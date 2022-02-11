@@ -410,7 +410,7 @@ This parameter is not used at the moment.
 
 Encoding Detector information in Titlebar. This parameter is used to "debug"  UCHARDET
 
-#### `AnalyzeReliableConfidenceLevel=92`
+#### `AnalyzeReliableConfidenceLevel=75`
 
 Confidence/Reliability level for reliability switch in encoding dialog.
 

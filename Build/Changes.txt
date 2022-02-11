@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.209.(build_#) (2022-02-09)
+Current BETA/RC Version 5.22.211.(build_#) (2022-02-11)
 ========================================================
 
 --------------------------------------------------------
@@ -50,6 +50,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.211.1]- Pimping UCHARDET encoding detector.
 [.128.1]- CamelCase WordLists for AHK Lexer.
 [.127.1]- Ctrl/Alt+F10 as Accelerator-Keys for Filesystem-Path to URL (and back) conversion.
 [.121.1]- Renaming Spanish Latin America (es-419) to Spanish Mexican (es-MX) (MUI).

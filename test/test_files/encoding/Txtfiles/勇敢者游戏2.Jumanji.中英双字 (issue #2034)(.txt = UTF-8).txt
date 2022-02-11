@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2020-02-29 16:38:13 - tinyMediaManager 3.1.1-->
+<movie>
+  <title>勇敢者游戏2：再战巅峰</title>
+  <originaltitle>Jumanji: The Next Level</originaltitle>
+  <sorttitle/>
+  <epbookmark/>
+  <year>2019</year>
+  <ratings>
+    <rating default="true" max="10" name="imdb">
+      <value>6.9</value>
+      <votes>87472</votes>
+    </rating>
+  </ratings>
+  <userrating>0.0</userrating>
+  <top250>0</top250>
+  <set/>
+  <plot>四名勇敢者再次穿越回到险象环生的游戏世界中，开启全新冒险。与上次不同的是，变身勇石博士 (道恩·强森 饰) 的是斯潘瑟的外公，外公的好友则变身为语言学家 (凯文· 哈特 饰)，高大威猛的弗里奇变成了中年发福地质学家 (杰克·布莱克 饰)，只有学霸玛莎依旧化身性感打女 (凯伦·吉兰 饰)，斯潘瑟和贝瑟尼却不知所踪。为营救消失的伙伴，四人必须进入全面失控的未知世界，面对难度爆表危险重重的致命关卡，强森领队挑战极限玩命闯关。山崩石裂的险境中命悬一线，与突如其来的凶猛野兽死战到底，他们唯有绷紧神经并肩作战，才能通过生死考验逃出生天。一场惊险刺激又充满惊喜的冒险之旅即将展开！</plot>
+  <outline>四名勇敢者再次穿越回到险象环生的游戏世界中，开启全新冒险。与上次不同的是，变身勇石博士 (道恩·强森 饰) 的是斯潘瑟的外公，外公的好友则变身为语言学家 (凯文· 哈特 饰)，高大威猛的弗里奇变成了中年发福地质学家 (杰克·布莱克 饰)，只有学霸玛莎依旧化身性感打女 (凯伦·吉兰 饰)，斯潘瑟和贝瑟尼却不知所踪。为营救消失的伙伴，四人必须进入全面失控的未知世界，面对难度爆表危险重重的致命关卡，强森领队挑战极限玩命闯关。山崩石裂的险境中命悬一线，与突如其来的凶猛野兽死战到底，他们唯有绷紧神经并肩作战，才能通过生死考验逃出生天。一场惊险刺激又充满惊喜的冒险之旅即将展开！</outline>
+  <tagline>The next level</tagline>
+  <runtime>123</runtime>
+  <thumb aspect="poster">https://s2.ax1x.com/2020/02/29/3y1sQs.jpg</thumb>
+  <fanart>
+    <thumb>https://s2.ax1x.com/2020/02/29/3y3Vfg.jpg</thumb>
+  </fanart>
+  <mpaa>Rated PG-13</mpaa>
+  <certification>US:PG-13 / US:Rated PG-13</certification>
+  <id>tt7975244</id>
+  <tmdbid/>
+  <tmdbCollectionId/>
+  <uniqueid default="true" type="imdb">tt7975244</uniqueid>
+  <country>美国</country>
+  <status/>
+  <code/>
+  <premiered>2019-12-13</premiered>
+  <watched>false</watched>
+  <playcount/>
+  <lastplayed/>
+  <genre>Action</genre>
+  <genre>Adventure</genre>
+  <genre>Comedy</genre>
+  <genre>Fantasy</genre>
+  <studio>Matt Tolmach Productions</studio>
+  <studio>Seven Bucks Productions</studio>
+  <studio>The Detective Agency</studio>
+  <credits>Jake Kasdan</credits>
+  <credits>Jeff Pinkner</credits>
+  <credits>Scott Rosenberg</credits>
+  <credits>Chris Van Allsburg</credits>
+  <director>Jake Kasdan</director>
+  <tag>sequel</tag>
+  <tag>third-part</tag>
+  <tag>shared-universe</tag>
+  <tag>christmas</tag>
+  <tag>jumanji</tag>
+  <actor>
+    <name>Dwayne Johnson</name>
+    <role>Bravestone</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMTkyNDQ3NzAxM15BMl5BanBnXkFtZTgwODIwMTQ0NTE@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm0425005/</profile>
+  </actor>
+  <actor>
+    <name>Kevin Hart</name>
+    <role>Mouse</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMTY4OTAxMjkxN15BMl5BanBnXkFtZTgwODg5MzYyMTE@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm0366389/</profile>
+  </actor>
+  <actor>
+    <name>Jack Black</name>
+    <role>Oberon</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BYTFiMWNlNmItMDRiYy00NzA4LWE5YjItZmViNWQ2NzhhOWZlXkEyXkFqcGdeQXVyMTA2Mjc5ODMy._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm0085312/</profile>
+  </actor>
+  <actor>
+    <name>Karen Gillan</name>
+    <role>Ruby</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMTQwMDQ0NDk1OV5BMl5BanBnXkFtZTcwNDcxOTExNg@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm2394794/</profile>
+  </actor>
+  <actor>
+    <name>Awkwafina</name>
+    <role>Ming</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMTU0NTUwNjkyN15BMl5BanBnXkFtZTgwMjM0NzEzMTI@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm5377144/</profile>
+  </actor>
+  <actor>
+    <name>Nick Jonas</name>
+    <role>Seaplane</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMjI2NTI0NjczM15BMl5BanBnXkFtZTgwMDc4NDI1NDM@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm2679917/</profile>
+  </actor>
+  <actor>
+    <name>Alex Wolff</name>
+    <role>Spencer</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BNTdiNzc5NmQtM2ZlNS00MTAxLTg2YzAtYzU0NjBjM2JkZDA1XkEyXkFqcGdeQXVyMjQwMDg0Ng@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm1842974/</profile>
+  </actor>
+  <actor>
+    <name>Morgan Turner</name>
+    <role>Martha</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BYTQ1ODMwNDYtMTMyMS00ZmViLThhNTEtNWY3OGE5MmVmMzM4XkEyXkFqcGdeQXVyMTczNTU1NDQ@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm2367353/</profile>
+  </actor>
+  <actor>
+    <name>Madison Iseman</name>
+    <role>Bethany</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BZTgzN2FhZjgtOWZhOS00ZDdlLThmNDYtMTNlNTc5YzI0YWNhXkEyXkFqcGdeQXVyNDIxNzMxNTc@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm5589690/</profile>
+  </actor>
+  <actor>
+    <name>Ser'Darius Blain</name>
+    <role>Fridge</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BNTFhNTc3OWUtMjM5YS00YmYzLWJjMDMtMGI2NDgyNWJlM2YwXkEyXkFqcGdeQXVyMjQwMDg0Ng@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm3843144/</profile>
+  </actor>
+  <actor>
+    <name>Danny DeVito</name>
+    <role>Eddie</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMTE5MjM5MzM3M15BMl5BanBnXkFtZTYwOTEzOTY0._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm0000362/</profile>
+  </actor>
+  <actor>
+    <name>Danny Glover</name>
+    <role>Milo</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMTI4ODM2MzQwN15BMl5BanBnXkFtZTcwMjY2OTI5MQ@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm0000418/</profile>
+  </actor>
+  <actor>
+    <name>Rhys Darby</name>
+    <role>Nigel</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMTU2NjExNjI4NF5BMl5BanBnXkFtZTgwNjU0OTk3NzE@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm1055302/</profile>
+  </actor>
+  <actor>
+    <name>Colin Hanks</name>
+    <role>Alex</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMTc5OTcxNjIzM15BMl5BanBnXkFtZTcwNDI0NjMyMw@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm0004988/</profile>
+  </actor>
+  <actor>
+    <name>Rory McCann</name>
+    <role>Jurgen the Brutal</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BYmIzMjdkZmEtMDA0Yy00YzVhLWEzYmEtOWRmZmMzODYxZDQ5XkEyXkFqcGdeQXVyMTAwMDczMTU3._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm0564920/</profile>
+  </actor>
+  <actor>
+    <name>Marin Hinkle</name>
+    <role>Janice</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMTkyNTIyNDgyMV5BMl5BanBnXkFtZTcwMDk3MjU5MQ@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm0385792/</profile>
+  </actor>
+  <actor>
+    <name>Vince Pisani</name>
+    <role>Pharmacy Manager</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BZjk5MDM2ZmEtZTc0Ny00OWNkLTliOGMtNGRjYjc3NmExYTc2XkEyXkFqcGdeQXVyMjQwMDg0Ng@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm2079627/</profile>
+  </actor>
+  <actor>
+    <name>Dorothy Steel</name>
+    <role>Village Elder</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BZTk4YzIwM2EtNmUwMy00Mzg1LWIxM2MtYWE4Njk1MzBmYTlkXkEyXkFqcGdeQXVyNzgxOTY1MDk@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm7262074/</profile>
+  </actor>
+  <actor>
+    <name>Jennifer Patino</name>
+    <role>Bravestone's Mother</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMTQ3Mzk2NjM0NF5BMl5BanBnXkFtZTgwMTEwNzc4NjE@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm2358594/</profile>
+  </actor>
+  <actor>
+    <name>Madison Johnson</name>
+    <role>Little Bethany Vreeke</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BYzk2ZTU5YjctMjlkMy00YmQ3LWI3NWEtN2Q0YjIyNDUyZTM0XkEyXkFqcGdeQXVyMTA0ODIxNDc3._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm10794211/</profile>
+  </actor>
+  <actor>
+    <name>Dania Ramirez</name>
+    <role>Lady in Red</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMjU0OTIyNzQ3MF5BMl5BanBnXkFtZTgwNzQwODU1NjM@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm1268158/</profile>
+  </actor>
+  <actor>
+    <name>Derek Russo</name>
+    <role>Key Master</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BM2U1OTJhZmMtNjJmYS00ZDdjLWIzOTUtNTg5N2E1NzE3MzdkXkEyXkFqcGdeQXVyMjQwMDg0Ng@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm2403799/</profile>
+  </actor>
+  <actor>
+    <name>Vanessa Cater</name>
+    <role>Red Headed Marauder</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMzgzZmRkZDQtYzE3MS00ZWU4LTgzMzctMjM4ODM1ZjZkMjBlXkEyXkFqcGdeQXVyMTkxNzAwODU@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm1695706/</profile>
+  </actor>
+  <actor>
+    <name>Nick Gomez</name>
+    <role>Oasis Drunk</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMmI3NTc3NTAtODU2Ny00NDYyLWE1N2YtZWNkYjlkNWM0MGEyXkEyXkFqcGdeQXVyMjQwMDg0Ng@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm0327063/</profile>
+  </actor>
+  <actor>
+    <name>Massi Furlan</name>
+    <role>Switchblade</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BZDA1MWY1MzQtZTAwNi00NTExLTg0MmYtZTA1NjY1ODEyMWNhL2ltYWdlXkEyXkFqcGdeQXVyMTIwNDk5MDA@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm2939724/</profile>
+  </actor>
+  <actor>
+    <name>Javier Villamil</name>
+    <role>Switchblade's Sidekick</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BN2NiYmU2NTktMDIwNi00NjNlLTljNzktYTE0MDhjYTZlMTcwXkEyXkFqcGdeQXVyMjk2MTA5NjE@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm4676698/</profile>
+  </actor>
+  <actor>
+    <name>Anthony Neves</name>
+    <role>Jurgen's Patrolman</role>
+    <thumb/>
+    <profile>http://www.imdb.com/name/nm7543346/</profile>
+  </actor>
+  <actor>
+    <name>Morgan Brown</name>
+    <role>Fortress Guard</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMmY3NTA3NjAtYzQyZS00MDQwLTkzNTctMTEzYmQ1ZjdjZjczXkEyXkFqcGdeQXVyMjQwMDg0Ng@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm3231814/</profile>
+  </actor>
+  <actor>
+    <name>Deobia Oparei</name>
+    <role>Elevator Guard</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMjMyNzU5MzI5MV5BMl5BanBnXkFtZTgwMjI5MTg5ODE@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm0649046/</profile>
+  </actor>
+  <actor>
+    <name>Leslie Simms</name>
+    <role>Cake Lady</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMTg4YTdjYjctNzRkNy00ZWMxLWJiZTEtMzc4M2Y2OWQyM2FkXkEyXkFqcGdeQXVyMTc3MTYwNzY@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm0799984/</profile>
+  </actor>
+  <actor>
+    <name>John Ross Bowie</name>
+    <role>Cavendish</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BN2MwZWMyMDQtOTc5Ny00NDcyLWJjODgtMjZiYTJjYzUyYTMwXkEyXkFqcGdeQXVyMDYyODYzMQ@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm0101152/</profile>
+  </actor>
+  <actor>
+    <name>Lucy DeVito</name>
+    <role>Maiden</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BNWZhZmFjNjUtM2U4NS00MzY1LWFiYmQtMDZjZmUzNjRjNjI2XkEyXkFqcGdeQXVyMjQwMDg0Ng@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm2192439/</profile>
+  </actor>
+  <actor>
+    <name>Bebe Neuwirth</name>
+    <role>Nora</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMjEzOTUxODI1M15BMl5BanBnXkFtZTcwNTU3MjE3NA@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm0001564/</profile>
+  </actor>
+  <actor>
+    <name>Lamorne Morris</name>
+    <role>Heater Repair Man</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BNmJhMWJkNTgtODIzMC00ZmIzLTliMjUtZGZmMmM1MTU5OTZhXkEyXkFqcGdeQXVyMjY5MDMxMzQ@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm2031358/</profile>
+  </actor>
+  <actor>
+    <name>Cruz Abelita</name>
+    <role>Messenger Boy</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BYWVkYjBkNDMtOTgwYi00ZjYyLWI3MWUtY2Q4NjMzMGUxYjk4XkEyXkFqcGdeQXVyNjc3ODE4Mzg@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm8914091/</profile>
+  </actor>
+  <actor>
+    <name>James William Ballard</name>
+    <role>Bad Guy in Fortress</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMmZiOGE3MDUtMzU5MC00NjYxLThhNGEtZTgwMTQ1NWUzZmUyXkEyXkFqcGdeQXVyMjQwMDg0Ng@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm9735552/</profile>
+  </actor>
+  <actor>
+    <name>Richard Baxter</name>
+    <role>Fortress Guard / Fortress Guard Detaining Awkwafina</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BODQ5MGY3ODEtNGI3Zi00OWQzLTk3NDItYzE4MjI5MjNhZmJkXkEyXkFqcGdeQXVyOTk3MDM3NTk@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm10509356/</profile>
+  </actor>
+  <actor>
+    <name>Michael Beasley</name>
+    <role>Coach Davis</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BYjMwYzhiM2MtNjE2Mi00YjAzLTg2NjAtZmYyYWMwNzFlZjBkXkEyXkFqcGdeQXVyMTk5NTE1ODA@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm2689261/</profile>
+  </actor>
+  <actor>
+    <name>Dillon Belisle</name>
+    <role>Fortress Guard</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BNzRlNjVmMmMtY2U2OS00ZWFkLThlNTgtNzM4YzkyZWU0ZmM4XkEyXkFqcGdeQXVyMjQwMDg0Ng@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm6911209/</profile>
+  </actor>
+  <actor>
+    <name>Shane Berengue</name>
+    <role>Jergan's Viking</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMWUyMjE1ZDYtNjAzZC00ZDkyLTkwOWUtMWYwNmQ2ZDcwNDRlXkEyXkFqcGdeQXVyOTg3ODA2NDU@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm10656436/</profile>
+  </actor>
+  <actor>
+    <name>Ashley Black</name>
+    <role>Viking Woman</role>
+    <thumb/>
+    <profile>http://www.imdb.com/name/nm8587437/</profile>
+  </actor>
+  <actor>
+    <name>Matt Bolick</name>
+    <role>Jergans inner circle</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BYjRkYzA2YTgtZGUzNi00MzZiLWJhOGMtN2ViNmQwNTFhODYxXkEyXkFqcGdeQXVyMzYxMDMxMjI@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm8569766/</profile>
+  </actor>
+  <actor>
+    <name>Kristopherr Brown Jr.</name>
+    <role>Fortress Guard</role>
+    <thumb/>
+    <profile>http://www.imdb.com/name/nm10744694/</profile>
+  </actor>
+  <actor>
+    <name>Ray Buchanan</name>
+    <role>Pedestrian</role>
+    <thumb/>
+    <profile>http://www.imdb.com/name/nm10557155/</profile>
+  </actor>
+  <actor>
+    <name>John David Bulla</name>
+    <role>Groovy Face Tattoo Biker</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BZmIwMGU4YWQtN2Y3OS00Y2FjLTk4NWEtNTY4ZmRiMmJiYzIyXkEyXkFqcGdeQXVyMjQwMDg0Ng@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm6980280/</profile>
+  </actor>
+  <actor>
+    <name>Catherine Busby</name>
+    <role>College Hiker</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMjY0Yzg2NGUtMmJiNS00YWU5LWFlOTEtYmJmNzdkYTlkOTE0XkEyXkFqcGdeQXVyNzAxNTk3MDE@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm8559849/</profile>
+  </actor>
+  <actor>
+    <name>Matthew Byrge</name>
+    <role>Jurgen's Viking</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BYWQxZGEwNDItMDIxOC00M2U2LWFjZWQtNDU1NzdjZTEyZGU4XkEyXkFqcGdeQXVyOTQ2OTE4NDk@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm10233844/</profile>
+  </actor>
+  <actor>
+    <name>Ryan Cheeseman</name>
+    <role>Marauder</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BYjU2YjI1MGUtNDQ1Ny00ZjMwLTg1OGEtZjU5MTAyZGZiMDk4XkEyXkFqcGdeQXVyMjQwMDg0Ng@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm10504390/</profile>
+  </actor>
+  <actor>
+    <name>Teo Ciltia</name>
+    <role>Fortress Guard</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMzkwMDY4ODg2M15BMl5BanBnXkFtZTgwMTIxODg5NTE@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm5854970/</profile>
+  </actor>
+  <actor>
+    <name>Jeremy Connell</name>
+    <role>Bus Passenger</role>
+    <thumb/>
+    <profile>http://www.imdb.com/name/nm10517614/</profile>
+  </actor>
+  <actor>
+    <name>Marché Day</name>
+    <role>Fortress Guard</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BYzZhNDgwZTctNTU3Yi00MTE4LWIwZTYtZjYxNjkyY2YwODcwXkEyXkFqcGdeQXVyMTAyNjY1Nzky._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm10693389/</profile>
+  </actor>
+  <actor>
+    <name>Bethany Dixon</name>
+    <role>Jurgen's Viking</role>
+    <thumb/>
+    <profile>http://www.imdb.com/name/nm10128159/</profile>
+  </actor>
+  <actor>
+    <name>Darin Ferraro</name>
+    <role>The Gun Seller</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BNGMwOGU3YTgtYWRjNi00YjVhLWIyMTYtNjg2MGIyZjIyN2ZiXkEyXkFqcGdeQXVyODI2NjMzOTA@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm5155353/</profile>
+  </actor>
+  <actor>
+    <name>Brent Moorer Gaskins</name>
+    <role>Farmer</role>
+    <thumb/>
+    <profile>http://www.imdb.com/name/nm7476062/</profile>
+  </actor>
+  <actor>
+    <name>John Gettier</name>
+    <role>Fortress Guard</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BZmY2OGZlNzQtNWVlMy00NDk5LTk1ZjYtYTBmZDdjMWZjMzQ5XkEyXkFqcGdeQXVyNjgyMTc3ODI@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm8074962/</profile>
+  </actor>
+  <actor>
+    <name>Tahseen Ghauri</name>
+    <role>Oasis Market Patron</role>
+    <thumb/>
+    <profile>http://www.imdb.com/name/nm6708940/</profile>
+  </actor>
+  <actor>
+    <name>Charles Green</name>
+    <role>Bartender</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BZmU0ZDUxMjEtNzYxNS00OWY0LWI3MDQtYjUzNTljOGY4YTAwXkEyXkFqcGdeQXVyMzU3NjIzMjc@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm0337705/</profile>
+  </actor>
+  <actor>
+    <name>Jared Hasmuk</name>
+    <role>Dagfin</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BYzc1NjJkNmQtZDU0Ni00YTFiLTgwZjQtMjk1OTU4ODk5NmU5XkEyXkFqcGdeQXVyMjQwMDg0Ng@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm9187777/</profile>
+  </actor>
+  <actor>
+    <name>Marque Hernandez</name>
+    <role>Gypsy Guy in Tattoo Chair</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BYTU4MmIwMDAtMDk1My00ZGRiLWEwYmQtOWM5ODAwYjIwZTVmXkEyXkFqcGdeQXVyNzQ3ODU1NjI@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm9145803/</profile>
+  </actor>
+  <actor>
+    <name>Shiquita James</name>
+    <role>Pedestrian</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BNGY4ZDVkNDctY2MwNi00ZjJhLWI0YTgtN2NkZDM5ZGNhMjMzXkEyXkFqcGdeQXVyODcyNjczNzA@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm7691913/</profile>
+  </actor>
+  <actor>
+    <name>Sean K. Jones</name>
+    <role>Fortress Guard</role>
+    <thumb/>
+    <profile>http://www.imdb.com/name/nm10268319/</profile>
+  </actor>
+  <actor>
+    <name>Christine A. Jordan</name>
+    <role>Gym Goer</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BNTIwODhiN2QtMGNmMy00YWNkLWFkZTMtYzBiNDVmMGVhYzIxXkEyXkFqcGdeQXVyMTg0ODU3NzM@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm9451882/</profile>
+  </actor>
+  <actor>
+    <name>David Kallaway</name>
+    <role>New Hyena Master</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BOGU3ZjY4MWEtMTkxNy00NjIyLWFiMzgtNDYxOTFmZmE0YzUzXkEyXkFqcGdeQXVyNTMyMjUwMDA@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm0436064/</profile>
+  </actor>
+  <actor>
+    <name>Melissa Kennemore</name>
+    <role>Marauder 1 / Jergens Inner Circle</role>
+    <thumb/>
+    <profile>http://www.imdb.com/name/nm11156931/</profile>
+  </actor>
+  <actor>
+    <name>Chase Ledgerwood</name>
+    <role>NYU Student / Bus Passenger</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMjEyODM3Y2MtMzBiMC00MTAyLWFkODgtMmEwZWY4YWU5YjU0XkEyXkFqcGdeQXVyNTI5NjIyMw@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm9453496/</profile>
+  </actor>
+  <actor>
+    <name>Damon LeGrand</name>
+    <role>Jurgen Henchman</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BYTk2NWU2ZWEtM2U4My00NjcwLWE0ODQtYzdlZjNmNDBhMjQ3XkEyXkFqcGdeQXVyMTExMjg4NzY0._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm10836044/</profile>
+  </actor>
+  <actor>
+    <name>Sal Longobardo</name>
+    <role>Tony</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMTk0NTU4YmItNjlkMi00ZjAzLWE5NmQtNjY0MDhlMTUwNmVjXkEyXkFqcGdeQXVyMjI0NDU5MTQ@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm2381885/</profile>
+  </actor>
+  <actor>
+    <name>Dennis Mallen</name>
+    <role>Second Husband</role>
+    <thumb/>
+    <profile>http://www.imdb.com/name/nm9990253/</profile>
+  </actor>
+  <actor>
+    <name>Michael Mathis</name>
+    <role>Fighter</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BZDBjZThmNWMtNzliMC00ODEzLWFjNWQtMGExMTVjNzFlMjMwXkEyXkFqcGdeQXVyMTA1ODUzNTQw._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm11093179/</profile>
+  </actor>
+  <actor>
+    <name>Andrew R. McCallister</name>
+    <role>Jurgen's Henchman</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMTIzZGZhNzMtNDYyNi00NDY5LTg1MzYtMGMxM2YzNTg5OWU5XkEyXkFqcGdeQXVyMTA5OTg5MDU3._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm11132403/</profile>
+  </actor>
+  <actor>
+    <name>Ego Mikitas</name>
+    <role>Jergen Man</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BNzQ0NzZiMzMtZGM0Mi00NGVlLTkxMDktMWRhZTgyZTJjNWQwXkEyXkFqcGdeQXVyNTYxOTc4MDM@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm3658494/</profile>
+  </actor>
+  <actor>
+    <name>Brandon Parker</name>
+    <role>Jergan's Viking</role>
+    <thumb/>
+    <profile>http://www.imdb.com/name/nm10814930/</profile>
+  </actor>
+  <actor>
+    <name>Paul Pillsbury</name>
+    <role>Fortress Guard</role>
+    <thumb/>
+    <profile>http://www.imdb.com/name/nm7591351/</profile>
+  </actor>
+  <actor>
+    <name>Monica Powers</name>
+    <role>Fortress Viking</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMWUzMTdiZjgtYmZjMC00ODQwLWI4ZmQtZjJlNjQ3MmQ2NzQyXkEyXkFqcGdeQXVyMTAyNTE4NTgy._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm10667070/</profile>
+  </actor>
+  <actor>
+    <name>Scott Rapp</name>
+    <role>Marauder</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMzcxOWE5ODAtZmE0My00NWFhLWJlZjItZjZlZGJlYzc0MTg0XkEyXkFqcGdeQXVyOTQyMzUzMzk@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm10405165/</profile>
+  </actor>
+  <actor>
+    <name>Sheril Rodgers</name>
+    <role>New York City Pedestrain</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMGM3ZWEzN2MtNzcxOC00NWE4LWFhNzItYjM5MjJjMmM5MGIxXkEyXkFqcGdeQXVyNjY0MzQxMzA@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm3725031/</profile>
+  </actor>
+  <actor>
+    <name>Bruno Rose</name>
+    <role>NY Dorm Guy</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BZThjMWNiYmUtOTNhZC00NGQ1LWFkM2UtZGJiNGFhNjE3N2RjXkEyXkFqcGdeQXVyNDc4Mzk3MTI@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm6261591/</profile>
+  </actor>
+  <actor>
+    <name>Robert Sargent</name>
+    <role>Luna Viking- Jergen</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BOWFhNjYwNjctZmZhYS00NGUwLThmZDEtNzkwOGI3MDdmNDdmXkEyXkFqcGdeQXVyMTA4MzY1Mjcw._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm11032927/</profile>
+  </actor>
+  <actor>
+    <name>Ashley Scott</name>
+    <role>Ashley</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMjIwNTU4OTQ1Nl5BMl5BanBnXkFtZTgwNTM2OTg0MDE@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm1008709/</profile>
+  </actor>
+  <actor>
+    <name>Taylor Simmons</name>
+    <role>Viking</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BMmY3ZWFlY2YtZjZkYy00YTFiLThlNWQtNGU3MWU5MDg5MDA4XkEyXkFqcGdeQXVyMjQwMDg0Ng@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm5574343/</profile>
+  </actor>
+  <actor>
+    <name>Elizabeth Sparks</name>
+    <role>Viking</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BOWUyNjY3NmMtNTczYS00YjljLTljMzYtY2M4ZDJhNjYxYTk5XkEyXkFqcGdeQXVyOTM5NjEwNDg@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm10198488/</profile>
+  </actor>
+  <actor>
+    <name>Ulrike Stewart</name>
+    <role>Jergens Viking</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BYjA2YjZhOGItNjBjOC00OGIwLTk5YzktNjJkNDBiMWIxOTg0XkEyXkFqcGdeQXVyOTA5NjYwODI@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm10032663/</profile>
+  </actor>
+  <actor>
+    <name>Zachary Tzegaegbe</name>
+    <role>Young Bravestone</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BNjQwYWM0ZTAtNzBlOC00MzgxLTlhMWEtY2EwNzIzNTMyOWQ1XkEyXkFqcGdeQXVyMTEwOTQzNDYw._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm10435927/</profile>
+  </actor>
+  <actor>
+    <name>Trinity Whiteside</name>
+    <role>Viking</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BYzdiMWZjZDktMWE0ZS00NzY4LWI0MmYtNDNhMDM5NjRiYWFlXkEyXkFqcGdeQXVyNjg0MjI5ODU@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm8376728/</profile>
+  </actor>
+  <actor>
+    <name>Lewis Wright</name>
+    <role>Viking Warrior</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BYzcyNmJiMzgtNjhmMi00N2RlLTg4Y2UtOWVmMTllOGMzYjMxXkEyXkFqcGdeQXVyNzc1MzU5MTk@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm9152774/</profile>
+  </actor>
+  <actor>
+    <name>Kodai Yamaguchi</name>
+    <role>Jumanjian Villager</role>
+    <thumb>https://m.media-amazon.com/images/M/MV5BYmQ2MWIwZDktNDUyZi00ZmQ4LTkxMjItMWVhNTdjN2IyZjY0XkEyXkFqcGdeQXVyMjQwMDg0Ng@@._UY632.jpg</thumb>
+    <profile>http://www.imdb.com/name/nm10139978/</profile>
+  </actor>
+  <producer>
+    <name>Ted Field</name>
+    <role/>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Dany Garcia</name>
+    <role/>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Hiram Garcia</name>
+    <role/>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>David B. Householter</name>
+    <role/>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Dwayne Johnson</name>
+    <role/>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Jake Kasdan</name>
+    <role/>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>David Manpearl</name>
+    <role/>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Melvin Mar</name>
+    <role/>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Jeff Pinkner</name>
+    <role/>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Sky Salem Robinson</name>
+    <role/>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Scott Rosenberg</name>
+    <role/>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>William Teitler</name>
+    <role/>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Matt Tolmach</name>
+    <role/>
+    <thumb/>
+  </producer>
+  <producer>
+    <name>Mike Weber</name>
+    <role/>
+    <thumb/>
+  </producer>
+  <trailer/>
+  <languages>英文</languages>
+  <dateadded>2020-02-29 16:32:39</dateadded>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>h264</codec>
+        <aspect>1.78</aspect>
+        <width>1920</width>
+        <height>1080</height>
+        <durationinseconds>7385</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>AAC</codec>
+        <language>eng</language>
+        <channels>2</channels>
+      </audio>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>UNKNOWN</source>
+  <edition>NONE</edition>
+</movie>
