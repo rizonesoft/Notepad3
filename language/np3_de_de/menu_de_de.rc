@@ -340,6 +340,7 @@ BEGIN
     END
     POPUP "&Ansicht"
     BEGIN
+        MENUITEM "&Dokument Nur Lesen"                      IDM_VIEW_READONLY
         MENUITEM "Langzeilen Umbruch\tCtrl+W",              IDM_VIEW_WORDWRAP
         MENUITEM "&Langzeilen Markierung\tCtrl+Alt+L",      IDM_VIEW_LONGLINEMARKER
         MENUITEM "Leitlinien Einrückung\tCtrl+Shift+G",     IDM_VIEW_SHOWINDENTGUIDES

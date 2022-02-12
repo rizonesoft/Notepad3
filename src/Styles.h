@@ -52,7 +52,7 @@ void   Style_SetLexer(HWND hwnd,PEDITLEXER pLexNew);
 void   Style_FillRelatedStyles(HWND hwnd, const PEDITLEXER pLexer);
 void   Style_SetUrlHotSpot(HWND hwnd);
 void   Style_SetInvisible(HWND hwnd, bool);
-void   Style_SetReadonly(HWND hwnd, bool);
+//void   Style_SetReadonly(HWND hwnd, bool);
 void   Style_HighlightCurrentLine(HWND hwnd, int);
 void   Style_SetFolding(HWND hwnd, bool bShowMargin);
 void   Style_SetBookmark(HWND hwnd, bool bShowMargin);

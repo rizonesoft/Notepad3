@@ -760,6 +760,7 @@
 #define IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK 41054
 #define IDM_VIEW_UNICODE_POINTS         41055
 #define IDM_VIEW_WIN_DARK_MODE          41056
+#define IDM_VIEW_READONLY               41057
 
 // keep Scintilla(SC) order
 #define IDM_SET_RENDER_TECH_GDI         42000   // SC_TECHNOLOGY_DEFAULT(0)
