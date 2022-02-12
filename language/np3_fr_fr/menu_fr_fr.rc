@@ -340,6 +340,7 @@ BEGIN
     END
     POPUP "&Affichage"
     BEGIN
+        MENUITEM "Document &Lecture Seule"                                  IDM_VIEW_READONLY
         MENUITEM "Retour à la Lig&ne Automatique\tCtrl+W",                  IDM_VIEW_WORDWRAP
         MENUITEM "Marqueur de &Longue Ligne\tCtrl+Alt+L",                   IDM_VIEW_LONGLINEMARKER
         MENUITEM "Guides de Retra&it\tCtrl+Shift+G",                        IDM_VIEW_SHOWINDENTGUIDES

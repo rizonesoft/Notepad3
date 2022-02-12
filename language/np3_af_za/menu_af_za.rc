@@ -340,6 +340,7 @@ BEGIN
     END
     POPUP "&Aansig"
     BEGIN
+        MENUITEM "Document &Read Only"                      IDM_VIEW_READONLY
         MENUITEM "Woord Oo&rvloei\tCtrl+W",                 IDM_VIEW_WORDWRAP
         MENUITEM "&Lang Lyn Merker\tCtrl+Alt+L",            IDM_VIEW_LONGLINEMARKER
         MENUITEM "Indent&asiegidse\tCtrl+Shift+G",          IDM_VIEW_SHOWINDENTGUIDES

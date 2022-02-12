@@ -340,6 +340,7 @@ BEGIN
     END
     POPUP "查看(&V)"
     BEGIN
+        MENUITEM "Document &Read Only"                         IDM_VIEW_READONLY
         MENUITEM "自动换行(&R)\tCtrl+W",                        IDM_VIEW_WORDWRAP
         MENUITEM "显示行长度标记(&L)\tCtrl+Alt+L",               IDM_VIEW_LONGLINEMARKER
         MENUITEM "显示缩进指示(&A)\tCtrl+Shift+G",               IDM_VIEW_SHOWINDENTGUIDES

@@ -340,6 +340,7 @@ BEGIN
     END
     POPUP "&Zobraziť"
     BEGIN
+        MENUITEM "Document &Read Only"                          IDM_VIEW_READONLY
         MENUITEM "&Zalomenie textu\tCtrl+W",                    IDM_VIEW_WORDWRAP
         MENUITEM "&Ohraničenie dĺžky riadku\tCtrl+Alt+L",       IDM_VIEW_LONGLINEMARKER
         MENUITEM "Vodítka odsadenia\tCtrl+Shift+G",             IDM_VIEW_SHOWINDENTGUIDES

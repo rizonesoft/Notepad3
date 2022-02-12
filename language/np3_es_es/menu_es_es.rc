@@ -340,6 +340,7 @@ BEGIN
     END
     POPUP "&Vista"
     BEGIN
+        MENUITEM "Documento &Sólo lectura"                              IDM_VIEW_READONLY
         MENUITEM "&Ajuste automático de línea\tCtrl+W",                 IDM_VIEW_WORDWRAP
         MENUITEM "&Marcador de línea larga\tCtrl+Alt+L",                IDM_VIEW_LONGLINEMARKER
         MENUITEM "&Guías de Sangría\tCtrl+Shift+G",                     IDM_VIEW_SHOWINDENTGUIDES

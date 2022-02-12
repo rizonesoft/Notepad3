@@ -340,6 +340,7 @@ BEGIN
     END
     POPUP "&Ver"
     BEGIN
+        MENUITEM "Document &Read Only"                          IDM_VIEW_READONLY
         MENUITEM "Moldar texto\tCtrl+W",                        IDM_VIEW_WORDWRAP
         MENUITEM "Marcador de linha &longa\tCtrl+Alt+L",        IDM_VIEW_LONGLINEMARKER
         MENUITEM "&Guias de indentação\tCtrl+Shift+G",          IDM_VIEW_SHOWINDENTGUIDES

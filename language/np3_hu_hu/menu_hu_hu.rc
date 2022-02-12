@@ -340,6 +340,7 @@ BEGIN
     END
     POPUP "&Nézet"
     BEGIN
+        MENUITEM "Document &Read Only"                    IDM_VIEW_READONLY
         MENUITEM "Sort&örés\tCtrl+W",                     IDM_VIEW_WORDWRAP
         MENUITEM "&Hosszú sor jelölő\tCtrl+Alt+L",        IDM_VIEW_LONGLINEMARKER
         MENUITEM "&Behúzás jelölése\tCtrl+Shift+G",       IDM_VIEW_SHOWINDENTGUIDES
