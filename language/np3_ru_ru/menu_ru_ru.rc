@@ -340,6 +340,7 @@ BEGIN
     END
     POPUP "&Вид"
     BEGIN
+        MENUITEM "Document &Read Only"                              IDM_VIEW_READONLY
         MENUITEM "&Перенос строк\tCtrl+W",                          IDM_VIEW_WORDWRAP
         MENUITEM "&Маркер длинных строк\tCtrl+Alt+L",               IDM_VIEW_LONGLINEMARKER
         MENUITEM "Направ&ляющие отступов\tCtrl+Shift+G",            IDM_VIEW_SHOWINDENTGUIDES

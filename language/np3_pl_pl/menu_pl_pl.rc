@@ -340,6 +340,7 @@ BEGIN
     END
     POPUP "&Widok"
     BEGIN
+        MENUITEM "Document &Read Only"                              IDM_VIEW_READONLY
         MENUITEM "Zawijanie wierszy\tCtrl+W",                       IDM_VIEW_WORDWRAP
         MENUITEM "&Znacznik długości wiersza\tCtrl+Alt+L",          IDM_VIEW_LONGLINEMARKER
         MENUITEM "Linie pomocnicze wcięć\tCtrl+Shift+G",            IDM_VIEW_SHOWINDENTGUIDES

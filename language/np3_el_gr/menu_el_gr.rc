@@ -340,6 +340,7 @@ BEGIN
     END
     POPUP "Πρ&οβολή"
     BEGIN
+        MENUITEM "Document &Read Only"                            IDM_VIEW_READONLY
         MENUITEM "&Αναδίπλωση λέξεων\tCtrl+W",                    IDM_VIEW_WORDWRAP
         MENUITEM "&Δείκτης μήκους γραμμής\tCtrl+Alt+L",           IDM_VIEW_LONGLINEMARKER
         MENUITEM "Οδη&γοί εσοχών\tCtrl+Shift+G",                  IDM_VIEW_SHOWINDENTGUIDES

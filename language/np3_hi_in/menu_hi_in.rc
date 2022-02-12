@@ -340,6 +340,7 @@ BEGIN
     END
     POPUP "दृश्य (&V)"
     BEGIN
+        MENUITEM "Document &Read Only"                     IDM_VIEW_READONLY
         MENUITEM "शब्द लपेटें (&W)\tCtrl+W",                   IDM_VIEW_WORDWRAP
         MENUITEM "दीर्घ रेखा चिन्हक (&L)\tCtrl+Alt+L",        IDM_VIEW_LONGLINEMARKER
         MENUITEM "इंडेंटेशन निर्देशिका (&G)\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES

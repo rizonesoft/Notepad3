@@ -340,6 +340,7 @@ BEGIN
     END
     POPUP "&Görünüm"
     BEGIN
+        MENUITEM "Document &Read Only"                                IDM_VIEW_READONLY
         MENUITEM "&Sözcük kaydırmalar görüntülensin\tCtrl+W",         IDM_VIEW_WORDWRAP
         MENUITEM "&Uzun satır işareti görüntülensin\tCtrl+Alt+L",     IDM_VIEW_LONGLINEMARKER
         MENUITEM "Sekme &konumları görüntülensin\tCtrl+Shift+G",      IDM_VIEW_SHOWINDENTGUIDES

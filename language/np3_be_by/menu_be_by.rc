@@ -340,6 +340,7 @@ BEGIN
     END
     POPUP "&Выгляд"
     BEGIN
+        MENUITEM "Document &Read Only"                          IDM_VIEW_READONLY
         MENUITEM "&Перанос радкоў\tCtrl+W",                     IDM_VIEW_WORDWRAP
         MENUITEM "&Маркер доўгіх радкоў\tCtrl+Alt+L",           IDM_VIEW_LONGLINEMARKER
         MENUITEM "Нак&іравальнікі водступаў\tCtrl+Shift+G",     IDM_VIEW_SHOWINDENTGUIDES

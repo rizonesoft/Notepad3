@@ -340,6 +340,7 @@ BEGIN
     END
     POPUP "&Visualizza"
     BEGIN
+        MENUITEM "Document &Read Only"                                 IDM_VIEW_READONLY
         MENUITEM "A capo automatico\tCtrl+W",                          IDM_VIEW_WORDWRAP
         MENUITEM "&Marcatore riga lunga\tCtrl+Alt+L",                  IDM_VIEW_LONGLINEMARKER
         MENUITEM "&Guide indentazione\tCtrl+Shift+G",                  IDM_VIEW_SHOWINDENTGUIDES
