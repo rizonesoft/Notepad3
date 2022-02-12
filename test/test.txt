@@ -1,0 +1,22 @@
+Software\Microsoft\Windows10\
+Software\Microsoft\Windows10\
+Software\Microsoft\Windows10\
+Software\Microsoft\Windows10\
+Software\Microsoft\Windows10\
+Software\Microsoft\Windows10\
+Software\Microsoft\Windows10\
+Software\Microsoft\Windows10\
+Software\Microsoft\Windows10\
+Software\Microsoft\Windows10\
+Software\Microsoft\Windows10\
+Software\Microsoft\Windows10\
+Software\Microsoft\Windows10\
+Software\Microsoft\Windows10\
+Software\Microsoft\Windows10\
+Software\Microsoft\Windows10\
+Software\Microsoft\Windows10\
+
+This is an old bug (reappeared): 
+- Selection with mouse (Shift+Alt/mouse)
+- Replace selection --> only last line is replaced.
+- If selection with arrow --> no problem !
