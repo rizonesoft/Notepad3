@@ -1942,7 +1942,7 @@ void Style_SetInvisible(HWND hwnd, bool bInvisible)
     }
 }
 
-
+#if 0
 //=============================================================================
 //
 //  Style_SetReadonly()
@@ -1952,7 +1952,7 @@ void Style_SetReadonly(HWND hwnd, bool bReadonly)
     UNREFERENCED_PARAMETER(hwnd);
     SciCall_StyleSetChangeable(Style_GetReadonlyStyleID(), !bReadonly);
 }
-
+#endif
 
 //=============================================================================
 //

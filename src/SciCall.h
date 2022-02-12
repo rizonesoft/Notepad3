@@ -214,8 +214,6 @@ DeclareSciCallR1(GetElementIsSet, GETELEMENTISSET, bool, int, element);
 DeclareSciCallR1(GetElementAllowsTranslucent, GETELEMENTALLOWSTRANSLUCENT, bool, int, element);
 
 //  Selection, positions and information
-DeclareSciCallR0(GetReadOnly, GETREADONLY, bool);
-DeclareSciCallV1(SetReadOnly, SETREADONLY, bool, flag);
 DeclareSciCallV0(Undo, UNDO);
 DeclareSciCallV0(Redo, REDO);
 DeclareSciCallR0(CanUndo, CANUNDO, bool);
@@ -227,6 +225,8 @@ DeclareSciCallV1(SetFocus, SETFOCUS, bool, flag);
 DeclareSciCallR0(GetFocus, GETFOCUS, bool);
 DeclareSciCallR0(GetPasteConvertEndings, GETPASTECONVERTENDINGS, bool);
 DeclareSciCallR0(GetOverType, GETOVERTYPE, bool);
+DeclareSciCallR0(GetReadOnly, GETREADONLY, bool);
+DeclareSciCallV1(SetReadOnly, SETREADONLY, bool, flag);
 
 DeclareSciCallV1(SetSelectionLayer, SETSELECTIONLAYER, int, layer);
 DeclareSciCallR0(GetSelectionLayer, GETSELECTIONLAYER, int);
