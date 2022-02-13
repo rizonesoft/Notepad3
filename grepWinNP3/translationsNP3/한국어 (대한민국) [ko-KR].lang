@@ -297,7 +297,7 @@ msgstr "다음보다 최신"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr "줄바꿈은 '.'와 일치"
+msgstr "새 줄은 '.'로 일치"
 
 #. Resource IDs: (1)
 msgid "OK"
