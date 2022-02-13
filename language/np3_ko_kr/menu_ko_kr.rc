@@ -340,7 +340,7 @@ BEGIN
     END
     POPUP "보기(&V)"
     BEGIN
-        MENUITEM "문서 읽기 전용(&R)"                    IDM_VIEW_READONLY
+        MENUITEM "읽기 전용 문서(&R)"                    IDM_VIEW_READONLY
         MENUITEM "줄 바꿈(&R)\tCtrl+W",                    IDM_VIEW_WORDWRAP
         MENUITEM "긴 줄 표시(&L)\tCtrl+Alt+L",             IDM_VIEW_LONGLINEMARKER
         MENUITEM "들여쓰기 안내선(&A)\tCtrl+Shift+G",       IDM_VIEW_SHOWINDENTGUIDES
