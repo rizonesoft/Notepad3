@@ -340,7 +340,7 @@ BEGIN
     END
     POPUP "&Visualizza"
     BEGIN
-        MENUITEM "Document &Read Only"                                 IDM_VIEW_READONLY
+        MENUITEM "Documento in Sola &Lettura"                          IDM_VIEW_READONLY
         MENUITEM "A capo automatico\tCtrl+W",                          IDM_VIEW_WORDWRAP
         MENUITEM "&Marcatore riga lunga\tCtrl+Alt+L",                  IDM_VIEW_LONGLINEMARKER
         MENUITEM "&Guide indentazione\tCtrl+Shift+G",                  IDM_VIEW_SHOWINDENTGUIDES
@@ -464,9 +464,9 @@ BEGIN
         MENUITEM "Completamento automatico &keywords lexer",         IDM_SET_AUTOCLEXKEYWORDS
         MENUITEM "Navi&gazione accelerata delle parole\tCtrl+Alt+A", IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "Only One Instance per &File",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "Solo una istanza per &File",                       IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Notifica di modifi&che al file...\tAlt+F5",        IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
+        ///MENUITEM "AutoSave / Backup Settings...",                 IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Muto Messaggio &Bips",                             IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Azione su tasto '&Esc'"
         BEGIN
