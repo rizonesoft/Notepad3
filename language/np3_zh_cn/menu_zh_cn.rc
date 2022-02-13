@@ -340,7 +340,7 @@ BEGIN
     END
     POPUP "查看(&V)"
     BEGIN
-        MENUITEM "Document &Read Only"                         IDM_VIEW_READONLY
+        MENUITEM "只读(&R)"                         IDM_VIEW_READONLY
         MENUITEM "自动换行(&R)\tCtrl+W",                        IDM_VIEW_WORDWRAP
         MENUITEM "显示行长度标记(&L)\tCtrl+Alt+L",               IDM_VIEW_LONGLINEMARKER
         MENUITEM "显示缩进指示(&A)\tCtrl+Shift+G",               IDM_VIEW_SHOWINDENTGUIDES
@@ -466,7 +466,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "对每个文件仅允许单个实例(&F)",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "文件修改通知(&C)...\tAlt+F5",                 IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
+        ///MENUITEM "自动保存和备份设置...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "关闭消息提示音(&M)",                          IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Esc 键功能(&E)"
         BEGIN
