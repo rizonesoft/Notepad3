@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.212.(build_#) (2022-02-12)
+Current BETA/RC Version 5.22.214.(build_#) (2022-02-14)
 ========================================================
 
 --------------------------------------------------------
@@ -51,6 +51,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.214.1]- "grepWinNP3": make runtime statically linking (GRE).
 [.211.1]- Pimping UCHARDET encoding detector.
 [.128.1]- CamelCase WordLists for AHK Lexer.
 [.127.1]- Ctrl/Alt+F10 as Accelerator-Keys for Filesystem-Path to URL (and back) conversion.
@@ -79,6 +80,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.214.1]- Allow switching encoding for empty document.
 [.209.1]- Memory issues fixing and hardening.
 [.128.2]- XML/HTML Stream Comment.
 [.103.1]- Find/Replace pattern history: clear all not persisted to .ini file.
