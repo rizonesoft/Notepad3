@@ -65,7 +65,8 @@
 #endif
 inline void* reallocz(void* pMem, size_t numBytes) { void* pM = realloc(pMem, numBytes); if (pM) memset(pM, 0, numBytes); return pM; }
 #define AllocMem(B, F) (((F)&HEAP_ZERO_MEMORY) ? calloc(1, B) : malloc(B))
-#define ReAllocMem(M, B, F) ((M) ? ((_msize(M) >= (B)) ? (((F)&HEAP_ZERO_MEMORY) ? (memset(M, 0, B), (M)) : (M)) : (((F)&HEAP_ZERO_MEMORY) ? reallocz(M, B) : realloc(M, B))) : AllocMem(B, F))
+#define ReAllocMem(M, B, F) ((M) ? (((F)&HEAP_ZERO_MEMORY) ? reallocz(M, B) : realloc(M, B)) : AllocMem(B, F))
+#define ReAllocGrowMem(M, B, F) ((M) ? ((_msize(M) >= (B)) ? (((F)&HEAP_ZERO_MEMORY) ? (memset(M, 0, B), (M)) : (M)) : (((F)&HEAP_ZERO_MEMORY) ? reallocz(M, B) : realloc(M, B))) : AllocMem(B, F))
 #define FreeMem(M) ((M ? (free(M)) : NOOP), true)
 #define SizeOfMem(M) ((M) ? _msize(M) : 0)
 
@@ -84,6 +85,14 @@ inline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
 }
 
 inline LPVOID ReAllocMem(LPVOID lpMem, size_t numBytes, DWORD dwFlags)
+{
+    if (lpMem) {
+        return HeapReAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), lpMem, numBytes);
+    }
+    return HeapAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
+}
+
+inline LPVOID ReAllocGrowMem(LPVOID lpMem, size_t numBytes, DWORD dwFlags)
 {
     if (lpMem) {
         size_t const memSize = HeapSize(Globals.hndlProcessHeap, 0, lpMem);

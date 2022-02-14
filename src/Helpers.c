@@ -949,10 +949,10 @@ LPWSTR StrReplaceAll(LPCWSTR str, LPCWSTR from, LPCWSTR to)
     /* Adjust each of the below values to suit your needs. */
 
     /* Increment positions cache size initially by this number. */
-    size_t cache_sz_inc = 16;
+    size_t cache_sz_inc = 64;
     /* Thereafter, each time capacity needs to be increased,
 	 * multiply the increment by this factor. */
-    const size_t cache_sz_inc_factor = 3;
+    const size_t cache_sz_inc_factor = 2;
     /* But never increment capacity by more than this number. */
     const size_t cache_sz_inc_max = 1048576;
 
@@ -966,7 +966,7 @@ LPWSTR StrReplaceAll(LPCWSTR str, LPCWSTR from, LPCWSTR to)
     size_t cache_sz = 0;
     size_t cpylen, orglen, retlen, tolen = 0, fromlen = wcslen(from);
 
-     ptrdiff_t* pos_cache = AllocMem(cache_sz_inc, HEAP_ZERO_MEMORY); // init for ReAllocMem()
+    ptrdiff_t* pos_cache = AllocMem(cache_sz_inc, HEAP_ZERO_MEMORY); // init for ReAllocGrowMem()
 
     /* Find all matches and cache their positions. */
     while ((pstr2 = wcsstr(pstr, from)) != NULL) {
@@ -975,7 +975,7 @@ LPWSTR StrReplaceAll(LPCWSTR str, LPCWSTR from, LPCWSTR to)
         /* Increase the cache size when necessary. */
         if (cache_sz < count) {
             cache_sz += cache_sz_inc;
-                pos_cache_tmp = ReAllocMem(pos_cache, sizeof(*pos_cache) * cache_sz, HEAP_ZERO_MEMORY);
+            pos_cache_tmp = ReAllocGrowMem(pos_cache, cache_sz, HEAP_ZERO_MEMORY);
             if (pos_cache_tmp == NULL) {
                 goto end_repl_wcs;
             } else

@@ -474,6 +474,7 @@ static LPCH EditReInterpretText(LPCCH pchSource, const int szSrc, cpi_enc_t from
 //=============================================================================
 //
 //  EditConvertText()
+//  MultiBytes(Sci) -> WideChar(destination) -> Sci(MultiByte)
 //
 bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest)
 {
@@ -488,38 +489,54 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest)
 
     if (length <= 0) {
         EditSetNewText(hwnd, "", 0, true);
-        return false;
+        Encoding_Current(encDest);
+        return true;
     }
 
-    WCHAR* const pwchText = AllocMem((length + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-
-    DocPos const chBufSize = length * 5 + 2;
-    char* const pchText = AllocMem(chBufSize, HEAP_ZERO_MEMORY);
-
-    // MultiBytes(Sci) -> WideChar(destination) -> Sci(MultiByte)
-    const UINT cpDst = Encoding_GetCodePage(encDest);
+    // moves the gap within Scintilla so that the text of the document is stored consecutively and
+    // ensure there is a NUL character after the text
+    const char* const pDoc = SciCall_GetCharacterPointer();
 
     // get text as wide char
-    ptrdiff_t cbwText = MultiByteToWideCharEx(Encoding_SciCP, 0, SciCall_GetCharacterPointer(), length, pwchText, length);
-    // convert wide char to destination multibyte
-    ptrdiff_t cbText = WideCharToMultiByteEx(cpDst, 0, pwchText, cbwText, pchText, chBufSize, NULL, NULL);
-    // re-code to wide char
-    cbwText = MultiByteToWideCharEx(cpDst, 0, pchText, cbText, pwchText, length);
-    // convert to Scintilla format
-    cbText = WideCharToMultiByteEx(Encoding_SciCP, 0, pwchText, cbwText, pchText, chBufSize, NULL, NULL);
-
-    pchText[cbText]     = '\0';
-    pchText[cbText + 1] = '\0';
-
-    FreeMem(pwchText);
-
-    EditSetNewText(hwnd, pchText, cbText, true);
-
-    FreeMem(pchText);
-
-    Encoding_Current(encDest);
-
-    return true;
+    ptrdiff_t cbwText = MultiByteToWideCharEx(Encoding_SciCP, 0, pDoc, -1, NULL, 0);
+    WCHAR*    pwchText = AllocMem(cbwText * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+    if (pwchText) {
+        MultiByteToWideCharEx(Encoding_SciCP, 0, pDoc, -1, pwchText, cbwText);
+        // convert wide char to destination multibyte
+        UINT const cpDst = Encoding_GetCodePage(encDest);
+        ptrdiff_t cbText = WideCharToMultiByteEx(cpDst, 0, pwchText, -1, NULL, 0, NULL, NULL);
+        char*    pchText = AllocMem(cbText * sizeof(char), HEAP_ZERO_MEMORY);
+        if (pchText) {
+            WideCharToMultiByteEx(cpDst, 0, pwchText, -1, pchText, cbText, NULL, NULL);
+            // re-code to wide char
+            cbwText = MultiByteToWideCharEx(cpDst, 0, pchText, -1, NULL, 0);
+            pwchText = ReAllocGrowMem(pwchText, cbwText * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+            if (pwchText) {
+                MultiByteToWideCharEx(cpDst, 0, pchText, -1, pwchText, cbwText);
+                // convert to Scintilla format
+                cbText = WideCharToMultiByteEx(Encoding_SciCP, 0, pwchText, -1, NULL, 0, NULL, NULL);
+                pchText = ReAllocGrowMem(pchText, cbText * sizeof(char), HEAP_ZERO_MEMORY);
+                if (pchText) {
+                    WideCharToMultiByteEx(Encoding_SciCP, 0, pwchText, -1, pchText, cbText, NULL, NULL);
+                    FreeMem(pwchText);
+                    EditSetNewText(hwnd, pchText, (cbText - 1), true);
+                    Encoding_Current(encDest);
+                    FreeMem(pchText);
+                    return true;
+                }
+                else {
+                    FreeMem(pwchText);
+                }
+            }
+            else {
+                FreeMem(pchText);
+            }
+        }
+        else {
+            FreeMem(pwchText);
+        }
+    }
+    return false;
 }
 
 
@@ -3891,11 +3908,14 @@ static DocPos  _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineEnd, DocPos
 {
     UNREFERENCED_PARAMETER(hwnd);
 
-    size_t size = (size_t)iMaxColumn;
-    char* const pmszPadStr = AllocMem(size + 1, HEAP_ZERO_MEMORY);
-    FillMemory(pmszPadStr, size, ' ');
+    DocPos      spcCount = 0;
 
-    DocPos spcCount = 0;
+    size_t      size = (size_t)iMaxColumn;
+    char* const pmszPadStr = AllocMem(size + 1, HEAP_ZERO_MEMORY);
+    if (!pmszPadStr) {
+        return spcCount;
+    }
+    FillMemory(pmszPadStr, size, ' ');
 
     for (DocLn iLine = iLineStart; iLine <= iLineEnd; ++iLine) {
 
@@ -3962,7 +3982,7 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty) {
             pVspCVec[i] = SciCall_GetSelectionNCaretVirtualSpace(i);
         }
 
-        DocPosU i = 0;
+        DocPos i = 0;
         DocPos iSpcCount = 0;
         DocLn const iLnIncr = (iRcAnchorLine <= iRcCaretLine) ? (DocLn) + 1 : (DocLn)-1;
         DocLn iLine = iRcAnchorLine - iLnIncr;
@@ -3978,7 +3998,7 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty) {
                 pSpaceBuffer[cntVSp] = ' ';
                 iSpcCount += cntVSp;
             }
-        } while (iLine != iRcCaretLine);
+        } while ((iLine != iRcCaretLine) && (i < iLineCount));
 
         FreeMem(pSpaceBuffer);
 
