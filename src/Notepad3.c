@@ -5674,10 +5674,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
 
-    case IDM_VIEW_READONLY: {
+    case IDM_VIEW_READONLY:
         SciCall_SetReadOnly(!SciCall_GetReadOnly());
-    }
-    break;
+        UpdateToolbar();
+        break;
 
 
     case IDM_VIEW_WORDWRAP:
