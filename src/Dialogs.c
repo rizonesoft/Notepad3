@@ -502,6 +502,9 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
     HWND hwnd = focus ? focus : Globals.hwndMain;
 
     INT_PTR const answer = ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(idDlg), hwnd, _InfoBoxLngDlgProc, (LPARAM)&msgBox);
+    if (msgBox.lpstrMessage) {
+        FreeMem(msgBox.lpstrMessage);
+    }
     return MAKELONG(answer, iMode);
 }
 
