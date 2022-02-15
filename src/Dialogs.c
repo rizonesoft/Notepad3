@@ -351,6 +351,7 @@ CASE_WM_CTLCOLOR_SET:
             if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting) && Globals.bCanSaveIniFile) {
                 IniFileSetInt(Paths.IniFile, Constants.SectionSuppressedMessages, lpMsgBox->lpstrSetting, LOWORD(wParam));
             }
+            //[FallThrough]
         case IDNO:
         case IDABORT:
         case IDCLOSE:
@@ -358,12 +359,15 @@ CASE_WM_CTLCOLOR_SET:
             EndDialog(hwnd, LOWORD(wParam));
             break;
 
-        case IDC_INFOBOXCHECK:
-            DialogEnableControl(hwnd, IDNO, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
-            DialogEnableControl(hwnd, IDABORT, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
-            DialogEnableControl(hwnd, IDCLOSE, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
-            DialogEnableControl(hwnd, IDCANCEL, !IsButtonChecked(hwnd, IDC_INFOBOXCHECK));
-            break;
+        case IDC_INFOBOXCHECK: {
+            bool const isChecked = IsButtonChecked(hwnd, IDC_INFOBOXCHECK);
+            DialogEnableControl(hwnd, IDNO, !isChecked);
+            DialogEnableControl(hwnd, IDABORT, !isChecked);
+            DialogEnableControl(hwnd, IDCLOSE, !isChecked);
+            DialogEnableControl(hwnd, IDCANCEL, !isChecked);
+            SendMessage(hwnd, WM_NEXTDLGCTL, 0, FALSE);
+        }
+        break;
 
         default:
             break;
@@ -2523,10 +2527,10 @@ CASE_WM_CTLCOLOR_SET:
                     }
 
                     // Ask...
-                    WORD const answer = (LOWORD(wParam) == IDOK) ? INFOBOX_ANSW(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_MRUDLG))
+                    LONG const answer = (LOWORD(wParam) == IDOK) ? InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_MRUDLG)
                                         : ((iCur == lvi.iItem) ? IDNO : IDYES);
 
-                    if ((IDOK == answer) || (IDYES == answer)) {
+                    if (IsYesOkayRetryContinue(answer)) {
                         MRU_Delete(Globals.pFileMRU, lvi.iItem);
                         //SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_DELETESTRING,(WPARAM)iItem,0);
                         //ListView_DeleteItem(GetDlgItem(hwnd,IDC_FILEMRU),lvi.iItem);
@@ -4996,12 +5000,9 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
     sei.nShow = SW_SHOWNORMAL;
     if (bExecInstaller) {
         ShellExecuteExW(&sei);
-        if ((INT_PTR)sei.hInstApp < 32) {
-            WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_OKCANCEL, L"NoAdminTool", IDS_MUI_ERR_ADMINEXE));
-            if ((IDOK == answer) || (IDYES == answer)) {
-                sei.lpFile = VERSION_UPDATE_CHECK;
-                ShellExecuteExW(&sei);
-            }
+        if (IsYesOkayRetryContinue(InfoBoxLng(MB_OKCANCEL, L"NoAdminTool", IDS_MUI_ERR_ADMINEXE))) {
+            sei.lpFile = VERSION_UPDATE_CHECK;
+            ShellExecuteExW(&sei);
         }
     } else {
         sei.lpFile = VERSION_UPDATE_CHECK;

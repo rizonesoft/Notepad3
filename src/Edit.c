@@ -559,7 +559,7 @@ bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bSupressWarning)
 
         if (Sci_IsDocEmpty()) {
             bool const doNewEncoding = (Sci_HaveUndoRedoHistory() && !bSupressWarning) ?
-                                       (INFOBOX_ANSW(InfoBoxLng(MB_YESNO, L"MsgConv2", IDS_MUI_ASK_ENCODING2)) == IDYES) : true;
+                                       IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO, L"MsgConv2", IDS_MUI_ASK_ENCODING2)) : true;
 
             if (doNewEncoding) {
                 return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding);
@@ -572,9 +572,7 @@ bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bSupressWarning)
                 bSupressWarning         = bIsCurANSI && bIsTargetUTF;
             }
 
-            bool const doNewEncoding = (!bSupressWarning) ?
-                                       (INFOBOX_ANSW(InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING)) == IDYES) : true;
-
+            bool const doNewEncoding = (!bSupressWarning) ? IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING)) : true;
             if (doNewEncoding) {
                 return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding);
             }
@@ -1215,7 +1213,7 @@ bool EditLoadFile(
         WCHAR sizeWarnStr[64] = { L'\0' };
         StrFormatByteSizeEx(fileSizeWarning, SFBS_FLAGS_ROUND_TO_NEAREST_DISPLAYED_DIGIT, sizeWarnStr, COUNTOF(sizeWarnStr));
         Flags.bHugeFileLoadState = true;
-        if (INFOBOX_ANSW(InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE, sizeStr, sizeWarnStr)) != IDYES) {
+        if (!IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE, sizeStr, sizeWarnStr))) {
             CloseHandle(hFile);
             Encoding_Forced(CPI_NONE);
             return false;
@@ -1225,8 +1223,7 @@ bool EditLoadFile(
     // check for unknown file/extension
     status->bUnknownExt = false;
     if (!Style_HasLexerForExt(hfile_pth)) {
-        WORD const answer = INFOBOX_ANSW(InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, Path_FindFileName(hfile_pth)));
-        if (!((IDOK == answer) || (IDYES == answer))) {
+        if (!IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, Path_FindFileName(hfile_pth)))) {
             CloseHandle(hFile);
             Encoding_Forced(CPI_NONE);
             status->bUnknownExt = true;
@@ -1253,7 +1250,7 @@ bool EditLoadFile(
     bool bReadSuccess = ((readFlag & DECRYPT_FATAL_ERROR) || (readFlag & DECRYPT_FREAD_FAILED)) ? false : true;
 
     if ((readFlag & DECRYPT_CANCELED_NO_PASS) || (readFlag & DECRYPT_WRONG_PASS)) {
-        bReadSuccess = (INFOBOX_ANSW(InfoBoxLng(MB_OKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS)) == IDOK);
+        bReadSuccess = IsYesOkayRetryContinue(InfoBoxLng(MB_OKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS));
         if (!bReadSuccess) {
             Encoding_Forced(CPI_NONE);
             FreeMem(lpData);
@@ -1625,7 +1622,7 @@ bool EditSaveFile(
 
                     FreeMem(lpDataWide);
 
-                    if (!bCancelDataLoss || INFOBOX_ANSW(InfoBoxLng(MB_OKCANCEL, L"MsgConv3", IDS_MUI_ERR_UNICODE2)) == IDOK) {
+                    if (!bCancelDataLoss || IsYesOkayRetryContinue(InfoBoxLng(MB_OKCANCEL, L"MsgConv3", IDS_MUI_ERR_UNICODE2))) {
                         SetEndOfFile(hFile);
                         if (cbDataConverted != 0) {
                             bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE *)lpData, cbDataConverted, &bytesWritten);
@@ -7035,7 +7032,7 @@ bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelectio
                 }
             } else {
                 LONG const result = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW);
-                if (INFOBOX_ANSW(result) != IDOK) {
+                if (!IsYesOkayRetryContinue(result)) {
                     iPos = -1LL;
                     bSuppressNotFound = true;
                 }
@@ -7119,7 +7116,7 @@ bool EditFindPrev(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
                 }
             } else {
                 LONG const result = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPRE);
-                if (INFOBOX_ANSW(result) != IDOK) {
+                if (!IsYesOkayRetryContinue(result)) {
                     iPos = -1LL;
                     bSuppressNotFound = true;
                 }

@@ -81,6 +81,9 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...);
 #define INFOBOX_ANSW(_R_) LOWORD(_R_)
 #define INFOBOX_MODE(_R_) HIWORD(_R_)
+inline bool IsYesOkayRetryContinue(LONG answ) {
+    return ((LOWORD(answ) == IDOK) || (LOWORD(answ) == IDYES) || (LOWORD(answ) == IDRETRY) || (LOWORD(answ) == IDCONTINUE));
+}
 
 void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, int iFormat,
     bool bPasteBoard, bool bIsElevated, bool bModified,
