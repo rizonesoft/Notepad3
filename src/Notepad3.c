@@ -901,9 +901,6 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 
     ReleaseDarkMode();
 
-    OleUninitialize();
-    CoUninitialize();
-
     // ---  free allocated memory  ---
 
     if (s_lpOrigFileArg) {
@@ -998,6 +995,9 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     if (_hOldInvalidParamHandler) {
         _set_invalid_parameter_handler(_hOldInvalidParamHandler);
     }
+    
+    CoUninitialize();
+    OleUninitialize();
 }
 
 
