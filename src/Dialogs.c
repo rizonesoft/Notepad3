@@ -5237,16 +5237,21 @@ int ComboBox_GetTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, size_t cch)
 
 void ComboBox_SetTextHW(HWND hDlg, int nIDDlgItem, const HSTRINGW hstr)
 {
-    ComboBox_SetText(GetDlgItem(hDlg, nIDDlgItem), StrgGet(hstr));
+    ComboBox_SetText(GetDlgItem(hDlg, nIDDlgItem), StrgIsNotEmpty(hstr) ? StrgGet(hstr) : L"");
 }
 
 void ComboBox_SetTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString)
 {
-    int const len = MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, NULL, 0) + 1;
-    LPWSTR const buf = AllocMem(len * sizeof(wchar_t), HEAP_ZERO_MEMORY);
-    MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, buf, len);
-    ComboBox_SetText(GetDlgItem(hDlg, nIDDlgItem), buf);
-    FreeMem(buf);
+    if (StrIsEmptyA(lpString)) {
+        ComboBox_SetText(GetDlgItem(hDlg, nIDDlgItem), L"");
+    }
+    else {
+        int const size = MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, NULL, 0) + 1;
+        LPWSTR const buf = AllocMem(size * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+        MultiByteToWideChar(Encoding_SciCP, 0, lpString, -1, buf, size);
+        ComboBox_SetText(GetDlgItem(hDlg, nIDDlgItem), buf);
+        FreeMem(buf);
+    }
 }
 
 #if 0

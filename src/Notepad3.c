@@ -1460,7 +1460,7 @@ void GetFindPatternMB(LPSTR chPattern, int cch)
 //
 void SetFindPattern(LPCWSTR wchFindPattern)
 {
-    StrgReset(s_hstrCurrentFindPattern, wchFindPattern);
+    StrgReset(s_hstrCurrentFindPattern, StrIsNotEmpty(wchFindPattern) ? wchFindPattern : L"");
 }
 
 //=============================================================================
@@ -1469,7 +1469,7 @@ void SetFindPattern(LPCWSTR wchFindPattern)
 //
 void SetFindPatternMB(LPCSTR chFindPattern)
 {
-    StrgResetFromUTF8(s_hstrCurrentFindPattern, chFindPattern);
+    StrgResetFromUTF8(s_hstrCurrentFindPattern, !StrIsEmptyA(chFindPattern) ? chFindPattern : "");
 }
 
 //=============================================================================

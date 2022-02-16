@@ -5775,28 +5775,34 @@ static LPCWSTR _EditGetFindStrg(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool b
     }
 
     static HSTRINGW hfind = NULL;
+    // TODO: get rid of const FNDRPL_BUFFER size and StrgDestroy(hfind);
 
     if (!hfind) {
         hfind = StrgCreate(NULL);
     }
+
+    // 1st: try last used pattern
     if (StrgIsEmpty(lpefr->chFindPattern) && bFillEmpty) {
         StrgReset(hfind, GetFindPattern());
     } else {
         StrgReset(hfind, StrgGet(lpefr->chFindPattern));
     }
+
+    // 2nd: try get clipboard content
     if (StrgIsEmpty(hfind) && bFillEmpty) {
-        // get most recently used find pattern
-        LPWSTR const buf = StrgWriteAccessBuf(hfind, 0);
-        MRU_Enum(Globals.pMRUfind, 0, buf, (int)StrgGetAllocLength(hfind));
-        StrgSanitize(hfind);
-    }
-    if (StrgIsEmpty(hfind) && bFillEmpty) {
-        // get clipboard content
-        LPWSTR const buf = StrgWriteAccessBuf(hfind, 0);
+        LPWSTR const buf = StrgWriteAccessBuf(hfind, FNDRPL_BUFFER);
         EditGetClipboardW(buf, StrgGetAllocLength(hfind));
         StrgSanitize(hfind);
     }
 
+    // 3rd: try get most recently used find pattern
+    if (StrgIsEmpty(hfind) && bFillEmpty) {
+        LPWSTR const buf = StrgWriteAccessBuf(hfind, FNDRPL_BUFFER);
+        MRU_Enum(Globals.pMRUfind, 0, buf, (int)StrgGetAllocLength(hfind));
+        StrgSanitize(hfind);
+    }
+
+    // 4th: return if still empty
     if (StrgIsEmpty(hfind)) {
         //~StrgDestroy(hfind); - static for speed
         return NULL;
@@ -5807,14 +5813,14 @@ static LPCWSTR _EditGetFindStrg(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool b
     SetFindPattern(StrgGet(hfind));
 
     if (lpefr->bWildcardSearch) {
-        LPWSTR const buf = StrgWriteAccessBuf(hfind, 0);
+        LPWSTR const buf = StrgWriteAccessBuf(hfind, FNDRPL_BUFFER);
         _EscapeWildcards(buf, StrgGetAllocLength(hfind), lpefr);
         StrgSanitize(hfind);
     }
 
     bool const bIsRegEx = (lpefr->fuFlags & SCFIND_REGEXP);
     if (lpefr->bTransformBS || bIsRegEx) {
-        LPWSTR const buf = StrgWriteAccessBuf(hfind, 0);
+        LPWSTR const buf = StrgWriteAccessBuf(hfind, FNDRPL_BUFFER);
         TransformBackslashesW(buf, bIsRegEx, CP_UTF8, NULL);
         StrgSanitize(hfind);
     }
@@ -6166,7 +6172,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 SetWindowSubclass(cbInfoR.hwndItem, EditBoxForPasteFixes, 0, (DWORD_PTR) &(s_wchBufOut[0]));
                 SHAutoComplete(cbInfoR.hwndItem, SHACF_FILESYS_ONLY | SHACF_AUTOAPPEND_FORCE_OFF | SHACF_AUTOSUGGEST_FORCE_OFF);
             }
-
             ComboBox_SetTextHW(hwnd, IDC_REPLACETEXT, s_pEfrData->chReplaceTemplate);
         }
 
@@ -6510,15 +6515,17 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 if ((cchSelection > 0) && (LOWORD(wParam) != IDC_REPLACETEXT)) {
                     lpszSelection = AllocMem((cchSelection + 1), HEAP_ZERO_MEMORY);
                     SciCall_GetSelText(lpszSelection);
-                } else { // (cchSelection <= 1)
+                } else { // (cchSelection <= 0)
                     // nothing is selected in the editor:
-                    LPCWSTR wchFind = _EditGetFindStrg(Globals.hwndEdit, s_pEfrData, true);
-                    int const len = WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, NULL, 0, NULL, NULL);
-                    lpszSelection = AllocMem(len, HEAP_ZERO_MEMORY);
-                    WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, lpszSelection, len, NULL, NULL);
                     // if first time you bring up find/replace dialog,
                     // use most recent search pattern to find box
                     // in case of no history: paste clipboard
+                    LPCWSTR wchFind = _EditGetFindStrg(Globals.hwndEdit, s_pEfrData, true);
+                    if (StrIsNotEmpty(wchFind)) {
+                        int const size = WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, NULL, 0, NULL, NULL);
+                        lpszSelection = AllocMem(size * sizeof(CHAR), HEAP_ZERO_MEMORY);
+                        WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, lpszSelection, size, NULL, NULL);
+                    }
                 }
                 if (lpszSelection) {
                     ComboBox_SetTextMB2W(hwnd, IDC_FINDTEXT, lpszSelection);
