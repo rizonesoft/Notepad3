@@ -33,13 +33,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.214.(build_#) (2022-02-14)
+Current BETA/RC Version 5.22.215.(build_#) (2022-02-15)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.215.1]- Set keyword-lists for CSS Lexer according to SiTE's css.properties.
 [.212.1]- Document "Read Only" view menu item for switching mode.
 [.129.1]- JSON Lexer: colorizing for URL/IRI and Compact IRI.
 [.128.3]- JSON Lexer: error coloring for unclosed strings.
