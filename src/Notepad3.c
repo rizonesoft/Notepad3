@@ -11045,6 +11045,35 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
 
 
 //=============================================================================
+
+static void _MRU_UpdateSession()
+{
+    int idx = 0;
+    if (MRU_FindPath(Globals.pFileMRU, Paths.CurrentFile, &idx)) {
+        Globals.pFileMRU->iEncoding[idx] = Encoding_GetCurrent();
+        Globals.pFileMRU->iCaretPos[idx] = (Settings.PreserveCaretPos) ? SciCall_GetCurrentPos() : -1;
+        Globals.pFileMRU->iSelAnchPos[idx] = (Settings.PreserveCaretPos) ? (Sci_IsMultiOrRectangleSelection() ? -1 : SciCall_GetAnchor()) : -1;
+        WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
+        EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
+        if (Globals.pFileMRU->pszBookMarks[idx]) {
+            LocalFree(Globals.pFileMRU->pszBookMarks[idx]); // StrDup()
+            Globals.pFileMRU->pszBookMarks[idx] = NULL;
+        }
+        Globals.pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
+    }
+}
+
+static void _MRU_AddSession()
+{
+    cpi_enc_t    iCurrEnc = Encoding_GetCurrent();
+    const DocPos iCaretPos = SciCall_GetCurrentPos();
+    const DocPos iAnchorPos = Sci_IsMultiOrRectangleSelection() ? -1 : SciCall_GetAnchor();
+    WCHAR        wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
+    EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
+    MRU_AddPath(Globals.pFileMRU, Paths.CurrentFile, Flags.RelativeFileMRU, Flags.PortableMyDocs, iCurrEnc, iCaretPos, iAnchorPos, wchBookMarks);
+}
+
+// ----------------------------------------------------------------------------
 //
 //  FileSave()
 //
@@ -11078,19 +11107,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
 
 
     if (!(fSaveFlags & FSF_SaveAlways) && (!IsDocumentModified() || IsFileChangedFlagSet() || bIsEmptyNewFile) && !(fSaveFlags & FSF_SaveAs)) {
-        int idx;
-        if (MRU_FindPath(Globals.pFileMRU, Paths.CurrentFile, &idx)) {
-            Globals.pFileMRU->iEncoding[idx]   = Encoding_GetCurrent();
-            Globals.pFileMRU->iCaretPos[idx]   = (Settings.PreserveCaretPos) ? SciCall_GetCurrentPos() : -1;
-            Globals.pFileMRU->iSelAnchPos[idx] = (Settings.PreserveCaretPos) ? SciCall_GetAnchor() : -1;
-            WCHAR wchBookMarks[MRU_BMRK_SIZE]  = {L'\0'};
-            EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
-            if (Globals.pFileMRU->pszBookMarks[idx]) {
-                LocalFree(Globals.pFileMRU->pszBookMarks[idx]);  // StrDup()
-                Globals.pFileMRU->pszBookMarks[idx] = NULL;
-            }
-            Globals.pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
-        }
+        _MRU_UpdateSession();
         AutoSaveStop();
         ResetFileObservationData(true);
         return true;
@@ -11111,6 +11128,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
         case IDCANCEL:
             return false;
         case IDNO:
+            _MRU_UpdateSession();
             AutoSaveStop();
             return true;
         default:
@@ -11195,22 +11213,19 @@ bool FileSave(FileSaveFlags fSaveFlags)
     }
 
     if (fSuccess) {
+
         if (!((fSaveFlags & FSF_SaveCopy) || Flags.bDoRelaunchElevated)) {
-            cpi_enc_t iCurrEnc = Encoding_GetCurrent();
-            const DocPos iCaretPos = SciCall_GetCurrentPos();
-            const DocPos iAnchorPos = Sci_IsMultiOrRectangleSelection() ? -1 : SciCall_GetAnchor();
-            WCHAR wchBookMarks[MRU_BMRK_SIZE] = { L'\0' };
-            EditGetBookmarkList(Globals.hwndEdit, wchBookMarks, COUNTOF(wchBookMarks));
-            MRU_AddPath(Globals.pFileMRU, Paths.CurrentFile, Flags.RelativeFileMRU, Flags.PortableMyDocs, iCurrEnc, iCaretPos, iAnchorPos, wchBookMarks);
+            _MRU_AddSession();
             AddFilePathToRecentDocs(Paths.CurrentFile);
-
             SetSavePoint();
-
             // Install watching of the current file
             if ((fSaveFlags & FSF_SaveAs) && Settings.ResetFileWatching) {
                 _ResetFileWatchingMode();
             }
             InstallFileWatching(true);
+        }
+        else {
+            _MRU_UpdateSession();
         }
 
         // if current file is settings/config file: ask to start
@@ -11258,6 +11273,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
             }
         }
     }
+
     if (fSuccess) {
         AutoSaveStop();
         ResetFileObservationData(true);
