@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.215.(build_#) (2022-02-15)
+Current BETA/RC Version 5.22.216.(build_#) (2022-02-16)
 ========================================================
 
 --------------------------------------------------------
@@ -81,6 +81,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.216.1]- ID mismatch using 'enter' to close infobox (vs. 'yes/ok' button).
 [.214.1]- Allow switching encoding for empty document.
 [.209.1]- Memory issues fixing and hardening.
 [.128.2]- XML/HTML Stream Comment.
