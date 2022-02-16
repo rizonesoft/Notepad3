@@ -614,6 +614,8 @@ typedef struct SETTINGS_T {
     int  FocusViewMarkerMode;
     bool PreferredLocale4DateFmt;
     int  AutoSaveInterval;
+    bool ReplaceByClipboardTag;
+
     AutoSaveBackupOptions AutoSaveOptions;
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -642,7 +644,7 @@ extern SETTINGS_T Settings;
 typedef struct FLAGS_T {
 
     int  ToolbarLook;
-    int PrintFileAndLeave;
+    int  PrintFileAndLeave;
 
     bool bHugeFileLoadState;
     bool bDevDebugMode;
