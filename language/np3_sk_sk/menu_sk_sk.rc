@@ -340,7 +340,7 @@ BEGIN
     END
     POPUP "&Zobraziť"
     BEGIN
-        MENUITEM "Document &Read Only"                          IDM_VIEW_READONLY
+        MENUITEM "Dokument &Len na čítanie"                     IDM_VIEW_READONLY
         MENUITEM "&Zalomenie textu\tCtrl+W",                    IDM_VIEW_WORDWRAP
         MENUITEM "&Ohraničenie dĺžky riadku\tCtrl+Alt+L",       IDM_VIEW_LONGLINEMARKER
         MENUITEM "Vodítka odsadenia\tCtrl+Shift+G",             IDM_VIEW_SHOWINDENTGUIDES
@@ -464,9 +464,9 @@ BEGIN
         MENUITEM "Auto-kompletizácia kľúčových slov &Lexer",     IDM_SET_AUTOCLEXKEYWORDS
         MENUITEM "Zrýchlená navi&gácia slov\tCtrl+Alt+A",        IDM_SET_ACCELWORDNAV
         MENUITEM SEPARATOR
-        MENUITEM "&Iba jedna inštancia na súbor",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "&Iba jedna inštancia na súbor",                IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "&Oznámenie o zmene súboru...\tAlt+F5",         IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
+        ///MENUITEM "Auto-ukladanie / Nastavenie zálohovania...",   IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "&Stlmiť hlásenie pípnutím",                    IDM_SET_MUTE_MESSAGEBEEP
         POPUP "&Funkcia klávesy Esc"
         BEGIN
