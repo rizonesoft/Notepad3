@@ -97,6 +97,7 @@
 #define IDACC_PREVIEW                   313
 #define IDACC_CLEAR_FIND_HISTORY        314
 #define IDACC_CLEAR_REPL_HISTORY        315
+#define IDACC_REPLCLIPTAG               316
 
 #define IDC_SETCURLEXERTV               402
 

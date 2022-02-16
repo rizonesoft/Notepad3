@@ -227,6 +227,7 @@
 #define IDS_MUI_CLEAR_REPL_HISTORY      15043
 #define IDS_MUI_WRAPSEARCH_FWD          15044
 #define IDS_MUI_WRAPSEARCH_BCK          15045
+#define IDS_MUI_REPLCLIPTAG             15046
 
 #define IDS_MUI_TRANSL_AUTHOR           15050
 #define IDS_MUI_ASSOCIATED_EXT          15051

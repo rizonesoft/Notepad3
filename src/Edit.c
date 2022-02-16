@@ -5836,7 +5836,9 @@ static LPCWSTR _EditGetFindStrg(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool b
 static char* _GetReplaceString(HWND hwnd, CLPCEDITFINDREPLACE lpefr, int* iReplaceMsg)
 {
     char* pszReplace = NULL; // replace text of arbitrary size
-    if (StringCchCompareXW(StrgGet(lpefr->chReplaceTemplate), L"^c") == 0) {
+    if (Settings.ReplaceByClipboardTag && 
+        (StringCchCompareXW(StrgGet(lpefr->chReplaceTemplate), L"^c")) == 0)
+    {
         *iReplaceMsg = SCI_REPLACETARGET;
         pszReplace = EditGetClipboardText(hwnd, true, NULL, NULL);
     }
@@ -6227,7 +6229,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         }
 
         WCHAR wchMenuBuf[80] = {L'\0'};
-        HMENU hmenu = GetSystemMenu(hwnd, false);
+        HMENU hmenu = GetSystemMenu(hwnd, FALSE);
 
         GetLngString(IDS_MUI_SAVEPOS, wchMenuBuf, COUNTOF(wchMenuBuf));
         InsertMenu(hmenu, 0, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_SAVEPOS, wchMenuBuf);
@@ -6239,6 +6241,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         GetLngString(IDS_MUI_CLEAR_REPL_HISTORY, wchMenuBuf, COUNTOF(wchMenuBuf));
         InsertMenu(hmenu, 4, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_CLEAR_REPL_HISTORY, wchMenuBuf);
         InsertMenu(hmenu, 5, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+        GetLngString(IDS_MUI_REPLCLIPTAG, wchMenuBuf, COUNTOF(wchMenuBuf));
+        InsertMenu(hmenu, 6, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_REPLCLIPTAG, wchMenuBuf);
+        InsertMenu(hmenu, 7, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+
+        CheckCmd(hmenu, IDS_MUI_REPLCLIPTAG, Settings.ReplaceByClipboardTag);
 
 
         hBrushRed = CreateSolidBrush(rgbRedColorRef);
@@ -6323,6 +6330,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         DeleteObject(hBrushRed);
         DeleteObject(hBrushGreen);
         DeleteObject(hBrushBlue);
+        GetSystemMenu(hwnd, TRUE);
+
         s_pEfrData = NULL;
         Globals.hwndDlgFindReplace = NULL;
     }
@@ -6868,6 +6877,12 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SetDlgItemText(hwnd, IDC_REPLACETEXT, L"");
             break;
 
+        case IDACC_REPLCLIPTAG:
+            Settings.ReplaceByClipboardTag = !Settings.ReplaceByClipboardTag;
+            HMENU hmenu = GetSystemMenu(hwnd, FALSE);
+            CheckCmd(hmenu, IDS_MUI_REPLCLIPTAG, Settings.ReplaceByClipboardTag);
+            break;
+
         case IDACC_FINDNEXT:
             PostWMCommand(hwnd, IDOK);
             break;
@@ -6917,6 +6932,9 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             return TRUE;
         } else if (wParam == IDS_MUI_CLEAR_REPL_HISTORY) {
             PostWMCommand(hwnd, IDACC_CLEAR_REPL_HISTORY);
+            return TRUE;
+        } else if (wParam == IDS_MUI_REPLCLIPTAG) {
+            PostWMCommand(hwnd, IDACC_REPLCLIPTAG);
             return TRUE;
         }
         break;
