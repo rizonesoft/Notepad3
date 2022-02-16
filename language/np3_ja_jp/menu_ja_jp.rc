@@ -340,7 +340,7 @@ BEGIN
     END
     POPUP "表示(&V)"
     BEGIN
-        MENUITEM "Document &Read Only"                     IDM_VIEW_READONLY
+        MENUITEM "読み取り専用(&R)"                     IDM_VIEW_READONLY
         MENUITEM "右端で折り返す(&R)\tCtrl+W",                 IDM_VIEW_WORDWRAP
         MENUITEM "行の長さガイド(&L)\tCtrl+Alt+L",            IDM_VIEW_LONGLINEMARKER
         MENUITEM "インデントのガイド(&A)\tCtrl+Shift+G",          IDM_VIEW_SHOWINDENTGUIDES
@@ -466,7 +466,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "ファイルごとに単一インスタンス(&F)",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "ファイルの変更を通知(&C)...\tAlt+F5",          IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
+        ///MENUITEM "自動保存/バックアップの設定...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "メッセージの効果音をミュート(&M)",                  IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Escキーの動作(&E)"
         BEGIN
