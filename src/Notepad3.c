@@ -1532,7 +1532,7 @@ static void SetFindReplaceData()
 //
 // SetCurrentSelAsFindReplaceData()
 //
-static bool SetCurrentSelAsFindReplaceData()
+static bool SetCurrentSelAsFindReplaceData(LPEDITFINDREPLACE lpefr)
 {
     if (SciCall_IsSelectionEmpty()) {
         EditSelectWordAtPos(SciCall_GetCurrentPos(), true);
@@ -1544,8 +1544,13 @@ static bool SetCurrentSelAsFindReplaceData()
         char* const szSelection = AllocMem((cchSelection + 1), HEAP_ZERO_MEMORY);
         if (szSelection) {
             SciCall_GetSelText(szSelection);
+
             SetFindPatternMB(szSelection);
             SetFindReplaceData(); // s_FindReplaceData
+            if (lpefr) {
+                StrgReset(lpefr->chFindPattern, GetFindPattern());
+            }
+
             FreeMem(szSelection);
             return true;
         }
@@ -5583,7 +5588,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
             case IDM_EDIT_SELTONEXT:
                 if (IsFindPatternEmpty()) {
-                    if (!SetCurrentSelAsFindReplaceData()) {
+                    if (!SetCurrentSelAsFindReplaceData(&s_FindReplaceData)) {
                         break;
                     }
                 }
@@ -5592,7 +5597,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
             case IDM_EDIT_SELTOPREV:
                 if (IsFindPatternEmpty()) {
-                    if (!SetCurrentSelAsFindReplaceData()) {
+                    if (!SetCurrentSelAsFindReplaceData(&s_FindReplaceData)) {
                         break;
                     }
                 }
@@ -5606,7 +5611,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_FINDNEXTSEL:
     case CMD_FINDPREVSEL:
     case IDM_EDIT_SAVEFIND: {
-        if (SetCurrentSelAsFindReplaceData()) {
+        if (SetCurrentSelAsFindReplaceData(&s_FindReplaceData)) {
             MRU_Add(Globals.pMRUfind, GetFindPattern(), 0, -1, -1, NULL);
             s_FindReplaceData.fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));
             s_FindReplaceData.bTransformBS = false;
@@ -5617,11 +5622,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 break;
 
             case CMD_FINDNEXTSEL:
-                EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false, true);
+                EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
                 break;
 
             case CMD_FINDPREVSEL:
-                EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false, true);
+                EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
                 break;
             }
         }
