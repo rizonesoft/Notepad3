@@ -7582,12 +7582,12 @@ int EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase,
 //
 void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, bool bMultiSel)
 {
-    BeginWaitCursorUID(Flags.bHugeFileLoadState, IDS_MUI_SB_MARK_ALL_OCC);
-
     DocPos iFindLength = 0;
 
     char chText[2048] = { L'\0'};
     WCHAR wchText[2048] = { L'\0'};
+
+    IgnoreNotifyDocChangedEvent(EVM_Default); // goto observe:
 
     if (StrIsEmpty(wchFind)) {
 
@@ -7600,19 +7600,19 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
                 DocPos iWordStart = SciCall_WordStartPosition(iCurPos, true);
                 DocPos iWordEnd = SciCall_WordEndPosition(iCurPos, true);
                 if (iWordStart == iWordEnd) {
-                    __leave;
+                    goto observe;
                 }
                 iFindLength = (iWordEnd - iWordStart);
 
                 StringCchCopyNA(chText, COUNTOF(chText), SciCall_GetRangePointer(iWordStart, iFindLength), iFindLength);
 
             } else {
-                __leave; // no pattern, no selection and no word mark chosen
+                goto observe; // no pattern, no selection and no word mark chosen
             }
         } else { // we have a selection
 
             if (Sci_IsMultiSelection()) {
-                __leave;
+                goto observe;
             }
 
             // get current selection
@@ -7622,12 +7622,12 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
 
             // if multiple lines are selected exit
             if (SciCall_LineFromPosition(iSelStart) != SciCall_LineFromPosition(iSelEnd)) {
-                __leave;
+                goto observe;
             }
 
             DocPosU const iSelLen = SciCall_GetSelText(NULL);
             if (iSelLen >= COUNTOF(chText)) {
-                __leave;
+                goto observe;
             }
 
             iFindLength = SciCall_GetSelText(chText);
@@ -7639,7 +7639,7 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
                 const char* delims = (Settings.AccelWordNavigation ? DelimCharsAccel : DelimChars);
                 while ((iSelStart2 <= iSelLen) && chText[iSelStart2]) {
                     if (StrChrIA(delims, chText[iSelStart2])) {
-                        __leave;
+                        goto observe;
                     }
                     ++iSelStart2;
                 }
@@ -7686,13 +7686,12 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
             end = rangeEnd;
             iPos = _FindInTarget(wchText, sFlags, &start, &end, true, FRMOD_NORM);
         };
-
-        if (count > 0) {
-            SciCall_SetSelectionNCaret(SciCall_GetMainSelection(), SciCall_GetSelectionNEnd(SciCall_GetMainSelection()));
-        }
         Globals.iMarkOccurrencesCount = count;
     }
-    EndWaitCursor();
+
+observe:
+
+    ObserveNotifyDocChangedEvent();
 }
 
 

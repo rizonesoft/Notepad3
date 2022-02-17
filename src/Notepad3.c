@@ -5566,11 +5566,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             switch (iLoWParam) {
 
             case IDM_EDIT_FINDNEXT:
-                EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
+                EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false, true);
                 break;
 
             case IDM_EDIT_FINDPREV:
-                EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
+                EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false, true);
                 break;
 
             case IDM_EDIT_REPLACENEXT:
