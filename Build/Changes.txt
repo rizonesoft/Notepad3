@@ -53,6 +53,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.217.2]- Drag&drop text snippet while ALT-Key down will not scroll.
 [.214.1]- "grepWinNP3": make runtime statically linking (GRE).
 [.211.1]- Pimping UCHARDET encoding detector.
 [.128.1]- CamelCase WordLists for AHK Lexer.
@@ -82,6 +83,10 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.217.2]- Find-Pattern storage handling.
+[.217.2]- Find Next/Prev behavior.
+[.217.2]- Regression caused by previous fix.
+[.217.2]- Mark all occurrences: move caret to end of main selection.
 [.217.1]- Preserve Caret position (issue 3927).
 [.217.1]- Fill Find pattern on F/R-dialog init, prefer clipboard over search history.
 [.216.1]- ID mismatch using 'enter' to close infobox (vs. 'yes/ok' button).
