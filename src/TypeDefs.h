@@ -472,6 +472,7 @@ typedef struct GLOBALS_T {
     bool      bZeroBasedColumnIndex;
     bool      bZeroBasedCharacterCount;
     int       iReplacedOccurrences;
+    DocPosU   iSelectionMarkNumber;
     DocPosU   iMarkOccurrencesCount;
     bool      bUseLimitedAutoCCharSet;
     bool      bIsCJKInputCodePage;

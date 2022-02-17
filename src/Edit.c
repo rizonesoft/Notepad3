@@ -6198,7 +6198,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         CheckDlgButton(hwnd, IDC_ALL_OCCURRENCES, SetBtn(s_pEfrData->bMarkOccurences));
         if (!s_pEfrData->bMarkOccurences) {
             EditClearAllOccurrenceMarkers(s_pEfrData->hwnd);
-            Globals.iMarkOccurrencesCount = 0;
+            Globals.iSelectionMarkNumber = Globals.iMarkOccurrencesCount = 0;
         }
 
         CheckDlgButton(hwnd, IDC_FINDCASE, SetBtn(s_pEfrData->fuFlags & SCFIND_MATCHCASE));
@@ -6305,7 +6305,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 MarkAllOccurrences(_MQ_STD, true);
             } else {
                 EditClearAllOccurrenceMarkers(s_pEfrData->hwnd);
-                Globals.iMarkOccurrencesCount = 0;
+                Globals.iSelectionMarkNumber = Globals.iMarkOccurrencesCount = 0;
             }
 
             if (s_InitialTopLine >= 0) {
@@ -6625,7 +6625,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                     EditToggleView(s_pEfrData->hwnd);
                 }
                 EditClearAllOccurrenceMarkers(s_pEfrData->hwnd);
-                Globals.iMarkOccurrencesCount = 0;
+                Globals.iSelectionMarkNumber = Globals.iMarkOccurrencesCount = 0;
                 InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, TRUE);
             }
         }
@@ -7044,6 +7044,7 @@ bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelectio
     } else if ((iPos < 0LL) && (start >= 0LL) && !bExtendSelection) {
         UpdateStatusbar(false);
         if (!lpefr->bNoFindWrap && !bSuppressNotFound) {
+            Globals.iSelectionMarkNumber = 0;
             DocPos const _start = start;
             //DocPos const _end = end;
             end = min_p(start, iDocEndPos);
@@ -7079,6 +7080,10 @@ bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelectio
         EditSetSelectionEx(min_p(iSelAnchor, iSelPos), end, -1, -1);
     } else {
         EditSetSelectionEx(iPos, end, -1, -1);
+    }
+
+    if (Globals.iMarkOccurrencesCount) {
+        ++Globals.iSelectionMarkNumber;
     }
 
     if (iPos == end) {
@@ -7128,6 +7133,7 @@ bool EditFindPrev(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
     } else if ((iPos < 0LL) && (start <= iDocEndPos) &&  !bExtendSelection) {
         UpdateStatusbar(false);
         if (!lpefr->bNoFindWrap && !bSuppressNotFound) {
+            Globals.iSelectionMarkNumber = Globals.iMarkOccurrencesCount + 1;
             DocPos const _start = start;
             //DocPos const _end = end;
             end = max_p(start, 0LL);
@@ -7163,6 +7169,10 @@ bool EditFindPrev(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
         EditSetSelectionEx(max_p(iSelPos, iSelAnchor), iPos, -1, -1);
     } else {
         EditSetSelectionEx(end, iPos, -1, -1);
+    }
+
+    if (Globals.iMarkOccurrencesCount) {
+        --Globals.iSelectionMarkNumber;
     }
 
     if (iPos == end) {
@@ -7473,7 +7483,7 @@ bool EditReplaceAllInSelection(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bShowInf
 void EditClearAllOccurrenceMarkers(HWND hwnd)
 {
     UNREFERENCED_PARAMETER(hwnd);
-    Globals.iMarkOccurrencesCount = 0;
+    Globals.iMarkOccurrencesCount = Globals.iMarkOccurrencesCount = 0;
 
     DocChangeTransactionBegin();
 
@@ -7582,10 +7592,10 @@ int EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase,
 //
 void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, bool bMultiSel)
 {
-    DocPos iFindLength = 0;
+    char  chText[2048] = { L'\0' };
+    WCHAR wchText[2048] = { L'\0' };
 
-    char chText[2048] = { L'\0'};
-    WCHAR wchText[2048] = { L'\0'};
+    DocPos       iFindLength = 0;
 
     IgnoreNotifyDocChangedEvent(EVM_Default); // goto observe:
 
@@ -7654,6 +7664,7 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
 
     if (StrIsNotEmpty(wchText)) {
 
+        DocPos const iSelStart = SciCall_GetSelectionStart();
         if (bMultiSel) {
             SciCall_ClearSelections();
         }
@@ -7667,6 +7678,7 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
         DocPos iPos = _FindInTarget(wchText, sFlags, &start, &end, false, FRMOD_NORM);
 
         DocPosU count = 0;
+        DocPosU found = 0;
         while ((iPos >= 0LL) && (start <= rangeEnd)) {
 
             if (bMultiSel) {
@@ -7682,10 +7694,12 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
                 SciCall_MarkerAdd(SciCall_LineFromPosition(iPos), MARKER_NP3_OCCURRENCE);
             }
             ++count;
+            if (iSelStart == start) { found = count; }
             start = end;
             end = rangeEnd;
             iPos = _FindInTarget(wchText, sFlags, &start, &end, true, FRMOD_NORM);
         };
+        Globals.iSelectionMarkNumber = found;
         Globals.iMarkOccurrencesCount = count;
     }
 
