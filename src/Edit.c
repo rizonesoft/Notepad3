@@ -7688,6 +7688,9 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
         };
 
         Globals.iMarkOccurrencesCount = count;
+        if (count > 0) {
+            SciCall_SetSelectionNCaret(SciCall_GetMainSelection(), SciCall_GetSelectionNEnd(SciCall_GetMainSelection()));
+        }
     }
     EndWaitCursor();
 }
