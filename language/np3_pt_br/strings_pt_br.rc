@@ -260,7 +260,7 @@ BEGIN
     IDS_USE_LOCALE_DATEFMT  "Idioma define Formato da &Data"
     IDS_MUI_MENU_THEMES     "&Coleção de Esquemas"
     IDM_THEMES_FACTORY_RESET "&Padrão de Fábrica"
-    IDM_THEMES_STD_CFG       "&Padrão"
+    IDM_THEMES_STD_CFG       "Config. &Padrão"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Limpar Tudo"
@@ -268,6 +268,7 @@ BEGIN
                             "Limpar Histórico Localizar"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Limpar Histórico Substituir"
+    IDS_MUI_REPLCLIPTAG     "Substituir pelo Atalho da Área de Transferência [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Pesquisa circular - correspondência a partir do início"
     IDS_MUI_WRAPSEARCH_BCK  "Pesquisa circular - correspondência a partir do final"
 END

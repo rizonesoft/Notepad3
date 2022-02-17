@@ -260,7 +260,7 @@ BEGIN
     IDS_USE_LOCALE_DATEFMT  "언어가 날짜 형식 정의(&D)"
     IDS_MUI_MENU_THEMES     "구성표 모음(&S)"
     IDM_THEMES_FACTORY_RESET "기본값(&F)"
-    IDM_THEMES_STD_CFG       "표준 (&S)"  // 앞에 공백을 유지(&S)
+    IDM_THEMES_STD_CFG       "표준 구성 (&S)"  // 앞에 공백을 유지(&S)
     IDS_MUI_STATUSBAR_PREFIXES "줄  ,열  ,선택  ,블럭  ,줄선택  ,일치  ,,,,,,,글자  ,교체  ,유형  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "모두 지우기"
@@ -268,6 +268,7 @@ BEGIN
                             "찾기 내역 지우기"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "바꾸기 내역 지우기"
+    IDS_MUI_REPLCLIPTAG     "클립보드 바로 가기 [^c]로 대체"
     IDS_MUI_WRAPSEARCH_FWD  "위부터 반올림"
     IDS_MUI_WRAPSEARCH_BCK  "아래부터 반올림"
 END

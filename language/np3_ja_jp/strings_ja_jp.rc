@@ -260,7 +260,7 @@ BEGIN
     IDS_USE_LOCALE_DATEFMT  "言語を日付の書式に反映(&D)"
     IDS_MUI_MENU_THEMES     "配色テーマ(&S)"
     IDM_THEMES_FACTORY_RESET "初期設定(&F)"
-    IDM_THEMES_STD_CFG       "標準 (&S)"  // Keep blank space before (&S)
+    IDM_THEMES_STD_CFG       "標準 Config (&S)"  // Keep blank space before (&S)
     IDS_MUI_STATUSBAR_PREFIXES "行 ,列 ,選 ,選B ,選行 ,見 ,,,,,,,字 ,置 ,式 ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "すべて削除"
@@ -268,6 +268,7 @@ BEGIN
                             "検索履歴を消去"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "置換履歴を消去"
+    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard Shortcut [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "先頭に戻り一致した行"
     IDS_MUI_WRAPSEARCH_BCK  "終端に行き一致した行"
 END
