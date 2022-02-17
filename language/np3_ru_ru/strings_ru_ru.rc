@@ -260,7 +260,7 @@ BEGIN
     IDS_USE_LOCALE_DATEFMT  "Язык определяет &формат даты"
     IDS_MUI_MENU_THEMES     "&Коллекция схем"
     IDM_THEMES_FACTORY_RESET "&Заводские настройки"
-    IDM_THEMES_STD_CFG       "&Стандартная"
+    IDM_THEMES_STD_CFG       "&Стандартная Config"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Очистить всё"
@@ -268,6 +268,7 @@ BEGIN
                             "Очистить историю поиска"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Очистить историю замен"
+    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard Shortcut [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Совпадение в начале"
     IDS_MUI_WRAPSEARCH_BCK  "Совпадение в конце"
 END
