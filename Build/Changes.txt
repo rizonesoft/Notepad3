@@ -33,13 +33,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.216.(build_#) (2022-02-16)
+Current BETA/RC Version 5.22.217.(build_#) (2022-02-17)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.217.1]- F/R-dialog menu item to switch replace by clipboard tag (^c).
 [.215.1]- Set keyword-lists for CSS Lexer according to SiTE's css.properties.
 [.212.1]- Document "Read Only" view menu item for switching mode.
 [.129.1]- JSON Lexer: colorizing for URL/IRI and Compact IRI.
@@ -81,6 +82,8 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.217.1]- Preserve Caret position (issue 3927).
+[.217.1]- Fill Find pattern on F/R-dialog init, prefer clipboard over search history.
 [.216.1]- ID mismatch using 'enter' to close infobox (vs. 'yes/ok' button).
 [.214.1]- Allow switching encoding for empty document.
 [.209.1]- Memory issues fixing and hardening.
