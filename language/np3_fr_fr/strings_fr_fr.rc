@@ -260,7 +260,7 @@ BEGIN
     IDS_USE_LOCALE_DATEFMT  "Langue définit Format &Date"
     IDS_MUI_MENU_THEMES     "&Collection de Modèles"
     IDM_THEMES_FACTORY_RESET "Par &Défaut"
-    IDM_THEMES_STD_CFG       "&Standard"
+    IDM_THEMES_STD_CFG       "Config. &Standard"
     IDS_MUI_STATUSBAR_PREFIXES "Lgn  ,Col  ,Sel  ,Sb  ,SLgn  ,Occ  ,,,,,,,Car  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Effacer tout"
@@ -268,6 +268,7 @@ BEGIN
                             "Effacer l'historique de recherche"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Effacer l'historique de remplacement"
+    IDS_MUI_REPLCLIPTAG     "Remplacer par raccourci du Presse-papiers [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Match en boucle par le haut"
     IDS_MUI_WRAPSEARCH_BCK  "Match en boucle par le bas"
 END

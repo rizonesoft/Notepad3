@@ -260,7 +260,7 @@ BEGIN
     IDS_USE_LOCALE_DATEFMT  "Definovať jazyk a formát dátumu"
     IDS_MUI_MENU_THEMES     "&Výber motívu"
     IDM_THEMES_FACTORY_RESET "&Predvolené nastavenia"
-    IDM_THEMES_STD_CFG       "&Štandardné"
+    IDM_THEMES_STD_CFG       "&Štandardné Config"
     IDS_MUI_STATUSBAR_PREFIXES "Riadok  ,Stĺpec  ,Výber  ,Sb  ,SLn  ,Occ  ,,,,,,,Znaky  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Vymazať všetko"
@@ -268,6 +268,7 @@ BEGIN
                             "Vymazať históriu vyhľadávania"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Vymazať históriu nahradenia"
+    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard Shortcut [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Zvinovať zvrchu"
     IDS_MUI_WRAPSEARCH_BCK  "Zvinovať zospodu"
 END

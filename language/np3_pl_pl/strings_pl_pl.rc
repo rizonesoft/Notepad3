@@ -260,7 +260,7 @@ BEGIN
     IDS_USE_LOCALE_DATEFMT  "Język definiuje Format &Daty"
     IDS_MUI_MENU_THEMES     "Wybór &schematów"
     IDM_THEMES_FACTORY_RESET "&Domyślne"
-    IDM_THEMES_STD_CFG       "&Standardowe"
+    IDM_THEMES_STD_CFG       "&Standardowe Config"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,kol  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Podn  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Wyczyść wszystko"
@@ -268,6 +268,7 @@ BEGIN
                             "Wyczyść Znajdź Historię"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Wyczyść Zamień Historię"
+    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard Shortcut [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Zawijaj pasujące od góry"
     IDS_MUI_WRAPSEARCH_BCK  "Zawijaj pasujące od spodu"
 END
