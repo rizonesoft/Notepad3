@@ -7587,7 +7587,7 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
     char chText[2048] = { L'\0'};
     WCHAR wchText[2048] = { L'\0'};
 
-    IgnoreNotifyDocChangedEvent(EVM_Default);
+    IgnoreNotifyDocChangedEvent(EVM_Default); // goto observe:
 
     if (StrIsEmpty(wchFind)) {
 
@@ -7686,10 +7686,6 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
             end = rangeEnd;
             iPos = _FindInTarget(wchText, sFlags, &start, &end, true, FRMOD_NORM);
         };
-
-        if (count > 0) {
-            SciCall_SetSelectionNCaret(SciCall_GetMainSelection(), SciCall_GetSelectionNEnd(SciCall_GetMainSelection()));
-        }
         Globals.iMarkOccurrencesCount = count;
     }
 
