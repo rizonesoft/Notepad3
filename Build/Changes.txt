@@ -40,6 +40,7 @@ Current BETA/RC Version 5.22.217.(build_#) (2022-02-17)
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.218.1]- Show number of occurrence on sequence of marked all.
 [.217.1]- F/R-dialog menu item to switch replace by clipboard tag (^c).
 [.215.1]- Set keyword-lists for CSS Lexer according to SiTE's css.properties.
 [.212.1]- Document "Read Only" view menu item for switching mode.
