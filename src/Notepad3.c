@@ -749,6 +749,7 @@ static void _InitGlobals()
     Globals.bZeroBasedColumnIndex = false;
     Globals.bZeroBasedCharacterCount = false;
     Globals.iReplacedOccurrences = 0;
+    Globals.iSelectionMarkNumber = 0;
     Globals.iMarkOccurrencesCount = 0;
     Globals.bUseLimitedAutoCCharSet = false;
     Globals.bIsCJKInputCodePage = false;
@@ -1862,6 +1863,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         SetNotifyIconTitle(Globals.hwndMain);
     }
     Globals.iReplacedOccurrences = 0;
+    Globals.iSelectionMarkNumber = 0;
     Globals.iMarkOccurrencesCount = 0;
 
     UpdateToolbar();
@@ -5831,6 +5833,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             MarkAllOccurrences(_MQ_FAST, true);
         } else {
             EditClearAllOccurrenceMarkers(Globals.hwndEdit);
+            Globals.iSelectionMarkNumber = 0;
             Globals.iMarkOccurrencesCount = 0;
         }
         break;
@@ -9719,27 +9722,37 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     }
     // ------------------------------------------------------
 
-    static WCHAR tchOcc[32] = { L'\0' };
+    static WCHAR tchOccOf[50] = { L'\0' };
+    static WCHAR tchOcc2[24] = { L'\0' };
 
     // number of occurrence marks found
     if (g_iStatusbarVisible[STATUS_OCCURRENCE] || bIsWindowFindReplace) {
+        static DocPosU s_iSeletionMarkNumber = 0;
         static DocPosU s_iMarkOccurrencesCount = 0;
         static bool s_bMOVisible = false;
-        if (bForceRedraw || ((s_bMOVisible != Settings.MarkOccurrencesMatchVisible) || (s_iMarkOccurrencesCount != Globals.iMarkOccurrencesCount))) {
+        if (bForceRedraw || ((s_bMOVisible != Settings.MarkOccurrencesMatchVisible) ||
+                             (s_iSeletionMarkNumber != Globals.iSelectionMarkNumber) ||
+                             (s_iMarkOccurrencesCount != Globals.iMarkOccurrencesCount))) {
             if (Globals.iMarkOccurrencesCount > 0) {
-                StringCchPrintf(tchOcc, COUNTOF(tchOcc), DOCPOSFMTW, Globals.iMarkOccurrencesCount);
-                FormatNumberStr(tchOcc, COUNTOF(tchOcc), 0);
+                StringCchPrintf(tchOccOf, COUNTOF(tchOccOf), DOCPOSFMTW, Globals.iSelectionMarkNumber);
+                FormatNumberStr(tchOccOf, COUNTOF(tchOccOf), 0);
+                StringCchPrintf(tchOcc2, COUNTOF(tchOcc2), DOCPOSFMTW, Globals.iMarkOccurrencesCount);
+                FormatNumberStr(tchOcc2, COUNTOF(tchOcc2), 0);
+                StringCchCat(tchOccOf, COUNTOF(tchOccOf), L"/");
+                StringCchCat(tchOccOf, COUNTOF(tchOccOf), tchOcc2);
+                
             } else {
-                StringCchCopy(tchOcc, COUNTOF(tchOcc), L"--");
+                StringCchCopy(tchOccOf, COUNTOF(tchOccOf), L"-/-");
             }
             if (Settings.MarkOccurrencesMatchVisible) {
-                StringCchCat(tchOcc, COUNTOF(tchOcc), L"(V)");
+                StringCchCat(tchOccOf, COUNTOF(tchOccOf), L"(V)");
             }
 
             StringCchPrintf(tchStatusBar[STATUS_OCCURRENCE], txtWidth, L"%s%s%s",
-                            g_mxSBPrefix[STATUS_OCCURRENCE], tchOcc, g_mxSBPostfix[STATUS_OCCURRENCE]);
+                            g_mxSBPrefix[STATUS_OCCURRENCE], tchOccOf, g_mxSBPostfix[STATUS_OCCURRENCE]);
 
             s_bMOVisible = Settings.MarkOccurrencesMatchVisible;
+            s_iSeletionMarkNumber = Globals.iSelectionMarkNumber;
             s_iMarkOccurrencesCount = Globals.iMarkOccurrencesCount;
             bIsUpdateNeeded = true;
         }
@@ -9938,7 +9951,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
                         g_mxSBPrefix[STATUS_DOCLINE], tchLn, tchLines,
                         g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol,
                         g_mxSBPrefix[STATUS_SELECTION], tchSel,
-                        g_mxSBPrefix[STATUS_OCCURRENCE], tchOcc,
+                        g_mxSBPrefix[STATUS_OCCURRENCE], tchOccOf,
                         g_mxSBPrefix[STATUS_OCCREPLACE], tchReplOccs,
                         FR_StatusW[Globals.FindReplaceMatchFoundState]);
 
