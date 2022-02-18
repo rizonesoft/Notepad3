@@ -480,13 +480,13 @@ BEGIN
     IDS_LEX_STR_63372       "Dekorator"
     IDS_LEX_STR_63373       "Znacznik zadań"
     IDS_LEX_STR_63374       "Komentarz błędu Doc"
-    IDS_LEX_STR_63375       "Type Operator"
-    IDS_LEX_STR_63376       "Continuation"
-    IDS_LEX_STR_63377       "Special"
-    IDS_LEX_STR_63378       "Syntax Operator"
-    IDS_LEX_STR_63379       "Unclosed String"
+    IDS_LEX_STR_63375       "Typ Operatora"
+    IDS_LEX_STR_63376       "Kontynuacja"
+    IDS_LEX_STR_63377       "Specjalny"
+    IDS_LEX_STR_63378       "Operator składni"
+    IDS_LEX_STR_63379       "Niezamknięty ciąg"
     IDS_LEX_STR_63380       "URL/IRI"
-    IDS_LEX_STR_63381       "Compact IRI"
+    IDS_LEX_STR_63381       "Zwięzły IRI"
 END
 
 STRINGTABLE
