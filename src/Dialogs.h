@@ -98,6 +98,7 @@ UINT ComboBox_GetTextLengthEx(HWND hDlg, int nIDDlgItem);
 UINT ComboBox_GetCurSelEx(HWND hDlg, int nIDDlgItem);
 int  ComboBox_GetTextHW(HWND hDlg, int nIDDlgItem, HSTRINGW hstr);
 int  ComboBox_GetTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, size_t cch);
+void ComboBox_SetTextW(HWND hDlg, int nIDDlgItem, LPCWSTR wstr);
 void ComboBox_SetTextHW(HWND hDlg, int nIDDlgItem, const HSTRINGW hstr);
 void ComboBox_SetTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString);
 //void ComboBox_AddStringMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString);

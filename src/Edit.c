@@ -5529,6 +5529,8 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
             lpefr->bStateChanged = true;
         }
 
+        StrgReset(hstr, L"");
+
         ComboBox_GetTextHW(hwnd, IDC_REPLACETEXT, hstr);
         if (StringCchCompareX(StrgGet(hstr), StrgGet(lpefr->chReplaceTemplate)) != 0) {
             StrgReset(lpefr->chReplaceTemplate, StrgGet(hstr));
@@ -6152,9 +6154,17 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SetWindowSubclass(cbInfoF.hwndItem, EditBoxForPasteFixes, 0, (DWORD_PTR) &(s_wchBufOut[0]));
             SHAutoComplete(cbInfoF.hwndItem, SHACF_FILESYS_ONLY | SHACF_AUTOAPPEND_FORCE_OFF | SHACF_AUTOSUGGEST_FORCE_OFF);
         }
-
         if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_FINDTEXT))) {
-            ComboBox_SetTextHW(hwnd, IDC_FINDTEXT, s_pEfrData->chFindPattern);
+            if (StrgIsNotEmpty(s_pEfrData->chFindPattern)) {
+                ComboBox_SetTextHW(hwnd, IDC_FINDTEXT, s_pEfrData->chFindPattern);
+            }
+            else if (MRU_Count(Globals.pMRUfind)) {
+                MRU_Enum(Globals.pMRUfind, 0, s_wchBufOut, COUNTOF(s_wchBufOut));
+                ComboBox_SetTextW(hwnd, IDC_FINDTEXT, s_wchBufOut);
+            }
+            else {
+                ComboBox_SetTextW(hwnd, IDC_FINDTEXT, NULL);
+            }
         }
 
         if (s_bIsReplaceDlg) {
@@ -6174,7 +6184,18 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 SetWindowSubclass(cbInfoR.hwndItem, EditBoxForPasteFixes, 0, (DWORD_PTR) &(s_wchBufOut[0]));
                 SHAutoComplete(cbInfoR.hwndItem, SHACF_FILESYS_ONLY | SHACF_AUTOAPPEND_FORCE_OFF | SHACF_AUTOSUGGEST_FORCE_OFF);
             }
-            ComboBox_SetTextHW(hwnd, IDC_REPLACETEXT, s_pEfrData->chReplaceTemplate);
+            if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_REPLACETEXT))) {
+                if (StrgIsNotEmpty(s_pEfrData->chReplaceTemplate)) {
+                    ComboBox_SetTextHW(hwnd, IDC_REPLACETEXT, s_pEfrData->chReplaceTemplate);
+                }
+                else if (MRU_Count(Globals.pMRUreplace)) {
+                    MRU_Enum(Globals.pMRUreplace, 0, s_wchBufOut, COUNTOF(s_wchBufOut));
+                    ComboBox_SetTextW(hwnd, IDC_REPLACETEXT, s_wchBufOut);
+                }
+                else {
+                    ComboBox_SetTextW(hwnd, IDC_REPLACETEXT, NULL);
+                }
+            }
         }
 
         CheckDlgButton(hwnd, IDC_FINDREGEXP, SetBtn(s_pEfrData->bRegExprSearch));
@@ -7592,8 +7613,8 @@ int EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase,
 //
 void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, bool bMultiSel)
 {
-    char  chText[2048] = { L'\0' };
-    WCHAR wchText[2048] = { L'\0' };
+    char  chText[FNDRPL_BUFFER] = { L'\0' };
+    WCHAR wchText[FNDRPL_BUFFER] = { L'\0' };
 
     DocPos       iFindLength = 0;
 
