@@ -5235,6 +5235,11 @@ int ComboBox_GetTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, size_t cch)
     return len;
 }
 
+void ComboBox_SetTextW(HWND hDlg, int nIDDlgItem, LPCWSTR wstr)
+{
+    ComboBox_SetText(GetDlgItem(hDlg, nIDDlgItem), wstr ? wstr : L"");
+}
+
 void ComboBox_SetTextHW(HWND hDlg, int nIDDlgItem, const HSTRINGW hstr)
 {
     ComboBox_SetText(GetDlgItem(hDlg, nIDDlgItem), StrgIsNotEmpty(hstr) ? StrgGet(hstr) : L"");
