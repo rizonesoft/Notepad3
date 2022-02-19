@@ -33,7 +33,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.217.(build_#) (2022-02-17)
+Current BETA/RC Version 5.22.219.(build_#) (2022-02-19)
 ========================================================
 
 --------------------------------------------------------
@@ -84,6 +84,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.219.1]- F/R-Dialog: Initial fill of replace template box.
 [.217.2]- Find-Pattern storage handling.
 [.217.2]- Find Next/Prev behavior.
 [.217.2]- Regression caused by previous fix.
