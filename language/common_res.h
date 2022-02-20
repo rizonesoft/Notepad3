@@ -180,6 +180,7 @@
 #define IDS_MUI_SELMULTI                14020
 #define IDS_MUI_SELRECTORMULTI          14021
 #define IDS_MUI_INIFILE_READONLY        14022
+#define IDS_MUI_DOCUMENT_READONLY       14023
 
 #define IDS_MUI_ASK_SAVE                15000
 #define IDS_MUI_ASK_REVERT              15001
