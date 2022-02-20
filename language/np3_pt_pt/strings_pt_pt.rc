@@ -205,6 +205,8 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Manter a data/hora de modificação original do ficheiro activada.\nEsta opção será válida para esta sessão!"
     IDS_MUI_OUT_OFF_OCCMRK   "Não existem outros marcadores de ocorrência (Marcador/Realce)!"
+    IDS_MUI_DOCUMENT_READONLY
+                             "The document is locked for view only. Do you like to unlock it for editing?"
 END
 
 STRINGTABLE

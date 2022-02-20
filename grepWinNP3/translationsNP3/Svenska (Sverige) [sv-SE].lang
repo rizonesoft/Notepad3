@@ -327,10 +327,6 @@ msgstr "Klistra in text att testa regex med:"
 msgid "Path"
 msgstr "Sökväg"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "Sökvägen existerar inte, eller kan inte nås!"
-
 #. Resource IDs: (131)
 msgid "Preset name"
 msgstr "Förvalt namn"
@@ -469,6 +465,11 @@ msgstr "Textträffar"
 msgid "Text search"
 msgstr "Textsökning"
 
+#. Resource IDs: (160)
+#, c-format
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr ""
+
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
 msgstr "Regex sökning matchar:"
@@ -489,6 +490,10 @@ msgstr "Behandlar filer som binära"
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
 msgstr "Inställningen \"%s\ är aktiverad.\r\nVid ersättning kan denna inställning leda till korrupta filer.\r\nVill du fortsätta ändå?"
+
+#. Resource IDs: (1025)
+msgid "\\"
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."

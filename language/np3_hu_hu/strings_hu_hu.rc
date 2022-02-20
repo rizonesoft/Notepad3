@@ -205,6 +205,8 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Az eredeti fájl módosítási idejeének megőrzése opció be van kapcsolva.\nA beállítás így marad erre a munkamenetre!"
     IDS_MUI_OUT_OFF_OCCMRK   "Elfogytak a találatjelölők (Könyvjelző/Kiemelés)!"
+    IDS_MUI_DOCUMENT_READONLY
+                             "The document is locked for view only. Do you like to unlock it for editing?"
 END
 
 STRINGTABLE

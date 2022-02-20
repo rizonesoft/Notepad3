@@ -205,6 +205,8 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Zachovanie pôvodnej časovej pečiatky pri úprave súboru je povolené.\nTáto možnosť zostane len pre túto reláciu!"
     IDS_MUI_OUT_OFF_OCCMRK   "Dochádzajú označené výskyty (záložka/zvýraznenie)!"
+    IDS_MUI_DOCUMENT_READONLY
+                             "The document is locked for view only. Do you like to unlock it for editing?"
 END
 
 STRINGTABLE

@@ -327,10 +327,6 @@ msgstr "貼上文字來測試規則運算式"
 msgid "Path"
 msgstr "路徑"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "路徑不存在或無法存取!"
-
 #. Resource IDs: (131)
 msgid "Preset name"
 msgstr "預設名稱"
@@ -469,6 +465,11 @@ msgstr "文字符合"
 msgid "Text search"
 msgstr "文字搜尋"
 
+#. Resource IDs: (160)
+#, c-format
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr ""
+
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
 msgstr "規則運算式搜尋字串符合:"
@@ -489,6 +490,10 @@ msgstr "將檔案視為二進位"
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
 msgstr "您已啟用選項 \"%s\"。\r\n當替換時，此選項可能會導致檔案毀損。\r\n無論如何仍要繼續嗎?"
+
+#. Resource IDs: (1025)
+msgid "\\"
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."

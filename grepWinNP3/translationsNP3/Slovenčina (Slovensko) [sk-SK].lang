@@ -327,10 +327,6 @@ msgstr "Vložiť text na otestovanie regex:"
 msgid "Path"
 msgstr "Cesta"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "Cesta neexistuje alebo nie je prístupná!"
-
 #. Resource IDs: (131)
 msgid "Preset name"
 msgstr "Názov predvoľby"
@@ -469,6 +465,11 @@ msgstr "Textová zhoda"
 msgid "Text search"
 msgstr "Textové hľadanie"
 
+#. Resource IDs: (160)
+#, c-format
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr ""
+
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
 msgstr "Vyhľadávací reťazec regex zodpovedá:"
@@ -489,6 +490,10 @@ msgstr "Považovať súbory ako binárne"
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
 msgstr "Máte povolenú možnosť \"%s\".\r\nPri nahrádzaní môže táto možnosť viesť k poškodeniu súborov.\r\nChcete pokračovať?"
+
+#. Resource IDs: (1025)
+msgid "\\"
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."

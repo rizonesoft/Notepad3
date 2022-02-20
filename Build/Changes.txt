@@ -33,13 +33,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.219.(build_#) (2022-02-19)
+Current BETA/RC Version 5.22.220.(build_#) (2022-02-20)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.220.1]- Msg box for editing read-only.
 [.218.1]- Show number of occurrence on sequence of marked all.
 [.217.1]- F/R-dialog menu item to switch replace by clipboard tag (^c).
 [.215.1]- Set keyword-lists for CSS Lexer according to SiTE's css.properties.
@@ -84,6 +85,8 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.220.1]- Workaround to fix horizontal mouse wheel with Logitech Options utility.
+[.220.1]- Occurrence counter for "current word" mode.
 [.219.1]- F/R-Dialog: Initial fill of replace template box.
 [.217.2]- Find-Pattern storage handling.
 [.217.2]- Find Next/Prev behavior.

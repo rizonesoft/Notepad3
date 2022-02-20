@@ -3,12 +3,12 @@
 ==  This ".txt" file is intended for "Translators" to communicate to them the "Line numbers" of the   ==
 ==  "Added or Modified" items in the "Resource" files ("filename_xx_yy.rc" and "grepWinNP3.lang").    ==
 ==                                                                                                    ==
-==                                                                         Last update:  2022-02-17   ==
+==                                                                         Last update:  2022-02-20   ==
 ========================================================================================================
 
 January 2022:   Line numbers to translate_2022-01 - https://workupload.com/file/3kmZN49gB9w (2022-01-29)
 
-February 2022:  Line numbers to translate_2022-02 - https://workupload.com/file/hvsjjC43q45 (2022-02-17)
+February 2022:  Line numbers to translate_2022-02 - https://workupload.com/file/vr9gjJzTyEz (2022-02-20)
 
 March 2022:     Line numbers to translate_2022-03 -  (2022-03-xx)
 

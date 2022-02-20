@@ -205,6 +205,8 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Η διατήρηση της αρχικής χρονοσήμανσης μεταβολής του αρχείου είναι ενεργοποιημένη.\nΑυτή η επιλογή θα παραμείνει για αυτή την σύνοδο!"
     IDS_MUI_OUT_OFF_OCCMRK   "Δεν υπάρχουν άλλοι δείκτες εμφάνισης (Σελιδοδείκτης/Επισήμανση)!"
+    IDS_MUI_DOCUMENT_READONLY
+                             "The document is locked for view only. Do you like to unlock it for editing?"
 END
 
 STRINGTABLE

@@ -327,10 +327,6 @@ msgstr "Тэкст для праверкі regex:"
 msgid "Path"
 msgstr "Шлях"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "Шлях не існуе альбо недаступны!"
-
 #. Resource IDs: (131)
 msgid "Preset name"
 msgstr "Імя прэсета"
@@ -469,6 +465,11 @@ msgstr "Тэкст"
 msgid "Text search"
 msgstr "Пошук тэксту"
 
+#. Resource IDs: (160)
+#, c-format
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr ""
+
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
 msgstr "Шукаемы regex супадае:"
@@ -489,6 +490,10 @@ msgstr "Файлы як бінарныя"
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
 msgstr "Уключана опцыя \"%s\".\r\nПадчас замены гэтая опцыя можа прывесці да пашкоджання файлаў.\r\nВы ўсё роўна хочаце працягнуць?"
+
+#. Resource IDs: (1025)
+msgid "\\"
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."

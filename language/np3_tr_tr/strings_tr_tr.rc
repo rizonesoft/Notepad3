@@ -205,6 +205,8 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Özgün dosya değişiklik zamanının korunması seçeneği etkinleştirilmiş.\nBu seçenek bu oturum boyunca etkin olacak!"
     IDS_MUI_OUT_OFF_OCCMRK   "Yinelenme işaretleyicileri bitiyor (Yer imi/Vurgula)!"
+    IDS_MUI_DOCUMENT_READONLY
+                             "The document is locked for view only. Do you like to unlock it for editing?"
 END
 
 STRINGTABLE

@@ -327,10 +327,6 @@ msgstr "정규식을 테스트할 텍스트 붙여넣기:"
 msgid "Path"
 msgstr "경로"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "경로가 존재하지 않거나 접근할 수 없습니다!"
-
 #. Resource IDs: (131)
 msgid "Preset name"
 msgstr "프리셋 이름"
@@ -469,6 +465,11 @@ msgstr "텍스트 일치"
 msgid "Text search"
 msgstr "텍스트 검색"
 
+#. Resource IDs: (160)
+#, c-format
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr ""
+
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
 msgstr "정규식 검색한 문자열 일치:"
@@ -489,6 +490,10 @@ msgstr "파일을 바이너리로 취급"
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
 msgstr "\"%s\"옵션을 활성화했습니다.\r\n교체할 때 이 옵션을 사용하면 파일이 손상될 수 있습니다.\r\n그래도 계속하시겠습니까?"
+
+#. Resource IDs: (1025)
+msgid "\\"
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."

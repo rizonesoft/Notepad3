@@ -205,6 +205,8 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Die behoud van die oorspronklike tydstempel vir lêerveranderings is geaktiveer.\nHierdie opsie bly vir hierdie sessie!"
     IDS_MUI_OUT_OFF_OCCMRK   "Die optredemarkers raak op (Bookmerk/Merk)!"
+    IDS_MUI_DOCUMENT_READONLY
+                             "The document is locked for view only. Do you like to unlock it for editing?"
 END
 
 STRINGTABLE

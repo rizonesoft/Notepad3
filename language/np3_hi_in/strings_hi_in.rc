@@ -205,6 +205,8 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "फ़ाईल परिवर्तन का मौलिक समय संरक्षण सक्षम है.\nयह विकल्प इस सत्र के लिए बना रहेगा!"
     IDS_MUI_OUT_OFF_OCCMRK   "उपस्तिथि चिन्हक खत्म हो रहे है (बुकमार्क/हाइलाइट)!"
+    IDS_MUI_DOCUMENT_READONLY
+                             "The document is locked for view only. Do you like to unlock it for editing?"
 END
 
 STRINGTABLE

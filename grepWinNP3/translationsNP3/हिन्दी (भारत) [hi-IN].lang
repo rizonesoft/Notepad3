@@ -327,10 +327,6 @@ msgstr "regex को इस टेक्स्ट से जाँचने क�
 msgid "Path"
 msgstr "पथ"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "पथ मौजूद नहीं है या उस तक पहुँचा नहीं जा सकता!"
-
 #. Resource IDs: (131)
 msgid "Preset name"
 msgstr "प्रीसेट नाम"
@@ -469,6 +465,11 @@ msgstr "टेक्स्ट मिलान"
 msgid "Text search"
 msgstr "टेक्स्ट खोज"
 
+#. Resource IDs: (160)
+#, c-format
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr ""
+
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
 msgstr "regex खोज स्ट्रिंग इससे मिलती है:"
@@ -489,6 +490,10 @@ msgstr "फ़ाइलों को binary जैसा बरतें"
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
 msgstr "आपके पास \"%s\" विकल्प सक्षम है|\r\nबदलने की प्रक्रिया में इस विकल्प से फ़ाइल खराब हो सकती है|\r\nक्या फ़िर भी आप आगे बढ़ना चाहते हैं?"
+
+#. Resource IDs: (1025)
+msgid "\\"
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."

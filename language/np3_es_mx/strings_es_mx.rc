@@ -205,6 +205,8 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Conservar la marca de tiempo de modificación del archivo original habilitada.\n¡Esta opción permanecerá para esta sesión!"
     IDS_MUI_OUT_OFF_OCCMRK   "¡No hay más marcadores de ocurrencia (Marcador/Resaltar)!"
+    IDS_MUI_DOCUMENT_READONLY
+                             "El documento está bloqueado para sólo lectura. ¿Quiere desbloquearlo para editar?"
 END
 
 STRINGTABLE
