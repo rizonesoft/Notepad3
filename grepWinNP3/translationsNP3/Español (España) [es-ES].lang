@@ -327,10 +327,6 @@ msgstr "Pegue el texto para probar el regex con:"
 msgid "Path"
 msgstr "Ruta"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "¡La ruta no existe o no es accesible!"
-
 #. Resource IDs: (131)
 msgid "Preset name"
 msgstr "Nombre del predifinido"
@@ -469,6 +465,11 @@ msgstr "Modelo de texto"
 msgid "Text search"
 msgstr "Buscar texto"
 
+#. Resource IDs: (160)
+#, c-format
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr "¡La ruta \"%s\" no existe o no es accesible!"
+
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
 msgstr "La búsqueda regex coincide con:"
@@ -489,6 +490,10 @@ msgstr "Tratar archivos como binarios"
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
 msgstr "Tiene la opción \"%s\" habilitada.\r\nAl reemplazar, esta opción puede conducir a archivos corruptos.\r\n¿Desea continuar de todos modos?"
+
+#. Resource IDs: (1025)
+msgid "\\"
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."

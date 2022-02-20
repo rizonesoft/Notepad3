@@ -327,10 +327,6 @@ msgstr "Sınanacak kurallı ifade metnini yapıştırın:"
 msgid "Path"
 msgstr "Yol"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "Yol buunamadı ya da erişilemiyor!"
-
 #. Resource IDs: (131)
 msgid "Preset name"
 msgstr "Hazır ayar adı"
@@ -469,6 +465,11 @@ msgstr "Metin eşleşmesi"
 msgid "Text search"
 msgstr "Metin arama"
 
+#. Resource IDs: (160)
+#, c-format
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr ""
+
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
 msgstr "Kurallı ifade aranacak dizge eşleşmeleri:"
@@ -489,6 +490,10 @@ msgstr "Dosyalar Binary kabul edilsin"
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
 msgstr "\"%s\" seçeneği etkinleştirilmiş.\r\nDeğiştirme sırasında bu seçenek dosyanın bozulmasına neden olabilir.\r\nGene de ilerlemek istiyor musunuz?"
+
+#. Resource IDs: (1025)
+msgid "\\"
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."

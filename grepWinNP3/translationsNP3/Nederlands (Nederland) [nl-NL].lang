@@ -327,10 +327,6 @@ msgstr "Voeg tekst in om de Regex te testen:"
 msgid "Path"
 msgstr "Pad"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "Pad bestaat niet of is niet toegankelijk!"
-
 #. Resource IDs: (131)
 msgid "Preset name"
 msgstr "Naam Voorinstelling"
@@ -469,6 +465,11 @@ msgstr "Tekst"
 msgid "Text search"
 msgstr "Tekst zoeken"
 
+#. Resource IDs: (160)
+#, c-format
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr ""
+
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
 msgstr "De Regex zoekreeks komt overeen met:"
@@ -489,6 +490,10 @@ msgstr "Als binair behandelen"
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
 msgstr "De optie \"%s\" is ingeschakeld.\r\nBij het vervangen kan deze optie leiden tot beschadigde bestanden.\r\nWil je toch doorgaan?"
+
+#. Resource IDs: (1025)
+msgid "\\"
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."

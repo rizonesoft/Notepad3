@@ -327,10 +327,6 @@ msgstr "正規表現テスト用のテキスト:"
 msgid "Path"
 msgstr "パス"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "パスが存在しないかアクセスできません！"
-
 #. Resource IDs: (131)
 msgid "Preset name"
 msgstr "プリセット名"
@@ -469,6 +465,11 @@ msgstr "文字列に一致"
 msgid "Text search"
 msgstr "文字列で検索"
 
+#. Resource IDs: (160)
+#, c-format
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr ""
+
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
 msgstr "正規表現に一致した文字列:"
@@ -489,6 +490,10 @@ msgstr "ファイルをバイナリとして処理"
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
 msgstr "設定の「%s」が有効になっています。\r\nこの設定のまま置換すると、ファイルが破損する場合があります。\r\n続行しますか?"
+
+#. Resource IDs: (1025)
+msgid "\\"
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
