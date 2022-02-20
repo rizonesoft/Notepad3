@@ -7685,10 +7685,11 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
 
     if (StrIsNotEmpty(wchText)) {
 
-        DocPos const iSelStart = SciCall_GetSelectionStart();
         if (bMultiSel) {
             SciCall_ClearSelections();
         }
+        DocPos const iSelStart = SciCall_GetSelectionStart();
+        DocPos const iSelEnd = SciCall_GetSelectionEnd();
 
         DocPos const iTextEnd = Sci_GetDocEndPosition();
         rangeStart = max_p(0, rangeStart);
@@ -7715,7 +7716,7 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
                 SciCall_MarkerAdd(SciCall_LineFromPosition(iPos), MARKER_NP3_OCCURRENCE);
             }
             ++count;
-            if (iSelStart == start) { found = count; }
+            if ((iSelStart >= start) && (iSelEnd <= end)) { found = count; }
             start = end;
             end = rangeEnd;
             iPos = _FindInTarget(wchText, sFlags, &start, &end, true, FRMOD_NORM);
