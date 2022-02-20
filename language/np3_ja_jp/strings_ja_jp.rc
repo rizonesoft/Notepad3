@@ -205,6 +205,8 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "元ファイルの更新日時のままにします。\nこのセッションでのみ有効となります。"
     IDS_MUI_OUT_OFF_OCCMRK   "単語出現マーカーが枯渇しています (しおり/強調表示)!"
+    IDS_MUI_DOCUMENT_READONLY
+                             "The document is locked for view only. Do you like to unlock it for editing?"
 END
 
 STRINGTABLE

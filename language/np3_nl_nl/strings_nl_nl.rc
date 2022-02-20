@@ -205,6 +205,8 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Tijdstempel originele bestandswijziging behouden.\nDeze optie blijft gedurende deze sessie actief!"
     IDS_MUI_OUT_OFF_OCCMRK   "Er zijn geen andere markeringen van voorvallen (Bladwijzer/Markering)!"
+    IDS_MUI_DOCUMENT_READONLY
+                             "The document is locked for view only. Do you like to unlock it for editing?"
 END
 
 STRINGTABLE

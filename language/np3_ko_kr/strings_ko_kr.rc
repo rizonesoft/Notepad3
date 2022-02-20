@@ -205,6 +205,8 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "원래 파일 수정 타임스탬프를 보존할 수 있습니다.\n이 옵션은 이 세션에 유지됩니다!"
     IDS_MUI_OUT_OFF_OCCMRK   "발생 마커 (책갈피/강조)가 부족합니다!"
+    IDS_MUI_DOCUMENT_READONLY
+                             "The document is locked for view only. Do you like to unlock it for editing?"
 END
 
 STRINGTABLE
