@@ -1665,7 +1665,7 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 			int const xPos = std::min(xOffset + charsToScroll, scrollWidth - static_cast<int>(rcText.Width()) + 1);
 			HorizontalScrollTo(xPos);
 		}
-		return 0;
+		return 1;
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	}
