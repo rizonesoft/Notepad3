@@ -468,7 +468,7 @@ msgstr "텍스트 검색"
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr ""
+msgstr "\"%s\" 경로가 없거나 액세스할 수 없습니다!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
