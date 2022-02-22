@@ -360,10 +360,10 @@ BEGIN
     RTEXT           "%s satır",IDC_INDENT_SUM_SPC,84,30,52,8
     RTEXT           "%s satır",IDC_INDENT_SUM_MIX,84,42,52,8
     GROUPBOX        "Tüm girintiler yeniden ayarlansın mı? ",IDC_STATIC2,7,60,182,56,WS_GROUP
-    CONTROL         "&Tabs",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
-    CONTROL         "&Blanks",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,29,10
-    RTEXT           "%s satırın girinti derinliği düzensiz",IDC_INDENT_TAB_MODX,45,72,120,8
-    RTEXT           "%s satırın girinti derinliği düzensiz",IDC_INDENT_SPC_MODX,45,84,120,8
+    CONTROL         "&Sekmeler",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,38,10
+    CONTROL         "&Boşluklar",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,38,10
+    RTEXT           "%s satırın girinti derinliği düzensiz",IDC_INDENT_TAB_MODX,52,72,120,8
+    RTEXT           "%s satırın girinti derinliği düzensiz",IDC_INDENT_SPC_MODX,52,84,120,8
     PUSHBUTTON      "&Evet",IDOK,80,98,50,14
     PUSHBUTTON      "&Hayır",IDCANCEL,134,98,50,14
     CONTROL         "&Bu pencere her zaman görüntülensin.",IDC_WARN_INCONSISTENT_INDENTS,
@@ -450,7 +450,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
-    LTEXT           "Sık kullanılanlar dosyalarınıza bağlantılar içeren dizini belirtmek için burayı tıklayın.",IDC_FAVORITESDESCR,26,83,132,18
+    LTEXT           "Sık kullanılan dosyalar klasörünü belirtmek için buraya tıklayın.",IDC_FAVORITESDESCR,26,83,132,18
     DEFPUSHBUTTON   "Tamam",IDOK,52,108,50,14
     PUSHBUTTON      "İptal",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10

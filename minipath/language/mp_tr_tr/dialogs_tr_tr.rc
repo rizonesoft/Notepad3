@@ -90,7 +90,7 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Sık kullandığınız uygulamaların kısayollarının bulunduğu klasörü belirtmek için buraya tıklayın.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Sık kullanılan uygulamalar klasörünü belirtmek için buraya tıklayın.",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "Tamam",IDOK,52,108,50,14
     PUSHBUTTON      "İptal",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -114,7 +114,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Dosya süzgeci"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "&Yeni bir dosya süzgeci belirtin. Birden çok süzgeci ; ile ayırarak yazın",IDC_STATIC,7,7,170,8
+    LTEXT           "&Süzgeci yazın. Süzgeçleri ; ile ayırın",IDC_STATIC,7,7,170,8
     EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
     CONTROL         "&Süzgeçle eşleşen dosyalar katılmasın.",IDC_NEGFILTER,
@@ -183,7 +183,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
     CONTROL         "Sistem tepsisine &küçült (yeniden etkinleştirmek için tıklayın).",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,205,10
-    CONTROL         "MiniPath başlatıldığında &var olan pencere yeniden kullanılmaya çalışılsın.",IDC_REUSEWINDOW,
+    CONTROL         "Başlatıldığında &var olan pencere kullanılmaya çalışılsın.",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,205,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
     CONTROL         "&Ayarlar çıkışta kaydedilsin.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,90,10
@@ -196,9 +196,9 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
     LTEXT           "MiniPath gelişmiş uygulama ayarlarını yapın.",IDC_STATIC,40,15,160,8
-    CONTROL         "Kullanılacak &başlangıç klasörü:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
+    CONTROL         "&Başlangıç klasörü:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
     CONTROL         "Son &kullanılanlar.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
-    CONTROL         """&Sık kullanılanlar"" klâsör.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,120,10
+    CONTROL         """&Sık kullanılanlar"" klasörü.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,120,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
     CONTROL         "&Kaydedilmiş dosyaların salt okunur özniteliği temizlensin.",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,180,10
@@ -264,7 +264,7 @@ BEGIN
     LTEXT           "İleti:",IDC_STATIC,20,120,32,8
     CONTROL         "Yok. Her dosya açıldığında hedef uygulama çalıştırılsın.",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,191,10
-    CONTROL         "Hedef uygulama penceresine bir dosya açma iletisi gönderilsin:",IDC_SENDDROPMSG,
+    CONTROL         "Hedef uygulamada dosya açma penceresi açılsın:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
     CONTROL         "Şu DDE komutu yürütülsün:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
     LTEXT           "Uygulama:",IDC_STATIC,128,120,38,8
