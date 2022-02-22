@@ -72,11 +72,11 @@ END
 
 IDD_RUN DIALOGEX 0, 0, 224, 85
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Run"
+CAPTION "Çalıştır"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Açılacak yürütülebilir program dosyasının,\nklasörün ya da belgenin adını yazın .",IDC_STATIC,35,7,188,17
+    LTEXT           "Açılacak yürütülebilir program dosyasının,\nklasörün ya da belgenin adını yazın.",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "Tamam",IDOK,112,64,50,14
@@ -85,7 +85,7 @@ END
 
 IDD_OPENWITH DIALOGEX 0, 0, 165, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Open with..."
+CAPTION "Birlikte aç.."
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
@@ -118,7 +118,7 @@ BEGIN
     EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
     CONTROL         "&Süzgeçle eşleşen dosyalar katılmasın.",IDC_NEGFILTER,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,118,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,120,10
     DEFPUSHBUTTON   "Tamam",IDOK,72,58,50,14
     PUSHBUTTON      "İptal",IDCANCEL,127,58,50,14
 END
@@ -149,7 +149,7 @@ END
 
 IDD_COPYMOVE DIALOGEX 0, 0, 230, 95
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Copy/Move"
+CAPTION "Kopyala/&taşı"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "Kaynak:",IDC_STATIC,7,7,26,8
@@ -159,7 +159,7 @@ BEGIN
     PUSHBUTTON      "",IDC_BROWSEDESTINATION,210,48,13,13
     LTEXT           "İşlem:",IDC_STATIC,7,66,24,8
     CONTROL         "&Kopyala",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,35,66,40,10
-    CONTROL         "&Move",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,40,10
+    CONTROL         "&Taşı",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,40,10
     DEFPUSHBUTTON   "Tamam",IDOK,117,74,50,14,WS_DISABLED
     PUSHBUTTON      "İptal",IDCANCEL,173,74,50,14
     SCROLLBAR       IDC_RESIZEGRIP2,7,78,10,10
@@ -177,16 +177,16 @@ BEGIN
     CONTROL         "İ&z seçimi yapılabilsin.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
     CONTROL         "&Tam satır seçimi yapılabilsin.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
     CONTROL         "&Bir dosya açıldığında her zaman hedef pencere etkinleştirilsin.",IDC_FOCUSEDIT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,187,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,205,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
     CONTROL         "&MiniPath penceresi üstte kalsın.",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
     CONTROL         "Sistem tepsisine &küçült (yeniden etkinleştirmek için tıklayın).",IDC_MINIMIZETOTRAY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,157,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,205,10
     CONTROL         "MiniPath başlatıldığında &var olan pencere yeniden kullanılmaya çalışılsın.",IDC_REUSEWINDOW,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,195,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,205,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "&Ayarlar çıkışta kaydedilsin.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,86,10
+    CONTROL         "&Ayarlar çıkışta kaydedilsin.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,90,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
@@ -198,12 +198,12 @@ BEGIN
     LTEXT           "MiniPath gelişmiş uygulama ayarlarını yapın.",IDC_STATIC,40,15,160,8
     CONTROL         "Kullanılacak &başlangıç klasörü:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
     CONTROL         "Son &kullanılanlar.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
-    CONTROL         """&Sık kullanılanlar"" folder.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
+    CONTROL         """&Sık kullanılanlar"" klâsör.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,120,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
     CONTROL         "&Kaydedilmiş dosyaların salt okunur özniteliği temizlensin.",IDC_CLEARREADONLY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,143,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,180,10
     CONTROL         "&Ad çakışmalarında kopyalanan dosyalar yeniden adlandırılsın.",IDC_RENAMEONCOLLISION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,141,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,195,10
     CONTROL         "Silinen &dosyalar çöp kutusuna atılsın.",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
     CONTROL         "Dosya silme &onayı istenmesin (önerilmez).",IDC_NOCONFIRMDELETE,
@@ -222,12 +222,12 @@ BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
     LTEXT           "Klasör listesindeki ögelerin görünümü.",IDC_STATIC,40,15,118,8
     GROUPBOX        "Renkler",IDC_STATIC,10,41,205,134
-    LTEXT           "Bir süzgeç UYGULANMADIĞINDA kullanılacak metin rengi:",IDC_STATIC,20,54,136,8
+    LTEXT           "Bir süzgeç UYGULANMADIĞINDA kullanılacak metin rengi:",IDC_STATIC,20,54,205,8
     CONTROL         "&Varsayılan pencere rengi.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
     CONTROL         "Ö&zel rek:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Renk seçin...",IDC_COLOR_PICK1,119,80,50,14
-    LTEXT           "Bir süzgeç UYGULANDIĞINDA kullanılacak metin rengi:",IDC_STATIC,20,105,146,8
+    LTEXT           "Bir süzgeç UYGULANDIĞINDA kullanılacak metin rengi:",IDC_STATIC,20,105,180,8
     CONTROL         "Varsayılan &pencere rengi.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
     CONTROL         "ÖZ&el renk:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
@@ -241,10 +241,10 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
     LTEXT           "Dış uygulamaları ve yollarını belirtin.",IDC_STATIC,40,15,122,8
-    LTEXT           "&Varsayılan ""Hızlı görüntüleme"" uygulaması (Ctrl+Q):",IDC_STATIC,10,41,126,8
+    LTEXT           "&Varsayılan ""Hızlı görüntüleme"" uygulaması (Ctrl+Q):",IDC_STATIC,10,41,180,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
-    LTEXT           "&Sık kullanılanlar klasörü (F11):",IDC_STATIC,10,76,76,8
+    LTEXT           "&Sık kullanılanlar klasörü (F11):",IDC_STATIC,10,76,120,8
     EDITTEXT        IDC_FAVORITES,10,87,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
 END
