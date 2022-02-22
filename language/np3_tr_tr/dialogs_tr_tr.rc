@@ -191,7 +191,7 @@ BEGIN
     CONTROL         "7-bit &ASCII dosyaları UTF-8 kipinde açılsın.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,136,10
     CONTROL         "Yalnızca &güvenilir algılama sonuçları kullanılsın.",IDC_RELIABLE_DETECTION_RES,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,155,10
     CONTROL         "8-bit *.&nfo/diz dosyaları DOS-437 kipinde açılsın.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
     CONTROL         "&Kodlama dosyası kod imleri işlensin.",IDC_ENCODINGFROMFILEVARS,
@@ -238,7 +238,7 @@ BEGIN
     PUSHBUTTON      "&Evet",IDOK,138,63,50,14
     PUSHBUTTON      "&Hayır",IDCANCEL,138,80,50,14
     CONTROL         "&Bu pencere her zaman görüntülensin.",IDC_WARN_INCONSISTENT_EOLS,
-                    "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
+                    "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,125,10
 END
 
 IDD_MUI_LINENUM DIALOGEX 0, 0, 115, 95
@@ -261,7 +261,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
     CONTROL         "Şapka &konumu korunsun.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,96,10
-    CONTROL         "Çıkışta &son kullanılan dosyalar listesi kaydedilsin.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,96,10
+    CONTROL         "Çıkışta &son kullanılan dosyalar listesi kaydedilsin.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,155,10
     CONTROL         "&Arama modeli hatırlansın.",IDC_REMEMBERSEARCHPATTERN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,130,96,10
     CONTROL         "Vazgeç", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
@@ -295,7 +295,7 @@ BEGIN
     CONTROL         "Seçilmiş şema &varsayılan olsun.",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,118,10
     CONTROL         "Dosya uzantısına göre &otomatik seçilsin.",IDC_AUTOSELECT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,127,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,130,10
     DEFPUSHBUTTON   "Tamam",IDOK,53,173,50,14,WS_DISABLED
     PUSHBUTTON      "İptal",IDCANCEL,108,173,50,14
 END
@@ -361,9 +361,9 @@ BEGIN
     RTEXT           "%s satır",IDC_INDENT_SUM_MIX,84,42,52,8
     GROUPBOX        "Tüm girintiler yeniden ayarlansın mı? ",IDC_STATIC2,7,60,182,56,WS_GROUP
     CONTROL         "&Tabs",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
-    CONTROL         "&Blanks",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,25,10
-    RTEXT           "%s satırın girinti derinliği düzensiz",IDC_INDENT_TAB_MODX,40,72,124,8
-    RTEXT           "%s satırın girinti derinliği düzensiz",IDC_INDENT_SPC_MODX,40,84,124,8
+    CONTROL         "&Blanks",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,29,10
+    RTEXT           "%s satırın girinti derinliği düzensiz",IDC_INDENT_TAB_MODX,45,72,120,8
+    RTEXT           "%s satırın girinti derinliği düzensiz",IDC_INDENT_SPC_MODX,45,84,120,8
     PUSHBUTTON      "&Evet",IDOK,80,98,50,14
     PUSHBUTTON      "&Hayır",IDCANCEL,134,98,50,14
     CONTROL         "&Bu pencere her zaman görüntülensin.",IDC_WARN_INCONSISTENT_INDENTS,
@@ -411,8 +411,8 @@ BEGIN
     LTEXT           "&Kaynak:",1090,16,45,36,8
     COMBOBOX        1138,64,42,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     GROUPBOX        "Doğrultu",1072,8,69,64,56,WS_GROUP
-    CONTROL         "&Yatay",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,16,82,52,12
-    CONTROL         "L&andscape",1057,"Button",BS_AUTORADIOBUTTON,16,103,52,12
+    CONTROL         "&Portre",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,16,82,52,12
+    CONTROL         "Pey&zaj",1057,"Button",BS_AUTORADIOBUTTON,16,103,52,12
     GROUPBOX        "Kenar boşlukları",1075,80,69,152,56,WS_GROUP
     LTEXT           "S&ol:",1102,88,85,32,8
     EDITTEXT        1155,120,82,28,12,WS_GROUP
@@ -450,7 +450,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
-    LTEXT           "Sık kullandığınız dosyaların kısayollarının bulunduğu klasörü belirtmek için buraya tıklayın.",IDC_FAVORITESDESCR,26,83,132,18
+    LTEXT           "Sık kullanılanlar dosyalarınıza bağlantılar içeren dizini belirtmek için burayı tıklayın.",IDC_FAVORITESDESCR,26,83,132,18
     DEFPUSHBUTTON   "Tamam",IDOK,52,108,50,14
     PUSHBUTTON      "İptal",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
@@ -481,7 +481,7 @@ BEGIN
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
     LTEXT           "İsteğe bağlı anahtar:",IDC_STATIC2,17,61,72,10,NOT WS_GROUP
     CONTROL         "Parola ile şifrele",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
-    CONTROL         "Anahtar yeniden kullanılsın",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
+    CONTROL         "Anahtar yeniden kullanılsın",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,205,60,90,10
     CONTROL         "Parolayı görüntüle",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,75,10
 END
 
@@ -515,9 +515,9 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Satırları değiştir"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "Satırlara &eklenecek ön ek:",IDC_STATIC,7,7,62,8
+    LTEXT           "Satırlara &eklenecek ön ek:",IDC_STATIC,7,7,80,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "Satırlara eklenecek &metin:",IDC_STATIC2,7,37,68,8
+    LTEXT           "Satırlara eklenecek &metin:",IDC_STATIC2,7,37,80,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "Tamam",IDOK,125,7,50,14
     PUSHBUTTON      "İptal",IDCANCEL,125,24,50,14
@@ -539,7 +539,7 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "Kod imi &açılışı (öznitelikler ile):",IDC_STATIC,7,7,97,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "Kod imi &kapanışı (düzenlenebilir):",IDC_STATIC2,7,37,90,8
+    LTEXT           "Kod imi &kapanışı (düzenlenebilir):",IDC_STATIC2,7,37,100,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     EDITTEXT        102,125,48,20,14,ES_AUTOHSCROLL
     LTEXT           "X kez",IDC_STATIC3,148,50,24,8
@@ -657,7 +657,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Şuna döndür"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Dosyayı yeniden yüklemek için kaynak kodlamasını seçin:",IDC_STATIC,7,7,119,8
+    LTEXT           "&Dosyayı yeniden yüklemek için kaynak kodlamasını seçin:",IDC_STATIC,7,7,173,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "Tamam",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "İptal",IDCANCEL,108,114,50,14
