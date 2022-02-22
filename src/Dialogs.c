@@ -126,17 +126,23 @@ static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPA
 
 int MessageBoxLng(UINT uType, UINT uidMsg, ...)
 {
-    WCHAR szFormat[SMALL_BUFFER] = { L'\0' };
-    if (!GetLngString(uidMsg, szFormat, COUNTOF(szFormat))) {
+    HSTRINGW     hfmt_str = StrgCreate(NULL);
+    LPWSTR const fmt_buf = StrgWriteAccessBuf(hfmt_str, XXXL_BUFFER);
+    if (!GetLngString(uidMsg, fmt_buf, (int)StrgGetAllocLength(hfmt_str))) {
+        StrgDestroy(hfmt_str);
         return -1;
     }
+    StrgSanitize(hfmt_str);
 
-    WCHAR szText[XXXL_BUFFER] = { L'\0' };
+    LPCWSTR pText = fmt_buf;
+
+    HSTRINGW     htxt_str = StrgCreate(NULL);
     const PUINT_PTR argp = (PUINT_PTR)&uidMsg + 1;
     if (argp && *argp) {
-        StringCchVPrintfW(szText, COUNTOF(szText), szFormat, (LPVOID)argp);
-    } else {
-        StringCchCopy(szText, COUNTOF(szText), szFormat);
+        LPWSTR const txt_buf = StrgWriteAccessBuf(htxt_str, XXXL_BUFFER);
+        StringCchVPrintfW(txt_buf, StrgGetAllocLength(htxt_str), fmt_buf, (LPVOID)argp);
+        StrgSanitize(htxt_str);
+        pText = txt_buf;
     }
 
     uType |= MB_SETFOREGROUND;  //~ MB_TOPMOST
@@ -149,7 +155,12 @@ int MessageBoxLng(UINT uType, UINT uidMsg, ...)
     HWND const hwnd  = focus ? focus : Globals.hwndMain;
     s_hCBThook       = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
 
-    return MessageBoxEx(hwnd, szText, _W(SAPPNAME), uType, GetLangIdByLocaleName(Globals.CurrentLngLocaleName));
+    int const res = MessageBoxEx(hwnd, pText, _W(SAPPNAME), uType, GetLangIdByLocaleName(Globals.CurrentLngLocaleName));
+
+    StrgDestroy(htxt_str);
+    StrgDestroy(hfmt_str);
+
+    return res;
 }
 
 
