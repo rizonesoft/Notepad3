@@ -427,7 +427,7 @@ msgstr "%ld dosya arandı, %ld dosya atlandı. %ld dosyada %ld eşleşmesi bulun
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr "&ld dosya arandı, %ld dosya atlandı. %ld eşleşme %ld dosyada bulundu. %ld sonuç seçildi."
+msgstr "%ld dosya arandı, %ld dosya atlandı. %ld eşleşme %ld dosyada bulundu. %ld sonuç seçildi."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
@@ -468,7 +468,7 @@ msgstr "Metin arama"
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr ""
+msgstr "\"%s\" yolu bulunamadı ya da erişilemiyor!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
