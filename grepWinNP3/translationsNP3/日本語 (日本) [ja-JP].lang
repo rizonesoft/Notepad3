@@ -468,7 +468,7 @@ msgstr "文字列で検索"
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr ""
+msgstr "%s というパスは存在しないかアクセスできません!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
