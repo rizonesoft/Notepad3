@@ -624,12 +624,12 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, size_t size, size_
         PREAMBLE_data[0] = PREAMBLE;
         PREAMBLE_data[1] = FILEKEY_FORMAT;
 
-        static int sequence = 1;	// sequence counter so each time is unique
+        static int sequence = 1;  // sequence counter so each time is unique
         srand(sequence++ ^ (unsigned int)time(NULL));
         {
             for (int i = 0; i < AES_MAX_IV_SIZE; i++)
             {
-                precodedata[PREAMBLE_SIZE + i] = 0;//rand();
+                precodedata[PREAMBLE_SIZE + i] = ((i % 2) == 0) ? HIBYTE(rand()) : LOBYTE(rand());
             }
         }
 
