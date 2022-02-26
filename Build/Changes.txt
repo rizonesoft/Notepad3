@@ -24,6 +24,7 @@ ABBREVIATIONS:
 CED - (C)ompact (E)ncoding (D)etection (by Google)
 GRE - (GRE)pWinNP3 Search in Files Tool
 LEX - (LEX)illa Library
+MIN - (MIN)iPath Fast Browser Tool
 MUI - (M)ultilingual (U)ser (I)nterface
 NLS - (N)ew (L)anguage (S)trings (need for translation)
 ONI - (ONI)guruma Regex engine
@@ -33,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.220.(build_#) (2022-02-20)
+Current BETA/RC Version 5.22.226.(build_#) (2022-02-26)
 ========================================================
 
 --------------------------------------------------------
@@ -41,10 +42,8 @@ NEW:
 --------------------------------------------------------
 [.###.#]- .
 [.220.1]- Msg box for editing read-only.
-[.218.1]- Show number of occurrence on sequence of marked all.
 [.217.1]- F/R-dialog menu item to switch replace by clipboard tag (^c).
 [.215.1]- Set keyword-lists for CSS Lexer according to SiTE's css.properties.
-[.212.1]- Document "Read Only" view menu item for switching mode.
 [.129.1]- JSON Lexer: colorizing for URL/IRI and Compact IRI.
 [.128.3]- JSON Lexer: error coloring for unclosed strings.
 [1211.1]- Partial (incomplete - disabled) "Auto-Save and Backup" handling feature.
@@ -55,8 +54,11 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.226.1]- Rainbow CSV Lexer: try to solve non-paired quotings.
+[.218.1]- Show number of occurrence on sequence of marked all.
 [.217.2]- Drag&drop text snippet while ALT-Key down will not scroll.
 [.214.1]- "grepWinNP3": make runtime statically linking (GRE).
+[.212.1]- Document "Read Only" view menu item for switching mode.
 [.211.1]- Pimping UCHARDET encoding detector.
 [.128.1]- CamelCase WordLists for AHK Lexer.
 [.127.1]- Ctrl/Alt+F10 as Accelerator-Keys for Filesystem-Path to URL (and back) conversion.
@@ -80,11 +82,14 @@ CHANGES Versions in Tools or Libraries:
 [.209.1]- Update Lexilla Library (LEX) version 5.1.5 (2022-02-09).
 [1201.1]- Update grepWinNP3 (GRE) version 2.1.9.41 (2021-11-30).
 [1130.1]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-10-19).
+[.713.1]- Update MiniPath (MIN) version 1.0.2.181 (2020-07-13).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.226.1]- Security enhancement of AES Encryption feature.
+[.226.1]- MessageBox: shortage of text buffer.
 [.220.1]- Workaround to fix horizontal mouse wheel with Logitech Options utility.
 [.220.1]- Occurrence counter for "current word" mode.
 [.219.1]- F/R-Dialog: Initial fill of replace template box.
@@ -134,20 +139,12 @@ TRANSLATIONS (MUI):
 
 --------------------------------------------------------
 Hello everybody ! 😀
-For our "Notepad3 Translation Projects", we are looking for motivated volunteers for many languages, 
-with a priority to take over "(incomplete...)" translation projects:
-- Bulgarian (bg-BG)
-- Czech (cs-CZ)
-- Finnish (fi-FI)
-- Indonesian (id-ID) (incomplete...)
-- Irish (ga-IE)
-- Norwegian (nb-NO)
-- Romanian (ro-RO)
-- Spanish Mexican (es-MX) (incomplete...)
-- Ukrainian (uk-UA)
-- Vietnamese (vi-VN) (incomplete...)
-- etc...
-Please, send me a PM (mailto:hpwamr51 @ gmail.com) if you are willing to help. 🤔
+For our Notepad3 translation projects, we are looking for motivated volunteers, 
+with a priority to resume "aborted" translations for these languages:
+  - Indonesian (id-ID) (incomplete...)
+  - Spanish Mexican (es-MX) (incomplete...)
+  - Vietnamese (vi-VN) (incomplete...)
+Please, send me a PM (mailto:hpwamr51 @ gmail.com) if you are willing to help. 😀
 --------------------------------------------------------
 
 
