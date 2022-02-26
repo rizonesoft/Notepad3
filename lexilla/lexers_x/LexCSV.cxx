@@ -226,7 +226,48 @@ constexpr unsigned int IsDelimiter(const int ch) noexcept
 // ----------------------------------------------------------------------------
 
 
+constexpr Sci_PositionU CountCharOccTillLineEnd(StyleContext& sc, const Sci_PositionU endPos)
+{
+	Sci_Position i = 0;
+	Sci_PositionU count = 0;
+	while (((sc.currentPos + i) < endPos) && !IsLineBreak(sc.GetRelative(i)))
+	{
+		if (sc.GetRelative(++i) == sc.ch) { ++count; };
+	}
+	return count;
+}
 // ----------------------------------------------------------------------------
+
+
+static inline bool HandleQuoteContext(StyleContext& sc, bool& isInSQString, bool& isInDQString, const Sci_PositionU endPos)
+{
+	if (IsSingleQuoteChar(sc.ch))
+	{
+		// consistent count of possible end-quotes ?
+		Sci_PositionU const focc = isInSQString ? 1 : CountCharOccTillLineEnd(sc, endPos);
+
+		if (!isInDQString && (focc % 2 == 1))
+		{
+			isInSQString = !isInSQString; // toggle
+		}
+		return true;
+	}
+	if (IsDoubleQuoteChar(sc.ch))
+	{
+		// consistent count of possible end-quotes ?
+		Sci_PositionU const focc = isInDQString ? 1 : CountCharOccTillLineEnd(sc, endPos);
+
+		if (!isInSQString && (focc % 2 == 1))
+		{
+			isInDQString = !isInDQString; // toggle
+		}
+		return true;
+	}
+	return false;
+}
+// ----------------------------------------------------------------------------
+
+
 
 constexpr int GetStateByColumn(const int col) noexcept
 {
@@ -267,6 +308,7 @@ void SCI_METHOD LexerCSV::Lex(Sci_PositionU startPos, Sci_Position length, int i
 
     // 2 passes:  1st pass: smart delimiter detection,   2nd pass: do styling
 
+	Sci_PositionU endPos = startPos + length;
     Sci_PositionU delimCount[eMax] = { 0 };
     Sci_PositionU countPerPrevLine[eMax] = { 0 };
 
@@ -281,11 +323,11 @@ void SCI_METHOD LexerCSV::Lex(Sci_PositionU startPos, Sci_Position length, int i
     bool isInSQString = false;
     bool isInDQString = false;
 
-    StyleContext cnt(startPos, length, initStyle, styler);
-    for (; cnt.More(); cnt.Forward())
+    StyleContext sc(startPos, length, initStyle, styler);
+    for (; sc.More(); sc.Forward())
     {
         // reset column infos
-        if (cnt.atLineStart)
+        if (sc.atLineStart)
         {
             isInSQString = false;
             isInDQString = false;
@@ -316,32 +358,18 @@ void SCI_METHOD LexerCSV::Lex(Sci_PositionU startPos, Sci_Position length, int i
                 //totalCount[i] += dlm;
                 //++lineCount[i];
             }
-        } // cnt.atLineStart
+        } // sc.atLineStart
 
-        if (IsSingleQuoteChar(cnt.ch))
+		if (!HandleQuoteContext(sc, isInSQString, isInDQString, endPos) && (!isInSQString && !isInDQString))
         {
-            if (!isInDQString)
-            {
-                isInSQString = !isInSQString; // toggle
-            }
-        }
-        else if (IsDoubleQuoteChar(cnt.ch))
-        {
-            if (!isInSQString)
-            {
-                isInDQString = !isInDQString; // toggle
-            }
-        }
-        else if (!isInSQString && !isInDQString)
-        {
-            unsigned int i = IsDelimiter(cnt.ch);
+            unsigned int i = IsDelimiter(sc.ch);
             if (i < eMax)
             {
                 ++delimCount[i];
             }
         }
     }
-    cnt.Complete();
+    sc.Complete();
 
     // --------------------------
     // smar delimiter selection
@@ -368,42 +396,29 @@ void SCI_METHOD LexerCSV::Lex(Sci_PositionU startPos, Sci_Position length, int i
     isInSQString = false;
     isInDQString = false;
 
-    StyleContext sc(startPos, length, initStyle, styler);
-    for (; sc.More(); sc.Forward())
+    StyleContext sc2(startPos, length, initStyle, styler);
+
+    for (; sc2.More(); sc2.Forward())
     {
         // reset context infos
-        if (sc.atLineStart)
+        if (sc2.atLineStart)
         {
             csvColumn = 0;
             isInSQString = false;
             isInDQString = false;
-            sc.SetState(GetStateByColumn(csvColumn));
+            sc2.SetState(GetStateByColumn(csvColumn));
         }
 
-        if (IsSingleQuoteChar(sc.ch))
-        {
-            if (!isInDQString)
-            {
-                isInSQString = !isInSQString; // toggle
-            }
-        }
-        else if (IsDoubleQuoteChar(sc.ch))
-        {
-            if (!isInSQString)
-            {
-                isInDQString = !isInDQString; // toggle
-            }
-        }
-        else if (delimiter == sc.ch)
+		if (!HandleQuoteContext(sc2, isInSQString, isInDQString, endPos) && (delimiter == sc2.ch))
         {
             if (!isInSQString && !isInDQString)
             {
-                sc.SetState(GetStateByColumn(++csvColumn));
+                sc2.SetState(GetStateByColumn(++csvColumn));
             }
         }
 
     }
-    sc.Complete();
+    sc2.Complete();
 }
 // ----------------------------------------------------------------------------
 

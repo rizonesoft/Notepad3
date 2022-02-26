@@ -51,19 +51,11 @@
 #include "LexAccessor.h"
 #include "Accessor.h"
 #include "StyleContext.h"
-#include "CharacterSet.h"
+//#include "CharacterSet.h"
+#include "CharSetX.h"
 #include "LexerModule.h"
 
 using namespace Lexilla;
-
-namespace {
-
-constexpr bool IsNewline(const int ch) {
-    // sc.GetRelative(i) returns '\0' if out of range
-    return (ch == '\n' || ch == '\r' || ch == '\0');
-}
-
-}
 
 // True if can follow ch down to the end with possibly trailing whitespace
 static bool FollowToLineEnd(const int ch, const int state, const Sci_PositionU endPos, StyleContext &sc) {
@@ -73,7 +65,7 @@ static bool FollowToLineEnd(const int ch, const int state, const Sci_PositionU e
     // Skip over whitespace
     while (IsASpaceOrTab(sc.GetRelative(i)) && sc.currentPos + i < endPos)
         ++i;
-    if (IsNewline(sc.GetRelative(i)) || sc.currentPos + i == endPos) {
+    if (IsLineBreak(sc.GetRelative(i)) || sc.currentPos + i == endPos) {
         sc.Forward(i);
         sc.ChangeState(state);
         sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
@@ -131,7 +123,7 @@ static void SetStateAndZoom(const int state, const Sci_Position length, const in
 static bool HasPrevLineContent(StyleContext &sc) {
     Sci_Position i = 0;
     // Go back to the previous newline
-    while ((--i + (Sci_Position)sc.currentPos) >= 0 && !IsNewline(sc.GetRelative(i)))
+    while ((--i + (Sci_Position)sc.currentPos) >= 0 && !IsLineBreak(sc.GetRelative(i)))
         ;
     while ((--i + (Sci_Position)sc.currentPos) >= 0) {
         const int ch = sc.GetRelative(i);
@@ -151,7 +143,7 @@ static bool IsCompleteStyleRegion(StyleContext &sc, const char *token) {
     bool found = false;
 	const size_t start = strlen(token);
     Sci_Position i = static_cast<Sci_Position>(start);
-    while (!IsNewline(sc.GetRelative(i))) {
+    while (!IsLineBreak(sc.GetRelative(i))) {
         // make sure an empty pair of single-char tokens doesn't match
         // with a longer token: {*}{*} != {**}
 	    if (sc.GetRelative(i) == *token && sc.GetRelative(i - 1) != *token) {
@@ -174,7 +166,7 @@ static bool IsValidHrule(const Sci_PositionU endPos, StyleContext &sc) {
         // hit a terminating character
         else if (!IsASpaceOrTab(ch) || (sc.currentPos + i) == endPos) {
             // Are we a valid HRULE
-            if ((IsNewline(ch) || (sc.currentPos + i) == endPos) &&
+            if ((IsLineBreak(ch) || (sc.currentPos + i) == endPos) &&
                 count >= 3 && !HasPrevLineContent(sc)) {
                 sc.SetState(SCE_MARKDOWN_HRULE);
                 sc.Forward(i);
@@ -264,37 +256,37 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
         */
         // Strong
         else if (sc.state == SCE_MARKDOWN_STRONG1) {
-            if ((sc.Match("**") && sc.chPrev != ' ') || IsNewline(sc.GetRelative(2))) {
+            if ((sc.Match("**") && sc.chPrev != ' ') || IsLineBreak(sc.GetRelative(2))) {
                 sc.Forward(2);
                 sc.SetState(SCE_MARKDOWN_DEFAULT);
             }
         }
         else if (sc.state == SCE_MARKDOWN_STRONG2) {
-            if ((sc.Match("__") && sc.chPrev != ' ') || IsNewline(sc.GetRelative(2))) {
+            if ((sc.Match("__") && sc.chPrev != ' ') || IsLineBreak(sc.GetRelative(2))) {
                 sc.Forward(2);
                 sc.SetState(SCE_MARKDOWN_DEFAULT);
             }
         }
         // Emphasis
         else if (sc.state == SCE_MARKDOWN_EM1) {
-            if ((sc.ch == '*' && sc.chPrev != ' ') || IsNewline(sc.chNext))
+            if ((sc.ch == '*' && sc.chPrev != ' ') || IsLineBreak(sc.chNext))
                 sc.ForwardSetState(SCE_MARKDOWN_DEFAULT);
         }
         else if (sc.state == SCE_MARKDOWN_EM2) {
-            if ((sc.ch == '_' && sc.chPrev != ' ') || IsNewline(sc.chNext))
+            if ((sc.ch == '_' && sc.chPrev != ' ') || IsLineBreak(sc.chNext))
                 sc.ForwardSetState(SCE_MARKDOWN_DEFAULT);
         }
         else if (sc.state == SCE_MARKDOWN_CODEBK) {
             if (sc.atLineStart && sc.Match("~~~")) {
                 Sci_Position i = 1;
-                while (!IsNewline(sc.GetRelative(i)) && sc.currentPos + i < endPos)
+                while (!IsLineBreak(sc.GetRelative(i)) && sc.currentPos + i < endPos)
                     i++;
                 sc.Forward(i);
                 sc.SetState(SCE_MARKDOWN_DEFAULT);
             }
         }
         else if (sc.state == SCE_MARKDOWN_STRIKEOUT) {
-            if ((sc.Match("~~") && sc.chPrev != ' ') || IsNewline(sc.GetRelative(2))) {
+            if ((sc.Match("~~") && sc.chPrev != ' ') || IsLineBreak(sc.GetRelative(2))) {
                 sc.Forward(2);
                 sc.SetState(SCE_MARKDOWN_DEFAULT);
             }
@@ -480,7 +472,7 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
                 sc.Forward();
             }
             // Beginning of line
-            else if (IsNewline(sc.ch)) {
+            else if (IsLineBreak(sc.ch)) {
                 sc.SetState(SCE_MARKDOWN_LINE_BEGIN);
             }
         }
