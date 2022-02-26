@@ -2,4 +2,7 @@
 Alice Beetle,User,Office1,,6491234567
 Adrian Smith,User,Office3,64271234567,6441234567
 Harriet O'Donoghue,User,Office2,6421234567,6471234567
+"Harr|et O'Donoghue",User,Office2,6421234567,6471234567
+Harriet O'Do,nogh'ue,User,Office2,6421234567,6471234567
+Harriet O'Donoghue;User,User,Office2,6421234567,6471234567
 Judith Cole,User,Office1,,6491234568
