@@ -4,5 +4,11 @@ Adrian Smith,User,Office3,64271234567,6441234567
 Harriet O'Donoghue,User,Office2,6421234567,6471234567
 "Harr|et O'Donoghue",User,Office2,6421234567,6471234567
 Harriet O'Do,nogh'ue,User,Office2,6421234567,6471234567
-Harriet O'Donoghue;User,User,Office2,6421234567,6471234567
-Judith Cole,User,Office1,,6491234568
+"Harriet ODo,nogh'ue",User,Office2,6421234567,6471234567
+"Harriet ODo,noghue",User,Office2,6421234567,6471234567
+Harriet O'Donogh'ue;User,User,Office2,6421234567,6471234567
+'Harriet O"Donogh"ue';User,User,Office2,6421234567,6471234567
+'Harriet O"Don,og"hue';User,User,Office21,6421234567,6471234"567
+"Harriet O'Donoghue";User,User,Office21,6421234567,6471234'567
+Judith Cole,User,Office31,,6491234568
+Judith Cole,User,,,6491234568
