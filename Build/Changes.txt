@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.226.(build_#) (2022-02-26)
+Current BETA/RC Version 5.22.301.(build_#) (2022-03-01)
 ========================================================
 
 --------------------------------------------------------
@@ -88,6 +88,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.301.1]- DarkMode issue in Decrypt dialog.
 [.226.1]- Security enhancement of AES Encryption feature.
 [.226.1]- MessageBox: shortage of text buffer.
 [.220.1]- Workaround to fix horizontal mouse wheel with Logitech Options utility.
