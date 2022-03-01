@@ -331,7 +331,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
             SetExplorerTheme(GetDlgItem(hDlg, IDOK));
             SetExplorerTheme(GetDlgItem(hDlg, IDCANCEL));
             //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
-            int const ctl[] = { IDC_PWD_STATMPW, IDC_PWD_EDIT3, IDC_PWD_CHECK3, IDC_STATIC };
+            int const ctl[] = { IDC_PWD_STATMPW, IDC_PWD_EDIT3, IDC_PWD_CHECK3, IDC_PWD_CHECK4, IDC_STATIC };
             for (int i = 0; i < COUNTOF(ctl); ++i)
             {
                 SetWindowTheme(GetDlgItem(hDlg, ctl[i]), L"", L""); // remove theme for static controls
@@ -339,7 +339,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
         }
 #endif
 
-        int vis = masterKeyAvailable ? SW_SHOW : SW_HIDE;
+        int const vis = masterKeyAvailable ? SW_SHOW : SW_HIDE;
         ShowWindow(GetDlgItem(hDlg, IDC_PWD_STATMPW), vis);
         ShowWindow(GetDlgItem(hDlg, IDC_PWD_CHECK3), vis);
         //~SetDlgItemText( hDlg, IDC_PWD_EDIT3, fileKey );
