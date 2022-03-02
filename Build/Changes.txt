@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.301.(build_#) (2022-03-01)
+Current BETA/RC Version 5.22.302.(build_#) (2022-03-02)
 ========================================================
 
 --------------------------------------------------------
@@ -54,6 +54,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.302.1]- Default settings for Auto-Save beta version.
 [.226.1]- Rainbow CSV Lexer: try to solve non-paired quotings.
 [.218.1]- Show number of occurrence on sequence of marked all.
 [.217.2]- Drag&drop text snippet while ALT-Key down will not scroll.
