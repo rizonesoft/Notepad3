@@ -206,7 +206,7 @@ BEGIN
                              "Сохранение исходной метки времени изменения файла включено.\nЭта опция останется включенной для текущей сессии!"
     IDS_MUI_OUT_OFF_OCCMRK   "Маркеры вхождения (закладка/отметка) на исходе!"
     IDS_MUI_DOCUMENT_READONLY
-                             "The document is locked for view only. Do you like to unlock it for editing?"
+                             "Документ заблокирован только для просмотра. Хотите разблокировать для редактирования?"
 END
 
 STRINGTABLE
@@ -262,7 +262,7 @@ BEGIN
     IDS_USE_LOCALE_DATEFMT  "Язык определяет &формат даты"
     IDS_MUI_MENU_THEMES     "&Коллекция схем"
     IDM_THEMES_FACTORY_RESET "&Заводские настройки"
-    IDM_THEMES_STD_CFG       "&Стандартная Config"
+    IDM_THEMES_STD_CFG       "&Стандартный конфиг"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Очистить всё"
@@ -270,7 +270,7 @@ BEGIN
                             "Очистить историю поиска"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Очистить историю замен"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard Shortcut [^c]"
+    IDS_MUI_REPLCLIPTAG     "Заменять ярлык буфера обмена [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Совпадение в начале"
     IDS_MUI_WRAPSEARCH_BCK  "Совпадение в конце"
 END

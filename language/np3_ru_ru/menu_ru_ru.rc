@@ -340,7 +340,7 @@ BEGIN
     END
     POPUP "&Вид"
     BEGIN
-        MENUITEM "Document &Read Only"                              IDM_VIEW_READONLY
+        MENUITEM "Документ только для чтени&я"                      IDM_VIEW_READONLY
         MENUITEM "&Перенос строк\tCtrl+W",                          IDM_VIEW_WORDWRAP
         MENUITEM "&Маркер длинных строк\tCtrl+Alt+L",               IDM_VIEW_LONGLINEMARKER
         MENUITEM "Направ&ляющие отступов\tCtrl+Shift+G",            IDM_VIEW_SHOWINDENTGUIDES
@@ -466,7 +466,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Только один &экземпляр на файл",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "&Уведомление об изменении файла...\tAlt+F5",  IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
+        ///MENUITEM "Автосохранение / резервные копии...",      IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Заглу&шить звук уведомлений",                 IDM_SET_MUTE_MESSAGEBEEP
         POPUP "&Функция клавиши Esc"
         BEGIN
