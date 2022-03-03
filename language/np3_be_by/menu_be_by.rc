@@ -233,7 +233,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "&Яшчэ...\tAlt+Q",                IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "Ду&бляваць вылучэнне/радок\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "Дубл&яваць вылучэнне/радок\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
             MENUITEM "Выраўнаваць &прабеламі\tAlt+B",   IDM_EDIT_PADWITHSPACES
             MENUITEM "Выдаліць першы сімвал\tAlt+Z",    IDM_EDIT_STRIP1STCHAR
@@ -246,7 +246,7 @@ BEGIN
             MENUITEM "Сар&таваць радкі...\tAlt+O",      IDM_EDIT_SORTLINES
             MENUITEM SEPARATOR
             MENUITEM "Перайсці &ў пачатак вылучэння\tCtrl+,",   CMD_JUMP2SELSTART
-            MENUITEM "Перайсці ў &канец вылучэння\tCtrl+.",     CMD_JUMP2SELEND
+            MENUITEM "Перайсці ў кане&ц вылучэння\tCtrl+.",     CMD_JUMP2SELEND
         END
         POPUP "Пераўтварэнне"
         BEGIN
@@ -340,7 +340,7 @@ BEGIN
     END
     POPUP "&Выгляд"
     BEGIN
-        MENUITEM "Document &Read Only"                          IDM_VIEW_READONLY
+        MENUITEM "Дакумент толькі для &чытання"                 IDM_VIEW_READONLY
         MENUITEM "&Перанос радкоў\tCtrl+W",                     IDM_VIEW_WORDWRAP
         MENUITEM "&Маркер доўгіх радкоў\tCtrl+Alt+L",           IDM_VIEW_LONGLINEMARKER
         MENUITEM "Нак&іравальнікі водступаў\tCtrl+Shift+G",     IDM_VIEW_SHOWINDENTGUIDES
@@ -466,7 +466,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Толькі адзін &экземпляр на файл",             IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Паведамленне а&б змяненні файла...\tAlt+F5",  IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
+        ///MENUITEM "Аўтазахаванне / рэзервовыя копіі...",      IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "&Заглушыць гук паведамленняў",                IDM_SET_MUTE_MESSAGEBEEP
         POPUP "&Функцыя клавішы Esc"
         BEGIN
