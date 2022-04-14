@@ -53,6 +53,7 @@ extern "C" {
 #include "Notepad3.h"
 #include "MuiLanguage.h"
 #include "DynStrg.h"
+#include "uthash/utstack.h"
 }
 
 #include "DarkMode/DarkMode.h"
@@ -336,7 +337,16 @@ extern "C" bool SaveIniFileCache(const HPATHL hpthIniFile)
 //
 //  OpenSettingsFile()
 //
-extern "C" bool OpenSettingsFile(bool * const pOpenedByMe)
+
+typedef struct iniOpen_t {
+    WCHAR fctname[80];
+    struct iniOpen_t* next;
+} iniOpen_t;
+
+static iniOpen_t * s_pOpenStackHead = NULL; /* important- initialize to NULL! */
+static bool s_bIFCReadOnly = true;
+
+extern "C" bool OpenSettingsFile(LPCWSTR fctname)
 {
     if (Path_IsNotEmpty(Paths.IniFile)) {
 
@@ -345,15 +355,18 @@ extern "C" bool OpenSettingsFile(bool * const pOpenedByMe)
         if (!IsIniFileCached()) {
             ResetIniFileCache();
             LoadIniFileCache(Paths.IniFile);
-            if (pOpenedByMe != NULL) {
-                *pOpenedByMe = true;
-            }
+            s_bIFCReadOnly = true; 
         }
-        else if (pOpenedByMe != NULL) {
-            *pOpenedByMe = false;
+
+        iniOpen_t* pOpenBy = (iniOpen_t*)AllocMem(sizeof(iniOpen_t), HEAP_ZERO_MEMORY);
+        if (pOpenBy) {
+            StringCchCopy(pOpenBy->fctname, COUNTOF(pOpenBy->fctname), fctname);
+            STACK_PUSH(s_pOpenStackHead, pOpenBy);
         }
+
     } else {
         Globals.bCanSaveIniFile = false;
+        assert(!STACK_EMPTY(s_pOpenStackHead));
     }
     return IsIniFileCached();
 }
@@ -363,21 +376,36 @@ extern "C" bool OpenSettingsFile(bool * const pOpenedByMe)
 //
 //  CloseSettingsFile()
 //
-extern "C" bool CloseSettingsFile(bool bSaveChanges, bool bClearCache)
+extern "C" bool CloseSettingsFile(LPCWSTR fctname, bool bSaveSettings)
 {
     if (Globals.bCanSaveIniFile) {
+
+        if (bSaveSettings) {
+            s_bIFCReadOnly = false;
+        }
         if (!IsIniFileCached()) {
+            assert(STACK_EMPTY(s_pOpenStackHead));
             return false;
         }
-        bool const bSaved = bSaveChanges ? SaveIniFileCache(Paths.IniFile) : false;
-        if (bClearCache) {
+        else {
+            assert(!STACK_EMPTY(s_pOpenStackHead));
+        }
+
+        iniOpen_t* pOpenBy = NULL;
+        STACK_POP(s_pOpenStackHead, pOpenBy);
+        assert(StringCchCompareX(fctname, pOpenBy->fctname) == 0);
+        FreeMem(pOpenBy);
+
+        bool bSaved = false;
+        if (STACK_EMPTY(s_pOpenStackHead)) {
+            if (!s_bIFCReadOnly) {
+                bSaved = SaveIniFileCache(Paths.IniFile);
+            }
             ResetIniFileCache();
         }
         return bSaved;
     }
-    if (bClearCache) {
-        ResetIniFileCache();
-    }
+    assert(!STACK_EMPTY(s_pOpenStackHead));
     return false;
 }
 
@@ -1104,8 +1132,7 @@ void LoadSettings()
 
     bool bDirtyFlag = false; // do we have to save the file on done
     
-    bool bOpenedByMe = false;
-    OpenSettingsFile(&bOpenedByMe);
+    OpenSettingsFile(L"LoadSettings");
 
     // --------------------------------------------------------------------------
     const WCHAR *const IniSecSettings = Constants.Settings_Section;
@@ -1784,8 +1811,6 @@ void LoadSettings()
     Globals.pMRUreplace = MRU_Create(_s_RecentReplace, (/*IsWindowsNT()*/ true) ? MRU_UTF8 : 0, MRU_ITEMSFNDRPL);
     MRU_Load(Globals.pMRUreplace, false);
 
-    CloseSettingsFile(bDirtyFlag, false); // keep cached
-
     // --------------------------------------------------------------------------
     const WCHAR *const IniSecStyles = Constants.Styles_Section;
     // --------------------------------------------------------------------------
@@ -1793,7 +1818,7 @@ void LoadSettings()
     
     Style_Prerequisites();
 
-    CloseSettingsFile(false, bOpenedByMe);
+    CloseSettingsFile(L"LoadSettings", bDirtyFlag);
 
     FreeMem(pPathBuffer);
 }
@@ -2194,8 +2219,7 @@ bool SaveAllSettings(bool bForceSaveSettings)
 
     BeginWaitCursor(true, tchMsg);
 
-    bool bOpenedByMe = false;
-    ok = OpenSettingsFile(&bOpenedByMe);
+    ok = OpenSettingsFile(L"SaveAllSettings");
 
     if (ok) {
 
@@ -2232,7 +2256,7 @@ bool SaveAllSettings(bool bForceSaveSettings)
     }
     Style_FileExtToIniSection(false);
 
-    ok = CloseSettingsFile(true, bOpenedByMe);
+    ok = CloseSettingsFile(L"SaveAllSettings", true);
 
     // maybe separate INI files for Style-Themes
     if (Globals.uCurrentThemeIndex > 0) {
@@ -2460,8 +2484,7 @@ bool MRU_AddPath(LPMRULIST pmru, const HPATHL hpth, bool bRelativePath, bool bUn
 
 static void _MRU_DeleteItemInIniFile(LPCWSTR section, LPMRULIST pmru, const int iIndex)
 {
-    bool bOpenedByMe = false;
-    if (OpenSettingsFile(&bOpenedByMe)) {
+    if (OpenSettingsFile(L"DeleteItemInIniFile")) {
 
         WCHAR wchName[32] = { L'\0' };
 
@@ -2487,7 +2510,7 @@ static void _MRU_DeleteItemInIniFile(LPCWSTR section, LPMRULIST pmru, const int 
                 IniSectionDelete(section, wchName, false);
             }
         }
-        CloseSettingsFile(bOpenedByMe, bOpenedByMe);
+        CloseSettingsFile(L"DeleteItemInIniFile", true);
     }
 }
 
@@ -2535,8 +2558,7 @@ bool MRU_Delete(LPMRULIST pmru, int iIndex)
 bool MRU_Empty(LPMRULIST pmru, bool bExceptLeast, bool bDelete)
 {
     if (pmru) {
-        bool bOpenedByMe = false;
-        if (OpenSettingsFile(&bOpenedByMe)) {
+        if (OpenSettingsFile(L"MRU_Empty")) {
 
             int const beg = bExceptLeast ? 1 : 0;
             for (int i = beg; i < pmru->iSize; ++i) {
@@ -2555,7 +2577,7 @@ bool MRU_Empty(LPMRULIST pmru, bool bExceptLeast, bool bDelete)
                     }
                 }
             }
-            CloseSettingsFile(bOpenedByMe, bOpenedByMe);
+            CloseSettingsFile(L"MRU_Empty", bDelete);
         }
         return true;
     }
@@ -2586,14 +2608,12 @@ int MRU_Enum(LPMRULIST pmru, int iIndex, LPWSTR pszItem, int cchItem)
 bool MRU_Load(LPMRULIST pmru, bool bFileProps)
 {
     if (pmru) {
-        int  n = 0;
-        bool bOpenedByMe = false;
-        if (OpenSettingsFile(&bOpenedByMe)) {
+        if (OpenSettingsFile(L"MRU_Load")) {
 
             MRU_Empty(pmru, false, false);
 
             const WCHAR* const RegKey_Section = pmru->szRegKey;
-
+            int n = 0; 
             for (int i = 0; i < pmru->iSize; ++i) {
                 WCHAR tchName[32] = { L'\0' };
                 StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
@@ -2625,7 +2645,7 @@ bool MRU_Load(LPMRULIST pmru, bool bFileProps)
                     ++n;
                 }
             }
-            CloseSettingsFile(false, bOpenedByMe); // load only
+            CloseSettingsFile(L"MRU_Load", false); // read only
         }
         return true;
     }
@@ -2636,8 +2656,7 @@ bool MRU_Load(LPMRULIST pmru, bool bFileProps)
 void MRU_Save(LPMRULIST pmru)
 {
     if (pmru) {
-        bool bOpenedByMe = false;
-        if (OpenSettingsFile(&bOpenedByMe)) {
+        if (OpenSettingsFile(L"MRU_Save")) {
 
             WCHAR tchName[32] = { L'\0' };
             WCHAR tchItem[2048] = { L'\0' };
@@ -2670,7 +2689,7 @@ void MRU_Save(LPMRULIST pmru)
                     }
                 }
             }
-            CloseSettingsFile(true, bOpenedByMe);
+            CloseSettingsFile(L"MRU_Save", true);
         }
     }
 }
@@ -2679,9 +2698,7 @@ void MRU_Save(LPMRULIST pmru)
 bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUnexpandMyDocs)
 {
     if (pmru) {
-
-        bool bOpenedByMe = false;
-        if (OpenSettingsFile(&bOpenedByMe)) {
+        if (OpenSettingsFile(L"MRU_MergeSave")) {
 
             LPMRULIST pmruBase = MRU_Create(pmru->szRegKey, pmru->iFlags, pmru->iSize);
             MRU_Load(pmruBase, bAddFiles);
@@ -2709,7 +2726,7 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
             MRU_Save(pmruBase);
             pmruBase = NULL;
 
-            CloseSettingsFile(bOpenedByMe, bOpenedByMe);
+            CloseSettingsFile(L"MRU_MergeSave", true);
 
             return true;
         }
