@@ -30,6 +30,10 @@
 #define DBG_NEW new
 #endif
 
+#ifndef assert
+#include <cassert>
+#endif
+
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
 //#define NOMINMAX 1
