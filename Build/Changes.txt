@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.302.(build_#) (2022-03-02)
+Current BETA/RC Version 5.22.414.(build_#) (2022-04-14)
 ========================================================
 
 --------------------------------------------------------
@@ -54,6 +54,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.414.1]- Using 'Cascadia Mono' as default for pure 'Text File' scheme (if available).
 [.302.1]- Default settings for Auto-Save beta version.
 [.226.1]- Rainbow CSV Lexer: try to solve non-paired quotings.
 [.218.1]- Show number of occurrence on sequence of marked all.
@@ -89,6 +90,10 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.414.1]- Dark mode color style scheme global from common base/2nd.
+[.414.1]- Writing wrong scheme to .ini-file.
+[.414.1]- Missing assert include for Win32/x86 compile config.
+[.414.1]- Compile errors for unreferenced formal parameter in release mode.
 [.301.1]- DarkMode issue in Decrypt dialog.
 [.226.1]- Security enhancement of AES Encryption feature.
 [.226.1]- MessageBox: shortage of text buffer.
