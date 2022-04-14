@@ -2811,8 +2811,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
         DestroyWindow(Globals.hwndToolbar);
     }
 
-    bool bOpenedByMe = false;
-    OpenSettingsFile(&bOpenedByMe);
+    OpenSettingsFile(L"CreateBars");
     bool bDirtyFlag = false;
 
     //InitToolbarWndClass(hInstance);
@@ -2975,7 +2974,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
         SendMessage(Globals.hwndToolbar, TB_ADDBUTTONS, COUNTOF(s_tbbMainWnd), (LPARAM)s_tbbMainWnd);
     }
 
-    CloseSettingsFile(bDirtyFlag, bOpenedByMe);
+    CloseSettingsFile(L"CreateBars", bDirtyFlag);
 
     // ------------------------------
     // Create ReBar and add Toolbar
@@ -3119,6 +3118,8 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         bShutdownOK = true;
     }
+
+    assert(!IsIniFileCached());
 
     if (umsg == WM_DESTROY) {
         PostQuitMessage(0);
@@ -6098,8 +6099,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 InfoBoxLng(MB_OK, L"MsgStickyWinPos", IDS_MUI_STICKYWINPOS);
             }
 
-            bool bOpenedByMe = false;
-            if (OpenSettingsFile(&bOpenedByMe)) {
+            if (OpenSettingsFile(L"IDM_VIEW_STICKYWINPOS")) {
 
                 SaveWindowPositionSettings(!Flags.bStickyWindowPosition);
 
@@ -6109,7 +6109,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 else {
                     IniSectionDelete(Constants.Settings2_Section, L"StickyWindowPosition", false);
                 }
-                CloseSettingsFile(true, bOpenedByMe);
+                CloseSettingsFile(L"IDM_VIEW_STICKYWINPOS", true);
             }
         }
         break;

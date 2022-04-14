@@ -724,8 +724,7 @@ bool Style_Import(HWND hwnd)
 //
 static void _LoadLexerFileExtensions()
 {
-    bool bOpenedByMe = false;
-    if (OpenSettingsFile(&bOpenedByMe)) {
+    if (OpenSettingsFile(L"_LoadLexerFileExtensions")) {
 
         for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
 
@@ -758,7 +757,7 @@ static void _LoadLexerFileExtensions()
             }
         }
 
-        CloseSettingsFile(false, bOpenedByMe); // load only
+        CloseSettingsFile(L"_LoadLexerFileExtensions", false); // read only
     }
 }
 
@@ -951,11 +950,10 @@ bool Style_ImportFromFile(const HPATHL hpath)
     bool const bHaveFileResource = Path_IsNotEmpty(hpath);
     bool const bIsStdIniFile = bHaveFileResource ? (Path_StrgComparePath(hpath, Paths.IniFile, Paths.ModuleDirectory) == 0) : false;
 
-    bool bOpenedByMe = false;
-    bool const result = bIsStdIniFile ? OpenSettingsFile(&bOpenedByMe) : (bHaveFileResource ? LoadIniFileCache(hpath) : true);
+    bool result = bIsStdIniFile ? OpenSettingsFile(L"Style_ImportFromFile") : (bHaveFileResource ? LoadIniFileCache(hpath) : true);
     if (result) {
         _ReadFromIniCache();
-        CloseSettingsFile(false, bOpenedByMe); // import only
+        result = bIsStdIniFile ? CloseSettingsFile(L"Style_ImportFromFile", false) /* import only */ : (bHaveFileResource ? ResetIniFileCache() : true);
     }
     return result;
 }
@@ -1183,11 +1181,10 @@ bool Style_ExportToFile(const HPATHL hpath, bool bForceAll)
     // special handling of standard .ini-file
     bool ok = false;
     if (bIsStdIniFile) {
-        bool bOpenedByMe = false;
-        if (OpenSettingsFile(&bOpenedByMe)) {
+        if (OpenSettingsFile(L"Style_ExportToFile")) {
             Style_ToIniSection(bForceAll);
             Style_FileExtToIniSection(bForceAll);
-            ok = CloseSettingsFile(bOpenedByMe, bOpenedByMe);
+            ok = CloseSettingsFile(L"Style_ExportToFile", true);
         }
     } else {
         HPATHL hpth_tmp = Path_Copy(hpath);
@@ -2823,8 +2820,8 @@ bool Style_GetFileFilterStr(LPWSTR lpszFilter, int cchFilter, LPWSTR lpszDefExt,
 
 static WCHAR _DefaultCodingFont[LF_FACESIZE] = { L"\0" }; // session static
 
-static inline bool GetDefaultCodeFont(LPWSTR pwchFontName, int cchFont) {
-
+static inline bool GetDefaultCodeFont(LPWSTR pwchFontName, int cchFont)
+{
     if (StrIsNotEmpty(_DefaultCodingFont)) {
         StringCchCopy(pwchFontName, cchFont, _DefaultCodingFont);
         return true;
@@ -2832,10 +2829,10 @@ static inline bool GetDefaultCodeFont(LPWSTR pwchFontName, int cchFont) {
 
     LPCWSTR const FontNamePrioList[] = {
         L"Cascadia Code",
-        L"Cascadia Mono",
         L"Fira Code",
-        L"Roboto Mono",
         L"Source Code Pro",
+        L"Cascadia Mono",
+        L"Roboto Mono",
         L"DejaVu Sans Mono",
         L"Consolas",
         L"Lucida Console"
@@ -2862,12 +2859,32 @@ static inline bool GetDefaultCodeFont(LPWSTR pwchFontName, int cchFont) {
 static WORD _wDTFSize = 9;
 static WCHAR _DefaultTextFont[LF_FACESIZE] = { L"\0" }; // session static
 
-static inline unsigned GetDefaultTextFont(LPWSTR pwchFontName) {
+static inline unsigned GetDefaultTextFont(LPWSTR pwchFontName, int cchFont)
+{
     if (StrIsNotEmpty(_DefaultTextFont)) {
         StringCchCopy(pwchFontName, LF_FACESIZE, _DefaultTextFont);
         return _wDTFSize;
     }
-    GetThemedDialogFont(pwchFontName, &_wDTFSize);
+
+    LPCWSTR const FontNamePrioList[] = {
+        L"Cascadia Mono",
+        L"Roboto Mono",
+        L"DejaVu Sans Mono",
+    };
+    unsigned const countof = COUNTOF(FontNamePrioList);
+
+    unsigned i = 0;
+    for (; i < countof; ++i) {
+        LPCWSTR const fontName = FontNamePrioList[i];
+        if (IsFontAvailable(fontName)) {
+            StringCchCopy(pwchFontName, cchFont, fontName);
+            break;
+        }
+    }
+    if (i >= countof) {
+        GetThemedDialogFont(pwchFontName, &_wDTFSize);
+    }
+
     StringCchCopy(_DefaultTextFont, COUNTOF(_DefaultTextFont), pwchFontName);
     return _wDTFSize;
 }
@@ -2896,7 +2913,7 @@ bool Style_StrGetFontName(LPCWSTR lpszStyle, LPWSTR lpszFont, int cchFont)
 
         } else if (StringCchCompareXI(lpszFont, L"$Text") == 0) {
 
-            GetDefaultTextFont(lpszFont);
+            GetDefaultTextFont(lpszFont, cchFont);
 
         } else if (!IsFontAvailable(lpszFont)) {
 

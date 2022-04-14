@@ -126,7 +126,7 @@ static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPA
 
 int MessageBoxLng(UINT uType, UINT uidMsg, ...)
 {
-    HSTRINGW     hfmt_str = StrgCreate(NULL);
+    HSTRINGW    hfmt_str = StrgCreate(NULL);
     LPWSTR const fmt_buf = StrgWriteAccessBuf(hfmt_str, XXXL_BUFFER);
     if (!GetLngString(uidMsg, fmt_buf, (int)StrgGetAllocLength(hfmt_str))) {
         StrgDestroy(hfmt_str);
@@ -134,15 +134,13 @@ int MessageBoxLng(UINT uType, UINT uidMsg, ...)
     }
     StrgSanitize(hfmt_str);
 
-    LPCWSTR pText = fmt_buf;
-
-    HSTRINGW     htxt_str = StrgCreate(NULL);
+    HSTRINGW    htxt_str = StrgCreate(NULL);
     const PUINT_PTR argp = (PUINT_PTR)&uidMsg + 1;
-    if (argp && *argp) {
+    bool const bHasArgs = (argp && *argp);
+    if (bHasArgs) {
         LPWSTR const txt_buf = StrgWriteAccessBuf(htxt_str, XXXL_BUFFER);
-        StringCchVPrintfW(txt_buf, StrgGetAllocLength(htxt_str), fmt_buf, (LPVOID)argp);
+        StringCchVPrintfW(txt_buf, StrgGetAllocLength(htxt_str), StrgGet(hfmt_str), (LPVOID)argp);
         StrgSanitize(htxt_str);
-        pText = txt_buf;
     }
 
     uType |= MB_SETFOREGROUND;  //~ MB_TOPMOST
@@ -155,7 +153,8 @@ int MessageBoxLng(UINT uType, UINT uidMsg, ...)
     HWND const hwnd  = focus ? focus : Globals.hwndMain;
     s_hCBThook       = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
 
-    int const res = MessageBoxEx(hwnd, pText, _W(SAPPNAME), uType, GetLangIdByLocaleName(Globals.CurrentLngLocaleName));
+    int const res = MessageBoxEx(hwnd, bHasArgs ? StrgGet(htxt_str) : StrgGet(hfmt_str), 
+                                 _W(SAPPNAME), uType, GetLangIdByLocaleName(Globals.CurrentLngLocaleName));
 
     StrgDestroy(htxt_str);
     StrgDestroy(hfmt_str);
@@ -6357,7 +6356,12 @@ INT_PTR CALLBACK FontDialogHookProc(
             }
         }
 #endif
+        //WCHAR buf[32] = { L'\0' };
+        //SendMessage(GetDlgItem(hdlg, stc5), WM_GETTEXT, (WPARAM)30, (LPARAM)buf);
+        //SendMessage(GetDlgItem(hdlg, stc5), WM_SETTEXT, 0, (LPARAM)buf);
+
         dpi = Scintilla_GetWindowDPI(hdlg);
+
 
         const CHOOSEFONT *const pChooseFont = ((CHOOSEFONT *)lParam);
         if (pChooseFont) {
