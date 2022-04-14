@@ -796,34 +796,16 @@ static void _DefaultsToTmpCache() {
 
         CopyToTmpCache(Globals.pStdDarkModeIniStyles);
 
-        // need to set default color if not defined
+        // in case of "pStdDarkModeIniStyles" is incomplete (new Lexer, etc.)
         for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
-
             LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
-            LPCWSTR const pszDfltName = g_pLexArray[iLexer]->Styles[0].pszName;
-
-            wchDefaultStyle[0] = L'\0'; // empty
-            TmpCacheGetString(Lexer_Section, pszDfltName, L"", wchDefaultStyle, COUNTOF(wchDefaultStyle));
-
-            COLORREF rgb;
-            WCHAR wchColor[32];
-            if (!Style_StrGetColor(wchDefaultStyle, FOREGROUND_LAYER, &rgb, false)) {
-                Style_PrintfCchColor(wchColor, COUNTOF(wchColor), L"; ", FOREGROUND_LAYER, rgbDarkTxtColorRef);
-                StringCchCat(wchDefaultStyle, COUNTOF(wchDefaultStyle), wchColor);
-            }
-            if (!Style_StrGetColor(wchDefaultStyle, BACKGROUND_LAYER, &rgb, false)) {
-                Style_PrintfCchColor(wchColor, COUNTOF(wchColor), L"; ", BACKGROUND_LAYER, rgbDarkBkgColorRef);
-                StringCchCat(wchDefaultStyle, COUNTOF(wchDefaultStyle), wchColor);
-            }
-            TmpCacheSetString(Lexer_Section, pszDfltName, wchDefaultStyle);
-
-            // in case of "pStdDarkModeIniStyles" is incomplete (new Lexer, etc.)
-            unsigned i = 1;
+            unsigned i = 0;
             while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
                 LPCWSTR const pszKeyName = g_pLexArray[iLexer]->Styles[i].pszName;
                 LPCWSTR const pszDefault = g_pLexArray[iLexer]->Styles[i].pszDefault;
                 wchDefaultStyle[0] = L'\0'; // empty
                 TmpCacheGetString(Lexer_Section, pszKeyName, L"", wchDefaultStyle, COUNTOF(wchDefaultStyle));
+                StrTrim(wchDefaultStyle, L" ;");
                 if (StrIsEmpty(wchDefaultStyle) && StrIsNotEmpty(pszDefault)) {
                     TmpCacheSetString(Lexer_Section, pszKeyName, pszDefault);
                 }
@@ -3184,9 +3166,11 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF *rgb, bool
         }
     }
     // no colordef bIsDefined - use default as fallback ?
-    if (!bIsDefined && useDefault) {
-        *rgb = bFGLayer ? SciCall_StyleGetFore(STYLE_DEFAULT) : SciCall_StyleGetBack(STYLE_DEFAULT);
-        //~bIsDefined = true;
+    if (!bIsDefined && useDefault)
+    {
+        //~*rgb = bFGLayer ? GetModeTextColor(UseDarkMode()) : GetModeBkColor(UseDarkMode());
+        *rgb = bFGLayer ? SciCall_StyleGetFore(STYLE_DEFAULT) : SciCall_StyleGetBack(STYLE_DEFAULT); //~ SCI maybe not initialized
+        //~ don't: bIsDefined = true;
     }
     return bIsDefined;
 }
