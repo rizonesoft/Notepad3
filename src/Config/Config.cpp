@@ -370,7 +370,7 @@ extern "C" bool OpenSettingsFile(LPCWSTR fctname)
 
     } else {
         Globals.bCanSaveIniFile = false;
-        assert(!STACK_EMPTY(s_pOpenStackHead));
+        assert(STACK_EMPTY(s_pOpenStackHead));
     }
     return IsIniFileCached();
 }
@@ -382,6 +382,8 @@ extern "C" bool OpenSettingsFile(LPCWSTR fctname)
 //
 extern "C" bool CloseSettingsFile(LPCWSTR fctname, bool bSaveSettings)
 {
+    UNREFERENCED_PARAMETER(fctname);
+
     if (Globals.bCanSaveIniFile) {
 
         if (bSaveSettings) {
@@ -409,7 +411,7 @@ extern "C" bool CloseSettingsFile(LPCWSTR fctname, bool bSaveSettings)
         }
         return bSaved;
     }
-    assert(!STACK_EMPTY(s_pOpenStackHead));
+    assert(STACK_EMPTY(s_pOpenStackHead));
     return false;
 }
 
