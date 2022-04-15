@@ -11,7 +11,7 @@ EDITLEXER lexPROPS =
     &KeyWords_PROPS, {
         { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
         //{ {SCE_PROPS_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        { {SCE_PROPS_KEY}, IDS_LEX_STR_63348, L"Key", L"fore:#00006D", L"" },
+        { {SCE_PROPS_KEY}, IDS_LEX_STR_63348, L"Key", L"fore:#0089DB", L"" },
         { {SCE_PROPS_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
         { {SCE_PROPS_SECTION}, IDS_LEX_STR_63232, L"Section", L"bold; fore:#000000; back:#FF8040; eolfilled", L"" },
         { {SCE_PROPS_ASSIGNMENT}, IDS_LEX_STR_63233, L"Assignment", L"fore:#FF0000", L"" },

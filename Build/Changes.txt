@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.414.(build_#) (2022-04-14)
+Current BETA/RC Version 5.22.415.(build_#) (2022-04-15)
 ========================================================
 
 --------------------------------------------------------
@@ -90,6 +90,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.415.1]- Minor adaption of "Sombra" scheme to correct Dark Blue color.
 [.414.1]- Dark mode color style scheme global from common base/2nd.
 [.414.1]- Writing wrong scheme to .ini-file.
 [.414.1]- Missing assert include for Win32/x86 compile config.
