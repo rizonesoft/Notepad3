@@ -129,6 +129,7 @@ BEGIN
     IDS_LEX_KOTLIN_SRC      "Kotlin kaynak kodu"
     IDS_LEX_JULIA_SCR       "Julia betiği"
     IDS_LEX_KIX_SCR         "KiXtart betiği"
+    IDS_LEX_FORTRAN         "Fortran Source Code"
 END
 
 STRINGTABLE
@@ -487,6 +488,13 @@ BEGIN
     IDS_LEX_STR_63379       "Kapatılmamış dizge"
     IDS_LEX_STR_63380       "URL/IRI"
     IDS_LEX_STR_63381       "Kısa IRI"
+    IDS_LEX_STR_63382       "Send Key"
+    IDS_LEX_STR_63383       "Meta-Data"
+    IDS_LEX_STR_63384       "Enumeration"
+    IDS_LEX_STR_63385       "TriQ-String"
+    IDS_LEX_STR_63386       "Symbol Identifier"
+    IDS_LEX_STR_63387       "Symbol Operator"
+    IDS_LEX_STR_63388       "String EOL"
 END
 
 STRINGTABLE
