@@ -96,7 +96,7 @@ EDITLEXER lexKotlin =
 	    { { SCE_KOTLIN_ANNOTATION }, IDS_LEX_STR_63370, L"Annotation", L"fore:#FF8000", L"" },
 	    { { SCE_KOTLIN_CLASS }, IDS_LEX_STR_63258, L"Class", L"fore:#0080FF", L"" },
 	    { { SCE_KOTLIN_INTERFACE }, IDS_LEX_STR_63369, L"Interface", L"bold; fore:#1E90FF", L"" },
-	    { { SCE_KOTLIN_ENUM }, IDS_LEX_STR_63203, L"Enumeration", L"fore:#FF8000", L"" },
+	    { { SCE_KOTLIN_ENUM }, IDS_LEX_STR_63384, L"Enumeration", L"fore:#FF8000", L"" },
 	    { { SCE_KOTLIN_FUNCTION }, IDS_LEX_STR_63277, L"Function", L"fore:#A46000", L"" },
 	    { { MULTI_STYLE(SCE_KOTLIN_COMMENTBLOCK, SCE_KOTLIN_COMMENTLINE, 0, 0) }, IDS_LEX_STR_63127, L"Comment", L"fore:#608060", L"" },
 	    { { MULTI_STYLE(SCE_KOTLIN_COMMENTBLOCKDOC, SCE_KOTLIN_COMMENTLINEDOC, 0, 0) }, IDS_LEX_STR_63259, L"Comment Doc", L"fore:#408080", L"" },

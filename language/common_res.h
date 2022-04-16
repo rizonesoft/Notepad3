@@ -1249,6 +1249,13 @@
 #define IDS_LEX_STR_63379               63379
 #define IDS_LEX_STR_63380               63380
 #define IDS_LEX_STR_63381               63381
+#define IDS_LEX_STR_63382               63382
+#define IDS_LEX_STR_63383               63383
+#define IDS_LEX_STR_63384               63384
+#define IDS_LEX_STR_63385               63385
+#define IDS_LEX_STR_63386               63386
+#define IDS_LEX_STR_63387               63387
+#define IDS_LEX_STR_63388               63388
 
 #define IDS_LEX_CSV_COL_0               63400
 #define IDS_LEX_CSV_COL_1               63401
