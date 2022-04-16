@@ -87,7 +87,7 @@ EDITLEXER lexFortran =
         { {SCE_F_WORD3}, IDS_LEX_STR_63305, L"User-Defined Function", L"bold; italic; fore:#800080", L"" },
         { {SCE_F_STRING1}, IDS_LEX_STR_63212, L"String Single Quoted", L"fore:#008800", L"" },
         { {SCE_F_STRING2}, IDS_LEX_STR_63211, L"String Double Quoted", L"fore:#008800", L"" },
-        { {SCE_F_STRINGEOL}, IDS_LEX_STR_63131, L"String EOL", L"fore:#008000", L"" },
+        { {SCE_F_STRINGEOL}, IDS_LEX_STR_63388, L"String EOL", L"fore:#008000", L"" },
         { {SCE_F_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#BD3000", L"" },
         { {MULTI_STYLE(SCE_F_OPERATOR,SCE_F_OPERATOR2,0,0)}, IDS_LEX_STR_63132, L"Operator", L"bold; fore:#A60053", L"" },
         { {SCE_F_LABEL}, IDS_LEX_STR_63235, L"Label", L"fore:#C10061", L"" },

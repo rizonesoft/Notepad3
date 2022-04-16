@@ -667,9 +667,9 @@ EDITLEXER lexAU3 =
         { {SCE_AU3_STRING}, IDS_LEX_STR_63131, L"String", L"fore:#008080", L"" },
         { {SCE_AU3_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"fore:#C000C0", L"" },
         { {SCE_AU3_VARIABLE}, IDS_LEX_STR_63249, L"Variable", L"fore:#808000", L"" },
-        { {SCE_AU3_SENT}, IDS_LEX_STR_63279, L"Send Key", L"fore:#FF0000", L"" },
+        { {SCE_AU3_SENT}, IDS_LEX_STR_63382, L"Send Key", L"fore:#FF0000", L"" },
         { {SCE_AU3_PREPROCESSOR}, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
-        { {SCE_AU3_SPECIAL}, IDS_LEX_STR_63280, L"Special", L"fore:#FF8000", L"" },
+        { {SCE_AU3_SPECIAL}, IDS_LEX_STR_63377, L"Special", L"fore:#FF8000", L"" },
         EDITLEXER_SENTINEL
     }
 };
