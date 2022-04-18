@@ -129,7 +129,7 @@ BEGIN
     IDS_LEX_KOTLIN_SRC      "Kotlin forráskód"
     IDS_LEX_JULIA_SCR       "Julia Script"
     IDS_LEX_KIX_SCR         "KiXtart szkript"
-    IDS_LEX_FORTRAN         "Fortran Source Code"
+    IDS_LEX_FORTRAN         "Fortran forráskód"
 END
 
 STRINGTABLE
