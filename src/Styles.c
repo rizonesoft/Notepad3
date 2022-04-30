@@ -2852,6 +2852,8 @@ static inline unsigned GetDefaultTextFont(LPWSTR pwchFontName, int cchFont)
         L"Cascadia Mono",
         L"Roboto Mono",
         L"DejaVu Sans Mono",
+        L"Consolas",
+        L"Lucida Console"
     };
     unsigned const countof = COUNTOF(FontNamePrioList);
 
