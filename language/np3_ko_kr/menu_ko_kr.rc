@@ -95,7 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "파일에서 되돌리기(&V)\tF5",                  IDM_FILE_REVERT
-        MENUITEM "파일 Var 무시&I)",                      CMD_IGNORE_FILE_VARS
+        MENUITEM "파일 Var 무시(&I)",                      CMD_IGNORE_FILE_VARS
         POPUP "인코딩(&E)"
         BEGIN
             POPUP "파일에서 다음으로 되돌리기(&R)"
