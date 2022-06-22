@@ -77,7 +77,9 @@
 
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1932)
-        #if (_MSC_FULL_VER >= 193231329)
+        #if (_MSC_FULL_VER >= 193231332)
+            #define VER_CPL     MS Visual C++ 2022 v17.2.5
+        #elif (_MSC_FULL_VER >= 193231329)
             #define VER_CPL     MS Visual C++ 2022 v17.2.(1-4)
         #elif (_MSC_FULL_VER >= 193231328)
             #define VER_CPL     MS Visual C++ 2022 v17.2.0
