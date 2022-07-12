@@ -257,8 +257,9 @@ Filename: "{userappdata}\Rizonesoft\Notepad3\Notepad3.ini"; Section: "Settings";
 [Registry]
 Root: "HKLM"; Subkey: "SYSTEM\CurrentControlSet\Control\FileSystem"; ValueType: dword; ValueName: "LongPathsEnabled"; ValueData: "1"
 ;The following "Keys/Values" are required to allow a "MS Notepad Replacement" in Windows 11.
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\notepad.exe"; Flags: deletekey
 Root: "HKLM"; Subkey: "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe"; ValueType: dword; ValueName: "UseFilter"; ValueData: "1"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\notepad.exe"; ValueType: string; ValueData: "C:\Windows\System32\Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\notepad.exe"; ValueType: string; ValueName: "Path"; ValueData: "C:\Windows\System32"
 Root: "HKCR"; Subkey: ".inf"; ValueType: string; ValueData: "inffile"
 Root: "HKCR"; Subkey: ".ini"; ValueType: string; ValueData: "inifile"
 Root: "HKCR"; Subkey: ".ps1"; ValueType: string; ValueData: "Microsoft.PowerShellScript.1"
