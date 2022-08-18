@@ -18,7 +18,7 @@ May 2022:       Line numbers to translate_2022-05 -  No "Added or Modified" item
 
 June 2022:      Line numbers to translate_2022-06 -  No "Added or Modified" items in June 2022
 
-July 2022:      Line numbers to translate_2022-07 -  (2022-08-xx)
+July 2022:      Line numbers to translate_2022-07 -  No "Added or Modified" items in July 2022
 
 August 2022:    Line numbers to translate_2022-08 -  (2022-08-xx)
 
