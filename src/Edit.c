@@ -1339,15 +1339,10 @@ bool EditLoadFile(
     // ===  UNICODE  ( UTF-16LE / UTF-16BE ) ===
     // --------------------------------------------------------------------------
 
-    bool const bPureASCIINoBOM = encDetection.bPureASCII && !encDetection.bHasBOM;
-    bool       bIsUnicodeDetected = !IS_ENC_ENFORCED() && Encoding_IsUNICODE(encDetection.unicodeAnalysis) && !bPureASCIINoBOM;
-
-    if (Encoding_IsUNICODE(encDetection.Encoding) || bIsUnicodeDetected) {
-
-        // ----------------------------------------------------------------------
+    if (Encoding_IsUNICODE(encDetection.Encoding))
+    {
         status->iEncoding = encDetection.bHasBOM ? (encDetection.bIsReverse ? CPI_UNICODEBEBOM : CPI_UNICODEBOM) :
                                                    (encDetection.bIsReverse ? CPI_UNICODEBE    : CPI_UNICODE);
-        // ----------------------------------------------------------------------
 
         if (encDetection.bIsReverse) {
             SwabEx(lpData, lpData, cbData);
@@ -1389,7 +1384,7 @@ bool EditLoadFile(
                 EditDetectEOLMode(lpData, cbData, status);
             }
         }
-        else if (!IS_ENC_ENFORCED() && encDetection.bPureASCII) {
+        else if (!IS_ENC_ENFORCED() && (encDetection.bPureASCII7Bit && !encDetection.bHasUnicodeNullBytes)) {
             // load ASCII(7-bit) as ANSI/UTF-8
             EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
             status->iEncoding = (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT);

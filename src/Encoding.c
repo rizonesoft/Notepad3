@@ -701,18 +701,24 @@ int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cwch)
 bool Has_UTF16_LE_BOM(const char* pBuf, size_t cnt)
 {
     int iTest = IS_TEXT_UNICODE_SIGNATURE;
-    /*bool const ok =*/ (void)IsTextUnicode(pBuf, clampi((int)cnt, 0, 4), &iTest);
-    //~return (ok && ((iTest & IS_TEXT_UNICODE_SIGNATURE) != 0));
-    return ((iTest & IS_TEXT_UNICODE_SIGNATURE) != 0); // don't rely on result ok
+    bool const ok = IsTextUnicode(pBuf, clampi((int)cnt, 0, 4), &iTest);
+    return (ok && ((iTest & IS_TEXT_UNICODE_SIGNATURE) != 0));
 }
 // ----------------------------------------------------------------------------
 
 bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt)
 {
     int iTest = IS_TEXT_UNICODE_REVERSE_SIGNATURE;
-    /*bool const ok =*/ (void)IsTextUnicode(pBuf, clampi((int)cnt, 0, 4), &iTest);
-    //~return (ok && ((iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE) != 0));
-    return ((iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE) != 0); // don't rely on result ok
+    bool const ok = IsTextUnicode(pBuf, clampi((int)cnt, 0, 4), &iTest);
+    return (ok && ((iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE) != 0));
+}
+// ----------------------------------------------------------------------------
+
+bool HasUnicodeNullBytes(const char* pBuf, size_t cnt)
+{
+    int        iTest = IS_TEXT_UNICODE_NULL_BYTES;
+    bool const ok = IsTextUnicode(pBuf, (int)cnt, &iTest);
+    return (ok && ((iTest & IS_TEXT_UNICODE_NULL_BYTES) != 0));
 }
 // ----------------------------------------------------------------------------
 
@@ -723,14 +729,14 @@ bool Has_UTF16_BOM(const char* pBuf, size_t cnt)
 
 // ============================================================================
 
-bool IsValidUTF7(const char* pTest, size_t nLength)
+bool IsPureAscii7Bit(const char* pTest, size_t nLength)
 {
     if (!pTest) {
         return false;
     }
     char const *pt = pTest;
     for (size_t i = 0; i < nLength; ++i) {
-        if ((*pt & 0x80) || !*pt) {
+        if (*pt & 0x80) {
             return false;
         }
         ++pt;
