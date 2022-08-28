@@ -555,7 +555,7 @@ cpi_enc_t GetUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM
     int const iAllTests = IS_TEXT_UNICODE_UNICODE_MASK | IS_TEXT_UNICODE_REVERSE_MASK | IS_TEXT_UNICODE_NOT_UNICODE_MASK | IS_TEXT_UNICODE_NOT_ASCII_MASK;
 
     int iTest = iAllTests;
-    /*bool const ok =*/ (void)IsTextUnicode(pBuffer, (int)cb, &iTest); // don't rely on result ok
+    /*bool const ok =*/ IsTextUnicode(pBuffer, (int)cb, &iTest); // don't rely on result ok in case of multi-flags
 
     if (iTest == iAllTests) {
         return CPI_NONE; // iTest doesn't seem to have been modified ...
@@ -1261,7 +1261,7 @@ extern "C" cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 //  GetFileEncoding()
 //
 extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpData, const size_t cbData,
-                                             cpi_enc_t iAnalyzeHint, bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection)
+    cpi_enc_t iAnalyzeHint, bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection)
 {
     ENC_DET_T encDetRes = INIT_ENC_DET_T;
 
@@ -1309,27 +1309,26 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
             Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes, iAnalyzeHint);
             // ---------------------------------------------------------------------------
         }
-        encDetRes.bPureASCII = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) || IsValidUTF7(lpData, cbData);
+        encDetRes.bHasUnicodeNullBytes = HasUnicodeNullBytes(lpData, cbData);
+        encDetRes.bPureASCII7Bit = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) || IsPureAscii7Bit(lpData, cbData);
 
         if (encDetRes.analyzedEncoding == CPI_NONE) {
             encDetRes.analyzedEncoding = iAnalyzeHint;
             encDetRes.confidence = (1.0f - Settings2.AnalyzeReliableConfidenceLevel);
         }
-        else if (encDetRes.bPureASCII) {
+        else if (encDetRes.bPureASCII7Bit && !encDetRes.bHasUnicodeNullBytes) {
             encDetRes.analyzedEncoding = (Settings.LoadASCIIasUTF8) ? CPI_UTF8 : CPI_ANSI_DEFAULT;
         }
 
         if (!bSkipUTFDetection) {
 
             encDetRes.unicodeAnalysis = GetUnicodeEncoding(lpData, cbData, &(encDetRes.bHasBOM), &(encDetRes.bIsReverse));
-
             if (Encoding_IsNONE(encDetRes.unicodeAnalysis) && Encoding_IsUNICODE(encDetRes.analyzedEncoding)) {
                 encDetRes.unicodeAnalysis = encDetRes.analyzedEncoding;
             }
 
-            if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis))
-            {
-                // check considten BOM
+            if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis)) {
+                // check consistent BOM
                 if (encDetRes.bHasBOM && !bBOM_LE && !bBOM_BE) {
                     encDetRes.unicodeAnalysis = CPI_NONE;
                 }
@@ -1347,7 +1346,8 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
             if (Encoding_IsValid(encDetRes.analyzedEncoding)) {
                 // no bIsReliable check (forced unreliable detection)
                 encDetRes.forcedEncoding = encDetRes.analyzedEncoding;
-            } else if (Encoding_IsValid(encDetRes.unicodeAnalysis)) {
+            }
+            else if (Encoding_IsValid(encDetRes.unicodeAnalysis)) {
                 encDetRes.forcedEncoding = encDetRes.unicodeAnalysis;
             }
         }
@@ -1370,23 +1370,38 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
 
     if (IS_ENC_ENFORCED()) {
         encDetRes.Encoding = encDetRes.forcedEncoding;
-    } else if (encDetRes.bIsUTF8Sig) {
+    }
+    else if (encDetRes.bIsUTF8Sig) {
         encDetRes.Encoding = CPI_UTF8SIGN;
-    } else if (bBOM_LE || bBOM_BE) {
+    }
+    else if (bBOM_LE || bBOM_BE) {
         encDetRes.Encoding = bBOM_LE ? CPI_UNICODEBOM : CPI_UNICODEBEBOM;
         encDetRes.bIsReverse = bBOM_BE;
-    } else if (Encoding_IsValid(encDetRes.analyzedEncoding) && (encDetRes.bIsAnalysisReliable || !Settings.UseReliableCEDonly)) {
+    }
+    else if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis) && encDetRes.bHasUnicodeNullBytes)
+    {
+        encDetRes.Encoding = encDetRes.unicodeAnalysis;
+    }
+    else if (Encoding_IsValid(encDetRes.analyzedEncoding) && (encDetRes.bIsAnalysisReliable || !Settings.UseReliableCEDonly))
+    {
         encDetRes.Encoding = encDetRes.analyzedEncoding;
-    } else if (Encoding_IsValid(Encoding_SrcWeak(CPI_GET))) {
+    }
+    else if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis))
+    {
+        encDetRes.Encoding = encDetRes.unicodeAnalysis;
+    }
+    else if (Encoding_IsValid(Encoding_SrcWeak(CPI_GET)))
+    {
         encDetRes.Encoding = Encoding_SrcWeak(CPI_GET);
-    } else if (Encoding_IsValid(iAnalyzeHint)) {
+    }
+    else if (Encoding_IsValid(iAnalyzeHint))
+    {
         encDetRes.Encoding = iAnalyzeHint;
     }
 
     if (!Encoding_IsValid(encDetRes.Encoding)) {
         encDetRes.Encoding = CPI_PREFERRED_ENCODING;
     }
-
     return encDetRes;
 }
 
