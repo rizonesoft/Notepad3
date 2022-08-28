@@ -4981,14 +4981,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_SELECTALLMATCHES: {
         if (!Sci_IsMultiOrRectangleSelection()) {
-            if (!IsWindow(Globals.hwndDlgFindReplace)) {
+            if (IsWindow(Globals.hwndDlgFindReplace)) {
+                SetFindReplaceData(); // s_FindReplaceData
+                EditSelectionMultiSelectAllEx(Globals.hwndEdit, &s_FindReplaceData);
+            } else {
                 if (SciCall_IsSelectionEmpty()) {
                     EditSelectWordAtPos(SciCall_GetCurrentPos(), false);
                 }
                 EditSelectionMultiSelectAll();
-            } else {
-                SetFindReplaceData();  // s_FindReplaceData
-                EditSelectionMultiSelectAllEx(Globals.hwndEdit, &s_FindReplaceData);
             }
         }
     }

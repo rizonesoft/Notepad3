@@ -923,6 +923,9 @@ bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend
                 pszTextW[cchTextW] = L'\0';
             }
         }
+        else {
+            return false;
+        }
     }
 
     bool res = false;
@@ -951,7 +954,7 @@ bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend
 
     size_t cchNewText = cchTextW;
     if (pszOld && *pszOld) {
-        cchNewText += StringCchLen(pszOld, 0) + StringCchLen(pszSep, 0);
+        cchNewText += (StringCchLen(pszOld, 0) + StringCchLen(pszSep, 0));
     }
 
     // Copy Clip & add line break
@@ -5888,6 +5891,8 @@ static DocPos  _FindInTarget(LPCWSTR wchFind, int sFlags,
     DocPos const len = (DocPos)WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, chFind, COUNTOF(chFind), NULL, NULL);
 
     iPos = SciCall_SearchInTarget(len - 1, chFind);
+    iPos = (bFindNext ? (iPos >= stop) : (iPos <= stop)) ? -1LL : iPos; // regex search
+
     //  handle next in case of zero-length-matches (regex) !
     if (iPos == start) {
         DocPos const nstop = SciCall_GetTargetEnd();
@@ -7721,6 +7726,7 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
         };
         Globals.iSelectionMarkNumber = found;
         Globals.iMarkOccurrencesCount = count;
+        assert(!bMultiSel || (SciCall_GetSelections() == count));
     }
 
 observe:
