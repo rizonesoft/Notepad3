@@ -723,13 +723,11 @@ bool Has_UTF16_BOM(const char* pBuf, size_t cnt)
 
 // ============================================================================
 
-#if 0
 bool IsValidUTF7(const char* pTest, size_t nLength)
 {
     if (!pTest) {
         return false;
     }
-
     char const *pt = pTest;
     for (size_t i = 0; i < nLength; ++i) {
         if ((*pt & 0x80) || !*pt) {
@@ -739,7 +737,6 @@ bool IsValidUTF7(const char* pTest, size_t nLength)
     }
     return true;
 }
-#endif
 // ============================================================================
 
 

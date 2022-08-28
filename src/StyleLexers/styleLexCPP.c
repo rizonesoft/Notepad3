@@ -31,7 +31,7 @@ KEYWORDLIST KeyWords_CPP =
     "ref relates remarks return retval sa section see showinitializer since skip skipline struct subsection "
     "test throw throws todo typedef union until var verbatim verbinclude version warning weakgroup",
 // Global classes and typedefs
-    "__int16 __int32 __int64 __int8 __m128 __m128d __m128i __m64 __wchar_t char16_t char32_t complex imaginary int16_t int32_t "
+    "__int16 __int32 __int64 __int8 __m128 __m128d __m128i __m64 __wchar_t char8_t char16_t char32_t complex imaginary int16_t int32_t "
     "int64_t int8_t intmax_t intptr_t ptrdiff_t size_t uint16_t uint32_t uint64_t uint8_t uintmax_t uintptr_t wchar_t",
 // Preprocessor definitions
     "DEBUG NDEBUG UNICODE _DEBUG _MSC_VER _UNICODE",
