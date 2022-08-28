@@ -192,12 +192,13 @@ typedef struct _enc_det_t {
     bool bIsReverse;
     bool bIsUTF8Sig;
     bool bValidUTF8;
+    bool bPureASCII;
 
     char encodingStrg[64];
 
 } ENC_DET_T;
 
-#define INIT_ENC_DET_T  { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, "" }
+#define INIT_ENC_DET_T  { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, false, "" }
 
 
 ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpData, const size_t cbData,

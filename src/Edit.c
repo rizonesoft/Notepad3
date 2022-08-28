@@ -1303,7 +1303,6 @@ bool EditLoadFile(
         (fLoadFlags & FLF_SkipUnicodeDetect), (fLoadFlags & FLF_SkipANSICPDetection), (fLoadFlags & FLF_ForceEncDetection));
 
     #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetection.forcedEncoding))
-    #define IS_ENC_PURE_ASCII() (encDetection.analyzedEncoding == CPI_ASCII_7BIT)
 
     // --------------------------------------------------------------------------
 
@@ -1340,12 +1339,14 @@ bool EditLoadFile(
     // ===  UNICODE  ( UTF-16LE / UTF-16BE ) ===
     // --------------------------------------------------------------------------
 
-    bool const bIsUnicodeDetected = !IS_ENC_ENFORCED() && Encoding_IsUNICODE(encDetection.unicodeAnalysis);
+    bool const bPureASCIINoBOM = encDetection.bPureASCII && !encDetection.bHasBOM;
+    bool       bIsUnicodeDetected = !IS_ENC_ENFORCED() && Encoding_IsUNICODE(encDetection.unicodeAnalysis) && !bPureASCIINoBOM;
 
     if (Encoding_IsUNICODE(encDetection.Encoding) || bIsUnicodeDetected) {
+
         // ----------------------------------------------------------------------
         status->iEncoding = encDetection.bHasBOM ? (encDetection.bIsReverse ? CPI_UNICODEBEBOM : CPI_UNICODEBOM) :
-                            (encDetection.bIsReverse ? CPI_UNICODEBE    : CPI_UNICODE);
+                                                   (encDetection.bIsReverse ? CPI_UNICODEBE    : CPI_UNICODE);
         // ----------------------------------------------------------------------
 
         if (encDetection.bIsReverse) {
@@ -1369,6 +1370,7 @@ bool EditLoadFile(
         FreeMem(lpDataUTF8);
 
     } else { // ===  ALL OTHERS  ===
+
         // ===  UTF-8 ? ===
         bool const bValidUTF8 = encDetection.bValidUTF8;
         bool const bForcedUTF8 = Encoding_IsUTF8(encDetection.forcedEncoding);// ~ don't || encDetection.bIsUTF8Sig here !
@@ -1386,7 +1388,8 @@ bool EditLoadFile(
                 status->iEncoding = CPI_UTF8;
                 EditDetectEOLMode(lpData, cbData, status);
             }
-        } else if (!IS_ENC_ENFORCED() && IS_ENC_PURE_ASCII()) {
+        }
+        else if (!IS_ENC_ENFORCED() && encDetection.bPureASCII) {
             // load ASCII(7-bit) as ANSI/UTF-8
             EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory);
             status->iEncoding = (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT);

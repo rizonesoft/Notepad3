@@ -544,7 +544,7 @@ cpi_enc_t GetUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM
     size_t const cb = (len < enoughData) ? len : enoughData;
 
     if (!pBuffer || cb < 2) {
-        return iEncoding;
+        return CPI_NONE;
     }
 
     // IS_TEXT_UNICODE_UNICODE_MASK -> IS_TEXT_UNICODE_ASCII16, IS_TEXT_UNICODE_STATISTICS, IS_TEXT_UNICODE_CONTROLS, IS_TEXT_UNICODE_SIGNATURE.
@@ -558,7 +558,7 @@ cpi_enc_t GetUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM
     /*bool const ok =*/ (void)IsTextUnicode(pBuffer, (int)cb, &iTest); // don't rely on result ok
 
     if (iTest == iAllTests) {
-        iTest = 0; // iTest doesn't seem to have been modified ...
+        return CPI_NONE; // iTest doesn't seem to have been modified ...
     }
 
     bool const bHasBOM = (iTest & IS_TEXT_UNICODE_SIGNATURE);
@@ -1261,8 +1261,7 @@ extern "C" cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 //  GetFileEncoding()
 //
 extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpData, const size_t cbData,
-        cpi_enc_t iAnalyzeHint,
-        bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection)
+                                             cpi_enc_t iAnalyzeHint, bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection)
 {
     ENC_DET_T encDetRes = INIT_ENC_DET_T;
 
@@ -1310,33 +1309,38 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
             Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes, iAnalyzeHint);
             // ---------------------------------------------------------------------------
         }
-        //~encDetRes.bIs7BitOnly = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) || IsValidUTF7(lpData, cbData);
+        encDetRes.bPureASCII = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) || IsValidUTF7(lpData, cbData);
 
         if (encDetRes.analyzedEncoding == CPI_NONE) {
             encDetRes.analyzedEncoding = iAnalyzeHint;
             encDetRes.confidence = (1.0f - Settings2.AnalyzeReliableConfidenceLevel);
-        } else if (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) {
+        }
+        else if (encDetRes.bPureASCII) {
             encDetRes.analyzedEncoding = (Settings.LoadASCIIasUTF8) ? CPI_UTF8 : CPI_ANSI_DEFAULT;
         }
 
         if (!bSkipUTFDetection) {
+
             encDetRes.unicodeAnalysis = GetUnicodeEncoding(lpData, cbData, &(encDetRes.bHasBOM), &(encDetRes.bIsReverse));
 
             if (Encoding_IsNONE(encDetRes.unicodeAnalysis) && Encoding_IsUNICODE(encDetRes.analyzedEncoding)) {
                 encDetRes.unicodeAnalysis = encDetRes.analyzedEncoding;
             }
 
-            //// check for UTF-32, can't handle
-            //if (encDetRes.bHasBOM && !bBOM_LE && !bBOM_BE) {
-            //  encDetRes.unicodeAnalysis = CPI_NONE;
-            //}
-            //else if (encDetRes.bHasBOM && encDetRes.bIsReverse && !bBOM_BE) {
-            //  encDetRes.unicodeAnalysis = CPI_NONE;
-            //}
-            //else if (encDetRes.bHasBOM && !encDetRes.bIsReverse && !bBOM_LE) {
-            //  // must be UTF-32, can't handle
-            //  encDetRes.unicodeAnalysis = CPI_NONE;
-            //}
+            if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis))
+            {
+                // check considten BOM
+                if (encDetRes.bHasBOM && !bBOM_LE && !bBOM_BE) {
+                    encDetRes.unicodeAnalysis = CPI_NONE;
+                }
+                else if (encDetRes.bHasBOM && encDetRes.bIsReverse && !bBOM_BE) {
+                    encDetRes.unicodeAnalysis = CPI_NONE;
+                }
+                else if (encDetRes.bHasBOM && !encDetRes.bIsReverse && !bBOM_LE) {
+                    // must be UTF-32, can't handle
+                    encDetRes.unicodeAnalysis = CPI_NONE;
+                }
+            }
         }
 
         if (bForceEncDetection) {
