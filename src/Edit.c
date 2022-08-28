@@ -7267,7 +7267,7 @@ void EditSelectionMultiSelectAll()
 //
 void EditSelectionMultiSelectAllEx(HWND hwnd, CLPCEDITFINDREPLACE edFndRpl)
 {
-    EDITFINDREPLACE efr;
+    EDITFINDREPLACE efr = INIT_EFR_DATA;
     DuplicateEFR(&efr, edFndRpl);
 
     if (IsWindow(Globals.hwndDlgFindReplace)) {
