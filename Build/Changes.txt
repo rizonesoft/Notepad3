@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.502.(build_#) (2022-05-02)
+Current BETA/RC Version 5.22.828.(build_#) (2022-08-28)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.828.1]- Add "char8_t" keyword for C++20.
 [.220.1]- Msg box for editing read-only.
 [.217.1]- F/R-dialog menu item to switch replace by clipboard tag (^c).
 [.215.1]- Set keyword-lists for CSS Lexer according to SiTE's css.properties.
@@ -91,6 +92,8 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.828.1]- Unicode Detection in case of pure ASCCI containing null bytes.
+[.828.1]- ASCII only issue of not reliable IsTextUnicode().
 [.502.1]- Using "Cascadia Mono" over "Cascadia Code" if applicable (regarding to "Text File" Scheme change).
 [.502.1]- "Text File" Scheme: using Common (2nd) Base Font.
 [.430.1]- Using by error "Segoe UI" as default for pure "Text File" scheme.
