@@ -105,6 +105,10 @@ bool EditModel::BidirectionalR2L() const noexcept {
 	return bidirectional == Bidirectional::R2L;
 }
 
+SurfaceMode EditModel::CurrentSurfaceMode() const noexcept {
+	return SurfaceMode(pdoc->dbcsCodePage, BidirectionalR2L());
+}
+
 void EditModel::SetDefaultFoldDisplayText(const char *text) {
 	defaultFoldDisplayText = IsNullOrEmpty(text) ? UniqueString() : UniqueStringCopy(text);
 }
@@ -125,4 +129,8 @@ const char *EditModel::GetFoldDisplayText(Sci::Line lineDoc) const noexcept {
 InSelection EditModel::LineEndInSelection(Sci::Line lineDoc) const {
 	const Sci::Position posAfterLineEnd = pdoc->LineStart(lineDoc + 1);
 	return sel.InSelectionForEOL(posAfterLineEnd);
+}
+
+int EditModel::GetMark(Sci::Line line) const {
+	return pdoc->GetMark(line, FlagSet(changeHistoryOption, ChangeHistoryOption::Markers));
 }

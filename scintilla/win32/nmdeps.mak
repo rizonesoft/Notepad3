@@ -87,6 +87,7 @@ $(DIR_O)/CaseConvert.obj: \
 	../src/UniConversion.h
 $(DIR_O)/CaseFolder.obj: \
 	../src/CaseFolder.cxx \
+	../src/CharacterType.h \
 	../src/CaseFolder.h \
 	../src/CaseConvert.h
 $(DIR_O)/CellBuffer.obj: \
@@ -96,8 +97,21 @@ $(DIR_O)/CellBuffer.obj: \
 	../src/Position.h \
 	../src/SplitVector.h \
 	../src/Partitioning.h \
+	../src/RunStyles.h \
+	../src/SparseVector.h \
+	../src/ChangeHistory.h \
 	../src/CellBuffer.h \
 	../src/UniConversion.h
+$(DIR_O)/ChangeHistory.obj: \
+	../src/ChangeHistory.cxx \
+	../include/ScintillaTypes.h \
+	../src/Debugging.h \
+	../src/Position.h \
+	../src/SplitVector.h \
+	../src/Partitioning.h \
+	../src/RunStyles.h \
+	../src/SparseVector.h \
+	../src/ChangeHistory.h
 $(DIR_O)/CharacterCategoryMap.obj: \
 	../src/CharacterCategoryMap.cxx \
 	../src/CharacterCategoryMap.h
@@ -273,6 +287,8 @@ $(DIR_O)/KeyMap.obj: \
 	../include/ScintillaTypes.h \
 	../include/ScintillaMessages.h \
 	../src/Debugging.h \
+	../src/Geometry.h \
+	../src/Platform.h \
 	../src/KeyMap.h
 $(DIR_O)/LineMarker.obj: \
 	../src/LineMarker.cxx \

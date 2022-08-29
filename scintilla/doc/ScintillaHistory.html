@@ -569,9 +569,187 @@
       </tr><tr>
 	<td>Arkadiusz Michalski</td>
 	<td>Christian Schmitz</td>
+	<td>Michael Berlenz</td>
+	<td>Jacky Yang</td>
     </tr>
     </table>
     <h2>Releases</h2>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla530.zip">Release 5.3.0</a>
+    </h3>
+    <ul>
+	<li>
+	Released 27 August 2022.
+	</li>
+	<li>
+	Added change history which can display document changes (modified, saved, ...)
+	in the margin or in the text.
+	</li>
+	<li>
+	Add SC_MARK_BAR marker and INDIC_POINT_TOP indicator.
+	SC_MARK_BAR is an outlined and filled rectangle that takes the full height of the line and 1/3
+	of the margin width.
+	To give a connected appearance, it displays even on wrapped lines and draws end caps on the first and last line.
+	INDIC_POINT_TOP is the same as INDIC_POINT but draws at the top of the line instead of the bottom.
+	INDIC_POINT and INDIC_POINTCHARACTER were tweaked to be 1 pixel taller and 2 pixels wider in
+	two-phase draw mode to be clearer.
+	The translucency of INDIC_COMPOSITIONTHICK can be changed with SCI_INDICSETOUTLINEALPHA.
+	</li>
+	<li>
+	Improve drawing of rounded rectangles on Direct2D.
+	</li>
+	<li>
+	Line state optimized to avoid excess allocations by always allocating for every line.
+	This makes SCI_GETMAXLINESTATE less useful although it can still distinguish cases
+	where line state was never set for any lines.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1441/">Feature #1441</a>.
+	</li>
+	<li>
+	Add SC_FOLDACTION_CONTRACT_EVERY_LEVEL option to contract every level for
+	SCI_FOLDALL.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2340/">Bug #2340</a>.
+	</li>
+	<li>
+	Enable multiline regex for gcc and clang when REGEX_MULTILINE defined.
+	This requires gcc 11.3 or clang 14.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2338/">Bug #2338</a>.
+	</li>
+	<li>
+	Stop including STYLE_CALLTIP when calculating line height.
+	Allows a large font to be used for calltips without affecting text display.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2341/">Bug #2341</a>.
+	</li>
+	<li>
+	Fix incorrect display of selection when printing in some modes.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2335/">Bug #2335</a>.
+	</li>
+	<li>
+	Fix crash on Qt when showing autocompletion and the caret isn't on a screen.
+	Move autocompletion onto screen when above it.
+	</li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla524.zip">Release 5.2.4</a>
+    </h3>
+    <ul>
+	<li>
+	Released 10 July 2022.
+	</li>
+	<li>
+	Fix hiding selection when selection layer is SC_LAYER_UNDER_TEXT.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2334/">Bug #2334</a>.
+	</li>
+	<li>
+	Fix bad background colour for additional, secondary, and inactive selections when printing.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2335/">Bug #2335</a>.
+	</li>
+	<li>
+	Fix failures on GTK with non-UTF-8 text when multi-threading due to
+	character set conversion code that was not thread-safe.
+	</li>
+	<li>
+	Fix crash when printing on Win32 in bidirectional mode with a non-empty selection.
+	</li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla523.zip">Release 5.2.3</a>
+    </h3>
+    <ul>
+	<li>
+	Released 22 May 2022.
+	</li>
+	<li>
+	Duplicate APIs to support 64-bit document positions on Win32:
+	SCI_GETTEXTRANGEFULL, SCI_FINDTEXTFULL, and SCI_FORMATRANGEFULL.
+	This adds new types to Scintilla.iface which may impact downstream projects.
+	Applications should move to these APIs from their predecessors as they will be deprecated.
+	</li>
+	<li>
+	Improve performance of SCI_FOLDALL(SC_FOLDACTION_EXPAND) by not lexing whole document
+	as it does not depend on folding structure.
+	</li>
+	<li>
+	Fix partial updates and non-responsive scroll bars on Xorg.
+	This defers scroll bar changes to an idle task so could affect applications that depend on
+	the scroll position being updated.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2322/">Bug #2322</a>,
+	<a href="https://sourceforge.net/p/scintilla/bugs/2196/">Bug #2196</a>,
+	<a href="https://sourceforge.net/p/scintilla/bugs/2312/">Bug #2312</a>.
+	</li>
+	<li>
+	Fix problem with horizontally inverted glyphs with buffered drawing and WS_EX_LAYOUTRTL set on Win32 GDI.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1435/">Feature #1435</a>.
+	</li>
+	<li>
+	Fix ARM64 builds with Visual C++ due to unsupported CETCOMPAT flag.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2324/">Bug #2324</a>.
+	</li>
+	<li>
+	On Cocoa, place autocompletion lists and calltips on a higher window level so they can be seen
+	when invoked from a modal dialog.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2329/">Bug #2329</a>.
+	</li>
+	<li>
+	For Qt 6, fix "modified" signal when text is null but length non-0.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2328/">Bug #2328</a>.
+	</li>
+	<li>
+	Fix pink selection background when printing by making it completely transparent.
+	</li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla522.zip">Release 5.2.2</a>
+    </h3>
+    <ul>
+	<li>
+	Released 31 March 2022.
+	</li>
+	<li>
+	Add SCI_GETSTYLEINDEXAT API to return styles over 127 as positive integers.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1431/">Feature #1431</a>.
+	</li>
+	<li>
+	On GTK, scroll horizontally with shift + scroll wheel.
+	</li>
+	<li>
+	Fix crash with unexpected right-to-left text on GTK.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2309/">Bug #2309</a>.
+	</li>
+	<li>
+	Fix position of end-of-line annotation when fold display text is visible.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2320/">Bug #2320</a>.
+	</li>
+	<li>
+	On Direct2D, support per-monitor text rendering parameters.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1432/">Feature #1432</a>.
+	</li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla521.zip">Release 5.2.1</a>
+    </h3>
+    <ul>
+	<li>
+	Released 24 February 2022.
+	</li>
+	<li>
+	Enable multi-threaded layout on GTK.
+	</li>
+	<li>
+	Fix pixmap leak on GTK.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2317/">Bug #2317</a>.
+	</li>
+	<li>
+	Fix re-entrant painting on GTK to maintain update region.
+	</li>
+	<li>
+	Fix key map for GTK on macOS.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2315/">Bug #2315</a>.
+	</li>
+	<li>
+	Fix building for Haiku.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2315/">Bug #2315</a>.
+	</li>
+    </ul>
     <h3>
        <a href="https://www.scintilla.org/scintilla520.zip">Release 5.2.0</a>
     </h3>
@@ -597,6 +775,11 @@
 	<li>
 	Allow choice of object file directory with makefile by setting DIR_O.
 	<a href="https://sourceforge.net/p/scintilla/bugs/2306/">Bug #2306</a>.
+	</li>
+	<li>
+	On GTK, use fractional positioning to help Chinese characters in monospaced fonts
+	line up better with roman characters.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2310/">Bug #2310</a>.
 	</li>
 	<li>
 	On macOS allow Scintilla to run if built without cursor images.

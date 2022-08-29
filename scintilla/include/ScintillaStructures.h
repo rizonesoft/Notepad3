@@ -19,8 +19,18 @@ struct CharacterRange {
 	PositionCR cpMax;
 };
 
+struct CharacterRangeFull {
+	Position cpMin;
+	Position cpMax;
+};
+
 struct TextRange {
 	CharacterRange chrg;
+	char *lpstrText;
+};
+
+struct TextRangeFull {
+	CharacterRangeFull chrg;
 	char *lpstrText;
 };
 
@@ -28,6 +38,12 @@ struct TextToFind {
 	CharacterRange chrg;
 	const char *lpstrText;
 	CharacterRange chrgText;
+};
+
+struct TextToFindFull {
+	CharacterRangeFull chrg;
+	const char *lpstrText;
+	CharacterRangeFull chrgText;
 };
 
 using SurfaceID = void *;
@@ -49,6 +65,14 @@ struct RangeToFormat {
 	CharacterRange chrg;
 };
 
+struct RangeToFormatFull {
+	SurfaceID hdc;
+	SurfaceID hdcTarget;
+	Rectangle rc;
+	Rectangle rcPage;
+	CharacterRangeFull chrg;
+};
+
 struct NotifyHeader {
 	/* Compatible with Windows NMHDR.
 	 * hwndFrom is really an environment specific window handle or pointer
@@ -57,6 +81,8 @@ struct NotifyHeader {
 	uptr_t idFrom;
 	Notification code;
 };
+
+enum class Message;	// Declare in case ScintillaMessages.h not included
 
 struct NotificationData {
 	NotifyHeader nmhdr;

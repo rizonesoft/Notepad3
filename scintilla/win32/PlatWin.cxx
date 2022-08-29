@@ -28,9 +28,11 @@
 #define NOMINMAX
 #endif
 #undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0601  /*_WIN32_WINNT_WIN7*/
+//~#define _WIN32_WINNT 0x0601  /*_WIN32_WINNT_WIN7*/
+#define _WIN32_WINNT 0x0A00  /*_WIN32_WINNT_WINTHRESHOLD, _WIN32_WINNT_WIN10*/
 #undef WINVER
-#define WINVER 0x0601  /*_WIN32_WINNT_WIN7*/
+//~#define WINVER 0x0601  /*_WIN32_WINNT_WIN7*/
+#define WINVER 0x0A00  /*_WIN32_WINNT_WINTHRESHOLD, _WIN32_WINNT_WIN10*/
 #define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <commctrl.h>
@@ -58,14 +60,6 @@
 #include "WinTypes.h"
 #include "PlatWin.h"
 
-#ifndef SPI_GETFONTSMOOTHINGCONTRAST
-#define SPI_GETFONTSMOOTHINGCONTRAST	0x200C
-#endif
-
-#ifndef LOAD_LIBRARY_SEARCH_SYSTEM32
-#define LOAD_LIBRARY_SEARCH_SYSTEM32 0x00000800
-#endif
-
 // __uuidof is a Microsoft extension but makes COM code neater, so disable warning
 #if defined(__clang__)
 #pragma clang diagnostic ignored "-Wlanguage-extension-token"
@@ -80,9 +74,9 @@ UINT CodePageFromCharSet(CharacterSet characterSet, UINT documentCodePage) noexc
 #if defined(USE_D2D)
 IDWriteFactory *pIDWriteFactory = nullptr;
 ID2D1Factory *pD2DFactory = nullptr;
-IDWriteRenderingParams *defaultRenderingParams = nullptr;
-IDWriteRenderingParams *customClearTypeRenderingParams = nullptr;
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+//~IDWriteRenderingParams *defaultRenderingParams = nullptr;
+//~IDWriteRenderingParams *customClearTypeRenderingParams = nullptr;
 IDWriteGdiInterop* gdiInterop = nullptr;
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 D2D1_DRAW_TEXT_OPTIONS d2dDrawTextOptions = D2D1_DRAW_TEXT_OPTIONS_NONE;
@@ -134,7 +128,7 @@ void LoadD2DOnce() noexcept {
 				reinterpret_cast<IUnknown**>(&pIDWriteFactory));
 		}
 	}
-
+#if 0
 	if (pIDWriteFactory) {
 		HRESULT hr = pIDWriteFactory->CreateRenderingParams(&defaultRenderingParams);
 		if (SUCCEEDED(hr)) {
@@ -158,6 +152,7 @@ void LoadD2DOnce() noexcept {
 		}
 		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	}
+#endif
 }
 
 bool LoadD2D() {
@@ -166,10 +161,6 @@ bool LoadD2D() {
 	return pIDWriteFactory && pD2DFactory;
 }
 
-#endif
-
-#ifndef CLEARTYPE_QUALITY
-#define CLEARTYPE_QUALITY 5
 #endif
 
 void *PointerFromWindow(HWND hWnd) noexcept {
@@ -635,7 +626,7 @@ SurfaceGDI::SurfaceGDI() noexcept {
 }
 
 SurfaceGDI::SurfaceGDI(HDC hdcCompatible, int width, int height, SurfaceMode mode_, int logPixelsY_) noexcept {
-	hdc = ::CreateCompatibleDC(hdc);
+	hdc = ::CreateCompatibleDC(hdcCompatible);
 	hdcOwned = true;
 	bitmap = ::CreateCompatibleBitmap(hdcCompatible, width, height);
 	bitmapOld = SelectBitmap(hdc, bitmap);
@@ -1378,7 +1369,7 @@ constexpr D2D1_RECT_F RectangleInset(D2D1_RECT_F rect, FLOAT inset) noexcept {
 
 class BlobInline;
 
-class SurfaceD2D : public Surface {
+class SurfaceD2D : public Surface, public ISetRenderingParams {
 	SurfaceMode mode;
 
 	ID2D1RenderTarget *pRenderTarget = nullptr;
@@ -1388,8 +1379,10 @@ class SurfaceD2D : public Surface {
 
 	ID2D1SolidColorBrush *pBrush = nullptr;
 
-	FontQuality fontQuality = FontQuality::QualityMask;
+	static constexpr FontQuality invalidFontQuality = FontQuality::QualityMask;
+	FontQuality fontQuality = invalidFontQuality;
 	int logPixelsY = USER_DEFAULT_SCREEN_DPI;
+	std::shared_ptr<RenderingParams> renderingParams;
 
 	void Clear() noexcept;
 	void SetFontQuality(FontQuality extraFontFlag);
@@ -1465,6 +1458,8 @@ public:
 	void PopClip() override;
 	void FlushCachedState() override;
 	void FlushDrawing() override;
+
+	void SetRenderingParams(std::shared_ptr<RenderingParams> renderingParams_) override;
 };
 
 SurfaceD2D::SurfaceD2D() noexcept {
@@ -1516,7 +1511,7 @@ void SurfaceD2D::Release() noexcept {
 }
 
 void SurfaceD2D::SetScale(WindowID wid) noexcept {
-	fontQuality = FontQuality::QualityMask;
+	fontQuality = invalidFontQuality;
 	logPixelsY = DpiForWindow(wid);
 }
 
@@ -1546,7 +1541,9 @@ void SurfaceD2D::Init(SurfaceID sid, WindowID wid, bool /*printing*/) {
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 std::unique_ptr<Surface> SurfaceD2D::AllocatePixMap(int width, int height) {
-	return std::make_unique<SurfaceD2D>(pRenderTarget, width, height, mode, logPixelsY);
+	std::unique_ptr<SurfaceD2D> surf = std::make_unique<SurfaceD2D>(pRenderTarget, width, height, mode, logPixelsY);
+	surf->SetRenderingParams(renderingParams);
+	return surf;
 }
 
 void SurfaceD2D::SetMode(SurfaceMode mode_) {
@@ -1573,15 +1570,14 @@ void SurfaceD2D::D2DPenColourAlpha(ColourRGBA fore) noexcept {
 }
 
 void SurfaceD2D::SetFontQuality(FontQuality extraFontFlag) {
-	if (fontQuality != extraFontFlag) {
+	if ((fontQuality != extraFontFlag) && renderingParams) {
 		fontQuality = extraFontFlag;
 		const D2D1_TEXT_ANTIALIAS_MODE aaMode = DWriteMapFontQuality(extraFontFlag);
-
-		if (aaMode == D2D1_TEXT_ANTIALIAS_MODE_CLEARTYPE && customClearTypeRenderingParams)
-			pRenderTarget->SetTextRenderingParams(customClearTypeRenderingParams);
-		else if (defaultRenderingParams)
-			pRenderTarget->SetTextRenderingParams(defaultRenderingParams);
-
+		if (aaMode == D2D1_TEXT_ANTIALIAS_MODE_CLEARTYPE && renderingParams->customRenderingParams) {
+			pRenderTarget->SetTextRenderingParams(renderingParams->customRenderingParams.get());
+		} else if (renderingParams->defaultRenderingParams) {
+			pRenderTarget->SetTextRenderingParams(renderingParams->defaultRenderingParams.get());
+		}
 		pRenderTarget->SetTextAntialiasMode(aaMode);
 	}
 }
@@ -1754,17 +1750,27 @@ void SurfaceD2D::FillRectangle(PRectangle rc, Surface &surfacePattern) {
 
 void SurfaceD2D::RoundedRectangle(PRectangle rc, FillStroke fillStroke) {
 	if (pRenderTarget) {
-		D2D1_ROUNDED_RECT roundedRectFill = {
-			RectangleFromPRectangle(rc.Inset(1.0)),
-			4, 4};
-		D2DPenColourAlpha(fillStroke.fill.colour);
-		pRenderTarget->FillRoundedRectangle(roundedRectFill, pBrush);
+		const FLOAT minDimension = static_cast<FLOAT>(std::min(rc.Width(), rc.Height())) / 2.0f;
+		const FLOAT radius = std::min(4.0f, minDimension);
+		if (fillStroke.fill.colour == fillStroke.stroke.colour) {
+			D2D1_ROUNDED_RECT roundedRectFill = {
+				RectangleFromPRectangle(rc),
+				radius, radius };
+			D2DPenColourAlpha(fillStroke.fill.colour);
+			pRenderTarget->FillRoundedRectangle(roundedRectFill, pBrush);
+		} else {
+			D2D1_ROUNDED_RECT roundedRectFill = {
+				RectangleFromPRectangle(rc.Inset(1.0)),
+				radius-1, radius-1 };
+			D2DPenColourAlpha(fillStroke.fill.colour);
+			pRenderTarget->FillRoundedRectangle(roundedRectFill, pBrush);
 
-		D2D1_ROUNDED_RECT roundedRect = {
-			RectangleFromPRectangle(rc.Inset(0.5)),
-			4, 4};
-		D2DPenColourAlpha(fillStroke.stroke.colour);
-		pRenderTarget->DrawRoundedRectangle(roundedRect, pBrush, fillStroke.stroke.WidthF());
+			D2D1_ROUNDED_RECT roundedRect = {
+				RectangleFromPRectangle(rc.Inset(0.5)),
+				radius, radius };
+			D2DPenColourAlpha(fillStroke.stroke.colour);
+			pRenderTarget->DrawRoundedRectangle(roundedRect, pBrush, fillStroke.stroke.WidthF());
+		}
 	}
 }
 
@@ -2454,31 +2460,33 @@ void SurfaceD2D::DrawTextTransparent(PRectangle rc, const Font *font_, XYPOSITIO
 	}
 }
 
-void SurfaceD2D::MeasureWidths(const Font *font_, std::string_view text, XYPOSITION *positions) {
-	const FontDirectWrite *pfm = FontDirectWrite::Cast(font_);
-	if (!pfm->pTextFormat) {
-		// SetFont failed or no access to DirectWrite so give up.
-		return;
+namespace {
+
+HRESULT MeasurePositions(TextPositions &poses, const TextWide &tbuf, IDWriteTextFormat *pTextFormat) {
+	if (!pTextFormat) {
+		// Unexpected failure like no access to DirectWrite so give up.
+		return E_FAIL;
 	}
-	const int codePageText = pfm->CodePageText(mode.codePage);
-	const TextWide tbuf(text, codePageText);
-	TextPositions poses(tbuf.tlen);
+
 	// Initialize poses for safety.
 	std::fill(poses.buffer, poses.buffer + tbuf.tlen, 0.0f);
 	// Create a layout
 	IDWriteTextLayout *pTextLayout = nullptr;
-	const HRESULT hrCreate = pIDWriteFactory->CreateTextLayout(tbuf.buffer, tbuf.tlen, pfm->pTextFormat, 10000.0, 1000.0, &pTextLayout);
-	if (!SUCCEEDED(hrCreate) || !pTextLayout) {
-		return;
+	const HRESULT hrCreate = pIDWriteFactory->CreateTextLayout(tbuf.buffer, tbuf.tlen, pTextFormat, 10000.0, 1000.0, &pTextLayout);
+	if (!SUCCEEDED(hrCreate)) {
+		return hrCreate;
 	}
-	constexpr int clusters = stackBufferLength;
-	DWRITE_CLUSTER_METRICS clusterMetrics[clusters];
+	if (!pTextLayout) {
+		return E_FAIL;
+	}
+	VarBuffer<DWRITE_CLUSTER_METRICS, stackBufferLength> cm(tbuf.tlen);
 	UINT32 count = 0;
-	const HRESULT hrGetCluster = pTextLayout->GetClusterMetrics(clusterMetrics, clusters, &count);
+	const HRESULT hrGetCluster = pTextLayout->GetClusterMetrics(cm.buffer, tbuf.tlen, &count);
 	ReleaseUnknown(pTextLayout);
 	if (!SUCCEEDED(hrGetCluster)) {
-		return;
+		return hrGetCluster;
 	}
+	const DWRITE_CLUSTER_METRICS * const clusterMetrics = cm.buffer;
 	// A cluster may be more than one WCHAR, such as for "ffi" which is a ligature in the Candara font
 	XYPOSITION position = 0.0;
 	int ti=0;
@@ -2489,6 +2497,19 @@ void SurfaceD2D::MeasureWidths(const Font *font_, std::string_view text, XYPOSIT
 		position += clusterMetrics[ci].width;
 	}
 	PLATFORM_ASSERT(ti == tbuf.tlen);
+	return S_OK;
+}
+
+}
+
+void SurfaceD2D::MeasureWidths(const Font *font_, std::string_view text, XYPOSITION *positions) {
+	const FontDirectWrite *pfm = FontDirectWrite::Cast(font_);
+	const int codePageText = pfm->CodePageText(mode.codePage);
+	const TextWide tbuf(text, codePageText);
+	TextPositions poses(tbuf.tlen);
+	if (FAILED(MeasurePositions(poses, tbuf, pfm->pTextFormat))) {
+		return;
+	}
 	if (codePageText == CpUtf8) {
 		// Map the widths given for UTF-16 characters back onto the UTF-8 input string
 		size_t i = 0;
@@ -2584,37 +2605,11 @@ void SurfaceD2D::DrawTextTransparentUTF8(PRectangle rc, const Font *font_, XYPOS
 
 void SurfaceD2D::MeasureWidthsUTF8(const Font *font_, std::string_view text, XYPOSITION *positions) {
 	const FontDirectWrite *pfm = FontDirectWrite::Cast(font_);
-	if (!pfm->pTextFormat) {
-		return;
-	}
 	const TextWide tbuf(text, CpUtf8);
 	TextPositions poses(tbuf.tlen);
-	// Initialize poses for safety.
-	std::fill(poses.buffer, poses.buffer + tbuf.tlen, 0.0f);
-	// Create a layout
-	IDWriteTextLayout *pTextLayout = nullptr;
-	const HRESULT hrCreate = pIDWriteFactory->CreateTextLayout(tbuf.buffer, tbuf.tlen, pfm->pTextFormat, 10000.0, 1000.0, &pTextLayout);
-	if (!SUCCEEDED(hrCreate) || !pTextLayout) {
+	if (FAILED(MeasurePositions(poses, tbuf, pfm->pTextFormat))) {
 		return;
 	}
-	constexpr int clusters = stackBufferLength;
-	DWRITE_CLUSTER_METRICS clusterMetrics[clusters];
-	UINT32 count = 0;
-	const HRESULT hrGetCluster = pTextLayout->GetClusterMetrics(clusterMetrics, clusters, &count);
-	ReleaseUnknown(pTextLayout);
-	if (!SUCCEEDED(hrGetCluster)) {
-		return;
-	}
-	// A cluster may be more than one WCHAR, such as for "ffi" which is a ligature in the Candara font
-	XYPOSITION position = 0.0;
-	int ti = 0;
-	for (unsigned int ci = 0; ci < count; ci++) {
-		for (unsigned int inCluster = 0; inCluster < clusterMetrics[ci].length; inCluster++) {
-			poses.buffer[ti++] = position + clusterMetrics[ci].width * (inCluster + 1) / clusterMetrics[ci].length;
-		}
-		position += clusterMetrics[ci].width;
-	}
-	PLATFORM_ASSERT(ti == tbuf.tlen);
 	// Map the widths given for UTF-16 characters back onto the UTF-8 input string
 	size_t i = 0;
 	for (int ui = 0; ui < tbuf.tlen; ui++) {
@@ -2622,9 +2617,9 @@ void SurfaceD2D::MeasureWidthsUTF8(const Font *font_, std::string_view text, XYP
 		const unsigned int byteCount = UTF8BytesOfLead[uch];
 		if (byteCount == 4) {	// Non-BMP
 			ui++;
-			PLATFORM_ASSERT(ui < ti);
+			PLATFORM_ASSERT(ui < tbuf.tlen);
 		}
-		for (unsigned int bytePos=0; (bytePos<byteCount) && (i<text.length()); bytePos++) {
+		for (unsigned int bytePos=0; (bytePos<byteCount) && (i<text.length()) && (ui < tbuf.tlen); bytePos++) {
 			positions[i++] = poses.buffer[ui];
 		}
 	}
@@ -2715,6 +2710,10 @@ void SurfaceD2D::FlushDrawing() {
 	if (pRenderTarget) {
 		pRenderTarget->Flush();
 	}
+}
+
+void SurfaceD2D::SetRenderingParams(std::shared_ptr<RenderingParams> renderingParams_) {
+	renderingParams = renderingParams_;
 }
 
 #endif
@@ -3951,9 +3950,9 @@ void Platform_Initialise(void *hInstance) noexcept {
 void Platform_Finalise(bool fromDllMain) noexcept {
 #if defined(USE_D2D)
 	if (!fromDllMain) {
-		ReleaseUnknown(defaultRenderingParams);
-		ReleaseUnknown(customClearTypeRenderingParams);
 		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		//~ReleaseUnknown(defaultRenderingParams);
+		//~ReleaseUnknown(customClearTypeRenderingParams);
 		ReleaseUnknown(gdiInterop);
 		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		ReleaseUnknown(pIDWriteFactory);

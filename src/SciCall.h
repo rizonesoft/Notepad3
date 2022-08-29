@@ -331,7 +331,7 @@ DeclareSciCallV0(SelectionDuplicate, SELECTIONDUPLICATE);
 DeclareSciCallV0(LineTranspose, LINETRANSPOSE);
 DeclareSciCallV0(MoveSelectedLinesUp, MOVESELECTEDLINESUP);
 DeclareSciCallV0(MoveSelectedLinesDown, MOVESELECTEDLINESDOWN);
-DeclareSciCallR2(FindText, FINDTEXT, DocPos, int, flags, struct Sci_TextToFind*, text);
+DeclareSciCallR2(FindTextFull, FINDTEXTFULL, DocPos, int, flags, struct Sci_TextToFind*, text);
 
 // Operations
 DeclareSciCallV0(Cut, CUT);
@@ -344,7 +344,7 @@ DeclareSciCallV0(Cancel, CANCEL);
 DeclareSciCallV0(CopyAllowLine, COPYALLOWLINE);
 DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, const char*, text);
 DeclareSciCallR2(GetText, GETTEXT, DocPos, DocPos, length, const char*, text); // NULL: w/o terminating '\0' (SCI v515)
-DeclareSciCallR01(GetTextRange, GETTEXTRANGE, DocPos, struct Sci_TextRange*, textrange);
+DeclareSciCallR01(GetTextRangeFull, GETTEXTRANGEFULL, DocPos, struct Sci_TextRange*, textrange);
 DeclareSciCallV0(UpperCase, UPPERCASE);
 DeclareSciCallV0(LowerCase, LOWERCASE);
 DeclareSciCallV2(ReplaceRectangular, REPLACERECTANGULAR, DocPos, length, const char *, text);
@@ -528,7 +528,7 @@ DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, int, style);
 DeclareSciCallV2(StyleSetFore, STYLESETFORE, int, style, COLORREF, rgb);
 DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, int, style);
 DeclareSciCallV2(StyleSetBack, STYLESETBACK, int, style, COLORREF, rgb);
-DeclareSciCallR1(GetStyleAt, GETSTYLEAT, int, DocPos, position);
+DeclareSciCallR1(GetStyleIndexAt, GETSTYLEINDEXAT, int, DocPos, position);
 DeclareSciCallV2(SetStyling, SETSTYLING, DocPos, length, int, style);
 DeclareSciCallV1(StartStyling, STARTSTYLING, DocPos, position);
 DeclareSciCallR0(GetEndStyled, GETENDSTYLED, DocPos);

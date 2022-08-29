@@ -33,10 +33,6 @@ using namespace Scintilla::Internal;
 
 MarkerHandleSet::MarkerHandleSet() = default;
 
-MarkerHandleSet::~MarkerHandleSet() {
-	mhList.clear();
-}
-
 bool MarkerHandleSet::Empty() const noexcept {
 	return mhList.empty();
 }
@@ -91,8 +87,6 @@ bool MarkerHandleSet::RemoveNumber(int markerNum, bool all) {
 void MarkerHandleSet::CombineWith(MarkerHandleSet *other) noexcept {
 	mhList.splice_after(mhList.before_begin(), other->mhList);
 }
-
-LineMarkers::~LineMarkers() = default;
 
 void LineMarkers::Init() {
 	markers.DeleteAll();
@@ -217,8 +211,6 @@ void LineMarkers::DeleteMarkFromHandle(int markerHandle) {
 	}
 }
 
-LineLevels::~LineLevels() = default;
-
 void LineLevels::Init() {
 	levels.DeleteAll();
 }
@@ -259,15 +251,13 @@ void LineLevels::ClearLevels() {
 }
 
 int LineLevels::SetLevel(Sci::Line line, int level, Sci::Line lines) {
-	int prev = 0;
+	int prev = level;
 	if ((line >= 0) && (line < lines)) {
 		if (!levels.Length()) {
 			ExpandLevels(lines + 1);
 		}
 		prev = levels[line];
-		if (prev != level) {
-			levels[line] = level;
-		}
+		levels[line] = level;
 	}
 	return prev;
 }
@@ -279,8 +269,6 @@ int LineLevels::GetLevel(Sci::Line line) const noexcept {
 		return static_cast<int>(Scintilla::FoldLevel::Base);
 	}
 }
-
-LineState::~LineState() = default;
 
 void LineState::Init() {
 	lineStates.DeleteAll();
@@ -308,10 +296,13 @@ void LineState::RemoveLine(Sci::Line line) {
 	}
 }
 
-int LineState::SetLineState(Sci::Line line, int state) {
-	lineStates.EnsureLength(line + 1);
-	const int stateOld = lineStates[line];
-	lineStates[line] = state;
+int LineState::SetLineState(Sci::Line line, int state, Sci::Line lines) {
+	int stateOld = state;
+	if ((line >= 0) && (line < lines)) {
+		lineStates.EnsureLength(lines + 1);
+		stateOld = lineStates[line];
+		lineStates[line] = state;
+	}
 	return stateOld;
 }
 
@@ -350,7 +341,9 @@ std::unique_ptr<char[]>AllocateAnnotation(size_t length, int style) {
 
 }
 
-LineAnnotation::~LineAnnotation() = default;
+bool LineAnnotation::Empty() const noexcept {
+	return annotations.Length() == 0;
+}
 
 void LineAnnotation::Init() {
 	ClearAll();
@@ -471,8 +464,6 @@ int LineAnnotation::Lines(Sci::Line line) const noexcept {
 	else
 		return 0;
 }
-
-LineTabstops::~LineTabstops() = default;
 
 void LineTabstops::Init() {
 	tabstops.DeleteAll();

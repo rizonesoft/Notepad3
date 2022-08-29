@@ -691,6 +691,7 @@ $(DIR_O)/LexMarkdown.obj: \
 	../lexlib/LexAccessor.h \
 	../lexlib/Accessor.h \
 	../lexlib/StyleContext.h \
+	../lexers_x/CharSetX.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
 $(DIR_O)/LexPython.obj: \

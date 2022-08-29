@@ -204,7 +204,6 @@ Editor::Editor() : durationWrapOneByte(0.000001, 0.00000001, 0.00001) {
 
 Editor::~Editor() {
 	pdoc->RemoveWatcher(this, nullptr);
-	DropGraphics();
 }
 
 void Editor::Finalise() {
@@ -264,7 +263,7 @@ void Editor::DropGraphics() noexcept {
 	view.DropGraphics();
 }
 
-void Editor::InvalidateStyleData() {
+void Editor::InvalidateStyleData() noexcept {
 	stylesValid = false;
 	vs.technology = technology;
 	DropGraphics();
@@ -290,13 +289,17 @@ void Editor::RefreshStyleData() {
 	}
 }
 
+bool Editor::HasMarginWindow() const noexcept {
+	return wMargin.Created();
+}
+
 Point Editor::GetVisibleOriginInMain() const {
 	return Point(0, 0);
 }
 
 PointDocument Editor::DocumentPointFromView(Point ptView) const {
 	PointDocument ptDocument(ptView);
-	if (wMargin.GetID()) {
+	if (HasMarginWindow()) {
 		const Point ptOrigin = GetVisibleOriginInMain();
 		ptDocument.x += ptOrigin.x;
 		ptDocument.y += ptOrigin.y;
@@ -307,8 +310,8 @@ PointDocument Editor::DocumentPointFromView(Point ptView) const {
 	return ptDocument;
 }
 
-Sci::Line Editor::TopLineOfMain() const {
-	if (wMargin.GetID())
+Sci::Line Editor::TopLineOfMain() const noexcept {
+	if (HasMarginWindow())
 		return 0;
 	else
 		return topLine;
@@ -433,7 +436,7 @@ Sci::Position Editor::PositionFromLineX(Sci::Line lineDoc, int x) {
 	return SPositionFromLineX(lineDoc, x).Position();
 }
 
-Sci::Line Editor::LineFromLocation(Point pt) const {
+Sci::Line Editor::LineFromLocation(Point pt) const noexcept {
 	return pcs->DocFromDisplay(static_cast<int>(pt.y) / vs.lineHeight + topLine);
 }
 
@@ -486,7 +489,7 @@ void Editor::Redraw() {
 	//Platform::DebugPrintf("Redraw all\n");
 	const PRectangle rcClient = GetClientRectangle();
 	wMain.InvalidateRectangle(rcClient);
-	if (wMargin.GetID()) {
+	if (HasMarginWindow()) {
 		wMargin.InvalidateAll();
 	} else if (paintState == PaintState::notPainting) {
 		redrawPendingText = true;
@@ -495,12 +498,12 @@ void Editor::Redraw() {
 
 void Editor::RedrawSelMargin(Sci::Line line, bool allAfter) {
 	const bool markersInText = vs.maskInLine || vs.maskDrawInText;
-	if (!wMargin.GetID() || markersInText) {	// May affect text area so may need to abandon and retry
+	if (!HasMarginWindow() || markersInText) {	// May affect text area so may need to abandon and retry
 		if (AbandonPaint()) {
 			return;
 		}
 	}
-	if (wMargin.GetID() && markersInText) {
+	if (HasMarginWindow() && markersInText) {
 		Redraw();
 		return;
 	}
@@ -533,7 +536,7 @@ void Editor::RedrawSelMargin(Sci::Line line, bool allAfter) {
 		if (rcMarkers.Empty())
 			return;
 	}
-	if (wMargin.GetID()) {
+	if (HasMarginWindow()) {
 		const Point ptOrigin = GetVisibleOriginInMain();
 		rcMarkers.Move(-ptOrigin.x, -ptOrigin.y);
 		wMargin.InvalidateRectangle(rcMarkers);
@@ -571,7 +574,7 @@ void Editor::InvalidateRange(Sci::Position start, Sci::Position end) {
 	RedrawRect(RectangleFromRange(Range(start, end), view.LinesOverlap() ? vs.lineOverlap : 0));
 }
 
-Sci::Position Editor::CurrentPosition() const {
+Sci::Position Editor::CurrentPosition() const noexcept {
 	return sel.MainCaret();
 }
 
@@ -579,11 +582,11 @@ bool Editor::SelectionEmpty() const noexcept {
 	return sel.Empty();
 }
 
-SelectionPosition Editor::SelectionStart() {
+SelectionPosition Editor::SelectionStart() noexcept {
 	return sel.RangeMain().Start();
 }
 
-SelectionPosition Editor::SelectionEnd() {
+SelectionPosition Editor::SelectionEnd() noexcept {
 	return sel.RangeMain().End();
 }
 
@@ -810,7 +813,7 @@ bool Editor::RangeContainsProtected(Sci::Position start, Sci::Position end) cons
 	return false;
 }
 
-bool Editor::SelectionContainsProtected() const {
+bool Editor::SelectionContainsProtected() const noexcept {
 	for (size_t r=0; r<sel.Count(); r++) {
 		if (RangeContainsProtected(sel.Range(r).Start().Position(),
 			sel.Range(r).End().Position())) {
@@ -1707,6 +1710,7 @@ void Editor::PaintSelMargin(Surface *surfaceWindow, const PRectangle &rc) {
 	} else {
 		surface = surfaceWindow;
 	}
+	surface->SetMode(CurrentSurfaceMode());
 
 	// Clip vertically to paint area to avoid drawing line numbers
 	if (rcMargin.bottom > rc.bottom)
@@ -1834,22 +1838,30 @@ void Editor::Paint(Surface *surfaceWindow, PRectangle rcArea) {
 // This is mostly copied from the Paint method but with some things omitted
 // such as the margin markers, line numbers, selection and caret
 // Should be merged back into a combined Draw method.
-Sci::Position Editor::FormatRange(bool draw, const RangeToFormat *pfr) {
-	if (!pfr)
+Sci::Position Editor::FormatRange(Scintilla::Message iMessage, Scintilla::uptr_t wParam, Scintilla::sptr_t lParam) {
+	if (!lParam)
 		return 0;
-
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	AutoSurface surface(pfr->hdc, this, Technology::Default, true);
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-	if (!surface)
-		return 0;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	AutoSurface surfaceMeasure(pfr->hdcTarget, this, Technology::Default, true);
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-	if (!surfaceMeasure) {
-		return 0;
+	const bool draw = wParam != 0;
+	void *ptr = PtrFromSPtr(lParam);
+	if (iMessage == Message::FormatRange) {
+		RangeToFormat *pfr = static_cast<RangeToFormat *>(ptr);
+		CharacterRangeFull chrg{ pfr->chrg.cpMin,pfr->chrg.cpMax };
+		AutoSurface surface(pfr->hdc, this, Technology::Default);
+		AutoSurface surfaceMeasure(pfr->hdcTarget, this, Technology::Default);
+		if (!surface || !surfaceMeasure) {
+			return 0;
+		}
+		return view.FormatRange(draw, chrg, pfr->rc, surface, surfaceMeasure, *this, vs);
+	} else {
+		// FormatRangeFull
+		RangeToFormatFull *pfr = static_cast<RangeToFormatFull *>(ptr);
+		AutoSurface surface(pfr->hdc, this, Technology::Default);
+		AutoSurface surfaceMeasure(pfr->hdcTarget, this, Technology::Default);
+		if (!surface || !surfaceMeasure) {
+			return 0;
+		}
+		return view.FormatRange(draw, pfr->chrg, pfr->rc, surface, surfaceMeasure, *this, vs);
 	}
-	return view.FormatRange(draw, pfr, surface, surfaceMeasure, *this, vs);
 }
 
 long Editor::TextWidth(uptr_t style, const char *text) {
@@ -1865,7 +1877,7 @@ long Editor::TextWidth(uptr_t style, const char *text) {
 // Empty method is overridden on GTK+ to show / hide scrollbars
 void Editor::ReconfigureScrollBars() {}
 
-void Editor::SetScrollBars() {
+void Editor::ChangeScrollBars() {
 	RefreshStyleData();
 
 	const Sci::Line nMax = MaxScrollPos();
@@ -1887,6 +1899,11 @@ void Editor::SetScrollBars() {
 			Redraw();
 	}
 	//Platform::DebugPrintf("end max = %d page = %d\n", nMax, nPage);
+}
+
+void Editor::SetScrollBars() {
+	// Overridden on GTK to defer to idle
+	ChangeScrollBars();
 }
 
 void Editor::ChangeSize() {
@@ -1924,9 +1941,7 @@ SelectionPosition Editor::RealizeVirtualSpace(const SelectionPosition &position)
 }
 
 void Editor::AddChar(char ch) {
-	char s[2];
-	s[0] = ch;
-	s[1] = '\0';
+	const char s[1] {ch};
 	InsertCharacter(std::string_view(s, 1), CharacterSource::DirectInput);
 }
 
@@ -2343,15 +2358,6 @@ void Editor::DelCharBack(bool allowLineStartDeletion) {
 	ShowCaretAtCurrentPosition();
 }
 
-KeyMod Editor::ModifierFlags(bool shift, bool ctrl, bool alt, bool meta, bool super) noexcept {
-	return
-		(shift ? KeyMod::Shift : KeyMod::Norm) |
-		(ctrl ? KeyMod::Ctrl : KeyMod::Norm) |
-		(alt ? KeyMod::Alt : KeyMod::Norm) |
-		(meta ? KeyMod::Meta : KeyMod::Norm) |
-		(super ? KeyMod::Super : KeyMod::Norm);
-}
-
 void Editor::NotifyFocus(bool focus) {
 	NotificationData scn = {};
 	scn.nmhdr.code = focus ? Notification::FocusIn : Notification::FocusOut;
@@ -2392,6 +2398,9 @@ void Editor::NotifySavePoint(bool isSavePoint) {
 	NotificationData scn = {};
 	if (isSavePoint) {
 		scn.nmhdr.code = Notification::SavePointReached;
+		if (changeHistoryOption != ChangeHistoryOption::Disabled) {
+			Redraw();
+		}
 	} else {
 		scn.nmhdr.code = Notification::SavePointLeft;
 	}
@@ -2720,6 +2729,9 @@ void Editor::NotifyModified(Document *, DocModification mh, void *) {
 					QueueIdleWork(WorkItems::style, mh.position + mh.length);
 				}
 				InvalidateRange(mh.position, mh.position + mh.length);
+				if (FlagSet(changeHistoryOption, ChangeHistoryOption::Markers)) {
+					RedrawSelMargin(pdoc->SciLineFromPosition(mh.position));
+				}
 			}
 		}
 	}
@@ -4087,17 +4099,9 @@ void Editor::Indent(bool forwards) {
 	ContainerNeedsUpdate(Update::Selection);
 }
 
-class CaseFolderASCII : public CaseFolderTable {
-public:
-	CaseFolderASCII() noexcept {
-		StandardASCII();
-	}
-};
-
-
 std::unique_ptr<CaseFolder> Editor::CaseFolderForEncoding() {
 	// Simple default that only maps ASCII upper case to lower case.
-	return std::make_unique<CaseFolderASCII>();
+	return std::make_unique<CaseFolderTable>();
 }
 
 /**
@@ -4132,6 +4136,37 @@ Sci::Position Editor::FindText(
 }
 
 /**
+ * Search of a text in the document, in the given range.
+ * @return The position of the found text, -1 if not found.
+ */
+Sci::Position Editor::FindTextFull(
+    uptr_t wParam,		///< Search modes : @c FindOption::MatchCase, @c FindOption::WholeWord,
+    ///< @c FindOption::WordStart, @c FindOption::RegExp or @c FindOption::Posix.
+    sptr_t lParam) {	///< @c Sci_TextToFindFull structure: The text to search for in the given range.
+
+	TextToFindFull *ft = static_cast<TextToFindFull *>(PtrFromSPtr(lParam));
+	Sci::Position lengthFound = strlen(ft->lpstrText);
+	if (!pdoc->HasCaseFolder())
+		pdoc->SetCaseFolder(CaseFolderForEncoding());
+	try {
+		const Sci::Position pos = pdoc->FindText(
+			static_cast<Sci::Position>(ft->chrg.cpMin),
+			static_cast<Sci::Position>(ft->chrg.cpMax),
+			ft->lpstrText,
+			static_cast<FindOption>(wParam),
+			&lengthFound);
+		if (pos != -1) {
+			ft->chrgText.cpMin = static_cast<Sci_PositionCR>(pos);
+			ft->chrgText.cpMax = static_cast<Sci_PositionCR>(pos + lengthFound);
+		}
+		return pos;
+	} catch (RegexError &) {
+		errorStatus = Status::RegEx;
+		return -1;
+	}
+}
+
+/**
  * Relocatable search support : Searches relative to current selection
  * point and sets the selection to the found text range with
  * each search.
@@ -4142,7 +4177,7 @@ Sci::Position Editor::FindText(
  * while still setting the selection to found text so the find/select
  * operation is self-contained.
  */
-void Editor::SearchAnchor() {
+void Editor::SearchAnchor() noexcept {
 	searchAnchor = SelectionStart().Position();
 }
 
@@ -4755,7 +4790,7 @@ void Editor::RightButtonDownWithModifiers(Point pt, unsigned int, KeyMod modifie
 		return;
 }
 
-bool Editor::PositionIsHotspot(Sci::Position position) const {
+bool Editor::PositionIsHotspot(Sci::Position position) const noexcept {
 	return vs.styles[pdoc->StyleIndexAt(position)].hotspot;
 }
 
@@ -5251,7 +5286,7 @@ bool Editor::PaintContains(PRectangle rc) const noexcept {
 }
 
 bool Editor::PaintContainsMargin() const noexcept {
-	if (wMargin.GetID()) {
+	if (HasMarginWindow()) {
 		// With separate margin view, paint of text view
 		// never contains margin.
 		return false;
@@ -5398,17 +5433,22 @@ void Editor::SetEOLAnnotationVisible(EOLAnnotationVisible visible) {
 Sci::Line Editor::ExpandLine(Sci::Line line) {
 	const Sci::Line lineMaxSubord = pdoc->GetLastChild(line);
 	line++;
+	Sci::Line lineStart = line;
 	while (line <= lineMaxSubord) {
-		pcs->SetVisible(line, line, true);
 		const FoldLevel level = pdoc->GetFoldLevel(line);
 		if (LevelIsHeader(level)) {
+			pcs->SetVisible(lineStart, line, true);
 			if (pcs->GetExpanded(line)) {
 				line = ExpandLine(line);
 			} else {
 				line = pdoc->GetLastChild(line);
 			}
+			lineStart = line + 1;
 		}
 		line++;
+	}
+	if (lineStart <= lineMaxSubord) {
+		pcs->SetVisible(lineStart, lineMaxSubord, true);
 	}
 	return lineMaxSubord;
 }
@@ -5556,35 +5596,41 @@ void Editor::EnsureLineVisible(Sci::Line lineDoc, bool enforcePolicy) {
 }
 
 void Editor::FoldAll(FoldAction action) {
-	pdoc->EnsureStyledTo(pdoc->Length());
 	const Sci::Line maxLine = pdoc->LinesTotal();
+	const bool contractAll = FlagSet(action, FoldAction::ContractEveryLevel);
+	action = static_cast<FoldAction>(static_cast<int>(action) & ~static_cast<int>(FoldAction::ContractEveryLevel));
 	bool expanding = action == FoldAction::Expand;
+	if (!expanding) {
+		pdoc->EnsureStyledTo(pdoc->Length());
+	}
+	Sci::Line line = 0;
 	if (action == FoldAction::Toggle) {
 		// Discover current state
-		for (int lineSeek = 0; lineSeek < maxLine; lineSeek++) {
-			if (LevelIsHeader(pdoc->GetFoldLevel(lineSeek))) {
-				expanding = !pcs->GetExpanded(lineSeek);
+		for (; line < maxLine; line++) {
+			if (LevelIsHeader(pdoc->GetFoldLevel(line))) {
+				expanding = !pcs->GetExpanded(line);
 				break;
 			}
 		}
 	}
 	if (expanding) {
 		pcs->SetVisible(0, maxLine-1, true);
-		for (int line = 0; line < maxLine; line++) {
-			const FoldLevel levelLine = pdoc->GetFoldLevel(line);
-			if (LevelIsHeader(levelLine)) {
-				SetFoldExpanded(line, true);
-			}
-		}
+		pcs->ExpandAll();
 	} else {
-		for (Sci::Line line = 0; line < maxLine; line++) {
+		for (; line < maxLine; line++) {
 			const FoldLevel level = pdoc->GetFoldLevel(line);
-			if (LevelIsHeader(level) &&
-					(FoldLevel::Base == LevelNumberPart(level))) {
-				SetFoldExpanded(line, false);
-				const Sci::Line lineMaxSubord = pdoc->GetLastChild(line);
-				if (lineMaxSubord > line) {
-					pcs->SetVisible(line + 1, lineMaxSubord, false);
+			if (LevelIsHeader(level)) {
+				if (FoldLevel::Base == LevelNumberPart(level)) {
+					SetFoldExpanded(line, false);
+					const Sci::Line lineMaxSubord = pdoc->GetLastChild(line);
+					if (lineMaxSubord > line) {
+						pcs->SetVisible(line + 1, lineMaxSubord, false);
+						if (!contractAll) {
+							line = lineMaxSubord;
+						}
+					}
+				} else if (contractAll) {
+					SetFoldExpanded(line, false);
 				}
 			}
 		}
@@ -5709,6 +5755,26 @@ int Editor::CodePage() const noexcept {
 		return pdoc->dbcsCodePage;
 	else
 		return 0;
+}
+
+std::unique_ptr<Surface> Editor::CreateMeasurementSurface() const {
+	if (!wMain.GetID()) {
+		return {};
+	}
+	std::unique_ptr<Surface> surf = Surface::Allocate(technology);
+	surf->Init(wMain.GetID());
+	surf->SetMode(CurrentSurfaceMode());
+	return surf;
+}
+
+std::unique_ptr<Surface> Editor::CreateDrawingSurface(SurfaceID sid, std::optional<Scintilla::Technology> technologyOpt) const {
+	if (!wMain.GetID()) {
+		return {};
+	}
+	std::unique_ptr<Surface> surf = Surface::Allocate(technologyOpt ? *technologyOpt : technology);
+	surf->Init(sid, wMain.GetID());
+	surf->SetMode(CurrentSurfaceMode());
+	return surf;
 }
 
 Sci::Line Editor::WrapCount(Sci::Line line) {
@@ -6261,6 +6327,9 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 	case Message::FindText:
 		return FindText(wParam, lParam);
 
+	case Message::FindTextFull:
+		return FindTextFull(wParam, lParam);
+
 	case Message::GetTextRange: {
 			if (lParam == 0)
 				return 0;
@@ -6276,13 +6345,34 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 			return len; 	// Not including NUL
 		}
 
+	case Message::GetTextRangeFull: {
+			if (lParam == 0)
+				return 0;
+			TextRangeFull *tr = static_cast<TextRangeFull *>(PtrFromSPtr(lParam));
+			Sci::Position cpMax = tr->chrg.cpMax;
+			if (cpMax == -1)
+				cpMax = pdoc->Length();
+			PLATFORM_ASSERT(cpMax <= pdoc->Length());
+			const Sci::Position len = cpMax - tr->chrg.cpMin; 	// No -1 as cpMin and cpMax are referring to inter character positions
+			PLATFORM_ASSERT(len >= 0);
+			pdoc->GetCharRange(tr->lpstrText, tr->chrg.cpMin, len);
+			// Spec says copied text is terminated with a NUL
+			tr->lpstrText[len] = '\0';
+			return len; 	// Not including NUL
+		}
+
 	case Message::HideSelection:
-		view.hideSelection = wParam != 0;
+		vs.selection.visible = wParam == 0;
 		Redraw();
 		break;
 
+	case Message::GetSelectionHidden:
+		return !vs.selection.visible;
+		break;
+
 	case Message::FormatRange:
-		return FormatRange(wParam != 0, static_cast<RangeToFormat *>(PtrFromSPtr(lParam)));
+	case Message::FormatRangeFull:
+		return FormatRange(iMessage, wParam, lParam);
 
 	case Message::GetMarginLeft:
 		return vs.leftMarginWidth;
@@ -6500,6 +6590,12 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 			return 0;
 		else
 			return pdoc->StyleAt(PositionFromUPtr(wParam));
+
+	case Message::GetStyleIndexAt:
+		if (PositionFromUPtr(wParam) >= pdoc->Length())
+			return 0;
+		else
+			return pdoc->StyleIndexAt(PositionFromUPtr(wParam));
 
 	case Message::Redo:
 		Redo();
@@ -7124,14 +7220,14 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case Message::MarkerGet:
-		return pdoc->GetMark(LineFromUPtr(wParam));
+		return GetMark(LineFromUPtr(wParam));
 
 	case Message::MarkerNext:
 		return pdoc->MarkerNext(LineFromUPtr(wParam), static_cast<int>(lParam));
 
 	case Message::MarkerPrevious: {
 			for (Sci::Line iLine = LineFromUPtr(wParam); iLine >= 0; iLine--) {
-				if ((pdoc->GetMark(iLine) & lParam) != 0)
+				if ((GetMark(iLine) & lParam) != 0)
 					return iLine;
 			}
 		}
@@ -8309,6 +8405,14 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case Message::GetGapPosition:
 		return pdoc->GapPosition();
+
+	case Message::SetChangeHistory:
+		changeHistoryOption = static_cast<ChangeHistoryOption>(wParam);
+		pdoc->ChangeHistorySet(wParam & 1);
+		break;
+
+	case Message::GetChangeHistory:
+		return static_cast<sptr_t>(changeHistoryOption);
 
 	case Message::SetExtraAscent:
 		vs.extraAscent = static_cast<int>(wParam);

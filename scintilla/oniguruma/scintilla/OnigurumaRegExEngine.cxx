@@ -58,7 +58,6 @@ using namespace Scintilla::Internal;
 #define SciLn(line)     static_cast<Sci::Line>(line)
 #define SciPosExt(pos)  static_cast<Sci_Position>(pos)
 
-
 // ============================================================================
 // ***   Oningmo configuration   ***
 // ============================================================================

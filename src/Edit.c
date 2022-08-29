@@ -5479,7 +5479,7 @@ void EditGetExcerpt(HWND hwnd, LPWSTR lpszExcerpt, DWORD cchExcerpt)
     DWORD cch = 0;
     if (pszText && pszTextW) {
         tr.lpstrText = pszText;
-        DocPos const rlen = SciCall_GetTextRange(&tr);
+        DocPos const rlen = SciCall_GetTextRangeFull(&tr);
         MultiByteToWideCharEx(Encoding_SciCP,0,pszText,rlen,pszTextW,len);
 
         for (WCHAR* p = pszTextW; *p && cch < COUNTOF(tch)-1; p++) {
@@ -7861,7 +7861,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
         ft.lpstrText = pRoot;
         ft.chrg.cpMax = (DocPosCR)iDocEndPos;
 
-        DocPos iPosFind = SciCall_FindText(SCFIND_WORDSTART, &ft);
+        DocPos iPosFind = SciCall_FindTextFull(SCFIND_WORDSTART, &ft);
         PWLIST pwlNewWord = NULL;
 
         while ((iPosFind >= 0) && ((iPosFind + iRootLen) < iDocEndPos)) {
@@ -7895,7 +7895,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
             }
 
             ft.chrg.cpMin = (DocPosCR)iWordEndPos;
-            iPosFind = SciCall_FindText(SCFIND_WORDSTART, &ft);
+            iPosFind = SciCall_FindTextFull(SCFIND_WORDSTART, &ft);
         }
         FreeMem(pwlNewWord);
         pwlNewWord = NULL;
