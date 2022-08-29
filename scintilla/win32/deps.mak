@@ -273,6 +273,8 @@ $(DIR_O)/KeyMap.o: \
 	../include/ScintillaTypes.h \
 	../include/ScintillaMessages.h \
 	../src/Debugging.h \
+	../src/Geometry.h \
+	../src/Platform.h \
 	../src/KeyMap.h
 $(DIR_O)/LineMarker.o: \
 	../src/LineMarker.cxx \

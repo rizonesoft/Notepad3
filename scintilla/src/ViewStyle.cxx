@@ -134,7 +134,6 @@ ViewStyle::ViewStyle(size_t stylesSize_) :
 		Element::SelectionSecondaryText,
 		Element::SelectionSecondaryBack,
 		Element::SelectionInactiveText,
-		Element::SelectionBack,
 		Element::SelectionInactiveBack,
 		});
 

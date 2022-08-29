@@ -32,9 +32,11 @@
 #define NOMINMAX
 #endif
 #undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0601  /*_WIN32_WINNT_WIN7*/
+//~#define _WIN32_WINNT 0x0601  /*_WIN32_WINNT_WIN7*/
+#define _WIN32_WINNT 0x0A00  /*_WIN32_WINNT_WINTHRESHOLD, _WIN32_WINNT_WIN10*/
 #undef WINVER
-#define WINVER 0x0601  /*_WIN32_WINNT_WIN7*/
+//~#define WINVER 0x0601  /*_WIN32_WINNT_WIN7*/
+#define WINVER 0x0A00  /*_WIN32_WINNT_WINTHRESHOLD, _WIN32_WINNT_WIN10*/
 #define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <commctrl.h>
@@ -98,37 +100,6 @@
 #include "HanjaDic.h"
 #include "ScintillaWin.h"
 
-#ifndef SPI_GETWHEELSCROLLLINES
-#define SPI_GETWHEELSCROLLLINES   104
-#endif
-
-#ifndef WM_UNICHAR
-#define WM_UNICHAR                      0x0109
-#endif
-
-#ifndef WM_DPICHANGED
-#define WM_DPICHANGED 0x02E0
-#endif
-#ifndef WM_DPICHANGED_AFTERPARENT
-#define WM_DPICHANGED_AFTERPARENT 0x02E3
-#endif
-
-#ifndef UNICODE_NOCHAR
-#define UNICODE_NOCHAR                  0xFFFF
-#endif
-
-#ifndef IS_HIGH_SURROGATE
-#define IS_HIGH_SURROGATE(x)            ((x) >= SURROGATE_LEAD_FIRST && (x) <= SURROGATE_LEAD_LAST)
-#endif
-
-#ifndef IS_LOW_SURROGATE
-#define IS_LOW_SURROGATE(x)             ((x) >= SURROGATE_TRAIL_FIRST && (x) <= SURROGATE_TRAIL_LAST)
-#endif
-
-#ifndef MK_ALT
-#define MK_ALT 32
-#endif
-
 namespace {
 
 // Two idle messages SC_WIN_IDLE and SC_WORK_IDLE.
@@ -145,12 +116,6 @@ constexpr int IndicatorInput = static_cast<int>(Scintilla::IndicatorNumbers::Ime
 constexpr int IndicatorTarget = IndicatorInput + 1;
 constexpr int IndicatorConverted = IndicatorInput + 2;
 constexpr int IndicatorUnknown = IndicatorInput + 3;
-
-#ifndef SCS_CAP_SETRECONVERTSTRING
-#define SCS_CAP_SETRECONVERTSTRING 0x00000004
-#define SCS_QUERYRECONVERTSTRING 0x00020000
-#define SCS_SETRECONVERTSTRING 0x00010000
-#endif
 
 typedef UINT_PTR (WINAPI *SetCoalescableTimerSig)(HWND hwnd, UINT_PTR nIDEvent,
 	UINT uElapse, TIMERPROC lpTimerFunc, ULONG uToleranceDelay);
@@ -357,6 +322,9 @@ class ScintillaWin :
 #if defined(USE_D2D)
 	ID2D1RenderTarget *pRenderTarget;
 	bool renderTargetValid;
+	// rendering parameters for current monitor
+	HMONITOR hCurrentMonitor;
+	std::shared_ptr<RenderingParams> renderingParams;
 #endif
 
 	explicit ScintillaWin(HWND hwnd);
@@ -369,6 +337,7 @@ class ScintillaWin :
 
 	void Finalise() override;
 #if defined(USE_D2D)
+	bool UpdateRenderingParams(bool force) noexcept;
 	void EnsureRenderTarget(HDC hdc);
 #endif
 	void DropRenderTarget() noexcept;
@@ -392,6 +361,8 @@ class ScintillaWin :
 
 	Sci::Position TargetAsUTF8(char *text) const;
 	Sci::Position EncodedFromUTF8(const char *utf8, char *encoded) const;
+
+	void SetRenderingParams(Surface *psurf) const;
 
 	bool PaintDC(HDC hdc);
 	sptr_t WndPaint();
@@ -582,6 +553,7 @@ ScintillaWin::ScintillaWin(HWND hwnd) {
 #if defined(USE_D2D)
 	pRenderTarget = nullptr;
 	renderTargetValid = true;
+	hCurrentMonitor = {};
 #endif
 
 	caret.period = ::GetCaretBlinkTime();
@@ -625,6 +597,38 @@ void ScintillaWin::Finalise() {
 }
 
 #if defined(USE_D2D)
+
+bool ScintillaWin::UpdateRenderingParams(bool force) noexcept {
+	if (!renderingParams) {
+		renderingParams = std::make_shared<RenderingParams>();
+	}
+	HMONITOR monitor = ::MonitorFromWindow(MainHWND(), MONITOR_DEFAULTTONEAREST);
+	if (!force && monitor == hCurrentMonitor && renderingParams->defaultRenderingParams) {
+		return false;
+	}
+
+	IDWriteRenderingParams *monitorRenderingParams = nullptr;
+	IDWriteRenderingParams *customClearTypeRenderingParams = nullptr;
+	const HRESULT hr = pIDWriteFactory->CreateMonitorRenderingParams(monitor, &monitorRenderingParams);
+	UINT clearTypeContrast = 0;
+	if (SUCCEEDED(hr) && ::SystemParametersInfo(SPI_GETFONTSMOOTHINGCONTRAST, 0, &clearTypeContrast, 0) != 0) {
+		if (clearTypeContrast >= 1000 && clearTypeContrast <= 2200) {
+			const FLOAT gamma = static_cast<FLOAT>(clearTypeContrast) / 1000.0f;
+			pIDWriteFactory->CreateCustomRenderingParams(gamma,
+				monitorRenderingParams->GetEnhancedContrast(),
+				monitorRenderingParams->GetClearTypeLevel(),
+				monitorRenderingParams->GetPixelGeometry(),
+				monitorRenderingParams->GetRenderingMode(),
+				&customClearTypeRenderingParams);
+		}
+	}
+
+	hCurrentMonitor = monitor;
+	renderingParams->defaultRenderingParams.reset(monitorRenderingParams);
+	renderingParams->customRenderingParams.reset(customClearTypeRenderingParams);
+	return true;
+}
+
 
 void ScintillaWin::EnsureRenderTarget(HDC hdc) {
 	if (!renderTargetValid) {
@@ -694,7 +698,6 @@ void ScintillaWin::EnsureRenderTarget(HDC hdc) {
 	}
 }
 #endif
-
 
 void ScintillaWin::DropRenderTarget() noexcept {
 #if defined(USE_D2D)
@@ -922,6 +925,17 @@ Sci::Position ScintillaWin::EncodedFromUTF8(const char *utf8, char *encoded) con
 	}
 }
 
+void ScintillaWin::SetRenderingParams([[maybe_unused]] Surface *psurf) const {
+#if defined(USE_D2D)
+	if (psurf) {
+		ISetRenderingParams *setDrawingParams = dynamic_cast<ISetRenderingParams *>(psurf);
+		if (setDrawingParams) {
+			setDrawingParams->SetRenderingParams(renderingParams);
+		}
+	}
+#endif
+}
+
 bool ScintillaWin::PaintDC(HDC hdc) {
 	if (technology == Technology::Default) {
 		AutoSurface surfaceWindow(hdc, this);
@@ -935,6 +949,7 @@ bool ScintillaWin::PaintDC(HDC hdc) {
 		if (pRenderTarget) {
 			AutoSurface surfaceWindow(pRenderTarget, this);
 			if (surfaceWindow) {
+				SetRenderingParams(surfaceWindow);
 				pRenderTarget->BeginDraw();
 				Paint(surfaceWindow, rcPaint);
 				surfaceWindow->Release();
@@ -1980,9 +1995,11 @@ sptr_t ScintillaWin::SciMessage(Message iMessage, uptr_t wParam, sptr_t lParam) 
 			if (technology != technologyNew) {
 				if (technologyNew > Technology::Default) {
 #if defined(USE_D2D)
-					if (!LoadD2D())
+					if (!LoadD2D()) {
 						// Failed to load Direct2D or DirectWrite so no effect
 						return 0;
+					}
+					UpdateRenderingParams(true);
 #else
 					return 0;
 #endif
@@ -1993,7 +2010,6 @@ sptr_t ScintillaWin::SciMessage(Message iMessage, uptr_t wParam, sptr_t lParam) 
 				technology = technologyNew;
 				view.bufferedDraw = technologyNew == Technology::Default;
 				// Invalidate all cached information including layout.
-				DropGraphics();
 				InvalidateStyleRedraw();
 			}
 		}
@@ -2006,7 +2022,6 @@ sptr_t ScintillaWin::SciMessage(Message iMessage, uptr_t wParam, sptr_t lParam) 
 			bidirectional = static_cast<Bidirectional>(wParam);
 		}
 		// Invalidate all cached information including layout.
-		DropGraphics();
 		InvalidateStyleRedraw();
 		break;
 
@@ -2111,10 +2126,15 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 
 		case WM_SETTINGCHANGE:
 			//Platform::DebugPrintf("Setting Changed\n");
+#if defined(USE_D2D)
+			if (technology != Technology::Default) {
+				UpdateRenderingParams(true);
+			}
+#endif
 			UpdateBaseElements();
-			InvalidateStyleData();
 			// Get Intellimouse scroll line parameters
 			GetIntelliMouseParameters();
+			InvalidateStyleRedraw();
 			break;
 
 		case WM_GETDLGCODE:
@@ -2179,7 +2199,17 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 		case WM_NCLBUTTONDOWN:
 		case WM_SYSCOMMAND:
 		case WM_WINDOWPOSCHANGING:
+			return ::DefWindowProc(MainHWND(), msg, wParam, lParam);
+
 		case WM_WINDOWPOSCHANGED:
+#if defined(USE_D2D)
+			if (technology != Technology::Default) {
+				if (UpdateRenderingParams(false)) {
+					DropGraphics();
+					Redraw();
+				}
+			}
+#endif
 			return ::DefWindowProc(MainHWND(), msg, wParam, lParam);
 
 		case WM_GETTEXTLENGTH:
@@ -3460,7 +3490,7 @@ STDMETHODIMP ScintillaWin::DragOver(DWORD grfKeyState, POINTL pt, PDWORD pdwEffe
 		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		if (!KeyboardIsKeyDown(VK_MENU)) // ALT-Key
 		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-			SetDragPosition(SPositionFromLocation(PointFromPOINT(rpt), false, false, UserVirtualSpace()));
+		SetDragPosition(SPositionFromLocation(PointFromPOINT(rpt), false, false, UserVirtualSpace()));
 
 		return S_OK;
 	} catch (...) {
@@ -3665,11 +3695,11 @@ LRESULT PASCAL ScintillaWin::CTWndProc(
 #endif
 				RECT rc;
 				GetClientRect(hWnd, &rc);
-				// Create a Direct2D render target.
 				if (sciThis->technology == Technology::Default) {
 					surfaceWindow->Init(ps.hdc, hWnd);
 				} else {
 #if defined(USE_D2D)
+					// Create a Direct2D render target.
 					D2D1_HWND_RENDER_TARGET_PROPERTIES dhrtp {};
 					dhrtp.hwnd = hWnd;
 					dhrtp.pixelSize = D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top);
@@ -3698,7 +3728,8 @@ LRESULT PASCAL ScintillaWin::CTWndProc(
 					}
 #endif
 				}
-				surfaceWindow->SetMode(SurfaceMode(sciThis->ct.codePage, sciThis->BidirectionalR2L()));
+				surfaceWindow->SetMode(sciThis->CurrentSurfaceMode());
+				sciThis->SetRenderingParams(surfaceWindow.get());
 				sciThis->ct.PaintCT(surfaceWindow.get());
 #if defined(USE_D2D)
 				if (pCTRenderTarget)
