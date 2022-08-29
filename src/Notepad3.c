@@ -10672,14 +10672,6 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
 
     Path_NormalizeEx(hopen_file, Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
 
-    // change current directory to prevent directory lock on another path
-    HPATHL hdir_pth = Path_Copy(hopen_file);
-    Path_RemoveFileSpec(hdir_pth);
-    if (Path_IsExistingDirectory(hdir_pth)) {
-        SetCurrentDirectoryW(Path_Get(hdir_pth));
-    }
-    Path_Release(hdir_pth);
-
     // Ask to create a new file...
     if (!(fLoadFlags & FLF_Reload) && !Path_IsExistingFile(hopen_file)) {
         bool bCreateFile = s_flagQuietCreate;
