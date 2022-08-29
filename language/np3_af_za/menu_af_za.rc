@@ -462,7 +462,7 @@ BEGIN
         MENUITEM "Outo-Sluit &HTML/XML\tCtrl+Shift+H",              IDM_SET_AUTOCLOSETAGS
         MENUITEM "O&uto-Voltooi Woorde",                            IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Outo-Voltooi Le&xer-Sleutel-Woorde",              IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Versnelde Woord Navi&gasie\tCtrl+Alt+A",          IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",          IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Slegs Een Keer per &Lêer",                        IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Lêerverandering-&Kennisgewing...\tAlt+F5",        IDM_SET_CHANGENOTIFY

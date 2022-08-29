@@ -462,7 +462,7 @@ BEGIN
         MENUITEM "Fechar Automaticamente &HTML/XML\tCtrl+Shift+H",      IDM_SET_AUTOCLOSETAGS
         MENUITEM "Completa Palavras A&utomaticamente",                  IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Completa Automaticamente Palavras-&Chaves-Léxicas",   IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Nave&gação de Palavra Acelerada\tCtrl+Alt+A",         IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",              IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Somente Uma &Instância por Arquivo",                  IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Notificação de &Mudança de Arquivo...\tAlt+F5",       IDM_SET_CHANGENOTIFY
