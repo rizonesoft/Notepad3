@@ -462,7 +462,7 @@ BEGIN
         MENUITEM "Автозакрытие тегов &HTML/XML\tCtrl+Shift+H",  IDM_SET_AUTOCLOSETAGS
         MENUITEM "Авто&завершение слов",                        IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Автозавершение на основе &лексем",            IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Ускоренная нави&гация по словам\tCtrl+Alt+A", IDM_SET_ACCELWORDNAV
+        MENUITEM "Ускоренная нави&гация по словам\tCtrl+Alt+A", IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Только один &экземпляр на файл",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "&Уведомление об изменении файла...\tAlt+F5",  IDM_SET_CHANGENOTIFY

@@ -454,18 +454,18 @@ BEGIN
     END
     POPUP "सेटिंग (&S)"
     BEGIN
-        MENUITEM "टैब को खाली जगह के रूप में डालें (&S)",                   IDM_SET_TABSASSPACES
-        MENUITEM "टैब सेटिंग (&T)...\tCtrl+T",                 IDM_SET_TABSETTINGS
-        MENUITEM "शब्द लपेटने की सेटिंग (&W)...",                   IDM_SET_WORDWRAPSETTINGS
-        MENUITEM "लंबी रेखा की सेटिंग (&O)...",                   IDM_SET_LONGLINESETTINGS
-        MENUITEM "स्वत: टेक्स्ट को इंडेंट करें (&D)",                        IDM_SET_AUTOINDENTTEXT
-        MENUITEM "HTML/XML स्वत: बंद करें (&H)\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
-        MENUITEM "शब्द स्वतः पूर्ण करें (&U)",                     IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "टैब को खाली जगह के रूप में डालें (&S)",          IDM_SET_TABSASSPACES
+        MENUITEM "टैब सेटिंग (&T)...\tCtrl+T",                   IDM_SET_TABSETTINGS
+        MENUITEM "शब्द लपेटने की सेटिंग (&W)...",                  IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "लंबी रेखा की सेटिंग (&O)...",                    IDM_SET_LONGLINESETTINGS
+        MENUITEM "स्वत: टेक्स्ट को इंडेंट करें (&D)",                  IDM_SET_AUTOINDENTTEXT
+        MENUITEM "HTML/XML स्वत: बंद करें (&H)\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
+        MENUITEM "शब्द स्वतः पूर्ण करें (&U)",                       IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Lexer-Key-Words स्वतः पूर्ण करें (&K)",           IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "शब्द यात्रा त्वरित गति (&G)\tCtrl+Alt+A", IDM_SET_ACCELWORDNAV
+        MENUITEM "शब्द यात्रा त्वरित गति (&G)\tCtrl+Alt+A",          IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
-        MENUITEM "प्रति फ़ाइल केवल एक अवस्था (&F)",              IDM_SET_SINGLEFILEINSTANCE
-        MENUITEM "फ़ाइल परिवर्तन अधिसूचना (&C)...\tAlt+F5",     IDM_SET_CHANGENOTIFY
+        MENUITEM "प्रति फ़ाइल केवल एक अवस्था (&F)",                IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "फ़ाइल परिवर्तन अधिसूचना (&C)...\tAlt+F5",        IDM_SET_CHANGENOTIFY
         ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "संदेश आवाज़ बंद करें (&M)",                      IDM_SET_MUTE_MESSAGEBEEP
         POPUP "ESC कुंजी उपयोग (&E)"
