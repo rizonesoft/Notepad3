@@ -45,6 +45,7 @@
 #undef ONIG_ESCAPE_UCHAR_COLLISION
 #endif
 #include "../oniguruma/src/oniguruma.h"   // Oniguruma - Regular Expression Engine
+typedef int OnigPos;
 // ---------------------------------------------------------------
 
 #define UCharPtr(pchar) reinterpret_cast<OnigUChar*>(pchar)
@@ -56,6 +57,7 @@ using namespace Scintilla::Internal;
 #define SciPos(pos)     static_cast<Sci::Position>(pos)
 #define SciLn(line)     static_cast<Sci::Line>(line)
 #define SciPosExt(pos)  static_cast<Sci_Position>(pos)
+
 
 // ============================================================================
 // ***   Oningmo configuration   ***

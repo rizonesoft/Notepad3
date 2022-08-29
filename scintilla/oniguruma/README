@@ -1,4 +1,4 @@
-README  2021/06/23
+README  2018/04/05
 
 Oniguruma  ----   (C) K.Kosako
 
@@ -48,7 +48,7 @@ Install
 
  Case 1: Linux distribution packages
 
-   * Fedora:         dnf install oniguruma
+   * Fedora:         dnf install oniguruma-devel
    * RHEL/CentOS:    yum install oniguruma
    * Debian/Ubuntu:  apt install libonig5
    * Arch:           pacman -S oniguruma
@@ -146,6 +146,7 @@ Source Files
   regcomp.c          compiling and optimization functions
   regenc.c           character encodings framework.
   regerror.c         error message function
+  regext.c           extended API functions. (deluxe version API)
   regexec.c          search and match functions
   regparse.c         parsing functions.
   regsyntax.c        pattern syntax functions and built-in syntax definitions.

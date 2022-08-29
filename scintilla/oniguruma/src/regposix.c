@@ -2,7 +2,7 @@
   regposix.c - Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2021  K.Kosako
+ * Copyright (c) 2002-2022  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ typedef struct {
 } O2PERR;
 
 static int
-onig2posix_error_code(OnigPos code)
+onig2posix_error_code(int code)
 {
   static const O2PERR o2p[] = {
     { ONIG_MISMATCH,                                      REG_NOMATCH },
@@ -82,7 +82,7 @@ onig2posix_error_code(OnigPos code)
     { ONIGERR_STACK_BUG,                                  REG_EONIG_INTERNAL },
     { ONIGERR_UNDEFINED_BYTECODE,                         REG_EONIG_INTERNAL },
     { ONIGERR_UNEXPECTED_BYTECODE,                        REG_EONIG_INTERNAL },
-    { ONIGERR_DEFAULT_ENCODING_IS_NOT_SETTED,             REG_EONIG_BADARG },
+    { ONIGERR_DEFAULT_ENCODING_IS_NOT_SET,                REG_EONIG_BADARG },
     { ONIGERR_SPECIFIED_ENCODING_CANT_CONVERT_TO_WIDE_CHAR, REG_EONIG_BADARG },
     { ONIGERR_FAIL_TO_INITIALIZE,                         REG_EONIG_INTERNAL },
     { ONIGERR_INVALID_ARGUMENT,                           REG_EONIG_BADARG },
@@ -105,6 +105,7 @@ onig2posix_error_code(OnigPos code)
     { ONIGERR_END_PATTERN_WITH_UNMATCHED_PARENTHESIS,     REG_EPAREN  },
     { ONIGERR_END_PATTERN_IN_GROUP,                       REG_BADPAT  },
     { ONIGERR_UNDEFINED_GROUP_OPTION,                     REG_BADPAT  },
+    { ONIGERR_INVALID_GROUP_OPTION,                       REG_BADPAT  },
     { ONIGERR_INVALID_POSIX_BRACKET_TYPE,                 REG_BADPAT  },
     { ONIGERR_INVALID_LOOK_BEHIND_PATTERN,                REG_BADPAT  },
     { ONIGERR_INVALID_REPEAT_RANGE_PATTERN,               REG_BADPAT  },
@@ -147,13 +148,11 @@ onig2posix_error_code(OnigPos code)
   };
 
   int i;
-  int icode;
 
   if (code >= 0) return 0;
 
-  icode = (int )code;
   for (i = 0; i < (int )(sizeof(o2p) / sizeof(o2p[0])); i++) {
-    if (icode == o2p[i].onig_err)
+    if (code == o2p[i].onig_err)
       return o2p[i].posix_err;
   }
 
@@ -199,7 +198,6 @@ onig_posix_regexec(onig_posix_regex_t* reg, const char* str, size_t nmatch,
                    onig_posix_regmatch_t pmatch[], int posix_options)
 {
   int r, i, len;
-  OnigPos pos;
   UChar* end;
   onig_posix_regmatch_t* pm;
   OnigOptionType options;
@@ -224,22 +222,22 @@ onig_posix_regexec(onig_posix_regex_t* reg, const char* str, size_t nmatch,
 
   ENC_STRING_LEN(ONIG_C(reg)->enc, str, len);
   end = (UChar* )(str + len);
-  pos = onig_search(ONIG_C(reg), (UChar* )str, end, (UChar* )str, end,
+  r = onig_search(ONIG_C(reg), (UChar* )str, end, (UChar* )str, end,
                     (OnigRegion* )pm, options);
 
-  if (pos >= 0) {
+  if (r >= 0) {
     r = 0; /* Match */
     if (pm != pmatch && pm != NULL) {
       xmemcpy(pmatch, pm, sizeof(onig_posix_regmatch_t) * nmatch);
     }
   }
-  else if (pos == ONIG_MISMATCH) {
+  else if (r == ONIG_MISMATCH) {
     r = REG_NOMATCH;
     for (i = 0; i < (int )nmatch; i++)
       pmatch[i].rm_so = pmatch[i].rm_eo = ONIG_REGION_NOTPOS;
   }
   else {
-    r = onig2posix_error_code(pos);
+    r = onig2posix_error_code(r);
   }
 
   if (pm != pmatch && pm != NULL)
