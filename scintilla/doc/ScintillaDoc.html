@@ -169,7 +169,7 @@
     <p>The GTK version also uses messages in a similar way to the Windows version. This is
     different to normal GTK practice but made it easier to implement rapidly.</p>
 
-    <p>Scintilla also builds with Cocoa on OS X and with Qt, and follows the conventions of
+    <p>Scintilla also builds with Cocoa on macOS and with Qt, and follows the conventions of
     those platforms.</p>
 
     <p>Scintilla provides only limited experimental support on Windows for right-to-left languages
@@ -5177,7 +5177,7 @@ struct Sci_TextToFind {
      <a class="jump" href="#RGBA">RGBA format</a> is used for the pixmap.
      The width and height must previously been set with the <code>SCI_RGBAIMAGESETWIDTH</code> and
      <code>SCI_RGBAIMAGESETHEIGHT</code> messages.</p>
-     <p>A scale factor in percent may be set with <code>SCI_RGBAIMAGESETSCALE</code>. This is useful on OS X with
+     <p>A scale factor in percent may be set with <code>SCI_RGBAIMAGESETSCALE</code>. This is useful on macOS with
      a retina display where each display unit is 2 pixels: use a factor of 200 so that each image pixel is displayed using a screen pixel.
      The default scale, 100, will stretch each image pixel to cover 4 screen pixels on a retina display.</p>
     <p>Pixmaps use the <code>SC_MARK_RGBAIMAGE</code> marker symbol. </p>
@@ -5562,7 +5562,7 @@ struct Sci_TextToFind {
           <td>A version of <code>INDIC_SQUIGGLE</code> that draws using a pixmap instead of
 	  as a series of line segments for performance.
 	  Measured to be between 3 and 6 times faster than <code>INDIC_SQUIGGLE</code> on GTK.
-	  Appearance will not be as good as <code>INDIC_SQUIGGLE</code> on OS X in HiDPI mode.</td>
+	  Appearance will not be as good as <code>INDIC_SQUIGGLE</code> on macOS in HiDPI mode.</td>
         </tr>
 
         <tr>
@@ -5728,11 +5728,11 @@ struct Sci_TextToFind {
     Can be used to iterate through the document to discover all the indicator positions.
     </p>
 
-    <h3 id="FindIndicators">OS X Find Indicator</h3>
+    <h3 id="FindIndicators">macOS Find Indicator</h3>
 
-    <p>On OS X search matches are highlighted with an animated gold rounded rectangle.
+    <p>On macOS search matches are highlighted with an animated gold rounded rectangle.
     The indicator shows, then briefly grows 25% and shrinks to the original size to draw the user's attention.
-    While this feature is currently only implemented on OS X, it may be implemented on other platforms
+    While this feature is currently only implemented on macOS, it may be implemented on other platforms
     in the future.</p>
 
     <p><b id="SCI_FINDINDICATORSHOW">SCI_FINDINDICATORSHOW(position start, position end)</b><br />
@@ -5740,7 +5740,7 @@ struct Sci_TextToFind {
      These two messages show and animate the find indicator. The indicator remains visible with
      <code>SCI_FINDINDICATORSHOW</code> and fades out after showing for half a second with
      <code>SCI_FINDINDICATORFLASH</code>.
-     <code>SCI_FINDINDICATORSHOW</code> behaves similarly to the OS X TextEdit and Safari applications
+     <code>SCI_FINDINDICATORSHOW</code> behaves similarly to the macOS TextEdit and Safari applications
      and is best suited to editing documentation where the search target is often a word.
      <code>SCI_FINDINDICATORFLASH</code> is similar to Xcode and is suited to editing source code
      where the match will often be located next to operators which would otherwise be hidden under the indicator's
@@ -6471,8 +6471,8 @@ struct Sci_TextToFind {
      </p>
 
     <p>The <code>SCI_SCROLLTO[START|END]</code> commands scroll the document to the start
-    or end without changing the selection. These commands match OS X platform conventions for the behaviour of the
-    <code>home</code> and <code>end</code> keys. Scintilla can be made to match OS X applications
+    or end without changing the selection. These commands match macOS platform conventions for the behaviour of the
+    <code>home</code> and <code>end</code> keys. Scintilla can be made to match macOS applications
     by binding the <code>home</code> and <code>end</code> keys to these commands.
      </p>
 
@@ -6514,7 +6514,7 @@ struct Sci_TextToFind {
     <p>The modifiers are a combination of zero or more of <code>SCMOD_ALT</code>,
     <code>SCMOD_CTRL</code>, <code>SCMOD_SHIFT</code>,
     <code>SCMOD_META</code>, and <code>SCMOD_SUPER</code>.
-    On OS X, the Command key is mapped to <code>SCMOD_CTRL</code> and the Control key to
+    On macOS, the Command key is mapped to <code>SCMOD_CTRL</code> and the Control key to
     <code>SCMOD_META</code>.
     <code>SCMOD_SUPER</code> is only available on GTK which is commonly the Windows key.
     If you are building a table, you might
@@ -9415,7 +9415,7 @@ for line = lineStart to lineEnd do SCI_ENSUREVISIBLE(line) next
     If there is no suitable platform support, the <a href="http://lodev.org/lodepng/">LodePNG and picoPNG</a> libraries are small libraries
     for loading and decoding PNG files available under a BSD-style license.</p>
 
-    <p>RGBA format is supported on Windows, GTK and OS X Cocoa.</p>
+    <p>RGBA format is supported on Windows, GTK and macOS Cocoa.</p>
 
     <h3 id="XPM">XPM</h3>
 

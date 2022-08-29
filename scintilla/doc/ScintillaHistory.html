@@ -573,6 +573,32 @@
     </table>
     <h2>Releases</h2>
     <h3>
+       <a href="https://www.scintilla.org/scintilla521.zip">Release 5.2.1</a>
+    </h3>
+    <ul>
+	<li>
+	Released 24 February 2022.
+	</li>
+	<li>
+	Enable multi-threaded layout on GTK.
+	</li>
+	<li>
+	Fix pixmap leak on GTK.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2317/">Bug #2317</a>.
+	</li>
+	<li>
+	Fix re-entrant painting on GTK to maintain update region.
+	</li>
+	<li>
+	Fix key map for GTK on macOS.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2315/">Bug #2315</a>.
+	</li>
+	<li>
+	Fix building for Haiku.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2315/">Bug #2315</a>.
+	</li>
+    </ul>
+    <h3>
        <a href="https://www.scintilla.org/scintilla520.zip">Release 5.2.0</a>
     </h3>
     <ul>
@@ -597,6 +623,11 @@
 	<li>
 	Allow choice of object file directory with makefile by setting DIR_O.
 	<a href="https://sourceforge.net/p/scintilla/bugs/2306/">Bug #2306</a>.
+	</li>
+	<li>
+	On GTK, use fractional positioning to help Chinese characters in monospaced fonts
+	line up better with roman characters.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2310/">Bug #2310</a>.
 	</li>
 	<li>
 	On macOS allow Scintilla to run if built without cursor images.
