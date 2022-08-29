@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # make_unicode_fold_data.py
-# Copyright (c) 2016-2020  K.Kosako
+# Copyright (c) 2016-2021  K.Kosako
 
 import sys
 import re
@@ -30,7 +30,7 @@ LOCALE_UNFOLDS  = {}
 
 COPYRIGHT = '''
 /*-
- * Copyright (c) 2017-2020  K.Kosako
+ * Copyright (c) 2017-2021  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

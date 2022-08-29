@@ -2,7 +2,7 @@
   regerror.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2021  K.Kosako
+ * Copyright (c) 2002-2022  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 #include "regint.h"
 
 extern UChar*
-onig_error_code_to_format(OnigPos code)
+onig_error_code_to_format(int code)
 {
   char *p;
 
@@ -68,8 +68,8 @@ onig_error_code_to_format(OnigPos code)
     p = "undefined bytecode (bug)"; break;
   case ONIGERR_UNEXPECTED_BYTECODE:
     p = "unexpected bytecode (bug)"; break;
-  case ONIGERR_DEFAULT_ENCODING_IS_NOT_SETTED:
-    p = "default multibyte-encoding is not setted"; break;
+  case ONIGERR_DEFAULT_ENCODING_IS_NOT_SET:
+    p = "default multibyte-encoding is not set"; break;
   case ONIGERR_SPECIFIED_ENCODING_CANT_CONVERT_TO_WIDE_CHAR:
     p = "can't convert to wide-char on specified multibyte-encoding"; break;
   case ONIGERR_FAIL_TO_INITIALIZE:
@@ -114,6 +114,8 @@ onig_error_code_to_format(OnigPos code)
     p = "end pattern in group"; break;
   case ONIGERR_UNDEFINED_GROUP_OPTION:
     p = "undefined group option"; break;
+  case ONIGERR_INVALID_GROUP_OPTION:
+    p = "invalid group option"; break;
   case ONIGERR_INVALID_POSIX_BRACKET_TYPE:
     p = "invalid POSIX bracket type"; break;
   case ONIGERR_INVALID_LOOK_BEHIND_PATTERN:
@@ -268,7 +270,7 @@ static int to_ascii(OnigEncoding enc, UChar *s, UChar *end,
 
 
 extern int
-onig_is_error_code_needs_param(OnigPos code)
+onig_is_error_code_needs_param(int code)
 {
   switch (code) {
   case ONIGERR_UNDEFINED_NAME_REFERENCE:
@@ -288,7 +290,7 @@ onig_is_error_code_needs_param(OnigPos code)
 #define MAX_ERROR_PAR_LEN   30
 
 extern int ONIG_VARIADIC_FUNC_ATTR
-onig_error_code_to_str(UChar* s, OnigPos code, ...)
+onig_error_code_to_str(UChar* s, int code, ...)
 {
   UChar *p, *q;
   OnigErrorInfo* einfo;

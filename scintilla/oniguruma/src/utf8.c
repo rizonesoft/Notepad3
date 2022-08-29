@@ -97,36 +97,6 @@ is_valid_mbc_string(const UChar* p, const UChar* end)
   return TRUE;
 }
 
-
-#if 0
-static int
-is_mbc_newline(const UChar * p, const UChar * end)
-{
-  if (p < end) {
-    if (*p == 0x0a) return 1;
-
-#ifdef USE_CRNL_AS_LINE_TERMINATOR
-    if (*p == 0x0d) return 1;
-#endif
-
-#ifdef USE_UNICODE_ALL_LINE_TERMINATORS
-    if (p + 1 < end) {
-      if (*(p + 1) == 0x85 && *p == 0xc2) /* U+0085 */
-        return 1;
-      if (p + 2 < end) {
-        if ((*(p + 2) == 0xa8 || *(p + 2) == 0xa9)
-          && *(p + 1) == 0x80 && *p == 0xe2)  /* U+2028, U+2029 */
-          return 1;
-      }
-    }
-#endif
-  }
-
-  return 0;
-}
-#endif
-
-
 static OnigCodePoint
 mbc_to_code(const UChar* p, const UChar* end)
 {
@@ -300,7 +270,6 @@ OnigEncodingType OnigEncodingUTF8 = {
   6,
 #endif
   1,           /* min enc length */
-  //is_mbc_newline,
   onigenc_is_mbc_newline_0x0a,
   mbc_to_code,
   code_to_mbclen,

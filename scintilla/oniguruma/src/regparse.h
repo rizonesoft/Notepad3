@@ -4,7 +4,7 @@
   regparse.h -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2021  K.Kosako
+ * Copyright (c) 2002-2022  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -350,6 +350,7 @@ typedef struct {
 #define NODE_ST_FIXED_CLEN_MIN_SURE (1<<25)
 #define NODE_ST_REFERENCED          (1<<26)
 #define NODE_ST_INPEEK              (1<<27)
+#define NODE_ST_WHOLE_OPTIONS       (1<<28)
 
 
 #define NODE_STATUS(node)           (((Node* )node)->u.base.status)
@@ -387,6 +388,7 @@ typedef struct {
 #define NODE_IS_FIXED_CLEN_MIN_SURE(node)  ((NODE_STATUS(node) & NODE_ST_FIXED_CLEN_MIN_SURE) != 0)
 #define NODE_IS_REFERENCED(node)      ((NODE_STATUS(node) & NODE_ST_REFERENCED) != 0)
 #define NODE_IS_INPEEK(node)          ((NODE_STATUS(node) & NODE_ST_INPEEK) != 0)
+#define NODE_IS_WHOLE_OPTIONS(node)   ((NODE_STATUS(node) & NODE_ST_WHOLE_OPTIONS) != 0)
 
 #define NODE_PARENT(node)         ((node)->u.base.parent)
 #define NODE_BODY(node)           ((node)->u.base.body)
@@ -444,13 +446,16 @@ typedef struct {
   SaveItem*        saves;
 #ifdef USE_CALL
   UnsetAddrList*   unset_addr_list;
-  int              has_call_zero;
 #endif
   unsigned int     parse_depth;
 #ifdef ONIG_DEBUG_PARSE
   unsigned int     max_parse_depth;
 #endif
+  unsigned int     flags;
 } ParseEnv;
+
+#define PE_FLAG_HAS_CALL_ZERO      (1<<0)
+#define PE_FLAG_HAS_WHOLE_OPTIONS  (1<<1)
 
 
 extern int    onig_renumber_name_table P_((regex_t* reg, GroupNumMap* map));

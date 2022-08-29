@@ -1,10 +1,29 @@
 History
 
+2022/04/2X: Version 6.9.8
+
+2022/04/11: implement whole option: (?C)
+2022/04/07: implement whole option: (?L)
+2022/04/04: implement whole option: (?I)
+2022/03/15: fix: Insufficient backreference matching for the same name groups
+2022/02/22: fix #250: ONIG_ESCAPE_REGEX_T_COLLISION doesn't work
+2021/10/17: Update to Unicode 14.0
+2021/08/29: fix: use CMAKE_INSTALL_LIBDIR as install lib dir, in some
+            platforms, lib could be installed in lib64 dir but the .pc file
+            is installed in lib dir.
+2021/08/22: fix: Stack overflow for some very long patterns
+2021/08/22: fix: Issue 37442 in oss-fuzz: Undefined-shift
+2021/08/05: fix #239: CMake build fails to detect alloca on some platforms
+            such as FreeBSD
+2021/08/04: CMake: Make documentation and examples optional
+2021/05/20: fix #235: 6.9.7 can't compile with Visual Studio 2005
+
 2021/04/15: Version 6.9.7 revised 1
 
 2021/04/14: fix: replace UChar to OnigUChar in oniguruma.h
 
 2021/04/14: Version 6.9.7
+
 2021/03/31: Release Candidate 1 for Version 6.9.7
 
 2021/03/23: fix Issue 32340, 32345, 32355 in oss-fuzz

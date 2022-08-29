@@ -1,4 +1,4 @@
-Unicode Properties (Unicode Version: 13.0.0,  Emoji: 13.0)
+Unicode Properties (Unicode Version: 14.0.0,  Emoji: 14.0)
 
 ASCII_Hex_Digit
 Adlam
@@ -46,6 +46,7 @@ Coptic
 Cs
 Cuneiform
 Cypriot
+Cypro_Minoan
 Cyrillic
 Dash
 Default_Ignorable_Code_Point
@@ -170,6 +171,7 @@ Old_Persian
 Old_Sogdian
 Old_South_Arabian
 Old_Turkic
+Old_Uyghur
 Oriya
 Osage
 Osmanya
@@ -230,6 +232,7 @@ Tai_Tham
 Tai_Viet
 Takri
 Tamil
+Tangsa
 Tangut
 Telugu
 Terminal_Punctuation
@@ -238,12 +241,14 @@ Thai
 Tibetan
 Tifinagh
 Tirhuta
+Toto
 Ugaritic
 Unified_Ideograph
 Unknown
 Uppercase
 Vai
 Variation_Selector
+Vithkuqi
 Wancho
 Warang_Citi
 White_Space
@@ -287,6 +292,7 @@ Combining_Mark
 Connector_Punctuation
 Control
 Copt
+Cpmn
 Cprt
 Currency_Symbol
 CWCF
@@ -418,6 +424,7 @@ Other_Letter
 Other_Number
 Other_Punctuation
 Other_Symbol
+Ougr
 OUpper
 Palm
 Paragraph_Separator
@@ -433,6 +440,7 @@ Phnx
 Plrd
 Private_Use
 Prti
+punct
 Punctuation
 Qaac
 Qaai
@@ -479,11 +487,13 @@ Thaa
 Tibt
 Tirh
 Titlecase_Letter
+Tnsa
 Ugar
 UIdeo
 Unassigned
 Uppercase_Letter
 Vaii
+Vith
 VS
 Wara
 Wcho
@@ -518,6 +528,7 @@ In_NKo
 In_Samaritan
 In_Mandaic
 In_Syriac_Supplement
+In_Arabic_Extended_B
 In_Arabic_Extended_A
 In_Devanagari
 In_Bengali
@@ -681,7 +692,9 @@ In_Osmanya
 In_Osage
 In_Elbasan
 In_Caucasian_Albanian
+In_Vithkuqi
 In_Linear_A
+In_Latin_Extended_F
 In_Cypriot_Syllabary
 In_Imperial_Aramaic
 In_Palmyrene
@@ -706,6 +719,7 @@ In_Rumi_Numeral_Symbols
 In_Yezidi
 In_Old_Sogdian
 In_Sogdian
+In_Old_Uyghur
 In_Chorasmian
 In_Elymaic
 In_Brahmi
@@ -732,6 +746,7 @@ In_Dives_Akuru
 In_Nandinagari
 In_Zanabazar_Square
 In_Soyombo
+In_Unified_Canadian_Aboriginal_Syllabics_Extended_A
 In_Pau_Cin_Hau
 In_Bhaiksuki
 In_Marchen
@@ -743,11 +758,13 @@ In_Tamil_Supplement
 In_Cuneiform
 In_Cuneiform_Numbers_and_Punctuation
 In_Early_Dynastic_Cuneiform
+In_Cypro_Minoan
 In_Egyptian_Hieroglyphs
 In_Egyptian_Hieroglyph_Format_Controls
 In_Anatolian_Hieroglyphs
 In_Bamum_Supplement
 In_Mro
+In_Tangsa
 In_Bassa_Vah
 In_Pahawh_Hmong
 In_Medefaidrin
@@ -757,12 +774,14 @@ In_Tangut
 In_Tangut_Components
 In_Khitan_Small_Script
 In_Tangut_Supplement
+In_Kana_Extended_B
 In_Kana_Supplement
 In_Kana_Extended_A
 In_Small_Kana_Extension
 In_Nushu
 In_Duployan
 In_Shorthand_Format_Controls
+In_Znamenny_Musical_Notation
 In_Byzantine_Musical_Symbols
 In_Musical_Symbols
 In_Ancient_Greek_Musical_Notation
@@ -771,9 +790,12 @@ In_Tai_Xuan_Jing_Symbols
 In_Counting_Rod_Numerals
 In_Mathematical_Alphanumeric_Symbols
 In_Sutton_SignWriting
+In_Latin_Extended_G
 In_Glagolitic_Supplement
 In_Nyiakeng_Puachue_Hmong
+In_Toto
 In_Wancho
+In_Ethiopic_Extended_B
 In_Mende_Kikakui
 In_Adlam
 In_Indic_Siyaq_Numbers

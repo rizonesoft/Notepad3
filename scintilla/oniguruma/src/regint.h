@@ -4,7 +4,7 @@
   regint.h -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2021  K.Kosako
+ * Copyright (c) 2002-2022  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,6 +63,7 @@
 #define USE_CALL
 #define USE_CALLOUT
 #define USE_BACKREF_WITH_LEVEL        /* \k<name+n>, \k<name-n> */
+#define USE_WHOLE_OPTIONS
 #define USE_RIGID_CHECK_CAPTURES_IN_EMPTY_REPEAT        /* /(?:()|())*\2/ */
 #define USE_NEWLINE_AT_END_OF_STRING_HAS_EMPTY_LINE     /* /\n$/ =~ "\n" */
 #define USE_WARNING_REDUNDANT_NESTED_REPEAT_OPERATOR
@@ -286,10 +287,6 @@ typedef unsigned __int64 uint64_t;
 
 #endif
 #endif /* _WIN32 */
-
-typedef size_t   OnigSize;
-
-#define INFINITE_SIZE  ~((OnigSize )0)
 
 #if SIZEOF_VOIDP == SIZEOF_LONG
 typedef unsigned long hash_data_type;
@@ -929,7 +926,7 @@ struct re_pattern_buffer {
   unsigned char  map[CHAR_MAP_SIZE]; /* used as BMH skip or char-map */
   int            map_offset;
   OnigLen        dist_min;           /* min-distance of exact or map */
-  OnigSize       dist_max;           /* max-distance of exact or map */
+  OnigLen        dist_max;           /* max-distance of exact or map */
   RegexExt*      extp;
 };
 
@@ -941,7 +938,7 @@ struct re_pattern_buffer {
 
 extern void onig_add_end_call(void (*func)(void));
 extern void onig_warning(const char* s);
-extern UChar* onig_error_code_to_format P_((OnigPos code));
+extern UChar* onig_error_code_to_format P_((int code));
 extern void ONIG_VARIADIC_FUNC_ATTR onig_snprintf_with_pattern PV_((UChar buf[], int bufsize, OnigEncoding enc, UChar* pat, UChar* pat_end, const UChar *fmt, ...));
 extern int onig_compile P_((regex_t* reg, const UChar* pattern, const UChar* pattern_end, OnigErrorInfo* einfo));
 extern int onig_is_code_in_cc_len P_((int enclen, OnigCodePoint code, void* /* CClassNode* */ cc));

@@ -1,4 +1,4 @@
-Oniguruma Regular Expressions Version 6.9.6    2020/07/31
+Oniguruma Regular Expressions Version 6.9.8    2022/08/28
 
 syntax: ONIG_SYNTAX_ONIGURUMA (default syntax)
 
@@ -246,9 +246,7 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default syntax)
       graph    [[:^space:]] && ^Control && ^Unassigned && ^Surrogate
       lower    Lowercase_Letter
       print    [[:graph:]] | [[:space:]]
-      punct    Connector_Punctuation | Dash_Punctuation | Close_Punctuation |
-               Final_Punctuation | Initial_Punctuation | Other_Punctuation |
-               Open_Punctuation
+      punct    Punctuation | Symbol
       space    Space_Separator | Line_Separator | Paragraph_Separator |
                U+0009 | U+000A | U+000B | U+000C | U+000D | U+0085
       upper    Uppercase_Letter
@@ -288,6 +286,17 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default syntax)
                       * It makes a group to the next ')' or end of the pattern.
                         /ab(?i)c|def|gh/ == /ab(?i:c|def|gh)/
 
+  * (?i) option has no effect on word types (\w, \p{Word}). However, if the word types are used within a character class, it is valid. But, this would only be a concern when word types are used with the (?W) option.
+
+
+  /(?CIL).../, /(?CIL:...)/   whole opiton
+
+                            This option must be placed in a position that
+                            affects the entire regular expression.
+
+                            C: ONIG_OPTION_DONT_CAPTURE_GROUP
+                            I: ONIG_OPTION_IGNORECASE_IS_ASCII
+                            L: ONIG_OPTION_FIND_LONGEST
 
   (?:subexp)         non-capturing group
   (subexp)           capturing group
@@ -529,7 +538,7 @@ A-2. Original extensions
    + named backref                   \k<name>
    + subexp call                     \g<name>, \g<group-num>
    + absent expression               (?~|...|...)
-   + absent stopper                  (?|...)
+   + absent stopper                  (?~|...)
 
 
 A-3. Missing features compared with perl 5.8.0
