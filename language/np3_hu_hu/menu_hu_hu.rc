@@ -462,7 +462,7 @@ BEGIN
         MENUITEM "HTML/&XML aut. lezárás\tCtrl+Shift+H",        IDM_SET_AUTOCLOSETAGS
         MENUITEM "Szó kie&gészítés",                            IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Lexer kul&csszavak kiegészítése",             IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "G&yorsított szó navigálás\tCtrl+Alt+A",       IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",      IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Egy &példány fájlonként",                     IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Figyel&meztetés fájl változásról...\tAlt+F5", IDM_SET_CHANGENOTIFY

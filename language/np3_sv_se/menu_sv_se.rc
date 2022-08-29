@@ -462,7 +462,7 @@ BEGIN
         MENUITEM "Stäng HTML/XML automatiskt\tCtrl+Shift+H",        IDM_SET_AUTOCLOSETAGS
         MENUITEM "Kompletera ord automatiskt",                      IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Komplettera Lexer-&Key-Words automatiskt",        IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Accelerad ordnavigering\tCtrl+Alt+A",             IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",          IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Bara en instans per fil",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Notifiering vid filändring...\tAlt+F5",            IDM_SET_CHANGENOTIFY

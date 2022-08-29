@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.828.(build_#) (2022-08-28)
+Current BETA/RC Version 5.22.829.(build_#) (2022-08-29)
 ========================================================
 
 --------------------------------------------------------
@@ -55,6 +55,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.829.1]- Renaming feature from obscure "Accelerated Word Navigation" to better name "Alternate Word Separators".
 [.418.1]- Sync the "Sombra" Scheme Collection with the "Window Dark Mode".
 [.414.1]- Using 'Cascadia Mono' as default for pure 'Text File' scheme (if available).
 [.302.1]- Default settings for Auto-Save beta version.
@@ -82,16 +83,20 @@ CHANGES:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
+[.829.1]- Update Oniguruma Regex (ONI) engine version 6.9.8 (2022-08-28).
 [.209.1]- Update Scintilla Library (SCI) version 5.2.0 (2022-02-09).
 [.209.1]- Update Lexilla Library (LEX) version 5.1.5 (2022-02-09).
 [1201.1]- Update grepWinNP3 (GRE) version 2.1.9.41 (2021-11-30).
-[1130.1]- Update Oniguruma Regex (ONI) engine version 7.0.0 (2021-10-19).
 [.713.1]- Update MiniPath (MIN) version 1.0.2.181 (2020-07-13).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.829.1]-  Directory locking of current file.
+[.829.1]- Remember user data entered for dialogs: EncloseSel, ModifyLines, InsertTag, StreamComment.
+[.829.1]- Uninitialized variable, causing problems on copy multi-selection.
+[.829.1]- Special not found position value in case of regex search.
 [.828.1]- Unicode Detection in case of pure ASCCI containing null bytes.
 [.828.1]- ASCII only issue of not reliable IsTextUnicode().
 [.502.1]- Using "Cascadia Mono" over "Cascadia Code" if applicable (regarding to "Text File" Scheme change).

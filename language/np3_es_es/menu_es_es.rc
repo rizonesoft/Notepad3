@@ -462,7 +462,7 @@ BEGIN
         MENUITEM "Auto Cierre &HTML/XML\tCtrl+Shift+H",                 IDM_SET_AUTOCLOSETAGS
         MENUITEM "A&uto completar palabras",                            IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Auto completar palabras clave 'Le&xer'",              IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "&Navegación por palabra acelerada\tCtrl+Alt+A",       IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Se&paradores alternativos de palabra\tCtrl+Alt+A",    IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Solo una instancia por &archivo",                     IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "N&otificación de cambios en archivo...\tAlt+F5",      IDM_SET_CHANGENOTIFY
