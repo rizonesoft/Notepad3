@@ -626,7 +626,7 @@ SurfaceGDI::SurfaceGDI() noexcept {
 }
 
 SurfaceGDI::SurfaceGDI(HDC hdcCompatible, int width, int height, SurfaceMode mode_, int logPixelsY_) noexcept {
-	hdc = ::CreateCompatibleDC(hdc);
+	hdc = ::CreateCompatibleDC(hdcCompatible);
 	hdcOwned = true;
 	bitmap = ::CreateCompatibleBitmap(hdcCompatible, width, height);
 	bitmapOld = SelectBitmap(hdc, bitmap);
