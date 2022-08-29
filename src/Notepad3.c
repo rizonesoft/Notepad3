@@ -8135,7 +8135,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
                 EditToggleView(Globals.hwndEdit);
             }
             else {
-                if (IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, NULL, IDS_MUI_DOCUMENT_READONLY))) {
+                if (!IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"QuietKeepReadonlyLock", IDS_MUI_DOCUMENT_READONLY))) {
                     SendWMCommand(Globals.hwndMain, IDM_VIEW_READONLY);
                 }
             }
