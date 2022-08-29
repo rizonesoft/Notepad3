@@ -5092,7 +5092,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case IDM_EDIT_ENCLOSESELECTION: {
-        ENCLOSESELDATA data = { 0 };
+        static ENCLOSESELDATA data = { 0 };
         if (EditEncloseSelectionDlg(hwnd, &data)) {
             EditEncloseSelection(data.pwsz1, data.pwsz2);
         }
@@ -5172,7 +5172,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_MODIFYLINES: {
-        ENCLOSESELDATA data = { 0 };
+        static ENCLOSESELDATA data = { 0 };
         if (EditModifyLinesDlg(hwnd, &data)) {
             EditModifyLines(&data);
         }
@@ -5268,7 +5268,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_INSERT_TAG: {
-        ENCLOSESELDATA data = { 0 };
+        static ENCLOSESELDATA data = { 0 };
         UINT repeat = 1;
         if (EditInsertTagDlg(hwnd, &data, &repeat)) {
             while (repeat > 0) {
@@ -5371,7 +5371,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_STREAMCOMMENT: {
-        ENCLOSESELDATA data = { 0 };
+        static ENCLOSESELDATA data = { 0 };
         Lexer_GetStreamCommentStrgs(data.pwsz1, data.pwsz2, ENCLDATA_SIZE);
         if (StrIsNotEmpty(data.pwsz1)) {
             EditEncloseSelection(data.pwsz1, data.pwsz2);
