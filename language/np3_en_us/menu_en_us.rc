@@ -462,7 +462,7 @@ BEGIN
         MENUITEM "Auto Close &HTML/XML\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
         MENUITEM "A&uto Complete Words",                     IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Auto Complete Lexer-&Key-Words",           IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Alternate Word Separators\tCtrl+Alt+A",    IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",   IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Only One Instance per &File",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "File &Change Notification...\tAlt+F5",     IDM_SET_CHANGENOTIFY

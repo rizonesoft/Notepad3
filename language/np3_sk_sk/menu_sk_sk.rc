@@ -462,7 +462,7 @@ BEGIN
         MENUITEM "Auto-zakončovanie &HTML/XML\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "A&utomatické dokončovanie slov",               IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Auto-kompletizácia kľúčových slov &Lexer",     IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Zrýchlená navi&gácia slov\tCtrl+Alt+A",        IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",       IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "&Iba jedna inštancia na súbor",                IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "&Oznámenie o zmene súboru...\tAlt+F5",         IDM_SET_CHANGENOTIFY

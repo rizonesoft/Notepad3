@@ -462,7 +462,7 @@ BEGIN
         MENUITEM "HTML/&XML kod imleri otomatik kapatılsın\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
         MENUITEM "Sözcükler &otomatik tamamlansın",                   IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "&Lexer-&anahtar sözcükleri otomatik tamamlansın",   IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "&Hızlandırılmış sözcük gezinmesi\tCtrl+Alt+A",      IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",            IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "&Her dosya tek pencerede açılsın",                  IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Dosyadaki değişiklikler bildirilsin...\tAlt+F5",    IDM_SET_CHANGENOTIFY
