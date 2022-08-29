@@ -300,17 +300,18 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	virtual void Initialise() = 0;
 	virtual void Finalise();
 
-	void InvalidateStyleData();
+	void InvalidateStyleData() noexcept;
 	void InvalidateStyleRedraw();
 	void RefreshStyleData();
 	void SetRepresentations();
 	void DropGraphics() noexcept;
 
+	bool HasMarginWindow() const noexcept;
 	// The top left visible point in main window coordinates. Will be 0,0 except for
 	// scroll views where it will be equivalent to the current scroll position.
 	Point GetVisibleOriginInMain() const override;
 	PointDocument DocumentPointFromView(Point ptView) const;  // Convert a point from view space to document
-	Sci::Line TopLineOfMain() const override;   // Return the line at Main's y coordinate 0
+	Sci::Line TopLineOfMain() const noexcept final;   // Return the line at Main's y coordinate 0
 	virtual PRectangle GetClientRectangle() const;
 	virtual PRectangle GetClientDrawingRectangle();
 	PRectangle GetTextRectangle() const;
@@ -326,7 +327,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	Sci::Position PositionFromLocation(Point pt, bool canReturnInvalid = false, bool charPosition = false);
 	SelectionPosition SPositionFromLineX(Sci::Line lineDoc, int x);
 	Sci::Position PositionFromLineX(Sci::Line lineDoc, int x);
-	Sci::Line LineFromLocation(Point pt) const;
+	Sci::Line LineFromLocation(Point pt) const noexcept;
 	void SetTopLine(Sci::Line topLineNew);
 
 	virtual bool AbandonPaint();
@@ -340,10 +341,10 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	bool UserVirtualSpace() const noexcept {
 		return (FlagSet(virtualSpaceOptions, Scintilla::VirtualSpace::UserAccessible));
 	}
-	Sci::Position CurrentPosition() const;
+	Sci::Position CurrentPosition() const noexcept;
 	bool SelectionEmpty() const noexcept;
-	SelectionPosition SelectionStart();
-	SelectionPosition SelectionEnd();
+	SelectionPosition SelectionStart() noexcept;
+	SelectionPosition SelectionEnd() noexcept;
 	void SetRectangularRange();
 	void ThinRectangularRange();
 	void InvalidateSelection(SelectionRange newMain, bool invalidateWholeSelection=false);
@@ -357,7 +358,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	enum class AddNumber { one, each };
 	void MultipleSelectAdd(AddNumber addNumber);
 	bool RangeContainsProtected(Sci::Position start, Sci::Position end) const noexcept;
-	bool SelectionContainsProtected() const;
+	bool SelectionContainsProtected() const noexcept;
 	Sci::Position MovePositionOutsideChar(Sci::Position pos, Sci::Position moveDir, bool checkLineEnd=true) const;
 	SelectionPosition MovePositionOutsideChar(SelectionPosition pos, Sci::Position moveDir, bool checkLineEnd=true) const;
 	void MovedCaret(SelectionPosition newPos, SelectionPosition previousPos,
@@ -446,7 +447,6 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void DelCharBack(bool allowLineStartDeletion);
 	virtual void ClaimSelection() = 0;
 
-	static Scintilla::KeyMod ModifierFlags(bool shift, bool ctrl, bool alt, bool meta=false, bool super=false) noexcept;
 	virtual void NotifyChange() = 0;
 	virtual void NotifyFocus(bool focus);
 	virtual void SetCtrlID(int identifier);
@@ -508,7 +508,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	virtual std::unique_ptr<CaseFolder> CaseFolderForEncoding();
 	Sci::Position FindText(Scintilla::uptr_t wParam, Scintilla::sptr_t lParam);
 	Sci::Position FindTextFull(Scintilla::uptr_t wParam, Scintilla::sptr_t lParam);
-	void SearchAnchor();
+	void SearchAnchor() noexcept;
 	Sci::Position SearchText(Scintilla::Message iMessage, Scintilla::uptr_t wParam, Scintilla::sptr_t lParam);
 	Sci::Position SearchInTarget(const char *text, Sci::Position length);
 	void GoToLine(Sci::Line lineNo);
@@ -588,7 +588,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	Sci::Position GetTag(char *tagValue, int tagNumber);
 	Sci::Position ReplaceTarget(bool replacePatterns, const char *text, Sci::Position length=-1);
 
-	bool PositionIsHotspot(Sci::Position position) const;
+	bool PositionIsHotspot(Sci::Position position) const noexcept;
 	bool PointIsHotspot(Point pt);
 	void SetHotSpotRange(const Point *pt);
 	void SetHoverIndicatorPosition(Sci::Position position);
@@ -694,7 +694,7 @@ private:
 public:
 	AutoSurface(const Editor *ed) :
 		surf(ed->CreateMeasurementSurface())  {
-		}
+	}
 	AutoSurface(SurfaceID sid, Editor *ed, std::optional<Scintilla::Technology> technology = {}) :
 		surf(ed->CreateDrawingSurface(sid, technology)) {
 	}
