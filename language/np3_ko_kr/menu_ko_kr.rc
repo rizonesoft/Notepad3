@@ -462,7 +462,7 @@ BEGIN
         MENUITEM "HTML/XML 자동 닫기(&H)\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "단어 자동 완성(&U)",                      IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "어휘 자동 완성(&K)",                       IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "가속화된 단어 탐색(&G)\tCtrl+Alt+A",       IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "대체 단어 구분자(&P)\tCtrl+Alt+A",   IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "파일당 하나의 인스턴스만(&F)",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "파일 변경 알림(&C)...\tAlt+F5",           IDM_SET_CHANGENOTIFY
