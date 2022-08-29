@@ -462,7 +462,7 @@ BEGIN
         MENUITEM "Fermeture Auto des Balises &HTML/XML\tCtrl+Shift+H",  IDM_SET_AUTOCLOSETAGS
         MENUITEM "A&uto-complétion des Mots",                           IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Auto-complétion des &Mots-clés Lexer",                IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Navi&gation Accélérée par Mot\tCtrl+Alt+A",           IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Sé&parateurs alternatifs de mot\tCtrl+Alt+A",        IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Seulement une instance par &fichier",                 IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Notif&ication de Modification de Fichier...\tAlt+F5", IDM_SET_CHANGENOTIFY

@@ -462,7 +462,7 @@ BEGIN
         MENUITEM "&HTML/XML tags automatisch sluiten\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "Sleutelwoorden &automatisch aanvullen",           IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "'Lexer' sleutelwoorden auto&matisch aanvullen",   IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Versnelde woordnavi&gatie\tCtrl+Alt+A",           IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",          IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Slechts één instantie per &bestand",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Melding bij bestandswijziging...\tAlt+F5",        IDM_SET_CHANGENOTIFY
