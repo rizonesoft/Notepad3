@@ -538,32 +538,16 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
     }
 }
 
+
 //=============================================================================
-
-
-typedef enum _FILE_ATTR_RO { GET, INVERT, SET_TRUE, SET_FALSE } _FILE_ATTR_RO;
-
-static bool FileReadOnly(_FILE_ATTR_RO query) {
-    static bool _bFileReadOnly = false;
-    switch (query) {
-    case INVERT:
-        _bFileReadOnly = !_bFileReadOnly;
-        SciCall_SetReadOnly(_bFileReadOnly);
-        break;
-    case SET_TRUE:
-        _bFileReadOnly = true;
-        SciCall_SetReadOnly(_bFileReadOnly);
-        break;
-    case SET_FALSE:
-        _bFileReadOnly = false;
-        SciCall_SetReadOnly(_bFileReadOnly);
-        break;
-    case GET:
-    default:
-        break;
-    }
-    return _bFileReadOnly;
+//
+// IsFileReadOnly
+//
+static bool IsFileReadOnly()
+{
+    return (Path_IsNotEmpty(Paths.CurrentFile) ? IsReadOnly(Path_GetFileAttributes(Paths.CurrentFile)) : false);
 }
+
 
 
 //=============================================================================
@@ -3911,9 +3895,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     //bool const dm = UseDarkMode();
     bool const si = Flags.bSingleFileInstance;
     bool const cf = Path_IsNotEmpty(Paths.CurrentFile);
-    bool const ro = SciCall_GetReadOnly(); // scintilla mode read-only
+    bool const ro = SciCall_GetReadOnly();                                 // scintilla mode read-only
     bool const lck = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK); // file write lock
-    bool const faro = FileReadOnly(GET);                                      // file attrib read-only
+    bool const faro = IsFileReadOnly();                                    // file attrib read-only
     bool const pst = SciCall_CanPaste();
     bool const se = SciCall_IsSelectionEmpty();
     bool const mrs = Sci_IsMultiOrRectangleSelection();
@@ -4475,24 +4459,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_FILE_READONLY:
         if (Path_IsNotEmpty(Paths.CurrentFile)) {
             DWORD dwFileAttributes = Path_GetFileAttributes(Paths.CurrentFile);
-            WCHAR szDisplayName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
-            if (dwFileAttributes != INVALID_FILE_ATTRIBUTES) {
-                if (FileReadOnly(GET)) {
-                    dwFileAttributes = (dwFileAttributes & ~FILE_ATTRIBUTE_READONLY);
-                } else {
-                    dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
-                }
-                if (!Path_SetFileAttributes(Paths.CurrentFile, dwFileAttributes)) {
-                    Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, NULL, false);
-                    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_READONLY_MODIFY, szDisplayName);
-                }
+            if (IsReadOnly(dwFileAttributes)) {
+                dwFileAttributes = (dwFileAttributes & ~FILE_ATTRIBUTE_READONLY);
             } else {
+                dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
+            }
+            WCHAR szDisplayName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
+            if (!Path_SetFileAttributes(Paths.CurrentFile, dwFileAttributes)) {
                 Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, NULL, false);
                 InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_READONLY_MODIFY, szDisplayName);
             }
-
-            FileReadOnly(IsReadOnly(Path_GetFileAttributes(Paths.CurrentFile)) ? SET_TRUE : SET_FALSE); // ensure setting
-
             if (Flags.bSettingsFileSoftLocked) {
                 Globals.bCanSaveIniFile = CanAccessPath(Paths.IniFile, GENERIC_WRITE);
                 UpdateSaveSettingsCmds();
@@ -8159,7 +8135,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
                 EditToggleView(Globals.hwndEdit);
             }
             else {
-                if (IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, NULL, IDS_MUI_DOCUMENT_READONLY))) {
+                if (!IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"QuietKeepReadonlyLock", IDS_MUI_DOCUMENT_READONLY))) {
                     SendWMCommand(Globals.hwndMain, IDM_VIEW_READONLY);
                 }
             }
@@ -10047,7 +10023,7 @@ void UpdateTitleBar(const HWND hwnd)
 
         SetWindowTitle(Globals.hwndMain, Paths.CurrentFile, Settings.PathNameFormat,
             s_flagPasteBoard, s_bIsProcessElevated, IsDocumentModified(),
-            bFileLocked, IsFileChangedFlagSet(), IsFileDeletedFlagSet(), FileReadOnly(GET), s_wchTitleExcerpt);
+            bFileLocked, IsFileChangedFlagSet(), IsFileDeletedFlagSet(), IsFileReadOnly(), s_wchTitleExcerpt);
     }
     PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
     PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
@@ -10529,8 +10505,6 @@ bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
         fSuccess = EditSaveFile(Globals.hwndEdit, hfile_pth, status, fSaveFlags, Flags.bPreserveFileModTime);
     }
 
-    FileReadOnly(IsReadOnly(Path_GetFileAttributes(hfile_pth)) ? SET_TRUE : SET_FALSE); // ensure setting
-
     EndWaitCursor();
 
     return(fSuccess);
@@ -10635,8 +10609,6 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
 
         Style_SetDefaultLexer(Globals.hwndEdit);
 
-        FileReadOnly(SET_FALSE);
-
         SetSavePoint();
 
         UpdateMarginWidth(true);
@@ -10705,7 +10677,6 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
                     fioStatus.iEncoding = Globals.fvCurFile.iEncoding;
                     Encoding_Current(Globals.fvCurFile.iEncoding);
                 }
-                FileReadOnly(SET_FALSE);
             }
             if (IS_VALID_HANDLE(hFile)) {
                 CloseHandle(hFile);
@@ -11154,10 +11125,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
 
     // Read only...
     if (!(fSaveFlags & FSF_SaveAs) && !(fSaveFlags & FSF_SaveCopy) && Path_IsNotEmpty(Paths.CurrentFile)) {
-
-        FileReadOnly(IsReadOnly(Path_GetFileAttributes(Paths.CurrentFile)) ? SET_TRUE : SET_FALSE); // ensure setting
-
-        if (FileReadOnly(GET)) {
+        if (IsFileReadOnly()) {
             UpdateTitleBar(Globals.hwndMain);
             INT_PTR const answer = (Settings.MuteMessageBeep) ?
                                    InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_READONLY_SAVE, Path_FindFileName(Paths.CurrentFile)) :
@@ -12174,12 +12142,12 @@ void InstallFileWatching(const bool bInstall) {
 
             assert(!IS_VALID_HANDLE(_hCurrFileHandle) && "CurrFileHandle not properly closed!");
 
-            bool const bPrevReadOnlyAttrib = FileReadOnly(GET);
+            bool const bPrevReadOnlyAttrib = IsFileReadOnly();
             if (bPrevReadOnlyAttrib) {
                 SendWMCommand(Globals.hwndMain, IDM_FILE_READONLY); // try to gain access
             }
 
-            if (!FileReadOnly(GET)) {
+            if (!IsFileReadOnly()) {
                 _hCurrFileHandle = CreateFile(Path_Get(Paths.CurrentFile),
                     GENERIC_READ | GENERIC_WRITE,
                     FILE_SHARE_READ, // 0 => NO FILE_SHARE_RW
@@ -12187,6 +12155,7 @@ void InstallFileWatching(const bool bInstall) {
                     OPEN_EXISTING,
                     FILE_ATTRIBUTE_NORMAL,
                     NULL);
+
                 Globals.dwLastError = GetLastError();
 
                 if (!IS_VALID_HANDLE(_hCurrFileHandle)) {
@@ -12204,7 +12173,8 @@ void InstallFileWatching(const bool bInstall) {
                     InstallFileWatching(true);
                 }
             }
-            if (bPrevReadOnlyAttrib && !FileReadOnly(GET)) {
+
+            if (bPrevReadOnlyAttrib && !IsFileReadOnly()) {
                 SendWMCommand(Globals.hwndMain, IDM_FILE_READONLY); // try to reset
             }
         }
