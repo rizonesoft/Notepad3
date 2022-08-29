@@ -125,7 +125,7 @@ int  EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase
 void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, bool bMultiSel);
 void EditUpdateVisibleIndicators();
 void EditUpdateIndicators(DocPos startPos, DocPos endPos, bool bClearOnly);
-void EditSetAccelWordNav(HWND hwnd,bool);
+void EditReducedWordSeparatorSet(HWND hwnd, bool);
 bool EditAutoCompleteWord(HWND hwnd, bool autoInsert);
 bool EditCheckNewLineInACFillUps();
 void EditGetBookmarkList(HWND hwnd,LPWSTR pszBookMarks,int cchLength);

@@ -7821,7 +7821,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
     DocPos const iWordStartPos = SciCall_WordStartPosition(iPosBefore, true);
 
     if (((iPosBefore - iWordStartPos) < iMinWdChCnt) || (iCol < iMinWdChCnt) || ((iCurrentPos - iWordStartPos) < iMinWdChCnt)) {
-        EditSetAccelWordNav(hwnd, Settings.AccelWordNavigation);
+        EditReducedWordSeparatorSet(hwnd, Settings.AccelWordNavigation);
         return true;
     }
 
@@ -7835,7 +7835,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
         iPos = SciCall_PositionAfter(iPos);
     }
     if (!autoInsert && bWordAllNumbers) {
-        EditSetAccelWordNav(hwnd, Settings.AccelWordNavigation);
+        EditReducedWordSeparatorSet(hwnd, Settings.AccelWordNavigation);
         return true;
     }
 
@@ -7973,7 +7973,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
         }
     }
 
-    EditSetAccelWordNav(hwnd, Settings.AccelWordNavigation);
+    EditReducedWordSeparatorSet(hwnd, Settings.AccelWordNavigation);
     return true;
 }
 
@@ -9319,9 +9319,9 @@ bool EditSortDlg(HWND hwnd,int* piSortFlags)
 
 //=============================================================================
 //
-//  EditSetAccelWordNav()
+//  EditReducedWordSeparatorSet()
 //
-void EditSetAccelWordNav(HWND hwnd,bool bAccelWordNav)
+void EditReducedWordSeparatorSet(HWND hwnd, bool bAccelWordNav)
 {
     UNREFERENCED_PARAMETER(hwnd);
     Settings.AccelWordNavigation = bAccelWordNav;

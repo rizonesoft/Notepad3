@@ -462,7 +462,7 @@ BEGIN
         MENUITEM "自動閉じHTML/XMLタグ(&H)\tCtrl+Shift+H",        IDM_SET_AUTOCLOSETAGS
         MENUITEM "単語補完(&U)",                                 IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "予約語を自動補完(&K)",                          IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "単語選択を広く(&G)\tCtrl+Alt+A",               IDM_SET_ACCELWORDNAV
+        MENUITEM "単語選択を広く(&G)\tCtrl+Alt+A",                IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "ファイルごとに単一インスタンス(&F)",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "ファイルの変更を通知(&C)...\tAlt+F5",          IDM_SET_CHANGENOTIFY

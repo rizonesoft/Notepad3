@@ -2363,7 +2363,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
     // word delimiter handling
     EditInitWordDelimiter(hwndEditCtrl);
-    EditSetAccelWordNav(hwndEditCtrl, Settings.AccelWordNavigation);
+    EditReducedWordSeparatorSet(hwndEditCtrl, Settings.AccelWordNavigation);
 
     SciCall_ClearRegisteredImages();
     SciCall_AutoCSetOptions(SC_AUTOCOMPLETE_FIXED_SIZE);
@@ -4256,7 +4256,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, IDM_SET_AUTOCOMPLETEWORDS, Settings.AutoCompleteWords && !ro);
     CheckCmd(hmenu, IDM_SET_AUTOCLEXKEYWORDS, Settings.AutoCLexerKeyWords && !ro);
 
-    CheckCmd(hmenu, IDM_SET_ACCELWORDNAV, Settings.AccelWordNavigation);
+    CheckCmd(hmenu, IDM_SET_ALTERNATE_WORD_SEPS, Settings.AccelWordNavigation);
     CheckCmd(hmenu, IDM_SET_AUTOSAVE_BACKUP, (Settings.AutoSaveOptions & (ASB_Periodic | ASB_Backup)));
 
     bool const dwr = (Settings.RenderingTechnology > SC_TECHNOLOGY_DEFAULT);
@@ -5819,9 +5819,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SciCall_AutoCCancel();
         break;
 
-    case IDM_SET_ACCELWORDNAV:
+    case IDM_SET_ALTERNATE_WORD_SEPS:
         Settings.AccelWordNavigation = !Settings.AccelWordNavigation;
-        EditSetAccelWordNav(Globals.hwndEdit,Settings.AccelWordNavigation);
+        EditReducedWordSeparatorSet(Globals.hwndEdit, Settings.AccelWordNavigation);
         MarkAllOccurrences(-1, true);
         break;
 
