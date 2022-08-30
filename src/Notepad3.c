@@ -5023,35 +5023,25 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_INDENT:
-        UndoTransActionBegin();
         EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, false);
-        EndUndoTransAction();
         break;
 
     case IDM_EDIT_UNINDENT:
-        UndoTransActionBegin();
         EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, false);
-        EndUndoTransAction();
         break;
 
     case CMD_TAB:
-        UndoTransActionBegin();
         EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
-        EndUndoTransAction();
         break;
 
     case CMD_BACKTAB:
-        UndoTransActionBegin();
         EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, false, false);
-        EndUndoTransAction();
         break;
 
     case CMD_CTRLTAB:
         SciCall_SetUseTabs(true);
         SciCall_SetTabIndents(false);
-        UndoTransActionBegin();
         EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
-        EndUndoTransAction();
         SciCall_SetTabIndents(Globals.fvCurFile.bTabIndents);
         SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
         break;
@@ -10552,10 +10542,8 @@ bool ConsistentIndentationCheck(EditFileIOStatus* status)
             bool const backSpcUnindents = SciCall_GetBackSpaceUnIndents();
             SciCall_SetBackSpaceUnIndents(true);
 
-            UndoTransActionBegin();
             EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, true);
             EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, true);
-            EndUndoTransAction();
 
             SciCall_SetUseTabs(useTabs);
             SciCall_SetTabIndents(tabIndents);

@@ -202,13 +202,13 @@ void ObserveNotifyDocChangedEvent();
 
 // ----------------------------------------------------------------------------
 
-// lean msg change notify
+// lean msg change notify (preferred)
 #define DocChangeTransactionBegin()  __try { IgnoreNotifyDocChangedEvent(EVM_Default); SciCall_BeginUndoAction(); 
 #define EndDocChangeTransaction()    } __finally { SciCall_EndUndoAction(); ObserveNotifyDocChangedEvent(); }
 
 // ----------------------------------------------------------------------------
 
-// none msg change notify
+// none msg change notify (only in simple, non complex operations)
 #define UndoTransActionBegin()  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyDocChangedEvent(EVM_None);
 #define EndUndoTransAction()    } __finally { ObserveNotifyDocChangedEvent(); EndUndoAction(_token_); } }
 
