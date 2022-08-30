@@ -527,6 +527,7 @@ typedef struct SETTINGS_T {
     int  WordWrapIndent;
     int  WordWrapSymbols;
     bool ShowWordWrapSymbols;
+    bool DocReadOnlyMode;
     bool MatchBraces;
     bool AutoCloseTags;
     int  HighlightCurrentLine;
