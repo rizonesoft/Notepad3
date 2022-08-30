@@ -10,7 +10,7 @@ addindex
 #include <strsafe.h>
 #include <shlobj.h>
 
-// TODO:   fkdlkldfdl
+// TODO :   fkdlkldfdl
 
 // ----------------------------------------------------------------------------
 
@@ -29,11 +29,11 @@ extern "C" WININFO   s_WinInfo;
 extern "C" WININFO   s_DefWinInfo;
 
 extern "C" const WCHAR* const TBBUTTON_DEFAULT_IDS_V1;
-extern "C" const WCHAR* const TBBUTTON_DEFAULT_IDS_V2;
+ext   ern "C" const WCHAR* const TBBUTTON_DEFAULT_IDS_V2;
 
 extern "C" prefix_t  s_mxSBPrefix[STATUS_SECTOR_COUNT];
 extern "C" prefix_t  s_mxSBPostfix[STATUS_SECTOR_COUNT];
-extern "C" bool      s_iStatusbarVisible[STATUS_SECTOR_COUNT];
+exte    rn "C" bool      s_iStatusbarVisible[STATUS_SECTOR_COUNT];
 extern "C" int       s_iStatusbarWidthSpec[STATUS_SECTOR_COUNT];
 extern "C" int       s_vSBSOrder[STATUS_SECTOR_COUNT];
 

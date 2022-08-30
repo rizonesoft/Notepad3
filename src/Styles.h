@@ -24,8 +24,17 @@
 
 #define MARGIN_SCI_LINENUM 0
 #define MARGIN_SCI_BOOKMRK 1
-#define MARGIN_SCI_FOLDING 2
-#define NUMBER_OF_MARGINS  3
+#define MARGIN_SCI_CHGHIST 2
+#define MARGIN_SCI_FOLDING 3
+#define NUMBER_OF_MARGINS  4
+
+#define MARGIN_MARK_HISTORY_MASK (                   \
+    (1 << SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN) |   \
+    (1 << SC_MARKNUM_HISTORY_SAVED) |                \
+    (1 << SC_MARKNUM_HISTORY_MODIFIED) |             \
+    (1 << SC_MARKNUM_HISTORY_REVERTED_TO_MODIFIED)   \
+)
+
 
 int    Style_NumOfLexers();  // Number of Lexers in pLexArray
 
@@ -56,6 +65,7 @@ void   Style_SetInvisible(HWND hwnd, bool);
 void   Style_HighlightCurrentLine(HWND hwnd, int);
 void   Style_SetFolding(HWND hwnd, bool bShowMargin);
 void   Style_SetBookmark(HWND hwnd, bool bShowMargin);
+void   Style_SetChangeHistory(HWND hwnd, bool bShowMargin);
 void   Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle);
 bool   Style_SetLexerFromFile(HWND hwnd,const HPATHL hpath);
 bool   Style_MaybeBinaryFile(HWND hwnd, const HPATHL hpath);

@@ -2213,7 +2213,13 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
 
     SciCall_SetMargins(NUMBER_OF_MARGINS);
     SciCall_SetMarginTypeN(MARGIN_SCI_LINENUM, SC_MARGIN_NUMBER);
+
     SciCall_SetMarginTypeN(MARGIN_SCI_BOOKMRK, SC_MARGIN_SYMBOL);
+    SciCall_SetMarginMaskN(MARGIN_SCI_BOOKMRK, ~SC_MASK_FOLDERS & ~MARGIN_MARK_HISTORY_MASK);
+
+    SciCall_SetMarginTypeN(MARGIN_SCI_CHGHIST, SC_MARGIN_SYMBOL);
+    SciCall_SetMarginMaskN(MARGIN_SCI_CHGHIST, MARGIN_MARK_HISTORY_MASK);
+
     SciCall_SetMarginTypeN(MARGIN_SCI_FOLDING, SC_MARGIN_COLOUR);
     SciCall_SetMarginMaskN(MARGIN_SCI_FOLDING, SC_MASK_FOLDERS);
 
@@ -3702,6 +3708,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         const SCNotification* const scn = (SCNotification*)lParam;
         switch (scn->margin) {
         case MARGIN_SCI_FOLDING:
+        case MARGIN_SCI_CHGHIST:
         case MARGIN_SCI_BOOKMRK:
         case MARGIN_SCI_LINENUM:
             imenu = MNU_MARGIN;
@@ -4137,6 +4144,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, IDM_VIEW_SHOWINDENTGUIDES, Settings.ShowIndentGuides);
     CheckCmd(hmenu, IDM_VIEW_LINENUMBERS, Settings.ShowLineNumbers);
     CheckCmd(hmenu, IDM_VIEW_BOOKMARK_MARGIN, Settings.ShowBookmarkMargin);
+    CheckCmd(hmenu, IDM_VIEW_CHGHISTORY_MARGIN, Settings.ShowChangeHistoryMargin);
     CheckCmd(hmenu, IDM_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
 
     CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, IsMarkOccurrencesEnabled());
@@ -5782,6 +5790,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_BOOKMARK_MARGIN:
         Settings.ShowBookmarkMargin = !Settings.ShowBookmarkMargin;
+        UpdateMarginWidth(true);
+        break;
+
+    case IDM_VIEW_CHGHISTORY_MARGIN:
+        Settings.ShowChangeHistoryMargin = !Settings.ShowChangeHistoryMargin;
         UpdateMarginWidth(true);
         break;
 
@@ -8402,6 +8415,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
         case MARGIN_SCI_BOOKMRK:
             EditBookmarkToggle(Globals.hwndEdit, SciCall_LineFromPosition(scn->position), scn->modifiers);
             break;
+        case MARGIN_SCI_CHGHIST:
         case MARGIN_SCI_LINENUM:
         //~SciCall_GotoLine(SciCall_LineFromPosition(scn->position));
         // fallthrough
@@ -9970,6 +9984,7 @@ void UpdateMarginWidth(const bool bForce)
         SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
     }
     Style_SetBookmark(Globals.hwndEdit, Settings.ShowBookmarkMargin);
+    Style_SetChangeHistory(Globals.hwndEdit, Settings.ShowChangeHistoryMargin);
     Style_SetFolding(Globals.hwndEdit, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
     bShowLnNums = Settings.ShowLineNumbers; 
     prevLineCount = currLineCount;
@@ -10067,6 +10082,7 @@ void UndoRedoRecordingStart()
     InterlockedExchange(&UndoActionToken, UNDOREDO_FREE); // clear
     _UndoRedoActionMap(-1, NULL);
     SciCall_SetUndoCollection(true);
+    SciCall_SetChangeHistory(SC_CHANGE_HISTORY_ENABLED | SC_CHANGE_HISTORY_MARKERS | SC_CHANGE_HISTORY_INDICATORS);
 }
 
 
@@ -10083,6 +10099,7 @@ void UndoRedoRecordingStop()
 
     _UndoRedoActionMap(-1, NULL);
 
+    SciCall_SetChangeHistory(SC_CHANGE_HISTORY_DISABLED);
     SciCall_SetUndoCollection(false);
     SciCall_EmptyUndoBuffer();
 }

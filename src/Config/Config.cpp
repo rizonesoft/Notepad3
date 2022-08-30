@@ -1523,6 +1523,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(AutoDetectIndentSettings, false);
 
     GET_BOOL_VALUE_FROM_INISECTION(ShowBookmarkMargin, IniSectionGetBool(IniSecSettings, L"ShowSelectionMargin", true));
+    GET_BOOL_VALUE_FROM_INISECTION(ShowChangeHistoryMargin, IniSectionGetBool(IniSecSettings, L"ShowChangeHistoryMargin", true));
     GET_BOOL_VALUE_FROM_INISECTION(ShowLineNumbers, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowCodeFolding, true);
     FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
@@ -1986,6 +1987,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
         IniSectionDelete(IniSecSettings, L"MultiEdgeLines", false);
     }
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowBookmarkMargin);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowChangeHistoryMargin);
     IniSectionDelete(IniSecSettings, L"ShowSelectionMargin", false); // old
 
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ShowLineNumbers);

@@ -163,7 +163,6 @@ DeclareSciCallR0(GetPositionCache, GETPOSITIONCACHE, int);
 DeclareSciCallV1(SetPositionCache, SETPOSITIONCACHE, int, cache);
 DeclareSciCallR0(GetLayoutThreads, GETLAYOUTTHREADS, int);
 DeclareSciCallV1(SetLayoutThreads, SETLAYOUTTHREADS, int, threads);
-
 // Event Masks
 DeclareSciCallR0(GetModEventMask, GETMODEVENTMASK, int);
 DeclareSciCallV1(SetModEventMask, SETMODEVENTMASK, int, mask);
@@ -410,6 +409,12 @@ DeclareSciCallR2(GetRangePointer, GETRANGEPOINTER, char *const, DocPos, start, D
 
 DeclareSciCallR2(GetLine, GETLINE, DocPos, DocLn, line, const char*, text);
 DeclareSciCallR2(GetCurLine, GETCURLINE, DocPos, unsigned int, length, const char*, text); // NULL: w/o terminating '\0' (SCI v515)
+
+// change history
+DeclareSciCallV1(SetChangeHistory, SETCHANGEHISTORY, int, changeHistory);
+DeclareSciCallR0(GetChangeHistory, GETCHANGEHISTORY, int);
+
+//=============================================================================
 
 inline DocPos SciCall_GetLine_Safe(DocLn iLine, char* pTxtBuf)
 {
