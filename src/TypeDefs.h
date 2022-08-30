@@ -551,6 +551,7 @@ typedef struct SETTINGS_T {
     int  LongLinesLimit;
     int  LongLineMode;
     bool ShowBookmarkMargin;
+    bool ShowChangeHistoryMargin;
     bool ShowLineNumbers;
     bool ShowCodeFolding;
     bool MarkOccurrences;

@@ -277,16 +277,16 @@ static inline int MapFQNameToSciFontQuality(LPCWSTR fqName) {
 //=============================================================================
 
 // ensure to be consistent with 
-static WCHAR* IndicatorTypes[22] = {
+static WCHAR* IndicatorTypes[23] = {
     L"indic_plain",              //  0 INDIC_PLAIN
     L"indic_squiggle",           //  1 INDIC_SQUIGGLE
     L"indic_tt",                 //  2 INDIC_TT
     L"indic_diagonal",           //  3 INDIC_DIAGONAL
-    L"indic_strike",             //  4 INDIC_STRIKE	4
-    L"indic_hidden",             //  5 INDIC_HIDDEN	5
-    L"indic_box",                //  6 INDIC_BOX	6
-    L"indic_roundbox",           //  7 INDIC_ROUNDBOX	7
-    L"indic_straightbox",        //  8 INDIC_STRAIGHTBOX   8
+    L"indic_strike",             //  4 INDIC_STRIKE
+    L"indic_hidden",             //  5 INDIC_HIDDEN
+    L"indic_box",                //  6 INDIC_BOX
+    L"indic_roundbox",           //  7 INDIC_ROUNDBOX
+    L"indic_straightbox",        //  8 INDIC_STRAIGHTBOX
     L"indic_dash",               //  9 INDIC_DASH
     L"indic_dots",               // 10 INDIC_DOTS
     L"indic_squigglelow",        // 11 INDIC_SQUIGGLELOW
@@ -299,7 +299,8 @@ static WCHAR* IndicatorTypes[22] = {
     L"indic_point",              // 18 INDIC_POINT
     L"indic_pointcharacter",     // 19 INDIC_POINTCHARACTER
     L"indic_gradient",           // 20 INDIC_GRADIENT
-    L"indic_gradientcentre"      // 21 INDIC_GRADIENTCENTRE
+    L"indic_gradientcentre",     // 21 INDIC_GRADIENTCENTRE
+    L"indic_point_top"           // 22 INDIC_POINT_TOP
 };
 
 static inline bool HasIndicStyleStrokeWidth(const int indicStyle) {
@@ -1595,6 +1596,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     // bookmark line or marker
     Style_SetBookmark(hwnd, Settings.ShowBookmarkMargin);
+    
+    // Change History
+    Style_SetChangeHistory(hwnd, Settings.ShowChangeHistoryMargin);
 
     // Hyperlink (URL) indicators
     Style_SetUrlHotSpot(hwnd);
@@ -2056,6 +2060,16 @@ void Style_SetBookmark(HWND hwnd, bool bShowMargin)
 
 //=============================================================================
 //
+//  Style_SetChangeHistory()
+//
+void Style_SetChangeHistory(HWND hwnd, bool bShowMargin)
+{
+    SciCall_SetMarginWidthN(MARGIN_SCI_CHGHIST, (bShowMargin ? _GetMarkerMarginWidth(hwnd) : 0));
+}
+
+
+//=============================================================================
+//
 //  Style_SetMargin()
 //
 void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBER
@@ -2077,13 +2091,23 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
     }
     COLORREF const clrMarginBack = colorRead;
 
+    COLORREF fldHiLight = clrLineNumFore;
+    const WCHAR* wchHighlightStyleStrg = GetCurrentStdLexer()->Styles[STY_SEL_TXT].szValue;
+    Style_StrGetColor(wchHighlightStyleStrg, FOREGROUND_LAYER, &fldHiLight, true);
+
+    COLORREF clrFoldMarginBack = clrMarginBack;
+    const WCHAR* wchDefaultStyleStrg = GetCurrentStdLexer()->Styles[STY_DEFAULT].szValue;
+    Style_StrGetColor(wchDefaultStyleStrg, BACKGROUND_LAYER, &clrFoldMarginBack, true);
+
+
+    // ---  Line Numbers  ---
     SciCall_StyleSetBack(STYLE_LINENUMBER, clrMarginBack);
     SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrMarginBack);
     //~SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrLineNumBack);
     SciCall_SetMarginSensitiveN(MARGIN_SCI_LINENUM, false); /// (!) false: allow selection drag
 
 
-    // CallTips
+    // ---  CallTips  ---
     SciCall_CallTipSetBack(clrMarginBack);
     SciCall_CallTipSetFore(RGB(0x80, 0x80, 0x80));
     SciCall_CallTipSetForeHlt(clrLineNumFore);
@@ -2137,12 +2161,11 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
     SciCall_SetMarginSensitiveN(MARGIN_SCI_BOOKMRK, true);
     SciCall_SetMarginCursorN(MARGIN_SCI_BOOKMRK, SC_NP3_CURSORHAND);
 
+    // --- Change History ---
+    SciCall_SetMarginBackN(MARGIN_SCI_CHGHIST, clrMarginBack);
+    SciCall_SetMarginSensitiveN(MARGIN_SCI_CHGHIST, false);
 
     // ---  Code folding  ---
-    COLORREF fldHiLight = clrLineNumFore;
-    const WCHAR* wchHighlightStyleStrg = GetCurrentStdLexer()->Styles[STY_SEL_TXT].szValue;
-    Style_StrGetColor(wchHighlightStyleStrg, FOREGROUND_LAYER, &fldHiLight, true);
-
     SciCall_SetMarginBackN(MARGIN_SCI_FOLDING, clrMarginBack);
     SciCall_SetMarginSensitiveN(MARGIN_SCI_FOLDING, true);
 
@@ -2183,8 +2206,9 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
     }
     SciCall_MarkerEnableHighlight(true); // highlight folding block
 
-    SciCall_SetFoldMarginColour(true, clrMarginBack); // background
-    SciCall_SetFoldMarginHiColour(true, clrMarginBack); // (!)
+    // background 
+    SciCall_SetFoldMarginColour(true, clrFoldMarginBack); // background
+    SciCall_SetFoldMarginHiColour(true, clrFoldMarginBack); // (!)
     //SciCall_FoldDisplayTextSetStyle(SC_FOLDDISPLAYTEXT_HIDDEN);
 
     int fldStyleLn = 0;
@@ -2207,6 +2231,7 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
 
     // set width
     Style_SetBookmark(hwnd, Settings.ShowBookmarkMargin);
+    Style_SetChangeHistory(hwnd, Settings.ShowChangeHistoryMargin);
     Style_SetFolding(hwnd, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 }
 
