@@ -206,7 +206,7 @@ BEGIN
                              "Preservação do Timestamp original de Modificação de Arquivo habilitado.\nEsta opção ficará ativa durante esta sessão!"
     IDS_MUI_OUT_OFF_OCCMRK   "Ficando sem marcadores de ocorrência (Marcador/Destacado)!"
     IDS_MUI_DOCUMENT_READONLY
-                             "The document is locked for view only. Keep the lock to prevent editing?"
+                             "O documento está bloqueado para somente visualização. Manter o bloqueio para prevenir a edição?"
 END
 
 STRINGTABLE
