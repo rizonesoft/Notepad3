@@ -1432,6 +1432,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(SaveRecentFiles, true);
     GET_BOOL_VALUE_FROM_INISECTION(PreserveCaretPos, false);
     GET_BOOL_VALUE_FROM_INISECTION(SaveFindReplace, false);
+    GET_BOOL_VALUE_FROM_INISECTION(DocReadOnlyMode, false);
 
     Defaults.EFR_Data.bFindClose = false;
     Settings.EFR_Data.bFindClose = IniSectionGetBool(IniSecSettings, L"CloseFind", Defaults.EFR_Data.bFindClose);
@@ -1884,6 +1885,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, PreserveCaretPos);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveFindReplace);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveFindReplace);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, DocReadOnlyMode);
 
     if (Settings.EFR_Data.bFindClose != Defaults.EFR_Data.bFindClose) {
         IniSectionSetBool(IniSecSettings, L"CloseFind", Settings.EFR_Data.bFindClose);

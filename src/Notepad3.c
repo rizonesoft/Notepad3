@@ -5664,6 +5664,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_READONLY:
         SciCall_SetReadOnly(!SciCall_GetReadOnly());
+        Settings.DocReadOnlyMode = SciCall_GetReadOnly();
         UpdateToolbar();
         break;
 
@@ -10504,6 +10505,7 @@ bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
     if (fLoad) {
         SciCall_SetReadOnly(false);
         fSuccess = EditLoadFile(Globals.hwndEdit, hfile_pth, status, fLoadFlags, bSetSavePoint);
+        SciCall_SetReadOnly(Settings.DocReadOnlyMode);
     } else {
         int idx;
         if (MRU_FindPath(Globals.pFileMRU, hfile_pth, &idx)) {
