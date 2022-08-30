@@ -154,6 +154,8 @@ BEGIN
     END
     POPUP "&Edit"
     BEGIN
+        MENUITEM "Document &Read Only"                   IDM_VIEW_READONLY
+        MENUITEM SEPARATOR
         MENUITEM "&Undo\tCtrl+Z",               IDM_EDIT_UNDO
         MENUITEM "&Redo\tCtrl+Y",               IDM_EDIT_REDO
         MENUITEM SEPARATOR
@@ -340,7 +342,6 @@ BEGIN
     END
     POPUP "&View"
     BEGIN
-        MENUITEM "Document &Read Only"                   IDM_VIEW_READONLY
         MENUITEM "&Word Wrap\tCtrl+W",                   IDM_VIEW_WORDWRAP
         MENUITEM "&Long Line Marker\tCtrl+Alt+L",        IDM_VIEW_LONGLINEMARKER
         MENUITEM "Indentation &Guides\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES
@@ -383,6 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Line &Numbers\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
         MENUITEM "Bookmark &Margin\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Folding"
         BEGIN
@@ -581,6 +583,7 @@ BEGIN
         MENUITEM "Folding",                     IDM_VIEW_FOLDING
         MENUITEM "Line Numbers",                IDM_VIEW_LINENUMBERS
         MENUITEM "Bookmark Margin",             IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

@@ -206,7 +206,7 @@ BEGIN
                              "Préservation de l'horodatage de modification original du fichier activée.\nCette option restera active pour cette session !"
     IDS_MUI_OUT_OFF_OCCMRK   "Il n'y a pas d'autres marqueurs d'occurrence (Signet/Surbrillance)!"
     IDS_MUI_DOCUMENT_READONLY
-                             "Le document est verrouillé en lecture seule. Voulez-vous le déverrouiller pour le modifier?"
+                             "Le document est verrouillé en lecture seule. Souhaitez-vous conserver ce mode?"
 END
 
 STRINGTABLE

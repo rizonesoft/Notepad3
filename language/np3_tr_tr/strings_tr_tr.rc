@@ -206,7 +206,7 @@ BEGIN
                              "Özgün dosya değişiklik zamanının korunması seçeneği etkinleştirilmiş.\nBu seçenek bu oturum boyunca etkin olacak!"
     IDS_MUI_OUT_OFF_OCCMRK   "Yinelenme işaretleyicileri bitiyor (Yer imi/Vurgula)!"
     IDS_MUI_DOCUMENT_READONLY
-                             "Belge şu anda salt okunur. Düzenlemeye geçmek ister misiniz?"
+                             "The document is locked for view only. Keep the lock to prevent editing?"
 END
 
 STRINGTABLE

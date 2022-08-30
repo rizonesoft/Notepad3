@@ -206,7 +206,7 @@ BEGIN
                              "원래 파일 수정 타임스탬프를 보존할 수 있습니다.\n이 옵션은 이 세션에 유지됩니다!"
     IDS_MUI_OUT_OFF_OCCMRK   "발생 마커 (책갈피/강조)가 부족합니다!"
     IDS_MUI_DOCUMENT_READONLY
-                             "문서는 보기 전용으로 잠겨 있습니다. 편집을 위해 잠금을 해제하시겠습니까?"
+                             "The document is locked for view only. Keep the lock to prevent editing?"
 END
 
 STRINGTABLE

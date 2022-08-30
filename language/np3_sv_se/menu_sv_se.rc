@@ -154,6 +154,8 @@ BEGIN
     END
     POPUP "Redigera"
     BEGIN
+        MENUITEM "Document &Read Only"                              IDM_VIEW_READONLY
+        MENUITEM SEPARATOR
         MENUITEM "Ångra\tCtrl+Z",                                   IDM_EDIT_UNDO
         MENUITEM "Gör om\tCtrl+Y",                                  IDM_EDIT_REDO
         MENUITEM SEPARATOR
@@ -340,7 +342,6 @@ BEGIN
     END
     POPUP "Visa"
     BEGIN
-        MENUITEM "Document &Read Only"                              IDM_VIEW_READONLY
         MENUITEM "Automatiskt radbyte\tCtrl+W",                     IDM_VIEW_WORDWRAP
         MENUITEM "Markering för långa rader\tCtrl+Alt+L",           IDM_VIEW_LONGLINEMARKER
         MENUITEM "Indragsguide\tCtrl+Shift+G",                      IDM_VIEW_SHOWINDENTGUIDES
@@ -383,6 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Radnummer\tCtrl+Shift+N",                         IDM_VIEW_LINENUMBERS
         MENUITEM "Bookmark &Margin\tCtrl+Shift+M",                  IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "Vikning"
         BEGIN
@@ -581,6 +583,7 @@ BEGIN
         MENUITEM "Ihopvikning av kodsegment",                       IDM_VIEW_FOLDING
         MENUITEM "Radnummer",                                       IDM_VIEW_LINENUMBERS
         MENUITEM "Marginal för bokmärken",                          IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

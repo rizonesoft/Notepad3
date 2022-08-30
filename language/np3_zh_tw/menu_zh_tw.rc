@@ -154,8 +154,10 @@ BEGIN
     END
     POPUP "編輯(&E)"
     BEGIN
+        MENUITEM "Document &Read Only"                        IDM_VIEW_READONLY
+        MENUITEM SEPARATOR
         MENUITEM "復原(&U)\tCtrl+Z",                          IDM_EDIT_UNDO
-        MENUITEM "取消復原(&R)\tCtrl+Y",                          IDM_EDIT_REDO
+        MENUITEM "取消復原(&R)\tCtrl+Y",                       IDM_EDIT_REDO
         MENUITEM SEPARATOR
         MENUITEM "剪下(&T)\tCtrl+X",                          IDM_EDIT_CUT
         MENUITEM "複製(&C)\tCtrl+C",                          IDM_EDIT_COPY
@@ -340,7 +342,6 @@ BEGIN
     END
     POPUP "檢視(&V)"
     BEGIN
-        MENUITEM "Document &Read Only"                         IDM_VIEW_READONLY
         MENUITEM "自動換行(&R)\tCtrl+W",                        IDM_VIEW_WORDWRAP
         MENUITEM "顯示行長度標記(&L)\tCtrl+Alt+L",               IDM_VIEW_LONGLINEMARKER
         MENUITEM "顯示縮排指示(&A)\tCtrl+Shift+G",               IDM_VIEW_SHOWINDENTGUIDES
@@ -383,6 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "行號(&N)\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
         MENUITEM "書籤邊界(&M)\tCtrl+Shift+M",        IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "摺疊(&F)"
         BEGIN
@@ -581,6 +583,7 @@ BEGIN
         MENUITEM "啟用摺疊",                              IDM_VIEW_FOLDING
         MENUITEM "行號",                                  IDM_VIEW_LINENUMBERS
         MENUITEM "書籤邊界",                       IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

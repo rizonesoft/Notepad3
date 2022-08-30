@@ -154,6 +154,8 @@ BEGIN
     END
     POPUP "&Upraviť"
     BEGIN
+        MENUITEM "Dokument &Len na čítanie"                 IDM_VIEW_READONLY
+        MENUITEM SEPARATOR
         MENUITEM "&Späť\tCtrl+Z",                           IDM_EDIT_UNDO
         MENUITEM "&Znova\tCtrl+Y",                          IDM_EDIT_REDO
         MENUITEM SEPARATOR
@@ -340,7 +342,6 @@ BEGIN
     END
     POPUP "&Zobraziť"
     BEGIN
-        MENUITEM "Dokument &Len na čítanie"                     IDM_VIEW_READONLY
         MENUITEM "&Zalomenie textu\tCtrl+W",                    IDM_VIEW_WORDWRAP
         MENUITEM "&Ohraničenie dĺžky riadku\tCtrl+Alt+L",       IDM_VIEW_LONGLINEMARKER
         MENUITEM "Vodítka odsadenia\tCtrl+Shift+G",             IDM_VIEW_SHOWINDENTGUIDES
@@ -383,6 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Číslovanie r&iadkov\tCtrl+Shift+N",       IDM_VIEW_LINENUMBERS
         MENUITEM "&Okraj záložky\tCtrl+Shift+M",            IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Skladanie"
         BEGIN
@@ -581,6 +583,7 @@ BEGIN
         MENUITEM "Skladacia väzba",                        IDM_VIEW_FOLDING
         MENUITEM "Číslovanie riadkov",                     IDM_VIEW_LINENUMBERS
         MENUITEM "Okraj záložky",                          IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

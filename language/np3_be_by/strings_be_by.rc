@@ -206,7 +206,7 @@ BEGIN
                              "Захоўванне зыходняй часаадзнакі змянення файла ўключана.\nГэта опцыя застанецца ўключанай для гэтай сесіі!"
     IDS_MUI_OUT_OFF_OCCMRK   "Маркеры ўваходжанняў (закладка/падсвечванне) на зыходзе!"
     IDS_MUI_DOCUMENT_READONLY
-                             "Дакумент заблакаваны толькі для прагляду. Жадаеце адблакаваць для рэдагавання?"
+                             "The document is locked for view only. Keep the lock to prevent editing?"
 END
 
 STRINGTABLE
