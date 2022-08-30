@@ -154,6 +154,8 @@ BEGIN
     END
     POPUP "편집(&E)"
     BEGIN
+        MENUITEM "읽기 전용 문서(&R)"                          IDM_VIEW_READONLY
+        MENUITEM SEPARATOR
         MENUITEM "실행 취소(&U)\tCtrl+Z",                      IDM_EDIT_UNDO
         MENUITEM "다시 실행(&R)\tCtrl+Y",                      IDM_EDIT_REDO
         MENUITEM SEPARATOR
@@ -340,7 +342,6 @@ BEGIN
     END
     POPUP "보기(&V)"
     BEGIN
-        MENUITEM "읽기 전용 문서(&R)"                    IDM_VIEW_READONLY
         MENUITEM "줄 바꿈(&R)\tCtrl+W",                    IDM_VIEW_WORDWRAP
         MENUITEM "긴 줄 표시(&L)\tCtrl+Alt+L",             IDM_VIEW_LONGLINEMARKER
         MENUITEM "들여쓰기 안내선(&A)\tCtrl+Shift+G",       IDM_VIEW_SHOWINDENTGUIDES
@@ -383,6 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "줄 번호(&N)\tCtrl+Shift+N",               IDM_VIEW_LINENUMBERS
         MENUITEM "책갈피 여백(&M)\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "접기"
         BEGIN
@@ -581,6 +583,7 @@ BEGIN
         MENUITEM "접기",                        IDM_VIEW_FOLDING
         MENUITEM "줄 번호",                          IDM_VIEW_LINENUMBERS
         MENUITEM "책갈피 여백",                 IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

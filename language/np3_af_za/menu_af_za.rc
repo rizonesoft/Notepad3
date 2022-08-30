@@ -154,6 +154,8 @@ BEGIN
     END
     POPUP "&Wysig"
     BEGIN
+        MENUITEM "Document &Read Only"                      IDM_VIEW_READONLY
+        MENUITEM SEPARATOR
         MENUITEM "O&ngedaan\tCtrl+Z",                       IDM_EDIT_UNDO
         MENUITEM "Oo&rdoen\tCtrl+Y",                        IDM_EDIT_REDO
         MENUITEM SEPARATOR
@@ -340,7 +342,6 @@ BEGIN
     END
     POPUP "&Aansig"
     BEGIN
-        MENUITEM "Document &Read Only"                      IDM_VIEW_READONLY
         MENUITEM "Woord Oo&rvloei\tCtrl+W",                 IDM_VIEW_WORDWRAP
         MENUITEM "&Lang Lyn Merker\tCtrl+Alt+L",            IDM_VIEW_LONGLINEMARKER
         MENUITEM "Indent&asiegidse\tCtrl+Shift+G",          IDM_VIEW_SHOWINDENTGUIDES
@@ -383,6 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Lyn &Nommers\tCtrl+Shift+N",              IDM_VIEW_LINENUMBERS
         MENUITEM "Boek&merk Ruglyn\tCtrl+Shift+M",          IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Vou"
         BEGIN
@@ -581,6 +583,7 @@ BEGIN
         MENUITEM "Kode Vou",                                IDM_VIEW_FOLDING
         MENUITEM "Lyn Nommer",                              IDM_VIEW_LINENUMBERS
         MENUITEM "Bookmerk Ruglyn",                         IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

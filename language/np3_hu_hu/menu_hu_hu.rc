@@ -154,6 +154,8 @@ BEGIN
     END
     POPUP "&Szerkesztés"
     BEGIN
+        MENUITEM "&Csak olvasható dokumentum"   IDM_VIEW_READONLY
+        MENUITEM SEPARATOR
         MENUITEM "&Visszavonás\tCtrl+Z",        IDM_EDIT_UNDO
         MENUITEM "&Újra\tCtrl+Y",               IDM_EDIT_REDO
         MENUITEM SEPARATOR
@@ -340,7 +342,6 @@ BEGIN
     END
     POPUP "&Nézet"
     BEGIN
-        MENUITEM "&Csak olvasható dokumentum"             IDM_VIEW_READONLY
         MENUITEM "Sort&örés\tCtrl+W",                     IDM_VIEW_WORDWRAP
         MENUITEM "&Hosszú sor jelölő\tCtrl+Alt+L",        IDM_VIEW_LONGLINEMARKER
         MENUITEM "&Behúzás jelölése\tCtrl+Shift+G",       IDM_VIEW_SHOWINDENTGUIDES
@@ -383,6 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Sorok s&záma\tCtrl+Shift+N",          IDM_VIEW_LINENUMBERS
         MENUITEM "Könyvjelző &Margó\tCtrl+Shift+M",     IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Behajtások"
         BEGIN
@@ -581,6 +583,7 @@ BEGIN
         MENUITEM "Kódblokk behajtások",         IDM_VIEW_FOLDING
         MENUITEM "Sorok száma",                 IDM_VIEW_LINENUMBERS
         MENUITEM "Könyvjelző margók",           IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

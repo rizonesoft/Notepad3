@@ -154,6 +154,8 @@ BEGIN
     END
     POPUP "Dü&zenle"
     BEGIN
+        MENUITEM "Belge salt &okunur"                                 IDM_VIEW_READONLY
+        MENUITEM SEPARATOR
         MENUITEM "&Geri al\tCtrl+Z",                                  IDM_EDIT_UNDO
         MENUITEM "&Yinele\tCtrl+Y",                                   IDM_EDIT_REDO
         MENUITEM SEPARATOR
@@ -340,7 +342,6 @@ BEGIN
     END
     POPUP "&Görünüm"
     BEGIN
-        MENUITEM "Belge salt &okunur"                                 IDM_VIEW_READONLY
         MENUITEM "&Sözcük kaydırmalar görüntülensin\tCtrl+W",         IDM_VIEW_WORDWRAP
         MENUITEM "&Uzun satır işareti görüntülensin\tCtrl+Alt+L",     IDM_VIEW_LONGLINEMARKER
         MENUITEM "Sekme &konumları görüntülensin\tCtrl+Shift+G",      IDM_VIEW_SHOWINDENTGUIDES
@@ -383,6 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Satır &numaraları\tCtrl+Shift+N",                   IDM_VIEW_LINENUMBERS
         MENUITEM "&Yer imi boşluğu\tCtrl+Shift+M",                    IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Blok daraltma"
         BEGIN
@@ -581,6 +583,7 @@ BEGIN
         MENUITEM "Toplama",                                           IDM_VIEW_FOLDING
         MENUITEM "Satır numaraları",                                  IDM_VIEW_LINENUMBERS
         MENUITEM "Yer imi kenar boşluğu",                             IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

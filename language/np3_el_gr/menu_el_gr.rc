@@ -154,6 +154,8 @@ BEGIN
     END
     POPUP "&Επεξεργασία"
     BEGIN
+        MENUITEM "Document &Read Only"            IDM_VIEW_READONLY
+        MENUITEM SEPARATOR
         MENUITEM "Αναίρε&ση\tCtrl+Z",             IDM_EDIT_UNDO
         MENUITEM "Επανάλη&ψη ενέργειας\tCtrl+Y",  IDM_EDIT_REDO
         MENUITEM SEPARATOR
@@ -340,7 +342,6 @@ BEGIN
     END
     POPUP "Πρ&οβολή"
     BEGIN
-        MENUITEM "Document &Read Only"                            IDM_VIEW_READONLY
         MENUITEM "&Αναδίπλωση λέξεων\tCtrl+W",                    IDM_VIEW_WORDWRAP
         MENUITEM "&Δείκτης μήκους γραμμής\tCtrl+Alt+L",           IDM_VIEW_LONGLINEMARKER
         MENUITEM "Οδη&γοί εσοχών\tCtrl+Shift+G",                  IDM_VIEW_SHOWINDENTGUIDES
@@ -383,6 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Α&ρίθμηση γραμμών\tCtrl+Shift+N",                IDM_VIEW_LINENUMBERS
         MENUITEM "Π&εριθώριο σελιδοδείκτη\tCtrl+Shift+M",          IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "Α&ναδίπλωση"
         BEGIN
@@ -581,6 +583,7 @@ BEGIN
         MENUITEM "Αναδίπλωση",                        IDM_VIEW_FOLDING
         MENUITEM "Αρίθμηση γραμμών",                  IDM_VIEW_LINENUMBERS
         MENUITEM "Περιθώριο σελιδοδείκτη",            IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

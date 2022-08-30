@@ -154,6 +154,8 @@ BEGIN
     END
     POPUP "&Edition"
     BEGIN
+        MENUITEM "Document &Lecture Seule"                                  IDM_VIEW_READONLY
+        MENUITEM SEPARATOR
         MENUITEM "&Annuler\tCtrl+Z",                        IDM_EDIT_UNDO
         MENUITEM "&Rétablir\tCtrl+Y",                       IDM_EDIT_REDO
         MENUITEM SEPARATOR
@@ -340,7 +342,6 @@ BEGIN
     END
     POPUP "&Affichage"
     BEGIN
-        MENUITEM "Document &Lecture Seule"                                  IDM_VIEW_READONLY
         MENUITEM "Retour à la Lig&ne Automatique\tCtrl+W",                  IDM_VIEW_WORDWRAP
         MENUITEM "Marqueur de &Longue Ligne\tCtrl+Alt+L",                   IDM_VIEW_LONGLINEMARKER
         MENUITEM "Guides de Retra&it\tCtrl+Shift+G",                        IDM_VIEW_SHOWINDENTGUIDES
@@ -376,13 +377,14 @@ BEGIN
             POPUP "Correspondance &Mot Entier"
             BEGIN
                 MENUITEM "Aucu&ne",                          IDM_VIEW_MARKOCCUR_WNONE
-                MENUITEM "Correpondance &Mot Sélectionné",  IDM_VIEW_MARKOCCUR_WORD
-                MENUITEM "Correpondance Mot Cour&ant",      IDM_VIEW_MARKOCCUR_CURRENT
+                MENUITEM "Correpondance &Mot Sélectionné",   IDM_VIEW_MARKOCCUR_WORD
+                MENUITEM "Correpondance Mot Cour&ant",       IDM_VIEW_MARKOCCUR_CURRENT
             END
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Numéros de Ligne\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
-        MENUITEM "&Marge de Signet\tCtrl+Shift+M",          IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "&Numéros de Ligne\tCtrl+Shift+N",          IDM_VIEW_LINENUMBERS
+        MENUITEM "&Marge de Signet\tCtrl+Shift+M",           IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Marge avec &historique des modifications", IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Pliage"
         BEGIN
@@ -581,7 +583,8 @@ BEGIN
         MENUITEM "&Pliage de Code",                         IDM_VIEW_FOLDING
         MENUITEM "&Numéros de Ligne",                       IDM_VIEW_LINENUMBERS
         MENUITEM "Marge de Signet",                         IDM_VIEW_BOOKMARK_MARGIN
-    END 
+        MENUITEM "Marge avec historique des modifications", IDM_VIEW_CHGHISTORY_MARGIN
+    END
     POPUP "+"
     BEGIN
         MENUITEM "Ouvrir Notepad3",                         IDM_TRAY_RESTORE

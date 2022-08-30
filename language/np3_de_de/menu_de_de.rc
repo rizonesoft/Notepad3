@@ -464,7 +464,7 @@ BEGIN
         MENUITEM "Auto Tagabschluss &HTML/XML\tCtrl+Shift+H",   IDM_SET_AUTOCLOSETAGS
         MENUITEM "Auto Wort &Vorschläge",                       IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Auto &Lexer KeyWord Vorschläge",              IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Alternative Wort Se&peratoren\tCtrl+Alt+A",   IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Alternative Wort Se&paratoren\tCtrl+Alt+A",   IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Nur eine &Instanz pro Datei",                 IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Nachricht bei &Dateiänderung...\tAlt+F5",     IDM_SET_CHANGENOTIFY

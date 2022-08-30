@@ -206,7 +206,7 @@ BEGIN
                              "Сохранение исходной метки времени изменения файла включено.\nЭта опция останется включенной для текущей сессии!"
     IDS_MUI_OUT_OFF_OCCMRK   "Маркеры вхождения (закладка/отметка) на исходе!"
     IDS_MUI_DOCUMENT_READONLY
-                             "Документ заблокирован только для просмотра. Хотите разблокировать для редактирования?"
+                             "The document is locked for view only. Keep the lock to prevent editing?"
 END
 
 STRINGTABLE

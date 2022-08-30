@@ -154,6 +154,8 @@ BEGIN
     END
     POPUP "Bew&erken"
     BEGIN
+        MENUITEM "Document &Read Only"                              IDM_VIEW_READONLY
+        MENUITEM SEPARATOR
         MENUITEM "&Ongedaan maken\tCtrl+Z",                         IDM_EDIT_UNDO
         MENUITEM "Op&nieuw uitvoeren\tCtrl+Y",                      IDM_EDIT_REDO
         MENUITEM SEPARATOR
@@ -340,7 +342,6 @@ BEGIN
     END
     POPUP "Beel&d"
     BEGIN
-        MENUITEM "Document &Read Only"                              IDM_VIEW_READONLY
         MENUITEM "Automatische regel&terugloop\tCtrl+W",            IDM_VIEW_WORDWRAP
         MENUITEM "&Lange regelmarkering\tCtrl+Alt+L",               IDM_VIEW_LONGLINEMARKER
         MENUITEM "Inspringing markeren\tCtrl+Shift+G",              IDM_VIEW_SHOWINDENTGUIDES
@@ -383,6 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Regel&nummers\tCtrl+Shift+N",                     IDM_VIEW_LINENUMBERS
         MENUITEM "Bladwijzer&marge\tCtrl+Shift+M",                  IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "&In/uitklappen"
         BEGIN
@@ -581,6 +583,7 @@ BEGIN
         MENUITEM "In/uitklappen",                                   IDM_VIEW_FOLDING
         MENUITEM "Regelnummers",                                    IDM_VIEW_LINENUMBERS
         MENUITEM "Bladwijzermarge",                                 IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

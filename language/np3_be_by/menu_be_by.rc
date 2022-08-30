@@ -154,6 +154,8 @@ BEGIN
     END
     POPUP "&Праўка"
     BEGIN
+        MENUITEM "Дакумент толькі для &чытання"     IDM_VIEW_READONLY
+        MENUITEM SEPARATOR
         MENUITEM "Ад&мена\tCtrl+Z",                 IDM_EDIT_UNDO
         MENUITEM "&Паўтор\tCtrl+Y",                 IDM_EDIT_REDO
         MENUITEM SEPARATOR
@@ -340,7 +342,6 @@ BEGIN
     END
     POPUP "&Выгляд"
     BEGIN
-        MENUITEM "Дакумент толькі для &чытання"                 IDM_VIEW_READONLY
         MENUITEM "&Перанос радкоў\tCtrl+W",                     IDM_VIEW_WORDWRAP
         MENUITEM "&Маркер доўгіх радкоў\tCtrl+Alt+L",           IDM_VIEW_LONGLINEMARKER
         MENUITEM "Нак&іравальнікі водступаў\tCtrl+Shift+G",     IDM_VIEW_SHOWINDENTGUIDES
@@ -383,6 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Нумары радкоў\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
         MENUITEM "В&одступ для закладак\tCtrl+Shift+M",  IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Блокі коду"
         BEGIN
@@ -581,6 +583,7 @@ BEGIN
         MENUITEM "Згортванне блокаў коду",       IDM_VIEW_FOLDING
         MENUITEM "Нумары радкоў",                IDM_VIEW_LINENUMBERS
         MENUITEM "Водступ для закладак",         IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

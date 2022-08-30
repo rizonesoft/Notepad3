@@ -154,18 +154,20 @@ BEGIN
     END
     POPUP "संपादन (&E)"
     BEGIN
-        MENUITEM "पूर्ववत करें (&U)\tCtrl+Z",               IDM_EDIT_UNDO
-        MENUITEM "फिर से करें (&R)\tCtrl+Y",               IDM_EDIT_REDO
+        MENUITEM "Document &Read Only"                 IDM_VIEW_READONLY
         MENUITEM SEPARATOR
-        MENUITEM "काटें (&T)\tCtrl+X",                IDM_EDIT_CUT
-        MENUITEM "कॉपी (&C)\tCtrl+C",               IDM_EDIT_COPY
+        MENUITEM "पूर्ववत करें (&U)\tCtrl+Z",               IDM_EDIT_UNDO
+        MENUITEM "फिर से करें (&R)\tCtrl+Y",              IDM_EDIT_REDO
+        MENUITEM SEPARATOR
+        MENUITEM "काटें (&T)\tCtrl+X",                   IDM_EDIT_CUT
+        MENUITEM "कॉपी (&C)\tCtrl+C",                  IDM_EDIT_COPY
         MENUITEM "सारा कॉपी करें (&A)\tAlt+C",            IDM_EDIT_COPYALL
-        MENUITEM "कॉपी करें और जोड़ें (&Y)\tCtrl+E",           IDM_EDIT_COPYADD
-        MENUITEM "चिपकाएं (&P)\tCtrl+V",              IDM_EDIT_PASTE
-        MENUITEM "बदलें (&W)\tCtrl+K",               IDM_EDIT_SWAP
-        MENUITEM "हटाएं (&D)\tDel",                IDM_EDIT_CLEAR
-        MENUITEM "क्लिपबोर्ड साफ़ करें (&E)",            IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "सारा चुनें (&S)\tCtrl+A",         IDM_EDIT_SELECTALL
+        MENUITEM "कॉपी करें और जोड़ें (&Y)\tCtrl+E",       IDM_EDIT_COPYADD
+        MENUITEM "चिपकाएं (&P)\tCtrl+V",                IDM_EDIT_PASTE
+        MENUITEM "बदलें (&W)\tCtrl+K",                  IDM_EDIT_SWAP
+        MENUITEM "हटाएं (&D)\tDel",                     IDM_EDIT_CLEAR
+        MENUITEM "क्लिपबोर्ड साफ़ करें (&E)",               IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "सारा चुनें (&S)\tCtrl+A",               IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
         POPUP "शब्द (&O)"
         BEGIN
@@ -340,7 +342,6 @@ BEGIN
     END
     POPUP "दृश्य (&V)"
     BEGIN
-        MENUITEM "Document &Read Only"                     IDM_VIEW_READONLY
         MENUITEM "शब्द लपेटें (&W)\tCtrl+W",                   IDM_VIEW_WORDWRAP
         MENUITEM "दीर्घ रेखा चिन्हक (&L)\tCtrl+Alt+L",        IDM_VIEW_LONGLINEMARKER
         MENUITEM "इंडेंटेशन निर्देशिका (&G)\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES
@@ -383,6 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "रेखा संख्या (&N)\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
         MENUITEM "बुकमार्क मार्जिन (&M)\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "फोलडिंग (&F)"
         BEGIN
@@ -581,6 +583,7 @@ BEGIN
         MENUITEM "फोलडिंग",                     IDM_VIEW_FOLDING
         MENUITEM "रेखा संख्या",                IDM_VIEW_LINENUMBERS
         MENUITEM "मार्जिन बुकमार्क करें",             IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN
