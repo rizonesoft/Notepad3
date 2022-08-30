@@ -3298,7 +3298,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
         return;
     }
 
-    //~~~UndoTransActionBegin(); ~ do outside
+    DocChangeTransactionBegin()
 
     if (bForceAll) {
         SciCall_SelectAll();
@@ -3369,7 +3369,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
         Sci_ScrollChooseCaret();
     }
 
-    //~~~EndUndoTransAction();  ~ do outside
+    EndDocChangeTransaction();
 }
 
 
