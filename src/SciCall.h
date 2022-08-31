@@ -330,8 +330,7 @@ DeclareSciCallV0(SelectionDuplicate, SELECTIONDUPLICATE);
 DeclareSciCallV0(LineTranspose, LINETRANSPOSE);
 DeclareSciCallV0(MoveSelectedLinesUp, MOVESELECTEDLINESUP);
 DeclareSciCallV0(MoveSelectedLinesDown, MOVESELECTEDLINESDOWN);
-DeclareSciCallR2(FindText, FINDTEXT, DocPos, int, flags, struct Sci_TextToFind*, text);
-DeclareSciCallR2(FindTextFull, FINDTEXTFULL, DocPos, int, flags, struct Sci_TextToFind*, text);
+DeclareSciCallR2(FindTextFull, FINDTEXTFULL, DocPos, int, flags, struct Sci_TextToFindFull*, text);
 
 // Operations
 DeclareSciCallV0(Cut, CUT);
@@ -344,7 +343,7 @@ DeclareSciCallV0(Cancel, CANCEL);
 DeclareSciCallV0(CopyAllowLine, COPYALLOWLINE);
 DeclareSciCallV2(CopyText, COPYTEXT, DocPos, length, const char*, text);
 DeclareSciCallR2(GetText, GETTEXT, DocPos, DocPos, length, const char*, text); // NULL: w/o terminating '\0' (SCI v515)
-DeclareSciCallR01(GetTextRangeFull, GETTEXTRANGEFULL, DocPos, struct Sci_TextRange*, textrange);
+DeclareSciCallR01(GetTextRangeFull, GETTEXTRANGEFULL, DocPos, struct Sci_TextRangeFull*, textrange);
 DeclareSciCallV0(UpperCase, UPPERCASE);
 DeclareSciCallV0(LowerCase, LOWERCASE);
 DeclareSciCallV2(ReplaceRectangular, REPLACERECTANGULAR, DocPos, length, const char *, text);

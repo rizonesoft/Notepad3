@@ -2064,7 +2064,7 @@ void Style_SetBookmark(HWND hwnd, bool bShowMargin)
 //
 void Style_SetChangeHistory(HWND hwnd, bool bShowMargin)
 {
-    SciCall_SetMarginWidthN(MARGIN_SCI_CHGHIST, (bShowMargin ? _GetMarkerMarginWidth(hwnd) : 0));
+    SciCall_SetMarginWidthN(MARGIN_SCI_CHGHIST, (bShowMargin ? _GetMarkerMarginWidth(hwnd) + 4 : 0));
 }
 
 
@@ -2164,10 +2164,15 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
     // --- Change History ---
     SciCall_SetMarginBackN(MARGIN_SCI_CHGHIST, clrMarginBack);
     SciCall_SetMarginSensitiveN(MARGIN_SCI_CHGHIST, false);
+    SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_MODIFIED, clrMarginBack);
+    //SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN, clrMarginBack);
+    //SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_SAVED, clrMarginBack);
+    //SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_REVERTED_TO_MODIFIED, clrMarginBack);
 
     // ---  Code folding  ---
     SciCall_SetMarginBackN(MARGIN_SCI_FOLDING, clrMarginBack);
     SciCall_SetMarginSensitiveN(MARGIN_SCI_FOLDING, true);
+
 
     int fldStyleMrk = SC_CASE_LOWER;
     Style_StrGetCase(wchBookMarkStyleStrg, &fldStyleMrk);

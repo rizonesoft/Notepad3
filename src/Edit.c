@@ -5460,17 +5460,17 @@ void EditGetExcerpt(HWND hwnd, LPWSTR lpszExcerpt, DWORD cchExcerpt)
     }
 
     WCHAR tch[256] = { L'\0' };
-    struct Sci_TextRange tr = { { 0, 0 }, NULL };
+    struct Sci_TextRangeFull tr = { { 0, 0 }, NULL };
     /*if (iCurPos != iAnchorPos && !Sci_IsMultiOrRectangleSelection()) {*/
     tr.chrg.cpMin = (DocPosCR)SciCall_GetSelectionStart();
-    tr.chrg.cpMax = min_cr((tr.chrg.cpMin + (DocPosCR)COUNTOF(tch)), (DocPosCR)SciCall_GetSelectionEnd());
+    tr.chrg.cpMax = min_p((tr.chrg.cpMin + COUNTOF(tch)), SciCall_GetSelectionEnd());
     /*}
     else {
       int iLine = SciCall_LineFromPosition(iCurPos);
       tr.chrg.cpMin = SciCall_PositionFromLine(iLine);
       tr.chrg.cpMax = min_cr(SciCall_GetLineEndPosition(iLine),(LONG)(tr.chrg.cpMin + COUNTOF(tchBuf2)));
     }*/
-    tr.chrg.cpMax = min_cr(tr.chrg.cpMax, (DocPosCR)Sci_GetDocEndPosition());
+    tr.chrg.cpMax = min_p(tr.chrg.cpMax, Sci_GetDocEndPosition());
 
     size_t const len = ((size_t)tr.chrg.cpMax - (size_t)tr.chrg.cpMin);
     char*  const pszText  = AllocMem(len+1LL, HEAP_ZERO_MEMORY);
@@ -7857,12 +7857,11 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
     if (Settings.AutoCompleteWords || (autoInsert && !Settings.AutoCLexerKeyWords)) {
     // --------------------------------------------------------------------------
 
-        struct Sci_TextToFind ft = { { 0, 0 }, 0, { 0, 0 } };
+        struct Sci_TextToFindFull ft = { { 0, 0 }, NULL, { 0, 0 } };
         ft.lpstrText = pRoot;
         ft.chrg.cpMax = (DocPosCR)iDocEndPos;
 
-        //DocPos iPosFind = SciCall_FindTextFull(SCFIND_WORDSTART, &ft);
-        DocPos iPosFind = SciCall_FindText(SCFIND_WORDSTART, &ft);
+        DocPos iPosFind = SciCall_FindTextFull(SCFIND_WORDSTART, &ft);
         PWLIST pwlNewWord = NULL;
 
         while ((iPosFind >= 0) && ((iPosFind + iRootLen) < iDocEndPos)) {
@@ -7896,8 +7895,8 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
             }
 
             ft.chrg.cpMin = (DocPosCR)iWordEndPos;
-            //iPosFind = SciCall_FindTextFull(SCFIND_WORDSTART, &ft);
-            iPosFind = SciCall_FindText(SCFIND_WORDSTART, &ft);
+            iPosFind = SciCall_FindTextFull(SCFIND_WORDSTART, &ft);
+            //iPosFind = SciCall_FindText(SCFIND_WORDSTART, &ft);
         }
         FreeMem(pwlNewWord);
         pwlNewWord = NULL;
