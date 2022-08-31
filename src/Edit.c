@@ -4571,7 +4571,7 @@ void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
     }
 
     DocLn const curLn = Sci_GetCurrentLineNumber();
-    int const bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK();
+    int const bitmask = SciCall_MarkerGet(curLn) & ALL_MARKERS_BITMASK();
 
     if (!bitmask) {
         return;
@@ -4585,7 +4585,7 @@ void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
         while (line >= 0) {
             line = SciCall_MarkerNext(line, bitmask);
             if (line >= 0) {
-                int const lnmask = SciCall_MarkerGet(line) & OCCURRENCE_MARKER_BITMASK();
+                int const lnmask = SciCall_MarkerGet(line) & ALL_MARKERS_BITMASK();
                 if (lnmask == bitmask) { // must fit all markers
                     copyBufSize += SciCall_LineLength(line); // incl line-breaks
                 }
@@ -4602,7 +4602,7 @@ void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
                 while (line >= 0) {
                     line = SciCall_MarkerNext(line, bitmask);
                     if (line >= 0) {
-                        int const lnmask = SciCall_MarkerGet(line) & OCCURRENCE_MARKER_BITMASK();
+                        int const lnmask = SciCall_MarkerGet(line) & ALL_MARKERS_BITMASK();
                         if (lnmask == bitmask) { // must fit all markers
                             DocPos const lnBeg = SciCall_PositionFromLine(line);
                             DocPos const lnLen = SciCall_LineLength(line); // incl line-breaks
@@ -4647,9 +4647,9 @@ void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
         while (line >= 0) {
             line = SciCall_MarkerNext(line, bitmask);
             if (line >= 0) {
-                int const lnmask = SciCall_MarkerGet(line) & OCCURRENCE_MARKER_BITMASK();
+                int const lnmask = SciCall_MarkerGet(line) & ALL_MARKERS_BITMASK();
                 if (lnmask == bitmask) { // must fit all markers
-                    SciCall_MarkerDelete(line, -1);
+                    UserMarkerDeleteAll(line);
                     DocPos const lnBeg = SciCall_PositionFromLine(line);
                     DocPos const lnLen = SciCall_LineLength(line); // incl line-breaks
                     SciCall_DeleteRange(lnBeg, lnLen); // complete line
@@ -7527,7 +7527,7 @@ void EditClearAllOccurrenceMarkers(HWND hwnd)
 void EditClearAllBookMarks(HWND hwnd)
 {
     UNREFERENCED_PARAMETER(hwnd);
-    int const bitmask = OCCURRENCE_MARKER_BITMASK() & ~(1 << MARKER_NP3_BOOKMARK);
+    int const bitmask = OCCURRENCE_MARKER_BITMASK();
     DocLn const line = SciCall_MarkerNext(0, bitmask);
     if (line >= 0) {
         // 1st press: clear all occurrences marker
@@ -8185,17 +8185,17 @@ void EditBookMarkLineRange(HWND hwnd)
 //
 void EditDeleteMarkerInSelection()
 {
-    if (SciCall_IsSelectionEmpty()) {
-        SciCall_MarkerDelete(Sci_GetCurrentLineNumber(), -1);
-    } else if (Sci_IsStreamSelection()) {
-        DocPos const posSelBeg = SciCall_GetSelectionStart();
-        DocPos const posSelEnd = SciCall_GetSelectionEnd();
-        DocLn const lnBeg = SciCall_LineFromPosition(posSelBeg);
-        DocLn const lnEnd = SciCall_LineFromPosition(posSelEnd);
-        DocLn const lnDelBeg = (posSelBeg <= SciCall_PositionFromLine(lnBeg)) ? lnBeg : lnBeg + 1;
-        DocLn const lnDelEnd = (posSelEnd  > SciCall_GetLineEndPosition(lnEnd)) ? lnEnd : lnEnd - 1;
-        for (DocLn ln = lnDelBeg; ln <= lnDelEnd; ++ln) {
-            SciCall_MarkerDelete(ln, -1);
+    if (!SciCall_IsSelectionEmpty()) {
+        if (Sci_IsStreamSelection()) {
+            DocPos const posSelBeg = SciCall_GetSelectionStart();
+            DocPos const posSelEnd = SciCall_GetSelectionEnd();
+            DocLn const  lnBeg = SciCall_LineFromPosition(posSelBeg);
+            DocLn const  lnEnd = SciCall_LineFromPosition(posSelEnd);
+            DocLn const  lnDelBeg = (posSelBeg <= SciCall_PositionFromLine(lnBeg)) ? lnBeg : lnBeg + 1;
+            DocLn const  lnDelEnd = (posSelEnd > SciCall_GetLineEndPosition(lnEnd)) ? lnEnd : lnEnd - 1;
+            for (DocLn ln = lnDelBeg; ln <= lnDelEnd; ++ln) {
+                UserMarkerDeleteAll(ln);
+            }
         }
     }
 }
@@ -9352,7 +9352,7 @@ void  EditGetBookmarkList(HWND hwnd, LPWSTR pszBookMarks, int cchLength)
     UNREFERENCED_PARAMETER(hwnd);
     WCHAR tchLine[32];
     StringCchCopyW(pszBookMarks, cchLength, L"");
-    int const bitmask = (1 << MARKER_NP3_BOOKMARK);
+    int const bitmask = BOOKMARK_BITMASK();
     DocLn iLine = 0;
     do {
         iLine = SciCall_MarkerNext(iLine, bitmask);
@@ -9409,14 +9409,14 @@ void EditBookmarkNext(HWND hwnd, const DocLn iLine)
     UNREFERENCED_PARAMETER(hwnd);
     int bitmask = SciCall_MarkerGet(iLine) & OCCURRENCE_MARKER_BITMASK();
     if (!bitmask) {
-        bitmask = (1 << MARKER_NP3_BOOKMARK);
+        bitmask = BOOKMARK_BITMASK();
     }
     DocLn iNextLine = SciCall_MarkerNext(iLine + 1, bitmask);
     if (iNextLine == (DocLn)-1) {
         iNextLine = SciCall_MarkerNext(0, bitmask); // wrap around
     }
     if (iNextLine == (DocLn)-1) {
-        bitmask = OCCURRENCE_MARKER_BITMASK();
+        bitmask = ALL_MARKERS_BITMASK();
         iNextLine = SciCall_MarkerNext(iLine + 1, bitmask); // find any bookmark
     }
     if (iNextLine == (DocLn)-1) {
@@ -9435,16 +9435,16 @@ void EditBookmarkNext(HWND hwnd, const DocLn iLine)
 void EditBookmarkPrevious(HWND hwnd, const DocLn iLine)
 {
     UNREFERENCED_PARAMETER(hwnd);
-    int bitmask = SciCall_MarkerGet(iLine) & OCCURRENCE_MARKER_BITMASK();
+    int bitmask = SciCall_MarkerGet(iLine) & ALL_MARKERS_BITMASK();
     if (!bitmask) {
-        bitmask = (1 << MARKER_NP3_BOOKMARK);
+        bitmask = BOOKMARK_BITMASK();
     }
     DocLn iPrevLine = SciCall_MarkerPrevious(max_ln(0, iLine - 1), bitmask);
     if (iPrevLine == (DocLn)-1) {
         iPrevLine = SciCall_MarkerPrevious(SciCall_GetLineCount(), bitmask); // wrap around
     }
     if (iPrevLine == (DocLn)-1) {
-        bitmask = OCCURRENCE_MARKER_BITMASK();
+        bitmask = ALL_MARKERS_BITMASK();
         iPrevLine = SciCall_MarkerPrevious(max_ln(0, iLine - 1), bitmask); //find any bookmark
     }
     if (iPrevLine == (DocLn)-1) {
@@ -9464,10 +9464,11 @@ void EditBookmarkPrevious(HWND hwnd, const DocLn iLine)
 void EditBookmarkToggle(HWND hwnd, const DocLn ln, const int modifiers)
 {
     UNREFERENCED_PARAMETER(hwnd);
-    int const bitmask = SciCall_MarkerGet(ln) & OCCURRENCE_MARKER_BITMASK();
+    int const all = ALL_MARKERS_BITMASK();
+    int const bitmask = SciCall_MarkerGet(ln) & all;
     if (!bitmask) {
         SciCall_MarkerAdd(ln, MARKER_NP3_BOOKMARK); // set
-    } else if (bitmask & (1 << MARKER_NP3_BOOKMARK)) {
+    } else if (bitmask & BOOKMARK_BITMASK()) {
         SciCall_MarkerDelete(ln, MARKER_NP3_BOOKMARK); // unset
     } else {
         for (int m = MARKER_NP3_1; m < MARKER_NP3_BOOKMARK; ++m) {

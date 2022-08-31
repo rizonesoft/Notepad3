@@ -243,6 +243,21 @@ void ObserveNotifyDocChangedEvent();
 
 // ----------------------------------------------------------------------------
 
+inline void UserMarkerDeleteAll(const DocLn ln)
+{
+    //~~~ SciCall_MarkerDelete(line, -1);
+    int const bitmask = ALL_MARKERS_BITMASK();
+    int       markers = SciCall_MarkerGet(ln);
+    while (markers & bitmask) {
+        for (int m = 0; m <= MARKER_NP3_BOOKMARK; ++m) {
+            if (TEST_BIT(int, m, markers)) {
+                SciCall_MarkerDelete(ln, m);
+            }
+        }
+        markers = SciCall_MarkerGet(ln);
+    }
+}
+
 // ----------------------------------------------------------------------------
 
 #endif //_NP3_NOTEPAD3_H_
