@@ -516,19 +516,19 @@ CAPTION "Modify Lines"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     LTEXT           "&Prefix text to lines:",IDC_STATIC,7,7,62,8
-    EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MODLNS_ED_PREPEND,7,18,98,14,ES_AUTOHSCROLL
     LTEXT           "&Append text to lines:",IDC_STATIC2,7,37,68,8
-    EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MODLNS_ED_APPEND,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,125,24,50,14
-    LTEXT           "$(L)",200,7,72,14,8
-    LTEXT           "$(0L)",201,30,72,18,8
+    LTEXT           "$(L)",IDC_MODLNS_DOCLN_CANONIC,7,72,14,8
+    LTEXT           "$(0L)",IDC_MODLNS_DOCLN_ZEROFLD,30,72,18,8
     LTEXT           "Document line number.",IDC_STATIC3,57,72,74,8
-    LTEXT           "$(N)",202,7,82,15,8
-    LTEXT           "$(0N)",203,30,82,19,8
+    LTEXT           "$(N)",IDC_MODLNS_CNTLN1_CANONIC,7,82,15,8
+    LTEXT           "$(0N)",IDC_MODLNS_CNTLN1_ZEROFLD,30,82,19,8
     LTEXT           "Continuous number.",IDC_STATIC4,57,82,66,8
-    LTEXT           "$(I)",204,7,92,13,8
-    LTEXT           "$(0I)",205,30,92,17,8
+    LTEXT           "$(I)",IDC_MODLNS_CNTLN0_CANONIC,7,92,13,8
+    LTEXT           "$(0I)",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,17,8
     LTEXT           "Continuous number (zero-based).",IDC_STATIC5,57,92,109,8
 END
 
