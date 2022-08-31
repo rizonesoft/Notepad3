@@ -3666,7 +3666,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         DocPos const iCurrentPos = SciCall_PositionFromPoint(pt.x, pt.y);
         DocLn const  curLn = SciCall_LineFromPosition(iCurrentPos);
-        int const    bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK() & ~(1 << MARKER_NP3_BOOKMARK);
+        int const    bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK();
         imenu = (bitmask && ((Settings.FocusViewMarkerMode & FVMM_LN_BACKGR) || !Settings.ShowBookmarkMargin)) ? MNU_MARGIN : MNU_EDIT;
 
         if (imenu == MNU_EDIT) {
@@ -3699,7 +3699,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
 
         DocLn const curLn = Sci_GetCurrentLineNumber();
-        int const   bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK();
+        int const   bitmask = SciCall_MarkerGet(curLn) & ALL_MARKERS_BITMASK();
         EnableCmd(hMenuCtx, IDM_EDIT_CLEAR_MARKER, bitmask);
         EnableCmd(hMenuCtx, IDM_EDIT_CUT_MARKED, bitmask);
         EnableCmd(hMenuCtx, IDM_EDIT_COPY_MARKED, bitmask);
@@ -5004,7 +5004,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_DELETELINE: {
-        SciCall_MarkerDelete(Sci_GetCurrentLineNumber(), -1);
+        UserMarkerDeleteAll(Sci_GetCurrentLineNumber());
         SciCall_LineDelete();
     }
     break;
@@ -6533,7 +6533,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             if (iStartPos != iEndPos) {
                 SciCall_DelWordRight();
             } else { // iStartPos == iEndPos
-                SciCall_MarkerDelete(Sci_GetCurrentLineNumber(), -1);
+                UserMarkerDeleteAll(Sci_GetCurrentLineNumber());
                 SciCall_LineDelete();
             }
         }
@@ -7950,9 +7950,9 @@ static void _HandleAutoIndent(int const charAdded)
         if (iCurLine > 0) {
             //~DocPos const iPrevLineLength = Sci_GetNetLineLength(iCurLine - 1);
             if (SciCall_GetLineEndPosition(iCurLine - 1) == SciCall_GetLineIndentPosition(iCurLine - 1)) {
-                int const bitmask = SciCall_MarkerGet(iCurLine - 1) & bitmask32_n(MARKER_NP3_BOOKMARK + 1); // all bookmarks
+                int const bitmask = SciCall_MarkerGet(iCurLine - 1) & ALL_MARKERS_BITMASK();
                 if (bitmask) {
-                    SciCall_MarkerDelete((iCurLine - 1), -1);
+                    UserMarkerDeleteAll(iCurLine - 1);
                     SciCall_MarkerAddSet(iCurLine, bitmask);
                 }
             }
@@ -10073,6 +10073,7 @@ void UndoRedoRecordingStart()
     InterlockedExchange(&UndoActionToken, UNDOREDO_FREE); // clear
     _UndoRedoActionMap(-1, NULL);
     SciCall_SetUndoCollection(true);
+    //SciCall_SetChangeHistory(SC_CHANGE_HISTORY_DISABLED);
     SciCall_SetChangeHistory(SC_CHANGE_HISTORY_ENABLED | SC_CHANGE_HISTORY_MARKERS | SC_CHANGE_HISTORY_INDICATORS);
 }
 

@@ -230,6 +230,14 @@ typedef enum STATUS_SECTOR_T {
 
 // --------------------------------------------------------------------------
 
+//        |- len -|
+// 0000000111111111000000000000
+//                 |-- pos ---|
+#define BITMASK_GEN(typ, pos, len) (~(~((typ)0ull) << (len)) << (pos))
+#define TEST_BIT(typ, pos, set) (BITMASK_GEN(typ, pos, 1) & (set))
+
+// --------------------------------------------------------------------------
+
 typedef struct FILEVARS {
 
     int        mask;
@@ -341,10 +349,25 @@ typedef enum MARKER_ID {
     MARKER_NP3_BOOKMARK
 
 } MARKER_ID;
+// ASSERT( MARKER_NP3_BOOKMARK < SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN )
 
-// ASSERT( MARKER_NP3_BOOKMARK < SC_MARKNUM_FOLDEREND )
 
-#define OCCURRENCE_MARKER_BITMASK() (bitmask32_n(MARKER_NP3_BOOKMARK + 1) & ~(1 << MARKER_NP3_OCCURRENCE))
+// SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN 21
+// SC_MARKNUM_HISTORY_SAVED 22
+// SC_MARKNUM_HISTORY_MODIFIED 23
+// SC_MARKNUM_HISTORY_REVERTED_TO_MODIFIED 24
+// SC_MARKNUM_FOLDEREND 25
+// SC_MARKNUM_FOLDEROPENMID 26
+// SC_MARKNUM_FOLDERMIDTAIL 27
+// SC_MARKNUM_FOLDERTAIL 28
+// SC_MARKNUM_FOLDERSUB 29
+// SC_MARKNUM_FOLDER 30
+// SC_MARKNUM_FOLDEROPEN 31
+
+
+#define BOOKMARK_BITMASK() BITMASK_GEN(int, MARKER_NP3_BOOKMARK, 1)
+#define OCCURRENCE_MARKER_BITMASK() BITMASK_GEN(int, 0, MARKER_NP3_8+1)
+#define ALL_MARKERS_BITMASK() BITMASK_GEN(int, 0, MARKER_NP3_BOOKMARK+1)
 
 extern LPCWSTR WordBookMarks[];
 
