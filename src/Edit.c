@@ -559,7 +559,7 @@ bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bSupressWarning)
 
         if (Sci_IsDocEmpty()) {
             bool const doNewEncoding = (Sci_HaveUndoRedoHistory() && !bSupressWarning) ?
-                                       IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO, L"MsgConv2", IDS_MUI_ASK_ENCODING2)) : true;
+                                       IsYesOkay(InfoBoxLng(MB_YESNO, L"MsgConv2", IDS_MUI_ASK_ENCODING2)) : true;
 
             if (doNewEncoding) {
                 return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding);
@@ -572,7 +572,7 @@ bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bSupressWarning)
                 bSupressWarning         = bIsCurANSI && bIsTargetUTF;
             }
 
-            bool const doNewEncoding = (!bSupressWarning) ? IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING)) : true;
+            bool const doNewEncoding = (!bSupressWarning) ? IsYesOkay(InfoBoxLng(MB_YESNO, L"MsgConv1", IDS_MUI_ASK_ENCODING)) : true;
             if (doNewEncoding) {
                 return EditConvertText(hwnd, iCurrentEncoding, iNewEncoding);
             }
@@ -1216,7 +1216,7 @@ bool EditLoadFile(
         WCHAR sizeWarnStr[64] = { L'\0' };
         StrFormatByteSizeEx(fileSizeWarning, SFBS_FLAGS_ROUND_TO_NEAREST_DISPLAYED_DIGIT, sizeWarnStr, COUNTOF(sizeWarnStr));
         Flags.bHugeFileLoadState = true;
-        if (!IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE, sizeStr, sizeWarnStr))) {
+        if (!IsYesOkay(InfoBoxLng(MB_YESNO, L"MsgFileSizeWarning", IDS_MUI_WARN_LOAD_BIG_FILE, sizeStr, sizeWarnStr))) {
             CloseHandle(hFile);
             Encoding_Forced(CPI_NONE);
             return false;
@@ -1226,7 +1226,7 @@ bool EditLoadFile(
     // check for unknown file/extension
     status->bUnknownExt = false;
     if (!Style_HasLexerForExt(hfile_pth)) {
-        if (!IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, Path_FindFileName(hfile_pth)))) {
+        if (!IsYesOkay(InfoBoxLng(MB_YESNO, L"MsgFileUnknownExt", IDS_MUI_WARN_UNKNOWN_EXT, Path_FindFileName(hfile_pth)))) {
             CloseHandle(hFile);
             Encoding_Forced(CPI_NONE);
             status->bUnknownExt = true;
@@ -1253,7 +1253,7 @@ bool EditLoadFile(
     bool bReadSuccess = ((readFlag & DECRYPT_FATAL_ERROR) || (readFlag & DECRYPT_FREAD_FAILED)) ? false : true;
 
     if ((readFlag & DECRYPT_CANCELED_NO_PASS) || (readFlag & DECRYPT_WRONG_PASS)) {
-        bReadSuccess = IsYesOkayRetryContinue(InfoBoxLng(MB_OKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS));
+        bReadSuccess = IsYesOkay(InfoBoxLng(MB_OKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS));
         if (!bReadSuccess) {
             Encoding_Forced(CPI_NONE);
             FreeMem(lpData);
@@ -1623,7 +1623,7 @@ bool EditSaveFile(
 
                     FreeMem(lpDataWide);
 
-                    if (!bCancelDataLoss || IsYesOkayRetryContinue(InfoBoxLng(MB_OKCANCEL, L"MsgConv3", IDS_MUI_ERR_UNICODE2))) {
+                    if (!bCancelDataLoss || IsYesOkay(InfoBoxLng(MB_OKCANCEL, L"MsgConv3", IDS_MUI_ERR_UNICODE2))) {
                         SetEndOfFile(hFile);
                         if (cbDataConverted != 0) {
                             bWriteSuccess = EncryptAndWriteFile(hwnd, hFile, (BYTE *)lpData, cbDataConverted, &bytesWritten);
@@ -7082,7 +7082,7 @@ bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelectio
                 }
             } else {
                 LONG const result = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW);
-                if (!IsYesOkayRetryContinue(result)) {
+                if (!IsYesOkay(result)) {
                     iPos = -1LL;
                     bSuppressNotFound = true;
                 }
@@ -7171,7 +7171,7 @@ bool EditFindPrev(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
                 }
             } else {
                 LONG const result = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPRE);
-                if (!IsYesOkayRetryContinue(result)) {
+                if (!IsYesOkay(result)) {
                     iPos = -1LL;
                     bSuppressNotFound = true;
                 }
@@ -7861,7 +7861,8 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
         ft.lpstrText = pRoot;
         ft.chrg.cpMax = (DocPosCR)iDocEndPos;
 
-        DocPos iPosFind = SciCall_FindTextFull(SCFIND_WORDSTART, &ft);
+        //DocPos iPosFind = SciCall_FindTextFull(SCFIND_WORDSTART, &ft);
+        DocPos iPosFind = SciCall_FindText(SCFIND_WORDSTART, &ft);
         PWLIST pwlNewWord = NULL;
 
         while ((iPosFind >= 0) && ((iPosFind + iRootLen) < iDocEndPos)) {
@@ -7895,7 +7896,8 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
             }
 
             ft.chrg.cpMin = (DocPosCR)iWordEndPos;
-            iPosFind = SciCall_FindTextFull(SCFIND_WORDSTART, &ft);
+            //iPosFind = SciCall_FindTextFull(SCFIND_WORDSTART, &ft);
+            iPosFind = SciCall_FindText(SCFIND_WORDSTART, &ft);
         }
         FreeMem(pwlNewWord);
         pwlNewWord = NULL;
@@ -8418,9 +8420,15 @@ bool EditLinenumDlg(HWND hwnd)
 //
 //  EditModifyLinesDlg()
 //
-//  Controls: 100 Input
-//            101 Input
-//
+//  Controls: 100 Input IDC_MODLNS_ED_PREPEND
+//            101 Input IDC_MODLNS_ED_APPEND
+//            IDC_MODLNS_DOCLN_CANONIC 200
+//            IDC_MODLNS_DOCLN_ZEROFLD 201
+//            IDC_MODLNS_CNTLN1_CANONIC 202
+//            IDC_MODLNS_CNTLN1_ZEROFLD 203
+//            IDC_MODLNS_CNTLN0_CANONIC 204
+//            IDC_MODLNS_CNTLN0_ZEROFLD 205
+
 static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
 
@@ -8450,7 +8458,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         }
 #endif
 
-        HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, 200, WM_GETFONT, 0, 0);
+        HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_MODLNS_DOCLN_CANONIC, WM_GETFONT, 0, 0);
         if (hFont) {
             LOGFONT lf = { 0 };
             GetObject(hFont, sizeof(LOGFONT), &lf);
@@ -8468,16 +8476,16 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             hCursorHover = LoadCursor(Globals.hInstance, IDC_ARROW);
         }
         pData = (PENCLOSESELDATA)lParam;
-        SetDlgItemTextW(hwnd,100,pData->pwsz1);
-        SendDlgItemMessage(hwnd, 100, EM_LIMITTEXT, ENCLDATA_SIZE - 1, 0);
-        SetDlgItemTextW(hwnd,101,pData->pwsz2);
-        SendDlgItemMessage(hwnd, 101, EM_LIMITTEXT, ENCLDATA_SIZE - 1, 0);
+        SetDlgItemTextW(hwnd,IDC_MODLNS_ED_PREPEND, pData->pwsz1);
+        SendDlgItemMessage(hwnd,IDC_MODLNS_ED_PREPEND, EM_LIMITTEXT, ENCLDATA_SIZE - 1, 0);
+        SetDlgItemTextW(hwnd,IDC_MODLNS_ED_APPEND, pData->pwsz2);
+        SendDlgItemMessage(hwnd,IDC_MODLNS_ED_APPEND, EM_LIMITTEXT, ENCLDATA_SIZE - 1, 0);
         CenterDlgInParent(hwnd, NULL);
     }
     return true;
 
     case WM_DPICHANGED: {
-        HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, 200, WM_GETFONT, 0, 0);
+        HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_MODLNS_DOCLN_CANONIC, WM_GETFONT, 0, 0);
         if (hFont) {
             LOGFONT lf = { 0 };
             GetObject(hFont, sizeof(LOGFONT), &lf);
@@ -8511,11 +8519,11 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-CASE_WM_CTLCOLOR_SET: {
+    CASE_WM_CTLCOLOR_SET: {
             DWORD const dwId = GetWindowLong((HWND)lParam, GWL_ID);
             HDC const hdc = (HDC)wParam;
             INT_PTR const hbrReturn = SetDarkModeCtlColors(hdc, UseDarkMode());
-            if (dwId >= 200 && dwId <= 205) {
+            if (dwId >= IDC_MODLNS_DOCLN_CANONIC && dwId <= IDC_MODLNS_CNTLN0_ZEROFLD) {
                 SetBkMode(hdc, TRANSPARENT);
                 if (GetSysColorBrush(COLOR_HOTLIGHT)) {
                     SetTextColor(hdc, GetSysColor(COLOR_HOTLIGHT));
@@ -8558,10 +8566,11 @@ CASE_WM_CTLCOLOR_SET: {
         pt.x = LOWORD(lParam);
         pt.y = HIWORD(lParam);
         HWND hwndHover = ChildWindowFromPoint(hwnd,pt);
+
         DWORD dwId = (DWORD)GetWindowLong(hwndHover,GWL_ID);
 
         if (GetActiveWindow() == hwnd) {
-            if (dwId >= 200 && dwId <= 205) {
+            if (dwId >= IDC_MODLNS_DOCLN_CANONIC && dwId <= IDC_MODLNS_CNTLN0_ZEROFLD) {
                 if (id_capture == (int)dwId || id_capture == 0) {
                     if (id_hover != id_capture || id_hover == 0) {
                         id_hover = (int)dwId;
@@ -8584,7 +8593,7 @@ CASE_WM_CTLCOLOR_SET: {
         HWND hwndHover = ChildWindowFromPoint(hwnd,pt);
         DWORD dwId = GetWindowLong(hwndHover,GWL_ID);
 
-        if (dwId >= 200 && dwId <= 205) {
+        if (dwId >= IDC_MODLNS_DOCLN_CANONIC && dwId <= IDC_MODLNS_CNTLN0_ZEROFLD) {
             GetCapture();
             id_hover = dwId;
             id_capture = dwId;
@@ -8602,7 +8611,7 @@ CASE_WM_CTLCOLOR_SET: {
             ReleaseCapture();
             if (id_hover == id_capture) {
                 int id_focus = GetWindowLong(GetFocus(),GWL_ID);
-                if (id_focus == 100 || id_focus == 101) {
+                if (id_focus == IDC_MODLNS_ED_PREPEND || id_focus == IDC_MODLNS_ED_APPEND) {
                     WCHAR wch[8];
                     GetDlgItemText(hwnd,id_capture,wch,COUNTOF(wch));
                     SendDlgItemMessage(hwnd,id_focus,EM_SETSEL,(WPARAM)0,(LPARAM)-1);
@@ -8628,8 +8637,8 @@ CASE_WM_CTLCOLOR_SET: {
     case WM_COMMAND:
         switch(LOWORD(wParam)) {
         case IDOK: {
-            GetDlgItemTextW(hwnd, 100, pData->pwsz1, ENCLDATA_SIZE);
-            GetDlgItemTextW(hwnd, 101, pData->pwsz2, ENCLDATA_SIZE);
+            GetDlgItemTextW(hwnd, IDC_MODLNS_ED_PREPEND, pData->pwsz1, ENCLDATA_SIZE);
+            GetDlgItemTextW(hwnd, IDC_MODLNS_ED_APPEND, pData->pwsz2, ENCLDATA_SIZE);
             EndDialog(hwnd,IDOK);
         }
         break;

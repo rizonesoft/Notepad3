@@ -3756,7 +3756,7 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         if (!bRevertFile) {
             if (FileWatching.FileWatchingMode == FWM_MSGBOX) {
-                bRevertFile = IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY));
+                bRevertFile = IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY));
             } else {
                 // FWM_INDICATORSILENT: nothing todo here
             }
@@ -3775,7 +3775,7 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     } else {
 
         if (FileWatching.FileWatchingMode == FWM_MSGBOX) {
-            if (IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2))) {
+            if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2))) {
                 FileSave(FSF_SaveAlways);
             } else {
                 SetSaveNeeded();
@@ -4371,7 +4371,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_FACTORY_RESET) && (iLoWParam < (int)(IDM_THEMES_FACTORY_RESET + ThemeItems_CountOf())));
     if (bIsThemesMenuCmd) {
         if (iLoWParam == IDM_THEMES_FACTORY_RESET) {
-            if (!IsYesOkayRetryContinue(InfoBoxLng(MB_OKCANCEL | MB_ICONWARNING, L"MsgResetScheme", IDS_MUI_WARN_STYLE_RESET))) {
+            if (!IsYesOkay(InfoBoxLng(MB_OKCANCEL | MB_ICONWARNING, L"MsgResetScheme", IDS_MUI_WARN_STYLE_RESET))) {
                 return FALSE;
             }
         }
@@ -4428,7 +4428,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_REVERT:
         if (IsDocumentModified()) {
-            if (!IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_REVERT))) {
+            if (!IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_REVERT))) {
                 break;
             }
             //~ don't revert if no save needed
@@ -4761,7 +4761,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             cpi_enc_t iNewEncoding = Encoding_MapSignature(Encoding_GetCurrent());
 
             if (IsDocumentModified()) {
-                if (!IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_RECODE))) {
+                if (!IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_RECODE))) {
                     break;
                 }
             }
@@ -6192,7 +6192,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_WIN_DARK_MODE: {
 
-        if (!IsYesOkayRetryContinue(InfoBoxLng(MB_OKCANCEL | MB_ICONWARNING, L"MsgResetScheme", IDS_MUI_WARN_STYLE_RESET))) {
+        if (!IsYesOkay(InfoBoxLng(MB_OKCANCEL | MB_ICONWARNING, L"MsgResetScheme", IDS_MUI_WARN_STYLE_RESET))) {
            break;
         }
 
@@ -8139,7 +8139,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
                 EditToggleView(Globals.hwndEdit);
             }
             else {
-                if (!IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"QuietKeepReadonlyLock", IDS_MUI_DOCUMENT_READONLY))) {
+                if (!IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"QuietKeepReadonlyLock", IDS_MUI_DOCUMENT_READONLY))) {
                     SendWMCommand(Globals.hwndMain, IDM_VIEW_READONLY);
                 }
             }
@@ -8587,7 +8587,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
                     WCHAR wch[64] = {L'\0'};
                     GetLngString(msgid, wch, COUNTOF(wch));
-                    if (IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_WARN_NORMALIZE_EOLS, wch))) {
+                    if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_WARN_NORMALIZE_EOLS, wch))) {
                         PostWMCommand(hwnd, eol_cmd);
                     }
                 }
@@ -10660,7 +10660,7 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
             GetLngString(IDS_MUI_UNTITLED, szDisplayName, COUNTOF(szDisplayName));
             Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), hopen_file, NULL, false); //~Path_FindFileName(hopen_file)
 
-            if (IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_CREATE, szDisplayName))) {
+            if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_CREATE, szDisplayName))) {
                 bCreateFile = true;
             }
         }
@@ -11229,7 +11229,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
             } else {
                 answer = InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, L"");
             }
-            if (IsYesOkayRetryContinue(answer)) {
+            if (IsYesOkay(answer)) {
                 DialogNewWindow(Globals.hwndMain, false, Paths.CurrentFile, NULL);
                 CloseApplication();
             }
@@ -11440,7 +11440,7 @@ bool ActivatePrevInst()
                 return true;
             }
             // IsWindowEnabled()
-            if (IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED))) {
+            if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED))) {
                 return false;
             }
             return true;
@@ -11530,7 +11530,7 @@ bool ActivatePrevInst()
             return true;
         }
         // IsWindowEnabled()
-        return !IsYesOkayRetryContinue(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED));
+        return !IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PREVWINDISABLED));
     }
     return false;
 }

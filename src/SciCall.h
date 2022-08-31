@@ -330,6 +330,7 @@ DeclareSciCallV0(SelectionDuplicate, SELECTIONDUPLICATE);
 DeclareSciCallV0(LineTranspose, LINETRANSPOSE);
 DeclareSciCallV0(MoveSelectedLinesUp, MOVESELECTEDLINESUP);
 DeclareSciCallV0(MoveSelectedLinesDown, MOVESELECTEDLINESDOWN);
+DeclareSciCallR2(FindText, FINDTEXT, DocPos, int, flags, struct Sci_TextToFind*, text);
 DeclareSciCallR2(FindTextFull, FINDTEXTFULL, DocPos, int, flags, struct Sci_TextToFind*, text);
 
 // Operations
