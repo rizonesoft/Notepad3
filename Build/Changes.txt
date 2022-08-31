@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.830.(build_#) (2022-08-30)
+Current BETA/RC Version 5.22.831.(build_#) (2022-08-31)
 ========================================================
 
 --------------------------------------------------------
@@ -57,6 +57,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.831.1]- Enhancements for Change History Marker.
+[.831.1]- Use deprecated SCI_FINDTEXT to workaround crash on new (Sci v5.2.3) SCI_FINDTEXTFULL method.
 [.830.1]- "Don't ask again" for keep Read-Only view mode dialog on editing file.
 [.830.1]- Decouple Read-Only file Attribute from Read-Only Document view mode.
 [.829.1]- Renaming feature from obscure "Accelerated Word Navigation" to better name "Alternate Word Separators".
@@ -97,6 +99,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.831.1]- Crash in SCI_FINDTEXTFULL caused by using wrong data structure.
 [.830.1]- TAB (indent) usage in case of read-only mode sets doc modified flag.
 [.829.1]- Directory locking of current file.
 [.829.1]- Remember user data entered for dialogs: EncloseSel, ModifyLines, InsertTag, StreamComment.
