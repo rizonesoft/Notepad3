@@ -2540,7 +2540,7 @@ CASE_WM_CTLCOLOR_SET:
                     LONG const answer = (LOWORD(wParam) == IDOK) ? InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_MRUDLG)
                                         : ((iCur == lvi.iItem) ? IDNO : IDYES);
 
-                    if (IsYesOkayRetryContinue(answer)) {
+                    if (IsYesOkay(answer)) {
                         MRU_Delete(Globals.pFileMRU, lvi.iItem);
                         //SendDlgItemMessage(hwnd,IDC_FILEMRU,LB_DELETESTRING,(WPARAM)iItem,0);
                         //ListView_DeleteItem(GetDlgItem(hwnd,IDC_FILEMRU),lvi.iItem);
@@ -5010,7 +5010,7 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
     sei.nShow = SW_SHOWNORMAL;
     if (bExecInstaller) {
         ShellExecuteExW(&sei);
-        if (IsYesOkayRetryContinue(InfoBoxLng(MB_OKCANCEL, L"NoAdminTool", IDS_MUI_ERR_ADMINEXE))) {
+        if (IsYesOkay(InfoBoxLng(MB_OKCANCEL, L"NoAdminTool", IDS_MUI_ERR_ADMINEXE))) {
             sei.lpFile = VERSION_UPDATE_CHECK;
             ShellExecuteExW(&sei);
         }

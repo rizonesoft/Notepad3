@@ -465,6 +465,15 @@
 #define IDC_CHECK_BOX_B                 18252
 #define IDC_CHECK_BOX_C                 18253
 
+#define IDC_MODLNS_ED_PREPEND           100
+#define IDC_MODLNS_ED_APPEND            101
+#define IDC_MODLNS_DOCLN_CANONIC        200
+#define IDC_MODLNS_DOCLN_ZEROFLD        201
+#define IDC_MODLNS_CNTLN1_CANONIC       202
+#define IDC_MODLNS_CNTLN1_ZEROFLD       203
+#define IDC_MODLNS_CNTLN0_CANONIC       204
+#define IDC_MODLNS_CNTLN0_ZEROFLD       205
+
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001
 #define CMD_SHIFTCTRLENTER              20002
