@@ -392,7 +392,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Zeilen &Nummern\tCtrl+Shift+N",           IDM_VIEW_LINENUMBERS
         MENUITEM "&Lesezeichen Rand\tCtrl+Shift+M",         IDM_VIEW_BOOKMARK_MARGIN
-        //MENUITEM "Änderung &Historie Rand",                IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "Code &Faltung"
         BEGIN
@@ -591,7 +590,6 @@ BEGIN
         MENUITEM "Code Faltung",                               IDM_VIEW_FOLDING
         MENUITEM "Zeilen Nummern",                             IDM_VIEW_LINENUMBERS
         MENUITEM "Lesezeichen Rand",                           IDM_VIEW_BOOKMARK_MARGIN
-        //MENUITEM "Änderung Historie Rand",                     IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

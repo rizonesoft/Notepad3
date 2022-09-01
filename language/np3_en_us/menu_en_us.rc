@@ -352,10 +352,10 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Change History Marker"
         BEGIN
-            MENUITEM "Hide All Change Markers", IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Show in Margin only", IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Show in Document only", IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Show All Change Markers", IDM_VIEW_CHGHIST_ALL
+            MENUITEM "Hide All Change Markers",             IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
         END
         MENUITEM SEPARATOR
         MENUITEM "&Hyperlink Hotspots\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
@@ -392,7 +392,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Line &Numbers\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
         MENUITEM "Bookmark &Margin\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
-        //MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Folding"
         BEGIN
@@ -591,7 +590,6 @@ BEGIN
         MENUITEM "Folding",                     IDM_VIEW_FOLDING
         MENUITEM "Line Numbers",                IDM_VIEW_LINENUMBERS
         MENUITEM "Bookmark Margin",             IDM_VIEW_BOOKMARK_MARGIN
-        //MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN
