@@ -350,6 +350,14 @@ BEGIN
         MENUITEM "显示空格(&W)\tCtrl+Shift+8",                  IDM_VIEW_SHOWBLANKS
         MENUITEM "显示换行符号(&E)\tCtrl+Shift+9",              IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
+        POPUP "Change History Marker"
+        BEGIN
+            MENUITEM "Hide All Change Markers",             IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+        END
+        MENUITEM SEPARATOR
         MENUITEM "检测超链接(&Y)\tCtrl+Alt+W",                 IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "检测 #RRGGBB 颜色(&C)"
         BEGIN
@@ -384,7 +392,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "行号(&N)\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
         MENUITEM "书签(&M)\tCtrl+Shift+M",        IDM_VIEW_BOOKMARK_MARGIN
-        //MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "折叠(&F)"
         BEGIN
@@ -583,7 +590,6 @@ BEGIN
         MENUITEM "启用折叠",                               IDM_VIEW_FOLDING
         MENUITEM "行号",                                   IDM_VIEW_LINENUMBERS
         MENUITEM "书签",                       IDM_VIEW_BOOKMARK_MARGIN
-        //MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

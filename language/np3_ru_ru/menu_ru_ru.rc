@@ -350,6 +350,14 @@ BEGIN
         MENUITEM "Отображать про&бельные символы\tCtrl+Shift+8",    IDM_VIEW_SHOWBLANKS
         MENUITEM "Отображать &окончания строк\tCtrl+Shift+9",       IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
+        POPUP "Change History Marker"
+        BEGIN
+            MENUITEM "Hide All Change Markers",             IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+        END
+        MENUITEM SEPARATOR
         MENUITEM "Отмечать &гиперссылки\tCtrl+Alt+W",               IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Отмечать области выбора &цвета"
         BEGIN
@@ -384,7 +392,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Номера строк\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
         MENUITEM "Отст&уп для закладок\tCtrl+Shift+M",  IDM_VIEW_BOOKMARK_MARGIN
-        //MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "Блоки &кода"
         BEGIN
@@ -583,7 +590,6 @@ BEGIN
         MENUITEM "Сворачивание блоков кода",           IDM_VIEW_FOLDING
         MENUITEM "Номера строк",                       IDM_VIEW_LINENUMBERS
         MENUITEM "Отступ для закладок",                IDM_VIEW_BOOKMARK_MARGIN
-        //MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN
