@@ -350,12 +350,12 @@ BEGIN
         MENUITEM "공백 표시(&B)\tCtrl+Shift+8",            IDM_VIEW_SHOWBLANKS
         MENUITEM "줄 끝 표시(&E)\tCtrl+Shift+9",           IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        POPUP "Change History Marker"
+        POPUP "기록 마커 변경"
         BEGIN
-            MENUITEM "Hide All Change Markers",             IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+            MENUITEM "모든 변경 마커 숨기기",             IDM_VIEW_CHGHIST_NONE
+            MENUITEM "여백에만 표시",                 IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "문서에만 표시",               IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "모든 변경 마커 표시",             IDM_VIEW_CHGHIST_ALL
         END
         MENUITEM SEPARATOR
         MENUITEM "하이퍼링크 핫스팟(&Y)\tCtrl+Alt+W",       IDM_VIEW_HYPERLINKHOTSPOTS
