@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.831.(build_#) (2022-08-31)
+Current BETA/RC Version 5.22.901.(build_#) (2022-09-01)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.901.1]- Menu (View) Settings for "Change History" feature.
 [.830.1]- Persistent settings for "Document Read-Only Mode".
 [.830.1]- Add Change History Marker (by Scintilla v5.3.0).
 [.828.1]- Add "char8_t" keyword for C++20.
@@ -99,6 +100,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.901.1]- Bookmarks handling in case of delete (in-line, complete line, selection).
 [.831.1]- Crash in SCI_FINDTEXTFULL caused by using wrong data structure.
 [.830.1]- TAB (indent) usage in case of read-only mode sets doc modified flag.
 [.829.1]- Directory locking of current file.
