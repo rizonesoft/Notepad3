@@ -4134,7 +4134,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     bool const bF = (SC_FOLDLEVELBASE < (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELNUMBERMASK));
     bool const bH = (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELHEADERFLAG);
     EnableCmd(hmenu, IDM_VIEW_TOGGLE_CURRENT_FOLD, !te && fd && (bF || bH));
-    CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 18, fd);
+    CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 20, fd);
 
     CheckCmd(hmenu, IDM_VIEW_USE2NDDEFAULT, Style_GetUse2ndDefault());
 
@@ -4144,7 +4144,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, IDM_VIEW_SHOWINDENTGUIDES, Settings.ShowIndentGuides);
     CheckCmd(hmenu, IDM_VIEW_LINENUMBERS, Settings.ShowLineNumbers);
     CheckCmd(hmenu, IDM_VIEW_BOOKMARK_MARGIN, Settings.ShowBookmarkMargin);
-    CheckCmd(hmenu, IDM_VIEW_CHGHISTORY_MARGIN, Settings.ShowChangeHistoryMargin);
     CheckCmd(hmenu, IDM_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
 
     CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, IsMarkOccurrencesEnabled());
@@ -4172,16 +4171,23 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
 
+    int const chState = Settings.ShowChangeHistory;
+    i = IDM_VIEW_CHGHIST_NONE;
+    i += ((chState & ChgHist_ON) && (chState & ChgHist_MARGIN)) ? 1 : 0;
+    i += ((chState & ChgHist_ON) && (chState & ChgHist_DOCTXT)) ? 2 : 0;
+    CheckMenuRadioItem(hmenu, IDM_VIEW_CHGHIST_NONE, IDM_VIEW_CHGHIST_ALL, i, MF_BYCOMMAND);
+    CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 8, (i != IDM_VIEW_CHGHIST_NONE));
+
     i = IDM_VIEW_COLORDEFHOTSPOTS + Settings.ColorDefHotspot;
     CheckMenuRadioItem(hmenu, IDM_VIEW_COLORDEFHOTSPOTS, IDM_VIEW_COLOR_BGRA, i, MF_BYCOMMAND);
-    CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 9, IsColorDefHotspotEnabled());
+    CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 11, IsColorDefHotspotEnabled());
 
     CheckCmd(hmenu, IDM_VIEW_UNICODE_POINTS, Settings.HighlightUnicodePoints);
     CheckCmd(hmenu, IDM_VIEW_MATCHBRACES, Settings.MatchBraces);
 
     i = IDM_VIEW_HILITCURLN_NONE + Settings.HighlightCurrentLine;
     CheckMenuRadioItem(hmenu, IDM_VIEW_HILITCURLN_NONE, IDM_VIEW_HILITCURLN_FRAME, i, MF_BYCOMMAND);
-    CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 12, (i != IDM_VIEW_HILITCURLN_NONE));
+    CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 14, (i != IDM_VIEW_HILITCURLN_NONE));
 
 #ifdef D_NP3_WIN10_DARK_MODE
     EnableCmd(hmenu, IDM_VIEW_WIN_DARK_MODE, IsDarkModeSupported());
@@ -4193,7 +4199,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     // --------------------------------------------------------------------------
 
     int const mnuMain = 2;
-    int const mnuSubOcc = 13;
+    int const mnuSubOcc = 15;
     int const mnuSubSubWord = 6;
 
     if (Settings.MarkOccurrencesMatchWholeWords) {
@@ -5784,11 +5790,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         UpdateMarginWidth(true);
         break;
 
-    case IDM_VIEW_CHGHISTORY_MARGIN:
-        Settings.ShowChangeHistoryMargin = !Settings.ShowChangeHistoryMargin;
-        UpdateMarginWidth(true);
-        break;
-
     case IDM_SET_AUTOCOMPLETEWORDS:
         Settings.AutoCompleteWords = !Settings.AutoCompleteWords;
         SciCall_AutoCCancel();
@@ -5949,6 +5950,38 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         Style_HighlightCurrentLine(Globals.hwndEdit, Settings.HighlightCurrentLine);
     }
     break;
+
+    case IDM_VIEW_CHGHIST_NONE:
+    case IDM_VIEW_CHGHIST_MARGIN:
+    case IDM_VIEW_CHGHIST_DOCTXT:
+    case IDM_VIEW_CHGHIST_ALL: {
+        int const set = iLoWParam - IDM_VIEW_CHGHIST_NONE;
+        int const chgHistState = SciCall_GetChangeHistory() & ChgHist_ON;
+        switch (set) {
+        case 0: 
+            Settings.ShowChangeHistory = chgHistState & ~(ChgHist_MARGIN | ChgHist_DOCTXT);
+            break;
+        case 1: 
+            Settings.ShowChangeHistory = (chgHistState | ChgHist_MARGIN) & ~ChgHist_DOCTXT;
+            break;
+        case 2: 
+            Settings.ShowChangeHistory = (chgHistState | ChgHist_DOCTXT) & ~ChgHist_MARGIN;
+            break;
+        case 3: 
+            Settings.ShowChangeHistory = chgHistState | (ChgHist_MARGIN | ChgHist_DOCTXT);
+            break;
+        default:
+            break;
+        }
+        SciCall_SetChangeHistory(Settings.ShowChangeHistory);
+        Style_SetChangeHistory(Globals.hwndEdit, ((Settings.ShowChangeHistory & ChgHist_ON) && (Settings.ShowChangeHistory & ChgHist_MARGIN)));
+        UpdateMarginWidth(true);
+        break;
+
+
+    } 
+    break;
+
 
     case IDM_VIEW_HYPERLINKHOTSPOTS:
         Settings.HyperlinkHotspot = !Settings.HyperlinkHotspot;
@@ -8142,6 +8175,9 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
                 if (!IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"QuietKeepReadonlyLock", IDS_MUI_DOCUMENT_READONLY))) {
                     SendWMCommand(Globals.hwndMain, IDM_VIEW_READONLY);
                 }
+                else {
+                    AttentionBeep(MB_YESNO | MB_ICONINFORMATION);
+                }
             }
         } break;
 
@@ -9975,7 +10011,7 @@ void UpdateMarginWidth(const bool bForce)
         SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
     }
     Style_SetBookmark(Globals.hwndEdit, Settings.ShowBookmarkMargin);
-    Style_SetChangeHistory(Globals.hwndEdit, Settings.ShowChangeHistoryMargin);
+    Style_SetChangeHistory(Globals.hwndEdit, ((Settings.ShowChangeHistory & ChgHist_ON) && (Settings.ShowChangeHistory & ChgHist_MARGIN)));
     Style_SetFolding(Globals.hwndEdit, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
     bShowLnNums = Settings.ShowLineNumbers; 
     prevLineCount = currLineCount;
@@ -10073,8 +10109,9 @@ void UndoRedoRecordingStart()
     InterlockedExchange(&UndoActionToken, UNDOREDO_FREE); // clear
     _UndoRedoActionMap(-1, NULL);
     SciCall_SetUndoCollection(true);
-    //SciCall_SetChangeHistory(SC_CHANGE_HISTORY_DISABLED);
-    SciCall_SetChangeHistory(SC_CHANGE_HISTORY_ENABLED | SC_CHANGE_HISTORY_MARKERS | SC_CHANGE_HISTORY_INDICATORS);
+    SetSavePoint();
+    SciCall_SetChangeHistory(SC_CHANGE_HISTORY_ENABLED | Settings.ShowChangeHistory);
+    UpdateMarginWidth(true);
 }
 
 
@@ -10094,6 +10131,7 @@ void UndoRedoRecordingStop()
     SciCall_SetChangeHistory(SC_CHANGE_HISTORY_DISABLED);
     SciCall_SetUndoCollection(false);
     SciCall_EmptyUndoBuffer();
+    UpdateMarginWidth(true);
 }
 
 

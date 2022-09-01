@@ -384,7 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "行号(&N)\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
         MENUITEM "书签(&M)\tCtrl+Shift+M",        IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "折叠(&F)"
         BEGIN
@@ -583,7 +583,7 @@ BEGIN
         MENUITEM "启用折叠",                               IDM_VIEW_FOLDING
         MENUITEM "行号",                                   IDM_VIEW_LINENUMBERS
         MENUITEM "书签",                       IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

@@ -384,7 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Нумары радкоў\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
         MENUITEM "В&одступ для закладак\tCtrl+Shift+M",  IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Блокі коду"
         BEGIN
@@ -583,7 +583,7 @@ BEGIN
         MENUITEM "Згортванне блокаў коду",       IDM_VIEW_FOLDING
         MENUITEM "Нумары радкоў",                IDM_VIEW_LINENUMBERS
         MENUITEM "Водступ для закладак",         IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

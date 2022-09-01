@@ -384,7 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Sorok s&záma\tCtrl+Shift+N",          IDM_VIEW_LINENUMBERS
         MENUITEM "Könyvjelző &Margó\tCtrl+Shift+M",     IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Behajtások"
         BEGIN
@@ -583,7 +583,7 @@ BEGIN
         MENUITEM "Kódblokk behajtások",         IDM_VIEW_FOLDING
         MENUITEM "Sorok száma",                 IDM_VIEW_LINENUMBERS
         MENUITEM "Könyvjelző margók",           IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

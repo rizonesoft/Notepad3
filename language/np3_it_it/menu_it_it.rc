@@ -384,7 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Numeri di riga\tCtrl+Shift+N",                  IDM_VIEW_LINENUMBERS
         MENUITEM "&Margine Bookmark\tCtrl+Shift+M",                IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Folding"
         BEGIN
@@ -583,7 +583,7 @@ BEGIN
         MENUITEM "Code Folding",                  IDM_VIEW_FOLDING
         MENUITEM "Numeri di riga",                IDM_VIEW_LINENUMBERS
         MENUITEM "Margine Bookmark",               IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

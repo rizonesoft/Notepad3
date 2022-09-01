@@ -384,7 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Numery wierszy\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
         MENUITEM "&Margines zakładki\tCtrl+Shift+M",                IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Składanie"
         BEGIN
@@ -583,7 +583,7 @@ BEGIN
         MENUITEM "Składanie kodu",                            IDM_VIEW_FOLDING
         MENUITEM "Numery wierszy",                            IDM_VIEW_LINENUMBERS
         MENUITEM "Margines zakładki",                         IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

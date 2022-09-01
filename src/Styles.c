@@ -1598,7 +1598,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     Style_SetBookmark(hwnd, Settings.ShowBookmarkMargin);
     
     // Change History
-    Style_SetChangeHistory(hwnd, Settings.ShowChangeHistoryMargin);
+    Style_SetChangeHistory(Globals.hwndEdit, ((Settings.ShowChangeHistory & ChgHist_ON) && (Settings.ShowChangeHistory & ChgHist_MARGIN)));
 
     // Hyperlink (URL) indicators
     Style_SetUrlHotSpot(hwnd);
@@ -2168,6 +2168,7 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
     //SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN, clrMarginBack);
     //SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_SAVED, clrMarginBack);
     //SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_REVERTED_TO_MODIFIED, clrMarginBack);
+    Style_SetChangeHistory(Globals.hwndEdit, ((Settings.ShowChangeHistory & ChgHist_ON) && (Settings.ShowChangeHistory & ChgHist_MARGIN)));
 
     // ---  Code folding  ---
     SciCall_SetMarginBackN(MARGIN_SCI_FOLDING, clrMarginBack);
@@ -2236,7 +2237,6 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
 
     // set width
     Style_SetBookmark(hwnd, Settings.ShowBookmarkMargin);
-    Style_SetChangeHistory(hwnd, Settings.ShowChangeHistoryMargin);
     Style_SetFolding(hwnd, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 }
 

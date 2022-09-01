@@ -426,6 +426,19 @@ typedef enum AutoSaveBackupOptions {
 
 //=============================================================================
 
+typedef enum ChangeHistory {
+
+    ChgHist_NONE   = SC_CHANGE_HISTORY_DISABLED,
+    ChgHist_ON     = SC_CHANGE_HISTORY_ENABLED,
+    ChgHist_MARGIN = SC_CHANGE_HISTORY_MARKERS,
+    ChgHist_DOCTXT = SC_CHANGE_HISTORY_INDICATORS,
+
+    ChgHist_ALL = ChgHist_ON | ChgHist_MARGIN | ChgHist_DOCTXT
+
+} ChangeHistory;
+
+//=============================================================================
+
 typedef struct CONSTANTS_T {
 
     int const          StdDefaultLexerID; // Pure Text Files
@@ -554,6 +567,7 @@ typedef struct SETTINGS_T {
     bool MatchBraces;
     bool AutoCloseTags;
     int  HighlightCurrentLine;
+    int  ShowChangeHistory;
     bool HyperlinkHotspot;
     int  ColorDefHotspot;
     bool ScrollPastEOF;
@@ -575,7 +589,6 @@ typedef struct SETTINGS_T {
     int  LongLinesLimit;
     int  LongLineMode;
     bool ShowBookmarkMargin;
-    bool ShowChangeHistoryMargin;
     bool ShowLineNumbers;
     bool ShowCodeFolding;
     bool MarkOccurrences;

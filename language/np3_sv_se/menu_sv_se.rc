@@ -384,7 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Radnummer\tCtrl+Shift+N",                         IDM_VIEW_LINENUMBERS
         MENUITEM "Bookmark &Margin\tCtrl+Shift+M",                  IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "Vikning"
         BEGIN
@@ -583,7 +583,7 @@ BEGIN
         MENUITEM "Ihopvikning av kodsegment",                       IDM_VIEW_FOLDING
         MENUITEM "Radnummer",                                       IDM_VIEW_LINENUMBERS
         MENUITEM "Marginal för bokmärken",                          IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

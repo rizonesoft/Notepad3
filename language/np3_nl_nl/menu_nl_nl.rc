@@ -384,7 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Regel&nummers\tCtrl+Shift+N",                     IDM_VIEW_LINENUMBERS
         MENUITEM "Bladwijzer&marge\tCtrl+Shift+M",                  IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "&In/uitklappen"
         BEGIN
@@ -583,7 +583,7 @@ BEGIN
         MENUITEM "In/uitklappen",                                   IDM_VIEW_FOLDING
         MENUITEM "Regelnummers",                                    IDM_VIEW_LINENUMBERS
         MENUITEM "Bladwijzermarge",                                 IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

@@ -384,7 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Números das Linhas\tCtrl+Shift+N",   IDM_VIEW_LINENUMBERS
         MENUITEM "Marcar &Margem\tCtrl+Shift+M",        IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Alterar Margem do &Histórico",        IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Alterar Margem do &Histórico",        IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "A&grupador"
         BEGIN
@@ -583,7 +583,7 @@ BEGIN
         MENUITEM "Agrupador de Código",                        IDM_VIEW_FOLDING
         MENUITEM "Números das Linhas",                         IDM_VIEW_LINENUMBERS
         MENUITEM "Margem do Marcador",                         IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Alterar Margem do Histórico",                IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Alterar Margem do Histórico",                IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN

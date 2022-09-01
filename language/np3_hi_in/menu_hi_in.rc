@@ -384,7 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "रेखा संख्या (&N)\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
         MENUITEM "बुकमार्क मार्जिन (&M)\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Change &History Margin",              IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "फोलडिंग (&F)"
         BEGIN
@@ -583,7 +583,7 @@ BEGIN
         MENUITEM "फोलडिंग",                     IDM_VIEW_FOLDING
         MENUITEM "रेखा संख्या",                IDM_VIEW_LINENUMBERS
         MENUITEM "मार्जिन बुकमार्क करें",             IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Change History Margin",       IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN
