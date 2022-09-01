@@ -384,7 +384,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Numéros de Ligne\tCtrl+Shift+N",          IDM_VIEW_LINENUMBERS
         MENUITEM "&Marge de Signet\tCtrl+Shift+M",           IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Marge avec &historique des modifications", IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Marge avec &historique des modifications", IDM_VIEW_CHGHISTORY_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Pliage"
         BEGIN
@@ -583,7 +583,7 @@ BEGIN
         MENUITEM "&Pliage de Code",                         IDM_VIEW_FOLDING
         MENUITEM "&Numéros de Ligne",                       IDM_VIEW_LINENUMBERS
         MENUITEM "Marge de Signet",                         IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Marge avec historique des modifications", IDM_VIEW_CHGHISTORY_MARGIN
+        //MENUITEM "Marge avec historique des modifications", IDM_VIEW_CHGHISTORY_MARGIN
     END
     POPUP "+"
     BEGIN
