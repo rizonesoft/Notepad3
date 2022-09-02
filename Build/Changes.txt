@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.901.(build_#) (2022-09-01)
+Current BETA/RC Version 5.22.902.(build_#) (2022-09-02)
 ========================================================
 
 --------------------------------------------------------
@@ -100,6 +100,10 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.902.1]- Try to fix printing scaling issue.
+[.902.1]- Propagate default font to undefined-font styles.
+[.902.1]- Remove wrong std. font selection.
+[.902.1]- Font selection (if font face-name does not match to family-name).
 [.901.1]- Bookmarks handling in case of delete (in-line, complete line, selection).
 [.831.1]- Crash in SCI_FINDTEXTFULL caused by using wrong data structure.
 [.830.1]- TAB (indent) usage in case of read-only mode sets doc modified flag.
