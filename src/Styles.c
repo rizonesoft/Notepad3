@@ -3823,9 +3823,6 @@ void Style_SetStyles(HWND hwnd, const int iStyle, LPCWSTR lpszStyle)
         char chSetFontName[LF_FACESIZE<<2] = { '\0' };
         WideCharToMultiByte(CP_UTF8, 0, wchFontName, -1, chSetFontName, (int)COUNTOF(chSetFontName), NULL, NULL);
         SciCall_StyleSetFont(iStyle, chSetFontName);
-        //char chGetFontName[LF_FACESIZE << 2] = { '\0' };
-        //SciCall_StyleGetFont(iStyle, chGetFontName);
-        //assert(StringCchCompareXA(chGetFontName, chSetFontName) == 0);
     }
 
     // Font Weight
