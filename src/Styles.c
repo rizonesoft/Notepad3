@@ -2831,7 +2831,6 @@ static inline bool GetDefaultCodeFont(LPWSTR pwchFontName, int cchFont)
     }
 
     LPCWSTR const FontNamePrioList[] = {
-        L"Iosevka Curly Slab Extended",
         L"Cascadia Mono",
         L"Cascadia Code",
         L"Fira Code",
