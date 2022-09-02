@@ -125,11 +125,11 @@ void LoadD2DOnce() noexcept {
 				__uuidof(IDWriteFactory),
 				reinterpret_cast<IUnknown**>(&pIDWriteFactory));
 		}
-    // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		if (SUCCEEDED(hr)) {
 			pIDWriteFactory->GetGdiInterop(&gdiInterop);
 		}
-    // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	}
 }
 
@@ -686,7 +686,9 @@ public:
 	~SurfaceGDI() noexcept override;
 
 	void Init(WindowID wid) override;
-	void Init(SurfaceID sid, WindowID wid) override;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	void Init(SurfaceID sid, WindowID wid, bool printing = false) override;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	std::unique_ptr<Surface> AllocatePixMap(int width, int height) override;
 
 	void SetMode(SurfaceMode mode_) override;
@@ -813,14 +815,16 @@ void SurfaceGDI::Init(WindowID wid) {
 	logPixelsY = DpiForWindow(wid);
 }
 
-void SurfaceGDI::Init(SurfaceID sid, WindowID wid) {
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+void SurfaceGDI::Init(SurfaceID sid, WindowID wid, bool printing) {
 	Release();
 	hdc = static_cast<HDC>(sid);
-	::SetTextAlign(hdc, TA_BASELINE);
 	// Windows on screen are scaled but printers are not.
-	const bool printing = ::GetDeviceCaps(hdc, TECHNOLOGY) != DT_RASDISPLAY;
+	//const bool printing = ::GetDeviceCaps(hdc, TECHNOLOGY) != DT_RASDISPLAY;
 	logPixelsY = printing ? ::GetDeviceCaps(hdc, LOGPIXELSY) : DpiForWindow(wid);
+	::SetTextAlign(hdc, TA_BASELINE);
 }
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 std::unique_ptr<Surface> SurfaceGDI::AllocatePixMap(int width, int height) {
 	return std::make_unique<SurfaceGDI>(hdc, width, height, mode, logPixelsY);
@@ -1517,7 +1521,9 @@ public:
 
 	void SetScale(WindowID wid) noexcept;
 	void Init(WindowID wid) override;
-	void Init(SurfaceID sid, WindowID wid) override;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	void Init(SurfaceID sid, WindowID wid, bool printing = false) override;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	std::unique_ptr<Surface> AllocatePixMap(int width, int height) override;
 
 	void SetMode(SurfaceMode mode_) override;
@@ -1647,11 +1653,14 @@ void SurfaceD2D::Init(WindowID wid) {
 	SetScale(wid);
 }
 
-void SurfaceD2D::Init(SurfaceID sid, WindowID wid) {
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+void SurfaceD2D::Init(SurfaceID sid, WindowID wid, bool /*printing*/) {
 	Release();
+	// printing always using GDI
+	pRenderTarget = static_cast<ID2D1RenderTarget*>(sid);
 	SetScale(wid);
-	pRenderTarget = static_cast<ID2D1RenderTarget *>(sid);
 }
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 std::unique_ptr<Surface> SurfaceD2D::AllocatePixMap(int width, int height) {
 	std::unique_ptr<SurfaceD2D> surf = std::make_unique<SurfaceD2D>(pRenderTarget, width, height, mode, logPixelsY);

@@ -199,7 +199,9 @@ public:
 	static std::unique_ptr<Surface> Allocate(Scintilla::Technology technology);
 
 	virtual void Init(WindowID wid)=0;
-	virtual void Init(SurfaceID sid, WindowID wid)=0;
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	virtual void Init(SurfaceID sid, WindowID wid, bool printing = false)=0;
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	virtual std::unique_ptr<Surface> AllocatePixMap(int width, int height)=0;
 
 	virtual void SetMode(SurfaceMode mode)=0;
