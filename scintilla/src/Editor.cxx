@@ -1846,8 +1846,10 @@ Sci::Position Editor::FormatRange(Scintilla::Message iMessage, Scintilla::uptr_t
 	if (iMessage == Message::FormatRange) {
 		RangeToFormat *pfr = static_cast<RangeToFormat *>(ptr);
 		CharacterRangeFull chrg{ pfr->chrg.cpMin,pfr->chrg.cpMax };
-		AutoSurface surface(pfr->hdc, this, Technology::Default);
-		AutoSurface surfaceMeasure(pfr->hdcTarget, this, Technology::Default);
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		AutoSurface surface(pfr->hdc, this, Technology::Default, true);
+		AutoSurface surfaceMeasure(pfr->hdcTarget, this, Technology::Default, true);
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		if (!surface || !surfaceMeasure) {
 			return 0;
 		}
@@ -5767,15 +5769,17 @@ std::unique_ptr<Surface> Editor::CreateMeasurementSurface() const {
 	return surf;
 }
 
-std::unique_ptr<Surface> Editor::CreateDrawingSurface(SurfaceID sid, std::optional<Scintilla::Technology> technologyOpt) const {
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+std::unique_ptr<Surface> Editor::CreateDrawingSurface(SurfaceID sid, std::optional<Scintilla::Technology> technologyOpt, bool printing) const {
 	if (!wMain.GetID()) {
 		return {};
 	}
 	std::unique_ptr<Surface> surf = Surface::Allocate(technologyOpt ? *technologyOpt : technology);
-	surf->Init(sid, wMain.GetID());
+	surf->Init(sid, wMain.GetID(), printing);
 	surf->SetMode(CurrentSurfaceMode());
 	return surf;
 }
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 Sci::Line Editor::WrapCount(Sci::Line line) {
 	AutoSurface surface(this);
@@ -5903,7 +5907,7 @@ sptr_t Editor::StyleGetMessage(Message iMessage, uptr_t wParam, sptr_t lParam) {
 	// Added strike style, 2020-05-31
 	case Message::StyleGetStrike:
 		return vs.styles[wParam].strike ? 1 : 0;
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	case Message::StyleGetCase:
 		return static_cast<int>(vs.styles[wParam].caseForce);
 	case Message::StyleGetCharacterSet:
@@ -7087,13 +7091,13 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 	case Message::GetIMEInteraction:
 		return static_cast<sptr_t>(imeInteraction);
 		
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	case Message::IsIMEOpen:
 		return static_cast<sptr_t>(imeIsOpen);
 		
 	case Message::IsIMEModeCJK:
 		return static_cast<sptr_t>(imeIsInModeCJK);
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	case Message::SetBidirectional:
 		// Message::SetBidirectional is implemented on platform subclasses if they support bidirectional text.
