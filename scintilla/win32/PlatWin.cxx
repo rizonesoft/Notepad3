@@ -74,12 +74,10 @@ UINT CodePageFromCharSet(CharacterSet characterSet, UINT documentCodePage) noexc
 #if defined(USE_D2D)
 IDWriteFactory *pIDWriteFactory = nullptr;
 ID2D1Factory *pD2DFactory = nullptr;
+D2D1_DRAW_TEXT_OPTIONS d2dDrawTextOptions = D2D1_DRAW_TEXT_OPTIONS_NONE;
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-//~IDWriteRenderingParams *defaultRenderingParams = nullptr;
-//~IDWriteRenderingParams *customClearTypeRenderingParams = nullptr;
 IDWriteGdiInterop* gdiInterop = nullptr;
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-D2D1_DRAW_TEXT_OPTIONS d2dDrawTextOptions = D2D1_DRAW_TEXT_OPTIONS_NONE;
 
 static HMODULE hDLLD2D {};
 static HMODULE hDLLDWrite {};
@@ -127,32 +125,12 @@ void LoadD2DOnce() noexcept {
 				__uuidof(IDWriteFactory),
 				reinterpret_cast<IUnknown**>(&pIDWriteFactory));
 		}
-	}
-#if 0
-	if (pIDWriteFactory) {
-		HRESULT hr = pIDWriteFactory->CreateRenderingParams(&defaultRenderingParams);
+    // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		if (SUCCEEDED(hr)) {
-			unsigned int clearTypeContrast = 0;
-			if (::SystemParametersInfo(SPI_GETFONTSMOOTHINGCONTRAST, 0, &clearTypeContrast, 0)) {
-
-				FLOAT gamma;
-				if (clearTypeContrast >= 1000 && clearTypeContrast <= 2200)
-					gamma = static_cast<FLOAT>(clearTypeContrast) / 1000.0f;
-				else
-					gamma = defaultRenderingParams->GetGamma();
-
-				pIDWriteFactory->CreateCustomRenderingParams(gamma, defaultRenderingParams->GetEnhancedContrast(), defaultRenderingParams->GetClearTypeLevel(),
-					defaultRenderingParams->GetPixelGeometry(), defaultRenderingParams->GetRenderingMode(), &customClearTypeRenderingParams);
-			}
+			pIDWriteFactory->GetGdiInterop(&gdiInterop);
 		}
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		hr = pIDWriteFactory->GetGdiInterop(&gdiInterop);
-		if (!SUCCEEDED(hr)) {
-			ReleaseUnknown(gdiInterop);
-		}
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+    // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	}
-#endif
 }
 
 bool LoadD2D() {
@@ -236,6 +214,8 @@ constexpr BYTE Win32MapFontQuality(FontQuality extraFontFlag) noexcept {
 	}
 }
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+#if 0
 #if defined(USE_D2D)
 constexpr D2D1_TEXT_ANTIALIAS_MODE DWriteMapFontQuality(FontQuality extraFontFlag) noexcept {
 	switch (extraFontFlag & FontQuality::QualityMask) {
@@ -253,50 +233,6 @@ constexpr D2D1_TEXT_ANTIALIAS_MODE DWriteMapFontQuality(FontQuality extraFontFla
 			return D2D1_TEXT_ANTIALIAS_MODE_DEFAULT;
 	}
 }
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-bool GetDWriteFontProperties(const LOGFONTW& lf, std::wstring& wsFamily,
-	DWRITE_FONT_WEIGHT& weight, DWRITE_FONT_STYLE& style, DWRITE_FONT_STRETCH& stretch) {
-	bool success = false;
-	if (gdiInterop) {
-		IDWriteFont* font = nullptr;
-		HRESULT hr = gdiInterop->CreateFontFromLOGFONT(&lf, &font);
-		if (SUCCEEDED(hr)) {
-			weight = font->GetWeight();
-			style = font->GetStyle();
-			stretch = font->GetStretch();
-
-			IDWriteFontFamily* family = nullptr;
-			hr = font->GetFontFamily(&family);
-			if (SUCCEEDED(hr)) {
-				IDWriteLocalizedStrings* names = nullptr;
-				hr = family->GetFamilyNames(&names);
-				if (SUCCEEDED(hr)) {
-					UINT32 index = 0;
-					BOOL exists = false;
-					names->FindLocaleName(L"en-US", &index, &exists);
-					if (!exists) {
-						index = 0;
-					}
-
-					UINT32 length = 0;
-					names->GetStringLength(index, &length);
-
-					wsFamily.resize(length + 1);
-					names->GetString(index, wsFamily.data(), length + 1);
-
-					ReleaseUnknown(names);
-					success = wsFamily[0] != L'\0';
-				}
-
-				ReleaseUnknown(family);
-			}
-
-			ReleaseUnknown(font);
-		}
-	}
-	return success;
-}
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #endif
 
 // Both GDI and DirectWrite can produce a HFONT for use in list boxes
@@ -356,24 +292,18 @@ struct FontDirectWrite : public FontWin {
 		const std::wstring wsFace = WStringFromUTF8(fp.faceName);
 		const std::wstring wsLocale = WStringFromUTF8(fp.localeName);
 		const FLOAT fHeight = static_cast<FLOAT>(fp.size);
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		DWRITE_FONT_STYLE style = fp.italic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL;
-		std::wstring wsFamily;
-		DWRITE_FONT_WEIGHT weight = static_cast<DWRITE_FONT_WEIGHT>(fp.weight);
-		DWRITE_FONT_STRETCH stretch = DWRITE_FONT_STRETCH_NORMAL;
-		LOGFONTW lf;
-		SetLogFont(lf, fp.faceName, fp.characterSet, fp.size, fp.weight, fp.italic, fp.extraFontFlag);
-		if (!GetDWriteFontProperties(lf, wsFamily, weight, style, stretch)) {
-			wsFamily = WStringFromUTF8(fp.faceName);
-		}
-		HRESULT hr = pIDWriteFactory->CreateTextFormat(wsFamily.c_str(), nullptr,
-			weight, style, stretch, fHeight, wsLocale.c_str(), &pTextFormat);
+		const DWRITE_FONT_STYLE style = fp.italic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL;
+		HRESULT hr = pIDWriteFactory->CreateTextFormat(wsFace.c_str(), nullptr,
+			static_cast<DWRITE_FONT_WEIGHT>(fp.weight),
+			style,
+			DWRITE_FONT_STRETCH_NORMAL, fHeight, wsLocale.c_str(), &pTextFormat);
 		if (hr == E_INVALIDARG) {
-			// Possibly a bad locale name like "/" so try "en-US".
-			hr = pIDWriteFactory->CreateTextFormat(wsFamily.c_str(), nullptr,
-				weight, style, stretch, fHeight, L"en-US", &pTextFormat);
+			// Possibly a bad locale name like "/" so try "en-us".
+			hr = pIDWriteFactory->CreateTextFormat(wsFace.c_str(), nullptr,
+				static_cast<DWRITE_FONT_WEIGHT>(fp.weight),
+				style,
+				DWRITE_FONT_STRETCH_NORMAL, fHeight, L"en-us", &pTextFormat);
 		}
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		if (SUCCEEDED(hr)) {
 			pTextFormat->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
 
@@ -438,8 +368,130 @@ struct FontDirectWrite : public FontWin {
 };
 #endif
 
+#else
+
+// Both GDI and DirectWrite can produce a HFONT for use in list boxes
+struct FontWin final : public Font {
+	HFONT hfont{};
+	IDWriteTextFormat* pTextFormat = nullptr;
+	FontQuality extraFontFlag;
+	CharacterSet characterSet;
+	FLOAT yAscent = 2.0f;
+	FLOAT yDescent = 1.0f;
+	FLOAT yInternalLeading = 0.0f;
+	LOGFONTW lf;
+	FontWin(const LOGFONTW& lf_, HFONT hfont_, FontQuality extraFontFlag_) noexcept :
+		hfont(hfont_),
+		extraFontFlag(extraFontFlag_),
+		characterSet(CharacterSet::Ansi),
+		lf(lf_) {}
+	FontWin(const LOGFONTW& lf_, IDWriteTextFormat* pTextFormat_,
+		FontQuality extraFontFlag_,
+		FLOAT yAscent_,
+		FLOAT yDescent_,
+		FLOAT yInternalLeading_) noexcept :
+		pTextFormat(pTextFormat_),
+		extraFontFlag(extraFontFlag_),
+		yAscent(yAscent_),
+		yDescent(yDescent_),
+		yInternalLeading(yInternalLeading_),
+		lf(lf_) {}
+	FontWin(const FontWin&) = delete;
+	FontWin(FontWin&&) = delete;
+	FontWin& operator=(const FontWin&) = delete;
+	FontWin& operator=(FontWin&&) = delete;
+
+	~FontWin() noexcept override {
+		if (hfont) {
+			::DeleteObject(hfont);
+		}
+		ReleaseUnknown(pTextFormat);
+	}
+	HFONT HFont() const noexcept {
+		return ::CreateFontIndirectW(&lf);
+	}
+	// --------------------------------------------------------------------------
+
+	int CodePageText(int codePage) const noexcept {
+		if (!(codePage == CpUtf8) && (characterSet != CharacterSet::Ansi)) {
+			codePage = CodePageFromCharSet(characterSet, codePage);
+		}
+		return codePage;
+	}
+
+	static const FontWin* Cast(const Font* font_) {
+		const FontWin* pfm = dynamic_cast<const FontWin*>(font_);
+		PLATFORM_ASSERT(pfm);
+		if (!pfm) {
+			throw std::runtime_error("SurfaceD2D::SetFont: wrong Font type.");
+		}
+		return pfm;
+	}
+};
+
+/* dummy types to minimize differences between official Scintilla.
+FontDirectWrite::HFont() will create wild font when font family name
+is different from typeface name, e.g. Source Code Pro Semibold.
+*/
+using FontGDI = FontWin;
+using FontDirectWrite = FontWin;
+
+constexpr D2D1_TEXT_ANTIALIAS_MODE DWriteMapFontQuality(FontQuality extraFontFlag) noexcept {
+	constexpr UINT mask = (D2D1_TEXT_ANTIALIAS_MODE_DEFAULT << static_cast<int>(FontQuality::QualityDefault))
+		| (D2D1_TEXT_ANTIALIAS_MODE_ALIASED << (2 * static_cast<int>(FontQuality::QualityNonAntialiased)))
+		| (D2D1_TEXT_ANTIALIAS_MODE_GRAYSCALE << (2 * static_cast<int>(FontQuality::QualityAntialiased)))
+		| (D2D1_TEXT_ANTIALIAS_MODE_CLEARTYPE << (2 * static_cast<int>(FontQuality::QualityLcdOptimized)))
+		;
+	return static_cast<D2D1_TEXT_ANTIALIAS_MODE>((mask >> (2 * static_cast<int>(extraFontFlag & FontQuality::QualityMask))) & 3);
 }
 
+bool GetDWriteFontProperties(const LOGFONTW& lf, std::wstring& wsFamily,
+	DWRITE_FONT_WEIGHT& weight, DWRITE_FONT_STYLE& style, DWRITE_FONT_STRETCH& stretch) {
+	bool success = false;
+	if (gdiInterop) {
+		IDWriteFont* font = nullptr;
+		HRESULT hr = gdiInterop->CreateFontFromLOGFONT(&lf, &font);
+		if (SUCCEEDED(hr)) {
+			weight = font->GetWeight();
+			style = font->GetStyle();
+			stretch = font->GetStretch();
+
+			IDWriteFontFamily* family = nullptr;
+			hr = font->GetFontFamily(&family);
+			if (SUCCEEDED(hr)) {
+				IDWriteLocalizedStrings* names = nullptr;
+				hr = family->GetFamilyNames(&names);
+				if (SUCCEEDED(hr)) {
+					UINT32 index = 0;
+					BOOL exists = false;
+					names->FindLocaleName(L"en-us", &index, &exists);
+					if (!exists) {
+						index = 0;
+					}
+
+					UINT32 length = 0;
+					names->GetStringLength(index, &length);
+
+					wsFamily.resize(length + 1);
+					names->GetString(index, wsFamily.data(), length + 1);
+
+					ReleaseUnknown(names);
+					success = wsFamily[0] != L'\0';
+				}
+
+				ReleaseUnknown(family);
+			}
+
+			ReleaseUnknown(font);
+		}
+	}
+	return success;
+}
+#endif
+
+}
+
+#if 0
 std::shared_ptr<Font> Font::Allocate(const FontParameters &fp) {
 #if defined(USE_D2D)
 	if (fp.technology != Technology::Default) {
@@ -448,6 +500,75 @@ std::shared_ptr<Font> Font::Allocate(const FontParameters &fp) {
 #endif
 	return std::make_shared<FontGDI>(fp);
 }
+
+#else
+
+std::shared_ptr<Font> Font::Allocate(const FontParameters& fp) {
+	LOGFONTW lf{};
+	// The negative is to allow for leading
+	lf.lfHeight = -std::abs(std::lround(fp.size));
+	lf.lfWeight = static_cast<LONG>(fp.weight);
+	lf.lfItalic = fp.italic ? 1 : 0;
+	lf.lfCharSet = static_cast<BYTE>(fp.characterSet);
+	lf.lfQuality = Win32MapFontQuality(fp.extraFontFlag);
+	UTF16FromUTF8(fp.faceName, lf.lfFaceName, LF_FACESIZE);
+	if (fp.technology == Technology::Default) {
+		HFONT hfont = ::CreateFontIndirectW(&lf);
+		return std::make_shared<FontGDI>(lf, hfont, fp.extraFontFlag);
+	}
+	else {
+		IDWriteTextFormat* pTextFormat = nullptr;
+		std::wstring wsFamily;
+		const FLOAT fHeight = static_cast<FLOAT>(fp.size);
+		DWRITE_FONT_WEIGHT weight = static_cast<DWRITE_FONT_WEIGHT>(fp.weight);
+		DWRITE_FONT_STYLE style = fp.italic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL;
+		DWRITE_FONT_STRETCH stretch = DWRITE_FONT_STRETCH_NORMAL;
+		if (!GetDWriteFontProperties(lf, wsFamily, weight, style, stretch)) {
+			wsFamily = WStringFromUTF8(fp.faceName);
+		}
+
+		const std::wstring wsLocale = WStringFromUTF8(fp.localeName);
+		HRESULT hr = pIDWriteFactory->CreateTextFormat(wsFamily.c_str(), nullptr,
+			weight, style, stretch, fHeight, wsLocale.c_str(), &pTextFormat);
+		if (hr == E_INVALIDARG) {
+			// Possibly a bad locale name like "/" so try "en-us".
+			hr = pIDWriteFactory->CreateTextFormat(wsFamily.c_str(), nullptr,
+				weight, style, stretch, fHeight, L"en-us", &pTextFormat);
+		}
+		if (SUCCEEDED(hr)) {
+			pTextFormat->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
+
+			FLOAT yAscent = 2.0f;
+			FLOAT yDescent = 1.0f;
+			FLOAT yInternalLeading = 0.0f;
+			IDWriteTextLayout* pTextLayout = nullptr;
+			hr = pIDWriteFactory->CreateTextLayout(L"X", 1, pTextFormat,
+				100.0f, 100.0f, &pTextLayout);
+			if (SUCCEEDED(hr) && pTextLayout) {
+				constexpr int maxLines = 2;
+				DWRITE_LINE_METRICS lineMetrics[maxLines]{};
+				UINT32 lineCount = 0;
+				hr = pTextLayout->GetLineMetrics(lineMetrics, maxLines, &lineCount);
+				if (SUCCEEDED(hr)) {
+					yAscent = lineMetrics[0].baseline;
+					yDescent = lineMetrics[0].height - lineMetrics[0].baseline;
+
+					FLOAT emHeight;
+					hr = pTextLayout->GetFontSize(0, &emHeight);
+					if (SUCCEEDED(hr)) {
+						yInternalLeading = lineMetrics[0].height - emHeight;
+					}
+				}
+				ReleaseUnknown(pTextLayout);
+				pTextFormat->SetLineSpacing(DWRITE_LINE_SPACING_METHOD_UNIFORM, lineMetrics[0].height, lineMetrics[0].baseline);
+			}
+			return std::make_shared<FontDirectWrite>(lf, pTextFormat, fp.extraFontFlag, yAscent, yDescent, yInternalLeading);
+		}
+	}
+	return {};
+}
+#endif
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 // Buffer to hold strings and string position arrays without always allocating on heap.
 // May sometimes have string too long to allocate on stack. So use a fixed stack-allocated buffer
@@ -565,9 +686,7 @@ public:
 	~SurfaceGDI() noexcept override;
 
 	void Init(WindowID wid) override;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	void Init(SurfaceID sid, WindowID wid, bool printing = false) override;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	void Init(SurfaceID sid, WindowID wid) override;
 	std::unique_ptr<Surface> AllocatePixMap(int width, int height) override;
 
 	void SetMode(SurfaceMode mode_) override;
@@ -694,14 +813,12 @@ void SurfaceGDI::Init(WindowID wid) {
 	logPixelsY = DpiForWindow(wid);
 }
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-void SurfaceGDI::Init(SurfaceID sid, WindowID wid, bool printing) {
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+void SurfaceGDI::Init(SurfaceID sid, WindowID wid) {
 	Release();
 	hdc = static_cast<HDC>(sid);
 	::SetTextAlign(hdc, TA_BASELINE);
 	// Windows on screen are scaled but printers are not.
-	//~const bool printing = ::GetDeviceCaps(hdc, TECHNOLOGY) != DT_RASDISPLAY;
+	const bool printing = ::GetDeviceCaps(hdc, TECHNOLOGY) != DT_RASDISPLAY;
 	logPixelsY = printing ? ::GetDeviceCaps(hdc, LOGPIXELSY) : DpiForWindow(wid);
 }
 
@@ -1400,9 +1517,7 @@ public:
 
 	void SetScale(WindowID wid) noexcept;
 	void Init(WindowID wid) override;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	void Init(SurfaceID sid, WindowID wid, bool printing = false) override;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	void Init(SurfaceID sid, WindowID wid) override;
 	std::unique_ptr<Surface> AllocatePixMap(int width, int height) override;
 
 	void SetMode(SurfaceMode mode_) override;
@@ -1532,13 +1647,11 @@ void SurfaceD2D::Init(WindowID wid) {
 	SetScale(wid);
 }
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-void SurfaceD2D::Init(SurfaceID sid, WindowID wid, bool /*printing*/) {
+void SurfaceD2D::Init(SurfaceID sid, WindowID wid) {
 	Release();
-	SetScale(wid); // printing always using GDI
+	SetScale(wid);
 	pRenderTarget = static_cast<ID2D1RenderTarget *>(sid);
 }
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 std::unique_ptr<Surface> SurfaceD2D::AllocatePixMap(int width, int height) {
 	std::unique_ptr<SurfaceD2D> surf = std::make_unique<SurfaceD2D>(pRenderTarget, width, height, mode, logPixelsY);
@@ -3950,11 +4063,9 @@ void Platform_Initialise(void *hInstance) noexcept {
 void Platform_Finalise(bool fromDllMain) noexcept {
 #if defined(USE_D2D)
 	if (!fromDllMain) {
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		//~ReleaseUnknown(defaultRenderingParams);
-		//~ReleaseUnknown(customClearTypeRenderingParams);
-		ReleaseUnknown(gdiInterop);
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+    // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+    ReleaseUnknown(gdiInterop);
+    // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		ReleaseUnknown(pIDWriteFactory);
 		ReleaseUnknown(pD2DFactory);
 		if (hDLLDWrite) {

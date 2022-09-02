@@ -1256,13 +1256,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     BeginWaitCursorUID(true, IDS_MUI_SB_LEXER_STYLING);
 
-    char localeNameA[LOCALE_NAME_MAX_LENGTH] = { '\0' };
-#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-    WideCharToMultiByte(CP_UTF8, 0, Settings2.PreferredLanguageLocaleName, -1, localeNameA, COUNTOF(localeNameA), NULL, NULL);
-#else
-    WideCharToMultiByte(CP_UTF8, 0, MUI_BASE_LNG_ID, -1, localeNameA, COUNTOF(localeNameA), NULL, NULL);
-#endif
-
     // first set standard lexer's default values
     const PEDITLEXER pCurrentStandard = (IsLexerStandard(pLexNew)) ? pLexNew : GetCurrentStdLexer();
 
@@ -1317,8 +1310,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     // apply default settings
     Style_SetStyles(hwnd, STYLE_DEFAULT, mergedDefaultStyles);
-
-    SciCall_SetFontLocale(localeNameA);
 
     // Broadcast STYLE_DEFAULT as base style to all other styles
     SciCall_StyleClearAll();
@@ -2840,6 +2831,7 @@ static inline bool GetDefaultCodeFont(LPWSTR pwchFontName, int cchFont)
     }
 
     LPCWSTR const FontNamePrioList[] = {
+        L"Iosevka Curly Slab Extended",
         L"Cascadia Mono",
         L"Cascadia Code",
         L"Fira Code",
@@ -3823,19 +3815,21 @@ void Style_SetStyles(HWND hwnd, const int iStyle, LPCWSTR lpszStyle)
 
     // Font Face Name
     WCHAR wchFontName[LF_FACESIZE] = { L'\0' };
-    if (Style_StrGetFontName(lpszStyle, wchFontName, COUNTOF(wchFontName))) {
-        assert(lstrlen(wchFontName) < LF_FACESIZE);
-        if (StrIsNotEmpty(wchFontName)) {
-            char chFontName[LF_FACESIZE] = { '\0' };
-            WideCharToMultiByte(Encoding_SciCP, 0, wchFontName, -1, chFontName, (int)COUNTOF(chFontName), NULL, NULL);
-            SciCall_StyleSetFont(iStyle, chFontName);
+    if (!Style_StrGetFontName(lpszStyle, wchFontName, COUNTOF(wchFontName))) {
+        if (bIsDefaultStyle) {
+            Style_StrGetFontName(L"font:$Code", wchFontName, COUNTOF(wchFontName));
         }
-    } else if (bIsDefaultStyle) {
-        Style_StrGetFontName(L"font:$Code", wchFontName, COUNTOF(wchFontName));
-        assert(lstrlen(wchFontName) < LF_FACESIZE);
-        char chFontName[LF_FACESIZE] = { '\0' };
-        WideCharToMultiByte(Encoding_SciCP, 0, wchFontName, -1, chFontName, (int)COUNTOF(chFontName), NULL, NULL);
-        SciCall_StyleSetFont(iStyle, chFontName);
+        else {
+            GetDefaultCodeFont(wchFontName, COUNTOF(wchFontName));
+        }
+    }
+    if (StrIsNotEmpty(wchFontName)) {
+        char chSetFontName[LF_FACESIZE<<2] = { '\0' };
+        WideCharToMultiByte(CP_UTF8, 0, wchFontName, -1, chSetFontName, (int)COUNTOF(chSetFontName), NULL, NULL);
+        SciCall_StyleSetFont(iStyle, chSetFontName);
+        //char chGetFontName[LF_FACESIZE << 2] = { '\0' };
+        //SciCall_StyleGetFont(iStyle, chGetFontName);
+        //assert(StringCchCompareXA(chGetFontName, chSetFontName) == 0);
     }
 
     // Font Weight
@@ -3870,6 +3864,14 @@ void Style_SetStyles(HWND hwnd, const int iStyle, LPCWSTR lpszStyle)
         _SetBaseFontSize(fBaseFontSize);
         SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, float2int(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER));
     }
+
+    char localeNameA[LOCALE_NAME_MAX_LENGTH] = "en-us\0";
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+    WideCharToMultiByte(CP_UTF8, 0, Settings2.PreferredLanguageLocaleName, -1, localeNameA, COUNTOF(localeNameA), NULL, NULL);
+#else
+    WideCharToMultiByte(CP_UTF8, 0, MUI_BASE_LNG_ID, -1, localeNameA, COUNTOF(localeNameA), NULL, NULL);
+#endif
+    SciCall_SetFontLocale(localeNameA);
 
     // Character Set
     if (Style_StrGetCharSet(lpszStyle, &iValue)) {
