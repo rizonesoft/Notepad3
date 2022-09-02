@@ -3818,9 +3818,6 @@ void Style_SetStyles(HWND hwnd, const int iStyle, LPCWSTR lpszStyle)
         if (bIsDefaultStyle) {
             Style_StrGetFontName(L"font:$Code", wchFontName, COUNTOF(wchFontName));
         }
-        else {
-            GetDefaultCodeFont(wchFontName, COUNTOF(wchFontName));
-        }
     }
     if (StrIsNotEmpty(wchFontName)) {
         char chSetFontName[LF_FACESIZE<<2] = { '\0' };
