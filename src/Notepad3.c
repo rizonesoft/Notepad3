@@ -1650,9 +1650,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 
     // Current file information -- moved in front of ShowWindow()
     HPATHL hfile_pth = Path_Allocate(L"");
-    FileLoadFlags fLoadFlags = FLF_DontSave | FLF_New;
-    fLoadFlags |= Settings.SkipUnicodeDetection ? FLF_SkipUnicodeDetect : 0;
-    fLoadFlags |= Settings.SkipANSICodePageDetection ? FLF_SkipANSICPDetection : 0;
+    FileLoadFlags fLoadFlags = FLF_DontSave | FLF_New | FLF_SkipUnicodeDetect | FLF_SkipANSICPDetection;
     FileLoad(hfile_pth, fLoadFlags);
 
     if (!s_flagStartAsTrayIcon) {
