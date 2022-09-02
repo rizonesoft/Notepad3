@@ -352,10 +352,10 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Change History Marker"
         BEGIN
-            MENUITEM "Hide All Change Markers",             IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+            MENUITEM "Masquer tous les marqueurs de modification",          IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Afficher uniquement dans la marge",                   IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "Afficher uniquement dans le document",                IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "Afficher tous les marqueurs de modification",         IDM_VIEW_CHGHIST_ALL
         END
         MENUITEM SEPARATOR
         MENUITEM "Indi&cateurs de liens\tCtrl+Alt+W",                       IDM_VIEW_HYPERLINKHOTSPOTS
