@@ -21,7 +21,7 @@ constexpr unsigned char IndexFromChar(char ch) {
 	return static_cast<unsigned char>(ch);
 }
 
-	}
+}
 
 CaseFolderTable::CaseFolderTable() noexcept : mapping{}  {
 	StandardASCII();
@@ -31,11 +31,11 @@ size_t CaseFolderTable::Fold(char *folded, size_t sizeFolded, const char *mixed,
 	if (lenMixed > sizeFolded) {
 		return 0;
 	}
-		for (size_t i=0; i<lenMixed; i++) {
+	for (size_t i=0; i<lenMixed; i++) {
 		folded[i] = mapping[IndexFromChar(mixed[i])];
-		}
-		return lenMixed;
 	}
+	return lenMixed;
+}
 
 void CaseFolderTable::SetTranslation(char ch, char chTranslation) noexcept {
 	mapping[IndexFromChar(ch)] = chTranslation;

@@ -1856,7 +1856,7 @@ void SurfaceD2D::FillRectangle(PRectangle rc, Surface &surfacePattern) {
 	if (SUCCEEDED(hr) && pBitmap) {
 		ID2D1BitmapBrush *pBitmapBrush = nullptr;
 		const D2D1_BITMAP_BRUSH_PROPERTIES brushProperties =
-	        D2D1::BitmapBrushProperties(D2D1_EXTEND_MODE_WRAP, D2D1_EXTEND_MODE_WRAP,
+			D2D1::BitmapBrushProperties(D2D1_EXTEND_MODE_WRAP, D2D1_EXTEND_MODE_WRAP,
 			D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR);
 		// Create the bitmap brush.
 		hr = pRenderTarget->CreateBitmapBrush(pBitmap, brushProperties, &pBitmapBrush);
@@ -1977,9 +1977,9 @@ void SurfaceD2D::DrawRGBAImage(PRectangle rc, int width, int height, const unsig
 		ID2D1Bitmap *bitmap = nullptr;
 		const D2D1_SIZE_U size = D2D1::SizeU(width, height);
 		D2D1_BITMAP_PROPERTIES props = {{DXGI_FORMAT_B8G8R8A8_UNORM,
-		    D2D1_ALPHA_MODE_PREMULTIPLIED}, 72.0, 72.0};
+			D2D1_ALPHA_MODE_PREMULTIPLIED}, 72.0, 72.0};
 		const HRESULT hr = pRenderTarget->CreateBitmap(size, image.data(),
-                  width * 4, &props, &bitmap);
+				  width * 4, &props, &bitmap);
 		if (SUCCEEDED(hr)) {
 			const D2D1_RECT_F rcDestination = RectangleFromPRectangle(rc);
 			pRenderTarget->DrawBitmap(bitmap, rcDestination);
@@ -3934,7 +3934,7 @@ LRESULT ListBoxX::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam
 }
 
 LRESULT PASCAL ListBoxX::StaticWndProc(
-    HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam) {
+	HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam) {
 	if (iMessage == WM_CREATE) {
 		CREATESTRUCT *pCreate = reinterpret_cast<CREATESTRUCT *>(lParam);
 		SetWindowPointer(hWnd, pCreate->lpCreateParams);
@@ -4072,9 +4072,9 @@ void Platform_Initialise(void *hInstance) noexcept {
 void Platform_Finalise(bool fromDllMain) noexcept {
 #if defined(USE_D2D)
 	if (!fromDllMain) {
-    // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-    ReleaseUnknown(gdiInterop);
-    // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		ReleaseUnknown(gdiInterop);
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		ReleaseUnknown(pIDWriteFactory);
 		ReleaseUnknown(pD2DFactory);
 		if (hDLLDWrite) {

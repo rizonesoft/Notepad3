@@ -742,9 +742,9 @@ void ScintillaWin::StartDrag() {
 	IDropSource *pDropSource = reinterpret_cast<IDropSource *>(&ds);
 	//Platform::DebugPrintf("About to DoDragDrop %x %x\n", pDataObject, pDropSource);
 	const HRESULT hr = ::DoDragDrop(
-	                 pDataObject,
-	                 pDropSource,
-	                 DROPEFFECT_COPY | DROPEFFECT_MOVE, &dwEffect);
+	                        pDataObject,
+	                        pDropSource,
+	                        DROPEFFECT_COPY | DROPEFFECT_MOVE, &dwEffect);
 	//Platform::DebugPrintf("DoDragDrop = %x\n", hr);
 	if (SUCCEEDED(hr)) {
 		if ((hr == DRAGDROP_S_DROP) && (dwEffect == DROPEFFECT_MOVE) && dropWentOutside) {
@@ -3779,7 +3779,7 @@ sptr_t ScintillaWin::DirectFunction(
 }
 
 sptr_t ScintillaWin::DirectStatusFunction(
-    sptr_t ptr, UINT iMessage, uptr_t wParam, sptr_t lParam, int *pStatus) {
+	sptr_t ptr, UINT iMessage, uptr_t wParam, sptr_t lParam, int *pStatus) {
 	ScintillaWin *sci = reinterpret_cast<ScintillaWin *>(ptr);
 	PLATFORM_ASSERT(::GetCurrentThreadId() == ::GetWindowThreadProcessId(sci->MainHWND(), nullptr));
 	const sptr_t returnValue = sci->WndProc(static_cast<Message>(iMessage), wParam, lParam);
@@ -3790,7 +3790,7 @@ sptr_t ScintillaWin::DirectStatusFunction(
 namespace Scintilla::Internal {
 
 sptr_t DirectFunction(
-    ScintillaWin *sci, UINT iMessage, uptr_t wParam, sptr_t lParam) {
+	ScintillaWin *sci, UINT iMessage, uptr_t wParam, sptr_t lParam) {
 	return sci->WndProc(static_cast<Message>(iMessage), wParam, lParam);
 }
 
