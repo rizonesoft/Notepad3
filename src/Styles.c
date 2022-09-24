@@ -568,7 +568,7 @@ bool Style_DynamicThemesMenuCmd(int cmd)
         } else {
             Style_ResetCurrentLexer(Globals.hwndEdit);
         }
-        UpdateMarginWidth(true);
+        UpdateMargins(true);
         UpdateUI();
     }
     return result;
@@ -1726,7 +1726,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         EditToggleView(Globals.hwndEdit);
     }
 
-    UpdateMarginWidth(true);
+    UpdateMargins(true);
 
     EndWaitCursor();
 
@@ -2154,7 +2154,7 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
 
     // --- Change History ---
     SciCall_SetMarginBackN(MARGIN_SCI_CHGHIST, clrMarginBack);
-    SciCall_SetMarginSensitiveN(MARGIN_SCI_CHGHIST, false);
+    SciCall_SetMarginSensitiveN(MARGIN_SCI_CHGHIST, true);
     SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_MODIFIED, clrMarginBack);
     //SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN, clrMarginBack);
     //SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_SAVED, clrMarginBack);
