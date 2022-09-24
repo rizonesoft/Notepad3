@@ -9466,15 +9466,20 @@ void EditBookmarkToggle(HWND hwnd, const DocLn ln, const int modifiers)
     UNREFERENCED_PARAMETER(hwnd);
     int const all = ALL_MARKERS_BITMASK();
     int const bitmask = SciCall_MarkerGet(ln) & all;
-    if (!bitmask) {
-        SciCall_MarkerAdd(ln, MARKER_NP3_BOOKMARK); // set
-    } else if (bitmask & BOOKMARK_BITMASK()) {
+    bool const bookmark = (bool)(bitmask & BOOKMARK_BITMASK());
+    if (bookmark) {
         SciCall_MarkerDelete(ln, MARKER_NP3_BOOKMARK); // unset
-    } else {
-        for (int m = MARKER_NP3_1; m < MARKER_NP3_BOOKMARK; ++m) {
-            if (bitmask & (1 << m)) {
-                SciCall_MarkerDeleteAll(m);
+    }
+    else {
+        if (bitmask) {
+            for (int m = MARKER_NP3_1; m < MARKER_NP3_BOOKMARK; ++m) {
+                if (bitmask & (1 << m)) {
+                    SciCall_MarkerDeleteAll(m);
+                }
             }
+        }
+        if (!bitmask || (bitmask == OCC_INVISIBLE_BITMASK())) {
+            SciCall_MarkerAdd(ln, MARKER_NP3_BOOKMARK); // set
         }
     }
     if (modifiers & SCMOD_ALT) {

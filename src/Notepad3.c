@@ -1850,7 +1850,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 
     UpdateToolbar();
     UpdateStatusbar(true);
-    UpdateMarginWidth(true);
+    UpdateMargins(true);
     ResetMouseDWellTime();
 
     // print file immediately and quit
@@ -3189,7 +3189,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
         UpdateToolbar();
         UpdateStatusbar(true);
-        UpdateMarginWidth(true);
+        UpdateMargins(true);
         UpdateUI();
     }
 
@@ -3260,7 +3260,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     UpdateToolbar();
     UpdateStatusbar(true);
-    UpdateMarginWidth(true);
+    UpdateMargins(true);
     UpdateTitleBar(hwnd);
 
     return FALSE;
@@ -3594,7 +3594,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         UpdateToolbar();
         UpdateStatusbar(true);
-        UpdateMarginWidth(true);
+        UpdateMargins(true);
     }
 
     return FALSE;
@@ -3664,7 +3664,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         DocPos const iCurrentPos = SciCall_PositionFromPoint(pt.x, pt.y);
         DocLn const  curLn = SciCall_LineFromPosition(iCurrentPos);
-        int const    bitmask = SciCall_MarkerGet(curLn) & OCCURRENCE_MARKER_BITMASK();
+        int const    bitmask = SciCall_MarkerGet(curLn) & (OCCURRENCE_MARKER_BITMASK() | BITMASK_GEN(int, SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN, 4));
         imenu = (bitmask && ((Settings.FocusViewMarkerMode & FVMM_LN_BACKGR) || !Settings.ShowBookmarkMargin)) ? MNU_MARGIN : MNU_EDIT;
 
         if (imenu == MNU_EDIT) {
@@ -4751,7 +4751,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         BeginWaitCursorUID(true, IDS_MUI_SB_RECODING_DOC);
         if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE))) {
-            UpdateMarginWidth(true);
+            UpdateMargins(true);
             SetSaveNeeded();
         }
         EndWaitCursor();
@@ -5651,7 +5651,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (!IsWindow(Globals.hwndDlgCustomizeSchemes)) {
             Style_SetDefaultFont(Globals.hwndEdit, (iLoWParam == IDM_VIEW_FONT));
         }
-        UpdateMarginWidth(true);
+        UpdateMargins(true);
         UpdateUI();
         break;
 
@@ -5779,13 +5779,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_LINENUMBERS:
         Settings.ShowLineNumbers = !Settings.ShowLineNumbers;
-        UpdateMarginWidth(true);
+        UpdateMargins(true);
         break;
 
 
     case IDM_VIEW_BOOKMARK_MARGIN:
         Settings.ShowBookmarkMargin = !Settings.ShowBookmarkMargin;
-        UpdateMarginWidth(true);
+        UpdateMargins(true);
         break;
 
     case IDM_SET_AUTOCOMPLETEWORDS:
@@ -5973,7 +5973,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         SciCall_SetChangeHistory(Settings.ShowChangeHistory);
         Style_SetChangeHistory(Globals.hwndEdit, ((Settings.ShowChangeHistory & ChgHist_ON) && (Settings.ShowChangeHistory & ChgHist_MARGIN)));
-        UpdateMarginWidth(true);
+        UpdateMargins(true);
         break;
 
 
@@ -6192,7 +6192,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         Settings.Bidirectional = SciCall_GetBidirectional();
 
         if ((prevRT != Settings.RenderingTechnology) || (prevBD != Settings.Bidirectional)) {
-            UpdateMarginWidth(true);
+            UpdateMargins(true);
         }
     }
     break;
@@ -8230,7 +8230,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
                         _SplitUndoTransaction();
                     }
                 }
-                UpdateMarginWidth(false);
+                UpdateMargins(false);
             }
             if (s_bInMultiEditMode && !(iModType & SC_MULTILINEUNDOREDO)) {
                 if (!Sci_IsMultiSelection()) {
@@ -8300,7 +8300,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
                 }
             }
             if (iUpd & SC_UPDATE_CONTENT) {
-                UpdateMarginWidth(false);
+                UpdateMargins(false);
                 //~ Style and Marker are out of scope here => using WM_COMMAND -> SCEN_CHANGE  instead!
                 //~MarkAllOccurrences(-1, false);
                 //~EditUpdateVisibleIndicators(); // will lead to recursion
@@ -8432,7 +8432,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
     break;
 
 
-    case SCN_MARGINCLICK:
+    case SCN_MARGINCLICK: {
         switch (scn->margin) {
         case MARGIN_SCI_FOLDING:
             EditFoldClick(SciCall_LineFromPosition(scn->position), scn->modifiers);
@@ -8447,7 +8447,8 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
         default:
             return 0;
         }
-        break;
+    }
+    break;
 
 
     case SCN_MARGINRIGHTCLICK: {
@@ -8467,7 +8468,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
     case SCN_ZOOM:
         UpdateToolbar();
-        UpdateMarginWidth(true);
+        UpdateMargins(true);
         break;
 
 #if 0
@@ -9983,10 +9984,10 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
 //=============================================================================
 //
-//  UpdateMarginWidth()
+//  UpdateMargins()
 //
 //
-void UpdateMarginWidth(const bool bForce)
+void UpdateMargins(const bool bForce)
 {
     static bool bShowLnNums = false;
     static DocLn prevLineCount = -1LL;
@@ -10109,7 +10110,7 @@ void UndoRedoRecordingStart()
     SciCall_SetUndoCollection(true);
     SetSavePoint();
     SciCall_SetChangeHistory(SC_CHANGE_HISTORY_ENABLED | Settings.ShowChangeHistory);
-    UpdateMarginWidth(true);
+    UpdateMargins(true);
 }
 
 
@@ -10129,7 +10130,7 @@ void UndoRedoRecordingStop()
     SciCall_SetChangeHistory(SC_CHANGE_HISTORY_DISABLED);
     SciCall_SetUndoCollection(false);
     SciCall_EmptyUndoBuffer();
-    UpdateMarginWidth(true);
+    UpdateMargins(true);
 }
 
 
@@ -10655,7 +10656,7 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
 
         SetSavePoint();
 
-        UpdateMarginWidth(true);
+        UpdateMargins(true);
         UpdateStatusbar(true);
         UpdateTitleBar(Globals.hwndMain);
 
@@ -10889,7 +10890,7 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
 
     UpdateTitleBar(Globals.hwndMain);
     UpdateToolbar();
-    UpdateMarginWidth(true);
+    UpdateMargins(true);
     UpdateStatusbar(true);
 
     //~Path_Release(hopen_file) ~ already released
@@ -10955,7 +10956,7 @@ bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc)
     }
 
     SetSavePoint();
-    UpdateMarginWidth(true);
+    UpdateMargins(true);
     UpdateStatusbar(true);
     UpdateToolbar();
     UpdateTitleBar(Globals.hwndMain);

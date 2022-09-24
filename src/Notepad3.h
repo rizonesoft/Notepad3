@@ -130,7 +130,7 @@ void MarkAllOccurrences(const int delay, const bool bForceClear);
 void UpdateUI();
 void UpdateToolbar();
 void UpdateStatusbar(const bool bForceRedraw);
-void UpdateMarginWidth(const bool bForce);
+void UpdateMargins(const bool bForce);
 void UpdateSaveSettingsCmds();
 void ResetMouseDWellTime();
 void UpdateTitleBar(const HWND hwnd);
