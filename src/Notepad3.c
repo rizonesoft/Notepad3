@@ -457,21 +457,23 @@ static int msgcmp(void* mqc1, void* mqc2)
     return 1;
 }
 
-static int sortcmp(void *mqc1, void *mqc2) {
+//~static int sortcmp(void *mqc1, void *mqc2) {
+//~
+//~    const CmdMessageQueue_t *const pMQC1 = (CmdMessageQueue_t *)mqc1;
+//~    const CmdMessageQueue_t *const pMQC2 = (CmdMessageQueue_t *)mqc2;
+//~
+//~    return (pMQC1->delay - pMQC2->delay);
+//~}
 
-    const CmdMessageQueue_t *const pMQC1 = (CmdMessageQueue_t *)mqc1;
-    const CmdMessageQueue_t *const pMQC2 = (CmdMessageQueue_t *)mqc2;
-
-    return (pMQC1->delay - pMQC2->delay);
-}
 // ----------------------------------------------------------------------------
 
 #define _MQ_TIMER_CYCLE (USER_TIMER_MINIMUM << 1) // 20ms cycle
-#define _MQ_ms2cycl(T) (((T) + USER_TIMER_MINIMUM) / _MQ_TIMER_CYCLE)
-#define _MQ_IMMEDIATE (_MQ_TIMER_CYCLE - 1)
+#define _MQ_IMMEDIATE (USER_TIMER_MINIMUM >> 1)
 #define _MQ_FAST (_MQ_TIMER_CYCLE << 1)
 #define _MQ_STD (_MQ_TIMER_CYCLE << 2)
 #define _MQ_LAZY (_MQ_TIMER_CYCLE << 3)
+
+#define _MQ_ms2cycl(T) (((T) + USER_TIMER_MINIMUM) / _MQ_TIMER_CYCLE)
 
 static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
 {
@@ -647,6 +649,7 @@ static int                   s_iCaretPolicyV = CARET_EVEN;
 // static forward declarations
 static void  _UpdateStatusbarDelayed(bool bForceRedraw);
 static void  _UpdateToolbarDelayed();
+static void  _UpdateTitlebarDelayed(const HWND hwnd);
 
 //==============================================================================
 //
@@ -660,7 +663,6 @@ static inline void SetSaveNeeded()
     if (!s_DocNeedSaving) {
         s_DocNeedSaving = true;
         UpdateToolbar();
-        UpdateTitleBar(Globals.hwndMain);
         AutoSaveStart(true);
     }
     else {
@@ -678,7 +680,6 @@ void SetSavePoint()
     }
     s_DocNeedSaving = false;
     UpdateToolbar();
-    UpdateTitleBar(Globals.hwndMain);
 }
 
 inline static bool IsDocumentModified()
@@ -1848,9 +1849,6 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
     Globals.iSelectionMarkNumber = 0;
     Globals.iMarkOccurrencesCount = 0;
 
-    UpdateToolbar();
-    UpdateStatusbar(true);
-    UpdateMargins(true);
     ResetMouseDWellTime();
 
     // print file immediately and quit
@@ -3161,7 +3159,6 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam,LPARAM lParam)
 #ifdef D_NP3_WIN10_DARK_MODE
         RefreshTitleBarThemeColor(hwnd);
 #endif
-        UpdateTitleBar(hwnd);
 
         // reinitialize edit frame
         _InitEditWndFrame();
@@ -3261,7 +3258,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     UpdateToolbar();
     UpdateStatusbar(true);
     UpdateMargins(true);
-    UpdateTitleBar(hwnd);
+    UpdateTitlebar(hwnd);
 
     return FALSE;
 }
@@ -4366,7 +4363,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         DynamicLanguageMenuCmd(iLoWParam);
         Style_InsertThemesMenu(Globals.hMainMenu);
         DrawMenuBar(Globals.hwndMain);
-        UpdateTitleBar(Globals.hwndMain);
+        UpdateToolbar();
         UpdateStatusbar(true);
         return FALSE;
     }
@@ -4395,6 +4392,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDT_TIMER_UPDATE_TOOLBAR:
         _UpdateToolbarDelayed();
+        break;
+
+    case IDT_TIMER_UPDATE_TITLEBAR:
+        _UpdateTitlebarDelayed((HWND)lParam);
         break;
 
     case IDT_TIMER_CALLBACK_MRKALL:
@@ -4486,7 +4487,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 UpdateSaveSettingsCmds();
             }
             UpdateToolbar();
-            UpdateTitleBar(Globals.hwndMain);
         }
         break;
 
@@ -6162,7 +6162,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SetWindowPos(hwnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
             Settings.AlwaysOnTop = true;
         }
-        UpdateTitleBar(Globals.hwndMain);
         UpdateToolbar();
         break;
 
@@ -6244,7 +6243,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             //~SendMessage(Globals.hwndDlgCustomizeSchemes, WM_CLOSE, 0, 0); ~ no need for restart
             //~PostWMCommand(hwnd, IDM_VIEW_SCHEMECONFIG);
             SendMessage(Globals.hwndDlgCustomizeSchemes, WM_THEMECHANGED, 0, 0);
-            UpdateTitleBar(Globals.hwndDlgCustomizeSchemes);
+            PostMessage(Globals.hwndDlgCustomizeSchemes, WM_NCACTIVATE, FALSE, -1); // (!)
+            PostMessage(Globals.hwndDlgCustomizeSchemes, WM_NCACTIVATE, TRUE, 0);
             PostMessage(hwnd, WM_SETFOCUS, 0, 0);
         }
 
@@ -6272,13 +6272,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_SET_SHOWFULLPATH:
         Settings.PathNameFormat = iLoWParam - IDM_SET_SHOWFILENAMEONLY;
         StringCchCopy(s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt),L"");
-        UpdateTitleBar(hwnd);
+        UpdateTitlebar(hwnd);
         break;
 
 
     case IDM_SET_SHOWEXCERPT:
         EditGetExcerpt(Globals.hwndEdit,s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt));
-        UpdateTitleBar(hwnd);
+        UpdateTitlebar(hwnd);
         break;
 
 
@@ -6826,7 +6826,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_TOGGLETITLE:
         EditGetExcerpt(Globals.hwndEdit,s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt));
-        UpdateTitleBar(hwnd);
+        UpdateTitlebar(hwnd);
         break;
 
 
@@ -9166,7 +9166,6 @@ void ParseCommandLine()
 //
 //  _DelayUpdateStatusbar()
 //
-//
 static void  _DelayUpdateStatusbar(const int delay, const bool bForceRedraw)
 {
     static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_STATUSBAR, 0LL);
@@ -9182,7 +9181,6 @@ static void  _DelayUpdateStatusbar(const int delay, const bool bForceRedraw)
 //
 //  _DelayUpdateToolbar()
 //
-//
 static void  _DelayUpdateToolbar(const int delay)
 {
     static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_TOOLBAR, 0LL);
@@ -9195,8 +9193,22 @@ static void  _DelayUpdateToolbar(const int delay)
 
 //=============================================================================
 //
-//  _DelayClearCallTip()
+//  _DelayUpdateTitlebar()
 //
+static void _DelayUpdateTitlebar(const int delay, const HWND hwnd)
+{
+    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_TITLEBAR, 0LL);
+    if (!mqc.hwnd) {
+        mqc.hwnd = Globals.hwndMain;
+    }
+    mqc.lparam = (LPARAM)hwnd;
+    _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
+}
+
+
+//=============================================================================
+//
+//  _DelayClearCallTip()
 //
 static void  _DelayClearCallTip(const int delay)
 {
@@ -9211,7 +9223,6 @@ static void  _DelayClearCallTip(const int delay)
 //=============================================================================
 //
 //  _DelaySplitUndoTransaction()
-//
 //
 static void  _DelaySplitUndoTransaction(const int delay)
 {
@@ -9241,11 +9252,41 @@ void MarkAllOccurrences(const int delay, const bool bForceClear)
 
 //=============================================================================
 //
+//  UpdateTitlebar()
+//
+void UpdateTitlebar(const HWND hwnd)
+{
+    _DelayUpdateTitlebar(_MQ_STD, hwnd);
+}
+
+
+//=============================================================================
+//
+//  _UpdateTitlebarDelayed()
+//
+static void _UpdateTitlebarDelayed(const HWND hwnd)
+{
+    if (hwnd == Globals.hwndMain) {
+        bool const bFileLocked = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
+        SetWindowTitle(Globals.hwndMain, Paths.CurrentFile, Settings.PathNameFormat,
+            s_flagPasteBoard, s_bIsProcessElevated, IsDocumentModified(),
+            bFileLocked, IsFileChangedFlagSet(), IsFileDeletedFlagSet(), IsFileReadOnly(), s_wchTitleExcerpt);
+    }
+    if (!IsWindows10OrGreater()) {
+        PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
+        PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
+    }
+}
+
+
+//=============================================================================
+//
 //  UpdateToolbar()
 //
 void UpdateToolbar()
 {
     _DelayUpdateToolbar(_MQ_STD);
+    _DelayUpdateTitlebar(_MQ_STD, Globals.hwndMain);
 }
 
 
@@ -10054,25 +10095,6 @@ void UpdateSaveSettingsCmds()
 
 //=============================================================================
 //
-//  UpdateTitleBar()
-//
-void UpdateTitleBar(const HWND hwnd)
-{
-    if (hwnd == Globals.hwndMain) {
-
-        bool const bFileLocked = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
-
-        SetWindowTitle(Globals.hwndMain, Paths.CurrentFile, Settings.PathNameFormat,
-            s_flagPasteBoard, s_bIsProcessElevated, IsDocumentModified(),
-            bFileLocked, IsFileChangedFlagSet(), IsFileDeletedFlagSet(), IsFileReadOnly(), s_wchTitleExcerpt);
-    }
-    PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
-    PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
-}
-
-
-//=============================================================================
-//
 //  UpdateUI()
 //
 void UpdateUI() {
@@ -10083,7 +10105,8 @@ void UpdateUI() {
     scn.updated = SC_UPDATE_CONTENT;
     SendMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
     SendWMSize(Globals.hwndMain, NULL);
-    UpdateTitleBar(Globals.hwndMain);
+    PostMessage(Globals.hwndMain, WM_NCACTIVATE, FALSE, -1); // (!)
+    PostMessage(Globals.hwndMain, WM_NCACTIVATE, TRUE, 0);
 }
 
 //=============================================================================
@@ -10656,9 +10679,9 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
 
         SetSavePoint();
 
+        UpdateToolbar();
         UpdateMargins(true);
         UpdateStatusbar(true);
-        UpdateTitleBar(Globals.hwndMain);
 
         // Terminate file watching
         AutoSaveStop();
@@ -10888,7 +10911,6 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
         ResetFileObservationData(true);
     }
 
-    UpdateTitleBar(Globals.hwndMain);
     UpdateToolbar();
     UpdateMargins(true);
     UpdateStatusbar(true);
@@ -10956,10 +10978,9 @@ bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc)
     }
 
     SetSavePoint();
+    UpdateToolbar();
     UpdateMargins(true);
     UpdateStatusbar(true);
-    UpdateToolbar();
-    UpdateTitleBar(Globals.hwndMain);
 
     return result;
 }
@@ -11171,7 +11192,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
     // Read only...
     if (!(fSaveFlags & FSF_SaveAs) && !(fSaveFlags & FSF_SaveCopy) && Path_IsNotEmpty(Paths.CurrentFile)) {
         if (IsFileReadOnly()) {
-            UpdateTitleBar(Globals.hwndMain);
+            UpdateToolbar();
             INT_PTR const answer = (Settings.MuteMessageBeep) ?
                                    InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_READONLY_SAVE, Path_FindFileName(Paths.CurrentFile)) :
                                    MessageBoxLng(MB_YESNO | MB_ICONWARNING, IDS_MUI_READONLY_SAVE, Path_Get(Paths.CurrentFile));
@@ -11308,7 +11329,6 @@ bool FileSave(FileSaveFlags fSaveFlags)
     }
 
     UpdateToolbar();
-    UpdateTitleBar(Globals.hwndMain);
 
     return fSuccess;
 }
@@ -12227,7 +12247,6 @@ void InstallFileWatching(const bool bInstall) {
     Path_Release(hdir_pth);
     
     UpdateSaveSettingsCmds(); // (!) reflection
-    UpdateTitleBar(Globals.hwndMain);
     UpdateToolbar();
 }
 
