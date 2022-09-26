@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.902.(build_#) (2022-09-02)
+Current BETA/RC Version 5.22.926.(build_#) (2022-09-26)
 ========================================================
 
 --------------------------------------------------------
@@ -58,6 +58,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.926.1]- Source code formatting.
+[.926.1]- Replace old logo "rizonesoft.bmp" by new layout.
 [.831.1]- Enhancements for Change History Marker.
 [.831.1]- Use deprecated SCI_FINDTEXT to workaround crash on new (Sci v5.2.3) SCI_FINDTEXTFULL method.
 [.830.1]- "Don't ask again" for keep Read-Only view mode dialog on editing file.
@@ -100,6 +102,9 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.926.1]- Margin handling (context, bookmarks).
+[.926.1]- New Rizone.soft bitmap.
+[.926.1]- Treat files as binary can be Accidentally Clicked (GRE).
 [.902.1]- Try to fix printing scaling issue.
 [.902.1]- Propagate default font to undefined-font styles.
 [.902.1]- Remove wrong std. font selection.
