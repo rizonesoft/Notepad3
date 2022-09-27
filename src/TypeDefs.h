@@ -568,7 +568,8 @@ typedef struct SETTINGS_T {
     bool MatchBraces;
     bool AutoCloseTags;
     int  HighlightCurrentLine;
-    int  ShowChangeHistory;
+    int  ChangeHistoryMode;
+    bool ChangeHistoryMargin;
     bool HyperlinkHotspot;
     int  ColorDefHotspot;
     bool ScrollPastEOF;

@@ -3658,11 +3658,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         else {
             ScreenToClient(Globals.hwndEdit, &pt);
         }
-
-        DocPos const iCurrentPos = SciCall_PositionFromPoint(pt.x, pt.y);
-        DocLn const  curLn = SciCall_LineFromPosition(iCurrentPos);
-        int const    bitmask = SciCall_MarkerGet(curLn) & (OCCURRENCE_MARKER_BITMASK() | BITMASK_GEN(int, SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN, 4));
-        imenu = (bitmask && ((Settings.FocusViewMarkerMode & FVMM_LN_BACKGR) || !Settings.ShowBookmarkMargin)) ? MNU_MARGIN : MNU_EDIT;
+        imenu = bMargin ? MNU_MARGIN : MNU_EDIT;
 
         if (imenu == MNU_EDIT) {
             // modify configured items
@@ -3674,8 +3670,10 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 ModifyMenu(hStdCtxMenu, CMD_WEBACTION2, MF_BYCOMMAND | MF_STRING, CMD_WEBACTION2, Settings2.WebTmpl2MenuName);
             }
         }
+
         // back to screen coordinates for menu display
         ClientToScreen(Globals.hwndEdit, &pt);
+
     } break;
 
     case IDC_TOOLBAR:
@@ -3718,8 +3716,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     }
 
     if (imenu != MNU_NONE) {
-        TrackPopupMenuEx(GetSubMenu(hMenuCtx, imenu),
-                         TPM_LEFTBUTTON | TPM_RIGHTBUTTON, pt.x + 1, pt.y + 1, hwnd, NULL);
+        TrackPopupMenuEx(GetSubMenu(hMenuCtx, imenu), TPM_LEFTBUTTON | TPM_RIGHTBUTTON, pt.x + 1, pt.y + 1, hwnd, NULL);
     }
     DestroyMenu(hMenuCtx);
 
@@ -4137,8 +4134,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, IDM_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
     CheckCmd(hmenu, IDM_VIEW_LONGLINEMARKER, Settings.MarkLongLines);
     CheckCmd(hmenu, IDM_VIEW_SHOWINDENTGUIDES, Settings.ShowIndentGuides);
-    CheckCmd(hmenu, IDM_VIEW_LINENUMBERS, Settings.ShowLineNumbers);
-    CheckCmd(hmenu, IDM_VIEW_BOOKMARK_MARGIN, Settings.ShowBookmarkMargin);
+    CheckCmd(hmenu, IDM_VIEW_LINENUMBERS, SciCall_GetMarginWidthN(MARGIN_SCI_LINENUM) > 0);
+    CheckCmd(hmenu, IDM_VIEW_BOOKMARK_MARGIN, SciCall_GetMarginWidthN(MARGIN_SCI_BOOKMRK) > 0);
+    CheckCmd(hmenu, IDM_VIEW_CHGHIST_TOGGLE_MARGIN, SciCall_GetMarginWidthN(MARGIN_SCI_CHGHIST) > 0);
     CheckCmd(hmenu, IDM_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
 
     CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, IsMarkOccurrencesEnabled());
@@ -4166,7 +4164,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
 
-    int const chState = Settings.ShowChangeHistory;
+    int const chState = Settings.ChangeHistoryMode;
     i = IDM_VIEW_CHGHIST_NONE;
     i += ((chState & ChgHist_ON) && (chState & ChgHist_MARGIN)) ? 1 : 0;
     i += ((chState & ChgHist_ON) && (chState & ChgHist_DOCTXT)) ? 2 : 0;
@@ -5901,7 +5899,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_FOLDING:
         Settings.ShowCodeFolding = !Settings.ShowCodeFolding;
         FocusedView.ShowCodeFolding = Settings.ShowCodeFolding;
-        Style_SetFolding(Globals.hwndEdit, FocusedView.ShowCodeFolding);
+        Style_UpdateFoldingMargin(Globals.hwndEdit, FocusedView.ShowCodeFolding);
         if (!FocusedView.ShowCodeFolding) {
             EditToggleFolds(EXPAND, true);
         }
@@ -5957,29 +5955,31 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         int const chgHistState = SciCall_GetChangeHistory() & ChgHist_ON;
         switch (set) {
         case 0: 
-            Settings.ShowChangeHistory = chgHistState & ~(ChgHist_MARGIN | ChgHist_DOCTXT);
+            Settings.ChangeHistoryMode = chgHistState & ~(ChgHist_MARGIN | ChgHist_DOCTXT);
             break;
         case 1: 
-            Settings.ShowChangeHistory = (chgHistState | ChgHist_MARGIN) & ~ChgHist_DOCTXT;
+            Settings.ChangeHistoryMode = (chgHistState | ChgHist_MARGIN) & ~ChgHist_DOCTXT;
             break;
         case 2: 
-            Settings.ShowChangeHistory = (chgHistState | ChgHist_DOCTXT) & ~ChgHist_MARGIN;
+            Settings.ChangeHistoryMode = (chgHistState | ChgHist_DOCTXT) & ~ChgHist_MARGIN;
             break;
         case 3: 
-            Settings.ShowChangeHistory = chgHistState | (ChgHist_MARGIN | ChgHist_DOCTXT);
+            Settings.ChangeHistoryMode = chgHistState | (ChgHist_MARGIN | ChgHist_DOCTXT);
             break;
         default:
             break;
         }
-        SciCall_SetChangeHistory(Settings.ShowChangeHistory);
-        Style_SetChangeHistory(Globals.hwndEdit, ((Settings.ShowChangeHistory & ChgHist_ON) && (Settings.ShowChangeHistory & ChgHist_MARGIN)));
+        SciCall_SetChangeHistory(Settings.ChangeHistoryMode);
+        Style_UpdateChangeHistoryMargin(Globals.hwndEdit);
         UpdateMargins(true);
         break;
-
-
     } 
     break;
 
+    case IDM_VIEW_CHGHIST_TOGGLE_MARGIN:
+        Settings.ChangeHistoryMargin = !Settings.ChangeHistoryMargin;
+        UpdateMargins(true);
+        break;
 
     case IDM_VIEW_HYPERLINKHOTSPOTS:
         Settings.HyperlinkHotspot = !Settings.HyperlinkHotspot;
@@ -10050,9 +10050,9 @@ void UpdateMargins(const bool bForce)
     } else {
         SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
     }
-    Style_SetBookmark(Globals.hwndEdit, Settings.ShowBookmarkMargin);
-    Style_SetChangeHistory(Globals.hwndEdit, ((Settings.ShowChangeHistory & ChgHist_ON) && (Settings.ShowChangeHistory & ChgHist_MARGIN)));
-    Style_SetFolding(Globals.hwndEdit, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
+    Style_UpdateBookmarkMargin(Globals.hwndEdit);
+    Style_UpdateChangeHistoryMargin(Globals.hwndEdit);
+    Style_UpdateFoldingMargin(Globals.hwndEdit, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
     bShowLnNums = Settings.ShowLineNumbers; 
     prevLineCount = currLineCount;
 }
@@ -10132,7 +10132,7 @@ void UndoRedoRecordingStart()
     _UndoRedoActionMap(-1, NULL);
     SciCall_SetUndoCollection(true);
     SetSavePoint();
-    SciCall_SetChangeHistory(SC_CHANGE_HISTORY_ENABLED | Settings.ShowChangeHistory);
+    SciCall_SetChangeHistory(SC_CHANGE_HISTORY_ENABLED | Settings.ChangeHistoryMode);
     UpdateMargins(true);
 }
 

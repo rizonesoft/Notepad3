@@ -1586,10 +1586,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     Style_HighlightCurrentLine(hwnd, Settings.HighlightCurrentLine);
 
     // bookmark line or marker
-    Style_SetBookmark(hwnd, Settings.ShowBookmarkMargin);
+    Style_UpdateBookmarkMargin(hwnd);
     
     // Change History
-    Style_SetChangeHistory(Globals.hwndEdit, ((Settings.ShowChangeHistory & ChgHist_ON) && (Settings.ShowChangeHistory & ChgHist_MARGIN)));
+    Style_UpdateChangeHistoryMargin(Globals.hwndEdit);
 
     // Hyperlink (URL) indicators
     Style_SetUrlHotSpot(hwnd);
@@ -2032,29 +2032,30 @@ static int  _GetMarkerMarginWidth(HWND hwnd)
 
 //=============================================================================
 //
-//  Style_SetFolding()
+//  Style_UpdateFoldingMargin()
 //
-void Style_SetFolding(HWND hwnd, bool bShowMargin)
+void Style_UpdateFoldingMargin(HWND hwnd, bool bShowMargin)
 {
     SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowMargin ? _GetMarkerMarginWidth(hwnd) : 0));
 }
 
 //=============================================================================
 //
-//  Style_SetBookmark()
+//  Style_UpdateBookmarkMargin()
 //
-void Style_SetBookmark(HWND hwnd, bool bShowMargin)
+void Style_UpdateBookmarkMargin(HWND hwnd)
 {
-    SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (bShowMargin ? _GetMarkerMarginWidth(hwnd) + 4 : 0));
+    SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (Settings.ShowBookmarkMargin ? _GetMarkerMarginWidth(hwnd) + 4 : 0));
 }
 
 
 //=============================================================================
 //
-//  Style_SetChangeHistory()
+//  Style_UpdateChangeHistoryMargin()
 //
-void Style_SetChangeHistory(HWND hwnd, bool bShowMargin)
+void Style_UpdateChangeHistoryMargin(HWND hwnd)
 {
+    bool const bShowMargin = Settings.ChangeHistoryMargin && ((Settings.ChangeHistoryMode & ChgHist_ON) && (Settings.ChangeHistoryMode & ChgHist_MARGIN));
     SciCall_SetMarginWidthN(MARGIN_SCI_CHGHIST, (bShowMargin ? _GetMarkerMarginWidth(hwnd) + 4 : 0));
 }
 
@@ -2159,7 +2160,7 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
     //SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN, clrMarginBack);
     //SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_SAVED, clrMarginBack);
     //SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_REVERTED_TO_MODIFIED, clrMarginBack);
-    Style_SetChangeHistory(Globals.hwndEdit, ((Settings.ShowChangeHistory & ChgHist_ON) && (Settings.ShowChangeHistory & ChgHist_MARGIN)));
+    Style_UpdateChangeHistoryMargin(Globals.hwndEdit);
 
     // ---  Code folding  ---
     SciCall_SetMarginBackN(MARGIN_SCI_FOLDING, clrMarginBack);
@@ -2227,8 +2228,8 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
     }
 
     // set width
-    Style_SetBookmark(hwnd, Settings.ShowBookmarkMargin);
-    Style_SetFolding(hwnd, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
+    Style_UpdateBookmarkMargin(hwnd);
+    Style_UpdateFoldingMargin(hwnd, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
 }
 
 
