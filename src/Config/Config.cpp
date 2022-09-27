@@ -1508,7 +1508,8 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(MatchBraces, true);
     GET_BOOL_VALUE_FROM_INISECTION(AutoCloseTags, false);
     GET_INT_VALUE_FROM_INISECTION(HighlightCurrentLine, 1, 0, 2);
-    GET_INT_VALUE_FROM_INISECTION(ShowChangeHistory, ChgHist_ON | ChgHist_MARGIN, ChgHist_NONE, ChgHist_ALL);
+    GET_INT_VALUE_FROM_INISECTION(ChangeHistoryMode, ChgHist_ON | ChgHist_MARGIN, ChgHist_NONE, ChgHist_ALL);
+    GET_BOOL_VALUE_FROM_INISECTION(ChangeHistoryMargin, true);
     GET_BOOL_VALUE_FROM_INISECTION(HyperlinkHotspot, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowHypLnkToolTip, false);
     GET_INT_VALUE_FROM_INISECTION(ColorDefHotspot, 2, 0, 3);
@@ -1964,7 +1965,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MatchBraces);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoCloseTags);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, HighlightCurrentLine);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, ShowChangeHistory);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, ChangeHistoryMode);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, HyperlinkHotspot);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, ColorDefHotspot);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ScrollPastEOF);
