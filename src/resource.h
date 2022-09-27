@@ -82,6 +82,7 @@
 #define IDT_TIMER_UPDATE_TOOLBAR        237
 #define IDT_TIMER_CLEAR_CALLTIP         238
 #define IDT_TIMER_UNDO_TRANSACTION      239
+#define IDT_TIMER_UPDATE_TITLEBAR       240
 
 #define IDACC_FIND                      302
 #define IDACC_REPLACE                   303

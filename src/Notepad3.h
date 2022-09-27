@@ -133,7 +133,7 @@ void UpdateStatusbar(const bool bForceRedraw);
 void UpdateMargins(const bool bForce);
 void UpdateSaveSettingsCmds();
 void ResetMouseDWellTime();
-void UpdateTitleBar(const HWND hwnd);
+void UpdateTitlebar(const HWND hwnd);
 
 void UndoRedoRecordingStart();
 void UndoRedoRecordingStop();
