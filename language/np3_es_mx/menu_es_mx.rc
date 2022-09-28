@@ -350,9 +350,9 @@ BEGIN
         MENUITEM "Mostrar los &Blancos\tCtrl+Shift+8",                  IDM_VIEW_SHOWBLANKS
         MENUITEM "Mostrar &fin de línea\tCtrl+Shift+9",                 IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        POPUP "Change History Marker"
+        POPUP "Marcadores historial de cambios"
         BEGIN
-            MENUITEM "Ocultar todos los marcadores de cambio",          IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Sin marcadores de cambio",                         IDM_VIEW_CHGHIST_NONE
             MENUITEM "Mostrar sólo en el margen",                       IDM_VIEW_CHGHIST_MARGIN
             MENUITEM "Mostrar sólo en el documento",                    IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Mostrar todos los marcadores de cambio",          IDM_VIEW_CHGHIST_ALL
@@ -392,6 +392,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Números de línea\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
         MENUITEM "&Margen de marcador\tCtrl+Shift+M",       IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Margen historial de cambios",             IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Margen historial de cambios",             IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Plegable"
         BEGIN
@@ -590,6 +592,7 @@ BEGIN
         MENUITEM "Código plegable",                            IDM_VIEW_FOLDING
         MENUITEM "Números de línea",                           IDM_VIEW_LINENUMBERS
         MENUITEM "Margen de marcador",                         IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Margen historial de cambios",                IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN

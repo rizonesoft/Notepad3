@@ -352,7 +352,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Change History Marker"
         BEGIN
-            MENUITEM "Hide All Change Markers",             IDM_VIEW_CHGHIST_NONE
+            MENUITEM "No Change Markers",                   IDM_VIEW_CHGHIST_NONE
             MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
             MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
@@ -392,6 +392,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "行號(&N)\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
         MENUITEM "書籤邊界(&M)\tCtrl+Shift+M",        IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change History Margin",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "摺疊(&F)"
         BEGIN
@@ -590,6 +591,7 @@ BEGIN
         MENUITEM "啟用摺疊",                              IDM_VIEW_FOLDING
         MENUITEM "行號",                                  IDM_VIEW_LINENUMBERS
         MENUITEM "書籤邊界",                       IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change History Margin",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN
