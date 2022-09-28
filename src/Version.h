@@ -71,6 +71,65 @@
 
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// https://docs.microsoft.com/en-us/windows/release-health/  (Windows releases health)
+// https://docs.microsoft.com/en-us/windows/release-health/release-information  (Windows 10)
+// https://docs.microsoft.com/en-us/windows/release-health/windows11-release-information  (Windows 11)
+// https://docs.microsoft.com/en-us/windows/release-health/windows-server-release-info  (Windows Server)
+// https://docs.microsoft.com/en-us/windows-insider/flight-hub/  (Windows Insider Preview Builds)
+// ----------------------------------------------------------------------------
+
+inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
+{
+    static LPCWSTR lpcReleaseID = L"unknown";
+
+    if (build >= 19045) {
+        lpcReleaseID = L"22H2";
+    }
+    else if (build >= 19044) {
+        lpcReleaseID = L"22H1";
+    }
+    else if (build >= 19043) {
+        lpcReleaseID = L"21H1";
+    }
+    else if (build >= 19042) {
+        lpcReleaseID = L"20H2";
+    }
+    else if (build >= 19041) {
+        lpcReleaseID = L"20H1";
+    }
+    else if (build >= 18363) {
+        lpcReleaseID = L"19H2";
+    }
+    else if (build >= 18362) {
+        lpcReleaseID = L"19H1";
+    }
+    else if (build >= 17763) {
+        lpcReleaseID = L"1809";
+    }
+    else if (build >= 17134) {
+        lpcReleaseID = L"1803";
+    }
+    else if (build >= 16299) {
+        lpcReleaseID = L"1709";
+    }
+    else if (build >= 15063) {
+        lpcReleaseID = L"1703";
+    }
+    else if (build >= 14393) {
+        lpcReleaseID = L"1607";
+    }
+    else if (build >= 10586) {
+        lpcReleaseID = L"1511";
+    }
+    else if (build >= 10240) {
+        lpcReleaseID = L"1507";
+    }
+    return lpcReleaseID;
+}
+
+// ============================================================================
+
 // Compiler specific
 
 #undef VER_CPL

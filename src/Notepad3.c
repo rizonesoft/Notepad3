@@ -3599,8 +3599,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 //=============================================================================
 //
-//  MsgContextMenu() - Handles WM_CONTEXTMENU
-//
+//  MsgContextMenu() - Handles WM_CONTEXTMENU and SCN_MARGINRIGHTCLICK
 //
 LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
@@ -9142,7 +9141,8 @@ void ParseCommandLine()
                         Path_Reset(pthAddFile, lpFileBuf);
                         Path_NormalizeEx(pthAddFile, Paths.WorkingDirectory, true, true);
                         Path_QuoteSpaces(pthAddFile, false);
-                        s_lpFileList[s_cFileList++] = StrDupW(Path_Get(pthAddFile)); // LocalAlloc()
+                        s_lpFileList[s_cFileList] = StrDupW(Path_Get(pthAddFile)); // LocalAlloc()
+                        s_cFileList += 1;
                     }
                     Path_Release(pthAddFile);
                     bContinue = false;
