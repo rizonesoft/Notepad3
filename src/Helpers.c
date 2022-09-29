@@ -16,12 +16,12 @@
 *                                                                             *
 *******************************************************************************/
 
-#include "Helpers.h"
-
 #include <shlobj.h>
 #include <shellapi.h>
 #include <ctype.h>
 #include <wchar.h>
+
+#include "Helpers.h"
 
 #include "PathLib.h"
 #include "Edit.h"
@@ -31,6 +31,7 @@
 #include "Dialogs.h"
 #include "Config/Config.h"
 #include "DarkMode/DarkMode.h"
+#include "Version.h"
 
 #pragma warning(push)
 #pragma warning(disable : 4201) // union/struct w/o name
@@ -218,47 +219,6 @@ static void _GetTrueWindowsVersion()
 // ----------------------------------------------------------------------------
 #endif
 
-// ----------------------------------------------------------------------------
-// https://docs.microsoft.com/en-us/windows/release-health/  (Windows releases health)
-// https://docs.microsoft.com/en-us/windows/release-health/release-information  (Windows 10)
-// https://docs.microsoft.com/en-us/windows/release-health/windows11-release-information  (Windows 11)
-// https://docs.microsoft.com/en-us/windows/release-health/windows-server-release-info  (Windows Server)
-// https://docs.microsoft.com/en-us/windows-insider/flight-hub/  (Windows Insider Preview Builds)
-// ----------------------------------------------------------------------------
-static LPCWSTR _Win10BuildToReleaseId() {
-
-    static LPCWSTR _wchpReleaseID = L"1507"; // <= 10240
-
-    DWORD const build = GetWindowsBuildNumber(NULL, NULL);
-
-    if (build > 19043) {
-        _wchpReleaseID = L"21H2";
-    } else if (build > 19042) {
-        _wchpReleaseID = L"21H1";
-    } else if (build > 19041) {
-        _wchpReleaseID = L"20H2";
-    } else if (build > 18363) {
-        _wchpReleaseID = L"2004";
-    } else if (build > 18362) {
-        _wchpReleaseID = L"1909";
-    } else if (build > 17763) {
-        _wchpReleaseID = L"1903 [EoS]";
-    } else if (build > 17134) {
-        _wchpReleaseID = L"1809";
-    } else if (build > 16299) {
-        _wchpReleaseID = L"1803 [EoS]";
-    } else if (build > 15063) {
-        _wchpReleaseID = L"1709 [EoS]";
-    } else if (build > 14393) {
-        _wchpReleaseID = L"1703 [EoS]";
-    } else if (build > 10586) {
-        _wchpReleaseID = L"1607";
-    } else if (build > 10240) {
-        _wchpReleaseID = L"1511 [EoS]";
-    }
-    return _wchpReleaseID;
-}
-// ----------------------------------------------------------------------------
 
 void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)
 {
@@ -283,8 +243,7 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)
 
     if (IsWindows10OrGreater()) {
         WCHAR win10ver[80] = { L'\0' };
-        StringCchPrintf(win10ver, COUNTOF(win10ver), L" Version %s (Build %lu)",
-                        _Win10BuildToReleaseId(), GetWindowsBuildNumber(NULL, NULL));
+        StringCchPrintf(win10ver, COUNTOF(win10ver), L" Version %s (Build %lu)", _Win10BuildToReleaseId(build), GetWindowsBuildNumber(NULL, NULL));
         StringCchCat(szVersionStr, cchVersionStr, win10ver);
     }
 }
