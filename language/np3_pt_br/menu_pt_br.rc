@@ -352,7 +352,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Alterar Marcador de Histórico"
         BEGIN
-            MENUITEM "No Change Markers",                         IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Nenhum Marcador de Alteração",              IDM_VIEW_CHGHIST_NONE
             MENUITEM "Mostrar somente na Margem",                 IDM_VIEW_CHGHIST_MARGIN
             MENUITEM "Mostrar somente no Documento",              IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Mostrar Todos os Marcadores Alterados",     IDM_VIEW_CHGHIST_ALL
@@ -392,7 +392,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Números das Linhas\tCtrl+Shift+N",   IDM_VIEW_LINENUMBERS
         MENUITEM "Marcar &Margem\tCtrl+Shift+M",        IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Alterar Margem do Histórico",         IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "A&grupador"
         BEGIN
@@ -591,7 +591,7 @@ BEGIN
         MENUITEM "Agrupador de Código",                        IDM_VIEW_FOLDING
         MENUITEM "Números das Linhas",                         IDM_VIEW_LINENUMBERS
         MENUITEM "Margem do Marcador",                         IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Alterar Margem do Histórico",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN
