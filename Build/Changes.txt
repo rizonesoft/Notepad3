@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.927.(build_#) (2022-09-28)
+Current BETA/RC Version 5.22.930.(build_#) (2022-09-30)
 ========================================================
 
 --------------------------------------------------------
@@ -102,6 +102,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.930.1]- Win10/11 build number to name mapping.
 [.928.1]- Titlebar update on change.
 [.926.1]- Margin handling (context, bookmarks).
 [.926.1]- New Rizone.soft bitmap.
