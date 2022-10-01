@@ -145,7 +145,7 @@ BEGIN
     IDS_LEX_STD_CTRL_CHAR   "Сімвалы кіравання (шрыфт)"
     IDS_LEX_STD_INDENT      "Накіравальнікі водступаў (колер)"
     IDS_LEX_STD_SEL         "Вылучаны тэкст (колеры)"
-    IDS_LEX_STD_WSPC        "Прабельны сімвал (колеры, памер 0-12)"
+    IDS_LEX_STD_WSPC        "Прабельны сімвал (колеры, памер 1-12)"
     IDS_LEX_STD_LN_BACKGR   "Падсвечванне актыўнага радка"
     IDS_LEX_STD_CARET       "Карэтка (колер, памер 1-3)"
     IDS_LEX_STD_LONG_LN     "Маркер доўгіх радкоў (колеры)"
@@ -157,7 +157,7 @@ BEGIN
     IDS_LEX_2ND_CTRL_CHAR   "Сімвалы кіравання другой схемы (шрыфт)"
     IDS_LEX_2ND_INDENT      "Накіравальнікі водступаў другой схемы (колер)"
     IDS_LEX_2ND_SEL         "Вылучаны тэкст другой схемы (колеры)"
-    IDS_LEX_2ND_WSPC        "Прабельны сімвал другой схемы (колеры, памер 0-12)"
+    IDS_LEX_2ND_WSPC        "Прабельны сімвал другой схемы (колеры, памер 1-12)"
 END
 
 STRINGTABLE
@@ -495,6 +495,18 @@ BEGIN
     IDS_LEX_STR_63386       "Symbol Identifier"
     IDS_LEX_STR_63387       "Symbol Operator"
     IDS_LEX_STR_63388       "String EOL"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STD_CH_MODIFIED     "Change History Marker Modified"
+    IDS_LEX_STD_CH_SAVED        "Change History Marker Saved"
+    IDS_LEX_STD_CH_REV_TO_MOD   "Change History Marker Reverted to Modified"
+    IDS_LEX_STD_CH_REV_TO_ORG   "Change History Marker Reverted to Origin"
+    IDS_LEX_2ND_CH_MODIFIED     "2nd Change History Marker Modified"
+    IDS_LEX_2ND_CH_SAVED        "2nd Change History Marker Saved"
+    IDS_LEX_2ND_CH_REV_TO_MOD   "2nd Change History Marker Reverted to Modified"
+    IDS_LEX_2ND_CH_REV_TO_ORG   "2nd Change History Marker Reverted to Origin"
 END
 
 STRINGTABLE

@@ -145,7 +145,7 @@ BEGIN
     IDS_LEX_STD_CTRL_CHAR   "제어 문자 (글꼴)"
     IDS_LEX_STD_INDENT      "들여쓰기 안내선 (색상)"
     IDS_LEX_STD_SEL         "선택한 텍스트 (색상)"
-    IDS_LEX_STD_WSPC        "공백 문자 (색상, 크기 0-12)"
+    IDS_LEX_STD_WSPC        "공백 문자 (색상, 크기 1-12)"
     IDS_LEX_STD_LN_BACKGR   "현재 줄 강조"
     IDS_LEX_STD_CARET       "탈자 기호 (색상, 크기 1-3)"
     IDS_LEX_STD_LONG_LN     "긴 줄 표시 (색상)"
@@ -157,7 +157,7 @@ BEGIN
     IDS_LEX_2ND_CTRL_CHAR   "두 번째 제어 문자 (글꼴)"
     IDS_LEX_2ND_INDENT      "두 번째 들여쓰기 안내선 (색상)"
     IDS_LEX_2ND_SEL         "두 번째 선택한 텍스트 (색상)"
-    IDS_LEX_2ND_WSPC        "두 번째 공백 문자 (색상, 크기 0-12)"
+    IDS_LEX_2ND_WSPC        "두 번째 공백 문자 (색상, 크기 1-12)"
 END
 
 STRINGTABLE
@@ -495,6 +495,18 @@ BEGIN
     IDS_LEX_STR_63386       "기호 식별자"
     IDS_LEX_STR_63387       "기호 연산자"
     IDS_LEX_STR_63388       "문자열 EOL"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STD_CH_MODIFIED     "Change History Marker Modified"
+    IDS_LEX_STD_CH_SAVED        "Change History Marker Saved"
+    IDS_LEX_STD_CH_REV_TO_MOD   "Change History Marker Reverted to Modified"
+    IDS_LEX_STD_CH_REV_TO_ORG   "Change History Marker Reverted to Origin"
+    IDS_LEX_2ND_CH_MODIFIED     "2nd Change History Marker Modified"
+    IDS_LEX_2ND_CH_SAVED        "2nd Change History Marker Saved"
+    IDS_LEX_2ND_CH_REV_TO_MOD   "2nd Change History Marker Reverted to Modified"
+    IDS_LEX_2ND_CH_REV_TO_ORG   "2nd Change History Marker Reverted to Origin"
 END
 
 STRINGTABLE
