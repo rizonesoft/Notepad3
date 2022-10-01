@@ -1537,10 +1537,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     // whitespace dot size
     wchSpecificStyle[0] = L'\0'; // empty
 
-    iValue = 2;
-    float fValue = 2.0;
+    iValue = 2; // default whitespace size
+    float fValue = 0.0;
     if (Style_StrGetSizeFloat(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &fValue)) {
-        iValue = clampi(float2int(fValue), 0, 12);
+        iValue = clampi(float2int(fValue), 1, 12);
         StringCchPrintf(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"size:%i", iValue);
     }
     SciCall_SetWhiteSpaceSize(iValue);
@@ -1604,10 +1604,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     } else {
         SciCall_SetCaretStyle(CARETSTYLE_LINE | ovrstrk_mode);
 
-        iValue = 1;
-        fValue = 1.0f;  // default caret width
+        iValue = 1; // don't allow invisible 0
+        fValue = 0.0f;
         if (Style_StrGetSizeFloat(pCurrentStandard->Styles[STY_CARET].szValue, &fValue)) {
-            iValue = clampi(float2int(fValue), 1, 3); // don't allow invisible 0
+            iValue = clampi(float2int(fValue), 1, 3);
             if (iValue != 1) {
                 StringCchPrintf(wch, COUNTOF(wch), L"; size:%i", iValue);
                 StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
@@ -2021,13 +2021,16 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
 //
 //  _GetMarkerMarginWidth()
 //
-static int  _GetMarkerMarginWidth(HWND hwnd)
+static int _GetMarkerMarginWidth(HWND hwnd)
 {
-    float fSize = Style_GetBaseFontSize();
+    float fSize = 0.0f;
+    float ftotal = Style_GetBaseFontSize();
     Style_StrGetSizeFloat(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize);     // relative to LineNumber
+    ftotal += fSize;
     Style_StrGetSizeFloat(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);  // settings
+    ftotal += fSize;
     float const zoomPercent = (float)SciCall_GetZoom();
-    return ScaleFloatToDPI(hwnd, (fSize * zoomPercent) / 100.0f);
+    return ScaleFloatToDPI(hwnd, (ftotal * zoomPercent) / 100.0f);
 }
 
 //=============================================================================
@@ -2068,7 +2071,7 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
 {
     Style_SetStyles(hwnd, STYLE_LINENUMBER, lpszStyle); // line numbers
 
-    COLORREF colorRead; // 
+    COLORREF colorRead;
 
     // foreground
     if (!Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &colorRead, false)) {
@@ -2154,15 +2157,61 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
     SciCall_SetMarginCursorN(MARGIN_SCI_BOOKMRK, SC_NP3_CURSORHAND);
 
     // --- Change History ---
+
     SciCall_SetMarginBackN(MARGIN_SCI_CHGHIST, clrMarginBack);
     SciCall_SetMarginSensitiveN(MARGIN_SCI_CHGHIST, true);
-    SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_MODIFIED, clrMarginBack);
-    //SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN, clrMarginBack);
-    //SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_SAVED, clrMarginBack);
-    //SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_REVERTED_TO_MODIFIED, clrMarginBack);
+
+    const WCHAR* const wchChgHistMrkModifiedStyleStrg = GetCurrentStdLexer()->Styles[STY_CHGHIST_MODIFIED].szValue;
+    colorRead = clrBookMarkFore;
+    if (Style_StrGetColor(wchChgHistMrkModifiedStyleStrg, FOREGROUND_LAYER, &colorRead, false)) {
+        SciCall_MarkerSetFore(SC_MARKNUM_HISTORY_MODIFIED, colorRead);
+    }
+    colorRead = clrMarginBack;
+    Style_StrGetColor(wchChgHistMrkModifiedStyleStrg, BACKGROUND_LAYER, &colorRead, false);
+    // also if not defined, use margin backgr
+    SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_MODIFIED, colorRead);
+
+    // TODO: alpha/translucent/layer in print mode ?
+    //alpha = SC_ALPHA_OPAQUE;
+    //Style_StrGetAlpha(wchChgHistMrkModifiedStyleStrg, &alpha, true);
+    //COLORREF const rgbAlpha = Style_RgbAlpha(colorRead, clrMarginBack, alpha);
+    //SciCall_MarkerSetAlpha(SC_MARKNUM_HISTORY_MODIFIED, alpha);
+ 
+    const WCHAR* const wchChgHistMrkSavedStyleStrg = GetCurrentStdLexer()->Styles[STY_CHGHIST_SAVED].szValue;
+    colorRead = clrBookMarkFore;
+    if (Style_StrGetColor(wchChgHistMrkSavedStyleStrg, FOREGROUND_LAYER, &colorRead, false)) {
+        SciCall_MarkerSetFore(SC_MARKNUM_HISTORY_SAVED, colorRead);
+    }
+    colorRead = clrMarginBack;
+    if (Style_StrGetColor(wchChgHistMrkSavedStyleStrg, BACKGROUND_LAYER, &colorRead, false)) {
+        SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_SAVED, colorRead);
+    }
+
+    const WCHAR* const wchChgHistMrkRev2OrgStyleStrg = GetCurrentStdLexer()->Styles[STY_CHGHIST_REV_TO_ORG].szValue;
+    colorRead = clrBookMarkFore;
+    if (Style_StrGetColor(wchChgHistMrkRev2OrgStyleStrg, FOREGROUND_LAYER, &colorRead, false)) {
+        SciCall_MarkerSetFore(SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN, colorRead);
+    }
+    colorRead = clrMarginBack;
+    if (Style_StrGetColor(wchChgHistMrkRev2OrgStyleStrg, BACKGROUND_LAYER, &colorRead, false)) {
+        SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN, colorRead);
+    }
+
+    const WCHAR* const wchChgHistMrkRev2ModStyleStrg = GetCurrentStdLexer()->Styles[STY_CHGHIST_REV_TO_MOD].szValue;
+    colorRead = clrBookMarkFore;
+    if (Style_StrGetColor(wchChgHistMrkRev2ModStyleStrg, FOREGROUND_LAYER, &colorRead, false)) {
+        SciCall_MarkerSetFore(SC_MARKNUM_HISTORY_REVERTED_TO_MODIFIED, colorRead);
+    }
+    colorRead = clrMarginBack;
+    if (Style_StrGetColor(wchChgHistMrkRev2ModStyleStrg, BACKGROUND_LAYER, &colorRead, false)) {
+        SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_REVERTED_TO_MODIFIED, colorRead);
+    }
+
     Style_UpdateChangeHistoryMargin(Globals.hwndEdit);
 
+
     // ---  Code folding  ---
+    
     SciCall_SetMarginBackN(MARGIN_SCI_FOLDING, clrMarginBack);
     SciCall_SetMarginSensitiveN(MARGIN_SCI_FOLDING, true);
 
@@ -3029,9 +3078,7 @@ bool Style_StrGetSizeFloat(LPCWSTR lpszStyle, float* f)
         float fValue = 0.0;
         if (StrToFloat(tch, &fValue)) {
             if (fSign != 0) {
-                // relative size calculation
-                float const base = *f; // base is input
-                fValue = (base + (fSign * fValue)); // can be negative
+                fValue = (fSign * fValue); // can be negative
             }
             *f = Round10th(fValue);
             return true;
@@ -3563,8 +3610,9 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
     float const fBaseFontSize = (bGlobalDefaultStyle ? GLOBAL_INITIAL_FONTSIZE : (bCurrentDefaultStyle ? Style_GetBaseFontSize() : Style_GetCurrentFontSize()));
 
     // Font Height
-    float fFontSize = fBaseFontSize;
-    Style_StrGetSizeFloat(lpszStyle, &fFontSize);
+    float fValue = 0.0f;
+    Style_StrGetSizeFloat(lpszStyle, &fValue);
+    float const fFontSize = fBaseFontSize + fValue;
 
     HDC const hdc = GetDC(hwnd);
     int const iFontHeight = PointSizeToFontHeight(fFontSize, hdc);
@@ -3846,7 +3894,9 @@ void Style_SetStyles(HWND hwnd, const int iStyle, LPCWSTR lpszStyle)
 
     // Size values are relative to BaseFontSize/CurrentFontSize
     float fBaseFontSize = Style_GetCurrentFontSize();
-    if (Style_StrGetSizeFloat(lpszStyle, &fBaseFontSize)) {
+    float fValue = 0.0f;
+    if (Style_StrGetSizeFloat(lpszStyle, &fValue)) {
+        fBaseFontSize += fValue;
         if (iStyle == STYLE_DEFAULT) {
             if (bIsDefaultStyle) {
                 _SetBaseFontSize(fBaseFontSize);
