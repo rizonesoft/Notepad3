@@ -145,7 +145,7 @@ BEGIN
     IDS_LEX_STD_CTRL_CHAR   "Vezérlőkarakterek (betű)"
     IDS_LEX_STD_INDENT      "Behúzási segéd (szín)"
     IDS_LEX_STD_SEL         "Kijelölt szöveg (színek)"
-    IDS_LEX_STD_WSPC        "Whitespace (színek, méret 0-12)"
+    IDS_LEX_STD_WSPC        "Whitespace (színek, méret 1-12)"
     IDS_LEX_STD_LN_BACKGR   "Jelenlegi sor kiemelése"
     IDS_LEX_STD_CARET       "Kurzor (szín, méret 1-3)"
     IDS_LEX_STD_LONG_LN     "Hosszú sor jelölése (színek)"
@@ -157,7 +157,7 @@ BEGIN
     IDS_LEX_2ND_CTRL_CHAR   "2. vezérlőkarakterek (betű)"
     IDS_LEX_2ND_INDENT      "2. behúzási segéd (szín)"
     IDS_LEX_2ND_SEL         "2. kijelölt szöveg (színek)"
-    IDS_LEX_2ND_WSPC        "2. whitespace (színek, méret 0-12)"
+    IDS_LEX_2ND_WSPC        "2. whitespace (színek, méret 1-12)"
 END
 
 STRINGTABLE
@@ -495,6 +495,18 @@ BEGIN
     IDS_LEX_STR_63386       "Symbol Identifier"
     IDS_LEX_STR_63387       "Symbol Operator"
     IDS_LEX_STR_63388       "String EOL"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STD_CH_MODIFIED     "Change History Marker Modified"
+    IDS_LEX_STD_CH_SAVED        "Change History Marker Saved"
+    IDS_LEX_STD_CH_REV_TO_MOD   "Change History Marker Reverted to Modified"
+    IDS_LEX_STD_CH_REV_TO_ORG   "Change History Marker Reverted to Origin"
+    IDS_LEX_2ND_CH_MODIFIED     "2nd Change History Marker Modified"
+    IDS_LEX_2ND_CH_SAVED        "2nd Change History Marker Saved"
+    IDS_LEX_2ND_CH_REV_TO_MOD   "2nd Change History Marker Reverted to Modified"
+    IDS_LEX_2ND_CH_REV_TO_ORG   "2nd Change History Marker Reverted to Origin"
 END
 
 STRINGTABLE

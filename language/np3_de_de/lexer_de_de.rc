@@ -157,7 +157,7 @@ BEGIN
     IDS_LEX_2ND_CTRL_CHAR   "2nd Control Characters (Font)"
     IDS_LEX_2ND_INDENT      "2nd Indentation Guide (Color)"
     IDS_LEX_2ND_SEL         "2nd Selected Text (Colors)"
-    IDS_LEX_2ND_WSPC        "2nd Whitespace (Colors, Size 0-12)"
+    IDS_LEX_2ND_WSPC        "2nd Whitespace (Colors, Size 1-12)"
 END
 
 STRINGTABLE
