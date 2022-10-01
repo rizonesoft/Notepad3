@@ -1270,17 +1270,26 @@
 #define IDS_LEX_STR_63386               63386
 #define IDS_LEX_STR_63387               63387
 #define IDS_LEX_STR_63388               63388
+#define IDS_LEX_STD_CH_SAVED            63389
+#define IDS_LEX_STD_CH_MODIFIED         63390
+#define IDS_LEX_STD_CH_REV_TO_ORG       63391
+#define IDS_LEX_STD_CH_REV_TO_MOD       63392
+#define IDS_LEX_2ND_CH_SAVED            63393
+#define IDS_LEX_2ND_CH_MODIFIED         63394
+#define IDS_LEX_2ND_CH_REV_TO_ORG       63395
+#define IDS_LEX_2ND_CH_REV_TO_MOD       63396
 
-#define IDS_LEX_CSV_COL_0               63400
-#define IDS_LEX_CSV_COL_1               63401
-#define IDS_LEX_CSV_COL_2               63402
-#define IDS_LEX_CSV_COL_3               63403
-#define IDS_LEX_CSV_COL_4               63404
-#define IDS_LEX_CSV_COL_5               63405
-#define IDS_LEX_CSV_COL_6               63406
-#define IDS_LEX_CSV_COL_7               63407
-#define IDS_LEX_CSV_COL_8               63408
-#define IDS_LEX_CSV_COL_9               63409
+
+#define IDS_LEX_CSV_COL_0               63490
+#define IDS_LEX_CSV_COL_1               63491
+#define IDS_LEX_CSV_COL_2               63492
+#define IDS_LEX_CSV_COL_3               63493
+#define IDS_LEX_CSV_COL_4               63494
+#define IDS_LEX_CSV_COL_5               63495
+#define IDS_LEX_CSV_COL_6               63496
+#define IDS_LEX_CSV_COL_7               63497
+#define IDS_LEX_CSV_COL_8               63498
+#define IDS_LEX_CSV_COL_9               63499
 
 #define RICHEDIT_CONTROL_VER            "RichEdit50W"  // RICHEDIT_CONTROL_VER
 

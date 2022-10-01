@@ -25,11 +25,14 @@ EDITLEXER lexStandard =
         /* 14 */ { {_STYLE_GETSTYLEID(STY_URL_HOTSPOT)}, IDS_LEX_STR_63264, L"Hyperlink Hotspots", L"fore:#0000E0; back:#0060B0; indic_plain", L"" },
         /* 15 */ { {_STYLE_GETSTYLEID(STY_UNICODE_HOTSPOT)}, IDS_LEX_STR_63367, L"Unicode-Point Hover", L"fore:#00FA00; alpha:60; alpha2:180; indic_compositionthick", L""},
         /* 16 */ { {_STYLE_GETSTYLEID(STY_MULTI_EDIT)}, IDS_LEX_STR_63354, L"Multi Edit Indicator", L"fore:#FFA000; alpha:60; alpha2:180; indic_roundbox", L"" },
-        /* 17 */ { {_STYLE_GETSTYLEID(STY_IME_COLOR)}, IDS_LEX_STR_63352, L"Inline-IME Color", L"fore:#00AA00", L"" },
+        /* 17 */ { {_STYLE_GETSTYLEID(STY_CHGHIST_MODIFIED)}, IDS_LEX_STD_CH_MODIFIED, L"Change History Marker Modified", L"fore:#FF8000", L"" },
+        /* 18 */ { {_STYLE_GETSTYLEID(STY_CHGHIST_SAVED)}, IDS_LEX_STD_CH_SAVED, L"Change History Marker Saved", L"fore:#00A000; back:#00A000", L"" },
+        /* 19 */ { {_STYLE_GETSTYLEID(STY_CHGHIST_REV_TO_MOD)}, IDS_LEX_STD_CH_REV_TO_MOD, L"Change History Marker Reverted to Modified", L"fore:#A0C000; back:#A0C000", L"" },
+        /* 20 */ { {_STYLE_GETSTYLEID(STY_CHGHIST_REV_TO_ORG)}, IDS_LEX_STD_CH_REV_TO_ORG, L"Change History Marker Reverted to Origin", L"fore:#40A0BF; back:#40A0BF", L"" },
+        /* 21 */ { {_STYLE_GETSTYLEID(STY_IME_COLOR)}, IDS_LEX_STR_63352, L"Inline-IME Color", L"fore:#00AA00", L"" },
         EDITLEXER_SENTINEL
     }
 };
-
 
 EDITLEXER lexStandard2nd =
 {
@@ -50,9 +53,13 @@ EDITLEXER lexStandard2nd =
         /* 12 */ { {_STYLE_GETSTYLEID(STY_BOOK_MARK)}, IDS_LEX_2ND_BKMRK, L"2nd Bookmarks and Folding (Colors, Size)", L"size:+2; charset:2; fore:#000000; back:#00DC00; case:U; alpha:100", L"" },
         /* 13 */ { {_STYLE_GETSTYLEID(STY_MARK_OCC)}, IDS_LEX_STR_63263, L"2nd Mark Occurrences (Indicator)", L"fore:#0000FF; alpha:60; alpha2:60; indic_box", L"" },
         /* 14 */ { {_STYLE_GETSTYLEID(STY_URL_HOTSPOT)}, IDS_LEX_STR_63265, L"2nd Hyperlink Hotspots", L"fore:#00D000; back:#009C00; alpha:180; indic_compositionthin", L"" },
-        /* 15 */ {{_STYLE_GETSTYLEID(STY_UNICODE_HOTSPOT)}, IDS_LEX_STR_63368, L"2nd Unicode-Point Hover", L"fore:#0000FA; alpha:60; alpha2:180; indic_compositionthick", L""},
-        /* 16 */ {{_STYLE_GETSTYLEID(STY_MULTI_EDIT)}, IDS_LEX_STR_63355, L"2nd Multi Edit Indicator", L"fore:#00A5FF; indic_box", L""},
-        /* 17 */ { {_STYLE_GETSTYLEID(STY_IME_COLOR)}, IDS_LEX_STR_63353, L"2nd Inline-IME Color", L"fore:#FF0000", L"" },
+        /* 15 */ { {_STYLE_GETSTYLEID(STY_UNICODE_HOTSPOT)}, IDS_LEX_STR_63368, L"2nd Unicode-Point Hover", L"fore:#0000FA; alpha:60; alpha2:180; indic_compositionthick", L""},
+        /* 16 */ { {_STYLE_GETSTYLEID(STY_MULTI_EDIT)}, IDS_LEX_STR_63355, L"2nd Multi Edit Indicator", L"fore:#00A5FF; indic_box", L""},
+        /* 17 */ { {_STYLE_GETSTYLEID(STY_CHGHIST_MODIFIED)}, IDS_LEX_2ND_CH_MODIFIED, L"2nd Change History Marker Modified", L"fore:#FF8000", L"" },
+        /* 18 */ { {_STYLE_GETSTYLEID(STY_CHGHIST_SAVED)}, IDS_LEX_2ND_CH_SAVED, L"2nd Change History Marker Saved", L"fore:#00A000; back:#00A000", L"" },
+        /* 19 */ { {_STYLE_GETSTYLEID(STY_CHGHIST_REV_TO_MOD)}, IDS_LEX_2ND_CH_REV_TO_MOD, L"2nd Change History Marker Reverted to Modified", L"fore:#A0C000; back:#A0C000", L"" },
+        /* 20 */ { {_STYLE_GETSTYLEID(STY_CHGHIST_REV_TO_ORG)}, IDS_LEX_2ND_CH_REV_TO_ORG, L"2nd Change History Marker Reverted to Origin", L"fore:#40A0BF; back:#40A0BF", L"" },
+        /* 21 */ { {_STYLE_GETSTYLEID(STY_IME_COLOR)}, IDS_LEX_STR_63353, L"2nd Inline-IME Color", L"fore:#FF0000", L"" },
         EDITLEXER_SENTINEL
     }
 };

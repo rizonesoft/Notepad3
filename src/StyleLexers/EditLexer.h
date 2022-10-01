@@ -68,13 +68,17 @@ typedef enum
     STY_URL_HOTSPOT = 14,
     STY_UNICODE_HOTSPOT = 15,
     STY_MULTI_EDIT = 16,
-    STY_IME_COLOR = 17,
+    STY_CHGHIST_MODIFIED = 17,
+    STY_CHGHIST_SAVED = 18,
+    STY_CHGHIST_REV_TO_MOD = 19,
+    STY_CHGHIST_REV_TO_ORG = 20,
+    STY_IME_COLOR = 21,
 
-    STY_INVISIBLE = 18,
-    STY_READONLY = 19
+    STY_INVISIBLE = 22,
+    STY_READONLY = 23
 
-                   // MAX = (127 - STYLE_LASTPREDEFINED)
-                   // -------^----- => char <-> int casting !!!
+    // MAX = (127 - STYLE_LASTPREDEFINED)
+    // -------^----- => char <-> int casting !!!
 }
 LexDefaultStyles;
 
