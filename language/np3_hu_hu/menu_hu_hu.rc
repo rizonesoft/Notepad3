@@ -352,7 +352,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Előzményjelölők megváltoztatása"
         BEGIN
-            MENUITEM "No Change Markers",                    IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Ne jelenjen meg előzmény-jelölő",      IDM_VIEW_CHGHIST_NONE
             MENUITEM "Megjelenítés a margóban",              IDM_VIEW_CHGHIST_MARGIN
             MENUITEM "Megjelenítés a dokumentumban",         IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Összes előzmény-jelölő megjelenítése", IDM_VIEW_CHGHIST_ALL
@@ -392,7 +392,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Sorok s&záma\tCtrl+Shift+N",          IDM_VIEW_LINENUMBERS
         MENUITEM "Könyvjelző &Margó\tCtrl+Shift+M",     IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Előzmény-jelölő a margóban",          IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Behajtások"
         BEGIN
@@ -591,7 +591,7 @@ BEGIN
         MENUITEM "Kódblokk behajtások",         IDM_VIEW_FOLDING
         MENUITEM "Sorok száma",                 IDM_VIEW_LINENUMBERS
         MENUITEM "Könyvjelző margók",           IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Előzményjelölő margó",        IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN
