@@ -3034,18 +3034,8 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
         return;
     }
 
-    char mszPrefix1[256 * 3] = { '\0' };
-    char  mszAppend1[256 * 3] = { '\0' };
-
-    DocPos iSelStart = SciCall_GetSelectionStart();
-    DocPos iSelEnd = SciCall_GetSelectionEnd();
-
-    if (StrIsNotEmpty(pEnclData->pwsz1)) {
-        WideCharToMultiByteEx(Encoding_SciCP, 0, pEnclData->pwsz1, -1, mszPrefix1, COUNTOF(mszPrefix1), NULL, NULL);
-    }
-    if (StrIsNotEmpty(pEnclData->pwsz2)) {
-        WideCharToMultiByteEx(Encoding_SciCP, 0, pEnclData->pwsz2, -1, mszAppend1, COUNTOF(mszAppend1), NULL, NULL);
-    }
+    DocPos const iSelStart = SciCall_GetSelectionStart();
+    DocPos const iSelEnd = SciCall_GetSelectionEnd();
 
     DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
     DocLn iLineEnd = SciCall_LineFromPosition(iSelEnd);
@@ -3064,160 +3054,171 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
     int   iPrefixNumWidth = 1;
     DocLn iAppendNum = 0;
     int   iAppendNumWidth = 1;
-    char  pszPrefixNumPad[2] = { '\0', '\0' };
-    char  pszAppendNumPad[2] = { '\0', '\0' };
-    char  mszPrefix2[256 * 3] = { '\0' };
-    char  mszAppend2[256 * 3] = { '\0' };
+    WCHAR pszPrefixNumPad[2] = { L'\0', L'\0' };
+    WCHAR pszAppendNumPad[2] = { L'\0', L'\0' };
+    WCHAR pszPrefixCpy[ENCLDATA_SIZE] = { L'\0' };
+    WCHAR pszAppendCpy[ENCLDATA_SIZE] = { L'\0' };
+    WCHAR pszPrefix[ENCLDATA_SIZE] = { L'\0' };
+    WCHAR pszAppend[ENCLDATA_SIZE] = { L'\0' };
 
-    if (!StrIsEmptyA(mszPrefix1)) {
-        char* p = StrStrA(mszPrefix1, "$(");
+    if (!StrIsEmpty(pEnclData->pwsz1)) {
+
+        StringCchCopy(pszPrefixCpy, COUNTOF(pszPrefixCpy), pEnclData->pwsz1);
+
+        WCHAR* p = StrStr(pszPrefixCpy, L"$(");
         while (!bPrefixNum && p) {
 
-            if (StrCmpNA(p, "$(I)", CONSTSTRGLEN("$(I)")) == 0) {
+            if (StrCmpN(p, L"$(I)", CONSTSTRGLEN(L"$(I)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CONSTSTRGLEN("$(I)"));
+                StringCchCopy(pszPrefix, COUNTOF(pszPrefix), p + CONSTSTRGLEN(L"$(I)"));
                 bPrefixNum = true;
                 iPrefixNum = 0;
                 for (DocLn i = iLineEnd - iLineStart; i >= 10; i = i / 10) {
                     iPrefixNumWidth++;
                 }
-                pszPrefixNumPad[0] = '\0';
+                pszPrefixNumPad[0] = L'\0'; // EOL
             }
 
-            else if (StrCmpNA(p, "$(0I)", CONSTSTRGLEN("$(0I)")) == 0) {
+            else if (StrCmpN(p, L"$(0I)", CONSTSTRGLEN(L"$(0I)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CONSTSTRGLEN("$(0I)"));
+                StringCchCopy(pszPrefix, COUNTOF(pszPrefix), p + CONSTSTRGLEN(L"$(0I)"));
                 bPrefixNum = true;
                 iPrefixNum = 0;
                 for (DocLn i = iLineEnd - iLineStart; i >= 10; i = i / 10) {
                     iPrefixNumWidth++;
                 }
-                pszPrefixNumPad[0] = '0';
+                pszPrefixNumPad[0] = L'0';
             }
 
-            else if (StrCmpNA(p, "$(N)", CONSTSTRGLEN("$(N)")) == 0) {
+            else if (StrCmpN(p, L"$(N)", CONSTSTRGLEN(L"$(N)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CONSTSTRGLEN("$(N)"));
+                StringCchCopy(pszPrefix, COUNTOF(pszPrefix), p + CONSTSTRGLEN(L"$(N)"));
                 bPrefixNum = true;
                 iPrefixNum = 1;
                 for (DocLn i = iLineEnd - iLineStart + 1; i >= 10; i = i / 10) {
                     iPrefixNumWidth++;
                 }
-                pszPrefixNumPad[0] = '\0';
+                pszPrefixNumPad[0] = L'\0'; // EOL
             }
 
-            else if (StrCmpNA(p, "$(0N)", CONSTSTRGLEN("$(0N)")) == 0) {
+            else if (StrCmpN(p, L"$(0N)", CONSTSTRGLEN(L"$(0N)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CONSTSTRGLEN("$(0N)"));
+                StringCchCopy(pszPrefix, COUNTOF(pszPrefix), p + CONSTSTRGLEN(L"$(0N)"));
                 bPrefixNum = true;
                 iPrefixNum = 1;
                 for (DocLn i = iLineEnd - iLineStart + 1; i >= 10; i = i / 10) {
                     iPrefixNumWidth++;
                 }
-                pszPrefixNumPad[0] = '0';
+                pszPrefixNumPad[0] = L'0'; // ZERO
             }
 
-            else if (StrCmpNA(p, "$(L)", CONSTSTRGLEN("$(L)")) == 0) {
+            else if (StrCmpN(p, L"$(L)", CONSTSTRGLEN(L"$(L)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CONSTSTRGLEN("$(L)"));
+                StringCchCopy(pszPrefix, COUNTOF(pszPrefix), p + CONSTSTRGLEN(L"$(L)"));
                 bPrefixNum = true;
                 iPrefixNum = iLineStart + 1;
                 for (DocLn i = iLineEnd + 1; i >= 10; i = i / 10) {
                     iPrefixNumWidth++;
                 }
-                pszPrefixNumPad[0] = '\0';
+                pszPrefixNumPad[0] = L'\0'; // EOL
             }
 
-            else if (StrCmpNA(p, "$(0L)", CONSTSTRGLEN("$(0L)")) == 0) {
+            else if (StrCmpN(p, L"$(0L)", CONSTSTRGLEN(L"$(0L)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), p + CONSTSTRGLEN("$(0L)"));
+                StringCchCopy(pszPrefix, COUNTOF(pszPrefix), p + CONSTSTRGLEN(L"$(0L)"));
                 bPrefixNum = true;
                 iPrefixNum = iLineStart + 1;
                 for (DocLn i = iLineEnd + 1; i >= 10; i = i / 10) {
                     iPrefixNumWidth++;
                 }
-                pszPrefixNumPad[0] = '0';
+                pszPrefixNumPad[0] = L'0'; // ZERO
             }
-            p += CONSTSTRGLEN("$(");
-            p = StrStrA(p, "$("); // next
+            p += CONSTSTRGLEN(L"$(");
+            p = StrStr(p, L"$("); // next
         }
     }
 
     bool  bAppendNum = false;
 
-    if (!StrIsEmptyA(mszAppend1)) {
-        char* p = StrStrA(mszAppend1, "$(");
+    if (!StrIsEmpty(pEnclData->pwsz2)) {
+
+        StringCchCopy(pszAppendCpy, COUNTOF(pszAppendCpy), pEnclData->pwsz2);
+
+        WCHAR* p = StrStr(pszAppendCpy, L"$(");
         while (!bAppendNum && p) {
 
-            if (StrCmpNA(p, "$(I)", CONSTSTRGLEN("$(I)")) == 0) {
+            if (StrCmpN(p, L"$(I)", CONSTSTRGLEN(L"$(I)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CONSTSTRGLEN("$(I)"));
+                StringCchCopy(pszAppend, COUNTOF(pszAppend), p + CONSTSTRGLEN(L"$(I)"));
                 bAppendNum = true;
                 iAppendNum = 0;
                 for (DocLn i = iLineEnd - iLineStart; i >= 10; i = i / 10) {
                     iAppendNumWidth++;
                 }
-                pszAppendNumPad[0] = '\0';
+                pszAppendNumPad[0] = L'\0'; // EOL
             }
 
-            else if (StrCmpNA(p, "$(0I)", CONSTSTRGLEN("$(0I)")) == 0) {
+            else if (StrCmpN(p, L"$(0I)", CONSTSTRGLEN(L"$(0I)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CONSTSTRGLEN("$(0I)"));
+                StringCchCopy(pszAppend, COUNTOF(pszAppend), p + CONSTSTRGLEN(L"$(0I)"));
                 bAppendNum = true;
                 iAppendNum = 0;
                 for (DocLn i = iLineEnd - iLineStart; i >= 10; i = i / 10) {
                     iAppendNumWidth++;
                 }
-                pszAppendNumPad[0] = '0';
+                pszAppendNumPad[0] = L'0'; // ZERO
             }
 
-            else if (StrCmpNA(p, "$(N)", CONSTSTRGLEN("$(N)")) == 0) {
+            else if (StrCmpN(p, L"$(N)", CONSTSTRGLEN(L"$(N)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CONSTSTRGLEN("$(N)"));
+                StringCchCopy(pszAppend, COUNTOF(pszAppend), p + CONSTSTRGLEN(L"$(N)"));
                 bAppendNum = true;
                 iAppendNum = 1;
                 for (DocLn i = iLineEnd - iLineStart + 1; i >= 10; i = i / 10) {
                     iAppendNumWidth++;
                 }
-                pszAppendNumPad[0] = '\0';
+                pszAppendNumPad[0] = L'\0'; // EOL
             }
 
-            else if (StrCmpNA(p, "$(0N)", CONSTSTRGLEN("$(0N)")) == 0) {
+            else if (StrCmpN(p, L"$(0N)", CONSTSTRGLEN(L"$(0N)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CONSTSTRGLEN("$(0N)"));
+                StringCchCopy(pszAppend, COUNTOF(pszAppend), p + CONSTSTRGLEN("$(0N)"));
                 bAppendNum = true;
                 iAppendNum = 1;
                 for (DocLn i = iLineEnd - iLineStart + 1; i >= 10; i = i / 10) {
                     iAppendNumWidth++;
                 }
-                pszAppendNumPad[0] = '0';
+                pszAppendNumPad[0] = L'0'; // ZERO
             }
 
-            else if (StrCmpNA(p, "$(L)", CONSTSTRGLEN("$(L)")) == 0) {
+            else if (StrCmpN(p, L"$(L)", CONSTSTRGLEN(L"$(L)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CONSTSTRGLEN("$(L)"));
+                StringCchCopy(pszAppend, COUNTOF(pszAppend), p + CONSTSTRGLEN(L"$(L)"));
                 bAppendNum = true;
                 iAppendNum = iLineStart + 1;
                 for (DocLn i = iLineEnd + 1; i >= 10; i = i / 10) {
                     iAppendNumWidth++;
                 }
-                pszAppendNumPad[0] = '\0';
+                pszAppendNumPad[0] = L'\0'; // EOL
             }
 
-            else if (StrCmpNA(p, "$(0L)", CONSTSTRGLEN("$(0L)")) == 0) {
+            else if (StrCmpN(p, L"$(0L)", CONSTSTRGLEN(L"$(0L)")) == 0) {
                 *p = 0;
-                StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), p + CONSTSTRGLEN("$(0L)"));
+                StringCchCopy(pszAppend, COUNTOF(pszAppend), p + CONSTSTRGLEN(L"$(0L)"));
                 bAppendNum = true;
                 iAppendNum = iLineStart + 1;
                 for (DocLn i = iLineEnd + 1; i >= 10; i = i / 10) {
                     iAppendNumWidth++;
                 }
-                pszAppendNumPad[0] = '0';
+                pszAppendNumPad[0] = L'0'; // ZERO
             }
-            p += CONSTSTRGLEN("$(");
-            p = StrStrA(p, "$("); // next
+            p += CONSTSTRGLEN(L"$(");
+            p = StrStr(p, L"$("); // next
         }
     }
+
+    WCHAR mszInsert[ENCLDATA_SIZE << 1] = { L'\0' };
+    char  sciBuffer[(ENCLDATA_SIZE << 1) * 3];
 
     UndoTransActionBegin();
 
@@ -3225,40 +3226,40 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
 
         if (StrIsNotEmpty(pEnclData->pwsz1)) {
 
-            char mszInsert[512 * 3] = { '\0' };
-            StringCchCopyA(mszInsert, COUNTOF(mszInsert), mszPrefix1);
+            StringCchCopy(mszInsert, COUNTOF(mszInsert), pszPrefixCpy);
 
             if (bPrefixNum) {
-                char tchFmt[64] = { '\0' };
-                char tchNum[64] = { '\0' };
-                StringCchPrintfA(tchFmt, COUNTOF(tchFmt), "%%%s%ii", pszPrefixNumPad, iPrefixNumWidth);
-                StringCchPrintfA(tchNum, COUNTOF(tchNum), tchFmt, iPrefixNum);
-                StringCchCatA(mszInsert, COUNTOF(mszInsert), tchNum);
-                StringCchCatA(mszInsert, COUNTOF(mszInsert), mszPrefix2);
+                WCHAR tchFmt[64] = { L'\0' };
+                WCHAR tchNum[64] = { L'\0' };
+                StringCchPrintf(tchFmt, COUNTOF(tchFmt), L"%%%s%ii", pszPrefixNumPad, iPrefixNumWidth);
+                StringCchPrintf(tchNum, COUNTOF(tchNum), tchFmt, iPrefixNum);
+                StringCchCat(mszInsert, COUNTOF(mszInsert), tchNum);
+                StringCchCat(mszInsert, COUNTOF(mszInsert), pszPrefix);
                 iPrefixNum++;
             }
             DocPos const iPos = SciCall_PositionFromLine(iLine);
             SciCall_SetTargetRange(iPos, iPos);
-            SciCall_ReplaceTarget(-1, mszInsert);
+            WideCharToMultiByteEx(Encoding_SciCP, 0, mszInsert, -1, sciBuffer, COUNTOF(sciBuffer), NULL, NULL);
+            SciCall_ReplaceTarget(-1, sciBuffer);
         }
 
         if (StrIsNotEmpty(pEnclData->pwsz2)) {
 
-            char mszInsert[512 * 3] = { '\0' };
-            StringCchCopyA(mszInsert, COUNTOF(mszInsert), mszAppend1);
+            StringCchCopy(mszInsert, COUNTOF(mszInsert), pszAppendCpy);
 
             if (bAppendNum) {
-                char tchFmt[64] = { '\0' };
-                char tchNum[64] = { '\0' };
-                StringCchPrintfA(tchFmt, COUNTOF(tchFmt), "%%%s%ii", pszAppendNumPad, iAppendNumWidth);
-                StringCchPrintfA(tchNum, COUNTOF(tchNum), tchFmt, iAppendNum);
-                StringCchCatA(mszInsert, COUNTOF(mszInsert), tchNum);
-                StringCchCatA(mszInsert, COUNTOF(mszInsert), mszAppend2);
+                WCHAR tchFmt[64] = { L'\0' };
+                WCHAR tchNum[64] = { L'\0' };
+                StringCchPrintf(tchFmt, COUNTOF(tchFmt), L"%%%s%ii", pszAppendNumPad, iAppendNumWidth);
+                StringCchPrintf(tchNum, COUNTOF(tchNum), tchFmt, iAppendNum);
+                StringCchCat(mszInsert, COUNTOF(mszInsert), tchNum);
+                StringCchCat(mszInsert, COUNTOF(mszInsert), pszAppend);
                 iAppendNum++;
             }
             DocPos const iPos = SciCall_GetLineEndPosition(iLine);
             SciCall_SetTargetRange(iPos, iPos);
-            SciCall_ReplaceTarget(-1, mszInsert);
+            WideCharToMultiByteEx(Encoding_SciCP, 0, mszInsert, -1, sciBuffer, COUNTOF(sciBuffer), NULL, NULL);
+            SciCall_ReplaceTarget(-1, sciBuffer);
         }
     }
 
