@@ -196,6 +196,9 @@ __forceinline DocPosU clamppu(DocPosU x, DocPosU lower, DocPosU upper) {
 __forceinline int float2int(const float f) {
     return (int)lroundf(f);
 }
+__forceinline int double2int(const double d) {
+    return (int)lround(d);
+}
 __forceinline float Round10th(const float f) {
     return (float)float2int(f * 10.0f) / 10;
 }

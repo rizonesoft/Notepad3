@@ -82,7 +82,7 @@ typedef struct state {
     int lookup_len;
 } state;
 
-#define TE_INIT_STATE { NULL, NULL, 0, 0.0, NULL, NULL, 0 }
+#define TE_INIT_STATE { NULL, NULL, TOK_END, 0.0, NULL, NULL, 0 }
 
 #if defined(TINYEXPR_USE_STATIC_MEMORY)
     static te_expr te_expr_array[TINYEXPR_MAX_EXPRESSIONS] = {0};
@@ -430,10 +430,11 @@ void next_token(state *s) {
             s->type = TOK_NUMBER;
         } else {
             /* Look for a variable or builtin function call. */
-            if (s->next[0] >= 'a' && s->next[0] <= 'z') {
+            char ch = s->next[0];
+            if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z')) {
+
                 const char * const start = s->next;
-                char ch = s->next[0];
-                while ((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || (ch == '_')) {
+                while ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || (ch == '_')) {
                     s->next++;
                     ch = s->next[0];
                 };
