@@ -3065,8 +3065,13 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
     char  pszAppendNumPad[2] = { '\0', '\0' };
     char  mszPrefix2[ENCLDATA_SIZE * 3] = { '\0' };
     char  mszAppend2[ENCLDATA_SIZE * 3] = { '\0' };
+
     char  mszTinyExprPre[ENCLDATA_SIZE] = { '\0' };
     char  mszTinyExprPost[ENCLDATA_SIZE] = { '\0' };
+    const char* const teErrMsgPreFmt = EXPR_BEG "%s%s<te-err>" EXPR_END;  // TE_XINT_FMT
+    const char* const teErrMsgPostFmt = EXPR_BEG "%s%s<te-err>" EXPR_END; // TE_XINT_FMT
+    char mszTEMsgPre[ENCLDATA_SIZE + 32] = { '\0' };
+    char mszTEMsgPost[ENCLDATA_SIZE + 32] = { '\0' };
 
     bool bPrefixNum = false;
 
@@ -3142,6 +3147,10 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
             }
             else {
                 tePreOk = false;
+                char ch = mszTinyExprPre[err];
+                mszTinyExprPre[err] = '\0';
+                StringCchPrintfA(mszTEMsgPre, COUNTOF(mszTEMsgPre), teErrMsgPreFmt, pszPrefixNumPad, mszTinyExprPre);
+                mszTinyExprPre[err] = ch;
             }
         }
 
@@ -3157,6 +3166,7 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
             }
             else {
                 tePreOk = false;
+                //~StringCchPrintfA(mszTEMsgPre, COUNTOF(mszTEMsgPre), teErrMsgPreFmt, pszPrefixNumPad, mszTinyExprPre);
             }
         }
 
@@ -3185,6 +3195,10 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
             }
             else {
                 tePostOk = false;
+                char ch = mszTinyExprPost[err];
+                mszTinyExprPost[err] = '\0';
+                StringCchPrintfA(mszTEMsgPost, COUNTOF(mszTEMsgPost), teErrMsgPostFmt, pszAppendNumPad, mszTinyExprPost);
+                mszTinyExprPost[err] = ch;
             }
         }
 
@@ -3200,6 +3214,7 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
             }
             else {
                 tePostOk = false;
+                //~StringCchPrintfA(mszTEMsgPost, COUNTOF(mszTEMsgPost), teErrMsgPostFmt, pszAppendNumPad, mszTinyExprPost);
             }
         }
 
@@ -3215,7 +3230,15 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
 
     UndoTransActionBegin();
 
-    char        mszInsert[(ENCLDATA_SIZE << 1) * 3] = { '\0' };
+    char tchFormatPre[32] = { '\0' };
+    if (tePreOk) {
+        StringCchPrintfA(tchFormatPre, COUNTOF(tchFormatPre), "%%%s%ii", pszPrefixNumPad, iNumWidthPre);
+    }
+    char tchFormatPost[32] = { '\0' };
+    if (tePostOk) {
+        StringCchPrintfA(tchFormatPost, COUNTOF(tchFormatPost), "%%%s%ii", pszAppendNumPad, iNumWidthPost);
+    }
+    char mszInsert[(ENCLDATA_SIZE << 1) * 3] = { '\0' };
 
     for (DocLn iLine = iLineStart, count = 0; iLine <= iLineEnd; ++iLine, ++count) {
 
@@ -3224,8 +3247,6 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
             StringCchCopyA(mszInsert, COUNTOF(mszInsert), mszPrefix1);
 
             if (bPrefixNum) {
-                char tchFmt[64] = { '\0' };
-                char tchNum[64] = { '\0' };
                 int iPrefixNum = (int)iLine + 1;
                 if (tePreOk) {
                     L = (double)iPrefixNum;
@@ -3237,10 +3258,9 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
                         iPrefixNum = double2int(te_eval(pExprPre));
                         te_free(pExprPre);
                     }
+                    StringCchPrintfA(mszTEMsgPre, COUNTOF(mszTEMsgPre), tchFormatPre, iPrefixNum);
                 }
-                StringCchPrintfA(tchFmt, COUNTOF(tchFmt), "%%%s%ii", pszPrefixNumPad, iNumWidthPre);
-                StringCchPrintfA(tchNum, COUNTOF(tchNum), tchFmt, iPrefixNum);
-                StringCchCatA(mszInsert, COUNTOF(mszInsert), tchNum);
+                StringCchCatA(mszInsert, COUNTOF(mszInsert), mszTEMsgPre);
                 StringCchCatA(mszInsert, COUNTOF(mszInsert), mszPrefix2);
             }
             DocPos const iPos = SciCall_PositionFromLine(iLine);
@@ -3253,8 +3273,6 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
             StringCchCopyA(mszInsert, COUNTOF(mszInsert), mszAppend1);
 
             if (bAppendNum) {
-                char tchFmt[64] = { '\0' };
-                char tchNum[64] = { '\0' };
                 int iAppendNum = (int)iLine + 1;
                 if (tePostOk) {
                     L = (double)iAppendNum;
@@ -3266,10 +3284,9 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
                         iAppendNum = double2int(te_eval(pExprPost));
                         te_free(pExprPost);
                     }
+                    StringCchPrintfA(mszTEMsgPost, COUNTOF(mszTEMsgPost), tchFormatPre, iAppendNum);
                 }
-                StringCchPrintfA(tchFmt, COUNTOF(tchFmt), "%%%s%ii", pszAppendNumPad, iNumWidthPost);
-                StringCchPrintfA(tchNum, COUNTOF(tchNum), tchFmt, iAppendNum);
-                StringCchCatA(mszInsert, COUNTOF(mszInsert), tchNum);
+                StringCchCatA(mszInsert, COUNTOF(mszInsert), mszTEMsgPost);
                 StringCchCatA(mszInsert, COUNTOF(mszInsert), mszAppend2);
             }
             DocPos const iPos = SciCall_GetLineEndPosition(iLine);
