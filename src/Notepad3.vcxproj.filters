@@ -19,9 +19,6 @@
     <Filter Include="Source Files\StyleLexers">
       <UniqueIdentifier>{82f9cc2d-9173-4af4-8967-5fd2e5f8aef7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\tinyexpr">
-      <UniqueIdentifier>{1de8e161-7393-4043-be9d-7bd2d0cb02df}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\uthash">
       <UniqueIdentifier>{24604833-5c1e-421c-813a-34c6a48bf6f9}</UniqueIdentifier>
     </Filter>
@@ -45,6 +42,9 @@
     </Filter>
     <Filter Include="Source Files\uchardet\tables">
       <UniqueIdentifier>{898b2e68-0b75-4ad3-acc4-20bc18163aec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\tinyexpr">
+      <UniqueIdentifier>{60486982-91be-42d2-b154-86c2706ca60f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -396,9 +396,6 @@
     <ClCompile Include="uchardet\uchardet\src\CharDistribution.cpp">
       <Filter>Source Files\uchardet</Filter>
     </ClCompile>
-    <ClCompile Include="tinyexpr\tinyexpr.c">
-      <Filter>Source Files\tinyexpr</Filter>
-    </ClCompile>
     <ClCompile Include="uchardet\uchardet\src\uchardet.cpp">
       <Filter>Source Files\uchardet</Filter>
     </ClCompile>
@@ -428,6 +425,9 @@
     </ClCompile>
     <ClCompile Include="PathLib.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyexpr\tinyexpr.c">
+      <Filter>Source Files\tinyexpr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -572,9 +572,6 @@
     <ClInclude Include="uchardet\uchardet\src\CharDistribution.h">
       <Filter>Source Files\uchardet</Filter>
     </ClInclude>
-    <ClInclude Include="tinyexpr\tinyexpr.h">
-      <Filter>Source Files\tinyexpr</Filter>
-    </ClInclude>
     <ClInclude Include="uchardet\uchardet\src\uchardet.h">
       <Filter>Source Files\uchardet</Filter>
     </ClInclude>
@@ -610,6 +607,9 @@
     </ClInclude>
     <ClInclude Include="PathLib.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyexpr\tinyexpr.h">
+      <Filter>Source Files\tinyexpr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

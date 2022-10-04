@@ -41,11 +41,11 @@ extern "C" {
 #endif
 
 #ifdef _WIN64
-  typedef __int64          te_xint_t;
-  #define TE_XINT_FMT      "%lli" 
+  typedef __int64          te_int_t;
+  #define TE_INT_FMT      "%lli" 
 #else
-  typedef int              te_xint_t;
-  #define TE_XINT_FMT      "%i"
+  typedef int              te_int_t;
+  #define TE_INT_FMT      "%i"
 #endif
 
 typedef struct te_expr {
@@ -89,11 +89,11 @@ void te_expr_memory_usage(unsigned int *count, unsigned int * count_max, unsigne
 
 /* Parses the input expression, evaluates it, and frees it. */
 /* Returns NaN on error. */
-double te_interp(const char *expression, te_xint_t* error);
+double te_interp(const char *expression, te_int_t* error);
 
 /* Parses the input expression and binds variables. */
 /* Returns NULL on error. */
-te_expr *te_compile(const char * expression, const te_variable * variables, int var_count, te_xint_t * error);
+te_expr *te_compile(const char * expression, const te_variable * variables, int var_count, te_int_t * error);
 
 /* Evaluates the expression. */
 double te_eval(const te_expr *n);

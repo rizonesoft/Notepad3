@@ -83,47 +83,59 @@ inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
 {
     static LPCWSTR lpcReleaseID = L"unknown";
 
-    if (build >= 19045) {
-        lpcReleaseID = L"22H2";
+    if (build >= 22000) { // Win11
+
+        if (build >= 22621) {
+            lpcReleaseID = L"22H2";
+        }
+        else {
+            lpcReleaseID = L"21H2";
+        }
     }
-    else if (build >= 19044) {
-        lpcReleaseID = L"22H1";
-    }
-    else if (build >= 19043) {
-        lpcReleaseID = L"21H1";
-    }
-    else if (build >= 19042) {
-        lpcReleaseID = L"20H2";
-    }
-    else if (build >= 19041) {
-        lpcReleaseID = L"20H1";
-    }
-    else if (build >= 18363) {
-        lpcReleaseID = L"19H2";
-    }
-    else if (build >= 18362) {
-        lpcReleaseID = L"19H1";
-    }
-    else if (build >= 17763) {
-        lpcReleaseID = L"1809";
-    }
-    else if (build >= 17134) {
-        lpcReleaseID = L"1803";
-    }
-    else if (build >= 16299) {
-        lpcReleaseID = L"1709";
-    }
-    else if (build >= 15063) {
-        lpcReleaseID = L"1703";
-    }
-    else if (build >= 14393) {
-        lpcReleaseID = L"1607";
-    }
-    else if (build >= 10586) {
-        lpcReleaseID = L"1511";
-    }
-    else if (build >= 10240) {
-        lpcReleaseID = L"1507";
+    else { // Win10
+
+        if (build >= 19045) {
+            lpcReleaseID = L"22H1";
+        }
+        else if (build >= 19044) {
+            lpcReleaseID = L"21H2";
+        }
+        else if (build >= 19043) {
+            lpcReleaseID = L"21H1";
+        }
+        else if (build >= 19042) {
+            lpcReleaseID = L"20H2";
+        }
+        else if (build >= 19041) {
+            lpcReleaseID = L"20H1";
+        }
+        else if (build >= 18363) {
+            lpcReleaseID = L"19H2";
+        }
+        else if (build >= 18362) {
+            lpcReleaseID = L"19H1";
+        }
+        else if (build >= 17763) {
+            lpcReleaseID = L"1809";
+        }
+        else if (build >= 17134) {
+            lpcReleaseID = L"1803";
+        }
+        else if (build >= 16299) {
+            lpcReleaseID = L"1709";
+        }
+        else if (build >= 15063) {
+            lpcReleaseID = L"1703";
+        }
+        else if (build >= 14393) {
+            lpcReleaseID = L"1607";
+        }
+        else if (build >= 10586) {
+            lpcReleaseID = L"1511";
+        }
+        else if (build >= 10240) {
+            lpcReleaseID = L"1507";
+        }
     }
     return lpcReleaseID;
 }

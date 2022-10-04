@@ -41,6 +41,7 @@
 #include "uthash/utarray.h"
 #include "uthash/utlist.h"
 #include "tinyexpr/tinyexpr.h"
+//#include "tinyexprcpp/tinyexpr_cif.h"
 #include "Encoding.h"
 #include "VersionEx.h"
 #include "MuiLanguage.h"
@@ -164,8 +165,8 @@ static bool      s_bUndoRedoScroll = false;
 static bool      s_bPrevFullScreenFlag = false;
 
 // for tiny expression calculation
-static double    s_dExpression = 0.0;
-static te_xint_t s_iExprError  = -1;
+static double   s_dExpression = 0.0;
+static te_int_t s_iExprError  = -1;
 
 //~static CONST WCHAR *const s_ToolbarWndClassName = L"NP3_TOOLBAR_CLASS";
 
@@ -2408,7 +2409,7 @@ static bool _EvalTinyExpr(bool qmark)
             }
 
             double dExprEval = 0.0;
-            te_xint_t exprErr = 1;
+            te_int_t exprErr = 1;
             while (*p && exprErr) {
                 dExprEval = te_interp(p, &exprErr);
                 // proceed to next possible expression
@@ -8678,7 +8679,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                         StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.7G", s_dExpression);
                     }
                 } else if (s_iExprError > 0) {
-                    StringCchPrintfA(chExpr, COUNTOF(chExpr), "^[" TE_XINT_FMT "]", s_iExprError);
+                    StringCchPrintfA(chExpr, COUNTOF(chExpr), "^[" TE_INT_FMT "]", s_iExprError);
                     SciCall_CopyText((DocPos)StringCchLenA(chExpr, COUNTOF(chExpr)), chExpr);
                 }
                 SciCall_CopyText((DocPos)StringCchLenA(chExpr, COUNTOF(chExpr)), chExpr);
@@ -9480,7 +9481,7 @@ static void  _CalculateStatusbarSections(int vSectionWidth[], sectionTxt_t tchSt
 //  _InterpMultiSelectionTinyExpr()
 //
 //
-static double _InterpMultiSelectionTinyExpr(te_xint_t* piExprError)
+static double _InterpMultiSelectionTinyExpr(te_int_t* piExprError)
 {
 #define _tmpBufCnt 128
     char tmpRectSelN[_tmpBufCnt] = { '\0' };
@@ -9733,7 +9734,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     // try calculate expression of selection
     if (g_iStatusbarVisible[STATUS_TINYEXPR]) {
         static WCHAR tchExpression[32] = { L'\0' };
-        static te_xint_t s_iExErr          = -3;
+        static te_int_t s_iExErr          = -3;
         s_dExpression = 0.0;
         tchExpression[0] = L'-';
         tchExpression[1] = L'-';
@@ -9771,7 +9772,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         if (!s_iExprError) {
             StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.7G", s_dExpression);
         } else if (s_iExprError > 0) {
-            StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"^[" _W(TE_XINT_FMT) L"]", s_iExprError);
+            StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"^[" _W(TE_INT_FMT) L"]", s_iExprError);
         }
 
         if (bForceRedraw || (!s_iExprError || (s_iExErr != s_iExprError))) {
