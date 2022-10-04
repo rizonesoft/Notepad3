@@ -36,6 +36,7 @@
 #pragma warning(push)
 #pragma warning(disable : 4201) // union/struct w/o name
 #include "tinyexpr/tinyexpr.h"
+//#include "tinyexprcpp/tinyexpr_cif.h"
 #pragma warning(pop)
 
 #include "Scintilla.h"
@@ -1102,7 +1103,7 @@ bool SplitFilePathLineNum(LPWSTR lpszPath, int* lineNum)
         char       chLnNumber[128];
         char const defchar = (char)0x24;
         WideCharToMultiByte(CP_ACP, (WC_COMPOSITECHECK | WC_DISCARDNS), &lpszSplit[1], -1, chLnNumber, COUNTOF(chLnNumber), &defchar, NULL);
-        te_xint_t iExprError = true;
+        te_int_t iExprError = true;
         int const ln = (int)te_interp(chLnNumber, &iExprError);
         if (!iExprError) {
             res = true;
@@ -2163,20 +2164,18 @@ size_t NormalizeColumnVector(LPSTR chStrg_in, LPWSTR wchStrg_out, size_t iCount)
     StrTrim(wchStrg_out, L"\"'");
 
     int* const intVector = (int*)AllocMem(iCount * sizeof(int), HEAP_ZERO_MEMORY);
-    if (!intVector) {
-        return 0;
+    if (intVector) {
+        size_t const cnt = ReadVectorFromString(wchStrg_out, intVector, iCount, 0, LONG_LINES_MARKER_LIMIT, 0, true);
+        WCHAR col[32];
+        wchStrg_out[0] = L'\0';
+        for (size_t i = 0; i < cnt; ++i) {
+            StringCchPrintf(col, COUNTOF(col), ((i == 0) ? L"%i" : L" %i"), intVector[i]);
+            StringCchCat(wchStrg_out, iCount, col);
+        }
+        FreeMem(intVector);
+        return cnt;
     }
-
-    size_t const cnt = ReadVectorFromString(wchStrg_out, intVector, iCount, 0, LONG_LINES_MARKER_LIMIT, 0, true);
-
-    WCHAR col[32];
-    wchStrg_out[0] = L'\0';
-    for (size_t i = 0; i < cnt; ++i) {
-        StringCchPrintf(col, COUNTOF(col), ((i == 0) ? L"%i" : L" %i"), intVector[i]);
-        StringCchCat(wchStrg_out, iCount, col);
-    }
-    FreeMem(intVector);
-    return cnt;
+    return 0;
 }
 
 //=============================================================================

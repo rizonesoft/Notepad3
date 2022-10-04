@@ -1093,7 +1093,7 @@ static void optimize(te_expr *n) {
 }
 
 
-te_expr *te_compile(const char *expression, const te_variable *variables, int var_count, te_xint_t *error) {
+te_expr *te_compile(const char *expression, const te_variable *variables, int var_count, te_int_t *error) {
     state s = TE_INIT_STATE;
     s.start = s.next = expression;
     s.lookup = variables;
@@ -1124,7 +1124,7 @@ te_expr *te_compile(const char *expression, const te_variable *variables, int va
 }
 
 
-double te_interp(const char *expression, te_xint_t* error) {
+double te_interp(const char *expression, te_int_t* error) {
     te_expr *n = te_compile(expression, 0, 0, error);
     double ret = NAN;
     if (n) {

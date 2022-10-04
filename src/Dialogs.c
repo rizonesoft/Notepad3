@@ -42,6 +42,7 @@
 #include "Config/Config.h"
 #include "DarkMode/DarkMode.h"
 #include "tinyexpr/tinyexpr.h"
+//#include "tinyexprcpp/tinyexpr_cif.h"
 #include "Resample.h"
 #include "PathLib.h"
 
@@ -4310,7 +4311,7 @@ static INT_PTR CALLBACK AutoSaveBackupSettingsDlgProc(HWND hwnd, UINT umsg, WPAR
 
             char chInterval[32];
             GetDlgItemTextA(hwnd, IDC_AUTOSAVE_INTERVAL, chInterval, COUNTOF(chInterval));
-            te_xint_t iExprErr = true;
+            te_int_t iExprErr = true;
             float     interval = (float)te_interp(chInterval, &iExprErr);
             if (iExprErr) {
                 WCHAR wch[32];
@@ -5432,52 +5433,54 @@ typedef const RESIZEDLG* LPCRESIZEDLG;
 void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_DIR iDirection)
 {
     RESIZEDLG* const pm = (RESIZEDLG*)AllocMem(sizeof(RESIZEDLG), HEAP_ZERO_MEMORY);
-    pm->direction = iDirection;
-    pm->dpi = Scintilla_GetWindowDPI(hwnd);
+    if (pm) {
+        pm->direction = iDirection;
+        pm->dpi = Scintilla_GetWindowDPI(hwnd);
 
-    RECT rc;
-    GetClientRect(hwnd, &rc);
-    pm->cxClient = rc.right - rc.left;
-    pm->cyClient = rc.bottom - rc.top;
+        RECT rc;
+        GetClientRect(hwnd, &rc);
+        pm->cxClient = rc.right - rc.left;
+        pm->cyClient = rc.bottom - rc.top;
 
-    const DWORD style = (pm->direction < 0) ? (GetWindowStyle(hwnd) & ~WS_THICKFRAME) : (GetWindowStyle(hwnd) | WS_THICKFRAME);
+        const DWORD style = (pm->direction < 0) ? (GetWindowStyle(hwnd) & ~WS_THICKFRAME) : (GetWindowStyle(hwnd) | WS_THICKFRAME);
 
-    Scintilla_AdjustWindowRectForDpi((LPWRECT)&rc, style, 0, pm->dpi);
+        Scintilla_AdjustWindowRectForDpi((LPWRECT)&rc, style, 0, pm->dpi);
 
-    pm->mmiPtMinX = rc.right - rc.left;
-    pm->mmiPtMinY = rc.bottom - rc.top;
+        pm->mmiPtMinX = rc.right - rc.left;
+        pm->mmiPtMinY = rc.bottom - rc.top;
 
-    // only one direction
-    switch (iDirection) {
-    case RSZ_ONLY_X:
-        pm->mmiPtMaxY = pm->mmiPtMinY;
-        break;
-    case RSZ_ONLY_Y:
-        pm->mmiPtMaxX = pm->mmiPtMinX;
-        break;
-    }
+        // only one direction
+        switch (iDirection) {
+        case RSZ_ONLY_X:
+            pm->mmiPtMaxY = pm->mmiPtMinY;
+            break;
+        case RSZ_ONLY_Y:
+            pm->mmiPtMaxX = pm->mmiPtMinX;
+            break;
+        }
 
-    cxFrame = max_i(cxFrame, pm->mmiPtMinX);
-    cyFrame = max_i(cyFrame, pm->mmiPtMinY);
+        cxFrame = max_i(cxFrame, pm->mmiPtMinX);
+        cyFrame = max_i(cyFrame, pm->mmiPtMinY);
 
-    SetProp(hwnd, RESIZEDLG_PROP_KEY, (HANDLE)pm);
+        SetProp(hwnd, RESIZEDLG_PROP_KEY, (HANDLE)pm);
 
-    SetWindowPos(hwnd, NULL, rc.left, rc.top, cxFrame, cyFrame, SWP_NOZORDER);
+        SetWindowPos(hwnd, NULL, rc.left, rc.top, cxFrame, cyFrame, SWP_NOZORDER);
 
-    SetWindowStyle(hwnd, style);
-    SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+        SetWindowStyle(hwnd, style);
+        SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
 
-    WCHAR wch[MIDSZ_BUFFER];
-    GetMenuString(GetSystemMenu(GetParent(hwnd), FALSE), SC_SIZE, wch, COUNTOF(wch), MF_BYCOMMAND);
-    InsertMenu(GetSystemMenu(hwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_STRING | MF_ENABLED, SC_SIZE, wch);
-    InsertMenu(GetSystemMenu(hwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_SEPARATOR, 0, NULL);
+        WCHAR wch[MIDSZ_BUFFER];
+        GetMenuString(GetSystemMenu(GetParent(hwnd), FALSE), SC_SIZE, wch, COUNTOF(wch), MF_BYCOMMAND);
+        InsertMenu(GetSystemMenu(hwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_STRING | MF_ENABLED, SC_SIZE, wch);
+        InsertMenu(GetSystemMenu(hwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_SEPARATOR, 0, NULL);
 
-    if (pm->direction >= 0) {
-        HWND const hwndCtl = GetDlgItem(hwnd, nIdGrip);
-        if (hwndCtl) {
-            SetWindowStyle(hwndCtl, GetWindowStyle(hwndCtl) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
-            int const cGrip = Scintilla_GetSystemMetricsForDpi(SM_CXHTHUMB, pm->dpi);
-            SetWindowPos(hwndCtl, NULL, pm->cxClient - cGrip, pm->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
+        if (pm->direction >= 0) {
+            HWND const hwndCtl = GetDlgItem(hwnd, nIdGrip);
+            if (hwndCtl) {
+                SetWindowStyle(hwndCtl, GetWindowStyle(hwndCtl) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
+                int const cGrip = Scintilla_GetSystemMetricsForDpi(SM_CXHTHUMB, pm->dpi);
+                SetWindowPos(hwndCtl, NULL, pm->cxClient - cGrip, pm->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
+            }
         }
     }
 }

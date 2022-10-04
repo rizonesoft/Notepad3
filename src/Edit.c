@@ -31,6 +31,7 @@
 #include "uthash/utarray.h"
 #include "uthash/utlist.h"
 #include "tinyexpr/tinyexpr.h"
+//#include "tinyexprcpp/tinyexpr_cif.h"
 #include "Encoding.h"
 #include "MuiLanguage.h"
 #include "Notepad3.h"
@@ -2247,7 +2248,7 @@ void EditChar2Hex(HWND hwnd)
     SecureZeroMemory(ch, alloc);
 
     for (int i = 0, j = 0; i < nchars; ++i) {
-        if (wch[i] <= 0xFF) {
+        if (wch && wch[i] <= 0xFF) {
             StringCchPrintfA(&ch[j], (alloc - j), "\\x%02X", (wch[i] & 0xFF));  // \xhh
             j += 4;
         } else {
@@ -3038,14 +3039,19 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
         return;
     }
 
+    bool const bHasPrefixPattern = StrIsNotEmpty(pEnclData->pwsz1);
+    bool const bHasAppendPattern = StrIsNotEmpty(pEnclData->pwsz2);
+
     char mszPrefix1[ENCLDATA_SIZE * 3] = { '\0' };
     char mszAppend1[ENCLDATA_SIZE * 3] = { '\0' };
+    char mszPrefix2[ENCLDATA_SIZE * 3] = { '\0' };
+    char mszAppend2[ENCLDATA_SIZE * 3] = { '\0' };
 
     // No UTF-8 multi-byte character will have a string terminator byte ('\0'), so handle as char 
-    if (StrIsNotEmpty(pEnclData->pwsz1)) {
+    if (bHasPrefixPattern) {
         WideCharToMultiByteEx(Encoding_SciCP, 0, pEnclData->pwsz1, -1, mszPrefix1, COUNTOF(mszPrefix1), NULL, NULL); 
     }
-    if (StrIsNotEmpty(pEnclData->pwsz2)) {
+    if (bHasAppendPattern) {
         WideCharToMultiByteEx(Encoding_SciCP, 0, pEnclData->pwsz2, -1, mszAppend1, COUNTOF(mszAppend1), NULL, NULL);
     }
 
@@ -3063,13 +3069,11 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
 
     char  pszPrefixNumPad[2] = { '\0', '\0' };
     char  pszAppendNumPad[2] = { '\0', '\0' };
-    char  mszPrefix2[ENCLDATA_SIZE * 3] = { '\0' };
-    char  mszAppend2[ENCLDATA_SIZE * 3] = { '\0' };
 
     char  mszTinyExprPre[ENCLDATA_SIZE] = { '\0' };
     char  mszTinyExprPost[ENCLDATA_SIZE] = { '\0' };
-    const char* const teErrMsgPreFmt = EXPR_BEG "%s%s<te-err>" EXPR_END;  // TE_XINT_FMT
-    const char* const teErrMsgPostFmt = EXPR_BEG "%s%s<te-err>" EXPR_END; // TE_XINT_FMT
+    const char* const teErrMsgPreFmt = EXPR_BEG "%s%s<???>" EXPR_END;  // TE_INT_FMT
+    const char* const teErrMsgPostFmt = EXPR_BEG "%s%s<???>" EXPR_END; // TE_INT_FMT
     char mszTEMsgPre[ENCLDATA_SIZE + 32] = { '\0' };
     char mszTEMsgPost[ENCLDATA_SIZE + 32] = { '\0' };
 
@@ -3127,102 +3131,74 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
 
     // calculate min/max field width (assuming steadily growing or falling tinyexpr(linenum))
 
+    te_expr*    pTinyExprPre = NULL;
+    te_expr*    pTinyExprPost = NULL;
     double      L = 0.0, I = 0.0, N = 1.0;
     te_variable vars[] = { { "L", &L }, { "I", &I }, { "N", &N } };
 
     int iNumWidthPre = 1;
-    bool tePreOk = true;
+    if (bPrefixNum)
     {
-        int       iNumMaxPre = (int)iLineEnd + 1;
-        te_xint_t err;
+        int iNumMaxPre = (int)iLineEnd + 1;
+        te_int_t err;
+        pTinyExprPre = te_compile(mszTinyExprPre, vars, 3, &err);
 
-        if (tePreOk) {
+        if (pTinyExprPre) {
             L = (double)(iLineStart + 1);
             I = 0.0;
             N = I + 1.0;
-            te_expr* pExprPre = te_compile(mszTinyExprPre, vars, 3, &err);
-            if (pExprPre) {
-                iNumMaxPre = double2int(te_eval(pExprPre));
-                te_free(pExprPre);
-            }
-            else {
-                tePreOk = false;
-                char ch = mszTinyExprPre[err];
-                mszTinyExprPre[err] = '\0';
-                StringCchPrintfA(mszTEMsgPre, COUNTOF(mszTEMsgPre), teErrMsgPreFmt, pszPrefixNumPad, mszTinyExprPre);
-                mszTinyExprPre[err] = ch;
-            }
+            iNumMaxPre = double2int(te_eval(pTinyExprPre));
+        }
+        else {
+            char ch = mszTinyExprPre[err];
+            mszTinyExprPre[err] = '\0';
+            StringCchPrintfA(mszTEMsgPre, COUNTOF(mszTEMsgPre), teErrMsgPreFmt, pszPrefixNumPad, mszTinyExprPre);
+            mszTinyExprPre[err] = ch;
         }
 
-        if (tePreOk) {
+        if (pTinyExprPre) {
             L = (double)(iLineEnd + 1);
             I = (double)(iLineEnd - iLineStart);
             N = I + 1.0;
-            te_expr* pExprPre = te_compile(mszTinyExprPre, vars, 3, &err);
-            if (pExprPre) {
-                int const result = double2int(te_eval(pExprPre));
-                iNumMaxPre = max_i(iNumMaxPre, result);
-                te_free(pExprPre);
-            }
-            else {
-                tePreOk = false;
-                //~StringCchPrintfA(mszTEMsgPre, COUNTOF(mszTEMsgPre), teErrMsgPreFmt, pszPrefixNumPad, mszTinyExprPre);
-            }
-        }
+            int const result = double2int(te_eval(pTinyExprPre));
+            iNumMaxPre = max_i(iNumMaxPre, result);
 
-        if (!tePreOk) {
-            iNumMaxPre = (int)iLineEnd + 1;
-        }
-        for (int i = iNumMaxPre; i >= 10; i = i / 10) {
-            ++iNumWidthPre;
+            for (int i = iNumMaxPre; i >= 10; i = i / 10) {
+                ++iNumWidthPre;
+            }
         }
     }
 
     int iNumWidthPost = 1;
-    bool tePostOk = true;
+    if (bAppendNum)
     {
-        int       iNumMaxPost = (int)iLineEnd + 1;
-        te_xint_t err;
+        int iNumMaxPost = (int)iLineEnd + 1;
+        te_int_t err;
+        pTinyExprPost = te_compile(mszTinyExprPost, vars, 3, &err);
 
-        if (tePostOk) {
+        if (pTinyExprPost) {
             L = (double)(iLineStart + 1);
             I = 0.0;
             N = I + 1.0;
-            te_expr* pExprPost = te_compile(mszTinyExprPost, vars, 3, &err);
-            if (pExprPost) {
-                iNumMaxPost = double2int(te_eval(pExprPost));
-                te_free(pExprPost);
-            }
-            else {
-                tePostOk = false;
-                char ch = mszTinyExprPost[err];
-                mszTinyExprPost[err] = '\0';
-                StringCchPrintfA(mszTEMsgPost, COUNTOF(mszTEMsgPost), teErrMsgPostFmt, pszAppendNumPad, mszTinyExprPost);
-                mszTinyExprPost[err] = ch;
-            }
+            iNumMaxPost = double2int(te_eval(pTinyExprPost));
+        }
+        else {
+            char ch = mszTinyExprPost[err];
+            mszTinyExprPost[err] = '\0';
+            StringCchPrintfA(mszTEMsgPost, COUNTOF(mszTEMsgPost), teErrMsgPostFmt, pszAppendNumPad, mszTinyExprPost);
+            mszTinyExprPost[err] = ch;
         }
 
-        if (tePostOk) {
+        if (pTinyExprPost) {
             L = (double)(iLineEnd + 1);
             I = (double)(iLineEnd - iLineStart);
             N = I + 1.0;
-            te_expr* pExprPost = te_compile(mszTinyExprPost, vars, 3, &err);
-            if (pExprPost) {
-                int const result = double2int(te_eval(pExprPost));
-                iNumMaxPost = max_i(iNumMaxPost, result);
-                te_free(pExprPost);
-            }
-            else {
-                tePostOk = false;
-                //~StringCchPrintfA(mszTEMsgPost, COUNTOF(mszTEMsgPost), teErrMsgPostFmt, pszAppendNumPad, mszTinyExprPost);
-            }
-        }
+            int const result = double2int(te_eval(pTinyExprPost));
+            iNumMaxPost = max_i(iNumMaxPost, result);
 
-        if (!tePostOk) {
-            iNumMaxPost = (int)iLineEnd + 1;
-        }
-        for (int i = iNumMaxPost; i >= 10; i = i / 10) {
-            ++iNumWidthPost;
+            for (int i = iNumMaxPost; i >= 10; i = i / 10) {
+                ++iNumWidthPost;
+            }
         }
     }
 
@@ -3231,69 +3207,62 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
     UndoTransActionBegin();
 
     char tchFormatPre[32] = { '\0' };
-    if (tePreOk) {
+    if (pTinyExprPre) {
         StringCchPrintfA(tchFormatPre, COUNTOF(tchFormatPre), "%%%s%ii", pszPrefixNumPad, iNumWidthPre);
     }
     char tchFormatPost[32] = { '\0' };
-    if (tePostOk) {
+    if (pTinyExprPost) {
         StringCchPrintfA(tchFormatPost, COUNTOF(tchFormatPost), "%%%s%ii", pszAppendNumPad, iNumWidthPost);
     }
     char mszInsert[(ENCLDATA_SIZE << 1) * 3] = { '\0' };
 
     for (DocLn iLine = iLineStart, count = 0; iLine <= iLineEnd; ++iLine, ++count) {
 
-        if (StrIsNotEmpty(pEnclData->pwsz1)) {
+        if (bHasPrefixPattern) {
 
             StringCchCopyA(mszInsert, COUNTOF(mszInsert), mszPrefix1);
-
             if (bPrefixNum) {
                 int iPrefixNum = (int)iLine + 1;
-                if (tePreOk) {
+                if (pTinyExprPre) {
                     L = (double)iPrefixNum;
                     I = (double)count;
                     N = I + 1.0;
-                    te_xint_t err;
-                    te_expr*  pExprPre = te_compile(mszTinyExprPre, vars, 3, &err);
-                    if (pExprPre) {
-                        iPrefixNum = double2int(te_eval(pExprPre));
-                        te_free(pExprPre);
-                    }
+                    iPrefixNum = double2int(te_eval(pTinyExprPre));
                     StringCchPrintfA(mszTEMsgPre, COUNTOF(mszTEMsgPre), tchFormatPre, iPrefixNum);
                 }
                 StringCchCatA(mszInsert, COUNTOF(mszInsert), mszTEMsgPre);
-                StringCchCatA(mszInsert, COUNTOF(mszInsert), mszPrefix2);
             }
+            StringCchCatA(mszInsert, COUNTOF(mszInsert), mszPrefix2);
+
             DocPos const iPos = SciCall_PositionFromLine(iLine);
             SciCall_SetTargetRange(iPos, iPos);
             SciCall_ReplaceTarget(-1, mszInsert);
         }
 
-        if (StrIsNotEmpty(pEnclData->pwsz2)) {
+        if (bHasAppendPattern) {
 
             StringCchCopyA(mszInsert, COUNTOF(mszInsert), mszAppend1);
-
             if (bAppendNum) {
                 int iAppendNum = (int)iLine + 1;
-                if (tePostOk) {
+                if (pTinyExprPost) {
                     L = (double)iAppendNum;
                     I = (double)count;
                     N = I + 1.0;
-                    te_xint_t err;
-                    te_expr*  pExprPost = te_compile(mszTinyExprPost, vars, 3, &err);
-                    if (pExprPost) {
-                        iAppendNum = double2int(te_eval(pExprPost));
-                        te_free(pExprPost);
-                    }
-                    StringCchPrintfA(mszTEMsgPost, COUNTOF(mszTEMsgPost), tchFormatPre, iAppendNum);
+                    iAppendNum = double2int(te_eval(pTinyExprPost));
+                    StringCchPrintfA(mszTEMsgPost, COUNTOF(mszTEMsgPost), tchFormatPost, iAppendNum);
                 }
                 StringCchCatA(mszInsert, COUNTOF(mszInsert), mszTEMsgPost);
-                StringCchCatA(mszInsert, COUNTOF(mszInsert), mszAppend2);
             }
+            StringCchCatA(mszInsert, COUNTOF(mszInsert), mszAppend2);
+
             DocPos const iPos = SciCall_GetLineEndPosition(iLine);
             SciCall_SetTargetRange(iPos, iPos);
             SciCall_ReplaceTarget(-1, mszInsert);
         }
     }
+
+    if (pTinyExprPre) { te_free(pTinyExprPre); }
+    if (pTinyExprPost) { te_free(pTinyExprPost); }
 
     // extend selection to start of first line
     // the above code is not required when last line has been excluded
