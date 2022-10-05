@@ -193,22 +193,28 @@ __forceinline DocPosU clamppu(DocPosU x, DocPosU lower, DocPosU upper) {
     return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
-__forceinline int float2int(const float f) {
+__forceinline DocLn d2ln(const double d)
+{
+    return (DocLn)llround(d);
+}
+
+__forceinline int f2int(const float f)
+{
     return (int)lroundf(f);
 }
-__forceinline int double2int(const double d) {
-    return (int)lround(d);
-}
+
 __forceinline float Round10th(const float f) {
-    return (float)float2int(f * 10.0f) / 10;
+    return (float)f2int(f * 10.0f) / 10;
 }
+
 __forceinline bool HasNonZeroFraction(const float f) {
-    return ((float2int(f * 10.0f) % 10) != 0);
+    return ((f2int(f * 10.0f) % 10) != 0);
 }
 
 __forceinline bool IsKeyDown(int key) {
     return (((GetKeyState(key) >> 8) & 0xff) != 0);
 }
+
 __forceinline bool IsAsyncKeyDown(int key) {
     return (((GetAsyncKeyState(key) >> 8) & 0xff) != 0);
 }
@@ -841,7 +847,7 @@ void CloseApplication();
 // ----------------------------------------------------------------------------
 
 inline int PointSizeToFontHeight(const float fPtHeight, const HDC hdc) {
-    return -MulDiv(float2int(fPtHeight * 100.0f), GetDeviceCaps(hdc, LOGPIXELSY), 72 * SC_FONT_SIZE_MULTIPLIER);
+    return -MulDiv(f2int(fPtHeight * 100.0f), GetDeviceCaps(hdc, LOGPIXELSY), 72 * SC_FONT_SIZE_MULTIPLIER);
 }
 
 // ----------------------------------------------------------------------------

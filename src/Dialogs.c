@@ -4318,7 +4318,7 @@ static INT_PTR CALLBACK AutoSaveBackupSettingsDlgProc(HWND hwnd, UINT umsg, WPAR
                 GetDlgItemText(hwnd, IDC_AUTOSAVE_INTERVAL, wch, COUNTOF(wch));
                 StrToFloat(wch, &interval);
             }
-            Settings.AutoSaveInterval = clampi(float2int(interval * 1000.0f), 2000, USER_TIMER_MAXIMUM);
+            Settings.AutoSaveInterval = clampi(f2int(interval * 1000.0f), 2000, USER_TIMER_MAXIMUM);
             EndDialog(hwnd, IDOK);
         } break;
 

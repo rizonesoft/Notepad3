@@ -921,7 +921,7 @@ static void _SetEncodingTitleInfo(const ENC_DET_T* pEncDetInfo)
         StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), (encUCD == CPI_ASCII_7BIT) ? L"ASCII" : ukn);
     }
     WCHAR tmpBuf[80] = { '\0' };
-    int const ucd_conf_perc = float2int(ucd_confidence * 100.0f);
+    int const ucd_conf_perc = f2int(ucd_confidence * 100.0f);
     StringCchPrintf(tmpBuf, COUNTOF(tmpBuf), L"' Conf=%i%%", ucd_conf_perc);
     StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), tmpBuf);
 
@@ -945,7 +945,7 @@ static void _SetEncodingTitleInfo(const ENC_DET_T* pEncDetInfo)
     //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), "'");
     //~}
 
-    int const relThreshold = float2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
+    int const relThreshold = f2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
     const WCHAR* rel_fmt = (ucd_conf_perc >= relThreshold) ? L" (reliable (%i%%))" : L" (NOT reliable (%i%%))";
     StringCchPrintf(tmpBuf, COUNTOF(tmpBuf), rel_fmt, relThreshold);
     StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), tmpBuf);
@@ -1357,8 +1357,8 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
         _SetEncodingTitleInfo(&encDetRes);
     }
 
-    int const iConfidence = float2int(encDetRes.confidence * 100.0f);
-    int const iReliableThreshold = float2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
+    int const iConfidence = f2int(encDetRes.confidence * 100.0f);
+    int const iReliableThreshold = f2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
     encDetRes.bIsAnalysisReliable = (iConfidence >= iReliableThreshold);
 
     // --------------------------------------------------------------------------

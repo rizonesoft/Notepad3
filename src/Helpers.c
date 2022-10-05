@@ -2252,7 +2252,7 @@ void FloatToStr(float fValue, LPWSTR lpszStrg, int cchSize)
     if (HasNonZeroFraction(fValue)) {
         StringCchPrintf(lpszStrg, cchSize, L"%.3G", fValue);
     } else {
-        StringCchPrintf(lpszStrg, cchSize, L"%i", float2int(fValue));
+        StringCchPrintf(lpszStrg, cchSize, L"%i", f2int(fValue));
     }
 }
 
