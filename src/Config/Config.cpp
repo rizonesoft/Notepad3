@@ -1566,7 +1566,7 @@ void LoadSettings()
     //int const zoomScale = 100;
     int const baseZoom = 100;
     int const prtFontSize = 10;
-    int const zoomScale = MulDiv(baseZoom, prtFontSize, float2int(GLOBAL_INITIAL_FONTSIZE));
+    int const zoomScale = MulDiv(baseZoom, prtFontSize, f2int(GLOBAL_INITIAL_FONTSIZE));
     Defaults.PrintZoom = (Globals.iCfgVersionRead < CFG_VER_0001) ? (zoomScale / 10) : zoomScale;
     int iPrintZoom = clampi(IniSectionGetInt(IniSecSettings, L"PrintZoom", Defaults.PrintZoom), 0, SC_MAX_ZOOM_LEVEL);
     if (Globals.iCfgVersionRead < CFG_VER_0001) {

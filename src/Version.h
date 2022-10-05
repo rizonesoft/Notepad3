@@ -77,6 +77,8 @@
 // https://docs.microsoft.com/en-us/windows/release-health/windows11-release-information  (Windows 11)
 // https://docs.microsoft.com/en-us/windows/release-health/windows-server-release-info  (Windows Server)
 // https://docs.microsoft.com/en-us/windows-insider/flight-hub/  (Windows Insider Preview Builds)
+// https://en.wikipedia.org/wiki/Windows_10/ (Wikipedia: Windows 10)
+// https://en.wikipedia.org/wiki/Windows_11/ (Wikipedia: Windows 11)
 // ----------------------------------------------------------------------------
 
 inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
@@ -95,7 +97,7 @@ inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
     else { // Win10
 
         if (build >= 19045) {
-            lpcReleaseID = L"22H1";
+            lpcReleaseID = L"22H2";
         }
         else if (build >= 19044) {
             lpcReleaseID = L"21H2";

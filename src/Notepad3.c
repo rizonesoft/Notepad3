@@ -7915,7 +7915,7 @@ void HandleColorDefClicked(HWND hwnd, const DocPos position)
         cc.Flags |= CC_ENABLEHOOK;
         cc.lpfnHook = (LPCCHOOKPROC)ColorDialogHookProc;
         WININFO const wi = GetMyWindowPlacement(Globals.hwndEdit, NULL, 0);
-        int const offset = float2int(Style_GetCurrentFontSize()) << 1;
+        int const offset = f2int(Style_GetCurrentFontSize()) << 1;
         POINT pt = { 0L, 0L };
         pt.x = wi.x + SciCall_PointXFromPosition(SciCall_GetCurrentPos()) + offset;
         pt.y = wi.y + SciCall_PointYFromPosition(SciCall_GetCurrentPos()) + offset;

@@ -1540,7 +1540,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     iValue = 2; // default whitespace size
     float fValue = 0.0;
     if (Style_StrGetSizeFloat(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &fValue)) {
-        iValue = clampi(float2int(fValue), 1, 12);
+        iValue = clampi(f2int(fValue), 1, 12);
         StringCchPrintf(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"size:%i", iValue);
     }
     SciCall_SetWhiteSpaceSize(iValue);
@@ -1607,7 +1607,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         iValue = 1; // don't allow invisible 0
         fValue = 0.0f;
         if (Style_StrGetSizeFloat(pCurrentStandard->Styles[STY_CARET].szValue, &fValue)) {
-            iValue = clampi(float2int(fValue), 1, 3);
+            iValue = clampi(f2int(fValue), 1, 3);
             if (iValue != 1) {
                 StringCchPrintf(wch, COUNTOF(wch), L"; size:%i", iValue);
                 StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
@@ -2775,8 +2775,8 @@ void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch)
     int iDescent = 0;
 
     if (bHasLnSpaceDef) {
-        int const iValue = float2int(fValue);
-        const int iCurFontSizeDbl = float2int(Style_GetCurrentFontSize() * 2.0f);
+        int const iValue = f2int(fValue);
+        const int iCurFontSizeDbl = f2int(Style_GetCurrentFontSize() * 2.0f);
         int iValAdj = clampi(iValue, (0 - iCurFontSizeDbl), 256 * iCurFontSizeDbl);
         if ((iValAdj != iValue) && (cch > 0)) {
             StringCchPrintf(lpszStyle, cch, L"size:%i", iValAdj);
@@ -3649,7 +3649,7 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
     cf.hwndOwner = hwnd;
     cf.hInstance = Globals.hLngResContainer; // Globals.hInstance;
 
-    cf.iPointSize = (INT)float2int(fFontSize * 10.0f);
+    cf.iPointSize = (INT)f2int(fFontSize * 10.0f);
     cf.rgbColors = fgColor;
 
     // --- FLAGS ---
@@ -3903,10 +3903,10 @@ void Style_SetStyles(HWND hwnd, const int iStyle, LPCWSTR lpszStyle)
             }
             _SetCurrentFontSize(fBaseFontSize);
         }
-        SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, float2int(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER));
+        SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, f2int(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER));
     } else if (bIsDefaultStyle) {
         _SetBaseFontSize(fBaseFontSize);
-        SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, float2int(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER));
+        SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, f2int(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER));
     }
 
     char localeNameA[LOCALE_NAME_MAX_LENGTH] = "en-us\0";

@@ -3139,15 +3139,35 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
     int iNumWidthPre = 1;
     if (bPrefixNum)
     {
-        int iNumMaxPre = (int)iLineEnd + 1;
         te_int_t err;
         pTinyExprPre = te_compile(mszTinyExprPre, vars, 3, &err);
 
         if (pTinyExprPre) {
-            L = (double)(iLineStart + 1);
+            L = (double)(iLineStart + 1ll);
             I = 0.0;
             N = I + 1.0;
-            iNumMaxPre = double2int(te_eval(pTinyExprPre));
+            DocLn vmin = d2ln(te_eval(pTinyExprPre));
+            DocLn vmax = vmin;
+            for (DocLn ln = iLineStart + 2; ln <= iLineEnd; ++ln) {
+                L = (double)ln;
+                I += 1.0;
+                N += 1.0;
+                DocLn const vres = d2ln(te_eval(pTinyExprPre));
+                if (vres < vmin)
+                    vmin = vres;
+                else if (vres > vmax)
+                    vmax = vres;
+            }
+            if (vmin < 0ll) {
+                ++iNumWidthPre; // signed
+                vmin *= -1ll;
+                if (vmax < 0ll)
+                    vmax *= -1ll;
+                vmax = max_ln(vmax, vmin);
+            }
+            for (DocLn i = vmax; i >= 10ll; i = i / 10ll) {
+                ++iNumWidthPre;
+            }
         }
         else {
             char ch = mszTinyExprPre[err];
@@ -3155,50 +3175,46 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
             StringCchPrintfA(mszTEMsgPre, COUNTOF(mszTEMsgPre), teErrMsgPreFmt, pszPrefixNumPad, mszTinyExprPre);
             mszTinyExprPre[err] = ch;
         }
-
-        if (pTinyExprPre) {
-            L = (double)(iLineEnd + 1);
-            I = (double)(iLineEnd - iLineStart);
-            N = I + 1.0;
-            int const result = double2int(te_eval(pTinyExprPre));
-            iNumMaxPre = max_i(iNumMaxPre, result);
-
-            for (int i = iNumMaxPre; i >= 10; i = i / 10) {
-                ++iNumWidthPre;
-            }
-        }
     }
 
     int iNumWidthPost = 1;
     if (bAppendNum)
     {
-        int iNumMaxPost = (int)iLineEnd + 1;
         te_int_t err;
         pTinyExprPost = te_compile(mszTinyExprPost, vars, 3, &err);
 
         if (pTinyExprPost) {
-            L = (double)(iLineStart + 1);
+            L = (double)(iLineStart + 1ll);
             I = 0.0;
             N = I + 1.0;
-            iNumMaxPost = double2int(te_eval(pTinyExprPost));
+            DocLn vmin = d2ln(te_eval(pTinyExprPost));
+            DocLn vmax = vmin;
+            for (DocLn ln = iLineStart + 2; ln <= iLineEnd; ++ln) {
+                L = (double)ln;
+                I += 1.0;
+                N += 1.0;
+                DocLn const vres = d2ln(te_eval(pTinyExprPost));
+                if (vres < vmin)
+                    vmin = vres;
+                else if (vres > vmax)
+                    vmax = vres;
+            }
+            if (vmin < 0ll) {
+                ++iNumWidthPost; // signed
+                vmin *= -1ll;
+                if (vmax < 0ll)
+                    vmax *= -1ll;
+                vmax = max_ln(vmax, vmin);
+            }
+            for (DocLn i = vmax; i >= 10ll; i = i / 10ll) {
+                ++iNumWidthPost;
+            }
         }
         else {
             char ch = mszTinyExprPost[err];
             mszTinyExprPost[err] = '\0';
             StringCchPrintfA(mszTEMsgPost, COUNTOF(mszTEMsgPost), teErrMsgPostFmt, pszAppendNumPad, mszTinyExprPost);
             mszTinyExprPost[err] = ch;
-        }
-
-        if (pTinyExprPost) {
-            L = (double)(iLineEnd + 1);
-            I = (double)(iLineEnd - iLineStart);
-            N = I + 1.0;
-            int const result = double2int(te_eval(pTinyExprPost));
-            iNumMaxPost = max_i(iNumMaxPost, result);
-
-            for (int i = iNumMaxPost; i >= 10; i = i / 10) {
-                ++iNumWidthPost;
-            }
         }
     }
 
@@ -3208,11 +3224,19 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
 
     char tchFormatPre[32] = { '\0' };
     if (pTinyExprPre) {
+#ifdef _WIN64
+        StringCchPrintfA(tchFormatPre, COUNTOF(tchFormatPre), "%%%s%illi", pszPrefixNumPad, iNumWidthPre);
+#else
         StringCchPrintfA(tchFormatPre, COUNTOF(tchFormatPre), "%%%s%ii", pszPrefixNumPad, iNumWidthPre);
+#endif
     }
     char tchFormatPost[32] = { '\0' };
     if (pTinyExprPost) {
+#ifdef _WIN64
+        StringCchPrintfA(tchFormatPost, COUNTOF(tchFormatPost), "%%%s%illi", pszAppendNumPad, iNumWidthPost);
+#else
         StringCchPrintfA(tchFormatPost, COUNTOF(tchFormatPost), "%%%s%ii", pszAppendNumPad, iNumWidthPost);
+#endif
     }
     char mszInsert[(ENCLDATA_SIZE << 1) * 3] = { '\0' };
 
@@ -3222,12 +3246,12 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
 
             StringCchCopyA(mszInsert, COUNTOF(mszInsert), mszPrefix1);
             if (bPrefixNum) {
-                int iPrefixNum = (int)iLine + 1;
+                DocLn iPrefixNum = iLine + 1ll;
                 if (pTinyExprPre) {
                     L = (double)iPrefixNum;
                     I = (double)count;
                     N = I + 1.0;
-                    iPrefixNum = double2int(te_eval(pTinyExprPre));
+                    iPrefixNum = d2ln(te_eval(pTinyExprPre));
                     StringCchPrintfA(mszTEMsgPre, COUNTOF(mszTEMsgPre), tchFormatPre, iPrefixNum);
                 }
                 StringCchCatA(mszInsert, COUNTOF(mszInsert), mszTEMsgPre);
@@ -3243,12 +3267,12 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
 
             StringCchCopyA(mszInsert, COUNTOF(mszInsert), mszAppend1);
             if (bAppendNum) {
-                int iAppendNum = (int)iLine + 1;
+                DocLn iAppendNum = iLine + 1ll;
                 if (pTinyExprPost) {
                     L = (double)iAppendNum;
                     I = (double)count;
                     N = I + 1.0;
-                    iAppendNum = double2int(te_eval(pTinyExprPost));
+                    iAppendNum = d2ln(te_eval(pTinyExprPost));
                     StringCchPrintfA(mszTEMsgPost, COUNTOF(mszTEMsgPost), tchFormatPost, iAppendNum);
                 }
                 StringCchCatA(mszInsert, COUNTOF(mszInsert), mszTEMsgPost);
