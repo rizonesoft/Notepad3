@@ -470,7 +470,7 @@ void SCI_METHOD LexerTOML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 
         // ------------------------------------------------------------------------
 
-        if (IsLineBreak(sc.ch))
+        if (IsNewline(sc.ch))
         {
             continue; // eat
         }

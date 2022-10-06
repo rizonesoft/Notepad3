@@ -361,7 +361,7 @@ void SCI_METHOD LexerJSON::Lex(Sci_PositionU startPos,
 				}
 				break;
 			case SCE_JSON_LINECOMMENT:
-				if (context.atLineEnd) {
+				if (context.MatchLineEnd()) {
 					context.SetState(SCE_JSON_DEFAULT);
 				}
 				break;
@@ -393,10 +393,10 @@ void SCI_METHOD LexerJSON::Lex(Sci_PositionU startPos,
 					}
 				}
 				break;
-            case SCE_JSON_PROPERTYNAME:
-                [[fallthrough]];
-            case SCE_JSON_STRING:
-                if (context.ch == ':' && !(doubleQuotCntx || singleQuotCntx)) {
+			case SCE_JSON_PROPERTYNAME:
+				[[fallthrough]];
+			case SCE_JSON_STRING:
+				if (context.ch == ':' && !(doubleQuotCntx || singleQuotCntx)) {
 					context.SetState(SCE_JSON_OPERATOR);
 				} else if (context.ch == '"' && doubleQuotCntx) {
 					if (compactIRI.shouldHighlight()) {
@@ -419,7 +419,7 @@ void SCI_METHOD LexerJSON::Lex(Sci_PositionU startPos,
 					}
 					singleQuotCntx = false;
 				} else if (context.ch == '\\') {
-                    // line continuation (yet: LF and CRLF only) ?
+					// line continuation (yet: LF and CRLF only) ?
 					if (context.Match("\\\n")) {
 						context.Forward();
 						context.ForwardSetState(context.state);
@@ -489,7 +489,7 @@ void SCI_METHOD LexerJSON::Lex(Sci_PositionU startPos,
 				context.SetState(SCE_JSON_DEFAULT);
 				break;
 			case SCE_JSON_ERROR:
-				if (context.atLineEnd) {
+				if (context.MatchLineEnd()) {
 					context.SetState(SCE_JSON_DEFAULT);
 				}
 				break;

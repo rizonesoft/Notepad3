@@ -271,7 +271,7 @@ struct EscapeSequence {
 
     // highlight any character as escape sequence.
     bool resetEscapeState(int state, int chNext) noexcept {
-        if (IsLineBreak(chNext)) {
+        if (IsNewline(chNext)) {
             return false;
         }
         outerState = state;

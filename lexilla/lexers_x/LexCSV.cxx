@@ -230,7 +230,7 @@ constexpr Sci_PositionU CountCharOccTillLineEnd(StyleContext& sc, const Sci_Posi
 {
 	Sci_Position i = 0;
 	Sci_PositionU count = 0;
-	while (((sc.currentPos + i) < endPos) && !IsLineBreak(sc.GetRelative(i)))
+	while (((sc.currentPos + i) < endPos) && !IsNewline(sc.GetRelative(i)))
 	{
 		if (sc.GetRelative(++i) == sc.ch) { ++count; };
 	}

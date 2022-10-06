@@ -2310,6 +2310,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     ResetMouseDWellTime();
 
     int const iCaretPolicy = CARET_SLOP | CARET_EVEN | CARET_STRICT;
+    SciCall_SetXCaretPolicy(iCaretPolicy, Settings2.CurrentLineHorizontalSlop);
     s_iCaretPolicyV = (Settings2.CurrentLineVerticalSlop > 0) ? iCaretPolicy : CARET_EVEN;
     SciCall_SetXCaretPolicy(iCaretPolicy, Settings2.CurrentLineHorizontalSlop);
     SciCall_SetYCaretPolicy(s_iCaretPolicyV, Settings2.CurrentLineVerticalSlop);
@@ -10934,6 +10935,9 @@ bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc)
 
     bool bPreserveView = true;
     DocLn const curLineNum = Sci_GetCurrentLineNumber();
+    DocPos const curColumnNum = Sci_GetCurrentColumnNumber();
+    DocLn const  firstVisibleLine = SciCall_GetFirstVisibleLine();
+
     bool const bIsAtDocEnd = (curLineNum >= (Sci_GetLastDocLineNumber() - Settings2.CurrentLineVerticalSlop));
 
     Encoding_SrcWeak(CPI_NONE);
@@ -10972,9 +10976,8 @@ bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc)
         }
   
         if (bPreserveView) {
-            SciCall_SetYCaretPolicy(s_iCaretPolicyV | CARET_JUMPS, Settings2.CurrentLineVerticalSlop);
-            EditJumpTo(curLineNum + 1, 0);
-            SciCall_SetYCaretPolicy(s_iCaretPolicyV, Settings2.CurrentLineVerticalSlop);
+            SciCall_SetFirstVisibleLine(firstVisibleLine);
+            Sci_GotoPosChooseCaret(SciCall_FindColumn(curLineNum, curColumnNum));
         }
     }
 
