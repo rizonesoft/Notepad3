@@ -68,9 +68,9 @@ constexpr bool IsALetter(const int ch) noexcept
     return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
 }
 
-constexpr bool IsLineBreak(const int ch) noexcept
-{
-    return ((ch == '\n') || (ch == '\r') || (ch == '\0'));
+constexpr bool IsNewline(const int ch) {
+	// sc.GetRelative(i) returns '\0' if out of range
+	return (ch == '\n' || ch == '\r' || ch == '\0');
 }
 
 constexpr bool IsLineEndUTF8(const unsigned char ch0, 

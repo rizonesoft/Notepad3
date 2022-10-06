@@ -739,6 +739,7 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
 
 #define Sci_HaveUndoRedoHistory() (SciCall_CanUndo() || SciCall_CanRedo())
 
+#define Sci_GetCurrentColumnNumber() SciCall_GetColumn(SciCall_GetCurrentPos())
 #define Sci_GetCurrentLineNumber() SciCall_LineFromPosition(SciCall_GetCurrentPos())
 #define Sci_GetLastDocLineNumber() (SciCall_GetLineCount() - 1)
 

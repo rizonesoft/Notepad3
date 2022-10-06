@@ -260,9 +260,6 @@
     <ClCompile Include="lexers\LexJulia.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
-    <ClCompile Include="lexers_x\LexMarkdown.cxx">
-      <Filter>lexers_x</Filter>
-    </ClCompile>
     <ClCompile Include="lexlib\LexAccessor.cxx">
       <Filter>lexlib</Filter>
     </ClCompile>
@@ -274,6 +271,9 @@
     </ClCompile>
     <ClCompile Include="lexers\LexKix.cxx">
       <Filter>lexers</Filter>
+    </ClCompile>
+    <ClCompile Include="lexers_x\LexMarkdown.cxx">
+      <Filter>lexers_x</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
