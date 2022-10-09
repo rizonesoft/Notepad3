@@ -350,12 +350,12 @@ BEGIN
         MENUITEM "空白(&W)\tCtrl+Shift+8",                   IDM_VIEW_SHOWBLANKS
         MENUITEM "改行コード(&E)\tCtrl+Shift+9",               IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        POPUP "Change History Marker"
+        POPUP "変更履歴の目印"
         BEGIN
-            MENUITEM "No Change Markers",                   IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+            MENUITEM "なし",                   IDM_VIEW_CHGHIST_NONE
+            MENUITEM "余白にのみ表示",                 IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "文書にのみ表示",               IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "すべて表示",             IDM_VIEW_CHGHIST_ALL
         END
         MENUITEM SEPARATOR
         MENUITEM "アドレスをリンク(&H)\tCtrl+Alt+W",              IDM_VIEW_HYPERLINKHOTSPOTS
@@ -392,7 +392,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "行番号(&N)\tCtrl+Shift+N",                 IDM_VIEW_LINENUMBERS
         MENUITEM "しおりの余白(&M)\tCtrl+Shift+M",       IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "変更履歴の余白",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "折りたたみ(&F)"
         BEGIN
@@ -472,7 +472,7 @@ BEGIN
         MENUITEM "自動閉じHTML/XMLタグ(&H)\tCtrl+Shift+H",        IDM_SET_AUTOCLOSETAGS
         MENUITEM "単語補完(&U)",                                 IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "予約語を自動補完(&K)",                          IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Alternate Word Se&parators(&P)\tCtrl+Alt+A",   IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "単語選択を広く(&P)\tCtrl+Alt+A",   IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "ファイルごとに単一インスタンス(&F)",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "ファイルの変更を通知(&C)...\tAlt+F5",          IDM_SET_CHANGENOTIFY
@@ -591,7 +591,7 @@ BEGIN
         MENUITEM "表示/コード折りたたみ",                    IDM_VIEW_FOLDING
         MENUITEM "表示/行番号",                               IDM_VIEW_LINENUMBERS
         MENUITEM "表示/しおりの余白",                     IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "表示/変更履歴",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN

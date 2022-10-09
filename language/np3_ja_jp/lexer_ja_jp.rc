@@ -129,7 +129,7 @@ BEGIN
     IDS_LEX_KOTLIN_SRC      "Kotlinソースコード"
     IDS_LEX_JULIA_SCR       "Juliaスクリプト"
     IDS_LEX_KIX_SCR         "KiXtartスクリプト"
-    IDS_LEX_FORTRAN         "Fortran Source Code"
+    IDS_LEX_FORTRAN         "Fortranソースコード"
 END
 
 STRINGTABLE
@@ -176,7 +176,7 @@ BEGIN
     IDS_LEX_STR_63131       "文字列"
     IDS_LEX_STR_63132       "演算子"
     IDS_LEX_STR_63133       "プリプロセッサ"
-    IDS_LEX_STR_63134       "逐語的文字列"
+    IDS_LEX_STR_63134       "逐語的文字列 (Verbatim)"
     IDS_LEX_STR_63135       "正規表現"
 END
 
@@ -357,7 +357,7 @@ BEGIN
     IDS_LEX_STR_63276       "セクショングループ"
     IDS_LEX_STR_63277       "関数定義"
     IDS_LEX_STR_63278       "PageEx"
-    IDS_LEX_STR_63279       "If定義 (AutoItではキー？)"
+    IDS_LEX_STR_63279       "If定義"
 END
 
 STRINGTABLE
@@ -436,7 +436,7 @@ BEGIN
     IDS_LEX_STR_63339       "標準パッケージ"
     IDS_LEX_STR_63340       "標準型 (Type)"
     IDS_LEX_STR_63341       "Word"
-    IDS_LEX_STR_63342       "Verbatim"
+    IDS_LEX_STR_63342       "逐語的 (Verbatim)"
     IDS_LEX_STR_63343       "型 (組み込み)"
 END
 
@@ -479,34 +479,34 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_STR_63372       "デコレータ"
-    IDS_LEX_STR_63373       "Task Marker"
+    IDS_LEX_STR_63373       "タスク一覧用コメント"
     IDS_LEX_STR_63374       "コメント Doc エラー"
-    IDS_LEX_STR_63375       "Type Operator"
-    IDS_LEX_STR_63376       "Continuation"
-    IDS_LEX_STR_63377       "Special"
-    IDS_LEX_STR_63378       "Syntax Operator"
+    IDS_LEX_STR_63375       "型演算子"
+    IDS_LEX_STR_63376       "継続行"
+    IDS_LEX_STR_63377       "特別"
+    IDS_LEX_STR_63378       "構文演算子"
     IDS_LEX_STR_63379       "閉じられていない文字列"
     IDS_LEX_STR_63380       "URL/IRI"
-    IDS_LEX_STR_63381       "Compact IRI"
-    IDS_LEX_STR_63382       "Send Key"
-    IDS_LEX_STR_63383       "Meta-Data"
-    IDS_LEX_STR_63384       "Enumeration"
-    IDS_LEX_STR_63385       "TriQ-String"
+    IDS_LEX_STR_63381       "短縮 IRI"
+    IDS_LEX_STR_63382       "キー送信"
+    IDS_LEX_STR_63383       "メタデータ"
+    IDS_LEX_STR_63384       "列挙 (enum)"
+    IDS_LEX_STR_63385       "文字列 (トリプル・クォート)"
     IDS_LEX_STR_63386       "Symbol Identifier"
     IDS_LEX_STR_63387       "Symbol Operator"
-    IDS_LEX_STR_63388       "String EOL"
+    IDS_LEX_STR_63388       "文字列 EOL"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_CH_MODIFIED     "Change History Marker Modified"
-    IDS_LEX_STD_CH_SAVED        "Change History Marker Saved"
-    IDS_LEX_STD_CH_REV_TO_MOD   "Change History Marker Reverted to Modified"
-    IDS_LEX_STD_CH_REV_TO_ORG   "Change History Marker Reverted to Origin"
-    IDS_LEX_2ND_CH_MODIFIED     "2nd Change History Marker Modified"
-    IDS_LEX_2ND_CH_SAVED        "2nd Change History Marker Saved"
-    IDS_LEX_2ND_CH_REV_TO_MOD   "2nd Change History Marker Reverted to Modified"
-    IDS_LEX_2ND_CH_REV_TO_ORG   "2nd Change History Marker Reverted to Origin"
+    IDS_LEX_STD_CH_MODIFIED     "変更履歴の目印 修正"
+    IDS_LEX_STD_CH_SAVED        "変更履歴の目印 保存済み"
+    IDS_LEX_STD_CH_REV_TO_MOD   "変更履歴の目印 Reverted to Modified"
+    IDS_LEX_STD_CH_REV_TO_ORG   "変更履歴の目印 元に戻した"
+    IDS_LEX_2ND_CH_MODIFIED     "第2 変更履歴の目印 修正"
+    IDS_LEX_2ND_CH_SAVED        "第2 変更履歴の目印 保存済み"
+    IDS_LEX_2ND_CH_REV_TO_MOD   "第2 変更履歴の目印 Reverted to Modified"
+    IDS_LEX_2ND_CH_REV_TO_ORG   "第2 変更履歴の目印 元に戻した"
 END
 
 STRINGTABLE
