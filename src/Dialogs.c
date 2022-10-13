@@ -2255,7 +2255,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
             SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
             SetExplorerTheme(GetDlgItem(hwnd, IDC_REMOVE));
             SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
-            int const ctl[] = { IDC_SAVEMRU, IDC_PRESERVECARET, IDC_REMEMBERSEARCHPATTERN, IDC_STATIC };
+            int const ctl[] = { IDC_SAVEMRU, IDC_PRESERVECARET, IDC_REMEMBERSEARCHPATTERN, IDC_AUTOLOAD_MRU_FILE, IDC_STATIC };
             for (int i = 0; i < COUNTOF(ctl); ++i) {
                 SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
             }
@@ -2301,6 +2301,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
         CheckDlgButton(hwnd, IDC_SAVEMRU, SetBtn(Settings.SaveRecentFiles));
         CheckDlgButton(hwnd, IDC_PRESERVECARET, SetBtn(Settings.PreserveCaretPos));
         CheckDlgButton(hwnd, IDC_REMEMBERSEARCHPATTERN, SetBtn(Settings.SaveFindReplace));
+        CheckDlgButton(hwnd, IDC_AUTOLOAD_MRU_FILE, SetBtn(Settings.AutoLoadMRUFile));
 
         DialogEnableControl(hwnd, IDC_PRESERVECARET, Settings.SaveRecentFiles);
 
@@ -2319,8 +2320,9 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
         }
 
         Settings.SaveRecentFiles  = IsButtonChecked(hwnd, IDC_SAVEMRU);
-        Settings.SaveFindReplace  = IsButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN);
         Settings.PreserveCaretPos = IsButtonChecked(hwnd, IDC_PRESERVECARET);
+        Settings.SaveFindReplace  = IsButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN);
+        Settings.AutoLoadMRUFile  = IsButtonChecked(hwnd, IDC_AUTOLOAD_MRU_FILE);
 
         Path_Release(hFilePath);
 
@@ -2340,6 +2342,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
         hdwp      = DeferCtlPos(hdwp, hwnd, IDC_SAVEMRU, 0, dy, SWP_NOSIZE);
         hdwp      = DeferCtlPos(hdwp, hwnd, IDC_PRESERVECARET, 0, dy, SWP_NOSIZE);
         hdwp      = DeferCtlPos(hdwp, hwnd, IDC_REMEMBERSEARCHPATTERN, 0, dy, SWP_NOSIZE);
+        hdwp      = DeferCtlPos(hdwp, hwnd, IDC_AUTOLOAD_MRU_FILE, 0, dy, SWP_NOSIZE);
         EndDeferWindowPos(hdwp);
         ListView_SetColumnWidth(hwndLV, 0, LVSCW_AUTOSIZE_USEHEADER);
     }
