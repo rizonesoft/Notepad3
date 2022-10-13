@@ -492,6 +492,7 @@ BEGIN
             MENUITEM "Letzte Dateien merken",                   IDM_SET_NOSAVERECENT
             MENUITEM "Textposition speichern",                  IDM_SET_NOPRESERVECARET
             MENUITEM "Suchbegriffe speichern",                  IDM_SET_NOSAVEFINDREPL
+            MENUITEM "Letzte Datei beim Start laden",           IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "&Fenster"
         BEGIN

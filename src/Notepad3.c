@@ -1076,6 +1076,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"B");
     }
 
+    // INI File Handling
     FindIniFile();
     TestIniFile();
     DWORD dwFileSize = 0UL;
@@ -1087,7 +1088,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     }
     LoadSettings();
 
-    // set AppUserModelID
+    // Autoload recent file on close
+    CheckAutoLoadMostRecent();
+
     PrivateSetCurrentProcessExplicitAppUserModelID(Settings2.AppUserModelID);
 
     (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
@@ -4281,6 +4284,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, IDM_SET_NOSAVERECENT, Settings.SaveRecentFiles);
     CheckCmd(hmenu, IDM_SET_NOPRESERVECARET, Settings.PreserveCaretPos);
     CheckCmd(hmenu, IDM_SET_NOSAVEFINDREPL, Settings.SaveFindReplace);
+    CheckCmd(hmenu, IDM_SET_AUTOLOAD_MRU_FILE, Settings.AutoLoadMRUFile);
 
     CheckCmd(hmenu, IDM_SET_EVALTINYEXPRONSEL, Settings.EvalTinyExprOnSelection);
 
@@ -6295,6 +6299,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_SET_NOSAVEFINDREPL:
         Settings.SaveFindReplace = !Settings.SaveFindReplace;
+        break;
+
+
+    case IDM_SET_AUTOLOAD_MRU_FILE:
+        Settings.AutoLoadMRUFile = !Settings.AutoLoadMRUFile;
         break;
 
 
@@ -9151,7 +9160,6 @@ void ParseCommandLine()
                     FreeMem(lpFileBuf);
                 }
             }
-
             // Continue with next argument
             if (bContinue) {
                 StringCchCopy(lp3, len, lp2);
@@ -9160,6 +9168,26 @@ void ParseCommandLine()
         FreeMem(lp1);
         FreeMem(lp2);
         FreeMem(lp3);
+    }
+}
+
+
+//=============================================================================
+//
+//  CheckAutoLoadMostRecent()
+//
+void CheckAutoLoadMostRecent()
+{
+    // Add most recent from file history
+    if (Path_IsEmpty(s_pthArgFilePath) && Settings.AutoLoadMRUFile) {
+        if (MRU_Count(Globals.pFileMRU) > 0) {
+            LPWSTR const szFileBuf = Path_WriteAccessBuf(s_pthArgFilePath, PATHLONG_MAX_CCH); // reserve buffer
+            int const    cchFileBuf = (int)Path_GetBufCount(s_pthArgFilePath);
+            MRU_Enum(Globals.pFileMRU, 0, szFileBuf, cchFileBuf);
+            Path_Sanitize(s_pthArgFilePath);
+            Path_UnQuoteSpaces(s_pthArgFilePath);
+            Path_AbsoluteFromApp(s_pthArgFilePath, true);
+        }
     }
 }
 
@@ -10090,6 +10118,7 @@ void UpdateSaveSettingsCmds()
     EnableCmd(hmenu, IDM_SET_NOSAVERECENT, bCanSav);
     EnableCmd(hmenu, IDM_SET_NOPRESERVECARET, Settings.SaveRecentFiles && bCanSav);
     EnableCmd(hmenu, IDM_SET_NOSAVEFINDREPL, bCanSav);
+    EnableCmd(hmenu, IDM_SET_AUTOLOAD_MRU_FILE, bCanSav);
 
     DrawMenuBar(Globals.hwndMain);
 }

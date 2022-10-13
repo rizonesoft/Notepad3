@@ -558,6 +558,7 @@ typedef struct SETTINGS_T {
     bool SaveRecentFiles;
     bool PreserveCaretPos;
     bool SaveFindReplace;
+    bool AutoLoadMRUFile;
     int  PathNameFormat;
     bool WordWrap;
     int  WordWrapMode;
