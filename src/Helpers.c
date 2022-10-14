@@ -696,10 +696,8 @@ bool VerifyContrast(COLORREF cr1,COLORREF cr2)
     BYTE r2 = GetRValue(cr2);
     BYTE g2 = GetGValue(cr2);
     BYTE b2 = GetBValue(cr2);
-
-    return(
-              ((abs((3*r1 + 5*g1 + 1*b1) - (3*r2 + 6*g2 + 1*b2))) >= 400) ||
-              ((abs(r1-r2) + abs(b1-b2) + abs(g1-g2)) >= 400));
+    return (((abs((3*r1 + 5*g1 + 1*b1) - (3*r2 + 6*g2 + 1*b2))) >= 400) ||
+            ((abs(r1-r2) + abs(b1-b2) + abs(g1-g2)) >= 400));
 }
 
 
