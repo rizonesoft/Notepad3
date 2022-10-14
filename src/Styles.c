@@ -1607,7 +1607,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         iValue = 1; // don't allow invisible 0
         fValue = 0.0f;
         if (Style_StrGetSizeFloat(pCurrentStandard->Styles[STY_CARET].szValue, &fValue)) {
-            iValue = clampi(f2int(fValue), 1, 3);
+            iValue = clampi(f2int(fValue), 1, 20);
             if (iValue != 1) {
                 StringCchPrintf(wch, COUNTOF(wch), L"; size:%i", iValue);
                 StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
@@ -1639,8 +1639,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         rgb = SciCall_StyleGetFore(0);
     }
 
-    SciCall_SetElementColour(SC_ELEMENT_CARET, RGBxA(rgb, SC_ALPHA_OPAQUE));
-    SciCall_SetElementColour(SC_ELEMENT_CARET_ADDITIONAL, RGBxA(RGB(220, 0, 0), SC_ALPHA_OPAQUE));
+    if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_CARET].szValue, &iValue, true)) {
+        iValue = clampi(iValue, 20, SC_ALPHA_OPAQUE); // no full transparency
+        StringCchPrintf(wch, COUNTOF(wch), L"; alpha:%i", iValue);
+        StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
+    }
+    SciCall_SetElementColour(SC_ELEMENT_CARET, RGBxA(rgb, iValue));
+    SciCall_SetElementColour(SC_ELEMENT_CARET_ADDITIONAL, RGBxA(RGB(220, 0, 0), iValue));
 
     StrTrim(wchSpecificStyle, L" ;");
     StringCchCopy(pCurrentStandard->Styles[STY_CARET].szValue,
