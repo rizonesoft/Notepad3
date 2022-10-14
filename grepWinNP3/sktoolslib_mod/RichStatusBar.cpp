@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2017-2018, 2020-2021 Stefan Kueng
+// Copyright (C) 2017-2018, 2020-2022 Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -168,8 +168,7 @@ int CRichStatusBar::GetPartIndexAt(const POINT& pt) const
 
 void CRichStatusBar::DrawSizeGrip(HDC hdc, LPCRECT lpRect)
 {
-    POINT pt;
-    INT   i;
+    POINT      pt{};
 
     const auto oneDpi = CDPIAware::Instance().Scale(*this, 1);
     pt.x              = lpRect->right - oneDpi;
@@ -186,7 +185,7 @@ void CRichStatusBar::DrawSizeGrip(HDC hdc, LPCRECT lpRect)
 
     HPEN hPenShadow = CreatePen(PS_SOLID, 1, m_themeColorFunc ? m_themeColorFunc(GetSysColor(COLOR_3DSHADOW)) : GetSysColor(COLOR_3DSHADOW));
     SelectObject(hdc, hPenShadow);
-    for (i = 1; i < CDPIAware::Instance().Scale(*this, 11); i += 4)
+    for (int i = 1; i < CDPIAware::Instance().Scale(*this, 11); i += 4)
     {
         MoveToEx(hdc, pt.x - i, pt.y, nullptr);
         LineTo(hdc, pt.x + 1, pt.y - i - 1);
@@ -197,7 +196,7 @@ void CRichStatusBar::DrawSizeGrip(HDC hdc, LPCRECT lpRect)
 
     HPEN hPenHighlight = CreatePen(PS_SOLID, 1, m_themeColorFunc ? m_themeColorFunc(GetSysColor(COLOR_3DHIGHLIGHT)) : GetSysColor(COLOR_3DHIGHLIGHT));
     SelectObject(hdc, hPenHighlight);
-    for (i = 3; i < CDPIAware::Instance().Scale(*this, 13); i += 4)
+    for (int i = 3; i < CDPIAware::Instance().Scale(*this, 13); i += 4)
     {
         MoveToEx(hdc, pt.x - i, pt.y, nullptr);
         LineTo(hdc, pt.x + 1, pt.y - i - 1);

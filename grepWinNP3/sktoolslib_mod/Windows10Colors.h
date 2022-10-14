@@ -23,7 +23,6 @@
  */
 
 #include <Windows.h>
-#include <vector>
 #include <wrl.h>
 #include <windows.ui.viewmanagement.h>
 

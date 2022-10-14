@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017-2021 - Stefan Kueng
+// Copyright (C) 2012, 2017-2022 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -45,7 +45,7 @@ public:
     /**
      * Loads a file from the specified \c path.
      */
-    bool Load(LPCWSTR path, UnicodeType& type, bool bUTF8, volatile LONG* bCancelled);
+    bool                Load(LPCWSTR path, UnicodeType& type, bool bUTF8, std::atomic_bool& bCancelled);
 
     /**
      * Saves the file contents to disk at \c path.
@@ -131,7 +131,7 @@ protected:
      * Fills an array with line information to make it faster later
      * to get the line from a char position.
      */
-    bool CalculateLines(volatile LONG* bCancelled);
+    bool        CalculateLines(std::atomic_bool& bCancelled);
 
 private:
     std::unique_ptr<BYTE[]> pFileBuf;

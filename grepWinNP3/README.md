@@ -5,7 +5,7 @@ This modified code is licensed under the [same license (GPL-3.0)](https://github
 as the [original source code by Stefan Küng](https://github.com/stefankueng/grepWin).
 [![Build Status](https://dev.azure.com/tortoisesvn/tortoisesvnGitHub/_apis/build/status/stefankueng.grepWin?branchName=master)](https://dev.azure.com/tortoisesvn/tortoisesvnGitHub/_build/latest?definitionId=8&branchName=master)
 
-[![CodeQL](https://github.com/stefankueng/grepWin/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/stefankueng/grepWin/actions/workflows/codeql-analysis.yml)
+[![Build](https://github.com/stefankueng/grepWin/actions/workflows/msbuild.yml/badge.svg)](https://github.com/stefankueng/grepWin/actions/workflows/msbuild.yml)
 
 grepWin is a simple search and replace tool which can use [regular expressions](https://en.wikipedia.org/wiki/Regular_expression) to do its job. This allows to do much more powerful searches and replaces.
 

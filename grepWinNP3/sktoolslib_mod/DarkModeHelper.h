@@ -17,7 +17,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 #pragma once
-#include <Uxtheme.h>
+//#include <Uxtheme.h>
 
 /// helper class for the Windows 10 dark mode
 /// note: we use undocumented APIs here, so be careful!
