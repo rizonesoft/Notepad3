@@ -87,6 +87,9 @@ EDITLEXER lexR =
         { {SCE_R_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
         { {SCE_R_INFIX}, IDS_LEX_STR_63269, L"Infix", L"fore:#660066", L"" },
         { {SCE_R_INFIXEOL}, IDS_LEX_STR_63270, L"Infix EOL", L"fore:#FF4000; back:#E0C0E0; eolfilled", L"" },
+        { {SCE_R_BACKTICKS}, IDS_LEX_STR_63397, L"Backticks", L"fore:#3C6CDD", L"" },
+        { {MULTI_STYLE(SCE_R_RAWSTRING,SCE_R_RAWSTRING2,0,0)}, IDS_LEX_STR_63301, L"Literal String", L"italic; fore:#3C6CDD", L"" },
+        { {SCE_R_ESCAPESEQUENCE}, IDS_LEX_STR_63366, L"ESC Sequence", L"fore:#0080C0", L"" },
         EDITLEXER_SENTINEL
     }
 };

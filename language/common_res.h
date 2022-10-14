@@ -1281,6 +1281,7 @@
 #define IDS_LEX_2ND_CH_MODIFIED         63394
 #define IDS_LEX_2ND_CH_REV_TO_ORG       63395
 #define IDS_LEX_2ND_CH_REV_TO_MOD       63396
+#define IDS_LEX_STR_63397               63397
 
 
 #define IDS_LEX_CSV_COL_0               63490
