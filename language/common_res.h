@@ -474,6 +474,7 @@
 #define IDC_MODLNS_CNTLN1_ZEROFLD       203
 #define IDC_MODLNS_CNTLN0_CANONIC       204
 #define IDC_MODLNS_CNTLN0_ZEROFLD       205
+#define IDC_MODLNS_TINYEXPR_ALL         206
 
 #define CMD_ESCAPE                      20000
 #define CMD_SHIFTESC                    20001

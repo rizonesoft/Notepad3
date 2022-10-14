@@ -8548,7 +8548,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             DWORD const dwId = GetWindowLong((HWND)lParam, GWL_ID);
             HDC const hdc = (HDC)wParam;
             INT_PTR const hbrReturn = SetDarkModeCtlColors(hdc, UseDarkMode());
-            if (dwId >= IDC_MODLNS_DOCLN_CANONIC && dwId <= IDC_MODLNS_CNTLN0_ZEROFLD) {
+            if (dwId >= IDC_MODLNS_DOCLN_CANONIC && dwId <= IDC_MODLNS_TINYEXPR_ALL) {
                 SetBkMode(hdc, TRANSPARENT);
                 if (GetSysColorBrush(COLOR_HOTLIGHT)) {
                     SetTextColor(hdc, GetSysColor(COLOR_HOTLIGHT));
@@ -8595,7 +8595,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         DWORD dwId = (DWORD)GetWindowLong(hwndHover,GWL_ID);
 
         if (GetActiveWindow() == hwnd) {
-            if (dwId >= IDC_MODLNS_DOCLN_CANONIC && dwId <= IDC_MODLNS_CNTLN0_ZEROFLD) {
+            if (dwId >= IDC_MODLNS_DOCLN_CANONIC && dwId <= IDC_MODLNS_TINYEXPR_ALL) {
                 if (id_capture == (int)dwId || id_capture == 0) {
                     if (id_hover != id_capture || id_hover == 0) {
                         id_hover = (int)dwId;
@@ -8618,7 +8618,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         HWND hwndHover = ChildWindowFromPoint(hwnd,pt);
         DWORD dwId = GetWindowLong(hwndHover,GWL_ID);
 
-        if (dwId >= IDC_MODLNS_DOCLN_CANONIC && dwId <= IDC_MODLNS_CNTLN0_ZEROFLD) {
+        if (dwId >= IDC_MODLNS_DOCLN_CANONIC && dwId <= IDC_MODLNS_TINYEXPR_ALL) {
             GetCapture();
             id_hover = dwId;
             id_capture = dwId;
@@ -8637,7 +8637,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             if (id_hover == id_capture) {
                 int id_focus = GetWindowLong(GetFocus(),GWL_ID);
                 if (id_focus == IDC_MODLNS_ED_PREPEND || id_focus == IDC_MODLNS_ED_APPEND) {
-                    WCHAR wch[8];
+                    WCHAR wch[64];
                     GetDlgItemText(hwnd,id_capture,wch,COUNTOF(wch));
                     SendDlgItemMessage(hwnd,id_focus,EM_SETSEL,(WPARAM)0,(LPARAM)-1);
                     SendDlgItemMessage(hwnd,id_focus,EM_REPLACESEL,(WPARAM)true,(LPARAM)wch);
