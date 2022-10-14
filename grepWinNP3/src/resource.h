@@ -110,6 +110,8 @@
 #define IDC_BOOKMARKS                   1022
 #define IDC_REPLACETEXT                 1023
 #define IDC_NEWINSTANCE                 1024
+#define IDC_SEARCHPATHBROWSE2           1025
+#define IDC_SEARCHPATHMULTILINEEDIT     1025
 #define IDC_SEARCHFORLABEL              1026
 #define IDC_REPLACEWITHLABEL            1027
 #define IDC_TESTREGEX                   1028

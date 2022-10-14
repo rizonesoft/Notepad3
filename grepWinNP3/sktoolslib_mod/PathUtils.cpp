@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2013-2015, 2017, 2020-2021 - Stefan Kueng
+// Copyright (C) 2013-2015, 2017, 2020-2022 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -42,9 +42,9 @@ namespace
 {
 // These variables are not exposed as any path name handling probably
 // should be a function in here rather than be manipulating strings directly / inline.
-const wchar_t thisOsPathSeparator  = L'\\';
-const wchar_t otherOsPathSeparator = L'/';
-const wchar_t DeviceSeparator      = L':';
+constexpr wchar_t thisOsPathSeparator  = L'\\';
+constexpr wchar_t otherOsPathSeparator = L'/';
+constexpr wchar_t DeviceSeparator      = L':';
 
 // Check if the character given is either type of folder separator.
 // if we want to remove support for "other"separators we can just

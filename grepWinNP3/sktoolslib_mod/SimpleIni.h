@@ -4,9 +4,9 @@
     <table>
         <tr><th>Library     <td>SimpleIni
         <tr><th>File        <td>SimpleIni.h
-        <tr><th>Author      <td>Brodie Thiesfield [code at jellycan dot com]
+        <tr><th>Author      <td>Brodie Thiesfield
         <tr><th>Source      <td>https://github.com/brofield/simpleini
-        <tr><th>Version     <td>4.17
+        <tr><th>Version     <td>4.19
     </table>
 
     Jump to the @link CSimpleIniTempl CSimpleIni @endlink interface documentation.
@@ -43,22 +43,31 @@
         - Windows/VC6 (warning level 3)
         - Windows/VC.NET 2003 (warning level 4)
         - Windows/VC 2005 (warning level 4)
+        - Windows/VC 2019 (warning level 4)
         - Linux/gcc (-Wall)
 
 
     @section usage USAGE SUMMARY
 
+    -#  Decide if you will be using utf8 or MBCS files, and working with the
+        data in utf8, wchar_t or ICU chars. 
+    -#  If you will only be using straight utf8 files and access the data via the 
+        char interface, then you do not need any conversion library and could define 
+        SI_NO_CONVERSION. Note that no conversion also means no validation of the data.
+        If no converter is specified then the default converter is SI_CONVERT_GENERIC 
+        on Mac/Linux and SI_CONVERT_WIN32 on Windows. If you need widechar support on 
+        Mac/Linux then use either SI_CONVERT_GENERIC or SI_CONVERT_ICU. These are also
+        supported on all platforms.
     -#  Define the appropriate symbol for the converter you wish to use and
-        include the SimpleIni.h header file. If no specific converter is defined
-        then the default converter is used. The default conversion mode uses
-        SI_CONVERT_WIN32 on Windows and SI_CONVERT_GENERIC on all other
-        platforms. If you are using ICU then SI_CONVERT_ICU is supported on all
-        platforms.
-    -#  Declare an instance the appropriate class. Note that the following
+        include the SimpleIni.h header file. 
+    -#  Declare an instance of the appropriate class. Note that the following
         definitions are just shortcuts for commonly used types. Other types
         (PRUnichar, unsigned short, unsigned char) are also possible.
         <table>
             <tr><th>Interface   <th>Case-sensitive  <th>Load UTF-8  <th>Load MBCS   <th>Typedef
+        <tr><th>SI_NO_CONVERSION
+            <tr><td>char        <td>No              <td>Yes         <td>No          <td>CSimpleIniA
+            <tr><td>char        <td>Yes             <td>Yes         <td>No          <td>CSimpleIniCaseA
         <tr><th>SI_CONVERT_GENERIC
             <tr><td>char        <td>No              <td>Yes         <td>Yes #1      <td>CSimpleIniA
             <tr><td>char        <td>Yes             <td>Yes         <td>Yes         <td>CSimpleIniCaseA
@@ -89,6 +98,8 @@
             <tr><td>GetValue        <td>Return a value for a section & key
             <tr><td>SetValue        <td>Add or update a value for a section & key
             <tr><td>Delete          <td>Remove a section, or a key from a section
+            <tr><td>SectionExists   <td>Does a section exist?
+            <tr><td>KeyExists       <td>Does a key exist?
         </table>
     -# Call Save() or SaveFile() to save the INI configuration data
 
@@ -214,34 +225,6 @@
 # pragma warning (disable: 4127 4503 4702 4786)
 #endif
 
-// Defines the conversion classes for different libraries. Before including
-// SimpleIni.h, set the converter that you wish you use by defining one of the
-// following symbols.
-//
-//  SI_CONVERT_GENERIC      Use the Unicode reference conversion library in
-//                          the accompanying files ConvertUTF.h/c
-//  SI_CONVERT_ICU          Use the IBM ICU conversion library. Requires
-//                          ICU headers on include path and icuuc.lib
-//  SI_CONVERT_WIN32        Use the Win32 API functions for conversion.
-
-#if !defined(SI_CONVERT_GENERIC) && !defined(SI_CONVERT_WIN32) && !defined(SI_CONVERT_ICU)
-# ifdef _WIN32
-#  define SI_CONVERT_WIN32
-# else
-#  define SI_CONVERT_GENERIC
-# endif
-#endif
-
-#ifdef SI_CONVERT_WIN32
-//#ifndef VC_EXTRALEAN
-//#define VC_EXTRALEAN 1
-//#endif
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN 1
-#endif
-#include <windows.h>
-#endif
-
 #include <cstring>  // for wcscpy_s, wcscat_s
 #include <cstdlib>  // for _countof
 #include <string>
@@ -249,13 +232,12 @@
 #include <list>
 #include <algorithm>
 #include <cstdio>
-#include <strsafe.h>
 
 #ifdef SI_SUPPORT_IOSTREAMS
 # include <iostream>
 #endif // SI_SUPPORT_IOSTREAMS
 
-#ifdef _DEBUG
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
 # ifndef assert
 #  include <cassert>
 # endif
@@ -264,25 +246,28 @@
 # define SI_ASSERT(x)
 #endif
 
+//using SI_Error = int;
+//constexpr int SI_OK = 0;        //!< No error
+//constexpr int SI_UPDATED = 1;   //!< An existing value was updated
+//constexpr int SI_INSERTED = 2;  //!< A new value was inserted
+//
+//    // note: test for any error with (retval < 0)
+//constexpr int SI_FAIL = -1;     //!< Generic failure
+//constexpr int SI_NOMEM = -2;    //!< Out of memory error
+//constexpr int SI_FILE = -3;     //!< File error (see errno for detail error)
 enum class SI_Error : int {
     SI_OK       =  0,   //!< No error
     SI_UPDATED  =  1,   //!< An existing value was updated
     SI_INSERTED =  2,   //!< A new value was inserted
-
     // note: test for any error with (retval < 0)
     SI_FAIL     = -1,   //!< Generic failure
     SI_NOMEM    = -2,   //!< Out of memory error
     SI_FILE     = -3    //!< File error (see errno for detail error)
 };
 
-
 #define SI_UTF8_SIGNATURE      "\xEF\xBB\xBF"
 #define SI_UTF16LE_SIGNATURE   "\xFF\xFE"
 #define SI_UTF16BE_SIGNATURE   "\xFE\xFF"
-
-#ifndef MAX_PATH
-#define MAX_PATH   260
-#endif
 
 #ifdef _WIN32
 # define SI_NEWLINE_A   "\r\n"
@@ -336,7 +321,7 @@ template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 class CSimpleIniTempl
 {
 public:
-    using SI_CHAR_T = SI_CHAR;
+    typedef SI_CHAR SI_CHAR_T;
 
     /** key entry */
     struct Entry {
@@ -388,15 +373,15 @@ public:
     };
 
     /** map keys to values */
-    using TKeyVal = std::multimap<Entry,const SI_CHAR *,typename Entry::KeyOrder>;
+    typedef std::multimap<Entry,const SI_CHAR *,typename Entry::KeyOrder> TKeyVal;
 
     /** map sections to key/value map */
-    using TSection = std::map<Entry,TKeyVal,typename Entry::KeyOrder>;
+    typedef std::map<Entry,TKeyVal,typename Entry::KeyOrder> TSection;
 
     /** set of dependent string pointers. Note that these pointers are
         dependent on memory owned by CSimpleIni.
     */
-    using TNamesDepend = std::list<Entry>;
+    typedef std::list<Entry> TNamesDepend;
 
     /** interface definition for the OutputWriter object to pass to Save()
         in order to output the INI file data.
@@ -603,6 +588,35 @@ public:
     /** Query the status of spaces output */
     bool UsingSpaces() const { return m_bSpaces; }
     
+
+    /** Should we recognise and parse quotes in single line values?
+
+        \param a_bParseQuotes  Parse quoted data in values?
+     */
+    void SetQuotes(bool a_bParseQuotes = true) {
+        m_bParseQuotes = a_bParseQuotes;
+    }
+
+    /** Are we permitting keys and values to be quoted? */
+    bool UsingQuotes() const { return m_bParseQuotes; }
+
+    /** When reading/writing an ini file, do we require every key to have an equals
+        sign to delineate a valid key value. If false, then every valid key must
+        have an equals sign and any lines without an equals sign is ignored. If
+        true then keys do not require an equals sign to be considered a key. Note 
+        that this means that any non-commented line of text would become a key.
+
+        \param a_bAllowKeyOnly  Permit keys without an equals sign or value.
+     */
+    void SetAllowKeyOnly(bool a_bAllowKeyOnly = true) {
+        m_bAllowKeyOnly = a_bAllowKeyOnly;
+    }
+
+    /** Do we allow keys to exist without a value or equals sign? */
+    bool GetAllowKeyOnly() const { return m_bAllowKeyOnly; }
+
+
+
     /*-----------------------------------------------------------------------*/
     /** @}
         @{ @name Loading INI Data */
@@ -913,6 +927,21 @@ public:
     const TKeyVal * GetSection(
         const SI_CHAR * a_pSection
         ) const;
+
+    /** Test if a section exists. Convenience function */
+    inline bool SectionExists(
+        const SI_CHAR * a_pSection
+    ) const {
+        return GetSection(a_pSection) != NULL;
+    }
+
+    /** Test if the key exists in a section. Convenience function. */
+    inline bool KeyExists(
+        const SI_CHAR * a_pSection,
+        const SI_CHAR * a_pKey
+    ) const {
+        return GetValue(a_pSection, a_pKey) != NULL;
+    }
 
     /** Retrieve the value for a specific key. If multiple keys are enabled
         (see SetMultiKey) then only the first value associated with that key
@@ -1297,8 +1326,9 @@ private:
         return isLess(a_pLeft, a_pRight);
     }
 
-    bool IsMultiLineTag(const SI_CHAR * a_pVal) const;
+    bool IsMultiLineTag(const SI_CHAR * a_pData) const;
     bool IsMultiLineData(const SI_CHAR * a_pData) const;
+    bool IsSingleLineQuotedValue(const SI_CHAR* a_pData) const;
     bool LoadMultiLineText(
         SI_CHAR *&          a_pData,
         const SI_CHAR *&    a_pVal,
@@ -1330,6 +1360,9 @@ private:
     /** File comment for this data, if one exists. */
     const SI_CHAR * m_pFileComment;
 
+    /** constant empty string */
+    const SI_CHAR m_cEmptyString;
+
     /** Parsed INI data. Section -> (Key -> Value). */
     TSection m_data;
 
@@ -1351,6 +1384,12 @@ private:
     /** Should spaces be written out surrounding the equals sign? */
     bool m_bSpaces;
     
+    /** Should quoted data in values be recognized and parsed? */
+    bool m_bParseQuotes;
+
+    /** Do keys always need to have an equals sign when reading/writing? */
+    bool m_bAllowKeyOnly;
+
     /** Next order value, used to ensure sections and keys are output in the
         same order that they are loaded/added.
      */
@@ -1370,10 +1409,13 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::CSimpleIniTempl(
   : m_pData(0)
   , m_uDataLen(0)
   , m_pFileComment(NULL)
+  , m_cEmptyString(0)
   , m_bStoreIsUtf8(a_bIsUtf8)
   , m_bAllowMultiKey(a_bAllowMultiKey)
   , m_bAllowMultiLine(a_bAllowMultiLine)
   , m_bSpaces(true)
+  , m_bParseQuotes(false)
+  , m_bAllowKeyOnly(false)
   , m_nOrder(0)
 { }
 
@@ -1505,7 +1547,7 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
   }
 
   // allocate and ensure NULL terminated
-  auto* pData = new(std::nothrow) char[(size_t)dwFileSize + 1];
+  auto* pData = new(std::nothrow) char[(size_t)dwFileSize + static_cast<size_t>(1)];
   if (!pData) {
     return SI_Error::SI_NOMEM;
   }
@@ -1547,7 +1589,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
     }
     
     // allocate and ensure NULL terminated
-    auto * pData = new(std::nothrow) char[lSize+1];
+    char * pData = new(std::nothrow) char[lSize+static_cast<size_t>(1)];
     if (!pData) {
         return SI_Error::SI_NOMEM;
     }
@@ -1743,6 +1785,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindEntry(
 {
     a_pComment = NULL;
 
+    bool bHaveValue = false;
     SI_CHAR * pTrail = NULL;
     while (*a_pData) {
         // skip spaces and empty lines
@@ -1805,14 +1848,16 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindEntry(
         while (*a_pData && *a_pData != '=' && !IsNewLineChar(*a_pData)) {
             ++a_pData;
         }
+        // *a_pData is null, equals, or newline
 
-        // if it's an invalid line, just skip it
-        if (*a_pData != '=') {
+        // if no value and we don't allow no value, then invalid
+        bHaveValue = (*a_pData == '=');
+        if (!bHaveValue && !m_bAllowKeyOnly) {
             continue;
         }
 
         // empty keys are invalid
-        if (a_pKey == a_pData) {
+        if (bHaveValue && a_pKey == a_pData) {
             while (*a_pData && !IsNewLineChar(*a_pData)) {
                 ++a_pData;
             }
@@ -1825,6 +1870,9 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindEntry(
             --pTrail;
         }
         ++pTrail;
+
+        if (bHaveValue) {
+            // process the value 
         *pTrail = 0;
 
         // skip leading whitespace on the value
@@ -1855,6 +1903,23 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindEntry(
             // skip the "<<<" to get the tag that will end the multiline
             const SI_CHAR * pTagName = a_pVal + 3;
             return LoadMultiLineText(a_pData, a_pVal, pTagName);
+        }
+
+            // check for quoted values, we are not supporting escapes in quoted values (yet)
+            if (m_bParseQuotes) {
+                --pTrail;
+                if (pTrail > a_pVal && *a_pVal == '"' && *pTrail == '"') {
+                    ++a_pVal;
+                    *pTrail = 0;
+                }
+            }
+        }
+        else {
+            // no value to process, just prepare for the next
+            if (*a_pData) { 
+                SkipNewLine(a_pData);
+            }
+            *pTrail = 0;
         }
 
         // return the standard entry
@@ -1916,6 +1981,41 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::IsMultiLineData(
 
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 bool
+CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::IsSingleLineQuotedValue(
+    const SI_CHAR* a_pData
+) const
+{
+    // data needs quoting if it starts or ends with whitespace 
+    // and doesn't have embedded newlines
+
+    // empty string
+    if (!*a_pData) {
+        return false;
+    }
+
+    // check for prefix
+    if (IsSpace(*a_pData)) {
+        return true;
+    }
+
+    // embedded newlines
+    while (*a_pData) {
+        if (IsNewLineChar(*a_pData)) {
+            return false;
+        }
+        ++a_pData;
+    }
+
+    // check for suffix
+    if (IsSpace(*--a_pData)) {
+        return true;
+    }
+
+    return false;
+}
+
+template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
+bool
 CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::IsNewLineChar(
     SI_CHAR a_c
     ) const
@@ -1947,8 +2047,8 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadMultiLineText(
     a_pVal = a_pData;
 
     // find the end tag. This tag must start in column 1 and be
-    // followed by a newline. No whitespace removal is done while
-    // searching for this tag.
+    // followed by a newline. We ignore any whitespace after the end
+    // tag but not whitespace before it.
     SI_CHAR cEndOfLineChar = *a_pData;
     for(;;) {
         // if we are loading comments then we need a comment character as
@@ -1992,7 +2092,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadMultiLineText(
 
         // move this line down to the location that it should be if necessary
         if (pDataLine < pCurrLine) {
-            auto nLen = (size_t) (a_pData - pCurrLine);
+            size_t nLen = (size_t) (a_pData - pCurrLine);
             memmove(pDataLine, pCurrLine, nLen * sizeof(SI_CHAR));
             pDataLine[nLen] = '\0';
         }
@@ -2004,10 +2104,18 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadMultiLineText(
         // if are looking for a tag then do the check now. This is done before
         // checking for end of the data, so that if we have the tag at the end
         // of the data then the tag is removed correctly.
-        if (a_pTagName &&
-            (!IsLess(pDataLine, a_pTagName) && !IsLess(a_pTagName, pDataLine)))
-        {
+        if (a_pTagName) {
+            // strip whitespace from the end of this tag
+            SI_CHAR* pc = a_pData - 1;
+            while (pc > pDataLine && IsSpace(*pc)) --pc;
+            SI_CHAR ch = *++pc;
+            *pc = 0;
+
+            if (!IsLess(pDataLine, a_pTagName) && !IsLess(a_pTagName, pDataLine)) {
             break;
+        }
+
+            *pc = ch;
         }
 
         // if we are at the end of the data then we just automatically end
@@ -2127,6 +2235,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::AddEntry(
     // check for existence of the key
     TKeyVal & keyval = iSection->second;
     typename TKeyVal::iterator iKey = keyval.find(a_pKey);
+    bInserted = iKey == keyval.end();
 
     // remove all existing entries but save the load order and
     // comment of the first entry
@@ -2147,6 +2256,11 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::AddEntry(
         }
         Delete(a_pSection, a_pKey);
         iKey = keyval.end();
+    }
+
+    // values need to be a valid string, even if they are an empty string
+    if (!a_pValue) {
+        a_pValue = &m_cEmptyString;
     }
 
     // make string copies if necessary
@@ -2173,8 +2287,8 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::AddEntry(
         }
         typename TKeyVal::value_type oEntry(oKey, static_cast<const SI_CHAR *>(NULL));
         iKey = keyval.insert(oEntry);
-        bInserted = true;
     }
+
     iKey->second = a_pValue;
     return bInserted ? SI_Error::SI_INSERTED : SI_Error::SI_UPDATED;
 }
@@ -2625,8 +2739,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SaveFile(
 #else // !__STDC_WANT_SECURE_LIB__
     fp = fopen(a_pszFile, "wb");
 #endif // __STDC_WANT_SECURE_LIB__
-    if (!fp)
-        return SI_Error::SI_FILE;
+    if (!fp) return SI_Error::SI_FILE;
     SI_Error rc = SaveFile(fp, a_bAddSignature);
     fflush(fp);
     fclose(fp);
@@ -2647,7 +2760,7 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::SaveFile(
   if (a_pwszFile && a_pwszFile[0]) 
   {
     HANDLE hFile = CreateFile(a_pwszFile,
-      GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+      GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
       nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
     SI_ASSERT(hFile != INVALID_HANDLE_VALUE);
@@ -2746,6 +2859,19 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
     oSections.sort(typename Entry::LoadOrder());
 #endif
 
+    // if there is an empty section name, then it must be written out first
+    // regardless of the load order
+    typename TNamesDepend::iterator is = oSections.begin();
+    for (; is != oSections.end(); ++is) {
+        if (!*is->pItem) {
+            // move the empty section name to the front of the section list
+            if (is != oSections.begin()) {
+                oSections.splice(oSections.begin(), oSections, is, std::next(is));
+            }
+            break;
+        }
+    }
+
     // write the file comment if we have one
     bool bNeedNewLine = false;
     if (m_pFileComment) {
@@ -2826,16 +2952,23 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
                 }
                 a_oOutput.Write(convert.Data());
 
-                // write the value
+                // write the value as long 
+                if (*iValue->pItem || !m_bAllowKeyOnly) {
                 if (!convert.ConvertToStore(iValue->pItem)) {
                     return SI_Error::SI_FAIL;
                 }
                 a_oOutput.Write(m_bSpaces ? " = " : "=");
-                if (m_bAllowMultiLine && IsMultiLineData(iValue->pItem)) {
+                    if (m_bParseQuotes && IsSingleLineQuotedValue(iValue->pItem)) {
+                        // the only way to preserve external whitespace on a value (i.e. before or after)
+                        // is to quote it. This is simple quoting, we don't escape quotes within the data. 
+                        a_oOutput.Write("\"");
+                        a_oOutput.Write(convert.Data());
+                        a_oOutput.Write("\"");
+                    }
+                    else if (m_bAllowMultiLine && IsMultiLineData(iValue->pItem)) {
                     // multi-line data needs to be processed specially to ensure
                     // that we use the correct newline format for the current system
                     a_oOutput.Write("<<<END_OF_TEXT" SI_NEWLINE_A);
-                    bNeedNewLine = false;
                     if (!OutputMultiLineText(a_oOutput, convert, iValue->pItem)) {
                         return SI_Error::SI_FAIL;
                     }
@@ -2843,6 +2976,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
                 }
                 else {
                     a_oOutput.Write(convert.Data());
+	                }
                 }
                 a_oOutput.Write(SI_NEWLINE_A);
                 bNeedNewLine = false;
@@ -2990,6 +3124,26 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::DeleteString(
 // ---------------------------------------------------------------------------
 //                              CONVERSION FUNCTIONS
 // ---------------------------------------------------------------------------
+
+// Defines the conversion classes for different libraries. Before including
+// SimpleIni.h, set the converter that you wish you use by defining one of the
+// following symbols.
+//
+//  SI_NO_CONVERSION        Do not make the "W" wide character version of the 
+//                          library available. Only CSimpleIniA etc is defined.
+//  SI_CONVERT_GENERIC      Use the Unicode reference conversion library in
+//                          the accompanying files ConvertUTF.h/c
+//  SI_CONVERT_ICU          Use the IBM ICU conversion library. Requires
+//                          ICU headers on include path and icuuc.lib
+//  SI_CONVERT_WIN32        Use the Win32 API functions for conversion.
+
+#if !defined(SI_NO_CONVERSION) && !defined(SI_CONVERT_GENERIC) && !defined(SI_CONVERT_WIN32) && !defined(SI_CONVERT_ICU)
+# ifdef _WIN32
+#  define SI_CONVERT_WIN32
+# else
+#  define SI_CONVERT_GENERIC
+# endif
+#endif
 
 /**
  * Generic case-sensitive less than comparison. This class returns numerically
@@ -3557,6 +3711,13 @@ public:
 # endif
 #endif
 
+#ifndef VC_EXTRALEAN
+#define VC_EXTRALEAN 1
+#endif
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN 1
+#endif
+#include <windows.h>
 #ifdef SI_NO_MBCS
 # define SI_NoCase   SI_GenericNoCase
 #else // !SI_NO_MBCS
@@ -3709,6 +3870,19 @@ public:
 #endif // SI_CONVERT_WIN32
 
 
+
+// ---------------------------------------------------------------------------
+//                              SI_NO_CONVERSION
+// ---------------------------------------------------------------------------
+#ifdef SI_NO_CONVERSION
+
+#define SI_Case     SI_GenericCase
+#define SI_NoCase   SI_GenericNoCase
+
+#endif // SI_NO_CONVERSION
+
+
+
 // ---------------------------------------------------------------------------
 //                                  TYPE DEFINITIONS
 // ---------------------------------------------------------------------------
@@ -3718,6 +3892,13 @@ using CSimpleIniA = CSimpleIniTempl<char,
 using CSimpleIniCaseA = CSimpleIniTempl<char,
     SI_Case<char>,SI_ConvertA<char> >;
 
+#if defined(SI_NO_CONVERSION)
+// if there is no wide char conversion then we don't need to define the 
+// widechar "W" versions of CSimpleIni
+# define CSimpleIni      CSimpleIniA
+# define CSimpleIniCase  CSimpleIniCaseA
+# define SI_NEWLINE      SI_NEWLINE_A
+#else
 #if defined(SI_CONVERT_ICU)
 typedef CSimpleIniTempl<UChar,
     SI_NoCase<UChar>,SI_ConvertW<UChar> >               CSimpleIniW;
@@ -3739,6 +3920,7 @@ using CSimpleIniCaseW = CSimpleIniTempl<wchar_t,
 # define CSimpleIniCase  CSimpleIniCaseA
 # define SI_NEWLINE      SI_NEWLINE_A
 #endif // _UNICODE
+#endif
 
 #ifdef _MSC_VER
 # pragma warning (pop)

@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2021 - Stefan Kueng
+// Copyright (C) 2012-2022 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -278,7 +278,7 @@ std::wstring to_bit_wstring(T number, bool trimSignificantClearBits)
     UT                                           zero = 0;
     UT                                           uNumber;
     uNumber            = UT(number);
-    const int    nBits = std::numeric_limits<UT>::digits;
+    constexpr int nBits = std::numeric_limits<UT>::digits;
     std::wstring bs;
     bool         seenSetBit = false;
     for (int bn = nBits - 1; bn >= 0; --bn)

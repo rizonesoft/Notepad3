@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2021 - Stefan Kueng
+// Copyright (C) 2007-2022 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -55,8 +55,8 @@
 #include "TempFile.h"
 #include "Monitor.h"
 #include "version.h"
-
 #endif
+#include "DPIAware.h"
 
 #include <string>
 #include <map>
@@ -76,8 +76,9 @@
 #define GREPWIN_DATEBUFFER 100
 #define LABELUPDATETIMER   10
 
-DWORD WINAPI SearchThreadEntry(LPVOID lpParam);
-DWORD WINAPI EvaluationThreadEntry(LPVOID lpParam);
+constexpr auto SearchEditSubclassID = 4321;
+DWORD WINAPI   SearchThreadEntry(LPVOID lpParam);
+DWORD WINAPI   EvaluationThreadEntry(LPVOID lpParam);
 
 // ReSharper disable once CppInconsistentNaming
 UINT                    CSearchDlg::m_grepwinStartupmsg = RegisterWindowMessage(L"grepWinNP3_StartupMessage");
@@ -86,21 +87,51 @@ std::map<size_t, DWORD> linePositions;
 extern ULONGLONG g_startTime;
 extern HANDLE    hInitProtection;
 
-
-static volatile LONG s_SearchThreadRunning     = FALSE;
-static volatile LONG s_EvaluationThreadRunning = FALSE;
-static volatile LONG s_Cancelled               = FALSE;
-static volatile LONG s_NOTSearch               = FALSE;
-
-inline bool IsSearchThreadRunning() { return InterlockedAnd(&s_SearchThreadRunning, TRUE); }
-inline bool IsEvaluationThreadRunning() { return InterlockedAnd(&s_EvaluationThreadRunning, TRUE); }
-inline bool IsCancelled() { return InterlockedAnd(&s_Cancelled, TRUE); }
-inline bool IsNOTSearch() { return InterlockedAnd(&s_NOTSearch, TRUE); }
-
+static std::atomic_bool      s_SearchThreadRunning     = false;
+static std::atomic_bool      s_EvaluationThreadRunning = false;
+static std::atomic_bool      s_Cancelled               = false;
+static std::atomic_bool      s_NOTSearch               = false;
+#define IsSearchThreadRunning()     (s_SearchThreadRunning)
+#define IsEvaluationThreadRunning() (s_EvaluationThreadRunning)
+#define IsCancelled()               (s_Cancelled)
+#define IsNOTSearch()               (s_NOTSearch)
 
 static BackupAndTempFilesLog s_BackupAndTmpFiles;
 static SearchThreadMap s_SearchThreadMap;
 
+// ==================================================================================
+
+LRESULT CALLBACK SearchEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR dwRefData)
+{
+    switch (uMsg)
+    {
+        case WM_NCPAINT:
+        {
+            auto searchDlg = reinterpret_cast<CSearchDlg*>(dwRefData);
+            if (!searchDlg->isRegexValid())
+            {
+                // make the border of the edit control red in case
+                // the regex is invalid
+                HDC hdc = nullptr;
+                if (wParam == NULLREGION)
+                    hdc = GetDC(hWnd);
+                else
+                    hdc = GetDCEx(hWnd, reinterpret_cast<HRGN>(wParam), DCX_WINDOW | DCX_INTERSECTRGN);
+                RECT rc = {0};
+                GetWindowRect(hWnd, &rc);
+                MapWindowPoints(nullptr, hWnd, reinterpret_cast<LPPOINT>(&rc), 2);
+                ::SetBkColor(hdc, RGB(255, 0, 0));
+                ::ExtTextOut(hdc, 0, 0, ETO_OPAQUE, &rc, nullptr, 0, nullptr);
+                ReleaseDC(hWnd, hdc);
+                return 0;
+            }
+        }
+        default:
+            break;
+    }
+
+    return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+}
 
 // ==================================================================================
 
@@ -112,6 +143,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_patternRegexC(false)
     , m_excludeDirsPatternRegexC(false)
     , m_bUseRegex(false)
+    , m_bUseRegexC(false)
     , m_bUseRegexForPaths(false)
     , m_bAllSize(false)
     , m_lSize(2000 << 10)
@@ -155,6 +187,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_totalMatches(0)
     , m_selectedItems(0)
     , m_bAscending(true)
+    , m_isRegexValid(true)
     , m_themeCallbackId(0)
     , m_pDropTarget(nullptr)
     , m_autoCompleteFilePatterns(bPortable ? &g_iniFile : nullptr)
@@ -266,8 +299,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             AddToolTip(IDC_EDITMULTILINE1, TranslatedString(hResource, IDS_EDITMULTILINE_TT).c_str());
             AddToolTip(IDC_EDITMULTILINE2, TranslatedString(hResource, IDS_EDITMULTILINE_TT).c_str());
             AddToolTip(IDC_EXPORT, TranslatedString(hResource, IDS_EXPORT_TT).c_str());
+            AddToolTip(IDC_SEARCHPATHMULTILINEEDIT, TranslatedString(hResource, IDS_EDITMULTILINE_TT).c_str());
             AddToolTip(IDOK, TranslatedString(hResource, IDS_SHIFT_NOTSEARCH).c_str());
             AddToolTip(IDC_REPLACETEXT, LPSTR_TEXTCALLBACK);
+
+            SetWindowSubclass(GetDlgItem(*this, IDC_SEARCHTEXT), SearchEditWndProc, SearchEditSubclassID, reinterpret_cast<DWORD_PTR>(this));
 
             if (m_searchPath.empty())
             {
@@ -441,7 +477,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
             SendDlgItemMessage(hwndDlg, IDC_WHOLEWORDS, BM_SETCHECK, m_bWholeWords ? BST_CHECKED : BST_UNCHECKED, 0);
             DialogEnableWindow(IDC_WHOLEWORDS, IsDlgButtonChecked(hwndDlg, IDC_TEXTRADIO));
-            if (!m_searchString.empty())
+            if (!m_searchString.empty() || m_bUseRegexC)
                 CheckRadioButton(*this, IDC_REGEXRADIO, IDC_TEXTRADIO, m_bUseRegex ? IDC_REGEXRADIO : IDC_TEXTRADIO);
 
             DialogEnableWindow(IDC_TESTREGEX, !IsDlgButtonChecked(*this, IDC_TEXTRADIO));
@@ -475,6 +511,12 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 
+            AdjustControlSize(IDC_BINARY);
+            AdjustControlSize(IDC_FILEPATTERNTEXT);
+            AdjustControlSize(IDC_ALLSIZERADIO);
+            AdjustControlSize(IDC_RADIO_DATE_ALL);
+            AdjustControlSize(IDC_WHOLEWORDS);
+
             m_resizer.Init(hwndDlg);
             m_resizer.UseSizeGrip(!CTheme::Instance().IsDarkTheme());
             m_resizer.AddControl(hwndDlg, IDC_HELPLABEL, RESIZER_TOPLEFT);
@@ -483,6 +525,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.AddControl(hwndDlg, IDC_PATHMRU, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_SEARCHPATH, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_NEWINSTANCE, RESIZER_TOPRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_SEARCHPATHMULTILINEEDIT, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_SEARCHPATHBROWSE, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHFOR, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_REGEXRADIO, RESIZER_TOPLEFT);
@@ -614,6 +657,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 default:
                     break;
             }
+            std::locale::global(std::locale(""));
         }
             return FALSE;
         case WM_CLOSE:
@@ -623,7 +667,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 m_updateCheckThread.join();
 #endif
             if (IsEvaluationThreadRunning())
-                InterlockedExchange(&s_Cancelled, TRUE);
+                s_Cancelled = true;
             else
             {
                 SaveSettings();
@@ -639,6 +683,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         }
         break;
         case WM_DESTROY:
+            RemoveWindowSubclass(*this, SearchEditWndProc, SearchEditSubclassID);
             CTheme::Instance().RemoveRegisteredCallback(m_themeCallbackId);
             break;
         case WM_COMMAND:
@@ -781,6 +826,19 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_totalMatches  = 0;
             m_selectedItems = 0;
             UpdateInfoLabel();
+            // reset the sort indicator
+            HDITEM hd         = {0};
+            hd.mask           = HDI_FORMAT;
+            HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+            HWND hHeader      = ListView_GetHeader(hListControl);
+            int  iCount       = Header_GetItemCount(hHeader);
+            for (int i = 0; i < iCount; ++i)
+            {
+                Header_GetItem(hHeader, i, &hd);
+                hd.fmt &= ~(HDF_SORTDOWN | HDF_SORTUP);
+                Header_SetItem(hHeader, i, &hd);
+            }
+
             SetTimer(*this, LABELUPDATETIMER, 200, nullptr);
             SendDlgItemMessage(*this, IDC_PROGRESS, PBM_SETSTATE, PBST_NORMAL, 0);
             SendDlgItemMessage(*this, IDC_PROGRESS, PBM_SETMARQUEE, 1, 0);
@@ -1030,7 +1088,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (IsSearchThreadRunning())
             {
-                InterlockedExchange(&s_Cancelled, TRUE);
+                s_Cancelled = true;
                 SendDlgItemMessage(*this, IDC_PROGRESS, PBM_SETSTATE, PBST_PAUSED, 0);
             }
             else
@@ -1040,6 +1098,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     break;
 
                 CStringUtils::rtrim(m_searchPath, L"\\/");
+                SearchReplace(m_searchPath, L"/", L"\\");
 
                 if (PathIsRelative(m_searchPath.c_str()))
                 {
@@ -1052,7 +1111,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 {
                     if (!PathFileExists(sp.c_str()))
                     {
-                        ShowEditBalloon(IDC_SEARCHPATH, TranslatedString(hResource, IDS_ERR_INVALID_PATH).c_str(), TranslatedString(hResource, IDS_ERR_PATHNOTEXIST).c_str());
+                        auto sErr = TranslatedString(hResource, IDS_ERR_PATHNOTEXIST);
+                        sErr      = CStringUtils::Format(sErr.c_str(), sp.c_str());
+                        ShowEditBalloon(IDC_SEARCHPATH, TranslatedString(hResource, IDS_ERR_INVALID_PATH).c_str(), sErr.c_str());
                         break;
                     }
                 }
@@ -1113,8 +1174,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 
                 m_bReplace = id == IDC_REPLACE;
 
-                if (m_bReplace && !m_bCreateBackup && m_bConfirmationOnReplace)
-                {
+                if (m_bReplace && !m_bCreateBackup && (m_bConfirmationOnReplace || m_replaceString.empty()))
+                    {
                     auto nowarnifnobackup = bPortable ? g_iniFile.GetBoolValue(L"settings", L"nowarnifnobackup", false) : static_cast<DWORD>(CRegStdDWORD(L"Software\\grepWinNP3\\nowarnifnobackup", FALSE));
                     if (!nowarnifnobackup)
                     {
@@ -1139,14 +1200,14 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 }
                 m_bConfirmationOnReplace = true;
                 if (id == IDC_INVERSESEARCH)
-                    InterlockedExchange(&s_NOTSearch, TRUE);
+                    s_NOTSearch = true;
                 else
-                    InterlockedExchange(&s_NOTSearch, ((GetKeyState(VK_SHIFT) & 0x8000) != 0) ? TRUE : FALSE);
+                    s_NOTSearch = ((GetKeyState(VK_SHIFT) & 0x8000) != 0) ? true : false;
 
                 if (id == IDC_CAPTURESEARCH)
                 {
                     m_bCaptureSearch = true;
-                    InterlockedExchange(&s_NOTSearch, FALSE);
+                    s_NOTSearch      = false;
                     m_bReplace       = false;
                 }
                 if (m_bReplace)
@@ -1162,8 +1223,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     InitResultList();
                 }
 
-                InterlockedExchange(&s_SearchThreadRunning, TRUE);
-                InterlockedExchange(&s_Cancelled, FALSE);
+                s_SearchThreadRunning = true;
+                s_Cancelled           = false;
                 SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_STOP).c_str());
                 SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_STOP).c_str());
                 ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_SHOW);
@@ -1186,8 +1247,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 }
                 else
                 {
-                    InterlockedExchange(&s_Cancelled, TRUE);
-                    InterlockedExchange(&s_SearchThreadRunning, FALSE);
+                    s_Cancelled           = true;
+                    s_SearchThreadRunning = false;
                     ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_HIDE);
                     EnableWindow(GetDlgItem(*this, IDC_SETTINGSBUTTON), TRUE);
                 }
@@ -1198,7 +1259,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 
                 if (nOfWorker > 1)
                 {
-                    InterlockedExchange(&s_EvaluationThreadRunning, TRUE);
+                    s_EvaluationThreadRunning = true;
                     // now start the thread which does result evaluation
                     dwThreadId = 0;
                     hThread    = CreateThread(
@@ -1216,9 +1277,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     }
                     else
                     {
-                        InterlockedExchange(&s_Cancelled, TRUE);
+                        s_Cancelled = true;
                         SendMessage(*this, SEARCH_END, 0, 0);
-                        InterlockedExchange(&s_EvaluationThreadRunning, FALSE);
+                        s_EvaluationThreadRunning = false;
                         ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_HIDE);
                         EnableWindow(GetDlgItem(*this, IDC_SETTINGSBUTTON), TRUE);
                     }
@@ -1238,7 +1299,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             if (escClose)
             {
                 if (IsEvaluationThreadRunning())
-                    InterlockedExchange(&s_Cancelled, TRUE);
+                    s_Cancelled = true;
                 else
                 {
                     SaveSettings();
@@ -1289,6 +1350,23 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         case IDC_NEWINSTANCE:
             CloneWindow();
             break;
+        case IDC_SEARCHPATHMULTILINEEDIT:
+        {
+            auto paths = std::wstring(GetDlgItemText(IDC_SEARCHPATH).get());
+
+            SearchReplace(paths, L"|", L"\r\n");
+            CMultiLineEditDlg editDlg(*this);
+            editDlg.SetString(paths);
+
+            if (editDlg.DoModal(hResource, IDD_MULTILINEEDIT, *this) == IDOK)
+            {
+                std::wstring text = editDlg.GetSearchString();
+                SearchReplace(text, L"\r\n", L"|");
+                SetDlgItemText(*this, IDC_SEARCHPATH, text.c_str());
+            }
+            ::SetFocus(GetDlgItem(*this, IDC_SEARCHPATH));
+        }
+        break;
         case IDC_SEARCHPATHBROWSE:
         {
             CBrowseFolder browse;
@@ -1488,11 +1566,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             // replace all \r\n strings with real CRLFs
             try
             {
-                int                                                ft         = boost::regex::normal;
-                boost::wregex                                      expression = boost::wregex(L"\\\\r\\\\n", ft);
-                boost::match_results<std::wstring::const_iterator> whatC;
-                boost::match_flag_type                             rFlags = boost::match_default | boost::format_all;
-                ctrlText                                                  = regex_replace(ctrlText, expression, L"\\r\\n", rFlags);
+                int                    ft         = boost::regex::normal;
+                boost::wregex          expression = (id == IDC_EDITMULTILINE1
+                                                         ? boost::wregex(L"\\(\\?:\\\\n\\|\\\\r\\\\n\\|\\\\n\\\\r\\)", ft)
+                                                         : boost::wregex(L"\\\\r\\\\n", ft));
+                boost::match_flag_type rFlags     = boost::match_default | boost::format_all;
+                ctrlText                          = regex_replace(ctrlText, expression, L"\\r\\n", rFlags);
             }
             catch (const std::exception&)
             {
@@ -1506,11 +1585,13 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 // replace all CRLFs with \r\n strings (literal)
                 try
                 {
-                    int                                                ft         = boost::regex::normal;
-                    boost::wregex                                      expression = boost::wregex(L"\\r\\n", ft);
-                    boost::match_results<std::wstring::const_iterator> whatC;
-                    boost::match_flag_type                             rFlags = boost::match_default | boost::format_all;
-                    text                                                      = regex_replace(text, expression, L"\\\\r\\\\n", rFlags);
+                    int                    ft         = boost::regex::normal;
+                    boost::wregex          expression = boost::wregex(L"\\r\\n", ft);
+                    boost::match_flag_type rFlags     = boost::match_default | boost::format_all;
+                    if (id == IDC_EDITMULTILINE1)
+                        text = regex_replace(text, expression, L"\\(\\?:\\\\n|\\\\r\\\\n|\\\\n\\\\r\\)", rFlags);
+                    else
+                        text = regex_replace(text, expression, L"\\\\r\\\\n", rFlags);
                 }
                 catch (const std::exception&)
                 {
@@ -2528,7 +2609,7 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
 
     std::wstring cmd = bPortable ? g_iniFile.GetValue(L"global", L"editorcmd", L"") :
                                    (std::wstring)CRegStdString(L"Software\\grepWinNP3\\editorcmd", L"");
-    if (!cmd.empty())
+    if (!cmd.empty() && !inf.readError && inf.encoding != CTextFile::UnicodeType::Binary)
     {
         bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
         if (!fileList)
@@ -2543,6 +2624,8 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
             lv.cchTextMax                 = _countof(textLineBuf);
             if (ListView_GetItem(hListControl, &lv))
             {
+                if (_wtol(textLineBuf) == 0)
+                    wcscpy_s(textLineBuf, L"0");
                 SearchReplace(cmd, L"%line%", textLineBuf);
             }
         }
@@ -3374,7 +3457,7 @@ DWORD CSearchDlg::SearchThread()
         PostMessage(m_hwnd, WM_GREPWIN_THREADEND, 0, 0);
     }
 
-    InterlockedExchange(&s_SearchThreadRunning, FALSE);
+    s_SearchThreadRunning = false;
     return 0L;
 }
 
@@ -3409,7 +3492,7 @@ DWORD CSearchDlg::EvaluationThread()
 
     s_SearchThreadMap.clear();
 
-    InterlockedExchange(&s_EvaluationThreadRunning, FALSE);
+    s_EvaluationThreadRunning = false;
     PostMessage(m_hwnd, WM_GREPWIN_THREADEND, 0, 0);
     return 0L;
 }
@@ -3633,26 +3716,28 @@ int CSearchDlg::SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wst
     // as if they're ANSI text files.
     std::wstring localSearchString = searchString;
 
-    if (!searchFlags.bUseRegex)
-    {
-        SearchReplace(localSearchString, L"\\E", L"\\\\E");
-        localSearchString = L"\\Q" + localSearchString + L"\\E";
-        if (searchFlags.bWholeWords)
-            localSearchString = L"\\b" + localSearchString + L"\\b";
-    }
-
     SearchReplace(localSearchString, L"${filepath}", sinfoPtr->filePath);
     std::wstring const fileNameFull = sinfoPtr->filePath.substr(sinfoPtr->filePath.find_last_of('\\') + 1);
     auto               dotPos       = fileNameFull.find_last_of('.');
     if (dotPos != std::string::npos)
     {
         std::wstring fileName = fileNameFull.substr(0, dotPos);
-        SearchReplace(localSearchString, L"${filepath}", fileName);
+        SearchReplace(localSearchString, L"${filename}", fileName);
         if (fileNameFull.size() > dotPos)
         {
             std::wstring fileExt = fileNameFull.substr(dotPos + 1);
             SearchReplace(localSearchString, L"${fileext}", fileExt);
         }
+    }
+    if (!searchFlags.bUseRegex)
+    {
+        using namespace std::string_literals;
+        for (const auto& c : {L"\\"s, L"^"s, L"$"s, L"."s, L"|"s, L"?"s, L"*"s, L"+"s, L"("s, L")"s, L"["s, L"{"s})
+        {
+            SearchReplace(localSearchString, c, L"\\" + c);
+        }
+        if (searchFlags.bWholeWords)
+            localSearchString = L"\\b" + localSearchString + L"\\b";
     }
 
     CTextFile              textFile;
@@ -3673,7 +3758,7 @@ int CSearchDlg::SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wst
             auto              megs  = sinfoPtr->fileSize / oneMB;
             textFile.SetNullbyteCountForBinary(nNullCount * ((int)megs + 1));
         }
-        bLoadResult = textFile.Load(sinfoPtr->filePath.c_str(), type, searchFlags.bUTF8, nullptr);
+        bLoadResult = textFile.Load(sinfoPtr->filePath.c_str(), type, searchFlags.bUTF8, s_Cancelled);
     }
     sinfoPtr->encoding = type;
     if ((bLoadResult) && ((type != CTextFile::Binary) || (searchFlags.bIncludeBinary) || searchFlags.bSearchAlways))
@@ -4090,7 +4175,7 @@ void CSearchDlg::FormatDate(wchar_t dateNative[], const FILETIME& fileTime, bool
 
     LCID locale = MAKELCID(MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), SORT_DEFAULT);
 
-    /// reusing this instance is vital for \ref formatDate performance
+    /// reusing this instance is vital for \ref FormatDate performance
 
     DWORD flags = forceShortFmt ? DATE_SHORTDATE : DATE_LONGDATE;
 
@@ -4103,8 +4188,9 @@ void CSearchDlg::FormatDate(wchar_t dateNative[], const FILETIME& fileTime, bool
 
 int CSearchDlg::CheckRegex()
 {
-    auto buf = GetDlgItemText(IDC_SEARCHTEXT);
-    int  len = static_cast<int>(wcslen(buf.get()));
+    m_isRegexValid = true;
+    auto buf       = GetDlgItemText(IDC_SEARCHTEXT);
+    int  len       = static_cast<int>(wcslen(buf.get()));
     if (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED)
     {
         m_bUseRegex = true;
@@ -4124,7 +4210,8 @@ int CSearchDlg::CheckRegex()
             }
             catch (const std::exception&)
             {
-                bValid = false;
+                bValid         = false;
+                m_isRegexValid = false;
             }
         }
         if (len)
@@ -4180,7 +4267,7 @@ void CSearchDlg::AutoSizeAllColumns()
         {
             IMAGEINFO imgInfo;
             ImageList_GetImageInfo(hImgList, 0, &imgInfo);
-            imgWidth = (imgInfo.rcImage.right - imgInfo.rcImage.left) + 3; // 3 pixels between icon and text
+            imgWidth = (imgInfo.rcImage.right - imgInfo.rcImage.left) + CDPIAware::Instance().Scale(*this, 3); // 3 pixels between icon and text
         }
         for (int col = 0; col <= maxCol; col++)
         {
@@ -4196,7 +4283,7 @@ void CSearchDlg::AutoSizeAllColumns()
             {
                 // get the width of the string and add 14 pixels for the column separator and margins
                 ListView_GetItemText(hListControl, index, col, textBuf, _countof(textBuf));
-                int lineWidth = ListView_GetStringWidth(hListControl, textBuf) + 14;
+                int lineWidth = ListView_GetStringWidth(hListControl, textBuf) + CDPIAware::Instance().Scale(*this, 14);
                 // add the image size
                 if (col == 0)
                     lineWidth += imgWidth;
@@ -4213,9 +4300,6 @@ void CSearchDlg::AutoSizeAllColumns()
         ListView_GetItemRect(hListControl, 0, &rc, LVIR_BOUNDS);
         auto itemWidth = rc.right - rc.left;
         ListView_GetItemRect(hListControl, 0, &rc, LVIR_ICON);
-        auto iconWidth = rc.right - rc.left;
-        itemWidth -= iconWidth;
-        itemWidth -= 2 * GetSystemMetrics(SM_CXBORDER);
         auto totalWidth = std::accumulate(colWidths.begin(), colWidths.end(), 0);
         totalWidth -= colWidths[colWidths.size() - 2];
         auto textWidth = itemWidth - totalWidth;

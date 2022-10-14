@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2014, 2017-2021 - Stefan Kueng
+// Copyright (C) 2012, 2014, 2017-2022 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -65,7 +65,7 @@ bool CTextFile::Save(LPCWSTR path) const
     return true;
 }
 
-bool CTextFile::Load(LPCWSTR path, UnicodeType &type, bool bUTF8, volatile LONG *bCancelled)
+bool CTextFile::Load(LPCWSTR path, UnicodeType &type, bool bUTF8, std::atomic_bool& bCancelled)
 {
     encoding = AutoType;
     type     = AutoType;
@@ -502,7 +502,7 @@ CTextFile::UnicodeType CTextFile::CheckUnicodeType(BYTE *pBuffer, int cb) const
     return Ansi;
 }
 
-bool CTextFile::CalculateLines(volatile LONG *bCancelled)
+bool CTextFile::CalculateLines(std::atomic_bool& bCancelled)
 {
     // fill an array with starting positions for every line in the loaded file
     if (pFileBuf == nullptr)
@@ -512,7 +512,7 @@ bool CTextFile::CalculateLines(volatile LONG *bCancelled)
     linePositions.clear();
     linePositions.reserve(textContent.size() / 10);
     size_t pos = 0;
-    for (auto it = textContent.begin(); it != textContent.end() && ((bCancelled == nullptr) || !InterlockedExchangeAdd(bCancelled, 0)); ++it)
+    for (auto it = textContent.begin(); it != textContent.end() && !bCancelled; ++it)
     {
         if (*it == '\r')
         {

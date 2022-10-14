@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2021 - Stefan Kueng
+// Copyright (C) 2007-2022 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -56,9 +56,7 @@ using namespace Microsoft::WRL;
 #define ID_CLONE            0x0011
 
 #define ID_STAY_ON_TOP      0x0022
-
 #define ALPHA_OPAQUE         (255)
-
 
 static constexpr uint64_t MaxFileSize()
 {
@@ -118,7 +116,7 @@ public:
     inline void  SetFileMask(const std::wstring& mask, bool reg) { m_patternRegex = mask; m_bUseRegexForPaths = reg; m_patternRegexC = true; };
     inline void  SetDirExcludeRegexMask(const std::wstring& mask) { m_excludeDirsPatternRegex = mask; m_excludeDirsPatternRegexC = true; }
     inline void  SetReplaceWith(const std::wstring& replace) { m_replaceString = replace; }
-    inline void  SetUseRegex(bool reg) { m_bUseRegex = reg; }
+    inline void  SetUseRegex(bool reg) { m_bUseRegex  = reg; m_bUseRegexC = true; }
 
     inline void  SetCaseSensitive(bool bSet) { m_bCaseSensitiveC = true; m_bCaseSensitive = bSet; }
     inline void  SetMatchesNewline(bool bSet) { m_bDotMatchesNewlineC = true; m_bDotMatchesNewline = bSet; }
@@ -138,6 +136,7 @@ public:
     inline void  SetExecute(ExecuteAction execute) { m_executeImmediately = execute; }
     inline void  SetEndDialog() { m_endDialog = true; }
     inline void  SetShowContent() { m_showContent = true; m_showContentSet = true; }
+    inline bool  isRegexValid() const { return m_isRegexValid; };
 
 protected:
     LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
@@ -156,7 +155,7 @@ protected:
     void                    UpdateInfoLabel();
     bool                    SaveSettings();
     void                    SaveWndPosition();
-    void                    FormatDate(wchar_t date_native[], const FILETIME& filetime, bool force_short_fmt) const;
+    void                    FormatDate(wchar_t dateNative[], const FILETIME& fileTime, bool forceShortFmt) const;
     int                     CheckRegex();
     bool                    MatchPath(LPCTSTR pathbuf);
     void                    AutoSizeAllColumns();
@@ -165,7 +164,7 @@ protected:
 #ifdef NP3_ALLOW_UPDATE
     void                    CheckForUpdates(bool force = false);
     void                    ShowUpdateAvailable();
-    bool                    IsVersionNewer(const std::wstring& sVer);
+    bool                    IsVersionNewer(const std::wstring& sVer) const;
 #endif
     bool                    CloneWindow();
     std::wstring            ExpandString(const std::wstring& replaceString) const;
@@ -189,11 +188,11 @@ private:
 
 private:
     HWND          m_hParent;
-    //volatile LONG m_dwThreadRunning;
-    //volatile LONG m_cancelled;
+    //std::atomic_bool LONG m_dwThreadRunning;
+    //std::atomic_bool LONG m_cancelled;
 
-    std::unique_ptr<CBookmarksDlg> m_bookmarksDlg;
-    ComPtr<ITaskbarList3>          m_pTaskbarList;
+    std::unique_ptr<CBookmarksDlg>    m_bookmarksDlg;
+    ComPtr<ITaskbarList3>             m_pTaskbarList;
 
     std::wstring                      m_searchPath;
     std::wstring                      m_searchString;
@@ -204,6 +203,7 @@ private:
     std::wstring                      m_excludeDirsPatternRegex;
     bool                              m_excludeDirsPatternRegexC;
     bool                              m_bUseRegex;
+    bool                              m_bUseRegexC;
     bool                              m_bUseRegexForPaths;
     bool                              m_bAllSize;
     uint64_t                          m_lSize;
@@ -253,60 +253,61 @@ private:
     std::wstring                      m_resultString;
     std::wstring                      m_toolTipReplaceString;
     std::unique_ptr<CInfoRtfDialog>   m_rtfDialog;
+    bool                              m_isRegexValid;
 
-    bool m_bStayOnTop;
-    BYTE m_OpacityNoFocus;
+    bool                              m_bStayOnTop;
+    BYTE                              m_OpacityNoFocus;
 
-    CDlgResizer m_resizer;
-    int         m_themeCallbackId;
+    CDlgResizer                       m_resizer;
+    int                               m_themeCallbackId;
 
-    CFileDropTarget* m_pDropTarget;
+    CFileDropTarget*                  m_pDropTarget;
 
-    static UINT m_grepwinStartupmsg;
+    static UINT                       m_grepwinStartupmsg;
 
 #ifdef NP3_ALLOW_UPDATE
-    std::thread m_updateCheckThread;
+    std::thread                       m_updateCheckThread;
 #endif
 
-    CAutoComplete m_autoCompleteFilePatterns;
-    CAutoComplete m_autoCompleteExcludeDirsPatterns;
-    CAutoComplete m_autoCompleteSearchPatterns;
-    CAutoComplete m_autoCompleteReplacePatterns;
-    CAutoComplete m_autoCompleteSearchPaths;
+    CAutoComplete                     m_autoCompleteFilePatterns;
+    CAutoComplete                     m_autoCompleteExcludeDirsPatterns;
+    CAutoComplete                     m_autoCompleteSearchPatterns;
+    CAutoComplete                     m_autoCompleteReplacePatterns;
+    CAutoComplete                     m_autoCompleteSearchPaths;
 
-    CEditDoubleClick m_editFilePatterns;
-    CEditDoubleClick m_editExcludeDirsPatterns;
-    CEditDoubleClick m_editSearchPatterns;
-    CEditDoubleClick m_editReplacePatterns;
-    CEditDoubleClick m_editSearchPaths;
+    CEditDoubleClick                  m_editFilePatterns;
+    CEditDoubleClick                  m_editExcludeDirsPatterns;
+    CEditDoubleClick                  m_editSearchPatterns;
+    CEditDoubleClick                  m_editReplacePatterns;
+    CEditDoubleClick                  m_editSearchPaths;
 
-    CRegStdDWORD  m_regUseRegex;
-    CRegStdDWORD  m_regAllSize;
-    CRegStdString m_regSize;
-    CRegStdDWORD  m_regSizeCombo;
-    CRegStdDWORD  m_regIncludeSystem;
-    CRegStdDWORD  m_regIncludeHidden;
-    CRegStdDWORD  m_regIncludeSubfolders;
-    CRegStdDWORD  m_regIncludeBinary;
-    CRegStdDWORD  m_regCreateBackup;
-    CRegStdDWORD  m_regWholeWords;
-    CRegStdDWORD  m_regUTF8;
-    CRegStdDWORD  m_regBinary;
-    CRegStdDWORD  m_regCaseSensitive;
-    CRegStdDWORD  m_regDotMatchesNewline;
-    CRegStdDWORD  m_regUseRegexForPaths;
-    CRegStdString m_regPattern;
-    CRegStdString m_regExcludeDirsPattern;
-    CRegStdString m_regSearchPath;
-    CRegStdString m_regEditorCmd;
-    CRegStdDWORD  m_regBackupInFolder;
-    CRegStdDWORD  m_regDateLimit;
-    CRegStdDWORD  m_regDate1Low;
-    CRegStdDWORD  m_regDate1High;
-    CRegStdDWORD  m_regDate2Low;
-    CRegStdDWORD  m_regDate2High;
-    CRegStdDWORD  m_regShowContent;
+    CRegStdDWORD                      m_regUseRegex;
+    CRegStdDWORD                      m_regAllSize;
+    CRegStdString                     m_regSize;
+    CRegStdDWORD                      m_regSizeCombo;
+    CRegStdDWORD                      m_regIncludeSystem;
+    CRegStdDWORD                      m_regIncludeHidden;
+    CRegStdDWORD                      m_regIncludeSubfolders;
+    CRegStdDWORD                      m_regIncludeBinary;
+    CRegStdDWORD                      m_regCreateBackup;
+    CRegStdDWORD                      m_regWholeWords;
+    CRegStdDWORD                      m_regUTF8;
+    CRegStdDWORD                      m_regBinary;
+    CRegStdDWORD                      m_regCaseSensitive;
+    CRegStdDWORD                      m_regDotMatchesNewline;
+    CRegStdDWORD                      m_regUseRegexForPaths;
+    CRegStdString                     m_regPattern;
+    CRegStdString                     m_regExcludeDirsPattern;
+    CRegStdString                     m_regSearchPath;
+    CRegStdString                     m_regEditorCmd;
+    CRegStdDWORD                      m_regBackupInFolder;
+    CRegStdDWORD                      m_regDateLimit;
+    CRegStdDWORD                      m_regDate1Low;
+    CRegStdDWORD                      m_regDate1High;
+    CRegStdDWORD                      m_regDate2Low;
+    CRegStdDWORD                      m_regDate2High;
+    CRegStdDWORD                      m_regShowContent;
 
-    CRegStdDWORD  m_regStayOnTop;
-    CRegStdDWORD  m_regOpacityNoFocus;
+    CRegStdDWORD                      m_regStayOnTop;
+    CRegStdDWORD                      m_regOpacityNoFocus;
 };
