@@ -248,14 +248,8 @@ Sci_Position SCI_METHOD LexerDart::WordListSet(int n, const char* wl)
     }
 
     Sci_Position firstModification = -1LL;
-
-    if (wordListN)
-    {
-        WordList wlNew;
-        wlNew.Set(wl);
-        if (*wordListN != wlNew)
-        {
-            wordListN->Set(wl);
+    if (wordListN) {
+        if (wordListN->Set(wl)) {
             firstModification = 0;
         }
     }

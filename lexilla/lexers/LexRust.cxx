@@ -171,10 +171,7 @@ Sci_Position SCI_METHOD LexerRust::WordListSet(int n, const char *wl) {
 	Sci_Position firstModification = -1;
 	if (n < NUM_RUST_KEYWORD_LISTS) {
 		WordList *wordListN = &keywords[n];
-		WordList wlNew;
-		wlNew.Set(wl);
-		if (*wordListN != wlNew) {
-			wordListN->Set(wl);
+		if (wordListN->Set(wl)) {
 			firstModification = 0;
 		}
 	}
