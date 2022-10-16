@@ -7021,7 +7021,8 @@ clear_optimize_info(regex_t* reg)
 #if defined(ONIG_DEBUG_PARSE)  || defined(ONIG_DEBUG_MATCH) || \
     defined(ONIG_DEBUG_SEARCH) || defined(ONIG_DEBUG_COMPILE)
 
-static void print_enc_string(FILE* fp, OnigEncoding enc,
+static void
+print_enc_string(FILE* fp, OnigEncoding enc,
                              const UChar *s, const UChar *end)
 {
   if (ONIGENC_MBC_MINLEN(enc) > 1) {
@@ -7043,7 +7044,17 @@ static void print_enc_string(FILE* fp, OnigEncoding enc,
   }
   else {
     while (s < end) {
+      if (ONIGENC_MBC_MAXLEN(enc) == 1) {
+        if (*s >= 0x80) {
+          fprintf(fp, "\\x%02x", (unsigned int )*s);
+        }
+        else {
+          fputc((int )*s, fp);
+        }
+      }
+      else { /* for UTF-8 */
       fputc((int )*s, fp);
+      }
       s++;
     }
   }
@@ -7991,8 +8002,7 @@ detect_can_be_slow(Node* node, SlowElementCount* ct, int ncall, int calls[])
         if (ct->empty_check_nest_level > ct->max_empty_check_nest_level)
           ct->max_empty_check_nest_level = ct->empty_check_nest_level;
       }
-      else if (IS_INFINITE_REPEAT(qn->upper) ||
-               qn->upper > MANY_REPEAT_OF_ANYCHAR) {
+      else if (IS_INFINITE_REPEAT(qn->upper) || qn->upper > 0) {
         MJ_RESULT mr = mostly_just_anychar(body, (qn->greedy == 0));
         if (mr == MJ_YES)
           ct->anychar_reluctant_many++;

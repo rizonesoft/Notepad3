@@ -92,6 +92,7 @@ static void SetSimpleOptions(OnigOptionType& onigOptions, EOLmode /*eolMode*/,
   //ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_CAPTURE_GROUP);
 
   // dynamic options
+  ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_MATCH_WHOLE_STRING);
 
   //switch (eolMode) {
   //  case EOLmode::CR:
@@ -514,8 +515,7 @@ void OnigurumaRegExEngine::regexFindAndReplace(std::string& inputStr_inout, cons
 
 
 
-std::string& OnigurumaRegExEngine::translateRegExpr(std::string& regExprStr, bool wholeWord, bool wordStart, EndOfLine eolMode, OnigOptionType& /*rxOptions*/)
-{
+std::string &OnigurumaRegExEngine::translateRegExpr(std::string &regExprStr, bool wholeWord, bool wordStart, EndOfLine eolMode, OnigOptionType & /*rxOptions*/) {
   std::string	tmpStr;
   bool bUseTmpStrg = false;
 
@@ -533,6 +533,12 @@ std::string& OnigurumaRegExEngine::translateRegExpr(std::string& regExprStr, boo
   else {
     tmpStr.append(regExprStr);
   }
+
+  //if (wholeString) {
+  //  ONIG_OPTION_ON(rxOptions, ONIG_OPTION_MATCH_WHOLE_STRING);
+  //} else {
+  //  ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_MATCH_WHOLE_STRING);
+  //}
 
   // Oniguruma supports LTGT word boundary by: ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END
   //

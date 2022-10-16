@@ -39,6 +39,8 @@ When using configure script, if you have the POSIX API enabled in an earlier ver
 
 Master branch
 -------------
+* Update Unicode version 15.0.0
+* NEW API: ONIG_OPTION_MATCH_WHOLE_STRING
 * Fixed: (?I) option was not enabled for character classes (Issue #264).
 * Changed specification to check for incorrect POSIX bracket (Issue #253).
 * Changed [[:punct:]] in Unicode encodings to be compatible with POSIX definition. (Issue #268)
