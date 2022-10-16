@@ -68,7 +68,7 @@ CR_NEWLINE[] = { 1,
 
 /* PROPERTY: 'Alpha': POSIX [[:Alpha:]] */
 static const OnigCodePoint
-CR_Alpha[] = { 722,
+CR_Alpha[] = { 732,
 0x0041, 0x005a,
 0x0061, 0x007a,
 0x00aa, 0x00aa,
@@ -203,8 +203,7 @@ CR_Alpha[] = { 722,
 0x0bca, 0x0bcc,
 0x0bd0, 0x0bd0,
 0x0bd7, 0x0bd7,
-0x0c00, 0x0c03,
-0x0c05, 0x0c0c,
+0x0c00, 0x0c0c,
 0x0c0e, 0x0c10,
 0x0c12, 0x0c28,
 0x0c2a, 0x0c39,
@@ -227,7 +226,7 @@ CR_Alpha[] = { 722,
 0x0cd5, 0x0cd6,
 0x0cdd, 0x0cde,
 0x0ce0, 0x0ce3,
-0x0cf1, 0x0cf2,
+0x0cf1, 0x0cf3,
 0x0d00, 0x0d0c,
 0x0d0e, 0x0d10,
 0x0d12, 0x0d3a,
@@ -265,7 +264,7 @@ CR_Alpha[] = { 722,
 0x0f00, 0x0f00,
 0x0f40, 0x0f47,
 0x0f49, 0x0f6c,
-0x0f71, 0x0f81,
+0x0f71, 0x0f83,
 0x0f88, 0x0f97,
 0x0f99, 0x0fbc,
 0x1000, 0x1036,
@@ -567,7 +566,7 @@ CR_Alpha[] = { 722,
 0x10fe0, 0x10ff6,
 0x11000, 0x11045,
 0x11071, 0x11075,
-0x11082, 0x110b8,
+0x11080, 0x110b8,
 0x110c2, 0x110c2,
 0x110d0, 0x110e8,
 0x11100, 0x11132,
@@ -582,7 +581,7 @@ CR_Alpha[] = { 722,
 0x11200, 0x11211,
 0x11213, 0x11234,
 0x11237, 0x11237,
-0x1123e, 0x1123e,
+0x1123e, 0x11241,
 0x11280, 0x11286,
 0x11288, 0x11288,
 0x1128a, 0x1128d,
@@ -662,12 +661,16 @@ CR_Alpha[] = { 722,
 0x11d93, 0x11d96,
 0x11d98, 0x11d98,
 0x11ee0, 0x11ef6,
+0x11f00, 0x11f10,
+0x11f12, 0x11f3a,
+0x11f3e, 0x11f40,
 0x11fb0, 0x11fb0,
 0x12000, 0x12399,
 0x12400, 0x1246e,
 0x12480, 0x12543,
 0x12f90, 0x12ff0,
-0x13000, 0x1342e,
+0x13000, 0x1342f,
+0x13441, 0x13446,
 0x14400, 0x14646,
 0x16800, 0x16a38,
 0x16a40, 0x16a5e,
@@ -691,7 +694,9 @@ CR_Alpha[] = { 722,
 0x1aff5, 0x1affb,
 0x1affd, 0x1affe,
 0x1b000, 0x1b122,
+0x1b132, 0x1b132,
 0x1b150, 0x1b152,
+0x1b155, 0x1b155,
 0x1b164, 0x1b167,
 0x1b170, 0x1b2fb,
 0x1bc00, 0x1bc6a,
@@ -730,16 +735,20 @@ CR_Alpha[] = { 722,
 0x1d7aa, 0x1d7c2,
 0x1d7c4, 0x1d7cb,
 0x1df00, 0x1df1e,
+0x1df25, 0x1df2a,
 0x1e000, 0x1e006,
 0x1e008, 0x1e018,
 0x1e01b, 0x1e021,
 0x1e023, 0x1e024,
 0x1e026, 0x1e02a,
+0x1e030, 0x1e06d,
+0x1e08f, 0x1e08f,
 0x1e100, 0x1e12c,
 0x1e137, 0x1e13d,
 0x1e14e, 0x1e14e,
 0x1e290, 0x1e2ad,
 0x1e2c0, 0x1e2eb,
+0x1e4d0, 0x1e4eb,
 0x1e7e0, 0x1e7e6,
 0x1e7e8, 0x1e7eb,
 0x1e7ed, 0x1e7ee,
@@ -785,12 +794,13 @@ CR_Alpha[] = { 722,
 0x1f150, 0x1f169,
 0x1f170, 0x1f189,
 0x20000, 0x2a6df,
-0x2a700, 0x2b738,
+0x2a700, 0x2b739,
 0x2b740, 0x2b81d,
 0x2b820, 0x2cea1,
 0x2ceb0, 0x2ebe0,
 0x2f800, 0x2fa1d,
 0x30000, 0x3134a,
+0x31350, 0x323af,
 }; /* END of CR_Alpha */
 
 /* PROPERTY: 'Blank': POSIX [[:Blank:]] */
@@ -815,7 +825,7 @@ CR_Cntrl[] = { 2,
 
 /* PROPERTY: 'Digit': POSIX [[:Digit:]] */
 static const OnigCodePoint
-CR_Digit[] = { 62,
+CR_Digit[] = { 64,
 0x0030, 0x0039,
 0x0660, 0x0669,
 0x06f0, 0x06f9,
@@ -870,19 +880,21 @@ CR_Digit[] = { 62,
 0x11c50, 0x11c59,
 0x11d50, 0x11d59,
 0x11da0, 0x11da9,
+0x11f50, 0x11f59,
 0x16a60, 0x16a69,
 0x16ac0, 0x16ac9,
 0x16b50, 0x16b59,
 0x1d7ce, 0x1d7ff,
 0x1e140, 0x1e149,
 0x1e2f0, 0x1e2f9,
+0x1e4f0, 0x1e4f9,
 0x1e950, 0x1e959,
 0x1fbf0, 0x1fbf9,
 }; /* END of CR_Digit */
 
 /* PROPERTY: 'Graph': POSIX [[:Graph:]] */
 static const OnigCodePoint
-CR_Graph[] = { 703,
+CR_Graph[] = { 712,
 0x0021, 0x007e,
 0x00a1, 0x0377,
 0x037a, 0x037f,
@@ -1005,7 +1017,7 @@ CR_Graph[] = { 703,
 0x0cdd, 0x0cde,
 0x0ce0, 0x0ce3,
 0x0ce6, 0x0cef,
-0x0cf1, 0x0cf2,
+0x0cf1, 0x0cf3,
 0x0d00, 0x0d0c,
 0x0d0e, 0x0d10,
 0x0d12, 0x0d44,
@@ -1035,7 +1047,7 @@ CR_Graph[] = { 703,
 0x0ea7, 0x0ebd,
 0x0ec0, 0x0ec4,
 0x0ec6, 0x0ec6,
-0x0ec8, 0x0ecd,
+0x0ec8, 0x0ece,
 0x0ed0, 0x0ed9,
 0x0edc, 0x0edf,
 0x0f00, 0x0f47,
@@ -1310,7 +1322,7 @@ CR_Graph[] = { 703,
 0x10e80, 0x10ea9,
 0x10eab, 0x10ead,
 0x10eb0, 0x10eb1,
-0x10f00, 0x10f27,
+0x10efd, 0x10f27,
 0x10f30, 0x10f59,
 0x10f70, 0x10f89,
 0x10fb0, 0x10fcb,
@@ -1327,7 +1339,7 @@ CR_Graph[] = { 703,
 0x11180, 0x111df,
 0x111e1, 0x111f4,
 0x11200, 0x11211,
-0x11213, 0x1123e,
+0x11213, 0x11241,
 0x11280, 0x11286,
 0x11288, 0x11288,
 0x1128a, 0x1128d,
@@ -1380,6 +1392,7 @@ CR_Graph[] = { 703,
 0x11a00, 0x11a47,
 0x11a50, 0x11aa2,
 0x11ab0, 0x11af8,
+0x11b00, 0x11b09,
 0x11c00, 0x11c08,
 0x11c0a, 0x11c36,
 0x11c38, 0x11c45,
@@ -1401,6 +1414,9 @@ CR_Graph[] = { 703,
 0x11d93, 0x11d98,
 0x11da0, 0x11da9,
 0x11ee0, 0x11ef8,
+0x11f00, 0x11f10,
+0x11f12, 0x11f3a,
+0x11f3e, 0x11f59,
 0x11fb0, 0x11fb0,
 0x11fc0, 0x11ff1,
 0x11fff, 0x12399,
@@ -1408,8 +1424,7 @@ CR_Graph[] = { 703,
 0x12470, 0x12474,
 0x12480, 0x12543,
 0x12f90, 0x12ff2,
-0x13000, 0x1342e,
-0x13430, 0x13438,
+0x13000, 0x13455,
 0x14400, 0x14646,
 0x16800, 0x16a38,
 0x16a40, 0x16a5e,
@@ -1436,7 +1451,9 @@ CR_Graph[] = { 703,
 0x1aff5, 0x1affb,
 0x1affd, 0x1affe,
 0x1b000, 0x1b122,
+0x1b132, 0x1b132,
 0x1b150, 0x1b152,
+0x1b155, 0x1b155,
 0x1b164, 0x1b167,
 0x1b170, 0x1b2fb,
 0x1bc00, 0x1bc6a,
@@ -1451,6 +1468,7 @@ CR_Graph[] = { 703,
 0x1d100, 0x1d126,
 0x1d129, 0x1d1ea,
 0x1d200, 0x1d245,
+0x1d2c0, 0x1d2d3,
 0x1d2e0, 0x1d2f3,
 0x1d300, 0x1d356,
 0x1d360, 0x1d378,
@@ -1478,11 +1496,14 @@ CR_Graph[] = { 703,
 0x1da9b, 0x1da9f,
 0x1daa1, 0x1daaf,
 0x1df00, 0x1df1e,
+0x1df25, 0x1df2a,
 0x1e000, 0x1e006,
 0x1e008, 0x1e018,
 0x1e01b, 0x1e021,
 0x1e023, 0x1e024,
 0x1e026, 0x1e02a,
+0x1e030, 0x1e06d,
+0x1e08f, 0x1e08f,
 0x1e100, 0x1e12c,
 0x1e130, 0x1e13d,
 0x1e140, 0x1e149,
@@ -1490,6 +1511,7 @@ CR_Graph[] = { 703,
 0x1e290, 0x1e2ae,
 0x1e2c0, 0x1e2f9,
 0x1e2ff, 0x1e2ff,
+0x1e4d0, 0x1e4f9,
 0x1e7e0, 0x1e7e6,
 0x1e7e8, 0x1e7eb,
 0x1e7ed, 0x1e7ee,
@@ -1548,10 +1570,10 @@ CR_Graph[] = { 703,
 0x1f250, 0x1f251,
 0x1f260, 0x1f265,
 0x1f300, 0x1f6d7,
-0x1f6dd, 0x1f6ec,
+0x1f6dc, 0x1f6ec,
 0x1f6f0, 0x1f6fc,
-0x1f700, 0x1f773,
-0x1f780, 0x1f7d8,
+0x1f700, 0x1f776,
+0x1f77b, 0x1f7d9,
 0x1f7e0, 0x1f7eb,
 0x1f7f0, 0x1f7f0,
 0x1f800, 0x1f80b,
@@ -1562,25 +1584,24 @@ CR_Graph[] = { 703,
 0x1f8b0, 0x1f8b1,
 0x1f900, 0x1fa53,
 0x1fa60, 0x1fa6d,
-0x1fa70, 0x1fa74,
-0x1fa78, 0x1fa7c,
-0x1fa80, 0x1fa86,
-0x1fa90, 0x1faac,
-0x1fab0, 0x1faba,
-0x1fac0, 0x1fac5,
-0x1fad0, 0x1fad9,
-0x1fae0, 0x1fae7,
-0x1faf0, 0x1faf6,
+0x1fa70, 0x1fa7c,
+0x1fa80, 0x1fa88,
+0x1fa90, 0x1fabd,
+0x1fabf, 0x1fac5,
+0x1face, 0x1fadb,
+0x1fae0, 0x1fae8,
+0x1faf0, 0x1faf8,
 0x1fb00, 0x1fb92,
 0x1fb94, 0x1fbca,
 0x1fbf0, 0x1fbf9,
 0x20000, 0x2a6df,
-0x2a700, 0x2b738,
+0x2a700, 0x2b739,
 0x2b740, 0x2b81d,
 0x2b820, 0x2cea1,
 0x2ceb0, 0x2ebe0,
 0x2f800, 0x2fa1d,
 0x30000, 0x3134a,
+0x31350, 0x323af,
 0xe0001, 0xe0001,
 0xe0020, 0xe007f,
 0xe0100, 0xe01ef,
@@ -1590,7 +1611,7 @@ CR_Graph[] = { 703,
 
 /* PROPERTY: 'Lower': POSIX [[:Lower:]] */
 static const OnigCodePoint
-CR_Lower[] = { 668,
+CR_Lower[] = { 671,
 0x0061, 0x007a,
 0x00aa, 0x00aa,
 0x00b5, 0x00b5,
@@ -1867,7 +1888,7 @@ CR_Lower[] = { 668,
 0x052f, 0x052f,
 0x0560, 0x0588,
 0x10d0, 0x10fa,
-0x10fd, 0x10ff,
+0x10fc, 0x10ff,
 0x13f8, 0x13fd,
 0x1c80, 0x1c88,
 0x1d00, 0x1dbf,
@@ -2207,10 +2228,11 @@ CR_Lower[] = { 668,
 0xa7d5, 0xa7d5,
 0xa7d7, 0xa7d7,
 0xa7d9, 0xa7d9,
+0xa7f2, 0xa7f4,
 0xa7f6, 0xa7f6,
 0xa7f8, 0xa7fa,
 0xab30, 0xab5a,
-0xab5c, 0xab68,
+0xab5c, 0xab69,
 0xab70, 0xabbf,
 0xfb00, 0xfb06,
 0xfb13, 0xfb17,
@@ -2258,12 +2280,14 @@ CR_Lower[] = { 668,
 0x1d7cb, 0x1d7cb,
 0x1df00, 0x1df09,
 0x1df0b, 0x1df1e,
+0x1df25, 0x1df2a,
+0x1e030, 0x1e06d,
 0x1e922, 0x1e943,
 }; /* END of CR_Lower */
 
 /* PROPERTY: 'Print': POSIX [[:Print:]] */
 static const OnigCodePoint
-CR_Print[] = { 700,
+CR_Print[] = { 709,
 0x0020, 0x007e,
 0x00a0, 0x0377,
 0x037a, 0x037f,
@@ -2386,7 +2410,7 @@ CR_Print[] = { 700,
 0x0cdd, 0x0cde,
 0x0ce0, 0x0ce3,
 0x0ce6, 0x0cef,
-0x0cf1, 0x0cf2,
+0x0cf1, 0x0cf3,
 0x0d00, 0x0d0c,
 0x0d0e, 0x0d10,
 0x0d12, 0x0d44,
@@ -2416,7 +2440,7 @@ CR_Print[] = { 700,
 0x0ea7, 0x0ebd,
 0x0ec0, 0x0ec4,
 0x0ec6, 0x0ec6,
-0x0ec8, 0x0ecd,
+0x0ec8, 0x0ece,
 0x0ed0, 0x0ed9,
 0x0edc, 0x0edf,
 0x0f00, 0x0f47,
@@ -2688,7 +2712,7 @@ CR_Print[] = { 700,
 0x10e80, 0x10ea9,
 0x10eab, 0x10ead,
 0x10eb0, 0x10eb1,
-0x10f00, 0x10f27,
+0x10efd, 0x10f27,
 0x10f30, 0x10f59,
 0x10f70, 0x10f89,
 0x10fb0, 0x10fcb,
@@ -2705,7 +2729,7 @@ CR_Print[] = { 700,
 0x11180, 0x111df,
 0x111e1, 0x111f4,
 0x11200, 0x11211,
-0x11213, 0x1123e,
+0x11213, 0x11241,
 0x11280, 0x11286,
 0x11288, 0x11288,
 0x1128a, 0x1128d,
@@ -2758,6 +2782,7 @@ CR_Print[] = { 700,
 0x11a00, 0x11a47,
 0x11a50, 0x11aa2,
 0x11ab0, 0x11af8,
+0x11b00, 0x11b09,
 0x11c00, 0x11c08,
 0x11c0a, 0x11c36,
 0x11c38, 0x11c45,
@@ -2779,6 +2804,9 @@ CR_Print[] = { 700,
 0x11d93, 0x11d98,
 0x11da0, 0x11da9,
 0x11ee0, 0x11ef8,
+0x11f00, 0x11f10,
+0x11f12, 0x11f3a,
+0x11f3e, 0x11f59,
 0x11fb0, 0x11fb0,
 0x11fc0, 0x11ff1,
 0x11fff, 0x12399,
@@ -2786,8 +2814,7 @@ CR_Print[] = { 700,
 0x12470, 0x12474,
 0x12480, 0x12543,
 0x12f90, 0x12ff2,
-0x13000, 0x1342e,
-0x13430, 0x13438,
+0x13000, 0x13455,
 0x14400, 0x14646,
 0x16800, 0x16a38,
 0x16a40, 0x16a5e,
@@ -2814,7 +2841,9 @@ CR_Print[] = { 700,
 0x1aff5, 0x1affb,
 0x1affd, 0x1affe,
 0x1b000, 0x1b122,
+0x1b132, 0x1b132,
 0x1b150, 0x1b152,
+0x1b155, 0x1b155,
 0x1b164, 0x1b167,
 0x1b170, 0x1b2fb,
 0x1bc00, 0x1bc6a,
@@ -2829,6 +2858,7 @@ CR_Print[] = { 700,
 0x1d100, 0x1d126,
 0x1d129, 0x1d1ea,
 0x1d200, 0x1d245,
+0x1d2c0, 0x1d2d3,
 0x1d2e0, 0x1d2f3,
 0x1d300, 0x1d356,
 0x1d360, 0x1d378,
@@ -2856,11 +2886,14 @@ CR_Print[] = { 700,
 0x1da9b, 0x1da9f,
 0x1daa1, 0x1daaf,
 0x1df00, 0x1df1e,
+0x1df25, 0x1df2a,
 0x1e000, 0x1e006,
 0x1e008, 0x1e018,
 0x1e01b, 0x1e021,
 0x1e023, 0x1e024,
 0x1e026, 0x1e02a,
+0x1e030, 0x1e06d,
+0x1e08f, 0x1e08f,
 0x1e100, 0x1e12c,
 0x1e130, 0x1e13d,
 0x1e140, 0x1e149,
@@ -2868,6 +2901,7 @@ CR_Print[] = { 700,
 0x1e290, 0x1e2ae,
 0x1e2c0, 0x1e2f9,
 0x1e2ff, 0x1e2ff,
+0x1e4d0, 0x1e4f9,
 0x1e7e0, 0x1e7e6,
 0x1e7e8, 0x1e7eb,
 0x1e7ed, 0x1e7ee,
@@ -2926,10 +2960,10 @@ CR_Print[] = { 700,
 0x1f250, 0x1f251,
 0x1f260, 0x1f265,
 0x1f300, 0x1f6d7,
-0x1f6dd, 0x1f6ec,
+0x1f6dc, 0x1f6ec,
 0x1f6f0, 0x1f6fc,
-0x1f700, 0x1f773,
-0x1f780, 0x1f7d8,
+0x1f700, 0x1f776,
+0x1f77b, 0x1f7d9,
 0x1f7e0, 0x1f7eb,
 0x1f7f0, 0x1f7f0,
 0x1f800, 0x1f80b,
@@ -2940,25 +2974,24 @@ CR_Print[] = { 700,
 0x1f8b0, 0x1f8b1,
 0x1f900, 0x1fa53,
 0x1fa60, 0x1fa6d,
-0x1fa70, 0x1fa74,
-0x1fa78, 0x1fa7c,
-0x1fa80, 0x1fa86,
-0x1fa90, 0x1faac,
-0x1fab0, 0x1faba,
-0x1fac0, 0x1fac5,
-0x1fad0, 0x1fad9,
-0x1fae0, 0x1fae7,
-0x1faf0, 0x1faf6,
+0x1fa70, 0x1fa7c,
+0x1fa80, 0x1fa88,
+0x1fa90, 0x1fabd,
+0x1fabf, 0x1fac5,
+0x1face, 0x1fadb,
+0x1fae0, 0x1fae8,
+0x1faf0, 0x1faf8,
 0x1fb00, 0x1fb92,
 0x1fb94, 0x1fbca,
 0x1fbf0, 0x1fbf9,
 0x20000, 0x2a6df,
-0x2a700, 0x2b738,
+0x2a700, 0x2b739,
 0x2b740, 0x2b81d,
 0x2b820, 0x2cea1,
 0x2ceb0, 0x2ebe0,
 0x2f800, 0x2fa1d,
 0x30000, 0x3134a,
+0x31350, 0x323af,
 0xe0001, 0xe0001,
 0xe0020, 0xe007f,
 0xe0100, 0xe01ef,
@@ -3221,9 +3254,11 @@ CR_PosixPunct[] = { 338,
 0x11a3f, 0x11a46,
 0x11a9a, 0x11a9c,
 0x11a9e, 0x11aa2,
+0x11b00, 0x11b09,
 0x11c41, 0x11c45,
 0x11c70, 0x11c71,
 0x11ef7, 0x11ef8,
+0x11f43, 0x11f4f,
 0x11fd5, 0x11ff1,
 0x11fff, 0x11fff,
 0x12470, 0x12474,
@@ -3282,10 +3317,10 @@ CR_PosixPunct[] = { 338,
 0x1f250, 0x1f251,
 0x1f260, 0x1f265,
 0x1f300, 0x1f6d7,
-0x1f6dd, 0x1f6ec,
+0x1f6dc, 0x1f6ec,
 0x1f6f0, 0x1f6fc,
-0x1f700, 0x1f773,
-0x1f780, 0x1f7d8,
+0x1f700, 0x1f776,
+0x1f77b, 0x1f7d9,
 0x1f7e0, 0x1f7eb,
 0x1f7f0, 0x1f7f0,
 0x1f800, 0x1f80b,
@@ -3296,15 +3331,13 @@ CR_PosixPunct[] = { 338,
 0x1f8b0, 0x1f8b1,
 0x1f900, 0x1fa53,
 0x1fa60, 0x1fa6d,
-0x1fa70, 0x1fa74,
-0x1fa78, 0x1fa7c,
-0x1fa80, 0x1fa86,
-0x1fa90, 0x1faac,
-0x1fab0, 0x1faba,
-0x1fac0, 0x1fac5,
-0x1fad0, 0x1fad9,
-0x1fae0, 0x1fae7,
-0x1faf0, 0x1faf6,
+0x1fa70, 0x1fa7c,
+0x1fa80, 0x1fa88,
+0x1fa90, 0x1fabd,
+0x1fabf, 0x1fac5,
+0x1face, 0x1fadb,
+0x1fae0, 0x1fae8,
+0x1faf0, 0x1faf8,
 0x1fb00, 0x1fb92,
 0x1fb94, 0x1fbca,
 }; /* END of CR_PosixPunct */
@@ -3990,7 +4023,7 @@ CR_XDigit[] = { 3,
 
 /* PROPERTY: 'Word': POSIX [[:Word:]] */
 static const OnigCodePoint
-CR_Word[] = { 758,
+CR_Word[] = { 770,
 0x0030, 0x0039,
 0x0041, 0x005a,
 0x005f, 0x005f,
@@ -4148,7 +4181,7 @@ CR_Word[] = { 758,
 0x0cdd, 0x0cde,
 0x0ce0, 0x0ce3,
 0x0ce6, 0x0cef,
-0x0cf1, 0x0cf2,
+0x0cf1, 0x0cf3,
 0x0d00, 0x0d0c,
 0x0d0e, 0x0d10,
 0x0d12, 0x0d44,
@@ -4181,7 +4214,7 @@ CR_Word[] = { 758,
 0x0ea7, 0x0ebd,
 0x0ec0, 0x0ec4,
 0x0ec6, 0x0ec6,
-0x0ec8, 0x0ecd,
+0x0ec8, 0x0ece,
 0x0ed0, 0x0ed9,
 0x0edc, 0x0edf,
 0x0f00, 0x0f00,
@@ -4494,7 +4527,7 @@ CR_Word[] = { 758,
 0x10e80, 0x10ea9,
 0x10eab, 0x10eac,
 0x10eb0, 0x10eb1,
-0x10f00, 0x10f1c,
+0x10efd, 0x10f1c,
 0x10f27, 0x10f27,
 0x10f30, 0x10f50,
 0x10f70, 0x10f85,
@@ -4517,7 +4550,7 @@ CR_Word[] = { 758,
 0x111dc, 0x111dc,
 0x11200, 0x11211,
 0x11213, 0x11237,
-0x1123e, 0x1123e,
+0x1123e, 0x11241,
 0x11280, 0x11286,
 0x11288, 0x11288,
 0x1128a, 0x1128d,
@@ -4598,12 +4631,17 @@ CR_Word[] = { 758,
 0x11d93, 0x11d98,
 0x11da0, 0x11da9,
 0x11ee0, 0x11ef6,
+0x11f00, 0x11f10,
+0x11f12, 0x11f3a,
+0x11f3e, 0x11f42,
+0x11f50, 0x11f59,
 0x11fb0, 0x11fb0,
 0x12000, 0x12399,
 0x12400, 0x1246e,
 0x12480, 0x12543,
 0x12f90, 0x12ff0,
-0x13000, 0x1342e,
+0x13000, 0x1342f,
+0x13440, 0x13455,
 0x14400, 0x14646,
 0x16800, 0x16a38,
 0x16a40, 0x16a5e,
@@ -4631,7 +4669,9 @@ CR_Word[] = { 758,
 0x1aff5, 0x1affb,
 0x1affd, 0x1affe,
 0x1b000, 0x1b122,
+0x1b132, 0x1b132,
 0x1b150, 0x1b152,
+0x1b155, 0x1b155,
 0x1b164, 0x1b167,
 0x1b170, 0x1b2fb,
 0x1bc00, 0x1bc6a,
@@ -4685,17 +4725,21 @@ CR_Word[] = { 758,
 0x1da9b, 0x1da9f,
 0x1daa1, 0x1daaf,
 0x1df00, 0x1df1e,
+0x1df25, 0x1df2a,
 0x1e000, 0x1e006,
 0x1e008, 0x1e018,
 0x1e01b, 0x1e021,
 0x1e023, 0x1e024,
 0x1e026, 0x1e02a,
+0x1e030, 0x1e06d,
+0x1e08f, 0x1e08f,
 0x1e100, 0x1e12c,
 0x1e130, 0x1e13d,
 0x1e140, 0x1e149,
 0x1e14e, 0x1e14e,
 0x1e290, 0x1e2ae,
 0x1e2c0, 0x1e2f9,
+0x1e4d0, 0x1e4f9,
 0x1e7e0, 0x1e7e6,
 0x1e7e8, 0x1e7eb,
 0x1e7ed, 0x1e7ee,
@@ -4742,18 +4786,19 @@ CR_Word[] = { 758,
 0x1f170, 0x1f189,
 0x1fbf0, 0x1fbf9,
 0x20000, 0x2a6df,
-0x2a700, 0x2b738,
+0x2a700, 0x2b739,
 0x2b740, 0x2b81d,
 0x2b820, 0x2cea1,
 0x2ceb0, 0x2ebe0,
 0x2f800, 0x2fa1d,
 0x30000, 0x3134a,
+0x31350, 0x323af,
 0xe0100, 0xe01ef,
 }; /* END of CR_Word */
 
 /* PROPERTY: 'Alnum': POSIX [[:Alnum:]] */
 static const OnigCodePoint
-CR_Alnum[] = { 760,
+CR_Alnum[] = { 772,
 0x0030, 0x0039,
 0x0041, 0x005a,
 0x0061, 0x007a,
@@ -4892,8 +4937,7 @@ CR_Alnum[] = { 760,
 0x0bd0, 0x0bd0,
 0x0bd7, 0x0bd7,
 0x0be6, 0x0bef,
-0x0c00, 0x0c03,
-0x0c05, 0x0c0c,
+0x0c00, 0x0c0c,
 0x0c0e, 0x0c10,
 0x0c12, 0x0c28,
 0x0c2a, 0x0c39,
@@ -4918,7 +4962,7 @@ CR_Alnum[] = { 760,
 0x0cdd, 0x0cde,
 0x0ce0, 0x0ce3,
 0x0ce6, 0x0cef,
-0x0cf1, 0x0cf2,
+0x0cf1, 0x0cf3,
 0x0d00, 0x0d0c,
 0x0d0e, 0x0d10,
 0x0d12, 0x0d3a,
@@ -4961,7 +5005,7 @@ CR_Alnum[] = { 760,
 0x0f20, 0x0f29,
 0x0f40, 0x0f47,
 0x0f49, 0x0f6c,
-0x0f71, 0x0f81,
+0x0f71, 0x0f83,
 0x0f88, 0x0f97,
 0x0f99, 0x0fbc,
 0x1000, 0x1036,
@@ -5271,7 +5315,7 @@ CR_Alnum[] = { 760,
 0x11000, 0x11045,
 0x11066, 0x1106f,
 0x11071, 0x11075,
-0x11082, 0x110b8,
+0x11080, 0x110b8,
 0x110c2, 0x110c2,
 0x110d0, 0x110e8,
 0x110f0, 0x110f9,
@@ -5287,7 +5331,7 @@ CR_Alnum[] = { 760,
 0x11200, 0x11211,
 0x11213, 0x11234,
 0x11237, 0x11237,
-0x1123e, 0x1123e,
+0x1123e, 0x11241,
 0x11280, 0x11286,
 0x11288, 0x11288,
 0x1128a, 0x1128d,
@@ -5377,12 +5421,17 @@ CR_Alnum[] = { 760,
 0x11d98, 0x11d98,
 0x11da0, 0x11da9,
 0x11ee0, 0x11ef6,
+0x11f00, 0x11f10,
+0x11f12, 0x11f3a,
+0x11f3e, 0x11f40,
+0x11f50, 0x11f59,
 0x11fb0, 0x11fb0,
 0x12000, 0x12399,
 0x12400, 0x1246e,
 0x12480, 0x12543,
 0x12f90, 0x12ff0,
-0x13000, 0x1342e,
+0x13000, 0x1342f,
+0x13441, 0x13446,
 0x14400, 0x14646,
 0x16800, 0x16a38,
 0x16a40, 0x16a5e,
@@ -5409,7 +5458,9 @@ CR_Alnum[] = { 760,
 0x1aff5, 0x1affb,
 0x1affd, 0x1affe,
 0x1b000, 0x1b122,
+0x1b132, 0x1b132,
 0x1b150, 0x1b152,
+0x1b155, 0x1b155,
 0x1b164, 0x1b167,
 0x1b170, 0x1b2fb,
 0x1bc00, 0x1bc6a,
@@ -5449,11 +5500,14 @@ CR_Alnum[] = { 760,
 0x1d7c4, 0x1d7cb,
 0x1d7ce, 0x1d7ff,
 0x1df00, 0x1df1e,
+0x1df25, 0x1df2a,
 0x1e000, 0x1e006,
 0x1e008, 0x1e018,
 0x1e01b, 0x1e021,
 0x1e023, 0x1e024,
 0x1e026, 0x1e02a,
+0x1e030, 0x1e06d,
+0x1e08f, 0x1e08f,
 0x1e100, 0x1e12c,
 0x1e137, 0x1e13d,
 0x1e140, 0x1e149,
@@ -5461,6 +5515,8 @@ CR_Alnum[] = { 760,
 0x1e290, 0x1e2ad,
 0x1e2c0, 0x1e2eb,
 0x1e2f0, 0x1e2f9,
+0x1e4d0, 0x1e4eb,
+0x1e4f0, 0x1e4f9,
 0x1e7e0, 0x1e7e6,
 0x1e7e8, 0x1e7eb,
 0x1e7ed, 0x1e7ee,
@@ -5508,12 +5564,13 @@ CR_Alnum[] = { 760,
 0x1f170, 0x1f189,
 0x1fbf0, 0x1fbf9,
 0x20000, 0x2a6df,
-0x2a700, 0x2b738,
+0x2a700, 0x2b739,
 0x2b740, 0x2b81d,
 0x2b820, 0x2cea1,
 0x2ceb0, 0x2ebe0,
 0x2f800, 0x2fa1d,
 0x30000, 0x3134a,
+0x31350, 0x323af,
 }; /* END of CR_Alnum */
 
 /* PROPERTY: 'ASCII': POSIX [[:ASCII:]] */
@@ -5559,7 +5616,7 @@ CR_Any[] = { 1,
 
 /* PROPERTY: 'Arabic': Script */
 static const OnigCodePoint
-CR_Arabic[] = { 57,
+CR_Arabic[] = { 58,
 0x0600, 0x0604,
 0x0606, 0x060b,
 0x060d, 0x061a,
@@ -5583,6 +5640,7 @@ CR_Arabic[] = { 57,
 0xfe70, 0xfe74,
 0xfe76, 0xfefc,
 0x10e60, 0x10e7e,
+0x10efd, 0x10eff,
 0x1ee00, 0x1ee03,
 0x1ee05, 0x1ee1f,
 0x1ee21, 0x1ee22,
@@ -5630,7 +5688,7 @@ CR_Armenian[] = { 4,
 
 /* PROPERTY: 'Assigned': - */
 static const OnigCodePoint
-CR_Assigned[] = { 698,
+CR_Assigned[] = { 707,
 0x0000, 0x0377,
 0x037a, 0x037f,
 0x0384, 0x038a,
@@ -5752,7 +5810,7 @@ CR_Assigned[] = { 698,
 0x0cdd, 0x0cde,
 0x0ce0, 0x0ce3,
 0x0ce6, 0x0cef,
-0x0cf1, 0x0cf2,
+0x0cf1, 0x0cf3,
 0x0d00, 0x0d0c,
 0x0d0e, 0x0d10,
 0x0d12, 0x0d44,
@@ -5782,7 +5840,7 @@ CR_Assigned[] = { 698,
 0x0ea7, 0x0ebd,
 0x0ec0, 0x0ec4,
 0x0ec6, 0x0ec6,
-0x0ec8, 0x0ecd,
+0x0ec8, 0x0ece,
 0x0ed0, 0x0ed9,
 0x0edc, 0x0edf,
 0x0f00, 0x0f47,
@@ -6053,7 +6111,7 @@ CR_Assigned[] = { 698,
 0x10e80, 0x10ea9,
 0x10eab, 0x10ead,
 0x10eb0, 0x10eb1,
-0x10f00, 0x10f27,
+0x10efd, 0x10f27,
 0x10f30, 0x10f59,
 0x10f70, 0x10f89,
 0x10fb0, 0x10fcb,
@@ -6070,7 +6128,7 @@ CR_Assigned[] = { 698,
 0x11180, 0x111df,
 0x111e1, 0x111f4,
 0x11200, 0x11211,
-0x11213, 0x1123e,
+0x11213, 0x11241,
 0x11280, 0x11286,
 0x11288, 0x11288,
 0x1128a, 0x1128d,
@@ -6123,6 +6181,7 @@ CR_Assigned[] = { 698,
 0x11a00, 0x11a47,
 0x11a50, 0x11aa2,
 0x11ab0, 0x11af8,
+0x11b00, 0x11b09,
 0x11c00, 0x11c08,
 0x11c0a, 0x11c36,
 0x11c38, 0x11c45,
@@ -6144,6 +6203,9 @@ CR_Assigned[] = { 698,
 0x11d93, 0x11d98,
 0x11da0, 0x11da9,
 0x11ee0, 0x11ef8,
+0x11f00, 0x11f10,
+0x11f12, 0x11f3a,
+0x11f3e, 0x11f59,
 0x11fb0, 0x11fb0,
 0x11fc0, 0x11ff1,
 0x11fff, 0x12399,
@@ -6151,8 +6213,7 @@ CR_Assigned[] = { 698,
 0x12470, 0x12474,
 0x12480, 0x12543,
 0x12f90, 0x12ff2,
-0x13000, 0x1342e,
-0x13430, 0x13438,
+0x13000, 0x13455,
 0x14400, 0x14646,
 0x16800, 0x16a38,
 0x16a40, 0x16a5e,
@@ -6179,7 +6240,9 @@ CR_Assigned[] = { 698,
 0x1aff5, 0x1affb,
 0x1affd, 0x1affe,
 0x1b000, 0x1b122,
+0x1b132, 0x1b132,
 0x1b150, 0x1b152,
+0x1b155, 0x1b155,
 0x1b164, 0x1b167,
 0x1b170, 0x1b2fb,
 0x1bc00, 0x1bc6a,
@@ -6194,6 +6257,7 @@ CR_Assigned[] = { 698,
 0x1d100, 0x1d126,
 0x1d129, 0x1d1ea,
 0x1d200, 0x1d245,
+0x1d2c0, 0x1d2d3,
 0x1d2e0, 0x1d2f3,
 0x1d300, 0x1d356,
 0x1d360, 0x1d378,
@@ -6221,11 +6285,14 @@ CR_Assigned[] = { 698,
 0x1da9b, 0x1da9f,
 0x1daa1, 0x1daaf,
 0x1df00, 0x1df1e,
+0x1df25, 0x1df2a,
 0x1e000, 0x1e006,
 0x1e008, 0x1e018,
 0x1e01b, 0x1e021,
 0x1e023, 0x1e024,
 0x1e026, 0x1e02a,
+0x1e030, 0x1e06d,
+0x1e08f, 0x1e08f,
 0x1e100, 0x1e12c,
 0x1e130, 0x1e13d,
 0x1e140, 0x1e149,
@@ -6233,6 +6300,7 @@ CR_Assigned[] = { 698,
 0x1e290, 0x1e2ae,
 0x1e2c0, 0x1e2f9,
 0x1e2ff, 0x1e2ff,
+0x1e4d0, 0x1e4f9,
 0x1e7e0, 0x1e7e6,
 0x1e7e8, 0x1e7eb,
 0x1e7ed, 0x1e7ee,
@@ -6291,10 +6359,10 @@ CR_Assigned[] = { 698,
 0x1f250, 0x1f251,
 0x1f260, 0x1f265,
 0x1f300, 0x1f6d7,
-0x1f6dd, 0x1f6ec,
+0x1f6dc, 0x1f6ec,
 0x1f6f0, 0x1f6fc,
-0x1f700, 0x1f773,
-0x1f780, 0x1f7d8,
+0x1f700, 0x1f776,
+0x1f77b, 0x1f7d9,
 0x1f7e0, 0x1f7eb,
 0x1f7f0, 0x1f7f0,
 0x1f800, 0x1f80b,
@@ -6305,25 +6373,24 @@ CR_Assigned[] = { 698,
 0x1f8b0, 0x1f8b1,
 0x1f900, 0x1fa53,
 0x1fa60, 0x1fa6d,
-0x1fa70, 0x1fa74,
-0x1fa78, 0x1fa7c,
-0x1fa80, 0x1fa86,
-0x1fa90, 0x1faac,
-0x1fab0, 0x1faba,
-0x1fac0, 0x1fac5,
-0x1fad0, 0x1fad9,
-0x1fae0, 0x1fae7,
-0x1faf0, 0x1faf6,
+0x1fa70, 0x1fa7c,
+0x1fa80, 0x1fa88,
+0x1fa90, 0x1fabd,
+0x1fabf, 0x1fac5,
+0x1face, 0x1fadb,
+0x1fae0, 0x1fae8,
+0x1faf0, 0x1faf8,
 0x1fb00, 0x1fb92,
 0x1fb94, 0x1fbca,
 0x1fbf0, 0x1fbf9,
 0x20000, 0x2a6df,
-0x2a700, 0x2b738,
+0x2a700, 0x2b739,
 0x2b740, 0x2b81d,
 0x2b820, 0x2cea1,
 0x2ceb0, 0x2ebe0,
 0x2f800, 0x2fa1d,
 0x30000, 0x3134a,
+0x31350, 0x323af,
 0xe0001, 0xe0001,
 0xe0020, 0xe007f,
 0xe0100, 0xe01ef,
@@ -6440,7 +6507,7 @@ CR_Buhid[] = { 1,
 
 /* PROPERTY: 'C': Major Category */
 static const OnigCodePoint
-CR_C[] = { 701,
+CR_C[] = { 712,
 0x0000, 0x001f,
 0x007f, 0x009f,
 0x00ad, 0x00ad,
@@ -6567,7 +6634,7 @@ CR_C[] = { 701,
 0x0cdf, 0x0cdf,
 0x0ce4, 0x0ce5,
 0x0cf0, 0x0cf0,
-0x0cf3, 0x0cff,
+0x0cf4, 0x0cff,
 0x0d0d, 0x0d0d,
 0x0d11, 0x0d11,
 0x0d45, 0x0d45,
@@ -6597,7 +6664,7 @@ CR_C[] = { 701,
 0x0ebe, 0x0ebf,
 0x0ec5, 0x0ec5,
 0x0ec7, 0x0ec7,
-0x0ece, 0x0ecf,
+0x0ecf, 0x0ecf,
 0x0eda, 0x0edb,
 0x0ee0, 0x0eff,
 0x0f48, 0x0f48,
@@ -6869,7 +6936,7 @@ CR_C[] = { 701,
 0x10e7f, 0x10e7f,
 0x10eaa, 0x10eaa,
 0x10eae, 0x10eaf,
-0x10eb2, 0x10eff,
+0x10eb2, 0x10efc,
 0x10f28, 0x10f2f,
 0x10f5a, 0x10f6f,
 0x10f8a, 0x10faf,
@@ -6887,7 +6954,7 @@ CR_C[] = { 701,
 0x111e0, 0x111e0,
 0x111f5, 0x111ff,
 0x11212, 0x11212,
-0x1123f, 0x1127f,
+0x11242, 0x1127f,
 0x11287, 0x11287,
 0x11289, 0x11289,
 0x1128e, 0x1128e,
@@ -6939,7 +7006,8 @@ CR_C[] = { 701,
 0x119e5, 0x119ff,
 0x11a48, 0x11a4f,
 0x11aa3, 0x11aaf,
-0x11af9, 0x11bff,
+0x11af9, 0x11aff,
+0x11b0a, 0x11bff,
 0x11c09, 0x11c09,
 0x11c37, 0x11c37,
 0x11c46, 0x11c4f,
@@ -6960,7 +7028,10 @@ CR_C[] = { 701,
 0x11d92, 0x11d92,
 0x11d99, 0x11d9f,
 0x11daa, 0x11edf,
-0x11ef9, 0x11faf,
+0x11ef9, 0x11eff,
+0x11f11, 0x11f11,
+0x11f3b, 0x11f3d,
+0x11f5a, 0x11faf,
 0x11fb1, 0x11fbf,
 0x11ff2, 0x11ffe,
 0x1239a, 0x123ff,
@@ -6968,7 +7039,8 @@ CR_C[] = { 701,
 0x12475, 0x1247f,
 0x12544, 0x12f8f,
 0x12ff3, 0x12fff,
-0x1342f, 0x143ff,
+0x13430, 0x1343f,
+0x13456, 0x143ff,
 0x14647, 0x167ff,
 0x16a39, 0x16a3f,
 0x16a5f, 0x16a5f,
@@ -6994,8 +7066,10 @@ CR_C[] = { 701,
 0x1aff4, 0x1aff4,
 0x1affc, 0x1affc,
 0x1afff, 0x1afff,
-0x1b123, 0x1b14f,
-0x1b153, 0x1b163,
+0x1b123, 0x1b131,
+0x1b133, 0x1b14f,
+0x1b153, 0x1b154,
+0x1b156, 0x1b163,
 0x1b168, 0x1b16f,
 0x1b2fc, 0x1bbff,
 0x1bc6b, 0x1bc6f,
@@ -7010,7 +7084,8 @@ CR_C[] = { 701,
 0x1d127, 0x1d128,
 0x1d173, 0x1d17a,
 0x1d1eb, 0x1d1ff,
-0x1d246, 0x1d2df,
+0x1d246, 0x1d2bf,
+0x1d2d4, 0x1d2df,
 0x1d2f4, 0x1d2ff,
 0x1d357, 0x1d35f,
 0x1d379, 0x1d3ff,
@@ -7037,19 +7112,23 @@ CR_C[] = { 701,
 0x1da8c, 0x1da9a,
 0x1daa0, 0x1daa0,
 0x1dab0, 0x1deff,
-0x1df1f, 0x1dfff,
+0x1df1f, 0x1df24,
+0x1df2b, 0x1dfff,
 0x1e007, 0x1e007,
 0x1e019, 0x1e01a,
 0x1e022, 0x1e022,
 0x1e025, 0x1e025,
-0x1e02b, 0x1e0ff,
+0x1e02b, 0x1e02f,
+0x1e06e, 0x1e08e,
+0x1e090, 0x1e0ff,
 0x1e12d, 0x1e12f,
 0x1e13e, 0x1e13f,
 0x1e14a, 0x1e14d,
 0x1e150, 0x1e28f,
 0x1e2af, 0x1e2bf,
 0x1e2fa, 0x1e2fe,
-0x1e300, 0x1e7df,
+0x1e300, 0x1e4cf,
+0x1e4fa, 0x1e7df,
 0x1e7e7, 0x1e7e7,
 0x1e7ec, 0x1e7ec,
 0x1e7ef, 0x1e7ef,
@@ -7107,11 +7186,11 @@ CR_C[] = { 701,
 0x1f249, 0x1f24f,
 0x1f252, 0x1f25f,
 0x1f266, 0x1f2ff,
-0x1f6d8, 0x1f6dc,
+0x1f6d8, 0x1f6db,
 0x1f6ed, 0x1f6ef,
 0x1f6fd, 0x1f6ff,
-0x1f774, 0x1f77f,
-0x1f7d9, 0x1f7df,
+0x1f777, 0x1f77a,
+0x1f7da, 0x1f7df,
 0x1f7ec, 0x1f7ef,
 0x1f7f1, 0x1f7ff,
 0x1f80c, 0x1f80f,
@@ -7122,25 +7201,24 @@ CR_C[] = { 701,
 0x1f8b2, 0x1f8ff,
 0x1fa54, 0x1fa5f,
 0x1fa6e, 0x1fa6f,
-0x1fa75, 0x1fa77,
 0x1fa7d, 0x1fa7f,
-0x1fa87, 0x1fa8f,
-0x1faad, 0x1faaf,
-0x1fabb, 0x1fabf,
-0x1fac6, 0x1facf,
-0x1fada, 0x1fadf,
-0x1fae8, 0x1faef,
-0x1faf7, 0x1faff,
+0x1fa89, 0x1fa8f,
+0x1fabe, 0x1fabe,
+0x1fac6, 0x1facd,
+0x1fadc, 0x1fadf,
+0x1fae9, 0x1faef,
+0x1faf9, 0x1faff,
 0x1fb93, 0x1fb93,
 0x1fbcb, 0x1fbef,
 0x1fbfa, 0x1ffff,
 0x2a6e0, 0x2a6ff,
-0x2b739, 0x2b73f,
+0x2b73a, 0x2b73f,
 0x2b81e, 0x2b81f,
 0x2cea2, 0x2ceaf,
 0x2ebe1, 0x2f7ff,
 0x2fa1e, 0x2ffff,
-0x3134b, 0xe00ff,
+0x3134b, 0x3134f,
+0x323b0, 0xe00ff,
 0xe01f0, 0x10ffff,
 }; /* END of CR_C */
 
@@ -7160,7 +7238,7 @@ CR_Carian[] = { 1,
 
 /* PROPERTY: 'Case_Ignorable': Derived Property */
 static const OnigCodePoint
-CR_Case_Ignorable[] = { 427,
+CR_Case_Ignorable[] = { 437,
 0x0027, 0x0027,
 0x002e, 0x002e,
 0x003a, 0x003a,
@@ -7274,7 +7352,7 @@ CR_Case_Ignorable[] = { 427,
 0x0eb1, 0x0eb1,
 0x0eb4, 0x0ebc,
 0x0ec6, 0x0ec6,
-0x0ec8, 0x0ecd,
+0x0ec8, 0x0ece,
 0x0f18, 0x0f19,
 0x0f35, 0x0f35,
 0x0f37, 0x0f37,
@@ -7463,6 +7541,7 @@ CR_Case_Ignorable[] = { 427,
 0x10ae5, 0x10ae6,
 0x10d24, 0x10d27,
 0x10eab, 0x10eac,
+0x10efd, 0x10eff,
 0x10f46, 0x10f50,
 0x10f82, 0x10f85,
 0x11001, 0x11001,
@@ -7487,6 +7566,7 @@ CR_Case_Ignorable[] = { 427,
 0x11234, 0x11234,
 0x11236, 0x11237,
 0x1123e, 0x1123e,
+0x11241, 0x11241,
 0x112df, 0x112df,
 0x112e3, 0x112ea,
 0x11300, 0x11301,
@@ -7548,7 +7628,12 @@ CR_Case_Ignorable[] = { 427,
 0x11d95, 0x11d95,
 0x11d97, 0x11d97,
 0x11ef3, 0x11ef4,
-0x13430, 0x13438,
+0x11f00, 0x11f01,
+0x11f36, 0x11f3a,
+0x11f40, 0x11f40,
+0x11f42, 0x11f42,
+0x13430, 0x13440,
+0x13447, 0x13455,
 0x16af0, 0x16af4,
 0x16b30, 0x16b36,
 0x16b40, 0x16b43,
@@ -7579,9 +7664,12 @@ CR_Case_Ignorable[] = { 427,
 0x1e01b, 0x1e021,
 0x1e023, 0x1e024,
 0x1e026, 0x1e02a,
+0x1e030, 0x1e06d,
+0x1e08f, 0x1e08f,
 0x1e130, 0x1e13d,
 0x1e2ae, 0x1e2ae,
 0x1e2ec, 0x1e2ef,
+0x1e4eb, 0x1e4ef,
 0x1e8d0, 0x1e8d6,
 0x1e944, 0x1e94b,
 0x1f3fb, 0x1f3ff,
@@ -7592,7 +7680,7 @@ CR_Case_Ignorable[] = { 427,
 
 /* PROPERTY: 'Cased': Derived Property */
 static const OnigCodePoint
-CR_Cased[] = { 155,
+CR_Cased[] = { 157,
 0x0041, 0x005a,
 0x0061, 0x007a,
 0x00aa, 0x00aa,
@@ -7624,7 +7712,7 @@ CR_Cased[] = { 155,
 0x10c7, 0x10c7,
 0x10cd, 0x10cd,
 0x10d0, 0x10fa,
-0x10fd, 0x10ff,
+0x10fc, 0x10ff,
 0x13a0, 0x13f5,
 0x13f8, 0x13fd,
 0x1c80, 0x1c88,
@@ -7684,10 +7772,10 @@ CR_Cased[] = { 155,
 0xa7d0, 0xa7d1,
 0xa7d3, 0xa7d3,
 0xa7d5, 0xa7d9,
-0xa7f5, 0xa7f6,
+0xa7f2, 0xa7f6,
 0xa7f8, 0xa7fa,
 0xab30, 0xab5a,
-0xab5c, 0xab68,
+0xab5c, 0xab69,
 0xab70, 0xabbf,
 0xfb00, 0xfb06,
 0xfb13, 0xfb17,
@@ -7744,6 +7832,8 @@ CR_Cased[] = { 155,
 0x1d7c4, 0x1d7cb,
 0x1df00, 0x1df09,
 0x1df0b, 0x1df1e,
+0x1df25, 0x1df2a,
+0x1e030, 0x1e06d,
 0x1e900, 0x1e943,
 0x1f130, 0x1f149,
 0x1f150, 0x1f169,
@@ -7779,7 +7869,7 @@ CR_Cf[] = { 21,
 0xfff9, 0xfffb,
 0x110bd, 0x110bd,
 0x110cd, 0x110cd,
-0x13430, 0x13438,
+0x13430, 0x1343f,
 0x1bca0, 0x1bca3,
 0x1d173, 0x1d17a,
 0xe0001, 0xe0001,
@@ -10458,7 +10548,7 @@ CR_Chorasmian[] = { 1,
 
 /* PROPERTY: 'Cn': General Category */
 static const OnigCodePoint
-CR_Cn[] = { 698,
+CR_Cn[] = { 707,
 0x0378, 0x0379,
 0x0380, 0x0383,
 0x038b, 0x038b,
@@ -10580,7 +10670,7 @@ CR_Cn[] = { 698,
 0x0cdf, 0x0cdf,
 0x0ce4, 0x0ce5,
 0x0cf0, 0x0cf0,
-0x0cf3, 0x0cff,
+0x0cf4, 0x0cff,
 0x0d0d, 0x0d0d,
 0x0d11, 0x0d11,
 0x0d45, 0x0d45,
@@ -10610,7 +10700,7 @@ CR_Cn[] = { 698,
 0x0ebe, 0x0ebf,
 0x0ec5, 0x0ec5,
 0x0ec7, 0x0ec7,
-0x0ece, 0x0ecf,
+0x0ecf, 0x0ecf,
 0x0eda, 0x0edb,
 0x0ee0, 0x0eff,
 0x0f48, 0x0f48,
@@ -10880,7 +10970,7 @@ CR_Cn[] = { 698,
 0x10e7f, 0x10e7f,
 0x10eaa, 0x10eaa,
 0x10eae, 0x10eaf,
-0x10eb2, 0x10eff,
+0x10eb2, 0x10efc,
 0x10f28, 0x10f2f,
 0x10f5a, 0x10f6f,
 0x10f8a, 0x10faf,
@@ -10898,7 +10988,7 @@ CR_Cn[] = { 698,
 0x111e0, 0x111e0,
 0x111f5, 0x111ff,
 0x11212, 0x11212,
-0x1123f, 0x1127f,
+0x11242, 0x1127f,
 0x11287, 0x11287,
 0x11289, 0x11289,
 0x1128e, 0x1128e,
@@ -10950,7 +11040,8 @@ CR_Cn[] = { 698,
 0x119e5, 0x119ff,
 0x11a48, 0x11a4f,
 0x11aa3, 0x11aaf,
-0x11af9, 0x11bff,
+0x11af9, 0x11aff,
+0x11b0a, 0x11bff,
 0x11c09, 0x11c09,
 0x11c37, 0x11c37,
 0x11c46, 0x11c4f,
@@ -10971,7 +11062,10 @@ CR_Cn[] = { 698,
 0x11d92, 0x11d92,
 0x11d99, 0x11d9f,
 0x11daa, 0x11edf,
-0x11ef9, 0x11faf,
+0x11ef9, 0x11eff,
+0x11f11, 0x11f11,
+0x11f3b, 0x11f3d,
+0x11f5a, 0x11faf,
 0x11fb1, 0x11fbf,
 0x11ff2, 0x11ffe,
 0x1239a, 0x123ff,
@@ -10979,8 +11073,7 @@ CR_Cn[] = { 698,
 0x12475, 0x1247f,
 0x12544, 0x12f8f,
 0x12ff3, 0x12fff,
-0x1342f, 0x1342f,
-0x13439, 0x143ff,
+0x13456, 0x143ff,
 0x14647, 0x167ff,
 0x16a39, 0x16a3f,
 0x16a5f, 0x16a5f,
@@ -11006,8 +11099,10 @@ CR_Cn[] = { 698,
 0x1aff4, 0x1aff4,
 0x1affc, 0x1affc,
 0x1afff, 0x1afff,
-0x1b123, 0x1b14f,
-0x1b153, 0x1b163,
+0x1b123, 0x1b131,
+0x1b133, 0x1b14f,
+0x1b153, 0x1b154,
+0x1b156, 0x1b163,
 0x1b168, 0x1b16f,
 0x1b2fc, 0x1bbff,
 0x1bc6b, 0x1bc6f,
@@ -11021,7 +11116,8 @@ CR_Cn[] = { 698,
 0x1d0f6, 0x1d0ff,
 0x1d127, 0x1d128,
 0x1d1eb, 0x1d1ff,
-0x1d246, 0x1d2df,
+0x1d246, 0x1d2bf,
+0x1d2d4, 0x1d2df,
 0x1d2f4, 0x1d2ff,
 0x1d357, 0x1d35f,
 0x1d379, 0x1d3ff,
@@ -11048,19 +11144,23 @@ CR_Cn[] = { 698,
 0x1da8c, 0x1da9a,
 0x1daa0, 0x1daa0,
 0x1dab0, 0x1deff,
-0x1df1f, 0x1dfff,
+0x1df1f, 0x1df24,
+0x1df2b, 0x1dfff,
 0x1e007, 0x1e007,
 0x1e019, 0x1e01a,
 0x1e022, 0x1e022,
 0x1e025, 0x1e025,
-0x1e02b, 0x1e0ff,
+0x1e02b, 0x1e02f,
+0x1e06e, 0x1e08e,
+0x1e090, 0x1e0ff,
 0x1e12d, 0x1e12f,
 0x1e13e, 0x1e13f,
 0x1e14a, 0x1e14d,
 0x1e150, 0x1e28f,
 0x1e2af, 0x1e2bf,
 0x1e2fa, 0x1e2fe,
-0x1e300, 0x1e7df,
+0x1e300, 0x1e4cf,
+0x1e4fa, 0x1e7df,
 0x1e7e7, 0x1e7e7,
 0x1e7ec, 0x1e7ec,
 0x1e7ef, 0x1e7ef,
@@ -11118,11 +11218,11 @@ CR_Cn[] = { 698,
 0x1f249, 0x1f24f,
 0x1f252, 0x1f25f,
 0x1f266, 0x1f2ff,
-0x1f6d8, 0x1f6dc,
+0x1f6d8, 0x1f6db,
 0x1f6ed, 0x1f6ef,
 0x1f6fd, 0x1f6ff,
-0x1f774, 0x1f77f,
-0x1f7d9, 0x1f7df,
+0x1f777, 0x1f77a,
+0x1f7da, 0x1f7df,
 0x1f7ec, 0x1f7ef,
 0x1f7f1, 0x1f7ff,
 0x1f80c, 0x1f80f,
@@ -11133,25 +11233,24 @@ CR_Cn[] = { 698,
 0x1f8b2, 0x1f8ff,
 0x1fa54, 0x1fa5f,
 0x1fa6e, 0x1fa6f,
-0x1fa75, 0x1fa77,
 0x1fa7d, 0x1fa7f,
-0x1fa87, 0x1fa8f,
-0x1faad, 0x1faaf,
-0x1fabb, 0x1fabf,
-0x1fac6, 0x1facf,
-0x1fada, 0x1fadf,
-0x1fae8, 0x1faef,
-0x1faf7, 0x1faff,
+0x1fa89, 0x1fa8f,
+0x1fabe, 0x1fabe,
+0x1fac6, 0x1facd,
+0x1fadc, 0x1fadf,
+0x1fae9, 0x1faef,
+0x1faf9, 0x1faff,
 0x1fb93, 0x1fb93,
 0x1fbcb, 0x1fbef,
 0x1fbfa, 0x1ffff,
 0x2a6e0, 0x2a6ff,
-0x2b739, 0x2b73f,
+0x2b73a, 0x2b73f,
 0x2b81e, 0x2b81f,
 0x2cea2, 0x2ceaf,
 0x2ebe1, 0x2f7ff,
 0x2fa1e, 0x2ffff,
-0x3134b, 0xe0000,
+0x3134b, 0x3134f,
+0x323b0, 0xe0000,
 0xe0002, 0xe001f,
 0xe0080, 0xe00ff,
 0xe01f0, 0xeffff,
@@ -11169,7 +11268,7 @@ CR_Co[] = { 3,
 
 /* PROPERTY: 'Common': Script */
 static const OnigCodePoint
-CR_Common[] = { 174,
+CR_Common[] = { 173,
 0x0000, 0x0040,
 0x005b, 0x0060,
 0x007b, 0x00a9,
@@ -11276,6 +11375,7 @@ CR_Common[] = { 174,
 0x1d183, 0x1d184,
 0x1d18c, 0x1d1a9,
 0x1d1ae, 0x1d1ea,
+0x1d2c0, 0x1d2d3,
 0x1d2e0, 0x1d2f3,
 0x1d300, 0x1d356,
 0x1d360, 0x1d378,
@@ -11316,10 +11416,10 @@ CR_Common[] = { 174,
 0x1f250, 0x1f251,
 0x1f260, 0x1f265,
 0x1f300, 0x1f6d7,
-0x1f6dd, 0x1f6ec,
+0x1f6dc, 0x1f6ec,
 0x1f6f0, 0x1f6fc,
-0x1f700, 0x1f773,
-0x1f780, 0x1f7d8,
+0x1f700, 0x1f776,
+0x1f77b, 0x1f7d9,
 0x1f7e0, 0x1f7eb,
 0x1f7f0, 0x1f7f0,
 0x1f800, 0x1f80b,
@@ -11330,15 +11430,13 @@ CR_Common[] = { 174,
 0x1f8b0, 0x1f8b1,
 0x1f900, 0x1fa53,
 0x1fa60, 0x1fa6d,
-0x1fa70, 0x1fa74,
-0x1fa78, 0x1fa7c,
-0x1fa80, 0x1fa86,
-0x1fa90, 0x1faac,
-0x1fab0, 0x1faba,
-0x1fac0, 0x1fac5,
-0x1fad0, 0x1fad9,
-0x1fae0, 0x1fae7,
-0x1faf0, 0x1faf6,
+0x1fa70, 0x1fa7c,
+0x1fa80, 0x1fa88,
+0x1fa90, 0x1fabd,
+0x1fabf, 0x1fac5,
+0x1face, 0x1fadb,
+0x1fae0, 0x1fae8,
+0x1faf0, 0x1faf8,
 0x1fb00, 0x1fb92,
 0x1fb94, 0x1fbca,
 0x1fbf0, 0x1fbf9,
@@ -11388,7 +11486,7 @@ CR_Cypro_Minoan[] = { 1,
 
 /* PROPERTY: 'Cyrillic': Script */
 static const OnigCodePoint
-CR_Cyrillic[] = { 8,
+CR_Cyrillic[] = { 10,
 0x0400, 0x0484,
 0x0487, 0x052f,
 0x1c80, 0x1c88,
@@ -11397,6 +11495,8 @@ CR_Cyrillic[] = { 8,
 0x2de0, 0x2dff,
 0xa640, 0xa69f,
 0xfe2e, 0xfe2f,
+0x1e030, 0x1e06d,
+0x1e08f, 0x1e08f,
 }; /* END of CR_Cyrillic */
 
 /* PROPERTY: 'Dash': Binary Property */
@@ -11470,16 +11570,17 @@ CR_Deseret[] = { 1,
 
 /* PROPERTY: 'Devanagari': Script */
 static const OnigCodePoint
-CR_Devanagari[] = { 4,
+CR_Devanagari[] = { 5,
 0x0900, 0x0950,
 0x0955, 0x0963,
 0x0966, 0x097f,
 0xa8e0, 0xa8ff,
+0x11b00, 0x11b09,
 }; /* END of CR_Devanagari */
 
 /* PROPERTY: 'Diacritic': Binary Property */
 static const OnigCodePoint
-CR_Diacritic[] = { 192,
+CR_Diacritic[] = { 195,
 0x005e, 0x005e,
 0x0060, 0x0060,
 0x00a8, 0x00a8,
@@ -11619,6 +11720,7 @@ CR_Diacritic[] = { 192,
 0x107b2, 0x107ba,
 0x10ae5, 0x10ae6,
 0x10d22, 0x10d27,
+0x10efd, 0x10eff,
 0x10f46, 0x10f50,
 0x10f82, 0x10f85,
 0x11046, 0x11046,
@@ -11652,6 +11754,7 @@ CR_Diacritic[] = { 192,
 0x11d42, 0x11d42,
 0x11d44, 0x11d45,
 0x11d97, 0x11d97,
+0x13447, 0x13455,
 0x16af0, 0x16af4,
 0x16b30, 0x16b36,
 0x16f8f, 0x16f9f,
@@ -11666,6 +11769,7 @@ CR_Diacritic[] = { 192,
 0x1d17b, 0x1d182,
 0x1d185, 0x1d18b,
 0x1d1aa, 0x1d1ad,
+0x1e030, 0x1e06d,
 0x1e130, 0x1e136,
 0x1e2ae, 0x1e2ae,
 0x1e2ec, 0x1e2ef,
@@ -11705,9 +11809,8 @@ CR_Duployan[] = { 5,
 
 /* PROPERTY: 'Egyptian_Hieroglyphs': Script */
 static const OnigCodePoint
-CR_Egyptian_Hieroglyphs[] = { 2,
-0x13000, 0x1342e,
-0x13430, 0x13438,
+CR_Egyptian_Hieroglyphs[] = { 1,
+0x13000, 0x13455,
 }; /* END of CR_Egyptian_Hieroglyphs */
 
 /* PROPERTY: 'Elbasan': Script */
@@ -11724,7 +11827,7 @@ CR_Elymaic[] = { 1,
 
 /* PROPERTY: 'Emoji': Emoji Property */
 static const OnigCodePoint
-CR_Emoji[] = { 153,
+CR_Emoji[] = { 151,
 0x0023, 0x0023,
 0x002a, 0x002a,
 0x0030, 0x0039,
@@ -11859,7 +11962,7 @@ CR_Emoji[] = { 153,
 0x1f680, 0x1f6c5,
 0x1f6cb, 0x1f6d2,
 0x1f6d5, 0x1f6d7,
-0x1f6dd, 0x1f6e5,
+0x1f6dc, 0x1f6e5,
 0x1f6e9, 0x1f6e9,
 0x1f6eb, 0x1f6ec,
 0x1f6f0, 0x1f6f0,
@@ -11869,15 +11972,13 @@ CR_Emoji[] = { 153,
 0x1f90c, 0x1f93a,
 0x1f93c, 0x1f945,
 0x1f947, 0x1f9ff,
-0x1fa70, 0x1fa74,
-0x1fa78, 0x1fa7c,
-0x1fa80, 0x1fa86,
-0x1fa90, 0x1faac,
-0x1fab0, 0x1faba,
-0x1fac0, 0x1fac5,
-0x1fad0, 0x1fad9,
-0x1fae0, 0x1fae7,
-0x1faf0, 0x1faf6,
+0x1fa70, 0x1fa7c,
+0x1fa80, 0x1fa88,
+0x1fa90, 0x1fabd,
+0x1fabf, 0x1fac5,
+0x1face, 0x1fadb,
+0x1fae0, 0x1fae8,
+0x1faf0, 0x1faf8,
 }; /* END of CR_Emoji */
 
 /* PROPERTY: 'Emoji_Component': Emoji Property */
@@ -11943,12 +12044,12 @@ CR_Emoji_Modifier_Base[] = { 40,
 0x1f9cd, 0x1f9cf,
 0x1f9d1, 0x1f9dd,
 0x1fac3, 0x1fac5,
-0x1faf0, 0x1faf6,
+0x1faf0, 0x1faf8,
 }; /* END of CR_Emoji_Modifier_Base */
 
 /* PROPERTY: 'Emoji_Presentation': Emoji Property */
 static const OnigCodePoint
-CR_Emoji_Presentation[] = { 83,
+CR_Emoji_Presentation[] = { 81,
 0x231a, 0x231b,
 0x23e9, 0x23ec,
 0x23f0, 0x23f0,
@@ -12015,7 +12116,7 @@ CR_Emoji_Presentation[] = { 83,
 0x1f6cc, 0x1f6cc,
 0x1f6d0, 0x1f6d2,
 0x1f6d5, 0x1f6d7,
-0x1f6dd, 0x1f6df,
+0x1f6dc, 0x1f6df,
 0x1f6eb, 0x1f6ec,
 0x1f6f4, 0x1f6fc,
 0x1f7e0, 0x1f7eb,
@@ -12023,15 +12124,13 @@ CR_Emoji_Presentation[] = { 83,
 0x1f90c, 0x1f93a,
 0x1f93c, 0x1f945,
 0x1f947, 0x1f9ff,
-0x1fa70, 0x1fa74,
-0x1fa78, 0x1fa7c,
-0x1fa80, 0x1fa86,
-0x1fa90, 0x1faac,
-0x1fab0, 0x1faba,
-0x1fac0, 0x1fac5,
-0x1fad0, 0x1fad9,
-0x1fae0, 0x1fae7,
-0x1faf0, 0x1faf6,
+0x1fa70, 0x1fa7c,
+0x1fa80, 0x1fa88,
+0x1fa90, 0x1fabd,
+0x1fabf, 0x1fac5,
+0x1face, 0x1fadb,
+0x1fae0, 0x1fae8,
+0x1faf0, 0x1faf8,
 }; /* END of CR_Emoji_Presentation */
 
 /* PROPERTY: 'Ethiopic': Script */
@@ -12250,7 +12349,7 @@ CR_Grantha[] = { 15,
 
 /* PROPERTY: 'Grapheme_Base': Derived Property */
 static const OnigCodePoint
-CR_Grapheme_Base[] = { 861,
+CR_Grapheme_Base[] = { 875,
 0x0020, 0x007e,
 0x00a0, 0x00ac,
 0x00ae, 0x02ff,
@@ -12400,7 +12499,7 @@ CR_Grapheme_Base[] = { 861,
 0x0cdd, 0x0cde,
 0x0ce0, 0x0ce1,
 0x0ce6, 0x0cef,
-0x0cf1, 0x0cf2,
+0x0cf1, 0x0cf3,
 0x0d02, 0x0d0c,
 0x0d0e, 0x0d10,
 0x0d12, 0x0d3a,
@@ -12819,6 +12918,7 @@ CR_Grapheme_Base[] = { 861,
 0x11232, 0x11233,
 0x11235, 0x11235,
 0x11238, 0x1123d,
+0x1123f, 0x11240,
 0x11280, 0x11286,
 0x11288, 0x11288,
 0x1128a, 0x1128d,
@@ -12905,6 +13005,7 @@ CR_Grapheme_Base[] = { 861,
 0x11a97, 0x11a97,
 0x11a9a, 0x11aa2,
 0x11ab0, 0x11af8,
+0x11b00, 0x11b09,
 0x11c00, 0x11c08,
 0x11c0a, 0x11c2f,
 0x11c3e, 0x11c3e,
@@ -12928,6 +13029,11 @@ CR_Grapheme_Base[] = { 861,
 0x11da0, 0x11da9,
 0x11ee0, 0x11ef2,
 0x11ef5, 0x11ef8,
+0x11f02, 0x11f10,
+0x11f12, 0x11f35,
+0x11f3e, 0x11f3f,
+0x11f41, 0x11f41,
+0x11f43, 0x11f59,
 0x11fb0, 0x11fb0,
 0x11fc0, 0x11ff1,
 0x11fff, 0x12399,
@@ -12935,7 +13041,8 @@ CR_Grapheme_Base[] = { 861,
 0x12470, 0x12474,
 0x12480, 0x12543,
 0x12f90, 0x12ff2,
-0x13000, 0x1342e,
+0x13000, 0x1342f,
+0x13441, 0x13446,
 0x14400, 0x14646,
 0x16800, 0x16a38,
 0x16a40, 0x16a5e,
@@ -12963,7 +13070,9 @@ CR_Grapheme_Base[] = { 861,
 0x1aff5, 0x1affb,
 0x1affd, 0x1affe,
 0x1b000, 0x1b122,
+0x1b132, 0x1b132,
 0x1b150, 0x1b152,
+0x1b155, 0x1b155,
 0x1b164, 0x1b167,
 0x1b170, 0x1b2fb,
 0x1bc00, 0x1bc6a,
@@ -12983,6 +13092,7 @@ CR_Grapheme_Base[] = { 861,
 0x1d1ae, 0x1d1ea,
 0x1d200, 0x1d241,
 0x1d245, 0x1d245,
+0x1d2c0, 0x1d2d3,
 0x1d2e0, 0x1d2f3,
 0x1d300, 0x1d356,
 0x1d360, 0x1d378,
@@ -13012,6 +13122,8 @@ CR_Grapheme_Base[] = { 861,
 0x1da76, 0x1da83,
 0x1da85, 0x1da8b,
 0x1df00, 0x1df1e,
+0x1df25, 0x1df2a,
+0x1e030, 0x1e06d,
 0x1e100, 0x1e12c,
 0x1e137, 0x1e13d,
 0x1e140, 0x1e149,
@@ -13020,6 +13132,8 @@ CR_Grapheme_Base[] = { 861,
 0x1e2c0, 0x1e2eb,
 0x1e2f0, 0x1e2f9,
 0x1e2ff, 0x1e2ff,
+0x1e4d0, 0x1e4eb,
+0x1e4f0, 0x1e4f9,
 0x1e7e0, 0x1e7e6,
 0x1e7e8, 0x1e7eb,
 0x1e7ed, 0x1e7ee,
@@ -13079,10 +13193,10 @@ CR_Grapheme_Base[] = { 861,
 0x1f250, 0x1f251,
 0x1f260, 0x1f265,
 0x1f300, 0x1f6d7,
-0x1f6dd, 0x1f6ec,
+0x1f6dc, 0x1f6ec,
 0x1f6f0, 0x1f6fc,
-0x1f700, 0x1f773,
-0x1f780, 0x1f7d8,
+0x1f700, 0x1f776,
+0x1f77b, 0x1f7d9,
 0x1f7e0, 0x1f7eb,
 0x1f7f0, 0x1f7f0,
 0x1f800, 0x1f80b,
@@ -13093,30 +13207,29 @@ CR_Grapheme_Base[] = { 861,
 0x1f8b0, 0x1f8b1,
 0x1f900, 0x1fa53,
 0x1fa60, 0x1fa6d,
-0x1fa70, 0x1fa74,
-0x1fa78, 0x1fa7c,
-0x1fa80, 0x1fa86,
-0x1fa90, 0x1faac,
-0x1fab0, 0x1faba,
-0x1fac0, 0x1fac5,
-0x1fad0, 0x1fad9,
-0x1fae0, 0x1fae7,
-0x1faf0, 0x1faf6,
+0x1fa70, 0x1fa7c,
+0x1fa80, 0x1fa88,
+0x1fa90, 0x1fabd,
+0x1fabf, 0x1fac5,
+0x1face, 0x1fadb,
+0x1fae0, 0x1fae8,
+0x1faf0, 0x1faf8,
 0x1fb00, 0x1fb92,
 0x1fb94, 0x1fbca,
 0x1fbf0, 0x1fbf9,
 0x20000, 0x2a6df,
-0x2a700, 0x2b738,
+0x2a700, 0x2b739,
 0x2b740, 0x2b81d,
 0x2b820, 0x2cea1,
 0x2ceb0, 0x2ebe0,
 0x2f800, 0x2fa1d,
 0x30000, 0x3134a,
+0x31350, 0x323af,
 }; /* END of CR_Grapheme_Base */
 
 /* PROPERTY: 'Grapheme_Extend': Derived Property */
 static const OnigCodePoint
-CR_Grapheme_Extend[] = { 353,
+CR_Grapheme_Extend[] = { 363,
 0x0300, 0x036f,
 0x0483, 0x0489,
 0x0591, 0x05bd,
@@ -13219,7 +13332,7 @@ CR_Grapheme_Extend[] = { 353,
 0x0e47, 0x0e4e,
 0x0eb1, 0x0eb1,
 0x0eb4, 0x0ebc,
-0x0ec8, 0x0ecd,
+0x0ec8, 0x0ece,
 0x0f18, 0x0f19,
 0x0f35, 0x0f35,
 0x0f37, 0x0f37,
@@ -13348,6 +13461,7 @@ CR_Grapheme_Extend[] = { 353,
 0x10ae5, 0x10ae6,
 0x10d24, 0x10d27,
 0x10eab, 0x10eac,
+0x10efd, 0x10eff,
 0x10f46, 0x10f50,
 0x10f82, 0x10f85,
 0x11001, 0x11001,
@@ -13370,6 +13484,7 @@ CR_Grapheme_Extend[] = { 353,
 0x11234, 0x11234,
 0x11236, 0x11237,
 0x1123e, 0x1123e,
+0x11241, 0x11241,
 0x112df, 0x112df,
 0x112e3, 0x112ea,
 0x11300, 0x11301,
@@ -13437,6 +13552,12 @@ CR_Grapheme_Extend[] = { 353,
 0x11d95, 0x11d95,
 0x11d97, 0x11d97,
 0x11ef3, 0x11ef4,
+0x11f00, 0x11f01,
+0x11f36, 0x11f3a,
+0x11f40, 0x11f40,
+0x11f42, 0x11f42,
+0x13440, 0x13440,
+0x13447, 0x13455,
 0x16af0, 0x16af4,
 0x16b30, 0x16b36,
 0x16f4f, 0x16f4f,
@@ -13463,9 +13584,11 @@ CR_Grapheme_Extend[] = { 353,
 0x1e01b, 0x1e021,
 0x1e023, 0x1e024,
 0x1e026, 0x1e02a,
+0x1e08f, 0x1e08f,
 0x1e130, 0x1e136,
 0x1e2ae, 0x1e2ae,
 0x1e2ec, 0x1e2ef,
+0x1e4ec, 0x1e4ef,
 0x1e8d0, 0x1e8d6,
 0x1e944, 0x1e94a,
 0xe0020, 0xe007f,
@@ -13474,7 +13597,7 @@ CR_Grapheme_Extend[] = { 353,
 
 /* PROPERTY: 'Grapheme_Link': Derived Property */
 static const OnigCodePoint
-CR_Grapheme_Link[] = { 55,
+CR_Grapheme_Link[] = { 56,
 0x094d, 0x094d,
 0x09cd, 0x09cd,
 0x0a4d, 0x0a4d,
@@ -13530,6 +13653,7 @@ CR_Grapheme_Link[] = { 55,
 0x11c3f, 0x11c3f,
 0x11d44, 0x11d45,
 0x11d97, 0x11d97,
+0x11f41, 0x11f42,
 }; /* END of CR_Grapheme_Link */
 
 /* PROPERTY: 'Greek': Script */
@@ -13626,7 +13750,7 @@ CR_Gurmukhi[] = { 16,
 
 /* PROPERTY: 'Han': Script */
 static const OnigCodePoint
-CR_Han[] = { 20,
+CR_Han[] = { 21,
 0x2e80, 0x2e99,
 0x2e9b, 0x2ef3,
 0x2f00, 0x2fd5,
@@ -13641,12 +13765,13 @@ CR_Han[] = { 20,
 0x16fe2, 0x16fe3,
 0x16ff0, 0x16ff1,
 0x20000, 0x2a6df,
-0x2a700, 0x2b738,
+0x2a700, 0x2b739,
 0x2b740, 0x2b81d,
 0x2b820, 0x2cea1,
 0x2ceb0, 0x2ebe0,
 0x2f800, 0x2fa1d,
 0x30000, 0x3134a,
+0x31350, 0x323af,
 }; /* END of CR_Han */
 
 /* PROPERTY: 'Hangul': Script */
@@ -13716,10 +13841,11 @@ CR_Hex_Digit[] = { 6,
 
 /* PROPERTY: 'Hiragana': Script */
 static const OnigCodePoint
-CR_Hiragana[] = { 5,
+CR_Hiragana[] = { 6,
 0x3041, 0x3096,
 0x309d, 0x309f,
 0x1b001, 0x1b11f,
+0x1b132, 0x1b132,
 0x1b150, 0x1b152,
 0x1f200, 0x1f200,
 }; /* END of CR_Hiragana */
@@ -13754,7 +13880,7 @@ CR_IDS_Trinary_Operator[] = { 1,
 
 /* PROPERTY: 'ID_Continue': Derived Property */
 static const OnigCodePoint
-CR_ID_Continue[] = { 756,
+CR_ID_Continue[] = { 768,
 0x0030, 0x0039,
 0x0041, 0x005a,
 0x005f, 0x005f,
@@ -13913,7 +14039,7 @@ CR_ID_Continue[] = { 756,
 0x0cdd, 0x0cde,
 0x0ce0, 0x0ce3,
 0x0ce6, 0x0cef,
-0x0cf1, 0x0cf2,
+0x0cf1, 0x0cf3,
 0x0d00, 0x0d0c,
 0x0d0e, 0x0d10,
 0x0d12, 0x0d44,
@@ -13946,7 +14072,7 @@ CR_ID_Continue[] = { 756,
 0x0ea7, 0x0ebd,
 0x0ec0, 0x0ec4,
 0x0ec6, 0x0ec6,
-0x0ec8, 0x0ecd,
+0x0ec8, 0x0ece,
 0x0ed0, 0x0ed9,
 0x0edc, 0x0edf,
 0x0f00, 0x0f00,
@@ -14259,7 +14385,7 @@ CR_ID_Continue[] = { 756,
 0x10e80, 0x10ea9,
 0x10eab, 0x10eac,
 0x10eb0, 0x10eb1,
-0x10f00, 0x10f1c,
+0x10efd, 0x10f1c,
 0x10f27, 0x10f27,
 0x10f30, 0x10f50,
 0x10f70, 0x10f85,
@@ -14282,7 +14408,7 @@ CR_ID_Continue[] = { 756,
 0x111dc, 0x111dc,
 0x11200, 0x11211,
 0x11213, 0x11237,
-0x1123e, 0x1123e,
+0x1123e, 0x11241,
 0x11280, 0x11286,
 0x11288, 0x11288,
 0x1128a, 0x1128d,
@@ -14363,12 +14489,17 @@ CR_ID_Continue[] = { 756,
 0x11d93, 0x11d98,
 0x11da0, 0x11da9,
 0x11ee0, 0x11ef6,
+0x11f00, 0x11f10,
+0x11f12, 0x11f3a,
+0x11f3e, 0x11f42,
+0x11f50, 0x11f59,
 0x11fb0, 0x11fb0,
 0x12000, 0x12399,
 0x12400, 0x1246e,
 0x12480, 0x12543,
 0x12f90, 0x12ff0,
-0x13000, 0x1342e,
+0x13000, 0x1342f,
+0x13440, 0x13455,
 0x14400, 0x14646,
 0x16800, 0x16a38,
 0x16a40, 0x16a5e,
@@ -14396,7 +14527,9 @@ CR_ID_Continue[] = { 756,
 0x1aff5, 0x1affb,
 0x1affd, 0x1affe,
 0x1b000, 0x1b122,
+0x1b132, 0x1b132,
 0x1b150, 0x1b152,
+0x1b155, 0x1b155,
 0x1b164, 0x1b167,
 0x1b170, 0x1b2fb,
 0x1bc00, 0x1bc6a,
@@ -14450,17 +14583,21 @@ CR_ID_Continue[] = { 756,
 0x1da9b, 0x1da9f,
 0x1daa1, 0x1daaf,
 0x1df00, 0x1df1e,
+0x1df25, 0x1df2a,
 0x1e000, 0x1e006,
 0x1e008, 0x1e018,
 0x1e01b, 0x1e021,
 0x1e023, 0x1e024,
 0x1e026, 0x1e02a,
+0x1e030, 0x1e06d,
+0x1e08f, 0x1e08f,
 0x1e100, 0x1e12c,
 0x1e130, 0x1e13d,
 0x1e140, 0x1e149,
 0x1e14e, 0x1e14e,
 0x1e290, 0x1e2ae,
 0x1e2c0, 0x1e2f9,
+0x1e4d0, 0x1e4f9,
 0x1e7e0, 0x1e7e6,
 0x1e7e8, 0x1e7eb,
 0x1e7ed, 0x1e7ee,
@@ -14504,18 +14641,19 @@ CR_ID_Continue[] = { 756,
 0x1eeab, 0x1eebb,
 0x1fbf0, 0x1fbf9,
 0x20000, 0x2a6df,
-0x2a700, 0x2b738,
+0x2a700, 0x2b739,
 0x2b740, 0x2b81d,
 0x2b820, 0x2cea1,
 0x2ceb0, 0x2ebe0,
 0x2f800, 0x2fa1d,
 0x30000, 0x3134a,
+0x31350, 0x323af,
 0xe0100, 0xe01ef,
 }; /* END of CR_ID_Continue */
 
 /* PROPERTY: 'ID_Start': Derived Property */
 static const OnigCodePoint
-CR_ID_Start[] = { 648,
+CR_ID_Start[] = { 659,
 0x0041, 0x005a,
 0x0061, 0x007a,
 0x00aa, 0x00aa,
@@ -14984,6 +15122,7 @@ CR_ID_Start[] = { 648,
 0x111dc, 0x111dc,
 0x11200, 0x11211,
 0x11213, 0x1122b,
+0x1123f, 0x11240,
 0x11280, 0x11286,
 0x11288, 0x11288,
 0x1128a, 0x1128d,
@@ -15046,12 +15185,16 @@ CR_ID_Start[] = { 648,
 0x11d6a, 0x11d89,
 0x11d98, 0x11d98,
 0x11ee0, 0x11ef2,
+0x11f02, 0x11f02,
+0x11f04, 0x11f10,
+0x11f12, 0x11f33,
 0x11fb0, 0x11fb0,
 0x12000, 0x12399,
 0x12400, 0x1246e,
 0x12480, 0x12543,
 0x12f90, 0x12ff0,
-0x13000, 0x1342e,
+0x13000, 0x1342f,
+0x13441, 0x13446,
 0x14400, 0x14646,
 0x16800, 0x16a38,
 0x16a40, 0x16a5e,
@@ -15074,7 +15217,9 @@ CR_ID_Start[] = { 648,
 0x1aff5, 0x1affb,
 0x1affd, 0x1affe,
 0x1b000, 0x1b122,
+0x1b132, 0x1b132,
 0x1b150, 0x1b152,
+0x1b155, 0x1b155,
 0x1b164, 0x1b167,
 0x1b170, 0x1b2fb,
 0x1bc00, 0x1bc6a,
@@ -15112,11 +15257,14 @@ CR_ID_Start[] = { 648,
 0x1d7aa, 0x1d7c2,
 0x1d7c4, 0x1d7cb,
 0x1df00, 0x1df1e,
+0x1df25, 0x1df2a,
+0x1e030, 0x1e06d,
 0x1e100, 0x1e12c,
 0x1e137, 0x1e13d,
 0x1e14e, 0x1e14e,
 0x1e290, 0x1e2ad,
 0x1e2c0, 0x1e2eb,
+0x1e4d0, 0x1e4eb,
 0x1e7e0, 0x1e7e6,
 0x1e7e8, 0x1e7eb,
 0x1e7ed, 0x1e7ee,
@@ -15158,17 +15306,18 @@ CR_ID_Start[] = { 648,
 0x1eea5, 0x1eea9,
 0x1eeab, 0x1eebb,
 0x20000, 0x2a6df,
-0x2a700, 0x2b738,
+0x2a700, 0x2b739,
 0x2b740, 0x2b81d,
 0x2b820, 0x2cea1,
 0x2ceb0, 0x2ebe0,
 0x2f800, 0x2fa1d,
 0x30000, 0x3134a,
+0x31350, 0x323af,
 }; /* END of CR_ID_Start */
 
 /* PROPERTY: 'Ideographic': Binary Property */
 static const OnigCodePoint
-CR_Ideographic[] = { 19,
+CR_Ideographic[] = { 20,
 0x3006, 0x3007,
 0x3021, 0x3029,
 0x3038, 0x303a,
@@ -15182,12 +15331,13 @@ CR_Ideographic[] = { 19,
 0x18d00, 0x18d08,
 0x1b170, 0x1b2fb,
 0x20000, 0x2a6df,
-0x2a700, 0x2b738,
+0x2a700, 0x2b739,
 0x2b740, 0x2b81d,
 0x2b820, 0x2cea1,
 0x2ceb0, 0x2ebe0,
 0x2f800, 0x2fa1d,
 0x30000, 0x3134a,
+0x31350, 0x323af,
 }; /* END of CR_Ideographic */
 
 /* PROPERTY: 'Imperial_Aramaic': Script */
@@ -15281,12 +15431,12 @@ CR_Kannada[] = { 13,
 0x0cdd, 0x0cde,
 0x0ce0, 0x0ce3,
 0x0ce6, 0x0cef,
-0x0cf1, 0x0cf2,
+0x0cf1, 0x0cf3,
 }; /* END of CR_Kannada */
 
 /* PROPERTY: 'Katakana': Script */
 static const OnigCodePoint
-CR_Katakana[] = { 13,
+CR_Katakana[] = { 14,
 0x30a1, 0x30fa,
 0x30fd, 0x30ff,
 0x31f0, 0x31ff,
@@ -15299,8 +15449,17 @@ CR_Katakana[] = { 13,
 0x1affd, 0x1affe,
 0x1b000, 0x1b000,
 0x1b120, 0x1b122,
+0x1b155, 0x1b155,
 0x1b164, 0x1b167,
 }; /* END of CR_Katakana */
+
+/* PROPERTY: 'Kawi': Script */
+static const OnigCodePoint
+CR_Kawi[] = { 3,
+0x11f00, 0x11f10,
+0x11f12, 0x11f3a,
+0x11f3e, 0x11f59,
+}; /* END of CR_Kawi */
 
 /* PROPERTY: 'Kayah_Li': Script */
 static const OnigCodePoint
@@ -15342,7 +15501,7 @@ CR_Khmer[] = { 4,
 static const OnigCodePoint
 CR_Khojki[] = { 2,
 0x11200, 0x11211,
-0x11213, 0x1123e,
+0x11213, 0x11241,
 }; /* END of CR_Khojki */
 
 /* PROPERTY: 'Khudawadi': Script */
@@ -15354,7 +15513,7 @@ CR_Khudawadi[] = { 2,
 
 /* PROPERTY: 'L': Major Category */
 static const OnigCodePoint
-CR_L[] = { 648,
+CR_L[] = { 659,
 0x0041, 0x005a,
 0x0061, 0x007a,
 0x00aa, 0x00aa,
@@ -15824,6 +15983,7 @@ CR_L[] = { 648,
 0x111dc, 0x111dc,
 0x11200, 0x11211,
 0x11213, 0x1122b,
+0x1123f, 0x11240,
 0x11280, 0x11286,
 0x11288, 0x11288,
 0x1128a, 0x1128d,
@@ -15886,11 +16046,15 @@ CR_L[] = { 648,
 0x11d6a, 0x11d89,
 0x11d98, 0x11d98,
 0x11ee0, 0x11ef2,
+0x11f02, 0x11f02,
+0x11f04, 0x11f10,
+0x11f12, 0x11f33,
 0x11fb0, 0x11fb0,
 0x12000, 0x12399,
 0x12480, 0x12543,
 0x12f90, 0x12ff0,
-0x13000, 0x1342e,
+0x13000, 0x1342f,
+0x13441, 0x13446,
 0x14400, 0x14646,
 0x16800, 0x16a38,
 0x16a40, 0x16a5e,
@@ -15913,7 +16077,9 @@ CR_L[] = { 648,
 0x1aff5, 0x1affb,
 0x1affd, 0x1affe,
 0x1b000, 0x1b122,
+0x1b132, 0x1b132,
 0x1b150, 0x1b152,
+0x1b155, 0x1b155,
 0x1b164, 0x1b167,
 0x1b170, 0x1b2fb,
 0x1bc00, 0x1bc6a,
@@ -15951,11 +16117,14 @@ CR_L[] = { 648,
 0x1d7aa, 0x1d7c2,
 0x1d7c4, 0x1d7cb,
 0x1df00, 0x1df1e,
+0x1df25, 0x1df2a,
+0x1e030, 0x1e06d,
 0x1e100, 0x1e12c,
 0x1e137, 0x1e13d,
 0x1e14e, 0x1e14e,
 0x1e290, 0x1e2ad,
 0x1e2c0, 0x1e2eb,
+0x1e4d0, 0x1e4eb,
 0x1e7e0, 0x1e7e6,
 0x1e7e8, 0x1e7eb,
 0x1e7ed, 0x1e7ee,
@@ -15997,17 +16166,18 @@ CR_L[] = { 648,
 0x1eea5, 0x1eea9,
 0x1eeab, 0x1eebb,
 0x20000, 0x2a6df,
-0x2a700, 0x2b738,
+0x2a700, 0x2b739,
 0x2b740, 0x2b81d,
 0x2b820, 0x2cea1,
 0x2ceb0, 0x2ebe0,
 0x2f800, 0x2fa1d,
 0x30000, 0x3134a,
+0x31350, 0x323af,
 }; /* END of CR_L */
 
 /* PROPERTY: 'LC': General Category */
 static const OnigCodePoint
-CR_LC[] = { 142,
+CR_LC[] = { 143,
 0x0041, 0x005a,
 0x0061, 0x007a,
 0x00b5, 0x00b5,
@@ -16149,6 +16319,7 @@ CR_LC[] = { 142,
 0x1d7c4, 0x1d7cb,
 0x1df00, 0x1df09,
 0x1df0b, 0x1df1e,
+0x1df25, 0x1df2a,
 0x1e900, 0x1e943,
 }; /* END of CR_LC */
 
@@ -16163,14 +16334,14 @@ CR_Lao[] = { 11,
 0x0ea7, 0x0ebd,
 0x0ec0, 0x0ec4,
 0x0ec6, 0x0ec6,
-0x0ec8, 0x0ecd,
+0x0ec8, 0x0ece,
 0x0ed0, 0x0ed9,
 0x0edc, 0x0edf,
 }; /* END of CR_Lao */
 
 /* PROPERTY: 'Latin': Script */
 static const OnigCodePoint
-CR_Latin[] = { 38,
+CR_Latin[] = { 39,
 0x0041, 0x005a,
 0x0061, 0x007a,
 0x00aa, 0x00aa,
@@ -16209,6 +16380,7 @@ CR_Latin[] = { 38,
 0x10787, 0x107b0,
 0x107b2, 0x107ba,
 0x1df00, 0x1df1e,
+0x1df25, 0x1df2a,
 }; /* END of CR_Latin */
 
 /* PROPERTY: 'Lepcha': Script */
@@ -16258,7 +16430,7 @@ CR_Lisu[] = { 2,
 
 /* PROPERTY: 'Ll': General Category */
 static const OnigCodePoint
-CR_Ll[] = { 657,
+CR_Ll[] = { 658,
 0x0061, 0x007a,
 0x00b5, 0x00b5,
 0x00df, 0x00f6,
@@ -16915,12 +17087,13 @@ CR_Ll[] = { 657,
 0x1d7cb, 0x1d7cb,
 0x1df00, 0x1df09,
 0x1df0b, 0x1df1e,
+0x1df25, 0x1df2a,
 0x1e922, 0x1e943,
 }; /* END of CR_Ll */
 
 /* PROPERTY: 'Lm': General Category */
 static const OnigCodePoint
-CR_Lm[] = { 69,
+CR_Lm[] = { 71,
 0x02b0, 0x02c1,
 0x02c6, 0x02d1,
 0x02e0, 0x02e4,
@@ -16988,13 +17161,15 @@ CR_Lm[] = { 69,
 0x1aff0, 0x1aff3,
 0x1aff5, 0x1affb,
 0x1affd, 0x1affe,
+0x1e030, 0x1e06d,
 0x1e137, 0x1e13d,
+0x1e4eb, 0x1e4eb,
 0x1e94b, 0x1e94b,
 }; /* END of CR_Lm */
 
 /* PROPERTY: 'Lo': General Category */
 static const OnigCodePoint
-CR_Lo[] = { 501,
+CR_Lo[] = { 510,
 0x00aa, 0x00aa,
 0x00ba, 0x00ba,
 0x01bb, 0x01bb,
@@ -17359,6 +17534,7 @@ CR_Lo[] = { 501,
 0x111dc, 0x111dc,
 0x11200, 0x11211,
 0x11213, 0x1122b,
+0x1123f, 0x11240,
 0x11280, 0x11286,
 0x11288, 0x11288,
 0x1128a, 0x1128d,
@@ -17420,11 +17596,15 @@ CR_Lo[] = { 501,
 0x11d6a, 0x11d89,
 0x11d98, 0x11d98,
 0x11ee0, 0x11ef2,
+0x11f02, 0x11f02,
+0x11f04, 0x11f10,
+0x11f12, 0x11f33,
 0x11fb0, 0x11fb0,
 0x12000, 0x12399,
 0x12480, 0x12543,
 0x12f90, 0x12ff0,
-0x13000, 0x1342e,
+0x13000, 0x1342f,
+0x13441, 0x13446,
 0x14400, 0x14646,
 0x16800, 0x16a38,
 0x16a40, 0x16a5e,
@@ -17439,7 +17619,9 @@ CR_Lo[] = { 501,
 0x18800, 0x18cd5,
 0x18d00, 0x18d08,
 0x1b000, 0x1b122,
+0x1b132, 0x1b132,
 0x1b150, 0x1b152,
+0x1b155, 0x1b155,
 0x1b164, 0x1b167,
 0x1b170, 0x1b2fb,
 0x1bc00, 0x1bc6a,
@@ -17451,6 +17633,7 @@ CR_Lo[] = { 501,
 0x1e14e, 0x1e14e,
 0x1e290, 0x1e2ad,
 0x1e2c0, 0x1e2eb,
+0x1e4d0, 0x1e4ea,
 0x1e7e0, 0x1e7e6,
 0x1e7e8, 0x1e7eb,
 0x1e7ed, 0x1e7ee,
@@ -17490,12 +17673,13 @@ CR_Lo[] = { 501,
 0x1eea5, 0x1eea9,
 0x1eeab, 0x1eebb,
 0x20000, 0x2a6df,
-0x2a700, 0x2b738,
+0x2a700, 0x2b739,
 0x2b740, 0x2b81d,
 0x2b820, 0x2cea1,
 0x2ceb0, 0x2ebe0,
 0x2f800, 0x2fa1d,
 0x30000, 0x3134a,
+0x31350, 0x323af,
 }; /* END of CR_Lo */
 
 /* PROPERTY: 'Logical_Order_Exception': Binary Property */
@@ -18194,7 +18378,7 @@ CR_Lydian[] = { 2,
 
 /* PROPERTY: 'M': Major Category */
 static const OnigCodePoint
-CR_M[] = { 299,
+CR_M[] = { 310,
 0x0300, 0x036f,
 0x0483, 0x0489,
 0x0591, 0x05bd,
@@ -18275,6 +18459,7 @@ CR_M[] = { 299,
 0x0cca, 0x0ccd,
 0x0cd5, 0x0cd6,
 0x0ce2, 0x0ce3,
+0x0cf3, 0x0cf3,
 0x0d00, 0x0d03,
 0x0d3b, 0x0d3c,
 0x0d3e, 0x0d44,
@@ -18293,7 +18478,7 @@ CR_M[] = { 299,
 0x0e47, 0x0e4e,
 0x0eb1, 0x0eb1,
 0x0eb4, 0x0ebc,
-0x0ec8, 0x0ecd,
+0x0ec8, 0x0ece,
 0x0f18, 0x0f19,
 0x0f35, 0x0f35,
 0x0f37, 0x0f37,
@@ -18395,6 +18580,7 @@ CR_M[] = { 299,
 0x10ae5, 0x10ae6,
 0x10d24, 0x10d27,
 0x10eab, 0x10eac,
+0x10efd, 0x10eff,
 0x10f46, 0x10f50,
 0x10f82, 0x10f85,
 0x11000, 0x11002,
@@ -18414,6 +18600,7 @@ CR_M[] = { 299,
 0x111ce, 0x111cf,
 0x1122c, 0x11237,
 0x1123e, 0x1123e,
+0x11241, 0x11241,
 0x112df, 0x112ea,
 0x11300, 0x11303,
 0x1133b, 0x1133c,
@@ -18461,6 +18648,12 @@ CR_M[] = { 299,
 0x11d90, 0x11d91,
 0x11d93, 0x11d97,
 0x11ef3, 0x11ef6,
+0x11f00, 0x11f01,
+0x11f03, 0x11f03,
+0x11f34, 0x11f3a,
+0x11f3e, 0x11f42,
+0x13440, 0x13440,
+0x13447, 0x13455,
 0x16af0, 0x16af4,
 0x16b30, 0x16b36,
 0x16f4f, 0x16f4f,
@@ -18488,9 +18681,11 @@ CR_M[] = { 299,
 0x1e01b, 0x1e021,
 0x1e023, 0x1e024,
 0x1e026, 0x1e02a,
+0x1e08f, 0x1e08f,
 0x1e130, 0x1e136,
 0x1e2ae, 0x1e2ae,
 0x1e2ec, 0x1e2ef,
+0x1e4ec, 0x1e4ef,
 0x1e8d0, 0x1e8d6,
 0x1e944, 0x1e94a,
 0xe0100, 0xe01ef,
@@ -18699,7 +18894,7 @@ CR_Math[] = { 138,
 
 /* PROPERTY: 'Mc': General Category */
 static const OnigCodePoint
-CR_Mc[] = { 177,
+CR_Mc[] = { 182,
 0x0903, 0x0903,
 0x093b, 0x093b,
 0x093e, 0x0940,
@@ -18735,6 +18930,7 @@ CR_Mc[] = { 177,
 0x0cc7, 0x0cc8,
 0x0cca, 0x0ccb,
 0x0cd5, 0x0cd6,
+0x0cf3, 0x0cf3,
 0x0d02, 0x0d03,
 0x0d3e, 0x0d40,
 0x0d46, 0x0d48,
@@ -18873,6 +19069,10 @@ CR_Mc[] = { 177,
 0x11d93, 0x11d94,
 0x11d96, 0x11d96,
 0x11ef5, 0x11ef6,
+0x11f03, 0x11f03,
+0x11f34, 0x11f35,
+0x11f3e, 0x11f3f,
+0x11f41, 0x11f41,
 0x16f51, 0x16f87,
 0x16ff0, 0x16ff1,
 0x1d165, 0x1d166,
@@ -18934,7 +19134,7 @@ CR_Miao[] = { 3,
 
 /* PROPERTY: 'Mn': General Category */
 static const OnigCodePoint
-CR_Mn[] = { 336,
+CR_Mn[] = { 346,
 0x0300, 0x036f,
 0x0483, 0x0487,
 0x0591, 0x05bd,
@@ -19027,7 +19227,7 @@ CR_Mn[] = { 336,
 0x0e47, 0x0e4e,
 0x0eb1, 0x0eb1,
 0x0eb4, 0x0ebc,
-0x0ec8, 0x0ecd,
+0x0ec8, 0x0ece,
 0x0f18, 0x0f19,
 0x0f35, 0x0f35,
 0x0f37, 0x0f37,
@@ -19158,6 +19358,7 @@ CR_Mn[] = { 336,
 0x10ae5, 0x10ae6,
 0x10d24, 0x10d27,
 0x10eab, 0x10eac,
+0x10efd, 0x10eff,
 0x10f46, 0x10f50,
 0x10f82, 0x10f85,
 0x11001, 0x11001,
@@ -19180,6 +19381,7 @@ CR_Mn[] = { 336,
 0x11234, 0x11234,
 0x11236, 0x11237,
 0x1123e, 0x1123e,
+0x11241, 0x11241,
 0x112df, 0x112df,
 0x112e3, 0x112ea,
 0x11300, 0x11301,
@@ -19241,6 +19443,12 @@ CR_Mn[] = { 336,
 0x11d95, 0x11d95,
 0x11d97, 0x11d97,
 0x11ef3, 0x11ef4,
+0x11f00, 0x11f01,
+0x11f36, 0x11f3a,
+0x11f40, 0x11f40,
+0x11f42, 0x11f42,
+0x13440, 0x13440,
+0x13447, 0x13455,
 0x16af0, 0x16af4,
 0x16b30, 0x16b36,
 0x16f4f, 0x16f4f,
@@ -19265,9 +19473,11 @@ CR_Mn[] = { 336,
 0x1e01b, 0x1e021,
 0x1e023, 0x1e024,
 0x1e026, 0x1e02a,
+0x1e08f, 0x1e08f,
 0x1e130, 0x1e136,
 0x1e2ae, 0x1e2ae,
 0x1e2ec, 0x1e2ef,
+0x1e4ec, 0x1e4ef,
 0x1e8d0, 0x1e8d6,
 0x1e944, 0x1e94a,
 0xe0100, 0xe01ef,
@@ -19319,7 +19529,7 @@ CR_Myanmar[] = { 3,
 
 /* PROPERTY: 'N': Major Category */
 static const OnigCodePoint
-CR_N[] = { 134,
+CR_N[] = { 137,
 0x0030, 0x0039,
 0x00b2, 0x00b3,
 0x00b9, 0x00b9,
@@ -19433,6 +19643,7 @@ CR_N[] = { 134,
 0x11c50, 0x11c6c,
 0x11d50, 0x11d59,
 0x11da0, 0x11da9,
+0x11f50, 0x11f59,
 0x11fc0, 0x11fd4,
 0x12400, 0x1246e,
 0x16a60, 0x16a69,
@@ -19440,11 +19651,13 @@ CR_N[] = { 134,
 0x16b50, 0x16b59,
 0x16b5b, 0x16b61,
 0x16e80, 0x16e96,
+0x1d2c0, 0x1d2d3,
 0x1d2e0, 0x1d2f3,
 0x1d360, 0x1d378,
 0x1d7ce, 0x1d7ff,
 0x1e140, 0x1e149,
 0x1e2f0, 0x1e2f9,
+0x1e4f0, 0x1e4f9,
 0x1e8c7, 0x1e8cf,
 0x1e950, 0x1e959,
 0x1ec71, 0x1ecab,
@@ -19462,6 +19675,12 @@ CR_Nabataean[] = { 2,
 0x10880, 0x1089e,
 0x108a7, 0x108af,
 }; /* END of CR_Nabataean */
+
+/* PROPERTY: 'Nag_Mundari': Script */
+static const OnigCodePoint
+CR_Nag_Mundari[] = { 1,
+0x1e4d0, 0x1e4f9,
+}; /* END of CR_Nag_Mundari */
 
 /* PROPERTY: 'Nandinagari': Script */
 static const OnigCodePoint
@@ -19516,7 +19735,7 @@ CR_Nl[] = { 12,
 
 /* PROPERTY: 'No': General Category */
 static const OnigCodePoint
-CR_No[] = { 71,
+CR_No[] = { 72,
 0x00b2, 0x00b3,
 0x00b9, 0x00b9,
 0x00bc, 0x00be,
@@ -19579,6 +19798,7 @@ CR_No[] = { 71,
 0x11fc0, 0x11fd4,
 0x16b5b, 0x16b61,
 0x16e80, 0x16e96,
+0x1d2c0, 0x1d2d3,
 0x1d2e0, 0x1d2f3,
 0x1d360, 0x1d378,
 0x1e8c7, 0x1e8cf,
@@ -19734,7 +19954,7 @@ CR_Osmanya[] = { 2,
 
 /* PROPERTY: 'Other_Alphabetic': Binary Property */
 static const OnigCodePoint
-CR_Other_Alphabetic[] = { 233,
+CR_Other_Alphabetic[] = { 240,
 0x0345, 0x0345,
 0x05b0, 0x05bd,
 0x05bf, 0x05bf,
@@ -19794,7 +20014,7 @@ CR_Other_Alphabetic[] = { 233,
 0x0bc6, 0x0bc8,
 0x0bca, 0x0bcc,
 0x0bd7, 0x0bd7,
-0x0c00, 0x0c03,
+0x0c00, 0x0c04,
 0x0c3e, 0x0c44,
 0x0c46, 0x0c48,
 0x0c4a, 0x0c4c,
@@ -19806,6 +20026,7 @@ CR_Other_Alphabetic[] = { 233,
 0x0cca, 0x0ccc,
 0x0cd5, 0x0cd6,
 0x0ce2, 0x0ce3,
+0x0cf3, 0x0cf3,
 0x0d00, 0x0d03,
 0x0d3e, 0x0d44,
 0x0d46, 0x0d48,
@@ -19824,7 +20045,7 @@ CR_Other_Alphabetic[] = { 233,
 0x0eb4, 0x0eb9,
 0x0ebb, 0x0ebc,
 0x0ecd, 0x0ecd,
-0x0f71, 0x0f81,
+0x0f71, 0x0f83,
 0x0f8d, 0x0f97,
 0x0f99, 0x0fbc,
 0x102b, 0x1036,
@@ -19897,7 +20118,7 @@ CR_Other_Alphabetic[] = { 233,
 0x11000, 0x11002,
 0x11038, 0x11045,
 0x11073, 0x11074,
-0x11082, 0x11082,
+0x11080, 0x11082,
 0x110b0, 0x110b8,
 0x110c2, 0x110c2,
 0x11100, 0x11102,
@@ -19909,6 +20130,7 @@ CR_Other_Alphabetic[] = { 233,
 0x1122c, 0x11234,
 0x11237, 0x11237,
 0x1123e, 0x1123e,
+0x11241, 0x11241,
 0x112df, 0x112e8,
 0x11300, 0x11303,
 0x1133e, 0x11344,
@@ -19954,6 +20176,10 @@ CR_Other_Alphabetic[] = { 233,
 0x11d90, 0x11d91,
 0x11d93, 0x11d96,
 0x11ef3, 0x11ef6,
+0x11f00, 0x11f01,
+0x11f03, 0x11f03,
+0x11f34, 0x11f3a,
+0x11f3e, 0x11f40,
 0x16f4f, 0x16f4f,
 0x16f51, 0x16f87,
 0x16f8f, 0x16f92,
@@ -19964,6 +20190,7 @@ CR_Other_Alphabetic[] = { 233,
 0x1e01b, 0x1e021,
 0x1e023, 0x1e024,
 0x1e026, 0x1e02a,
+0x1e08f, 0x1e08f,
 0x1e947, 0x1e947,
 0x1f130, 0x1f149,
 0x1f150, 0x1f169,
@@ -20036,7 +20263,7 @@ CR_Other_ID_Start[] = { 4,
 
 /* PROPERTY: 'Other_Lowercase': Binary Property */
 static const OnigCodePoint
-CR_Other_Lowercase[] = { 24,
+CR_Other_Lowercase[] = { 28,
 0x00aa, 0x00aa,
 0x00ba, 0x00ba,
 0x02b0, 0x02b8,
@@ -20044,6 +20271,7 @@ CR_Other_Lowercase[] = { 24,
 0x02e0, 0x02e4,
 0x0345, 0x0345,
 0x037a, 0x037a,
+0x10fc, 0x10fc,
 0x1d2c, 0x1d6a,
 0x1d78, 0x1d78,
 0x1d9b, 0x1dbf,
@@ -20055,12 +20283,15 @@ CR_Other_Lowercase[] = { 24,
 0x2c7c, 0x2c7d,
 0xa69c, 0xa69d,
 0xa770, 0xa770,
+0xa7f2, 0xa7f4,
 0xa7f8, 0xa7f9,
 0xab5c, 0xab5f,
+0xab69, 0xab69,
 0x10780, 0x10780,
 0x10783, 0x10785,
 0x10787, 0x107b0,
 0x107b2, 0x107ba,
+0x1e030, 0x1e06d,
 }; /* END of CR_Other_Lowercase */
 
 /* PROPERTY: 'Other_Math': Binary Property */
@@ -20214,7 +20445,7 @@ CR_Other_Uppercase[] = { 5,
 
 /* PROPERTY: 'P': Major Category */
 static const OnigCodePoint
-CR_P[] = { 189,
+CR_P[] = { 191,
 0x0021, 0x0023,
 0x0025, 0x002a,
 0x002c, 0x002f,
@@ -20389,9 +20620,11 @@ CR_P[] = { 189,
 0x11a3f, 0x11a46,
 0x11a9a, 0x11a9c,
 0x11a9e, 0x11aa2,
+0x11b00, 0x11b09,
 0x11c41, 0x11c45,
 0x11c70, 0x11c71,
 0x11ef7, 0x11ef8,
+0x11f43, 0x11f4f,
 0x11fff, 0x11fff,
 0x12470, 0x12474,
 0x12ff1, 0x12ff2,
@@ -20633,7 +20866,7 @@ CR_Pi[] = { 11,
 
 /* PROPERTY: 'Po': General Category */
 static const OnigCodePoint
-CR_Po[] = { 185,
+CR_Po[] = { 187,
 0x0021, 0x0023,
 0x0025, 0x0027,
 0x002a, 0x002a,
@@ -20804,9 +21037,11 @@ CR_Po[] = { 185,
 0x11a3f, 0x11a46,
 0x11a9a, 0x11a9c,
 0x11a9e, 0x11aa2,
+0x11b00, 0x11b09,
 0x11c41, 0x11c45,
 0x11c70, 0x11c71,
 0x11ef7, 0x11ef8,
+0x11f43, 0x11f4f,
 0x11fff, 0x11fff,
 0x12470, 0x12474,
 0x12ff1, 0x12ff2,
@@ -20973,7 +21208,7 @@ CR_Runic[] = { 2,
 
 /* PROPERTY: 'S': Major Category */
 static const OnigCodePoint
-CR_S[] = { 234,
+CR_S[] = { 232,
 0x0024, 0x0024,
 0x002b, 0x002b,
 0x003c, 0x003e,
@@ -21183,10 +21418,10 @@ CR_S[] = { 234,
 0x1f250, 0x1f251,
 0x1f260, 0x1f265,
 0x1f300, 0x1f6d7,
-0x1f6dd, 0x1f6ec,
+0x1f6dc, 0x1f6ec,
 0x1f6f0, 0x1f6fc,
-0x1f700, 0x1f773,
-0x1f780, 0x1f7d8,
+0x1f700, 0x1f776,
+0x1f77b, 0x1f7d9,
 0x1f7e0, 0x1f7eb,
 0x1f7f0, 0x1f7f0,
 0x1f800, 0x1f80b,
@@ -21197,15 +21432,13 @@ CR_S[] = { 234,
 0x1f8b0, 0x1f8b1,
 0x1f900, 0x1fa53,
 0x1fa60, 0x1fa6d,
-0x1fa70, 0x1fa74,
-0x1fa78, 0x1fa7c,
-0x1fa80, 0x1fa86,
-0x1fa90, 0x1faac,
-0x1fab0, 0x1faba,
-0x1fac0, 0x1fac5,
-0x1fad0, 0x1fad9,
-0x1fae0, 0x1fae7,
-0x1faf0, 0x1faf6,
+0x1fa70, 0x1fa7c,
+0x1fa80, 0x1fa88,
+0x1fa90, 0x1fabd,
+0x1fabf, 0x1fac5,
+0x1face, 0x1fadb,
+0x1fae0, 0x1fae8,
+0x1faf0, 0x1faf8,
 0x1fb00, 0x1fb92,
 0x1fb94, 0x1fbca,
 }; /* END of CR_S */
@@ -21252,7 +21485,7 @@ CR_Sc[] = { 21,
 
 /* PROPERTY: 'Sentence_Terminal': Binary Property */
 static const OnigCodePoint
-CR_Sentence_Terminal[] = { 79,
+CR_Sentence_Terminal[] = { 80,
 0x0021, 0x0021,
 0x002e, 0x002e,
 0x003f, 0x003f,
@@ -21325,6 +21558,7 @@ CR_Sentence_Terminal[] = { 79,
 0x11a9b, 0x11a9c,
 0x11c41, 0x11c42,
 0x11ef7, 0x11ef8,
+0x11f43, 0x11f44,
 0x16a6e, 0x16a6f,
 0x16af5, 0x16af5,
 0x16b37, 0x16b38,
@@ -21486,7 +21720,7 @@ CR_Sm[] = { 64,
 
 /* PROPERTY: 'So': General Category */
 static const OnigCodePoint
-CR_So[] = { 186,
+CR_So[] = { 184,
 0x00a6, 0x00a6,
 0x00a9, 0x00a9,
 0x00ae, 0x00ae,
@@ -21648,10 +21882,10 @@ CR_So[] = { 186,
 0x1f260, 0x1f265,
 0x1f300, 0x1f3fa,
 0x1f400, 0x1f6d7,
-0x1f6dd, 0x1f6ec,
+0x1f6dc, 0x1f6ec,
 0x1f6f0, 0x1f6fc,
-0x1f700, 0x1f773,
-0x1f780, 0x1f7d8,
+0x1f700, 0x1f776,
+0x1f77b, 0x1f7d9,
 0x1f7e0, 0x1f7eb,
 0x1f7f0, 0x1f7f0,
 0x1f800, 0x1f80b,
@@ -21662,22 +21896,20 @@ CR_So[] = { 186,
 0x1f8b0, 0x1f8b1,
 0x1f900, 0x1fa53,
 0x1fa60, 0x1fa6d,
-0x1fa70, 0x1fa74,
-0x1fa78, 0x1fa7c,
-0x1fa80, 0x1fa86,
-0x1fa90, 0x1faac,
-0x1fab0, 0x1faba,
-0x1fac0, 0x1fac5,
-0x1fad0, 0x1fad9,
-0x1fae0, 0x1fae7,
-0x1faf0, 0x1faf6,
+0x1fa70, 0x1fa7c,
+0x1fa80, 0x1fa88,
+0x1fa90, 0x1fabd,
+0x1fabf, 0x1fac5,
+0x1face, 0x1fadb,
+0x1fae0, 0x1fae8,
+0x1faf0, 0x1faf8,
 0x1fb00, 0x1fb92,
 0x1fb94, 0x1fbca,
 }; /* END of CR_So */
 
 /* PROPERTY: 'Soft_Dotted': Binary Property */
 static const OnigCodePoint
-CR_Soft_Dotted[] = { 32,
+CR_Soft_Dotted[] = { 34,
 0x0069, 0x006a,
 0x012f, 0x012f,
 0x0249, 0x0249,
@@ -21710,6 +21942,8 @@ CR_Soft_Dotted[] = { 32,
 0x1d65e, 0x1d65f,
 0x1d692, 0x1d693,
 0x1df1a, 0x1df1a,
+0x1e04c, 0x1e04d,
+0x1e068, 0x1e068,
 }; /* END of CR_Soft_Dotted */
 
 /* PROPERTY: 'Sogdian': Script */
@@ -21858,7 +22092,7 @@ CR_Telugu[] = { 13,
 
 /* PROPERTY: 'Terminal_Punctuation': Binary Property */
 static const OnigCodePoint
-CR_Terminal_Punctuation[] = { 107,
+CR_Terminal_Punctuation[] = { 108,
 0x0021, 0x0021,
 0x002c, 0x002c,
 0x002e, 0x002e,
@@ -21958,6 +22192,7 @@ CR_Terminal_Punctuation[] = { 107,
 0x11c41, 0x11c43,
 0x11c71, 0x11c71,
 0x11ef7, 0x11ef8,
+0x11f43, 0x11f44,
 0x12470, 0x12474,
 0x16a6e, 0x16a6f,
 0x16af5, 0x16af5,
@@ -22023,7 +22258,7 @@ CR_Ugaritic[] = { 2,
 
 /* PROPERTY: 'Unified_Ideograph': Binary Property */
 static const OnigCodePoint
-CR_Unified_Ideograph[] = { 15,
+CR_Unified_Ideograph[] = { 16,
 0x3400, 0x4dbf,
 0x4e00, 0x9fff,
 0xfa0e, 0xfa0f,
@@ -22034,16 +22269,17 @@ CR_Unified_Ideograph[] = { 15,
 0xfa23, 0xfa24,
 0xfa27, 0xfa29,
 0x20000, 0x2a6df,
-0x2a700, 0x2b738,
+0x2a700, 0x2b739,
 0x2b740, 0x2b81d,
 0x2b820, 0x2cea1,
 0x2ceb0, 0x2ebe0,
 0x30000, 0x3134a,
+0x31350, 0x323af,
 }; /* END of CR_Unified_Ideograph */
 
 /* PROPERTY: 'Unknown': Script */
 static const OnigCodePoint
-CR_Unknown[] = { 696,
+CR_Unknown[] = { 705,
 0x0378, 0x0379,
 0x0380, 0x0383,
 0x038b, 0x038b,
@@ -22165,7 +22401,7 @@ CR_Unknown[] = { 696,
 0x0cdf, 0x0cdf,
 0x0ce4, 0x0ce5,
 0x0cf0, 0x0cf0,
-0x0cf3, 0x0cff,
+0x0cf4, 0x0cff,
 0x0d0d, 0x0d0d,
 0x0d11, 0x0d11,
 0x0d45, 0x0d45,
@@ -22195,7 +22431,7 @@ CR_Unknown[] = { 696,
 0x0ebe, 0x0ebf,
 0x0ec5, 0x0ec5,
 0x0ec7, 0x0ec7,
-0x0ece, 0x0ecf,
+0x0ecf, 0x0ecf,
 0x0eda, 0x0edb,
 0x0ee0, 0x0eff,
 0x0f48, 0x0f48,
@@ -22465,7 +22701,7 @@ CR_Unknown[] = { 696,
 0x10e7f, 0x10e7f,
 0x10eaa, 0x10eaa,
 0x10eae, 0x10eaf,
-0x10eb2, 0x10eff,
+0x10eb2, 0x10efc,
 0x10f28, 0x10f2f,
 0x10f5a, 0x10f6f,
 0x10f8a, 0x10faf,
@@ -22483,7 +22719,7 @@ CR_Unknown[] = { 696,
 0x111e0, 0x111e0,
 0x111f5, 0x111ff,
 0x11212, 0x11212,
-0x1123f, 0x1127f,
+0x11242, 0x1127f,
 0x11287, 0x11287,
 0x11289, 0x11289,
 0x1128e, 0x1128e,
@@ -22535,7 +22771,8 @@ CR_Unknown[] = { 696,
 0x119e5, 0x119ff,
 0x11a48, 0x11a4f,
 0x11aa3, 0x11aaf,
-0x11af9, 0x11bff,
+0x11af9, 0x11aff,
+0x11b0a, 0x11bff,
 0x11c09, 0x11c09,
 0x11c37, 0x11c37,
 0x11c46, 0x11c4f,
@@ -22556,7 +22793,10 @@ CR_Unknown[] = { 696,
 0x11d92, 0x11d92,
 0x11d99, 0x11d9f,
 0x11daa, 0x11edf,
-0x11ef9, 0x11faf,
+0x11ef9, 0x11eff,
+0x11f11, 0x11f11,
+0x11f3b, 0x11f3d,
+0x11f5a, 0x11faf,
 0x11fb1, 0x11fbf,
 0x11ff2, 0x11ffe,
 0x1239a, 0x123ff,
@@ -22564,8 +22804,7 @@ CR_Unknown[] = { 696,
 0x12475, 0x1247f,
 0x12544, 0x12f8f,
 0x12ff3, 0x12fff,
-0x1342f, 0x1342f,
-0x13439, 0x143ff,
+0x13456, 0x143ff,
 0x14647, 0x167ff,
 0x16a39, 0x16a3f,
 0x16a5f, 0x16a5f,
@@ -22591,8 +22830,10 @@ CR_Unknown[] = { 696,
 0x1aff4, 0x1aff4,
 0x1affc, 0x1affc,
 0x1afff, 0x1afff,
-0x1b123, 0x1b14f,
-0x1b153, 0x1b163,
+0x1b123, 0x1b131,
+0x1b133, 0x1b14f,
+0x1b153, 0x1b154,
+0x1b156, 0x1b163,
 0x1b168, 0x1b16f,
 0x1b2fc, 0x1bbff,
 0x1bc6b, 0x1bc6f,
@@ -22606,7 +22847,8 @@ CR_Unknown[] = { 696,
 0x1d0f6, 0x1d0ff,
 0x1d127, 0x1d128,
 0x1d1eb, 0x1d1ff,
-0x1d246, 0x1d2df,
+0x1d246, 0x1d2bf,
+0x1d2d4, 0x1d2df,
 0x1d2f4, 0x1d2ff,
 0x1d357, 0x1d35f,
 0x1d379, 0x1d3ff,
@@ -22633,19 +22875,23 @@ CR_Unknown[] = { 696,
 0x1da8c, 0x1da9a,
 0x1daa0, 0x1daa0,
 0x1dab0, 0x1deff,
-0x1df1f, 0x1dfff,
+0x1df1f, 0x1df24,
+0x1df2b, 0x1dfff,
 0x1e007, 0x1e007,
 0x1e019, 0x1e01a,
 0x1e022, 0x1e022,
 0x1e025, 0x1e025,
-0x1e02b, 0x1e0ff,
+0x1e02b, 0x1e02f,
+0x1e06e, 0x1e08e,
+0x1e090, 0x1e0ff,
 0x1e12d, 0x1e12f,
 0x1e13e, 0x1e13f,
 0x1e14a, 0x1e14d,
 0x1e150, 0x1e28f,
 0x1e2af, 0x1e2bf,
 0x1e2fa, 0x1e2fe,
-0x1e300, 0x1e7df,
+0x1e300, 0x1e4cf,
+0x1e4fa, 0x1e7df,
 0x1e7e7, 0x1e7e7,
 0x1e7ec, 0x1e7ec,
 0x1e7ef, 0x1e7ef,
@@ -22703,11 +22949,11 @@ CR_Unknown[] = { 696,
 0x1f249, 0x1f24f,
 0x1f252, 0x1f25f,
 0x1f266, 0x1f2ff,
-0x1f6d8, 0x1f6dc,
+0x1f6d8, 0x1f6db,
 0x1f6ed, 0x1f6ef,
 0x1f6fd, 0x1f6ff,
-0x1f774, 0x1f77f,
-0x1f7d9, 0x1f7df,
+0x1f777, 0x1f77a,
+0x1f7da, 0x1f7df,
 0x1f7ec, 0x1f7ef,
 0x1f7f1, 0x1f7ff,
 0x1f80c, 0x1f80f,
@@ -22718,25 +22964,24 @@ CR_Unknown[] = { 696,
 0x1f8b2, 0x1f8ff,
 0x1fa54, 0x1fa5f,
 0x1fa6e, 0x1fa6f,
-0x1fa75, 0x1fa77,
 0x1fa7d, 0x1fa7f,
-0x1fa87, 0x1fa8f,
-0x1faad, 0x1faaf,
-0x1fabb, 0x1fabf,
-0x1fac6, 0x1facf,
-0x1fada, 0x1fadf,
-0x1fae8, 0x1faef,
-0x1faf7, 0x1faff,
+0x1fa89, 0x1fa8f,
+0x1fabe, 0x1fabe,
+0x1fac6, 0x1facd,
+0x1fadc, 0x1fadf,
+0x1fae9, 0x1faef,
+0x1faf9, 0x1faff,
 0x1fb93, 0x1fb93,
 0x1fbcb, 0x1fbef,
 0x1fbfa, 0x1ffff,
 0x2a6e0, 0x2a6ff,
-0x2b739, 0x2b73f,
+0x2b73a, 0x2b73f,
 0x2b81e, 0x2b81f,
 0x2cea2, 0x2ceaf,
 0x2ebe1, 0x2f7ff,
 0x2fa1e, 0x2ffff,
-0x3134b, 0xe0000,
+0x3134b, 0x3134f,
+0x323b0, 0xe0000,
 0xe0002, 0xe001f,
 0xe0080, 0xe00ff,
 0xe01f0, 0x10ffff,
@@ -22792,7 +23037,7 @@ CR_Warang_Citi[] = { 2,
 
 /* PROPERTY: 'XID_Continue': Derived Property */
 static const OnigCodePoint
-CR_XID_Continue[] = { 763,
+CR_XID_Continue[] = { 775,
 0x0030, 0x0039,
 0x0041, 0x005a,
 0x005f, 0x005f,
@@ -22951,7 +23196,7 @@ CR_XID_Continue[] = { 763,
 0x0cdd, 0x0cde,
 0x0ce0, 0x0ce3,
 0x0ce6, 0x0cef,
-0x0cf1, 0x0cf2,
+0x0cf1, 0x0cf3,
 0x0d00, 0x0d0c,
 0x0d0e, 0x0d10,
 0x0d12, 0x0d44,
@@ -22984,7 +23229,7 @@ CR_XID_Continue[] = { 763,
 0x0ea7, 0x0ebd,
 0x0ec0, 0x0ec4,
 0x0ec6, 0x0ec6,
-0x0ec8, 0x0ecd,
+0x0ec8, 0x0ece,
 0x0ed0, 0x0ed9,
 0x0edc, 0x0edf,
 0x0f00, 0x0f00,
@@ -23304,7 +23549,7 @@ CR_XID_Continue[] = { 763,
 0x10e80, 0x10ea9,
 0x10eab, 0x10eac,
 0x10eb0, 0x10eb1,
-0x10f00, 0x10f1c,
+0x10efd, 0x10f1c,
 0x10f27, 0x10f27,
 0x10f30, 0x10f50,
 0x10f70, 0x10f85,
@@ -23327,7 +23572,7 @@ CR_XID_Continue[] = { 763,
 0x111dc, 0x111dc,
 0x11200, 0x11211,
 0x11213, 0x11237,
-0x1123e, 0x1123e,
+0x1123e, 0x11241,
 0x11280, 0x11286,
 0x11288, 0x11288,
 0x1128a, 0x1128d,
@@ -23408,12 +23653,17 @@ CR_XID_Continue[] = { 763,
 0x11d93, 0x11d98,
 0x11da0, 0x11da9,
 0x11ee0, 0x11ef6,
+0x11f00, 0x11f10,
+0x11f12, 0x11f3a,
+0x11f3e, 0x11f42,
+0x11f50, 0x11f59,
 0x11fb0, 0x11fb0,
 0x12000, 0x12399,
 0x12400, 0x1246e,
 0x12480, 0x12543,
 0x12f90, 0x12ff0,
-0x13000, 0x1342e,
+0x13000, 0x1342f,
+0x13440, 0x13455,
 0x14400, 0x14646,
 0x16800, 0x16a38,
 0x16a40, 0x16a5e,
@@ -23441,7 +23691,9 @@ CR_XID_Continue[] = { 763,
 0x1aff5, 0x1affb,
 0x1affd, 0x1affe,
 0x1b000, 0x1b122,
+0x1b132, 0x1b132,
 0x1b150, 0x1b152,
+0x1b155, 0x1b155,
 0x1b164, 0x1b167,
 0x1b170, 0x1b2fb,
 0x1bc00, 0x1bc6a,
@@ -23495,17 +23747,21 @@ CR_XID_Continue[] = { 763,
 0x1da9b, 0x1da9f,
 0x1daa1, 0x1daaf,
 0x1df00, 0x1df1e,
+0x1df25, 0x1df2a,
 0x1e000, 0x1e006,
 0x1e008, 0x1e018,
 0x1e01b, 0x1e021,
 0x1e023, 0x1e024,
 0x1e026, 0x1e02a,
+0x1e030, 0x1e06d,
+0x1e08f, 0x1e08f,
 0x1e100, 0x1e12c,
 0x1e130, 0x1e13d,
 0x1e140, 0x1e149,
 0x1e14e, 0x1e14e,
 0x1e290, 0x1e2ae,
 0x1e2c0, 0x1e2f9,
+0x1e4d0, 0x1e4f9,
 0x1e7e0, 0x1e7e6,
 0x1e7e8, 0x1e7eb,
 0x1e7ed, 0x1e7ee,
@@ -23549,18 +23805,19 @@ CR_XID_Continue[] = { 763,
 0x1eeab, 0x1eebb,
 0x1fbf0, 0x1fbf9,
 0x20000, 0x2a6df,
-0x2a700, 0x2b738,
+0x2a700, 0x2b739,
 0x2b740, 0x2b81d,
 0x2b820, 0x2cea1,
 0x2ceb0, 0x2ebe0,
 0x2f800, 0x2fa1d,
 0x30000, 0x3134a,
+0x31350, 0x323af,
 0xe0100, 0xe01ef,
 }; /* END of CR_XID_Continue */
 
 /* PROPERTY: 'XID_Start': Derived Property */
 static const OnigCodePoint
-CR_XID_Start[] = { 655,
+CR_XID_Start[] = { 666,
 0x0041, 0x005a,
 0x0061, 0x007a,
 0x00aa, 0x00aa,
@@ -24036,6 +24293,7 @@ CR_XID_Start[] = { 655,
 0x111dc, 0x111dc,
 0x11200, 0x11211,
 0x11213, 0x1122b,
+0x1123f, 0x11240,
 0x11280, 0x11286,
 0x11288, 0x11288,
 0x1128a, 0x1128d,
@@ -24098,12 +24356,16 @@ CR_XID_Start[] = { 655,
 0x11d6a, 0x11d89,
 0x11d98, 0x11d98,
 0x11ee0, 0x11ef2,
+0x11f02, 0x11f02,
+0x11f04, 0x11f10,
+0x11f12, 0x11f33,
 0x11fb0, 0x11fb0,
 0x12000, 0x12399,
 0x12400, 0x1246e,
 0x12480, 0x12543,
 0x12f90, 0x12ff0,
-0x13000, 0x1342e,
+0x13000, 0x1342f,
+0x13441, 0x13446,
 0x14400, 0x14646,
 0x16800, 0x16a38,
 0x16a40, 0x16a5e,
@@ -24126,7 +24388,9 @@ CR_XID_Start[] = { 655,
 0x1aff5, 0x1affb,
 0x1affd, 0x1affe,
 0x1b000, 0x1b122,
+0x1b132, 0x1b132,
 0x1b150, 0x1b152,
+0x1b155, 0x1b155,
 0x1b164, 0x1b167,
 0x1b170, 0x1b2fb,
 0x1bc00, 0x1bc6a,
@@ -24164,11 +24428,14 @@ CR_XID_Start[] = { 655,
 0x1d7aa, 0x1d7c2,
 0x1d7c4, 0x1d7cb,
 0x1df00, 0x1df1e,
+0x1df25, 0x1df2a,
+0x1e030, 0x1e06d,
 0x1e100, 0x1e12c,
 0x1e137, 0x1e13d,
 0x1e14e, 0x1e14e,
 0x1e290, 0x1e2ad,
 0x1e2c0, 0x1e2eb,
+0x1e4d0, 0x1e4eb,
 0x1e7e0, 0x1e7e6,
 0x1e7e8, 0x1e7eb,
 0x1e7ed, 0x1e7ee,
@@ -24210,12 +24477,13 @@ CR_XID_Start[] = { 655,
 0x1eea5, 0x1eea9,
 0x1eeab, 0x1eebb,
 0x20000, 0x2a6df,
-0x2a700, 0x2b738,
+0x2a700, 0x2b739,
 0x2b740, 0x2b81d,
 0x2b820, 0x2cea1,
 0x2ceb0, 0x2ebe0,
 0x2f800, 0x2fa1d,
 0x30000, 0x3134a,
+0x31350, 0x323af,
 }; /* END of CR_XID_Start */
 
 /* PROPERTY: 'Yezidi': Script */
@@ -25503,6 +25771,12 @@ CR_In_Yezidi[] = { 1,
 0x10e80, 0x10ebf,
 }; /* END of CR_In_Yezidi */
 
+/* PROPERTY: 'In_Arabic_Extended_C': Block */
+static const OnigCodePoint
+CR_In_Arabic_Extended_C[] = { 1,
+0x10ec0, 0x10eff,
+}; /* END of CR_In_Arabic_Extended_C */
+
 /* PROPERTY: 'In_Old_Sogdian': Block */
 static const OnigCodePoint
 CR_In_Old_Sogdian[] = { 1,
@@ -25686,6 +25960,12 @@ CR_In_Pau_Cin_Hau[] = { 1,
 0x11ac0, 0x11aff,
 }; /* END of CR_In_Pau_Cin_Hau */
 
+/* PROPERTY: 'In_Devanagari_Extended_A': Block */
+static const OnigCodePoint
+CR_In_Devanagari_Extended_A[] = { 1,
+0x11b00, 0x11b5f,
+}; /* END of CR_In_Devanagari_Extended_A */
+
 /* PROPERTY: 'In_Bhaiksuki': Block */
 static const OnigCodePoint
 CR_In_Bhaiksuki[] = { 1,
@@ -25715,6 +25995,12 @@ static const OnigCodePoint
 CR_In_Makasar[] = { 1,
 0x11ee0, 0x11eff,
 }; /* END of CR_In_Makasar */
+
+/* PROPERTY: 'In_Kawi': Block */
+static const OnigCodePoint
+CR_In_Kawi[] = { 1,
+0x11f00, 0x11f5f,
+}; /* END of CR_In_Kawi */
 
 /* PROPERTY: 'In_Lisu_Supplement': Block */
 static const OnigCodePoint
@@ -25761,7 +26047,7 @@ CR_In_Egyptian_Hieroglyphs[] = { 1,
 /* PROPERTY: 'In_Egyptian_Hieroglyph_Format_Controls': Block */
 static const OnigCodePoint
 CR_In_Egyptian_Hieroglyph_Format_Controls[] = { 1,
-0x13430, 0x1343f,
+0x13430, 0x1345f,
 }; /* END of CR_In_Egyptian_Hieroglyph_Format_Controls */
 
 /* PROPERTY: 'In_Anatolian_Hieroglyphs': Block */
@@ -25908,6 +26194,12 @@ CR_In_Ancient_Greek_Musical_Notation[] = { 1,
 0x1d200, 0x1d24f,
 }; /* END of CR_In_Ancient_Greek_Musical_Notation */
 
+/* PROPERTY: 'In_Kaktovik_Numerals': Block */
+static const OnigCodePoint
+CR_In_Kaktovik_Numerals[] = { 1,
+0x1d2c0, 0x1d2df,
+}; /* END of CR_In_Kaktovik_Numerals */
+
 /* PROPERTY: 'In_Mayan_Numerals': Block */
 static const OnigCodePoint
 CR_In_Mayan_Numerals[] = { 1,
@@ -25950,6 +26242,12 @@ CR_In_Glagolitic_Supplement[] = { 1,
 0x1e000, 0x1e02f,
 }; /* END of CR_In_Glagolitic_Supplement */
 
+/* PROPERTY: 'In_Cyrillic_Extended_D': Block */
+static const OnigCodePoint
+CR_In_Cyrillic_Extended_D[] = { 1,
+0x1e030, 0x1e08f,
+}; /* END of CR_In_Cyrillic_Extended_D */
+
 /* PROPERTY: 'In_Nyiakeng_Puachue_Hmong': Block */
 static const OnigCodePoint
 CR_In_Nyiakeng_Puachue_Hmong[] = { 1,
@@ -25967,6 +26265,12 @@ static const OnigCodePoint
 CR_In_Wancho[] = { 1,
 0x1e2c0, 0x1e2ff,
 }; /* END of CR_In_Wancho */
+
+/* PROPERTY: 'In_Nag_Mundari': Block */
+static const OnigCodePoint
+CR_In_Nag_Mundari[] = { 1,
+0x1e4d0, 0x1e4ff,
+}; /* END of CR_In_Nag_Mundari */
 
 /* PROPERTY: 'In_Ethiopic_Extended_B': Block */
 static const OnigCodePoint
@@ -26142,6 +26446,12 @@ CR_In_CJK_Unified_Ideographs_Extension_G[] = { 1,
 0x30000, 0x3134f,
 }; /* END of CR_In_CJK_Unified_Ideographs_Extension_G */
 
+/* PROPERTY: 'In_CJK_Unified_Ideographs_Extension_H': Block */
+static const OnigCodePoint
+CR_In_CJK_Unified_Ideographs_Extension_H[] = { 1,
+0x31350, 0x323af,
+}; /* END of CR_In_CJK_Unified_Ideographs_Extension_H */
+
 /* PROPERTY: 'In_Tags': Block */
 static const OnigCodePoint
 CR_In_Tags[] = { 1,
@@ -26180,7 +26490,6 @@ CR_In_No_Block[] = { 51,
 0x10bb0, 0x10bff,
 0x10c50, 0x10c7f,
 0x10d40, 0x10e5f,
-0x10ec0, 0x10eff,
 0x11250, 0x1127f,
 0x11380, 0x113ff,
 0x114e0, 0x1157f,
@@ -26188,12 +26497,12 @@ CR_In_No_Block[] = { 51,
 0x11750, 0x117ff,
 0x11850, 0x1189f,
 0x11960, 0x1199f,
-0x11b00, 0x11bff,
+0x11b60, 0x11bff,
 0x11cc0, 0x11cff,
 0x11db0, 0x11edf,
-0x11f00, 0x11faf,
+0x11f60, 0x11faf,
 0x12550, 0x12f8f,
-0x13440, 0x143ff,
+0x13460, 0x143ff,
 0x14680, 0x167ff,
 0x16b90, 0x16e3f,
 0x16ea0, 0x16eff,
@@ -26202,12 +26511,13 @@ CR_In_No_Block[] = { 51,
 0x1b300, 0x1bbff,
 0x1bcb0, 0x1ceff,
 0x1cfd0, 0x1cfff,
-0x1d250, 0x1d2df,
+0x1d250, 0x1d2bf,
 0x1d380, 0x1d3ff,
 0x1dab0, 0x1deff,
-0x1e030, 0x1e0ff,
+0x1e090, 0x1e0ff,
 0x1e150, 0x1e28f,
-0x1e300, 0x1e7df,
+0x1e300, 0x1e4cf,
+0x1e500, 0x1e7df,
 0x1e8e0, 0x1e8ff,
 0x1e960, 0x1ec6f,
 0x1ecc0, 0x1ecff,
@@ -26217,7 +26527,7 @@ CR_In_No_Block[] = { 51,
 0x2a6e0, 0x2a6ff,
 0x2ebf0, 0x2f7ff,
 0x2fa20, 0x2ffff,
-0x31350, 0xdffff,
+0x323b0, 0xdffff,
 0xe0080, 0xe00ff,
 0xe01f0, 0xeffff,
 }; /* END of CR_In_No_Block */
@@ -26341,6 +26651,7 @@ const CodeRanges[] = {
   CR_Kaithi,
   CR_Kannada,
   CR_Katakana,
+  CR_Kawi,
   CR_Kayah_Li,
   CR_Kharoshthi,
   CR_Khitan_Small_Script,
@@ -26390,6 +26701,7 @@ const CodeRanges[] = {
   CR_Myanmar,
   CR_N,
   CR_Nabataean,
+  CR_Nag_Mundari,
   CR_Nandinagari,
   CR_Nd,
   CR_New_Tai_Lue,
@@ -26709,6 +27021,7 @@ const CodeRanges[] = {
   CR_In_Hanifi_Rohingya,
   CR_In_Rumi_Numeral_Symbols,
   CR_In_Yezidi,
+  CR_In_Arabic_Extended_C,
   CR_In_Old_Sogdian,
   CR_In_Sogdian,
   CR_In_Old_Uyghur,
@@ -26740,11 +27053,13 @@ const CodeRanges[] = {
   CR_In_Soyombo,
   CR_In_Unified_Canadian_Aboriginal_Syllabics_Extended_A,
   CR_In_Pau_Cin_Hau,
+  CR_In_Devanagari_Extended_A,
   CR_In_Bhaiksuki,
   CR_In_Marchen,
   CR_In_Masaram_Gondi,
   CR_In_Gunjala_Gondi,
   CR_In_Makasar,
+  CR_In_Kawi,
   CR_In_Lisu_Supplement,
   CR_In_Tamil_Supplement,
   CR_In_Cuneiform,
@@ -26777,6 +27092,7 @@ const CodeRanges[] = {
   CR_In_Byzantine_Musical_Symbols,
   CR_In_Musical_Symbols,
   CR_In_Ancient_Greek_Musical_Notation,
+  CR_In_Kaktovik_Numerals,
   CR_In_Mayan_Numerals,
   CR_In_Tai_Xuan_Jing_Symbols,
   CR_In_Counting_Rod_Numerals,
@@ -26784,9 +27100,11 @@ const CodeRanges[] = {
   CR_In_Sutton_SignWriting,
   CR_In_Latin_Extended_G,
   CR_In_Glagolitic_Supplement,
+  CR_In_Cyrillic_Extended_D,
   CR_In_Nyiakeng_Puachue_Hmong,
   CR_In_Toto,
   CR_In_Wancho,
+  CR_In_Nag_Mundari,
   CR_In_Ethiopic_Extended_B,
   CR_In_Mende_Kikakui,
   CR_In_Adlam,
@@ -26816,6 +27134,7 @@ const CodeRanges[] = {
   CR_In_CJK_Unified_Ideographs_Extension_F,
   CR_In_CJK_Compatibility_Ideographs_Supplement,
   CR_In_CJK_Unified_Ideographs_Extension_G,
+  CR_In_CJK_Unified_Ideographs_Extension_H,
   CR_In_Tags,
   CR_In_Variation_Selectors_Supplement,
   CR_In_Supplementary_Private_Use_Area_A,
@@ -26826,7 +27145,7 @@ const CodeRanges[] = {
 #define pool_offset(s) offsetof(struct unicode_prop_name_pool_t, unicode_prop_name_pool_str##s)
 
 
-#define TOTAL_KEYWORDS 844
+#define TOTAL_KEYWORDS 854
 #define MIN_WORD_LENGTH 1
 #define MAX_WORD_LENGTH 45
 #define MIN_HASH_VALUE 10
@@ -26897,12 +27216,12 @@ hash (register const char *str, register size_t len)
       6177, 6177, 6177, 6177, 6177, 6177, 6177, 6177, 6177, 6177,
       6177, 6177, 6177, 6177, 6177, 6177, 6177, 6177, 6177, 6177,
       6177, 6177, 6177, 6177, 6177,    0, 1338,  136,  400,   19,
-      1593, 1119,  864,    7, 1377,    8,  528,  103,    3,   16,
-      1430, 1254,   56,  181,  326,  637, 1293,  794, 1313, 1449,
-        10,    4,    7, 6177, 6177, 6177, 6177,    0, 1338,  136,
-       400,   19, 1593, 1119,  864,    7, 1377,    8,  528,  103,
-         3,   16, 1430, 1254,   56,  181,  326,  637, 1293,  794,
-      1313, 1449,   10,    4,    7, 6177, 6177, 6177, 6177, 6177,
+      1593, 1119,  864,    7,  517,    8,  528,  103,    3,   16,
+      1430, 1254,   56,  181,  326,  637, 1293,  895, 1216, 1449,
+        39,    0,    5, 6177, 6177, 6177, 6177,    0, 1338,  136,
+       400,   19, 1593, 1119,  864,    7,  517,    8,  528,  103,
+         3,   16, 1430, 1254,   56,  181,  326,  637, 1293,  895,
+      1216, 1449,   39,    0,    5, 6177, 6177, 6177, 6177, 6177,
       6177, 6177, 6177, 6177, 6177, 6177, 6177, 6177, 6177, 6177,
       6177, 6177, 6177, 6177, 6177, 6177, 6177, 6177, 6177, 6177,
       6177, 6177, 6177, 6177, 6177, 6177, 6177, 6177, 6177, 6177,
@@ -26958,26 +27277,25 @@ hash (register const char *str, register size_t len)
 struct unicode_prop_name_pool_t
   {
     char unicode_prop_name_pool_str10[sizeof("lana")];
+    char unicode_prop_name_pool_str16[sizeof("yi")];
     char unicode_prop_name_pool_str17[sizeof("lina")];
-    char unicode_prop_name_pool_str18[sizeof("z")];
-    char unicode_prop_name_pool_str20[sizeof("yi")];
     char unicode_prop_name_pool_str24[sizeof("mn")];
+    char unicode_prop_name_pool_str25[sizeof("yiii")];
     char unicode_prop_name_pool_str27[sizeof("cn")];
     char unicode_prop_name_pool_str28[sizeof("maka")];
-    char unicode_prop_name_pool_str29[sizeof("yiii")];
     char unicode_prop_name_pool_str30[sizeof("mani")];
     char unicode_prop_name_pool_str34[sizeof("inkannada")];
     char unicode_prop_name_pool_str35[sizeof("ci")];
     char unicode_prop_name_pool_str37[sizeof("lo")];
     char unicode_prop_name_pool_str38[sizeof("lao")];
     char unicode_prop_name_pool_str39[sizeof("laoo")];
-    char unicode_prop_name_pool_str41[sizeof("zzzz")];
     char unicode_prop_name_pool_str43[sizeof("miao")];
-    char unicode_prop_name_pool_str44[sizeof("yezi")];
+    char unicode_prop_name_pool_str45[sizeof("z")];
     char unicode_prop_name_pool_str51[sizeof("innko")];
     char unicode_prop_name_pool_str53[sizeof("co")];
     char unicode_prop_name_pool_str56[sizeof("me")];
     char unicode_prop_name_pool_str60[sizeof("loe")];
+    char unicode_prop_name_pool_str69[sizeof("yezi")];
     char unicode_prop_name_pool_str70[sizeof("gran")];
     char unicode_prop_name_pool_str72[sizeof("pi")];
     char unicode_prop_name_pool_str76[sizeof("lineara")];
@@ -26997,6 +27315,7 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str110[sizeof("kana")];
     char unicode_prop_name_pool_str111[sizeof("mero")];
     char unicode_prop_name_pool_str120[sizeof("m")];
+    char unicode_prop_name_pool_str126[sizeof("zzzz")];
     char unicode_prop_name_pool_str133[sizeof("gonm")];
     char unicode_prop_name_pool_str134[sizeof("cakm")];
     char unicode_prop_name_pool_str139[sizeof("inosmanya")];
@@ -27037,7 +27356,6 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str283[sizeof("incuneiform")];
     char unicode_prop_name_pool_str290[sizeof("mc")];
     char unicode_prop_name_pool_str293[sizeof("cc")];
-    char unicode_prop_name_pool_str297[sizeof("inzanabazarsquare")];
     char unicode_prop_name_pool_str298[sizeof("lineseparator")];
     char unicode_prop_name_pool_str302[sizeof("armn")];
     char unicode_prop_name_pool_str305[sizeof("qmark")];
@@ -27047,6 +27365,7 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str318[sizeof("inmarchen")];
     char unicode_prop_name_pool_str319[sizeof("inmasaramgondi")];
     char unicode_prop_name_pool_str321[sizeof("qaac")];
+    char unicode_prop_name_pool_str326[sizeof("inzanabazarsquare")];
     char unicode_prop_name_pool_str330[sizeof("pc")];
     char unicode_prop_name_pool_str335[sizeof("inscriptionalparthian")];
     char unicode_prop_name_pool_str336[sizeof("latn")];
@@ -27059,7 +27378,7 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str357[sizeof("inthai")];
     char unicode_prop_name_pool_str359[sizeof("incham")];
     char unicode_prop_name_pool_str367[sizeof("inkaithi")];
-    char unicode_prop_name_pool_str371[sizeof("zs")];
+    char unicode_prop_name_pool_str369[sizeof("zs")];
     char unicode_prop_name_pool_str372[sizeof("mtei")];
     char unicode_prop_name_pool_str379[sizeof("initialpunctuation")];
     char unicode_prop_name_pool_str383[sizeof("cs")];
@@ -27074,45 +27393,51 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str445[sizeof("katakana")];
     char unicode_prop_name_pool_str447[sizeof("ideo")];
     char unicode_prop_name_pool_str449[sizeof("prti")];
-    char unicode_prop_name_pool_str453[sizeof("yezidi")];
     char unicode_prop_name_pool_str456[sizeof("inideographicdescriptioncharacters")];
-    char unicode_prop_name_pool_str466[sizeof("xidcontinue")];
     char unicode_prop_name_pool_str467[sizeof("brai")];
     char unicode_prop_name_pool_str472[sizeof("ascii")];
     char unicode_prop_name_pool_str474[sizeof("privateuse")];
     char unicode_prop_name_pool_str477[sizeof("arabic")];
+    char unicode_prop_name_pool_str478[sizeof("yezidi")];
     char unicode_prop_name_pool_str480[sizeof("inmyanmarextendeda")];
     char unicode_prop_name_pool_str481[sizeof("inruminumeralsymbols")];
     char unicode_prop_name_pool_str485[sizeof("letter")];
     char unicode_prop_name_pool_str493[sizeof("innandinagari")];
+    char unicode_prop_name_pool_str495[sizeof("xidcontinue")];
     char unicode_prop_name_pool_str499[sizeof("inmeeteimayek")];
     char unicode_prop_name_pool_str506[sizeof("inoldnortharabian")];
     char unicode_prop_name_pool_str509[sizeof("incjkcompatibilityforms")];
     char unicode_prop_name_pool_str510[sizeof("knda")];
     char unicode_prop_name_pool_str513[sizeof("kannada")];
     char unicode_prop_name_pool_str514[sizeof("incjkcompatibilityideographs")];
+    char unicode_prop_name_pool_str526[sizeof("han")];
+    char unicode_prop_name_pool_str531[sizeof("hani")];
     char unicode_prop_name_pool_str532[sizeof("l")];
     char unicode_prop_name_pool_str534[sizeof("inmodi")];
     char unicode_prop_name_pool_str538[sizeof("inspecials")];
+    char unicode_prop_name_pool_str540[sizeof("hano")];
     char unicode_prop_name_pool_str545[sizeof("intransportandmapsymbols")];
     char unicode_prop_name_pool_str546[sizeof("inmendekikakui")];
     char unicode_prop_name_pool_str547[sizeof("letternumber")];
     char unicode_prop_name_pool_str556[sizeof("inmedefaidrin")];
-    char unicode_prop_name_pool_str557[sizeof("xidc")];
     char unicode_prop_name_pool_str558[sizeof("inchesssymbols")];
+    char unicode_prop_name_pool_str562[sizeof("hanunoo")];
     char unicode_prop_name_pool_str564[sizeof("inemoticons")];
+    char unicode_prop_name_pool_str567[sizeof("inkhojki")];
     char unicode_prop_name_pool_str570[sizeof("inlineara")];
     char unicode_prop_name_pool_str576[sizeof("inlao")];
     char unicode_prop_name_pool_str579[sizeof("brahmi")];
     char unicode_prop_name_pool_str581[sizeof("inolditalic")];
+    char unicode_prop_name_pool_str584[sizeof("hira")];
+    char unicode_prop_name_pool_str586[sizeof("xidc")];
     char unicode_prop_name_pool_str588[sizeof("inmiscellaneousmathematicalsymbolsa")];
     char unicode_prop_name_pool_str591[sizeof("mongolian")];
-    char unicode_prop_name_pool_str602[sizeof("xids")];
     char unicode_prop_name_pool_str603[sizeof("psalterpahlavi")];
     char unicode_prop_name_pool_str616[sizeof("grlink")];
     char unicode_prop_name_pool_str621[sizeof("kits")];
     char unicode_prop_name_pool_str625[sizeof("insundanese")];
     char unicode_prop_name_pool_str626[sizeof("inoldsogdian")];
+    char unicode_prop_name_pool_str631[sizeof("xids")];
     char unicode_prop_name_pool_str634[sizeof("gothic")];
     char unicode_prop_name_pool_str635[sizeof("inancientsymbols")];
     char unicode_prop_name_pool_str639[sizeof("meroiticcursive")];
@@ -27151,11 +27476,10 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str779[sizeof("inlinearbideograms")];
     char unicode_prop_name_pool_str782[sizeof("intaitham")];
     char unicode_prop_name_pool_str783[sizeof("inmusicalsymbols")];
-    char unicode_prop_name_pool_str789[sizeof("inznamennymusicalnotation")];
     char unicode_prop_name_pool_str800[sizeof("samr")];
     char unicode_prop_name_pool_str812[sizeof("insylotinagri")];
-    char unicode_prop_name_pool_str814[sizeof("innewa")];
     char unicode_prop_name_pool_str815[sizeof("samaritan")];
+    char unicode_prop_name_pool_str818[sizeof("inznamennymusicalnotation")];
     char unicode_prop_name_pool_str819[sizeof("s")];
     char unicode_prop_name_pool_str828[sizeof("joinc")];
     char unicode_prop_name_pool_str829[sizeof("incontrolpictures")];
@@ -27167,21 +27491,23 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str845[sizeof("sm")];
     char unicode_prop_name_pool_str848[sizeof("inmiscellaneoussymbolsandpictographs")];
     char unicode_prop_name_pool_str850[sizeof("inugaritic")];
+    char unicode_prop_name_pool_str855[sizeof("hatran")];
     char unicode_prop_name_pool_str858[sizeof("pd")];
     char unicode_prop_name_pool_str866[sizeof("ital")];
     char unicode_prop_name_pool_str878[sizeof("alnum")];
-    char unicode_prop_name_pool_str885[sizeof("zinh")];
-    char unicode_prop_name_pool_str887[sizeof("inwarangciti")];
+    char unicode_prop_name_pool_str883[sizeof("zinh")];
     char unicode_prop_name_pool_str891[sizeof("inlatinextendeda")];
     char unicode_prop_name_pool_str897[sizeof("insaurashtra")];
     char unicode_prop_name_pool_str898[sizeof("intaile")];
     char unicode_prop_name_pool_str900[sizeof("inoldturkic")];
     char unicode_prop_name_pool_str902[sizeof("idcontinue")];
+    char unicode_prop_name_pool_str903[sizeof("hatr")];
     char unicode_prop_name_pool_str908[sizeof("inhanifirohingya")];
     char unicode_prop_name_pool_str911[sizeof("sc")];
+    char unicode_prop_name_pool_str915[sizeof("innewa")];
     char unicode_prop_name_pool_str919[sizeof("idst")];
     char unicode_prop_name_pool_str929[sizeof("inlatinextendede")];
-    char unicode_prop_name_pool_str930[sizeof("lower")];
+    char unicode_prop_name_pool_str934[sizeof("inkawi")];
     char unicode_prop_name_pool_str939[sizeof("bali")];
     char unicode_prop_name_pool_str941[sizeof("inhiragana")];
     char unicode_prop_name_pool_str945[sizeof("incaucasianalbanian")];
@@ -27194,12 +27520,12 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str962[sizeof("cher")];
     char unicode_prop_name_pool_str964[sizeof("bengali")];
     char unicode_prop_name_pool_str965[sizeof("marchen")];
-    char unicode_prop_name_pool_str968[sizeof("inwancho")];
     char unicode_prop_name_pool_str974[sizeof("graphemelink")];
     char unicode_prop_name_pool_str977[sizeof("balinese")];
     char unicode_prop_name_pool_str978[sizeof("idstart")];
     char unicode_prop_name_pool_str982[sizeof("intamil")];
     char unicode_prop_name_pool_str984[sizeof("inmultani")];
+    char unicode_prop_name_pool_str988[sizeof("inwarangciti")];
     char unicode_prop_name_pool_str990[sizeof("cham")];
     char unicode_prop_name_pool_str992[sizeof("chakma")];
     char unicode_prop_name_pool_str994[sizeof("kaithi")];
@@ -27208,40 +27534,42 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str1001[sizeof("inogham")];
     char unicode_prop_name_pool_str1005[sizeof("cased")];
     char unicode_prop_name_pool_str1008[sizeof("inmeeteimayekextensions")];
+    char unicode_prop_name_pool_str1009[sizeof("kawi")];
     char unicode_prop_name_pool_str1011[sizeof("khojki")];
     char unicode_prop_name_pool_str1012[sizeof("inancientgreeknumbers")];
     char unicode_prop_name_pool_str1026[sizeof("runr")];
     char unicode_prop_name_pool_str1027[sizeof("khar")];
+    char unicode_prop_name_pool_str1031[sizeof("lower")];
     char unicode_prop_name_pool_str1032[sizeof("manichaean")];
-    char unicode_prop_name_pool_str1033[sizeof("lowercase")];
     char unicode_prop_name_pool_str1034[sizeof("canadianaboriginal")];
     char unicode_prop_name_pool_str1043[sizeof("inolchiki")];
     char unicode_prop_name_pool_str1044[sizeof("plrd")];
     char unicode_prop_name_pool_str1047[sizeof("inethiopic")];
     char unicode_prop_name_pool_str1051[sizeof("sind")];
-    char unicode_prop_name_pool_str1056[sizeof("cwcm")];
     char unicode_prop_name_pool_str1058[sizeof("inearlydynasticcuneiform")];
     char unicode_prop_name_pool_str1061[sizeof("ll")];
-    char unicode_prop_name_pool_str1065[sizeof("zl")];
+    char unicode_prop_name_pool_str1063[sizeof("zl")];
     char unicode_prop_name_pool_str1068[sizeof("insinhala")];
+    char unicode_prop_name_pool_str1069[sizeof("inwancho")];
     char unicode_prop_name_pool_str1074[sizeof("inkhudawadi")];
-    char unicode_prop_name_pool_str1077[sizeof("xidstart")];
-    char unicode_prop_name_pool_str1082[sizeof("xdigit")];
     char unicode_prop_name_pool_str1084[sizeof("bidic")];
     char unicode_prop_name_pool_str1093[sizeof("chorasmian")];
     char unicode_prop_name_pool_str1104[sizeof("insiddham")];
+    char unicode_prop_name_pool_str1106[sizeof("xidstart")];
     char unicode_prop_name_pool_str1108[sizeof("incountingrodnumerals")];
+    char unicode_prop_name_pool_str1111[sizeof("xdigit")];
     char unicode_prop_name_pool_str1123[sizeof("ahom")];
     char unicode_prop_name_pool_str1124[sizeof("chrs")];
     char unicode_prop_name_pool_str1130[sizeof("khmr")];
     char unicode_prop_name_pool_str1131[sizeof("inolduyghur")];
+    char unicode_prop_name_pool_str1134[sizeof("lowercase")];
     char unicode_prop_name_pool_str1142[sizeof("ingrantha")];
     char unicode_prop_name_pool_str1144[sizeof("bamu")];
     char unicode_prop_name_pool_str1146[sizeof("inscriptionalpahlavi")];
     char unicode_prop_name_pool_str1149[sizeof("gong")];
+    char unicode_prop_name_pool_str1157[sizeof("cwcm")];
     char unicode_prop_name_pool_str1158[sizeof("mong")];
     char unicode_prop_name_pool_str1163[sizeof("inlatinextendedc")];
-    char unicode_prop_name_pool_str1164[sizeof("innewtailue")];
     char unicode_prop_name_pool_str1171[sizeof("adlm")];
     char unicode_prop_name_pool_str1172[sizeof("inosage")];
     char unicode_prop_name_pool_str1178[sizeof("ingeneralpunctuation")];
@@ -27249,6 +27577,7 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str1181[sizeof("kharoshthi")];
     char unicode_prop_name_pool_str1182[sizeof("sinhala")];
     char unicode_prop_name_pool_str1187[sizeof("khmer")];
+    char unicode_prop_name_pool_str1189[sizeof("inkaktoviknumerals")];
     char unicode_prop_name_pool_str1193[sizeof("sterm")];
     char unicode_prop_name_pool_str1195[sizeof("casedletter")];
     char unicode_prop_name_pool_str1198[sizeof("multani")];
@@ -27257,10 +27586,13 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str1212[sizeof("incyrillicsupplement")];
     char unicode_prop_name_pool_str1215[sizeof("ingeorgian")];
     char unicode_prop_name_pool_str1217[sizeof("goth")];
+    char unicode_prop_name_pool_str1221[sizeof("gujr")];
     char unicode_prop_name_pool_str1224[sizeof("incherokeesupplement")];
     char unicode_prop_name_pool_str1225[sizeof("glagolitic")];
+    char unicode_prop_name_pool_str1232[sizeof("gujarati")];
+    char unicode_prop_name_pool_str1233[sizeof("vai")];
+    char unicode_prop_name_pool_str1234[sizeof("vaii")];
     char unicode_prop_name_pool_str1237[sizeof("quotationmark")];
-    char unicode_prop_name_pool_str1238[sizeof("uideo")];
     char unicode_prop_name_pool_str1240[sizeof("incjkunifiedideographsextensiona")];
     char unicode_prop_name_pool_str1242[sizeof("joincontrol")];
     char unicode_prop_name_pool_str1243[sizeof("runic")];
@@ -27268,6 +27600,8 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str1257[sizeof("emoji")];
     char unicode_prop_name_pool_str1259[sizeof("incjkunifiedideographsextensione")];
     char unicode_prop_name_pool_str1260[sizeof("grantha")];
+    char unicode_prop_name_pool_str1262[sizeof("innagmundari")];
+    char unicode_prop_name_pool_str1265[sizeof("innewtailue")];
     char unicode_prop_name_pool_str1266[sizeof("intirhuta")];
     char unicode_prop_name_pool_str1268[sizeof("inhatran")];
     char unicode_prop_name_pool_str1275[sizeof("adlam")];
@@ -27283,14 +27617,13 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str1323[sizeof("invai")];
     char unicode_prop_name_pool_str1324[sizeof("brah")];
     char unicode_prop_name_pool_str1328[sizeof("inmiscellaneoustechnical")];
-    char unicode_prop_name_pool_str1330[sizeof("vai")];
-    char unicode_prop_name_pool_str1331[sizeof("vaii")];
     char unicode_prop_name_pool_str1334[sizeof("saur")];
+    char unicode_prop_name_pool_str1339[sizeof("uideo")];
     char unicode_prop_name_pool_str1341[sizeof("guru")];
     char unicode_prop_name_pool_str1343[sizeof("taile")];
     char unicode_prop_name_pool_str1347[sizeof("inherited")];
     char unicode_prop_name_pool_str1349[sizeof("paucinhau")];
-    char unicode_prop_name_pool_str1352[sizeof("zanb")];
+    char unicode_prop_name_pool_str1350[sizeof("zanb")];
     char unicode_prop_name_pool_str1353[sizeof("punct")];
     char unicode_prop_name_pool_str1355[sizeof("linb")];
     char unicode_prop_name_pool_str1360[sizeof("gurmukhi")];
@@ -27303,26 +27636,20 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str1379[sizeof("graphemeextend")];
     char unicode_prop_name_pool_str1380[sizeof("inelbasan")];
     char unicode_prop_name_pool_str1383[sizeof("insorasompeng")];
-    char unicode_prop_name_pool_str1386[sizeof("han")];
-    char unicode_prop_name_pool_str1391[sizeof("hani")];
     char unicode_prop_name_pool_str1392[sizeof("limbu")];
-    char unicode_prop_name_pool_str1395[sizeof("unassigned")];
     char unicode_prop_name_pool_str1397[sizeof("radical")];
-    char unicode_prop_name_pool_str1400[sizeof("hano")];
-    char unicode_prop_name_pool_str1402[sizeof("lowercaseletter")];
+    char unicode_prop_name_pool_str1401[sizeof("mahj")];
     char unicode_prop_name_pool_str1409[sizeof("cntrl")];
     char unicode_prop_name_pool_str1411[sizeof("incjkunifiedideographs")];
+    char unicode_prop_name_pool_str1412[sizeof("mahajani")];
     char unicode_prop_name_pool_str1414[sizeof("linearb")];
     char unicode_prop_name_pool_str1420[sizeof("inanatolianhieroglyphs")];
-    char unicode_prop_name_pool_str1422[sizeof("hanunoo")];
-    char unicode_prop_name_pool_str1427[sizeof("inkhojki")];
     char unicode_prop_name_pool_str1428[sizeof("inlatinextendedadditional")];
     char unicode_prop_name_pool_str1429[sizeof("inenclosedalphanumerics")];
     char unicode_prop_name_pool_str1431[sizeof("anatolianhieroglyphs")];
     char unicode_prop_name_pool_str1434[sizeof("n")];
     char unicode_prop_name_pool_str1436[sizeof("emojimodifier")];
     char unicode_prop_name_pool_str1439[sizeof("sd")];
-    char unicode_prop_name_pool_str1444[sizeof("hira")];
     char unicode_prop_name_pool_str1448[sizeof("sidd")];
     char unicode_prop_name_pool_str1455[sizeof("limb")];
     char unicode_prop_name_pool_str1457[sizeof("bhks")];
@@ -27331,30 +27658,32 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str1464[sizeof("no")];
     char unicode_prop_name_pool_str1465[sizeof("saurashtra")];
     char unicode_prop_name_pool_str1467[sizeof("intangsa")];
-    char unicode_prop_name_pool_str1468[sizeof("cwt")];
     char unicode_prop_name_pool_str1469[sizeof("bhaiksuki")];
     char unicode_prop_name_pool_str1472[sizeof("ingreekandcoptic")];
     char unicode_prop_name_pool_str1473[sizeof("nko")];
     char unicode_prop_name_pool_str1474[sizeof("nkoo")];
     char unicode_prop_name_pool_str1475[sizeof("term")];
     char unicode_prop_name_pool_str1478[sizeof("osage")];
-    char unicode_prop_name_pool_str1479[sizeof("xpeo")];
     char unicode_prop_name_pool_str1481[sizeof("tnsa")];
     char unicode_prop_name_pool_str1483[sizeof("tangsa")];
     char unicode_prop_name_pool_str1484[sizeof("inkayahli")];
     char unicode_prop_name_pool_str1487[sizeof("p")];
     char unicode_prop_name_pool_str1490[sizeof("inoriya")];
-    char unicode_prop_name_pool_str1492[sizeof("inyezidi")];
     char unicode_prop_name_pool_str1493[sizeof("inarabic")];
     char unicode_prop_name_pool_str1494[sizeof("inphoenician")];
+    char unicode_prop_name_pool_str1496[sizeof("unassigned")];
     char unicode_prop_name_pool_str1497[sizeof("inshavian")];
     char unicode_prop_name_pool_str1498[sizeof("bidicontrol")];
+    char unicode_prop_name_pool_str1503[sizeof("lowercaseletter")];
+    char unicode_prop_name_pool_str1504[sizeof("khoj")];
     char unicode_prop_name_pool_str1507[sizeof("inenclosedideographicsupplement")];
+    char unicode_prop_name_pool_str1508[sizeof("xpeo")];
     char unicode_prop_name_pool_str1509[sizeof("wara")];
     char unicode_prop_name_pool_str1511[sizeof("mult")];
     char unicode_prop_name_pool_str1514[sizeof("inmeroitichieroglyphs")];
     char unicode_prop_name_pool_str1515[sizeof("sinh")];
     char unicode_prop_name_pool_str1518[sizeof("shavian")];
+    char unicode_prop_name_pool_str1521[sizeof("inyezidi")];
     char unicode_prop_name_pool_str1526[sizeof("inkangxiradicals")];
     char unicode_prop_name_pool_str1532[sizeof("enclosingmark")];
     char unicode_prop_name_pool_str1534[sizeof("arab")];
@@ -27366,7 +27695,9 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str1555[sizeof("inbasiclatin")];
     char unicode_prop_name_pool_str1556[sizeof("inarabicpresentationformsa")];
     char unicode_prop_name_pool_str1559[sizeof("cpmn")];
+    char unicode_prop_name_pool_str1569[sizeof("cwt")];
     char unicode_prop_name_pool_str1579[sizeof("regionalindicator")];
+    char unicode_prop_name_pool_str1580[sizeof("vs")];
     char unicode_prop_name_pool_str1583[sizeof("inenclosedalphanumericsupplement")];
     char unicode_prop_name_pool_str1584[sizeof("emojimodifierbase")];
     char unicode_prop_name_pool_str1586[sizeof("ingreekextended")];
@@ -27379,31 +27710,33 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str1605[sizeof("inphaistosdisc")];
     char unicode_prop_name_pool_str1609[sizeof("di")];
     char unicode_prop_name_pool_str1612[sizeof("diak")];
-    char unicode_prop_name_pool_str1625[sizeof("unknown")];
     char unicode_prop_name_pool_str1626[sizeof("grbase")];
     char unicode_prop_name_pool_str1628[sizeof("mymr")];
     char unicode_prop_name_pool_str1631[sizeof("myanmar")];
     char unicode_prop_name_pool_str1640[sizeof("incjkunifiedideographsextensiond")];
     char unicode_prop_name_pool_str1642[sizeof("emod")];
+    char unicode_prop_name_pool_str1643[sizeof("hang")];
     char unicode_prop_name_pool_str1647[sizeof("ingeometricshapes")];
     char unicode_prop_name_pool_str1649[sizeof("incyprominoan")];
     char unicode_prop_name_pool_str1651[sizeof("insundanesesupplement")];
     char unicode_prop_name_pool_str1655[sizeof("toto")];
     char unicode_prop_name_pool_str1658[sizeof("glag")];
     char unicode_prop_name_pool_str1659[sizeof("taiviet")];
+    char unicode_prop_name_pool_str1664[sizeof("ingujarati")];
     char unicode_prop_name_pool_str1670[sizeof("asciihexdigit")];
     char unicode_prop_name_pool_str1671[sizeof("odi")];
     char unicode_prop_name_pool_str1673[sizeof("punctuation")];
-    char unicode_prop_name_pool_str1677[sizeof("vs")];
+    char unicode_prop_name_pool_str1674[sizeof("ingunjalagondi")];
     char unicode_prop_name_pool_str1681[sizeof("sund")];
     char unicode_prop_name_pool_str1682[sizeof("insoyombo")];
     char unicode_prop_name_pool_str1683[sizeof("inimperialaramaic")];
+    char unicode_prop_name_pool_str1686[sizeof("patternsyntax")];
     char unicode_prop_name_pool_str1690[sizeof("inbatak")];
     char unicode_prop_name_pool_str1691[sizeof("inlatinextendedd")];
     char unicode_prop_name_pool_str1703[sizeof("innushu")];
     char unicode_prop_name_pool_str1706[sizeof("intibetan")];
-    char unicode_prop_name_pool_str1710[sizeof("inlowsurrogates")];
-    char unicode_prop_name_pool_str1715[sizeof("hatran")];
+    char unicode_prop_name_pool_str1707[sizeof("hiragana")];
+    char unicode_prop_name_pool_str1711[sizeof("inrejang")];
     char unicode_prop_name_pool_str1716[sizeof("inblockelements")];
     char unicode_prop_name_pool_str1723[sizeof("insogdian")];
     char unicode_prop_name_pool_str1724[sizeof("indingbats")];
@@ -27411,13 +27744,14 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str1730[sizeof("indevanagari")];
     char unicode_prop_name_pool_str1740[sizeof("emojicomponent")];
     char unicode_prop_name_pool_str1744[sizeof("inkatakanaphoneticextensions")];
+    char unicode_prop_name_pool_str1746[sizeof("hmng")];
+    char unicode_prop_name_pool_str1747[sizeof("inenclosedcjklettersandmonths")];
     char unicode_prop_name_pool_str1749[sizeof("ideographic")];
     char unicode_prop_name_pool_str1750[sizeof("coptic")];
+    char unicode_prop_name_pool_str1751[sizeof("indevanagariextendeda")];
     char unicode_prop_name_pool_str1752[sizeof("innumberforms")];
-    char unicode_prop_name_pool_str1763[sizeof("hatr")];
     char unicode_prop_name_pool_str1772[sizeof("incjkcompatibility")];
     char unicode_prop_name_pool_str1775[sizeof("inkanaextendedb")];
-    char unicode_prop_name_pool_str1783[sizeof("patternsyntax")];
     char unicode_prop_name_pool_str1784[sizeof("avestan")];
     char unicode_prop_name_pool_str1785[sizeof("inarabicextendeda")];
     char unicode_prop_name_pool_str1789[sizeof("sogdian")];
@@ -27426,27 +27760,31 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str1795[sizeof("copt")];
     char unicode_prop_name_pool_str1796[sizeof("graph")];
     char unicode_prop_name_pool_str1801[sizeof("oidc")];
-    char unicode_prop_name_pool_str1804[sizeof("inbyzantinemusicalsymbols")];
     char unicode_prop_name_pool_str1807[sizeof("ininscriptionalparthian")];
     char unicode_prop_name_pool_str1808[sizeof("diacritic")];
     char unicode_prop_name_pool_str1810[sizeof("ininscriptionalpahlavi")];
+    char unicode_prop_name_pool_str1811[sizeof("inlowsurrogates")];
     char unicode_prop_name_pool_str1815[sizeof("inmayannumerals")];
     char unicode_prop_name_pool_str1818[sizeof("inmyanmarextendedb")];
     char unicode_prop_name_pool_str1824[sizeof("intags")];
     char unicode_prop_name_pool_str1825[sizeof("java")];
+    char unicode_prop_name_pool_str1827[sizeof("unknown")];
+    char unicode_prop_name_pool_str1833[sizeof("inbyzantinemusicalsymbols")];
     char unicode_prop_name_pool_str1835[sizeof("cprt")];
     char unicode_prop_name_pool_str1837[sizeof("nand")];
     char unicode_prop_name_pool_str1843[sizeof("patsyn")];
     char unicode_prop_name_pool_str1844[sizeof("tale")];
+    char unicode_prop_name_pool_str1845[sizeof("incyrillicextendeda")];
     char unicode_prop_name_pool_str1846[sizeof("oids")];
+    char unicode_prop_name_pool_str1850[sizeof("injavanese")];
     char unicode_prop_name_pool_str1856[sizeof("sentenceterminal")];
     char unicode_prop_name_pool_str1858[sizeof("imperialaramaic")];
     char unicode_prop_name_pool_str1862[sizeof("terminalpunctuation")];
     char unicode_prop_name_pool_str1863[sizeof("lydi")];
     char unicode_prop_name_pool_str1864[sizeof("lydian")];
     char unicode_prop_name_pool_str1866[sizeof("bopo")];
+    char unicode_prop_name_pool_str1867[sizeof("intaixuanjingsymbols")];
     char unicode_prop_name_pool_str1870[sizeof("javanese")];
-    char unicode_prop_name_pool_str1872[sizeof("cwl")];
     char unicode_prop_name_pool_str1874[sizeof("ingeometricshapesextended")];
     char unicode_prop_name_pool_str1875[sizeof("inoldpersian")];
     char unicode_prop_name_pool_str1878[sizeof("inornamentaldingbats")];
@@ -27460,26 +27798,28 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str1908[sizeof("sharada")];
     char unicode_prop_name_pool_str1913[sizeof("inbalinese")];
     char unicode_prop_name_pool_str1915[sizeof("invedicextensions")];
+    char unicode_prop_name_pool_str1921[sizeof("inarabicextendedc")];
     char unicode_prop_name_pool_str1925[sizeof("word")];
     char unicode_prop_name_pool_str1926[sizeof("inmiscellaneousmathematicalsymbolsb")];
     char unicode_prop_name_pool_str1928[sizeof("taml")];
     char unicode_prop_name_pool_str1930[sizeof("olck")];
     char unicode_prop_name_pool_str1931[sizeof("idsb")];
+    char unicode_prop_name_pool_str1934[sizeof("hebr")];
     char unicode_prop_name_pool_str1935[sizeof("olower")];
     char unicode_prop_name_pool_str1939[sizeof("decimalnumber")];
     char unicode_prop_name_pool_str1940[sizeof("avst")];
-    char unicode_prop_name_pool_str1942[sizeof("incyrillicextendeda")];
     char unicode_prop_name_pool_str1947[sizeof("olchiki")];
     char unicode_prop_name_pool_str1961[sizeof("shrd")];
-    char unicode_prop_name_pool_str1964[sizeof("intaixuanjingsymbols")];
+    char unicode_prop_name_pool_str1969[sizeof("rjng")];
     char unicode_prop_name_pool_str1972[sizeof("intaiviet")];
-    char unicode_prop_name_pool_str1973[sizeof("ugar")];
+    char unicode_prop_name_pool_str1973[sizeof("cwl")];
     char unicode_prop_name_pool_str1976[sizeof("incjksymbolsandpunctuation")];
+    char unicode_prop_name_pool_str1981[sizeof("incyrillicextendedc")];
     char unicode_prop_name_pool_str1989[sizeof("bopomofo")];
     char unicode_prop_name_pool_str2000[sizeof("inlisu")];
     char unicode_prop_name_pool_str2004[sizeof("inoldpermic")];
+    char unicode_prop_name_pool_str2017[sizeof("zanabazarsquare")];
     char unicode_prop_name_pool_str2018[sizeof("siddham")];
-    char unicode_prop_name_pool_str2019[sizeof("zanabazarsquare")];
     char unicode_prop_name_pool_str2028[sizeof("assigned")];
     char unicode_prop_name_pool_str2032[sizeof("medf")];
     char unicode_prop_name_pool_str2034[sizeof("closepunctuation")];
@@ -27494,22 +27834,22 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str2048[sizeof("insyriacsupplement")];
     char unicode_prop_name_pool_str2053[sizeof("inhanguljamoextendeda")];
     char unicode_prop_name_pool_str2056[sizeof("cyrl")];
+    char unicode_prop_name_pool_str2057[sizeof("hmnp")];
     char unicode_prop_name_pool_str2063[sizeof("inshorthandformatcontrols")];
-    char unicode_prop_name_pool_str2078[sizeof("incyrillicextendedc")];
-    char unicode_prop_name_pool_str2081[sizeof("gujr")];
-    char unicode_prop_name_pool_str2090[sizeof("cwu")];
-    char unicode_prop_name_pool_str2092[sizeof("gujarati")];
+    char unicode_prop_name_pool_str2074[sizeof("ugar")];
+    char unicode_prop_name_pool_str2077[sizeof("xsux")];
     char unicode_prop_name_pool_str2096[sizeof("spacingmark")];
     char unicode_prop_name_pool_str2099[sizeof("alpha")];
     char unicode_prop_name_pool_str2100[sizeof("mlym")];
     char unicode_prop_name_pool_str2102[sizeof("inpalmyrene")];
+    char unicode_prop_name_pool_str2104[sizeof("incjkunifiedideographsextensionh")];
     char unicode_prop_name_pool_str2105[sizeof("malayalam")];
     char unicode_prop_name_pool_str2110[sizeof("space")];
     char unicode_prop_name_pool_str2113[sizeof("inlepcha")];
     char unicode_prop_name_pool_str2117[sizeof("palmyrene")];
     char unicode_prop_name_pool_str2122[sizeof("soyo")];
     char unicode_prop_name_pool_str2129[sizeof("meroitichieroglyphs")];
-    char unicode_prop_name_pool_str2145[sizeof("xsux")];
+    char unicode_prop_name_pool_str2143[sizeof("phnx")];
     char unicode_prop_name_pool_str2147[sizeof("intelugu")];
     char unicode_prop_name_pool_str2150[sizeof("indevanagariextended")];
     char unicode_prop_name_pool_str2152[sizeof("inmeroiticcursive")];
@@ -27522,51 +27862,52 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str2178[sizeof("titlecaseletter")];
     char unicode_prop_name_pool_str2182[sizeof("inmathematicalalphanumericsymbols")];
     char unicode_prop_name_pool_str2186[sizeof("orkh")];
+    char unicode_prop_name_pool_str2191[sizeof("cwu")];
     char unicode_prop_name_pool_str2195[sizeof("caucasianalbanian")];
     char unicode_prop_name_pool_str2199[sizeof("inbamum")];
     char unicode_prop_name_pool_str2201[sizeof("deseret")];
     char unicode_prop_name_pool_str2204[sizeof("ingeorgiansupplement")];
     char unicode_prop_name_pool_str2205[sizeof("buginese")];
     char unicode_prop_name_pool_str2207[sizeof("separator")];
+    char unicode_prop_name_pool_str2209[sizeof("vithkuqi")];
     char unicode_prop_name_pool_str2213[sizeof("insmallformvariants")];
+    char unicode_prop_name_pool_str2215[sizeof("variationselector")];
+    char unicode_prop_name_pool_str2218[sizeof("inmahjongtiles")];
+    char unicode_prop_name_pool_str2219[sizeof("hangul")];
     char unicode_prop_name_pool_str2224[sizeof("tirh")];
     char unicode_prop_name_pool_str2228[sizeof("inbrahmi")];
     char unicode_prop_name_pool_str2232[sizeof("nd")];
-    char unicode_prop_name_pool_str2240[sizeof("phnx")];
-    char unicode_prop_name_pool_str2247[sizeof("newa")];
+    char unicode_prop_name_pool_str2239[sizeof("ahex")];
+    char unicode_prop_name_pool_str2245[sizeof("incyrillicextendedd")];
     char unicode_prop_name_pool_str2252[sizeof("incombiningdiacriticalmarks")];
-    char unicode_prop_name_pool_str2261[sizeof("mahj")];
     char unicode_prop_name_pool_str2262[sizeof("incombiningdiacriticalmarksforsymbols")];
     char unicode_prop_name_pool_str2270[sizeof("oldpersian")];
-    char unicode_prop_name_pool_str2272[sizeof("mahajani")];
     char unicode_prop_name_pool_str2274[sizeof("taitham")];
-    char unicode_prop_name_pool_str2278[sizeof("newtailue")];
-    char unicode_prop_name_pool_str2279[sizeof("newline")];
+    char unicode_prop_name_pool_str2280[sizeof("hung")];
     char unicode_prop_name_pool_str2282[sizeof("syrc")];
+    char unicode_prop_name_pool_str2291[sizeof("inyijinghexagramsymbols")];
     char unicode_prop_name_pool_str2292[sizeof("inmongoliansupplement")];
     char unicode_prop_name_pool_str2296[sizeof("inunifiedcanadianaboriginalsyllabicsextendeda")];
-    char unicode_prop_name_pool_str2299[sizeof("shaw")];
     char unicode_prop_name_pool_str2305[sizeof("buhd")];
-    char unicode_prop_name_pool_str2306[sizeof("vithkuqi")];
     char unicode_prop_name_pool_str2307[sizeof("number")];
     char unicode_prop_name_pool_str2311[sizeof("insuttonsignwriting")];
-    char unicode_prop_name_pool_str2312[sizeof("variationselector")];
     char unicode_prop_name_pool_str2320[sizeof("ethi")];
     char unicode_prop_name_pool_str2322[sizeof("lepcha")];
     char unicode_prop_name_pool_str2326[sizeof("tirhuta")];
     char unicode_prop_name_pool_str2329[sizeof("rohg")];
-    char unicode_prop_name_pool_str2336[sizeof("ahex")];
     char unicode_prop_name_pool_str2343[sizeof("incopticepactnumbers")];
+    char unicode_prop_name_pool_str2348[sizeof("newa")];
     char unicode_prop_name_pool_str2354[sizeof("wancho")];
     char unicode_prop_name_pool_str2359[sizeof("incjkunifiedideographsextensiong")];
-    char unicode_prop_name_pool_str2364[sizeof("khoj")];
     char unicode_prop_name_pool_str2371[sizeof("cuneiform")];
+    char unicode_prop_name_pool_str2379[sizeof("newtailue")];
+    char unicode_prop_name_pool_str2380[sizeof("newline")];
     char unicode_prop_name_pool_str2382[sizeof("induployan")];
-    char unicode_prop_name_pool_str2390[sizeof("ugaritic")];
     char unicode_prop_name_pool_str2391[sizeof("insymbolsandpictographsextendeda")];
+    char unicode_prop_name_pool_str2400[sizeof("shaw")];
     char unicode_prop_name_pool_str2402[sizeof("oldpermic")];
     char unicode_prop_name_pool_str2407[sizeof("incombiningdiacriticalmarkssupplement")];
-    char unicode_prop_name_pool_str2414[sizeof("khudawadi")];
+    char unicode_prop_name_pool_str2417[sizeof("vith")];
     char unicode_prop_name_pool_str2419[sizeof("tang")];
     char unicode_prop_name_pool_str2420[sizeof("syriac")];
     char unicode_prop_name_pool_str2423[sizeof("tagbanwa")];
@@ -27584,46 +27925,42 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str2482[sizeof("idstrinaryoperator")];
     char unicode_prop_name_pool_str2487[sizeof("inbengali")];
     char unicode_prop_name_pool_str2488[sizeof("nl")];
+    char unicode_prop_name_pool_str2491[sizeof("ugaritic")];
     char unicode_prop_name_pool_str2493[sizeof("surrogate")];
     char unicode_prop_name_pool_str2500[sizeof("ebase")];
-    char unicode_prop_name_pool_str2503[sizeof("hang")];
     char unicode_prop_name_pool_str2504[sizeof("inbuginese")];
     char unicode_prop_name_pool_str2510[sizeof("mathsymbol")];
     char unicode_prop_name_pool_str2511[sizeof("invithkuqi")];
-    char unicode_prop_name_pool_str2514[sizeof("vith")];
+    char unicode_prop_name_pool_str2515[sizeof("khudawadi")];
     char unicode_prop_name_pool_str2518[sizeof("incjkradicalssupplement")];
-    char unicode_prop_name_pool_str2524[sizeof("ingujarati")];
     char unicode_prop_name_pool_str2533[sizeof("inglagolitic")];
-    char unicode_prop_name_pool_str2534[sizeof("ingunjalagondi")];
+    char unicode_prop_name_pool_str2536[sizeof("inethiopicextendeda")];
     char unicode_prop_name_pool_str2538[sizeof("phagspa")];
-    char unicode_prop_name_pool_str2546[sizeof("cwcf")];
     char unicode_prop_name_pool_str2547[sizeof("nchar")];
     char unicode_prop_name_pool_str2548[sizeof("otheridcontinue")];
     char unicode_prop_name_pool_str2549[sizeof("whitespace")];
     char unicode_prop_name_pool_str2556[sizeof("inlinearbsyllabary")];
-    char unicode_prop_name_pool_str2557[sizeof("sgnw")];
     char unicode_prop_name_pool_str2561[sizeof("other")];
-    char unicode_prop_name_pool_str2567[sizeof("hiragana")];
     char unicode_prop_name_pool_str2569[sizeof("inphagspa")];
     char unicode_prop_name_pool_str2570[sizeof("othernumber")];
-    char unicode_prop_name_pool_str2571[sizeof("inrejang")];
     char unicode_prop_name_pool_str2577[sizeof("osge")];
     char unicode_prop_name_pool_str2578[sizeof("incjkunifiedideographsextensionb")];
+    char unicode_prop_name_pool_str2581[sizeof("hluw")];
     char unicode_prop_name_pool_str2584[sizeof("intagalog")];
     char unicode_prop_name_pool_str2585[sizeof("inbassavah")];
     char unicode_prop_name_pool_str2591[sizeof("tangut")];
-    char unicode_prop_name_pool_str2606[sizeof("hmng")];
-    char unicode_prop_name_pool_str2607[sizeof("inenclosedcjklettersandmonths")];
     char unicode_prop_name_pool_str2614[sizeof("currencysymbol")];
     char unicode_prop_name_pool_str2624[sizeof("inlimbu")];
     char unicode_prop_name_pool_str2627[sizeof("inbuhid")];
-    char unicode_prop_name_pool_str2633[sizeof("inethiopicextendeda")];
     char unicode_prop_name_pool_str2634[sizeof("sylo")];
     char unicode_prop_name_pool_str2642[sizeof("dash")];
     char unicode_prop_name_pool_str2644[sizeof("warangciti")];
+    char unicode_prop_name_pool_str2647[sizeof("cwcf")];
     char unicode_prop_name_pool_str2652[sizeof("oalpha")];
     char unicode_prop_name_pool_str2653[sizeof("olditalic")];
+    char unicode_prop_name_pool_str2656[sizeof("nagm")];
     char unicode_prop_name_pool_str2657[sizeof("inottomansiyaqnumbers")];
+    char unicode_prop_name_pool_str2658[sizeof("sgnw")];
     char unicode_prop_name_pool_str2663[sizeof("spaceseparator")];
     char unicode_prop_name_pool_str2665[sizeof("inlatin1supplement")];
     char unicode_prop_name_pool_str2670[sizeof("otheralphabetic")];
@@ -27631,7 +27968,6 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str2683[sizeof("inaegeannumbers")];
     char unicode_prop_name_pool_str2695[sizeof("inunifiedcanadianaboriginalsyllabicsextended")];
     char unicode_prop_name_pool_str2706[sizeof("buhid")];
-    char unicode_prop_name_pool_str2710[sizeof("injavanese")];
     char unicode_prop_name_pool_str2724[sizeof("cyrillic")];
     char unicode_prop_name_pool_str2733[sizeof("dogra")];
     char unicode_prop_name_pool_str2735[sizeof("noncharactercodepoint")];
@@ -27644,12 +27980,10 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str2776[sizeof("inprivateusearea")];
     char unicode_prop_name_pool_str2787[sizeof("changeswhentitlecased")];
     char unicode_prop_name_pool_str2788[sizeof("dogr")];
-    char unicode_prop_name_pool_str2794[sizeof("hebr")];
     char unicode_prop_name_pool_str2804[sizeof("intagbanwa")];
     char unicode_prop_name_pool_str2811[sizeof("intifinagh")];
     char unicode_prop_name_pool_str2821[sizeof("inbopomofo")];
     char unicode_prop_name_pool_str2828[sizeof("narb")];
-    char unicode_prop_name_pool_str2829[sizeof("rjng")];
     char unicode_prop_name_pool_str2832[sizeof("inalphabeticpresentationforms")];
     char unicode_prop_name_pool_str2833[sizeof("incjkunifiedideographsextensionf")];
     char unicode_prop_name_pool_str2835[sizeof("insymbolsforlegacycomputing")];
@@ -27657,80 +27991,80 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str2854[sizeof("finalpunctuation")];
     char unicode_prop_name_pool_str2862[sizeof("inpaucinhau")];
     char unicode_prop_name_pool_str2863[sizeof("inpsalterpahlavi")];
-    char unicode_prop_name_pool_str2869[sizeof("zp")];
+    char unicode_prop_name_pool_str2867[sizeof("zp")];
     char unicode_prop_name_pool_str2882[sizeof("phlp")];
     char unicode_prop_name_pool_str2894[sizeof("inarabicpresentationformsb")];
     char unicode_prop_name_pool_str2901[sizeof("nonspacingmark")];
     char unicode_prop_name_pool_str2909[sizeof("deva")];
     char unicode_prop_name_pool_str2916[sizeof("tavt")];
-    char unicode_prop_name_pool_str2917[sizeof("hmnp")];
     char unicode_prop_name_pool_str2925[sizeof("devanagari")];
     char unicode_prop_name_pool_str2931[sizeof("khitansmallscript")];
+    char unicode_prop_name_pool_str2935[sizeof("inethiopicextended")];
     char unicode_prop_name_pool_str2958[sizeof("kayahli")];
     char unicode_prop_name_pool_str2963[sizeof("inbamumsupplement")];
     char unicode_prop_name_pool_str2965[sizeof("sylotinagri")];
     char unicode_prop_name_pool_str2968[sizeof("tibt")];
+    char unicode_prop_name_pool_str2971[sizeof("hex")];
     char unicode_prop_name_pool_str2972[sizeof("epres")];
     char unicode_prop_name_pool_str2974[sizeof("tibetan")];
     char unicode_prop_name_pool_str2989[sizeof("elba")];
+    char unicode_prop_name_pool_str2990[sizeof("ext")];
     char unicode_prop_name_pool_str2997[sizeof("osmanya")];
     char unicode_prop_name_pool_str3009[sizeof("indivesakuru")];
     char unicode_prop_name_pool_str3020[sizeof("oldturkic")];
     char unicode_prop_name_pool_str3026[sizeof("changeswhenlowercased")];
     char unicode_prop_name_pool_str3031[sizeof("cyprominoan")];
-    char unicode_prop_name_pool_str3032[sizeof("inethiopicextended")];
     char unicode_prop_name_pool_str3037[sizeof("emojipresentation")];
     char unicode_prop_name_pool_str3040[sizeof("any")];
+    char unicode_prop_name_pool_str3058[sizeof("inphoneticextensions")];
     char unicode_prop_name_pool_str3061[sizeof("otherlowercase")];
     char unicode_prop_name_pool_str3070[sizeof("ougr")];
-    char unicode_prop_name_pool_str3071[sizeof("inhebrew")];
     char unicode_prop_name_pool_str3072[sizeof("softdotted")];
     char unicode_prop_name_pool_str3074[sizeof("inmathematicaloperators")];
     char unicode_prop_name_pool_str3077[sizeof("inalchemicalsymbols")];
-    char unicode_prop_name_pool_str3078[sizeof("inmahjongtiles")];
-    char unicode_prop_name_pool_str3079[sizeof("hangul")];
-    char unicode_prop_name_pool_str3087[sizeof("ext")];
     char unicode_prop_name_pool_str3090[sizeof("omath")];
     char unicode_prop_name_pool_str3091[sizeof("intangutcomponents")];
     char unicode_prop_name_pool_str3095[sizeof("otherletter")];
     char unicode_prop_name_pool_str3098[sizeof("nbat")];
     char unicode_prop_name_pool_str3106[sizeof("nabataean")];
+    char unicode_prop_name_pool_str3109[sizeof("rejang")];
     char unicode_prop_name_pool_str3116[sizeof("nshu")];
     char unicode_prop_name_pool_str3117[sizeof("paragraphseparator")];
     char unicode_prop_name_pool_str3123[sizeof("inarabicextendedb")];
+    char unicode_prop_name_pool_str3128[sizeof("extender")];
     char unicode_prop_name_pool_str3129[sizeof("inlatinextendedg")];
     char unicode_prop_name_pool_str3135[sizeof("changeswhenuppercased")];
-    char unicode_prop_name_pool_str3140[sizeof("hung")];
+    char unicode_prop_name_pool_str3137[sizeof("extpict")];
     char unicode_prop_name_pool_str3141[sizeof("inplayingcards")];
     char unicode_prop_name_pool_str3142[sizeof("inarabicsupplement")];
-    char unicode_prop_name_pool_str3151[sizeof("inyijinghexagramsymbols")];
-    char unicode_prop_name_pool_str3155[sizeof("inphoneticextensions")];
     char unicode_prop_name_pool_str3170[sizeof("otheruppercase")];
     char unicode_prop_name_pool_str3171[sizeof("otheridstart")];
+    char unicode_prop_name_pool_str3172[sizeof("inhebrew")];
     char unicode_prop_name_pool_str3176[sizeof("elbasan")];
+    char unicode_prop_name_pool_str3183[sizeof("incyrillicextendedb")];
     char unicode_prop_name_pool_str3203[sizeof("elym")];
+    char unicode_prop_name_pool_str3206[sizeof("nagmundari")];
     char unicode_prop_name_pool_str3207[sizeof("cf")];
+    char unicode_prop_name_pool_str3212[sizeof("hexdigit")];
+    char unicode_prop_name_pool_str3213[sizeof("inphoneticextensionssupplement")];
     char unicode_prop_name_pool_str3217[sizeof("inindicsiyaqnumbers")];
     char unicode_prop_name_pool_str3220[sizeof("othersymbol")];
-    char unicode_prop_name_pool_str3225[sizeof("extender")];
-    char unicode_prop_name_pool_str3234[sizeof("extpict")];
+    char unicode_prop_name_pool_str3235[sizeof("posixpunct")];
+    char unicode_prop_name_pool_str3236[sizeof("ingeorgianextended")];
     char unicode_prop_name_pool_str3240[sizeof("wspace")];
     char unicode_prop_name_pool_str3244[sizeof("pf")];
     char unicode_prop_name_pool_str3246[sizeof("elymaic")];
     char unicode_prop_name_pool_str3252[sizeof("intangutsupplement")];
+    char unicode_prop_name_pool_str3253[sizeof("hanifirohingya")];
     char unicode_prop_name_pool_str3254[sizeof("cypriot")];
     char unicode_prop_name_pool_str3267[sizeof("symbol")];
-    char unicode_prop_name_pool_str3280[sizeof("incyrillicextendedb")];
     char unicode_prop_name_pool_str3282[sizeof("insuperscriptsandsubscripts")];
     char unicode_prop_name_pool_str3303[sizeof("inyisyllables")];
-    char unicode_prop_name_pool_str3310[sizeof("inphoneticextensionssupplement")];
     char unicode_prop_name_pool_str3330[sizeof("oldsogdian")];
-    char unicode_prop_name_pool_str3332[sizeof("posixpunct")];
-    char unicode_prop_name_pool_str3333[sizeof("ingeorgianextended")];
-    char unicode_prop_name_pool_str3340[sizeof("hluw")];
     char unicode_prop_name_pool_str3376[sizeof("digit")];
     char unicode_prop_name_pool_str3391[sizeof("inhanguljamoextendedb")];
     char unicode_prop_name_pool_str3410[sizeof("inhighprivateusesurrogates")];
+    char unicode_prop_name_pool_str3427[sizeof("hyphen")];
     char unicode_prop_name_pool_str3440[sizeof("inpahawhhmong")];
     char unicode_prop_name_pool_str3448[sizeof("ogham")];
     char unicode_prop_name_pool_str3455[sizeof("insupplementalarrowsa")];
@@ -27738,6 +28072,7 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str3461[sizeof("aghb")];
     char unicode_prop_name_pool_str3476[sizeof("othermath")];
     char unicode_prop_name_pool_str3527[sizeof("nushu")];
+    char unicode_prop_name_pool_str3546[sizeof("extendedpictographic")];
     char unicode_prop_name_pool_str3566[sizeof("soyombo")];
     char unicode_prop_name_pool_str3567[sizeof("inlatinextendedb")];
     char unicode_prop_name_pool_str3578[sizeof("alphabetic")];
@@ -27747,84 +28082,77 @@ struct unicode_prop_name_pool_t
     char unicode_prop_name_pool_str3607[sizeof("deprecated")];
     char unicode_prop_name_pool_str3610[sizeof("oldnortharabian")];
     char unicode_prop_name_pool_str3628[sizeof("incypriotsyllabary")];
-    char unicode_prop_name_pool_str3643[sizeof("extendedpictographic")];
-    char unicode_prop_name_pool_str3693[sizeof("unifiedideograph")];
-    char unicode_prop_name_pool_str3708[sizeof("pahawhhmong")];
+    char unicode_prop_name_pool_str3689[sizeof("hebrew")];
     char unicode_prop_name_pool_str3721[sizeof("divesakuru")];
-    char unicode_prop_name_pool_str3743[sizeof("signwriting")];
     char unicode_prop_name_pool_str3754[sizeof("tagb")];
     char unicode_prop_name_pool_str3768[sizeof("tifinagh")];
-    char unicode_prop_name_pool_str3771[sizeof("upper")];
+    char unicode_prop_name_pool_str3794[sizeof("unifiedideograph")];
+    char unicode_prop_name_pool_str3809[sizeof("pahawhhmong")];
     char unicode_prop_name_pool_str3842[sizeof("inhalfwidthandfullwidthforms")];
-    char unicode_prop_name_pool_str3874[sizeof("uppercase")];
+    char unicode_prop_name_pool_str3844[sizeof("signwriting")];
+    char unicode_prop_name_pool_str3872[sizeof("upper")];
+    char unicode_prop_name_pool_str3874[sizeof("inethiopicextendedb")];
     char unicode_prop_name_pool_str3899[sizeof("ethiopic")];
     char unicode_prop_name_pool_str3912[sizeof("modifiersymbol")];
     char unicode_prop_name_pool_str3952[sizeof("otherpunctuation")];
-    char unicode_prop_name_pool_str3969[sizeof("rejang")];
-    char unicode_prop_name_pool_str3971[sizeof("inethiopicextendedb")];
+    char unicode_prop_name_pool_str3975[sizeof("uppercase")];
     char unicode_prop_name_pool_str4012[sizeof("tfng")];
-    char unicode_prop_name_pool_str4025[sizeof("hex")];
     char unicode_prop_name_pool_str4043[sizeof("insupplementalpunctuation")];
     char unicode_prop_name_pool_str4063[sizeof("tglg")];
     char unicode_prop_name_pool_str4077[sizeof("inlatinextendedf")];
     char unicode_prop_name_pool_str4082[sizeof("tagalog")];
-    char unicode_prop_name_pool_str4113[sizeof("hanifirohingya")];
     char unicode_prop_name_pool_str4136[sizeof("ecomp")];
     char unicode_prop_name_pool_str4163[sizeof("inglagoliticsupplement")];
-    char unicode_prop_name_pool_str4169[sizeof("hexdigit")];
     char unicode_prop_name_pool_str4171[sizeof("changeswhencasefolded")];
     char unicode_prop_name_pool_str4185[sizeof("dashpunctuation")];
     char unicode_prop_name_pool_str4191[sizeof("oldsoutharabian")];
     char unicode_prop_name_pool_str4192[sizeof("dupl")];
     char unicode_prop_name_pool_str4237[sizeof("inegyptianhieroglyphs")];
     char unicode_prop_name_pool_str4239[sizeof("telugu")];
-    char unicode_prop_name_pool_str4243[sizeof("uppercaseletter")];
     char unicode_prop_name_pool_str4250[sizeof("inegyptianhieroglyphformatcontrols")];
-    char unicode_prop_name_pool_str4287[sizeof("hyphen")];
-    char unicode_prop_name_pool_str4347[sizeof("hebrew")];
+    char unicode_prop_name_pool_str4303[sizeof("ogrext")];
+    char unicode_prop_name_pool_str4344[sizeof("uppercaseletter")];
     char unicode_prop_name_pool_str4355[sizeof("inhighsurrogates")];
-    char unicode_prop_name_pool_str4358[sizeof("zyyy")];
-    char unicode_prop_name_pool_str4400[sizeof("ogrext")];
+    char unicode_prop_name_pool_str4356[sizeof("zyyy")];
     char unicode_prop_name_pool_str4467[sizeof("othergraphemeextend")];
     char unicode_prop_name_pool_str4475[sizeof("dep")];
     char unicode_prop_name_pool_str4793[sizeof("insupplementalarrowsb")];
     char unicode_prop_name_pool_str4796[sizeof("defaultignorablecodepoint")];
     char unicode_prop_name_pool_str4806[sizeof("inhangulcompatibilityjamo")];
     char unicode_prop_name_pool_str4815[sizeof("olduyghur")];
+    char unicode_prop_name_pool_str4829[sizeof("inbopomofoextended")];
     char unicode_prop_name_pool_str4838[sizeof("insupplementaryprivateuseareaa")];
-    char unicode_prop_name_pool_str4926[sizeof("inbopomofoextended")];
     char unicode_prop_name_pool_str5043[sizeof("insupplementalsymbolsandpictographs")];
     char unicode_prop_name_pool_str5052[sizeof("nyiakengpuachuehmong")];
     char unicode_prop_name_pool_str5114[sizeof("openpunctuation")];
     char unicode_prop_name_pool_str5121[sizeof("egyp")];
     char unicode_prop_name_pool_str5136[sizeof("duployan")];
-    char unicode_prop_name_pool_str5312[sizeof("inboxdrawing")];
+    char unicode_prop_name_pool_str5215[sizeof("inboxdrawing")];
     char unicode_prop_name_pool_str5725[sizeof("egyptianhieroglyphs")];
     char unicode_prop_name_pool_str6176[sizeof("insupplementaryprivateuseareab")];
   };
 static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
   {
     "lana",
-    "lina",
-    "z",
     "yi",
+    "lina",
     "mn",
+    "yiii",
     "cn",
     "maka",
-    "yiii",
     "mani",
     "inkannada",
     "ci",
     "lo",
     "lao",
     "laoo",
-    "zzzz",
     "miao",
-    "yezi",
+    "z",
     "innko",
     "co",
     "me",
     "loe",
+    "yezi",
     "gran",
     "pi",
     "lineara",
@@ -27844,6 +28172,7 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "kana",
     "mero",
     "m",
+    "zzzz",
     "gonm",
     "cakm",
     "inosmanya",
@@ -27884,7 +28213,6 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "incuneiform",
     "mc",
     "cc",
-    "inzanabazarsquare",
     "lineseparator",
     "armn",
     "qmark",
@@ -27894,6 +28222,7 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "inmarchen",
     "inmasaramgondi",
     "qaac",
+    "inzanabazarsquare",
     "pc",
     "inscriptionalparthian",
     "latn",
@@ -27921,45 +28250,51 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "katakana",
     "ideo",
     "prti",
-    "yezidi",
     "inideographicdescriptioncharacters",
-    "xidcontinue",
     "brai",
     "ascii",
     "privateuse",
     "arabic",
+    "yezidi",
     "inmyanmarextendeda",
     "inruminumeralsymbols",
     "letter",
     "innandinagari",
+    "xidcontinue",
     "inmeeteimayek",
     "inoldnortharabian",
     "incjkcompatibilityforms",
     "knda",
     "kannada",
     "incjkcompatibilityideographs",
+    "han",
+    "hani",
     "l",
     "inmodi",
     "inspecials",
+    "hano",
     "intransportandmapsymbols",
     "inmendekikakui",
     "letternumber",
     "inmedefaidrin",
-    "xidc",
     "inchesssymbols",
+    "hanunoo",
     "inemoticons",
+    "inkhojki",
     "inlineara",
     "inlao",
     "brahmi",
     "inolditalic",
+    "hira",
+    "xidc",
     "inmiscellaneousmathematicalsymbolsa",
     "mongolian",
-    "xids",
     "psalterpahlavi",
     "grlink",
     "kits",
     "insundanese",
     "inoldsogdian",
+    "xids",
     "gothic",
     "inancientsymbols",
     "meroiticcursive",
@@ -27998,11 +28333,10 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "inlinearbideograms",
     "intaitham",
     "inmusicalsymbols",
-    "inznamennymusicalnotation",
     "samr",
     "insylotinagri",
-    "innewa",
     "samaritan",
+    "inznamennymusicalnotation",
     "s",
     "joinc",
     "incontrolpictures",
@@ -28014,21 +28348,23 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "sm",
     "inmiscellaneoussymbolsandpictographs",
     "inugaritic",
+    "hatran",
     "pd",
     "ital",
     "alnum",
     "zinh",
-    "inwarangciti",
     "inlatinextendeda",
     "insaurashtra",
     "intaile",
     "inoldturkic",
     "idcontinue",
+    "hatr",
     "inhanifirohingya",
     "sc",
+    "innewa",
     "idst",
     "inlatinextendede",
-    "lower",
+    "inkawi",
     "bali",
     "inhiragana",
     "incaucasianalbanian",
@@ -28041,12 +28377,12 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "cher",
     "bengali",
     "marchen",
-    "inwancho",
     "graphemelink",
     "balinese",
     "idstart",
     "intamil",
     "inmultani",
+    "inwarangciti",
     "cham",
     "chakma",
     "kaithi",
@@ -28055,40 +28391,42 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "inogham",
     "cased",
     "inmeeteimayekextensions",
+    "kawi",
     "khojki",
     "inancientgreeknumbers",
     "runr",
     "khar",
+    "lower",
     "manichaean",
-    "lowercase",
     "canadianaboriginal",
     "inolchiki",
     "plrd",
     "inethiopic",
     "sind",
-    "cwcm",
     "inearlydynasticcuneiform",
     "ll",
     "zl",
     "insinhala",
+    "inwancho",
     "inkhudawadi",
-    "xidstart",
-    "xdigit",
     "bidic",
     "chorasmian",
     "insiddham",
+    "xidstart",
     "incountingrodnumerals",
+    "xdigit",
     "ahom",
     "chrs",
     "khmr",
     "inolduyghur",
+    "lowercase",
     "ingrantha",
     "bamu",
     "inscriptionalpahlavi",
     "gong",
+    "cwcm",
     "mong",
     "inlatinextendedc",
-    "innewtailue",
     "adlm",
     "inosage",
     "ingeneralpunctuation",
@@ -28096,6 +28434,7 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "kharoshthi",
     "sinhala",
     "khmer",
+    "inkaktoviknumerals",
     "sterm",
     "casedletter",
     "multani",
@@ -28104,10 +28443,13 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "incyrillicsupplement",
     "ingeorgian",
     "goth",
+    "gujr",
     "incherokeesupplement",
     "glagolitic",
+    "gujarati",
+    "vai",
+    "vaii",
     "quotationmark",
-    "uideo",
     "incjkunifiedideographsextensiona",
     "joincontrol",
     "runic",
@@ -28115,6 +28457,8 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "emoji",
     "incjkunifiedideographsextensione",
     "grantha",
+    "innagmundari",
+    "innewtailue",
     "intirhuta",
     "inhatran",
     "adlam",
@@ -28130,9 +28474,8 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "invai",
     "brah",
     "inmiscellaneoustechnical",
-    "vai",
-    "vaii",
     "saur",
+    "uideo",
     "guru",
     "taile",
     "inherited",
@@ -28150,26 +28493,20 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "graphemeextend",
     "inelbasan",
     "insorasompeng",
-    "han",
-    "hani",
     "limbu",
-    "unassigned",
     "radical",
-    "hano",
-    "lowercaseletter",
+    "mahj",
     "cntrl",
     "incjkunifiedideographs",
+    "mahajani",
     "linearb",
     "inanatolianhieroglyphs",
-    "hanunoo",
-    "inkhojki",
     "inlatinextendedadditional",
     "inenclosedalphanumerics",
     "anatolianhieroglyphs",
     "n",
     "emojimodifier",
     "sd",
-    "hira",
     "sidd",
     "limb",
     "bhks",
@@ -28178,30 +28515,32 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "no",
     "saurashtra",
     "intangsa",
-    "cwt",
     "bhaiksuki",
     "ingreekandcoptic",
     "nko",
     "nkoo",
     "term",
     "osage",
-    "xpeo",
     "tnsa",
     "tangsa",
     "inkayahli",
     "p",
     "inoriya",
-    "inyezidi",
     "inarabic",
     "inphoenician",
+    "unassigned",
     "inshavian",
     "bidicontrol",
+    "lowercaseletter",
+    "khoj",
     "inenclosedideographicsupplement",
+    "xpeo",
     "wara",
     "mult",
     "inmeroitichieroglyphs",
     "sinh",
     "shavian",
+    "inyezidi",
     "inkangxiradicals",
     "enclosingmark",
     "arab",
@@ -28213,7 +28552,9 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "inbasiclatin",
     "inarabicpresentationformsa",
     "cpmn",
+    "cwt",
     "regionalindicator",
+    "vs",
     "inenclosedalphanumericsupplement",
     "emojimodifierbase",
     "ingreekextended",
@@ -28226,31 +28567,33 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "inphaistosdisc",
     "di",
     "diak",
-    "unknown",
     "grbase",
     "mymr",
     "myanmar",
     "incjkunifiedideographsextensiond",
     "emod",
+    "hang",
     "ingeometricshapes",
     "incyprominoan",
     "insundanesesupplement",
     "toto",
     "glag",
     "taiviet",
+    "ingujarati",
     "asciihexdigit",
     "odi",
     "punctuation",
-    "vs",
+    "ingunjalagondi",
     "sund",
     "insoyombo",
     "inimperialaramaic",
+    "patternsyntax",
     "inbatak",
     "inlatinextendedd",
     "innushu",
     "intibetan",
-    "inlowsurrogates",
-    "hatran",
+    "hiragana",
+    "inrejang",
     "inblockelements",
     "insogdian",
     "indingbats",
@@ -28258,13 +28601,14 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "indevanagari",
     "emojicomponent",
     "inkatakanaphoneticextensions",
+    "hmng",
+    "inenclosedcjklettersandmonths",
     "ideographic",
     "coptic",
+    "indevanagariextendeda",
     "innumberforms",
-    "hatr",
     "incjkcompatibility",
     "inkanaextendedb",
-    "patternsyntax",
     "avestan",
     "inarabicextendeda",
     "sogdian",
@@ -28273,27 +28617,31 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "copt",
     "graph",
     "oidc",
-    "inbyzantinemusicalsymbols",
     "ininscriptionalparthian",
     "diacritic",
     "ininscriptionalpahlavi",
+    "inlowsurrogates",
     "inmayannumerals",
     "inmyanmarextendedb",
     "intags",
     "java",
+    "unknown",
+    "inbyzantinemusicalsymbols",
     "cprt",
     "nand",
     "patsyn",
     "tale",
+    "incyrillicextendeda",
     "oids",
+    "injavanese",
     "sentenceterminal",
     "imperialaramaic",
     "terminalpunctuation",
     "lydi",
     "lydian",
     "bopo",
+    "intaixuanjingsymbols",
     "javanese",
-    "cwl",
     "ingeometricshapesextended",
     "inoldpersian",
     "inornamentaldingbats",
@@ -28307,26 +28655,28 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "sharada",
     "inbalinese",
     "invedicextensions",
+    "inarabicextendedc",
     "word",
     "inmiscellaneousmathematicalsymbolsb",
     "taml",
     "olck",
     "idsb",
+    "hebr",
     "olower",
     "decimalnumber",
     "avst",
-    "incyrillicextendeda",
     "olchiki",
     "shrd",
-    "intaixuanjingsymbols",
+    "rjng",
     "intaiviet",
-    "ugar",
+    "cwl",
     "incjksymbolsandpunctuation",
+    "incyrillicextendedc",
     "bopomofo",
     "inlisu",
     "inoldpermic",
-    "siddham",
     "zanabazarsquare",
+    "siddham",
     "assigned",
     "medf",
     "closepunctuation",
@@ -28341,22 +28691,22 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "insyriacsupplement",
     "inhanguljamoextendeda",
     "cyrl",
+    "hmnp",
     "inshorthandformatcontrols",
-    "incyrillicextendedc",
-    "gujr",
-    "cwu",
-    "gujarati",
+    "ugar",
+    "xsux",
     "spacingmark",
     "alpha",
     "mlym",
     "inpalmyrene",
+    "incjkunifiedideographsextensionh",
     "malayalam",
     "space",
     "inlepcha",
     "palmyrene",
     "soyo",
     "meroitichieroglyphs",
-    "xsux",
+    "phnx",
     "intelugu",
     "indevanagariextended",
     "inmeroiticcursive",
@@ -28369,51 +28719,52 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "titlecaseletter",
     "inmathematicalalphanumericsymbols",
     "orkh",
+    "cwu",
     "caucasianalbanian",
     "inbamum",
     "deseret",
     "ingeorgiansupplement",
     "buginese",
     "separator",
+    "vithkuqi",
     "insmallformvariants",
+    "variationselector",
+    "inmahjongtiles",
+    "hangul",
     "tirh",
     "inbrahmi",
     "nd",
-    "phnx",
-    "newa",
+    "ahex",
+    "incyrillicextendedd",
     "incombiningdiacriticalmarks",
-    "mahj",
     "incombiningdiacriticalmarksforsymbols",
     "oldpersian",
-    "mahajani",
     "taitham",
-    "newtailue",
-    "newline",
+    "hung",
     "syrc",
+    "inyijinghexagramsymbols",
     "inmongoliansupplement",
     "inunifiedcanadianaboriginalsyllabicsextendeda",
-    "shaw",
     "buhd",
-    "vithkuqi",
     "number",
     "insuttonsignwriting",
-    "variationselector",
     "ethi",
     "lepcha",
     "tirhuta",
     "rohg",
-    "ahex",
     "incopticepactnumbers",
+    "newa",
     "wancho",
     "incjkunifiedideographsextensiong",
-    "khoj",
     "cuneiform",
+    "newtailue",
+    "newline",
     "induployan",
-    "ugaritic",
     "insymbolsandpictographsextendeda",
+    "shaw",
     "oldpermic",
     "incombiningdiacriticalmarkssupplement",
-    "khudawadi",
+    "vith",
     "tang",
     "syriac",
     "tagbanwa",
@@ -28431,46 +28782,42 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "idstrinaryoperator",
     "inbengali",
     "nl",
+    "ugaritic",
     "surrogate",
     "ebase",
-    "hang",
     "inbuginese",
     "mathsymbol",
     "invithkuqi",
-    "vith",
+    "khudawadi",
     "incjkradicalssupplement",
-    "ingujarati",
     "inglagolitic",
-    "ingunjalagondi",
+    "inethiopicextendeda",
     "phagspa",
-    "cwcf",
     "nchar",
     "otheridcontinue",
     "whitespace",
     "inlinearbsyllabary",
-    "sgnw",
     "other",
-    "hiragana",
     "inphagspa",
     "othernumber",
-    "inrejang",
     "osge",
     "incjkunifiedideographsextensionb",
+    "hluw",
     "intagalog",
     "inbassavah",
     "tangut",
-    "hmng",
-    "inenclosedcjklettersandmonths",
     "currencysymbol",
     "inlimbu",
     "inbuhid",
-    "inethiopicextendeda",
     "sylo",
     "dash",
     "warangciti",
+    "cwcf",
     "oalpha",
     "olditalic",
+    "nagm",
     "inottomansiyaqnumbers",
+    "sgnw",
     "spaceseparator",
     "inlatin1supplement",
     "otheralphabetic",
@@ -28478,7 +28825,6 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "inaegeannumbers",
     "inunifiedcanadianaboriginalsyllabicsextended",
     "buhid",
-    "injavanese",
     "cyrillic",
     "dogra",
     "noncharactercodepoint",
@@ -28491,12 +28837,10 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "inprivateusearea",
     "changeswhentitlecased",
     "dogr",
-    "hebr",
     "intagbanwa",
     "intifinagh",
     "inbopomofo",
     "narb",
-    "rjng",
     "inalphabeticpresentationforms",
     "incjkunifiedideographsextensionf",
     "insymbolsforlegacycomputing",
@@ -28510,74 +28854,74 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "nonspacingmark",
     "deva",
     "tavt",
-    "hmnp",
     "devanagari",
     "khitansmallscript",
+    "inethiopicextended",
     "kayahli",
     "inbamumsupplement",
     "sylotinagri",
     "tibt",
+    "hex",
     "epres",
     "tibetan",
     "elba",
+    "ext",
     "osmanya",
     "indivesakuru",
     "oldturkic",
     "changeswhenlowercased",
     "cyprominoan",
-    "inethiopicextended",
     "emojipresentation",
     "any",
+    "inphoneticextensions",
     "otherlowercase",
     "ougr",
-    "inhebrew",
     "softdotted",
     "inmathematicaloperators",
     "inalchemicalsymbols",
-    "inmahjongtiles",
-    "hangul",
-    "ext",
     "omath",
     "intangutcomponents",
     "otherletter",
     "nbat",
     "nabataean",
+    "rejang",
     "nshu",
     "paragraphseparator",
     "inarabicextendedb",
+    "extender",
     "inlatinextendedg",
     "changeswhenuppercased",
-    "hung",
+    "extpict",
     "inplayingcards",
     "inarabicsupplement",
-    "inyijinghexagramsymbols",
-    "inphoneticextensions",
     "otheruppercase",
     "otheridstart",
+    "inhebrew",
     "elbasan",
+    "incyrillicextendedb",
     "elym",
+    "nagmundari",
     "cf",
+    "hexdigit",
+    "inphoneticextensionssupplement",
     "inindicsiyaqnumbers",
     "othersymbol",
-    "extender",
-    "extpict",
+    "posixpunct",
+    "ingeorgianextended",
     "wspace",
     "pf",
     "elymaic",
     "intangutsupplement",
+    "hanifirohingya",
     "cypriot",
     "symbol",
-    "incyrillicextendedb",
     "insuperscriptsandsubscripts",
     "inyisyllables",
-    "inphoneticextensionssupplement",
     "oldsogdian",
-    "posixpunct",
-    "ingeorgianextended",
-    "hluw",
     "digit",
     "inhanguljamoextendedb",
     "inhighprivateusesurrogates",
+    "hyphen",
     "inpahawhhmong",
     "ogham",
     "insupplementalarrowsa",
@@ -28585,6 +28929,7 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "aghb",
     "othermath",
     "nushu",
+    "extendedpictographic",
     "soyombo",
     "inlatinextendedb",
     "alphabetic",
@@ -28594,52 +28939,46 @@ static const struct unicode_prop_name_pool_t unicode_prop_name_pool_contents =
     "deprecated",
     "oldnortharabian",
     "incypriotsyllabary",
-    "extendedpictographic",
-    "unifiedideograph",
-    "pahawhhmong",
+    "hebrew",
     "divesakuru",
-    "signwriting",
     "tagb",
     "tifinagh",
-    "upper",
+    "unifiedideograph",
+    "pahawhhmong",
     "inhalfwidthandfullwidthforms",
-    "uppercase",
+    "signwriting",
+    "upper",
+    "inethiopicextendedb",
     "ethiopic",
     "modifiersymbol",
     "otherpunctuation",
-    "rejang",
-    "inethiopicextendedb",
+    "uppercase",
     "tfng",
-    "hex",
     "insupplementalpunctuation",
     "tglg",
     "inlatinextendedf",
     "tagalog",
-    "hanifirohingya",
     "ecomp",
     "inglagoliticsupplement",
-    "hexdigit",
     "changeswhencasefolded",
     "dashpunctuation",
     "oldsoutharabian",
     "dupl",
     "inegyptianhieroglyphs",
     "telugu",
-    "uppercaseletter",
     "inegyptianhieroglyphformatcontrols",
-    "hyphen",
-    "hebrew",
+    "ogrext",
+    "uppercaseletter",
     "inhighsurrogates",
     "zyyy",
-    "ogrext",
     "othergraphemeextend",
     "dep",
     "insupplementalarrowsb",
     "defaultignorablecodepoint",
     "inhangulcompatibilityjamo",
     "olduyghur",
-    "insupplementaryprivateuseareaa",
     "inbopomofoextended",
+    "insupplementaryprivateuseareaa",
     "insupplementalsymbolsandpictographs",
     "nyiakengpuachuehmong",
     "openpunctuation",
@@ -28658,71 +28997,69 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1},
 
-      {pool_offset(10),                               243},
+      {pool_offset(10),                               245},
+      {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(16),                                 272},
+
+      {pool_offset(17),                               130},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(17),                               129},
+      {pool_offset(24),                                 159},
 
-      {pool_offset(18),                                  271},
+      {pool_offset(25),                               272},
       {-1},
-
-      {pool_offset(20),                                 270},
-      {-1}, {-1}, {-1},
-
-      {pool_offset(24),                                 158},
-      {-1}, {-1},
 
       {pool_offset(27),                                  54},
 
-      {pool_offset(28),                               143},
+      {pool_offset(28),                               144},
+      {-1},
 
-      {pool_offset(29),                               270},
-
-      {pool_offset(30),                               146},
+      {pool_offset(30),                               147},
       {-1}, {-1}, {-1},
 
-      {pool_offset(34),                          305},
+      {pool_offset(34),                          307},
 
       {pool_offset(35),                                  40},
       {-1},
 
-      {pool_offset(37),                                 134},
+      {pool_offset(37),                                 135},
 
-      {pool_offset(38),                                125},
+      {pool_offset(38),                                126},
 
-      {pool_offset(39),                               125},
+      {pool_offset(39),                               126},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(43),                               158},
       {-1},
 
-      {pool_offset(41),                               259},
-      {-1},
+      {pool_offset(45),                                  273},
+      {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(43),                               157},
-
-      {pool_offset(44),                               269},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(51),                              292},
+      {pool_offset(51),                              294},
       {-1},
 
       {pool_offset(53),                                  55},
       {-1}, {-1},
 
-      {pool_offset(56),                                 151},
+      {pool_offset(56),                                 152},
       {-1}, {-1}, {-1},
 
-      {pool_offset(60),                                135},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(60),                                136},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(69),                               271},
 
       {pool_offset(70),                                86},
       {-1},
 
-      {pool_offset(72),                                 210},
+      {pool_offset(72),                                 212},
       {-1}, {-1}, {-1},
 
-      {pool_offset(76),                            129},
+      {pool_offset(76),                            130},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(84),                               141},
+      {pool_offset(84),                               142},
       {-1},
 
       {pool_offset(86),                                39},
@@ -28730,250 +29067,254 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {pool_offset(87),                              39},
       {-1}, {-1},
 
-      {pool_offset(90),                                 211},
+      {pool_offset(90),                                 213},
 
-      {pool_offset(91),                       154},
+      {pool_offset(91),                       155},
       {-1}, {-1},
 
       {pool_offset(94),                                90},
       {-1},
 
-      {pool_offset(96),                                 206},
+      {pool_offset(96),                                 208},
       {-1}, {-1},
 
-      {pool_offset(99),                        153},
+      {pool_offset(99),                        154},
       {-1},
 
-      {pool_offset(101),                       472},
+      {pool_offset(101),                       474},
 
       {pool_offset(102),                                83},
 
       {pool_offset(103),                               90},
       {-1}, {-1}, {-1},
 
-      {pool_offset(107),                                161},
+      {pool_offset(107),                                162},
 
-      {pool_offset(108),                               161},
+      {pool_offset(108),                               162},
       {-1},
 
       {pool_offset(110),                               116},
 
-      {pool_offset(111),                               156},
+      {pool_offset(111),                               157},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(120),                                  141},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1},
+      {pool_offset(120),                                  142},
+      {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(133),                               148},
+      {pool_offset(126),                               261},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(133),                               149},
 
       {pool_offset(134),                                45},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(139),                          456},
+      {pool_offset(139),                          458},
       {-1}, {-1},
 
-      {pool_offset(142),                       475},
+      {pool_offset(142),                       477},
       {-1}, {-1}, {-1},
 
-      {pool_offset(146),                         286},
+      {pool_offset(146),                         288},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(151),                              531},
+      {pool_offset(151),                              536},
 
-      {pool_offset(152),                             536},
+      {pool_offset(152),                             541},
       {-1}, {-1}, {-1},
 
       {pool_offset(156),                                   37},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(163),                           493},
+      {pool_offset(163),                           496},
       {-1}, {-1},
 
       {pool_offset(166),                              56},
       {-1}, {-1},
 
-      {pool_offset(169),                            145},
+      {pool_offset(169),                            146},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1},
 
-      {pool_offset(182),                          311},
+      {pool_offset(182),                          313},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(187),                          520},
+      {pool_offset(187),                          524},
       {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(192),                               109},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(200), 537},
+      {pool_offset(200), 542},
       {-1}, {-1}, {-1},
 
-      {pool_offset(204),                            324},
+      {pool_offset(204),                            326},
       {-1}, {-1},
 
       {pool_offset(207),                                38},
       {-1},
 
-      {pool_offset(209),         212},
+      {pool_offset(209),         214},
       {-1},
 
-      {pool_offset(211),                                 133},
+      {pool_offset(211),                                 134},
 
-      {pool_offset(212),                               147},
+      {pool_offset(212),                               148},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(219),               204},
+      {pool_offset(219),               206},
 
-      {pool_offset(220),                            319},
+      {pool_offset(220),                            321},
 
-      {pool_offset(221),                           447},
+      {pool_offset(221),                           449},
       {-1},
 
-      {pool_offset(223),                          476},
+      {pool_offset(223),                          478},
       {-1},
 
-      {pool_offset(225),                      141},
+      {pool_offset(225),                      142},
 
-      {pool_offset(226),   524},
+      {pool_offset(226),   529},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(231),                               155},
+      {pool_offset(231),                               156},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(237),                       488},
+      {pool_offset(237),                       491},
 
-      {pool_offset(238),                               181},
+      {pool_offset(238),                               183},
 
-      {pool_offset(239),                             507},
+      {pool_offset(239),                             510},
 
-      {pool_offset(240),                    280},
+      {pool_offset(240),                    282},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1},
 
-      {pool_offset(251),                         316},
+      {pool_offset(251),                         318},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(257),                          495},
+      {pool_offset(257),                          498},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1},
 
-      {pool_offset(268),                            143},
+      {pool_offset(268),                            144},
       {-1}, {-1}, {-1},
 
-      {pool_offset(272),                           354},
+      {pool_offset(272),                           356},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(277),                                 124},
+      {pool_offset(277),                                 125},
       {-1},
 
-      {pool_offset(279),                       148},
+      {pool_offset(279),                       149},
       {-1}, {-1}, {-1},
 
-      {pool_offset(283),                        523},
+      {pool_offset(283),                        528},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(290),                                 150},
+      {pool_offset(290),                                 151},
       {-1}, {-1},
 
       {pool_offset(293),                                  43},
-      {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(297),                  512},
-
-      {pool_offset(298),                      273},
+      {pool_offset(298),                      275},
       {-1}, {-1}, {-1},
 
       {pool_offset(302),                                22},
       {-1}, {-1},
 
-      {pool_offset(305),                              215},
+      {pool_offset(305),                              217},
 
       {pool_offset(306),                               108},
       {-1}, {-1},
 
-      {pool_offset(309),                        293},
+      {pool_offset(309),                        295},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(316),                            22},
       {-1},
 
-      {pool_offset(318),                          517},
+      {pool_offset(318),                          521},
 
-      {pool_offset(319),                     518},
+      {pool_offset(319),                     522},
       {-1},
 
       {pool_offset(321),                                57},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(330),                                 204},
+      {pool_offset(326),                  515},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(330),                                 206},
       {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(335),              111},
 
-      {pool_offset(336),                               126},
+      {pool_offset(336),                               127},
       {-1}, {-1}, {-1},
 
-      {pool_offset(340),                              126},
+      {pool_offset(340),                              127},
       {-1},
 
-      {pool_offset(342),                                 217},
+      {pool_offset(342),                                 219},
       {-1}, {-1},
 
-      {pool_offset(345),                           291},
+      {pool_offset(345),                           293},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(352),                     330},
+      {pool_offset(352),                     332},
       {-1}, {-1},
 
-      {pool_offset(355),                         385},
+      {pool_offset(355),                         387},
 
-      {pool_offset(356),                         284},
+      {pool_offset(356),                         286},
 
-      {pool_offset(357),                             308},
+      {pool_offset(357),                             310},
       {-1},
 
-      {pool_offset(359),                             415},
+      {pool_offset(359),                             417},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(367),                           491},
-      {-1}, {-1}, {-1},
+      {pool_offset(367),                           494},
+      {-1},
 
-      {pool_offset(371),                                 275},
+      {pool_offset(369),                                 277},
+      {-1}, {-1},
 
-      {pool_offset(372),                               153},
+      {pool_offset(372),                               154},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(379),                 210},
+      {pool_offset(379),                 212},
       {-1}, {-1}, {-1},
 
       {pool_offset(383),                                  58},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(399),                           289},
+      {pool_offset(399),                           291},
       {-1},
 
-      {pool_offset(401),                                212},
+      {pool_offset(401),                                214},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(415),                            506},
+      {pool_offset(415),                            509},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(420),                                 213},
+      {pool_offset(420),                                 215},
       {-1}, {-1},
 
-      {pool_offset(423),                               145},
+      {pool_offset(423),                               146},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(437),                    544},
+      {pool_offset(437),                    549},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(442),                               154},
+      {pool_offset(442),                               155},
 
-      {pool_offset(443),                               159},
+      {pool_offset(443),                               160},
       {-1},
 
       {pool_offset(445),                           116},
@@ -28983,15 +29324,11 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {-1},
 
       {pool_offset(449),                               111},
-      {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(453),                             269},
-      {-1}, {-1},
-
-      {pool_offset(456), 382},
+      {pool_offset(456), 384},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(466),                        267},
+      {-1},
 
       {pool_offset(467),                                34},
       {-1}, {-1}, {-1}, {-1},
@@ -29003,167 +29340,192 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {-1}, {-1},
 
       {pool_offset(477),                              21},
-      {-1}, {-1},
 
-      {pool_offset(480),                 416},
+      {pool_offset(478),                             271},
+      {-1},
 
-      {pool_offset(481),               483},
+      {pool_offset(480),                 418},
+
+      {pool_offset(481),               485},
       {-1}, {-1}, {-1},
 
-      {pool_offset(485),                             123},
+      {pool_offset(485),                             124},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(493),                      511},
-      {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(493),                      514},
+      {-1},
 
-      {pool_offset(499),                      422},
+      {pool_offset(495),                        269},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(499),                      424},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(506),                  474},
+      {pool_offset(506),                  476},
       {-1}, {-1},
 
-      {pool_offset(509),            435},
+      {pool_offset(509),            437},
 
       {pool_offset(510),                               115},
       {-1}, {-1},
 
       {pool_offset(513),                            115},
 
-      {pool_offset(514),       429},
+      {pool_offset(514),       431},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1},
 
-      {pool_offset(532),                                  123},
+      {pool_offset(526),                                 94},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(531),                                94},
+
+      {pool_offset(532),                                  124},
       {-1},
 
-      {pool_offset(534),                             504},
+      {pool_offset(534),                             507},
       {-1}, {-1}, {-1},
 
-      {pool_offset(538),                         439},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(538),                         441},
+      {-1},
 
-      {pool_offset(545),           577},
+      {pool_offset(540),                                97},
+      {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(546),                     564},
+      {pool_offset(545),           585},
 
-      {pool_offset(547),                       171},
+      {pool_offset(546),                     572},
+
+      {pool_offset(547),                       173},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(556),                      535},
+      {pool_offset(556),                      540},
+      {-1},
 
-      {pool_offset(557),                               267},
+      {pool_offset(558),                     590},
+      {-1}, {-1}, {-1},
 
-      {pool_offset(558),                     582},
+      {pool_offset(562),                             97},
+      {-1},
+
+      {pool_offset(564),                        583},
+      {-1}, {-1},
+
+      {pool_offset(567),                           500},
+      {-1}, {-1},
+
+      {pool_offset(570),                          463},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(564),                        575},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(570),                          461},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(576),                              309},
+      {pool_offset(576),                              311},
       {-1}, {-1},
 
       {pool_offset(579),                              33},
       {-1},
 
-      {pool_offset(581),                        449},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(588), 365},
+      {pool_offset(581),                        451},
       {-1}, {-1},
 
-      {pool_offset(591),                          160},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(584),                               101},
       {-1},
 
-      {pool_offset(602),                               268},
+      {pool_offset(586),                               269},
+      {-1},
 
-      {pool_offset(603),                     214},
+      {pool_offset(588), 367},
+      {-1}, {-1},
+
+      {pool_offset(591),                          161},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1},
+
+      {pool_offset(603),                     216},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1},
 
       {pool_offset(616),                              89},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(621),                               119},
+      {pool_offset(621),                               120},
       {-1}, {-1}, {-1},
 
-      {pool_offset(625),                        335},
+      {pool_offset(625),                        337},
 
-      {pool_offset(626),                       485},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(626),                       488},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(631),                               270},
+      {-1}, {-1},
 
       {pool_offset(634),                              85},
 
-      {pool_offset(635),                   444},
+      {pool_offset(635),                   446},
       {-1}, {-1}, {-1},
 
-      {pool_offset(639),                    155},
+      {pool_offset(639),                    156},
       {-1}, {-1},
 
-      {pool_offset(642),                               117},
+      {pool_offset(642),                               118},
       {-1}, {-1},
 
       {pool_offset(645),                             43},
       {-1}, {-1},
 
-      {pool_offset(648),                  202},
+      {pool_offset(648),                  204},
 
-      {pool_offset(649),                            565},
+      {pool_offset(649),                            573},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(655),                                 230},
+      {pool_offset(655),                                 232},
       {-1},
 
-      {pool_offset(657),                                 137},
+      {pool_offset(657),                                 138},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(662),                          294},
+      {pool_offset(662),                          296},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(668),           406},
+      {pool_offset(668),           408},
 
-      {pool_offset(669), 590},
+      {pool_offset(669), 598},
       {-1},
 
-      {pool_offset(671),                                 232},
+      {pool_offset(671),                                 234},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1},
 
       {pool_offset(683),                                105},
 
-      {pool_offset(684),                  473},
+      {pool_offset(684),                  475},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(691),                               200},
+      {pool_offset(691),                               202},
       {-1},
 
-      {pool_offset(693),                           446},
+      {pool_offset(693),                           448},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(701),                             561},
+      {pool_offset(701),                             568},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(707),                  103},
       {-1},
 
-      {pool_offset(709),                   543},
+      {pool_offset(709),                   548},
 
-      {pool_offset(710),                       390},
+      {pool_offset(710),                       392},
       {-1}, {-1},
 
-      {pool_offset(713),                               235},
+      {pool_offset(713),                               237},
 
       {pool_offset(714),                               26},
       {-1}, {-1}, {-1},
 
-      {pool_offset(718),      358},
+      {pool_offset(718),      360},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(734),                      570},
+      {pool_offset(734),                      578},
       {-1}, {-1}, {-1},
 
       {pool_offset(738),                                28},
@@ -29174,16 +29536,16 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {pool_offset(747),                               28},
       {-1},
 
-      {pool_offset(749),                              202},
+      {pool_offset(749),                              204},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(756),                        306},
+      {pool_offset(756),                        308},
       {-1},
 
-      {pool_offset(758),              403},
+      {pool_offset(758),              405},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(765),               545},
+      {pool_offset(765),               550},
 
       {pool_offset(766),                                27},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
@@ -29194,126 +29556,129 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {pool_offset(776),                                7},
       {-1}, {-1},
 
-      {pool_offset(779),                 441},
+      {pool_offset(779),                 443},
       {-1}, {-1},
 
-      {pool_offset(782),                          332},
+      {pool_offset(782),                          334},
 
-      {pool_offset(783),                   551},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(789),          549},
+      {pool_offset(783),                   556},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(800),                               221},
+      {pool_offset(800),                               223},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1},
 
-      {pool_offset(812),                      405},
-      {-1},
+      {pool_offset(812),                      407},
+      {-1}, {-1},
 
-      {pool_offset(814),                             501},
+      {pool_offset(815),                          223},
+      {-1}, {-1},
 
-      {pool_offset(815),                          221},
-      {-1}, {-1}, {-1},
+      {pool_offset(818),          554},
 
-      {pool_offset(819),                                  220},
+      {pool_offset(819),                                  222},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(828),                              113},
 
-      {pool_offset(829),                  357},
+      {pool_offset(829),                  359},
       {-1}, {-1},
 
-      {pool_offset(832),                               131},
+      {pool_offset(832),                               132},
 
-      {pool_offset(833),                               203},
+      {pool_offset(833),                               205},
 
-      {pool_offset(834),             363},
+      {pool_offset(834),             365},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(842),      552},
+      {pool_offset(842),      557},
 
-      {pool_offset(843),    371},
+      {pool_offset(843),    373},
       {-1},
 
-      {pool_offset(845),                                 231},
+      {pool_offset(845),                                 233},
       {-1}, {-1},
 
-      {pool_offset(848), 574},
+      {pool_offset(848), 582},
       {-1},
 
-      {pool_offset(850),                         452},
+      {pool_offset(850),                         454},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(855),                              98},
+      {-1}, {-1},
+
+      {pool_offset(858),                                 207},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(858),                                 205},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(866),                               179},
+      {pool_offset(866),                               181},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1},
 
       {pool_offset(878),                               13},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(885),                               109},
-      {-1},
+      {pool_offset(883),                               109},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(887),                       509},
-      {-1}, {-1}, {-1},
-
-      {pool_offset(891),                   278},
+      {pool_offset(891),                   280},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(897),                       408},
+      {pool_offset(897),                       410},
 
-      {pool_offset(898),                            328},
+      {pool_offset(898),                            330},
       {-1},
 
-      {pool_offset(900),                        480},
+      {pool_offset(900),                        482},
       {-1},
 
       {pool_offset(902),                         105},
-      {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(908),                   482},
+      {pool_offset(903),                                98},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(908),                   484},
       {-1}, {-1},
 
-      {pool_offset(911),                                 223},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(911),                                 225},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(915),                             504},
+      {-1}, {-1}, {-1},
 
       {pool_offset(919),                               104},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(929),                   420},
+      {pool_offset(929),                   422},
+      {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(930),                                6},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(934),                             525},
+      {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(939),                                25},
       {-1},
 
-      {pool_offset(941),                         384},
+      {pool_offset(941),                         386},
       {-1}, {-1}, {-1},
 
-      {pool_offset(945),                459},
+      {pool_offset(945),                461},
 
-      {pool_offset(946),                          454},
+      {pool_offset(946),                          456},
       {-1}, {-1},
 
       {pool_offset(949),                                2},
       {-1}, {-1},
 
-      {pool_offset(952),           281},
+      {pool_offset(952),           283},
 
       {pool_offset(953),                            52},
       {-1}, {-1}, {-1},
 
-      {pool_offset(957),                           469},
+      {pool_offset(957),                           471},
       {-1},
 
-      {pool_offset(959),                         209},
+      {pool_offset(959),                         211},
       {-1}, {-1},
 
       {pool_offset(962),                                52},
@@ -29321,11 +29686,8 @@ unicode_lookup_property_name (register const char *str, register size_t len)
 
       {pool_offset(964),                             29},
 
-      {pool_offset(965),                            147},
-      {-1}, {-1},
-
-      {pool_offset(968),                           562},
-      {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(965),                            148},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(974),                        89},
       {-1}, {-1},
@@ -29335,11 +29697,14 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {pool_offset(978),                            106},
       {-1}, {-1}, {-1},
 
-      {pool_offset(982),                            303},
+      {pool_offset(982),                            305},
       {-1},
 
-      {pool_offset(984),                          498},
-      {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(984),                          501},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(988),                       512},
+      {-1},
 
       {pool_offset(990),                                46},
       {-1},
@@ -29349,72 +29714,68 @@ unicode_lookup_property_name (register const char *str, register size_t len)
 
       {pool_offset(994),                             114},
 
-      {pool_offset(995),                         494},
+      {pool_offset(995),                         497},
 
       {pool_offset(996),                        87},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1001),                            318},
+      {pool_offset(1001),                            320},
       {-1}, {-1}, {-1},
 
       {pool_offset(1005),                               41},
       {-1}, {-1},
 
-      {pool_offset(1008),            418},
-      {-1}, {-1},
+      {pool_offset(1008),            420},
 
-      {pool_offset(1011),                             121},
+      {pool_offset(1009),                               117},
+      {-1},
 
-      {pool_offset(1012),              443},
+      {pool_offset(1011),                             122},
+
+      {pool_offset(1012),              445},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1026),                               219},
+      {pool_offset(1026),                               221},
 
-      {pool_offset(1027),                               118},
-      {-1}, {-1}, {-1}, {-1},
+      {pool_offset(1027),                               119},
+      {-1}, {-1}, {-1},
 
-      {pool_offset(1032),                         146},
+      {pool_offset(1031),                                6},
 
-      {pool_offset(1033),                          136},
+      {pool_offset(1032),                         147},
+      {-1},
 
       {pool_offset(1034),                  38},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1043),                          338},
+      {pool_offset(1043),                          340},
 
-      {pool_offset(1044),                               157},
+      {pool_offset(1044),                               158},
       {-1}, {-1},
 
-      {pool_offset(1047),                         314},
+      {pool_offset(1047),                         316},
       {-1}, {-1}, {-1},
 
-      {pool_offset(1051),                               122},
-      {-1}, {-1}, {-1}, {-1},
+      {pool_offset(1051),                               123},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1056),                                48},
+      {pool_offset(1058),           530},
+      {-1}, {-1},
+
+      {pool_offset(1061),                                 133},
       {-1},
 
-      {pool_offset(1058),           525},
-      {-1}, {-1},
-
-      {pool_offset(1061),                                 132},
-      {-1}, {-1}, {-1},
-
-      {pool_offset(1065),                                 273},
-      {-1}, {-1},
-
-      {pool_offset(1068),                          307},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(1074),                        499},
-      {-1}, {-1},
-
-      {pool_offset(1077),                           268},
+      {pool_offset(1063),                                 275},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1082),                              11},
-      {-1},
+      {pool_offset(1068),                          309},
+
+      {pool_offset(1069),                           569},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(1074),                        502},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(1084),                               31},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
@@ -29423,25 +29784,33 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1},
 
-      {pool_offset(1104),                          503},
-      {-1}, {-1}, {-1},
+      {pool_offset(1104),                          506},
+      {-1},
 
-      {pool_offset(1108),              555},
+      {pool_offset(1106),                           270},
+      {-1},
+
+      {pool_offset(1108),              561},
+      {-1}, {-1},
+
+      {pool_offset(1111),                              11},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1},
 
       {pool_offset(1123),                                17},
 
       {pool_offset(1124),                                53},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1130),                               120},
+      {pool_offset(1130),                               121},
 
-      {pool_offset(1131),                        487},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1},
+      {pool_offset(1131),                        490},
+      {-1}, {-1},
 
-      {pool_offset(1142),                          500},
+      {pool_offset(1134),                          137},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(1142),                          503},
       {-1},
 
       {pool_offset(1144),                                26},
@@ -29451,101 +29820,116 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {-1}, {-1},
 
       {pool_offset(1149),                                92},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1158),                               160},
+      {pool_offset(1157),                                48},
+
+      {pool_offset(1158),                               161},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1163),                   373},
-
-      {pool_offset(1164),                        329},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(1163),                   375},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(1171),                                16},
 
-      {pool_offset(1172),                            457},
+      {pool_offset(1172),                            459},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1178),               348},
+      {pool_offset(1178),               350},
 
       {pool_offset(1179),                            83},
       {-1},
 
-      {pool_offset(1181),                         118},
+      {pool_offset(1181),                         119},
 
-      {pool_offset(1182),                            229},
+      {pool_offset(1182),                            231},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1187),                              120},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(1193),                              224},
+      {pool_offset(1187),                              121},
       {-1},
 
-      {pool_offset(1195),                        124},
+      {pool_offset(1189),                 558},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(1193),                              226},
+      {-1},
+
+      {pool_offset(1195),                        125},
       {-1}, {-1},
 
-      {pool_offset(1198),                            162},
+      {pool_offset(1198),                            163},
       {-1}, {-1},
 
       {pool_offset(1201),                        92},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1210),                               149},
+      {pool_offset(1210),                               150},
       {-1},
 
-      {pool_offset(1212),               285},
+      {pool_offset(1212),               287},
       {-1}, {-1},
 
-      {pool_offset(1215),                         312},
+      {pool_offset(1215),                         314},
       {-1},
 
       {pool_offset(1217),                                85},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1},
 
-      {pool_offset(1224),               421},
-
-      {pool_offset(1225),                          84},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(1221),                                91},
       {-1}, {-1},
 
-      {pool_offset(1237),                      215},
+      {pool_offset(1224),               423},
 
-      {pool_offset(1238),                              258},
-      {-1},
+      {pool_offset(1225),                          84},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1240),   394},
+      {pool_offset(1232),                            91},
+
+      {pool_offset(1233),                                263},
+
+      {pool_offset(1234),                               263},
+      {-1}, {-1},
+
+      {pool_offset(1237),                      217},
+      {-1}, {-1},
+
+      {pool_offset(1240),   396},
       {-1},
 
       {pool_offset(1242),                        113},
 
-      {pool_offset(1243),                              219},
+      {pool_offset(1243),                              221},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1250),                        325},
+      {pool_offset(1250),                        327},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(1257),                               75},
       {-1},
 
-      {pool_offset(1259),   588},
+      {pool_offset(1259),   596},
 
       {pool_offset(1260),                             86},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(1266),                          502},
       {-1},
 
-      {pool_offset(1268),                           467},
+      {pool_offset(1262),                       570},
+      {-1}, {-1},
+
+      {pool_offset(1265),                        331},
+
+      {pool_offset(1266),                          505},
+      {-1},
+
+      {pool_offset(1268),                           469},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(1275),                               16},
       {-1}, {-1}, {-1},
 
-      {pool_offset(1279),                                 138},
+      {pool_offset(1279),                                 139},
       {-1},
 
-      {pool_offset(1281),                540},
+      {pool_offset(1281),                545},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1},
@@ -29553,145 +29937,126 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {pool_offset(1304),                               114},
       {-1},
 
-      {pool_offset(1306),                         300},
+      {pool_offset(1306),                         302},
       {-1},
 
-      {pool_offset(1308),                          237},
+      {pool_offset(1308),                          239},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1315),                     481},
+      {pool_offset(1315),                     483},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1320),                              245},
+      {pool_offset(1320),                              247},
 
-      {pool_offset(1321),                  522},
+      {pool_offset(1321),                  527},
 
-      {pool_offset(1322),                              187},
+      {pool_offset(1322),                              189},
 
-      {pool_offset(1323),                              400},
+      {pool_offset(1323),                              402},
 
       {pool_offset(1324),                                33},
       {-1}, {-1}, {-1},
 
-      {pool_offset(1328),           356},
+      {pool_offset(1328),           358},
+      {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(1334),                               224},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(1339),                              260},
       {-1},
-
-      {pool_offset(1330),                                261},
-
-      {pool_offset(1331),                               261},
-      {-1}, {-1},
-
-      {pool_offset(1334),                               222},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(1341),                                93},
       {-1},
 
-      {pool_offset(1343),                              242},
+      {pool_offset(1343),                              244},
       {-1}, {-1}, {-1},
 
       {pool_offset(1347),                          109},
       {-1},
 
-      {pool_offset(1349),                          203},
+      {pool_offset(1349),                          205},
+
+      {pool_offset(1350),                               274},
       {-1}, {-1},
 
-      {pool_offset(1352),                               272},
-
-      {pool_offset(1353),                              198},
+      {pool_offset(1353),                              200},
       {-1},
 
-      {pool_offset(1355),                               130},
+      {pool_offset(1355),                               131},
       {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(1360),                            93},
 
-      {pool_offset(1361),                               245},
+      {pool_offset(1361),                               247},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1366),                        466},
+      {pool_offset(1366),                        468},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1371),                           388},
+      {pool_offset(1371),                           390},
       {-1},
 
-      {pool_offset(1373),              135},
+      {pool_offset(1373),              136},
 
-      {pool_offset(1374),                        516},
+      {pool_offset(1374),                        520},
       {-1},
 
-      {pool_offset(1376),   586},
+      {pool_offset(1376),   594},
       {-1}, {-1},
 
       {pool_offset(1379),                      88},
 
-      {pool_offset(1380),                          458},
+      {pool_offset(1380),                          460},
       {-1}, {-1},
 
-      {pool_offset(1383),                      492},
-      {-1}, {-1},
+      {pool_offset(1383),                      495},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1386),                                 94},
+      {pool_offset(1392),                              129},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1391),                                94},
+      {pool_offset(1397),                            218},
+      {-1}, {-1}, {-1},
 
-      {pool_offset(1392),                              128},
-      {-1}, {-1},
-
-      {pool_offset(1395),                          54},
-      {-1},
-
-      {pool_offset(1397),                            216},
-      {-1}, {-1},
-
-      {pool_offset(1400),                                97},
-      {-1},
-
-      {pool_offset(1402),                    132},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(1401),                               143},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(1409),                                3},
       {-1},
 
-      {pool_offset(1411),             396},
-      {-1}, {-1},
+      {pool_offset(1411),             398},
 
-      {pool_offset(1414),                            130},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(1420),             529},
+      {pool_offset(1412),                           143},
       {-1},
 
-      {pool_offset(1422),                             97},
-      {-1}, {-1}, {-1}, {-1},
+      {pool_offset(1414),                            131},
+      {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1427),                           497},
+      {pool_offset(1420),             534},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1428),          346},
+      {pool_offset(1428),          348},
 
-      {pool_offset(1429),            359},
+      {pool_offset(1429),            361},
       {-1},
 
       {pool_offset(1431),                19},
       {-1}, {-1},
 
-      {pool_offset(1434),                                  164},
+      {pool_offset(1434),                                  165},
       {-1},
 
       {pool_offset(1436),                       77},
       {-1}, {-1},
 
-      {pool_offset(1439),                                 233},
-      {-1}, {-1}, {-1}, {-1},
+      {pool_offset(1439),                                 235},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1444),                               101},
-      {-1}, {-1}, {-1},
-
-      {pool_offset(1448),                               227},
+      {pool_offset(1448),                               229},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1455),                               128},
+      {pool_offset(1455),                               129},
       {-1},
 
       {pool_offset(1457),                                30},
@@ -29700,138 +30065,147 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {pool_offset(1459),                               110},
       {-1},
 
-      {pool_offset(1461),                        166},
+      {pool_offset(1461),                        168},
       {-1}, {-1},
 
-      {pool_offset(1464),                                 172},
+      {pool_offset(1464),                                 174},
 
-      {pool_offset(1465),                         222},
+      {pool_offset(1465),                         224},
       {-1},
 
-      {pool_offset(1467),                           532},
-
-      {pool_offset(1468),                                 50},
+      {pool_offset(1467),                           537},
+      {-1},
 
       {pool_offset(1469),                           30},
       {-1}, {-1},
 
-      {pool_offset(1472),                   283},
+      {pool_offset(1472),                   285},
 
-      {pool_offset(1473),                                170},
+      {pool_offset(1473),                                172},
 
-      {pool_offset(1474),                               170},
+      {pool_offset(1474),                               172},
 
-      {pool_offset(1475),                               250},
+      {pool_offset(1475),                               252},
       {-1}, {-1},
 
-      {pool_offset(1478),                              188},
+      {pool_offset(1478),                              190},
+      {-1}, {-1},
 
-      {pool_offset(1479),                               182},
+      {pool_offset(1481),                               249},
       {-1},
 
-      {pool_offset(1481),                               247},
+      {pool_offset(1483),                             249},
+
+      {pool_offset(1484),                          412},
+      {-1}, {-1},
+
+      {pool_offset(1487),                                  200},
+      {-1}, {-1},
+
+      {pool_offset(1490),                            304},
+      {-1}, {-1},
+
+      {pool_offset(1493),                           290},
+
+      {pool_offset(1494),                       470},
       {-1},
 
-      {pool_offset(1483),                             247},
+      {pool_offset(1496),                          54},
 
-      {pool_offset(1484),                          410},
-      {-1}, {-1},
-
-      {pool_offset(1487),                                  198},
-      {-1}, {-1},
-
-      {pool_offset(1490),                            302},
-      {-1},
-
-      {pool_offset(1492),                           484},
-
-      {pool_offset(1493),                           288},
-
-      {pool_offset(1494),                       468},
-      {-1}, {-1},
-
-      {pool_offset(1497),                          455},
+      {pool_offset(1497),                          457},
 
       {pool_offset(1498),                         31},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1507),    573},
-      {-1},
+      {pool_offset(1503),                    133},
 
-      {pool_offset(1509),                               265},
-      {-1},
-
-      {pool_offset(1511),                               162},
+      {pool_offset(1504),                               122},
       {-1}, {-1},
 
-      {pool_offset(1514),              470},
+      {pool_offset(1507),    581},
 
-      {pool_offset(1515),                               229},
+      {pool_offset(1508),                               184},
+
+      {pool_offset(1509),                               267},
+      {-1},
+
+      {pool_offset(1511),                               163},
       {-1}, {-1},
 
-      {pool_offset(1518),                            226},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(1514),              472},
 
-      {pool_offset(1526),                   381},
+      {pool_offset(1515),                               231},
+      {-1}, {-1},
+
+      {pool_offset(1518),                            228},
+      {-1}, {-1},
+
+      {pool_offset(1521),                           486},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(1526),                   383},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1532),                      151},
+      {pool_offset(1532),                      152},
       {-1},
 
       {pool_offset(1534),                                21},
 
-      {pool_offset(1535),            496},
+      {pool_offset(1535),            499},
       {-1}, {-1},
 
       {pool_offset(1538),                             34},
       {-1},
 
-      {pool_offset(1540),                          321},
+      {pool_offset(1540),                          323},
       {-1},
 
-      {pool_offset(1542),                               189},
+      {pool_offset(1542),                               191},
       {-1}, {-1},
 
       {pool_offset(1545),                                29},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1555),                       276},
+      {pool_offset(1555),                       278},
 
-      {pool_offset(1556),         431},
+      {pool_offset(1556),         433},
       {-1}, {-1},
 
       {pool_offset(1559),                                61},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(1569),                                 50},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1},
 
-      {pool_offset(1579),                  217},
-      {-1}, {-1}, {-1},
+      {pool_offset(1579),                  219},
 
-      {pool_offset(1583),   572},
+      {pool_offset(1580),                                 264},
+      {-1}, {-1},
+
+      {pool_offset(1583),   580},
 
       {pool_offset(1584),                   78},
       {-1},
 
-      {pool_offset(1586),                    347},
+      {pool_offset(1586),                    349},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1592),                               127},
+      {pool_offset(1592),                               128},
 
-      {pool_offset(1593),                            508},
+      {pool_offset(1593),                            511},
 
       {pool_offset(1594),                              44},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1599),                               139},
+      {pool_offset(1599),                               140},
 
-      {pool_offset(1600),                             139},
+      {pool_offset(1600),                             140},
       {-1}, {-1},
 
       {pool_offset(1603),                                 68},
       {-1},
 
-      {pool_offset(1605),                     445},
+      {pool_offset(1605),                     447},
       {-1}, {-1}, {-1},
 
       {pool_offset(1609),                                  64},
@@ -29839,129 +30213,135 @@ unicode_lookup_property_name (register const char *str, register size_t len)
 
       {pool_offset(1612),                                69},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1},
-
-      {pool_offset(1625),                            259},
+      {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(1626),                              87},
       {-1},
 
-      {pool_offset(1628),                               163},
+      {pool_offset(1628),                               164},
       {-1}, {-1},
 
-      {pool_offset(1631),                            163},
+      {pool_offset(1631),                            164},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1640),   587},
+      {pool_offset(1640),   595},
       {-1},
 
       {pool_offset(1642),                                77},
-      {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1647),                  362},
-      {-1},
-
-      {pool_offset(1649),                      526},
-      {-1},
-
-      {pool_offset(1651),              341},
+      {pool_offset(1643),                                95},
       {-1}, {-1}, {-1},
 
-      {pool_offset(1655),                               256},
+      {pool_offset(1647),                  364},
+      {-1},
+
+      {pool_offset(1649),                      531},
+      {-1},
+
+      {pool_offset(1651),              343},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(1655),                               258},
       {-1}, {-1},
 
       {pool_offset(1658),                                84},
 
-      {pool_offset(1659),                            244},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1},
+      {pool_offset(1659),                            246},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(1664),                         303},
+      {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(1670),                       15},
 
-      {pool_offset(1671),                                191},
+      {pool_offset(1671),                                193},
       {-1},
 
-      {pool_offset(1673),                        198},
-      {-1}, {-1}, {-1},
+      {pool_offset(1673),                        200},
 
-      {pool_offset(1677),                                 262},
-      {-1}, {-1}, {-1},
-
-      {pool_offset(1681),                               237},
-
-      {pool_offset(1682),                          513},
-
-      {pool_offset(1683),                  464},
+      {pool_offset(1674),                     523},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1690),                            336},
+      {pool_offset(1681),                               239},
 
-      {pool_offset(1691),                   404},
+      {pool_offset(1682),                          516},
+
+      {pool_offset(1683),                  466},
+      {-1}, {-1},
+
+      {pool_offset(1686),                      203},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(1690),                            338},
+
+      {pool_offset(1691),                   406},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1},
 
-      {pool_offset(1703),                            546},
+      {pool_offset(1703),                            551},
       {-1}, {-1},
 
-      {pool_offset(1706),                          310},
+      {pool_offset(1706),                          312},
+
+      {pool_offset(1707),                           101},
       {-1}, {-1}, {-1},
 
-      {pool_offset(1710),                    427},
+      {pool_offset(1711),                           413},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1715),                              98},
-
-      {pool_offset(1716),                    361},
+      {pool_offset(1716),                    363},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1723),                          486},
+      {pool_offset(1723),                          489},
 
-      {pool_offset(1724),                         364},
+      {pool_offset(1724),                         366},
       {-1}, {-1},
 
-      {pool_offset(1727),                          489},
+      {pool_offset(1727),                          492},
       {-1}, {-1},
 
-      {pool_offset(1730),                       298},
+      {pool_offset(1730),                       300},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(1740),                      76},
       {-1}, {-1}, {-1},
 
-      {pool_offset(1744),       391},
-      {-1}, {-1}, {-1}, {-1},
+      {pool_offset(1744),       393},
+      {-1},
+
+      {pool_offset(1746),                               201},
+
+      {pool_offset(1747),      394},
+      {-1},
 
       {pool_offset(1749),                        107},
 
       {pool_offset(1750),                              57},
-      {-1},
 
-      {pool_offset(1752),                      353},
+      {pool_offset(1751),              519},
+
+      {pool_offset(1752),                      355},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1},
 
-      {pool_offset(1763),                                98},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(1772),                 393},
+      {pool_offset(1772),                 395},
       {-1}, {-1},
 
-      {pool_offset(1775),                    542},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(1783),                      201},
+      {pool_offset(1775),                    547},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(1784),                             24},
 
-      {pool_offset(1785),                  297},
+      {pool_offset(1785),                  299},
       {-1}, {-1}, {-1},
 
-      {pool_offset(1789),                            234},
+      {pool_offset(1789),                            236},
       {-1}, {-1},
 
-      {pool_offset(1792),                               183},
+      {pool_offset(1792),                               185},
 
-      {pool_offset(1793),                           538},
+      {pool_offset(1793),                           543},
       {-1},
 
       {pool_offset(1795),                                57},
@@ -29969,592 +30349,599 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {pool_offset(1796),                                5},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1801),                               193},
-      {-1}, {-1},
+      {pool_offset(1801),                               195},
+      {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1804),          550},
-      {-1}, {-1},
-
-      {pool_offset(1807),            477},
+      {pool_offset(1807),            479},
 
       {pool_offset(1808),                           68},
       {-1},
 
-      {pool_offset(1810),             478},
-      {-1}, {-1}, {-1}, {-1},
+      {pool_offset(1810),             480},
 
-      {pool_offset(1815),                    553},
+      {pool_offset(1811),                    429},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(1815),                    559},
       {-1}, {-1},
 
-      {pool_offset(1818),                 414},
+      {pool_offset(1818),                 416},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1824),                             592},
+      {pool_offset(1824),                             601},
 
       {pool_offset(1825),                               112},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1},
+
+      {pool_offset(1827),                            261},
+      {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(1833),          555},
+      {-1},
 
       {pool_offset(1835),                                60},
       {-1},
 
-      {pool_offset(1837),                               166},
+      {pool_offset(1837),                               168},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1843),                             201},
+      {pool_offset(1843),                             203},
 
-      {pool_offset(1844),                               242},
-      {-1},
+      {pool_offset(1844),                               244},
 
-      {pool_offset(1846),                               194},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(1845),                380},
 
-      {pool_offset(1856),                   224},
+      {pool_offset(1846),                               196},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(1850),                         415},
+      {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(1856),                   226},
       {-1},
 
       {pool_offset(1858),                    108},
       {-1}, {-1}, {-1},
 
-      {pool_offset(1862),                250},
+      {pool_offset(1862),                252},
 
-      {pool_offset(1863),                               140},
+      {pool_offset(1863),                               141},
 
-      {pool_offset(1864),                             140},
+      {pool_offset(1864),                             141},
       {-1},
 
       {pool_offset(1866),                                32},
-      {-1}, {-1}, {-1},
 
-      {pool_offset(1870),                           112},
-      {-1},
-
-      {pool_offset(1872),                                 49},
-      {-1},
-
-      {pool_offset(1874),          579},
-
-      {pool_offset(1875),                       453},
+      {pool_offset(1867),               560},
       {-1}, {-1},
 
-      {pool_offset(1878),               576},
+      {pool_offset(1870),                           112},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(1874),          587},
+
+      {pool_offset(1875),                       455},
+      {-1}, {-1},
+
+      {pool_offset(1878),               584},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1883),                  367},
+      {pool_offset(1883),                  369},
       {-1},
 
-      {pool_offset(1885),               432},
+      {pool_offset(1885),               434},
 
       {pool_offset(1886),                       40},
       {-1}, {-1}, {-1},
 
-      {pool_offset(1890),                       398},
+      {pool_offset(1890),                       400},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1897),                          596},
+      {pool_offset(1897),                          605},
 
-      {pool_offset(1898),                    433},
+      {pool_offset(1898),                    435},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1903),               315},
+      {pool_offset(1903),               317},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1908),                            225},
+      {pool_offset(1908),                            227},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1913),                         334},
+      {pool_offset(1913),                         336},
       {-1},
 
-      {pool_offset(1915),                  342},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(1915),                  344},
+      {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(1921),                  487},
+      {-1}, {-1}, {-1},
 
       {pool_offset(1925),                                12},
 
-      {pool_offset(1926), 369},
+      {pool_offset(1926), 371},
       {-1},
 
-      {pool_offset(1928),                               246},
+      {pool_offset(1928),                               248},
       {-1},
 
-      {pool_offset(1930),                               177},
+      {pool_offset(1930),                               179},
 
       {pool_offset(1931),                               103},
+      {-1}, {-1},
+
+      {pool_offset(1934),                                99},
+
+      {pool_offset(1935),                             197},
       {-1}, {-1}, {-1},
 
-      {pool_offset(1935),                             195},
-      {-1}, {-1}, {-1},
-
-      {pool_offset(1939),                      167},
+      {pool_offset(1939),                      169},
 
       {pool_offset(1940),                                24},
-      {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1942),                378},
-      {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(1947),                            177},
+      {pool_offset(1947),                            179},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1961),                               225},
-      {-1}, {-1},
-
-      {pool_offset(1964),               554},
+      {pool_offset(1961),                               227},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(1972),                          417},
-
-      {pool_offset(1973),                               257},
+      {pool_offset(1969),                               220},
       {-1}, {-1},
 
-      {pool_offset(1976),         383},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1},
+      {pool_offset(1972),                          419},
+
+      {pool_offset(1973),                                 49},
+      {-1}, {-1},
+
+      {pool_offset(1976),         385},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(1981),                341},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(1989),                            32},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1},
 
-      {pool_offset(2000),                             399},
+      {pool_offset(2000),                             401},
       {-1}, {-1}, {-1},
 
-      {pool_offset(2004),                        451},
+      {pool_offset(2004),                        453},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1},
 
-      {pool_offset(2018),                            227},
+      {pool_offset(2017),                    274},
 
-      {pool_offset(2019),                    272},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(2018),                            229},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(2028),                            23},
       {-1}, {-1}, {-1},
 
-      {pool_offset(2032),                               152},
+      {pool_offset(2032),                               153},
       {-1},
 
-      {pool_offset(2034),                   206},
+      {pool_offset(2034),                   208},
 
-      {pool_offset(2035),                               184},
+      {pool_offset(2035),                               186},
 
-      {pool_offset(2036),                        235},
+      {pool_offset(2036),                        237},
       {-1}, {-1}, {-1},
 
-      {pool_offset(2040),     593},
+      {pool_offset(2040),     602},
 
-      {pool_offset(2041),                       313},
+      {pool_offset(2041),                       315},
 
-      {pool_offset(2042),                        152},
+      {pool_offset(2042),                        153},
 
-      {pool_offset(2043),                               208},
+      {pool_offset(2043),                               210},
 
-      {pool_offset(2044),                   521},
+      {pool_offset(2044),                   526},
       {-1}, {-1},
 
-      {pool_offset(2047),                           374},
+      {pool_offset(2047),                           376},
 
-      {pool_offset(2048),                 295},
+      {pool_offset(2048),                 297},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2053),              412},
+      {pool_offset(2053),              414},
       {-1}, {-1},
 
       {pool_offset(2056),                                62},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2063),          548},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(2057),                               177},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2078),                339},
-      {-1}, {-1},
-
-      {pool_offset(2081),                                91},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2090),                                 51},
+      {pool_offset(2063),          553},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1},
 
-      {pool_offset(2092),                            91},
-      {-1}, {-1}, {-1},
+      {pool_offset(2074),                               259},
+      {-1}, {-1},
 
-      {pool_offset(2096),                        150},
+      {pool_offset(2077),                                59},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2096),                        151},
       {-1}, {-1},
 
       {pool_offset(2099),                                1},
 
-      {pool_offset(2100),                               144},
+      {pool_offset(2100),                               145},
       {-1},
 
-      {pool_offset(2102),                        465},
-      {-1}, {-1},
+      {pool_offset(2102),                        467},
+      {-1},
 
-      {pool_offset(2105),                          144},
+      {pool_offset(2104),   600},
+
+      {pool_offset(2105),                          145},
       {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(2110),                                9},
       {-1}, {-1},
 
-      {pool_offset(2113),                           337},
+      {pool_offset(2113),                           339},
       {-1}, {-1}, {-1},
 
-      {pool_offset(2117),                          200},
+      {pool_offset(2117),                          202},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2122),                               236},
+      {pool_offset(2122),                               238},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2129),                156},
+      {pool_offset(2129),                157},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2145),                                59},
-      {-1},
+      {pool_offset(2143),                               211},
+      {-1}, {-1}, {-1},
 
-      {pool_offset(2147),                           304},
+      {pool_offset(2147),                           306},
       {-1}, {-1},
 
-      {pool_offset(2150),               409},
+      {pool_offset(2150),               411},
       {-1},
 
-      {pool_offset(2152),                  471},
+      {pool_offset(2152),                  473},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(2160),                                66},
 
-      {pool_offset(2161),                               251},
+      {pool_offset(2161),                               253},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2166),                             251},
+      {pool_offset(2166),                             253},
 
       {pool_offset(2167),                                35},
 
-      {pool_offset(2168),                               252},
+      {pool_offset(2168),                               254},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2176),                               234},
+      {pool_offset(2176),                               236},
       {-1},
 
-      {pool_offset(2178),                    137},
+      {pool_offset(2178),                    138},
       {-1}, {-1}, {-1},
 
-      {pool_offset(2182),  556},
+      {pool_offset(2182),  562},
       {-1}, {-1}, {-1},
 
-      {pool_offset(2186),                               185},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(2186),                               187},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2191),                                 51},
+      {-1}, {-1}, {-1},
 
       {pool_offset(2195),                   42},
       {-1}, {-1}, {-1},
 
-      {pool_offset(2199),                            402},
+      {pool_offset(2199),                            404},
       {-1},
 
       {pool_offset(2201),                             66},
       {-1}, {-1},
 
-      {pool_offset(2204),               375},
+      {pool_offset(2204),               377},
 
       {pool_offset(2205),                            35},
       {-1},
 
-      {pool_offset(2207),                          271},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2213),                436},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(2207),                          273},
       {-1},
 
-      {pool_offset(2224),                               255},
+      {pool_offset(2209),                           265},
       {-1}, {-1}, {-1},
 
-      {pool_offset(2228),                           490},
-      {-1}, {-1}, {-1},
+      {pool_offset(2213),                438},
+      {-1},
 
-      {pool_offset(2232),                                 167},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(2215),                  264},
+      {-1}, {-1},
 
-      {pool_offset(2240),                               209},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(2218),                     577},
 
-      {pool_offset(2247),                               169},
+      {pool_offset(2219),                              95},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2252),        282},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2261),                               142},
-
-      {pool_offset(2262), 351},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2270),                         182},
-      {-1},
-
-      {pool_offset(2272),                           142},
-      {-1},
-
-      {pool_offset(2274),                            243},
+      {pool_offset(2224),                               257},
       {-1}, {-1}, {-1},
 
-      {pool_offset(2278),                          168},
-
-      {pool_offset(2279),                              0},
-      {-1}, {-1},
-
-      {pool_offset(2282),                               239},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2292),              505},
+      {pool_offset(2228),                           493},
       {-1}, {-1}, {-1},
 
-      {pool_offset(2296), 514},
-      {-1}, {-1},
+      {pool_offset(2232),                                 169},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2299),                               226},
+      {pool_offset(2239),                                15},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2305),                                36},
+      {pool_offset(2245),                566},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2306),                           263},
+      {pool_offset(2252),        284},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2307),                             164},
+      {pool_offset(2262), 353},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2270),                         184},
       {-1}, {-1}, {-1},
 
-      {pool_offset(2311),                557},
+      {pool_offset(2274),                            245},
+      {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2312),                  262},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(2280),                               180},
+      {-1},
+
+      {pool_offset(2282),                               241},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2291),            397},
+
+      {pool_offset(2292),              508},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(2296), 517},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2305),                                36},
+      {-1},
+
+      {pool_offset(2307),                             165},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(2311),                563},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(2320),                                80},
       {-1},
 
-      {pool_offset(2322),                             127},
+      {pool_offset(2322),                             128},
       {-1}, {-1}, {-1},
 
-      {pool_offset(2326),                            255},
+      {pool_offset(2326),                            257},
       {-1}, {-1},
 
       {pool_offset(2329),                                96},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2336),                                15},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2343),               448},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1},
-
-      {pool_offset(2354),                             264},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2359),   591},
+      {pool_offset(2343),               450},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2364),                               121},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2371),                           59},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1},
-
-      {pool_offset(2382),                         547},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2390),                           257},
-
-      {pool_offset(2391),   583},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1},
-
-      {pool_offset(2402),                          181},
-      {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2407), 345},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2414),                          122},
-      {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2419),                               248},
-
-      {pool_offset(2420),                             239},
-      {-1}, {-1},
-
-      {pool_offset(2423),                           241},
-      {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2428),                     133},
+      {pool_offset(2348),                               171},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2434),                  350},
+      {pool_offset(2354),                             266},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2359),   599},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1},
+
+      {pool_offset(2371),                           59},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2379),                          170},
+
+      {pool_offset(2380),                              0},
       {-1},
 
-      {pool_offset(2436),             560},
+      {pool_offset(2382),                         552},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2391),   591},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2400),                               228},
+      {-1},
+
+      {pool_offset(2402),                          183},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2407), 347},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2417),                               265},
+      {-1},
+
+      {pool_offset(2419),                               250},
+
+      {pool_offset(2420),                             241},
+      {-1}, {-1},
+
+      {pool_offset(2423),                           243},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2428),                     134},
+      {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2434),                  352},
+      {-1},
+
+      {pool_offset(2436),             567},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1},
 
-      {pool_offset(2457),                              246},
+      {pool_offset(2457),                              248},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2462),                               168},
+      {pool_offset(2462),                               170},
       {-1},
 
-      {pool_offset(2464),                           450},
+      {pool_offset(2464),                           452},
       {-1}, {-1}, {-1},
 
-      {pool_offset(2468), 317},
+      {pool_offset(2468), 319},
 
-      {pool_offset(2469),                               264},
+      {pool_offset(2469),                               266},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2479), 333},
+      {pool_offset(2479), 335},
 
-      {pool_offset(2480),                               176},
+      {pool_offset(2480),                               178},
 
-      {pool_offset(2481),                               249},
+      {pool_offset(2481),                               251},
 
       {pool_offset(2482),                 104},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2487),                          299},
+      {pool_offset(2487),                          301},
 
-      {pool_offset(2488),                                 171},
-      {-1}, {-1}, {-1}, {-1},
+      {pool_offset(2488),                                 173},
+      {-1}, {-1},
+
+      {pool_offset(2491),                           259},
+      {-1},
 
       {pool_offset(2493),                           58},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(2500),                               78},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(2504),                         333},
+      {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2510),                         233},
+
+      {pool_offset(2511),                         462},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(2515),                          123},
       {-1}, {-1},
 
-      {pool_offset(2503),                                95},
-
-      {pool_offset(2504),                         331},
+      {pool_offset(2518),            382},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2510),                         231},
-
-      {pool_offset(2511),                         460},
+      {pool_offset(2533),                       374},
       {-1}, {-1},
 
-      {pool_offset(2514),                               263},
-      {-1}, {-1}, {-1},
-
-      {pool_offset(2518),            380},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2524),                         301},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2533),                       372},
-
-      {pool_offset(2534),                     519},
-      {-1}, {-1}, {-1},
-
-      {pool_offset(2538),                            208},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2546),                                47},
-
-      {pool_offset(2547),                              173},
-
-      {pool_offset(2548),                    193},
-
-      {pool_offset(2549),                         266},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2556),                 440},
-
-      {pool_offset(2557),                               228},
-      {-1}, {-1}, {-1},
-
-      {pool_offset(2561),                               37},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2567),                           101},
+      {pool_offset(2536),                421},
       {-1},
 
-      {pool_offset(2569),                          407},
+      {pool_offset(2538),                            210},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2570),                        172},
+      {pool_offset(2547),                              175},
 
-      {pool_offset(2571),                           411},
-      {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(2548),                    195},
 
-      {pool_offset(2577),                               188},
-
-      {pool_offset(2578),   585},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2584),                          320},
-
-      {pool_offset(2585),                         533},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2591),                             248},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2606),                               199},
-
-      {pool_offset(2607),      392},
+      {pool_offset(2549),                         268},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2614),                     223},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(2556),                 442},
+      {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2624),                            327},
+      {pool_offset(2561),                               37},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2569),                          409},
+
+      {pool_offset(2570),                        174},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2577),                               190},
+
+      {pool_offset(2578),   593},
       {-1}, {-1},
 
-      {pool_offset(2627),                            322},
+      {pool_offset(2581),                                19},
+      {-1}, {-1},
+
+      {pool_offset(2584),                          322},
+
+      {pool_offset(2585),                         538},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2633),                419},
+      {pool_offset(2591),                             250},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2634),                               238},
+      {pool_offset(2614),                     225},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2624),                            329},
+      {-1}, {-1},
+
+      {pool_offset(2627),                            324},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2634),                               240},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(2642),                                63},
       {-1},
 
-      {pool_offset(2644),                         265},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(2644),                         267},
+      {-1}, {-1},
 
-      {pool_offset(2652),                             190},
-
-      {pool_offset(2653),                          179},
-      {-1}, {-1}, {-1},
-
-      {pool_offset(2657),              567},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2663),                     275},
-      {-1},
-
-      {pool_offset(2665),                 277},
+      {pool_offset(2647),                                47},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2670),                    190},
+      {pool_offset(2652),                             192},
+
+      {pool_offset(2653),                          181},
+      {-1}, {-1},
+
+      {pool_offset(2656),                               167},
+
+      {pool_offset(2657),              575},
+
+      {pool_offset(2658),                               230},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2663),                     277},
+      {-1},
+
+      {pool_offset(2665),                 279},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2670),                    192},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1},
 
       {pool_offset(2681),               48},
       {-1},
 
-      {pool_offset(2683),                    442},
+      {pool_offset(2683),                    444},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1},
 
-      {pool_offset(2695), 326},
+      {pool_offset(2695), 328},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1},
 
       {pool_offset(2706),                               36},
-      {-1}, {-1}, {-1},
-
-      {pool_offset(2710),                         413},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(2724),                            62},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
@@ -30562,326 +30949,323 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {pool_offset(2733),                               70},
       {-1},
 
-      {pool_offset(2735),              173},
+      {pool_offset(2735),              175},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2742),                  423},
+      {pool_offset(2742),                  425},
       {-1}, {-1}, {-1},
 
       {pool_offset(2746),                            27},
       {-1},
 
-      {pool_offset(2748),                352},
+      {pool_offset(2748),                354},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2756),               434},
+      {pool_offset(2756),               436},
 
-      {pool_offset(2757), 568},
+      {pool_offset(2757), 576},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2763),                               187},
+      {pool_offset(2763),                               189},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1},
 
-      {pool_offset(2776),                   428},
+      {pool_offset(2776),                   430},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1},
 
       {pool_offset(2787),               50},
 
       {pool_offset(2788),                                70},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2794),                                99},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2804),                         323},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2811),                         376},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2821),                         386},
+      {pool_offset(2804),                         325},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2828),                               180},
-
-      {pool_offset(2829),                               218},
-      {-1}, {-1},
-
-      {pool_offset(2832),      430},
-
-      {pool_offset(2833),   589},
-      {-1},
-
-      {pool_offset(2835),        584},
-      {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2840),                       178},
+      {pool_offset(2811),                         378},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2854),                   207},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(2821),                         388},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2862),                        515},
-
-      {pool_offset(2863),                   479},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(2869),                                 274},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(2828),                               182},
       {-1}, {-1}, {-1},
 
-      {pool_offset(2882),                               214},
+      {pool_offset(2832),      432},
+
+      {pool_offset(2833),   597},
+      {-1},
+
+      {pool_offset(2835),        592},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2840),                       180},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2854),                   209},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2862),                        518},
+
+      {pool_offset(2863),                   481},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(2867),                                 276},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2882),                               216},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1},
 
-      {pool_offset(2894),         437},
+      {pool_offset(2894),         439},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2901),                     158},
+      {pool_offset(2901),                     159},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(2909),                                67},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2916),                               244},
-
-      {pool_offset(2917),                               175},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(2916),                               246},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(2925),                          67},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2931),                  119},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(2931),                  120},
+      {-1}, {-1}, {-1},
 
-      {pool_offset(2958),                            117},
+      {pool_offset(2935),                 379},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2963),                  530},
+      {pool_offset(2958),                            118},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2963),                  535},
       {-1},
 
-      {pool_offset(2965),                        238},
+      {pool_offset(2965),                        240},
       {-1}, {-1},
 
-      {pool_offset(2968),                               253},
-      {-1}, {-1}, {-1},
+      {pool_offset(2968),                               255},
+      {-1}, {-1},
+
+      {pool_offset(2971),                                100},
 
       {pool_offset(2972),                               79},
       {-1},
 
-      {pool_offset(2974),                            253},
+      {pool_offset(2974),                            255},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(2989),                                73},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(2997),                            189},
+      {pool_offset(2990),                                 82},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(2997),                            191},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1},
 
-      {pool_offset(3009),                       510},
+      {pool_offset(3009),                       513},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1},
 
-      {pool_offset(3020),                          185},
+      {pool_offset(3020),                          187},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(3026),               49},
       {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(3031),                         61},
-
-      {pool_offset(3032),                 377},
-      {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(3037),                   79},
       {-1}, {-1},
 
       {pool_offset(3040),                                 20},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1},
-
-      {pool_offset(3061),                     195},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3070),                               186},
+      {pool_offset(3058),               345},
+      {-1}, {-1},
 
-      {pool_offset(3071),                           287},
+      {pool_offset(3061),                     197},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3072),                         233},
+      {pool_offset(3070),                               188},
       {-1},
 
-      {pool_offset(3074),            355},
+      {pool_offset(3072),                         235},
+      {-1},
+
+      {pool_offset(3074),            357},
       {-1}, {-1},
 
-      {pool_offset(3077),                578},
-
-      {pool_offset(3078),                     569},
-
-      {pool_offset(3079),                              95},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(3087),                                 82},
-      {-1}, {-1},
-
-      {pool_offset(3090),                              196},
-
-      {pool_offset(3091),                 539},
+      {pool_offset(3077),                586},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1},
 
-      {pool_offset(3095),                        134},
+      {pool_offset(3090),                              198},
+
+      {pool_offset(3091),                 544},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(3095),                        135},
       {-1}, {-1},
 
-      {pool_offset(3098),                               165},
+      {pool_offset(3098),                               166},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3106),                          165},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(3106),                          166},
+      {-1}, {-1},
 
-      {pool_offset(3116),                               174},
+      {pool_offset(3109),                             220},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3117),                 274},
+      {pool_offset(3116),                               176},
+
+      {pool_offset(3117),                 276},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3123),                  296},
-      {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(3123),                  298},
+      {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3129),                   558},
+      {pool_offset(3128),                            82},
+
+      {pool_offset(3129),                   564},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(3135),               51},
-      {-1}, {-1}, {-1}, {-1},
+      {-1},
 
-      {pool_offset(3140),                               178},
-
-      {pool_offset(3141),                     571},
-
-      {pool_offset(3142),                 290},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(3151),            395},
+      {pool_offset(3137),                             81},
       {-1}, {-1}, {-1},
 
-      {pool_offset(3155),               343},
+      {pool_offset(3141),                     579},
+
+      {pool_offset(3142),                 292},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3170),                     197},
+      {pool_offset(3170),                     199},
 
-      {pool_offset(3171),                       194},
-      {-1}, {-1}, {-1}, {-1},
+      {pool_offset(3171),                       196},
+
+      {pool_offset(3172),                           289},
+      {-1}, {-1}, {-1},
 
       {pool_offset(3176),                             73},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(3183),                403},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1},
 
       {pool_offset(3203),                                74},
-      {-1}, {-1}, {-1},
-
-      {pool_offset(3207),                                  44},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(3217),                566},
       {-1}, {-1},
 
-      {pool_offset(3220),                        232},
+      {pool_offset(3206),                         167},
+
+      {pool_offset(3207),                                  44},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3225),                            82},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(3212),                           100},
 
-      {pool_offset(3234),                             81},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(3240),                             266},
+      {pool_offset(3213),     346},
       {-1}, {-1}, {-1},
 
-      {pool_offset(3244),                                 207},
+      {pool_offset(3217),                574},
+      {-1}, {-1},
+
+      {pool_offset(3220),                        234},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(3235),                           8},
+
+      {pool_offset(3236),                 342},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(3240),                             268},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(3244),                                 209},
       {-1},
 
       {pool_offset(3246),                             74},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3252),                 541},
-      {-1},
+      {pool_offset(3252),                 546},
+
+      {pool_offset(3253),                      96},
 
       {pool_offset(3254),                             60},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1},
 
-      {pool_offset(3267),                             220},
+      {pool_offset(3267),                             222},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3280),                401},
-      {-1},
-
-      {pool_offset(3282),        349},
+      {pool_offset(3282),        351},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1},
 
-      {pool_offset(3303),                      397},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(3310),     344},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1},
-
-      {pool_offset(3330),                         183},
-      {-1},
-
-      {pool_offset(3332),                           8},
-
-      {pool_offset(3333),                 340},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(3340),                                19},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(3303),                      399},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(3330),                         185},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(3376),                                4},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3391),              424},
+      {pool_offset(3391),              426},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3410),         426},
+      {pool_offset(3410),         428},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1},
-
-      {pool_offset(3440),                      534},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3448),                              176},
+      {pool_offset(3427),                             102},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1},
+
+      {pool_offset(3440),                      539},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(3448),                              178},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3455),              366},
+      {pool_offset(3455),              368},
       {-1}, {-1},
 
-      {pool_offset(3458),                             197},
+      {pool_offset(3458),                             199},
       {-1}, {-1},
 
       {pool_offset(3461),                                42},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3476),                          196},
+      {pool_offset(3476),                          198},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
@@ -30889,16 +31273,18 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3527),                              174},
+      {pool_offset(3527),                              176},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1},
 
-      {pool_offset(3566),                            236},
+      {pool_offset(3546),                81},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1},
 
-      {pool_offset(3567),                   279},
+      {pool_offset(3566),                            238},
+
+      {pool_offset(3567),                   281},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1},
 
@@ -30906,75 +31292,74 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1},
 
-      {pool_offset(3591),              580},
+      {pool_offset(3591),              588},
       {-1}, {-1},
 
-      {pool_offset(3594), 370},
+      {pool_offset(3594), 372},
       {-1}, {-1}, {-1},
 
-      {pool_offset(3598),     191},
+      {pool_offset(3598),     193},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(3607),                          65},
       {-1}, {-1},
 
-      {pool_offset(3610),                    180},
+      {pool_offset(3610),                    182},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3628),                 463},
+      {pool_offset(3628),                 465},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3643),                81},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(3689),                              99},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(3693),                   258},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(3708),                        199},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1},
 
       {pool_offset(3721),                          69},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1},
-
-      {pool_offset(3743),                        228},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3754),                               241},
+      {pool_offset(3754),                               243},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3768),                           254},
-      {-1}, {-1},
-
-      {pool_offset(3771),                               10},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(3768),                           256},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3842),       438},
+      {pool_offset(3794),                   260},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(3874),                          260},
+      {pool_offset(3809),                        201},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(3842),       440},
+      {-1},
+
+      {pool_offset(3844),                        230},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(3872),                               10},
+      {-1},
+
+      {pool_offset(3874),                571},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
@@ -30983,77 +31368,66 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1},
 
-      {pool_offset(3912),                     230},
+      {pool_offset(3912),                     232},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1},
 
-      {pool_offset(3952),                   211},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(3969),                             218},
-      {-1},
-
-      {pool_offset(3971),                563},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(3952),                   213},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(4012),                               254},
+      {pool_offset(3975),                          262},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(4012),                               256},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1},
 
-      {pool_offset(4025),                                100},
+      {pool_offset(4043),          381},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1},
+
+      {pool_offset(4063),                               242},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(4077),                   464},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(4082),                            242},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(4043),          379},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1},
-
-      {pool_offset(4063),                               240},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(4077),                   462},
-      {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(4082),                            240},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1},
-
-      {pool_offset(4113),                      96},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(4136),                               76},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(4163),             559},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(4169),                           100},
-      {-1},
+      {pool_offset(4163),             565},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(4171),               47},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(4185),                    205},
+      {pool_offset(4185),                    207},
       {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(4191),                    184},
+      {pool_offset(4191),                    186},
 
       {pool_offset(4192),                                71},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
@@ -31062,54 +31436,50 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(4237),              527},
+      {pool_offset(4237),              532},
       {-1},
 
-      {pool_offset(4239),                             249},
-      {-1}, {-1}, {-1},
+      {pool_offset(4239),                             251},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1},
 
-      {pool_offset(4243),                    138},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(4250), 528},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(4287),                             102},
+      {pool_offset(4250), 533},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(4347),                              99},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(4355),                   425},
+      {pool_offset(4303),                             194},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(4344),                    139},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1},
+
+      {pool_offset(4355),                   427},
+
+      {pool_offset(4356),                                56},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1},
 
-      {pool_offset(4358),                                56},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(4400),                             192},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1},
-
-      {pool_offset(4467),                192},
+      {pool_offset(4467),                194},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(4475),                                 65},
@@ -31150,21 +31520,36 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1},
 
-      {pool_offset(4793),              368},
+      {pool_offset(4793),              370},
       {-1}, {-1},
 
       {pool_offset(4796),           64},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(4806),          387},
+      {pool_offset(4806),          389},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(4815),                          186},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(4815),                          188},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(4838),     594},
+      {pool_offset(4829),                 391},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+
+      {pool_offset(4838),     603},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
@@ -31176,25 +31561,10 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(4926),                 389},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {pool_offset(5043), 589},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(5043), 581},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-
-      {pool_offset(5052),               175},
+      {pool_offset(5052),               177},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
@@ -31203,7 +31573,7 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(5114),                    213},
+      {pool_offset(5114),                    215},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(5121),                                72},
@@ -31219,20 +31589,9 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(5312),                       360},
+      {pool_offset(5215),                       362},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
@@ -31278,7 +31637,18 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
-      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
+      {-1}, {-1}, {-1}, {-1}, {-1},
 
       {pool_offset(5725),                 72},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
@@ -31332,7 +31702,7 @@ unicode_lookup_property_name (register const char *str, register size_t len)
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
       {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1}, {-1},
 
-      {pool_offset(6176),     595}
+      {pool_offset(6176),     604}
     };
 
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
@@ -31356,11 +31726,11 @@ unicode_lookup_property_name (register const char *str, register size_t len)
 
 
 
-#define UNICODE_PROPERTY_VERSION  140000
-#define UNICODE_EMOJI_VERSION     1400
+#define UNICODE_PROPERTY_VERSION  150000
+#define UNICODE_EMOJI_VERSION     1500
 
 #define PROPERTY_NAME_MAX_SIZE  61
-#define CODE_RANGES_NUM         597
+#define CODE_RANGES_NUM         606
 
 #define PROP_INDEX_NEWLINE 0
 #define PROP_INDEX_ALPHA 1
@@ -31574,635 +31944,645 @@ unicode_lookup_property_name (register const char *str, register size_t len)
 #define PROP_INDEX_KANNADA 115
 #define PROP_INDEX_KATAKANA 116
 #define PROP_INDEX_KANA 116
-#define PROP_INDEX_KAYAHLI 117
-#define PROP_INDEX_KALI 117
-#define PROP_INDEX_KHAROSHTHI 118
-#define PROP_INDEX_KHAR 118
-#define PROP_INDEX_KITS 119
-#define PROP_INDEX_KHITANSMALLSCRIPT 119
-#define PROP_INDEX_KHMR 120
-#define PROP_INDEX_KHMER 120
-#define PROP_INDEX_KHOJ 121
-#define PROP_INDEX_KHOJKI 121
-#define PROP_INDEX_KHUDAWADI 122
-#define PROP_INDEX_SIND 122
-#define PROP_INDEX_L 123
-#define PROP_INDEX_LETTER 123
-#define PROP_INDEX_LC 124
-#define PROP_INDEX_CASEDLETTER 124
-#define PROP_INDEX_LAO 125
-#define PROP_INDEX_LAOO 125
-#define PROP_INDEX_LATN 126
-#define PROP_INDEX_LATIN 126
-#define PROP_INDEX_LEPC 127
-#define PROP_INDEX_LEPCHA 127
-#define PROP_INDEX_LIMBU 128
-#define PROP_INDEX_LIMB 128
-#define PROP_INDEX_LINA 129
-#define PROP_INDEX_LINEARA 129
-#define PROP_INDEX_LINB 130
-#define PROP_INDEX_LINEARB 130
-#define PROP_INDEX_LISU 131
-#define PROP_INDEX_LOWERCASELETTER 132
-#define PROP_INDEX_LL 132
-#define PROP_INDEX_LM 133
-#define PROP_INDEX_MODIFIERLETTER 133
-#define PROP_INDEX_LO 134
-#define PROP_INDEX_OTHERLETTER 134
-#define PROP_INDEX_LOGICALORDEREXCEPTION 135
-#define PROP_INDEX_LOE 135
-#define PROP_INDEX_LOWERCASE 136
-#define PROP_INDEX_LT 137
-#define PROP_INDEX_TITLECASELETTER 137
-#define PROP_INDEX_UPPERCASELETTER 138
-#define PROP_INDEX_LU 138
-#define PROP_INDEX_LYCI 139
-#define PROP_INDEX_LYCIAN 139
-#define PROP_INDEX_LYDI 140
-#define PROP_INDEX_LYDIAN 140
-#define PROP_INDEX_M 141
-#define PROP_INDEX_COMBININGMARK 141
-#define PROP_INDEX_MARK 141
-#define PROP_INDEX_MAHJ 142
-#define PROP_INDEX_MAHAJANI 142
-#define PROP_INDEX_MAKASAR 143
-#define PROP_INDEX_MAKA 143
-#define PROP_INDEX_MALAYALAM 144
-#define PROP_INDEX_MLYM 144
-#define PROP_INDEX_MAND 145
-#define PROP_INDEX_MANDAIC 145
-#define PROP_INDEX_MANI 146
-#define PROP_INDEX_MANICHAEAN 146
-#define PROP_INDEX_MARC 147
-#define PROP_INDEX_MARCHEN 147
-#define PROP_INDEX_MASARAMGONDI 148
-#define PROP_INDEX_GONM 148
-#define PROP_INDEX_MATH 149
-#define PROP_INDEX_MC 150
-#define PROP_INDEX_SPACINGMARK 150
-#define PROP_INDEX_ENCLOSINGMARK 151
-#define PROP_INDEX_ME 151
-#define PROP_INDEX_MEDEFAIDRIN 152
-#define PROP_INDEX_MEDF 152
-#define PROP_INDEX_MEETEIMAYEK 153
-#define PROP_INDEX_MTEI 153
-#define PROP_INDEX_MENDEKIKAKUI 154
-#define PROP_INDEX_MEND 154
-#define PROP_INDEX_MEROITICCURSIVE 155
-#define PROP_INDEX_MERC 155
-#define PROP_INDEX_MEROITICHIEROGLYPHS 156
-#define PROP_INDEX_MERO 156
-#define PROP_INDEX_PLRD 157
-#define PROP_INDEX_MIAO 157
-#define PROP_INDEX_MN 158
-#define PROP_INDEX_NONSPACINGMARK 158
-#define PROP_INDEX_MODI 159
-#define PROP_INDEX_MONGOLIAN 160
-#define PROP_INDEX_MONG 160
-#define PROP_INDEX_MRO 161
-#define PROP_INDEX_MROO 161
-#define PROP_INDEX_MULT 162
-#define PROP_INDEX_MULTANI 162
-#define PROP_INDEX_MYANMAR 163
-#define PROP_INDEX_MYMR 163
-#define PROP_INDEX_NUMBER 164
-#define PROP_INDEX_N 164
-#define PROP_INDEX_NABATAEAN 165
-#define PROP_INDEX_NBAT 165
-#define PROP_INDEX_NAND 166
-#define PROP_INDEX_NANDINAGARI 166
-#define PROP_INDEX_DECIMALNUMBER 167
-#define PROP_INDEX_ND 167
-#define PROP_INDEX_TALU 168
-#define PROP_INDEX_NEWTAILUE 168
-#define PROP_INDEX_NEWA 169
-#define PROP_INDEX_NKO 170
-#define PROP_INDEX_NKOO 170
-#define PROP_INDEX_LETTERNUMBER 171
-#define PROP_INDEX_NL 171
-#define PROP_INDEX_OTHERNUMBER 172
-#define PROP_INDEX_NO 172
-#define PROP_INDEX_NONCHARACTERCODEPOINT 173
-#define PROP_INDEX_NCHAR 173
-#define PROP_INDEX_NSHU 174
-#define PROP_INDEX_NUSHU 174
-#define PROP_INDEX_HMNP 175
-#define PROP_INDEX_NYIAKENGPUACHUEHMONG 175
-#define PROP_INDEX_OGHAM 176
-#define PROP_INDEX_OGAM 176
-#define PROP_INDEX_OLCK 177
-#define PROP_INDEX_OLCHIKI 177
-#define PROP_INDEX_HUNG 178
-#define PROP_INDEX_OLDHUNGARIAN 178
-#define PROP_INDEX_ITAL 179
-#define PROP_INDEX_OLDITALIC 179
-#define PROP_INDEX_NARB 180
-#define PROP_INDEX_OLDNORTHARABIAN 180
-#define PROP_INDEX_OLDPERMIC 181
-#define PROP_INDEX_PERM 181
-#define PROP_INDEX_OLDPERSIAN 182
-#define PROP_INDEX_XPEO 182
-#define PROP_INDEX_SOGO 183
-#define PROP_INDEX_OLDSOGDIAN 183
-#define PROP_INDEX_SARB 184
-#define PROP_INDEX_OLDSOUTHARABIAN 184
-#define PROP_INDEX_OLDTURKIC 185
-#define PROP_INDEX_ORKH 185
-#define PROP_INDEX_OUGR 186
-#define PROP_INDEX_OLDUYGHUR 186
-#define PROP_INDEX_ORYA 187
-#define PROP_INDEX_ORIYA 187
-#define PROP_INDEX_OSAGE 188
-#define PROP_INDEX_OSGE 188
-#define PROP_INDEX_OSMANYA 189
-#define PROP_INDEX_OSMA 189
-#define PROP_INDEX_OTHERALPHABETIC 190
-#define PROP_INDEX_OALPHA 190
-#define PROP_INDEX_ODI 191
-#define PROP_INDEX_OTHERDEFAULTIGNORABLECODEPOINT 191
-#define PROP_INDEX_OGREXT 192
-#define PROP_INDEX_OTHERGRAPHEMEEXTEND 192
-#define PROP_INDEX_OIDC 193
-#define PROP_INDEX_OTHERIDCONTINUE 193
-#define PROP_INDEX_OTHERIDSTART 194
-#define PROP_INDEX_OIDS 194
-#define PROP_INDEX_OTHERLOWERCASE 195
-#define PROP_INDEX_OLOWER 195
-#define PROP_INDEX_OTHERMATH 196
-#define PROP_INDEX_OMATH 196
-#define PROP_INDEX_OTHERUPPERCASE 197
-#define PROP_INDEX_OUPPER 197
-#define PROP_INDEX_P 198
-#define PROP_INDEX_PUNCT 198
-#define PROP_INDEX_PUNCTUATION 198
-#define PROP_INDEX_PAHAWHHMONG 199
-#define PROP_INDEX_HMNG 199
-#define PROP_INDEX_PALMYRENE 200
-#define PROP_INDEX_PALM 200
-#define PROP_INDEX_PATTERNSYNTAX 201
-#define PROP_INDEX_PATSYN 201
-#define PROP_INDEX_PATWS 202
-#define PROP_INDEX_PATTERNWHITESPACE 202
-#define PROP_INDEX_PAUCINHAU 203
-#define PROP_INDEX_PAUC 203
-#define PROP_INDEX_CONNECTORPUNCTUATION 204
-#define PROP_INDEX_PC 204
-#define PROP_INDEX_DASHPUNCTUATION 205
-#define PROP_INDEX_PD 205
-#define PROP_INDEX_PE 206
-#define PROP_INDEX_CLOSEPUNCTUATION 206
-#define PROP_INDEX_FINALPUNCTUATION 207
-#define PROP_INDEX_PF 207
-#define PROP_INDEX_PHAG 208
-#define PROP_INDEX_PHAGSPA 208
-#define PROP_INDEX_PHOENICIAN 209
-#define PROP_INDEX_PHNX 209
-#define PROP_INDEX_PI 210
-#define PROP_INDEX_INITIALPUNCTUATION 210
-#define PROP_INDEX_OTHERPUNCTUATION 211
-#define PROP_INDEX_PO 211
-#define PROP_INDEX_PREPENDEDCONCATENATIONMARK 212
-#define PROP_INDEX_PCM 212
-#define PROP_INDEX_PS 213
-#define PROP_INDEX_OPENPUNCTUATION 213
-#define PROP_INDEX_PHLP 214
-#define PROP_INDEX_PSALTERPAHLAVI 214
-#define PROP_INDEX_QUOTATIONMARK 215
-#define PROP_INDEX_QMARK 215
-#define PROP_INDEX_RADICAL 216
-#define PROP_INDEX_RI 217
-#define PROP_INDEX_REGIONALINDICATOR 217
-#define PROP_INDEX_REJANG 218
-#define PROP_INDEX_RJNG 218
-#define PROP_INDEX_RUNIC 219
-#define PROP_INDEX_RUNR 219
-#define PROP_INDEX_S 220
-#define PROP_INDEX_SYMBOL 220
-#define PROP_INDEX_SAMARITAN 221
-#define PROP_INDEX_SAMR 221
-#define PROP_INDEX_SAURASHTRA 222
-#define PROP_INDEX_SAUR 222
-#define PROP_INDEX_SC 223
-#define PROP_INDEX_CURRENCYSYMBOL 223
-#define PROP_INDEX_SENTENCETERMINAL 224
-#define PROP_INDEX_STERM 224
-#define PROP_INDEX_SHARADA 225
-#define PROP_INDEX_SHRD 225
-#define PROP_INDEX_SHAVIAN 226
-#define PROP_INDEX_SHAW 226
-#define PROP_INDEX_SIDDHAM 227
-#define PROP_INDEX_SIDD 227
-#define PROP_INDEX_SIGNWRITING 228
-#define PROP_INDEX_SGNW 228
-#define PROP_INDEX_SINH 229
-#define PROP_INDEX_SINHALA 229
-#define PROP_INDEX_SK 230
-#define PROP_INDEX_MODIFIERSYMBOL 230
-#define PROP_INDEX_MATHSYMBOL 231
-#define PROP_INDEX_SM 231
-#define PROP_INDEX_SO 232
-#define PROP_INDEX_OTHERSYMBOL 232
-#define PROP_INDEX_SD 233
-#define PROP_INDEX_SOFTDOTTED 233
-#define PROP_INDEX_SOGD 234
-#define PROP_INDEX_SOGDIAN 234
-#define PROP_INDEX_SORASOMPENG 235
-#define PROP_INDEX_SORA 235
-#define PROP_INDEX_SOYO 236
-#define PROP_INDEX_SOYOMBO 236
-#define PROP_INDEX_SUND 237
-#define PROP_INDEX_SUNDANESE 237
-#define PROP_INDEX_SYLO 238
-#define PROP_INDEX_SYLOTINAGRI 238
-#define PROP_INDEX_SYRC 239
-#define PROP_INDEX_SYRIAC 239
-#define PROP_INDEX_TGLG 240
-#define PROP_INDEX_TAGALOG 240
-#define PROP_INDEX_TAGBANWA 241
-#define PROP_INDEX_TAGB 241
-#define PROP_INDEX_TAILE 242
-#define PROP_INDEX_TALE 242
-#define PROP_INDEX_TAITHAM 243
-#define PROP_INDEX_LANA 243
-#define PROP_INDEX_TAIVIET 244
-#define PROP_INDEX_TAVT 244
-#define PROP_INDEX_TAKRI 245
-#define PROP_INDEX_TAKR 245
-#define PROP_INDEX_TAMIL 246
-#define PROP_INDEX_TAML 246
-#define PROP_INDEX_TANGSA 247
-#define PROP_INDEX_TNSA 247
-#define PROP_INDEX_TANG 248
-#define PROP_INDEX_TANGUT 248
-#define PROP_INDEX_TELUGU 249
-#define PROP_INDEX_TELU 249
-#define PROP_INDEX_TERM 250
-#define PROP_INDEX_TERMINALPUNCTUATION 250
-#define PROP_INDEX_THAA 251
-#define PROP_INDEX_THAANA 251
-#define PROP_INDEX_THAI 252
-#define PROP_INDEX_TIBT 253
-#define PROP_INDEX_TIBETAN 253
-#define PROP_INDEX_TFNG 254
-#define PROP_INDEX_TIFINAGH 254
-#define PROP_INDEX_TIRHUTA 255
-#define PROP_INDEX_TIRH 255
-#define PROP_INDEX_TOTO 256
-#define PROP_INDEX_UGAR 257
-#define PROP_INDEX_UGARITIC 257
-#define PROP_INDEX_UNIFIEDIDEOGRAPH 258
-#define PROP_INDEX_UIDEO 258
-#define PROP_INDEX_ZZZZ 259
-#define PROP_INDEX_UNKNOWN 259
-#define PROP_INDEX_UPPERCASE 260
-#define PROP_INDEX_VAII 261
-#define PROP_INDEX_VAI 261
-#define PROP_INDEX_VARIATIONSELECTOR 262
-#define PROP_INDEX_VS 262
-#define PROP_INDEX_VITH 263
-#define PROP_INDEX_VITHKUQI 263
-#define PROP_INDEX_WCHO 264
-#define PROP_INDEX_WANCHO 264
-#define PROP_INDEX_WARANGCITI 265
-#define PROP_INDEX_WARA 265
-#define PROP_INDEX_WHITESPACE 266
-#define PROP_INDEX_WSPACE 266
-#define PROP_INDEX_XIDC 267
-#define PROP_INDEX_XIDCONTINUE 267
-#define PROP_INDEX_XIDS 268
-#define PROP_INDEX_XIDSTART 268
-#define PROP_INDEX_YEZIDI 269
-#define PROP_INDEX_YEZI 269
-#define PROP_INDEX_YI 270
-#define PROP_INDEX_YIII 270
-#define PROP_INDEX_SEPARATOR 271
-#define PROP_INDEX_Z 271
-#define PROP_INDEX_ZANABAZARSQUARE 272
-#define PROP_INDEX_ZANB 272
-#define PROP_INDEX_ZL 273
-#define PROP_INDEX_LINESEPARATOR 273
-#define PROP_INDEX_ZP 274
-#define PROP_INDEX_PARAGRAPHSEPARATOR 274
-#define PROP_INDEX_ZS 275
-#define PROP_INDEX_SPACESEPARATOR 275
-#define PROP_INDEX_INBASICLATIN 276
-#define PROP_INDEX_INLATIN1SUPPLEMENT 277
-#define PROP_INDEX_INLATINEXTENDEDA 278
-#define PROP_INDEX_INLATINEXTENDEDB 279
-#define PROP_INDEX_INIPAEXTENSIONS 280
-#define PROP_INDEX_INSPACINGMODIFIERLETTERS 281
-#define PROP_INDEX_INCOMBININGDIACRITICALMARKS 282
-#define PROP_INDEX_INGREEKANDCOPTIC 283
-#define PROP_INDEX_INCYRILLIC 284
-#define PROP_INDEX_INCYRILLICSUPPLEMENT 285
-#define PROP_INDEX_INARMENIAN 286
-#define PROP_INDEX_INHEBREW 287
-#define PROP_INDEX_INARABIC 288
-#define PROP_INDEX_INSYRIAC 289
-#define PROP_INDEX_INARABICSUPPLEMENT 290
-#define PROP_INDEX_INTHAANA 291
-#define PROP_INDEX_INNKO 292
-#define PROP_INDEX_INSAMARITAN 293
-#define PROP_INDEX_INMANDAIC 294
-#define PROP_INDEX_INSYRIACSUPPLEMENT 295
-#define PROP_INDEX_INARABICEXTENDEDB 296
-#define PROP_INDEX_INARABICEXTENDEDA 297
-#define PROP_INDEX_INDEVANAGARI 298
-#define PROP_INDEX_INBENGALI 299
-#define PROP_INDEX_INGURMUKHI 300
-#define PROP_INDEX_INGUJARATI 301
-#define PROP_INDEX_INORIYA 302
-#define PROP_INDEX_INTAMIL 303
-#define PROP_INDEX_INTELUGU 304
-#define PROP_INDEX_INKANNADA 305
-#define PROP_INDEX_INMALAYALAM 306
-#define PROP_INDEX_INSINHALA 307
-#define PROP_INDEX_INTHAI 308
-#define PROP_INDEX_INLAO 309
-#define PROP_INDEX_INTIBETAN 310
-#define PROP_INDEX_INMYANMAR 311
-#define PROP_INDEX_INGEORGIAN 312
-#define PROP_INDEX_INHANGULJAMO 313
-#define PROP_INDEX_INETHIOPIC 314
-#define PROP_INDEX_INETHIOPICSUPPLEMENT 315
-#define PROP_INDEX_INCHEROKEE 316
-#define PROP_INDEX_INUNIFIEDCANADIANABORIGINALSYLLABICS 317
-#define PROP_INDEX_INOGHAM 318
-#define PROP_INDEX_INRUNIC 319
-#define PROP_INDEX_INTAGALOG 320
-#define PROP_INDEX_INHANUNOO 321
-#define PROP_INDEX_INBUHID 322
-#define PROP_INDEX_INTAGBANWA 323
-#define PROP_INDEX_INKHMER 324
-#define PROP_INDEX_INMONGOLIAN 325
-#define PROP_INDEX_INUNIFIEDCANADIANABORIGINALSYLLABICSEXTENDED 326
-#define PROP_INDEX_INLIMBU 327
-#define PROP_INDEX_INTAILE 328
-#define PROP_INDEX_INNEWTAILUE 329
-#define PROP_INDEX_INKHMERSYMBOLS 330
-#define PROP_INDEX_INBUGINESE 331
-#define PROP_INDEX_INTAITHAM 332
-#define PROP_INDEX_INCOMBININGDIACRITICALMARKSEXTENDED 333
-#define PROP_INDEX_INBALINESE 334
-#define PROP_INDEX_INSUNDANESE 335
-#define PROP_INDEX_INBATAK 336
-#define PROP_INDEX_INLEPCHA 337
-#define PROP_INDEX_INOLCHIKI 338
-#define PROP_INDEX_INCYRILLICEXTENDEDC 339
-#define PROP_INDEX_INGEORGIANEXTENDED 340
-#define PROP_INDEX_INSUNDANESESUPPLEMENT 341
-#define PROP_INDEX_INVEDICEXTENSIONS 342
-#define PROP_INDEX_INPHONETICEXTENSIONS 343
-#define PROP_INDEX_INPHONETICEXTENSIONSSUPPLEMENT 344
-#define PROP_INDEX_INCOMBININGDIACRITICALMARKSSUPPLEMENT 345
-#define PROP_INDEX_INLATINEXTENDEDADDITIONAL 346
-#define PROP_INDEX_INGREEKEXTENDED 347
-#define PROP_INDEX_INGENERALPUNCTUATION 348
-#define PROP_INDEX_INSUPERSCRIPTSANDSUBSCRIPTS 349
-#define PROP_INDEX_INCURRENCYSYMBOLS 350
-#define PROP_INDEX_INCOMBININGDIACRITICALMARKSFORSYMBOLS 351
-#define PROP_INDEX_INLETTERLIKESYMBOLS 352
-#define PROP_INDEX_INNUMBERFORMS 353
-#define PROP_INDEX_INARROWS 354
-#define PROP_INDEX_INMATHEMATICALOPERATORS 355
-#define PROP_INDEX_INMISCELLANEOUSTECHNICAL 356
-#define PROP_INDEX_INCONTROLPICTURES 357
-#define PROP_INDEX_INOPTICALCHARACTERRECOGNITION 358
-#define PROP_INDEX_INENCLOSEDALPHANUMERICS 359
-#define PROP_INDEX_INBOXDRAWING 360
-#define PROP_INDEX_INBLOCKELEMENTS 361
-#define PROP_INDEX_INGEOMETRICSHAPES 362
-#define PROP_INDEX_INMISCELLANEOUSSYMBOLS 363
-#define PROP_INDEX_INDINGBATS 364
-#define PROP_INDEX_INMISCELLANEOUSMATHEMATICALSYMBOLSA 365
-#define PROP_INDEX_INSUPPLEMENTALARROWSA 366
-#define PROP_INDEX_INBRAILLEPATTERNS 367
-#define PROP_INDEX_INSUPPLEMENTALARROWSB 368
-#define PROP_INDEX_INMISCELLANEOUSMATHEMATICALSYMBOLSB 369
-#define PROP_INDEX_INSUPPLEMENTALMATHEMATICALOPERATORS 370
-#define PROP_INDEX_INMISCELLANEOUSSYMBOLSANDARROWS 371
-#define PROP_INDEX_INGLAGOLITIC 372
-#define PROP_INDEX_INLATINEXTENDEDC 373
-#define PROP_INDEX_INCOPTIC 374
-#define PROP_INDEX_INGEORGIANSUPPLEMENT 375
-#define PROP_INDEX_INTIFINAGH 376
-#define PROP_INDEX_INETHIOPICEXTENDED 377
-#define PROP_INDEX_INCYRILLICEXTENDEDA 378
-#define PROP_INDEX_INSUPPLEMENTALPUNCTUATION 379
-#define PROP_INDEX_INCJKRADICALSSUPPLEMENT 380
-#define PROP_INDEX_INKANGXIRADICALS 381
-#define PROP_INDEX_INIDEOGRAPHICDESCRIPTIONCHARACTERS 382
-#define PROP_INDEX_INCJKSYMBOLSANDPUNCTUATION 383
-#define PROP_INDEX_INHIRAGANA 384
-#define PROP_INDEX_INKATAKANA 385
-#define PROP_INDEX_INBOPOMOFO 386
-#define PROP_INDEX_INHANGULCOMPATIBILITYJAMO 387
-#define PROP_INDEX_INKANBUN 388
-#define PROP_INDEX_INBOPOMOFOEXTENDED 389
-#define PROP_INDEX_INCJKSTROKES 390
-#define PROP_INDEX_INKATAKANAPHONETICEXTENSIONS 391
-#define PROP_INDEX_INENCLOSEDCJKLETTERSANDMONTHS 392
-#define PROP_INDEX_INCJKCOMPATIBILITY 393
-#define PROP_INDEX_INCJKUNIFIEDIDEOGRAPHSEXTENSIONA 394
-#define PROP_INDEX_INYIJINGHEXAGRAMSYMBOLS 395
-#define PROP_INDEX_INCJKUNIFIEDIDEOGRAPHS 396
-#define PROP_INDEX_INYISYLLABLES 397
-#define PROP_INDEX_INYIRADICALS 398
-#define PROP_INDEX_INLISU 399
-#define PROP_INDEX_INVAI 400
-#define PROP_INDEX_INCYRILLICEXTENDEDB 401
-#define PROP_INDEX_INBAMUM 402
-#define PROP_INDEX_INMODIFIERTONELETTERS 403
-#define PROP_INDEX_INLATINEXTENDEDD 404
-#define PROP_INDEX_INSYLOTINAGRI 405
-#define PROP_INDEX_INCOMMONINDICNUMBERFORMS 406
-#define PROP_INDEX_INPHAGSPA 407
-#define PROP_INDEX_INSAURASHTRA 408
-#define PROP_INDEX_INDEVANAGARIEXTENDED 409
-#define PROP_INDEX_INKAYAHLI 410
-#define PROP_INDEX_INREJANG 411
-#define PROP_INDEX_INHANGULJAMOEXTENDEDA 412
-#define PROP_INDEX_INJAVANESE 413
-#define PROP_INDEX_INMYANMAREXTENDEDB 414
-#define PROP_INDEX_INCHAM 415
-#define PROP_INDEX_INMYANMAREXTENDEDA 416
-#define PROP_INDEX_INTAIVIET 417
-#define PROP_INDEX_INMEETEIMAYEKEXTENSIONS 418
-#define PROP_INDEX_INETHIOPICEXTENDEDA 419
-#define PROP_INDEX_INLATINEXTENDEDE 420
-#define PROP_INDEX_INCHEROKEESUPPLEMENT 421
-#define PROP_INDEX_INMEETEIMAYEK 422
-#define PROP_INDEX_INHANGULSYLLABLES 423
-#define PROP_INDEX_INHANGULJAMOEXTENDEDB 424
-#define PROP_INDEX_INHIGHSURROGATES 425
-#define PROP_INDEX_INHIGHPRIVATEUSESURROGATES 426
-#define PROP_INDEX_INLOWSURROGATES 427
-#define PROP_INDEX_INPRIVATEUSEAREA 428
-#define PROP_INDEX_INCJKCOMPATIBILITYIDEOGRAPHS 429
-#define PROP_INDEX_INALPHABETICPRESENTATIONFORMS 430
-#define PROP_INDEX_INARABICPRESENTATIONFORMSA 431
-#define PROP_INDEX_INVARIATIONSELECTORS 432
-#define PROP_INDEX_INVERTICALFORMS 433
-#define PROP_INDEX_INCOMBININGHALFMARKS 434
-#define PROP_INDEX_INCJKCOMPATIBILITYFORMS 435
-#define PROP_INDEX_INSMALLFORMVARIANTS 436
-#define PROP_INDEX_INARABICPRESENTATIONFORMSB 437
-#define PROP_INDEX_INHALFWIDTHANDFULLWIDTHFORMS 438
-#define PROP_INDEX_INSPECIALS 439
-#define PROP_INDEX_INLINEARBSYLLABARY 440
-#define PROP_INDEX_INLINEARBIDEOGRAMS 441
-#define PROP_INDEX_INAEGEANNUMBERS 442
-#define PROP_INDEX_INANCIENTGREEKNUMBERS 443
-#define PROP_INDEX_INANCIENTSYMBOLS 444
-#define PROP_INDEX_INPHAISTOSDISC 445
-#define PROP_INDEX_INLYCIAN 446
-#define PROP_INDEX_INCARIAN 447
-#define PROP_INDEX_INCOPTICEPACTNUMBERS 448
-#define PROP_INDEX_INOLDITALIC 449
-#define PROP_INDEX_INGOTHIC 450
-#define PROP_INDEX_INOLDPERMIC 451
-#define PROP_INDEX_INUGARITIC 452
-#define PROP_INDEX_INOLDPERSIAN 453
-#define PROP_INDEX_INDESERET 454
-#define PROP_INDEX_INSHAVIAN 455
-#define PROP_INDEX_INOSMANYA 456
-#define PROP_INDEX_INOSAGE 457
-#define PROP_INDEX_INELBASAN 458
-#define PROP_INDEX_INCAUCASIANALBANIAN 459
-#define PROP_INDEX_INVITHKUQI 460
-#define PROP_INDEX_INLINEARA 461
-#define PROP_INDEX_INLATINEXTENDEDF 462
-#define PROP_INDEX_INCYPRIOTSYLLABARY 463
-#define PROP_INDEX_INIMPERIALARAMAIC 464
-#define PROP_INDEX_INPALMYRENE 465
-#define PROP_INDEX_INNABATAEAN 466
-#define PROP_INDEX_INHATRAN 467
-#define PROP_INDEX_INPHOENICIAN 468
-#define PROP_INDEX_INLYDIAN 469
-#define PROP_INDEX_INMEROITICHIEROGLYPHS 470
-#define PROP_INDEX_INMEROITICCURSIVE 471
-#define PROP_INDEX_INKHAROSHTHI 472
-#define PROP_INDEX_INOLDSOUTHARABIAN 473
-#define PROP_INDEX_INOLDNORTHARABIAN 474
-#define PROP_INDEX_INMANICHAEAN 475
-#define PROP_INDEX_INAVESTAN 476
-#define PROP_INDEX_ININSCRIPTIONALPARTHIAN 477
-#define PROP_INDEX_ININSCRIPTIONALPAHLAVI 478
-#define PROP_INDEX_INPSALTERPAHLAVI 479
-#define PROP_INDEX_INOLDTURKIC 480
-#define PROP_INDEX_INOLDHUNGARIAN 481
-#define PROP_INDEX_INHANIFIROHINGYA 482
-#define PROP_INDEX_INRUMINUMERALSYMBOLS 483
-#define PROP_INDEX_INYEZIDI 484
-#define PROP_INDEX_INOLDSOGDIAN 485
-#define PROP_INDEX_INSOGDIAN 486
-#define PROP_INDEX_INOLDUYGHUR 487
-#define PROP_INDEX_INCHORASMIAN 488
-#define PROP_INDEX_INELYMAIC 489
-#define PROP_INDEX_INBRAHMI 490
-#define PROP_INDEX_INKAITHI 491
-#define PROP_INDEX_INSORASOMPENG 492
-#define PROP_INDEX_INCHAKMA 493
-#define PROP_INDEX_INMAHAJANI 494
-#define PROP_INDEX_INSHARADA 495
-#define PROP_INDEX_INSINHALAARCHAICNUMBERS 496
-#define PROP_INDEX_INKHOJKI 497
-#define PROP_INDEX_INMULTANI 498
-#define PROP_INDEX_INKHUDAWADI 499
-#define PROP_INDEX_INGRANTHA 500
-#define PROP_INDEX_INNEWA 501
-#define PROP_INDEX_INTIRHUTA 502
-#define PROP_INDEX_INSIDDHAM 503
-#define PROP_INDEX_INMODI 504
-#define PROP_INDEX_INMONGOLIANSUPPLEMENT 505
-#define PROP_INDEX_INTAKRI 506
-#define PROP_INDEX_INAHOM 507
-#define PROP_INDEX_INDOGRA 508
-#define PROP_INDEX_INWARANGCITI 509
-#define PROP_INDEX_INDIVESAKURU 510
-#define PROP_INDEX_INNANDINAGARI 511
-#define PROP_INDEX_INZANABAZARSQUARE 512
-#define PROP_INDEX_INSOYOMBO 513
-#define PROP_INDEX_INUNIFIEDCANADIANABORIGINALSYLLABICSEXTENDEDA 514
-#define PROP_INDEX_INPAUCINHAU 515
-#define PROP_INDEX_INBHAIKSUKI 516
-#define PROP_INDEX_INMARCHEN 517
-#define PROP_INDEX_INMASARAMGONDI 518
-#define PROP_INDEX_INGUNJALAGONDI 519
-#define PROP_INDEX_INMAKASAR 520
-#define PROP_INDEX_INLISUSUPPLEMENT 521
-#define PROP_INDEX_INTAMILSUPPLEMENT 522
-#define PROP_INDEX_INCUNEIFORM 523
-#define PROP_INDEX_INCUNEIFORMNUMBERSANDPUNCTUATION 524
-#define PROP_INDEX_INEARLYDYNASTICCUNEIFORM 525
-#define PROP_INDEX_INCYPROMINOAN 526
-#define PROP_INDEX_INEGYPTIANHIEROGLYPHS 527
-#define PROP_INDEX_INEGYPTIANHIEROGLYPHFORMATCONTROLS 528
-#define PROP_INDEX_INANATOLIANHIEROGLYPHS 529
-#define PROP_INDEX_INBAMUMSUPPLEMENT 530
-#define PROP_INDEX_INMRO 531
-#define PROP_INDEX_INTANGSA 532
-#define PROP_INDEX_INBASSAVAH 533
-#define PROP_INDEX_INPAHAWHHMONG 534
-#define PROP_INDEX_INMEDEFAIDRIN 535
-#define PROP_INDEX_INMIAO 536
-#define PROP_INDEX_INIDEOGRAPHICSYMBOLSANDPUNCTUATION 537
-#define PROP_INDEX_INTANGUT 538
-#define PROP_INDEX_INTANGUTCOMPONENTS 539
-#define PROP_INDEX_INKHITANSMALLSCRIPT 540
-#define PROP_INDEX_INTANGUTSUPPLEMENT 541
-#define PROP_INDEX_INKANAEXTENDEDB 542
-#define PROP_INDEX_INKANASUPPLEMENT 543
-#define PROP_INDEX_INKANAEXTENDEDA 544
-#define PROP_INDEX_INSMALLKANAEXTENSION 545
-#define PROP_INDEX_INNUSHU 546
-#define PROP_INDEX_INDUPLOYAN 547
-#define PROP_INDEX_INSHORTHANDFORMATCONTROLS 548
-#define PROP_INDEX_INZNAMENNYMUSICALNOTATION 549
-#define PROP_INDEX_INBYZANTINEMUSICALSYMBOLS 550
-#define PROP_INDEX_INMUSICALSYMBOLS 551
-#define PROP_INDEX_INANCIENTGREEKMUSICALNOTATION 552
-#define PROP_INDEX_INMAYANNUMERALS 553
-#define PROP_INDEX_INTAIXUANJINGSYMBOLS 554
-#define PROP_INDEX_INCOUNTINGRODNUMERALS 555
-#define PROP_INDEX_INMATHEMATICALALPHANUMERICSYMBOLS 556
-#define PROP_INDEX_INSUTTONSIGNWRITING 557
-#define PROP_INDEX_INLATINEXTENDEDG 558
-#define PROP_INDEX_INGLAGOLITICSUPPLEMENT 559
-#define PROP_INDEX_INNYIAKENGPUACHUEHMONG 560
-#define PROP_INDEX_INTOTO 561
-#define PROP_INDEX_INWANCHO 562
-#define PROP_INDEX_INETHIOPICEXTENDEDB 563
-#define PROP_INDEX_INMENDEKIKAKUI 564
-#define PROP_INDEX_INADLAM 565
-#define PROP_INDEX_ININDICSIYAQNUMBERS 566
-#define PROP_INDEX_INOTTOMANSIYAQNUMBERS 567
-#define PROP_INDEX_INARABICMATHEMATICALALPHABETICSYMBOLS 568
-#define PROP_INDEX_INMAHJONGTILES 569
-#define PROP_INDEX_INDOMINOTILES 570
-#define PROP_INDEX_INPLAYINGCARDS 571
-#define PROP_INDEX_INENCLOSEDALPHANUMERICSUPPLEMENT 572
-#define PROP_INDEX_INENCLOSEDIDEOGRAPHICSUPPLEMENT 573
-#define PROP_INDEX_INMISCELLANEOUSSYMBOLSANDPICTOGRAPHS 574
-#define PROP_INDEX_INEMOTICONS 575
-#define PROP_INDEX_INORNAMENTALDINGBATS 576
-#define PROP_INDEX_INTRANSPORTANDMAPSYMBOLS 577
-#define PROP_INDEX_INALCHEMICALSYMBOLS 578
-#define PROP_INDEX_INGEOMETRICSHAPESEXTENDED 579
-#define PROP_INDEX_INSUPPLEMENTALARROWSC 580
-#define PROP_INDEX_INSUPPLEMENTALSYMBOLSANDPICTOGRAPHS 581
-#define PROP_INDEX_INCHESSSYMBOLS 582
-#define PROP_INDEX_INSYMBOLSANDPICTOGRAPHSEXTENDEDA 583
-#define PROP_INDEX_INSYMBOLSFORLEGACYCOMPUTING 584
-#define PROP_INDEX_INCJKUNIFIEDIDEOGRAPHSEXTENSIONB 585
-#define PROP_INDEX_INCJKUNIFIEDIDEOGRAPHSEXTENSIONC 586
-#define PROP_INDEX_INCJKUNIFIEDIDEOGRAPHSEXTENSIOND 587
-#define PROP_INDEX_INCJKUNIFIEDIDEOGRAPHSEXTENSIONE 588
-#define PROP_INDEX_INCJKUNIFIEDIDEOGRAPHSEXTENSIONF 589
-#define PROP_INDEX_INCJKCOMPATIBILITYIDEOGRAPHSSUPPLEMENT 590
-#define PROP_INDEX_INCJKUNIFIEDIDEOGRAPHSEXTENSIONG 591
-#define PROP_INDEX_INTAGS 592
-#define PROP_INDEX_INVARIATIONSELECTORSSUPPLEMENT 593
-#define PROP_INDEX_INSUPPLEMENTARYPRIVATEUSEAREAA 594
-#define PROP_INDEX_INSUPPLEMENTARYPRIVATEUSEAREAB 595
-#define PROP_INDEX_INNOBLOCK 596
+#define PROP_INDEX_KAWI 117
+#define PROP_INDEX_KAYAHLI 118
+#define PROP_INDEX_KALI 118
+#define PROP_INDEX_KHAROSHTHI 119
+#define PROP_INDEX_KHAR 119
+#define PROP_INDEX_KITS 120
+#define PROP_INDEX_KHITANSMALLSCRIPT 120
+#define PROP_INDEX_KHMR 121
+#define PROP_INDEX_KHMER 121
+#define PROP_INDEX_KHOJ 122
+#define PROP_INDEX_KHOJKI 122
+#define PROP_INDEX_KHUDAWADI 123
+#define PROP_INDEX_SIND 123
+#define PROP_INDEX_L 124
+#define PROP_INDEX_LETTER 124
+#define PROP_INDEX_LC 125
+#define PROP_INDEX_CASEDLETTER 125
+#define PROP_INDEX_LAO 126
+#define PROP_INDEX_LAOO 126
+#define PROP_INDEX_LATN 127
+#define PROP_INDEX_LATIN 127
+#define PROP_INDEX_LEPC 128
+#define PROP_INDEX_LEPCHA 128
+#define PROP_INDEX_LIMBU 129
+#define PROP_INDEX_LIMB 129
+#define PROP_INDEX_LINA 130
+#define PROP_INDEX_LINEARA 130
+#define PROP_INDEX_LINB 131
+#define PROP_INDEX_LINEARB 131
+#define PROP_INDEX_LISU 132
+#define PROP_INDEX_LOWERCASELETTER 133
+#define PROP_INDEX_LL 133
+#define PROP_INDEX_LM 134
+#define PROP_INDEX_MODIFIERLETTER 134
+#define PROP_INDEX_LO 135
+#define PROP_INDEX_OTHERLETTER 135
+#define PROP_INDEX_LOGICALORDEREXCEPTION 136
+#define PROP_INDEX_LOE 136
+#define PROP_INDEX_LOWERCASE 137
+#define PROP_INDEX_LT 138
+#define PROP_INDEX_TITLECASELETTER 138
+#define PROP_INDEX_UPPERCASELETTER 139
+#define PROP_INDEX_LU 139
+#define PROP_INDEX_LYCI 140
+#define PROP_INDEX_LYCIAN 140
+#define PROP_INDEX_LYDI 141
+#define PROP_INDEX_LYDIAN 141
+#define PROP_INDEX_M 142
+#define PROP_INDEX_COMBININGMARK 142
+#define PROP_INDEX_MARK 142
+#define PROP_INDEX_MAHJ 143
+#define PROP_INDEX_MAHAJANI 143
+#define PROP_INDEX_MAKASAR 144
+#define PROP_INDEX_MAKA 144
+#define PROP_INDEX_MALAYALAM 145
+#define PROP_INDEX_MLYM 145
+#define PROP_INDEX_MAND 146
+#define PROP_INDEX_MANDAIC 146
+#define PROP_INDEX_MANI 147
+#define PROP_INDEX_MANICHAEAN 147
+#define PROP_INDEX_MARC 148
+#define PROP_INDEX_MARCHEN 148
+#define PROP_INDEX_MASARAMGONDI 149
+#define PROP_INDEX_GONM 149
+#define PROP_INDEX_MATH 150
+#define PROP_INDEX_MC 151
+#define PROP_INDEX_SPACINGMARK 151
+#define PROP_INDEX_ENCLOSINGMARK 152
+#define PROP_INDEX_ME 152
+#define PROP_INDEX_MEDEFAIDRIN 153
+#define PROP_INDEX_MEDF 153
+#define PROP_INDEX_MEETEIMAYEK 154
+#define PROP_INDEX_MTEI 154
+#define PROP_INDEX_MENDEKIKAKUI 155
+#define PROP_INDEX_MEND 155
+#define PROP_INDEX_MEROITICCURSIVE 156
+#define PROP_INDEX_MERC 156
+#define PROP_INDEX_MEROITICHIEROGLYPHS 157
+#define PROP_INDEX_MERO 157
+#define PROP_INDEX_PLRD 158
+#define PROP_INDEX_MIAO 158
+#define PROP_INDEX_MN 159
+#define PROP_INDEX_NONSPACINGMARK 159
+#define PROP_INDEX_MODI 160
+#define PROP_INDEX_MONGOLIAN 161
+#define PROP_INDEX_MONG 161
+#define PROP_INDEX_MRO 162
+#define PROP_INDEX_MROO 162
+#define PROP_INDEX_MULT 163
+#define PROP_INDEX_MULTANI 163
+#define PROP_INDEX_MYANMAR 164
+#define PROP_INDEX_MYMR 164
+#define PROP_INDEX_NUMBER 165
+#define PROP_INDEX_N 165
+#define PROP_INDEX_NABATAEAN 166
+#define PROP_INDEX_NBAT 166
+#define PROP_INDEX_NAGMUNDARI 167
+#define PROP_INDEX_NAGM 167
+#define PROP_INDEX_NAND 168
+#define PROP_INDEX_NANDINAGARI 168
+#define PROP_INDEX_DECIMALNUMBER 169
+#define PROP_INDEX_ND 169
+#define PROP_INDEX_TALU 170
+#define PROP_INDEX_NEWTAILUE 170
+#define PROP_INDEX_NEWA 171
+#define PROP_INDEX_NKO 172
+#define PROP_INDEX_NKOO 172
+#define PROP_INDEX_LETTERNUMBER 173
+#define PROP_INDEX_NL 173
+#define PROP_INDEX_OTHERNUMBER 174
+#define PROP_INDEX_NO 174
+#define PROP_INDEX_NONCHARACTERCODEPOINT 175
+#define PROP_INDEX_NCHAR 175
+#define PROP_INDEX_NSHU 176
+#define PROP_INDEX_NUSHU 176
+#define PROP_INDEX_HMNP 177
+#define PROP_INDEX_NYIAKENGPUACHUEHMONG 177
+#define PROP_INDEX_OGHAM 178
+#define PROP_INDEX_OGAM 178
+#define PROP_INDEX_OLCK 179
+#define PROP_INDEX_OLCHIKI 179
+#define PROP_INDEX_HUNG 180
+#define PROP_INDEX_OLDHUNGARIAN 180
+#define PROP_INDEX_ITAL 181
+#define PROP_INDEX_OLDITALIC 181
+#define PROP_INDEX_NARB 182
+#define PROP_INDEX_OLDNORTHARABIAN 182
+#define PROP_INDEX_OLDPERMIC 183
+#define PROP_INDEX_PERM 183
+#define PROP_INDEX_OLDPERSIAN 184
+#define PROP_INDEX_XPEO 184
+#define PROP_INDEX_SOGO 185
+#define PROP_INDEX_OLDSOGDIAN 185
+#define PROP_INDEX_SARB 186
+#define PROP_INDEX_OLDSOUTHARABIAN 186
+#define PROP_INDEX_OLDTURKIC 187
+#define PROP_INDEX_ORKH 187
+#define PROP_INDEX_OUGR 188
+#define PROP_INDEX_OLDUYGHUR 188
+#define PROP_INDEX_ORYA 189
+#define PROP_INDEX_ORIYA 189
+#define PROP_INDEX_OSAGE 190
+#define PROP_INDEX_OSGE 190
+#define PROP_INDEX_OSMANYA 191
+#define PROP_INDEX_OSMA 191
+#define PROP_INDEX_OTHERALPHABETIC 192
+#define PROP_INDEX_OALPHA 192
+#define PROP_INDEX_ODI 193
+#define PROP_INDEX_OTHERDEFAULTIGNORABLECODEPOINT 193
+#define PROP_INDEX_OGREXT 194
+#define PROP_INDEX_OTHERGRAPHEMEEXTEND 194
+#define PROP_INDEX_OIDC 195
+#define PROP_INDEX_OTHERIDCONTINUE 195
+#define PROP_INDEX_OTHERIDSTART 196
+#define PROP_INDEX_OIDS 196
+#define PROP_INDEX_OTHERLOWERCASE 197
+#define PROP_INDEX_OLOWER 197
+#define PROP_INDEX_OTHERMATH 198
+#define PROP_INDEX_OMATH 198
+#define PROP_INDEX_OTHERUPPERCASE 199
+#define PROP_INDEX_OUPPER 199
+#define PROP_INDEX_P 200
+#define PROP_INDEX_PUNCT 200
+#define PROP_INDEX_PUNCTUATION 200
+#define PROP_INDEX_PAHAWHHMONG 201
+#define PROP_INDEX_HMNG 201
+#define PROP_INDEX_PALMYRENE 202
+#define PROP_INDEX_PALM 202
+#define PROP_INDEX_PATTERNSYNTAX 203
+#define PROP_INDEX_PATSYN 203
+#define PROP_INDEX_PATWS 204
+#define PROP_INDEX_PATTERNWHITESPACE 204
+#define PROP_INDEX_PAUCINHAU 205
+#define PROP_INDEX_PAUC 205
+#define PROP_INDEX_CONNECTORPUNCTUATION 206
+#define PROP_INDEX_PC 206
+#define PROP_INDEX_DASHPUNCTUATION 207
+#define PROP_INDEX_PD 207
+#define PROP_INDEX_PE 208
+#define PROP_INDEX_CLOSEPUNCTUATION 208
+#define PROP_INDEX_FINALPUNCTUATION 209
+#define PROP_INDEX_PF 209
+#define PROP_INDEX_PHAG 210
+#define PROP_INDEX_PHAGSPA 210
+#define PROP_INDEX_PHOENICIAN 211
+#define PROP_INDEX_PHNX 211
+#define PROP_INDEX_PI 212
+#define PROP_INDEX_INITIALPUNCTUATION 212
+#define PROP_INDEX_OTHERPUNCTUATION 213
+#define PROP_INDEX_PO 213
+#define PROP_INDEX_PREPENDEDCONCATENATIONMARK 214
+#define PROP_INDEX_PCM 214
+#define PROP_INDEX_PS 215
+#define PROP_INDEX_OPENPUNCTUATION 215
+#define PROP_INDEX_PHLP 216
+#define PROP_INDEX_PSALTERPAHLAVI 216
+#define PROP_INDEX_QUOTATIONMARK 217
+#define PROP_INDEX_QMARK 217
+#define PROP_INDEX_RADICAL 218
+#define PROP_INDEX_RI 219
+#define PROP_INDEX_REGIONALINDICATOR 219
+#define PROP_INDEX_REJANG 220
+#define PROP_INDEX_RJNG 220
+#define PROP_INDEX_RUNIC 221
+#define PROP_INDEX_RUNR 221
+#define PROP_INDEX_S 222
+#define PROP_INDEX_SYMBOL 222
+#define PROP_INDEX_SAMARITAN 223
+#define PROP_INDEX_SAMR 223
+#define PROP_INDEX_SAURASHTRA 224
+#define PROP_INDEX_SAUR 224
+#define PROP_INDEX_SC 225
+#define PROP_INDEX_CURRENCYSYMBOL 225
+#define PROP_INDEX_SENTENCETERMINAL 226
+#define PROP_INDEX_STERM 226
+#define PROP_INDEX_SHARADA 227
+#define PROP_INDEX_SHRD 227
+#define PROP_INDEX_SHAVIAN 228
+#define PROP_INDEX_SHAW 228
+#define PROP_INDEX_SIDDHAM 229
+#define PROP_INDEX_SIDD 229
+#define PROP_INDEX_SIGNWRITING 230
+#define PROP_INDEX_SGNW 230
+#define PROP_INDEX_SINH 231
+#define PROP_INDEX_SINHALA 231
+#define PROP_INDEX_SK 232
+#define PROP_INDEX_MODIFIERSYMBOL 232
+#define PROP_INDEX_MATHSYMBOL 233
+#define PROP_INDEX_SM 233
+#define PROP_INDEX_SO 234
+#define PROP_INDEX_OTHERSYMBOL 234
+#define PROP_INDEX_SD 235
+#define PROP_INDEX_SOFTDOTTED 235
+#define PROP_INDEX_SOGD 236
+#define PROP_INDEX_SOGDIAN 236
+#define PROP_INDEX_SORASOMPENG 237
+#define PROP_INDEX_SORA 237
+#define PROP_INDEX_SOYO 238
+#define PROP_INDEX_SOYOMBO 238
+#define PROP_INDEX_SUND 239
+#define PROP_INDEX_SUNDANESE 239
+#define PROP_INDEX_SYLO 240
+#define PROP_INDEX_SYLOTINAGRI 240
+#define PROP_INDEX_SYRC 241
+#define PROP_INDEX_SYRIAC 241
+#define PROP_INDEX_TGLG 242
+#define PROP_INDEX_TAGALOG 242
+#define PROP_INDEX_TAGBANWA 243
+#define PROP_INDEX_TAGB 243
+#define PROP_INDEX_TAILE 244
+#define PROP_INDEX_TALE 244
+#define PROP_INDEX_TAITHAM 245
+#define PROP_INDEX_LANA 245
+#define PROP_INDEX_TAIVIET 246
+#define PROP_INDEX_TAVT 246
+#define PROP_INDEX_TAKRI 247
+#define PROP_INDEX_TAKR 247
+#define PROP_INDEX_TAMIL 248
+#define PROP_INDEX_TAML 248
+#define PROP_INDEX_TANGSA 249
+#define PROP_INDEX_TNSA 249
+#define PROP_INDEX_TANG 250
+#define PROP_INDEX_TANGUT 250
+#define PROP_INDEX_TELUGU 251
+#define PROP_INDEX_TELU 251
+#define PROP_INDEX_TERM 252
+#define PROP_INDEX_TERMINALPUNCTUATION 252
+#define PROP_INDEX_THAA 253
+#define PROP_INDEX_THAANA 253
+#define PROP_INDEX_THAI 254
+#define PROP_INDEX_TIBT 255
+#define PROP_INDEX_TIBETAN 255
+#define PROP_INDEX_TFNG 256
+#define PROP_INDEX_TIFINAGH 256
+#define PROP_INDEX_TIRHUTA 257
+#define PROP_INDEX_TIRH 257
+#define PROP_INDEX_TOTO 258
+#define PROP_INDEX_UGAR 259
+#define PROP_INDEX_UGARITIC 259
+#define PROP_INDEX_UNIFIEDIDEOGRAPH 260
+#define PROP_INDEX_UIDEO 260
+#define PROP_INDEX_ZZZZ 261
+#define PROP_INDEX_UNKNOWN 261
+#define PROP_INDEX_UPPERCASE 262
+#define PROP_INDEX_VAII 263
+#define PROP_INDEX_VAI 263
+#define PROP_INDEX_VARIATIONSELECTOR 264
+#define PROP_INDEX_VS 264
+#define PROP_INDEX_VITH 265
+#define PROP_INDEX_VITHKUQI 265
+#define PROP_INDEX_WCHO 266
+#define PROP_INDEX_WANCHO 266
+#define PROP_INDEX_WARANGCITI 267
+#define PROP_INDEX_WARA 267
+#define PROP_INDEX_WHITESPACE 268
+#define PROP_INDEX_WSPACE 268
+#define PROP_INDEX_XIDC 269
+#define PROP_INDEX_XIDCONTINUE 269
+#define PROP_INDEX_XIDS 270
+#define PROP_INDEX_XIDSTART 270
+#define PROP_INDEX_YEZIDI 271
+#define PROP_INDEX_YEZI 271
+#define PROP_INDEX_YI 272
+#define PROP_INDEX_YIII 272
+#define PROP_INDEX_SEPARATOR 273
+#define PROP_INDEX_Z 273
+#define PROP_INDEX_ZANABAZARSQUARE 274
+#define PROP_INDEX_ZANB 274
+#define PROP_INDEX_ZL 275
+#define PROP_INDEX_LINESEPARATOR 275
+#define PROP_INDEX_ZP 276
+#define PROP_INDEX_PARAGRAPHSEPARATOR 276
+#define PROP_INDEX_ZS 277
+#define PROP_INDEX_SPACESEPARATOR 277
+#define PROP_INDEX_INBASICLATIN 278
+#define PROP_INDEX_INLATIN1SUPPLEMENT 279
+#define PROP_INDEX_INLATINEXTENDEDA 280
+#define PROP_INDEX_INLATINEXTENDEDB 281
+#define PROP_INDEX_INIPAEXTENSIONS 282
+#define PROP_INDEX_INSPACINGMODIFIERLETTERS 283
+#define PROP_INDEX_INCOMBININGDIACRITICALMARKS 284
+#define PROP_INDEX_INGREEKANDCOPTIC 285
+#define PROP_INDEX_INCYRILLIC 286
+#define PROP_INDEX_INCYRILLICSUPPLEMENT 287
+#define PROP_INDEX_INARMENIAN 288
+#define PROP_INDEX_INHEBREW 289
+#define PROP_INDEX_INARABIC 290
+#define PROP_INDEX_INSYRIAC 291
+#define PROP_INDEX_INARABICSUPPLEMENT 292
+#define PROP_INDEX_INTHAANA 293
+#define PROP_INDEX_INNKO 294
+#define PROP_INDEX_INSAMARITAN 295
+#define PROP_INDEX_INMANDAIC 296
+#define PROP_INDEX_INSYRIACSUPPLEMENT 297
+#define PROP_INDEX_INARABICEXTENDEDB 298
+#define PROP_INDEX_INARABICEXTENDEDA 299
+#define PROP_INDEX_INDEVANAGARI 300
+#define PROP_INDEX_INBENGALI 301
+#define PROP_INDEX_INGURMUKHI 302
+#define PROP_INDEX_INGUJARATI 303
+#define PROP_INDEX_INORIYA 304
+#define PROP_INDEX_INTAMIL 305
+#define PROP_INDEX_INTELUGU 306
+#define PROP_INDEX_INKANNADA 307
+#define PROP_INDEX_INMALAYALAM 308
+#define PROP_INDEX_INSINHALA 309
+#define PROP_INDEX_INTHAI 310
+#define PROP_INDEX_INLAO 311
+#define PROP_INDEX_INTIBETAN 312
+#define PROP_INDEX_INMYANMAR 313
+#define PROP_INDEX_INGEORGIAN 314
+#define PROP_INDEX_INHANGULJAMO 315
+#define PROP_INDEX_INETHIOPIC 316
+#define PROP_INDEX_INETHIOPICSUPPLEMENT 317
+#define PROP_INDEX_INCHEROKEE 318
+#define PROP_INDEX_INUNIFIEDCANADIANABORIGINALSYLLABICS 319
+#define PROP_INDEX_INOGHAM 320
+#define PROP_INDEX_INRUNIC 321
+#define PROP_INDEX_INTAGALOG 322
+#define PROP_INDEX_INHANUNOO 323
+#define PROP_INDEX_INBUHID 324
+#define PROP_INDEX_INTAGBANWA 325
+#define PROP_INDEX_INKHMER 326
+#define PROP_INDEX_INMONGOLIAN 327
+#define PROP_INDEX_INUNIFIEDCANADIANABORIGINALSYLLABICSEXTENDED 328
+#define PROP_INDEX_INLIMBU 329
+#define PROP_INDEX_INTAILE 330
+#define PROP_INDEX_INNEWTAILUE 331
+#define PROP_INDEX_INKHMERSYMBOLS 332
+#define PROP_INDEX_INBUGINESE 333
+#define PROP_INDEX_INTAITHAM 334
+#define PROP_INDEX_INCOMBININGDIACRITICALMARKSEXTENDED 335
+#define PROP_INDEX_INBALINESE 336
+#define PROP_INDEX_INSUNDANESE 337
+#define PROP_INDEX_INBATAK 338
+#define PROP_INDEX_INLEPCHA 339
+#define PROP_INDEX_INOLCHIKI 340
+#define PROP_INDEX_INCYRILLICEXTENDEDC 341
+#define PROP_INDEX_INGEORGIANEXTENDED 342
+#define PROP_INDEX_INSUNDANESESUPPLEMENT 343
+#define PROP_INDEX_INVEDICEXTENSIONS 344
+#define PROP_INDEX_INPHONETICEXTENSIONS 345
+#define PROP_INDEX_INPHONETICEXTENSIONSSUPPLEMENT 346
+#define PROP_INDEX_INCOMBININGDIACRITICALMARKSSUPPLEMENT 347
+#define PROP_INDEX_INLATINEXTENDEDADDITIONAL 348
+#define PROP_INDEX_INGREEKEXTENDED 349
+#define PROP_INDEX_INGENERALPUNCTUATION 350
+#define PROP_INDEX_INSUPERSCRIPTSANDSUBSCRIPTS 351
+#define PROP_INDEX_INCURRENCYSYMBOLS 352
+#define PROP_INDEX_INCOMBININGDIACRITICALMARKSFORSYMBOLS 353
+#define PROP_INDEX_INLETTERLIKESYMBOLS 354
+#define PROP_INDEX_INNUMBERFORMS 355
+#define PROP_INDEX_INARROWS 356
+#define PROP_INDEX_INMATHEMATICALOPERATORS 357
+#define PROP_INDEX_INMISCELLANEOUSTECHNICAL 358
+#define PROP_INDEX_INCONTROLPICTURES 359
+#define PROP_INDEX_INOPTICALCHARACTERRECOGNITION 360
+#define PROP_INDEX_INENCLOSEDALPHANUMERICS 361
+#define PROP_INDEX_INBOXDRAWING 362
+#define PROP_INDEX_INBLOCKELEMENTS 363
+#define PROP_INDEX_INGEOMETRICSHAPES 364
+#define PROP_INDEX_INMISCELLANEOUSSYMBOLS 365
+#define PROP_INDEX_INDINGBATS 366
+#define PROP_INDEX_INMISCELLANEOUSMATHEMATICALSYMBOLSA 367
+#define PROP_INDEX_INSUPPLEMENTALARROWSA 368
+#define PROP_INDEX_INBRAILLEPATTERNS 369
+#define PROP_INDEX_INSUPPLEMENTALARROWSB 370
+#define PROP_INDEX_INMISCELLANEOUSMATHEMATICALSYMBOLSB 371
+#define PROP_INDEX_INSUPPLEMENTALMATHEMATICALOPERATORS 372
+#define PROP_INDEX_INMISCELLANEOUSSYMBOLSANDARROWS 373
+#define PROP_INDEX_INGLAGOLITIC 374
+#define PROP_INDEX_INLATINEXTENDEDC 375
+#define PROP_INDEX_INCOPTIC 376
+#define PROP_INDEX_INGEORGIANSUPPLEMENT 377
+#define PROP_INDEX_INTIFINAGH 378
+#define PROP_INDEX_INETHIOPICEXTENDED 379
+#define PROP_INDEX_INCYRILLICEXTENDEDA 380
+#define PROP_INDEX_INSUPPLEMENTALPUNCTUATION 381
+#define PROP_INDEX_INCJKRADICALSSUPPLEMENT 382
+#define PROP_INDEX_INKANGXIRADICALS 383
+#define PROP_INDEX_INIDEOGRAPHICDESCRIPTIONCHARACTERS 384
+#define PROP_INDEX_INCJKSYMBOLSANDPUNCTUATION 385
+#define PROP_INDEX_INHIRAGANA 386
+#define PROP_INDEX_INKATAKANA 387
+#define PROP_INDEX_INBOPOMOFO 388
+#define PROP_INDEX_INHANGULCOMPATIBILITYJAMO 389
+#define PROP_INDEX_INKANBUN 390
+#define PROP_INDEX_INBOPOMOFOEXTENDED 391
+#define PROP_INDEX_INCJKSTROKES 392
+#define PROP_INDEX_INKATAKANAPHONETICEXTENSIONS 393
+#define PROP_INDEX_INENCLOSEDCJKLETTERSANDMONTHS 394
+#define PROP_INDEX_INCJKCOMPATIBILITY 395
+#define PROP_INDEX_INCJKUNIFIEDIDEOGRAPHSEXTENSIONA 396
+#define PROP_INDEX_INYIJINGHEXAGRAMSYMBOLS 397
+#define PROP_INDEX_INCJKUNIFIEDIDEOGRAPHS 398
+#define PROP_INDEX_INYISYLLABLES 399
+#define PROP_INDEX_INYIRADICALS 400
+#define PROP_INDEX_INLISU 401
+#define PROP_INDEX_INVAI 402
+#define PROP_INDEX_INCYRILLICEXTENDEDB 403
+#define PROP_INDEX_INBAMUM 404
+#define PROP_INDEX_INMODIFIERTONELETTERS 405
+#define PROP_INDEX_INLATINEXTENDEDD 406
+#define PROP_INDEX_INSYLOTINAGRI 407
+#define PROP_INDEX_INCOMMONINDICNUMBERFORMS 408
+#define PROP_INDEX_INPHAGSPA 409
+#define PROP_INDEX_INSAURASHTRA 410
+#define PROP_INDEX_INDEVANAGARIEXTENDED 411
+#define PROP_INDEX_INKAYAHLI 412
+#define PROP_INDEX_INREJANG 413
+#define PROP_INDEX_INHANGULJAMOEXTENDEDA 414
+#define PROP_INDEX_INJAVANESE 415
+#define PROP_INDEX_INMYANMAREXTENDEDB 416
+#define PROP_INDEX_INCHAM 417
+#define PROP_INDEX_INMYANMAREXTENDEDA 418
+#define PROP_INDEX_INTAIVIET 419
+#define PROP_INDEX_INMEETEIMAYEKEXTENSIONS 420
+#define PROP_INDEX_INETHIOPICEXTENDEDA 421
+#define PROP_INDEX_INLATINEXTENDEDE 422
+#define PROP_INDEX_INCHEROKEESUPPLEMENT 423
+#define PROP_INDEX_INMEETEIMAYEK 424
+#define PROP_INDEX_INHANGULSYLLABLES 425
+#define PROP_INDEX_INHANGULJAMOEXTENDEDB 426
+#define PROP_INDEX_INHIGHSURROGATES 427
+#define PROP_INDEX_INHIGHPRIVATEUSESURROGATES 428
+#define PROP_INDEX_INLOWSURROGATES 429
+#define PROP_INDEX_INPRIVATEUSEAREA 430
+#define PROP_INDEX_INCJKCOMPATIBILITYIDEOGRAPHS 431
+#define PROP_INDEX_INALPHABETICPRESENTATIONFORMS 432
+#define PROP_INDEX_INARABICPRESENTATIONFORMSA 433
+#define PROP_INDEX_INVARIATIONSELECTORS 434
+#define PROP_INDEX_INVERTICALFORMS 435
+#define PROP_INDEX_INCOMBININGHALFMARKS 436
+#define PROP_INDEX_INCJKCOMPATIBILITYFORMS 437
+#define PROP_INDEX_INSMALLFORMVARIANTS 438
+#define PROP_INDEX_INARABICPRESENTATIONFORMSB 439
+#define PROP_INDEX_INHALFWIDTHANDFULLWIDTHFORMS 440
+#define PROP_INDEX_INSPECIALS 441
+#define PROP_INDEX_INLINEARBSYLLABARY 442
+#define PROP_INDEX_INLINEARBIDEOGRAMS 443
+#define PROP_INDEX_INAEGEANNUMBERS 444
+#define PROP_INDEX_INANCIENTGREEKNUMBERS 445
+#define PROP_INDEX_INANCIENTSYMBOLS 446
+#define PROP_INDEX_INPHAISTOSDISC 447
+#define PROP_INDEX_INLYCIAN 448
+#define PROP_INDEX_INCARIAN 449
+#define PROP_INDEX_INCOPTICEPACTNUMBERS 450
+#define PROP_INDEX_INOLDITALIC 451
+#define PROP_INDEX_INGOTHIC 452
+#define PROP_INDEX_INOLDPERMIC 453
+#define PROP_INDEX_INUGARITIC 454
+#define PROP_INDEX_INOLDPERSIAN 455
+#define PROP_INDEX_INDESERET 456
+#define PROP_INDEX_INSHAVIAN 457
+#define PROP_INDEX_INOSMANYA 458
+#define PROP_INDEX_INOSAGE 459
+#define PROP_INDEX_INELBASAN 460
+#define PROP_INDEX_INCAUCASIANALBANIAN 461
+#define PROP_INDEX_INVITHKUQI 462
+#define PROP_INDEX_INLINEARA 463
+#define PROP_INDEX_INLATINEXTENDEDF 464
+#define PROP_INDEX_INCYPRIOTSYLLABARY 465
+#define PROP_INDEX_INIMPERIALARAMAIC 466
+#define PROP_INDEX_INPALMYRENE 467
+#define PROP_INDEX_INNABATAEAN 468
+#define PROP_INDEX_INHATRAN 469
+#define PROP_INDEX_INPHOENICIAN 470
+#define PROP_INDEX_INLYDIAN 471
+#define PROP_INDEX_INMEROITICHIEROGLYPHS 472
+#define PROP_INDEX_INMEROITICCURSIVE 473
+#define PROP_INDEX_INKHAROSHTHI 474
+#define PROP_INDEX_INOLDSOUTHARABIAN 475
+#define PROP_INDEX_INOLDNORTHARABIAN 476
+#define PROP_INDEX_INMANICHAEAN 477
+#define PROP_INDEX_INAVESTAN 478
+#define PROP_INDEX_ININSCRIPTIONALPARTHIAN 479
+#define PROP_INDEX_ININSCRIPTIONALPAHLAVI 480
+#define PROP_INDEX_INPSALTERPAHLAVI 481
+#define PROP_INDEX_INOLDTURKIC 482
+#define PROP_INDEX_INOLDHUNGARIAN 483
+#define PROP_INDEX_INHANIFIROHINGYA 484
+#define PROP_INDEX_INRUMINUMERALSYMBOLS 485
+#define PROP_INDEX_INYEZIDI 486
+#define PROP_INDEX_INARABICEXTENDEDC 487
+#define PROP_INDEX_INOLDSOGDIAN 488
+#define PROP_INDEX_INSOGDIAN 489
+#define PROP_INDEX_INOLDUYGHUR 490
+#define PROP_INDEX_INCHORASMIAN 491
+#define PROP_INDEX_INELYMAIC 492
+#define PROP_INDEX_INBRAHMI 493
+#define PROP_INDEX_INKAITHI 494
+#define PROP_INDEX_INSORASOMPENG 495
+#define PROP_INDEX_INCHAKMA 496
+#define PROP_INDEX_INMAHAJANI 497
+#define PROP_INDEX_INSHARADA 498
+#define PROP_INDEX_INSINHALAARCHAICNUMBERS 499
+#define PROP_INDEX_INKHOJKI 500
+#define PROP_INDEX_INMULTANI 501
+#define PROP_INDEX_INKHUDAWADI 502
+#define PROP_INDEX_INGRANTHA 503
+#define PROP_INDEX_INNEWA 504
+#define PROP_INDEX_INTIRHUTA 505
+#define PROP_INDEX_INSIDDHAM 506
+#define PROP_INDEX_INMODI 507
+#define PROP_INDEX_INMONGOLIANSUPPLEMENT 508
+#define PROP_INDEX_INTAKRI 509
+#define PROP_INDEX_INAHOM 510
+#define PROP_INDEX_INDOGRA 511
+#define PROP_INDEX_INWARANGCITI 512
+#define PROP_INDEX_INDIVESAKURU 513
+#define PROP_INDEX_INNANDINAGARI 514
+#define PROP_INDEX_INZANABAZARSQUARE 515
+#define PROP_INDEX_INSOYOMBO 516
+#define PROP_INDEX_INUNIFIEDCANADIANABORIGINALSYLLABICSEXTENDEDA 517
+#define PROP_INDEX_INPAUCINHAU 518
+#define PROP_INDEX_INDEVANAGARIEXTENDEDA 519
+#define PROP_INDEX_INBHAIKSUKI 520
+#define PROP_INDEX_INMARCHEN 521
+#define PROP_INDEX_INMASARAMGONDI 522
+#define PROP_INDEX_INGUNJALAGONDI 523
+#define PROP_INDEX_INMAKASAR 524
+#define PROP_INDEX_INKAWI 525
+#define PROP_INDEX_INLISUSUPPLEMENT 526
+#define PROP_INDEX_INTAMILSUPPLEMENT 527
+#define PROP_INDEX_INCUNEIFORM 528
+#define PROP_INDEX_INCUNEIFORMNUMBERSANDPUNCTUATION 529
+#define PROP_INDEX_INEARLYDYNASTICCUNEIFORM 530
+#define PROP_INDEX_INCYPROMINOAN 531
+#define PROP_INDEX_INEGYPTIANHIEROGLYPHS 532
+#define PROP_INDEX_INEGYPTIANHIEROGLYPHFORMATCONTROLS 533
+#define PROP_INDEX_INANATOLIANHIEROGLYPHS 534
+#define PROP_INDEX_INBAMUMSUPPLEMENT 535
+#define PROP_INDEX_INMRO 536
+#define PROP_INDEX_INTANGSA 537
+#define PROP_INDEX_INBASSAVAH 538
+#define PROP_INDEX_INPAHAWHHMONG 539
+#define PROP_INDEX_INMEDEFAIDRIN 540
+#define PROP_INDEX_INMIAO 541
+#define PROP_INDEX_INIDEOGRAPHICSYMBOLSANDPUNCTUATION 542
+#define PROP_INDEX_INTANGUT 543
+#define PROP_INDEX_INTANGUTCOMPONENTS 544
+#define PROP_INDEX_INKHITANSMALLSCRIPT 545
+#define PROP_INDEX_INTANGUTSUPPLEMENT 546
+#define PROP_INDEX_INKANAEXTENDEDB 547
+#define PROP_INDEX_INKANASUPPLEMENT 548
+#define PROP_INDEX_INKANAEXTENDEDA 549
+#define PROP_INDEX_INSMALLKANAEXTENSION 550
+#define PROP_INDEX_INNUSHU 551
+#define PROP_INDEX_INDUPLOYAN 552
+#define PROP_INDEX_INSHORTHANDFORMATCONTROLS 553
+#define PROP_INDEX_INZNAMENNYMUSICALNOTATION 554
+#define PROP_INDEX_INBYZANTINEMUSICALSYMBOLS 555
+#define PROP_INDEX_INMUSICALSYMBOLS 556
+#define PROP_INDEX_INANCIENTGREEKMUSICALNOTATION 557
+#define PROP_INDEX_INKAKTOVIKNUMERALS 558
+#define PROP_INDEX_INMAYANNUMERALS 559
+#define PROP_INDEX_INTAIXUANJINGSYMBOLS 560
+#define PROP_INDEX_INCOUNTINGRODNUMERALS 561
+#define PROP_INDEX_INMATHEMATICALALPHANUMERICSYMBOLS 562
+#define PROP_INDEX_INSUTTONSIGNWRITING 563
+#define PROP_INDEX_INLATINEXTENDEDG 564
+#define PROP_INDEX_INGLAGOLITICSUPPLEMENT 565
+#define PROP_INDEX_INCYRILLICEXTENDEDD 566
+#define PROP_INDEX_INNYIAKENGPUACHUEHMONG 567
+#define PROP_INDEX_INTOTO 568
+#define PROP_INDEX_INWANCHO 569
+#define PROP_INDEX_INNAGMUNDARI 570
+#define PROP_INDEX_INETHIOPICEXTENDEDB 571
+#define PROP_INDEX_INMENDEKIKAKUI 572
+#define PROP_INDEX_INADLAM 573
+#define PROP_INDEX_ININDICSIYAQNUMBERS 574
+#define PROP_INDEX_INOTTOMANSIYAQNUMBERS 575
+#define PROP_INDEX_INARABICMATHEMATICALALPHABETICSYMBOLS 576
+#define PROP_INDEX_INMAHJONGTILES 577
+#define PROP_INDEX_INDOMINOTILES 578
+#define PROP_INDEX_INPLAYINGCARDS 579
+#define PROP_INDEX_INENCLOSEDALPHANUMERICSUPPLEMENT 580
+#define PROP_INDEX_INENCLOSEDIDEOGRAPHICSUPPLEMENT 581
+#define PROP_INDEX_INMISCELLANEOUSSYMBOLSANDPICTOGRAPHS 582
+#define PROP_INDEX_INEMOTICONS 583
+#define PROP_INDEX_INORNAMENTALDINGBATS 584
+#define PROP_INDEX_INTRANSPORTANDMAPSYMBOLS 585
+#define PROP_INDEX_INALCHEMICALSYMBOLS 586
+#define PROP_INDEX_INGEOMETRICSHAPESEXTENDED 587
+#define PROP_INDEX_INSUPPLEMENTALARROWSC 588
+#define PROP_INDEX_INSUPPLEMENTALSYMBOLSANDPICTOGRAPHS 589
+#define PROP_INDEX_INCHESSSYMBOLS 590
+#define PROP_INDEX_INSYMBOLSANDPICTOGRAPHSEXTENDEDA 591
+#define PROP_INDEX_INSYMBOLSFORLEGACYCOMPUTING 592
+#define PROP_INDEX_INCJKUNIFIEDIDEOGRAPHSEXTENSIONB 593
+#define PROP_INDEX_INCJKUNIFIEDIDEOGRAPHSEXTENSIONC 594
+#define PROP_INDEX_INCJKUNIFIEDIDEOGRAPHSEXTENSIOND 595
+#define PROP_INDEX_INCJKUNIFIEDIDEOGRAPHSEXTENSIONE 596
+#define PROP_INDEX_INCJKUNIFIEDIDEOGRAPHSEXTENSIONF 597
+#define PROP_INDEX_INCJKCOMPATIBILITYIDEOGRAPHSSUPPLEMENT 598
+#define PROP_INDEX_INCJKUNIFIEDIDEOGRAPHSEXTENSIONG 599
+#define PROP_INDEX_INCJKUNIFIEDIDEOGRAPHSEXTENSIONH 600
+#define PROP_INDEX_INTAGS 601
+#define PROP_INDEX_INVARIATIONSELECTORSSUPPLEMENT 602
+#define PROP_INDEX_INSUPPLEMENTARYPRIVATEUSEAREAA 603
+#define PROP_INDEX_INSUPPLEMENTARYPRIVATEUSEAREAB 604
+#define PROP_INDEX_INNOBLOCK 605
