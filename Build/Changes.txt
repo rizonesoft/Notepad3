@@ -34,13 +34,17 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.930.(build_#) (2022-09-30)
+Current BETA/RC Version 5.22.1018.(build_#) (2022-10-18)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[1018.1]- Add example for tinyexpr in Modify Lines dialog.
+[1018.1]- Add option to auto-load most recent file from file history.
+[1018.1]- Add sourcecode for experimental version of tinyexpr CPP.
+[1018.1]- Change History Marker: color configuration.
 [.901.1]- Menu (View) Settings for "Change History" feature.
 [.830.1]- Persistent settings for "Document Read-Only Mode".
 [.830.1]- Add Change History Marker (by Scintilla v5.3.0).
@@ -58,6 +62,13 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[1018.1]- Simplify WordList Set according to (https://github.com/ScintillaOrg/lexilla/issues/103).
+[1018.1]- Caret style: allow std caret bar width up to max(20) and define alpha transparency (not below 20).
+[1018.1]- "Modify Lines" feature (using tinyexpr) - fixes and optimizations.
+[1018.1]- Alow "tinyexpr" within ${...} specification, using L, I, N as expression variables.
+[1018.1]- "Modify Lines..." feature (using tinyexpr) - add error message.
+[1018.1]- More powerful "Modify Lines..." feature (using tinyexpr).
+[1018.1]- "Modify Lines..." : make WideChar (Unicode) aware.
 [.926.1]- Source code formatting.
 [.926.1]- Replace old logo "rizonesoft.bmp" by new layout.
 [.831.1]- Enhancements for Change History Marker.
@@ -92,16 +103,20 @@ CHANGES:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.830.1]- Update Scintilla Library (SCI) version 5.3.0 (2022-08-27).
-[.830.1]- Update Lexilla Library (LEX) version 5.1.9 (2022-08-27).
-[.829.1]- Update Oniguruma Regex (ONI) engine version 6.9.8 (2022-08-28).
-[1201.1]- Update grepWinNP3 (GRE) version 2.1.9.41 (2021-11-30).
+[1018.1]- Update grepWinNP3 (GRE) version 2.1.11.42 (2022-10-14).
+[1018.1]- Update Scintilla Library (SCI) version 5.3.1 (2022-10-12).
+[1018.1]- Update Lexilla Library (LEX) version 5.2.0 (2022-10-12).
+[1018.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2022-09-06).
 [.713.1]- Update MiniPath (MIN) version 1.0.2.181 (2020-07-13).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1018.1]- Resizing control (files as binary), minor layout adjustments (GRE).
+[1018.1]- Fixed Text box for longest text length ("el-GR") + correction typo (GRE).
+[1018.1]- Avoid horizontal line scrolling on File Revert (F5).
+[1018.1]- "Modify Lines" feature - correct computation of field width for tinyexpr results.
 [.930.1]- Win10/11 build number to name mapping.
 [.928.1]- Titlebar update on change.
 [.926.1]- Margin handling (context, bookmarks).
