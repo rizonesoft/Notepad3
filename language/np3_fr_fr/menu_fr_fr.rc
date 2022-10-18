@@ -492,6 +492,7 @@ BEGIN
             MENUITEM "Se Souvenir des F&ichiers Récents",               IDM_SET_NOSAVERECENT
             MENUITEM "Conser&ver la Position du Curseur",               IDM_SET_NOPRESERVECARET
             MENUITEM "Se Souvenir des Chaînes R&echerchées",            IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Auto-charger le fichier récent",                 IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "F&enêtre"
         BEGIN

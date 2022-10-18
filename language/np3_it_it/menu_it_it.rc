@@ -492,6 +492,7 @@ BEGIN
             MENUITEM "Ricorda &file recenti",             IDM_SET_NOSAVERECENT
             MENUITEM "Ricorda posizione del c&ursore",    IDM_SET_NOPRESERVECARET
             MENUITEM "Ricorda argomenti della &Ricerca",  IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "&Finestra"
         BEGIN

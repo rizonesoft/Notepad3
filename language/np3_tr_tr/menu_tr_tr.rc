@@ -492,6 +492,7 @@ BEGIN
             MENUITEM "&Son kullanılan dosyalar hatırlansın",          IDM_SET_NOSAVERECENT
             MENUITEM "İ&mleç konumu hatırlansın",                     IDM_SET_NOPRESERVECARET
             MENUITEM "&Arama modeli hatırlansın",                     IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "P&encere"
         BEGIN

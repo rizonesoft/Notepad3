@@ -492,6 +492,7 @@ BEGIN
             MENUITEM "&Onthou Onlangse Lêers",              IDM_SET_NOSAVERECENT
             MENUITEM "Bewaar &Caret Posisie",               IDM_SET_NOPRESERVECARET
             MENUITEM "On&thou Soekpatroon",                 IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "&Venster"
         BEGIN

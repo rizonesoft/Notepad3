@@ -492,6 +492,7 @@ BEGIN
             MENUITEM "Сохранять историю открытых &файлов",  IDM_SET_NOSAVERECENT
             MENUITEM "Восстанавливать положение &каретки",  IDM_SET_NOPRESERVECARET
             MENUITEM "Запоминать поисковые &запросы",       IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "&Окно"
         BEGIN

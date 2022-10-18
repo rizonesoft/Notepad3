@@ -492,6 +492,7 @@ BEGIN
             MENUITEM "हाल की फ़ाइल स्मरण रखें (&R)",      IDM_SET_NOSAVERECENT
             MENUITEM "कैरट स्थान सुरक्षित करें (&C)",    IDM_SET_NOPRESERVECARET
             MENUITEM "खोज स्वरूप याद रखें (&S)",    IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "विंडो (&I)"
         BEGIN

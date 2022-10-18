@@ -492,6 +492,7 @@ BEGIN
             MENUITEM "&Naposledy použité súbory",           IDM_SET_NOSAVERECENT
             MENUITEM "Pozíciu &okna",                       IDM_SET_NOPRESERVECARET
             MENUITEM "Pozíciu &kurzora",                    IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "&Okno"
         BEGIN

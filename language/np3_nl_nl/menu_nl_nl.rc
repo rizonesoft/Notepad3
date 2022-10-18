@@ -492,6 +492,7 @@ BEGIN
             MENUITEM "&Recente bestanden",                          IDM_SET_NOSAVERECENT
             MENUITEM "Cursor&positie",                              IDM_SET_NOPRESERVECARET
             MENUITEM "&Zoekpatroon",                                IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "&Venster"
         BEGIN

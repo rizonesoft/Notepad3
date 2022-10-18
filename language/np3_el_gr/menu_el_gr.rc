@@ -492,6 +492,7 @@ BEGIN
             MENUITEM "Απομνημόνευση &πρόσφατων αρχείων",     IDM_SET_NOSAVERECENT
             MENUITEM "Απομνημόνευση θέσης &δρομέα",          IDM_SET_NOPRESERVECARET
             MENUITEM "Απομνημόνευση &μοτίβου αναζήτησης",    IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "Παρά&θυρο"
         BEGIN
