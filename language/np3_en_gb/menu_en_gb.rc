@@ -492,6 +492,7 @@ BEGIN
             MENUITEM "Remember &Recent Files",      IDM_SET_NOSAVERECENT
             MENUITEM "Preserve &Caret Position",    IDM_SET_NOPRESERVECARET
             MENUITEM "Remember &Search Pattern",    IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "W&indow"
         BEGIN

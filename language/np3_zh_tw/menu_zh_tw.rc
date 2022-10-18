@@ -492,6 +492,7 @@ BEGIN
             MENUITEM "記憶最近使用的檔案(&R)",                 IDM_SET_NOSAVERECENT
             MENUITEM "記憶插入游標位置(&C)",                   IDM_SET_NOPRESERVECARET
             MENUITEM "記憶查詢方式(&S)",                       IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "視窗(&I)"
         BEGIN

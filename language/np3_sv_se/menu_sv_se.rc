@@ -492,6 +492,7 @@ BEGIN
             MENUITEM "Kom ihåg senaste filer",                      IDM_SET_NOSAVERECENT
             MENUITEM "Bevara markörposition",                       IDM_SET_NOPRESERVECARET
             MENUITEM "Kom ihåg sökmönster",                         IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "Fönster"
         BEGIN

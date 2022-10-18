@@ -492,6 +492,7 @@ BEGIN
             MENUITEM "Zapamiętaj ostatnie pliki",                   IDM_SET_NOSAVERECENT
             MENUITEM "Zachowaj pozycję znaku wstawienia",           IDM_SET_NOPRESERVECARET
             MENUITEM "Zapamiętaj wzór wyszukiwania",                IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "&Okno"
         BEGIN

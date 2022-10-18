@@ -492,6 +492,7 @@ BEGIN
             MENUITEM "&Legutóbbi fájlokra emlékezzen",  IDM_SET_NOSAVERECENT
             MENUITEM "&Őrizze meg a kurzor pozícióját", IDM_SET_NOPRESERVECARET
             MENUITEM "&Keresési mintákre emlékezzen",   IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "&Ablak"
         BEGIN

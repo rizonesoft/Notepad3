@@ -492,6 +492,7 @@ BEGIN
             MENUITEM "&Recordar archivos recientes",         IDM_SET_NOSAVERECENT
             MENUITEM "&Preservar la posición de caret",      IDM_SET_NOPRESERVECARET
             MENUITEM "Recordar los &argumentos de búsqueda", IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Auto-carga de archivo reciente",      IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "&Ventana"
         BEGIN
