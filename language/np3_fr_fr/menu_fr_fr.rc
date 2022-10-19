@@ -487,16 +487,16 @@ BEGIN
         MENUITEM "Enregistrer &Avant d'Exécuter les Outils",            IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Calculer des Mini-E&xpressions",                      IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
-        POPUP "Se Sou&venir"
+        POPUP "Se sou&venir"
         BEGIN
-            MENUITEM "Se Souvenir des F&ichiers Récents",               IDM_SET_NOSAVERECENT
-            MENUITEM "Conser&ver la Position du Curseur",               IDM_SET_NOPRESERVECARET
-            MENUITEM "Se Souvenir des Chaînes R&echerchées",            IDM_SET_NOSAVEFINDREPL
-            MENUITEM "&Auto-charger le fichier récent",                 IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "Se souvenir des f&ichiers récents",               IDM_SET_NOSAVERECENT
+            MENUITEM "Conser&ver la position du curseur",               IDM_SET_NOPRESERVECARET
+            MENUITEM "Se souvenir des chaînes r&echerchées",            IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Auto-charger le fichier le plus récent",         IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "F&enêtre"
         BEGIN
-            POPUP "Affichage du &Titre de la Fenêtre"
+            POPUP "Affichage du &titre de la fenêtre"
             BEGIN
                 MENUITEM "N&om du Fichier Seul",                        IDM_SET_SHOWFILENAMEONLY
                 MENUITEM "Nom du Fichier et &Dossier",                  IDM_SET_SHOWFILENAMEFIRST
