@@ -385,6 +385,7 @@ extern "C" bool OpenSettingsFile(LPCSTR fctname)
 //
 static inline void popCheckStackHead(LPCSTR fctname)
 {
+    UNREFERENCED_PARAMETER(fctname); // NDEBUG mode
     iniOpen_t* pOpenBy = NULL;
     STACK_POP(s_pOpenStackHead, pOpenBy);
     assert(StringCchCompareXA(fctname, pOpenBy->fctname) == 0);
