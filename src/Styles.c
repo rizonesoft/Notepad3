@@ -548,7 +548,7 @@ bool Style_DynamicThemesMenuCmd(int cmd)
                 }
             }
         } else if (Path_IsExistingFile(Theme_Files[Globals.uCurrentThemeIndex].hStyleFilePath)) {
-            Style_ExportToFile(Theme_Files[Globals.uCurrentThemeIndex].hStyleFilePath, false);
+            Style_ExportToFile(Theme_Files[Globals.uCurrentThemeIndex].hStyleFilePath, true);
         }
     }
 
@@ -725,7 +725,7 @@ bool Style_Import(HWND hwnd)
 //
 static void _LoadLexerFileExtensions()
 {
-    if (OpenSettingsFile(L"_LoadLexerFileExtensions")) {
+    if (OpenSettingsFile(__func__)) {
 
         for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); iLexer++) {
 
@@ -758,7 +758,7 @@ static void _LoadLexerFileExtensions()
             }
         }
 
-        CloseSettingsFile(L"_LoadLexerFileExtensions", false); // read only
+        CloseSettingsFile(__func__, false); // read only
     }
 }
 
@@ -933,10 +933,10 @@ bool Style_ImportFromFile(const HPATHL hpath)
     bool const bHaveFileResource = Path_IsNotEmpty(hpath);
     bool const bIsStdIniFile = bHaveFileResource ? (Path_StrgComparePath(hpath, Paths.IniFile, Paths.ModuleDirectory) == 0) : false;
 
-    bool result = bIsStdIniFile ? OpenSettingsFile(L"Style_ImportFromFile") : (bHaveFileResource ? LoadIniFileCache(hpath) : true);
+    bool result = bIsStdIniFile ? OpenSettingsFile(__func__) : (bHaveFileResource ? LoadIniFileCache(hpath) : true);
     if (result) {
         _ReadFromIniCache();
-        result = bIsStdIniFile ? CloseSettingsFile(L"Style_ImportFromFile", false) /* import only */ : (bHaveFileResource ? ResetIniFileCache() : true);
+        result = bIsStdIniFile ? !CloseSettingsFile(__func__, false) /* (!)import only */ : (bHaveFileResource ? ResetIniFileCache() : true);
     }
     return result;
 }
@@ -1108,10 +1108,10 @@ bool Style_ToIniSection(bool bForceAll)
 
         LPCWSTR const Lexer_Section = g_pLexArray[iLexer]->pszName;
 
-        unsigned i = 0;
-        while (g_pLexArray[iLexer]->Styles[i].iStyle != -1) {
+        unsigned idx = 0;
+        while (g_pLexArray[iLexer]->Styles[idx].iStyle != -1) {
 
-            LPCWSTR const pszKeyName = g_pLexArray[iLexer]->Styles[i].pszName;
+            LPCWSTR const pszKeyName = g_pLexArray[iLexer]->Styles[idx].pszName;
 
             // normalize values for comparison
             wchCurrentStyle[0] = L'\0';
@@ -1120,11 +1120,11 @@ bool Style_ToIniSection(bool bForceAll)
             Style_CopyStyles_IfNotDefined(wchCurrentStyle, wchDefaultStyle, COUNTOF(wchDefaultStyle));
 
             wchCurrentStyle[0] = L'\0';
-            LPCWSTR const pszValue = g_pLexArray[iLexer]->Styles[i].szValue;
+            LPCWSTR const pszValue = g_pLexArray[iLexer]->Styles[idx].szValue;
             Style_CopyStyles_IfNotDefined(pszValue, wchCurrentStyle, COUNTOF(wchCurrentStyle));
 
             if (bForceAll || (StringCchCompareX(wchCurrentStyle, wchDefaultStyle) != 0)) {
-                if (bForceAll || StrIsNotEmpty(wchCurrentStyle)) {
+                if (StrIsNotEmpty(wchCurrentStyle)) {
                     IniSectionSetString(Lexer_Section, pszKeyName, wchCurrentStyle);
                 } else {
                     IniSectionDelete(Lexer_Section, pszKeyName, false);
@@ -1132,7 +1132,7 @@ bool Style_ToIniSection(bool bForceAll)
             } else {
                 IniSectionDelete(Lexer_Section, pszKeyName, false);
             }
-            ++i;
+            ++idx;
         }
     }
 
@@ -1164,10 +1164,10 @@ bool Style_ExportToFile(const HPATHL hpath, bool bForceAll)
     // special handling of standard .ini-file
     bool ok = false;
     if (bIsStdIniFile) {
-        if (OpenSettingsFile(L"Style_ExportToFile")) {
+        if (OpenSettingsFile(__func__)) {
             Style_ToIniSection(bForceAll);
             Style_FileExtToIniSection(bForceAll);
-            ok = CloseSettingsFile(L"Style_ExportToFile", true);
+            ok = CloseSettingsFile(__func__, true);
         }
     } else {
         HPATHL hpth_tmp = Path_Copy(hpath);
