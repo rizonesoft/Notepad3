@@ -303,7 +303,7 @@ Opciones:\r\n\
 /e\tCodificación de la fuente del archivo.\r\n\
 /g\tSaltar a la posición especificada (/g -1 fin de archivo).\r\n\
 /m\tCoincidencia de texto especificado (/m- último, /mr regex,\r\n\t/mb backslash).\r\n\
-/l\tAuto-recargar archivos modificados.\r\n\
+/l\tAuto recargar archivos modificados.\r\n\
 /q\tForzar la creación de nuevos archivos sin aviso.\r\n\
 /s\tSeleccione el esquema de sintaxis especificado.\r\n\
 /d\tSeleccione el esquema de texto por defecto.\r\n\
