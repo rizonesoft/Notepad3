@@ -103,8 +103,8 @@ BEGIN
     CONTROL         "Avec &Joker",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
     CONTROL         "Mode transparent quand perte de focus",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,134,10
-    DEFPUSHBUTTON   "Chercher &suivant",IDOK,211,7,55,14
-    PUSHBUTTON      "Chercher &précéd.",IDC_FINDPREV,211,24,55,14
+    DEFPUSHBUTTON   "&Suivant",IDOK,211,7,55,14
+    PUSHBUTTON      "&Précédent.",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Fermer",IDCANCEL,211,99,55,14
     CONTROL         "<a>Aller à Remplacer (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,120,103,84,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
@@ -137,8 +137,8 @@ BEGIN
     CONTROL         "Avec &Joker",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
     CONTROL         "Mode transparent quand perte de focus",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,134,10
-    DEFPUSHBUTTON   "Chercher &suivant",IDOK,211,7,55,14
-    PUSHBUTTON      "Chercher &précéd.",IDC_FINDPREV,211,23,55,14
+    DEFPUSHBUTTON   "&Suivant",IDOK,211,7,55,14
+    PUSHBUTTON      "&Précédent",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "Remp&lacer",IDC_REPLACE,211,43,55,14
     PUSHBUTTON      "Dans sélectio&n",IDC_REPLACEINSEL,211,59,55,14
     PUSHBUTTON      "Rempl&acer tous",IDC_REPLACEALL,211,75,55,14
@@ -476,12 +476,12 @@ BEGIN
     GROUPBOX        "Phrase secrète", IDC_STATIC, 7, 7, 297, 108
     DEFPUSHBUTTON   "OK",IDOK,245,98,50,14
     PUSHBUTTON      "Annuler",IDCANCEL,184,98,50,14
-    CONTROL         "Définir une Nouvelle Clé Principale",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,120,10
+    CONTROL         "Définir une Nouvelle clé principale",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,120,10
     EDITTEXT        IDC_PWD_EDIT1,17,35,276,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
-    LTEXT           "Clé Principale Optionnelle :",IDC_STATIC2,17,61,90,10,NOT WS_GROUP
+    LTEXT           "Clé principale optionnelle :",IDC_STATIC2,17,61,90,10,NOT WS_GROUP
     CONTROL         "Encrypter avec une phrase secrète",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,128,10
-    CONTROL         "Réutiliser la Clé Principale",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
+    CONTROL         "Réutiliser la clé principale",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
     CONTROL         "Montrer les phrases secrètes",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,95,10
 END
 
@@ -494,8 +494,8 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,233,58,50,14
     PUSHBUTTON      "Annuler",IDCANCEL,175,58,50,14
     EDITTEXT        IDC_PWD_EDIT3,16,23,267,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
-    CONTROL         "Décrypter à l'aide de la Clé Principale",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,153,40,137,10
-    LTEXT           "Ce fichier a une Clé Principale",IDC_PWD_STATMPW,16,41,129,11,NOT WS_GROUP
+    CONTROL         "Décrypter à l'aide de la clé principale",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,153,40,137,10
+    LTEXT           "Ce fichier a une clé principale",IDC_PWD_STATMPW,16,41,129,11,NOT WS_GROUP
     CONTROL         "Montrer la phrase secrète",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,95,10
 END
 
@@ -526,12 +526,12 @@ BEGIN
     LTEXT           "Numéro de ligne du document.",IDC_STATIC3,57,72,94,8
     LTEXT           "${N}",IDC_MODLNS_CNTLN1_CANONIC,7,82,15,8
     LTEXT           "${0N}",IDC_MODLNS_CNTLN1_ZEROFLD,30,82,19,8
-    LTEXT           "Numéros Continus.",IDC_STATIC4,57,82,66,8
+    LTEXT           "Numéros continus.",IDC_STATIC4,57,82,66,8
     LTEXT           "${I}",IDC_MODLNS_CNTLN0_CANONIC,7,92,13,8
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,17,8
-    LTEXT           "Numéros Continus (base zéro).",IDC_STATIC5,57,92,109,8
+    LTEXT           "Numéros continus (base zéro).",IDC_STATIC5,57,92,109,8
     LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,30,8
-    LTEXT           "${<expr>} définit formules mathématiques.",IDC_STATIC5,57,102,175,8
+    LTEXT           "${<expr>} définit formules mathémat.",IDC_STATIC5,57,102,175,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
