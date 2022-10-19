@@ -492,7 +492,7 @@ BEGIN
             MENUITEM "Lembrar A&rquivos Recentes",     IDM_SET_NOSAVERECENT
             MENUITEM "Preser&var Posição do Cursor",   IDM_SET_NOPRESERVECARET
             MENUITEM "Lembrar Padrão de B&usca",       IDM_SET_NOSAVEFINDREPL
-            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "&Carregar arquivo recente automaticamente",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "J&anela"
         BEGIN
