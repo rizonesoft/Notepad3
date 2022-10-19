@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.1018.(build_#) (2022-10-18)
+Current BETA/RC Version 5.22.1019.(build_#) (2022-10-19)
 ========================================================
 
 --------------------------------------------------------
@@ -113,6 +113,8 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1019.1]- "grepWinNP3" minor layout adjustments (GRE).
+[1019.1]- Resizing the "Open Recent File" dialog box.
 [1018.1]- Resizing control (files as binary), minor layout adjustments (GRE).
 [1018.1]- Fixed Text box for longest text length ("el-GR") + correction typo (GRE).
 [1018.1]- Avoid horizontal line scrolling on File Revert (F5).
