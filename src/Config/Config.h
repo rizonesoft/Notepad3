@@ -36,8 +36,8 @@ bool SaveWindowPositionSettings(bool bClearSettings);
 bool SaveAllSettings(bool bForceSaveSettings);
 void CmdSaveSettingsNow();
 
-bool OpenSettingsFile(LPCWSTR fctname);
-bool CloseSettingsFile(LPCWSTR fctname, bool bSaveSettings);
+bool OpenSettingsFile(LPCSTR fctname);
+bool CloseSettingsFile(LPCSTR fctname, bool bSaveSettings);
 
 // ----------------------------------------------------------------------------
 
