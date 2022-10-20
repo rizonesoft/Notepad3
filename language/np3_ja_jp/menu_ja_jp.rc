@@ -312,7 +312,7 @@ BEGIN
             MENUITEM "単語や行を選択(&W)\tCtrl+Spc",                   IDM_EDIT_SELECTWORD
             MENUITEM "一致文字列すべてに複数カーソル(&A)\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "改行で「元に戻す」の履歴を区切る(&T)",                IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "「元に戻す」の履歴を改行で区切る(&T)",                IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "しおり(ブックマーク)(&K)"
@@ -377,7 +377,7 @@ BEGIN
         POPUP "単語出現マーカー(&k)"
         BEGIN
             MENUITEM "オン(&A)\tAlt+A",                       IDM_VIEW_MARKOCCUR_ONOFF
-            MENUITEM "しおりの余白も使用(&B)",                IDM_VIEW_MARKOCCUR_BOOKMARKS
+            MENUITEM "しおり用の余白も使用(&B)",                IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "単語一望モードを無効に(&V)",               IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -391,8 +391,8 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "行番号(&N)\tCtrl+Shift+N",                 IDM_VIEW_LINENUMBERS
-        MENUITEM "しおりの余白(&M)\tCtrl+Shift+M",       IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "変更履歴の余白",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "しおり用の余白(&M)\tCtrl+Shift+M",       IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "変更履歴用の余白",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "折りたたみ(&F)"
         BEGIN
@@ -492,7 +492,7 @@ BEGIN
             MENUITEM "保存/最近使ったファイルの履歴(&R)",         IDM_SET_NOSAVERECENT
             MENUITEM "保存/カーソル位置(文書ごと)(&C)",          IDM_SET_NOPRESERVECARET
             MENUITEM "保存/検索文字列(&S)",                  IDM_SET_NOSAVEFINDREPL
-            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "最近のファイルを自動読込(&A)",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "ウィンドウ(&I)"
         BEGIN
@@ -592,7 +592,7 @@ BEGIN
         MENUITEM "表示/コード折りたたみ",                    IDM_VIEW_FOLDING
         MENUITEM "表示/行番号",                               IDM_VIEW_LINENUMBERS
         MENUITEM "表示/しおりの余白",                     IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "表示/変更履歴",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "表示/変更履歴用の余白 ",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN

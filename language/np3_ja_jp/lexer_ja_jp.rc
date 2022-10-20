@@ -499,14 +499,14 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_CH_MODIFIED     "変更履歴の目印 修正"
+    IDS_LEX_STD_CH_MODIFIED     "変更履歴の目印 修正済み"
     IDS_LEX_STD_CH_SAVED        "変更履歴の目印 保存済み"
-    IDS_LEX_STD_CH_REV_TO_MOD   "変更履歴の目印 Reverted to Modified"
-    IDS_LEX_STD_CH_REV_TO_ORG   "変更履歴の目印 元に戻した"
-    IDS_LEX_2ND_CH_MODIFIED     "第2 変更履歴の目印 修正"
+    IDS_LEX_STD_CH_REV_TO_MOD   "変更履歴の目印 修正済みへと戻した"
+    IDS_LEX_STD_CH_REV_TO_ORG   "変更履歴の目印 原文へと戻した"
+    IDS_LEX_2ND_CH_MODIFIED     "第2 変更履歴の目印 修正済み"
     IDS_LEX_2ND_CH_SAVED        "第2 変更履歴の目印 保存済み"
-    IDS_LEX_2ND_CH_REV_TO_MOD   "第2 変更履歴の目印 Reverted to Modified"
-    IDS_LEX_2ND_CH_REV_TO_ORG   "第2 変更履歴の目印 元に戻した"
+    IDS_LEX_2ND_CH_REV_TO_MOD   "第2 変更履歴の目印 修正済みへと戻した"
+    IDS_LEX_2ND_CH_REV_TO_ORG   "第2 変更履歴の目印 原文へと戻した"
 END
 
 STRINGTABLE
