@@ -221,6 +221,8 @@ BEGIN
     IDS_MUI_PRINT_PAGENUM   "Sida %i"
     IDS_MUI_WARN_STYLE_RESET
                             "Denna åtgård kommer att återställa stilen till förvalt färgläge och ändra aktiv temafail config.ini!"
+    IDS_MUI_ASK_INSTANCE_EXISTS
+                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
 END
 
 STRINGTABLE

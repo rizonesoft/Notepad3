@@ -221,6 +221,8 @@ BEGIN
     IDS_MUI_PRINT_PAGENUM   "%i. sayfa"
     IDS_MUI_WARN_STYLE_RESET
                             "Bu işlem, biçemi istenilen renk kipinin fabrika varsayılanlarına sıfırlar ve etkin tema dosyasını standart config.ini ile değiştirir.!"
+    IDS_MUI_ASK_INSTANCE_EXISTS
+                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
 END
 
 STRINGTABLE

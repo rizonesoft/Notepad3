@@ -221,6 +221,8 @@ BEGIN
     IDS_MUI_PRINT_PAGENUM   "Старонка %i"
     IDS_MUI_WARN_STYLE_RESET
                             "Гэта дзеянне скіне стыль да завадскіх налад у вызначаным колеравым рэжыме і пераключыць актыўную тэму файла на прадвызначаную ў наладах .ini!"
+    IDS_MUI_ASK_INSTANCE_EXISTS
+                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
 END
 
 STRINGTABLE

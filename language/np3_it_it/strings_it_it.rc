@@ -221,6 +221,8 @@ BEGIN
     IDS_MUI_PRINT_PAGENUM   "Pagina %i"
     IDS_MUI_WARN_STYLE_RESET
                             "Questa azione ripristina le impostazioni di fabbrica della modalità colore desiderata, e attiverà il file .ini della configurazione standard!"
+    IDS_MUI_ASK_INSTANCE_EXISTS
+                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
 END
 
 STRINGTABLE

@@ -221,6 +221,8 @@ BEGIN
     IDS_MUI_PRINT_PAGENUM   "Strona %i"
     IDS_MUI_WARN_STYLE_RESET
                             "Ta czynność zresetuje styl do domyślnych ustawień fabrycznych żądanego trybu kolorów i przełączy aktywny plik motywu do standardowego config.ini!"
+    IDS_MUI_ASK_INSTANCE_EXISTS
+                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
 END
 
 STRINGTABLE

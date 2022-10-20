@@ -221,6 +221,8 @@ BEGIN
     IDS_MUI_PRINT_PAGENUM   "Page %i"
     IDS_MUI_WARN_STYLE_RESET
                             "Cette action réinitialisera le style aux paramètres d'usine du mode de couleur souhaité et basculera le fichier de thème actif vers la configuration standard .ini !"
+    IDS_MUI_ASK_INSTANCE_EXISTS
+                            "Une seule instance par fichier :\n\nDéfinir le focus sur cette instance ?"
 END
 
 STRINGTABLE

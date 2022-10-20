@@ -221,6 +221,8 @@ BEGIN
     IDS_MUI_PRINT_PAGENUM   "Bladsy %i"
     IDS_MUI_WARN_STYLE_RESET
                             "Hierdie aksie sal die styl terugstel na die fabrieksinstellings van die gewenste kleurmodus en die aktiewe temalêer oorskakel na die standaard config .ini!"
+    IDS_MUI_ASK_INSTANCE_EXISTS
+                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
 END
 
 STRINGTABLE
