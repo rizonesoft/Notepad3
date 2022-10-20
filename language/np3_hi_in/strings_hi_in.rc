@@ -221,6 +221,8 @@ BEGIN
     IDS_MUI_PRINT_PAGENUM   "प्रष्ठ %i"
     IDS_MUI_WARN_STYLE_RESET
                             "यह क्रिया शैली को डिफ़ॉल्ट स्वरूप के वांछित रंग प्रकार में वापस ले आएगी और चालू थीम को मानक कॉन्फिग .ini में बदल देगी!"
+    IDS_MUI_ASK_INSTANCE_EXISTS
+                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
 END
 
 STRINGTABLE

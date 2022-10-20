@@ -221,6 +221,8 @@ BEGIN
     IDS_MUI_PRINT_PAGENUM   "페이지 %i"
     IDS_MUI_WARN_STYLE_RESET
                             "이 작업은 스타일을 원하는 색상 모드의 출고시 기본값으로 재설정하고 활성 테마 파일을 표준 config .ini로 전환합니다!"
+    IDS_MUI_ASK_INSTANCE_EXISTS
+                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
 END
 
 STRINGTABLE

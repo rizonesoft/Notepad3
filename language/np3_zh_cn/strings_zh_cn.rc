@@ -221,6 +221,8 @@ BEGIN
     IDS_MUI_PRINT_PAGENUM   "第 %i 页"
     IDS_MUI_WARN_STYLE_RESET
                             "该操作将会把颜色样式重置为出厂设置，并将活动的主题文件切换为标准的 .INI 配置文件。"
+    IDS_MUI_ASK_INSTANCE_EXISTS
+                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
 END
 
 STRINGTABLE

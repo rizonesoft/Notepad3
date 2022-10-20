@@ -221,6 +221,8 @@ BEGIN
     IDS_MUI_PRINT_PAGENUM   "%i ページ"
     IDS_MUI_WARN_STYLE_RESET
                             "この操作は、配色設定をそのカラーモードの初期値へと初期化し、テーマファイルを標準の .ini ファイルに切り替えます!"
+    IDS_MUI_ASK_INSTANCE_EXISTS
+                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
 END
 
 STRINGTABLE
