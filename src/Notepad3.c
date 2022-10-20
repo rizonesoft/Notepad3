@@ -579,12 +579,12 @@ static inline bool HasCurrentFileChanged() {
         // The current file has been removed
         if (IsFileDeletedFlagSet()) {
             return false;
-        } else {
-            SetEvent(s_hEventFileChangedExt);
-            SetEvent(s_hEventFileDeletedExt);
-            return true;
         }
-    } else if (IsFileDeletedFlagSet()) {
+        SetEvent(s_hEventFileChangedExt);
+        SetEvent(s_hEventFileDeletedExt);
+        return true;
+    }
+    if (IsFileDeletedFlagSet()) {
         // The current file has been restored
         ResetEvent(s_hEventFileDeletedExt);
     }
@@ -630,6 +630,7 @@ static LPWSTR                s_lpSchemeArg = NULL;
 static LPWSTR                s_lpOrigFileArg = NULL;
 
 static HPATHL                s_pthArgFilePath = NULL;
+static HPATHL                s_pthCheckFilePath = NULL;
 
 static cpi_enc_t             s_flagSetEncoding = CPI_NONE;
 static int                   s_flagSetEOLMode = 0;
@@ -821,6 +822,7 @@ static void _InitGlobals()
     s_hstrCurrentFindPattern = StrgCreate(NULL);
 
     s_pthArgFilePath = Path_Allocate(NULL);
+    s_pthCheckFilePath = Path_Allocate(NULL);
     
     // don't allow empty extensions settings => use default ext
     Style_InitFileExtensions();
@@ -929,6 +931,7 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     Path_Release(g_tchToolbarBitmap);
 
     Path_Release(s_pthArgFilePath);
+    Path_Release(s_pthCheckFilePath);
 
     StrgDestroy(s_hstrCurrentFindPattern);
     ThemesItems_Release();
@@ -1393,6 +1396,66 @@ WININFO GetWinInfoByFlag(const int flagsPos)
     return winfo;
 }
 
+
+//
+static BOOL CALLBACK _EnumWndProc(HWND hwnd, LPARAM lParam)
+{
+    BOOL  bContinue = TRUE;
+    WCHAR szClassName[64] = { L'\0' };
+
+    if (GetClassName(hwnd, szClassName, COUNTOF(szClassName))) {
+
+        if (StringCchCompareNIW(szClassName, COUNTOF(szClassName), s_wchWndClass, COUNTOF(s_wchWndClass)) == 0) {
+
+            DWORD const dwReuseLock = GetDlgItemInt(hwnd, IDC_REUSELOCK, NULL, FALSE);
+            if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) {
+
+                *(HWND*)lParam = hwnd;
+
+                if (IsWindowEnabled(hwnd)) {
+                    bContinue = FALSE;
+                }
+            }
+        }
+    }
+    return bContinue;
+}
+
+
+//=============================================================================
+//
+//  _EnumWndProc()s : find other Notepad3 windows
+//
+static BOOL CALLBACK _EnumWndProc2(HWND hwnd, LPARAM lParam)
+{
+    BOOL  bContinue = TRUE;
+    WCHAR szClassName[64] = { L'\0' };
+
+    if (GetClassName(hwnd, szClassName, COUNTOF(szClassName))) {
+
+        if (StringCchCompareNIW(szClassName, COUNTOF(szClassName), s_wchWndClass, COUNTOF(s_wchWndClass)) == 0) {
+
+            DWORD const dwReuseLock = GetDlgItemInt(hwnd, IDC_REUSELOCK, NULL, FALSE);
+            if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) {
+
+                if (IsWindowEnabled(hwnd)) {
+                    bContinue = FALSE;
+                }
+
+                WCHAR wchFileName[INTERNET_MAX_URL_LENGTH] = { L'\0' };
+                GetDlgItemText(hwnd, IDC_FILENAME, wchFileName, COUNTOF(wchFileName));
+
+                if (StringCchCompareXI(wchFileName, Path_Get(s_pthCheckFilePath)) == 0) {
+                    *(HWND*)lParam = hwnd;
+                }
+                else {
+                    bContinue = TRUE;
+                }
+            }
+        }
+    }
+    return bContinue;
+}
 
 //=============================================================================
 //
@@ -10743,6 +10806,21 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
 
     Path_NormalizeEx(hopen_file, Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
 
+    if (Path_StrgComparePathNormalized(hopen_file, Paths.CurrentFile) == 0) {
+        return false;
+    }
+    if (Flags.bSingleFileInstance) {
+        Path_Reset(s_pthCheckFilePath, Path_Get(hopen_file));
+        HWND hwnd = NULL;
+        EnumWindows(_EnumWndProc2, (LPARAM)&hwnd);
+        if (hwnd != NULL) {
+            if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, L"InfoInstanceExist", IDS_MUI_ASK_INSTANCE_EXISTS))) {
+                SetForegroundWindow(hwnd);
+            }
+            return false;
+        }
+    }
+
     // Ask to create a new file...
     if (!(fLoadFlags & FLF_Reload) && !Path_IsExistingFile(hopen_file)) {
         bool bCreateFile = s_flagQuietCreate;
@@ -11400,65 +11478,9 @@ int CountRunningInstances() {
 *
 ******************************************************************************/
 
-static BOOL CALLBACK _EnumWndProc(HWND hwnd, LPARAM lParam)
-{
-    BOOL  bContinue = TRUE;
-    WCHAR szClassName[64] = { L'\0' };
-
-    if (GetClassName(hwnd, szClassName, COUNTOF(szClassName))) {
-
-        if (StringCchCompareNIW(szClassName, COUNTOF(szClassName), s_wchWndClass, COUNTOF(s_wchWndClass)) == 0) {
-
-            DWORD const dwReuseLock = GetDlgItemInt(hwnd, IDC_REUSELOCK, NULL, FALSE);
-            if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) {
-
-                *(HWND*)lParam = hwnd;
-
-                if (IsWindowEnabled(hwnd)) {
-                    bContinue = FALSE;
-                }
-            }
-        }
-    }
-    return bContinue;
-}
-
-
-static BOOL CALLBACK _EnumWndProc2(HWND hwnd, LPARAM lParam)
-{
-    BOOL  bContinue = TRUE;
-    WCHAR szClassName[64] = { L'\0' };
-
-    if (GetClassName(hwnd, szClassName, COUNTOF(szClassName))) {
-
-        if (StringCchCompareNIW(szClassName, COUNTOF(szClassName), s_wchWndClass, COUNTOF(s_wchWndClass)) == 0) {
-
-            DWORD const dwReuseLock = GetDlgItemInt(hwnd, IDC_REUSELOCK, NULL, FALSE);
-            if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) {
-
-                if (IsWindowEnabled(hwnd)) {
-                    bContinue = FALSE;
-                }
-
-                WCHAR wchFileName[INTERNET_MAX_URL_LENGTH] = { L'\0' };
-                GetDlgItemText(hwnd, IDC_FILENAME, wchFileName, COUNTOF(wchFileName));
-
-                if (StringCchCompareXI(wchFileName, Path_Get(s_pthArgFilePath)) == 0) {
-                    *(HWND*)lParam = hwnd;
-                }
-                else {
-                    bContinue = TRUE;
-                }
-            }
-        }
-    }
-    return bContinue;
-}
-
-
 bool ActivatePrevInst()
 {
-    HWND hwnd = NULL;
+    HWND           hwnd = NULL;
     COPYDATASTRUCT cds = { 0 };
 
     if ((!Flags.bReuseWindow && !Flags.bSingleFileInstance) || s_flagStartAsTrayIcon || s_flagNewFromClipboard || s_flagPasteBoard) {
@@ -11469,6 +11491,7 @@ bool ActivatePrevInst()
 
         Path_NormalizeEx(s_pthArgFilePath, Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
 
+        Path_Reset(s_pthCheckFilePath, Path_Get(s_pthArgFilePath));
         EnumWindows(_EnumWndProc2,(LPARAM)&hwnd);
 
         if (hwnd != NULL) {

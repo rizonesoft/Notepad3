@@ -221,6 +221,8 @@ BEGIN
     IDS_MUI_PRINT_PAGENUM   "Seite %i"
     IDS_MUI_WARN_STYLE_RESET
                             "Diese Aktion wird die Stilanpassungen des Farb-Modes auf Fabrikeinstellungen zurücksetzen und die Schemakonfiguration auf Standard .ini wechseln!"
+    IDS_MUI_ASK_INSTANCE_EXISTS
+                            "Nur eine(1) Instanz pro Datei:\n\nDen Fokus auf diese Instanz legen?"
 END
 
 STRINGTABLE

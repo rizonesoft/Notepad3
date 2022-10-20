@@ -126,7 +126,7 @@ bool CanAccessPath(const HPATHL hpth, DWORD genericAccessRights)
     bool bRet = false;
     // check security tokens
     if (!::GetFileSecurityW(Path_Get(hpth), secInfo, NULL, 0, &length) && (ERROR_INSUFFICIENT_BUFFER == GetLastError())) {
-        PSECURITY_DESCRIPTOR const security = static_cast<PSECURITY_DESCRIPTOR>(AllocMem(length, HEAP_ZERO_MEMORY));
+        auto const security = static_cast<PSECURITY_DESCRIPTOR>(AllocMem(length, HEAP_ZERO_MEMORY));
         if (security && ::GetFileSecurityW(Path_Get(hpth), secInfo, security, length, &length)) {
             HANDLE hToken = NULL;
             if (::OpenProcessToken(::GetCurrentProcess(), TOKEN_IMPERSONATE | TOKEN_QUERY | TOKEN_DUPLICATE | STANDARD_RIGHTS_READ, &hToken)) {
@@ -352,7 +352,7 @@ static bool s_bIFCReadOnly = true;
 
 static inline void pushStackHead(LPCSTR fctname)
 {
-    iniOpen_t* pOpenBy = (iniOpen_t*)AllocMem(sizeof(iniOpen_t), HEAP_ZERO_MEMORY);
+    auto* pOpenBy = (iniOpen_t*)AllocMem(sizeof(iniOpen_t), HEAP_ZERO_MEMORY);
     if (pOpenBy) {
         StringCchCopyA(pOpenBy->fctname, COUNTOF(pOpenBy->fctname), fctname);
         STACK_PUSH(s_pOpenStackHead, pOpenBy);
@@ -370,12 +370,14 @@ extern "C" bool OpenSettingsFile(LPCSTR fctname)
             LoadIniFileCache(Paths.IniFile);
             s_bIFCReadOnly = true; 
         }
-        pushStackHead(fctname);
-
     } else {
         Globals.bCanSaveIniFile = false;
     }
-    return IsIniFileCached();
+    bool const bCached = IsIniFileCached();
+    if (bCached) {
+        pushStackHead(fctname);
+    }
+    return bCached;
 }
 
 
@@ -396,20 +398,18 @@ extern "C" bool CloseSettingsFile(LPCSTR fctname, bool bSaveSettings)
 {
     UNREFERENCED_PARAMETER(fctname);
 
+    if (!IsIniFileCached()) {
+        assert(STACK_EMPTY(s_pOpenStackHead));
+        return false;
+    }
+    assert(!STACK_EMPTY(s_pOpenStackHead));
+    popCheckStackHead(fctname);
+
     if (Globals.bCanSaveIniFile) {
 
         if (bSaveSettings) {
             s_bIFCReadOnly = false;
         }
-        if (!IsIniFileCached()) {
-            assert(STACK_EMPTY(s_pOpenStackHead));
-            return false;
-        }
-        else {
-            assert(!STACK_EMPTY(s_pOpenStackHead));
-        }
-
-        popCheckStackHead(fctname);
 
         bool bSaved = false;
         if (STACK_EMPTY(s_pOpenStackHead)) {
@@ -419,10 +419,6 @@ extern "C" bool CloseSettingsFile(LPCSTR fctname, bool bSaveSettings)
             ResetIniFileCache();
         }
         return bSaved;
-    }
-    else {
-        popCheckStackHead(fctname);
-        ResetIniFileCache();
     }
     assert(STACK_EMPTY(s_pOpenStackHead));
     return false;
@@ -1147,7 +1143,7 @@ void LoadSettings()
 {
     CFG_VERSION const _ver = Path_IsEmpty(Paths.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
 
-    wchar_t* const pPathBuffer = (wchar_t*)AllocMem(PATHLONG_MAX_CCH * sizeof(wchar_t), HEAP_ZERO_MEMORY);
+    auto* const pPathBuffer = (wchar_t*)AllocMem(PATHLONG_MAX_CCH * sizeof(wchar_t), HEAP_ZERO_MEMORY);
 
     bool bDirtyFlag = false; // do we have to save the file on done
     
@@ -1371,8 +1367,8 @@ void LoadSettings()
     WCHAR cfgVerb[MICRO_BUFFER] = { L'\0' };
     Settings2.HyperlinkFileProtocolVerb[0] = L'\0';
     IniSectionGetStringNoQuotes(IniSecSettings2, L"HyperlinkFileProtocolVerb", L"", cfgVerb, COUNTOF(cfgVerb));
-    for (int i = 0; i < 7; ++i) {
-        if (StrStr(cfgVerb, allowedVerbs[i])) {
+    for (auto allowedVerb : allowedVerbs) {
+        if (StrStr(cfgVerb, allowedVerb)) {
             StringCchCopy(Settings2.HyperlinkFileProtocolVerb, COUNTOF(Settings2.HyperlinkFileProtocolVerb), cfgVerb);
             break;
         }
@@ -2362,7 +2358,7 @@ void CmdSaveSettingsNow()
 //
 LPMRULIST MRU_Create(LPCWSTR pszRegKey, int iFlags, int iSize)
 {
-    LPMRULIST pmru = (LPMRULIST)AllocMem(sizeof(MRULIST), HEAP_ZERO_MEMORY);
+    auto pmru = (LPMRULIST)AllocMem(sizeof(MRULIST), HEAP_ZERO_MEMORY);
     if (pmru) {
         pmru->szRegKey = pszRegKey;
         pmru->iFlags = iFlags;
@@ -2652,7 +2648,7 @@ bool MRU_Load(LPMRULIST pmru, bool bFileProps)
                     pmru->pszItems[n] = StrDup(tchItem);
 
                     StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
-                    int const iCP = (cpi_enc_t)IniSectionGetInt(RegKey_Section, tchName, 0);
+                    auto const iCP = (cpi_enc_t)IniSectionGetInt(RegKey_Section, tchName, 0);
                     pmru->iEncoding[n] = bFileProps ? (cpi_enc_t)Encoding_MapIniSetting(true, iCP) : 0;
 
                     StringCchPrintf(tchName, COUNTOF(tchName), L"POS%.2i", i + 1);
@@ -2697,7 +2693,7 @@ void MRU_Save(LPMRULIST pmru)
 
                     if (pmru->iEncoding[i] > 0) {
                         StringCchPrintf(tchName, COUNTOF(tchName), L"ENC%.2i", i + 1);
-                        int const iCP = (int)Encoding_MapIniSetting(false, (int)pmru->iEncoding[i]);
+                        auto const iCP = (int)Encoding_MapIniSetting(false, (int)pmru->iEncoding[i]);
                         IniSectionSetInt(RegKey_Section, tchName, iCP);
                     }
                     if (pmru->iCaretPos[i] >= 0) {
@@ -2815,13 +2811,12 @@ extern "C" bool EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText)
     if (SciCall_GetDocumentOptions() != docOptions) {
         // we have to create a new document with changed options
         return CreateNewDocument(lpstrText, lenText, docOptions);
+    }
+    if (!lpstrText || (lenText == 0)) {
+        SciCall_ClearAll();
     } else {
-        if (!lpstrText || (lenText == 0)) {
-            SciCall_ClearAll();
-        } else {
-            SciCall_TargetWholeDocument();
-            SciCall_ReplaceTarget(lenText, lpstrText);
-        }
+        SciCall_TargetWholeDocument();
+        SciCall_ReplaceTarget(lenText, lpstrText);
     }
     return true;
 }
