@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.1019.(build_#) (2022-10-19)
+Current BETA/RC Version 5.22.1020.(build_#) (2022-10-20)
 ========================================================
 
 --------------------------------------------------------
@@ -62,6 +62,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[1020.1]- Standard DarkMode Theme.
+[1020.1]- Minor adjustment of grepWinNP3's layout and correction of some strings (GRE).
 [1018.1]- Simplify WordList Set according to (https://github.com/ScintillaOrg/lexilla/issues/103).
 [1018.1]- Caret style: allow std caret bar width up to max(20) and define alpha transparency (not below 20).
 [1018.1]- "Modify Lines" feature (using tinyexpr) - fixes and optimizations.
@@ -113,6 +115,9 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1020.1]- Respect single file instance mode for internal file loading.
+[1020.1]- "unref" param in RELEASE mode.
+[1020.1]- DarkTheme handling.
 [1019.1]- "grepWinNP3" minor layout adjustments (GRE).
 [1019.1]- Resizing the "Open Recent File" dialog box.
 [1018.1]- Resizing control (files as binary), minor layout adjustments (GRE).
