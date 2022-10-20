@@ -230,9 +230,9 @@ BEGIN
     RTEXT           "CR+LF:",IDC_STATIC2,10,18,34,8
     RTEXT           "CR:",IDC_STATIC3,10,28,34,8
     RTEXT           "LF:",IDC_STATIC4,10,38,34,8
-    LTEXT           "%s 줄",IDC_EOL_SUM_CRLF,48,18,136,8
-    LTEXT           "%s 줄",IDC_EOL_SUM_CR,48,28,136,8
-    LTEXT           "%s 줄",IDC_EOL_SUM_LF,48,38,136,8
+    LTEXT           "%s줄",IDC_EOL_SUM_CRLF,48,18,136,8
+    LTEXT           "%s줄",IDC_EOL_SUM_CR,48,28,136,8
+    LTEXT           "%s줄",IDC_EOL_SUM_LF,48,38,136,8
     LTEXT           "줄 끝을 정규화하시겠습니까?(&D)",IDC_STATIC5,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "예(&Y)",IDOK,138,63,50,14
@@ -260,10 +260,10 @@ CAPTION "최근 파일 열기"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
-    CONTROL         "종료시 최근 파일 목록을 저장(&S).",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,123,10
+    CONTROL         "종료시 최근 파일 목록을 저장(&S)",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,123,10
     CONTROL         "탈자 기호 위치를 유지(&P).",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,123,10
-    CONTROL         "검색 패턴을 기억(&R).",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,123,10
-    CONTROL         "&Autoload most recent file on startup.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,140,10
+    CONTROL         "검색 패턴을 기억(&R)",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,123,10
+    CONTROL         "시작할 때 최신 파일 자동 불러오기(&A)",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,140,10
     CONTROL         "폐기", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
     DEFPUSHBUTTON   "확인",IDOK,154,158,50,14,WS_DISABLED
     PUSHBUTTON      "닫기",IDCANCEL,212,158,50,14
@@ -356,14 +356,14 @@ BEGIN
     LTEXT           "탭[%s]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
     LTEXT           "공백[%s]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
     LTEXT           "혼합[x]:",IDC_STATIC3,54,42,30,8
-    RTEXT           "%s 줄",IDC_INDENT_SUM_TAB,84,18,52,8
-    RTEXT           "%s 줄",IDC_INDENT_SUM_SPC,84,30,52,8
-    RTEXT           "%s 줄",IDC_INDENT_SUM_MIX,84,42,52,8
+    RTEXT           "%s줄",IDC_INDENT_SUM_TAB,84,18,52,8
+    RTEXT           "%s줄",IDC_INDENT_SUM_SPC,84,30,52,8
+    RTEXT           "%s줄",IDC_INDENT_SUM_MIX,84,42,52,8
     GROUPBOX        "모두 다시 들여쓰기를 합니까? ",IDC_STATIC2,7,60,182,56,WS_GROUP
     CONTROL         "탭(&T)",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,35,10
     CONTROL         "공백(&B)",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,35,10
-    RTEXT           "%s 줄 폭/ 불규칙한 들여쓰기 깊이",IDC_INDENT_TAB_MODX,50,72,124,8
-    RTEXT           "%s 줄 폭/ 불규칙한 들여쓰기 깊이",IDC_INDENT_SPC_MODX,50,84,124,8
+    RTEXT           "%s줄 폭/ 불규칙한 들여쓰기 깊이",IDC_INDENT_TAB_MODX,50,72,124,8
+    RTEXT           "%s줄 폭/ 불규칙한 들여쓰기 깊이",IDC_INDENT_SPC_MODX,50,84,124,8
     PUSHBUTTON      "예(&Y)",IDOK,80,98,50,14
     PUSHBUTTON      "아니오(&N)",IDCANCEL,134,98,50,14
     CONTROL         "항상 이 대화 상자를 표시합니다(&A).",IDC_WARN_INCONSISTENT_INDENTS,
@@ -783,7 +783,7 @@ BEGIN
     CONTROL         "", COLOR_CURRENT, "static",
     SS_SIMPLE | WS_CHILD, 152, 124, 40, 26
 
-    PUSHBUTTON      "&o", COLOR_SOLID, 300, 200, 4, 14, WS_GROUP
+    PUSHBUTTON      "&O", COLOR_SOLID, 300, 200, 4, 14, WS_GROUP
     RTEXT           "색상", COLOR_SOLID_LEFT, 152, 151, 20, 9
     LTEXT           "|솔리드(&O)", COLOR_SOLID_RIGHT, 172, 151, 20, 9
 
