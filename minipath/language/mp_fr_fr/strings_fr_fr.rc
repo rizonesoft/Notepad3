@@ -54,20 +54,20 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_HISTORY_BACK        "Arrière"
-    IDT_HISTORY_FORWARD     "Avant"
-    IDT_UPDIR               "Dossier supérieur"
-    IDT_ROOT                "Dossier racine"
+    IDT_HISTORY_BACK        "Reculer"
+    IDT_HISTORY_FORWARD     "Avancer"
+    IDT_UPDIR               "Remonter"
+    IDT_ROOT                "Répertoire racine"
     IDT_VIEW_FAVORITES      "Favoris"
     IDT_FILE_PREV           "Fichier précédent"
-    IDT_FILE_NEXT           "Fichier Suivant"
+    IDT_FILE_NEXT           "Fichier suivant"
     IDT_FILE_RUN            "Exécuter"
-    IDT_FILE_QUICKVIEW      "Aperçu rapide"
-    IDT_FILE_SAVEAS         "Enregistrer sous"
+    IDT_FILE_QUICKVIEW      "Aperçu"
+    IDT_FILE_SAVEAS         "Sauvegarder sous"
     IDT_FILE_COPYMOVE       "Copier/Déplacer"
     IDT_FILE_DELETE         "Supprimer"
-    IDT_FILE_DELETE2        "Supprimer (Permanent)"
-    IDT_VIEW_FILTER         "Filtre"
+    IDT_FILE_DELETE2        "Supprimer (définitif)"
+    IDT_VIEW_FILTER         "Filtrer"
 END
 
 STRINGTABLE
@@ -75,49 +75,49 @@ BEGIN
     IDS_APPTITLE            "MiniPath"
     IDS_NUMFILES            "%s Objet(s)"
     IDS_NUMFILES2           "%s Objet(s) | Filtre"
-    IDS_SAVEFILE            "Sauvergarde ""%s""..."
+    IDS_SAVEFILE            "Sauvegarder ""%s""..."
     IDS_OPEN_FILE_WITH      "Ouvrir avec %s"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Erreur d'accès au dossier\nPas d'accès au dossier spécifié.\nVérifier le disque ou la connexion réseau."
-    IDS_ERR_FILE            "Erreur d'accès au fichier\nPas d'accès à ""%s"".\nLe fichier peut être utilisé par une autre application.\nVérifier le disque ou la connexion réseau."
-    IDS_ERR_NEW             "Erreur d'accès au fichier\nLe fichier n'a pas pu être créé.\nVérifier le disque ou la connexion réseau."
-    IDS_ERR_NEWDIR          "Erreur d'accès au dossier\nLe dossier n'a pas pu être créé.\nVérifier le disque ou la connexion réseau."
-    IDS_ERR_SAVEAS1         "Erreur d'enregistrement de fichier\nErreur d'enregistrement ""%s"".\nProbablement un fichier déjà existant est protégé en écriture."
-    IDS_ERR_SAVEAS2         "Erreur d'enregistrement de fichier\nErreur lors de la suppression de l'attribut en lecture seule du fichier enregistré."
-    IDS_ERR_CMDLINE         "MiniPath\nErreur lors de l'accès au fichier ou au dossier spécifié dans la ligne de commande."
-    IDS_ERR_STARTUPDIR      "MiniPath\nPas d'accès au dossier de démarrage."
-    IDS_ERR_DROP1           "MiniPath\nAucun accès au fichier ou au dossier supprimé."
-    IDS_ERR_DROP2           "MiniPath\nUn seul fichier ou dossier peut être déposé à la fois."
-    IDS_ERR_FAVORITES       "Favoris\nPas d'accès au dossier 'Favoris'.\nSpécifier un dossier valide dans la boîte de dialogue 'Options'."
-    IDS_ERR_LNK_GETPATH     "Erreur de lien\nAucun chemin de système de fichiers valide disponible pour l'objet lié.\nProbablement le lien ne se réfère pas à un fichier ou un dossier."
-    IDS_ERR_LNK_NOACCESS    "Erreur de lien\nPas d'accès au système de fichiers-chemin de l'objet lié.\nVérifier le disque ou la connexion réseau."
+    IDS_ERR_CD              "Erreur d'accès au répertoire\nPas d'accès au dossier spécifié.\nVérifiez le disque ou la connexion réseau."
+    IDS_ERR_FILE            "Erreur d'accès au fichier\nPas d'accès à ""%s"".\nLe fichier peut être utilisé par une autre application.\nVérifiez le disque ou la connexion réseau."
+    IDS_ERR_NEW             "Erreur d'accès au fichier\nLe fichier n'a pas pu être créé.\nVérifiez le disque ou la connexion réseau."
+    IDS_ERR_NEWDIR          "Erreur d'accès au répertoire\nLe dossier n'a pas pu être créé.\nVérifiez le disque ou la connexion réseau."
+    IDS_ERR_SAVEAS1         "Erreur de sauvegarde de fichier\nErreur en sauvegardant ""%s"".\nProbablement un fichier déjà existant est protégé en écriture."
+    IDS_ERR_SAVEAS2         "Erreur de sauvegarde de fichier\nErreur lors de la suppression de l'attribut ""lecture seule"" du fichier sauvegardé."
+    IDS_ERR_CMDLINE         "MiniPath\nErreur d'accès au fichier ou au répertoire spécifié dans la ligne de commande."
+    IDS_ERR_STARTUPDIR      "MiniPath\nPas d'accès au répertoire de démarrage."
+    IDS_ERR_DROP1           "MiniPath\nAucun accès au fichier ou au répertoire supprimé."
+    IDS_ERR_DROP2           "MiniPath\nUn seul fichier ou répertoire peut être déposé à la fois."
+    IDS_ERR_FAVORITES       "Favoris\nPas d'accès au dossier ""Favoris"".\nSpécifiez un dossier valide dans la boîte de dialogue ""Options""."
+    IDS_ERR_LNK_GETPATH     "Erreur de lien\nAucun chemin de système de fichiers valide disponible pour l'objet lié.\nProbablement le lien ne se réfère pas à un fichier ou un répertoire."
+    IDS_ERR_LNK_NOACCESS    "Erreur de lien\nPas d'accès, dans le système de fichiers, au chemin de l'objet lié.\nVérifiez le disque ou la connexion réseau."
     IDS_ERR_CREATELINK      "Erreur de lien\nErreur lors de la création du lien spécifié.\nProbablement le dossier de destination est protégé en écriture."
-    IDS_ERR_FILTER          "Erreur de filtre de fichier\nAucun filtre supplémentaire spécifié.\nVeuillez vous référer au fichier readme de MiniPath pour plus d'informations."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nLa fenêtre MiniPath existante est occupée ou possède une boîte de dialogue active.\nVoulez-vous ouvrir une autre fenêtre MiniPath?"
+    IDS_ERR_FILTER          "Erreur de filtre de fichier\nAucun filtre supplémentaire spécifié.\nRéférez-vous au fichier ""Readme"" de MiniPath pour plus d'informations."
+    IDS_ERR_PREVWINDISABLED "MiniPath\nLa fenêtre MiniPath existante est occupée ou possède une boîte de dialogue active.\nVoulez-vous ouvrir une autre fenêtre MiniPath ?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nLa fenêtre cible existante est occupée ou possède une boîte de dialogue active.\nVoulez-vous ouvrir une nouvelle fenêtre?"
+    IDS_ERR_TARGETDISABLED  "MiniPath\nLa fenêtre cible existante est occupée ou possède une boîte de dialogue active.\nVoulez-vous ouvrir une nouvelle fenêtre ?"
     IDS_ERR_INVALIDTARGET   "MiniPath\nAssurez-vous que tous les champs obligatoires sont complétés.\nVous devrez également trouver une fenêtre cible si l'option appropriée est activée."
     IDS_ERR_INIOPEN         "MiniPath\nPas d'accès au fichier de configuration MiniPath."
-    IDS_ERR_INICREATE       "Enregistrer les paramètres\nErreur de création du fichier de configuration."
-    IDS_ERR_INIWRITE        "Enregistrer les paramètres\nParamètres non enregistrés!\nAucun accès en écriture au fichier de configuration."
+    IDS_ERR_INICREATE       "Sauvegarder les paramètres\nErreur de création du fichier de configuration."
+    IDS_ERR_INIWRITE        "Sauvegarder les paramètres\nParamètres non enregistrés!\nAucun accès en écriture au fichier de configuration."
 END
 
 STRINGTABLE
 BEGIN
     IDS_SEARCHEXE           "Chercher un exécutable"
-    IDS_GETQUICKVIEWER      "Chercher aperçu rapide"
-    IDS_GETTARGET           "Chercher Editeur"
+    IDS_GETQUICKVIEWER      "Chercher un aperçu"
+    IDS_GETTARGET           "Chercher un éditeur"
     IDS_NEWFILE             "Nouveau fichier"
     IDS_FILTER_ALL          "Tous les fichiers (*.*)\n*.*\n"
-    IDS_FILTER_EXE          "Fichiers executables (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nAll files (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Sélectionner un nouveau dossier."
-    IDS_FAVORITES           "Specifier le dossier 'Favori'."
+    IDS_FILTER_EXE          "Fichiers exécutables (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nTous fichiers (*.*)\n*.*\n"
+    IDS_GETDIRECTORY        "Sélectionner un nouveau répertoire."
+    IDS_FAVORITES           "Spécifier le répertoire des ""Favoris""."
 END
 
 STRINGTABLE
@@ -128,11 +128,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "Sélectionner le dossier avec des liens vers vos applications préférées."
-    IDS_COPYMOVE            "Sélectionner un dossier de destination."
-    IDS_CREATELINK          "Sélectionner un dossier de destination pour le nouveau lien."
-    IDS_SAVESETTINGS        "Enregistrer les paramètres\nLes paramètres du programme en cours ont été sauvegardés."
-    IDS_MUI_TRANSL_AUTHOR   "(fr-FR) Traduction française par hpwamr"
+    IDS_OPENWITH            "Sélectionnez le répertoire avec des liens vers vos applications favorites."
+    IDS_COPYMOVE            "Sélectionnez un répertoire de destination."
+    IDS_CREATELINK          "Sélectionnez un répertoire de destination pour le nouveau lien."
+    IDS_SAVESETTINGS        "Sauvegardez les paramètres\nLes paramètres actuels du programme ont été sauvegardés."
+    IDS_MUI_TRANSL_AUTHOR   "(fr-FR) Traduction française par Lidgeu"
 END
 
 
