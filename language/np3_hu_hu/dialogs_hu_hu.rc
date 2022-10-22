@@ -531,7 +531,7 @@ BEGIN
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,17,8
     LTEXT           "Folytatólagos szám (nullától).",IDC_STATIC5,57,92,109,8
     LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,30,8
-    LTEXT           "${<expr>} defines math formulas.",IDC_STATIC5,57,102,175,8
+    LTEXT           "${<expr>} defines math formulas.",IDC_STATIC6,57,102,175,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
