@@ -237,7 +237,7 @@ BEGIN
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "예(&Y)",IDOK,138,63,50,14
     PUSHBUTTON      "아니오(&N)",IDCANCEL,138,80,50,14
-    CONTROL         "항상 이 대화 상자를 표시합니다(&A).",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "항상 이 대화 상자를 표시(&A)",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -531,7 +531,7 @@ BEGIN
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,20,8
     LTEXT           "연속 번호 (0부터).",IDC_STATIC5,57,92,109,8
     LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,30,8
-    LTEXT           "${<expr>} defines math formulas.",IDC_STATIC6,57,102,175,8
+    LTEXT           "${<expr>}은(는) 산술 공식을 정의",IDC_STATIC6,57,102,175,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
