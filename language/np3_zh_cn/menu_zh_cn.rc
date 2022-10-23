@@ -350,12 +350,12 @@ BEGIN
         MENUITEM "显示空格(&W)\tCtrl+Shift+8",                  IDM_VIEW_SHOWBLANKS
         MENUITEM "显示换行符号(&E)\tCtrl+Shift+9",              IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        POPUP "Change History Marker"
+        POPUP "变更记录标记"
         BEGIN
-            MENUITEM "No Change Markers",                   IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+            MENUITEM "无变更标记",                   IDM_VIEW_CHGHIST_NONE
+            MENUITEM "仅显示在页面边缘",                 IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "仅显示在文档中",               IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "全部显示",             IDM_VIEW_CHGHIST_ALL
         END
         MENUITEM SEPARATOR
         MENUITEM "检测超链接(&Y)\tCtrl+Alt+W",                 IDM_VIEW_HYPERLINKHOTSPOTS
@@ -392,7 +392,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "行号(&N)\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
         MENUITEM "书签(&M)\tCtrl+Shift+M",        IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "变更记录标记",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "折叠(&F)"
         BEGIN
@@ -472,7 +472,7 @@ BEGIN
         MENUITEM "自动关闭 &HTML/XML 标记\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
         MENUITEM "自动补全单词(&U)",                            IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "自动补全语法关键字(&K)",                      IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Alternate Word Se&parators(&P)\tCtrl+Alt+A",   IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "切换单词分隔规则(&P)\tCtrl+Alt+A",   IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "对每个文件仅允许单个实例(&F)",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "文件修改通知(&C)...\tAlt+F5",                 IDM_SET_CHANGENOTIFY
@@ -492,7 +492,7 @@ BEGIN
             MENUITEM "记忆最近使用的文件(&R)",                 IDM_SET_NOSAVERECENT
             MENUITEM "记忆插入光标位置(&C)",                   IDM_SET_NOPRESERVECARET
             MENUITEM "记忆查找方式(&S)",                       IDM_SET_NOSAVEFINDREPL
-            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "自动加载最后打开的文件(&A)",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "窗口(&I)"
         BEGIN
@@ -592,7 +592,7 @@ BEGIN
         MENUITEM "启用折叠",                               IDM_VIEW_FOLDING
         MENUITEM "行号",                                   IDM_VIEW_LINENUMBERS
         MENUITEM "书签",                       IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "变更记录",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN
