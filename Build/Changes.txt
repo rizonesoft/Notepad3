@@ -115,7 +115,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
-[1020.1]- Fix a warning msg in "dialogs_xx_yy.rc".
+[1023.1]- A warning message in "dialogs_xx_yy.rc".
 [1020.1]- Respect single file instance mode for internal file loading.
 [1020.1]- "unref" param in RELEASE mode.
 [1020.1]- DarkTheme handling.
