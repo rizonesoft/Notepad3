@@ -222,7 +222,7 @@ BEGIN
     IDS_MUI_WARN_STYLE_RESET
                             "Ez a művelet visszaállítja a színeket a gyári színmód beállítására és az aktuális témafájlt a standard konfigurációs .ini-re!"
     IDS_MUI_ASK_INSTANCE_EXISTS
-                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
+                            "Egyetlen fájl példány mód:\n\nLegyen váltás a már betöltött példányre?"
 END
 
 STRINGTABLE
