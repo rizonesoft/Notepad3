@@ -794,6 +794,18 @@ extern WCHAR Default_PreferredLanguageLocaleName[];
 
 //=============================================================================
 
+typedef enum SpecialUndoRedoToken {
+    // normal token >= 0
+    URTok_TokenStart    =  0L,
+    URTok_NoTransaction = -1L,
+    URTok_NoRecording   = -2L,
+    URTok_InTransaction = -3L,
+    URTok_NoTokenFlag   = LONG_MAX
+
+} SpecialUndoRedoToken;
+
+//=============================================================================
+
 typedef struct FOCUSEDVIEW_T {
 
     bool HideNonMatchedLines;
@@ -905,12 +917,11 @@ typedef struct THEMEFILES {
 //
 typedef enum SciEventMask {
 
-    EVM_None = SC_MOD_NONE,
+    EVM_None     = SC_MOD_NONE,
+    EVM_UndoRedo = SC_MOD_CONTAINER | SC_PERFORMED_UNDO | SC_PERFORMED_REDO | SC_MULTILINEUNDOREDO | SC_MULTISTEPUNDOREDO | SC_LASTSTEPINUNDOREDO |
+                   SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE,
+    EVM_Default  = EVM_UndoRedo
     //~EVM_All = SC_MODEVENTMASKALL ~ don't use
-    EVM_UndoRedo = SC_MOD_CONTAINER | SC_PERFORMED_UNDO | SC_PERFORMED_REDO \
-                   | SC_MULTILINEUNDOREDO | SC_MULTISTEPUNDOREDO | SC_LASTSTEPINUNDOREDO \
-                   | SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT | SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE,
-    EVM_Default = EVM_UndoRedo
 
 } SciEventMask;
 

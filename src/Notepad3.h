@@ -119,8 +119,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch);
 void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode);
 void ShowNotifyIcon(HWND hwnd, bool bAdd);
 void SetNotifyIconTitle(HWND hwnd);
-//bool IsDocumentModified(); -> inline static
-void SetSavePoint();
+void SetSaveDone();
 
 void ParseCommandLine();
 void CheckAutoLoadMostRecent();
@@ -139,9 +138,9 @@ void UpdateTitlebar(const HWND hwnd);
 void UndoRedoRecordingStart();
 void UndoRedoRecordingStop();
 void UndoRedoReset();
-int  BeginUndoAction();
-void EndUndoAction(int token);
-bool RestoreAction(int token, DoAction doAct);
+LONG BeginUndoActionSelection();
+void EndUndoActionSelection(LONG token);
+void RestoreActionSelection(LONG token, DoAction doAct);
 
 void HandleDWellStartEnd(const DocPos position, const UINT uid);
 bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operation);
@@ -198,43 +197,42 @@ LRESULT MsgNonClientAreaPaint(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
 
 // ----------------------------------------------------------------------------
 
-void IgnoreNotifyDocChangedEvent(const SciEventMask evm);
-void ObserveNotifyDocChangedEvent();
+void SetNotifyDocChangedEvent(const SciEventMask evm);
+void ResetNotifyDocChangedEvent();
+
+#define DisableNotifyEvents()  { int _evm_ = 0; __try { _evm_ = SciCall_GetModEventMask();  SciCall_SetModEventMask(EVM_None);
+#define EnableNotifyEvents()   ;} __finally { SciCall_SetModEventMask(_evm_); } }
 
 // ----------------------------------------------------------------------------
 
-// lean msg change notify (preferred)
-#define DocChangeTransactionBegin()  __try { IgnoreNotifyDocChangedEvent(EVM_Default); SciCall_BeginUndoAction(); 
-#define EndDocChangeTransaction()    } __finally { SciCall_EndUndoAction(); ObserveNotifyDocChangedEvent(); }
+LONG BeginUndoActionEx();
+void EndLockUndoActionEx(const LONG token);
+
+// lean msg change notify (preferred) - does not preserve redo-undo selection stack
+#define DocChangeTransactionBegin()  { LONG _tok_ = 0L; __try { _tok_ = BeginUndoActionEx(); SetNotifyDocChangedEvent(EVM_None); 
+#define EndDocChangeTransaction()    ;} __finally { ResetNotifyDocChangedEvent(); EndLockUndoActionEx(_tok_); } }
 
 // ----------------------------------------------------------------------------
 
-// none msg change notify (only in simple, non complex operations)
-#define UndoTransActionBegin()  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyDocChangedEvent(EVM_None);
-#define EndUndoTransAction()    } __finally { ObserveNotifyDocChangedEvent(); EndUndoAction(_token_); } }
+// none msg change notify, preserve redo-undo selection stack  (only in simple, non complex operations)
+#define UndoTransActionBegin()  { LONG _token_ = 0L; __try { _token_ = BeginUndoActionSelection(); SetNotifyDocChangedEvent(EVM_None); 
+#define EndUndoTransAction()    ;} __finally { ResetNotifyDocChangedEvent(); EndUndoActionSelection(_token_); } }
 
 // ----------------------------------------------------------------------------
 
-#define BeginWaitCursor(cond, text)                                 \
-    __try {                                                         \
-        IgnoreNotifyDocChangedEvent(EVM_None);                      \
+#define BeginWaitCursor(cond, text) {                               \
         if (cond) {                                                 \
             SciCall_SetCursor(SC_CURSORWAIT);                       \
             StatusSetText(Globals.hwndStatus, STATUS_HELP, (text)); \
         }
 
-#define BeginWaitCursorUID(cond, uid)                          \
-    __try {                                                    \
-        IgnoreNotifyDocChangedEvent(EVM_None);    \
+#define BeginWaitCursorUID(cond, uid) {                        \
         if (cond) {                                            \
             SciCall_SetCursor(SC_CURSORWAIT);                  \
             StatusSetTextID(Globals.hwndStatus, STATUS_HELP, (uid)); \
         }
 
 #define EndWaitCursor()                       \
-    }                                         \
-    __finally {                               \
-        ObserveNotifyDocChangedEvent();       \
         SciCall_SetCursor(SC_CURSORNORMAL);   \
         POINT pt;                             \
         GetCursorPos(&pt);                    \

@@ -228,8 +228,41 @@ const char chr_currency[6] = { '$', 0x80, 0xA2, 0xA3, 0xA5, '\0' }; // "$€¢£
 const WCHAR *const TBBUTTON_DEFAULT_IDS_V1 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
 const WCHAR* const TBBUTTON_DEFAULT_IDS_V2 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 29 0 17";
 
-//=============================================================================
-// static method declarations
+//==============================================================================
+//
+//  Save Needed Flag
+//
+static bool s_DocNeedSaving = false; // dirty-flag
+
+static inline void SetSaveNeeded()
+{
+    AutoSaveStart(!s_DocNeedSaving);
+    s_DocNeedSaving = true;
+
+    if (IsWindow(Globals.hwndDlgFindReplace)) {
+        PostWMCommand(Globals.hwndDlgFindReplace, IDC_DOC_MODIFIED);
+    }
+    UpdateToolbar();
+}
+
+static inline void SetSavePoint()
+{
+    SciCall_SetSavePoint();
+    UpdateToolbar();
+}
+
+inline static bool IsSaveNeeded()
+{
+    return SciCall_GetModify() || s_DocNeedSaving;
+}
+
+void SetSaveDone()
+{
+    s_DocNeedSaving = false;
+    SetSavePoint();
+}
+
+//==============================================================================
 
 // current find pattern
 static HSTRINGW s_hstrCurrentFindPattern = NULL;
@@ -376,9 +409,9 @@ static void CopyUndoRedoSelection(void* dst, const void* src)
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), InitUndoRedoSelection, CopyUndoRedoSelection, DelUndoRedoSelection };
 static UT_array* UndoRedoSelectionUTArray = NULL;
 static inline bool _InUndoRedoTransaction();
-static void  _SaveRedoSelection(int token);
-static int   _SaveUndoSelection();
-static int   _UndoRedoActionMap(int token, const UndoRedoSelection_t** selection);
+static void  _SaveRedoSelection(const LONG token);
+static LONG  _SaveUndoSelection();
+static LONG  _UndoRedoActionMap(const LONG token, const UndoRedoSelection_t** selection);
 // => UndoTransActionBegin();
 // => EndUndoTransAction();
 
@@ -410,26 +443,26 @@ static __forceinline bool IsEventSignaled() {
 
 static volatile LONG iNotifyChangeStackCounter = 0L;
 
-static __forceinline bool CheckNotifyDocChangedEvent()
+static __forceinline bool NotifyDocChanged()
 {
     return (InterlockedOr(&iNotifyChangeStackCounter, 0L) == 0L);
 }
 
-void IgnoreNotifyDocChangedEvent(SciEventMask evm)
+void SetNotifyDocChangedEvent(const SciEventMask evm)
 {
     InterlockedIncrement(&iNotifyChangeStackCounter);
     SciCall_SetModEventMask(evm);
 }
 
-void ObserveNotifyDocChangedEvent()
+void ResetNotifyDocChangedEvent()
 {
-    if (!CheckNotifyDocChangedEvent()) {
+    if (!NotifyDocChanged()) {
         InterlockedDecrement(&iNotifyChangeStackCounter);
     }
-    if (CheckNotifyDocChangedEvent()) {
-        SciCall_SetModEventMask(EVM_Default);
+    if (NotifyDocChanged()) {
         EditUpdateVisibleIndicators();
         UpdateStatusbar(false);
+        SciCall_SetModEventMask(EVM_Default);
     }
 }
 
@@ -652,45 +685,6 @@ static int                   s_iCaretPolicyV = CARET_EVEN;
 static void  _UpdateStatusbarDelayed(bool bForceRedraw);
 static void  _UpdateToolbarDelayed();
 static void  _UpdateTitlebarDelayed(const HWND hwnd);
-
-//==============================================================================
-//
-//  Save Needed Flag
-//
-//
-static bool s_DocNeedSaving = false; // dirty-flag
-
-static inline void SetSaveNeeded()
-{
-    if (!s_DocNeedSaving) {
-        s_DocNeedSaving = true;
-        UpdateToolbar();
-        AutoSaveStart(true);
-    }
-    else {
-        AutoSaveStart(false);
-    }
-    if (IsWindow(Globals.hwndDlgFindReplace)) {
-        PostWMCommand(Globals.hwndDlgFindReplace, IDC_DOC_MODIFIED);
-    }
-}
-
-void SetSavePoint()
-{
-    if (SciCall_GetModify()) {
-        SciCall_SetSavePoint();
-    }
-    s_DocNeedSaving = false;
-    UpdateToolbar();
-}
-
-inline static bool IsDocumentModified()
-{
-    if ((SciCall_GetModify() && !s_DocNeedSaving)) { 
-        SetSaveNeeded(); 
-    }
-    return s_DocNeedSaving;
-}
 
 //==============================================================================
 
@@ -1259,6 +1253,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     ResetTmpCache();
     ResetIniFileCache();
 
+    UndoRedoReset();
+    SetSaveDone();
+
     MSG msg;
     while (GetMessage(&msg,NULL,0,0)) {
         if (IsWindow(Globals.hwndDlgFindReplace) && ((msg.hwnd == Globals.hwndDlgFindReplace) || IsChild(Globals.hwndDlgFindReplace, msg.hwnd))) {
@@ -1719,7 +1716,9 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
     // Current file information -- moved in front of ShowWindow()
     HPATHL hfile_pth = Path_Allocate(L"");
     FileLoadFlags fLoadFlags = FLF_DontSave | FLF_New | FLF_SkipUnicodeDetect | FLF_SkipANSICPDetection;
-    FileLoad(hfile_pth, fLoadFlags);
+    if (Path_IsEmpty(s_pthArgFilePath)) {
+        FileLoad(hfile_pth, fLoadFlags);
+    }
 
     if (!s_flagStartAsTrayIcon) {
         ShowWindow(hwndMain,nCmdShow);
@@ -1769,10 +1768,8 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
                         if (Path_IsExistingFile(s_hpthRelaunchElevatedFile)) {
                             DeleteFileW(Path_Get(s_hpthRelaunchElevatedFile));
                         }
+                        SetSaveNeeded();
                     }
-
-                    UndoRedoReset();
-                    SetSaveNeeded();
 
                     if (Path_IsNotEmpty(Paths.CurrentFile)) {
                         if (s_flagSaveOnRelaunch) {
@@ -2109,14 +2106,16 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             // Hold RIGHT MOUSE BUTTON and SCROLL to cycle through UNDO history
             if (GET_WHEEL_DELTA_WPARAM(wParam) > 0) {
                 s_bUndoRedoScroll = true;
-                IgnoreNotifyDocChangedEvent(EVM_UndoRedo);
+                int const evm = SciCall_GetModEventMask();
+                SciCall_SetModEventMask(EVM_UndoRedo);
                 SciCall_Redo();
-                ObserveNotifyDocChangedEvent();
+                SciCall_SetModEventMask(evm);
             } else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0) {
                 s_bUndoRedoScroll = true;
-                IgnoreNotifyDocChangedEvent(EVM_UndoRedo);
+                int const evm = SciCall_GetModEventMask();
+                SciCall_SetModEventMask(EVM_UndoRedo);
                 SciCall_Undo();
-                ObserveNotifyDocChangedEvent();
+                SciCall_SetModEventMask(evm);
             }
         }
         break;
@@ -2637,7 +2636,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
     SciCall_SetZoom(g_IniWinInfo.zoom ? g_IniWinInfo.zoom : 100);
 
-    ObserveNotifyDocChangedEvent();
+    ResetNotifyDocChangedEvent();
 
     return 0LL;
 }
@@ -3805,13 +3804,13 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     DocPos const iCurPos = SciCall_GetCurrentPos();
 
-    if ((FileWatching.FileWatchingMode == FWM_MSGBOX) || IsDocumentModified()) {
+    if ((FileWatching.FileWatchingMode == FWM_MSGBOX) || IsSaveNeeded()) {
         SetForegroundWindow(hwnd);
     }
 
     if (Path_IsExistingFile(Paths.CurrentFile)) {
 
-        bool bRevertFile = ((FileWatching.FileWatchingMode == FWM_AUTORELOAD) && !IsDocumentModified());
+        bool bRevertFile = ((FileWatching.FileWatchingMode == FWM_AUTORELOAD) && !IsSaveNeeded());
 
         if (!bRevertFile) {
             if (FileWatching.FileWatchingMode == FWM_MSGBOX) {
@@ -4498,7 +4497,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_REVERT:
-        if (IsDocumentModified()) {
+        if (IsSaveNeeded()) {
             if (!IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_REVERT))) {
                 break;
             }
@@ -4830,7 +4829,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (Path_IsNotEmpty(Paths.CurrentFile)) {
             cpi_enc_t iNewEncoding = Encoding_MapSignature(Encoding_GetCurrent());
 
-            if (IsDocumentModified()) {
+            if (IsSaveNeeded()) {
                 if (!IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_RECODE))) {
                     break;
                 }
@@ -4872,22 +4871,20 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_UNDO:
         if (SciCall_CanUndo()) {
-            //~DocChangeTransactionBegin();
-            IgnoreNotifyDocChangedEvent(EVM_UndoRedo);
+            int const evm = SciCall_GetModEventMask();
+            SciCall_SetModEventMask(EVM_UndoRedo);
             SciCall_Undo();
-            ObserveNotifyDocChangedEvent();
-            //~EndDocChangeTransaction();
+            SciCall_SetModEventMask(evm);
         }
         break;
 
 
     case IDM_EDIT_REDO:
         if (SciCall_CanRedo()) {
-            //~DocChangeTransactionBegin();
-            IgnoreNotifyDocChangedEvent(EVM_UndoRedo);
+            int const evm = SciCall_GetModEventMask();
+            SciCall_SetModEventMask(EVM_UndoRedo);
             SciCall_Redo();
-            ObserveNotifyDocChangedEvent();
-            //~EndDocChangeTransaction();
+            SciCall_SetModEventMask(evm);
         }
         break;
 
@@ -6109,12 +6106,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             _saveChgNotify = FileWatching.FileWatchingMode;
             FileWatching.FileWatchingMode = FWM_AUTORELOAD;
             FileWatching.FileCheckInverval = 250UL;
-            UndoRedoRecordingStop();
             SciCall_SetEndAtLastLine(false);
         } else {
             FileWatching.FileWatchingMode = _saveChgNotify;
             FileWatching.FileCheckInverval = Settings2.FileCheckInverval;
-            UndoRedoRecordingStart();
             SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
         }
         EditScrollSelectionToView();
@@ -6540,10 +6535,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_CLEAR:
     case IDM_EDIT_CLEAR:
-        ///~UndoTransActionBegin();
+        //~UndoTransActionBegin();
         EditDeleteMarkerInSelection();
         SciCall_Clear();
-        ///~EndUndoTransAction();
+        //~EndUndoTransAction();
         break;
 
 
@@ -8172,7 +8167,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
 
     const LPNMHDR pnmh = (LPNMHDR)scn;
 
-    static int _mod_insdel_token = -1;
+    static LONG _mod_insdel_token = URTok_NoTransaction;
 
     // --- check only mandatory events (must be fast !!!) ---
     if (pnmh->idFrom == IDC_EDIT) {
@@ -8188,12 +8183,12 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
             if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
                 //*bModified = false; // not yet
                 if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
-                    if (!_InUndoRedoTransaction() && (_mod_insdel_token < 0)) {
+                    if (!_InUndoRedoTransaction() && (_mod_insdel_token < URTok_TokenStart)) {
                         bool const bIsSelEmpty = !SciCall_IsSelectionEmpty();
                         bool const bIsMultiRectSel = Sci_IsMultiOrRectangleSelection();
                         if (bIsSelEmpty || bIsMultiRectSel) {
-                            int const tok = _SaveUndoSelection();
-                            _mod_insdel_token = (tok >= 0) ? tok : _mod_insdel_token;
+                            LONG const tok = _SaveUndoSelection();
+                            _mod_insdel_token = (tok >= URTok_TokenStart ? tok : _mod_insdel_token);
                         }
                         // TODO: @@@ Find reason for why this NOP workaround is needed:
                         if (bIsSelEmpty && bIsMultiRectSel) {
@@ -8206,9 +8201,9 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
                 }
             } else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
                 if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
-                    if (!_InUndoRedoTransaction() && (_mod_insdel_token >= 0)) {
+                    if (!_InUndoRedoTransaction() && (_mod_insdel_token >= URTok_TokenStart)) {
                         _SaveRedoSelection(_mod_insdel_token);
-                        _mod_insdel_token = -1;
+                        _mod_insdel_token = URTok_NoTransaction;
                     }
                 }
                 *bModified = true;
@@ -8216,9 +8211,9 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
             // check for ADDUNDOACTION step
             if (iModType & SC_MOD_CONTAINER) {
                 if (iModType & SC_PERFORMED_UNDO) {
-                    RestoreAction(scn->token, UNDO);
+                    RestoreActionSelection(scn->token, UNDO);
                 } else if (iModType & SC_PERFORMED_REDO) {
-                    RestoreAction(scn->token, REDO);
+                    RestoreActionSelection(scn->token, REDO);
                 }
             }
             if (*bModified) {
@@ -8585,13 +8580,8 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     switch (pnmh->idFrom) {
 
     case IDC_EDIT: {
-        if (CheckNotifyDocChangedEvent()) {
-            result = _MsgNotifyFromEdit(hwnd, scn);
-        }
-        else {
-            bool bModified = false;
-            result = _MsgNotifyLean(scn, &bModified);
-        }
+        bool bModified = false;
+        result = NotifyDocChanged() ? _MsgNotifyFromEdit(hwnd, scn) : _MsgNotifyLean(scn, &bModified);
     } break;
 
     // ------------------------------------------------------------------------
@@ -9362,7 +9352,7 @@ static void _UpdateTitlebarDelayed(const HWND hwnd)
     if (hwnd == Globals.hwndMain) {
         bool const bFileLocked = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
         SetWindowTitle(Globals.hwndMain, Paths.CurrentFile, Settings.PathNameFormat,
-            s_flagPasteBoard, s_bIsProcessElevated, IsDocumentModified(),
+            s_flagPasteBoard, s_bIsProcessElevated, IsSaveNeeded(),
             bFileLocked, IsFileChangedFlagSet(), IsFileDeletedFlagSet(), IsFileReadOnly(), s_wchTitleExcerpt);
     }
     if (!IsWindows10OrGreater()) {
@@ -9392,7 +9382,7 @@ static void  _UpdateToolbarDelayed()
     }
 
     EnableTool(Globals.hwndToolbar, IDT_FILE_ADDTOFAV, Path_IsNotEmpty(Paths.CurrentFile));
-    EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, IsDocumentModified() || IsFileChangedFlagSet() /*&& !bReadOnly*/);
+    EnableTool(Globals.hwndToolbar, IDT_FILE_SAVE, IsSaveNeeded() || IsFileChangedFlagSet() /*&& !bReadOnly*/);
     EnableTool(Globals.hwndToolbar, IDT_FILE_RECENT, (MRU_Count(Globals.pFileMRU) > 0));
 
     CheckTool(Globals.hwndToolbar, IDT_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
@@ -10205,15 +10195,39 @@ void UpdateUI() {
 
 //=============================================================================
 
-#define UNDOREDO_FREE (-1L)
-#define UNDOREDO_BLOCKED (-2L)
-static volatile LONG UndoActionToken = UNDOREDO_BLOCKED; // block
+static volatile LONG UndoActionToken = URTok_NoRecording; // needs UndoRedoRecordingStart()
 
-//=============================================================================
-
-static inline bool  _InUndoRedoTransaction()
+static inline bool _InUndoRedoTransaction()
 {
-    return (InterlockedOr(&UndoActionToken, 0L) != UNDOREDO_FREE);
+    return (InterlockedOr(&UndoActionToken, 0L) >= URTok_TokenStart);
+}
+
+LONG BeginUndoActionEx()
+{
+    if (!_InUndoRedoTransaction()) {
+        InterlockedExchange(&UndoActionToken, URTok_NoTokenFlag);
+        SciCall_BeginUndoAction();
+        return URTok_NoTokenFlag;
+    }
+    return URTok_InTransaction;
+}
+
+void EndLockUndoActionEx(const LONG token)
+{
+    if (_InUndoRedoTransaction()) {
+        if (InterlockedOr(&UndoActionToken, 0L) == token) {
+            SciCall_EndUndoAction();
+            InterlockedExchange(&UndoActionToken, URTok_NoTransaction);
+        } else {
+            assert("Wrong Transaction" && 0);
+        }
+    }
+    else if (URTok_InTransaction == token) {
+        // okay, was child transaction
+    }
+    else {
+        assert("No Transaction" && 0);
+    }
 }
 
 //=============================================================================
@@ -10222,9 +10236,9 @@ static inline bool  _InUndoRedoTransaction()
 //
 void UndoRedoRecordingStart()
 {
-    InterlockedExchange(&UndoActionToken, UNDOREDO_FREE); // clear
-    _UndoRedoActionMap(-1, NULL);
+    _UndoRedoActionMap(URTok_NoTransaction, NULL); // clear
     SciCall_SetUndoCollection(true);
+    SciCall_EmptyUndoBuffer();
     SetSavePoint();
     SciCall_SetChangeHistory(SC_CHANGE_HISTORY_ENABLED | Settings.ChangeHistoryMode);
     UpdateMargins(true);
@@ -10237,16 +10251,10 @@ void UndoRedoRecordingStart()
 //
 void UndoRedoRecordingStop()
 {
-    int const curToken = InterlockedOr(&UndoActionToken, 0L);
-    if (curToken >= 0) {
-        EndUndoAction(curToken);
-    }
-
-    _UndoRedoActionMap(-1, NULL);
-
+    _UndoRedoActionMap(URTok_NoTransaction, NULL); // clear
+    SciCall_EmptyUndoBuffer();
     SciCall_SetChangeHistory(SC_CHANGE_HISTORY_DISABLED);
     SciCall_SetUndoCollection(false);
-    SciCall_EmptyUndoBuffer();
     UpdateMargins(true);
 }
 
@@ -10265,8 +10273,7 @@ void UndoRedoReset()
 //
 //  _SaveUndoSelection()
 //
-//
-static int _SaveUndoSelection()
+static LONG _SaveUndoSelection()
 {
     static DocPosU _s_iSelection = 0;           // index
 
@@ -10337,11 +10344,11 @@ static int _SaveUndoSelection()
     }
 
     const UndoRedoSelection_t* pSel = &sel;
-    int const token = _UndoRedoActionMap(-1, &pSel);
+    LONG const token = _UndoRedoActionMap(URTok_NoTransaction, &pSel);
 
     if (token >= 0) {
         //~SciCall_AddUndoAction(token, UNDO_MAY_COALESCE);
-        SciCall_AddUndoAction(token, UNDO_NONE);
+        SciCall_AddUndoAction((int)token, UNDO_NONE);
     }
 
     DelUndoRedoSelection(&sel); // utarray_free()
@@ -10357,11 +10364,11 @@ static int _SaveUndoSelection()
 //  _SaveRedoSelection()
 //
 //
-static void  _SaveRedoSelection(int token)
+static void _SaveRedoSelection(const LONG token)
 {
     static DocPosU _s_iSelection = 0;  // index
 
-    if (token < 0) {
+    if (token <= URTok_NoTransaction) {
         return;
     }
 
@@ -10378,7 +10385,7 @@ static void  _SaveRedoSelection(int token)
         return;
     }
 
-    if ((_UndoRedoActionMap(token, &pSel) >= 0) && (pSel != NULL)) {
+    if ((_UndoRedoActionMap(token, &pSel) >= URTok_TokenStart) && (pSel != NULL)) {
 
         int const selMode = ((numOfSel > 1) && !SciCall_IsSelectionRectangle()) ? NP3_SEL_MULTI : SciCall_GetSelectionMode();
 
@@ -10435,65 +10442,72 @@ static void  _SaveRedoSelection(int token)
 
 //=============================================================================
 //
-//  BeginUndoAction()
+//  BeginUndoActionSelection()
 //
-//
-int BeginUndoAction()
+LONG BeginUndoActionSelection()
 {
     if (_InUndoRedoTransaction()) {
-        return -1;
+        return URTok_InTransaction;
     }
+    LONG const token = _SaveUndoSelection();
+    InterlockedExchange(&UndoActionToken, token);
     SciCall_BeginUndoAction();
-    int const token = _SaveUndoSelection();
-    InterlockedExchange(&UndoActionToken, (LONG)token);
     return token;
 }
 
 
-
 //=============================================================================
 //
-//  EndUndoAction()
+//  EndUndoActionSelection()
 //
+const char* const _assert_msg = "Broken UndoRedo-Transaction!";
 //
-void EndUndoAction(int token)
+void EndUndoActionSelection(const LONG token)
 {
-    if ((token >= 0) && (token == (int)InterlockedOr(&UndoActionToken, 0L))) {
-        _SaveRedoSelection(token);
-        SciCall_EndUndoAction();
-        InterlockedExchange(&UndoActionToken, UNDOREDO_FREE);
+    switch (token) {
+    case URTok_NoTransaction:
+    case URTok_InTransaction:
+        // nothing to do (child transaction)
+        break;
+    case URTok_NoRecording:
+        assert(_assert_msg && InterlockedOr(&UndoActionToken, 0L) == URTok_NoRecording);
+        break;
+    default:
+        if (InterlockedOr(&UndoActionToken, 0L) == token) {
+            _SaveRedoSelection(token);
+            SciCall_EndUndoAction();
+            InterlockedExchange(&UndoActionToken, URTok_NoTransaction);
+        }
+        else { assert(_assert_msg && 0); }
+        break;
     }
 }
 
 
-
 //=============================================================================
 //
-//  RestoreAction()
+//  RestoreActionSelection()
 //
 //
-bool RestoreAction(int token, DoAction doAct)
+void RestoreActionSelection(const LONG token, DoAction doAct)
 {
     if (_InUndoRedoTransaction()) {
-        return false;
+        assert("Wrong Transaction!" && 0);
+        return;
     }
 
     UndoRedoSelection_t* pSel = NULL;
 
     HWND const hwndedit = Globals.hwndEdit;
 
-    if ((_UndoRedoActionMap(token, &pSel) >= 0) && (pSel != NULL)) {
+    if ((_UndoRedoActionMap(token, &pSel) >= URTok_TokenStart) && (pSel != NULL)) {
 
         // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
 
-        DocPos* pPosAnchor = NULL;
-        DocPos* pPosCur = NULL;
-        DocPos* pPosAnchorVS = NULL;
-        DocPos* pPosCurVS = NULL;
-        pPosAnchor = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->anchorPos_undo) : utarray_front(pSel->anchorPos_redo));
-        pPosCur = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->curPos_undo) : utarray_front(pSel->curPos_redo));
-        pPosAnchorVS = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->anchorVS_undo) : utarray_front(pSel->anchorVS_redo));
-        pPosCurVS = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->curVS_undo) : utarray_front(pSel->curVS_redo));
+        DocPos* pPosAnchor = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->anchorPos_undo) : utarray_front(pSel->anchorPos_redo));
+        DocPos* pPosCur = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->curPos_undo) : utarray_front(pSel->curPos_redo));
+        DocPos* pPosAnchorVS = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->anchorVS_undo) : utarray_front(pSel->anchorVS_redo));
+        DocPos* pPosCurVS = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->curVS_undo) : utarray_front(pSel->curVS_redo));
 
         if (pPosAnchor && pPosCur) {
             // Ensure that the first and last lines of a selection are always unfolded
@@ -10570,8 +10584,9 @@ bool RestoreAction(int token, DoAction doAct)
         }
         PostMessage(hwndedit, SCI_CHOOSECARETX, 0, 0);
     }
-
-    return true;
+    else {
+        assert("Invalid Token to Restore!" && 0);
+    }
 }
 
 
@@ -10580,51 +10595,62 @@ bool RestoreAction(int token, DoAction doAct)
 //  _UndoRedoActionMap()
 //
 //
-static int  _UndoRedoActionMap(int token, const UndoRedoSelection_t** selection)
+static LONG _UndoRedoActionMap(const LONG token, const UndoRedoSelection_t** selection)
 {
+    static ULONG uiTokenCnt = URTok_TokenStart;
+
     if (UndoRedoSelectionUTArray == NULL) {
-        return -1;
+        return URTok_NoRecording;
     };
 
-    static unsigned int uiTokenCnt = 0U;
-
     // indexing is unsigned
-    unsigned int utoken = (token >= 0) ? (unsigned int)token : 0U;
+    ULONG utoken = (token >= URTok_TokenStart) ? (ULONG)token : 0UL;
 
-    if (selection == NULL) {
-        // reset / clear
-        int const curToken = InterlockedOr(&UndoActionToken, 0L);
-        if (curToken >= 0) {
-            EndUndoAction(curToken);
+    if (selection == NULL) { // reset / clear
+        LONG const curToken = InterlockedOr(&UndoActionToken, 0L);
+        if (curToken == URTok_NoTokenFlag) {
+            EndLockUndoActionEx(curToken);
+            InterlockedExchange(&UndoActionToken, URTok_InTransaction);
+        }
+        else if (curToken >= URTok_TokenStart) {
+            EndUndoActionSelection(curToken);
+        }
+        else {
+            InterlockedExchange(&UndoActionToken, URTok_NoTransaction);
         }
         utarray_clear(UndoRedoSelectionUTArray);
-        //utarray_free(UndoRedoSelectionUTArray);
-        //utarray_init(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
-        uiTokenCnt = 0U;
-        InterlockedExchange(&UndoActionToken, UNDOREDO_FREE);
-        return -1;
+        //~utarray_free(UndoRedoSelectionUTArray);
+        //~utarray_init(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
+        uiTokenCnt = URTok_TokenStart;
+        return InterlockedOr(&UndoActionToken, 0L);
     }
 
     if (!SciCall_GetUndoCollection()) {
-        return -1;
+        assert("Inactive Undo Collection!" && 0);
+        return URTok_NoRecording;
     }
 
     // get or set map item request ?
-    if ((token >= 0) && (utoken < uiTokenCnt)) {
+    if ((token >= URTok_TokenStart) && (utoken < uiTokenCnt)) {
         if ((*selection) == NULL) {
             // this is a get request
             (*selection) = (UndoRedoSelection_t*)utarray_eltptr(UndoRedoSelectionUTArray, utoken);
         } else {
             // this is a set request (fill redo pos)
             assert(false); // not used yet
-            //utarray_insert(UndoRedoSelectionUTArray, (void*)(*selection), utoken);
+            //~utarray_insert(UndoRedoSelectionUTArray, (void*)(*selection), utoken);
         }
         // don't clear map item here (token used in redo/undo again)
-    } else if (token < 0) {
+    }
+    else if (token <= URTok_NoTransaction) {
         // set map new item request
-        token = (int)uiTokenCnt;
+        LONG const newToken = (LONG)uiTokenCnt;
         utarray_insert(UndoRedoSelectionUTArray, (void*)(*selection), uiTokenCnt);
-        uiTokenCnt = (uiTokenCnt < (unsigned int)INT_MAX) ? (uiTokenCnt + 1U) : 0U;  // round robin next
+        uiTokenCnt = (uiTokenCnt < (ULONG)LONG_MAX) ? (uiTokenCnt + 1UL) : 0UL; // round robin next
+        return newToken;
+    }
+    else {
+        assert("Invalid Token to Set/Get!" && 0);
     }
     return token;
 }
@@ -10638,20 +10664,14 @@ static int  _UndoRedoActionMap(int token, const UndoRedoSelection_t** selection)
 bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
     FileLoadFlags fLoadFlags, FileSaveFlags fSaveFlags, bool bSetSavePoint)
 {
-    bool fSuccess = false;
-
-    WCHAR wchFName[64];
-    Path_GetDisplayName(wchFName, COUNTOF(wchFName), hfile_pth, L"...", true);
-    WCHAR wchMsg[128];
-    FormatLngStringW(wchMsg, COUNTOF(wchMsg), (fLoad) ? IDS_MUI_LOADFILE : IDS_MUI_SAVEFILE, wchFName);
-    
-    BeginWaitCursor(true, wchMsg);
+    bool bSuccess = false;
 
     if (fLoad) {
         SciCall_SetReadOnly(false);
-        fSuccess = EditLoadFile(Globals.hwndEdit, hfile_pth, status, fLoadFlags, bSetSavePoint);
+        bSuccess = EditLoadFile(Globals.hwndEdit, hfile_pth, status, fLoadFlags, bSetSavePoint);
         SciCall_SetReadOnly(Settings.DocReadOnlyMode);
-    } else {
+    }
+    else {
         int idx;
         if (MRU_FindPath(Globals.pFileMRU, hfile_pth, &idx)) {
             Globals.pFileMRU->iEncoding[idx] = status->iEncoding;
@@ -10666,12 +10686,9 @@ bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
             }
             Globals.pFileMRU->pszBookMarks[idx] = StrDup(wchBookMarks);
         }
-        fSuccess = EditSaveFile(Globals.hwndEdit, hfile_pth, status, fSaveFlags, Flags.bPreserveFileModTime);
+        bSuccess = EditSaveFile(Globals.hwndEdit, hfile_pth, status, fSaveFlags, Flags.bPreserveFileModTime);
     }
-
-    EndWaitCursor();
-
-    return(fSuccess);
+    return bSuccess;
 }
 
 
@@ -10764,7 +10781,7 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
         }
         FileVars_GetFromData(NULL, 0, &Globals.fvCurFile); // init-reset
 
-        EditSetNewText(Globals.hwndEdit, "", 0, true);
+        EditSetNewText(Globals.hwndEdit, "", 0, false);
 
         SciCall_SetEOLMode(Settings.DefaultEOLMode);
         Encoding_Current(Settings.DefaultEncoding);
@@ -10843,7 +10860,7 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
             fSuccess = IS_VALID_HANDLE(hFile);
             if (fSuccess) {
                 FileVars_GetFromData(NULL, 0, &Globals.fvCurFile); // init/reset
-                EditSetNewText(Globals.hwndEdit, "", 0, true);
+                EditSetNewText(Globals.hwndEdit, "", 0, false);
                 Style_SetDefaultLexer(Globals.hwndEdit);
                 SciCall_SetEOLMode(Settings.DefaultEOLMode);
                 if (Encoding_IsValid(Encoding_Forced(CPI_GET))) {
@@ -10961,7 +10978,8 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
             EditSetSelectionEx(iAnchorPos, iCaretPos, -1, -1);
         }
 
-        SetSavePoint();
+        UndoRedoReset();
+        SetSaveDone();
 
         // consistent settings file handling (if loaded in editor)
         Flags.bSettingsFileSoftLocked = (StringCchCompareXIW(Path_Get(Paths.CurrentFile), Path_Get(Paths.IniFile)) == 0);
@@ -10985,9 +11003,9 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
 
         if (bCheckEOL && !Style_MaybeBinaryFile(Globals.hwndEdit, Paths.CurrentFile)) {
             if (WarnLineEndingDlg(Globals.hwndMain, &fioStatus)) {
-                IgnoreNotifyDocChangedEvent(EVM_None);
+                DocChangeTransactionBegin();
                 SciCall_ConvertEOLs(fioStatus.iEOLMode);
-                ObserveNotifyDocChangedEvent();
+                EndDocChangeTransaction();
                 Globals.bDocHasInconsistentEOLs = false;
             }
             SciCall_SetEOLMode(fioStatus.iEOLMode);
@@ -11088,7 +11106,7 @@ bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc)
         }
     }
 
-    SetSavePoint();
+    SetSaveDone();
     UpdateToolbar();
     UpdateMargins(true);
     UpdateStatusbar(true);
@@ -11191,7 +11209,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
 
     if (RelaunchElevated(StrgGet(hstr_args))) {
         // set no change and quit
-        SetSavePoint();
+        SetSaveDone();
     } else {
         Globals.dwLastError = GetLastError();
         if (PathIsExistingFile(wchTempFileName)) {
@@ -11199,7 +11217,6 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
         }
         Flags.bDoRelaunchElevated = false;
     }
-
    
     StrgDestroy(hstr_args);
 
@@ -11269,7 +11286,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
 #endif
 
 
-    if (!(fSaveFlags & FSF_SaveAlways) && (!IsDocumentModified() || IsFileChangedFlagSet() || bIsEmptyNewFile) && !(fSaveFlags & FSF_SaveAs)) {
+    if (!(fSaveFlags & FSF_SaveAlways) && (!IsSaveNeeded() || IsFileChangedFlagSet() || bIsEmptyNewFile) && !(fSaveFlags & FSF_SaveAs)) {
         _MRU_UpdateSession();
         AutoSaveStop();
         ResetFileObservationData(true);
@@ -11377,7 +11394,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
         if (!((fSaveFlags & FSF_SaveCopy) || Flags.bDoRelaunchElevated)) {
             _MRU_AddSession();
             AddFilePathToRecentDocs(Paths.CurrentFile);
-            SetSavePoint();
+            SetSaveDone();
             // Install watching of the current file
             if ((fSaveFlags & FSF_SaveAs) && Settings.ResetFileWatching) {
                 _ResetFileWatchingMode();
@@ -11969,7 +11986,7 @@ void SetNotifyIconTitle(HWND hwnd)
     } else {
         GetLngString(IDS_MUI_UNTITLED, tchTitle, COUNTOF(tchTitle) - 4);
     }
-    if (IsDocumentModified()) {
+    if (IsSaveNeeded()) {
         StringCchCat(nid.szTip, COUNTOF(nid.szTip), DOCMODDIFYD);
     } 
     if (IsFileChangedFlagSet()) {
@@ -12349,7 +12366,7 @@ void AutoSaveStop()
 //
 void AutoSaveDoWork(FileSaveFlags fSaveFlags)
 {
-	if (!IsDocumentModified()) {
+	if (!IsSaveNeeded()) {
         return;
     }
     FileSave(fSaveFlags | FSF_AutoSave);
