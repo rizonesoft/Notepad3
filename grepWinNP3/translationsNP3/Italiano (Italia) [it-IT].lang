@@ -467,8 +467,8 @@ msgstr "Ricerca testo"
 
 #. Resource IDs: (160)
 #, c-format
-msgid "Il percorso \"%s\" non esiste o non è accessibile!"
-msgstr ""
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr "Il percorso \"%s\" non esiste o non è accessibile!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
