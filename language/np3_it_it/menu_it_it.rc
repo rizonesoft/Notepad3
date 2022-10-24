@@ -350,12 +350,12 @@ BEGIN
         MENUITEM "Mostra terminatori di riga\tCtrl+Shift+9",           IDM_VIEW_SHOWEOLS
         MENUITEM "Mostra simboli di a capo\tCtrl+Shift+0",             IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
-        POPUP "Change History Marker"
+        POPUP "Marcatore cronologia modifiche"
         BEGIN
-            MENUITEM "No Change Markers",                   IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+            MENUITEM "Nessun marcatore modifiche",                   IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Mostra solo nel margine",                 IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "Mostra solo nel documento",               IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "Mostra tutti i marcatori modifiche",             IDM_VIEW_CHGHIST_ALL
         END
         MENUITEM SEPARATOR
         MENUITEM "Evidenzia h&yperlink\tCtrl+Alt+W",                   IDM_VIEW_HYPERLINKHOTSPOTS
@@ -392,7 +392,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Numeri di riga\tCtrl+Shift+N",                  IDM_VIEW_LINENUMBERS
         MENUITEM "&Margine Bookmark\tCtrl+Shift+M",                IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Margine cronologia modifiche",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Folding"
         BEGIN
@@ -472,7 +472,7 @@ BEGIN
         MENUITEM "Chiusura automatica &HTML/XML\tCtrl+Shift+H",      IDM_SET_AUTOCLOSETAGS
         MENUITEM "Completamento a&utomatico delle parole",           IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Completamento automatico &keywords lexer",         IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",           IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Alterna Se&paratori parola\tCtrl+Alt+A",           IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Solo una istanza per &File",                       IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Notifica di modifi&che al file...\tAlt+F5",        IDM_SET_CHANGENOTIFY
@@ -492,7 +492,7 @@ BEGIN
             MENUITEM "Ricorda &file recenti",             IDM_SET_NOSAVERECENT
             MENUITEM "Ricorda posizione del c&ursore",    IDM_SET_NOPRESERVECARET
             MENUITEM "Ricorda argomenti della &Ricerca",  IDM_SET_NOSAVEFINDREPL
-            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "Carica &automaticamente file recente",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "&Finestra"
         BEGIN
@@ -592,7 +592,7 @@ BEGIN
         MENUITEM "Code Folding",                  IDM_VIEW_FOLDING
         MENUITEM "Numeri di riga",                IDM_VIEW_LINENUMBERS
         MENUITEM "Margine Bookmark",               IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Margine cronologia modifiche",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN

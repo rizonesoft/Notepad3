@@ -98,9 +98,9 @@ BEGIN
         MENUITEM "&Ignorer les variables de fichier",               CMD_IGNORE_FILE_VARS
         POPUP "Encoda&ge"
         BEGIN
-            POPUP "&Recharger le Fichier comme"
+            POPUP "&Recharger le fichier comme"
             BEGIN
-                MENUITEM "&Défaut (Paramètres)",                     CMD_RECODEDEFAULT
+                MENUITEM "&Défaut (paramètres)",                     CMD_RECODEDEFAULT
                 MENUITEM "&ANSI\tCtrl+Maj+A",                        CMD_RECODEANSI
                 MENUITEM "&OEM\tCtrl+Maj+O",                         CMD_RECODEOEM
                 MENUITEM "&GB18030\tCtrl+Maj+F10",                   CMD_RECODEGB18030
@@ -122,7 +122,7 @@ BEGIN
                 MENUITEM "&Plus d'encodages...\tF9",                 IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
-            MENUITEM "&Plus d'encodages...\tF9",            IDM_ENCODING_SETDEFAULT
+            MENUITEM "Définir les valeurs par défaut de l'encodage...\tF9",            IDM_ENCODING_SETDEFAULT
         END
         POPUP "&Fins de lignes"
         BEGIN
@@ -133,7 +133,7 @@ BEGIN
             MENUITEM "Par &défaut...",                      IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Con&trôle des retraits...",               CMD_CHECK_INDENTATION
+        MENUITEM "Vérifier les retraits...",               CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "&Mise en page...",                        IDM_FILE_PAGESETUP
         MENUITEM "Im&primer...\tCtrl+P",                    IDM_FILE_PRINT
@@ -265,20 +265,20 @@ BEGIN
             MENUITEM "Ta&buler le retrait\tCtrl+Alt+T",                 IDM_EDIT_CONVERTSPACES2
             MENUITEM "Détabuler le r&etrait\tCtrl+Alt+S",               IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "Encodage en Base&64",                                   IDM_EDIT_BASE64ENCODE
-            MENUITEM "Désencodage de Base6&4",                                IDM_EDIT_BASE64DECODE
-            MENUITEM "Désencodage de Base64 comme...",                        IDM_EDIT_B64DECODESEL
+            MENUITEM "Encodage en Base&64",                             IDM_EDIT_BASE64ENCODE
+            MENUITEM "Désencodage de Base6&4",                          IDM_EDIT_BASE64DECODE
+            MENUITEM "Désencodage de Base64 en...",                     IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "Encodage en URL \tCtrl+Maj+E",                     IDM_EDIT_URLENCODE
             MENUITEM "&Désencodage d'URL\tCtrl+Maj+R",                   IDM_EDIT_URLDECODE
             MENUITEM "Chemin du système de fichiers vers URL",           IDM_EDIT_PATH2URL
             MENUITEM "URL vers le chemin du système de fichiers",        IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Inverser les barres obliques inverses",            IDM_EDIT_INVERTBACKSLASH
-            MENUITEM "Inverser les barres obliques",                     IDM_EDIT_INVERTSLASH
+            MENUITEM "Inverser ""\\""",   						         IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Inverser ""/""",         					         IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
-            MENUITEM "&Caractère vers hexa\tCtrl+Alt+X",                       IDM_EDIT_CHAR2HEX
-            MENUITEM "&Hexa vers caractère\tCtrl+Alt+C",                       IDM_EDIT_HEX2CHAR
+            MENUITEM "&Caractère vers hexa\tCtrl+Alt+X",                 IDM_EDIT_CHAR2HEX
+            MENUITEM "&Hexa vers caractère\tCtrl+Alt+C",                 IDM_EDIT_HEX2CHAR
         END
         POPUP "&Insérer"
         BEGIN
@@ -312,7 +312,7 @@ BEGIN
             MENUITEM "Sélectionner le mot ou la ligne\tCtrl+Espac.",                     IDM_EDIT_SELECTWORD
             MENUITEM "Multi-sélectionner toutes les correspond&ances\tCtrl+Maj+Espac.",  IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Fractionner l'opération d'annulation aux sauts de ligne",          IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "Fractionner l'opération ""Défaire"" aux sauts de ligne",          IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "Sig&nets"
@@ -359,7 +359,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Points d'accès hyperliens\tCtrl+Alt+W",                   IDM_VIEW_HYPERLINKHOTSPOTS
-        POPUP "Définition de &couleurs de points d'accès"
+        POPUP "Points d'accès définition de &couleurs"
         BEGIN
             MENUITEM "INACTIF",                          IDM_VIEW_COLORDEFHOTSPOTS
             MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
@@ -374,7 +374,7 @@ BEGIN
             MENUITEM "&Couleur d'arrière-plan",                   IDM_VIEW_HILITCURLN_BACK
             MENUITEM "Cadre de con&tour",                         IDM_VIEW_HILITCURLN_FRAME
         END
-        POPUP "Cadre de con&tour"
+        POPUP "Mar&quer les occurrences"
         BEGIN
             MENUITEM "&Actif\tAlt+A",                       IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM "Utiliser aussi les &signets",         IDM_VIEW_MARKOCCUR_BOOKMARKS
@@ -394,13 +394,13 @@ BEGIN
         MENUITEM "&Marge de signet\tCtrl+Maj+M",               IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM "Marge d'historique des modifications",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
-        POPUP "&Pliage"
+        POPUP "&Repliage"
         BEGIN
             MENUITEM "(re)Pliage de &Code",                     IDM_VIEW_FOLDING
-            MENUITEM "Commuter les plis\tCtrl+Alt+F",           IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Commuter les pliages\tCtrl+Alt+F",           IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "S&auter au pli suivant\tAlt+ +",          CMD_FOLDJUMPDOWN
-            MENUITEM "Saut&er au pli précédent\tAlt+ –",        CMD_FOLDJUMPUP
+            MENUITEM "S&auter au pliage suivant\tAlt+ +",          CMD_FOLDJUMPDOWN
+            MENUITEM "Saut&er au pliage précédent\tAlt+ –",        CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
             MENUITEM "Replie&r\tAlt+ ←",                        CMD_FOLDCOLLAPSE
             MENUITEM "&Déplier\tAlt+ →",                        CMD_FOLDEXPAND
@@ -410,11 +410,11 @@ BEGIN
             MENUITEM "Vue focalisée\tCtrl+Alt+V",           IDM_VIEW_TOGGLE_VIEW
             POPUP "Mode d'affichage"
             BEGIN
-                MENUITEM "Pliage",                          IDM_VIEW_FV_FOLD
+                MENUITEM "Repliage",                          IDM_VIEW_FV_FOLD
                 MENUITEM "Signet",                          IDM_VIEW_FV_BOOKMARK
                 MENUITEM "Surlignage",                      IDM_VIEW_FV_HIGHLIGHT
-                MENUITEM "Signet && Pliage",                IDM_VIEW_FV_BKMRKFOLD
-                MENUITEM "Surlignage && Pliage",            IDM_VIEW_FV_HIGHLGFOLD
+                MENUITEM "Signet && Repliage",                IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Surlignage && Repliage",            IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
             MENUITEM "Journal de surveillance",                     IDM_VIEW_CHASING_DOCTAIL
@@ -501,7 +501,7 @@ BEGIN
                 MENUITEM "N&om du fichier seul",                        IDM_SET_SHOWFILENAMEONLY
                 MENUITEM "Nom du fichier et répertoire",                IDM_SET_SHOWFILENAMEFIRST
                 MENUITEM "&Chemin com&plet",                            IDM_SET_SHOWFULLPATH
-                MENUITEM "&Extrait de texte sélectionné\tCtrl+9",       IDM_SET_SHOWEXCERPT
+                MENUITEM "&Extrait du texte sélectionné\tCtrl+9",       IDM_SET_SHOWEXCERPT
             END
             MENUITEM "&Réutiliser la fenêtre\tCtrl+Maj+L",              IDM_SET_REUSEWINDOW
             MENUITEM "Toujours &visible\tAlt+T",                        IDM_SET_ALWAYSONTOP
@@ -531,8 +531,8 @@ BEGIN
         END
         POPUP "Configu&ration avancée"
         BEGIN
-            MENUITEM "Enregistrer les paramètres en q&uittant",       IDM_SET_SAVESETTINGS
-            MENUITEM "Enregistrer les paramètres mai&ntenant\tF7",    IDM_SET_SAVESETTINGSNOW
+            MENUITEM "Sauvegarder les paramètres en q&uittant",       IDM_SET_SAVESETTINGS
+            MENUITEM "Sauvegarder les paramètres mai&ntenant\tF7",    IDM_SET_SAVESETTINGSNOW
             MENUITEM "&Ouvrir le fichier des paramètres\tCtrl+F7",    CMD_OPENINIFILE
         END
     END
@@ -589,7 +589,7 @@ BEGIN
         MENUITEM "Copier les lignes marquées",              IDM_EDIT_COPY_MARKED
         MENUITEM "Supprimer les lignes marquées",           IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
-        MENUITEM "&Pliage",                                 IDM_VIEW_FOLDING
+        MENUITEM "&Repliage",                                 IDM_VIEW_FOLDING
         MENUITEM "&Numéros de ligne",                       IDM_VIEW_LINENUMBERS
         MENUITEM "Marge de signet",                         IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM "Marge d'historique des modifications",    IDM_VIEW_CHGHIST_TOGGLE_MARGIN
