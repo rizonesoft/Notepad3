@@ -495,7 +495,7 @@ BEGIN
     IDS_LEX_STR_63386       "Identificador de Símbolo"
     IDS_LEX_STR_63387       "Operador de Símbolos"
     IDS_LEX_STR_63388       "String EOL"
-    IDS_LEX_STR_63397       "Backticks"
+    IDS_LEX_STR_63397       "Acentos Graves"
 END
 
 STRINGTABLE
