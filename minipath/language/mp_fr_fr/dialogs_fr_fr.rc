@@ -173,7 +173,7 @@ BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
     LTEXT           "Spécifiez les paramètres généraux de MiniPath.",IDC_STATIC,40,15,153,8
     CONTROL         "N'autoriser qu'un seul clic de souris pour ouvrir les objets.",IDC_SINGLECLICK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,161,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,187,10
     CONTROL         "&Activer la sélection de pistage.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,140,10
     CONTROL         "Activer la &sélection de ligne complète.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,125,10
     CONTROL         "Toujours ac&tiver la fenêtre cible quand un fichier est ouvert.",IDC_FOCUSEDIT,
