@@ -700,12 +700,21 @@ DeclareSciCallV1(SetAdditionalCaretsVisible, SETADDITIONALCARETSVISIBLE, bool, f
 //  Undo/Redo Stack
 //
 DeclareSciCallV0(EmptyUndoBuffer, EMPTYUNDOBUFFER);
-DeclareSciCallV0(BeginUndoAction, BEGINUNDOACTION);
+//DeclareSciCallV0(BeginUndoAction, BEGINUNDOACTION);
 DeclareSciCallV2(AddUndoAction, ADDUNDOACTION, int, token, int, flags);
-DeclareSciCallV0(EndUndoAction, ENDUNDOACTION);
+//DeclareSciCallV0(EndUndoAction, ENDUNDOACTION);
 DeclareSciCallR0(GetUndoCollection, GETUNDOCOLLECTION, bool);
 DeclareSciCallV1(SetUndoCollection, SETUNDOCOLLECTION, bool, bCollectUndo);
 
+
+inline void SciCall_BeginUndoAction()
+{
+    SciCall(SCI_BEGINUNDOACTION, 0, 0);
+}
+inline void SciCall_EndUndoAction()
+{
+    SciCall(SCI_ENDUNDOACTION, 0, 0);
+}
 
 //=============================================================================
 //

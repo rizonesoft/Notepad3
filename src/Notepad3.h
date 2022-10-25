@@ -193,15 +193,21 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 LRESULT MsgUahMenuBar(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
-LRESULT MsgNonClientAreaPaint(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
+//LRESULT MsgNonClientAreaPaint(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
 // ----------------------------------------------------------------------------
 
-void SetNotifyDocChangedEvent(const SciEventMask evm);
-void ResetNotifyDocChangedEvent();
-
 #define DisableNotifyEvents()  { int _evm_ = 0; __try { _evm_ = SciCall_GetModEventMask();  SciCall_SetModEventMask(EVM_None);
 #define EnableNotifyEvents()   ;} __finally { SciCall_SetModEventMask(_evm_); } }
+
+// ----------------------------------------------------------------------------
+
+void SetNotifyDocChangedEvent();
+void ResetNotifyDocChangedEvent();
+
+// none msg change notify, preserve redo-undo selection stack  (only in simple, non complex operations)
+#define UndoTransActionBegin()  { LONG _token_ = 0L; __try { _token_ = BeginUndoActionSelection(); SetNotifyDocChangedEvent(); 
+#define EndUndoTransAction()    ;} __finally { ResetNotifyDocChangedEvent(); EndUndoActionSelection(_token_); } }
 
 // ----------------------------------------------------------------------------
 
@@ -209,14 +215,14 @@ LONG BeginUndoActionEx();
 void EndLockUndoActionEx(const LONG token);
 
 // lean msg change notify (preferred) - does not preserve redo-undo selection stack
-#define DocChangeTransactionBegin()  { LONG _tok_ = 0L; __try { _tok_ = BeginUndoActionEx(); SetNotifyDocChangedEvent(EVM_None); 
+#define DocChangeTransactionBegin()  { LONG _tok_ = 0L; __try { _tok_ = BeginUndoActionEx(); SetNotifyDocChangedEvent(); 
 #define EndDocChangeTransaction()    ;} __finally { ResetNotifyDocChangedEvent(); EndLockUndoActionEx(_tok_); } }
 
-// ----------------------------------------------------------------------------
-
-// none msg change notify, preserve redo-undo selection stack  (only in simple, non complex operations)
-#define UndoTransActionBegin()  { LONG _token_ = 0L; __try { _token_ = BeginUndoActionSelection(); SetNotifyDocChangedEvent(EVM_None); 
-#define EndUndoTransAction()    ;} __finally { ResetNotifyDocChangedEvent(); EndUndoActionSelection(_token_); } }
+// DEBUG:
+//#define DocChangeTransactionBegin() UndoTransActionBegin()
+//#define EndDocChangeTransaction()   EndUndoTransAction()
+//#define UndoTransActionBegin()      DocChangeTransactionBegin()
+//#define EndUndoTransAction()        EndDocChangeTransaction()
 
 // ----------------------------------------------------------------------------
 

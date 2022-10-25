@@ -232,13 +232,19 @@ const WCHAR* const TBBUTTON_DEFAULT_IDS_V2 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 
 //
 //  Save Needed Flag
 //
-static bool s_DocNeedSaving = false; // dirty-flag
+static bool s_NeedSavingForced = false; // dirty-flag
 
-static inline void SetSaveNeeded()
+inline static bool IsSaveNeeded()
 {
-    AutoSaveStart(!s_DocNeedSaving);
-    s_DocNeedSaving = true;
+    return SciCall_GetModify() || s_NeedSavingForced;
+}
 
+static inline void SetSaveNeeded(const bool bSetFlag)
+{
+    AutoSaveStart(!s_NeedSavingForced);
+    if (bSetFlag) {
+        s_NeedSavingForced = true;
+    }
     if (IsWindow(Globals.hwndDlgFindReplace)) {
         PostWMCommand(Globals.hwndDlgFindReplace, IDC_DOC_MODIFIED);
     }
@@ -251,14 +257,9 @@ static inline void SetSavePoint()
     UpdateToolbar();
 }
 
-inline static bool IsSaveNeeded()
-{
-    return SciCall_GetModify() || s_DocNeedSaving;
-}
-
 void SetSaveDone()
 {
-    s_DocNeedSaving = false;
+    s_NeedSavingForced = false;
     SetSavePoint();
 }
 
@@ -408,14 +409,22 @@ static void CopyUndoRedoSelection(void* dst, const void* src)
 
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), InitUndoRedoSelection, CopyUndoRedoSelection, DelUndoRedoSelection };
 static UT_array* UndoRedoSelectionUTArray = NULL;
-static inline bool _InUndoRedoTransaction();
 static void  _SaveRedoSelection(const LONG token);
 static LONG  _SaveUndoSelection();
 static LONG  _UndoRedoActionMap(const LONG token, const UndoRedoSelection_t** selection);
 // => UndoTransActionBegin();
 // => EndUndoTransAction();
 
-static inline void _SplitUndoTransaction() {
+
+static volatile LONG UndoActionToken = URTok_NoRecording; // needs UndoRedoRecordingStart()
+
+static inline bool _InUndoRedoTransaction()
+{
+    return (InterlockedOr(&UndoActionToken, 0L) >= URTok_TokenStart);
+}
+
+static inline void _SplitUndoTransaction()
+{
     if (!_InUndoRedoTransaction()) {
         SciCall_BeginUndoAction();
         /* noop */
@@ -448,10 +457,12 @@ static __forceinline bool NotifyDocChanged()
     return (InterlockedOr(&iNotifyChangeStackCounter, 0L) == 0L);
 }
 
-void SetNotifyDocChangedEvent(const SciEventMask evm)
+void SetNotifyDocChangedEvent()
 {
+    if (NotifyDocChanged()) {
+        SciCall_SetModEventMask(EVM_None);
+    }
     InterlockedIncrement(&iNotifyChangeStackCounter);
-    SciCall_SetModEventMask(evm);
 }
 
 void ResetNotifyDocChangedEvent()
@@ -1768,7 +1779,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
                         if (Path_IsExistingFile(s_hpthRelaunchElevatedFile)) {
                             DeleteFileW(Path_Get(s_hpthRelaunchElevatedFile));
                         }
-                        SetSaveNeeded();
+                        SetSaveNeeded(true);
                     }
 
                     if (Path_IsNotEmpty(Paths.CurrentFile)) {
@@ -3836,11 +3847,11 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2))) {
                 FileSave(FSF_SaveAlways);
             } else {
-                SetSaveNeeded();
+                SetSaveNeeded(true);
             }
         } else {
             // FWM_INDICATORSILENT: nothing todo here
-            SetSaveNeeded();
+            SetSaveNeeded(true);
         }
     }
 
@@ -4817,7 +4828,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         BeginWaitCursorUID(true, IDS_MUI_SB_RECODING_DOC);
         if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE))) {
             UpdateMargins(true);
-            SetSaveNeeded();
+            SetSaveNeeded(true);
         }
         EndWaitCursor();
         UpdateToolbar();
@@ -6437,7 +6448,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_SETPASS:
         if (GetFileKey(Globals.hwndEdit)) {
-            SetSaveNeeded();
+            SetSaveNeeded(true);
         }
         break;
 
@@ -8226,11 +8237,11 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
         } break;
 
         case SCN_SAVEPOINTREACHED: {
-            SetSavePoint();
+            SetSaveDone();
         } break;
 
         case SCN_SAVEPOINTLEFT: {
-            SetSaveNeeded();
+            SetSaveNeeded(false);
         } break;
 
         case SCN_MODIFYATTEMPTRO: {
@@ -10195,13 +10206,6 @@ void UpdateUI() {
 
 //=============================================================================
 
-static volatile LONG UndoActionToken = URTok_NoRecording; // needs UndoRedoRecordingStart()
-
-static inline bool _InUndoRedoTransaction()
-{
-    return (InterlockedOr(&UndoActionToken, 0L) >= URTok_TokenStart);
-}
-
 LONG BeginUndoActionEx()
 {
     if (!_InUndoRedoTransaction()) {
@@ -10209,21 +10213,21 @@ LONG BeginUndoActionEx()
         SciCall_BeginUndoAction();
         return URTok_NoTokenFlag;
     }
-    return URTok_InTransaction;
+    return InterlockedOr(&UndoActionToken, 0L); // current token
 }
 
 void EndLockUndoActionEx(const LONG token)
 {
     if (_InUndoRedoTransaction()) {
-        if (InterlockedOr(&UndoActionToken, 0L) == token) {
-            SciCall_EndUndoAction();
-            InterlockedExchange(&UndoActionToken, URTok_NoTransaction);
+        if (token == InterlockedOr(&UndoActionToken, 0L)) {
+            if (token == URTok_NoTokenFlag) {
+                SciCall_EndUndoAction();
+                InterlockedExchange(&UndoActionToken, URTok_NoTransaction);
+            }
+            //else foreign token - okay, child transaction
         } else {
             assert("Wrong Transaction" && 0);
         }
-    }
-    else if (URTok_InTransaction == token) {
-        // okay, was child transaction
     }
     else {
         assert("No Transaction" && 0);
@@ -10239,7 +10243,6 @@ void UndoRedoRecordingStart()
     _UndoRedoActionMap(URTok_NoTransaction, NULL); // clear
     SciCall_SetUndoCollection(true);
     SciCall_EmptyUndoBuffer();
-    SetSavePoint();
     SciCall_SetChangeHistory(SC_CHANGE_HISTORY_ENABLED | Settings.ChangeHistoryMode);
     UpdateMargins(true);
 }
@@ -10347,8 +10350,8 @@ static LONG _SaveUndoSelection()
     LONG const token = _UndoRedoActionMap(URTok_NoTransaction, &pSel);
 
     if (token >= 0) {
-        //~SciCall_AddUndoAction(token, UNDO_MAY_COALESCE);
-        SciCall_AddUndoAction((int)token, UNDO_NONE);
+        SciCall_AddUndoAction(token, UNDO_MAY_COALESCE);
+        //SciCall_AddUndoAction((int)token, UNDO_NONE);
     }
 
     DelUndoRedoSelection(&sel); // utarray_free()
@@ -10465,15 +10468,17 @@ const char* const _assert_msg = "Broken UndoRedo-Transaction!";
 void EndUndoActionSelection(const LONG token)
 {
     switch (token) {
-    case URTok_NoTransaction:
     case URTok_InTransaction:
         // nothing to do (child transaction)
+        break;
+    case URTok_NoTransaction:
+        assert(_assert_msg && InterlockedOr(&UndoActionToken, 0L) == URTok_NoTransaction);
         break;
     case URTok_NoRecording:
         assert(_assert_msg && InterlockedOr(&UndoActionToken, 0L) == URTok_NoRecording);
         break;
     default:
-        if (InterlockedOr(&UndoActionToken, 0L) == token) {
+        if (token == InterlockedOr(&UndoActionToken, 0L)) {
             _SaveRedoSelection(token);
             SciCall_EndUndoAction();
             InterlockedExchange(&UndoActionToken, URTok_NoTransaction);
@@ -10597,7 +10602,7 @@ void RestoreActionSelection(const LONG token, DoAction doAct)
 //
 static LONG _UndoRedoActionMap(const LONG token, const UndoRedoSelection_t** selection)
 {
-    static ULONG uiTokenCnt = URTok_TokenStart;
+    static ULONG uiTokenCnt = URTok_TokenStart; 
 
     if (UndoRedoSelectionUTArray == NULL) {
         return URTok_NoRecording;
@@ -10637,7 +10642,7 @@ static LONG _UndoRedoActionMap(const LONG token, const UndoRedoSelection_t** sel
             (*selection) = (UndoRedoSelection_t*)utarray_eltptr(UndoRedoSelectionUTArray, utoken);
         } else {
             // this is a set request (fill redo pos)
-            assert(false); // not used yet
+            assert("Invalid set request (fill redo pos)!" && 0); // not used yet
             //~utarray_insert(UndoRedoSelectionUTArray, (void*)(*selection), utoken);
         }
         // don't clear map item here (token used in redo/undo again)
@@ -10788,7 +10793,7 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
 
         Style_SetDefaultLexer(Globals.hwndEdit);
 
-        SetSavePoint();
+        SetSaveDone();
 
         UpdateToolbar();
         UpdateMargins(true);

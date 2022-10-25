@@ -5162,6 +5162,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     }
 
     BeginWaitCursor(iLineCount > 10000, L" Sorting Lines...");
+    UndoTransActionBegin();
 
     DocPos      iMaxLineLen = Sci_GetRangeMaxLineLength(iLineStart, iLineEnd);
     char* const pmsz = AllocMem(iMaxLineLen + 1, HEAP_ZERO_MEMORY);
@@ -5331,6 +5332,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
         EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
     }
 
+    EndUndoTransAction();
     EndWaitCursor();
 }
 
@@ -7276,8 +7278,6 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
 
     int const searchFlags = GetMarkAllOccSearchFlags();
 
-    DocChangeTransactionBegin();
-
     if (Settings.MarkOccurrencesMatchVisible) {
 
         // get visible lines for update
@@ -7292,8 +7292,6 @@ void EditMarkAllOccurrences(HWND hwnd, bool bForceClear)
     } else {
         EditMarkAll(NULL, searchFlags, 0, Sci_GetDocEndPosition(), false);
     }
-
-    EndDocChangeTransaction();
 }
 
 
@@ -7488,7 +7486,9 @@ bool EditReplaceAll(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bShowInfo)
     DocPos enlargement = 0;
 
     BeginWaitCursorUID(true, IDS_MUI_SB_REPLACE_ALL);
+    UndoTransActionBegin();
     Globals.iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
+    EndUndoTransAction();
     EndWaitCursor();
 
     WCHAR wchOcc[64] = { L'\0' };
