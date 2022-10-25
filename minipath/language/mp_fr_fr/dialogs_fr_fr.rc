@@ -102,7 +102,7 @@ CAPTION "Aller à"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Entrez le nom d'un fichier ou d'un dossier à ouvrir,\nou sélectionnez un dossier récemment visité dans la liste.",IDC_STATIC,35,7,182,17
+    LTEXT           "Entrez le nom d'un fichier ou d'un dossier à ouvrir,\nou sélectionnez dans la liste un dossier récemment visité.",IDC_STATIC,35,7,182,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "Annuler",IDCANCEL,167,66,50,14
@@ -111,10 +111,10 @@ END
 
 IDD_FILTER DIALOGEX 0, 0, 184, 79
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Filtre Fichier"
+CAPTION "Filtre de fichier"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-    LTEXT           "Spécifiez un nouveau filtre.\nNB : Séparez plusieurs filtres par un ';'",IDC_STATIC,7,7,170,8
+    LTEXT           "Spécifiez un nouveau filtre.\nNB : Séparez plusieurs filtres par un "";""",IDC_STATIC,7,7,170,8
     EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
     CONTROL         "&Exclure les fichiers correspondants au filtre.",IDC_NEGFILTER,
@@ -200,7 +200,7 @@ BEGIN
     CONTROL         "&Dossier de démarrage :",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
     CONTROL         "Dossier des ""&Favoris"".",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
-    CONTROL         "&Effacer l'attribut en lecture seule des fichiers sauvés.",IDC_CLEARREADONLY,
+    CONTROL         "&Effacer l'attribut ""lecture seule"" des fichiers sauvés.",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,180,10
     CONTROL         "Reno&mmer les fichiers copiés si collision de nom.",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,174,10
@@ -244,7 +244,7 @@ BEGIN
     LTEXT           "Programme ""Aperçu""  par défaut (Ctrl+Q) :",IDC_STATIC,10,41,146,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
-    LTEXT           "Dossier des  ""&Favoris""  (F11) :",IDC_STATIC,10,76,76,8
+    LTEXT           "Dossier des ""&Favoris""  (F11) :",IDC_STATIC,10,76,76,8
     EDITTEXT        IDC_FAVORITES,10,87,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
 END
