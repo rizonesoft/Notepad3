@@ -459,16 +459,16 @@ msgstr "Text"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Textová zhoda"
+msgstr "Zhoda textu"
 
 #. Resource IDs: (1002)
 msgid "Text search"
-msgstr "Textové hľadanie"
+msgstr "Hľadanie textu"
 
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr ""
+msgstr "Cesta \"%s\" neexistuje, alebo nie je dostupná!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
