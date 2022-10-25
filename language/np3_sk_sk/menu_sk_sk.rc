@@ -350,12 +350,12 @@ BEGIN
         MENUITEM "Prázdne &miesto odsadenia\tCtrl+Shift+8",     IDM_VIEW_SHOWBLANKS
         MENUITEM "Zobraziť &koncovky riadkov\tCtrl+Shift+9",    IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        POPUP "Change History Marker"
+        POPUP "Značka histórie zmien"
         BEGIN
-            MENUITEM "No Change Markers",                   IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+            MENUITEM "Značky bez zmeny",                        IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Zobraziť len na okraji",                  IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "Zobraziť len v dokumente",                IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "Zobraziť všetky značky zmien",            IDM_VIEW_CHGHIST_ALL
         END
         MENUITEM SEPARATOR
         MENUITEM "&Hyperlinkové prepojenia\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
@@ -392,7 +392,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Číslovanie r&iadkov\tCtrl+Shift+N",       IDM_VIEW_LINENUMBERS
         MENUITEM "&Okraj záložky\tCtrl+Shift+M",            IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Okraj histórie zmien",                    IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Skladanie"
         BEGIN
@@ -472,12 +472,12 @@ BEGIN
         MENUITEM "Auto-zakončovanie &HTML/XML\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "A&utomatické dokončovanie slov",               IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Auto-kompletizácia kľúčových slov &Lexer",     IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",       IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Alternatívne oddeľovanie &slov\tCtrl+Alt+A",   IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
-        MENUITEM "&Iba jedna inštancia na súbor",                IDM_SET_SINGLEFILEINSTANCE
-        MENUITEM "&Oznámenie o zmene súboru...\tAlt+F5",         IDM_SET_CHANGENOTIFY
-        ///MENUITEM "Auto-ukladanie / Nastavenie zálohovania...",   IDM_SET_AUTOSAVE_BACKUP
-        MENUITEM "&Stlmiť hlásenie pípnutím",                    IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "&Iba jedna inštancia na súbor",                  IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "&Oznámenie o zmene súboru...\tAlt+F5",           IDM_SET_CHANGENOTIFY
+        ///MENUITEM "Auto-ukladanie / Nastavenie zálohovania...",  IDM_SET_AUTOSAVE_BACKUP
+        MENUITEM "&Stlmiť hlásenie pípnutím",                      IDM_SET_MUTE_MESSAGEBEEP
         POPUP "&Funkcia klávesy Esc"
         BEGIN
             MENUITEM "Ž&iadna",                             IDM_SET_NOESCFUNC
@@ -489,10 +489,10 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Pamätať si"
         BEGIN
-            MENUITEM "&Naposledy použité súbory",           IDM_SET_NOSAVERECENT
-            MENUITEM "Pozíciu &okna",                       IDM_SET_NOPRESERVECARET
-            MENUITEM "Pozíciu &kurzora",                    IDM_SET_NOSAVEFINDREPL
-            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "&Naposledy použité súbory",             IDM_SET_NOSAVERECENT
+            MENUITEM "Pozíciu &okna",                         IDM_SET_NOPRESERVECARET
+            MENUITEM "Pozíciu &kurzora",                      IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Auto-načítať naposledy použitý súbor", IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "&Okno"
         BEGIN
@@ -592,7 +592,7 @@ BEGIN
         MENUITEM "Skladacia väzba",                        IDM_VIEW_FOLDING
         MENUITEM "Číslovanie riadkov",                     IDM_VIEW_LINENUMBERS
         MENUITEM "Okraj záložky",                          IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Okraj histórie zmien",                   IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN

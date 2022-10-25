@@ -500,14 +500,14 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_CH_MODIFIED     "Change History Marker Modified"
-    IDS_LEX_STD_CH_SAVED        "Change History Marker Saved"
-    IDS_LEX_STD_CH_REV_TO_MOD   "Change History Marker Reverted to Modified"
-    IDS_LEX_STD_CH_REV_TO_ORG   "Change History Marker Reverted to Origin"
-    IDS_LEX_2ND_CH_MODIFIED     "2nd Change History Marker Modified"
-    IDS_LEX_2ND_CH_SAVED        "2nd Change History Marker Saved"
-    IDS_LEX_2ND_CH_REV_TO_MOD   "2nd Change History Marker Reverted to Modified"
-    IDS_LEX_2ND_CH_REV_TO_ORG   "2nd Change History Marker Reverted to Origin"
+    IDS_LEX_STD_CH_MODIFIED     "Zmena značky histórie zmien"
+    IDS_LEX_STD_CH_SAVED        "Uloženie značky histórie zmien"
+    IDS_LEX_STD_CH_REV_TO_MOD   "Zmena značky histórie Vrátené späť na Upravené"
+    IDS_LEX_STD_CH_REV_TO_ORG   "Zmena značky histórie Vrátené späť na Originál"
+    IDS_LEX_2ND_CH_MODIFIED     "2. zmena značky histórie Upravené"
+    IDS_LEX_2ND_CH_SAVED        "2. zmena značky histórie Uložené"
+    IDS_LEX_2ND_CH_REV_TO_MOD   "2. zmena značky histórie Vrátené späť na Upravené"
+    IDS_LEX_2ND_CH_REV_TO_ORG   "2. zmena značky histórie Vrátené späť na Originál"
 END
 
 STRINGTABLE

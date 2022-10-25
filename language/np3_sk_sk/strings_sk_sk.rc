@@ -120,7 +120,7 @@ BEGIN
     IDS_MUI_FAVORITES       "Vyberte adresár s odkazmi na vaše obľúbené súbory."
     IDS_MUI_BACKSLASHHELP   "Transformácie spätného lomítka\n\n\\a\tVýstraha (BEL, Ascii 7)\n\\b\tKrok vzad (BS, Ascii 8)\n\\f\tInformačný formulár (FF, Ascii 12)\n\\n\tNový riadok (LF, Ascii 10)\n\\r\tMedzera (CR, Ascii 13)\n\\t\tVodorovná karta (HT, Ascii 9)\n\\v\tZvislá karta (VT, Ascii 11)\n\\0oo\tOktálna hodnota\n\\u####\tHexadecimálna hodnota\n\\xhh\tHexadecimálna hodnota\n\\\\\tSpätné lomítko"
     IDS_MUI_REGEXPHELP      "Syntax zhody RegExp (viac riadkov)\n\n.\tZodpovedá ľubovoľnému znaku\n^\tPrázdny reťazec hneď po novom riadku\n$\tPrázdny reťazec tesne pred koncom riadku\n\\<\tZačiatok slova\n\\>\tKoniec slova\n\\b\tHranica slova\n[...]\tSada znakov ([abc]) alebo rozsah ([a-z])\n[^...]\tZnaky NIE sú v sade alebo rozsahu\n\\d\tAkákoľvek desatinná číslica\n\\D\tAkýkoľvek znak bez číslice\n\\s\tAkýkoľvek znak medzery\n\\S\tNie je znak medzery\n\\w\tAkýkoľvek znak ako ""slovo""\n\\W\tAkýkoľvek znak ktorý ""nie je slovo""\n\\x\tÚnikový znak s iným zvláštnym významom\n\\xHH\tZnak so šestnástkovým kódom HH\n?\tZhody predchádzajúce 0 alebo 1-krát\n*\tZhody predchádzajúce 0 alebo viackrát\n+\tZhody predchádzajúce 1 alebo viackrát\n*? or +?\tNespravodlivé porovnávanie kvantifikátorov ""?"" a ""+""\n(\tZačiatok regiónu\n)\tKoniec regiónu\n\\n\tPri zámene odkazuje na región (n je 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Vyhľadávanie zástupných znakov\n\n*\tZodpovedá nule alebo viacerým znakom.\n?\tZhoduje sa presne s jedným znakom. "
+    IDS_MUI_WILDCARDHELP    "Vyhľadávanie zástupných znakov\n\n*\tZodpovedá nule alebo viacerým znakom.\n?\tZhoduje sa presne s jedným znakom."
 END
 
 STRINGTABLE
@@ -206,7 +206,7 @@ BEGIN
                              "Zachovanie pôvodnej časovej pečiatky pri úprave súboru je povolené.\nTáto možnosť zostane len pre túto reláciu!"
     IDS_MUI_OUT_OFF_OCCMRK   "Dochádzajú označené výskyty (záložka/zvýraznenie)!"
     IDS_MUI_DOCUMENT_READONLY
-                             "The document is locked for view only. Keep the lock to prevent editing?"
+                             "Dokument je uzamknutý len na čítanie. Ponechať uzamknutie na zabránenie úprav?"
 END
 
 STRINGTABLE
@@ -222,7 +222,7 @@ BEGIN
     IDS_MUI_WARN_STYLE_RESET
                             "Táto akcia obnoví štýl na predvolené nastavenia požadovaného farebného režimu a prepne súbor INI aktívnej témy na štandardnú konfiguráciu!"
     IDS_MUI_ASK_INSTANCE_EXISTS
-                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
+                            "Režim jednej inštancie súboru:\n\nNastaviť zameranie na už načítanú inštanciu súboru?"
 END
 
 STRINGTABLE
@@ -272,9 +272,9 @@ BEGIN
                             "Vymazať históriu vyhľadávania"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Vymazať históriu nahradenia"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard Shortcut [^c]"
-    IDS_MUI_WRAPSEARCH_FWD  "Zvinovať zvrchu"
-    IDS_MUI_WRAPSEARCH_BCK  "Zvinovať zospodu"
+    IDS_MUI_REPLCLIPTAG     "Nahradiť skratkou schránky [^c]"
+    IDS_MUI_WRAPSEARCH_FWD  "Zviňovať zvrchu"
+    IDS_MUI_WRAPSEARCH_BCK  "Zviňovať zospodu"
 END
 
 STRINGTABLE
