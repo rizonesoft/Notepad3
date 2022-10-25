@@ -106,7 +106,7 @@ BEGIN
     DEFPUSHBUTTON   "Successivo &>",IDOK,221,7,63,14
     PUSHBUTTON      "&< Precedente",IDC_FINDPREV,221,24,63,14
     PUSHBUTTON      "Chiudi",IDCANCEL,221,99,63,14
-    CONTROL         "<a>Vai a Sostituisci (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,103,74,10
+    CONTROL         "<a>Vai a Sostituisci (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,105,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,201,85,14,10
@@ -144,7 +144,7 @@ BEGIN
     PUSHBUTTON      "Sostituisci &Tutto",IDC_REPLACEALL,221,75,63,14
     PUSHBUTTON      "Scambia stringhe",IDC_SWAPSTRG,150,32,59,12
     PUSHBUTTON      "Chiudi",IDCANCEL,221,126,63,14
-    CONTROL         "<a>Vai a Cerca (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,130,74,10
+    CONTROL         "<a>Vai a Cerca (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,132,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,201,114,14,10
