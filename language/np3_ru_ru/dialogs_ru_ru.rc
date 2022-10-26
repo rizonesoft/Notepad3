@@ -106,7 +106,7 @@ BEGIN
     DEFPUSHBUTTON   "Найти &далее",IDOK,246,7,60,14
     PUSHBUTTON      "&Предыдущее",IDC_FINDPREV,246,23,60,14
     PUSHBUTTON      "Закрыть",IDCANCEL,246,99,60,14
-    CONTROL         "<a>Заменить (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,133,103,74,10
+    CONTROL         "<a>Заменить (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,133,105,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,224,85,14,10
@@ -144,7 +144,7 @@ BEGIN
     PUSHBUTTON      "Заменить в&сё",IDC_REPLACEALL,246,75,60,14
     PUSHBUTTON      "Поменять местами",IDC_SWAPSTRG,156,32,73,12
     PUSHBUTTON      "Закрыть",IDCANCEL,246,126,60,14
-    CONTROL         "<a>Найти (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,133,130,74,10
+    CONTROL         "<a>Найти (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,133,132,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,224,114,14,10

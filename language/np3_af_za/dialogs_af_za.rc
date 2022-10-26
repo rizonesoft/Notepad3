@@ -106,7 +106,7 @@ BEGIN
     DEFPUSHBUTTON   "&Vind Volgende",IDOK,221,7,55,14
     PUSHBUTTON      "Vind V&orige",IDC_FINDPREV,221,24,55,14
     PUSHBUTTON      "Maak toe",IDCANCEL,221,99,55,14
-    CONTROL         "<a>Gaan na vervang (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,135,103,84,10
+    CONTROL         "<a>Gaan na vervang (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,135,105,84,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,116,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,116,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,208,85,14,10
@@ -144,7 +144,7 @@ BEGIN
     PUSHBUTTON      "Vervang &Alles",IDC_REPLACEALL,221,75,55,14
     PUSHBUTTON      "Swap Strings",IDC_SWAPSTRG,160,32,49,12
     PUSHBUTTON      "Maak toe",IDCANCEL,221,126,55,14
-    CONTROL         "<a>Gaan Soek (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,135,130,74,10
+    CONTROL         "<a>Gaan Soek (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,135,132,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,117,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,117,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,208,1114,12,10

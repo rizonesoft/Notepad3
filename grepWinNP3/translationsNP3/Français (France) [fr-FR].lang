@@ -67,7 +67,7 @@ msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "Visit Stefan Küng's website"
-msgstr "Visiter le site web Stefan Küng"
+msgstr "Visitez le site web Stefan Küng"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWinNP3...</a>"
@@ -100,7 +100,7 @@ msgstr "Toutes les tailles"
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr "Etes-vous certain de vouloir remplacer\n%s\npar\n%s\nsans créer d'archivage ?"
+msgstr "Etes-vous certain de vouloir remplacer\n%s\npar\n%s\nsans créer d'archivages ?"
 
 #. Resource IDs: (1081)
 msgid "Between"
@@ -112,7 +112,7 @@ msgstr "Annuler"
 
 #. Resource IDs: (169)
 msgid "Capture search"
-msgstr "Capture de recherche"
+msgstr "Capturer la recherche"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
@@ -220,7 +220,7 @@ msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Recherche par nom de fichier : (utiliser '|' pour séparer\nplusieurs motifs, préfixer '-' pour exclure)."
+msgstr "Recherche par nom de fichier : (utiliser '|' pour séparer\nplusieurs modèles, préfixer '-' pour exclure)."
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -599,7 +599,7 @@ msgstr "examen du fichier '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
-msgstr "le motif de recherche est vide."
+msgstr "la chaîne de recherche est vide."
 
 #. Resource IDs: (170, 171)
 msgid "Start new grepWinNP3 window"
