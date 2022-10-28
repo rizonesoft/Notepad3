@@ -10729,9 +10729,10 @@ static inline void _ResetFileWatchingMode() {
     ResetFileObservationData(true);
 }
 
-bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
+bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
 {
     bool fSuccess = false;
+    bool const bReloadFile = (fLoadFlags & FLF_Reload);
 
     EditFileIOStatus fioStatus = INIT_FILEIO_STATUS;
     fioStatus.iEOLMode = Settings.DefaultEOLMode;
@@ -10743,7 +10744,7 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
         }
     }
 
-    if (!(fLoadFlags & FLF_Reload)) {
+    if (!bReloadFile) {
         ResetEncryption();
     }
 
@@ -10806,10 +10807,10 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
 
     Path_NormalizeEx(hopen_file, Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
 
-    if (Path_StrgComparePathNormalized(hopen_file, Paths.CurrentFile) == 0) {
+    if (!bReloadFile && Path_StrgComparePathNormalized(hopen_file, Paths.CurrentFile) == 0) {
         return false;
     }
-    if (Flags.bSingleFileInstance) {
+    if (!bReloadFile && Flags.bSingleFileInstance) {
         Path_Reset(s_pthCheckFilePath, Path_Get(hopen_file));
         HWND hwnd = NULL;
         EnumWindows(_EnumWndProc2, (LPARAM)&hwnd);
@@ -10822,7 +10823,7 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
     }
 
     // Ask to create a new file...
-    if (!(fLoadFlags & FLF_Reload) && !Path_IsExistingFile(hopen_file)) {
+    if (!bReloadFile && !Path_IsExistingFile(hopen_file)) {
         bool bCreateFile = s_flagQuietCreate;
         if (!bCreateFile) {
             WCHAR szDisplayName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
@@ -10866,7 +10867,7 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
     }
     else {
         int idx;
-        if (!(fLoadFlags & FLF_Reload) && MRU_FindPath(Globals.pFileMRU, hopen_file, &idx)) {
+        if (!bReloadFile && MRU_FindPath(Globals.pFileMRU, hopen_file, &idx)) {
             fioStatus.iEncoding = Globals.pFileMRU->iEncoding[idx];
             if (Encoding_IsValid(fioStatus.iEncoding)) {
                 Encoding_SrcWeak(fioStatus.iEncoding);
@@ -10875,10 +10876,10 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
         else {
             fioStatus.iEncoding = Encoding_GetCurrent();
         }
-        if ((fLoadFlags & FLF_Reload) && !FileWatching.MonitoringLog) {
+        if (bReloadFile && !FileWatching.MonitoringLog) {
             Sci_GotoPosChooseCaret(0);
             UndoTransActionBegin();
-            fSuccess = FileIO(true, hopen_file, &fioStatus, fLoadFlags, FSF_None, !(fLoadFlags & FLF_Reload));
+            fSuccess = FileIO(true, hopen_file, &fioStatus, fLoadFlags, FSF_None, !bReloadFile);
             EndUndoTransAction();
         }
         else {
@@ -10915,7 +10916,7 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
         DocPos  iCaretPos = -1;
         DocPos  iAnchorPos = -1;
         LPCWSTR pszBookMarks = L"";
-        if (!(fLoadFlags & FLF_Reload) && MRU_FindPath(Globals.pFileMRU, Paths.CurrentFile, &idx)) {
+        if (!bReloadFile && MRU_FindPath(Globals.pFileMRU, Paths.CurrentFile, &idx)) {
             iCaretPos = Globals.pFileMRU->iCaretPos[idx];
             iAnchorPos = Globals.pFileMRU->iSelAnchPos[idx];
             pszBookMarks = Globals.pFileMRU->pszBookMarks[idx];
@@ -10932,7 +10933,7 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
 
         // Install watching of the current file
         AutoSaveStop();
-        if (!(fLoadFlags & FLF_Reload)) {
+        if (!bReloadFile) {
             InstallFileWatching(false); // terminate previous
             if (Settings.ResetFileWatching) {
                 _ResetFileWatchingMode();
@@ -10978,7 +10979,7 @@ bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags)
         // Show inconsistent line endings warning
         Globals.bDocHasInconsistentEOLs = fioStatus.bInconsistentEOLs;
 
-        bool const bCheckFile = !Globals.CmdLnFlag_PrintFileAndLeave && !fioStatus.bEncryptedRaw && !(fioStatus.bUnknownExt && bUnknownLexer) && !(fLoadFlags & FLF_Reload);
+        bool const bCheckFile = !Globals.CmdLnFlag_PrintFileAndLeave && !fioStatus.bEncryptedRaw && !(fioStatus.bUnknownExt && bUnknownLexer) && !bReloadFile;
         //&& (fioStatus.iEncoding == CPI_ANSI_DEFAULT) ???
 
         bool const bCheckEOL = bCheckFile && Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs;

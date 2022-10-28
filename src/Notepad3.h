@@ -157,7 +157,7 @@ size_t  LengthOfFindPatternMB();
 
 bool ConsistentIndentationCheck(EditFileIOStatus* status);
 
-bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags);
+bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags);
 bool FileSave(FileSaveFlags fSaveFlags);
 bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc);
 bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
