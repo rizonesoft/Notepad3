@@ -88,10 +88,11 @@ typedef enum {
 
 
 //==== Notifications ==========================================================
-#define WM_TRAYMESSAGE           (WM_USER+1)       // Callback Message from System Tray
-#define WM_FILECHANGEDNOTIFY     (WM_USER+2)       // Change Notifications
-#define IDC_FILEMRU_UPDATE_VIEW  (WM_USER+3)
-//#define WM_CHANGENOTIFYCLEAR     (WM_USER+4)
+#define WM_TRAYMESSAGE             (WM_USER + 1)       // Callback Message from System Tray
+#define WM_FILECHANGEDNOTIFY       (WM_USER + 2)       // Change Notifications
+#define WM_RESTORE_UNDOREDOACTION  (WM_USER + 3)
+#define IDC_FILEMRU_UPDATE_VIEW    (WM_USER + 4)
+//#define WM_CHANGENOTIFYCLEAR     (WM_USER + 5)
 
 //==== Timer ==================================================================
 #define ID_WATCHTIMER       (0xA000)        // File Watching
@@ -140,7 +141,6 @@ void UndoRedoRecordingStop();
 void UndoRedoReset();
 LONG BeginUndoActionSelection();
 void EndUndoActionSelection(LONG token);
-void RestoreActionSelection(LONG token, DoAction doAct);
 
 void HandleDWellStartEnd(const DocPos position, const UINT uid);
 bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operation);
@@ -156,7 +156,7 @@ size_t  LengthOfFindPatternMB();
 
 bool ConsistentIndentationCheck(EditFileIOStatus* status);
 
-bool FileLoad(const HPATHL hfile_pth, FileLoadFlags fLoadFlags);
+bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags);
 bool FileSave(FileSaveFlags fSaveFlags);
 bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc);
 bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
@@ -197,26 +197,25 @@ LRESULT MsgUahMenuBar(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
 // ----------------------------------------------------------------------------
 
-#define DisableNotifyEvents()  { int _evm_ = 0; __try { _evm_ = SciCall_GetModEventMask();  SciCall_SetModEventMask(EVM_None);
-#define EnableNotifyEvents()   ;} __finally { SciCall_SetModEventMask(_evm_); } }
+#define LimitNotifyEvents(EVM)  { int _evm_ = 0; __try { _evm_ = SciCall_GetModEventMask(); SciCall_SetModEventMask(EVM);
+#define RestoreNotifyEvents()   ;} __finally { SciCall_SetModEventMask(_evm_); } }
+
+void DisableDocChangeNotification();
+void EnableDocChangeNotification();
 
 // ----------------------------------------------------------------------------
 
-void SetNotifyDocChangedEvent();
-void ResetNotifyDocChangedEvent();
-
 // none msg change notify, preserve redo-undo selection stack  (only in simple, non complex operations)
-#define UndoTransActionBegin()  { LONG _token_ = 0L; __try { _token_ = BeginUndoActionSelection(); SetNotifyDocChangedEvent(); 
-#define EndUndoTransAction()    ;} __finally { ResetNotifyDocChangedEvent(); EndUndoActionSelection(_token_); } }
+#define UndoTransActionBegin()  { LONG _token_ = 0L; __try { _token_ = BeginUndoActionSelection();
+#define EndUndoTransAction()    ;} __finally { EndUndoActionSelection(_token_); } }
 
 // ----------------------------------------------------------------------------
 
 LONG BeginUndoActionEx();
-void EndLockUndoActionEx(const LONG token);
-
+void EndUndoActionEx(const LONG token);
 // lean msg change notify (preferred) - does not preserve redo-undo selection stack
-#define DocChangeTransactionBegin()  { LONG _tok_ = 0L; __try { _tok_ = BeginUndoActionEx(); SetNotifyDocChangedEvent(); 
-#define EndDocChangeTransaction()    ;} __finally { ResetNotifyDocChangedEvent(); EndLockUndoActionEx(_tok_); } }
+#define DocChangeTransactionBegin()  { LONG _tok_ = 0L; __try { _tok_ = BeginUndoActionEx();
+#define EndDocChangeTransaction()    ;} __finally { EndUndoActionEx(_tok_); } }
 
 // DEBUG:
 //#define DocChangeTransactionBegin() UndoTransActionBegin()

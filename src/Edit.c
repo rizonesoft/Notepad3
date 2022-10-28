@@ -417,7 +417,7 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
         UndoRedoReset();
     }
 
-    DocChangeTransactionBegin();
+    //DocChangeTransactionBegin();
 
     SciCall_Cancel();
     if (SciCall_GetReadOnly()) {
@@ -434,7 +434,7 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
 
     Sci_GotoPosChooseCaret(0);
 
-    EndDocChangeTransaction();
+    //EndDocChangeTransaction();
 
     s_bFreezeAppTitle = false;
 }
@@ -7559,14 +7559,14 @@ void EditClearAllOccurrenceMarkers(HWND hwnd)
     UNREFERENCED_PARAMETER(hwnd);
     Globals.iMarkOccurrencesCount = Globals.iMarkOccurrencesCount = 0;
 
-    DisableNotifyEvents();
+    LimitNotifyEvents(EVM_None);
 
     SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
     SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
 
     SciCall_MarkerDeleteAll(MARKER_NP3_OCCURRENCE);
 
-    EnableNotifyEvents();
+    RestoreNotifyEvents();
 }
 
 
@@ -7671,7 +7671,7 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
 
     DocPos       iFindLength = 0;
 
-    DisableNotifyEvents();
+    LimitNotifyEvents(EVM_None);
 
     if (StrIsEmpty(wchFind)) {
 
@@ -7781,7 +7781,7 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
 
 observe:
 
-    EnableNotifyEvents();
+    RestoreNotifyEvents();
 }
 
 
