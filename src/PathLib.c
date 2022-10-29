@@ -936,6 +936,9 @@ bool PTHAPI Path_IsExistingDirectory(const HPATHL hpth)
 
 int PTHAPI Path_StrgComparePathNormalized(const HPATHL hpth1, const HPATHL hpth2)
 {
+    if (Path_IsEmpty(hpth1)) { return -1; }
+    if (Path_IsEmpty(hpth2)) { return +1; }
+
     size_t const max_len = min_s(Path_GetLength(hpth1), Path_GetLength(hpth2)) + 1;
     //~return wcsncmp(Path_Get(hpth1), Path_Get(hpth2), max_len);
     return _wcsnicmp(Path_Get(hpth1), Path_Get(hpth2), max_len);
@@ -945,12 +948,8 @@ int PTHAPI Path_StrgComparePathNormalized(const HPATHL hpth1, const HPATHL hpth2
 
 int PTHAPI Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2, const HPATHL hpth_wrkdir)
 {
-    if (Path_IsEmpty(hpth1)) {
-        return -1;
-    }
-    if (Path_IsEmpty(hpth2)) {
-        return +1;
-    }
+    if (Path_IsEmpty(hpth1)) { return -1; }
+    if (Path_IsEmpty(hpth2)) { return +1; }
 
     HPATHL hpth1_tmp = Path_Copy(hpth1);
     HPATHL hpth2_tmp = Path_Copy(hpth2);

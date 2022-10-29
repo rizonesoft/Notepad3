@@ -88,10 +88,11 @@ typedef enum {
 
 
 //==== Notifications ==========================================================
-#define WM_TRAYMESSAGE           (WM_USER+1)       // Callback Message from System Tray
-#define WM_FILECHANGEDNOTIFY     (WM_USER+2)       // Change Notifications
-#define IDC_FILEMRU_UPDATE_VIEW  (WM_USER+3)
-//#define WM_CHANGENOTIFYCLEAR     (WM_USER+4)
+#define WM_TRAYMESSAGE             (WM_USER + 1)       // Callback Message from System Tray
+#define WM_FILECHANGEDNOTIFY       (WM_USER + 2)       // Change Notifications
+#define WM_RESTORE_UNDOREDOACTION  (WM_USER + 3)
+#define IDC_FILEMRU_UPDATE_VIEW    (WM_USER + 4)
+//#define WM_CHANGENOTIFYCLEAR     (WM_USER + 5)
 
 //==== Timer ==================================================================
 #define ID_WATCHTIMER       (0xA000)        // File Watching
@@ -119,8 +120,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch);
 void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode);
 void ShowNotifyIcon(HWND hwnd, bool bAdd);
 void SetNotifyIconTitle(HWND hwnd);
-//bool IsDocumentModified(); -> inline static
-void SetSavePoint();
+void SetSaveDone();
 
 void ParseCommandLine();
 void CheckAutoLoadMostRecent();
@@ -136,12 +136,9 @@ void UpdateSaveSettingsCmds();
 void ResetMouseDWellTime();
 void UpdateTitlebar(const HWND hwnd);
 
-void UndoRedoRecordingStart();
-void UndoRedoRecordingStop();
 void UndoRedoReset();
-int  BeginUndoAction();
-void EndUndoAction(int token);
-bool RestoreAction(int token, DoAction doAct);
+LONG BeginUndoActionSelection();
+void EndUndoActionSelection(LONG token);
 
 void HandleDWellStartEnd(const DocPos position, const UINT uid);
 bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operation);
@@ -194,47 +191,37 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 LRESULT MsgUahMenuBar(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
-LRESULT MsgNonClientAreaPaint(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
+//LRESULT MsgNonClientAreaPaint(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
 // ----------------------------------------------------------------------------
 
-void IgnoreNotifyDocChangedEvent(const SciEventMask evm);
-void ObserveNotifyDocChangedEvent();
+int  DisableDocChangeNotification();
+void EnableDocChangeNotification(const int evm);
+
+#define LimitNotifyEvents()     { int _evm_ = 0; __try { _evm_ = DisableDocChangeNotification();
+#define RestoreNotifyEvents()   ;} __finally { EnableDocChangeNotification(_evm_); } }
 
 // ----------------------------------------------------------------------------
 
-// lean msg change notify (preferred)
-#define DocChangeTransactionBegin()  __try { IgnoreNotifyDocChangedEvent(EVM_Default); SciCall_BeginUndoAction(); 
-#define EndDocChangeTransaction()    } __finally { SciCall_EndUndoAction(); ObserveNotifyDocChangedEvent(); }
+// none msg change notify, preserve redo-undo selection stack
+#define UndoTransActionBegin()  { LONG _token_ = 0L; __try { _token_ = BeginUndoActionSelection();
+#define EndUndoTransAction()    ;} __finally { EndUndoActionSelection(_token_); } }
 
 // ----------------------------------------------------------------------------
 
-// none msg change notify (only in simple, non complex operations)
-#define UndoTransActionBegin()  { int const _token_ = BeginUndoAction(); __try { IgnoreNotifyDocChangedEvent(EVM_None);
-#define EndUndoTransAction()    } __finally { ObserveNotifyDocChangedEvent(); EndUndoAction(_token_); } }
-
-// ----------------------------------------------------------------------------
-
-#define BeginWaitCursor(cond, text)                                 \
-    __try {                                                         \
-        IgnoreNotifyDocChangedEvent(EVM_None);                      \
+#define BeginWaitCursor(cond, text) {                               \
         if (cond) {                                                 \
             SciCall_SetCursor(SC_CURSORWAIT);                       \
             StatusSetText(Globals.hwndStatus, STATUS_HELP, (text)); \
         }
 
-#define BeginWaitCursorUID(cond, uid)                          \
-    __try {                                                    \
-        IgnoreNotifyDocChangedEvent(EVM_None);    \
+#define BeginWaitCursorUID(cond, uid) {                        \
         if (cond) {                                            \
             SciCall_SetCursor(SC_CURSORWAIT);                  \
             StatusSetTextID(Globals.hwndStatus, STATUS_HELP, (uid)); \
         }
 
 #define EndWaitCursor()                       \
-    }                                         \
-    __finally {                               \
-        ObserveNotifyDocChangedEvent();       \
         SciCall_SetCursor(SC_CURSORNORMAL);   \
         POINT pt;                             \
         GetCursorPos(&pt);                    \

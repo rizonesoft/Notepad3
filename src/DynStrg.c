@@ -527,7 +527,7 @@ void STRAPI StrgEmpty(const HSTRINGW hstr, bool truncate)
     STRINGW* pstr = ToWStrg(hstr);
     if (!pstr)
         return;
-    if (!(pstr->data)) {
+    if (!pstr->data) {
         ReAllocW(pstr, 0, true);
         return;
     }
@@ -543,7 +543,7 @@ void STRAPI StrgEmpty(const HSTRINGW hstr, bool truncate)
 void STRAPI StrgSetAt(HSTRINGW hstr, const size_t index, const wchar_t ch)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return;
     if (index >= pstr->data_length)
     {
@@ -558,7 +558,7 @@ void STRAPI StrgSetAt(HSTRINGW hstr, const size_t index, const wchar_t ch)
 wchar_t STRAPI StrgGetAt(const HSTRINGW hstr, const size_t index)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return L'\0';
     if (index >= pstr->data_length)
     {
@@ -589,8 +589,8 @@ void STRAPI StrgSwap(HSTRINGW hstr1, HSTRINGW hstr2)
         return;
     
     LPWSTR const ptmp_data = pstr1->data;
-    size_t const   tmp_data_len = pstr1->data_length;
-    size_t const   tmp_alloc_len = pstr1->alloc_length;
+    size_t const tmp_data_len = pstr1->data_length;
+    size_t const tmp_alloc_len = pstr1->alloc_length;
 
     pstr1->data = pstr2->data;
     pstr1->data_length = pstr2->data_length;
@@ -616,7 +616,7 @@ void STRAPI StrgCat(HSTRINGW hstr, LPCWSTR str)
 size_t STRAPI StrgInsert(HSTRINGW hstr, size_t index, LPCWSTR str)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return STRINGW_INVALID_IDX;
 
     size_t const ins_len = StrlenW(str);
@@ -645,7 +645,7 @@ size_t STRAPI StrgInsert(HSTRINGW hstr, size_t index, LPCWSTR str)
 size_t STRAPI StrgInsertCh(HSTRINGW hstr, size_t index, const wchar_t c)
 {
     STRINGW *pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return 0;
 
     size_t const new_len = pstr->data_length + 1;
@@ -667,7 +667,7 @@ size_t STRAPI StrgInsertCh(HSTRINGW hstr, size_t index, const wchar_t c)
 size_t STRAPI StrgReplace(HSTRINGW hstr, LPCWSTR pOld, LPCWSTR pNew)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return 0;
 
     size_t const src_len = StrlenW(pOld);
@@ -732,7 +732,7 @@ size_t STRAPI StrgRemove(HSTRINGW hstr, LPCWSTR str)
 size_t STRAPI StrgReplaceCh(HSTRINGW hstr, const wchar_t chOld, const wchar_t chNew)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return 0;
 
     size_t count = 0;
@@ -758,7 +758,7 @@ size_t STRAPI StrgReplaceCh(HSTRINGW hstr, const wchar_t chOld, const wchar_t ch
 size_t STRAPI StrgRemoveCh(HSTRINGW hstr, const wchar_t chRemove)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return 0;
 
     LPWSTR  source = pstr->data;
@@ -787,7 +787,7 @@ size_t STRAPI StrgRemoveCh(HSTRINGW hstr, const wchar_t chRemove)
 size_t STRAPI StrgDelete(HSTRINGW hstr, const size_t index, size_t count)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return 0;
 
     size_t const len = pstr->data_length;
@@ -814,7 +814,7 @@ int STRAPI StrgGetAsUTF8(const HSTRINGW hstr, char* chStrg, int cch)
 int STRAPI StrgResetFromUTF8(HSTRINGW hstr, const char* str)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr || !str)
+    if (!pstr || !pstr->data || !str)
         return -1;
     int const len = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0) + 1;
     ReAllocW(pstr, len, true);
@@ -828,7 +828,7 @@ int STRAPI StrgResetFromUTF8(HSTRINGW hstr, const char* str)
 void STRAPI StrgToUpper(HSTRINGW hstr)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return;
     _wcsupr_s(pstr->data, pstr->data_length);
 }
@@ -838,7 +838,7 @@ void STRAPI StrgToUpper(HSTRINGW hstr)
 void STRAPI StrgToLower(HSTRINGW hstr)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return;
     _wcslwr_s(pstr->data, pstr->data_length);
 }
@@ -848,7 +848,7 @@ void STRAPI StrgToLower(HSTRINGW hstr)
 void STRAPI StrgReverse(HSTRINGW hstr)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return;
     _wcsrev(pstr->data);
 }
@@ -858,7 +858,7 @@ void STRAPI StrgReverse(HSTRINGW hstr)
 void STRAPI StrgTrimRight(HSTRINGW hstr, const wchar_t wch)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return;
 
     LPWSTR  start = pstr->data;
@@ -888,7 +888,7 @@ void STRAPI StrgTrimRight(HSTRINGW hstr, const wchar_t wch)
 void STRAPI StrgTrimLeft(HSTRINGW hstr, const wchar_t wch)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return;
 
     LPWSTR  start = pstr->data;
@@ -917,7 +917,7 @@ void STRAPI StrgTrim(HSTRINGW hstr, const wchar_t wch)
 size_t STRAPI StrgFind(const HSTRINGW hstr, LPCWSTR sub, const size_t start)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return STRINGW_INVALID_IDX;
 
     if (start >= pstr->data_length)
@@ -933,7 +933,7 @@ size_t STRAPI StrgFind(const HSTRINGW hstr, LPCWSTR sub, const size_t start)
 size_t STRAPI StrgFindCh(const HSTRINGW hstr, const wchar_t ch, const size_t start)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return STRINGW_INVALID_IDX;
 
     if (start >= pstr->data_length)
@@ -949,7 +949,7 @@ size_t STRAPI StrgFindCh(const HSTRINGW hstr, const wchar_t ch, const size_t sta
 size_t STRAPI StrgReverseFind(const HSTRINGW hstr, wchar_t ch)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return STRINGW_INVALID_IDX;
 
     LPWSTR  p = wcsrchr(pstr->data, ch);
@@ -962,7 +962,7 @@ size_t STRAPI StrgReverseFind(const HSTRINGW hstr, wchar_t ch)
 size_t STRAPI StrgFindOneOf(const HSTRINGW hstr, LPCWSTR char_set)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return STRINGW_INVALID_IDX;
 
     LPWSTR  p = wcspbrk(pstr->data, char_set);
@@ -974,7 +974,7 @@ size_t STRAPI StrgFindOneOf(const HSTRINGW hstr, LPCWSTR char_set)
 HSTRINGW STRAPI StrgMid(HSTRINGW hstr, const size_t start, size_t count)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return NULL;
 
     if (start + count > pstr->data_length)
@@ -1001,7 +1001,7 @@ HSTRINGW STRAPI StrgMid(HSTRINGW hstr, const size_t start, size_t count)
 HSTRINGW STRAPI StrgLeft(HSTRINGW hstr, const size_t count)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return NULL;
 
     HSTRINGW hCopy = StrgCreate(NULL);
@@ -1020,7 +1020,7 @@ HSTRINGW STRAPI StrgLeft(HSTRINGW hstr, const size_t count)
 HSTRINGW STRAPI StrgRight(HSTRINGW hstr, const size_t count)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return NULL;
 
     HSTRINGW hCopy = StrgCreate(NULL);
@@ -1039,7 +1039,7 @@ HSTRINGW STRAPI StrgRight(HSTRINGW hstr, const size_t count)
 void STRAPI StrgFormat(HSTRINGW hstr, LPCWSTR fmt, ...)
 {
     STRINGW* const pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return;
     va_list args;
     va_start(args, fmt);
@@ -1066,7 +1066,7 @@ LPWSTR STRAPI StrgWriteAccessBuf(HSTRINGW hstr, size_t min_len)
 void STRAPI StrgSanitize(HSTRINGW hstr)
 {
     STRINGW* pstr = ToWStrg(hstr);
-    if (!pstr)
+    if (!pstr || !pstr->data)
         return;
     // ensure buffer limits
     pstr->alloc_length = LengthOfBuffer(pstr->data);
