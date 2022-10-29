@@ -136,8 +136,6 @@ void UpdateSaveSettingsCmds();
 void ResetMouseDWellTime();
 void UpdateTitlebar(const HWND hwnd);
 
-void UndoRedoRecordingStart();
-void UndoRedoRecordingStop();
 void UndoRedoReset();
 LONG BeginUndoActionSelection();
 void EndUndoActionSelection(LONG token);

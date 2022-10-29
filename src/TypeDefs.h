@@ -742,6 +742,7 @@ typedef struct SETTINGS2_T {
 
     float  AnalyzeReliableConfidenceLevel;
     float  LocaleAnsiCodePageAnalysisBonus;
+    float  DarkModeHiglightContrast;
 
 #ifdef D_NP3_WIN10_DARK_MODE
     COLORREF DarkModeBkgColor;
@@ -795,12 +796,10 @@ extern WCHAR Default_PreferredLanguageLocaleName[];
 //=============================================================================
 
 typedef enum SpecialUndoRedoToken {
-    // normal token >= 0
+    // undoredo token >= 0
     URTok_TokenStart    =  0L,
     URTok_NoTransaction = -1L,
-    URTok_NoRecording   = -2L,
-    URTok_InTransaction = -3L,
-    URTok_NoTokenFlag   = LONG_MAX
+    URTok_NoRecording   = -2L
 
 } SpecialUndoRedoToken;
 

@@ -3248,6 +3248,10 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF *rgb, bool
         *rgb = bFGLayer ? SciCall_StyleGetFore(STYLE_DEFAULT) : SciCall_StyleGetBack(STYLE_DEFAULT); //~ SCI maybe not initialized
         //~ don't: bIsDefined = true;
     }
+    if (bFGLayer && UseDarkMode()) {
+        *rgb = ContrastColor(*rgb, Settings2.DarkModeHiglightContrast);
+    }
+
     return bIsDefined;
 }
 

@@ -1260,7 +1260,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     ResetTmpCache();
     ResetIniFileCache();
 
-    UndoRedoReset();
+    //UndoRedoReset();
     SetSaveDone();
 
     MSG msg;
@@ -4488,7 +4488,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         FileLoadFlags fLoadFlags = FLF_New;
         fLoadFlags |= Settings.SkipUnicodeDetection ? FLF_SkipUnicodeDetect : 0;
         fLoadFlags |= Settings.SkipANSICodePageDetection ? FLF_SkipANSICPDetection : 0;
-        FileLoad(hfile_pth, fLoadFlags);
+        if (FileLoad(hfile_pth, fLoadFlags)) {
+            UndoRedoReset();
+        }
         Path_Release(hfile_pth);
     } break;
 
@@ -8171,7 +8173,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
 
     const LPNMHDR pnmh = (LPNMHDR)scn;
 
-    static LONG _mod_insdel_token = URTok_NoTransaction;
+    static LONG _urtoken = URTok_NoTransaction;
 
     // --- check only mandatory events (must be fast !!!) ---
     if (pnmh->idFrom == IDC_EDIT) {
@@ -8187,15 +8189,15 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
             if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
                 //*bModified = false; // not yet
                 if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
-                    if (!_InUndoRedoTransaction() && (_mod_insdel_token < URTok_TokenStart)) {
-                        bool const bIsSelEmpty = !SciCall_IsSelectionEmpty();
+                    if (!_InUndoRedoTransaction() && (_urtoken < URTok_TokenStart)) {
+                        bool const bIsSelEmpty = SciCall_IsSelectionEmpty();
                         bool const bIsMultiRectSel = Sci_IsMultiOrRectangleSelection();
-                        if (bIsSelEmpty || bIsMultiRectSel) {
+                        if (!bIsSelEmpty || bIsMultiRectSel) {
                             LONG const tok = _SaveUndoSelection();
-                            _mod_insdel_token = (tok >= URTok_TokenStart ? tok : _mod_insdel_token);
+                            _urtoken = (tok >= URTok_TokenStart ? tok : _urtoken);
                         }
                         // TODO: @@@ Find reason for why this NOP workaround is needed:
-                        if (bIsSelEmpty && bIsMultiRectSel) {
+                        if (!bIsSelEmpty && bIsMultiRectSel) {
                             // need to trigger SCI:InvalidateCaret()
                             bool const bAddSelTyping = SciCall_GetAdditionalSelectionTyping();
                             //~SciCall_SetAdditionalSelectionTyping(!bAddSelTyping); // v5.1.1: no check for change, so:
@@ -8205,9 +8207,9 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
                 }
             } else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
                 if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
-                    if (!_InUndoRedoTransaction() && (_mod_insdel_token >= URTok_TokenStart)) {
-                        _SaveRedoSelection(_mod_insdel_token);
-                        _mod_insdel_token = URTok_NoTransaction;
+                    if (!_InUndoRedoTransaction() && (_urtoken >= URTok_TokenStart)) {
+                        _SaveRedoSelection(_urtoken);
+                        _urtoken = URTok_NoTransaction;
                     }
                 }
                 *bModified = true;
@@ -10198,45 +10200,12 @@ void UpdateUI() {
     PostMessage(Globals.hwndMain, WM_NCACTIVATE, TRUE, 0);
 }
 
-//=============================================================================
-
-#if 0
-LONG BeginUndoActionEx()
-{
-    if (!_InUndoRedoTransaction()) {
-        SciCall_BeginUndoAction();
-        DisableDocChangeNotification();
-        InterlockedExchange(&UndoActionToken, URTok_NoTokenFlag);
-        return URTok_NoTokenFlag;
-    }
-    return InterlockedOr(&UndoActionToken, 0L); // current token
-}
-
-void EndUndoActionEx(const LONG token)
-{
-    if (_InUndoRedoTransaction()) {
-        if (token == InterlockedOr(&UndoActionToken, 0L)) {
-            if (token == URTok_NoTokenFlag) {
-                InterlockedExchange(&UndoActionToken, URTok_NoTransaction);
-                EnableDocChangeNotification();
-                SciCall_EndUndoAction();
-            }
-            //else foreign token - okay, child transaction
-        } else {
-            assert("Wrong Transaction" && 0);
-        }
-    }
-    else {
-        assert("No Transaction" && 0);
-    }
-}
-#endif
 
 //=============================================================================
 //
 //  UndoRedoRecordingStart()
 //
-void UndoRedoRecordingStart()
+static void _UndoRedoRecordingStart()
 {
     _UndoRedoActionMap(URTok_NoTransaction, NULL); // clear
     SciCall_SetUndoCollection(true);
@@ -10246,21 +10215,18 @@ void UndoRedoRecordingStart()
     UpdateMargins(true);
 }
 
-
 //=============================================================================
 //
 //  UndoRedoRecordingStop()
 //
-void UndoRedoRecordingStop()
+static void _UndoRedoRecordingStop()
 {
     _UndoRedoActionMap(URTok_NoTransaction, NULL); // clear
     SciCall_EmptyUndoBuffer();
     SciCall_SetSavePoint();
     SciCall_SetChangeHistory(SC_CHANGE_HISTORY_DISABLED);
     SciCall_SetUndoCollection(false);
-    UpdateMargins(true);
 }
-
 
 //=============================================================================
 //
@@ -10268,9 +10234,10 @@ void UndoRedoRecordingStop()
 //
 void UndoRedoReset()
 {
-    UndoRedoRecordingStop();
-    UndoRedoRecordingStart();
+    _UndoRedoRecordingStop();
+    _UndoRedoRecordingStart();
 }
+
 
 //=============================================================================
 //
@@ -10448,12 +10415,15 @@ static void _SaveRedoSelection(const LONG token)
 //
 LONG BeginUndoActionSelection()
 {
-    SciCall_BeginUndoAction();
-    ++UndoRedoActionStackCount;
-    if (1 == UndoRedoActionStackCount) {
-        DisableDocChangeNotification();
+    if (SciCall_GetUndoCollection()) {
+        SciCall_BeginUndoAction();
+        ++UndoRedoActionStackCount;
+        if (1 == UndoRedoActionStackCount) {
+            DisableDocChangeNotification();
+        }
+        return SciCall_IsSelectionEmpty() ? URTok_NoTransaction : _SaveUndoSelection();
     }
-    return _SaveUndoSelection();
+    return URTok_NoRecording;
 }
 
 
@@ -10465,18 +10435,17 @@ const char* const _assert_msg = "Broken UndoRedo-Transaction!";
 //
 void EndUndoActionSelection(const LONG token)
 {
-    if (token >= URTok_TokenStart) {
+    if (SciCall_GetUndoCollection()) {
         --UndoRedoActionStackCount;
         SciCall_EndUndoAction();
         if (0 == UndoRedoActionStackCount) {
             EnableDocChangeNotification(EVM_Default);
         }
-        _SaveRedoSelection(token);
+        if ((token >= URTok_TokenStart) && !SciCall_IsSelectionEmpty()) {
+            _SaveRedoSelection(token);
+        }
+        assert(_assert_msg && (UndoRedoActionStackCount >= 0));
     }
-    else {
-        assert(_assert_msg && 0);
-    }
-    assert(_assert_msg && (UndoRedoActionStackCount >= 0));
 }
 
 //=============================================================================
@@ -10709,10 +10678,14 @@ static LONG _UndoRedoActionMap(const LONG token, const UndoRedoSelection_t** sel
     ULONG utoken = (token >= URTok_TokenStart) ? (ULONG)token : 0UL;
 
     if (selection == NULL) { // reset / clear
-        while (UndoRedoActionStackCount > 0) {
-            SciCall_EndUndoAction();
-            --UndoRedoActionStackCount;
+        if (SciCall_GetUndoCollection()) {
+            while (UndoRedoActionStackCount > 0) {
+                SciCall_EndUndoAction();
+                --UndoRedoActionStackCount;
+            }
         }
+        UndoRedoActionStackCount = 0;
+
         utarray_clear(UndoRedoSelectionUTArray);
         //~utarray_free(UndoRedoSelectionUTArray);
         //~utarray_init(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
@@ -10902,6 +10875,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
             ShowZoomCallTip();
         }
         ResetFileObservationData(true);
+        UndoRedoReset();
         return true;
     }
 
@@ -11001,6 +10975,8 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
     bool bUnknownLexer = s_flagLexerSpecified;
 
     if (fSuccess) {
+        _UndoRedoRecordingStop();
+
         Sci_GotoPosChooseCaret(0);
 
         if (!s_IsThisAnElevatedRelaunch) {
@@ -11120,6 +11096,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
             Globals.fvCurFile.bTabsAsSpaces = (fioStatus.indentCount[I_TAB_LN] < fioStatus.indentCount[I_SPC_LN]) ? true : false;
             SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
         }
+        _UndoRedoRecordingStart();
     }
     else if (!(Flags.bHugeFileLoadState || fioStatus.bUnknownExt)) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, Path_FindFileName(Paths.CurrentFile));

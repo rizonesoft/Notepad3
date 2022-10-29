@@ -417,7 +417,7 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
         UndoRedoReset();
     }
 
-    //UndoTransActionBegin();
+    UndoTransActionBegin();
 
     SciCall_Cancel();
     if (SciCall_GetReadOnly()) {
@@ -434,7 +434,7 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
 
     Sci_GotoPosChooseCaret(0);
 
-    //EndUndoTransAction();
+    EndUndoTransAction();
 
     s_bFreezeAppTitle = false;
 }

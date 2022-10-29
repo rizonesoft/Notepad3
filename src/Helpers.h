@@ -252,11 +252,19 @@ __forceinline COLORREF CalcContrastColor(COLORREF rgb, int alpha) {
 }
 
 
-__forceinline COLORREF AdjustColor(COLORREF rgb, int amount) {
+__forceinline COLORREF AdjustColor(const COLORREF rgb, const int amount) {
 
     return RGB(clampu(GetRValue(rgb) + amount, 0, 0xFF),
                clampu(GetGValue(rgb) + amount, 0, 0xFF),
                clampu(GetBValue(rgb) + amount, 0, 0xFF));
+}
+
+
+__forceinline COLORREF ContrastColor(const COLORREF rgb, const float factor)
+{
+    return RGB(clampu(f2int(factor * (GetRValue(rgb) - 128) + 128.0f), 0, 0xFF),
+               clampu(f2int(factor * (GetGValue(rgb) - 128) + 128.0f), 0, 0xFF),
+               clampu(f2int(factor * (GetBValue(rgb) - 128) + 128.0f), 0, 0xFF));
 }
 
 
@@ -340,7 +348,8 @@ inline COLORREF GetModeBtnfaceColor(const bool bDarkMode)
 inline int SetModeTextColor(const HDC hdc, const bool bDarkMode)
 {
 #ifdef D_NP3_WIN10_DARK_MODE
-    return SetTextColor(hdc, bDarkMode ? Settings2.DarkModeTxtColor : GetSysColor(COLOR_WINDOWTEXT));
+    //return SetTextColor(hdc, bDarkMode ? Settings2.DarkModeTxtColor : GetSysColor(COLOR_WINDOWTEXT));
+    return SetTextColor(hdc, bDarkMode ? ContrastColor(Settings2.DarkModeTxtColor, Settings2.DarkModeHiglightContrast) : GetSysColor(COLOR_WINDOWTEXT));
 #else
     UNREFERENCED_PARAMETER(bDarkMode);
     return SetTextColor(hdc, GetSysColor(COLOR_WINDOWTEXT));
@@ -350,7 +359,8 @@ inline int SetModeTextColor(const HDC hdc, const bool bDarkMode)
 inline COLORREF GetModeTextColor(const bool bDarkMode)
 {
 #ifdef D_NP3_WIN10_DARK_MODE
-    return bDarkMode ? Settings2.DarkModeTxtColor : (COLORREF)GetSysColor(COLOR_WINDOWTEXT);
+    //return bDarkMode ? Settings2.DarkModeTxtColor : (COLORREF)GetSysColor(COLOR_WINDOWTEXT);
+    return bDarkMode ? ContrastColor(Settings2.DarkModeTxtColor, Settings2.DarkModeHiglightContrast) : (COLORREF)GetSysColor(COLOR_WINDOWTEXT);
 #else
     UNREFERENCED_PARAMETER(bDarkMode);
     return (COLORREF)GetSysColor(COLOR_WINDOWTEXT);
