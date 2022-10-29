@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.1028.(build_#) (2022-10-28)
+Current BETA/RC Version 5.22.1029.(build_#) (2022-10-29)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[1029.1]- Darkmode highlight (foreground) contrast settings + default reduction to 75%.
 [1018.1]- Add example for tinyexpr in Modify Lines dialog.
 [1018.1]- Add option to auto-load most recent file from file history.
 [1018.1]- Add sourcecode for experimental version of tinyexpr CPP.
@@ -62,6 +63,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[1029.1]- Refactoring of undo/redo and document modify handler.
 [1020.1]- Standard DarkMode Theme.
 [1020.1]- Minor adjustment of grepWinNP3's layout and correction of some strings (GRE).
 [1018.1]- Simplify WordList Set according to (https://github.com/ScintillaOrg/lexilla/issues/103).
@@ -115,6 +117,8 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1029.1]- Issue on undo/redo stack.
+[1029.1]- Refactored of undo/redo and document modify handler.
 [1028.1]- Broken reload file (broken by check for single file instance)".
 [1023.1]- A warning message in "dialogs_xx_yy.rc".
 [1020.1]- Respect single file instance mode for internal file loading.
