@@ -197,31 +197,17 @@ LRESULT MsgUahMenuBar(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 
 // ----------------------------------------------------------------------------
 
-#define LimitNotifyEvents(EVM)  { int _evm_ = 0; __try { _evm_ = SciCall_GetModEventMask(); SciCall_SetModEventMask(EVM);
-#define RestoreNotifyEvents()   ;} __finally { SciCall_SetModEventMask(_evm_); } }
+int  DisableDocChangeNotification();
+void EnableDocChangeNotification(const int evm);
 
-void DisableDocChangeNotification();
-void EnableDocChangeNotification();
+#define LimitNotifyEvents()     { int _evm_ = 0; __try { _evm_ = DisableDocChangeNotification();
+#define RestoreNotifyEvents()   ;} __finally { EnableDocChangeNotification(_evm_); } }
 
 // ----------------------------------------------------------------------------
 
-// none msg change notify, preserve redo-undo selection stack  (only in simple, non complex operations)
+// none msg change notify, preserve redo-undo selection stack
 #define UndoTransActionBegin()  { LONG _token_ = 0L; __try { _token_ = BeginUndoActionSelection();
 #define EndUndoTransAction()    ;} __finally { EndUndoActionSelection(_token_); } }
-
-// ----------------------------------------------------------------------------
-
-LONG BeginUndoActionEx();
-void EndUndoActionEx(const LONG token);
-// lean msg change notify (preferred) - does not preserve redo-undo selection stack
-#define DocChangeTransactionBegin()  { LONG _tok_ = 0L; __try { _tok_ = BeginUndoActionEx();
-#define EndDocChangeTransaction()    ;} __finally { EndUndoActionEx(_tok_); } }
-
-// DEBUG:
-//#define DocChangeTransactionBegin() UndoTransActionBegin()
-//#define EndDocChangeTransaction()   EndUndoTransAction()
-//#define UndoTransActionBegin()      DocChangeTransactionBegin()
-//#define EndUndoTransAction()        EndDocChangeTransaction()
 
 // ----------------------------------------------------------------------------
 

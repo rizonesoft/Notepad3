@@ -416,20 +416,19 @@ static LONG  _UndoRedoActionMap(const LONG token, const UndoRedoSelection_t** se
 // => EndUndoTransAction();
 
 
-static volatile LONG UndoActionToken = URTok_NoRecording; // needs UndoRedoRecordingStart()
+static volatile int UndoRedoActionStackCount = 0;
 
-static inline bool _InUndoRedoTransaction()
+__forceinline bool _InUndoRedoTransaction()
 {
-    return (InterlockedOr(&UndoActionToken, 0L) >= URTok_TokenStart);
+    return (UndoRedoActionStackCount > 0);
 }
 
 static inline void _SplitUndoTransaction()
 {
-
-    if (!_InUndoRedoTransaction()) {
-        SciCall_BeginUndoAction();
-        /* noop */
+    if (_InUndoRedoTransaction()) {
         SciCall_EndUndoAction();
+        /* noop */
+        SciCall_BeginUndoAction();
     }
 }
 
@@ -452,28 +451,23 @@ static __forceinline bool IsEventSignaled() {
 
 // ----------------------------------------------------------------------------
 
-static volatile LONG iNotifyChangeStackCounter = 0L;
 
-static __forceinline bool NotifyDocChanged()
+__forceinline bool NotifyDocChanged()
 {
-    return (InterlockedOr(&iNotifyChangeStackCounter, 0L) == 0L);
+    return ((SciCall_GetModEventMask() & EVM_Default) == EVM_Default);
 }
 
-void DisableDocChangeNotification()
+int DisableDocChangeNotification()
 {
-    if (NotifyDocChanged()) {
-        SciCall_SetModEventMask(EVM_None);
-    }
-    InterlockedIncrement(&iNotifyChangeStackCounter);
+    int const currentMask = SciCall_GetModEventMask();
+    SciCall_SetModEventMask(EVM_None);
+    return currentMask;
 }
 
-void EnableDocChangeNotification()
+void EnableDocChangeNotification(const int evm)
 {
-    if (!NotifyDocChanged()) {
-        InterlockedDecrement(&iNotifyChangeStackCounter);
-    }
+    SciCall_SetModEventMask(evm);
     if (NotifyDocChanged()) {
-        SciCall_SetModEventMask(EVM_Default);
         EditUpdateVisibleIndicators();
         UpdateStatusbar(false);
     }
@@ -2650,8 +2644,6 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
     Encoding_Current(Settings.DefaultEncoding);
 
     SciCall_SetZoom(g_IniWinInfo.zoom ? g_IniWinInfo.zoom : 100);
-
-    EnableDocChangeNotification();
 
     return 0LL;
 }
@@ -10208,6 +10200,7 @@ void UpdateUI() {
 
 //=============================================================================
 
+#if 0
 LONG BeginUndoActionEx()
 {
     if (!_InUndoRedoTransaction()) {
@@ -10237,6 +10230,7 @@ void EndUndoActionEx(const LONG token)
         assert("No Transaction" && 0);
     }
 }
+#endif
 
 //=============================================================================
 //
@@ -10454,16 +10448,12 @@ static void _SaveRedoSelection(const LONG token)
 //
 LONG BeginUndoActionSelection()
 {
-    if (_InUndoRedoTransaction()) {
-        return URTok_InTransaction;
-    }
-    LONG const token = _SaveUndoSelection();
-    if (token >= URTok_TokenStart) {
-        InterlockedExchange(&UndoActionToken, token);
+    SciCall_BeginUndoAction();
+    ++UndoRedoActionStackCount;
+    if (1 == UndoRedoActionStackCount) {
         DisableDocChangeNotification();
-        SciCall_BeginUndoAction();
     }
-    return token;
+    return _SaveUndoSelection();
 }
 
 
@@ -10475,26 +10465,18 @@ const char* const _assert_msg = "Broken UndoRedo-Transaction!";
 //
 void EndUndoActionSelection(const LONG token)
 {
-    switch (token) {
-    case URTok_InTransaction:
-        // nothing to do (child transaction)
-        break;
-    case URTok_NoTransaction:
-        assert(_assert_msg && InterlockedOr(&UndoActionToken, 0L) == URTok_NoTransaction);
-        break;
-    case URTok_NoRecording:
-        assert(_assert_msg && InterlockedOr(&UndoActionToken, 0L) == URTok_NoRecording);
-        break;
-    default:
-        if (token == InterlockedOr(&UndoActionToken, 0L)) {
-            _SaveRedoSelection(token);
-            SciCall_EndUndoAction();
-            InterlockedExchange(&UndoActionToken, URTok_NoTransaction);
-            EnableDocChangeNotification();
+    if (token >= URTok_TokenStart) {
+        --UndoRedoActionStackCount;
+        SciCall_EndUndoAction();
+        if (0 == UndoRedoActionStackCount) {
+            EnableDocChangeNotification(EVM_Default);
         }
-        else { assert(_assert_msg && 0); }
-        break;
+        _SaveRedoSelection(token);
     }
+    else {
+        assert(_assert_msg && 0);
+    }
+    assert(_assert_msg && (UndoRedoActionStackCount >= 0));
 }
 
 //=============================================================================
@@ -10512,7 +10494,7 @@ static void _RestoreActionSelection(const LONG token, DoAction doAct)
 
     if ((_UndoRedoActionMap(token, &pSel) >= URTok_TokenStart) && (pSel != NULL)) {
 
-        LimitNotifyEvents(EVM_None);
+        LimitNotifyEvents();
 
         DocPos* pPosAnchor = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->anchorPos_undo) : utarray_front(pSel->anchorPos_redo));
         DocPos* pPosCur = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->curPos_undo) : utarray_front(pSel->curPos_redo));
@@ -10727,22 +10709,15 @@ static LONG _UndoRedoActionMap(const LONG token, const UndoRedoSelection_t** sel
     ULONG utoken = (token >= URTok_TokenStart) ? (ULONG)token : 0UL;
 
     if (selection == NULL) { // reset / clear
-        LONG const curToken = InterlockedOr(&UndoActionToken, 0L);
-        if (curToken == URTok_NoTokenFlag) {
-            EndUndoActionEx(curToken);
-            InterlockedExchange(&UndoActionToken, URTok_InTransaction);
-        }
-        else if (curToken >= URTok_TokenStart) {
-            EndUndoActionSelection(curToken);
-        }
-        else {
-            InterlockedExchange(&UndoActionToken, URTok_NoTransaction);
+        while (UndoRedoActionStackCount > 0) {
+            SciCall_EndUndoAction();
+            --UndoRedoActionStackCount;
         }
         utarray_clear(UndoRedoSelectionUTArray);
         //~utarray_free(UndoRedoSelectionUTArray);
         //~utarray_init(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
         uiTokenCnt = URTok_TokenStart;
-        return InterlockedOr(&UndoActionToken, 0L);
+        return URTok_NoTransaction;
     }
 
     if (!SciCall_GetUndoCollection()) {
@@ -11120,9 +11095,9 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
 
         if (bCheckEOL && !Style_MaybeBinaryFile(Globals.hwndEdit, Paths.CurrentFile)) {
             if (WarnLineEndingDlg(Globals.hwndMain, &fioStatus)) {
-                DocChangeTransactionBegin();
+                UndoTransActionBegin();
                 SciCall_ConvertEOLs(fioStatus.iEOLMode);
-                EndDocChangeTransaction();
+                EndUndoTransAction();
                 Globals.bDocHasInconsistentEOLs = false;
             }
             SciCall_SetEOLMode(fioStatus.iEOLMode);

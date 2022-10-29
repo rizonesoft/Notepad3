@@ -417,7 +417,7 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
         UndoRedoReset();
     }
 
-    //DocChangeTransactionBegin();
+    //UndoTransActionBegin();
 
     SciCall_Cancel();
     if (SciCall_GetReadOnly()) {
@@ -434,7 +434,7 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
 
     Sci_GotoPosChooseCaret(0);
 
-    //EndDocChangeTransaction();
+    //EndUndoTransAction();
 
     s_bFreezeAppTitle = false;
 }
@@ -3346,7 +3346,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
         return;
     }
 
-    DocChangeTransactionBegin()
+    UndoTransActionBegin()
 
     if (bForceAll) {
         SciCall_SelectAll();
@@ -3417,7 +3417,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
         Sci_ScrollChooseCaret();
     }
 
-    EndDocChangeTransaction();
+    EndUndoTransAction();
 }
 
 
@@ -4122,7 +4122,7 @@ void EditStripFirstCharacter(HWND hwnd)
     DocLn const  iLineStart = SciCall_LineFromPosition(iSelStart);
     DocLn const  iLineEnd = SciCall_LineFromPosition(iSelEnd);
 
-    DocChangeTransactionBegin();
+    UndoTransActionBegin();
 
     if (SciCall_IsSelectionRectangle()) {
         const DocPos selAnchorMainPos = SciCall_GetRectangularSelectionAnchor();
@@ -4176,7 +4176,7 @@ void EditStripFirstCharacter(HWND hwnd)
         }
     }
 
-    EndDocChangeTransaction();
+    EndUndoTransAction();
 }
 
 
@@ -4197,7 +4197,7 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
     DocLn const iLineStart = SciCall_LineFromPosition(iSelStart);
     DocLn const iLineEnd = SciCall_LineFromPosition(iSelEnd);
 
-    DocChangeTransactionBegin();
+    UndoTransActionBegin();
 
     if (Sci_IsMultiOrRectangleSelection() && !bIgnoreSelection) {
         if (SciCall_IsSelectionEmpty()) {
@@ -4290,7 +4290,7 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
         }
     }
 
-    EndDocChangeTransaction();
+    EndUndoTransAction();
     
 }
 
@@ -4319,7 +4319,7 @@ void EditCompressBlanks()
         const DocPos vSpcAnchorMainPos = SciCall_GetRectangularSelectionAnchorVirtualSpace();
         const DocPos vSpcCaretMainPos = SciCall_GetRectangularSelectionCaretVirtualSpace();
 
-        DocChangeTransactionBegin();
+        UndoTransActionBegin();
 
         DocPos iMaxLineLen = Sci_GetRangeMaxLineLength(iLineStart, iLineEnd);
         char* lineBuffer = AllocMem(iMaxLineLen + 1, HEAP_ZERO_MEMORY);
@@ -4372,7 +4372,7 @@ void EditCompressBlanks()
             SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCaretMainPos);
         }
 
-        EndDocChangeTransaction();
+        EndUndoTransAction();
 
     } else if (Sci_IsMultiSelection()) {
         // @@@ not implemented
@@ -4435,7 +4435,7 @@ void EditCompressBlanks()
 
             if (bModified) {
 
-                DocChangeTransactionBegin();
+                UndoTransActionBegin();
 
                 if (!SciCall_IsSelectionEmpty()) {
                     SciCall_TargetFromSelection();
@@ -4458,7 +4458,7 @@ void EditCompressBlanks()
                     EditSetSelectionEx(iNewPos, iNewPos, -1, -1);
                 }
 
-                EndDocChangeTransaction();
+                EndUndoTransAction();
             }
         }
         FreeMem(pszOut);
@@ -4493,7 +4493,7 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
         --iEndLine;
     }
 
-    DocChangeTransactionBegin();
+    UndoTransActionBegin();
 
     for (DocLn iLine = iBegLine; iLine <= iEndLine; ) {
         DocLn nBlanks = 0;
@@ -4538,8 +4538,7 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
         }
     }
 
-    EndDocChangeTransaction();
-
+    EndUndoTransAction();
 }
 
 
@@ -4694,7 +4693,7 @@ void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
 
     if (bDelete) {
 
-        DocChangeTransactionBegin();
+        UndoTransActionBegin();
 
         line = 0;
         while (line >= 0) {
@@ -4712,7 +4711,7 @@ void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
             }
         }
 
-        EndDocChangeTransaction();
+        EndUndoTransAction();
     }
 
     SciCall_GotoLine(min_ln(curLn, Sci_GetLastDocLineNumber()));
@@ -7332,9 +7331,9 @@ void EditSelectionMultiSelectAllEx(HWND hwnd, CLPCEDITFINDREPLACE edFndRpl)
     LPCWSTR wchFind = _EditGetFindStrg(hwnd, &efr, false);
 
     if (StrIsNotEmpty(wchFind)) {
-        DocChangeTransactionBegin();
+        UndoTransActionBegin();
         EditMarkAll(wchFind, efr.fuFlags, 0, Sci_GetDocEndPosition(), true);
-        EndDocChangeTransaction();
+        EndUndoTransAction();
     }
     ReleaseEFR(&efr);
 }
@@ -7559,7 +7558,7 @@ void EditClearAllOccurrenceMarkers(HWND hwnd)
     UNREFERENCED_PARAMETER(hwnd);
     Globals.iMarkOccurrencesCount = Globals.iMarkOccurrencesCount = 0;
 
-    LimitNotifyEvents(EVM_None);
+    LimitNotifyEvents();
 
     SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
     SciCall_IndicatorClearRange(0, Sci_GetDocEndPosition());
@@ -7671,7 +7670,7 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
 
     DocPos       iFindLength = 0;
 
-    LimitNotifyEvents(EVM_None);
+    LimitNotifyEvents();
 
     if (StrIsEmpty(wchFind)) {
 
