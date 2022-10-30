@@ -60,7 +60,7 @@ FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,330,266,50,14
     EDITTEXT        IDC_VERSION,84,10,220,24, ES_CENTER | ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
-    LTEXT           "Scintilla Library Version:",IDC_SCI_VERSION,84,34,219,8
+    LTEXT           "Scintilla biblioteksversion:",IDC_SCI_VERSION,84,34,219,8
     LTEXT           "Byggd med:",IDC_COMPILER,84,45,218,8
     LTEXT           "IDC_COPYRIGHT",IDC_COPYRIGHT,84,62,218,8
     LTEXT           "IDC_TRANSL_AUTH",IDC_TRANSL_AUTH,84,74,218,8
@@ -263,7 +263,7 @@ BEGIN
     CONTROL         "Spara listan över senast öppnade filer vid avslut.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,160,10
     CONTROL         "Bevara textmarkörens position.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
     CONTROL         "Kom ihåg sökmönster.",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,120,10
-    CONTROL         "&Autoload most recent file on startup.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,160,10
+    CONTROL         "Ladda senaste fil automatiskt vid start.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,160,10
     CONTROL         "Släng", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
     DEFPUSHBUTTON   "OK",IDOK,154,158,50,14,WS_DISABLED
     PUSHBUTTON      "Stäng",IDCANCEL,212,158,50,14
@@ -531,7 +531,7 @@ BEGIN
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,17,8
     LTEXT           "Löpande nummer (nollbaserad).",IDC_STATIC5,57,92,109,8
     LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,30,8
-    LTEXT           "${<expr>} defines math formulas.",IDC_STATIC6,57,102,175,8
+    LTEXT           "${<expr>} definierar matematiska formler.",IDC_STATIC6,57,102,175,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
@@ -818,19 +818,19 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Auto-Save & Backup Settings"
 FONT 9, "Segoe UI", 0, 0, 0x0
 BEGIN
-GROUPBOX        "Auto-Save: ", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
-AUTOCHECKBOX    "Enable Auto-Save.", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
-LTEXT           "Auto-Save interval [sec]:", IDC_STATIC2, 14, 30, 108, 10, SS_RIGHT
+GROUPBOX        "Spara automatiskt: ", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
+AUTOCHECKBOX    "Aktivera automatiskt sparande.", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
+LTEXT           "Intervall för automatiskt sparande [sec]:", IDC_STATIC2, 14, 30, 108, 10, SS_RIGHT
 EDITTEXT        IDC_AUTOSAVE_INTERVAL, 130, 28, 40, 12, ES_AUTOHSCROLL
-AUTOCHECKBOX    "Auto-Save on system suspend.", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Auto-Save on system shutdown.", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
-GROUPBOX        "Backup: ", IDC_STATIC3, 7, 74, 170, 66, 0, WS_EX_TRANSPARENT
-AUTOCHECKBOX    "Enable Backup.", IDC_AS_BACKUP_ENABLE, 14, 85, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Backup on Auto-Save.", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Side-by-Side Backup.", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP
-PUSHBUTTON      "Open Folder", IDC_AS_BACKUP_OPENFOLDER, 110, 122, 60, 14
+AUTOCHECKBOX    "Spara automatiskt när dator sätts i viloläge.", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Spara automatiskt när datorn stängs av.", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
+GROUPBOX        "Säkerhetskopiera: ", IDC_STATIC3, 7, 74, 170, 66, 0, WS_EX_TRANSPARENT
+AUTOCHECKBOX    "Aktivera säkerhetskopiering.", IDC_AS_BACKUP_ENABLE, 14, 85, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Säkerhetskopiering vid automatisk sparning.", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Sida-vid-sida säkerhetskopiering.", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP
+PUSHBUTTON      "Öppna mapp", IDC_AS_BACKUP_OPENFOLDER, 110, 122, 60, 14
 DEFPUSHBUTTON   "OK", IDOK, 71, 146, 50, 14
-PUSHBUTTON      "Cancel", IDCANCEL, 127, 146, 50, 14
+PUSHBUTTON      "Avbryt", IDCANCEL, 127, 146, 50, 14
 END
 
 

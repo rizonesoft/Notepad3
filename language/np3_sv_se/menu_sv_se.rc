@@ -350,12 +350,12 @@ BEGIN
         MENUITEM "Visa blanksteg\tCtrl+Shift+8",                    IDM_VIEW_SHOWBLANKS
         MENUITEM "Visa radslut\tCtrl+Shift+9",                      IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        POPUP "Change History Marker"
+        POPUP "Ändra historiemarkör"
         BEGIN
-            MENUITEM "No Change Markers",                   IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+            MENUITEM "Icke-ändring markörer",                   IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Visa endast i marginal",                  IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "Visa endast i dokument",                  IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "Visa alla markörer",                      IDM_VIEW_CHGHIST_ALL
         END
         MENUITEM SEPARATOR
         MENUITEM "Hyperlänkpunkt\tCtrl+Alt+W",                      IDM_VIEW_HYPERLINKHOTSPOTS
@@ -391,8 +391,8 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Radnummer\tCtrl+Shift+N",                         IDM_VIEW_LINENUMBERS
-        MENUITEM "Bookmark &Margin\tCtrl+Shift+M",                  IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Bokmärke marginal\tCtrl+Shift+M",                 IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Ändra bokmärke marginal",                         IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "Vikning"
         BEGIN
@@ -492,7 +492,7 @@ BEGIN
             MENUITEM "Kom ihåg senaste filer",                      IDM_SET_NOSAVERECENT
             MENUITEM "Bevara markörposition",                       IDM_SET_NOPRESERVECARET
             MENUITEM "Kom ihåg sökmönster",                         IDM_SET_NOSAVEFINDREPL
-            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "Ladda senaste fil automatiskt",               IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "Fönster"
         BEGIN
@@ -592,7 +592,7 @@ BEGIN
         MENUITEM "Ihopvikning av kodsegment",                       IDM_VIEW_FOLDING
         MENUITEM "Radnummer",                                       IDM_VIEW_LINENUMBERS
         MENUITEM "Marginal för bokmärken",                          IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Marginal historia",                               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN
