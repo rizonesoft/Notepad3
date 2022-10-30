@@ -468,7 +468,7 @@ msgstr "Textsökning"
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr ""
+msgstr "Sökvägen \"%s\" existerar inte eller är ej tillgänglig!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
