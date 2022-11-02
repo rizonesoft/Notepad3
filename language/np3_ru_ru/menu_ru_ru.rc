@@ -350,12 +350,12 @@ BEGIN
         MENUITEM "Отображать про&бельные символы\tCtrl+Shift+8",    IDM_VIEW_SHOWBLANKS
         MENUITEM "Отображать &окончания строк\tCtrl+Shift+9",       IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        POPUP "Change History Marker"
+        POPUP "Маркер истории изменений"
         BEGIN
-            MENUITEM "No Change Markers",                   IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+            MENUITEM "Не показывать",                       IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Показывать только в отступе",         IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "Показывать только в документе",       IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "Показывать везде",                    IDM_VIEW_CHGHIST_ALL
         END
         MENUITEM SEPARATOR
         MENUITEM "Отмечать &гиперссылки\tCtrl+Alt+W",               IDM_VIEW_HYPERLINKHOTSPOTS
@@ -392,7 +392,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Номера строк\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
         MENUITEM "Отст&уп для закладок\tCtrl+Shift+M",  IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Отступ для истории изменений",        IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "Блоки &кода"
         BEGIN
@@ -472,7 +472,7 @@ BEGIN
         MENUITEM "Автозакрытие тегов &HTML/XML\tCtrl+Shift+H",  IDM_SET_AUTOCLOSETAGS
         MENUITEM "Авто&завершение слов",                        IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Автозавершение на основе &лексем",            IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",      IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "&Альтернативные разделители слов\tCtrl+Alt+A", IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Только один &экземпляр на файл",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "&Уведомление об изменении файла...\tAlt+F5",  IDM_SET_CHANGENOTIFY
@@ -492,7 +492,7 @@ BEGIN
             MENUITEM "Сохранять историю открытых &файлов",  IDM_SET_NOSAVERECENT
             MENUITEM "Восстанавливать положение &каретки",  IDM_SET_NOPRESERVECARET
             MENUITEM "Запоминать поисковые &запросы",       IDM_SET_NOSAVEFINDREPL
-            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "&Автозагрузка последнего файла",      IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "&Окно"
         BEGIN
@@ -592,7 +592,7 @@ BEGIN
         MENUITEM "Сворачивание блоков кода",           IDM_VIEW_FOLDING
         MENUITEM "Номера строк",                       IDM_VIEW_LINENUMBERS
         MENUITEM "Отступ для закладок",                IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Отступ для истории изменений",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN
