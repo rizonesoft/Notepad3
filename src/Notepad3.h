@@ -213,20 +213,22 @@ void EnableDocChangeNotification(const int evm);
         if (cond) {                                                 \
             SciCall_SetCursor(SC_CURSORWAIT);                       \
             StatusSetText(Globals.hwndStatus, STATUS_HELP, (text)); \
-        }
+        }                                                           \
+        LimitNotifyEvents()
 
-#define BeginWaitCursorUID(cond, uid) {                        \
-        if (cond) {                                            \
-            SciCall_SetCursor(SC_CURSORWAIT);                  \
+#define BeginWaitCursorUID(cond, uid) {                              \
+        if (cond) {                                                  \
+            SciCall_SetCursor(SC_CURSORWAIT);                        \
             StatusSetTextID(Globals.hwndStatus, STATUS_HELP, (uid)); \
-        }
+        }                                                            \
+        LimitNotifyEvents()
 
 #define EndWaitCursor()                       \
         SciCall_SetCursor(SC_CURSORNORMAL);   \
         POINT pt;                             \
         GetCursorPos(&pt);                    \
         SetCursorPos(pt.x, pt.y);             \
-        UpdateStatusbar(true);                \
+        RestoreNotifyEvents();                \
     }
 
 // ----------------------------------------------------------------------------
