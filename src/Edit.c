@@ -1142,10 +1142,8 @@ bool EditLoadFile(
     FileLoadFlags fLoadFlags,
     bool bClearUndoHistory)
 {
-    bool bLoadSuccess = false;
-
     if (!status) {
-        return bLoadSuccess;
+        return false;
     }
     status->iEncoding = Settings.DefaultEncoding;
     status->bUnicodeErr = false;
@@ -1157,6 +1155,8 @@ bool EditLoadFile(
     Path_GetDisplayName(wchFName, COUNTOF(wchFName), hfile_pth, L"...", true);
     WCHAR wchMsg[128];
     FormatLngStringW(wchMsg, COUNTOF(wchMsg), IDS_MUI_LOADFILE, wchFName);
+
+    bool bReadSuccess = false;
 
     BeginWaitCursor(true, wchMsg);
 
@@ -1257,7 +1257,7 @@ bool EditLoadFile(
 
     CloseHandle(hFile);
 
-    bool bReadSuccess = ((readFlag & DECRYPT_FATAL_ERROR) || (readFlag & DECRYPT_FREAD_FAILED)) ? false : true;
+    bReadSuccess = ((readFlag & DECRYPT_FATAL_ERROR) || (readFlag & DECRYPT_FREAD_FAILED)) ? false : true;
 
     if ((readFlag & DECRYPT_CANCELED_NO_PASS) || (readFlag & DECRYPT_WRONG_PASS)) {
         bReadSuccess = IsYesOkay(InfoBoxLng(MB_OKCANCEL, L"MsgNoOrWrongPassphrase", IDS_MUI_NOPASS));
@@ -1326,23 +1326,18 @@ bool EditLoadFile(
         SciCall_CallTipShow(iPos, Encoding_GetTitleInfoA());
         SciCall_SetXOffset(iXOff);
 #endif
-
+        WCHAR wchBuf[128] = { L'\0' };
         if (IS_ENC_ENFORCED()) {
-            WCHAR wchBuf[128] = { L'\0' };
             StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"ForcedEncoding='%s'", g_Encodings[encDetection.forcedEncoding].wchLabel);
             SetAdditionalTitleInfo(wchBuf);
         }
-
         if (!Encoding_IsNONE(encDetection.fileVarEncoding) && FileVars_IsValidEncoding(&Globals.fvCurFile)) {
-            WCHAR wchBuf[128] = { L'\0' };
             StringCchPrintf(wchBuf, COUNTOF(wchBuf), L" - FilEncTag='%s'",
                             g_Encodings[FileVars_GetEncoding(&Globals.fvCurFile)].wchLabel);
             AppendAdditionalTitleInfo(wchBuf);
         }
-
-        WCHAR wcBuf[128] = { L'\0' };
-        StringCchPrintf(wcBuf, ARRAYSIZE(wcBuf), L" - OS-CP='%s'", g_Encodings[CPI_ANSI_DEFAULT].wchLabel);
-        AppendAdditionalTitleInfo(wcBuf);
+        StringCchPrintf(wchBuf, ARRAYSIZE(wchBuf), L" - OS-CP='%s'", g_Encodings[CPI_ANSI_DEFAULT].wchLabel);
+        AppendAdditionalTitleInfo(wchBuf);
     }
 
     // --------------------------------------------------------------------------
@@ -1421,12 +1416,14 @@ bool EditLoadFile(
                         Encoding_Forced(CPI_NONE);
                         FreeMem(lpDataWide);
                         FreeMem(lpData);
+                        bReadSuccess = false;
                         goto observe;
                     }
                 } else {
                     Encoding_Forced(CPI_NONE);
                     FreeMem(lpDataWide);
                     FreeMem(lpData);
+                    bReadSuccess = false;
                     goto observe;
                 }
             } else {
@@ -1442,13 +1439,11 @@ bool EditLoadFile(
 
     FreeMem(lpData);
 
-    bLoadSuccess = true;
-
 observe:
 
     EndWaitCursor();
 
-    return bLoadSuccess;
+    return bReadSuccess;
 }
 
 
