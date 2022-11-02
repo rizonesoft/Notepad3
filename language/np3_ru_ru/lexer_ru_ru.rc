@@ -500,14 +500,14 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_CH_MODIFIED     "Change History Marker Modified"
-    IDS_LEX_STD_CH_SAVED        "Change History Marker Saved"
-    IDS_LEX_STD_CH_REV_TO_MOD   "Change History Marker Reverted to Modified"
-    IDS_LEX_STD_CH_REV_TO_ORG   "Change History Marker Reverted to Origin"
-    IDS_LEX_2ND_CH_MODIFIED     "2nd Change History Marker Modified"
-    IDS_LEX_2ND_CH_SAVED        "2nd Change History Marker Saved"
-    IDS_LEX_2ND_CH_REV_TO_MOD   "2nd Change History Marker Reverted to Modified"
-    IDS_LEX_2ND_CH_REV_TO_ORG   "2nd Change History Marker Reverted to Origin"
+    IDS_LEX_STD_CH_MODIFIED     "Маркер истории изменений изменен"
+    IDS_LEX_STD_CH_SAVED        "Маркер истории изменений сохранен"
+    IDS_LEX_STD_CH_REV_TO_MOD   "Маркер истории изменений возвращен к измененному"
+    IDS_LEX_STD_CH_REV_TO_ORG   "Маркер истории изменений возвращен к исходному"
+    IDS_LEX_2ND_CH_MODIFIED     "Маркер истории изменений второй схемы изменен"
+    IDS_LEX_2ND_CH_SAVED        "Маркер истории изменений второй схемы сохранен"
+    IDS_LEX_2ND_CH_REV_TO_MOD   "Маркер истории изменений второй схемы возвращен к измененному"
+    IDS_LEX_2ND_CH_REV_TO_ORG   "Маркер истории изменений второй схемы возвращен к исходному"
 END
 
 STRINGTABLE
