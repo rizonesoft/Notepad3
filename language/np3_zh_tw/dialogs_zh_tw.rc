@@ -530,7 +530,7 @@ BEGIN
     LTEXT           "${I}",IDC_MODLNS_CNTLN0_CANONIC,7,92,13,8
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,17,8
     LTEXT           "連續的數字（從 0 開始）",IDC_STATIC5,57,92,109,8
-    LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,30,8
+    LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,35,8
     LTEXT           "${<expr>} defines math formulas.",IDC_STATIC6,57,102,175,8
 END
 
