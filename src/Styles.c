@@ -636,10 +636,6 @@ static float  _SetBaseFontSize(float fSize)
     return fBaseFontSize;
 }
 
-//=============================================================================
-//
-//  Style_GetBaseFontSize()
-//
 float Style_GetBaseFontSize()
 {
     return _SetBaseFontSize(-1.0); // neg. value indicate getter
@@ -655,7 +651,7 @@ static float  _SetCurrentFontSize(float fSize)
 
     if (signbit(fSize) == 0) {
         float const fSizeR10th = Round10th(fSize);
-        fCurrentFontSize = (0.5f < fSizeR10th) ? fSizeR10th : 0.5f;
+        fCurrentFontSize = max_f(0.5f, fSizeR10th);
     }
     return fCurrentFontSize;
 }
@@ -2028,12 +2024,16 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
 //
 static int _GetMarkerMarginWidth(HWND hwnd)
 {
-    float fSize = 0.0f;
     float ftotal = Style_GetBaseFontSize();
+
+    float fSize = 0.0f;
     Style_StrGetSizeFloat(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize);     // relative to LineNumber
     ftotal += fSize;
+
+    fSize = 0.0f;
     Style_StrGetSizeFloat(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);  // settings
     ftotal += fSize;
+
     float const zoomPercent = (float)SciCall_GetZoom();
     return ScaleFloatToDPI(hwnd, (ftotal * zoomPercent) / 100.0f);
 }
@@ -3082,10 +3082,13 @@ bool Style_StrGetSizeFloat(LPCWSTR lpszStyle, float* f)
 
         float fValue = 0.0;
         if (StrToFloat(tch, &fValue)) {
-            if (fSign != 0) {
-                fValue = (fSign * fValue); // can be negative
+            if (fSign == 0) {
+                *f = Round10th(fValue);
             }
-            *f = Round10th(fValue);
+            else { // fSign: relative value
+                fValue = (fSign * fValue); // can be negative
+                *f += Round10th(fValue);
+            }
             return true;
         }
     }
@@ -3903,20 +3906,18 @@ void Style_SetStyles(HWND hwnd, const int iStyle, LPCWSTR lpszStyle)
 
     // Size values are relative to BaseFontSize/CurrentFontSize
     float fBaseFontSize = Style_GetCurrentFontSize();
-    float fValue = 0.0f;
-    if (Style_StrGetSizeFloat(lpszStyle, &fValue)) {
-        fBaseFontSize += fValue;
-        if (iStyle == STYLE_DEFAULT) {
-            if (bIsDefaultStyle) {
-                _SetBaseFontSize(fBaseFontSize);
-            }
+    if (Style_StrGetSizeFloat(lpszStyle, &fBaseFontSize)) {
+        if (bIsDefaultStyle) {
+            _SetBaseFontSize(fBaseFontSize);
             _SetCurrentFontSize(fBaseFontSize);
         }
         SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, f2int(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER));
-    } else if (bIsDefaultStyle) {
+    }
+    else if (bIsDefaultStyle) {
         _SetBaseFontSize(fBaseFontSize);
         SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, STYLE_DEFAULT, f2int(fBaseFontSize * SC_FONT_SIZE_MULTIPLIER));
     }
+
 
     char localeNameA[LOCALE_NAME_MAX_LENGTH] = "en-us\0";
 #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)

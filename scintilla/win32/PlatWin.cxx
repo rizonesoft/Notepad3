@@ -4028,7 +4028,7 @@ void Platform::DebugPrintf(const char *format, ...) noexcept {
 	char buffer[2000];
 	va_list pArguments;
 	va_start(pArguments, format);
-	vsprintf(buffer,format,pArguments);
+	vsprintf_s(buffer,format,pArguments);
 	va_end(pArguments);
 	Platform::DebugDisplay(buffer);
 }

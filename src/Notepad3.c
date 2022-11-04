@@ -409,7 +409,7 @@ static void CopyUndoRedoSelection(void* dst, const void* src)
 
 static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), InitUndoRedoSelection, CopyUndoRedoSelection, DelUndoRedoSelection };
 static UT_array* UndoRedoSelectionUTArray = NULL;
-static void  _SaveRedoSelection(const LONG token);
+static void  _SaveRedoSelection(const LONG token, const bool bAddAction);
 static LONG  _SaveUndoSelection();
 static LONG  _UndoRedoActionMap(const LONG token, const UndoRedoSelection_t** selection);
 // => UndoTransActionBegin();
@@ -3189,21 +3189,18 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 }
 
 
-
 //=============================================================================
 //
 // MsgDPIChanged() - Handle WM_DPICHANGED
 //
-//
 LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     //UINT const dpi = LOWORD(wParam);
-    UNREFERENCED_PARAMETER(wParam);
-    //const RECT* const rc = (RECT*)lParam;
+    const RECT* const rc = (RECT*)lParam;
 
     DocPos const pos = SciCall_GetCurrentPos();
 
-    UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
+    UpdateWindowLayoutForDPI(hwnd, rc, 0);
 
     SendMessage(Globals.hwndEdit, WM_DPICHANGED, wParam, lParam);
 
@@ -3277,8 +3274,6 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam,LPARAM lParam)
 //
 LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    UNREFERENCED_PARAMETER(hwnd);
-
     if (wParam == SIZE_MINIMIZED) {
         return FALSE;
     }
@@ -3317,7 +3312,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     }
 
 
-    HDWP hdwp = BeginDeferWindowPos(2);
+    HDWP const hdwp = BeginDeferWindowPos(2);
 
     DeferWindowPos(hdwp,s_hwndEditFrame,NULL,x,y,cx,cy, SWP_NOZORDER | SWP_NOACTIVATE);
 
@@ -3333,7 +3328,8 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     UpdateStatusbar(true);
     UpdateMargins(true);
     UpdateTitlebar(hwnd);
-
+    //~UpdateUI();
+    
     return FALSE;
 }
 
@@ -8208,7 +8204,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
             } else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
                 if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
                     if (!_InUndoRedoTransaction() && (_urtoken >= URTok_TokenStart)) {
-                        _SaveRedoSelection(_urtoken);
+                        _SaveRedoSelection(_urtoken, SciCall_GetModify());
                         _urtoken = URTok_NoTransaction;
                     }
                 }
@@ -10316,10 +10312,6 @@ static LONG _SaveUndoSelection()
     const UndoRedoSelection_t* pSel = &sel;
     LONG const token = _UndoRedoActionMap(URTok_NoTransaction, &pSel);
 
-    if (token >= URTok_TokenStart) {
-        SciCall_AddUndoAction((int)token, UNDO_NONE); //~UNDO_MAY_COALESCE
-    }
-
     DelUndoRedoSelection(&sel); // utarray_free()
 
     _s_iSelection = 0; // reset
@@ -10333,9 +10325,9 @@ static LONG _SaveUndoSelection()
 //  _SaveRedoSelection()
 //
 //
-static void _SaveRedoSelection(const LONG token)
+static void _SaveRedoSelection(const LONG token, const bool bAddAction)
 {
-    static DocPosU _s_iSelection = 0;  // index
+    static DocPosU _s_iSelection = 0; // index
 
     if (token <= URTok_NoTransaction) {
         return;
@@ -10353,57 +10345,61 @@ static void _SaveRedoSelection(const LONG token)
     if (0 != --_s_iSelection) {
         return;
     }
+    if (bAddAction) {
 
-    if ((_UndoRedoActionMap(token, &pSel) >= URTok_TokenStart) && (pSel != NULL)) {
+        if ((_UndoRedoActionMap(token, &pSel) >= URTok_TokenStart) && (pSel != NULL)) {
 
-        int const selMode = ((numOfSel > 1) && !SciCall_IsSelectionRectangle()) ? NP3_SEL_MULTI : SciCall_GetSelectionMode();
+            int const selMode = ((numOfSel > 1) && !SciCall_IsSelectionRectangle()) ? NP3_SEL_MULTI : SciCall_GetSelectionMode();
 
-        pSel->selMode_redo = selMode;
+            pSel->selMode_redo = selMode;
 
-        switch (selMode) {
-        case NP3_SEL_MULTI: {
-            for (DocPosU i = 0; i < numOfSel; ++i) {
-                DocPos const anchorPos = SciCall_GetSelectionNAnchor(i);
+            switch (selMode) {
+            case NP3_SEL_MULTI: {
+                for (DocPosU i = 0; i < numOfSel; ++i) {
+                    DocPos const anchorPos = SciCall_GetSelectionNAnchor(i);
+                    utarray_push_back(pSel->anchorPos_redo, &anchorPos);
+                    DocPos const curPos = SciCall_GetSelectionNCaret(i);
+                    utarray_push_back(pSel->curPos_redo, &curPos);
+                    if (!Settings2.DenyVirtualSpaceAccess) {
+                        DocPos const anchorVS = SciCall_GetSelectionNAnchorVirtualSpace(i);
+                        utarray_push_back(pSel->anchorVS_redo, &anchorVS);
+                        DocPos const curVS = SciCall_GetSelectionNCaretVirtualSpace(i);
+                        utarray_push_back(pSel->curVS_redo, &curVS);
+                    }
+                }
+            } break;
+
+            case SC_SEL_RECTANGLE:
+            case SC_SEL_THIN: {
+                DocPos const anchorPos = SciCall_GetRectangularSelectionAnchor();
                 utarray_push_back(pSel->anchorPos_redo, &anchorPos);
-                DocPos const curPos = SciCall_GetSelectionNCaret(i);
+                DocPos const curPos = SciCall_GetRectangularSelectionCaret();
                 utarray_push_back(pSel->curPos_redo, &curPos);
                 if (!Settings2.DenyVirtualSpaceAccess) {
-                    DocPos const anchorVS = SciCall_GetSelectionNAnchorVirtualSpace(i);
+                    DocPos const anchorVS = SciCall_GetRectangularSelectionAnchorVirtualSpace();
                     utarray_push_back(pSel->anchorVS_redo, &anchorVS);
-                    DocPos const curVS = SciCall_GetSelectionNCaretVirtualSpace(i);
+                    DocPos const curVS = SciCall_GetRectangularSelectionCaretVirtualSpace();
                     utarray_push_back(pSel->curVS_redo, &curVS);
                 }
-            }
-        }
-        break;
+            } break;
 
-        case SC_SEL_RECTANGLE:
-        case SC_SEL_THIN: {
-            DocPos const anchorPos = SciCall_GetRectangularSelectionAnchor();
-            utarray_push_back(pSel->anchorPos_redo, &anchorPos);
-            DocPos const curPos = SciCall_GetRectangularSelectionCaret();
-            utarray_push_back(pSel->curPos_redo, &curPos);
-            if (!Settings2.DenyVirtualSpaceAccess) {
-                DocPos const anchorVS = SciCall_GetRectangularSelectionAnchorVirtualSpace();
-                utarray_push_back(pSel->anchorVS_redo, &anchorVS);
-                DocPos const curVS = SciCall_GetRectangularSelectionCaretVirtualSpace();
-                utarray_push_back(pSel->curVS_redo, &curVS);
+            case SC_SEL_LINES:
+            case SC_SEL_STREAM:
+            default: {
+                DocPos const anchorPos = SciCall_GetAnchor();
+                utarray_push_back(pSel->anchorPos_redo, &anchorPos);
+                DocPos const curPos = SciCall_GetCurrentPos();
+                utarray_push_back(pSel->curPos_redo, &curPos);
+                //~DocPos const dummy = (DocPos)-1;
+                //~utarray_push_back(pSel->anchorVS_redo, &dummy);
+                //~utarray_push_back(pSel->curVS_redo, &dummy);
+            } break;
             }
-        }
-        break;
 
-        case SC_SEL_LINES:
-        case SC_SEL_STREAM:
-        default: {
-            DocPos const anchorPos = SciCall_GetAnchor();
-            utarray_push_back(pSel->anchorPos_redo, &anchorPos);
-            DocPos const curPos = SciCall_GetCurrentPos();
-            utarray_push_back(pSel->curPos_redo, &curPos);
-            //~DocPos const dummy = (DocPos)-1;
-            //~utarray_push_back(pSel->anchorVS_redo, &dummy);
-            //~utarray_push_back(pSel->curVS_redo, &dummy);
+            SciCall_AddUndoAction((int)token, UNDO_NONE); //~UNDO_MAY_COALESCE
         }
-        break;
+        else {
+            _UndoRedoActionMap(token, NULL);  // remove
         }
     }
 }
@@ -10436,13 +10432,13 @@ const char* const _assert_msg = "Broken UndoRedo-Transaction!";
 void EndUndoActionSelection(const LONG token)
 {
     if (SciCall_GetUndoCollection()) {
+        if (token >= URTok_TokenStart) {
+            _SaveRedoSelection(token, SciCall_GetModify());
+        }
         --UndoRedoActionStackCount;
         SciCall_EndUndoAction();
         if (0 == UndoRedoActionStackCount) {
             EnableDocChangeNotification(EVM_Default);
-        }
-        if ((token >= URTok_TokenStart) && !SciCall_IsSelectionEmpty()) {
-            _SaveRedoSelection(token);
         }
         assert(_assert_msg && (UndoRedoActionStackCount >= 0));
     }
@@ -10674,24 +10670,37 @@ static LONG _UndoRedoActionMap(const LONG token, const UndoRedoSelection_t** sel
         return URTok_NoRecording;
     };
 
-    // indexing is unsigned
-    ULONG utoken = (token >= URTok_TokenStart) ? (ULONG)token : 0UL;
+    if (selection == NULL) {
 
-    if (selection == NULL) { // reset / clear
-        if (SciCall_GetUndoCollection()) {
-            while (UndoRedoActionStackCount > 0) {
-                SciCall_EndUndoAction();
-                --UndoRedoActionStackCount;
+        if (token <= URTok_NoTransaction) { // reset / clear
+            if (SciCall_GetUndoCollection()) {
+                while (UndoRedoActionStackCount > 0) {
+                    SciCall_EndUndoAction();
+                    --UndoRedoActionStackCount;
+                }
+            }
+            UndoRedoActionStackCount = 0;
+
+            utarray_clear(UndoRedoSelectionUTArray);
+            //~utarray_free(UndoRedoSelectionUTArray);
+            //~utarray_init(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
+            uiTokenCnt = URTok_TokenStart;
+        }
+        else { // remove token indexed action
+            
+            utarray_erase(UndoRedoSelectionUTArray, (ULONG)token, 1);
+            if (((ULONG)token + 1UL) == uiTokenCnt) {
+                --uiTokenCnt;
+            }
+            else {
+                assert("Invalid index of item to remove!" && 0);
             }
         }
-        UndoRedoActionStackCount = 0;
-
-        utarray_clear(UndoRedoSelectionUTArray);
-        //~utarray_free(UndoRedoSelectionUTArray);
-        //~utarray_init(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
-        uiTokenCnt = URTok_TokenStart;
         return URTok_NoTransaction;
     }
+
+    // indexing is unsigned
+    ULONG utoken = (token >= URTok_TokenStart) ? (ULONG)token : 0UL;
 
     if (!SciCall_GetUndoCollection()) {
         assert("Inactive Undo Collection!" && 0);
@@ -11477,16 +11486,15 @@ bool FileSave(FileSaveFlags fSaveFlags)
         // if current file is settings/config file: ask to start
         if (Flags.bSettingsFileSoftLocked && !s_flagAppIsClosing) {
             ///~ LoadSettings(); NOT all settings will be applied ...
-            LONG answer = 0L;
-            if (Settings.SaveSettings) {
-                WCHAR tch[256] = { L'\0' };
-                LoadLngStringW(IDS_MUI_RELOADCFGSEX, tch, COUNTOF(tch));
-                answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, tch);
-            } else {
-                answer = InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, L"");
-            }
+            WCHAR tch[256] = { L'\0' };
+            if (Settings.SaveSettings) { LoadLngStringW(IDS_MUI_RELOADCFGSEX, tch, COUNTOF(tch)); }
+            UINT const typ = Settings.SaveSettings ? (MB_YESNO | MB_ICONWARNING) : (MB_YESNO | MB_ICONINFORMATION);
+            LONG const answer = InfoBoxLng(typ, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, tch);
             if (IsYesOkay(answer)) {
-                DialogNewWindow(Globals.hwndMain, false, Paths.CurrentFile, NULL);
+                ///~SaveAllSettings(true); ~ already saved (CurrentFile)
+                HPATHL hempty_pth = Path_Allocate(NULL);
+                DialogNewWindow(Globals.hwndMain, false, hempty_pth, NULL);
+                Path_Release(hempty_pth);
                 CloseApplication();
             }
         }

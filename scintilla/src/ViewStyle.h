@@ -71,7 +71,7 @@ struct CaretLineAppearance {
 constexpr int GetFontSizeZoomed(int size, int zoomLevel) noexcept {
 	size = (size * zoomLevel + 50) / 100;
 	// Hangs if sizeZoomed (in point) <= 1
-	return std::max(size, 2 * SC_FONT_SIZE_MULTIPLIER);
+	return std::max(size, 2 * FontSizeMultiplier);
 }
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
