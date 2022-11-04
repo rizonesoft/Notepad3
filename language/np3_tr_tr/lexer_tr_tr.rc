@@ -129,7 +129,7 @@ BEGIN
     IDS_LEX_KOTLIN_SRC      "Kotlin kaynak kodu"
     IDS_LEX_JULIA_SCR       "Julia betiği"
     IDS_LEX_KIX_SCR         "KiXtart betiği"
-    IDS_LEX_FORTRAN         "Fortran Source Code"
+    IDS_LEX_FORTRAN         "Fortran kaynak kodu"
 END
 
 STRINGTABLE
@@ -488,26 +488,26 @@ BEGIN
     IDS_LEX_STR_63379       "Kapatılmamış dizge"
     IDS_LEX_STR_63380       "URL/IRI"
     IDS_LEX_STR_63381       "Kısa IRI"
-    IDS_LEX_STR_63382       "Send Key"
-    IDS_LEX_STR_63383       "Meta-Data"
-    IDS_LEX_STR_63384       "Enumeration"
-    IDS_LEX_STR_63385       "TriQ-String"
-    IDS_LEX_STR_63386       "Symbol Identifier"
-    IDS_LEX_STR_63387       "Symbol Operator"
-    IDS_LEX_STR_63388       "String EOL"
-    IDS_LEX_STR_63397       "Backticks"
+    IDS_LEX_STR_63382       "Tuş gönderme"
+    IDS_LEX_STR_63383       "Üst veri"
+    IDS_LEX_STR_63384       "Hesaplama"
+    IDS_LEX_STR_63385       "TriQ dizgesi"
+    IDS_LEX_STR_63386       "Simge belirteci"
+    IDS_LEX_STR_63387       "Simge işlemi"
+    IDS_LEX_STR_63388       "Dizge satır sonu"
+    IDS_LEX_STR_63397       "Ters tik"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_CH_MODIFIED     "Change History Marker Modified"
-    IDS_LEX_STD_CH_SAVED        "Change History Marker Saved"
-    IDS_LEX_STD_CH_REV_TO_MOD   "Change History Marker Reverted to Modified"
-    IDS_LEX_STD_CH_REV_TO_ORG   "Change History Marker Reverted to Origin"
-    IDS_LEX_2ND_CH_MODIFIED     "2nd Change History Marker Modified"
-    IDS_LEX_2ND_CH_SAVED        "2nd Change History Marker Saved"
-    IDS_LEX_2ND_CH_REV_TO_MOD   "2nd Change History Marker Reverted to Modified"
-    IDS_LEX_2ND_CH_REV_TO_ORG   "2nd Change History Marker Reverted to Origin"
+    IDS_LEX_STD_CH_MODIFIED     "Değişiklik geçmişi işaretleyici değiştirildi"
+    IDS_LEX_STD_CH_SAVED        "Değişiklik geçmişi işaretleyici kaydedildi"
+    IDS_LEX_STD_CH_REV_TO_MOD   "Değişiklik geçmişi işaretleyici değiştirilmişe döndürüldü"
+    IDS_LEX_STD_CH_REV_TO_ORG   "Değişiklik geçmişi işaretleyici kaynağa döndürüldü"
+    IDS_LEX_2ND_CH_MODIFIED     "2. Değişiklik geçmişi işaretleyici değiştirildi"
+    IDS_LEX_2ND_CH_SAVED        "2. Değişiklik geçmişi işaretleyici kaydedildi"
+    IDS_LEX_2ND_CH_REV_TO_MOD   "2. Değişiklik geçmişi işaretleyici değiştirilmişe döndürüldü"
+    IDS_LEX_2ND_CH_REV_TO_ORG   "2. Değişiklik geçmişi işaretleyici kaynağa döndürüldü"
 END
 
 STRINGTABLE
