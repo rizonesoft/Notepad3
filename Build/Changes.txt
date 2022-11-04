@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.1102.(build_#) (2022-11-02)
+Current BETA/RC Version 5.22.1104.(build_#) (2022-11-04)
 ========================================================
 
 --------------------------------------------------------
@@ -63,6 +63,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[1104.1]- Full font description in resource files.
 [1029.1]- Refactoring of undo/redo and document modify handler.
 [1020.1]- Standard DarkMode Theme.
 [1020.1]- Minor adjustment of grepWinNP3's layout and correction of some strings (GRE).
@@ -117,6 +118,10 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1104.1]- Common base font size scheme handling.
+[1104.1]- Context menu: web action handler.
+[1104.1]- Modification marker based on selection history.
+[1104.1]- Disable events from edit-window while in Begin/End-WaitCursor.
 [1102.1]- Error message on loading empty file.
 [1029.1]- Issue on undo/redo stack.
 [1029.1]- Refactored of undo/redo and document modify handler.
