@@ -350,12 +350,12 @@ BEGIN
         MENUITEM "Boşluklar görüntülensin\tCtrl+Shift+8",             IDM_VIEW_SHOWBLANKS
         MENUITEM "Satır sonları görüntülensin\tCtrl+Shift+9",         IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        POPUP "Change History Marker"
+        POPUP "Değişiklik geçmişi işareti"
         BEGIN
-            MENUITEM "No Change Markers",                   IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+            MENUITEM "Değişiklik işareti yok",                        IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Yalnızca kenarda görüntülensin",                IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "Yalnızca belgede görüntülensin",                IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "Tüm değişiklik işaretleri görüntülensin",       IDM_VIEW_CHGHIST_ALL
         END
         MENUITEM SEPARATOR
         MENUITEM "&Bağlantı noktaları görüntülensin\tCtrl+Alt+W",     IDM_VIEW_HYPERLINKHOTSPOTS
@@ -392,7 +392,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Satır &numaraları\tCtrl+Shift+N",                   IDM_VIEW_LINENUMBERS
         MENUITEM "&Yer imi boşluğu\tCtrl+Shift+M",                    IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Değişiklik geçmişi kenarlığı",                      IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Blok daraltma"
         BEGIN
@@ -472,7 +472,7 @@ BEGIN
         MENUITEM "HTML/&XML kod imleri otomatik kapatılsın\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
         MENUITEM "Sözcükler &otomatik tamamlansın",                   IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "&Lexer-&anahtar sözcükleri otomatik tamamlansın",   IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",            IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Alternatif sö&zcük ayraçları\tCtrl+Alt+A",          IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "&Her dosya tek pencerede açılsın",                  IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Dosyadaki değişiklikler bildirilsin...\tAlt+F5",    IDM_SET_CHANGENOTIFY
@@ -492,7 +492,7 @@ BEGIN
             MENUITEM "&Son kullanılan dosyalar hatırlansın",          IDM_SET_NOSAVERECENT
             MENUITEM "İ&mleç konumu hatırlansın",                     IDM_SET_NOPRESERVECARET
             MENUITEM "&Arama modeli hatırlansın",                     IDM_SET_NOSAVEFINDREPL
-            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "&Son kullanılan dosya otomatik yüklensin",      IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "P&encere"
         BEGIN
@@ -592,7 +592,7 @@ BEGIN
         MENUITEM "Toplama",                                           IDM_VIEW_FOLDING
         MENUITEM "Satır numaraları",                                  IDM_VIEW_LINENUMBERS
         MENUITEM "Yer imi kenar boşluğu",                             IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Değişiklik geçmişi kenarlığı",                      IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN
