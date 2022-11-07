@@ -220,7 +220,7 @@
     </Manifest>
     <Manifest>
       <AdditionalManifestFiles>$(ProjDir)..\res\$(TargetName)$(TargetExt).conf.manifest</AdditionalManifestFiles>
-      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
     </Manifest>
     <ManifestResourceCompile>
       <ResourceOutputFileName>
@@ -294,7 +294,7 @@
     </Manifest>
     <Manifest>
       <AdditionalManifestFiles>$(ProjDir)..\res\$(TargetName)$(TargetExt).conf.manifest</AdditionalManifestFiles>
-      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
     </Manifest>
     <ManifestResourceCompile>
       <ResourceOutputFileName>
@@ -378,7 +378,7 @@
     </Manifest>
     <Manifest>
       <AdditionalManifestFiles>$(ProjDir)..\res\$(TargetName)$(TargetExt).conf.manifest</AdditionalManifestFiles>
-      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
     </Manifest>
     <ManifestResourceCompile>
       <ResourceOutputFileName>
@@ -456,7 +456,7 @@
     </Manifest>
     <Manifest>
       <AdditionalManifestFiles>$(ProjDir)..\res\$(TargetName)$(TargetExt).conf.manifest</AdditionalManifestFiles>
-      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
     </Manifest>
     <ManifestResourceCompile>
       <ResourceOutputFileName>
@@ -539,7 +539,7 @@
     </Manifest>
     <Manifest>
       <AdditionalManifestFiles>$(ProjDir)..\res\$(TargetName)$(TargetExt).conf.manifest</AdditionalManifestFiles>
-      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
     </Manifest>
     <ManifestResourceCompile>
       <ResourceOutputFileName>
@@ -616,7 +616,7 @@
     </Manifest>
     <Manifest>
       <AdditionalManifestFiles>$(ProjDir)..\res\$(TargetName)$(TargetExt).conf.manifest</AdditionalManifestFiles>
-      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
     </Manifest>
     <ManifestResourceCompile>
       <ResourceOutputFileName>
