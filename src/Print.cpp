@@ -99,7 +99,7 @@ static UINT_PTR CALLBACK _LPPrintHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
     break;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         break;
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -612,7 +612,7 @@ static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
     break;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT *)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         break;
 
 #ifdef D_NP3_WIN10_DARK_MODE

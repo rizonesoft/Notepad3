@@ -46,14 +46,14 @@
 
 
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
-void DbgLog(const char *fmt, ...)
+void DbgLog(const wchar_t *fmt, ...)
 {
-    char buf[1024] = "";
+    static wchar_t buf[2048] = { 0 };
     va_list va;
     va_start(va, fmt);
-    wvsprintfA(buf, fmt, va);
+    wvnsprintfW(buf, COUNTOF(buf), fmt, va);
     va_end(va);
-    OutputDebugStringA(buf);
+    OutputDebugStringW(buf);
 }
 #endif
 

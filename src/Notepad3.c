@@ -1128,8 +1128,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     Style_ImportTheme(-1); // init (!)
     Style_ImportTheme(Globals.uCurrentThemeIndex);
 
-    //SetProcessDPIAware(); -> .manifest
-    //SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
+    //SetProcessDPIAware(); // ->.manifest
+    //SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     //~Scintilla_LoadDpiForWindow(); done in Sci::Platform_Initialize();
 
     // ----------------------------------------------------
@@ -1265,6 +1265,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     MSG msg;
     while (GetMessage(&msg,NULL,0,0)) {
+
         if (IsWindow(Globals.hwndDlgFindReplace) && ((msg.hwnd == Globals.hwndDlgFindReplace) || IsChild(Globals.hwndDlgFindReplace, msg.hwnd))) {
             const int iTr = TranslateAccelerator(Globals.hwndDlgFindReplace, hAccFindReplace, &msg);
             if (iTr || IsDialogMessage(Globals.hwndDlgFindReplace, &msg)) {
@@ -3195,12 +3196,14 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 LRESULT MsgDPIChanged(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    //UINT const dpi = LOWORD(wParam);
+    UINT const dpi = LOWORD(wParam);
+    DbgLog(L"MsgDPIChanged() -> %u\n", dpi);
+
     const RECT* const rc = (RECT*)lParam;
 
     DocPos const pos = SciCall_GetCurrentPos();
 
-    UpdateWindowLayoutForDPI(hwnd, rc, 0);
+    UpdateWindowLayoutForDPI(hwnd, rc, dpi);
 
     SendMessage(Globals.hwndEdit, WM_DPICHANGED, wParam, lParam);
 
