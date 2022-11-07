@@ -1486,6 +1486,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 #define _SC_INDIC_IME_UNKNOWN INDIC_IME_MAX
 
     COLORREF rgb = RGB(0xFF, 0xA0, 0x00);
+    COLORREF rgbWrt = RGB(0xFF, 0xA0, 0x00);
     Style_StrGetColor(pCurrentStandard->Styles[STY_IME_COLOR].szValue, FOREGROUND_LAYER, &rgb, NULL, true); // IME foregr
     SciCall_IndicSetFore(_SC_INDIC_IME_INPUT, rgb);
     SciCall_IndicSetFore(_SC_INDIC_IME_TARGET, rgb);
@@ -1543,8 +1544,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     // whitespace colors
     rgb = RGB(0, 0, 0);
-    if (Style_StrGetColor(pCurrentStandard->Styles[STY_WHITESPACE].szValue, FOREGROUND_LAYER, &rgb, NULL, false)) {
-        Style_PrintfCchColor(wch, COUNTOF(wch), L"; ", FOREGROUND_LAYER, rgb);
+    rgbWrt = rgb;
+    if (Style_StrGetColor(pCurrentStandard->Styles[STY_WHITESPACE].szValue, FOREGROUND_LAYER, &rgb, &rgbWrt, false)) {
+        Style_PrintfCchColor(wch, COUNTOF(wch), L"; ", FOREGROUND_LAYER, rgbWrt);
         StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
 
         if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &iValue, true)) {
@@ -1558,8 +1560,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
 
     rgb = RGB(0, 0, 0);
-    if (Style_StrGetColor(pCurrentStandard->Styles[STY_WHITESPACE].szValue, BACKGROUND_LAYER, &rgb, NULL, true)) {
-        Style_PrintfCchColor(wch, COUNTOF(wch), L"; ", FOREGROUND_LAYER, rgb);
+    rgbWrt = rgb;
+    if (Style_StrGetColor(pCurrentStandard->Styles[STY_WHITESPACE].szValue, BACKGROUND_LAYER, &rgb, &rgbWrt, true)) {
+        Style_PrintfCchColor(wch, COUNTOF(wch), L"; ", FOREGROUND_LAYER, rgbWrt);
         StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
 
         //~ always opaque, no translucency possible in Win32
@@ -1612,6 +1615,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         SciCall_SetCaretWidth(iValue);
     }
 
+
     if (CARETSTYLE_OVERSTRIKE_BLOCK == ovrstrk_mode) {
         StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; ovrblck");
     }
@@ -1627,8 +1631,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
     // caret fore
     rgb = GetModeTextColor(UseDarkMode());
-    if (Style_StrGetColor(pCurrentStandard->Styles[STY_CARET].szValue, FOREGROUND_LAYER, &rgb, NULL, false)) {
-        Style_PrintfCchColor(wch, COUNTOF(wch), L"; ", FOREGROUND_LAYER, rgb);
+    rgbWrt = rgb;
+    if (Style_StrGetColor(pCurrentStandard->Styles[STY_CARET].szValue, FOREGROUND_LAYER, &rgb, &rgbWrt, false)) {
+        Style_PrintfCchColor(wch, COUNTOF(wch), L"; ", FOREGROUND_LAYER, rgbWrt);
         StringCchCat(wchSpecificStyle,COUNTOF(wchSpecificStyle),wch);
     }
     if (!VerifyContrast(rgb, SciCall_StyleGetBack(0))) {
