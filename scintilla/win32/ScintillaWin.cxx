@@ -32,11 +32,11 @@
 #define NOMINMAX
 #endif
 #undef _WIN32_WINNT
-//~#define _WIN32_WINNT 0x0601  /*_WIN32_WINNT_WIN7*/
-#define _WIN32_WINNT 0x0A00  /*_WIN32_WINNT_WINTHRESHOLD, _WIN32_WINNT_WIN10*/
+#define _WIN32_WINNT 0x0601  /*_WIN32_WINNT_WIN7*/
+//#define _WIN32_WINNT 0x0A00  /*_WIN32_WINNT_WINTHRESHOLD, _WIN32_WINNT_WIN10*/
 #undef WINVER
-//~#define WINVER 0x0601  /*_WIN32_WINNT_WIN7*/
-#define WINVER 0x0A00  /*_WIN32_WINNT_WINTHRESHOLD, _WIN32_WINNT_WIN10*/
+#define WINVER 0x0601  /*_WIN32_WINNT_WIN7*/
+//#define WINVER 0x0A00  /*_WIN32_WINNT_WINTHRESHOLD, _WIN32_WINNT_WIN10*/
 #define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <commctrl.h>
@@ -44,6 +44,7 @@
 #include <windowsx.h>
 #include <zmouse.h>
 #include <ole2.h>
+
 
 #if !defined(DISABLE_D2D)
 #define USE_D2D 1
@@ -2108,6 +2109,7 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 			InvalidateStyleRedraw();
 			break;
 
+#if(WINVER >= 0x0605)
 		case WM_DPICHANGED_AFTERPARENT: {
 				const UINT dpiNow = DpiForWindow(wMain.GetID());
 				if (dpi != dpiNow) {
@@ -2116,6 +2118,7 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 				}
 			}
 			break;
+#endif
 
 		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		#if SCI_EnablePopupMenu
