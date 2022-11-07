@@ -2,10 +2,10 @@
 
 <assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
 	<assemblyIdentity
-		name="Rizonesoft.$APPNAME$"
-		version="$VERSION$"
+		name="Rizonesoft.Notepad3"
+		version="5.22.1105.5"
 		processorArchitecture="*"
 		type="win32"
 	/>
-	<description>$APPNAME$ $VERPATCH$</description>
+	<description>Notepad3 beta</description>
 </assembly>

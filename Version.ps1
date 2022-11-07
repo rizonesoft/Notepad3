@@ -45,14 +45,14 @@ try
 
 	if ($AppVeyorEnv) {
 		if ($LastBuildDay -ne "$Revis") {
-			$Revis | Set-Content "Versions\day.txt"
+			$Revis | Set-Content -Path "Versions\day.txt"
 			$Build = 1  # reset (AppVeyor)
 		}
 		$CommitID = ([string]($env:appveyor_repo_commit)).substring(0,8)
 	}
 	else {
 		if ($LastBuildDay -ne "$Revis") {
-			$Revis | Set-Content "Versions\day.txt"
+			$Revis | Set-Content -Path "Versions\day.txt"
 			$Build = 0  # reset (local build)
 		}
 		# locally: increase build number and persit it
@@ -73,7 +73,7 @@ try
 		}
 	}
 	if (!$CommitID) { $CommitID = "---" }
-	$Build | Set-Content "Versions\build.txt"
+	$Build | Set-Content -Path "Versions\build.txt"
 
 	$CompleteVer = "$Major.$Minor.$Revis.$Build"
 	DebugOutput("Notepad3 version number: 'v$CompleteVer $VerPatch'")
@@ -101,24 +101,25 @@ try
 #~if ($VerPatch) { $VerPatch = " $VerPatch" }  # ensure space in front of string
 
 	Copy-Item -LiteralPath "Versions\VersionEx.h.tpl" -Destination "src\VersionEx.h" -Force
-	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$APPNAME\$', "$AppName" } | Set-Content "src\VersionEx.h"
-	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MAJOR\$', "$Major" } | Set-Content "src\VersionEx.h"
-	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MINOR\$', "$Minor" } | Set-Content "src\VersionEx.h"
-	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MAINT\$', "$Revis" } | Set-Content "src\VersionEx.h"
-	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$BUILD\$', "$Build" } | Set-Content "src\VersionEx.h"
-	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$SCIVER\$', "$SciVer" } | Set-Content "src\VersionEx.h"
-	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$LXIVER\$', "$LxiVer" } | Set-Content "src\VersionEx.h"
-	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$ONIGURUMAVER\$', "$OnigVer" } | Set-Content "src\VersionEx.h"
-	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$UCHARDETVER\$', "$UChardetVer" } | Set-Content "src\VersionEx.h"
-	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$TINYEXPRVER\$', "$TinyExprVer" } | Set-Content "src\VersionEx.h"
-	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$UTHASHVER\$', "$UtHashVer" } | Set-Content "src\VersionEx.h"
-	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$VERPATCH\$', "$VerPatch" } | Set-Content "src\VersionEx.h"
-	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$COMMITID\$', "$CommitID" } | Set-Content "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$APPNAME\$', "$AppName" } | Set-Content -Path "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MAJOR\$', "$Major" } | Set-Content -Path "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MINOR\$', "$Minor" } | Set-Content -Path "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$MAINT\$', "$Revis" } | Set-Content -Path "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$BUILD\$', "$Build" } | Set-Content -Path "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$SCIVER\$', "$SciVer" } | Set-Content -Path "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$LXIVER\$', "$LxiVer" } | Set-Content -Path "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$ONIGURUMAVER\$', "$OnigVer" } | Set-Content -Path "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$UCHARDETVER\$', "$UChardetVer" } | Set-Content -Path "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$TINYEXPRVER\$', "$TinyExprVer" } | Set-Content -Path "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$UTHASHVER\$', "$UtHashVer" } | Set-Content -Path "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$VERPATCH\$', "$VerPatch" } | Set-Content -Path "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$COMMITID\$', "$CommitID" } | Set-Content -Path "src\VersionEx.h"
 	
-	Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination "res\Notepad3.exe.manifest.conf" -Force
-	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$APPNAME\$', "$AppName" } | Set-Content "res\Notepad3.exe.manifest.conf"
-	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERPATCH\$', "$VerPatch" } | Set-Content "res\Notepad3.exe.manifest.conf"
-	(Get-Content "res\Notepad3.exe.manifest.conf") | ForEach-Object { $_ -replace '\$VERSION\$', "$CompleteVer" } | Set-Content "res\Notepad3.exe.manifest.conf"
+	$confManifest = "res\Notepad3.exe.conf.manifest"
+	Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination $confManifest -Force
+	(Get-Content $confManifest) | ForEach-Object { $_ -replace '\$APPNAME\$', "$AppName" } | Set-Content -Path $confManifest
+	(Get-Content $confManifest) | ForEach-Object { $_ -replace '\$VERPATCH\$', "$VerPatch" } | Set-Content -Path $confManifest
+	(Get-Content $confManifest) | ForEach-Object { $_ -replace '\$VERSION\$', "$CompleteVer" } | Set-Content -Path $confManifest
 }
 catch 
 {

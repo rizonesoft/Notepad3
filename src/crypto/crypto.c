@@ -156,7 +156,7 @@ INT_PTR CALLBACK SetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
     return TRUE;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hDlg, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hDlg, (RECT*)lParam, (UINT)HIWORD(wParam));
         return TRUE;
 
 //#define WM_CTLCOLORMSGBOX               0x0132
@@ -352,7 +352,7 @@ INT_PTR CALLBACK GetKeysDlgProc(HWND hDlg, UINT umsg, WPARAM wParam, LPARAM lPar
     return !0;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hDlg, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hDlg, (RECT*)lParam, (UINT)HIWORD(wParam));
         return !0;
 
 #ifdef D_NP3_WIN10_DARK_MODE

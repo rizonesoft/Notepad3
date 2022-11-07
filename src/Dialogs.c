@@ -306,7 +306,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
         if (hIconBmp) {
             SetBitmapControl(hwnd, IDC_INFOBOXICON, hIconBmp);
         }
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
     }
     return TRUE;
 
@@ -767,7 +767,7 @@ static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
     return TRUE;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -1076,7 +1076,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
             SendDlgItemMessageW(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
         }
 
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
     }
     break;
 
@@ -1318,7 +1318,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -1571,7 +1571,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -1827,7 +1827,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -2045,7 +2045,7 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         break;
 
 
@@ -2349,7 +2349,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
     return TRUE;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT *)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
     case WM_GETMINMAXINFO:
@@ -2649,7 +2649,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
     return TRUE;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -2811,7 +2811,7 @@ static INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -2958,7 +2958,7 @@ static INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -3102,7 +3102,7 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -3260,7 +3260,7 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -3435,7 +3435,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -3632,7 +3632,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -3862,7 +3862,7 @@ static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wP
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, 0);
+        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -6255,19 +6255,22 @@ void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
 //
 //  UpdateWindowLayoutForDPI()
 //
-void UpdateWindowLayoutForDPI(HWND hwnd, const RECT *pNewRect, const UINT adpi) {
 
+#define USE_RECT_FOR_WIN_POS true
+
+void UpdateWindowLayoutForDPI(HWND hwnd, const RECT *pNewRect, const UINT dpi)
+{
     UINT const uWndFlags = SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED; //~ SWP_NOMOVE | SWP_NOSIZE | SWP_NOREPOSITION
 
-    if (pNewRect) {
+    if (pNewRect && (USE_RECT_FOR_WIN_POS || (dpi == 0))) {
         SetWindowPos(hwnd, NULL, pNewRect->left, pNewRect->top, 
             (pNewRect->right - pNewRect->left), (pNewRect->bottom - pNewRect->top), uWndFlags);
     } else {
         RECT rc = { 0 };
         GetWindowRect(hwnd, &rc);
         //~MapWindowPoints(NULL, hWnd, (LPPOINT)&rc, 2);
-        UINT const dpi = adpi ? adpi : Scintilla_GetWindowDPI(hwnd);
-        Scintilla_AdjustWindowRectForDpi((LPWRECT)&rc, uWndFlags, 0, dpi);
+        UINT const _dpi = (dpi < (USER_DEFAULT_SCREEN_DPI >> 2)) ? Scintilla_GetWindowDPI(hwnd) : dpi;
+        Scintilla_AdjustWindowRectForDpi((LPWRECT)&rc, uWndFlags, 0, _dpi);
         SetWindowPos(hwnd, NULL, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), uWndFlags);
     }
     RedrawWindow(hwnd, NULL, NULL, RDW_FRAME | RDW_INVALIDATE | RDW_ERASE | RDW_INTERNALPAINT | RDW_ALLCHILDREN | RDW_UPDATENOW);
@@ -6425,7 +6428,7 @@ INT_PTR CALLBACK FontDialogHookProc(
     case WM_DPICHANGED:
         dpi = LOWORD(wParam);
         //dpi.y = HIWORD(wParam);
-        UpdateWindowLayoutForDPI(hdlg, (RECT *)lParam, 0);
+        UpdateWindowLayoutForDPI(hdlg, (RECT*)lParam, LOWORD(wParam));
         int const ctl[] = { cmb1, cmb2, cmb3, cmb4, cmb5 };
         for (int i = 0; i < COUNTOF(ctl); ++i) {
             HFONT const hFont = (HFONT)SendMessage(GetDlgItem(hdlg, ctl[i]), WM_GETFONT, 0, 0);
@@ -6527,7 +6530,7 @@ INT_PTR CALLBACK ColorDialogHookProc(
     case WM_DPICHANGED:
         dpi = LOWORD(wParam);
         //dpi.y = HIWORD(wParam);
-        UpdateWindowLayoutForDPI(hdlg, (RECT *)lParam, 0);
+        UpdateWindowLayoutForDPI(hdlg, (RECT*)lParam, LOWORD(wParam));
         int const ctl[] = { COLOR_ADD, COLOR_MIX, IDOK, IDCANCEL };
         for (int i = 0; i < COUNTOF(ctl); ++i) {
             HFONT const hFont = (HFONT)SendMessage(GetDlgItem(hdlg, ctl[i]), WM_GETFONT, 0, 0);

@@ -122,7 +122,7 @@ inline size_t SizeOfMem(LPCVOID lpMem)
 // ============================================================================
 
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
-void DbgLog(const char *fmt, ...);
+void DbgLog(const wchar_t *fmt, ...);
 #else
 #define DbgLog(fmt, ...) NOOP
 #endif
