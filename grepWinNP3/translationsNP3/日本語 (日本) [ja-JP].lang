@@ -422,16 +422,16 @@ msgstr "検索文字列"
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "検索済み %ldファイル, 省略 %ldファイル. %ldか所の一致 %ld個のファイル中."
+msgstr "検索済み %ldファイル, 飛ばした %ldファイル. 一致%ldか所 %ld個のファイル中."
 
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr "検索済み %ldファイル, 省略 %ldファイル. %ldか所の一致 %ld個のファイル中. %ld項目の結果を選択"
+msgstr "検索済み %ldファイル, 飛ばした %ldファイル. 一致%ldか所 %ld個のファイル中. 結果の%ld項目を選択"
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr "お好みのエディタを選択..."
+msgstr "エディタを選択..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
