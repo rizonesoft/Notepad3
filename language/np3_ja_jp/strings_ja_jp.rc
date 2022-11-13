@@ -222,7 +222,7 @@ BEGIN
     IDS_MUI_WARN_STYLE_RESET
                             "この操作は、配色設定をそのカラーモードの初期値へと初期化し、テーマファイルを標準の .ini ファイルに切り替えます!"
     IDS_MUI_ASK_INSTANCE_EXISTS
-                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
+                            "ファイルの単一インスタンスモード:\n\n読み込み済みのファイルのインスタンスにフォーカスを移しますか?"
 END
 
 STRINGTABLE
@@ -314,7 +314,7 @@ Notepad3 \t[/?] [...[文字コード]] [...[改行コード]] [/e] [/g] [/m] [/l
 /c\t新規ウインドウを開きクリップボードの内容を貼り付け\r\n\
 /b\tクリップボード履歴表示モードで開く\r\n\
 /n\t新規ウィンドウで開く (/ns ファイルは単一のインスタンス)\r\n\
-/r\tひとつウインドウを再利用 (/rs 同じく単一のインスタンス\r\n\
+/r\tウインドウを再利用 (/rs 同じく単一のインスタンス\r\n\
 /p\tウィンドウの位置とサイズを指定 [/p x,y,sizex,y[,max]] (/p0, /ps,\r\n\t/pf,l,t,r,b,m)\r\n\
 \tor /p <left>,<top>,<width>,<height>,<max>    [すべて整数]\r\n\
 /t\tタイトルバーの文字列を指定 [/t text]\r\n\

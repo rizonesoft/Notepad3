@@ -148,7 +148,7 @@ BEGIN
             MENUITEM "現在のファイルを追加(&A)...\tAlt+K",        IDM_FILE_ADDTOFAV
             MENUITEM "エクスプローラーで開く(&M)...\tAlt+F9",        IDM_FILE_MANAGEFAV
         END
-        MENUITEM "最近開いたファイル(&H)...\tCtrl+Alt+H",         IDM_FILE_RECENT
+        MENUITEM "最近使ったファイル(&H)...\tCtrl+Alt+H",         IDM_FILE_RECENT
         MENUITEM SEPARATOR
         MENUITEM "終了(&X)\tAlt+F4",                          IDM_FILE_EXIT
     END
@@ -492,7 +492,7 @@ BEGIN
             MENUITEM "保存/最近使ったファイルの履歴(&R)",         IDM_SET_NOSAVERECENT
             MENUITEM "保存/カーソル位置(文書ごと)(&C)",          IDM_SET_NOPRESERVECARET
             MENUITEM "保存/検索文字列(&S)",                  IDM_SET_NOSAVEFINDREPL
-            MENUITEM "最近のファイルを自動読込(&A)",       IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "最近使ったファイルを自動読込(&A)",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "ウィンドウ(&I)"
         BEGIN
