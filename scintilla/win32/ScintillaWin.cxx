@@ -33,10 +33,10 @@
 #endif
 #undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0601  /*_WIN32_WINNT_WIN7*/
-//#define _WIN32_WINNT 0x0A00  /*_WIN32_WINNT_WINTHRESHOLD, _WIN32_WINNT_WIN10*/
+//~#define _WIN32_WINNT 0x0A00  /*_WIN32_WINNT_WINTHRESHOLD, _WIN32_WINNT_WIN10*/
 #undef WINVER
 #define WINVER 0x0601  /*_WIN32_WINNT_WIN7*/
-//#define WINVER 0x0A00  /*_WIN32_WINNT_WINTHRESHOLD, _WIN32_WINNT_WIN10*/
+//~#define WINVER 0x0A00  /*_WIN32_WINNT_WINTHRESHOLD, _WIN32_WINNT_WIN10*/
 #define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <commctrl.h>
@@ -44,7 +44,6 @@
 #include <windowsx.h>
 #include <zmouse.h>
 #include <ole2.h>
-
 
 #if !defined(DISABLE_D2D)
 #define USE_D2D 1

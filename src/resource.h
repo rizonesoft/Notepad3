@@ -56,7 +56,7 @@
 #define IDC_STATIC                     (-1)
 #endif
 
-#define IDR_RT_MANIFEST                 1
+//#define IDR_RT_MANIFEST                 1
 
 #define IDR_POPUPMENU                   115
 #define IDR_ACCFINDREPLACE              126
