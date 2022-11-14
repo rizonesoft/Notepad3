@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.1104.(build_#) (2022-11-04)
+Current BETA/RC Version 5.22.1114.(build_#) (2022-11-14)
 ========================================================
 
 --------------------------------------------------------
@@ -63,6 +63,10 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[1114.1]- Minor corrections to project properties.
+[1114.1]- VS2022-vc143 build (WM_DPICHANGED not send).
+[1114.1]- Revert all NP3 project files to vc142 toolset.
+[1114.1]- Workaround to fix DPI scaling issues related to VS2022 compiler toolset.
 [1104.1]- Full font description in resource files.
 [1029.1]- Refactoring of undo/redo and document modify handler.
 [1020.1]- Standard DarkMode Theme.
@@ -118,6 +122,12 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1114.1]- Set correct _WIN32_WINNT version (0x0601 /*_WIN32_WINNT_WIN7*/).
+[1114.1]- Common Base Whitespace style not cleared if default.
+[1114.1]- Linker must generate Manifest (???).
+[1114.1]- All static link libs should be toolset vc142 compiled.
+[1114.1]- Adapt AppVeyor AHK Tests to vc142.
+[1114.1]- Don't store contrast adapted dark mode foreground color themes.
 [1104.1]- Common base font size scheme handling.
 [1104.1]- Context menu: web action handler.
 [1104.1]- Modification marker based on selection history.
