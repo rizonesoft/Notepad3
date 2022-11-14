@@ -240,10 +240,10 @@ inline static bool IsSaveNeeded()
     return SciCall_GetModify() || s_NeedSavingForced;
 }
 
-static inline void SetSaveNeeded(const bool bSetFlag)
+static inline void SetSaveNeeded(const bool bSetFlagForced)
 {
     AutoSaveStart(!s_NeedSavingForced);
-    if (bSetFlag) {
+    if (bSetFlagForced) {
         s_NeedSavingForced = true;
     }
     if (IsWindow(Globals.hwndDlgFindReplace)) {
@@ -1264,7 +1264,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     ResetTmpCache();
     ResetIniFileCache();
 
-    //UndoRedoReset();
+    UndoRedoReset();
     SetSaveDone();
 
     MSG msg;
@@ -3831,7 +3831,7 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
 
         if (bRevertFile) {
-            FileRevert(Paths.CurrentFile, /*Encoding_Changed(CPI_GET)*/false);
+            FileRevert(Paths.CurrentFile, false);
             if (FileWatching.MonitoringLog) {
                 SciCall_SetReadOnly(FileWatching.MonitoringLog);
             } else {
@@ -4491,9 +4491,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         FileLoadFlags fLoadFlags = FLF_New;
         fLoadFlags |= Settings.SkipUnicodeDetection ? FLF_SkipUnicodeDetect : 0;
         fLoadFlags |= Settings.SkipANSICodePageDetection ? FLF_SkipANSICPDetection : 0;
-        if (FileLoad(hfile_pth, fLoadFlags)) {
-            UndoRedoReset();
-        }
+        FileLoad(hfile_pth, fLoadFlags);
         Path_Release(hfile_pth);
     } break;
 
@@ -4514,10 +4512,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 break;
             }
             //~ don't revert if no save needed
-            //~FileRevert(Paths.CurrentFile, Encoding_Changed(CPI_GET));
+            //~FileRevert(Paths.CurrentFile, false);
         }
         // revert in any case (manually forced)
-        FileRevert(Paths.CurrentFile, /*Encoding_Changed(CPI_GET)*/true);
+        FileRevert(Paths.CurrentFile, true);
         break;
 
 
@@ -10875,10 +10873,6 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
 
         SetSaveDone();
 
-        UpdateToolbar();
-        UpdateMargins(true);
-        UpdateStatusbar(true);
-
         // Terminate file watching
         AutoSaveStop();
         InstallFileWatching(false); // terminate
@@ -10891,7 +10885,13 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
             ShowZoomCallTip();
         }
         ResetFileObservationData(true);
+        
         UndoRedoReset();
+
+        UpdateToolbar();
+        UpdateMargins(true);
+        UpdateStatusbar(true);
+
         return true;
     }
 
@@ -10991,7 +10991,6 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
     bool bUnknownLexer = s_flagLexerSpecified;
 
     if (fSuccess) {
-        _UndoRedoRecordingStop();
 
         Sci_GotoPosChooseCaret(0);
 
@@ -11112,7 +11111,6 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
             Globals.fvCurFile.bTabsAsSpaces = (fioStatus.indentCount[I_TAB_LN] < fioStatus.indentCount[I_SPC_LN]) ? true : false;
             SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
         }
-        _UndoRedoRecordingStart();
     }
     else if (!(Flags.bHugeFileLoadState || fioStatus.bUnknownExt)) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, Path_FindFileName(Paths.CurrentFile));
@@ -11120,6 +11118,9 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
     }
 
     if (fSuccess) {
+        if (!bReloadFile) {
+            UndoRedoReset();
+        }
         ResetFileObservationData(true);
     }
 
@@ -11479,7 +11480,6 @@ bool FileSave(FileSaveFlags fSaveFlags)
         if (!((fSaveFlags & FSF_SaveCopy) || Flags.bDoRelaunchElevated)) {
             _MRU_AddSession();
             AddFilePathToRecentDocs(Paths.CurrentFile);
-            SetSaveDone();
             // Install watching of the current file
             if ((fSaveFlags & FSF_SaveAs) && Settings.ResetFileWatching) {
                 _ResetFileWatchingMode();
