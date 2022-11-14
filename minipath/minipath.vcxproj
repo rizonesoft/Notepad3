@@ -177,7 +177,7 @@
       </Command>
     </PreBuildEvent>
     <Manifest>
-      <EnableDpiAwareness>false</EnableDpiAwareness>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
       <InputResourceManifests>
       </InputResourceManifests>
       <AdditionalManifestFiles>$(ProjDir)res\$(TargetName)$(TargetExt).manifest.conf</AdditionalManifestFiles>
@@ -243,7 +243,7 @@
       </Command>
     </PreBuildEvent>
     <Manifest>
-      <EnableDpiAwareness>false</EnableDpiAwareness>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
       <InputResourceManifests>
       </InputResourceManifests>
       <AdditionalManifestFiles>$(ProjDir)res\$(TargetName)$(TargetExt).manifest.conf</AdditionalManifestFiles>
@@ -311,7 +311,7 @@
       </Command>
     </PreBuildEvent>
     <Manifest>
-      <EnableDpiAwareness>false</EnableDpiAwareness>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
       <InputResourceManifests>
       </InputResourceManifests>
       <AdditionalManifestFiles>$(ProjDir)res\$(TargetName)$(TargetExt).manifest.conf</AdditionalManifestFiles>
@@ -353,7 +353,7 @@
       <UseStandardPreprocessor>false</UseStandardPreprocessor>
     </ClCompile>
     <Manifest>
-      <EnableDpiAwareness>false</EnableDpiAwareness>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
       <InputResourceManifests>
       </InputResourceManifests>
       <AdditionalManifestFiles>$(ProjDir)res\$(TargetName)$(TargetExt).manifest.conf</AdditionalManifestFiles>
@@ -403,7 +403,7 @@
       <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
     <Manifest>
-      <EnableDpiAwareness>false</EnableDpiAwareness>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
       <InputResourceManifests>
       </InputResourceManifests>
       <AdditionalManifestFiles>$(ProjDir)res\$(TargetName)$(TargetExt).manifest.conf</AdditionalManifestFiles>
@@ -452,7 +452,7 @@
       <UseStandardPreprocessor>false</UseStandardPreprocessor>
     </ClCompile>
     <Manifest>
-      <EnableDpiAwareness>false</EnableDpiAwareness>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
       <InputResourceManifests>
       </InputResourceManifests>
       <AdditionalManifestFiles>$(ProjDir)res\$(TargetName)$(TargetExt).manifest.conf</AdditionalManifestFiles>
