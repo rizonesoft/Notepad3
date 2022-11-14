@@ -122,6 +122,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1114.1]- Reset change history except in case of "revert from file".
 [1114.1]- Set correct _WIN32_WINNT version (0x0601 /*_WIN32_WINNT_WIN7*/).
 [1114.1]- Common Base Whitespace style not cleared if default.
 [1114.1]- Linker must generate Manifest (???).
