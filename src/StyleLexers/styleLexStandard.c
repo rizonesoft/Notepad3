@@ -82,7 +82,7 @@ EDITLEXER lexANSI =
 {
     SCLEX_NULL, "null", IDS_LEX_ANSI_ART, L"ANSI Art", L"nfo; diz; \\^Readme$", L"",
     &KeyWords_NULL,{
-        { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"font:Lucida Console; thin; size:11; smoothing:aliased", L"" },
+        { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"font:Lucida Console; thin; size:+11; smoothing:aliased", L"" },
         { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
         { {STYLE_BRACELIGHT}, IDS_LEX_STD_BRACE, L"Matching Braces", L"", L"" },
         { {STYLE_BRACEBAD}, IDS_LEX_STD_BRACE_FAIL, L"Matching Braces Error", L"", L"" },
