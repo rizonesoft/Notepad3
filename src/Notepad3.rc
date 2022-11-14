@@ -129,6 +129,14 @@ IDR_STD_DARKMODE_THEME  RCDATA                   "StdDarkModeScheme.ini"
 
 
 /////////////////////////////////////////////////////////////////////////////
+//
+// RT_MANIFEST
+//
+//~~~ Linker generated and merged & embedded by manifesttool
+//~~~ IDR_RT_MANIFEST     RT_MANIFEST         "..\\res\\Notepad3.exe.manifest"
+
+
+/////////////////////////////////////////////////////////////////////////////
 // English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)

@@ -23,6 +23,16 @@
 #define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
 #endif
 
+#if 0
+#undef _WIN32_WINNT
+#define _WIN32_WINNT 0x0A00 /*_WIN32_WINNT_WIN7*/
+#undef WINVER
+#define WINVER 0x0A00 /*_WIN32_WINNT_WIN7*/
+#undef NTDDI_VERSION
+#define NTDDI_VERSION 0x0A000000 /*NTDDI_WIN7*/
+#endif
+
+
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
 #endif
 

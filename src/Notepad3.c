@@ -32,6 +32,7 @@
 #include <string.h>
 #include <process.h>
 #include <vsstyle.h>
+//#include <ShellScalingApi.h>
 
 #include "PathLib.h"
 #include "Edit.h"
@@ -1058,6 +1059,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         MsgBoxLastError(L"Application Initialization", ERROR_OLD_WIN_VERSION);
         return 1; // exit
     }
+
+    //~SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+    //~SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
     // Check if running with elevated privileges
     s_bIsProcessElevated = IsProcessElevated();
