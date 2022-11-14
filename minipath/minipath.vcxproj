@@ -155,11 +155,11 @@
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
-      <ManifestFile />
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
       <CETCompat>true</CETCompat>
       <AdditionalLibraryDirectories>$(OutputPath)obj;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ManifestFile />
     </Link>
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -180,8 +180,7 @@
       <EnableDpiAwareness>false</EnableDpiAwareness>
       <InputResourceManifests>
       </InputResourceManifests>
-      <AdditionalManifestFiles>$(ProjDir)res\Notepad3$(TargetExt).manifest.conf</AdditionalManifestFiles>
-      <OutputManifestFile>$(IntDir)$(TargetName)$(TargetExt).embed.manifest</OutputManifestFile>
+      <AdditionalManifestFiles>$(ProjDir)res\$(TargetName)$(TargetExt).manifest.conf</AdditionalManifestFiles>
     </Manifest>
     <ManifestResourceCompile>
       <ResourceOutputFileName />
@@ -222,11 +221,11 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <SubSystem>Windows</SubSystem>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ManifestFile />
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
       <CETCompat>true</CETCompat>
       <AdditionalLibraryDirectories>$(OutputPath)obj;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ManifestFile />
     </Link>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -247,8 +246,7 @@
       <EnableDpiAwareness>false</EnableDpiAwareness>
       <InputResourceManifests>
       </InputResourceManifests>
-      <AdditionalManifestFiles>$(ProjDir)res\Notepad3$(TargetExt).manifest.conf</AdditionalManifestFiles>
-      <OutputManifestFile>$(IntDir)$(TargetName)$(TargetExt).embed.manifest</OutputManifestFile>
+      <AdditionalManifestFiles>$(ProjDir)res\$(TargetName)$(TargetExt).manifest.conf</AdditionalManifestFiles>
     </Manifest>
     <ManifestResourceCompile>
       <ResourceOutputFileName />
@@ -291,12 +289,11 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <SubSystem>Windows</SubSystem>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ManifestFile>
-      </ManifestFile>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
       <CETCompat>true</CETCompat>
       <AdditionalLibraryDirectories>$(OutputPath)obj;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ManifestFile />
     </Link>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -317,8 +314,7 @@
       <EnableDpiAwareness>false</EnableDpiAwareness>
       <InputResourceManifests>
       </InputResourceManifests>
-      <AdditionalManifestFiles>$(ProjDir)res\Notepad3$(TargetExt).manifest.conf</AdditionalManifestFiles>
-      <OutputManifestFile>$(IntDir)$(TargetName)$(TargetExt).embed.manifest</OutputManifestFile>
+      <AdditionalManifestFiles>$(ProjDir)res\$(TargetName)$(TargetExt).manifest.conf</AdditionalManifestFiles>
     </Manifest>
     <ManifestResourceCompile>
       <ResourceOutputFileName>
@@ -330,11 +326,11 @@
       <AdditionalDependencies>shlwapi.lib;muiload.lib;psapi.lib;legacy_stdio_definitions.lib;user32-stub.lib;uxtheme-stub.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
-      <ManifestFile />
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
       <CETCompat>true</CETCompat>
       <AdditionalLibraryDirectories>$(OutputPath)obj;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ManifestFile />
     </Link>
     <ClCompile>
     </ClCompile>
@@ -360,8 +356,7 @@
       <EnableDpiAwareness>false</EnableDpiAwareness>
       <InputResourceManifests>
       </InputResourceManifests>
-      <AdditionalManifestFiles>$(ProjDir)res\Notepad3$(TargetExt).manifest.conf</AdditionalManifestFiles>
-      <OutputManifestFile>$(IntDir)$(TargetName)$(TargetExt).embed.manifest</OutputManifestFile>
+      <AdditionalManifestFiles>$(ProjDir)res\$(TargetName)$(TargetExt).manifest.conf</AdditionalManifestFiles>
     </Manifest>
     <ManifestResourceCompile>
       <ResourceOutputFileName />
@@ -375,11 +370,11 @@
       <AdditionalDependencies>shlwapi.lib;muiload.lib;psapi.lib;legacy_stdio_definitions.lib;user32-stub.lib;uxtheme-stub.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ManifestFile />
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
       <CETCompat>true</CETCompat>
       <AdditionalLibraryDirectories>$(OutputPath)obj;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ManifestFile />
     </Link>
     <ClCompile>
     </ClCompile>
@@ -411,8 +406,7 @@
       <EnableDpiAwareness>false</EnableDpiAwareness>
       <InputResourceManifests>
       </InputResourceManifests>
-      <AdditionalManifestFiles>$(ProjDir)res\Notepad3$(TargetExt).manifest.conf</AdditionalManifestFiles>
-      <OutputManifestFile>$(IntDir)$(TargetName)$(TargetExt).embed.manifest</OutputManifestFile>
+      <AdditionalManifestFiles>$(ProjDir)res\$(TargetName)$(TargetExt).manifest.conf</AdditionalManifestFiles>
     </Manifest>
     <ManifestResourceCompile>
       <ResourceOutputFileName />
@@ -426,12 +420,11 @@
       <AdditionalDependencies>shlwapi.lib;muiload.lib;psapi.lib;legacy_stdio_definitions.lib;user32-stub.lib;uxtheme-stub.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ManifestFile>
-      </ManifestFile>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
       <CETCompat>true</CETCompat>
       <AdditionalLibraryDirectories>$(OutputPath)obj;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ManifestFile />
     </Link>
     <ClCompile />
     <ClCompile>
@@ -462,8 +455,7 @@
       <EnableDpiAwareness>false</EnableDpiAwareness>
       <InputResourceManifests>
       </InputResourceManifests>
-      <AdditionalManifestFiles>$(ProjDir)res\Notepad3$(TargetExt).manifest.conf</AdditionalManifestFiles>
-      <OutputManifestFile>$(IntDir)$(TargetName)$(TargetExt).embed.manifest</OutputManifestFile>
+      <AdditionalManifestFiles>$(ProjDir)res\$(TargetName)$(TargetExt).manifest.conf</AdditionalManifestFiles>
     </Manifest>
     <ManifestResourceCompile>
       <ResourceOutputFileName>

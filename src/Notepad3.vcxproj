@@ -198,7 +198,7 @@
       <SupportUnloadOfDelayLoadedDLL>true</SupportUnloadOfDelayLoadedDLL>
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
       <CETCompat>true</CETCompat>
-      <ManifestFile />
+      <AllowIsolation>true</AllowIsolation>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -272,7 +272,7 @@
       <SupportUnloadOfDelayLoadedDLL>true</SupportUnloadOfDelayLoadedDLL>
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
       <CETCompat>true</CETCompat>
-      <ManifestFile />
+      <AllowIsolation>true</AllowIsolation>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -356,7 +356,7 @@
       <LinkErrorReporting>NoErrorReport</LinkErrorReporting>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <CETCompat>true</CETCompat>
-      <ManifestFile />
+      <AllowIsolation>true</AllowIsolation>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -433,7 +433,7 @@
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <CETCompat>true</CETCompat>
-      <ManifestFile />
+      <AllowIsolation>true</AllowIsolation>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -516,7 +516,7 @@
       <LinkErrorReporting>NoErrorReport</LinkErrorReporting>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <CETCompat>true</CETCompat>
-      <ManifestFile />
+      <AllowIsolation>true</AllowIsolation>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -592,7 +592,7 @@
       <DelayLoadDLLs>uxtheme.dll</DelayLoadDLLs>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <CETCompat>true</CETCompat>
-      <ManifestFile />
+      <AllowIsolation>true</AllowIsolation>
     </Link>
     <PreBuildEvent>
       <Command>
