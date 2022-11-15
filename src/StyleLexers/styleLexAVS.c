@@ -3,8 +3,9 @@
 // ----------------------------------------------------------------------------
 
 KEYWORDLIST KeyWords_AVS =
-{
+{   // --- keywords ---
     "false global return true",
+    // --- filters ---
     "addborders alignedsplice amplify amplifydb animate applyrange assumebff assumefieldbased assumefps "
     "assumeframebased assumesamplerate assumescaledfps assumetff audiodub audiodubex avifilesource avisource "
     "bicubicresize bilinearresize blackmanresize blackness blankclip blur bob cache changefps colorbars "
@@ -12,20 +13,22 @@ KEYWORDLIST KeyWords_AVS =
     "convertaudioto16bit convertaudioto24bit convertaudioto32bit convertaudioto8bit convertaudiotofloat "
     "convertbacktoyuy2 convertfps converttobackyuy2 converttomono converttorgb converttorgb24 converttorgb32 "
     "converttoy8 converttoyuy2 converttoyv12 converttoyv16 converttoyv24 converttoyv411 crop cropbottom "
-    "delayaudio deleteframe dissolve distributor doubleweave duplicateframe ensurevbrmp3sync fadein fadein0 "
-    "fadein2 fadeio fadeio0 fadeio2 fadeout fadeout0 fadeout2 fixbrokenchromaupsampling fixluminance "
-    "fliphorizontal flipvertical frameevaluate freezeframe gaussresize generalconvolution getchannel "
+    "delayaudio deleteframe dissolve distributor doubleweave duplicateframe "
+    "ensurevbrmp3sync extracta extractb extractg extractr extractu extractv extracty "
+    "fadein fadein0 fadein2 fadeio fadeio0 fadeio2 fadeout fadeout0 fadeout2 fixbrokenchromaupsampling "
+    "fixluminance fliphorizontal flipvertical frameevaluate freezeframe gaussresize generalconvolution getchannel "
     "getchannels getmtmode getparity grayscale greyscale histogram horizontalreduceby2 imagereader imagesource "
     "imagewriter info interleave internalcache internalcachemt invert killaudio killvideo lanczos4resize "
     "lanczosresize layer letterbox levels limiter loop mask maskhs max merge mergeargb mergechannels "
     "mergechroma mergeluma mergergb messageclip min mixaudio monotostereo normalize null opendmlsource overlay "
-    "peculiarblend pointresize pulldown reduceby2 resampleaudio resetmask reverse rgbadjust scriptclip "
+    "peculiarblend planetoy pointresize pulldown reduceby2 resampleaudio resetmask reverse rgbadjust scriptclip "
     "segmentedavisource segmenteddirectshowsource selecteven selectevery selectodd selectrangeevery "
     "separatefields setmtmode sharpen showalpha showblue showfiveversions showframenumber showgreen showred "
     "showsmpte showtime sincresize skewrows spatialsoften spline16resize spline36resize spline64resize ssrc "
     "stackhorizontal stackvertical subtitle subtract supereq swapfields swapuv temporalsoften timestretch tone "
     "trim turn180 turnleft turnright tweak unalignedsplice utoy utoy8 version verticalreduceby2 vtoy vtoy8 "
     "wavsource weave writefile writefileend writefileif writefilestart ytouv",
+    // --- plugins ---
     "addgrain addgrainc agc_hdragc analyzelogo animeivtc asharp audiograph autocrop autoyuy2 avsrecursion "
     "awarpsharp bassaudiosource bicublinresize bifrost binarize blendfields blindpp blockbuster bordercontrol "
     "cfielddiff cframediff chromashift cnr2 colormatrix combmask contra convolution3d convolution3dyv12 "
@@ -62,6 +65,7 @@ KEYWORDLIST KeyWords_AVS =
     "vobsub vqmcalc warpedresize warpsharp xsharpen yadif yadifmod yuy2lut yv12convolution "
     "yv12interlacedreduceby2 yv12interlacedselecttopfields yv12layer yv12lut yv12lutxy yv12substract "
     "yv12torgb24 yv12toyuy2",
+    // --- functions ---
     "abs apply assert averagechromau averagechromav averageluma bool ceil chr chromaudifference "
     "chromavdifference clip continueddenominator continuednumerator cos default defined eval exist exp findstr "
     "float floor frac hexvalue import int isbool isclip isfloat isint isstring lcase leftstr "
@@ -73,9 +77,14 @@ KEYWORDLIST KeyWords_AVS =
     "uplanemax uplanemedian uplanemin uplaneminmaxdifference value vdifferencefromprevious vdifferencetonext "
     "versionnumber versionstring vplanemax vplanemedian vplanemin vplaneminmaxdifference "
     "ydifferencefromprevious ydifferencetonext yplanemax yplanemedian yplanemin yplaneminmaxdifference",
-    "audiobits audiochannels audiolength audiolengthf audiorate framecount framerate frameratedenominator "
-    "frameratenumerator getleftchannel getrightchannel hasaudio hasvideo height isaudiofloat isaudioint "
-    "isfieldbased isframebased isinterleaved isplanar isrgb isrgb24 isrgb32 isyuv isyuy2 isyv12 width",
+    // --- clipProperties ---
+    "audiobits audiochannels audiolength audiolengthf audiorate bitspercomponent componentsize framecount "
+    "framerate frameratedenominator frameratenumerator getleftchannel getrightchannel hasalpha hasaudio "
+    "hasvideo height is420 is422 is444 isaudiofloat isaudioint isfieldbased isframebased isinterleaved "
+    "ispackedrgb isplanar isplanarrgb isplanarrgba isrgb isrgb24 isrgb32 isrgb48 isrgb64 isy isyuv isyuva "
+    "isyuy2 isyv12 isyv411 numcomponents width",
+    // --- userDefined ---
+    "",
     NULL,
 };
 
@@ -91,11 +100,12 @@ EDITLEXER lexAVS =
         { {MULTI_STYLE(SCE_AVS_STRING,SCE_AVS_TRIPLESTRING,0,0)}, IDS_LEX_STR_63131, L"String", L"fore:#7F007F", L"" },
         { {SCE_AVS_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#007F7F", L"" },
         { {SCE_AVS_KEYWORD}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#00007F", L"" },
+        { {SCE_AVS_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"bold; fore:#0A246A", L"" },
         { {SCE_AVS_FILTER}, IDS_LEX_STR_63314, L"Filter", L"bold; fore:#00007F", L"" },
         { {SCE_AVS_PLUGIN}, IDS_LEX_STR_63315, L"Plugin", L"bold; fore:#0080C0", L"" },
         { {SCE_AVS_FUNCTION}, IDS_LEX_STR_63277, L"Function", L"fore:#007F7F", L"" },
         { {SCE_AVS_CLIPPROP}, IDS_LEX_STR_63316, L"Clip Property", L"fore:#00007F", L"" },
-        //{ {SCE_AVS_USERDFN}, IDS_LEX_STR_63106, L"User Defined", L"fore:#8000FF", L"" },
+        { {SCE_AVS_USERDFN}, IDS_LEX_STR_63305, L"User Defined Function", L"fore:#8000FF", L"" },
         EDITLEXER_SENTINEL
     }
 };
