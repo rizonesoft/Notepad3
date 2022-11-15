@@ -229,6 +229,7 @@ void EnableDocChangeNotification(const int evm);
         GetCursorPos(&pt);                    \
         SetCursorPos(pt.x, pt.y);             \
         RestoreNotifyEvents();                \
+        UpdateStatusbar(true);                \
     }
 
 // ----------------------------------------------------------------------------
