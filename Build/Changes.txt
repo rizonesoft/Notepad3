@@ -63,6 +63,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[1115.2]- Minor enhancements for AviSynth Lexer.
 [1115.1]- Refactoring common base and subsequent syntax base font handling.
 [1114.1]- Minor corrections to project properties.
 [1104.1]- Full font description in resource files.
