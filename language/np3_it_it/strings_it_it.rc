@@ -261,7 +261,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Lingua"
-    IDS_USE_LOCALE_DATEFMT  "La lingua define il Formato &Data"
+    IDS_USE_LOCALE_DATEFMT  "La lingua definisce il Formato &Data"
     IDS_MUI_MENU_THEMES     "&Collezione di Schemi"
     IDM_THEMES_FACTORY_RESET "Impostazioni di &fabbrica"
     IDM_THEMES_STD_CFG       "&Standard Config"
