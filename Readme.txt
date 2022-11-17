@@ -116,9 +116,9 @@ Lidgeu                  https://github.com/Lidgeu
 ltGuillaume             https://github.com/ltGuillaume
 maboroshin              https://github.com/maboroshin
 MadDogVachon            https://github.com/MadDogVachon
+Matteo-Nigro            https://github.com/Matteo-Nigro
 MelchiorGaspar          https://github.com/MelchiorGaspar
 Mitezuss                https://github.com/Mitezuss
-RaffaeleBianc0          https://github.com/RaffaeleBianc0
 RaiKoHoff               https://github.com/RaiKoHoff
 rizonesoft              https://github.com/rizonesoft
 Rudolfin                https://github.com/Rudolfin
