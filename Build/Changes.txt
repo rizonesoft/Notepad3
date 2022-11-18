@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.1115.(build_#) (2022-11-15)
+Current BETA/RC Version 5.22.1118.(build_#) (2022-11-18)
 ========================================================
 
 --------------------------------------------------------
@@ -63,6 +63,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[1118.1]- Using new AviSynth+ keyword lists and AviSynth colors (light/dark mode).
 [1115.2]- Minor enhancements for AviSynth Lexer.
 [1115.1]- Refactoring common base and subsequent syntax base font handling.
 [1114.1]- Minor corrections to project properties.
