@@ -67,13 +67,13 @@ BEGIN
         MENUITEM "Attributo di Sola lettu&ra",             IDM_FILE_READONLY
         MENUITEM "&Blocca file (lettura condivisa)",   IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
-        MENUITEM "Imposta passphrase per crittografia...", IDM_SETPASS
+        MENUITEM "Imposta frase d'accesso per crittografia...", IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "Percorso negli Appunti"
         BEGIN
             MENUITEM "Copia &Nome file\tCtrl+F9",          IDM_EDIT_INSERT_FILENAME
             MENUITEM "Copia solo &Percorso",               IDM_EDIT_INSERT_DIRNAME
-            MENUITEM "Copia il &Full-path\tCtrl+Shift+F9", IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "Copia il Percorso Completo\tCtrl+Shift+F9", IDM_EDIT_INSERT_PATHNAME
         END
         POPUP "&Esegui"
         BEGIN
@@ -122,7 +122,7 @@ BEGIN
                 MENUITEM "&Altre Codifiche...\tF9",        IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
-            MENUITEM "Imposta Pre&definiti Codifica...",   IDM_ENCODING_SETDEFAULT
+            MENUITEM "Imposta Codifica Pre&definita...",   IDM_ENCODING_SETDEFAULT
         END
         POPUP "Terminatori di ri&ga"
         BEGIN
@@ -165,7 +165,7 @@ BEGIN
         MENUITEM "Copia Aggiungi\tCtrl+E",                IDM_EDIT_COPYADD
         MENUITEM "&Incolla\tCtrl+V",                      IDM_EDIT_PASTE
         MENUITEM "Scam&bia\tCtrl+K",                      IDM_EDIT_SWAP
-        MENUITEM "&Elimina\tDel",                         IDM_EDIT_CLEAR
+        MENUITEM "&Elimina\tCanc",                         IDM_EDIT_CLEAR
         MENUITEM "Svuota appunti",                        IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "&Seleziona tutto\tCtrl+A",              IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
@@ -176,7 +176,7 @@ BEGIN
             MENUITEM "Cursore Parola &SX\tCtrl+ ←",       CMD_CTRLLEFT
             MENUITEM "Cursore Parola &DX\tCtrl+ →",       CMD_CTRLRIGHT
             MENUITEM "Cancella Parola &SX\tCtrl+Back",    CMD_CTRLBACK
-            MENUITEM "Cancella Parola &DX\tCtrl+Del",     CMD_CTRLDEL
+            MENUITEM "Cancella Parola &DX\tCtrl+Canc",     CMD_CTRLDEL
         END
         POPUP "&Righe"
         BEGIN
@@ -193,7 +193,7 @@ BEGIN
             MENUITEM "Elimina righe\tCtrl+Shift+D",       IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "Elimina riga a SX\tCtrl+Shift+Back",   IDM_EDIT_DELETELINELEFT
-            MENUITEM "Elimina riga a DX\tCtrl+Shift+Del",    IDM_EDIT_DELETELINERIGHT
+            MENUITEM "Elimina riga a DX\tCtrl+Shift+Canc",    IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Colonna a capo...\tCtrl+Shift+W",      IDM_EDIT_COLUMNWRAP
             MENUITEM "&Dividi righe\tCtrl+I",                IDM_EDIT_SPLITLINES
@@ -217,7 +217,7 @@ BEGIN
                 MENUITEM "&Commuta\tCtrl+Q",               IDM_EDIT_LINECOMMENT
                 MENUITEM "&Aggiungi\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
                 MENUITEM "&Rimuovi\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
-                MENUITEM "&Block Edit\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
+                MENUITEM "Modifica &Blocco\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
             MENUITEM SEPARATOR
             MENUITEM "&Commento multi-riga\tCtrl+Shift+Q",        IDM_EDIT_STREAMCOMMENT
@@ -277,8 +277,8 @@ BEGIN
             MENUITEM "Inverti Backslashes",                       IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Inverti Barre",                             IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
-            MENUITEM "&Char To Hex\tCtrl+Alt+X",                  IDM_EDIT_CHAR2HEX
-            MENUITEM "&Hex To Char\tCtrl+Alt+C",                  IDM_EDIT_HEX2CHAR
+            MENUITEM "&Carattere in Esadecimale\tCtrl+Alt+X",                  IDM_EDIT_CHAR2HEX
+            MENUITEM "Esadecimale in Carattere\tCtrl+Alt+C",                  IDM_EDIT_HEX2CHAR
         END
         POPUP "&Inserisci"
         BEGIN
@@ -315,7 +315,7 @@ BEGIN
             MENUITEM "Separa &transazione Undo per ogni riga",                     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
-        POPUP "Boo&kmarks"
+        POPUP "Segnalibri"
         BEGIN
             MENUITEM "&Imposta/rimuovi\tCtrl+F2",                 BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR
@@ -377,7 +377,7 @@ BEGIN
         POPUP "Contrassegna occorrenze"
         BEGIN
             MENUITEM "&Attiva\tAlt+A",                       IDM_VIEW_MARKOCCUR_ONOFF
-            MENUITEM "Considera anche i &Bookmarks",         IDM_VIEW_MARKOCCUR_BOOKMARKS
+            MENUITEM "Considera anche i Segnalibri",         IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
             MENUITEM "Corrispondenza solo visibile",         IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
@@ -391,7 +391,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Numeri di riga\tCtrl+Shift+N",                  IDM_VIEW_LINENUMBERS
-        MENUITEM "&Margine Bookmark\tCtrl+Shift+M",                IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "&Margine Segnalibri\tCtrl+Shift+M",                IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM "Margine cronologia modifiche",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Folding"
@@ -402,19 +402,19 @@ BEGIN
             MENUITEM "Salta al Prossimo Fold\tAlt+ +",             CMD_FOLDJUMPDOWN
             MENUITEM "Salta al Precedente Fold\tAlt+ –",           CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "&Collapse Fold\tAlt+ ←",                     CMD_FOLDCOLLAPSE
-            MENUITEM "&Expand Fold\tAlt+ →",                       CMD_FOLDEXPAND
+            MENUITEM "&Collassa Fold\tAlt+ ←",                     CMD_FOLDCOLLAPSE
+            MENUITEM "&Espandi Fold\tAlt+ →",                       CMD_FOLDEXPAND
         END
-        POPUP "&Display"
+        POPUP "Mostra"
         BEGIN
             MENUITEM "Visualizzazione focalizzata\tCtrl+Alt+V",    IDM_VIEW_TOGGLE_VIEW
             POPUP "Modalità Visualizzazione"
             BEGIN
                 MENUITEM "Fold",                                   IDM_VIEW_FV_FOLD
-                MENUITEM "Bookmark",                               IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Segnalibri",                               IDM_VIEW_FV_BOOKMARK
                 MENUITEM "Evidenzia",                              IDM_VIEW_FV_HIGHLIGHT
-                MENUITEM "Bookmark && Fold",                       IDM_VIEW_FV_BKMRKFOLD
-                MENUITEM "Evidenzia && Fold",                      IDM_VIEW_FV_HIGHLGFOLD
+                MENUITEM "Segnalibri e Fold",                       IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Evidenzia e Fold",                      IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
             MENUITEM "&Monitoraggio log",                          IDM_VIEW_CHASING_DOCTAIL
@@ -470,8 +470,8 @@ BEGIN
         MENUITEM "Impostazioni &Righe lunghe...",                    IDM_SET_LONGLINESETTINGS
         MENUITEM "In&dentazione automatica",                         IDM_SET_AUTOINDENTTEXT
         MENUITEM "Chiusura automatica &HTML/XML\tCtrl+Shift+H",      IDM_SET_AUTOCLOSETAGS
-        MENUITEM "Completamento a&utomatico delle parole",           IDM_SET_AUTOCOMPLETEWORDS
-        MENUITEM "Completamento automatico &keywords lexer",         IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "&Autocompletamento delle parole",           IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Autocompletamento &keywords lexer",         IDM_SET_AUTOCLEXKEYWORDS
         MENUITEM "Alterna Se&paratori parola\tCtrl+Alt+A",           IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Solo una istanza per &File",                       IDM_SET_SINGLEFILEINSTANCE
@@ -591,7 +591,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Code Folding",                  IDM_VIEW_FOLDING
         MENUITEM "Numeri di riga",                IDM_VIEW_LINENUMBERS
-        MENUITEM "Margine Bookmark",               IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Margine Segnalibri",               IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM "Margine cronologia modifiche",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"

@@ -62,7 +62,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_DEF_TXT         "Common Base"
+    IDS_LEX_DEF_TXT         "Base Comune"
     IDS_LEX_WEB_SRC         "Codice Sorgente Web"
     IDS_LEX_XML_DOC         "Documento XML"
     IDS_LEX_CSS_STYLE       "Fogli di stile CSS"
@@ -147,7 +147,7 @@ BEGIN
     IDS_LEX_STD_SEL         "Testo Selezionato (Colori)"
     IDS_LEX_STD_WSPC        "Whitespace (Colori, Dimensione 1-12)"
     IDS_LEX_STD_LN_BACKGR   "Evidenzia riga corrente"
-    IDS_LEX_STD_CARET       "Caret (Colori, Dimensione 1-20)"
+    IDS_LEX_STD_CARET       "Cursore (Colori, Dimensione 1-20)"
     IDS_LEX_STD_LONG_LN     "Marcatore di riga lunga (Colori)"
     IDS_LEX_STD_X_SPC       "Aumenta Interlinea (Dimensione)"
     IDS_LEX_2ND_STYLE       "2° Stile Predefinito"
@@ -163,7 +163,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_2ND_LN_BACKGR   "2° Evidenzia riga corrente"
-    IDS_LEX_2ND_CARET       "2° Caret (Colore, Dimensione 1-20)"
+    IDS_LEX_2ND_CARET       "2° Cursore (Colore, Dimensione 1-20)"
     IDS_LEX_2ND_LONG_LN     "2° Marcatore di riga lunga (Colori)"
     IDS_LEX_2ND_X_SPC       "2° Aumenta Interlinea (Dimensione)"
     IDS_LEX_STD_BKMRK       "Segnalibri e Folding (Colori, Dimensione)"
@@ -450,7 +450,7 @@ BEGIN
     IDS_LEX_STR_63349       "Tasto di scelta rapida"
     IDS_LEX_STR_63350       "HotString"
     IDS_LEX_STR_63351       "Opzione HotString"
-    IDS_LEX_STR_63352       "Inline-IME Color"
+    IDS_LEX_STR_63352       "Colore Inline-IME"
     IDS_LEX_STR_63353       "2° Colore Inline-IME"
     IDS_LEX_STR_63354       "Indicatore Modifica Multipla"
     IDS_LEX_STR_63355       "2° Indicatore Modifica Multipla"
