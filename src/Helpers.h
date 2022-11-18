@@ -235,6 +235,14 @@ inline bool Char2Int(LPCWSTR str, int *value) {
     *value = (int)wcstol(str, &end, 10);
     return (str != end);
 }
+
+inline bool Char2Float(LPCWSTR str, float* value)
+{
+    LPWSTR end;
+    *value = (float)wcstod(str, &end);
+    return (str != end);
+}
+
 bool StrToFloat(WCHAR *wnumber, float *fresult);
 void FloatToStr(float fValue, LPWSTR lpszStrg, int cchSize);
 

@@ -1447,7 +1447,7 @@ CASE_WM_CTLCOLOR_SET:
 
                 bool bQuickExit = false;
 
-                Path_ExpandEnvironmentStrings(hfile_pth);
+                Path_ExpandEnvStrings(hfile_pth);
                 ExtractFirstArgument(file_buf, file_buf, args_buf, (int)Path_GetBufCount(hfile_pth));
                 Path_Sanitize(hfile_pth);
                 StrgSanitize(hargs_str);

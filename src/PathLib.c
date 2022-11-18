@@ -1286,7 +1286,7 @@ bool PTHAPI Path_QuoteSpaces(HPATHL hpth_in_out, bool bForceQuotes)
 void PTHAPI Path_UnQuoteSpaces(HPATHL hpth_in_out)
 {
     HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
-    if (!hstr_io)
+    if (!hstr_io || StrgIsEmpty(hstr_io))
         return;
 
     StrgTrimLeft(hstr_io, L'"');
@@ -1299,18 +1299,37 @@ int PTHAPI Path_GetDriveNumber(const HPATHL hpth)
 {
     int      res = -1;
     HSTRINGW hstr = ToHStrgW(hpth);
-    if (!hstr)
+    if (!hstr || StrgIsEmpty(hstr))
         return res;
 
-    LPWSTR const colon = wcschr(StrgGet(hstr), L':');
-
-    if (colon && (colon > StrgGet(hstr))) {
-        res = max_i(-1, ((int)_wcsupr_s((colon - 1), 1) - (int)L'A'));
-        res = (res > 25) ? -1 : res;
+    LPCWSTR const lpszPath = StrgGet(hstr);
+    LPCWSTR const colon = wcschr(lpszPath, L':');
+    if (colon && ((colon - 1) == lpszPath)) {
+        WCHAR buf[2] = { 0 };
+        StringCchCopy(buf, COUNTOF(buf), lpszPath);
+        if (_wcsupr_s(buf, COUNTOF(buf)) == 0) {
+            res = (int)buf[0] - (int)L'A';
+            res = (res > 25) ? -1 : res;
+        }
     }
     return res;
 }
 // ----------------------------------------------------------------------------
+
+
+bool PTHAPI Path_IsUNC(const HPATHL hpth)
+{
+    HSTRINGW hstr = ToHStrgW(hpth);
+    if (!hstr || StrgIsEmpty(hstr))
+        return false;
+
+    WCHAR maxPath[MAX_PATH];
+    StringCchCopy(maxPath, COUNTOF(maxPath), StrgGet(hstr));
+
+    return PathIsUNC(maxPath);
+}
+// ----------------------------------------------------------------------------
+
 
 wchar_t PTHAPI Path_GetDriveLetterByNumber(const int number)
 {
@@ -1331,6 +1350,24 @@ DWORD PTHAPI Path_GetFileAttributes(const HPATHL hpth)
 bool PTHAPI Path_SetFileAttributes(HPATHL hpth, DWORD dwAttributes)
 {
     return SetFileAttributesW(PathGet(hpth), dwAttributes);
+}
+// ----------------------------------------------------------------------------
+
+
+bool PTHAPI Path_StripToRoot(HPATHL hpth_in_out)
+{
+    HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
+    if (!hstr_io)
+        return false;
+
+    WCHAR maxPath[MAX_PATH];
+    StringCchCopy(maxPath, COUNTOF(maxPath), StrgGet(hstr_io));
+
+    if (PathStripToRoot(maxPath)) {
+        Path_Reset(hpth_in_out, maxPath);
+        return true;
+    }
+    return false;
 }
 // ----------------------------------------------------------------------------
 
@@ -2080,8 +2117,10 @@ void PTHAPI ExpandEnvironmentStrgs(HSTRINGW hstr_in_out, bool bStripQ)
         StrgTrim(hstr_in_out, L'"');
         StrgTrim(hstr_in_out, L'\'');
     }
+    
+    //StrgReplace(hstr_in_out, L"~", L"%USERPROFILE%");
 
-    size_t const min_len = ExpandEnvironmentStringsW(StrgGet(hstr_in_out), NULL, 0);
+    size_t const min_len = ExpandEnvironmentStrings(StrgGet(hstr_in_out), NULL, 0);
     LPWSTR       buf_io = StrgWriteAccessBuf(hstr_in_out, min_len);
     DWORD const  cch_io = (DWORD)StrgGetAllocLength(hstr_in_out);
 
@@ -2091,14 +2130,6 @@ void PTHAPI ExpandEnvironmentStrgs(HSTRINGW hstr_in_out, bool bStripQ)
         StrgSanitize(hstr_in_out);
     }
     StrgDestroy(hstr_cpy);
-}
-
-void PTHAPI Path_ExpandEnvironmentStrings(HPATHL hpth_in_out)
-{
-    HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
-    if (!hstr_io)
-        return;
-    ExpandEnvironmentStrgs(hstr_io, true);
 }
 // ----------------------------------------------------------------------------
 
