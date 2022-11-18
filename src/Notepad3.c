@@ -1267,6 +1267,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     UndoRedoReset();
     SetSaveDone();
 
+    // drag-n-drop into elevated process even does not work using:
+    ///ChangeWindowMessageFilter(WM_DROPFILES, MSGFLT_ADD);
+    ///ChangeWindowMessageFilter(WM_COPYDATA, MSGFLT_ADD);
+    ///ChangeWindowMessageFilter(0x0049, MSGFLT_ADD);
+
     MSG msg;
     while (GetMessage(&msg,NULL,0,0)) {
 
@@ -9206,6 +9211,17 @@ void ParseCommandLine()
                     StringCchCopy(s_lpOrigFileArg, fileArgLen + 1, lp3);
 
                     Path_Reset(s_pthArgFilePath, lp3);
+
+                    //assert(false);
+                    //if (!Path_IsRelative(s_pthArgFilePath) && !Path_IsUNC(s_pthArgFilePath) && (Path_GetDriveNumber(s_pthArgFilePath) == -1))
+                    //{
+                    //    HPATHL pthAdjustPath = Path_Copy(Paths.WorkingDirectory);
+                    //    Path_StripToRoot(pthAdjustPath);
+                    //    Path_Append(pthAdjustPath, Path_Get(s_pthArgFilePath));
+                    //    Path_Reset(s_pthArgFilePath, Path_Get(pthAdjustPath));
+                    //    Path_Release(pthAdjustPath);
+                    //}
+
                     Path_NormalizeEx(s_pthArgFilePath, Paths.WorkingDirectory, true, true);
 
                     HPATHL pthAddFile = Path_Allocate(NULL);

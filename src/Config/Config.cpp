@@ -1222,7 +1222,7 @@ void LoadSettings()
 
     IniSectionGetStringNoQuotes(IniSecSettings2, L"DefaultDirectory", L"", pPathBuffer, PATHLONG_MAX_CCH);
     Path_Reset(Settings2.DefaultDirectory, pPathBuffer);
-    Path_ExpandEnvironmentStrings(Settings2.DefaultDirectory);
+    Path_ExpandEnvStrings(Settings2.DefaultDirectory);
 
     IniSectionGetStringNoQuotes(IniSecSettings2, L"FileDlgFilters", L"", pPathBuffer, XHUGE_BUFFER);
     StrgReset(Settings2.FileDlgFilters, pPathBuffer);
@@ -1308,15 +1308,15 @@ void LoadSettings()
 
     IniSectionGetStringNoQuotes(IniSecSettings2, L"filebrowser.exe", L"", pPathBuffer, PATHLONG_MAX_CCH);
     Path_Reset(Settings2.FileBrowserPath, pPathBuffer);
-    Path_ExpandEnvironmentStrings(Settings2.FileBrowserPath);
+    Path_ExpandEnvStrings(Settings2.FileBrowserPath);
 
     IniSectionGetStringNoQuotes(IniSecSettings2, L"grepWin.exe", L"", pPathBuffer, PATHLONG_MAX_CCH);
     Path_Reset(Settings2.GrepWinPath, pPathBuffer);
-    Path_ExpandEnvironmentStrings(Settings2.GrepWinPath);
+    Path_ExpandEnvStrings(Settings2.GrepWinPath);
 
     IniSectionGetStringNoQuotes(IniSecSettings2, L"AdministrationTool.exe", L"", pPathBuffer, PATHLONG_MAX_CCH);
     Path_Reset(Settings2.AdministrationTool, pPathBuffer);
-    Path_ExpandEnvironmentStrings(Settings2.AdministrationTool);
+    Path_ExpandEnvStrings(Settings2.AdministrationTool);
 
     if (StrIsEmpty(Settings2.AppUserModelID)) { // set via CmdLine ?
         IniSectionGetString(IniSecSettings2, L"ShellAppUserModelID", _W("Rizonesoft." SAPPNAME), Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID));

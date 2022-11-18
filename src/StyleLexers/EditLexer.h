@@ -49,7 +49,7 @@ typedef struct _editlexer
 // -----------------------------------------------------------------------------
 
 // Default Style (styleLexStandard.c) Indices
-typedef enum
+typedef enum LexDefaultStyles
 {
     STY_DEFAULT = 0,
     STY_MARGIN = 1,
