@@ -122,6 +122,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1118.3]- Linker problem (Debug Win32).
 [1118.2]- Several minor fixes.
 [1115.1]- Revert relative size for ANSI Art.
 [1114.1]- Reset change history except in case of "revert from file".
