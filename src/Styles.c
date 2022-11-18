@@ -630,7 +630,7 @@ float Style_GetBaseFontSize()
 {
     LPCWSTR const lpszStyle = GetCurrentStdLexer()->Styles[STY_DEFAULT].szValue;
     float         fFontSize = GLOBAL_INITIAL_FONTSIZE;
-    Style_StrGetSizeFloat(lpszStyle, &fFontSize);
+    Style_StrGetSizeFloatEx(lpszStyle, &fFontSize);
     return max_f(0.5f, fFontSize);
 }
 
@@ -644,7 +644,7 @@ float Style_GetCurrentLexerFontSize()
     float fFontSize = Style_GetBaseFontSize();
     if (!IsLexerStandard(Style_GetCurrentLexerPtr())) {
         LPCWSTR const lpszStyle = Style_GetCurrentLexerPtr()->Styles[STY_DEFAULT].szValue;
-        Style_StrGetSizeFloat(lpszStyle, &fFontSize);
+        Style_StrGetSizeFloatEx(lpszStyle, &fFontSize);
     }
     return max_f(0.5f, fFontSize);
 }
@@ -1293,7 +1293,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     // apply default settings
     float fBaseFontSize = IsLexerStandard(pLexNew) ? GLOBAL_INITIAL_FONTSIZE : Style_GetBaseFontSize();
     Style_SetStyles(hwnd, STYLE_DEFAULT, mergedDefaultStyles, fBaseFontSize);
-    Style_StrGetSizeFloat(mergedDefaultStyles, &fBaseFontSize); // get scheme base font size
+    Style_StrGetSizeFloatEx(mergedDefaultStyles, &fBaseFontSize); // get scheme base font size
 
     // Broadcast STYLE_DEFAULT as base style to all other styles
     SciCall_StyleClearAll();
@@ -1523,9 +1523,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     wchSpecificStyle[0] = L'\0'; // empty
 
     iValue = 2; // default whitespace size
-    float fValue = 0.0;
-    if (Style_StrGetSizeFloat(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &fValue)) {
-        iValue = clampi(f2int(fValue), 1, 12);
+    if (Style_StrGetSizeInt(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &iValue)) {
+        iValue = clampi(iValue, 1, 12);
         StringCchPrintf(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"size:%i", iValue);
     }
     SciCall_SetWhiteSpaceSize(iValue);
@@ -1592,9 +1591,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         SciCall_SetCaretStyle(CARETSTYLE_LINE | ovrstrk_mode);
 
         iValue = 1; // don't allow invisible 0
-        fValue = 0.0f;
-        if (Style_StrGetSizeFloat(pCurrentStandard->Styles[STY_CARET].szValue, &fValue)) {
-            iValue = clampi(f2int(fValue), 1, 20);
+        if (Style_StrGetSizeInt(pCurrentStandard->Styles[STY_CARET].szValue, &iValue)) {
+            iValue = clampi(iValue, 1, 20);
             if (iValue != 1) {
                 StringCchPrintf(wch, COUNTOF(wch), L"; size:%i", iValue);
                 StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
@@ -1737,7 +1735,7 @@ void Style_FillRelatedStyles(HWND hwnd, const PEDITLEXER pLexer) {
     //bool const bIsLexerStd = IsLexerStandard(pLexer);
 
     float fBaseFontSize = IsLexerStandard(pLexer) ? GLOBAL_INITIAL_FONTSIZE : Style_GetBaseFontSize();
-    Style_StrGetSizeFloat(pLexer->Styles[STY_DEFAULT].szValue, &fBaseFontSize);
+    Style_StrGetSizeFloatEx(pLexer->Styles[STY_DEFAULT].szValue, &fBaseFontSize);
 
     // -----------------------------------------------
     int i = 1; // don't re-apply lexer's default style
@@ -2019,20 +2017,21 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
 //
 //  _GetMarkerMarginWidth()
 //
-static int _GetMarkerMarginWidth(HWND hwnd)
+static int _GetMarkerMarginWidth(HWND hwnd, const float scale)
 {
-    float ftotal = Style_GetBaseFontSize();
+    float       ftotal = 0.0f;
+    float const fbase = Style_GetBaseFontSize();
 
-    float fSize = 0.0f;
-    Style_StrGetSizeFloat(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize);     // relative to LineNumber
+    float fSize = fbase;
+    Style_StrGetSizeFloatEx(GetCurrentStdLexer()->Styles[STY_MARGIN].szValue, &fSize);    // linenumber
     ftotal += fSize;
 
-    fSize = 0.0f;
-    Style_StrGetSizeFloat(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize);  // settings
+    fSize = fbase;
+    Style_StrGetSizeFloatEx(GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue, &fSize); // settings
     ftotal += fSize;
 
     float const zoomPercent = (float)SciCall_GetZoom();
-    return ScaleFloatToDPI(hwnd, (ftotal * zoomPercent) / 100.0f);
+    return ScaleFloatToDPI(hwnd, (ftotal * zoomPercent * scale) / 100.0f);
 }
 
 //=============================================================================
@@ -2041,7 +2040,7 @@ static int _GetMarkerMarginWidth(HWND hwnd)
 //
 void Style_UpdateFoldingMargin(HWND hwnd, bool bShowMargin)
 {
-    SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowMargin ? _GetMarkerMarginWidth(hwnd) : 0));
+    SciCall_SetMarginWidthN(MARGIN_SCI_FOLDING, (bShowMargin ? _GetMarkerMarginWidth(hwnd, 0.5f) : 0));
 }
 
 //=============================================================================
@@ -2050,7 +2049,7 @@ void Style_UpdateFoldingMargin(HWND hwnd, bool bShowMargin)
 //
 void Style_UpdateBookmarkMargin(HWND hwnd)
 {
-    SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (Settings.ShowBookmarkMargin ? _GetMarkerMarginWidth(hwnd) + 4 : 0));
+    SciCall_SetMarginWidthN(MARGIN_SCI_BOOKMRK, (Settings.ShowBookmarkMargin ? _GetMarkerMarginWidth(hwnd, 0.7f) : 0));
 }
 
 
@@ -2061,7 +2060,7 @@ void Style_UpdateBookmarkMargin(HWND hwnd)
 void Style_UpdateChangeHistoryMargin(HWND hwnd)
 {
     bool const bShowMargin = Settings.ChangeHistoryMargin && ((Settings.ChangeHistoryMode & ChgHist_ON) && (Settings.ChangeHistoryMode & ChgHist_MARGIN));
-    SciCall_SetMarginWidthN(MARGIN_SCI_CHGHIST, (bShowMargin ? _GetMarkerMarginWidth(hwnd) + 4 : 0));
+    SciCall_SetMarginWidthN(MARGIN_SCI_CHGHIST, (bShowMargin ? _GetMarkerMarginWidth(hwnd, 0.7f) : 0));
 }
 
 
@@ -2258,7 +2257,8 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
     // background 
     SciCall_SetFoldMarginColour(true, clrFoldMarginBack); // background
     SciCall_SetFoldMarginHiColour(true, clrFoldMarginBack); // (!)
-    //SciCall_FoldDisplayTextSetStyle(SC_FOLDDISPLAYTEXT_HIDDEN);
+    //SciCall_FoldDisplayTextSetStyle(SC_FOLDDISPLAYTEXT_BOXED);
+    //SciCall_SetDefaultFoldDisplayText("...");
 
     int fldStyleLn = 0;
     Style_StrGetCharSet(wchBookMarkStyleStrg, &fldStyleLn);
@@ -2770,14 +2770,8 @@ void Style_SetIndentGuides(HWND hwnd,bool bShow)
 //
 void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch)
 {
-    float fValue = 0.0f;
-    bool const  bHasLnSpaceDef = Style_StrGetSizeFloat(lpszStyle, &fValue);
-
-    int iAscent = 0;
-    int iDescent = 0;
-
-    if (bHasLnSpaceDef) {
-        int const iValue = f2int(fValue);
+    int iValue = 0, iAscent = 0, iDescent = 0;
+    if (Style_StrGetSizeInt(lpszStyle, &iValue)) {
         const int iCurFontSizeDbl = f2int(Style_GetCurrentLexerFontSize() * 2.0f);
         int iValAdj = clampi(iValue, (0 - iCurFontSizeDbl), 256 * iCurFontSizeDbl);
         if ((iValAdj != iValue) && (cch > 0)) {
@@ -3040,7 +3034,7 @@ bool Style_StrGetCharSet(LPCWSTR lpszStyle, int* i)
 
 //=============================================================================
 //
-//  Style_StrGetIntSizeInt()
+//  Style_StrGetSizeInt()
 //
 bool Style_StrGetSizeInt(LPCWSTR lpszStyle, int* i)
 {
@@ -3058,6 +3052,22 @@ bool Style_StrGetSizeInt(LPCWSTR lpszStyle, int* i)
 //  Style_StrGetSizeFloat()
 //
 bool Style_StrGetSizeFloat(LPCWSTR lpszStyle, float* f)
+{
+    WCHAR *p = StrStr(lpszStyle, L"size:");
+    if (p) {
+        p += CONSTSTRGLEN(L"size:");
+        return Char2Float(p, f);
+    }
+    return false;
+}
+
+
+//=============================================================================
+//
+//  Style_StrGetSizeFloatEx()
+//  Adds parsed value to given one if relative (+/-)
+//
+bool Style_StrGetSizeFloatEx(LPCWSTR lpszStyle, float* f)
 {
     WCHAR *p = StrStr(lpszStyle, L"size:");
     if (p) {
@@ -3638,7 +3648,7 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
         break;
     case DFS_GENERIC_USE:
     default:
-        Style_StrGetSizeFloat(lpszStyle, &fFontSize);
+        Style_StrGetSizeFloatEx(lpszStyle, &fFontSize);
         break;
     }
 
@@ -3951,7 +3961,7 @@ void Style_SetStyles(HWND hwnd, const int iStyle, LPCWSTR lpszStyle, const float
 
     // Size values are relative to BaseFontSize/CurrentFontSize
     float fFontSize = fBaseFontSize;
-    Style_StrGetSizeFloat(lpszStyle, &fFontSize);
+    Style_StrGetSizeFloatEx(lpszStyle, &fFontSize);
     SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, f2int(fFontSize * SC_FONT_SIZE_MULTIPLIER));
 
     char localeNameA[LOCALE_NAME_MAX_LENGTH] = "en-us\0";

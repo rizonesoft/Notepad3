@@ -115,9 +115,11 @@ LPCWSTR PTHAPI         Path_FindExtension(const HPATHL hpth);
 bool PTHAPI            Path_QuoteSpaces(HPATHL hpth_in_out, bool bForceQuotes);
 void PTHAPI            Path_UnQuoteSpaces(HPATHL hpth_in_out);
 int PTHAPI             Path_GetDriveNumber(const HPATHL hpth);
+bool PTHAPI            Path_IsUNC(const HPATHL hpth);
 wchar_t PTHAPI         Path_GetDriveLetterByNumber(const int number);
 DWORD PTHAPI           Path_GetFileAttributes(const HPATHL hpth);
 bool PTHAPI            Path_SetFileAttributes(HPATHL hpth, DWORD dwAttributes);
+bool PTHAPI            Path_StripToRoot(HPATHL hpth_in_out);
 bool PTHAPI            Path_GetCurrentDirectory(HPATHL hpth_out);
 size_t PTHAPI          Path_ToShortPathName(HPATHL hpth_in_out);  // use only, if neccessary
 size_t PTHAPI          Path_GetLongPathNameEx(HPATHL hpth_in_out);
@@ -136,7 +138,6 @@ void PTHAPI            Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, b
 bool PTHAPI            Path_GetKnownFolder(REFKNOWNFOLDERID rfid, HPATHL hpth_out);
 
 void PTHAPI            ExpandEnvironmentStrgs(HSTRINGW hstr, bool bStripQ);
-void PTHAPI            Path_ExpandEnvironmentStrings(HPATHL hpth_in_out);
 
 
 // ============================================================================
