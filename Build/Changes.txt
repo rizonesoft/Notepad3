@@ -63,7 +63,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[1118.1]- Using new AviSynth+ keyword lists and AviSynth colors (light/dark mode).
+[1118.2]- Using new AviSynth+ keyword lists and AviSynth colors (light/dark mode).
 [1115.2]- Minor enhancements for AviSynth Lexer.
 [1115.1]- Refactoring common base and subsequent syntax base font handling.
 [1114.1]- Minor corrections to project properties.
@@ -122,6 +122,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1118.2]- Several minor fixes.
 [1115.1]- Revert relative size for ANSI Art.
 [1114.1]- Reset change history except in case of "revert from file".
 [1114.1]- VS2022-vc143 build (WM_DPICHANGED not send).
