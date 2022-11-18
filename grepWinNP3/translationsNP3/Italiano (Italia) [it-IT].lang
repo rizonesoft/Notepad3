@@ -164,7 +164,7 @@ msgstr "Modalità Scura"
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr "Data di ultima modifica"
+msgstr "Data ultima modifica"
 
 #. Resource IDs: (137)
 msgid "Dialog"
@@ -172,7 +172,7 @@ msgstr "Finestra di dialogo"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr "Non avvisare quando si sostituisce senza creare i backup"
+msgstr "Non avvisare quando si sostituisce senza creare backup"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -313,7 +313,7 @@ msgstr "Solo un'istanza"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
-msgstr "Apri la cartella padre"
+msgstr "Apri la cartella contenente"
 
 #. Resource IDs: (141)
 msgid "Open with Editor"
