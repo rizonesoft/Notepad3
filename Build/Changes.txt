@@ -44,7 +44,6 @@ NEW:
 [1029.1]- Darkmode highlight (foreground) contrast settings + default reduction to 75%.
 [1018.1]- Add example for tinyexpr in Modify Lines dialog.
 [1018.1]- Add option to auto-load most recent file from file history.
-[1018.1]- Add sourcecode for experimental version of tinyexpr CPP.
 [1018.1]- Change History Marker: color configuration.
 [.901.1]- Menu (View) Settings for "Change History" feature.
 [.830.1]- Persistent settings for "Document Read-Only Mode".
@@ -52,10 +51,9 @@ NEW:
 [.828.1]- Add "char8_t" keyword for C++20.
 [.220.1]- Msg box for editing read-only.
 [.217.1]- F/R-dialog menu item to switch replace by clipboard tag (^c).
-[.215.1]- Set keyword-lists for CSS Lexer according to SiTE's css.properties.
+[.215.1]- Set keyword-lists for CSS Lexer according to SciTE's css.properties.
 [.129.1]- JSON Lexer: colorizing for URL/IRI and Compact IRI.
 [.128.3]- JSON Lexer: error coloring for unclosed strings.
-[1211.1]- Partial (incomplete - disabled) "Auto-Save and Backup" handling feature.
 [1130.1]- Add a Fortran Lexer.
 [1130.1]- LongPath Support enhancements.
 
@@ -64,40 +62,25 @@ CHANGES:
 --------------------------------------------------------
 [.###.#]- .
 [1118.2]- Using new AviSynth+ keyword lists and AviSynth colors (light/dark mode).
-[1115.2]- Minor enhancements for AviSynth Lexer.
-[1115.1]- Refactoring common base and subsequent syntax base font handling.
-[1114.1]- Minor corrections to project properties.
-[1104.1]- Full font description in resource files.
-[1029.1]- Refactoring of undo/redo and document modify handler.
 [1020.1]- Standard DarkMode Theme.
 [1020.1]- Minor adjustment of grepWinNP3's layout and correction of some strings (GRE).
 [1018.1]- Simplify WordList Set according to (https://github.com/ScintillaOrg/lexilla/issues/103).
 [1018.1]- Caret style: allow std caret bar width up to max(20) and define alpha transparency (not below 20).
-[1018.1]- "Modify Lines" feature (using tinyexpr) - fixes and optimizations.
-[1018.1]- Alow "tinyexpr" within ${...} specification, using L, I, N as expression variables.
-[1018.1]- "Modify Lines..." feature (using tinyexpr) - add error message.
-[1018.1]- More powerful "Modify Lines..." feature (using tinyexpr).
-[1018.1]- "Modify Lines..." : make WideChar (Unicode) aware.
-[.926.1]- Source code formatting.
+[1018.1]- Alow "tinyexpr" within "Modify Lines" ${...} specification, using L, I, N as expression variables.
 [.926.1]- Replace old logo "rizonesoft.bmp" by new layout.
-[.831.1]- Enhancements for Change History Marker.
 [.831.1]- Use deprecated SCI_FINDTEXT to workaround crash on new (Sci v5.2.3) SCI_FINDTEXTFULL method.
 [.830.1]- "Don't ask again" for keep Read-Only view mode dialog on editing file.
 [.830.1]- Decouple Read-Only file Attribute from Read-Only Document view mode.
 [.829.1]- Renaming feature from obscure "Accelerated Word Navigation" to better name "Alternate Word Separators".
 [.418.1]- Sync the "Sombra" Scheme Collection with the "Window Dark Mode".
 [.414.1]- Using 'Cascadia Mono' as default for pure 'Text File' scheme (if available).
-[.302.1]- Default settings for Auto-Save beta version.
 [.226.1]- Rainbow CSV Lexer: try to solve non-paired quotings.
 [.218.1]- Show number of occurrence on sequence of marked all.
 [.217.2]- Drag&drop text snippet while ALT-Key down will not scroll.
-[.214.1]- "grepWinNP3": make runtime statically linking (GRE).
 [.212.1]- Document "Read Only" view menu item for switching mode.
-[.211.1]- Pimping UCHARDET encoding detector.
 [.128.1]- CamelCase WordLists for AHK Lexer.
 [.127.1]- Ctrl/Alt+F10 as Accelerator-Keys for Filesystem-Path to URL (and back) conversion.
 [.121.1]- Renaming Spanish Latin America (es-419) to Spanish Mexican (es-MX) (MUI).
-[1228.1]- AboutBox's RichEdit Ctrl: enable more options for EM_AUTOURLDETECT.
 [1228.1]- Hyperlink RegEx Scanner: don't allow XML tagging brackets as part of Hyperlink text.
 [1226.1]- In Windows 11, running "Notepad" from "Run" (Win+R) launches "Notepad3".
 [1211.1]- Removing unnecessary "ToShortPath" operations.
@@ -106,8 +89,6 @@ CHANGES:
 [1202.1]- Merged Fortran Lexer keyword/functions suggestions from zoziha.
 [1202.1]- Fortran Lexer keyword/function enhancement.
 [1130.1]- Default settings: LaunchInstanceWndPosOffset=28 and LaunchInstanceFullVisible=true.
-[1130.1]- Lexer Fortran: add extended intrinsic functions.
-[1130.1]- Some more DynStrg refactorings and LongPath handling.
 
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
@@ -122,13 +103,8 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
-[1118.3]- Linker problem (Debug Win32).
-[1118.2]- Several minor fixes.
 [1115.1]- Revert relative size for ANSI Art.
 [1114.1]- Reset change history except in case of "revert from file".
-[1114.1]- VS2022-vc143 build (WM_DPICHANGED not send).
-[1114.1]- Set correct _WIN32_WINNT version (0x0601 /*_WIN32_WINNT_WIN7*/).
-[1114.1]- Common Base Whitespace style not cleared if default.
 [1114.1]- Linker must generate Manifest.
 [1114.1]- Don't store contrast adapted dark mode foreground color themes.
 [1104.1]- Common base font size scheme handling.
@@ -136,7 +112,6 @@ FIXES:
 [1104.1]- Modification marker based on selection history.
 [1104.1]- Disable events from edit-window while in Begin/End-WaitCursor.
 [1102.1]- Error message on loading empty file.
-[1029.1]- Issue on undo/redo stack.
 [1029.1]- Refactored of undo/redo and document modify handler.
 [1028.1]- Broken reload file (broken by check for single file instance)".
 [1023.1]- A warning message in "dialogs_xx_yy.rc".
@@ -156,7 +131,6 @@ FIXES:
 [.926.1]- Treat files as binary can be Accidentally Clicked (GRE).
 [.902.1]- Try to fix printing scaling issue.
 [.902.1]- Propagate default font to undefined-font styles.
-[.902.1]- Remove wrong std. font selection.
 [.902.1]- Font selection (if font face-name does not match to family-name).
 [.901.1]- Bookmarks handling in case of delete (in-line, complete line, selection).
 [.831.1]- Crash in SCI_FINDTEXTFULL caused by using wrong data structure.
@@ -207,11 +181,8 @@ FIXES:
 [1201.1]- Add to Favorites: keep base-filename + extension.
 [1201.1]- Find file extension.
 [1201.1]- Reading initial style config.
-[1130.1]- Small LongPath bugfixes.
 [1130.1]- Notification blocker on loading huge files.
 [1130.1]- Heap corruption on retrieving text from combo box.
-[1130.1]- Path_ToShortPathName() for grepWinNP3 startup.
-[1130.1]- Path_StripPath().
 
 --------------------------------------------------------
 REMOVED:
