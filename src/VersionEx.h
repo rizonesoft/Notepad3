@@ -17,4 +17,4 @@
 #define TINYEXPR_VER 2018.05.11
 #define UTHASH_VER 2.3.0
 #define VERSION_PATCH rc
-#define VERSION_COMMIT_ID dkt1-amr
+#define VERSION_COMMIT_ID 33e08055
