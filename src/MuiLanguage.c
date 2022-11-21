@@ -80,8 +80,8 @@ grepWinLng_t grepWinLangResName[] = {
     { L"sv-SE",  L".\\lng\\gwLng\\Svenska (Sverige) [sv-SE].lang" },
     { L"tr-TR",  L".\\lng\\gwLng\\Türkçe (Türkiye) [tr-TR].lang" },
     { L"vi-VN",  L".\\lng\\gwLng\\Tiếng Việt (Việt Nam) [vi-VN].lang" },
-    { L"zh-CN",  L".\\lng\\gwLng\\简体中文 (中国) [zh-CN].lang" },
-    { L"zh-TW",  L".\\lng\\gwLng\\正體中文 (台灣) [zh-TW].lang" }
+    { L"zh-CN",  L".\\lng\\gwLng\\简体中文 (中国大陆) [zh-CN].lang" },
+    { L"zh-TW",  L".\\lng\\gwLng\\正體中文 (中國台灣) [zh-TW].lang" }
 };
 
 unsigned grepWinLang_CountOf() {
@@ -233,8 +233,8 @@ MUILANGUAGE MUI_LanguageDLLs[] = {
     { IDS_MUI_LANG_SV_SE,  L"sv-SE",   L"Svenska (Sverige)\t\t\t[%s]",             false, false },
     { IDS_MUI_LANG_TR_TR,  L"tr-TR",   L"Türkçe (Türkiye)\t\t\t[%s]",              false, false },
     { IDS_MUI_LANG_VI_VN,  L"vi-VN",   L"Tiếng Việt (Việt Nam)\t\t\t[%s]",         false, false },
-    { IDS_MUI_LANG_ZH_CN,  L"zh-CN",   L"简体中文 (中国)\t\t\t[%s]",                false, false },
-    { IDS_MUI_LANG_ZH_TW,  L"zh-TW",   L"正體中文 (台灣)\t\t\t[%s]",                false, false }
+    { IDS_MUI_LANG_ZH_CN,  L"zh-CN",   L"简体中文 (中国大陆)\t\t\t[%s]",                false, false },
+    { IDS_MUI_LANG_ZH_TW,  L"zh-TW",   L"正體中文 (中國台灣)\t\t\t[%s]",                false, false }
 };
 
 //NUM_OF_MUI_LANGUAGES
