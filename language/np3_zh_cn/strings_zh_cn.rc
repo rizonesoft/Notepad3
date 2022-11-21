@@ -206,7 +206,7 @@ BEGIN
                              "已启用维持文件最后修改时间功能。\n\n本选项将在当前会话期间生效。"
     IDS_MUI_OUT_OFF_OCCMRK   "书签/高亮标记已用完。"
     IDS_MUI_DOCUMENT_READONLY
-                             "The document is locked for view only. Keep the lock to prevent editing?"
+                             "该文档已被锁定仅供阅览。保持锁定以防止修改吗？"
 END
 
 STRINGTABLE
@@ -222,7 +222,7 @@ BEGIN
     IDS_MUI_WARN_STYLE_RESET
                             "该操作将会把颜色样式重置为出厂设置，并将活动的主题文件切换为标准的 .INI 配置文件。"
     IDS_MUI_ASK_INSTANCE_EXISTS
-                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
+                            "单实例模式：\n\n切换到已经加载的文件实例吗？"
 END
 
 STRINGTABLE
@@ -264,7 +264,7 @@ BEGIN
     IDS_USE_LOCALE_DATEFMT  "使用本地化的日期格式(&D)"
     IDS_MUI_MENU_THEMES     "语法高亮方案集(&S)"
     IDM_THEMES_FACTORY_RESET "工厂默认(&F)"
-    IDM_THEMES_STD_CFG       "标准 Config (&S)"  // Keep blank space before (&S)
+    IDM_THEMES_STD_CFG       "标准配置 (&S)"  // Keep blank space before (&S)
     IDS_MUI_STATUSBAR_PREFIXES "行  ,列  ,选定  ,字节  ,选行  ,匹配  ,,,,,,,字符  ,改写  ,求值  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "清除全部"
@@ -272,7 +272,7 @@ BEGIN
                             "清除查找历史"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "清除替换历史"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard Shortcut [^c]"
+    IDS_MUI_REPLCLIPTAG     "^c 快捷替换为剪贴板"
     IDS_MUI_WRAPSEARCH_FWD  "从顶部循环找到"
     IDS_MUI_WRAPSEARCH_BCK  "从底部循环找到"
 END
