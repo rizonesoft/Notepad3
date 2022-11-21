@@ -154,7 +154,7 @@ BEGIN
     END
     POPUP "編輯(&E)"
     BEGIN
-        MENUITEM "Document &Read Only"                        IDM_VIEW_READONLY
+        MENUITEM "唯讀(&R)"                        IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "復原(&U)\tCtrl+Z",                          IDM_EDIT_UNDO
         MENUITEM "取消復原(&R)\tCtrl+Y",                       IDM_EDIT_REDO
@@ -350,12 +350,12 @@ BEGIN
         MENUITEM "顯示空格(&W)\tCtrl+Shift+8",                  IDM_VIEW_SHOWBLANKS
         MENUITEM "顯示換行符號(&E)\tCtrl+Shift+9",              IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        POPUP "Change History Marker"
+        POPUP "變更記錄標記"
         BEGIN
-            MENUITEM "No Change Markers",                   IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+            MENUITEM "無變更標記",                   IDM_VIEW_CHGHIST_NONE
+            MENUITEM "僅顯示於頁面邊緣",                 IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "僅顯示於文件中",               IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "全部顯示",             IDM_VIEW_CHGHIST_ALL
         END
         MENUITEM SEPARATOR
         MENUITEM "檢測超連結(&Y)\tCtrl+Alt+W",                 IDM_VIEW_HYPERLINKHOTSPOTS
@@ -392,7 +392,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "行號(&N)\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
         MENUITEM "書籤邊界(&M)\tCtrl+Shift+M",        IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "變更記錄標記",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "摺疊(&F)"
         BEGIN
@@ -472,11 +472,11 @@ BEGIN
         MENUITEM "自動關閉 HTML/XML 標記(&H)\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
         MENUITEM "自動完成單詞(&U)",                            IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "自動完成語法關鍵字(&K)",                      IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Alternate Word Se&parators(&P)\tCtrl+Alt+A",   IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "切換單詞分隔規則(&P)\tCtrl+Alt+A",   IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "每個檔案只有一個執行個體(&F)",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "檔案修改通知(&C)...\tAlt+F5",                 IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
+        ///MENUITEM "自動儲存和備份設定...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "關閉訊息提示音(&M)",                          IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Esc 鍵功能(&E)"
         BEGIN
@@ -492,7 +492,7 @@ BEGIN
             MENUITEM "記憶最近使用的檔案(&R)",                 IDM_SET_NOSAVERECENT
             MENUITEM "記憶插入游標位置(&C)",                   IDM_SET_NOPRESERVECARET
             MENUITEM "記憶查詢方式(&S)",                       IDM_SET_NOSAVEFINDREPL
-            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "自動載入最後開啟的檔案(&A)",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "視窗(&I)"
         BEGIN
@@ -592,7 +592,7 @@ BEGIN
         MENUITEM "啟用摺疊",                              IDM_VIEW_FOLDING
         MENUITEM "行號",                                  IDM_VIEW_LINENUMBERS
         MENUITEM "書籤邊界",                       IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "變更記錄",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN
