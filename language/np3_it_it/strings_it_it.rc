@@ -292,7 +292,7 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Utilizzo:\r\n\
-Notepad3 \t[/?] [...[Encoding]] [...[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 [/?] [...[Encoding]] [...[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]filename[...]]\r\n\r\n\
 file\tDeve essere l'ultimo argomento, nessuno spazio tra virgolette per default.\r\n\

@@ -292,7 +292,7 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Utilização:\r\n\
-Notepad3 \t[/?] [...[Codificação]] [...[Modo fim de linha]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 [/?] [...[Codificação]] [...[Modo fim de linha]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[unidade:][caminho]ficheiro[...]]\r\n\r\n\
 ficheiro\tDeve ser o último argumento, sem espaços entre aspas por defeito.\r\n\

@@ -292,7 +292,7 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Utilisation :\r\n\
-Notepad3 \t[/?] [...[Encodage]] [...[Mode de fin de ligne]] [/e] [/g] [/m]\r\n\
+Notepad3 [/?] [...[Encodage]] [...[Mode de fin de ligne]] [/e] [/g] [/m]\r\n\
  \t[/l] [/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[lecteur:][chemin]fichier[...]]\r\n\r\n\
 fichier\tDoit être le dernier argument, aucun espace entre guillemets par défaut.\r\n\

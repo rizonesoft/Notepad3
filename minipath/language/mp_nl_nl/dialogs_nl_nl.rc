@@ -109,18 +109,18 @@ BEGIN
     SCROLLBAR       IDC_RESIZEGRIP,7,70,10,10
 END
 
-IDD_FILTER DIALOGEX 0, 0, 184, 79
+IDD_FILTER DIALOGEX 0, 0, 189, 79
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Bestandenfilter"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Geef een nieuw bestanden&filter op. Scheid filters met ';'",IDC_STATIC,7,7,170,8
-    EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
+    LTEXT           "Geef een nieuw bestanden&filter op. Scheid filters met ';'",IDC_STATIC,7,7,175,8
+    EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
     CONTROL         "Bestanden door filtering &uitsluiten.",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,158,10
-    DEFPUSHBUTTON   "OK",IDOK,72,58,50,14
-    PUSHBUTTON      "Annuleren",IDCANCEL,127,58,50,14
+    DEFPUSHBUTTON   "OK",IDOK,77,58,50,14
+    PUSHBUTTON      "Annuleren",IDCANCEL,132,58,50,14
 END
 
 IDD_RENAME DIALOGEX 0, 0, 172, 74
@@ -240,7 +240,7 @@ CAPTION "Locaties"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Geef externe programma's en paden op.",IDC_STATIC,40,15,122,8
+    LTEXT           "Geef externe programma's en paden op.",IDC_STATIC,40,15,140,8
     LTEXT           "&Standaard ""Voorbeeld""-programma (Ctrl+Q):",IDC_STATIC,10,41,175,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
@@ -249,7 +249,7 @@ BEGIN
     PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
 END
 
-IDD_FINDTARGET DIALOGEX 0, 0, 271, 180
+IDD_FINDTARGET DIALOGEX 0, 0, 276, 180
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Doeltoepassing"
 FONT 9, "Segoe UI", 400, 0, 0x1
@@ -258,23 +258,23 @@ BEGIN
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,255,10
     CONTROL         "Gebruik de volgende doeltoepassing:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
-    LTEXT           "Geef de actie op als de doeltoepassing al wordt uitgevoerd:",IDC_STATIC,7,64,196,8
-    EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
+    LTEXT           "Geef de actie op als de doeltoepassing al wordt uitgevoerd:",IDC_STATIC,7,64,220,8
+    EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "Bericht:",IDC_STATIC,20,120,32,8
     CONTROL         "Geen, voer doeltoepassing uit elke keer dat een bestand wordt geopend.",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,225,10
     CONTROL         "Verzend bericht Open bestand naar doeltoepassingsvenster:",IDC_SENDDROPMSG,
-                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,198,10
     CONTROL         "Voer de volgende DDE-opdracht uit:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
-    LTEXT           "Toepassing:",IDC_STATIC,128,120,38,8
-    PUSHBUTTON      "Venster aanwijzen...",IDC_FINDWIN,204,91,60,14
+    LTEXT           "Toepassing:",IDC_STATIC,133,120,40,8
+    PUSHBUTTON      "Venster aanwijzen...",IDC_FINDWIN,209,91,60,14
     LTEXT           "Onderwerp:",IDC_STATIC,198,120,40,8
-    EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDETOPIC,198,130,66,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,160,159,50,14
-    PUSHBUTTON      "Annuleren",IDCANCEL,214,159,50,14
+    EDITTEXT        IDC_DDEMSG,20,130,109,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDEAPP,133,130,66,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDETOPIC,203,130,66,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,165,159,50,14
+    PUSHBUTTON      "Annuleren",IDCANCEL,219,159,50,14
 END
 
 IDD_FINDWIN DIALOGEX 0, 0, 210, 85

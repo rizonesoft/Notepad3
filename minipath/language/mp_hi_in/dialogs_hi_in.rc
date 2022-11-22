@@ -109,18 +109,18 @@ BEGIN
     SCROLLBAR       IDC_RESIZEGRIP,7,70,10,10
 END
 
-IDD_FILTER DIALOGEX 0, 0, 184, 79
+IDD_FILTER DIALOGEX 0, 0, 189, 79
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "फ़ाइल फ़िल्टर"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "एक नया फ़िल्टर बताएं। विभिन्न फिल्टरों को ; से अलग करें (&F)",IDC_STATIC,7,7,170,8
-    EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
+    LTEXT           "एक नया फ़िल्टर बताएं। विभिन्न फिल्टरों को ; से अलग करें (&F)",IDC_STATIC,7,7,175,8
+    EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
     CONTROL         "फ़िल्टर से मेल खाती हुई फ़ाइलें बाहर रखें (&E)",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,118,10
-    DEFPUSHBUTTON   "सही है",IDOK,72,58,50,14
-    PUSHBUTTON      "रद्द करें",IDCANCEL,127,58,50,14
+    DEFPUSHBUTTON   "सही है",IDOK,77,58,50,14
+    PUSHBUTTON      "रद्द करें",IDCANCEL,132,58,50,14
 END
 
 IDD_RENAME DIALOGEX 0, 0, 172, 74
@@ -207,7 +207,7 @@ BEGIN
     CONTROL         "मिटाई हुई फ़ाइल रीसाइकल बिन में भेजें। (&M)",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
     CONTROL         "फ़ाइल मिटाने की पुष्टि न करें (यह अनुशंसित नहीं है) (&D)",IDC_NOCONFIRMDELETE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,159,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,170,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
     CONTROL         """Esc"" कुंजी सक्षम करें (&E)...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
     CONTROL         "विंडो छोटी करें (&W)",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
@@ -220,7 +220,7 @@ CAPTION "आइटम"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "निदेशिका सूची में आइटम का दिखाव",IDC_STATIC,40,15,118,8
+    LTEXT           "निदेशिका सूची में आइटम का दिखाव",IDC_STATIC,40,15,140,8
     GROUPBOX        "रंग",IDC_STATIC,10,41,205,134
     LTEXT           "कोई फ़िल्टर न होने की अवस्था में इस रंग के टेक्स्ट का प्रयोग करें:",IDC_STATIC,20,54,180,8
     CONTROL         "डिफ़ॉल्ट विंडो रंग (&W)",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
@@ -240,8 +240,8 @@ CAPTION "स्थान"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "बाहरी प्रोग्राम और स्थान बताएं",IDC_STATIC,40,15,122,8
-    LTEXT           "डिफ़ॉल्ट (&D) ""Quick View"" प्रोग्राम (Ctrl+Q):",IDC_STATIC,10,41,126,8
+    LTEXT           "बाहरी प्रोग्राम और स्थान बताएं",IDC_STATIC,40,15,140,8
+    LTEXT           "डिफ़ॉल्ट (&D) ""Quick View"" प्रोग्राम (Ctrl+Q):",IDC_STATIC,10,41,140,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
     LTEXT           "पसंदीदा फ़ोल्डर (F11): (&F)",IDC_STATIC,10,76,76,8
@@ -249,32 +249,32 @@ BEGIN
     PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
 END
 
-IDD_FINDTARGET DIALOGEX 0, 0, 271, 180
+IDD_FINDTARGET DIALOGEX 0, 0, 276, 180
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "लक्ष्य ऐप्लिकेशन"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "लक्ष्य ऐप्लिकेशन प्रयोग न करें, मात्र चुनी हुई फ़ाइल प्रक्षेपित करें",IDC_LAUNCH,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,245,10
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,250,10
     CONTROL         "निम्न लक्ष्य ऐप्लिकेशन प्रयोग करें:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
-    LTEXT           "लक्ष्य ऐप्लिकेशन प्रगतिशील होने की अवस्था में क्रिया निर्देशित करें:",IDC_STATIC,7,64,196,8
-    EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
+    LTEXT           "लक्ष्य ऐप्लिकेशन प्रगतिशील होने की अवस्था में क्रिया निर्देशित करें:",IDC_STATIC,7,64,220,8
+    EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "संदेश:",IDC_STATIC,20,120,32,8
     CONTROL         "कुछ भी नहीं, प्रत्येक बार फ़ाइल खोलने में लक्ष्य ऐप्लिकेशन चलाएं",IDC_ALWAYSRUN,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,191,10
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,220,10
     CONTROL         "लक्ष्य ऐप्लिकेशन विंडो को फ़ाइल खुली हुई है का संदेश भेजें:",IDC_SENDDROPMSG,
-                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,198,10
     CONTROL         "निम्न DDE कमांड चलाएं:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
-    LTEXT           "ऐप्लिकेशन:",IDC_STATIC,128,120,38,8
-    PUSHBUTTON      "विंडो खोजें...",IDC_FINDWIN,204,91,60,14
-    LTEXT           "विषय:",IDC_STATIC,198,120,20,8
-    EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDETOPIC,198,130,66,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "सही है",IDOK,160,159,50,14
-    PUSHBUTTON      "रद्द करें",IDCANCEL,214,159,50,14
+    LTEXT           "ऐप्लिकेशन:",IDC_STATIC,133,120,40,8
+    PUSHBUTTON      "विंडो खोजें...",IDC_FINDWIN,209,91,60,14
+    LTEXT           "विषय:",IDC_STATIC,203,120,20,8
+    EDITTEXT        IDC_DDEMSG,20,130,109,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDEAPP,133,130,66,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDETOPIC,203,130,66,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "सही है",IDOK,165,159,50,14
+    PUSHBUTTON      "रद्द करें",IDCANCEL,219,159,50,14
 END
 
 IDD_FINDWIN DIALOGEX 0, 0, 210, 85

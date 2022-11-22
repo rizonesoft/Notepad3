@@ -100,7 +100,7 @@ BEGIN
     CONTROL         "Niet opnieuw zoeken",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
     CONTROL         "S&luiten na vinden",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
     CONTROL         "Mar&keren",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
-    CONTROL         "&Met jokertekens",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
+    CONTROL         "&Met jokertekens",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,65,10
     CONTROL         "Venster transparant maken bij verlies van focus",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,154,10
     DEFPUSHBUTTON   "Vo&lgende",IDOK,211,7,55,14
@@ -109,7 +109,7 @@ BEGIN
     CONTROL         "<a>Naar Vervangen (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,105,85,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,85,14,10
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,193,85,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,130,259,9,WS_EX_STATICEDGE
     PUSHBUTTON      "Gefocust &beeld",IDC_TOGGLE_VISIBILITY,211,65,55,14
 END
@@ -134,7 +134,7 @@ BEGIN
     CONTROL         "Niet opnieuw zoeken",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
     CONTROL         "S&luiten na vervangen",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,85,10
     CONTROL         "Mar&keren",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
-    CONTROL         "&Met jokertekens",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
+    CONTROL         "&Met jokertekens",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,65,10
     CONTROL         "Venster transparant maken bij verlies van focus",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,154,10
     DEFPUSHBUTTON   "Vo&lgende",IDOK,211,7,55,14
@@ -147,7 +147,7 @@ BEGIN
     CONTROL         "<a>Naar Zoeken (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,132,85,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,114,14,10
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,193,114,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,156,259,9,WS_EX_STATICEDGE
     PUSHBUTTON      "Gefocust &beeld",IDC_TOGGLE_VISIBILITY,211,94,55,14
 END
@@ -539,7 +539,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "HTML/XML tag invoegen"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Openingstag (met attributen):",IDC_STATIC,7,7,97,8
+    LTEXT           "&Openingstag (met attributen):",IDC_STATIC,7,7,110,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
     LTEXT           "&Tag sluiten (kan worden bewerkt):",IDC_STATIC2,7,37,125,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL

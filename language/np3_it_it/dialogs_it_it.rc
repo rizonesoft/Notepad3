@@ -539,7 +539,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Inserisci tag HTML/XML"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Tag di &apertura (con attributi):",IDC_STATIC,7,7,97,8
+    LTEXT           "Tag di &apertura (con attributi):",IDC_STATIC,7,7,110,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
     LTEXT           "Tag di &chiusura (può essere modificato):",IDC_STATIC2,7,37,125,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL

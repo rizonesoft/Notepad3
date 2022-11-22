@@ -220,7 +220,7 @@ CAPTION "Items"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Voorkoms van items in die lys.",IDC_STATIC,40,15,118,8
+    LTEXT           "Voorkoms van items in die lys.",IDC_STATIC,40,15,140,8
     GROUPBOX        "Kleure",IDC_STATIC,10,41,205,134
     LTEXT           "Gebruik hierdie teks kleur wanneer GEEN FILTER ingestel is nie:",IDC_STATIC,20,54,190,8
     CONTROL         "Standaard &vensters kleur.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
@@ -249,7 +249,7 @@ BEGIN
     PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
 END
 
-IDD_FINDTARGET DIALOGEX 0, 0, 271, 180
+IDD_FINDTARGET DIALOGEX 0, 0, 276, 180
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Teikentoepassing"
 FONT 9, "Segoe UI", 400, 0, 0x1
@@ -258,23 +258,23 @@ BEGIN
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,255,10
     CONTROL         "Gebruik die volgende teikenprogram:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
-    LTEXT           "Gee die aksie as die teikentoepassing reeds uitgevoer word:",IDC_STATIC,7,64,196,8
-    EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
+    LTEXT           "Gee die aksie as die teikentoepassing reeds uitgevoer word:",IDC_STATIC,7,64,220,8
+    EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "Boodskap:",IDC_STATIC,20,120,32,8
     CONTROL         "Geen, voer teikenprogram elke keer as 'n lêer oopgemaak word.",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,211,10
     CONTROL         "Stuur 'n lêer oop boodskap na die toepassing venster:",IDC_SENDDROPMSG,
-                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,198,10
     CONTROL         "Voer die volgende DDE opdrag uit:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
-    LTEXT           "Toepassing:",IDC_STATIC,128,120,38,8
-    PUSHBUTTON      "Vind Venster...",IDC_FINDWIN,204,91,60,14
+    LTEXT           "Toepassing:",IDC_STATIC,133,120,40,8
+    PUSHBUTTON      "Vind Venster...",IDC_FINDWIN,209,91,60,14
     LTEXT           "Onderwerp:",IDC_STATIC,198,120,50,8
-    EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDETOPIC,198,130,66,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,160,159,50,14
-    PUSHBUTTON      "Kanselleer",IDCANCEL,214,159,50,14
+    EDITTEXT        IDC_DDEMSG,20,130,109,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDEAPP,133,130,66,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDETOPIC,203,130,66,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,165,159,50,14
+    PUSHBUTTON      "Kanselleer",IDCANCEL,219,159,50,14
 END
 
 IDD_FINDWIN DIALOGEX 0, 0, 210, 85

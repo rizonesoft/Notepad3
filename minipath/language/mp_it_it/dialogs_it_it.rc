@@ -109,18 +109,18 @@ BEGIN
     SCROLLBAR       IDC_RESIZEGRIP,7,70,10,10
 END
 
-IDD_FILTER DIALOGEX 0, 0, 184, 79
+IDD_FILTER DIALOGEX 0, 0, 189, 79
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Filtro file"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Specifica un nuovo &filtro file. Separa più filtri con ';'",IDC_STATIC,7,7,170,8
-    EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
+    LTEXT           "Specifica un nuovo &filtro file. Separa più filtri con ';'",IDC_STATIC,7,7,175,8
+    EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
     CONTROL         "&Escludi i file in base al filtro.",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,118,10
-    DEFPUSHBUTTON   "OK",IDOK,72,58,50,14
-    PUSHBUTTON      "Annulla",IDCANCEL,127,58,50,14
+    DEFPUSHBUTTON   "OK",IDOK,77,58,50,14
+    PUSHBUTTON      "Annulla",IDCANCEL,132,58,50,14
 END
 
 IDD_RENAME DIALOGEX 0, 0, 172, 74
@@ -173,7 +173,7 @@ BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
     LTEXT           "Specifica le impostazioni generali di MiniPath.",IDC_STATIC,40,15,153,8
     CONTROL         "&Apri oggetti con un click singolo.",IDC_SINGLECLICK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,161,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,180,10
     CONTROL         "&Segui la selezione.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
     CONTROL         "&Selezione a riga intera.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
     CONTROL         "Attiva la finestra di destinazione quando apri un file.",IDC_FOCUSEDIT,
@@ -207,7 +207,7 @@ BEGIN
     CONTROL         "&Sposta i file eliminati nel Cestino.",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
     CONTROL         "&Elimina file senza conferma (non raccomandato).",IDC_NOCONFIRMDELETE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,159,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,170,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
     CONTROL         "Abilita tasto ""&Esc"" per...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
     CONTROL         "Minimizzare la finestra.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,80,10
@@ -240,7 +240,7 @@ CAPTION "Posizioni"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Specifica programmi e percorsi esterni.",IDC_STATIC,40,15,122,8
+    LTEXT           "Specifica programmi e percorsi esterni.",IDC_STATIC,40,15,140,8
     LTEXT           "&Programma ""Quick View"" di default (Ctrl+Q):",IDC_STATIC,10,41,180,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
@@ -249,32 +249,32 @@ BEGIN
     PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
 END
 
-IDD_FINDTARGET DIALOGEX 0, 0, 271, 180
+IDD_FINDTARGET DIALOGEX 0, 0, 276, 180
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Applicazione di destinazione"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "Non usare un'applicazione di destinazione specifica, e lancia il file selezionato.",IDC_LAUNCH,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,245,10
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,250,10
     CONTROL         "Usa la seguente applicazione di destinazione:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,150,10
     LTEXT           "Specifica l'azione quando l'applicazione di destinazione è già in esecuzione:",IDC_STATIC,7,64,245,8
-    EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
+    EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "Messaggio:",IDC_STATIC,20,120,40,8
     CONTROL         "Nessuno, esegui l'applicazione di destinazione ogni volta che apri un file.",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,245,10
     CONTROL         "Invia il messaggio 'File aperto' nella finestra di destinazione:",IDC_SENDDROPMSG,
-                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,198,10
     CONTROL         "Esegui il comando DDE seguente:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
     LTEXT           "Applicazione:",IDC_STATIC,128,120,40,8
-    PUSHBUTTON      "Trova finestra...",IDC_FINDWIN,204,91,60,14
+    PUSHBUTTON      "Trova finestra...",IDC_FINDWIN,209,91,60,14
     LTEXT           "Argomento:",IDC_STATIC,198,120,40,8
-    EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDETOPIC,198,130,66,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,160,159,50,14
-    PUSHBUTTON      "Annulla",IDCANCEL,214,159,50,14
+    EDITTEXT        IDC_DDEMSG,20,130,109,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDEAPP,133,130,66,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDETOPIC,203,130,66,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,165,159,50,14
+    PUSHBUTTON      "Annulla",IDCANCEL,219,159,50,14
 END
 
 IDD_FINDWIN DIALOGEX 0, 0, 210, 85

@@ -100,7 +100,7 @@ BEGIN
     CONTROL         "&Ne menjen körbe",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
     CONTROL         "Ta&lálat után bezárás",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,80,10
     CONTROL         "Ere&dmények jelölése",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,75,10
-    CONTROL         "&Joker keresés",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
+    CONTROL         "&Joker keresés",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,65,10
     CONTROL         "Átlátszó mód, ha nincs fókuszban",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
     DEFPUSHBUTTON   "&Köv. keresése",IDOK,211,7,55,14
@@ -109,7 +109,7 @@ BEGIN
     CONTROL         "<a>Csere (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,105,74,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,85,14,10
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,193,85,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,130,259,9,WS_EX_STATICEDGE
     PUSHBUTTON      "F&ókuszált nézet",IDC_TOGGLE_VISIBILITY,211,65,55,14
 END
@@ -134,7 +134,7 @@ BEGIN
     CONTROL         "&Ne menjen körbe",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
     CONTROL         "Csere után bezár",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,80,10
     CONTROL         "Ere&dmények jelölése",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
-    CONTROL         "&Joker keresés",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
+    CONTROL         "&Joker keresés",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,65,10
     CONTROL         "Átlátszó mód, ha nincs fókuszban",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
     DEFPUSHBUTTON   "K&öv. keresése",IDOK,211,7,55,14
@@ -147,7 +147,7 @@ BEGIN
     CONTROL         "<a>Keresés (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,132,84,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,114,14,10
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,193,114,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,156,259,9,WS_EX_STATICEDGE
     PUSHBUTTON      "F&ókuszált nézet",IDC_TOGGLE_VISIBILITY,211,94,55,14
 END
@@ -515,9 +515,9 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Sorok módosítása"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Sor &elejére:",IDC_STATIC,7,7,62,8
+    LTEXT           "Sor &elejére:",IDC_STATIC,7,7,72,8
     EDITTEXT        IDC_MODLNS_ED_PREPEND,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "Sor &végére:",IDC_STATIC2,7,37,68,8
+    LTEXT           "Sor &végére:",IDC_STATIC2,7,37,72,8
     EDITTEXT        IDC_MODLNS_ED_APPEND,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Mégsem",IDCANCEL,125,24,50,14
@@ -539,9 +539,9 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "HTML/XML elem beillesztése"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Nyitó elem (attribútumokkal):",IDC_STATIC,7,7,97,8
+    LTEXT           "&Nyitó elem (attribútumokkal):",IDC_STATIC,7,7,110,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "&Záró elem (szerkeszthető):",IDC_STATIC2,7,37,90,8
+    LTEXT           "&Záró elem (szerkeszthető):",IDC_STATIC2,7,37,100,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     EDITTEXT        102,125,48,20,14,ES_AUTOHSCROLL
     LTEXT           "X-szer",IDC_STATIC3,148,50,24,8

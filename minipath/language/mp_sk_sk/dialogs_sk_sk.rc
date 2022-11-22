@@ -109,18 +109,18 @@ BEGIN
     SCROLLBAR       IDC_RESIZEGRIP,7,70,10,10
 END
 
-IDD_FILTER DIALOGEX 0, 0, 184, 79
+IDD_FILTER DIALOGEX 0, 0, 189, 79
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Filter súborov"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Zadajte nový &filter súborov. Viac filtrov oddeľte ';'",IDC_STATIC,7,7,170,8
-    EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
+    LTEXT           "Zadajte nový &filter súborov. Viac filtrov oddeľte ';'",IDC_STATIC,7,7,175,8
+    EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
     CONTROL         "&Vylúčiť súbory zodpovedajúce filtru.",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,127,10
-    DEFPUSHBUTTON   "OK",IDOK,72,58,50,14
-    PUSHBUTTON      "Zrušiť",IDCANCEL,127,58,50,14
+    DEFPUSHBUTTON   "OK",IDOK,77,58,50,14
+    PUSHBUTTON      "Zrušiť",IDCANCEL,132,58,50,14
 END
 
 IDD_RENAME DIALOGEX 0, 0, 172, 74
@@ -173,7 +173,7 @@ BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
     LTEXT           "Zadajte obecné nastavenia MiniPath.",IDC_STATIC,40,15,153,8
     CONTROL         "&Otvárať položky len jedným kliknutím myši.",IDC_SINGLECLICK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,161,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,180,10
     CONTROL         "Zvýrazniť výber &položky.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,92,10
     CONTROL         "Zvýrazniť výber &celého riadku.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,110,10
     CONTROL         "Po otvorení súboru vždy &aktivovať cieľové okno.",IDC_FOCUSEDIT,
@@ -240,7 +240,7 @@ CAPTION "Umiestnenia"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Zadajte externé programy a cesty.",IDC_STATIC,40,15,122,8
+    LTEXT           "Zadajte externé programy a cesty.",IDC_STATIC,40,15,140,8
     LTEXT           "&Predvolený ""Quick View"" program (Ctrl+Q):",IDC_STATIC,10,41,146,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
@@ -249,32 +249,32 @@ BEGIN
     PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
 END
 
-IDD_FINDTARGET DIALOGEX 0, 0, 271, 180
+IDD_FINDTARGET DIALOGEX 0, 0, 276, 180
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Cieľová aplikácia"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "Nepoužívať konkrétnu cieľovú aplikáciu, priamo spúšťať vybraný súbor.",IDC_LAUNCH,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,245,10
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,250,10
     CONTROL         "Použiť nasledujúcu cieľovú aplikáciu:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,135,10
-    LTEXT           "Zadajte akciu, ak je cieľová aplikácia už spustená:",IDC_STATIC,7,64,196,8
-    EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
+    LTEXT           "Zadajte akciu, ak je cieľová aplikácia už spustená:",IDC_STATIC,7,64,220,8
+    EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "Správa:",IDC_STATIC,20,120,32,8
     CONTROL         "Žiadna, spustiť cieľovú aplikáciu pri každom otvorení súboru.",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,211,10
     CONTROL         "Odoslať správu do okna cieľovej aplikácie:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,155,10
     CONTROL         "Vykonať nasledujúci príkaz DDE:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
-    LTEXT           "Aplikácia:",IDC_STATIC,128,120,38,8
-    PUSHBUTTON      "Nájsť okno...",IDC_FINDWIN,204,91,60,14
+    LTEXT           "Aplikácia:",IDC_STATIC,133,120,40,8
+    PUSHBUTTON      "Nájsť okno...",IDC_FINDWIN,209,91,60,14
     LTEXT           "Téma:",IDC_STATIC,198,120,24,8
-    EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDETOPIC,198,130,66,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,160,159,50,14
-    PUSHBUTTON      "Zrušiť",IDCANCEL,214,159,50,14
+    EDITTEXT        IDC_DDEMSG,20,130,109,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDEAPP,133,130,66,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDETOPIC,203,130,66,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,165,159,50,14
+    PUSHBUTTON      "Zrušiť",IDCANCEL,219,159,50,14
 END
 
 IDD_FINDWIN DIALOGEX 0, 0, 210, 85

@@ -100,7 +100,7 @@ BEGIN
     CONTROL         "Başta/sonda &sürdürülsün",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,85,10
     CONTROL         "B&ulunca kapatılsın",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
     CONTROL         "Ko&pyalar işaretlensin",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
-    CONTROL         "&Genel arama",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,63,10
+    CONTROL         "&Genel arama",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,65,10
     CONTROL         "Odak kaybolduğunda saydam kipe geçilsin",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,140,10
     DEFPUSHBUTTON   "S&onrakini bul",IDOK,211,7,55,14
@@ -109,7 +109,7 @@ BEGIN
     CONTROL         "<a>Değiştirmeye git (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,105,80,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,85,14,10
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,193,85,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,130,259,9,WS_EX_STATICEDGE
     PUSHBUTTON      "&Odak görünümü",IDC_TOGGLE_VISIBILITY,211,65,55,14
 END
@@ -134,7 +134,7 @@ BEGIN
     CONTROL         "Başta/sonda &sürdürülsün",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,85,10
     CONTROL         "D&eğiştirince kapatılsın",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
     CONTROL         "Ko&pyalar işaretlensin",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
-    CONTROL         "&Genel arama",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,63,10
+    CONTROL         "&Genel arama",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,65,10
     CONTROL         "Odak kaybolduğunda saydam kipe geçilsin",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,140,10
     DEFPUSHBUTTON   "S&onrakini bul",IDOK,211,7,55,14
@@ -147,7 +147,7 @@ BEGIN
     CONTROL         "<a>Bulmaya git (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,132,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,191,114,14,10
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,193,114,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,156,259,9,WS_EX_STATICEDGE
     PUSHBUTTON      "&Odak görünümü",IDC_TOGGLE_VISIBILITY,211,94,55,14
 END
@@ -539,7 +539,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "HTML/XML kod imi ekle"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Kod imi &açılışı (öznitelikler ile):",IDC_STATIC,7,7,97,8
+    LTEXT           "Kod imi &açılışı (öznitelikler ile):",IDC_STATIC,7,7,110,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
     LTEXT           "Kod imi &kapanışı (düzenlenebilir):",IDC_STATIC2,7,37,100,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL

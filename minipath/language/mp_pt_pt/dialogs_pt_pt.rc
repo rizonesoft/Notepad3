@@ -109,18 +109,18 @@ BEGIN
     SCROLLBAR       IDC_RESIZEGRIP,7,70,10,10
 END
 
-IDD_FILTER DIALOGEX 0, 0, 184, 79
+IDD_FILTER DIALOGEX 0, 0, 189, 79
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Filtrar ficheiros"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Especifique um novo &filtro de ficheiro. Separare vários filtros com ;",IDC_STATIC,7,7,170,18
-    EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
+    EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
     CONTROL         "&Excluir ficheiros correspondentes ao filtro.",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,150,10
-    DEFPUSHBUTTON   "OK",IDOK,72,58,50,14
-    PUSHBUTTON      "Cancelar",IDCANCEL,127,58,50,14
+    DEFPUSHBUTTON   "OK",IDOK,77,58,50,14
+    PUSHBUTTON      "Cancelar",IDCANCEL,132,58,50,14
 END
 
 IDD_RENAME DIALOGEX 0, 0, 172, 74
@@ -220,7 +220,7 @@ CAPTION "Itens"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Aspecto dos itens na lista de pastas.",IDC_STATIC,40,15,118,8
+    LTEXT           "Aspecto dos itens na lista de pastas.",IDC_STATIC,40,15,140,8
     GROUPBOX        "Cores",IDC_STATIC,10,41,205,134
     LTEXT           "Usar esta cor quando NENHUM FILTRO for definido:",IDC_STATIC,20,54,173,8
     CONTROL         "Cor padrão do &windows.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,12,68,89,10
@@ -249,7 +249,7 @@ BEGIN
     PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
 END
 
-IDD_FINDTARGET DIALOGEX 0, 0, 271, 180
+IDD_FINDTARGET DIALOGEX 0, 0, 276, 180
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Programa de destino"
 FONT 9, "Segoe UI", 400, 0, 0x1
@@ -259,22 +259,22 @@ BEGIN
     CONTROL         "Usar o seguinte programa de destino:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
     LTEXT           "Especificar a acção se o programa de destino já estiver em execução:",IDC_STATIC,7,64,225,8
-    EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
+    EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "Mensagem:",IDC_STATIC,20,120,37,8
     CONTROL         "Nenhuma, executar programa de destino sempre que for aberto um ficheiro.",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,255,10
     CONTROL         "Enviar mensagem abrir ficheiro para a janela do programa:",IDC_SENDDROPMSG,
-                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,198,10
     CONTROL         "Executar o seguinte comando DDE:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
-    LTEXT           "Programa:",IDC_STATIC,128,120,38,8
+    LTEXT           "Programa:",IDC_STATIC,133,120,40,8
     PUSHBUTTON      "Localizar janela...",IDC_FINDWIN,204,91,63,14
     LTEXT           "Tópico:",IDC_STATIC,198,120,23,8
-    EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDETOPIC,198,130,66,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,160,159,50,14
-    PUSHBUTTON      "Cancelar",IDCANCEL,214,159,50,14
+    EDITTEXT        IDC_DDEMSG,20,130,109,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDEAPP,133,130,66,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDETOPIC,203,130,66,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,165,159,50,14
+    PUSHBUTTON      "Cancelar",IDCANCEL,219,159,50,14
 END
 
 IDD_FINDWIN DIALOGEX 0, 0, 210, 85
