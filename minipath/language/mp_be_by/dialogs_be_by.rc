@@ -220,7 +220,7 @@ CAPTION "Аб'екты"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,20,20
-    LTEXT           "Адлюстроўванне аб'ектаў у спісе.",IDC_STATIC,40,15,118,8
+    LTEXT           "Адлюстроўванне аб'ектаў у спісе.",IDC_STATIC,40,15,140,8
     GROUPBOX        "Колеры",IDC_STATIC,10,41,205,134
     LTEXT           "Выкарыстоўваць колер, калі НЯМА фільтра:",IDC_STATIC,20,54,152,8
     CONTROL         "&Прадвызначаны колер",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,93,10
@@ -249,7 +249,7 @@ BEGIN
     PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
 END
 
-IDD_FINDTARGET DIALOGEX 0, 0, 271, 180
+IDD_FINDTARGET DIALOGEX 0, 0, 276, 180
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Мэтавая праграма"
 FONT 9, "Segoe UI", 400, 0, 0x1
@@ -259,8 +259,8 @@ BEGIN
     CONTROL         "Выкарыстоўваць праграму ў якасці мэтавай:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,168,10
     LTEXT           "Вызначце дзеянне, калі мэтавая праграма ўжо выконваецца:",IDC_STATIC,7,64,210,8
-    EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
+    EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "Паведамленне:",IDC_STATIC,20,120,53,8
     CONTROL         "Запускаць мэтавую праграму кожны раз, калі файл адкрываецца",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,239,10
@@ -268,13 +268,13 @@ BEGIN
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,189,10
     CONTROL         "Выканаць каманду DDE:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,98,10
     LTEXT           "Праграма:",IDC_STATIC,128,120,36,8
-    PUSHBUTTON      "Знайсці акно...",IDC_FINDWIN,204,91,60,14
+    PUSHBUTTON      "Знайсці акно...",IDC_FINDWIN,209,91,60,14
     LTEXT           "Тэма:",IDC_STATIC,198,120,19,8
-    EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDETOPIC,198,130,66,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,160,159,50,14
-    PUSHBUTTON      "Скасаваць",IDCANCEL,214,159,50,14
+    EDITTEXT        IDC_DDEMSG,20,130,109,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDEAPP,133,130,66,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDETOPIC,203,130,66,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,165,159,50,14
+    PUSHBUTTON      "Скасаваць",IDCANCEL,219,159,50,14
 END
 
 IDD_FINDWIN DIALOGEX 0, 0, 238, 85

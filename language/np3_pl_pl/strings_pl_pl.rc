@@ -292,7 +292,7 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Użycie:\r\n\
-Notepad3 \t[/?] [...[Kodowanie]] [...[Tryb końca wiersza]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 [/?] [...[Kodowanie]] [...[Tryb końca wiersza]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[napęd:][ścieżka]nazwa pliku[...]]\r\n\r\n\
 file\tMust be the last argument, no quoted spaces by default.\r\n\

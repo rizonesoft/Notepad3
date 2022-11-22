@@ -292,7 +292,7 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 사용법:\r\n\
-Notepad3 \t[/?] [...[인코딩]] [...[줄 끝 모드]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 [/?] [...[인코딩]] [...[줄 끝 모드]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]파일명[...]]\r\n\r\n\
 파일\t기본적으로 따옴표로 묶인 공백이 없는 마지막 인수여야 합니다.\r\n\

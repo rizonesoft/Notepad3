@@ -109,18 +109,18 @@ BEGIN
     SCROLLBAR       IDC_RESIZEGRIP,7,70,10,10
 END
 
-IDD_FILTER DIALOGEX 0, 0, 184, 79
+IDD_FILTER DIALOGEX 0, 0, 189, 79
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Dosya süzgeci"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Süzgeci yazın. Süzgeçleri ; ile ayırın",IDC_STATIC,7,7,170,8
-    EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
+    LTEXT           "&Süzgeci yazın. Süzgeçleri ; ile ayırın",IDC_STATIC,7,7,175,8
+    EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
     CONTROL         "&Süzgeçle eşleşen dosyalar katılmasın.",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,120,10
-    DEFPUSHBUTTON   "Tamam",IDOK,72,58,50,14
-    PUSHBUTTON      "İptal",IDCANCEL,127,58,50,14
+    DEFPUSHBUTTON   "Tamam",IDOK,77,58,50,14
+    PUSHBUTTON      "İptal",IDCANCEL,132,58,50,14
 END
 
 IDD_RENAME DIALOGEX 0, 0, 172, 74
@@ -173,7 +173,7 @@ BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
     LTEXT           "MiniPath genel uygulama ayarlarını yapın.",IDC_STATIC,40,15,153,8
     CONTROL         "&Nesneler yalnız tek tıkla açılsın.",IDC_SINGLECLICK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,161,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,180,10
     CONTROL         "İ&z seçimi yapılabilsin.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
     CONTROL         "&Tam satır seçimi yapılabilsin.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
     CONTROL         "&Bir dosya açıldığında her zaman hedef pencere etkinleştirilsin.",IDC_FOCUSEDIT,
@@ -207,7 +207,7 @@ BEGIN
     CONTROL         "Silinen &dosyalar çöp kutusuna atılsın.",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
     CONTROL         "Dosya silme &onayı istenmesin (önerilmez).",IDC_NOCONFIRMDELETE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,159,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,170,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
     CONTROL         """&Esc"" tuşu kullanımı...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
     CONTROL         "&Pencereyi küçült.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
@@ -220,7 +220,7 @@ CAPTION "Ögeler"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Klasör listesindeki ögelerin görünümü.",IDC_STATIC,40,15,118,8
+    LTEXT           "Klasör listesindeki ögelerin görünümü.",IDC_STATIC,40,15,140,8
     GROUPBOX        "Renkler",IDC_STATIC,10,41,205,134
     LTEXT           "Bir süzgeç UYGULANMADIĞINDA kullanılacak metin rengi:",IDC_STATIC,20,54,205,8
     CONTROL         "&Varsayılan pencere rengi.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
@@ -240,7 +240,7 @@ CAPTION "Konumlar"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Dış uygulamaları ve yollarını belirtin.",IDC_STATIC,40,15,122,8
+    LTEXT           "Dış uygulamaları ve yollarını belirtin.",IDC_STATIC,40,15,140,8
     LTEXT           "&Varsayılan ""Hızlı görüntüleme"" uygulaması (Ctrl+Q):",IDC_STATIC,10,41,180,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
@@ -249,32 +249,32 @@ BEGIN
     PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
 END
 
-IDD_FINDTARGET DIALOGEX 0, 0, 271, 180
+IDD_FINDTARGET DIALOGEX 0, 0, 276, 180
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Hedef uygulama"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "Herhangi bir hedef uygulama kullanılmasın. Seçilmiş dosya başlatılsın.",IDC_LAUNCH,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,245,10
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,250,10
     CONTROL         "Şu hedef uygulama kullanılsın:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
-    LTEXT           "Hedef uygulama zaten çalışıyorsa yapılacak işlemi belirtin:",IDC_STATIC,7,64,196,8
-    EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
+    LTEXT           "Hedef uygulama zaten çalışıyorsa yapılacak işlemi belirtin:",IDC_STATIC,7,64,220,8
+    EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "İleti:",IDC_STATIC,20,120,32,8
     CONTROL         "Yok. Her dosya açıldığında hedef uygulama çalıştırılsın.",IDC_ALWAYSRUN,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,191,10
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,220,10
     CONTROL         "Hedef uygulamada dosya açma penceresi açılsın:",IDC_SENDDROPMSG,
-                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,198,10
     CONTROL         "Şu DDE komutu yürütülsün:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
-    LTEXT           "Uygulama:",IDC_STATIC,128,120,38,8
-    PUSHBUTTON      "Pencereyi bul...",IDC_FINDWIN,204,91,60,14
-    LTEXT           "Konu:",IDC_STATIC,198,120,20,8
-    EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDETOPIC,198,130,66,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "Tamam",IDOK,160,159,50,14
-    PUSHBUTTON      "İptal",IDCANCEL,214,159,50,14
+    LTEXT           "Uygulama:",IDC_STATIC,133,120,40,8
+    PUSHBUTTON      "Pencereyi bul...",IDC_FINDWIN,209,91,60,14
+    LTEXT           "Konu:",IDC_STATIC,203,120,20,8
+    EDITTEXT        IDC_DDEMSG,20,130,109,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDEAPP,133,130,66,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDETOPIC,203,130,66,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "Tamam",IDOK,165,159,50,14
+    PUSHBUTTON      "İptal",IDCANCEL,219,159,50,14
 END
 
 IDD_FINDWIN DIALOGEX 0, 0, 210, 85

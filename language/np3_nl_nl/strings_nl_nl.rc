@@ -292,7 +292,7 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Gebruik:\r\n\
-Notepad3 \t[/?] [...[Codering]] [...[Regeleinde-modus]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 [/?] [...[Codering]] [...[Regeleinde-modus]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[schijf:][pad]bestand[...]]\r\n\r\n\
 bestand\tMoet het laatste argument zijn, geen aanhalingstekens\r\n\tspaties standaard.\r\n\

@@ -109,18 +109,18 @@ BEGIN
     SCROLLBAR       IDC_RESIZEGRIP,7,70,10,10
 END
 
-IDD_FILTER DIALOGEX 0, 0, 184, 79
+IDD_FILTER DIALOGEX 0, 0, 189, 79
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Filtr pliku"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Określ nowy filtr pliku. Oddziel poszczególne filty znakiem ;",IDC_STATIC,7,7,170,8
-    EDITTEXT        IDC_FILTER,7,22,153,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSEFILTER,164,22,13,13
+    LTEXT           "Określ nowy filtr pliku. Oddziel poszczególne filty znakiem ;",IDC_STATIC,7,7,175,8
+    EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
     CONTROL         "&Wyklucz pliki pasujące do filtra.",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,118,10
-    DEFPUSHBUTTON   "OK",IDOK,72,58,50,14
-    PUSHBUTTON      "Anuluj",IDCANCEL,127,58,50,14
+    DEFPUSHBUTTON   "OK",IDOK,77,58,50,14
+    PUSHBUTTON      "Anuluj",IDCANCEL,132,58,50,14
 END
 
 IDD_RENAME DIALOGEX 0, 0, 172, 74
@@ -173,7 +173,7 @@ BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
     LTEXT           "Określ ogólne ustawienia MiniPath.",IDC_STATIC,40,15,153,8
     CONTROL         "&Pojedyncze kliknięcie aby otworzyć objekt.",IDC_SINGLECLICK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,161,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,180,10
     CONTROL         "&Włącz wybór ścieżki.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
     CONTROL         "Włącz wybór całego rzędu.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
     CONTROL         "Zawsze aktywuj okno docelowe gdy plik jest otwarty.",IDC_FOCUSEDIT,
@@ -203,11 +203,11 @@ BEGIN
     CONTROL         "&Wyczyść Tylko do odczytu w zapisanych plikach.",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,143,10
     CONTROL         "Zmień nazwę kopiowanych plików jeśli wystąpił konflikt nazw.",IDC_RENAMEONCOLLISION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,141,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,150,10
     CONTROL         "&Przenieś usunięte pliki do kosza.",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
     CONTROL         "&Nie potwierdzaj usunięcia pliku (niezalecane).",IDC_NOCONFIRMDELETE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,159,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,170,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
     CONTROL         "Włącz klawisz ""&Esc"" aby...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
     CONTROL         "Zminimalizować okno.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
@@ -220,7 +220,7 @@ CAPTION "Składniki"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Pojawienie sie na liście katalogów.",IDC_STATIC,40,15,118,8
+    LTEXT           "Pojawienie sie na liście katalogów.",IDC_STATIC,40,15,140,8
     GROUPBOX        "Kolory",IDC_STATIC,10,41,205,134
     LTEXT           "Użyj tego koloru tekstu gdy NIE WYBRANO FILTRA:",IDC_STATIC,20,54,136,8
     CONTROL         "D&omyślny kolor okna.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
@@ -240,8 +240,8 @@ CAPTION "Lokalizacja"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Określ zewnętrzne programy i ścieżki.",IDC_STATIC,40,15,122,8
-    LTEXT           "&Domyślnie ""Szybki podgląd"" (Ctrl+Q):",IDC_STATIC,10,41,126,8
+    LTEXT           "Określ zewnętrzne programy i ścieżki.",IDC_STATIC,40,15,140,8
+    LTEXT           "&Domyślnie ""Szybki podgląd"" (Ctrl+Q):",IDC_STATIC,10,41,140,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
     LTEXT           "&Folder Ulubione (F11):",IDC_STATIC,10,76,76,8
@@ -249,32 +249,32 @@ BEGIN
     PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
 END
 
-IDD_FINDTARGET DIALOGEX 0, 0, 271, 180
+IDD_FINDTARGET DIALOGEX 0, 0, 276, 180
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Aplikacja docelowa"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "Nie używaj żadnej aplikacji docelowej, tylko uruchom wybrany plik.",IDC_LAUNCH,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,245,10
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,250,10
     CONTROL         "Użyj następ. aplikacji docelowej:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
-    LTEXT           "Określ działanie gdy aplikacja jest uruchomiona:",IDC_STATIC,7,64,196,8
-    EDITTEXT        IDC_TARGETPATH,20,35,225,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSE,249,35,15,14,BS_BITMAP
+    LTEXT           "Określ działanie gdy aplikacja jest uruchomiona:",IDC_STATIC,7,64,220,8
+    EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "Wiadomość:",IDC_STATIC,20,120,32,8
     CONTROL         "None, uruchom aplikacje zawsze gdy plik jest otwarty.",IDC_ALWAYSRUN,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,191,10
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,220,10
     CONTROL         "Wyślij wiadomość do okna aplikacji docelowej:",IDC_SENDDROPMSG,
-                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,193,10
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,198,10
     CONTROL         "Wykonaj następ. komendę DDE:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
-    LTEXT           "Aplikacja:",IDC_STATIC,128,120,38,8
-    PUSHBUTTON      "Znajdź okno...",IDC_FINDWIN,204,91,60,14
-    LTEXT           "Temat:",IDC_STATIC,198,120,20,8
-    EDITTEXT        IDC_DDEMSG,20,130,104,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDEAPP,128,130,66,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDETOPIC,198,130,66,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,160,159,50,14
-    PUSHBUTTON      "Anuluj",IDCANCEL,214,159,50,14
+    LTEXT           "Aplikacja:",IDC_STATIC,133,120,40,8
+    PUSHBUTTON      "Znajdź okno...",IDC_FINDWIN,209,91,60,14
+    LTEXT           "Temat:",IDC_STATIC,203,120,20,8
+    EDITTEXT        IDC_DDEMSG,20,130,109,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDEAPP,133,130,66,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDETOPIC,203,130,66,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,165,159,50,14
+    PUSHBUTTON      "Anuluj",IDCANCEL,219,159,50,14
 END
 
 IDD_FINDWIN DIALOGEX 0, 0, 210, 85
