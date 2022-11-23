@@ -8508,7 +8508,9 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
         case '[':
         case '{':
         case '(':
-            _HandleAutoCloseBrackets(ich);
+            if (Settings.AutoCloseBrackets) {
+                _HandleAutoCloseBrackets(ich);
+            }
             break;
         case '?':
             _EvalTinyExpr(true);
