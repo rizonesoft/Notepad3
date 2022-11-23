@@ -118,7 +118,7 @@ BEGIN
     IDS_MUI_FILTER_BITMAP   "Fichiers Bitmap (*.bmp)|*.bmp|Tous les fichiers (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Sélectionnez le dossier avec les liens vers vos applications favorites."
     IDS_MUI_FAVORITES       "Sélectionnez le dossier avec les liens vers vos fichiers favoris."
-    IDS_MUI_BACKSLASHHELP   "Transformations des ""\""\n\n\\a\tAlerte (BEL, Ascii 7)\n\\b\tRetour arr. (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNouvelle ligne (LF, Ascii 10)\n\\r\tSaut de ligne (CR, Ascii 13)\n\\t\tTabulation horizontale (HT, Ascii 9)\n\\v\tTabulation verticale (VT, Ascii 11)\n\\0oo\tValeur octale\n\\u####\tValeur hexadécimale\n\\xhh\tValeur hexadécimale\n\\\\\t""\"""
+    IDS_MUI_BACKSLASHHELP   "Transformation des barres obliques inverses\n\n\\a\tAlerte (BEL, Ascii 7)\n\\b\tRetour arr. (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNouvelle ligne (LF, Ascii 10)\n\\r\tSaut de ligne (CR, Ascii 13)\n\\t\tTabulation horizontale (HT, Ascii 9)\n\\v\tTabulation verticale (VT, Ascii 11)\n\\0oo\tValeur octale\n\\u####\tValeur hexadécimale\n\\xhh\tValeur hexadécimale\n\\\\\tBarre oblique inverse"
     IDS_MUI_REGEXPHELP      "Syntaxe de correspondances RegExp (Lignes multiples)\n\n.\tTout caractère\n^\tChaîne vide immédiatement après retour à la ligne\n$\tChaîne vide immédiatement après la fin de Ligne\n\\<\tDébut d'un mot\n\\>\tFin d'un mot\n\\b\tLimite de mot\n[...]\tGroupe de caractères ([abc]) ou intervalle ([a-z])\n[^...]\tCaractères PAS dans le groupe ou l'intervalle\n\\d\tTout chiffre décimal\n\\D\tTout caractère non numérique\n\\s\tTout caractère d'espacement\n\\S\tPas un caractère d'espacement\n\\w\tTout caractère ""de mot""\n\\W\tTout caractère ""pas de mot""\n\\x\tEchapper les caractères qui ont un sens particulier \r\n\tautrement\n\\xHH\tCaractère avec code hexadécimal HH\n?\tCorrespond aux précédents 0 ou 1 fois\n*\ttCorrespond aux précédents 0 ou \r\n\tplusieurs fois\n+\tFait la correspondance sur ce qui précède 1 ou \r\n\tplusieurs fois\n*? ou +?\tCorrespondance modérée des \r\n\tquantificateurs ""?"" et ""+""\n(\tDébut d'une région\n)\tFin d'une région\n\\n\tSe réfère à une région pendant le replacement\r\n\t(n is 1-9)\n"
     IDS_MUI_WILDCARDHELP    "Recherche avec joker\n\n*\tCorrespond à zéro ou plusieurs caractères.\n?\tCorrespond exactement à un caractère. "
 END
@@ -295,8 +295,8 @@ Utilisation :\r\n\
 Notepad3 [/?] [...[Encodage]] [...[Mode de fin de ligne]] [/e] [/g] [/m]\r\n\
  \t[/l] [/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[lecteur:][chemin]fichier[...]]\r\n\r\n\
-fichier\tDoit être le dernier argument, aucun espace entre guillemets par défaut.\r\n\
-+\tAccepte plusieurs arguments de fichier (avec des espaces entre guillemets).\r\n\
+fichier\tDoit être le dernier argument, aucun espace entre guillemets\r\n\tpar défaut.\r\n\
++\tAccepte plusieurs arguments de fichier (avec des espaces entre\r\n\tguillemets).\r\n\
 -\tAccepte un seul argument de fichier (sans espaces entre guillemets).\r\n\r\n\
 Options :\r\n\
 /?\tAffiche ce message d'aide.\r\n\
@@ -304,7 +304,7 @@ Options :\r\n\
 ...\tMode de fin de ligne (/crlf, /cr, /lf).\r\n\
 /e\tEncodage du fichier source.\r\n\
 /g\tVa à la position spécifiée (/g -1 fin de fichier).\r\n\
-/m\tTrouve le texte spécifié (/m- dernier, /mr regex,\r\n\\ \t/mb oblique inverse).\r\n\
+/m\tTrouve le texte spécifié (/m- dernier, /mr regex,\r\n\t/mb oblique inverse).\r\n\
 /l\tRecharge automatiquement les fichiers modifiés.\r\n\
 /q\tForce la création de nouveaux fichiers sans confirmation.\r\n\
 /s\tSélectionne le modèle de syntaxe spécifié.\r\n\
@@ -324,11 +324,11 @@ Options :\r\n\
 /u\tDémarre avec des privilèges élevés.\r\n\
 /v\tImprime le fichier immédiatement et quitte.\r\n\
 /vd\tImprime le fichier (ouvre le dialogue de l'imprimante).\r\n\
-/y\tCherche dans le PATH (environnement) en cas de nom de fichier relatif.\r\n\
+/y\tCherche dans le PATH (environnement) en cas de nom de fichier\r\n\trelatif.\r\n\
 /z\tPasse au suivant (utilisable avec le remplacement de Notepad via\r\n\tle registre).\r\n\r\n\
 Exemples :\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Ouvre un nouveau fichier : ""Test.txt"" Encodage=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Ouvre un nouveau fichier : ""Test.txt"" Encodage=UTF-8-BOM,\r\n\tEoL=CRLF.\r\n\
  Notepad3 /v d:\\temp\\Test.txt\r\n\
   \t... Imprime le fichier : ""Test.txt"" immédiatement.\
 "

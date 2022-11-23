@@ -315,8 +315,8 @@ Opciones:\r\n\
 /b\tAbre una nueva tabla de pegar para recoger las entradas\r\n\tdel portapapeles.\r\n\
 /n\tSiempre abre una nueva ventana (/ns instancia de archivo único).\r\n\
 /r\tReutilizar la ventana (/rs instancia de archivo único).\r\n\
-/p\tEstablecer el tamaño y la posición de la ventana (/p0, /ps,\r\n\t/pf,l,t,r,b,m)\r\n\
-\to /p <izquierda>,<arriba>,<ancho>,<altura>,<max>    [todos enteros].\r\n\
+/p\tEstablecer el tamaño y la posición de la ventana (/p0, /ps, /pf,l,t,r,b,m)\r\n\
+\to /p <izquierda>,<arriba>,<ancho>,<altura>,<max>    [todos\r\n\tenteros].\r\n\
 /t\tEstablecer el título de la ventana.\r\n\
 /i\tComenzar como un icono de la barra de tareas.\r\n\
 /o\tVentana siempre visible.\r\n\
@@ -328,7 +328,7 @@ Opciones:\r\n\
 /z\tIr a la siguiente (usar para reemplazar el Notepad basado\r\n\ten el registro).\r\n\r\n\
 Ejemplos:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Abrir un nuevo archivo: ""Test.txt"" Codificación=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Abrir un nuevo archivo: ""Test.txt"" Codificación=UTF-8-BOM,\r\n\tEoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
  \t... Imprimir el archivo: ""Test.txt"" inmediatamente.\
 "

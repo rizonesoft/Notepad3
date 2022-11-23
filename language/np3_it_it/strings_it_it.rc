@@ -295,7 +295,7 @@ Utilizzo:\r\n\
 Notepad3 [/?] [...[Encoding]] [...[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]filename[...]]\r\n\r\n\
-file\tDeve essere l'ultimo argomento, nessuno spazio tra virgolette per default.\r\n\
+file\tDeve essere l'ultimo argomento, nessuno spazio tra virgolette\r\n\tper default.\r\n\
 +\tAccetta argomenti multipli di tipo file (con spazi tra virgolette).\r\n\
 -\tAccetta un solo argomento di tipo file (senza spazi tra virgolette).\r\n\r\n\
 Opzioni:\r\n\
@@ -312,7 +312,7 @@ Opzioni:\r\n\
 /h\tSeleziona lo Schema Web Source Code.\r\n\
 /x\tSeleziona lo Schema Documento XML.\r\n\
 /c\tApri una nuova finestra e incolla il contenuto degli Appunti.\r\n\
-/b\tApri una nuova Paste Board per collezionare il testo copiato negli Appunti.\r\n\
+/b\tApri una nuova Paste Board per collezionare il testo copiato\r\n\tnegli Appunti.\r\n\
 /n\tApri sempre una nuova finestra (/ns istanza singola).\r\n\
 /r\tRiutilizza finestra (/rs istanza singola).\r\n\
 /p\tImposta posizione e dimensione della finestra (/p0, /ps, /pf,l,t,r,b,m)\r\n\

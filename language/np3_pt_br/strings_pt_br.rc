@@ -324,8 +324,8 @@ Opções:\r\n\
 /u\tExecuta com privilégios elevados.\r\n\
 /v\tImprime o arquivo imediatamente e fecha.\r\n\
 /vd\tImprime o arquivo (abre o diálogo de impressão).\r\n\
-/y\tCAMINHO do ambiente de pesquisa em caso de nome de arquivo relativo.\r\n\
-/z\tPular próximo (utilizável para substituição de Bloco de Notas com base \r\n\tno registro).\r\n\r\n\
+/y\tCAMINHO do ambiente de pesquisa em caso de nome de\r\n\tarquivo relativo.\r\n\
+/z\tPular próximo (utilizável para substituição de Bloco de Notas\r\n\tcom base no registro).\r\n\r\n\
 Exemplos:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
  \t... Abre um novo arquivo: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
