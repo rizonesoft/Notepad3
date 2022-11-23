@@ -304,7 +304,7 @@ Opções:\r\n\
 ...\tModo fim de linha (/crlf, /cr, /lf).\r\n\
 /e\tCodificação do ficheiro de origem.\r\n\
 /g\tSalta para posição indicada (/g -1 fim do ficheiro).\r\n\
-/m\tCorresponde ao texto especificado (/m- último, /mr regex, /mb backslash).\r\n\
+/m\tCorresponde ao texto especificado (/m- último, /mr regex,\r\n\t/mb backslash).\r\n\
 /l\tAuto-recarrega ficheiros modificados.\r\n\
 /q\tForça a criação de novos ficheiros sem perguntar.\r\n\
 /s\tSelecciona esquema de sintaxe especificado.\r\n\
@@ -315,8 +315,8 @@ Opções:\r\n\
 /b\tAbre novo quadro de colagem para recolher entradas da área \r\n\tde transferência.\r\n\
 /n\tAbre sempre uma nova janela (/ns instância de único ficheiro).\r\n\
 /r\tReutiliza a janela (/rs instância de único ficheiro).\r\n\
-/p\tDefine tamanho e posição da janela (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tou /p <esquerda>,<superior>,<largura>,<altura>,<máx>    [todos inteiros].\r\n\
+/p\tDefine tamanho e posição da janela (/p0, /ps, /pf,l,t,r,b,m) ou /p\r\n\
+\t<esquerda>,<superior>,<largura>,<altura>,<máx>    [todos inteiros].\r\n\
 /t\tDefine título da janela.\r\n\
 /i\tInicia como ícone na área de notificação.\r\n\
 /o\tMantém a janela sempre visível.\r\n\
@@ -328,7 +328,7 @@ Opções:\r\n\
 /z\tIgnora seguinte (utilizável para substituição do Notepad com base \r\n\tno registro).\r\n\r\n\
 Exemplos:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Abre um novo ficheiro: ""Test.txt"" Codificação=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Abre um novo ficheiro: ""Test.txt"" Codificação=UTF-8-BOM,\r\n\tEoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
  \t... Imprime o ficheiro: ""Test.txt"" imediatamente.\
 "

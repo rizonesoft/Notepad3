@@ -325,7 +325,7 @@ Seçenekler:\r\n\
 /v\tDosyayı hemen yazdırır ve çıkar.\r\n\
 /vd\tDosyayı yazdırır (yazıcı penceresini açar).\r\n\
 /y\tGöreli dosya adı durumuna karşı PATH ortam değişkeninde arar.\r\n\
-/z\tSonrakine geçer (kayıt defteri temelli Notepad değişikliği için kullanışlı).\r\n\r\n\
+/z\tSonrakine geçer (kayıt defteri temelli Notepad değişikliği\r\n\tiçin kullanışlı).\r\n\r\n\
 Örnekler:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Deneme.txt\r\n\
  \t... Yeni bir dosya açar: ""Deneme.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
