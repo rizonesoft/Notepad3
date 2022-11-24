@@ -328,7 +328,7 @@ Optionen:\r\n\
 /z\tÜberspringe Nächstes (nützlich für Registy-Basierte\r\n\tNotepad Ersetzung).\r\n\r\n\
 Beispiele:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Eine neue Datei öffnen: ""Test.txt"" Codierung=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Eine neue Datei öffnen: ""Test.txt"" Codierung=UTF-8-BOM,\r\n\tEoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
  \t... Drucke Datei: ""Test.txt"" direkt.\
 "

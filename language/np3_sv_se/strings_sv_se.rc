@@ -325,7 +325,7 @@ Tillval:\r\n\
 /v\tSpara fil och avsluta.\r\n\
 /vd\tSkriv ut fil (öppna skrivardialogen).\r\n\
 /y\tSök miljövariable vid relativt filnamn.\r\n\
-/z\tHoppa över nästa (användbart för registerbaserad notepad-ersättning).\r\n\r\n\
+/z\tHoppa över nästa (användbart för registerbaserad\r\n\tnotepad-ersättning).\r\n\r\n\
 Exempel:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
  \t... Öppna ny fil: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
