@@ -8158,17 +8158,15 @@ static void  _HandleAutoCloseTags()
 static void  _HandleAutoCloseBrackets(int const x)
 {
     DocPos const iCurPos = SciCall_GetCurrentPos();
-    DocPos const iStartPos = max_p(0, iCurPos - 1);
-    SciCall_SetSel(iStartPos, iCurPos);
     switch(x){
         case '[':
-            EditReplaceSelection("[]", false);
+            SciCall_AddText(1,"]");
         break;
         case '{':
-            EditReplaceSelection("{}", false);
+            SciCall_AddText(1,"}");
         break;
         case '(':
-            EditReplaceSelection("()", false);
+            SciCall_AddText(1,")");
         break;
     }
     SciCall_SetSel(iCurPos, iCurPos);
