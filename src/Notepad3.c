@@ -8158,6 +8158,7 @@ static void  _HandleAutoCloseTags()
 static void  _HandleAutoCloseBrackets(int const x)
 {
     DocPos const iCurPos = SciCall_GetCurrentPos();
+    UndoTransActionBegin();
     switch(x){
         case '[':
             SciCall_AddText(1,"]");
@@ -8170,6 +8171,7 @@ static void  _HandleAutoCloseBrackets(int const x)
         break;
     }
     SciCall_SetSel(iCurPos, iCurPos);
+    EndUndoTransAction();
 }
 
 
