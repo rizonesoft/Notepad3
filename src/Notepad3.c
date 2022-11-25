@@ -4313,6 +4313,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     //i = SciCall_GetLexer();
     //EnableCmd(hmenu,IDM_SET_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
     CheckCmd(hmenu, IDM_SET_AUTOCLOSETAGS, Settings.AutoCloseTags /*&& (i == SCLEX_HTML || i == SCLEX_XML)*/);
+    CheckCmd(hmenu, IDM_SET_AUTOCLOSEBRACKETS, Settings.AutoCloseBrackets);
 
     CheckCmd(hmenu, IDM_SET_REUSEWINDOW, Flags.bReuseWindow);
     CheckCmd(hmenu, IDM_SET_SINGLEFILEINSTANCE, Flags.bSingleFileInstance);
@@ -6012,6 +6013,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_SET_AUTOCLOSETAGS:
         Settings.AutoCloseTags = !Settings.AutoCloseTags;
+        break;
+
+    case IDM_SET_AUTOCLOSEBRACKETS:
+        Settings.AutoCloseBrackets = !Settings.AutoCloseBrackets;
         break;
 
     case IDM_VIEW_TOGGLE_HILITCURLN:
@@ -8145,6 +8150,31 @@ static void  _HandleAutoCloseTags()
     }
 }
 
+
+//=============================================================================
+//
+//  _HandleAutoCloseBrackets()
+//
+static void  _HandleAutoCloseBrackets(int const x)
+{
+    DocPos const iCurPos = SciCall_GetCurrentPos();
+    UndoTransActionBegin();
+    switch(x){
+        case '[':
+            SciCall_AddText(1,"]");
+        break;
+        case '{':
+            SciCall_AddText(1,"}");
+        break;
+        case '(':
+            SciCall_AddText(1,")");
+        break;
+    }
+    SciCall_SetSel(iCurPos, iCurPos);
+    EndUndoTransAction();
+}
+
+
 #if 0
 //=============================================================================
 //
@@ -8473,6 +8503,13 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
         case '>':
             if (Settings.AutoCloseTags) {
                 _HandleAutoCloseTags();
+            }
+            break;
+        case '[':
+        case '{':
+        case '(':
+            if (Settings.AutoCloseBrackets) {
+                _HandleAutoCloseBrackets(ich);
             }
             break;
         case '?':

@@ -824,6 +824,7 @@
 #define IDM_SET_NOPRESERVECARET         42039
 #define IDM_SET_MUTE_MESSAGEBEEP        42040
 #define IDM_SET_EVALTINYEXPRONSEL       42041
+#define IDM_SET_AUTOCLOSEBRACKETS       42042
 
 #define IDM_HELP_ABOUT                  43000
 #define IDM_HELP_CMD                    43001
