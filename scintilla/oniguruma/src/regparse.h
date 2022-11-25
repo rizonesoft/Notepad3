@@ -31,23 +31,23 @@
 
 #include "regint.h"
 
-#define NODE_STRING_MARGIN     16
-#define NODE_STRING_BUF_SIZE   24  /* sizeof(CClassNode) - sizeof(int)*4 */
-#define NODE_BACKREFS_SIZE      6
+#define ND_STRING_MARGIN     16
+#define ND_STRING_BUF_SIZE   24  /* sizeof(CClassNode) - sizeof(int)*4 */
+#define ND_BACKREFS_SIZE      6
 
 /* node type */
 typedef enum {
-  NODE_STRING  =  0,
-  NODE_CCLASS  =  1,
-  NODE_CTYPE   =  2,
-  NODE_BACKREF =  3,
-  NODE_QUANT   =  4,
-  NODE_BAG     =  5,
-  NODE_ANCHOR  =  6,
-  NODE_LIST    =  7,
-  NODE_ALT     =  8,
-  NODE_CALL    =  9,
-  NODE_GIMMICK = 10
+  ND_STRING  =  0,
+  ND_CCLASS  =  1,
+  ND_CTYPE   =  2,
+  ND_BACKREF =  3,
+  ND_QUANT   =  4,
+  ND_BAG     =  5,
+  ND_ANCHOR  =  6,
+  ND_LIST    =  7,
+  ND_ALT     =  8,
+  ND_CALL    =  9,
+  ND_GIMMICK = 10
 } NodeType;
 
 enum BagType {
@@ -91,7 +91,7 @@ typedef struct {
   UChar* s;
   UChar* end;
   unsigned int flag;
-  UChar  buf[NODE_STRING_BUF_SIZE];
+  UChar  buf[ND_STRING_BUF_SIZE];
   int    capacity;  /* (allocated size - 1) or 0: use buf[] */
 } StrNode;
 
@@ -186,7 +186,7 @@ typedef struct {
   struct _Node* parent;
 
   int  back_num;
-  int  back_static[NODE_BACKREFS_SIZE];
+  int  back_static[ND_BACKREFS_SIZE];
   int* back_dynamic;
   int  nest_level;
 } BackRefNode;
@@ -267,22 +267,22 @@ typedef struct {
 
 
 /* node type bit */
-#define NODE_TYPE2BIT(type)      (1<<(type))
+#define ND_TYPE2BIT(type)      (1<<(type))
 
-#define NODE_BIT_STRING     NODE_TYPE2BIT(NODE_STRING)
-#define NODE_BIT_CCLASS     NODE_TYPE2BIT(NODE_CCLASS)
-#define NODE_BIT_CTYPE      NODE_TYPE2BIT(NODE_CTYPE)
-#define NODE_BIT_BACKREF    NODE_TYPE2BIT(NODE_BACKREF)
-#define NODE_BIT_QUANT      NODE_TYPE2BIT(NODE_QUANT)
-#define NODE_BIT_BAG        NODE_TYPE2BIT(NODE_BAG)
-#define NODE_BIT_ANCHOR     NODE_TYPE2BIT(NODE_ANCHOR)
-#define NODE_BIT_LIST       NODE_TYPE2BIT(NODE_LIST)
-#define NODE_BIT_ALT        NODE_TYPE2BIT(NODE_ALT)
-#define NODE_BIT_CALL       NODE_TYPE2BIT(NODE_CALL)
-#define NODE_BIT_GIMMICK    NODE_TYPE2BIT(NODE_GIMMICK)
+#define ND_BIT_STRING     ND_TYPE2BIT(ND_STRING)
+#define ND_BIT_CCLASS     ND_TYPE2BIT(ND_CCLASS)
+#define ND_BIT_CTYPE      ND_TYPE2BIT(ND_CTYPE)
+#define ND_BIT_BACKREF    ND_TYPE2BIT(ND_BACKREF)
+#define ND_BIT_QUANT      ND_TYPE2BIT(ND_QUANT)
+#define ND_BIT_BAG        ND_TYPE2BIT(ND_BAG)
+#define ND_BIT_ANCHOR     ND_TYPE2BIT(ND_ANCHOR)
+#define ND_BIT_LIST       ND_TYPE2BIT(ND_LIST)
+#define ND_BIT_ALT        ND_TYPE2BIT(ND_ALT)
+#define ND_BIT_CALL       ND_TYPE2BIT(ND_CALL)
+#define ND_BIT_GIMMICK    ND_TYPE2BIT(ND_GIMMICK)
 
-#define NODE_TYPE(node)             ((node)->u.base.node_type)
-#define NODE_SET_TYPE(node, ntype)   (node)->u.base.node_type = (ntype)
+#define ND_TYPE(node)             ((node)->u.base.node_type)
+#define ND_SET_TYPE(node, ntype)   (node)->u.base.node_type = (ntype)
 
 #define STR_(node)         (&((node)->u.str))
 #define CCLASS_(node)      (&((node)->u.cclass))
@@ -295,107 +295,107 @@ typedef struct {
 #define CALL_(node)        (&((node)->u.call))
 #define GIMMICK_(node)     (&((node)->u.gimmick))
 
-#define NODE_CAR(node)     (CONS_(node)->car)
-#define NODE_CDR(node)     (CONS_(node)->cdr)
+#define ND_CAR(node)     (CONS_(node)->car)
+#define ND_CDR(node)     (CONS_(node)->cdr)
 
 #define CTYPE_ANYCHAR      -1
-#define NODE_IS_ANYCHAR(node) \
-  (NODE_TYPE(node) == NODE_CTYPE && CTYPE_(node)->ctype == CTYPE_ANYCHAR)
+#define ND_IS_ANYCHAR(node) \
+  (ND_TYPE(node) == ND_CTYPE && CTYPE_(node)->ctype == CTYPE_ANYCHAR)
 
 
 #define ANCR_ANYCHAR_INF_MASK  (ANCR_ANYCHAR_INF | ANCR_ANYCHAR_INF_ML)
 #define ANCR_END_BUF_MASK      (ANCR_END_BUF | ANCR_SEMI_END_BUF)
 
-#define NODE_STRING_CRUDE           (1<<0)
-#define NODE_STRING_CASE_EXPANDED   (1<<1)
+#define ND_STRING_CRUDE           (1<<0)
+#define ND_STRING_CASE_EXPANDED   (1<<1)
 
-#define NODE_STRING_LEN(node)            (int )((node)->u.str.end - (node)->u.str.s)
-#define NODE_STRING_SET_CRUDE(node)         (node)->u.str.flag |= NODE_STRING_CRUDE
-#define NODE_STRING_CLEAR_CRUDE(node)       (node)->u.str.flag &= ~NODE_STRING_CRUDE
-#define NODE_STRING_SET_CASE_EXPANDED(node) (node)->u.str.flag |= NODE_STRING_CASE_EXPANDED
-#define NODE_STRING_IS_CRUDE(node) \
-  (((node)->u.str.flag & NODE_STRING_CRUDE) != 0)
-#define NODE_STRING_IS_CASE_EXPANDED(node) \
-  (((node)->u.str.flag & NODE_STRING_CASE_EXPANDED) != 0)
+#define ND_STRING_LEN(node)            (int )((node)->u.str.end - (node)->u.str.s)
+#define ND_STRING_SET_CRUDE(node)         (node)->u.str.flag |= ND_STRING_CRUDE
+#define ND_STRING_CLEAR_CRUDE(node)       (node)->u.str.flag &= ~ND_STRING_CRUDE
+#define ND_STRING_SET_CASE_EXPANDED(node) (node)->u.str.flag |= ND_STRING_CASE_EXPANDED
+#define ND_STRING_IS_CRUDE(node) \
+  (((node)->u.str.flag & ND_STRING_CRUDE) != 0)
+#define ND_STRING_IS_CASE_EXPANDED(node) \
+  (((node)->u.str.flag & ND_STRING_CASE_EXPANDED) != 0)
 
 #define BACKREFS_P(br) \
   (IS_NOT_NULL((br)->back_dynamic) ? (br)->back_dynamic : (br)->back_static)
 
 /* node status bits */
-#define NODE_ST_FIXED_MIN           (1<<0)
-#define NODE_ST_FIXED_MAX           (1<<1)
-#define NODE_ST_FIXED_CLEN          (1<<2)
-#define NODE_ST_MARK1               (1<<3)
-#define NODE_ST_MARK2               (1<<4)
-#define NODE_ST_STRICT_REAL_REPEAT  (1<<5)
-#define NODE_ST_RECURSION           (1<<6)
-#define NODE_ST_CALLED              (1<<7)
-#define NODE_ST_FIXED_ADDR          (1<<8)
-#define NODE_ST_NAMED_GROUP         (1<<9)
-#define NODE_ST_IN_REAL_REPEAT      (1<<10) /* STK_REPEAT is nested in stack. */
-#define NODE_ST_IN_ZERO_REPEAT      (1<<11) /* (....){0} */
-#define NODE_ST_IN_MULTI_ENTRY      (1<<12)
-#define NODE_ST_NEST_LEVEL          (1<<13)
-#define NODE_ST_BY_NUMBER           (1<<14) /* {n,m} */
-#define NODE_ST_BY_NAME             (1<<15) /* backref by name */
-#define NODE_ST_BACKREF             (1<<16)
-#define NODE_ST_CHECKER             (1<<17)
-#define NODE_ST_PROHIBIT_RECURSION  (1<<18)
-#define NODE_ST_SUPER               (1<<19)
-#define NODE_ST_EMPTY_STATUS_CHECK  (1<<20)
-#define NODE_ST_IGNORECASE          (1<<21)
-#define NODE_ST_MULTILINE           (1<<22)
-#define NODE_ST_TEXT_SEGMENT_WORD   (1<<23)
-#define NODE_ST_ABSENT_WITH_SIDE_EFFECTS (1<<24)  /* stopper or clear */
-#define NODE_ST_FIXED_CLEN_MIN_SURE (1<<25)
-#define NODE_ST_REFERENCED          (1<<26)
-#define NODE_ST_INPEEK              (1<<27)
-#define NODE_ST_WHOLE_OPTIONS       (1<<28)
+#define ND_ST_FIXED_MIN           (1<<0)
+#define ND_ST_FIXED_MAX           (1<<1)
+#define ND_ST_FIXED_CLEN          (1<<2)
+#define ND_ST_MARK1               (1<<3)
+#define ND_ST_MARK2               (1<<4)
+#define ND_ST_STRICT_REAL_REPEAT  (1<<5)
+#define ND_ST_RECURSION           (1<<6)
+#define ND_ST_CALLED              (1<<7)
+#define ND_ST_FIXED_ADDR          (1<<8)
+#define ND_ST_NAMED_GROUP         (1<<9)
+#define ND_ST_IN_REAL_REPEAT      (1<<10) /* STK_REPEAT is nested in stack. */
+#define ND_ST_IN_ZERO_REPEAT      (1<<11) /* (....){0} */
+#define ND_ST_IN_MULTI_ENTRY      (1<<12)
+#define ND_ST_NEST_LEVEL          (1<<13)
+#define ND_ST_BY_NUMBER           (1<<14) /* {n,m} */
+#define ND_ST_BY_NAME             (1<<15) /* backref by name */
+#define ND_ST_BACKREF             (1<<16)
+#define ND_ST_CHECKER             (1<<17)
+#define ND_ST_PROHIBIT_RECURSION  (1<<18)
+#define ND_ST_SUPER               (1<<19)
+#define ND_ST_EMPTY_STATUS_CHECK  (1<<20)
+#define ND_ST_IGNORECASE          (1<<21)
+#define ND_ST_MULTILINE           (1<<22)
+#define ND_ST_TEXT_SEGMENT_WORD   (1<<23)
+#define ND_ST_ABSENT_WITH_SIDE_EFFECTS (1<<24)  /* stopper or clear */
+#define ND_ST_FIXED_CLEN_MIN_SURE (1<<25)
+#define ND_ST_REFERENCED          (1<<26)
+#define ND_ST_INPEEK              (1<<27)
+#define ND_ST_WHOLE_OPTIONS       (1<<28)
 
 
-#define NODE_STATUS(node)           (((Node* )node)->u.base.status)
-#define NODE_STATUS_ADD(node,f)     (NODE_STATUS(node) |= (NODE_ST_ ## f))
-#define NODE_STATUS_REMOVE(node,f)  (NODE_STATUS(node) &= ~(NODE_ST_ ## f))
+#define ND_STATUS(node)           (((Node* )node)->u.base.status)
+#define ND_STATUS_ADD(node,f)     (ND_STATUS(node) |= (ND_ST_ ## f))
+#define ND_STATUS_REMOVE(node,f)  (ND_STATUS(node) &= ~(ND_ST_ ## f))
 
-#define NODE_IS_BY_NUMBER(node)       ((NODE_STATUS(node) & NODE_ST_BY_NUMBER)      != 0)
-#define NODE_IS_IN_REAL_REPEAT(node)  ((NODE_STATUS(node) & NODE_ST_IN_REAL_REPEAT) != 0)
-#define NODE_IS_CALLED(node)          ((NODE_STATUS(node) & NODE_ST_CALLED)         != 0)
-#define NODE_IS_IN_MULTI_ENTRY(node)  ((NODE_STATUS(node) & NODE_ST_IN_MULTI_ENTRY) != 0)
-#define NODE_IS_RECURSION(node)       ((NODE_STATUS(node) & NODE_ST_RECURSION)      != 0)
-#define NODE_IS_IN_ZERO_REPEAT(node)  ((NODE_STATUS(node) & NODE_ST_IN_ZERO_REPEAT) != 0)
-#define NODE_IS_NAMED_GROUP(node)     ((NODE_STATUS(node) & NODE_ST_NAMED_GROUP)  != 0)
-#define NODE_IS_FIXED_ADDR(node)      ((NODE_STATUS(node) & NODE_ST_FIXED_ADDR)   != 0)
-#define NODE_IS_FIXED_CLEN(node)      ((NODE_STATUS(node) & NODE_ST_FIXED_CLEN)   != 0)
-#define NODE_IS_FIXED_MIN(node)       ((NODE_STATUS(node) & NODE_ST_FIXED_MIN)    != 0)
-#define NODE_IS_FIXED_MAX(node)       ((NODE_STATUS(node) & NODE_ST_FIXED_MAX)    != 0)
-#define NODE_IS_MARK1(node)           ((NODE_STATUS(node) & NODE_ST_MARK1)        != 0)
-#define NODE_IS_MARK2(node)           ((NODE_STATUS(node) & NODE_ST_MARK2)        != 0)
-#define NODE_IS_NEST_LEVEL(node)      ((NODE_STATUS(node) & NODE_ST_NEST_LEVEL)   != 0)
-#define NODE_IS_BY_NAME(node)         ((NODE_STATUS(node) & NODE_ST_BY_NAME)      != 0)
-#define NODE_IS_BACKREF(node)         ((NODE_STATUS(node) & NODE_ST_BACKREF)      != 0)
-#define NODE_IS_CHECKER(node)         ((NODE_STATUS(node) & NODE_ST_CHECKER)      != 0)
-#define NODE_IS_SUPER(node)           ((NODE_STATUS(node) & NODE_ST_SUPER)        != 0)
-#define NODE_IS_PROHIBIT_RECURSION(node) \
-    ((NODE_STATUS(node) & NODE_ST_PROHIBIT_RECURSION) != 0)
-#define NODE_IS_STRICT_REAL_REPEAT(node) \
-    ((NODE_STATUS(node) & NODE_ST_STRICT_REAL_REPEAT) != 0)
-#define NODE_IS_EMPTY_STATUS_CHECK(node) \
-    ((NODE_STATUS(node) & NODE_ST_EMPTY_STATUS_CHECK) != 0)
-#define NODE_IS_IGNORECASE(node)      ((NODE_STATUS(node) & NODE_ST_IGNORECASE) != 0)
-#define NODE_IS_MULTILINE(node)       ((NODE_STATUS(node) & NODE_ST_MULTILINE) != 0)
-#define NODE_IS_TEXT_SEGMENT_WORD(node)  ((NODE_STATUS(node) & NODE_ST_TEXT_SEGMENT_WORD) != 0)
-#define NODE_IS_ABSENT_WITH_SIDE_EFFECTS(node)  ((NODE_STATUS(node) & NODE_ST_ABSENT_WITH_SIDE_EFFECTS) != 0)
-#define NODE_IS_FIXED_CLEN_MIN_SURE(node)  ((NODE_STATUS(node) & NODE_ST_FIXED_CLEN_MIN_SURE) != 0)
-#define NODE_IS_REFERENCED(node)      ((NODE_STATUS(node) & NODE_ST_REFERENCED) != 0)
-#define NODE_IS_INPEEK(node)          ((NODE_STATUS(node) & NODE_ST_INPEEK) != 0)
-#define NODE_IS_WHOLE_OPTIONS(node)   ((NODE_STATUS(node) & NODE_ST_WHOLE_OPTIONS) != 0)
+#define ND_IS_BY_NUMBER(node)       ((ND_STATUS(node) & ND_ST_BY_NUMBER)      != 0)
+#define ND_IS_IN_REAL_REPEAT(node)  ((ND_STATUS(node) & ND_ST_IN_REAL_REPEAT) != 0)
+#define ND_IS_CALLED(node)          ((ND_STATUS(node) & ND_ST_CALLED)         != 0)
+#define ND_IS_IN_MULTI_ENTRY(node)  ((ND_STATUS(node) & ND_ST_IN_MULTI_ENTRY) != 0)
+#define ND_IS_RECURSION(node)       ((ND_STATUS(node) & ND_ST_RECURSION)      != 0)
+#define ND_IS_IN_ZERO_REPEAT(node)  ((ND_STATUS(node) & ND_ST_IN_ZERO_REPEAT) != 0)
+#define ND_IS_NAMED_GROUP(node)     ((ND_STATUS(node) & ND_ST_NAMED_GROUP)  != 0)
+#define ND_IS_FIXED_ADDR(node)      ((ND_STATUS(node) & ND_ST_FIXED_ADDR)   != 0)
+#define ND_IS_FIXED_CLEN(node)      ((ND_STATUS(node) & ND_ST_FIXED_CLEN)   != 0)
+#define ND_IS_FIXED_MIN(node)       ((ND_STATUS(node) & ND_ST_FIXED_MIN)    != 0)
+#define ND_IS_FIXED_MAX(node)       ((ND_STATUS(node) & ND_ST_FIXED_MAX)    != 0)
+#define ND_IS_MARK1(node)           ((ND_STATUS(node) & ND_ST_MARK1)        != 0)
+#define ND_IS_MARK2(node)           ((ND_STATUS(node) & ND_ST_MARK2)        != 0)
+#define ND_IS_NEST_LEVEL(node)      ((ND_STATUS(node) & ND_ST_NEST_LEVEL)   != 0)
+#define ND_IS_BY_NAME(node)         ((ND_STATUS(node) & ND_ST_BY_NAME)      != 0)
+#define ND_IS_BACKREF(node)         ((ND_STATUS(node) & ND_ST_BACKREF)      != 0)
+#define ND_IS_CHECKER(node)         ((ND_STATUS(node) & ND_ST_CHECKER)      != 0)
+#define ND_IS_SUPER(node)           ((ND_STATUS(node) & ND_ST_SUPER)        != 0)
+#define ND_IS_PROHIBIT_RECURSION(node) \
+    ((ND_STATUS(node) & ND_ST_PROHIBIT_RECURSION) != 0)
+#define ND_IS_STRICT_REAL_REPEAT(node) \
+    ((ND_STATUS(node) & ND_ST_STRICT_REAL_REPEAT) != 0)
+#define ND_IS_EMPTY_STATUS_CHECK(node) \
+    ((ND_STATUS(node) & ND_ST_EMPTY_STATUS_CHECK) != 0)
+#define ND_IS_IGNORECASE(node)      ((ND_STATUS(node) & ND_ST_IGNORECASE) != 0)
+#define ND_IS_MULTILINE(node)       ((ND_STATUS(node) & ND_ST_MULTILINE) != 0)
+#define ND_IS_TEXT_SEGMENT_WORD(node)  ((ND_STATUS(node) & ND_ST_TEXT_SEGMENT_WORD) != 0)
+#define ND_IS_ABSENT_WITH_SIDE_EFFECTS(node)  ((ND_STATUS(node) & ND_ST_ABSENT_WITH_SIDE_EFFECTS) != 0)
+#define ND_IS_FIXED_CLEN_MIN_SURE(node)  ((ND_STATUS(node) & ND_ST_FIXED_CLEN_MIN_SURE) != 0)
+#define ND_IS_REFERENCED(node)      ((ND_STATUS(node) & ND_ST_REFERENCED) != 0)
+#define ND_IS_INPEEK(node)          ((ND_STATUS(node) & ND_ST_INPEEK) != 0)
+#define ND_IS_WHOLE_OPTIONS(node)   ((ND_STATUS(node) & ND_ST_WHOLE_OPTIONS) != 0)
 
-#define NODE_PARENT(node)         ((node)->u.base.parent)
-#define NODE_BODY(node)           ((node)->u.base.body)
-#define NODE_QUANT_BODY(node)     ((node)->body)
-#define NODE_BAG_BODY(node)       ((node)->body)
-#define NODE_CALL_BODY(node)      ((node)->body)
-#define NODE_ANCHOR_BODY(node)    ((node)->body)
+#define ND_PARENT(node)         ((node)->u.base.parent)
+#define ND_BODY(node)           ((node)->u.base.body)
+#define ND_QUANT_BODY(node)     ((node)->body)
+#define ND_BAG_BODY(node)       ((node)->body)
+#define ND_CALL_BODY(node)      ((node)->body)
+#define ND_ANCHOR_BODY(node)    ((node)->body)
 
 #define PARSEENV_MEMENV_SIZE  8
 #define PARSEENV_MEMENV(senv) \

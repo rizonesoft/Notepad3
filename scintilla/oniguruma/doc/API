@@ -1,4 +1,4 @@
-Oniguruma API  Version 6.9.9  2022/09/06
+Oniguruma API  Version 6.9.9  2022/10/28
 
 #include <oniguruma.h>
 
@@ -643,7 +643,7 @@ Oniguruma API  Version 6.9.9  2022/09/06
   return value
   normal: number of groups for the name.
           (ex. /(?<x>..)(?<x>..)/  ==>  2)
-  name not found: -1
+  name not found: ONIGERR_UNDEFINED_NAME_REFERENCE
 
   arguments
   1 reg:       regex object.
