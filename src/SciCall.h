@@ -373,6 +373,8 @@ DeclareSciCallV1(SetSearchFlags, SETSEARCHFLAGS, int, flags);
 DeclareSciCallR2(SearchInTarget, SEARCHINTARGET, DocPos, DocPos, length, const char*, text);
 DeclareSciCallV2(DeleteRange, DELETERANGE, DocPos, start, DocPos, length);
 
+DeclareSciCallV2(ChangeInsertion, CHANGEINSERTION, DocPos, length, const char*, text);
+
 DeclareSciCallV1(SetAnchor, SETANCHOR, DocPos, position);
 DeclareSciCallV1(SetCurrentPos, SETCURRENTPOS, DocPos, position);
 
@@ -805,6 +807,14 @@ inline void Sci_RedrawScrollbars()
 #define Sci_ColouriseAll() SciCall_Colourise(0, -1)
 
 #define Sci_DisableMouseDWellNotification()  SciCall_SetMouseDWellTime(SC_TIME_FOREVER)
+
+// ----------------------------------------------------------------------------
+
+inline void Sci_GetSelectionTextN(char* pBuffer, size_t count)
+{
+    size_t const selLen = SciCall_GetSelText(NULL);
+    StringCchCopyNA(pBuffer, count, SciCall_GetRangePointer(SciCall_GetSelectionStart(), selLen), selLen);
+}
 
 // ----------------------------------------------------------------------------
 

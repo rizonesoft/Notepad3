@@ -169,6 +169,8 @@ static bool      s_bPrevFullScreenFlag = false;
 static double   s_dExpression = 0.0;
 static te_int_t s_iExprError  = -1;
 
+static char*    s_SelectionBuffer = NULL;
+
 //~static CONST WCHAR *const s_ToolbarWndClassName = L"NP3_TOOLBAR_CLASS";
 
 static int const INISECTIONBUFCNT = 32; // .ini file load buffer in KB
@@ -869,6 +871,11 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
         s_hEventFileDeletedExt = INVALID_HANDLE_VALUE;
     }
 
+    if (s_SelectionBuffer) {
+        FreeMem(s_SelectionBuffer);
+        s_SelectionBuffer = NULL;
+    }
+
     // ---------------------------------------------
     // Save Settings should be done elsewhere before
     // ---------------------------------------------
@@ -1035,7 +1042,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     _InitGlobals();
     InitDarkMode();
-    
+
     // Windows Class name
     StringCchCopy(s_wchWndClass, COUNTOF(s_wchWndClass), _W(SAPPNAME));
 
@@ -1043,6 +1050,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     Globals.hInstance = hInstance;
     Globals.hPrevInst = hPrevInstance;
     Globals.hndlProcessHeap = GetProcessHeap();
+
+    // now using AllocMen() methods
+    s_SelectionBuffer = (char*)AllocMem(128, HEAP_ZERO_MEMORY);
+
 
     Path_GetAppDirectory(Paths.ModuleDirectory);
 
@@ -8101,10 +8112,13 @@ static void _HandleAutoIndent(int const charAdded)
 //
 //  _HandleAutoCloseTags()
 //
-static void  _HandleAutoCloseTags()
+static void _HandleAutoCloseTags()
 {
-    ///int const lexerID = SciCall_GetLexer();
-    ///if (lexerID == SCLEX_HTML || lexerID == SCLEX_XML)
+    if (Sci_IsMultiSelection()) {
+        return;
+    }
+    /// int const lexerID = SciCall_GetLexer();
+    /// if (lexerID == SCLEX_HTML || lexerID == SCLEX_XML)
     DocPos const maxSearchBackward = 8192;
     DocPos const iCurPos = SciCall_GetCurrentPos();
     DocPos const iHelper = iCurPos - maxSearchBackward;
@@ -8153,25 +8167,78 @@ static void  _HandleAutoCloseTags()
 
 //=============================================================================
 //
-//  _HandleAutoCloseBrackets()
+//  _HandleInsertCheck()
 //
-static void  _HandleAutoCloseBrackets(int const x)
+
+static inline void _SaveSelectionToBuffer()
 {
-    DocPos const iCurPos = SciCall_GetCurrentPos();
-    UndoTransActionBegin();
-    switch(x){
-        case '[':
-            SciCall_AddText(1,"]");
-        break;
-        case '{':
-            SciCall_AddText(1,"}");
-        break;
-        case '(':
-            SciCall_AddText(1,")");
-        break;
+    if (!s_SelectionBuffer) {
+        return;
     }
-    SciCall_SetSel(iCurPos, iCurPos);
-    EndUndoTransAction();
+    if (Sci_IsMultiOrRectangleSelection()) {
+        s_SelectionBuffer[0] = '\0';
+        s_SelectionBuffer[1] = 'X';
+        return;
+    }
+    size_t len = SciCall_GetSelText(NULL);
+    if ((len + 3) > SizeOfMem(s_SelectionBuffer)) {
+        s_SelectionBuffer = (char*)ReAllocMem(s_SelectionBuffer, len + 3, HEAP_ZERO_MEMORY);
+    }
+    Sci_GetSelectionTextN(&s_SelectionBuffer[1], SizeOfMem(s_SelectionBuffer) - 2);
+    s_SelectionBuffer[0] = s_SelectionBuffer[1];
+}
+
+static inline DocPos _EncloseSelectionBuffer(const char op, const char cl)
+{
+    if (!s_SelectionBuffer) {
+        return 0;
+    }
+    if (s_SelectionBuffer[0] == '\0' && s_SelectionBuffer[1] == 'X') {
+        // IsMultiOrRectangleSelection:
+        s_SelectionBuffer[0] = op;
+        s_SelectionBuffer[1] = '\0';
+        return 1;
+    }
+    size_t len = s_SelectionBuffer ? strlen(s_SelectionBuffer) : 0;
+    len += (len ? 0 : 1); // empty correction
+    s_SelectionBuffer[0] = op;
+    s_SelectionBuffer[len++] = cl;
+    s_SelectionBuffer[len] = '\0';
+    return len;
+}
+
+
+static void _HandleInsertCheck(const SCNotification* const scn)
+{
+    if (Sci_IsMultiOrRectangleSelection() || !scn || !(scn->text)) {
+        return;
+    }
+    if (Settings.AutoCloseBrackets) {
+        if (scn->length == 1) {
+            bool bInserted = true;
+            DocPos len = 0;
+            switch (scn->text[0]) {
+            case '[':
+                len = _EncloseSelectionBuffer('[', ']');
+                break;
+            case '{':
+                len = _EncloseSelectionBuffer('{', '}');
+                break;
+            case '(':
+                len = _EncloseSelectionBuffer('(', ')');
+                break;
+            default:
+                bInserted = false;
+                break;
+            }
+            if (bInserted) {
+                SciCall_ChangeInsertion(len, s_SelectionBuffer);
+                if (len == 2) {
+                    PostMessage(Globals.hwndEdit, SCI_CHARLEFT, 0, 0);
+                }
+            }
+        }
+    }
 }
 
 
@@ -8198,6 +8265,7 @@ static bool  _IsIMEOpenInNoNativeMode()
 #endif
 
 
+
 //=============================================================================
 //
 //  MsgNotifyLean() - Handles WM_NOTIFY (only absolute neccessary events)
@@ -8222,18 +8290,24 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
             if ((iModType & SC_MULTISTEPUNDOREDO) && !(iModType & SC_LASTSTEPINUNDOREDO)) {
                 return TRUE; // wait for last step in multi-step-undo/redo
             }
+            if (iModType & SC_MOD_INSERTCHECK) {
+                if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
+                    _HandleInsertCheck(scn);
+                }
+            }
             if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
-                //*bModified = false; // not yet
+                *bModified = false; // not yet
                 if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
                     if (!_InUndoRedoTransaction() && (_urtoken < URTok_TokenStart)) {
-                        bool const bIsSelEmpty = SciCall_IsSelectionEmpty();
+                        _SaveSelectionToBuffer();
+                        bool const bSelEmpty = SciCall_IsSelectionEmpty();
                         bool const bIsMultiRectSel = Sci_IsMultiOrRectangleSelection();
-                        if (!bIsSelEmpty || bIsMultiRectSel) {
+                        if (!bSelEmpty || bIsMultiRectSel) {
                             LONG const tok = _SaveUndoSelection();
                             _urtoken = (tok >= URTok_TokenStart ? tok : _urtoken);
                         }
                         // TODO: @@@ Find reason for why this NOP workaround is needed:
-                        if (!bIsSelEmpty && bIsMultiRectSel) {
+                        if (!bSelEmpty && bIsMultiRectSel) {
                             // need to trigger SCI:InvalidateCaret()
                             bool const bAddSelTyping = SciCall_GetAdditionalSelectionTyping();
                             //~SciCall_SetAdditionalSelectionTyping(!bAddSelTyping); // v5.1.1: no check for change, so:
@@ -8503,13 +8577,6 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
         case '>':
             if (Settings.AutoCloseTags) {
                 _HandleAutoCloseTags();
-            }
-            break;
-        case '[':
-        case '{':
-        case '(':
-            if (Settings.AutoCloseBrackets) {
-                _HandleAutoCloseBrackets(ich);
             }
             break;
         case '?':

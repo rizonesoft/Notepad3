@@ -469,7 +469,7 @@ BEGIN
         MENUITEM "&Woord Omslag Instellings...",                    IDM_SET_WORDWRAPSETTINGS
         MENUITEM "L&ang Lyn Instellings...",                        IDM_SET_LONGLINESETTINGS
         MENUITEM "Outo-In&dent Teks",                               IDM_SET_AUTOINDENTTEXT
-        ///MENUITEM "Auto Close Brackets",                      IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Auto Close Brackets",                      IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Outo-Sluit &HTML/XML\tCtrl+Shift+H",              IDM_SET_AUTOCLOSETAGS
         MENUITEM "O&uto-Voltooi Woorde",                            IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Outo-Voltooi Le&xer-Sleutel-Woorde",              IDM_SET_AUTOCLEXKEYWORDS

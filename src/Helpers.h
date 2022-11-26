@@ -56,22 +56,6 @@
 
 // ============================================================================
 
-#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
-#ifndef _DEBUG
-#define _DEBUG 1
-#endif
-#ifndef DEBUG
-#define DEBUG 1
-#endif
-inline void* reallocz(void* pMem, size_t numBytes) { void* pM = realloc(pMem, numBytes); if (pM) memset(pM, 0, numBytes); return pM; }
-#define AllocMem(B, F) (((F)&HEAP_ZERO_MEMORY) ? calloc(1, B) : malloc(B))
-#define ReAllocMem(M, B, F) ((M) ? (((F)&HEAP_ZERO_MEMORY) ? reallocz(M, B) : realloc(M, B)) : AllocMem(B, F))
-#define ReAllocGrowMem(M, B, F) ((M) ? ((_msize(M) >= (B)) ? (((F)&HEAP_ZERO_MEMORY) ? (memset(M, 0, B), (M)) : (M)) : (((F)&HEAP_ZERO_MEMORY) ? reallocz(M, B) : realloc(M, B))) : AllocMem(B, F))
-#define FreeMem(M) ((M ? (free(M)) : NOOP), true)
-#define SizeOfMem(M) ((M) ? _msize(M) : 0)
-
-#else  // RELASE VERSION
-
 // direct heap allocation
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
 #define DEFAULT_ALLOC_FLAGS (HEAP_GENERATE_EXCEPTIONS | HEAP_TAIL_CHECKING_ENABLED | HEAP_FREE_CHECKING_ENABLED | HEAP_CREATE_HARDENED)
@@ -116,8 +100,6 @@ inline size_t SizeOfMem(LPCVOID lpMem)
 {
     return (lpMem ? HeapSize(Globals.hndlProcessHeap, 0, lpMem) : 0);
 }
-
-#endif
 
 // ============================================================================
 
