@@ -67,7 +67,7 @@ BEGIN
         MENUITEM "Attribut de fichier en lecture seule",              IDM_FILE_READONLY
         MENUITEM "&Verrouiller le fichier (lecture-partage)",         IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
-        MENUITEM "Définir mot de p&asse de cryptage...",    IDM_SETPASS
+        MENUITEM "Définir le mot de p&asse de cryptage...",           IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "Copie vers le presse-papiers"
         BEGIN
