@@ -469,7 +469,7 @@ BEGIN
         MENUITEM "Na&stavenie zalomenia slov...",                IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Nastavenie &dĺžky riadkov...",                 IDM_SET_LONGLINESETTINGS
         MENUITEM "Auto&matická identifikácia textu",             IDM_SET_AUTOINDENTTEXT
-        ///MENUITEM "Auto Close Brackets",                      IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Auto Close Brackets",                      IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Auto-zakončovanie &HTML/XML\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "A&utomatické dokončovanie slov",               IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Auto-kompletizácia kľúčových slov &Lexer",     IDM_SET_AUTOCLEXKEYWORDS
