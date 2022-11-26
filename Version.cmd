@@ -5,7 +5,13 @@
 setlocal enableextensions
 set SCRIPTNAME=%~dpn0.ps1
 set ARGS=%*
-if ["%~1"] neq [""] call :ESCAPE_ARGS
+
+set POSTFIX=beta
+if ["%POSTFIX%"] == [""] (
+  if ["%~1"] neq [""] call :ESCAPE_ARGS
+) else (
+  set ARGS=-VerPatch "%POSTFIX%"
+)
 
 :POWERSHELL
 PowerShell.exe -NoProfile -NonInteractive -NoLogo -ExecutionPolicy Unrestricted -Command "& { $ErrorActionPreference = 'Stop'; & '%SCRIPTNAME%' @args; Exit $LastExitCode }" %ARGS%
