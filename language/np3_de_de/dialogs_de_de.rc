@@ -165,33 +165,33 @@ BEGIN
     PUSHBUTTON      "Abbrechen",IDCANCEL,105,69,55,16
 END
 
-IDD_MUI_OPENWITH DIALOGEX 0, 0, 165, 129
+IDD_MUI_OPENWITH DIALOGEX 0, 0, 170, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Öffnen mit..."
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
+    CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,156,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Spezifiziere das Verzeichnis mit den Links zu den bevorzugten Applikationen.",IDC_OPENWITHDESCR,26,83,132,18
-    DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
-    PUSHBUTTON      "Abbrechen",IDCANCEL,108,108,50,14
+    LTEXT           "Spezifiziere das Verzeichnis mit den Links zu den bevorzugten Applikationen.",IDC_OPENWITHDESCR,26,83,140,18
+    DEFPUSHBUTTON   "OK",IDOK,57,108,50,14
+    PUSHBUTTON      "Abbrechen",IDCANCEL,113,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
 END
 
-IDD_MUI_DEFENCODING DIALOGEX 0, 0, 197, 172
+IDD_MUI_DEFENCODING DIALOGEX 0, 0, 205, 172
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Codierung (Code-Page)"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Standard Codierung (neue Datei):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
-    CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
+    GROUPBOX        "Standard Codierung (neue Datei):",IDC_STATIC,7,7,191,48,0,WS_EX_TRANSPARENT
+    CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,175,128
     CONTROL         "Als Fallback bei fehlgeschlagener Erkennung nutzen.",IDC_USEASREADINGFALLBACK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,165,10
-    GROUPBOX        "Codierungs-Erkennung: ",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,182,10
+    GROUPBOX        "Codierungs-Erkennung: ",IDC_STATIC2,7,58,191,88,0,WS_EX_TRANSPARENT
     CONTROL         "Öffne 7-bit &ASCII Dateien als UTF-8.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,165,10
     CONTROL         "Nutze nur verläßliche Erkennungen.",IDC_RELIABLE_DETECTION_RES,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,130,10
     CONTROL         "Öffne 8-bit *.&nfo/diz Dateien als DOS-437.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,165,10
     CONTROL         "Nutze Codierungs-&Tags aus der Datei.",IDC_ENCODINGFROMFILEVARS,
@@ -200,8 +200,8 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,165,10
     CONTROL         "Erlaube &UNICODE Erkennung.",IDC_NOUNICODEDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
-    DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
-    PUSHBUTTON      "Abbrechen",IDCANCEL,140,151,50,14
+    DEFPUSHBUTTON   "OK",IDOK,95,151,50,14
+    PUSHBUTTON      "Abbrechen",IDCANCEL,148,151,50,14
 END
 
 IDD_MUI_DEFEOLMODE DIALOGEX 0, 0, 200, 80
@@ -212,7 +212,7 @@ BEGIN
     LTEXT           "&Voreinstellung:",IDC_STATIC,7,7,120,8
     COMBOBOX        IDC_EOLMODELIST,7,20,98,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Zeige Warnung bei inkonsistenten Zeilenumbrüchen.",IDC_WARN_INCONSISTENT_EOLS,
-                    "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,175,10
+                    "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,185,10
     CONTROL         "&Zeilenumbruch beim Speichern angleichen.",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,175,10
     CONTROL         "&Hängende Leerzeichen beim Speichern entfernen.",IDC_AUTOSTRIPBLANKS,
@@ -260,10 +260,10 @@ CAPTION "Zuletzt geöffnete Dateien"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
-    CONTROL         "&Speichere Historie beim Beenden.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,120,10
+    CONTROL         "&Speichere Historie beim Beenden.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,125,10
     CONTROL         "&Letzte Caret Position merken.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
     CONTROL         "&Letztes Suchmuster merken.",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,120,10
-    CONTROL         "&Lade letzte Datei beim Start automatisch.",IDC_AUTOLOAD_MRU_FILE,"Button", BS_AUTOCHECKBOX | WS_TABSTOP,7,143,140,10
+    CONTROL         "&Lade letzte Datei beim Start automatisch.",IDC_AUTOLOAD_MRU_FILE,"Button", BS_AUTOCHECKBOX | WS_TABSTOP,7,143,150,10
     CONTROL         "Verwerfen", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
     DEFPUSHBUTTON   "OK",IDOK,154,158,50,14,WS_DISABLED
     PUSHBUTTON      "Schließen",IDCANCEL,212,158,50,14
@@ -279,7 +279,7 @@ BEGIN
     CONTROL         "&Indikator (lautlos).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
     CONTROL         "&Zeige Nachricht.", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
     CONTROL         "&Auto-Neuladen.", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
-    CONTROL         "&Exklusive Sperrung der Datei.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,99,10
+    CONTROL         "&Exklusive Sperrung der Datei.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,120,10
     CONTROL         "&Zurücksetzen beim öffnen einer neuen Datei.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,160,10
     CONTROL         "&Logfile Monitoring.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,160,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
@@ -295,7 +295,7 @@ BEGIN
     CONTROL         "Setze gewähltes Schema als Voreinstellung.",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,180,10
     CONTROL         "&Auto-Auswahl entsprechend Dateinamen-Erweiterung.",IDC_AUTOSELECT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,180,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,190,10
     DEFPUSHBUTTON   "OK",IDOK,86,173,50,14,WS_DISABLED
     PUSHBUTTON      "Abbrechen",IDCANCEL,141,173,50,14
 END
@@ -326,7 +326,7 @@ BEGIN
     EDITTEXT        IDC_STYLEEDIT_HELP,197,54,252,74,ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
-IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 184, 114
+IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 190, 114
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Tabulator Einstellungen"
 FONT 9, "Segoe UI", 400, 0, 0x1
@@ -342,9 +342,9 @@ BEGIN
     CONTROL         "&Warnung bei inkonsistenten Einrückungen.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,160,10
     CONTROL         "&Auto-Erkennung von Tab/Leerzeichen Einrückungen.",IDC_AUTO_DETECT_INDENTS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,160,10
-    DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
-    PUSHBUTTON      "Abbrechen",IDCANCEL,127,27,50,14
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,181,10
+    DEFPUSHBUTTON   "OK",IDOK,133,7,50,14
+    PUSHBUTTON      "Abbrechen",IDCANCEL,133,27,50,14
 END
 
 IDD_MUI_WARNINDENTATION DIALOGEX 0, 0, 196, 138
@@ -495,7 +495,7 @@ BEGIN
     PUSHBUTTON      "Abbrechen",IDCANCEL,175,58,50,14
     EDITTEXT        IDC_PWD_EDIT3,16,23,267,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     CONTROL         "Mit Master-Key entschlüsseln",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,117,10
-    LTEXT           "Diese Datei enthält einen Master-Key.",IDC_PWD_STATMPW,16,40,140,10
+    LTEXT           "Diese Datei enthält einen Master-Key",IDC_PWD_STATMPW,16,40,140,10
     CONTROL         "Zeige Passwort",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,75,10
 END
 
@@ -539,9 +539,9 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "HTML/XML Tag Einfügen"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Öffnender Tag (mit Attributen):",IDC_STATIC,7,7,100,8
+    LTEXT           "&Öffnender Tag (mit Attributen):",IDC_STATIC,7,7,110,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "&Schließender Tag (veränderbar):",IDC_STATIC2,7,37,100,8
+    LTEXT           "&Schließender Tag (veränderbar):",IDC_STATIC2,7,37,110,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     EDITTEXT        102,125,48,20,14,ES_AUTOHSCROLL
     LTEXT           "X Wdh.",IDC_STATIC3,148,50,24,8
@@ -554,9 +554,9 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Umschließe Selektion"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Vor der Auswahl einfügen:",IDC_STATIC,7,7,76,8
+    LTEXT           "&Vor der Auswahl einfügen:",IDC_STATIC,7,7,90,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "&Nach der Auswahl einfügen:",IDC_STATIC2,7,37,71,8
+    LTEXT           "&Nach der Auswahl einfügen:",IDC_STATIC2,7,37,100,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Abbrechen",IDCANCEL,125,24,50,14
@@ -645,25 +645,25 @@ BEGIN
     CONTROL         "Entferne ein&zigartige Zeilen.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
     CONTROL         "Entferne Leerzeilen.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
     CONTROL         "Entferne Leerzeichen-Zeilen.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
-    CONTROL         "Groß-/Klein-Schreibung &beachten.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,120,10
-    CONTROL         "&Groß-/Klein-Schreibung ignorieren.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,120,10
-    CONTROL         "Nummern-Logik vergleichen.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
-    CONTROL         "&Lexikographisch vergleichen.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
-    CONTROL         "&Spalten-Sortierung (Rechteck-Auswahl).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10
+    CONTROL         "Groß-/Klein-Schreibung &beachten.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,130,10
+    CONTROL         "&Groß-/Klein-Schreibung ignorieren.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,130,10
+    CONTROL         "Nummern-Logik vergleichen.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,110,10
+    CONTROL         "&Lexikographisch vergleichen.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,110,10
+    CONTROL         "&Spalten-Sortierung (Rechteck-Auswahl).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,150,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Abbrechen",IDCANCEL,128,24,50,14
 END
 
-IDD_MUI_RECODE DIALOGEX 0, 0, 185, 135
+IDD_MUI_RECODE DIALOGEX 0, 0, 187, 135
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Erneut Laden als"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Wähle Quell-Codierung um die Datei erneut zu laden:",IDC_STATIC,7,7,170,8
-    CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,171,87
-    DEFPUSHBUTTON   "OK",IDOK,73,114,50,14,WS_DISABLED
-    PUSHBUTTON      "Abbrechen",IDCANCEL,128,114,50,14
-    SCROLLBAR       IDC_RESIZEGRIP,7,118,10,10
+    LTEXT           "Wähle Quell-Codierung um die Datei erneut zu laden:",IDC_STATIC,7,7,178,8
+    CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,173,87
+    DEFPUSHBUTTON   "OK",IDOK,75,114,50,14,WS_DISABLED
+    PUSHBUTTON      "Abbrechen",IDCANCEL,130,114,50,14
+    SCROLLBAR       IDC_RESIZEGRIP,7,120,10,10
 END
 
 IDD_MUI_ENCODING DIALOGEX 0, 0, 185, 135

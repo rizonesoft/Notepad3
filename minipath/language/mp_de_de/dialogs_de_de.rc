@@ -184,7 +184,7 @@ BEGIN
     CONTROL         "Minimiere in den &System-Tray (Click zum reaktivieren).",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121, 230,10
     CONTROL         "Versuche e&xistierendes Fenster zu nutzen, wenn MiniPath gestartet wird.",IDC_REUSEWINDOW,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133, 230,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133, 245,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151, 240,1
     CONTROL         "Einstellungen beim Verlassen speichern.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160, 230,10
 END
@@ -196,7 +196,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
     LTEXT           "Fortgeschrittene Programm-Einstellungen festlegen.",IDC_STATIC,40,15,180,8
-    CONTROL         "Nutze als &Startup-Verzeichnis:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,105,10
+    CONTROL         "Nutze als &Startup-Verzeichnis:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,110,10
     CONTROL         "das &zuletzt benutzte.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,130,46, 105,10
     CONTROL         """&Favoriten"".",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,130,58, 105,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,240,1
@@ -224,14 +224,14 @@ BEGIN
     GROUPBOX        "Farben",IDC_STATIC,10,41,238,134
     LTEXT           "Benutze diese Textfarbe, wenn KEIN FILTER gesetzt ist:",IDC_STATIC,20,54, 220,8
     CONTROL         "Voreingestellte &Fenster-Farbe.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,180,10
-    CONTROL         "&Selbstdefinierte Farbe:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,80,10
-    EDITTEXT        IDC_COLOR_SAMP1,105,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
-    PUSHBUTTON      "Wähle Farbe...",IDC_COLOR_PICK1,140,80,60,14
+    CONTROL         "&Selbstdefinierte Farbe:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,85,10
+    EDITTEXT        IDC_COLOR_SAMP1,115,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
+    PUSHBUTTON      "Wähle Farbe...",IDC_COLOR_PICK1,150,80,60,14
     LTEXT           "Benutze diese Textfarbe, wenn ein FILTER AKTIV IST:",IDC_STATIC,20,105, 220,8
     CONTROL         "&Voreingestellte &Fenster-Farbe.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,180,10
-    CONTROL         "Sel&bstdefinierte Farbe:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,80,10
-    EDITTEXT        IDC_COLOR_SAMP2,105,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
-    PUSHBUTTON      "Wähle Farbe...",IDC_COLOR_PICK2,140,130,60,14
+    CONTROL         "Sel&bstdefinierte Farbe:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,85,10
+    EDITTEXT        IDC_COLOR_SAMP2,115,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
+    PUSHBUTTON      "Wähle Farbe...",IDC_COLOR_PICK2,150,130,60,14
 END
 
 IDPP_PROG DIALOGEX 0, 0, 260, 185
@@ -244,7 +244,7 @@ BEGIN
     LTEXT           "&Voreingestelltes ""Schnellansicht"" Programm (Ctrl+Q):",IDC_STATIC,10,41,230,8
     EDITTEXT        IDC_QUICKVIEW,10,52,224,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,236,52,13,13,BS_BITMAP
-    LTEXT           """&Favoriten""-Verzeichnis (F11):",IDC_STATIC,10,76,76,8
+    LTEXT           """&Favoriten""-Verzeichnis (F11):",IDC_STATIC,10,76,100,8
     EDITTEXT        IDC_FAVORITES,10,87,224,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_F,236,87,13,13,BS_BITMAP
 END
@@ -255,24 +255,24 @@ CAPTION "Ziel-Applikation"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "Keine spezifische Ziel-Applikation nutzen, einfach die ausgewählte Datei starten.",IDC_LAUNCH,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,265,10
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,277,10
     CONTROL         "Benutze diese Ziel-Applikation:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,240,10
     LTEXT           "Lege die Aktion fest, falls die Ziel-Applikation bereits läuft:", IDC_STATIC, 7, 64, 240, 8
-    EDITTEXT        IDC_TARGETPATH,16,35,245,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "", IDC_BROWSE, 265, 35, 15, 14, BS_BITMAP
+    EDITTEXT        IDC_TARGETPATH,16,35,248,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "", IDC_BROWSE, 268, 35, 15, 14, BS_BITMAP
     LTEXT           "Nachricht:", IDC_STATIC, 16, 120, 40, 8
     CONTROL         "KEINE, starte die Ziel-Applikation immer wenn eine Datei geöffnet wird.",IDC_ALWAYSRUN,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,240,10
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,250,10
     CONTROL         "Sende eine ""DROP FILES"" Nachricht zum Ziel-Fenster:",IDC_SENDDROPMSG,
-                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,170,10
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,190,10
     CONTROL         "Führe folgendes DDE-Kommando aus:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,240,10
-    LTEXT           "Applikation:",IDC_STATIC,124,120,40,8
-    PUSHBUTTON      "Ziel-Fenster...", IDC_FINDWIN, 180, 91, 60, 14
-    LTEXT           "Thema:",IDC_STATIC,194,120,40,8
-    EDITTEXT        IDC_DDEMSG,16,130,104,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDEAPP,124,130,66,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDETOPIC,194,130,66,14,ES_AUTOHSCROLL
+    LTEXT           "Applikation:",IDC_STATIC,144,120,40,8
+    PUSHBUTTON      "Ziel-Fenster...", IDC_FINDWIN, 224, 91, 60, 14
+    LTEXT           "Thema:",IDC_STATIC,216,120,40,8
+    EDITTEXT        IDC_DDEMSG,16,130,124,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDEAPP,144,130,68,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDETOPIC,216,130,68,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,180,159,50,14
     PUSHBUTTON      "Abbruch",IDCANCEL,234,159,50,14
 END
@@ -283,7 +283,7 @@ CAPTION "Definiere Ziel-Fenster"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "Ziehe das Fadenkreuz über das neu zu definierende Ziel-Fenster, oder drücke ""Esc"" zum Abbruch.",IDC_STATIC,35,7,168,22
+    LTEXT           "Ziehe das Fadenkreuz über das neu zu definierende Ziel-Fenster, oder drücke ""Esc"" zum Abbruch.",IDC_STATIC,35,7,168,26
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Fenster-Klasse",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Fenster-Modul",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE
