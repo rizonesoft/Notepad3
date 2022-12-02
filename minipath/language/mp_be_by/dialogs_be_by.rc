@@ -114,7 +114,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Фільтр файлаў"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Надайце маску імён &файлаў, разбіваючы знакам ;",IDC_STATIC,7,7,169,8
+    LTEXT           "Надайце маску імён &файлаў, разбіваючы знакам ;",IDC_STATIC,7,7,190,8
     EDITTEXT        IDC_FILTER,7,22,181,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,192,22,13,13
     CONTROL         "&Выключыць файлы, якія адпавядаюць фільтру",IDC_NEGFILTER,
@@ -154,7 +154,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Зыходны файл:",IDC_STATIC,7,7,54,8
     EDITTEXT        IDC_SOURCE,7,18,216,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "&Месца прызначэння:",IDC_STATIC,7,37,70,8
+    LTEXT           "&Месца прызначэння:",IDC_STATIC,7,37,90,8
     COMBOBOX        IDC_DESTINATION,7,48,199,105,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "",IDC_BROWSEDESTINATION,210,48,13,13
     LTEXT           "Дзеянне:",IDC_STATIC,7,66,32,8
@@ -171,7 +171,7 @@ CAPTION "Асноўныя"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "Асноўныя налады MiniPath.",IDC_STATIC,40,15,94,8
+    LTEXT           "Асноўныя налады MiniPath.",IDC_STATIC,40,15,110,8
     CONTROL         "&Адкрываць аб'екты адным клікам",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,131,10
     CONTROL         "&Вылучэнне ходзіць за курсорам",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,123,10
@@ -201,9 +201,9 @@ BEGIN
     CONTROL         "Папка «А&бранае»",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,80,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
     CONTROL         "&Выдаліць атрыбут «толькі для чытання» у час захавання",IDC_CLEARREADONLY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,213,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,210,10
     CONTROL         "П&ерайменаваць капіяваны файл калі імёны супадаюць",IDC_RENAMEONCOLLISION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,201,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,210,10
     CONTROL         "Пераносіць вы&даленыя файлы ў Сметніцу",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,157,10
     CONTROL         "&Не пытаць у час выдалення (не рэкамендуецца)",IDC_NOCONFIRMDELETE,
@@ -240,7 +240,7 @@ CAPTION "Размяшчэнне"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Вызначце вонкавыя праграмы і шляхі.",IDC_STATIC,40,15,130,8
+    LTEXT           "Вызначце вонкавыя праграмы і шляхі.",IDC_STATIC,40,15,150,8
     LTEXT           "&Праграма хуткага прагляду (Ctrl+Q):",IDC_STATIC,10,41,128,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
@@ -258,7 +258,7 @@ BEGIN
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,229,10
     CONTROL         "Выкарыстоўваць праграму ў якасці мэтавай:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,168,10
-    LTEXT           "Вызначце дзеянне, калі мэтавая праграма ўжо выконваецца:",IDC_STATIC,7,64,210,8
+    LTEXT           "Вызначце дзеянне, калі мэтавая праграма ўжо выконваецца:",IDC_STATIC,7,64,220,8
     EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "Паведамленне:",IDC_STATIC,20,120,53,8
@@ -267,9 +267,9 @@ BEGIN
     CONTROL         "Даслаць каманду адкрыцця файла мэтаваму акну:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,189,10
     CONTROL         "Выканаць каманду DDE:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,98,10
-    LTEXT           "Праграма:",IDC_STATIC,128,120,36,8
+    LTEXT           "Праграма:",IDC_STATIC,133,120,36,8
     PUSHBUTTON      "Знайсці акно...",IDC_FINDWIN,209,91,60,14
-    LTEXT           "Тэма:",IDC_STATIC,198,120,19,8
+    LTEXT           "Тэма:",IDC_STATIC,203,120,19,8
     EDITTEXT        IDC_DDEMSG,20,130,109,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDEAPP,133,130,66,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDETOPIC,203,130,66,14,ES_AUTOHSCROLL
