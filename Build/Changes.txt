@@ -199,12 +199,19 @@ TRANSLATIONS (MUI):
 
 --------------------------------------------------------
 Hello everybody ! 😀
-For our Notepad3 translation projects, we are looking for motivated volunteers, 
-with a priority to resume "aborted" translations for these languages:
-  - Indonesian (id-ID) (incomplete...)
-  - Spanish Mexican (es-MX) (incomplete...)
-  - Vietnamese (vi-VN) (incomplete...)
-Please, send me a PM (mailto:hpwamr51 @ gmail.com) if you are willing to help. 😀
+For our "Notepad3 Translation Projects", we are looking for motivated volunteers, with a priority
+to resume "(incomplete...)" translation projects:
+
+- Greek (el-GR) (incomplete...)
+- Hindi (hi-IN) (incomplete...)
+- Indonesian (id-ID) (incomplete...)
+- Polish (pl-PL) (incomplete...)
+- Portuguese (pt-PT) (incomplete...)
+- Spanish Mexican (es-MX) (incomplete...)
+- Vietnamese (vi-VN) (incomplete...)
+- etc...
+
+Please, send me a PM (mailto:hpwamr51 @ gmail.com) if you are willing to help. 🤔
 --------------------------------------------------------
 
 

@@ -467,8 +467,8 @@ msgstr "Soek Teks"
 
 #. Resource IDs: (160)
 #, c-format
-msgid "Die pad \"%s\" bestaan ​​nie of is nie toeganklik nie!"
-msgstr ""
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr "Die pad \"%s\" bestaan ​​nie of is nie toeganklik nie!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
