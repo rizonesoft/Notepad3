@@ -102,7 +102,7 @@ CAPTION "Перайсці"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Увядзіце імя файла ці папкі каб іх адкрыць\nальбо выберыце са спісу нядаўна наведаную папку.",IDC_STATIC,35,7,196,17
+    LTEXT           "Увядзіце імя файла ці папкі каб іх адкрыць альбо\nвыберыце са спісу нядаўна наведаную папку.",IDC_STATIC,35,7,196,17
     COMBOBOX        IDC_GOTO,35,35,196,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,126,64,50,14,WS_DISABLED
     PUSHBUTTON      "Скасаваць",IDCANCEL,181,64,50,14
