@@ -102,7 +102,7 @@ CAPTION "Ir a"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Teclee el nombre de un archivo o carpeta para abrir,\no seleccionar un carpeta visitada recientemente de la lista.",IDC_STATIC,35,7,182,17
+    LTEXT           "Teclee el nombre de un archivo o carpeta para abrir,\no seleccionar un carpeta visitada recientemente de la lista.",IDC_STATIC,35,7,182,26
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "Aceptar",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,167,66,50,14
