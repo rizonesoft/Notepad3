@@ -90,7 +90,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Fai click qui per specificare la cartella con\ni link alle tue applicazioni preferite.",IDC_OPENWITHDESCR,26,83,130,18
+    LTEXT           "Fai click qui per specificare la cartella con i link alle tue applicazioni preferite.",IDC_OPENWITHDESCR,26,83,135,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Annulla",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -152,9 +152,9 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Copia/Sposta"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Sorgente:",IDC_STATIC,7,7,30,8
+    LTEXT           "Sorgente:",IDC_STATIC,7,7,35,8
     EDITTEXT        IDC_SOURCE,7,18,216,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "&Destinazione:",IDC_STATIC,7,37,40,8
+    LTEXT           "&Destinazione:",IDC_STATIC,7,37,45,8
     COMBOBOX        IDC_DESTINATION,7,48,199,105,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "",IDC_BROWSEDESTINATION,210,48,13,13
     LTEXT           "Azione:",IDC_STATIC,7,66,24,8
@@ -180,7 +180,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,187,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
     CONTROL         "&Mantieni MiniPath sempre in primo piano.",IDC_ALWAYSONTOP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,150,10
     CONTROL         "&Minimizza nella Tray (click per ripristinare).",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,157,10
     CONTROL         "&Prova a riutilizzare la finestra quando esegui MiniPath.",IDC_REUSEWINDOW,
@@ -207,10 +207,10 @@ BEGIN
     CONTROL         "&Sposta i file eliminati nel Cestino.",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
     CONTROL         "&Elimina file senza conferma (non raccomandato).",IDC_NOCONFIRMDELETE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,170,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,175,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
     CONTROL         "Abilita tasto ""&Esc"" per...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
-    CONTROL         "Minimizzare la finestra.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,80,10
+    CONTROL         "Minimizzare la finestra.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,90,10
     CONTROL         "Uscire da MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,80,10
 END
 
@@ -221,15 +221,15 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
     LTEXT           "Aspetto degli elementi nella lista della cartella.",IDC_STATIC,40,15,150,8
-    GROUPBOX        "Colori",IDC_STATIC,10,41,205,134
-    LTEXT           "Usa questo colore del testo quando è impostato NO FILTRO:",IDC_STATIC,20,54,190,8
-    CONTROL         "Colore di default della &finestra.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,105,10
-    CONTROL         "Colore personal.:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
+    GROUPBOX        "Colori",IDC_STATIC,7,41,211,137
+    LTEXT           "Usa questo colore del testo quando è impostato NO FILTRO:",IDC_STATIC,14,54,200,8
+    CONTROL         "Colore di default della &finestra.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,68,105,10
+    CONTROL         "Colore personal.:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,14,82,65,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Seleziona...",IDC_COLOR_PICK1,119,80,50,14
-    LTEXT           "Usa questo colore per il testo quando c'è un FILTRO ATTIVO:",IDC_STATIC,20,105,190,8
-    CONTROL         "Colore di default della &finestra.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,105,10
-    CONTROL         "Colore personal.:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
+    LTEXT           "Usa questo colore per il testo quando c'è un FILTRO ATTIVO:",IDC_STATIC,14,105,200,8
+    CONTROL         "Colore di default della &finestra.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,119,105,10
+    CONTROL         "Colore personal.:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,14,133,65,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Seleziona...",IDC_COLOR_PICK2,120,130,50,14
 END
@@ -244,35 +244,35 @@ BEGIN
     LTEXT           "&Programma ""Quick View"" di default (Ctrl+Q):",IDC_STATIC,10,41,180,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
-    LTEXT           "&Cartella ""Preferiti"" (F11):",IDC_STATIC,10,76,76,8
+    LTEXT           "&Cartella ""Preferiti"" (F11):",IDC_STATIC,10,76,90,8
     EDITTEXT        IDC_FAVORITES,10,87,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
 END
 
-IDD_FINDTARGET DIALOGEX 0, 0, 276, 180
+IDD_FINDTARGET DIALOGEX 0, 0, 280, 180
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Applicazione di destinazione"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "Non usare un'applicazione di destinazione specifica, e lancia il file selezionato.",IDC_LAUNCH,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,250,10
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,270,10
     CONTROL         "Usa la seguente applicazione di destinazione:",IDC_TARGET,
-                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,150,10
-    LTEXT           "Specifica l'azione quando l'applicazione di destinazione è già in esecuzione:",IDC_STATIC,7,64,245,8
-    EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,160,10
+    LTEXT           "Specifica l'azione quando l'applicazione di destinazione è già in esecuzione:",IDC_STATIC,7,64,265,8
+    EDITTEXT        IDC_TARGETPATH,20,35,234,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSE,258,35,15,14,BS_BITMAP
     LTEXT           "Messaggio:",IDC_STATIC,20,120,40,8
     CONTROL         "Nessuno, esegui l'applicazione di destinazione ogni volta che apri un file.",IDC_ALWAYSRUN,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,245,10
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,255,10
     CONTROL         "Invia il messaggio 'File aperto' nella finestra di destinazione:",IDC_SENDDROPMSG,
-                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,198,10
+                    "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,208,10
     CONTROL         "Esegui il comando DDE seguente:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
-    LTEXT           "Applicazione:",IDC_STATIC,128,120,40,8
-    PUSHBUTTON      "Trova finestra...",IDC_FINDWIN,209,91,60,14
-    LTEXT           "Argomento:",IDC_STATIC,198,120,40,8
-    EDITTEXT        IDC_DDEMSG,20,130,109,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDEAPP,133,130,66,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_DDETOPIC,203,130,66,14,ES_AUTOHSCROLL
+    LTEXT           "Applicazione:",IDC_STATIC,137,120,45,8
+    PUSHBUTTON      "Trova finestra...",IDC_FINDWIN,218,91,55,14
+    LTEXT           "Argomento:",IDC_STATIC,207,120,40,8
+    EDITTEXT        IDC_DDEMSG,20,130,113,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDEAPP,137,130,66,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DDETOPIC,207,130,66,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,165,159,50,14
     PUSHBUTTON      "Annulla",IDCANCEL,219,159,50,14
 END
