@@ -406,7 +406,7 @@ CAPTION "Impostazione pagina"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Carta",1073,8,8,224,56,WS_GROUP
-    LTEXT           "Dimensione:",1089,16,24,40,8
+    LTEXT           "Dimensione:",1089,16,24,43,8
     COMBOBOX        1137,64,23,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     LTEXT           "&Sorgente:",1090,16,45,36,8
     COMBOBOX        1138,64,42,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
@@ -423,7 +423,7 @@ BEGIN
     LTEXT           "&Inferiore:",1105,164,104,32,8
     EDITTEXT        1158,196,103,28,12,WS_GROUP
     GROUPBOX        "Intestazioni e Pié di pagina",1074,8,130,224,56,WS_GROUP
-    LTEXT           "&Intestazione:",IDC_STATIC,16,146,40,8
+    LTEXT           "&Intestazione:",IDC_STATIC,16,148,40,8
     COMBOBOX        32,64,145,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     LTEXT           "&Pié di pagina:",IDC_STATIC3,16,167,45,8
     COMBOBOX        33,64,164,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
