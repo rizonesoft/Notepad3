@@ -118,7 +118,7 @@ BEGIN
     EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
     CONTROL         "फ़िल्टर से मेल खाती हुई फ़ाइलें बाहर रखें (&E)",IDC_NEGFILTER,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,118,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,140,10
     DEFPUSHBUTTON   "सही है",IDOK,77,58,50,14
     PUSHBUTTON      "रद्द करें",IDCANCEL,132,58,50,14
 END
@@ -159,13 +159,13 @@ BEGIN
     PUSHBUTTON      "",IDC_BROWSEDESTINATION,210,48,13,13
     LTEXT           "क्रिया:",IDC_STATIC,7,66,24,8
     CONTROL         "कॉपी (&C)",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,35,66,40,10
-    CONTROL         "स्थान बदलें (&M)",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,40,10
+    CONTROL         "स्थान बदलें (&M)",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,55,10
     DEFPUSHBUTTON   "सही है",IDOK,117,74,50,14,WS_DISABLED
     PUSHBUTTON      "रद्द करें",IDCANCEL,173,74,50,14
     SCROLLBAR       IDC_RESIZEGRIP2,7,78,10,10
 END
 
-IDPP_GENERAL DIALOGEX 0, 0, 225, 185
+IDPP_GENERAL DIALOGEX 0, 0, 240, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "सामान्य"
 FONT 9, "Segoe UI", 400, 0, 0x1
@@ -173,23 +173,23 @@ BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
     LTEXT           "MiniPath के लिए सामान्य प्रोग्राम सेटिंग बताएं",IDC_STATIC,40,15,153,8
     CONTROL         "ऑब्जेक्ट खोलने के लिए सिर्फ़ एक माउस-क्लिक ही स्वीकारें (&A)",IDC_SINGLECLICK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,175,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,195,10
     CONTROL         "ट्रैक चुनाव सक्षम करें (&E)",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
-    CONTROL         "सम्पूर्ण पंक्ति चुनाव सक्षम करें (&F)",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
-    CONTROL         "फ़ाइल खुली होने की अवस्था में लक्ष्य विंडो को हमेशा सक्रिय रखें (&A)",IDC_FOCUSEDIT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,187,10
-    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
+    CONTROL         "सम्पूर्ण पंक्ति चुनाव सक्षम करें (&F)",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,115,10
+    CONTROL         "फ़ाइल खुली होने की अवस्था में लक्ष्य विंडो को हमेशा सक्रिय रखें (&C)",IDC_FOCUSEDIT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,205,10
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,220,1
     CONTROL         "MiniPath विंडो को हमेशा ऊपर रखें (&K)",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
     CONTROL         "सिस्टम ट्रे में छोटा करें (पुनः सक्रिय करने लिए क्लिक करें) (&M)",IDC_MINIMIZETOTRAY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,175,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,190,10
     CONTROL         "जब MiniPath शुरू हो, मौजूदा विंडो को पुनः इस्तेमाल करने का प्रयत्न करें (&T)",IDC_REUSEWINDOW,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,208,10
-    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,230,10
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,220,1
     CONTROL         "बाहर निकलते समय सेटिंग सहेजें (&S)",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,120,10
 END
 
-IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
+IDPP_ADVANCED DIALOGEX 0, 0, 240, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "उन्नत"
 FONT 9, "Segoe UI", 400, 0, 0x1
@@ -197,32 +197,32 @@ BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
     LTEXT           "MiniPath के लिए उन्नत प्रोग्राम सेटिंग बताएं",IDC_STATIC,40,15,160,8
     CONTROL         "स्टार्टअप निर्देशिका: (&U)",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
-    CONTROL         "हाल ही में अधिक प्रयोग हुई (&R)",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,90,10
+    CONTROL         "हाल ही में अधिक प्रयोग हुई (&R)",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,100,10
     CONTROL         """पसंदीदा"" फ़ोल्डर (&F)",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
-    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,220,1
     CONTROL         "सहेजी हुई फ़ाइल का सिर्फ़ पढ़ने-योग्य गुण साफ़ करें (&C)",IDC_CLEARREADONLY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,160,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,170,10
     CONTROL         "कॉपी की गई फ़ाइलों के नाम विरोधाभास होने में नाम बदलें (&N)",IDC_RENAMEONCOLLISION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,170,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,190,10
     CONTROL         "मिटाई हुई फ़ाइल रीसाइकल बिन में भेजें। (&M)",IDC_USERECYCLEBIN,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
     CONTROL         "फ़ाइल मिटाने की पुष्टि न करें (यह अनुशंसित नहीं है) (&D)",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,170,10
-    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         """Esc"" कुंजी सक्षम करें (&E)...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,220,1
+    CONTROL         """Esc"" कुंजी सक्षम करें (&E)...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,90,10
     CONTROL         "विंडो छोटी करें (&W)",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
-    CONTROL         "MiniPath से बाहर निकलें (&X)",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,90,10
+    CONTROL         "MiniPath से बाहर निकलें (&X)",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,100,10
 END
 
-IDPP_ITEMS DIALOGEX 0, 0, 225, 185
+IDPP_ITEMS DIALOGEX 0, 0, 240, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "आइटम"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
     LTEXT           "निदेशिका सूची में आइटम का दिखाव",IDC_STATIC,40,15,140,8
-    GROUPBOX        "रंग",IDC_STATIC,10,41,205,134
-    LTEXT           "कोई फ़िल्टर न होने की अवस्था में इस रंग के टेक्स्ट का प्रयोग करें:",IDC_STATIC,20,54,180,8
+    GROUPBOX        "रंग",IDC_STATIC,10,41,220,134
+    LTEXT           "कोई फ़िल्टर न होने की अवस्था में इस रंग के टेक्स्ट का प्रयोग करें:",IDC_STATIC,20,54,190,8
     CONTROL         "डिफ़ॉल्ट विंडो रंग (&W)",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
     CONTROL         "मनचाहे रंग: (&C)",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
@@ -234,7 +234,7 @@ BEGIN
     PUSHBUTTON      "रंग चुनें...",IDC_COLOR_PICK2,120,130,50,14
 END
 
-IDPP_PROG DIALOGEX 0, 0, 226, 185
+IDPP_PROG DIALOGEX 0, 0, 240, 185
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "स्थान"
 FONT 9, "Segoe UI", 400, 0, 0x1
@@ -242,11 +242,11 @@ BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
     LTEXT           "बाहरी प्रोग्राम और स्थान बताएं",IDC_STATIC,40,15,140,8
     LTEXT           "डिफ़ॉल्ट (&D) ""Quick View"" प्रोग्राम (Ctrl+Q):",IDC_STATIC,10,41,140,8
-    EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
+    EDITTEXT        IDC_QUICKVIEW,10,52,206,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSE_Q,218,52,13,13,BS_BITMAP
     LTEXT           "पसंदीदा फ़ोल्डर (F11): (&F)",IDC_STATIC,10,76,76,8
-    EDITTEXT        IDC_FAVORITES,10,87,191,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
+    EDITTEXT        IDC_FAVORITES,10,87,206,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_BROWSE_F,218,87,13,13,BS_BITMAP
 END
 
 IDD_FINDTARGET DIALOGEX 0, 0, 276, 180

@@ -454,7 +454,7 @@ BEGIN
     BEGIN
         MENUITEM "मनपसंद स्कीम बनाएं (&C)...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "वाक्य-रचना स्कीम चुनें (&X)\tF12",                   IDM_VIEW_SCHEME
+        MENUITEM "वाक्य-रचना स्कीम चुनें (&X)...\tF12",                   IDM_VIEW_SCHEME
         MENUITEM "दूसरा सामान्य बेस (&2)\tShift+F12",                     IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "व्यापक डिफ़ॉल्ट फॉन्ट (&D)...\tAlt+F12",                IDM_VIEW_FONT
