@@ -544,7 +544,7 @@ BEGIN
     LTEXT           "बंद करने वाला टैग (संपादित योग्य) (&C)",IDC_STATIC2,7,37,110,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     EDITTEXT        102,125,48,20,14,ES_AUTOHSCROLL
-    LTEXT           "X गुणा",IDC_STATIC3,148,50,24,8
+    LTEXT           "X गुणा",IDC_STATIC3,148,50,28,8
     DEFPUSHBUTTON   "सही है",IDOK,125,7,50,14
     PUSHBUTTON      "रद्द करें",IDCANCEL,125,24,50,14
 END
