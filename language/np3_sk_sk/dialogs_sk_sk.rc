@@ -361,7 +361,7 @@ BEGIN
     RTEXT           "%s riadok(y)",IDC_INDENT_SUM_MIX,84,42,52,8
     GROUPBOX        "Preodsadiť všetko? ",IDC_STATIC2,7,60,182,56,WS_GROUP
     CONTROL         "&Tabulátory",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
-    CONTROL         "&Prázdne",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,25,10
+    CONTROL         "&Prázdne",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,32,10
     RTEXT           "%s riadok(y) w/ nepravidelná hĺbka odsadenia",IDC_INDENT_TAB_MODX,40,72,124,8
     RTEXT           "%s riadok(y) w/ nepravidelná hĺbka odsadenia",IDC_INDENT_SPC_MODX,40,84,124,8
     PUSHBUTTON      "&Áno",IDOK,80,98,50,14
@@ -544,7 +544,7 @@ BEGIN
     LTEXT           "&Koncový Tag (možná úprava):",IDC_STATIC2,7,37,97,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     EDITTEXT        102,125,48,20,14,ES_AUTOHSCROLL
-    LTEXT           "X-krát",IDC_STATIC3,148,50,24,8
+    LTEXT           "X-krát",IDC_STATIC3,148,50,28,8
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Zrušiť",IDCANCEL,125,24,50,14
 END
