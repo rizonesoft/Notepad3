@@ -89,24 +89,24 @@ CAPTION "Tekst zoeken"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Zoek naar:",IDC_STATIC,7,7,46,8
-    CONTROL         "<a>Esc Ctrl-teken.</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
+    CONTROL         "<a>Esc Ctrl-teken.</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 75, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "&Hoofdlettergevoelig",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,110,10
     CONTROL         "Alleen heel &woord",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
     CONTROL         "&Begin van het woord",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,100,10
     CONTROL         "Backslashes &transformeren",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,100,10
     CONTROL         "Reguliere &expressie",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
-    CONTROL         "Punt &matches alles",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
-    CONTROL         "Niet opnieuw zoeken",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
-    CONTROL         "S&luiten na vinden",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
+    CONTROL         "Punt &matches alles",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,75,10
+    CONTROL         "Niet opnieuw zoeken",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,80,10
+    CONTROL         "S&luiten na vinden",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,70,10
     CONTROL         "Mar&keren",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
     CONTROL         "&Met jokertekens",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,65,10
     CONTROL         "Venster transparant maken bij verlies van focus",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,154,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,170,10
     DEFPUSHBUTTON   "Vo&lgende",IDOK,211,7,55,14
     PUSHBUTTON      "Vo&rige",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Sluiten",IDCANCEL,211,99,55,14
-    CONTROL         "<a>Naar Vervangen (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,105,85,10
+    CONTROL         "<a>Naar Vervangen (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,120,105,85,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,193,85,14,10
@@ -120,23 +120,23 @@ CAPTION "Tekst vervangen"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Zoeken naar:",IDC_STATIC,7,7,46,8
-    CONTROL         "<a>Esc Ctrl-teken.</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
+    CONTROL         "<a>Esc Ctrl-teken.</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 75, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Vervangen door:",IDC_STATIC2,7,36,55,8
-    CONTROL         "<a>Esc Ctrl-teken.</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
+    CONTROL         "<a>Esc Ctrl-teken.</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 75, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "&Hoofdlettergevoelig",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,110,10
     CONTROL         "Alleen heel &woord",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
     CONTROL         "&Begin van het woord",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,100,10
     CONTROL         "Backslashes &transformeren",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,100,10
     CONTROL         "Reguliere &expressie",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
-    CONTROL         "Punt &matches alles",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
-    CONTROL         "Niet opnieuw zoeken",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
-    CONTROL         "S&luiten na vervangen",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,85,10
+    CONTROL         "Punt &matches alles",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,75,10
+    CONTROL         "Niet opnieuw zoeken",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,80,10
+    CONTROL         "S&luiten na vervangen",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,80,10
     CONTROL         "Mar&keren",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
     CONTROL         "&Met jokertekens",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,65,10
     CONTROL         "Venster transparant maken bij verlies van focus",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,154,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,170,10
     DEFPUSHBUTTON   "Vo&lgende",IDOK,211,7,55,14
     PUSHBUTTON      "Vo&rige",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "&Vervangen",IDC_REPLACE,211,43,55,14
@@ -144,7 +144,7 @@ BEGIN
     PUSHBUTTON      "&Alles vervangen",IDC_REPLACEALL,211,75,55,14
     PUSHBUTTON      "Wisselen",IDC_SWAPSTRG,150,32,49,12
     PUSHBUTTON      "Sluiten",IDCANCEL,211,126,55,14
-    CONTROL         "<a>Naar Zoeken (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,132,85,10
+    CONTROL         "<a>Naar Zoeken (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,120,132,85,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,193,114,14,10
@@ -165,43 +165,43 @@ BEGIN
     PUSHBUTTON      "Annuleren",IDCANCEL,105,69,55,16
 END
 
-IDD_MUI_OPENWITH DIALOGEX 0, 0, 165, 129
+IDD_MUI_OPENWITH DIALOGEX 0, 0, 170, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Openen met..."
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
-    PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
+    CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,156,69
+    PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,84,13,13
     LTEXT           "Klik hier om de map met koppelingen naar\nuw favoriete applicaties op te geven.",IDC_OPENWITHDESCR,26,83,150,18
-    DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
-    PUSHBUTTON      "Annuleren",IDCANCEL,108,108,50,14
-    SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
+    DEFPUSHBUTTON   "OK",IDOK,57,108,50,14
+    PUSHBUTTON      "Annuleren",IDCANCEL,113,108,50,14
+    SCROLLBAR       IDC_RESIZEGRIP,7,117,10,10
 END
 
-IDD_MUI_DEFENCODING DIALOGEX 0, 0, 197, 172
+IDD_MUI_DEFENCODING DIALOGEX 0, 0, 208, 172
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Codering"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Standaardcodering (nieuw bestand):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
-    CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
+    GROUPBOX        "Standaardcodering (nieuw bestand):",IDC_STATIC,7,7,194,48,0,WS_EX_TRANSPARENT
+    CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,178,128
     CONTROL         "Te gebruiken bij detectiefout.",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
-    GROUPBOX        "Coderingsdetectie: ",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
+    GROUPBOX        "Coderingsdetectie: ",IDC_STATIC2,7,58,194,88,0,WS_EX_TRANSPARENT
     CONTROL         "7-bit &ASCII bestanden in UTF-8 modus openen.",IDC_ASCIIASUTF8,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,155,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,165,10
     CONTROL         "Alleen betrouwbare detectieresultaten geb&ruiken.",IDC_RELIABLE_DETECTION_RES,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,170,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,176,10
     CONTROL         "8-bit *.&nfo/diz bestanden in DOS-437 modus openen.",IDC_NFOASOEM,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,175,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,186,10
     CONTROL         "Codering van bestands&tags verwerken.",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,140,10
     CONTROL         "Analyse van &ANSI-codepagina uitvoeren.",IDC_NOANSICPDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,122,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,145,10
     CONTROL         "&UNICODE-detectie inschakelen.",IDC_NOUNICODEDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
-    DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
-    PUSHBUTTON      "Annuleren",IDCANCEL,140,151,50,14
+    DEFPUSHBUTTON   "OK",IDOK,98,151,50,14
+    PUSHBUTTON      "Annuleren",IDCANCEL,151,151,50,14
 END
 
 IDD_MUI_DEFEOLMODE DIALOGEX 0, 0, 196, 80
@@ -264,7 +264,7 @@ BEGIN
     CONTROL         "Cursorpositie &behouden.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
     CONTROL         "Zoekpat&roon onthouden.",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,120,10
     CONTROL         "&Automatisch het meest recente document openen.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,180,10
-    CONTROL         "Verwijderen", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
+    CONTROL         "Verwijderen", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 210, 107, 52, 14
     DEFPUSHBUTTON   "OK",IDOK,154,158,50,14,WS_DISABLED
     PUSHBUTTON      "Sluiten",IDCANCEL,212,158,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,143,10,10
@@ -278,26 +278,26 @@ BEGIN
     CONTROL         "&Geen.", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
     CONTROL         "&Indicatie (stil).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
     CONTROL         "Bericht &tonen.", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&Automatisch opnieuw laden.", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
+    CONTROL         "&Automatisch opnieuw laden.", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,120,10
     CONTROL         "&Exclusieve bestandsvergrendeling.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,140,10
-    CONTROL         "&Herstellen als een nieuw bestand wordt geopend.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,155,10
+    CONTROL         "&Herstellen als een nieuw bestand wordt geopend.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,176,10
     CONTROL         "Log &Monitoren.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Annuleren",IDCANCEL,127,24,50,14
 END
 
-IDD_MUI_STYLESELECT DIALOGEX 0, 0, 165, 194
+IDD_MUI_STYLESELECT DIALOGEX 0, 0, 170, 194
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Syntax-schema selecteren"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,130
+    CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,156,130
     CONTROL         "Geselecteerde schema instellen als stand&aard.",IDC_DEFAULTSCHEME,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,148,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,162,10
     CONTROL         "&Automatisch selecteren op bestandsextensie.",IDC_AUTOSELECT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,127,10
-    DEFPUSHBUTTON   "OK",IDOK,53,173,50,14,WS_DISABLED
-    PUSHBUTTON      "Annuleren",IDCANCEL,108,173,50,14
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,160,10
+    DEFPUSHBUTTON   "OK",IDOK,58,173,50,14,WS_DISABLED
+    PUSHBUTTON      "Annuleren",IDCANCEL,113,173,50,14
 END
 
 IDD_MUI_STYLECONFIG DIALOGEX 0, 0, 467, 254
@@ -323,7 +323,7 @@ BEGIN
     PUSHBUTTON      "Annuleren",IDCANCEL,410,232,50,14
     GROUPBOX        "Info",IDC_INFO_GROUPBOX,181,7,280,127
     CTEXT           "-",IDC_TITLE,240,20,180,24,SS_CENTERIMAGE
-    EDITTEXT        IDC_STYLEEDIT_HELP,197,50,262,74,ES_MULTILINE | ES_READONLY | NOT WS_BORDER
+    EDITTEXT        IDC_STYLEEDIT_HELP,182,54,275,74,ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
 IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 114
@@ -342,7 +342,7 @@ BEGIN
     CONTROL         "&Waarschuwing bij inconsistente inspringing.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,157,10
     CONTROL         "T&ab/spatie-inspringing automatisch detecteren.",IDC_AUTO_DETECT_INDENTS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,166,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Annuleren",IDCANCEL,117,27,50,14
 END
@@ -443,17 +443,17 @@ BEGIN
     CONTROL         "",1082,"Static",SS_GRAYRECT,262,123,80,4
 END
 
-IDD_MUI_FAVORITES DIALOGEX 0, 0, 165, 129
+IDD_MUI_FAVORITES DIALOGEX 0, 0, 170, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Favorieten"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
+    CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,156,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
     LTEXT           "Klik hier om de map met koppelingen naar uw favoriete bestanden op te geven.",IDC_FAVORITESDESCR,26,83,150,18
-    DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
-    PUSHBUTTON      "Annuleren",IDCANCEL,108,108,50,14
-    SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
+    DEFPUSHBUTTON   "OK",IDOK,58,108,50,14
+    PUSHBUTTON      "Annuleren",IDCANCEL,116,108,50,14
+    SCROLLBAR       IDC_RESIZEGRIP,7,116,10,10
 END
 
 IDD_MUI_ADDTOFAV DIALOGEX 0, 0, 172, 66
@@ -461,28 +461,28 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Toevoegen aan favorieten"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Voer de naam in voor het nieuwe favoriete item:",IDC_FAVORITESDESCR,7,7,158,8
+    LTEXT           "Voer de naam in voor het nieuwe favoriete item:",IDC_FAVORITESDESCR,7,7,162,8
     EDITTEXT        IDC_ADDFAV_FILES,7,22,158,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "Annuleren",IDCANCEL,115,45,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,45,10,10
 END
 
-IDD_MUI_PASSWORDS DIALOGEX 0, 0, 311, 122
+IDD_MUI_PASSWORDS DIALOGEX 0, 0, 314, 122
 STYLE DS_SETFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Bestandversleuteling"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Wachtwoordzin", IDC_STATIC, 7, 7, 297, 108
-    DEFPUSHBUTTON   "OK",IDOK,245,98,50,14
-    PUSHBUTTON      "Annuleren",IDCANCEL,184,98,50,14
-    CONTROL         "Een nieuwe hoofdsleutel instellen",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,110,10
-    EDITTEXT        IDC_PWD_EDIT1,17,35,276,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
-    EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
-    LTEXT           "Optionele Hoofdsleutel:",IDC_STATIC2,17,61,90,10,NOT WS_GROUP
+    GROUPBOX        "Wachtwoordzin", IDC_STATIC, 7, 7, 301, 108
+    DEFPUSHBUTTON   "OK",IDOK,249,98,50,14
+    PUSHBUTTON      "Annuleren",IDCANCEL,188,98,50,14
+    CONTROL         "Nieuwe hoofdsleutel instellen",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,101,60,110,10
+    EDITTEXT        IDC_PWD_EDIT1,17,35,280,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
+    EDITTEXT        IDC_PWD_EDIT2,17,74,280,12,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "Optionele Hoofdsleutel:",IDC_STATIC2,17,61,83,10,NOT WS_GROUP
     CONTROL         "Versleuteling met wachtwoordzin",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,125,10
-    CONTROL         "Hoofdsleutel hergebruiken",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,105,10
-    CONTROL         "Wachtwoordzin weergeven",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,95,10
+    CONTROL         "Hoofdsleutel hergebruik.",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,214,60,92,10
+    CONTROL         "Wachtwoordzin weergeven",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,100,10
 END
 
 IDD_MUI_READPW DIALOGEX 0, 0, 299, 81
@@ -496,7 +496,7 @@ BEGIN
     EDITTEXT        IDC_PWD_EDIT3,16,23,267,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     CONTROL         "Decoderen met hoofdsleutel",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,117,10
     LTEXT           "Dit bestand heeft een Hoofdsleutel",IDC_PWD_STATMPW,16,41,119,11,NOT WS_GROUP
-    CONTROL         "Wachtwoordzin weergeven",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,95,10
+    CONTROL         "Wachtwoordzin weergeven",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,100,10
 END
 
 IDD_MUI_COLUMNWRAP DIALOGEX 0, 0, 130, 47
@@ -510,7 +510,7 @@ BEGIN
     PUSHBUTTON      "Annuleren",IDCANCEL,73,24,50,14
 END
 
-IDD_MUI_MODIFYLINES DIALOGEX 0, 0, 182, 120
+IDD_MUI_MODIFYLINES DIALOGEX 0, 0, 190, 120
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Regels aanpassen"
 FONT 9, "Segoe UI", 400, 0, 0x1
@@ -519,17 +519,17 @@ BEGIN
     EDITTEXT        IDC_MODLNS_ED_PREPEND,7,18,98,14,ES_AUTOHSCROLL
     LTEXT           "&Tekst aan regels toevoegen:",IDC_STATIC2,7,37,95,8
     EDITTEXT        IDC_MODLNS_ED_APPEND,7,48,98,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
-    PUSHBUTTON      "Annuleren",IDCANCEL,125,24,50,14
+    DEFPUSHBUTTON   "OK",IDOK,133,7,50,14
+    PUSHBUTTON      "Annuleren",IDCANCEL,133,24,50,14
     LTEXT           "${L}",IDC_MODLNS_DOCLN_CANONIC,7,72,14,8
     LTEXT           "${0L}",IDC_MODLNS_DOCLN_ZEROFLD,30,72,18,8
-    LTEXT           "Document regelnummer.",IDC_STATIC3,57,72,74,8
+    LTEXT           "Document regelnummer.",IDC_STATIC3,57,72,90,8
     LTEXT           "${N}",IDC_MODLNS_CNTLN1_CANONIC,7,82,15,8
     LTEXT           "${0N}",IDC_MODLNS_CNTLN1_ZEROFLD,30,82,19,8
-    LTEXT           "Doorlopende nummers.",IDC_STATIC4,57,82,66,8
+    LTEXT           "Doorlopende nummers.",IDC_STATIC4,57,82,90,8
     LTEXT           "${I}",IDC_MODLNS_CNTLN0_CANONIC,7,92,13,8
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,17,8
-    LTEXT           "Doorlopende nummers (vanaf nul).",IDC_STATIC5,57,92,109,8
+    LTEXT           "Doorlopende nummers (vanaf nul).",IDC_STATIC5,57,92,120,8
     LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,35,8
     LTEXT           "${<expr>} definieert wiskund. formules.",IDC_STATIC6,57,102,132,8
 END
@@ -544,7 +544,7 @@ BEGIN
     LTEXT           "&Tag sluiten (kan worden bewerkt):",IDC_STATIC2,7,37,125,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     EDITTEXT        102,125,48,20,14,ES_AUTOHSCROLL
-    LTEXT           "X maal",IDC_STATIC3,148,50,24,8
+    LTEXT           "X maal",IDC_STATIC3,148,50,28,8
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Annuleren",IDCANCEL,125,24,50,14
 END
@@ -640,14 +640,14 @@ BEGIN
     CONTROL         "&Oplopend sorteren.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
     CONTROL         "&Aflopend sorteren.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
     CONTROL         "Regels &vermengen.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
-    CONTROL         "Dubbele regels &samenvoegen.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "Dubbele regels &samenvoegen.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,110,10
     CONTROL         "Dubbele regels ve&rwijderen.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
     CONTROL         "&Unieke regels verwijderen.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
     CONTROL         "L&ege regels verwijderen.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
     CONTROL         "&Blanco regels verwijderen.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
     CONTROL         "Hoofdletter&gevoelig.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
     CONTROL         "&Niet-hoofdlettergevoelig.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
-    CONTROL         "Logische &nummervergelijking.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
+    CONTROL         "Logische &nummervergelijking.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,110,10
     CONTROL         "&Lexicografische vergelijking.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
     CONTROL         "Kolom &soort (rechthoekige selectie).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
@@ -659,7 +659,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Opnieuw laden als"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Selecteer bron&codering om bestand opnieuw te laden:",IDC_STATIC,7,7,160,8
+    LTEXT           "Selecteer bron&codering om opnieuw te laden:",IDC_STATIC,7,7,180,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "Annuleren",IDCANCEL,108,114,50,14

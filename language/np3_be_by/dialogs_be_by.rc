@@ -88,7 +88,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Знайсці тэкст"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Шукаць:",IDC_STATIC,7,7,46,8
+    LTEXT           "&Шукаць:",IDC_STATIC,7,7,47,8
     CONTROL         "<a>Экранаванне</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,221,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Улічваць &рэгістр",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,71,10
@@ -100,7 +100,7 @@ BEGIN
     CONTROL         "Не з&ацыкліваць",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,37,69,10
     CONTROL         "&Закрыць пасля пошуку",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,49,94,10
     CONTROL         "Адзначыць ува&ходжанні",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,61,99,10
-    CONTROL         "&Wildcard пошук",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,85,63,10
+    CONTROL         "&Wildcard пошук",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,85,67,10
     CONTROL         "Празрыстасць, калі няма фокусу",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,127,10
     DEFPUSHBUTTON   "Знайсці &далей",IDOK,246,7,60,14
@@ -119,7 +119,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS
 CAPTION "Замяніць тэкст"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Шукаць:",IDC_STATIC,7,7,46,8
+    LTEXT           "&Шукаць:",IDC_STATIC,7,7,47,8
     CONTROL         "<a>Экранаванне</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,221,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Замяніц&ь на:",IDC_STATIC2,7,36,46,8
@@ -263,7 +263,7 @@ BEGIN
     CONTROL         "&Захоўваць гісторыю адкрытых файлаў",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,150,10
     CONTROL         "&Аднаўляць пазіцыю карэткі",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
     CONTROL         "Захоўваць &пошукавыя запыты",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,121,10
-    CONTROL         "Аўтазагрузка апошняга &файла падчас старту.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,160,10
+    CONTROL         "Аўтазагрузка апошняга &файла падчас старту.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,180,10
     CONTROL         "Прыняць", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
     DEFPUSHBUTTON   "OK",IDOK,154,158,50,14,WS_DISABLED
     PUSHBUTTON      "Закрыць",IDCANCEL,212,158,50,14
@@ -333,7 +333,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Памер &табуляцыі:",IDC_STATIC,7,10,65,8
     EDITTEXT        IDC_TAB_WIDTH,79,7,30,14,ES_AUTOHSCROLL
-    LTEXT           "Памер в&одступа:",IDC_STATIC2,7,30,56,8
+    LTEXT           "Памер в&одступа:",IDC_STATIC2,7,30,65,8
     EDITTEXT        IDC_INDENT_DEPTH,79,27,30,14,ES_AUTOHSCROLL
     CONTROL         "&Замяняць прабеламі",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,83,10
     CONTROL         "&Клавіша Tab перафарматуе водступ",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,139,10
@@ -526,7 +526,7 @@ BEGIN
     LTEXT           "Нумар радка дакумента",IDC_STATIC3,57,72,83,8
     LTEXT           "${N}",IDC_MODLNS_CNTLN1_CANONIC,7,82,15,8
     LTEXT           "${0N}",IDC_MODLNS_CNTLN1_ZEROFLD,30,82,19,8
-    LTEXT           "Паслядоўны лік",IDC_STATIC4,57,82,54,8
+    LTEXT           "Паслядоўны лік",IDC_STATIC4,57,82,65,8
     LTEXT           "${I}",IDC_MODLNS_CNTLN0_CANONIC,7,92,13,8
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,17,8
     LTEXT           "Паслядоўны лік (з нуля)",IDC_STATIC5,57,92,109,8
@@ -554,7 +554,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Абгарнуць вылучэнне"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Уставіць п&ерад вылучэннем:",IDC_STATIC,7,7,98,8
+    LTEXT           "Уставіць п&ерад вылучэннем:",IDC_STATIC,7,7,108,8
     EDITTEXT        100,7,18,126,14,ES_AUTOHSCROLL
     LTEXT           "Уставіць п&асля вылучэння:",IDC_STATIC2,7,37,93,8
     EDITTEXT        101,7,48,126,14,ES_AUTOHSCROLL
@@ -671,7 +671,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Вызначыць кадоўку"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Выберыце дзейную &кадоўку файла:",IDC_STATIC,7,7,122,8
+    LTEXT           "Выберыце дзейную &кадоўку файла:",IDC_STATIC,7,7,140,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "Скасаваць",IDCANCEL,108,114,50,14
