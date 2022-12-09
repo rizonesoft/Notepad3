@@ -38,6 +38,7 @@
 #include <commctrl.h>
 #include <richedit.h>
 #include <windowsx.h>
+#include <shellscalingapi.h>
 
 #if !defined(DISABLE_D2D)
 #define USE_D2D 1
@@ -167,11 +168,24 @@ GetSystemMetricsForDpiSig fnGetSystemMetricsForDpi = nullptr;
 using AdjustWindowRectExForDpiSig = BOOL(WINAPI *)(LPRECT lpRect, DWORD dwStyle, BOOL bMenu, DWORD dwExStyle, UINT dpi);
 AdjustWindowRectExForDpiSig fnAdjustWindowRectExForDpi = nullptr;
 
+using AreDpiAwarenessContextsEqualSig = BOOL(WINAPI *)(DPI_AWARENESS_CONTEXT, DPI_AWARENESS_CONTEXT);
+AreDpiAwarenessContextsEqualSig fnAreDpiAwarenessContextsEqual = nullptr;
+
+using GetWindowDpiAwarenessContextSig = DPI_AWARENESS_CONTEXT(WINAPI *)(HWND);
+GetWindowDpiAwarenessContextSig fnGetWindowDpiAwarenessContext = nullptr;
+
+using GetScaleFactorForMonitorSig = HRESULT(WINAPI *)(HMONITOR, DEVICE_SCALE_FACTOR *);
+GetScaleFactorForMonitorSig fnGetScaleFactorForMonitor = nullptr;
+
+using SetThreadDpiAwarenessContextSig = DPI_AWARENESS_CONTEXT(WINAPI *)(DPI_AWARENESS_CONTEXT);
+SetThreadDpiAwarenessContextSig fnSetThreadDpiAwarenessContext = nullptr;
+
 void LoadDpiForWindow() noexcept {
 	HMODULE user32 = ::GetModuleHandleW(L"user32.dll");
 	fnGetDpiForWindow = DLLFunction<GetDpiForWindowSig>(user32, "GetDpiForWindow");
 	fnGetSystemMetricsForDpi = DLLFunction<GetSystemMetricsForDpiSig>(user32, "GetSystemMetricsForDpi");
 	fnAdjustWindowRectExForDpi = DLLFunction<AdjustWindowRectExForDpiSig>(user32, "AdjustWindowRectExForDpi");
+	fnSetThreadDpiAwarenessContext = DLLFunction<SetThreadDpiAwarenessContextSig>(user32, "SetThreadDpiAwarenessContext");
 
 	using GetDpiForSystemSig = UINT(WINAPI *)(void);
 	GetDpiForSystemSig fnGetDpiForSystem = DLLFunction<GetDpiForSystemSig>(user32, "GetDpiForSystem");
@@ -183,11 +197,13 @@ void LoadDpiForWindow() noexcept {
 		::DeleteDC(hdcMeasure);
 	}
 
-	if (!fnGetDpiForWindow) {
-		hDLLShcore = ::LoadLibraryExW(L"shcore.dll", {}, LOAD_LIBRARY_SEARCH_SYSTEM32);
-		if (hDLLShcore) {
-			fnGetDpiForMonitor = DLLFunction<GetDpiForMonitorSig>(hDLLShcore, "GetDpiForMonitor");
-		}
+	fnGetWindowDpiAwarenessContext = DLLFunction<GetWindowDpiAwarenessContextSig>(user32, "GetWindowDpiAwarenessContext");
+	fnAreDpiAwarenessContextsEqual = DLLFunction<AreDpiAwarenessContextsEqualSig>(user32, "AreDpiAwarenessContextsEqual");
+
+	hDLLShcore = ::LoadLibraryExW(L"shcore.dll", {}, LOAD_LIBRARY_SEARCH_SYSTEM32);
+	if (hDLLShcore) {
+		fnGetScaleFactorForMonitor = DLLFunction<GetScaleFactorForMonitorSig>(hDLLShcore, "GetScaleFactorForMonitor");
+		fnGetDpiForMonitor = DLLFunction<GetDpiForMonitorSig>(hDLLShcore, "GetDpiForMonitor");
 	}
 }
 
@@ -392,6 +408,7 @@ struct FontWin final : public Font {
 		FLOAT yInternalLeading_) noexcept :
 		pTextFormat(pTextFormat_),
 		extraFontFlag(extraFontFlag_),
+		characterSet(CharacterSet::Ansi),
 		yAscent(yAscent_),
 		yDescent(yDescent_),
 		yInternalLeading(yInternalLeading_),
@@ -467,7 +484,7 @@ bool GetDWriteFontProperties(const LOGFONTW& lf, std::wstring& wsFamily,
 					names->FindLocaleName(L"en-us", &index, &exists);
 					if (!exists) {
 						index = 0;
-					}
+}
 
 					UINT32 length = 0;
 					names->GetStringLength(index, &length);
@@ -491,7 +508,42 @@ bool GetDWriteFontProperties(const LOGFONTW& lf, std::wstring& wsFamily,
 
 }
 
+HMONITOR MonitorFromWindowHandleScaling(HWND hWnd) noexcept {
+	constexpr DWORD monitorFlags = MONITOR_DEFAULTTONEAREST;
+
+	if (!fnSetThreadDpiAwarenessContext) {
+		return ::MonitorFromWindow(hWnd, monitorFlags);
+	}
+
+	// Temporarily switching to PerMonitorV2 to retrieve correct monitor via MonitorFromRect() in case of active GDI scaling.
+	const DPI_AWARENESS_CONTEXT oldContext = fnSetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+	PLATFORM_ASSERT(oldContext != nullptr);
+
+	RECT rect;
+	::GetWindowRect(hWnd, &rect);
+	const HMONITOR monitor = ::MonitorFromRect(&rect, monitorFlags);
+
+	fnSetThreadDpiAwarenessContext(oldContext);
+	return monitor;
+}
+
+int GetDeviceScaleFactorWhenGdiScalingActive(HWND hWnd) noexcept {
+	if (fnAreDpiAwarenessContextsEqual) {
+		PLATFORM_ASSERT(fnGetWindowDpiAwarenessContext && fnGetScaleFactorForMonitor);
+		if (fnAreDpiAwarenessContextsEqual(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED, fnGetWindowDpiAwarenessContext(hWnd))) {
+			const HWND hRootWnd = ::GetAncestor(hWnd, GA_ROOT); // Scale factor applies to entire (root) window.
+			const HMONITOR hMonitor = MonitorFromWindowHandleScaling(hRootWnd);
+			DEVICE_SCALE_FACTOR deviceScaleFactor;
+			if (S_OK == fnGetScaleFactorForMonitor(hMonitor, &deviceScaleFactor))
+				return (static_cast<int>(deviceScaleFactor) + 99) / 100; // increase to first integral multiple of 1
+		}
+	}
+	return 1;
+}
+
+
 #if 0
+
 std::shared_ptr<Font> Font::Allocate(const FontParameters &fp) {
 #if defined(USE_D2D)
 	if (fp.technology != Technology::Default) {
@@ -1503,11 +1555,13 @@ class SurfaceD2D : public Surface, public ISetRenderingParams {
 	static constexpr FontQuality invalidFontQuality = FontQuality::QualityMask;
 	FontQuality fontQuality = invalidFontQuality;
 	int logPixelsY = USER_DEFAULT_SCREEN_DPI;
+	int deviceScaleFactor = 1;
 	std::shared_ptr<RenderingParams> renderingParams;
 
 	void Clear() noexcept;
 	void SetFontQuality(FontQuality extraFontFlag);
 	HRESULT GetBitmap(ID2D1Bitmap **ppBitmap);
+	void SetDeviceScaleFactor(const ID2D1RenderTarget *const pRenderTarget) noexcept;
 
 public:
 	SurfaceD2D() noexcept;
@@ -1599,6 +1653,7 @@ SurfaceD2D::SurfaceD2D(ID2D1RenderTarget *pRenderTargetCompatible, int width, in
 		&desiredSize, nullptr, &desiredFormat, D2D1_COMPATIBLE_RENDER_TARGET_OPTIONS_NONE, &pBitmapRenderTarget);
 	if (SUCCEEDED(hr)) {
 		pRenderTarget = pBitmapRenderTarget;
+		SetDeviceScaleFactor(pRenderTarget);
 		pRenderTarget->BeginDraw();
 		ownRenderTarget = true;
 	}
@@ -1658,6 +1713,7 @@ void SurfaceD2D::Init(SurfaceID sid, WindowID wid, bool /*printing*/) {
 	Release();
 	// printing always using GDI
 	pRenderTarget = static_cast<ID2D1RenderTarget*>(sid);
+	SetDeviceScaleFactor(pRenderTarget);
 	SetScale(wid);
 }
 // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
@@ -1708,9 +1764,15 @@ int SurfaceD2D::LogPixelsY() {
 	return logPixelsY;
 }
 
+void SurfaceD2D::SetDeviceScaleFactor(const ID2D1RenderTarget *const pD2D1RenderTarget) noexcept {
+	FLOAT dpiX = 0.f;
+	FLOAT dpiY = 0.f;
+	pD2D1RenderTarget->GetDpi(&dpiX, &dpiY);
+	deviceScaleFactor = static_cast<int>(dpiX / 96.f);
+}
+
 int SurfaceD2D::PixelDivisions() {
-	// Win32 uses device pixels.
-	return 1;
+	return deviceScaleFactor;
 }
 
 int SurfaceD2D::DeviceHeightFont(int points) {
@@ -1842,7 +1904,7 @@ void SurfaceD2D::FillRectangle(PRectangle rc, Fill fill) {
 }
 
 void SurfaceD2D::FillRectangleAligned(PRectangle rc, Fill fill) {
-	FillRectangle(PixelAlign(rc, 1), fill);
+	FillRectangle(PixelAlign(rc, PixelDivisions()), fill);
 }
 
 void SurfaceD2D::FillRectangle(PRectangle rc, Surface &surfacePattern) {
@@ -1856,7 +1918,7 @@ void SurfaceD2D::FillRectangle(PRectangle rc, Surface &surfacePattern) {
 	if (SUCCEEDED(hr) && pBitmap) {
 		ID2D1BitmapBrush *pBitmapBrush = nullptr;
 		const D2D1_BITMAP_BRUSH_PROPERTIES brushProperties =
-			D2D1::BitmapBrushProperties(D2D1_EXTEND_MODE_WRAP, D2D1_EXTEND_MODE_WRAP,
+	        D2D1::BitmapBrushProperties(D2D1_EXTEND_MODE_WRAP, D2D1_EXTEND_MODE_WRAP,
 			D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR);
 		// Create the bitmap brush.
 		hr = pRenderTarget->CreateBitmapBrush(pBitmap, brushProperties, &pBitmapBrush);
@@ -1977,9 +2039,9 @@ void SurfaceD2D::DrawRGBAImage(PRectangle rc, int width, int height, const unsig
 		ID2D1Bitmap *bitmap = nullptr;
 		const D2D1_SIZE_U size = D2D1::SizeU(width, height);
 		D2D1_BITMAP_PROPERTIES props = {{DXGI_FORMAT_B8G8R8A8_UNORM,
-			D2D1_ALPHA_MODE_PREMULTIPLIED}, 72.0, 72.0};
+		    D2D1_ALPHA_MODE_PREMULTIPLIED}, 72.0, 72.0};
 		const HRESULT hr = pRenderTarget->CreateBitmap(size, image.data(),
-				  width * 4, &props, &bitmap);
+                  width * 4, &props, &bitmap);
 		if (SUCCEEDED(hr)) {
 			const D2D1_RECT_F rcDestination = RectangleFromPRectangle(rc);
 			pRenderTarget->DrawBitmap(bitmap, rcDestination);
@@ -3116,7 +3178,7 @@ class ListBoxX : public ListBox {
 	PRectangle rcPreSize;
 	Point dragOffset;
 	Point location;	// Caret location at which the list is opened
-	int wheelDelta; // mouse wheel residue
+	MouseWheelDelta wheelDelta;
 	ListOptions options;
 	DWORD frameStyle = WS_THICKFRAME;
 
@@ -3148,7 +3210,7 @@ public:
 		desiredVisibleRows(9), maxItemCharacters(0), aveCharWidth(8),
 		parent(nullptr), ctrlID(0), dpi(USER_DEFAULT_SCREEN_DPI),
 		delegate(nullptr),
-		widestItem(nullptr), maxCharWidth(1), resizeHit(0), wheelDelta(0) {
+		widestItem(nullptr), maxCharWidth(1), resizeHit(0) {
 	}
 	ListBoxX(const ListBoxX &) = delete;
 	ListBoxX(ListBoxX &&) = delete;
@@ -3910,21 +3972,15 @@ LRESULT ListBoxX::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam
 		}
 		return ::DefWindowProc(hWnd, iMessage, wParam, lParam);
 	case WM_MOUSEWHEEL:
-		wheelDelta -= GET_WHEEL_DELTA_WPARAM(wParam);
-		if (std::abs(wheelDelta) >= WHEEL_DELTA) {
+		if (wheelDelta.Accumulate(wParam)) {
 			const int nRows = GetVisibleRows();
 			int linesToScroll = std::clamp(nRows - 1, 1, 3);
-			linesToScroll *= (wheelDelta / WHEEL_DELTA);
+			linesToScroll *= wheelDelta.Actions();
 			int top = ListBox_GetTopIndex(lb) + linesToScroll;
 			if (top < 0) {
 				top = 0;
 			}
 			ListBox_SetTopIndex(lb, top);
-			// update wheel delta residue
-			if (wheelDelta >= 0)
-				wheelDelta = wheelDelta % WHEEL_DELTA;
-			else
-				wheelDelta = - (-wheelDelta % WHEEL_DELTA);
 		}
 		break;
 
@@ -3936,7 +3992,7 @@ LRESULT ListBoxX::WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam
 }
 
 LRESULT PASCAL ListBoxX::StaticWndProc(
-	HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam) {
+    HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam) {
 	if (iMessage == WM_CREATE) {
 		CREATESTRUCT *pCreate = reinterpret_cast<CREATESTRUCT *>(lParam);
 		SetWindowPointer(hWnd, pCreate->lpCreateParams);
