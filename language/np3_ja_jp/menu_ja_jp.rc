@@ -277,7 +277,7 @@ BEGIN
             MENUITEM "バックスラッシュを反転",                     IDM_EDIT_INVERTBACKSLASH
             MENUITEM "スラッシュを反転",                         IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
-            MENUITEM "16進表記へ(&H\tCtrl+Alt+X",               IDM_EDIT_CHAR2HEX
+            MENUITEM "16進表記へ(&H)\tCtrl+Alt+X",               IDM_EDIT_CHAR2HEX
             MENUITEM "16進表記を文字へ(&C)\tCtrl+Alt+C",         IDM_EDIT_HEX2CHAR
         END
         POPUP "挿入(&I)"
@@ -374,7 +374,7 @@ BEGIN
             MENUITEM "背景色を変更(&C)",                     IDM_VIEW_HILITCURLN_BACK
             MENUITEM "枠線(&F)",                             IDM_VIEW_HILITCURLN_FRAME
         END
-        POPUP "単語出現マーカー(&k)"
+        POPUP "単語出現マーカー(&K)"
         BEGIN
             MENUITEM "オン(&A)\tAlt+A",                       IDM_VIEW_MARKOCCUR_ONOFF
             MENUITEM "しおり用の余白も使用(&B)",                IDM_VIEW_MARKOCCUR_BOOKMARKS
