@@ -2818,7 +2818,7 @@ typedef struct {
 
 #define MATCH_COUNTER_OUT(title) do {\
   int i;\
-  fprintf(DBGFP, "%s (%ld): retry limit: %8lu, subexp_call: %8lu\n", (title), (sstart - str), retry_in_match_counter, msa->subexp_call_in_search_counter); \
+  fprintf(DBGFP, "%s (%ld): retry limit: %8lu/%8lu, subexp_call: %8lu\n", (title), (sstart - str), retry_in_match_counter, retry_limit_in_match, msa->subexp_call_in_search_counter); \
   fprintf(DBGFP, "      ");\
   for (i = 0; i < MAX_SUBEXP_CALL_COUNTERS; i++) {\
     fprintf(DBGFP, " %6lu", subexp_call_counters[i]);\
@@ -3058,33 +3058,33 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
         goto fail; /* for retry */
       }
 
-      if (n > best_len) {
 #ifdef USE_FIND_LONGEST_SEARCH_ALL_OF_RANGE
         if (OPTON_FIND_LONGEST(options)) {
+        if (n > best_len) {
           if (n > msa->best_len) {
+            best_len = n;
             msa->best_len = n;
             msa->best_s   = (UChar* )sstart;
-            if (s >= in_right_range) {
-              best_len = msa->best_len; /* end of find */
-            }
           }
           else {
             if (s >= in_right_range && msa->best_s == sstart) {
-              best_len = msa->best_len; /* end of find */
+              goto op_end_out;
             }
             else {
-              SOP_OUT;
               goto fail; /* for retry */
             }
           }
         }
         else {
+          goto fail; /* for retry */
+        }
+      }
+      else {
           best_len = n;
         }
 #else
         best_len = n;
 #endif
-      }
 
       /* set region */
       region = msa->region;
@@ -3149,14 +3149,14 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
 #endif
       } /* if (region) */
 
-      SOP_OUT;
-
       if (OPTON_CALLBACK_EACH_MATCH(options) &&
           IS_NOT_NULL(CallbackEachMatch)) {
         i = CallbackEachMatch(str, end, sstart, region,
                               msa->mp->callout_user_data);
-        if (i < 0) MATCH_AT_ERROR_RETURN(i);
-
+        if (i < 0) {
+          SOP_OUT;
+          MATCH_AT_ERROR_RETURN(i);
+        }
 #ifdef USE_FIND_LONGEST_SEARCH_ALL_OF_RANGE
         if (! OPTON_FIND_LONGEST(options))
 #endif
@@ -3165,7 +3165,13 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
         goto fail;
       }
 
+#ifdef USE_FIND_LONGEST_SEARCH_ALL_OF_RANGE
+      if (OPTON_FIND_LONGEST(options)) goto fail;
+#endif
+
+  op_end_out:
       /* default behavior: return first-matching result. */
+      SOP_OUT;
       goto match_at_end;
 
     CASE_OP(STR_1)
@@ -4414,6 +4420,11 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
 #endif
 
     CASE_OP(FINISH)
+#ifdef USE_FIND_LONGEST_SEARCH_ALL_OF_RANGE
+      if (OPTON_FIND_LONGEST(options)) {
+        best_len = ONIG_MISMATCH;
+      }
+#endif
       goto match_at_end;
 
 #ifdef ONIG_DEBUG_STATISTICS

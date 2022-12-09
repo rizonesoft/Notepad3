@@ -44,6 +44,7 @@ Master branch
 * Fixed: (?I) option was not enabled for character classes (Issue #264).
 * Changed specification to check for incorrect POSIX bracket (Issue #253).
 * Changed [[:punct:]] in Unicode encodings to be compatible with POSIX definition. (Issue #268)
+* Fixed: ONIG_OPTION_FIND_LONGEST behavior
 
 
 Version 6.9.8
