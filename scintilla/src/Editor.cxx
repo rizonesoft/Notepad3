@@ -1058,8 +1058,7 @@ void Editor::MoveSelectedLines(int lineDelta) {
 	}
 	SetSelection(selectionStart, selectionEnd);
 
-	SelectionText selectedText;
-	CopySelectionRange(&selectedText);
+	const std::string selectedText = RangeText(selectionStart, selectionEnd);
 
 	const Point currentLocation = LocationFromPosition(CurrentPosition());
 	const Sci::Line currentLine = LineFromLocation(currentLocation);
@@ -1073,7 +1072,7 @@ void Editor::MoveSelectedLines(int lineDelta) {
 		pdoc->InsertString(pdoc->Length(), eol, strlen(eol));
 	GoToLine(currentLine + lineDelta);
 
-	Sci::Position selectionLength = pdoc->InsertString(CurrentPosition(), selectedText.Data(), selectedText.Length());
+	Sci::Position selectionLength = pdoc->InsertString(CurrentPosition(), selectedText);
 	if (appendEol) {
 		const Sci::Position lengthInserted = pdoc->InsertString(CurrentPosition() + selectionLength, eol, strlen(eol));
 		selectionLength += lengthInserted;
@@ -5718,15 +5717,27 @@ Sci::Position Editor::GetTag(char *tagValue, int tagNumber) {
 	return length;
 }
 
-Sci::Position Editor::ReplaceTarget(bool replacePatterns, const char *text, Sci::Position length) {
+Sci::Position Editor::ReplaceTarget(ReplaceType replaceType, std::string_view text) {
 	UndoGroup ug(pdoc);
-	if (length == -1)
-		length = strlen(text);
-	if (replacePatterns) {
-		text = pdoc->SubstituteByPosition(text, &length);
-		if (!text) {
+	if (replaceType == ReplaceType::patterns) {
+		Sci::Position length = text.length();
+		const char *p = pdoc->SubstituteByPosition(text.data(), &length);
+		if (!p) {
 			return 0;
 		}
+		text = std::string_view(p, length);
+	}
+
+	if (replaceType == ReplaceType::minimal) {
+		// Check for prefix and suffix and reduce text and target to match.
+		// This is performed with Range which doesn't support virtual space.
+		Range range(targetRange.start.Position(), targetRange.end.Position());
+		pdoc->TrimReplacement(text, range);
+		// Re-apply virtual space to start if start position didn't change.
+		// Don't bother with end as its virtual space is not used
+		const SelectionPosition start(range.start == targetRange.start.Position() ?
+			targetRange.start : SelectionPosition(range.start));
+		targetRange = SelectionSegment(start, SelectionPosition(range.end));
 	}
 
 	// Remove the text inside the range
@@ -5740,9 +5751,9 @@ Sci::Position Editor::ReplaceTarget(bool replacePatterns, const char *text, Sci:
 	targetRange.end = targetRange.start;
 
 	// Insert the new text
-	const Sci::Position lengthInserted = pdoc->InsertString(targetRange.start.Position(), text, length);
+	const Sci::Position lengthInserted = pdoc->InsertString(targetRange.start.Position(), text);
 	targetRange.end.SetPosition(targetRange.start.Position() + lengthInserted);
-	return length;
+	return text.length();
 }
 
 bool Editor::IsUnicodeMode() const noexcept {
@@ -5807,6 +5818,27 @@ void Editor::AddStyledText(const char *buffer, Sci::Position appendLength) {
 	SetEmptySelection(sel.MainCaret() + lengthInserted);
 }
 
+Sci::Position Editor::GetStyledText(char *buffer, Sci::Position cpMin, Sci::Position cpMax) const noexcept {
+	Sci::Position iPlace = 0;
+	for (Sci::Position iChar = cpMin; iChar < cpMax; iChar++) {
+		buffer[iPlace++] = pdoc->CharAt(iChar);
+		buffer[iPlace++] = pdoc->StyleAtNoExcept(iChar);
+	}
+	buffer[iPlace] = '\0';
+	buffer[iPlace + 1] = '\0';
+	return iPlace;
+}
+
+Sci::Position Editor::GetTextRange(char *buffer, Sci::Position cpMin, Sci::Position cpMax) const {
+	const Sci::Position cpEnd = (cpMax == -1) ? pdoc->Length() : cpMax;
+	PLATFORM_ASSERT(cpEnd <= pdoc->Length());
+	const Sci::Position len = cpEnd - cpMin; 	// No -1 as cpMin and cpMax are referring to inter character positions
+	pdoc->GetCharRange(buffer, cpMin, len);
+	// Spec says copied text is terminated with a NUL
+	buffer[len] = '\0';
+	return len; 	// Not including NUL
+}
+
 bool Editor::ValidMargin(uptr_t wParam) const noexcept {
 	return wParam < vs.ms.size();
 }
@@ -5869,7 +5901,7 @@ void Editor::StyleSetMessage(Message iMessage, uptr_t wParam, sptr_t lParam) {
 		if (!(classified & UTF8MaskInvalid)) {
 			// valid UTF-8
 			int len = classified & UTF8MaskWidth;
-			while (len--)
+			for (int i=0; i<len && i<4; i++)
 				*rep++ = *utf8++;
 		}
 		*rep = 0;
@@ -6254,11 +6286,15 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case Message::ReplaceTarget:
 		PLATFORM_ASSERT(lParam);
-		return ReplaceTarget(false, ConstCharPtrFromSPtr(lParam), PositionFromUPtr(wParam));
+		return ReplaceTarget(ReplaceType::basic, ViewFromParams(lParam, wParam));
 
 	case Message::ReplaceTargetRE:
 		PLATFORM_ASSERT(lParam);
-		return ReplaceTarget(true, ConstCharPtrFromSPtr(lParam), PositionFromUPtr(wParam));
+		return ReplaceTarget(ReplaceType::patterns, ViewFromParams(lParam, wParam));
+
+	case Message::ReplaceTargetMinimal:
+		PLATFORM_ASSERT(lParam);
+		return ReplaceTarget(ReplaceType::minimal, ViewFromParams(lParam, wParam));
 
 	case Message::SearchInTarget:
 		PLATFORM_ASSERT(lParam);
@@ -6346,36 +6382,17 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 	case Message::FindTextFull:
 		return FindTextFull(wParam, lParam);
 
-	case Message::GetTextRange: {
-			if (lParam == 0)
-				return 0;
-			TextRange *tr = static_cast<TextRange *>(PtrFromSPtr(lParam));
-			Sci::Position cpMax = static_cast<Sci::Position>(tr->chrg.cpMax);
-			if (cpMax == -1)
-				cpMax = pdoc->Length();
-			PLATFORM_ASSERT(cpMax <= pdoc->Length());
-			Sci::Position len = cpMax - tr->chrg.cpMin; 	// No -1 as cpMin and cpMax are referring to inter character positions
-			pdoc->GetCharRange(tr->lpstrText, tr->chrg.cpMin, len);
-			// Spec says copied text is terminated with a NUL
-			tr->lpstrText[len] = '\0';
-			return len; 	// Not including NUL
+	case Message::GetTextRange:
+		if (TextRange *tr = static_cast<TextRange *>(PtrFromSPtr(lParam))) {
+			return GetTextRange(tr->lpstrText, tr->chrg.cpMin, tr->chrg.cpMax);
 		}
+		return 0;
 
-	case Message::GetTextRangeFull: {
-			if (lParam == 0)
-				return 0;
-			TextRangeFull *tr = static_cast<TextRangeFull *>(PtrFromSPtr(lParam));
-			Sci::Position cpMax = tr->chrg.cpMax;
-			if (cpMax == -1)
-				cpMax = pdoc->Length();
-			PLATFORM_ASSERT(cpMax <= pdoc->Length());
-			const Sci::Position len = cpMax - tr->chrg.cpMin; 	// No -1 as cpMin and cpMax are referring to inter character positions
-			PLATFORM_ASSERT(len >= 0);
-			pdoc->GetCharRange(tr->lpstrText, tr->chrg.cpMin, len);
-			// Spec says copied text is terminated with a NUL
-			tr->lpstrText[len] = '\0';
-			return len; 	// Not including NUL
+	case Message::GetTextRangeFull:
+		if (TextRangeFull *tr = static_cast<TextRangeFull *>(PtrFromSPtr(lParam))) {
+			return GetTextRange(tr->lpstrText, tr->chrg.cpMin, tr->chrg.cpMax);
 		}
+		return 0;
 
 	case Message::HideSelection:
 		vs.selection.visible = wParam == 0;
@@ -6625,19 +6642,17 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 		pdoc->SetSavePoint();
 		break;
 
-	case Message::GetStyledText: {
-			if (lParam == 0)
-				return 0;
-			TextRange *tr = static_cast<TextRange *>(PtrFromSPtr(lParam));
-			Sci::Position iPlace = 0;
-			for (Sci::Position iChar = tr->chrg.cpMin; iChar < tr->chrg.cpMax; iChar++) {
-				tr->lpstrText[iPlace++] = pdoc->CharAt(iChar);
-				tr->lpstrText[iPlace++] = pdoc->StyleAt(iChar);
-			}
-			tr->lpstrText[iPlace] = '\0';
-			tr->lpstrText[iPlace + 1] = '\0';
-			return iPlace;
+	case Message::GetStyledText:
+		if (TextRange *tr = static_cast<TextRange *>(PtrFromSPtr(lParam))) {
+			return GetStyledText(tr->lpstrText, tr->chrg.cpMin, tr->chrg.cpMax);
 		}
+		return 0;
+
+	case Message::GetStyledTextFull:
+		if (TextRangeFull *tr = static_cast<TextRangeFull *>(PtrFromSPtr(lParam))) {
+			return GetStyledText(tr->lpstrText, tr->chrg.cpMin, tr->chrg.cpMax);
+		}
+		return 0;
 
 	case Message::CanRedo:
 		return (pdoc->CanRedo() && !pdoc->IsReadOnly()) ? 1 : 0;
@@ -7102,7 +7117,7 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case Message::GetIMEInteraction:
 		return static_cast<sptr_t>(imeInteraction);
-		
+
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	case Message::IsIMEOpen:
 		return static_cast<sptr_t>(imeIsOpen);
@@ -7509,10 +7524,7 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 		InvalidateStyleRedraw();
 		break;
 	case Message::GetCaretLineBack:
-		if (vs.ElementColour(Element::CaretLineBack))
-			return vs.ElementColour(Element::CaretLineBack)->OpaqueRGB();
-		else
-			return 0;
+		return vs.ElementColourForced(Element::CaretLineBack).OpaqueRGB();
 
 	case Message::SetCaretLineBack:
 		vs.SetElementRGB(Element::CaretLineBack, static_cast<int>(wParam));
@@ -7723,7 +7735,7 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 	case Message::GetSelAlpha:
 		if (vs.selection.layer == Layer::Base)
 			return static_cast<sptr_t>(Alpha::NoAlpha);
-		return vs.ElementColour(Element::SelectionBack)->GetAlpha();
+		return vs.ElementColourForced(Element::SelectionBack).GetAlpha();
 
 	case Message::GetSelEOLFilled:
 		return vs.selection.eolFilled;
@@ -7762,7 +7774,7 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case Message::GetCaretFore:
-		return vs.ElementColour(Element::Caret)->OpaqueRGB();
+		return vs.ElementColourForced(Element::Caret).OpaqueRGB();
 
 	case Message::SetCaretStyle:
 		if (static_cast<CaretStyle>(wParam) <= (CaretStyle::Block | CaretStyle::OverstrikeBlock | CaretStyle::Curses | CaretStyle::BlockAfter))
@@ -8785,7 +8797,7 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 	case Message::GetAdditionalSelAlpha:
 		if (vs.selection.layer == Layer::Base)
 			return static_cast<sptr_t>(Alpha::NoAlpha);
-		return vs.ElementColour(Element::SelectionAdditionalBack)->GetAlpha();
+		return vs.ElementColourForced(Element::SelectionAdditionalBack).GetAlpha();
 
 	case Message::SetAdditionalCaretFore:
 		vs.elementColours[Element::CaretAdditional] = ColourRGBA::FromIpRGB(SPtrFromUPtr(wParam));
@@ -8793,7 +8805,7 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case Message::GetAdditionalCaretFore:
-		return vs.ElementColour(Element::CaretAdditional)->OpaqueRGB();
+		return vs.ElementColourForced(Element::CaretAdditional).OpaqueRGB();
 
 	case Message::RotateSelection:
 		sel.RotateMain();

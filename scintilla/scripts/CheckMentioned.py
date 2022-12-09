@@ -212,6 +212,13 @@ def checkDocumentation():
 		except KeyError:
 			print("***", val, "<-", name)
 
+	# Examine 'seealso' definitions
+	#<a class="seealso" href="#SCI_CREATEDOCUMENT">SCI_CREATEDOCUMENT</a>
+	seealsoPattern = re.compile(r'"seealso" href="#(\w+)">(\w+)[<(]')
+	for ref, text in re.findall(seealsoPattern, docs):
+		if ref != text:
+			print(f"seealso {text} -> {ref}")
+
 	for name in sccToValue.keys():
 		if name not in ["SCI_OPTIONAL_START", "SCI_LEXER_START"] and name not in docs:
 			print(f"Unknown {name}")
