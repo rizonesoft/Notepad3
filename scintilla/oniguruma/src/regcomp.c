@@ -1686,6 +1686,10 @@ compile_length_bag_node(BagNode* node, regex_t* reg)
     /* never come here, but set for escape warning */
     len = 0;
     break;
+
+  default:
+    return ONIGERR_TYPE_BUG;
+    break;
   }
 
   return len;
@@ -1887,6 +1891,10 @@ compile_bag_node(BagNode* node, regex_t* reg, ParseEnv* env)
         r = compile_tree(Else, reg, env);
       }
     }
+    break;
+
+  default:
+    return ONIGERR_TYPE_BUG;
     break;
   }
 
@@ -2416,6 +2424,10 @@ compile_length_gimmick_node(GimmickNode* node, regex_t* reg)
     }
     break;
 #endif
+
+  default:
+    return ONIGERR_TYPE_BUG;
+    break;
   }
 
   return len;
