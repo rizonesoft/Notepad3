@@ -469,6 +469,7 @@ BEGIN
         MENUITEM "Configuración &ajuste de línea...",                   IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Configuración de &larga línea...",                    IDM_SET_LONGLINESETTINGS
         MENUITEM "&Sangría texto automático",                           IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Auto Close Brackets",                      IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Auto Cierre &HTML/XML\tCtrl+Shift+H",                 IDM_SET_AUTOCLOSETAGS
         MENUITEM "A&uto completar palabras",                            IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Auto completar palabras clave 'Le&xer'",              IDM_SET_AUTOCLEXKEYWORDS

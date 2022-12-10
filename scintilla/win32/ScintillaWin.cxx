@@ -278,20 +278,6 @@ public:
 	}
 };
 
-class MouseWheelDelta {
-	int wheelDelta = 0;
-public:
-	bool Accumulate(WPARAM wParam) noexcept {
-		wheelDelta -= GET_WHEEL_DELTA_WPARAM(wParam);
-		return std::abs(wheelDelta) >= WHEEL_DELTA;
-	}
-	int Actions() noexcept {
-		const int actions = wheelDelta / WHEEL_DELTA;
-		wheelDelta = wheelDelta % WHEEL_DELTA;
-		return actions;
-	}
-};
-
 struct HorizontalScrollRange {
 	int pageWidth;
 	int documentWidth;
@@ -339,6 +325,8 @@ class ScintillaWin :
 	static HINSTANCE hInstance;
 	static ATOM scintillaClassAtom;
 	static ATOM callClassAtom;
+
+	int deviceScaleFactor = 1;
 
 #if defined(USE_D2D)
 	ID2D1RenderTarget *pRenderTarget;
@@ -444,7 +432,7 @@ class ScintillaWin :
 	void CreateCallTipWindow(PRectangle rc) override;
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	#if SCI_EnablePopupMenu
-		void AddToPopUp(const char* label, int cmd = 0, bool enabled = true) override;
+	void AddToPopUp(const char *label, int cmd = 0, bool enabled = true) override;
 	#endif
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	void ClaimSelection() override;
@@ -627,7 +615,8 @@ bool ScintillaWin::UpdateRenderingParams(bool force) noexcept {
 			return false;
 		}
 	}
-	HMONITOR monitor = ::MonitorFromWindow(MainHWND(), MONITOR_DEFAULTTONEAREST);
+	const HWND hRootWnd = ::GetAncestor(MainHWND(), GA_ROOT);
+	const HMONITOR monitor = Internal::MonitorFromWindowHandleScaling(hRootWnd);
 	if (!force && monitor == hCurrentMonitor && renderingParams->defaultRenderingParams) {
 		return false;
 	}
@@ -649,11 +638,23 @@ bool ScintillaWin::UpdateRenderingParams(bool force) noexcept {
 	}
 
 	hCurrentMonitor = monitor;
+	deviceScaleFactor = Internal::GetDeviceScaleFactorWhenGdiScalingActive(hRootWnd);
 	renderingParams->defaultRenderingParams.reset(monitorRenderingParams);
 	renderingParams->customRenderingParams.reset(customClearTypeRenderingParams);
 	return true;
 }
 
+namespace {
+
+D2D1_SIZE_U GetSizeUFromRect(const RECT &rc, const int scaleFactor) noexcept {
+	const long width = rc.right - rc.left;
+	const long height = rc.bottom - rc.top;
+	const UINT32 scaledWidth = width * scaleFactor;
+	const UINT32 scaledHeight = height * scaleFactor;
+	return D2D1::SizeU(scaledWidth, scaledHeight);
+}
+
+}
 
 void ScintillaWin::EnsureRenderTarget(HDC hdc) {
 	if (!renderTargetValid) {
@@ -665,19 +666,15 @@ void ScintillaWin::EnsureRenderTarget(HDC hdc) {
 		RECT rc;
 		::GetClientRect(hw, &rc);
 
-		const D2D1_SIZE_U size = D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top);
-
 		// Create a Direct2D render target.
 		D2D1_RENDER_TARGET_PROPERTIES drtp {};
 		drtp.type = D2D1_RENDER_TARGET_TYPE_DEFAULT;
-		drtp.pixelFormat.format = DXGI_FORMAT_UNKNOWN;
-		drtp.pixelFormat.alphaMode = D2D1_ALPHA_MODE_UNKNOWN;
-		drtp.dpiX = 96.0;
-		drtp.dpiY = 96.0;
 		drtp.usage = D2D1_RENDER_TARGET_USAGE_NONE;
 		drtp.minLevel = D2D1_FEATURE_LEVEL_DEFAULT;
 
 		if (technology == Technology::DirectWriteDC) {
+			drtp.dpiX = 96.f;
+			drtp.dpiY = 96.f;
 			// Explicit pixel format needed.
 			drtp.pixelFormat = D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM,
 				D2D1_ALPHA_MODE_IGNORE);
@@ -692,9 +689,14 @@ void ScintillaWin::EnsureRenderTarget(HDC hdc) {
 			}
 
 		} else {
+			drtp.dpiX = 96.f * deviceScaleFactor;
+			drtp.dpiY = 96.f * deviceScaleFactor;
+			drtp.pixelFormat = D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN,
+				D2D1_ALPHA_MODE_UNKNOWN);
+
 			D2D1_HWND_RENDER_TARGET_PROPERTIES dhrtp {};
 			dhrtp.hwnd = hw;
-			dhrtp.pixelSize = size;
+			dhrtp.pixelSize = ::GetSizeUFromRect(rc, deviceScaleFactor);
 			dhrtp.presentOptions = (technology == Technology::DirectWriteRetain) ?
 			D2D1_PRESENT_OPTIONS_RETAIN_CONTENTS : D2D1_PRESENT_OPTIONS_NONE;
 
@@ -1620,12 +1622,12 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 			// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 			if (wParam & (MK_CONTROL | MK_RBUTTON)) {
 				if (wParam & (MK_CONTROL)) {
-					// Zoom! We play with the font sizes in the styles.
-					// Number of steps/line is ignored, we just care if sizing up or down
+				// Zoom! We play with the font sizes in the styles.
+				// Number of steps/line is ignored, we just care if sizing up or down
 					if (linesToScroll < 0)
-						KeyCommand(Message::ZoomIn);
+					KeyCommand(Message::ZoomIn);
 					else
-						KeyCommand(Message::ZoomOut);
+					KeyCommand(Message::ZoomOut);
 				}
 				// send to main window (trigger zoom callTip or undo/redo history) !
 				::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
@@ -2773,7 +2775,7 @@ void ScintillaWin::CreateCallTipWindow(PRectangle) {
 
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #if SCI_EnablePopupMenu
-void ScintillaWin::AddToPopUp(const char* label, int cmd, bool enabled) {
+void ScintillaWin::AddToPopUp(const char *label, int cmd, bool enabled) {
 	HMENU hmenuPopup = static_cast<HMENU>(popup.GetID());
 	if (!label[0])
 		::AppendMenuA(hmenuPopup, MF_SEPARATOR, 0, "");
@@ -3661,10 +3663,12 @@ LRESULT PASCAL ScintillaWin::CTWndProc(
 					surfaceWindow->Init(ps.hdc, hWnd);
 				} else {
 #if defined(USE_D2D)
+					const int scaleFactor = sciThis->deviceScaleFactor;
+
 					// Create a Direct2D render target.
 					D2D1_HWND_RENDER_TARGET_PROPERTIES dhrtp {};
 					dhrtp.hwnd = hWnd;
-					dhrtp.pixelSize = D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top);
+					dhrtp.pixelSize = ::GetSizeUFromRect(rc, scaleFactor);
 					dhrtp.presentOptions = (sciThis->technology == Technology::DirectWriteRetain) ?
 						D2D1_PRESENT_OPTIONS_RETAIN_CONTENTS : D2D1_PRESENT_OPTIONS_NONE;
 
@@ -3672,8 +3676,8 @@ LRESULT PASCAL ScintillaWin::CTWndProc(
 					drtp.type = D2D1_RENDER_TARGET_TYPE_DEFAULT;
 					drtp.pixelFormat.format = DXGI_FORMAT_UNKNOWN;
 					drtp.pixelFormat.alphaMode = D2D1_ALPHA_MODE_UNKNOWN;
-					drtp.dpiX = 96.0;
-					drtp.dpiY = 96.0;
+					drtp.dpiX = 96.f * scaleFactor;
+					drtp.dpiY = 96.f * scaleFactor;
 					drtp.usage = D2D1_RENDER_TARGET_USAGE_NONE;
 					drtp.minLevel = D2D1_FEATURE_LEVEL_DEFAULT;
 
@@ -3737,7 +3741,7 @@ sptr_t ScintillaWin::DirectFunction(
 }
 
 sptr_t ScintillaWin::DirectStatusFunction(
-	sptr_t ptr, UINT iMessage, uptr_t wParam, sptr_t lParam, int *pStatus) {
+    sptr_t ptr, UINT iMessage, uptr_t wParam, sptr_t lParam, int *pStatus) {
 	ScintillaWin *sci = reinterpret_cast<ScintillaWin *>(ptr);
 	PLATFORM_ASSERT(::GetCurrentThreadId() == ::GetWindowThreadProcessId(sci->MainHWND(), nullptr));
 	const sptr_t returnValue = sci->WndProc(static_cast<Message>(iMessage), wParam, lParam);
@@ -3748,7 +3752,7 @@ sptr_t ScintillaWin::DirectStatusFunction(
 namespace Scintilla::Internal {
 
 sptr_t DirectFunction(
-	ScintillaWin *sci, UINT iMessage, uptr_t wParam, sptr_t lParam) {
+    ScintillaWin *sci, UINT iMessage, uptr_t wParam, sptr_t lParam) {
 	return sci->WndProc(static_cast<Message>(iMessage), wParam, lParam);
 }
 

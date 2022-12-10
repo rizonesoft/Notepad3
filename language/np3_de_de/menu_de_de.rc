@@ -469,6 +469,7 @@ BEGIN
         MENUITEM "&Wort Umbruch Einstellungen...",              IDM_SET_WORDWRAPSETTINGS
         MENUITEM "&Lang Zeilen Einstellungen...",               IDM_SET_LONGLINESETTINGS
         MENUITEM "Auto Text &Einrückung",                       IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Auto Klammer Schließen",                      IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Auto Tagabschluss &HTML/XML\tCtrl+Shift+H",   IDM_SET_AUTOCLOSETAGS
         MENUITEM "Auto Wort &Vorschläge",                       IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Auto &Lexer KeyWord Vorschläge",              IDM_SET_AUTOCLEXKEYWORDS

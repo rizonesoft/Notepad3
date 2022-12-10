@@ -6,13 +6,12 @@ setlocal enableextensions
 set SCRIPTNAME=%~dpn0.ps1
 set ARGS=%*
 
-set POSTFIX=RC
+set POSTFIX=beta
 if ["%POSTFIX%"] == [""] (
   if ["%~1"] neq [""] call :ESCAPE_ARGS
 ) else (
   set ARGS=-VerPatch "%POSTFIX%"
 )
-echo."%POSTFIX%">.\np3portableapp\_buildname.txt
 
 :POWERSHELL
 PowerShell.exe -NoProfile -NonInteractive -NoLogo -ExecutionPolicy Unrestricted -Command "& { $ErrorActionPreference = 'Stop'; & '%SCRIPTNAME%' @args; Exit $LastExitCode }" %ARGS%
