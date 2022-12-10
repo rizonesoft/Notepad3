@@ -9,15 +9,15 @@ Notepad3 is a fast and light-weight Scintilla-based text editor with syntax high
 > *Notepad3 is based on code from Florian Balmer's Notepad2 and XhmikosR's Notepad2-mod. MiniPath is based on code from Florian Balmer's metapath.*
 
 ## Important links!
-* Notepad3/RC download page - https://www.rizonesoft.com/downloads/notepad3
+* Download page - https://www.rizonesoft.com/downloads/notepad3
 * Latest changelog (release notes) - https://www.rizonesoft.com/downloads/notepad3/update
-* Notepad3 changelog (all versions/builds) - [Notepad3 - Full Changelog](https://raw.githubusercontent.com/rizonesoft/Notepad3/master/Build/Changes.txt)
-* Notepad3 Documentation - https://www.rizonesoft.com/documents/notepad3
+* Full changelog (all versions/builds) - [Notepad3 - Full Changelog](https://raw.githubusercontent.com/rizonesoft/Notepad3/master/Build/Changes.txt)
+* Documentation - https://www.rizonesoft.com/documents/notepad3
 
 ## Rizonesoft Support
 
 * **[GET IN TOUCH](https://www.rizonesoft.com/#contact)**
-* **Premium Support** - On Rizonesoft, support is free and we will assist you the best we can. Please be patient when contacting us; there are mainly volunteers working on Rizonesoft projects and time is a precious commodity.
+* **Premium Support** - On Rizonesoft, support is free and we will assist you the best we can. Please be patient when contacting us; there are mainly volunteers working on Rizonesoft projects, and time is a precious commodity.
 
 ## Changes compared to Flo's official [Notepad2](https://www.flos-freeware.ch/notepad2.html) (made in [Notepad2-mod](https://xhmikosr.github.io/notepad2-mod/)):
 
@@ -34,28 +34,28 @@ Notepad3 is a fast and light-weight Scintilla-based text editor with syntax high
 ## Changes compared to the Notepad2-mod fork:
 
 * Additional syntax highlighting support for Awk, D, golang, MATLAB
-* State of the art Regular Expression search engine ([Onigmu](https://github.com/k-takata/Onigmo))
-* New toolbar icons based on Yusuke Kamiyaman's Fugue Icons (Purchased by [Rizonesoft](https://www.rizonesoft.com))
-* Hyperlink Hotspot highlighting (single click Open in Browser (Ctrl) / Load in Editor (Alt)
-* Syntax highlighting support for D Source Script, Go Source Script, JSON, Makefiles, MATLAB, Nim Source Code, Power Shell Script, Resource Script, Shell Script.
+* Regular Expression search engine ([Onigmu](https://github.com/k-takata/Onigmo))
+* New toolbar icons based on Yusuke Kamiyaman's Fugue Icons (purchased by [Rizonesoft](https://www.rizonesoft.com))
+* Hyperlink hotspot highlighting (single-click Open in Browser (Ctrl) / Load in Editor (Alt)
+* Syntax highlighting support for D Source Script, Go Source Script, JSON, Makefiles, MATLAB, Nim Source Code, Power Shell Script, Resource Script, Shell Script
 * New program icon and other small cosmetic changes
-* In-App support for AES-256 Rijndael encryption/decryption of files (incl. external commandline tool for batch processing)
-* Virtual Space rectangular selection box (Alt-Key down)
+* In-App support for AES-256 Rijndael encryption/decryption of files (incl. external command line tool for batch processing)
+* Virtual space rectangular selection box (Alt-key down)
 * High-DPI awareness, including high definition toolbar icons
 * Undo/Redo preserves selection
-* File History preserves Caret position (optional) and remembers encoding of file
+* File history preserves caret position (optional) and remembers encoding of file
 * Accelerated word navigation
 * Preserve caret position of items in file history
 * Count occurrences of a marked selection or word
-* Count and Mark occurrences of matching search/find expression
+* Count and mark occurrences of matching search/find expression
 * Visual Studio style copy/paste current line (no selection)
 * Insert GUIDs
-* Dropped support for Windows XP version
-* Other various minor changes, tweaks and bugfixes
+* Dropped support for Windows XP
+* Other various minor changes, tweaks, and bugfixes
 
 ## Supported Operating Systems:
 
-* Windows 7, 8, 8.1 and 10 both 32-bit and 64-bit
+* Windows 7, 8, 8.1, 10, and 11 (both 32-bit and 64-bit)
 
 <hr/>
 
@@ -63,9 +63,7 @@ Notepad3 is a fast and light-weight Scintilla-based text editor with syntax high
 
 Seen on Nsane Forums: [Notepad3 is an advanced text editor...](https://www.nsaneforums.com/topic/382910-guidereview-notepad3-is-an-advanced-text-editor-that-supports-many-programming-languages/), a review of **Notepad3** posted by the moderator [Karston](https://www.nsaneforums.com/profile/12756-karlston/) at [nsane.forums](https://www.nsaneforums.com/). 
 
-To be correct and complete, this **Notepad3's review** is written on 2020-08-11 by **[Ashwin](https://www.ghacks.net/author/ashwin/)** and posted on **[gHacks](https://www.ghacks.net/)**.
-
-Original source:  **[Notepad3 is an advanced text editor that supports many programming languages](https://www.ghacks.net/2020/08/11/notepad3-is-an-advanced-text-editor-that-supports-many-programming-languages/)**.
+**Notepad3's review**: **[Notepad3 is an advanced text editor that supports many programming languages](https://www.ghacks.net/2020/08/11/notepad3-is-an-advanced-text-editor-that-supports-many-programming-languages/)**.
 
 <hr/>
 
@@ -74,22 +72,22 @@ Original source:  **[Notepad3 is an advanced text editor that supports many prog
 
 ## **`[Notepad3]`**
 
-This section can be used to redirect to a settings file which should be used by Notepad3.
-If a non elevated user is not allowed to write to the program directory of Notepad3.exe, 
-the side-by-side Notepad3.ini can point to a place, where the user is allowed to write his settings, 
-for example : 
+This section can be used to redirect to a settings file which will be used by Notepad3.
+If a non-elevated user is not allowed to write to the program directory of Notepad3.exe, 
+the side-by-side Notepad3.ini can point to a place where the user is allowed to write their settings, 
+for example: 
 
 `Notepad3.ini=%APPDATA%\Rizonesoft\Notepad3\Notepad3.ini`
 
-or a to have user specific settings:
+or a to have user-specific settings:
 
 `Notepad3.ini=%WINDIR%\Notepad3-%USERNAME%.ini`
 
 
 ## **`[Settings]`**
 
-This settings are read and written by Notepad3’s user interface.
-For examples all Menu ? Settings will go here.
+These settings are read and written by Notepad3’s user interface.
+For example, all Menu ? Settings will go here.
 
 #### `SettingsVersion=4`
 
@@ -210,10 +208,9 @@ If you don't like it, you can configure e.g.
 
 #### `grepWin.exe=grepWinNP3.exe`
 
-We have integrated of a Powerful External Tool called **grepWinNP3**. 
-**grepWinNP3** is a simple search and replace tool which can use regular expressions to do its job. 
-
-This allows to do much more powerful searches and replaces in Files.
+We have integrated a powerful external tool called **grepWinNP3**. 
+**grepWinNP3** is a search and replace tool which can use regular expressions to perform its job.
+This allows you to perform much more powerful search and replace operations in files.
 
 **grepWinNP3** can be launched:
 - from "File --> Launch --> Search in Files"
@@ -241,7 +238,7 @@ The size limit, in megabytes, to display a warning message for large files.
 
 #### `MultiFileArg=0`
 
-Control if Notepad2 should allow multiple files on the command line (set to 1). 
+Control if Notepad3 should allow multiple files on the command line (set to 1). 
 The default behavior is to accept only a single file, without quoted spaces, like Windows Notepad (set to 0). 
 The command line switches + and - can be used to override this setting on the fly, and the /z command-line switch has the same effect as the - switch.
 
@@ -373,7 +370,7 @@ UseOldStyleBraceMatching=1 to switch back to (not recommended) old style behavio
 
 #### `ExtendedWhiteSpaceChars=:`
 
-Put in here all ASCII chars which should be word delimiter in case of "Accelerated Word Navigation".
+Put in here all ASCII chars which will be word delimiters for "Accelerated Word Navigation".
 
 #### `AutoCompleteWordCharSet=`
 
@@ -408,7 +405,7 @@ This parameter is not used at the moment.
 
 #### `DevDebugMode=0`
 
-Encoding Detector information in Titlebar. This parameter is used to "debug"  UCHARDET
+Encoding Detector information in Titlebar. This parameter is used to "debug" UCHARDET.
 
 #### `AnalyzeReliableConfidenceLevel=75`
 
@@ -439,7 +436,7 @@ New parameter "[Settings2] ExitOnESCSkipLevel = 2"
 
 #### `ZoomTooltipTimeout=3200`
 
-- A value of zero (0) (or less than 100 ms) will disable the Tooltip display.
+- A value of zero (0) (or less than 100 ms) will disable the tooltip display.
 
 #### `LargeIconScalePrecent=150`
 
@@ -455,8 +452,8 @@ New parameter "[Settings2] ExitOnESCSkipLevel = 2"
 
 #### `HyperlinkShellExURLWithApp=""`
 
-- If not defined or empty the default behavior on `Ctrl+Click` URL is done:
-- The URL-String is send to OS via ShellExecute(), which will try open the URL using the registered protocol (e.g. http:// or file://) - in most cases the default browser resp. the file, if extension is known.
+- If not defined or empty the default behavior on `Ctrl+Click` URL is performed:
+- The URL-String is sent to the OS via ShellExecute(), which will try open the URL using the registered protocol (e.g. http:// or file://) - in most cases the default browser resp. the file, if extension is known.
 - If defined, e.g. "`D:\PortableApps\GoogleChromePortable\GoogleChromePortable.exe`", this application will be started on `Ctrl+Click`.
 
 #### `HyperlinkShellExURLCmdLnArgs="${URL}"`
