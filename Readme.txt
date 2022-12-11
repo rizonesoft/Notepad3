@@ -33,7 +33,7 @@ Changes compared to Flo's official Notepad2 (made in Notepad2-mod):
 Changes compared to the Notepad2-mod fork:
 ------------------------------------------
 - Additional syntax highlighting support for Awk, D, golang, MATLAB
-- State of the art Regular Expression search engine (Onigmu)
+- State of the art Regular Expression search engine (Oniguruma)
 - New toolbar icons based on Yusuke Kamiyaman's Fugue Icons 
   (Purchased by Rizonesoft)
 - Hyperlink Hotspot highlighting 
