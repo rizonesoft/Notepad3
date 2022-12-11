@@ -34,7 +34,7 @@ Notepad3 is a fast and light-weight Scintilla-based text editor with syntax high
 ## Changes compared to the Notepad2-mod fork:
 
 * Additional syntax highlighting support for Awk, D, golang, MATLAB
-* Regular Expression search engine ([Onigmu](https://github.com/k-takata/Onigmo))
+* Regular Expression search engine ([Oniguruma](https://github.com/kkos/oniguruma))
 * New toolbar icons based on Yusuke Kamiyaman's Fugue Icons (purchased by [Rizonesoft](https://www.rizonesoft.com))
 * Hyperlink hotspot highlighting (single-click Open in Browser (Ctrl) / Load in Editor (Alt)
 * Syntax highlighting support for D Source Script, Go Source Script, JSON, Makefiles, MATLAB, Nim Source Code, Power Shell Script, Resource Script, Shell Script
