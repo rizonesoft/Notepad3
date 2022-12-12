@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.1125.(build_#) (2022-11-25)
+Current BETA/RC Version 5.22.1212.(build_#) (2022-12-12)
 ========================================================
 
 --------------------------------------------------------
@@ -103,6 +103,9 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1212.1]- "Notepad3 Replacement" after update to Win11 22H2 (SUP).
+[1212.1]- Oniguruma fix (ONIG_OPTION_FIND_LONGEST behavior) (ONI).
+[1212.1]- Make current line visible after word-wrap-mode toggle.
 [1125.1]- Restore and correction the line "IDM_SETPASS" in menu_fr_fr_rc.
 [1115.1]- Revert relative size for ANSI Art.
 [1114.1]- Reset change history except in case of "revert from file".
