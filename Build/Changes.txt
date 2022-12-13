@@ -34,14 +34,13 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.1213.(build_#) (2022-12-13)
+Current BETA/RC Version 5.22.1212.(build_#) (2022-12-12)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
-[1212.1]- Implementation of automatic parenthesis closure.
 [1029.1]- Darkmode highlight (foreground) contrast settings + default reduction to 75%.
 [1018.1]- Add example for tinyexpr in Modify Lines dialog.
 [1018.1]- Add option to auto-load most recent file from file history.
@@ -62,7 +61,6 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[1212.1]- Extend AutoCloseBrackets (by Matteo-Nigro PR #4318) for Selection.
 [1118.2]- Using new AviSynth+ keyword lists and AviSynth colors (light/dark mode).
 [1020.1]- Standard DarkMode Theme.
 [1020.1]- Minor adjustment of grepWinNP3's layout and correction of some strings (GRE).
@@ -95,17 +93,17 @@ CHANGES:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
-[1212.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2022-12-09).
-[1212.1]- Update Scintilla Library (SCI) version 5.3.2 (2022-12-06).
-[1212.1]- Update Lexilla Library (LEX) version 5.2.1 (2022-12-06).
 [1018.1]- Update grepWinNP3 (GRE) version 2.1.11.42 (2022-10-14).
+[1018.1]- Update Scintilla Library (SCI) version 5.3.1 (2022-10-12).
+[1018.1]- Update Lexilla Library (LEX) version 5.2.0 (2022-10-12).
+[1018.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2022-09-06).
+[.713.1]- Update MiniPath (MIN) version 1.0.2.181 (2020-07-13).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
-[1212.1]- "Notepad3 Replacement" after Win11 22H2 update (SUP).
+[1212.1]- "Notepad3 Replacement" after update to Win11 22H2 (SUP).
 [1212.1]- Oniguruma fix (ONIG_OPTION_FIND_LONGEST behavior) (ONI).
 [1212.1]- Make current line visible after word-wrap-mode toggle.
 [1125.1]- Restore and correction the line "IDM_SETPASS" in menu_fr_fr_rc.

@@ -6,9 +6,7 @@ setlocal enableextensions
 set SCRIPTNAME=%~dpn0.ps1
 set ARGS=%*
 
-:: set POSTFIX= (blank) or beta or rc or rc2
-
-set POSTFIX=rc2
+set POSTFIX=beta
 if ["%POSTFIX%"] == [""] (
   if ["%~1"] neq [""] call :ESCAPE_ARGS
 ) else (
