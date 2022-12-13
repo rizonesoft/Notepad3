@@ -96,6 +96,7 @@ BEGIN
             MENUITEM "&Inverso",                     IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
+        MENUITEM "&Ir a...",                         IDM_FILE_GOTO
         MENUITEM "&Ir a Favoritos",                  IDM_VIEW_FAVORITES
         MENUITEM "&Editar Favoritos",                IDM_VIEW_EDITFAVORITES
         MENUITEM "&Carpeta...",                      IDM_FILE_CHANGEDIR

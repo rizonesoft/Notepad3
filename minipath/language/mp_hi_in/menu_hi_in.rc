@@ -96,9 +96,10 @@ BEGIN
             MENUITEM "उल्टा करें (&R)",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
+        MENUITEM "यहाँ पर जाएं (&T...",              IDM_FILE_GOTO
         MENUITEM "पसंदीदा पर जाएं (&G)",             IDM_VIEW_FAVORITES
-        MENUITEM "पसंदीदा संपादित करें (&E)",             IDM_VIEW_EDITFAVORITES
-        MENUITEM "निदेशिका (&D)...",               IDM_FILE_CHANGEDIR
+        MENUITEM "पसंदीदा संपादित करें (&E)",          IDM_VIEW_EDITFAVORITES
+        MENUITEM "निदेशिका (&D)...",                IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
         MENUITEM "ड्राइव दिखाएं (&V)",                IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR

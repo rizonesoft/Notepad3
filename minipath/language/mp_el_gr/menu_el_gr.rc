@@ -96,6 +96,7 @@ BEGIN
             MENUITEM "&Αντίστροφα",             IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
+        MENUITEM "Μετά&βαση...",                IDM_FILE_GOTO
         MENUITEM "&Μετάβαση στα αγαπημένα",     IDM_VIEW_FAVORITES
         MENUITEM "Επε&ξεργασία αγαπημένων",     IDM_VIEW_EDITFAVORITES
         MENUITEM "&Κατάλογος...",               IDM_FILE_CHANGEDIR

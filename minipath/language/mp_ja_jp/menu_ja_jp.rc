@@ -96,6 +96,7 @@ BEGIN
             MENUITEM "逆順(&R)",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
+        MENUITEM "指定行へジャンプ(&T)...",          IDM_FILE_GOTO
         MENUITEM "お気に入りを表示(&G)",             IDM_VIEW_FAVORITES
         MENUITEM "お気に入りをエクスプローラで開く(&E)",   IDM_VIEW_EDITFAVORITES
         MENUITEM "フォルダ選択(&D)...",              IDM_FILE_CHANGEDIR

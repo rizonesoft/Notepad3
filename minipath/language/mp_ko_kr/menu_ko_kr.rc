@@ -96,6 +96,7 @@ BEGIN
             MENUITEM "역순(&R)",                  IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
+        MENUITEM "이동(&T)...",                  IDM_FILE_GOTO
         MENUITEM "즐겨찾기로 이동(&G)",           IDM_VIEW_FAVORITES
         MENUITEM "즐겨찾기 편집(&E)",             IDM_VIEW_EDITFAVORITES
         MENUITEM "디렉토리(&D)...",               IDM_FILE_CHANGEDIR
