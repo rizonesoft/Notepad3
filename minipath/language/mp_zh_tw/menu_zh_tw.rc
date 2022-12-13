@@ -96,8 +96,9 @@ BEGIN
             MENUITEM "反向排序(&R)",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "移至常用(&G)",             IDM_VIEW_FAVORITES
-        MENUITEM "編輯常用(&E)",             IDM_VIEW_EDITFAVORITES
+        MENUITEM "移至(&T)...",               IDM_FILE_GOTO
+        MENUITEM "移至常用(&G)",               IDM_VIEW_FAVORITES
+        MENUITEM "編輯常用(&E)",               IDM_VIEW_EDITFAVORITES
         MENUITEM "目錄(&D)...",               IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
         MENUITEM "顯示磁碟(&V)",                IDM_VIEW_DRIVEBOX

@@ -96,11 +96,12 @@ BEGIN
             MENUITEM "T&ersten",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
+        MENUITEM "&Git...",                             IDM_FILE_GOTO
         MENUITEM "Sık k&ullanılanlara git",             IDM_VIEW_FAVORITES
-        MENUITEM "Sık kulla&nılanları düzenle",             IDM_VIEW_EDITFAVORITES
-        MENUITEM "&Klasör...",               IDM_FILE_CHANGEDIR
+        MENUITEM "Sık kulla&nılanları düzenle",         IDM_VIEW_EDITFAVORITES
+        MENUITEM "&Klasör...",                          IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "Sürü&cüleri görüntüle",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Sürü&cüleri görüntüle",               IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
         MENUITEM "&Ayarları kaydet",              IDM_VIEW_SAVESETTINGS
         MENUITEM "&Hedefi ayarla...",            IDM_VIEW_FINDTARGET

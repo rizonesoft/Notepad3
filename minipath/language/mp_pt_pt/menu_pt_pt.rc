@@ -96,9 +96,10 @@ BEGIN
             MENUITEM "Inve&rter",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
+        MENUITEM "I&r para...",                    IDM_FILE_GOTO
         MENUITEM "&Ir para favoritos",             IDM_VIEW_FAVORITES
-        MENUITEM "&Editar favoritos",             IDM_VIEW_EDITFAVORITES
-        MENUITEM "&Pasta...",               IDM_FILE_CHANGEDIR
+        MENUITEM "&Editar favoritos",              IDM_VIEW_EDITFAVORITES
+        MENUITEM "&Pasta...",                      IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
         MENUITEM "Mostrar &unidades",                IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR

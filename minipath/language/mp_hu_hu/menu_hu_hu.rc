@@ -96,6 +96,7 @@ BEGIN
             MENUITEM "&Fordítva",             IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
+        MENUITEM "&Ugrás...",                 IDM_FILE_GOTO
         MENUITEM "&Ugrás a Kedvencekhez",     IDM_VIEW_FAVORITES
         MENUITEM "Kedvencek s&zerkesztése",   IDM_VIEW_EDITFAVORITES
         MENUITEM "&Mappa...",                 IDM_FILE_CHANGEDIR

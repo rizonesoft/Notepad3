@@ -96,8 +96,9 @@ BEGIN
             MENUITEM "&Reverse",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Goto Favourites",             IDM_VIEW_FAVORITES
-        MENUITEM "&Edit Favourites",             IDM_VIEW_EDITFAVORITES
+        MENUITEM "Go&to...",                    IDM_FILE_GOTO
+        MENUITEM "&Goto Favourites",            IDM_VIEW_FAVORITES
+        MENUITEM "&Edit Favourites",            IDM_VIEW_EDITFAVORITES
         MENUITEM "&Directory...",               IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
         MENUITEM "Show Dri&ves",                IDM_VIEW_DRIVEBOX

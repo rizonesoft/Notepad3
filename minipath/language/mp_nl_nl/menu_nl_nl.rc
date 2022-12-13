@@ -96,6 +96,7 @@ BEGIN
             MENUITEM "Omgekee&rd",              IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
+        MENUITEM "Ga &naar...",                 IDM_FILE_GOTO
         MENUITEM "&Favorieten",             	IDM_VIEW_FAVORITES
         MENUITEM "Favorieten b&ewerken",        IDM_VIEW_EDITFAVORITES
         MENUITEM "&Mappen...",               	IDM_FILE_CHANGEDIR
