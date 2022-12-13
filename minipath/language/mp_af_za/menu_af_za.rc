@@ -96,6 +96,7 @@ BEGIN
             MENUITEM "&Keur Om",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
+        MENUITEM "Ga&an na...",                 IDM_FILE_GOTO
         MENUITEM "&Gaan na Gunstelinge",        IDM_VIEW_FAVORITES
         MENUITEM "Wysig Gunst&elinge",          IDM_VIEW_EDITFAVORITES
         MENUITEM "&Gidse...",               	IDM_FILE_CHANGEDIR

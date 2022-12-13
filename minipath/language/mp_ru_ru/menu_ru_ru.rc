@@ -96,6 +96,7 @@ BEGIN
             MENUITEM "И&нвертировать",          IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
+        MENUITEM "Пе&рейти...",                 IDM_FILE_GOTO
         MENUITEM "Перейти в &избранное",        IDM_VIEW_FAVORITES
         MENUITEM "&Редактировать избранное",    IDM_VIEW_EDITFAVORITES
         MENUITEM "Перейти в п&апку...",         IDM_FILE_CHANGEDIR

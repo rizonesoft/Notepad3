@@ -5336,18 +5336,10 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 //
 //  _EnsurePositionsVisible()
 //
-static void _EnsurePositionsVisible(const DocPos iAnchorPos, const DocPos iCurrentPos) {
-
-    DocLn const iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
-    DocLn const iCurrentLine = SciCall_LineFromPosition(iCurrentPos);
-    if (iAnchorLine != iCurrentLine) {
-        if (!SciCall_GetLineVisible(iAnchorLine)) {
-            SciCall_EnsureVisible(iAnchorLine);
-        }
-    }
-    if (!SciCall_GetLineVisible(iCurrentLine)) {
-        SciCall_EnsureVisibleEnforcePolicy(iCurrentLine);
-    }
+static inline void _EnsurePositionsVisible(const DocPos iAnchorPos, const DocPos iCurrentPos)
+{
+    SciCall_EnsureVisible(SciCall_LineFromPosition(iAnchorPos));
+    SciCall_EnsureVisibleEnforcePolicy(SciCall_LineFromPosition(iCurrentPos));
 }
 
 

@@ -96,9 +96,10 @@ BEGIN
             MENUITEM "&Inverti",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
+        MENUITEM "&Vai a...",                     IDM_FILE_GOTO
         MENUITEM "&Vai ai Preferiti",             IDM_VIEW_FAVORITES
-        MENUITEM "&Modifica Preferiti",             IDM_VIEW_EDITFAVORITES
-        MENUITEM "&Cartella...",               IDM_FILE_CHANGEDIR
+        MENUITEM "&Modifica Preferiti",           IDM_VIEW_EDITFAVORITES
+        MENUITEM "&Cartella...",                  IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
         MENUITEM "Mostra unità disco",                IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
