@@ -96,6 +96,7 @@ BEGIN
             MENUITEM "Omvänt",                    IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
+        MENUITEM "Gå till...",                    IDM_FILE_GOTO
         MENUITEM "Gå till favoriter",             IDM_VIEW_FAVORITES
         MENUITEM "Redigera favoriter",            IDM_VIEW_EDITFAVORITES
         MENUITEM "Mapp...",                       IDM_FILE_CHANGEDIR

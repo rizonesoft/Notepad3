@@ -96,9 +96,10 @@ BEGIN
             MENUITEM "&Obrátene",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
+        MENUITEM "Pr&ejsť na...",                 IDM_FILE_GOTO
         MENUITEM "O&bľúbené položky",             IDM_VIEW_FAVORITES
-        MENUITEM "&Upraviť obľúbené položky",             IDM_VIEW_EDITFAVORITES
-        MENUITEM "&Adresáre...",               IDM_FILE_CHANGEDIR
+        MENUITEM "&Upraviť obľúbené položky",     IDM_VIEW_EDITFAVORITES
+        MENUITEM "&Adresáre...",                  IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
         MENUITEM "Zobraziť &disky",                IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
