@@ -10,8 +10,10 @@ set ARGS=%*
 
 set POSTFIX=rc2
 if ["%POSTFIX%"] == [""] (
+    echo."%POSTFIX%">.\np3portableapp\_buildname.txt
   if ["%~1"] neq [""] call :ESCAPE_ARGS
 ) else (
+  echo."_%POSTFIX%">.\np3portableapp\_buildname.txt
   set ARGS=-VerPatch "%POSTFIX%"
 )
 
