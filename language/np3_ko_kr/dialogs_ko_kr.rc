@@ -260,9 +260,9 @@ CAPTION "최근 파일 열기"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
-    CONTROL         "종료시 최근 파일 목록을 저장(&S).",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,123,10
-    CONTROL         "탈자 기호 위치를 유지(&P).",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,123,10
-    CONTROL         "검색 패턴을 기억(&R).",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,123,10
+    CONTROL         "종료시 최근 파일 목록 저장(&S).",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,123,10
+    CONTROL         "탈자 기호 위치 유지(&P).",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,123,10
+    CONTROL         "검색 패턴 기억(&R).",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,123,10
     CONTROL         "시작할 때 최신 파일 자동 불러오기(&A).",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,140,10
     CONTROL         "폐기", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
     DEFPUSHBUTTON   "확인",IDOK,154,158,50,14,WS_DISABLED
@@ -275,7 +275,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "파일 변경 알림"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "안함(&N).", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
+    CONTROL         "안 함(&N).", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
     CONTROL         "표시기 (침묵)(&I).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
     CONTROL         "메시지 표시(&D).", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
     CONTROL         "자동 새로 고침(&A).", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
@@ -394,7 +394,7 @@ BEGIN
     COMBOBOX        103,7,58,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "확인",IDOK,83,79,50,14
     PUSHBUTTON      "취소",IDCANCEL,139,79,50,14
-    LTEXT           "들여쓰기 줄바꿈 안함|한 글자 들여쓰기 줄바꿈|두 글자 들여쓰기 줄바꿈|한 단계 들여쓰기 줄바꿈|두 단계 들여쓰기 줄바꿈|첫 번째 하위 줄로 들여쓰기 줄바꿈|첫 번째 하위 줄보다 한 수준 더 들여쓰기 줄바꿈",200,0,0,615,8,NOT WS_VISIBLE
+    LTEXT           "들여쓰기 줄바꿈 안 함|한 글자 들여쓰기 줄바꿈|두 글자 들여쓰기 줄바꿈|한 단계 들여쓰기 줄바꿈|두 단계 들여쓰기 줄바꿈|첫 번째 하위 줄로 들여쓰기 줄바꿈|첫 번째 하위 줄보다 한 수준 더 들여쓰기 줄바꿈",200,0,0,615,8,NOT WS_VISIBLE
     LTEXT           "줄바꿈 전에 시각적 표시기 없음|줄바꿈 전에 시각적 표시기 표시 (텍스트 근처)|줄바꿈 전에 시각적 표시기 표시 (테두리 근처)",201,0,0,418,8,NOT WS_VISIBLE
     LTEXT           "줄바꿈 후에 시각적 표시기 없음|줄바꿈 후에 시각적 표시기 표시 (텍스트 근처)|줄바꿈 후에 시각적 표시기 표시 (테두리 근처)",202,0,0,402,8,NOT WS_VISIBLE
     LTEXT           "단어들 사이에 텍스트 줄바꿈|모든 상형문자들 사이에 텍스트 줄바꿈",203,0,0,187,8,NOT WS_VISIBLE
@@ -422,10 +422,10 @@ BEGIN
     EDITTEXT        1156,120,103,28,12,WS_GROUP
     LTEXT           "아래(&B):",1105,164,104,32,8
     EDITTEXT        1158,196,103,28,12,WS_GROUP
-    GROUPBOX        "머리글 및 바닥글",1074,8,130,224,56,WS_GROUP
+    GROUPBOX        "머리글 및 꼬리글",1074,8,130,224,56,WS_GROUP
     LTEXT           "머리말(&H):",IDC_STATIC,16,146,36,8
     COMBOBOX        32,64,145,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    LTEXT           "바닥글(&F):",IDC_STATIC3,16,167,36,8
+    LTEXT           "꼬리글(&F):",IDC_STATIC3,16,167,36,8
     COMBOBOX        33,64,164,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     GROUPBOX        "인쇄 색상",1076,8,191,224,37,WS_GROUP
     LTEXT           "방식(&D):",IDC_STATIC4,16,207,36,8
@@ -482,7 +482,7 @@ BEGIN
     LTEXT           "마스터 키 선택 사항:",IDC_STATIC2,17,61,72,10,NOT WS_GROUP
     CONTROL         "암호를 사용하여 암호화",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
     CONTROL         "마스터 키 재사용",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
-    CONTROL         "암호를 표시",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,75,10
+    CONTROL         "암호 표시",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,75,10
 END
 
 IDD_MUI_READPW DIALOGEX 0, 0, 299, 81
@@ -646,7 +646,7 @@ BEGIN
     CONTROL         "빈 줄 제거(&E).",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
     CONTROL         "공백 줄 제거(&W).",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
     CONTROL         "대소문자 구분.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
-    CONTROL         "대소문자 구분 안함(&C).",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
+    CONTROL         "대소문자 구분 안 함(&C).",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
     CONTROL         "논리적 숫자 비교(&N).",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
     CONTROL         "사전 비교(&L).",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
     CONTROL         "열 정렬 (사각형 선택)(&S).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10
