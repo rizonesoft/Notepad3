@@ -124,7 +124,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Imposta Codifica Pre&definita...",   IDM_ENCODING_SETDEFAULT
         END
-        POPUP "Terminatori di ri&ga"
+        POPUP "Terminazioni di ri&ga"
         BEGIN
             MENUITEM "&Windows (CR+LF)",                  IDM_LINEENDINGS_CRLF
             MENUITEM "&Mac (CR)",                         IDM_LINEENDINGS_CR
@@ -476,7 +476,7 @@ BEGIN
         MENUITEM "Alterna Se&paratori parola\tCtrl+Alt+A",           IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Solo una istanza per &File",                       IDM_SET_SINGLEFILEINSTANCE
-        MENUITEM "Notifica di modifi&che al file...\tAlt+F5",        IDM_SET_CHANGENOTIFY
+        MENUITEM "Notifica le modifi&che al file...\tAlt+F5",        IDM_SET_CHANGENOTIFY
         ///MENUITEM "Impostazioni Salvataggio automatico e Backup...",  IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Muta Messaggio &Bips",                             IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Azione su tasto '&Esc'"
