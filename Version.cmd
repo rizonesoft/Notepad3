@@ -5,16 +5,14 @@
 setlocal enableextensions
 set SCRIPTNAME=%~dpn0.ps1
 set ARGS=%*
+if ["%ARGS%"] NEQ [""] (
+  call :ESCAPE_ARGS
+)
 
-:: set POSTFIX= (blank) or beta or rc or rc2 or ...
+echo."%ARGS%">.\np3portableapp\_buildname.txt
 
-set POSTFIX=rc2
-if ["%POSTFIX%"] == [""] (
-  echo."%POSTFIX%">.\np3portableapp\_buildname.txt
-  if ["%~1"] neq [""] call :ESCAPE_ARGS
-) else (
-  echo."_%POSTFIX%">.\np3portableapp\_buildname.txt
-  set ARGS=-VerPatch "%POSTFIX%"
+if ["%ARGS%"] NEQ [""] (
+  set ARGS=-VerPatch "%ARGS%"
 )
 
 :POWERSHELL

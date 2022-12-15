@@ -34,7 +34,7 @@ Thumbs.db
 /packages
 /other_sln/packages
 
-/Version_*.cmd
+/_Version_*.cmd
 /Versions/build.txt
 /Versions/day.txt
 /Versions/commit_id.txt
