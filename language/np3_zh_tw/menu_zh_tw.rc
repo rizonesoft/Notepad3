@@ -468,8 +468,8 @@ BEGIN
         MENUITEM "TAB 設定(&T)...\tCtrl+T",                     IDM_SET_TABSETTINGS
         MENUITEM "自動換行設定(&W)...",                         IDM_SET_WORDWRAPSETTINGS
         MENUITEM "長行標記設定(&O)...",                         IDM_SET_LONGLINESETTINGS
-        MENUITEM "自動縮排(&D)",                                IDM_SET_AUTOINDENTTEXT
-        MENUITEM "自動關閉括弧(&L)",                      IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "自動縮排(&I)",                                IDM_SET_AUTOINDENTTEXT
+        MENUITEM "自動關閉括弧(&B)",                      IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "自動關閉 HTML/XML 標記(&H)\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
         MENUITEM "自動完成單詞(&U)",                            IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "自動完成語法關鍵字(&K)",                      IDM_SET_AUTOCLEXKEYWORDS
@@ -485,7 +485,7 @@ BEGIN
             MENUITEM "最小化 Notepad3(&M)",                    IDM_SET_ESCMINIMIZE
             MENUITEM "結束 Notepad3(&X)",                     IDM_SET_ESCEXIT
         END
-        MENUITEM "執行工具前先儲存(&B)",                       IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "執行工具前先儲存(&V)",                       IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "計算微小表達式(&x)",               IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "記憶(&R)"
@@ -495,7 +495,7 @@ BEGIN
             MENUITEM "記憶查詢方式(&S)",                       IDM_SET_NOSAVEFINDREPL
             MENUITEM "自動載入最後開啟的檔案(&A)",       IDM_SET_AUTOLOAD_MRU_FILE
         END
-        POPUP "視窗(&I)"
+        POPUP "視窗(&N)"
         BEGIN
             POPUP "標題列顯示(&Y)"
             BEGIN
@@ -509,7 +509,7 @@ BEGIN
             MENUITEM "最小化到系統匣(&M)",                       IDM_SET_MINTOTRAY
             MENUITEM "透明模式(&T)\tAlt+G",                    IDM_SET_TRANSPARENT
         END
-        POPUP "處理技術(&N)"
+        POPUP "處理技術(&G)"
         BEGIN
             POPUP "渲染(&R)"
             BEGIN

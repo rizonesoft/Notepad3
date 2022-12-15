@@ -468,8 +468,8 @@ BEGIN
         MENUITEM "टैब सेटिंग (&T)...\tCtrl+T",                   IDM_SET_TABSETTINGS
         MENUITEM "शब्द लपेटने की सेटिंग (&W)...",                  IDM_SET_WORDWRAPSETTINGS
         MENUITEM "लंबी रेखा की सेटिंग (&O)...",                    IDM_SET_LONGLINESETTINGS
-        MENUITEM "स्वत: टेक्स्ट को इंडेंट करें (&D)",                  IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close Brackets",                      IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "स्वत: टेक्स्ट को इंडेंट करें (&I)",                  IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Auto Close Brackets (&B)",                      IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "HTML/XML स्वत: बंद करें (&H)\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "शब्द स्वतः पूर्ण करें (&U)",                       IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Lexer-Key-Words स्वतः पूर्ण करें (&K)",           IDM_SET_AUTOCLEXKEYWORDS
@@ -485,7 +485,7 @@ BEGIN
             MENUITEM "Notepad3 छोटा करें (&M)",          IDM_SET_ESCMINIMIZE
             MENUITEM "Notepad3 से बाहर निकलें (&X)",              IDM_SET_ESCEXIT
         END
-        MENUITEM "टूल चलाने से पूर्व सहेजें (&B)",      IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "टूल चलाने से पूर्व सहेजें (&V)",      IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "लघु व्यंजक की गणना करें (&X)",     IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "स्मरण (&R)"
@@ -495,7 +495,7 @@ BEGIN
             MENUITEM "खोज स्वरूप याद रखें (&S)",    IDM_SET_NOSAVEFINDREPL
             MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
         END
-        POPUP "विंडो (&I)"
+        POPUP "विंडो (&N)"
         BEGIN
             POPUP "विंडो शीर्षक देखें (&W)"
             BEGIN
@@ -509,7 +509,7 @@ BEGIN
             MENUITEM "छोटा करें (&M)",               IDM_SET_MINTOTRAY
             MENUITEM "पारदर्शी मोड (&T)\tAlt+G",        IDM_SET_TRANSPARENT
         END
-        POPUP "प्रोद्योगिकी (&N)"
+        POPUP "प्रोद्योगिकी (&G)"
         BEGIN
             POPUP "संश्लेषण (&R)"
             BEGIN
