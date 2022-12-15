@@ -468,8 +468,8 @@ BEGIN
         MENUITEM "탭 설정(&T)...\tCtrl+T",                  IDM_SET_TABSETTINGS
         MENUITEM "줄 바꿈 설정(&W)...",                     IDM_SET_WORDWRAPSETTINGS
         MENUITEM "긴 줄 설정(&O)...",                      IDM_SET_LONGLINESETTINGS
-        MENUITEM "텍스트 자동 들여쓰기(&D)",                  IDM_SET_AUTOINDENTTEXT
-        MENUITEM "괄호 자동 닫기",                      IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "텍스트 자동 들여쓰기(&I)",                  IDM_SET_AUTOINDENTTEXT
+        MENUITEM "괄호 자동 닫기(&B)",                      IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "HTML/XML 자동 닫기(&H)\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "단어 자동 완성(&U)",                      IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "어휘 자동 완성(&K)",                       IDM_SET_AUTOCLEXKEYWORDS
@@ -485,7 +485,7 @@ BEGIN
             MENUITEM "Notepad3 최소화(&M)",                IDM_SET_ESCMINIMIZE
             MENUITEM "Notepad3 종료(&X)",                  IDM_SET_ESCEXIT
         END
-        MENUITEM "도구 실행 전에 저장(&B)",                 IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "도구 실행 전에 저장(&V)",                 IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "작은 표현식 계산",           IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "기억(&R)"
@@ -495,7 +495,7 @@ BEGIN
             MENUITEM "검색 패턴 기억(&S)",               IDM_SET_NOSAVEFINDREPL
             MENUITEM "최근 파일 자동 불러오기(&A)",       IDM_SET_AUTOLOAD_MRU_FILE
         END
-        POPUP "창(&I)"
+        POPUP "창(&N)"
         BEGIN
             POPUP "창 제목 표시(&W)"
             BEGIN
@@ -509,7 +509,7 @@ BEGIN
             MENUITEM "트레이로 최소화(&M)",                  IDM_SET_MINTOTRAY
             MENUITEM "투명 모드(&T)\tAlt+G",                IDM_SET_TRANSPARENT
         END
-        POPUP "기술(&N)"
+        POPUP "기술(&G)"
         BEGIN
             POPUP "렌더링(&R)"
             BEGIN
