@@ -92,7 +92,7 @@ BEGIN
     IDT_VIEW_TOGGLE_VIEW     "Vue focalisée"
     IDT_VIEW_CHASING_DOCTAIL "Journal de surveillance"
     IDT_VIEW_PIN_ON_TOP      "Toujours visible"
-    IDT_GREP_WIN_TOOL        "Chercher dans les fichiers"
+    IDT_GREP_WIN_TOOL        "Chercher DANS les fichiers"
 END
 
 STRINGTABLE
@@ -194,7 +194,7 @@ BEGIN
     IDS_MUI_RELOADSETTINGS   "Activer les paramètres sauvegardés en redémarrant Notepad3 ?\n\n%s"
     IDS_MUI_RELOADCFGSEX     "En poursuivant sans redémarrage, les paramètres sauvegardés ne seront pas appliqués et seront remplacés par les paramètres internes à la sortie du programme !"
     IDS_MUI_EXPORT_FAIL      "Erreur d'exportation des paramètres de style vers ""%s""."
-    IDS_MUI_REGEX_INVALID    "Erreur dans d'évaluation de l'expression régulière. L'expression est invalide !"
+    IDS_MUI_REGEX_INVALID    "Erreur dans l'évaluation de l'expression régulière. L'expression est invalide !"
     IDS_MUI_DROP_NO_FILE     "Aucun nom de fichier valide récupéré.\nSi une application 32 bits est utilisée,\nessayez de faire glisser le fichier sur la barre d'outils de Notepad3."
     IDS_MUI_URL_DIR_EXISTS   "Le répertoire spécifié par l'URL existe !"
     IDS_MUI_URL_FILE_EXISTS  "Le fichier spécifié par l'URL existe !"
