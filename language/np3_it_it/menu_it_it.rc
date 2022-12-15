@@ -73,7 +73,7 @@ BEGIN
         BEGIN
             MENUITEM "Copia &Nome file\tCtrl+F9",          IDM_EDIT_INSERT_FILENAME
             MENUITEM "Copia solo &Percorso",               IDM_EDIT_INSERT_DIRNAME
-            MENUITEM "Copia il Percorso Completo\tCtrl+Shift+F9", IDM_EDIT_INSERT_PATHNAME
+            MENUITEM "Copia il Percorso completo\tCtrl+Shift+F9", IDM_EDIT_INSERT_PATHNAME
         END
         POPUP "&Esegui"
         BEGIN
@@ -309,7 +309,7 @@ BEGIN
             MENUITEM "Seleziona fino al prossimo\tCtrl+Alt+F2",                    IDM_EDIT_SELTONEXT
             MENUITEM "Seleziona fino al precedente\tCtrl+Alt+Shift+F2",            IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "Seleziona &Parola o Linea\tCtrl+Spc",                        IDM_EDIT_SELECTWORD
+            MENUITEM "Seleziona &Parola o Riga\tCtrl+Spc",                        IDM_EDIT_SELECTWORD
             MENUITEM "Multi-Selezione di &tutte le occorrenze\tCtrl+Shift+Spazio",    IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
             MENUITEM "Separa &transazione Undo per ogni riga",                     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
@@ -347,7 +347,7 @@ BEGIN
         MENUITEM "&Guide indentazione\tCtrl+Shift+G",                  IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Mostra blanks\tCtrl+Shift+8",  IDM_VIEW_SHOWBLANKS
-        MENUITEM "Mostra terminatori di riga\tCtrl+Shift+9",           IDM_VIEW_SHOWEOLS
+        MENUITEM "Mostra terminazioni di riga\tCtrl+Shift+9",           IDM_VIEW_SHOWEOLS
         MENUITEM "Mostra simboli di a capo\tCtrl+Shift+0",             IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         POPUP "Marcatore cronologia modifiche"
@@ -479,7 +479,7 @@ BEGIN
         MENUITEM "Notifica le modifi&che al file...\tAlt+F5",        IDM_SET_CHANGENOTIFY
         ///MENUITEM "Impostazioni Salvataggio automatico e Backup...",  IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Muta Messaggio &Bips",                             IDM_SET_MUTE_MESSAGEBEEP
-        POPUP "Azione su tasto '&Esc'"
+        POPUP "Azione tasto '&Esc'"
         BEGIN
             MENUITEM "&Nessuna",                          IDM_SET_NOESCFUNC
             MENUITEM "&Minimizza Notepad3",             IDM_SET_ESCMINIMIZE
@@ -506,7 +506,7 @@ BEGIN
             END
             MENUITEM "&Riusa finestra\tCtrl+Shift+L",     IDM_SET_REUSEWINDOW
             MENUITEM "&Sempre in primo piano\tAlt+T",     IDM_SET_ALWAYSONTOP
-            MENUITEM "Minimi&zza nella Tray",             IDM_SET_MINTOTRAY
+            MENUITEM "Minimi&zza nell'area di notifica",             IDM_SET_MINTOTRAY
             MENUITEM "Modalità &trasparente\tAlt+G",      IDM_SET_TRANSPARENT
         END
         POPUP "Tec&nologia"
@@ -541,11 +541,11 @@ BEGIN
     BEGIN
         MENUITEM "Documentazione in &linea\tF1",               IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
-        MENUITEM "Avvia Administration &Tool...",              IDM_HELP_ADMINEXE
+        MENUITEM "Avvia St&rumenti Amministrativi...",              IDM_HELP_ADMINEXE
         MENUITEM "Controlla aggiornamenti sul sito &web",      IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
         MENUITEM "Aiuto Linea di &Comando...",                 IDM_HELP_CMD
-        MENUITEM "&Informazioni su...\tShift+F1",              IDM_HELP_ABOUT
+        MENUITEM "A p&roposito...\tShift+F1",              IDM_HELP_ABOUT
     END
 END
 
