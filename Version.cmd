@@ -9,7 +9,7 @@ if ["%ARGS%"] NEQ [""] (
   call :ESCAPE_ARGS
 )
 
-echo."%ARGS%">.\np3portableapp\_buildname.txt
+echo."_%ARGS%">.\np3portableapp\_buildname.txt
 
 if ["%ARGS%"] NEQ [""] (
   set ARGS=-VerPatch "%ARGS%"
