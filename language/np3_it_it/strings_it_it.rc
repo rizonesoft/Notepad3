@@ -235,7 +235,7 @@ BEGIN
     IDS_MUI_SAVEPOS         "&Salva posizione\tCtrl+S"
     IDS_MUI_RESETPOS        "&Ripristina posizione\tCtrl+R"
     IDS_MUI_PREVIEW         "&Anteprima impostazioni\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "La passphrase è sbagliata.\nRiprovre con una diversa passphrase?"
+    IDS_MUI_PASS_FAILURE    "La frase d'accesso è sbagliata.\nRiprovre con una frase d'accesso diversa?"
     IDS_MUI_NOPASS          "Decrittazione annullata!\nLeggere i dati grezzi crittati?"
     IDS_MUI_STY_BASESTD     "BASE (Stile di Default):"
     IDS_MUI_STY_BASE2ND     "BASE (2° Stile di Default):"
@@ -336,11 +336,11 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 IDS_MUI_STYLEEDIT_HELP "\
 Le estensioni devono essere separate con ';'\r\n\
 Usa il backslash (\\) per definire un pattern di riconoscimento filename:\r\n\
-   \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
+   \\xyz$;   => filenames(basename+ext) con 'xyz' come ultimi caratteri.\r\n\r\n\
 Formato Stile:\r\n\
-font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
-fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Le proprietà di Stile possono essere copiate con Copia-e-incolla o Drag'n'drop.\
+font: Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
+fore: #ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
+Le proprietà di Stile possono essere copiate con Copia e Incolla o Trascinamento.\
 "
 
 END

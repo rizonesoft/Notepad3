@@ -394,7 +394,7 @@ BEGIN
     COMBOBOX        103,7,58,194,200,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,95,79,50,14
     PUSHBUTTON      "Annulla",IDCANCEL,151,79,50,14
-    LTEXT           "Nessuna indentazione|Indenta di 1 carattere|Indenta di 2 caratteri|Indenta di 1 livello|Indenta di 2 livelli|Indenta come prima sotto-riga|Indenta di 1 livello aggiuntivo rispetto alla prima sottoriga",200,0,0,615,8,NOT WS_VISIBLE
+    LTEXT           "Nessuna indentazione|Indenta di 1 carattere|Indenta di 2 caratteri|Indenta di 1 livello|Indenta di 2 livelli|Indenta come prima sotto-riga|Indenta di 1 livello aggiuntivo rispetto alla prima sotto-riga",200,0,0,615,8,NOT WS_VISIBLE
     LTEXT           "Nessun indicatore visuale prima dell'a-capo|Mostra indicatore visuale prima dell'a-capo (vicino al testo)|Mostra indicatore visuale prima dell'a-capo (vicino ai bordi)",201,0,0,418,8,NOT WS_VISIBLE
     LTEXT           "Nessun indicatore visuale dopo l'a-capo|Mostra indicatore visuale dopo l'a-capo (vicino al testo)|Mostra indicatore visuale dopo l'a-capo (vicino ai bordi)",202,0,0,402,8,NOT WS_VISIBLE
     LTEXT           "Vai a capo solo tra due parole|Vai a capo sempre",203,0,0,187,8,NOT WS_VISIBLE
@@ -530,8 +530,8 @@ BEGIN
     LTEXT           "${I}",IDC_MODLNS_CNTLN0_CANONIC,7,92,13,8
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,17,8
     LTEXT           "Numerazione continua (base zero).",IDC_STATIC5,57,92,120,8
-    LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,35,8
-    LTEXT           "${<expr>} -> le formule matematiche.",IDC_STATIC6,57,102,127,8
+    LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,7,102,35,8
+    LTEXT           "${<expr>} Def. formule matematiche.",IDC_STATIC6,57,102,135,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 185, 70
@@ -713,7 +713,7 @@ BEGIN
     WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
     CBS_OWNERDRAWFIXED
 
-    LTEXT           "&Dimensione:", stc3, 198, 7, 36, 9
+    LTEXT           "&Dimensione:", stc3, 198, 7, 38, 9
     COMBOBOX        cmb3, 198, 16, 36, 76,
     CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_DISABLENOSCROLL |
     CBS_SORT | WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
