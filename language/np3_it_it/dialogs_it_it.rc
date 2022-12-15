@@ -784,8 +784,8 @@ BEGIN
     SS_SIMPLE | WS_CHILD, 152, 124, 40, 26
 
     PUSHBUTTON      "&o", COLOR_SOLID, 300, 200, 4, 14, WS_GROUP
-    RTEXT           "Colore", COLOR_SOLID_LEFT, 152, 151, 25, 9
-    LTEXT           "|S&olid", COLOR_SOLID_RIGHT, 172, 151, 20, 9
+    RTEXT           "Colore", COLOR_SOLID_LEFT, 147, 151, 25, 9
+    LTEXT           "|S&olido", COLOR_SOLID_RIGHT, 172, 151, 25, 9
 
     RTEXT           "&Ton:", COLOR_HUEACCEL, 194, 126, 20, 9
     EDITTEXT, COLOR_HUE, 216, 124, 18, 12, WS_GROUP | WS_TABSTOP
@@ -793,7 +793,7 @@ BEGIN
     RTEXT           "&Sat:", COLOR_SATACCEL, 194, 140, 20, 9
     EDITTEXT, COLOR_SAT, 216, 138, 18, 12, WS_GROUP | WS_TABSTOP
 
-    RTEXT           "&Lum:", COLOR_LUMACCEL, 194, 154, 20, 9
+    RTEXT           "&Lum:", COLOR_LUMACCEL, 199, 154, 15, 9
     EDITTEXT, COLOR_LUM, 216, 152, 18, 12, WS_GROUP | WS_TABSTOP
 
     RTEXT           "&Rosso:", COLOR_REDACCEL, 243, 126, 24, 9
