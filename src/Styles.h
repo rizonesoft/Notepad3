@@ -95,7 +95,7 @@ void   Style_AppendWeightAttribute(LPWSTR lpszWeight, int cchSize, int fontWeigh
 bool   Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF *rgb, COLORREF *rgbOrig, bool useDefault);
 bool   Style_StrGetStrokeWidth(HWND hwnd, int indicID, LPCWSTR lpszStyle, int *piStrokeWidth);
 bool   Style_StrGetCase(LPCWSTR lpszStyle, int *i);
-bool   Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, bool bAlpha1st);
+bool   Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, const int defAlpha, const bool bAlpha1st);
 bool   Style_GetIndicatorType(LPWSTR lpszStyle,int cchSize,int* idx);
 void   Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, int cchSizeDest);
 bool   Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerName, LPCWSTR sStyleName, DEFAULT_FONT_STYLES styleType);
