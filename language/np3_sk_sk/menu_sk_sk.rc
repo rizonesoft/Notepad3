@@ -136,10 +136,10 @@ BEGIN
         MENUITEM "Kon&trola odsadenia...",                  CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "&Nastavenie tlače...",                    IDM_FILE_PAGESETUP
-        MENUITEM "&Tlač...\tCtrl+P",                        IDM_FILE_PRINT
+        MENUITEM "&Tlačiť...\tCtrl+P",                        IDM_FILE_PRINT
         MENUITEM SEPARATOR
         MENUITEM "V&lastnosti...",                          IDM_FILE_PROPERTIES
-        MENUITEM "Vytvoriť &zástupcu na Ploche ",           IDM_FILE_CREATELINK
+        MENUITEM "Vytvoriť &zástupcu na Ploche",           IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
         MENUITEM "Pre&hľadávať...\tCtrl+M",                 IDM_FILE_BROWSE
         POPUP "O&bľúbené súbory"
@@ -222,7 +222,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Pr&enos komentára\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
-            POPUP "&Pridať k začiatku a koncu výberu"
+            POPUP "&Pripojiť výber"
             BEGIN
                 MENUITEM "&Jednoduché úvodzovky\tCtrl+1",   CMD_STRINGIFY
                 MENUITEM "&Dvojité úvodzovky\tCtrl+2",      CMD_STRINGIFY2
@@ -233,17 +233,17 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "``\tCtrl+6",      		    CMD_EMBRACE4
                 MENUITEM SEPARATOR
-                MENUITEM "&Pridať vlastné znaky...\tAlt+Q", IDM_EDIT_ENCLOSESELECTION
+                MENUITEM "&S...\tAlt+Q", IDM_EDIT_ENCLOSESELECTION
             END
             MENUITEM "&Duplikovať výber/riadok\tCtrl+D",    IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "&Pad With Blanks\tAlt+B",             IDM_EDIT_PADWITHSPACES
-            MENUITEM "Odstrániť prvé zna&ky\tAlt+Z",        IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Odstrániť posledné znak&y\tAlt+U",    IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Odstrániť koncové &medzery\tAlt+W",   IDM_EDIT_TRIMLINES
+            MENUITEM "&Podčiarnik\tAlt+B",             IDM_EDIT_PADWITHSPACES
+            MENUITEM "Odobrať &prvý znak\tAlt+Z",        IDM_EDIT_STRIP1STCHAR
+            MENUITEM "Odobrať p&osledný znak\tAlt+U",    IDM_EDIT_STRIPLASTCHAR
+            MENUITEM "Odobrať &koncové prázdne miesta\tAlt+W",   IDM_EDIT_TRIMLINES
             MENUITEM "Komp&resia medzier\tCtrl+Alt+P",      IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
-            MENUITEM "&Doplnenie riadkov...\tAlt+M",        IDM_EDIT_MODIFYLINES
+            MENUITEM "&Upraviť riadky...\tAlt+M",        IDM_EDIT_MODIFYLINES
             MENUITEM "&Zarovnať riadky...\tAlt+J",          IDM_EDIT_ALIGN
             MENUITEM "Zor&adiť riadky...\tAlt+O",           IDM_EDIT_SORTLINES
             MENUITEM SEPARATOR
@@ -271,7 +271,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Kódovať URL\tCtrl+Shift+E",          IDM_EDIT_URLENCODE
             MENUITEM "&Dekódovať URL\tCtrl+Shift+R",        IDM_EDIT_URLDECODE
-            MENUITEM "Systémová cesta súboru na URL\tCtrl+F10",      IDM_EDIT_PATH2URL
+            MENUITEM "Systémová cesta súboru do URL\tCtrl+F10",      IDM_EDIT_PATH2URL
             MENUITEM "URL na systémovú cestu súboru\tAlt+F10",       IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
             MENUITEM "Invertovať opačné lomítko",           IDM_EDIT_INVERTBACKSLASH
@@ -300,8 +300,8 @@ BEGIN
             MENUITEM "&Escape C znaky\tCtrl+Alt+E",                    IDM_EDIT_ESCAPECCHARS
             MENUITEM "&Unescape C znaky\tCtrl+Alt+R",                  IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
-            MENUITEM "Zvýšiť číslo\tCtrl+Alt+NK+",                     CMD_INCREASENUM
-            MENUITEM "Znížiť číslo\tCtrl+Alt+NK-",                     CMD_DECREASENUM
+            MENUITEM "&Zvýšiť číslo\tCtrl+Alt+NK+",                     CMD_INCREASENUM
+            MENUITEM "Z&nížiť číslo\tCtrl+Alt+NK-",                     CMD_DECREASENUM
             MENUITEM SEPARATOR
             MENUITEM "&Nájsť zodpovedajúcu zátvorku\tCtrl+B",          IDM_EDIT_FINDMATCHINGBRACE
             MENUITEM "&Vybrať zodpovedajúcu zátvorku\tCtrl+Shift+B",   IDM_EDIT_SELTOMATCHINGBRACE
@@ -310,7 +310,7 @@ BEGIN
             MENUITEM "Vyb&rať predchádzajúce\tCtrl+Alt+Shift+F2",      IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
             MENUITEM "Vybrať &slovo alebo riadok\tCtrl+Spc",           IDM_EDIT_SELECTWORD
-            MENUITEM "&Multivýber všetkých výskytov\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
+            MENUITEM "&Viacnásobný výber všetkých zhôd\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
             MENUITEM "Rozdeliť a&kciu Späť po zalomení riadku",        IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
@@ -330,9 +330,9 @@ BEGIN
             MENUITEM "&Hľadať...\tCtrl+F",                      IDM_EDIT_FIND
             MENUITEM "&Uložiť hľadaný text\tAlt+F3",            IDM_EDIT_SAVEFIND
             MENUITEM "Hľa&dať ďalej\tF3",                       IDM_EDIT_FINDNEXT
-            MENUITEM "Hľadať &spätne\tShift+F3",                IDM_EDIT_FINDPREV
+            MENUITEM "Hľadať na&späť\tShift+F3",                IDM_EDIT_FINDPREV
             MENUITEM "Hľadať ďalšie vybraté\tCtrl+F3",          CMD_FINDNEXTSEL
-            MENUITEM "Hľadať spätne vybraté\tCtrl+Shift+F3",    CMD_FINDPREVSEL
+            MENUITEM "Hľadať naspäť vybraté\tCtrl+Shift+F3",    CMD_FINDPREVSEL
             MENUITEM "&Zameniť...\tCtrl+H",                     IDM_EDIT_REPLACE
             MENUITEM "Z&ameniť ďalej\tF4",                      IDM_EDIT_REPLACENEXT
             MENUITEM "Pr&ejsť na...\tCtrl+G",                   IDM_EDIT_GOTOLINE
@@ -347,8 +347,8 @@ BEGIN
         MENUITEM "Vodítka odsadenia\tCtrl+Shift+G",             IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Zobraziť &symboly zalomenia\tCtrl+Shift+7",   IDM_VIEW_WORDWRAPSYMBOLS
-        MENUITEM "Prázdne &miesto odsadenia\tCtrl+Shift+8",     IDM_VIEW_SHOWBLANKS
-        MENUITEM "Zobraziť &koncovky riadkov\tCtrl+Shift+9",    IDM_VIEW_SHOWEOLS
+        MENUITEM "Zobraziť &prázdne miesta\tCtrl+Shift+8",     IDM_VIEW_SHOWBLANKS
+        MENUITEM "Zobraziť &konce riadkov\tCtrl+Shift+9",    IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         POPUP "Značka histórie zmien"
         BEGIN
@@ -377,16 +377,16 @@ BEGIN
         POPUP "&Označiť výskyty"
         BEGIN
             MENUITEM "&Aktívne\tAlt+A",                     IDM_VIEW_MARKOCCUR_ONOFF
-            MENUITEM "Použiť aj &záložky",                  IDM_VIEW_MARKOCCUR_BOOKMARKS
+            MENUITEM "Použiť aj na &záložky",                  IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
-            MENUITEM "Len viditeľné",                       IDM_VIEW_MARKOCCUR_VISIBLE
+            MENUITEM "Len &viditeľné zhody",                       IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
             MENUITEM "Rozlišovať malé a veľké písmo",       IDM_VIEW_MARKOCCUR_CASE
-            POPUP "Priradiť iba celé slovo"
+            POPUP "Zhoda len &celého slova"
             BEGIN
                 MENUITEM "&VYP.",                           IDM_VIEW_MARKOCCUR_WNONE
-                MENUITEM "Priradiť &vybrané slovo",         IDM_VIEW_MARKOCCUR_WORD
-                MENUITEM "Priradiť &aktuálne slovo",        IDM_VIEW_MARKOCCUR_CURRENT
+                MENUITEM "Zhoda &vybraného slova",         IDM_VIEW_MARKOCCUR_WORD
+                MENUITEM "Zhoda &aktuálneho slova",        IDM_VIEW_MARKOCCUR_CURRENT
             END
         END
         MENUITEM SEPARATOR
@@ -396,8 +396,8 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Skladanie"
         BEGIN
-            MENUITEM "Skladacia &väzba",                         IDM_VIEW_FOLDING
-            MENUITEM "Zvinúť všetky &uzly\tCtrl+Alt+F",          IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "&Skladanie kódu",                         IDM_VIEW_FOLDING
+            MENUITEM "Prepnúť &uzly\tCtrl+Alt+F",          IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "Prejsť na ď&alší uzol\tAlt+ +",            CMD_FOLDJUMPDOWN
             MENUITEM "Prejsť na p&redchádzajúci uzol\tAlt+ –",   CMD_FOLDJUMPUP
@@ -407,19 +407,19 @@ BEGIN
         END
         POPUP "Zo&brazenie"
         BEGIN
-            MENUITEM "Zamerať zobrazenie\tCtrl+Alt+V",      IDM_VIEW_TOGGLE_VIEW
+            MENUITEM "Zobraziť zameranie\tCtrl+Alt+V",      IDM_VIEW_TOGGLE_VIEW
             POPUP "Režim zobrazenia"
             BEGIN
-                MENUITEM "Zložené",                         IDM_VIEW_FV_FOLD
+                MENUITEM "Uzol",                         IDM_VIEW_FV_FOLD
                 MENUITEM "Záložka",                         IDM_VIEW_FV_BOOKMARK
                 MENUITEM "Zvýraznenie",                     IDM_VIEW_FV_HIGHLIGHT
-                MENUITEM "Záložka a zložené",               IDM_VIEW_FV_BKMRKFOLD
-                MENUITEM "Zvýraznenie a zložené",           IDM_VIEW_FV_HIGHLGFOLD
+                MENUITEM "Záložka a uzol",               IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Zvýraznenie a uzol",           IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
-            MENUITEM "&Monitorovať logovanie",              IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "&Rolovanie na koniec súboru",         IDM_VIEW_SCROLLPASTEOF
-            MENUITEM "Nápovedný &tip na prepojení",         IDM_VIEW_SHOW_HYPLNK_CALLTIP
+            MENUITEM "&Denník monitorovania",              IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "&Rolovať za koniec súboru",         IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "Nápovedný &tip na odkaze",         IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         MENUITEM SEPARATOR
         POPUP "P&anely"
@@ -441,12 +441,12 @@ BEGIN
         END
         POPUP "&Pozícia"
         BEGIN
-            MENUITEM "Kopírovať polohu argumentov\tCtrl+Shift+K",      CMD_COPYWINPOS
-            MENUITEM "Prichytiť k predvolenej pozícii\tCtrl+Shift+P",  CMD_DEFAULTWINPOS
-            MENUITEM "Uložiť ako predvolenú pozíciu",                  CMD_SAVEASDEFWINPOS
-            MENUITEM "Zmazať uloženú predvolenú pozíciu",              CMD_CLEARSAVEDWINPOS
-            MENUITEM "Prichytiť k úvodnej pozícii\tCtrl+F11",          CMD_INITIALWINPOS
-            MENUITEM "Prepnúť na celú obrazovku\tF11",                 CMD_FULLSCRWINPOS
+            MENUITEM "Kopírovať polohu &argumentov\tCtrl+Shift+K",      CMD_COPYWINPOS
+            MENUITEM "Prichytiť k pre&dvolenej pozícii\tCtrl+Shift+P",  CMD_DEFAULTWINPOS
+            MENUITEM "Uložiť &ako predvolenú pozíciu",                  CMD_SAVEASDEFWINPOS
+            MENUITEM "Zmazať &uloženú predvolenú pozíciu",              CMD_CLEARSAVEDWINPOS
+            MENUITEM "Pr&ichytiť k úvodnej pozícii\tCtrl+F11",          CMD_INITIALWINPOS
+            MENUITEM "Prepnúť na &celú obrazovku\tF11",                 CMD_FULLSCRWINPOS
             MENUITEM "&Kotviť pozíciu okna",                           IDM_VIEW_STICKYWINPOS
         END
     END
@@ -468,9 +468,9 @@ BEGIN
         MENUITEM "&Nastavenie tabulátora...\tCtrl+T",            IDM_SET_TABSETTINGS
         MENUITEM "Na&stavenie zalomenia slov...",                IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Nastavenie &dĺžky riadkov...",                 IDM_SET_LONGLINESETTINGS
-        MENUITEM "Auto&matická identifikácia textu",             IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close Brackets",                      IDM_SET_AUTOCLOSEBRACKETS
-        MENUITEM "Auto-zakončovanie &HTML/XML\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
+        MENUITEM "Auto&maticky odsadiť text",                IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Automaticky uzatvárať zátvorky",           IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Automaticky uzatvárať &HTML/XML\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "A&utomatické dokončovanie slov",               IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Auto-kompletizácia kľúčových slov &Lexer",     IDM_SET_AUTOCLEXKEYWORDS
         MENUITEM "Alternatívne oddeľovanie &slov\tCtrl+Alt+A",   IDM_SET_ALTERNATE_WORD_SEPS
@@ -491,9 +491,9 @@ BEGIN
         POPUP "&Pamätať si"
         BEGIN
             MENUITEM "&Naposledy použité súbory",             IDM_SET_NOSAVERECENT
-            MENUITEM "Pozíciu &okna",                         IDM_SET_NOPRESERVECARET
-            MENUITEM "Pozíciu &kurzora",                      IDM_SET_NOSAVEFINDREPL
-            MENUITEM "&Auto-načítať naposledy použitý súbor", IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "Zachovať pozíciu &kurzora",   IDM_SET_NOPRESERVECARET
+            MENUITEM "&Pamätať si voľbu hľadania",            IDM_SET_NOSAVEFINDREPL
+            MENUITEM "&Otvoriť naposledy použitý súbor", IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "&Okno"
         BEGIN
@@ -525,12 +525,12 @@ BEGIN
             END
             POPUP "&Obojsmerne"
             BEGIN
-                MENUITEM "Žiadne",                          IDM_SET_BIDIRECTIONAL_NONE
-                MENUITEM "Zľava doprava",                   IDM_SET_BIDIRECTIONAL_L2R
-                MENUITEM "Sprava doľava",                   IDM_SET_BIDIRECTIONAL_R2L
+                MENUITEM "Žiad&ne",                          IDM_SET_BIDIRECTIONAL_NONE
+                MENUITEM "&Zľava do prava",                   IDM_SET_BIDIRECTIONAL_L2R
+                MENUITEM "Zprava &do ľava",                   IDM_SET_BIDIRECTIONAL_R2L
             END
         END
-        POPUP "&Uloženie nastavení"
+        POPUP "Ď&alšie nastavenia"
         BEGIN
             MENUITEM "Uložiť pri u&končení",                IDM_SET_SAVESETTINGS
             MENUITEM "Uložiť &teraz...\tF7",                IDM_SET_SAVESETTINGSNOW
@@ -590,7 +590,7 @@ BEGIN
         MENUITEM "Kopírovať riadky so značkami",           IDM_EDIT_COPY_MARKED
         MENUITEM "Zmazať riadky so značkami",              IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
-        MENUITEM "Skladacia väzba",                        IDM_VIEW_FOLDING
+        MENUITEM "Skladanie",                        IDM_VIEW_FOLDING
         MENUITEM "Číslovanie riadkov",                     IDM_VIEW_LINENUMBERS
         MENUITEM "Okraj záložky",                          IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM "Okraj histórie zmien",                   IDM_VIEW_CHGHIST_TOGGLE_MARGIN
