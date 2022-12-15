@@ -468,8 +468,8 @@ BEGIN
         MENUITEM "制表符设置(&T)...\tCtrl+T",                   IDM_SET_TABSETTINGS
         MENUITEM "自动换行设置(&W)...",                         IDM_SET_WORDWRAPSETTINGS
         MENUITEM "长行标记设置(&O)...",                         IDM_SET_LONGLINESETTINGS
-        MENUITEM "自动缩进(&D)",                                IDM_SET_AUTOINDENTTEXT
-        MENUITEM "自动关闭括号(&L)",                      IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "自动缩进(&I)",                                IDM_SET_AUTOINDENTTEXT
+        MENUITEM "自动关闭括号(B)",                      IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "自动关闭 &HTML/XML 标记\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
         MENUITEM "自动补全单词(&U)",                            IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "自动补全语法关键字(&K)",                      IDM_SET_AUTOCLEXKEYWORDS
@@ -485,7 +485,7 @@ BEGIN
             MENUITEM "最小化 Notepad3(&M)",                    IDM_SET_ESCMINIMIZE
             MENUITEM "退出 Notepad3(&X)",                     IDM_SET_ESCEXIT
         END
-        MENUITEM "运行工具前先保存(&B)",                       IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "运行工具前先保存(&V)",                       IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "计算选定的表达式(&X)",               IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "记忆(&R)"
@@ -495,7 +495,7 @@ BEGIN
             MENUITEM "记忆查找方式(&S)",                       IDM_SET_NOSAVEFINDREPL
             MENUITEM "自动加载最后打开的文件(&A)",       IDM_SET_AUTOLOAD_MRU_FILE
         END
-        POPUP "窗口(&I)"
+        POPUP "窗口(&N)"
         BEGIN
             POPUP "标题栏显示(&W)"
             BEGIN
@@ -509,7 +509,7 @@ BEGIN
             MENUITEM "最小化到托盘(&M)",                       IDM_SET_MINTOTRAY
             MENUITEM "透明模式(&T)\tAlt+G",                    IDM_SET_TRANSPARENT
         END
-        POPUP "处理技术(&N)"
+        POPUP "处理技术(&G)"
         BEGIN
             POPUP "渲染(&R)"
             BEGIN
