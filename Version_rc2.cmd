@@ -1,3 +1,3 @@
-rem - Batch file for RELEASE CANDIDATE version
+rem - Batch file for RELEASE CANDIDATE 2 version
 @echo off
-call Version RC2
+call Version rc2
