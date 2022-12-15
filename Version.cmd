@@ -7,10 +7,10 @@ set SCRIPTNAME=%~dpn0.ps1
 set ARGS=%*
 if ["%ARGS%"] NEQ [""] (
   call :ESCAPE_ARGS
+  echo."_%ARGS%">.\np3portableapp\_buildname.txt
+) else (
+  echo."%ARGS%">.\np3portableapp\_buildname.txt
 )
-
-echo."_%ARGS%">.\np3portableapp\_buildname.txt
-
 if ["%ARGS%"] NEQ [""] (
   set ARGS=-VerPatch "%ARGS%"
 )
