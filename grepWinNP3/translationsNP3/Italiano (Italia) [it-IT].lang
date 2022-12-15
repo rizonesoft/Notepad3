@@ -43,7 +43,7 @@ msgstr "%path% viene sostituito dal percorso del file, %line% dalla riga a cui s
 
 #. Resource IDs: (119)
 msgid "&About grepWinNP3..."
-msgstr "&Informazioni su grepWinNP3..."
+msgstr "R&iguardo grepWinNP3..."
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -71,7 +71,7 @@ msgstr "Visita il sito web di Stefan Küng"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWinNP3...</a>"
-msgstr "<a>informazioni su grepWinNP3...</a>"
+msgstr "<a>riguardo grepWinNP3...</a>"
 
 #. Resource IDs: (1086)
 msgid ">>>"
@@ -79,7 +79,7 @@ msgstr ">>>"
 
 #. Resource IDs: (135)
 msgid "About grepWinNP3"
-msgstr "Informazioni su grepWinNP3"
+msgstr "Riguardo grepWinNP3"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets..."
