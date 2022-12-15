@@ -1325,10 +1325,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         if (Style_StrGetColor(pCurrentStandard->Styles[STY_BRACE_OK].szValue, FOREGROUND_LAYER, &dColor, NULL, false)) {
             SciCall_IndicSetFore(INDIC_NP3_MATCH_BRACE, dColor);
         }
-        if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_OK].szValue, &iValue, true)) {
+        if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_OK].szValue, &iValue, SC_ALPHA_OPAQUE, true)) {
             SciCall_IndicSetAlpha(INDIC_NP3_MATCH_BRACE, iValue);
         }
-        if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_OK].szValue, &iValue, false)) {
+        if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_OK].szValue, &iValue, SC_ALPHA_OPAQUE, false)) {
             SciCall_IndicSetOutlineAlpha(INDIC_NP3_MATCH_BRACE, iValue);
         }
 
@@ -1354,10 +1354,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         if (Style_StrGetColor(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, FOREGROUND_LAYER, &dColor, NULL, false)) {
             SciCall_IndicSetFore(INDIC_NP3_BAD_BRACE, dColor);
         }
-        if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, &iValue, true)) {
+        if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, &iValue, SC_ALPHA_OPAQUE, true)) {
             SciCall_IndicSetAlpha(INDIC_NP3_BAD_BRACE, iValue);
         }
-        if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, &iValue, false)) {
+        if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_BRACE_BAD].szValue, &iValue, SC_ALPHA_OPAQUE, false)) {
             SciCall_IndicSetOutlineAlpha(INDIC_NP3_BAD_BRACE, iValue);
         }
 
@@ -1385,13 +1385,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
     SciCall_IndicSetFore(INDIC_NP3_MARK_OCCURANCE, dColor);
 
-    if (!Style_StrGetAlpha(pCurrentStandard->Styles[STY_MARK_OCC].szValue, &iValue, true)) {
+    if (!Style_StrGetAlpha(pCurrentStandard->Styles[STY_MARK_OCC].szValue, &iValue, SC_ALPHA_OPAQUE, true)) {
         iValue = 60; // force
         StringCchCat(pCurrentStandard->Styles[STY_MARK_OCC].szValue, COUNTOF(pCurrentStandard->Styles[0].szValue), L"; alpha:60");
     }
     SciCall_IndicSetAlpha(INDIC_NP3_MARK_OCCURANCE, iValue);
 
-    if (!Style_StrGetAlpha(pCurrentStandard->Styles[STY_MARK_OCC].szValue, &iValue, false)) {
+    if (!Style_StrGetAlpha(pCurrentStandard->Styles[STY_MARK_OCC].szValue, &iValue, SC_ALPHA_OPAQUE, false)) {
         iValue = 60; // force
         StringCchCat(pCurrentStandard->Styles[STY_MARK_OCC].szValue, COUNTOF(pCurrentStandard->Styles[0].szValue), L"; alpha2:60");
     }
@@ -1426,10 +1426,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     if (Style_StrGetColor(pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, FOREGROUND_LAYER, &dColor, NULL, false)) {
         SciCall_IndicSetHoverFore(INDIC_NP3_UNICODE_POINT, dColor);
     }
-    if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, &iValue, true)) {
+    if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, &iValue, SC_ALPHA_OPAQUE, true)) {
         SciCall_IndicSetAlpha(INDIC_NP3_UNICODE_POINT, iValue);
     }
-    if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, &iValue, false)) {
+    if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_UNICODE_HOTSPOT].szValue, &iValue, SC_ALPHA_OPAQUE, false)) {
         SciCall_IndicSetOutlineAlpha(INDIC_NP3_UNICODE_POINT, iValue);
     }
 
@@ -1446,10 +1446,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     if (Style_StrGetColor(pCurrentStandard->Styles[STY_MULTI_EDIT].szValue, FOREGROUND_LAYER, &dColor, NULL, false)) {
         SciCall_IndicSetFore(INDIC_NP3_MULTI_EDIT, dColor);
     }
-    if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_MULTI_EDIT].szValue, &iValue, true)) {
+    if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_MULTI_EDIT].szValue, &iValue, SC_ALPHA_OPAQUE, true)) {
         SciCall_IndicSetAlpha(INDIC_NP3_MULTI_EDIT, iValue);
     }
-    if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_MULTI_EDIT].szValue, &iValue, false)) {
+    if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_MULTI_EDIT].szValue, &iValue, SC_ALPHA_OPAQUE, false)) {
         SciCall_IndicSetOutlineAlpha(INDIC_NP3_MULTI_EDIT, iValue);
     }
 
@@ -1498,7 +1498,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     rgb = RGB(0xC0, 0xC0, 0xC0);
     SciCall_SetSelectionLayer(SC_LAYER_UNDER_TEXT); // selection back
     if (Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, BACKGROUND_LAYER, &rgb, NULL, true)) {
-        Style_StrGetAlpha(pCurrentStandard->Styles[STY_SEL_TXT].szValue, &iValue, true);
+        Style_StrGetAlpha(pCurrentStandard->Styles[STY_SEL_TXT].szValue, &iValue, SC_ALPHA_OPAQUE, true);
         SciCall_SetElementColour(SC_ELEMENT_SELECTION_BACK, RGBxA(rgb, iValue));
         SciCall_SetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_BACK, RGBxA(rgb, iValue * 2 / 3));
     }
@@ -1535,8 +1535,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     if (Style_StrGetColor(pCurrentStandard->Styles[STY_WHITESPACE].szValue, FOREGROUND_LAYER, &rgb, &rgbWrt, false)) {
         Style_PrintfCchColor(wch, COUNTOF(wch), L"; ", FOREGROUND_LAYER, rgbWrt);
         StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
-
-        if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &iValue, true)) {
+        if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &iValue, SC_ALPHA_OPAQUE, true)) {
             StringCchPrintf(wch, COUNTOF(wch), L"; alpha:%i", iValue);
             StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
         }
@@ -1553,7 +1552,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
 
         //~ always opaque, no translucency possible in Win32
-        //~if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &iValue, false)) {
+        //~if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_WHITESPACE].szValue, &iValue, SC_ALPHA_OPAQUE, false)) {
         //~    StringCchPrintf(wch, COUNTOF(wch), L"; alpha2:%i", iValue);
         //~    StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
         //~}
@@ -1626,7 +1625,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         rgb = SciCall_StyleGetFore(0);
     }
 
-    if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_CARET].szValue, &iValue, true)) {
+    if (Style_StrGetAlpha(pCurrentStandard->Styles[STY_CARET].szValue, &iValue, SC_ALPHA_OPAQUE, true)) {
         iValue = clampi(iValue, 20, SC_ALPHA_OPAQUE); // no full transparency
         StringCchPrintf(wch, COUNTOF(wch), L"; alpha:%i", iValue);
         StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
@@ -1873,11 +1872,11 @@ void Style_SetUrlHotSpot(HWND hwnd)
     COLORREF inactiveFG = RGB(0x00, 0x60, 0xB0);
     Style_StrGetColor(lpszStyleHotSpot, BACKGROUND_LAYER, &inactiveFG, NULL, false);
 
-    int iValue = SC_ALPHA_OPAQUE;
-    Style_StrGetAlpha(lpszStyleHotSpot, &iValue, true);
+    int iValue;
+    Style_StrGetAlpha(lpszStyleHotSpot, &iValue, SC_ALPHA_OPAQUE, true);
     SciCall_IndicSetAlpha(INDIC_NP3_HYPERLINK_U, iValue);
 
-    Style_StrGetAlpha(lpszStyleHotSpot, &iValue, false); // alpha2:
+    Style_StrGetAlpha(lpszStyleHotSpot, &iValue, SC_ALPHA_OPAQUE, false); // alpha2:
     SciCall_IndicSetOutlineAlpha(INDIC_NP3_HYPERLINK_U, iValue);
 
     // normal (fix)
@@ -1981,7 +1980,6 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
     SciCall_SetCaretLineFrame(0);
     SciCall_SetCaretLineVisibleAlways(false);
 
-    int alpha = SC_ALPHA_OPAQUE;
     bool const backgrColor = (iHiLitCurLn == 1);
     LPCWSTR szValue = GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue;
 
@@ -1990,10 +1988,9 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
         rgb = (backgrColor ? RGB(0xFF, 0xFF, 0x00) : RGB(0xC2, 0xC0, 0xC3));
     }
 
+    int alpha = SC_ALPHA_TRANSPARENT; // full translucent
     if (iHiLitCurLn > 0) {
-
-        Style_StrGetAlpha(GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue, &alpha, true);
-
+        Style_StrGetAlpha(GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue, &alpha, 80, true);
         if (!backgrColor) {
             int iFrameSize = 0;
             if (!Style_StrGetSizeInt(szValue, &iFrameSize)) {
@@ -2002,9 +1999,6 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
             iFrameSize = max_i(1, ScaleIntToDPI(hwnd, iFrameSize));
             SciCall_SetCaretLineFrame(iFrameSize);
         }
-
-    } else {
-        alpha = SC_ALPHA_TRANSPARENT; // full translucent
     }
 
     SciCall_SetCaretLineLayer(SC_LAYER_UNDER_TEXT);
@@ -2120,8 +2114,8 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
     colorRead = clrMarginBack;
     Style_StrGetColor(wchBookMarkStyleStrg, BACKGROUND_LAYER, &colorRead, NULL, false);
     // adjust background color by alpha in case of show margin
-    int alpha = SC_ALPHA_OPAQUE;
-    Style_StrGetAlpha(wchBookMarkStyleStrg, &alpha, true);
+    int alpha;
+    Style_StrGetAlpha(wchBookMarkStyleStrg, &alpha, SC_ALPHA_OPAQUE, true);
     COLORREF const clrBookMarkBack = Style_RgbAlpha(colorRead, clrMarginBack, alpha);
 
     int strokeWidth = FW_DONTCARE;
@@ -2173,8 +2167,7 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
     SciCall_MarkerSetBack(SC_MARKNUM_HISTORY_MODIFIED, colorRead);
 
     // TODO: alpha/translucent/layer in print mode ?
-    //alpha = SC_ALPHA_OPAQUE;
-    //Style_StrGetAlpha(wchChgHistMrkModifiedStyleStrg, &alpha, true);
+    //Style_StrGetAlpha(wchChgHistMrkModifiedStyleStrg, &alpha, SC_ALPHA_OPAQUE, true);
     //COLORREF const rgbAlpha = Style_RgbAlpha(colorRead, clrMarginBack, alpha);
     //SciCall_MarkerSetAlpha(SC_MARKNUM_HISTORY_MODIFIED, alpha);
  
@@ -3278,7 +3271,7 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb, COLO
 //
 //  Style_StrGetAlpha()
 //
-bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, bool bAlpha1st)
+bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, const int defAlpha, const bool bAlpha1st)
 {
     const WCHAR* strAlpha = bAlpha1st ? L"alpha:" : L"alpha2:";
 
@@ -3297,7 +3290,7 @@ bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, bool bAlpha1st)
             return true;
         }
     }
-    *iOutValue = SC_ALPHA_OPAQUE; // default = Sci_ClampAlpha(SC_ALPHA_NOALPHA);
+    *iOutValue = Sci_ClampAlpha(defAlpha);
     return false;
 }
 
@@ -3521,18 +3514,20 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
         StringCchCat(szTmpStyle, COUNTOF(szTmpStyle), (iValue == SC_CASE_UPPER) ? L"U" : L"L");
     }
 
-    if (Style_StrGetAlpha(lpszStyleDest, &iValue, true)) {
+    if (Style_StrGetAlpha(lpszStyleDest, &iValue, SC_ALPHA_OPAQUE, true)) {
         StringCchPrintf(tch, COUNTOF(tch), L"alpha:%i", iValue);
         AppendStyle(szTmpStyle, COUNTOF(szTmpStyle), tch);
-    } else if (Style_StrGetAlpha(lpszStyleSrc, &iValue, true)) {
+    }
+    else if (Style_StrGetAlpha(lpszStyleSrc, &iValue, SC_ALPHA_OPAQUE, true)) {
         StringCchPrintf(tch, COUNTOF(tch), L"alpha:%i", iValue);
         AppendStyle(szTmpStyle, COUNTOF(szTmpStyle), tch);
     }
 
-    if (Style_StrGetAlpha(lpszStyleDest, &iValue, false)) {
+    if (Style_StrGetAlpha(lpszStyleDest, &iValue, SC_ALPHA_OPAQUE, false)) {
         StringCchPrintf(tch, COUNTOF(tch), L"alpha2:%i", iValue);
         AppendStyle(szTmpStyle, COUNTOF(szTmpStyle), tch);
-    } else if (Style_StrGetAlpha(lpszStyleSrc, &iValue, false)) {
+    }
+    else if (Style_StrGetAlpha(lpszStyleSrc, &iValue, SC_ALPHA_OPAQUE, false)) {
         StringCchPrintf(tch, COUNTOF(tch), L"alpha2:%i", iValue);
         AppendStyle(szTmpStyle, COUNTOF(szTmpStyle), tch);
     }
