@@ -98,11 +98,11 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE_ELEVATED "%s : Amministratore"
-    IDS_MUI_APPTITLE_PASTEBOARD "%s: Clipboard"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s: Appunti"
     IDS_MUI_UNTITLED        "Senza titolo"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Sola lettura)"
-    IDS_MUI_FILELOCKED      "<Exclusive>"
+    IDS_MUI_FILELOCKED      "<Esclusivo>"
     IDS_MUI_LOADFILE        "Apertura ""%s""..."
     IDS_MUI_SAVEFILE        "Salvataggio ""%s""..."
     IDS_MUI_PRINTFILE       "Stampa in corso pagina %i..."
@@ -134,7 +134,7 @@ BEGIN
     IDS_MUI_ERR_CREATELINK  "Errore nella creazione del collegamento su Desktop."
     IDS_MUI_ERR_PREVWINDISABLED
                             "La finestra Notepad3 è impegnata oppure ha una dialog box in attesa di input.\nVuoi aprire una nuova finestra Notepad3?"
-    IDS_MUI_ERR_ENCODINGNA  "Le tabelle di conversione di Code page per l'encoding selezionato non sono disponibili nel tuo sistema."
+    IDS_MUI_ERR_ENCODINGNA  "Le tabelle di conversione di Code page per la codifica selezionata non sono disponibili nel tuo sistema."
     IDS_MUI_ERR_UNICODE     "Errore nella conversione di questo file Unicode.\nCi sarà una perdita di dati se salvi il file!"
     IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
@@ -143,7 +143,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "Alcuni caratteri nel testo corrente non sono supportati dall'encoding selezionato, e potrebbero essere rimpiazzati da segnaposto di default al salvataggio. E' opportuno selezionare un encoding differente. Continuare?"
+    IDS_MUI_ERR_UNICODE2    "Alcuni caratteri nel testo corrente non sono supportati dalla codifica selezionata, e potrebbero essere rimpiazzati da segnaposto di default al salvataggio. E' opportuno selezionare una codifica differente. Continuare?"
     IDS_MUI_ERR_DROP        "Solo un file può essere rilasciato con una unica operazione!"
     IDS_MUI_ERR_ACCESSDENIED
                             "Il file ""%s"" non può essere salvato e potrebbe essere protetto.\n\nVuoi aprire %s con diritti amministrativi?"
@@ -172,8 +172,8 @@ BEGIN
     IDS_MUI_FIND_WRAPRE     "Raggiunto l'inizio del documento, la ricerca riprende dalla fine."
     IDS_MUI_NOTFOUND        "Nessuna corrispondenza trovata per il pattern di ricerca specificato."
     IDS_MUI_REPLCOUNT       "%s occorrenze del pattern di ricerca specificato sono state sostituite."
-    IDS_MUI_ASK_ENCODING    "Cambiare l'encoding del file potrebbe sostituire testo non supportato con un carattere di default, e la cronologia delle modifiche (undo) sarà svuotata. Continuare?"
-    IDS_MUI_ASK_ENCODING2   "Stai per cambiare l'encoding di un file vuoto. Questo cancellerà la cronologia delle modifiche (undo), perché non può essere sincronizzata con il nuovo encoding. Continuare?"
+    IDS_MUI_ASK_ENCODING    "Cambiare la codifica del file potrebbe sostituire testo non supportato con un carattere di default, e la cronologia delle modifiche (undo) sarà svuotata. Continuare?"
+    IDS_MUI_ASK_ENCODING2   "Stai per cambiare la codifica di un file vuoto. Questo cancellerà la cronologia delle modifiche (undo), perché non può essere sincronizzata con la nuova codifica. Continuare?"
     IDS_MUI_READONLY_SAVE   """%s"" è in sola lettura. Salvare in un file differente?"
     IDS_MUI_FILECHANGENOTIFY
                             "Il file corrente è stato modificato da un programma esterno. Ricaricare?"
@@ -265,14 +265,14 @@ BEGIN
     IDS_MUI_MENU_THEMES     "&Collezione di Schemi"
     IDM_THEMES_FACTORY_RESET "Impostazioni di &fabbrica"
     IDM_THEMES_STD_CFG       "&Standard Config"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
+    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Car  ,Sost  ,Ris  ,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Pulisci tutto"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Pulisci Cronologia Ricerche"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Pulisci Cronologia Sostituzioni"
-    IDS_MUI_REPLCLIPTAG     "Sostituisci con shortcut Appunti [^c]"
+    IDS_MUI_REPLCLIPTAG     "Sostituisci con scorciatoia Appunti [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Corrispondenza Wrap-Around dall'inizio"
     IDS_MUI_WRAPSEARCH_BCK  "Corrispondenza Wrap-Around dalla fine"
 END
@@ -292,24 +292,24 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Utilizzo:\r\n\
-Notepad3 [/?] [...[Encoding]] [...[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 [/?] [...[Codifica]] [...[Terminazioni di riga]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]filename[...]]\r\n\r\n\
-file\tDeve essere l'ultimo argomento, nessuno spazio tra virgolette\r\n\tper default.\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[disco:][percorso]Nome file[...]]\r\n\r\n\
+file\tDeve essere l'ultimo argomento, nessuno spazio tra virgolette\r\n\tper impostazione predefinita.\r\n\
 +\tAccetta argomenti multipli di tipo file (con spazi tra virgolette).\r\n\
 -\tAccetta un solo argomento di tipo file (senza spazi tra virgolette).\r\n\r\n\
 Opzioni:\r\n\
-/?\tVisualizza questo messaggio di help.\r\n\
-...\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-...\tLine ending mode (/crlf, /cr, /lf).\r\n\
-/e\tEncoding del file sorgente.\r\n\
+/?\tVisualizza questo messaggio di aiuto.\r\n\
+...\tCodifica (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+...\tTerminazioni di riga (/crlf, /cr, /lf).\r\n\
+/e\tCodifica del file sorgente.\r\n\
 /g\tSalta alla posizione specificata (/g -1 EOF).\r\n\
 /m\tTrova il testo specificato (/m- ultimo, /mr regex, /mb backslash).\r\n\
 /l\tRicarica automaticamente i file modificati.\r\n\
 /q\tForza la creazione di nuovi file, senza richiedere conferma.\r\n\
-/s\tSeleziona lo Schema di sintassi specificato.\r\n\
-/d\tSeleziona lo Schema di default per il testo.\r\n\
-/h\tSeleziona lo Schema Web Source Code.\r\n\
+/s\tSeleziona lo Schema sintattico specificato.\r\n\
+/d\tSeleziona lo Schema predefinito per il testo.\r\n\
+/h\tSeleziona lo Schema Codice sorgente Web.\r\n\
 /x\tSeleziona lo Schema Documento XML.\r\n\
 /c\tApri una nuova finestra e incolla il contenuto degli Appunti.\r\n\
 /b\tApri una nuova Paste Board per collezionare il testo copiato\r\n\tnegli Appunti.\r\n\
@@ -318,12 +318,12 @@ Opzioni:\r\n\
 /p\tImposta posizione e dimensione della finestra (/p0, /ps, /pf,l,t,r,b,m)\r\n\
 \tor /p <left>,<top>,<width>,<height>,<max>    [numeri interi].\r\n\
 /t\tImposta titolo della finestra.\r\n\
-/i\tAvvia come icona nella Tray.\r\n\
+/i\tAvvia come icona nell'area di notifica'.\r\n\
 /o\tMantieni finestra in primo piano.\r\n\
 /f\tSpecifica il file INI (/f0 nessun file INI).\r\n\
 /u\tAvvia con privilegi elevati.\r\n\
 /v\tStampa il file immediatamente ed esci.\r\n\
-/vd\tStampa il file (apri il dialogo di stampa).\r\n\
+/vd\tStampa il file (apre il dialogo di stampa).\r\n\
 /y\tCerca la variabile d'ambiente PATH nel caso di filename relativo.\r\n\
 /z\tSalta il successivo (utilizzabile per il sostituto del Blocco Note\r\n\tbasato su Registro).\r\n\r\n\
 Esempi:\r\n\
