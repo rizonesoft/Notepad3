@@ -442,7 +442,7 @@ BEGIN
         POPUP "視窗位置(&P)"
         BEGIN
             MENUITEM "複製視窗位置參數(&A)\tCtrl+Shift+K",     CMD_COPYWINPOS
-            MENUITEM "調整視窗至預設位置(N)\tCtrl+Shift+P",   CMD_DEFAULTWINPOS
+            MENUITEM "調整視窗至預設位置(&N)\tCtrl+Shift+P",   CMD_DEFAULTWINPOS
             MENUITEM "儲存為預設視窗位置(&S)",                 CMD_SAVEASDEFWINPOS
             MENUITEM "清除已儲存的預設視窗位置(&C)",           CMD_CLEARSAVEDWINPOS
             MENUITEM "移動視窗至初始位置(&I)\tCtrl+F11",       CMD_INITIALWINPOS
