@@ -1741,12 +1741,10 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 
     Globals.hwndMain = hwndMain; // make main window globaly available
 
-    // Current file information -- moved in front of ShowWindow()
+    // Initial FileLoad() moved in front of ShowWindow()
     HPATHL hfile_pth = Path_Allocate(L"");
     FileLoadFlags fLoadFlags = FLF_DontSave | FLF_New | FLF_SkipUnicodeDetect | FLF_SkipANSICPDetection;
-    if (Path_IsEmpty(s_pthArgFilePath)) {
-        FileLoad(hfile_pth, fLoadFlags);
-    }
+    FileLoad(hfile_pth, fLoadFlags); // int editor frame
 
     if (!s_flagStartAsTrayIcon) {
         ShowWindow(hwndMain,nCmdShow);
@@ -8054,7 +8052,7 @@ void HandleColorDefClicked(HWND hwnd, const DocPos position)
         }
 
         SciCall_SetTargetRange(firstPos, lastPos);
-        SciCall_ReplaceTarget(length, wchColor);
+        SciCall_ReplaceTargetMinimal(length, wchColor);
 
         EditUpdateVisibleIndicators();
     }
@@ -9379,11 +9377,7 @@ void CheckAutoLoadMostRecent()
 //
 static void  _DelayUpdateStatusbar(const int delay, const bool bForceRedraw)
 {
-    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_STATUSBAR, 0LL);
-    if (!mqc.hwnd) {
-        mqc.hwnd = Globals.hwndMain;
-    }
-    mqc.lparam = (LPARAM)bForceRedraw;
+    CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(Globals.hwndMain, IDT_TIMER_UPDATE_STATUSBAR, bForceRedraw);
     _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
 }
 
@@ -9394,10 +9388,7 @@ static void  _DelayUpdateStatusbar(const int delay, const bool bForceRedraw)
 //
 static void  _DelayUpdateToolbar(const int delay)
 {
-    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_TOOLBAR, 0LL);
-    if (!mqc.hwnd) {
-        mqc.hwnd = Globals.hwndMain;
-    }
+    CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(Globals.hwndMain, IDT_TIMER_UPDATE_TOOLBAR, 0LL);
     _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
 }
 
@@ -9408,11 +9399,7 @@ static void  _DelayUpdateToolbar(const int delay)
 //
 static void _DelayUpdateTitlebar(const int delay, const HWND hwnd)
 {
-    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UPDATE_TITLEBAR, 0LL);
-    if (!mqc.hwnd) {
-        mqc.hwnd = Globals.hwndMain;
-    }
-    mqc.lparam = (LPARAM)hwnd;
+    CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(Globals.hwndMain, IDT_TIMER_UPDATE_TITLEBAR, (LPARAM)hwnd);
     _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
 }
 
@@ -9423,10 +9410,7 @@ static void _DelayUpdateTitlebar(const int delay, const HWND hwnd)
 //
 static void  _DelayClearCallTip(const int delay)
 {
-    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_CLEAR_CALLTIP, 0LL);
-    if (!mqc.hwnd) {
-        mqc.hwnd = Globals.hwndMain;
-    }
+    CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(Globals.hwndMain, IDT_TIMER_CLEAR_CALLTIP, 0LL);
     _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
 }
 
@@ -9437,10 +9421,7 @@ static void  _DelayClearCallTip(const int delay)
 //
 static void  _DelaySplitUndoTransaction(const int delay)
 {
-    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_UNDO_TRANSACTION, 0);
-    if (!mqc.hwnd) {
-        mqc.hwnd = Globals.hwndMain;
-    }
+    CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(Globals.hwndMain, IDT_TIMER_UNDO_TRANSACTION, 0);
     _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
 }
 
@@ -9451,11 +9432,7 @@ static void  _DelaySplitUndoTransaction(const int delay)
 //
 void MarkAllOccurrences(const int delay, const bool bForceClear)
 {
-    static CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(IDT_TIMER_CALLBACK_MRKALL, 0);
-    if (!mqc.hwnd) {
-        mqc.hwnd = Globals.hwndMain;
-    }
-    mqc.lparam = (LPARAM)bForceClear;
+    CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(Globals.hwndMain, IDT_TIMER_CALLBACK_MRKALL, bForceClear);
     int const timer = (delay < 0) ? Settings2.UpdateDelayMarkAllOccurrences : delay;
     _MQ_AppendCmd(&mqc, _MQ_ms2cycl(timer));
 }
@@ -10869,7 +10846,6 @@ bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
     bool bSuccess = false;
 
     if (fLoad) {
-        SciCall_SetReadOnly(false);
         bSuccess = EditLoadFile(Globals.hwndEdit, hfile_pth, status, fLoadFlags, bSetSavePoint);
         SciCall_SetReadOnly(Settings.DocReadOnlyMode);
     }
@@ -10984,7 +10960,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
         }
         FileVars_GetFromData(NULL, 0, &Globals.fvCurFile); // init-reset
 
-        EditSetNewText(Globals.hwndEdit, "", 0, false);
+        EditSetNewText(Globals.hwndEdit, "", 0, false, false);
 
         SciCall_SetEOLMode(Settings.DefaultEOLMode);
         Encoding_Current(Settings.DefaultEncoding);
@@ -11065,7 +11041,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
             fSuccess = IS_VALID_HANDLE(hFile);
             if (fSuccess) {
                 FileVars_GetFromData(NULL, 0, &Globals.fvCurFile); // init/reset
-                EditSetNewText(Globals.hwndEdit, "", 0, false);
+                EditSetNewText(Globals.hwndEdit, "", 0, false, false);
                 Style_SetDefaultLexer(Globals.hwndEdit);
                 SciCall_SetEOLMode(Settings.DefaultEOLMode);
                 if (Encoding_IsValid(Encoding_Forced(CPI_GET))) {
@@ -11099,9 +11075,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
         }
         if (bReloadFile && !FileWatching.MonitoringLog) {
             Sci_GotoPosChooseCaret(0);
-            UndoTransActionBegin();
             fSuccess = FileIO(true, hopen_file, &fioStatus, fLoadFlags, FSF_None, !bReloadFile);
-            EndUndoTransAction();
         }
         else {
             fSuccess = FileIO(true, hopen_file, &fioStatus, fLoadFlags, FSF_None, !s_IsThisAnElevatedRelaunch);
