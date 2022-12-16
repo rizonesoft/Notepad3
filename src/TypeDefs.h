@@ -330,8 +330,8 @@ typedef struct CmdMessageQueue_t {
 
 } CmdMessageQueue_t;
 
-#define MESSAGE_QUEUE_INIT(cmd,wp,lp)  { NULL, (cmd), MAKEWPARAM((wp), 1), ((LPARAM)(DWORD)(lp)), -1, NULL, NULL }
-#define MQ_WM_CMD_INIT(wp,lp)            MESSAGE_QUEUE_INIT(WM_COMMAND, (wp), (lp))
+#define MESSAGE_QUEUE_INIT(hwnd,cmd,wp,lp)  { (hwnd), (cmd), MAKEWPARAM((wp), 1), ((LPARAM)(DWORD)(lp)), -1, NULL, NULL }
+#define MQ_WM_CMD_INIT(hw,wp,lp)            MESSAGE_QUEUE_INIT((hw), WM_COMMAND, (wp), (lp))
 
 // --------------------------------------------------------------------------
 

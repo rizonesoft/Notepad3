@@ -2769,7 +2769,7 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
 //
 
 #if TRUE
-static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOptions)
+static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOptions, bool reload)
 {
 #define RELEASE_RETURN(ret)  { pDocLoad->Release(); return(ret); }
 
@@ -2785,7 +2785,11 @@ static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOpt
             SciCall_SetDocPointer(0);
         }
         SciCall_TargetWholeDocument();
-        SciCall_ReplaceTarget(lenText, lpstrText);
+        if (reload) {
+            SciCall_ReplaceTargetMinimal(lenText, lpstrText);
+        } else {
+            SciCall_ReplaceTarget(lenText, lpstrText);
+        }
     }
     return true;
 }
@@ -2797,14 +2801,18 @@ static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOpt
         SciCall_ClearAll();
     } else {
         SciCall_TargetWholeDocument();
-        SciCall_ReplaceTarget(lenText, lpstrText);
+        if (reload) {
+            SciCall_ReplaceTargetMinimal(lenText, lpstrText);
+        } else {
+            SciCall_ReplaceTarget(lenText, lpstrText);
+        }
     }
     return true;
 }
 #endif
 
 
-extern "C" bool EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText)
+extern "C" bool EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText, bool reload)
 {
     bool const bLargerThan2GB = (lenText >= ((DocPosU)INT32_MAX));
     bool const bLargeFileLoaded = (lenText >= ((DocPosU)Settings2.FileLoadWarningMB << 20));
@@ -2813,13 +2821,17 @@ extern "C" bool EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText)
 
     if (SciCall_GetDocumentOptions() != docOptions) {
         // we have to create a new document with changed options
-        return CreateNewDocument(lpstrText, lenText, docOptions);
+        return CreateNewDocument(lpstrText, lenText, docOptions, reload);
     }
     if (!lpstrText || (lenText == 0)) {
         SciCall_ClearAll();
     } else {
         SciCall_TargetWholeDocument();
-        SciCall_ReplaceTarget(lenText, lpstrText);
+        if (reload) {
+            SciCall_ReplaceTargetMinimal(lenText, lpstrText);
+        } else {
+            SciCall_ReplaceTarget(lenText, lpstrText);
+        }
     }
     return true;
 }
