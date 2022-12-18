@@ -135,7 +135,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_STD_STYLE       "Stile Predefinito"
-    IDS_LEX_STD_MARGIN      "Margini e numeri di riga"
+    IDS_LEX_STD_MARGIN      "Margini e numeri di linea"
     IDS_LEX_STD_BRACE       "Corrispondenza parentesi (Indicatore)"
     IDS_LEX_STD_BRACE_FAIL  "Errore Corrispondenza parentesi (Indicatore)"
 END
@@ -146,12 +146,12 @@ BEGIN
     IDS_LEX_STD_INDENT      "Guida Indentazione (Colore)"
     IDS_LEX_STD_SEL         "Testo Selezionato (Colori)"
     IDS_LEX_STD_WSPC        "Whitespace (Colori, Dimensione 1-12)"
-    IDS_LEX_STD_LN_BACKGR   "Evidenzia riga corrente"
+    IDS_LEX_STD_LN_BACKGR   "Evidenzia linea corrente"
     IDS_LEX_STD_CARET       "Cursore (Colori, Dimensione 1-20)"
-    IDS_LEX_STD_LONG_LN     "Marcatore di riga lunga (Colori)"
+    IDS_LEX_STD_LONG_LN     "Marcatore di linea lunga (Colori)"
     IDS_LEX_STD_X_SPC       "Aumenta Interlinea (Dimensione)"
     IDS_LEX_2ND_STYLE       "2° Stile Predefinito"
-    IDS_LEX_2ND_MARGIN      "2° Margini e numeri di riga"
+    IDS_LEX_2ND_MARGIN      "2° Margini e numeri di linea"
     IDS_LEX_2ND_BRACE       "2° Corrispondenza parentesi (Indicatore)"
     IDS_LEX_2ND_BRACE_FAIL  "2° Errore Corrispondenza parentesi (Indicatore)"
     IDS_LEX_2ND_CTRL_CHAR   "2° Caratteri di controllo (Font)"
@@ -162,9 +162,9 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_2ND_LN_BACKGR   "2° Evidenzia riga corrente"
+    IDS_LEX_2ND_LN_BACKGR   "2° Evidenzia linea corrente"
     IDS_LEX_2ND_CARET       "2° Cursore (Colore, Dimensione 1-20)"
-    IDS_LEX_2ND_LONG_LN     "2° Marcatore di riga lunga (Colori)"
+    IDS_LEX_2ND_LONG_LN     "2° Marcatore di linea lunga (Colori)"
     IDS_LEX_2ND_X_SPC       "2° Aumenta Interlinea (Dimensione)"
     IDS_LEX_STD_BKMRK       "Segnalibri e Folding (Colori, Dimensione)"
     IDS_LEX_2ND_BKMRK       "2° Segnalibri e Folding (Colori, Dimensione)"
@@ -407,7 +407,7 @@ BEGIN
     IDS_LEX_STR_63314       "Filtor"
     IDS_LEX_STR_63315       "Plugin"
     IDS_LEX_STR_63316       "Proprietà Clip"
-    IDS_LEX_STR_63317       "Inizio Riga"
+    IDS_LEX_STR_63317       "Inizio Linea"
     IDS_LEX_STR_63318       "Forte"
     IDS_LEX_STR_63319       "Enfasi"
     IDS_LEX_STR_63320       "Intestazione 1"
@@ -424,7 +424,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63328       "Citazione Blocco"
     IDS_LEX_STR_63329       "Barrato"
-    IDS_LEX_STR_63330       "Riga orizzontale"
+    IDS_LEX_STR_63330       "Linea orizzontale"
     IDS_LEX_STR_63331       "Link"
     IDS_LEX_STR_63332       "Codice"
     IDS_LEX_STR_63333       "Riferimento"
