@@ -340,7 +340,7 @@ usar \\<regex>; para definir um padrão de correspondência ao nome do ficheiro:
 Formato do estilo:\r\n\
 tipo de letra:Nome; tamanho:[+/-]nn.mm; negrito; itálico; sublinhado;\r\n\
 1º plano:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Propriedades do estilo podem ser copiadas usando copiar/colar ou arrastar/largar.\
+Propriedades do estilo podem ser copiadas usando copiar/colar ou arrast./largar.\
 "
 
 END
