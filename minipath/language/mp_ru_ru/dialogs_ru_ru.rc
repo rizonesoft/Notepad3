@@ -114,7 +114,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Фильтр файлов"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Укажите маску имен &файлов, разделяя знаком ;",IDC_STATIC,7,7,164,8
+    LTEXT           "Укажите маску имен &файлов, разделяя знаком ;",IDC_STATIC,7,7,180,8
     EDITTEXT        IDC_FILTER,7,22,181,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,192,22,13,13
     CONTROL         "&Исключить файлы, соответствующие фильтру",IDC_NEGFILTER,
@@ -154,7 +154,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Исходный файл:",IDC_STATIC,7,7,57,8
     EDITTEXT        IDC_SOURCE,7,18,216,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "Место &назначения:",IDC_STATIC,7,37,66,8
+    LTEXT           "Место &назначения:",IDC_STATIC,7,37,80,8
     COMBOBOX        IDC_DESTINATION,7,48,199,105,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "",IDC_BROWSEDESTINATION,210,48,13,13
     LTEXT           "Действие:",IDC_STATIC,7,66,36,8
@@ -171,7 +171,7 @@ CAPTION "Основные"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "Основные настройки MiniPath.",IDC_STATIC,40,15,104,8
+    LTEXT           "Основные настройки MiniPath.",IDC_STATIC,40,15,125,8
     CONTROL         "&Открывать объекты одним кликом",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,135,10
     CONTROL         "&Выделение следует за курсором",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,127,10
@@ -198,12 +198,12 @@ BEGIN
     LTEXT           "Расширенные настройки MiniPath.",IDC_STATIC,40,15,160,8
     CONTROL         "&Папка при запуске:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,82,10
     CONTROL         "Последняя &открытая",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,88,10
-    CONTROL         "Папка «&Избранное»",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,80,10
+    CONTROL         "Папка «&Избранное»",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,85,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
     CONTROL         "&Удалять атрибут «только для чтения» при сохранении",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,205,10
     CONTROL         "П&ереименовать копируемый файл при совпадении имен",IDC_RENAMEONCOLLISION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,205,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,214,10
     CONTROL         "Перемещать у&даленные файлы в корзину",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,159,10
     CONTROL         "&Не спрашивать при удалении (не рекомендуется)",IDC_NOCONFIRMDELETE,
@@ -241,10 +241,10 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
     LTEXT           "Укажите внешние программы и пути.",IDC_STATIC,40,15,128,8
-    LTEXT           "&Программа быстрого просмотра (Ctrl+Q):",IDC_STATIC,10,41,140,8
+    LTEXT           "&Программа быстрого просмотра (Ctrl+Q):",IDC_STATIC,10,41,160,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
-    LTEXT           "Папка «&Избранное» (F11):",IDC_STATIC,10,76,90,8
+    LTEXT           "Папка «&Избранное» (F11):",IDC_STATIC,10,76,120,8
     EDITTEXT        IDC_FAVORITES,10,87,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_F,203,87,13,13,BS_BITMAP
 END
@@ -258,7 +258,7 @@ BEGIN
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,225,10
     CONTROL         "Использовать приложение в качестве целевого:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,182,10
-    LTEXT           "Укажите действие, если целевое приложение уже запущено:",IDC_STATIC,7,64,212,8
+    LTEXT           "Укажите действие, если целевое приложение уже запущено:",IDC_STATIC,7,64,225,8
     EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "Сообщение:",IDC_STATIC,20,120,42,8
