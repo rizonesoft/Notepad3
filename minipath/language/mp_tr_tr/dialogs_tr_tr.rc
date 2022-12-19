@@ -67,7 +67,7 @@ BEGIN
     LTEXT           "",IDC_AUTHORNAME,65,51,116,8
     LTEXT           "",IDC_EMAIL2,65,75,116,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_EMAIL,"SysLink",WS_TABSTOP,65,61,116,10
-    LTEXT           "", IDC_TRANSL_AUTH, 65, 78, 200, 8
+    LTEXT           "", IDC_TRANSL_AUTH, 40, 78, 200, 8
 END
 
 IDD_RUN DIALOGEX 0, 0, 224, 85
@@ -102,7 +102,7 @@ CAPTION "Git"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Açılacak bir dosya ya da klasör adını yazın\nya da listeden son kullandığınız klasörlerden birini seçin.",IDC_STATIC,35,7,182,17
+    LTEXT           "Açılacak bir dosya ya da klasör adını yazın ya da listeden son kullandığınız klasörlerden birini seçin.",IDC_STATIC,35,7,182,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "Tamam",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "İptal",IDCANCEL,167,66,50,14
@@ -118,7 +118,7 @@ BEGIN
     EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
     CONTROL         "&Süzgeçle eşleşen dosyalar katılmasın.",IDC_NEGFILTER,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,120,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,135,10
     DEFPUSHBUTTON   "Tamam",IDOK,77,58,50,14
     PUSHBUTTON      "İptal",IDCANCEL,132,58,50,14
 END
@@ -175,18 +175,18 @@ BEGIN
     CONTROL         "&Nesneler yalnız tek tıkla açılsın.",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,180,10
     CONTROL         "İ&z seçimi yapılabilsin.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
-    CONTROL         "&Tam satır seçimi yapılabilsin.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
+    CONTROL         "&Tam satır seçimi yapılabilsin.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,105,10
     CONTROL         "&Bir dosya açıldığında her zaman hedef pencere etkinleştirilsin.",IDC_FOCUSEDIT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,205,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,214,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
     CONTROL         "&MiniPath penceresi üstte kalsın.",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
     CONTROL         "Sistem tepsisine &küçült (yeniden etkinleştirmek için tıklayın).",IDC_MINIMIZETOTRAY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,205,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,208,10
     CONTROL         "Başlatıldığında &var olan pencere kullanılmaya çalışılsın.",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,205,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "&Ayarlar çıkışta kaydedilsin.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,90,10
+    CONTROL         "&Ayarlar çıkışta kaydedilsin.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,100,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
@@ -201,9 +201,9 @@ BEGIN
     CONTROL         """&Sık kullanılanlar"" klasörü.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,120,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
     CONTROL         "&Kaydedilmiş dosyaların salt okunur özniteliği temizlensin.",IDC_CLEARREADONLY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,180,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,200,10
     CONTROL         "&Ad çakışmalarında kopyalanan dosyalar yeniden adlandırılsın.",IDC_RENAMEONCOLLISION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,195,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,214,10
     CONTROL         "Silinen &dosyalar çöp kutusuna atılsın.",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
     CONTROL         "Dosya silme &onayı istenmesin (önerilmez).",IDC_NOCONFIRMDELETE,
@@ -222,13 +222,13 @@ BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
     LTEXT           "Klasör listesindeki ögelerin görünümü.",IDC_STATIC,40,15,140,8
     GROUPBOX        "Renkler",IDC_STATIC,10,41,205,134
-    LTEXT           "Bir süzgeç UYGULANMADIĞINDA kullanılacak metin rengi:",IDC_STATIC,20,54,205,8
-    CONTROL         "&Varsayılan pencere rengi.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
+    LTEXT           "Bir süzgeç UYGULANMADIĞINDA kullanılacak metin rengi:",IDC_STATIC,20,54,193,8
+    CONTROL         "&Varsayılan pencere rengi.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,95,10
     CONTROL         "Ö&zel rek:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Renk seçin...",IDC_COLOR_PICK1,119,80,50,14
-    LTEXT           "Bir süzgeç UYGULANDIĞINDA kullanılacak metin rengi:",IDC_STATIC,20,105,180,8
-    CONTROL         "Varsayılan &pencere rengi.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
+    LTEXT           "Bir süzgeç UYGULANDIĞINDA kullanılacak metin rengi:",IDC_STATIC,20,105,182,8
+    CONTROL         "Varsayılan &pencere rengi.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,95,10
     CONTROL         "ÖZ&el renk:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Renk seçin...",IDC_COLOR_PICK2,120,130,50,14
@@ -283,7 +283,7 @@ CAPTION "Pencereyi bul"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "Artı şeklindeki imleci yeni hedef olarak seçmek istediğiniz pencere üzerüne sürükleyin. İptal etmek için Esc tuşuna basın.",IDC_STATIC,35,7,168,22
+    LTEXT           "Artı şeklindeki imleci yeni hedef olarak seçmek istediğiniz pencere üzerüne sürükleyin. İptal etmek için Esc tuşuna basın.",IDC_STATIC,35,7,168,26
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Pencere sınıfı",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Pencere modülü",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE
