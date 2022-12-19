@@ -178,41 +178,41 @@ BEGIN
             MENUITEM "Cancella Parola &SX\tCtrl+Back",    CMD_CTRLBACK
             MENUITEM "Cancella Parola &DX\tCtrl+Canc",     CMD_CTRLDEL
         END
-        POPUP "&Righe"
+        POPUP "&Linee"
         BEGIN
             MENUITEM "Sposta &su\tAlt+ ↑",                IDM_EDIT_MOVELINEUP
             MENUITEM "Sposta &giù\tAlt+ ↓",               IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
-            MENUITEM "&Taglia selezione o riga corrente\tCtrl+X",    IDM_EDIT_CUT
-            MENUITEM "Taglia righe intere\tCtrl+Shift+X",            IDM_EDIT_CUTLINE
-            MENUITEM "&Copia selezione o riga corrente\tCtrl+C",     IDM_EDIT_COPY
-            MENUITEM "Copia righe intere\tCtrl+Shift+C",             IDM_EDIT_COPYLINE
+            MENUITEM "&Taglia selezione o linea corrente\tCtrl+X",    IDM_EDIT_CUT
+            MENUITEM "Taglia linee intere\tCtrl+Shift+X",            IDM_EDIT_CUTLINE
+            MENUITEM "&Copia selezione o linea corrente\tCtrl+C",     IDM_EDIT_COPY
+            MENUITEM "Copia linee intere\tCtrl+Shift+C",             IDM_EDIT_COPYLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Duplica riga/selezione\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "&Trasponi righe\tAlt+D",            IDM_EDIT_LINETRANSPOSE
-            MENUITEM "Elimina righe\tCtrl+Shift+D",       IDM_EDIT_DELETELINE
+            MENUITEM "&Duplica linea/selezione\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "&Trasponi linee\tAlt+D",            IDM_EDIT_LINETRANSPOSE
+            MENUITEM "Elimina linee\tCtrl+Shift+D",       IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
-            MENUITEM "Elimina riga a SX\tCtrl+Shift+Back",   IDM_EDIT_DELETELINELEFT
-            MENUITEM "Elimina riga a DX\tCtrl+Shift+Canc",    IDM_EDIT_DELETELINERIGHT
+            MENUITEM "Elimina linea a SX\tCtrl+Shift+Back",   IDM_EDIT_DELETELINELEFT
+            MENUITEM "Elimina linea a DX\tCtrl+Shift+Canc",    IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Colonna a capo...\tCtrl+Shift+W",      IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Dividi righe\tCtrl+I",                IDM_EDIT_SPLITLINES
-            MENUITEM "&Unisci righe\tCtrl+J",                IDM_EDIT_JOINLINES
-            MENUITEM "&Fondi righe\tCtrl+Alt+J",             IDM_EDIT_JOINLN_NOSP
+            MENUITEM "&Dividi linee\tCtrl+I",                IDM_EDIT_SPLITLINES
+            MENUITEM "&Unisci linee\tCtrl+J",                IDM_EDIT_JOINLINES
+            MENUITEM "&Fondi linee\tCtrl+Alt+J",             IDM_EDIT_JOINLN_NOSP
             MENUITEM "&Conserva i paragrafi\tCtrl+Shift+J",  IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
-            MENUITEM "Unisci righe &vuote\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "Unisci righe &blank\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "&Rimuovi righe vuote\tAlt+R",          IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "Rimuovi righe blank\tCtrl+Alt+B",      IDM_EDIT_REMOVEBLANKLINES
-            MENUITEM "Rimuove righe &duplicate\tCtrl+Alt+D", IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "Unisci linee &vuote\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
+            MENUITEM "Unisci linee &blank\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
+            MENUITEM "&Rimuovi linee vuote\tAlt+R",          IDM_EDIT_REMOVEEMPTYLINES
+            MENUITEM "Rimuovi linee blank\tCtrl+Alt+B",      IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "Rimuove linee &duplicate\tCtrl+Alt+D", IDM_EDIT_REMOVEDUPLICATELINES
         END
         POPUP "&Selezione"
         BEGIN
             MENUITEM "&Indenta",                             IDM_EDIT_INDENT
             MENUITEM "&Rimuovi indentazione",                IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "&Commento riga"
+            POPUP "&Commento linea"
             BEGIN
                 MENUITEM "&Commuta\tCtrl+Q",               IDM_EDIT_LINECOMMENT
                 MENUITEM "&Aggiungi\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
@@ -220,7 +220,7 @@ BEGIN
                 MENUITEM "Modifica &Blocco\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
             MENUITEM SEPARATOR
-            MENUITEM "&Commento multi-riga\tCtrl+Shift+Q",        IDM_EDIT_STREAMCOMMENT
+            MENUITEM "&Commento multi-linea\tCtrl+Shift+Q",        IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Racchiudi selezione"
             BEGIN
@@ -235,17 +235,17 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "&Con...\tAlt+Q",                   IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "&Duplica selezione/riga\tCtrl+D",      IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "&Duplica selezione/linea\tCtrl+D",      IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
             MENUITEM "&Pad con blanks\tAlt+B",               IDM_EDIT_PADWITHSPACES
             MENUITEM "Rimuovi &primo carattere\tAlt+Z",      IDM_EDIT_STRIP1STCHAR
             MENUITEM "Rimuovi &ultimo carattere\tAlt+U",     IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Rimuovi i blanks a fine riga\tAlt+W",  IDM_EDIT_TRIMLINES
+            MENUITEM "Rimuovi i blanks a fine linea\tAlt+W",  IDM_EDIT_TRIMLINES
             MENUITEM "Comprimi i blanks\tCtrl+Alt+P",        IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
-            MENUITEM "&Modifica righe...\tAlt+M",     IDM_EDIT_MODIFYLINES
-            MENUITEM "&Allinea righe...\tAlt+J",      IDM_EDIT_ALIGN
-            MENUITEM "&Ordina righe...\tAlt+O",       IDM_EDIT_SORTLINES
+            MENUITEM "&Modifica linee...\tAlt+M",     IDM_EDIT_MODIFYLINES
+            MENUITEM "&Allinea linee...\tAlt+J",      IDM_EDIT_ALIGN
+            MENUITEM "&Ordina linee...\tAlt+O",       IDM_EDIT_SORTLINES
             MENUITEM SEPARATOR
             MENUITEM "Vai all'&Inizio della selezione\tCtrl+,",  CMD_JUMP2SELSTART
             MENUITEM "Vai alla &Fine della selezione\tCtrl+.",   CMD_JUMP2SELEND
@@ -282,7 +282,7 @@ BEGIN
         END
         POPUP "&Inserisci"
         BEGIN
-            MENUITEM "&Nuova riga sopra\tCtrl+Invio",             CMD_INSERTNEWLINE
+            MENUITEM "&Nuova linea sopra\tCtrl+Invio",             CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
             MENUITEM "Tag &HTML/XML...\tAlt+X",                   IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
@@ -309,10 +309,10 @@ BEGIN
             MENUITEM "Seleziona fino al prossimo\tCtrl+Alt+F2",                    IDM_EDIT_SELTONEXT
             MENUITEM "Seleziona fino al precedente\tCtrl+Alt+Shift+F2",            IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "Seleziona &Parola o Riga\tCtrl+Spc",                        IDM_EDIT_SELECTWORD
+            MENUITEM "Seleziona &Parola o Linea\tCtrl+Spc",                        IDM_EDIT_SELECTWORD
             MENUITEM "Multi-Selezione di &tutte le occorrenze\tCtrl+Shift+Spazio",    IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Separa &transazione Undo per ogni riga",                     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "Separa &transazione Undo per ogni linea",                     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "Segnalibri"
@@ -343,11 +343,11 @@ BEGIN
     POPUP "&Visualizza"
     BEGIN
         MENUITEM "A capo automatico\tCtrl+W",                          IDM_VIEW_WORDWRAP
-        MENUITEM "&Marcatore riga lunga\tCtrl+Alt+L",                  IDM_VIEW_LONGLINEMARKER
+        MENUITEM "&Marcatore linea lunga\tCtrl+Alt+L",                  IDM_VIEW_LONGLINEMARKER
         MENUITEM "&Guide indentazione\tCtrl+Shift+G",                  IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Mostra blanks\tCtrl+Shift+8",  IDM_VIEW_SHOWBLANKS
-        MENUITEM "Mostra terminazioni di riga\tCtrl+Shift+9",           IDM_VIEW_SHOWEOLS
+        MENUITEM "Mostra terminazioni di linea\tCtrl+Shift+9",           IDM_VIEW_SHOWEOLS
         MENUITEM "Mostra simboli di a capo\tCtrl+Shift+0",             IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM SEPARATOR
         POPUP "Marcatore cronologia modifiche"
@@ -368,7 +368,7 @@ BEGIN
         END
         MENUITEM "Evidenzia &Unicode-Points",                          IDM_VIEW_UNICODE_POINTS
         MENUITEM "Evidenzia &parentesi corrispondente\tCtrl+Shift+V",  IDM_VIEW_MATCHBRACES
-        POPUP "Evidenzia riga corrente\tCtrl+Shift+I"
+        POPUP "Evidenzia linea corrente\tCtrl+Shift+I"
         BEGIN
             MENUITEM "&Nessuna evidenziatura",               IDM_VIEW_HILITCURLN_NONE
             MENUITEM "&Colore di sfondo",                    IDM_VIEW_HILITCURLN_BACK
@@ -390,7 +390,7 @@ BEGIN
             END
         END
         MENUITEM SEPARATOR
-        MENUITEM "&Numeri di riga\tCtrl+Shift+N",                  IDM_VIEW_LINENUMBERS
+        MENUITEM "&Numeri di linea\tCtrl+Shift+N",                  IDM_VIEW_LINENUMBERS
         MENUITEM "&Margine Segnalibri\tCtrl+Shift+M",                IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM "Margine cronologia modifiche",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
@@ -467,7 +467,7 @@ BEGIN
         MENUITEM "Inserisci Tab come &Spazi",                IDM_SET_TABSASSPACES
         MENUITEM "Impostazioni &Tab...\tCtrl+T",             IDM_SET_TABSETTINGS
         MENUITEM "Impostazioni &A capo automatico...",               IDM_SET_WORDWRAPSETTINGS
-        MENUITEM "Impostazioni &Righe lunghe...",                    IDM_SET_LONGLINESETTINGS
+        MENUITEM "Impostazioni &Linee lunghe...",                    IDM_SET_LONGLINESETTINGS
         MENUITEM "In&dentazione automatica",                         IDM_SET_AUTOINDENTTEXT
         MENUITEM "Chiusura automatica Parentesi",                    IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Chiusura automatica &HTML/XML\tCtrl+Shift+H",      IDM_SET_AUTOCLOSETAGS
@@ -586,12 +586,12 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Cancella Marcatori",                  IDM_EDIT_CLEAR_MARKER
-        MENUITEM "Taglia righe di tipo Marcatore",      IDM_EDIT_CUT_MARKED
-        MENUITEM "Copia righe di tipo Marcatore",       IDM_EDIT_COPY_MARKED
-        MENUITEM "Cancella righe di tipo Marcatore",    IDM_EDIT_DELETE_MARKED
+        MENUITEM "Taglia linee di tipo Marcatore",      IDM_EDIT_CUT_MARKED
+        MENUITEM "Copia linee di tipo Marcatore",       IDM_EDIT_COPY_MARKED
+        MENUITEM "Cancella linee di tipo Marcatore",    IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
         MENUITEM "Code Folding",                  IDM_VIEW_FOLDING
-        MENUITEM "Numeri di riga",                IDM_VIEW_LINENUMBERS
+        MENUITEM "Numeri di linea",                IDM_VIEW_LINENUMBERS
         MENUITEM "Margine Segnalibri",               IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM "Margine cronologia modifiche",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END

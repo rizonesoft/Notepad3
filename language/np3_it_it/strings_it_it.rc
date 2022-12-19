@@ -159,7 +159,7 @@ BEGIN
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
     IDS_MUI_WARN_NORMALIZE_EOLS
-                            "Vuoi normalizzare tutti i terminatori di riga, in modo che siano '%s'?"
+                            "Vuoi normalizzare tutti i terminatori di linea, in modo che siano '%s'?"
 END
 
 STRINGTABLE
@@ -167,7 +167,7 @@ BEGIN
     IDS_MUI_SELRECT         "Questa operazione non può essere eseguita in una selezione rettangolare."
     IDS_MUI_SELMULTI        "Questa operazione non può essere eseguita in una multi-selezione."
     IDS_MUI_SELRECTORMULTI  "Questa operazione non può essere eseguita in una selezione rettangolare o in una multi-selezione."
-    IDS_MUI_BUFFERTOOSMALL  "Questa operazione non può essere eseguita (righe troppo lunghe)."
+    IDS_MUI_BUFFERTOOSMALL  "Questa operazione non può essere eseguita (linee troppo lunghe)."
     IDS_MUI_FIND_WRAPFW     "Raggiunta la fine del documento, la ricerca riprende dall'inizio."
     IDS_MUI_FIND_WRAPRE     "Raggiunto l'inizio del documento, la ricerca riprende dalla fine."
     IDS_MUI_NOTFOUND        "Nessuna corrispondenza trovata per il pattern di ricerca specificato."
@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_CREATE      """%s"" non trovato.\nVuoi creare questo file?"
     IDS_MUI_PRINT_HEADER    "Nome file, data e ora correnti|Nome file, Data corrente|Nome file|Lascia vuoto"
     IDS_MUI_PRINT_FOOTER    "Numero di pagina|Lascia vuoto"
-    IDS_MUI_PRINT_COLOR     "Normale|Inverti (sfondo scuro)|Nero su bianco|Colore su bianco|Colore su bianco (tranne i numeri di riga)|Colori a schermo"
+    IDS_MUI_PRINT_COLOR     "Normale|Inverti (sfondo scuro)|Nero su bianco|Colore su bianco|Colore su bianco (tranne i numeri di linea)|Colori a schermo"
     IDS_MUI_PRINT_PAGENUM   "Pagina %i"
     IDS_MUI_WARN_STYLE_RESET
                             "Questa azione ripristina le impostazioni di fabbrica della modalità colore desiderata, e attiverà il file .ini della configurazione standard!"
@@ -254,7 +254,7 @@ BEGIN
     IDS_MUI_TITLE_FIXARB    "Stile '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Estensioni associate:"
     IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
-    IDS_MUI_GOTO_LINE       "Riga (1 - %s):"
+    IDS_MUI_GOTO_LINE       "Linea (1 - %s):"
     IDS_MUI_GOTO_COLUMN     "Colonna (1 - %s):"
 END
 
@@ -292,7 +292,7 @@ STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
 Utilizzo:\r\n\
-Notepad3 [/?] [...[Codifica]] [...[Terminazioni di riga]] [/e] [/g] [/m] [/l]\r\n\
+Notepad3 [/?] [...[Codifica]] [...[Terminazioni di linea]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[disco:][percorso]Nome file[...]]\r\n\r\n\
 file\tDeve essere l'ultimo argomento, nessuno spazio tra virgolette\r\n\tper impostazione predefinita.\r\n\
@@ -301,7 +301,7 @@ file\tDeve essere l'ultimo argomento, nessuno spazio tra virgolette\r\n\tper imp
 Opzioni:\r\n\
 /?\tVisualizza questo messaggio di aiuto.\r\n\
 ...\tCodifica (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-...\tTerminazioni di riga (/crlf, /cr, /lf).\r\n\
+...\tTerminazioni di linea (/crlf, /cr, /lf).\r\n\
 /e\tCodifica del file sorgente.\r\n\
 /g\tSalta alla posizione specificata (/g -1 EOF).\r\n\
 /m\tTrova il testo specificato (/m- ultimo, /mr regex, /mb backslash).\r\n\

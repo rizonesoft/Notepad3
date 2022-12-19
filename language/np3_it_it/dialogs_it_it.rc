@@ -109,7 +109,7 @@ BEGIN
     CONTROL         "<a>Vai a Sostituisci (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,105,80,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,73,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,223,85,14,10
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,221,85,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,130,277,9,WS_EX_STATICEDGE
     PUSHBUTTON      "&Vista focalizzata",IDC_TOGGLE_VISIBILITY,221,65,63,14
 END
@@ -147,7 +147,7 @@ BEGIN
     CONTROL         "<a>Vai a Cerca (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,132,80,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,223,114,14,10
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,221,114,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,156,277,9,WS_EX_STATICEDGE
     PUSHBUTTON      "&Vista focalizzata",IDC_TOGGLE_VISIBILITY,221,94,63,14
 END
@@ -206,16 +206,16 @@ END
 
 IDD_MUI_DEFEOLMODE DIALOGEX 0, 0, 200, 80
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Terminazione di riga"
+CAPTION "Terminazione di linea"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Modalità terminazione riga predefinita:",IDC_STATIC,7,7,125,8
+    LTEXT           "&Modalità terminazione linea predefinita:",IDC_STATIC,7,7,125,8
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Mostra l'avviso di interruzioni di riga incoerenti.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "Mostra l'avviso di interruzioni di linea incoerenti.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
-    CONTROL         "Garantisci interruzioni di riga co&erenti al salvataggio.",IDC_CONSISTENT_EOLS,
+    CONTROL         "Garantisci interruzioni di linea co&erenti al salvataggio.",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,185,10
-    CONTROL         "&Elimina gli spazi a fine riga al salvataggio.",IDC_AUTOSTRIPBLANKS,
+    CONTROL         "&Elimina gli spazi a fine linea al salvataggio.",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,175,10
     DEFPUSHBUTTON   "OK",IDOK,143,7,50,14
     PUSHBUTTON      "Annulla",IDCANCEL,143,24,50,14
@@ -223,17 +223,17 @@ END
 
 IDD_MUI_WARNLINEENDS DIALOGEX 0, 0, 196, 100
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Terminazioni di riga incoerenti"
+CAPTION "Terminazioni di linea incoerenti"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Trovate terminazioni di riga incoerenti nel file:",IDC_STATIC,7,7,180,8
+    LTEXT           "Trovate terminazioni di linea incoerenti nel file:",IDC_STATIC,7,7,180,8
     RTEXT           "CR+LF:",IDC_STATIC2,10,18,34,8
     RTEXT           "CR:",IDC_STATIC3,10,28,34,8
     RTEXT           "LF:",IDC_STATIC4,10,38,34,8
-    LTEXT           "%s riga/he.",IDC_EOL_SUM_CRLF,48,18,136,8
-    LTEXT           "%s riga/he.",IDC_EOL_SUM_CR,48,28,136,8
-    LTEXT           "%s riga/he.",IDC_EOL_SUM_LF,48,38,136,8
-    LTEXT           "&Vuoi normalizzare le terminazioni di riga?",IDC_STATIC5,7,52,180,8
+    LTEXT           "%s linea/e.",IDC_EOL_SUM_CRLF,48,18,136,8
+    LTEXT           "%s linea/e.",IDC_EOL_SUM_CR,48,28,136,8
+    LTEXT           "%s linea/e.",IDC_EOL_SUM_LF,48,38,136,8
+    LTEXT           "&Vuoi normalizzare le terminazioni di linea?",IDC_STATIC5,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Sì",IDOK,138,63,50,14
     PUSHBUTTON      "&No",IDCANCEL,138,80,50,14
@@ -246,7 +246,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Vai a"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Riga:",IDC_LINE_TEXT,7,8,101,8
+    LTEXT           "&Linea:",IDC_LINE_TEXT,7,8,101,8
     EDITTEXT        IDC_LINENUM,7,18,101,12,ES_AUTOHSCROLL
     LTEXT           "&Colonna:",IDC_COLUMN_TEXT,7,40,101,8
     EDITTEXT        IDC_COLNUM,7,50,101,12,ES_AUTOHSCROLL
@@ -356,14 +356,14 @@ BEGIN
     LTEXT           "Tabul.[%s]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
     LTEXT           "Blanks[%s]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
     LTEXT           "Misti[x]:",IDC_STATIC3,54,42,30,8
-    RTEXT           "%s riga/he",IDC_INDENT_SUM_TAB,84,18,52,8
-    RTEXT           "%s riga/he",IDC_INDENT_SUM_SPC,84,30,52,8
-    RTEXT           "%s riga/he",IDC_INDENT_SUM_MIX,84,42,52,8
+    RTEXT           "%s linea/e",IDC_INDENT_SUM_TAB,84,18,52,8
+    RTEXT           "%s linea/e",IDC_INDENT_SUM_SPC,84,30,52,8
+    RTEXT           "%s linea/e",IDC_INDENT_SUM_MIX,84,42,52,8
     GROUPBOX        "Re-indentare tutto? ",IDC_STATIC2,7,60,182,56,WS_GROUP
     CONTROL         "&Tabul.",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,32,10
     CONTROL         "&Blanks",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,32,10
-    RTEXT           "%s riga/he con indentazione irregolare",IDC_INDENT_TAB_MODX,50,72,124,8
-    RTEXT           "%s riga/he con indentazione irregolare",IDC_INDENT_SPC_MODX,50,84,124,8
+    RTEXT           "%s linea/e con indentazione irregolare",IDC_INDENT_TAB_MODX,50,72,124,8
+    RTEXT           "%s linea/e con indentazione irregolare",IDC_INDENT_SPC_MODX,50,84,124,8
     PUSHBUTTON      "&Sì",IDOK,80,98,50,14
     PUSHBUTTON      "&No",IDCANCEL,134,98,50,14
     CONTROL         "&Mostra sempre questa finestra.",IDC_WARN_INCONSISTENT_INDENTS,
@@ -372,10 +372,10 @@ END
 
 IDD_MUI_LONGLINES DIALOGEX 0, 0, 279, 55
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Impostazioni Righe lunghe"
+CAPTION "Impostazioni Linee lunghe"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Pos. indicatore righe lunghe:",IDC_STATIC,7,10,101,8
+    LTEXT           "&Pos. indicatore linee lunghe:",IDC_STATIC,7,10,101,8
     EDITTEXT        IDC_MULTIEDGELINE,112,7,160,14,ES_AUTOHSCROLL
     CONTROL         "Mostra &indicatore",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,100,10
     CONTROL         "Cambia &colore di sfondo",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
@@ -394,7 +394,7 @@ BEGIN
     COMBOBOX        103,7,58,214,200,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,115,79,50,14
     PUSHBUTTON      "Annulla",IDCANCEL,171,79,50,14
-    LTEXT           "Nessuna indentazione|Indenta di 1 carattere|Indenta di 2 caratteri|Indenta di 1 livello|Indenta di 2 livelli|Indenta come prima sotto-riga|Indenta di 1 livello aggiuntivo rispetto alla prima sotto-riga",200,0,0,615,8,NOT WS_VISIBLE
+    LTEXT           "Nessuna indentazione|Indenta di 1 carattere|Indenta di 2 caratteri|Indenta di 1 livello|Indenta di 2 livelli|Indenta come prima sotto-linea|Indenta di 1 livello aggiuntivo rispetto alla prima sotto-linea",200,0,0,615,8,NOT WS_VISIBLE
     LTEXT           "Nessun indicatore visuale prima dell'a-capo|Mostra indicatore visuale prima dell'a-capo (vicino al testo)|Mostra indicatore visuale prima dell'a-capo (vicino ai bordi)",201,0,0,418,8,NOT WS_VISIBLE
     LTEXT           "Nessun indicatore visuale dopo l'a-capo|Mostra indicatore visuale dopo l'a-capo (vicino al testo)|Mostra indicatore visuale dopo l'a-capo (vicino ai bordi)",202,0,0,402,8,NOT WS_VISIBLE
     LTEXT           "Vai a capo solo tra due parole|Vai a capo sempre",203,0,0,187,8,NOT WS_VISIBLE
@@ -512,18 +512,18 @@ END
 
 IDD_MUI_MODIFYLINES DIALOGEX 0, 0, 185, 120
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Modifica righe"
+CAPTION "Modifica linee"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Anteponi testo alle righe:",IDC_STATIC,7,7,90,8
+    LTEXT           "&Anteponi testo alle linee:",IDC_STATIC,7,7,90,8
     EDITTEXT        IDC_MODLNS_ED_PREPEND,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "&Posponi testo alle righe:",IDC_STATIC2,7,37,80,8
+    LTEXT           "&Posponi testo alle linee:",IDC_STATIC2,7,37,80,8
     EDITTEXT        IDC_MODLNS_ED_APPEND,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Annulla",IDCANCEL,128,24,50,14
     LTEXT           "${L}",IDC_MODLNS_DOCLN_CANONIC,7,72,14,8
     LTEXT           "${0L}",IDC_MODLNS_DOCLN_ZEROFLD,30,72,18,8
-    LTEXT           "Numero riga documento.",IDC_STATIC3,57,72,90,8
+    LTEXT           "Numero linea documento.",IDC_STATIC3,57,72,90,8
     LTEXT           "${N}",IDC_MODLNS_CNTLN1_CANONIC,7,82,15,8
     LTEXT           "${0N}",IDC_MODLNS_CNTLN1_ZEROFLD,30,82,19,8
     LTEXT           "Numerazione continua.",IDC_STATIC4,57,82,80,8
@@ -634,17 +634,17 @@ END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 188
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Ordinamento righe"
+CAPTION "Ordinamento linee"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "Ordinamento &crescente.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
     CONTROL         "Ordinamento &decrescente.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
-    CONTROL         "Mescola righe.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
-    CONTROL         "&Fondi le righe duplicate.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
-    CONTROL         "&Rimuovi le righe duplicate.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
-    CONTROL         "Rimuovi le righe &uniche.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
-    CONTROL         "Rimuovi le righe &vuote.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
-    CONTROL         "Rimuovi le righe &white-space.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,110,10
+    CONTROL         "Mescola linee.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
+    CONTROL         "&Fondi le linee duplicate.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "&Rimuovi le linee duplicate.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "Rimuovi le linee &uniche.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
+    CONTROL         "Rimuovi le linee &vuote.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
+    CONTROL         "Rimuovi le linee &white-space.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,110,10
     CONTROL         "Con&sidera Maiuscole\\Minuscole.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,120,10
     CONTROL         "Ignora Maiuscole\\Minus&cole.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,110,10
     CONTROL         "Comparazione logica dei &numeri.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,120,10
@@ -680,7 +680,7 @@ END
 
 IDD_MUI_ALIGN DIALOGEX 0, 0, 184, 74
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Allinea righe"
+CAPTION "Allinea linee"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "&A sinistra.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,41,10
