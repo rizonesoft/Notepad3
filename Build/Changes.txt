@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.1216.(build_#) (2022-12-16)
+Current BETA/RC Version 5.22.1220.(build_#) (2022-12-20)
 ========================================================
 
 --------------------------------------------------------
@@ -62,6 +62,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[1220.1]- Update Lexer "AutoIt3 Script" to Autoit v3.3.16.1.
+[1220.1]- Adjust All dialogboxes for all Languages to fit at display scale of 125%.
 [1216.1]- Replacing SCI_REPLACETARGET calls by SCI_REPLACETARGETMINIMAL calls where appropriate.
 [1212.1]- Extend AutoCloseBrackets (by Matteo-Nigro PR #4318) for Selection.
 [1118.2]- Using new AviSynth+ keyword lists and AviSynth colors (light/dark mode).
