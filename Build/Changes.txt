@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.1220.(build_#) (2022-12-20)
+Current BETA/RC Version 5.22.1223.(build_#) (2022-12-23)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[1223.1]- Allow "Notepad3 x64 Setup" to install on Win11 Arm (64-bit emulation).
 [1212.1]- Implementation of automatic parenthesis closure.
 [1029.1]- Darkmode highlight (foreground) contrast settings + default reduction to 75%.
 [1018.1]- Add example for tinyexpr in Modify Lines dialog.
