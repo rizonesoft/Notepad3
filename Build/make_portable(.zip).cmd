@@ -27,9 +27,9 @@ IF /I "%~1" == "-help"  GOTO SHOWHELP
 IF /I "%~1" == "--help" GOTO SHOWHELP
 IF /I "%~1" == "/?"     GOTO SHOWHELP
 
-SET INPUTDIRx86=bin\Release_x86_v143
-SET INPUTDIRx64=bin\Release_x64_v143
-SET "TEMP_NAME=make_portable_temp"
+SET INPUTDIRx86="bin\Release_x86_v143"
+SET INPUTDIRx64="bin\Release_x64_v143"
+SET TEMP_NAME="make_portable_temp"
 
 IF NOT EXIST "..\%INPUTDIRx86%\Notepad3.exe"   CALL :SUBMSG "ERROR" "Compile Notepad3 x86 first!"
 IF NOT EXIST "..\%INPUTDIRx86%\minipath.exe"   CALL :SUBMSG "ERROR" "Compile MiniPath x86 first!"
@@ -60,15 +60,14 @@ PUSHD "%TEMP_NAME%"
 "%SEVENZIP%" a -tzip -mcu=on -mx=7 Notepad3_%NP3_VER%.zip * >NUL
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
 
-CALL :SUBMSG "INFO" "Notepad3_%NP3_VER%.zip created successfully!"
+CALL :SUBMSG "INFO" "Notepad3_%NP3_VER%_Portable.zip created successfully!"
 
-MOVE /Y "Notepad3_%NP3_VER%.zip" ".." >NUL
+MOVE /Y "Notepad3_%NP3_VER%.zip" "..\Notepad3_%NP3_VER%_Portable.zip" >NUL
 
 POPD
 IF EXIST "%TEMP_NAME%" RD /S /Q "%TEMP_NAME%"
 
 POPD
-
 
 :END
 TITLE Finished!
@@ -76,14 +75,14 @@ ECHO.
 
 :: Pause of 4 seconds to verify the logfile before exiting 
 :: ===========================================================================================
-:: ping -n 5 127.0.0.1>nul
+ping -n 5 127.0.0.1>nul
 
 ENDLOCAL
 EXIT /B
 
 
 :SubZipFiles
-SET "ZIP_NAME=Notepad3_%NP3_VER%_%2%SUFFIX%"
+SET "ZIP_NAME=Notepad3_%NP3_VER%_%2%_Portable"
 TITLE Creating %ZIP_NAME%.zip...
 CALL :SUBMSG "INFO" "Creating %ZIP_NAME%.zip..."
 IF EXIST "%TEMP_NAME%"     RD /S /Q "%TEMP_NAME%"
