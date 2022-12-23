@@ -58,7 +58,7 @@ DisableWelcomePage=yes
 AllowCancelDuringInstall=yes
 UsedUserAreasWarning=no
 MinVersion=0,6.1sp1
-ArchitecturesAllowed=x86 x64
+ArchitecturesAllowed=x86 x64 arm64
 ArchitecturesInstallIn64BitMode=
 #ifexist "..\signinfo_notepad3.txt"
 SignTool=MySignTool
