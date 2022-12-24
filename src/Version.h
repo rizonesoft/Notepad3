@@ -17,7 +17,7 @@
 #define NOTEPAD3_VERSION_H
 
 #define __CC(p,s) p ## s
-#define _V(s)  __CC(,s)
+#define _V(s)  __CC(v,s)
 #define _W(s)  __CC(L,s)
 
 #define _STRINGIFY(s) #s
