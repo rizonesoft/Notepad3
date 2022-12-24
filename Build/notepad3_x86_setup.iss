@@ -28,7 +28,7 @@
 
 [Setup]
 AppId={#app_name}
-AppName={#app_name}
+AppName={#app_name} (x86)
 AppVersion={#app_version}
 AppVerName={#app_name} {#app_version}
 AppPublisher={#app_publisher}
@@ -39,7 +39,7 @@ AppContact=https://rizonesoft.com
 AppCopyright={#app_copyright}
 VersionInfoVersion={#app_version}
 UninstallDisplayIcon={app}\Notepad3.exe
-UninstallDisplayName={#app_name} {#app_version}
+UninstallDisplayName={#app_name} (x86) {#app_version}
 DefaultDirName={commonpf}\Notepad3
 LicenseFile="..\License.txt"
 OutputDir=.\Packages
