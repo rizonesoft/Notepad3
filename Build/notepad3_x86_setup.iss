@@ -20,6 +20,10 @@
   #error Compile MiniPath x86 first
 #endif
 
+#ifnexist bindir + "\Release_x86_v143\grepWinNP3.exe"
+  #error Compile grepWinNP3 x86 first
+#endif
+
 #define app_name "Notepad3"
 #define app_publisher "Rizonesoft"
 #define app_version GetVersionNumbersString(bindir + "\Release_x86_v143\Notepad3.exe")
