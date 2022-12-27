@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.122x.(build_#) (2022-12-2x)
+Current BETA/RC Version 5.22.1227.(build_#) (2022-12-27)
 ========================================================
 
 --------------------------------------------------------
@@ -109,7 +109,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
-[122x.1]- Use alternate path, if Path_GetKnownFolder() failed.
+[1227.1]- Use alternate path, if Path_GetKnownFolder() failed.
 [1215.1]- Set alpha (80) for "highlight current line" translucency, if not given.
 [1212.1]- "Notepad3 Replacement" after Win11 22H2 update (SUP).
 [1212.1]- Oniguruma fix (ONIG_OPTION_FIND_LONGEST behavior) (ONI).
