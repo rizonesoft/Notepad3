@@ -1464,23 +1464,29 @@ void LoadSettings()
     Defaults.EFR_Data.fuFlags = 0;
     Settings.EFR_Data.fuFlags = (UINT)IniSectionGetInt(IniSecSettings, L"efrData_fuFlags", (int)Defaults.EFR_Data.fuFlags);
 
-    Path_GetKnownFolder(FOLDERID_Desktop, Defaults.OpenWithDir);
-    LPWSTR const wchOpenWithDir = Path_WriteAccessBuf(Settings.OpenWithDir, PATHLONG_MAX_CCH);
-    if (IniSectionGetStringNoQuotes(IniSecSettings, L"OpenWithDir", Path_Get(Defaults.OpenWithDir), wchOpenWithDir, PATHLONG_MAX_CCH)) {
-        Path_Sanitize(Settings.OpenWithDir);
-        Path_FreeExtra(Settings.OpenWithDir, 0);
-        Path_AbsoluteFromApp(Settings.OpenWithDir, true);
+    if (Path_GetKnownFolder(FOLDERID_Desktop, Defaults.OpenWithDir)) {
+        LPWSTR const wchOpenWithDir = Path_WriteAccessBuf(Settings.OpenWithDir, PATHLONG_MAX_CCH);
+        if (IniSectionGetStringNoQuotes(IniSecSettings, L"OpenWithDir", Path_Get(Defaults.OpenWithDir), wchOpenWithDir, PATHLONG_MAX_CCH)) {
+            Path_Sanitize(Settings.OpenWithDir);
+            Path_FreeExtra(Settings.OpenWithDir, 0);
+            Path_AbsoluteFromApp(Settings.OpenWithDir, true);
+        }
     }
-    //~Path_FreeExtra(Settings.OpenWithDir, 0); ~ already done
+    else {
+        Path_Reset(Settings.OpenWithDir, Path_Get(Paths.ModuleDirectory));
+    }
 
-    Path_GetKnownFolder(FOLDERID_Favorites, Defaults.FavoritesDir);
-    LPWSTR const wchFavoritesDir = Path_WriteAccessBuf(Settings.FavoritesDir, PATHLONG_MAX_CCH);
-    if (IniSectionGetStringNoQuotes(IniSecSettings, L"Favorites", Path_Get(Defaults.FavoritesDir), wchFavoritesDir, PATHLONG_MAX_CCH)) {
-        Path_Sanitize(Settings.FavoritesDir);
-        Path_FreeExtra(Settings.FavoritesDir, 0);
-        Path_AbsoluteFromApp(Settings.FavoritesDir, true);
+    if (Path_GetKnownFolder(FOLDERID_Favorites, Defaults.FavoritesDir)) {
+        LPWSTR const wchFavoritesDir = Path_WriteAccessBuf(Settings.FavoritesDir, PATHLONG_MAX_CCH);
+        if (IniSectionGetStringNoQuotes(IniSecSettings, L"Favorites", Path_Get(Defaults.FavoritesDir), wchFavoritesDir, PATHLONG_MAX_CCH)) {
+            Path_Sanitize(Settings.FavoritesDir);
+            Path_FreeExtra(Settings.FavoritesDir, 0);
+            Path_AbsoluteFromApp(Settings.FavoritesDir, true);
+        }
     }
-    //~Path_FreeExtra(Settings.FavoritesDir, 0); ~ already done
+    else {
+        Path_Reset(Settings.FavoritesDir, Path_Get(Paths.WorkingDirectory));
+    }
 
     GET_INT_VALUE_FROM_INISECTION(PathNameFormat, 1, 0, 2);
     GET_INT_VALUE_FROM_INISECTION(WordWrapMode, 0, 0, 1);
