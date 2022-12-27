@@ -1662,10 +1662,13 @@ bool PTHAPI Path_CreateDeskLnk(const HPATHL hDocumentPath, LPCWSTR pszDescriptio
         return true;
     }
 
-    bool bSucceeded = false;
-
     HPATHL hdsk_pth = Path_Allocate(NULL);
-    Path_GetKnownFolder(&FOLDERID_Desktop, hdsk_pth);
+    if (!Path_GetKnownFolder(&FOLDERID_Desktop, hdsk_pth)) {
+        Path_Release(hdsk_pth);
+        return false;
+    }
+
+    bool bSucceeded = false;
 
     // Try to construct a valid filename...
     HPATHL       hlnkfile_pth = Path_Allocate(NULL);
@@ -1794,7 +1797,11 @@ bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out, const HPATHL hdir_rel_base)
     if (StrgFind(hstr_io, PATH_CSIDL_MYDOCUMENTS, 0) == 0) {
 
         HPATHL hfld_pth = Path_Allocate(NULL);
-        Path_GetKnownFolder(&FOLDERID_Documents, hfld_pth);
+        if (!Path_GetKnownFolder(&FOLDERID_Documents, hfld_pth)) {
+            if (!Path_GetCurrentDirectory(hfld_pth)) {
+                Path_GetAppDirectory(hfld_pth);
+            }
+        }
         StrgReplace(hstr_io, PATH_CSIDL_MYDOCUMENTS, PathGet(hfld_pth));
         Path_Release(hfld_pth);
     }
@@ -2042,13 +2049,21 @@ void PTHAPI Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpa
     Path_GetAppDirectory(happdir_pth);
 
     HPATHL const husrdoc_pth = Path_Allocate(NULL);
-    Path_GetKnownFolder(&FOLDERID_Documents, husrdoc_pth);
+    if (!Path_GetKnownFolder(&FOLDERID_Documents, husrdoc_pth)) {
+        if (!Path_GetCurrentDirectory(husrdoc_pth)) {
+            Path_GetAppDirectory(husrdoc_pth);
+        }
+    }
 
     HPATHL const hprgs_pth = Path_Allocate(NULL);
 #ifdef _WIN64
-    Path_GetKnownFolder(&FOLDERID_ProgramFiles, hprgs_pth);
+    if (!Path_GetKnownFolder(&FOLDERID_ProgramFiles, hprgs_pth)) {
+        Path_GetAppDirectory(hprgs_pth);
+    }
 #else
-    Path_GetKnownFolder(&FOLDERID_ProgramFilesX86, hprgs_pth);
+    if (!Path_GetKnownFolder(&FOLDERID_ProgramFilesX86, hprgs_pth)) {
+        Path_GetAppDirectory(hprgs_pth);
+    }
 #endif
     //~HPATHL const hwindows_pth = Path_Allocate(NULL);
     //~Path_GetKnownFolder(&FOLDERID_Windows, hwindows_pth); // deprecated
@@ -2200,7 +2215,11 @@ void PTHAPI Path_AbsoluteFromApp(HPATHL hpth_in_out, bool bExpandEnv)
     if (StrgFind(hstr_in_out, PATH_CSIDL_MYDOCUMENTS, 0) == 0) {
 
         HPATHL hfld_pth = Path_Allocate(NULL);
-        Path_GetKnownFolder(&FOLDERID_Documents, hfld_pth);
+        if (!Path_GetKnownFolder(&FOLDERID_Documents, hfld_pth)) {
+            if (!Path_GetCurrentDirectory(hfld_pth)) {
+                Path_GetAppDirectory(hfld_pth);
+            }
+        }
         StrgReplace(htmp_str, PATH_CSIDL_MYDOCUMENTS, PathGet(hfld_pth));
         Path_Release(hfld_pth);
     }
