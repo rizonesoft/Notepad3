@@ -6169,12 +6169,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_TOGGLETB:
         Settings.ToolBarTheme = (Settings.ToolBarTheme + 1) % 3;
-        SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+        CreateBars(hwnd, Globals.hInstance);
+        UpdateUI();
         break;
 
     case IDM_VIEW_LOADTHEMETB:
         if (SelectExternalToolBar(hwnd)) {
-            SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+            CreateBars(hwnd, Globals.hInstance);
+            UpdateUI();
         }
         break;
 
