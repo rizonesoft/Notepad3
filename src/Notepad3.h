@@ -198,8 +198,8 @@ LRESULT MsgUahMenuBar(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 int  DisableDocChangeNotification();
 void EnableDocChangeNotification(const int evm);
 
-#define LimitNotifyEvents()     { int _evm_ = 0; __try { _evm_ = DisableDocChangeNotification();
-#define RestoreNotifyEvents()   ;} __finally { EnableDocChangeNotification(_evm_); } }
+#define LimitNotifyEvents()     { int _evm_ = 0; __try { _evm_ = DisableDocChangeNotification(); SendMessage(Globals.hwndEdit, WM_SETREDRAW, FALSE, 0);
+#define RestoreNotifyEvents()   ;} __finally { EnableDocChangeNotification(_evm_); SendMessage(Globals.hwndEdit, WM_SETREDRAW, TRUE, 0); InvalidateRect(Globals.hwndEdit, NULL, TRUE); } }
 
 // ----------------------------------------------------------------------------
 
@@ -212,6 +212,8 @@ void EnableDocChangeNotification(const int evm);
 #define BeginWaitCursor(cond, text) {                               \
         if (cond) {                                                 \
             SciCall_SetCursor(SC_CURSORWAIT);                       \
+            SciCall_SetVScrollbar(false);                           \
+            SciCall_SetHScrollbar(false);                           \
             StatusSetText(Globals.hwndStatus, STATUS_HELP, (text)); \
         }                                                           \
         LimitNotifyEvents()
@@ -219,17 +221,20 @@ void EnableDocChangeNotification(const int evm);
 #define BeginWaitCursorUID(cond, uid) {                              \
         if (cond) {                                                  \
             SciCall_SetCursor(SC_CURSORWAIT);                        \
+            SciCall_SetVScrollbar(false);                            \
+            SciCall_SetHScrollbar(false);                            \
             StatusSetTextID(Globals.hwndStatus, STATUS_HELP, (uid)); \
         }                                                            \
         LimitNotifyEvents()
 
-#define EndWaitCursor()                       \
-        SciCall_SetCursor(SC_CURSORNORMAL);   \
-        POINT pt;                             \
-        GetCursorPos(&pt);                    \
-        SetCursorPos(pt.x, pt.y);             \
-        RestoreNotifyEvents();                \
-        UpdateStatusbar(true);                \
+#define EndWaitCursor()                                        \
+        RestoreNotifyEvents();                                 \
+        SciCall_SetCursor(SC_CURSORNORMAL);                    \
+        POINT pt; GetCursorPos(&pt);                           \
+        SetCursorPos(pt.x, pt.y);                              \
+        SciCall_SetHScrollbar(true);                           \
+        SciCall_SetVScrollbar(true);                           \
+        UpdateStatusbar(true);                                 \
     }
 
 // ----------------------------------------------------------------------------

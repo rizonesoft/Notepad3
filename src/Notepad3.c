@@ -2316,8 +2316,8 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     SciCall_SetPasteConvertEndings(true);
     SciCall_UsePopUp(SC_POPUP_TEXT);
-    SciCall_SetScrollWidth(1);
     SciCall_SetScrollWidthTracking(true);
+    // SciCall_SetScrollWidth(2000);
 
     SciCall_SetMultipleSelection(true);
     SciCall_SetMultiPaste(SC_MULTIPASTE_EACH); // paste into rectangular selection
@@ -10172,6 +10172,9 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
             Settings.ShowStatusbar = false;
         }
 
+
+        SendMessage(Globals.hwndStatus, WM_SETREDRAW, FALSE, 0);
+
         SIZE const size = _StatusCalcTextSize(Globals.hwndStatus, L"X");
         SendMessage(Globals.hwndStatus, SB_SETMINHEIGHT, MAKEWPARAM(size.cy + 2, 0), 0);
 
@@ -10184,7 +10187,10 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
             }
         }
 
-        PostMessage(Globals.hwndStatus, WM_SIZE, 0, 0);
+        SendMessage(Globals.hwndStatus, WM_SETREDRAW, TRUE, 0);
+        InvalidateRect(Globals.hwndStatus, NULL, TRUE);
+
+        //PostMessage(Globals.hwndStatus, WM_SIZE, 0, 0);
     }
     // --------------------------------------------------------------------------
 

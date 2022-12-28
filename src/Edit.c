@@ -475,7 +475,7 @@ static LPCH EditReInterpretText(LPCCH pchSource, const int szSrc, cpi_enc_t from
 bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest)
 {
     if ((encSource == encDest) || (Encoding_SciCP == encDest)) {
-        return false;
+        return true;
     }
     if (!(Encoding_IsValid(encSource) && Encoding_IsValid(encDest))) {
         return false;
@@ -7432,6 +7432,7 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
     }
 
     int iCount = 0;
+
     UndoTransActionBegin();
     while ((iPos >= 0LL) && (start <= iEndPos)) {
         DocLn const lnCnt = bRegexStartOfLine ? SciCall_GetLineCount() : 0;
@@ -7454,6 +7455,7 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
 
     *enlargement = (iEndPos - iOrigEndPos);
     SciCall_SetTargetRange(_saveTargetBeg_, _saveTargetEnd_ + *enlargement); //restore
+
     return iCount;
 }
 
@@ -7469,9 +7471,7 @@ bool EditReplaceAll(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bShowInfo)
     DocPos enlargement = 0;
 
     BeginWaitCursorUID(true, IDS_MUI_SB_REPLACE_ALL);
-    UndoTransActionBegin();
     Globals.iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
-    EndUndoTransAction();
     EndWaitCursor();
 
     WCHAR wchOcc[64] = { L'\0' };
@@ -7507,7 +7507,9 @@ bool EditReplaceAllInSelection(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bShowInf
     const DocPos anchorPos = SciCall_GetAnchor();
     DocPos enlargement = 0;
 
+    BeginWaitCursorUID(true, IDS_MUI_SB_REPLACE_ALL);
     Globals.iReplacedOccurrences = EditReplaceAllInRange(hwnd, lpefr, start, end, &enlargement);
+    EndWaitCursor();
 
     if (Globals.iReplacedOccurrences > 0) {
         if (currPos < anchorPos) {
