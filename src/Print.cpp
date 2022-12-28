@@ -133,7 +133,7 @@ CASE_WM_CTLCOLOR_SET:
 #endif
 
     case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK) {
+        if (IsYesOkay(wParam)) {
         }
         break;
 
@@ -645,7 +645,7 @@ CASE_WM_CTLCOLOR_SET:
 
 #endif
     case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK) {
+        if (IsYesOkay(wParam)) {
             BOOL bError = FALSE;
             int const iZoom = (int)SendDlgItemMessage(hwnd, 31, UDM_GETPOS32, 0, (LPARAM)&bError);
             Settings.PrintZoom = bError ? Defaults.PrintZoom : iZoom;

@@ -1184,6 +1184,11 @@ bool EditLoadFile(
     bool const bCacheWholeDocument = okay && ((liFileSize.HighPart == 0) && (liFileSize.LowPart <= (DWORD)(2 * (1<<20))));
     SciCall_SetLayoutCache(bCacheWholeDocument ? SC_CACHE_DOCUMENT : SC_CACHE_PAGE); // beware of memory consumption !
 
+    // TODO: Optimization ?
+    // SCI_SETCHARACTERCATEGORYOPTIMIZATION(int countCharacters)
+    // SCI_GETCHARACTERCATEGORYOPTIMIZATION → int
+    // SCI_SETIDLESTYLING(int idleStyling)
+
     bool const bLargerThan2GB = okay && ((liFileSize.HighPart > 0) || (liFileSize.LowPart >= (DWORD)INT32_MAX)); // 'int'
     if (!okay || bLargerThan2GB) {
         if (!okay) {
@@ -8433,11 +8438,8 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool EditLinenumDlg(HWND hwnd)
 {
-    if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_LINENUM),
-                                     GetParent(hwnd), EditLinenumDlgProc, (LPARAM)hwnd)) {
-        return true;
-    }
-    return false;
+    return IsYesOkay(ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_LINENUM),
+                                          GetParent(hwnd), EditLinenumDlgProc, (LPARAM)hwnd));
 }
 
 
@@ -8679,19 +8681,16 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 //
 //  EditModifyLinesDlg()
 //
-bool EditModifyLinesDlg(HWND hwnd, PENCLOSESELDATA pEnclData) {
+bool EditModifyLinesDlg(HWND hwnd, PENCLOSESELDATA pEnclData)
+{
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                                Globals.hLngResContainer,
+                                MAKEINTRESOURCEW(IDD_MUI_MODIFYLINES),
+                                hwnd,
+                                EditModifyLinesDlgProc,
+                                (LPARAM)pEnclData);
 
-    INT_PTR iResult;
-
-    iResult = ThemedDialogBoxParam(
-        Globals.hLngResContainer,
-        MAKEINTRESOURCEW(IDD_MUI_MODIFYLINES),
-        hwnd,
-        EditModifyLinesDlgProc,
-        (LPARAM)pEnclData);
-
-    return (iResult == IDOK) ? true : false;
-
+    return IsYesOkay(iResult);
 }
 
 
@@ -8799,18 +8798,14 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool EditAlignDlg(HWND hwnd,int *piAlignMode)
 {
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                              Globals.hLngResContainer,
+                              MAKEINTRESOURCEW(IDD_MUI_ALIGN),
+                              hwnd,
+                              EditAlignDlgProc,
+                              (LPARAM)piAlignMode);
 
-    INT_PTR iResult;
-
-    iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCEW(IDD_MUI_ALIGN),
-                  hwnd,
-                  EditAlignDlgProc,
-                  (LPARAM)piAlignMode);
-
-    return (iResult == IDOK) ? true : false;
-
+    return IsYesOkay(iResult);
 }
 
 
@@ -8902,19 +8897,16 @@ CASE_WM_CTLCOLOR_SET:
 //
 //  EditEncloseSelectionDlg()
 //
-bool EditEncloseSelectionDlg(HWND hwnd, PENCLOSESELDATA pEnclData) {
+bool EditEncloseSelectionDlg(HWND hwnd, PENCLOSESELDATA pEnclData)
+{
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                                Globals.hLngResContainer,
+                                MAKEINTRESOURCEW(IDD_MUI_ENCLOSESELECTION),
+                                hwnd,
+                                EditEncloseSelectionDlgProc,
+                                (LPARAM)pEnclData);
 
-    INT_PTR iResult;
-
-    iResult = ThemedDialogBoxParam(
-        Globals.hLngResContainer,
-        MAKEINTRESOURCEW(IDD_MUI_ENCLOSESELECTION),
-        hwnd,
-        EditEncloseSelectionDlgProc,
-        (LPARAM)pEnclData);
-
-    return (iResult == IDOK) ? true : false;
-
+    return IsYesOkay(iResult);
 }
 
 
@@ -9084,21 +9076,19 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool EditInsertTagDlg(HWND hwnd, PENCLOSESELDATA pEnclData, UINT* pRepeat)
 {
-
-    INT_PTR iResult = 0;
     TAGSDATA data = { 0 };
     data.pwsz1 = pEnclData->pwsz1;
     data.pwsz2 = pEnclData->pwsz2;
     data.repeat = 1;
 
-    iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCEW(IDD_MUI_INSERTTAG),
-                  hwnd,
-                  EditInsertTagDlgProc,
-                  (LPARAM)&data);
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                              Globals.hLngResContainer,
+                              MAKEINTRESOURCEW(IDD_MUI_INSERTTAG),
+                              hwnd,
+                              EditInsertTagDlgProc,
+                              (LPARAM)&data);
 
-    if (iResult == IDOK) {
+    if (IsYesOkay(iResult)) {
         *pRepeat = data.repeat;
         return true;
     }
@@ -9344,8 +9334,7 @@ bool EditSortDlg(HWND hwnd,int* piSortFlags)
                                   EditSortDlgProc,
                                   (LPARAM)piSortFlags);
 
-    return (iResult == IDOK) ? true : false;
-
+    return IsYesOkay(iResult);
 }
 
 

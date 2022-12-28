@@ -443,16 +443,16 @@ CASE_WM_CTLCOLOR_SET:
 // set passphrases for output
 bool GetFileKey(HWND hwnd)
 {
-    return (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_PASSWORDS),
-                                         GetParent(hwnd), SetKeysDlgProc, (LPARAM)hwnd));
+    return (IsYesOkay(ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_PASSWORDS),
+                                           GetParent(hwnd), SetKeysDlgProc, (LPARAM)hwnd)));
 }
 
 // set passphrases for file being input
 bool ReadFileKey(HWND hwnd, bool master)
 {
     masterKeyAvailable = master;
-    return (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_READPW),
-                                         GetParent(hwnd), GetKeysDlgProc, (LPARAM)hwnd));
+    return (IsYesOkay(ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_READPW),
+                                           GetParent(hwnd), GetKeysDlgProc, (LPARAM)hwnd)));
 }
 
 
