@@ -22,8 +22,11 @@ v_ExitCode := 0
 
 ; =============================================================================
 
-Run, %v_NP3TestDir%/%v_NP3Name%.exe %v_NP3TestDir%/%v_NP3IniFile%, , UseErrorLevel, v_Notepad3_PID
+stdout.WriteLine("Run " . v_NP3Name . ": " . v_NP3TestDir . "\" . v_NP3Name . ".exe '" . v_NP3TestDir . "\" . v_NP3IniFile . ".")
+
+Run, %v_NP3TestDir%\%v_NP3Name%.exe "%v_NP3TestDir%\%v_NP3IniFile%", , UseErrorLevel, v_Notepad3_PID
 v_ErrLevel = %ErrorLevel%
+
 if (v_ErrLevel != 0)
 {
     stdout.WriteLine("*** ERROR: " . v_NP3Name . "could not be launched.")
@@ -33,9 +36,9 @@ if (v_ErrLevel != 0)
 ; -----------------------------------------------------------------------------
 
 GoSub CHECK_NP3_STARTS
-Sleep, 500
+Sleep, 1000
 GoSub CHECK_WIN_TITLE
-Sleep, 500
+Sleep, 1000
 GoSub CHECK_ABOUT_BOX
 
 
@@ -60,21 +63,22 @@ Return
 CHECK_WIN_TITLE:
 ; check Main Window Title
 WinGetTitle, v_NP3Title, ahk_pid %v_Notepad3_PID%
+stdout.WriteLine(v_NP3Name . "'s Title is: " . v_NP3Title)
 
 IfNotInString, v_NP3Title, %v_NP3Name%
 {
     v_ExitCode := 3
-    stdout.WriteLine("*** ERROR: " . v_NP3Name . " missing in Title: " . v_NP3Title)
+    stdout.WriteLine("*** ERROR: " . v_NP3Name . " missing in Title: ")
 }
 IfNotInString, v_NP3Title, %v_NP3IniFile%
 {
     v_ExitCode := 3
-    stdout.WriteLine("*** ERROR: " . v_NP3IniFile . " missing in Title: " . v_NP3Title)
+    stdout.WriteLine("*** ERROR: " . v_NP3IniFile . " missing in Title: ")
 }
 IfNotInString, v_NP3Title, %v_NP3TestDir%
 {
     v_ExitCode := 3
-    stdout.WriteLine("*** ERROR: " . v_NP3TestDir . " missing in Title: " . v_NP3Title)
+    stdout.WriteLine("*** ERROR: " . v_NP3TestDir . " missing in Title: ")
 }
 If (v_ExitCode != 0)
 {

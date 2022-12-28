@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.1216.(build_#) (2022-12-16)
+Current BETA/RC Version 5.22.1227.(build_#) (2022-12-27)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[1223.1]- Allow "Notepad3 x64 Setup" to install on Win11 Arm (64-bit emulation).
 [1212.1]- Implementation of automatic parenthesis closure.
 [1029.1]- Darkmode highlight (foreground) contrast settings + default reduction to 75%.
 [1018.1]- Add example for tinyexpr in Modify Lines dialog.
@@ -62,6 +63,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[1220.1]- Update Lexer "AutoIt3 Script" to Autoit v3.3.16.1.
+[1220.1]- Adjust All dialogboxes for all Languages to fit at display scale of 125%.
 [1216.1]- Replacing SCI_REPLACETARGET calls by SCI_REPLACETARGETMINIMAL calls where appropriate.
 [1212.1]- Extend AutoCloseBrackets (by Matteo-Nigro PR #4318) for Selection.
 [1118.2]- Using new AviSynth+ keyword lists and AviSynth colors (light/dark mode).
@@ -106,6 +109,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1227.1]- Use alternate path, if Path_GetKnownFolder() failed.
 [1215.1]- Set alpha (80) for "highlight current line" translucency, if not given.
 [1212.1]- "Notepad3 Replacement" after Win11 22H2 update (SUP).
 [1212.1]- Oniguruma fix (ONIG_OPTION_FIND_LONGEST behavior) (ONI).

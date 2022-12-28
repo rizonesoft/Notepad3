@@ -806,8 +806,6 @@ inline void Sci_RedrawScrollbars()
     SciCall_SetVScrollbar(true);
 }
 
-#define Sci_ReplaceTarget(M,L,T) (((M) == SCI_REPLACETARGET) ? SciCall_ReplaceTarget((L),(T)) : SciCall_ReplaceTargetRe((L),(T)))
-
 //  if iRangeEnd == -1 : apply style from iRangeStart to document end
 #define Sci_ColouriseAll() SciCall_Colourise(0, -1)
 
@@ -881,7 +879,6 @@ inline int Sci_GetCurrentEOL_W(LPWCH eol)
 }
 // ----------------------------------------------------------------------------
 
-
 inline DocPos Sci_GetSelectionStartEx()
 {
     if (!Sci_IsMultiSelection()) {
@@ -916,6 +913,18 @@ inline DocPos Sci_GetSelectionEndEx()
 }
 // ----------------------------------------------------------------------------
 
+inline DocPos Sci_ReplaceTarget(const int mode, const DocPos length, const char* text)
+{
+    if (mode == SCI_REPLACETARGETRE) {
+        return SciCall_ReplaceTargetRe(length, text);
+    }
+    if (SciCall_GetChangeHistory() == SC_CHANGE_HISTORY_DISABLED) {
+        return SciCall_ReplaceTarget(length, text);
+    }
+    return SciCall_ReplaceTargetMinimal(length, text);
+}
+
+// ----------------------------------------------------------------------------
 
 //=============================================================================
 

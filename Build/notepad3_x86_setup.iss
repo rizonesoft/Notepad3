@@ -20,6 +20,10 @@
   #error Compile MiniPath x86 first
 #endif
 
+#ifnexist bindir + "\Release_x86_v143\grepWinNP3.exe"
+  #error Compile grepWinNP3 x86 first
+#endif
+
 #define app_name "Notepad3"
 #define app_publisher "Rizonesoft"
 #define app_version GetVersionNumbersString(bindir + "\Release_x86_v143\Notepad3.exe")
@@ -28,7 +32,7 @@
 
 [Setup]
 AppId={#app_name}
-AppName={#app_name}
+AppName={#app_name} (x86)
 AppVersion={#app_version}
 AppVerName={#app_name} {#app_version}
 AppPublisher={#app_publisher}
@@ -39,7 +43,7 @@ AppContact=https://rizonesoft.com
 AppCopyright={#app_copyright}
 VersionInfoVersion={#app_version}
 UninstallDisplayIcon={app}\Notepad3.exe
-UninstallDisplayName={#app_name} {#app_version}
+UninstallDisplayName={#app_name} (x86) {#app_version}
 DefaultDirName={commonpf}\Notepad3
 LicenseFile="..\License.txt"
 OutputDir=.\Packages
@@ -58,7 +62,7 @@ DisableWelcomePage=yes
 AllowCancelDuringInstall=yes
 UsedUserAreasWarning=no
 MinVersion=0,6.1sp1
-ArchitecturesAllowed=x86 x64
+ArchitecturesAllowed=x86 x64 arm64
 ArchitecturesInstallIn64BitMode=
 #ifexist "..\signinfo_notepad3.txt"
 SignTool=MySignTool

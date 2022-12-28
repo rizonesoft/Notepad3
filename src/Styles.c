@@ -5174,9 +5174,9 @@ void Style_SelectLexerDlg(HWND hwnd)
 {
     PEDITLEXER selectedLexer = s_pLexCurrent;
 
-    if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,
-                    MAKEINTRESOURCE(IDD_MUI_STYLESELECT),
-                    GetParent(hwnd), Style_SelectLexerDlgProc, (LPARAM)&selectedLexer)) {
+    if (IsYesOkay(ThemedDialogBoxParam(Globals.hLngResContainer,
+                  MAKEINTRESOURCE(IDD_MUI_STYLESELECT),
+                  GetParent(hwnd), Style_SelectLexerDlgProc, (LPARAM)&selectedLexer))) {
         Style_SetLexer(Globals.hwndEdit, selectedLexer);
     }
 }

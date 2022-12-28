@@ -1732,8 +1732,8 @@ bool OpenWithDlg(HWND hwnd, LPCWSTR lpstrFile)
     Path_GetDisplayName(chDispayName, COUNTOF(chDispayName), hpthFileName, NULL, true);
     dliOpenWith.strDisplayName = chDispayName;
 
-    if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_OPENWITH),
-                                     hwnd,OpenWithDlgProc,(LPARAM)&dliOpenWith)) {
+    if (IsYesOkay(ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_OPENWITH),
+                                       hwnd,OpenWithDlgProc,(LPARAM)&dliOpenWith))) {
 
         Path_Sanitize(hpthFileName);
         if (Path_IsLnkFile(hpthFileName)) {
@@ -1988,8 +1988,8 @@ bool FavoritesDlg(HWND hwnd, HPATHL hpath_in_out)
     dliFavorite.strDisplayName = StrgWriteAccessBuf(hstrDisplayName, INTERNET_MAX_URL_LENGTH);
 
     bool res = false;
-    if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_FAVORITES),
-                                     hwnd,FavoritesDlgProc,(LPARAM)&dliFavorite)) {
+    if (IsYesOkay(ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_FAVORITES),
+                                       hwnd,FavoritesDlgProc,(LPARAM)&dliFavorite))) {
         Path_Sanitize(hpthFileName);
         Path_Swap(hpath_in_out, hpthFileName);
         res = true;
@@ -2138,7 +2138,7 @@ bool AddToFavDlg(HWND hwnd, const HPATHL hTargetPth)
         hwnd,
         AddToFavDlgProc, (LPARAM)szDisplayName);
 
-    if (iResult == IDOK) {
+    if (IsYesOkay(iResult)) {
         StringCchCat(szDisplayName, COUNTOF(szDisplayName), L".lnk");
         if (!Path_CreateFavLnk(szDisplayName, hTargetPth, Settings.FavoritesDir)) {
             InfoBoxLng(MB_ICONWARNING,NULL,IDS_MUI_FAV_FAILURE);
@@ -2541,7 +2541,7 @@ CASE_WM_CTLCOLOR_SET:
                     }
 
                     // Ask...
-                    LONG const answer = (LOWORD(wParam) == IDOK) ? InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_MRUDLG)
+                    LONG const answer = IsYesOkay(wParam) ? InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_MRUDLG)
                                         : ((iCur == lvi.iItem) ? IDNO : IDYES);
 
                     if (IsYesOkay(answer)) {
@@ -2586,8 +2586,8 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool FileMRUDlg(HWND hwnd, HPATHL hFilePath_out)
 {
-    return (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_FILEMRU),
-                        hwnd, FileMRUDlgProc, (LPARAM)hFilePath_out));
+    return (IsYesOkay(ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_FILEMRU),
+                      hwnd, FileMRUDlgProc, (LPARAM)hFilePath_out)));
 }
 
 
@@ -2764,17 +2764,14 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool ChangeNotifyDlg(HWND hwnd)
 {
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                              Globals.hLngResContainer,
+                              MAKEINTRESOURCEW(IDD_MUI_CHANGENOTIFY),
+                              hwnd,
+                              ChangeNotifyDlgProc,
+                              0);
 
-    INT_PTR iResult;
-
-    iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCEW(IDD_MUI_CHANGENOTIFY),
-                  hwnd,
-                  ChangeNotifyDlgProc,
-                  0);
-
-    return (iResult == IDOK) ? true : false;
+    return IsYesOkay(iResult);
 
 }
 
@@ -2882,16 +2879,13 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool ColumnWrapDlg(HWND hwnd,UINT uidDlg, UINT *iNumber)
 {
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                              Globals.hLngResContainer,
+                              MAKEINTRESOURCE(uidDlg),
+                              hwnd,
+                              ColumnWrapDlgProc,(LPARAM)iNumber);
 
-    INT_PTR iResult;
-
-    iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCE(uidDlg),
-                  hwnd,
-                  ColumnWrapDlgProc,(LPARAM)iNumber);
-
-    return (iResult == IDOK) ? true : false;
+    return IsYesOkay(iResult);
 
 }
 
@@ -3035,17 +3029,13 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool WordWrapSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
 {
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                              Globals.hLngResContainer,
+                              MAKEINTRESOURCE(uidDlg),
+                              hwnd,
+                              WordWrapSettingsDlgProc,(LPARAM)iNumber);
 
-    INT_PTR iResult;
-
-    iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCE(uidDlg),
-                  hwnd,
-                  WordWrapSettingsDlgProc,(LPARAM)iNumber);
-
-    return (iResult == IDOK) ? true : false;
-
+    return IsYesOkay(iResult);
 }
 
 
@@ -3204,7 +3194,7 @@ bool LongLineSettingsDlg(HWND hwnd,UINT uidDlg, LPWSTR pColList)
                                 hwnd,
                                 LongLineSettingsDlgProc, (LPARAM)pColList);
 
-    return (iResult == IDOK) ? true : false;
+    return IsYesOkay(iResult);
 }
 
 
@@ -3347,17 +3337,13 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool TabSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
 {
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                              Globals.hLngResContainer,
+                              MAKEINTRESOURCE(uidDlg),
+                              hwnd,
+                              TabSettingsDlgProc,(LPARAM)iNumber);
 
-    INT_PTR iResult;
-
-    iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCE(uidDlg),
-                  hwnd,
-                  TabSettingsDlgProc,(LPARAM)iNumber);
-
-    return (iResult == IDOK) ? true : false;
-
+    return IsYesOkay(iResult);
 }
 
 
@@ -3558,23 +3544,22 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool SelectDefEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding)
 {
-    INT_PTR iResult;
     ENCODEDLG dd = { 0 };
     dd.bRecodeOnly = false;
     dd.idEncoding = *pidREncoding;
 
-    iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCE(IDD_MUI_DEFENCODING),
-                  hwnd,
-                  SelectDefEncodingDlgProc,
-                  (LPARAM)&dd);
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                              Globals.hLngResContainer,
+                              MAKEINTRESOURCE(IDD_MUI_DEFENCODING),
+                              hwnd,
+                              SelectDefEncodingDlgProc,
+                              (LPARAM)&dd);
 
-    if (iResult == IDOK) {
+    if (IsYesOkay(iResult)) {
         *pidREncoding = dd.idEncoding;
-        return TRUE;
+        return true;
     }
-    return FALSE;
+    return false;
 }
 
 
@@ -3756,25 +3741,23 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool SelectEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding)
 {
-
-    INT_PTR iResult;
     ENCODEDLG dd = { 0 };
     dd.bRecodeOnly = false;
     dd.idEncoding = *pidREncoding;
     dd.cxDlg = Settings.EncodingDlgSizeX;
     dd.cyDlg = Settings.EncodingDlgSizeY;
 
-    iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCE(IDD_MUI_ENCODING),
-                  hwnd,
-                  SelectEncodingDlgProc,
-                  (LPARAM)&dd);
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                              Globals.hLngResContainer,
+                              MAKEINTRESOURCE(IDD_MUI_ENCODING),
+                              hwnd,
+                              SelectEncodingDlgProc,
+                              (LPARAM)&dd);
 
     Settings.EncodingDlgSizeX = dd.cxDlg;
     Settings.EncodingDlgSizeY = dd.cyDlg;
 
-    if (iResult == IDOK) {
+    if (IsYesOkay(iResult)) {
         *pidREncoding = dd.idEncoding;
         return TRUE;
     }
@@ -3788,25 +3771,23 @@ bool SelectEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding)
 //
 bool RecodeDlg(HWND hwnd, cpi_enc_t* pidREncoding)
 {
-
-    INT_PTR iResult = 0;
     ENCODEDLG dd = { 0 };
     dd.bRecodeOnly = true;
     dd.idEncoding = *pidREncoding;
     dd.cxDlg = Settings.RecodeDlgSizeX;
     dd.cyDlg = Settings.RecodeDlgSizeY;
 
-    iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCE(IDD_MUI_RECODE),
-                  hwnd,
-                  SelectEncodingDlgProc,
-                  (LPARAM)&dd);
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                              Globals.hLngResContainer,
+                              MAKEINTRESOURCE(IDD_MUI_RECODE),
+                              hwnd,
+                              SelectEncodingDlgProc,
+                              (LPARAM)&dd);
 
     Settings.RecodeDlgSizeX = dd.cxDlg;
     Settings.RecodeDlgSizeY = dd.cyDlg;
 
-    if (iResult == IDOK) {
+    if (IsYesOkay(iResult)) {
         *pidREncoding = dd.idEncoding;
         return TRUE;
     }
@@ -3931,7 +3912,7 @@ bool SelectDefLineEndingDlg(HWND hwnd, LPARAM piOption)
                             SelectDefLineEndingDlgProc,
                             piOption);
 
-    return (iResult == IDOK);
+    return IsYesOkay(iResult);
 }
 
 
@@ -4043,12 +4024,12 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus)
 {
-    const INT_PTR iResult = ThemedDialogBoxParam(Globals.hLngResContainer,
-                            MAKEINTRESOURCE(IDD_MUI_WARNLINEENDS),
-                            hwnd,
-                            WarnLineEndingDlgProc,
-                            (LPARAM)fioStatus);
-    return (iResult == IDOK);
+    INT_PTR const iResult = ThemedDialogBoxParam(Globals.hLngResContainer,
+                                MAKEINTRESOURCE(IDD_MUI_WARNLINEENDS),
+                                hwnd,
+                                WarnLineEndingDlgProc,
+                                (LPARAM)fioStatus);
+    return IsYesOkay(iResult);
 }
 
 
@@ -4196,12 +4177,12 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus)
 {
-    const INT_PTR iResult = ThemedDialogBoxParam(Globals.hLngResContainer,
-                            MAKEINTRESOURCE(IDD_MUI_WARNINDENTATION),
-                            hwnd,
-                            WarnIndentationDlgProc,
-                            (LPARAM)fioStatus);
-    return (iResult == IDOK);
+    INT_PTR const iResult = ThemedDialogBoxParam(Globals.hLngResContainer,
+                                MAKEINTRESOURCE(IDD_MUI_WARNINDENTATION),
+                                hwnd,
+                                WarnIndentationDlgProc,
+                                (LPARAM)fioStatus);
+    return IsYesOkay(iResult);
 }
 
 
@@ -4366,13 +4347,13 @@ static INT_PTR CALLBACK AutoSaveBackupSettingsDlgProc(HWND hwnd, UINT umsg, WPAR
 
 bool AutoSaveBackupSettingsDlg(HWND hwnd)
 {
-    const INT_PTR iResult = ThemedDialogBoxParam(Globals.hLngResContainer,
-        MAKEINTRESOURCE(IDD_MUI_AUTOSAVE_BACKUP),
-        hwnd, 
-        AutoSaveBackupSettingsDlgProc,
-        0);
+    INT_PTR const iResult = ThemedDialogBoxParam(Globals.hLngResContainer,
+                                MAKEINTRESOURCE(IDD_MUI_AUTOSAVE_BACKUP),
+                                hwnd, 
+                                AutoSaveBackupSettingsDlgProc,
+                                0);
 
-    return (iResult == IDOK);
+    return IsYesOkay(iResult);
 }
 
 
