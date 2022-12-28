@@ -2316,8 +2316,8 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     SciCall_SetPasteConvertEndings(true);
     SciCall_UsePopUp(SC_POPUP_TEXT);
-    SciCall_SetScrollWidth(1);
     SciCall_SetScrollWidthTracking(true);
+    // SciCall_SetScrollWidth(2000);
 
     SciCall_SetMultipleSelection(true);
     SciCall_SetMultiPaste(SC_MULTIPASTE_EACH); // paste into rectangular selection
@@ -6169,12 +6169,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_TOGGLETB:
         Settings.ToolBarTheme = (Settings.ToolBarTheme + 1) % 3;
-        SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+        CreateBars(hwnd, Globals.hInstance);
+        UpdateUI();
         break;
 
     case IDM_VIEW_LOADTHEMETB:
         if (SelectExternalToolBar(hwnd)) {
-            SendMessage(hwnd, WM_THEMECHANGED, 0, 0);
+            CreateBars(hwnd, Globals.hInstance);
+            UpdateUI();
         }
         break;
 
@@ -8828,9 +8830,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 break;
 
             case STATUS_EOLMODE: {
-                int const eol_mode = (SciCall_GetEOLMode() + 2) % 3;
-                int const eol_cmd  = (eol_mode == SC_EOL_CRLF) ? IDM_LINEENDINGS_CRLF :
-                                     ((eol_mode == SC_EOL_CR) ? IDM_LINEENDINGS_CR : IDM_LINEENDINGS_LF);
+                int const eol_mode = (SciCall_GetEOLMode() + 1) % 3;
+                // skip unusual CR-only mode; should be explicitly set by menu or dialog only, so:
+                int const eol_cmd = (eol_mode == SC_EOL_CRLF) ? IDM_LINEENDINGS_CRLF : IDM_LINEENDINGS_LF;
+                                    //~((eol_mode == SC_EOL_CR) ? IDM_LINEENDINGS_CR : IDM_LINEENDINGS_LF);
                 PostWMCommand(hwnd, eol_cmd);
             }
             break;
@@ -10169,6 +10172,9 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
             Settings.ShowStatusbar = false;
         }
 
+
+        SendMessage(Globals.hwndStatus, WM_SETREDRAW, FALSE, 0);
+
         SIZE const size = _StatusCalcTextSize(Globals.hwndStatus, L"X");
         SendMessage(Globals.hwndStatus, SB_SETMINHEIGHT, MAKEWPARAM(size.cy + 2, 0), 0);
 
@@ -10181,7 +10187,10 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
             }
         }
 
-        PostMessage(Globals.hwndStatus, WM_SIZE, 0, 0);
+        SendMessage(Globals.hwndStatus, WM_SETREDRAW, TRUE, 0);
+        InvalidateRect(Globals.hwndStatus, NULL, TRUE);
+
+        //PostMessage(Globals.hwndStatus, WM_SIZE, 0, 0);
     }
     // --------------------------------------------------------------------------
 
@@ -11504,7 +11513,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
             INT_PTR const answer = (Settings.MuteMessageBeep) ?
                                    InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_READONLY_SAVE, Path_FindFileName(Paths.CurrentFile)) :
                                    MessageBoxLng(MB_YESNO | MB_ICONWARNING, IDS_MUI_READONLY_SAVE, Path_Get(Paths.CurrentFile));
-            if ((IDOK == answer) || (IDYES == answer)) {
+            if (IsYesOkay(answer)) {
                 fSaveFlags |= FSF_SaveAs;
             } else {
                 return false;
@@ -11608,7 +11617,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
             INT_PTR const answer = (Settings.MuteMessageBeep) ?
                                    InfoBoxLng(MB_YESNO | MB_ICONSHIELD, NULL, IDS_MUI_ERR_ACCESSDENIED, currentFileName, _W(SAPPNAME)) :
                                    MessageBoxLng(MB_YESNO | MB_ICONSHIELD, IDS_MUI_ERR_ACCESSDENIED, Path_Get(Paths.CurrentFile), _W(SAPPNAME));
-            if ((IDOK == answer) || (IDYES == answer)) {
+            if (IsYesOkay(answer)) {
                 if (DoElevatedRelaunch(&fioStatus, true)) {
                     CloseApplication();
                 } else {

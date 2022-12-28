@@ -31,7 +31,7 @@ EDITLEXER lexJSON =
         { {SCE_JSON_PROPERTYNAME}, IDS_LEX_STR_63364, L"Property Name", L"fore:#002697", L"" },
         { {SCE_JSON_ESCAPESEQUENCE}, IDS_LEX_STR_63366, L"ESC Sequence", L"fore:#0B982E", L"" },
         { {SCE_JSON_URI}, IDS_LEX_STR_63380, L"URL/IRI", L"fore:#0000FF", L"" },
-        { {SCE_JSON_COMPACTIRI}, IDS_LEX_STR_63381, L"Compact IRI", L"fore:#D137C1", L"" },
+        { {SCE_JSON_COMPACTIRI}, IDS_LEX_STR_63381, L"Compact IRI", L"fore:#002697", L"" },
         { {SCE_JSON_ERROR}, IDS_LEX_STR_63252, L"Parsing Error", L"fore:#FFFF00; back:#A02020; eolfilled", L"" },
         EDITLEXER_SENTINEL
     }
