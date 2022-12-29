@@ -316,7 +316,7 @@ Opcje:\r\n\
 /n\tAlways open a new window (/ns single file instance).\r\n\
 /r\tReuse window (/rs single file instance).\r\n\
 /p\tSet window position and size (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tor /p <lewy>,<góra>,<szer.>,<wys.>,<maks>    [wszystkie liczby].\r\n\
+\tor /p <lewy>,<góra>,<szer.>,<wys.>[,<dpi>,<maks>]    [wszystkie liczby].\r\n\
 /t\tSet window title.\r\n\
 /i\tStart as tray icon.\r\n\
 /o\tKeep window on top.\r\n\
