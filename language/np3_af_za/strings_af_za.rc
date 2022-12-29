@@ -316,7 +316,7 @@ Opsies:\r\n\
 /n\tMaak altyd 'n nuwe venster oop (/ns enkele lêer instansie).\r\n\
 /r\tHergebruik venster (/rs enkele lêer instansie).\r\n\
 /p\tStel venster posisie en grootte (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tor /p <left>,<top>,<width>,<height>,<max>    [alle heelgetalle].\r\n\
+\tor /p <left>,<top>,<width>,<height>[,<dpi>,<max>]    [alle heelgetalle].\r\n\
 /t\tStel venster titel.\r\n\
 /i\tBegin as tray ikoon.\r\n\
 /o\tHou venster bo-op.\r\n\
