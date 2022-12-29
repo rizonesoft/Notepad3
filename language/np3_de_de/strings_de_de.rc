@@ -316,7 +316,7 @@ Optionen:\r\n\
 /n\tÖffne immer ein neues Fenster (/ns single file instance).\r\n\
 /r\tBenutze geöffnetes Fenster erneut (/rs single file instance).\r\n\
 /p\tSetze Fenster: Position und Größe (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\toder /p <links>,<oben>,<breite>,<höhe>,<max>    [ganzzahlig].\r\n\
+\toder /p <links>,<oben>,<breite>,<höhe>[,<dpi>,<max>]    [ganzzahlig].\r\n\
 /t\tSetze Fenster-Titel.\r\n\
 /i\tStarte als 'Tray-Icon'.\r\n\
 /o\tHalte Fenster immer auf oberster Ebene.\r\n\
