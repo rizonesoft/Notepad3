@@ -1733,7 +1733,7 @@ void LoadSettings()
     // startup window  (ignore window position if /p was specified)
     // --------------------------------------------------------------
 
-    IniSectionGetString(IniSecSettings2, L"DefaultWindowPosition", L"",
+    IniSectionGetString(IniSecSettings2, Constants.DefaultWindowPosition, L"",
                         Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition));
 
     bool const bExplicitDefaultWinPos = StrIsNotEmpty(Settings2.DefaultWindowPosition);
@@ -1744,11 +1744,20 @@ void LoadSettings()
 
     if (bExplicitDefaultWinPos) {
         int bMaxi = 0;
-        int const itok = swscanf_s(Settings2.DefaultWindowPosition, L"%i,%i,%i,%i,%i",
-                                   &g_DefWinInfo.x, &g_DefWinInfo.y, &g_DefWinInfo.cx, &g_DefWinInfo.cy, &bMaxi);
-        if (itok == 4 || itok == 5) { // scan successful
+        int const itok = swscanf_s(Settings2.DefaultWindowPosition, WINDOWPOS_STRGFORMAT,
+                                   &g_DefWinInfo.x, &g_DefWinInfo.y, &g_DefWinInfo.cx, &g_DefWinInfo.cy, &g_DefWinInfo.dpi, &bMaxi);
+        if (itok == 4 || itok == 5 || itok == 6) { // scan successful
             if (itok == 4) {
+                g_DefWinInfo.dpi = USER_DEFAULT_SCREEN_DPI;
                 g_DefWinInfo.max = false;
+            } else if (itok == 5) { // maybe DPI or Maxi (old)
+                if (g_DefWinInfo.dpi < (USER_DEFAULT_SCREEN_DPI >> 2)) {
+                    g_DefWinInfo.max = g_DefWinInfo.dpi ? true : false;
+                    g_DefWinInfo.dpi = USER_DEFAULT_SCREEN_DPI;
+                }
+                else {
+                    g_DefWinInfo.max = false;
+                }
             } else {
                 g_DefWinInfo.max = bMaxi ? true : false;
             }
@@ -1756,8 +1765,8 @@ void LoadSettings()
             g_DefWinInfo = GetFactoryDefaultWndPos(2);
             // overwrite bad defined default position
             StringCchPrintf(Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition),
-                            L"%i,%i,%i,%i,%i", g_DefWinInfo.x, g_DefWinInfo.y, g_DefWinInfo.cx, g_DefWinInfo.cy, g_DefWinInfo.max);
-            IniSectionSetString(IniSecSettings2, L"DefaultWindowPosition", Settings2.DefaultWindowPosition);
+                WINDOWPOS_STRGFORMAT, g_DefWinInfo.x, g_DefWinInfo.y, g_DefWinInfo.cx, g_DefWinInfo.cy, g_DefWinInfo.dpi, g_DefWinInfo.max);
+            IniSectionSetString(IniSecSettings2, Constants.DefaultWindowPosition, Settings2.DefaultWindowPosition);
             bDirtyFlag = true;
         }
     }
