@@ -316,7 +316,7 @@ Opciones:\r\n\
 /n\tSiempre abre una nueva ventana (/ns instancia de archivo único).\r\n\
 /r\tReutilizar la ventana (/rs instancia de archivo único).\r\n\
 /p\tEstablecer el tamaño y la posición de la ventana (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\to /p <izquierda>,<arriba>,<ancho>,<altura>,<max>    [todos\r\n\tenteros].\r\n\
+\to /p <izquierda>,<arriba>,<ancho>,<altura>[,<dpi>,<max>]    [todos\r\n\tenteros].\r\n\
 /t\tEstablecer el título de la ventana.\r\n\
 /i\tComenzar como un icono de la barra de tareas.\r\n\
 /o\tVentana siempre visible.\r\n\
