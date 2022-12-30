@@ -496,7 +496,7 @@ BEGIN
     IDS_LEX_STR_63387       "Operador de Símbolos"
     IDS_LEX_STR_63388       "String EOL"
     IDS_LEX_STR_63397       "Acentos Graves"
-    IDS_LEX_STR_63398       "GUID String"
+    IDS_LEX_STR_63398       "Cadeia GUID"
 END
 
 STRINGTABLE
