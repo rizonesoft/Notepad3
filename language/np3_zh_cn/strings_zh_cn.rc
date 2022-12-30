@@ -174,6 +174,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "替换了 %s 个匹配项。"
     IDS_MUI_ASK_ENCODING    "切换文件编码可能导致部分无法表示的字符被替换为其它字符，并且该操作会清空撤销历史。是否继续？"
     IDS_MUI_ASK_ENCODING2   "切换文件编码会清空撤销历史。是否继续？"
+    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
     IDS_MUI_READONLY_SAVE   "“%s”是只读的。是否尝试使用其它名字保存？"
     IDS_MUI_FILECHANGENOTIFY
                             "当前文件已被其它程序修改。是否重新加载？"

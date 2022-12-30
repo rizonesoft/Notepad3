@@ -496,6 +496,7 @@ BEGIN
     IDS_LEX_STR_63387       "기호 연산자"
     IDS_LEX_STR_63388       "문자열 EOL"
     IDS_LEX_STR_63397       "백틱"
+    IDS_LEX_STR_63398       "GUID String"
 END
 
 STRINGTABLE
