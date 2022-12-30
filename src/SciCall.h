@@ -913,7 +913,12 @@ inline DocPos Sci_GetSelectionEndEx()
 }
 // ----------------------------------------------------------------------------
 
-inline DocPos Sci_ReplaceTarget(const int mode, const DocPos length, const char* text)
+__forceinline DocPos Sci_ReplaceTargetTestChgHist(const DocPos length, const char* text)
+{
+    return SciCall_GetChangeHistory() ? SciCall_ReplaceTargetMinimal(length, text) : SciCall_ReplaceTarget(length, text);
+}
+
+inline DocPos Sci_ReplaceTargetEx(const int mode, const DocPos length, const char* text)
 {
     switch (mode) {
     case SCI_REPLACETARGETRE:
