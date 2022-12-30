@@ -277,7 +277,7 @@ static void ColorizeMarkdownDoc(Sci_PositionU startPos, Sci_Position length, int
                 freezeCursor = true;
             }
             else if (sc.Match("####")) {
-                SetStateAndZoom(SCE_MARKDOWN_HEADER4, 4, '#', sc);           
+                SetStateAndZoom(SCE_MARKDOWN_HEADER4, 4, '#', sc);
                 freezeCursor = true;
             }
             else if (sc.Match("###")) {

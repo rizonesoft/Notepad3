@@ -272,8 +272,8 @@
     <ClCompile Include="lexers\LexKix.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
-    <ClCompile Include="lexers_x\LexMarkdown.cxx">
-      <Filter>lexers_x</Filter>
+    <ClCompile Include="lexers\LexMarkdown.cxx">
+      <Filter>lexers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

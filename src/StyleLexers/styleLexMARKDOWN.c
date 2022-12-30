@@ -14,7 +14,7 @@ EDITLEXER lexMARKDOWN =
         { {SCE_MARKDOWN_LINE_BEGIN}, IDS_LEX_STR_63317, L"Line Begin", L"", L"" },
         { {MULTI_STYLE(SCE_MARKDOWN_STRONG1,SCE_MARKDOWN_STRONG2,0,0)}, IDS_LEX_STR_63318, L"Strong", L"bold", L"" },
         { {MULTI_STYLE(SCE_MARKDOWN_EM1,SCE_MARKDOWN_EM2,0,0)}, IDS_LEX_STR_63319, L"Emphasis", L"italic", L"" },
-        { {SCE_MARKDOWN_HEADER1}, IDS_LEX_STR_63320, L"Header 1", L"bold; fore:#FFFFE2; back:#3D3DD3; eolfilled", L"" },
+        { {SCE_MARKDOWN_HEADER1}, IDS_LEX_STR_63320, L"Header 1", L"bold; fore:#FFFFE2; back:#8BA4ED; eolfilled", L"" },
         { {SCE_MARKDOWN_HEADER2}, IDS_LEX_STR_63321, L"Header 2", L"bold; fore:#336193; back:#9DCEFF; eolfilled", L"" },
         { {SCE_MARKDOWN_HEADER3}, IDS_LEX_STR_63322, L"Header 3", L"bold; fore:#336193; back:#D9ECFF; eolfilled", L"" },
         { {SCE_MARKDOWN_HEADER4}, IDS_LEX_STR_63323, L"Header 4", L"bold; fore:#336193; eolfilled", L"" },
