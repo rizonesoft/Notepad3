@@ -440,19 +440,6 @@ typedef enum AutoSaveBackupOptions {
 
 //=============================================================================
 
-typedef enum ChangeHistory {
-
-    ChgHist_NONE   = SC_CHANGE_HISTORY_DISABLED,
-    ChgHist_ON     = SC_CHANGE_HISTORY_ENABLED,
-    ChgHist_MARGIN = SC_CHANGE_HISTORY_MARKERS,
-    ChgHist_DOCTXT = SC_CHANGE_HISTORY_INDICATORS,
-
-    ChgHist_ALL = ChgHist_ON | ChgHist_MARGIN | ChgHist_DOCTXT
-
-} ChangeHistory;
-
-//=============================================================================
-
 typedef struct CONSTANTS_T {
 
     int const          StdDefaultLexerID; // Pure Text Files
@@ -463,10 +450,13 @@ typedef struct CONSTANTS_T {
     const WCHAR* const Window_Section;
     const WCHAR* const Styles_Section;
     const WCHAR* const SectionSuppressedMessages;
+    const WCHAR* const DefaultWindowPosition;
 
 } CONSTANTS_T, *PCONSTANTS_T;
 
 extern CONSTANTS_T const Constants;
+
+#define WINDOWPOS_STRGFORMAT L"%i,%i,%i,%i,%i,%i"
 
 // ------------------------------------
 
@@ -584,7 +574,6 @@ typedef struct SETTINGS_T {
     bool AutoCloseBrackets;
     int  HighlightCurrentLine;
     int  ChangeHistoryMode;
-    bool ChangeHistoryMargin;
     bool HyperlinkHotspot;
     int  ColorDefHotspot;
     bool ScrollPastEOF;

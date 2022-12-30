@@ -316,7 +316,7 @@ Opzioni:\r\n\
 /n\tApri sempre una nuova finestra (/ns istanza singola).\r\n\
 /r\tRiutilizza finestra (/rs istanza singola).\r\n\
 /p\tImposta posizione e dimensione della finestra (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tor /p <left>,<top>,<width>,<height>,<max>    [numeri interi].\r\n\
+\to /p <sinistra>,<sopra>,<larghezza>,<altezza>[,<dpi>,<max>]    [numeri interi].\r\n\
 /t\tImposta titolo della finestra.\r\n\
 /i\tAvvia come icona nell'area di notifica'.\r\n\
 /o\tMantieni finestra in primo piano.\r\n\

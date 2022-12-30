@@ -316,7 +316,7 @@ Opções:\r\n\
 /n\tAbre sempre uma nova janela (/ns instância de único ficheiro).\r\n\
 /r\tReutiliza a janela (/rs instância de único ficheiro).\r\n\
 /p\tDefine tamanho e posição da janela (/p0, /ps, /pf,l,t,r,b,m) ou /p\r\n\
-\t<esquerda>,<superior>,<largura>,<altura>,<máx>    [todos inteiros].\r\n\
+\t<esquerda>,<superior>,<largura>,<altura>[,<dpi>,<máx>]    [todos inteiros].\r\n\
 /t\tDefine título da janela.\r\n\
 /i\tInicia como ícone na área de notificação.\r\n\
 /o\tMantém a janela sempre visível.\r\n\

@@ -80,7 +80,7 @@ LPCWSTR WordBookMarks[MARKER_NP3_BOOKMARK] = {
 #define RELAUNCH_ELEVATED_BUF_ARG L"tmpfbuf="
 
 CONSTANTS_T const Constants = {
-    2                                    // StdDefaultLexerID
+      2                                    // StdDefaultLexerID
     , L"minipath.exe"                      // FileBrowserMiniPath
     , L"grepWinNP3.exe"                    // FileSearchGrepWin
     , L"Settings"                          // Inifile Section "Settings"
@@ -88,7 +88,9 @@ CONSTANTS_T const Constants = {
     , L"Window"                            // Inifile Section "Window"
     , L"Styles"                            // Inifile Section "Styles"
     , L"Suppressed Messages"               // Inifile Section "SuppressedMessages"
+    , L"DefaultWindowPosition"             // Strg DefaultWindowPosition
 };
+
 
 FLAGS_T     Flags;
 FLAGS_T     DefaultFlags;
@@ -4254,10 +4256,11 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
 
-    int const chState = Settings.ChangeHistoryMode;
+    int const chState = SciCall_GetChangeHistory();
+    assert(chState == Settings.ChangeHistoryMode);
     i = IDM_VIEW_CHGHIST_NONE;
-    i += ((chState & ChgHist_ON) && (chState & ChgHist_MARGIN)) ? 1 : 0;
-    i += ((chState & ChgHist_ON) && (chState & ChgHist_DOCTXT)) ? 2 : 0;
+    i += (chState & SC_CHANGE_HISTORY_MARKERS) ? 1 : 0;
+    i += (chState & SC_CHANGE_HISTORY_INDICATORS) ? 2 : 0;
     CheckMenuRadioItem(hmenu, IDM_VIEW_CHGHIST_NONE, IDM_VIEW_CHGHIST_ALL, i, MF_BYCOMMAND);
     CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 8, (i != IDM_VIEW_CHGHIST_NONE));
 
@@ -4437,6 +4440,31 @@ LRESULT MsgKeyDown(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return FALSE;
 }
 #endif
+
+
+//=============================================================================
+//
+//  _ApplyChangeHistoryMode() - Handles Change-History Settings
+//
+static void _ApplyChangeHistoryMode()
+{
+    int const iChgHist = SciCall_GetChangeHistory();
+    if (iChgHist == Settings.ChangeHistoryMode) { return; }
+    if ((!iChgHist && Settings.ChangeHistoryMode) || !Settings.ChangeHistoryMode) {
+        if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"AllowClearUndoHistory", IDS_MUI_ASK_CLEAR_UNDO))) {
+            UndoRedoReset();
+        }
+        else {
+            Settings.ChangeHistoryMode = iChgHist;
+            return;
+        }
+    }
+    else {
+        SciCall_SetChangeHistory(Settings.ChangeHistoryMode);
+    }
+    Style_UpdateChangeHistoryMargin(Globals.hwndEdit);
+    UpdateMargins(true);
+}
 
 
 //=============================================================================
@@ -6043,33 +6071,38 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_CHGHIST_DOCTXT:
     case IDM_VIEW_CHGHIST_ALL: {
         int const set = iLoWParam - IDM_VIEW_CHGHIST_NONE;
-        int const chgHistState = SciCall_GetChangeHistory() & ChgHist_ON;
         switch (set) {
         case 0: 
-            Settings.ChangeHistoryMode = chgHistState & ~(ChgHist_MARGIN | ChgHist_DOCTXT);
+            Settings.ChangeHistoryMode = SC_CHANGE_HISTORY_DISABLED;
             break;
-        case 1: 
-            Settings.ChangeHistoryMode = (chgHistState | ChgHist_MARGIN) & ~ChgHist_DOCTXT;
+        case 1:
+            Settings.ChangeHistoryMode = SC_CHANGE_HISTORY_ENABLED | SC_CHANGE_HISTORY_MARKERS;
             break;
         case 2: 
-            Settings.ChangeHistoryMode = (chgHistState | ChgHist_DOCTXT) & ~ChgHist_MARGIN;
+            Settings.ChangeHistoryMode = SC_CHANGE_HISTORY_ENABLED | SC_CHANGE_HISTORY_INDICATORS;
             break;
         case 3: 
-            Settings.ChangeHistoryMode = chgHistState | (ChgHist_MARGIN | ChgHist_DOCTXT);
+            Settings.ChangeHistoryMode = SC_CHANGE_HISTORY_ENABLED | SC_CHANGE_HISTORY_INDICATORS | SC_CHANGE_HISTORY_MARKERS;
             break;
         default:
             break;
         }
-        SciCall_SetChangeHistory(Settings.ChangeHistoryMode);
-        Style_UpdateChangeHistoryMargin(Globals.hwndEdit);
-        UpdateMargins(true);
+        _ApplyChangeHistoryMode();
         break;
     } 
     break;
 
     case IDM_VIEW_CHGHIST_TOGGLE_MARGIN:
-        Settings.ChangeHistoryMargin = !Settings.ChangeHistoryMargin;
-        UpdateMargins(true);
+        if (Settings.ChangeHistoryMode & SC_CHANGE_HISTORY_MARKERS) {
+            Settings.ChangeHistoryMode &= ~SC_CHANGE_HISTORY_MARKERS;
+            if (!(Settings.ChangeHistoryMode & SC_CHANGE_HISTORY_INDICATORS)) {
+                Settings.ChangeHistoryMode = SC_CHANGE_HISTORY_DISABLED;
+            }
+        }
+        else {
+            Settings.ChangeHistoryMode |= (SC_CHANGE_HISTORY_ENABLED | SC_CHANGE_HISTORY_MARKERS);
+        }
+        _ApplyChangeHistoryMode();
         break;
 
     case IDM_VIEW_HYPERLINKHOTSPOTS:
@@ -6990,7 +7023,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_COPYWINPOS: {
         WININFO wi = GetMyWindowPlacement(Globals.hwndMain, NULL, 0);
         WCHAR   wchBuf[128] = { L'\0' };
-        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"/pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
+        StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"/pos " WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, (int)wi.max);
         SetClipboardText(hwnd, wchBuf, StringCchLen(wchBuf, 0));
     }
     break;
@@ -7013,9 +7046,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case CMD_SAVEASDEFWINPOS: {
         WININFO const wi = GetMyWindowPlacement(Globals.hwndMain, NULL, 0);
         WCHAR tchDefWinPos[80];
-        StringCchPrintf(tchDefWinPos, COUNTOF(tchDefWinPos), L"%i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, wi.max);
+        StringCchPrintf(tchDefWinPos, COUNTOF(tchDefWinPos), WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, (int)wi.max);
         if (Globals.bCanSaveIniFile) {
-            IniFileSetString(Paths.IniFile, Constants.Settings2_Section, L"DefaultWindowPosition", tchDefWinPos);
+            IniFileSetString(Paths.IniFile, Constants.Settings2_Section, Constants.DefaultWindowPosition, tchDefWinPos);
         }
         g_DefWinInfo = wi; //GetWinInfoByFlag(-1); // use current win pos as new default
     }
@@ -7023,7 +7056,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_CLEARSAVEDWINPOS:
         g_DefWinInfo = GetFactoryDefaultWndPos(2);
-        IniFileDelete(Paths.IniFile, Constants.Settings2_Section, L"DefaultWindowPosition", false);
+        IniFileDelete(Paths.IniFile, Constants.Settings2_Section, Constants.DefaultWindowPosition, false);
         break;
 
     case CMD_OPENINIFILE:
@@ -9133,17 +9166,25 @@ void ParseCommandLine()
                             }
                         } else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
                             WININFO wi = INIT_WININFO;
-                            int bMaximize = 0;
-                            int itok = swscanf_s(lp1, L"%i,%i,%i,%i,%i", &wi.x, &wi.y, &wi.cx, &wi.cy, &bMaximize);
-                            if (itok == 4 || itok == 5) { // scan successful
+                            int iMaximize = 0;
+                            int const itok = swscanf_s(lp1, WINDOWPOS_STRGFORMAT, &wi.x, &wi.y, &wi.cx, &wi.cy, &wi.dpi, &iMaximize);
+                            if (itok == 4 || itok == 5 || itok == 6) { // scan successful
                                 Globals.CmdLnFlag_PosParam = true;
                                 Globals.CmdLnFlag_WindowPos = 0;
-                                if (bMaximize) {
-                                    wi.max = true;
-                                }
                                 if (itok == 4) {
-                                    wi.max = false;
+                                    wi.dpi = USER_DEFAULT_SCREEN_DPI;
+                                    iMaximize = 0;
                                 }
+                                else if (itok == 5) { // maybe DPI or Maxi (old)
+                                    if (wi.dpi < (USER_DEFAULT_SCREEN_DPI >> 2)) {
+                                        iMaximize = wi.dpi;
+                                        wi.dpi = USER_DEFAULT_SCREEN_DPI;
+                                    }
+                                    else {
+                                        iMaximize = 0;
+                                    }
+                                }
+                                wi.max = !!iMaximize;
                                 g_IniWinInfo = wi; // set window placement
                             }
                         }
@@ -10336,7 +10377,7 @@ static void _UndoRedoRecordingStart()
     SciCall_SetUndoCollection(true);
     SciCall_EmptyUndoBuffer();
     SciCall_SetSavePoint();
-    SciCall_SetChangeHistory(SC_CHANGE_HISTORY_ENABLED | Settings.ChangeHistoryMode);
+    SciCall_SetChangeHistory(Settings.ChangeHistoryMode);
     UpdateMargins(true);
 }
 
@@ -11382,8 +11423,8 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
     WININFO const wi = GetMyWindowPlacement(Globals.hwndMain, NULL, 0);
 
     HSTRINGW hstr_args = StrgCreate(NULL);
-    StrgFormat(hstr_args, L"%s/pos %i,%i,%i,%i,%i /g %i,%i %s",
-               wchFlags, wi.x, wi.y, wi.cx, wi.cy, wi.max, iCurLn, iCurCol, lpArgs);
+    StrgFormat(hstr_args, L"%s/pos " WINDOWPOS_STRGFORMAT L" /g %i,%i %s",
+               wchFlags, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, (int)wi.max, iCurLn, iCurCol, lpArgs);
 
     WCHAR wchTempFileName[MAX_PATH_EXPLICIT + 1] = { L'\0' };
     WCHAR wchTempPathBuffer[MAX_PATH_EXPLICIT + 1] = { L'\0' };
@@ -11399,8 +11440,8 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
             WCHAR wchEncoding[80] = { L'\0' };
             Encoding_GetNameW(Encoding_GetCurrent(), wchEncoding, COUNTOF(wchEncoding));
 
-            StrgFormat(hstr_args, L"%s/%s /pos %i,%i,%i,%i,%i /g %i,%i /%s\"%s\" %s",
-                       wchFlags, wchEncoding, wi.x, wi.y, wi.cx, wi.cy, wi.max, iCurLn, iCurCol, RELAUNCH_ELEVATED_BUF_ARG, Path_Get(htmp_pth), lpArgs);
+            StrgFormat(hstr_args, L"%s/%s /pos " WINDOWPOS_STRGFORMAT L" /g %i,%i /%s\"%s\" %s",
+                       wchFlags, wchEncoding, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, (int)wi.max, iCurLn, iCurCol, RELAUNCH_ELEVATED_BUF_ARG, Path_Get(htmp_pth), lpArgs);
 
             if (!StrStrI(StrgGet(hstr_args), Path_FindFileName(Paths.CurrentFile))) {
                 if (Path_IsNotEmpty(Paths.CurrentFile)) {
@@ -11894,7 +11935,7 @@ bool LaunchNewInstance(HWND hwnd, LPCWSTR lpszParameter, LPCWSTR lpszFilePath)
         int const instCnt = CountRunningInstances();
         WININFO wi = GetMyWindowPlacement(hwnd, NULL, offset * instCnt);
         WCHAR wchPos[80] = { L'\0' };
-        StringCchPrintf(wchPos, COUNTOF(wchPos), L"-pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, (int)wi.max);
+        StringCchPrintf(wchPos, COUNTOF(wchPos), L"-pos " WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, (int)wi.max);
 
         StringCchPrintf(params_buf, StrgGetAllocLength(hstrParams),
             L"%s %s \"%s\"", lpszParameter, wchPos, lpszFilePath);
@@ -11958,7 +11999,7 @@ bool RelaunchMultiInst()
             wi.y += (i * offset);
             WCHAR wchPos[80] = { L'\0' };
             if (!Globals.CmdLnFlag_PosParam) {
-                StringCchPrintf(wchPos, COUNTOF(wchPos), L" -pos %i,%i,%i,%i,%i", wi.x, wi.y, wi.cx, wi.cy, (int)wi.max);
+                StringCchPrintf(wchPos, COUNTOF(wchPos), L" -pos " WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, (int)wi.max);
             }
             size_t const pl = StringCchLen(wchPos, 80) + 1;
 
@@ -12100,13 +12141,13 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
             if (GetDoAnimateMinimize()) {
                 DrawAnimatedRects(hWindow, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
             }
+            SetWindowPlacement(hWindow, &wndpl); // 1st set correct screen (DPI Aware)
             if (hwnd) {
                 UINT const dpi = Scintilla_GetWindowDPI(hwnd);
                 if (dpi != winInfo.dpi) {
                     RelAdjustRectForDPI(&wndpl.rcNormalPosition, winInfo.dpi, dpi);
                 }
             }
-            SetWindowPlacement(hWindow, &wndpl); // 1st set correct screen (DPI Aware)
             SetWindowPlacement(hWindow, &wndpl); // 2nd resize position to correct DPI settings
         }
         if (hwnd) {

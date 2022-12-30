@@ -915,13 +915,15 @@ inline DocPos Sci_GetSelectionEndEx()
 
 inline DocPos Sci_ReplaceTarget(const int mode, const DocPos length, const char* text)
 {
-    if (mode == SCI_REPLACETARGETRE) {
+    switch (mode) {
+    case SCI_REPLACETARGETRE:
         return SciCall_ReplaceTargetRe(length, text);
-    }
-    if (SciCall_GetChangeHistory() == SC_CHANGE_HISTORY_DISABLED) {
+    case SCI_REPLACETARGETMINIMAL:
+        return SciCall_ReplaceTargetMinimal(length, text);
+    case SCI_REPLACETARGET:
+    default:
         return SciCall_ReplaceTarget(length, text);
     }
-    return SciCall_ReplaceTargetMinimal(length, text);
 }
 
 // ----------------------------------------------------------------------------

@@ -316,7 +316,7 @@ Možnosti:\r\n\
 /n\tVždy otvoriť nové okno (/ns inštancia jedného súboru).\r\n\
 /r\tOpätovné použitie okna (/rs inštancia jedného súboru).\r\n\
 /p\tNastavenie polohy a veľkosti okna (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\talebo /p <vľavo>,<hore>,<šírka>,<výška>,<max> [všetky čísla celé].\r\n\
+\talebo /p <vľavo>,<hore>,<šírka>,<výška>[,<dpi>,<max>]    [všetky čísla celé].\r\n\
 /t\tNastavenie titulku okna.\r\n\
 /i\tZačať ako ikona na paneli úloh.\r\n\
 /o\tPonechanie okna vždy na vrchu.\r\n\
