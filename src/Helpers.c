@@ -1632,7 +1632,7 @@ static int _CheckRegExReplTargetA(LPSTR pszInput)
             ++pszInput;
         }
     }
-    return SCI_REPLACETARGET;
+    return SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
 }
 
 static int _CheckRegExReplTargetW(LPWSTR pszInput)
@@ -1652,7 +1652,7 @@ static int _CheckRegExReplTargetW(LPWSTR pszInput)
             ++pszInput;
         }
     }
-    return SCI_REPLACETARGET;
+    return SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
 }
 
 
@@ -1663,12 +1663,11 @@ void TransformBackslashesA(LPSTR pszInput, bool bRegEx, UINT cpEdit, int* iRepla
             UnSlashLowOctalA(pszInput);
             *iReplaceMsg = _CheckRegExReplTargetA(pszInput);
         } else {
-            *iReplaceMsg = SCI_REPLACETARGET;  // uses SCI std replacement
+            *iReplaceMsg = SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
         }
     }
-    bool const bStdReplace = (iReplaceMsg && (SCI_REPLACETARGET == *iReplaceMsg));
-
     // regex handles backslashes itself
+    bool const bStdReplace = (iReplaceMsg && (SCI_REPLACETARGETRE != *iReplaceMsg));
     if (!bRegEx || bStdReplace) {
         UnSlashA(pszInput, cpEdit);
     }
@@ -1681,12 +1680,11 @@ void TransformBackslashesW(LPWSTR pszInput, bool bRegEx, UINT cpEdit, int* iRepl
             UnSlashLowOctalW(pszInput);
             *iReplaceMsg = _CheckRegExReplTargetW(pszInput);
         } else {
-            *iReplaceMsg = SCI_REPLACETARGET;  // uses SCI std replacement
+            *iReplaceMsg = SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
         }
     }
-    bool const bStdReplace = (iReplaceMsg && (SCI_REPLACETARGET == *iReplaceMsg));
-
     // regex handles backslashes itself
+    bool const bStdReplace = (iReplaceMsg && (SCI_REPLACETARGETRE != *iReplaceMsg));
     if (!bRegEx || bStdReplace) {
         UnSlashW(pszInput, cpEdit);
     }

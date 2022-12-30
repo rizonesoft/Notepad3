@@ -182,6 +182,7 @@
 #define IDS_MUI_SELRECTORMULTI          14021
 #define IDS_MUI_INIFILE_READONLY        14022
 #define IDS_MUI_DOCUMENT_READONLY       14023
+#define IDS_MUI_ASK_CLEAR_UNDO          14024
 
 #define IDS_MUI_ASK_SAVE                15000
 #define IDS_MUI_ASK_REVERT              15001
@@ -1284,6 +1285,7 @@
 #define IDS_LEX_2ND_CH_REV_TO_ORG       63395
 #define IDS_LEX_2ND_CH_REV_TO_MOD       63396
 #define IDS_LEX_STR_63397               63397
+#define IDS_LEX_STR_63398               63398
 
 
 #define IDS_LEX_CSV_COL_0               63490

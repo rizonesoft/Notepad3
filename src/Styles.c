@@ -2053,7 +2053,7 @@ void Style_UpdateBookmarkMargin(HWND hwnd)
 //
 void Style_UpdateChangeHistoryMargin(HWND hwnd)
 {
-    bool const bShowMargin = Settings.ChangeHistoryMargin && ((Settings.ChangeHistoryMode & ChgHist_ON) && (Settings.ChangeHistoryMode & ChgHist_MARGIN));
+    bool const bShowMargin = (Settings.ChangeHistoryMode & SC_CHANGE_HISTORY_MARKERS);
     SciCall_SetMarginWidthN(MARGIN_SCI_CHGHIST, (bShowMargin ? _GetMarkerMarginWidth(hwnd, 0.7f) : 0));
 }
 
