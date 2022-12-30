@@ -8087,7 +8087,7 @@ void HandleColorDefClicked(HWND hwnd, const DocPos position)
         }
 
         SciCall_SetTargetRange(firstPos, lastPos);
-        SciCall_ReplaceTargetMinimal(length, wchColor);
+        Sci_ReplaceTargetTestChgHist(length, wchColor);
 
         EditUpdateVisibleIndicators();
     }

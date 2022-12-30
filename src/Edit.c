@@ -1931,7 +1931,7 @@ void EditURLEncode(const bool isPathConvert)
     UndoTransActionBegin();
 
     SciCall_TargetFromSelection();
-    SciCall_ReplaceTargetMinimal(cchEscapedEnc, pszEscaped);
+    Sci_ReplaceTargetTestChgHist(cchEscapedEnc, pszEscaped);
 
     EditSetAndScrollSelection(iSelStart, iSelStart + cchEscapedEnc, bStraightSel);
 
@@ -2008,7 +2008,7 @@ void EditURLDecode(const bool isPathConvert)
         UndoTransActionBegin();
 
         SciCall_TargetFromSelection();
-        SciCall_ReplaceTargetMinimal(cchUnescapedDec, pszUnescaped);
+        Sci_ReplaceTargetTestChgHist(cchUnescapedDec, pszUnescaped);
 
         EditSetAndScrollSelection(iSelStart, iSelStart + cchUnescapedDec, bStraightSel);
 
@@ -2063,7 +2063,7 @@ void EditReplaceAllChr(const WCHAR chSearch, const WCHAR chReplace) {
     UndoTransActionBegin();
 
     SciCall_TargetFromSelection();
-    SciCall_ReplaceTargetMinimal(cchRepl, pchReplace);
+    Sci_ReplaceTargetTestChgHist(cchRepl, pchReplace);
 
     EditSetAndScrollSelection(iSelStart, iSelEnd, bStraightSel);
     
@@ -2136,7 +2136,7 @@ void EditBase64Code(HWND hwnd, const bool bEncode, cpi_enc_t cpi) {
     UndoTransActionBegin();
 
     SciCall_TargetFromSelection();
-    DocPos const len = (base64Size ? SciCall_ReplaceTarget(base64Size, pBase64CodedTxt) : SciCall_ReplaceTarget(0, ""));
+    DocPos const len = (base64Size ? Sci_ReplaceTargetTestChgHist(base64Size, pBase64CodedTxt) : SciCall_ReplaceTarget(0, ""));
     FreeMem(pBase64CodedTxt);
 
     EditSetAndScrollSelection(iSelStart, iSelStart + len, bStraightSel);
@@ -2685,7 +2685,7 @@ void EditTabsToSpaces(int nTabWidth,bool bOnlyIndentingWS)
 
         UndoTransActionBegin();
         SciCall_SetTargetRange(iSelStart, iSelEnd);
-        SciCall_ReplaceTargetMinimal(cchConvM, pszText2);
+        Sci_ReplaceTargetTestChgHist(cchConvM, pszText2);
         EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
         EndUndoTransAction();
         FreeMem(pszText2);
@@ -2797,7 +2797,7 @@ void EditSpacesToTabs(int nTabWidth,bool bOnlyIndentingWS)
 
         UndoTransActionBegin();
         SciCall_SetTargetRange(iSelStart, iSelEnd);
-        SciCall_ReplaceTargetMinimal(cchConvM, pszText2);
+        Sci_ReplaceTargetTestChgHist(cchConvM, pszText2);
         EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
         EndUndoTransAction();
         FreeMem(pszText2);
@@ -3569,7 +3569,7 @@ void EditAlignText(int nMode)
                         ptrdiff_t const cch = WideCharToMultiByteEx(Encoding_SciCP, 0, wchNewLineBuf, -1, chNewLineBuf, (int)iBufCount, NULL, NULL) - 1;
 
                         SciCall_SetTargetRange(SciCall_PositionFromLine(iLine), SciCall_GetLineEndPosition(iLine));
-                        SciCall_ReplaceTargetMinimal(cch, chNewLineBuf);
+                        Sci_ReplaceTargetTestChgHist(cch, chNewLineBuf);
                         SciCall_SetLineIndentation(iLine, iMinIndent);
                     } else {
                         chNewLineBuf[0] = '\0';
@@ -3615,7 +3615,7 @@ void EditAlignText(int nMode)
                                 iPos = SciCall_PositionFromLine(iLine);
                             }
                             SciCall_SetTargetRange(iPos, SciCall_GetLineEndPosition(iLine));
-                            SciCall_ReplaceTargetMinimal(cch, chNewLineBuf);
+                            Sci_ReplaceTargetTestChgHist(cch, chNewLineBuf);
 
                             if (nMode == ALIGN_LEFT) {
                                 SciCall_SetLineIndentation(iLine, iMinIndent);
@@ -3681,12 +3681,13 @@ void EditEncloseSelection(LPCWSTR pszOpen, LPCWSTR pszClose) {
 
     if (iLenOpen > 0) {
         SciCall_SetTargetRange(iSelStart, iSelStart);
-        SciCall_ReplaceTargetMinimal(-1, mszOpen);
+        SciCall_ReplaceTarget(-1, mszOpen);
     }
 
     if (iLenClose > 0) {
-        SciCall_SetTargetRange(iSelEnd + iLenOpen, iSelEnd + iLenOpen);
-        SciCall_ReplaceTargetMinimal(-1, mszClose);
+        DocPos const iPos = iSelEnd + iLenOpen;
+        SciCall_SetTargetRange(iPos, iPos);
+        SciCall_ReplaceTarget(-1, mszClose);
     }
 
     // Move selection
@@ -3979,7 +3980,7 @@ static DocPos  _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineEnd, DocPos
         pmszPadStr[iPadLen] = '\0'; // slice
 
         SciCall_SetTargetRange(iPos, iPos);
-        SciCall_ReplaceTargetMinimal(-1, pmszPadStr); // pad
+        SciCall_ReplaceTarget(-1, pmszPadStr); // pad
 
         pmszPadStr[iPadLen] = ' '; // reset
         spcCount += iPadLen;
@@ -4141,7 +4142,7 @@ void EditStripFirstCharacter(HWND hwnd)
                 if (len > 0) {
                     StringCchCopyNA(lineBuffer, SizeOfMem(lineBuffer), SciCall_GetRangePointer(nextPos, len + 1), len);
                     SciCall_SetTargetRange(selTargetStart, selTargetEnd);
-                    SciCall_ReplaceTargetMinimal(len, lineBuffer);
+                    Sci_ReplaceTargetTestChgHist(len, lineBuffer);
                 }
                 remCount += (nextPos - selTargetStart);
             } // for()
@@ -4236,7 +4237,7 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
                             }
                             diff = len - (++i);
                             SciCall_SetTargetRange(selTargetStart, selTargetEnd);
-                            SciCall_ReplaceTargetMinimal(-1, lineBuffer);
+                            Sci_ReplaceTargetTestChgHist(-1, lineBuffer);
                         }
                     } else {
                         DocPos const prevPos = SciCall_PositionBefore(selTargetEnd);
@@ -4245,7 +4246,7 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
                         if (len > 0) {
                             StringCchCopyNA(lineBuffer, iMaxLineLen, SciCall_GetRangePointer(selTargetStart, len + 1), len);
                             SciCall_SetTargetRange(selTargetStart, selTargetEnd);
-                            SciCall_ReplaceTargetMinimal(len, lineBuffer);
+                            Sci_ReplaceTargetTestChgHist(len, lineBuffer);
                         }
                     }
                     remCount += diff;
@@ -4354,7 +4355,7 @@ void EditCompressBlanks()
                     lineBuffer[i] = '\0';
                     diff = len - i;
                     SciCall_SetTargetRange(selTargetStart, selTargetEnd);
-                    SciCall_ReplaceTargetMinimal(-1, lineBuffer);
+                    Sci_ReplaceTargetTestChgHist(-1, lineBuffer);
                 }
                 remCount += diff;
             } // for()
@@ -4440,7 +4441,7 @@ void EditCompressBlanks()
                 } else {
                     SciCall_TargetWholeDocument();
                 }
-                SciCall_ReplaceTargetMinimal(-1, pszOut);
+                Sci_ReplaceTargetTestChgHist(-1, pszOut);
 
                 DocPos const iNewLen = (DocPos)StringCchLenA(pszOut, SizeOfMem(pszOut));
 
@@ -4859,7 +4860,7 @@ void EditWrapToColumn(DocPosU nColumn)
             UndoTransActionBegin();
 
             SciCall_SetTargetRange(iSelStart, iSelEnd);
-            SciCall_ReplaceTargetMinimal(cchConvM, pszText);
+            Sci_ReplaceTargetTestChgHist(cchConvM, pszText);
             EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
 
             EndUndoTransAction();
@@ -4997,7 +4998,7 @@ void EditJoinLinesEx(bool bPreserveParagraphs, bool bCRLF2Space)
         UndoTransActionBegin();
 
         SciCall_SetTargetRange(iSelStart, iSelEnd);
-        SciCall_ReplaceTargetMinimal(cchJoin, pszJoin);
+        Sci_ReplaceTargetTestChgHist(cchJoin, pszJoin);
         EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
 
         EndUndoTransAction();
@@ -5321,7 +5322,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
     //SciCall_SetTargetRange(SciCall_PositionFromLine(iLineStart), SciCall_PositionFromLine(iLineEnd + 1));
     SciCall_SetTargetRange(SciCall_PositionFromLine(iLineStart), SciCall_GetLineEndPosition(iLineEnd));
-    SciCall_ReplaceTargetMinimal(-1, pmszResult);
+    Sci_ReplaceTargetTestChgHist(-1, pmszResult);
     FreeMem(pmszResult);
     if (bIsMultiSel) {
         EditSetSelectionEx(iAnchorPos, iCurPos, iAnchorPosVS, iCurPosVS);
@@ -7376,7 +7377,7 @@ bool EditReplace(HWND hwnd, LPEDITFINDREPLACE lpefr)
     UndoTransActionBegin();
 
     SciCall_TargetFromSelection();
-    Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
+    Sci_ReplaceTargetEx(iReplaceMsg, -1, pszReplace);
     // move caret behind replacement
     SciCall_SetCurrentPos(SciCall_GetTargetEnd());
     Globals.iReplacedOccurrences = 1;
@@ -7439,7 +7440,7 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
     while ((iPos >= 0LL) && (start <= iEndPos)) {
         DocLn const lnCnt = bRegexStartOfLine ? SciCall_GetLineCount() : 0;
         SciCall_SetTargetRange(iPos, end);
-        DocPos const replLen = Sci_ReplaceTarget(iReplaceMsg, -1, pszReplace);
+        DocPos const replLen = Sci_ReplaceTargetEx(iReplaceMsg, -1, pszReplace);
         ++iCount;
         // start next search behind replacement
         iStartPos = SciCall_GetTargetEnd();
