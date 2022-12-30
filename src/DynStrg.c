@@ -167,8 +167,9 @@ static void ReAllocW(STRINGW* pstr, size_t len, bool bZeroMem)
     else if (pstr->alloc_length < alloc_len) {
         pstr->data = ReAllocBuffer(pstr->data, alloc_len, bZeroMem, false);
         pstr->alloc_length = LengthOfBuffer(pstr->data);
-        assert("inconsistent data" && (alloc_len != (pstr->alloc_length * sizeof(wchar_t))));
+        assert("inconsistent data 1" && (alloc_len != (pstr->alloc_length * sizeof(wchar_t))));
         /// original memory block is moved, so data_length is not touched
+        assert("inconsistent data 2" && (alloc_len > pstr->data_length));
         pstr->data[pstr->data_length] = L'\0'; // ensure terminating zero
     }
     else {

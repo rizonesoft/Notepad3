@@ -1540,9 +1540,15 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
             StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
         }
         SciCall_SetElementColour(SC_ELEMENT_WHITE_SPACE, RGBxA(rgb, iValue));
+        SciCall_SetRepresentationColour("\r", RGBxA(rgb, iValue));
+        SciCall_SetRepresentationColour("\n", RGBxA(rgb, iValue));
+        SciCall_SetRepresentationColour("\r\n", RGBxA(rgb, iValue));
     }
     else {
         SciCall_ResetElementColour(SC_ELEMENT_WHITE_SPACE);
+        SciCall_SetRepresentationColour("\r", SciCall_GetElementColour(SC_ELEMENT_WHITE_SPACE));
+        SciCall_SetRepresentationColour("\n", SciCall_GetElementColour(SC_ELEMENT_WHITE_SPACE));
+        SciCall_SetRepresentationColour("\r\n", SciCall_GetElementColour(SC_ELEMENT_WHITE_SPACE));
     }
 
     rgb = RGB(0, 0, 0);
