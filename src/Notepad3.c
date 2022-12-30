@@ -4256,10 +4256,11 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
 
-    int const chState = Settings.ChangeHistoryMode;
+    int const chState = SciCall_GetChangeHistory();
+    assert(chState == Settings.ChangeHistoryMode);
     i = IDM_VIEW_CHGHIST_NONE;
-    i += ((chState & ChgHist_ON) && (chState & ChgHist_MARGIN)) ? 1 : 0;
-    i += ((chState & ChgHist_ON) && (chState & ChgHist_DOCTXT)) ? 2 : 0;
+    i += (chState & SC_CHANGE_HISTORY_MARKERS) ? 1 : 0;
+    i += (chState & SC_CHANGE_HISTORY_INDICATORS) ? 2 : 0;
     CheckMenuRadioItem(hmenu, IDM_VIEW_CHGHIST_NONE, IDM_VIEW_CHGHIST_ALL, i, MF_BYCOMMAND);
     CheckCmdPos(GetSubMenu(GetMenu(Globals.hwndMain), 2), 8, (i != IDM_VIEW_CHGHIST_NONE));
 
@@ -4439,6 +4440,31 @@ LRESULT MsgKeyDown(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return FALSE;
 }
 #endif
+
+
+//=============================================================================
+//
+//  _ApplyChangeHistoryMode() - Handles Change-History Settings
+//
+static void _ApplyChangeHistoryMode()
+{
+    int const iChgHist = SciCall_GetChangeHistory();
+    if (iChgHist == Settings.ChangeHistoryMode) { return; }
+    if ((!iChgHist && Settings.ChangeHistoryMode) || !Settings.ChangeHistoryMode) {
+        if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"AllowClearUndoHistory", IDS_MUI_ASK_CLEAR_UNDO))) {
+            UndoRedoReset();
+        }
+        else {
+            Settings.ChangeHistoryMode = iChgHist;
+            return;
+        }
+    }
+    else {
+        SciCall_SetChangeHistory(Settings.ChangeHistoryMode);
+    }
+    Style_UpdateChangeHistoryMargin(Globals.hwndEdit);
+    UpdateMargins(true);
+}
 
 
 //=============================================================================
@@ -6045,33 +6071,38 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_CHGHIST_DOCTXT:
     case IDM_VIEW_CHGHIST_ALL: {
         int const set = iLoWParam - IDM_VIEW_CHGHIST_NONE;
-        int const chgHistState = SciCall_GetChangeHistory() & ChgHist_ON;
         switch (set) {
         case 0: 
-            Settings.ChangeHistoryMode = chgHistState & ~(ChgHist_MARGIN | ChgHist_DOCTXT);
+            Settings.ChangeHistoryMode = SC_CHANGE_HISTORY_DISABLED;
             break;
-        case 1: 
-            Settings.ChangeHistoryMode = (chgHistState | ChgHist_MARGIN) & ~ChgHist_DOCTXT;
+        case 1:
+            Settings.ChangeHistoryMode = SC_CHANGE_HISTORY_ENABLED | SC_CHANGE_HISTORY_MARKERS;
             break;
         case 2: 
-            Settings.ChangeHistoryMode = (chgHistState | ChgHist_DOCTXT) & ~ChgHist_MARGIN;
+            Settings.ChangeHistoryMode = SC_CHANGE_HISTORY_ENABLED | SC_CHANGE_HISTORY_INDICATORS;
             break;
         case 3: 
-            Settings.ChangeHistoryMode = chgHistState | (ChgHist_MARGIN | ChgHist_DOCTXT);
+            Settings.ChangeHistoryMode = SC_CHANGE_HISTORY_ENABLED | SC_CHANGE_HISTORY_INDICATORS | SC_CHANGE_HISTORY_MARKERS;
             break;
         default:
             break;
         }
-        SciCall_SetChangeHistory(Settings.ChangeHistoryMode);
-        Style_UpdateChangeHistoryMargin(Globals.hwndEdit);
-        UpdateMargins(true);
+        _ApplyChangeHistoryMode();
         break;
     } 
     break;
 
     case IDM_VIEW_CHGHIST_TOGGLE_MARGIN:
-        Settings.ChangeHistoryMargin = !Settings.ChangeHistoryMargin;
-        UpdateMargins(true);
+        if (Settings.ChangeHistoryMode & SC_CHANGE_HISTORY_MARKERS) {
+            Settings.ChangeHistoryMode &= ~SC_CHANGE_HISTORY_MARKERS;
+            if (!(Settings.ChangeHistoryMode & SC_CHANGE_HISTORY_INDICATORS)) {
+                Settings.ChangeHistoryMode = SC_CHANGE_HISTORY_DISABLED;
+            }
+        }
+        else {
+            Settings.ChangeHistoryMode |= (SC_CHANGE_HISTORY_ENABLED | SC_CHANGE_HISTORY_MARKERS);
+        }
+        _ApplyChangeHistoryMode();
         break;
 
     case IDM_VIEW_HYPERLINKHOTSPOTS:
@@ -10328,7 +10359,7 @@ static void _UndoRedoRecordingStart()
     SciCall_SetUndoCollection(true);
     SciCall_EmptyUndoBuffer();
     SciCall_SetSavePoint();
-    SciCall_SetChangeHistory(SC_CHANGE_HISTORY_ENABLED | Settings.ChangeHistoryMode);
+    SciCall_SetChangeHistory(Settings.ChangeHistoryMode);
     UpdateMargins(true);
 }
 

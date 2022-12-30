@@ -5883,7 +5883,7 @@ static char* _GetReplaceString(HWND hwnd, CLPCEDITFINDREPLACE lpefr, int* iRepla
     if (Settings.ReplaceByClipboardTag && 
         (StringCchCompareXW(StrgGet(lpefr->chReplaceTemplate), L"^c")) == 0)
     {
-        *iReplaceMsg = SCI_REPLACETARGET;
+        *iReplaceMsg = SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
         pszReplace = EditGetClipboardText(hwnd, true, NULL, NULL);
     }
     else {
@@ -7329,7 +7329,7 @@ void EditSelectionMultiSelectAllEx(HWND hwnd, CLPCEDITFINDREPLACE edFndRpl)
 //
 bool EditReplace(HWND hwnd, LPEDITFINDREPLACE lpefr)
 {
-    int iReplaceMsg = SCI_REPLACETARGET;
+    int iReplaceMsg = SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
     DocPos const selBeg = SciCall_GetSelectionStart();
     DocPos const selEnd = SciCall_GetSelectionEnd();
 
@@ -7413,11 +7413,13 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
     bool const bRegexStartOfLine = bIsRegExpr && (wchFind[0] == L'^');
 
     // SCI_REPLACETARGET or SCI_REPLACETARGETRE
-    int iReplaceMsg = SCI_REPLACETARGET;
+    int iReplaceMsg = SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
     char* const pszReplace = _GetReplaceString(hwnd, lpefr, &iReplaceMsg);
     if (!pszReplace) {
         return -1; // recoding of clipboard canceled
     }
+    bool const bMinRepl = (SCI_REPLACETARGETMINIMAL == iReplaceMsg);
+    DocPos const pszReplaceLen = strlen(pszReplace);
 
     DocPos const _saveTargetBeg_ = SciCall_GetTargetStart();
     DocPos const _saveTargetEnd_ = SciCall_GetTargetEnd();
@@ -7444,7 +7446,7 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
         if (bRegexStartOfLine && (Sci_GetLineStartPosition(iStartPos) == iStartPos) && (SciCall_GetLineCount() == lnCnt)) {
             iStartPos = SciCall_PositionAfter(iStartPos);
         }
-        iEndPos += replLen - (end - iPos);
+        iEndPos += (bMinRepl ? pszReplaceLen : replLen) - (end - iPos);
         start = iStartPos;
         end   = iEndPos;
         iPos = (start <= end) ? _FindInTarget(wchFind, sFlags, &start, &end, true, FRMOD_NORM) : -1LL;

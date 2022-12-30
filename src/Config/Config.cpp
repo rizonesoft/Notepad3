@@ -1526,8 +1526,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(AutoCloseTags, false);
     GET_BOOL_VALUE_FROM_INISECTION(AutoCloseBrackets, false);
     GET_INT_VALUE_FROM_INISECTION(HighlightCurrentLine, 1, 0, 2);
-    GET_INT_VALUE_FROM_INISECTION(ChangeHistoryMode, ChgHist_ON | ChgHist_MARGIN, ChgHist_NONE, ChgHist_ALL);
-    GET_BOOL_VALUE_FROM_INISECTION(ChangeHistoryMargin, true);
+    GET_INT_VALUE_FROM_INISECTION(ChangeHistoryMode, SC_CHANGE_HISTORY_ENABLED | SC_CHANGE_HISTORY_MARKERS, 0, 7);
     GET_BOOL_VALUE_FROM_INISECTION(HyperlinkHotspot, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowHypLnkToolTip, false);
     GET_INT_VALUE_FROM_INISECTION(ColorDefHotspot, 2, 0, 3);

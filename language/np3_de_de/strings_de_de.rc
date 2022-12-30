@@ -172,8 +172,9 @@ BEGIN
     IDS_MUI_FIND_WRAPRE     "Der Anfang des Dokumentes wurde erreicht, Rückwärtssuche vom Ende her weiter führen."
     IDS_MUI_NOTFOUND        "Der gegebene Suchbegriff führte zu keiner passenden Textstelle."
     IDS_MUI_REPLCOUNT       "%s Fundstelle(n) des gegebenen Suchbegriffs wurde(n) ersetzt."
-    IDS_MUI_ASK_ENCODING    "Der Wechsel zwischen verschiedenen Codierungen kann die Ersetzung nicht unterstützter Zeichen mit voreingestellten Zeichen zur folge haben, wobei die Historie gelöscht wird. Weiter machen?"
-    IDS_MUI_ASK_ENCODING2   "Du bist dabei die Codierung eines leeren Dokumentes zu ändern. Beachte bitte, daß dabei die Historie gelöscht wird, da diese nicht mit der neuen Codierung synchronisiert werden kann. Weiter machen?"
+    IDS_MUI_ASK_ENCODING    "Der Wechsel zwischen verschiedenen Codierungen kann die Ersetzung nicht unterstützter Zeichen mit voreingestellten Zeichen zur folge haben, wobei die Undo-Historie gelöscht wird. Weiter machen?"
+    IDS_MUI_ASK_ENCODING2   "Du bist dabei die Codierung eines leeren Dokumentes zu ändern. Beachte bitte, daß dabei die Undo-Historie gelöscht wird, da diese nicht mit der neuen Codierung synchronisiert werden kann. Weiter machen?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Diese Operation wird die Undo-History löschen. Weiter machen?"
     IDS_MUI_READONLY_SAVE   """%s"" ist schreibgeschützt. Dokument unter einem anderen Dateipfad speichern?"
     IDS_MUI_FILECHANGENOTIFY
                             "Die geladene Datei wurde durch ein anderes Programm auf dem Datenträger verändert. Neu laden?"
