@@ -195,6 +195,10 @@ DeclareSciCallV01(GetWordChars, GETWORDCHARS, char*, ptxt);
 DeclareSciCallV01(GetWhiteSpaceChars, GETWHITESPACECHARS, char*, ptxt);
 DeclareSciCallV01(GetPunctuationChars, GETPUNCTUATIONCHARS, char*, ptxt);
 
+DeclareSciCallV2(SetRepresentation, SETREPRESENTATION, const char*, encChar, const char*, represent);
+DeclareSciCallV2(SetRepresentationColour, SETREPRESENTATIONCOLOUR, const char*, encChar, COLORALPHAREF, colour);
+DeclareSciCallV2(SetRepresentationAppearance, SETREPRESENTATIONAPPEARANCE, const char*, encChar, int, appear);
+
 // Document Pointer Handling
 DeclareSciCallR0(GetDocPointer, GETDOCPOINTER, sptr_t);
 DeclareSciCallV01(SetDocPointer, SETDOCPOINTER, sptr_t, pdoc);

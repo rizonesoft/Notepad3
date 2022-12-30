@@ -216,6 +216,9 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //     After Win10 1903 upgrade, Ctrl+Alt+Shift+F hotkey is intercepted by File Explorer (issue #1609)
 //
 //
+// --------------------------------------------------------------------------------------------------------------------
+// Reference: https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+// --------------------------------------------------------------------------------------------------------------------
 
 IDR_MAINWND ACCELERATORS
 BEGIN

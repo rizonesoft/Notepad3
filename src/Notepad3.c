@@ -2438,6 +2438,13 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_SetMarginOptions(SC_MARGINOPTION_SUBLINESELECT);
 
     // Nonprinting characters
+    SciCall_SetRepresentation("\r", "\xE2\x86\x90");
+    SciCall_SetRepresentationAppearance("\r", SC_REPRESENTATION_COLOUR);
+    SciCall_SetRepresentation("\n", "\xE2\x86\x93");
+    SciCall_SetRepresentationAppearance("\n", SC_REPRESENTATION_COLOUR);
+    SciCall_SetRepresentation("\r\n", "\xE2\x86\xB2"); // "\xE2\xAE\x92"
+    SciCall_SetRepresentationAppearance("\r\n", SC_REPRESENTATION_COLOUR);
+    /// (!) -> SciCall_SetRepresentationColour() in Styles.c
     SciCall_SetViewWS(Settings.ViewWhiteSpace ? SCWS_VISIBLEALWAYS : SCWS_INVISIBLE);
     SciCall_SetViewEOL(Settings.ViewEOLs);
 
@@ -8820,7 +8827,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         switch(pnmh->code) {
         case NM_CLICK: { // single click
             LPNMMOUSE const pnmm = (LPNMMOUSE)lParam;
-
+            
+            if (pnmm->dwItemSpec >= COUNTOF(g_vSBSOrder)) {
+                break;
+            }
             switch (g_vSBSOrder[pnmm->dwItemSpec]) {
             case STATUS_EOLMODE: {
                 if (Globals.bDocHasInconsistentEOLs) {
@@ -12370,7 +12380,6 @@ DWORD const dwObservingTimeout = 250UL; // then check for done
 static HANDLE s_hEventObserverDone = INVALID_HANDLE_VALUE;
 
 static unsigned __stdcall FileChangeObserver(void * pArg) {
-
 
     if (!pArg) {
         _endthreadex(0);
