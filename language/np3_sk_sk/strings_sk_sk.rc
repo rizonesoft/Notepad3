@@ -174,6 +174,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "%s výskytov zadaného vyhľadávania bolo nahradených."
     IDS_MUI_ASK_ENCODING    "Prepínanie kódovania súboru z jedného na iné môže spôsobiť, že nepodporované znaky budú nahradené predvolenými znakmi a história spätných krokov sa vymaže. Chcete pokračovať?"
     IDS_MUI_ASK_ENCODING2   "Chystáte sa zmeniť kódovanie prázdneho súboru. Upozorňujeme, že týmto sa vymaže história spätných krokov, pretože sa nedá synchronizovať s novým kódovaním. Pokračovať?"
+    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
     IDS_MUI_READONLY_SAVE   """%s"" je iba na čítanie. Uložiť súbor pod iným názvom?"
     IDS_MUI_FILECHANGENOTIFY
                             "Aktuálny súbor bol upravený externým programom. Znovu ho načítať?"

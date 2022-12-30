@@ -496,6 +496,7 @@ BEGIN
     IDS_LEX_STR_63387       "Symbol Operator"
     IDS_LEX_STR_63388       "String EOL"
     IDS_LEX_STR_63397       "Backticks"
+    IDS_LEX_STR_63398       "GUID String"
 END
 
 STRINGTABLE

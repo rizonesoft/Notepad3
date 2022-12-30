@@ -174,6 +174,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "%s 次出現的指定搜索模式已被替換。"
     IDS_MUI_ASK_ENCODING    "切換檔案編碼可能導致部分無法表示的字元被替換為其它字元，並且該操作會清空取消歷程記錄。是否繼續？"
     IDS_MUI_ASK_ENCODING2   "切換檔案編碼會清空取消歷程記錄。是否繼續？"
+    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
     IDS_MUI_READONLY_SAVE   """%s"" 是唯讀。是否嘗試使用其它名字儲存？"
     IDS_MUI_FILECHANGENOTIFY
                             "目前檔案已被其它程式修改。是否重新載入？"

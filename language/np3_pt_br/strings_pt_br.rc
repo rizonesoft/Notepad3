@@ -174,6 +174,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "%s ocorrência(s) substituída(s) do termo de pesquisa especificado."
     IDS_MUI_ASK_ENCODING    "Mudar a codificação de um arquivo de uma codificação para outra pode levar à substituição de textos não suportados por caracteres padrão, e o histórico de ações para desfazer será apagado. Continuar?"
     IDS_MUI_ASK_ENCODING2   "Você está para mudar a codificação de um arquivo vazio. Note que isso apagará o histórico de ações para desfazer, já que ela não pode ser sincronizada com a nova codificação. Continuar?"
+    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
     IDS_MUI_READONLY_SAVE   """%s"" é somente leitura. Salvar em um arquivo diferente?"
     IDS_MUI_FILECHANGENOTIFY
                             "O presente arquivo foi modificado por um programa externo. Recarregar?"

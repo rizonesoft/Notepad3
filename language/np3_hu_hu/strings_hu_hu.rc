@@ -174,6 +174,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "A keresési minta %s db. találata cserélve lett."
     IDS_MUI_ASK_ENCODING    "A fájl kódolásának megváltoztatása lecserélhet nem támogatott karaktereket alapértelmezettek karakterekkel, valamint a visszavonási történet törölve lesz. Folytatja?"
     IDS_MUI_ASK_ENCODING2   "Egy üres fájl kódolását változtatja meg. Ne feledje, hogy ez a visszavonási történetet törli, mert azt nem lehet szinkronizálni az új kódolással. Folytatja?"
+    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
     IDS_MUI_READONLY_SAVE   """%s"" csak olvastható. Legyen mentés egy másik fájlba?"
     IDS_MUI_FILECHANGENOTIFY
                             "Az aktuális fájl egy külső progarm által módosítva lett. Újratöltsük?"
