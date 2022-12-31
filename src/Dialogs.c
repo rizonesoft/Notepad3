@@ -4362,6 +4362,7 @@ bool AutoSaveBackupSettingsDlg(HWND hwnd)
 //  RelAdjustRectForDPI()
 //
 void RelAdjustRectForDPI(LPRECT rc, const UINT oldDPI, const UINT newDPI) {
+    if (oldDPI == newDPI) { return; }
     float const scale = (float)newDPI / (float)(oldDPI != 0 ? oldDPI : 1);
     LONG const oldWidth = (rc->right - rc->left);
     LONG const oldHeight = (rc->bottom - rc->top);
@@ -4378,7 +4379,7 @@ void RelAdjustRectForDPI(LPRECT rc, const UINT oldDPI, const UINT newDPI) {
 //
 //  MapRectClientToWndCoords()
 //
-void MapRectClientToWndCoords(HWND hwnd, RECT* rc)
+void MapRectClientToWndCoords(HWND hwnd, LPRECT rc)
 {
     // map to screen (left-top as point)
     MapWindowPoints(hwnd, NULL, (POINT*)rc, 2);
@@ -4634,11 +4635,96 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
     return wndpl;
 }
 
+//=============================================================================
+//
+//  SnapToWinInfoPos()
+//  Aligns Notepad3 to the given window position on the screen
+//
+static bool s_bPrevFullScreenFlag = false;
+
+void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
+{
+    if (!hwnd) {
+        return;
+    }
+    static bool            s_bPrevShowMenubar = true;
+    static bool            s_bPrevShowToolbar = true;
+    static bool            s_bPrevShowStatusbar = true;
+    static bool            s_bPrevAlwaysOnTop = false;
+    static WINDOWPLACEMENT s_wndplPrev = { 0 };
+    s_wndplPrev.length = sizeof(WINDOWPLACEMENT);
+
+    DWORD const dwRmvFScrStyle = WS_OVERLAPPEDWINDOW | WS_BORDER;
+
+    DWORD dwStyle = GetWindowLong(hwnd, GWL_STYLE);
+    RECT  rcCurrent;
+    GetWindowRect(hwnd, &rcCurrent);
+
+    if ((mode == SCR_NORMAL) || s_bPrevFullScreenFlag) {
+        SetWindowLong(hwnd, GWL_STYLE, dwStyle | dwRmvFScrStyle);
+        if (s_bPrevFullScreenFlag) {
+            SetWindowPlacement(hwnd, &s_wndplPrev); // 1st set correct screen (DPI Aware)
+            SetWindowPlacement(hwnd, &s_wndplPrev); // 2nd resize position to correct DPI settings
+            Settings.ShowMenubar = s_bPrevShowMenubar;
+            Settings.ShowToolbar = s_bPrevShowToolbar;
+            Settings.ShowStatusbar = s_bPrevShowStatusbar;
+            Settings.AlwaysOnTop = s_bPrevAlwaysOnTop;
+        }
+        else {
+            WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hwnd, &winInfo, mode);
+            if (GetDoAnimateMinimize()) {
+                DrawAnimatedRects(hwnd, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
+            }
+            SetWindowPlacement(hwnd, &wndpl); // 1st set correct screen (DPI Aware)
+            RelAdjustRectForDPI(&wndpl.rcNormalPosition, winInfo.dpi, Scintilla_GetWindowDPI(hwnd));
+            SetWindowPlacement(hwnd, &wndpl); // 2nd resize position to correct DPI settings
+        }
+        SetWindowPos(hwnd, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        s_bPrevFullScreenFlag = false;
+    }
+    else { // full screen mode
+        s_bPrevShowMenubar = Settings.ShowMenubar;
+        s_bPrevShowToolbar = Settings.ShowToolbar;
+        s_bPrevShowStatusbar = Settings.ShowStatusbar;
+        s_bPrevAlwaysOnTop = Settings.AlwaysOnTop;
+        GetWindowPlacement(hwnd, &s_wndplPrev);
+        MONITORINFO mi = { sizeof(mi) };
+        GetMonitorInfo(MonitorFromWindow(hwnd, MONITOR_DEFAULTTOPRIMARY), &mi);
+        SetWindowLong(hwnd, GWL_STYLE, dwStyle & ~dwRmvFScrStyle);
+        WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hwnd, NULL, mode);
+        if (GetDoAnimateMinimize()) {
+            DrawAnimatedRects(hwnd, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
+        }
+        SetWindowPlacement(hwnd, &wndpl);
+        SetWindowPos(hwnd, HWND_TOPMOST, mi.rcMonitor.left, mi.rcMonitor.top,
+            mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top,
+            SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+        Settings.ShowMenubar = Settings.ShowToolbar = Settings.ShowStatusbar = false;
+        Settings.AlwaysOnTop = true;
+        s_bPrevFullScreenFlag = true;
+    }
+    SendWMSize(hwnd, NULL);
+    UpdateToolbar();
+}
+
+
+//=============================================================================
+//
+//  RestorePrevScreenPos()
+//
+void RestorePrevScreenPos(HWND hwnd)
+{
+    if (hwnd == Globals.hwndMain) {
+        if (s_bPrevFullScreenFlag) {
+            SendWMCommand(hwnd, CMD_FULLSCRWINPOS);
+        }
+    }
+}
+
 
 //=============================================================================
 //
 //  DialogNewWindow()
-//
 //
 void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, const HPATHL hFilePath, WININFO* wi)
 {

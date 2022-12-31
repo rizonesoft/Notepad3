@@ -69,6 +69,8 @@ WININFO         GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo, const
 bool            GetWindowRectEx(HWND hwnd, LPRECT pRect);
 void            FitIntoMonitorGeometry(LPRECT pRect, WININFO* pWinInfo, SCREEN_MODE mode, bool bTopLeft);
 WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode);
+void            SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode);
+void            RestorePrevScreenPos(HWND hwnd);
 
 void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, const HPATHL hFilePath, WININFO* wi);
 void DialogFileBrowse(HWND hwnd);
@@ -156,7 +158,7 @@ void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam);
 void ResizeDlg_SetAttr(HWND hwnd, int index, int value);
 int ResizeDlg_GetAttr(HWND hwnd, int index);
 
-void ResizeDlg_InitY2Ex(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_DIR iDirection, int nCtlId1, int nCtlId2);
+void        ResizeDlg_InitY2Ex(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDirection, int nCtlId1, int nCtlId2);
 inline void ResizeDlg_InitY2(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int nCtlId1, int nCtlId2)
 {
     ResizeDlg_InitY2Ex(hwnd, cxFrame, cyFrame, nIdGrip, RSZ_BOTH, nCtlId1, nCtlId2);

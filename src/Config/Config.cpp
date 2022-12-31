@@ -1138,7 +1138,6 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
 //
 //  LoadSettings()
 //
-//
 void LoadSettings()
 {
     CFG_VERSION const _ver = Path_IsEmpty(Paths.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
@@ -1735,46 +1734,9 @@ void LoadSettings()
     IniSectionGetString(IniSecSettings2, Constants.DefaultWindowPosition, L"",
                         Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition));
 
-    bool const bExplicitDefaultWinPos = StrIsNotEmpty(Settings2.DefaultWindowPosition);
-
-    // 1st set default window position
-
-    g_DefWinInfo = GetFactoryDefaultWndPos(2); // std. default position
-
-    if (bExplicitDefaultWinPos) {
-        int bMaxi = 0;
-        int const itok = swscanf_s(Settings2.DefaultWindowPosition, WINDOWPOS_STRGFORMAT,
-                                   &g_DefWinInfo.x, &g_DefWinInfo.y, &g_DefWinInfo.cx, &g_DefWinInfo.cy, &g_DefWinInfo.dpi, &bMaxi);
-        if (itok == 4 || itok == 5 || itok == 6) { // scan successful
-            if (itok == 4) {
-                g_DefWinInfo.dpi = USER_DEFAULT_SCREEN_DPI;
-                g_DefWinInfo.max = false;
-            } else if (itok == 5) { // maybe DPI or Maxi (old)
-                if (g_DefWinInfo.dpi < (USER_DEFAULT_SCREEN_DPI >> 2)) {
-                    g_DefWinInfo.max = g_DefWinInfo.dpi ? true : false;
-                    g_DefWinInfo.dpi = USER_DEFAULT_SCREEN_DPI;
-                }
-                else {
-                    g_DefWinInfo.max = false;
-                }
-            } else {
-                g_DefWinInfo.max = bMaxi ? true : false;
-            }
-        } else {
-            g_DefWinInfo = GetFactoryDefaultWndPos(2);
-            // overwrite bad defined default position
-            StringCchPrintf(Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition),
-                WINDOWPOS_STRGFORMAT, g_DefWinInfo.x, g_DefWinInfo.y, g_DefWinInfo.cx, g_DefWinInfo.cy, g_DefWinInfo.dpi, g_DefWinInfo.max);
-            IniSectionSetString(IniSecSettings2, Constants.DefaultWindowPosition, Settings2.DefaultWindowPosition);
-            bDirtyFlag = true;
-        }
-    }
-
-    // 2nd set initial window position
-
     if (!Globals.CmdLnFlag_PosParam /*|| g_bStickyWinPos*/) {
 
-        WININFO winInfo = g_IniWinInfo;
+        WININFO winInfo = INIT_WININFO;
         WCHAR tchPosX[64], tchPosY[64], tchSizeX[64], tchSizeY[64], tchMaximized[64], tchZoom[64], tchDPI[64];
         StringCchPrintf(tchPosX, COUNTOF(tchPosX), L"%ix%i PosX", ResX, ResY);
         StringCchPrintf(tchPosY, COUNTOF(tchPosY), L"%ix%i PosY", ResX, ResY);
@@ -1784,17 +1746,17 @@ void LoadSettings()
         StringCchPrintf(tchZoom, COUNTOF(tchZoom), L"%ix%i Zoom", ResX, ResY);
         StringCchPrintf(tchDPI, COUNTOF(tchDPI), L"%ix%i DPI", ResX, ResY);
 
-        winInfo.x = IniSectionGetInt(IniSecWindow, tchPosX, g_IniWinInfo.x);
-        winInfo.y = IniSectionGetInt(IniSecWindow, tchPosY, g_IniWinInfo.y);
-        winInfo.cx = IniSectionGetInt(IniSecWindow, tchSizeX, g_IniWinInfo.cx);
-        winInfo.cy = IniSectionGetInt(IniSecWindow, tchSizeY, g_IniWinInfo.cy);
+        winInfo.x = IniSectionGetInt(IniSecWindow, tchPosX, CW_USEDEFAULT);
+        winInfo.y = IniSectionGetInt(IniSecWindow, tchPosY, CW_USEDEFAULT);
+        winInfo.cx = IniSectionGetInt(IniSecWindow, tchSizeX, CW_USEDEFAULT);
+        winInfo.cy = IniSectionGetInt(IniSecWindow, tchSizeY, CW_USEDEFAULT);
         winInfo.max = IniSectionGetBool(IniSecWindow, tchMaximized, false);
         winInfo.zoom = IniSectionGetInt(IniSecWindow, tchZoom, (Globals.iCfgVersionRead < CFG_VER_0001) ? 0 : 100);
         if (Globals.iCfgVersionRead < CFG_VER_0001) {
             winInfo.zoom = (winInfo.zoom + 10) * 10;
         }
         winInfo.zoom = clampi(winInfo.zoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
-        winInfo.dpi = IniSectionGetInt(IniSecWindow, tchDPI, g_IniWinInfo.dpi);
+        winInfo.dpi = IniSectionGetInt(IniSecWindow, tchDPI, USER_DEFAULT_SCREEN_DPI);
 
         int const offset = Settings2.LaunchInstanceWndPosOffset;
         int const instCnt = CountRunningInstances();
@@ -1803,7 +1765,6 @@ void LoadSettings()
 
         if ((winInfo.x == CW_USEDEFAULT) || (winInfo.y == CW_USEDEFAULT) ||
                 (winInfo.cx == CW_USEDEFAULT) || (winInfo.cy == CW_USEDEFAULT)) {
-            g_IniWinInfo = g_DefWinInfo;
             Globals.CmdLnFlag_WindowPos = 2; // std. default position (CmdLn: /pd)
         } else {
             g_IniWinInfo = winInfo;
