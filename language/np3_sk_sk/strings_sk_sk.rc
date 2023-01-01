@@ -296,7 +296,7 @@ Použitie:\r\n\
 Notepad3 [/?] [...[Kódovanie]] [...[Režim ukončenia riadku]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[disk:][cesta]názov súboru[...]]\r\n\r\n\
-súbor\tMusí to byť posledný argument, v predvolenom nastavení nie sú\r\n\tmedzery.\r\n\
+súbor\tMusí to byť posledný argument, v predvolenom nastavení nie sú medzery.\r\n\
 +\tAkceptuje viac argumentov súborov (s medzerami).\r\n\
 -\tAkceptuje argument jedného súboru (bez medzier).\r\n\r\n\
 Možnosti:\r\n\
@@ -316,8 +316,8 @@ Možnosti:\r\n\
 /b\tOtvorenie nového panela na vkladanie a zber záznamov zo schránky.\r\n\
 /n\tVždy otvoriť nové okno (/ns inštancia jedného súboru).\r\n\
 /r\tOpätovné použitie okna (/rs inštancia jedného súboru).\r\n\
-/p\tNastavenie polohy a veľkosti okna (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\talebo /p <vľavo>,<hore>,<šírka>,<výška>[,<dpi>,<max>]    [všetky čísla celé].\r\n\
+/p\tNastavenie polohy a veľkosti okna (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\talebo /p <vľavo>,<hore>,<šírka>,<výška>[,<dpi>,<max>]  [všetky čísla \r\n\tcelé].\r\n\
 /t\tNastavenie titulku okna.\r\n\
 /i\tZačať ako ikona na paneli úloh.\r\n\
 /o\tPonechanie okna vždy na vrchu.\r\n\
@@ -326,7 +326,7 @@ Možnosti:\r\n\
 /v\tOkamžité vytlačenie súboru a ukončenie.\r\n\
 /vd\tTlač súboru cez dialógové okno tlačiarne.\r\n\
 /y\tVyhľadanie prostredia cesty v prípade relatívneho názvu súboru.\r\n\
-/z\tPreskočiť ďalej (použiteľné pri zámene Poznámkového bloku\r\n\tWindows pomocou registrov).\r\n\r\n\
+/z\tPreskočiť ďalej (použiteľné pri zámene Poznámkového bloku Windows \r\n\tpomocou registrov).\r\n\r\n\
 Príklady:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
  \t... Otvoriť nový súbor: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
