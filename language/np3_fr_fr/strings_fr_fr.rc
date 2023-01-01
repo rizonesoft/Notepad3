@@ -296,8 +296,8 @@ Utilisation :\r\n\
 Notepad3 [/?] [...[Encodage]] [...[Mode de fin de ligne]] [/e] [/g] [/m]\r\n\
  \t[/l] [/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[lecteur:][chemin]fichier[...]]\r\n\r\n\
-fichier\tDoit être le dernier argument, aucun espace entre guillemets\r\n\tpar défaut.\r\n\
-+\tAccepte plusieurs arguments de fichier (avec des espaces entre\r\n\tguillemets).\r\n\
+fichier\tDoit être le dernier argument, aucun espace entre guillemets par défaut.\r\n\
++\tAccepte plusieurs arguments de fichier (avec des espaces entre guillemets).\r\n\
 -\tAccepte un seul argument de fichier (sans espaces entre guillemets).\r\n\r\n\
 Options :\r\n\
 /?\tAffiche ce message d'aide.\r\n\
@@ -305,7 +305,7 @@ Options :\r\n\
 ...\tMode de fin de ligne (/crlf, /cr, /lf).\r\n\
 /e\tEncodage du fichier source.\r\n\
 /g\tVa à la position spécifiée (/g -1 fin de fichier).\r\n\
-/m\tTrouve le texte spécifié (/m- dernier, /mr regex,\r\n\t/mb oblique inverse).\r\n\
+/m\tTrouve le texte spécifié (/m- dernier, /mr regex, /mb oblique inverse).\r\n\
 /l\tRecharge automatiquement les fichiers modifiés.\r\n\
 /q\tForce la création de nouveaux fichiers sans confirmation.\r\n\
 /s\tSélectionne le modèle de syntaxe spécifié.\r\n\
@@ -313,11 +313,11 @@ Options :\r\n\
 /h\tSélectionne un modèle de Code Source Web.\r\n\
 /x\tSélectionne un modèle de Document XML.\r\n\
 /c\tOuvre une nouvelle fenêtre et colle le contenu du presse-papiers.\r\n\
-/b\tOuvre un nouveau tableau de collage pour collecter les entrées du\r\n\tpresse-papiers.\r\n\
-/n\tOuvre toujours une nouvelle fenêtre (/ns instance\r\n\tde fichier unique).\r\n\
+/b\tOuvre un nouveau tableau de collage pour collecter les entrées du \r\n\tpresse-papiers.\r\n\
+/n\tOuvre toujours une nouvelle fenêtre (/ns instance de fichier unique).\r\n\
 /r\tRéutilise la fenêtre (/rs instance de fichier unique).\r\n\
-/p\tDéfinit la position et la taille de la fenêtre (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tou /p <gauche>,<haut>,<largeur>,<hauteur>[,<dpi>,<max>]    [tous entiers].\r\n\
+/p\tDéfinit la position et la taille de la fenêtre (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tou /p <gauche>,<haut>,<largeur>,<hauteur>[,<dpi>,<max>]  [tous  entiers].\r\n\
 /t\tDéfinit un titre de fenêtre.\r\n\
 /i\tDémarre en icône dans la zone de notifications.\r\n\
 /o\tGarde la fenêtre toujours visible.\r\n\
@@ -325,11 +325,11 @@ Options :\r\n\
 /u\tDémarre avec des privilèges élevés.\r\n\
 /v\tImprime le fichier immédiatement et quitte.\r\n\
 /vd\tImprime le fichier (ouvre le dialogue de l'imprimante).\r\n\
-/y\tCherche dans le PATH (environnement) en cas de nom de fichier\r\n\trelatif.\r\n\
-/z\tPasse au suivant (utilisable avec le remplacement de Notepad via\r\n\tle registre).\r\n\r\n\
+/y\tCherche dans le PATH (environnement) en cas de nom de fichier relatif.\r\n\
+/z\tPasse au suivant (utilisable avec le remplacement de Notepad via le registre).\r\n\r\n\
 Exemples :\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Ouvre un nouveau fichier : ""Test.txt"" Encodage=UTF-8-BOM,\r\n\tEoL=CRLF.\r\n\
+ \t... Ouvre un nouveau fichier : ""Test.txt"" Encodage=UTF-8-BOM, EoL=CRLF.\r\n\
  Notepad3 /v d:\\temp\\Test.txt\r\n\
   \t... Imprime le fichier : ""Test.txt"" immédiatement.\
 "

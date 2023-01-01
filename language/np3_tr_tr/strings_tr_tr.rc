@@ -316,8 +316,8 @@ Seçenekler:\r\n\
 /b\tPano kayıtlarını derlemek için yeni yapıştırma panosu açar.\r\n\
 /n\tHer zaman yeni pencerede açar (/ns tek dosya kopyası).\r\n\
 /r\tPencereyi yeniden kullanır (/rs tek dosya kopyası).\r\n\
-/p\tPencere konumunu ve boyutunu ayarlar (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tor /p <left>,<top>,<width>,<height>[,<dpi>,<max>]    [tümü tam sayı].\r\n\
+/p\tPencere konumunu ve boyutunu ayarlar (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tor /p <left>,<top>,<width>,<height>[,<dpi>,<max>]  [tümü tam sayı].\r\n\
 /t\tPencere başlığını ayarlar.\r\n\
 /i\tSistem tepsisinde başlatır.\r\n\
 /o\tPencereyi üste sabitler.\r\n\
@@ -326,7 +326,7 @@ Seçenekler:\r\n\
 /v\tDosyayı hemen yazdırır ve çıkar.\r\n\
 /vd\tDosyayı yazdırır (yazıcı penceresini açar).\r\n\
 /y\tGöreli dosya adı durumuna karşı PATH ortam değişkeninde arar.\r\n\
-/z\tSonrakine geçer (kayıt defteri temelli Notepad değişikliği\r\n\tiçin kullanışlı).\r\n\r\n\
+/z\tSonrakine geçer (kayıt defteri temelli Notepad değişikliği için kullanışlı).\r\n\r\n\
 Örnekler:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Deneme.txt\r\n\
  \t... Yeni bir dosya açar: ""Deneme.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
