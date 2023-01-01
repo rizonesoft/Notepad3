@@ -7,7 +7,7 @@
 * Version.h                                                                   *
 *   Based on code from Notepad2-mod, (c) XhmikosR 2010-2015                   *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                 https://www.rizonesoft.com  *
 *                                                                             *
 *                                                                             *
@@ -42,8 +42,8 @@
 #pragma message("Release Build: " _STRG(VERSION_FILEVERSION_LONG))
 #endif
 
-#define VERSION_LEGALCOPYRIGHT         "Copyright © 2008-2022 Rizonesoft"
-//#define VERSION_LEGALCOPYRIGHT_LONG  "© Rizonesoft 2008-2022"
+#define VERSION_LEGALCOPYRIGHT         "Copyright © 2008-2023 Rizonesoft"
+//#define VERSION_LEGALCOPYRIGHT_LONG  "© Rizonesoft 2008-2023"
 #define VERSION_AUTHORNAME             "© Rizonesoft"
 #define VERSION_WEBPAGEDISPLAY         "https://www.rizonesoft.com"
 #define VERSION_COMPANYNAME            "© Rizonesoft"
