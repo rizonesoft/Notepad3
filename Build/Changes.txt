@@ -2,7 +2,7 @@
 =                                                                              =
 =            Notepad3 - light-weight Scintilla-based text editor for Windows   =
 =                                                                              =
-=                                                   (c) Rizonesoft 2008-2022   =
+=                                                   (c) Rizonesoft 2008-2023   =
 =                                                 https://www.rizonesoft.com   =
 =                                                                              =
 ================================================================================
@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.1230.(build_#) (2022-12-30)
+Current BETA/RC Version 5.23.101.(build_#) (2023-01-01)
 ========================================================
 
 --------------------------------------------------------
@@ -63,6 +63,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.101.1]- Fix and refactoring window positioning respecting monitor DPI.
 [1230.1]- Revert to Lexilla's standard Markdown lexer (LEX).
 [1230.1]- Change background color for Heading 1 to enhance contrast to std Hyperlink (LEX).
 [1230.1]- Visible representation of EOL characters.
