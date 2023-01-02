@@ -2115,23 +2115,23 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
     int      alpha;
     COLORREF colorRead;
 
-    // foreground
-    if (!Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &colorRead, NULL, false)) {
-        colorRead = GetModeTextColor(UseDarkMode());
-    }
-    COLORREF const clrLineNumFore = colorRead;
-    SciCall_StyleSetFore(STYLE_LINENUMBER, clrLineNumFore);
-
     // background
     if (!Style_StrGetColor(lpszStyle, BACKGROUND_LAYER, &colorRead, NULL, false)) {
         colorRead = GetModeBtnfaceColor(UseDarkMode());
     }
-    COLORREF const clrMarginBack = colorRead;
+    COLORREF const clrMarginBack = colorRead; // (=clrLineNumBack)
+
+    // foreground
+    if (!Style_StrGetColor(lpszStyle, FOREGROUND_LAYER, &colorRead, NULL, false)) {
+        colorRead = GetModeTextColor(UseDarkMode());
+    }
+    Style_StrGetAlpha(lpszStyle, &alpha, SC_ALPHA_OPAQUE, true);
+    COLORREF const clrLineNumFore = Style_RgbAlpha(colorRead, clrMarginBack, alpha);
 
     // ---  Line Numbers  ---
+    SciCall_StyleSetFore(STYLE_LINENUMBER, clrLineNumFore);
     SciCall_StyleSetBack(STYLE_LINENUMBER, clrMarginBack);
     SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrMarginBack);
-    //~SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrLineNumBack);
     SciCall_SetMarginSensitiveN(MARGIN_SCI_LINENUM, false); /// (!) false: allow selection drag
 
 
