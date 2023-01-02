@@ -4525,7 +4525,6 @@ static void _ApplyChangeHistoryMode()
     else {
         SciCall_SetChangeHistory(Settings.ChangeHistoryMode);
     }
-    Style_UpdateChangeHistoryMargin(Globals.hwndEdit);
     UpdateMargins(true);
 }
 
@@ -10334,33 +10333,8 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 //
 void UpdateMargins(const bool bForce)
 {
-    static bool bShowLnNums = false;
-    static DocLn prevLineCount = -1LL;
-
-    DocLn const currLineCount = SciCall_GetLineCount();
-
-    if (!bForce && (currLineCount == prevLineCount) && (bShowLnNums == Settings.ShowLineNumbers)) {
-        return;
-    }
-
-    if (Settings.ShowLineNumbers) {
-        static char chLines[32] = { '\0' };
-        StringCchPrintfA(chLines, COUNTOF(chLines), "_%td", (size_t)currLineCount);
-        int const iLineMarginWidthFit = SciCall_TextWidth(STYLE_LINENUMBER, chLines);
-        int const iLineMarginWidthNow = SciCall_GetMarginWidthN(MARGIN_SCI_LINENUM);
-        if (iLineMarginWidthNow != iLineMarginWidthFit) {
-            SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, iLineMarginWidthFit);
-        }
-    } else {
-        SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
-    }
-    Style_UpdateBookmarkMargin(Globals.hwndEdit);
-    Style_UpdateChangeHistoryMargin(Globals.hwndEdit);
-    Style_UpdateFoldingMargin(Globals.hwndEdit, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
-    bShowLnNums = Settings.ShowLineNumbers; 
-    prevLineCount = currLineCount;
+    Style_UpdateAllMargins(Globals.hwndEdit, bForce);
 }
-
 
 
 //=============================================================================
