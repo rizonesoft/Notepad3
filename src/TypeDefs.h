@@ -145,20 +145,27 @@ extern WININFO g_DefWinInfo;
 
 // ----------------------------------------------------------------------------
 // see windef.h  and wingdi.h
-//-typedef DWORD COLORREF;
-typedef int COLORALPHAREF;
-//-#define RGB(r, g, b) ((COLORREF)(((BYTE)(r) | ((WORD)((BYTE)(g)) << 8)) | (((DWORD)(BYTE)(b)) << 16)))
-#define RGBA(r, g, b, a) ((COLORALPHAREF)(((BYTE)(((r)&0xff)) | ((WORD)((BYTE)((g)&0xff)) << 8)) | (((DWORD)(BYTE)((b)&0xff)) << 16) | (((DWORD)(BYTE)((a)&0xff)) << 24)))
-#define RGBxA(rgb, a) ((COLORALPHAREF)(((DWORD)((rgb)&0xffffff)) | (((DWORD)(BYTE)((a)&0xff)) << 24)))
-//-#define GetRValue(rgba) (LOBYTE(rgba))                 
-//-#define GetGValue(rgba) (LOBYTE(((WORD)(rgba)) >> 8))
-//-#define GetBValue(rgba) (LOBYTE((rgba) >> 16))
+//::typedef DWORD COLORREF;
+typedef COLORREF COLORALPHAREF;
+// typedef unsigned __int32 COLORALPHAREF; //: warning(C4057) different base types
+//::#define RGB(r, g, b) ((COLORREF)(((BYTE)(r) | ((WORD)((BYTE)(g)) << 8)) | (((DWORD)(BYTE)(b)) << 16)))
+#define ARGB(a, r, g, b) ((COLORALPHAREF)(((BYTE)(((r)&0xff)) | ((WORD)((BYTE)((g)&0xff)) << 8)) | (((DWORD)(BYTE)((b)&0xff)) << 16) | (((DWORD)(BYTE)((a)&0xff)) << 24)))
+#define AxRGB(a, rgb) ((COLORALPHAREF)(((COLORREF)((rgb)&0xffffff)) | (((COLORALPHAREF)(BYTE)((a)&0xff)) << 24)))
+#define RGB2RGBAREF(rgb) AxRGB(SC_ALPHA_OPAQUE, (COLORREF)((rgb)&0xffffff))
+//::#define GetRValue(rgba) (LOBYTE(rgba))
+//::#define GetGValue(rgba) (LOBYTE(((WORD)(rgba)) >> 8))
+//::#define GetBValue(rgba) (LOBYTE((rgba) >> 16))
 #define GetAValue(rgba) (LOBYTE((rgba) >> 24))
 
-#define ARGB_TO_COLREF(X) (RGB(((X) >> 16) & 0xff, ((X) >> 8) & 0xff, (X)&0xff))
-#define RGBA_TO_COLREF(X) (RGB(((X) >> 24) & 0xff, ((X) >> 16) & 0xff, ((X) >> 8) & 0xff))
-#define BGRA_TO_COLREF(X) (RGB(((X) >> 8) & 0xff, ((X) >> 16) & 0xff, ((X) >> 24) & 0xff))
-#define ARGB_GET_ALPHA(A) (((A) >> 24) & 0xff)
+#define ARGB_TO_COLREF(X) ((X) & 0xffffff)
+#define RGBA_TO_COLREF(X) RGB(((X) >> 24)&0xff, ((X) >> 16)&0xff, ((X) >> 8)&0xff)
+#define BGRA_TO_COLREF(X) RGB(((X) >> 8)&0xff, ((X) >> 16)&0xff, ((X) >> 24)&0xff)
+
+//#define ARGB_TO_COLORALPHAREF(X) (X)
+#define RGBA_TO_COLORALPHAREF(X) AxRGB((X)&0xff, RGBA_TO_COLREF(X))
+#define BGRA_TO_COLORALPHAREF(X) AxRGB((X)&0xff, BGRA_TO_COLREF(X))
+
+#define ARGB_GET_ALPHA(A) (((A) >> 24)&0xff)
 #define RGBA_GET_ALPHA(A) ((A)&0xff)
 #define BGRA_GET_ALPHA(A) RGBA_GET_ALPHA(A)
 
