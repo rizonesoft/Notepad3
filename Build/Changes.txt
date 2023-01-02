@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.23.101.(build_#) (2023-01-01)
+Current BETA/RC Version 5.23.102.(build_#) (2023-01-02)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.102.1]- Allow Line Number color to be alpha blended (e.g. DarkMode).
 [1223.1]- Allow "Notepad3 x64 Setup" to install on Win11 Arm (64-bit emulation).
 [1212.1]- Implementation of automatic parenthesis closure.
 [1029.1]- Darkmode highlight (foreground) contrast settings + default reduction to 75%.
@@ -63,7 +64,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[.101.1]- Fix and refactoring window positioning respecting monitor DPI.
+[.101.1]- Refactoring and fix window positioning respecting monitor DPI.
 [1230.1]- Revert to Lexilla's standard Markdown lexer (LEX).
 [1230.1]- Change background color for Heading 1 to enhance contrast to std Hyperlink (LEX).
 [1230.1]- Visible representation of EOL characters.
@@ -117,6 +118,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.102.1]- Minor design change and some fixes for Margin and Bookmark handling.
 [1230.1]- Minor bugs related to new feature Change-History.
 [1230.1]- (re)setting default window position in case of non std DPI resolution.
 [1228.1]- Speedup search&replace in large text files.
