@@ -316,8 +316,8 @@ Options:\r\n\
 /b\tOpen new paste board to collect clipboard entries.\r\n\
 /n\tAlways open a new window (/ns single file instance).\r\n\
 /r\tReuse window (/rs single file instance).\r\n\
-/p\tSet window position and size (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tor /p <left>,<top>,<width>,<height>[,<dpi>,<max>]    [all integers].\r\n\
+/p\tSet window position and size (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tor /p <left>,<top>,<width>,<height>[,<dpi>,<max>]  [all integers].\r\n\
 /t\tSet window title.\r\n\
 /i\tStart as tray icon.\r\n\
 /o\tKeep window on top.\r\n\

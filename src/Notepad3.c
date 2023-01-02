@@ -8,7 +8,7 @@
 *   Main application window functionality                                     *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -165,7 +165,6 @@ static int       s_cyReBarFrame;
 static int       s_cxEditFrame;
 static int       s_cyEditFrame;
 static bool      s_bUndoRedoScroll = false;
-static bool      s_bPrevFullScreenFlag = false;
 
 // for tiny expression calculation
 static double   s_dExpression = 0.0;
@@ -814,8 +813,6 @@ static void _InitGlobals()
 
     // --- unstructured globals ---
     
-    g_IniWinInfo = GetFactoryDefaultWndPos(2);
-
     g_tchToolbarBitmap = Path_Allocate(NULL);
     g_tchToolbarBitmapHot = Path_Allocate(NULL);
     g_tchToolbarBitmapDisabled = Path_Allocate(NULL);
@@ -1319,21 +1316,28 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 //  GetFactoryDefaultWndPos()
 //
 //
-WININFO GetFactoryDefaultWndPos(const int flagsPos)
+WININFO GetFactoryDefaultWndPos(HWND hwnd, const int flagsPos)
 {
-    HWND const hwnd = GetDesktopWindow();
-    RECT rc;
+    hwnd = hwnd ? hwnd : GetDesktopWindow();
+    unsigned int const dpi = Scintilla_GetWindowDPI(hwnd);
+
+    RECT rc = { 0 };
     GetWindowRect(hwnd, &rc);
     MONITORINFO mi;
     GetMonitorInfoFromRect(&rc, &mi);
+    
+    rc = mi.rcWork;
+    //~RelAdjustRectForDPI(&rc, USER_DEFAULT_SCREEN_DPI, dpi);
+
     WININFO winfo = INIT_WININFO;
-    winfo.y = mi.rcMonitor.top;
-    winfo.cy = mi.rcWork.bottom - mi.rcWork.top;
-    winfo.cx = (mi.rcWork.right - mi.rcWork.left) / 2;
-    winfo.x = (flagsPos == 3) ? mi.rcMonitor.left : winfo.cx;
+    winfo.y = rc.top;
+    winfo.cy = rc.bottom - rc.top;
+    winfo.cx = (rc.right - rc.left) / 2;
+    winfo.x = (flagsPos == 3) ? rc.left : winfo.cx;
     winfo.max = 0;
     winfo.zoom = 100;
-    winfo.dpi = Scintilla_GetWindowDPI(hwnd);
+    winfo.dpi = dpi;
+
     return winfo;
 }
 // ----------------------------------------------------------------------------
@@ -1341,15 +1345,65 @@ WININFO GetFactoryDefaultWndPos(const int flagsPos)
 
 //=============================================================================
 //
+//  _GetDefaultWinInfoByStrg()
+//
+static WININFO _GetDefaultWinInfoByStrg(HWND hwnd, LPCWSTR strDefaultWinPos)
+{
+    hwnd = hwnd ? hwnd : GetDesktopWindow();
+    WININFO const wiDef = GetFactoryDefaultWndPos(hwnd, 2); // std. default position
+
+    if (StrIsEmpty(strDefaultWinPos)) {
+        return wiDef;
+    }
+
+    WININFO   wi = wiDef;
+    int       bMaxi = 0;
+    int const itok = swscanf_s(Settings2.DefaultWindowPosition, WINDOWPOS_STRGFORMAT,
+        &wi.x, &wi.y, &wi.cx, &wi.cy, &wi.dpi, &bMaxi);
+    if (itok == 4 || itok == 5 || itok == 6) { // scan successful
+        if (itok == 4) {
+            wi.dpi = USER_DEFAULT_SCREEN_DPI;
+            wi.max = false;
+        }
+        else if (itok == 5) { // maybe DPI or Maxi (old)
+            if (wi.dpi < (USER_DEFAULT_SCREEN_DPI >> 2)) {
+                wi.max = wi.dpi ? true : false;
+                wi.dpi = USER_DEFAULT_SCREEN_DPI;
+            }
+            else {
+                wi.max = false;
+            }
+        }
+        else {
+            wi.max = bMaxi ? true : false;
+        }
+    }
+    else {
+        wi = wiDef;
+        // overwrite bad defined default position
+        StringCchPrintf(Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition),
+            WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, wi.max);
+        IniSectionSetString(Constants.Settings2_Section, Constants.DefaultWindowPosition, Settings2.DefaultWindowPosition);
+    }
+    return wi;
+}
+
+
+//=============================================================================
+//
 //  GetWinInfoByFlag()
 //
 //
-WININFO GetWinInfoByFlag(const int flagsPos)
+WININFO GetWinInfoByFlag(HWND hwnd, const int flagsPos)
 {
+    hwnd = hwnd ? hwnd : GetDesktopWindow();
+    if ((g_DefWinInfo.x == CW_USEDEFAULT) || (g_DefWinInfo.y == CW_USEDEFAULT)) {
+        g_DefWinInfo = _GetDefaultWinInfoByStrg(hwnd, Settings2.DefaultWindowPosition);
+    }
+    
     WININFO winfo = INIT_WININFO;
-
     if (flagsPos < 0) {
-        winfo = GetMyWindowPlacement(Globals.hwndMain, NULL, 0); // current window position
+        winfo = GetMyWindowPlacement(hwnd, NULL, 0); // current window position
     } else if (flagsPos == 0) {
         winfo = g_IniWinInfo; // initial window position
     } else if (flagsPos == 1) {
@@ -1359,21 +1413,21 @@ WININFO GetWinInfoByFlag(const int flagsPos)
     } else if (flagsPos == 2) {
         winfo = g_DefWinInfo; // NP3 default window position
     } else if (flagsPos == 3) {
-        winfo = GetFactoryDefaultWndPos(flagsPos);
+        winfo = GetFactoryDefaultWndPos(hwnd, flagsPos);
     } else if ((flagsPos >= 4) && (flagsPos < 256)) {
-        HWND const hwnd = GetDesktopWindow();
-        RECT rc;
+        RECT rc = { 0 };
         GetWindowRect(hwnd, &rc);
         MONITORINFO mi;
         GetMonitorInfoFromRect(&rc, &mi);
+        rc = mi.rcWork;
 
-        int const width = (mi.rcWork.right - mi.rcWork.left);
-        int const height = (mi.rcWork.bottom - mi.rcWork.top);
+        int const width = (rc.right - rc.left);
+        int const height = (rc.bottom - rc.top);
 
         if (flagsPos & 8) {
-            winfo.x = mi.rcMonitor.left + (width >> 1);
+            winfo.x = rc.left + (width >> 1);
         } else {
-            winfo.x = mi.rcMonitor.left;
+            winfo.x = rc.left;
         }
 
         if (flagsPos & (4 | 8)) {
@@ -1383,9 +1437,9 @@ WININFO GetWinInfoByFlag(const int flagsPos)
         }
 
         if (flagsPos & 32) {
-            winfo.y = mi.rcMonitor.top + (height >> 1);
+            winfo.y = rc.top + (height >> 1);
         } else {
-            winfo.y = mi.rcMonitor.top;
+            winfo.y = rc.top;
         }
 
         if (flagsPos & (16 | 32)) {
@@ -1395,8 +1449,8 @@ WININFO GetWinInfoByFlag(const int flagsPos)
         }
 
         if (flagsPos & 64) {
-            winfo.x = mi.rcMonitor.left;
-            winfo.y = mi.rcMonitor.top;
+            winfo.x = rc.left;
+            winfo.y = rc.top;
             winfo.cx = width;
             winfo.cy = height;
         }
@@ -1413,9 +1467,10 @@ WININFO GetWinInfoByFlag(const int flagsPos)
         RectFromWinInfo(&winfo, &rc);
         MONITORINFO mi;
         GetMonitorInfoFromRect(&rc, &mi);
+        rc = mi.rcWork;
         WININFO wi = winfo;
         wi.cx = wi.cy = 16; // really small
-        FitIntoMonitorGeometry(&(mi.rcWork), &wi, SCR_NORMAL, false);
+        FitIntoMonitorGeometry(&rc, &wi, SCR_NORMAL, false);
         winfo.x = wi.x;
         winfo.y = wi.y;
     }
@@ -1697,8 +1752,8 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 {
     UNREFERENCED_PARAMETER(pszCmdLine);
 
-    g_IniWinInfo = GetWinInfoByFlag(Globals.CmdLnFlag_WindowPos);
-    s_WinCurrentWidth = g_IniWinInfo.cx;
+    // init w/o hwnd
+    g_IniWinInfo = GetWinInfoByFlag(NULL, Globals.CmdLnFlag_WindowPos);
 
     // get monitor coordinates from g_IniWinInfo
     WININFO srcninfo = g_IniWinInfo;
@@ -1720,9 +1775,12 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         hInstance,
         NULL);
 
-    g_IniWinInfo.dpi = Scintilla_GetWindowDPI(hwndMain); // correct dpi
-    SnapToWinInfoPos(hwndMain, g_IniWinInfo, SCR_NORMAL);
+    // correct infos based on hwnd
+    g_DefWinInfo = _GetDefaultWinInfoByStrg(hwndMain, Settings2.DefaultWindowPosition);
+    g_IniWinInfo = GetWinInfoByFlag(hwndMain, Globals.CmdLnFlag_WindowPos);
+    s_WinCurrentWidth = g_IniWinInfo.cx;
 
+    SnapToWinInfoPos(hwndMain, g_IniWinInfo, SCR_NORMAL);
     if (g_IniWinInfo.max) {
         nCmdShow = SW_SHOWMAXIMIZED;
     }
@@ -2438,6 +2496,13 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_SetMarginOptions(SC_MARGINOPTION_SUBLINESELECT);
 
     // Nonprinting characters
+    SciCall_SetRepresentation("\r", "\xE2\x86\x90");
+    SciCall_SetRepresentationAppearance("\r", SC_REPRESENTATION_COLOUR);
+    SciCall_SetRepresentation("\n", "\xE2\x86\x93");
+    SciCall_SetRepresentationAppearance("\n", SC_REPRESENTATION_COLOUR);
+    SciCall_SetRepresentation("\r\n", "\xE2\x86\xB2"); // "\xE2\xAE\x92"
+    SciCall_SetRepresentationAppearance("\r\n", SC_REPRESENTATION_COLOUR);
+    /// (!) -> SciCall_SetRepresentationColour() in Styles.c
     SciCall_SetViewWS(Settings.ViewWhiteSpace ? SCWS_VISIBLEALWAYS : SCWS_INVISIBLE);
     SciCall_SetViewEOL(Settings.ViewEOLs);
 
@@ -3166,9 +3231,7 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     if (!bShutdownOK) {
 
-        if (s_bPrevFullScreenFlag) {
-            SendWMCommand(hwnd, CMD_FULLSCRWINPOS);
-        }
+        RestorePrevScreenPos(hwnd);
 
         // Terminate AutoSave
         AutoSaveStop();
@@ -4462,7 +4525,6 @@ static void _ApplyChangeHistoryMode()
     else {
         SciCall_SetChangeHistory(Settings.ChangeHistoryMode);
     }
-    Style_UpdateChangeHistoryMargin(Globals.hwndEdit);
     UpdateMargins(true);
 }
 
@@ -7034,7 +7096,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case CMD_FULLSCRWINPOS: {
-        WININFO wi = GetMyWindowPlacement(Globals.hwndMain, NULL, 0);
+        WININFO wi = GetMyWindowPlacement(hwnd, NULL, 0);
         SnapToWinInfoPos(hwnd, wi, SCR_FULL_SCREEN);
     }
     break;
@@ -7044,18 +7106,18 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case CMD_SAVEASDEFWINPOS: {
-        WININFO const wi = GetMyWindowPlacement(Globals.hwndMain, NULL, 0);
+        WININFO const wi = GetMyWindowPlacement(hwnd, NULL, 0);
         WCHAR tchDefWinPos[80];
         StringCchPrintf(tchDefWinPos, COUNTOF(tchDefWinPos), WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, (int)wi.max);
         if (Globals.bCanSaveIniFile) {
             IniFileSetString(Paths.IniFile, Constants.Settings2_Section, Constants.DefaultWindowPosition, tchDefWinPos);
         }
-        g_DefWinInfo = wi; //GetWinInfoByFlag(-1); // use current win pos as new default
+        g_DefWinInfo = wi; //~GetWinInfoByFlag(-1); // use current win pos as new default
     }
     break;
 
     case CMD_CLEARSAVEDWINPOS:
-        g_DefWinInfo = GetFactoryDefaultWndPos(2);
+        g_DefWinInfo = GetFactoryDefaultWndPos(hwnd, 2);
         IniFileDelete(Paths.IniFile, Constants.Settings2_Section, Constants.DefaultWindowPosition, false);
         break;
 
@@ -8838,7 +8900,10 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         switch(pnmh->code) {
         case NM_CLICK: { // single click
             LPNMMOUSE const pnmm = (LPNMMOUSE)lParam;
-
+            
+            if (pnmm->dwItemSpec >= COUNTOF(g_vSBSOrder)) {
+                break;
+            }
             switch (g_vSBSOrder[pnmm->dwItemSpec]) {
             case STATUS_EOLMODE: {
                 if (Globals.bDocHasInconsistentEOLs) {
@@ -10286,33 +10351,8 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 //
 void UpdateMargins(const bool bForce)
 {
-    static bool bShowLnNums = false;
-    static DocLn prevLineCount = -1LL;
-
-    DocLn const currLineCount = SciCall_GetLineCount();
-
-    if (!bForce && (currLineCount == prevLineCount) && (bShowLnNums == Settings.ShowLineNumbers)) {
-        return;
-    }
-
-    if (Settings.ShowLineNumbers) {
-        static char chLines[32] = { '\0' };
-        StringCchPrintfA(chLines, COUNTOF(chLines), "_%td", (size_t)currLineCount);
-        int const iLineMarginWidthFit = SciCall_TextWidth(STYLE_LINENUMBER, chLines);
-        int const iLineMarginWidthNow = SciCall_GetMarginWidthN(MARGIN_SCI_LINENUM);
-        if (iLineMarginWidthNow != iLineMarginWidthFit) {
-            SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, iLineMarginWidthFit);
-        }
-    } else {
-        SciCall_SetMarginWidthN(MARGIN_SCI_LINENUM, 0);
-    }
-    Style_UpdateBookmarkMargin(Globals.hwndEdit);
-    Style_UpdateChangeHistoryMargin(Globals.hwndEdit);
-    Style_UpdateFoldingMargin(Globals.hwndEdit, (FocusedView.CodeFoldingAvailable && FocusedView.ShowCodeFolding));
-    bShowLnNums = Settings.ShowLineNumbers; 
-    prevLineCount = currLineCount;
+    Style_UpdateAllMargins(Globals.hwndEdit, bForce);
 }
-
 
 
 //=============================================================================
@@ -12107,81 +12147,6 @@ bool RelaunchElevated(LPCWSTR lpNewCmdLnArgs)
 
 //=============================================================================
 //
-//  SnapToWinInfoPos()
-//  Aligns Notepad3 to the default window position on the current screen
-//
-void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
-{
-    static bool s_bPrevShowMenubar   = true;
-    static bool s_bPrevShowToolbar   = true;
-    static bool s_bPrevShowStatusbar = true;
-    static bool s_bPrevAlwaysOnTop   = false;
-    static WINDOWPLACEMENT s_wndplPrev = { 0 };
-    s_wndplPrev.length = sizeof(WINDOWPLACEMENT);
-
-    DWORD const dwRmvFScrStyle = WS_OVERLAPPEDWINDOW | WS_BORDER;
-
-    HWND const hWindow = hwnd ? hwnd : GetDesktopWindow();
-
-    DWORD dwStyle = GetWindowLong(hWindow, GWL_STYLE);
-    RECT rcCurrent;
-    GetWindowRect(hWindow, &rcCurrent);
-
-    if ((mode == SCR_NORMAL) || s_bPrevFullScreenFlag) {
-        SetWindowLong(hWindow, GWL_STYLE, dwStyle | dwRmvFScrStyle);
-        if (s_bPrevFullScreenFlag) {
-            SetWindowPlacement(hWindow, &s_wndplPrev); // 1st set correct screen (DPI Aware)
-            SetWindowPlacement(hWindow, &s_wndplPrev); // 2nd resize position to correct DPI settings
-            Settings.ShowMenubar = s_bPrevShowMenubar;
-            Settings.ShowToolbar = s_bPrevShowToolbar;
-            Settings.ShowStatusbar = s_bPrevShowStatusbar;
-            Settings.AlwaysOnTop = s_bPrevAlwaysOnTop;
-        } else {
-            WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hWindow, &winInfo, mode);
-            if (GetDoAnimateMinimize()) {
-                DrawAnimatedRects(hWindow, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
-            }
-            SetWindowPlacement(hWindow, &wndpl); // 1st set correct screen (DPI Aware)
-            if (hwnd) {
-                UINT const dpi = Scintilla_GetWindowDPI(hwnd);
-                if (dpi != winInfo.dpi) {
-                    RelAdjustRectForDPI(&wndpl.rcNormalPosition, winInfo.dpi, dpi);
-                }
-            }
-            SetWindowPlacement(hWindow, &wndpl); // 2nd resize position to correct DPI settings
-        }
-        if (hwnd) {
-            SetWindowPos(hwnd, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        }
-        s_bPrevFullScreenFlag = false;
-    } else { // full screen mode
-        s_bPrevShowMenubar = Settings.ShowMenubar;
-        s_bPrevShowToolbar = Settings.ShowToolbar;
-        s_bPrevShowStatusbar = Settings.ShowStatusbar;
-        s_bPrevAlwaysOnTop = Settings.AlwaysOnTop;
-        GetWindowPlacement(hWindow, &s_wndplPrev);
-        MONITORINFO mi = { sizeof(mi) };
-        GetMonitorInfo(MonitorFromWindow(hWindow, MONITOR_DEFAULTTOPRIMARY), &mi);
-        SetWindowLong(hWindow, GWL_STYLE, dwStyle & ~dwRmvFScrStyle);
-        WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hWindow, NULL, mode);
-        if (GetDoAnimateMinimize()) {
-            DrawAnimatedRects(hWindow, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
-        }
-        SetWindowPlacement(hWindow, &wndpl);
-        SetWindowPos(hWindow, HWND_TOPMOST, mi.rcMonitor.left, mi.rcMonitor.top,
-            mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top,
-            SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
-        Settings.ShowMenubar = Settings.ShowToolbar = Settings.ShowStatusbar = false;
-        Settings.AlwaysOnTop = true;
-        s_bPrevFullScreenFlag = true;
-    }
-    SendWMSize(hWindow, NULL);
-    UpdateToolbar();
-}
-
-
-//=============================================================================
-//
 //  ShowNotifyIcon()
 //
 //
@@ -12388,7 +12353,6 @@ DWORD const dwObservingTimeout = 250UL; // then check for done
 static HANDLE s_hEventObserverDone = INVALID_HANDLE_VALUE;
 
 static unsigned __stdcall FileChangeObserver(void * pArg) {
-
 
     if (!pArg) {
         _endthreadex(0);

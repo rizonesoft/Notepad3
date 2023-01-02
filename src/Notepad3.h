@@ -8,7 +8,7 @@
 *   Global definitions and declarations                                       *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -109,15 +109,14 @@ bool InitApplication(const HINSTANCE hInstance);
 //~bool InitToolbarWndClass(const HINSTANCE hInstance);
 HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow);
 void CreateBars(HWND hwnd, HINSTANCE hInstance);
-WININFO GetFactoryDefaultWndPos(const int flagsPos);
-WININFO GetWinInfoByFlag(const int flagsPos);
+WININFO GetFactoryDefaultWndPos(HWND hwnd, const int flagsPos);
+WININFO GetWinInfoByFlag(HWND hwnd, const int flagsPos);
 int  CountRunningInstances();
 bool ActivatePrevInst();
 bool LaunchNewInstance(HWND hwnd, LPCWSTR lpszParameter, LPCWSTR lpszFilePath);
 bool RelaunchMultiInst();
 bool RelaunchElevated(LPCWSTR lpNewCmdLnArgs);
 bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch);
-void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode);
 void ShowNotifyIcon(HWND hwnd, bool bAdd);
 void SetNotifyIconTitle(HWND hwnd);
 void SetSaveDone();

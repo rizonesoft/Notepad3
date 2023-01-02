@@ -174,6 +174,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "%s occorrenze del pattern di ricerca specificato sono state sostituite."
     IDS_MUI_ASK_ENCODING    "Cambiare la codifica del file potrebbe sostituire testo non supportato con un carattere di default, e la cronologia delle modifiche (undo) sarà svuotata. Continuare?"
     IDS_MUI_ASK_ENCODING2   "Stai per cambiare la codifica di un file vuoto. Questo cancellerà la cronologia delle modifiche (undo), perché non può essere sincronizzata con la nuova codifica. Continuare?"
+    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
     IDS_MUI_READONLY_SAVE   """%s"" è in sola lettura. Salvare in un file differente?"
     IDS_MUI_FILECHANGENOTIFY
                             "Il file corrente è stato modificato da un programma esterno. Ricaricare?"
@@ -315,8 +316,8 @@ Opzioni:\r\n\
 /b\tApri una nuova Paste Board per collezionare il testo copiato\r\n\tnegli Appunti.\r\n\
 /n\tApri sempre una nuova finestra (/ns istanza singola).\r\n\
 /r\tRiutilizza finestra (/rs istanza singola).\r\n\
-/p\tImposta posizione e dimensione della finestra (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\to /p <sinistra>,<sopra>,<larghezza>,<altezza>[,<dpi>,<max>]    [numeri interi].\r\n\
+/p\tImposta posizione e dimensione della finestra (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\to /p <sinistra>,<sopra>,<larghezza>,<altezza>[,<dpi>,<max>]  \r\n\t[numeri interi].\r\n\
 /t\tImposta titolo della finestra.\r\n\
 /i\tAvvia come icona nell'area di notifica'.\r\n\
 /o\tMantieni finestra in primo piano.\r\n\

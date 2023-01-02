@@ -8,7 +8,7 @@
 *   Scintilla Style Management                                                *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -63,9 +63,11 @@ void   Style_SetUrlHotSpot(HWND hwnd);
 void   Style_SetInvisible(HWND hwnd, bool);
 //void   Style_SetReadonly(HWND hwnd, bool);
 void   Style_HighlightCurrentLine(HWND hwnd, int);
-void   Style_UpdateFoldingMargin(HWND hwnd, bool bShowMargin);
+void   Style_UpdateLineNumberMargin(const bool bForce);
 void   Style_UpdateBookmarkMargin(HWND hwnd);
 void   Style_UpdateChangeHistoryMargin(HWND hwnd);
+void   Style_UpdateFoldingMargin(HWND hwnd, bool bShowMargin);
+void   Style_UpdateAllMargins(HWND hwnd, const bool bForce);
 void   Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle);
 bool   Style_SetLexerFromFile(HWND hwnd,const HPATHL hpath);
 bool   Style_MaybeBinaryFile(HWND hwnd, const HPATHL hpath);

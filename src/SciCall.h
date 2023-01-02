@@ -12,7 +12,7 @@
 *   The use of these inline wrapper functions with declared types will        *
 *   ensure that we get the benefit of the compiler's type checking.           *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -194,6 +194,10 @@ DeclareSciCallV2(SetYCaretPolicy, SETYCARETPOLICY, int, policy, int, slop);
 DeclareSciCallV01(GetWordChars, GETWORDCHARS, char*, ptxt);
 DeclareSciCallV01(GetWhiteSpaceChars, GETWHITESPACECHARS, char*, ptxt);
 DeclareSciCallV01(GetPunctuationChars, GETPUNCTUATIONCHARS, char*, ptxt);
+
+DeclareSciCallV2(SetRepresentation, SETREPRESENTATION, const char*, encChar, const char*, represent);
+DeclareSciCallV2(SetRepresentationColour, SETREPRESENTATIONCOLOUR, const char*, encChar, COLORALPHAREF, colour);
+DeclareSciCallV2(SetRepresentationAppearance, SETREPRESENTATIONAPPEARANCE, const char*, encChar, int, appear);
 
 // Document Pointer Handling
 DeclareSciCallR0(GetDocPointer, GETDOCPOINTER, sptr_t);

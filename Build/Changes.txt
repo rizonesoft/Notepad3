@@ -2,7 +2,7 @@
 =                                                                              =
 =            Notepad3 - light-weight Scintilla-based text editor for Windows   =
 =                                                                              =
-=                                                   (c) Rizonesoft 2008-2022   =
+=                                                   (c) Rizonesoft 2008-2023   =
 =                                                 https://www.rizonesoft.com   =
 =                                                                              =
 ================================================================================
@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.1228.(build_#) (2022-12-28)
+Current BETA/RC Version 5.23.101.(build_#) (2023-01-01)
 ========================================================
 
 --------------------------------------------------------
@@ -63,6 +63,12 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.101.1]- Fix and refactoring window positioning respecting monitor DPI.
+[1230.1]- Revert to Lexilla's standard Markdown lexer (LEX).
+[1230.1]- Change background color for Heading 1 to enhance contrast to std Hyperlink (LEX).
+[1230.1]- Visible representation of EOL characters.
+[1230.1]- Refactoring of using SCI_REPLACETARGET(MINIMAL).
+[1230.1]- Lexer Registry-Files: split string and GUID String coloring (LEX).
 [1228.1]- JSON lexer: Same style for SCE_JSON_COMPACTIRI and SCE_JSON_PROPERTYNAME (LEX).
 [1228.1]- Status-bar double-click line-break mode: Cycle only between CR+LF <-> LF modes.
 [1220.1]- Update Lexer "AutoIt3 Script" to Autoit v3.3.16.1.
@@ -111,6 +117,8 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1230.1]- Minor bugs related to new feature Change-History.
+[1230.1]- (re)setting default window position in case of non std DPI resolution.
 [1228.1]- Speedup search&replace in large text files.
 [1227.1]- Use alternate path, if Path_GetKnownFolder() failed.
 [1215.1]- Set alpha (80) for "highlight current line" translucency, if not given.

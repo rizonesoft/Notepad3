@@ -234,6 +234,10 @@ void Lexer_SetLexerSpecificProperties(const int lexerId) {
         //SciCall_SetProperty("lexer.sql.allow.dotted.word", "0");
         break;
 
+    case SCLEX_MARKDOWN:
+        SciCall_SetProperty("lexer.markdown.header.eolfill", "1");
+        break;
+
     case SCLEX_NSIS:
         SciCall_SetProperty("nsis.ignorecase", "1");
         break;

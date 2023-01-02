@@ -174,6 +174,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "替换了 %s 个匹配项。"
     IDS_MUI_ASK_ENCODING    "切换文件编码可能导致部分无法表示的字符被替换为其它字符，并且该操作会清空撤销历史。是否继续？"
     IDS_MUI_ASK_ENCODING2   "切换文件编码会清空撤销历史。是否继续？"
+    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
     IDS_MUI_READONLY_SAVE   "“%s”是只读的。是否尝试使用其它名字保存？"
     IDS_MUI_FILECHANGENOTIFY
                             "当前文件已被其它程序修改。是否重新加载？"
@@ -315,8 +316,8 @@ Notepad3 [/?] [...[编码]] [...[换行符模式]] [/e] [/g] [/m] [/l]\r\n\
 /b\t打开剪贴板收集窗口（自动粘贴加入到剪贴板中的内容）。\r\n\
 /n\t总是打开新窗口（/ns 对于每个文件只允许打开一个实例）。\r\n\
 /r\t重用已存在的窗口（/rs 对于每个文件只允许打开一个实例）。\r\n\
-/p\t设置窗口位置和大小（/p0, /ps, /pf,左,上,宽,高,最大化）\r\n\
-\t或 /p <左>,<上>,<宽>,<高>[,<dpi>,<最大化>]    [均为整数］。\r\n\
+/p\t设置窗口位置和大小（/p0,/ps,/pd,f,l,t,r,b,m）\r\n\
+\t或 /p <左>,<上>,<宽>,<高>[,<dpi>,<最大化>]  [均为整数］。\r\n\
 /t\t设置窗口标题。\r\n\
 /i\t以托盘图标状态启动。\r\n\
 /o\t窗口置顶。\r\n\

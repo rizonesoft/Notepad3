@@ -364,6 +364,18 @@ $(DIR_O)/LexMake.obj: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
+$(DIR_O)/LexMarkdown.obj: \
+	../lexers/LexMarkdown.cxx \
+	../../scintilla/include/ILexer.h \
+	../../scintilla/include/Sci_Position.h \
+	../../scintilla/include/Scintilla.h \
+	../include/SciLexer.h \
+	../lexlib/WordList.h \
+	../lexlib/LexAccessor.h \
+	../lexlib/Accessor.h \
+	../lexlib/StyleContext.h \
+	../lexlib/CharacterSet.h \
+	../lexlib/LexerModule.h
 $(DIR_O)/LexMatlab.obj: \
 	../lexers/LexMatlab.cxx \
 	../../scintilla/include/ILexer.h \
@@ -681,19 +693,6 @@ $(DIR_O)/LexKotlin.obj: \
 	../include/SciLexer.h \
 	../lexers_x/StringUtils.h \
 	../lexers_x/LexerUtils.h
-$(DIR_O)/LexMarkdown.obj: \
-	../lexers_x/LexMarkdown.cxx \
-	../../scintilla/include/ILexer.h \
-	../../scintilla/include/Sci_Position.h \
-	../../scintilla/include/Scintilla.h \
-	../include/SciLexer.h \
-	../lexlib/WordList.h \
-	../lexlib/LexAccessor.h \
-	../lexlib/Accessor.h \
-	../lexlib/StyleContext.h \
-	../lexers_x/CharSetX.h \
-	../lexlib/CharacterSet.h \
-	../lexlib/LexerModule.h
 $(DIR_O)/LexPython.obj: \
 	../lexers_x/LexPython.cxx \
 	../../scintilla/include/ILexer.h \

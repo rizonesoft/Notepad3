@@ -174,6 +174,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "%s träff(ar) för angivet sökmönster ersatta."
     IDS_MUI_ASK_ENCODING    "Att byta teckenkodning från en kodning till en annan kommer att ersätta tecken som inte stöds med standardtecken och ångerhistoriken kommer att rensas. Vill du fortsätta?"
     IDS_MUI_ASK_ENCODING2   "Du kommer att ändra teckenkodning i en tom fil. Notera att detta kommer att rensa ångerhistoriken. Vill du fortsätta?"
+    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
     IDS_MUI_READONLY_SAVE   """%s"" är inte skrivbar. Vill du spara till en annan fil?"
     IDS_MUI_FILECHANGENOTIFY
                             "Aktuell fil har modifierats av ett externt program. Vill du ladda om?"
@@ -315,8 +316,8 @@ Tillval:\r\n\
 /b\tÖppna urklippsbordet för att samla alla urklipp.\r\n\
 /n\tÖppna alltid nytt fönster (/ns enkel filinstans).\r\n\
 /r\tÅteranvänd fönster (/rs enkel filinstans).\r\n\
-/p\tAnge fönsterposition och storlek (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\teller /p <vänster>,<topp>,<bredd>,<höjd>[,<dpi>,<max>]    [alla heltal].\r\n\
+/p\tAnge fönsterposition och storlek (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\teller /p <vänster>,<topp>,<bredd>,<höjd>[,<dpi>,<max>]  [alla heltal].\r\n\
 /t\tAnge fönstertitel.\r\n\
 /i\tStarta som ikon i verktygsfältet.\r\n\
 /o\tVisa alltid fönstret överst.\r\n\
@@ -325,7 +326,7 @@ Tillval:\r\n\
 /v\tSpara fil och avsluta.\r\n\
 /vd\tSkriv ut fil (öppna skrivardialogen).\r\n\
 /y\tSök miljövariable vid relativt filnamn.\r\n\
-/z\tHoppa över nästa (användbart för registerbaserad\r\n\tnotepad-ersättning).\r\n\r\n\
+/z\tHoppa över nästa (användbart för registerbaserad notepad-ersättning).\r\n\r\n\
 Exempel:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
  \t... Öppna ny fil: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\

@@ -174,6 +174,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "一致する %s か所を指定の検索条件で置換しました。"
     IDS_MUI_ASK_ENCODING    "他の文字コードに変換すると、未対応の文字は所定の文字に置換され、また「元に戻す」の履歴もリセットされます。\n変換を続行しますか?"
     IDS_MUI_ASK_ENCODING2   "空のファイルの文字コードを変更しようとしています。「元に戻す」の履歴もリセットされます。変更を続行しますか?"
+    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
     IDS_MUI_READONLY_SAVE   "「%s」は読み取り専用です。別のファイル名で保存しますか?"
     IDS_MUI_FILECHANGENOTIFY
                             "ファイルが他のプログラムによって変更されました。再読み込みしますか?"
@@ -304,7 +305,7 @@ Notepad3 [/?] [...[文字コード]] [...[改行コード]] [/e] [/g] [/m] [/l]\
 ...\t改行コード (/crlf, /cr, /lf)\r\n\
 /e\tファイルの文字コードを指定 [/e id]\r\n\
 /g\t指定位置にジャンプ (/g 行[,列] -1で終端)\r\n\
-/m\t文字列一致 [/m text] (/m- 最後, /mr 正規表現,\r\n\t/mb バックスラッシュ変換)\r\n\
+/m\t文字列一致 [/m text] (/m- 最後, /mr 正規表現, /mb バックスラッシュ変換)\r\n\
 /l\tファイル変更時に自動で最新内容に再読み込み\r\n\
 /q\tファイルがない場合、問い合わせずファイル作成\r\n\
 /s\t配色設定を指定 [/s ext]\r\n\
@@ -315,8 +316,8 @@ Notepad3 [/?] [...[文字コード]] [...[改行コード]] [/e] [/g] [/m] [/l]\
 /b\tクリップボード履歴表示モードで開く\r\n\
 /n\t新規ウィンドウで開く (/ns ファイルは単一のインスタンス)\r\n\
 /r\tウインドウを再利用 (/rs 同じく単一のインスタンス\r\n\
-/p\tウィンドウの位置とサイズを指定 [/p x,y,sizex,y[,max]] (/p0, /ps, /pf,\r\n\
-\tl,t,r,b,m) or /p <left>,<top>,<width>,<height>[,<dpi>,<max>]    [すべて整数]\r\n\
+/p\tウィンドウの位置とサイズを指定 (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tor /p <left>,<top>,<width>,<height>[,<dpi>,<max>]  [すべて整数]\r\n\
 /t\tタイトルバーの文字列を指定 [/t text]\r\n\
 /i\tシステムトレイ内に起動\r\n\
 /o\t常に手前に表示\r\n\

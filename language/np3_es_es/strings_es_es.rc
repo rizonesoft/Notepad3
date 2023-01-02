@@ -174,6 +174,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "Se han reemplazado %s ocurrencia(s) del patrón de búsqueda especificado."
     IDS_MUI_ASK_ENCODING    "Cambiar la codificación del archivo de una codificación a otra puede reemplazar el texto no compatible con caracteres predeterminados, y el historial de deshacer se borrará. ¿Continuar?"
     IDS_MUI_ASK_ENCODING2   "Está a punto de cambiar la codificación de un archivo vacío. Tenga en cuenta que esto borrará el historial de deshacer, ya que no se puede sincronizar con la nueva codificación. ¿Continuar?"
+    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
     IDS_MUI_READONLY_SAVE   """%s"" es de sólo lectura. ¿Guardar en un archivo diferente?"
     IDS_MUI_FILECHANGENOTIFY
                             "El archivo actual ha sido modificado por un programa externo. ¿Recargar?"
@@ -295,8 +296,8 @@ Uso:\r\n\
 Notepad3 [/?] [...[Codificación]] [...[Modo de final de línea]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[unidad:][ruta]archivo[...]]\r\n\r\n\
-archivo\tDebe ser el último argumento, sin espacios entre\r\n\tcomillas por defecto.\r\n\
-+\tAceptar múltiples argumentos de archivo (con espacios\r\n\tentre comillas).\r\n\
+archivo\tDebe ser el último argumento, sin espacios entre comillas por defecto.\r\n\
++\tAceptar múltiples argumentos de archivo (con espacios entre comillas).\r\n\
 -\tAceptar argumento de archivo único (sin espacios entre comillas).\r\n\r\n\
 Opciones:\r\n\
 /?\tMostrar este mensaje de ayuda.\r\n\
@@ -304,7 +305,7 @@ Opciones:\r\n\
 ...\tModo de final de línea (/crlf, /cr, /lf).\r\n\
 /e\tCodificación de la fuente del archivo.\r\n\
 /g\tSaltar a la posición especificada (/g -1 fin de archivo).\r\n\
-/m\tCoincidencia de texto especificado (/m- último, /mr regex,\r\n\t/mb backslash).\r\n\
+/m\tCoincidencia de texto especificado (/m- último, /mr regex, /mb backslash).\r\n\
 /l\tAuto recargar archivos modificados.\r\n\
 /q\tForzar la creación de nuevos archivos sin aviso.\r\n\
 /s\tSeleccione el esquema de sintaxis especificado.\r\n\
@@ -312,11 +313,11 @@ Opciones:\r\n\
 /h\tSeleccione un esquema de código fuente Web.\r\n\
 /x\tSeleccione el esquema de documento XML.\r\n\
 /c\tAbrir nueva ventana y pegar contenido del portapapeles.\r\n\
-/b\tAbre una nueva tabla de pegar para recoger las entradas\r\n\tdel portapapeles.\r\n\
+/b\tAbre una nueva tabla de pegar para recoger las entradas del portapapeles.\r\n\
 /n\tSiempre abre una nueva ventana (/ns instancia de archivo único).\r\n\
 /r\tReutilizar la ventana (/rs instancia de archivo único).\r\n\
-/p\tEstablecer el tamaño y la posición de la ventana (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\to /p <izquierda>,<arriba>,<ancho>,<altura>[,<dpi>,<max>]    [todos\r\n\tenteros].\r\n\
+/p\tEstablecer el tamaño y la posición de la ventana  (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\to /p <izquierda>,<arriba>,<ancho>,<altura>[,<dpi>,<max>]  [todos enteros].\r\n\
 /t\tEstablecer el título de la ventana.\r\n\
 /i\tComenzar como un icono de la barra de tareas.\r\n\
 /o\tVentana siempre visible.\r\n\
@@ -325,10 +326,10 @@ Opciones:\r\n\
 /v\tImprimir el archivo inmediatamente y salir.\r\n\
 /vd\tImprimir archivo (abrir el cuadro de diálogo de la impresora).\r\n\
 /y\tEntorno de búsqueda PATH en caso de nombre de archivo relativo..\r\n\
-/z\tIr a la siguiente (usar para reemplazar el Notepad basado\r\n\ten el registro).\r\n\r\n\
+/z\tIr a la siguiente (usar para reemplazar el Notepad basado en el registro).\r\n\r\n\
 Ejemplos:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Abrir un nuevo archivo: ""Test.txt"" Codificación=UTF-8-BOM,\r\n\tEoL=CRLF.\r\n\
+ \t... Abrir un nuevo archivo: ""Test.txt"" Codificación=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
  \t... Imprimir el archivo: ""Test.txt"" inmediatamente.\
 "
