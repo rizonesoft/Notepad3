@@ -296,7 +296,7 @@ Használat:\r\n\
 Notepad3 [/?] [...[kódolás]] [...[sorvég mód]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[meghajtó:][útvonal]fájlnév[...]]\r\n\r\n\
-fájl\tAz utolsó paraméter kell legyen, alapból nincsenek idézőjelezett\r\n\tszóközök.\r\n\
+fájl\tAz utolsó paraméter kell legyen, alapból nincsenek idézőjelezett szóközök.\r\n\
 +\tTöbb fájlt is elfogad (idézőjelezett szóközökkel).\r\n\
 -\tEgy fájlt fogad el paraméterként (idézőjelezett szóközök nélkül).\r\n\r\n\
 Opciók:\r\n\
@@ -316,8 +316,8 @@ Opciók:\r\n\
 /b\tÚj dokumentum megnyitása, ahova a vágólap tartalma gyűlik.\r\n\
 /n\tMindig nyisson új ablakot (/ns egyetlen fájl példány).\r\n\
 /r\tAblak újrahasznosítása (/rs egyetlen fájl példány).\r\n\
-/p\tAblak pozíció és méret beállítása (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tor /p <bal>,<teteje>,<szélesség>,<magasság>[,<dpi>,<max>]    [mindegyik\r\n\tegész szám].\r\n\
+/p\tAblak pozíció és méret beállítása (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tor /p <bal>,<teteje>,<szélesség>,<magasság>[,<dpi>,<max>]  [mindegyik \r\n\tegész szám].\r\n\
 /t\tCímsor szövegének beállítása.\r\n\
 /i\tIndítás óra melé kicsinyítve.\r\n\
 /o\tAblak mindig felül.\r\n\
@@ -326,7 +326,7 @@ Opciók:\r\n\
 /v\tFájl nyomtatása rögtön és kilépés.\r\n\
 /vd\tFájl nyomtatása (Nyomtatási ablak megnyitása).\r\n\
 /y\tRelatív fájlnév esetén keressen az útvonalon (PATH) belül.\r\n\
-/z\tKövetkező kihagyása (registry alapú Notepad lecserélésnél lehet\r\n\thasznos).\r\n\r\n\
+/z\tKövetkező kihagyása (registry alapú Notepad lecserélésnél lehet hasznos).\r\n\r\n\
 Példák:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
  \t... Egy új fájlt nyit meg: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\

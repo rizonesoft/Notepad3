@@ -10,7 +10,7 @@
 *	Parts taken from SciTE, (c) Neil Hodgson                                  *
 *	MinimizeToTray, (c) 2000 Matthew Ellis                                    *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *

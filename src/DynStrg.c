@@ -10,7 +10,7 @@
 *   https://www.codeproject.com/Articles/1259074/C-Language-Dynamic-String    *
 *   by steveb (MIT license)                                                   *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *

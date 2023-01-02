@@ -316,8 +316,8 @@ Tillval:\r\n\
 /b\tÖppna urklippsbordet för att samla alla urklipp.\r\n\
 /n\tÖppna alltid nytt fönster (/ns enkel filinstans).\r\n\
 /r\tÅteranvänd fönster (/rs enkel filinstans).\r\n\
-/p\tAnge fönsterposition och storlek (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\teller /p <vänster>,<topp>,<bredd>,<höjd>[,<dpi>,<max>]    [alla heltal].\r\n\
+/p\tAnge fönsterposition och storlek (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\teller /p <vänster>,<topp>,<bredd>,<höjd>[,<dpi>,<max>]  [alla heltal].\r\n\
 /t\tAnge fönstertitel.\r\n\
 /i\tStarta som ikon i verktygsfältet.\r\n\
 /o\tVisa alltid fönstret överst.\r\n\
@@ -326,7 +326,7 @@ Tillval:\r\n\
 /v\tSpara fil och avsluta.\r\n\
 /vd\tSkriv ut fil (öppna skrivardialogen).\r\n\
 /y\tSök miljövariable vid relativt filnamn.\r\n\
-/z\tHoppa över nästa (användbart för registerbaserad\r\n\tnotepad-ersättning).\r\n\r\n\
+/z\tHoppa över nästa (användbart för registerbaserad notepad-ersättning).\r\n\r\n\
 Exempel:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
  \t... Öppna ny fil: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
