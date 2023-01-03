@@ -457,13 +457,13 @@ typedef struct CONSTANTS_T {
     const WCHAR* const Window_Section;
     const WCHAR* const Styles_Section;
     const WCHAR* const SectionSuppressedMessages;
-    const WCHAR* const DefaultWindowPosition;
 
 } CONSTANTS_T, *PCONSTANTS_T;
 
 extern CONSTANTS_T const Constants;
 
-#define WINDOWPOS_STRGFORMAT L"%i,%i,%i,%i,%i,%i"
+#define DEF_WIN_POSITION_STRG L"DefaultWindowPosition"
+#define WINDOWPOS_STRGFORMAT  L"%i,%i,%i,%i,%i,%i"
 
 // ------------------------------------
 
