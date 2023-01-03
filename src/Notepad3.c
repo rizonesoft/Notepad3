@@ -2764,7 +2764,7 @@ bool SelectExternalToolBar(HWND hwnd)
 
     if (GetOpenFileNameW(&ofn)) {
         Path_Sanitize(hfile_pth);
-        Path_CanonicalizeEx(hfile_pth, Paths.WorkingDirectory);
+        Path_CanonicalizeEx(hfile_pth, Paths.ModuleDirectory);
         Path_Reset(g_tchToolbarBitmap, Path_Get(hfile_pth));
         Path_RelativeToApp(g_tchToolbarBitmap, true, true, true);
         if (Globals.bCanSaveIniFile) {
@@ -2833,14 +2833,8 @@ bool SelectExternalToolBar(HWND hwnd)
 //
 //  LoadBitmapFile()
 //
-static HBITMAP LoadBitmapFile(LPCWSTR path)
+static HBITMAP LoadBitmapFile(const HPATHL hpath)
 {
-    HPATHL hpath = Path_Allocate(path);
-    if (Path_IsRelative(hpath)) {
-        Path_GetAppDirectory(hpath);
-        Path_Append(hpath, path);
-    }
-
     HBITMAP hbmp = NULL;
 
     if (Path_IsExistingFile(hpath)) {
@@ -2855,7 +2849,7 @@ static HBITMAP LoadBitmapFile(LPCWSTR path)
             bDimOK = (bmp.bmWidth >= (height * NUMTOOLBITMAPS));
         }
         if (!bDimOK) {
-            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, path,
+            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, Path_Get(hpath),
                 (height * NUMTOOLBITMAPS), height, NUMTOOLBITMAPS);
             if (hbmp) {
                 DeleteObject(hbmp);
@@ -2864,10 +2858,9 @@ static HBITMAP LoadBitmapFile(LPCWSTR path)
         }
     }
     else {
-        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, path);
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, Path_Get(hpath));
     }
 
-    Path_Release(hpath);
     return hbmp;
 }
 
@@ -2987,7 +2980,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     if ((Settings.ToolBarTheme == 2) && Path_IsNotEmpty(g_tchToolbarBitmap)) {
         HPATHL hfile_pth = Path_Copy(g_tchToolbarBitmap);
         Path_AbsoluteFromApp(hfile_pth, true);
-        hbmp = LoadBitmapFile(Path_Get(hfile_pth));
+        hbmp = LoadBitmapFile(hfile_pth);
         if (!hbmp) {
             Path_Reset(g_tchToolbarBitmap, L"");
             IniSectionDelete(L"Toolbar Images", L"BitmapDefault", false);
@@ -3019,7 +3012,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     if ((Settings.ToolBarTheme == 2) && Path_IsNotEmpty(g_tchToolbarBitmapHot)) {
         HPATHL hfile_pth = Path_Copy(g_tchToolbarBitmapHot);
         Path_AbsoluteFromApp(hfile_pth, true);
-        hbmp = Path_IsExistingFile(hfile_pth) ? LoadBitmapFile(Path_Get(hfile_pth)) : NULL;
+        hbmp = Path_IsExistingFile(hfile_pth) ? LoadBitmapFile(hfile_pth) : NULL;
         if (!hbmp) {
             Path_Reset(g_tchToolbarBitmapHot, L"");
             IniSectionDelete(L"Toolbar Images", L"BitmapHot", false);
@@ -3048,7 +3041,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     if ((Settings.ToolBarTheme == 2) && Path_IsNotEmpty(g_tchToolbarBitmapDisabled)) {
         HPATHL hfile_pth = Path_Copy(g_tchToolbarBitmapDisabled);
         Path_AbsoluteFromApp(hfile_pth, true);
-        hbmp = Path_IsExistingFile(hfile_pth) ? LoadBitmapFile(Path_Get(hfile_pth)) : NULL;
+        hbmp = Path_IsExistingFile(hfile_pth) ? LoadBitmapFile(hfile_pth) : NULL;
         if (!hbmp) {
             Path_Reset(g_tchToolbarBitmapDisabled, L"");
             IniSectionDelete(L"Toolbar Images", L"BitmapDisabled", false);
