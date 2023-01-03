@@ -88,7 +88,6 @@ CONSTANTS_T const Constants = {
     , L"Window"                            // Inifile Section "Window"
     , L"Styles"                            // Inifile Section "Styles"
     , L"Suppressed Messages"               // Inifile Section "SuppressedMessages"
-    , L"DefaultWindowPosition"             // Strg DefaultWindowPosition
 };
 
 
@@ -1381,9 +1380,13 @@ static WININFO _GetDefaultWinInfoByStrg(HWND hwnd, LPCWSTR strDefaultWinPos)
     else {
         wi = wiDef;
         // overwrite bad defined default position
+        WCHAR tchScrnDim[64] = { L'\0' };
+        StringCchPrintf(tchScrnDim, COUNTOF(tchScrnDim), L"%ix%i " DEF_WIN_POSITION_STRG, 
+                        GetSystemMetrics(SM_CXVIRTUALSCREEN), GetSystemMetrics(SM_CYVIRTUALSCREEN));
         StringCchPrintf(Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition),
-            WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, wi.max);
-        IniSectionSetString(Constants.Settings2_Section, Constants.DefaultWindowPosition, Settings2.DefaultWindowPosition);
+                        WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, wi.max);
+        IniFileSetString(Paths.IniFile, Constants.Window_Section, tchScrnDim, Settings2.DefaultWindowPosition);
+        IniFileDelete(Paths.IniFile, Constants.Settings2_Section, DEF_WIN_POSITION_STRG, true);
     }
     return wi;
 }
@@ -7086,10 +7089,17 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_SAVEASDEFWINPOS: {
         WININFO const wi = GetMyWindowPlacement(hwnd, NULL, 0);
-        WCHAR tchDefWinPos[80];
-        StringCchPrintf(tchDefWinPos, COUNTOF(tchDefWinPos), WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, (int)wi.max);
+        StringCchPrintf(Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition), 
+                        WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, (int)wi.max);
         if (Globals.bCanSaveIniFile) {
-            IniFileSetString(Paths.IniFile, Constants.Settings2_Section, Constants.DefaultWindowPosition, tchDefWinPos);
+            // overwrite bad defined default position
+            WCHAR tchScrnDim[64] = { L'\0' };
+            StringCchPrintf(tchScrnDim, COUNTOF(tchScrnDim), L"%ix%i " DEF_WIN_POSITION_STRG,
+                GetSystemMetrics(SM_CXVIRTUALSCREEN), GetSystemMetrics(SM_CYVIRTUALSCREEN));
+            StringCchPrintf(Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition),
+                WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, wi.max);
+            IniFileSetString(Paths.IniFile, Constants.Window_Section, tchScrnDim, Settings2.DefaultWindowPosition);
+            IniFileDelete(Paths.IniFile, Constants.Settings2_Section, DEF_WIN_POSITION_STRG, true);
         }
         g_DefWinInfo = wi; //~GetWinInfoByFlag(-1); // use current win pos as new default
     }
@@ -7097,7 +7107,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_CLEARSAVEDWINPOS:
         g_DefWinInfo = GetFactoryDefaultWndPos(hwnd, 2);
-        IniFileDelete(Paths.IniFile, Constants.Settings2_Section, Constants.DefaultWindowPosition, false);
+        StringCchCopy(Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition), L"");
+        WCHAR tchScrnDim[64] = { L'\0' };
+        StringCchPrintf(tchScrnDim, COUNTOF(tchScrnDim), L"%ix%i " DEF_WIN_POSITION_STRG,
+            GetSystemMetrics(SM_CXVIRTUALSCREEN), GetSystemMetrics(SM_CYVIRTUALSCREEN));
+        IniFileDelete(Paths.IniFile, Constants.Window_Section, tchScrnDim, true);
+        IniFileDelete(Paths.IniFile, Constants.Settings2_Section, DEF_WIN_POSITION_STRG, true);
         break;
 
     case CMD_OPENINIFILE:
