@@ -2737,28 +2737,14 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
 //=============================================================================
 //
-//  SelectExternalToolBar() - Select and Load an external Bitmal as ToolBarImage
+//  SelectExternalToolBar() - Select and Load an external Bitmap as ToolBarImage
 //
 bool SelectExternalToolBar(HWND hwnd)
 {
     UNREFERENCED_PARAMETER(hwnd);
 
-    HSTRINGW    hargs_str = StrgCreate(NULL);
-    DWORD const  len = (DWORD)SendDlgItemMessageW(hwnd, IDC_COMMANDLINE, EM_GETLIMITTEXT, 0, 0);
-    LPWSTR const args_buf = StrgWriteAccessBuf(hargs_str, len ? len : CMDLN_LENGTH_LIMIT);
-    GetDlgItemTextW(hwnd, IDC_COMMANDLINE, args_buf, (int)StrgGetAllocLength(hargs_str));
-    StrgSanitize(hargs_str);
-
     HPATHL hfile_pth = Path_Allocate(NULL);
     Path_WriteAccessBuf(hfile_pth, CMDLN_LENGTH_LIMIT);
-
-    HSTRINGW     hargs2_str = StrgCreate(NULL);
-    LPWSTR const args2_buf = StrgWriteAccessBuf(hargs2_str, CMDLN_LENGTH_LIMIT >> 1);
-
-    ExpandEnvironmentStrgs(hargs_str, false);
-    ExtractFirstArgument(StrgGet(hargs_str), Path_WriteAccessBuf(hfile_pth, 0), args2_buf, CMDLN_LENGTH_LIMIT >> 1);
-    Path_Sanitize(hfile_pth);
-    StrgSanitize(hargs2_str);
 
     WCHAR wchFilter[MIDSZ_BUFFER] = { L'\0' };
     GetLngString(IDS_MUI_FILTER_BITMAP, wchFilter, COUNTOF(wchFilter));
@@ -2775,11 +2761,7 @@ bool SelectExternalToolBar(HWND hwnd)
 
     if (GetOpenFileNameW(&ofn)) {
         Path_Sanitize(hfile_pth);
-        if (StrgIsNotEmpty(hargs2_str)) {
-            Path_QuoteSpaces(hfile_pth, false);
-            StringCchCatW(Path_WriteAccessBuf(hfile_pth, 0), Path_GetBufCount(hfile_pth), L" ");
-            StringCchCatW(Path_WriteAccessBuf(hfile_pth, 0), Path_GetBufCount(hfile_pth), StrgGet(hargs2_str));
-        }
+        Path_CanonicalizeEx(hfile_pth, Paths.WorkingDirectory);
         Path_Reset(g_tchToolbarBitmap, Path_Get(hfile_pth));
         Path_RelativeToApp(g_tchToolbarBitmap, true, true, true);
         if (Globals.bCanSaveIniFile) {
@@ -2787,41 +2769,47 @@ bool SelectExternalToolBar(HWND hwnd)
         }
     }
 
-    StrgDestroy(hargs2_str);
-    StrgDestroy(hargs_str);
-
     bool res = false;
 
-    if (Path_IsNotEmpty(g_tchToolbarBitmap)) {
+    if (Path_IsNotEmpty(hfile_pth)) {
 
-        Path_Reset(hfile_pth, Path_Get(g_tchToolbarBitmap));
-        Path_AbsoluteFromApp(hfile_pth, false);
+        WCHAR strFileName[MAX_PATH_EXPLICIT] = { 0 };
+        WCHAR strNewFileName[MAX_PATH_EXPLICIT] = { 0 };
+
         Path_RenameExtension(hfile_pth, NULL); // remove
-        StringCchCatW(Path_WriteAccessBuf(hfile_pth, 0), Path_GetBufCount(hfile_pth), L"Hot.bmp");
+        StringCchCopy(strFileName, COUNTOF(strFileName), Path_FindFileName(hfile_pth));
+        Path_RemoveFileSpec(hfile_pth);
+
         if (Globals.bCanSaveIniFile) {
-            if (Path_IsExistingFile(hfile_pth)) {
-                Path_Reset(g_tchToolbarBitmapHot, Path_Get(hfile_pth));
+            StringCchCopy(strNewFileName, COUNTOF(strNewFileName), strFileName);
+            StringCchCat(strNewFileName, COUNTOF(strNewFileName), L"Hot.bmp");
+            HPATHL hfile_hot_pth = Path_Copy(hfile_pth);
+            Path_Append(hfile_hot_pth, strNewFileName);
+            if (Path_IsExistingFile(hfile_hot_pth)) {
+                Path_Reset(g_tchToolbarBitmapHot, Path_Get(hfile_hot_pth));
                 Path_RelativeToApp(g_tchToolbarBitmapHot, true, true, true);
                 IniFileSetString(Paths.IniFile, L"Toolbar Images", L"BitmapHot", Path_Get(g_tchToolbarBitmapHot));
             } else {
                 Path_Reset(g_tchToolbarBitmapHot, L"");
                 IniFileDelete(Paths.IniFile, L"Toolbar Images", L"BitmapHot", false);
             }
+            Path_Release(hfile_hot_pth);
         }
 
-        Path_Reset(hfile_pth, Path_Get(g_tchToolbarBitmap));
-        Path_AbsoluteFromApp(hfile_pth, false);
-        Path_RenameExtension(hfile_pth, NULL); // remove
-        StringCchCatW(Path_WriteAccessBuf(hfile_pth, 0), Path_GetBufCount(hfile_pth), L"Disabled.bmp");
         if (Globals.bCanSaveIniFile) {
-            if (Path_IsExistingFile(hfile_pth)) {
-                Path_Reset(g_tchToolbarBitmapDisabled, Path_Get(hfile_pth));
+            StringCchCopy(strNewFileName, COUNTOF(strNewFileName), strFileName);
+            StringCchCat(strNewFileName, COUNTOF(strNewFileName), L"Disabled.bmp");
+            HPATHL hfile_dis_pth = Path_Copy(hfile_pth);
+            Path_Append(hfile_dis_pth, strNewFileName);
+            if (Path_IsExistingFile(hfile_dis_pth)) {
+                Path_Reset(g_tchToolbarBitmapDisabled, Path_Get(hfile_dis_pth));
                 Path_RelativeToApp(g_tchToolbarBitmapDisabled, true, true, true);
                 IniFileSetString(Paths.IniFile, L"Toolbar Images", L"BitmapDisabled", Path_Get(g_tchToolbarBitmapDisabled));
             } else {
                 Path_Reset(g_tchToolbarBitmapDisabled, L"");
                 IniFileDelete(Paths.IniFile, L"Toolbar Images", L"BitmapDisabled", false);
             }
+            Path_Release(hfile_dis_pth);
         }
 
         Settings.ToolBarTheme = 2;
@@ -2871,6 +2859,9 @@ static HBITMAP LoadBitmapFile(LPCWSTR path)
             }
             hbmp = NULL;
         }
+    }
+    else {
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, path);
     }
 
     Path_Release(hpath);
@@ -2991,12 +2982,15 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     HBITMAP hbmpCopy = NULL;
 
     if ((Settings.ToolBarTheme == 2) && Path_IsNotEmpty(g_tchToolbarBitmap)) {
-        hbmp = LoadBitmapFile(Path_Get(g_tchToolbarBitmap));
+        HPATHL hfile_pth = Path_Copy(g_tchToolbarBitmap);
+        Path_AbsoluteFromApp(hfile_pth, true);
+        hbmp = LoadBitmapFile(Path_Get(hfile_pth));
         if (!hbmp) {
             Path_Reset(g_tchToolbarBitmap, L"");
             IniSectionDelete(L"Toolbar Images", L"BitmapDefault", false);
             bDirtyFlag = true;
         }
+        Path_Release(hfile_pth);
     }
     if (!hbmp) {
         Settings.ToolBarTheme = Settings.ToolBarTheme % 2;
@@ -3018,24 +3012,26 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     // --------------------------
     // Add a Hot Toolbar Bitmap
     // --------------------------
+    hbmp = NULL;
     if ((Settings.ToolBarTheme == 2) && Path_IsNotEmpty(g_tchToolbarBitmapHot)) {
-        hbmp = LoadBitmapFile(Path_Get(g_tchToolbarBitmapHot));
+        HPATHL hfile_pth = Path_Copy(g_tchToolbarBitmapHot);
+        Path_AbsoluteFromApp(hfile_pth, true);
+        hbmp = Path_IsExistingFile(hfile_pth) ? LoadBitmapFile(Path_Get(hfile_pth)) : NULL;
         if (!hbmp) {
             Path_Reset(g_tchToolbarBitmapHot, L"");
             IniSectionDelete(L"Toolbar Images", L"BitmapHot", false);
             bDirtyFlag = true;
         }
+        Path_Release(hfile_pth);
     }
     if (!hbmp && (Settings.ToolBarTheme < 2)) {
         LPCWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTBHOT) : (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB2HOT);
         hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
     }
-
     if (hbmp) {
         himl = CreateScaledImageListFromBitmap(hwnd, hbmp);
         DeleteObject(hbmp);
         hbmp = NULL;
-
         SendMessage(Globals.hwndToolbar, TB_SETHOTIMAGELIST, 0, (LPARAM)himl);
     } else { // clear the old one
         SendMessage(Globals.hwndToolbar, TB_SETHOTIMAGELIST, 0, 0);
@@ -3045,8 +3041,11 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     // ------------------------------
     // Add a disabled Toolbar Bitmap
     // ------------------------------
+    hbmp = NULL;
     if ((Settings.ToolBarTheme == 2) && Path_IsNotEmpty(g_tchToolbarBitmapDisabled)) {
-        hbmp = LoadBitmapFile(Path_Get(g_tchToolbarBitmapDisabled));
+        HPATHL hfile_pth = Path_Copy(g_tchToolbarBitmapDisabled);
+        Path_AbsoluteFromApp(hfile_pth, true);
+        hbmp = Path_IsExistingFile(hfile_pth) ? LoadBitmapFile(Path_Get(hfile_pth)) : NULL;
         if (!hbmp) {
             Path_Reset(g_tchToolbarBitmapDisabled, L"");
             IniSectionDelete(L"Toolbar Images", L"BitmapDisabled", false);
@@ -3057,13 +3056,12 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
         LPCWSTR toolBarIntRes = (Settings.ToolBarTheme == 0) ? (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTBDIS) : (LPCWSTR)MAKEINTRESOURCE(IDR_MAINWNDTB2DIS);
         hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
     }
-
     if (hbmp) {
         himl = CreateScaledImageListFromBitmap(hwnd, hbmp);
         DeleteObject(hbmp);
         hbmp = NULL;
-
         SendMessage(Globals.hwndToolbar, TB_SETDISABLEDIMAGELIST, 0, (LPARAM)himl);
+
     } else { // create disabled Toolbar, no external bitmap is supplied
 
         if ((Settings.ToolBarTheme == 2) && !Path_IsNotEmpty(g_tchToolbarBitmapDisabled)) {
@@ -3078,7 +3076,6 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
             }
             if (bProcessed) {
                 himl = CreateScaledImageListFromBitmap(hwnd, hbmpCopy);
-
                 SendMessage(Globals.hwndToolbar, TB_SETDISABLEDIMAGELIST, 0, (LPARAM)himl);
             }
         }
