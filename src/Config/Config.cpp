@@ -1140,6 +1140,8 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
 //
 void LoadSettings()
 {
+    WCHAR tchKeyName[MIDSZ_BUFFER] = { L'\0' };
+
     CFG_VERSION const _ver = Path_IsEmpty(Paths.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
 
     auto* const pPathBuffer = (wchar_t*)AllocMem(PATHLONG_MAX_CCH * sizeof(wchar_t), HEAP_ZERO_MEMORY);
@@ -1364,12 +1366,11 @@ void LoadSettings()
     StrgReset(Settings2.HyperlinkShellExURLCmdLnArgs, pPathBuffer);
 
     const static WCHAR *const allowedVerbs[7] = { L"edit", L"explore", L"find", L"open", L"print", L"properties", L"runas" };
-    WCHAR cfgVerb[MICRO_BUFFER] = { L'\0' };
     Settings2.HyperlinkFileProtocolVerb[0] = L'\0';
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"HyperlinkFileProtocolVerb", L"", cfgVerb, COUNTOF(cfgVerb));
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"HyperlinkFileProtocolVerb", L"", tchKeyName, COUNTOF(tchKeyName));
     for (auto allowedVerb : allowedVerbs) {
-        if (StrStr(cfgVerb, allowedVerb)) {
-            StringCchCopy(Settings2.HyperlinkFileProtocolVerb, COUNTOF(Settings2.HyperlinkFileProtocolVerb), cfgVerb);
+        if (StrStr(tchKeyName, allowedVerb)) {
+            StringCchCopy(Settings2.HyperlinkFileProtocolVerb, COUNTOF(Settings2.HyperlinkFileProtocolVerb), tchKeyName);
             break;
         }
     }
@@ -1378,11 +1379,10 @@ void LoadSettings()
 
     unsigned int iValue = 0;
     WCHAR color[32] = { L'\0' };
-    WCHAR wchBuffer[MIDSZ_BUFFER] = { L'\0' };
 
     StringCchPrintf(color, COUNTOF(color), L"%#08x", rgbDarkBkgColorRef);
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"DarkModeBkgColor", color, wchBuffer, COUNTOF(wchBuffer));
-    if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"DarkModeBkgColor", color, tchKeyName, COUNTOF(tchKeyName));
+    if (swscanf_s(tchKeyName, L"%x", &iValue) == 1) {
         Settings2.DarkModeBkgColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
     } else {
         Settings2.DarkModeBkgColor = rgbDarkBkgColorRef;
@@ -1397,8 +1397,8 @@ void LoadSettings()
     Globals.hbrDarkModeBkgBrush = CreateSolidBrush(Settings2.DarkModeBkgColor);
 
     StringCchPrintf(color, COUNTOF(color), L"%#08x", rgbDarkBtnFcColorRef);
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"DarkModeBtnFaceColor", color, wchBuffer, COUNTOF(wchBuffer));
-    if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"DarkModeBtnFaceColor", color, tchKeyName, COUNTOF(tchKeyName));
+    if (swscanf_s(tchKeyName, L"%x", &iValue) == 1) {
         Settings2.DarkModeBtnFaceColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
     } else {
         Settings2.DarkModeBtnFaceColor = rgbDarkBtnFcColorRef;
@@ -1406,8 +1406,8 @@ void LoadSettings()
     Globals.hbrDarkModeBtnFcBrush = CreateSolidBrush(Settings2.DarkModeBtnFaceColor);
 
     StringCchPrintf(color, COUNTOF(color), L"%#08x", rgbDarkTxtColorRef);
-    IniSectionGetStringNoQuotes(IniSecSettings2, L"DarkModeTxtColor", color, wchBuffer, COUNTOF(wchBuffer));
-    if (swscanf_s(wchBuffer, L"%x", &iValue) == 1) {
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"DarkModeTxtColor", color, tchKeyName, COUNTOF(tchKeyName));
+    if (swscanf_s(tchKeyName, L"%x", &iValue) == 1) {
         Settings2.DarkModeTxtColor = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
     } else {
         Settings2.DarkModeTxtColor = rgbDarkTxtColorRef;
@@ -1590,9 +1590,8 @@ void LoadSettings()
     }
     Settings.PrintZoom = clampi(iPrintZoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
 
-    WCHAR localeInfo[SMALL_BUFFER];
-    GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, localeInfo, COUNTOF(localeInfo));
-    LONG const _margin = (localeInfo[0] == L'0') ? 2000L : 1000L; // Metric system. L'1' is US System
+    GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, tchKeyName, COUNTOF(tchKeyName));
+    LONG const _margin = (tchKeyName[0] == L'0') ? 2000L : 1000L; // Metric system. L'1' is US System
     Defaults.PrintMargin.left = _margin;
     Settings.PrintMargin.left = clampi(IniSectionGetInt(IniSecSettings, L"PrintMarginLeft", Defaults.PrintMargin.left), 0, 40000);
     Defaults.PrintMargin.top = _margin;
@@ -1674,9 +1673,8 @@ void LoadSettings()
     const WCHAR *const StatusBar_Section = L"Statusbar Settings";
     // --------------------------------------------------------------------------
 
-    WCHAR tchStatusBar[MIDSZ_BUFFER] = { L'\0' };
-    IniSectionGetStringNoQuotes(StatusBar_Section, L"VisibleSections", STATUSBAR_DEFAULT_IDS, tchStatusBar, COUNTOF(tchStatusBar));
-    ReadVectorFromString(tchStatusBar, s_iStatusbarSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1, false);
+    IniSectionGetStringNoQuotes(StatusBar_Section, L"VisibleSections", STATUSBAR_DEFAULT_IDS, tchKeyName, COUNTOF(tchKeyName));
+    ReadVectorFromString(tchKeyName, s_iStatusbarSections, STATUS_SECTOR_COUNT, 0, (STATUS_SECTOR_COUNT - 1), -1, false);
 
     // cppcheck-suppress useStlAlgorithm
     for (bool &sbv : g_iStatusbarVisible) {
@@ -1692,8 +1690,8 @@ void LoadSettings()
         }
     }
 
-    IniSectionGetStringNoQuotes(StatusBar_Section, L"SectionWidthSpecs", STATUSBAR_SECTION_WIDTH_SPECS, tchStatusBar, COUNTOF(tchStatusBar));
-    ReadVectorFromString(tchStatusBar, g_iStatusbarWidthSpec, STATUS_SECTOR_COUNT, -4096, 4096, 0, false);
+    IniSectionGetStringNoQuotes(StatusBar_Section, L"SectionWidthSpecs", STATUSBAR_SECTION_WIDTH_SPECS, tchKeyName, COUNTOF(tchKeyName));
+    ReadVectorFromString(tchKeyName, g_iStatusbarWidthSpec, STATUS_SECTOR_COUNT, -4096, 4096, 0, false);
 
     Globals.bZeroBasedColumnIndex = IniSectionGetBool(StatusBar_Section, L"ZeroBasedColumnIndex", false);
     Globals.bZeroBasedCharacterCount = IniSectionGetBool(StatusBar_Section, L"ZeroBasedCharacterCount", false);
@@ -1731,8 +1729,12 @@ void LoadSettings()
     // startup window  (ignore window position if /p was specified)
     // --------------------------------------------------------------
 
-    IniSectionGetString(IniSecSettings2, Constants.DefaultWindowPosition, L"",
-                        Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition));
+    StringCchPrintf(tchKeyName, COUNTOF(tchKeyName), L"%ix%i " DEF_WIN_POSITION_STRG, ResX, ResY);
+    if (!IniSectionGetString(IniSecWindow, tchKeyName, L"",
+                             Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition))) {
+        IniSectionGetString(IniSecSettings2, DEF_WIN_POSITION_STRG, L"",
+            Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition));
+    }
 
     if (!Globals.CmdLnFlag_PosParam /*|| g_bStickyWinPos*/) {
 
@@ -1775,13 +1777,11 @@ void LoadSettings()
     // ------------------------------------------------------------------------
 
     // ---  override by resolution specific settings  ---
-    WCHAR tchSciDirectWriteTech[64];
-    StringCchPrintf(tchSciDirectWriteTech, COUNTOF(tchSciDirectWriteTech), L"%ix%i RenderingTechnology", ResX, ResY);
-    Settings.RenderingTechnology = clampi(IniSectionGetInt(IniSecWindow, tchSciDirectWriteTech, Settings.RenderingTechnology), 0, 3);
+    StringCchPrintf(tchKeyName, COUNTOF(tchKeyName), L"%ix%i RenderingTechnology", ResX, ResY);
+    Settings.RenderingTechnology = clampi(IniSectionGetInt(IniSecWindow, tchKeyName, Settings.RenderingTechnology), 0, 3);
 
-    WCHAR tchSciFontQuality[64];
-    StringCchPrintf(tchSciFontQuality, COUNTOF(tchSciFontQuality), L"%ix%i SciFontQuality", ResX, ResY);
-    Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecWindow, tchSciFontQuality, Settings2.SciFontQuality), SC_EFF_QUALITY_DEFAULT, SC_EFF_QUALITY_LCD_OPTIMIZED);
+    StringCchPrintf(tchKeyName, COUNTOF(tchKeyName), L"%ix%i SciFontQuality", ResX, ResY);
+    Settings2.SciFontQuality = clampi(IniSectionGetInt(IniSecWindow, tchKeyName, Settings2.SciFontQuality), SC_EFF_QUALITY_DEFAULT, SC_EFF_QUALITY_LCD_OPTIMIZED);
 
     // ------------------------------------------------------------------------
 
