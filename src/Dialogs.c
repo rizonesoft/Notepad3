@@ -4760,6 +4760,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, const HPATHL hFilePath, WI
     if (Path_IsNotEmpty(hFilePath)) {
         HPATHL hfile_pth = Path_Copy(hFilePath);
         Path_QuoteSpaces(hfile_pth, true);
+        StrgCat(hparam_str, L" ");
         StrgCat(hparam_str, Path_Get(hfile_pth));
         Path_Release(hfile_pth);
     }
