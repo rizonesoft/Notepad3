@@ -766,9 +766,7 @@ bool PTHAPI Path_Append(HPATHL hpth_in_out, LPCWSTR more)
     StringCchCatW(wbuf, cch, more);
     StrgSanitize(hstr_io);
 
-    Path_Canonicalize(hpth_in_out);
-
-    return true;
+    return Path_Canonicalize(hpth_in_out);
 }
 // ----------------------------------------------------------------------------
 
@@ -1095,14 +1093,13 @@ void PTHAPI Path_GetModuleFilePath(HPATHL hpth_out)
 {
     static HPATHL mod_path = NULL;
 
-    HSTRINGW hstr = ToHStrgW(hpth_out);
-    if (!hstr) {
+    if (!hpth_out) {
         if (mod_path) {
             Path_Release(mod_path);
             mod_path = NULL;
         }
         else {
-            assert(hstr != NULL);
+            assert(hpth_out != NULL);
         }
         return;
     }
@@ -1810,15 +1807,13 @@ bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out, const HPATHL hdir_rel_base)
     bool res = false;
     if (!Path_IsEmpty(hdir_rel_base) && _Path_IsRelative(hpth_in_out)) {
         HPATHL hmod_pth = Path_Copy(hdir_rel_base);
-        Path_Append(hmod_pth, Path_Get(hpth_in_out));
-        res = Path_Canonicalize(hmod_pth);
+        res = Path_Append(hmod_pth, Path_Get(hpth_in_out));
         Path_Swap(hpth_in_out, hmod_pth);
         Path_Release(hmod_pth);
     }
     else {
         res = Path_Canonicalize(hpth_in_out);
     }
-
     Path_RemoveBackslash(hpth_in_out);
 
     return res;
@@ -1927,16 +1922,6 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
     bool from_is_dir = (attr_from & FILE_ATTRIBUTE_DIRECTORY);
     bool to_is_dir = (attr_to & FILE_ATTRIBUTE_DIRECTORY);
 
-#if 0
-    // DEBUG
-    {
-        Path_Reset(hfrom, L"\\FolderA\\FolderB\\FolderC\\abab");
-        //from_is_dir = true;
-        Path_Reset(hto, L"\\FolderA\\FolderD\\FolderE\\blah");
-        //to_is_dir = false;
-    }
-#endif
-
     // ensure comparable paths (no relatives(..\)
     HPATHL hfrom_cpy = Path_Allocate(PathGet(hfrom));
     Path_Canonicalize(hfrom_cpy);
@@ -1947,11 +1932,13 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
     if (from_is_dir) {
         HSTRINGW hstr_from = ToHStrgW(hfrom_cpy);
         StrgTrimRight(hstr_from, L'\\');
+        StrgTrimRight(hstr_from, L'/');
         StrgCat(hstr_from, L"\\");
     }
     if (to_is_dir) {
         HSTRINGW hstr_cpy = ToHStrgW(hto_cpy);
         StrgTrimRight(hstr_cpy, L'\\');
+        StrgTrimRight(hstr_cpy, L'/');
         StrgCat(hstr_cpy, L"\\");
     }
 
@@ -1983,8 +1970,8 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
         // back to prev sync point
         LPCWSTR p = &hfrom_buf[i];
         while (p > r) {
-            if ((*p == L'\\') || (*p == L':')) {
-                break;
+            if ((*p == L'\\') || (*p == L'/') || (*p == L':')) {
+                ++p; break;
             }
             --p;
         }
@@ -1993,29 +1980,26 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
         // count dirs of from-path reverse to sync point
         size_t dir_cnt = 0;
         while (*p != L'\0') {
-            if ((*p == L'\\')) {
-                // ignore trailing backslash
-                if (*(p + 1)) {
-                    ++dir_cnt;
-                }
+            if ((*p == L'\\') || (*p == L'/')) {
+                ++dir_cnt;
             }
             ++p;
         }
 
         // prepare buffer for prefix "..\" x dir_cnt
 
-        size_t const   alloc_add = wcslen(&hto_buf[prefix]) + 1;
-        size_t const   len = (wcslen(PATHPARENT_PREFIX) * dir_cnt) + alloc_add;
-        LPWSTR const out_buf = StrgWriteAccessBuf(hrecv_str, len);
+        size_t const alloc_add = wcslen(&hto_buf[prefix]) + 1;
+        size_t const len = (wcslen(PATHPARENT_PREFIX) * dir_cnt) + alloc_add;
+        LPWSTR const hrecv_buf = StrgWriteAccessBuf(hrecv_str, len);
         for (size_t d = 0; d < dir_cnt; ++d) {
-            StringCchCatW(out_buf, len, PATHPARENT_PREFIX);
+            StringCchCatW(hrecv_buf, len, PATHPARENT_PREFIX);
         }
         //~Path_RemoveBackslash(hpath_in_out);
-        if (hto_buf[prefix] == L'\\') {
+        if ((hto_buf[prefix] == L'\\') || (hto_buf[prefix] == L'/')) {
             ++prefix;
         }
         // copy rest of to-path (excluding first seperator)
-        StringCchCatW(out_buf, len, &hto_buf[prefix]);
+        StringCchCatW(hrecv_buf, len, &hto_buf[prefix]);
     }
     else {
         Path_Swap(hrecv, hto_cpy);
@@ -2230,14 +2214,13 @@ void PTHAPI Path_AbsoluteFromApp(HPATHL hpth_in_out, bool bExpandEnv)
 
     if (_Path_IsRelative(htmp_pth)) {
         Path_GetAppDirectory(hpth_in_out);
-        Path_Append(hpth_in_out, Path_Get(htmp_pth));
+        Path_Append(hpth_in_out, Path_Get(htmp_pth)); // does Path_Canonicalize()
     }
     else {
         Path_Swap(hpth_in_out, htmp_pth);
+        Path_Canonicalize(hpth_in_out);
     }
     Path_Release(htmp_pth);
-
-    Path_Canonicalize(hpth_in_out);
 
     // TODO:
     //if (PathGetDriveNumber(wchResult) != -1) {
