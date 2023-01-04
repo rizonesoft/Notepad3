@@ -11083,7 +11083,6 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
         if (SciCall_GetZoom() != 100) {
             ShowZoomCallTip();
         }
-        ResetFileObservationData(true);
         
         UndoRedoReset();
 
@@ -11238,6 +11237,10 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
                 _ResetFileWatchingMode();
             }
         }
+
+        // consistent settings file handling (if loaded in editor)
+        Flags.bSettingsFileSoftLocked = (Path_StrgComparePathNormalized(Paths.CurrentFile, Paths.IniFile) == 0);
+
         InstallFileWatching(true);
 
         // the .LOG feature ...
@@ -11261,8 +11264,6 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
             EditSetSelectionEx(iAnchorPos, iCaretPos, -1, -1);
         }
 
-        // consistent settings file handling (if loaded in editor)
-        Flags.bSettingsFileSoftLocked = (StringCchCompareXIW(Path_Get(Paths.CurrentFile), Path_Get(Paths.IniFile)) == 0);
         UpdateSaveSettingsCmds();
         if (SciCall_GetZoom() != 100) {
             ShowZoomCallTip();
@@ -11696,9 +11697,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
             LONG const answer = InfoBoxLng(typ, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, tch);
             if (IsYesOkay(answer)) {
                 ///~SaveAllSettings(true); ~ already saved (CurrentFile)
-                HPATHL hempty_pth = Path_Allocate(NULL);
-                DialogNewWindow(Globals.hwndMain, false, hempty_pth, NULL);
-                Path_Release(hempty_pth);
+                DialogNewWindow(Globals.hwndMain, false, Paths.CurrentFile, NULL);
                 CloseApplication();
             }
         }
@@ -12407,6 +12406,11 @@ void InstallFileWatching(const bool bInstall) {
     static HANDLE _hObserverThread = INVALID_HANDLE_VALUE;
     static HANDLE _hCurrFileHandle = INVALID_HANDLE_VALUE;  // exclusive lock
 
+    // don't install FileWathing on own Settings IniFile
+    if (bInstall && Flags.bSettingsFileSoftLocked) {
+        return;
+    }
+
     HPATHL hdir_pth = Path_Copy(Paths.CurrentFile);
     Path_RemoveFileSpec(hdir_pth);
 
@@ -12427,6 +12431,8 @@ void InstallFileWatching(const bool bInstall) {
 
     // Terminate previous watching
     if (bTerminate) {
+
+        ResetFileObservationData(true);
 
         KillTimer(Globals.hwndMain, ID_WATCHTIMER);
 
