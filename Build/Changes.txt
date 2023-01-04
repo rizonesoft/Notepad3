@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.23.103.(build_#) (2023-01-03)
+Current BETA/RC Version 5.23.104.(build_#) (2023-01-04)
 ========================================================
 
 --------------------------------------------------------
@@ -64,6 +64,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.104.1]- Minor refactoring on UpdateUI.
+[.104.1]- Move DefaultWindowPosition to Window section (deprecated: Settings2 section).
 [.101.1]- Refactoring and fix window positioning respecting monitor DPI.
 [1230.1]- Revert to Lexilla's standard Markdown lexer (LEX).
 [1230.1]- Change background color for Heading 1 to enhance contrast to std Hyperlink (LEX).
@@ -77,6 +79,7 @@ CHANGES:
 [1216.1]- Replacing SCI_REPLACETARGET calls by SCI_REPLACETARGETMINIMAL calls where appropriate.
 [1212.1]- Extend AutoCloseBrackets (by Matteo-Nigro PR #4318) for Selection.
 [1118.2]- Using new AviSynth+ keyword lists and AviSynth colors (light/dark mode).
+[1029.1]- Refactored of undo/redo and document modify handler.
 [1020.1]- Standard DarkMode Theme.
 [1020.1]- Minor adjustment of grepWinNP3's layout and correction of some strings (GRE).
 [1018.1]- Simplify WordList Set according to (https://github.com/ScintillaOrg/lexilla/issues/103).
@@ -118,6 +121,8 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.104.1]- Handling of editing own settings (in this case: disable file watching).
+[.104.1]- Path to module relative representation.
 [.103.1]- Load Toolbar-Bitmap handling.
 [.102.1]- Minor design change and some fixes for Margin and Bookmark handling.
 [1230.1]- Minor bugs related to new feature Change-History.
@@ -138,7 +143,6 @@ FIXES:
 [1104.1]- Modification marker based on selection history.
 [1104.1]- Disable events from edit-window while in Begin/End-WaitCursor.
 [1102.1]- Error message on loading empty file.
-[1029.1]- Refactored of undo/redo and document modify handler.
 [1028.1]- Broken reload file (broken by check for single file instance)".
 [1023.1]- A warning message in "dialogs_xx_yy.rc".
 [1020.1]- Respect single file instance mode for internal file loading.
