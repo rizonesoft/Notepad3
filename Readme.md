@@ -89,7 +89,7 @@ or a to have user-specific settings:
 These settings are read and written by Notepad3’s user interface.
 For example, all Menu ? Settings will go here.
 
-#### `SettingsVersion=4`
+#### `SettingsVersion=5`
 
 #### `Favorites=%APPDATA%\Rizonesoft\Notepad3\Favorites\`
 
