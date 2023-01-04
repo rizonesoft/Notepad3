@@ -569,7 +569,7 @@ bool Style_DynamicThemesMenuCmd(int cmd)
             Style_ResetCurrentLexer(Globals.hwndEdit);
         }
         UpdateMargins(true);
-        UpdateUI();
+        UpdateUI(Globals.hwndMain);
     }
     return result;
 }

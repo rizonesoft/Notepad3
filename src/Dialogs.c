@@ -4703,8 +4703,8 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
         Settings.AlwaysOnTop = true;
         s_bPrevFullScreenFlag = true;
     }
-    SendWMSize(hwnd, NULL);
-    UpdateToolbar();
+
+    UpdateUI(hwnd);
 }
 
 

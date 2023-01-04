@@ -103,9 +103,13 @@ SETTINGS2_T Settings2;
 FOCUSEDVIEW_T FocusedView;
 FILEWATCHING_T FileWatching;
 
+// set by InitScintillaHandle()
+HWND      g_hwndEditWindow = NULL; 
+HANDLE    g_hndlScintilla  = NULL;
+
+// window positioning
 WININFO   g_IniWinInfo = INIT_WININFO;
 WININFO   g_DefWinInfo = INIT_WININFO;
-HANDLE    g_hndlScintilla = NULL;
 
 COLORREF  g_colorCustom[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -3334,10 +3338,7 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
         EditUpdateVisibleIndicators();
 
-        UpdateToolbar();
-        UpdateStatusbar(true);
-        UpdateMargins(true);
-        UpdateUI();
+        UpdateUI(hwnd);
     }
 
     UpdateWindowEx(hwnd);
@@ -3395,7 +3396,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     DeferWindowPos(hdwp,s_hwndEditFrame,NULL,x,y,cx,cy, SWP_NOZORDER | SWP_NOACTIVATE);
 
-    DeferWindowPos(hdwp, Globals.hwndEdit, s_hwndEditFrame,
+    DeferWindowPos(hdwp, g_hwndEditWindow, s_hwndEditFrame,
                    x+s_cxEditFrame,y+s_cyEditFrame, cx-2*s_cxEditFrame,cy-2*s_cyEditFrame,
                    SWP_NOZORDER | SWP_NOACTIVATE);
 
@@ -3407,9 +3408,34 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     UpdateStatusbar(true);
     UpdateMargins(true);
     UpdateTitlebar(hwnd);
-    //~UpdateUI();
+    //~UpdateUI(); ~ recursion
     
     return FALSE;
+}
+
+
+//=============================================================================
+//
+//  UpdateContentArea()
+//
+void UpdateContentArea()
+{
+    Sci_ForceNotifyUpdateUI(Globals.hwndMain, IDC_EDIT);
+}
+
+
+//=============================================================================
+//
+//  UpdateUI()
+//
+void UpdateUI(HWND hwnd)
+{
+    //if (hwnd == Globals.hwndMain) {
+    //    UpdateContentArea()
+    //}
+    SendWMSize(hwnd, NULL);
+    PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
+    PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
 }
 
 
@@ -5810,7 +5836,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SetForegroundWindow(Globals.hwndDlgCustomizeSchemes);
         }
         SendWMCommand(Globals.hwndDlgCustomizeSchemes, IDC_SETCURLEXERTV);
-        UpdateUI();
+        UpdateUI(hwnd);
         break;
 
 
@@ -5820,7 +5846,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             Style_SetDefaultFont(Globals.hwndEdit, (iLoWParam == IDM_VIEW_FONT));
         }
         UpdateMargins(true);
-        UpdateUI();
+        UpdateUI(hwnd);
         break;
 
 
@@ -6248,7 +6274,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_TOOLBAR:
         Settings.ShowToolbar = !Settings.ShowToolbar;
         ShowWindow(Globals.hwndRebar, (Settings.ShowToolbar ? SW_SHOW : SW_HIDE));
-        SendWMSize(hwnd, NULL);
+        UpdateUI(hwnd);
         break;
 
     case IDM_VIEW_CUSTOMIZETB:
@@ -6258,13 +6284,13 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_TOGGLETB:
         Settings.ToolBarTheme = (Settings.ToolBarTheme + 1) % 3;
         CreateBars(hwnd, Globals.hInstance);
-        UpdateUI();
+        UpdateUI(hwnd);
         break;
 
     case IDM_VIEW_LOADTHEMETB:
         if (SelectExternalToolBar(hwnd)) {
             CreateBars(hwnd, Globals.hInstance);
-            UpdateUI();
+            UpdateUI(hwnd);
         }
         break;
 
@@ -6276,8 +6302,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_STATUSBAR:
         Settings.ShowStatusbar = !Settings.ShowStatusbar;
         ShowWindow(Globals.hwndStatus, (Settings.ShowStatusbar ? SW_SHOW : SW_HIDE));
-        UpdateStatusbar(Settings.ShowStatusbar);
-        SendWMSize(hwnd, NULL);
+        UpdateUI(hwnd);
         break;
 
 
@@ -10374,23 +10399,6 @@ void UpdateSaveSettingsCmds()
     EnableCmd(hmenu, IDM_SET_AUTOLOAD_MRU_FILE, bCanSav);
 
     DrawMenuBar(Globals.hwndMain);
-}
-
-
-//=============================================================================
-//
-//  UpdateUI()
-//
-void UpdateUI() {
-    struct SCNotification scn = { 0 };
-    scn.nmhdr.hwndFrom = Globals.hwndEdit;
-    scn.nmhdr.idFrom = IDC_EDIT;
-    scn.nmhdr.code = SCN_UPDATEUI;
-    scn.updated = SC_UPDATE_CONTENT;
-    SendMessage(Globals.hwndMain, WM_NOTIFY, IDC_EDIT, (LPARAM)&scn);
-    SendWMSize(Globals.hwndMain, NULL);
-    PostMessage(Globals.hwndMain, WM_NCACTIVATE, FALSE, -1); // (!)
-    PostMessage(Globals.hwndMain, WM_NCACTIVATE, TRUE, 0);
 }
 
 
