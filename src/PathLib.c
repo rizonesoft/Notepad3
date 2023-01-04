@@ -1987,7 +1987,6 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
         }
 
         // prepare buffer for prefix "..\" x dir_cnt
-
         size_t const alloc_add = wcslen(&hto_buf[prefix]) + 1;
         size_t const len = (wcslen(PATHPARENT_PREFIX) * dir_cnt) + alloc_add;
         LPWSTR const hrecv_buf = StrgWriteAccessBuf(hrecv_str, len);

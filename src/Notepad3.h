@@ -127,13 +127,16 @@ void ShowZoomCallTip();
 void ShowWrapAroundCallTip(bool forwardSearch);
 
 void MarkAllOccurrences(const int delay, const bool bForceClear);
-void UpdateUI();
+
 void UpdateToolbar();
 void UpdateStatusbar(const bool bForceRedraw);
 void UpdateMargins(const bool bForce);
 void UpdateSaveSettingsCmds();
-void ResetMouseDWellTime();
 void UpdateTitlebar(const HWND hwnd);
+void UpdateContentArea();
+void UpdateUI(HWND hwnd);
+
+void ResetMouseDWellTime();
 
 void UndoRedoReset();
 LONG BeginUndoActionSelection();
