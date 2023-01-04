@@ -62,12 +62,16 @@
 //  Scintilla Window Handle
 //
 #if defined(__cplusplus)
+extern "C" HWND   g_hwndEditWindow;
 extern "C" HANDLE g_hndlScintilla;
 #else
+extern HWND   g_hwndEditWindow;
 extern HANDLE g_hndlScintilla;
 #endif
 
+
 __forceinline void InitScintillaHandle(HWND hwnd) {
+    g_hwndEditWindow = hwnd;
     g_hndlScintilla = (HANDLE)SendMessage(hwnd, SCI_GETDIRECTPOINTER, 0, 0);
 }
 
@@ -933,6 +937,18 @@ inline DocPos Sci_ReplaceTargetEx(const int mode, const DocPos length, const cha
     default:
         return SciCall_ReplaceTarget(length, text);
     }
+}
+
+// ----------------------------------------------------------------------------
+
+inline LRESULT Sci_ForceNotifyUpdateUI(HWND hwnd, uptr_t idc)
+{
+    struct SCNotification scn = { 0 };
+    scn.nmhdr.hwndFrom = g_hwndEditWindow;
+    scn.nmhdr.idFrom = idc;
+    scn.nmhdr.code = SCN_UPDATEUI;
+    scn.updated = SC_UPDATE_CONTENT;
+    return SendMessageW(hwnd, WM_NOTIFY, idc, (LPARAM)&scn);
 }
 
 // ----------------------------------------------------------------------------
