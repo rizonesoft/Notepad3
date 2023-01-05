@@ -83,7 +83,7 @@ BEGIN
     IDT_FILE_PRINT          "Stampa"
     IDT_FILE_OPENFAV        "Preferiti"
     IDT_FILE_ADDTOFAV       "Aggiungi ai Preferiti"
-    IDT_VIEW_TOGGLEFOLDS    "Attiva/disattiva Folding"
+    IDT_VIEW_TOGGLEFOLDS    "Espandi/Collassa tutti i Folds"
 END
 
 STRINGTABLE
