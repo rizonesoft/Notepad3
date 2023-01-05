@@ -793,6 +793,37 @@ void PTHAPI Path_FreeExtra(HPATHL hpth_in_out, size_t keep_length)
 // ----------------------------------------------------------------------------
 
 
+//=============================================================================
+//
+// PathFixBackslashes() - in place conversion
+//
+bool PTHAPI Path_FixBackslashes(HPATHL hpth_in_out)
+{
+    HSTRINGW hstr_io = ToHStrgW(hpth_in_out); // inplace hpth_in_out
+    if (!hstr_io)
+        return false;
+
+    LPWSTR const lpsz = StrgWriteAccessBuf(hstr_io, 0);
+
+    WCHAR* c = lpsz;
+    bool   bFixed = false;
+    while ((c = StrChr(c, L'/')) != NULL) {
+        if (c != lpsz && c[-1] == L':' && c[1] == L'/') {
+            c += 2;
+        }
+        else {
+            *c++ = L'\\';
+            bFixed = true;
+        }
+    }
+    //~StrgSanitize(hstr_io); : '/' replaced by '\' only
+    return bFixed;
+}
+
+
+//=============================================================================
+
+
 // With untrusted input, this function by itself, cannot be used to convert
 // paths into a form that can be compared with other paths for sub-path or identity.
 // Callers that need that ability should convert forward to back slashes before
@@ -803,6 +834,7 @@ bool PTHAPI Path_Canonicalize(HPATHL hpth_in_out)
     if (!hpth_in_out) {
         return false;
     }
+    Path_FixBackslashes(hpth_in_out);
 
     HPATHL hpth_cpy = Path_Allocate(PathGet(hpth_in_out));
     HSTRINGW hstr_cpy = ToHStrgW(hpth_cpy);
@@ -961,29 +993,6 @@ int PTHAPI Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2, const HP
     Path_Release(hpth2_tmp);
 
     return cmp;
-}
-// ----------------------------------------------------------------------------
-
-
-bool PTHAPI Path_RemoveBackslash(HPATHL hpth_in_out)
-{
-    HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
-    if (!hstr_io)
-        return false;
-
-    LPWSTR       wbuf = StrgWriteAccessBuf(hstr_io, 0); // no need to ReAlloc
-    //size_t const cch = StrgGetAllocLength(hstr_io);
-    size_t const hstr_len = StrgGetLength(hstr_io);
-
-    ///bool const res = SUCCEEDED(PathXCchRemoveBackslashEx(wbuf, cch, NULL, NULL));
-    if (hstr_len > 0) {
-        if ((wbuf[hstr_len - 1] == L'/') || (wbuf[hstr_len - 1] == L'\\')) {
-            wbuf[hstr_len] = L'\0';
-        }
-    }
-    StrgSanitize(hstr_io);
-
-    return true;
 }
 // ----------------------------------------------------------------------------
 
@@ -1790,6 +1799,8 @@ bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out, const HPATHL hdir_rel_base)
     HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
     if (!hstr_io)
         return false;
+    
+    Path_FixBackslashes(hpth_in_out);
 
     if (StrgFind(hstr_io, PATH_CSIDL_MYDOCUMENTS, 0) == 0) {
 
@@ -1814,7 +1825,6 @@ bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out, const HPATHL hdir_rel_base)
     else {
         res = Path_Canonicalize(hpth_in_out);
     }
-    Path_RemoveBackslash(hpth_in_out);
 
     return res;
 }
@@ -1830,6 +1840,8 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
     HSTRINGW hstr_io = ToHStrgW(hpth_in_out); // inplace hpth_in_out
     if (!hstr_io)
         return false;
+
+    Path_FixBackslashes(hpth_in_out);
 
     ExpandEnvironmentStrgs(hstr_io, true);
 
@@ -1993,7 +2005,6 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
         for (size_t d = 0; d < dir_cnt; ++d) {
             StringCchCatW(hrecv_buf, len, PATHPARENT_PREFIX);
         }
-        //~Path_RemoveBackslash(hpath_in_out);
         if ((hto_buf[prefix] == L'\\') || (hto_buf[prefix] == L'/')) {
             ++prefix;
         }
@@ -2116,7 +2127,7 @@ void PTHAPI ExpandEnvironmentStrgs(HSTRINGW hstr_in_out, bool bStripQ)
         StrgTrim(hstr_in_out, L'\'');
     }
     
-    //StrgReplace(hstr_in_out, L"~", L"%USERPROFILE%");
+    StrgReplace(hstr_in_out, L"~", L"%USERPROFILE%");
 
     size_t const min_len = ExpandEnvironmentStrings(StrgGet(hstr_in_out), NULL, 0);
     LPWSTR       buf_io = StrgWriteAccessBuf(hstr_in_out, min_len);
