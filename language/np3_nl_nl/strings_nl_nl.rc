@@ -174,7 +174,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "%s exempla(a)r(en) van het opgegeven zoekpatroon vervangen."
     IDS_MUI_ASK_ENCODING    "Bij het omzetten van de ene naar de andere codering kan niet-ondersteunde tekst worden vervangen door standaardtekens. Dit kan niet ongedaan worden. Doorgaan?"
     IDS_MUI_ASK_ENCODING2   "Je staat op het punt de codering van een leeg bestand te wijzigen. Dit kan niet ongedaan worden. Doorgaan?"
-    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Deze actie zal de geschiedenis wissen. Doorgaan?"
     IDS_MUI_READONLY_SAVE   """%s"" is alleen-lezen. Opslaan als een ander bestand?"
     IDS_MUI_FILECHANGENOTIFY
                            "Het huidige bestand is gewijzigd door een extern programma. Opnieuw laden?"
