@@ -172,9 +172,9 @@ BEGIN
     IDS_MUI_FIND_WRAPRE     "文書の先頭に到達しました。終端から検索しますか?"
     IDS_MUI_NOTFOUND        "指定の検索条件には一致しませんでした。"
     IDS_MUI_REPLCOUNT       "一致する %s か所を指定の検索条件で置換しました。"
-    IDS_MUI_ASK_ENCODING    "他の文字コードに変換すると、未対応の文字は所定の文字に置換され、また「元に戻す」の履歴もリセットされます。\n変換を続行しますか?"
-    IDS_MUI_ASK_ENCODING2   "空のファイルの文字コードを変更しようとしています。「元に戻す」の履歴もリセットされます。変更を続行しますか?"
-    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
+    IDS_MUI_ASK_ENCODING    "他の文字コードに変換すると、未対応の文字は所定の文字に置換され、また「元に戻す」の履歴が消去されます。\n変換を続行しますか?"
+    IDS_MUI_ASK_ENCODING2   "空のファイルの文字コードを変更しようとしています。「元に戻す」の履歴が消去されます。変更を続行しますか?"
+    IDS_MUI_ASK_CLEAR_UNDO  "この操作は「元に戻す」の履歴を消去します。続行しますか?"
     IDS_MUI_READONLY_SAVE   "「%s」は読み取り専用です。別のファイル名で保存しますか?"
     IDS_MUI_FILECHANGENOTIFY
                             "ファイルが他のプログラムによって変更されました。再読み込みしますか?"

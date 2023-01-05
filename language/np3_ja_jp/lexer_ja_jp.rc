@@ -496,7 +496,7 @@ BEGIN
     IDS_LEX_STR_63387       "Symbol Operator"
     IDS_LEX_STR_63388       "文字列 EOL"
     IDS_LEX_STR_63397       "Backticks"
-    IDS_LEX_STR_63398       "GUID String"
+    IDS_LEX_STR_63398       "GUID 文字列"
 END
 
 STRINGTABLE

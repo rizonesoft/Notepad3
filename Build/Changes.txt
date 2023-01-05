@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.23.104.(build_#) (2023-01-04)
+Current BETA/RC Version 5.23.105.(build_#) (2023-01-05)
 ========================================================
 
 --------------------------------------------------------
@@ -121,6 +121,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.104.1]- Fix some WSL2 (Linux) path issues.
 [.104.1]- Handling of editing own settings (in this case: disable file watching).
 [.104.1]- Path to module relative representation.
 [.103.1]- Load Toolbar-Bitmap handling.
