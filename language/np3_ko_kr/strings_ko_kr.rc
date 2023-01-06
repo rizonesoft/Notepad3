@@ -116,8 +116,8 @@ BEGIN
     IDS_MUI_FILTER_EXE      "실행 파일 (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|모든 파일 (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "구성 파일 (*.ini)|*.ini|모든 파일 (*.*)|*.*|"
     IDS_MUI_FILTER_BITMAP   "비트맵 파일 (*.bmp)|*.bmp|모든 파일 (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "즐겨찾는 응용프로그램에 대한 링크가 있는 디렉토리를 선택하십시오."
-    IDS_MUI_FAVORITES       "즐겨찾는 파일에 대한 링크가 있는 디렉토리를 선택하십시오."
+    IDS_MUI_OPENWITH        "즐겨찾는 응용프로그램에 대한 링크가 있는 디렉터리를 선택하십시오."
+    IDS_MUI_FAVORITES       "즐겨찾는 파일에 대한 링크가 있는 디렉터리를 선택하십시오."
     IDS_MUI_BACKSLASHHELP   "백슬래시 변환\n\n\\a\t경보 (BEL, Ascii 7)\n\\b\t백스페이스 (BS, Ascii 8)\n\\f\t폼 피드 (FF, Ascii 12)\n\\n\t새 줄 (LF, Ascii 10)\n\\r\t캐리지 리턴 (CR, Ascii 13)\n\\t\t가로 탭 (HT, Ascii 9)\n\\v\t세로 탭 (VT, Ascii 11)\n\\0oo\t8진수 값\n\\u####\t16진수 값\n\\xhh\t16진수 값\n\\\\\t백슬래시"
     IDS_MUI_REGEXPHELP      "정규식 구문 (여러 줄)\n\n.\t모든 문자와 일치\n^\t새 줄 바로 뒤에 빈 문자열\n$\t줄 끝 바로 앞의 빈 문자열\n\\<\t단어의 시작\n\\>\t단어의 끝\n\\b\t단어 경계\n[...]\t문자 집합([abc]) 또는 범위 ([a-z])\n[^...]\t설정 또는 범위에 포함되지 않는 문자\n\\d\t모든 10진수\n\\D\t숫자가 아닌 문자\n\\s\t모든 공백 문자\n\\S\t공백이 아닌 문자\n\\w\t모든 ""단어"" 문자\n\\W\t모든 ""비-단어"" 문자\n\\x\t특별한 의미를 가진 Escape 문자\n\\xHH\tHex 값이 HH인 문자\n?\t0회 또는 1회 선행 일치\n*\t0회 이상 선행 일치\n+\t1회 이상 선행 일치\n*? or +?\t정량자 ""?"" 및 ""+""의 욕심 없는 일치\n(\t영역의 시작\n)\t영역의 끝\n\\n\t교체할 때 영역 참조 (n은 1-9)\n"
     IDS_MUI_WILDCARDHELP    "와일드카드 검색\n\n*\t0개 이상의 문자와 일치합니다.\n?\t정확하게 하나의 문자와 일치합니다. "
@@ -147,7 +147,7 @@ BEGIN
     IDS_MUI_ERR_DROP        "한 번에 하나의 파일만 끌어서 놓을 수 있습니다.!"
     IDS_MUI_ERR_ACCESSDENIED
                             """%s"" 파일을 저장할 수 없으며 보호할 수 있습니다.\n\n%s을 '상승된 권한' 응용프로그램으로 시작하시겠습니까?"
-    IDS_MUI_ERR_ADMINEXE    "관리 실행 파일이 없습니다. https://rizonesoft.com 에서 확인하시겠습니까?"
+    IDS_MUI_ERR_ADMINEXE    "관리 실행 파일이 없습니다. https://rizonesoft.com에서 확인하시겠습니까?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "이 큰 파일을 여시겠습니까?\n\t(크기: %s >= %s)!\n(스타일링 및 구문 강조가 적용되지 않습니다!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -174,7 +174,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "지정한 검색 패턴의 %s 발생이 대체되었습니다."
     IDS_MUI_ASK_ENCODING    "파일 인코딩을 한 인코딩에서 다른 인코딩으로 전환하면 지원되지 않는 텍스트가 기본 문자로 대체될 수 있으며 실행 취소 기록이 지워집니다. 계속하시겠습니까?"
     IDS_MUI_ASK_ENCODING2   "빈 파일의 인코딩을 변경하려고 합니다. 새 인코딩과 동기화할 수 없기 때문에 실행 취소 기록이 지워집니다. 계속하시겠습니까?"
-    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
+    IDS_MUI_ASK_CLEAR_UNDO  "이 작업을 수행하면 실행 취소 기록이 지워집니다. 계속하시겠습니까?"
     IDS_MUI_READONLY_SAVE   """%s""은 읽기 전용입니다. 다른 파일로 저장하시겠습니까?"
     IDS_MUI_FILECHANGENOTIFY
                             "현재 파일이 외부 프로그램에 의해 수정되었습니다. 다시 불러오시겠습니까?"
@@ -223,14 +223,14 @@ BEGIN
     IDS_MUI_WARN_STYLE_RESET
                             "이 작업은 스타일을 원하는 색상 모드의 출고시 기본값으로 재설정하고 활성 테마 파일을 표준 config .ini로 전환합니다!"
     IDS_MUI_ASK_INSTANCE_EXISTS
-                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
+                            "단일 파일 인스턴스 모드:\n\n이미 로드된 파일 인스턴스에 초점을 설정하시겠습니까?"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_PRINT_EMPTY     "이 문서에는 인쇄할 텍스트가 없습니다."
     IDS_MUI_PRINT_ERROR     """%s"" 인쇄 오류!"
-    IDS_MUI_FAV_SUCCESS     "현재 파일에 대한 바로가기가 즐겨찾기 디렉토리에 만들어졌습니다."
+    IDS_MUI_FAV_SUCCESS     "현재 파일에 대한 바로가기가 즐겨찾기 디렉터리에 만들어졌습니다."
     IDS_MUI_FAV_FAILURE     "현재 파일에 대한 바로가기를 만들 수 없습니다.\n같은 이름의 다른 파일이 없는지 확인하십시오."
     IDS_MUI_READONLY_MODIFY """%s""의 속성을 수정할 수 없습니다."
     IDS_MUI_SAVEPOS         "위치 저장(&S)\tCtrl+S"
