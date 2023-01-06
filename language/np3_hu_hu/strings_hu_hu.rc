@@ -317,7 +317,7 @@ Opciók:\r\n\
 /n\tMindig nyisson új ablakot (/ns egyetlen fájl példány).\r\n\
 /r\tAblak újrahasznosítása (/rs egyetlen fájl példány).\r\n\
 /p\tAblak pozíció és méret beállítása (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
-\tor /p <bal>,<teteje>,<szélesség>,<magasság>[,<dpi>,<max>]  [mindegyik \r\n\tegész szám].\r\n\
+\tor /p <bal>,<teteje>,<szélesség>,<magasság>[,<dpi>[,<max>]]  (mindegyik \r\n\tegész szám).\r\n\
 /t\tCímsor szövegének beállítása.\r\n\
 /i\tIndítás óra melé kicsinyítve.\r\n\
 /o\tAblak mindig felül.\r\n\
