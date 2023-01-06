@@ -2126,9 +2126,6 @@ void PTHAPI ExpandEnvironmentStrgs(HSTRINGW hstr_in_out, bool bStripQ)
         StrgTrim(hstr_in_out, L'"');
         StrgTrim(hstr_in_out, L'\'');
     }
-    
-    StrgReplace(hstr_in_out, L"~", L"%USERPROFILE%");
-
     size_t const min_len = ExpandEnvironmentStrings(StrgGet(hstr_in_out), NULL, 0);
     LPWSTR       buf_io = StrgWriteAccessBuf(hstr_in_out, min_len);
     DWORD const  cch_io = (DWORD)StrgGetAllocLength(hstr_in_out);
