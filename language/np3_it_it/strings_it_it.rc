@@ -61,7 +61,7 @@ BEGIN
     IDT_FILE_SAVE           "Salva"
     IDT_FILE_RECENT         "Recenti"
     IDT_EDIT_UNDO           "Annulla"
-    IDT_EDIT_REDO           "Ripeti"
+    IDT_EDIT_REDO           "Ripristina"
     IDT_EDIT_CUT            "Taglia"
     IDT_EDIT_COPY           "Copia"
 END
