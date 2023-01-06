@@ -397,7 +397,7 @@ BEGIN
         POPUP "&Folding"
         BEGIN
             MENUITEM "Code &Folding",                              IDM_VIEW_FOLDING
-            MENUITEM "&Attiva/Disattiva Folds\tCtrl+Alt+F",        IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Esp&andi/Collassa tutti i Folds\tCtrl+Alt+F",        IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "Salta al Prossimo Fold\tAlt+ +",             CMD_FOLDJUMPDOWN
             MENUITEM "Salta al Precedente Fold\tAlt+ –",           CMD_FOLDJUMPUP

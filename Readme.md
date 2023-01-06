@@ -89,7 +89,7 @@ or a to have user-specific settings:
 These settings are read and written by Notepad3’s user interface.
 For example, all Menu ? Settings will go here.
 
-#### `SettingsVersion=4`
+#### `SettingsVersion=5`
 
 #### `Favorites=%APPDATA%\Rizonesoft\Notepad3\Favorites\`
 
@@ -181,12 +181,6 @@ Specify the default directory for the open and save dialogs, used if no file is 
 
 Specify the default extension for saved files (omit the leading dot, just like txt or html).
 
-#### `DefaultWindowPosition=`
-
-This items are managed by Notepad3. (`Menu->View->Position->Save as Default Position`)
-(Will set current window position as "Default Position" - can be recalled by `Ctrl+Shift+P` Hotkey)
-
-
 #### `DenyVirtualSpaceAccess=0`
 
 #### `filebrowser.exe=minipath.exe`
@@ -204,7 +198,6 @@ If you don't like it, you can configure e.g.
 - [Settings2] filebrowser.exe=explorer.exe (system's file explorer), or
 - [Settings2] filebrowser.exe=Explorer++.exe (https://explorerplusplus.com/) (side-by-side Notepad3), or
 - [Settings2] filebrowser.exe=Q-Dir_x64+.exe (https://www.softwareok.de/?seite=Freeware/Q-Dir/) (side-by-side Notepad3)
-
 
 #### `grepWin.exe=grepWinNP3.exe`
 
@@ -559,5 +552,14 @@ This section offers the possibility to display the name of the function to the r
 29=Always On Top
 30=Search in Files
 ```
+
+
+## **`[Window]`**
+
+#### `<ResX>x<ResY> DefaultWindowPosition=`
+
+This items are managed by Notepad3. (`Menu->View->Position->Save as Default Position`)
+(Will set current window position as "Default Position" - can be recalled by `Ctrl+Shift+P` Hotkey)
+
 
 <hr/>

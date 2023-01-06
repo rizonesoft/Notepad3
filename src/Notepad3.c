@@ -9063,7 +9063,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 //  ParseCommandLine()
 //
-//
+
+static void ParseCmdLnOption(LPWSTR lp1, LPWSTR lp2, const size_t len); // forward decl
+
+//=============================================================================
+
 void ParseCommandLine()
 {
     LPWSTR lpCmdLine = GetCommandLine();
@@ -9074,13 +9078,12 @@ void ParseCommandLine()
     // Good old console can also send args separated by Tabs
     StrTab2Space(lpCmdLine);
 
-    DocPos const len = (DocPos)(StringCchLenW(lpCmdLine,0) + 2UL);
+    size_t const len = StringCchLenW(lpCmdLine,0) + 2UL;
     LPWSTR const lp1 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
     LPWSTR const lp2 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
     LPWSTR const lp3 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
 
     if (lp1 && lp2 && lp3) {
-        bool bIsNotepadReplacement = false;
 
         // Start with 2nd argument
         ExtractFirstArgument(lpCmdLine, lp1, lp3, (int)len);
@@ -9094,368 +9097,28 @@ void ParseCommandLine()
             if (!bIsFileArg && (lp1[0] == L'+') && (lp1[1] == L'\0')) {
                 Globals.CmdLnFlag_MultiFileArg = 2;
                 bIsFileArg = true;
-            } else if (!bIsFileArg && (lp1[0] == L'-') && (lp1[1] == L'\0')) {
+                StringCchCopy(lp3, len, lp2); // next arg
+            }
+            else if (!bIsFileArg && (lp1[0] == L'-') && (lp1[1] == L'\0')) {
                 Globals.CmdLnFlag_MultiFileArg = 1;
                 bIsFileArg = true;
-            } else if (!bIsFileArg && ((*lp1 == L'/') || (*lp1 == L'-'))) {
-                // LTrim
-                StrLTrimI(lp1, L"-/");
-
-                // Encoding
-                cpi_enc_t const encoding = Encoding_MatchW(lp1);
-
-                if (StringCchCompareXI(lp1, L"ANSI") == 0 || StringCchCompareXI(lp1, L"A") == 0 || StringCchCompareXI(lp1, L"MBCS") == 0) {
-                    s_flagSetEncoding = CPI_ANSI_DEFAULT;
-                } else if (StringCchCompareXI(lp1, L"UNICODE") == 0 || StringCchCompareXI(lp1, L"W") == 0) {
-                    s_flagSetEncoding = CPI_UNICODEBOM;
-                } else if (StringCchCompareXI(lp1, L"UNICODEBE") == 0 || StringCchCompareXI(lp1, L"UNICODE-BE") == 0) {
-                    s_flagSetEncoding = CPI_UNICODEBEBOM;
-                } else if (StringCchCompareXI(lp1, L"UTF8") == 0 || StringCchCompareXI(lp1, L"UTF-8") == 0) {
-                    s_flagSetEncoding = CPI_UTF8;
-                } else if (StringCchCompareXI(lp1, L"UTF8SIG") == 0 || StringCchCompareXI(lp1, L"UTF-8SIG") == 0 ||
-                           StringCchCompareXI(lp1, L"UTF8SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8SIGNATURE") == 0 ||
-                           StringCchCompareXI(lp1, L"UTF8-SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8-SIGNATURE") == 0) {
-                    s_flagSetEncoding = CPI_UTF8SIGN;
-                }
-                // maybe parsed encoding
-                else if (Encoding_IsValid(encoding)) {
-                    s_flagSetEncoding = encoding;
-                }
-                // EOL Mode
-                else if (StringCchCompareXI(lp1, L"CRLF") == 0 || StringCchCompareXI(lp1, L"CR+LF") == 0) {
-                    s_flagSetEOLMode = IDM_LINEENDINGS_CRLF - IDM_LINEENDINGS_CRLF + 1;
-                } else if (StringCchCompareXI(lp1, L"CR") == 0) {
-                    s_flagSetEOLMode = IDM_LINEENDINGS_CR - IDM_LINEENDINGS_CRLF + 1;
-                } else if (StringCchCompareXI(lp1, L"LF") == 0) {
-                    s_flagSetEOLMode = IDM_LINEENDINGS_LF - IDM_LINEENDINGS_CRLF + 1;
-                }
-                // Shell integration
-                else if (StrCmpNI(lp1, L"appid=", CONSTSTRGLEN(L"appid=")) == 0) {
-                    StringCchCopyN(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID),
-                                   lp1 + CONSTSTRGLEN(L"appid="), len - CONSTSTRGLEN(L"appid="));
-                    StrTrim(Settings2.AppUserModelID, L" ");
-                    if (StrIsEmpty(Settings2.AppUserModelID)) {
-                        StringCchCopy(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID), _W("Rizonesoft.") _W(SAPPNAME));
-                    }
-                } else if (StrCmpNI(lp1, L"sysmru=", CONSTSTRGLEN(L"sysmru=")) == 0) {
-                    WCHAR wch[16];
-                    StringCchCopyN(wch, COUNTOF(wch), lp1 + CONSTSTRGLEN(L"sysmru="), COUNTOF(wch));
-                    StrTrim(wch, L" ");
-                    if (*wch == L'1') {
-                        Globals.CmdLnFlag_ShellUseSystemMRU = 2;
-                    } else {
-                        Globals.CmdLnFlag_ShellUseSystemMRU = 1;
-                    }
-                }
-                // Relaunch elevated
-                else if (StrCmpNI(lp1, RELAUNCH_ELEVATED_BUF_ARG, CONSTSTRGLEN(RELAUNCH_ELEVATED_BUF_ARG)) == 0) {
-                    Path_Reset(s_hpthRelaunchElevatedFile, lp1 + CONSTSTRGLEN(RELAUNCH_ELEVATED_BUF_ARG));
-                    //?TrimSpcW(s_hpthRelaunchElevatedFile);
-                    Path_NormalizeEx(s_hpthRelaunchElevatedFile, Paths.ModuleDirectory, true, Flags.bSearchPathIfRelative);
-                    s_IsThisAnElevatedRelaunch = true;
-                }
-
-                else {
-
-                    switch (*CharUpper(lp1)) {
-
-                    case L'N':
-                        Globals.CmdLnFlag_ReuseWindow = 1;
-                        if (*CharUpper(lp1 + 1) == L'S') {
-                            Globals.CmdLnFlag_SingleFileInstance = 2;
-                        } else {
-                            Globals.CmdLnFlag_SingleFileInstance = 1;
-                        }
-                        break;
-
-                    case L'R':
-                        if (*CharUpper(lp1 + 1) == L'P') {
-                            Flags.bPreserveFileModTime = true;
-                        } else {
-                            Globals.CmdLnFlag_ReuseWindow = 2;
-                            if (*CharUpper(lp1 + 1) == L'S') {
-                                Globals.CmdLnFlag_SingleFileInstance = 2;
-                            } else {
-                                Globals.CmdLnFlag_SingleFileInstance = 1;
-                            }
-                        }
-                        break;
-
-                    case L'F':
-                        if (*(lp1 + 1) == L'0' || *CharUpper(lp1 + 1) == L'O') {
-                            Path_Reset(Paths.IniFile, L"*?");
-                        } else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-                            WCHAR wchPath[INTERNET_MAX_URL_LENGTH];
-                            StringCchCopyN(wchPath, COUNTOF(wchPath), lp1, len);
-                            Path_Reset(Paths.IniFile, wchPath);
-                            Path_NormalizeEx(Paths.IniFile, Paths.ModuleDirectory, true, false);
-                        }
-                        break;
-
-                    case L'I':
-                        s_flagStartAsTrayIcon = true;
-                        break;
-
-                    case L'O':
-                        if (*(lp1 + 1) == L'0' || *(lp1 + 1) == L'-' || *CharUpper(lp1 + 1) == L'O') {
-                            Globals.CmdLnFlag_AlwaysOnTop = 1;
-                        } else {
-                            Globals.CmdLnFlag_AlwaysOnTop = 2;
-                        }
-                        break;
-
-                    case L'P': {
-                        WCHAR* lp = lp1;
-                        if (StrCmpNI(lp1, L"POS:", CONSTSTRGLEN(L"POS:")) == 0) {
-                            lp += CONSTSTRGLEN(L"POS:") - 1;
-                        } else if (StrCmpNI(lp1, L"POS", CONSTSTRGLEN(L"POS")) == 0) {
-                            lp += CONSTSTRGLEN(L"POS") - 1;
-                        } else if (*(lp1 + 1) == L':') {
-                            lp += 1;
-                        } else if (bIsNotepadReplacement) {
-                            if (*(lp1 + 1) == L'T') {
-                                ExtractFirstArgument(lp2, lp1, lp2, (int)len);
-                            }
-                            break;
-                        }
-                        if (*(lp + 1) == L'0' || *CharUpper(lp + 1) == L'O') {
-                            Globals.CmdLnFlag_PosParam = true;
-                            Globals.CmdLnFlag_WindowPos = 1;
-                        } else if (*CharUpper(lp + 1) == L'D' || *CharUpper(lp + 1) == L'S') {
-                            Globals.CmdLnFlag_PosParam = true;
-                            Globals.CmdLnFlag_WindowPos = (StrChrI((lp + 1), L'L')) ? 3 : 2;
-                        } else if (StrChrI(L"FLTRBM", *(lp + 1))) {
-                            WCHAR* p = (lp + 1);
-                            Globals.CmdLnFlag_PosParam = true;
-                            Globals.CmdLnFlag_WindowPos = 0;
-                            while (*p) {
-                                switch (*CharUpper(p)) {
-                                case L'F':
-                                    Globals.CmdLnFlag_WindowPos &= ~(4 | 8 | 16 | 32);
-                                    Globals.CmdLnFlag_WindowPos |= 64;
-                                    break;
-                                case L'L':
-                                    Globals.CmdLnFlag_WindowPos &= ~(8 | 64);
-                                    Globals.CmdLnFlag_WindowPos |= 4;
-                                    break;
-                                case  L'R':
-                                    Globals.CmdLnFlag_WindowPos &= ~(4 | 64);
-                                    Globals.CmdLnFlag_WindowPos |= 8;
-                                    break;
-                                case L'T':
-                                    Globals.CmdLnFlag_WindowPos &= ~(32 | 64);
-                                    Globals.CmdLnFlag_WindowPos |= 16;
-                                    break;
-                                case L'B':
-                                    Globals.CmdLnFlag_WindowPos &= ~(16 | 64);
-                                    Globals.CmdLnFlag_WindowPos |= 32;
-                                    break;
-                                case L'M':
-                                    if (Globals.CmdLnFlag_WindowPos == 0) {
-                                        Globals.CmdLnFlag_WindowPos |= 64;
-                                    }
-                                    Globals.CmdLnFlag_WindowPos |= 128;
-                                    break;
-                                }
-                                p = CharNext(p);
-                            }
-                        } else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-                            WININFO wi = INIT_WININFO;
-                            int iMaximize = 0;
-                            int const itok = swscanf_s(lp1, WINDOWPOS_STRGFORMAT, &wi.x, &wi.y, &wi.cx, &wi.cy, &wi.dpi, &iMaximize);
-                            if (itok == 4 || itok == 5 || itok == 6) { // scan successful
-                                Globals.CmdLnFlag_PosParam = true;
-                                Globals.CmdLnFlag_WindowPos = 0;
-                                if (itok == 4) {
-                                    wi.dpi = USER_DEFAULT_SCREEN_DPI;
-                                    iMaximize = 0;
-                                }
-                                else if (itok == 5) { // maybe DPI or Maxi (old)
-                                    if (wi.dpi < (USER_DEFAULT_SCREEN_DPI >> 2)) {
-                                        iMaximize = wi.dpi;
-                                        wi.dpi = USER_DEFAULT_SCREEN_DPI;
-                                    }
-                                    else {
-                                        iMaximize = 0;
-                                    }
-                                }
-                                wi.max = !!iMaximize;
-                                g_IniWinInfo = wi; // set window placement
-                            }
-                        }
-                    }
-                    break;
-
-                    case L'T':
-                        if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-                            StringCchCopyN(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), lp1, len);
-                            s_flagKeepTitleExcerpt = true;
-                        }
-                        break;
-
-                    case L'C':
-                        s_flagNewFromClipboard = true;
-                        break;
-
-                    case L'B':
-                        s_flagPasteBoard = true;
-                        break;
-
-                    case L'E':
-                        if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-                            s_flagSetEncoding = Encoding_MatchW(lp1);
-                        }
-                        break;
-
-                    case L'G':
-                        if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-                            int itok =
-                                swscanf_s(lp1, L"%i,%i", &s_iInitialLine, &s_iInitialColumn);
-                            if (itok == 1 || itok == 2) { // scan successful
-                                s_flagJumpTo = true;
-                            }
-                        }
-                        break;
-
-                    case L'M': {
-                        bool bFindUp = false;
-                        bool bMatchCase = false;
-                        bool bRegex = false;
-                        bool bDotMatchAll = false;
-                        bool bTransBS = false;
-
-                        if (StrChr(lp1, L'-')) {
-                            bFindUp = true;
-                        }
-                        if (StrChr(lp1, L'C')) {
-                            bMatchCase = true;
-                        }
-                        if (StrChr(lp1, L'R')) {
-                            bRegex = true;
-                            bTransBS = true;
-                        }
-                        if (StrChr(lp1, L'A')) {
-                            bDotMatchAll = true;
-                        }
-                        if (StrChr(lp1, L'B')) {
-                            bTransBS = true;
-                        }
-                        if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-                            SetFindPattern(lp1);
-
-                            g_flagMatchText = 1;
-                            if (bFindUp) {
-                                g_flagMatchText |= 2;
-                            }
-                            if (bRegex) {
-                                g_flagMatchText |= 4;
-                            }
-                            if (bMatchCase) {
-                                g_flagMatchText |= 8;
-                            }
-                            if (bDotMatchAll) {
-                                g_flagMatchText |= 16;
-                            }
-                            if (bTransBS) {
-                                g_flagMatchText |= 32;
-                            }
-                        }
-                    }
-                    break;
-
-                    case L'L':
-                        if (*(lp1 + 1) == L'0' || *(lp1 + 1) == L'-' || *CharUpper(lp1 + 1) == L'O') {
-                            s_flagChangeNotify = FWM_MSGBOX;
-                        } else if (*(lp1 + 1) == L'1' || *(lp1 + 1) == L'+' || *CharUpper(lp1 + 1) == L'X') {
-                            s_flagChangeNotify = FWM_EXCLUSIVELOCK;
-                        } else {
-                            s_flagChangeNotify = FWM_AUTORELOAD;
-                        }
-                        break;
-
-                    case L'Q':
-                        if (*CharUpper(lp1 + 1) == L'S') {
-                            s_flagSaveOnRelaunch = true;
-                        } else {
-                            s_flagQuietCreate = true;
-                        }
-                        break;
-
-                    case L'S':
-                        if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-                            if (s_lpSchemeArg) {
-                                LocalFree(s_lpSchemeArg);    // StrDup()
-                                s_lpSchemeArg = NULL;
-                            }
-                            s_lpSchemeArg = StrDup(lp1);
-                            s_flagLexerSpecified = true;
-                        }
-                        break;
-
-                    case L'D':
-                        if (s_lpSchemeArg) {
-                            LocalFree(s_lpSchemeArg);  // StrDup()
-                            s_lpSchemeArg = NULL;
-                        }
-                        s_iInitialLexer = 0;
-                        s_flagLexerSpecified = true;
-                        break;
-
-                    case L'H':
-                        if (s_lpSchemeArg) {
-                            LocalFree(s_lpSchemeArg);  // StrDup()
-                            s_lpSchemeArg = NULL;
-                        }
-                        s_iInitialLexer = 35;
-                        s_flagLexerSpecified = true;
-                        break;
-
-                    case L'X':
-                        if (s_lpSchemeArg) {
-                            LocalFree(s_lpSchemeArg);  // StrDup()
-                            s_lpSchemeArg = NULL;
-                        }
-                        s_iInitialLexer = 36;
-                        s_flagLexerSpecified = true;
-                        break;
-
-                    case L'U':
-                        if (*CharUpper(lp1 + 1) == L'C') {
-                            s_flagAppIsClosing = true;
-                        } else {
-                            Flags.bDoRelaunchElevated = true;
-                        }
-                        break;
-
-                    case L'Y':
-                        Flags.bSearchPathIfRelative = true;
-                        break;
-
-                    case L'Z':
-                        ExtractFirstArgument(lp2, lp1, lp2, (int)len);
-                        Globals.CmdLnFlag_MultiFileArg = 1;
-                        bIsNotepadReplacement = true;
-                        break;
-
-                    case L'?':
-                        s_flagDisplayHelp = true;
-                        break;
-
-                    case L'V':
-                        Globals.CmdLnFlag_PrintFileAndLeave = 1;
-                        if (*CharUpper(lp1 + 1) == L'D') {
-                            Globals.CmdLnFlag_PrintFileAndLeave = 2;  // open printer dialog
-                        }
-                        break;
-
-                    default:
-                        break;
-
-                    }
-                }
+                StringCchCopy(lp3, len, lp2); // next arg
+            }
+            else if (!bIsFileArg && ((*lp1 == L'/') && (*lp2 == '\0'))) {
+                bIsFileArg = true;
+                // lp3 must be file, so not ~StringCchCopy(lp3, len, lp2)
+            } 
+            else if (!bIsFileArg && ((*lp1 == L'/') || (*lp1 == L'-'))) {
+                StrLTrimI(lp1, L"-/"); // LeftTrim
+                ParseCmdLnOption(lp1, lp2, len);
+                bIsFileArg = false;
+            }
+            else {
+                bIsFileArg = true;
             }
             // pathname
-            else {
+            if (bIsFileArg) {
+
                 LPWSTR const lpFileBuf = AllocMem(sizeof(WCHAR) * len, HEAP_ZERO_MEMORY);
                 if (lpFileBuf) {
 
@@ -9466,20 +9129,22 @@ void ParseCommandLine()
                         FreeMem(s_lpOrigFileArg);
                         s_lpOrigFileArg = NULL;
                     }
-                    s_lpOrigFileArg = AllocMem(sizeof(WCHAR)*(fileArgLen + 1), HEAP_ZERO_MEMORY); // changed for ActivatePrevInst() needs
-                    StringCchCopy(s_lpOrigFileArg, fileArgLen + 1, lp3);
+                    size_t const alloc_spc = sizeof(WCHAR) * (fileArgLen + 1);
+                    s_lpOrigFileArg = AllocMem(alloc_spc, HEAP_ZERO_MEMORY); // changed for ActivatePrevInst() needs
+                    StringCchCopy(s_lpOrigFileArg, alloc_spc, lp3);
 
                     Path_Reset(s_pthArgFilePath, lp3);
 
-                    //assert(false);
-                    //if (!Path_IsRelative(s_pthArgFilePath) && !Path_IsUNC(s_pthArgFilePath) && (Path_GetDriveNumber(s_pthArgFilePath) == -1))
-                    //{
-                    //    HPATHL pthAdjustPath = Path_Copy(Paths.WorkingDirectory);
-                    //    Path_StripToRoot(pthAdjustPath);
-                    //    Path_Append(pthAdjustPath, Path_Get(s_pthArgFilePath));
-                    //    Path_Reset(s_pthArgFilePath, Path_Get(pthAdjustPath));
-                    //    Path_Release(pthAdjustPath);
-                    //}
+                    Path_FixBackslashes(s_pthArgFilePath);
+
+                    if (!Path_IsRelative(s_pthArgFilePath) && !Path_IsUNC(s_pthArgFilePath) && (Path_GetDriveNumber(s_pthArgFilePath) == -1))
+                    {
+                         HPATHL pthAdjustPath = Path_Copy(Paths.WorkingDirectory);
+                         Path_StripToRoot(pthAdjustPath);
+                         Path_Append(pthAdjustPath, Path_Get(s_pthArgFilePath));
+                         Path_Reset(s_pthArgFilePath, Path_Get(pthAdjustPath));
+                         Path_Release(pthAdjustPath);
+                    }
 
                     Path_NormalizeEx(s_pthArgFilePath, Paths.WorkingDirectory, true, true);
 
@@ -9504,6 +9169,384 @@ void ParseCommandLine()
         FreeMem(lp1);
         FreeMem(lp2);
         FreeMem(lp3);
+    }
+}
+
+static void ParseCmdLnOption(LPWSTR lp1, LPWSTR lp2, const size_t len)
+{
+    static bool bIsNotepadReplacement = false;
+
+    // Encoding
+    cpi_enc_t const encoding = Encoding_MatchW(lp1);
+
+    if (StringCchCompareXI(lp1, L"ANSI") == 0 || StringCchCompareXI(lp1, L"A") == 0 || StringCchCompareXI(lp1, L"MBCS") == 0) {
+        s_flagSetEncoding = CPI_ANSI_DEFAULT;
+    }
+    else if (StringCchCompareXI(lp1, L"UNICODE") == 0 || StringCchCompareXI(lp1, L"W") == 0) {
+        s_flagSetEncoding = CPI_UNICODEBOM;
+    }
+    else if (StringCchCompareXI(lp1, L"UNICODEBE") == 0 || StringCchCompareXI(lp1, L"UNICODE-BE") == 0) {
+        s_flagSetEncoding = CPI_UNICODEBEBOM;
+    }
+    else if (StringCchCompareXI(lp1, L"UTF8") == 0 || StringCchCompareXI(lp1, L"UTF-8") == 0) {
+        s_flagSetEncoding = CPI_UTF8;
+    }
+    else if (StringCchCompareXI(lp1, L"UTF8SIG") == 0 || StringCchCompareXI(lp1, L"UTF-8SIG") == 0 ||
+             StringCchCompareXI(lp1, L"UTF8SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8SIGNATURE") == 0 ||
+             StringCchCompareXI(lp1, L"UTF8-SIGNATURE") == 0 || StringCchCompareXI(lp1, L"UTF-8-SIGNATURE") == 0) {
+        s_flagSetEncoding = CPI_UTF8SIGN;
+    }
+    // maybe parsed encoding
+    else if (Encoding_IsValid(encoding)) {
+        s_flagSetEncoding = encoding;
+    }
+    // EOL Mode
+    else if (StringCchCompareXI(lp1, L"CRLF") == 0 || StringCchCompareXI(lp1, L"CR+LF") == 0) {
+        s_flagSetEOLMode = IDM_LINEENDINGS_CRLF - IDM_LINEENDINGS_CRLF + 1;
+    }
+    else if (StringCchCompareXI(lp1, L"CR") == 0) {
+        s_flagSetEOLMode = IDM_LINEENDINGS_CR - IDM_LINEENDINGS_CRLF + 1;
+    }
+    else if (StringCchCompareXI(lp1, L"LF") == 0) {
+        s_flagSetEOLMode = IDM_LINEENDINGS_LF - IDM_LINEENDINGS_CRLF + 1;
+    }
+    // Shell integration
+    else if (StrCmpNI(lp1, L"appid=", CONSTSTRGLEN(L"appid=")) == 0) {
+        StringCchCopyN(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID),
+            lp1 + CONSTSTRGLEN(L"appid="), len - CONSTSTRGLEN(L"appid="));
+        StrTrim(Settings2.AppUserModelID, L" ");
+        if (StrIsEmpty(Settings2.AppUserModelID)) {
+            StringCchCopy(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID), _W("Rizonesoft.") _W(SAPPNAME));
+        }
+    }
+    else if (StrCmpNI(lp1, L"sysmru=", CONSTSTRGLEN(L"sysmru=")) == 0) {
+        WCHAR wch[16];
+        StringCchCopyN(wch, COUNTOF(wch), lp1 + CONSTSTRGLEN(L"sysmru="), COUNTOF(wch));
+        StrTrim(wch, L" ");
+        if (*wch == L'1') {
+            Globals.CmdLnFlag_ShellUseSystemMRU = 2;
+        }
+        else {
+            Globals.CmdLnFlag_ShellUseSystemMRU = 1;
+        }
+    }
+    // Relaunch elevated
+    else if (StrCmpNI(lp1, RELAUNCH_ELEVATED_BUF_ARG, CONSTSTRGLEN(RELAUNCH_ELEVATED_BUF_ARG)) == 0) {
+        Path_Reset(s_hpthRelaunchElevatedFile, lp1 + CONSTSTRGLEN(RELAUNCH_ELEVATED_BUF_ARG));
+        //?TrimSpcW(s_hpthRelaunchElevatedFile);
+        Path_NormalizeEx(s_hpthRelaunchElevatedFile, Paths.ModuleDirectory, true, Flags.bSearchPathIfRelative);
+        s_IsThisAnElevatedRelaunch = true;
+    }
+
+    else {
+
+        switch (*CharUpper(lp1)) {
+
+        case L'N':
+            Globals.CmdLnFlag_ReuseWindow = 1;
+            if (*CharUpper(lp1 + 1) == L'S') {
+                Globals.CmdLnFlag_SingleFileInstance = 2;
+            }
+            else {
+                Globals.CmdLnFlag_SingleFileInstance = 1;
+            }
+            break;
+
+        case L'R':
+            if (*CharUpper(lp1 + 1) == L'P') {
+                Flags.bPreserveFileModTime = true;
+            }
+            else {
+                Globals.CmdLnFlag_ReuseWindow = 2;
+                if (*CharUpper(lp1 + 1) == L'S') {
+                    Globals.CmdLnFlag_SingleFileInstance = 2;
+                }
+                else {
+                    Globals.CmdLnFlag_SingleFileInstance = 1;
+                }
+            }
+            break;
+
+        case L'F':
+            if (*(lp1 + 1) == L'0' || *CharUpper(lp1 + 1) == L'O') {
+                Path_Reset(Paths.IniFile, L"*?");
+            }
+            else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
+                WCHAR wchPath[INTERNET_MAX_URL_LENGTH];
+                StringCchCopyN(wchPath, COUNTOF(wchPath), lp1, len);
+                Path_Reset(Paths.IniFile, wchPath);
+                Path_NormalizeEx(Paths.IniFile, Paths.ModuleDirectory, true, false);
+            }
+            break;
+
+        case L'I':
+            s_flagStartAsTrayIcon = true;
+            break;
+
+        case L'O':
+            if (*(lp1 + 1) == L'0' || *(lp1 + 1) == L'-' || *CharUpper(lp1 + 1) == L'O') {
+                Globals.CmdLnFlag_AlwaysOnTop = 1;
+            }
+            else {
+                Globals.CmdLnFlag_AlwaysOnTop = 2;
+            }
+            break;
+
+        case L'P': {
+            WCHAR* lp = lp1;
+            if (StrCmpNI(lp1, L"POS:", CONSTSTRGLEN(L"POS:")) == 0) {
+                lp += CONSTSTRGLEN(L"POS:") - 1;
+            }
+            else if (StrCmpNI(lp1, L"POS", CONSTSTRGLEN(L"POS")) == 0) {
+                lp += CONSTSTRGLEN(L"POS") - 1;
+            }
+            else if (*(lp1 + 1) == L':') {
+                lp += 1;
+            }
+            else if (bIsNotepadReplacement) {
+                if (*(lp1 + 1) == L'T') {
+                    ExtractFirstArgument(lp2, lp1, lp2, (int)len);
+                }
+                break;
+            }
+            if (*(lp + 1) == L'0' || *CharUpper(lp + 1) == L'O') {
+                Globals.CmdLnFlag_PosParam = true;
+                Globals.CmdLnFlag_WindowPos = 1;
+            }
+            else if (*CharUpper(lp + 1) == L'D' || *CharUpper(lp + 1) == L'S') {
+                Globals.CmdLnFlag_PosParam = true;
+                Globals.CmdLnFlag_WindowPos = (StrChrI((lp + 1), L'L')) ? 3 : 2;
+            }
+            else if (StrChrI(L"FLTRBM", *(lp + 1))) {
+                WCHAR* p = (lp + 1);
+                Globals.CmdLnFlag_PosParam = true;
+                Globals.CmdLnFlag_WindowPos = 0;
+                while (*p) {
+                    switch (*CharUpper(p)) {
+                    case L'F':
+                        Globals.CmdLnFlag_WindowPos &= ~(4 | 8 | 16 | 32);
+                        Globals.CmdLnFlag_WindowPos |= 64;
+                        break;
+                    case L'L':
+                        Globals.CmdLnFlag_WindowPos &= ~(8 | 64);
+                        Globals.CmdLnFlag_WindowPos |= 4;
+                        break;
+                    case L'R':
+                        Globals.CmdLnFlag_WindowPos &= ~(4 | 64);
+                        Globals.CmdLnFlag_WindowPos |= 8;
+                        break;
+                    case L'T':
+                        Globals.CmdLnFlag_WindowPos &= ~(32 | 64);
+                        Globals.CmdLnFlag_WindowPos |= 16;
+                        break;
+                    case L'B':
+                        Globals.CmdLnFlag_WindowPos &= ~(16 | 64);
+                        Globals.CmdLnFlag_WindowPos |= 32;
+                        break;
+                    case L'M':
+                        if (Globals.CmdLnFlag_WindowPos == 0) {
+                            Globals.CmdLnFlag_WindowPos |= 64;
+                        }
+                        Globals.CmdLnFlag_WindowPos |= 128;
+                        break;
+                    }
+                    p = CharNext(p);
+                }
+            }
+            else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
+                WININFO   wi = INIT_WININFO;
+                int       iMaximize = 0;
+                int const itok = swscanf_s(lp1, WINDOWPOS_STRGFORMAT, &wi.x, &wi.y, &wi.cx, &wi.cy, &wi.dpi, &iMaximize);
+                if (itok == 4 || itok == 5 || itok == 6) { // scan successful
+                    Globals.CmdLnFlag_PosParam = true;
+                    Globals.CmdLnFlag_WindowPos = 0;
+                    if (itok == 4) {
+                        wi.dpi = USER_DEFAULT_SCREEN_DPI;
+                        iMaximize = 0;
+                    }
+                    else if (itok == 5) { // maybe DPI or Maxi (old)
+                        if (wi.dpi < (USER_DEFAULT_SCREEN_DPI >> 2)) {
+                            iMaximize = wi.dpi;
+                            wi.dpi = USER_DEFAULT_SCREEN_DPI;
+                        }
+                        else {
+                            iMaximize = 0;
+                        }
+                    }
+                    wi.max = !!iMaximize;
+                    g_IniWinInfo = wi; // set window placement
+                }
+            }
+        } break;
+
+        case L'T':
+            if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
+                StringCchCopyN(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), lp1, len);
+                s_flagKeepTitleExcerpt = true;
+            }
+            break;
+
+        case L'C':
+            s_flagNewFromClipboard = true;
+            break;
+
+        case L'B':
+            s_flagPasteBoard = true;
+            break;
+
+        case L'E':
+            if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
+                s_flagSetEncoding = Encoding_MatchW(lp1);
+            }
+            break;
+
+        case L'G':
+            if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
+                int itok =
+                    swscanf_s(lp1, L"%i,%i", &s_iInitialLine, &s_iInitialColumn);
+                if (itok == 1 || itok == 2) { // scan successful
+                    s_flagJumpTo = true;
+                }
+            }
+            break;
+
+        case L'M': {
+            bool bFindUp = false;
+            bool bMatchCase = false;
+            bool bRegex = false;
+            bool bDotMatchAll = false;
+            bool bTransBS = false;
+
+            if (StrChr(lp1, L'-')) {
+                bFindUp = true;
+            }
+            if (StrChr(lp1, L'C')) {
+                bMatchCase = true;
+            }
+            if (StrChr(lp1, L'R')) {
+                bRegex = true;
+                bTransBS = true;
+            }
+            if (StrChr(lp1, L'A')) {
+                bDotMatchAll = true;
+            }
+            if (StrChr(lp1, L'B')) {
+                bTransBS = true;
+            }
+            if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
+                SetFindPattern(lp1);
+
+                g_flagMatchText = 1;
+                if (bFindUp) {
+                    g_flagMatchText |= 2;
+                }
+                if (bRegex) {
+                    g_flagMatchText |= 4;
+                }
+                if (bMatchCase) {
+                    g_flagMatchText |= 8;
+                }
+                if (bDotMatchAll) {
+                    g_flagMatchText |= 16;
+                }
+                if (bTransBS) {
+                    g_flagMatchText |= 32;
+                }
+            }
+        } break;
+
+        case L'L':
+            if (*(lp1 + 1) == L'0' || *(lp1 + 1) == L'-' || *CharUpper(lp1 + 1) == L'O') {
+                s_flagChangeNotify = FWM_MSGBOX;
+            }
+            else if (*(lp1 + 1) == L'1' || *(lp1 + 1) == L'+' || *CharUpper(lp1 + 1) == L'X') {
+                s_flagChangeNotify = FWM_EXCLUSIVELOCK;
+            }
+            else {
+                s_flagChangeNotify = FWM_AUTORELOAD;
+            }
+            break;
+
+        case L'Q':
+            if (*CharUpper(lp1 + 1) == L'S') {
+                s_flagSaveOnRelaunch = true;
+            }
+            else {
+                s_flagQuietCreate = true;
+            }
+            break;
+
+        case L'S':
+            if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
+                if (s_lpSchemeArg) {
+                    LocalFree(s_lpSchemeArg); // StrDup()
+                    s_lpSchemeArg = NULL;
+                }
+                s_lpSchemeArg = StrDup(lp1);
+                s_flagLexerSpecified = true;
+            }
+            break;
+
+        case L'D':
+            if (s_lpSchemeArg) {
+                LocalFree(s_lpSchemeArg); // StrDup()
+                s_lpSchemeArg = NULL;
+            }
+            s_iInitialLexer = 0;
+            s_flagLexerSpecified = true;
+            break;
+
+        case L'H':
+            if (s_lpSchemeArg) {
+                LocalFree(s_lpSchemeArg); // StrDup()
+                s_lpSchemeArg = NULL;
+            }
+            s_iInitialLexer = 35;
+            s_flagLexerSpecified = true;
+            break;
+
+        case L'X':
+            if (s_lpSchemeArg) {
+                LocalFree(s_lpSchemeArg); // StrDup()
+                s_lpSchemeArg = NULL;
+            }
+            s_iInitialLexer = 36;
+            s_flagLexerSpecified = true;
+            break;
+
+        case L'U':
+            if (*CharUpper(lp1 + 1) == L'C') {
+                s_flagAppIsClosing = true;
+            }
+            else {
+                Flags.bDoRelaunchElevated = true;
+            }
+            break;
+
+        case L'Y':
+            Flags.bSearchPathIfRelative = true;
+            break;
+
+        case L'Z':
+            ExtractFirstArgument(lp2, lp1, lp2, (int)len);
+            Globals.CmdLnFlag_MultiFileArg = 1;
+            bIsNotepadReplacement = true;
+            break;
+
+        case L'?':
+            s_flagDisplayHelp = true;
+            break;
+
+        case L'V':
+            Globals.CmdLnFlag_PrintFileAndLeave = 1;
+            if (*CharUpper(lp1 + 1) == L'D') {
+                Globals.CmdLnFlag_PrintFileAndLeave = 2; // open printer dialog
+            }
+            break;
+
+        default:
+            break;
+        }
     }
 }
 

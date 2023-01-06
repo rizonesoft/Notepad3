@@ -83,7 +83,7 @@ BEGIN
     IDT_FILE_PRINT          "Stampa"
     IDT_FILE_OPENFAV        "Preferiti"
     IDT_FILE_ADDTOFAV       "Aggiungi ai Preferiti"
-    IDT_VIEW_TOGGLEFOLDS    "Attiva/disattiva Folding"
+    IDT_VIEW_TOGGLEFOLDS    "Espandi/Collassa tutti i Folds"
 END
 
 STRINGTABLE
@@ -174,7 +174,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "%s occorrenze del pattern di ricerca specificato sono state sostituite."
     IDS_MUI_ASK_ENCODING    "Cambiare la codifica del file potrebbe sostituire testo non supportato con un carattere di default, e la cronologia delle modifiche (undo) sarà svuotata. Continuare?"
     IDS_MUI_ASK_ENCODING2   "Stai per cambiare la codifica di un file vuoto. Questo cancellerà la cronologia delle modifiche (undo), perché non può essere sincronizzata con la nuova codifica. Continuare?"
-    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Questa operazione cancella la cronologia delle modifiche. Continuare?"
     IDS_MUI_READONLY_SAVE   """%s"" è in sola lettura. Salvare in un file differente?"
     IDS_MUI_FILECHANGENOTIFY
                             "Il file corrente è stato modificato da un programma esterno. Ricaricare?"
