@@ -317,7 +317,7 @@ Seçenekler:\r\n\
 /n\tHer zaman yeni pencerede açar (/ns tek dosya kopyası).\r\n\
 /r\tPencereyi yeniden kullanır (/rs tek dosya kopyası).\r\n\
 /p\tPencere konumunu ve boyutunu ayarlar (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
-\tor /p <left>,<top>,<width>,<height>[,<dpi>,<max>]  [tümü tam sayı].\r\n\
+\tor /p <left>,<top>,<width>,<height>[,<dpi>[,<max>]]  (tümü tam sayı).\r\n\
 /t\tPencere başlığını ayarlar.\r\n\
 /i\tSistem tepsisinde başlatır.\r\n\
 /o\tPencereyi üste sabitler.\r\n\
