@@ -174,7 +174,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "Se han reemplazado %s ocurrencia(s) del patrón de búsqueda especificado."
     IDS_MUI_ASK_ENCODING    "Cambiar la codificación del archivo de una codificación a otra puede reemplazar el texto no compatible con caracteres predeterminados, y el historial de deshacer se borrará. ¿Continuar?"
     IDS_MUI_ASK_ENCODING2   "Está a punto de cambiar la codificación de un archivo vacío. Tenga en cuenta que esto borrará el historial de deshacer, ya que no se puede sincronizar con la nueva codificación. ¿Continuar?"
-    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Esta operación borrará el historial de deshacer. ¿Continuar?"
     IDS_MUI_READONLY_SAVE   """%s"" es de sólo lectura. ¿Guardar en un archivo diferente?"
     IDS_MUI_FILECHANGENOTIFY
                             "El archivo actual ha sido modificado por un programa externo. ¿Recargar?"
