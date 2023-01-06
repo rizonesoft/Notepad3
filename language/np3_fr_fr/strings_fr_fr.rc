@@ -317,7 +317,7 @@ Options :\r\n\
 /n\tOuvre toujours une nouvelle fenêtre (/ns instance de fichier unique).\r\n\
 /r\tRéutilise la fenêtre (/rs instance de fichier unique).\r\n\
 /p\tDéfinit la position et la taille de la fenêtre (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
-\tou /p <gauche>,<haut>,<largeur>,<hauteur>[,<dpi>,<max>]  [tous  entiers].\r\n\
+\tou /p <gauche>,<haut>,<largeur>,<hauteur>[,<dpi>[,<max>]]  (tous  entiers).\r\n\
 /t\tDéfinit un titre de fenêtre.\r\n\
 /i\tDémarre en icône dans la zone de notifications.\r\n\
 /o\tGarde la fenêtre toujours visible.\r\n\

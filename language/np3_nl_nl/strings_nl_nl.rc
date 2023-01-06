@@ -317,7 +317,7 @@ Opties:\r\n\
 /n\tOpen altijd een nieuw venster (/ns één bestand instantie).\r\n\
 /r\tHergebruik venster (/rs één bestand instantie).\r\n\
 /p\tVensterpositie en -grootte instellen (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
-\tof /p <links>,<top>,<breedte>,<hoogte>[,<dpi>,<max>]  [gehele\r\n\tgetallen].\r\n\
+\tof /p <links>,<top>,<breedte>,<hoogte>[,<dpi>[,<max>]]  (gehele\r\n\tgetallen).\r\n\
 /t\tVenstertitel instellen.\r\n\
 /i\tStart als systeemvakpictogram.\r\n\
 /o\tVenster bovenop houden.\r\n\
