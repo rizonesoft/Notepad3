@@ -496,7 +496,7 @@ BEGIN
     IDS_LEX_STR_63387       "Simge işlemi"
     IDS_LEX_STR_63388       "Dizge satır sonu"
     IDS_LEX_STR_63397       "Ters tik"
-    IDS_LEX_STR_63398       "GUID String"
+    IDS_LEX_STR_63398       "GUID dizgesi"
 END
 
 STRINGTABLE
