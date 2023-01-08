@@ -263,7 +263,7 @@ BEGIN
     CONTROL         "&Zapisz ostatnią listę pliku przy wyjściu.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,140,10
     CONTROL         "&Zachowaj znak wstawienia.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
     CONTROL         "&Zapamiętaj wzór wyszukiwania.",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,120,10
-    CONTROL         "&Autoload most recent file on startup.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,160,10
+    CONTROL         "&Automatyczne ładowanie ostatniego pliku przy starcie systemu.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,160,10
     CONTROL         "Odrzuć", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
     DEFPUSHBUTTON   "OK",IDOK,154,158,50,14,WS_DISABLED
     PUSHBUTTON      "Zamknij",IDCANCEL,212,158,50,14
@@ -510,7 +510,7 @@ BEGIN
     PUSHBUTTON      "Anuluj",IDCANCEL,73,24,50,14
 END
 
-IDD_MUI_MODIFYLINES DIALOGEX 0, 0, 182, 120
+IDD_MUI_MODIFYLINES DIALOGEX 0, 0, 205, 120
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Modyfikuj wiersze"
 FONT 9, "Segoe UI", 400, 0, 0x1
@@ -519,8 +519,8 @@ BEGIN
     EDITTEXT        IDC_MODLNS_ED_PREPEND,7,18,98,14,ES_AUTOHSCROLL
     LTEXT           "&Dołącz tekst do wiersza:",IDC_STATIC2,7,37,90,8
     EDITTEXT        IDC_MODLNS_ED_APPEND,7,48,98,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
-    PUSHBUTTON      "Anuluj",IDCANCEL,125,24,50,14
+    DEFPUSHBUTTON   "OK",IDOK,148,7,50,14
+    PUSHBUTTON      "Anuluj",IDCANCEL,148,24,50,14
     LTEXT           "${L}",IDC_MODLNS_DOCLN_CANONIC,7,72,14,8
     LTEXT           "${0L}",IDC_MODLNS_DOCLN_ZEROFLD,30,72,18,8
     LTEXT           "Numer wiersza dokumentu.",IDC_STATIC3,57,72,90,8
@@ -531,7 +531,7 @@ BEGIN
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,17,8
     LTEXT           "Liczba ciągła (oparte na zerze).",IDC_STATIC5,57,92,109,8
     LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,35,8
-    LTEXT           "${<expr>} defines math formulas.",IDC_STATIC6,57,102,132,8
+    LTEXT           "${<expr>} definiuje formuły matematyczne.",IDC_STATIC6,57,102,145,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 192, 70
