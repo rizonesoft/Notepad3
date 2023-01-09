@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.23.106.(build_#) (2023-01-06)
+Current BETA/RC Version 5.23.109.(build_#) (2023-01-09)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.109.1]- Allow "dotbox" instead of "horiz. line" for folded text.
 [.102.1]- Allow Line Number color to be alpha blended (e.g. DarkMode).
 [1223.1]- Allow "Notepad3 x64 Setup" to install on Win11 Arm (64-bit emulation).
 [1212.1]- Implementation of automatic parenthesis closure.
@@ -121,6 +122,7 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.109.1]- Trigger mark-all-occ after transform backslash (EscCtrlChr) in F/R-Box is used.
 [.106.1]- Not intended replacement of "~" used in short windows path names.
 [.105.1]- Some WSL2 (Linux) path issues.
 [.104.1]- Handling of editing own settings (in this case: disable file watching).
@@ -236,7 +238,6 @@ to resume "(incomplete...)" translation projects:
 - Greek (el-GR) (incomplete...)
 - Hindi (hi-IN) (incomplete...)
 - Indonesian (id-ID) (incomplete...)
-- Polish (pl-PL) (incomplete...)
 - Portuguese (pt-PT) (incomplete...)
 - Spanish Mexican (es-MX) (incomplete...)
 - Vietnamese (vi-VN) (incomplete...)
