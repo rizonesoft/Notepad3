@@ -174,7 +174,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "%s occurrence(s) du modèle de recherche spécifié remplacée(s)."
     IDS_MUI_ASK_ENCODING    "Changer l'encodage du fichier d'un encodage à un autre peut remplacer le texte non pris en charge par des caractères par défaut et l'historique de ""Défaire"" sera effacé. Continuer ?"
     IDS_MUI_ASK_ENCODING2   "Vous êtes sur le point de changer l'encodage d'un fichier vide. Notez que cela effacera l'historique de ""Défaire"", car il ne peut pas être synchronisé avec le nouvel encodage. Continuer ?"
-    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Cette opération videra l'historique ""Défaire"". Continuer ?"
     IDS_MUI_READONLY_SAVE   """%s"" est en lecture seule. Sauvegarder dans un fichier différent ?"
     IDS_MUI_FILECHANGENOTIFY
                             "Le fichier actuel a été modifié par un programme externe. Recharger ?"
@@ -317,7 +317,7 @@ Options :\r\n\
 /n\tOuvre toujours une nouvelle fenêtre (/ns instance de fichier unique).\r\n\
 /r\tRéutilise la fenêtre (/rs instance de fichier unique).\r\n\
 /p\tDéfinit la position et la taille de la fenêtre (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
-\tou /p <gauche>,<haut>,<largeur>,<hauteur>[,<dpi>,<max>]  [tous  entiers].\r\n\
+\tou /p <gauche>,<haut>,<largeur>,<hauteur>[,<dpi>[,<max>]]  (tous entiers).\r\n\
 /t\tDéfinit un titre de fenêtre.\r\n\
 /i\tDémarre en icône dans la zone de notifications.\r\n\
 /o\tGarde la fenêtre toujours visible.\r\n\

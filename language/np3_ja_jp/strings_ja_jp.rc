@@ -317,7 +317,7 @@ Notepad3 [/?] [...[文字コード]] [...[改行コード]] [/e] [/g] [/m] [/l]\
 /n\t新規ウィンドウで開く (/ns ファイルは単一のインスタンス)\r\n\
 /r\tウインドウを再利用 (/rs 同じく単一のインスタンス\r\n\
 /p\tウィンドウの位置とサイズを指定 (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
-\tor /p <left>,<top>,<width>,<height>[,<dpi>,<max>]  [すべて整数]\r\n\
+\tor /p <left>,<top>,<width>,<height>[,<dpi>[,<max>]]  (すべて整数)\r\n\
 /t\tタイトルバーの文字列を指定 [/t text]\r\n\
 /i\tシステムトレイ内に起動\r\n\
 /o\t常に手前に表示\r\n\

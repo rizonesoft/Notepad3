@@ -129,7 +129,7 @@ BEGIN
     IDS_LEX_KOTLIN_SRC      "Kod źródłowy Kotlin"
     IDS_LEX_JULIA_SCR       "Julia Script"
     IDS_LEX_KIX_SCR         "KiXtart Script"
-    IDS_LEX_FORTRAN         "Fortran Source Code"
+    IDS_LEX_FORTRAN         "Kod źródłowy Fortran"
 END
 
 STRINGTABLE
@@ -488,27 +488,27 @@ BEGIN
     IDS_LEX_STR_63379       "Niezamknięty ciąg"
     IDS_LEX_STR_63380       "URL/IRI"
     IDS_LEX_STR_63381       "Zwięzły IRI"
-    IDS_LEX_STR_63382       "Send Key"
-    IDS_LEX_STR_63383       "Meta-Data"
-    IDS_LEX_STR_63384       "Enumeration"
-    IDS_LEX_STR_63385       "TriQ-String"
-    IDS_LEX_STR_63386       "Symbol Identifier"
-    IDS_LEX_STR_63387       "Symbol Operator"
-    IDS_LEX_STR_63388       "String EOL"
+    IDS_LEX_STR_63382       "Wyślij klucz"
+    IDS_LEX_STR_63383       "MetaDane"
+    IDS_LEX_STR_63384       "Wykaz"
+    IDS_LEX_STR_63385       "Ciąg TriQ"
+    IDS_LEX_STR_63386       "Identyfikator Symbolu"
+    IDS_LEX_STR_63387       "Operator Symbolu"
+    IDS_LEX_STR_63388       "Ciąg EOL"
     IDS_LEX_STR_63397       "Backticks"
-    IDS_LEX_STR_63398       "GUID String"
+    IDS_LEX_STR_63398       "Ciąg GUID"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_CH_MODIFIED     "Change History Marker Modified"
-    IDS_LEX_STD_CH_SAVED        "Change History Marker Saved"
-    IDS_LEX_STD_CH_REV_TO_MOD   "Change History Marker Reverted to Modified"
-    IDS_LEX_STD_CH_REV_TO_ORG   "Change History Marker Reverted to Origin"
-    IDS_LEX_2ND_CH_MODIFIED     "2nd Change History Marker Modified"
-    IDS_LEX_2ND_CH_SAVED        "2nd Change History Marker Saved"
-    IDS_LEX_2ND_CH_REV_TO_MOD   "2nd Change History Marker Reverted to Modified"
-    IDS_LEX_2ND_CH_REV_TO_ORG   "2nd Change History Marker Reverted to Origin"
+    IDS_LEX_STD_CH_MODIFIED     "Zmodyfikowano znacznik historii zmian"
+    IDS_LEX_STD_CH_SAVED        "Zapisano znacznik historii zmian"
+    IDS_LEX_STD_CH_REV_TO_MOD   "Znacznik historii zmian został przywrócony do zmodyfikowanego"
+    IDS_LEX_STD_CH_REV_TO_ORG   "Znacznik historii zmian został przywrócony do początku"
+    IDS_LEX_2ND_CH_MODIFIED     "Drugi Zmodyfikowano znacznik historii zmian"
+    IDS_LEX_2ND_CH_SAVED        "Drugi Zapisano znacznik historii zmian"
+    IDS_LEX_2ND_CH_REV_TO_MOD   "Drugi Znacznik historii zmian został przywrócony do zmodyfikowanego"
+    IDS_LEX_2ND_CH_REV_TO_ORG   "Drugi Znacznik historii zmian został przywrócony do początku"
 END
 
 STRINGTABLE

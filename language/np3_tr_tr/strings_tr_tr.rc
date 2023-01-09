@@ -174,7 +174,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "Belirtilen aramaya uygun %s eşleşme bulundu."
     IDS_MUI_ASK_ENCODING    "Dosya kodlamasını değiştirmek desteklenmeyen karakterlerin varsayılanlar ile değiştirilmesine yol açar ve geri alma geçmişini temizler. Devam etmek istiyor musunuz?"
     IDS_MUI_ASK_ENCODING2   "Boş bir dosyanın kodlamasını değiştirmek üzeresiniz. Yeni kodlama ile eşitlenemeyeceğinden bu işlemin geri alma geçmişini sileceğini unutmayın. Devam etmek istiyor musunuz?"
-    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Bu işlem geri alma geçmişini temizleyecek. İlerlemek istiyor musunuz?"
     IDS_MUI_READONLY_SAVE   """%s"" salt okunur. Başka bir dosyaya kaydetmek ister misiniz?"
     IDS_MUI_FILECHANGENOTIFY
                             "Geçerli dosya başka bir uygulama tarafından değiştirilmiş Yeniden yüklemek ister misiniz?"
@@ -317,7 +317,7 @@ Seçenekler:\r\n\
 /n\tHer zaman yeni pencerede açar (/ns tek dosya kopyası).\r\n\
 /r\tPencereyi yeniden kullanır (/rs tek dosya kopyası).\r\n\
 /p\tPencere konumunu ve boyutunu ayarlar (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
-\tor /p <left>,<top>,<width>,<height>[,<dpi>,<max>]  [tümü tam sayı].\r\n\
+\tor /p <left>,<top>,<width>,<height>[,<dpi>[,<max>]]  (tümü tam sayı).\r\n\
 /t\tPencere başlığını ayarlar.\r\n\
 /i\tSistem tepsisinde başlatır.\r\n\
 /o\tPencereyi üste sabitler.\r\n\

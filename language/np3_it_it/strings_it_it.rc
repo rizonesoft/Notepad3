@@ -61,7 +61,7 @@ BEGIN
     IDT_FILE_SAVE           "Salva"
     IDT_FILE_RECENT         "Recenti"
     IDT_EDIT_UNDO           "Annulla"
-    IDT_EDIT_REDO           "Ripeti"
+    IDT_EDIT_REDO           "Ripristina"
     IDT_EDIT_CUT            "Taglia"
     IDT_EDIT_COPY           "Copia"
 END
@@ -317,7 +317,7 @@ Opzioni:\r\n\
 /n\tApri sempre una nuova finestra (/ns istanza singola).\r\n\
 /r\tRiutilizza finestra (/rs istanza singola).\r\n\
 /p\tImposta posizione e dimensione della finestra (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
-\to /p <sinistra>,<sopra>,<larghezza>,<altezza>[,<dpi>,<max>]  \r\n\t[numeri interi].\r\n\
+\to /p <sinistra>,<sopra>,<larghezza>,<altezza>[,<dpi>[,<max>]]  \r\n\t(numeri interi).\r\n\
 /t\tImposta titolo della finestra.\r\n\
 /i\tAvvia come icona nell'area di notifica'.\r\n\
 /o\tMantieni finestra in primo piano.\r\n\
