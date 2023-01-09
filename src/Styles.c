@@ -2298,21 +2298,23 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
     SciCall_SetFoldMarginColour(true, clrFoldMarginBack);     // background
     SciCall_SetFoldMarginHiColour(true, clrFoldMarginBack); // (!)
 
-    //SciCall_FoldDisplayTextSetStyle(SC_FOLDDISPLAYTEXT_BOXED);
-    //SciCall_SetDefaultFoldDisplayText("...");
-
-    int fldStyleLn = 0;
-    Style_StrGetCharSet(wchBookMarkStyleStrg, &fldStyleLn);
 
     int const _debug_flags = 0;
     //int const _debug_flags = (SC_FOLDFLAG_LEVELNUMBERS | SC_FOLDFLAG_LINESTATE); // !extend margin width
 
+    int fldStyleLn = 0;
+    Style_StrGetCharSet(wchBookMarkStyleStrg, &fldStyleLn);
     switch (fldStyleLn) {
     case 1:
         SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED | _debug_flags);
         break;
     case 2:
         SciCall_SetFoldFlags(SC_FOLDFLAG_LINEBEFORE_CONTRACTED | SC_FOLDFLAG_LINEAFTER_CONTRACTED | _debug_flags);
+        break;
+    case 3:
+        SciCall_SetFoldFlags(SC_FOLDFLAG_NONE | _debug_flags);
+        SciCall_SetDefaultFoldDisplayText(" \xE2\x80\xA6 ");
+        SciCall_FoldDisplayTextSetStyle(SC_FOLDDISPLAYTEXT_BOXED);
         break;
     default:
         SciCall_SetFoldFlags(SC_FOLDFLAG_LINEAFTER_CONTRACTED | _debug_flags);
