@@ -171,9 +171,11 @@ static int sortcmp(void *mqc1, void *mqc2) {
 // ----------------------------------------------------------------------------
 
 
+
 #define _MQ_TIMER_CYCLE (USER_TIMER_MINIMUM << 1)
+#define _MQ_STD  (_MQ_TIMER_CYCLE << 2)
 #define _MQ_ms2cycl(T) (((T) + USER_TIMER_MINIMUM) / _MQ_TIMER_CYCLE)
-#define _MQ_STD (_MQ_TIMER_CYCLE << 2)
+#define _MQ_ASAP 0
 
 static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
 {
@@ -6883,10 +6885,16 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         case IDC_REPLESCCTRLCHR: {
             UINT const ctrl_id = (LOWORD(wParam) == IDC_FINDESCCTRLCHR) ? IDC_FINDTEXT : IDC_REPLACETEXT;
             GetDlgItemTextW(hwnd, ctrl_id, s_wchBufIn, COUNTOF(s_wchBufIn));
-            if (SlashCtrlW(s_wchBufOut, COUNTOF(s_wchBufOut), s_wchBufIn) == StringCchLen(s_wchBufIn, 0)) {
+            size_t const inLen = StringCchLen(s_wchBufIn, 0);
+            if (SlashCtrlW(s_wchBufOut, COUNTOF(s_wchBufOut), s_wchBufIn) == inLen) {
                 UnSlashCtrlW(s_wchBufOut);
             }
             SetDlgItemTextW(hwnd, ctrl_id, s_wchBufOut);
+            if ((ctrl_id == IDC_FINDTEXT) && (inLen != StringCchLen(s_wchBufOut, 0))) {
+                Globals.FindReplaceMatchFoundState = FND_NOP;
+                _SetSearchFlags(hwnd, s_pEfrData);
+                _DelayMarkAll(_MQ_ASAP);
+            }
         }
         break;
 
@@ -6895,9 +6903,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             GetDlgItemTextW(hwnd, IDC_REPLACETEXT, s_wchBufIn, COUNTOF(s_wchBufIn));
             SetDlgItemTextW(hwnd, IDC_FINDTEXT, s_wchBufIn);
             SetDlgItemTextW(hwnd, IDC_REPLACETEXT, s_wchBufOut);
-            Globals.FindReplaceMatchFoundState = FND_NOP;
-            _SetSearchFlags(hwnd, s_pEfrData);
-            _DelayMarkAll(_MQ_STD);
+            if (StringCchCompareX(s_wchBufIn, s_wchBufOut) != 0) {
+                Globals.FindReplaceMatchFoundState = FND_NOP;
+                _SetSearchFlags(hwnd, s_pEfrData);
+                _DelayMarkAll(_MQ_ASAP);
+            }
         }
         break;
 

@@ -72,13 +72,13 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// https://docs.microsoft.com/en-us/windows/release-health/  (Windows releases health)
+// https://docs.microsoft.com/en-us/windows/release-health  (Windows releases health)
 // https://docs.microsoft.com/en-us/windows/release-health/release-information  (Windows 10)
 // https://docs.microsoft.com/en-us/windows/release-health/windows11-release-information  (Windows 11)
 // https://docs.microsoft.com/en-us/windows/release-health/windows-server-release-info  (Windows Server)
-// https://docs.microsoft.com/en-us/windows-insider/flight-hub/  (Windows Insider Preview Builds)
-// https://en.wikipedia.org/wiki/Windows_10/ (Wikipedia: Windows 10)
-// https://en.wikipedia.org/wiki/Windows_11/ (Wikipedia: Windows 11)
+// https://docs.microsoft.com/en-us/windows-insider/flight-hub  (Windows Insider Preview Builds)
+// https://en.wikipedia.org/wiki/Windows_10 (Wikipedia: Windows 10)
+// https://en.wikipedia.org/wiki/Windows_11 (Wikipedia: Windows 11)
 // ----------------------------------------------------------------------------
 
 inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
@@ -151,7 +151,7 @@ inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1934)
         #if (_MSC_FULL_VER >= 193431937)
-            #define VER_CPL     MS Visual C++ 2022 v17.4.3
+            #define VER_CPL     MS Visual C++ 2022 v17.4.(3-4)
         #elif (_MSC_FULL_VER >= 193431935)
             #define VER_CPL     MS Visual C++ 2022 v17.4.2
         #elif (_MSC_FULL_VER >= 193431933)
@@ -191,7 +191,7 @@ inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
         #endif
     #elif (_MSC_VER == 1929)
         #if (_MSC_FULL_VER >= 192930147)
-            #define VER_CPL     MS Visual C++ 2019 v16.11.(21-22)
+            #define VER_CPL     MS Visual C++ 2019 v16.11.(21-23)
         #elif (_MSC_FULL_VER >= 192930146)
             #define VER_CPL     MS Visual C++ 2019 v16.11.(17-20)
         #elif (_MSC_FULL_VER >= 192930145)

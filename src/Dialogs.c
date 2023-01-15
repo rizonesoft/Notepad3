@@ -665,7 +665,10 @@ static bool GetTrayWndRect(LPRECT lpTrayRect) {
 }
 
 void MinimizeWndToTray(HWND hWnd) {
-    if (GetDoAnimateMinimize()) {
+
+    bool const bAnimate = GetDoAnimateMinimize();
+
+    if (bAnimate) {
 
         // Get the rect of the window. It is safe to use the rect of the whole
         // window - DrawAnimatedRects will only draw the caption
@@ -683,11 +686,14 @@ void MinimizeWndToTray(HWND hWnd) {
     // This looks untidy, so call the functions in this order
 
     // Hide the window
+    ShowWindow(hWnd, SW_MINIMIZE);
+    if (bAnimate) { Sleep(500); }
     ShowWindow(hWnd, SW_HIDE);
     Globals.bMinimizedToTray = true;
 }
 
 void RestoreWndFromTray(HWND hWnd) {
+
     if (GetDoAnimateMinimize()) {
 
         // Get the rect of the tray and the window. Note that the window rect
@@ -703,6 +709,7 @@ void RestoreWndFromTray(HWND hWnd) {
 
     // Show the window, and make sure we're the foreground window
     ShowWindow(hWnd, SW_SHOW);
+    ShowWindow(hWnd, SW_RESTORE);
     SetActiveWindow(hWnd);
     SetForegroundWindow(hWnd);
     Globals.bMinimizedToTray = false;
@@ -6393,6 +6400,16 @@ LRESULT SendWMSize(HWND hwnd, RECT* rc)
     return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(wndrc.right, wndrc.bottom));
 }
 
+//=============================================================================
+//
+//  UpdateUI()
+//
+void UpdateUI(HWND hwnd)
+{
+    SendWMSize(hwnd, NULL);
+    PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
+    PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
+}
 
 
 //=============================================================================

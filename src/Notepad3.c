@@ -1034,6 +1034,8 @@ void InvalidParameterHandler(const wchar_t* expression,
 //
 int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd)
 {
+    UNREFERENCED_PARAMETER(lpCmdLine);
+
     _invalid_parameter_handler const hNewInvalidParamHandler = InvalidParameterHandler;
     _hOldInvalidParamHandler= _set_invalid_parameter_handler(hNewInvalidParamHandler);
 
@@ -1259,7 +1261,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         return 1;
     }
 
-    HWND const hwnd = InitInstance(Globals.hInstance, lpCmdLine, nShowCmd);
+    HWND const hwnd = InitInstance(Globals.hInstance, nShowCmd);
     if (!hwnd) {
         _CleanUpResources(hwnd, true);
         return 1;
@@ -1755,10 +1757,8 @@ bool InitWndClass(const HINSTANCE hInstance, LPCWSTR lpszWndClassName, LPCWSTR l
 //
 //  InitInstance() - DarkMode already initialized !
 //
-HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
+HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
 {
-    UNREFERENCED_PARAMETER(pszCmdLine);
-
     // init w/o hwnd
     g_IniWinInfo = GetWinInfoByFlag(NULL, Globals.CmdLnFlag_WindowPos);
 
@@ -1772,7 +1772,7 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         WS_EX_ACCEPTFILES,
         s_wchWndClass,
         _W(SAPPNAME),
-        WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+        (WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN) & ~WS_VISIBLE,
         srcninfo.x,
         srcninfo.y,
         srcninfo.cx,
@@ -1782,12 +1782,12 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         hInstance,
         NULL);
 
+    ShowWindow(hwndMain, SW_HIDE); // force to be hidden
+
     // correct infos based on hwnd
     g_DefWinInfo = _GetDefaultWinInfoByStrg(hwndMain, Settings2.DefaultWindowPosition);
     g_IniWinInfo = GetWinInfoByFlag(hwndMain, Globals.CmdLnFlag_WindowPos);
     s_WinCurrentWidth = g_IniWinInfo.cx;
-
-    SnapToWinInfoPos(hwndMain, g_IniWinInfo, SCR_NORMAL);
     if (g_IniWinInfo.max) {
         nCmdShow = SW_SHOWMAXIMIZED;
     }
@@ -1808,27 +1808,18 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
 
     Globals.hwndMain = hwndMain; // make main window globaly available
 
-    // Initial FileLoad() moved in front of ShowWindow()
     HPATHL hfile_pth = Path_Allocate(L"");
-    FileLoadFlags fLoadFlags = FLF_DontSave | FLF_New | FLF_SkipUnicodeDetect | FLF_SkipANSICPDetection;
-    FileLoad(hfile_pth, fLoadFlags); // int editor frame
-
-    if (!s_flagStartAsTrayIcon) {
-        ShowWindow(hwndMain,nCmdShow);
-        UpdateWindow(hwndMain);
-    } else {
-        ShowWindow(hwndMain,SW_HIDE);    // trick ShowWindow()
-        ShowNotifyIcon(hwndMain,true);
-    }
-
+    FileLoadFlags fLoadFlags = FLF_None;
+    
     // Source Encoding
     Encoding_Forced(s_flagSetEncoding);
+
+    // Initial FileLoad() moved in front of ShowWindow()
+    bool bOpened = false;
 
     // Pathname parameter
     if (s_IsThisAnElevatedRelaunch || (Path_IsNotEmpty(s_pthArgFilePath) /*&& !g_flagNewFromClipboard*/)) {
 
-        bool bOpened = false;
-        fLoadFlags = FLF_None;
         fLoadFlags |= Settings.SkipUnicodeDetection ? FLF_SkipUnicodeDetect : 0;
         fLoadFlags |= Settings.SkipANSICodePageDetection ? FLF_SkipANSICPDetection : 0;
 
@@ -1905,6 +1896,31 @@ HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow)
         if (Encoding_IsValid(forcedEncoding)) {
             Encoding_Current(forcedEncoding);
         }
+    }
+    if (!bOpened) {
+        Path_Reset(hfile_pth, L"");
+        fLoadFlags = FLF_DontSave | FLF_New | FLF_SkipUnicodeDetect | FLF_SkipANSICPDetection;
+        FileLoad(hfile_pth, fLoadFlags); // init editor frame
+    }
+
+    // now, after FileLoad() do ShowWindow()
+    SnapToWinInfoPos(hwndMain, g_IniWinInfo, SCR_NORMAL);
+    ShowWindowAsync(s_hwndEditFrame, SW_SHOW);
+    ShowWindowAsync(Globals.hwndEdit, SW_SHOW);
+
+    if (!s_flagStartAsTrayIcon) {
+        UpdateWindow(hwndMain);
+        ShowWindow(hwndMain, nCmdShow);
+    }
+    else {
+        if (Settings.MinimizeToTray) {
+            MinimizeWndToTray(hwndMain);
+        }
+        else {
+            ShowWindow(hwndMain, SW_MINIMIZE);
+        }
+        ShowNotifyIcon(hwndMain, true);
+        SetNotifyIconTitle(hwndMain);
     }
 
     // reset
@@ -2625,7 +2641,7 @@ static void _InitEditWndFrame()
         if (!IsWindowsVistaOrGreater()) {
 
             SetWindowPos(s_hwndEditFrame, Globals.hwndEdit, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
-            ShowWindow(s_hwndEditFrame, SW_SHOWNORMAL);
+            ShowWindow(s_hwndEditFrame, SW_HIDE);
 
             RECT rc, rc2;
             GetClientRect(s_hwndEditFrame, &rc);
@@ -2638,7 +2654,7 @@ static void _InitEditWndFrame()
 
         SetWindowLongPtr(Globals.hwndEdit, GWL_EXSTYLE, WS_EX_CLIENTEDGE | GetWindowLongPtr(Globals.hwndEdit, GWL_EXSTYLE));
         SetWindowPos(Globals.hwndEdit, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
-
+        ShowWindow(Globals.hwndEdit, SW_HIDE);
     }
 }
 
@@ -2666,7 +2682,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
                            WS_EX_CLIENTEDGE,
                            L"Scintilla",
                            NULL,
-                           WS_CHILD | WS_CLIPSIBLINGS,
+                           (WS_CHILD | WS_CLIPSIBLINGS) & ~WS_VISIBLE,
                            0, 0, 0, 0,
                            hwnd,
                            (HMENU)IDC_EDIT,
@@ -2711,7 +2727,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
     (void)CreateWindow(
         WC_STATIC,
         NULL,
-        WS_CHILD|WS_CLIPSIBLINGS|WS_CLIPCHILDREN,
+        WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
         10,10,10,10,
         hwnd,
         (HMENU)IDC_REUSELOCK,
@@ -2732,7 +2748,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
     //~ Style_SetDefaultLexer(Globals.hwndEdit); -- done by WM_THEMECHANGED
 
-    ShowWindow(Globals.hwndEdit, SW_SHOWNORMAL);
+    ShowWindow(Globals.hwndEdit, SW_HIDE);
 
     Encoding_Current(Settings.DefaultEncoding);
 
@@ -3166,10 +3182,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     s_cyReBar = (rc.bottom - rc.top);
     s_cyReBarFrame = s_bIsAppThemed ? 0 : 2;  // (!) frame color is same as INITIAL title-bar ???
 
-    if (Settings.ShowToolbar) {
-        ShowWindow(Globals.hwndRebar, SW_SHOWNORMAL);
-    }
-
+    ShowWindow(Globals.hwndRebar, Settings.ShowToolbar ? SW_SHOWNORMAL : SW_HIDE);
 
     // -------------------
     // Create Statusbar
@@ -3209,9 +3222,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     //~ReleaseDC(Globals.hwndStatus, hdc);
 #endif
 
-    if (Settings.ShowStatusbar) {
-        ShowWindow(Globals.hwndStatus, SW_SHOWNORMAL);
-    }
+    ShowWindow(Globals.hwndStatus, Settings.ShowStatusbar ? SW_SHOWNORMAL : SW_HIDE);
 }
 
 
@@ -3421,21 +3432,6 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 void UpdateContentArea()
 {
     Sci_ForceNotifyUpdateUI(Globals.hwndMain, IDC_EDIT);
-}
-
-
-//=============================================================================
-//
-//  UpdateUI()
-//
-void UpdateUI(HWND hwnd)
-{
-    //if (hwnd == Globals.hwndMain) {
-    //    UpdateContentArea()
-    //}
-    SendWMSize(hwnd, NULL);
-    PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
-    PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
 }
 
 
@@ -6273,7 +6269,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_TOOLBAR:
         Settings.ShowToolbar = !Settings.ShowToolbar;
-        ShowWindow(Globals.hwndRebar, (Settings.ShowToolbar ? SW_SHOW : SW_HIDE));
+        ShowWindow(Globals.hwndRebar, (Settings.ShowToolbar ? SW_SHOWNORMAL : SW_HIDE));
         UpdateUI(hwnd);
         break;
 
@@ -6301,7 +6297,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_STATUSBAR:
         Settings.ShowStatusbar = !Settings.ShowStatusbar;
-        ShowWindow(Globals.hwndStatus, (Settings.ShowStatusbar ? SW_SHOW : SW_HIDE));
+        ShowWindow(Globals.hwndStatus, (Settings.ShowStatusbar ? SW_SHOWNORMAL : SW_HIDE));
         UpdateUI(hwnd);
         break;
 

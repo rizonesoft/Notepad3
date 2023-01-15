@@ -107,7 +107,7 @@ typedef enum {
 //==== Function Declarations ==================================================
 bool InitApplication(const HINSTANCE hInstance);
 //~bool InitToolbarWndClass(const HINSTANCE hInstance);
-HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow);
+HWND InitInstance(const HINSTANCE hInstance, int nCmdShow);
 void CreateBars(HWND hwnd, HINSTANCE hInstance);
 WININFO GetFactoryDefaultWndPos(HWND hwnd, const int flagsPos);
 WININFO GetWinInfoByFlag(HWND hwnd, const int flagsPos);
@@ -134,7 +134,6 @@ void UpdateMargins(const bool bForce);
 void UpdateSaveSettingsCmds();
 void UpdateTitlebar(const HWND hwnd);
 void UpdateContentArea();
-void UpdateUI(HWND hwnd);
 
 void ResetMouseDWellTime();
 
