@@ -65,9 +65,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[.104.1]- Minor refactoring on UpdateUI.
 [.104.1]- Move DefaultWindowPosition to Window section (deprecated: Settings2 section).
-[.101.1]- Refactoring and fix window positioning respecting monitor DPI.
 [1230.1]- Revert to Lexilla's standard Markdown lexer (LEX).
 [1230.1]- Change background color for Heading 1 to enhance contrast to std Hyperlink (LEX).
 [1230.1]- Visible representation of EOL characters.
@@ -123,13 +121,11 @@ FIXES:
 --------------------------------------------------------
 [.###.#]- .
 [.109.1]- Trigger mark-all-occ after transform backslash (EscCtrlChr) in F/R-Box is used.
-[.106.1]- Not intended replacement of "~" used in short windows path names.
 [.105.1]- Some WSL2 (Linux) path issues.
 [.104.1]- Handling of editing own settings (in this case: disable file watching).
 [.104.1]- Path to module relative representation.
 [.103.1]- Load Toolbar-Bitmap handling.
 [.102.1]- Minor design change and some fixes for Margin and Bookmark handling.
-[1230.1]- Minor bugs related to new feature Change-History.
 [1230.1]- (re)setting default window position in case of non std DPI resolution.
 [1228.1]- Speedup search&replace in large text files.
 [1227.1]- Use alternate path, if Path_GetKnownFolder() failed.
