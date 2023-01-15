@@ -236,7 +236,8 @@ void UpdateWindowLayoutForDPI(HWND hwnd, const RECT *pRC, const UINT dpi);
 //#define BMP_RESAMPLE_FILTER   STOCK_FILTER_QUADRATICBSPLINE
 HBITMAP ResampleImageBitmap(HWND hwnd, HBITMAP hbmp, int width, int height);
 LRESULT SendWMSize(HWND hwnd, RECT* rc);
-//HFONT   CreateAndSetFontDlgItemDPI(HWND hdlg, const int idDlgItem, int fontSize, bool bold);
+void    UpdateUI(HWND hwnd);
+// HFONT   CreateAndSetFontDlgItemDPI(HWND hdlg, const int idDlgItem, int fontSize, bool bold);
 
 // ----------------------------------------------------------------------------
 
