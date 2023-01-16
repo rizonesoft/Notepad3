@@ -34,7 +34,7 @@ function DebugOutput($msg)
 try 
 {
   $AppName = "Notepad3"
-	$Major = 5
+	$Major = 6
 	$Minor = [int]$(Get-Date -format yy)
 	$Revis = [int]$(Get-Date -format Mdd)
 	$Build = [int](Get-Content "Versions\build.txt")
