@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.23.109.(build_#) (2023-01-09)
+Current BETA/RC Version 5.23.115.(build_#) (2023-01-15)
 ========================================================
 
 --------------------------------------------------------
@@ -120,6 +120,8 @@ CHANGES Versions in Tools or Libraries:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.115.1]- Initial white display (splash) in case of Dark Mode Win
+[.115.1]- Animated minimize (taskbar or tray), restore w/o white splash.
 [.109.1]- Trigger mark-all-occ after transform backslash (EscCtrlChr) in F/R-Box is used.
 [.105.1]- Some WSL2 (Linux) path issues.
 [.104.1]- Handling of editing own settings (in this case: disable file watching).
