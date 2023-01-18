@@ -2,7 +2,7 @@
 =                                                                              =
 =            Notepad3 - light-weight Scintilla-based text editor for Windows   =
 =                                                                              =
-=                                                   (c) Rizonesoft 2008-2023   =
+=                                                   (c) Rizonesoft 2008-2022   =
 =                                                 https://www.rizonesoft.com   =
 =                                                                              =
 ================================================================================
@@ -31,6 +31,66 @@ ONI - (ONI)guruma Regex engine
 SCI - (SCI)ntilla Library
 SUP - (S)et(UP) / Installer Package
 UCD - (UCD)ARDET is an Encoding Detector Library
+
+
+========================================================
+Current BETA/RC Version 6.23.118.(build_#) (2023-01-18)
+========================================================
+
+--------------------------------------------------------
+NEW:
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+CHANGES:
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+FIXES:
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+REMOVED:
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+CHANGES Versions in Tools or Libraries:
+--------------------------------------------------------
+[1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
+[1212.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2022-12-09).
+[1212.1]- Update Scintilla Library (SCI) version 5.3.2 (2022-12-06).
+[1212.1]- Update Lexilla Library (LEX) version 5.2.1 (2022-12-06).
+[1018.1]- Update grepWinNP3 (GRE) version 2.1.11.42 (2022-10-14).
+
+--------------------------------------------------------
+TRANSLATIONS (MUI):
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+Hello everybody ! 😀
+For our "Notepad3 Translation Projects", we are looking for motivated volunteers, with a priority
+to resume "(incomplete...)" translation projects:
+
+- Greek (el-GR) (incomplete...)
+- Hindi (hi-IN) (incomplete...)
+- Indonesian (id-ID) (incomplete...)
+- Portuguese (pt-PT) (incomplete...)
+- Spanish Mexican (es-MX) (incomplete...)
+- Vietnamese (vi-VN) (incomplete...)
+- etc...
+
+Please, send me a PM (mailto:hpwamr51 @ gmail.com) if you are willing to help. 🤔
+--------------------------------------------------------
 
 
 ========================================================
