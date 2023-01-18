@@ -34,13 +34,12 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.23.115.(build_#) (2023-01-15)
+Version 6.23.118.1 (18 January 2023)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
-[.###.#]- .
 [.109.1]- Allow "dotbox" instead of "horiz. line" for folded text.
 [.102.1]- Allow Line Number color to be alpha blended (e.g. DarkMode).
 [1223.1]- Allow "Notepad3 x64 Setup" to install on Win11 Arm (64-bit emulation).
@@ -64,7 +63,6 @@ NEW:
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
-[.###.#]- .
 [.104.1]- Move DefaultWindowPosition to Window section (deprecated: Settings2 section).
 [1230.1]- Revert to Lexilla's standard Markdown lexer (LEX).
 [1230.1]- Change background color for Heading 1 to enhance contrast to std Hyperlink (LEX).
@@ -108,18 +106,8 @@ CHANGES:
 [1130.1]- Default settings: LaunchInstanceWndPosOffset=28 and LaunchInstanceFullVisible=true.
 
 --------------------------------------------------------
-CHANGES Versions in Tools or Libraries:
---------------------------------------------------------
-[1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
-[1212.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2022-12-09).
-[1212.1]- Update Scintilla Library (SCI) version 5.3.2 (2022-12-06).
-[1212.1]- Update Lexilla Library (LEX) version 5.2.1 (2022-12-06).
-[1018.1]- Update grepWinNP3 (GRE) version 2.1.11.42 (2022-10-14).
-
---------------------------------------------------------
 FIXES:
 --------------------------------------------------------
-[.###.#]- .
 [.115.1]- Initial white display (splash) in case of Dark Mode Win
 [.115.1]- Animated minimize (taskbar or tray), restore w/o white splash.
 [.109.1]- Trigger mark-all-occ after transform backslash (EscCtrlChr) in F/R-Box is used.
@@ -219,30 +207,21 @@ FIXES:
 --------------------------------------------------------
 REMOVED:
 --------------------------------------------------------
-[.###.#]- .
-[.###.#]- .
+-
+
+--------------------------------------------------------
+CHANGES Versions in Tools or Libraries:
+--------------------------------------------------------
+[1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
+[1212.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2022-12-09).
+[1212.1]- Update Scintilla Library (SCI) version 5.3.2 (2022-12-06).
+[1212.1]- Update Lexilla Library (LEX) version 5.2.1 (2022-12-06).
+[1018.1]- Update grepWinNP3 (GRE) version 2.1.11.42 (2022-10-14).
 
 --------------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------------
-[.###.#]- .
 [.208.1]- Turkish (tr-TR).
-
---------------------------------------------------------
-Hello everybody ! 😀
-For our "Notepad3 Translation Projects", we are looking for motivated volunteers, with a priority
-to resume "(incomplete...)" translation projects:
-
-- Greek (el-GR) (incomplete...)
-- Hindi (hi-IN) (incomplete...)
-- Indonesian (id-ID) (incomplete...)
-- Portuguese (pt-PT) (incomplete...)
-- Spanish Mexican (es-MX) (incomplete...)
-- Vietnamese (vi-VN) (incomplete...)
-- etc...
-
-Please, send me a PM (mailto:hpwamr51 @ gmail.com) if you are willing to help. 🤔
---------------------------------------------------------
 
 
 ========================================================
