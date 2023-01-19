@@ -3,9 +3,9 @@
 <assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
 	<assemblyIdentity
 		name="Rizonesoft.Notepad3"
-		version="5.23.115.1"
+		version="6.23.118.2"
 		processorArchitecture="*"
 		type="win32"
 	/>
-	<description>Notepad3 rc2</description>
+	<description>Notepad3 beta</description>
 </assembly>
