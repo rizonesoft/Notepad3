@@ -8,7 +8,7 @@
 ================================================================================
 
 
-*** Keyboard Shortcuts for Notepad3 ***              date: 2021-08-30
+*** Keyboard Shortcuts for Notepad3 ***              date: 2023-01-20
 ---------------------------------------------------------------------
 
 
@@ -244,6 +244,8 @@
         Ctrl+Alt+V            Focused View.
         Ctrl+PgUp/PgDn        Goto Previous/Next.
         Ctrl+Shift+PgUp/PgDn  Select to Previous/Next.
+        Alt+PageUp            Paragraph navigation Up.
+        Alt+PageDown          Paragraph navigation Down.
 
       Zoom
       ----
@@ -317,6 +319,7 @@
   Ctrl+D          Change to another directory.
   Ctrl+E          Toggle "Activate target window" option.
   Ctrl+F          Launch target application without any file.
+  Ctrl+G          Goto...
   Ctrl+H          Save settings.
   Ctrl+K          Create link.
   Ctrl+L          Launch selected file.

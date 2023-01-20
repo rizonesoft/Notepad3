@@ -3,7 +3,7 @@
 <assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
 	<assemblyIdentity
 		name="Rizonesoft.Notepad3"
-		version="6.23.118.2"
+		version="6.23.120.1"
 		processorArchitecture="*"
 		type="win32"
 	/>
