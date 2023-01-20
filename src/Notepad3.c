@@ -6730,6 +6730,24 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
 
+    case CMD_PARAGRAPH_UP:
+        if (!SciCall_IsSelectionEmpty() && Sci_IsStreamSelection()) {
+            SciCall_ParaUpExtend();
+        } else {
+            SciCall_ParaUp();
+        }
+        break;
+
+
+    case CMD_PARAGRAPH_DOWN:
+        if (!SciCall_IsSelectionEmpty() && Sci_IsStreamSelection()) {
+            SciCall_ParaDownExtend();
+        } else {
+            SciCall_ParaDown();
+        }
+        break;
+
+
     case CMD_CTRLBACK: {
         DocPos const iPos = SciCall_GetCurrentPos();
         DocPos const iAnchor = SciCall_GetAnchor();

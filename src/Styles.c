@@ -9,7 +9,7 @@
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *   Mostly taken from SciTE, (c) Neil Hodgson                                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2023   *
+*                                                  (c) Rizonesoft 2008-2022   *
 *                                                 http://www.rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -1487,8 +1487,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_INDENT_GUIDE].iStyle, pCurrentStandard->Styles[STY_INDENT_GUIDE].szValue, fBaseFontSize); // indent guide
 
     if (Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, FOREGROUND_LAYER, &rgb, NULL, false)) { // selection fore
-        SciCall_SetElementColour(SC_ELEMENT_SELECTION_TEXT, RGBxA(rgb, SC_ALPHA_OPAQUE));
-        SciCall_SetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_TEXT, RGBxA(rgb, SC_ALPHA_OPAQUE));
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_TEXT, RGB2RGBAREF(rgb));
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_TEXT, RGB2RGBAREF(rgb));
     }
     else {
         SciCall_ResetElementColour(SC_ELEMENT_SELECTION_TEXT);
@@ -1499,8 +1499,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SciCall_SetSelectionLayer(SC_LAYER_UNDER_TEXT); // selection back
     if (Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, BACKGROUND_LAYER, &rgb, NULL, true)) {
         Style_StrGetAlpha(pCurrentStandard->Styles[STY_SEL_TXT].szValue, &iValue, SC_ALPHA_OPAQUE, true);
-        SciCall_SetElementColour(SC_ELEMENT_SELECTION_BACK, RGBxA(rgb, iValue));
-        SciCall_SetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_BACK, RGBxA(rgb, iValue * 2 / 3));
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_BACK, AxRGB(iValue, rgb));
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_BACK, AxRGB(iValue * 2 / 3, rgb));
     }
     else {
         SciCall_ResetElementColour(SC_ELEMENT_SELECTION_BACK);
@@ -1508,8 +1508,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
 
     // AutoCompletion List
-    SciCall_SetElementColour(SC_ELEMENT_LIST, RGBxA(GetModeTextColor(UseDarkMode()), SC_ALPHA_OPAQUE));
-    SciCall_SetElementColour(SC_ELEMENT_LIST_BACK, RGBxA(GetModeBkColor(UseDarkMode()), SC_ALPHA_OPAQUE));
+    SciCall_SetElementColour(SC_ELEMENT_LIST, RGB2RGBAREF(GetModeTextColor(UseDarkMode())));
+    SciCall_SetElementColour(SC_ELEMENT_LIST_BACK, RGB2RGBAREF(GetModeBkColor(UseDarkMode())));
     //SciCall_SetElementColour(SC_ELEMENT_LIST_SELECTED, SciCall_GetElementBaseColour(SC_ELEMENT_LIST_SELECTED));
     //SciCall_SetElementColour(SC_ELEMENT_LIST_SELECTED_BACK, SciCall_GetElementBaseColour(SC_ELEMENT_LIST_SELECTED_BACK));
 
@@ -1540,10 +1540,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
             StringCchPrintf(wch, COUNTOF(wch), L"; alpha:%i", iValue);
             StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
         }
-        SciCall_SetElementColour(SC_ELEMENT_WHITE_SPACE, RGBxA(rgb, iValue));
-        SciCall_SetRepresentationColour("\r", RGBxA(rgb, iValue));
-        SciCall_SetRepresentationColour("\n", RGBxA(rgb, iValue));
-        SciCall_SetRepresentationColour("\r\n", RGBxA(rgb, iValue));
+        SciCall_SetElementColour(SC_ELEMENT_WHITE_SPACE, AxRGB(iValue, rgb));
+        SciCall_SetRepresentationColour("\r", AxRGB(iValue, rgb));
+        SciCall_SetRepresentationColour("\n", AxRGB(iValue, rgb));
+        SciCall_SetRepresentationColour("\r\n", AxRGB(iValue, rgb));
     }
     else {
         SciCall_ResetElementColour(SC_ELEMENT_WHITE_SPACE);
@@ -1563,7 +1563,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         //~    StringCchPrintf(wch, COUNTOF(wch), L"; alpha2:%i", iValue);
         //~    StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
         //~}
-        SciCall_SetElementColour(SC_ELEMENT_WHITE_SPACE_BACK, RGBxA(rgb, SC_ALPHA_OPAQUE));
+        SciCall_SetElementColour(SC_ELEMENT_WHITE_SPACE_BACK, RGB2RGBAREF(rgb));
     }
     else {
         SciCall_ResetElementColour(SC_ELEMENT_WHITE_SPACE_BACK);
@@ -1631,8 +1631,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         StringCchPrintf(wch, COUNTOF(wch), L"; alpha:%i", iValue);
         StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), wch);
     }
-    SciCall_SetElementColour(SC_ELEMENT_CARET, RGBxA(rgb, iValue));
-    SciCall_SetElementColour(SC_ELEMENT_CARET_ADDITIONAL, RGBxA(RGB(220, 0, 0), iValue));
+    SciCall_SetElementColour(SC_ELEMENT_CARET, AxRGB(iValue, rgb));
+    SciCall_SetElementColour(SC_ELEMENT_CARET_ADDITIONAL, AxRGB(iValue, RGB(220, 0, 0)));
 
     StrTrim(wchSpecificStyle, L" ;");
     StringCchCopy(pCurrentStandard->Styles[STY_CARET].szValue,
@@ -2003,7 +2003,7 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
     }
 
     SciCall_SetCaretLineLayer(SC_LAYER_UNDER_TEXT);
-    SciCall_SetElementColour(SC_ELEMENT_CARET_LINE_BACK, RGBxA(rgb, alpha));
+    SciCall_SetElementColour(SC_ELEMENT_CARET_LINE_BACK, AxRGB(alpha, rgb));
     SciCall_SetCaretLineVisibleAlways(iHiLitCurLn > 0);
 }
 
@@ -2167,17 +2167,17 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
     SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_VERTICALBOOKMARK); // SC_MARK_BOOKMARK/SC_MARK_SHORTARROW
     SciCall_MarkerSetStrokeWidth(MARKER_NP3_BOOKMARK, strokeWidth);
     SciCall_MarkerSetAlpha(MARKER_NP3_BOOKMARK, bookmarkAlpha);                                  // if drawn in content area
-    SciCall_MarkerSetForeTranslucent(MARKER_NP3_BOOKMARK, RGBxA(clrLineNumFore, bookmarkAlpha)); //~clrBookMarkFore
+    SciCall_MarkerSetForeTranslucent(MARKER_NP3_BOOKMARK, AxRGB(bookmarkAlpha, clrLineNumFore)); //~clrBookMarkFore
     //~SciCall_MarkerSetBack(MARKER_NP3_BOOKMARK, Style_RgbAlpha(clrBookMarkFore, clrMarginBack, bookmarkAlpha));
-    SciCall_MarkerSetBackTranslucent(MARKER_NP3_BOOKMARK, RGBxA(clrBookMarkFore, bookmarkAlpha));
+    SciCall_MarkerSetBackTranslucent(MARKER_NP3_BOOKMARK, AxRGB(bookmarkAlpha, clrBookMarkFore));
 
     // occurrence bookmarker
     bool const visible = Settings.MarkOccurrencesBookmark;
     //SciCall_MarkerDefine(MARKER_NP3_OCCURRENCE, visible ? SC_MARK_ARROWS : SC_MARK_BACKGROUND);
     SciCall_MarkerDefine(MARKER_NP3_OCCURRENCE, visible ? SC_MARK_ARROWS : SC_MARK_EMPTY);
     SciCall_MarkerSetStrokeWidth(MARKER_NP3_OCCURRENCE, strokeWidth);
-    SciCall_MarkerSetForeTranslucent(MARKER_NP3_OCCURRENCE, RGBxA(CalcContrastColor(clrMarginBack, 100), SC_ALPHA_OPAQUE));
-    SciCall_MarkerSetBackTranslucent(MARKER_NP3_OCCURRENCE, RGBxA(clrMarginBack, SC_ALPHA_TRANSPARENT));
+    SciCall_MarkerSetForeTranslucent(MARKER_NP3_OCCURRENCE, RGB2RGBAREF(CalcContrastColor(clrMarginBack, 100)));
+    SciCall_MarkerSetBackTranslucent(MARKER_NP3_OCCURRENCE, AxRGB(SC_ALPHA_TRANSPARENT, clrMarginBack));
     //~SciCall_MarkerSetForeSelected(MARKER_NP3_OCCURRENCE, RGB(0,0,220));
 
     // ---  WordBookMarks  ---
@@ -2186,8 +2186,8 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
         SciCall_MarkerDefine(m, (Settings.FocusViewMarkerMode & FVMM_LN_BACKGR) ? SC_MARK_BACKGROUND : SC_MARK_BOOKMARK);
         Style_StrGetColor(WordBookMarks[m], BACKGROUND_LAYER, &color, NULL, true);
         SciCall_MarkerSetAlpha(m, bookmarkAlpha); // if drawn in content area
-        SciCall_MarkerSetForeTranslucent(m, RGBxA(color, SC_ALPHA_OPAQUE));
-        SciCall_MarkerSetBackTranslucent(m, RGBxA(color, bookmarkAlpha)); // 'alpha' no meaning for SC_MARK_BACKGROUND
+        SciCall_MarkerSetForeTranslucent(m, RGB2RGBAREF(color));
+        SciCall_MarkerSetBackTranslucent(m, AxRGB(bookmarkAlpha, color)); // 'alpha' no meaning for SC_MARK_BACKGROUND
     }
 
     SciCall_SetMarginBackN(MARGIN_SCI_BOOKMRK, clrMarginBack);
@@ -2286,8 +2286,8 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
     COLORREF const fldHiLight = colorRead;
 
     for (int i = 0; i < COUNTOF(FoldMarkerID); ++i) {
-        SciCall_MarkerSetForeTranslucent(FoldMarkerID[i], RGBxA(clrFoldMarginBack, SC_ALPHA_OPAQUE)); // (!)
-        SciCall_MarkerSetBackTranslucent(FoldMarkerID[i], RGBxA(clrLineNumFore, SC_ALPHA_OPAQUE));  // (!) //~clrBookMarkForeAlpha
+        SciCall_MarkerSetForeTranslucent(FoldMarkerID[i], RGB2RGBAREF(clrFoldMarginBack)); // (!)
+        SciCall_MarkerSetBackTranslucent(FoldMarkerID[i], RGB2RGBAREF(clrLineNumFore)); // (!) //~clrBookMarkForeAlpha
         SciCall_MarkerSetBackSelected(FoldMarkerID[i], fldHiLight);
         SciCall_MarkerSetStrokeWidth(FoldMarkerID[i], strokeWidth);
     }
@@ -3269,18 +3269,19 @@ void Style_AppendWeightAttribute(LPWSTR lpszWeight, int cchSize, int fontWeight)
 //
 //  Style_StrGetColor()
 //
-bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb, COLORREF* rgbOrig, bool useDefault)
+bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORALPHAREF* rgba, COLORALPHAREF* rgbaOrig, bool useDefault)
 {
-    bool const         bFGLayer = (layer == FOREGROUND_LAYER);
+    bool const bFGLayer = (layer == FOREGROUND_LAYER);
     //~COLORREF const     colorDefault = bFGLayer ? GetModeTextColor(UseDarkMode()) : GetModeBkColor(UseDarkMode());
-    COLORREF const     colorDefault = bFGLayer ? SciCall_StyleGetFore(STYLE_DEFAULT) : SciCall_StyleGetBack(STYLE_DEFAULT); //~ SCI maybe not initialized
-    COLORREF           color = rgbOrig ? *rgbOrig : (rgb ? *rgb : colorDefault);
-    bool               bIsDefined = false;
-    const WCHAR* const pItem = bFGLayer ? L"fore:" : L"back:";
-    WCHAR *p = StrStr(lpszStyle, pItem);
+    COLORALPHAREF const colorDefault = bFGLayer ? RGB2RGBAREF(SciCall_StyleGetFore(STYLE_DEFAULT)) : 
+                                                  RGB2RGBAREF(SciCall_StyleGetBack(STYLE_DEFAULT)); //~ SCI maybe not initialized
+    COLORALPHAREF       color = rgbaOrig ? *rgbaOrig : (rgba ? *rgba : colorDefault);
+    bool                bIsDefined = false;
+    const WCHAR* const  pItem = bFGLayer ? L"fore:" : L"back:";
+    WCHAR*              p = StrStr(lpszStyle, pItem);
     if (p) {
         WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-        StringCchCopy(tch, COUNTOF(tch), p + StringCchLenW(pItem,0));
+        StringCchCopy(tch, COUNTOF(tch), p + StringCchLenW(pItem, 0));
         if (tch[0] == L'#') {
             tch[0] = L' ';
         }
@@ -3290,9 +3291,12 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb, COLO
         }
         TrimSpcW(tch);
 
-        unsigned int iValue = 0;
+        unsigned __int32 iValue = 0;
         if (swscanf_s(tch, L"%x", &iValue) == 1) {
-            color = RGB((iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
+            color = ARGB((iValue & 0xFF000000) >> 24, (iValue & 0xFF0000) >> 16, (iValue & 0xFF00) >> 8, iValue & 0xFF);
+            if (GetAValue(color) == 0) {
+                color = RGB2RGBAREF(color); // alpha not defined: assuming opaque
+            }
             bIsDefined = true;
         }
     }
@@ -3302,14 +3306,14 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF* rgb, COLO
         //~ don't: bIsDefined = true;
     }
 
-    if (rgbOrig) {
-        *rgbOrig = color;
+    if (rgbaOrig) {
+        *rgbaOrig = color;
     }
     if (bFGLayer && UseDarkMode()) {
-        color = ContrastColor(color, Settings2.DarkModeHiglightContrast);
+        color = AxRGB(GetAValue(color), ContrastColor(ARGB_TO_COLREF(color), Settings2.DarkModeHiglightContrast));
     }
-    if (rgb) {
-        *rgb = color;
+    if (rgba) {
+        *rgba = color;
     }
 
     return bIsDefined;
