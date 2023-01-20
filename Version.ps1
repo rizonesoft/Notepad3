@@ -23,7 +23,7 @@ function DebugOutput($msg)
 {
 	#~return ## disabled debug output
 	if ($msg -ne $null) { 
-      	Write-Host ""
+		Write-Host ""
 		Write-Host "$msg"
 	}
 }
@@ -33,7 +33,7 @@ function DebugOutput($msg)
 
 try 
 {
-  $AppName = "Notepad3"
+	$AppName = "Notepad3"
 	$Major = 6
 	$Minor = [int]$(Get-Date -format yy)
 	$Revis = [int]$(Get-Date -format Mdd)
@@ -57,20 +57,16 @@ try
 		}
 		# locally: increase build number and persit it
 		$Build = $Build + 1
-		# locally: we have no commit ID, create an arificial one
-		$CommitID = [string](Get-Content "Versions\commit_id.txt")
-		if (!$CommitID) { $CommitID = "---" }
-		if ($CommitID -eq "computername") {
+		# locally: read commit ID from .git\FETCH_HEAD
+		$CommitID = [string](Get-Content ".git\FETCH_HEAD" -TotalCount 8)
+		if (!$CommitID) {
             $length = ([string]($env:computername)).length
 			$CommitID = ([string]($env:computername)).substring(0,[math]::min($length,8)).ToLower()
 		}
-		else {
-			if (!$CommitID) { $CommitID = "---" }
-			$CommitID = $CommitID -replace '"', ''
-			$CommitID = $CommitID -replace "'", ''
-		    $length = $CommitID.length
-			$CommitID = $CommitID.substring(0,[math]::min($length,8))
-		}
+		$CommitID = $CommitID -replace '"', ''
+		$CommitID = $CommitID -replace "'", ''
+		$length = $CommitID.length
+		$CommitID = $CommitID.substring(0,[math]::min($length,8))
 	}
 	if (!$CommitID) { $CommitID = "---" }
 	$Build | Set-Content -Path "Versions\build.txt"
