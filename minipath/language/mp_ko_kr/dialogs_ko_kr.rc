@@ -90,7 +90,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "즐겨찾기 응용프로그램에 대한 링크가 있는 디렉토리를 지정하려면 여기를 클릭하세요.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "즐겨찾기 응용프로그램에 대한 링크가 있는 디렉터리를 지정하려면 여기를 클릭하세요.",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "확인",IDOK,52,108,50,14
     PUSHBUTTON      "취소",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -102,7 +102,7 @@ CAPTION "이동"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "열려는 파일 또는 디렉토리의 이름을 입력하거나,\n목록에서 최근에 방문한 디렉토리를 선택합니다.",IDC_STATIC,35,7,182,17
+    LTEXT           "열려는 파일 또는 디렉터리의 이름을 입력하거나,\n목록에서 최근에 방문한 디렉터리를 선택합니다.",IDC_STATIC,35,7,182,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "확인",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "취소",IDCANCEL,167,66,50,14
@@ -138,10 +138,10 @@ END
 
 IDD_NEWDIR DIALOGEX 0, 0, 172, 66
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "새 디렉토리"
+CAPTION "새 디렉터리"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "새 디렉토리의 이름 입력:",IDC_STATIC,7,7,158,8
+    LTEXT           "새 디렉터리의 이름 입력:",IDC_STATIC,7,7,158,8
     EDITTEXT        IDC_NEWDIR,7,22,158,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "확인",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "취소",IDCANCEL,115,45,50,14
@@ -196,7 +196,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
     LTEXT           "MiniPath에 대한 고급 프로그램 설정을 지정합니다.",IDC_STATIC,40,15,160,8
-    CONTROL         "시작 디렉토리 사용(&U):",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,92,10
+    CONTROL         "시작 디렉터리 사용(&U):",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,92,10
     CONTROL         "가장 최근에 사용한(&R).",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,108,46,86,10
     CONTROL         """즐겨찾기"" 폴더(&F).",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,108,58,86,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
@@ -430,3 +430,4 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
+
