@@ -39,8 +39,8 @@ Thumbs.db
 /Versions/day.txt
 /Versions/commit_id.txt
 
-/res/Notepad3.exe.manifest.conf
-/minipath/res/Notepad3.exe.manifest.conf
+/res/Notepad3.exe.conf.manifest
+/minipath/res/MiniPath.exe.manifest.conf
 /src/VersionEx.h
 /minipath/src/VersionEx.h
 
