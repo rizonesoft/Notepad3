@@ -57,8 +57,10 @@ try
 		}
 		# locally: increase build number and persit it
 		$Build = $Build + 1
-		# locally: read commit ID from .git\FETCH_HEAD
-		$CommitID = [string](Get-Content ".git\FETCH_HEAD" -TotalCount 8)
+		# locally: read commit ID from .git\refs\heads\<first file>
+		$HeadDir = ".git\refs\heads"
+		$HeadMaster = Get-ChildItem -Path $HeadDir -Force -Recurse -File | Select-Object -First 1
+		$CommitID = [string](Get-Content "$HeadDir\$HeadMaster" -TotalCount 8)
 		if (!$CommitID) {
             $length = ([string]($env:computername)).length
 			$CommitID = ([string]($env:computername)).substring(0,[math]::min($length,8)).ToLower()
