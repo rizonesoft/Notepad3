@@ -34,7 +34,14 @@ Thumbs.db
 /packages
 /other_sln/packages
 
+### changes by Version.ps1 script ###
 /_Version_*.cmd
+/Versions/build.txt
+/Versions/day.txt
+/res/Notepad3.exe.conf.manifest
+/minipath/res/MiniPath.exe.manifest.conf
+/src/VersionEx.h
+/minipath/src/VersionEx.h
 
 /test/test.log
 /Notepad3.VC.VC.opendb
