@@ -49,7 +49,7 @@
 #include "ILoader.h"
 
 extern "C" {
-#include "Version.h"
+#include "VersionEx.h"
 #include "Helpers.h"
 #include "Styles.h"
 #include "Dialogs.h"

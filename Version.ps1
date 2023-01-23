@@ -40,7 +40,7 @@ try
 	
 	$BuildPath = "Versions\build.txt"
 	if (!(Test-Path $BuildPath)) {
-		New-Item -Path $BuildPath -ItemType "file" -Value "0"
+		New-Item -Path $BuildPath -ItemType "file" -Value "101"
 	}
 	$Build = [int](Get-Content $BuildPath)
 	if (!$Build) { $Build = 0 }

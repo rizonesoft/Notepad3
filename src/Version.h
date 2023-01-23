@@ -23,9 +23,8 @@
 #define _STRINGIFY(s) #s
 #define _STRG(s)  _STRINGIFY(s)
 
-#include "VersionEx.h"
-
 // ----------------------------------------------------------------------------
+
 #define VERSION_FILEVERSION          VERSION_MAJOR.VERSION_MINOR.VERSION_REV.VERSION_BUILD
 #define VERSION_FILEVERSION_NUM      VERSION_MAJOR,VERSION_MINOR,VERSION_REV,VERSION_BUILD
 

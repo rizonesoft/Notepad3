@@ -12,7 +12,7 @@
 *                                                                             *
 *******************************************************************************/
 
-#include "version.h"
+#include "versionex.h"
 
 #ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
