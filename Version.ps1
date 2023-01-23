@@ -37,22 +37,33 @@ try
 	$Major = 6
 	$Minor = [int]$(Get-Date -format yy)
 	$Revis = [int]$(Get-Date -format Mdd)
-	$Build = [int](Get-Content "Versions\build.txt")
+	
+	$BuildPath = "Versions\build.txt"
+	if (!(Test-Path $BuildPath)) {
+		New-Item -Path $BuildPath -ItemType "file" -Value "0"
+	}
+	$Build = [int](Get-Content $BuildPath)
 	if (!$Build) { $Build = 0 }
-	$LastBuildDay = [string](Get-Content "Versions\day.txt")
+	
+	$DayPath = "Versions\day.txt"
+	if (!(Test-Path $DayPath)) {
+		New-Item -Path $DayPath -ItemType "file" -Value "0"
+	}
+	$LastBuildDay = [string](Get-Content $DayPath)
+	if (!$LastBuildDay) { $LastBuildDay = 0 }
 
 	$AppVeyorBuild = [int]($env:appveyor_build_number) # AppVeyor internal
 
 	if ($AppVeyorEnv) {
 		if ($LastBuildDay -ne "$Revis") {
-			$Revis | Set-Content -Path "Versions\day.txt"
+			$Revis | Set-Content -Path $DayPath
 			$Build = 1  # reset (AppVeyor)
 		}
 		$CommitID = ([string]($env:appveyor_repo_commit)).substring(0,8)
 	}
 	else {
 		if ($LastBuildDay -ne "$Revis") {
-			$Revis | Set-Content -Path "Versions\day.txt"
+			$Revis | Set-Content -Path $DayPath
 			$Build = 0  # reset (local build)
 		}
 		# locally: increase build number and persit it
@@ -71,7 +82,7 @@ try
 		$CommitID = $CommitID.substring(0,[math]::min($length,8))
 	}
 	if (!$CommitID) { $CommitID = "---" }
-	$Build | Set-Content -Path "Versions\build.txt"
+	$Build | Set-Content -Path $BuildPath
 
 	$CompleteVer = "$Major.$Minor.$Revis.$Build"
 	DebugOutput("Notepad3 version number: 'v$CompleteVer $VerPatch'")
@@ -113,11 +124,11 @@ try
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$VERPATCH\$', "$VerPatch" } | Set-Content -Path "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$COMMITID\$', "$CommitID" } | Set-Content -Path "src\VersionEx.h"
 	
-	$confManifest = "res\Notepad3.exe.conf.manifest"
-	Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination $confManifest -Force
-	(Get-Content $confManifest) | ForEach-Object { $_ -replace '\$APPNAME\$', "$AppName" } | Set-Content -Path $confManifest
-	(Get-Content $confManifest) | ForEach-Object { $_ -replace '\$VERPATCH\$', "$VerPatch" } | Set-Content -Path $confManifest
-	(Get-Content $confManifest) | ForEach-Object { $_ -replace '\$VERSION\$', "$CompleteVer" } | Set-Content -Path $confManifest
+	$ConfManifest = "res\Notepad3.exe.conf.manifest"
+	Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination $ConfManifest -Force
+	(Get-Content $ConfManifest) | ForEach-Object { $_ -replace '\$APPNAME\$', "$AppName" } | Set-Content -Path $ConfManifest
+	(Get-Content $ConfManifest) | ForEach-Object { $_ -replace '\$VERPATCH\$', "$VerPatch" } | Set-Content -Path $ConfManifest
+	(Get-Content $ConfManifest) | ForEach-Object { $_ -replace '\$VERSION\$', "$CompleteVer" } | Set-Content -Path $ConfManifest
 }
 catch 
 {
