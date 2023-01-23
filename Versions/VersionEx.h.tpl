@@ -18,3 +18,5 @@
 #define UTHASH_VER $UTHASHVER$
 #define VERSION_PATCH $VERPATCH$
 #define VERSION_COMMIT_ID $COMMITID$
+
+#include "Version.h"

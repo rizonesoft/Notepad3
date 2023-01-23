@@ -31,10 +31,10 @@
 #include <richedit.h>
 #pragma warning( pop )
 
+#include "VersionEx.h"
 #include "PathLib.h"
 #include "Edit.h"
 #include "Dlapi.h"
-#include "Version.h"
 #include "Encoding.h"
 #include "Styles.h"
 #include "MuiLanguage.h"
