@@ -36,6 +36,7 @@ Thumbs.db
 
 ### changes by Version.ps1 script ###
 /_Version_*.cmd
+/_Version_*.lnk
 /Versions/build.txt
 /Versions/day.txt
 /res/Notepad3.exe.conf.manifest
