@@ -2368,7 +2368,7 @@ void EditFindMatchingBrace()
     if (iMatchingBracePos != (DocPos)-1) {
         iMatchingBracePos = bIsAfter ? iMatchingBracePos : SciCall_PositionAfter(iMatchingBracePos);
         Sci_GotoPosChooseCaret(iMatchingBracePos);
-        EditScrollSelectionToView();
+        Sci_ScrollSelectionToView();
     }
 }
 
@@ -5337,30 +5337,6 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 }
 
 
-
-//=============================================================================
-//
-//  _EnsurePositionsVisible()
-//
-static inline void _EnsurePositionsVisible(const DocPos iAnchorPos, const DocPos iCurrentPos)
-{
-    SciCall_EnsureVisible(SciCall_LineFromPosition(iAnchorPos));
-    SciCall_EnsureVisibleEnforcePolicy(SciCall_LineFromPosition(iCurrentPos));
-}
-
-
-//=============================================================================
-//
-//  EditScrollSelectionToView()
-//
-void EditScrollSelectionToView() {
-    DocPos const iAnchorPos = SciCall_GetAnchor();
-    DocPos const iCurrentPos = SciCall_GetCurrentPos();
-    _EnsurePositionsVisible(iAnchorPos, iCurrentPos);
-    SciCall_ScrollRange(iAnchorPos, iCurrentPos);
-}
-
-
 //=============================================================================
 //
 //  EditSetAndScrollSelection()
@@ -5372,7 +5348,7 @@ void EditSetAndScrollSelection(DocPos iSelStart, DocPos iSelEnd, bool bStraightS
     if (!bStraightSel) {
         SciCall_SwapMainAnchorCaret();
     }
-    EditScrollSelectionToView();
+    Sci_ScrollSelectionToView();
 }
 
 
@@ -5396,7 +5372,7 @@ void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor
 
         // Ensure that the first and last lines of a selection are always unfolded
         // This needs to be done *before* the SCI_SETSEL message
-        _EnsurePositionsVisible(iAnchorPos, iCurrentPos);
+        Sci_EnsureVisibleSelection();
 
         if ((vSpcAnchor >= 0) && (vSpcCurrent >= 0)) {
             SciCall_SetRectangularSelectionAnchor(iAnchorPos);
@@ -6379,7 +6355,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 if (s_anyMatch == NO_MATCH) {
                     EditSetSelectionEx(s_InitialAnchorPos, s_InitialCaretPos, -1, -1);
                 } else {
-                    EditScrollSelectionToView();
+                    Sci_ScrollSelectionToView();
                 }
             }
 
@@ -6520,7 +6496,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             _DelayMarkAll(_MQ_STD);
 
             if (!SciCall_IsSelectionEmpty()) {
-                EditScrollSelectionToView();
+                Sci_ScrollSelectionToView();
             }
             /// don't do:  ///~SendWMCommandEx(hwnd, IDC_FINDTEXT, CBN_EDITCHANGE);
             break;
@@ -7303,7 +7279,7 @@ void EditSelectionMultiSelectAll()
         if (SciCall_GetSelectionNAnchor(0) > SciCall_GetSelectionNCaret(0)) {
             SciCall_SwapMainAnchorCaret();
         }
-        EditScrollSelectionToView();
+        Sci_ScrollSelectionToView();
     }
 }
 
@@ -9596,7 +9572,7 @@ void EditToggleFolds(FOLD_ACTION action, bool bForceAll)
                 }
             }
             if (fToggled) {
-                EditScrollSelectionToView();
+                Sci_ScrollSelectionToView();
             }
         }
     }

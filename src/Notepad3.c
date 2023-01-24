@@ -1955,7 +1955,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
                 EditJumpTo(s_iInitialLine, s_iInitialColumn);
                 SciCall_SetYCaretPolicy(s_iCaretPolicyV, Settings2.CurrentLineVerticalSlop);
             } else {
-                EditScrollSelectionToView();
+                Sci_ScrollSelectionToView();
             }
         }
     }
@@ -2299,6 +2299,8 @@ static void  _SetWrapStartIndent()
 //
 static void  _SetWrapIndentMode()
 {
+    BeginWaitCursorUID(Flags.bHugeFileLoadState, IDS_MUI_SB_WRAP_LINES);
+
     int const wrap_mode = (!Globals.fvCurFile.bWordWrap ? SC_WRAP_NONE : ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR));
 
     SciCall_SetWrapMode(wrap_mode);
@@ -2313,6 +2315,8 @@ static void  _SetWrapIndentMode()
         _SetWrapStartIndent();
         SciCall_SetWrapIndentMode(SC_WRAPINDENT_FIXED);
     }
+    
+    EndWaitCursor();
 }
 
 
@@ -2369,11 +2373,12 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_SetBidirectional(Settings.Bidirectional);  // experimental
     Settings.Bidirectional = SciCall_GetBidirectional();
 
-    //~SciCall_SetPhasesDraw(SC_PHASES_TWO);      // (= default)
+    if (SciCall_SupportsFeature(SC_SUPPORTS_THREAD_SAFE_MEASURE_WIDTHS)) {
+        SciCall_SetLayoutThreads(max_dw(2, GetNumberOfProcessors())); // MultiThreading Layout (SCI v5.2.0)
+    }
+    //~SciCall_SetPhasesDraw(SC_PHASES_TWO);   // (= default)
     SciCall_SetPhasesDraw(SC_PHASES_MULTIPLE);
     SciCall_SetLayoutCache(SC_CACHE_PAGE);     //~ SC_CACHE_DOCUMENT ~ beware of memory consumption !
-    DWORD const np = GetNumberOfProcessors();
-    SciCall_SetLayoutThreads(max_dw(2,np>>1)); // MultiThreading Layout (SCI v5.2.0)
 
     // Idle Styling (very large text)
     SciCall_SetIdleStyling(SC_IDLESTYLING_NONE); // needed for focused view
@@ -3931,7 +3936,7 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             } else {
                 Sci_GotoPosChooseCaret(iCurPos);
             }
-            EditScrollSelectionToView();
+            Sci_ScrollSelectionToView();
         }
 
     } else {
@@ -5707,7 +5712,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             switch (iLoWParam) {
             case IDM_EDIT_SELTONEXT: {
                 SciCall_RotateSelection();
-                EditScrollSelectionToView();
+                Sci_ScrollSelectionToView();
             }
             break;
 
@@ -5719,7 +5724,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                     DocPosU const iNewMain = SciCall_GetSelections() - 1;
                     SciCall_SetMainSelection(iNewMain);
                 }
-                EditScrollSelectionToView();
+                Sci_ScrollSelectionToView();
             }
             break;
 
@@ -5855,10 +5860,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_WORDWRAP:
         Globals.fvCurFile.bWordWrap = Settings.WordWrap = !Settings.WordWrap;
-        BeginWaitCursorUID(Flags.bHugeFileLoadState, IDS_MUI_SB_WRAP_LINES);
         _SetWrapIndentMode(Globals.hwndEdit);
-        EditScrollSelectionToView();
-        EndWaitCursor();
+        Sci_ScrollSelectionToView();
         UpdateToolbar();
         break;
 
@@ -6248,7 +6251,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             FileWatching.FileCheckInverval = Settings2.FileCheckInverval;
             SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
         }
-        EditScrollSelectionToView();
+        Sci_ScrollSelectionToView();
 
         InstallFileWatching(true);
 
@@ -6608,7 +6611,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if ((!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) && (skipLevel == Settings2.ExitOnESCSkipLevel)) {
             Sci_GotoPosChooseCaret(iCurPos);
-            EditScrollSelectionToView();
+            Sci_ScrollSelectionToView();
             skipLevel -= Default_ExitOnESCSkipLevel;
         }
 
@@ -6624,7 +6627,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
             default:
                 Sci_GotoPosChooseCaret(iCurPos);
-                EditScrollSelectionToView();
+                Sci_ScrollSelectionToView();
                 break;
             }
         }
@@ -11104,6 +11107,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
     }
 
     if (fLoadFlags & FLF_New) {
+
         if (FocusedView.HideNonMatchedLines) {
             EditToggleView(Globals.hwndEdit);
         }
@@ -11426,7 +11430,7 @@ bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc)
             if (bIsAtDocEnd || FileWatching.MonitoringLog) {
                 bPreserveView = false;
                 SciCall_DocumentEnd();
-                EditScrollSelectionToView();
+                Sci_ScrollSelectionToView();
             }
         }
 
@@ -11437,7 +11441,7 @@ bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc)
                 SciCall_ClearSelections();
                 bPreserveView = false;
                 SciCall_DocumentEnd();
-                EditScrollSelectionToView();
+                Sci_ScrollSelectionToView();
             }
         }
   
@@ -12354,7 +12358,7 @@ void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
             SciCall_Paste();
             SciCall_NewLine();
             EndUndoTransAction();
-            EditScrollSelectionToView();
+            Sci_ScrollSelectionToView();
             Settings.AutoIndent = bAutoIndent2;
         }
         s_dwLastCopyTime = 0;
