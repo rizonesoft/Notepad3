@@ -160,6 +160,7 @@ DeclareSciCallV1(SetBidirectional, SETBIDIRECTIONAL, int, direction);
 DeclareSciCallV1(SetBufferedDraw, SETBUFFEREDDRAW, bool, value);
 DeclareSciCallV1(SetPhasesDraw, SETPHASESDRAW, int, phases);
 DeclareSciCallV1(SetCharacterCategoryOptimization, SETCHARACTERCATEGORYOPTIMIZATION, int, count);
+DeclareSciCallR1(SupportsFeature, SUPPORTSFEATURE, bool, int, feature);
 // Layout, Position Cache and Layout Threads
 DeclareSciCallR0(GetLayoutCache, GETLAYOUTCACHE, int);
 DeclareSciCallV1(SetLayoutCache, SETLAYOUTCACHE, int, cache);
@@ -167,6 +168,7 @@ DeclareSciCallR0(GetPositionCache, GETPOSITIONCACHE, int);
 DeclareSciCallV1(SetPositionCache, SETPOSITIONCACHE, int, cache);
 DeclareSciCallR0(GetLayoutThreads, GETLAYOUTTHREADS, int);
 DeclareSciCallV1(SetLayoutThreads, SETLAYOUTTHREADS, int, threads);
+
 // Event Masks
 DeclareSciCallR0(GetModEventMask, GETMODEVENTMASK, int);
 DeclareSciCallV1(SetModEventMask, SETMODEVENTMASK, int, mask);
@@ -537,6 +539,7 @@ DeclareSciCallV1(EnsureVisibleEnforcePolicy, ENSUREVISIBLEENFORCEPOLICY, DocLn, 
 DeclareSciCallR0(GetLexer, GETLEXER, int);
 DeclareSciCallV01(SetILexer, SETILEXER, void*, lexerPtr); // ILexer5*
 
+DeclareSciCallR0(GetIdleStyling, GETIDLESTYLING, int);
 DeclareSciCallV1(SetIdleStyling, SETIDLESTYLING, int, idlestyle);
 
 DeclareSciCallV0(StyleClearAll, STYLECLEARALL);
@@ -756,6 +759,7 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
 #define Sci_HaveUndoRedoHistory() (SciCall_CanUndo() || SciCall_CanRedo())
 
 #define Sci_GetCurrentColumnNumber() SciCall_GetColumn(SciCall_GetCurrentPos())
+#define Sci_GetAnchorLineNumber() SciCall_LineFromPosition(SciCall_GetAnchor())
 #define Sci_GetCurrentLineNumber() SciCall_LineFromPosition(SciCall_GetCurrentPos())
 #define Sci_GetLastDocLineNumber() (SciCall_GetLineCount() - 1)
 
@@ -804,6 +808,26 @@ inline void Sci_ScrollToLine(const DocLn line)
 inline void Sci_ScrollToCurrentLine()
 {
     Sci_ScrollToLine(Sci_GetCurrentLineNumber());
+}
+inline void Sci_EnsureVisibleSelection()
+{
+    DocLn const iAnchorLn = SciCall_LineFromPosition(SciCall_GetAnchor());
+    DocLn const iCurrentLn = SciCall_LineFromPosition(SciCall_GetCurrentPos());
+    if (!SciCall_GetLineVisible(iAnchorLn)) {
+        if (iAnchorLn == iCurrentLn) {
+            SciCall_EnsureVisibleEnforcePolicy(iAnchorLn);
+        } else {
+            SciCall_EnsureVisible(iAnchorLn);
+        }
+    }
+    if ((iAnchorLn != iCurrentLn) && !SciCall_GetLineVisible(iCurrentLn)) {
+        SciCall_EnsureVisibleEnforcePolicy(iCurrentLn);
+    }
+}
+inline void Sci_ScrollSelectionToView()
+{
+    Sci_EnsureVisibleSelection();
+    SciCall_ScrollRange(SciCall_GetAnchor(), SciCall_GetCurrentPos());
 }
 
 inline void Sci_RedrawScrollbars()

@@ -1087,9 +1087,9 @@ extern "C" bool FileVars_Apply(LPFILEVARS lpfv)
     SciCall_SetTabIndents(_bTabIndents);
     SciCall_SetBackSpaceUnIndents(Settings.BackspaceUnindents);
 
-    bool const _bWordWrap = (lpfv->mask & FV_WORDWRAP) ? lpfv->bWordWrap : Settings.WordWrap;
-    int const  _iWrapMode = _bWordWrap ? ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR) : SC_WRAP_NONE;
-    SciCall_SetWrapMode(_iWrapMode);
+    bool const bWordWrap = (lpfv->mask & FV_WORDWRAP) ? lpfv->bWordWrap : Settings.WordWrap;
+    int const  iWrapMode = bWordWrap ? ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR) : SC_WRAP_NONE;
+    SciCall_SetWrapMode(iWrapMode);
 
     int edgeColumns[SMALL_BUFFER];
     size_t const cnt = ReadVectorFromString(lpfv->wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);

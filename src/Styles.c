@@ -1240,6 +1240,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     BeginWaitCursorUID(true, IDS_MUI_SB_LEXER_STYLING);
 
+    int const idleStylingMode = SciCall_GetIdleStyling();
+    SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);
+
     // first set standard lexer's default values
     const PEDITLEXER pCurrentStandard = (IsLexerStandard(pLexNew)) ? pLexNew : GetCurrentStdLexer();
 
@@ -1601,7 +1604,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         SciCall_SetCaretWidth(iValue);
     }
 
-
     if (CARETSTYLE_OVERSTRIKE_BLOCK == ovrstrk_mode) {
         StringCchCat(wchSpecificStyle, COUNTOF(wchSpecificStyle), L"; ovrblck");
     }
@@ -1703,7 +1705,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SciCall_SetLayoutCache(SC_CACHE_PAGE); //~SC_CACHE_DOCUMENT ~ memory consumption !
     SciCall_SetPositionCache(SciCall_GetPositionCache()); // clear - default=1024
 
-    SciCall_SetIdleStyling(Flags.bHugeFileLoadState ? SC_IDLESTYLING_TOVISIBLE : SC_IDLESTYLING_NONE);
     SciCall_StartStyling(0);
     //~SciCall_Colourise(0, -1);
 
@@ -1714,15 +1715,17 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         EditUpdateIndicators(0, -1, false);
     }
 
+    Style_UpdateAllMargins(hwnd, true);
+
+    SciCall_SetIdleStyling(Flags.bHugeFileLoadState ? SC_IDLESTYLING_TOVISIBLE : idleStylingMode);
+
     if (bFocusedView) {
         EditToggleView(hwnd);
     }
 
-    Style_UpdateAllMargins(hwnd, true);
+    Sci_ScrollSelectionToView();
 
     EndWaitCursor();
-
-    EditScrollSelectionToView();
 }
 
 
@@ -2588,6 +2591,7 @@ bool Style_SetLexerFromFile(HWND hwnd, const HPATHL hpath)
     } else {
         Style_SetLexer(hwnd, pLexNew);
     }
+
     return bFound;
 }
 
