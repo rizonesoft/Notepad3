@@ -469,6 +469,7 @@ BEGIN
         MENUITEM "&Sortörés beállítások...",                    IDM_SET_WORDWRAPSETTINGS
         MENUITEM "&Hosszú sorok beállításai...",                IDM_SET_LONGLINESETTINGS
         MENUITEM "A&utomatikus behúzás",                        IDM_SET_AUTOINDENTTEXT
+        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Automatikus záró zárójelek",                  IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "HTML/&XML aut. lezárás\tCtrl+Shift+H",        IDM_SET_AUTOCLOSETAGS
         MENUITEM "Szó kie&gészítés",                            IDM_SET_AUTOCOMPLETEWORDS

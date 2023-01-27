@@ -469,6 +469,7 @@ BEGIN
         MENUITEM "Na&stavenie zalomenia slov...",                IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Nastavenie &dĺžky riadkov...",                 IDM_SET_LONGLINESETTINGS
         MENUITEM "Auto&maticky odsadiť text",                IDM_SET_AUTOINDENTTEXT
+        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Automaticky uzatvárať zátvorky",           IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Automaticky uzatvárať &HTML/XML\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "A&utomatické dokončovanie slov",               IDM_SET_AUTOCOMPLETEWORDS
