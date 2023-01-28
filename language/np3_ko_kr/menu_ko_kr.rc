@@ -325,7 +325,7 @@ BEGIN
             MENUITEM "모두 지우기(&C)\tAlt+F2",                    BME_EDIT_BOOKMARKCLEAR
         END
         MENUITEM SEPARATOR
-        POPUP "찾기(&R)"
+        POPUP "검색(&R)"
         BEGIN
             MENUITEM "찾기(&F)...\tCtrl+F",                     IDM_EDIT_FIND
             MENUITEM "찾기 텍스트 저장(&A)\tAlt+F3",                IDM_EDIT_SAVEFIND
