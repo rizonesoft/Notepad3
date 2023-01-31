@@ -8,7 +8,7 @@
 ================================================================================
 
 
-*** Keyboard Shortcuts for Notepad3 ***              date: 2023-01-20
+*** Keyboard Shortcuts for Notepad3 ***              date: 2023-01-31
 ---------------------------------------------------------------------
 
 
@@ -38,8 +38,8 @@
       Launch
       ------
         Ctrl+Shift+F          Search in Files.
-        Alt+N                 Open Document in New Window.
-        Alt+Shift+N           Open New Empty Window.
+        Alt+N                 Open New Empty Window.
+        Alt+Shift+N           Duplicate Current Document in New Window (If Not "Only One Instance").
         Ctrl+L                Launch Document.
         Alt+L                 Open With...
         Ctrl+R                Run Command...
@@ -302,7 +302,7 @@
 
 ================================================================================
 
-*** Keyboard Shortcuts for Minipath ***             date: 2020/09/29
+*** Keyboard Shortcuts for Minipath ***             date: 2023-01-20
 ---------------------------------------------------------------------
 
 
