@@ -39,7 +39,7 @@
       ------
         Ctrl+Shift+F          Search in Files.
         Alt+N                 Open New Empty Window.
-        Alt+Shift+N           Duplicate Current Document in New Window.
+        Alt+Shift+N           Duplicate Current Document in New Window (If Not Only 1 Instance).
         Ctrl+L                Launch Document.
         Alt+L                 Open With...
         Ctrl+R                Run Command...
