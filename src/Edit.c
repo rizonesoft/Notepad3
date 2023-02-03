@@ -7382,6 +7382,10 @@ bool EditReplace(HWND hwnd, LPEDITFINDREPLACE lpefr)
 //  EditReplaceAllInRange()
 //
 //
+
+// force NOT minimal replacement to calculate next match correctly
+#define REPLACE_ALL_MSG(M) ((M) == SCI_REPLACETARGETRE ? SCI_REPLACETARGETRE : SCI_REPLACETARGET)
+
 int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, DocPos iEndPos, DocPos *enlargement)
 {
     if (iStartPos > iEndPos) {
@@ -7400,13 +7404,11 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
     bool const bRegexStartOfLine = bIsRegExpr && (wchFind[0] == L'^');
 
     // SCI_REPLACETARGET or SCI_REPLACETARGETRE
-    int iReplaceMsg = SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
+    int iReplaceMsg = SCI_REPLACETARGET;
     char* const pszReplace = _GetReplaceString(hwnd, lpefr, &iReplaceMsg);
     if (!pszReplace) {
         return -1; // recoding of clipboard canceled
     }
-    bool const bMinRepl = (SCI_REPLACETARGETMINIMAL == iReplaceMsg);
-    DocPos const pszReplaceLen = strlen(pszReplace);
 
     DocPos const _saveTargetBeg_ = SciCall_GetTargetStart();
     DocPos const _saveTargetEnd_ = SciCall_GetTargetEnd();
@@ -7426,14 +7428,14 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
     while ((iPos >= 0LL) && (start <= iEndPos)) {
         DocLn const lnCnt = bRegexStartOfLine ? SciCall_GetLineCount() : 0;
         SciCall_SetTargetRange(iPos, end);
-        DocPos const replLen = Sci_ReplaceTargetEx(iReplaceMsg, -1, pszReplace);
+        DocPos const replLen = Sci_ReplaceTargetEx(REPLACE_ALL_MSG(iReplaceMsg), -1, pszReplace);
         ++iCount;
         // start next search behind replacement
         iStartPos = SciCall_GetTargetEnd();
         if (bRegexStartOfLine && (Sci_GetLineStartPosition(iStartPos) == iStartPos) && (SciCall_GetLineCount() == lnCnt)) {
             iStartPos = SciCall_PositionAfter(iStartPos);
         }
-        iEndPos += (bMinRepl ? pszReplaceLen : replLen) - (end - iPos);
+        iEndPos += replLen - (end - iPos);
         start = iStartPos;
         end   = iEndPos;
         iPos = (start <= end) ? _FindInTarget(wchFind, sFlags, &start, &end, true, FRMOD_NORM) : -1LL;
