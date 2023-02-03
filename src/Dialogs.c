@@ -4594,7 +4594,7 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO *hMonitorInfo, const int off
     if (Settings2.LaunchInstanceFullVisible) {
         RECT rci;
         RectFromWinInfo(&wi, &rci);
-        FitIntoMonitorGeometry(&rci, &wi, SCR_NORMAL, true);
+        FitIntoMonitorGeometry(&rci, &wi, SCR_NORMAL, false);
     }
     return wi;
 }

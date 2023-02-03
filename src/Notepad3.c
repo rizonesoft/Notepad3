@@ -1352,6 +1352,17 @@ WININFO GetFactoryDefaultWndPos(HWND hwnd, const int flagsPos)
 //
 //  _GetDefaultWinInfoByStrg()
 //
+static void _IniFileWriteDefaultWindowPosition(WININFO wi)
+{
+    WCHAR tchScrnDim[64] = { L'\0' };
+    StringCchPrintf(tchScrnDim, COUNTOF(tchScrnDim), L"%ix%i " DEF_WIN_POSITION_STRG,
+        GetSystemMetrics(SM_CXVIRTUALSCREEN), GetSystemMetrics(SM_CYVIRTUALSCREEN));
+    StringCchPrintf(Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition),
+        WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, wi.max);
+    IniFileSetString(Paths.IniFile, Constants.Window_Section, tchScrnDim, Settings2.DefaultWindowPosition);
+    IniFileDelete(Paths.IniFile, Constants.Settings2_Section, DEF_WIN_POSITION_STRG, true);
+}
+
 static WININFO _GetDefaultWinInfoByStrg(HWND hwnd, LPCWSTR strDefaultWinPos)
 {
     hwnd = hwnd ? hwnd : GetDesktopWindow();
@@ -1386,13 +1397,7 @@ static WININFO _GetDefaultWinInfoByStrg(HWND hwnd, LPCWSTR strDefaultWinPos)
     else {
         wi = wiDef;
         // overwrite bad defined default position
-        WCHAR tchScrnDim[64] = { L'\0' };
-        StringCchPrintf(tchScrnDim, COUNTOF(tchScrnDim), L"%ix%i " DEF_WIN_POSITION_STRG, 
-                        GetSystemMetrics(SM_CXVIRTUALSCREEN), GetSystemMetrics(SM_CYVIRTUALSCREEN));
-        StringCchPrintf(Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition),
-                        WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, wi.max);
-        IniFileSetString(Paths.IniFile, Constants.Window_Section, tchScrnDim, Settings2.DefaultWindowPosition);
-        IniFileDelete(Paths.IniFile, Constants.Settings2_Section, DEF_WIN_POSITION_STRG, true);
+        _IniFileWriteDefaultWindowPosition(wi);
     }
     return wi;
 }
@@ -7128,13 +7133,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                         WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, (int)wi.max);
         if (Globals.bCanSaveIniFile) {
             // overwrite bad defined default position
-            WCHAR tchScrnDim[64] = { L'\0' };
-            StringCchPrintf(tchScrnDim, COUNTOF(tchScrnDim), L"%ix%i " DEF_WIN_POSITION_STRG,
-                GetSystemMetrics(SM_CXVIRTUALSCREEN), GetSystemMetrics(SM_CYVIRTUALSCREEN));
-            StringCchPrintf(Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition),
-                WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, wi.max);
-            IniFileSetString(Paths.IniFile, Constants.Window_Section, tchScrnDim, Settings2.DefaultWindowPosition);
-            IniFileDelete(Paths.IniFile, Constants.Settings2_Section, DEF_WIN_POSITION_STRG, true);
+            _IniFileWriteDefaultWindowPosition(wi);
         }
         g_DefWinInfo = wi; //~GetWinInfoByFlag(-1); // use current win pos as new default
     }
