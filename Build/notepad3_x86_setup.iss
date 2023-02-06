@@ -80,7 +80,7 @@ SetupWindowTitle=Setup - {#app_name}
 [CustomMessages]
 en.msg_AppIsRunning=Setup has detected that {#app_name} is currently running.%n%nPlease close all instances of it now, then click OK to continue, or Cancel to exit.
 en.msg_AppIsRunningUninstall=Uninstall has detected that {#app_name} is currently running.%n%nPlease close all instances of it now, then click OK to continue, or Cancel to exit.
-en.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+en.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
 #if defined(sse_required)
 en.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
 #elif defined(sse2_required)
@@ -89,7 +89,7 @@ en.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension su
 en.tsk_AllUsers=For all users
 en.tsk_CurrentUser=For the current user only
 en.tsk_Other=Other tasks:
-en.tsk_ResetSettings=Reset {#app_name}'s settings
+en.tsk_ResetSettings=Reset {#app_name}'s settings and themes
 en.tsk_RemoveDefault=Restore Windows Notepad
 en.tsk_SetDefault=Replace Windows Notepad with {#app_name}
 en.tsk_StartMenuIcon=Create a Start Menu shortcut
@@ -118,9 +118,9 @@ Source: "..\Readme.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\grepWinNP3\grepWinLicense.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Notepad3.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3"; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "minipath.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3"; Flags: onlyifdoesntexist uninsneveruninstall
-Source: "Themes\Dark.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3\Themes"; Flags: ignoreversion uninsneveruninstall
-Source: "Themes\Obsidian.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3\Themes"; Flags: ignoreversion uninsneveruninstall
-Source: "Themes\Sombra.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3\Themes"; Flags: ignoreversion uninsneveruninstall
+Source: "Themes\Dark.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3\Themes"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "Themes\Obsidian.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3\Themes"; Flags: onlyifdoesntexist uninsneveruninstall
+Source: "Themes\Sombra.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3\Themes"; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "{#bindir}\Release_x86_v143\lng\mplng.dll"; DestDir: "{app}\lng"; Flags: ignoreversion
 Source: "{#bindir}\Release_x86_v143\lng\np3lng.dll"; DestDir: "{app}\lng"; Flags: ignoreversion
 Source: "{#bindir}\Release_x86_v143\lng\gwLng\*.lang"; DestDir: "{app}\lng\gwLng"; Flags: ignoreversion
@@ -468,7 +468,9 @@ begin
   DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Notepad3.ini'));
   DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\minipath.ini'));
   DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\grepWinNP3.ini'));
-  RemoveDir(ExpandConstant('{userappdata}\Rizonesoft\Notepad3'));
+  DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Themes\Dark.ini'));
+  DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Themes\Obsidian.ini'));
+  DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Themes\Sombra.ini'));
 end;
 
 procedure RemoveReg();
@@ -548,7 +550,7 @@ end;
 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 begin
-  // When uninstalling, ask the user to delete Notepad3's settings
+  // When uninstalling, ask the user to delete Notepad3's settings and themes
   if CurUninstallStep = usUninstall then begin
     if SettingsExistCheck() then begin
       if SuppressibleMsgBox(CustomMessage('msg_DeleteSettings'), mbConfirmation, MB_YESNO or MB_DEFBUTTON2, IDNO) = IDYES then
