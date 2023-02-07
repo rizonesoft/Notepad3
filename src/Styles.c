@@ -1669,9 +1669,17 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
                 pCurrentStandard->Styles[STY_BRACE_BAD].szValue, fBaseFontSize);
         }
 
-        // (SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT) at pos STY_CTRL_CHR(4) )
         Style_SetExtraLineSpace(hwnd, s_pLexCurrent->Styles[STY_CTRL_CHR].szValue,
-                                COUNTOF(s_pLexCurrent->Styles[STY_CTRL_CHR].szValue));
+            COUNTOF(s_pLexCurrent->Styles[STY_CTRL_CHR].szValue));
+    
+    }
+    else if (s_pLexCurrent == &lexTEXT) {
+    
+        // margin (line number, bookmarks, folding) style
+        Style_SetMargin(hwnd, s_pLexCurrent->Styles[STY_MARGIN].szValue);
+
+        Style_SetExtraLineSpace(hwnd, s_pLexCurrent->Styles[STY_BRACE_OK].szValue,
+            COUNTOF(s_pLexCurrent->Styles[STY_BRACE_OK].szValue));
 
     } else if (s_pLexCurrent->lexerID != SCLEX_NULL) {
 
@@ -1749,7 +1757,6 @@ void Style_FillRelatedStyles(HWND hwnd, const PEDITLEXER pLexer) {
         for (int j = 0; j < 4 && (pLexer->Styles[i].iStyle8[j] != 0 || j == 0); ++j) {
             Style_SetStyles(hwnd, pLexer->Styles[i].iStyle8[j], pLexer->Styles[i].szValue, fBaseFontSize);
         }
-
 
         if (pLexer->lexerID == SCLEX_HTML && pLexer->Styles[i].iStyle8[0] == SCE_HPHP_DEFAULT) {
             int iRelated[] = { SCE_HPHP_COMMENT, SCE_HPHP_COMMENTLINE, SCE_HPHP_WORD, SCE_HPHP_HSTRING, SCE_HPHP_SIMPLESTRING, SCE_HPHP_NUMBER,
@@ -2816,11 +2823,13 @@ void Style_SetIndentGuides(HWND hwnd,bool bShow)
 //
 void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch)
 {
+    UNREFERENCED_PARAMETER(hwnd);
+
     int iValue = 0, iAscent = 0, iDescent = 0;
     if (Style_StrGetSizeInt(lpszStyle, &iValue)) {
         const int iCurFontSizeDbl = f2int(Style_GetCurrentLexerFontSize() * 2.0f);
         int iValAdj = clampi(iValue, (0 - iCurFontSizeDbl), 256 * iCurFontSizeDbl);
-        if ((iValAdj != iValue) && (cch > 0)) {
+        if ((iValAdj != iValue) && (cch > 10)) {
             StringCchPrintf(lpszStyle, cch, L"size:%i", iValAdj);
         }
         if ((iValAdj % 2) != 0) {
@@ -2830,8 +2839,8 @@ void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch)
         iAscent += (iValAdj >> 1);
         iDescent += (iValAdj >> 1);
     }
-    SendMessage(hwnd, SCI_SETEXTRAASCENT, (WPARAM)iAscent, 0);
-    SendMessage(hwnd, SCI_SETEXTRADESCENT, (WPARAM)iDescent, 0);
+    SciCall_SetExtraAscent(iAscent);
+    SciCall_SetExtraDescent(iDescent);
 }
 
 
