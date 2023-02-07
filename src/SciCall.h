@@ -404,6 +404,11 @@ DeclareSciCallR0(GetEOLMode, GETEOLMODE, int);
 DeclareSciCallV1(SetEOLMode, SETEOLMODE, int, eolmode);
 DeclareSciCallV1(ConvertEOLs, CONVERTEOLS, int, eolmode);
 
+DeclareSciCallR0(GetExtraAscent, GETEXTRAASCENT, int);
+DeclareSciCallV1(SetExtraAscent, SETEXTRAASCENT, int, exascent);
+DeclareSciCallR0(GetExtraDescent, GETEXTRADESCENT, int);
+DeclareSciCallV1(SetExtraDescent, SETEXTRADESCENT, int, exdescent);
+
 DeclareSciCallV0(SetCharsDefault, SETCHARSDEFAULT);
 DeclareSciCallV01(SetWordChars, SETWORDCHARS, const char*, chrs);
 DeclareSciCallV01(SetWhitespaceChars, SETWHITESPACECHARS, const char*, chrs);
