@@ -431,6 +431,10 @@ New parameter "[Settings2] ExitOnESCSkipLevel = 2"
 
 - A value of zero (0) (or less than 100 ms) will disable the tooltip display.
 
+#### `WrapAroundTooltipTimeout=2000`
+
+- A value of zero (0) (or less than 100 ms) will disable the tooltip display.
+
 #### `LargeIconScalePrecent=150`
 
 - `Screen/Display Scale Percent` threshold to switch to bigger file types icons (lexer style selections)
@@ -476,7 +480,7 @@ If used, this setting also defines the field ordering.
 - Section  2 = Sel : Number of characters selected
 - Section  3 = Sb : Number of bytes (Bytes in [UTF-8]) selected
 - Section  4 = SLn : Number of selected lines
-- Section  5 =  Occ : Number of Marked Occurrences 
+- Section  5 = Occ : Number of Marked Occurrences 
 - Section  6 = Size of file in [UTF-8] Mode
 - Section  7 = Encoding Mode  (double click to open `Encoding F9` )
 - Section  8 = EOL Mode (Toggle CR+LF, LF, CR)

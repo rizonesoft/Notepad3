@@ -47,7 +47,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[.207.1]- Installer script resets "Theme files" only on user decision.
+[.207.1]- Installer script resets "Theme files" only on user decision (SUP).
 
 --------------------------------------------------------
 FIXES:
@@ -104,7 +104,7 @@ NEW:
 [.120.1]- Paragraph navigation (Alt+PageUp, Alt+PageDown).
 [.109.1]- Allow "dotbox" instead of "horiz. line" for folded text.
 [.102.1]- Allow Line Number color to be alpha blended (e.g. DarkMode).
-[1223.1]- Allow "Notepad3 x64 Setup" to install on Win11 Arm (64-bit emulation).
+[1223.1]- Allow "Notepad3 x64 Setup" to install on Win11 Arm (64-bit emulation) (SUP).
 [1212.1]- Implementation of automatic parenthesis closure.
 [1029.1]- Darkmode highlight (foreground) contrast settings + default reduction to 75%.
 [1018.1]- Add example for tinyexpr in Modify Lines dialog.
