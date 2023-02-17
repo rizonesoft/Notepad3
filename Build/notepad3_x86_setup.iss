@@ -64,38 +64,507 @@ UsedUserAreasWarning=no
 MinVersion=0,6.1sp1
 ArchitecturesAllowed=x86 x64 arm64
 ArchitecturesInstallIn64BitMode=
-#ifexist "..\signinfo_notepad3.txt"
-SignTool=MySignTool
-#endif
 CloseApplications=true
 SetupMutex='{#app_name}' + '_setup_mutex'
 
 [Languages]
-Name: "en"; MessagesFile: "compiler:Default.isl"
+Name: "enu"; MessagesFile: "compiler:Default.isl"
+Name: "afk"; MessagesFile: "compiler:Notepad3\Afrikaans.isl"
+Name: "bel"; MessagesFile: "compiler:Notepad3\Belarusian.isl"
+Name: "deu"; MessagesFile: "compiler:Notepad3\German.isl"
+Name: "ell"; MessagesFile: "compiler:Notepad3\Greek.isl"
+Name: "eng"; MessagesFile: "compiler:Notepad3\EnglishBritish.isl"
+Name: "esn"; MessagesFile: "compiler:Notepad3\Spanish.isl"
+Name: "esm"; MessagesFile: "compiler:Notepad3\SpanishMexican.isl"
+Name: "fra"; MessagesFile: "compiler:Notepad3\French.isl"
+Name: "hin"; MessagesFile: "compiler:Notepad3\Hindi.isl"
+Name: "hun"; MessagesFile: "compiler:Notepad3\Hungarian.isl"
+Name: "ind"; MessagesFile: "compiler:Notepad3\Indonesian.isl"
+Name: "ita"; MessagesFile: "compiler:Notepad3\Italian.isl"
+Name: "jpn"; MessagesFile: "compiler:Notepad3\Japanese.isl"
+Name: "kor"; MessagesFile: "compiler:Notepad3\Korean.isl"
+Name: "nld"; MessagesFile: "compiler:Notepad3\Dutch.isl"
+Name: "plk"; MessagesFile: "compiler:Notepad3\Polish.isl"
+Name: "ptb"; MessagesFile: "compiler:Notepad3\BrazilianPortuguese.isl"
+Name: "ptg"; MessagesFile: "compiler:Notepad3\Portuguese.isl"
+Name: "rus"; MessagesFile: "compiler:Notepad3\Russian.isl"
+Name: "sky"; MessagesFile: "compiler:Notepad3\Slovak.isl"
+Name: "sve"; MessagesFile: "compiler:Notepad3\Swedish.isl"
+Name: "trk"; MessagesFile: "compiler:Notepad3\Turkish.isl"
+Name: "vit"; MessagesFile: "compiler:Notepad3\Vietnamese.isl"
+Name: "chs"; MessagesFile: "compiler:Notepad3\ChineseSimplified.isl"
+Name: "cht"; MessagesFile: "compiler:Notepad3\ChineseTraditional.isl"
 
 [Messages]
-SetupAppTitle=Setup - {#app_name}
-SetupWindowTitle=Setup - {#app_name}
+enu.BeveledLabel=English (US)
+afk.BeveledLabel=Afrikaans
+bel.BeveledLabel=Belarusian
+deu.BeveledLabel=German
+ell.BeveledLabel=Greek
+eng.BeveledLabel=English (GB)
+esn.BeveledLabel=Spanish
+esm.BeveledLabel=Spanish (MX)
+fra.BeveledLabel=French
+hin.BeveledLabel=Hindi
+hun.BeveledLabel=Hungarian
+ind.BeveledLabel=Indonesian
+ita.BeveledLabel=Italian
+jpn.BeveledLabel=Japanese
+kor.BeveledLabel=Korean
+nld.BeveledLabel=Dutch
+plk.BeveledLabel=Polish
+ptb.BeveledLabel=Portuguese (BR)
+ptg.BeveledLabel=Portuguese
+rus.BeveledLabel=Russian
+sky.BeveledLabel=Slovak
+sve.BeveledLabel=Swedish
+trk.BeveledLabel=Turkish
+vit.BeveledLabel=Vietnamese
+chs.BeveledLabel=Chinese (CN)
+cht.BeveledLabel=Chinese (TW)
 
 [CustomMessages]
-en.msg_AppIsRunning=Setup has detected that {#app_name} is currently running.%n%nPlease close all instances of it now, then click OK to continue, or Cancel to exit.
-en.msg_AppIsRunningUninstall=Uninstall has detected that {#app_name} is currently running.%n%nPlease close all instances of it now, then click OK to continue, or Cancel to exit.
-en.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+enu.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
 #if defined(sse_required)
-en.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+enu.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
 #elif defined(sse2_required)
-en.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+enu.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
 #endif
-en.tsk_AllUsers=For all users
-en.tsk_CurrentUser=For the current user only
-en.tsk_Other=Other tasks:
-en.tsk_ResetSettings=Reset {#app_name}'s settings and themes
-en.tsk_RemoveDefault=Restore Windows Notepad
-en.tsk_SetDefault=Replace Windows Notepad with {#app_name}
-en.tsk_StartMenuIcon=Create a Start Menu shortcut
-en.tsk_LaunchWelcomePage=Important Release Information!
-en.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
-en.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+enu.tsk_AllUsers=For all users
+enu.tsk_CurrentUser=For the current user only
+enu.tsk_Other=Other tasks:
+enu.tsk_ResetSettings=Reset {#app_name}'s settings and themes
+enu.tsk_RemoveDefault=Restore Windows Notepad
+enu.tsk_SetDefault=Replace Windows Notepad with {#app_name}
+enu.tsk_StartMenuIcon=Create a Start Menu shortcut
+enu.tsk_LaunchWelcomePage=Important Release Information!
+enu.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
+enu.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+
+afk.msg_DeleteSettings=Wil jy ook {#app_name} se instellings en temas uitvee?%n%nAs jy beplan om {#app_name} weer te installeer, hoef jy dit nie uit te vee nie.
+#if defined(sse_required)
+afk.msg_simd_sse=Hierdie bou van {#app_name} vereis 'n SVE met SSE-uitbreidingsteun.%n%nJou SVE het nie daardie vermoëns nie.
+#elif defined(sse2_required)
+afk.msg_simd_sse2=Hierdie bou van {#app_name} vereis 'n SVE met SSE2-uitbreidingsteun.%n%nJou SVE het nie daardie vermoëns nie.
+#endif
+afk.tsk_AllUsers=Vir alle gebruikers
+afk.tsk_CurrentUser=Slegs vir die huidige gebruiker
+afk.tsk_Other=
+afk.tsk_ResetSettings=Stel {#app_name} se instellings en temas terug
+afk.tsk_RemoveDefault=Herstel Windows Notepad
+afk.tsk_SetDefault=Vervang Windows Notepad met {#app_name}
+afk.tsk_StartMenuIcon=Skep 'n Start Menu-kortpad
+afk.tsk_LaunchWelcomePage=Belangrike vrystelling-inligting!
+afk.tsk_RemoveOpenWith=Verwyder "Verwyder Maak oop met {#app_name}" uit die kontekskieslys
+afk.tsk_SetOpenWith=Sit "Maak oop met {#app_name}" in die kontekskieslys
+
+bel.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+#if defined(sse_required)
+bel.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+#elif defined(sse2_required)
+bel.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+#endif
+bel.tsk_AllUsers=For all users
+bel.tsk_CurrentUser=For the current user only
+bel.tsk_Other=Other tasks:
+bel.tsk_ResetSettings=Reset {#app_name}'s settings and themes
+bel.tsk_RemoveDefault=Restore Windows Notepad
+bel.tsk_SetDefault=Replace Windows Notepad with {#app_name}
+bel.tsk_StartMenuIcon=Create a Start Menu shortcut
+bel.tsk_LaunchWelcomePage=Important Release Information!
+bel.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
+bel.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+
+deu.msg_DeleteSettings=Wollen sie die Einstellungen und Themen von {#app_name} löschen?%n%nWenn sie planen {#app_name} erneut zu installieren, dann müssen diese Einstellungen nicht gelöscht werden.
+#if defined(sse_required)
+deu.msg_simd_sse=Diese Version von {#app_name} benötigt eine CPU mit welche die SSE Erweiterung unterstützt.%n%nIhre CPU hat diese Fähigkeiten nicht.
+#elif defined(sse2_required)
+deu.msg_simd_sse2=Diese Version von {#app_name} benötigt eine CPU mit welche die SSE2 Erweiterung unterstützt.%n%nIhre CPU hat diese Fähigkeiten nicht.
+#endif
+deu.tsk_AllUsers=Für alle Benutzer
+deu.tsk_CurrentUser=Für den aktuellen Benutzer alleine
+deu.tsk_Other=Andere Aufgaben:
+deu.tsk_ResetSettings={#app_name}s Einstellungen und Themen zurück setzen.
+deu.tsk_RemoveDefault=Windows Notepad wiederherstellen
+deu.tsk_SetDefault=Ersetze Windows Notepad mit {#app_name}
+deu.tsk_StartMenuIcon=Erstelle einen Start-Menü Eintrag
+deu.tsk_LaunchWelcomePage=Wichtige Release Information!
+deu.tsk_RemoveOpenWith=Entferne "Öffnen mit {#app_name}" aus dem Kontextmenü
+deu.tsk_SetOpenWith=Füge "Öffnen mit {#app_name}" zum Kontextmenü hinzu.
+
+ell.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+#if defined(sse_required)
+ell.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+#elif defined(sse2_required)
+ell.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+#endif
+ell.tsk_AllUsers=For all users
+ell.tsk_CurrentUser=For the current user only
+ell.tsk_Other=Other tasks:
+ell.tsk_ResetSettings=Reset {#app_name}'s settings and themes
+ell.tsk_RemoveDefault=Restore Windows Notepad
+ell.tsk_SetDefault=Replace Windows Notepad with {#app_name}
+ell.tsk_StartMenuIcon=Create a Start Menu shortcut
+ell.tsk_LaunchWelcomePage=Important Release Information!
+ell.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
+ell.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+
+eng.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+#if defined(sse_required)
+eng.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+#elif defined(sse2_required)
+eng.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+#endif
+eng.tsk_AllUsers=For all users
+eng.tsk_CurrentUser=For the current user only
+eng.tsk_Other=Other tasks:
+eng.tsk_ResetSettings=Reset {#app_name}'s settings and themes
+eng.tsk_RemoveDefault=Restore Windows Notepad
+eng.tsk_SetDefault=Replace Windows Notepad with {#app_name}
+eng.tsk_StartMenuIcon=Create a Start Menu shortcut
+eng.tsk_LaunchWelcomePage=Important Release Information!
+eng.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
+eng.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+
+esn.msg_DeleteSettings=¿También quieres eliminar la configuración y los temas de {#app_name}?%n%nSi planeas instalar {#app_name} nuevamente, no tienes que eliminarlos.
+#if defined(sse_required)
+esn.msg_simd_sse=Esta compilación de {#app_name} requiere una CPU compatible con la extensión SSE.%n%nTu CPU no tiene esas capacidades.
+#elif defined(sse2_required)
+esn.msg_simd_sse2=Esta compilación de {#app_name} requiere una CPU compatible con la extensión SSE2.%n%nTu CPU no tiene esas capacidades.
+#endif
+esn.tsk_AllUsers=Para todos los usuarios
+esn.tsk_CurrentUser=Sólo para el usuario actual
+esn.tsk_Other=Otras tareas:
+esn.tsk_ResetSettings=Restablecer la configuración y los temas de {#app_name}
+esn.tsk_RemoveDefault=Restaurar el Notepad de Windows
+esn.tsk_SetDefault=Reemplace el Notepad de Windows con {#app_name}
+esn.tsk_StartMenuIcon=Crear un acceso directo al menú de inicio
+esn.tsk_LaunchWelcomePage=¡Información importante de lanzamiento!
+esn.tsk_RemoveOpenWith=Eliminar "Abrir con {#app_name}" del menú contextual
+esn.tsk_SetOpenWith=Añade "Abrir con {#app_name}" al menú contextual
+
+esm.msg_DeleteSettings=¿También quieres eliminar la configuración y los temas de {#app_name}?%n%nSi planeas instalar {#app_name} nuevamente, no tienes que eliminarlos.
+#if defined(sse_required)
+esm.msg_simd_sse=Esta compilación de {#app_name} requiere una CPU compatible con la extensión SSE.%n%nTu CPU no tiene esas capacidades.
+#elif defined(sse2_required)
+esm.msg_simd_sse2=Esta compilación de {#app_name} requiere una CPU compatible con la extensión SSE2.%n%nTu CPU no tiene esas capacidades.
+#endif
+esm.tsk_AllUsers=Para todos los usuarios
+esm.tsk_CurrentUser=Sólo para el usuario actual
+esm.tsk_Other=Otras tareas:
+esm.tsk_ResetSettings=Restablecer la configuración y los temas de {#app_name}
+esm.tsk_RemoveDefault=Restaurar el Notepad de Windows
+esm.tsk_SetDefault=Reemplace el Notepad de Windows con {#app_name}
+esm.tsk_StartMenuIcon=Crear un acceso directo al menú de inicio
+esm.tsk_LaunchWelcomePage=¡Información importante de lanzamiento!
+esm.tsk_RemoveOpenWith=Eliminar "Abrir con {#app_name}" del menú contextual
+esm.tsk_SetOpenWith=Añade "Abrir con {#app_name}" al menú contextual
+
+fra.msg_DeleteSettings=Voulez-vous également supprimer les paramètres et les thèmes de {#app_name} ?%n%nSi vous prévoyez de réinstaller {#app_name}, vous n'avez pas à les supprimer.
+#if defined(sse_required)
+fra.msg_simd_sse=Cette version de {#app_name} nécessite un CPU prenant en charge l'extension SSE.%n%nVotre CPU n'a pas ces fonctionnalités.
+#elif defined(sse2_required)
+fra.msg_simd_sse2=Cette version de {#app_name} nécessite un CPU prenant en charge l'extension SSE2.%n%nVotre CPU n'a pas ces fonctionnalités.
+#endif
+fra.tsk_AllUsers=Pour tous les utilisateurs
+fra.tsk_CurrentUser=Pour l'utilisateur actuel uniquement
+fra.tsk_Other=Other tasks:
+fra.tsk_ResetSettings=Réinitialiser les paramètres et les thèmes de {#app_name}
+fra.tsk_RemoveDefault=Restaurer le Notepad Windows
+fra.tsk_SetDefault=Remplacez le Notepad Windows par {#app_name}
+fra.tsk_StartMenuIcon=Créer un raccourci au menu Démarrer
+fra.tsk_LaunchWelcomePage=Informations importantes sur la version!
+fra.tsk_RemoveOpenWith=Supprimer "Ouvrir avec {#app_name}" du menu contextuel
+fra.tsk_SetOpenWith=Ajouter "Ouvrir avec {#app_name}" au menu contextuel
+
+hin.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+#if defined(sse_required)
+hin.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+#elif defined(sse2_required)
+hin.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+#endif
+hin.tsk_AllUsers=For all users
+hin.tsk_CurrentUser=For the current user only
+hin.tsk_Other=Other tasks:
+hin.tsk_ResetSettings=Reset {#app_name}'s settings and themes
+hin.tsk_RemoveDefault=Restore Windows Notepad
+hin.tsk_SetDefault=Replace Windows Notepad with {#app_name}
+hin.tsk_StartMenuIcon=Create a Start Menu shortcut
+hin.tsk_LaunchWelcomePage=Important Release Information!
+hin.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
+hin.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+
+hun.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+#if defined(sse_required)
+hun.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+#elif defined(sse2_required)
+hun.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+#endif
+hun.tsk_AllUsers=For all users
+hun.tsk_CurrentUser=For the current user only
+hun.tsk_Other=Other tasks:
+hun.tsk_ResetSettings=Reset {#app_name}'s settings and themes
+hun.tsk_RemoveDefault=Restore Windows Notepad
+hun.tsk_SetDefault=Replace Windows Notepad with {#app_name}
+hun.tsk_StartMenuIcon=Create a Start Menu shortcut
+hun.tsk_LaunchWelcomePage=Important Release Information!
+hun.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
+hun.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+
+ind.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+#if defined(sse_required)
+ind.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+#elif defined(sse2_required)
+ind.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+#endif
+ind.tsk_AllUsers=For all users
+ind.tsk_CurrentUser=For the current user only
+ind.tsk_Other=Other tasks:
+ind.tsk_ResetSettings=Reset {#app_name}'s settings and themes
+ind.tsk_RemoveDefault=Restore Windows Notepad
+ind.tsk_SetDefault=Replace Windows Notepad with {#app_name}
+ind.tsk_StartMenuIcon=Create a Start Menu shortcut
+ind.tsk_LaunchWelcomePage=Important Release Information!
+ind.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
+ind.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+
+ita.msg_DeleteSettings=Volete eliminare anche le impostazioni e i temi di {#app_name}? %n%nSe intendete installare nuovamente {#app_name}, non è necessario eliminarli.
+#if defined(sse_required)
+ita.msg_simd_sse=Questa versione di {#app_name} richiede una CPU con supporto per le estensioni SSE.%n%nLa vostra CPU non ha queste capacità.
+#elif defined(sse2_required)
+ita.msg_simd_sse2=Questa versione di {#app_name} richiede una CPU con supporto per le estensioni SSE2.%n%nLa vostra CPU non ha queste capacità.
+#endif
+ita.tsk_AllUsers=Per tutti gli utenti
+ita.tsk_CurrentUser=Solo per l'utente corrente
+ita.tsk_Other=Altre attività:
+ita.tsk_ResetSettings=Ripristino delle impostazioni e dei temi di {#app_name}
+ita.tsk_RemoveDefault=Ripristina il Blocco note di Windows
+ita.tsk_SetDefault=Sostituisci il Blocco note di Windows con {#app_name}
+ita.tsk_StartMenuIcon=Creare un collegamento al Menu Start
+ita.tsk_LaunchWelcomePage=Informazioni importanti sul rilascio!
+ita.tsk_RemoveOpenWith=Rimuovere l'opzione "Apri con {#app_name}" dal menu contestuale.
+ita.tsk_SetOpenWith=Aggiungete "Apri con {#app_name}" al menu contestuale
+
+jpn.msg_DeleteSettings={#app_name} の設定とテーマも削除しますか？%n%n{#app_name} を再度インストールする予定なら削除する必要はありません。
+#if defined(sse_required)
+jpn.msg_simd_sse={#app_name} のこのビルドには、SSE 拡張命令に対応した CPU が必要です。%n%nこの CPU は対応していません。
+#elif defined(sse2_required)
+jpn.msg_simd_sse2={#app_name} のこのビルドには、SSE2 拡張命令に対応した CPU が必要です。%n%nこの CPU は対応していません。
+#endif
+jpn.tsk_AllUsers=すべてのユーザー
+jpn.tsk_CurrentUser=現在のユーザーのみ
+jpn.tsk_Other=ほかの設定:
+jpn.tsk_ResetSettings={#app_name} の設定とテーマを初期化
+jpn.tsk_RemoveDefault=Windows のメモ帳を復元する
+jpn.tsk_SetDefault=Windows のメモ帳を {#app_name} に置換する
+jpn.tsk_StartMenuIcon=スタートメニューにショートカットを作成
+jpn.tsk_LaunchWelcomePage=リリース時の重要な情報！
+jpn.tsk_RemoveOpenWith=右クリックメニューから「{#app_name} で開く」を削除
+jpn.tsk_SetOpenWith=右クリックメニューに「{#app_name} で開く」を追加
+
+kor.msg_DeleteSettings={#app_name}의 설정 및 테마도 삭제하시겠습니까?%n%n{#app_name}을 다시 설치할 계획이라면 삭제할 필요가 없습니다.
+#if defined(sse_required)
+kor.msg_simd_sse=이 {#app_name} 빌드에는 SSE 확장을 지원하는 CPU가 필요합니다.%n%nCPU에 이러한 기능이 없습니다.
+#elif defined(sse2_required)
+kor.msg_simd_sse2=이 {#app_name} 빌드에는 SSE2 확장을 지원하는 CPU가 필요합니다.%n%nCPU에 이러한 기능이 없습니다.
+#endif
+kor.tsk_AllUsers=모든 사용자용
+kor.tsk_CurrentUser=현재 사용자 전용
+kor.tsk_Other=기타 작업:
+kor.tsk_ResetSettings={#app_name}의 설정 및 테마 재설정
+kor.tsk_RemoveDefault=Windows 메모장 복원
+kor.tsk_SetDefault=Windows 메모장을 {#app_name}으로 바꾸기
+kor.tsk_StartMenuIcon=시작 메뉴에 바로가기 만들기
+kor.tsk_LaunchWelcomePage=중요한 릴리스 정보!
+kor.tsk_RemoveOpenWith=상황에 맞는 메뉴에서 "{#app_name}으로 열기" 제거
+kor.tsk_SetOpenWith=상황에 맞는 메뉴 메뉴에 "{#app_name}으로 열기" 추가
+
+nld.msg_DeleteSettings=Wilt u ook de instellingen en thema's van {#app_name} verwijderen?%n%nAls u van plan bent {#app_name} opnieuw te installeren, hoeft u deze niet te verwijderen.
+#if defined(sse_required)
+nld.msg_simd_sse=Deze versie van {#app_name} vereist een CPU met ondersteuning voor SSE-extensies.%n%nUw CPU heeft die mogelijkheden niet.
+#elif defined(sse2_required)
+nld.msg_simd_sse2=Deze versie van {#app_name} vereist een CPU met ondersteuning voor SSE2-extensies.%n%nUw CPU heeft die mogelijkheden niet.
+#endif
+nld.tsk_AllUsers=Voor alle gebruikers
+nld.tsk_CurrentUser=Alleen voor de huidige gebruiker
+nld.tsk_Other=Overige taken:
+nld.tsk_ResetSettings=Instellingen en thema's van {#app_name} opnieuw instellen
+nld.tsk_RemoveDefault=Windows Notepad opnieuw instellen
+nld.tsk_SetDefault=Windows Notepad vervangen door {#app_name}
+nld.tsk_StartMenuIcon=Maak een snelkoppeling naar het startmenu
+nld.tsk_LaunchWelcomePage=Belangrijke informatie bij deze uitgave!
+nld.tsk_RemoveOpenWith="Openen met {#app_name}" verwijderen van het contextmenu
+nld.tsk_SetOpenWith="Openen met {#app_name}" toevoegen van het contextmenu
+
+plk.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+#if defined(sse_required)
+plk.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+#elif defined(sse2_required)
+plk.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+#endif
+plk.tsk_AllUsers=For all users
+plk.tsk_CurrentUser=For the current user only
+plk.tsk_Other=Other tasks:
+plk.tsk_ResetSettings=Reset {#app_name}'s settings and themes
+plk.tsk_RemoveDefault=Restore Windows Notepad
+plk.tsk_SetDefault=Replace Windows Notepad with {#app_name}
+plk.tsk_StartMenuIcon=Create a Start Menu shortcut
+plk.tsk_LaunchWelcomePage=Important Release Information!
+plk.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
+plk.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+
+ptb.msg_DeleteSettings=Você também deseja excluir as configurações e temas do {#app_name}?%n%nSe você planeja instalar o {#app_name} novamente, então você não precisa excluí-los.
+#if defined(sse_required)
+ptb.msg_simd_sse=Esta versão do {#app_name} requer uma CPU com suporte à extensão SSE.%n%nSua CPU não possui este recurso.
+#elif defined(sse2_required)
+ptb.msg_simd_sse2=Esta versão do {#app_name} requer uma CPU com suporte à extensão SSE2.%n%nSua CPU não possui este recurso.
+#endif
+ptb.tsk_AllUsers=Para todos os usuários
+ptb.tsk_CurrentUser=Somente para o usuário atual
+ptb.tsk_Other=Tarefas adicionais:
+ptb.tsk_ResetSettings=Restaurar configurações e temas do {#app_name}
+ptb.tsk_RemoveDefault=Restaurar Bloco de notas do Windows
+ptb.tsk_SetDefault=Substituir Bloco de notas do Windows pelo {#app_name}
+ptb.tsk_StartMenuIcon=Criar atalho no Menu Iniciar
+ptb.tsk_LaunchWelcomePage=Informações importantes sobre esta versão!
+ptb.tsk_RemoveOpenWith=Remover "Abrir com o {#app_name}" do menu de contexto
+ptb.tsk_SetOpenWith=Adicionar "Abrir com {#app_name} ao menu de contexto 
+
+ptg.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+#if defined(sse_required)
+ptg.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+#elif defined(sse2_required)
+ptg.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+#endif
+ptg.tsk_AllUsers=For all users
+ptg.tsk_CurrentUser=For the current user only
+ptg.tsk_Other=Other tasks:
+ptg.tsk_ResetSettings=Reset {#app_name}'s settings and themes
+ptg.tsk_RemoveDefault=Restore Windows Notepad
+ptg.tsk_SetDefault=Replace Windows Notepad with {#app_name}
+ptg.tsk_StartMenuIcon=Create a Start Menu shortcut
+ptg.tsk_LaunchWelcomePage=Important Release Information!
+ptg.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
+ptg.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+
+rus.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+#if defined(sse_required)
+rus.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+#elif defined(sse2_required)
+rus.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+#endif
+rus.tsk_AllUsers=For all users
+rus.tsk_CurrentUser=For the current user only
+rus.tsk_Other=Other tasks:
+rus.tsk_ResetSettings=Reset {#app_name}'s settings and themes
+rus.tsk_RemoveDefault=Restore Windows Notepad
+rus.tsk_SetDefault=Replace Windows Notepad with {#app_name}
+rus.tsk_StartMenuIcon=Create a Start Menu shortcut
+rus.tsk_LaunchWelcomePage=Important Release Information!
+rus.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
+rus.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+
+sky.msg_DeleteSettings=Chcete odstrániť aj nastavenia a témy {#app_name}?%n%nAk plánujete opätovnú inštaláciu {#app_name}, nemusíte ich odstraňovať.
+#if defined(sse_required)
+sky.msg_simd_sse=Táto zostava {#app_name} vyžaduje procesor s podporou rozšírenia SSE.%n%nVáš procesor tieto možnosti nemá.
+#elif defined(sse2_required)
+sky.msg_simd_sse2=Táto zostava {#app_name} vyžaduje procesor s podporou rozšírenia SSE2.%n%nVáš procesor tieto možnosti nemá.
+#endif
+sky.tsk_AllUsers=Pre všetkých užívateľov
+sky.tsk_CurrentUser=Len pre aktuálneho užívateľa
+sky.tsk_Other=Ďalšie možnosti:
+sky.tsk_ResetSettings=Obnoviť nastavenia a témy {#app_name} na predvolené hodnoty
+sky.tsk_RemoveDefault=Obnoviť Poznámkový blok Windows
+sky.tsk_SetDefault=Nahradiť Poznámkový blok Windows s {#app_name}
+sky.tsk_StartMenuIcon=Vytvoriť odkaz v ponuke Štart
+sky.tsk_LaunchWelcomePage=Dôležité informácie o vydaní!
+sky.tsk_RemoveOpenWith=Odstrániť z kontextového menu položku "Otvoriť v {#app_name}" 
+sky.tsk_SetOpenWith=Pridať do kontextového menu položku "Otvoriť v {#app_name}"
+
+sve.msg_DeleteSettings=Vill du även ta bort {#app_name} inställningar och teman?%n%nOm du tänker installera {#app_name} igen behöver du inte ta bort inställningarna.
+#if defined(sse_required)
+sve.msg_simd_sse=Den här versionen av {#app_name} kräver processor med SSE stöd.%n%n din processor har inte denna funktionalitet.
+#elif defined(sse2_required)
+sve.msg_simd_sse2=Den här versionen av {#app_name} kräver processor med SSE2 stöd.%n%n din processor har inte denna funktionalitet.
+#endif
+sve.tsk_AllUsers=För alla användare
+sve.tsk_CurrentUser=Endast för aktuell användare
+sve.tsk_Other=Andra uppgifter:
+sve.tsk_ResetSettings=Återställ inställningarna och tema för {#app_name}
+sve.tsk_RemoveDefault=Återställ Windows Anteckningar
+sve.tsk_SetDefault=Ersätt Windows Anteckningar med {#app_name}
+sve.tsk_StartMenuIcon=Skapa en genväg till Startmeny
+sve.tsk_LaunchWelcomePage=Viktig information för denna version!
+sve.tsk_RemoveOpenWith=Ta bort "Öppna med {#app_name}" från snabbmenyn
+sve.tsk_SetOpenWith=Lägg till "Öppna med {#app_name}" från snabbmenyn
+
+trk.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+#if defined(sse_required)
+trk.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+#elif defined(sse2_required)
+trk.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+#endif
+trk.tsk_AllUsers=For all users
+trk.tsk_CurrentUser=For the current user only
+trk.tsk_Other=Other tasks:
+trk.tsk_ResetSettings=Reset {#app_name}'s settings and themes
+trk.tsk_RemoveDefault=Restore Windows Notepad
+trk.tsk_SetDefault=Replace Windows Notepad with {#app_name}
+trk.tsk_StartMenuIcon=Create a Start Menu shortcut
+trk.tsk_LaunchWelcomePage=Important Release Information!
+trk.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
+trk.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+
+vit.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+#if defined(sse_required)
+vit.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+#elif defined(sse2_required)
+vit.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+#endif
+vit.tsk_AllUsers=For all users
+vit.tsk_CurrentUser=For the current user only
+vit.tsk_Other=Other tasks:
+vit.tsk_ResetSettings=Reset {#app_name}'s settings and themes
+vit.tsk_RemoveDefault=Restore Windows Notepad
+vit.tsk_SetDefault=Replace Windows Notepad with {#app_name}
+vit.tsk_StartMenuIcon=Create a Start Menu shortcut
+vit.tsk_LaunchWelcomePage=Important Release Information!
+vit.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
+vit.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+
+chs.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+#if defined(sse_required)
+chs.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+#elif defined(sse2_required)
+chs.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+#endif
+chs.tsk_AllUsers=For all users
+chs.tsk_CurrentUser=For the current user only
+chs.tsk_Other=Other tasks:
+chs.tsk_ResetSettings=Reset {#app_name}'s settings and themes
+chs.tsk_RemoveDefault=Restore Windows Notepad
+chs.tsk_SetDefault=Replace Windows Notepad with {#app_name}
+chs.tsk_StartMenuIcon=Create a Start Menu shortcut
+chs.tsk_LaunchWelcomePage=Important Release Information!
+chs.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
+chs.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+
+cht.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+#if defined(sse_required)
+cht.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+#elif defined(sse2_required)
+cht.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+#endif
+cht.tsk_AllUsers=For all users
+cht.tsk_CurrentUser=For the current user only
+cht.tsk_Other=Other tasks:
+cht.tsk_ResetSettings=Reset {#app_name}'s settings and themes
+cht.tsk_RemoveDefault=Restore Windows Notepad
+cht.tsk_SetDefault=Replace Windows Notepad with {#app_name}
+cht.tsk_StartMenuIcon=Create a Start Menu shortcut
+cht.tsk_LaunchWelcomePage=Important Release Information!
+cht.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
+cht.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
