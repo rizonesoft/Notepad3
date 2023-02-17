@@ -53,6 +53,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.217.2]- Encoding as "UTF-8 Signature" for Korean INNO Setup menus (SUP).
 [.207.1]- Line spacing in TEXT Lexer.
 [.204.1]- Don't force top-left if window does not fit to monitor.
 
