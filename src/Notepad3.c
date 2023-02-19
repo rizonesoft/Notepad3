@@ -2529,13 +2529,6 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_SetMarginOptions(SC_MARGINOPTION_SUBLINESELECT);
 
     // Nonprinting characters
-    SciCall_SetRepresentation("\r", "\xE2\x86\x90");
-    SciCall_SetRepresentationAppearance("\r", SC_REPRESENTATION_COLOUR);
-    SciCall_SetRepresentation("\n", "\xE2\x86\x93");
-    SciCall_SetRepresentationAppearance("\n", SC_REPRESENTATION_COLOUR);
-    SciCall_SetRepresentation("\r\n", "\xE2\x86\xB2"); // "\xE2\xAE\x92"
-    SciCall_SetRepresentationAppearance("\r\n", SC_REPRESENTATION_COLOUR);
-    /// (!) -> SciCall_SetRepresentationColour() in Styles.c
     SciCall_SetViewWS(Settings.ViewWhiteSpace ? SCWS_VISIBLEALWAYS : SCWS_INVISIBLE);
     SciCall_SetViewEOL(Settings.ViewEOLs);
 
@@ -6399,7 +6392,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         Settings.Bidirectional = SciCall_GetBidirectional();
 
         if ((prevRT != Settings.RenderingTechnology) || (prevBD != Settings.Bidirectional)) {
-            UpdateMargins(true);
+            Style_ResetCurrentLexer(Globals.hwndEdit);
         }
     }
     break;
