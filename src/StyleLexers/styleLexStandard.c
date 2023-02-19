@@ -49,7 +49,7 @@ EDITLEXER lexStandard2nd =
         /*  8 */ { {_STYLE_GETSTYLEID(STY_CUR_LN)}, IDS_LEX_2ND_LN_BACKGR, L"2nd Current Line Background (Color)", L"size:2; fore:#0000B0; back:#FFFF00; alpha:50", L"" },
         /*  9 */ { {_STYLE_GETSTYLEID(STY_CARET)}, IDS_LEX_2ND_CARET, L"2nd Caret (Color, Size 1-3)", L"", L"" },
         /* 10 */ { {_STYLE_GETSTYLEID(STY_LONG_LN_MRK)}, IDS_LEX_2ND_LONG_LN, L"2nd Long Line Marker (Colors)", L"fore:#FFC000", L"" },
-        /* 11 */ { {_STYLE_GETSTYLEID(STY_X_LN_SPACE)}, IDS_LEX_2ND_X_SPC, L"2nd Extra Line Spacing (Size)", L"", L"" },
+        /* 11 */ { {_STYLE_GETSTYLEID(STY_X_LN_SPACE)}, IDS_LEX_2ND_X_SPC, L"2nd Extra Line Spacing (Size)", L"size:2", L"" },
         /* 12 */ { {_STYLE_GETSTYLEID(STY_BOOK_MARK)}, IDS_LEX_2ND_BKMRK, L"2nd Bookmarks and Folding (Colors, Size)", L"charset:2; fore:#00DC00; case:U; alpha:100", L"" },
         /* 13 */ { {_STYLE_GETSTYLEID(STY_MARK_OCC)}, IDS_LEX_STR_63263, L"2nd Mark Occurrences (Indicator)", L"fore:#0000FF; alpha:60; alpha2:60; indic_box", L"" },
         /* 14 */ { {_STYLE_GETSTYLEID(STY_URL_HOTSPOT)}, IDS_LEX_STR_63265, L"2nd Hyperlink Hotspots", L"fore:#00D000; back:#009C00; alpha:180; indic_compositionthin", L"" },
@@ -69,10 +69,9 @@ EDITLEXER lexTEXT =
 {
     SCLEX_NULL, "null", IDS_LEX_TEXT_FILES, L"Text Files", L"txt; text; tmp; log; asc; doc; scp; wtx", L"",
     &KeyWords_NULL,{
-        //~{ {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"font:$Text", L"" },
-        { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Consolas; size:-2", L"" },
-        { {STYLE_BRACELIGHT}, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:-1", L"" },
+        { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"font:$Text; size:11", L"" },
+        { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Consolas; size:-1", L"" },
+        { {STYLE_BRACELIGHT}, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:+1", L"" },
         EDITLEXER_SENTINEL
     }
 };
@@ -86,7 +85,7 @@ EDITLEXER lexANSI =
         { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
         { {STYLE_BRACELIGHT}, IDS_LEX_STD_BRACE, L"Matching Braces", L"", L"" },
         { {STYLE_BRACEBAD}, IDS_LEX_STD_BRACE_FAIL, L"Matching Braces Error", L"", L"" },
-        { {STYLE_CONTROLCHAR}, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:-1", L"" },
+        { {STYLE_CONTROLCHAR}, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:0", L"" },
         EDITLEXER_SENTINEL
     }
 };
