@@ -6382,15 +6382,17 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_SET_RENDER_TECH_D2D:
     case IDM_SET_RENDER_TECH_D2DRETAIN:
     case IDM_SET_RENDER_TECH_D2DDC: {
-        int const prevRT = Settings.RenderingTechnology;
+        int const prevRT = SciCall_GetTechnology();
         Settings.RenderingTechnology = (iLoWParam - IDM_SET_RENDER_TECH_GDI);
-        SciCall_SetTechnology(Settings.RenderingTechnology);
-        Settings.RenderingTechnology = SciCall_GetTechnology();
-
-        int const prevBD = Settings.Bidirectional;
-        SciCall_SetBidirectional(Settings.Bidirectional);
-        Settings.Bidirectional = SciCall_GetBidirectional();
-
+        if (prevRT != Settings.RenderingTechnology) {
+            SciCall_SetTechnology(Settings.RenderingTechnology);
+            Settings.RenderingTechnology = SciCall_GetTechnology(); // switched ?
+        }
+        int const prevBD = SciCall_GetBidirectional();
+        if (prevBD != Settings.Bidirectional) {
+            SciCall_SetBidirectional(Settings.Bidirectional);
+            Settings.Bidirectional = SciCall_GetBidirectional(); // switched ?
+        }
         if ((prevRT != Settings.RenderingTechnology) || (prevBD != Settings.Bidirectional)) {
             Style_ResetCurrentLexer(Globals.hwndEdit);
         }
