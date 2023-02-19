@@ -36,8 +36,11 @@ typedef struct AES_file
 
 void gen_iv(unsigned char *buf, int size)
 {
-    while (--size >= 0) buf[size] = (unsigned char)size; //+= CM_random();
+    for (int i = 0; i < size; i++) {
+        buf[i] = ((i % 2) == 0) ? HIBYTE(rand()) : LOBYTE(rand());
+    }
 }
+
 /* @func
 open a file, possibly encrypted using notepad2 format, for reading and decryption.
 @rdesc 0 for success
@@ -171,7 +174,7 @@ int encrypt(char *infile, char *outfile, char *filephrase, char *masterphrase)
                 preamble[1] = MASTERKEY_FORMAT;
             }
 
-            gen_iv(iv, sizeof(iv));				// generate a random iv
+            gen_iv(iv, sizeof(iv));				    // generate a random iv
             AES_keygen(filephrase, filekey);		// make key file passphrase
             fwrite(preamble, 1, sizeof(preamble), out);	// write the preamble
             fwrite(iv, 1, sizeof(iv), out);				// and the iv
@@ -187,7 +190,7 @@ int encrypt(char *infile, char *outfile, char *filephrase, char *masterphrase)
                 AES_cipherInstance mastercipher;
                 AES_keyInstance mkey;
 
-                AES_keygen(masterphrase, masterkey);			// generate the master key
+                AES_keygen(masterphrase, masterkey);		// generate the master key
                 gen_iv(masteriv, sizeof(masteriv));			// and an iv for it
                 AES_bin_setup(&mkey, AES_DIR_ENCRYPT, KEY_BYTES * 8, masterkey);
                 AES_bin_cipherInit(&mastercipher, AES_MODE_CBC, masteriv);
@@ -199,8 +202,8 @@ int encrypt(char *infile, char *outfile, char *filephrase, char *masterphrase)
 
             // now encrypt and output the actual data
             {
-                long bytesread = 0;
-                long bytesencrypted = 0;
+                ptrdiff_t bytesread = 0;
+                ptrdiff_t bytesencrypted = 0;
                 do
                 {
                     bytesread = (long)fread(buffer, 1, sizeof(buffer), in);
@@ -278,6 +281,8 @@ int main(int argc, char *argv[])
         char *outfile = argv[idx++];
         char *pass1 = argv[idx++];
         char *pass2 = (idx < argc) ? argv[idx++] : "";
+
+        srand((unsigned int)time(NULL)); // init pseudo random generator
 
         if (_stricmp(op, "EF") == 0)  	// encrypt with file passphrase only
         {
