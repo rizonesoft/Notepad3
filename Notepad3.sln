@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28606.126
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D32CB10B-1891-471D-B780-5445BC67C1E2}"
 	ProjectSection(SolutionItems) = preProject
@@ -366,6 +366,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_el_gr", "language\np3_e
 	ProjectSection(ProjectDependencies) = postProject
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3encrypt", "np3encrypt\np3encrypt.vcxproj", "{0210F830-26C6-40FC-BFD1-6ED833B90830}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1461,6 +1463,30 @@ Global
 		{740715FC-9F1A-4FA0-8876-D28A9CB11E67}.Release|Win32.Build.0 = Release|Win32
 		{740715FC-9F1A-4FA0-8876-D28A9CB11E67}.Release|x64.ActiveCfg = Release|x64
 		{740715FC-9F1A-4FA0-8876-D28A9CB11E67}.Release|x64.Build.0 = Release|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Debug|ARM.ActiveCfg = Debug|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Debug|ARM.Build.0 = Debug|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Debug|ARM64.ActiveCfg = Debug|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Debug|ARM64.Build.0 = Debug|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Debug|Win32.Build.0 = Debug|Win32
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Debug|x64.ActiveCfg = Debug|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Debug|x64.Build.0 = Debug|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release_Dbg|ARM.ActiveCfg = Release|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release_Dbg|ARM.Build.0 = Release|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release_Dbg|ARM64.ActiveCfg = Release|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release_Dbg|ARM64.Build.0 = Release|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release_Dbg|Win32.ActiveCfg = Release|Win32
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release_Dbg|Win32.Build.0 = Release|Win32
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release_Dbg|x64.ActiveCfg = Release|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release_Dbg|x64.Build.0 = Release|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|ARM.ActiveCfg = Release|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|ARM.Build.0 = Release|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|ARM64.ActiveCfg = Release|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|ARM64.Build.0 = Release|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|Win32.ActiveCfg = Release|Win32
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|Win32.Build.0 = Release|Win32
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|x64.ActiveCfg = Release|x64
+		{0210F830-26C6-40FC-BFD1-6ED833B90830}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1528,6 +1554,7 @@ Global
 		{B6757299-D2DD-4103-834D-45227AC13CB7} = {8C28F8E6-5B4E-4233-B5C7-5A903596AEB2}
 		{FF993C51-06FB-461A-9780-FE57BF498155} = {8FD783D5-8709-432D-A88E-6E3073AFF220}
 		{740715FC-9F1A-4FA0-8876-D28A9CB11E67} = {8C28F8E6-5B4E-4233-B5C7-5A903596AEB2}
+		{0210F830-26C6-40FC-BFD1-6ED833B90830} = {C3735E17-6EAE-4CC5-980E-30BCEF094862}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0B8FE68-ECBC-4173-9027-E1EC2C9B5BDF}

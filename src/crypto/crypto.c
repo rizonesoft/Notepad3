@@ -25,7 +25,6 @@ see ecryption-doc.txt for details
 #define WIN32_LEAN_AND_MEAN 1
 #define NOMINMAX 1
 #include <windows.h>
-#include <intsafe.h>
 #include <shellapi.h>
 #include <time.h>
 #include "../src/Dialogs.h"
@@ -667,10 +666,9 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, size_t size, size_
                 AES_bin_setup(&masterencode, AES_DIR_ENCRYPT, KEY_BYTES * 8, binMasterKey);
                 {
                     // generate another IV for the master key
-
                     for (int i = 0; i < sizeof(masterFileIV); i++)
                     {
-                        masterFileIV[i] = (BYTE)(rand() & BYTE_MAX);
+                        masterFileIV[i] = ((i % 2) == 0) ? HIBYTE(rand()) : LOBYTE(rand());
                     }
                 }
 
