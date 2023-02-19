@@ -1533,6 +1533,19 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     //@@@SciCall_SetWhiteSpaceSize(MulDiv(iValue, SciCall_GetZoom(), 100)); // needs update on zoom
     SciCall_SetWhiteSpaceSize(iValue);
 
+    // Nonprinting characters
+    if (SciCall_GetTechnology() == SC_TECHNOLOGY_DEFAULT) {
+        SciCall_ClearAllRepresentations();
+    }
+    else {
+        SciCall_SetRepresentation("\r", "\xE2\x86\x90");
+        SciCall_SetRepresentationAppearance("\r", SC_REPRESENTATION_COLOUR);
+        SciCall_SetRepresentation("\n", "\xE2\x86\x93");
+        SciCall_SetRepresentationAppearance("\n", SC_REPRESENTATION_COLOUR);
+        SciCall_SetRepresentation("\r\n", "\xE2\x86\xB2"); // "\xE2\xAE\x92"
+        SciCall_SetRepresentationAppearance("\r\n", SC_REPRESENTATION_COLOUR);
+    }
+
     // whitespace colors
     rgb = RGB(0, 0, 0);
     rgbWrt = rgb;

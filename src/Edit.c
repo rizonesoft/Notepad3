@@ -5911,7 +5911,7 @@ static DocPos  _FindInTarget(LPCWSTR wchFind, int sFlags,
     DocPos const len = (DocPos)WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, chFind, COUNTOF(chFind), NULL, NULL);
 
     iPos = SciCall_SearchInTarget(len - 1, chFind);
-    iPos = (bFindNext ? (iPos >= stop) : (iPos <= stop)) ? -1LL : iPos; // regex search
+    iPos = (bFindNext ? (iPos > stop) : (iPos < stop)) ? -1LL : iPos; // not found if beyond stop
 
     //  handle next in case of zero-length-matches (regex) !
     if (iPos == start) {
