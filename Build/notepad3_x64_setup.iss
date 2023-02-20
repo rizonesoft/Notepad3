@@ -24,6 +24,10 @@
   #error Compile grepWinNP3 x64 first
 #endif
 
+#ifnexist bindir + "\Release_x64_v143\np3encrypt.exe"
+  #error Compile np3encrypt x64 first
+#endif
+
 #define app_name "Notepad3"
 #define app_publisher "Rizonesoft"
 #define app_version GetVersionNumbersString(bindir + "\Release_x64_v143\Notepad3.exe")
@@ -260,21 +264,21 @@ esm.tsk_LaunchWelcomePage=¡Información importante de lanzamiento!
 esm.tsk_RemoveOpenWith=Eliminar "Abrir con {#app_name}" del menú contextual
 esm.tsk_SetOpenWith=Añade "Abrir con {#app_name}" al menú contextual
 
-fra.msg_DeleteSettings=Voulez-vous également supprimer les paramètres et les thèmes de {#app_name} ?%n%nSi vous prévoyez de réinstaller {#app_name}, vous n'avez pas à les supprimer.
+fra.msg_DeleteSettings=Voulez-vous également supprimer tous les réglages et thèmes de {#app_name} ?%n%nSi vous comptez réinstaller {#app_name}, vous pouvez les garder.
 #if defined(sse_required)
-fra.msg_simd_sse=Cette version de {#app_name} nécessite un CPU prenant en charge l'extension SSE.%n%nVotre CPU n'a pas ces fonctionnalités.
+fra.msg_simd_sse=Cette édition de {#app_name} nécessite un CPU supportant l'extension SSE.%n%nVotre CPU ne dispose pas de ces capacités.
 #elif defined(sse2_required)
-fra.msg_simd_sse2=Cette version de {#app_name} nécessite un CPU prenant en charge l'extension SSE2.%n%nVotre CPU n'a pas ces fonctionnalités.
+fra.msg_simd_sse2=Cette édition de {#app_name} nécessite un CPU supportant l'extension SSE2.%n%nVotre CPU ne dispose pas de ces capacités.
 #endif
 fra.tsk_AllUsers=Pour tous les utilisateurs
-fra.tsk_CurrentUser=Pour l'utilisateur actuel uniquement
-fra.tsk_Other=Other tasks:
-fra.tsk_ResetSettings=Réinitialiser les paramètres et les thèmes de {#app_name}
-fra.tsk_RemoveDefault=Restaurer le Notepad Windows
-fra.tsk_SetDefault=Remplacez le Notepad Windows par {#app_name}
-fra.tsk_StartMenuIcon=Créer un raccourci au menu Démarrer
-fra.tsk_LaunchWelcomePage=Informations importantes sur la version!
-fra.tsk_RemoveOpenWith=Supprimer "Ouvrir avec {#app_name}" du menu contextuel
+fra.tsk_CurrentUser=Uniquement pour l'utilisateur actuel
+fra.tsk_Other=Autres tâches :
+fra.tsk_ResetSettings=Rétablir les réglages et thèmes de {#app_name}
+fra.tsk_RemoveDefault=Restaurer le Notepad de Windows
+fra.tsk_SetDefault=Remplacer le Notepad de Windows par {#app_name}
+fra.tsk_StartMenuIcon=Créer un raccourci dans le menu de démarrage
+fra.tsk_LaunchWelcomePage=Information importante de publication !
+fra.tsk_RemoveOpenWith=Retirer "Ouvrir avec {#app_name}" du menu contextuel
 fra.tsk_SetOpenWith=Ajouter "Ouvrir avec {#app_name}" au menu contextuel
 
 hin.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
@@ -582,6 +586,7 @@ Name: "remove_openwith"; Description: "{cm:tsk_RemoveOpenWith}"; GroupDescriptio
 Source: "{#bindir}\Release_x64_v143\Notepad3.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#bindir}\Release_x64_v143\minipath.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#bindir}\Release_x64_v143\grepWinNP3.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#bindir}\Release_x64_v143\np3encrypt.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\License.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Readme.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\grepWinNP3\grepWinLicense.txt"; DestDir: "{app}"; Flags: ignoreversion
