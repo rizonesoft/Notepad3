@@ -82,7 +82,7 @@ void   Style_ToggleUse2ndDefault(HWND hwnd);
 bool   Style_GetUse2ndDefault();
 void   Style_SetUse2ndDefault(bool);
 void   Style_SetIndentGuides(HWND hwnd,bool);
-void   Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int iValue);
+void   Style_SetExtraLineSpace(int iValue);
 bool   Style_GetFileFilterStr(LPWSTR lpszFilter, int cchFilter, LPWSTR lpszDefExt, int cchExt, bool bSaveAs);
 bool   Style_StrGetFontName(LPCWSTR lpszStyle,LPWSTR lpszFont,int cchFont);
 bool   Style_StrGetFontQuality(LPCWSTR lpszStyle, LPWSTR lpszQuality, int cchQuality, int* iSciQuality_out);
