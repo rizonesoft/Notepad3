@@ -34,9 +34,11 @@ SET TEMP_NAME="make_portable_temp"
 IF NOT EXIST "..\%INPUTDIRx86%\Notepad3.exe"   CALL :SUBMSG "ERROR" "Compile Notepad3 x86 first!"
 IF NOT EXIST "..\%INPUTDIRx86%\minipath.exe"   CALL :SUBMSG "ERROR" "Compile MiniPath x86 first!"
 IF NOT EXIST "..\%INPUTDIRx86%\grepWinNP3.exe" CALL :SUBMSG "ERROR" "Compile grepWinNP3 x86 first!"
+IF NOT EXIST "..\%INPUTDIRx86%\np3encrypt.exe" CALL :SUBMSG "ERROR" "Compile np3encrypt x86 first!"
 IF NOT EXIST "..\%INPUTDIRx64%\Notepad3.exe"   CALL :SUBMSG "ERROR" "Compile Notepad3 x64 first!"
 IF NOT EXIST "..\%INPUTDIRx64%\minipath.exe"   CALL :SUBMSG "ERROR" "Compile MiniPath x64 first!"
 IF NOT EXIST "..\%INPUTDIRx64%\grepWinNP3.exe" CALL :SUBMSG "ERROR" "Compile grepWinNP3 x64 first!"
+IF NOT EXIST "..\%INPUTDIRx64%\np3encrypt.exe" CALL :SUBMSG "ERROR" "Compile np3encrypt x64 first!"
 
 CALL :SubGetVersion
 CALL :SubDetectSevenzipPath
@@ -90,7 +92,7 @@ IF NOT EXIST "%TEMP_NAME%" MD "%TEMP_NAME%"
 IF NOT EXIST "Packages"    MD "Packages"
 
 FOR %%A IN ("..\License.txt" "..\Readme.txt" "..\grepWinNP3\grepWinLicense.txt" "Notepad3.ini" "minipath.ini"^
-    "..\%1\Notepad3.exe" "..\%1\minipath.exe" "..\%1\grepWinNP3.exe") DO COPY /Y /V "%%A" "%TEMP_NAME%\"
+    "..\%1\Notepad3.exe" "..\%1\minipath.exe" "..\%1\grepWinNP3.exe" "..\%1\np3encrypt.exe") DO COPY /Y /V "%%A" "%TEMP_NAME%\"
 
 SET "LNG=%TEMP_NAME%\lng"
 SET "GRP=%TEMP_NAME%\lng\gwLng\"
@@ -111,7 +113,7 @@ IF NOT EXIST "%FAVORITES%" MD "%FAVORITES%"
 PUSHD "%TEMP_NAME%"
 "%SEVENZIP%" a -tzip -mcu=on -mx=7^
  "%ZIP_NAME%.zip" "License.txt" "Notepad3.exe" "Notepad3.ini" "grepWinLicense.txt" "Readme.txt"^
- "Favorites" "minipath.exe" "minipath.ini" "grepWinNP3.exe" "lng" "Themes" "Docs">NUL
+ "Favorites" "minipath.exe" "minipath.ini" "grepWinNP3.exe"  "np3encrypt.exe" "lng" "Themes" "Docs">NUL
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
 
 CALL :SUBMSG "INFO" "%ZIP_NAME%.zip created successfully!"

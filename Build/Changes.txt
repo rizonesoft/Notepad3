@@ -34,25 +34,32 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.217.(build_#) (2023-02-17)
+Current BETA/RC Version 6.23.220.(build_#) (2023-02-20)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.220.1]- Add "np3encrypt" project to solution (cmd-ln tool).
 [.217.1]- Localization of the INNO Setup / Installer menus (SUP).
 
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.220.1]- AnalyzeConfidenceLevel at least 90%.
+[.220.1]- Lexer TEXT using own Default settings (corresponding to ANSI Lexer).
 [.207.1]- Installer script resets "Theme files" only on user decision (SUP).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.220.1]- WSL2 simple path and NP3 otions given with slash.
+[.220.1]- Representation of EOLs in case of GDI technology (use default).
+[.220.1]- Find previous skips finding at begin.
+[.220.1]- Use random IV for np3encrypt.
 [.217.2]- Encoding as "UTF-8 Signature" for Korean INNO Setup menus (SUP).
 [.207.1]- Line spacing in TEXT Lexer.
 [.204.1]- Don't force top-left if window does not fit to monitor.

@@ -158,14 +158,16 @@ for /d %%d in (%NP3_LANGUAGE_SET%) do (
 copy /B "%NP3_X64_DIR%\lng\np3lng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
 copy /B "%NP3_X64_DIR%\lng\mplng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
 
-:: Copy all current "grepWinNP3" files
+:: Copy all current "grepWinNP3" and "np3encrypt" files
 if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng"
 copy /B "%NP3_WIN32_DIR%\lng\gwLng\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" /Y /V
 copy /B "%NP3_WIN32_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
+copy /B "%NP3_WIN32_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
 
 if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng"
 copy /B "%NP3_X64_DIR%\lng\gwLng\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" /Y /V
 copy /B "%NP3_X64_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
+copy /B "%NP3_X64_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
 :: ---------------------------------------------------------------------------------------------------
 
