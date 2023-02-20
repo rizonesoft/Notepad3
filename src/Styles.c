@@ -1656,7 +1656,14 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     size_t const cnt = ReadVectorFromString(Globals.fvCurFile.wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
     Style_SetMultiEdgeLine(edgeColumns, cnt);
 
-    Style_SetExtraLineSpace(hwnd, pCurrentStandard->Styles[STY_X_LN_SPACE].szValue, 0);
+        
+    int iLnSpc = 0;
+    if (Style_StrGetSizeIntEx(pCurrentStandard->Styles[STY_X_LN_SPACE].szValue, &iLnSpc)) {
+        Style_SetExtraLineSpace(iLnSpc);
+    }
+    else {
+        Style_SetExtraLineSpace(0);
+    }
 
     if (SciCall_GetIndentationGuides() != SC_IV_NONE) {
         Style_SetIndentGuides(hwnd, true);
@@ -1682,9 +1689,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
                 pCurrentStandard->Styles[STY_BRACE_BAD].szValue, fBaseFontSize);
         }
 
-        int const curSpc = (SciCall_GetExtraAscent() + SciCall_GetExtraDescent()) >> 1;
-        Style_SetExtraLineSpace(hwnd, s_pLexCurrent->Styles[STY_CTRL_CHR].szValue, curSpc);
-    
+        iLnSpc = 0; // do not inherit from base
+        if (Style_StrGetSizeIntEx(s_pLexCurrent->Styles[4].szValue, &iLnSpc)) {
+            Style_SetExtraLineSpace(iLnSpc);
+        }
     }
     else if (s_pLexCurrent == &lexTEXT) {
     
@@ -1693,7 +1701,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         Style_CopyStyles_IfNotDefined(pCurrentStandard->Styles[STY_MARGIN].szValue, wchStylesBuffer, COUNTOF(wchStylesBuffer));
         Style_SetMargin(hwnd, wchStylesBuffer);
 
-        Style_SetExtraLineSpace(hwnd, s_pLexCurrent->Styles[STY_BRACE_OK].szValue, 0);
+        iLnSpc = (SciCall_GetExtraAscent() + SciCall_GetExtraDescent()) >> 1; // inherit from base
+        if (Style_StrGetSizeIntEx(s_pLexCurrent->Styles[2].szValue, &iLnSpc)) {
+            Style_SetExtraLineSpace(iLnSpc);
+        }
 
     } else if (s_pLexCurrent->lexerID != SCLEX_NULL) {
 
@@ -2835,19 +2846,15 @@ void Style_SetIndentGuides(HWND hwnd,bool bShow)
 //
 //  Style_SetExtraLineSpace()
 //
-void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int iValue)
+void Style_SetExtraLineSpace(int iValue)
 {
-    UNREFERENCED_PARAMETER(hwnd);
-
     int iAscent = 0, iDescent = 0;
-    if (Style_StrGetSizeIntEx(lpszStyle, &iValue)) {
-        if ((iValue % 2) != 0) {
-            iAscent++;
-            iValue--;
-        }
-        iAscent += (iValue >> 1);
-        iDescent += (iValue >> 1);
+    if ((iValue % 2) != 0) {
+        iAscent++;
+        iValue--;
     }
+    iAscent += (iValue >> 1);
+    iDescent += (iValue >> 1);
     SciCall_SetExtraAscent(iAscent);
     SciCall_SetExtraDescent(iDescent);
 }

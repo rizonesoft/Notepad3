@@ -71,7 +71,7 @@ EDITLEXER lexTEXT =
     &KeyWords_NULL,{
         { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"font:$Text; size:11", L"" },
         { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Consolas; size:-1", L"" },
-        { {STYLE_BRACELIGHT}, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:+1", L"" },
+        { {STYLE_BRACELIGHT}, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:2", L"" },
         EDITLEXER_SENTINEL
     }
 };
@@ -85,7 +85,7 @@ EDITLEXER lexANSI =
         { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Lucida Console; size:-2", L"" },
         { {STYLE_BRACELIGHT}, IDS_LEX_STD_BRACE, L"Matching Braces", L"", L"" },
         { {STYLE_BRACEBAD}, IDS_LEX_STD_BRACE_FAIL, L"Matching Braces Error", L"", L"" },
-        { {STYLE_CONTROLCHAR}, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:-2", L"" },
+        { {STYLE_CONTROLCHAR}, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:-1", L"" },
         EDITLEXER_SENTINEL
     }
 };
