@@ -1841,32 +1841,28 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
     if (!hstr_io)
         return false;
 
-    Path_FixBackslashes(hpth_in_out);
-
     ExpandEnvironmentStrgs(hstr_io, true);
 
     if (_Path_IsRelative(hpth_in_out)) {
         HPATHL hsrch_pth = Path_Allocate(PathGet(hpth_wrkdir));
         Path_Append(hsrch_pth, Path_Get(hpth_in_out));
-        if (bSearchPathIfRelative) {
-            if (Path_IsExistingFile(hsrch_pth)) {
+        if (Path_IsExistingFile(hsrch_pth)) {
+            Path_Swap(hpth_in_out, hsrch_pth);
+        }
+        else if (bSearchPathIfRelative) {
+            Path_StripPath(hsrch_pth);
+            HSTRINGW       hsrch_str = StrgCreate(NULL);
+            LPWSTR const buf = StrgWriteAccessBuf(hsrch_str, PATHLONG_MAX_CCH);
+            if (SearchPathW(NULL, PathGet(hsrch_pth), NULL, PATHLONG_MAX_CCH, buf, NULL) != 0) {
+                //~StrgSanitize(hsrch_str);
+                Path_Reset(hpth_in_out, buf);
+                //~PrependLongPathPrefix(hpth_in_out, false);
+            }
+            else { // not found, use file name only (!)
+                Path_Sanitize(hsrch_pth);
                 Path_Swap(hpth_in_out, hsrch_pth);
             }
-            else {
-                Path_StripPath(hsrch_pth);
-                HSTRINGW       hsrch_str = StrgCreate(NULL);
-                LPWSTR const buf = StrgWriteAccessBuf(hsrch_str, PATHLONG_MAX_CCH);
-                if (SearchPathW(NULL, PathGet(hsrch_pth), NULL, PATHLONG_MAX_CCH, buf, NULL) != 0) {
-                    //~StrgSanitize(hsrch_str);
-                    Path_Reset(hpth_in_out, buf);
-                    //~PrependLongPathPrefix(hpth_in_out, false);
-                }
-                else {
-                    StrgSanitize(hsrch_str);
-                    Path_Swap(hpth_in_out, hsrch_pth);
-                }
-                StrgDestroy(hsrch_str);
-            }
+            StrgDestroy(hsrch_str);
         }
         Path_Release(hsrch_pth);
     }

@@ -1657,8 +1657,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     size_t const cnt = ReadVectorFromString(Globals.fvCurFile.wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
     Style_SetMultiEdgeLine(edgeColumns, cnt);
 
-    Style_SetExtraLineSpace(hwnd, pCurrentStandard->Styles[STY_X_LN_SPACE].szValue,
-                            COUNTOF(pCurrentStandard->Styles[STY_X_LN_SPACE].szValue));
+    Style_SetExtraLineSpace(hwnd, pCurrentStandard->Styles[STY_X_LN_SPACE].szValue, 0);
 
     if (SciCall_GetIndentationGuides() != SC_IV_NONE) {
         Style_SetIndentGuides(hwnd, true);
@@ -1682,8 +1681,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
                 pCurrentStandard->Styles[STY_BRACE_BAD].szValue, fBaseFontSize);
         }
 
-        Style_SetExtraLineSpace(hwnd, s_pLexCurrent->Styles[STY_CTRL_CHR].szValue,
-            COUNTOF(s_pLexCurrent->Styles[STY_CTRL_CHR].szValue));
+        Style_SetExtraLineSpace(hwnd, s_pLexCurrent->Styles[STY_CTRL_CHR].szValue, 0);
     
     }
     else if (s_pLexCurrent == &lexTEXT) {
@@ -1691,8 +1689,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         // margin (line number, bookmarks, folding) style
         Style_SetMargin(hwnd, s_pLexCurrent->Styles[STY_MARGIN].szValue);
 
-        Style_SetExtraLineSpace(hwnd, s_pLexCurrent->Styles[STY_BRACE_OK].szValue,
-            COUNTOF(s_pLexCurrent->Styles[STY_BRACE_OK].szValue));
+        int const curSpc = (SciCall_GetExtraAscent() + SciCall_GetExtraDescent()) >> 1;
+        Style_SetExtraLineSpace(hwnd, s_pLexCurrent->Styles[STY_BRACE_OK].szValue, curSpc);
 
     } else if (s_pLexCurrent->lexerID != SCLEX_NULL) {
 
@@ -2834,23 +2832,18 @@ void Style_SetIndentGuides(HWND hwnd,bool bShow)
 //
 //  Style_SetExtraLineSpace()
 //
-void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch)
+void Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int iValue)
 {
     UNREFERENCED_PARAMETER(hwnd);
 
-    int iValue = 0, iAscent = 0, iDescent = 0;
-    if (Style_StrGetSizeInt(lpszStyle, &iValue)) {
-        const int iCurFontSizeDbl = f2int(Style_GetCurrentLexerFontSize() * 2.0f);
-        int iValAdj = clampi(iValue, (0 - iCurFontSizeDbl), 256 * iCurFontSizeDbl);
-        if ((iValAdj != iValue) && (cch > 10)) {
-            StringCchPrintf(lpszStyle, cch, L"size:%i", iValAdj);
-        }
-        if ((iValAdj % 2) != 0) {
+    int iAscent = 0, iDescent = 0;
+    if (Style_StrGetSizeIntEx(lpszStyle, &iValue)) {
+        if ((iValue % 2) != 0) {
             iAscent++;
-            iValAdj--;
+            iValue--;
         }
-        iAscent += (iValAdj >> 1);
-        iDescent += (iValAdj >> 1);
+        iAscent += (iValue >> 1);
+        iDescent += (iValue >> 1);
     }
     SciCall_SetExtraAscent(iAscent);
     SciCall_SetExtraDescent(iDescent);
@@ -3110,6 +3103,47 @@ bool Style_StrGetSizeInt(LPCWSTR lpszStyle, int* i)
     if (p) {
         p += CONSTSTRGLEN(L"size:");
         return Char2Int(p, i);
+    }
+    return false;
+}
+
+
+//=============================================================================
+//
+//  Style_StrGetSizeIntEx()
+//
+bool Style_StrGetSizeIntEx(LPCWSTR lpszStyle, int* i)
+{
+    WCHAR* p = StrStr(lpszStyle, L"size:");
+    if (p) {
+        int   iSign = 0;
+        WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
+        StringCchCopy(tch, COUNTOF(tch), p + CONSTSTRGLEN(L"size:"));
+        if (tch[0] == L'+') {
+            iSign = 1;
+            tch[0] = L' ';
+        }
+        else if (tch[0] == L'-') {
+            iSign = -1;
+            tch[0] = L' ';
+        }
+        p = StrChr(tch, L';');
+        if (p) {
+            *p = L'\0';
+        }
+        TrimSpcW(tch);
+
+        int   iValue = 0;
+        if (Char2Int(tch, &iValue)) {
+            if (iSign == 0) {
+                *i = iValue;
+            }
+            else {                         // iSign: relative value
+                iValue = (iSign * iValue); // can be negative
+                *i += iValue;
+            }
+            return true;
+        }
     }
     return false;
 }
