@@ -9059,7 +9059,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 static void ParseCmdLnOption(LPWSTR lp1, LPWSTR lp2, const size_t len); // forward decl
 
-//=============================================================================
+// -----------------------------------------------------------------------------
 
 void ParseCommandLine()
 {
@@ -9097,9 +9097,8 @@ void ParseCommandLine()
                 bIsFileArg = true;
                 StringCchCopy(lp3, len, lp2); // next arg
             }
-            else if (!bIsFileArg && ((*lp1 == L'/') && (*lp2 == '\0'))) {
-                bIsFileArg = true;
-                // lp3 must be file, so not ~StringCchCopy(lp3, len, lp2)
+            else if (!bIsFileArg && ((*lp1 == L'/') && (*lp2 == '\0')) && (StrStrW(&lp1[1], L"/") != NULL)) {
+                bIsFileArg = true; // WSL2 filepath (at least 2 slashes needed)
             } 
             else if (!bIsFileArg && ((*lp1 == L'/') || (*lp1 == L'-'))) {
                 StrLTrimI(lp1, L"-/"); // LeftTrim
@@ -9127,8 +9126,6 @@ void ParseCommandLine()
                     StringCchCopy(s_lpOrigFileArg, alloc_spc, lp3);
 
                     Path_Reset(s_pthArgFilePath, lp3);
-
-                    Path_FixBackslashes(s_pthArgFilePath);
 
                     if (!Path_IsRelative(s_pthArgFilePath) && !Path_IsUNC(s_pthArgFilePath) && (Path_GetDriveNumber(s_pthArgFilePath) == -1))
                     {
