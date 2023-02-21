@@ -469,7 +469,7 @@ BEGIN
         MENUITEM "Configurações de Quebra de &Palavra...",              IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Configurações de Linha &Longa...",                    IDM_SET_LONGLINESETTINGS
         MENUITEM "In&dentar Texto Automaticamente",                     IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close &Quotes",                                  IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Fec&har Aspas Automático",                            IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Fechar Parênteses Automaticamente",                   IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Fechar Automaticamente &HTML/XML\tCtrl+Shift+H",      IDM_SET_AUTOCLOSETAGS
         MENUITEM "Completa Palavras A&utomaticamente",                  IDM_SET_AUTOCOMPLETEWORDS
