@@ -5431,6 +5431,7 @@ void EditJumpTo(DocLn iNewLine, DocPos iNewCol)
     iNewCol = clampp((iNewCol - colOffset), 0, iLineEndPos);
 
     Sci_GotoPosChooseCaret(SciCall_FindColumn(iNewLine, iNewCol));
+    Sci_ScrollSelectionToView();
 }
 
 

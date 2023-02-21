@@ -1643,19 +1643,18 @@ size_t LengthOfFindPatternMB()
 
 static EDITFINDREPLACE s_FindReplaceData = INIT_EFR_DATA;
 
-
 //=============================================================================
 //
 // SetFindReplaceData()
 //
 static void SetFindReplaceData()
 {
-    // reset
-    DuplicateEFR(&s_FindReplaceData, &(Settings.EFR_Data));
-
+    // init find pattern with current
     if (!IsFindPatternEmpty()) {
         StrgReset(Settings.EFR_Data.chFindPattern, GetFindPattern());
     }
+    // copy settings to working data
+    DuplicateEFR(&s_FindReplaceData, &(Settings.EFR_Data));
 
     if (g_flagMatchText) { // cmd line
         if (g_flagMatchText & 4) {
@@ -1866,11 +1865,6 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
                         }
                     }
                 }
-                if (s_flagJumpTo) { // Jump to position
-                    SciCall_SetYCaretPolicy(s_iCaretPolicyV | CARET_JUMPS, Settings2.CurrentLineVerticalSlop);
-                    EditJumpTo(s_iInitialLine, s_iInitialColumn);
-                    SciCall_SetYCaretPolicy(s_iCaretPolicyV, Settings2.CurrentLineVerticalSlop);
-                }
             }
         }
 
@@ -1942,7 +1936,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     utarray_reserve(UndoRedoSelectionUTArray,256);
 
     // Check for /c [if no file is specified] -- even if a file is specified
-    /*else */if (s_flagNewFromClipboard) {
+    if (s_flagNewFromClipboard) {
         if (SciCall_CanPaste()) {
             bool bAutoIndent2 = Settings.AutoIndent;
             Settings.AutoIndent = 0;
@@ -1962,6 +1956,13 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
             } else {
                 Sci_ScrollSelectionToView();
             }
+        }
+    }
+    else {
+        if (s_flagJumpTo) { // Jump to position
+            SciCall_SetYCaretPolicy(s_iCaretPolicyV | CARET_JUMPS, Settings2.CurrentLineVerticalSlop);
+            EditJumpTo(s_iInitialLine, s_iInitialColumn);
+            SciCall_SetYCaretPolicy(s_iCaretPolicyV, Settings2.CurrentLineVerticalSlop);
         }
     }
 
@@ -3740,7 +3741,8 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
             if (params->flagMatchText) {
                 g_flagMatchText = params->flagMatchText;
-                SetFindPattern(StrEndW(Path_Get(hfile_pth), 0) + 1);
+
+                SetFindPattern(StrEndW(&params->wchData, 0) + 1);
                 SetFindReplaceData(); // s_FindReplaceData
 
                 if (g_flagMatchText & 2) {
@@ -9423,8 +9425,7 @@ static void ParseCmdLnOption(LPWSTR lp1, LPWSTR lp2, const size_t len)
 
         case L'G':
             if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
-                int itok =
-                    swscanf_s(lp1, L"%i,%i", &s_iInitialLine, &s_iInitialColumn);
+                int itok = swscanf_s(lp1, L"%i,%i", &s_iInitialLine, &s_iInitialColumn);
                 if (itok == 1 || itok == 2) { // scan successful
                     s_flagJumpTo = true;
                 }
@@ -9455,6 +9456,7 @@ static void ParseCmdLnOption(LPWSTR lp1, LPWSTR lp2, const size_t len)
                 bTransBS = true;
             }
             if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
+
                 SetFindPattern(lp1);
 
                 g_flagMatchText = 1;
@@ -10077,7 +10079,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
             if (wChr <= 0xFFFF)
                 StringCchPrintf(tchChr, COUNTOF(tchChr), L"%.4X", wChr);
             else
-                StringCchPrintf(tchChr, COUNTOF(tchChr), L"0x%.4X0x%.4X", LOWORD(wChr), HIWORD(wChr));
+                StringCchPrintf(tchChr, COUNTOF(tchChr), L"0x%.4X 0x%.4X", LOWORD(wChr), HIWORD(wChr));
         }
         if (s_wChr != wChr) {
             StringCchPrintf(tchStatusBar[STATUS_UNICODEPT], txtWidth, L"%s%s%s",
