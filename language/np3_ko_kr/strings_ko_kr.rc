@@ -266,8 +266,8 @@ BEGIN
     IDS_MUI_MENU_THEMES     "구성표 모음(&S)"
     IDM_THEMES_FACTORY_RESET "기본값(&F)"
     IDM_THEMES_STD_CFG       "표준 구성 (&S)"  // 앞에 공백을 유지(&S)
-    IDS_MUI_STATUSBAR_PREFIXES "줄  ,열  ,선택  ,블럭  ,줄선택  ,일치  ,,,,,,,글자  ,교체  ,유형  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "줄  ,열  ,선택  ,블럭  ,줄선택  ,일치  ,,,,,,,글자  ,교체  ,유형  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "모두 지우기"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "찾기 내역 지우기"

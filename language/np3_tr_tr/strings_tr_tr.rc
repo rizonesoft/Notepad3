@@ -266,8 +266,8 @@ BEGIN
     IDS_MUI_MENU_THEMES     "Şema &teması"
     IDM_THEMES_FACTORY_RESET "&Fabrika ayarları"
     IDM_THEMES_STD_CFG       "Standart yapılandırma"
-    IDS_MUI_STATUSBAR_PREFIXES "Sat  ,Süt  ,Seç  ,Haz  ,SSat  ,Kop  ,,,,,,,Krk  ,Değ  ,Dene  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Sat  ,Süt  ,Seç  ,Haz  ,SSat  ,Kop  ,,,,,,,Krk  ,Değ  ,Dene  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Tümünü temizle"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Arama geçmişini temizle"

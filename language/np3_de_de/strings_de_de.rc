@@ -266,8 +266,8 @@ BEGIN
     IDS_MUI_MENU_THEMES     "&Schema Sammlung"
     IDM_THEMES_FACTORY_RESET "&Zurücksetzen auf Fabrik Schema"
     IDM_THEMES_STD_CFG       "&Standard Config Schema"
-    IDS_MUI_STATUSBAR_PREFIXES  "Z  ,Sp  ,Sel  ,GrB  ,SelZ  ,Vork  ,,,,,,,Zch  ,Ersz  ,Ergb  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES  "Z  ,Sp  ,Sel  ,GrB  ,SelZ  ,Vork  ,,,,,,,Zch  ,Ersz  ,Ergb  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Alle löschen"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Suchen-Historie löschen"

@@ -266,8 +266,8 @@ BEGIN
     IDS_MUI_MENU_THEMES     "&Schema's"
     IDM_THEMES_FACTORY_RESET "&Standaardinstelling"
     IDM_THEMES_STD_CFG       "&Standaard Config"
-    IDS_MUI_STATUSBAR_PREFIXES "Rg  ,Kol  ,Sel  ,Sb  ,SRg  ,Occ  ,,,,,,,Ch  ,Verv  ,Eval  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Rg  ,Kol  ,Sel  ,Sb  ,SRg  ,Occ  ,,,,,,,Ch  ,Verv  ,Eval  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Alles wissen"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Zoekgeschiedenis wissen"

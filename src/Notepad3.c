@@ -10027,6 +10027,36 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     }
     // ------------------------------------------------------
 
+    if (g_iStatusbarVisible[STATUS_UNICODEPT]) {
+
+        static WCHAR tchChr[32] = { L'\0' };
+        static unsigned s_wChr = L'\0';
+        int const len = sizeof(int) / sizeof(WCHAR); 
+
+        DocPos const iPosAfter = SciCall_PositionAfter(iPos);
+
+        char chChrs[8] = { '\0' };
+        struct Sci_TextRangeFull tr = { { iPos, iPosAfter }, chChrs };
+        SciCall_GetTextRangeFull(&tr);
+
+        unsigned wChr = L'\0';
+        MultiByteToWideChar(Encoding_SciCP, 0, chChrs, (int)strlen(chChrs), (LPWSTR)&wChr, len);
+
+        if (bForceRedraw || (s_wChr != wChr)) {
+            if (wChr <= 0xFFFF)
+                StringCchPrintf(tchChr, COUNTOF(tchChr), L"%.4X", wChr);
+            else
+                StringCchPrintf(tchChr, COUNTOF(tchChr), L"0x%.4X0x%.4X", LOWORD(wChr), HIWORD(wChr));
+        }
+        if (s_wChr != wChr) {
+            StringCchPrintf(tchStatusBar[STATUS_UNICODEPT], txtWidth, L"%s%s%s",
+                g_mxSBPrefix[STATUS_UNICODEPT], tchChr, g_mxSBPostfix[STATUS_UNICODEPT]);
+            s_wChr = wChr;
+            bIsUpdateNeeded = true;
+        }
+    }
+    // ------------------------------------------------------
+
     static WCHAR tchSel[32] = { L'\0' };
 
     // number of selected chars in statusbar

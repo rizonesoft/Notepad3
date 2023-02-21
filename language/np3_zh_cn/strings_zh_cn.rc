@@ -266,8 +266,8 @@ BEGIN
     IDS_MUI_MENU_THEMES     "语法高亮方案集(&S)"
     IDM_THEMES_FACTORY_RESET "工厂默认(&F)"
     IDM_THEMES_STD_CFG       "标准配置 (&S)"  // Keep blank space before (&S)
-    IDS_MUI_STATUSBAR_PREFIXES "行  ,列  ,选定  ,字节  ,选行  ,匹配  ,,,,,,,字符  ,改写  ,求值  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "行  ,列  ,选定  ,字节  ,选行  ,匹配  ,,,,,,,字符  ,改写  ,求值  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "清除全部"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "清除查找历史"

@@ -266,8 +266,8 @@ BEGIN
     IDS_MUI_MENU_THEMES     "&Coleção de Esquemas"
     IDM_THEMES_FACTORY_RESET "&Padrão de Fábrica"
     IDM_THEMES_STD_CFG       "Config. &Padrão"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Limpar Tudo"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Limpar Histórico Localizar"

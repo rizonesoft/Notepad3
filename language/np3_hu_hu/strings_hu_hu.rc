@@ -266,8 +266,8 @@ BEGIN
     IDS_MUI_MENU_THEMES     "&Sablon gyűjtemény"
     IDM_THEMES_FACTORY_RESET "&Gyári érték"
     IDM_THEMES_STD_CFG       "&Standard konfiguráció"
-    IDS_MUI_STATUSBAR_PREFIXES "Sor ,Oszl ,Kij  ,Sb  ,SKij ,Tal  ,,,,,,,Ch  ,Csere ,Eval  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Sor ,Oszl ,Kij  ,Sb  ,SKij ,Tal  ,,,,,,,Ch  ,Csere ,Eval  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Mind törlése"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Keresési előzmények törlése"

@@ -266,8 +266,8 @@ BEGIN
     IDS_MUI_MENU_THEMES     "&Výber motívu"
     IDM_THEMES_FACTORY_RESET "&Predvolené nastavenia"
     IDM_THEMES_STD_CFG       "&Štandardná konfigurácia"
-    IDS_MUI_STATUSBAR_PREFIXES "Riadok  ,Stĺpec  ,Výber  ,Sb  ,SLn  ,Occ  ,,,,,,,Znaky  ,Repl  ,Eval  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Riadok  ,Stĺpec  ,Výber  ,Sb  ,SLn  ,Occ  ,,,,,,,Znaky  ,Repl  ,Eval  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Vymazať všetko"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Vymazať históriu vyhľadávania"

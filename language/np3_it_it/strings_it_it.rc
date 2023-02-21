@@ -266,8 +266,8 @@ BEGIN
     IDS_MUI_MENU_THEMES     "&Collezione di Schemi"
     IDM_THEMES_FACTORY_RESET "Impostazioni di &fabbrica"
     IDM_THEMES_STD_CFG       "&Standard Config"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Car  ,Sost  ,Ris  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Car  ,Sost  ,Ris  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Pulisci tutto"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Pulisci Cronologia Ricerche"
