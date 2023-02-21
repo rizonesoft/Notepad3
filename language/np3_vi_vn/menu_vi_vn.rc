@@ -469,7 +469,7 @@ BEGIN
         MENUITEM "&Word Wrap Settings...",                   IDM_SET_WORDWRAPSETTINGS
         MENUITEM "L&ong Line Settings...",                   IDM_SET_LONGLINESETTINGS
         MENUITEM "Auto &Indent Text",                        IDM_SET_AUTOINDENTTEXT
-        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Auto Close &Brackets",                     IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Auto Close &HTML/XML\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
         MENUITEM "A&uto Complete Words",                     IDM_SET_AUTOCOMPLETEWORDS

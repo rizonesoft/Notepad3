@@ -469,8 +469,8 @@ BEGIN
         MENUITEM "Ρυθμίσεις αναδίπλωσης &λέξεων...",                IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Ρυθμίσεις &μεγάλης γραμμής...",                   IDM_SET_LONGLINESETTINGS
         MENUITEM "Αυτόματη εσ&οχή κειμένου",                        IDM_SET_AUTOINDENTTEXT
-        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
-        MENUITEM "Auto Close Brackets",                      IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Auto Close &Quotes",                              IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Auto Close Brackets",                             IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Αυτόματο κλείσιμο Η&ΤΜL/XML\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
         MENUITEM "Αυτόματη συμπλήρωση λέ&ξεων",                     IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Α&υτόμ. συμπλήρωση λέ&ξεων-κλειδιών του Lexer",   IDM_SET_AUTOCLEXKEYWORDS

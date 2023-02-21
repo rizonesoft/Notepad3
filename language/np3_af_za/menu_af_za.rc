@@ -469,7 +469,7 @@ BEGIN
         MENUITEM "&Woord Omslag Instellings...",                    IDM_SET_WORDWRAPSETTINGS
         MENUITEM "L&ang Lyn Instellings...",                        IDM_SET_LONGLINESETTINGS
         MENUITEM "Outo-In&dent Teks",                               IDM_SET_AUTOINDENTTEXT
-        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Auto Close &Quotes",                              IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Outomatiese Toe&beugel",                          IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Outo-Sluit &HTML/XML\tCtrl+Shift+H",              IDM_SET_AUTOCLOSETAGS
         MENUITEM "O&uto-Voltooi Woorde",                            IDM_SET_AUTOCOMPLETEWORDS
@@ -478,7 +478,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Slegs Een Keer per &Lêer",                        IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Lêerverandering-&Kennisgewing...\tAlt+F5",        IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
+        MENUITEM "AutoSave / Backup Settings...",                   IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "&Mute Message Beeps",                             IDM_SET_MUTE_MESSAGEBEEP
         POPUP "&Esc Sleutel Funksie"
         BEGIN

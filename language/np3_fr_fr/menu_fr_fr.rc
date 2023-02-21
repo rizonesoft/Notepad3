@@ -469,7 +469,7 @@ BEGIN
         MENUITEM "&Paramètres de saut de ligne automatique...",         IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Paramètres de ligne l&ongue...",                      IDM_SET_LONGLINESETTINGS
         MENUITEM "Retrait automatique &du texte",                       IDM_SET_AUTOINDENTTEXT
-        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Auto-fermeture des &guillemets",                      IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Auto-fermeture des parenthèses",                      IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Auto-fermeture des balises &HTML/XML\tCtrl+Maj+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "A&uto-complétion des mots",                           IDM_SET_AUTOCOMPLETEWORDS

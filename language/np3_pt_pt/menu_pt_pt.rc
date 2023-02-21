@@ -469,8 +469,8 @@ BEGIN
         MENUITEM "Definições de moldagem de texto...",                 IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Definições de linhas &longas...",                    IDM_SET_LONGLINESETTINGS
         MENUITEM "In&dentação automática do texto",                    IDM_SET_AUTOINDENTTEXT
-        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
-        MENUITEM "Auto Close Brackets",                      IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Auto Close &Quotes",                                 IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Auto Close Brackets",                                IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Fechar automaticamente &HTML/XML\tCtrl+Shift+H",     IDM_SET_AUTOCLOSETAGS
         MENUITEM "Conclusão a&utomática das palavras",                 IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Conclusão automática palavras chave Lexer",          IDM_SET_AUTOCLEXKEYWORDS

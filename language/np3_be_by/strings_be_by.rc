@@ -267,7 +267,7 @@ BEGIN
     IDM_THEMES_FACTORY_RESET "&Завадскія налады"
     IDM_THEMES_STD_CFG       "&Стандартны канфіг"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Ачысціць усё"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Ачысціць гісторыю пошуку"

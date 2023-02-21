@@ -464,13 +464,13 @@ BEGIN
     END
     POPUP "सेटिंग (&S)"
     BEGIN
-        MENUITEM "टैब को खाली जगह के रूप में डालें (&S)",          IDM_SET_TABSASSPACES
+        MENUITEM "टैब को खाली जगह के रूप में डालें (&S)",           IDM_SET_TABSASSPACES
         MENUITEM "टैब सेटिंग (&T)...\tCtrl+T",                   IDM_SET_TABSETTINGS
         MENUITEM "शब्द लपेटने की सेटिंग (&W)...",                  IDM_SET_WORDWRAPSETTINGS
         MENUITEM "लंबी रेखा की सेटिंग (&O)...",                    IDM_SET_LONGLINESETTINGS
         MENUITEM "स्वत: टेक्स्ट को इंडेंट करें (&I)",                  IDM_SET_AUTOINDENTTEXT
-        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
-        MENUITEM "Auto Close Brackets (&B)",                      IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Auto Close &Quotes",                        IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Auto Close Brackets (&B)",                  IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "HTML/XML स्वत: बंद करें (&H)\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "शब्द स्वतः पूर्ण करें (&U)",                       IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Lexer-Key-Words स्वतः पूर्ण करें (&K)",           IDM_SET_AUTOCLEXKEYWORDS

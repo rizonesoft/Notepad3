@@ -469,14 +469,14 @@ BEGIN
         MENUITEM "自动换行设置(&W)...",                         IDM_SET_WORDWRAPSETTINGS
         MENUITEM "长行标记设置(&O)...",                         IDM_SET_LONGLINESETTINGS
         MENUITEM "自动缩进(&I)",                                IDM_SET_AUTOINDENTTEXT
-        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
-        MENUITEM "自动关闭括号(&B)",                      IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Auto Close &Quotes",                        IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "自动关闭括号(&B)",                            IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "自动关闭 &HTML/XML 标记\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
         MENUITEM "自动补全单词(&U)",                            IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "自动补全语法关键字(&K)",                      IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "切换单词分隔规则(&P)\tCtrl+Alt+A",   IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "切换单词分隔规则(&P)\tCtrl+Alt+A",            IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
-        MENUITEM "对每个文件仅允许单个实例(&F)",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "对每个文件仅允许单个实例(&F)",                IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "文件修改通知(&C)...\tAlt+F5",                 IDM_SET_CHANGENOTIFY
         ///MENUITEM "自动保存和备份设置...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "关闭消息提示音(&M)",                          IDM_SET_MUTE_MESSAGEBEEP
