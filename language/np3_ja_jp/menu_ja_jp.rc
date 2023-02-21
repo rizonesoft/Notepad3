@@ -469,6 +469,7 @@ BEGIN
         MENUITEM "折り返し方の設定(&W)...",                        IDM_SET_WORDWRAPSETTINGS
         MENUITEM "行の長さガイドの設定(&O)...",                     IDM_SET_LONGLINESETTINGS
         MENUITEM "自動インデント(&I)",                             IDM_SET_AUTOINDENTTEXT
+        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "自動で括弧を閉じる(&B)",                      IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "自動閉じHTML/XMLタグ(&H)\tCtrl+Shift+H",        IDM_SET_AUTOCLOSETAGS
         MENUITEM "単語補完(&U)",                                 IDM_SET_AUTOCOMPLETEWORDS

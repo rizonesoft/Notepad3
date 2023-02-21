@@ -469,6 +469,7 @@ BEGIN
         MENUITEM "शब्द लपेटने की सेटिंग (&W)...",                  IDM_SET_WORDWRAPSETTINGS
         MENUITEM "लंबी रेखा की सेटिंग (&O)...",                    IDM_SET_LONGLINESETTINGS
         MENUITEM "स्वत: टेक्स्ट को इंडेंट करें (&I)",                  IDM_SET_AUTOINDENTTEXT
+        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Auto Close Brackets (&B)",                      IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "HTML/XML स्वत: बंद करें (&H)\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "शब्द स्वतः पूर्ण करें (&U)",                       IDM_SET_AUTOCOMPLETEWORDS

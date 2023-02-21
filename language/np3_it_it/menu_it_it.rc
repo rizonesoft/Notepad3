@@ -469,6 +469,7 @@ BEGIN
         MENUITEM "Impostazioni &A capo automatico...",               IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Impostazioni &Linee lunghe...",                    IDM_SET_LONGLINESETTINGS
         MENUITEM "In&dentazione automatica",                         IDM_SET_AUTOINDENTTEXT
+        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Chiusura automatica Parentesi",                    IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Chiusura automatica &HTML/XML\tCtrl+Shift+H",      IDM_SET_AUTOCLOSETAGS
         MENUITEM "&Autocompletamento delle parole",           IDM_SET_AUTOCOMPLETEWORDS

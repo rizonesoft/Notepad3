@@ -469,6 +469,7 @@ BEGIN
         MENUITEM "&Instellingen voor regelterugloop...",            IDM_SET_WORDWRAPSETTINGS
         MENUITEM "&Lange regelinstellingen...",                     IDM_SET_LONGLINESETTINGS
         MENUITEM "Te&kst automatisch inspringen",                   IDM_SET_AUTOINDENTTEXT
+        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Haakjes automatisch sluiten",                      IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "&HTML/XML tags automatisch sluiten\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "Sleutelwoorden &automatisch aanvullen",           IDM_SET_AUTOCOMPLETEWORDS

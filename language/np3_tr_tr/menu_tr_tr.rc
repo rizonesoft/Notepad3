@@ -469,6 +469,7 @@ BEGIN
         MENUITEM "Sözcük &kaydırma ayarları...",                      IDM_SET_WORDWRAPSETTINGS
         MENUITEM "&Uzun satır ayarları...",                           IDM_SET_LONGLINESETTINGS
         MENUITEM "Otomatik girinti kullanılsın",                      IDM_SET_AUTOINDENTTEXT
+        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Parantezler otomatik kapatılsın",                   IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "HTML/&XML kod imleri otomatik kapatılsın\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
         MENUITEM "Sözcükler &otomatik tamamlansın",                   IDM_SET_AUTOCOMPLETEWORDS

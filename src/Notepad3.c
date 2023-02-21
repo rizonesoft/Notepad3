@@ -4406,6 +4406,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     //i = SciCall_GetLexer();
     //EnableCmd(hmenu,IDM_SET_AUTOCLOSETAGS,(i == SCLEX_HTML || i == SCLEX_XML));
     CheckCmd(hmenu, IDM_SET_AUTOCLOSETAGS, Settings.AutoCloseTags /*&& (i == SCLEX_HTML || i == SCLEX_XML)*/);
+    CheckCmd(hmenu, IDM_SET_AUTOCLOSEQUOTES, Settings.AutoCloseQuotes);
     CheckCmd(hmenu, IDM_SET_AUTOCLOSEBRACKETS, Settings.AutoCloseBrackets);
 
     CheckCmd(hmenu, IDM_SET_REUSEWINDOW, Flags.bReuseWindow);
@@ -6128,6 +6129,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_SET_AUTOCLOSETAGS:
         Settings.AutoCloseTags = !Settings.AutoCloseTags;
+        break;
+
+    case IDM_SET_AUTOCLOSEQUOTES:
+        Settings.AutoCloseQuotes = !Settings.AutoCloseQuotes;
         break;
 
     case IDM_SET_AUTOCLOSEBRACKETS:
@@ -8348,6 +8353,32 @@ static void _HandleInsertCheck(const SCNotification* const scn)
 {
     if (Sci_IsMultiOrRectangleSelection() || !scn || !(scn->text)) {
         return;
+    }
+    if (Settings.AutoCloseQuotes) {
+        if (scn->length == 1) {
+            bool bInserted = true;
+            DocPos len = 0;
+            switch (scn->text[0]) {
+            case '"':
+                len = _EncloseSelectionBuffer('"', '"');
+                break;
+            case '\'':
+                len = _EncloseSelectionBuffer('\'', '\'');
+                break;
+            case '`':
+                len = _EncloseSelectionBuffer('`', '`');
+                break;
+            default:
+                bInserted = false;
+                break;
+            }
+            if (bInserted) {
+                SciCall_ChangeInsertion(len, s_SelectionBuffer);
+                if (len == 2) {
+                    PostMessage(Globals.hwndEdit, SCI_CHARLEFT, 0, 0);
+                }
+            }
+        }
     }
     if (Settings.AutoCloseBrackets) {
         if (scn->length == 1) {

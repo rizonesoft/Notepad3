@@ -577,6 +577,7 @@ typedef struct SETTINGS_T {
     bool DocReadOnlyMode;
     bool MatchBraces;
     bool AutoCloseTags;
+    bool AutoCloseQuotes;
     bool AutoCloseBrackets;
     int  HighlightCurrentLine;
     int  ChangeHistoryMode;
