@@ -266,8 +266,8 @@ BEGIN
     IDS_MUI_MENU_THEMES     "स्कीम संग्रह (&S)"
     IDM_THEMES_FACTORY_RESET "फैक्ट्री डिफ़ॉल्ट (&F)"
     IDM_THEMES_STD_CFG       "सामान्य Config (&S)"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "सारा साफ करें"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "ढूँढी हुई फ़ाइलों की जानकारी हटाएं"

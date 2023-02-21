@@ -266,8 +266,8 @@ BEGIN
     IDS_MUI_MENU_THEMES     "&Συλλογή συνδυασμών"
     IDM_THEMES_FACTORY_RESET "&Προεπιλεγμένη"
     IDM_THEMES_STD_CFG       "&Τυπική Config"
-    IDS_MUI_STATUSBAR_PREFIXES "Γρ.  ,Στήλη  ,Επιλ.  ,Επιλb  ,ΕπιλΓρ.  ,Εμφ.  ,,,,,,,Χαρ.  ,Αντικ.  ,Βαθμ.  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Γρ.  ,Στήλη  ,Επιλ.  ,Επιλb  ,ΕπιλΓρ.  ,Εμφ.  ,,,,,,,Χαρ.  ,Αντικ.  ,Βαθμ.  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Απαλοιφή όλων"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Απαλοιφή ιστορικού αναζήτησης"

@@ -266,8 +266,8 @@ BEGIN
     IDS_MUI_MENU_THEMES     "配色テーマ(&S)"
     IDM_THEMES_FACTORY_RESET "初期設定(&F)"
     IDM_THEMES_STD_CFG       "標準設定 (&S)"  // Keep blank space before (&S)
-    IDS_MUI_STATUSBAR_PREFIXES "行 ,列 ,選 ,選B ,選行 ,見 ,,,,,,,字 ,置 ,式 ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "行 ,列 ,選 ,選B ,選行 ,見 ,,,,,,,字 ,置 ,式 ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "すべて削除"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "検索履歴を消去"
