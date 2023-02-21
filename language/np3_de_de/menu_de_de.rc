@@ -468,9 +468,8 @@ BEGIN
         MENUITEM "&Tabulator Einstellungen...\tCtrl+T",         IDM_SET_TABSETTINGS
         MENUITEM "&Wort Umbruch Einstellungen...",              IDM_SET_WORDWRAPSETTINGS
         MENUITEM "&Lang Zeilen Einstellungen...",               IDM_SET_LONGLINESETTINGS
-
         MENUITEM "Auto Text &Einrückung",                       IDM_SET_AUTOINDENTTEXT
-        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Auto Hochkomma Schließen",                    IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Auto Klammer Schließen",                      IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Auto Tagabschluss &HTML/XML\tCtrl+Shift+H",   IDM_SET_AUTOCLOSETAGS
         MENUITEM "Auto Wort &Vorschläge",                       IDM_SET_AUTOCOMPLETEWORDS
