@@ -469,7 +469,7 @@ BEGIN
         MENUITEM "Налады перано&са радкоў...",                  IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Налады до&ўгіх радкоў...",                    IDM_SET_LONGLINESETTINGS
         MENUITEM "Аўта&матычны водступ тэксту",                 IDM_SET_AUTOINDENTTEXT
-        //////MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Auto Close &Quotes",                          IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Аўтазакрыццё дужак",                          IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Аўтазакрыццё тэгаў &HTML/XML\tCtrl+Shift+H",  IDM_SET_AUTOCLOSETAGS
         MENUITEM "Cамадавяр&шэнне слоў",                        IDM_SET_AUTOCOMPLETEWORDS

@@ -490,13 +490,14 @@ If used, this setting also defines the field ordering.
 - Section 12 = Character Count (per line)
 - Section 13 = Replaced Occurrences
 - Section 14 = TinyExpr Evaluation
+- Section 15 = Unicode point display of current (caret pos) character.
 
-#### `SectionPrefixes=Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,`  (internal default)
+#### `SectionPrefixes=Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,`  (internal default)
 
 This parameter is used to redefines the displayed Prefixes in the sections of the Status Bar
 - A “,” (comma) is used as separator. Spaces are **NOT** ignored.
 
-#### `SectionPostfixes=,,,,,,,,,,,,,,,`  (internal default)
+#### `SectionPostfixes=,,,,,,,,,,,,,,,,`  (internal default)
 
 This parameter is used to redefines the displayed Postfixes in the sections of the Status Bar
 - A “,” (comma) is used as separator. Spaces are **NOT** ignored.

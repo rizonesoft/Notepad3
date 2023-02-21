@@ -469,7 +469,7 @@ BEGIN
         MENUITEM "&Ustawienia zawijania wierszy...",                IDM_SET_WORDWRAPSETTINGS
         MENUITEM "&Ustawienia długości wierszy...",                 IDM_SET_LONGLINESETTINGS
         MENUITEM "Automatyczne wcięcie",                            IDM_SET_AUTOINDENTTEXT
-        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Auto Close &Quotes",                              IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Automatyczne zamknięcie nawiasów",                IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Automatyczne zamykanie &HTML/XML\tCtrl+Shift+H",  IDM_SET_AUTOCLOSETAGS
         MENUITEM "A&utouzupełnianie wyrazów",                       IDM_SET_AUTOCOMPLETEWORDS

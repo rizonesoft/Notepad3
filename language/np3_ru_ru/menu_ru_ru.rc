@@ -469,7 +469,7 @@ BEGIN
         MENUITEM "Настройка переноса &строк...",                IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Настро&йка длинных строк...",                 IDM_SET_LONGLINESETTINGS
         MENUITEM "Авто&матический отступ текста",               IDM_SET_AUTOINDENTTEXT
-        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Auto Close &Quotes",                          IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Автозакрытие скобок",                         IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Автозакрытие тегов &HTML/XML\tCtrl+Shift+H",  IDM_SET_AUTOCLOSETAGS
         MENUITEM "Авто&завершение слов",                        IDM_SET_AUTOCOMPLETEWORDS

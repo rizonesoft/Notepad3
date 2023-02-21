@@ -469,14 +469,14 @@ BEGIN
         MENUITEM "自動換行設定(&W)...",                         IDM_SET_WORDWRAPSETTINGS
         MENUITEM "長行標記設定(&O)...",                         IDM_SET_LONGLINESETTINGS
         MENUITEM "自動縮排(&I)",                                IDM_SET_AUTOINDENTTEXT
-        ///MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
-        MENUITEM "自動關閉括弧(&B)",                      IDM_SET_AUTOCLOSEBRACKETS
-        MENUITEM "自動關閉 HTML/XML 標記(&H)\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
+        MENUITEM "Auto Close &Quotes",                        IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "自動關閉括弧(&B)",                            IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "自動關閉 HTML/XML 標記(&H)\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "自動完成單詞(&U)",                            IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "自動完成語法關鍵字(&K)",                      IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "切換單詞分隔規則(&P)\tCtrl+Alt+A",   IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "切換單詞分隔規則(&P)\tCtrl+Alt+A",            IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
-        MENUITEM "每個檔案只有一個執行個體(&F)",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "每個檔案只有一個執行個體(&F)",                 IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "檔案修改通知(&C)...\tAlt+F5",                 IDM_SET_CHANGENOTIFY
         ///MENUITEM "自動儲存和備份設定...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "關閉訊息提示音(&M)",                          IDM_SET_MUTE_MESSAGEBEEP
