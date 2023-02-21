@@ -16,14 +16,13 @@ addindex
 namespace {
 
 1
-2
-3
-5
-4
-6
-7
+file:///D:/DEV/GitHub/Notepad3/language/np3_af_za/menu_af_za.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_be_by/menu_be_by.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_de_de/menu_de_de.rc:472
+7ꟹ
 8
 9
+𖠀
 
 extern "C" {
 #include "Version.h"
