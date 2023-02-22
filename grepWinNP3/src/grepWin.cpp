@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010-2021 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010-2022 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -33,15 +33,15 @@
 #pragma warning(pop)
 
 // Global Variables:
-HINSTANCE    g_hInst; // current instance
-HICON        g_hDlgIcon128;
-bool         bPortable = false;
-CSimpleIni   g_iniFile;
-std::wstring g_iniPath;
-HANDLE       hInitProtection = nullptr;
+HINSTANCE           g_hInst; // current instance
+HICON               g_hDlgIcon128;
+bool                bPortable = false;
+CSimpleIni          g_iniFile;
+std::wstring        g_iniPath;
+HANDLE              hInitProtection    = nullptr;
 
-ULONGLONG g_startTime = GetTickCount64();
-UINT      GREPWIN_STARTUPMSG = RegisterWindowMessage(L"grepWinNP3_StartupMessage");
+ULONGLONG           g_startTime        = GetTickCount64();
+UINT                GREPWIN_STARTUPMSG = RegisterWindowMessage(L"grepWinNP3_StartupMessage");
 
 static std::wstring SanitizeSearchPaths(const std::wstring& searchpath)
 {
@@ -224,12 +224,10 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
             timeout--;
         } while ((hWnd == nullptr) && alreadyRunning && timeout);
     }
-    auto modulename = CPathUtils::GetFileName(CPathUtils::GetModulePath(nullptr));
-    bPortable       = ((wcsstr(modulename.c_str(), L"portable")) || 
-                       (wcsstr(modulename.c_str(), L"NP3")) || 
-                       (parser.HasKey(L"portable")));
- 
-    g_iniPath = CPathUtils::GetModuleDir(0);
+    auto moduleName = CPathUtils::GetFileName(CPathUtils::GetModulePath(nullptr));
+    bPortable       = ((wcsstr(moduleName.c_str(), L"portable")) || (parser.HasKey(L"portable")) || (wcsstr(moduleName.c_str(), L"NP3")));
+
+    g_iniPath       = CPathUtils::GetModuleDir(nullptr);
     g_iniPath += L"\\grepwinNP3.ini";
     if (parser.HasVal(L"inipath")) {
         g_iniPath = parser.GetVal(L"inipath");
@@ -274,21 +272,33 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                                      parser.GetVal(L"searchfor") :
                                      (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L"");
 
-            std::wstring spath     = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : 
+            std::wstring sPath     = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : 
                 (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : L"");
-            SearchReplace(spath, L"/", L"\\");
-            spath = SanitizeSearchPaths(spath);
+            SearchReplace(sPath, L"/", L"\\");
+            sPath = SanitizeSearchPaths(sPath);
 
             CopyData_t data2copy = {0};
             StringCchCopyW(data2copy.searchFor, _countof(data2copy.searchFor), searchfor.c_str());
-            StringCchCopyW(data2copy.searchPath, _countof(data2copy.searchPath), spath.c_str());
+            StringCchCopyW(data2copy.searchPath, _countof(data2copy.searchPath), sPath.c_str());
 
-            COPYDATASTRUCT CopyData = {0};
-            CopyData.dwData         = (DWORD)GREPWINNP3_CPYDAT;
-            CopyData.lpData         = (LPVOID)&data2copy;
-            CopyData.cbData         = (DWORD)sizeof(CopyData_t);
-            SendMessage(hWnd, WM_COPYDATA, (WPARAM)(HWND)NULL, (LPARAM)&CopyData);
+            COPYDATASTRUCT copyData = {0};
+            copyData.lpData         = static_cast<LPVOID>(const_cast<LPWSTR>(sPath.c_str()));
+            copyData.cbData         = static_cast<DWORD>(sPath.size()) * sizeof(wchar_t);
+            SendMessage(hWnd, WM_COPYDATA, 0, reinterpret_cast<LPARAM>(&copyData));
             SetForegroundWindow(hWnd); //set the window to front
+            bQuit = true;
+        }
+        else if (bOnlyOne)
+        {
+            std::wstring sPath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : L"";
+            SearchReplace(sPath, L"/", L"\\");
+            sPath                   = SanitizeSearchPaths(sPath);
+            COPYDATASTRUCT copyData = {0};
+            copyData.lpData         = static_cast<LPVOID>(const_cast<LPWSTR>(sPath.c_str()));
+            copyData.cbData         = static_cast<DWORD>(sPath.size()) * sizeof(wchar_t);
+            SendMessage(hWnd, WM_COPYDATA, 1, reinterpret_cast<LPARAM>(&copyData));
+            SetForegroundWindow(hWnd); // set the window to front
+            bQuit = true;
         }
     }
 
@@ -366,6 +376,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     searchDlg.SetMatchesNewline(_wcsicmp(searchIni.GetValue(section.c_str(), L"n"), L"yes") == 0);
                 if (searchIni.GetValue(section.c_str(), L"k"))
                     searchDlg.SetCreateBackups(_wcsicmp(searchIni.GetValue(section.c_str(), L"k"), L"yes") == 0);
+                if (searchIni.GetValue(section.c_str(), L"keepfiledate"))
+                    searchDlg.SetKeepFileDate(_wcsicmp(searchIni.GetValue(section.c_str(), L"keepfiledate"), L"yes") == 0);
                 if (searchIni.GetValue(section.c_str(), L"wholewords"))
                     searchDlg.SetWholeWords(_wcsicmp(searchIni.GetValue(section.c_str(), L"wholewords"), L"yes") == 0);
                 if (searchIni.GetValue(section.c_str(), L"utf8"))
@@ -385,6 +397,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     searchDlg.SetIncludeHidden(_wcsicmp(searchIni.GetValue(section.c_str(), L"h"), L"yes") == 0);
                 if (searchIni.GetValue(section.c_str(), L"u"))
                     searchDlg.SetIncludeSubfolders(_wcsicmp(searchIni.GetValue(section.c_str(), L"u"), L"yes") == 0);
+                if (searchIni.GetValue(section.c_str(), L"l"))
+                    searchDlg.SetIncludeSymLinks(_wcsicmp(searchIni.GetValue(section.c_str(), L"l"), L"yes") == 0);
                 if (searchIni.GetValue(section.c_str(), L"b"))
                     searchDlg.SetIncludeBinary(_wcsicmp(searchIni.GetValue(section.c_str(), L"b"), L"yes") == 0);
                 if (searchIni.GetValue(section.c_str(), L"regex"))
@@ -457,6 +471,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                 searchDlg.SetMatchesNewline(_wcsicmp(parser.GetVal(L"n"), L"yes")==0);
             if (parser.HasVal(L"k"))
                 searchDlg.SetCreateBackups(_wcsicmp(parser.GetVal(L"k"), L"yes") == 0);
+            if (parser.HasVal(L"keepfiledate"))
+                searchDlg.SetKeepFileDate(_wcsicmp(parser.GetVal(L"keepfiledate"), L"yes") == 0);
             if (parser.HasVal(L"wholewords"))
                 searchDlg.SetWholeWords(_wcsicmp(parser.GetVal(L"wholewords"), L"yes") == 0);
             else if (parser.HasKey(L"wholewords"))
@@ -473,13 +489,15 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                 searchDlg.SetSize(parser.GetLongVal(L"size"), cmp);
             }
             if (parser.HasVal(L"s"))
-                searchDlg.SetIncludeSystem(_wcsicmp(parser.GetVal(L"s"), L"yes")==0);
+                searchDlg.SetIncludeSystem(_wcsicmp(parser.GetVal(L"s"), L"yes") == 0);
             if (parser.HasVal(L"h"))
-                searchDlg.SetIncludeHidden(_wcsicmp(parser.GetVal(L"h"), L"yes")==0);
+                searchDlg.SetIncludeHidden(_wcsicmp(parser.GetVal(L"h"), L"yes") == 0);
             if (parser.HasVal(L"u"))
-                searchDlg.SetIncludeSubfolders(_wcsicmp(parser.GetVal(L"u"), L"yes")==0);
+                searchDlg.SetIncludeSubfolders(_wcsicmp(parser.GetVal(L"u"), L"yes") == 0);
+            if (parser.HasVal(L"l"))
+                searchDlg.SetIncludeSymLinks(_wcsicmp(parser.GetVal(L"l"), L"yes") == 0);
             if (parser.HasVal(L"b"))
-                searchDlg.SetIncludeBinary(_wcsicmp(parser.GetVal(L"b"), L"yes")==0);
+                searchDlg.SetIncludeBinary(_wcsicmp(parser.GetVal(L"b"), L"yes") == 0);
             if (parser.HasVal(L"regex"))
                 searchDlg.SetUseRegex(_wcsicmp(parser.GetVal(L"regex"), L"yes") == 0);
             else if(parser.HasVal(L"searchfor"))

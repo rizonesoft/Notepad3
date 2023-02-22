@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2017-2022 - Stefan Kueng
+// Copyright (C) 2012, 2017-2023 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -50,7 +50,7 @@ public:
     /**
      * Saves the file contents to disk at \c path.
      */
-    bool Save(LPCWSTR path) const;
+    bool                Save(LPCWSTR path, bool keepFileDate) const;
 
     /**
      * modifies the contents of a file.
@@ -92,6 +92,11 @@ public:
      * Returns the encoding of the file
      */
     UnicodeType GetEncoding() const { return encoding; }
+
+    /**
+     * Returns a string representation of the encoding
+     */
+    static std::wstring        GetEncodingString(UnicodeType type);
 
     /**
      * Returns the filename

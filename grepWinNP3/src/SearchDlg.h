@@ -80,6 +80,7 @@ typedef struct _SearchFlags_t
     bool bUseRegex;
     bool bCaseSensitive;
     bool bDotMatchesNewline;
+    bool bKeepFileDate;
     bool bWholeWords;
     bool bCreateBackup;
     bool bBackupInFolder;
@@ -122,8 +123,10 @@ public:
     inline void  SetMatchesNewline(bool bSet) { m_bDotMatchesNewlineC = true; m_bDotMatchesNewline = bSet; }
     inline void  SetCreateBackups(bool bSet) { m_bCreateBackupC = true; m_bCreateBackup = bSet; m_bConfirmationOnReplace = false; }
     inline void  SetCreateBackupsInFolders(bool bSet) { m_bCreateBackupInFoldersC = true; m_bCreateBackupInFolders = bSet; SetCreateBackups(bSet); }
+    inline void  SetKeepFileDate(bool bSet) { m_bWholeWordsC = true; m_bWholeWords = bSet; }
     inline void  SetWholeWords(bool bSet) { m_bWholeWordsC = true; m_bWholeWords = bSet; }
     inline void  SetUTF8(bool bSet) { m_bUTF8C = true; m_bUTF8 = bSet; m_bForceBinary = false; }
+    inline void  SetIncludeSymLinks(bool bSet) { m_bIncludeSymLinksC = true; m_bIncludeSymLinks = bSet; }
     inline void  SetBinary(bool bSet) { m_bUTF8C = true; m_bForceBinary = bSet; m_bUTF8 = false; }
     inline void  SetSize(uint64_t size, int cmp) { m_bSizeC = true; m_lSize = size << 10; m_sizeCmp = cmp; m_bAllSize = (m_lSize == MaxFileSize()) ? true : m_bAllSize; }
     inline void  SetIncludeSystem(bool bSet) { m_bIncludeSystemC = true; m_bIncludeSystem = bSet; }
@@ -146,45 +149,29 @@ protected:
     static int              SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wstring& searchRoot, const SearchFlags_t searchFlags,
                                        const std::wstring& searchString, const std::wstring& searchStringUtf16le, const std::wstring& replaceString);
 
-    bool                    InitResultList();
-    void                    FillResultList();
-    bool                    AddFoundEntry(const CSearchInfo * pInfo, bool bOnlyListControl = false);
-    void                    ShowContextMenu(int x, int y);
-    void                    DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
-    void                    OpenFileAtListIndex(int listIndex);
-    void                    UpdateInfoLabel();
-    bool                    SaveSettings();
-    void                    SaveWndPosition();
-    void                    FormatDate(wchar_t dateNative[], const FILETIME& fileTime, bool forceShortFmt) const;
-    int                     CheckRegex();
-    bool                    MatchPath(LPCTSTR pathbuf);
-    void                    AutoSizeAllColumns();
-    int                     GetSelectedListIndex(int index);
-    bool                    FailedShowMessage(HRESULT hr);
+    bool             InitResultList();
+    void             FillResultList();
+    bool             AddFoundEntry(const CSearchInfo* pInfo, bool bOnlyListControl = false);
+    void             ShowContextMenu(int x, int y);
+    void             DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
+    void             OpenFileAtListIndex(int listIndex);
+    void             UpdateInfoLabel();
+    bool             SaveSettings();
+    void             SaveWndPosition();
+    void             FormatDate(wchar_t dateNative[], const FILETIME& fileTime, bool forceShortFmt) const;
+    int              CheckRegex();
+    bool             MatchPath(LPCTSTR pathBuf) const;
+    void             AutoSizeAllColumns();
+    int              GetSelectedListIndex(int index);
+    static bool      FailedShowMessage(HRESULT hr);
 #ifdef NP3_ALLOW_UPDATE
-    void                    CheckForUpdates(bool force = false);
-    void                    ShowUpdateAvailable();
-    bool                    IsVersionNewer(const std::wstring& sVer) const;
+    void             CheckForUpdates(bool force = false);
+    void             ShowUpdateAvailable();
+    bool             IsVersionNewer(const std::wstring& sVer) const;
 #endif
-    bool                    CloneWindow();
-    std::wstring            ExpandString(const std::wstring& replaceString) const;
+    bool             CloneWindow();
+    std::wstring     ExpandString(const std::wstring& replaceString) const;
 
-private:
-    static bool NameCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool SizeCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool MatchesCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool PathCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool EncodingCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool ModifiedTimeCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool ExtCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-
-    static bool NameCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool SizeCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool MatchesCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool PathCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool EncodingCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool ModifiedTimeCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool ExtCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
 
 private:
     HWND          m_hParent;
@@ -214,12 +201,16 @@ private:
     bool                              m_bIncludeHiddenC;
     bool                              m_bIncludeSubfolders;
     bool                              m_bIncludeSubfoldersC;
+    bool                              m_bIncludeSymLinks;
+    bool                              m_bIncludeSymLinksC;
     bool                              m_bIncludeBinary;
     bool                              m_bIncludeBinaryC;
     bool                              m_bCreateBackup;
     bool                              m_bCreateBackupC;
     bool                              m_bCreateBackupInFolders;
     bool                              m_bCreateBackupInFoldersC;
+    bool                              m_bKeepFileDate;
+    bool                              m_bKeepFileDateC;
     bool                              m_bWholeWords;
     bool                              m_bWholeWordsC;
     bool                              m_bUTF8;
@@ -288,8 +279,10 @@ private:
     CRegStdDWORD                      m_regIncludeSystem;
     CRegStdDWORD                      m_regIncludeHidden;
     CRegStdDWORD                      m_regIncludeSubfolders;
+    CRegStdDWORD                      m_regIncludeSymLinks;
     CRegStdDWORD                      m_regIncludeBinary;
     CRegStdDWORD                      m_regCreateBackup;
+    CRegStdDWORD                      m_regKeepFileDate;
     CRegStdDWORD                      m_regWholeWords;
     CRegStdDWORD                      m_regUTF8;
     CRegStdDWORD                      m_regBinary;

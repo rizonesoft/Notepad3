@@ -20,7 +20,6 @@
 #include "stdafx.h"
 #include "BaseDialog.h"
 #include <CommCtrl.h>
-#include <VSStyle.h>
 #include <WindowsX.h>
 
 #include "DPIAware.h"
@@ -538,7 +537,7 @@ BOOL CDialog::IsDialogMessage(LPMSG lpMsg)
     return FALSE;
 }
 
-RECT CDialog::AdjustControlSize(UINT nID)
+void CDialog::AdjustControlSize(UINT nID)
 {
     HWND hwndDlgItem = GetDlgItem(*this, nID);
     // adjust the size of the control to fit its content
@@ -546,49 +545,31 @@ RECT CDialog::AdjustControlSize(UINT nID)
     // next step: find the rectangle the control text needs to
     // be displayed
 
-    HDC  hDC          = GetWindowDC(hwndDlgItem);
+
+    HDC  hDC          = GetWindowDC(*this);
     RECT controlRect;
     GetWindowRect(hwndDlgItem, &controlRect);
     ::MapWindowPoints(nullptr, *this, reinterpret_cast<LPPOINT>(&controlRect), 2);
     RECT controlRectOrig = controlRect;
     if (hDC)
     {
-        HTHEME hTheme = OpenThemeData(*this, L"Button");
-        if (hTheme)
-        {
-            int      iPartId      = BP_CHECKBOX;
-            LONG_PTR dwButtonType = GetWindowLongPtr(hwndDlgItem, GWL_STYLE) & BS_TYPEMASK;
-
-            if (dwButtonType == BS_RADIOBUTTON || dwButtonType == BS_AUTORADIOBUTTON)
-                iPartId = BP_RADIOBUTTON;
-
-            HDC            hdcPaint     = nullptr;
-            BP_PAINTPARAMS params       = {sizeof(BP_PAINTPARAMS)};
-            params.dwFlags              = BPPF_ERASE;
-            HPAINTBUFFER hBufferedPaint = BeginBufferedPaint(hDC, &controlRect, BPBF_TOPDOWNDIB, &params, &hdcPaint);
-            if (hdcPaint)
-            {
                 HFONT hFont    = GetWindowFont(hwndDlgItem);
-                HFONT hOldFont = static_cast<HFONT>(SelectObject(hdcPaint, hFont));
-                if (DrawThemeTextEx(hTheme, hdcPaint, iPartId, 0, sControlText.get(), -1, DT_WORDBREAK | DT_EDITCONTROL | DT_EXPANDTABS | DT_LEFT | DT_CALCRECT, &controlRect, nullptr))
+        HFONT hOldFont = static_cast<HFONT>(SelectObject(hDC, hFont));
+        OffsetRect(&controlRect, -controlRect.left, -controlRect.top);
+        if (DrawText(hDC, sControlText.get(), -1, &controlRect, DT_WORDBREAK | DT_EXPANDTABS | DT_LEFT | DT_CALCRECT))
                 {
-                    const int checkWidth = GetSystemMetrics(SM_CXMENUCHECK) + 2 * GetSystemMetrics(SM_CXEDGE);
-                    controlRect.right += checkWidth + CDPIAware::Instance().Scale(*this, 3);
+            // we're dealing with radio buttons and check boxes,
+            // which means we have to add a little space for the checkbox
+            const int checkWidth = GetSystemMetrics(SM_CXMENUCHECK) + 2 * GetSystemMetrics(SM_CXEDGE) + CDPIAware::Instance().Scale(*this, 3);
+            controlRect.right += checkWidth;
             // now we have the rectangle the control really needs
             if ((controlRectOrig.right - controlRectOrig.left) > (controlRect.right - controlRect.left))
             {
-                // we're dealing with radio buttons and check boxes,
-                // which means we have to add a little space for the checkbox
                         controlRectOrig.right = controlRectOrig.left + (controlRect.right - controlRect.left);
                 MoveWindow(hwndDlgItem, controlRectOrig.left, controlRectOrig.top, controlRectOrig.right - controlRectOrig.left, controlRectOrig.bottom - controlRectOrig.top, TRUE);
             }
         }
-                SelectObject(hdcPaint, hOldFont);
-                EndBufferedPaint(hBufferedPaint, TRUE);
-            }
-            CloseThemeData(hTheme);
-        }
+        SelectObject(hDC, hOldFont);
         ReleaseDC(*this, hDC);
     }
-    return controlRectOrig;
 }
