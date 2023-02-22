@@ -72,7 +72,7 @@ LRESULT CAboutDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
                     CTheme::Instance().SetThemeForDialog(*this, CTheme::Instance().IsDarkTheme());
                     CTheme::Instance().SetFontForDialog(*this, CTheme::Instance().GetDlgFontFaceName(), CTheme::Instance().GetDlgFontSize());
                 });
-            m_link.ConvertStaticToHyperlink(hwndDlg, IDC_WEBLINK, L"https://tools.stefankueng.com");
+            m_link.ConvertStaticToHyperlink(hwndDlg, IDC_WEBLINK, L"http://tools.stefankueng.com");
             CTheme::Instance().SetThemeForDialog(*this, CTheme::Instance().IsDarkTheme());
             CTheme::Instance().SetFontForDialog(*this, CTheme::Instance().GetDlgFontFaceName(), CTheme::Instance().GetDlgFontSize());
             InitDialog(hwndDlg, IDI_GREPWIN);

@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009, 2012-2013, 2016, 2019-2021 - Stefan Kueng
+// Copyright (C) 2007-2009, 2012-2013, 2016, 2019-2022 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -42,11 +42,13 @@ public:
     bool         GetSelectedSearchCase() const { return m_bCaseSensitive; }
     bool         GetSelectedDotMatchNewline() const { return m_bDotMatchesNewline; }
     bool         GetSelectedBackup() const { return m_bBackup; }
+    bool         GetSelectedKeepFileDate() const { return m_bKeepFileDate; }
     bool         GetSelectedWholeWords() const { return m_bWholeWords; }
     bool         GetSelectedTreatAsUtf8() const { return m_bUtf8; }
     bool         GetSelectedTreatAsBinary() const { return m_bForceBinary; }
     bool         GetSelectedIncludeSystem() const { return m_bIncludeSystem; }
     bool         GetSelectedIncludeFolder() const { return m_bIncludeFolder; }
+    bool         GetSelectedIncludeSymLinks() const { return m_bIncludeSymLinks; }
     bool         GetSelectedIncludeHidden() const { return m_bIncludeHidden; }
     bool         GetSelectedIncludeBinary() const { return m_bIncludeBinary; }
     std::wstring GetSelectedExcludeDirs() const { return m_sExcludeDirs; }
@@ -71,11 +73,13 @@ private:
     bool         m_bCaseSensitive;
     bool         m_bDotMatchesNewline;
     bool         m_bBackup;
+    bool         m_bKeepFileDate;
     bool         m_bWholeWords;
     bool         m_bUtf8;
     bool         m_bForceBinary;
     bool         m_bIncludeSystem;
     bool         m_bIncludeFolder;
+    bool         m_bIncludeSymLinks;
     bool         m_bIncludeHidden;
     bool         m_bIncludeBinary;
     std::wstring m_sExcludeDirs;

@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010, 2012-2013, 2021 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010, 2012-2013, 2021-2022 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -27,6 +27,22 @@ public:
     CSearchInfo();
     CSearchInfo(const std::wstring& path);
     ~CSearchInfo();
+
+    static bool               NameCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool               SizeCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool               MatchesCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool               PathCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool               EncodingCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool               ModifiedTimeCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool               ExtCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+
+    static bool               NameCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool               SizeCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool               MatchesCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool               PathCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool               EncodingCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool               ModifiedTimeCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool               ExtCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
 
     std::wstring              filePath;
     __int64                   fileSize;

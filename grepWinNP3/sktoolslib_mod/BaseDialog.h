@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2012-2013, 2016, 2020-2021 - Stefan Kueng
+// Copyright (C) 2012-2013, 2016, 2020-2022 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -94,7 +94,7 @@ protected:
     * this method can reduce the size of those controls again to only
     * fit the text.
     */
-    RECT AdjustControlSize(UINT nID);
+    void AdjustControlSize(UINT nID);
 
     // the real message handler
     static INT_PTR CALLBACK stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);

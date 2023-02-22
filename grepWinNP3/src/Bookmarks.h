@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2012-2013, 2020-2021 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012-2013, 2020-2022 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -29,11 +29,13 @@ public:
         , CaseSensitive(false)
         , DotMatchesNewline(false)
         , Backup(false)
+        , KeepFileDate(false)
         , WholeWords(false)
         , Utf8(false)
         , Binary(false)
         , IncludeSystem(false)
         , IncludeFolder(false)
+        , IncludeSymLinks(false)
         , IncludeHidden(false)
         , IncludeBinary(false)
         , FileMatchRegex(false)
@@ -50,11 +52,13 @@ public:
     bool         CaseSensitive;
     bool         DotMatchesNewline;
     bool         Backup;
+    bool         KeepFileDate;
     bool         WholeWords;
     bool         Utf8;
     bool         Binary;
     bool         IncludeSystem;
     bool         IncludeFolder;
+    bool         IncludeSymLinks;
     bool         IncludeHidden;
     bool         IncludeBinary;
     std::wstring ExcludeDirs;
