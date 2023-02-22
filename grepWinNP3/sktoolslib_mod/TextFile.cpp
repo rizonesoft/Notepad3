@@ -21,6 +21,7 @@
 #include "TextFile.h"
 #include "PathUtils.h"
 #include "maxpath.h"
+#include <cassert>
 #include <memory>
 
 static wchar_t WideCharSwap(wchar_t nValue)
