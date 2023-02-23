@@ -9406,29 +9406,52 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
 }
 
 
-
 //=============================================================================
 //
 //  EditBookmarkNext()
 //
-void EditBookmarkNext(HWND hwnd, const DocLn iLine)
+
+static DocLn _MarkerNext(const DocLn iLine, const int bitmask)
+{
+    if (bitmask & CHANGE_HISTORY_MARKER_BITMASK()) {
+        DocLn const lastLine = SciCall_GetLineCount();
+        for (DocLn ln = iLine; ln <= lastLine; ++ln) {
+            if (SciCall_MarkerGet(ln) & bitmask) {
+                return ln;
+            }
+        }
+        return (DocLn)-1;
+    }
+    return SciCall_MarkerNext(iLine, bitmask);
+}
+
+void EditBookmarkNext(HWND hwnd, DocLn iLine)
 {
     UNREFERENCED_PARAMETER(hwnd);
-    int bitmask = SciCall_MarkerGet(iLine) & OCCURRENCE_MARKER_BITMASK();
-    if (!bitmask) {
-        bitmask = BOOKMARK_BITMASK();
-    }
-    DocLn iNextLine = SciCall_MarkerNext(iLine + 1, bitmask);
-    if (iNextLine == (DocLn)-1) {
-        iNextLine = SciCall_MarkerNext(0, bitmask); // wrap around
-    }
-    if (iNextLine == (DocLn)-1) {
-        bitmask = ALL_MARKERS_BITMASK();
-        iNextLine = SciCall_MarkerNext(iLine + 1, bitmask); // find any bookmark
-    }
-    if (iNextLine == (DocLn)-1) {
-        iNextLine = SciCall_MarkerNext(0, bitmask); // wrap around
-    }
+    DocLn iNextLine = (DocLn)-1;
+    bool bWrapedAround = true;
+    do {
+        int bitmask = SciCall_MarkerGet(iLine) & (OCCURRENCE_MARKER_BITMASK() | CHANGE_HISTORY_MARKER_BITMASK());
+        if (!bitmask) {
+            bitmask = BOOKMARK_BITMASK();
+        }
+        iNextLine = _MarkerNext(iLine + 1, bitmask);
+        if (iNextLine == (DocLn)-1) {
+            iNextLine = _MarkerNext(0, bitmask); // wrap around
+        }
+        if (iNextLine == (DocLn)-1) {
+            bitmask = ALL_MARKERS_BITMASK();
+            iNextLine = _MarkerNext(iLine + 1, bitmask); // find any bookmark
+        }
+        if (iNextLine == (DocLn)-1) {
+            bitmask = CHANGE_HISTORY_MARKER_BITMASK();
+            iNextLine = _MarkerNext(iLine + 1, bitmask); // find change history marker
+        }
+        if (iNextLine == (DocLn)-1) {
+            iLine = 0;
+            bWrapedAround = !bWrapedAround;
+        }
+    } while ((iNextLine == (DocLn)-1) && !bWrapedAround);
 
     if (iNextLine != (DocLn)-1) {
         SciCall_GotoLine(iNextLine);
@@ -9439,24 +9462,47 @@ void EditBookmarkNext(HWND hwnd, const DocLn iLine)
 //
 //  EditBookmarkPrevious()
 //
-void EditBookmarkPrevious(HWND hwnd, const DocLn iLine)
+static DocLn _MarkerPrevious(const DocLn iLine, const int bitmask)
+{
+    if (bitmask & CHANGE_HISTORY_MARKER_BITMASK()) {
+        for (DocLn ln = iLine; ln >= 0; --ln) {
+            if (SciCall_MarkerGet(ln) & bitmask) {
+                return ln;
+            }
+        }
+        return (DocLn)-1;
+    }
+    return SciCall_MarkerPrevious(iLine, bitmask);
+}
+
+void EditBookmarkPrevious(HWND hwnd, DocLn iLine)
 {
     UNREFERENCED_PARAMETER(hwnd);
-    int bitmask = SciCall_MarkerGet(iLine) & ALL_MARKERS_BITMASK();
-    if (!bitmask) {
-        bitmask = BOOKMARK_BITMASK();
-    }
-    DocLn iPrevLine = SciCall_MarkerPrevious(max_ln(0, iLine - 1), bitmask);
-    if (iPrevLine == (DocLn)-1) {
-        iPrevLine = SciCall_MarkerPrevious(SciCall_GetLineCount(), bitmask); // wrap around
-    }
-    if (iPrevLine == (DocLn)-1) {
-        bitmask = ALL_MARKERS_BITMASK();
-        iPrevLine = SciCall_MarkerPrevious(max_ln(0, iLine - 1), bitmask); //find any bookmark
-    }
-    if (iPrevLine == (DocLn)-1) {
-        iPrevLine = SciCall_MarkerPrevious(SciCall_GetLineCount(), bitmask); // wrap around
-    }
+    DocLn iPrevLine = (DocLn)-1;
+    bool  bWrapedAround = true;
+    do {
+        int bitmask = SciCall_MarkerGet(iLine) & (ALL_MARKERS_BITMASK() | CHANGE_HISTORY_MARKER_BITMASK());
+        if (!bitmask) {
+            bitmask = BOOKMARK_BITMASK();
+        }
+        iLine = !iLine ? SciCall_GetLineCount() : max_ln(0, iLine - 1);
+        iPrevLine = _MarkerPrevious(iLine, bitmask);
+        if (iPrevLine == (DocLn)-1) {
+            iPrevLine = _MarkerPrevious(SciCall_GetLineCount(), bitmask); // wrap around
+        }
+        if (iPrevLine == (DocLn)-1) {
+            bitmask = ALL_MARKERS_BITMASK();
+            iPrevLine = _MarkerPrevious(iLine, bitmask); // find any bookmark
+        }
+        if (iPrevLine == (DocLn)-1) {
+            bitmask = CHANGE_HISTORY_MARKER_BITMASK();
+            iPrevLine = _MarkerPrevious(iLine, bitmask); // find change history marker
+        }
+        if (iPrevLine == (DocLn)-1) {
+            iLine = SciCall_GetLineCount();
+            bWrapedAround = !bWrapedAround;
+        }
+    } while ((iPrevLine == (DocLn)-1) && !bWrapedAround);
 
     if (iPrevLine != (DocLn)-1) {
         SciCall_GotoLine(iPrevLine);

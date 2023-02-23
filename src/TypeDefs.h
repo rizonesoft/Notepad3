@@ -389,6 +389,9 @@ typedef enum MARKER_ID {
 #define OCCURRENCE_MARKER_BITMASK() BITMASK_GEN(int, 0, MARKER_NP3_8 + 1)
 #define ALL_MARKERS_BITMASK() BITMASK_GEN(int, 0, MARKER_NP3_BOOKMARK + 1)
 
+#define CHANGE_HISTORY_MARKER_BITMASK() BITMASK_GEN(int, SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN, \
+                                                    (SC_MARKNUM_HISTORY_REVERTED_TO_MODIFIED - SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN + 1))
+
 extern LPCWSTR WordBookMarks[];
 
 // --------------------------------------------------------------------------
