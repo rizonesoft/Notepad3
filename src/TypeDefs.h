@@ -237,7 +237,7 @@ typedef enum STATUS_SECTOR_T {
 #define SBS_INIT_ZERO  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 #define SBS_INIT_MINUS { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 }
 
-#define STATUSBAR_DEFAULT_IDS  L"0 1 12 16 14 2 4 5 6 7 8 9 10 11"
+#define STATUSBAR_DEFAULT_IDS  L"0 1 12 15 14 2 4 5 6 7 8 9 10 11"
 #define STATUSBAR_SECTION_WIDTH_SPECS L"30 20 20 20 20 20 20 0 0 0 0 0 0 20 20 20"
 #define STAUSBAR_RIGHT_MARGIN 20
 

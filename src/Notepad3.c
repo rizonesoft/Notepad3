@@ -10062,18 +10062,19 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     if (g_iStatusbarVisible[STATUS_UNICODEPT]) {
 
-        static WCHAR tchChr[32] = { L'\0' };
-        static unsigned s_wChr = L'\0';
-        int const len = sizeof(int) / sizeof(WCHAR); 
+        static WCHAR     tchChr[32] = { L'\0' };
+        static UINT64    s_wChr = L'\0';
+        static int const len = sizeof(UINT64) / sizeof(WCHAR);
 
         DocPos const iPosAfter = SciCall_PositionAfter(iPos);
+        int const    chrLen = (int)(iPosAfter - iPos);
 
         char chChrs[8] = { '\0' };
         struct Sci_TextRangeFull tr = { { iPos, iPosAfter }, chChrs };
         SciCall_GetTextRangeFull(&tr);
 
-        unsigned wChr = L'\0';
-        MultiByteToWideChar(Encoding_SciCP, 0, chChrs, (int)strlen(chChrs), (LPWSTR)&wChr, len);
+        UINT64 wChr = L'\0';
+        MultiByteToWideChar(Encoding_SciCP, 0, chChrs, chrLen, (LPWSTR)&wChr, len);
 
         if (bForceRedraw || (s_wChr != wChr)) {
             if (wChr <= 0xFFFF)
