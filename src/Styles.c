@@ -2950,10 +2950,12 @@ static inline bool GetDefaultCodeFont(LPWSTR pwchFontName, int cchFont)
     LPCWSTR const FontNamePrioList[] = {
         L"Cascadia Code",
         L"Cascadia Mono",
+        L"Cousine",
         L"Fira Code",
         L"Source Code Pro",
         L"Roboto Mono",
         L"DejaVu Sans Mono",
+        L"Inconsolata",
         L"Consolas",
         L"Lucida Console"
     };
@@ -2988,8 +2990,10 @@ static inline unsigned GetDefaultTextFont(LPWSTR pwchFontName, int cchFont)
 
     LPCWSTR const FontNamePrioList[] = {
         L"Cascadia Mono",
+        L"Cousine",
         L"Roboto Mono",
         L"DejaVu Sans Mono",
+        L"Inconsolata",
         L"Consolas",
         L"Lucida Console"
     };

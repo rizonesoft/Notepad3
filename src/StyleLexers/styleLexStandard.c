@@ -69,7 +69,7 @@ EDITLEXER lexTEXT =
 {
     SCLEX_NULL, "null", IDS_LEX_TEXT_FILES, L"Text Files", L"txt; text; tmp; log; asc; doc; scp; wtx", L"",
     &KeyWords_NULL,{
-        { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"font:$Text; size:11", L"" },
+        { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"font:$Text", L"" },
         { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"font:Consolas; size:-2; fore:#008080", L"" },
         { {STYLE_BRACELIGHT}, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:2", L"" },
         EDITLEXER_SENTINEL
