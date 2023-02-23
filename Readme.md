@@ -470,7 +470,7 @@ You can specify more command line parameter for the app here. The token `${URL}`
 This section provides the ability to set the number, order and width of columns, 
 and the prefix text of the status bar fields.
 
-#### `VisibleSections=0 1 12 15 14 2 4 5 6 7 8 9 10 11`  (internal default)
+#### `VisibleSections=0 1 15 14 2 4 5 6 7 8 9 10 11`  (internal default)
 
 This parameter is used to define, which fields of the Status Bar should be visible. 
 If used, this setting also defines the field ordering.

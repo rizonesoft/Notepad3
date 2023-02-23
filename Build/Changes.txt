@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.221.(build_#) (2023-02-21)
+Current BETA/RC Version 6.23.223.(build_#) (2023-02-23)
 ========================================================
 
 --------------------------------------------------------
@@ -50,6 +50,9 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.223.1]- Remove (Ch) in Toolbar because values are almost equal with (Col) .
+[.223.1]- Use change-history-markers for bookmark find next/previous.
+[.223.1]- Enhancement for auto-close char-pairs.
 [.221.1]- All "Margins and Line Numbers" to "font:Consolas; size:-2; fore:#008080".
 [.220.1]- AnalyzeConfidenceLevel at least 90%.
 [.220.1]- Lexer TEXT using own Default settings (corresponding to ANSI Lexer).
@@ -59,6 +62,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.223.1]- Minor changes for Unicode Point display.
 [.221.1]- Repair jump to line (Alt+Click) and related command line search.
 [.221.1]- Correction to LineSpace evaluation TEXT files.
 [.221.1]- Lexer TEXT using own Default but inheriting from Common Base.
@@ -79,11 +83,11 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
+[.223.1]- Update grepWinNP3 (GRE) version 2.1.12.43 (2023-02-22).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
 [1212.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2022-12-09).
 [1212.1]- Update Scintilla Library (SCI) version 5.3.2 (2022-12-06).
 [1212.1]- Update Lexilla Library (LEX) version 5.2.1 (2022-12-06).
-[1018.1]- Update grepWinNP3 (GRE) version 2.1.11.42 (2022-10-14).
 
 --------------------------------------------------------
 TRANSLATIONS (MUI):
