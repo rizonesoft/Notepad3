@@ -502,22 +502,22 @@ sve.tsk_LaunchWelcomePage=Viktig information för denna version!
 sve.tsk_RemoveOpenWith=Ta bort "Öppna med {#app_name}" från snabbmenyn
 sve.tsk_SetOpenWith=Lägg till "Öppna med {#app_name}" från snabbmenyn
 
-trk.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+trk.msg_DeleteSettings={#app_name} ayarlarının ve temalarının da silinmesini ister misiniz?%n%n{#app_name} uygulamasını yeniden kurmayı düşünüyorsanız bu verileri silmeniz gerekmez.
 #if defined(sse_required)
-trk.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+trk.msg_simd_sse=Bu {#app_name} sürümü için SSE eklentileri desteği olan bir işlemci gereklidir.%n%nİşlemcinizde bu özellik bulunmuyor.
 #elif defined(sse2_required)
-trk.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+trk.msg_simd_sse2=Bu {#app_name} sürümü için SSE2 eklentileri desteği olan bir işlemci gereklidir.%n%nİşlemcinizde bu özellik bulunmuyor.
 #endif
-trk.tsk_AllUsers=For all users
-trk.tsk_CurrentUser=For the current user only
-trk.tsk_Other=Other tasks:
-trk.tsk_ResetSettings=Reset {#app_name}'s settings and themes
-trk.tsk_RemoveDefault=Restore Windows Notepad
-trk.tsk_SetDefault=Replace Windows Notepad with {#app_name}
-trk.tsk_StartMenuIcon=Create a Start Menu shortcut
-trk.tsk_LaunchWelcomePage=Important Release Information!
-trk.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
-trk.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+trk.tsk_AllUsers=Tüm kullanıcılar için
+trk.tsk_CurrentUser=Yalnızca geçerli kullanıcı için
+trk.tsk_Other=Diğer işlemler:
+trk.tsk_ResetSettings={#app_name} ayarları ve temaları sıfırlansın
+trk.tsk_RemoveDefault=Windows Notepad geri yüklensin
+trk.tsk_SetDefault=Windows Notepad {#app_name} ile değiştirilsin
+trk.tsk_StartMenuIcon=Başlat menüsü kısayolu oluşturulsun
+trk.tsk_LaunchWelcomePage=Önemli sürüm bilgileri
+trk.tsk_RemoveOpenWith=Sağ tık menüsünden "{#app_name} ile aç" seçeneği kaldırılsın
+trk.tsk_SetOpenWith=Sağ tık menüsüne "{#app_name} ile aç" seçeneği eklensin
 
 vit.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
 #if defined(sse_required)
