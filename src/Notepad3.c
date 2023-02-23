@@ -8358,23 +8358,39 @@ static void _HandleInsertCheck(const SCNotification* const scn)
     }
     if (Settings.AutoCloseQuotes) {
         if (scn->length == 1) {
-            bool bInserted = true;
             DocPos len = 0;
             switch (scn->text[0]) {
             case '"':
-                len = _EncloseSelectionBuffer('"', '"');
+                if (Sci_GetCurrChar() == '"') {
+                    SciCall_ChangeInsertion(0, ""); // clear
+                    PostMessage(Globals.hwndEdit, SCI_CHARRIGHT, 0, 0);
+                }
+                else {
+                    len = _EncloseSelectionBuffer('"', '"');
+                }
                 break;
             case '\'':
-                len = _EncloseSelectionBuffer('\'', '\'');
+                if (Sci_GetCurrChar() == '\'') {
+                    SciCall_ChangeInsertion(0, ""); // clear
+                    PostMessage(Globals.hwndEdit, SCI_CHARRIGHT, 0, 0);
+                }
+                else {
+                    len = _EncloseSelectionBuffer('\'', '\'');
+                }
                 break;
             case '`':
-                len = _EncloseSelectionBuffer('`', '`');
+                if (Sci_GetCurrChar() == '`') {
+                    SciCall_ChangeInsertion(0, ""); // clear
+                    PostMessage(Globals.hwndEdit, SCI_CHARRIGHT, 0, 0);
+                }
+                else {
+                    len = _EncloseSelectionBuffer('`', '`');
+                }
                 break;
             default:
-                bInserted = false;
                 break;
             }
-            if (bInserted) {
+            if (len) {
                 SciCall_ChangeInsertion(len, s_SelectionBuffer);
                 if (len == 2) {
                     PostMessage(Globals.hwndEdit, SCI_CHARLEFT, 0, 0);
@@ -8384,7 +8400,6 @@ static void _HandleInsertCheck(const SCNotification* const scn)
     }
     if (Settings.AutoCloseBrackets) {
         if (scn->length == 1) {
-            bool bInserted = true;
             DocPos len = 0;
             switch (scn->text[0]) {
             case '[':
@@ -8396,11 +8411,28 @@ static void _HandleInsertCheck(const SCNotification* const scn)
             case '(':
                 len = _EncloseSelectionBuffer('(', ')');
                 break;
+            case ')':
+                if (Sci_GetCurrChar() == ')') {
+                    SciCall_ChangeInsertion(0, ""); // clear
+                    PostMessage(Globals.hwndEdit, SCI_CHARRIGHT, 0, 0);
+                }
+                break;
+            case '}':
+                if (Sci_GetCurrChar() == '}') {
+                    SciCall_ChangeInsertion(0, ""); // clear
+                    PostMessage(Globals.hwndEdit, SCI_CHARRIGHT, 0, 0);
+                }
+                break;
+            case ']':
+                if (Sci_GetCurrChar() == ']') {
+                    SciCall_ChangeInsertion(0, ""); // clear
+                    PostMessage(Globals.hwndEdit, SCI_CHARRIGHT, 0, 0);
+                }
+                break;
             default:
-                bInserted = false;
                 break;
             }
-            if (bInserted) {
+            if (len) {
                 SciCall_ChangeInsertion(len, s_SelectionBuffer);
                 if (len == 2) {
                     PostMessage(Globals.hwndEdit, SCI_CHARLEFT, 0, 0);

@@ -772,6 +772,9 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
 #define Sci_GetLineStartPosition(position) SciCall_PositionFromLine(SciCall_LineFromPosition(position))
 #define Sci_GetLineEndPosition(position) SciCall_GetLineEndPosition(SciCall_LineFromPosition(position))
 
+#define Sci_GetCurrChar() SciCall_GetCharAt(SciCall_GetCurrentPos())
+#define Sci_GetNextChar() SciCall_GetCharAt(SciCall_PositionAfter(SciCall_GetCurrentPos()))
+
 // length of line w/o line-end chars (full use SciCall_LineLength()
 #define Sci_GetNetLineLength(line) (SciCall_GetLineEndPosition(line) - SciCall_PositionFromLine(line))
 
