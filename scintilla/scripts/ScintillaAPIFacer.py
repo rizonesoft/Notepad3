@@ -23,9 +23,9 @@ typeAliases = {
 	"colour": "Colour",
 	"colouralpha": "ColourAlpha",
 	"findtext": "void *",
-	"findtextfull": "void *",
+	"findtextfull": "TextToFindFull *",
 	"formatrange": "void *",
-	"formatrangefull": "void *",
+	"formatrangefull": "RangeToFormatFull *",
 	"int": "int",
 	"keymod": "int",
 	"line": "Line",
@@ -34,7 +34,7 @@ typeAliases = {
 	"string": "const char *",
 	"stringresult": "char *",
 	"textrange": "void *",
-	"textrangefull": "void *",
+	"textrangefull": "TextRangeFull *",
 }
 
 basicTypes = [
