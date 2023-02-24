@@ -289,7 +289,7 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default syntax)
   * (?i) option has no effect on word types (\w, \p{Word}). However, if the word types are used within a character class, it is valid. But, this would only be a concern when word types are used with the (?W) option.
 
 
-  /(?CIL).../, /(?CIL:...)/   whole opiton
+  /(?CIL).../, /(?CIL:...)/   whole option
 
                             This option must be placed in a position that
                             affects the entire regular expression.

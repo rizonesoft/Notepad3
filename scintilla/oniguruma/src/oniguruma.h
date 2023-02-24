@@ -546,6 +546,7 @@ ONIG_EXTERN OnigSyntaxType*   OnigDefaultSyntax;
 #define ONIG_SYN_VARIABLE_LEN_LOOK_BEHIND        (1U<<11)  /* (?<=a+|..) */
 #define ONIG_SYN_PYTHON                          (1U<<12)  /* \UHHHHHHHH */
 #define ONIG_SYN_WHOLE_OPTIONS                   (1U<<13)  /* (?Ie) */
+#define ONIG_SYN_BRE_ANCHOR_AT_EDGE_OF_SUBEXP    (1U<<14)  /* \(^abc$\) */
 
 /* syntax (behavior) in char class [...] */
 #define ONIG_SYN_NOT_NEWLINE_IN_NEGATIVE_CC      (1U<<20) /* [^...] */
