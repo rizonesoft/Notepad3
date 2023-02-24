@@ -2938,81 +2938,58 @@ bool Style_GetFileFilterStr(LPWSTR lpszFilter, int cchFilter, LPWSTR lpszDefExt,
 
 //=============================================================================
 
-static WCHAR _DefaultCodingFont[LF_FACESIZE] = { L"\0" }; // session static
+static WCHAR _DefaultCodingFont[LF_FACESIZE+1] = { L"\0" }; // session static
 
-static inline bool GetDefaultCodeFont(LPWSTR pwchFontName, int cchFont)
+static inline void GetDefaultCodeFont(LPWSTR pwchFontName, int cchFont)
 {
-    if (StrIsNotEmpty(_DefaultCodingFont)) {
-        StringCchCopy(pwchFontName, cchFont, _DefaultCodingFont);
-        return true;
+    StringCchCopy(pwchFontName, cchFont, _DefaultCodingFont);
+
+    if (StrIsNotEmpty(pwchFontName)) {
+        return;
     }
 
-    LPCWSTR const FontNamePrioList[] = {
-        L"Cascadia Code",
-        L"Cascadia Mono",
-        L"Cousine",
-        L"Fira Code",
-        L"Source Code Pro",
-        L"Roboto Mono",
-        L"DejaVu Sans Mono",
-        L"Inconsolata",
-        L"Consolas",
-        L"Lucida Console"
-    };
-    unsigned const countof = COUNTOF(FontNamePrioList);
+    unsigned const countof = COUNTOF(Settings2.CodeFontPrefPrioList);
 
     unsigned i = 0;
     for ( ; i < countof; ++i) {
-        LPCWSTR const fontName = FontNamePrioList[i];
+        LPCWSTR const fontName = Settings2.CodeFontPrefPrioList[i];
         if (IsFontAvailable(fontName)) {
             StringCchCopy(pwchFontName, cchFont, fontName);
             break;
         }
     }
-    if (i >= countof) {
+    if (StrIsEmpty(pwchFontName)) {
         StringCchCopy(pwchFontName, cchFont, L"Courier New"); // fallback
     }
     StringCchCopy(_DefaultCodingFont, COUNTOF(_DefaultCodingFont), pwchFontName);
-
-    return (i < countof);
 }
 
 
-static WORD _wDTFSize = 9;
-static WCHAR _DefaultTextFont[LF_FACESIZE] = { L"\0" }; // session static
+static WCHAR _DefaultTextFont[LF_FACESIZE+1] = { L"\0" }; // session static
 
-static inline unsigned GetDefaultTextFont(LPWSTR pwchFontName, int cchFont)
+static inline void GetDefaultTextFont(LPWSTR pwchFontName, int cchFont)
 {
+    StringCchCopy(pwchFontName, LF_FACESIZE, _DefaultTextFont);
+
     if (StrIsNotEmpty(_DefaultTextFont)) {
-        StringCchCopy(pwchFontName, LF_FACESIZE, _DefaultTextFont);
-        return _wDTFSize;
+        return;
     }
 
-    LPCWSTR const FontNamePrioList[] = {
-        L"Cascadia Mono",
-        L"Cousine",
-        L"Roboto Mono",
-        L"DejaVu Sans Mono",
-        L"Inconsolata",
-        L"Consolas",
-        L"Lucida Console"
-    };
-    unsigned const countof = COUNTOF(FontNamePrioList);
+    unsigned const countof = COUNTOF(Settings2.TextFontPrefPrioList);
 
     unsigned i = 0;
     for (; i < countof; ++i) {
-        LPCWSTR const fontName = FontNamePrioList[i];
+        LPCWSTR const fontName = Settings2.TextFontPrefPrioList[i];
         if (IsFontAvailable(fontName)) {
             StringCchCopy(pwchFontName, cchFont, fontName);
             break;
         }
     }
-    if (i >= countof) {
+    if (StrIsEmpty(pwchFontName)) {
+        WORD _wDTFSize = 9;
         GetThemedDialogFont(pwchFontName, &_wDTFSize);
     }
-
     StringCchCopy(_DefaultTextFont, COUNTOF(_DefaultTextFont), pwchFontName);
-    return _wDTFSize;
 }
 
 //=============================================================================
