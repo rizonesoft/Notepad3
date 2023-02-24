@@ -392,6 +392,10 @@ If the string contains spaces, you have to double-quote it,
 
 #### `UndoTransactionTimeout=0`
 
+UndoTransactionTimeout is in milliseconds [ms].
+UndoTransactionTimeout=1 (will be clamped to 10ms min.) will separate nearly every keystroke as single undo action.
+(UndoTransactionTimeout=0 will switch this timer OFF)
+
 #### `AdministrationTool.exe=`  
 
 This parameter is not used at the moment.
