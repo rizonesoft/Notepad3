@@ -8495,14 +8495,15 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
             if ((iModType & SC_MULTISTEPUNDOREDO) && !(iModType & SC_LASTSTEPINUNDOREDO)) {
                 return TRUE; // wait for last step in multi-step-undo/redo
             }
+            bool const bInUndoRedoStep = (iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO));
             if (iModType & SC_MOD_INSERTCHECK) {
-                if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
+                if (!bInUndoRedoStep) {
                     _HandleInsertCheck(scn);
                 }
             }
             if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
                 *bModified = false; // not yet
-                if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
+                if (!bInUndoRedoStep) {
                     if (!_InUndoRedoTransaction() && (_urtoken < URTok_TokenStart)) {
                         _SaveSelectionToBuffer();
                         bool const bSelEmpty = SciCall_IsSelectionEmpty();
@@ -8521,7 +8522,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
                     }
                 }
             } else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
-                if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
+                if (!bInUndoRedoStep) {
                     if (!_InUndoRedoTransaction() && (_urtoken >= URTok_TokenStart)) {
                         _SaveRedoSelection(_urtoken, SciCall_GetModify());
                         _urtoken = URTok_NoTransaction;
@@ -8541,7 +8542,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
             if (*bModified) {
                 DWORD const timeout = Settings2.UndoTransactionTimeout;
                 if (timeout != 0UL) {
-                    if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
+                    if (!bInUndoRedoStep) {
                         _DelaySplitUndoTransaction(max_dw(_MQ_IMMEDIATE, timeout));
                     }
                 }

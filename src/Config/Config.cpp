@@ -96,6 +96,17 @@ static const WCHAR* const _s_RecentReplace = L"Recent Replace";
 
 // ----------------------------------------------------------------------------
 
+const WCHAR* const CodeFontPrioList[] = { L"Cascadia Code", L"Cascadia Mono", L"Cousine", L"Fira Code",
+    L"Source Code Pro", L"Roboto Mono", L"DejaVu Sans Mono", L"Inconsolata", L"Consolas", L"Lucida Console" };
+
+const WCHAR* const TextFontPrioList[] = { L"Cascadia Mono", L"Cousine", L"Roboto Mono", L"DejaVu Sans Mono",
+    L"Inconsolata", L"Consolas", L"Lucida Console" };
+
+WCHAR CodeFontPrioListStrgBuf[LARGE_BUFFER] = { 0 };
+WCHAR TextFontPrioListStrgBuf[LARGE_BUFFER] = { 0 };
+
+// ----------------------------------------------------------------------------
+
 static int s_iStatusbarSections[STATUS_SECTOR_COUNT] = SBS_INIT_MINUS;
 
 // ----------------------------------------------------------------------------
@@ -1147,12 +1158,12 @@ void LoadSettings()
     auto* const pPathBuffer = (wchar_t*)AllocMem(PATHLONG_MAX_CCH * sizeof(wchar_t), HEAP_ZERO_MEMORY);
 
     bool bDirtyFlag = false; // do we have to save the file on done
-    
+
     OpenSettingsFile(__func__);
 
     // --------------------------------------------------------------------------
-    const WCHAR *const IniSecSettings = Constants.Settings_Section;
-    const WCHAR *const IniSecSettings2 = Constants.Settings2_Section;
+    const WCHAR* const IniSecSettings = Constants.Settings_Section;
+    const WCHAR* const IniSecSettings2 = Constants.Settings2_Section;
     // --------------------------------------------------------------------------
 
     // prerequisites
@@ -1168,25 +1179,29 @@ void LoadSettings()
 
     if (Globals.CmdLnFlag_ReuseWindow == 0) {
         Flags.bReuseWindow = IniSectionGetBool(IniSecSettings2, L"ReuseWindow", DefaultFlags.bReuseWindow);
-    } else {
+    }
+    else {
         Flags.bReuseWindow = (Globals.CmdLnFlag_ReuseWindow == 2);
     }
 
     if (Globals.CmdLnFlag_SingleFileInstance == 0) {
         Flags.bSingleFileInstance = IniSectionGetBool(IniSecSettings2, L"SingleFileInstance", DefaultFlags.bSingleFileInstance);
-    } else {
+    }
+    else {
         Flags.bSingleFileInstance = (Globals.CmdLnFlag_SingleFileInstance == 2);
     }
 
     if (Globals.CmdLnFlag_MultiFileArg == 0) {
         Flags.MultiFileArg = IniSectionGetBool(IniSecSettings2, L"MultiFileArg", DefaultFlags.MultiFileArg);
-    } else {
+    }
+    else {
         Flags.MultiFileArg = (Globals.CmdLnFlag_MultiFileArg == 2);
     }
 
     if (Globals.CmdLnFlag_ShellUseSystemMRU == 0) {
         Flags.ShellUseSystemMRU = IniSectionGetBool(IniSecSettings2, L"ShellUseSystemMRU", DefaultFlags.ShellUseSystemMRU);
-    } else {
+    }
+    else {
         Flags.ShellUseSystemMRU = (Globals.CmdLnFlag_ShellUseSystemMRU == 2);
     }
 
@@ -1206,19 +1221,19 @@ void LoadSettings()
 
     // --------------------------------------------------------------------------
 
-    #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
 
-        Default_PreferredLanguageLocaleName[0] = L'\0';
-        GetUserPreferredLanguage(Default_PreferredLanguageLocaleName, LOCALE_NAME_MAX_LENGTH);
+    Default_PreferredLanguageLocaleName[0] = L'\0';
+    GetUserPreferredLanguage(Default_PreferredLanguageLocaleName, LOCALE_NAME_MAX_LENGTH);
 
-        IniSectionGetStringNoQuotes(IniSecSettings2, L"PreferredLanguageLocaleName", Default_PreferredLanguageLocaleName,
-                                    Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName));
-    #endif
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"PreferredLanguageLocaleName", Default_PreferredLanguageLocaleName,
+        Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName));
+#endif
 
     // --------------------------------------------------------------------------
 
     IniSectionGetStringNoQuotes(IniSecSettings2, L"DefaultExtension", L"txt",
-                                Settings2.DefaultExtension, COUNTOF(Settings2.DefaultExtension));
+        Settings2.DefaultExtension, COUNTOF(Settings2.DefaultExtension));
     StrTrim(Settings2.DefaultExtension, L" \t.");
 
     IniSectionGetStringNoQuotes(IniSecSettings2, L"DefaultDirectory", L"", pPathBuffer, PATHLONG_MAX_CCH);
@@ -1228,9 +1243,9 @@ void LoadSettings()
     IniSectionGetStringNoQuotes(IniSecSettings2, L"FileDlgFilters", L"", pPathBuffer, XHUGE_BUFFER);
     StrgReset(Settings2.FileDlgFilters, pPathBuffer);
 
-    Settings2.FileCheckInverval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInverval", 0), 0, 86400000<<2); // max: 48h
+    Settings2.FileCheckInverval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInverval", 0), 0, 86400000 << 2); // max: 48h
     // handle deprecated old "AutoReloadTimeout"
-    int const autoReload = IniSectionGetInt(IniSecSettings2, L"AutoReloadTimeout", -1); // deprecated
+    int const          autoReload = IniSectionGetInt(IniSecSettings2, L"AutoReloadTimeout", -1); // deprecated
     unsigned int const fci = max_u(250, (autoReload > 0) ? max_u(autoReload, Settings2.FileCheckInverval) : Settings2.FileCheckInverval);
     if ((Settings2.FileCheckInverval > 0) && (fci != Settings2.FileCheckInverval)) {
         Settings2.FileCheckInverval = fci;
@@ -1254,7 +1269,8 @@ void LoadSettings()
             bDirtyFlag = true;
         }
         Defaults.RenderingTechnology = clampi(Defaults.RenderingTechnology, SC_TECHNOLOGY_DEFAULT, SC_TECHNOLOGY_DIRECTWRITEDC);
-    } else {
+    }
+    else {
         Defaults.RenderingTechnology = SC_TECHNOLOGY_DIRECTWRITE; // new default DirectWrite (D2D)
     }
 
@@ -1323,13 +1339,13 @@ void LoadSettings()
         IniSectionGetString(IniSecSettings2, L"ShellAppUserModelID", _W("Rizonesoft." SAPPNAME), Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID));
     }
     IniSectionGetString(IniSecSettings2, L"ExtendedWhiteSpaceChars", L"",
-                        Settings2.ExtendedWhiteSpaceChars, COUNTOF(Settings2.ExtendedWhiteSpaceChars));
+        Settings2.ExtendedWhiteSpaceChars, COUNTOF(Settings2.ExtendedWhiteSpaceChars));
 
     IniSectionGetString(IniSecSettings2, L"AutoCompleteWordCharSet", L"", Settings2.AutoCompleteWordCharSet, COUNTOF(Settings2.AutoCompleteWordCharSet));
 
     IniSectionGetString(IniSecSettings2, L"AutoCompleteFillUpChars", L"", Settings2.AutoCompleteFillUpChars, COUNTOF(Settings2.AutoCompleteFillUpChars));
 
-    IniSectionGetString(IniSecSettings2, L"LineCommentPostfixStrg", L"",  Settings2.LineCommentPostfixStrg, COUNTOF(Settings2.LineCommentPostfixStrg));
+    IniSectionGetString(IniSecSettings2, L"LineCommentPostfixStrg", L"", Settings2.LineCommentPostfixStrg, COUNTOF(Settings2.LineCommentPostfixStrg));
     StrTrim(Settings2.LineCommentPostfixStrg, L"\"'");
 
     IniSectionGetStringNoQuotes(IniSecSettings2, L"DateTimeFormat", L"", Settings2.DateTimeFormat, COUNTOF(Settings2.DateTimeFormat));
@@ -1365,13 +1381,53 @@ void LoadSettings()
     IniSectionGetStringNoQuotes(IniSecSettings2, L"HyperlinkShellExURLCmdLnArgs", URLPLACEHLDR, pPathBuffer, PATHLONG_MAX_CCH);
     StrgReset(Settings2.HyperlinkShellExURLCmdLnArgs, pPathBuffer);
 
-    const static WCHAR *const allowedVerbs[7] = { L"edit", L"explore", L"find", L"open", L"print", L"properties", L"runas" };
+    const static WCHAR* const allowedVerbs[] = { L"edit", L"explore", L"find", L"open", L"print", L"properties", L"runas" };
     Settings2.HyperlinkFileProtocolVerb[0] = L'\0';
     IniSectionGetStringNoQuotes(IniSecSettings2, L"HyperlinkFileProtocolVerb", L"", tchKeyName, COUNTOF(tchKeyName));
     for (auto allowedVerb : allowedVerbs) {
         if (StrStr(tchKeyName, allowedVerb)) {
             StringCchCopy(Settings2.HyperlinkFileProtocolVerb, COUNTOF(Settings2.HyperlinkFileProtocolVerb), tchKeyName);
             break;
+        }
+    }
+
+    for (int i = 0; i < COUNTOF(Settings2.CodeFontPrefPrioList); ++i) {
+        if (i < COUNTOF(CodeFontPrioList))
+            Settings2.CodeFontPrefPrioList[i] = CodeFontPrioList[i];
+        else
+            Settings2.CodeFontPrefPrioList[i] = nullptr;
+    }
+    if (IniSectionGetStringNoQuotes(IniSecSettings2, L"CodeFontPrefPrioList", L"", CodeFontPrioListStrgBuf, COUNTOF(CodeFontPrioListStrgBuf))) {
+        // split string and assign pointer array
+        WCHAR* p = &CodeFontPrioListStrgBuf[0];
+        int    i = 0;
+        while (p && *p && (i < COUNTOF(Settings2.CodeFontPrefPrioList))) {
+            Settings2.CodeFontPrefPrioList[i] = p;
+            while (p && *p) {
+                if (*p == L',') { *p = L'\0'; ++p; break; }
+                ++p;
+            }
+            ++i;
+        }
+    }
+
+    for (int i = 0; i < COUNTOF(Settings2.TextFontPrefPrioList); ++i) {
+        if (i < COUNTOF(TextFontPrioList))
+            Settings2.TextFontPrefPrioList[i] = TextFontPrioList[i];
+        else
+            Settings2.TextFontPrefPrioList[i] = nullptr;
+    }
+    if (IniSectionGetStringNoQuotes(IniSecSettings2, L"TextFontPrefPrioList", L"", TextFontPrioListStrgBuf, COUNTOF(TextFontPrioListStrgBuf))) {
+        // split string and assign pointer array
+        WCHAR* p = &TextFontPrioListStrgBuf[0];
+        int    i = 0;
+        while (p && *p && (i < COUNTOF(Settings2.TextFontPrefPrioList))) {
+            Settings2.TextFontPrefPrioList[i] = p;
+            while (p && *p) {
+                if (*p == L',') { *p = L'\0'; ++p; break; }
+                ++p;
+            }
+            ++i;
         }
     }
 

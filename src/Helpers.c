@@ -717,7 +717,9 @@ static int CALLBACK EnumFontFamExProcFound(CONST LOGFONT *plf, CONST TEXTMETRIC 
 
 bool IsFontAvailable(LPCWSTR lpszFontName) {
 
-    bool fFound = FALSE;
+    BOOL fFound = FALSE;
+    if (!lpszFontName)
+        return fFound;
 
     LOGFONT lf = { 0 };
     StringCchCopy(lf.lfFaceName, LF_FACESIZE, lpszFontName);

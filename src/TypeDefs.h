@@ -798,6 +798,9 @@ typedef struct SETTINGS2_T {
 
     WCHAR HyperlinkFileProtocolVerb[MICRO_BUFFER];
 
+    const WCHAR* CodeFontPrefPrioList[MICRO_BUFFER];
+    const WCHAR* TextFontPrefPrioList[MICRO_BUFFER];
+
 } SETTINGS2_T, *PSETTINGS2_T;
 
 #define Default_ExitOnESCSkipLevel 2
