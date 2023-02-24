@@ -523,7 +523,6 @@ static int msgcmp(void* mqc1, void* mqc2)
 #define _MQ_FAST (_MQ_TIMER_CYCLE << 1)
 #define _MQ_STD (_MQ_TIMER_CYCLE << 2)
 #define _MQ_LAZY (_MQ_TIMER_CYCLE << 3)
-#define _MQ_RELAXED (_MQ_TIMER_CYCLE << 4)
 
 #define _MQ_ms2cycl(T) (((T) + USER_TIMER_MINIMUM) / _MQ_TIMER_CYCLE)
 
@@ -8543,7 +8542,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
                 DWORD const timeout = Settings2.UndoTransactionTimeout;
                 if (timeout != 0UL) {
                     if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
-                        _DelaySplitUndoTransaction(max_dw(_MQ_RELAXED, timeout));
+                        _DelaySplitUndoTransaction(max_dw(_MQ_IMMEDIATE, timeout));
                     }
                 }
             }
