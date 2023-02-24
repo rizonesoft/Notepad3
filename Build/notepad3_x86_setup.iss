@@ -298,22 +298,22 @@ hin.tsk_LaunchWelcomePage=Important Release Information!
 hin.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
 hin.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
 
-hun.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+hun.msg_DeleteSettings=Törölni szeretné {#app_name} beállításait is?%n%nHa újra szeretné telepíteni {#app_name}-t, akkor nem szükséges törölni.
 #if defined(sse_required)
-hun.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+hun.msg_simd_sse=Ahhoz, hogy {#app_name} ezen változata jól fusson, SSE kiterjesztés támogatással bíró CPU szükséges.%n%nA jelenlegi CPU nem megfelelő.
 #elif defined(sse2_required)
-hun.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+hun.msg_simd_sse2=Ahhoz, hogy {#app_name} ezen változata jól fusson, SSE2 kiterjesztés támogatással bíró CPU szükséges.%n%nA jelenlegi CPU nem megfelelő.
 #endif
-hun.tsk_AllUsers=For all users
-hun.tsk_CurrentUser=For the current user only
-hun.tsk_Other=Other tasks:
-hun.tsk_ResetSettings=Reset {#app_name}'s settings and themes
-hun.tsk_RemoveDefault=Restore Windows Notepad
-hun.tsk_SetDefault=Replace Windows Notepad with {#app_name}
-hun.tsk_StartMenuIcon=Create a Start Menu shortcut
-hun.tsk_LaunchWelcomePage=Important Release Information!
-hun.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
-hun.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+hun.tsk_AllUsers=Minden felhasználónak
+hun.tsk_CurrentUser=Csak a jelenlegi felhasználónak
+hun.tsk_Other=Egyéb műveletek:
+hun.tsk_ResetSettings={#app_name} beállításainak és témáinak visszaállítása
+hun.tsk_RemoveDefault=Windows Jegyzettömb visszaállítása
+hun.tsk_SetDefault=Windows Jegyzettömb lecserélése ezzel: {#app_name}
+hun.tsk_StartMenuIcon=Start menü ikon létrehozása
+hun.tsk_LaunchWelcomePage=Fontos kiadási információk!
+hun.tsk_RemoveOpenWith="Megnyitás ezzel: {#app_name}" bejegyzés eltávolítása a helyi menüből
+hun.tsk_SetOpenWith="Megnyitás ezzel: {#app_name}" bejegyzés hozzáadása a helyi menühöz
 
 ind.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
 #if defined(sse_required)
