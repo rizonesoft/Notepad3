@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2012-2014, 2021-2022 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012-2014, 2021-2023 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -140,4 +140,26 @@ bool CSearchInfo::ExtCompareDesc(const CSearchInfo& entry1, const CSearchInfo& e
     std::wstring ext1    = dotPos1 != std::wstring::npos ? entry1.filePath.substr(dotPos1 + 1) : L"";
     std::wstring ext2    = dotPos2 != std::wstring::npos ? entry2.filePath.substr(dotPos2 + 1) : L"";
     return StrCmpLogicalW(ext1.c_str(), ext2.c_str()) > 0;
+}
+
+bool CSearchInfo::operator<(const CSearchInfo& other) const
+{
+    auto res = _wcsicmp(filePath.c_str(), other.filePath.c_str());
+    if (res != 0)
+        return res < 0;
+    if (fileSize != other.fileSize)
+        return fileSize < other.fileSize;
+    if (matchCount != other.matchCount)
+        return matchCount < matchCount;
+    if (readError != other.readError)
+        return readError != other.readError;
+    if (folder != other.folder)
+        return folder != other.folder;
+    if (CompareFileTime(&modifiedTime, &other.modifiedTime) != 0)
+        return CompareFileTime(&modifiedTime, &other.modifiedTime) < 0;
+    if (matchLinesNumbers != other.matchLinesNumbers)
+        return matchLinesNumbers < other.matchLinesNumbers;
+    if (matchLines != other.matchLines)
+        return matchLines < other.matchLines;
+    return false;
 }

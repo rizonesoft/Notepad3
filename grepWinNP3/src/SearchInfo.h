@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010, 2012-2013, 2021-2022 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010, 2012-2013, 2021-2023 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -43,6 +43,8 @@ public:
     static bool               EncodingCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
     static bool               ModifiedTimeCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
     static bool               ExtCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+
+    bool                      operator<(const CSearchInfo& other) const;
 
     std::wstring              filePath;
     __int64                   fileSize;

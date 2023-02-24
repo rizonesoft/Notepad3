@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2015, 2017, 2020-2021 - Stefan Kueng
+// Copyright (C) 2007-2015, 2017, 2020-2021, 2023 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -44,8 +44,7 @@ struct ICompare
 };
 
 CShellContextMenu::CShellContextMenu()
-    : m_nItems(0)
-    , bDelete(FALSE)
+    : bDelete(FALSE)
     , m_menu(nullptr)
     , m_psfFolder(nullptr)
     , m_pidlArray(nullptr)
@@ -315,8 +314,6 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                 std::wstring lines;
                 for (auto it = m_lineVector.begin(); it != m_lineVector.end(); ++it)
                 {
-                    if (!lines.empty())
-                        lines += L"\r\n";
                     for (auto it2 = it->lines.cbegin(); it2 != it->lines.cend(); ++it2)
                     {
                         std::wstring l = it2->text;
@@ -324,6 +321,8 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                         std::replace(l.begin(), l.end(), '\n', ' ');
                         std::replace(l.begin(), l.end(), '\r', ' ');
 
+                        if (!lines.empty())
+                            lines += L"\r\n";
                         lines += l;
                     }
                 }
@@ -419,35 +418,35 @@ void CShellContextMenu::SetObjects(const std::vector<CSearchInfo>& strVector, co
     // but since we use the Desktop as our interface and the Desktop is the namespace root
     // that means that it's a fully qualified PIDL, which is what we need
 
-    m_nItems    = strVector.size();
-    m_pidlArray = static_cast<LPITEMIDLIST*>(CoTaskMemAlloc((m_nItems + 10) * sizeof(LPITEMIDLIST)));
-    SecureZeroMemory(m_pidlArray, (m_nItems + 10) * sizeof(LPITEMIDLIST));
+    auto nItems = strVector.size();
+    m_pidlArray = static_cast<LPITEMIDLIST*>(CoTaskMemAlloc((nItems + 10) * sizeof(LPITEMIDLIST)));
+    SecureZeroMemory(m_pidlArray, (nItems + 10) * sizeof(LPITEMIDLIST));
     m_pidlArrayItems            = 0;
     int          succeededItems = 0;
     LPITEMIDLIST pidl           = nullptr;
     m_strVector.clear();
     m_lineVector.clear();
-    m_strVector.reserve(m_nItems);
-    m_lineVector.reserve(m_nItems);
+    m_strVector.reserve(nItems);
+    m_lineVector.reserve(nItems);
 
     size_t bufSize  = 1024;
     auto   filePath = std::make_unique<WCHAR[]>(bufSize);
-    for (size_t i = 0; i < m_nItems; i++)
+    for (const auto& sInfo : strVector)
     {
-        if (bufSize < strVector[i].filePath.size())
+        if (bufSize < sInfo.filePath.size())
         {
-            bufSize  = strVector[i].filePath.size() + 3;
+            bufSize  = sInfo.filePath.size() + 3;
             filePath = std::make_unique<WCHAR[]>(bufSize);
         }
-        wcscpy_s(filePath.get(), bufSize, strVector[i].filePath.c_str());
+        wcscpy_s(filePath.get(), bufSize, sInfo.filePath.c_str());
         if (SUCCEEDED(m_psfFolder->ParseDisplayName(NULL, nullptr, filePath.get(), NULL, &pidl, NULL)))
         {
             m_pidlArray[succeededItems++] = pidl; // copy pidl to pidlArray
-            m_strVector.push_back(strVector[i]);
-            if (lineVector.size() > static_cast<size_t>(i))
-                m_lineVector.push_back(lineVector[i]);
+            m_strVector.push_back(sInfo);
         }
     }
+    m_lineVector     = lineVector;
+
     m_pidlArrayItems = succeededItems;
 
     bDelete = TRUE; // indicates that m_psfFolder should be deleted by CShellContextMenu
