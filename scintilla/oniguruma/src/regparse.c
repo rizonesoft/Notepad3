@@ -486,6 +486,7 @@ onig_strcpy(UChar* dest, const UChar* src, const UChar* end)
 #define PFETCH_READY  UChar* pfetch_prev
 #define PEND         (p < end ?  0 : 1)
 #define PUNFETCH     p = pfetch_prev
+#define PPREV        pfetch_prev
 #define PINC       do { \
   pfetch_prev = p; \
   p += ONIGENC_MBC_ENC_LEN(enc, p); \
@@ -5104,6 +5105,63 @@ find_str_position(OnigCodePoint s[], int n, UChar* from, UChar* to,
 }
 
 static int
+is_head_of_bre_subexp(UChar* p, UChar* end, OnigEncoding enc, ParseEnv* env)
+{
+  UChar* start;
+  OnigCodePoint code;
+
+  start = env->pattern;
+  if (p > start) {
+    p = onigenc_get_prev_char_head(enc, start, p);
+    if (p > start) {
+      code = ONIGENC_MBC_TO_CODE(enc, p, end);
+      if (code == '(' ||
+          (code == '|' &&
+           IS_SYNTAX_OP(env->syntax, ONIG_SYN_OP_ESC_VBAR_ALT))) {
+        p = onigenc_get_prev_char_head(enc, start, p);
+        code = ONIGENC_MBC_TO_CODE(enc, p, end);
+        if (IS_MC_ESC_CODE(code, env->syntax)) {
+          int count = 0;
+          while (p > start) {
+            p = onigenc_get_prev_char_head(enc, start, p);
+            code = ONIGENC_MBC_TO_CODE(enc, p, end);
+            if (! IS_MC_ESC_CODE(code, env->syntax)) break;
+            count++;
+          }
+          return (count % 2 == 0);
+        }
+      }
+    }
+    return FALSE;
+  }
+  else {
+    return TRUE;
+  }
+}
+
+static int
+is_end_of_bre_subexp(UChar* p, UChar* end, OnigEncoding enc, ParseEnv* env)
+{
+  OnigCodePoint code;
+
+  if (p == end) return TRUE;
+
+  code = ONIGENC_MBC_TO_CODE(enc, p, end);
+  if (IS_MC_ESC_CODE(code, env->syntax)) {
+    p += ONIGENC_MBC_ENC_LEN(enc, p);
+    if (p < end) {
+      code = ONIGENC_MBC_TO_CODE(enc, p, end);
+      if (code == ')' ||
+          (code == '|' &&
+           IS_SYNTAX_OP(env->syntax, ONIG_SYN_OP_ESC_VBAR_ALT)))
+        return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+static int
 is_posix_bracket_start(UChar* from, UChar* to, OnigEncoding enc)
 {
   int n;
@@ -6235,6 +6293,9 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ParseEnv* env)
 
     case '^':
       if (! IS_SYNTAX_OP(syn, ONIG_SYN_OP_LINE_ANCHOR)) break;
+      if (IS_SYNTAX_BV(syn, ONIG_SYN_BRE_ANCHOR_AT_EDGE_OF_SUBEXP)) {
+        if (! is_head_of_bre_subexp(PPREV, end, enc, env)) break;
+      }
       tok->type = TK_ANCHOR;
       tok->u.subtype = (OPTON_SINGLELINE(env->options)
                         ? ANCR_BEGIN_BUF : ANCR_BEGIN_LINE);
@@ -6242,6 +6303,9 @@ fetch_token(PToken* tok, UChar** src, UChar* end, ParseEnv* env)
 
     case '$':
       if (! IS_SYNTAX_OP(syn, ONIG_SYN_OP_LINE_ANCHOR)) break;
+      if (IS_SYNTAX_BV(syn, ONIG_SYN_BRE_ANCHOR_AT_EDGE_OF_SUBEXP)) {
+        if (! is_end_of_bre_subexp(p, end, enc, env)) break;
+      }
       tok->type = TK_ANCHOR;
       tok->u.subtype = (OPTON_SINGLELINE(env->options)
                         ? ANCR_SEMI_END_BUF : ANCR_END_LINE);
@@ -7810,6 +7874,7 @@ prs_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
             PINC;
             r = make_range_clear(np, env);
             if (r != 0) return r;
+            env->flags |= PE_FLAG_HAS_ABSENT_STOPPER;
             goto end;
           }
         }
@@ -7831,7 +7896,7 @@ prs_bag(Node** np, PToken* tok, int term, UChar** src, UChar* end,
           if (ND_TYPE(top) != ND_ALT || IS_NULL(ND_CDR(top))) {
             expr = NULL_NODE;
             is_range_cutter = 1;
-            /* return ONIGERR_INVALID_ABSENT_GROUP_GENERATOR_PATTERN; */
+            env->flags |= PE_FLAG_HAS_ABSENT_STOPPER;
           }
           else {
             absent = ND_CAR(top);
