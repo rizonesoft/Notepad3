@@ -1103,7 +1103,7 @@ extern "C" bool FileVars_Apply(LPFILEVARS lpfv)
 //
 //  FileVars_ParseInt()
 //
-extern "C" bool FileVars_ParseInt(char* pszData, char* pszName, int* piValue)
+extern "C" bool FileVars_ParseInt(const char* pszData, const char* pszName, int* piValue)
 {
 
     char* pvStart = StrStrIA(pszData, pszName);
@@ -1159,7 +1159,7 @@ extern "C" bool FileVars_ParseInt(char* pszData, char* pszName, int* piValue)
 //
 //  FileVars_ParseStr()
 //
-extern "C" bool FileVars_ParseStr(char* pszData, char* pszName, char* pszValue, int cchValue)
+extern "C" bool FileVars_ParseStr(const char* pszData, const char* pszName, char* pszValue, int cchValue)
 {
 
     const char* pvStart = StrStrIA(pszData, pszName);

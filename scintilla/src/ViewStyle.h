@@ -257,8 +257,8 @@ public:
 	bool DrawCaretInsideSelection(bool inOverstrike, bool imeCaretBlockOverride) const noexcept;
 	CaretShape CaretShapeForMode(bool inOverstrike, bool isMainSelection) const noexcept;
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	bool ViewStyle::ZoomIn() noexcept;
-	bool ViewStyle::ZoomOut() noexcept;
+	bool ZoomIn() noexcept;
+	bool ZoomOut() noexcept;
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 private:

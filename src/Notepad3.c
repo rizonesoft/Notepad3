@@ -10109,8 +10109,10 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         MultiByteToWideChar(Encoding_SciCP, 0, chChrs, chrLen, (LPWSTR)&wChr, len);
 
         if (bForceRedraw || (s_wChr != wChr)) {
-            if (wChr <= 0xFFFF)
-                StringCchPrintf(tchChr, COUNTOF(tchChr), L"%.4X", wChr);
+            if (wChr <= 0x7F)
+                StringCchPrintf(tchChr, COUNTOF(tchChr), L"0x%.4X (ASC:%i)", LOWORD(wChr), LOWORD(wChr));
+            else if (wChr <= 0xFFFF)
+                StringCchPrintf(tchChr, COUNTOF(tchChr), L"0x%.4X (DEC:%i)", LOWORD(wChr), LOWORD(wChr));
             else
                 StringCchPrintf(tchChr, COUNTOF(tchChr), L"0x%.4X 0x%.4X", LOWORD(wChr), HIWORD(wChr));
         }

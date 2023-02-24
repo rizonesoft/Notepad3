@@ -487,7 +487,7 @@ If used, this setting also defines the field ordering.
 - Section  9 = Toggle INS/OVR Mode
 - Section 10 = Toggle STD/2ND Text Mode (Default Text or 2nd Default Text)
 - Section 11 = Current Scheme  (double click to open `Select Scheme` )
-- Section 12 = Character Count (per line)
+- Section 12 = Character Count (per line from line start)
 - Section 13 = Replaced Occurrences
 - Section 14 = TinyExpr Evaluation
 - Section 15 = Unicode point display (UTF-16 encoding) of current (caret pos) character.
@@ -502,15 +502,15 @@ This parameter is used to redefines the displayed Prefixes in the sections of th
 This parameter is used to redefines the displayed Postfixes in the sections of the Status Bar
 - A “,” (comma) is used as separator. Spaces are **NOT** ignored.
 
-#### `SectionWidthSpecs=30 20 20 20 20 20 20 0 0 0 0 0 0 20 20 20`  (internal default)
+#### `SectionWidthSpecs=30 20 20 20 20 20 20 0 0 0 0 0 0 0 20 24`  (internal default)
 
 This parameter is used to define the relative width of each field of the Status Bar
 - 0 = space optimized fit to text (dynamically adapted to width changes)
 - -n (neg. val) = fixed width of section [pix] , longer text is truncated
 
 Fine tuning: increase, decrease or modify the value of numbers,
-- e.g.: `;;;;;;;;;;;;;;;;;  0  1  2  3  4  5 6 7 8 9 10  11 12 13  14`
-- `SectionWidthSpecs=50 40 42 40 36 40 0 0 0 0  0 -10 40 40 -40`
+- e.g.: `;;;;;;;;;;;;;;;;;  0  1  2  3  4  5 6 7 8 9 10 11 12 13 14 15`
+- `SectionWidthSpecs=50 40 42 40 36 40 0 0 0 0 0 -10 40 40 -40 40`
 
 #### `ZeroBasedColumnIndex=0`
 

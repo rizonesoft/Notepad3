@@ -90,9 +90,9 @@ static bool const s_bSetSpaces = false;
 
 // ----------------------------------------------------------------------------
 
-static WCHAR* const _s_RecentFiles = L"Recent Files";
-static WCHAR* const _s_RecentFind = L"Recent Find";
-static WCHAR* const _s_RecentReplace = L"Recent Replace";
+static const WCHAR* const _s_RecentFiles = L"Recent Files";
+static const WCHAR* const _s_RecentFind = L"Recent Find";
+static const WCHAR* const _s_RecentReplace = L"Recent Replace";
 
 // ----------------------------------------------------------------------------
 
