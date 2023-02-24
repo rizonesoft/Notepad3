@@ -390,9 +390,8 @@ If the string contains spaces, you have to double-quote it,
 
 #### `CurrentLineVerticalSlop=5`
 
-#### `UndoTransactionTimeout=0`
+#### `UndoTransactionTimeout=0`  ;in [ms]
 
-UndoTransactionTimeout is in milliseconds [ms].
 UndoTransactionTimeout=1 (will be clamped to 10ms min.) will separate nearly every keystroke as single undo action.
 (UndoTransactionTimeout=0 will switch this timer OFF)
 
@@ -431,11 +430,11 @@ New parameter "[Settings2] ExitOnESCSkipLevel = 2"
 - Level 1 : ESC cancels message-box and ignores Selection.
 - Level 0 : ESC cancels all states and proceeds to Exit (if configured).
 
-#### `ZoomTooltipTimeout=3200`
+#### `ZoomTooltipTimeout=3200`  ;in [ms]
 
 - A value of zero (0) (or less than 100 ms) will disable the tooltip display.
 
-#### `WrapAroundTooltipTimeout=2000`
+#### `WrapAroundTooltipTimeout=2000`  ;in [ms]
 
 - A value of zero (0) (or less than 100 ms) will disable the tooltip display.
 
@@ -467,6 +466,10 @@ You can specify more command line parameter for the app here. The token `${URL}`
 #### `HyperlinkFileProtocolVerb=""`
 
 - `ShellExecuteEx()::lpVerb (""=default, "edit", "explore", "find", "open", "print", "properties", "runas")`
+
+#### `CodeFontPrefPrioList="Cascadia Code,Cascadia Mono,Cousine,Fira Code,Source Code Pro,Roboto Mono,DejaVu Sans Mono,Inconsolata,Consolas,Lucida Console"`
+
+#### `TextFontPrefPrioList="Cascadia Mono,Cousine,Roboto Mono,DejaVu Sans Mono,Inconsolata,Consolas,Lucida Console"`
 
 
 ## **`[Statusbar Settings]`**
