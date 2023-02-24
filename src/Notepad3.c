@@ -434,8 +434,11 @@ static inline void _SplitUndoTransaction()
 {
     if (_InUndoRedoTransaction()) {
         SciCall_EndUndoAction();
-        /* noop */
         SciCall_BeginUndoAction();
+    }
+    else {
+        SciCall_BeginUndoAction();
+        SciCall_EndUndoAction();
     }
 }
 
@@ -1282,13 +1285,14 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     UndoRedoReset();
     SetSaveDone();
 
+
     // drag-n-drop into elevated process even does not work using:
     ///ChangeWindowMessageFilter(WM_DROPFILES, MSGFLT_ADD);
     ///ChangeWindowMessageFilter(WM_COPYDATA, MSGFLT_ADD);
     ///ChangeWindowMessageFilter(0x0049, MSGFLT_ADD);
 
     MSG msg;
-    while (GetMessage(&msg,NULL,0,0)) {
+    while (GetMessage(&msg, NULL, 0, 0)) {
 
         if (IsWindow(Globals.hwndDlgFindReplace) && ((msg.hwnd == Globals.hwndDlgFindReplace) || IsChild(Globals.hwndDlgFindReplace, msg.hwnd))) {
             const int iTr = TranslateAccelerator(Globals.hwndDlgFindReplace, hAccFindReplace, &msg);
@@ -8537,8 +8541,9 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
             if (*bModified) {
                 DWORD const timeout = Settings2.UndoTransactionTimeout;
                 if (timeout != 0UL) {
-                    bool const bInUndoRedo = ((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO));
-                    _DelaySplitUndoTransaction(bInUndoRedo ? max_dw(_MQ_FAST, timeout) : timeout);
+                    if (!((iModType & SC_PERFORMED_UNDO) || (iModType & SC_PERFORMED_REDO))) {
+                        _DelaySplitUndoTransaction(max_dw(_MQ_IMMEDIATE, timeout));
+                    }
                 }
             }
         } break;
@@ -8611,8 +8616,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
             EditUpdateVisibleIndicators();
             if (scn->linesAdded != 0) {
                 if (Settings.SplitUndoTypingSeqOnLnBreak && (scn->linesAdded > 0)) {
-                    bool const bInUndoRedo = _InUndoRedoTransaction() || (iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO));
-                    if (!bInUndoRedo) {
+                    if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
                         _SplitUndoTransaction();
                     }
                 }
@@ -10750,7 +10754,9 @@ static void _SaveRedoSelection(const LONG token, const bool bAddAction)
             } break;
             }
 
-            SciCall_AddUndoAction((int)token, UNDO_NONE); //~UNDO_MAY_COALESCE
+            //~SciCall_AddUndoAction((int)token, UNDO_MAY_COALESCE);
+            SciCall_AddUndoAction((int)token, UNDO_NONE);
+
         }
         else {
             _UndoRedoActionMap(token, NULL);  // remove
