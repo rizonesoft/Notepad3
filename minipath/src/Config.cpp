@@ -750,7 +750,7 @@ int CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
     return 0;
 }
 
-int CheckIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile, LPCWSTR lpszModule)
+int CheckIniFileRedirect(LPCWSTR lpszAppName, LPCWSTR lpszKeyName, LPWSTR lpszFile, LPCWSTR lpszModule)
 {
     WCHAR tch[MAX_PATH];
 

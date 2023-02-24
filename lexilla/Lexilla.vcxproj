@@ -243,7 +243,7 @@
       </SDLCheck>
       <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;SCI_LEXER;_CRT_SECURE_NO_WARNINGS;STATIC_BUILD;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>include;lexlib;src;..\scintilla\include;</AdditionalIncludeDirectories>
       <StringPooling>true</StringPooling>
@@ -277,7 +277,7 @@
       </SDLCheck>
       <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;SCI_LEXER;_CRT_SECURE_NO_WARNINGS;STATIC_BUILD;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>include;lexlib;src;..\scintilla\include;ser\lexer_x</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -320,7 +320,7 @@
       </SDLCheck>
       <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;SCI_LEXER;_CRT_SECURE_NO_WARNINGS;STATIC_BUILD;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>include;lexlib;src;..\scintilla\include;ser\lexer_x</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -354,7 +354,7 @@
       </SDLCheck>
       <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;SCI_LEXER;_CRT_SECURE_NO_WARNINGS;STATIC_BUILD;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>include;lexlib;src;..\scintilla\include;</AdditionalIncludeDirectories>
       <StringPooling>true</StringPooling>
@@ -387,7 +387,7 @@
       </SDLCheck>
       <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;SCI_LEXER;_CRT_SECURE_NO_WARNINGS;STATIC_BUILD;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>include;lexlib;src;..\scintilla\include;ser\lexer_x</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -429,7 +429,7 @@
       </SDLCheck>
       <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;SCI_LEXER;_CRT_SECURE_NO_WARNINGS;STATIC_BUILD;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>include;lexlib;src;..\scintilla\include;ser\lexer_x</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
