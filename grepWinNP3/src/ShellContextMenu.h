@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2011-2015, 2021 - Stefan Kueng
+// Copyright (C) 2007-2008, 2011-2015, 2021, 2023 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -35,7 +35,6 @@ public:
     virtual ~CShellContextMenu();
 
 private:
-    size_t                   m_nItems;
     BOOL                     bDelete;
     HMENU                    m_menu;
     IShellFolder *           m_psfFolder;

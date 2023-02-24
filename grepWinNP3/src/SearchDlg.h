@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2022 - Stefan Kueng
+// Copyright (C) 2007-2023 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -126,12 +126,12 @@ public:
     inline void  SetKeepFileDate(bool bSet) { m_bWholeWordsC = true; m_bWholeWords = bSet; }
     inline void  SetWholeWords(bool bSet) { m_bWholeWordsC = true; m_bWholeWords = bSet; }
     inline void  SetUTF8(bool bSet) { m_bUTF8C = true; m_bUTF8 = bSet; m_bForceBinary = false; }
-    inline void  SetIncludeSymLinks(bool bSet) { m_bIncludeSymLinksC = true; m_bIncludeSymLinks = bSet; }
     inline void  SetBinary(bool bSet) { m_bUTF8C = true; m_bForceBinary = bSet; m_bUTF8 = false; }
     inline void  SetSize(uint64_t size, int cmp) { m_bSizeC = true; m_lSize = size << 10; m_sizeCmp = cmp; m_bAllSize = (m_lSize == MaxFileSize()) ? true : m_bAllSize; }
     inline void  SetIncludeSystem(bool bSet) { m_bIncludeSystemC = true; m_bIncludeSystem = bSet; }
     inline void  SetIncludeHidden(bool bSet) { m_bIncludeHiddenC = true; m_bIncludeHidden = bSet; }
     inline void  SetIncludeSubfolders(bool bSet) { m_bIncludeSubfoldersC = true; m_bIncludeSubfolders = bSet; }
+    inline void  SetIncludeSymLinks(bool bSet) { m_bIncludeSymLinksC = true; m_bIncludeSymLinks = bSet; }
     inline void  SetIncludeBinary(bool bSet) { m_bIncludeBinaryC = true; m_bIncludeBinary = bSet; }
     inline void  SetDateLimit(int datelimit, FILETIME t1, FILETIME t2) { m_bDateLimitC = true; m_dateLimit = datelimit; m_date1 = t1; m_date2 = t2; }
     inline void  SetNoSaveSettings(bool nosave) { m_bNoSaveSettings = nosave; }
@@ -152,7 +152,7 @@ protected:
     bool             InitResultList();
     void             FillResultList();
     bool             AddFoundEntry(const CSearchInfo* pInfo, bool bOnlyListControl = false);
-    void             ShowContextMenu(int x, int y);
+    void             ShowContextMenu(HWND hWnd, int x, int y);
     void             DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
     void             OpenFileAtListIndex(int listIndex);
     void             UpdateInfoLabel();
@@ -163,6 +163,7 @@ protected:
     bool             MatchPath(LPCTSTR pathBuf) const;
     void             AutoSizeAllColumns();
     int              GetSelectedListIndex(int index);
+    int              GetSelectedListIndex(bool fileList, int index) const;
     static bool      FailedShowMessage(HRESULT hr);
 #ifdef NP3_ALLOW_UPDATE
     void             CheckForUpdates(bool force = false);
@@ -177,6 +178,7 @@ private:
     HWND          m_hParent;
     //std::atomic_bool LONG m_dwThreadRunning;
     //std::atomic_bool LONG m_cancelled;
+    bool                              m_bBlockUpdate;
 
     std::unique_ptr<CBookmarksDlg>    m_bookmarksDlg;
     ComPtr<ITaskbarList3>             m_pTaskbarList;
