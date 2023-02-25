@@ -251,9 +251,6 @@
     <ClCompile Include="lexlib\WordList.cxx">
       <Filter>lexlib</Filter>
     </ClCompile>
-    <ClCompile Include="lexers_x\LexPython.cxx">
-      <Filter>lexers_x</Filter>
-    </ClCompile>
     <ClCompile Include="lexers_x\LexerUtils.cxx">
       <Filter>lexers_x</Filter>
     </ClCompile>
@@ -273,6 +270,9 @@
       <Filter>lexers</Filter>
     </ClCompile>
     <ClCompile Include="lexers\LexMarkdown.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
+    <ClCompile Include="lexers\LexPython.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
   </ItemGroup>

@@ -138,7 +138,7 @@ static void ColourisePowerShellDoc(Sci_PositionU startPos, Sci_Position length, 
 					      MakeLowerCase(sc.ch),
 					      MakeLowerCase(sc.chNext))) {
 				if (sc.MatchLineEnd() || IsASpaceOrTab(sc.ch) || isoperator(sc.ch)) {
-				sc.SetState(SCE_POWERSHELL_DEFAULT);
+					sc.SetState(SCE_POWERSHELL_DEFAULT);
 				} else {
 					sc.ChangeState(SCE_POWERSHELL_IDENTIFIER);
 				}

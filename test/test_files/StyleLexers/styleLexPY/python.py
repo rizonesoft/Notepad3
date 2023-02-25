@@ -75,6 +75,7 @@ def check_read_access(input_file):
 
     if not os.access(input_file, os.R_OK):
         eprint("Input file ({}) is not readable!".format(input_file))
+        eprint(f"Input file ({input_file}) is not readable!")
         return False
 
     return True

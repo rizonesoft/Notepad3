@@ -12,6 +12,32 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
+
+
+file:///D:/DEV/GitHub/Notepad3/language/np3_af_za/menu_af_za.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_be_by/menu_be_by.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_de_de/menu_de_de.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_af_za/menu_af_za.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_be_by/menu_be_by.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_de_de/menu_de_de.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_af_za/menu_af_za.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_be_by/menu_be_by.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_de_de/menu_de_de.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_af_za/menu_af_za.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_be_by/menu_be_by.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_de_de/menu_de_de.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_af_za/menu_af_za.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_be_by/menu_be_by.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_de_de/menu_de_de.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_af_za/menu_af_za.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_be_by/menu_be_by.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_de_de/menu_de_de.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_af_za/menu_af_za.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_be_by/menu_be_by.rc:472
+file:///D:/DEV/GitHub/Notepad3/language/np3_de_de/menu_de_de.rc:472
+
+𒁻ÖÜ
+
 #if !defined(WINVER)
 #define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
 #endif
@@ -34,7 +60,7 @@
 #include <cassert>
 #endif
 
-#define VC_EXTRALEAN 1
+#define VC_EXTRALEAN 1+1
 #define WIN32_LEAN_AND_MEAN 1
 //#define NOMINMAX 1
 #include <windows.h>

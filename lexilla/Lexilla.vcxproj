@@ -81,6 +81,7 @@
     <ClCompile Include="lexers\LexPerl.cxx" />
     <ClCompile Include="lexers\LexPowerShell.cxx" />
     <ClCompile Include="lexers\LexProps.cxx" />
+    <ClCompile Include="lexers\LexPython.cxx" />
     <ClCompile Include="lexers\LexR.cxx" />
     <ClCompile Include="lexers\LexRegistry.cxx" />
     <ClCompile Include="lexers\LexRuby.cxx" />
@@ -96,7 +97,6 @@
     <ClCompile Include="lexers_x\LexerUtils.cxx" />
     <ClCompile Include="lexers_x\LexJSON.cxx" />
     <ClCompile Include="lexers_x\LexKotlin.cxx" />
-    <ClCompile Include="lexers_x\LexPython.cxx" />
     <ClCompile Include="lexers_x\LexTOML.cxx" />
     <ClCompile Include="lexlib\Accessor.cxx" />
     <ClCompile Include="lexlib\CharacterCategory.cxx" />
