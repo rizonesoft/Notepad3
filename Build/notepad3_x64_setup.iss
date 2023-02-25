@@ -536,39 +536,39 @@ vit.tsk_LaunchWelcomePage=Important Release Information!
 vit.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
 vit.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
 
-chs.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+chs.msg_DeleteSettings=是否希望删除 {#app_name} 的设置和主题？%n%n如果您稍后将要重新安装 {#app_name}，您不需要删除以前的配置。
 #if defined(sse_required)
-chs.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+chs.msg_simd_sse=这个版本的 {#app_name} 需要支持 SSE 扩展指令集的 CPU。%n%n您的 CPU 缺少该支持。
 #elif defined(sse2_required)
-chs.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+chs.msg_simd_sse2=这个版本的 {#app_name} 需要支持 SSE2 扩展指令集的 CPU。%n%n您的 CPU 缺少该支持。
 #endif
-chs.tsk_AllUsers=For all users
-chs.tsk_CurrentUser=For the current user only
-chs.tsk_Other=Other tasks:
-chs.tsk_ResetSettings=Reset {#app_name}'s settings and themes
-chs.tsk_RemoveDefault=Restore Windows Notepad
-chs.tsk_SetDefault=Replace Windows Notepad with {#app_name}
-chs.tsk_StartMenuIcon=Create a Start Menu shortcut
-chs.tsk_LaunchWelcomePage=Important Release Information!
-chs.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
-chs.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+chs.tsk_AllUsers=为所有用户
+chs.tsk_CurrentUser=仅为当前用户
+chs.tsk_Other=其它任务：
+chs.tsk_ResetSettings=重置 {#app_name} 的设置和主题
+chs.tsk_RemoveDefault=恢复 Windows 记事本
+chs.tsk_SetDefault=将 Windows 记事本替换为 {#app_name}
+chs.tsk_StartMenuIcon=在开始菜单中创建快捷方式
+chs.tsk_LaunchWelcomePage=重要更新信息！
+chs.tsk_RemoveOpenWith=从上下文菜单中删除“用 {#app_name} 打开”
+chs.tsk_SetOpenWith=在上下文菜单中添加“用 {#app_name} 打开”
 
-cht.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+cht.msg_DeleteSettings=是否希望刪除 {#app_name} 的設定和主題？%n%n如果您稍後將要重新安裝 {#app_name}，您不需要刪除以前的設定。
 #if defined(sse_required)
-cht.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+cht.msg_simd_sse=這個版本的 {#app_name} 需要支援 SSE 擴充指令集的 CPU。%n%n您的 CPU 缺少該支援。
 #elif defined(sse2_required)
-cht.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+cht.msg_simd_sse2=這個版本的 {#app_name} 需要支援 SSE2 擴充指令集的 CPU。%n%n您的 CPU 缺少該支援。
 #endif
-cht.tsk_AllUsers=For all users
-cht.tsk_CurrentUser=For the current user only
-cht.tsk_Other=Other tasks:
-cht.tsk_ResetSettings=Reset {#app_name}'s settings and themes
-cht.tsk_RemoveDefault=Restore Windows Notepad
-cht.tsk_SetDefault=Replace Windows Notepad with {#app_name}
-cht.tsk_StartMenuIcon=Create a Start Menu shortcut
-cht.tsk_LaunchWelcomePage=Important Release Information!
-cht.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
-cht.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+cht.tsk_AllUsers=為所有使用者
+cht.tsk_CurrentUser=僅為當前使用者
+cht.tsk_Other=其它任務：
+cht.tsk_ResetSettings=重置 {#app_name} 的設定和主題
+cht.tsk_RemoveDefault=恢復 Windows 記事本
+cht.tsk_SetDefault=將 Windows 記事本替換為 {#app_name}
+cht.tsk_StartMenuIcon=於開始功能表中建立快捷方式
+cht.tsk_LaunchWelcomePage=重要更新資訊！
+cht.tsk_RemoveOpenWith=從上下文選單中刪除“用 {#app_name} 開啟”
+cht.tsk_SetOpenWith=在上下文選單中新增“用 {#app_name} 開啟”
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
