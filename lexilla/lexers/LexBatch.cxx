@@ -79,13 +79,13 @@ bool textQuoted(const char *lineBuffer, Sci_PositionU endPos) {
 	const size_t strLength = strlen(strQuotes);
 	for (size_t i = 0; i < strLength; i++) {
 		const char *pQuote = strchr(strBuffer, strQuotes[i]);
-	while (pQuote != NULL)
-	{
-		if (!IsEscaped(strBuffer, pQuote - strBuffer)) {
-			CurrentStatus = !CurrentStatus;
-		}
+		while (pQuote != NULL)
+		{
+			if (!IsEscaped(strBuffer, pQuote - strBuffer)) {
+				CurrentStatus = !CurrentStatus;
+			}
 			pQuote = strchr(pQuote + 1, strQuotes[i]);
-	}
+		}
 		if (CurrentStatus) {
 			break;
 		}
@@ -204,8 +204,8 @@ void ColouriseBatchDoc(
 					if ((CompareCaseInsensitive(wordBuffer, "rem") == 0) || (wordBuffer[0] == ':' && wordBuffer[1] == ':')) {
 						if ((offset == wbl) || !textQuoted(lineBuffer, offset - wbl)) {
 							styler.ColourTo(startLine + offset - wbl - 1, SCE_BAT_DEFAULT);
-						styler.ColourTo(endPos, SCE_BAT_COMMENT);
-						break;
+							styler.ColourTo(endPos, SCE_BAT_COMMENT);
+							break;
 						}
 					}
 				}

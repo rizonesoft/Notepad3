@@ -67,7 +67,7 @@ enum literalsAllowed { litNone = 0, litU = 1, litB = 2, litF = 4 };
 
 constexpr int indicatorWhitespace = 1;
 
-constexpr bool IsPyComment(Accessor &styler, Sci_Position pos, Sci_Position len) {
+bool IsPyComment(Accessor &styler, Sci_Position pos, Sci_Position len) {
 	return len > 0 && styler[pos] == '#';
 }
 
@@ -78,7 +78,7 @@ constexpr bool IsPyStringTypeChar(int ch, literalsAllowed allowed) noexcept {
 		((allowed & litF) && (ch == 'f' || ch == 'F'));
 }
 
-constexpr bool IsPyStringStart(int ch, int chNext, int chNext2, literalsAllowed allowed) noexcept {
+bool IsPyStringStart(int ch, int chNext, int chNext2, literalsAllowed allowed) noexcept {
 	if (ch == '\'' || ch == '"')
 		return true;
 	if (IsPyStringTypeChar(ch, allowed)) {
@@ -87,12 +87,9 @@ constexpr bool IsPyStringStart(int ch, int chNext, int chNext2, literalsAllowed 
 		if ((chNext == 'r' || chNext == 'R') && (chNext2 == '"' || chNext2 == '\''))
 			return true;
 	}
-    if (ch == 'r' || ch == 'R') {
-        if (chNext == '"' || chNext == '\'')
-            return true;
-        if ((chNext == 'f' || chNext == 'F') && (chNext2 == '"' || chNext2 == '\''))
-            return true;
-    }
+	if ((ch == 'r' || ch == 'R') && (chNext == '"' || chNext == '\''))
+		return true;
+
 	return false;
 }
 
@@ -111,7 +108,7 @@ constexpr bool IsPyTripleQuoteStringState(int st) noexcept {
 		(st == SCE_P_FTRIPLE) || (st == SCE_P_FTRIPLEDOUBLE));
 }
 
-constexpr char GetPyStringQuoteChar(int st) noexcept {
+char GetPyStringQuoteChar(int st) noexcept {
 	if ((st == SCE_P_CHARACTER) || (st == SCE_P_FCHARACTER) ||
 			(st == SCE_P_TRIPLE) || (st == SCE_P_FTRIPLE))
 		return '\'';
@@ -150,16 +147,11 @@ int PopFromStateStack(std::vector<SingleFStringExpState> &stack, SingleFStringEx
 int GetPyStringState(Accessor &styler, Sci_Position i, Sci_PositionU *nextIndex, literalsAllowed allowed) {
 	char ch = styler.SafeGetCharAt(i);
 	char chNext = styler.SafeGetCharAt(i + 1);
-	int firstIsF = (ch == 'f' || ch == 'F');
+	const int firstIsF = (ch == 'f' || ch == 'F');
 
 	// Advance beyond r, u, or ur prefix (or r, b, or br in Python 2.7+ and r, f, or fr in Python 3.6+), but bail if there are any unexpected chars
 	if (ch == 'r' || ch == 'R') {
-		if (chNext == 'f' || chNext == 'F') {
-			firstIsF = true;
-			i += 2;
-		} else {
-			i += 1;
-		}
+		i++;
 		ch = styler.SafeGetCharAt(i);
 		chNext = styler.SafeGetCharAt(i + 1);
 	} else if (IsPyStringTypeChar(ch, allowed)) {
@@ -226,6 +218,54 @@ bool IsFirstNonWhitespace(Sci_Position pos, Accessor &styler) {
 	return true;
 }
 
+unsigned char GetNextNonWhitespaceChar(Accessor &styler, Sci_PositionU pos, Sci_PositionU maxPos, Sci_PositionU *charPosPtr = nullptr) {
+	while (pos < maxPos) {
+		const unsigned char ch = styler.SafeGetCharAt(pos, '\0');
+		if (!(ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r')) {
+			if (charPosPtr != nullptr) {
+				*charPosPtr = pos;
+			}
+			return ch;
+		}
+		pos++;
+	}
+
+	return '\0';
+}
+
+// Returns whether symbol is "match" or "case" and it is an identifier &
+// not a keyword. Does not require the line to end with : so "match\n"
+// and "match (x)\n" return false because match could be a keyword once
+// more text is added
+bool IsMatchOrCaseIdentifier(const StyleContext &sc, Accessor &styler, const char *symbol) {
+	if (strcmp(symbol, "match") != 0 && strcmp(symbol, "case") != 0) {
+		return false;
+	}
+
+	if (!IsFirstNonWhitespace(sc.currentPos - strlen(symbol), styler)) {
+		return true;
+	}
+
+	// The match keyword can be followed by an expression; the case keyword
+	// is a bit more restrictive but not much. Here, we look for the next
+	// char and return false if the char cannot start an expression; for '.'
+	// we look at the following char to see if it's a digit because .1 is a
+	// number
+	Sci_PositionU nextCharPos = 0;
+	const unsigned char nextChar = GetNextNonWhitespaceChar(styler, sc.currentPos, sc.lineEnd, &nextCharPos);
+	if (nextChar == '=' || nextChar == '#') {
+		return true;
+	}
+	if (nextChar == '.' && nextCharPos >= sc.currentPos) {
+		const unsigned char followingChar = GetNextNonWhitespaceChar(styler, nextCharPos+1, sc.lineEnd);
+		if (!IsADigit(followingChar)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 // Options used for LexerPython
 struct OptionsPython {
 	int whingeLevel;
@@ -243,19 +283,19 @@ struct OptionsPython {
 	int decoratorAttributes;
 
 	OptionsPython() noexcept {
-		whingeLevel = 1;
+		whingeLevel = 0;
 		base2or8Literals = true;
 		stringsU = true;
 		stringsB = true;
 		stringsF = true;
 		stringsOverNewline = false;
 		keywords2NoSubIdentifiers = false;
-		fold = true;
-		foldQuotes = true;
-		foldCompact = true;
+		fold = false;
+		foldQuotes = false;
+		foldCompact = false;
 		unicodeIdentifiers = true;
-		identifierAttributes = 1;
-		decoratorAttributes = 1;
+		identifierAttributes = 0;
+		decoratorAttributes = 0;
 	}
 
 	literalsAllowed AllowedLiterals() const noexcept {
@@ -618,7 +658,7 @@ void SCI_METHOD LexerPython::Lex(Sci_PositionU startPos, Sci_Position length, in
 				int style = SCE_P_IDENTIFIER;
 				if ((kwLast == kwImport) && (strcmp(s, "as") == 0)) {
 					style = SCE_P_WORD;
-				} else if (keywords.InList(s)) {
+				} else if (keywords.InList(s) && !IsMatchOrCaseIdentifier(sc, styler, s)) {
 					style = SCE_P_WORD;
 				} else if (kwLast == kwClass) {
 					style = SCE_P_CLASSNAME;
