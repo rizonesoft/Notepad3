@@ -400,22 +400,22 @@ nld.tsk_LaunchWelcomePage=Belangrijke informatie bij deze uitgave!
 nld.tsk_RemoveOpenWith="Openen met {#app_name}" verwijderen van het contextmenu
 nld.tsk_SetOpenWith="Openen met {#app_name}" toevoegen van het contextmenu
 
-plk.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+plk.msg_DeleteSettings=Czy chcesz również usunąć ustawienia i motywy {#app_name}? Jeśli zamierzasz zainstalować {#app_name} ponownie, to nie musisz ich usuwać.
 #if defined(sse_required)
-plk.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+plk.msg_simd_sse=Ta kompilacja {#app_name} wymaga procesora z rozszerzeniem wsparcia SSE. Twój procesor nie posiada takiej zdolności.
 #elif defined(sse2_required)
-plk.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+plk.msg_simd_sse2=Ta kompilacja {#app_name} wymaga procesora z rozszerzeniem wsparcia SSE2. Twój procesor nie posiada takiej zdolności.
 #endif
-plk.tsk_AllUsers=For all users
-plk.tsk_CurrentUser=For the current user only
-plk.tsk_Other=Other tasks:
-plk.tsk_ResetSettings=Reset {#app_name}'s settings and themes
-plk.tsk_RemoveDefault=Restore Windows Notepad
-plk.tsk_SetDefault=Replace Windows Notepad with {#app_name}
-plk.tsk_StartMenuIcon=Create a Start Menu shortcut
-plk.tsk_LaunchWelcomePage=Important Release Information!
-plk.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
-plk.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+plk.tsk_AllUsers=Dla wszystkich użytkowników
+plk.tsk_CurrentUser=Tylko dla bieżącego użytkownika
+plk.tsk_Other=Inne zadania
+plk.tsk_ResetSettings=Zresetuj ustawienia i motywy {#app_name}
+plk.tsk_RemoveDefault=Przywróć Notepad Windows
+plk.tsk_SetDefault=Zamień Notepad Windows na {#app_name}
+plk.tsk_StartMenuIcon=Utwórz skrót w Menu Start
+plk.tsk_LaunchWelcomePage=Ważne informacje o wydaniu!
+plk.tsk_RemoveOpenWith=Usuń "Otwórz z {#app_name}" z menu kontekstowego
+plk.tsk_SetOpenWith=Dodaj "Otwórz z {#app_name}" do menu kontekstowego
 
 ptb.msg_DeleteSettings=Você também deseja excluir as configurações e temas do {#app_name}?%n%nSe você planeja instalar o {#app_name} novamente, então você não precisa excluí-los.
 #if defined(sse_required)

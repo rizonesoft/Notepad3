@@ -469,7 +469,11 @@ You can specify more command line parameter for the app here. The token `${URL}`
 
 #### `CodeFontPrefPrioList="Cascadia Code,Cascadia Mono,Cousine,Fira Code,Source Code Pro,Roboto Mono,DejaVu Sans Mono,Inconsolata,Consolas,Lucida Console"`
 
+Configurable Fonts priority list for for "Common Base" Scheme.
+
 #### `TextFontPrefPrioList="Cascadia Mono,Cousine,Roboto Mono,DejaVu Sans Mono,Inconsolata,Consolas,Lucida Console"`
+
+Configurable Fonts priority list for "Text Files" Scheme.
 
 
 ## **`[Statusbar Settings]`**
