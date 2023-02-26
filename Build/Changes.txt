@@ -106,7 +106,6 @@ to resume "(incomplete...)" translation projects:
 - Greek (el-GR) (incomplete...)
 - Hindi (hi-IN) (incomplete...)
 - Indonesian (id-ID) (incomplete...)
-- Portuguese (pt-PT) (incomplete...)
 - Spanish Mexican (es-MX) (incomplete...)
 - Vietnamese (vi-VN) (incomplete...)
 - etc...
