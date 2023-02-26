@@ -32,6 +32,11 @@ msgstr ""
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
 
+#. Resource IDs: (175)
+#, c-format
+msgid "%ld files, skipped %ld files. %ld results selected."
+msgstr ""
+
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
@@ -61,7 +66,7 @@ msgstr "&Ταίριασμα όλης της λέξης"
 msgid "..."
 msgstr "..."
 
-#. Resource IDs: (1061, 1063, 1064, 1066, 1067)
+#. Resource IDs: (1061, 1063)
 msgid "/"
 msgstr "/"
 
@@ -150,6 +155,10 @@ msgstr "Αντιγραφή κειμένου αποτελέσματος στο π
 msgid "Copy text results to clipboard"
 msgstr "Αντιγραφή κειμένων αποτελεσμάτων στο πρόχειρο"
 
+#. Resource IDs: (177)
+msgid "Copy whole column"
+msgstr ""
+
 #. Resource IDs: (1029)
 msgid "Create backup files"
 msgstr "Λήψη αντιγρ. ασφαλείας"
@@ -226,6 +235,11 @@ msgstr "Συμφωνία ονομάτων αρχείων:\nΧρήση του '|'
 msgid "Files"
 msgstr "Αρχεία"
 
+#. Resource IDs: (174)
+#, c-format
+msgid "Found %ld files, skipped %ld files."
+msgstr ""
+
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
 msgstr "GREPWINNP3"
@@ -250,6 +264,10 @@ msgstr "Συμπερίληψη διαδρομής αναζήτησης"
 msgid "Include subfolders"
 msgstr "Συμπερίληψη υποφακέλων"
 
+#. Resource IDs: (1092)
+msgid "Include symbolic links"
+msgstr ""
+
 #. Resource IDs: (1009)
 msgid "Include system items"
 msgstr "Στοιχεία συστήματος"
@@ -265,6 +283,10 @@ msgstr "Αντίστροφη αναζήτηση (ΟΧΙ κείμενο αναζ�
 #. Resource IDs: (1019)
 msgid "KB"
 msgstr "KB"
+
+#. Resource IDs: (1062)
+msgid "Keep file date when replacing"
+msgstr ""
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -580,6 +602,10 @@ msgstr "Ο αριθμός των NULL bytes ανά MB που επιτρέπετ�
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
 msgstr "Αναζητούνται μόνο αρχεία που συμφωνούν με αυτό το μοτίβο.\nΧρήση του '|'  ως διαχωριστικό.\nΠαράδειγμα: *.cpp|*.h"
 
+#. Resource IDs: (176)
+msgid "Open list with recent entries"
+msgstr ""
+
 #. Resource IDs: (129)
 msgid "read error"
 msgstr "Σφάλμα ανάγνωσης"
@@ -612,6 +638,10 @@ msgstr "Οι διαδρομές στις οποίες γίνεται αναζή�
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Μπορείτε να εξαιρέσετε καταλόγους, π.χ. CVS και εικόνες.\nΠαράδειγμα: ^(CVS|images)$\nΣημείωση: Οι φάκελοι  «.svn» είναι «κρυφοί» στα Windows και κανονικά δεν σαρώνονται."
+
+#. Resource IDs: (1064, 1066, 1067)
+msgid "|"
+msgstr "|"
 
 #. Resource IDs: (1024)
 msgid "Y"
