@@ -433,7 +433,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPEN_MRU            "open list with recent entries"
+    IDS_OPEN_MRU            "Open list with recent entries"
     IDS_COPY_COLUMN         "Copy whole column"
 END
 

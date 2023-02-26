@@ -127,9 +127,9 @@ BEGIN
     IDS_LEX_TOML_CFG        "TOML"
     IDS_LEX_DART_SRC        "Código Fonte Dart"
     IDS_LEX_KOTLIN_SRC      "Código Fonte Kotlin"
-    IDS_LEX_JULIA_SCR       "Julia Script"
-    IDS_LEX_KIX_SCR         "KiXtart Script"
-    IDS_LEX_FORTRAN         "Fortran Source Code"
+	IDS_LEX_JULIA_SCR       "Script Julia"
+    IDS_LEX_KIX_SCR         "Script KiXtart"
+    IDS_LEX_FORTRAN         "Código fonte Fortran"
 END
 
 STRINGTABLE
@@ -460,7 +460,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_STR_63357       "Para cada definição"
-    IDS_LEX_STR_63358       "Enquato definição"
+    IDS_LEX_STR_63358       "Enquanto definição"
     IDS_LEX_STR_63359       "Matemática"
     IDS_LEX_STR_63360       "Escalar"
     IDS_LEX_STR_63361       "Substituição"
@@ -478,19 +478,19 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63372       "Decorator"
+    IDS_LEX_STR_63372       "Decorador"
     IDS_LEX_STR_63373       "Marcador de Tarefa"
     IDS_LEX_STR_63374       "Comment Doc Error"
     IDS_LEX_STR_63375       "Type Operator"
-    IDS_LEX_STR_63376       "Continuation"
-    IDS_LEX_STR_63377       "Special"
+    IDS_LEX_STR_63376       "Continuação"
+    IDS_LEX_STR_63377       "Especial"
     IDS_LEX_STR_63378       "Syntax Operator"
     IDS_LEX_STR_63379       "Unclosed String"
     IDS_LEX_STR_63380       "URL/IRI"
     IDS_LEX_STR_63381       "Compact IRI"
     IDS_LEX_STR_63382       "Send Key"
     IDS_LEX_STR_63383       "Meta-Data"
-    IDS_LEX_STR_63384       "Enumeration"
+    IDS_LEX_STR_63384       "Enumeração"
     IDS_LEX_STR_63385       "TriQ-String"
     IDS_LEX_STR_63386       "Symbol Identifier"
     IDS_LEX_STR_63387       "Symbol Operator"
@@ -501,14 +501,14 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_CH_MODIFIED     "Change History Marker Modified"
-    IDS_LEX_STD_CH_SAVED        "Change History Marker Saved"
-    IDS_LEX_STD_CH_REV_TO_MOD   "Change History Marker Reverted to Modified"
-    IDS_LEX_STD_CH_REV_TO_ORG   "Change History Marker Reverted to Origin"
-    IDS_LEX_2ND_CH_MODIFIED     "2nd Change History Marker Modified"
-    IDS_LEX_2ND_CH_SAVED        "2nd Change History Marker Saved"
-    IDS_LEX_2ND_CH_REV_TO_MOD   "2nd Change History Marker Reverted to Modified"
-    IDS_LEX_2ND_CH_REV_TO_ORG   "2nd Change History Marker Reverted to Origin"
+    IDS_LEX_STD_CH_MODIFIED     "Marcador do histórico de alterações Modificado"
+    IDS_LEX_STD_CH_SAVED        "Marcador do histórico de alterações Guardado"
+    IDS_LEX_STD_CH_REV_TO_MOD   "Marcador do histórico de alterações Revertido para Modificado"
+    IDS_LEX_STD_CH_REV_TO_ORG   "Marcador do histórico de alterações Revertido para Original"
+    IDS_LEX_2ND_CH_MODIFIED     "2nd Marcador do histórico de alterações Modificado"
+    IDS_LEX_2ND_CH_SAVED        "2nd Marcador do histórico de alterações Guardado"
+    IDS_LEX_2ND_CH_REV_TO_MOD   "2nd Marcador do histórico de alterações Revertido para Modificado"
+    IDS_LEX_2ND_CH_REV_TO_ORG   "2nd Marcador do histórico de alterações Revertido para Original"
 END
 
 STRINGTABLE

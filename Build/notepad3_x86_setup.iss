@@ -162,22 +162,22 @@ afk.tsk_LaunchWelcomePage=Belangrike vrystelling-inligting!
 afk.tsk_RemoveOpenWith=Verwyder "Verwyder Maak oop met {#app_name}" uit die kontekskieslys
 afk.tsk_SetOpenWith=Sit "Maak oop met {#app_name}" in die kontekskieslys
 
-bel.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+bel.msg_DeleteSettings=Вы хочаце таксама выдаліць налады і тэмы {#app_name}?%n%nКалі вы плануеце ўсталяваць {#app_name} зноў, то вам не трэба іх выдаляць.
 #if defined(sse_required)
-bel.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+bel.msg_simd_sse=Гэтая зборка {#app_name} патрабуе працэсар з падтрымкай набору каманд SSE.%n%nВаш працэсар не мае такой падтрымкі.
 #elif defined(sse2_required)
-bel.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+bel.msg_simd_sse2=Гэтая зборка {#app_name} патрабуе працэсар з падтрымкай набору каманд SSE2.%n%nВаш працэсар не мае такой падтрымкі.
 #endif
-bel.tsk_AllUsers=For all users
-bel.tsk_CurrentUser=For the current user only
-bel.tsk_Other=Other tasks:
-bel.tsk_ResetSettings=Reset {#app_name}'s settings and themes
-bel.tsk_RemoveDefault=Restore Windows Notepad
-bel.tsk_SetDefault=Replace Windows Notepad with {#app_name}
-bel.tsk_StartMenuIcon=Create a Start Menu shortcut
-bel.tsk_LaunchWelcomePage=Important Release Information!
-bel.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
-bel.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+bel.tsk_AllUsers=Для ўсіх карыстальнікаў
+bel.tsk_CurrentUser=Для гэтага карыстальніка
+bel.tsk_Other=Іншыя задачы:
+bel.tsk_ResetSettings=Скінуць налады і тэмы {#app_name}
+bel.tsk_RemoveDefault=Аднавіць Нататнік Windows
+bel.tsk_SetDefault=Замяніць Нататнік Windows на {#app_name}
+bel.tsk_StartMenuIcon=Стварыць ярлык у меню Пуск
+bel.tsk_LaunchWelcomePage=Важная інфармацыя пра выпуск!
+bel.tsk_RemoveOpenWith=Выдаліць "Адкрыць з дапамогай {#app_name}" з кантэкставага меню
+bel.tsk_SetOpenWith=Дадаць "Адкрыць з дапамогай {#app_name}" у кантэкставае меню
 
 deu.msg_DeleteSettings=Wollen sie die Einstellungen und Themen von {#app_name} löschen?%n%nWenn sie planen {#app_name} erneut zu installieren, dann müssen diese Einstellungen nicht gelöscht werden.
 #if defined(sse_required)
@@ -434,39 +434,39 @@ ptb.tsk_LaunchWelcomePage=Informações importantes sobre esta versão!
 ptb.tsk_RemoveOpenWith=Remover "Abrir com o {#app_name}" do menu de contexto
 ptb.tsk_SetOpenWith=Adicionar "Abrir com {#app_name} ao menu de contexto 
 
-ptg.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+ptg.msg_DeleteSettings=Também pretende eliminar as definições e temas do {#app_name}?%n%nSe planeia instalar novamente o {#app_name} não necessita eliminá-los.
 #if defined(sse_required)
-ptg.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+ptg.msg_simd_sse=Esta versão do {#app_name} requer um CPU com suporte de extensão SSE.%n%nO seu CPU não possui essas capacidades.
 #elif defined(sse2_required)
-ptg.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+ptg.msg_simd_sse2=Esta versão do {#app_name} requer um CPU com suporte de extensão SSE2.%n%nO seu CPU não possui essas capacidades.
 #endif
-ptg.tsk_AllUsers=For all users
-ptg.tsk_CurrentUser=For the current user only
-ptg.tsk_Other=Other tasks:
-ptg.tsk_ResetSettings=Reset {#app_name}'s settings and themes
-ptg.tsk_RemoveDefault=Restore Windows Notepad
-ptg.tsk_SetDefault=Replace Windows Notepad with {#app_name}
-ptg.tsk_StartMenuIcon=Create a Start Menu shortcut
-ptg.tsk_LaunchWelcomePage=Important Release Information!
-ptg.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
-ptg.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+ptg.tsk_AllUsers=Para todos os utilizadores
+ptg.tsk_CurrentUser=Só para este utilizador
+ptg.tsk_Other=Outras tarefas:
+ptg.tsk_ResetSettings=Repor as definições e temas do {#app_name}
+ptg.tsk_RemoveDefault=Restaurar o Notepad do Windows
+ptg.tsk_SetDefault=Substituir o Notepad de Windows com o {#app_name}
+ptg.tsk_StartMenuIcon=Criar um atalho no Menu Iniciar
+ptg.tsk_LaunchWelcomePage=Informações Importantes do Lançamento!
+ptg.tsk_RemoveOpenWith=Remover "Abrir com o {#app_name}" do menu de contexto
+ptg.tsk_SetOpenWith=Adicionar "Abrir com o {#app_name}" ao menu de contexto
 
-rus.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+rus.msg_DeleteSettings=Вы хотите также удалить настройки и темы {#app_name}?%n%nЕсли вы планируете установить {#app_name} снова, то вам не нужно их удалять.
 #if defined(sse_required)
-rus.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+rus.msg_simd_sse=Эта сборка {#app_name} требует процессор с поддержкой набора команд SSE.%n%nВаш процессор не имеет такой поддержки.
 #elif defined(sse2_required)
-rus.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+rus.msg_simd_sse2=Эта сборка {#app_name} требует процессор с поддержкой набора команд SSE2.%n%nВаш процессор не имеет такой поддержки.
 #endif
-rus.tsk_AllUsers=For all users
-rus.tsk_CurrentUser=For the current user only
-rus.tsk_Other=Other tasks:
-rus.tsk_ResetSettings=Reset {#app_name}'s settings and themes
-rus.tsk_RemoveDefault=Restore Windows Notepad
-rus.tsk_SetDefault=Replace Windows Notepad with {#app_name}
-rus.tsk_StartMenuIcon=Create a Start Menu shortcut
-rus.tsk_LaunchWelcomePage=Important Release Information!
-rus.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
-rus.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+rus.tsk_AllUsers=Для всех пользователей
+rus.tsk_CurrentUser=Для текущего пользователя
+rus.tsk_Other=Другие задачи:
+rus.tsk_ResetSettings=Сбросить настройки и темы {#app_name}
+rus.tsk_RemoveDefault=Восстановить Блокнот Windows
+rus.tsk_SetDefault=Заменить Блокнот Windows на {#app_name}
+rus.tsk_StartMenuIcon=Создать значок в меню Пуск
+rus.tsk_LaunchWelcomePage=Важная информация о выпуске!
+rus.tsk_RemoveOpenWith=Удалить "Открыть с помощью {#app_name}" из контекстного меню
+rus.tsk_SetOpenWith=Добавить "Открыть с помощью {#app_name}" в контекстное меню
 
 sky.msg_DeleteSettings=Chcete odstrániť aj nastavenia a témy {#app_name}?%n%nAk plánujete opätovnú inštaláciu {#app_name}, nemusíte ich odstraňovať.
 #if defined(sse_required)

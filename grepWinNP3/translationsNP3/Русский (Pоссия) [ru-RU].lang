@@ -32,6 +32,11 @@ msgstr ""
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
 
+#. Resource IDs: (175)
+#, c-format
+msgid "%ld files, skipped %ld files. %ld results selected."
+msgstr ""
+
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
@@ -61,7 +66,7 @@ msgstr "&Всё слово"
 msgid "..."
 msgstr "..."
 
-#. Resource IDs: (1061, 1063, 1064, 1066, 1067)
+#. Resource IDs: (1061, 1063)
 msgid "/"
 msgstr "/"
 
@@ -150,6 +155,10 @@ msgstr "Копировать текст результата"
 msgid "Copy text results to clipboard"
 msgstr "Копировать текст результатов"
 
+#. Resource IDs: (177)
+msgid "Copy whole column"
+msgstr ""
+
 #. Resource IDs: (1029)
 msgid "Create backup files"
 msgstr "Создавать бэкапы"
@@ -226,6 +235,11 @@ msgstr "Совпадения имен:\n'|' для разделения неск
 msgid "Files"
 msgstr "Файлы"
 
+#. Resource IDs: (174)
+#, c-format
+msgid "Found %ld files, skipped %ld files."
+msgstr ""
+
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
 msgstr "GREPWINNP3"
@@ -250,6 +264,10 @@ msgstr "Включать путь поиска"
 msgid "Include subfolders"
 msgstr "Включать подпапки"
 
+#. Resource IDs: (1092)
+msgid "Include symbolic links"
+msgstr ""
+
 #. Resource IDs: (1009)
 msgid "Include system items"
 msgstr "Включать системные"
@@ -265,6 +283,10 @@ msgstr "Обратный поиск (НЕ искомая фраза)"
 #. Resource IDs: (1019)
 msgid "KB"
 msgstr "КБ"
+
+#. Resource IDs: (1062)
+msgid "Keep file date when replacing"
+msgstr ""
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -580,6 +602,10 @@ msgstr "Разрешенное число NULL-байтов на МБ, чтоб�
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
 msgstr "Поиск файлов, только соответствующих шаблону.\nЧерта '|' как разделитель.\nПример: *.cpp|*.h"
 
+#. Resource IDs: (176)
+msgid "Open list with recent entries"
+msgstr ""
+
 #. Resource IDs: (129)
 msgid "read error"
 msgstr "Ошибка чтения"
@@ -612,6 +638,10 @@ msgstr "Рекурсивный поиск путей.\nРазделение пу
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Можно исключать папки, например, CVS и images.\nПример: ^(CVS|images)$\nВнимание: папки '.svn' скрыты в Windows, поэтому они обычно не сканируются."
+
+#. Resource IDs: (1064, 1066, 1067)
+msgid "|"
+msgstr "|"
 
 #. Resource IDs: (1024)
 msgid "Y"

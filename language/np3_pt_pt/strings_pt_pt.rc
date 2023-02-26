@@ -92,7 +92,7 @@ BEGIN
     IDT_VIEW_TOGGLE_VIEW     "Vista focada"
     IDT_VIEW_CHASING_DOCTAIL "Registo de monitorização"
     IDT_VIEW_PIN_ON_TOP      "Sempre visível"
-    IDT_GREP_WIN_TOOL        "Procurar em ficheiro"
+    IDT_GREP_WIN_TOOL        "Procurar em ficheiros"
 END
 
 STRINGTABLE
@@ -170,11 +170,11 @@ BEGIN
     IDS_MUI_BUFFERTOOSMALL  "Esta operação não pode ser efectuada (linhas demasiado longas)."
     IDS_MUI_FIND_WRAPFW     "Atingido o fim do documento, reiniciar procura no pricípio."
     IDS_MUI_FIND_WRAPRE     "Atingido o início do documento, reiniciar procura no fim."
-    IDS_MUI_NOTFOUND        "Nenhuma correspondência encontrada para o padrão de procura especificado."
-    IDS_MUI_REPLCOUNT       "Foram substituídas %s ocorrência(s) do padrão de procura especificado."
+    IDS_MUI_NOTFOUND        "Não foi encontrado o texto especificado."
+    IDS_MUI_REPLCOUNT       "Foram substituídas %s ocorrências do texto especificado."
     IDS_MUI_ASK_ENCODING    "A alteração da codificação do ficheiro de uma para outra, pode substituir texto não suportado com caracteres padrão e será limpo o histórico de anulações. Continuar?"
     IDS_MUI_ASK_ENCODING2   "Está prestes a alterar a codificação de um ficheiro vazio. Tenha em atenção de que isto irá limpar o histórico de anulações e que não pode ser sincronizado com a nova codificação. Continuar?"
-    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Esta operação vai limpar o histórico de anulações. Continuar?"
     IDS_MUI_READONLY_SAVE   """%s"" é só de leitura. Guardar noutro ficheiro?"
     IDS_MUI_FILECHANGENOTIFY
                             "O ficheiro actual foi modificado por um programa externo. Recarregar?"
@@ -207,7 +207,7 @@ BEGIN
                              "Manter a data/hora de modificação original do ficheiro activada.\nEsta opção será válida para esta sessão!"
     IDS_MUI_OUT_OFF_OCCMRK   "Não existem outros marcadores de ocorrência (Marcador/Realce)!"
     IDS_MUI_DOCUMENT_READONLY
-                             "The document is locked for view only. Keep the lock to prevent editing?"
+                             "O documento está bloqueado só para ver. Manter bloqueio para impedir edição?"
 END
 
 STRINGTABLE
@@ -223,7 +223,7 @@ BEGIN
     IDS_MUI_WARN_STYLE_RESET
                             "Esta acção vai repor o estilo para os padrões originais do modo de cor desejado e mudar o ficheiro de tema activo para o config .ini padrão!"
     IDS_MUI_ASK_INSTANCE_EXISTS
-                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
+                            "Modo instância de ficheiro único:\n\nDefinir foco na instância do ficheiro já aberto?"
 END
 
 STRINGTABLE
@@ -273,7 +273,7 @@ BEGIN
                             "Limpar histórico de localizar"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Limpar histórico de substituir"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard Shortcut [^c]"
+    IDS_MUI_REPLCLIPTAG     "Substituir por atalho da área de transferência [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "A partir do topo"
     IDS_MUI_WRAPSEARCH_BCK  "A partir da base"
 END
@@ -341,7 +341,7 @@ usar \\<regex>; para definir um padrão de correspondência ao nome do ficheiro:
 Formato do estilo:\r\n\
 tipo de letra:Nome; tamanho:[+/-]nn.mm; negrito; itálico; sublinhado;\r\n\
 1º plano:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Propriedades do estilo podem ser copiadas usando copiar/colar ou arrast./largar.\
+Propriedades do estilo podem ser copiadas usando copiar/colar ou arrastar/largar.\
 "
 
 END
