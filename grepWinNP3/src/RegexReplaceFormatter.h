@@ -84,7 +84,7 @@ public:
         // is replaced with numbers starting from n, incremented by m
         // 0 and L are optional and specify the size of the right-aligned
         // number string. If 0 is specified, zeros are used for padding, otherwise spaces.
-        //boost::wregex expression = boost::wregex(L"(?<!\\\\)\\$\\{count(?<leadzero>0)?(?<length>\\d+)?(\\((?<startval>[-0-9]+)\\)||\\((?<startval>[-0-9]+),(?<increment>[-0-9]+)\\))?\\}", boost::regex::normal);
+        // boost::wregex expression = boost::wregex(L"(?<!\\\\)\\$\\{count(?<leadzero>0)?(?<length>\\d+)?(\\((?<startval>[-0-9]+)\\)||\\((?<startval>[-0-9]+),(?<increment>[-0-9]+)\\))?\\}", boost::regex::normal);
         boost::wregex                                      expression = boost::wregex(L"\\$\\{count(?<leadzero>0)?(?<length>\\d+)?(\\((?<startval>[-0-9]+)\\)||\\((?<startval>[-0-9]+),(?<increment>[-0-9]+)\\))?\\}", boost::regex::normal);
         boost::match_results<std::wstring::const_iterator> whatc;
         std::wstring::const_iterator                       start = m_sReplace.begin();
@@ -175,8 +175,8 @@ public:
                         {
                             // for small strings, reserve space on the stack
                             wchar_t buf[128] = {0};
-                        swprintf_s(buf, _countof(buf), format, it->start);
-                        sReplace.replace(itBegin, itEnd, buf);
+                            swprintf_s(buf, _countof(buf), format, it->start);
+                            sReplace.replace(itBegin, itEnd, buf);
                         }
                         else
                         {
@@ -193,7 +193,7 @@ public:
             }
         }
 
-        //sReplace = boost::regex_replace(what[0].str(), sReplace, boost::match_default);
+        // sReplace = boost::regex_replace(what[0].str(), sReplace, boost::match_default);
 
         return sReplace;
     }
@@ -219,7 +219,7 @@ public:
         // is replaced with numbers starting from n, incremented by m
         // 0 and L are optional and specify the size of the right-aligned
         // number string. If 0 is specified, zeros are used for padding, otherwise spaces.
-        //boost::wregex expression = boost::wregex(L"(?<!\\\\)\\$\\{count(?<leadzero>0)?(?<length>\\d+)?(\\((?<startval>[-0-9]+)\\)||\\((?<startval>[-0-9]+),(?<increment>[-0-9]+)\\))?\\}", boost::regex::normal);
+        // boost::wregex expression = boost::wregex(L"(?<!\\\\)\\$\\{count(?<leadzero>0)?(?<length>\\d+)?(\\((?<startval>[-0-9]+)\\)||\\((?<startval>[-0-9]+),(?<increment>[-0-9]+)\\))?\\}", boost::regex::normal);
         boost::regex                                      expression = boost::regex("\\$\\{count(?<leadzero>0)?(?<length>\\d+)?(\\((?<startval>[-0-9]+)\\)||\\((?<startval>[-0-9]+),(?<increment>[-0-9]+)\\))?\\}", boost::regex::normal);
         boost::match_results<std::string::const_iterator> whatc;
         std::string::const_iterator                       start = m_sReplace.begin();
@@ -311,8 +311,8 @@ public:
                         {
                             // for small strings, reserve space on the stack
                             char buf[128] = {0};
-                        sprintf_s(buf, _countof(buf), format, it->start);
-                        sReplace.replace(itBegin, itEnd, buf);
+                            sprintf_s(buf, _countof(buf), format, it->start);
+                            sReplace.replace(itBegin, itEnd, buf);
                         }
                         else
                         {
