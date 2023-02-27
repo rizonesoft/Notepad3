@@ -113,7 +113,7 @@ BOOL CShellContextMenu::GetContextMenu(HWND hWnd, void** ppContextMenu, int& iMe
     }
 
     delete m_pFolderHook;
-    m_pFolderHook = new CIShellFolderHook(m_psfFolder, this);
+    m_pFolderHook      = new CIShellFolderHook(m_psfFolder, this);
 
     LPCONTEXTMENU icm1 = nullptr;
     if (FAILED(CDefFolderMenu_Create2(NULL, hWnd, static_cast<UINT>(m_pidlArrayItems), const_cast<LPCITEMIDLIST*>(m_pidlArray), m_pFolderHook, dfmCallback, numkeys, ahkeys, &icm1)))
@@ -268,7 +268,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
             case 1:
             {
                 // This is the command line for explorer which tells it to select the given file
-                std::wstring sFolder = L"/Select,\"" + m_strVector[0].filePath + L"\"";
+                std::wstring     sFolder    = L"/Select,\"" + m_strVector[0].filePath + L"\"";
 
                 // Prepare shell execution params
                 SHELLEXECUTEINFO shExecInfo = {0};
@@ -449,7 +449,7 @@ void CShellContextMenu::SetObjects(const std::vector<CSearchInfo>& strVector, co
 
     m_pidlArrayItems = succeededItems;
 
-    bDelete = TRUE; // indicates that m_psfFolder should be deleted by CShellContextMenu
+    bDelete          = TRUE; // indicates that m_psfFolder should be deleted by CShellContextMenu
 }
 
 void CShellContextMenu::FreePIDLArray(LPITEMIDLIST* pidlArray, int nItems)
@@ -486,7 +486,7 @@ HRESULT STDMETHODCALLTYPE CIShellFolderHook::GetUIObjectOf(HWND hwndOwner, UINT 
         if (FAILED(hRes))
             return hRes;
 
-        IDataObject* iData = static_cast<LPDATAOBJECT>(*ppv);
+        IDataObject*                     iData = static_cast<LPDATAOBJECT>(*ppv);
         // the IDataObject returned here doesn't have a HDROP, so we create one ourselves and add it to the IDataObject
         // the HDROP is necessary for most context menu handlers
 
