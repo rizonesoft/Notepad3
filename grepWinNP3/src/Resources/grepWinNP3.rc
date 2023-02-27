@@ -194,7 +194,7 @@ BEGIN
     PUSHBUTTON      "Reset",IDC_RESETDEFAULT,225,14,57,14
     EDITTEXT        IDC_EDITORCMD,13,31,269,14,ES_AUTOHSCROLL
     PUSHBUTTON      "...",IDC_SEARCHPATHBROWSE,286,31,15,14
-    LTEXT           "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string.",IDC_STATIC2,13,47,290,17
+    LTEXT           "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string.",IDC_STATIC2,13,47,292,17
     LTEXT           "This adds a new entry to the context menu named 'Open with Editor'",IDC_ENTRYCONTEXTMENU,13,66,288,16
     LTEXT           "Language:",IDC_STATIC4,16,92,119,8
     COMBOBOX        IDC_LANGUAGE,151,90,159,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
@@ -204,7 +204,7 @@ BEGIN
     CONTROL         "Create backup files in a separate folder",IDC_BACKUPINFOLDER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,141,250,10
     CONTROL         "Don't warn when replacing without creating backups",IDC_NOWARNINGIFNOBACKUP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,153,250,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,153,260,10
     CONTROL         "Only one instance",IDC_ONLYONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,165,150,10
     CONTROL         "Check for updates",IDC_DOUPDATECHECKS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP | WS_DISABLED,7,177,150,10
     CONTROL         "Dark mode",IDC_DARKMODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,189,157,10
