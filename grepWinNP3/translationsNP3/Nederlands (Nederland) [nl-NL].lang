@@ -35,7 +35,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld bestanden, overgeslagen %ld bestanden. %ld resultaten geselecteerd."
 
 #. Resource IDs: (149)
 #, c-format
@@ -157,7 +157,7 @@ msgstr "Tekstresultaten naar klembord kopiëren"
 
 #. Resource IDs: (177)
 msgid "Copy whole column"
-msgstr ""
+msgstr "Hele kolom kopiëren"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
@@ -238,7 +238,7 @@ msgstr "Bestanden"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr ""
+msgstr "%ld bestanden gevonden, %ld bestanden overgeslagen."
 
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
@@ -258,19 +258,19 @@ msgstr "Verborgen bestanden"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr "Inclusief zoekpad"
+msgstr "Zoekpad"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
-msgstr "Inclusief submappen"
+msgstr "Submappen"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "Symbolische links"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr "Inclusief systeembestanden"
+msgstr "Systeembestanden"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
@@ -286,7 +286,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "Bestandsdatum bij vervanging behouden"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -604,7 +604,7 @@ msgstr "alleen bestanden die overeenkomen met dit patroon, worden doorzocht.\nGe
 
 #. Resource IDs: (176)
 msgid "Open list with recent entries"
-msgstr ""
+msgstr "Lijst met recente vermeldingen openen"
 
 #. Resource IDs: (129)
 msgid "read error"
