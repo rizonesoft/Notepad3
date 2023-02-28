@@ -7942,7 +7942,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
         return false;
     }
 
-    //~PostMessage(Globals.hwndEdit, WM_LBUTTONUP, MK_LBUTTON, 0);
+    //~SciCall_PostMsg(WM_LBUTTONUP, MK_LBUTTON, 0);
     SciCall_CallTipCancel();
 
     bool bHandled = false;
@@ -8034,7 +8034,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
                 if (bReuseWindow && success && (lineNum >= 0)) {
                     lineNum = clampi(lineNum - 1, 0, INT_MAX);
                     //~SciCall_GotoLine((DocLn)lineNum);
-                    PostMessage(Globals.hwndEdit, SCI_GOTOLINE, (WPARAM)lineNum, 0);
+                    SciCall_PostMsg(SCI_GOTOLINE, (WPARAM)lineNum, 0);
                 }
                 bHandled = true;
                 Path_Release(hfile_pth);
@@ -8354,8 +8354,7 @@ static inline DocPos _EncloseSelectionBuffer(const char op, const char cl)
     return len;
 }
 
-
-static void _HandleInsertCheck(const SCNotification* const scn)
+static inline void _HandleInsertCheck(const SCNotification* const scn)
 {
     if (Sci_IsMultiOrRectangleSelection() || !scn || !(scn->text)) {
         return;
@@ -8367,7 +8366,7 @@ static void _HandleInsertCheck(const SCNotification* const scn)
             case '"':
                 if (Sci_GetCurrChar() == '"') {
                     SciCall_ChangeInsertion(0, ""); // clear
-                    PostMessage(Globals.hwndEdit, SCI_CHARRIGHT, 0, 0);
+                    SciCall_PostMsg(SCI_CHARRIGHT, 0, 0);
                 }
                 else {
                     len = _EncloseSelectionBuffer('"', '"');
@@ -8376,7 +8375,7 @@ static void _HandleInsertCheck(const SCNotification* const scn)
             case '\'':
                 if (Sci_GetCurrChar() == '\'') {
                     SciCall_ChangeInsertion(0, ""); // clear
-                    PostMessage(Globals.hwndEdit, SCI_CHARRIGHT, 0, 0);
+                    SciCall_PostMsg(SCI_CHARRIGHT, 0, 0);
                 }
                 else {
                     len = _EncloseSelectionBuffer('\'', '\'');
@@ -8385,7 +8384,7 @@ static void _HandleInsertCheck(const SCNotification* const scn)
             case '`':
                 if (Sci_GetCurrChar() == '`') {
                     SciCall_ChangeInsertion(0, ""); // clear
-                    PostMessage(Globals.hwndEdit, SCI_CHARRIGHT, 0, 0);
+                    SciCall_PostMsg(SCI_CHARRIGHT, 0, 0);
                 }
                 else {
                     len = _EncloseSelectionBuffer('`', '`');
@@ -8397,7 +8396,7 @@ static void _HandleInsertCheck(const SCNotification* const scn)
             if (len) {
                 SciCall_ChangeInsertion(len, s_SelectionBuffer);
                 if (len == 2) {
-                    PostMessage(Globals.hwndEdit, SCI_CHARLEFT, 0, 0);
+                    SciCall_PostMsg(SCI_CHARLEFT, 0, 0);
                 }
             }
         }
@@ -8418,19 +8417,19 @@ static void _HandleInsertCheck(const SCNotification* const scn)
             case ')':
                 if (Sci_GetCurrChar() == ')') {
                     SciCall_ChangeInsertion(0, ""); // clear
-                    PostMessage(Globals.hwndEdit, SCI_CHARRIGHT, 0, 0);
+                    SciCall_PostMsg(SCI_CHARRIGHT, 0, 0);
                 }
                 break;
             case '}':
                 if (Sci_GetCurrChar() == '}') {
                     SciCall_ChangeInsertion(0, ""); // clear
-                    PostMessage(Globals.hwndEdit, SCI_CHARRIGHT, 0, 0);
+                    SciCall_PostMsg(SCI_CHARRIGHT, 0, 0);
                 }
                 break;
             case ']':
                 if (Sci_GetCurrChar() == ']') {
                     SciCall_ChangeInsertion(0, ""); // clear
-                    PostMessage(Globals.hwndEdit, SCI_CHARRIGHT, 0, 0);
+                    SciCall_PostMsg(SCI_CHARRIGHT, 0, 0);
                 }
                 break;
             default:
@@ -8439,10 +8438,66 @@ static void _HandleInsertCheck(const SCNotification* const scn)
             if (len) {
                 SciCall_ChangeInsertion(len, s_SelectionBuffer);
                 if (len == 2) {
-                    PostMessage(Globals.hwndEdit, SCI_CHARLEFT, 0, 0);
+                    SciCall_PostMsg(SCI_CHARLEFT, 0, 0);
                 }
             }
         }
+    }
+}
+
+static inline void _HandleDeleteCheck(const SCNotification* const scn)
+{
+    if (Settings.AutoCloseQuotes) {
+        if (scn->length == 1) {
+            bool       bDelPair = false;
+            char const chrAfter = SciCall_GetCharAt(scn->position);
+            switch (scn->text[0]) {
+            case '"':
+                if (chrAfter == '"')
+                    bDelPair = true;
+                break;
+            case '\'':
+                if (chrAfter == '\'')
+                    bDelPair = true;
+                break;
+            case '`':
+                if (chrAfter == '`')
+                    bDelPair = true;
+                break;
+            default:
+                break;
+            }
+            if (bDelPair) {
+                SciCall_PostMsg(SCI_CHARRIGHT, 0, 0);
+                SciCall_PostMsg(SCI_DELETEBACK, 0, 0);
+            }
+        }
+    }
+
+    if (Settings.AutoCloseBrackets) {
+        if (scn->length == 1) {
+            bool       bDelPair = false;
+            char const chrAfter = SciCall_GetCharAt(scn->position);         
+            switch (scn->text[0]) {
+            case '[':
+                if (chrAfter == ']')
+                    bDelPair = true;
+                break;
+            case '{':
+                if (chrAfter == '}')
+                    bDelPair = true;
+            case '(':
+                if (chrAfter == ')')
+                    bDelPair = true;
+                break;
+            default:
+                break;
+            }
+            if (bDelPair) {
+                SciCall_PostMsg(SCI_CHARRIGHT, 0, 0);
+                SciCall_PostMsg(SCI_DELETEBACK, 0, 0);
+            }
+        }       
     }
 }
 
@@ -8526,6 +8581,9 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
                     if (!_InUndoRedoTransaction() && (_urtoken >= URTok_TokenStart)) {
                         _SaveRedoSelection(_urtoken, SciCall_GetModify());
                         _urtoken = URTok_NoTransaction;
+                    }
+                    if (iModType & SC_MOD_DELETETEXT) {
+                        _HandleDeleteCheck(scn);
                     }
                 }
                 *bModified = true;
@@ -8650,7 +8708,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
         case SC_AC_NEWLINE:
             if (!EditCheckNewLineInACFillUps()) {
                 SciCall_AutoCCancel(); // rejected
-                PostMessage(Globals.hwndEdit, SCI_NEWLINE, 0, 0);
+                SciCall_PostMsg(SCI_NEWLINE, 0, 0);
             }
             break;
 
@@ -10925,8 +10983,6 @@ static void _RestoreActionSelection(const LONG token, DoAction doAct)
 
     UndoRedoSelection_t* pSel = NULL;
 
-    HWND const hwndedit = Globals.hwndEdit;
-
     if ((_UndoRedoActionMap(token, &pSel) >= URTok_TokenStart) && (pSel != NULL)) {
 
         // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
@@ -10941,14 +10997,14 @@ static void _RestoreActionSelection(const LONG token, DoAction doAct)
             // This needs to be done _before_ the SCI_SETSEL message
             DocLn const anchorPosLine = SciCall_LineFromPosition((*pPosAnchor));
             DocLn const currPosLine = SciCall_LineFromPosition((*pPosCur));
-            PostMessage(hwndedit, SCI_ENSUREVISIBLE, anchorPosLine, 0);
+            SciCall_PostMsg(SCI_ENSUREVISIBLE, anchorPosLine, 0);
             if (anchorPosLine != currPosLine) {
-                PostMessage(hwndedit, SCI_ENSUREVISIBLE, currPosLine, 0);
+                SciCall_PostMsg(SCI_ENSUREVISIBLE, currPosLine, 0);
             }
 
             int const selectionMode = (UNDO == doAct) ? pSel->selMode_undo : pSel->selMode_redo;
 
-            PostMessage(hwndedit, SCI_SETSELECTIONMODE, (WPARAM)((selectionMode == NP3_SEL_MULTI) ? SC_SEL_STREAM : selectionMode), 0);
+            SciCall_PostMsg(SCI_SETSELECTIONMODE, (WPARAM)((selectionMode == NP3_SEL_MULTI) ? SC_SEL_STREAM : selectionMode), 0);
 
             switch (selectionMode) {
             case NP3_SEL_MULTI: {
@@ -10957,59 +11013,59 @@ static void _RestoreActionSelection(const LONG token, DoAction doAct)
                 DocPosU const selCount = (UNDO == doAct) ? utarray_len(pSel->anchorPos_undo) : utarray_len(pSel->anchorPos_redo);
                 DocPosU const selCountVS = (UNDO == doAct) ? utarray_len(pSel->anchorVS_undo) : utarray_len(pSel->anchorVS_redo);
 
-                PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
+                SciCall_PostMsg(SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
                 if (pPosAnchorVS && pPosCurVS) {
-                    PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)0, (LPARAM)(*pPosAnchorVS));
-                    PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)0, (LPARAM)(*pPosCurVS));
+                    SciCall_PostMsg(SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)0, (LPARAM)(*pPosAnchorVS));
+                    SciCall_PostMsg(SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)0, (LPARAM)(*pPosCurVS));
                 }
-                PostMessage(hwndedit, SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
+                SciCall_PostMsg(SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
 
                 ++i;
                 while (i < selCount) {
                     pPosAnchor = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->anchorPos_undo, i) : utarray_eltptr(pSel->anchorPos_redo, i));
                     pPosCur = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->curPos_undo, i) : utarray_eltptr(pSel->curPos_redo, i));
                     if (pPosAnchor && pPosCur) {
-                        PostMessage(hwndedit, SCI_ADDSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
+                        SciCall_PostMsg(SCI_ADDSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
                         if (i < selCountVS) {
                             pPosAnchorVS = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->anchorVS_undo, i) : utarray_eltptr(pSel->anchorVS_redo, i));
                             pPosCurVS = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->curVS_undo, i) : utarray_eltptr(pSel->curVS_redo, i));
                             if (pPosAnchorVS && pPosCurVS) {
-                                PostMessage(hwndedit, SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)i, (LPARAM)(*pPosAnchorVS));
-                                PostMessage(hwndedit, SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)i, (LPARAM)(*pPosCurVS));
+                                SciCall_PostMsg(SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)i, (LPARAM)(*pPosAnchorVS));
+                                SciCall_PostMsg(SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)i, (LPARAM)(*pPosCurVS));
                             }
                         }
                     }
                     ++i;
                 }
-                //~PostMessage(hwndedit, SCI_SETMAINSELECTION, (WPARAM)0, (LPARAM)0);
+                //~SciCall_PostMsg(SCI_SETMAINSELECTION, (WPARAM)0, (LPARAM)0);
             }
             break;
 
             case SC_SEL_RECTANGLE:
             case SC_SEL_THIN:
-                PostMessage(Globals.hwndEdit, SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)(*pPosAnchor), 0);
-                PostMessage(Globals.hwndEdit, SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)(*pPosCur), 0);
+                SciCall_PostMsg(SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)(*pPosAnchor), 0);
+                SciCall_PostMsg(SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)(*pPosCur), 0);
                 if (pPosAnchorVS && pPosCurVS) {
-                    PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)(*pPosAnchorVS), 0);
-                    PostMessage(hwndedit, SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)(*pPosCurVS), 0);
+                    SciCall_PostMsg(SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)(*pPosAnchorVS), 0);
+                    SciCall_PostMsg(SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)(*pPosCurVS), 0);
                 }
-                PostMessage(hwndedit, SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
+                SciCall_PostMsg(SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
                 break;
 
             case SC_SEL_LINES:
             case SC_SEL_STREAM:
             default:
                 if (pPosAnchor && pPosCur) {
-                    PostMessage(hwndedit, SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
+                    SciCall_PostMsg(SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
                 }
-                PostMessage(hwndedit, SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
+                SciCall_PostMsg(SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
                 break;
             }
         }
         if (pPosAnchor && pPosCur) {
-            PostMessage(hwndedit, SCI_SCROLLRANGE, (WPARAM)(*pPosAnchor), (LPARAM)(*pPosCur));
+            SciCall_PostMsg(SCI_SCROLLRANGE, (WPARAM)(*pPosAnchor), (LPARAM)(*pPosCur));
         }
-        PostMessage(hwndedit, SCI_CHOOSECARETX, 0, 0);
+        SciCall_PostMsg(SCI_CHOOSECARETX, 0, 0);
     }
     else {
         assert("Invalid Token to Restore!" && 0);
