@@ -196,22 +196,22 @@ deu.tsk_LaunchWelcomePage=Wichtige Release Information!
 deu.tsk_RemoveOpenWith=Entferne "Öffnen mit {#app_name}" aus dem Kontextmenü
 deu.tsk_SetOpenWith=Füge "Öffnen mit {#app_name}" zum Kontextmenü hinzu.
 
-ell.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+ell.msg_DeleteSettings=Θέλετε επίσης να διαγράψετε τις ρυθμίσεις και τα θέματα του {#app_name};%n%nΕάν σκοπεύετε να εγκαταστήσετε ξανά το {#app_name}, τότε δεν χρειάζεται να τα διαγράψετε.
 #if defined(sse_required)
-ell.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+ell.msg_simd_sse=Αυτή η έκδοση του {#app_name} απαιτεί CPU με υποστήριξη επέκτασης SSE.%n%nΗ CPU σας δεν έχει αυτές τις δυνατότητες.
 #elif defined(sse2_required)
-ell.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+ell.msg_simd_sse2=Αυτή η έκδοση του {#app_name} απαιτεί CPU με υποστήριξη επέκτασης SSE2.%n%nΗ CPU σας δεν έχει αυτές τις δυνατότητες.
 #endif
-ell.tsk_AllUsers=For all users
-ell.tsk_CurrentUser=For the current user only
-ell.tsk_Other=Other tasks:
-ell.tsk_ResetSettings=Reset {#app_name}'s settings and themes
-ell.tsk_RemoveDefault=Restore Windows Notepad
-ell.tsk_SetDefault=Replace Windows Notepad with {#app_name}
-ell.tsk_StartMenuIcon=Create a Start Menu shortcut
-ell.tsk_LaunchWelcomePage=Important Release Information!
-ell.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
-ell.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+ell.tsk_AllUsers=Για όλους τους χρήστες
+ell.tsk_CurrentUser=Μόνο για τον τρέχοντα χρήστη
+ell.tsk_Other=Άλλες εργασίες:
+ell.tsk_ResetSettings=Μηδενισμός ρυθμίσεων και θεμάτων του {#app_name}
+ell.tsk_RemoveDefault=Επαναφορά του Σημειωματάριου των Windows
+ell.tsk_SetDefault=Αντικατάσταση του Σημειωματάριου των Windows με το {#app_name}
+ell.tsk_StartMenuIcon=Δημιουργία συντόμευσης στο μενού Έναρξη
+ell.tsk_LaunchWelcomePage=Σημαντικές πληροφορίες έκδοσης!
+ell.tsk_RemoveOpenWith=Κατάργηση της επιλογής «Άνοιγμα με {#app_name}» από το μενού περιβάλλοντος
+ell.tsk_SetOpenWith=Προσθήκη της επιλογής «Άνοιγμα με {#app_name}» στο μενού περιβάλλοντος
 
 eng.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
 #if defined(sse_required)
