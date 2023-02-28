@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.226.(build_#) (2023-02-26)
+Current BETA/RC Version 6.23.228.(build_#) (2023-02-28)
 ========================================================
 
 --------------------------------------------------------
@@ -50,6 +50,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.224.1]- Delete matching brace/quote, if content in between is empty.
 [.224.1]- Make Code/Text font priority list configurable.
 [.224.1]- Enhance Display of Unicode Point.
 [.223.1]- In Statusbar remove "Ch" because the values are almost similar with "Col".
@@ -64,6 +65,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.228.1]- grepWinNP3: properly search from the file beginning again (grepWin bugfix) (GRE).
+[.228.1]- Navigate marker: consecutive change-marker handled as single mark.
 [.224.1]- SplitUndoTypingSeqOnLnBreak and UndoTransactionTimeout.
 [.223.1]- Minor changes for Unicode Point display.
 [.221.1]- Repair jump to line (Alt+Click) and related command line search.
@@ -86,9 +89,9 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
+[.228.1]- Update grepWinNP3 (GRE) version 2.1.13.45 (2023-02-27).
 [.226.1]- Update Lexilla Library (LEX) version 5.2.2 (2023-02-08).
 [.224.1]- Update Scintilla Library (SCI) version 5.3.3 (2023-02-08).
-[.224.1]- Update grepWinNP3 (GRE) version 2.1.13.44 (2023-02-24).
 [.224.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2023-02-21).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
 
