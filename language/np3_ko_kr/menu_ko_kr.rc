@@ -469,7 +469,7 @@ BEGIN
         MENUITEM "줄 바꿈 설정(&W)...",                     IDM_SET_WORDWRAPSETTINGS
         MENUITEM "긴 줄 설정(&O)...",                      IDM_SET_LONGLINESETTINGS
         MENUITEM "텍스트 자동 들여쓰기(&I)",                  IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close &Quotes",                      IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "따옴표 자동 닫기(Q)",                      IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "괄호 자동 닫기(&B)",                      IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "HTML/XML 자동 닫기(&H)\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "단어 자동 완성(&U)",                      IDM_SET_AUTOCOMPLETEWORDS
