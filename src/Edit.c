@@ -9413,6 +9413,10 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
 
 #define NOT_FOUND_LN ((DocLn)-1)
 
+__forceinline int _GetAllNP3Markers(const DocLn iLine) {
+    return (SciCall_MarkerGet(iLine) & (ALL_MARKERS_BITMASK() | CHANGE_HISTORY_MARKER_BITMASK()));
+}
+
 static inline DocLn _MarkerNext(const DocLn iLine, const int bitmask)
 {
     if (bitmask & CHANGE_HISTORY_MARKER_BITMASK()) {
@@ -9433,7 +9437,7 @@ void EditBookmarkNext(HWND hwnd, DocLn iLine)
     DocLn iNextLine = NOT_FOUND_LN;
     bool bWrapedAround = true;
     do {
-        int bitmask = SciCall_MarkerGet(iLine) & (ALL_MARKERS_BITMASK() | CHANGE_HISTORY_MARKER_BITMASK());
+        int bitmask = _GetAllNP3Markers(iLine);
         if (!bitmask) {
             bitmask = BOOKMARK_BITMASK();
         }
@@ -9494,7 +9498,7 @@ void EditBookmarkPrevious(HWND hwnd, DocLn iLine)
     DocLn iPrevLine = NOT_FOUND_LN;
     bool  bWrapedAround = true;
     do {
-        int bitmask = SciCall_MarkerGet(iLine) & (ALL_MARKERS_BITMASK() | CHANGE_HISTORY_MARKER_BITMASK());
+        int bitmask = _GetAllNP3Markers(iLine);
         if (!bitmask) {
             bitmask = BOOKMARK_BITMASK();
         }
@@ -9530,8 +9534,8 @@ void EditBookmarkPrevious(HWND hwnd, DocLn iLine)
 
     if (iPrevLine != NOT_FOUND_LN) {
         // find beginning of consecutive change marker
-        int const bm = SciCall_MarkerGet(iPrevLine);
-        while ((--iPrevLine >= 0) && (bm == SciCall_MarkerGet(iPrevLine))) {}
+        int const bm = _GetAllNP3Markers(iPrevLine);
+        while ((--iPrevLine >= 0) && (bm & SciCall_MarkerGet(iPrevLine))) {}
         SciCall_GotoLine(iPrevLine + 1);
     }
 }
