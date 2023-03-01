@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.228.(build_#) (2023-02-28)
+Current BETA/RC Version 6.23.301.(build_#) (2023-03-01)
 ========================================================
 
 --------------------------------------------------------
@@ -50,6 +50,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.301.1]- Generic font names $Code/$Text prepend by number referring to priority list position.
+[.301.1]- Goto next/prev markers: respect last searched markers.
 [.224.1]- Delete matching brace/quote, if content in between is empty.
 [.224.1]- Make Code/Text font priority list configurable.
 [.224.1]- Enhance Display of Unicode Point.
@@ -65,6 +67,10 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.301.1]- Backward compat. for .ini param 'FileCheckInverval' (typo).
+[.301.1]- 'FileCheckInterval' instead of 'FileCheckInverval' (typo).
+[.301.1]- Find marker next/prev.
+[.301.1]- Find consecutive change marker begin.
 [.228.1]- grepWinNP3: properly search from the file beginning again (grepWin bugfix) (GRE).
 [.228.1]- Navigate marker: consecutive change-marker handled as single mark.
 [.224.1]- SplitUndoTypingSeqOnLnBreak and UndoTransactionTimeout.
@@ -330,7 +336,7 @@ CHANGES:
 [1015.1]- Remove the max win version check for undocumented DarkMode UxTheme methods.
 [1015.1]- SQL Lexer bright and dark mode highlight color enhanced.
 [.924.1]- Disable actively file change polling - rely on directory change notification by default.
-[.924.1]- Allow [Settings2] "FileCheckInverval" to be zero(0), means no active file change polling.
+[.924.1]- Allow [Settings2] "FileCheckInterval" to be zero(0), means no active file change polling.
 [.923.2]- Enable context menu for Statusbar.
 [.923.1]- Enable context menu for Menubar.
 [.916.1]- Use "round nearest displayed digit" method for estimated file size display.
