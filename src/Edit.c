@@ -9433,7 +9433,6 @@ void EditBookmarkNext(HWND hwnd, DocLn iLine)
     DocLn iNextLine = NOT_FOUND_LN;
     bool bWrapedAround = true;
     do {
-        bWrapedAround = !bWrapedAround;
         int bitmask = SciCall_MarkerGet(iLine) & (ALL_MARKERS_BITMASK() | CHANGE_HISTORY_MARKER_BITMASK());
         if (!bitmask) {
             bitmask = BOOKMARK_BITMASK();
@@ -9451,9 +9450,9 @@ void EditBookmarkNext(HWND hwnd, DocLn iLine)
             iNextLine = _MarkerNext(iLine + 1, bitmask); // find change history marker
         }
         if (iNextLine == NOT_FOUND_LN) {
+            // initial search not started from beginning?
             if (iLine != 0) {
                 iLine = 0;
-                bWrapedAround = !bWrapedAround;
             }
         }
         else { // check for consecutive change marker
@@ -9464,6 +9463,7 @@ void EditBookmarkNext(HWND hwnd, DocLn iLine)
                 }
             }
         }
+        bWrapedAround = !bWrapedAround;
     } while ((iNextLine == NOT_FOUND_LN) && !bWrapedAround);
 
     if (iNextLine != NOT_FOUND_LN) {
@@ -9494,7 +9494,6 @@ void EditBookmarkPrevious(HWND hwnd, DocLn iLine)
     DocLn iPrevLine = NOT_FOUND_LN;
     bool  bWrapedAround = true;
     do {
-        bWrapedAround = !bWrapedAround;
         int bitmask = SciCall_MarkerGet(iLine) & (ALL_MARKERS_BITMASK() | CHANGE_HISTORY_MARKER_BITMASK());
         if (!bitmask) {
             bitmask = BOOKMARK_BITMASK();
@@ -9513,9 +9512,9 @@ void EditBookmarkPrevious(HWND hwnd, DocLn iLine)
             iPrevLine = _MarkerPrevious(iLine - 1, bitmask); // find change history marker
         }
         if (iPrevLine == NOT_FOUND_LN) {
+            // initial search not started from bottom?
             if (iLine != SciCall_GetLineCount()) {
                 iLine = SciCall_GetLineCount();
-                bWrapedAround = !bWrapedAround;
             }
         }
         else { // check for consecutive change marker
@@ -9526,10 +9525,14 @@ void EditBookmarkPrevious(HWND hwnd, DocLn iLine)
                 }
             }
         }
+        bWrapedAround = !bWrapedAround;
     } while ((iPrevLine == NOT_FOUND_LN) && !bWrapedAround);
 
     if (iPrevLine != NOT_FOUND_LN) {
-        SciCall_GotoLine(iPrevLine);
+        // find beginning of consecutive change marker
+        int const bm = SciCall_MarkerGet(iPrevLine);
+        while ((--iPrevLine >= 0) && (bm == SciCall_MarkerGet(iPrevLine))) {}
+        SciCall_GotoLine(iPrevLine + 1);
     }
 }
 
