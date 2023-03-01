@@ -35,7 +35,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld fichiers, %ld fichiers ignorés. %ld résultats sélectionnés."
 
 #. Resource IDs: (149)
 #, c-format
@@ -76,7 +76,7 @@ msgstr "Visitez le site web Stefan Küng"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWinNP3...</a>"
-msgstr "<a>à propos de grepWinNP3...</a>"
+msgstr "<a>A propos de grepWinNP3...</a>"
 
 #. Resource IDs: (1086)
 msgid ">>>"
@@ -157,7 +157,7 @@ msgstr "Copier les résultats du texte dans le presse-papiers"
 
 #. Resource IDs: (177)
 msgid "Copy whole column"
-msgstr ""
+msgstr "Copier toute la colonne"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
@@ -238,7 +238,7 @@ msgstr "Fichiers"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr ""
+msgstr "%ld fichiers trouvés, %ld fichiers ignorés."
 
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
@@ -266,7 +266,7 @@ msgstr "Sous-dossiers"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "Liens symboliques"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
@@ -286,7 +286,7 @@ msgstr "Ko"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "Conserver la date de fichier"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -604,7 +604,7 @@ msgstr "seuls les fichiers correspondant à ce modèle sont recherchés.\nUtilis
 
 #. Resource IDs: (176)
 msgid "Open list with recent entries"
-msgstr ""
+msgstr "Ouvrir la liste des entrées récentes"
 
 #. Resource IDs: (129)
 msgid "read error"
