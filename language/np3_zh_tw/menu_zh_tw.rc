@@ -469,7 +469,7 @@ BEGIN
         MENUITEM "自動換行設定(&W)...",                         IDM_SET_WORDWRAPSETTINGS
         MENUITEM "長行標記設定(&O)...",                         IDM_SET_LONGLINESETTINGS
         MENUITEM "自動縮排(&I)",                                IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close &Quotes",                        IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "自動關閉引號(&Q)",                        IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "自動關閉括弧(&B)",                            IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "自動關閉 HTML/XML 標記(&H)\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "自動完成單詞(&U)",                            IDM_SET_AUTOCOMPLETEWORDS
