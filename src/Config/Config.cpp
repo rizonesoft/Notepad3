@@ -1243,13 +1243,18 @@ void LoadSettings()
     IniSectionGetStringNoQuotes(IniSecSettings2, L"FileDlgFilters", L"", pPathBuffer, XHUGE_BUFFER);
     StrgReset(Settings2.FileDlgFilters, pPathBuffer);
 
-    Settings2.FileCheckInterval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInterval", 0), 0, 86400000 << 2); // max: 48h
+    // handle deprecated (typo) key 'FileCheckInverval'
+    int const dfci = IniSectionGetInt(IniSecSettings2, L"FileCheckInverval", 0);
+    Settings2.FileCheckInterval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInterval", dfci), 0, 86400000 << 2); // max: 48h
     // handle deprecated old "AutoReloadTimeout"
     int const          autoReload = IniSectionGetInt(IniSecSettings2, L"AutoReloadTimeout", -1); // deprecated
     unsigned int const fci = max_u(250, (autoReload > 0) ? max_u(autoReload, Settings2.FileCheckInterval) : Settings2.FileCheckInterval);
-    if ((Settings2.FileCheckInterval > 0) && (fci != Settings2.FileCheckInterval)) {
+    if (((Settings2.FileCheckInterval > 0) && (fci != Settings2.FileCheckInterval)) || (dfci != 0)) {
         Settings2.FileCheckInterval = fci;
         IniSectionSetInt(IniSecSettings2, L"FileCheckInterval", Settings2.FileCheckInterval);
+        if (dfci != 0) {
+            IniSectionDelete(IniSecSettings2, L"FileCheckInverval", true); // deprecated wrong (typo) name
+        }
         bDirtyFlag = true;
     }
     FileWatching.FileCheckInterval = Settings2.FileCheckInterval;
