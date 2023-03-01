@@ -9417,6 +9417,15 @@ __forceinline int _GetAllNP3Markers(const DocLn iLine) {
     return (SciCall_MarkerGet(iLine) & (ALL_MARKERS_BITMASK() | CHANGE_HISTORY_MARKER_BITMASK()));
 }
 
+static int _RespectLastSearch(const int bitmask) {
+    static int s_LastSearchBitmask = 0;
+    if (!(bitmask & s_LastSearchBitmask)) {
+        s_LastSearchBitmask = bitmask;
+    }
+    return s_LastSearchBitmask;
+}
+
+
 static inline DocLn _MarkerNext(const DocLn iLine, const int bitmask)
 {
     if (bitmask & CHANGE_HISTORY_MARKER_BITMASK()) {
@@ -9437,7 +9446,7 @@ void EditBookmarkNext(HWND hwnd, DocLn iLine)
     DocLn iNextLine = NOT_FOUND_LN;
     bool bWrapedAround = true;
     do {
-        int bitmask = _GetAllNP3Markers(iLine);
+        int bitmask = _RespectLastSearch(_GetAllNP3Markers(iLine));
         if (!bitmask) {
             bitmask = BOOKMARK_BITMASK();
         }
@@ -9498,7 +9507,7 @@ void EditBookmarkPrevious(HWND hwnd, DocLn iLine)
     DocLn iPrevLine = NOT_FOUND_LN;
     bool  bWrapedAround = true;
     do {
-        int bitmask = _GetAllNP3Markers(iLine);
+        int bitmask = _RespectLastSearch(_GetAllNP3Markers(iLine));
         if (!bitmask) {
             bitmask = BOOKMARK_BITMASK();
         }
