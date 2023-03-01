@@ -6253,11 +6253,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SendWMCommand(hwnd, IDM_FILE_REVERT);
             _saveChgNotify = FileWatching.FileWatchingMode;
             FileWatching.FileWatchingMode = FWM_AUTORELOAD;
-            FileWatching.FileCheckInverval = 250UL;
+            FileWatching.FileCheckInterval = 250UL;
             SciCall_SetEndAtLastLine(false);
         } else {
             FileWatching.FileWatchingMode = _saveChgNotify;
-            FileWatching.FileCheckInverval = Settings2.FileCheckInverval;
+            FileWatching.FileCheckInterval = Settings2.FileCheckInterval;
             SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
         }
         Sci_ScrollSelectionToView();
@@ -12537,7 +12537,7 @@ static inline void NotifyIfFileHasChanged(const bool forcedNotify) {
 }
 // ----------------------------------------------------------------------------
 
-// FWM_MSGBOX (polling: FileWatching.FileCheckInverval)
+// FWM_MSGBOX (polling: FileWatching.FileCheckInterval)
 // FWM_AUTORELOAD (also FileWatching.MonitoringLog)
 static void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
 
@@ -12549,7 +12549,7 @@ static void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
     DWORD const diff = GetTickCount() - s_dwFileChangeNotifyTime;
 
     // Directory-Observer is not notified for continously updated (log-)files
-    if (diff > Settings2.FileCheckInverval) {
+    if (diff > Settings2.FileCheckInterval) {
         NotifyIfFileHasChanged(/*FileWatching.MonitoringLog*/ false);
     }
 }
@@ -12693,8 +12693,8 @@ void InstallFileWatching(const bool bInstall) {
             }
 
             s_dwFileChangeNotifyTime = (FileWatching.FileWatchingMode == FWM_AUTORELOAD) ? GetTickCount() : 0UL;
-            if (FileWatching.FileCheckInverval > 0) {
-                SetTimer(Globals.hwndMain, ID_WATCHTIMER, FileWatching.FileCheckInverval, WatchTimerProc);
+            if (FileWatching.FileCheckInterval > 0) {
+                SetTimer(Globals.hwndMain, ID_WATCHTIMER, FileWatching.FileCheckInterval, WatchTimerProc);
             }
             else {
                 KillTimer(Globals.hwndMain, ID_WATCHTIMER);

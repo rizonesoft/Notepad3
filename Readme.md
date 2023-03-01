@@ -210,7 +210,7 @@ This allows you to perform much more powerful search and replace operations in f
 - or from "Edit --> Search --> Search in Files"
 - or simply with "`Ctrl+Shift+F`"
 
-#### `FileCheckInverval=0`
+#### `FileCheckInterval=0`
 
 The interval (in milliseconds) to check for external modification of the currently opened file. 
 - Defaults is 0 ms.
