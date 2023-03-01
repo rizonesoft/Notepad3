@@ -147,7 +147,7 @@ BEGIN
     IDS_MUI_ERR_DROP        "한 번에 하나의 파일만 끌어서 놓을 수 있습니다.!"
     IDS_MUI_ERR_ACCESSDENIED
                             """%s"" 파일을 저장할 수 없으며 보호할 수 있습니다.\n\n%s을 '상승된 권한' 응용프로그램으로 시작하시겠습니까?"
-    IDS_MUI_ERR_ADMINEXE    "관리 실행 파일이 없습니다. https://rizonesoft.com에서 확인하시겠습니까?"
+    IDS_MUI_ERR_ADMINEXE    "관리 실행 파일이 없습니다.\nhttps://rizonesoft.com에서 확인하시겠습니까?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "이 큰 파일을 여시겠습니까?\n\t(크기: %s >= %s)!\n(스타일링 및 구문 강조가 적용되지 않습니다!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -171,7 +171,7 @@ BEGIN
     IDS_MUI_FIND_WRAPFW     "문서의 끝에 도달하여 검색을 처음부터 다시 시작합니다."
     IDS_MUI_FIND_WRAPRE     "문서의 시작 부분에 도달하여 끝에서 검색을 다시 시작합니다."
     IDS_MUI_NOTFOUND        "지정한 검색 패턴에 일치하는 항목을 찾을 수 없습니다."
-    IDS_MUI_REPLCOUNT       "지정한 검색 패턴의 %s 발생이 대체되었습니다."
+    IDS_MUI_REPLCOUNT       "지정한 검색 패턴의 %s개 발생이 대체되었습니다."
     IDS_MUI_ASK_ENCODING    "파일 인코딩을 한 인코딩에서 다른 인코딩으로 전환하면 지원되지 않는 텍스트가 기본 문자로 대체될 수 있으며 실행 취소 기록이 지워집니다. 계속하시겠습니까?"
     IDS_MUI_ASK_ENCODING2   "빈 파일의 인코딩을 변경하려고 합니다. 새 인코딩과 동기화할 수 없기 때문에 실행 취소 기록이 지워집니다. 계속하시겠습니까?"
     IDS_MUI_ASK_CLEAR_UNDO  "이 작업을 수행하면 실행 취소 기록이 지워집니다. 계속하시겠습니까?"
@@ -196,7 +196,7 @@ BEGIN
     IDS_MUI_RELOADCFGSEX     "다시 시작하지 않고 계속하면 저장된 설정이 적용되지 않으며 프로그램 종료시 내부 설정이 무시됩니다!"
     IDS_MUI_EXPORT_FAIL      "스타일 설정을 ""%s""으로 내보내는 중 오류가 발생하였습니다."
     IDS_MUI_REGEX_INVALID    "정규 표현식을 평가하는 동안 오류가 발생했습니다. 표현식이 잘못되었습니다!"
-    IDS_MUI_DROP_NO_FILE     "검색된 유효한 파일 이름이 없습니다. \n32 비트 응용 프로그램에서 드롭하는 경우 \nNotepad3의 도구 모음으로 끌어서 놓으십시오."
+    IDS_MUI_DROP_NO_FILE     "검색된 유효한 파일 이름이 없습니다. \n32비트 응용 프로그램에서 드롭하는 경우 \nNotepad3의 도구 모음으로 끌어서 놓으십시오."
     IDS_MUI_URL_DIR_EXISTS   "URL 지정 디렉터리가 있습니다!"
     IDS_MUI_URL_FILE_EXISTS  "URL 지정 파일이 있습니다!"
     IDS_MUI_URL_PATH_NOT_FOUND
@@ -223,7 +223,7 @@ BEGIN
     IDS_MUI_WARN_STYLE_RESET
                             "이 작업은 스타일을 원하는 색상 모드의 출고시 기본값으로 재설정하고 활성 테마 파일을 표준 config .ini로 전환합니다!"
     IDS_MUI_ASK_INSTANCE_EXISTS
-                            "단일 파일 인스턴스 모드:\n\n이미 로드된 파일 인스턴스에 초점을 설정하시겠습니까?"
+                            "단일 파일 인스턴스 모드:\n\n이미 불러온 파일 인스턴스에 초점을 설정하시겠습니까?"
 END
 
 STRINGTABLE
@@ -254,8 +254,8 @@ BEGIN
     IDS_MUI_TITLE_RELARB    "+++ 스타일 '%s' - (%s) +++"
     IDS_MUI_TITLE_FIXARB    "스타일 '%s' - (%s)"
     IDS_MUI_ASSOCIATED_EXT  "연결된 파일 이름 확장자:"
-    IDS_MUI_ZERO_LEN_MATCH  "^ 제로 길이 일치"
-    IDS_MUI_GOTO_LINE       "행 (1 - %s):"
+    IDS_MUI_ZERO_LEN_MATCH  "^ 길이 0 일치"
+    IDS_MUI_GOTO_LINE       "줄 (1 - %s):"
     IDS_MUI_GOTO_COLUMN     "열 (1 - %s):"
 END
 
@@ -264,9 +264,9 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "언어(&L)"
     IDS_USE_LOCALE_DATEFMT  "언어가 날짜 형식 정의(&D)"
     IDS_MUI_MENU_THEMES     "구성표 모음(&S)"
-    IDM_THEMES_FACTORY_RESET "기본값(&F)"
-    IDM_THEMES_STD_CFG       "표준 구성 (&S)"  // 앞에 공백을 유지(&S)
-    IDS_MUI_STATUSBAR_PREFIXES "줄  ,열  ,선택  ,블럭  ,줄선택  ,일치  ,,,,,,,글자  ,교체  ,유형  ,U+,"
+    IDM_THEMES_FACTORY_RESET "공장 초기화(&F)"
+    IDM_THEMES_STD_CFG       "표준 구성 (&S)"
+    IDS_MUI_STATUSBAR_PREFIXES "줄  ,열  ,선택  ,블럭 선택  ,줄 선택  ,일치  ,,,,,,,글자  ,교체  ,평가  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "모두 지우기"
     IDS_MUI_CLEAR_FIND_HISTORY
@@ -280,11 +280,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "모든 발생되는 것 표시..."
+    IDS_MUI_SB_MARK_ALL_OCC   "모든 발생 표시..."
     IDS_MUI_SB_TOGGLE_VIEW    "보기 전환..."
     IDS_MUI_SB_REPLACE_ALL    "모두 바꾸기..."
-    IDS_MUI_SB_WRAP_LINES     "줄바꿈 줄..."
-    IDS_MUI_SB_CONV_LNBRK     "변환 줄 바꿈..."
+    IDS_MUI_SB_WRAP_LINES     "줄바꿈..."
+    IDS_MUI_SB_CONV_LNBRK     "줄바꿈 변환 ..."
     IDS_MUI_SB_RECODING_DOC   "문서 기록..."
     IDS_MUI_SB_LEXER_STYLING  "렉서 스타일링 적용..."
 END
@@ -297,8 +297,8 @@ Notepad3 [/?] [...[인코딩]] [...[줄 끝 모드]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]파일명[...]]\r\n\r\n\
 파일\t기본적으로 따옴표로 묶인 공백이 없는 마지막 인수여야 합니다.\r\n\
-+\t여러 파일 인수를 허용합니다 (따옴표로 묶인 공백 포함).\r\n\
--\t단일 파일 인수를 허용합니다 (따옴표로 묶인 공백 없음).\r\n\r\n\
++\t여러 파일 인수를 허용합니다 (따옴표로 묶은 공백 포함).\r\n\
+-\t단일 파일 인수를 허용합니다 (따옴표로 묶은 공백 없음).\r\n\r\n\
 옵션:\r\n\
 /?\t이 도움말 메시지를 표시합니다.\r\n\
 ...\t인코딩 (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
@@ -306,7 +306,7 @@ Notepad3 [/?] [...[인코딩]] [...[줄 끝 모드]] [/e] [/g] [/m] [/l]\r\n\
 /e\t파일 소스 인코딩입니다.\r\n\
 /g\t지정된 위치로 이동합니다 (/g -1 파일 끝).\r\n\
 /m\t지정된 텍스트와 일치합니다 (/m- 마지막, /mr 정규식, /mb 백슬래시).\r\n\
-/l\t수정된 파일을 자동으로 다시 로드합니다.\r\n\
+/l\t수정된 파일을 자동으로 다시 불러옵니다.\r\n\
 /q\t프롬프트 없이 새 파일을 강제로 만듭니다.\r\n\
 /s\t지정된 구문 체계를 선택합니다.\r\n\
 /d\t기본 텍스트 구성표를 선택합니다.\r\n\
@@ -335,9 +335,9 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-파일 이름 확장자는 ';'로 구분해야 합니다 \r\n\
+파일 이름 확장자는 ';'로 구분해야 합니다\r\n\
 \\<regex>;를 사용하여 파일 이름 일치 패턴을 정의합니다:\r\n\
-   \\xyz$;   => 파일 이름(기본 이름+확장자)과 'xyz'를 마지막 문자로 합니다.\r\n\r\n\
+   \\xyz$;   => 파일 이름 (기본 이름+확장자)과 'xyz'를 마지막 문자로 합니다.\r\n\r\n\
 스타일 형식:\r\n\
 글꼴:이름; 크기:[+/-]nn.mm; 굵게; 기울임; 밑줄;\r\n\
 전경색:#ffffff; 배경색:#bbbbbb; 줄 끝 채우기; indic_gradient\r\n\r\n\
@@ -387,4 +387,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
