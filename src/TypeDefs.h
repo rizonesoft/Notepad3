@@ -734,7 +734,7 @@ typedef struct SETTINGS2_T {
     int    FileLoadWarningMB;
     int    OpacityLevel;
     int    FindReplaceOpacityLevel;
-    DWORD  FileCheckInverval;
+    DWORD  FileCheckInterval;
     DWORD  UndoTransactionTimeout;
     int    IMEInteraction;
     int    SciFontQuality;
@@ -837,7 +837,7 @@ typedef struct FILEWATCHING_T {
 
     FILE_WATCHING_MODE flagChangeNotify;  // <-> s_flagChangeNotify;
     FILE_WATCHING_MODE FileWatchingMode;  // <-> Settings.FileWatchingMode;
-    DWORD              FileCheckInverval; // <-> Settings2.FileCheckInverval;
+    DWORD              FileCheckInterval; // <-> Settings2.FileCheckInterval;
     bool               MonitoringLog;
 
 } FILEWATCHING_T, *PFILEWATCHING_T;
