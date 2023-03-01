@@ -212,7 +212,7 @@ FileDlgFilters
 Specify filters for the open and save dialogs 
 (Example: Text Files|*.txt;*.wtx;*.log;*.asc;*.doc;*.diz;*.nfo|All Files|*.*).
 
-FileCheckInverval
+FileCheckInterval
 The interval (in milliseconds) to check for external modification 
 of the currently opened file. Defaults to 2000 ms.
 

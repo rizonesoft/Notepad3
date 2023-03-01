@@ -1254,16 +1254,16 @@ void LoadSettings()
     IniSectionGetStringNoQuotes(IniSecSettings2, L"FileDlgFilters", L"", pPathBuffer, XHUGE_BUFFER);
     StrgReset(Settings2.FileDlgFilters, pPathBuffer);
 
-    Settings2.FileCheckInverval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInverval", 0), 0, 86400000<<2); // max: 48h
+    Settings2.FileCheckInterval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInterval", 0), 0, 86400000<<2); // max: 48h
     // handle deprecated old "AutoReloadTimeout"
     int const autoReload = IniSectionGetInt(IniSecSettings2, L"AutoReloadTimeout", -1); // deprecated
-    unsigned int const fci = max_u(250, (autoReload > 0) ? max_u(autoReload, Settings2.FileCheckInverval) : Settings2.FileCheckInverval);
-    if ((Settings2.FileCheckInverval > 0) && (fci != Settings2.FileCheckInverval)) {
-        Settings2.FileCheckInverval = fci;
-        IniSectionSetInt(IniSecSettings2, L"FileCheckInverval", Settings2.FileCheckInverval);
+    unsigned int const fci = max_u(250, (autoReload > 0) ? max_u(autoReload, Settings2.FileCheckInterval) : Settings2.FileCheckInterval);
+    if ((Settings2.FileCheckInterval > 0) && (fci != Settings2.FileCheckInterval)) {
+        Settings2.FileCheckInterval = fci;
+        IniSectionSetInt(IniSecSettings2, L"FileCheckInterval", Settings2.FileCheckInterval);
         bDirtyFlag = true;
     }
-    FileWatching.FileCheckInverval = Settings2.FileCheckInverval;
+    FileWatching.FileCheckInterval = Settings2.FileCheckInterval;
 
     IniSectionGetString(IniSecSettings2, L"FileChangedIndicator", L"[@]", Settings2.FileChangedIndicator, COUNTOF(Settings2.FileChangedIndicator));
 
