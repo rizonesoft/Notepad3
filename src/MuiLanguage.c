@@ -98,7 +98,7 @@ static bool _LngStrToMultiLngStr(LPWSTR const pLngStr, LPWSTR pLngMultiStr, size
 
     bool rtnVal = true;
 
-    size_t strLen = StringCchLenW(pLngStr, 0);
+    size_t strLen = StringCchLen(pLngStr, 0);
 
     if ((strLen > 0) && pLngMultiStr && (cchLngMultiStrCnt > 0)) {
 
@@ -110,7 +110,7 @@ static bool _LngStrToMultiLngStr(LPWSTR const pLngStr, LPWSTR pLngMultiStr, size
             if (next) {
                 *next = L'\0';
             }
-            strLen = StringCchLenW(last, LOCALE_NAME_MAX_LENGTH);
+            strLen = StringCchLen(last, LOCALE_NAME_MAX_LENGTH);
             if (strLen && IsValidLocaleName(last)) {
                 lngMultiStrPtr[0] = L'\0';
                 rtnVal &= SUCCEEDED(StringCchCatW(lngMultiStrPtr, (cchLngMultiStrCnt - (lngMultiStrPtr - pLngMultiStr)), last));
@@ -596,7 +596,7 @@ int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
             StringCchVPrintfW(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)& uIdFormat + 1));
         }
         FreeMem(pBuffer);
-        return (int)StringCchLenW(lpOutput, nOutput);
+        return (int)StringCchLen(lpOutput, nOutput);
     }
     return 0;
 }

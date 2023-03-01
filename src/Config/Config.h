@@ -43,7 +43,7 @@ bool CloseSettingsFile(LPCSTR fctname, bool bSaveSettings);
 
 bool CopyToTmpCache(LPCSTR lpIniFileResource);
 size_t TmpCacheGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
-    LPWSTR lpReturnedString, size_t cchReturnedString);
+    LPWSTR lpReturnedString, const size_t cchReturnedString);
 bool TmpCacheSetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString);
 bool ResetTmpCache();
 
@@ -55,9 +55,9 @@ bool SaveIniFileCache(const HPATHL hpthIniFile);
 bool ResetIniFileCache();
 
 size_t IniSectionGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
-                           LPWSTR lpReturnedString, size_t cchReturnedString);
+                           LPWSTR lpReturnedString, const size_t cchReturnedString);
 size_t IniSectionGetStringNoQuotes(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
-                                   LPWSTR lpReturnedString, size_t cchReturnedString);
+                                   LPWSTR lpReturnedString, const size_t cchReturnedString);
 int IniSectionGetInt(LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault);
 long IniSectionGetLong(LPCWSTR lpSectionName, LPCWSTR lpKeyName, long lDefault);
 long long IniSectionGetLongLong(LPCWSTR lpSectionName, LPCWSTR lpKeyName, long long llDefault);

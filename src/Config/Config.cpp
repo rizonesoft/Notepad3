@@ -263,12 +263,12 @@ extern "C" bool CopyToTmpCache(LPCSTR lpIniFileResource) {
 }
 
 extern "C" size_t TmpCacheGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
-    LPWSTR lpReturnedString, size_t cchReturnedString) {
+    LPWSTR lpReturnedString, const size_t cchReturnedString) {
     bool bHasMultiple = false;
     StringCchCopy(lpReturnedString, cchReturnedString,
         s_TMPINI.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
     //assert(!bHasMultiple);
-    return StringCchLenW(lpReturnedString, cchReturnedString);
+    return StringCchLen(lpReturnedString, cchReturnedString);
 }
 
 extern "C" bool TmpCacheSetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString) {
@@ -445,26 +445,26 @@ extern "C" bool CloseSettingsFile(LPCSTR fctname, bool bSaveSettings)
 
 
 extern "C" size_t IniSectionGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
-                                      LPWSTR lpReturnedString, size_t cchReturnedString)
+                                      LPWSTR lpReturnedString, const size_t cchReturnedString)
 {
     bool bHasMultiple = false;
     StringCchCopy(lpReturnedString, cchReturnedString,
                    s_INI.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
     //assert(!bHasMultiple);
-    return StringCchLenW(lpReturnedString, cchReturnedString);
+    return StringCchLen(lpReturnedString, cchReturnedString);
 }
 // ============================================================================
 
 
 extern "C" size_t IniSectionGetStringNoQuotes(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
-                                              LPWSTR lpReturnedString, size_t cchReturnedString)
+                                              LPWSTR lpReturnedString, const size_t cchReturnedString)
 {
     bool bHasMultiple = false;
     StringCchCopy(lpReturnedString, cchReturnedString,
                    s_INI.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
     //assert(!bHasMultiple);
     StrTrim(lpReturnedString, L"\"'");
-    return StringCchLenW(lpReturnedString, cchReturnedString);
+    return StringCchLen(lpReturnedString, cchReturnedString);
 }
 // ============================================================================
 
@@ -612,7 +612,7 @@ extern "C" size_t IniFileGetString(const HPATHL hpthIniFile, LPCWSTR lpSectionNa
 {
     if (Path_IsEmpty(hpthIniFile)) {
         StringCchCopy(lpReturnedString, cchReturnedString, lpDefault);
-        return StringCchLenW(lpReturnedString, cchReturnedString);
+        return StringCchLen(lpReturnedString, cchReturnedString);
     }
 
     CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
@@ -621,7 +621,7 @@ extern "C" size_t IniFileGetString(const HPATHL hpthIniFile, LPCWSTR lpSectionNa
     HANDLE     hFile = AcquireReadFileLock(Path_Get(hpthIniFile), ovrLpd);
     if (!IS_VALID_HANDLE(hFile)) {
         StringCchCopy(lpReturnedString, cchReturnedString, lpDefault);
-        return StringCchLenW(lpReturnedString, cchReturnedString);
+        return StringCchLen(lpReturnedString, cchReturnedString);
     }
 
     SI_Error const rc = Ini.LoadFile(hFile);
@@ -634,7 +634,7 @@ extern "C" size_t IniFileGetString(const HPATHL hpthIniFile, LPCWSTR lpSectionNa
     } else {
         StringCchCopy(lpReturnedString, cchReturnedString, lpDefault);
     }
-    return StringCchLenW(lpReturnedString, cchReturnedString);
+    return StringCchLen(lpReturnedString, cchReturnedString);
 }
 // ============================================================================
 

@@ -666,7 +666,7 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
     // get clipboard
     HANDLE hmem = GetClipboardData(CF_UNICODETEXT);
     WCHAR* pwch = GlobalLock(hmem);
-    int const wlen = (int)StringCchLenW(pwch,0);
+    int const wlen = (int)StringCchLen(pwch,0);
 
     if (bCheckEncoding && EditIsRecodingNeeded(pwch,wlen)) {
         const DocPos iPos = SciCall_GetCurrentPos();
@@ -3553,7 +3553,7 @@ void EditAlignText(int nMode)
                                     *p++ = L' ';
                                     *p = 0;
                                 }
-                                StringCchCat(p, (length - StringCchLenW(wchNewLineBuf, iBufCount)), pWords[i]);
+                                StringCchCat(p, (length - StringCchLen(wchNewLineBuf, iBufCount)), pWords[i]);
                                 p = (WCHAR*)StrEnd(p, 0);
                             }
                         } else {
@@ -3563,7 +3563,7 @@ void EditAlignText(int nMode)
                             for (int i = 1; i < iWords; i++) {
                                 *p++ = L' ';
                                 *p = 0;
-                                StringCchCat(p, (iBufCount - StringCchLenW(wchNewLineBuf, iBufCount)), pWords[i]);
+                                StringCchCat(p, (iBufCount - StringCchLen(wchNewLineBuf, iBufCount)), pWords[i]);
                                 p = (WCHAR*)StrEnd(p, 0);
                             }
                         }
@@ -3594,12 +3594,12 @@ void EditAlignText(int nMode)
                             *p = 0;
                         }
                         for (int i = 0; i < iWords; i++) {
-                            StringCchCat(p, (iBufCount - StringCchLenW(wchNewLineBuf, iBufCount)), pWords[i]);
+                            StringCchCat(p, (iBufCount - StringCchLen(wchNewLineBuf, iBufCount)), pWords[i]);
                             if (i < iWords - 1) {
-                                StringCchCat(p, (iBufCount - StringCchLenW(wchNewLineBuf, iBufCount)), L" ");
+                                StringCchCat(p, (iBufCount - StringCchLen(wchNewLineBuf, iBufCount)), L" ");
                             }
                             if (nMode == ALIGN_CENTER && iWords > 1 && iOddSpaces > 0 && i + 1 >= iWords / 2) {
-                                StringCchCat(p, (iBufCount - StringCchLenW(wchNewLineBuf, iBufCount)), L" ");
+                                StringCchCat(p, (iBufCount - StringCchLen(wchNewLineBuf, iBufCount)), L" ");
                                 iOddSpaces--;
                             }
                             p = (WCHAR*)StrEnd(p, 0);
@@ -8994,7 +8994,7 @@ CASE_WM_CTLCOLOR_SET:
             if (HIWORD(wParam) == EN_CHANGE) {
                 bool bClear = true;
                 GetDlgItemTextW(hwnd, 100, pData->pwsz1, ENCLDATA_SIZE);
-                if (StringCchLenW(pData->pwsz1, ENCLDATA_SIZE) >= 3) {
+                if (StringCchLen(pData->pwsz1, ENCLDATA_SIZE) >= 3) {
 
                     if ((pData->pwsz1)[0] == L'<') {
                         WCHAR wchIns[ENCLDATA_SIZE] = { L'\0' };

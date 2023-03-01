@@ -6156,7 +6156,7 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
         pTemplate->style |= DS_SHELLFONT;
     }
 
-    size_t const cbNew = cbFontAttr + ((StringCchLenW(wchFaceName, COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
+    size_t const cbNew = cbFontAttr + ((StringCchLen(wchFaceName, COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
     BYTE* const pbNew = (BYTE*)wchFaceName;
 
     BYTE* pb = DialogTemplate_GetFontSizeField(pTemplate);

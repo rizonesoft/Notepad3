@@ -808,7 +808,7 @@ bool StrLTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars)
         ++psz;
     }
 
-    MoveMemory(pszSource, psz, sizeof(WCHAR)*(StringCchLenW(psz,0) + 1));
+    MoveMemory(pszSource, psz, sizeof(WCHAR)*(StringCchLen(psz,0) + 1));
 
     return (psz != pszSource);
 }
@@ -823,7 +823,7 @@ bool StrRTrimI(LPWSTR pszSource, LPCWSTR pszTrimChars)
     if (!pszSource || !*pszSource) {
         return false;
     }
-    size_t const length = StringCchLenW(pszSource, 0);
+    size_t const length = StringCchLen(pszSource, 0);
 
     size_t len = length;
     while ((len > 0) && StrChrI(pszTrimChars, pszSource[--len])) {
@@ -1984,7 +1984,7 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
 
     DWORD posIn = 0;
     WCHAR buf[5] = { L'\0' };
-    DWORD lastEsc = (DWORD)StringCchLenW(lpURL,0) - 2;
+    DWORD lastEsc = (DWORD)StringCchLen(lpURL,0) - 2;
     unsigned int code;
 
     DWORD posOut = 0;
@@ -2118,11 +2118,11 @@ size_t ReadVectorFromString(LPCWSTR wchStrg, int iVector[], size_t iCount, int i
     // ensure single spaces only
     const WCHAR *p = StrStr(wchTmpBuff, L"  ");
     while (p) {
-        MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (StringCchLenW(p,0) + 1) * sizeof(WCHAR));
+        MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (StringCchLen(p,0) + 1) * sizeof(WCHAR));
         p = StrStr(wchTmpBuff, L"  ");  // next
     }
     // separate values
-    int const len = (int)StringCchLenW(wchTmpBuff, COUNTOF(wchTmpBuff));
+    int const len = (int)StringCchLen(wchTmpBuff, COUNTOF(wchTmpBuff));
     for (int i = 0; i < len; ++i) {
         if (wchTmpBuff[i] == L' ') {
             wchTmpBuff[i] = L'\0';

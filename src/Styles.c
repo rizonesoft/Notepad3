@@ -2422,7 +2422,7 @@ PEDITLEXER  Style_SniffShebang(char* pchText)
 PEDITLEXER Style_MatchLexer(LPCWSTR lpszMatch, bool bCheckNames)
 {
     if (bCheckNames) {
-        int const cch = (int)StringCchLenW(lpszMatch, 0);
+        int const cch = (int)StringCchLen(lpszMatch, 0);
         if (cch >= 3) {
             for (int iLex = 0; iLex < COUNTOF(g_pLexArray); ++iLex) {
                 if (StrCmpNI(g_pLexArray[iLex]->pszName, lpszMatch, cch) == 0) {
@@ -2672,7 +2672,7 @@ bool Style_MaybeBinaryFile(HWND hwnd, const HPATHL hpath)
     StringCchCopyW(lpszExt, COUNTOF(lpszExt), Path_FindExtension(hpath));
     StringCchCat(lpszExt, COUNTOF(lpszExt), L"|");
 
-    size_t const len = StringCchLenW(lpszExt, COUNTOF(lpszExt));
+    size_t const len = StringCchLen(lpszExt, COUNTOF(lpszExt));
     if (len < _min || len > _max) {
         if (StrStrIW(binaryExt, lpszExt)) {
             return true;
@@ -3332,7 +3332,7 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORALPHAREF* rgba
     WCHAR*              p = StrStr(lpszStyle, pItem);
     if (p) {
         WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-        StringCchCopy(tch, COUNTOF(tch), p + StringCchLenW(pItem, 0));
+        StringCchCopy(tch, COUNTOF(tch), p + StringCchLen(pItem, 0));
         if (tch[0] == L'#') {
             tch[0] = L' ';
         }
@@ -3382,7 +3382,7 @@ bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, const int defAlpha, co
     WCHAR* p = StrStr(lpszStyle, strAlpha);
     if (p) {
         WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-        StringCchCopy(tch, COUNTOF(tch), p + StringCchLenW(strAlpha,0));
+        StringCchCopy(tch, COUNTOF(tch), p + StringCchLen(strAlpha,0));
         p = StrChr(tch, L';');
         if (p) {
             *p = L'\0';
@@ -3426,7 +3426,7 @@ bool Style_StrGetStrokeWidth(HWND hwnd, int indicID, LPCWSTR lpszStyle, int *piS
 //  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
 //  WCHAR *p = StrStr(lpszStyle, lpszProperty);
 //  if (p) {
-//    StringCchCopy(tch, COUNTOF(tch), (p + StringCchLenW(lpszProperty,0)));
+//    StringCchCopy(tch, COUNTOF(tch), (p + StringCchLen(lpszProperty,0)));
 //    p = StrChr(tch, L';');
 //    if (p)
 //      *p = L'\0';
