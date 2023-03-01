@@ -2422,7 +2422,7 @@ PEDITLEXER  Style_SniffShebang(char* pchText)
 PEDITLEXER Style_MatchLexer(LPCWSTR lpszMatch, bool bCheckNames)
 {
     if (bCheckNames) {
-        int const cch = (int)StringCchLenW(lpszMatch, 0);
+        int const cch = (int)StringCchLen(lpszMatch, 0);
         if (cch >= 3) {
             for (int iLex = 0; iLex < COUNTOF(g_pLexArray); ++iLex) {
                 if (StrCmpNI(g_pLexArray[iLex]->pszName, lpszMatch, cch) == 0) {
@@ -2672,7 +2672,7 @@ bool Style_MaybeBinaryFile(HWND hwnd, const HPATHL hpath)
     StringCchCopyW(lpszExt, COUNTOF(lpszExt), Path_FindExtension(hpath));
     StringCchCat(lpszExt, COUNTOF(lpszExt), L"|");
 
-    size_t const len = StringCchLenW(lpszExt, COUNTOF(lpszExt));
+    size_t const len = StringCchLen(lpszExt, COUNTOF(lpszExt));
     if (len < _min || len > _max) {
         if (StrStrIW(binaryExt, lpszExt)) {
             return true;
@@ -2938,24 +2938,31 @@ bool Style_GetFileFilterStr(LPWSTR lpszFilter, int cchFilter, LPWSTR lpszDefExt,
 
 //=============================================================================
 
-static WCHAR _DefaultCodingFont[LF_FACESIZE+1] = { L"\0" }; // session static
-
-static inline void GetDefaultCodeFont(LPWSTR pwchFontName, int cchFont)
+static inline void GetDefaultCodeFont(LPWSTR pwchFontName, int cchFont, int iStartIdx)
 {
+    static WCHAR _DefaultCodingFont[LF_FACESIZE] = { L"\0" }; // session static
+
     StringCchCopy(pwchFontName, cchFont, _DefaultCodingFont);
 
-    if (StrIsNotEmpty(pwchFontName)) {
+    if (StrIsNotEmpty(pwchFontName) && (pwchFontName[0] != L'$')) {
         return;
     }
 
-    unsigned const countof = COUNTOF(Settings2.CodeFontPrefPrioList);
-
-    unsigned i = 0;
-    for ( ; i < countof; ++i) {
+    for (unsigned i = iStartIdx; i < COUNTOF(Settings2.CodeFontPrefPrioList); ++i) {
         LPCWSTR const fontName = Settings2.CodeFontPrefPrioList[i];
         if (IsFontAvailable(fontName)) {
             StringCchCopy(pwchFontName, cchFont, fontName);
             break;
+        }
+    }
+    if (StrIsEmpty(pwchFontName)) {
+        // use internal list
+        for (unsigned i = iStartIdx; i < COUNTOF(g_CodeFontPrioList); ++i) {
+            LPCWSTR const fontName = g_CodeFontPrioList[i];
+            if (IsFontAvailable(fontName)) {
+                StringCchCopy(pwchFontName, cchFont, fontName);
+                break;
+            }
         }
     }
     if (StrIsEmpty(pwchFontName)) {
@@ -2965,24 +2972,31 @@ static inline void GetDefaultCodeFont(LPWSTR pwchFontName, int cchFont)
 }
 
 
-static WCHAR _DefaultTextFont[LF_FACESIZE+1] = { L"\0" }; // session static
-
-static inline void GetDefaultTextFont(LPWSTR pwchFontName, int cchFont)
+static inline void GetDefaultTextFont(LPWSTR pwchFontName, int cchFont, int iStartIdx)
 {
-    StringCchCopy(pwchFontName, LF_FACESIZE, _DefaultTextFont);
+    static WCHAR _DefaultTextFont[LF_FACESIZE] = { L"\0" }; // session static
 
-    if (StrIsNotEmpty(_DefaultTextFont)) {
+    StringCchCopy(pwchFontName, cchFont, _DefaultTextFont);
+
+    if (StrIsNotEmpty(pwchFontName) && (pwchFontName[0] != L'$')) {
         return;
     }
 
-    unsigned const countof = COUNTOF(Settings2.TextFontPrefPrioList);
-
-    unsigned i = 0;
-    for (; i < countof; ++i) {
+    for (unsigned i = iStartIdx; i < COUNTOF(Settings2.TextFontPrefPrioList); ++i) {
         LPCWSTR const fontName = Settings2.TextFontPrefPrioList[i];
         if (IsFontAvailable(fontName)) {
             StringCchCopy(pwchFontName, cchFont, fontName);
             break;
+        }
+    }
+    if (StrIsEmpty(pwchFontName)) {
+        // use internal list
+        for (unsigned i = iStartIdx; i < COUNTOF(g_TextFontPrioList); ++i) {
+            LPCWSTR const fontName = g_TextFontPrioList[i];
+            if (IsFontAvailable(fontName)) {
+                StringCchCopy(pwchFontName, cchFont, fontName);
+                break;
+            }
         }
     }
     if (StrIsEmpty(pwchFontName)) {
@@ -3010,17 +3024,27 @@ bool Style_StrGetFontName(LPCWSTR lpszStyle, LPWSTR lpszFont, int cchFont)
         }
         TrimSpcW(lpszFont);
 
-        if ((StringCchCompareXI(lpszFont, L"$Code") == 0) || (StringCchCompareXI(lpszFont, L"Default") == 0)) {
+        if (StringCchCompareXI(lpszFont, L"Default") == 0) {
 
-            GetDefaultCodeFont(lpszFont, cchFont);
+            GetDefaultCodeFont(lpszFont, cchFont, 0);
 
-        } else if (StringCchCompareXI(lpszFont, L"$Text") == 0) {
+        }
+        else if (StringCchStartsWithI(lpszFont, L"$Code")) {
 
-            GetDefaultTextFont(lpszFont, cchFont);
+            int idx = 0;
+            Str2Int(&lpszFont[CONSTSTRGLEN(L"$Code")], &idx);
+            GetDefaultCodeFont(lpszFont, cchFont, idx);
+
+        }
+        else if (StringCchStartsWithI(lpszFont, L"$Text")) {
+
+            int idx = 0;
+            Str2Int(&lpszFont[CONSTSTRGLEN(L"$Text")], &idx);
+            GetDefaultTextFont(lpszFont, cchFont, idx);
 
         } else if (!IsFontAvailable(lpszFont)) {
 
-            GetDefaultCodeFont(lpszFont, cchFont);
+            GetDefaultCodeFont(lpszFont, cchFont, 0);
 
         }
         return true; // font: defined
@@ -3075,8 +3099,8 @@ bool Style_StrGetCharSet(LPCWSTR lpszStyle, int* i)
     if (p) {
         p += CONSTSTRGLEN(L"charset:");
         int iValue = 0;
-        if (Char2Int(p, &iValue)) {
-            *i = max_i(SC_CHARSET_ANSI, iValue);
+        if (Str2Int(p, &iValue)) {
+            *i = (int)max_l(SC_CHARSET_ANSI, iValue);
             return true;
         }
     }
@@ -3090,10 +3114,12 @@ bool Style_StrGetCharSet(LPCWSTR lpszStyle, int* i)
 //
 bool Style_StrGetSizeInt(LPCWSTR lpszStyle, int* i)
 {
-    WCHAR *p = StrStr(lpszStyle, L"size:");
-    if (p) {
-        p += CONSTSTRGLEN(L"size:");
-        return Char2Int(p, i);
+    if (i) {
+        WCHAR* p = StrStr(lpszStyle, L"size:");
+        if (p) {
+            p += CONSTSTRGLEN(L"size:");
+            return Str2Int(p, i);
+        }
     }
     return false;
 }
@@ -3105,35 +3131,37 @@ bool Style_StrGetSizeInt(LPCWSTR lpszStyle, int* i)
 //
 bool Style_StrGetSizeIntEx(LPCWSTR lpszStyle, int* i)
 {
-    WCHAR* p = StrStr(lpszStyle, L"size:");
-    if (p) {
-        int   iSign = 0;
-        WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-        StringCchCopy(tch, COUNTOF(tch), p + CONSTSTRGLEN(L"size:"));
-        if (tch[0] == L'+') {
-            iSign = 1;
-            tch[0] = L' ';
-        }
-        else if (tch[0] == L'-') {
-            iSign = -1;
-            tch[0] = L' ';
-        }
-        p = StrChr(tch, L';');
+    if (i) {
+        WCHAR* p = StrStr(lpszStyle, L"size:");
         if (p) {
-            *p = L'\0';
-        }
-        TrimSpcW(tch);
+            int   iSign = 0;
+            WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
+            StringCchCopy(tch, COUNTOF(tch), p + CONSTSTRGLEN(L"size:"));
+            if (tch[0] == L'+') {
+                iSign = 1;
+                tch[0] = L' ';
+            }
+            else if (tch[0] == L'-') {
+                iSign = -1;
+                tch[0] = L' ';
+            }
+            p = StrChr(tch, L';');
+            if (p) {
+                *p = L'\0';
+            }
+            TrimSpcW(tch);
 
-        int   iValue = 0;
-        if (Char2Int(tch, &iValue)) {
-            if (iSign == 0) {
-                *i = iValue;
+            int iValue = 0;
+            if (Str2Int(tch, &iValue)) {
+                if (iSign == 0) {
+                    *i = iValue;
+                }
+                else {                         // iSign: relative value
+                    iValue = (iSign * iValue); // can be negative
+                    *i += iValue;
+                }
+                return true;
             }
-            else {                         // iSign: relative value
-                iValue = (iSign * iValue); // can be negative
-                *i += iValue;
-            }
-            return true;
         }
     }
     return false;
@@ -3149,7 +3177,7 @@ bool Style_StrGetSizeFloat(LPCWSTR lpszStyle, float* f)
     WCHAR *p = StrStr(lpszStyle, L"size:");
     if (p) {
         p += CONSTSTRGLEN(L"size:");
-        return Char2Float(p, f);
+        return Str2Float(p, f);
     }
     return false;
 }
@@ -3181,7 +3209,7 @@ bool Style_StrGetSizeFloatEx(LPCWSTR lpszStyle, float* f)
         TrimSpcW(tch);
 
         float fValue = 0.0;
-        if (StrToFloat(tch, &fValue)) {
+        if (StrToFloatEx(tch, &fValue)) {
             if (fSign == 0) {
                 *f = Round10th(fValue);
             }
@@ -3214,7 +3242,7 @@ bool Style_StrGetSizeStr(LPCWSTR lpszStyle, LPWSTR lpszSize, int cchSize)
         TrimSpcW(tch);
         // --- normalize ---
         float fValue = 0.0f;
-        if (StrToFloat(tch, &fValue)) {
+        if (StrToFloatEx(tch, &fValue)) {
             WCHAR wchFloatVal[64];
             fValue = (float)fabs(fValue);
             bool const isZero = (fValue == 0.0f);
@@ -3332,7 +3360,7 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORALPHAREF* rgba
     WCHAR*              p = StrStr(lpszStyle, pItem);
     if (p) {
         WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-        StringCchCopy(tch, COUNTOF(tch), p + StringCchLenW(pItem, 0));
+        StringCchCopy(tch, COUNTOF(tch), p + StringCchLen(pItem, 0));
         if (tch[0] == L'#') {
             tch[0] = L' ';
         }
@@ -3382,7 +3410,7 @@ bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, const int defAlpha, co
     WCHAR* p = StrStr(lpszStyle, strAlpha);
     if (p) {
         WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
-        StringCchCopy(tch, COUNTOF(tch), p + StringCchLenW(strAlpha,0));
+        StringCchCopy(tch, COUNTOF(tch), p + StringCchLen(strAlpha,0));
         p = StrChr(tch, L';');
         if (p) {
             *p = L'\0';
@@ -3426,7 +3454,7 @@ bool Style_StrGetStrokeWidth(HWND hwnd, int indicID, LPCWSTR lpszStyle, int *piS
 //  WCHAR tch[BUFSIZE_STYLE_VALUE] = { L'\0' };
 //  WCHAR *p = StrStr(lpszStyle, lpszProperty);
 //  if (p) {
-//    StringCchCopy(tch, COUNTOF(tch), (p + StringCchLenW(lpszProperty,0)));
+//    StringCchCopy(tch, COUNTOF(tch), (p + StringCchLen(lpszProperty,0)));
 //    p = StrChr(tch, L';');
 //    if (p)
 //      *p = L'\0';
@@ -3693,9 +3721,8 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
 {
 
     // Map lpszStyle to LOGFONT
-    const WCHAR *const defaultFontTemplate = L"font:$Code";
     WCHAR wchDefaultFontName[LF_FACESIZE] = { L'\0' };
-    Style_StrGetFontName(defaultFontTemplate, wchDefaultFontName, COUNTOF(wchDefaultFontName));
+    GetDefaultCodeFont(wchDefaultFontName, COUNTOF(wchDefaultFontName), 0);
 
     // current base style
     const WCHAR *const lpszBaseStyleDefinition = GetCurrentStdLexer()->Styles[STY_DEFAULT].szValue;
@@ -3870,7 +3897,7 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
     WCHAR szNewStyle[BUFSIZE_STYLE_VALUE] = { L'\0' };
 
     if (StringCchCompareX(lf.lfFaceName, wchDefaultFontName) == 0) {
-        StringCchCopy(szNewStyle, COUNTOF(szNewStyle), defaultFontTemplate);
+        StringCchCopy(szNewStyle, COUNTOF(szNewStyle), L"font:$Code0");
     } else {
         StringCchPrintf(szNewStyle, COUNTOF(szNewStyle), L"font:%s", lf.lfFaceName);
     }
@@ -4029,7 +4056,8 @@ void Style_SetStyles(HWND hwnd, const int iStyle, LPCWSTR lpszStyle, const float
     WCHAR wchFontName[LF_FACESIZE] = { L'\0' };
     if (!Style_StrGetFontName(lpszStyle, wchFontName, COUNTOF(wchFontName))) {
         if (bIsDefaultStyle) {
-            Style_StrGetFontName(L"font:$Code", wchFontName, COUNTOF(wchFontName));
+            //?Style_StrGetFontName(GetCurrentStdLexer()->Styles[STY_DEFAULT].szValue, wchFontName, COUNTOF(wchFontName));
+            GetDefaultCodeFont(wchFontName, COUNTOF(wchFontName), 0);
         }
     }
     if (StrIsNotEmpty(wchFontName)) {

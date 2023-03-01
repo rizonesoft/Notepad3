@@ -212,20 +212,20 @@ inline DWORD GetNumberOfProcessors()
 
 // ----------------------------------------------------------------------------
 
-inline bool Char2Int(LPCWSTR str, int *value) {
+inline bool Str2Int(LPCWSTR str, int *value) {
     LPWSTR end;
     *value = (int)wcstol(str, &end, 10);
     return (str != end);
 }
 
-inline bool Char2Float(LPCWSTR str, float* value)
+inline bool Str2Float(LPCWSTR str, float* value)
 {
     LPWSTR end;
     *value = (float)wcstod(str, &end);
     return (str != end);
 }
 
-bool StrToFloat(WCHAR *wnumber, float *fresult);
+bool StrToFloatEx(WCHAR *wnumber, float *fresult);
 void FloatToStr(float fValue, LPWSTR lpszStrg, int cchSize);
 
 // ----------------------------------------------------------------------------
@@ -623,8 +623,8 @@ inline void SwabEx(char* src, char* dest, size_t n)
 
 //==== StrCut methods ===================
 
-CHAR*  StrCutIA(CHAR* s,const CHAR* pattern);
-WCHAR* StrCutIW(WCHAR* s,const WCHAR* pattern);
+WCHAR* StrCutIW(WCHAR* s, const WCHAR* pattern);
+CHAR*  StrCutIA(CHAR* s, const CHAR* pattern);
 #if defined(UNICODE) || defined(_UNICODE)
 #define StrCutI StrCutIW
 #else
@@ -633,8 +633,8 @@ WCHAR* StrCutIW(WCHAR* s,const WCHAR* pattern);
 
 
 //==== StrNextTok methods ===================
-CHAR*  StrNextTokA(CHAR* strg, const CHAR* tokens);
 WCHAR* StrNextTokW(WCHAR* strg, const WCHAR* tokens);
+CHAR*  StrNextTokA(CHAR* strg, const CHAR* tokens);
 #if defined(UNICODE) || defined(_UNICODE)
 #define StrNextTok StrNextTokW
 #else
@@ -643,71 +643,58 @@ WCHAR* StrNextTokW(WCHAR* strg, const WCHAR* tokens);
 
 // ----------------------------------------------------------------------------
 
-bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove);
 bool StrDelChrW(LPWSTR pszSource, LPCWSTR pCharsToRemove);
+bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove);
 #if defined(UNICODE) || defined(_UNICODE)
-#define StrDelChr(s,r) StrDelChrW((s),(r))
+#define StrDelChr(s, r) StrDelChrW((s), (r))
 #else
-#define StrDelChr(s,r) StrDelChrA((s),(r))
+#define StrDelChr(s, r) StrDelChrA((s), (r))
 #endif
 
 
 //==== StrSafe lstrlen() =======================================================
-//inline size_t StringCchLenA(LPCSTR s, size_t n) {
-//  n = (n ? n : STRSAFE_MAX_CCH); size_t len; return (size_t)(!s ? 0 : (SUCCEEDED(StringCchLengthA(s, n, &len)) ? len : n));
-//}
-//inline size_t StringCchLenW(LPCWSTR s, size_t n) {
-//  n = (n ? n : STRSAFE_MAX_CCH); size_t len; return (size_t)(!s ? 0 : (SUCCEEDED(StringCchLengthW(s, n, &len)) ? len : n));
-//}
 
-inline size_t StringCchLenA(LPCSTR s, size_t n)
-{
-    n = (n ? n : STRSAFE_MAX_CCH);
-    return (s ? strnlen_s(s, n) : 0LL);
-}
+// inline size_t StringCchLenW(LPCWSTR s, size_t n) {
+//   n = (n ? n : STRSAFE_MAX_CCH); size_t len; return (size_t)(!s ? 0 : (SUCCEEDED(StringCchLengthW(s, n, &len)) ? len : n));
+// }
 inline size_t StringCchLenW(LPCWSTR s, size_t n)
 {
     n = (n ? n : STRSAFE_MAX_CCH);
     return (s ? wcsnlen_s(s, n) : 0LL);
 }
-
+// inline size_t StringCchLenA(LPCSTR s, size_t n) {
+//   n = (n ? n : STRSAFE_MAX_CCH); size_t len; return (size_t)(!s ? 0 : (SUCCEEDED(StringCchLengthA(s, n, &len)) ? len : n));
+// }
+inline size_t StringCchLenA(LPCSTR s, size_t n)
+{
+    n = (n ? n : STRSAFE_MAX_CCH);
+    return (s ? strnlen_s(s, n) : 0LL);
+}
 #if defined(UNICODE) || defined(_UNICODE)
-#define StringCchLen(s,n)  StringCchLenW((s),(n))
+#define StringCchLen(s, n) StringCchLenW((s), (n))
 #else
-#define StringCchLen(s,n)  StringCchLenA((s),(n))
+#define StringCchLen(s, n) StringCchLenA((s), (n))
 #endif
 
 // ----------------------------------------------------------------------------
-
-inline char* StrEndA(const char* pStart, size_t siz)
-{
-    // cppcheck-suppress cert-EXP05-C   // Attempt to cast away const - Intended(!)
-    return (char*)(pStart + StringCchLenA(pStart, siz));
-}
 
 inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz)
 {
     // cppcheck-suppress cert-EXP05-C   // Attempt to cast away const - Intended(!)
     return (WCHAR*)(pStart + StringCchLenW(pStart, siz));
 }
-
+inline char* StrEndA(const char* pStart, size_t siz)
+{
+    // cppcheck-suppress cert-EXP05-C   // Attempt to cast away const - Intended(!)
+    return (char*)(pStart + StringCchLenA(pStart, siz));
+}
 #if defined(UNICODE) || defined(_UNICODE)
-#define StrEnd(s,n) StrEndW((s),(n))
+#define StrEnd(s, n) StrEndW((s), (n))
 #else
-#define StrEnd(s,n) StrEndA((s),(n))
+#define StrEnd(s, n) StrEndA((s), (n))
 #endif
 
 // ----------------------------------------------------------------------------
-
-inline void StrReplChrA(CHAR* pStrg, const CHAR chSearch, const CHAR chReplace)
-{
-    while (pStrg && *pStrg) {
-        if (*pStrg == chSearch) {
-            *pStrg = chReplace;
-        }
-        ++pStrg;
-    }
-}
 
 inline void StrReplChrW(WCHAR* pStrg, const WCHAR chSearch, const WCHAR chReplace)
 {
@@ -718,7 +705,15 @@ inline void StrReplChrW(WCHAR* pStrg, const WCHAR chSearch, const WCHAR chReplac
         ++pStrg;
     }
 }
-
+inline void StrReplChrA(CHAR* pStrg, const CHAR chSearch, const CHAR chReplace)
+{
+    while (pStrg && *pStrg) {
+        if (*pStrg == chSearch) {
+            *pStrg = chReplace;
+        }
+        ++pStrg;
+    }
+}
 #if defined(UNICODE) || defined(_UNICODE)
 #define StrReplChr(str, cs, cr) StrReplChrW((str), (cs), (cr))
 #else
@@ -730,23 +725,21 @@ inline void StrReplChrW(WCHAR* pStrg, const WCHAR chSearch, const WCHAR chReplac
 //==== StrSafe lstrcmp(),lstrcmpi() =============================================
 
 // NOTE: !!! differences in AutoCompleteList depending compare functions (CRT vs. Shlwapi)) !!!
+#define StringCchCompareNW(s1, l1, s2, l2) StrCmpNW((s1), (s2), min_i((int)(l1), (int)(l2)))
+#define StringCchCompareXW(s1, s2) StrCmpW((s1), (s2))
 
-#define StringCchCompareNA(s1,l1,s2,l2)   StrCmpNA((s1),(s2),min_i((int)(l1),(int)(l2)))
-//#define StringCchCompareNA(s1,l1,s2,l2)   strncmp((s1),(s2),min_s((l1),(l2)))
-#define StringCchCompareXA(s1,s2)         StrCmpA((s1),(s2))
-//#define StringCchCompareXA(s1,s2)         strcmp((s1),(s2))
+#define StringCchCompareNIW(s1, l1, s2, l2) StrCmpNIW((s1), (s2), min_i((int)(l1), (int)(l2)))
+#define StringCchCompareXIW(s1, s2) StrCmpIW((s1), (s2))
 
-#define StringCchCompareNIA(s1,l1,s2,l2)  StrCmpNIA((s1),(s2),min_i((int)(l1),(int)(l2)))
-//#define StringCchCompareNIA(s1,l1,s2,l2)  _strnicmp((s1),(s2),min_s((l1),(l2)))
-#define StringCchCompareXIA(s1,s2)        StrCmpIA((s1),(s2))
-//#define StringCchCompareXIA(s1,s2)        _stricmp((s1),(s2))
+#define StringCchCompareNA(s1, l1, s2, l2) StrCmpNA((s1), (s2), min_i((int)(l1), (int)(l2)))
+// #define StringCchCompareNA(s1,l1,s2,l2)   strncmp((s1),(s2),min_s((l1),(l2)))
+#define StringCchCompareXA(s1, s2) StrCmpA((s1), (s2))
+// #define StringCchCompareXA(s1,s2)         strcmp((s1),(s2))
 
-
-#define StringCchCompareNW(s1,l1,s2,l2)   StrCmpNW((s1),(s2),min_i((int)(l1),(int)(l2)))
-#define StringCchCompareXW(s1,s2)         StrCmpW((s1),(s2))
-
-#define StringCchCompareNIW(s1,l1,s2,l2)  StrCmpNIW((s1),(s2),min_i((int)(l1),(int)(l2)))
-#define StringCchCompareXIW(s1,s2)        StrCmpIW((s1),(s2))
+#define StringCchCompareNIA(s1, l1, s2, l2) StrCmpNIA((s1), (s2), min_i((int)(l1), (int)(l2)))
+// #define StringCchCompareNIA(s1,l1,s2,l2)  _strnicmp((s1),(s2),min_s((l1),(l2)))
+#define StringCchCompareXIA(s1, s2) StrCmpIA((s1), (s2))
+// #define StringCchCompareXIA(s1,s2)        _stricmp((s1),(s2))
 
 #if defined(UNICODE) || defined(_UNICODE)
 #define StringCchCompareN(s1,l1,s2,l2)   StringCchCompareNW((s1),(l1),(s2),(l2))
@@ -759,6 +752,21 @@ inline void StrReplChrW(WCHAR* pStrg, const WCHAR chSearch, const WCHAR chReplac
 #define StringCchCompareNI(s1,l1,s2,l2)  StringCchCompareNIA((s1),(l1),(s2),(l2))
 #define StringCchCompareXI(s1,s2)        StringCchCompareXIA((s1),(s2))
 #endif
+
+
+#define StringCchStartsWithW(s1, s2)     (StrCmpNW((s1), (s2),  (int)StringCchLenW((s2),0)) == 0)
+#define StringCchStartsWithIW(s1, s2)    (StrCmpNIW((s1), (s2), (int)StringCchLenW((s2),0)) == 0)
+#define StringCchStartsWithA(s1, s2)     (StrCmpNA((s1), (s2),  (int)StringCchLenA((s2),0)) == 0)
+#define StringCchStartsWithIA(s1, s2)    (StrCmpNIA((s1), (s2), (int)StringCchLenA((s2),0)) == 0)
+
+#if defined(UNICODE) || defined(_UNICODE)
+#define StringCchStartsWith(s1, s2)      StringCchStartsWithW((s1), (s2))
+#define StringCchStartsWithI(s1,s2)      StringCchStartsWithIW((s1),(s2))
+#else
+#define StringCchStartsWith(s1,s2)       StringCchStartsWithA((s1),(s2))
+#define StringCchStartsWithI(s1,s2)      StringCchStartsWithIA((s1),(s2))
+#endif
+
 
 #ifdef __cplusplus
 #undef NULL

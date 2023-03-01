@@ -742,7 +742,7 @@ bool PTHAPI Path_Append(HPATHL hpth_in_out, LPCWSTR more)
         return false;
 
     size_t const hstr_len = StrgGetLength(hstr_io);
-    size_t const hmore_len = StringCchLenW(more, 0);
+    size_t const hmore_len = StringCchLen(more, 0);
     if (!hmore_len) {
         return true;
     }

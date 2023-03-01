@@ -426,17 +426,17 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
             if (Settings.PrintHeader < 3) {
                 ExtTextOut(hdc, frPrint.rc.left + 5, frPrint.rc.top - headerLineHeight / 2,
                            /*ETO_OPAQUE*/0, &rcw, pszDocTitle,
-                           (UINT)StringCchLenW(pszDocTitle,0), nullptr);
+                           (UINT)StringCchLen(pszDocTitle,0), nullptr);
             }
 
             // Print date in header
             if (Settings.PrintHeader == 0 || Settings.PrintHeader == 1) {
                 SIZE sizeInfo;
                 SelectObject(hdc,fontFooter);
-                GetTextExtentPoint32(hdc,dateString,(int)StringCchLenW(dateString,COUNTOF(dateString)),&sizeInfo);
+                GetTextExtentPoint32(hdc,dateString,(int)StringCchLen(dateString,COUNTOF(dateString)),&sizeInfo);
                 ExtTextOut(hdc, frPrint.rc.right - 5 - sizeInfo.cx, frPrint.rc.top - headerLineHeight / 2,
                            /*ETO_OPAQUE*/0, &rcw, dateString,
-                           (UINT)StringCchLenW(dateString,COUNTOF(dateString)), nullptr);
+                           (UINT)StringCchLen(dateString,COUNTOF(dateString)), nullptr);
             }
 
             if (Settings.PrintHeader < 3) {
@@ -466,10 +466,10 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 
             if (Settings.PrintFooter == 0) {
                 SIZE sizeFooter;
-                GetTextExtentPoint32(hdc,pageString,(int)StringCchLenW(pageString,COUNTOF(pageString)),&sizeFooter);
+                GetTextExtentPoint32(hdc,pageString,(int)StringCchLen(pageString,COUNTOF(pageString)),&sizeFooter);
                 ExtTextOut(hdc, frPrint.rc.right - 5 - sizeFooter.cx, frPrint.rc.bottom + footerLineHeight / 2,
                            /*ETO_OPAQUE*/0, &rcw, pageString,
-                           (UINT)StringCchLenW(pageString,COUNTOF(pageString)), nullptr);
+                           (UINT)StringCchLen(pageString,COUNTOF(pageString)), nullptr);
 
                 SetTextAlign(hdc, ta);
                 HPEN pen = ::CreatePen(0, 1, RGB(0,0,0));

@@ -4307,7 +4307,7 @@ static INT_PTR CALLBACK AutoSaveBackupSettingsDlgProc(HWND hwnd, UINT umsg, WPAR
             if (iExprErr) {
                 WCHAR wch[32];
                 GetDlgItemText(hwnd, IDC_AUTOSAVE_INTERVAL, wch, COUNTOF(wch));
-                StrToFloat(wch, &interval);
+                StrToFloatEx(wch, &interval);
             }
             Settings.AutoSaveInterval = clampi(f2int(interval * 1000.0f), 2000, USER_TIMER_MAXIMUM);
             EndDialog(hwnd, IDOK);
@@ -6156,7 +6156,7 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
         pTemplate->style |= DS_SHELLFONT;
     }
 
-    size_t const cbNew = cbFontAttr + ((StringCchLenW(wchFaceName, COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
+    size_t const cbNew = cbFontAttr + ((StringCchLen(wchFaceName, COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
     BYTE* const pbNew = (BYTE*)wchFaceName;
 
     BYTE* pb = DialogTemplate_GetFontSizeField(pTemplate);

@@ -96,10 +96,10 @@ static const WCHAR* const _s_RecentReplace = L"Recent Replace";
 
 // ----------------------------------------------------------------------------
 
-const WCHAR* const CodeFontPrioList[] = { L"Cascadia Code", L"Cascadia Mono", L"Cousine", L"Fira Code",
+const WCHAR* const g_CodeFontPrioList[10] = { L"Cascadia Code", L"Cascadia Mono", L"Cousine", L"Fira Code",
     L"Source Code Pro", L"Roboto Mono", L"DejaVu Sans Mono", L"Inconsolata", L"Consolas", L"Lucida Console" };
 
-const WCHAR* const TextFontPrioList[] = { L"Cascadia Mono", L"Cousine", L"Roboto Mono", L"DejaVu Sans Mono",
+const WCHAR* const g_TextFontPrioList[7] = { L"Cascadia Mono", L"Cousine", L"Roboto Mono", L"DejaVu Sans Mono",
     L"Inconsolata", L"Consolas", L"Lucida Console" };
 
 WCHAR CodeFontPrioListStrgBuf[LARGE_BUFFER] = { 0 };
@@ -263,12 +263,12 @@ extern "C" bool CopyToTmpCache(LPCSTR lpIniFileResource) {
 }
 
 extern "C" size_t TmpCacheGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
-    LPWSTR lpReturnedString, size_t cchReturnedString) {
+    LPWSTR lpReturnedString, const size_t cchReturnedString) {
     bool bHasMultiple = false;
     StringCchCopy(lpReturnedString, cchReturnedString,
         s_TMPINI.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
     //assert(!bHasMultiple);
-    return StringCchLenW(lpReturnedString, cchReturnedString);
+    return StringCchLen(lpReturnedString, cchReturnedString);
 }
 
 extern "C" bool TmpCacheSetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString) {
@@ -445,26 +445,26 @@ extern "C" bool CloseSettingsFile(LPCSTR fctname, bool bSaveSettings)
 
 
 extern "C" size_t IniSectionGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
-                                      LPWSTR lpReturnedString, size_t cchReturnedString)
+                                      LPWSTR lpReturnedString, const size_t cchReturnedString)
 {
     bool bHasMultiple = false;
     StringCchCopy(lpReturnedString, cchReturnedString,
                    s_INI.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
     //assert(!bHasMultiple);
-    return StringCchLenW(lpReturnedString, cchReturnedString);
+    return StringCchLen(lpReturnedString, cchReturnedString);
 }
 // ============================================================================
 
 
 extern "C" size_t IniSectionGetStringNoQuotes(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
-                                              LPWSTR lpReturnedString, size_t cchReturnedString)
+                                              LPWSTR lpReturnedString, const size_t cchReturnedString)
 {
     bool bHasMultiple = false;
     StringCchCopy(lpReturnedString, cchReturnedString,
                    s_INI.GetValue(lpSectionName, lpKeyName, lpDefault, &bHasMultiple));
     //assert(!bHasMultiple);
     StrTrim(lpReturnedString, L"\"'");
-    return StringCchLenW(lpReturnedString, cchReturnedString);
+    return StringCchLen(lpReturnedString, cchReturnedString);
 }
 // ============================================================================
 
@@ -612,7 +612,7 @@ extern "C" size_t IniFileGetString(const HPATHL hpthIniFile, LPCWSTR lpSectionNa
 {
     if (Path_IsEmpty(hpthIniFile)) {
         StringCchCopy(lpReturnedString, cchReturnedString, lpDefault);
-        return StringCchLenW(lpReturnedString, cchReturnedString);
+        return StringCchLen(lpReturnedString, cchReturnedString);
     }
 
     CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
@@ -621,7 +621,7 @@ extern "C" size_t IniFileGetString(const HPATHL hpthIniFile, LPCWSTR lpSectionNa
     HANDLE     hFile = AcquireReadFileLock(Path_Get(hpthIniFile), ovrLpd);
     if (!IS_VALID_HANDLE(hFile)) {
         StringCchCopy(lpReturnedString, cchReturnedString, lpDefault);
-        return StringCchLenW(lpReturnedString, cchReturnedString);
+        return StringCchLen(lpReturnedString, cchReturnedString);
     }
 
     SI_Error const rc = Ini.LoadFile(hFile);
@@ -634,7 +634,7 @@ extern "C" size_t IniFileGetString(const HPATHL hpthIniFile, LPCWSTR lpSectionNa
     } else {
         StringCchCopy(lpReturnedString, cchReturnedString, lpDefault);
     }
-    return StringCchLenW(lpReturnedString, cchReturnedString);
+    return StringCchLen(lpReturnedString, cchReturnedString);
 }
 // ============================================================================
 
@@ -1243,13 +1243,18 @@ void LoadSettings()
     IniSectionGetStringNoQuotes(IniSecSettings2, L"FileDlgFilters", L"", pPathBuffer, XHUGE_BUFFER);
     StrgReset(Settings2.FileDlgFilters, pPathBuffer);
 
-    Settings2.FileCheckInterval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInterval", 0), 0, 86400000 << 2); // max: 48h
+    // handle deprecated (typo) key 'FileCheckInverval'
+    int const dfci = IniSectionGetInt(IniSecSettings2, L"FileCheckInverval", 0);
+    Settings2.FileCheckInterval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInterval", dfci), 0, 86400000 << 2); // max: 48h
     // handle deprecated old "AutoReloadTimeout"
     int const          autoReload = IniSectionGetInt(IniSecSettings2, L"AutoReloadTimeout", -1); // deprecated
     unsigned int const fci = max_u(250, (autoReload > 0) ? max_u(autoReload, Settings2.FileCheckInterval) : Settings2.FileCheckInterval);
-    if ((Settings2.FileCheckInterval > 0) && (fci != Settings2.FileCheckInterval)) {
+    if (((Settings2.FileCheckInterval > 0) && (fci != Settings2.FileCheckInterval)) || (dfci != 0)) {
         Settings2.FileCheckInterval = fci;
         IniSectionSetInt(IniSecSettings2, L"FileCheckInterval", Settings2.FileCheckInterval);
+        if (dfci != 0) {
+            IniSectionDelete(IniSecSettings2, L"FileCheckInverval", true); // deprecated wrong (typo) name
+        }
         bDirtyFlag = true;
     }
     FileWatching.FileCheckInterval = Settings2.FileCheckInterval;
@@ -1392,8 +1397,8 @@ void LoadSettings()
     }
 
     for (int i = 0; i < COUNTOF(Settings2.CodeFontPrefPrioList); ++i) {
-        if (i < COUNTOF(CodeFontPrioList))
-            Settings2.CodeFontPrefPrioList[i] = CodeFontPrioList[i];
+        if (i < COUNTOF(g_CodeFontPrioList))
+            Settings2.CodeFontPrefPrioList[i] = g_CodeFontPrioList[i];
         else
             Settings2.CodeFontPrefPrioList[i] = nullptr;
     }
@@ -1412,8 +1417,8 @@ void LoadSettings()
     }
 
     for (int i = 0; i < COUNTOF(Settings2.TextFontPrefPrioList); ++i) {
-        if (i < COUNTOF(TextFontPrioList))
-            Settings2.TextFontPrefPrioList[i] = TextFontPrioList[i];
+        if (i < COUNTOF(g_TextFontPrioList))
+            Settings2.TextFontPrefPrioList[i] = g_TextFontPrioList[i];
         else
             Settings2.TextFontPrefPrioList[i] = nullptr;
     }

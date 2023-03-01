@@ -7964,7 +7964,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
         StrTrim(szTextW, L" \r\n\t");
 
         const WCHAR* const chkPreFix = L"file://";
-        size_t const lenPfx = StringCchLenW(chkPreFix, 0);
+        size_t const lenPfx = StringCchLen(chkPreFix, 0);
 
         if (operation & SELECT_HYPERLINK) {
 
@@ -9199,7 +9199,7 @@ void ParseCommandLine()
     // Good old console can also send args separated by Tabs
     StrTab2Space(lpCmdLine);
 
-    size_t const len = StringCchLenW(lpCmdLine,0) + 2UL;
+    size_t const len = StringCchLen(lpCmdLine,0) + 2UL;
     LPWSTR const lp1 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
     LPWSTR const lp2 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
     LPWSTR const lp3 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
@@ -9242,8 +9242,8 @@ void ParseCommandLine()
                 LPWSTR const lpFileBuf = AllocMem(sizeof(WCHAR) * len, HEAP_ZERO_MEMORY);
                 if (lpFileBuf) {
 
-                    size_t const fileArgLen = StringCchLenW(lp3, len);
-                    s_cchiFileList = (int)(StringCchLenW(lpCmdLine, len - 2) - fileArgLen);
+                    size_t const fileArgLen = StringCchLen(lp3, len);
+                    s_cchiFileList = (int)(StringCchLen(lpCmdLine, len - 2) - fileArgLen);
 
                     if (s_lpOrigFileArg) {
                         FreeMem(s_lpOrigFileArg);
@@ -12101,9 +12101,9 @@ bool ActivatePrevInst()
                 cb += (Path_GetLength(s_pthArgFilePath) + 1) * sizeof(WCHAR);
 
                 if (s_lpSchemeArg) {
-                    cb += (StringCchLenW(s_lpSchemeArg, 0) + 1) * sizeof(WCHAR);
+                    cb += (StringCchLen(s_lpSchemeArg, 0) + 1) * sizeof(WCHAR);
                 }
-                size_t cchTitleExcerpt = StringCchLenW(s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt));
+                size_t cchTitleExcerpt = StringCchLen(s_wchTitleExcerpt,COUNTOF(s_wchTitleExcerpt));
                 if (cchTitleExcerpt) {
                     cb += (cchTitleExcerpt + 1) * sizeof(WCHAR);
                 }
@@ -12299,7 +12299,7 @@ bool RelaunchElevated(LPCWSTR lpNewCmdLnArgs)
     }
 
     LPCWSTR      lpCmdLine = GetCommandLine();
-    size_t const wlen = StringCchLenW(lpCmdLine, 0) + 2ULL;
+    size_t const wlen = StringCchLen(lpCmdLine, 0) + 2ULL;
 
     HPATHL hfile = Path_Allocate(NULL);
     wchar_t* const fbuf = Path_WriteAccessBuf(hfile, PATHLONG_MAX_CCH);
