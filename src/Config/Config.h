@@ -151,6 +151,9 @@ bool      MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool
 
 // ----------------------------------------------------------------------------
 
+extern const WCHAR* const g_CodeFontPrioList[10];
+extern const WCHAR* const g_TextFontPrioList[7];
+
 #ifdef __cplusplus
 }
 #endif

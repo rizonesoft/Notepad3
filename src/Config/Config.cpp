@@ -96,10 +96,10 @@ static const WCHAR* const _s_RecentReplace = L"Recent Replace";
 
 // ----------------------------------------------------------------------------
 
-const WCHAR* const CodeFontPrioList[] = { L"Cascadia Code", L"Cascadia Mono", L"Cousine", L"Fira Code",
+const WCHAR* const g_CodeFontPrioList[10] = { L"Cascadia Code", L"Cascadia Mono", L"Cousine", L"Fira Code",
     L"Source Code Pro", L"Roboto Mono", L"DejaVu Sans Mono", L"Inconsolata", L"Consolas", L"Lucida Console" };
 
-const WCHAR* const TextFontPrioList[] = { L"Cascadia Mono", L"Cousine", L"Roboto Mono", L"DejaVu Sans Mono",
+const WCHAR* const g_TextFontPrioList[7] = { L"Cascadia Mono", L"Cousine", L"Roboto Mono", L"DejaVu Sans Mono",
     L"Inconsolata", L"Consolas", L"Lucida Console" };
 
 WCHAR CodeFontPrioListStrgBuf[LARGE_BUFFER] = { 0 };
@@ -1392,8 +1392,8 @@ void LoadSettings()
     }
 
     for (int i = 0; i < COUNTOF(Settings2.CodeFontPrefPrioList); ++i) {
-        if (i < COUNTOF(CodeFontPrioList))
-            Settings2.CodeFontPrefPrioList[i] = CodeFontPrioList[i];
+        if (i < COUNTOF(g_CodeFontPrioList))
+            Settings2.CodeFontPrefPrioList[i] = g_CodeFontPrioList[i];
         else
             Settings2.CodeFontPrefPrioList[i] = nullptr;
     }
@@ -1412,8 +1412,8 @@ void LoadSettings()
     }
 
     for (int i = 0; i < COUNTOF(Settings2.TextFontPrefPrioList); ++i) {
-        if (i < COUNTOF(TextFontPrioList))
-            Settings2.TextFontPrefPrioList[i] = TextFontPrioList[i];
+        if (i < COUNTOF(g_TextFontPrioList))
+            Settings2.TextFontPrefPrioList[i] = g_TextFontPrioList[i];
         else
             Settings2.TextFontPrefPrioList[i] = nullptr;
     }
