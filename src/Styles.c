@@ -2940,13 +2940,7 @@ bool Style_GetFileFilterStr(LPWSTR lpszFilter, int cchFilter, LPWSTR lpszDefExt,
 
 static inline void GetDefaultCodeFont(LPWSTR pwchFontName, int cchFont, int iStartIdx)
 {
-    static WCHAR _DefaultCodingFont[LF_FACESIZE] = { L"\0" }; // session static
-
-    StringCchCopy(pwchFontName, cchFont, _DefaultCodingFont);
-
-    if (StrIsNotEmpty(pwchFontName) && (pwchFontName[0] != L'$')) {
-        return;
-    }
+    pwchFontName[0] = L'\0';
 
     for (unsigned i = iStartIdx; i < COUNTOF(Settings2.CodeFontPrefPrioList); ++i) {
         LPCWSTR const fontName = Settings2.CodeFontPrefPrioList[i];
@@ -2968,19 +2962,12 @@ static inline void GetDefaultCodeFont(LPWSTR pwchFontName, int cchFont, int iSta
     if (StrIsEmpty(pwchFontName)) {
         StringCchCopy(pwchFontName, cchFont, L"Courier New"); // fallback
     }
-    StringCchCopy(_DefaultCodingFont, COUNTOF(_DefaultCodingFont), pwchFontName);
 }
 
 
 static inline void GetDefaultTextFont(LPWSTR pwchFontName, int cchFont, int iStartIdx)
 {
-    static WCHAR _DefaultTextFont[LF_FACESIZE] = { L"\0" }; // session static
-
-    StringCchCopy(pwchFontName, cchFont, _DefaultTextFont);
-
-    if (StrIsNotEmpty(pwchFontName) && (pwchFontName[0] != L'$')) {
-        return;
-    }
+    pwchFontName[0] = L'\0';
 
     for (unsigned i = iStartIdx; i < COUNTOF(Settings2.TextFontPrefPrioList); ++i) {
         LPCWSTR const fontName = Settings2.TextFontPrefPrioList[i];
@@ -3003,8 +2990,8 @@ static inline void GetDefaultTextFont(LPWSTR pwchFontName, int cchFont, int iSta
         WORD _wDTFSize = 9;
         GetThemedDialogFont(pwchFontName, &_wDTFSize);
     }
-    StringCchCopy(_DefaultTextFont, COUNTOF(_DefaultTextFont), pwchFontName);
 }
+
 
 //=============================================================================
 //
