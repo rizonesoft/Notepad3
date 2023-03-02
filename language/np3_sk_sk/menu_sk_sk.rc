@@ -465,16 +465,16 @@ BEGIN
     POPUP "&Nastavenia"
     BEGIN
         MENUITEM "Tabulátor ako &medzerník",                     IDM_SET_TABSASSPACES
-        MENUITEM "&Nastavenie tabulátora...\tCtrl+T",            IDM_SET_TABSETTINGS
-        MENUITEM "Na&stavenie zalomenia slov...",                IDM_SET_WORDWRAPSETTINGS
-        MENUITEM "Nastavenie &dĺžky riadkov...",                 IDM_SET_LONGLINESETTINGS
-        MENUITEM "Auto&maticky odsadiť text",                    IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close &Quotes",                           IDM_SET_AUTOCLOSEQUOTES
-        MENUITEM "Automaticky uzatvárať zátvorky",               IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Nastavenie &tabulátora...\tCtrl+T",            IDM_SET_TABSETTINGS
+        MENUITEM "Nastavenie zalom&enia slov...",                IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "Nastavenie dĺžky &riadkov...",                 IDM_SET_LONGLINESETTINGS
+        MENUITEM "Automaticky &odsadiť text",                    IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Automaticky &uzatvárať úvodzovky",             IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Automaticky uzatvárať &zátvorky",              IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Automaticky uzatvárať &HTML/XML\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
-        MENUITEM "A&utomatické dokončovanie slov",               IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Automaticky &dokončovať slová",                IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Auto-kompletizácia kľúčových slov &Lexer",     IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Alternatívne oddeľovanie &slov\tCtrl+Alt+A",   IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "&Alternatívne oddeľovanie slov\tCtrl+Alt+A",   IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "&Iba jedna inštancia na súbor",                  IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "&Oznámenie o zmene súboru...\tAlt+F5",           IDM_SET_CHANGENOTIFY
