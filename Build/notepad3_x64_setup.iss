@@ -315,22 +315,22 @@ hun.tsk_LaunchWelcomePage=Fontos kiadási információk!
 hun.tsk_RemoveOpenWith="Megnyitás ezzel: {#app_name}" bejegyzés eltávolítása a helyi menüből
 hun.tsk_SetOpenWith="Megnyitás ezzel: {#app_name}" bejegyzés hozzáadása a helyi menühöz
 
-ind.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+ind.msg_DeleteSettings=Apakah Anda juga ingin menghapus pengaturan dan tema {#app_name}?%n%nJika Anda berencana untuk memasang kembali {#app_name}, Anda tidak perlu menghapusnya.
 #if defined(sse_required)
-ind.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+ind.msg_simd_sse=Versi {#app_name} ini memerlukan CPU dengan dukungan ekstensi SSE.%n%nTampaknya CPU Anda tidak memiliki kemampuan tersebut.
 #elif defined(sse2_required)
-ind.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+ind.msg_simd_sse2=Versi {#app_name} ini memerlukan CPU dengan dukungan ekstensi SSE2.%n%nTampaknya CPU Anda tidak memiliki kemampuan tersebut.
 #endif
-ind.tsk_AllUsers=For all users
-ind.tsk_CurrentUser=For the current user only
-ind.tsk_Other=Other tasks:
-ind.tsk_ResetSettings=Reset {#app_name}'s settings and themes
-ind.tsk_RemoveDefault=Restore Windows Notepad
-ind.tsk_SetDefault=Replace Windows Notepad with {#app_name}
-ind.tsk_StartMenuIcon=Create a Start Menu shortcut
-ind.tsk_LaunchWelcomePage=Important Release Information!
-ind.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
-ind.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+ind.tsk_AllUsers=Untuk semua pengguna
+ind.tsk_CurrentUser=Untuk pengguna saat ini
+ind.tsk_Other=Lainnya:
+ind.tsk_ResetSettings=Setel ulang pengaturan dan tema {#app_name}
+ind.tsk_RemoveDefault=Pulihkan Windows Notepad
+ind.tsk_SetDefault=Gantikan Windows Notepad dengan {#app_name}
+ind.tsk_StartMenuIcon=Buat pintasan pada Start Menu
+ind.tsk_LaunchWelcomePage=Informasi Rilis yang Penting!
+ind.tsk_RemoveOpenWith=Hapus "Open with {#app_name}" dari menu konteks
+ind.tsk_SetOpenWith=Tambahkan "Open with {#app_name}" ke menu konteks
 
 ita.msg_DeleteSettings=Volete eliminare anche le impostazioni e i temi di {#app_name}? %n%nSe intendete installare nuovamente {#app_name}, non è necessario eliminarli.
 #if defined(sse_required)
