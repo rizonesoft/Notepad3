@@ -44,7 +44,7 @@ msgstr "%ld kecocokan lainnya"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
-msgstr "%path% digantikan dengan jalur berkas, %line% dengan nomor baris yang akan dilompati, %pattern% dengan string pencarian."
+msgstr "%path% untuk jalur berkas, %line% untuk nomor yang akan dituju, %pattern% untuk pencarian string."
 
 #. Resource IDs: (119)
 msgid "&About grepWinNP3..."
@@ -169,7 +169,7 @@ msgstr "Buat berkas cadangan di folder terpisah"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr "Mode Gelap"
+msgstr "Mode gelap"
 
 #. Resource IDs: (139)
 msgid "Date modified"
@@ -181,11 +181,11 @@ msgstr "Dialog"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr "Jangan peringatkan saat menggati tanpa membuat cadangan"
+msgstr "Jangan peringatkan saat mengganti teks tanpa membuat cadangan"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr "Titik cocok dengan baris baru"
+msgstr "Titik menyertakan newline"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
@@ -229,7 +229,7 @@ msgstr "Ekstensi"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Pencocokan nama berkas:\ngunakan '|' untuk memisahkan beberapa pola pencocokan teks, tambahka&n '-' untuk mengecualikan"
+msgstr "Cocokkan nama berkas:\n'|' untuk memisahkan pola pencocokan teks, '-' untuk mengecualikan"
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -286,7 +286,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr "Pertahankan tanggal berkas saat mengganti"
+msgstr "Pertahankan tanggal berkas"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -331,7 +331,7 @@ msgstr "Lebih lama dari"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr "Hanya satu aplikasi"
+msgstr "Jalankan satu aplikasi ini saja"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
@@ -379,7 +379,7 @@ msgstr "Uji Regex"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Kecocokan regex"
+msgstr "Sesuai regex"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
@@ -419,11 +419,11 @@ msgstr "Cari"
 
 #. Resource IDs: (1026)
 msgid "Search &for:"
-msgstr "Car&i:"
+msgstr "Cari &kata:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "Pencarian peka huruf besar-kecil"
+msgstr "Pencarian peka huruf"
 
 #. Resource IDs: (1015)
 msgid "Search in"
@@ -469,7 +469,7 @@ msgstr "Ukuran"
 
 #. Resource IDs: (1006)
 msgid "Size is"
-msgstr "Ukurannya"
+msgstr "Ukuran"
 
 #. Resource IDs: (1028)
 msgid "Test regex..."
@@ -481,7 +481,7 @@ msgstr "Teks"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Kecocokan teks"
+msgstr "Sesuai teks"
 
 #. Resource IDs: (1002)
 msgid "Text search"
@@ -502,11 +502,11 @@ msgstr "Hasil teks setelah diganti:"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
-msgstr "Perlakukan berkas sebagai UTF-8"
+msgstr "Paksakan sebagai UTF-8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr "Perlakukan berkas sebagai biner"
+msgstr "Paksakan sebagai biner"
 
 #. Resource IDs: (172)
 #, c-format
@@ -596,7 +596,7 @@ msgstr "tidak ada teks yang tersedia untuk diuji"
 
 #. Resource IDs: (1074)
 msgid "Number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr "Jumlah bita NULL per MB yang diperbolehkan file agar tetap dianggap sebagai teks alih-alih biner"
+msgstr "Jumlah byte NULL per MB untuk berkas agar tetap dianggap sebagai teks daripada biner"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
