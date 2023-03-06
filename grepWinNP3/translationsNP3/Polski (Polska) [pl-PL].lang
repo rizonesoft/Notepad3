@@ -35,7 +35,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld pliki, pominięto %ld pliki. %ld wyników wybrano."
 
 #. Resource IDs: (149)
 #, c-format
@@ -157,7 +157,7 @@ msgstr "Kopiuj wyniki tekstowe do schowka"
 
 #. Resource IDs: (177)
 msgid "Copy whole column"
-msgstr ""
+msgstr "Kopiuj całą kolumnę"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
@@ -238,7 +238,7 @@ msgstr "Pliki"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr ""
+msgstr "Znaleziono %ld pliki, pominięto %ld pliki"
 
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
@@ -266,7 +266,7 @@ msgstr "Uwzględnij podfoldery"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "Uwzględnij symboliczne łącza"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
@@ -286,7 +286,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "Zachowaj datę plików podczas zamiany"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -604,7 +604,7 @@ msgstr "Wyszukiwane są tylko pliki odpowiadające temu wzorcowi.\nJako separato
 
 #. Resource IDs: (176)
 msgid "Open list with recent entries"
-msgstr ""
+msgstr "Otwórz liste ostatnich wejść"
 
 #. Resource IDs: (129)
 msgid "read error"
