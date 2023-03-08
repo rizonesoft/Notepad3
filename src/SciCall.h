@@ -98,6 +98,7 @@ LRESULT WINAPI Scintilla_DirectStatusFunction(HANDLE, UINT, WPARAM, LPARAM, LPIN
 
 //=============================================================================
 
+#define SciCall_SendMsg(m, w, l) SendMessage(g_hwndEditWindow, (m), (w), (l))
 #define SciCall_PostMsg(m, w, l) PostMessage(g_hwndEditWindow, (m), (w), (l))
 
 //=============================================================================
