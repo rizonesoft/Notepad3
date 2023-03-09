@@ -54,85 +54,85 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_HISTORY_BACK        "Back"
-    IDT_HISTORY_FORWARD     "Forward"
-    IDT_UPDIR               "Upper Directory"
-    IDT_ROOT                "Root Directory"
-    IDT_VIEW_FAVORITES      "Favourites"
-    IDT_FILE_PREV           "Previous File"
-    IDT_FILE_NEXT           "Next File"
-    IDT_FILE_RUN            "Run"
+    IDT_HISTORY_BACK        "Mundur"
+    IDT_HISTORY_FORWARD     "Maju"
+    IDT_UPDIR               "Direktori Induk"
+    IDT_ROOT                "Direktori Utama"
+    IDT_VIEW_FAVORITES      "Favorit"
+    IDT_FILE_PREV           "Berkas Sebelumnya"
+    IDT_FILE_NEXT           "Berkas Berikutnya"
+    IDT_FILE_RUN            "Jalankan"
     IDT_FILE_QUICKVIEW      "Quickview"
-    IDT_FILE_SAVEAS         "Save As"
-    IDT_FILE_COPYMOVE       "Copy/Move"
-    IDT_FILE_DELETE         "Delete"
-    IDT_FILE_DELETE2        "Delete (No Recycle)"
-    IDT_VIEW_FILTER         "Filter"
+    IDT_FILE_SAVEAS         "Simpan Sebagai"
+    IDT_FILE_COPYMOVE       "Salin/Pindah"
+    IDT_FILE_DELETE         "Hapus"
+    IDT_FILE_DELETE2        "Hapus (Permanen)"
+    IDT_VIEW_FILTER         "Saring"
 END
 
 STRINGTABLE
 BEGIN
     IDS_APPTITLE            "MiniPath"
-    IDS_NUMFILES            "%s Object(s)"
-    IDS_NUMFILES2           "%s Object(s) | Filter"
-    IDS_SAVEFILE            "Saving ""%s""..."
-    IDS_OPEN_FILE_WITH      "Open with %s"
+    IDS_NUMFILES            "%s Objek"
+    IDS_NUMFILES2           "%s Objek | Tersaring"
+    IDS_SAVEFILE            "Menyimpan ""%s""..."
+    IDS_OPEN_FILE_WITH      "Buka dengan %s"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Directory Access Error\nNo access to specified directory.\nCheck the disk or the network connection."
-    IDS_ERR_FILE            "File Access Error\nNo access to ""%s"".\nThe file may be used by another application.\nCheck the disk or the network connection."
-    IDS_ERR_NEW             "File Access Error\nFile could not be created.\nCheck the disk or the network connection."
-    IDS_ERR_NEWDIR          "Directory Access Error\nDirectory could not be created.\nCheck the disk or the network connection."
-    IDS_ERR_SAVEAS1         "File Save Error\nError saving ""%s"".\nProbably an already existing file is write-protected."
-    IDS_ERR_SAVEAS2         "File Save Error\nError removing read-only attribute of saved file."
-    IDS_ERR_CMDLINE         "MiniPath\nError accessing file or directory specified in command line."
-    IDS_ERR_STARTUPDIR      "MiniPath\nNo access to startup directory."
-    IDS_ERR_DROP1           "MiniPath\nNo access to dropped file or directory."
-    IDS_ERR_DROP2           "MiniPath\nOnly a single file or directory can be dropped at a time."
-    IDS_ERR_FAVORITES       "Favourites\nNo access to ""Favourites"" folder.\nSpecify a valid directory in the ""Options"" dialog box."
-    IDS_ERR_LNK_GETPATH     "Link Error\nNo valid filesystem-path available for linked object.\nProbably the link doesn't refer to a file or directory."
-    IDS_ERR_LNK_NOACCESS    "Link Error\nNo access to filesystem-path of linked object.\nCheck the disk or the network connection."
-    IDS_ERR_CREATELINK      "Link Error\nError creating the specified link.\nProbably the destination directory is write-protected."
-    IDS_ERR_FILTER          "File Filter Error\nNo additional filters specified.\nPlease refer to the MiniPath readme file for more information."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nExisting MiniPath window is busy or has an active dialog box.\nDo you want to open another MiniPath window?"
+    IDS_ERR_CD              "Kesalahan Akses Direktori\nTidak dapat mengakses direktori.\nPeriksa disk atau koneksi jaringan."
+    IDS_ERR_FILE            "Kesalahan Akses Berkas\nTidak dapat mengakses ""%s"".\nBerkas ini mungkin sedang digunakan oleh aplikasi lain.\nPeriksa disk atau koneksi jaringan."
+    IDS_ERR_NEW             "Kesalahan Akses Berkas\nTidak dapat membuat berkas.\nPeriksa disk atau koneksi jaringan."
+    IDS_ERR_NEWDIR          "Kesalahan Akses Direktori\nTidak dapat membuat direktori.\nPeriksa disk atau koneksi jaringan."
+    IDS_ERR_SAVEAS1         "Kesalahan Menyimpan Berkas\nKesalahan saat menyimpan ""%s"".\nSepertinya berkas tersebut terlindungi."
+    IDS_ERR_SAVEAS2         "Kesalahan Menyimpan Berkas\nKesalahan saat menghapus atribut hanya baca pada berkas."
+    IDS_ERR_CMDLINE         "MiniPath\nKesalahan saat mengakses berkas atau direktori pada baris perintah."
+    IDS_ERR_STARTUPDIR      "MiniPath\nTidak dapat mengakses direktori startup."
+    IDS_ERR_DROP1           "MiniPath\nTidak dapat mengakses berkas atau direktori yang dilepas."
+    IDS_ERR_DROP2           "MiniPath\nHanya satu berkas atau direktori yang bisa dilepas dalam satu waktu."
+    IDS_ERR_FAVORITES       "Favorit\nTidak dapat mengakses folder ""Favorit"".\nTentukan direktori pada menu ""Options""."
+    IDS_ERR_LNK_GETPATH     "Kesalahan Tautan\nJalur berkas sistem untuk objek tersebut tidak valid.\nSepertinya tautan tidak merujuk suatu berkas atau direktori."
+    IDS_ERR_LNK_NOACCESS    "Kesalahan Tautan\nTidak dapat mengakses berkas sistem tersebut.\nPeriksa disk atau koneksi jaringan."
+    IDS_ERR_CREATELINK      "Kesalahan Tautan\nKesalahan saat membuat tautan.\nSepertinya direktori tersebut terlindungi."
+    IDS_ERR_FILTER          "Kesalahan Menyaring Berkas\nTidak ada penyaringan lain yang ditentukan.\nSilakan lihat berkas readme MiniPath untuk informasi lebih lanjut."
+    IDS_ERR_PREVWINDISABLED "MiniPath\nTerdapat jendela MiniPath lain yang sedang sibuk atau aktif.\nApakan Anda ingin membuka jendela MiniPath baru?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nExisting target window is busy or has an active dialog box.\nWould you like to open a new window?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nPlease make sure all the required fields are completed.\nYou will also have to find a target window if the appropriate option is enabled."
-    IDS_ERR_INIOPEN         "MiniPath\nNo access to MiniPath configuration file."
-    IDS_ERR_INICREATE       "Save Settings\nError creating configuration file."
-    IDS_ERR_INIWRITE        "Save Settings\nSettings not saved!\nNo write access to configuration file."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nJendela target saat ini sedang sibuk atau aktif.\nApakah Anda ingin membukanya di jendela baru?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nPastikan untuk mengisi semua kolom yang diperlukan.\nAnda nanti juga harus menemukan jendela target apabila opsi tertentu diaktifkan."
+    IDS_ERR_INIOPEN         "MiniPath\nTidak dapat mengakses konfigurasi Minipath."
+    IDS_ERR_INICREATE       "Simpan Pengaturan\nKesalahan saat membuat konfigurasi."
+    IDS_ERR_INIWRITE        "Simpan Pengaturan\nPengaturan tidak tersimpan!\nTidak ada akses menulis konfigurasi."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_SEARCHEXE           "Find Executable"
-    IDS_GETQUICKVIEWER      "Find Quickview"
-    IDS_GETTARGET           "Find Editor"
-    IDS_NEWFILE             "New File"
-    IDS_FILTER_ALL          "All files (*.*)\n*.*\n"
-    IDS_FILTER_EXE          "Executable files (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nAll files (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Select a new directory."
-    IDS_FAVORITES           "Specify the ""Favourites"" directory."
+    IDS_SEARCHEXE           "Cari Berkas Eksekusi"
+    IDS_GETQUICKVIEWER      "Cari Quickview"
+    IDS_GETTARGET           "Cari Editor"
+    IDS_NEWFILE             "Berkas Baru"
+    IDS_FILTER_ALL          "Semua berkas (*.*)\n*.*\n"
+    IDS_FILTER_EXE          "Berkas Eksekusi (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nSemua Berkas (*.*)\n*.*\n"
+    IDS_GETDIRECTORY        "Pilih direktori baru."
+    IDS_FAVORITES           "Tentukan direktori ""Favorit""."
 END
 
 STRINGTABLE
 BEGIN
-    SC_ALWAYSONTOP          "&Keep on Top"
+    SC_ALWAYSONTOP          "Tetap di &Atas"
     SC_ABOUT                "&Info..."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "Select the directory with links to your favourite applications."
-    IDS_COPYMOVE            "Select a destination directory."
-    IDS_CREATELINK          "Select a destination directory for the new link."
-    IDS_SAVESETTINGS        "Save Settings\nThe current program settings have been saved."
-    IDS_MUI_TRANSL_AUTHOR   "(id-ID) Terjemahan bahasa Indonesia oleh Ghost"
+    IDS_OPENWITH            "Buka direktori aplikasi favorit Anda."
+    IDS_COPYMOVE            "Pilih direktori tujuan."
+    IDS_CREATELINK          "Pilih direktori tujuan untuk pintasan baru."
+    IDS_SAVESETTINGS        "Simpan Pengaturan\nPengaturan program telah disimpan."
+    IDS_MUI_TRANSL_AUTHOR   "(id-ID) Terjemahan bahasa Indonesia oleh fadzikri"
 END
 
 
