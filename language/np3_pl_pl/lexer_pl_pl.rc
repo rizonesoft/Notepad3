@@ -494,9 +494,14 @@ BEGIN
     IDS_LEX_STR_63385       "Ciąg TriQ"
     IDS_LEX_STR_63386       "Identyfikator Symbolu"
     IDS_LEX_STR_63387       "Operator Symbolu"
+END
+
+STRINGTABLE
+BEGIN
     IDS_LEX_STR_63388       "Ciąg EOL"
     IDS_LEX_STR_63397       "Backticks"
     IDS_LEX_STR_63398       "Ciąg GUID"
+    IDS_LEX_STR_63399       "Global"
 END
 
 STRINGTABLE
