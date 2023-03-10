@@ -494,9 +494,14 @@ BEGIN
     IDS_LEX_STR_63385       "TriQ-문자열"
     IDS_LEX_STR_63386       "기호 식별자"
     IDS_LEX_STR_63387       "기호 연산자"
+END
+
+STRINGTABLE
+BEGIN
     IDS_LEX_STR_63388       "문자열 EOL"
     IDS_LEX_STR_63397       "백틱"
     IDS_LEX_STR_63398       "GUID 문자열"
+    IDS_LEX_STR_63399       "Global"
 END
 
 STRINGTABLE

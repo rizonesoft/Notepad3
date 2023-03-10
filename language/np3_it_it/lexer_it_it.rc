@@ -494,9 +494,14 @@ BEGIN
     IDS_LEX_STR_63385       "Stringa-TriQ"
     IDS_LEX_STR_63386       "Identificatore Simbolo"
     IDS_LEX_STR_63387       "Operatore Simbolo"
+END
+
+STRINGTABLE
+BEGIN
     IDS_LEX_STR_63388       "Stringa EOL"
     IDS_LEX_STR_63397       "Backticks"
     IDS_LEX_STR_63398       "Stringa GUID"
+    IDS_LEX_STR_63399       "Global"
 END
 
 STRINGTABLE
