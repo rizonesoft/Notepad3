@@ -494,9 +494,14 @@ BEGIN
     IDS_LEX_STR_63385       "文字列 (トリプル・クォート)"
     IDS_LEX_STR_63386       "Symbol Identifier"
     IDS_LEX_STR_63387       "Symbol Operator"
+END
+
+STRINGTABLE
+BEGIN
     IDS_LEX_STR_63388       "文字列 EOL"
     IDS_LEX_STR_63397       "Backticks"
     IDS_LEX_STR_63398       "GUID 文字列"
+    IDS_LEX_STR_63399       "Global"
 END
 
 STRINGTABLE

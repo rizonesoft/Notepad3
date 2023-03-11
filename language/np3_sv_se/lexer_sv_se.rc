@@ -494,9 +494,14 @@ BEGIN
     IDS_LEX_STR_63385       "TriQ-sträng"
     IDS_LEX_STR_63386       "Symbolidentifierare"
     IDS_LEX_STR_63387       "Symboloperatör"
+END
+
+STRINGTABLE
+BEGIN
     IDS_LEX_STR_63388       "Sträng EOL"
     IDS_LEX_STR_63397       "Backticks"
     IDS_LEX_STR_63398       "GUID String"
+    IDS_LEX_STR_63399       "Global"
 END
 
 STRINGTABLE
