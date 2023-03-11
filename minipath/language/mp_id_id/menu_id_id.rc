@@ -58,7 +58,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "&Buka",                       IDM_FILE_OPEN
-        MENUITEM "B&uka Dengan...",   			IDM_FILE_OPENWITH
+        MENUITEM "B&uka dengan...",   			IDM_FILE_OPENWITH
         MENUITEM "&Quickview",                  IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
         MENUITEM "&Salin Jalur",                IDM_POP_COPYNAME
@@ -78,7 +78,7 @@ BEGIN
         MENUITEM "&Berkas Baru...",             IDM_FILE_NEW
         MENUITEM "Direktori B&aru...",          IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "Pen&yaringan Berkas...",      IDM_VIEW_FILTER
+        MENUITEM "Sa&ring Berkas...",      		IDM_VIEW_FILTER
         MENUITEM "Setel &Ulang Penyaringan",    IDM_VIEW_FILTERALL
         POPUP "&Tampilkan"
         BEGIN
@@ -98,7 +98,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Pergi &ke...",                IDM_FILE_GOTO
         MENUITEM "Pergi ke &Favorit",           IDM_VIEW_FAVORITES
-        MENUITEM "&Sunting Favorit",            IDM_VIEW_EDITFAVORITES
+        MENUITEM "&Buka folder favorit",        IDM_VIEW_EDITFAVORITES
         MENUITEM "&Direktori...",               IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
         MENUITEM "Tampilkan Dri&ve",            IDM_VIEW_DRIVEBOX
