@@ -101,7 +101,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nJendela target saat ini sedang sibuk atau aktif.\Silahkan buka jendela target baru?"
+    IDS_ERR_TARGETDISABLED  "MiniPath\nJendela target saat ini sedang sibuk atau aktif.\nApakah Anda ingin membuka jendela baru?"
     IDS_ERR_INVALIDTARGET   "MiniPath\nPastikan untuk mengisi semua kolom yang diperlukan.\nAnda nanti juga harus menemukan jendela target apabila opsi tertentu diaktifkan."
     IDS_ERR_INIOPEN         "MiniPath\nTidak dapat mengakses konfigurasi Minipath."
     IDS_ERR_INICREATE       "Simpan Pengaturan\nKesalahan saat membuat konfigurasi."
