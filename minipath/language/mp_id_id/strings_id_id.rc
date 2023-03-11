@@ -63,7 +63,7 @@ BEGIN
     IDT_FILE_NEXT           "Berkas Berikutnya"
     IDT_FILE_RUN            "Jalankan"
     IDT_FILE_QUICKVIEW      "Quickview"
-    IDT_FILE_SAVEAS         "Simpan Sebagai"
+    IDT_FILE_SAVEAS         "Simpan sebagai"
     IDT_FILE_COPYMOVE       "Salin/Pindah"
     IDT_FILE_DELETE         "Hapus"
     IDT_FILE_DELETE2        "Hapus (Permanen)"
@@ -85,23 +85,23 @@ BEGIN
     IDS_ERR_FILE            "Kesalahan Akses Berkas\nTidak dapat mengakses ""%s"".\nBerkas ini mungkin sedang digunakan oleh aplikasi lain.\nPeriksa disk atau koneksi jaringan."
     IDS_ERR_NEW             "Kesalahan Akses Berkas\nTidak dapat membuat berkas.\nPeriksa disk atau koneksi jaringan."
     IDS_ERR_NEWDIR          "Kesalahan Akses Direktori\nTidak dapat membuat direktori.\nPeriksa disk atau koneksi jaringan."
-    IDS_ERR_SAVEAS1         "Kesalahan Menyimpan Berkas\nKesalahan saat menyimpan ""%s"".\nSepertinya berkas tersebut terlindungi."
-    IDS_ERR_SAVEAS2         "Kesalahan Menyimpan Berkas\nKesalahan saat menghapus atribut hanya baca pada berkas."
+    IDS_ERR_SAVEAS1         "Kesalahan Menyimpan Berkas\nKesalahan saat menyimpan ""%s"".\nSepertinya berkas diproteksi."
+    IDS_ERR_SAVEAS2         "Kesalahan Menyimpan Berkas\nKesalahan saat menghapus atribut read-only pada berkas."
     IDS_ERR_CMDLINE         "MiniPath\nKesalahan saat mengakses berkas atau direktori pada baris perintah."
     IDS_ERR_STARTUPDIR      "MiniPath\nTidak dapat mengakses direktori startup."
     IDS_ERR_DROP1           "MiniPath\nTidak dapat mengakses berkas atau direktori yang dilepas."
     IDS_ERR_DROP2           "MiniPath\nHanya satu berkas atau direktori yang bisa dilepas dalam satu waktu."
     IDS_ERR_FAVORITES       "Favorit\nTidak dapat mengakses folder ""Favorit"".\nTentukan direktori pada menu ""Options""."
-    IDS_ERR_LNK_GETPATH     "Kesalahan Tautan\nJalur berkas sistem untuk objek tersebut tidak valid.\nSepertinya tautan tidak merujuk suatu berkas atau direktori."
-    IDS_ERR_LNK_NOACCESS    "Kesalahan Tautan\nTidak dapat mengakses berkas sistem tersebut.\nPeriksa disk atau koneksi jaringan."
-    IDS_ERR_CREATELINK      "Kesalahan Tautan\nKesalahan saat membuat tautan.\nSepertinya direktori tersebut terlindungi."
+    IDS_ERR_LNK_GETPATH     "Kesalahan Tautan\nJalur berkas sistem untuk objek tidak valid.\nSepertinya tautan tidak menuju suatu berkas atau direktori."
+    IDS_ERR_LNK_NOACCESS    "Kesalahan Tautan\nTidak dapat mengakses berkas sistem.\nPeriksa disk atau koneksi jaringan."
+    IDS_ERR_CREATELINK      "Kesalahan Tautan\nKesalahan saat membuat tautan.\nSepertinya direktori dilindungi."
     IDS_ERR_FILTER          "Kesalahan Menyaring Berkas\nTidak ada penyaringan lain yang ditentukan.\nSilakan lihat berkas readme MiniPath untuk informasi lebih lanjut."
     IDS_ERR_PREVWINDISABLED "MiniPath\nTerdapat jendela MiniPath lain yang sedang sibuk atau aktif.\nApakan Anda ingin membuka jendela MiniPath baru?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nJendela target saat ini sedang sibuk atau aktif.\nApakah Anda ingin membukanya di jendela baru?"
+    IDS_ERR_TARGETDISABLED  "MiniPath\nJendela target saat ini sedang sibuk atau aktif.\nApakah Anda ingin membuka jendela baru?"
     IDS_ERR_INVALIDTARGET   "MiniPath\nPastikan untuk mengisi semua kolom yang diperlukan.\nAnda nanti juga harus menemukan jendela target apabila opsi tertentu diaktifkan."
     IDS_ERR_INIOPEN         "MiniPath\nTidak dapat mengakses konfigurasi Minipath."
     IDS_ERR_INICREATE       "Simpan Pengaturan\nKesalahan saat membuat konfigurasi."
@@ -110,13 +110,13 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_SEARCHEXE           "Cari Berkas Eksekusi"
+    IDS_SEARCHEXE           "Cari Program Eksekusi"
     IDS_GETQUICKVIEWER      "Cari Quickview"
     IDS_GETTARGET           "Cari Editor"
     IDS_NEWFILE             "Berkas Baru"
     IDS_FILTER_ALL          "Semua berkas (*.*)\n*.*\n"
-    IDS_FILTER_EXE          "Berkas Eksekusi (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nSemua Berkas (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Pilih direktori baru."
+    IDS_FILTER_EXE          "Berkas eksekusi (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nSemua berkas (*.*)\n*.*\n"
+    IDS_GETDIRECTORY        "Buka direktori."
     IDS_FAVORITES           "Tentukan direktori ""Favorit""."
 END
 
@@ -131,7 +131,7 @@ BEGIN
     IDS_OPENWITH            "Buka direktori aplikasi favorit Anda."
     IDS_COPYMOVE            "Pilih direktori tujuan."
     IDS_CREATELINK          "Pilih direktori tujuan untuk pintasan baru."
-    IDS_SAVESETTINGS        "Simpan Pengaturan\nPengaturan program telah disimpan."
+    IDS_SAVESETTINGS        "Simpan Pengaturan\nPengaturan program tersimpan."
     IDS_MUI_TRANSL_AUTHOR   "(id-ID) Terjemahan bahasa Indonesia oleh fadzikri"
 END
 
