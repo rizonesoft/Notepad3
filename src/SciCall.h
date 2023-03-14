@@ -300,6 +300,7 @@ DeclareSciCallR1(GetSelectionNStart, GETSELECTIONNSTART, DocPos, DocPosU, selnum
 DeclareSciCallR1(GetSelectionNEnd, GETSELECTIONNEND, DocPos, DocPosU, selnum);
 DeclareSciCallR1(GetSelectionNStartVirtualSpace, GETSELECTIONNSTARTVIRTUALSPACE, DocPos, DocPosU, selnum);
 DeclareSciCallR1(GetSelectionNEndVirtualSpace, GETSELECTIONNENDVIRTUALSPACE, DocPos, DocPosU, selnum);
+DeclareSciCallR0(GetMoveExtendsSelection, GETMOVEEXTENDSSELECTION, bool);
 
 DeclareSciCallV0(SwapMainAnchorCaret, SWAPMAINANCHORCARET);
 DeclareSciCallV0(MultipleSelectAddEach, MULTIPLESELECTADDEACH);

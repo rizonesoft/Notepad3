@@ -5803,30 +5803,34 @@ void MakeColorPickButton(HWND hwnd, int nCtrlId, HINSTANCE hInstance, COLORREF c
     if (SendMessage(hwndCtl, BCM_GETIMAGELIST, 0, (LPARAM)&bi)) {
         himlOld = bi.himl;
     }
+
+    COLORREF const MASK_NONE = RGB(0x00, 0x00, 0x00);
+    COLORREF const MASK_FULL = RGB(0xFF, 0xFF, 0xFF);
+    COLORREF const CNTRST = RGB(0xFF, 0xFF, 0xFE);
+
     if (IsWindowEnabled(hwndCtl) && (crColor != COLORREF_MAX)) {
-        colormap[0].from = RGB(0x00, 0x00, 0x00);
+        colormap[0].from = MASK_NONE;
         colormap[0].to = GetSysColor(COLOR_3DSHADOW);
     } else {
-        colormap[0].from = RGB(0x00, 0x00, 0x00);
-        colormap[0].to = RGB(0xFF, 0xFF, 0xFF);
+        colormap[0].from = MASK_NONE;
+        colormap[0].to = MASK_FULL;
     }
 
     if (IsWindowEnabled(hwndCtl) && (crColor != COLORREF_MAX)) {
-
-        if (crColor == RGB(0xFF, 0xFF, 0xFF)) {
-            crColor = RGB(0xFF, 0xFF, 0xFE);
-        }
-        colormap[1].from = RGB(0xFF, 0xFF, 0xFF);
+        if (crColor == MASK_FULL) { crColor = CNTRST; }
+        colormap[1].from = MASK_FULL;
         colormap[1].to = crColor;
     } else {
-        colormap[1].from = RGB(0xFF, 0xFF, 0xFF);
-        colormap[1].to = RGB(0xFF, 0xFF, 0xFF);
+        colormap[1].from = MASK_FULL;
+        colormap[1].to = MASK_FULL;
     }
 
     HBITMAP hBmp = CreateMappedBitmap(hInstance, IDB_PICK, 0, colormap, 2);
 
-    bi.himl = ImageList_Create(10, 10, ILC_COLORDDB | ILC_MASK, 1, 0);
-    ImageList_AddMasked(bi.himl, hBmp, RGB(0xFF, 0xFF, 0xFF));
+    BITMAP bmp = { 0 };
+    GetObject(hBmp, sizeof(BITMAP), &bmp);
+    bi.himl = ImageList_Create(bmp.bmWidth, bmp.bmHeight, ILC_COLORDDB | ILC_MASK, 1, 0);
+    ImageList_AddMasked(bi.himl, hBmp, MASK_FULL);
     DeleteObject(hBmp);
 
     SetRect(&bi.margin, 0, 0, 4, 0);
