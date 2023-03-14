@@ -12613,6 +12613,39 @@ static unsigned __stdcall FileChangeObserver(void * pArg) {
 // ----------------------------------------------------------------------------
 
 
+static void StopFileChangeObserver(HANDLE* phObserverThread)
+{
+#pragma warning(push)
+#pragma warning(disable : 6258)
+
+    if (IS_VALID_HANDLE(*phObserverThread)) {
+        if (IS_VALID_HANDLE(s_hEventObserverDone)) {
+            DWORD const wait = SignalObjectAndWait(s_hEventObserverDone, *phObserverThread,
+                /*INFINITE*/ (dwObservingTimeout << 1), FALSE);
+            if (wait == WAIT_OBJECT_0) {
+                CloseHandle(*phObserverThread); // ok
+            }
+            else if (wait == WAIT_TIMEOUT) {
+                TerminateThread(*phObserverThread, 0UL);
+                assert("Observer Timeout Exceeded Error!" && false);
+            }
+            else {
+                TerminateThread(*phObserverThread, 0UL);
+                assert("Fatal Observer Error!" && false);
+            }
+        }
+        else {
+            TerminateThread(*phObserverThread, 0UL);
+            assert("Fatal: Invalid Observer Done Handle!" && false);
+        }
+        *phObserverThread = INVALID_HANDLE_VALUE;
+    }
+
+#pragma warning(pop)
+}
+// ----------------------------------------------------------------------------
+
+
 void InstallFileWatching(const bool bInstall) {
 
     static HANDLE _hChangeHandle = INVALID_HANDLE_VALUE;    // observer
@@ -12639,39 +12672,12 @@ void InstallFileWatching(const bool bInstall) {
 
     bool const bTerminate = !bInstall || !bWatchFile || !bFileDirExists;
 
-#pragma warning(push)
-#pragma warning(disable:6258)
-
     // Terminate previous watching
     if (bTerminate) {
-
         ResetFileObservationData(true);
-
         KillTimer(Globals.hwndMain, ID_WATCHTIMER);
-
-        if (IS_VALID_HANDLE(_hObserverThread)) {
-            if (IS_VALID_HANDLE(s_hEventObserverDone)) {
-                DWORD const wait = SignalObjectAndWait(s_hEventObserverDone, _hObserverThread,
-                    /*INFINITE*/ (dwObservingTimeout << 1), FALSE);
-                if (wait == WAIT_OBJECT_0) {
-                    CloseHandle(_hObserverThread); // ok
-                }
-                else if (wait == WAIT_TIMEOUT) {
-                    TerminateThread(_hObserverThread, 0UL);
-                    assert("Observer Timeout Exceeded Error!" && false);
-                } else {
-                    TerminateThread(_hObserverThread, 0UL);
-                    assert("Fatal Observer Error!" && false);
-                }
-            } else {
-                TerminateThread(_hObserverThread, 0UL);
-                assert("Fatal: Invalid Observer Done Handle!" && false);
-            }
-            _hObserverThread = INVALID_HANDLE_VALUE;
-        }
+        StopFileChangeObserver(&_hObserverThread);
     }
-
-#pragma warning(pop)
 
     if (bInstall) {
 

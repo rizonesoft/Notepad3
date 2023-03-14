@@ -341,6 +341,7 @@
     <ClCompile Include="oniguruma\src\regenc.c" />
     <ClCompile Include="oniguruma\src\regerror.c" />
     <ClCompile Include="oniguruma\src\regexec.c" />
+    <ClCompile Include="oniguruma\src\regext.c" />
     <ClCompile Include="oniguruma\src\reggnu.c" />
     <ClCompile Include="oniguruma\src\regparse.c" />
     <ClCompile Include="oniguruma\src\regsyntax.c" />

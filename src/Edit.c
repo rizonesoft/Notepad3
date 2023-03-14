@@ -5888,8 +5888,6 @@ static char* _GetReplaceString(HWND hwnd, CLPCEDITFINDREPLACE lpefr, int* iRepla
 static DocPos  _FindInTarget(LPCWSTR wchFind, int sFlags,
                              DocPos* begin, DocPos* end, bool bForceNext, FR_UPD_MODES fMode)
 {
-    UNREFERENCED_PARAMETER(bForceNext);
-
     static char chFind[8192] = { '\0' }; // max find buffer
 
     DocPos iPos = -1LL; // not found
@@ -6606,7 +6604,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             DocPos end = Sci_GetDocEndPosition();
 
             LPCWSTR wchFind = _EditGetFindStrg(s_pEfrData->hwnd, s_pEfrData, false);
-            DocPos const  iPos = _FindInTarget(wchFind, (int)(s_pEfrData->fuFlags), &start, &end, false, FRMOD_NORM);
+            DocPos const iPos = _FindInTarget(wchFind, (int)(s_pEfrData->fuFlags), &start, &end, false, FRMOD_NORM);
+
             if (iPos >= 0) {
                 if (s_bIsReplaceDlg) {
                     SciCall_ScrollRange(end, iPos);
@@ -7077,7 +7076,7 @@ bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelectio
 
     DocPos const iDocEndPos = Sci_GetDocEndPosition();
 
-    EditSetCaretToSelectionEnd(); // fluent swittch between Prev/Next
+    EditSetCaretToSelectionEnd(); // fluent switch between Prev/Next
     DocPos start = SciCall_GetCurrentPos();
     DocPos end = iDocEndPos;
 

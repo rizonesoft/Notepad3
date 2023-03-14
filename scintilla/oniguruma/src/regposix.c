@@ -223,7 +223,7 @@ onig_posix_regexec(onig_posix_regex_t* reg, const char* str, size_t nmatch,
   ENC_STRING_LEN(ONIG_C(reg)->enc, str, len);
   end = (UChar* )(str + len);
   r = onig_search(ONIG_C(reg), (UChar* )str, end, (UChar* )str, end,
-                    (OnigRegion* )pm, options);
+                  (OnigRegion* )pm, options);
 
   if (r >= 0) {
     r = 0; /* Match */
