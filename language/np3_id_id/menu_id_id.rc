@@ -346,16 +346,16 @@ BEGIN
         MENUITEM "&Long Line Marker\tCtrl+Alt+L",        IDM_VIEW_LONGLINEMARKER
         MENUITEM "Indentation &Guides\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
-        MENUITEM "Show W&rap Symbols\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
-        MENUITEM "Show &Blanks\tCtrl+Shift+8",           IDM_VIEW_SHOWBLANKS
-        MENUITEM "Show Line &Endings\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
+        MENUITEM "Tampilkan W&rap Symbols\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
+        MENUITEM "Tampilkan &Blanks\tCtrl+Shift+8",           IDM_VIEW_SHOWBLANKS
+        MENUITEM "Tampilkan Line &Endings\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         POPUP "Change History Marker"
         BEGIN
             MENUITEM "No Change Markers",                   IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+            MENUITEM "Tampilkan in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "Tampilkan in Document only",               IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "Tampilkan All Change Markers",             IDM_VIEW_CHGHIST_ALL
         END
         MENUITEM SEPARATOR
         MENUITEM "&Hyperlink Hotspots\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
@@ -390,22 +390,22 @@ BEGIN
             END
         END
         MENUITEM SEPARATOR
-        MENUITEM "Line &Numbers\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
-        MENUITEM "Bookmark &Margin\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Line &Numbers\tCtrl+Shift+N",           IDM_VIEW_LINENUMBERS
+        MENUITEM "Bookmark &Margin\tCtrl+Shift+M",        IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Change History Margin",                 IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
-        POPUP "&Folding"
+        POPUP "Li&patan"
         BEGIN
-            MENUITEM "Code &Folding",                   IDM_VIEW_FOLDING
-            MENUITEM "&Toggle Folds\tCtrl+Alt+F",       IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Lipatan K&ode",                     IDM_VIEW_FOLDING
+            MENUITEM "&Alihkan Lipatan\tCtrl+Alt+F",      IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
-            MENUITEM "Jump &Next Fold\tAlt+ +",         CMD_FOLDJUMPDOWN
-            MENUITEM "Jump &Prev Fold\tAlt+ –",         CMD_FOLDJUMPUP
+            MENUITEM "Buka Lipatan B&erikutnya\tAlt+ +",  CMD_FOLDJUMPDOWN
+            MENUITEM "Buka Lipatan &Sebelumnya\tAlt+ –",  CMD_FOLDJUMPUP
             MENUITEM SEPARATOR
-            MENUITEM "&Collapse Fold\tAlt+ ←",          CMD_FOLDCOLLAPSE
-            MENUITEM "&Expand Fold\tAlt+ →",            CMD_FOLDEXPAND
+            MENUITEM "&Runtuh Lipatan\tAlt+ ←",            CMD_FOLDCOLLAPSE
+            MENUITEM "Per&luas Lipatan\tAlt+ →",              CMD_FOLDEXPAND
         END
-        POPUP "&Display"
+        POPUP "&Tampilan"
         BEGIN
             MENUITEM "&Focused View\tCtrl+Alt+V",       IDM_VIEW_TOGGLE_VIEW
             POPUP "View Mode"
@@ -419,25 +419,25 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Monitoring Log",                 IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Scroll Past End of File",        IDM_VIEW_SCROLLPASTEOF
-            MENUITEM "Show &Hyperlink Tooltip",         IDM_VIEW_SHOW_HYPLNK_CALLTIP
+            MENUITEM "Tampilkan &Hyperlink Tooltip",         IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         MENUITEM SEPARATOR
-        POPUP "P&anels"
+        POPUP "P&anel"
         BEGIN
-            MENUITEM "Show &Menubar",                   IDM_VIEW_MENUBAR
-            MENUITEM "Show &Toolbar",                   IDM_VIEW_TOOLBAR
-            MENUITEM "Show &Statusbar",                 IDM_VIEW_STATUSBAR
+            MENUITEM "Tampilkan &Menubar",                   IDM_VIEW_MENUBAR
+            MENUITEM "Tampilkan &Toolbar",                   IDM_VIEW_TOOLBAR
+            MENUITEM "Tampilkan &Statusbar",                 IDM_VIEW_STATUSBAR
             MENUITEM SEPARATOR
             MENUITEM "&Load Toolbar Theme...",          IDM_VIEW_LOADTHEMETB
             MENUITEM "&Customise Toolbar...",           IDM_VIEW_CUSTOMIZETB
             MENUITEM "To&ggle Toolbars",                IDM_VIEW_TOGGLETB
             MENUITEM "&DPI Scale Toolbar",              IDM_VIEW_DPISCALETB
         END
-        POPUP "&Zoom"
+        POPUP "&Zum"
         BEGIN
-            MENUITEM "Zoom &In\tCtrl+ +",               IDM_VIEW_ZOOMIN
-            MENUITEM "Zoom &Out\tCtrl+ –",              IDM_VIEW_ZOOMOUT
-            MENUITEM "&Reset Zoom\tCtrl+0",             IDM_VIEW_RESETZOOM
+            MENUITEM "Per&besar\tCtrl+ +",              IDM_VIEW_ZOOMIN
+            MENUITEM "Per&kecil\tCtrl+ –",              IDM_VIEW_ZOOMOUT
+            MENUITEM "Atur &Ulang Zum\tCtrl+0",         IDM_VIEW_RESETZOOM
         END
         POPUP "&Position"
         BEGIN
@@ -450,19 +450,19 @@ BEGIN
             MENUITEM "S&ticky Window Position",                     IDM_VIEW_STICKYWINPOS
         END
     END
-    POPUP "A&ppearance"
+    POPUP "Tam&pilan"
     BEGIN
-        MENUITEM "&Customise Schemes...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
+        MENUITEM "Ses&uaikan Skema...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "Select Synta&x Scheme...\tF12",                   IDM_VIEW_SCHEME
-        MENUITEM "&2nd Common Base\tShift+F12",                     IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "Pilih Skema Sinta&ks..\tF12",                   IDM_VIEW_SCHEME
+        MENUITEM "Basis Umum ke-&2\tShift+F12",                     IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
-        MENUITEM "Global &Default Font...\tAlt+F12",                IDM_VIEW_FONT
-        MENUITEM "Current Sc&heme's Default Font...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
+        MENUITEM "Font Baku Gl&obal...\tAlt+F12",                IDM_VIEW_FONT
+        MENUITEM "Font &Baku Skema Sekarang...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
         MENUITEM SEPARATOR
-        MENUITEM "Windows Dark Mode",                               IDM_VIEW_WIN_DARK_MODE
+        MENUITEM "Mode G&elap Windows",                               IDM_VIEW_WIN_DARK_MODE
     END
-    POPUP "&Settings"
+    POPUP "&Pengaturan"
     BEGIN
         MENUITEM "Insert Tabs as &Spaces",                   IDM_SET_TABSASSPACES
         MENUITEM "&Tab Settings...\tCtrl+T",                 IDM_SET_TABSETTINGS
@@ -531,22 +531,22 @@ BEGIN
                 MENUITEM "&Right to Left",               IDM_SET_BIDIRECTIONAL_R2L
             END
         END
-        POPUP "&Advanced Configuration"
+        POPUP "&Konfigurasi Lanjutan"
         BEGIN
-            MENUITEM "Save Settings On E&xit",          IDM_SET_SAVESETTINGS
-            MENUITEM "Save Settings &Now\tF7",          IDM_SET_SAVESETTINGSNOW
-            MENUITEM "&Open Settings File\tCtrl+F7",    CMD_OPENINIFILE
+            MENUITEM "Simpan Pengaturan Setelah &Keluar", IDM_SET_SAVESETTINGS
+            MENUITEM "Simpan Pengaturan &Sekarang\tF7",           IDM_SET_SAVESETTINGSNOW
+            MENUITEM "Buka &Berkas Pengaturan\tCtrl+F7",     CMD_OPENINIFILE
         END
     END
-    POPUP "&Help"
+    POPUP "&Bantuan"
     BEGIN
-        MENUITEM "&Online Documentation\tF1",           IDM_HELP_ONLINEDOCUMENTATION
+        MENUITEM "&Dokumentasi Daring\tF1",              IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
-        MENUITEM "Launch Administration &Tool...",      IDM_HELP_ADMINEXE
-        MENUITEM "Check &Website for Update",           IDM_HELP_UPDATEWEBSITE
+        MENUITEM "Luncurkan Alat Administrasi...",       IDM_HELP_ADMINEXE
+        MENUITEM "Periksa &Situs Web untuk Pembaruan",   IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
-        MENUITEM "&Command Line Help...",               IDM_HELP_CMD
-        MENUITEM "&About...\tShift+F1",                 IDM_HELP_ABOUT
+        MENUITEM "Bantuan Baris &Perintah...",           IDM_HELP_CMD
+        MENUITEM "&Tentang...\tShift+F1",                IDM_HELP_ABOUT
     END
 END
 
@@ -555,51 +555,51 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "Open Hyperlink",             CMD_OPEN_HYPERLINK
+        MENUITEM "Buka Tautan",                CMD_OPEN_HYPERLINK
         MENUITEM SEPARATOR
-        MENUITEM "Undo",                       IDM_EDIT_UNDO
-        MENUITEM "Redo",                       IDM_EDIT_REDO
+        MENUITEM "Urungkan",                   IDM_EDIT_UNDO
+        MENUITEM "Kembalikan",                 DM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "Cut",                        IDM_EDIT_CUT
-        MENUITEM "Copy",                       IDM_EDIT_COPY
-        MENUITEM "Paste",                      IDM_EDIT_PASTE
-        MENUITEM "Delete",                     IDM_EDIT_CLEAR
+        MENUITEM "Potong",                     IDM_EDIT_CUT
+        MENUITEM "Salin",                      IDM_EDIT_COPY
+        MENUITEM "Tempel",                     IDM_EDIT_PASTE
+        MENUITEM "Hapus",                      IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "Select All",                 IDM_EDIT_SELECTALL
+        MENUITEM "Pilih Semua",                IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM "Toggle Current Fold",        IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM "Alihkan Lipatan",            IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
-        MENUITEM "Open Web Action 1",          CMD_WEBACTION1
-        MENUITEM "Open Web Action 2",          CMD_WEBACTION2
-        MENUITEM "Open File Explorer",         IDM_FILE_EXPLORE_DIR
+        MENUITEM "Buka Aksi Web 1",            CMD_WEBACTION1
+        MENUITEM "Buka Aksi Web 2",            CMD_WEBACTION2
+        MENUITEM "Buka File Explorer",         IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show Menubar",               IDM_VIEW_MENUBAR
-        MENUITEM "Show Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "Show Statusbar",             IDM_VIEW_STATUSBAR
+        MENUITEM "Tampilkan Bilah Menu",       IDM_VIEW_MENUBAR
+        MENUITEM "Tampilkan Bilah Alat",       IDM_VIEW_TOOLBAR
+        MENUITEM "Tampilkan Bar Status",       IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
-        MENUITEM "Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB
-        MENUITEM "Customize Toolbar...",       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Toggle Toolbars",            IDM_VIEW_TOGGLETB
-        MENUITEM "DPI Scale Toolbar",          IDM_VIEW_DPISCALETB
+        MENUITEM "Muat Tema Bilah Alat...",    IDM_VIEW_LOADTHEMETB
+        MENUITEM "Sesuaikan Bilah Alat...",    IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Alihkan Bilah Alat",         IDM_VIEW_TOGGLETB
+        MENUITEM "Bilah Alat Skala DPI",       IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Clear Marker",                IDM_EDIT_CLEAR_MARKER
-        MENUITEM "Cut Lines of Marker-Type",    IDM_EDIT_CUT_MARKED
-        MENUITEM "Copy Lines of Marker-Type",   IDM_EDIT_COPY_MARKED
-        MENUITEM "Delete Lines of Marker-Type", IDM_EDIT_DELETE_MARKED
+        MENUITEM "Hapus Penanda",              IDM_EDIT_CLEAR_MARKER
+        MENUITEM "Tempel Baris Penanda",       IDM_EDIT_CUT_MARKED
+        MENUITEM "Salin Baris Penanda",        IDM_EDIT_COPY_MARKED
+        MENUITEM "Hapus Baris Penanda",        IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
-        MENUITEM "Folding",                     IDM_VIEW_FOLDING
-        MENUITEM "Line Numbers",                IDM_VIEW_LINENUMBERS
-        MENUITEM "Bookmark Margin",             IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Lipatan",                    IDM_VIEW_FOLDING
+        MENUITEM "Nomor Baris",                IDM_VIEW_LINENUMBERS
+        MENUITEM "Margin Markah",              IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Ubah Margin Riwayat",        IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Open Notepad3",               IDM_TRAY_RESTORE
-        MENUITEM "Exit Notepad3",               IDM_TRAY_EXIT
+        MENUITEM "Buka Notepad3",              IDM_TRAY_RESTORE
+        MENUITEM "Keluar Notepad3",            IDM_TRAY_EXIT
     END
 END
 
