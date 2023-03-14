@@ -1282,10 +1282,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     ResetTmpCache();
     ResetIniFileCache();
 
-    UndoRedoReset();
-    SetSaveDone();
-
-
     // drag-n-drop into elevated process even does not work using:
     ///ChangeWindowMessageFilter(WM_DROPFILES, MSGFLT_ADD);
     ///ChangeWindowMessageFilter(WM_COPYDATA, MSGFLT_ADD);
@@ -11401,6 +11397,11 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
 
     if (fSuccess) {
 
+        if (!bReloadFile) {
+            UndoRedoReset();
+            SetSavePoint();
+        }
+
         Sci_GotoPosChooseCaret(0);
 
         if (!s_IsThisAnElevatedRelaunch) {
@@ -11454,6 +11455,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
         // consistent settings file handling (if loaded in editor)
         Flags.bSettingsFileSoftLocked = (Path_StrgComparePathNormalized(Paths.CurrentFile, Paths.IniFile) == 0);
 
+        ResetFileObservationData(true);
         InstallFileWatching(true);
 
         // the .LOG feature ...
@@ -11522,17 +11524,11 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
             Globals.fvCurFile.bTabsAsSpaces = (fioStatus.indentCount[I_TAB_LN] < fioStatus.indentCount[I_SPC_LN]) ? true : false;
             SciCall_SetUseTabs(!Globals.fvCurFile.bTabsAsSpaces);
         }
+
     }
     else if (!(Flags.bHugeFileLoadState || fioStatus.bUnknownExt)) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, Path_FindFileName(Paths.CurrentFile));
         Flags.bHugeFileLoadState = false; // reset
-    }
-
-    if (fSuccess) {
-        if (!bReloadFile) {
-            UndoRedoReset();
-        }
-        ResetFileObservationData(true);
     }
 
     UpdateToolbar();
