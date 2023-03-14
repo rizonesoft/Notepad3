@@ -494,9 +494,14 @@ BEGIN
     IDS_LEX_STR_63385       "TriQ-String"
     IDS_LEX_STR_63386       "Symbol Identifier"
     IDS_LEX_STR_63387       "Symbol Operator"
+END
+
+STRINGTABLE
+BEGIN
     IDS_LEX_STR_63388       "String EOL"
     IDS_LEX_STR_63397       "Backticks"
     IDS_LEX_STR_63398       "GUID String"
+    IDS_LEX_STR_63399       "Global"
 END
 
 STRINGTABLE

@@ -494,9 +494,14 @@ BEGIN
     IDS_LEX_STR_63385       "TriQ dizgesi"
     IDS_LEX_STR_63386       "Simge belirteci"
     IDS_LEX_STR_63387       "Simge işlemi"
+END
+
+STRINGTABLE
+BEGIN
     IDS_LEX_STR_63388       "Dizge satır sonu"
     IDS_LEX_STR_63397       "Ters tik"
     IDS_LEX_STR_63398       "GUID dizgesi"
+    IDS_LEX_STR_63399       "Global"
 END
 
 STRINGTABLE

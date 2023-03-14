@@ -494,9 +494,14 @@ BEGIN
     IDS_LEX_STR_63385       "Chaîne TriQ"
     IDS_LEX_STR_63386       "Identificateur de symbole"
     IDS_LEX_STR_63387       "Opérateur de symbole"
+END
+
+STRINGTABLE
+BEGIN
     IDS_LEX_STR_63388       "Chaîne EOL"
     IDS_LEX_STR_63397       "Accents graves"
     IDS_LEX_STR_63398       "Chaîne GUID"
+    IDS_LEX_STR_63399       "Global"
 END
 
 STRINGTABLE
