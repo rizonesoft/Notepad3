@@ -5813,13 +5813,13 @@ static LPCWSTR _EditGetFindStrg(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool b
     }
 
     // 2nd: try get clipboard content
-    if (StrgIsEmpty(hfind) && bFillEmpty) {
+    if (StrgIsEmpty(hfind) && bFillEmpty && Settings.SearchByClipboardIfEmpty) {
         LPWSTR const buf = StrgWriteAccessBuf(hfind, FNDRPL_BUFFER);
         EditGetClipboardW(buf, StrgGetAllocLength(hfind));
         StrgSanitize(hfind);
     }
 
-    // 3rd: try get most recently used find pattern
+    // 3nd: try get most recently used find pattern
     if (StrgIsEmpty(hfind) && bFillEmpty) {
         LPWSTR const buf = StrgWriteAccessBuf(hfind, FNDRPL_BUFFER);
         MRU_Enum(Globals.pMRUfind, 0, buf, (int)StrgGetAllocLength(hfind));
@@ -5860,8 +5860,7 @@ static LPCWSTR _EditGetFindStrg(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool b
 static char* _GetReplaceString(HWND hwnd, CLPCEDITFINDREPLACE lpefr, int* iReplaceMsg)
 {
     char* pszReplace = NULL; // replace text of arbitrary size
-    if (Settings.ReplaceByClipboardTag && 
-        (StringCchCompareXW(StrgGet(lpefr->chReplaceTemplate), L"^c")) == 0)
+    if (Settings.ReplaceByClipboardTag && (StringCchCompareXW(StrgGet(lpefr->chReplaceTemplate), L"^c")) == 0)
     {
         *iReplaceMsg = SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
         pszReplace = EditGetClipboardText(hwnd, true, NULL, NULL);
@@ -6280,10 +6279,13 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         GetLngString(IDS_MUI_CLEAR_REPL_HISTORY, wchMenuBuf, COUNTOF(wchMenuBuf));
         InsertMenu(hmenu, 4, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_CLEAR_REPL_HISTORY, wchMenuBuf);
         InsertMenu(hmenu, 5, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+        GetLngString(IDS_MUI_SEARCHCLIPIFEMPTY, wchMenuBuf, COUNTOF(wchMenuBuf));
+        InsertMenu(hmenu, 6, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_SEARCHCLIPIFEMPTY, wchMenuBuf);
         GetLngString(IDS_MUI_REPLCLIPTAG, wchMenuBuf, COUNTOF(wchMenuBuf));
-        InsertMenu(hmenu, 6, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_REPLCLIPTAG, wchMenuBuf);
-        InsertMenu(hmenu, 7, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+        InsertMenu(hmenu, 7, MF_BYPOSITION | MF_STRING | MF_ENABLED, IDS_MUI_REPLCLIPTAG, wchMenuBuf);
+        InsertMenu(hmenu, 8, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
 
+        CheckCmd(hmenu, IDS_MUI_SEARCHCLIPIFEMPTY, Settings.SearchByClipboardIfEmpty);
         CheckCmd(hmenu, IDS_MUI_REPLCLIPTAG, Settings.ReplaceByClipboardTag);
 
 
@@ -6923,10 +6925,14 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SetDlgItemText(hwnd, IDC_REPLACETEXT, L"");
             break;
 
+        case IDACC_SEARCHCLIPIFEMPTY:
+            Settings.SearchByClipboardIfEmpty = !Settings.SearchByClipboardIfEmpty;
+            CheckCmd(GetSystemMenu(hwnd, FALSE), IDS_MUI_SEARCHCLIPIFEMPTY, Settings.SearchByClipboardIfEmpty);
+            break;
+
         case IDACC_REPLCLIPTAG:
             Settings.ReplaceByClipboardTag = !Settings.ReplaceByClipboardTag;
-            HMENU hmenu = GetSystemMenu(hwnd, FALSE);
-            CheckCmd(hmenu, IDS_MUI_REPLCLIPTAG, Settings.ReplaceByClipboardTag);
+            CheckCmd(GetSystemMenu(hwnd, FALSE), IDS_MUI_REPLCLIPTAG, Settings.ReplaceByClipboardTag);
             break;
 
         case IDACC_FINDNEXT:
@@ -6978,6 +6984,9 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             return TRUE;
         } else if (wParam == IDS_MUI_CLEAR_REPL_HISTORY) {
             PostWMCommand(hwnd, IDACC_CLEAR_REPL_HISTORY);
+            return TRUE;
+        } else if (wParam == IDS_MUI_SEARCHCLIPIFEMPTY) {
+            PostWMCommand(hwnd, IDACC_SEARCHCLIPIFEMPTY);
             return TRUE;
         } else if (wParam == IDS_MUI_REPLCLIPTAG) {
             PostWMCommand(hwnd, IDACC_REPLCLIPTAG);

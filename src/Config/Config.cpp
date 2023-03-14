@@ -1692,6 +1692,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(EditLayoutRTL, false);
     GET_BOOL_VALUE_FROM_INISECTION(DialogsLayoutRTL, false);
     GET_BOOL_VALUE_FROM_INISECTION(PreferredLocale4DateFmt, false);
+    GET_BOOL_VALUE_FROM_INISECTION(SearchByClipboardIfEmpty, true);
     GET_BOOL_VALUE_FROM_INISECTION(ReplaceByClipboardTag, true);
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -2117,6 +2118,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, EditLayoutRTL);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, DialogsLayoutRTL);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, PreferredLocale4DateFmt);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SearchByClipboardIfEmpty);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ReplaceByClipboardTag);
 
 #ifdef D_NP3_WIN10_DARK_MODE

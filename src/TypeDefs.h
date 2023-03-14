@@ -669,6 +669,7 @@ typedef struct SETTINGS_T {
     int  FocusViewMarkerMode;
     bool PreferredLocale4DateFmt;
     int  AutoSaveInterval;
+    bool SearchByClipboardIfEmpty;
     bool ReplaceByClipboardTag;
 
     AutoSaveBackupOptions AutoSaveOptions;
