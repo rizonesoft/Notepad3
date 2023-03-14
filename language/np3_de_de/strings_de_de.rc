@@ -273,7 +273,9 @@ BEGIN
                             "Suchen-Historie löschen"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Ersetzen-Historie löschen"
-    IDS_MUI_REPLCLIPTAG     "Ersetzen durch Clipboard Shortcut [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Suche Clipboardinhalt wenn keine Selektion"
+    IDS_MUI_REPLCLIPTAG     "Ersetzen durch Clipboard mittels Shortcut [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around Fund von Oben"
     IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around Fund von Unten"
 END
