@@ -146,8 +146,8 @@ OnigEncodingType OnigEncodingASCII_CR = {
 OnigEncodingType OnigEncodingASCII_CRLF = {
   onigenc_single_byte_mbc_enc_len,
   "US-ASCII",  /* name */
-  1,           /* max enc length */
-  1,           /* min enc length */
+  2,           /* max enc length */
+  2,           /* min enc length */
   onigenc_is_mbc_newline_0x0d_0x0a,
   onigenc_single_byte_mbc_to_code,
   onigenc_single_byte_code_to_mbclen,

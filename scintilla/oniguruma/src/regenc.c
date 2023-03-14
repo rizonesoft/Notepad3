@@ -719,8 +719,7 @@ extern int
 onigenc_is_mbc_newline_0x0d_0x0a(const UChar* p, const UChar* end)
 {
   if (p < end) {
-    //~if ((*p == CARRIAGE_RET) && (*(p+1) == NEWLINE_CODE)) return 1; // CRLF
-    if ((*p == NEWLINE_CODE) || (*p == CARRIAGE_RET)) return 1; // LF|CR
+    if ((*p == CARRIAGE_RET) && (*(p+1) == NEWLINE_CODE)) return 1; // CRLF
   }
   return 0;
 }
