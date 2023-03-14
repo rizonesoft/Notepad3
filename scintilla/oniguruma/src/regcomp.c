@@ -7076,7 +7076,7 @@ clear_optimize_info(regex_t* reg)
 
 static void
 print_enc_string(FILE* fp, OnigEncoding enc,
-                             const UChar *s, const UChar *end)
+                 const UChar *s, const UChar *end)
 {
   if (ONIGENC_MBC_MINLEN(enc) > 1) {
     const UChar *p;
@@ -7106,7 +7106,7 @@ print_enc_string(FILE* fp, OnigEncoding enc,
         }
       }
       else { /* for UTF-8 */
-      fputc((int )*s, fp);
+        fputc((int )*s, fp);
       }
       s++;
     }
@@ -7251,7 +7251,7 @@ print_optimize_info(FILE* f, regex_t* reg)
       if (reg->map[i]) n++;
 
     fprintf(f, "map: n=%d, dmin: %u, dmax: %u\n",
-               n, reg->dist_min, reg->dist_max);
+            n, reg->dist_min, reg->dist_max);
     if (n > 0) {
       c = 0;
       fputc('[', f);

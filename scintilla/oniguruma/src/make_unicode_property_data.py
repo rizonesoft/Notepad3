@@ -7,7 +7,7 @@ import sys
 import re
 
 POSIX_LIST = [
-    'NEWLINE', 'Alpha', 'Blank', 'Cntrl', 'Digit', 'Graph', 'Lower',
+  'NEWLINE', 'Alpha', 'Blank', 'Cntrl', 'Digit', 'Graph', 'Lower',
   'Print', 'PosixPunct', 'Space', 'Upper', 'XDigit', 'Word', 'Alnum',
   'ASCII'
 ]
