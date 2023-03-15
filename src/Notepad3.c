@@ -1823,13 +1823,13 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
 
     // Pathname parameter
     
-    Path_CanonicalizeEx(hfile_pth, Paths.WorkingDirectory);
-    if (s_IsThisAnElevatedRelaunch || (Path_IsNotEmpty(hfile_pth) /*&& !g_flagNewFromClipboard*/)) {
-
+    if (s_IsThisAnElevatedRelaunch || (Path_IsNotEmpty(s_pthArgFilePath) /*&& !g_flagNewFromClipboard*/))
+    {
         fLoadFlags |= Settings.SkipUnicodeDetection ? FLF_SkipUnicodeDetect : 0;
         fLoadFlags |= Settings.SkipANSICodePageDetection ? FLF_SkipANSICPDetection : 0;
 
         // Open from Directory
+        Path_CanonicalizeEx(hfile_pth, Paths.WorkingDirectory);
 
         if (!s_IsThisAnElevatedRelaunch && Path_IsExistingDirectory(hfile_pth)) {
             if (OpenFileDlg(Globals.hwndMain, hfile_pth, hfile_pth)) {
