@@ -8797,7 +8797,9 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
     case SCN_INDICATORRELEASE: {
         if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, scn->position) > 0) {
-            if ((_s_indic_click_modifiers & SCMOD_ALT) && SciCall_IsSelectionEmpty()) {
+            bool const bIsNoSel = Sci_IsSingleSelection() && SciCall_IsSelectionEmpty();
+            if ((_s_indic_click_modifiers & SCMOD_ALT) && bIsNoSel)
+            {
                 if (_s_indic_click_modifiers & SCMOD_CTRL) {
                     HandleHotSpotURLClicked(scn->position, OPEN_NEW_NOTEPAD3);
                 } else {
