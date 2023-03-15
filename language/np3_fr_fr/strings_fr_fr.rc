@@ -273,6 +273,8 @@ BEGIN
                             "Effacer l'historique de recherche"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Effacer l'historique de remplacement"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Rechercher par presse-papiers si sélection vide"
     IDS_MUI_REPLCLIPTAG     "Remplacer par raccourci du presse-papiers [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Correspondre en boucle par le haut"
     IDS_MUI_WRAPSEARCH_BCK  "Correspondre en boucle par le bas"

@@ -273,7 +273,9 @@ BEGIN
                             "Borrar historial de búsqueda"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Borrar historial de reemplazo"
-    IDS_MUI_REPLCLIPTAG     "Reemplazar por acceso directo del portapapeles [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Buscar por portapapeles si la selección está vacía"
+    IDS_MUI_REPLCLIPTAG     "Reemplazar con acceso directo al portapapeles [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Coincidencia de bucle desde arriba"
     IDS_MUI_WRAPSEARCH_BCK  "Coincidencia de bucle desde abajo"
 END

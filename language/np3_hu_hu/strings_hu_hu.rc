@@ -273,7 +273,9 @@ BEGIN
                             "Keresési előzmények törlése"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Csere előzmények törlése"
-    IDS_MUI_REPLCLIPTAG     "Csere a vágólap gyorsbill. szerint [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Search by Clipboard if empty selection"
+    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Keresés folytatása az elejéről"
     IDS_MUI_WRAPSEARCH_BCK  "Keresés folytatása a végéről"
 END
