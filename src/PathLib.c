@@ -1844,8 +1844,10 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
     ExpandEnvironmentStrgs(hstr_io, true);
 
     if (_Path_IsRelative(hpth_in_out)) {
-        HPATHL hsrch_pth = Path_Allocate(PathGet(hpth_wrkdir));
-        Path_Append(hsrch_pth, Path_Get(hpth_in_out));
+        
+        HPATHL hsrch_pth = Path_Allocate(PathGet(hpth_in_out));
+        Path_CanonicalizeEx(hsrch_pth, hpth_wrkdir);
+
         if (Path_IsExistingFile(hsrch_pth)) {
             Path_Swap(hpth_in_out, hsrch_pth);
         }
@@ -1864,6 +1866,9 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
             }
             StrgDestroy(hsrch_str);
         }
+        //else {
+        //    //~~~Path_CanonicalizeEx(hpth_in_out, hpth_wrkdir);
+        //}
         Path_Release(hsrch_pth);
     }
 

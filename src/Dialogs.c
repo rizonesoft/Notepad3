@@ -6799,12 +6799,15 @@ bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     if (!hfile_pth_io) {
         return false;
     }
-
+    if (!Path_IsEmpty(hinidir_pth)) {
+        // clear output path, so that GetOpenFileName does not use the contents of szFile to initialize itself.
+        Path_Empty(hfile_pth_io, false);
+    }
     WCHAR szDefExt[64] = { L'\0' };
     WCHAR szFilter[EXTENTIONS_FILTER_BUFFER];
     Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), false);
 
-    HPATHL hpth_dir = Path_Allocate(Path_Get(hinidir_pth));
+    HPATHL hpth_dir = Path_Copy(hinidir_pth);
     _CanonicalizeInitialDir(hpth_dir);
 
     OPENFILENAME ofn = { sizeof(OPENFILENAME) };
