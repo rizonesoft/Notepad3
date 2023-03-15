@@ -34,13 +34,16 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.302.(build_#) (2023-03-02)
+Current BETA/RC Version 6.23.315.(build_#) (2023-03-15)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.315.1]- Cooperation of Alt+LClick on Hyperlinks vs. extend selection.
+[.315.1]- Option to fill empty search text in F/R dialog.
+[.315.1]- RegExpr enhancements.
 [.221.1]- Unicode point display (status bar) of current (caret pos) character.
 [.221.1]- Quotation Mark Auto-Close Functionality.
 [.220.1]- Add "np3encrypt" project to solution (cmd-ln tool).
@@ -50,6 +53,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.315.1]- Use larger color bitmaps within color select buttons (customize schemes).
+[.315.1]- SCI add SendMessage macro (SCI).
 [.301.1]- Generic font names $Code/$Text prepend by number referring to priority list position.
 [.301.1]- Goto next/prev markers: respect last searched markers.
 [.224.1]- Delete matching brace/quote, if content in between is empty.
@@ -67,6 +72,10 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.315.1]- Shift+Alt+Click on Hyperlink should not fire Hyperlink action.
+[.315.1]- In case of no file args: open empty doc instead of file open dialog.
+[.315.1]- Creating New file in current working directory.
+[.315.1]- Don't reset "dirty flag" after file loading (in case of EOL or indent correction).
 [.302.1]- Remove session state from default font from list retrieval.
 [.301.1]- Backward compat. for .ini param 'FileCheckInverval' (typo).
 [.301.1]- 'FileCheckInterval' instead of 'FileCheckInverval' (typo).
@@ -96,9 +105,9 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
+[.315.1]- Update Lexilla Library (LEX) version 5.2.4 (2023-03-13).
+[.315.1]- Update Scintilla Library (SCI) version 5.3.4 (2023-03-08).
 [.228.1]- Update grepWinNP3 (GRE) version 2.1.13.45 (2023-02-27).
-[.226.1]- Update Lexilla Library (LEX) version 5.2.2 (2023-02-08).
-[.224.1]- Update Scintilla Library (SCI) version 5.3.3 (2023-02-08).
 [.224.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2023-02-21).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
 
