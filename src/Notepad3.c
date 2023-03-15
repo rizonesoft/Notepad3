@@ -608,15 +608,16 @@ static bool IsFileReadOnly()
 // HasCurrentFileChanged
 //
 
-static WIN32_FIND_DATA s_fdCurFile = { 0 };
-static HANDLE s_hEventFileChangedExt = INVALID_HANDLE_VALUE;
-static HANDLE s_hEventFileDeletedExt = INVALID_HANDLE_VALUE;
+static FCOBSRVDATA_T s_FileChgObsvrData = INIT_FCOBSRV_T;
+
+// ----------------------------------------------------------------------------
 
 static inline bool IsFileChangedFlagSet() {
-    return (WaitForSingleObject(s_hEventFileChangedExt, 0) != WAIT_TIMEOUT);
+    return (WaitForSingleObject(s_FileChgObsvrData.hEventFileChanged, 0) != WAIT_TIMEOUT);
 }
+
 static inline bool IsFileDeletedFlagSet() {
-    return (WaitForSingleObject(s_hEventFileDeletedExt, 0) != WAIT_TIMEOUT);
+    return (WaitForSingleObject(s_FileChgObsvrData.hEventFileDeleted, 0) != WAIT_TIMEOUT);
 }
 
 static inline bool HasCurrentFileChanged() {
@@ -630,36 +631,39 @@ static inline bool HasCurrentFileChanged() {
         if (IsFileDeletedFlagSet()) {
             return false;
         }
-        SetEvent(s_hEventFileChangedExt);
-        SetEvent(s_hEventFileDeletedExt);
+        SetEvent(s_FileChgObsvrData.hEventFileChanged);
+        SetEvent(s_FileChgObsvrData.hEventFileDeleted);
         return true;
     }
     if (IsFileDeletedFlagSet()) {
         // The current file has been restored
-        ResetEvent(s_hEventFileDeletedExt);
+        ResetEvent(s_FileChgObsvrData.hEventFileDeleted);
     }
-
-    bool const changed = (s_fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow) || (s_fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh)
-                         //~|| (CompareFileTime(&s_fdCurFile.ftLastWriteTime, &fdUpdated.ftLastWriteTime) != 0)
-                         || (s_fdCurFile.ftLastWriteTime.dwLowDateTime != fdUpdated.ftLastWriteTime.dwLowDateTime)
-                         || (s_fdCurFile.ftLastWriteTime.dwHighDateTime != fdUpdated.ftLastWriteTime.dwHighDateTime);
+    
+    bool const changed = (s_FileChgObsvrData.fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow) || (s_FileChgObsvrData.fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh)
+                         //~|| (CompareFileTime(&(s_FileChgObsvrData.fdCurFile.ftLastWriteTime), &fdUpdated.ftLastWriteTime) != 0)
+                         || (s_FileChgObsvrData.fdCurFile.ftLastWriteTime.dwLowDateTime != fdUpdated.ftLastWriteTime.dwLowDateTime)
+                         || (s_FileChgObsvrData.fdCurFile.ftLastWriteTime.dwHighDateTime != fdUpdated.ftLastWriteTime.dwHighDateTime);
     if (changed) {
-        SetEvent(s_hEventFileChangedExt);
+        SetEvent(s_FileChgObsvrData.hEventFileChanged);
     }
     return changed;
 }
+// ----------------------------------------------------------------------------
 
 static inline void ResetFileObservationData(const bool bResetEvt) {
     if (bResetEvt) {
-        ResetEvent(s_hEventFileChangedExt);
-        ResetEvent(s_hEventFileDeletedExt);
+        ResetEvent(s_FileChgObsvrData.hEventFileChanged);
+        ResetEvent(s_FileChgObsvrData.hEventFileDeleted);
     }
     if (Path_IsNotEmpty(Paths.CurrentFile)) {
-        if (!GetFileAttributesEx(Path_Get(Paths.CurrentFile), GetFileExInfoStandard, &s_fdCurFile)) {
-            ZeroMemory(&s_fdCurFile, sizeof(WIN32_FIND_DATA));
+        if (!GetFileAttributesEx(Path_Get(Paths.CurrentFile), GetFileExInfoStandard, &(s_FileChgObsvrData.fdCurFile)))
+        {
+            ZeroMemory(&(s_FileChgObsvrData.fdCurFile), sizeof(WIN32_FIND_DATA));
         }
     }
 }
+// ----------------------------------------------------------------------------
 
 
 //=============================================================================
@@ -867,14 +871,18 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
         UndoRedoSelectionUTArray = NULL;
     }
 
-    if (IS_VALID_HANDLE(s_hEventFileChangedExt)) {
-        CloseHandle(s_hEventFileChangedExt);
-        s_hEventFileChangedExt = INVALID_HANDLE_VALUE;
+    if (IS_VALID_HANDLE(s_FileChgObsvrData.hEventFileChanged)) {
+        CloseHandle(s_FileChgObsvrData.hEventFileChanged);
+        s_FileChgObsvrData.hEventFileChanged = INVALID_HANDLE_VALUE;
     }
-    if (IS_VALID_HANDLE(s_hEventFileDeletedExt)) {
-        CloseHandle(s_hEventFileDeletedExt);
-        s_hEventFileDeletedExt = INVALID_HANDLE_VALUE;
+    if (IS_VALID_HANDLE(s_FileChgObsvrData.hEventFileDeleted)) {
+        CloseHandle(s_FileChgObsvrData.hEventFileDeleted);
+        s_FileChgObsvrData.hEventFileDeleted = INVALID_HANDLE_VALUE;
     }
+
+    BackgroundWorker_Destroy(&(s_FileChgObsvrData.worker));
+
+    // ---------------------------------------------
 
     if (s_SelectionBuffer) {
         FreeMem(s_SelectionBuffer);
@@ -1799,9 +1807,9 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     SetDialogIconNP3(hwndMain);
     InitWindowCommon(hwndMain, true);
 
-    // manual (no automatic) reset & initial state: not signaled (TRUE, FALSE)
-    s_hEventFileChangedExt = CreateEvent(NULL, TRUE, FALSE, NULL);
-    s_hEventFileDeletedExt = CreateEvent(NULL, TRUE, FALSE, NULL);
+    // manual (not automatic) reset & initial state: not signaled (TRUE, FALSE)
+    s_FileChgObsvrData.hEventFileChanged = CreateEvent(NULL, TRUE, FALSE, NULL);
+    s_FileChgObsvrData.hEventFileDeleted = CreateEvent(NULL, TRUE, FALSE, NULL);
 
     if (Settings.TransparentMode) {
         SetWindowTransparentMode(hwndMain, true, Settings2.OpacityLevel);
@@ -12527,7 +12535,6 @@ void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
 //
 //=============================================================================
 
-static DWORD s_dwFileChangeNotifyTime = 0UL;
 
 static inline void NotifyIfFileHasChanged(const bool forcedNotify) {
     
@@ -12535,7 +12542,7 @@ static inline void NotifyIfFileHasChanged(const bool forcedNotify) {
         PostMessage(Globals.hwndMain, WM_FILECHANGEDNOTIFY, 0, 0);
     }
     // reset Timeout interval
-    s_dwFileChangeNotifyTime = GetTickCount();
+    s_FileChgObsvrData.dwFileChangeNotifyTime = GetTickCount();
 }
 // ----------------------------------------------------------------------------
 
@@ -12548,7 +12555,7 @@ static void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
     UNREFERENCED_PARAMETER(uMsg);
     UNREFERENCED_PARAMETER(hwnd);
 
-    DWORD const diff = GetTickCount() - s_dwFileChangeNotifyTime;
+    DWORD const diff = GetTickCount() - s_FileChgObsvrData.dwFileChangeNotifyTime;
 
     // Directory-Observer is not notified for continously updated (log-)files
     if (diff > Settings2.FileCheckInterval) {
@@ -12558,100 +12565,51 @@ static void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
 // ----------------------------------------------------------------------------
 
 
-DWORD const dwObservingTimeout = 250UL; // then check for done
-static HANDLE s_hEventObserverDone = INVALID_HANDLE_VALUE;
-
-static unsigned __stdcall FileChangeObserver(void * pArg) {
-
-    if (!pArg) {
-        _endthreadex(0);
-        return 0;
-    }
-
-    // get handle for change notify from FindFirstChangeNotification()
-    HANDLE* const pChangeHandle = (HANDLE*)(LONG_PTR)pArg;
-
-    if (pChangeHandle && IS_VALID_HANDLE(*pChangeHandle)) {
-
-        // not manual (automatic) reset & initial state: not signaled (FALSE, FALSE)
-        s_hEventObserverDone = CreateEvent(NULL, FALSE, FALSE, NULL);
-
-        if (IS_VALID_HANDLE(s_hEventObserverDone)) {
-
-            while (WaitForSingleObject(s_hEventObserverDone, 0) == WAIT_TIMEOUT) {
-
-                DWORD const chgEvt = WaitForSingleObject(*pChangeHandle, dwObservingTimeout);
-                switch (chgEvt) {
-                case WAIT_TIMEOUT:
-                    // okay, wait again until done
-                    break;
-
-                case WAIT_OBJECT_0:
-                    if (HasCurrentFileChanged()) {
-                        PostMessage(Globals.hwndMain, WM_FILECHANGEDNOTIFY, 0, 0);
-                    }
-                    FindNextChangeNotification(*pChangeHandle);
-                    break;
-
-                case WAIT_ABANDONED:
-                case WAIT_FAILED:
-                default:
-                    SetEvent(s_hEventObserverDone);
-                    break;
-                }
-            }
-        }
-        FindCloseChangeNotification(*pChangeHandle);
-        *pChangeHandle = INVALID_HANDLE_VALUE;
-    }
-
-    if (IS_VALID_HANDLE(s_hEventObserverDone)) {
-        CloseHandle(s_hEventObserverDone);
-        s_hEventObserverDone = INVALID_HANDLE_VALUE;
-    }
-    _endthreadex(0);
-    return 0;
-}
-// ----------------------------------------------------------------------------
-
-
-static void StopFileChangeObserver(HANDLE* phObserverThread)
+unsigned int WINAPIV FileChangeObserver(LPVOID lpParam)
 {
-#pragma warning(push)
-#pragma warning(disable : 6258)
+    PFCOBSRVDATA_T const pFCOBSVData = (PFCOBSRVDATA_T)(LONG_PTR)lpParam;
 
-    if (IS_VALID_HANDLE(*phObserverThread)) {
-        if (IS_VALID_HANDLE(s_hEventObserverDone)) {
-            DWORD const wait = SignalObjectAndWait(s_hEventObserverDone, *phObserverThread,
-                /*INFINITE*/ (dwObservingTimeout << 1), FALSE);
-            if (wait == WAIT_OBJECT_0) {
-                CloseHandle(*phObserverThread); // ok
-            }
-            else if (wait == WAIT_TIMEOUT) {
-                TerminateThread(*phObserverThread, 0UL);
-                assert("Observer Timeout Exceeded Error!" && false);
-            }
-            else {
-                TerminateThread(*phObserverThread, 0UL);
-                assert("Fatal Observer Error!" && false);
+    unsigned int retcode = 0;
+
+    if (pFCOBSVData) {
+
+        BackgroundWorker* const worker = &(pFCOBSVData->worker);
+
+        while (BackgroundWorker_Continue(worker)) {
+
+            switch (WaitForSingleObject(pFCOBSVData->hFileChanged, (FileWatching.FileCheckInterval >> 1))) {
+
+            case WAIT_TIMEOUT:
+                // okay, wait again until done
+                break;
+
+            case WAIT_OBJECT_0:
+                //~NotifyIfFileHasChanged(false); // immediate notification
+                WatchTimerProc(NULL, 0, 0ULL, 0); // rely on FileCheckInterval
+                FindNextChangeNotification(pFCOBSVData->hFileChanged);
+                break;
+
+            case WAIT_ABANDONED:
+            case WAIT_FAILED:
+            default:
+                BackgroundWorker_Cancel(worker);
+                retcode = 1;
+                break;
             }
         }
-        else {
-            TerminateThread(*phObserverThread, 0UL);
-            assert("Fatal: Invalid Observer Done Handle!" && false);
-        }
+
+        FindCloseChangeNotification(pFCOBSVData->hFileChanged);
+        pFCOBSVData->hFileChanged = INVALID_HANDLE_VALUE;
+
+        BackgroundWorker_End(worker, retcode);
     }
-    *phObserverThread = INVALID_HANDLE_VALUE;
-
-#pragma warning(pop)
+    return retcode;
 }
 // ----------------------------------------------------------------------------
 
 
 void InstallFileWatching(const bool bInstall) {
 
-    static HANDLE _hChangeHandle = INVALID_HANDLE_VALUE;    // observer
-    static HANDLE _hObserverThread = INVALID_HANDLE_VALUE;
     static HANDLE _hCurrFileHandle = INVALID_HANDLE_VALUE;  // exclusive lock
 
     // don't install FileWathing on own Settings IniFile
@@ -12672,35 +12630,40 @@ void InstallFileWatching(const bool bInstall) {
         _hCurrFileHandle = INVALID_HANDLE_VALUE;
     }
 
+    if (!IS_VALID_HANDLE(s_FileChgObsvrData.worker.eventCancel)) {
+        BackgroundWorker_Init(&(s_FileChgObsvrData.worker), NULL, NULL);
+    }
+
     bool const bTerminate = !bInstall || !bWatchFile || !bFileDirExists;
 
     // Terminate previous watching
     if (bTerminate) {
-        ResetFileObservationData(true);
         KillTimer(Globals.hwndMain, ID_WATCHTIMER);
-        StopFileChangeObserver(&_hObserverThread);
+        BackgroundWorker_Cancel(&(s_FileChgObsvrData.worker));
+        ResetFileObservationData(true);
     }
 
     if (bInstall) {
 
         if (bWatchFile) {
 
-            if (!IS_VALID_HANDLE(_hObserverThread)) {
+            if (!IS_VALID_HANDLE(s_FileChgObsvrData.worker.workerThread)) {
 
                 // Save data of current file
                 ResetFileObservationData(false); // (!) false
 
-                assert(!IS_VALID_HANDLE(_hChangeHandle) && "ChangeHandle not properly closed!");
+                assert(!IS_VALID_HANDLE(s_FileChgObsvrData.hFileChanged) && "ChangeHandle not properly closed!");
 
-                _hChangeHandle = FindFirstChangeNotificationW(Path_Get(hdir_pth), false,
+                s_FileChgObsvrData.hFileChanged = FindFirstChangeNotificationW(Path_Get(hdir_pth), false,
                     FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
                     FILE_NOTIFY_CHANGE_ATTRIBUTES | FILE_NOTIFY_CHANGE_SIZE |
                     FILE_NOTIFY_CHANGE_LAST_WRITE);
 
-                _hObserverThread = (HANDLE)_beginthreadex(NULL, 0, &FileChangeObserver, (void *)&_hChangeHandle, 0, NULL);
+                BackgroundWorker_Start(&(s_FileChgObsvrData.worker), FileChangeObserver, &s_FileChgObsvrData);
             }
 
-            s_dwFileChangeNotifyTime = (FileWatching.FileWatchingMode == FWM_AUTORELOAD) ? GetTickCount() : 0UL;
+            s_FileChgObsvrData.dwFileChangeNotifyTime = (FileWatching.FileWatchingMode == FWM_AUTORELOAD) ? GetTickCount() : 0UL;
+
             if (FileWatching.FileCheckInterval > 0) {
                 SetTimer(Globals.hwndMain, ID_WATCHTIMER, FileWatching.FileCheckInterval, WatchTimerProc);
             }
@@ -12757,13 +12720,14 @@ void InstallFileWatching(const bool bInstall) {
 
 
 
-static bool s_bAutoSaveTimerSet = false;
-
 //=============================================================================
 //
 //  AutoSaveStart()
 //
-void AutoSaveStart(bool bReset)
+
+static bool s_bAutoSaveTimerSet = false;
+
+void        AutoSaveStart(bool bReset)
 {
     if ((Settings.AutoSaveOptions & ASB_Periodic) && Settings.AutoSaveInterval >= USER_TIMER_MINIMUM) {
         if (bReset || !s_bAutoSaveTimerSet) {

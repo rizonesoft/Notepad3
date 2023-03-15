@@ -2163,7 +2163,7 @@ bool AddToFavDlg(HWND hwnd, const HPATHL hTargetPth)
 //  FileMRUDlgProc()
 //
 //
-unsigned int WINAPI FileMRUIconThread(LPVOID lpParam)
+unsigned int WINAPIV FileMRUIconThread(LPVOID lpParam)
 {
     BackgroundWorker *worker = (BackgroundWorker *)lpParam;
 
@@ -2236,7 +2236,7 @@ unsigned int WINAPI FileMRUIconThread(LPVOID lpParam)
     }
 
     CoUninitialize();
-    BackgroundWorker_End(0);
+    BackgroundWorker_End(worker, 0);
     return 0;
 }
 
@@ -2245,7 +2245,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
 {
     static HWND hwndLV = NULL;
     static HPATHL hFilePath = NULL;
-
+    
     switch (umsg) {
     case WM_INITDIALOG: {
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
@@ -2331,9 +2331,9 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
         Settings.SaveFindReplace  = IsButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN);
         Settings.AutoLoadMRUFile  = IsButtonChecked(hwnd, IDC_AUTOLOAD_MRU_FILE);
 
-        Path_Release(hFilePath);
-
         ResizeDlg_Destroy(hwnd, &Settings.FileMRUDlgSizeX, &Settings.FileMRUDlgSizeY);
+
+        Path_Release(hFilePath);
     }
     return FALSE;
 
