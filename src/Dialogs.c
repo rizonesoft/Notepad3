@@ -2163,7 +2163,7 @@ bool AddToFavDlg(HWND hwnd, const HPATHL hTargetPth)
 //  FileMRUDlgProc()
 //
 //
-unsigned int WINAPIV FileMRUIconThread(LPVOID lpParam)
+unsigned int WINAPI FileMRUIconThread(LPVOID lpParam)
 {
     BackgroundWorker *worker = (BackgroundWorker *)lpParam;
 

@@ -12565,7 +12565,7 @@ static void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
 // ----------------------------------------------------------------------------
 
 
-unsigned int WINAPIV FileChangeObserver(LPVOID lpParam)
+unsigned int WINAPI FileChangeObserver(LPVOID lpParam)
 {
     PFCOBSRVDATA_T const pFCOBSVData = (PFCOBSRVDATA_T)(LONG_PTR)lpParam;
 

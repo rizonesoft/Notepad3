@@ -334,7 +334,7 @@ int DirList_Fill(HWND hwnd,LPCWSTR lpszDir,DWORD grfFlags,LPCWSTR lpszFileSpec,
 //
 //  Thread to extract file icons in the background
 //
-unsigned int WINAPIV DirList_IconThread(LPVOID lpParam)
+unsigned int WINAPI DirList_IconThread(LPVOID lpParam)
 {
     LPDLDATA lpdl = (LPDLDATA)lpParam;
     BackgroundWorker *worker = &lpdl->worker;
