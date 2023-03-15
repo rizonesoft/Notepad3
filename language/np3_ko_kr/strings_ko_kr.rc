@@ -274,8 +274,8 @@ BEGIN
     IDS_MUI_CLEAR_REPL_HISTORY
                             "바꾸기 내역 지우기"
     IDS_MUI_SEARCHCLIPIFEMPTY
-                            "Search by Clipboard if empty selection"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
+                            "선택 항목이 비어 있는 경우 클립보드로 검색"
+    IDS_MUI_REPLCLIPTAG     "바로가기 [^c]의 클립보드로 바꾸기"
     IDS_MUI_WRAPSEARCH_FWD  "위부터 반올림"
     IDS_MUI_WRAPSEARCH_BCK  "아래부터 반올림"
 END
