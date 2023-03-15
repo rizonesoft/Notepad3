@@ -273,7 +273,9 @@ BEGIN
                             "Pulisci Cronologia Ricerche"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Pulisci Cronologia Sostituzioni"
-    IDS_MUI_REPLCLIPTAG     "Sostituisci con scorciatoia Appunti [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Search by Clipboard if empty selection"
+    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Corrispondenza Wrap-Around dall'inizio"
     IDS_MUI_WRAPSEARCH_BCK  "Corrispondenza Wrap-Around dalla fine"
 END
