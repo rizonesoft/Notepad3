@@ -273,7 +273,9 @@ BEGIN
                             "Απαλοιφή ιστορικού αναζήτησης"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Απαλοιφή ιστορικού αντικατάστασης"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard Shortcut [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Search by Clipboard if empty selection"
+    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Επανάληψη αναζήτησης από την αρχή"
     IDS_MUI_WRAPSEARCH_BCK  "Επανάληψη αναζήτησης από το τέλος"
 END

@@ -273,7 +273,9 @@ BEGIN
                             "Wyczyść Znajdź Historię"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Wyczyść Zamień Historię"
-    IDS_MUI_REPLCLIPTAG     "Zamień przez skrót schowka [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Search by Clipboard if empty selection"
+    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Zawijaj pasujące od góry"
     IDS_MUI_WRAPSEARCH_BCK  "Zawijaj pasujące od spodu"
 END

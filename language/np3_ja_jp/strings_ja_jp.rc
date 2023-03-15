@@ -273,7 +273,9 @@ BEGIN
                             "検索履歴を消去"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "置換履歴を消去"
-    IDS_MUI_REPLCLIPTAG     "クリップボードの内容で置換 [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Search by Clipboard if empty selection"
+    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "先頭に戻り一致した行"
     IDS_MUI_WRAPSEARCH_BCK  "終端に行き一致した行"
 END
