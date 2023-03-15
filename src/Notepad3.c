@@ -1812,7 +1812,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
 
     Globals.hwndMain = hwndMain; // make main window globaly available
 
-    HPATHL hfile_pth = Path_Allocate(L"");
+    HPATHL        hfile_pth = Path_Copy(s_pthArgFilePath);
     FileLoadFlags fLoadFlags = FLF_None;
     
     // Source Encoding
@@ -1822,23 +1822,26 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     bool bOpened = false;
 
     // Pathname parameter
-    if (s_IsThisAnElevatedRelaunch || (Path_IsNotEmpty(s_pthArgFilePath) /*&& !g_flagNewFromClipboard*/)) {
+    
+    Path_CanonicalizeEx(hfile_pth, Paths.WorkingDirectory);
+    if (s_IsThisAnElevatedRelaunch || (Path_IsNotEmpty(hfile_pth) /*&& !g_flagNewFromClipboard*/)) {
 
         fLoadFlags |= Settings.SkipUnicodeDetection ? FLF_SkipUnicodeDetect : 0;
         fLoadFlags |= Settings.SkipANSICodePageDetection ? FLF_SkipANSICPDetection : 0;
 
         // Open from Directory
-        if (!s_IsThisAnElevatedRelaunch && Path_IsExistingDirectory(s_pthArgFilePath)) {
-            if (OpenFileDlg(Globals.hwndMain, hfile_pth, s_pthArgFilePath)) {
+
+        if (!s_IsThisAnElevatedRelaunch && Path_IsExistingDirectory(hfile_pth)) {
+            if (OpenFileDlg(Globals.hwndMain, hfile_pth, hfile_pth)) {
                 bOpened = FileLoad(hfile_pth, fLoadFlags);
             }
         } else {
-            HPATHL const hpthFileToOpen = s_IsThisAnElevatedRelaunch ? s_hpthRelaunchElevatedFile : s_pthArgFilePath;
+            HPATHL const hpthFileToOpen = s_IsThisAnElevatedRelaunch ? s_hpthRelaunchElevatedFile : hfile_pth;
             bOpened = FileLoad(hpthFileToOpen, fLoadFlags);
             if (bOpened) {
                 if (s_IsThisAnElevatedRelaunch) {
-                    if (Path_IsNotEmpty(s_pthArgFilePath)) {
-                        Path_Reset(Paths.CurrentFile, Path_Get(s_pthArgFilePath));
+                    if (Path_IsNotEmpty(hfile_pth)) {
+                        Path_Reset(Paths.CurrentFile, Path_Get(hfile_pth));
                     } else {
                         Path_Empty(Paths.CurrentFile, false);
                     }
@@ -9260,8 +9263,6 @@ void ParseCommandLine()
                          Path_Release(pthAdjustPath);
                     }
 
-                    Path_NormalizeEx(s_pthArgFilePath, Paths.WorkingDirectory, true, true);
-
                     HPATHL pthAddFile = Path_Allocate(NULL);
                     while ((s_cFileList < FILE_LIST_SIZE) && ExtractFirstArgument(lp3, lpFileBuf, lp3, (int)len)) {
                         Path_Reset(pthAddFile, lpFileBuf);
@@ -11313,6 +11314,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
     else {
         Path_Reset(hopen_file, Path_Get(hfile_pth));
     }
+
     Path_NormalizeEx(hopen_file, Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
 
     if (!bReloadFile && Path_StrgComparePathNormalized(hopen_file, Paths.CurrentFile) == 0) {
@@ -11334,12 +11336,13 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
     if (!bReloadFile && !Path_IsExistingFile(hopen_file)) {
         bool bCreateFile = s_flagQuietCreate;
         if (!bCreateFile) {
-            WCHAR szDisplayName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
 
+            WCHAR szDisplayName[MAX_PATH_EXPLICIT >> 1] = { L'\0' };
             GetLngString(IDS_MUI_UNTITLED, szDisplayName, COUNTOF(szDisplayName));
             Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), hopen_file, NULL, false); //~Path_FindFileName(hopen_file)
 
             if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_CREATE, szDisplayName))) {
+                Path_CanonicalizeEx(hopen_file, Paths.WorkingDirectory);
                 bCreateFile = true;
             }
         }
@@ -11998,8 +12001,8 @@ bool ActivatePrevInst()
         Path_NormalizeEx(s_pthArgFilePath, Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
 
         Path_Reset(s_pthCheckFilePath, Path_Get(s_pthArgFilePath));
-        EnumWindows(_EnumWndProc2,(LPARAM)&hwnd);
 
+        EnumWindows(_EnumWndProc2,(LPARAM)&hwnd);
         if (hwnd != NULL) {
             // Enabled
             if (IsWindowEnabled(hwnd)) {
@@ -12092,7 +12095,8 @@ bool ActivatePrevInst()
 
             SetForegroundWindow(hwnd);
 
-            if (Path_IsNotEmpty(s_pthArgFilePath)) {
+            if (Path_IsNotEmpty(s_pthArgFilePath))
+            {
                 size_t cb = sizeof(np3params);
                 cb += (Path_GetLength(s_pthArgFilePath) + 1) * sizeof(WCHAR);
 
@@ -12634,8 +12638,8 @@ static void StopFileChangeObserver(HANDLE* phObserverThread)
             TerminateThread(*phObserverThread, 0UL);
             assert("Fatal: Invalid Observer Done Handle!" && false);
         }
-        *phObserverThread = INVALID_HANDLE_VALUE;
     }
+    *phObserverThread = INVALID_HANDLE_VALUE;
 
 #pragma warning(pop)
 }
@@ -12656,7 +12660,7 @@ void InstallFileWatching(const bool bInstall) {
     HPATHL hdir_pth = Path_Copy(Paths.CurrentFile);
     Path_RemoveFileSpec(hdir_pth);
 
-    bool const bFileDirExists = Path_IsNotEmpty(Paths.CurrentFile) && Path_IsExistingDirectory(hdir_pth); //~ && PathIsExistingFile(Paths.CurrentFile);
+    bool const bFileDirExists = Path_IsNotEmpty(Paths.CurrentFile) && Path_IsExistingDirectory(hdir_pth); //~ && Path_IsExistingFile(Paths.CurrentFile);
     bool const bExclusiveLock = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
     bool const bWatchFile = (FileWatching.FileWatchingMode != FWM_DONT_CARE) && !bExclusiveLock;
 
