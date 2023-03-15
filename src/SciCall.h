@@ -759,6 +759,7 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
 
 #define Sci_IsThinSelection() (SciCall_GetSelectionMode() == SC_SEL_THIN)
 #define Sci_IsStreamSelection() (SciCall_GetSelectionMode() == SC_SEL_STREAM)
+#define Sci_IsSingleSelection() (SciCall_GetSelections() == 1)
 #define Sci_IsMultiSelection() ((SciCall_GetSelections() > 1) && !SciCall_IsSelectionRectangle())
 #define Sci_IsMultiOrRectangleSelection() ((SciCall_GetSelections() > 1) || SciCall_IsSelectionRectangle())
 
