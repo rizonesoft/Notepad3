@@ -25,6 +25,9 @@
 #include <iterator>
 #include <memory>
 #include <chrono>
+#include <atomic>
+#include <thread>
+#include <future>
 
 #include "ScintillaTypes.h"
 #include "ScintillaMessages.h"
@@ -274,6 +277,11 @@ Sci::Line Editor::TopLineOfMain() const noexcept {
 		return topLine;
 }
 
+Point Editor::ClientSize() const {
+	const PRectangle rcClient = GetClientRectangle();
+	return Point(rcClient.Width(), rcClient.Height());
+}
+
 PRectangle Editor::GetClientRectangle() const {
 	return wMain.GetClientPosition();
 }
@@ -290,8 +298,8 @@ PRectangle Editor::GetTextRectangle() const {
 }
 
 Sci::Line Editor::LinesOnScreen() const {
-	const PRectangle rcClient = GetClientRectangle();
-	const int htClient = static_cast<int>(rcClient.bottom - rcClient.top);
+	const Point sizeClient = ClientSize();
+	const int htClient = static_cast<int>(sizeClient.y);
 	//Platform::DebugPrintf("lines on screen = %d\n", htClient / lineHeight + 1);
 	return htClient / vs.lineHeight;
 }
@@ -1468,6 +1476,130 @@ bool Editor::WrapOneLine(Surface *surface, Sci::Line lineToWrap) {
 	return pcs->SetHeight(lineToWrap, linesWrapped);
 }
 
+namespace {
+
+// Lines less than lengthToMultiThread are laid out in blocks in parallel.
+// Longer lines are multi-threaded inside LayoutLine.
+// This allows faster processing when lines differ greatly in length and thus time to lay out.
+constexpr Sci::Position lengthToMultiThread = 4000;
+
+}
+
+bool Editor::WrapBlock(Surface *surface, Sci::Line lineToWrap, Sci::Line lineToWrapEnd) {
+
+	const size_t linesBeingWrapped = static_cast<size_t>(lineToWrapEnd - lineToWrap);
+
+	std::vector<int> linesAfterWrap(linesBeingWrapped);
+
+	size_t threads = std::min<size_t>({ linesBeingWrapped, view.maxLayoutThreads });
+	if (!surface->SupportsFeature(Supports::ThreadSafeMeasureWidths)) {
+		threads = 1;
+	}
+
+	const bool multiThreaded = threads > 1;
+
+	ElapsedPeriod epWrapping;
+
+	// Wrap all the short lines in multiple threads
+
+	// If only 1 thread needed then use the main thread, else spin up multiple
+	const std::launch policy = multiThreaded ? std::launch::async : std::launch::deferred;
+
+	std::atomic<size_t> nextIndex = 0;
+
+	// Lines that are less likely to be re-examined should not be read from or written to the cache.
+	const SignificantLines significantLines {
+		pdoc->SciLineFromPosition(sel.MainCaret()),
+		pcs->DocFromDisplay(topLine),
+		LinesOnScreen() + 1,
+		view.llc.GetLevel(),
+	};
+
+	// Protect the line layout cache from being accessed from multiple threads simultaneously
+	std::mutex mutexRetrieve;
+
+	std::vector<std::future<void>> futures;
+	for (size_t th = 0; th < threads; th++) {
+		std::future<void> fut = std::async(policy,
+			[=, &surface, &nextIndex, &linesAfterWrap, &mutexRetrieve]() {
+			// llTemporary is reused for non-significant lines, avoiding allocation costs.
+			std::shared_ptr<LineLayout> llTemporary = std::make_shared<LineLayout>(-1, 200);
+			while (true) {
+				const size_t i = nextIndex.fetch_add(1, std::memory_order_acq_rel);
+				if (i >= linesBeingWrapped) {
+					break;
+				}
+				const Sci::Line lineNumber = lineToWrap + i;
+				const Range rangeLine = pdoc->LineRange(lineNumber);
+				const Sci::Position lengthLine = rangeLine.Length();
+				if (lengthLine < lengthToMultiThread) {
+					std::shared_ptr<LineLayout> ll;
+					if (significantLines.LineMayCache(lineNumber)) {
+						std::lock_guard<std::mutex> guard(mutexRetrieve);
+						ll = view.RetrieveLineLayout(lineNumber, *this);
+					} else {
+						ll = llTemporary;
+						ll->ReSet(lineNumber, lengthLine);
+					}
+					view.LayoutLine(*this, surface, vs, ll.get(), wrapWidth, multiThreaded);
+					linesAfterWrap[i] = ll->lines;
+				}
+			}
+		});
+		futures.push_back(std::move(fut));
+	}
+	for (const std::future<void> &f : futures) {
+		f.wait();
+	}
+	// End of multiple threads
+
+	// Multiply duration by number of threads to produce (near) equivalence to duration if single threaded
+	const double durationShortLines = epWrapping.Duration(true);
+	const double durationShortLinesThreads = durationShortLines * threads;
+
+	// Wrap all the long lines in the main thread.
+	// LayoutLine may then multi-thread over segments in each line.
+
+	std::shared_ptr<LineLayout> llLarge = std::make_shared<LineLayout>(-1, 200);
+	for (size_t indexLarge = 0; indexLarge < linesBeingWrapped; indexLarge++) {
+		const Sci::Line lineNumber = lineToWrap + indexLarge;
+		const Range rangeLine = pdoc->LineRange(lineNumber);
+		const Sci::Position lengthLine = rangeLine.Length();
+		if (lengthLine >= lengthToMultiThread) {
+			std::shared_ptr<LineLayout> ll;
+			if (significantLines.LineMayCache(lineNumber)) {
+				ll = view.RetrieveLineLayout(lineNumber, *this);
+			} else {
+				ll = llLarge;
+				ll->ReSet(lineNumber, lengthLine);
+			}
+			view.LayoutLine(*this, surface, vs, ll.get(), wrapWidth);
+			linesAfterWrap[indexLarge] = ll->lines;
+		}
+	}
+
+	const double durationLongLines = epWrapping.Duration();
+	const size_t bytesBeingWrapped = pdoc->LineStart(lineToWrap + linesBeingWrapped) - pdoc->LineStart(lineToWrap);
+
+	size_t wrapsDone = 0;
+
+	for (size_t i = 0; i < linesBeingWrapped; i++) {
+		const Sci::Line lineNumber = lineToWrap + i;
+		int linesWrapped = linesAfterWrap[i];
+		if (vs.annotationVisible != AnnotationVisible::Hidden) {
+			linesWrapped += pdoc->AnnotationLines(lineNumber);
+		}
+		if (pcs->SetHeight(lineNumber, linesWrapped)) {
+			wrapsDone++;
+		}
+		wrapPending.Wrapped(lineNumber);
+	}
+
+	durationWrapOneByte.AddSample(bytesBeingWrapped, durationShortLinesThreads + durationLongLines);
+
+	return wrapsDone > 0;
+}
+
 // Perform  wrapping for a subset of the lines needing wrapping.
 // wsAll: wrap all lines which need wrapping in this single call
 // wsVisible: wrap currently visible lines
@@ -1549,16 +1681,7 @@ bool Editor::WrapLines(WrapScope ws) {
 			if (surface) {
 //Platform::DebugPrintf("Wraplines: scope=%0d need=%0d..%0d perform=%0d..%0d\n", ws, wrapPending.start, wrapPending.end, lineToWrap, lineToWrapEnd);
 
-				const size_t bytesBeingWrapped = pdoc->LineStart(lineToWrapEnd) - pdoc->LineStart(lineToWrap);
-				ElapsedPeriod epWrapping;
-				while (lineToWrap < lineToWrapEnd) {
-					if (WrapOneLine(surface, lineToWrap)) {
-						wrapOccurred = true;
-					}
-					wrapPending.Wrapped(lineToWrap);
-					lineToWrap++;
-				}
-				durationWrapOneByte.AddSample(bytesBeingWrapped, epWrapping.Duration());
+				wrapOccurred = WrapBlock(surface, lineToWrap, lineToWrapEnd);
 
 				goodTopLine = pcs->DisplayFromDoc(lineDocTop) + std::min(
 					subLineTop, static_cast<Sci::Line>(pcs->GetHeight(lineDocTop)-1));

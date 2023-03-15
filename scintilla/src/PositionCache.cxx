@@ -102,6 +102,13 @@ void LineLayout::Resize(int maxLineLength_) {
 	}
 }
 
+void LineLayout::ReSet(Sci::Line lineNumber_, Sci::Position maxLineLength_) {
+	lineNumber = lineNumber_;
+	Resize(static_cast<int>(maxLineLength_));
+	lines = 0;
+	Invalidate(ValidLevel::invalid);
+}
+
 void LineLayout::EnsureBidiData() {
 	if (!bidiData) {
 		bidiData = std::make_unique<BidiData>();
@@ -114,6 +121,7 @@ void LineLayout::Free() noexcept {
 	styles.reset();
 	positions.reset();
 	lineStarts.reset();
+	lenLineStarts = 0;
 	bidiData.reset();
 }
 
@@ -444,6 +452,21 @@ XYPOSITION ScreenLine::RepresentationWidth(size_t position) const noexcept {
 
 XYPOSITION ScreenLine::TabPositionAfter(XYPOSITION xPosition) const noexcept {
 	return (std::floor((xPosition + TabWidthMinimumPixels()) / TabWidth()) + 1) * TabWidth();
+}
+
+bool SignificantLines::LineMayCache(Sci::Line line) const noexcept {
+	switch (level) {
+	case LineCache::None:
+		return false;
+	case LineCache::Caret:
+		return line == lineCaret;
+	case LineCache::Page:
+		return (abs(line - lineCaret) < linesOnScreen) ||
+			((line >= lineTop) && (line <= (lineTop + linesOnScreen)));
+	case LineCache::Document:
+	default:
+		return true;
+	}
 }
 
 LineLayoutCache::LineLayoutCache() :
