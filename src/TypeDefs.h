@@ -852,11 +852,14 @@ typedef struct FCOBSRVDATA_T {
     HANDLE            hEventFileDeleted;
 
     HANDLE            hFileChanged;  // FindFirstChangeNotification()
+    bool              bNotifyImmediate;
     BackgroundWorker  worker;
 
 } FCOBSRVDATA_T, *PFCOBSRVDATA_T;
 
-#define INIT_FCOBSRV_T { 0UL, { 0 }, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, { NULL, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, NULL } }
+#define INIT_FCOBSRV_T { 0UL, { 0 }, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, false, { NULL, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, NULL } }
+
+#define MIN_FC_POLL_INTERVAL (500UL)
 
 //=============================================================================
 
