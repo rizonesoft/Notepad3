@@ -2893,7 +2893,9 @@ static HBITMAP LoadBitmapFile(const HPATHL hpath)
         }
     }
     else {
-        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, Path_Get(hpath));
+        WCHAR displayName[80];
+        Path_GetDisplayName(displayName, 80, hpath, L"<unknown>", false);
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, displayName);
     }
 
     return hbmp;
@@ -11328,6 +11330,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
     Path_NormalizeEx(hopen_file, Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
 
     if (!bReloadFile && Path_StrgComparePathNormalized(hopen_file, Paths.CurrentFile) == 0) {
+        Path_Release(hopen_file);
         return false;
     }
     if (!bReloadFile && Flags.bSingleFileInstance) {
@@ -11338,6 +11341,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
             if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, L"InfoInstanceExist", IDS_MUI_ASK_INSTANCE_EXISTS))) {
                 SetForegroundWindow(hwnd);
             }
+            Path_Release(hopen_file);
             return false;
         }
     }
@@ -11421,8 +11425,8 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
             Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime;
         }
 
-        Path_Swap(Paths.CurrentFile, hopen_file);
-        Path_Release(hopen_file);
+        //~Path_Swap(Paths.CurrentFile, hopen_file); ~ hopen_file needed later
+        Path_Reset(Paths.CurrentFile, Path_Get(hopen_file)); // dup
 
         SetDlgItemText(Globals.hwndMain, IDC_FILENAME, Path_Get(Paths.CurrentFile));
         SetDlgItemInt(Globals.hwndMain, IDC_REUSELOCK, GetTickCount(), false);
@@ -11540,7 +11544,9 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
 
     }
     else if (!(Flags.bHugeFileLoadState || fioStatus.bUnknownExt)) {
-        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, Path_FindFileName(Paths.CurrentFile));
+        WCHAR displayName[80];
+        Path_GetDisplayName(displayName, 80, hopen_file, L"<unknown>", false);
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, displayName);
         Flags.bHugeFileLoadState = false; // reset
     }
 
@@ -11548,7 +11554,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
     UpdateMargins(true);
     UpdateStatusbar(true);
 
-    //~Path_Release(hopen_file) ~ already released
+    Path_Release(hopen_file);
     return fSuccess;
 }
 
@@ -12584,8 +12590,11 @@ unsigned int WINAPI FileChangeObserver(LPVOID lpParam)
                 break;
 
             case WAIT_OBJECT_0:
-                //~NotifyIfFileHasChanged(false); // immediate notification
-                WatchTimerProc(NULL, 0, 0ULL, 0); // rely on FileCheckInterval
+                if (/*FileWatching.MonitoringLog*/ false) {
+                    NotifyIfFileHasChanged(false); // immediate notification
+                } else {
+                    WatchTimerProc(NULL, 0, 0ULL, 0); // rely on FileCheckInterval
+                }
                 FindNextChangeNotification(pFCOBSVData->hFileChanged);
                 break;
 
