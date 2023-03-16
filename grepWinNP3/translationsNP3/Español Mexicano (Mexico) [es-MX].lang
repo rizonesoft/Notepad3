@@ -156,8 +156,12 @@ msgid "Copy text results to clipboard"
 msgstr "Copiar los textos resultantes al portapapeles"
 
 #. Resource IDs: (177)
-msgid "Copy whole column"
-msgstr "Copiar toda la columna"
+msgid "Copy column for all items"
+msgstr ""
+
+#. Resource IDs: (178)
+msgid "Copy column for selected items"
+msgstr ""
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
