@@ -1244,7 +1244,7 @@ void LoadSettings()
     StrgReset(Settings2.FileDlgFilters, pPathBuffer);
 
     // handle deprecated (typo) key 'FileCheckInverval'
-    int const dfci = IniSectionGetInt(IniSecSettings2, L"FileCheckInverval", 0);
+    int const dfci = IniSectionGetInt(IniSecSettings2, L"FileCheckInverval", 2000);
     Settings2.FileCheckInterval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInterval", dfci), 0UL, (24UL*60*60*1000) << 1); // max: 48h
     // handle deprecated old "AutoReloadTimeout"
     int const   autoReload = IniSectionGetInt(IniSecSettings2, L"AutoReloadTimeout", -1); // deprecated
