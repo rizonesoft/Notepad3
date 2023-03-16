@@ -420,11 +420,13 @@ bool IsRunAsAdmin();
 
 void        BackgroundWorker_Init(BackgroundWorker* worker, HWND hwnd, const HPATHL hFilePath);
 void        BackgroundWorker_Start(BackgroundWorker* worker, _beginthreadex_proc_type routine, LPVOID property);
-void        BackgroundWorker_Cancel(BackgroundWorker *worker);
-void        BackgroundWorker_Destroy(BackgroundWorker *worker);
+void        BackgroundWorker_Cancel(BackgroundWorker* worker);
+void        BackgroundWorker_Destroy(BackgroundWorker* worker);
 
+inline bool BackgroundWorker_Continue(BackgroundWorker* worker) { 
+    return (worker) ? (WaitForSingleObject(worker->eventCancel, 0) != WAIT_OBJECT_0) : false;
+}
 inline void BackgroundWorker_End(BackgroundWorker* worker, unsigned int retcode) { if (worker) { _endthreadex(retcode); }}
-inline bool BackgroundWorker_Continue(BackgroundWorker* worker) { return (worker) ? (WaitForSingleObject(worker->eventCancel, 0) != WAIT_OBJECT_0) : false; }
 
 
 bool BitmapMergeAlpha(HBITMAP hbmp,COLORREF crDest);
