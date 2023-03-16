@@ -210,10 +210,11 @@ This allows you to perform much more powerful search and replace operations in f
 - or from "Edit --> Search --> Search in Files"
 - or simply with "`Ctrl+Shift+F`"
 
-#### `FileCheckInterval=0`
+#### `FileCheckInterval=2000`
 
 The interval (in milliseconds) to check for external modification of the currently opened file. 
-- Defaults is 0 ms.
+- Defaults is 2000 msec.
+- Min: 500[msec] - if equal or less, notify immediately.
 
 #### `FileChangedIndicator=[@]`
 
@@ -390,9 +391,11 @@ If the string contains spaces, you have to double-quote it,
 
 #### `CurrentLineVerticalSlop=5`
 
-#### `UndoTransactionTimeout=0`  ;in [ms]
+#### `UndoTransactionTimeout=0`
 
-UndoTransactionTimeout=1 (will be clamped to 10ms min.) will separate nearly every keystroke as single undo action.
+- in [msec]
+
+UndoTransactionTimeout=1 (will be clamped to 10msec min.) will separate nearly every keystroke as single undo action.
 (UndoTransactionTimeout=0 will switch this timer OFF)
 
 #### `AdministrationTool.exe=`  
@@ -430,13 +433,15 @@ New parameter "[Settings2] ExitOnESCSkipLevel = 2"
 - Level 1 : ESC cancels message-box and ignores Selection.
 - Level 0 : ESC cancels all states and proceeds to Exit (if configured).
 
-#### `ZoomTooltipTimeout=3200`  ;in [ms]
+#### `ZoomTooltipTimeout=3200`
 
-- A value of zero (0) (or less than 100 ms) will disable the tooltip display.
+- in [msec]
+- A value of zero (0) (or less than 100 msec) will disable the tooltip display.
 
-#### `WrapAroundTooltipTimeout=2000`  ;in [ms]
+#### `WrapAroundTooltipTimeout=2000`
 
-- A value of zero (0) (or less than 100 ms) will disable the tooltip display.
+- in [msec]
+- A value of zero (0) (or less than 100 msec) will disable the tooltip display.
 
 #### `LargeIconScalePrecent=150`
 
