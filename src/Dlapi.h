@@ -36,7 +36,7 @@ typedef struct tagLV_ITEMDATA { // lvid
 
 //==== DlInit() ===============================================================
 
-bool DirList_Init(HWND hwnd, LPCWSTR pszHeader, HPATHL hFilePath);
+bool DirList_Init(HWND hwnd, LPCWSTR pszHeader, const HPATHL hFilePath);
 
 
 //==== DlDestroy() ============================================================

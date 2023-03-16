@@ -418,19 +418,14 @@ bool IsProcessElevated();
 bool IsUserInAdminGroup();
 bool IsRunAsAdmin();
 
-typedef struct BackgroundWorker {
-    HWND hwnd;
-    HANDLE eventCancel;
-    HANDLE workerThread;
-    HPATHL hFilePath; // PATHLONG_MAX_CCH
-} BackgroundWorker;
+void        BackgroundWorker_Init(BackgroundWorker* worker, HWND hwnd, const HPATHL hFilePath);
+void        BackgroundWorker_Start(BackgroundWorker* worker, _beginthreadex_proc_type routine, LPVOID property);
+void        BackgroundWorker_Cancel(BackgroundWorker *worker);
+void        BackgroundWorker_Destroy(BackgroundWorker *worker);
 
-void BackgroundWorker_Init(BackgroundWorker* worker, HWND hwnd, HPATHL hFilePath);
-void BackgroundWorker_Start(BackgroundWorker* worker, _beginthreadex_proc_type routine, LPVOID property);
-void BackgroundWorker_End(unsigned int retcode);
-void BackgroundWorker_Cancel(BackgroundWorker *worker);
-void BackgroundWorker_Destroy(BackgroundWorker *worker);
-__forceinline bool BackgroundWorker_Continue(BackgroundWorker* worker) { return (WaitForSingleObject(worker->eventCancel, 0) != WAIT_OBJECT_0); }
+inline void BackgroundWorker_End(BackgroundWorker* worker, unsigned int retcode) { if (worker) { _endthreadex(retcode); }}
+inline bool BackgroundWorker_Continue(BackgroundWorker* worker) { return (worker) ? (WaitForSingleObject(worker->eventCancel, 0) != WAIT_OBJECT_0) : false; }
+
 
 bool BitmapMergeAlpha(HBITMAP hbmp,COLORREF crDest);
 bool BitmapAlphaBlend(HBITMAP hbmp,COLORREF crDest,BYTE alpha);

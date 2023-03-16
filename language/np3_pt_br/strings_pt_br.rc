@@ -274,8 +274,8 @@ BEGIN
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Limpar Histórico Substituir"
     IDS_MUI_SEARCHCLIPIFEMPTY
-                            "Search by Clipboard if empty selection"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
+                            "Pesquisar pela Área de Transferência se a seleção estiver vazia"
+    IDS_MUI_REPLCLIPTAG     "Substituir pela Área de Transferência no Atalho [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Pesquisa circular - correspondência a partir do início"
     IDS_MUI_WRAPSEARCH_BCK  "Pesquisa circular - correspondência a partir do final"
 END

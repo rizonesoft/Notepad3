@@ -834,6 +834,32 @@ extern FOCUSEDVIEW_T FocusedView;
 
 //=============================================================================
 
+typedef struct BackgroundWorker {
+    HWND   hwnd;
+    HANDLE eventCancel;
+    HANDLE workerThread;
+    HPATHL hFilePath; // PATHLONG_MAX_CCH
+} BackgroundWorker;
+
+//=============================================================================
+
+typedef struct FCOBSRVDATA_T {
+
+    DWORD             dwFileChangeNotifyTime;
+
+    WIN32_FIND_DATA   fdCurFile;
+    HANDLE            hEventFileChanged;
+    HANDLE            hEventFileDeleted;
+
+    HANDLE            hFileChanged;  // FindFirstChangeNotification()
+    BackgroundWorker  worker;
+
+} FCOBSRVDATA_T, *PFCOBSRVDATA_T;
+
+#define INIT_FCOBSRV_T { 0UL, { 0 }, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, { NULL, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, NULL } }
+
+//=============================================================================
+
 typedef struct FILEWATCHING_T {
 
     FILE_WATCHING_MODE flagChangeNotify;  // <-> s_flagChangeNotify;
