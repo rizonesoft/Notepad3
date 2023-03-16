@@ -468,23 +468,23 @@ BEGIN
         MENUITEM "&Tab Settings...\tCtrl+T",                 IDM_SET_TABSETTINGS
         MENUITEM "&Word Wrap Settings...",                   IDM_SET_WORDWRAPSETTINGS
         MENUITEM "L&ong Line Settings...",                   IDM_SET_LONGLINESETTINGS
-        MENUITEM "Auto &Indent Text",                        IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
-        MENUITEM "Auto Close &Brackets",                     IDM_SET_AUTOCLOSEBRACKETS
-        MENUITEM "Auto Close &HTML/XML\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
-        MENUITEM "A&uto Complete Words",                     IDM_SET_AUTOCOMPLETEWORDS
-        MENUITEM "Auto Complete Lexer-&Key-Words",           IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "Otomatis &Indentasi Teks",                 IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Otomatis Tutup &Tanda Kutip",              IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Otomatis Tutup &Tanda Kurung",             IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Otomatis Tutup &HTML/XML\tCtrl+Shift+H",   IDM_SET_AUTOCLOSETAGS
+        MENUITEM "Otomatis Melengkapi Kata",                 IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Otomatis Complete Lexer-&Key-Words",       IDM_SET_AUTOCLEXKEYWORDS
         MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",   IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Only One Instance per &File",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "File &Change Notification...\tAlt+F5",     IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
+        ///MENUITEM "Pengaturan Otomatis Simpan / Cadangkan ...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "&Mute Message Beeps",                      IDM_SET_MUTE_MESSAGEBEEP
-        POPUP "&Esc Key Function"
+        POPUP "&Fungsi Tombol Escape"
         BEGIN
-            MENUITEM "&None",                       IDM_SET_NOESCFUNC
-            MENUITEM "&Minimise Notepad3",          IDM_SET_ESCMINIMIZE
-            MENUITEM "E&xit Notepad3",              IDM_SET_ESCEXIT
+            MENUITEM "Tida&k Ada",                       IDM_SET_NOESCFUNC
+            MENUITEM "&Minimalkan Notepad3",          IDM_SET_ESCMINIMIZE
+            MENUITEM "Ke&luar Notepad3",              IDM_SET_ESCEXIT
         END
         MENUITEM "Sa&ve Before Running Tools",      IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Calculate Tiny-E&xpressions",     IDM_SET_EVALTINYEXPRONSEL
@@ -524,11 +524,11 @@ BEGIN
                 MENUITEM "&Edit Area",                  IDM_SET_RTL_LAYOUT_EDIT
                 MENUITEM "&Other Dialogs",              IDM_SET_RTL_LAYOUT_DLG
             END
-            POPUP "&Bidirectional"
+            POPUP "&Arah Penulisan"
             BEGIN
-                MENUITEM "&None",                        IDM_SET_BIDIRECTIONAL_NONE
-                MENUITEM "&Left to Right",               IDM_SET_BIDIRECTIONAL_L2R
-                MENUITEM "&Right to Left",               IDM_SET_BIDIRECTIONAL_R2L
+                MENUITEM "&Tidak Ada",                   IDM_SET_BIDIRECTIONAL_NONE
+                MENUITEM "Ki&ri ke Kanan",               IDM_SET_BIDIRECTIONAL_L2R
+                MENUITEM "K&anan ke Kiri",               IDM_SET_BIDIRECTIONAL_R2L
             END
         END
         POPUP "&Konfigurasi Lanjutan"
