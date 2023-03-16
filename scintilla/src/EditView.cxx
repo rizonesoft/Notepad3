@@ -397,7 +397,7 @@ void LayoutSegments(IPositionCache *pCache,
 * Copy the given @a line and its styles from the document into local arrays.
 * Also determine the x position at which each character starts.
 */
-void EditView::LayoutLine(const EditModel &model, Surface *surface, const ViewStyle &vstyle, LineLayout *ll, int width) {
+void EditView::LayoutLine(const EditModel &model, Surface *surface, const ViewStyle &vstyle, LineLayout *ll, int width, bool callerMultiThreaded) {
 	if (!ll)
 		return;
 
@@ -494,7 +494,7 @@ void EditView::LayoutLine(const EditModel &model, Surface *surface, const ViewSt
 
 			const size_t threadsForLength = std::max(1, numCharsInLine / bytesPerLayoutThread);
 			size_t threads = std::min<size_t>({ segments.size(), threadsForLength, maxLayoutThreads });
-			if (!surface->SupportsFeature(Supports::ThreadSafeMeasureWidths)) {
+			if (!surface->SupportsFeature(Supports::ThreadSafeMeasureWidths) || callerMultiThreaded) {
 				threads = 1;
 			}
 
@@ -502,6 +502,7 @@ void EditView::LayoutLine(const EditModel &model, Surface *surface, const ViewSt
 
 			const bool textUnicode = CpUtf8 == model.pdoc->dbcsCodePage;
 			const bool multiThreaded = threads > 1;
+			const bool multiThreadedContext = multiThreaded || callerMultiThreaded;
 			IPositionCache *pCache = posCache.get();
 
 			// If only 1 thread needed then use the main thread, else spin up multiple
@@ -511,8 +512,8 @@ void EditView::LayoutLine(const EditModel &model, Surface *surface, const ViewSt
 			for (size_t th = 0; th < threads; th++) {
 				// Find relative positions of everything except for tabs
 				std::future<void> fut = std::async(policy,
-					[pCache, surface, &vstyle, &ll, &segments, &nextIndex, textUnicode, multiThreaded]() {
-					LayoutSegments(pCache, surface, vstyle, ll, segments, nextIndex, textUnicode, multiThreaded);
+					[pCache, surface, &vstyle, &ll, &segments, &nextIndex, textUnicode, multiThreadedContext]() {
+					LayoutSegments(pCache, surface, vstyle, ll, segments, nextIndex, textUnicode, multiThreadedContext);
 				});
 				futures.push_back(std::move(fut));
 			}

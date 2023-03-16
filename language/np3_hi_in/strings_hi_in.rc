@@ -273,7 +273,9 @@ BEGIN
                             "ढूँढी हुई फ़ाइलों की जानकारी हटाएं"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "बदलाव की जानकारी हटाएं"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard Shortcut [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Search by Clipboard if empty selection"
+    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "मिलान के चारों ओर ऊपर से लपेटें"
     IDS_MUI_WRAPSEARCH_BCK  "मिलान के चारों ओर नीचे से लपेटें"
 END

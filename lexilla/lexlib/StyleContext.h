@@ -160,7 +160,6 @@ public:
 		const unsigned char uch1 = ch1;
 		return (ch == uch0) && (chNext == uch1);
 	}
-
 	bool Match(const char *s) {
 		const unsigned char su = *s;
 		if (ch != su)
@@ -183,7 +182,8 @@ public:
 	bool MatchIgnoreCase(const char *s);
 	void GetCurrent(char *s, Sci_PositionU len);
 	void GetCurrentLowered(char *s, Sci_PositionU len);
-
+	enum class Transform { none, lower };
+	void GetCurrentString(std::string &string, Transform transform);
 
     // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 

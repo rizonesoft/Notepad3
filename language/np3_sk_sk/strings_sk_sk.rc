@@ -273,7 +273,9 @@ BEGIN
                             "Vymazať históriu vyhľadávania"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Vymazať históriu nahradenia"
-    IDS_MUI_REPLCLIPTAG     "Nahradiť skratkou schránky [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Search by Clipboard if empty selection"
+    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Zviňovať zvrchu"
     IDS_MUI_WRAPSEARCH_BCK  "Zviňovať zospodu"
 END

@@ -1823,13 +1823,13 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
 
     // Pathname parameter
     
-    Path_CanonicalizeEx(hfile_pth, Paths.WorkingDirectory);
-    if (s_IsThisAnElevatedRelaunch || (Path_IsNotEmpty(hfile_pth) /*&& !g_flagNewFromClipboard*/)) {
-
+    if (s_IsThisAnElevatedRelaunch || (Path_IsNotEmpty(s_pthArgFilePath) /*&& !g_flagNewFromClipboard*/))
+    {
         fLoadFlags |= Settings.SkipUnicodeDetection ? FLF_SkipUnicodeDetect : 0;
         fLoadFlags |= Settings.SkipANSICodePageDetection ? FLF_SkipANSICPDetection : 0;
 
         // Open from Directory
+        Path_CanonicalizeEx(hfile_pth, Paths.WorkingDirectory);
 
         if (!s_IsThisAnElevatedRelaunch && Path_IsExistingDirectory(hfile_pth)) {
             if (OpenFileDlg(Globals.hwndMain, hfile_pth, hfile_pth)) {
@@ -8797,7 +8797,9 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
     case SCN_INDICATORRELEASE: {
         if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, scn->position) > 0) {
-            if ((_s_indic_click_modifiers & SCMOD_ALT) && SciCall_IsSelectionEmpty()) {
+            bool const bIsNoSel = Sci_IsSingleSelection() && SciCall_IsSelectionEmpty();
+            if ((_s_indic_click_modifiers & SCMOD_ALT) && bIsNoSel)
+            {
                 if (_s_indic_click_modifiers & SCMOD_CTRL) {
                     HandleHotSpotURLClicked(scn->position, OPEN_NEW_NOTEPAD3);
                 } else {

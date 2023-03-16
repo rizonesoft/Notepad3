@@ -83,6 +83,7 @@ public:
 	void operator=(LineLayout &&) = delete;
 	virtual ~LineLayout();
 	void Resize(int maxLineLength_);
+	void ReSet(Sci::Line lineNumber_, Sci::Position maxLineLength_);
 	void EnsureBidiData();
 	void Free() noexcept;
 	void ClearPositions();
@@ -138,6 +139,14 @@ struct ScreenLine : public IScreenLine {
 	const Font *FontOfPosition(size_t position) const noexcept override;
 	XYPOSITION RepresentationWidth(size_t position) const noexcept override;
 	XYPOSITION TabPositionAfter(XYPOSITION xPosition) const noexcept override;
+};
+
+struct SignificantLines {
+	Sci::Line lineCaret;
+	Sci::Line lineTop;
+	Sci::Line linesOnScreen;
+	Scintilla::LineCache level;
+	bool LineMayCache(Sci::Line line) const noexcept;
 };
 
 /**
