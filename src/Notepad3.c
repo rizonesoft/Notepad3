@@ -2893,7 +2893,9 @@ static HBITMAP LoadBitmapFile(const HPATHL hpath)
         }
     }
     else {
-        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, Path_Get(hpath));
+        WCHAR displayName[80];
+        Path_GetDisplayName(displayName, 80, hpath, L"<unknown>", false);
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, displayName);
     }
 
     return hbmp;
@@ -11328,6 +11330,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
     Path_NormalizeEx(hopen_file, Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
 
     if (!bReloadFile && Path_StrgComparePathNormalized(hopen_file, Paths.CurrentFile) == 0) {
+        Path_Release(hopen_file);
         return false;
     }
     if (!bReloadFile && Flags.bSingleFileInstance) {
@@ -11338,6 +11341,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
             if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, L"InfoInstanceExist", IDS_MUI_ASK_INSTANCE_EXISTS))) {
                 SetForegroundWindow(hwnd);
             }
+            Path_Release(hopen_file);
             return false;
         }
     }
@@ -11421,8 +11425,8 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
             Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime;
         }
 
-        Path_Swap(Paths.CurrentFile, hopen_file);
-        Path_Release(hopen_file);
+        //~Path_Swap(Paths.CurrentFile, hopen_file); ~ hopen_file needed later
+        Path_Reset(Paths.CurrentFile, Path_Get(hopen_file)); // dup
 
         SetDlgItemText(Globals.hwndMain, IDC_FILENAME, Path_Get(Paths.CurrentFile));
         SetDlgItemInt(Globals.hwndMain, IDC_REUSELOCK, GetTickCount(), false);
@@ -11540,7 +11544,9 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
 
     }
     else if (!(Flags.bHugeFileLoadState || fioStatus.bUnknownExt)) {
-        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, Path_FindFileName(Paths.CurrentFile));
+        WCHAR displayName[80];
+        Path_GetDisplayName(displayName, 80, hopen_file, L"<unknown>", false);
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, displayName);
         Flags.bHugeFileLoadState = false; // reset
     }
 
@@ -11548,7 +11554,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
     UpdateMargins(true);
     UpdateStatusbar(true);
 
-    //~Path_Release(hopen_file) ~ already released
+    Path_Release(hopen_file);
     return fSuccess;
 }
 
@@ -12575,17 +12581,27 @@ unsigned int WINAPI FileChangeObserver(LPVOID lpParam)
 
         BackgroundWorker* const worker = &(pFCOBSVData->worker);
 
+        assert(!IS_VALID_HANDLE(pFCOBSVData->hFileChanged) && "ChangeHandle not properly closed!");
+
+        pFCOBSVData->hFileChanged = FindFirstChangeNotificationW(Path_Get(pFCOBSVData->worker.hFilePath), false,
+            FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
+            FILE_NOTIFY_CHANGE_ATTRIBUTES | FILE_NOTIFY_CHANGE_SIZE |
+            FILE_NOTIFY_CHANGE_LAST_WRITE);
+
         while (BackgroundWorker_Continue(worker)) {
 
-            switch (WaitForSingleObject(pFCOBSVData->hFileChanged, (FileWatching.FileCheckInterval >> 1))) {
+            switch (WaitForSingleObject(pFCOBSVData->hFileChanged, 100)) {
 
             case WAIT_TIMEOUT:
-                // okay, wait again until done
+                // okay, check BGWorker cancellation or wait again until done
                 break;
 
             case WAIT_OBJECT_0:
-                //~NotifyIfFileHasChanged(false); // immediate notification
-                WatchTimerProc(NULL, 0, 0ULL, 0); // rely on FileCheckInterval
+                if (pFCOBSVData->bNotifyImmediate) {
+                    NotifyIfFileHasChanged(/*(!)*/false); // immediate notification
+                } else {
+                    WatchTimerProc(NULL, 0, 0ULL, 0); // rely on FileCheckInterval
+                }
                 FindNextChangeNotification(pFCOBSVData->hFileChanged);
                 break;
 
@@ -12598,7 +12614,7 @@ unsigned int WINAPI FileChangeObserver(LPVOID lpParam)
             }
         }
 
-        FindCloseChangeNotification(pFCOBSVData->hFileChanged);
+        FindCloseChangeNotification(pFCOBSVData->hFileChanged); // stop monitoring
         pFCOBSVData->hFileChanged = INVALID_HANDLE_VALUE;
 
         BackgroundWorker_End(worker, retcode);
@@ -12623,6 +12639,8 @@ void InstallFileWatching(const bool bInstall) {
     bool const bFileDirExists = Path_IsNotEmpty(Paths.CurrentFile) && Path_IsExistingDirectory(hdir_pth); //~ && Path_IsExistingFile(Paths.CurrentFile);
     bool const bExclusiveLock = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
     bool const bWatchFile = (FileWatching.FileWatchingMode != FWM_DONT_CARE) && !bExclusiveLock;
+
+    s_FileChgObsvrData.bNotifyImmediate = (FileWatching.FileCheckInterval <= MIN_FC_POLL_INTERVAL);
 
     // always release exclusive file lock in any case
     if (IS_VALID_HANDLE(_hCurrFileHandle)) {
@@ -12652,12 +12670,7 @@ void InstallFileWatching(const bool bInstall) {
                 // Save data of current file
                 ResetFileObservationData(false); // (!) false
 
-                assert(!IS_VALID_HANDLE(s_FileChgObsvrData.hFileChanged) && "ChangeHandle not properly closed!");
-
-                s_FileChgObsvrData.hFileChanged = FindFirstChangeNotificationW(Path_Get(hdir_pth), false,
-                    FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME |
-                    FILE_NOTIFY_CHANGE_ATTRIBUTES | FILE_NOTIFY_CHANGE_SIZE |
-                    FILE_NOTIFY_CHANGE_LAST_WRITE);
+                Path_Reset(s_FileChgObsvrData.worker.hFilePath, Path_Get(hdir_pth)); // directory monitoring
 
                 BackgroundWorker_Start(&(s_FileChgObsvrData.worker), FileChangeObserver, &s_FileChgObsvrData);
             }

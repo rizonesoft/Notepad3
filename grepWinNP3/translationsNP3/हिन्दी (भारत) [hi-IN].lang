@@ -156,7 +156,11 @@ msgid "Copy text results to clipboard"
 msgstr "कई टेक्स्ट नतीजे क्लिपबोर्ड में कॉपी करें"
 
 #. Resource IDs: (177)
-msgid "Copy whole column"
+msgid "Copy column for all items"
+msgstr ""
+
+#. Resource IDs: (178)
+msgid "Copy column for selected items"
 msgstr ""
 
 #. Resource IDs: (1029)

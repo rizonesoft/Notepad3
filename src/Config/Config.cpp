@@ -1257,7 +1257,7 @@ void LoadSettings()
         }
         bDirtyFlag = true;
     }
-    Settings2.FileCheckInterval = clampul(Settings2.FileCheckInterval, 120UL, (24UL*60*60*1000) << 1); // min: 120msec  max: 48h
+    Settings2.FileCheckInterval = clampul(Settings2.FileCheckInterval, MIN_FC_POLL_INTERVAL, (24UL * 60 * 60 * 1000) << 1); // min: 500msec  max: 48h
     FileWatching.FileCheckInterval = Settings2.FileCheckInterval;
 
     IniSectionGetString(IniSecSettings2, L"FileChangedIndicator", L"[@]", Settings2.FileChangedIndicator, COUNTOF(Settings2.FileChangedIndicator));
