@@ -156,8 +156,12 @@ msgid "Copy text results to clipboard"
 msgstr "Textresultate in Zwischenablage kopieren"
 
 #. Resource IDs: (177)
-msgid "Copy whole column"
-msgstr "Ganze Spalte kopieren"
+msgid "Copy column for all items"
+msgstr "Spaltentext für alle Einträge kopieren"
+
+#. Resource IDs: (178)
+msgid "Copy column for selected items"
+msgstr "Spaltentext für selektierte Einträge kopieren"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"

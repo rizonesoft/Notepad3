@@ -2132,15 +2132,18 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
             {
                 OnOutOfScope(DestroyMenu(hMenu));
                 auto sCopyColumn = TranslatedString(hResource, IDS_COPY_COLUMN);
+                auto sCopyColumnSel = TranslatedString(hResource, IDS_COPY_COLUMN_SEL);
                 AppendMenu(hMenu, MF_STRING, 1, sCopyColumn.c_str());
+                if (ListView_GetSelectedCount(hListControl) > 0)
+                    AppendMenu(hMenu, MF_STRING, 2, sCopyColumnSel.c_str());
                 // Display the menu.
                 auto cmdId = TrackPopupMenu(hMenu, TPM_RETURNCMD, pt.x, pt.y, 0, *this, nullptr);
-                if (cmdId == 1)
+                if (cmdId == 1 || cmdId == 2)
                 {
                     int          iItem = -1;
                     std::wstring copyText;
                     auto         sReadError = TranslatedString(hResource, IDS_READERROR);
-                    while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_ALL)) != (-1))
+                    while ((iItem = ListView_GetNextItem(hListControl, iItem, cmdId == 1 ? LVNI_ALL : LVNI_SELECTED)) != (-1))
                     {
                         int selIndex = GetSelectedListIndex(fileList, iItem);
                         if ((selIndex < 0) || (selIndex >= static_cast<int>(m_items.size())))
@@ -2250,6 +2253,7 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
                     WriteAsciiStringToClipboard(copyText.c_str(), *this);
                 }
             }
+            return;
         }
     }
 
@@ -3889,7 +3893,7 @@ bool CSearchDlg::MatchPath(LPCTSTR pathBuf) const
 
 
 int CSearchDlg::SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wstring& searchRoot, const SearchFlags_t searchFlags,
-                           const std::wstring& searchString, const std::wstring& searchStringUtf16le, const std::wstring& replaceString)
+                           const std::wstring& searchString, const std::wstring& searchStringUtf16Le, const std::wstring& replaceString)
 {
     if (IsCancelled())
         return -1; // don't start this search thread
@@ -4007,7 +4011,7 @@ int CSearchDlg::SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wst
             }
             if (type == CTextFile::Binary)
             {
-                boost::wregex expressionUtf16 = boost::wregex(searchStringUtf16le, ft);
+                boost::wregex expressionUtf16 = boost::wregex(searchStringUtf16Le, ft);
                 start                         = textFile.GetFileString().begin();
                 end                           = textFile.GetFileString().end();
 
