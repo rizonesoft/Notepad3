@@ -157,11 +157,11 @@ msgstr "Copiar los textos resultantes al portapapeles"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr ""
+msgstr "Copiar todos los elementos de la columna"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr ""
+msgstr "Copiar elementos seleccionados de la columna"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
