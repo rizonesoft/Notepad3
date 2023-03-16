@@ -147,7 +147,7 @@ protected:
     bool                    PreTranslateMessage(MSG* pMsg) override;
 
     static int              SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wstring& searchRoot, const SearchFlags_t searchFlags,
-                                       const std::wstring& searchString, const std::wstring& searchStringUtf16le, const std::wstring& replaceString);
+                                       const std::wstring& searchString, const std::wstring& searchStringUtf16Le, const std::wstring& replaceString);
 
     bool             InitResultList();
     void             FillResultList();
