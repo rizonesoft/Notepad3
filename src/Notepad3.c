@@ -3919,7 +3919,7 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(wParam);
     UNREFERENCED_PARAMETER(lParam);
-    
+
     SET_FCT_GUARD(TRUE);
 
     InstallFileWatching(false); // terminate
@@ -3952,7 +3952,7 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             Sci_ScrollSelectionToView();
         }
 
-    } else {
+    } else { // file has been deleted
 
         if (FileWatching.FileWatchingMode == FWM_MSGBOX) {
             if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2))) {
@@ -3964,6 +3964,7 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             // FWM_INDICATORSILENT: nothing todo here
             SetSaveNeeded(true);
         }
+
     }
 
     InstallFileWatching(true);
@@ -12636,7 +12637,9 @@ void InstallFileWatching(const bool bInstall) {
     HPATHL hdir_pth = Path_Copy(Paths.CurrentFile);
     Path_RemoveFileSpec(hdir_pth);
 
-    bool const bFileDirExists = Path_IsNotEmpty(Paths.CurrentFile) && Path_IsExistingDirectory(hdir_pth); //~ && Path_IsExistingFile(Paths.CurrentFile);
+    bool const bFileDirExists = Path_IsNotEmpty(Paths.CurrentFile) && Path_IsExistingDirectory(hdir_pth);
+    bool const bFileExists = bFileDirExists && Path_IsExistingFile(Paths.CurrentFile);
+
     bool const bExclusiveLock = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
     bool const bWatchFile = (FileWatching.FileWatchingMode != FWM_DONT_CARE) && !bExclusiveLock;
 
@@ -12652,16 +12655,16 @@ void InstallFileWatching(const bool bInstall) {
         BackgroundWorker_Init(&(s_FileChgObsvrData.worker), NULL, NULL);
     }
 
-    bool const bTerminate = !bInstall || !bWatchFile || !bFileDirExists;
+    bool const bTerminate = !bInstall || !bWatchFile || !bFileDirExists /*~||!bFileExists~*/;
 
     // Terminate previous watching
     if (bTerminate) {
         KillTimer(Globals.hwndMain, ID_WATCHTIMER);
         BackgroundWorker_Cancel(&(s_FileChgObsvrData.worker));
-        ResetFileObservationData(true);
+        ResetFileObservationData(false); // (!) false
     }
 
-    if (bInstall) {
+    if (bInstall && bFileExists) {
 
         if (bWatchFile) {
 
@@ -12684,7 +12687,8 @@ void InstallFileWatching(const bool bInstall) {
                 KillTimer(Globals.hwndMain, ID_WATCHTIMER);
             }
 
-        } else if (bExclusiveLock) {
+        }
+        else if (bExclusiveLock) {
 
             assert(!IS_VALID_HANDLE(_hCurrFileHandle) && "CurrFileHandle not properly closed!");
 

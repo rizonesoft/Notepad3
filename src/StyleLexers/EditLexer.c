@@ -248,8 +248,8 @@ void Lexer_SetLexerSpecificProperties(const int lexerId) {
         break;
 
     case SCLEX_JSON:
-        SciCall_SetProperty("json.allow.comments", "1");
-        SciCall_SetProperty("json.escape.sequence", "1");
+        SciCall_SetProperty("lexer.json.allow.comments", "1");
+        SciCall_SetProperty("lexer.json.escape.sequence", "1");
         break;
 
     case SCLEX_PYTHON:
