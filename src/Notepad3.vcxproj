@@ -642,6 +642,7 @@
     <ClCompile Include="StyleLexers\styleLexJulia.c" />
     <ClCompile Include="StyleLexers\styleLexKiX.c" />
     <ClCompile Include="StyleLexers\styleLexKotlin.c" />
+    <ClCompile Include="StyleLexers\styleLexVerilog.c" />
     <ClCompile Include="tinyexpr\tinyexpr.c" />
     <ClCompile Include="uchardet\uchardet\src\CharDistribution.cpp" />
     <ClCompile Include="uchardet\uchardet\src\JpCntx.cpp" />

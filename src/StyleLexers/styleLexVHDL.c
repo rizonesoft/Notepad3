@@ -88,25 +88,25 @@ static KEYWORDLIST KeyWords_VHDL = {
 };
 
 
-
 EDITLEXER lexVHDL =
 {
-    SCLEX_VHDL, "vhdl", IDS_LEX_VHDL, L"VHDL", L"vhdl; vhd", L"",
+    SCLEX_VHDL, "vhdl", // see LexVHDL.cxx: LexerModule lmVHDL
+    IDS_LEX_VHDL, L"VHDL", L"vhdl; vhd", L"",
     &KeyWords_VHDL, {
         { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
         //{ {SCE_VHDL_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
         { {MULTI_STYLE(SCE_VHDL_COMMENT, SCE_VHDL_COMMENTLINEBANG, SCE_VHDL_BLOCK_COMMENT, 0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008800", L"" },
         { {SCE_VHDL_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
         { {MULTI_STYLE(SCE_VHDL_STRING, SCE_VHDL_STRINGEOL, 0, 0)}, IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
-        { {SCE_VHDL_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"fore:#B000B0", L"" },
+        { {SCE_VHDL_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"fore:#007F7F", L"" },
         { {SCE_VHDL_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
-        { {SCE_VHDL_KEYWORD}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#0000FF", L"" },
+        { {SCE_VHDL_KEYWORD}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#0000A4", L"" },
         { {SCE_VHDL_STDOPERATOR}, IDS_LEX_STR_63336, L"Standard Operator", L"bold; fore:#0A246A", L"" },
-        { {SCE_VHDL_ATTRIBUTE}, IDS_LEX_STR_63337, L"Attribute", L"", L"" },
-        { {SCE_VHDL_STDFUNCTION}, IDS_LEX_STR_63338, L"Standard Function", L"", L"" },
-        { {SCE_VHDL_STDPACKAGE}, IDS_LEX_STR_63339, L"Standard Package", L"", L"" },
-        { {SCE_VHDL_STDTYPE}, IDS_LEX_STR_63340, L"Standard Type", L"fore:#FF8000", L"" },
-        { {SCE_VHDL_USERWORD}, IDS_LEX_STR_63274, L"Constant", L"fore:#A400A4", L"" },
+        { {SCE_VHDL_ATTRIBUTE}, IDS_LEX_STR_63337, L"Attribute", L"fore:#804020", L"" },
+        { {SCE_VHDL_STDFUNCTION}, IDS_LEX_STR_63338, L"Standard Function", L"fore:#808020", L"" },
+        { {SCE_VHDL_STDPACKAGE}, IDS_LEX_STR_63339, L"Standard Package", L"fore:#208020", L"" },
+        { {SCE_VHDL_STDTYPE}, IDS_LEX_STR_63340, L"Standard Type", L"fore:#208080", L"" },
+        { {SCE_VHDL_USERWORD}, IDS_LEX_STR_63274, L"Constant", L"fore:#804020", L"" },
         EDITLEXER_SENTINEL
     }
 };
