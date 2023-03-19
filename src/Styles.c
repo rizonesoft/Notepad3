@@ -105,6 +105,7 @@ static PEDITLEXER g_pLexArray[] = {
     &lexTCL,           // Tcl Script
     &lexTOML,          // TOML Config Script
     &lexVBS,           // VBScript
+    &lexVerilog,       // Verilog
     &lexVHDL,          // VHDL
     &lexVB,            // Visual Basic
     &lexHTML,          // Web Source Code

@@ -141,6 +141,7 @@ extern EDITLEXER lexSQL;           // SQL Query
 extern EDITLEXER lexTCL;           // Tcl Script
 extern EDITLEXER lexTOML;          // TOML Config Script
 extern EDITLEXER lexVBS;           // VBScript
+extern EDITLEXER lexVerilog;       // Verilog
 extern EDITLEXER lexVHDL;          // VHDL
 extern EDITLEXER lexVB;            // Visual Basic
 extern EDITLEXER lexHTML;          // Web Source Code

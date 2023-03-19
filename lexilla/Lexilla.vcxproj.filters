@@ -275,6 +275,9 @@
     <ClCompile Include="lexers\LexPython.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
+    <ClCompile Include="lexers\LexVerilog.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\LexillaVersion.rc">

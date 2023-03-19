@@ -257,6 +257,13 @@ void Lexer_SetLexerSpecificProperties(const int lexerId) {
         SciCall_SetProperty("lexer.python.strings.f", "1");
         break;
 
+    case SCLEX_VERILOG:
+        SciCall_SetProperty("lexer.verilog.track.preprocessor", "1");
+        SciCall_SetProperty("lexer.verilog.update.preprocessor", "1");
+        SciCall_SetProperty("lexer.verilog.portstyling", "1");
+        SciCall_SetProperty("lexer.verilog.allupperkeywords", "1");
+        break;
+
     case SCLEX_XML:
         SciCall_SetProperty("lexer.xml.allow.scripts", "1");
         break;

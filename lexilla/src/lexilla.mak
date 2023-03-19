@@ -111,6 +111,7 @@ LEX_OBJS=\
 	$(DIR_O)\LexSQL.obj \
 	$(DIR_O)\LexTCL.obj \
 	$(DIR_O)\LexVB.obj \
+	$(DIR_O)\LexVerilog.obj \
 	$(DIR_O)\LexVHDL.obj \
 	$(DIR_O)\LexYAML.obj \
 	$(DIR_O)\LexAHK.obj \

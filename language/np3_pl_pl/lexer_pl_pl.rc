@@ -501,7 +501,7 @@ BEGIN
     IDS_LEX_STR_63388       "Ciąg EOL"
     IDS_LEX_STR_63397       "Backticks"
     IDS_LEX_STR_63398       "Ciąg GUID"
-    IDS_LEX_STR_63399       "Global"
+    IDS_LEX_STR_Global       "Global"
 END
 
 STRINGTABLE
