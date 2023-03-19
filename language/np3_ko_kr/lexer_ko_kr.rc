@@ -134,6 +134,11 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_LEX_VERILOG         "Verilog HDL"
+END
+
+STRINGTABLE
+BEGIN
     IDS_LEX_STD_STYLE       "기본 스타일"
     IDS_LEX_STD_MARGIN      "여백 및 줄 번호"
     IDS_LEX_STD_BRACE       "일치하는 중괄호 (표시기)"
@@ -501,7 +506,11 @@ BEGIN
     IDS_LEX_STR_63388       "문자열 EOL"
     IDS_LEX_STR_63397       "백틱"
     IDS_LEX_STR_63398       "GUID 문자열"
-    IDS_LEX_STR_Global       "Global"
+    IDS_LEX_STR_Global      "Global"
+    IDS_LEX_STR_Input       "Input"
+    IDS_LEX_STR_Output      "Output"
+    IDS_LEX_STR_InOut       "InOut"
+    IDS_LEX_STR_Port_Conn   "Port Connection"
 END
 
 STRINGTABLE
