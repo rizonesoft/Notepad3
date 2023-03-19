@@ -134,6 +134,11 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_LEX_VERILOG         "Verilog HDL"
+END
+
+STRINGTABLE
+BEGIN
     IDS_LEX_STD_STYLE       "デフォルトのスタイル"
     IDS_LEX_STD_MARGIN      "行数"
     IDS_LEX_STD_BRACE       "対応する括弧 (強調)"
@@ -501,7 +506,11 @@ BEGIN
     IDS_LEX_STR_63388       "文字列 EOL"
     IDS_LEX_STR_63397       "Backticks"
     IDS_LEX_STR_63398       "GUID 文字列"
-    IDS_LEX_STR_Global       "Global"
+    IDS_LEX_STR_Global      "Global"
+    IDS_LEX_STR_Input       "Input"
+    IDS_LEX_STR_Output      "Output"
+    IDS_LEX_STR_InOut       "InOut"
+    IDS_LEX_STR_Port_Conn   "Port Connection"
 END
 
 STRINGTABLE

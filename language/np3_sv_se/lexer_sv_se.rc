@@ -134,6 +134,11 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_LEX_VERILOG         "Verilog HDL"
+END
+
+STRINGTABLE
+BEGIN
     IDS_LEX_STD_STYLE       "Förvald stil"
     IDS_LEX_STD_MARGIN      "Marginaler och radnummer"
     IDS_LEX_STD_BRACE       "Matcha klamrar (indikator)"
@@ -501,7 +506,11 @@ BEGIN
     IDS_LEX_STR_63388       "Sträng EOL"
     IDS_LEX_STR_63397       "Backticks"
     IDS_LEX_STR_63398       "GUID String"
-    IDS_LEX_STR_Global       "Global"
+    IDS_LEX_STR_Global      "Global"
+    IDS_LEX_STR_Input       "Input"
+    IDS_LEX_STR_Output      "Output"
+    IDS_LEX_STR_InOut       "InOut"
+    IDS_LEX_STR_Port_Conn   "Port Connection"
 END
 
 STRINGTABLE
