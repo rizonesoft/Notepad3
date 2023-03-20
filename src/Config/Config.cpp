@@ -1244,20 +1244,32 @@ void LoadSettings()
     StrgReset(Settings2.FileDlgFilters, pPathBuffer);
 
     // handle deprecated (typo) key 'FileCheckInverval'
-    int const dfci = IniSectionGetInt(IniSecSettings2, L"FileCheckInverval", 2000);
-    Settings2.FileCheckInterval = clampul(IniSectionGetInt(IniSecSettings2, L"FileCheckInterval", dfci), 0UL, (24UL*60*60*1000) << 1); // max: 48h
-    // handle deprecated old "AutoReloadTimeout"
-    int const   autoReload = IniSectionGetInt(IniSecSettings2, L"AutoReloadTimeout", -1); // deprecated
-    unsigned int const fci = (autoReload > 0) ? max_u(autoReload, Settings2.FileCheckInterval) : Settings2.FileCheckInterval;
-    if (((Settings2.FileCheckInterval > 0) && (fci != Settings2.FileCheckInterval)) || (dfci != 0)) {
-        Settings2.FileCheckInterval = fci;
-        IniSectionSetInt(IniSecSettings2, L"FileCheckInterval", Settings2.FileCheckInterval);
-        if (dfci != 0) {
-            IniSectionDelete(IniSecSettings2, L"FileCheckInverval", true); // deprecated wrong (typo) name
-        }
+    constexpr const int defaultFCI = 2000;
+    constexpr const WCHAR* deprecatedKeyFCI = L"FileCheckInverval";
+    constexpr const WCHAR* correctKeyFCI = L"FileCheckInterval";
+
+    int const autoReload = IniSectionGetInt(IniSecSettings2, L"AutoReloadTimeout", -1);  // deprecated
+    int const dfci = IniSectionGetInt(IniSecSettings2, deprecatedKeyFCI, -1);            // get deprecated typo setting
+    if (autoReload != -1 || dfci != -1) {
+        IniSectionDelete(IniSecSettings2, L"AutoReloadTimeout", true); // deprecated
+        IniSectionDelete(IniSecSettings2, deprecatedKeyFCI, true); // deprecated wrong (typo) name
         bDirtyFlag = true;
     }
-    Settings2.FileCheckInterval = clampul(Settings2.FileCheckInterval, MIN_FC_POLL_INTERVAL, (24UL * 60 * 60 * 1000) << 1); // min: 500msec  max: 48h
+    int const deprecatedFCI = max_i(autoReload, dfci);
+
+    Settings2.FileCheckInterval = static_cast<DWORD>(clampi(IniSectionGetInt(IniSecSettings2, correctKeyFCI, deprecatedFCI),
+                                                                             MIN_FC_POLL_INTERVAL, MAX_FC_POLL_INTERVAL));
+
+    if (Settings2.FileCheckInterval == defaultFCI) {
+        if (deprecatedFCI != defaultFCI) {
+            IniSectionDelete(IniSecSettings2, correctKeyFCI, true); // is default
+            bDirtyFlag = true;
+        }
+    }
+    else if (Settings2.FileCheckInterval == static_cast<DWORD>(deprecatedFCI)) {
+        IniSectionSetInt(IniSecSettings2, correctKeyFCI, Settings2.FileCheckInterval);
+        bDirtyFlag = true;
+    }
     FileWatching.FileCheckInterval = Settings2.FileCheckInterval;
 
     IniSectionGetString(IniSecSettings2, L"FileChangedIndicator", L"[@]", Settings2.FileChangedIndicator, COUNTOF(Settings2.FileChangedIndicator));
@@ -1479,6 +1491,13 @@ void LoadSettings()
     Globals.hbrDarkModeBkgSelBrush = CreateSolidBrush(Settings2.DarkModeBtnFaceColor);
 
 #endif
+
+    // ---  remove deprecated  ---
+    constexpr const WCHAR* mocc = L"MarkOccurrencesMaxCount";
+    if (IniSectionGetLong(IniSecSettings2, mocc, -111) != -111) {
+        IniSectionDelete(IniSecSettings2, mocc, true);
+        bDirtyFlag = true;
+    }
 
     // --------------------------------------------------------------------------
     // Settings: IniSecSettings
@@ -1917,10 +1936,6 @@ static bool _SaveSettings(bool bForceSaveSettings)
     const WCHAR* const IniSecSettings = Constants.Settings_Section;
     // --------------------------------------------------------------------------
 
-    // ---  remove deprecated  ---
-    IniSectionDelete(IniSecSettings, L"MarkOccurrencesMaxCount", false);
-
-
     if (!(Settings.SaveSettings || bForceSaveSettings)) {
         if (Settings.SaveSettings != Defaults.SaveSettings) {
             IniSectionSetBool(IniSecSettings, L"SaveSettings", Settings.SaveSettings);
@@ -2163,13 +2178,8 @@ static bool _SaveSettings(bool bForceSaveSettings)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FocusViewMarkerMode);
 
     // --------------------------------------------------------------------------
-    const WCHAR* const IniSecSettings2 = Constants.Settings2_Section;
+    //const WCHAR* const IniSecSettings2 = Constants.Settings2_Section;
     // --------------------------------------------------------------------------
-
-    // ---  remove deprecated  ---
-    IniSectionDelete(IniSecSettings2, L"MarkOccurrencesMaxCount", false);
-    IniSectionDelete(IniSecSettings2, L"AutoReloadTimeout", false);
-
 
     // --------------------------------------------------------------------------
     const WCHAR* const IniSecWindow = Constants.Window_Section;
