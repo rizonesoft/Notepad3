@@ -258,6 +258,7 @@ void Lexer_SetLexerSpecificProperties(const int lexerId) {
         break;
 
     case SCLEX_VERILOG:
+    case SCLEX_SYSVERILOG:
         SciCall_SetProperty("lexer.verilog.track.preprocessor", "1");
         SciCall_SetProperty("lexer.verilog.update.preprocessor", "1");
         SciCall_SetProperty("lexer.verilog.portstyling", "1");

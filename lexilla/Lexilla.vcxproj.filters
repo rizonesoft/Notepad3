@@ -275,8 +275,8 @@
     <ClCompile Include="lexers\LexPython.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
-    <ClCompile Include="lexers\LexVerilog.cxx">
-      <Filter>lexers</Filter>
+    <ClCompile Include="lexers_x\LexVerilog.cxx">
+      <Filter>lexers_x</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

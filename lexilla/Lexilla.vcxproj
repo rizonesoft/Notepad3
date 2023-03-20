@@ -89,7 +89,6 @@
     <ClCompile Include="lexers\LexSQL.cxx" />
     <ClCompile Include="lexers\LexTCL.cxx" />
     <ClCompile Include="lexers\LexVB.cxx" />
-    <ClCompile Include="lexers\LexVerilog.cxx" />
     <ClCompile Include="lexers\LexVHDL.cxx" />
     <ClCompile Include="lexers\LexYAML.cxx" />
     <ClCompile Include="lexers_x\LexAHK.cxx" />
@@ -99,6 +98,7 @@
     <ClCompile Include="lexers_x\LexJSON.cxx" />
     <ClCompile Include="lexers_x\LexKotlin.cxx" />
     <ClCompile Include="lexers_x\LexTOML.cxx" />
+    <ClCompile Include="lexers_x\LexVerilog.cxx" />
     <ClCompile Include="lexlib\Accessor.cxx" />
     <ClCompile Include="lexlib\CharacterCategory.cxx" />
     <ClCompile Include="lexlib\CharacterSet.cxx" />

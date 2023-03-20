@@ -82,17 +82,17 @@ extern "C"           THEMEFILES Theme_Files[];
 
 // ============================================================================
 
-static bool const s_bIsUTF8 = true;
-static bool const s_bWriteSIG = true;     // IniFileSetXXX()
-static bool const s_bUseMultiKey = false;
-static bool const s_bUseMultiLine = true; // find/replace with line breaks
-static bool const s_bSetSpaces = false;
+constexpr bool const s_bIsUTF8 = true;
+constexpr bool const s_bWriteSIG = true; // IniFileSetXXX()
+constexpr bool const s_bUseMultiKey = false;
+constexpr bool const s_bUseMultiLine = true; // find/replace with line breaks
+constexpr bool const s_bSetSpaces = false;
 
 // ----------------------------------------------------------------------------
 
-static const WCHAR* const _s_RecentFiles = L"Recent Files";
-static const WCHAR* const _s_RecentFind = L"Recent Find";
-static const WCHAR* const _s_RecentReplace = L"Recent Replace";
+constexpr const WCHAR* const _s_RecentFiles = L"Recent Files";
+constexpr const WCHAR* const _s_RecentFind = L"Recent Find";
+constexpr const WCHAR* const _s_RecentReplace = L"Recent Replace";
 
 // ----------------------------------------------------------------------------
 
@@ -921,7 +921,7 @@ static bool _CheckAndSetIniFile(HPATHL hpth_in_out)
 
     // ---  Alternate Search Paths  ---
 
-    const wchar_t* wchMore = Path_IsNotEmpty(hpth_in_out) ? Path_FindFileName(hpth_in_out) : SAPPNAME L".ini";
+    const wchar_t* const wchMore = Path_IsNotEmpty(hpth_in_out) ? Path_FindFileName(hpth_in_out) : SAPPNAME L".ini";
 
     if (!result) {
         // sub directory (.\np3\)
@@ -1245,13 +1245,17 @@ void LoadSettings()
 
     // handle deprecated (typo) key 'FileCheckInverval'
     constexpr const int defaultFCI = 2000;
+    constexpr const WCHAR* deprecatedKeyART = L"AutoReloadTimeout";
     constexpr const WCHAR* deprecatedKeyFCI = L"FileCheckInverval";
     constexpr const WCHAR* correctKeyFCI = L"FileCheckInterval";
 
-    int const autoReload = IniSectionGetInt(IniSecSettings2, L"AutoReloadTimeout", -1);  // deprecated
-    int const dfci = IniSectionGetInt(IniSecSettings2, deprecatedKeyFCI, -1);            // get deprecated typo setting
-    if (autoReload != -1 || dfci != -1) {
-        IniSectionDelete(IniSecSettings2, L"AutoReloadTimeout", true); // deprecated
+    int const autoReload = IniSectionGetInt(IniSecSettings2, deprecatedKeyART, -111); // deprecated
+    if (autoReload != -111) {
+        IniSectionDelete(IniSecSettings2, deprecatedKeyART, true); // deprecated
+        bDirtyFlag = true;
+    }
+    int const dfci = IniSectionGetInt(IniSecSettings2, deprecatedKeyFCI, -111); // get deprecated typo setting
+    if (dfci != -111) {
         IniSectionDelete(IniSecSettings2, deprecatedKeyFCI, true); // deprecated wrong (typo) name
         bDirtyFlag = true;
     }
@@ -1399,7 +1403,7 @@ void LoadSettings()
     IniSectionGetStringNoQuotes(IniSecSettings2, L"HyperlinkShellExURLCmdLnArgs", URLPLACEHLDR, pPathBuffer, PATHLONG_MAX_CCH);
     StrgReset(Settings2.HyperlinkShellExURLCmdLnArgs, pPathBuffer);
 
-    const static WCHAR* const allowedVerbs[] = { L"edit", L"explore", L"find", L"open", L"print", L"properties", L"runas" };
+    constexpr const WCHAR* const allowedVerbs[] = { L"edit", L"explore", L"find", L"open", L"print", L"properties", L"runas" };
     Settings2.HyperlinkFileProtocolVerb[0] = L'\0';
     IniSectionGetStringNoQuotes(IniSecSettings2, L"HyperlinkFileProtocolVerb", L"", tchKeyName, COUNTOF(tchKeyName));
     for (auto allowedVerb : allowedVerbs) {
@@ -1493,7 +1497,7 @@ void LoadSettings()
 #endif
 
     // ---  remove deprecated  ---
-    constexpr const WCHAR* mocc = L"MarkOccurrencesMaxCount";
+    constexpr const WCHAR* const mocc = L"MarkOccurrencesMaxCount";
     if (IniSectionGetLong(IniSecSettings2, mocc, -111) != -111) {
         IniSectionDelete(IniSecSettings2, mocc, true);
         bDirtyFlag = true;
@@ -1684,14 +1688,16 @@ void LoadSettings()
     Settings.PrintMargin.bottom = clampi(IniSectionGetInt(IniSecSettings, L"PrintMarginBottom", Defaults.PrintMargin.bottom), 0, 40000);
 
     if (Globals.iCfgVersionRead < CFG_VER_0005) {
-        int const fwm_mode = IniSectionGetInt(IniSecSettings, L"FileWatchingMode", -1);
-        if (fwm_mode > (int)FWM_DONT_CARE) {
-            IniSectionSetInt(IniSecSettings, L"FileWatchingMode", fwm_mode + 1);
+        constexpr const WCHAR* const fwm = L"FileWatchingMode";
+        int const fwm_mode = IniSectionGetInt(IniSecSettings, fwm, -1);
+        if (fwm_mode > static_cast<int>(FWM_DONT_CARE)) {
+            IniSectionSetInt(IniSecSettings, fwm, fwm_mode + 1);
+            bDirtyFlag = true;
         }
     }
     GET_CAST_INT_VALUE_FROM_INISECTION(FILE_WATCHING_MODE, FileWatchingMode, FWM_MSGBOX, FWM_DONT_CARE, FWM_EXCLUSIVELOCK);
 
-    GET_INT_VALUE_FROM_INISECTION(AutoSaveInterval, 60000, 2000, 86400000); // 2s - 24h
+    GET_INT_VALUE_FROM_INISECTION(AutoSaveInterval, 60000, 2000, (24 * 60 * 60 * 1000)); // 2s - 24h
     GET_CAST_INT_VALUE_FROM_INISECTION(AutoSaveBackupOptions, AutoSaveOptions, ASB_Default, ASB_None, INT_MAX);
 
     GET_BOOL_VALUE_FROM_INISECTION(SaveBeforeRunningTools, false);
@@ -1753,7 +1759,7 @@ void LoadSettings()
 
 
     // --------------------------------------------------------------------------
-    const WCHAR *const StatusBar_Section = L"Statusbar Settings";
+    constexpr const WCHAR* const StatusBar_Section = L"Statusbar Settings";
     // --------------------------------------------------------------------------
 
     IniSectionGetStringNoQuotes(StatusBar_Section, L"VisibleSections", STATUSBAR_DEFAULT_IDS, tchKeyName, COUNTOF(tchKeyName));
@@ -1780,7 +1786,7 @@ void LoadSettings()
     Globals.bZeroBasedCharacterCount = IniSectionGetBool(StatusBar_Section, L"ZeroBasedCharacterCount", false);
 
     // --------------------------------------------------------------------------
-    const WCHAR *const ToolbarImg_Section = L"Toolbar Images";
+    constexpr const WCHAR * const ToolbarImg_Section = L"Toolbar Images";
     // --------------------------------------------------------------------------
 
     IniSectionGetStringNoQuotes(ToolbarImg_Section, L"BitmapDefault", L"", pPathBuffer, PATHLONG_MAX_CCH);
@@ -1791,7 +1797,7 @@ void LoadSettings()
     Path_Reset(g_tchToolbarBitmapDisabled, pPathBuffer);
 
     // --------------------------------------------------------------------------
-    const WCHAR *const IniSecWindow = Constants.Window_Section;
+    const WCHAR * const IniSecWindow = Constants.Window_Section;
     // --------------------------------------------------------------------------
 
     int const ResX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
@@ -1891,7 +1897,7 @@ void LoadSettings()
     MRU_Load(Globals.pMRUreplace, false);
 
     // --------------------------------------------------------------------------
-    const WCHAR *const IniSecStyles = Constants.Styles_Section;
+    const WCHAR* const IniSecStyles = Constants.Styles_Section;
     // --------------------------------------------------------------------------
     IniSectionGetString(IniSecStyles, L"ThemeFileName", L"", Settings.CurrentThemeName, COUNTOF(Settings.CurrentThemeName));
     
