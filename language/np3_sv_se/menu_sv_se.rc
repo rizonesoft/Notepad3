@@ -469,16 +469,16 @@ BEGIN
         MENUITEM "Automatiskt radbyte...",                          IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Långa rader...",                                  IDM_SET_LONGLINESETTINGS
         MENUITEM "Automatiskt indrag",                              IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close &Quotes",                              IDM_SET_AUTOCLOSEQUOTES
-        MENUITEM "Auto Close Brackets",                             IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Stäng citattecken automatiskt",                   IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Stäng paranteser automatiskt",                    IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Stäng HTML/XML automatiskt\tCtrl+Shift+H",        IDM_SET_AUTOCLOSETAGS
         MENUITEM "Kompletera ord automatiskt",                      IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Komplettera Lexer-&Key-Words automatiskt",        IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",          IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Alternativa ordavgränsare\tCtrl+Alt+A",           IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
-        MENUITEM "Bara en instans per fil",              IDM_SET_SINGLEFILEINSTANCE
-        MENUITEM "Notifiering vid filändring...\tAlt+F5",            IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
+        MENUITEM "Bara en instans per fil",                         IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "Notifiering vid filändring...\tAlt+F5",           IDM_SET_CHANGENOTIFY
+        ///MENUITEM "AutoSave / Backup Settings...",                IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Stäng av ljud vid meddelande",                    IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Esc-tangentens funktion"
         BEGIN
@@ -503,7 +503,7 @@ BEGIN
                 MENUITEM "Endast filnamn",                          IDM_SET_SHOWFILENAMEONLY
                 MENUITEM "Filnamn och mapp",                        IDM_SET_SHOWFILENAMEFIRST
                 MENUITEM "Fullständig sökväg",                      IDM_SET_SHOWFULLPATH
-                MENUITEM "Urdrag ur text\tCtrl+9",                  IDM_SET_SHOWEXCERPT
+                MENUITEM "Utdrag ur text\tCtrl+9",                  IDM_SET_SHOWEXCERPT
             END
             MENUITEM "Återanvänd fönster\tCtrl+Shift+L",            IDM_SET_REUSEWINDOW
             MENUITEM "Alltid överst\tAlt+T",                        IDM_SET_ALWAYSONTOP
