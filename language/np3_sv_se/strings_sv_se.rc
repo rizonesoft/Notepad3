@@ -174,7 +174,7 @@ BEGIN
     IDS_MUI_REPLCOUNT       "%s träff(ar) för angivet sökmönster ersatta."
     IDS_MUI_ASK_ENCODING    "Att byta teckenkodning från en kodning till en annan kommer att ersätta tecken som inte stöds med standardtecken och ångerhistoriken kommer att rensas. Vill du fortsätta?"
     IDS_MUI_ASK_ENCODING2   "Du kommer att ändra teckenkodning i en tom fil. Notera att detta kommer att rensa ångerhistoriken. Vill du fortsätta?"
-    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Denna åtgärd rensar ångra-historiken. Fortsätta?"
     IDS_MUI_READONLY_SAVE   """%s"" är inte skrivbar. Vill du spara till en annan fil?"
     IDS_MUI_FILECHANGENOTIFY
                             "Aktuell fil har modifierats av ett externt program. Vill du ladda om?"
@@ -274,8 +274,8 @@ BEGIN
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Rensa ersättningshistorik"
     IDS_MUI_SEARCHCLIPIFEMPTY
-                            "Search by Clipboard if empty selection"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
+                            "Sök via urklipp om inget är markerat"
+    IDS_MUI_REPLCLIPTAG     "Ersätt med urklipp när kortkommando används [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Omslut sökning från början"
     IDS_MUI_WRAPSEARCH_BCK  "Omslut sökning från slutet"
 END

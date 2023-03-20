@@ -35,7 +35,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld filer, skippede %ld filer. %ld resultat valda."
 
 #. Resource IDs: (149)
 #, c-format
@@ -157,11 +157,11 @@ msgstr "Kopiera textresultat till urklipp"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr ""
+msgstr "Kopiera kolumn för alla objekt"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr ""
+msgstr "Kopiera kolumn för valt objekt"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
@@ -242,7 +242,7 @@ msgstr "Filer"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr ""
+msgstr "Hittade %ld filer, skippade %ld filer."
 
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
@@ -270,7 +270,7 @@ msgstr "Inkludera undermappar"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "Inkludera symboliska länkar"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
@@ -290,7 +290,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "Spara fildatum vid ersättning"
 
 #. Resource IDs: (1075)
 msgid "Language:"
