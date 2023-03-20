@@ -584,21 +584,6 @@ $(DIR_O)/LexVB.obj: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
-$(DIR_O)/LexVerilog.obj: \
-	../lexers/LexVerilog.cxx \
-	../../scintilla/include/ILexer.h \
-	../../scintilla/include/Sci_Position.h \
-	../../scintilla/include/Scintilla.h \
-	../include/SciLexer.h \
-	../lexlib/WordList.h \
-	../lexlib/LexAccessor.h \
-	../lexlib/Accessor.h \
-	../lexlib/StyleContext.h \
-	../lexlib/CharacterSet.h \
-	../lexlib/LexerModule.h \
-	../lexlib/OptionSet.h \
-	../lexlib/SubStyles.h \
-	../lexlib/DefaultLexer.h
 $(DIR_O)/LexVHDL.obj: \
 	../lexers/LexVHDL.cxx \
 	../../scintilla/include/ILexer.h \
@@ -743,3 +728,19 @@ $(DIR_O)/LexTOML.obj: \
 	../lexlib/CharacterSet.h \
 	../lexers_x/SciXLexer.h \
 	../include/SciLexer.h
+$(DIR_O)/LexVerilog.obj: \
+	../lexers_x/LexVerilog.cxx \
+	../../scintilla/include/ILexer.h \
+	../../scintilla/include/Sci_Position.h \
+	../../scintilla/include/Scintilla.h \
+	../include/SciLexer.h \
+	../lexers_x/SciXLexer.h \
+	../lexlib/WordList.h \
+	../lexlib/LexAccessor.h \
+	../lexlib/Accessor.h \
+	../lexlib/StyleContext.h \
+	../lexlib/CharacterSet.h \
+	../lexlib/LexerModule.h \
+	../lexlib/OptionSet.h \
+	../lexlib/SubStyles.h \
+	../lexlib/DefaultLexer.h

@@ -990,6 +990,7 @@
 #define IDS_LEX_FORTRAN                 63055
 //#define IDS_LEX_F77                     63056
 #define IDS_LEX_VERILOG                 63057
+#define IDS_LEX_SYSVERILOG              63058
 
 
 #define IDS_LEX_STD_STYLE               63100

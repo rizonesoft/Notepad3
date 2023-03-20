@@ -102,10 +102,11 @@ static PEDITLEXER g_pLexArray[] = {
     &lexRust,          // Rust Script
     &lexBASH,          // Shell Script
     &lexSQL,           // SQL Query
+    &lexSysVerilog,    // SystemVerilog HDVL
     &lexTCL,           // Tcl Script
     &lexTOML,          // TOML Config Script
     &lexVBS,           // VBScript
-    &lexVerilog,       // Verilog
+    &lexVerilog,       // Verilog HDL
     &lexVHDL,          // VHDL
     &lexVB,            // Visual Basic
     &lexHTML,          // Web Source Code
