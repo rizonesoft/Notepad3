@@ -135,6 +135,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_VERILOG         "HDL da Verilog"
+    IDS_LEX_SYSVERILOG      "SystemVerilog HDVL"
 END
 
 STRINGTABLE
