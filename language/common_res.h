@@ -1298,6 +1298,7 @@
 #define IDS_LEX_STR_Output              63401
 #define IDS_LEX_STR_InOut               63402
 #define IDS_LEX_STR_Port_Conn           63403
+#define IDS_LEX_STR_SysTasks            63404
 
 
 #define IDS_LEX_CSV_COL_0               63490

@@ -512,6 +512,7 @@ BEGIN
     IDS_LEX_STR_Output      "Output"
     IDS_LEX_STR_InOut       "InOut"
     IDS_LEX_STR_Port_Conn   "Port Connection"
+    IDS_LEX_STR_SysTasks    "System Tasks"
 END
 
 STRINGTABLE
