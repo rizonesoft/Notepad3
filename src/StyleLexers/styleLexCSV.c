@@ -9,7 +9,7 @@ EDITLEXER lexCSV =
     SCLEX_CSV, "CSV", IDS_LEX_PRISM_CSV, L"CSV Prism", L"csv", L"",
     & KeyWords_CSV,{
         //SCE_CSV_DEFAULT
-        { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
+        { {STYLE_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
         { {STYLE_LINENUMBER}, IDS_LEX_STD_MARGIN, L"Margins and Line Numbers", L"", L"" },
         { {SCI_SETEXTRAASCENT + SCI_SETEXTRADESCENT}, IDS_LEX_STD_X_SPC, L"Extra Line Spacing (Size)", L"size:-1", L"" },
         { {SCE_CSV_COLUMN_0}, IDS_LEX_CSV_COL_0, L"Column 0", L"fore:#9400D3", L"" },

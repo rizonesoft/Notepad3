@@ -599,7 +599,7 @@ inline bool  IsStyleStandardDefault(PEDITSTYLE pStyle)
 
 inline bool  IsStyleSchemeDefault(PEDITSTYLE pStyle)
 {
-    return (pStyle && (pStyle->rid == IDS_LEX_STR_63126));
+    return (pStyle && (pStyle->rid == IDS_LEX_STR_Default));
 }
 
 inline PEDITLEXER  GetDefaultLexer()

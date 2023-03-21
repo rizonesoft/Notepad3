@@ -37,19 +37,19 @@ EDITLEXER lexCmake =
 {
     SCLEX_CMAKE, "cmake", IDS_LEX_CMAKE, L"Cmake Script", L"cmake; ctest; \\^cmakelists\\.txt$", L"",
     &KeyWords_CMAKE, {
-        { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        //{ {SCE_CMAKE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        { {SCE_CMAKE_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
-        { {MULTI_STYLE(SCE_CMAKE_STRINGDQ,SCE_CMAKE_STRINGLQ,SCE_CMAKE_STRINGRQ,0)}, IDS_LEX_STR_63131, L"String", L"fore:#7F007F; back:#EEEEEE", L"" },
+        { {STYLE_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        //{ {SCE_CMAKE_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        { {SCE_CMAKE_COMMENT}, IDS_LEX_STR_Comment, L"Comment", L"fore:#008000", L"" },
+        { {MULTI_STYLE(SCE_CMAKE_STRINGDQ,SCE_CMAKE_STRINGLQ,SCE_CMAKE_STRINGRQ,0)}, IDS_LEX_STR_String, L"String", L"fore:#7F007F; back:#EEEEEE", L"" },
         { {SCE_CMAKE_COMMANDS}, IDS_LEX_STR_63277, L"Function", L"fore:#00007F", L"" },
-        { {SCE_CMAKE_PARAMETERS}, IDS_LEX_STR_63281, L"Parameter", L"fore:#7F200F", L"" },
-        { {SCE_CMAKE_VARIABLE}, IDS_LEX_STR_63249, L"Variable", L"fore:#CC3300", L"" },
+        { {SCE_CMAKE_PARAMETERS}, IDS_LEX_STR_Param, L"Parameter", L"fore:#7F200F", L"" },
+        { {SCE_CMAKE_VARIABLE}, IDS_LEX_STR_Var, L"Variable", L"fore:#CC3300", L"" },
         { {SCE_CMAKE_WHILEDEF}, IDS_LEX_STR_63358, L"While Def", L"fore:#00007F", L"" },
         { {SCE_CMAKE_FOREACHDEF}, IDS_LEX_STR_63357, L"For Each Def", L"fore:#00007F", L"" },
         { {SCE_CMAKE_IFDEFINEDEF}, IDS_LEX_STR_63279, L"If Def", L"fore:#00007F", L"" },
         { {SCE_CMAKE_MACRODEF}, IDS_LEX_STR_63280, L"Macro Def", L"fore:#00007F", L"" },
         { {SCE_CMAKE_STRINGVAR}, IDS_LEX_STR_63267, L"Variable within String", L"fore:#CC3300; back:#EEEEEE", L"" },
-        { {SCE_CMAKE_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#008080", L"" },
+        { {SCE_CMAKE_NUMBER}, IDS_LEX_STR_Number, L"Number", L"fore:#008080", L"" },
         //{ {SCE_CMAKE_USERDEFINED}, IDS_LEX_STR_63106, L"User Defined", L"fore:#800020", L"" },
         EDITLEXER_SENTINEL
     }

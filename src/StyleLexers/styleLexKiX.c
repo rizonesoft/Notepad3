@@ -32,17 +32,17 @@ EDITLEXER lexKiX =
 {
     SCLEX_KIX, "kix", IDS_LEX_KIX_SCR, L"KiXtart Script", L"kix", L"",
     &KeyWords_KiX, {
-        { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        //{ {SCE_KIX_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        { {SCE_KIX_KEYWORD}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#265CFF", L"" },
+        { {STYLE_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        //{ {SCE_KIX_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        { {SCE_KIX_KEYWORD}, IDS_LEX_STR_Keyword, L"Keyword", L"bold; fore:#265CFF", L"" },
         { {SCE_KIX_FUNCTIONS}, IDS_LEX_STR_63277, L"Function", L"fore:#9B009B", L"" },
         { {SCE_KIX_MACRO}, IDS_LEX_STR_63280, L"Macro", L"fore:#FFC000", L"" },
-        { {MULTI_STYLE(SCE_KIX_COMMENT, SCE_KIX_COMMENTSTREAM,0,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
-        { {MULTI_STYLE(SCE_KIX_STRING1, SCE_KIX_STRING2,0,0)}, IDS_LEX_STR_63131, L"String", L"italic; fore:#8F8F8F", L"" },
-        { {SCE_KIX_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"fore:#C80000", L"" },
-        { {SCE_KIX_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#009797", L"" },
-        { {SCE_KIX_VAR}, IDS_LEX_STR_63249, L"Variable", L"fore:#9E4D2A", L"" },
-        { {SCE_KIX_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+        { {MULTI_STYLE(SCE_KIX_COMMENT, SCE_KIX_COMMENTSTREAM,0,0)}, IDS_LEX_STR_Comment, L"Comment", L"fore:#008000", L"" },
+        { {MULTI_STYLE(SCE_KIX_STRING1, SCE_KIX_STRING2,0,0)}, IDS_LEX_STR_String, L"String", L"italic; fore:#8F8F8F", L"" },
+        { {SCE_KIX_OPERATOR}, IDS_LEX_STR_Operator, L"Operator", L"fore:#C80000", L"" },
+        { {SCE_KIX_NUMBER}, IDS_LEX_STR_Number, L"Number", L"fore:#009797", L"" },
+        { {SCE_KIX_VAR}, IDS_LEX_STR_Var, L"Variable", L"fore:#9E4D2A", L"" },
+        { {SCE_KIX_IDENTIFIER}, IDS_LEX_STR_Identifier, L"Identifier", L"", L"" },
         EDITLEXER_SENTINEL
     }
 };
