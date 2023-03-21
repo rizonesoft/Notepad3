@@ -558,7 +558,7 @@ BEGIN
         MENUITEM "Buka Tautan",                CMD_OPEN_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Urungkan",                   IDM_EDIT_UNDO
-        MENUITEM "Kembalikan",                 DM_EDIT_REDO
+        MENUITEM "Kembalikan",                 IDM_EDIT_REDO
         MENUITEM SEPARATOR
         MENUITEM "Potong",                     IDM_EDIT_CUT
         MENUITEM "Salin",                      IDM_EDIT_COPY
