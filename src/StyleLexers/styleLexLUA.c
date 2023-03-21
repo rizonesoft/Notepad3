@@ -37,20 +37,20 @@ EDITLEXER lexLUA =
 {
     SCLEX_LUA, "lua", IDS_LEX_LUA, L"Lua Script", L"lua; wlua; nse; luadoc; luax", L"",
     &KeyWords_LUA, {
-        { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        //{ {SCE_LUA_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        { {MULTI_STYLE(SCE_LUA_COMMENT,SCE_LUA_COMMENTLINE,SCE_LUA_COMMENTDOC,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
-        { {SCE_LUA_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#008080", L"" },
-        { {SCE_LUA_WORD}, IDS_LEX_STR_63128, L"Keyword", L"fore:#00007F", L"" },
-        { {SCE_LUA_WORD2}, IDS_LEX_STR_63298, L"Basic Functions", L"fore:#00007F", L"" },
+        { {STYLE_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        //{ {SCE_LUA_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        { {MULTI_STYLE(SCE_LUA_COMMENT,SCE_LUA_COMMENTLINE,SCE_LUA_COMMENTDOC,0)}, IDS_LEX_STR_Comment, L"Comment", L"fore:#008000", L"" },
+        { {SCE_LUA_NUMBER}, IDS_LEX_STR_Number, L"Number", L"fore:#008080", L"" },
+        { {SCE_LUA_WORD}, IDS_LEX_STR_Keyword, L"Keyword", L"fore:#00007F", L"" },
+        { {SCE_LUA_WORD2}, IDS_LEX_STR_BaseFct, L"Basic Functions", L"fore:#00007F", L"" },
         { {SCE_LUA_WORD3}, IDS_LEX_STR_63299, L"String, Table & Math Functions", L"fore:#00007F", L"" },
         { {SCE_LUA_WORD4}, IDS_LEX_STR_63300, L"Input, Output & System Facilities", L"fore:#00007F", L"" },
-        { {MULTI_STYLE(SCE_LUA_STRING,SCE_LUA_STRINGEOL,SCE_LUA_CHARACTER,0)}, IDS_LEX_STR_63131, L"String", L"fore:#B000B0", L"" },
-        { {SCE_LUA_LITERALSTRING}, IDS_LEX_STR_63301, L"Literal String", L"fore:#B000B0", L"" },
-        { {SCE_LUA_PREPROCESSOR}, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
-        { {SCE_LUA_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"", L"" },
-        { {SCE_LUA_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
-        { {SCE_LUA_LABEL}, IDS_LEX_STR_63235, L"Label", L"fore:#808000", L"" },
+        { {MULTI_STYLE(SCE_LUA_STRING,SCE_LUA_STRINGEOL,SCE_LUA_CHARACTER,0)}, IDS_LEX_STR_String, L"String", L"fore:#B000B0", L"" },
+        { {SCE_LUA_LITERALSTRING}, IDS_LEX_STR_LitStrg, L"Literal String", L"fore:#B000B0", L"" },
+        { {SCE_LUA_PREPROCESSOR}, IDS_LEX_STR_PreProc, L"Preprocessor", L"fore:#FF8000", L"" },
+        { {SCE_LUA_OPERATOR}, IDS_LEX_STR_Operator, L"Operator", L"", L"" },
+        { {SCE_LUA_IDENTIFIER}, IDS_LEX_STR_Identifier, L"Identifier", L"", L"" },
+        { {SCE_LUA_LABEL}, IDS_LEX_STR_Label, L"Label", L"fore:#808000", L"" },
         EDITLEXER_SENTINEL
     }
 };
