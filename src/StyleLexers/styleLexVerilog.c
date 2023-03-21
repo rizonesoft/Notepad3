@@ -162,21 +162,21 @@ EDITLEXER lexVerilog =
     SCLEX_VERILOG, "verilog", // see LexVerilog.cxx: LexerModule lmVerilog
     IDS_LEX_VERILOG, L"Verilog HDL", L"v; vh", L"",
     &KeyWords_Verilog, {
-        { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        //{ {SCE_V_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        { {MULTI_STYLE(SCE_V_COMMENT, SCE_V_COMMENTLINE, SCE_V_COMMENTLINEBANG, SCE_V_COMMENT_WORD)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008800", L"" },
-        { {SCE_V_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
-        { {MULTI_STYLE(SCE_V_WORD, SCE_V_WORD2, 0, 0)}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#A8007E", L"" },
+        { {STYLE_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        //{ {SCE_V_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        { {MULTI_STYLE(SCE_V_COMMENT, SCE_V_COMMENTLINE, SCE_V_COMMENTLINEBANG, SCE_V_COMMENT_WORD)}, IDS_LEX_STR_Comment, L"Comment", L"fore:#008800", L"" },
+        { {SCE_V_NUMBER}, IDS_LEX_STR_Number, L"Number", L"fore:#FF0000", L"" },
+        { {MULTI_STYLE(SCE_V_WORD, SCE_V_WORD2, 0, 0)}, IDS_LEX_STR_Keyword, L"Keyword", L"bold; fore:#A8007E", L"" },
         { {SCE_V_WORD3}, IDS_LEX_STR_SysTasks, L"System Tasks", L"fore:#0053A6", L"" },
-        { {MULTI_STYLE(SCE_V_STRING, SCE_V_STRINGEOL, 0, 0)}, IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
-        { {SCE_V_PREPROCESSOR}, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
-        { {SCE_V_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"fore:#007070", L"" },
-        { {SCE_V_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+        { {MULTI_STYLE(SCE_V_STRING, SCE_V_STRINGEOL, 0, 0)}, IDS_LEX_STR_String, L"String", L"fore:#008000", L"" },
+        { {SCE_V_PREPROCESSOR}, IDS_LEX_STR_PreProc, L"Preprocessor", L"fore:#FF8000", L"" },
+        { {SCE_V_OPERATOR}, IDS_LEX_STR_Operator, L"Operator", L"fore:#007070", L"" },
+        { {SCE_V_IDENTIFIER}, IDS_LEX_STR_Identifier, L"Identifier", L"", L"" },
         { {SCE_V_USER}, IDS_LEX_STR_63305, L"User-Defined Function", L"fore:#2A00FF", L"" },
         { {SCE_V_INPUT}, IDS_LEX_STR_Input, L"Input", L"fore:#0231AC", L"" },
         { {SCE_V_OUTPUT}, IDS_LEX_STR_Output, L"Output", L"fore:#00007F", L"" },
         { {SCE_V_INOUT}, IDS_LEX_STR_InOut, L"InOut", L"fore:#0000FF", L"" },
-        { {SCE_V_PORT_CONNECT}, IDS_LEX_STR_Port_Conn, L"Port Connection", L"bold; fore:#0A246A", L"" },
+        { {SCE_V_PORT_CONNECT}, IDS_LEX_STR_PortConn, L"Port Connection", L"bold; fore:#0A246A", L"" },
         EDITLEXER_SENTINEL
     }
 };
@@ -187,21 +187,21 @@ EDITLEXER lexSysVerilog =
     SCLEX_SYSVERILOG, "sysverilog", // see LexVerilog.cxx: LexerModule lmVerilog
     IDS_LEX_SYSVERILOG, L"SystemVerilog HDVL", L"sv; svh", L"",
     &KeyWords_SysVerilog, {
-        { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        //{ {SCE_V_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        { {MULTI_STYLE(SCE_V_COMMENT, SCE_V_COMMENTLINE, SCE_V_COMMENTLINEBANG, SCE_V_COMMENT_WORD)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008800", L"" },
-        { {SCE_V_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
-        { {MULTI_STYLE(SCE_V_WORD, SCE_V_WORD2, 0, 0)}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#A8007E", L"" },
+        { {STYLE_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        //{ {SCE_V_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        { {MULTI_STYLE(SCE_V_COMMENT, SCE_V_COMMENTLINE, SCE_V_COMMENTLINEBANG, SCE_V_COMMENT_WORD)}, IDS_LEX_STR_Comment, L"Comment", L"fore:#008800", L"" },
+        { {SCE_V_NUMBER}, IDS_LEX_STR_Number, L"Number", L"fore:#FF0000", L"" },
+        { {MULTI_STYLE(SCE_V_WORD, SCE_V_WORD2, 0, 0)}, IDS_LEX_STR_Keyword, L"Keyword", L"bold; fore:#A8007E", L"" },
         { {SCE_V_WORD3}, IDS_LEX_STR_SysTasks, L"System Tasks", L"fore:#0053A6", L"" },
-        { {MULTI_STYLE(SCE_V_STRING, SCE_V_STRINGEOL, 0, 0)}, IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
-        { {SCE_V_PREPROCESSOR}, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
-        { {SCE_V_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"fore:#007070", L"" },
-        { {SCE_V_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+        { {MULTI_STYLE(SCE_V_STRING, SCE_V_STRINGEOL, 0, 0)}, IDS_LEX_STR_String, L"String", L"fore:#008000", L"" },
+        { {SCE_V_PREPROCESSOR}, IDS_LEX_STR_PreProc, L"Preprocessor", L"fore:#FF8000", L"" },
+        { {SCE_V_OPERATOR}, IDS_LEX_STR_Operator, L"Operator", L"fore:#007070", L"" },
+        { {SCE_V_IDENTIFIER}, IDS_LEX_STR_Identifier, L"Identifier", L"", L"" },
         { {SCE_V_USER}, IDS_LEX_STR_63305, L"User-Defined Function", L"fore:#2A00FF", L"" },
         { {SCE_V_INPUT}, IDS_LEX_STR_Input, L"Input", L"fore:#0231AC", L"" },
         { {SCE_V_OUTPUT}, IDS_LEX_STR_Output, L"Output", L"fore:#00007F", L"" },
         { {SCE_V_INOUT}, IDS_LEX_STR_InOut, L"InOut", L"fore:#0000FF", L"" },
-        { {SCE_V_PORT_CONNECT}, IDS_LEX_STR_Port_Conn, L"Port Connection", L"bold; fore:#0A246A", L"" },
+        { {SCE_V_PORT_CONNECT}, IDS_LEX_STR_PortConn, L"Port Connection", L"bold; fore:#0A246A", L"" },
         EDITLEXER_SENTINEL
     }
 };

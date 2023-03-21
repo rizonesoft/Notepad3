@@ -639,20 +639,20 @@ EDITLEXER lexAU3 =
 {
     SCLEX_AU3, "au3", IDS_LEX_AUTOIT3, L"AutoIt3 Script", L"au3", L"",
     &KeyWords_AU3, {
-        { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        //{ SCE_AU3_DEFAULT, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        { {MULTI_STYLE(SCE_AU3_COMMENT,SCE_AU3_COMMENTBLOCK,0,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
-        { {SCE_AU3_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#008080", L"" },
+        { {STYLE_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        //{ SCE_AU3_DEFAULT, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        { {MULTI_STYLE(SCE_AU3_COMMENT,SCE_AU3_COMMENTBLOCK,0,0)}, IDS_LEX_STR_Comment, L"Comment", L"fore:#008000", L"" },
+        { {SCE_AU3_NUMBER}, IDS_LEX_STR_Number, L"Number", L"fore:#008080", L"" },
         { {SCE_AU3_FUNCTION}, IDS_LEX_STR_63277, L"Function", L"fore:#0000FF", L"" },
         { {SCE_AU3_UDF}, IDS_LEX_STR_63305, L"User-Defined Function", L"fore:#0000FF", L"" },
-        { {SCE_AU3_KEYWORD}, IDS_LEX_STR_63128, L"Keyword", L"fore:#0000FF", L"" },
-        { {SCE_AU3_MACRO}, IDS_LEX_STR_63278, L"Macro", L"fore:#0080FF", L"" },
-        { {SCE_AU3_STRING}, IDS_LEX_STR_63131, L"String", L"fore:#008080", L"" },
-        { {SCE_AU3_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"fore:#C000C0", L"" },
-        { {SCE_AU3_VARIABLE}, IDS_LEX_STR_63249, L"Variable", L"fore:#808000", L"" },
-        { {SCE_AU3_SENT}, IDS_LEX_STR_63382, L"Send Key", L"fore:#FF0000", L"" },
-        { {SCE_AU3_PREPROCESSOR}, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#FF8000", L"" },
-        { {SCE_AU3_SPECIAL}, IDS_LEX_STR_63377, L"Special", L"fore:#FF8000", L"" },
+        { {SCE_AU3_KEYWORD}, IDS_LEX_STR_Keyword, L"Keyword", L"fore:#0000FF", L"" },
+        { {SCE_AU3_MACRO}, IDS_LEX_STR_PageEx, L"Macro", L"fore:#0080FF", L"" },
+        { {SCE_AU3_STRING}, IDS_LEX_STR_String, L"String", L"fore:#008080", L"" },
+        { {SCE_AU3_OPERATOR}, IDS_LEX_STR_Operator, L"Operator", L"fore:#C000C0", L"" },
+        { {SCE_AU3_VARIABLE}, IDS_LEX_STR_Var, L"Variable", L"fore:#808000", L"" },
+        { {SCE_AU3_SENT}, IDS_LEX_STR_SendKey, L"Send Key", L"fore:#FF0000", L"" },
+        { {SCE_AU3_PREPROCESSOR}, IDS_LEX_STR_PreProc, L"Preprocessor", L"fore:#FF8000", L"" },
+        { {SCE_AU3_SPECIAL}, IDS_LEX_STR_Special, L"Special", L"fore:#FF8000", L"" },
         EDITLEXER_SENTINEL
     }
 };

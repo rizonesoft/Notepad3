@@ -1650,6 +1650,11 @@ void LoadSettings()
     Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ? CPI_PREFERRED_ENCODING : (cpi_enc_t)Encoding_MapIniSetting(true, (int)Settings.DefaultEncoding));
     Globals.fvCurFile.iEncoding = Settings.DefaultEncoding;
 
+#ifdef D_NP3_WIN10_DARK_MODE
+    Defaults.WinThemeDarkMode = ShouldAppsUseDarkModeEx();
+    Settings.WinThemeDarkMode = IniSectionGetBool(IniSecSettings, L"WinThemeDarkMode", Defaults.WinThemeDarkMode) && IsDarkModeSupported();
+#endif
+
     GET_BOOL_VALUE_FROM_INISECTION(UseDefaultForFileEncoding, false);
     GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, true);
     GET_BOOL_VALUE_FROM_INISECTION(UseReliableCEDonly, true);
@@ -1663,7 +1668,8 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(FixTrailingBlanks, false);
     GET_INT_VALUE_FROM_INISECTION(PrintHeader, 1, 0, 3);
     GET_INT_VALUE_FROM_INISECTION(PrintFooter, 0, 0, 1);
-    GET_INT_VALUE_FROM_INISECTION(PrintColorMode, 3, 0, 4);
+    int const defPrtColMod = Settings.WinThemeDarkMode ? SC_PRINT_INVERTLIGHT : SC_PRINT_COLOURONWHITE;
+    GET_INT_VALUE_FROM_INISECTION(PrintColorMode, defPrtColMod, SC_PRINT_NORMAL, SC_PRINT_SCREENCOLOURS);
 
     //int const zoomScale = 100;
     int const baseZoom = 100;
@@ -1720,11 +1726,6 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(PreferredLocale4DateFmt, false);
     GET_BOOL_VALUE_FROM_INISECTION(SearchByClipboardIfEmpty, true);
     GET_BOOL_VALUE_FROM_INISECTION(ReplaceByClipboardTag, true);
-
-#ifdef D_NP3_WIN10_DARK_MODE
-    Defaults.WinThemeDarkMode = ShouldAppsUseDarkModeEx();
-    Settings.WinThemeDarkMode = IniSectionGetBool(IniSecSettings, L"WinThemeDarkMode", Defaults.WinThemeDarkMode) && IsDarkModeSupported();
-#endif
 
     ///~Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings, L"IMEInteraction", Settings2.IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
 

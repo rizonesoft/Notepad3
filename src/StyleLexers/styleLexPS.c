@@ -58,18 +58,18 @@ EDITLEXER lexPS =
 {
     SCLEX_POWERSHELL, "powershell", IDS_LEX_PWRSHELL, L"PowerShell Script", L"ps1; psd1; psm1; psc1", L"",
     &KeyWords_PS, {
-        { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        //{ {SCE_POWERSHELL_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        { {MULTI_STYLE(SCE_POWERSHELL_COMMENT,SCE_POWERSHELL_COMMENTSTREAM,SCE_POWERSHELL_COMMENTDOCKEYWORD,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#646464", L"" },
-        { {SCE_POWERSHELL_KEYWORD}, IDS_LEX_STR_63128, L"Keyword", L"bold; fore:#804000", L"" },
-        { {SCE_POWERSHELL_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
-        { {MULTI_STYLE(SCE_POWERSHELL_STRING,SCE_POWERSHELL_CHARACTER,0,0)}, IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
-        { {SCE_POWERSHELL_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
-        { {SCE_POWERSHELL_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"bold", L"" },
-        { {SCE_POWERSHELL_VARIABLE}, IDS_LEX_STR_63249, L"Variable", L"fore:#0A246A", L"" },
-        { {MULTI_STYLE(SCE_POWERSHELL_CMDLET,SCE_POWERSHELL_FUNCTION,0,0)}, IDS_LEX_STR_63250, L"Cmdlet", L"fore:#804000; back:#FFF1A8", L"" },
-        { {SCE_POWERSHELL_ALIAS}, IDS_LEX_STR_63251, L"Alias", L"bold; fore:#0A246A", L"" },
-        //{ {MULTI_STYLE(SCE_POWERSHELL_HERE_STRING,SCE_POWERSHELL_HERE_CHARACTER,0,0)}, IDS_LEX_STR_63131, L"Here String", L"fore:#008000", L"" },
+        { {STYLE_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        //{ {SCE_POWERSHELL_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        { {MULTI_STYLE(SCE_POWERSHELL_COMMENT,SCE_POWERSHELL_COMMENTSTREAM,SCE_POWERSHELL_COMMENTDOCKEYWORD,0)}, IDS_LEX_STR_Comment, L"Comment", L"fore:#646464", L"" },
+        { {SCE_POWERSHELL_KEYWORD}, IDS_LEX_STR_Keyword, L"Keyword", L"bold; fore:#804000", L"" },
+        { {SCE_POWERSHELL_IDENTIFIER}, IDS_LEX_STR_Identifier, L"Identifier", L"", L"" },
+        { {MULTI_STYLE(SCE_POWERSHELL_STRING,SCE_POWERSHELL_CHARACTER,0,0)}, IDS_LEX_STR_String, L"String", L"fore:#008000", L"" },
+        { {SCE_POWERSHELL_NUMBER}, IDS_LEX_STR_Number, L"Number", L"fore:#FF0000", L"" },
+        { {SCE_POWERSHELL_OPERATOR}, IDS_LEX_STR_Operator, L"Operator", L"bold", L"" },
+        { {SCE_POWERSHELL_VARIABLE}, IDS_LEX_STR_Var, L"Variable", L"fore:#0A246A", L"" },
+        { {MULTI_STYLE(SCE_POWERSHELL_CMDLET,SCE_POWERSHELL_FUNCTION,0,0)}, IDS_LEX_STR_Cmdlet, L"Cmdlet", L"fore:#804000; back:#FFF1A8", L"" },
+        { {SCE_POWERSHELL_ALIAS}, IDS_LEX_STR_Alias, L"Alias", L"bold; fore:#0A246A", L"" },
+        //{ {MULTI_STYLE(SCE_POWERSHELL_HERE_STRING,SCE_POWERSHELL_HERE_CHARACTER,0,0)}, IDS_LEX_STR_String, L"Here String", L"fore:#008000", L"" },
         EDITLEXER_SENTINEL
     }
 };

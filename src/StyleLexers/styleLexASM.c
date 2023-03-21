@@ -90,19 +90,19 @@ EDITLEXER lexASM =
 {
     SCLEX_ASM, "asm", IDS_LEX_ASM_SCR, L"Assembly Script", L"asm; s; sx; inc; a51", L"",
     &KeyWords_ASM, {
-        { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        //{ {SCE_ASM_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        { {MULTI_STYLE(SCE_ASM_COMMENT,SCE_ASM_COMMENTBLOCK,0,0)}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
-        { {SCE_ASM_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
-        { {MULTI_STYLE(SCE_ASM_STRING,SCE_ASM_CHARACTER,SCE_ASM_STRINGEOL,0)}, IDS_LEX_STR_63131, L"String", L"fore:#008000", L"" },
-        { {SCE_ASM_NUMBER}, IDS_LEX_STR_63130, L"Number", L"fore:#FF0000", L"" },
-        { {SCE_ASM_OPERATOR}, IDS_LEX_STR_63132, L"Operator", L"fore:#0A246A", L"" },
+        { {STYLE_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        //{ {SCE_ASM_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        { {MULTI_STYLE(SCE_ASM_COMMENT,SCE_ASM_COMMENTBLOCK,0,0)}, IDS_LEX_STR_Comment, L"Comment", L"fore:#008000", L"" },
+        { {SCE_ASM_IDENTIFIER}, IDS_LEX_STR_Identifier, L"Identifier", L"", L"" },
+        { {MULTI_STYLE(SCE_ASM_STRING,SCE_ASM_CHARACTER,SCE_ASM_STRINGEOL,0)}, IDS_LEX_STR_String, L"String", L"fore:#008000", L"" },
+        { {SCE_ASM_NUMBER}, IDS_LEX_STR_Number, L"Number", L"fore:#FF0000", L"" },
+        { {SCE_ASM_OPERATOR}, IDS_LEX_STR_Operator, L"Operator", L"fore:#0A246A", L"" },
         { {SCE_ASM_CPUINSTRUCTION}, IDS_LEX_STR_63206, L"CPU Instruction", L"fore:#0A246A", L"" },
         { {SCE_ASM_MATHINSTRUCTION}, IDS_LEX_STR_63207, L"FPU Instruction", L"fore:#0A246A", L"" },
         { {SCE_ASM_EXTINSTRUCTION}, IDS_LEX_STR_63210, L"Extended Instruction", L"fore:#0A246A", L"" },
         { {SCE_ASM_DIRECTIVE}, IDS_LEX_STR_63203, L"Directive", L"fore:#0A246A", L"" },
         { {SCE_ASM_DIRECTIVEOPERAND}, IDS_LEX_STR_63209, L"Directive Operand", L"fore:#0A246A", L"" },
-        { {SCE_ASM_REGISTER}, IDS_LEX_STR_63208, L"Register", L"fore:#FF8000", L"" },
+        { {SCE_ASM_REGISTER}, IDS_LEX_STR_Register, L"Register", L"fore:#FF8000", L"" },
         EDITLEXER_SENTINEL
     }
 };
