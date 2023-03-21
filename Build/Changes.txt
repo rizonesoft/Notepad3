@@ -55,6 +55,9 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.321.2]- Default Print Colour Mode depending on Dark/Light Mode.
+[.321.2]- Renaming for Lexer related resource string IDs (defined names).
+[.321.2]- Verilog: split 'System Tasks' from 'Keywords'.
 [.320.1]- Update VHDL Lexer.
 [.320.1]- Dialog windows with special system menu: add 'burger' symbol.
 [.320.1]- Use relaxing default FileCheckInterval (2000[msec]).
