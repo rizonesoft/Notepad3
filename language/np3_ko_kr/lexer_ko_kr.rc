@@ -174,16 +174,16 @@ BEGIN
     IDS_LEX_2ND_X_SPC       "두 번째 줄 간격 (크기)"
     IDS_LEX_STD_BKMRK       "책갈피 및 접기 (색상, 크기)"
     IDS_LEX_2ND_BKMRK       "두 번째 책갈피 및 접기 (색상, 크기)"
-    IDS_LEX_STR_63126       "기본값"
-    IDS_LEX_STR_63127       "주석"
-    IDS_LEX_STR_63128       "키워드"
-    IDS_LEX_STR_63129       "식별 문자"
-    IDS_LEX_STR_63130       "숫자"
-    IDS_LEX_STR_63131       "문자열"
-    IDS_LEX_STR_63132       "연산자"
-    IDS_LEX_STR_63133       "전 처리기"
-    IDS_LEX_STR_63134       "약어 문자열"
-    IDS_LEX_STR_63135       "정규식"
+    IDS_LEX_STR_Default     "기본값"
+    IDS_LEX_STR_Comment     "주석"
+    IDS_LEX_STR_Keyword     "키워드"
+    IDS_LEX_STR_Identifier  "식별 문자"
+    IDS_LEX_STR_Number      "숫자"
+    IDS_LEX_STR_String      "문자열"
+    IDS_LEX_STR_Operator    "연산자"
+    IDS_LEX_STR_PreProc     "전 처리기"
+    IDS_LEX_STR_VerbStrg    "약어 문자열"
+    IDS_LEX_STR_RegEx       "정규식"
 END
 
 STRINGTABLE
@@ -414,8 +414,8 @@ BEGIN
     IDS_LEX_STR_Plugin      "플러그인"
     IDS_LEX_STR_63316       "클립 속성"
     IDS_LEX_STR_63317       "줄 시작"
-    IDS_LEX_STR_63318       "강세"
-    IDS_LEX_STR_63319       "강조"
+    IDS_LEX_STR_Strong      "강세"
+    IDS_LEX_STR_Emph        "강조"
     IDS_LEX_STR_63320       "머리글 1"
     IDS_LEX_STR_63321       "머리글 2"
     IDS_LEX_STR_63322       "머리글 3"
@@ -504,14 +504,14 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63388       "문자열 EOL"
-    IDS_LEX_STR_63397       "백틱"
-    IDS_LEX_STR_63398       "GUID 문자열"
+    IDS_LEX_STR_StrgEOL     "문자열 EOL"
+    IDS_LEX_STR_Backticks   "백틱"
+    IDS_LEX_STR_GUIDStrg    "GUID 문자열"
     IDS_LEX_STR_Global      "전역"
     IDS_LEX_STR_Input       "입력"
     IDS_LEX_STR_Output      "출력"
     IDS_LEX_STR_InOut       "입출력"
-    IDS_LEX_STR_Port_Conn   "포트 연결"
+    IDS_LEX_STR_PortConn    "포트 연결"
     IDS_LEX_STR_SysTasks    "System Tasks"
 END
 
