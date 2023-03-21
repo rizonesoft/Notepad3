@@ -3,11 +3,12 @@
 
 #include "SciLexer.h"    // Scintilla/Lexilla Lexer defines
 
-#define SCLEX_AHK     200
-#define SCLEX_CSV     201
-#define SCLEX_DART    202
-#define SCLEX_KOTLIN  203
-#define SCLEX_TOML    204
+#define SCLEX_AHK         200
+#define SCLEX_CSV         201
+#define SCLEX_DART        202
+#define SCLEX_KOTLIN      203
+#define SCLEX_TOML        204
+#define SCLEX_SYSVERILOG  205
 
 // -----------------------------------------------------------------------------
 // !!!!! ADD  Lexer Linkage in:  scintilla\src\Catalogue.cxx  !!!!!

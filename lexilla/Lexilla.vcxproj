@@ -98,6 +98,7 @@
     <ClCompile Include="lexers_x\LexJSON.cxx" />
     <ClCompile Include="lexers_x\LexKotlin.cxx" />
     <ClCompile Include="lexers_x\LexTOML.cxx" />
+    <ClCompile Include="lexers_x\LexVerilog.cxx" />
     <ClCompile Include="lexlib\Accessor.cxx" />
     <ClCompile Include="lexlib\CharacterCategory.cxx" />
     <ClCompile Include="lexlib\CharacterSet.cxx" />

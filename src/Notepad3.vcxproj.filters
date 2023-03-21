@@ -429,6 +429,9 @@
     <ClCompile Include="tinyexpr\tinyexpr.c">
       <Filter>Source Files\tinyexpr</Filter>
     </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexVerilog.c">
+      <Filter>Source Files\StyleLexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dlapi.h">

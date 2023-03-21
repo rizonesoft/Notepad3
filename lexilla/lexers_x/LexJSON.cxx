@@ -111,10 +111,10 @@ struct OptionsJSON {
 	bool allowComments;
 	bool escapeSequence;
 	OptionsJSON() {
-		foldCompact = true;
-		fold = true;
-		allowComments = true;
-		escapeSequence = true;
+		foldCompact = false;
+		fold = false;
+		allowComments = false;
+		escapeSequence = false;
 	}
 };
 

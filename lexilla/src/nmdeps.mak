@@ -728,3 +728,19 @@ $(DIR_O)/LexTOML.obj: \
 	../lexlib/CharacterSet.h \
 	../lexers_x/SciXLexer.h \
 	../include/SciLexer.h
+$(DIR_O)/LexVerilog.obj: \
+	../lexers_x/LexVerilog.cxx \
+	../../scintilla/include/ILexer.h \
+	../../scintilla/include/Sci_Position.h \
+	../../scintilla/include/Scintilla.h \
+	../include/SciLexer.h \
+	../lexers_x/SciXLexer.h \
+	../lexlib/WordList.h \
+	../lexlib/LexAccessor.h \
+	../lexlib/Accessor.h \
+	../lexlib/StyleContext.h \
+	../lexlib/CharacterSet.h \
+	../lexlib/LexerModule.h \
+	../lexlib/OptionSet.h \
+	../lexlib/SubStyles.h \
+	../lexlib/DefaultLexer.h

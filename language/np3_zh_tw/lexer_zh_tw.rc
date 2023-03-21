@@ -134,6 +134,12 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_LEX_VERILOG         "Verilog HDL"
+    IDS_LEX_SYSVERILOG      "SystemVerilog HDVL"
+END
+
+STRINGTABLE
+BEGIN
     IDS_LEX_STD_STYLE       "預設樣式"
     IDS_LEX_STD_MARGIN      "邊界和行號"
     IDS_LEX_STD_BRACE       "符合大括弧 (指示器)"
@@ -501,7 +507,11 @@ BEGIN
     IDS_LEX_STR_63388       "String EOL"
     IDS_LEX_STR_63397       "Backticks"
     IDS_LEX_STR_63398       "GUID String"
-    IDS_LEX_STR_63399       "Global"
+    IDS_LEX_STR_Global      "Global"
+    IDS_LEX_STR_Input       "Input"
+    IDS_LEX_STR_Output      "Output"
+    IDS_LEX_STR_InOut       "InOut"
+    IDS_LEX_STR_Port_Conn   "Port Connection"
 END
 
 STRINGTABLE

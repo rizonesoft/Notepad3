@@ -25,7 +25,7 @@ EDITLEXER lexRUBY =
         { {SCE_RB_DEFNAME}, IDS_LEX_STR_63247, L"Function Name", L"fore:#007F7F", L"" },
         { {SCE_RB_POD}, IDS_LEX_STR_63292, L"POD", L"fore:#004000; back:#C0FFC0; eolfilled", L"" },
         { {SCE_RB_REGEX}, IDS_LEX_STR_63135, L"Regex", L"fore:#000000; back:#A0FFA0", L"" },
-        { {SCE_RB_GLOBAL}, IDS_LEX_STR_63399, L"Global", L"fore:#EA4D00", L"" },
+        { {SCE_RB_GLOBAL}, IDS_LEX_STR_Global, L"Global", L"fore:#EA4D00", L"" },
         { {SCE_RB_SYMBOL}, IDS_LEX_STR_63293, L"Symbol", L"fore:#C0A030", L"" },
         { {SCE_RB_MODULE_NAME}, IDS_LEX_STR_63294, L"Module Name", L"fore:#A000A0", L"" },
         { {SCE_RB_INSTANCE_VAR}, IDS_LEX_STR_63295, L"Instance Var", L"fore:#B00080", L"" },

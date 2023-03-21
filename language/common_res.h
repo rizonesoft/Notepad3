@@ -989,6 +989,9 @@
 #define IDS_LEX_KIX_SCR                 63054
 #define IDS_LEX_FORTRAN                 63055
 //#define IDS_LEX_F77                     63056
+#define IDS_LEX_VERILOG                 63057
+#define IDS_LEX_SYSVERILOG              63058
+
 
 #define IDS_LEX_STD_STYLE               63100
 #define IDS_LEX_STD_MARGIN              63101
@@ -1290,7 +1293,11 @@
 #define IDS_LEX_2ND_CH_REV_TO_MOD       63396
 #define IDS_LEX_STR_63397               63397
 #define IDS_LEX_STR_63398               63398
-#define IDS_LEX_STR_63399               63399
+#define IDS_LEX_STR_Global              63399
+#define IDS_LEX_STR_Input               63400
+#define IDS_LEX_STR_Output              63401
+#define IDS_LEX_STR_InOut               63402
+#define IDS_LEX_STR_Port_Conn           63403
 
 
 #define IDS_LEX_CSV_COL_0               63490

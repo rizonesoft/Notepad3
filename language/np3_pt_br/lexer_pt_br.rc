@@ -134,6 +134,12 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_LEX_VERILOG         "HDL da Verilog"
+    IDS_LEX_SYSVERILOG      "SystemVerilog HDVL"
+END
+
+STRINGTABLE
+BEGIN
     IDS_LEX_STD_STYLE       "Estilo Padrão"
     IDS_LEX_STD_MARGIN      "Números de Margens e Números de Linhas"
     IDS_LEX_STD_BRACE       "Par de Colchetes (Indicador)"
@@ -501,7 +507,11 @@ BEGIN
     IDS_LEX_STR_63388       "String EOL"
     IDS_LEX_STR_63397       "Acentos Graves"
     IDS_LEX_STR_63398       "Cadeia GUID"
-    IDS_LEX_STR_63399       "Global"
+    IDS_LEX_STR_Global      "Global"
+    IDS_LEX_STR_Input       "Entrada"
+    IDS_LEX_STR_Output      "Saída"
+    IDS_LEX_STR_InOut       "Entrada/Saída"
+    IDS_LEX_STR_Port_Conn   "Conexão de Porta"
 END
 
 STRINGTABLE

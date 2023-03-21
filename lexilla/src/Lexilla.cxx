@@ -73,10 +73,12 @@ extern LexerModule lmRegistry;
 extern LexerModule lmRuby;
 extern LexerModule lmRust;
 extern LexerModule lmSQL;
+extern LexerModule lmSysVerilog;
 extern LexerModule lmTCL;
 extern LexerModule lmTOML;
 extern LexerModule lmVB;
 extern LexerModule lmVBScript;
+extern LexerModule lmVerilog;
 extern LexerModule lmVHDL;
 extern LexerModule lmXML;
 extern LexerModule lmYAML;
@@ -141,10 +143,12 @@ void AddEachLexer() {
 		&lmRuby,
 		&lmRust,
 		&lmSQL,
+		&lmSysVerilog,
 		&lmTCL,
 		&lmTOML,
 		&lmVB,
 		&lmVBScript,
+		&lmVerilog,
 		&lmVHDL,
 		&lmXML,
 		&lmYAML,
