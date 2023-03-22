@@ -135,7 +135,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_VERILOG         "HDL da Verilog"
-    IDS_LEX_SYSVERILOG      "SystemVerilog HDVL"
+    IDS_LEX_SYSVERILOG      "HDVL da SystemVerilog"
 END
 
 STRINGTABLE
@@ -512,7 +512,7 @@ BEGIN
     IDS_LEX_STR_Output      "Saída"
     IDS_LEX_STR_InOut       "Entrada/Saída"
     IDS_LEX_STR_PortConn    "Conexão de Porta"
-    IDS_LEX_STR_SysTasks    "System Tasks"
+    IDS_LEX_STR_SysTasks    "Tarefas do Sistema"
 END
 
 STRINGTABLE
