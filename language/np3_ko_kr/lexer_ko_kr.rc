@@ -127,7 +127,7 @@ BEGIN
     IDS_LEX_TOML_CFG        "TOML"
     IDS_LEX_DART_SRC        "Dart 소스 코드"
     IDS_LEX_KOTLIN_SRC      "Kotlin 소스 코드"
-    IDS_LEX_JULIA_SCR       "Julia Script"
+    IDS_LEX_JULIA_SCR       "Julia 스크립트"
     IDS_LEX_KIX_SCR         "KiXtart 스크립트"
     IDS_LEX_FORTRAN         "Fortran 소스 코드"
 END
@@ -512,7 +512,7 @@ BEGIN
     IDS_LEX_STR_Output      "출력"
     IDS_LEX_STR_InOut       "입출력"
     IDS_LEX_STR_PortConn    "포트 연결"
-    IDS_LEX_STR_SysTasks    "System Tasks"
+    IDS_LEX_STR_SysTasks    "시스템 작업"
 END
 
 STRINGTABLE
