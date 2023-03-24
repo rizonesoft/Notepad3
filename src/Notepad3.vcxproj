@@ -181,7 +181,7 @@
       <CompileAsWinRT>false</CompileAsWinRT>
       <AdditionalOptions>/Zc:threadSafeInit /utf-8 %(AdditionalOptions)</AdditionalOptions>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <OmitFramePointers />
+      <OmitFramePointers>false</OmitFramePointers>
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
@@ -254,8 +254,7 @@
       <AdditionalOptions>/Zc:threadSafeInit /utf-8 %(AdditionalOptions)</AdditionalOptions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <EnableEnhancedInstructionSet />
-      <OmitFramePointers>
-      </OmitFramePointers>
+      <OmitFramePointers>false</OmitFramePointers>
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <LanguageStandard_C>stdc17</LanguageStandard_C>

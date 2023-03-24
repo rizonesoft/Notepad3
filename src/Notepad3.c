@@ -91,17 +91,18 @@ CONSTANTS_T const Constants = {
 };
 
 
-FLAGS_T     Flags;
-FLAGS_T     DefaultFlags;
+FLAGS_T     Flags = { 0 };
+FLAGS_T DefaultFlags = { 0 };
 
-PATHS_T     Paths;
-GLOBALS_T   Globals;
-SETTINGS_T  Settings;
-SETTINGS_T  Defaults;
-SETTINGS2_T Settings2;
+GLOBALS_T   Globals = { 0 };
+SETTINGS_T  Settings = { 0 };
+SETTINGS_T  Defaults = { 0 };
+SETTINGS2_T Settings2 = { 0 };
 
-FOCUSEDVIEW_T FocusedView;
-FILEWATCHING_T FileWatching;
+PATHS_T Paths = { 0 };
+
+FOCUSEDVIEW_T  FocusedView = { 0 };
+FILEWATCHING_T FileWatching = { 0 };
 
 // set by InitScintillaHandle()
 HWND      g_hwndEditWindow = NULL; 
@@ -113,8 +114,8 @@ WININFO   g_DefWinInfo = INIT_WININFO;
 
 COLORREF  g_colorCustom[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-prefix_t  g_mxSBPrefix[STATUS_SECTOR_COUNT];
-prefix_t  g_mxSBPostfix[STATUS_SECTOR_COUNT];
+prefix_t g_mxSBPrefix[STATUS_SECTOR_COUNT] = { L'\0' };
+prefix_t g_mxSBPostfix[STATUS_SECTOR_COUNT] = { L'\0' };
 
 int       g_flagMatchText = 0;
 bool      g_iStatusbarVisible[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
@@ -125,7 +126,7 @@ HPATHL    g_tchToolbarBitmap = NULL;
 HPATHL    g_tchToolbarBitmapHot = NULL;
 HPATHL    g_tchToolbarBitmapDisabled = NULL;
 
-WCHAR     Default_PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];
+WCHAR Default_PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1] = { L'\0' };
 
 // ------------------------------------
 
@@ -159,14 +160,14 @@ static bool      s_bLastCopyFromMe = false;
 static bool      s_bInMultiEditMode = false;
 static bool      s_bCallTipEscDisabled = false;
 
-static int       s_iInitialLine;
-static int       s_iInitialColumn;
-static int       s_iInitialLexer;
+static int       s_iInitialLine = 0;
+static int       s_iInitialColumn = 0;
+static int       s_iInitialLexer = 0;
 
-static int       s_cyReBar;
-static int       s_cyReBarFrame;
-static int       s_cxEditFrame;
-static int       s_cyEditFrame;
+static int       s_cyReBar = 0;
+static int       s_cyReBarFrame = 0;
+static int       s_cxEditFrame = 0;
+static int       s_cyEditFrame = 0;
 static bool      s_bUndoRedoScroll = false;
 
 // for tiny expression calculation
@@ -712,15 +713,6 @@ static void  _UpdateTitlebarDelayed(const HWND hwnd);
 
 static void _InitGlobals()
 {
-    ZeroMemory(&Paths, sizeof(PATHS_T));
-    ZeroMemory(&Globals, sizeof(GLOBALS_T));
-    ZeroMemory(&Defaults, sizeof(SETTINGS_T));
-    ZeroMemory(&Settings, sizeof(SETTINGS_T));
-    ZeroMemory(&Settings2, sizeof(SETTINGS2_T));
-    ZeroMemory(&Flags, sizeof(FLAGS_T));
-
-    ZeroMemory(&(Globals.fvCurFile), sizeof(FILEVARS));
-
     Globals.hLngResContainer = NULL;
 
     Globals.hDlgIcon256   = NULL;
@@ -1180,33 +1172,49 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     int const cxs = GetSystemMetrics(SM_CXSMICON) << 1;
     int const cys = GetSystemMetrics(SM_CYSMICON) << 1;
 
-    //UINT const fuLoad = LR_DEFAULTCOLOR | LR_SHARED;
+    UINT const fuLoad = LR_DEFAULTCOLOR | LR_SHARED;
 
     if (!Globals.hDlgIcon256) {
-        LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 256, 256, &(Globals.hDlgIcon256));
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 256, 256, &(Globals.hDlgIcon256)))) {
+            Globals.hDlgIcon256 = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 256, 256, fuLoad);
+        }
     }
     if (!Globals.hDlgIcon128) {
-        LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 128, 128, &(Globals.hDlgIcon128));
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 128, 128, &(Globals.hDlgIcon128)))) {
+            Globals.hDlgIcon128 = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, fuLoad);
+        }
     }
     if (!Globals.hDlgIconBig) {
-        LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxb, cyb, &(Globals.hDlgIconBig));
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxb, cyb, &(Globals.hDlgIconBig)))) {
+            Globals.hDlgIconBig = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, cxb, cyb, fuLoad);
+        }
     }
     if (!Globals.hDlgIconSmall) {
-        LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxs, cys, &(Globals.hDlgIconSmall));
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxs, cys, &(Globals.hDlgIconSmall)))) {
+            Globals.hDlgIconSmall = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, cxs, cys, fuLoad);
+        }
     }
 
     if (!Globals.hDlgIconPrefs256) {
-        LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 256, 256, &(Globals.hDlgIconPrefs256));
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 256, 256, &(Globals.hDlgIconPrefs256)))) {
+            Globals.hDlgIconPrefs256 = LoadImage(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), IMAGE_ICON, 256, 256, fuLoad);
+        }
     }
     if (!Globals.hDlgIconPrefs128) {
-        LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 128, 128, &(Globals.hDlgIconPrefs128));
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 128, 128, &(Globals.hDlgIconPrefs128)))) {
+            Globals.hDlgIconPrefs128 = LoadImage(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), IMAGE_ICON, 128, 128, fuLoad);
+        }
     }
     if (!Globals.hDlgIconPrefs64) {
-        LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 64, 64, &(Globals.hDlgIconPrefs64));
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 64, 64, &(Globals.hDlgIconPrefs64)))) {
+            Globals.hDlgIconPrefs64 = LoadImage(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), IMAGE_ICON, 64, 64, fuLoad);
+        }
     }
 
     if (!Globals.hIconMsgUser) {
-        LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxb, cyb, &(Globals.hIconMsgUser));
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxb, cyb, &(Globals.hIconMsgUser)))) {
+            Globals.hIconMsgUser = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, cxb, cyb, fuLoad);
+        }
     }
     if (!Globals.hIconMsgInfo) {
         LoadIconWithScaleDown(NULL, IDI_INFORMATION, cxb, cyb, &(Globals.hIconMsgInfo));

@@ -61,7 +61,7 @@
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{0873b090-7ffd-4abd-9b42-619a06c5041f}</ProjectGuid>
     <RootNamespace>uxthemestub</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion />
     <ProjectName>uxtheme-stub</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

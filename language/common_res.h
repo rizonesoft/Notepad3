@@ -65,6 +65,17 @@
 
 // ==========================================
 
+#define IDR_MAINWND                     1000
+#define IDR_MAINWNDTB                   1001
+#define IDR_MAINWNDTBHOT                1002
+#define IDR_MAINWNDTBDIS                1003
+#define IDR_MAINWNDTB2                  1004
+#define IDR_MAINWNDTB2HOT               1005
+#define IDR_MAINWNDTB2DIS               1006
+#define IDR_STD_DARKMODE_THEME          1050
+
+// ==========================================
+
 #ifndef IDC_STATIC
 #define IDC_STATIC                       (-1)
 #endif
@@ -258,16 +269,6 @@
 #define IDS_MUI_SB_CONV_LNBRK           15504
 #define IDS_MUI_SB_RECODING_DOC         15505
 #define IDS_MUI_SB_LEXER_STYLING        15506
-
-#define IDR_MAINWND                     16000
-#define IDR_MAINWNDTB                   16001
-#define IDR_MAINWNDTBHOT                16002
-#define IDR_MAINWNDTBDIS                16003
-#define IDR_MAINWNDTB2                  16004
-#define IDR_MAINWNDTB2HOT               16005
-#define IDR_MAINWNDTB2DIS               16006
-
-#define IDR_STD_DARKMODE_THEME          16050
 
 #define IDI_MUI_RUN                     16100
 #define IDI_MUI_STYLES                  16101

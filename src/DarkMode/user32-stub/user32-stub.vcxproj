@@ -61,8 +61,8 @@
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{1f757558-0e57-4de5-82d6-a14e9d81f05f}</ProjectGuid>
     <RootNamespace>user32stub</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>user32-stub</ProjectName>
+    <WindowsTargetPlatformVersion />
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
