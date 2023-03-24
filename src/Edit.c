@@ -9421,16 +9421,24 @@ void  EditSetBookmarkList(HWND hwnd, LPCWSTR pszBookMarks)
 
 #define NOT_FOUND_LN ((DocLn)-1)
 
-__forceinline int _GetAllNP3Markers(const DocLn iLine) {
-    return (SciCall_MarkerGet(iLine) & (ALL_MARKERS_BITMASK() | CHANGE_HISTORY_MARKER_BITMASK()));
-}
+static int _RespectLastSearch(const int bitmask, const DocLn iLine)
+{
+    static int   _LastSearchBitmask = BOOKMARK_BITMASK();
+    static DocLn _LastSearchStart = NOT_FOUND_LN;
 
-static int _RespectLastSearch(const int bitmask) {
-    static int s_LastSearchBitmask = 0;
-    if (!(bitmask & s_LastSearchBitmask)) {
-        s_LastSearchBitmask = bitmask;
+    if (iLine == _LastSearchStart) {
+        if (bitmask & _LastSearchBitmask) {
+            return _LastSearchBitmask;
+        }
     }
-    return s_LastSearchBitmask;
+    if (bitmask & BOOKMARK_BITMASK()) { // BOOKMARKS got prio
+        _LastSearchBitmask = BOOKMARK_BITMASK();
+    }
+    else {
+        _LastSearchBitmask = bitmask ? bitmask : BOOKMARK_BITMASK();
+    }
+    _LastSearchStart = iLine; 
+    return _LastSearchBitmask;
 }
 
 
@@ -9448,46 +9456,43 @@ static inline DocLn _MarkerNext(const DocLn iLine, const int bitmask)
     return SciCall_MarkerNext(iLine, bitmask);
 }
 
+
 void EditBookmarkNext(HWND hwnd, DocLn iLine)
 {
     UNREFERENCED_PARAMETER(hwnd);
-    DocLn iNextLine = NOT_FOUND_LN;
-    bool bWrapedAround = true;
-    do {
-        int bitmask = _RespectLastSearch(_GetAllNP3Markers(iLine));
-        if (!bitmask) {
-            bitmask = BOOKMARK_BITMASK();
+
+    int   bitmask = _RespectLastSearch(SciCall_MarkerGet(iLine), iLine);
+    DocLn iNextLine = _MarkerNext(iLine + 1, bitmask);
+
+    // skip consecutive change marker
+    if (bitmask & CHANGE_HISTORY_MARKER_BITMASK()) {
+        while ((iLine + 1) == iNextLine) {
+            iNextLine = _MarkerNext(++iLine + 1, bitmask);
         }
+    }
+
+    if ((iNextLine == NOT_FOUND_LN) && (iLine > 0)) {
+        iNextLine = _MarkerNext(0, bitmask); // wrap around
+    }
+
+    if (iNextLine == NOT_FOUND_LN) { // find any bookmark
+        bitmask = ALL_MARKERS_BITMASK();
         iNextLine = _MarkerNext(iLine + 1, bitmask);
-        if (iNextLine == NOT_FOUND_LN) {
+        if ((iNextLine == NOT_FOUND_LN) && (iLine > 0)) {
             iNextLine = _MarkerNext(0, bitmask); // wrap around
         }
-        if (iNextLine == NOT_FOUND_LN) {
-            bitmask = ALL_MARKERS_BITMASK();
-            iNextLine = _MarkerNext(iLine + 1, bitmask); // find any bookmark
+    }
+
+    if (iNextLine == NOT_FOUND_LN) {  // find change history marker
+        bitmask = CHANGE_HISTORY_MARKER_BITMASK();
+        iNextLine = _MarkerNext(iLine + 1, bitmask);
+        if ((iNextLine == NOT_FOUND_LN) && (iLine > 0)) {
+            iNextLine = _MarkerNext(0, bitmask); // wrap around
         }
-        if (iNextLine == NOT_FOUND_LN) {
-            bitmask = CHANGE_HISTORY_MARKER_BITMASK();
-            iNextLine = _MarkerNext(iLine + 1, bitmask); // find change history marker
-        }
-        if (iNextLine == NOT_FOUND_LN) {
-            // initial search not started from beginning?
-            if (iLine != 0) {
-                iLine = 0;
-            }
-        }
-        else { // check for consecutive change marker
-            if (bitmask & CHANGE_HISTORY_MARKER_BITMASK()) {
-                while ((iLine + 1) == iNextLine) {
-                    iLine = iNextLine;
-                    iNextLine = _MarkerNext(iLine + 1, bitmask);
-                }
-            }
-        }
-        bWrapedAround = !bWrapedAround;
-    } while ((iNextLine == NOT_FOUND_LN) && !bWrapedAround);
+    }
 
     if (iNextLine != NOT_FOUND_LN) {
+        _RespectLastSearch(bitmask, iNextLine); // reset
         SciCall_GotoLine(iNextLine);
     }
 }
@@ -9512,47 +9517,45 @@ static inline DocLn _MarkerPrevious(const DocLn iLine, const int bitmask)
 void EditBookmarkPrevious(HWND hwnd, DocLn iLine)
 {
     UNREFERENCED_PARAMETER(hwnd);
-    DocLn iPrevLine = NOT_FOUND_LN;
-    bool  bWrapedAround = true;
-    do {
-        int bitmask = _RespectLastSearch(_GetAllNP3Markers(iLine));
-        if (!bitmask) {
-            bitmask = BOOKMARK_BITMASK();
+
+    DocLn const docLnCount = SciCall_GetLineCount();
+
+    int bitmask = _RespectLastSearch(SciCall_MarkerGet(iLine), iLine);
+    iLine = (iLine <= 0) ? docLnCount + 1 : iLine;
+    DocLn iPrevLine = _MarkerPrevious(iLine - 1, bitmask);
+
+    // skip consecutive change marker
+    if (bitmask & CHANGE_HISTORY_MARKER_BITMASK()) {
+        while ((iLine - 1) == iPrevLine) {
+            iPrevLine = _MarkerPrevious(--iLine - 1, bitmask);
         }
-        iLine = (iLine <= 0) ? SciCall_GetLineCount() + 1 : iLine;
+    }
+
+    if ((iPrevLine == NOT_FOUND_LN) && (iLine < docLnCount)) {
+        iPrevLine = _MarkerPrevious(docLnCount, bitmask); // wrap around
+    }
+
+    if (iPrevLine == NOT_FOUND_LN) { // find any bookmark
+        bitmask = ALL_MARKERS_BITMASK();
         iPrevLine = _MarkerPrevious(iLine - 1, bitmask);
-        if (iPrevLine == NOT_FOUND_LN) {
-            iPrevLine = _MarkerPrevious(SciCall_GetLineCount(), bitmask); // wrap around
+        if ((iPrevLine == NOT_FOUND_LN) && (iLine < docLnCount)) {
+            iPrevLine = _MarkerPrevious(docLnCount, bitmask); // wrap around
         }
-        if (iPrevLine == NOT_FOUND_LN) {
-            bitmask = ALL_MARKERS_BITMASK();
-            iPrevLine = _MarkerPrevious(iLine - 1, bitmask); // find any bookmark
+    }
+
+    if (iPrevLine == NOT_FOUND_LN) { // find change history marker
+        bitmask = CHANGE_HISTORY_MARKER_BITMASK();
+        iPrevLine = _MarkerPrevious(iLine - 1, bitmask);
+        if ((iPrevLine == NOT_FOUND_LN) && (iLine < docLnCount)) {
+            iPrevLine = _MarkerPrevious(docLnCount, bitmask); // wrap around
         }
-        if (iPrevLine == NOT_FOUND_LN) {
-            bitmask = CHANGE_HISTORY_MARKER_BITMASK();
-            iPrevLine = _MarkerPrevious(iLine - 1, bitmask); // find change history marker
-        }
-        if (iPrevLine == NOT_FOUND_LN) {
-            // initial search not started from bottom?
-            if (iLine != SciCall_GetLineCount()) {
-                iLine = SciCall_GetLineCount();
-            }
-        }
-        else { // check for consecutive change marker
-            if (bitmask & CHANGE_HISTORY_MARKER_BITMASK()) {
-                while ((iLine - 1) == iPrevLine) {
-                    iLine = iPrevLine;
-                    iPrevLine = _MarkerPrevious(iLine - 1, bitmask);
-                }
-            }
-        }
-        bWrapedAround = !bWrapedAround;
-    } while ((iPrevLine == NOT_FOUND_LN) && !bWrapedAround);
+    }
 
     if (iPrevLine != NOT_FOUND_LN) {
         // find beginning of consecutive change marker
-        int const bm = _GetAllNP3Markers(iPrevLine);
+        int const bm = bitmask & CHANGE_HISTORY_MARKER_BITMASK();
         while ((--iPrevLine >= 0) && (bm & SciCall_MarkerGet(iPrevLine))) {}
+        _RespectLastSearch(bitmask, iPrevLine + 1); // reset
         SciCall_GotoLine(iPrevLine + 1);
     }
 }
