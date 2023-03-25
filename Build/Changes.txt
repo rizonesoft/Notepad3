@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.321.(build_#) (2023-03-21)
+Current BETA/RC Version 6.23.325.(build_#) (2023-03-25)
 ========================================================
 
 --------------------------------------------------------
@@ -55,6 +55,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.325.1]- Option for ASAN Dbg to not throw exception.
 [.321.2]- Default Print Colour Mode depending on Dark/Light Mode.
 [.321.2]- Renaming for Lexer related resource string IDs (defined names).
 [.321.2]- Verilog: split 'System Tasks' from 'Keywords'.
@@ -81,6 +82,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.325.1]- Book/Change-Mmarker search: high prio on Book-Marker.
+[.325.1]- Fallback on LoadIconWithScaleDown() failed.
 [.320.2]- Deprecated settings key-names handling ('FileCheckInverval').
 [.320.1]- Notification adjustment in case of externally deleted file.
 [.320.1]- Min. FileCheckInterval 500msec, else notify immediately.
