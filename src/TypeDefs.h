@@ -330,7 +330,7 @@ typedef struct CmdMessageQueue_t {
     UINT  cmd;
     WPARAM wparam;
     LPARAM lparam;
-    int delay;
+    int64_t                   delay;
     struct CmdMessageQueue_t* next;
     struct CmdMessageQueue_t* prev;
 
@@ -732,32 +732,32 @@ extern FLAGS_T DefaultFlags;
 
 typedef struct SETTINGS2_T {
 
-    int    FileLoadWarningMB;
-    int    OpacityLevel;
-    int    FindReplaceOpacityLevel;
-    DWORD  FileCheckInterval;
-    DWORD  UndoTransactionTimeout;
-    int    IMEInteraction;
-    int    SciFontQuality;
-    int    LaunchInstanceWndPosOffset;
-    bool   LaunchInstanceFullVisible;
-    int    UpdateDelayMarkAllOccurrences;
-    bool   DenyVirtualSpaceAccess;
-    bool   UseOldStyleBraceMatching;
-    int    CurrentLineHorizontalSlop;
-    int    CurrentLineVerticalSlop;
-    bool   NoCopyLineOnEmptySelection;
-    bool   NoCutLineOnEmptySelection;
-    bool   LexerSQLNumberSignAsComment;
-    int    ExitOnESCSkipLevel;
-    int    ZoomTooltipTimeout;
-    int    WrapAroundTooltipTimeout;
-    int    LargeIconScalePrecent;
+    int     FileLoadWarningMB;
+    int     OpacityLevel;
+    int     FindReplaceOpacityLevel;
+    int64_t FileCheckInterval;
+    int64_t UndoTransactionTimeout;
+    int     IMEInteraction;
+    int     SciFontQuality;
+    int     LaunchInstanceWndPosOffset;
+    bool    LaunchInstanceFullVisible;
+    int     UpdateDelayMarkAllOccurrences;
+    bool    DenyVirtualSpaceAccess;
+    bool    UseOldStyleBraceMatching;
+    int     CurrentLineHorizontalSlop;
+    int     CurrentLineVerticalSlop;
+    bool    NoCopyLineOnEmptySelection;
+    bool    NoCutLineOnEmptySelection;
+    bool    LexerSQLNumberSignAsComment;
+    int     ExitOnESCSkipLevel;
+    int     ZoomTooltipTimeout;
+    int     WrapAroundTooltipTimeout;
+    int     LargeIconScalePrecent;
 
-    float  AnalyzeReliableConfidenceLevel;
-    float  LocaleAnsiCodePageAnalysisBonus;
-    float  DarkModeHiglightContrast;
-
+    float   AnalyzeReliableConfidenceLevel;
+    float   LocaleAnsiCodePageAnalysisBonus;
+    float   DarkModeHiglightContrast;
+           
 #ifdef D_NP3_WIN10_DARK_MODE
     COLORREF DarkModeBkgColor;
     COLORREF DarkModeBtnFaceColor;
@@ -845,7 +845,7 @@ typedef struct BackgroundWorker {
 
 typedef struct FCOBSRVDATA_T {
 
-    DWORD             dwFileChangeNotifyTime;
+    int64_t           iFileChangeNotifyTime;
 
     WIN32_FIND_DATA   fdCurFile;
     HANDLE            hEventFileChanged;
@@ -868,7 +868,7 @@ typedef struct FILEWATCHING_T {
 
     FILE_WATCHING_MODE flagChangeNotify;  // <-> s_flagChangeNotify;
     FILE_WATCHING_MODE FileWatchingMode;  // <-> Settings.FileWatchingMode;
-    DWORD              FileCheckInterval; // <-> Settings2.FileCheckInterval;
+    int64_t            FileCheckInterval; // <-> Settings2.FileCheckInterval;
     bool               MonitoringLog;
 
 } FILEWATCHING_T, *PFILEWATCHING_T;

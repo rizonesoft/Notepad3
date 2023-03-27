@@ -126,7 +126,7 @@ void CheckAutoLoadMostRecent();
 void ShowZoomCallTip();
 void ShowWrapAroundCallTip(bool forwardSearch);
 
-void MarkAllOccurrences(const int delay, const bool bForceClear);
+void MarkAllOccurrences(const int64_t delay, const bool bForceClear);
 
 void UpdateToolbar();
 void UpdateStatusbar(const bool bForceRedraw);

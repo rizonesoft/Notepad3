@@ -161,11 +161,9 @@ static int msgcmp(void* mqc1, void* mqc2)
     return 1;
 }
 
-static int sortcmp(void *mqc1, void *mqc2) {
-
+static int64_t sortcmp(void *mqc1, void *mqc2) {
     const CmdMessageQueue_t *const pMQC1 = (CmdMessageQueue_t *)mqc1;
     const CmdMessageQueue_t *const pMQC2 = (CmdMessageQueue_t *)mqc2;
-
     return (pMQC1->delay - pMQC2->delay);
 }
 // ----------------------------------------------------------------------------
@@ -222,12 +220,13 @@ static void _MQ_DropAll() {
 //
 // called by MarkAll Timer
 //
+// TIMERPROC
 static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
     UNREFERENCED_PARAMETER(hwnd);    // must be main wnd
     UNREFERENCED_PARAMETER(uMsg);    // must be WM_TIMER
     UNREFERENCED_PARAMETER(idEvent); // must be pTimerIdentifier
-    UNREFERENCED_PARAMETER(dwTime);  // This is the value returned by the GetTickCount function
+    UNREFERENCED_PARAMETER(dwTime);  // This is the value returned by the GetTickCoun(t)) function
 
     CmdMessageQueue_t *pmqc;
     DL_FOREACH(MessageQueue, pmqc) {
@@ -5243,7 +5242,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
             qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdRev);
         }
     } else { /*if (iSortFlags & SORT_SHUFFLE)*/
-        srand((UINT)GetTickCount());
+        srand((UINT)GetTicks());
         for (DocLn i = (iLineCount - 1); i > 0; --i) {
             int j = rand() % i;
             SORTLINE sLine = { NULL, NULL };
@@ -9685,7 +9684,7 @@ void EditFoldClick(DocLn ln, int mode)
     static struct {
         DocLn ln;
         int mode;
-        DWORD dwTickCount;
+        int64_t iTickCount;
     } prev = { 0, 0, 0 };
 
     bool fGotoFoldPoint = mode & FOLD_SIBLINGS;
@@ -9693,7 +9692,7 @@ void EditFoldClick(DocLn ln, int mode)
     if (!(SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)) {
         // Not a fold point: need to look for a double-click
         if (prev.ln == ln && prev.mode == mode &&
-                GetTickCount() - prev.dwTickCount <= GetDoubleClickTime()) {
+                GetTicks() - prev.iTickCount <= GetDoubleClickTime()) {
             prev.ln = NOT_FOUND_LN;  // Prevent re-triggering on a triple-click
 
             ln = SciCall_GetFoldParent(ln);
@@ -9707,7 +9706,7 @@ void EditFoldClick(DocLn ln, int mode)
             // Save the info needed to match this click with the next click
             prev.ln = ln;
             prev.mode = mode;
-            prev.dwTickCount = GetTickCount();
+            prev.iTickCount = GetTicks();
             return;
         }
     }
