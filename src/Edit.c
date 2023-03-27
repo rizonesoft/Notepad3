@@ -9428,11 +9428,11 @@ static int _RespectLastSearch(const int bitmask, const DocLn iLine)
 
     if (iLine == _LastSearchStart) {
         if (bitmask & _LastSearchBitmask) {
-            return _LastSearchBitmask;
+            return _LastSearchBitmask;           // respect last found bitmask
         }
     }
-    if (bitmask & BOOKMARK_BITMASK()) { // BOOKMARKS got prio
-        _LastSearchBitmask = BOOKMARK_BITMASK();
+    if (bitmask & BOOKMARK_BITMASK()) {
+        _LastSearchBitmask = BOOKMARK_BITMASK(); // BOOKMARKS got prio
     }
     else {
         _LastSearchBitmask = bitmask ? bitmask : BOOKMARK_BITMASK();

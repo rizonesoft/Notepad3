@@ -715,15 +715,6 @@ onigenc_is_mbc_newline_0x0d(const UChar* p, const UChar* end)
   return 0;
 }
 
-extern int
-onigenc_is_mbc_newline_0x0d_0x0a(const UChar* p, const UChar* end)
-{
-  if (p < end) {
-    if ((*p == CARRIAGE_RET) && (*(p+1) == NEWLINE_CODE)) return 1; // CRLF
-  }
-  return 0;
-}
-
 /* for single byte encodings */
 extern int
 onigenc_ascii_mbc_case_fold(OnigCaseFoldType flag ARG_UNUSED, const UChar** p,

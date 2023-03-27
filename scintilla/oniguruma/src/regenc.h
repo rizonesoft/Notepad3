@@ -117,7 +117,7 @@ struct PropertyNameCtype {
   int ctype;
 };
 
-//~#define USE_CRNL_AS_LINE_TERMINATOR ~ solved by is_new_line() fct-ptr
+#define USE_CRNL_AS_LINE_TERMINATOR
 #define USE_UNICODE_PROPERTIES
 #define USE_UNICODE_EXTENDED_GRAPHEME_CLUSTER
 #define USE_UNICODE_WORD_BREAK
@@ -158,7 +158,6 @@ extern int onigenc_get_case_fold_codes_by_str_with_map P_((int map_size, const O
 extern int onigenc_not_support_get_ctype_code_range P_((OnigCtype ctype, OnigCodePoint* sb_out, const OnigCodePoint* ranges[]));
 extern int onigenc_is_mbc_newline_0x0a P_((const UChar* p, const UChar* end));
 extern int onigenc_is_mbc_newline_0x0d P_((const UChar* p, const UChar* end));
-extern int onigenc_is_mbc_newline_0x0d_0x0a P_((const UChar* p, const UChar* end));
 
 /* methods for single byte encoding */
 extern int onigenc_ascii_mbc_case_fold P_((OnigCaseFoldType flag, const UChar** p, const UChar* end, UChar* lower));

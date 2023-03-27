@@ -44,12 +44,6 @@
    ONIGENC_IS_MBC_NEWLINE(enc,(p+enclen(enc,p)),end))
 #endif
 
-// --- fexible NP3 mode (CR|LF|CRLF) dependant ANCHOR and BOL/EOL handling   ---
-const OnigUChar* const _CRLF = "\r\n\0";
-#define IS_CRLF_NEWLINE(enc) ((enc)->is_mbc_newline(&_CRLF[0], &_CRLF[1]) && (enc)->is_mbc_newline(&_CRLF[1], &_CRLF[2]))
-#define IS_LF_CODE(enc, s, end) (ONIGENC_MBC_TO_CODE((enc), (s), (end)) == NEWLINE_CODE)
-#define IS_CR_CODE(enc, s, end) (ONIGENC_MBC_TO_CODE((enc), (s), (end)) == CARRIAGE_RET)
-// ----------------------------------------------------------------------------
 #define CHECK_INTERRUPT_IN_MATCH
 
 #define STACK_MEM_START(reg, idx) \
@@ -3684,10 +3678,10 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
       else if (! ON_STR_END(s)) {
         UChar* sprev = (UChar* )onigenc_get_prev_char_head(encode, str, s);
         if (ONIGENC_IS_MBC_NEWLINE(encode, sprev, end)) {
-            INC_OP;
-            JUMP_OUT;
-          }
+          INC_OP;
+          JUMP_OUT;
         }
+      }
       goto fail;
 
     CASE_OP(END_LINE)
@@ -3704,10 +3698,8 @@ match_at(regex_t* reg, const UChar* str, const UChar* end,
 #endif
       }
       else if (ONIGENC_IS_MBC_NEWLINE(encode, s, end)) {
-        if (!IS_CRLF_NEWLINE(encode) || IS_CR_CODE(encode, s, end)) {
-          INC_OP;
-          JUMP_OUT;
-        }
+        INC_OP;
+        JUMP_OUT;
       }
 #ifdef USE_CRNL_AS_LINE_TERMINATOR
       else if (ONIGENC_IS_MBC_CRNL(encode, s, end)) {
@@ -5242,13 +5234,8 @@ forward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* start,
       case ANCR_BEGIN_LINE:
         if (!ON_STR_BEGIN(p)) {
           prev = onigenc_get_prev_char_head(reg->enc, (pprev ? pprev : str), p);
-          if (IS_NOT_NULL(prev)) {
-            if (!ONIGENC_IS_MBC_NEWLINE(reg->enc, prev, end)) {
-              goto retry_gate;
-            } else if (IS_CRLF_NEWLINE(reg->enc) && !IS_LF_CODE(reg->enc, prev, end)) {
-              goto retry_gate;
-            }
-          }
+          if (!ONIGENC_IS_MBC_NEWLINE(reg->enc, prev, end))
+            goto retry_gate;
         }
         break;
 
@@ -5263,14 +5250,11 @@ forward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* start,
         }
         else if (! ONIGENC_IS_MBC_NEWLINE(reg->enc, p, end)
 #ifdef USE_CRNL_AS_LINE_TERMINATOR
-                   && !ONIGENC_IS_MBC_CRNL(reg->enc, p, end)
+                 && ! ONIGENC_IS_MBC_CRNL(reg->enc, p, end)
 #endif
-        ) {
+                 )
           goto retry_gate;
-        }
-        else if (IS_CRLF_NEWLINE(reg->enc) && !IS_CR_CODE(reg->enc, p, end)) {
-          goto retry_gate;
-        }
+
         break;
       }
     }
@@ -5346,11 +5330,8 @@ backward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* s,
         if (!ON_STR_BEGIN(p)) {
           prev = onigenc_get_prev_char_head(reg->enc, str, p);
           if (IS_NOT_NULL(prev) && !ONIGENC_IS_MBC_NEWLINE(reg->enc, prev, end)) {
-              p = prev;
-              goto retry;
-          } else if (IS_CRLF_NEWLINE(reg->enc) && !IS_LF_CODE(reg->enc, prev, end)) {
-              p = prev;
-              goto retry;
+            p = prev;
+            goto retry;
           }
         }
         break;
@@ -5368,13 +5349,9 @@ backward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* s,
         }
         else if (! ONIGENC_IS_MBC_NEWLINE(reg->enc, p, end)
 #ifdef USE_CRNL_AS_LINE_TERMINATOR
-                   && !ONIGENC_IS_MBC_CRNL(reg->enc, p, end)
+                 && ! ONIGENC_IS_MBC_CRNL(reg->enc, p, end)
 #endif
                  ) {
-          p = onigenc_get_prev_char_head(reg->enc, adjrange, p);
-          if (IS_NULL(p)) goto fail;
-          goto retry;
-        } else if (IS_CRLF_NEWLINE(reg->enc) && !IS_LF_CODE(reg->enc, p, end)) {
           p = onigenc_get_prev_char_head(reg->enc, adjrange, p);
           if (IS_NULL(p)) goto fail;
           goto retry;
@@ -5789,8 +5766,8 @@ search_in_range(regex_t* reg, const UChar* str, const UChar* end,
 
 extern int
 onig_search_with_param(regex_t* reg, const UChar* str, const UChar* end,
-                 const UChar* start, const UChar* range, OnigRegion* region,
-                 OnigOptionType option, OnigMatchParam* mp)
+                       const UChar* start, const UChar* range, OnigRegion* region,
+                       OnigOptionType option, OnigMatchParam* mp)
 {
   const UChar* data_range;
 
