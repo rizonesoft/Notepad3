@@ -167,6 +167,10 @@ __forceinline unsigned clampul(unsigned long x, unsigned long lower, unsigned lo
     return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
 
+__forceinline long long clampll(long long x, long long lower, long long upper) {
+    return (x < lower) ? lower : ((x > upper) ? upper : x);
+}
+
 __forceinline DocPos clampp(DocPos x, DocPos lower, DocPos upper) {
     return (x < lower) ? lower : ((x > upper) ? upper : x);
 }
@@ -853,6 +857,22 @@ void CloseApplication();
 
 inline int PointSizeToFontHeight(const float fPtHeight, const HDC hdc) {
     return -MulDiv(f2int(fPtHeight * 100.0f), GetDeviceCaps(hdc, LOGPIXELSY), 72 * SC_FONT_SIZE_MULTIPLIER);
+}
+
+// ----------------------------------------------------------------------------
+
+static inline int64_t GetTicks() {
+    LARGE_INTEGER ticks;
+    if (!QueryPerformanceCounter(&ticks)) {
+        return (int64_t)GetTickCount64();
+    }
+    LARGE_INTEGER freq;
+    if (!QueryPerformanceFrequency(&freq)) {
+        return (int64_t)GetTickCount64();
+    }
+    ticks.QuadPart *= 1000000;
+    ticks.QuadPart /= freq.QuadPart;
+    return ticks.QuadPart;
 }
 
 // ----------------------------------------------------------------------------

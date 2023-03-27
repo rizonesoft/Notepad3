@@ -155,7 +155,7 @@ static int       s_iAlignMode = 0;
 static bool      s_bIsAppThemed = true;
 static UINT      s_msgTaskbarCreated = 0;
 static WCHAR     s_wchTitleExcerpt[MIDSZ_BUFFER] = { L'\0' };
-static DWORD     s_dwLastCopyTime = 0;
+static int64_t   s_iLastCopyTime = 0;
 static bool      s_bLastCopyFromMe = false;
 static bool      s_bInMultiEditMode = false;
 static bool      s_bCallTipEscDisabled = false;
@@ -445,9 +445,9 @@ static inline void _SplitUndoTransaction()
 
 // ----------------------------------------------------------------------------
 
-static void  _DelayClearCallTip(const int delay);
-static void  _DelaySplitUndoTransaction(const int delay);
-static void  _RestoreActionSelection(const LONG token, DoAction doAct);
+static void _DelayClearCallTip(const int64_t delay);
+static void _DelaySplitUndoTransaction(const int64_t delay);
+static void _RestoreActionSelection(const LONG token, DoAction doAct);
 
 // ----------------------------------------------------------------------------
 
@@ -527,11 +527,11 @@ static int msgcmp(void* mqc1, void* mqc2)
 
 #define _MQ_ms2cycl(T) (((T) + USER_TIMER_MINIMUM) / _MQ_TIMER_CYCLE)
 
-static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int cycles)
+static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int64_t cycles)
 {
     if (!pMsgQCmd) { return; }
 
-    cycles = clampi(cycles, 0, _MQ_ms2cycl(60000));
+    cycles = clampll(cycles, 0, _MQ_ms2cycl(60000));
 
     CmdMessageQueue_t* pmqc = NULL;
     DL_SEARCH(MessageQueue, pmqc, pMsgQCmd, msgcmp);
@@ -574,12 +574,13 @@ static void _MQ_DropAll()
 //
 // called by Timer(IDT_TIMER_MRKALL)
 //
+// TIMERPROC
 static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
 {
     UNREFERENCED_PARAMETER(hwnd);    // must be main window handle
     UNREFERENCED_PARAMETER(uMsg);    // must be WM_TIMER
     UNREFERENCED_PARAMETER(idEvent); // must be IDT_TIMER_MRKALL
-    UNREFERENCED_PARAMETER(dwTime);  // This is the value returned by the GetTickCount function
+    UNREFERENCED_PARAMETER(dwTime);  // This is the value returned by the GetTickCount() function
 
     CmdMessageQueue_t* pmqc;
     DL_FOREACH(MessageQueue, pmqc) {
@@ -1519,8 +1520,8 @@ static BOOL CALLBACK _EnumWndProc(HWND hwnd, LPARAM lParam)
 
         if (StringCchCompareNIW(szClassName, COUNTOF(szClassName), s_wchWndClass, COUNTOF(s_wchWndClass)) == 0) {
 
-            DWORD const dwReuseLock = GetDlgItemInt(hwnd, IDC_REUSELOCK, NULL, FALSE);
-            if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) {
+            UINT const iReuseLock = GetDlgItemInt(hwnd, IDC_REUSELOCK, NULL, FALSE);
+            if ((GetTicks() - iReuseLock) >= REUSEWINDOWLOCKTIMEOUT) {
 
                 *(HWND*)lParam = hwnd;
 
@@ -1547,8 +1548,8 @@ static BOOL CALLBACK _EnumWndProc2(HWND hwnd, LPARAM lParam)
 
         if (StringCchCompareNIW(szClassName, COUNTOF(szClassName), s_wchWndClass, COUNTOF(s_wchWndClass)) == 0) {
 
-            DWORD const dwReuseLock = GetDlgItemInt(hwnd, IDC_REUSELOCK, NULL, FALSE);
-            if (GetTickCount() - dwReuseLock >= REUSEWINDOWLOCKTIMEOUT) {
+            UINT const iReuseLock = GetDlgItemInt(hwnd, IDC_REUSELOCK, NULL, FALSE);
+            if ((GetTicks() - iReuseLock) >= REUSEWINDOWLOCKTIMEOUT) {
 
                 if (IsWindowEnabled(hwnd)) {
                     bContinue = FALSE;
@@ -2023,7 +2024,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
         s_hwndNextCBChain = SetClipboardViewer(Globals.hwndMain);
         s_bLastCopyFromMe = false;
 
-        s_dwLastCopyTime = 0;
+        s_iLastCopyTime = 0;
         SetTimer(Globals.hwndMain, ID_PASTEBOARDTIMER, 100, PasteBoardTimerProc);
     }
 
@@ -2203,7 +2204,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case WM_DRAWCLIPBOARD:
         if (!s_bLastCopyFromMe) {
-            s_dwLastCopyTime = GetTickCount();
+            s_iLastCopyTime = GetTicks();
         } else {
             s_bLastCopyFromMe = false;
         }
@@ -2757,7 +2758,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
         hInstance,
         NULL);
 
-    SetDlgItemInt(hwnd,IDC_REUSELOCK,GetTickCount(),false);
+    SetDlgItemInt(hwnd,IDC_REUSELOCK,(UINT)GetTicks(),false);
 
     // Menu
     //~SetMenuDefaultItem(GetSubMenu(GetMenu(hwnd),0),0);
@@ -3677,7 +3678,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
     // Reset Change Notify
     //bPendingChangeNotify = false;
 
-    SetDlgItemInt(hwnd, IDC_REUSELOCK, GetTickCount(), false);
+    SetDlgItemInt(hwnd, IDC_REUSELOCK, (UINT)GetTicks(), false);
 
     if (pcds->dwData == DATA_NOTEPAD3_PARAMS) {
         LPnp3params const params = AllocMem(pcds->cbData, HEAP_ZERO_MEMORY);
@@ -4569,6 +4570,7 @@ static void _ApplyChangeHistoryMode()
         SciCall_SetChangeHistory(Settings.ChangeHistoryMode);
     }
     UpdateMargins(true);
+    UpdateToolbar();
 }
 
 
@@ -6212,6 +6214,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         _ApplyChangeHistoryMode();
         break;
 
+    case IDM_VIEW_CHGHIST_CLEAR_UNDOREDO:
+        if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"AllowClearUndoHistory", IDS_MUI_ASK_CLEAR_UNDO))) {
+            UndoRedoReset();
+            UpdateMargins(true);
+            UpdateToolbar();
+        }
+        break;
+
     case IDM_VIEW_HYPERLINKHOTSPOTS:
         Settings.HyperlinkHotspot = !Settings.HyperlinkHotspot;
         EditUpdateVisibleIndicators();
@@ -6271,7 +6281,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SendWMCommand(hwnd, IDM_FILE_REVERT);
             _saveChgNotify = FileWatching.FileWatchingMode;
             FileWatching.FileWatchingMode = FWM_AUTORELOAD;
-            FileWatching.FileCheckInterval = 250UL;
+            FileWatching.FileCheckInterval = 250LL;
             SciCall_SetEndAtLastLine(false);
         } else {
             FileWatching.FileWatchingMode = _saveChgNotify;
@@ -8616,10 +8626,10 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
                 }
             }
             if (*bModified) {
-                DWORD const timeout = Settings2.UndoTransactionTimeout;
-                if (timeout != 0UL) {
+                int64_t const timeout = Settings2.UndoTransactionTimeout;
+                if (timeout != 0LL) {
                     if (!bInUndoRedoStep) {
-                        _DelaySplitUndoTransaction(max_dw(_MQ_IMMEDIATE, timeout));
+                        _DelaySplitUndoTransaction(max_ll(_MQ_IMMEDIATE, timeout));
                     }
                 }
             }
@@ -9722,7 +9732,7 @@ static void  _DelayUpdateStatusbar(const int delay, const bool bForceRedraw)
 //
 //  _DelayUpdateToolbar()
 //
-static void  _DelayUpdateToolbar(const int delay)
+static void _DelayUpdateToolbar(const int64_t delay)
 {
     CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(Globals.hwndMain, IDT_TIMER_UPDATE_TOOLBAR, 0LL);
     _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
@@ -9733,7 +9743,7 @@ static void  _DelayUpdateToolbar(const int delay)
 //
 //  _DelayUpdateTitlebar()
 //
-static void _DelayUpdateTitlebar(const int delay, const HWND hwnd)
+static void _DelayUpdateTitlebar(const int64_t delay, const HWND hwnd)
 {
     CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(Globals.hwndMain, IDT_TIMER_UPDATE_TITLEBAR, (LPARAM)hwnd);
     _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
@@ -9744,7 +9754,7 @@ static void _DelayUpdateTitlebar(const int delay, const HWND hwnd)
 //
 //  _DelayClearCallTip()
 //
-static void  _DelayClearCallTip(const int delay)
+static void  _DelayClearCallTip(const int64_t delay)
 {
     CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(Globals.hwndMain, IDT_TIMER_CLEAR_CALLTIP, 0LL);
     _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
@@ -9755,7 +9765,7 @@ static void  _DelayClearCallTip(const int delay)
 //
 //  _DelaySplitUndoTransaction()
 //
-static void  _DelaySplitUndoTransaction(const int delay)
+static void _DelaySplitUndoTransaction(const int64_t delay)
 {
     CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(Globals.hwndMain, IDT_TIMER_UNDO_TRANSACTION, 0);
     _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
@@ -9766,10 +9776,10 @@ static void  _DelaySplitUndoTransaction(const int delay)
 //
 //  MarkAllOccurrences()
 //
-void MarkAllOccurrences(const int delay, const bool bForceClear)
+void MarkAllOccurrences(const int64_t delay, const bool bForceClear)
 {
     CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(Globals.hwndMain, IDT_TIMER_CALLBACK_MRKALL, bForceClear);
-    int const timer = (delay < 0) ? Settings2.UpdateDelayMarkAllOccurrences : delay;
+    int64_t const     timer = (delay < 0) ? Settings2.UpdateDelayMarkAllOccurrences : delay;
     _MQ_AppendCmd(&mqc, _MQ_ms2cycl(timer));
 }
 
@@ -11288,7 +11298,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
 
         Path_Empty(Paths.CurrentFile, false);
         SetDlgItemText(Globals.hwndMain, IDC_FILENAME, Path_Get(Paths.CurrentFile));
-        SetDlgItemInt(Globals.hwndMain, IDC_REUSELOCK, GetTickCount(), false);
+        SetDlgItemInt(Globals.hwndMain, IDC_REUSELOCK, (UINT)GetTicks(), false);
         if (!s_flagKeepTitleExcerpt) {
             StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
         }
@@ -11423,9 +11433,9 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
 
     if (fSuccess) {
 
+        // keep change-history on reload (!)
         if (!bReloadFile) {
             UndoRedoReset();
-            SetSavePoint();
         }
 
         Sci_GotoPosChooseCaret(0);
@@ -11438,7 +11448,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
         Path_Reset(Paths.CurrentFile, Path_Get(hopen_file)); // dup
 
         SetDlgItemText(Globals.hwndMain, IDC_FILENAME, Path_Get(Paths.CurrentFile));
-        SetDlgItemInt(Globals.hwndMain, IDC_REUSELOCK, GetTickCount(), false);
+        SetDlgItemInt(Globals.hwndMain, IDC_REUSELOCK, (UINT)GetTicks(), false);
 
         if (!s_flagKeepTitleExcerpt) {
             StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
@@ -11888,7 +11898,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
                 if (!(fSaveFlags & FSF_SaveCopy)) {
                     Path_Swap(Paths.CurrentFile, hfile_pth);
                     SetDlgItemText(Globals.hwndMain, IDC_FILENAME, Path_Get(Paths.CurrentFile));
-                    SetDlgItemInt(Globals.hwndMain, IDC_REUSELOCK, GetTickCount(), false);
+                    SetDlgItemInt(Globals.hwndMain, IDC_REUSELOCK, (UINT)GetTicks(), false);
                     if (!s_flagKeepTitleExcerpt) {
                         StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
                     }
@@ -12522,7 +12532,7 @@ void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
     UNREFERENCED_PARAMETER(idEvent);
     UNREFERENCED_PARAMETER(dwTime);
 
-    if ((s_dwLastCopyTime > 0) && ((GetTickCount() - s_dwLastCopyTime) > 200)) {
+    if ((s_iLastCopyTime > 0) && ((GetTicks() - s_iLastCopyTime) > 200)) {
 
         if (SciCall_CanPaste()) {
             bool bAutoIndent2 = Settings.AutoIndent;
@@ -12538,7 +12548,7 @@ void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
             Sci_ScrollSelectionToView();
             Settings.AutoIndent = bAutoIndent2;
         }
-        s_dwLastCopyTime = 0;
+        s_iLastCopyTime = 0;
     }
 }
 
@@ -12557,7 +12567,7 @@ static inline void NotifyIfFileHasChanged(const bool forcedNotify) {
         PostMessage(Globals.hwndMain, WM_FILECHANGEDNOTIFY, 0, 0);
     }
     // reset Timeout interval
-    s_FileChgObsvrData.dwFileChangeNotifyTime = GetTickCount();
+    s_FileChgObsvrData.iFileChangeNotifyTime = GetTicks();
 }
 // ----------------------------------------------------------------------------
 
@@ -12570,9 +12580,8 @@ static void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
     UNREFERENCED_PARAMETER(uMsg);
     UNREFERENCED_PARAMETER(hwnd);
 
-    DWORD const diff = GetTickCount() - s_FileChgObsvrData.dwFileChangeNotifyTime;
-
-    // Directory-Observer is not notified for continously updated (log-)files
+    int64_t const diff = GetTicks() - s_FileChgObsvrData.iFileChangeNotifyTime;
+    // Directory-Observer is not notified for continuously updated (log-)files
     if (diff > Settings2.FileCheckInterval) {
         NotifyIfFileHasChanged(/*FileWatching.MonitoringLog*/ false);
     }
@@ -12609,6 +12618,7 @@ unsigned int WINAPI FileChangeObserver(LPVOID lpParam)
                 if (pFCOBSVData->bNotifyImmediate) {
                     NotifyIfFileHasChanged(/*(!)*/false); // immediate notification
                 } else {
+                    s_FileChgObsvrData.iFileChangeNotifyTime = GetTicks();
                     WatchTimerProc(NULL, 0, 0ULL, 0); // rely on FileCheckInterval
                 }
                 FindNextChangeNotification(pFCOBSVData->hFileChanged);
@@ -12686,10 +12696,10 @@ void InstallFileWatching(const bool bInstall) {
                 BackgroundWorker_Start(&(s_FileChgObsvrData.worker), FileChangeObserver, &s_FileChgObsvrData);
             }
 
-            s_FileChgObsvrData.dwFileChangeNotifyTime = (FileWatching.FileWatchingMode == FWM_AUTORELOAD) ? GetTickCount() : 0UL;
+            s_FileChgObsvrData.iFileChangeNotifyTime = (FileWatching.FileWatchingMode == FWM_AUTORELOAD) ? GetTicks() : 0;
 
             if (FileWatching.FileCheckInterval > 0) {
-                SetTimer(Globals.hwndMain, ID_WATCHTIMER, FileWatching.FileCheckInterval, WatchTimerProc);
+                SetTimer(Globals.hwndMain, ID_WATCHTIMER, (UINT)FileWatching.FileCheckInterval, WatchTimerProc);
             }
             else {
                 KillTimer(Globals.hwndMain, ID_WATCHTIMER);

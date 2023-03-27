@@ -1244,7 +1244,7 @@ void LoadSettings()
     StrgReset(Settings2.FileDlgFilters, pPathBuffer);
 
     // handle deprecated (typo) key 'FileCheckInverval'
-    constexpr const int defaultFCI = 2000;
+    constexpr const int64_t defaultFCI = 2000;
     constexpr const WCHAR* deprecatedKeyART = L"AutoReloadTimeout";
     constexpr const WCHAR* deprecatedKeyFCI = L"FileCheckInverval";
     constexpr const WCHAR* correctKeyFCI = L"FileCheckInterval";
@@ -1261,8 +1261,8 @@ void LoadSettings()
     }
     int const deprecatedFCI = max_i(autoReload, dfci);
 
-    Settings2.FileCheckInterval = static_cast<DWORD>(clampi(IniSectionGetInt(IniSecSettings2, correctKeyFCI, deprecatedFCI),
-                                                                             MIN_FC_POLL_INTERVAL, MAX_FC_POLL_INTERVAL));
+    Settings2.FileCheckInterval = static_cast<int64_t>(clampll(IniSectionGetLongLong(IniSecSettings2, correctKeyFCI, deprecatedFCI),
+                                                                                     MIN_FC_POLL_INTERVAL, MAX_FC_POLL_INTERVAL));
 
     if (Settings2.FileCheckInterval == defaultFCI) {
         if (deprecatedFCI != defaultFCI) {
@@ -1270,8 +1270,8 @@ void LoadSettings()
             bDirtyFlag = true;
         }
     }
-    else if (Settings2.FileCheckInterval == static_cast<DWORD>(deprecatedFCI)) {
-        IniSectionSetInt(IniSecSettings2, correctKeyFCI, Settings2.FileCheckInterval);
+    else if (Settings2.FileCheckInterval == static_cast<int64_t>(deprecatedFCI)) {
+        IniSectionSetLongLong(IniSecSettings2, correctKeyFCI, Settings2.FileCheckInterval);
         bDirtyFlag = true;
     }
     FileWatching.FileCheckInterval = Settings2.FileCheckInterval;
