@@ -4569,6 +4569,7 @@ static void _ApplyChangeHistoryMode()
         SciCall_SetChangeHistory(Settings.ChangeHistoryMode);
     }
     UpdateMargins(true);
+    UpdateToolbar();
 }
 
 
@@ -6210,6 +6211,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             Settings.ChangeHistoryMode |= (SC_CHANGE_HISTORY_ENABLED | SC_CHANGE_HISTORY_MARKERS);
         }
         _ApplyChangeHistoryMode();
+        break;
+
+    case IDM_VIEW_CHGHIST_CLEAR_UNDOREDO:
+        if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"AllowClearUndoHistory", IDS_MUI_ASK_CLEAR_UNDO))) {
+            UndoRedoReset();
+            UpdateMargins(true);
+            UpdateToolbar();
+        }
         break;
 
     case IDM_VIEW_HYPERLINKHOTSPOTS:
@@ -11423,9 +11432,9 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
 
     if (fSuccess) {
 
+        // keep change-history on reload (!)
         if (!bReloadFile) {
             UndoRedoReset();
-            SetSavePoint();
         }
 
         Sci_GotoPosChooseCaret(0);

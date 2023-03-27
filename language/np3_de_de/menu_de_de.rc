@@ -357,6 +357,7 @@ BEGIN
             MENUITEM "Zeige Änderungen im Dokument",        IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Zeige alle Änderungen",               IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Lösche Änderungshistorie"                 IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink Indikator\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Farb-Definition Indikator"
