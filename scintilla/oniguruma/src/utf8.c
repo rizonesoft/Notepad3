@@ -319,34 +319,3 @@ OnigEncodingType OnigEncodingUTF8_CR = {
   0, 0
 };
 
-
-OnigEncodingType OnigEncodingUTF8_CRLF = {
-  mbc_enc_len,
-  "UTF-8",     /* name */
-#ifdef USE_RFC3629_RANGE
-  4,           /* max enc length */
-#else
-  6,
-#endif
-  1,           /* min enc length */
-  //is_mbc_newline,
-  onigenc_is_mbc_newline_0x0d_0x0a,
-  mbc_to_code,
-  code_to_mbclen,
-  code_to_mbc,
-  mbc_case_fold,
-  onigenc_unicode_apply_all_case_fold,
-  get_case_fold_codes_by_str,
-  onigenc_unicode_property_name_to_ctype,
-  onigenc_unicode_is_code_ctype,
-  get_ctype_code_range,
-  left_adjust_char_head,
-  onigenc_always_true_is_allowed_reverse_match,
-  NULL, /* init */
-  NULL, /* is_initialized */
-  is_valid_mbc_string,
-  ENC_FLAG_ASCII_COMPATIBLE|ENC_FLAG_UNICODE|ENC_FLAG_SKIP_OFFSET_1_OR_0,
-  0, 0
-};
-
-

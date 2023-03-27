@@ -999,7 +999,7 @@ inline void SetDialogIconNP3(HWND hwnd)
         SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIconSmall);
     }
     if (Globals.hDlgIconBig) {
-        SendMessage((hwnd), WM_SETICON, ICON_BIG, (LPARAM)Globals.hDlgIconBig);
+        SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)Globals.hDlgIconBig);
     }
 }
 

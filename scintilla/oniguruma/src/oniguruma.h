@@ -189,10 +189,8 @@ ONIG_EXTERN OnigEncodingType OnigEncodingGB18030;
 #else // lean and mean
 ONIG_EXTERN OnigEncodingType OnigEncodingASCII;
 ONIG_EXTERN OnigEncodingType OnigEncodingASCII_CR;
-ONIG_EXTERN OnigEncodingType OnigEncodingASCII_CRLF;
 ONIG_EXTERN OnigEncodingType OnigEncodingUTF8;
 ONIG_EXTERN OnigEncodingType OnigEncodingUTF8_CR;
-ONIG_EXTERN OnigEncodingType OnigEncodingUTF8_CRLF;
 #endif
 
 #if 0
@@ -230,10 +228,8 @@ ONIG_EXTERN OnigEncodingType OnigEncodingUTF8_CRLF;
 #else // lean and mean
 #define ONIG_ENCODING_ASCII        (&OnigEncodingASCII)
 #define ONIG_ENCODING_ASCII_CR     (&OnigEncodingASCII_CR)
-#define ONIG_ENCODING_ASCII_CRLF   (&OnigEncodingASCII_CRLF)
 #define ONIG_ENCODING_UTF8         (&OnigEncodingUTF8)
 #define ONIG_ENCODING_UTF8_CR      (&OnigEncodingUTF8_CR)
-#define ONIG_ENCODING_UTF8_CRLF    (&OnigEncodingUTF8_CRLF)
 #endif
 
 #define ONIG_ENCODING_UNDEF    ((OnigEncoding )0)

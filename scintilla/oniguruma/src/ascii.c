@@ -142,29 +142,3 @@ OnigEncodingType OnigEncodingASCII_CR = {
   0, 0
 };
 
-
-OnigEncodingType OnigEncodingASCII_CRLF = {
-  onigenc_single_byte_mbc_enc_len,
-  "US-ASCII",  /* name */
-  2,           /* max enc length */
-  2,           /* min enc length */
-  onigenc_is_mbc_newline_0x0d_0x0a,
-  onigenc_single_byte_mbc_to_code,
-  onigenc_single_byte_code_to_mbclen,
-  onigenc_single_byte_code_to_mbc,
-  onigenc_ascii_mbc_case_fold,
-  onigenc_ascii_apply_all_case_fold,
-  onigenc_ascii_get_case_fold_codes_by_str,
-  onigenc_minimum_property_name_to_ctype,
-  ascii_is_code_ctype,
-  onigenc_not_support_get_ctype_code_range,
-  onigenc_single_byte_left_adjust_char_head,
-  onigenc_always_true_is_allowed_reverse_match,
-  init,
-  0, /* is_initialized */
-  onigenc_always_true_is_valid_mbc_string,
-  ENC_FLAG_ASCII_COMPATIBLE|ENC_FLAG_SKIP_OFFSET_1,
-  0, 0
-};
-
-
