@@ -357,6 +357,7 @@ BEGIN
             MENUITEM "文書にのみ表示",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "すべて表示",             IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "アドレスをリンク(&H)\tCtrl+Alt+W",              IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "色をプレビュー(&C)"

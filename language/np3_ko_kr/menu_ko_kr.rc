@@ -357,6 +357,7 @@ BEGIN
             MENUITEM "문서에만 표시",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "모든 변경 마커 표시",             IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "하이퍼링크 핫스팟(&Y)\tCtrl+Alt+W",       IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "핫스팟 색상 정의(&C)"

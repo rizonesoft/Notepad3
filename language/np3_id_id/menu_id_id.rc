@@ -357,6 +357,7 @@ BEGIN
             MENUITEM "Tampilkan in Document only",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Tampilkan All Change Markers",             IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "&Hyperlink Hotspots\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Color Definition Hotspots"

@@ -357,6 +357,7 @@ BEGIN
             MENUITEM "Visa endast i dokument",                  IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Visa alla markörer",                      IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Hyperlänkpunkt\tCtrl+Alt+W",                      IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Färgpunkter"

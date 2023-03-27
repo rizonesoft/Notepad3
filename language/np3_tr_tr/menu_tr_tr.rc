@@ -357,6 +357,7 @@ BEGIN
             MENUITEM "Yalnızca belgede görüntülensin",                IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Tüm değişiklik işaretleri görüntülensin",       IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "&Bağlantı noktaları görüntülensin\tCtrl+Alt+W",     IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Renk tanımı noktaları görüntülensin"
