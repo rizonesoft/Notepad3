@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.325.(build_#) (2023-03-25)
+Current BETA/RC Version 6.23.327.(build_#) (2023-03-27)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.327.1]- Menu entry to clear change/undo history.
 [.321.1]- Split Verilog Lexer (Verilog and SystemVerilog).
 [.320.1]- Add Lexer Verilog HDL.
 [.315.1]- Cooperation of Alt+LClick on Hyperlinks vs. extend selection.
@@ -55,6 +56,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.327.1]- Migrate GetTickCount() -> QueryPerformanceCounter().
 [.325.1]- Option for ASAN Dbg to not throw exception.
 [.321.2]- Default Print Colour Mode depending on Dark/Light Mode.
 [.321.2]- Renaming for Lexer related resource string IDs (defined names).
@@ -82,6 +84,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.327.1]- Some clean-up in uninstalling "Notepad3_setup" (SUP).
+[.327.1]- Oniguruma line-break handling (CRLF & CR) support.
 [.325.1]- Book/Change-Mmarker search: high prio on Book-Marker.
 [.325.1]- Fallback on LoadIconWithScaleDown() failed.
 [.320.2]- Deprecated settings key-names handling ('FileCheckInverval').
