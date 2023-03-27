@@ -710,58 +710,67 @@ Root: "HKCR"; Subkey: "txtfilelegacy\shell\printto"; ValueType: string; ValueNam
 Root: "HKCR"; Subkey: "txtfilelegacy\shell\printto\command"; ValueType: expandsz; ValueData: "%SystemRoot%\system32\notepad.exe /pt ""%1"" ""%2"" ""%3"" ""%4"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.inf\OpenWithList"; Flags: deletekey
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.inf\UserChoice"; Flags: deletekey
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.inf\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad3.exe"
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.inf\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.inf\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.inf\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad3.exe"; Flags: uninsdeletevalue
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.inf\OpenWithList"; ValueType: string; ValueName: "MRUList"; ValueData: "ab"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.inf\UserChoice"; ValueType: string; ValueName: "ProgId"; ValueData: "inffile"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.ini\OpenWithList"; Flags: deletekey
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.ini\UserChoice"; Flags: deletekey
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.ini\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad3.exe"
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.ini\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.ini\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.ini\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad3.exe"; Flags: uninsdeletevalue
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.ini\OpenWithList"; ValueType: string; ValueName: "MRUList"; ValueData: "ab"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.ini\UserChoice"; ValueType: string; ValueName: "ProgId"; ValueData: "inifile"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.ps1\OpenWithList"; Flags: deletekey
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.ps1\UserChoice"; Flags: deletekey
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.ps1\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad3.exe"
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.ps1\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.ps1\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.ps1\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad3.exe"; Flags: uninsdeletevalue
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.ps1\OpenWithList"; ValueType: string; ValueName: "MRUList"; ValueData: "ab"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.ps1\UserChoice"; ValueType: string; ValueName: "ProgId"; ValueData: "Microsoft.PowerShellScript.1"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.psd1\OpenWithList"; Flags: deletekey
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.psd1\UserChoice"; Flags: deletekey
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.psd1\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad3.exe"
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.psd1\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.psd1\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.psd1\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad3.exe"; Flags: uninsdeletevalue
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.psd1\OpenWithList"; ValueType: string; ValueName: "MRUList"; ValueData: "ab"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.psd1\UserChoice"; ValueType: string; ValueName: "ProgId"; ValueData: "Microsoft.PowerShellData.1"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.psm1\OpenWithList"; Flags: deletekey
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.psm1\UserChoice"; Flags: deletekey
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.psm1\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad3.exe"
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.psm1\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.psm1\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.psm1\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad3.exe"; Flags: uninsdeletevalue
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.psm1\OpenWithList"; ValueType: string; ValueName: "MRUList"; ValueData: "ab"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.psm1\UserChoice"; ValueType: string; ValueName: "ProgId"; ValueData: "Microsoft.PowerShellModule.1"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.log\OpenWithList"; Flags: deletekey
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.log\UserChoice"; Flags: deletekey
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.log\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad3.exe"
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.log\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.log\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.log\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad3.exe"; Flags: uninsdeletevalue
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.log\OpenWithList"; ValueType: string; ValueName: "MRUList"; ValueData: "ab"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.log\UserChoice"; ValueType: string; ValueName: "ProgId"; ValueData: "txtfile"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.scp\OpenWithList"; Flags: deletekey
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.scp\UserChoice"; Flags: deletekey
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.scp\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad3.exe"
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.scp\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.scp\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.scp\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad3.exe"; Flags: uninsdeletevalue
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.scp\OpenWithList"; ValueType: string; ValueName: "MRUList"; ValueData: "ab"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.scp\UserChoice"; ValueType: string; ValueName: "ProgId"; ValueData: "txtfile"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.txt\OpenWithList"; Flags: deletekey
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.txt\UserChoice"; Flags: deletekey
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.txt\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad3.exe"
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.txt\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.txt\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.txt\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad3.exe"; Flags: uninsdeletevalue
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.txt\OpenWithList"; ValueType: string; ValueName: "MRUList"; ValueData: "ab"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.txt\UserChoice"; ValueType: string; ValueName: "ProgId"; ValueData: "txtfile"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.wtx\OpenWithList"; Flags: deletekey
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.wtx\UserChoice"; Flags: deletekey
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.wtx\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad3.exe"
-Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.wtx\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.wtx\OpenWithList"; ValueType: string; ValueName: "a"; ValueData: "Notepad.exe"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.wtx\OpenWithList"; ValueType: string; ValueName: "b"; ValueData: "Notepad3.exe"; Flags: uninsdeletevalue
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.wtx\OpenWithList"; ValueType: string; ValueName: "MRUList"; ValueData: "ab"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.wtx\UserChoice"; ValueType: string; ValueName: "ProgId"; ValueData: "txtfile"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts"; ValueType: dword; ValueName: "Applications\Notepad.exe_.inf"; ValueData: "0"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts"; ValueType: dword; ValueName: "Applications\Notepad.exe_.ini"; ValueData: "0"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts"; ValueType: dword; ValueName: "Applications\Notepad.exe_.ps1"; ValueData: "0"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts"; ValueType: dword; ValueName: "Applications\Notepad.exe_.psd1"; ValueData: "0"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts"; ValueType: dword; ValueName: "Applications\Notepad.exe_.psm1"; ValueData: "0"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts"; ValueType: dword; ValueName: "Applications\Notepad.exe_.log"; ValueData: "0"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts"; ValueType: dword; ValueName: "Applications\Notepad.exe_.scp"; ValueData: "0"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts"; ValueType: dword; ValueName: "Applications\Notepad.exe_.txt"; ValueData: "0"
+Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts"; ValueType: dword; ValueName: "Applications\Notepad.exe_.wtx"; ValueData: "0"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts"; ValueType: dword; ValueName: "Applications\Notepad3.exe_.inf"; ValueData: "0"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts"; ValueType: dword; ValueName: "Applications\Notepad3.exe_.ini"; ValueData: "0"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts"; ValueType: dword; ValueName: "Applications\Notepad3.exe_.ps1"; ValueData: "0"
