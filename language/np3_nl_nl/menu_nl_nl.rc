@@ -357,6 +357,7 @@ BEGIN
             MENUITEM "Alleen in het document weergeven",            IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Alle markeringen van wijzigingenweergeven",   IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink-indicatoren\tCtrl+Alt+W",              IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Hotspots &kleuren"

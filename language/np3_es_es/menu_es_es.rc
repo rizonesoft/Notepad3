@@ -357,6 +357,7 @@ BEGIN
             MENUITEM "Mostrar sólo en el documento",                    IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Mostrar todos los marcadores de cambio",          IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Borrar historial de cambios/deshacer"                 IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Indicar &hipervínculos\tCtrl+Alt+W",                  IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Definición color Hotspots"

@@ -357,6 +357,7 @@ BEGIN
             MENUITEM "Показывать только в документе",       IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Показывать везде",                    IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Отмечать &гиперссылки\tCtrl+Alt+W",               IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Отмечать области выбора &цвета"

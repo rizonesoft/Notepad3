@@ -357,6 +357,7 @@ BEGIN
             MENUITEM "Wys slegs in Dokument",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Wys alle Veranderingsmerkers",        IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Skakel &Hotspots\tCtrl+Alt+W",            IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Kleur Definisie Hotspots",

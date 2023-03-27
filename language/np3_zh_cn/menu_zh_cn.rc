@@ -357,6 +357,7 @@ BEGIN
             MENUITEM "仅显示在文档中",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "全部显示",             IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "检测超链接(&Y)\tCtrl+Alt+W",                 IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "检测 #RRGGBB 颜色(&C)"
