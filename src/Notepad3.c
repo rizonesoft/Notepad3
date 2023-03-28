@@ -3926,27 +3926,70 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     SET_FCT_GUARD(TRUE);
 
-    ResetFileObservationData(true);
-
     DocPos const iCurPos = SciCall_GetCurrentPos();
-
-    if ((FileWatching.FileWatchingMode == FWM_MSGBOX) || IsSaveNeeded()) {
-        SetForegroundWindow(hwnd);
-    }
 
     if (Path_IsExistingFile(Paths.CurrentFile)) {
 
-        bool bRevertFile = ((FileWatching.FileWatchingMode == FWM_AUTORELOAD) && !IsSaveNeeded());
+        bool bRevertFile = IsSaveNeeded();
+            
+        switch (FileWatching.FileWatchingMode)
+        {
+        case FWM_AUTORELOAD:
+            bRevertFile = true;
+            break;
 
-        if (!bRevertFile) {
-            if (FileWatching.FileWatchingMode == FWM_MSGBOX) {
-                bRevertFile = IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY));
-            } else {
-                // FWM_INDICATORSILENT: nothing todo here
+        case FWM_MSGBOX: 
+            {
+                SetForegroundWindow(hwnd);
+                /// LONG const answer = MessageBoxExW(Globals.hwndMain, L"File change, Cancel, Retry, Continue", L"NP3", MB_ABORTRETRYIGNORE, GetLangIdByLocaleName(Globals.CurrentLngLocaleName));
+                LONG const answer = InfoBoxLng(MB_CANCELTRYCONTINUE | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY);
+                switch (LOWORD(answer)) {
+                case IDCANCEL:
+                case IDABORT:
+                    FileWatching.FileWatchingMode = FWM_INDICATORSILENT;
+                    UpdateToolbar();
+                    bRevertFile = false;
+                    ResetFileObservationData(true);
+                break;
+
+                case IDIGNORE:
+                case IDCONTINUE:
+                    UndoRedoReset();
+                    FileRevert(Paths.CurrentFile, false);
+                    SciCall_SetReadOnly(true);
+                    FileWatching.MonitoringLog = false; // will be reset in IDM_VIEW_CHASING_DOCTAIL
+                    PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+                    bRevertFile = false; // done already
+                    break;
+
+                case IDTRYAGAIN:
+                case IDCLOSE:
+                default:
+                    bRevertFile = true;
+                    ResetFileObservationData(true);
+                    break;
+                }
             }
+            break;
+
+        case FWM_DONT_CARE:
+        case FWM_EXCLUSIVELOCK:
+            ResetFileObservationData(true);
+            break;
+
+        case FWM_INDICATORSILENT:
+            bRevertFile = false;
+            UpdateToolbar();
+            break;
+
+        case FWM_NO_INIT:
+        default:
+            assert("Invalid FileWatching Mode!" && 0);
+            break;
         }
 
         if (bRevertFile) {
+            SetForegroundWindow(hwnd);
             FileRevert(Paths.CurrentFile, false);
             if (FileWatching.MonitoringLog) {
                 SciCall_SetReadOnly(FileWatching.MonitoringLog);
@@ -4652,15 +4695,17 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_REVERT:
-        if (IsSaveNeeded()) {
-            if (!IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_REVERT))) {
-                break;
+        if (!FileWatching.MonitoringLog) {
+            if (IsSaveNeeded()) {
+                if (!IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, NULL, IDS_MUI_ASK_REVERT))) {
+                    break;
+                }
+                //~ don't revert if no save needed
+                //~FileRevert(Paths.CurrentFile, false);
             }
-            //~ don't revert if no save needed
-            //~FileRevert(Paths.CurrentFile, false);
+            // revert in any case (manually forced)
+            FileRevert(Paths.CurrentFile, true);
         }
-        // revert in any case (manually forced)
-        FileRevert(Paths.CurrentFile, true);
         break;
 
 
@@ -6263,6 +6308,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     break;
 
     case IDM_VIEW_CHASING_DOCTAIL: {
+
+        InstallFileWatching(false);
+
         static FILE_WATCHING_MODE _saveChgNotify = FWM_NO_INIT;
         if (_saveChgNotify == FWM_NO_INIT) {
             _saveChgNotify = FileWatching.FileWatchingMode;    
@@ -8643,7 +8691,9 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
                 EditToggleView(Globals.hwndEdit);
             }
             else {
-                if (!IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"QuietKeepReadonlyLock", IDS_MUI_DOCUMENT_READONLY))) {
+                if (!FileWatching.MonitoringLog 
+                    && !IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"QuietKeepReadonlyLock", IDS_MUI_DOCUMENT_READONLY)))
+                {
                     SendWMCommand(Globals.hwndMain, IDM_VIEW_READONLY);
                 }
                 else {
