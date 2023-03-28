@@ -852,15 +852,14 @@ typedef struct FCOBSRVDATA_T {
     HANDLE            hEventFileDeleted;
 
     HANDLE            hFileChanged;  // FindFirstChangeNotification()
-    bool              bNotifyImmediate;
     BackgroundWorker  worker;
 
 } FCOBSRVDATA_T, *PFCOBSRVDATA_T;
 
-#define INIT_FCOBSRV_T { 0UL, { 0 }, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, false, { NULL, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, NULL } }
+#define INIT_FCOBSRV_T { 0LL, { 0 }, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, { NULL, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, NULL } }
 
-#define MIN_FC_POLL_INTERVAL (500UL)
-#define MAX_FC_POLL_INTERVAL ((24UL * 60 * 60 * 1000) << 1) // max: 48h
+#define MIN_FC_POLL_INTERVAL (500LL)
+#define MAX_FC_POLL_INTERVAL ((24LL * 60 * 60 * 1000) << 1) // max: 48h
 
 //=============================================================================
 
@@ -868,7 +867,7 @@ typedef struct FILEWATCHING_T {
 
     FILE_WATCHING_MODE flagChangeNotify;  // <-> s_flagChangeNotify;
     FILE_WATCHING_MODE FileWatchingMode;  // <-> Settings.FileWatchingMode;
-    int64_t            FileCheckInterval; // <-> Settings2.FileCheckInterval;
+    int64_t            FileCheckInterval; // <-> clampll(Settings2.FileCheckInterval, MIN_FC_POLL_INTERVAL, MAX_FC_POLL_INTERVAL);
     bool               MonitoringLog;
 
 } FILEWATCHING_T, *PFILEWATCHING_T;

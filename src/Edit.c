@@ -5242,7 +5242,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
             qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdRev);
         }
     } else { /*if (iSortFlags & SORT_SHUFFLE)*/
-        srand((UINT)GetTicks());
+        srand((UINT)GetTicks_ms());
         for (DocLn i = (iLineCount - 1); i > 0; --i) {
             int j = rand() % i;
             SORTLINE sLine = { NULL, NULL };
@@ -9691,8 +9691,8 @@ void EditFoldClick(DocLn ln, int mode)
 
     if (!(SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)) {
         // Not a fold point: need to look for a double-click
-        if (prev.ln == ln && prev.mode == mode &&
-                GetTicks() - prev.iTickCount <= GetDoubleClickTime()) {
+        if ((prev.ln == ln) && (prev.mode == mode) &&
+                ((GetTicks_ms() - prev.iTickCount) <= GetDoubleClickTime())) {
             prev.ln = NOT_FOUND_LN;  // Prevent re-triggering on a triple-click
 
             ln = SciCall_GetFoldParent(ln);
@@ -9706,7 +9706,7 @@ void EditFoldClick(DocLn ln, int mode)
             // Save the info needed to match this click with the next click
             prev.ln = ln;
             prev.mode = mode;
-            prev.iTickCount = GetTicks();
+            prev.iTickCount = GetTicks_ms();
             return;
         }
     }

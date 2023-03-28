@@ -1261,8 +1261,7 @@ void LoadSettings()
     }
     int const deprecatedFCI = max_i(autoReload, dfci);
 
-    Settings2.FileCheckInterval = static_cast<int64_t>(clampll(IniSectionGetLongLong(IniSecSettings2, correctKeyFCI, deprecatedFCI),
-                                                                                     MIN_FC_POLL_INTERVAL, MAX_FC_POLL_INTERVAL));
+    Settings2.FileCheckInterval = IniSectionGetLongLong(IniSecSettings2, correctKeyFCI, deprecatedFCI);
 
     if (Settings2.FileCheckInterval == defaultFCI) {
         if (deprecatedFCI != defaultFCI) {
@@ -1274,7 +1273,7 @@ void LoadSettings()
         IniSectionSetLongLong(IniSecSettings2, correctKeyFCI, Settings2.FileCheckInterval);
         bDirtyFlag = true;
     }
-    FileWatching.FileCheckInterval = Settings2.FileCheckInterval;
+    FileWatching.FileCheckInterval = clampll(Settings2.FileCheckInterval, MIN_FC_POLL_INTERVAL, MAX_FC_POLL_INTERVAL);
 
     IniSectionGetString(IniSecSettings2, L"FileChangedIndicator", L"[@]", Settings2.FileChangedIndicator, COUNTOF(Settings2.FileChangedIndicator));
 
