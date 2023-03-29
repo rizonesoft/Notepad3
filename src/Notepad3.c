@@ -3917,112 +3917,6 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 //=============================================================================
 //
-//  MsgFileChangeNotify() - Handles WM_FILECHANGEDNOTIFY
-//
-LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
-{
-    UNREFERENCED_PARAMETER(wParam);
-    UNREFERENCED_PARAMETER(lParam);
-
-    SET_FCT_GUARD(TRUE);
-
-    DocPos const iCurPos = SciCall_GetCurrentPos();
-
-    if (Path_IsExistingFile(Paths.CurrentFile)) {
-
-        bool bRevertFile = IsSaveNeeded();
-            
-        switch (FileWatching.FileWatchingMode)
-        {
-        case FWM_AUTORELOAD:
-            bRevertFile = true;
-            break;
-
-        case FWM_MSGBOX: 
-            {
-                SetForegroundWindow(hwnd);
-                /// LONG const answer = MessageBoxExW(Globals.hwndMain, L"File change, Cancel, Retry, Continue", L"NP3", MB_ABORTRETRYIGNORE, GetLangIdByLocaleName(Globals.CurrentLngLocaleName));
-                LONG const answer = InfoBoxLng(MB_CANCELTRYCONTINUE | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY);
-                switch (LOWORD(answer)) {
-                case IDCANCEL:
-                case IDABORT:
-                    FileWatching.FileWatchingMode = FWM_INDICATORSILENT;
-                    UpdateToolbar();
-                    bRevertFile = false;
-                    ResetFileObservationData(true);
-                break;
-
-                case IDIGNORE:
-                case IDCONTINUE:
-                    UndoRedoReset();
-                    FileRevert(Paths.CurrentFile, false);
-                    SciCall_SetReadOnly(true);
-                    FileWatching.MonitoringLog = false; // will be reset in IDM_VIEW_CHASING_DOCTAIL
-                    PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
-                    bRevertFile = false; // done already
-                    break;
-
-                case IDTRYAGAIN:
-                case IDCLOSE:
-                default:
-                    bRevertFile = true;
-                    ResetFileObservationData(true);
-                    break;
-                }
-            }
-            break;
-
-        case FWM_DONT_CARE:
-        case FWM_EXCLUSIVELOCK:
-            ResetFileObservationData(true);
-            break;
-
-        case FWM_INDICATORSILENT:
-            bRevertFile = false;
-            UpdateToolbar();
-            break;
-
-        case FWM_NO_INIT:
-        default:
-            assert("Invalid FileWatching Mode!" && 0);
-            break;
-        }
-
-        if (bRevertFile) {
-            SetForegroundWindow(hwnd);
-            FileRevert(Paths.CurrentFile, false);
-            if (FileWatching.MonitoringLog) {
-                SciCall_SetReadOnly(FileWatching.MonitoringLog);
-            } else {
-                Sci_GotoPosChooseCaret(iCurPos);
-            }
-            Sci_ScrollSelectionToView();
-        }
-
-    } else { // file has been deleted
-
-        InstallFileWatching(false); // terminate
-
-        if (FileWatching.FileWatchingMode == FWM_MSGBOX) {
-            if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2))) {
-                FileSave(FSF_SaveAlways);
-            } else {
-                SetSaveNeeded(true);
-            }
-        } else {
-            // FWM_INDICATORSILENT: nothing todo here
-            SetSaveNeeded(true);
-        }
-
-    }
-
-    RESET_FCT_GUARD();
-    return TRUE;
-}
-
-
-//=============================================================================
-//
 //  MsgTrayMessage() - Handles WM_TRAYMESSAGE
 //
 //
@@ -11861,15 +11755,21 @@ bool FileSave(FileSaveFlags fSaveFlags)
     bool const bIsEmptyNewFile = (Path_IsEmpty(Paths.CurrentFile) && (SciCall_GetTextLength() <= 0LL));
 #endif
 
+    bool const bSaveAs = (fSaveFlags & FSF_SaveAs);
+    bool const bSaveAsk = (fSaveFlags & FSF_Ask);
+    bool const bSaveCopy = (fSaveFlags & FSF_SaveCopy);
+    bool const bSaveAlways = (fSaveFlags & FSF_SaveAlways);
+    bool const bSaveNeeded = (IsSaveNeeded() || IsFileChangedFlagSet()) && !bIsEmptyNewFile;
 
-    if (!(fSaveFlags & FSF_SaveAlways) && (!IsSaveNeeded() || IsFileChangedFlagSet() || bIsEmptyNewFile) && !(fSaveFlags & FSF_SaveAs)) {
+
+    if (!bSaveAs  && !bSaveAlways && !bSaveNeeded) {
         _MRU_UpdateSession();
         AutoSaveStop();
         ResetFileObservationData(true);
         return true;
     }
 
-    if (fSaveFlags & FSF_Ask) {
+    if (bSaveAsk) {
         // File or "Untitled" ...
         WCHAR wchFileName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
 
@@ -11894,7 +11794,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
     }
 
     // Read only...
-    if (!(fSaveFlags & FSF_SaveAs) && !(fSaveFlags & FSF_SaveCopy) && Path_IsNotEmpty(Paths.CurrentFile)) {
+    if (!bSaveAs && !bSaveCopy && Path_IsNotEmpty(Paths.CurrentFile)) {
         if (IsFileReadOnly()) {
             UpdateToolbar();
             INT_PTR const answer = (Settings.MuteMessageBeep) ?
@@ -11909,7 +11809,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
     }
 
     // Save As...
-    if ((fSaveFlags & FSF_SaveAs) || (fSaveFlags & FSF_SaveCopy) || Path_IsEmpty(Paths.CurrentFile)) {
+    if (bSaveAs || bSaveCopy || Path_IsEmpty(Paths.CurrentFile)) {
 
         static HPATHL _hpthLastSaveCopyDir = NULL; // session remember copyTo dir
         if (!_hpthLastSaveCopyDir) {
@@ -11967,7 +11867,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
 
     if (fSuccess) {
 
-        if (!((fSaveFlags & FSF_SaveCopy) || Flags.bDoRelaunchElevated)) {
+        if (!bSaveCopy && !Flags.bDoRelaunchElevated) {
             _MRU_AddSession();
             AddFilePathToRecentDocs(Paths.CurrentFile);
             // Install watching of the current file
@@ -12598,6 +12498,111 @@ void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
 }
 
 
+//=============================================================================
+//
+//  MsgFileChangeNotify() - Handles WM_FILECHANGEDNOTIFY
+//
+LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    UNREFERENCED_PARAMETER(wParam);
+    UNREFERENCED_PARAMETER(lParam);
+
+    SET_FCT_GUARD(TRUE);
+
+    DocPos const iCurPos = SciCall_GetCurrentPos();
+
+    if (Path_IsExistingFile(Paths.CurrentFile)) {
+
+        bool bRevertFile = IsSaveNeeded();
+
+        switch (FileWatching.FileWatchingMode) {
+        case FWM_AUTORELOAD:
+            bRevertFile = true;
+            break;
+
+        case FWM_MSGBOX: {
+            SetForegroundWindow(hwnd);
+            /// LONG const answer = MessageBoxExW(Globals.hwndMain, L"File change, Cancel, Retry, Continue", L"NP3", MB_ABORTRETRYIGNORE, GetLangIdByLocaleName(Globals.CurrentLngLocaleName));
+            LONG const answer = InfoBoxLng(MB_CANCELTRYCONTINUE | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY);
+            switch (LOWORD(answer)) {
+            case IDCANCEL:
+            case IDABORT:
+                FileWatching.FileWatchingMode = FWM_INDICATORSILENT;
+                SetSaveNeeded(true);
+                bRevertFile = false;
+                ResetFileObservationData(false); // false (!)
+                UpdateToolbar();
+                break;
+
+            case IDIGNORE:
+            case IDCONTINUE:
+                UndoRedoReset();
+                FileRevert(Paths.CurrentFile, false);
+                SciCall_SetReadOnly(true);
+                FileWatching.MonitoringLog = false; // will be reset in IDM_VIEW_CHASING_DOCTAIL
+                PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+                bRevertFile = false; // done already
+                break;
+
+            case IDTRYAGAIN:
+            case IDCLOSE:
+            default:
+                bRevertFile = true;
+                ResetFileObservationData(true);
+                break;
+            }
+        } break;
+
+        case FWM_DONT_CARE:
+        case FWM_EXCLUSIVELOCK:
+            ResetFileObservationData(true);
+            break;
+
+        case FWM_INDICATORSILENT:
+            bRevertFile = false;
+            UpdateToolbar();
+            break;
+
+        case FWM_NO_INIT:
+        default:
+            assert("Invalid FileWatching Mode!" && 0);
+            break;
+        }
+
+        if (bRevertFile) {
+            SetForegroundWindow(hwnd);
+            FileRevert(Paths.CurrentFile, false);
+            if (FileWatching.MonitoringLog) {
+                SciCall_SetReadOnly(FileWatching.MonitoringLog);
+            }
+            else {
+                Sci_GotoPosChooseCaret(iCurPos);
+            }
+            Sci_ScrollSelectionToView();
+        }
+    }
+    else { // file has been deleted
+
+        InstallFileWatching(false); // terminate
+
+        if (FileWatching.FileWatchingMode == FWM_MSGBOX) {
+            if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2))) {
+                FileSave(FSF_SaveAlways);
+            }
+            else {
+                SetSaveNeeded(true);
+            }
+        }
+        else {
+            // FWM_INDICATORSILENT: nothing todo here
+            SetSaveNeeded(true);
+        }
+    }
+
+    RESET_FCT_GUARD();
+    return TRUE;
+}
+
 
 //=============================================================================
 //
@@ -12605,8 +12610,8 @@ void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
 //
 //=============================================================================
 
-
-static inline void NotifyIfFileHasChanged() {
+static inline void NotifyIfFileHasChanged()
+{
     
     if (IsFileChangedFlagSet() || IsFileDeletedFlagSet() || RaiseFlagIfCurrentFileChanged()) {
         PostMessage(Globals.hwndMain, WM_FILECHANGEDNOTIFY, 0, 0);
