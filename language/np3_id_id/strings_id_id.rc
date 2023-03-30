@@ -77,7 +77,7 @@ BEGIN
     IDT_VIEW_SCHEME         "Pilih Skema"
     IDT_VIEW_SCHEMECONFIG   "Sesuaikan Skema"
     IDT_FILE_EXIT           "Keluar"
-    IDT_FILE_SAVEAS         "Simpan Sebagai"
+    IDT_FILE_SAVEAS         "Simpan sebagai"
     IDT_FILE_SAVECOPY       "Simpan Salinan"
     IDT_EDIT_CLEAR          "Hapus"
     IDT_FILE_PRINT          "Cetak"
@@ -92,7 +92,7 @@ BEGIN
     IDT_VIEW_TOGGLE_VIEW     "Tampilan Fokus"
     IDT_VIEW_CHASING_DOCTAIL "Pemantauan Log"
     IDT_VIEW_PIN_ON_TOP      "Selalu di Atas"
-    IDT_GREP_WIN_TOOL        "Cari dalam berkas"
+    IDT_GREP_WIN_TOOL        "Cari dalam Berkas"
 END
 
 STRINGTABLE
@@ -118,9 +118,9 @@ BEGIN
     IDS_MUI_FILTER_BITMAP   "Berkas bitmap (*.bmp)|*.bmp|Semua berkas (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Buka direktori aplikasi favorit Anda."
     IDS_MUI_FAVORITES       "Buka direktori berkas favorit Anda."
-    IDS_MUI_BACKSLASHHELP   "Perubahan Backslash\n\n\\a\tPeringatan (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tBaris baru (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tTab Horizontal (HT, Ascii 9)\n\\v\tTab Vertikal (VT, Ascii 11)\n\\0oo\tNilai Oktal\n\\u####\tNilai Heksadesimal\n\\xhh\tNilai Heksadesimal\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP      "Sintaks Pencocokan RegExp (Multi Baris)\n\n.\tCocokkan semua karakter\n^\tEmpty string immediately after Baris baru\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n itu 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Pencarian wildcard\n\n*\tCocokkan nol atau lebih karakter.\n?\tCocok dengan satu karakter."
+    IDS_MUI_BACKSLASHHELP   "Konversi garis miring\n\n\\a\tAlarm (BEL, ASCII 7)\n\\b\tHapus (BS, ASCII 8)\n\\f\tPemisah Halaman (FF, ASCII 12)\n\\n\tBaris baru (LF, ASCII 10)\n\\r\tBaris Baru (CR, ASCII 13)\n\\t\tTab Horizontal (HT, ASCII 9)\n\\v\tTab Vertikal (VT, ASCII 11)\n\\0oo\tNotasi Oktal\n\\u####\tNotasi Heksadesimal\n\\xhh\tNotasi Heksadesimal\n\\\\\tGaris Miring"
+    IDS_MUI_REGEXPHELP      "Sintaks Ekspresi Reguler (Multi Baris)\n\n.\tSemua karakter\n^\tAwal baris\n$\tAkhir baris\n\\<\tAwal kata\n\\>\tAkhir kata\n\\b\tBatas kata\n[...]\tSatu set karakter ([abc]) atau rentang ([a-z])\n[^...]\tKarakter yang BUKAN dari set atau rentang\n\\d\tSetiap digit desimal\n\\D\tSetiap karakter non-digit\n\\s\tKarakter spasi\n\\S\tBukan karakter spasi\n\\w\tKarakter ""huruf""\n\\W\tKarakter ""non-huruf""\n\\x\tEscape character with otherwise special meaning\n\\xHH\tKarakter dengan notasi kode Hex HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n itu 1-9)\n"
+    IDS_MUI_WILDCARDHELP    "Pencarian wildcard\n\n*\tCocokkan nol atau lebih karakter.\n?\tCocokkan dengan satu karakter."
 END
 
 STRINGTABLE
@@ -128,15 +128,15 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Kesalahan memuat ""%s""."
     IDS_MUI_ERR_SAVEFILE    "Kesalahan menyimpan ""%s""."
     IDS_MUI_ERR_DLG_FORMAT  "Kesalahan pada '%s', penyebab:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "No berkas browser plugin was found.\nThe MiniPath berkas browser plugin can be downloaded from https://rizonesoft.com."
-    IDS_MUI_ERR_GREPWIN     "No berkas search plugin was found.\nThe grepWinNP3 berkas search plugin can be downloaded from https://rizonesoft.com."
-    IDS_MUI_ERR_MRUDLG      "No access to the selected berkas!\nWould you like to remove it from the list?"
+    IDS_MUI_ERR_BROWSE      "Tidak ditemukan plugin penelusuran berkas.\nPlugin penelusuran berkas MiniPath dapat diunduh di https://rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "Tidak ditemukan plugin pencarian berkas.\nPlugin pencarian berkas grepWinNP3 dapat diunduh di https://rizonesoft.com."
+    IDS_MUI_ERR_MRUDLG      "Tidak ada akses ke berkas yang dipilih!\nApakah Anda ingin menghapusnya dari daftar?"
     IDS_MUI_ERR_CREATELINK  "Kesalahan saat membuat pintasan Desktop."
     IDS_MUI_ERR_PREVWINDISABLED
                             "Terdapat jendela Notepad3 lain yang sedang sibuk atau aktif.\nApakan Anda ingin membuka jendela Notepad3 baru?"
-    IDS_MUI_ERR_ENCODINGNA  "Code page conversion tables for the selected encoding are not available on your system."
+    IDS_MUI_ERR_ENCODINGNA  "Tabel konversi halaman kode untuk encoding yang dipilih tidak tersedia di sistem Anda."
     IDS_MUI_ERR_UNICODE     "Kesalahan saat mengonversi berkas Unicode ini.\nData akan hilang apabila berkas disimpan!"
-    IDS_MUI_ERR_BITMAP      "Kesalahan memuat bitmap ""%s"".\nDimensi yang dibutuhkan: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      "Kesalahan memuat bitmap ""%s"".\nDimensi yang dibutuhkan: %i x %i (lebar >= %i x tinggi)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Kesalahan prioritas hak pengguna!"
 END
@@ -149,12 +149,12 @@ BEGIN
                             "The berkas ""%s"" cannot be saved and may be protected.\n\nDo you want to launch %s as 'Elevated' application?"
     IDS_MUI_ERR_ADMINEXE    "No administration executable found.\nCheck website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Are you sure you want to open this large berkas?\n\t(ukuran: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
+                            "Apa kamu yakin ingin membuka berkas berukuran besar ini?\n\t(ukuran: %s >= %s)!\n(Tampilan Gaya and Sorotan Sintaksis tidak dapat diterapkan!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
                             "TIdak dapat menangani berkas berukuran besar (ukuran: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Ekstensi nama berkas yang tidak diketahui (%s)!\nTetap memuat data?"
-    IDS_MUI_INDENT_CONSISTENT  "The berkas has a consistent indentation!"
+    IDS_MUI_INDENT_CONSISTENT  "Berkas terdapat indentasi!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Mac Lama (CR)"
@@ -164,16 +164,16 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "Operasi ini tidak dapat dilakukan within a rectangular selection."
-    IDS_MUI_SELMULTI        "Operasi ini tidak dapat dilakukan within a multi-selection."
-    IDS_MUI_SELRECTORMULTI  "Operasi ini tidak dapat dilakukan within a rectangular or multi-selection."
+    IDS_MUI_SELRECT         "Operasi ini tidak dapat dilakukan dengan seleksi area."
+    IDS_MUI_SELMULTI        "Operasi ini tidak dapat dilakukan dengan multi seleksi."
+    IDS_MUI_SELRECTORMULTI  "Operasi ini tidak dapat dilakukan dengan seleksi area atau multi seleksi."
     IDS_MUI_BUFFERTOOSMALL  "Operasi ini tidak dapat dilakukan (baris terlalu panjang)."
     IDS_MUI_FIND_WRAPFW     "Mencapai akhir dari dokumen, memulai pencarian dari awal."
     IDS_MUI_FIND_WRAPRE     "Mencapai awal dari dokumen, memulai pencarian dari akhir."
-    IDS_MUI_NOTFOUND        "No match found for specified search pattern."
-    IDS_MUI_REPLCOUNT       "%s occurrence(s) of specified search pattern replaced."
+    IDS_MUI_NOTFOUND        "Tidak ada yang cocok untuk pola pencarian ini."
+    IDS_MUI_REPLCOUNT       "%s pencarian muncul dan diganti."
     IDS_MUI_ASK_ENCODING    "Mengalihkan encoding berkas dari satu ke yang lain mungkin akan menggantikan teks yang tidak didukung dengan karakter lain, dan riwayat kembali akan dihapus. Lanjutkan?"
-    IDS_MUI_ASK_ENCODING2   "You are about to change the encoding of an empty berkas. Note that this will clear the undo history, as it can't be synchronised with the new encoding. Lanjutkan?"
+    IDS_MUI_ASK_ENCODING2   "Anda akan mengubah encoding berkas kosong. Perhatikan bahwa ini akan menghapus riwayat tulisan. Karena, itu tidak dapat disinkronkan dengan encoding baru. Lanjutkan?"
     IDS_MUI_ASK_CLEAR_UNDO  "Operasi ini dapat menghapus riwayat kembali. Lanjutkan?"
     IDS_MUI_READONLY_SAVE   """%s"" hanya baca saja. Simpan dalam berkas berbeda?"
     IDS_MUI_FILECHANGENOTIFY
@@ -304,16 +304,16 @@ berkas\tHarus sebagai argumen terakhir, tidak apa untuk tidak menggunakan tanda 
 Opsi:\r\n\
 /?\tTampilkam halaman bantuan ini.\r\n\
 ...\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-...\tLine ending mode (/crlf, /cr, /lf).\r\n\
-/e\tberkas source encoding.\r\n\
-/g\tJump to specified position (/g -1 akhir berkas).\r\n\
+...\tMode akhir baris (/crlf, /cr, /lf).\r\n\
+/e\tEncoding berkas.\r\n\
+/g\tPergi ke baris yang ditentukan (/g -1 akhir berkas).\r\n\
 /m\tMatch specified text (/m- last, /mr regex, /mb backslash).\r\n\
-/l\tAuto-reload modified berkas.\r\n\
+/l\tOtomatis mulai ulang berkas yang berubah.\r\n\
 /q\tForce creation of new berkas without prompt.\r\n\
-/s\tSelect specified syntax scheme.\r\n\
-/d\tSelect default text scheme.\r\n\
-/h\tSelect Web Source Code scheme.\r\n\
-/x\tSelect XML Document scheme.\r\n\
+/s\Pilih skema sintaks yang ditentukan.\r\n\
+/d\Pilih skema teks baku.\r\n\
+/h\tPilih skema Kode Sumber Web.\r\n\
+/x\Pilih skema Dokumen XML.\r\n\
 /c\tOpen new window and paste clipboard contents.\r\n\
 /b\tOpen new paste board to collect clipboard entries.\r\n\
 /n\tSelalu buka jendela baru (/ns satu aplikasi untuk berkas).\r\n\
@@ -330,9 +330,9 @@ Opsi:\r\n\
 /y\tSearch environment PATH in case of relative filename.\r\n\
 /z\tSkip next (usable for registry-based Notepad replacement).\r\n\r\n\
 Contoh:\r\n\
-Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
+Notepad3 /utf8sig /crlf D:\\temp\\Test.txt\r\n\
  \t... Buka berkas baru: ""Tes.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
-Notepad3 /v d:\\temp\\Tes.txt\r\n\
+Notepad3 /v D:\\temp\\Tes.txt\r\n\
  \t... Cetak berkas: ""Tes.txt"" segera.\
 "
 
