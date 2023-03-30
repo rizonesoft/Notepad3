@@ -330,7 +330,7 @@ typedef struct CmdMessageQueue_t {
     UINT  cmd;
     WPARAM wparam;
     LPARAM lparam;
-    int64_t                   delay;
+    LONG64                    delay;
     struct CmdMessageQueue_t* next;
     struct CmdMessageQueue_t* prev;
 
@@ -735,8 +735,8 @@ typedef struct SETTINGS2_T {
     int     FileLoadWarningMB;
     int     OpacityLevel;
     int     FindReplaceOpacityLevel;
-    int64_t FileCheckInterval;
-    int64_t UndoTransactionTimeout;
+    LONG64  FileCheckInterval;
+    LONG64  UndoTransactionTimeout;
     int     IMEInteraction;
     int     SciFontQuality;
     int     LaunchInstanceWndPosOffset;
@@ -845,7 +845,7 @@ typedef struct BackgroundWorker {
 
 typedef struct FCOBSRVDATA_T {
 
-    int64_t           iFileChangeNotifyTime;
+    volatile LONG64   iFileChangeNotifyTime; // multi-threaded
 
     WIN32_FIND_DATA   fdCurFile;
     HANDLE            hEventFileChanged;
@@ -865,9 +865,8 @@ typedef struct FCOBSRVDATA_T {
 
 typedef struct FILEWATCHING_T {
 
-    FILE_WATCHING_MODE flagChangeNotify;  // <-> s_flagChangeNotify;
     FILE_WATCHING_MODE FileWatchingMode;  // <-> Settings.FileWatchingMode;
-    int64_t            FileCheckInterval; // <-> clampll(Settings2.FileCheckInterval, MIN_FC_POLL_INTERVAL, MAX_FC_POLL_INTERVAL);
+    LONG64             FileCheckInterval; // <-> clampll(Settings2.FileCheckInterval, MIN_FC_POLL_INTERVAL, MAX_FC_POLL_INTERVAL);
     bool               MonitoringLog;
 
 } FILEWATCHING_T, *PFILEWATCHING_T;

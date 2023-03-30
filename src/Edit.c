@@ -161,7 +161,7 @@ static int msgcmp(void* mqc1, void* mqc2)
     return 1;
 }
 
-static int64_t sortcmp(void *mqc1, void *mqc2) {
+static LONG64 sortcmp(void *mqc1, void *mqc2) {
     const CmdMessageQueue_t *const pMQC1 = (CmdMessageQueue_t *)mqc1;
     const CmdMessageQueue_t *const pMQC2 = (CmdMessageQueue_t *)mqc2;
     return (pMQC1->delay - pMQC2->delay);
@@ -9682,9 +9682,9 @@ void EditToggleFolds(FOLD_ACTION action, bool bForceAll)
 void EditFoldClick(DocLn ln, int mode)
 {
     static struct {
-        DocLn ln;
-        int mode;
-        int64_t iTickCount;
+        DocLn  ln;
+        int    mode;
+        LONG64 iTickCount;
     } prev = { 0, 0, 0 };
 
     bool fGotoFoldPoint = mode & FOLD_SIBLINGS;

@@ -1244,36 +1244,38 @@ void LoadSettings()
     StrgReset(Settings2.FileDlgFilters, pPathBuffer);
 
     // handle deprecated (typo) key 'FileCheckInverval'
-    constexpr const int64_t defaultFCI = 2000;
+    constexpr const LONG64 NOTSETFCI = -111LL;
+    constexpr const LONG64 defaultFCI = 2000LL;
     constexpr const WCHAR* deprecatedKeyART = L"AutoReloadTimeout";
     constexpr const WCHAR* deprecatedKeyFCI = L"FileCheckInverval";
     constexpr const WCHAR* correctKeyFCI = L"FileCheckInterval";
 
-    int const autoReload = IniSectionGetInt(IniSecSettings2, deprecatedKeyART, -111); // deprecated
-    if (autoReload != -111) {
+    LONG64 const autoReload = IniSectionGetLongLong(IniSecSettings2, deprecatedKeyART, NOTSETFCI); // deprecated
+    if (autoReload != NOTSETFCI) {
         IniSectionDelete(IniSecSettings2, deprecatedKeyART, true); // deprecated
         bDirtyFlag = true;
     }
-    int const dfci = IniSectionGetInt(IniSecSettings2, deprecatedKeyFCI, -111); // get deprecated typo setting
-    if (dfci != -111) {
+    LONG64 const dfci = IniSectionGetLongLong(IniSecSettings2, deprecatedKeyFCI, NOTSETFCI); // get deprecated typo setting
+    if (dfci != NOTSETFCI) {
         IniSectionDelete(IniSecSettings2, deprecatedKeyFCI, true); // deprecated wrong (typo) name
         bDirtyFlag = true;
     }
-    int const deprecatedFCI = max_i(autoReload, dfci);
+    LONG64 const adpDefaultFCI = (max_ll(autoReload, dfci) == NOTSETFCI) ? defaultFCI : 
+        clampll(max_ll(autoReload, dfci), MIN_FC_POLL_INTERVAL, MAX_FC_POLL_INTERVAL);
 
-    Settings2.FileCheckInterval = IniSectionGetLongLong(IniSecSettings2, correctKeyFCI, deprecatedFCI);
+    Settings2.FileCheckInterval = clampll(IniSectionGetLongLong(IniSecSettings2, correctKeyFCI, adpDefaultFCI), MIN_FC_POLL_INTERVAL, MAX_FC_POLL_INTERVAL);
 
     if (Settings2.FileCheckInterval == defaultFCI) {
-        if (deprecatedFCI != defaultFCI) {
-            IniSectionDelete(IniSecSettings2, correctKeyFCI, true); // is default
-            bDirtyFlag = true;
-        }
-    }
-    else if (Settings2.FileCheckInterval == static_cast<int64_t>(deprecatedFCI)) {
-        IniSectionSetLongLong(IniSecSettings2, correctKeyFCI, Settings2.FileCheckInterval);
+        IniSectionDelete(IniSecSettings2, correctKeyFCI, true); // is default
         bDirtyFlag = true;
     }
-    FileWatching.FileCheckInterval = clampll(Settings2.FileCheckInterval, MIN_FC_POLL_INTERVAL, MAX_FC_POLL_INTERVAL);
+    else if (Settings2.FileCheckInterval == adpDefaultFCI) {
+        IniSectionSetLongLong(IniSecSettings2, correctKeyFCI, adpDefaultFCI);
+        bDirtyFlag = true;
+    }
+    
+    FileWatching.FileCheckInterval = Settings2.FileCheckInterval;
+
 
     IniSectionGetString(IniSecSettings2, L"FileChangedIndicator", L"[@]", Settings2.FileChangedIndicator, COUNTOF(Settings2.FileChangedIndicator));
 

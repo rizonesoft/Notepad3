@@ -869,14 +869,14 @@ static inline int PointSizeToFontHeight(const float fPtHeight, const HDC hdc) {
 // ----------------------------------------------------------------------------
 
 
-static inline int64_t GetTicks_ms() {
+static inline LONG64 GetTicks_ms() {
     LARGE_INTEGER freq;
     if (!QueryPerformanceFrequency(&freq)) {
-        return (int64_t)GetTickCount64();
+        return (LONG64)GetTickCount64();
     }
     LARGE_INTEGER ticks;
     if (!QueryPerformanceCounter(&ticks)) {
-        return (int64_t)GetTickCount64();
+        return (LONG64)GetTickCount64();
     }
     return (ticks.QuadPart * 1000LL) / freq.QuadPart;
 }

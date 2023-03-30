@@ -155,7 +155,7 @@ static int       s_iAlignMode = 0;
 static bool      s_bIsAppThemed = true;
 static UINT      s_msgTaskbarCreated = 0;
 static WCHAR     s_wchTitleExcerpt[MIDSZ_BUFFER] = { L'\0' };
-static int64_t   s_iLastCopyTime = 0;
+static LONG64    s_iLastCopyTime = 0;
 static bool      s_bLastCopyFromMe = false;
 static bool      s_bInMultiEditMode = false;
 static bool      s_bCallTipEscDisabled = false;
@@ -445,8 +445,8 @@ static inline void _SplitUndoTransaction()
 
 // ----------------------------------------------------------------------------
 
-static void _DelayClearCallTip(const int64_t delay);
-static void _DelaySplitUndoTransaction(const int64_t delay);
+static void _DelayClearCallTip(const LONG64 delay);
+static void _DelaySplitUndoTransaction(const LONG64 delay);
 static void _RestoreActionSelection(const LONG token, DoAction doAct);
 
 // ----------------------------------------------------------------------------
@@ -527,7 +527,7 @@ static int msgcmp(void* mqc1, void* mqc2)
 
 #define _MQ_ms2cycl(T) (((T) + USER_TIMER_MINIMUM) / _MQ_TIMER_CYCLE)
 
-static void  _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, int64_t cycles)
+static void _MQ_AppendCmd(CmdMessageQueue_t* const pMsgQCmd, LONG64 cycles)
 {
     if (!pMsgQCmd) { return; }
 
@@ -804,7 +804,6 @@ static void _InitGlobals()
     FocusedView.CodeFoldingAvailable = false;
     FocusedView.ShowCodeFolding = true;
 
-    FileWatching.flagChangeNotify = FWM_DONT_CARE;
     FileWatching.FileWatchingMode = FWM_DONT_CARE;
     FileWatching.MonitoringLog = false;
 
@@ -1836,9 +1835,6 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     Encoding_Forced(s_flagSetEncoding);
 
     switch (s_flagChangeNotify) {
-    case FWM_NO_INIT:
-        FileWatching.FileWatchingMode = Settings.FileWatchingMode;
-        break;
     case FWM_DONT_CARE:
     case FWM_INDICATORSILENT:
     case FWM_MSGBOX:
@@ -1846,8 +1842,9 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     case FWM_EXCLUSIVELOCK:
         FileWatching.FileWatchingMode = s_flagChangeNotify;
         break;
+    case FWM_NO_INIT:
     default:
-        FileWatching.FileWatchingMode = FWM_MSGBOX;
+        FileWatching.FileWatchingMode = Settings.FileWatchingMode;
         break;
     }
 
@@ -3707,15 +3704,20 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 }
                 if (bOpened) {
                     if (params->flagChangeNotify == FWM_MSGBOX) {
-                        FileWatching.FileWatchingMode = FWM_DONT_CARE;
+                        FileWatching.FileWatchingMode = FWM_MSGBOX;
                         InstallFileWatching(true);
-                    } else if (params->flagChangeNotify == FWM_AUTORELOAD) {
-                        if (!FileWatching.MonitoringLog) {
+                    }
+                    else if (params->flagChangeNotify == FWM_AUTORELOAD) {
+                        if (FileWatching.MonitoringLog) {
                             PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
-                        } else {
-                            FileWatching.FileWatchingMode = FWM_AUTORELOAD;
-                            InstallFileWatching(true);
                         }
+                        else {
+                            FileWatching.FileWatchingMode = FWM_AUTORELOAD;
+                        }
+                        InstallFileWatching(true);
+                    }
+                    else if (params->flagChangeNotify == FWM_INDICATORSILENT) {
+                        InstallFileWatching(true);
                     }
 
                     if (params->flagSetEncoding != CPI_NONE) {
@@ -6210,7 +6212,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             _saveChgNotify = FileWatching.FileWatchingMode;    
         }
         FileWatching.MonitoringLog = !FileWatching.MonitoringLog; // toggle
-        FileWatching.flagChangeNotify = s_flagChangeNotify;
         SciCall_SetReadOnly(FileWatching.MonitoringLog);
 
         if (FileWatching.MonitoringLog) {
@@ -6222,7 +6223,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SciCall_SetEndAtLastLine(false);
         } else {
             FileWatching.FileWatchingMode = _saveChgNotify;
-            FileWatching.FileCheckInterval = clampll(Settings2.FileCheckInterval, MIN_FC_POLL_INTERVAL, MAX_FC_POLL_INTERVAL);
+            FileWatching.FileCheckInterval = Settings2.FileCheckInterval;
             SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
         }
         Sci_ScrollSelectionToView();
@@ -8563,7 +8564,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bMod
                 }
             }
             if (*bModified) {
-                int64_t const timeout = Settings2.UndoTransactionTimeout;
+                LONG64 const timeout = Settings2.UndoTransactionTimeout;
                 if (timeout != 0LL) {
                     if (!bInUndoRedoStep) {
                         _DelaySplitUndoTransaction(max_ll(_MQ_IMMEDIATE, timeout));
@@ -9671,7 +9672,7 @@ static void  _DelayUpdateStatusbar(const int delay, const bool bForceRedraw)
 //
 //  _DelayUpdateToolbar()
 //
-static void _DelayUpdateToolbar(const int64_t delay)
+static void _DelayUpdateToolbar(const LONG64 delay)
 {
     CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(Globals.hwndMain, IDT_TIMER_UPDATE_TOOLBAR, 0LL);
     _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
@@ -9682,7 +9683,7 @@ static void _DelayUpdateToolbar(const int64_t delay)
 //
 //  _DelayUpdateTitlebar()
 //
-static void _DelayUpdateTitlebar(const int64_t delay, const HWND hwnd)
+static void _DelayUpdateTitlebar(const LONG64 delay, const HWND hwnd)
 {
     CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(Globals.hwndMain, IDT_TIMER_UPDATE_TITLEBAR, (LPARAM)hwnd);
     _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
@@ -9693,7 +9694,7 @@ static void _DelayUpdateTitlebar(const int64_t delay, const HWND hwnd)
 //
 //  _DelayClearCallTip()
 //
-static void  _DelayClearCallTip(const int64_t delay)
+static void _DelayClearCallTip(const LONG64 delay)
 {
     CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(Globals.hwndMain, IDT_TIMER_CLEAR_CALLTIP, 0LL);
     _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
@@ -9704,7 +9705,7 @@ static void  _DelayClearCallTip(const int64_t delay)
 //
 //  _DelaySplitUndoTransaction()
 //
-static void _DelaySplitUndoTransaction(const int64_t delay)
+static void _DelaySplitUndoTransaction(const LONG64 delay)
 {
     CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(Globals.hwndMain, IDT_TIMER_UNDO_TRANSACTION, 0);
     _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
@@ -9715,10 +9716,10 @@ static void _DelaySplitUndoTransaction(const int64_t delay)
 //
 //  MarkAllOccurrences()
 //
-void MarkAllOccurrences(const int64_t delay, const bool bForceClear)
+void MarkAllOccurrences(const LONG64 delay, const bool bForceClear)
 {
     CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(Globals.hwndMain, IDT_TIMER_CALLBACK_MRKALL, bForceClear);
-    int64_t const     timer = (delay < 0) ? Settings2.UpdateDelayMarkAllOccurrences : delay;
+    LONG64 const      timer = (delay < 0) ? Settings2.UpdateDelayMarkAllOccurrences : delay;
     _MQ_AppendCmd(&mqc, _MQ_ms2cycl(timer));
 }
 
@@ -11199,10 +11200,11 @@ bool ConsistentIndentationCheck(EditFileIOStatus* status)
 //
 
 static inline void _ResetFileWatchingMode() {
+    FileWatching.FileWatchingMode = (s_flagChangeNotify != FWM_NO_INIT) ? s_flagChangeNotify : Settings.FileWatchingMode;
     if (FileWatching.MonitoringLog) {
+        FileWatching.FileWatchingMode = FWM_AUTORELOAD;
         PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
     }
-    FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     ResetFileObservationData(true);
 }
 
@@ -11252,18 +11254,20 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
 
         SetSaveDone();
 
-        // Terminate file watching
+        // Restart file watching
         AutoSaveStop();
-        InstallFileWatching(false); // terminate
+        InstallFileWatching(false); // terminate old
         if (Settings.ResetFileWatching) {
             _ResetFileWatchingMode();
         }
+        InstallFileWatching(true);
+
         Flags.bSettingsFileSoftLocked = false;
         UpdateSaveSettingsCmds();
         if (SciCall_GetZoom() != 100) {
             ShowZoomCallTip();
         }
-        
+
         UndoRedoReset();
 
         UpdateToolbar();
@@ -11420,18 +11424,13 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
 
         // Install watching of the current file
         AutoSaveStop();
-        if (!bReloadFile) {
-            InstallFileWatching(false); // terminate previous
-            if (Settings.ResetFileWatching) {
-                _ResetFileWatchingMode();
-            }
+        InstallFileWatching(false); // terminate previous
+        if (!bReloadFile && Settings.ResetFileWatching) {
+            _ResetFileWatchingMode();
         }
 
         // consistent settings file handling (if loaded in editor)
         Flags.bSettingsFileSoftLocked = (Path_StrgComparePathNormalized(Paths.CurrentFile, Paths.IniFile) == 0);
-
-        ResetFileObservationData(true);
-        InstallFileWatching(true);
 
         // the .LOG feature ...
         if (SciCall_GetTextLength() >= 4) {
@@ -11513,6 +11512,10 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
     UpdateStatusbar(true);
 
     Path_Release(hopen_file);
+
+    ResetFileObservationData(true);
+    InstallFileWatching(fSuccess);
+
     return fSuccess;
 }
 
@@ -12612,12 +12615,11 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 static inline void NotifyIfFileHasChanged()
 {
-    
     if (IsFileChangedFlagSet() || IsFileDeletedFlagSet() || RaiseFlagIfCurrentFileChanged()) {
         PostMessage(Globals.hwndMain, WM_FILECHANGEDNOTIFY, 0, 0);
     }
     // reset Timeout interval
-    s_FileChgObsvrData.iFileChangeNotifyTime = GetTicks_ms();
+    InterlockedExchange64(&(s_FileChgObsvrData.iFileChangeNotifyTime), GetTicks_ms());
 }
 // ----------------------------------------------------------------------------
 
@@ -12630,7 +12632,7 @@ static void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
     UNREFERENCED_PARAMETER(uMsg);
     UNREFERENCED_PARAMETER(hwnd);
 
-    int64_t const diff = (GetTicks_ms() - s_FileChgObsvrData.iFileChangeNotifyTime);
+    LONG64 const diff = (GetTicks_ms() - InterlockedOr64(&(s_FileChgObsvrData.iFileChangeNotifyTime), 0LL));
     // Directory-Observer is not notified for continuously updated (log-)files
     if (diff > FileWatching.FileCheckInterval) {
         NotifyIfFileHasChanged();
@@ -12744,7 +12746,7 @@ void InstallFileWatching(const bool bInstall) {
                 BackgroundWorker_Start(&(s_FileChgObsvrData.worker), FileChangeObserver, &s_FileChgObsvrData);
             }
 
-            s_FileChgObsvrData.iFileChangeNotifyTime = GetTicks_ms();
+            InterlockedExchange64(&(s_FileChgObsvrData.iFileChangeNotifyTime), GetTicks_ms());
 
             if (Settings2.FileCheckInterval > 0) {
                 SetTimer(Globals.hwndMain, ID_WATCHTIMER, (UINT)FileWatching.FileCheckInterval, WatchTimerProc);
