@@ -311,6 +311,10 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
     return TRUE;
 
 
+    case WM_CLOSE:
+        EndDialog(hwnd, LOWORD(IDCLOSE));
+        break;
+
     case WM_DESTROY:
         if (hIconBmp) {
             DeleteObject(hIconBmp);
@@ -374,6 +378,8 @@ CASE_WM_CTLCOLOR_SET:
             bool const isChecked = IsButtonChecked(hwnd, IDC_INFOBOXCHECK);
             DialogEnableControl(hwnd, IDNO, !isChecked);
             DialogEnableControl(hwnd, IDABORT, !isChecked);
+            DialogEnableControl(hwnd, IDIGNORE, !isChecked);
+            DialogEnableControl(hwnd, IDCONTINUE, !isChecked);
             DialogEnableControl(hwnd, IDCLOSE, !isChecked);
             DialogEnableControl(hwnd, IDCANCEL, !isChecked);
             SendMessage(hwnd, WM_NEXTDLGCTL, 0, FALSE);
@@ -488,7 +494,11 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
     int idDlg;
     switch (uType & MB_TYPEMASK) {
 
-    case MB_YESNO:  // contains two push buttons : Yes and No.
+    case MB_OK:    // one push button : OK. This is the default.
+        idDlg = IDD_MUI_INFOBOX;
+        break;
+
+    case MB_YESNO: // contains two push buttons : Yes and No.
         idDlg = IDD_MUI_INFOBOX2;
         break;
 
@@ -505,9 +515,13 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
         break;
 
     case MB_ABORTRETRYIGNORE:   // three push buttons : Abort, Retry, and Ignore.
-    case MB_CANCELTRYCONTINUE:  // three push buttons : Cancel, Try Again, Continue.Use this message box type instead of MB_ABORTRETRYIGNORE.
+        idDlg = IDD_MUI_INFOBOX6;
+        break;
+    // Use this message box type instead of MB_ABORTRETRYIGNORE.
+    case MB_CANCELTRYCONTINUE:  // three push buttons : Cancel, Try Again, Continue.
+        idDlg = IDD_MUI_INFOBOX7;
+        break;
 
-    case MB_OK:  // one push button : OK. This is the default.
     default:
         idDlg = IDD_MUI_INFOBOX;
         break;
@@ -1040,6 +1054,10 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     }
     break;
 
+    case WM_CLOSE:
+        EndDialog(hwnd, IDCLOSE);
+        break;
+
     case WM_DESTROY:
         if (hVersionFont) {
             DeleteObject(hVersionFont);
@@ -1329,6 +1347,10 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
         return TRUE;
 
 
+    case WM_CLOSE:
+        EndDialog(hwnd, IDCLOSE);
+        break;
+
     case WM_DESTROY:
         DeleteBitmapButton(hwnd, IDC_SEARCHEXE);
         return FALSE;
@@ -1581,6 +1603,10 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
+
+    case WM_CLOSE:
+        EndDialog(hwnd, IDCLOSE);
+        break;
 
     case WM_DESTROY:
         DirList_Destroy(hwndLV);
@@ -1838,6 +1864,11 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         return TRUE;
 
 
+    case WM_CLOSE:
+        EndDialog(hwnd, IDCLOSE);
+        break;
+
+
     case WM_DESTROY:
         DirList_Destroy(hwndLV);
         hwndLV = NULL;
@@ -2044,6 +2075,11 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
         CenterDlgInParent(hwnd, NULL);
     }
     return TRUE;
+
+
+    case WM_CLOSE:
+        EndDialog(hwnd, IDCLOSE);
+        break;
 
 
     case WM_DESTROY:
@@ -2315,6 +2351,10 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
         CenterDlgInParent(hwnd, NULL);
     }
     return TRUE;
+
+    case WM_CLOSE:
+        EndDialog(hwnd, IDCLOSE);
+        break;
 
     case WM_DESTROY: {
         BackgroundWorker *worker = (BackgroundWorker *)GetProp(hwnd, L"it");
@@ -3626,6 +3666,11 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
     case WM_DPICHANGED:
         UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
+
+
+    case WM_CLOSE:
+        EndDialog(hwnd, IDCLOSE);
+        break;
 
 
     case WM_DESTROY: {

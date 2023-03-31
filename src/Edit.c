@@ -161,7 +161,7 @@ static int msgcmp(void* mqc1, void* mqc2)
     return 1;
 }
 
-static int64_t sortcmp(void *mqc1, void *mqc2) {
+static LONG64 sortcmp(void *mqc1, void *mqc2) {
     const CmdMessageQueue_t *const pMQC1 = (CmdMessageQueue_t *)mqc1;
     const CmdMessageQueue_t *const pMQC2 = (CmdMessageQueue_t *)mqc2;
     return (pMQC1->delay - pMQC2->delay);
@@ -5242,7 +5242,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
             qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdRev);
         }
     } else { /*if (iSortFlags & SORT_SHUFFLE)*/
-        srand((UINT)GetTicks());
+        srand((UINT)GetTicks_ms());
         for (DocLn i = (iLineCount - 1); i > 0; --i) {
             int j = rand() % i;
             SORTLINE sLine = { NULL, NULL };
@@ -9682,17 +9682,17 @@ void EditToggleFolds(FOLD_ACTION action, bool bForceAll)
 void EditFoldClick(DocLn ln, int mode)
 {
     static struct {
-        DocLn ln;
-        int mode;
-        int64_t iTickCount;
+        DocLn  ln;
+        int    mode;
+        LONG64 iTickCount;
     } prev = { 0, 0, 0 };
 
     bool fGotoFoldPoint = mode & FOLD_SIBLINGS;
 
     if (!(SciCall_GetFoldLevel(ln) & SC_FOLDLEVELHEADERFLAG)) {
         // Not a fold point: need to look for a double-click
-        if (prev.ln == ln && prev.mode == mode &&
-                GetTicks() - prev.iTickCount <= GetDoubleClickTime()) {
+        if ((prev.ln == ln) && (prev.mode == mode) &&
+                ((GetTicks_ms() - prev.iTickCount) <= GetDoubleClickTime())) {
             prev.ln = NOT_FOUND_LN;  // Prevent re-triggering on a triple-click
 
             ln = SciCall_GetFoldParent(ln);
@@ -9706,7 +9706,7 @@ void EditFoldClick(DocLn ln, int mode)
             // Save the info needed to match this click with the next click
             prev.ln = ln;
             prev.mode = mode;
-            prev.iTickCount = GetTicks();
+            prev.iTickCount = GetTicks_ms();
             return;
         }
     }

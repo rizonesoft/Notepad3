@@ -5173,6 +5173,11 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
     return TRUE;
 
 
+    case WM_CLOSE:
+        EndDialog(hwnd, IDCLOSE);
+        break;
+
+
     case WM_DESTROY:
         return TRUE;
 

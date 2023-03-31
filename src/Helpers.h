@@ -63,12 +63,12 @@
 #define DEFAULT_ALLOC_FLAGS (HEAP_CREATE_HARDENED)
 #endif
 
-inline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
+static inline LPVOID AllocMem(size_t numBytes, DWORD dwFlags)
 {
     return HeapAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
 }
 
-inline LPVOID ReAllocMem(LPVOID lpMem, size_t numBytes, DWORD dwFlags)
+static inline LPVOID ReAllocMem(LPVOID lpMem, size_t numBytes, DWORD dwFlags)
 {
     if (lpMem) {
         return HeapReAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), lpMem, numBytes);
@@ -76,7 +76,7 @@ inline LPVOID ReAllocMem(LPVOID lpMem, size_t numBytes, DWORD dwFlags)
     return HeapAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
 }
 
-inline LPVOID ReAllocGrowMem(LPVOID lpMem, size_t numBytes, DWORD dwFlags)
+static inline LPVOID ReAllocGrowMem(LPVOID lpMem, size_t numBytes, DWORD dwFlags)
 {
     if (lpMem) {
         size_t const memSize = HeapSize(Globals.hndlProcessHeap, 0, lpMem);
@@ -91,12 +91,12 @@ inline LPVOID ReAllocGrowMem(LPVOID lpMem, size_t numBytes, DWORD dwFlags)
     return HeapAlloc(Globals.hndlProcessHeap, (dwFlags | DEFAULT_ALLOC_FLAGS), numBytes);
 }
 
-inline bool FreeMem(LPVOID lpMem)
+static inline bool FreeMem(LPVOID lpMem)
 {
     return (lpMem ? HeapFree(Globals.hndlProcessHeap, 0, lpMem) : true);
 }
 
-inline size_t SizeOfMem(LPCVOID lpMem)
+static inline size_t SizeOfMem(LPCVOID lpMem)
 {
     return (lpMem ? HeapSize(Globals.hndlProcessHeap, 0, lpMem) : 0);
 }
@@ -207,7 +207,7 @@ __forceinline bool IsAsyncKeyDown(int key) {
 
 // ----------------------------------------------------------------------------
 
-inline DWORD GetNumberOfProcessors()
+static inline DWORD GetNumberOfProcessors()
 {
     SYSTEM_INFO sysinfo;
     GetSystemInfo(&sysinfo);
@@ -216,13 +216,14 @@ inline DWORD GetNumberOfProcessors()
 
 // ----------------------------------------------------------------------------
 
-inline bool Str2Int(LPCWSTR str, int *value) {
+__forceinline bool Str2Int(LPCWSTR str, int* value)
+{
     LPWSTR end;
     *value = (int)wcstol(str, &end, 10);
     return (str != end);
 }
 
-inline bool Str2Float(LPCWSTR str, float* value)
+__forceinline bool Str2Float(LPCWSTR str, float* value)
 {
     LPWSTR end;
     *value = (float)wcstod(str, &end);
@@ -298,7 +299,7 @@ __forceinline bool StrIsEmptyW(LPCWSTR s) {
 //inline COLORREF GetBackgroundColor(HWND hwnd) { return GetBkColor(GetDC(hwnd)); }
 
 
-inline int SetModeBkColor(const HDC hdc, const bool bDarkMode)
+static inline int SetModeBkColor(const HDC hdc, const bool bDarkMode)
 {
 #ifdef D_NP3_WIN10_DARK_MODE
     return SetBkColor(hdc, bDarkMode ? Settings2.DarkModeBkgColor : GetSysColor(COLOR_WINDOW));
@@ -308,7 +309,7 @@ inline int SetModeBkColor(const HDC hdc, const bool bDarkMode)
 #endif
 }
 
-inline int SetModeBtnFaceColor(const HDC hdc, const bool bDarkMode)
+static inline int SetModeBtnFaceColor(const HDC hdc, const bool bDarkMode)
 {
 #ifdef D_NP3_WIN10_DARK_MODE
     return SetBkColor(hdc, bDarkMode ? Settings2.DarkModeBtnFaceColor : GetSysColor(COLOR_BTNFACE));
@@ -318,7 +319,7 @@ inline int SetModeBtnFaceColor(const HDC hdc, const bool bDarkMode)
 #endif
 }
 
-inline COLORREF GetModeBkColor(const bool bDarkMode)
+static inline COLORREF GetModeBkColor(const bool bDarkMode)
 {
 #ifdef D_NP3_WIN10_DARK_MODE
     return bDarkMode ? Settings2.DarkModeBkgColor : (COLORREF)GetSysColor(COLOR_WINDOW);
@@ -328,7 +329,7 @@ inline COLORREF GetModeBkColor(const bool bDarkMode)
 #endif
 }
 
-inline COLORREF GetModeBtnfaceColor(const bool bDarkMode)
+static inline COLORREF GetModeBtnfaceColor(const bool bDarkMode)
 {
 #ifdef D_NP3_WIN10_DARK_MODE
     return bDarkMode ? Settings2.DarkModeBtnFaceColor : (COLORREF)GetSysColor(COLOR_BTNFACE);
@@ -339,7 +340,7 @@ inline COLORREF GetModeBtnfaceColor(const bool bDarkMode)
 }
 
 
-inline int SetModeTextColor(const HDC hdc, const bool bDarkMode)
+static inline int SetModeTextColor(const HDC hdc, const bool bDarkMode)
 {
 #ifdef D_NP3_WIN10_DARK_MODE
     //return SetTextColor(hdc, bDarkMode ? Settings2.DarkModeTxtColor : GetSysColor(COLOR_WINDOWTEXT));
@@ -350,7 +351,7 @@ inline int SetModeTextColor(const HDC hdc, const bool bDarkMode)
 #endif
 }
 
-inline COLORREF GetModeTextColor(const bool bDarkMode)
+static inline COLORREF GetModeTextColor(const bool bDarkMode)
 {
 #ifdef D_NP3_WIN10_DARK_MODE
     //return bDarkMode ? Settings2.DarkModeTxtColor : (COLORREF)GetSysColor(COLOR_WINDOWTEXT);
@@ -364,7 +365,7 @@ inline COLORREF GetModeTextColor(const bool bDarkMode)
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-inline INT_PTR SetDarkModeCtlColors(const HDC hdc, const bool bDarkMode)
+static inline INT_PTR SetDarkModeCtlColors(const HDC hdc, const bool bDarkMode)
 {
     if (bDarkMode) {
         SetBkColor(hdc, Settings2.DarkModeBkgColor);
@@ -390,7 +391,7 @@ bool SetClipboardText(HWND hwnd, LPCWSTR pszTextW, size_t cchTextW);
 
 // ----------------------------------------------------------------------------
 
-inline void GetCurrentMonitorResolution(HWND hwnd, int* pCXScreen, int* pCYScreen)
+static inline void GetCurrentMonitorResolution(HWND hwnd, int* pCXScreen, int* pCYScreen)
 {
     HMONITOR const hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
     MONITORINFO mi = { sizeof(MONITORINFO) };
@@ -400,7 +401,7 @@ inline void GetCurrentMonitorResolution(HWND hwnd, int* pCXScreen, int* pCYScree
 }
 
 // FullHD? =>   0:'==',   -1:'<',   +1:'>'
-inline int IsFullHD(HWND hwnd, int resX, int resY)
+static inline int IsFullHD(HWND hwnd, int resX, int resY)
 {
     int cxScreen, cyScreen;
     GetCurrentMonitorResolution(hwnd, &cxScreen, &cyScreen);
@@ -427,10 +428,10 @@ void        BackgroundWorker_Start(BackgroundWorker* worker, _beginthreadex_proc
 void        BackgroundWorker_Cancel(BackgroundWorker* worker);
 void        BackgroundWorker_Destroy(BackgroundWorker* worker);
 
-inline bool BackgroundWorker_Continue(BackgroundWorker* worker) { 
+static inline bool BackgroundWorker_Continue(BackgroundWorker* worker) { 
     return (worker) ? (WaitForSingleObject(worker->eventCancel, 0) != WAIT_OBJECT_0) : false;
 }
-inline void BackgroundWorker_End(BackgroundWorker* worker, unsigned int retcode) { if (worker) { _endthreadex(retcode); }}
+static inline void BackgroundWorker_End(BackgroundWorker* worker, unsigned int retcode) { if (worker) { _endthreadex(retcode); }}
 
 
 bool BitmapMergeAlpha(HBITMAP hbmp,COLORREF crDest);
@@ -445,15 +446,15 @@ bool IsCmdEnabled(HWND hwnd, UINT uId);
 
 #define SetBtn(b) ((b) ? BST_CHECKED : BST_UNCHECKED)
 
-inline bool IsButtonChecked(HWND hwnd, int iButtonID)
+__forceinline bool IsButtonChecked(HWND hwnd, int iButtonID)
 {
     return (IsDlgButtonChecked(hwnd, iButtonID) == BST_CHECKED);
 }
-inline bool IsButtonIntermediate(HWND hwnd, int iButtonID)
+__forceinline bool IsButtonIntermediate(HWND hwnd, int iButtonID)
 {
     return (IsDlgButtonChecked(hwnd, iButtonID) == BST_INDETERMINATE);
 }
-inline bool IsButtonUnchecked(HWND hwnd, int iButtonID)
+__forceinline bool IsButtonUnchecked(HWND hwnd, int iButtonID)
 {
     return (IsDlgButtonChecked(hwnd, iButtonID) == BST_UNCHECKED);
 }
@@ -478,7 +479,7 @@ bool  SplitFilePathLineNum(LPWSTR lpszPath, int *lineNum);
 bool StrLTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars);
 bool StrRTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars);
 
-inline bool TrimSpcA(LPSTR lpString)
+static inline bool TrimSpcA(LPSTR lpString)
 {
     if (!lpString || !*lpString) {
         return false;
@@ -486,7 +487,7 @@ inline bool TrimSpcA(LPSTR lpString)
     return (bool)StrTrimA(lpString, " \t\v");
 };
 
-inline bool TrimSpcW(LPWSTR lpString)
+static inline bool TrimSpcW(LPWSTR lpString)
 {
     if (!lpString || !*lpString) {
         return false;
@@ -577,29 +578,29 @@ __forceinline ptrdiff_t MultiByteToWideCharEx(
 
 // ============================================================================
 
-inline int wcscmp_s(const wchar_t* s1, const wchar_t* s2)
+__forceinline int wcscmp_s(const wchar_t* s1, const wchar_t* s2)
 {
     return (s1 && s2) ? wcscmp(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
 }
 
-inline int wcscoll_s(const wchar_t* s1, const wchar_t* s2)
+__forceinline int wcscoll_s(const wchar_t* s1, const wchar_t* s2)
 {
     return (s1 && s2) ? wcscoll(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
 }
 
-inline int wcsicmp_s(const wchar_t* s1, const wchar_t* s2)
+__forceinline int wcsicmp_s(const wchar_t* s1, const wchar_t* s2)
 {
     return (s1 && s2) ? _wcsicmp(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
 }
 
-inline int wcsicoll_s(const wchar_t* s1, const wchar_t* s2)
+__forceinline int wcsicoll_s(const wchar_t* s1, const wchar_t* s2)
 {
     return (s1 && s2) ? _wcsicoll(s1, s2) : ((s1 ? 1 : (s2 ? -1 : 0)));
 }
 
 // ============================================================================
 
-inline void SwabEx(char* src, char* dest, size_t n)
+static inline void SwabEx(char* src, char* dest, size_t n)
 {
     static int const max = (INT_MAX - (INT_MAX % 2));
 
@@ -658,7 +659,7 @@ bool StrDelChrA(LPSTR pszSource, LPCSTR pCharsToRemove);
 // inline size_t StringCchLenW(LPCWSTR s, size_t n) {
 //   n = (n ? n : STRSAFE_MAX_CCH); size_t len; return (size_t)(!s ? 0 : (SUCCEEDED(StringCchLengthW(s, n, &len)) ? len : n));
 // }
-inline size_t StringCchLenW(LPCWSTR s, size_t n)
+static inline size_t StringCchLenW(LPCWSTR s, size_t n)
 {
     n = (n ? n : STRSAFE_MAX_CCH);
     return (s ? wcsnlen_s(s, n) : 0LL);
@@ -666,7 +667,7 @@ inline size_t StringCchLenW(LPCWSTR s, size_t n)
 // inline size_t StringCchLenA(LPCSTR s, size_t n) {
 //   n = (n ? n : STRSAFE_MAX_CCH); size_t len; return (size_t)(!s ? 0 : (SUCCEEDED(StringCchLengthA(s, n, &len)) ? len : n));
 // }
-inline size_t StringCchLenA(LPCSTR s, size_t n)
+static inline size_t StringCchLenA(LPCSTR s, size_t n)
 {
     n = (n ? n : STRSAFE_MAX_CCH);
     return (s ? strnlen_s(s, n) : 0LL);
@@ -679,12 +680,12 @@ inline size_t StringCchLenA(LPCSTR s, size_t n)
 
 // ----------------------------------------------------------------------------
 
-inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz)
+static inline WCHAR* StrEndW(const WCHAR* pStart, size_t siz)
 {
     // cppcheck-suppress cert-EXP05-C   // Attempt to cast away const - Intended(!)
     return (WCHAR*)(pStart + StringCchLenW(pStart, siz));
 }
-inline char* StrEndA(const char* pStart, size_t siz)
+static inline char* StrEndA(const char* pStart, size_t siz)
 {
     // cppcheck-suppress cert-EXP05-C   // Attempt to cast away const - Intended(!)
     return (char*)(pStart + StringCchLenA(pStart, siz));
@@ -697,7 +698,7 @@ inline char* StrEndA(const char* pStart, size_t siz)
 
 // ----------------------------------------------------------------------------
 
-inline void StrReplChrW(WCHAR* pStrg, const WCHAR chSearch, const WCHAR chReplace)
+static inline void StrReplChrW(WCHAR* pStrg, const WCHAR chSearch, const WCHAR chReplace)
 {
     while (pStrg && *pStrg) {
         if (*pStrg == chSearch) {
@@ -706,7 +707,7 @@ inline void StrReplChrW(WCHAR* pStrg, const WCHAR chSearch, const WCHAR chReplac
         ++pStrg;
     }
 }
-inline void StrReplChrA(CHAR* pStrg, const CHAR chSearch, const CHAR chReplace)
+static inline void StrReplChrA(CHAR* pStrg, const CHAR chSearch, const CHAR chReplace)
 {
     while (pStrg && *pStrg) {
         if (*pStrg == chSearch) {
@@ -781,29 +782,35 @@ inline void StrReplChrA(CHAR* pStrg, const CHAR chSearch, const CHAR chReplace)
 #define IsOctalDigitW(wch) (((wch) >= L'0') && ((wch) <= L'7'))
 
 // Is the character an octal digit?
-inline bool IsDigitA(const char ch) {
+__forceinline bool IsDigitA(const char ch)
+{
     return ((ch >= '0') && (ch <= '9'));
 }
-inline bool IsDigitW(const WCHAR wch) {
+__forceinline bool IsDigitW(const WCHAR wch)
+{
     return ((wch >= L'0') && (wch <= L'9'));
 }
 
 // Is the character a white space char?
-inline bool IsBlankCharA(const char ch) {
+__forceinline bool IsBlankCharA(const char ch)
+{
     return ((ch == ' ') || (ch == '\t'));
 }
-inline bool IsBlankCharW(const WCHAR wch) {
+__forceinline bool IsBlankCharW(const WCHAR wch)
+{
     return ((wch == L' ') || (wch == L'\t'));
 }
 
 // no encoding for safe chars
-inline bool IsAlphaNumericA(const char ch) {
+__forceinline bool IsAlphaNumericA(const char ch)
+{
     return ((ch >= '0') && (ch <= '9')) ||
            ((ch >= 'a') && (ch <= 'z')) ||
            ((ch >= 'A') && (ch <= 'Z'));
 }
 
-inline bool IsAlphaNumericW(const WCHAR ch) {
+__forceinline bool IsAlphaNumericW(const WCHAR ch)
+{
     return
         ((ch >= L'0') && (ch <= L'9')) ||
         ((ch >= L'a') && (ch <= L'z')) ||
@@ -811,7 +818,7 @@ inline bool IsAlphaNumericW(const WCHAR ch) {
 }
 
 // If the character is an hexadecimal digit, get its value.
-inline int GetHexDigitA(const char ch)
+static inline int GetHexDigitA(const char ch)
 {
     if (ch >= '0' && ch <= '9') {
         return ch - '0';
@@ -825,7 +832,7 @@ inline int GetHexDigitA(const char ch)
     return -1;
 }
 
-inline int GetHexDigitW(const WCHAR ch)
+static inline int GetHexDigitW(const WCHAR ch)
 {
     if (ch >= L'0' && ch <= L'9') {
         return ch - L'0';
@@ -855,24 +862,23 @@ void CloseApplication();
 
 // ----------------------------------------------------------------------------
 
-inline int PointSizeToFontHeight(const float fPtHeight, const HDC hdc) {
+static inline int PointSizeToFontHeight(const float fPtHeight, const HDC hdc) {
     return -MulDiv(f2int(fPtHeight * 100.0f), GetDeviceCaps(hdc, LOGPIXELSY), 72 * SC_FONT_SIZE_MULTIPLIER);
 }
 
 // ----------------------------------------------------------------------------
 
-static inline int64_t GetTicks() {
-    LARGE_INTEGER ticks;
-    if (!QueryPerformanceCounter(&ticks)) {
-        return (int64_t)GetTickCount64();
-    }
+
+static inline LONG64 GetTicks_ms() {
     LARGE_INTEGER freq;
     if (!QueryPerformanceFrequency(&freq)) {
-        return (int64_t)GetTickCount64();
+        return (LONG64)GetTickCount64();
     }
-    ticks.QuadPart *= 1000000;
-    ticks.QuadPart /= freq.QuadPart;
-    return ticks.QuadPart;
+    LARGE_INTEGER ticks;
+    if (!QueryPerformanceCounter(&ticks)) {
+        return (LONG64)GetTickCount64();
+    }
+    return (ticks.QuadPart * 1000LL) / freq.QuadPart;
 }
 
 // ----------------------------------------------------------------------------
