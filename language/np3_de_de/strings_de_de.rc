@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Diese Operation wird die Undo-History löschen. Weiter machen?"
     IDS_MUI_READONLY_SAVE   """%s"" ist schreibgeschützt. Dokument unter einem anderen Dateipfad speichern?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Die geladene Datei wurde durch ein anderes Programm auf dem Datenträger verändert.\n[Abbrechen]:  \tIgnoriere alle Änderungen (Stiller Indikator).\n[Wiederholen]:\tDatei neu laden.\n[Weiter]:     \tWechsle ins Logfile Monitoring."
+                            "Die geladene Datei wurde durch ein anderes Programm auf dem Datenträger verändert.\n[Abbrechen]:\tIgnoriere alle Änderungen (Stiller Indikator).\n[Wiederholen]:\tDatei neu laden.\n[Weiter]:\tWechsle ins Logfile Monitoring."
     IDS_MUI_FILECHANGENOTIFY2 "Die geladene Datei wurde auf dem Datenträger gelöscht. Nochmals speichern?"
     IDS_MUI_FILELOCK_ERROR  "Es konnte keine exklusive Dateisperre auf ""%s"" gesetzt werden!"
     IDS_MUI_STICKYWINPOS    "Eingefrorene Fensterpositionierung is eingeschaltet worden. Jede neue Notepad3 Instanz wird nun diese Fensterpositionierung initial verwenden."

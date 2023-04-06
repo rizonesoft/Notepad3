@@ -44,7 +44,7 @@ msgstr "... %ld więcej dopasowań"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
-msgstr "%path% jest zastępowana ścieżką pliku, %line% z linią, aby przejść do, %pattern% with the search string."
+msgstr "%path% jest zastępowana ścieżką pliku, %line% z linią, aby przejść do, %pattern% z szukanym ciągiem."
 
 #. Resource IDs: (119)
 msgid "&About grepWinNP3..."
@@ -274,7 +274,7 @@ msgstr "Uwzględnij symboliczne łącza"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr "Uwzględnij skladniki systemowe"
+msgstr "Uwzględnij elementy sys."
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
@@ -290,7 +290,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr "Zachowaj datę plików podczas zamiany"
+msgstr "Zachowaj datę plików przy zamianie"
 
 #. Resource IDs: (1075)
 msgid "Language:"

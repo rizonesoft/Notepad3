@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Operasi ini dapat menghapus riwayat kembali. Lanjutkan?"
     IDS_MUI_READONLY_SAVE   """%s"" hanya baca saja. Simpan dalam berkas berbeda?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Berkas ini telah dimodifikasi oleh program lain. Muat ulang?"
+                            "Berkas ini telah dimodifikasi oleh program lain.\n[Cancel]:\tIgnore any changes (silent indicator).\n[Try Again]:\tReload File.\n[Continue]:\tSwitch to File Monitoring."
     IDS_MUI_FILECHANGENOTIFY2 "Berkas ini telah dihapus. Simpan sekarang?"
     IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive berkas lock for ""%s""!"
     IDS_MUI_STICKYWINPOS    "Sticky Window Position is enabled. Any new Notepad3 windows will use the current window placement settings."
@@ -310,10 +310,10 @@ Opsi:\r\n\
 /m\tMatch specified text (/m- last, /mr regex, /mb backslash).\r\n\
 /l\tOtomatis mulai ulang berkas yang berubah.\r\n\
 /q\tForce creation of new berkas without prompt.\r\n\
-/s\Pilih skema sintaks yang ditentukan.\r\n\
-/d\Pilih skema teks baku.\r\n\
+/s\tPilih skema sintaks yang ditentukan.\r\n\
+/d\tPilih skema teks baku.\r\n\
 /h\tPilih skema Kode Sumber Web.\r\n\
-/x\Pilih skema Dokumen XML.\r\n\
+/x\tPilih skema Dokumen XML.\r\n\
 /c\tOpen new window and paste clipboard contents.\r\n\
 /b\tOpen new paste board to collect clipboard entries.\r\n\
 /n\tSelalu buka jendela baru (/ns satu aplikasi untuk berkas).\r\n\

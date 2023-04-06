@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Cette opération videra l'historique ""Défaire"". Continuer ?"
     IDS_MUI_READONLY_SAVE   """%s"" est en lecture seule. Sauvegarder dans un fichier différent ?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Le fichier actuel a été modifié par un programme externe. Recharger ?"
+                            "Le fichier actuel a été modifié par un programme externe.\n[Cancel]:\tIgnore any changes (silent indicator).\n[Try Again]:\tReload File.\n[Continue]:\tSwitch to File Monitoring."
     IDS_MUI_FILECHANGENOTIFY2 "Le fichier actuel a été supprimé. Sauvegarder maintenant ?"
     IDS_MUI_FILELOCK_ERROR  "Ne peut acquérir un verrouillage de fichier exclusif pour ""%s"" !"
     IDS_MUI_STICKYWINPOS    "Le gel de la position de la fenêtre est activée. Toute nouvelle fenêtre Notepad3 utilisera les paramètres de placement de fenêtre en cours."
@@ -274,8 +274,8 @@ BEGIN
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Effacer l'historique de remplacement"
     IDS_MUI_SEARCHCLIPIFEMPTY
-                            "Rechercher par presse-papiers si sélection vide"
-    IDS_MUI_REPLCLIPTAG     "Remplacer par raccourci du presse-papiers [^c]"
+                            "Search by Clipboard if empty selection"
+    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Correspondre en boucle par le haut"
     IDS_MUI_WRAPSEARCH_BCK  "Correspondre en boucle par le bas"
 END
