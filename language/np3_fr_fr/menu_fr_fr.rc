@@ -357,7 +357,7 @@ BEGIN
             MENUITEM "Afficher uniquement dans le document",                IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Afficher tous les marqueurs de modification",         IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Effacer historique modifications/annulations"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Clear Change/Undo History"                                IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Points d'accès hyperliens\tCtrl+Alt+W",                   IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Points d'accès définition de &couleurs"

@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Esta operación borrará el historial de deshacer. ¿Continuar?"
     IDS_MUI_READONLY_SAVE   """%s"" es de sólo lectura. ¿Guardar en un archivo diferente?"
     IDS_MUI_FILECHANGENOTIFY
-                            "El archivo actual ha sido modificado por un programa externo. ¿Recargar?"
+                            "El archivo actual ha sido modificado por un programa externo.\n[Cancel]:\tIgnore any changes (silent indicator).\n[Try Again]:\tReload File.\n[Continue]:\tSwitch to File Monitoring."
     IDS_MUI_FILECHANGENOTIFY2 "El archivo actual ha sido eliminado. ¿Guardar ahora?"
     IDS_MUI_FILELOCK_ERROR  "No se puede adquirir un bloqueo de archivo exclusivo para ""%s""!"
     IDS_MUI_STICKYWINPOS    "La posición de la ventana fija está activada. Cualquier nueva ventana de Notepad3 utilizará la configuración de ubicación de la ventana actual."

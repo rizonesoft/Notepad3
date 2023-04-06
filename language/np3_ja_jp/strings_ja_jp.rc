@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "この操作は「元に戻す」の履歴を消去します。続行しますか?"
     IDS_MUI_READONLY_SAVE   "「%s」は読み取り専用です。別のファイル名で保存しますか?"
     IDS_MUI_FILECHANGENOTIFY
-                            "ファイルが他のプログラムによって変更されました。再読み込みしますか?"
+                            "ファイルが他のプログラムによって変更されました。\n[Cancel]:\tIgnore any changes (silent indicator).\n[Try Again]:\tReload File.\n[Continue]:\tSwitch to File Monitoring."
     IDS_MUI_FILECHANGENOTIFY2 "ファイルが削除されました。保存しますか?"
     IDS_MUI_FILELOCK_ERROR  "ファイル %s を排他ロックできませんでした !"
     IDS_MUI_STICKYWINPOS    "ウィンドウ位置の固定を有効にします。新しいウインドウは、現在のウインドウ位置の設定にて開かれます。"
