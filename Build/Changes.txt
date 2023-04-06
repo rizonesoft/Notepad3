@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.327.(build_#) (2023-03-27)
+Current BETA/RC Version 6.23.406.(build_#) (2023-04-06)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.406.1]- Enhanced File-Change Notification Messagebox.
 [.327.1]- Menu entry to clear change/undo history.
 [.321.1]- Split Verilog Lexer (Verilog and SystemVerilog).
 [.320.1]- Add Lexer Verilog HDL.
@@ -84,6 +85,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.406.1]- Some more issues around "File Change Monitoring".
+[.406.1]- Integration and Notification of DirectoryObserver and FileChanged-Polling.
+[.406.1]- Issue "file changed on disk" for silent mode on closing.
 [.327.1]- Some clean-up in uninstalling "Notepad3_setup" (SUP).
 [.327.1]- Oniguruma line-break handling (CRLF & CR) support.
 [.325.1]- Book/Change-Mmarker search: high prio on Book-Marker.
