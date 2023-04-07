@@ -357,7 +357,7 @@ BEGIN
             MENUITEM "Megjelenítés a dokumentumban",         IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Összes előzmény-jelölő megjelenítése", IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Változás/Visszavonás előzmények törlése"   IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Hivatkoz&ások kiemelése\tCtrl+Alt+W",   IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Szín&választó területek"
