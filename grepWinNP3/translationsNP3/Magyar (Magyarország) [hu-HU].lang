@@ -157,11 +157,11 @@ msgstr "Eredmények vágólapra másolása"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr ""
+msgstr "Minden elem oszlopának másolása"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr ""
+msgstr "Kielölt elemek oszlopának másolása"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
