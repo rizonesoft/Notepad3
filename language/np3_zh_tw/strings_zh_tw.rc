@@ -274,8 +274,8 @@ BEGIN
     IDS_MUI_CLEAR_REPL_HISTORY
                             "清除替換歷程記錄"
     IDS_MUI_SEARCHCLIPIFEMPTY
-                            "Search by Clipboard if empty selection"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
+                            "當選定為空時依照剪貼簿尋找"
+    IDS_MUI_REPLCLIPTAG     "[^c] 依照剪貼簿替換"
     IDS_MUI_WRAPSEARCH_FWD  "從頂部循環比對"
     IDS_MUI_WRAPSEARCH_BCK  "從底部循環比對"
 END

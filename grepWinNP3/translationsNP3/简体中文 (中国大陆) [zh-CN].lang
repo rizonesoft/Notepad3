@@ -157,11 +157,11 @@ msgstr "复制文本结果到剪贴板"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr ""
+msgstr "复制列（全部）"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr ""
+msgstr "复制列（仅选定项目）"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
