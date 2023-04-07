@@ -120,7 +120,7 @@ BEGIN
     IDS_MUI_FAVORITES       "Scegli la cartella con i collegamenti ai tuoi file preferiti."
     IDS_MUI_BACKSLASHHELP   "Trasformazioni backslash\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage Return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
     IDS_MUI_REGEXPHELP      "Sintassi occorrenze RegExp (Multi lines)\n\n.\tTrova qualunque carattere\n^\tStringa vuota immediatamente dopo un Newline\n$\tStringa vuota immediatamente prima dell'EOL\n\\<\tInizio di parola\n\\>\tFine di parola\n\\b\tConfini di parola\n[...]\tSet di caratteri ([abc]) o range ([a-z])\n[^...]\tCaratteri NON nel set o range\n\\d\tQualunque cifra numerica\n\\D\tQualunque carattere alfabetico\n\\s\tQualunque carattere whitespace\n\\S\tCarattere NON whitespace\n\\w\tQualunque carattere ""parola""\n\\W\tQualunque carattere ""non-parola""\n\\x\tCarattere di Escape con significato\n\taltrimenti speciale\n\\xHH\tChar con codice hex HH\n?\tTrova corrispondenza precedente 0 o 1 volta\n*\tTrova corrispondenza precedente 0 o più volte\n+\tTrova corrispondenza precedente 1 o più volte\n*? or +?\tNon-greedy-matching dei quantificatori ""?"" e ""+""\n(\tInizio region\n)\tFine region\n\\n\tRiferimento a una region quando\n\tsostituisce (n è 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Cerca con wildcard\n\n*\tTrova 0 o più caratteri.\n?\tTrova esattamente 1 carattere. "
+    IDS_MUI_WILDCARDHELP    "Cerca con caratteri Jolly\n\n*\tTrova 0 o più caratteri.\n?\tTrova esattamente 1 carattere. "
 END
 
 STRINGTABLE
