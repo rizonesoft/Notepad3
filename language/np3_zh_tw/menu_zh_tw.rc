@@ -357,7 +357,7 @@ BEGIN
             MENUITEM "僅顯示於文件中",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "全部顯示",             IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "清除變更/復原歷程"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "檢測超連結(&Y)\tCtrl+Alt+W",                 IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "檢測 #RRGGBB 顏色(&C)"
