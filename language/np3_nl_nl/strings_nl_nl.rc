@@ -274,8 +274,8 @@ BEGIN
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Vervanggeschiedenis wissen"
     IDS_MUI_SEARCHCLIPIFEMPTY
-                            "Search by Clipboard if empty selection"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
+                            "Zoeken vanuit klembord bij lege selectie"
+    IDS_MUI_REPLCLIPTAG     "Vervangen door klembord bij sneltoets [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Zoekopdracht bovenaan voortzetten"
     IDS_MUI_WRAPSEARCH_BCK  "Zoekopdracht onderaan voorzetten"
 END
