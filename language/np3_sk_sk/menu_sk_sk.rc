@@ -357,7 +357,7 @@ BEGIN
             MENUITEM "Zobraziť len v dokumente",                IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Zobraziť všetky značky zmien",            IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Vymazať históriu príkazov Späť/Znova"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "&Hyperlinkové prepojenia\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Farba definície prepojenia"
