@@ -357,7 +357,7 @@ BEGIN
             MENUITEM "Pokaż tylko w dokumencie",                  IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Pokaż wszystkie markery zmain",             IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Wyczyść zmiany/Cofnij historię"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Aktywne miejsca hiperpłącza\tCtrl+Alt+W",         IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Definicja kolorów Hotspotów"
