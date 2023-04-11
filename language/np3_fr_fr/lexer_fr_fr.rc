@@ -507,12 +507,12 @@ BEGIN
     IDS_LEX_STR_StrgEOL     "Chaîne EOL"
     IDS_LEX_STR_Backticks   "Accents graves"
     IDS_LEX_STR_GUIDStrg    "Chaîne GUID"
-    IDS_LEX_STR_Global      "Global"
-    IDS_LEX_STR_Input       "Input"
-    IDS_LEX_STR_Output      "Output"
-    IDS_LEX_STR_InOut       "InOut"
-    IDS_LEX_STR_PortConn    "Port Connection"
-    IDS_LEX_STR_SysTasks    "System Tasks"
+    IDS_LEX_STR_Global      "Globale"
+    IDS_LEX_STR_Input       "Entrée"
+    IDS_LEX_STR_Output      "Sortie"
+    IDS_LEX_STR_InOut       "EntréeSortie"
+    IDS_LEX_STR_PortConn    "Connexion Port"
+    IDS_LEX_STR_SysTasks    "Tâches Système"
 END
 
 STRINGTABLE

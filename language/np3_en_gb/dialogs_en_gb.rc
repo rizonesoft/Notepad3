@@ -753,7 +753,7 @@ BEGIN
     AUTOCHECKBOX    "Stri&keout", chx1, 13, 111, 90, 10, WS_TABSTOP
     AUTOCHECKBOX    "&Underline", chx2, 13, 127, 90, 10
 
-    LTEXT           "&Color:", stc4, 13, 144, 89, 9
+    LTEXT           "&Colour:", stc4, 13, 144, 89, 9
     COMBOBOX        cmb4, 13, 155, 85, 100,
     CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | CBS_AUTOHSCROLL |
     CBS_HASSTRINGS | WS_BORDER | WS_VSCROLL | WS_TABSTOP
@@ -784,20 +784,20 @@ END
 
 IDD_MUI_SYSCOLOR_DLG DIALOGEX LOADONCALL MOVEABLE DISCARDABLE 2, 0, 298, 184
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Choose Color"
+CAPTION "Choose Colour"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Basic colors:", -1, 4, 4, 140, 9
+    LTEXT           "&Basic colours:", -1, 4, 4, 140, 9
     CONTROL         "", COLOR_BOX1, "static",
     SS_SIMPLE | WS_CHILD | WS_TABSTOP | WS_GROUP,
     4, 14, 140, 86
 
-    LTEXT           "&Custom colors:", -1, 4, 106, 140, 9
+    LTEXT           "&Custom colours:", -1, 4, 106, 140, 9
     CONTROL         "", COLOR_CUSTOM1, "static",
     SS_SIMPLE | WS_CHILD | WS_TABSTOP | WS_GROUP,
     4, 116, 140, 28
 
-    PUSHBUTTON      "&Define Custom Colors >>" COLOR_MIX, 4, 150, 138, 14,
+    PUSHBUTTON      "&Define Custom Colours >>" COLOR_MIX, 4, 150, 138, 14,
     WS_TABSTOP | WS_GROUP
 
     DEFPUSHBUTTON   "OK", IDOK, 4, 166, 44, 14, WS_GROUP | WS_TABSTOP
@@ -814,7 +814,7 @@ BEGIN
     SS_SIMPLE | WS_CHILD, 152, 124, 40, 26
 
     PUSHBUTTON      "&o", COLOR_SOLID, 300, 200, 4, 14, WS_GROUP
-    RTEXT           "Color", COLOR_SOLID_LEFT, 152, 151, 20, 9
+    RTEXT           "Colour", COLOR_SOLID_LEFT, 152, 151, 20, 9
     LTEXT           "|S&olid", COLOR_SOLID_RIGHT, 172, 151, 20, 9
 
     RTEXT           "Hu&e:", COLOR_HUEACCEL, 194, 126, 20, 9
@@ -835,7 +835,7 @@ BEGIN
     RTEXT           "Bl&ue:", COLOR_BLUEACCEL, 243, 154, 24, 9
     EDITTEXT, COLOR_BLUE, 269, 152, 18, 12, WS_GROUP | WS_TABSTOP
 
-    PUSHBUTTON      "&Add to Custom Colors", COLOR_ADD, 152, 166, 142, 14,
+    PUSHBUTTON      "&Add to Custom Colours", COLOR_ADD, 152, 166, 142, 14,
     WS_GROUP | WS_TABSTOP
 END
 
