@@ -360,7 +360,7 @@ BEGIN
         MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "&Hyperlink Hotspots\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
-        POPUP "&Color Definition Hotspots"
+        POPUP "&Colour Definition Hotspots"
         BEGIN
             MENUITEM "&OFF",                             IDM_VIEW_COLORDEFHOTSPOTS
             MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
@@ -372,7 +372,7 @@ BEGIN
         POPUP "H&ighlight Current Line\tCtrl+Shift+I"
         BEGIN
             MENUITEM "&No Highlight",                   IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "Background &Color",               IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "Background &Colour",              IDM_VIEW_HILITCURLN_BACK
             MENUITEM "Outline &Frame",                  IDM_VIEW_HILITCURLN_FRAME
         END
         POPUP "Mark &Occurrences"
