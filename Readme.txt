@@ -101,6 +101,7 @@ bravo-hero              https://github.com/bravo-hero
 craigo-                 https://github.com/craigo-
 Crane70                 https://github.com/Crane70
 engelhro                https://github.com/engelhro
+fadzikri                https://github.com/fadzikri
 geogeo-gr               https://github.com/geogeo-gr
 Hexaae                  https://github.com/Hexaae
 hpwamr                  https://github.com/hpwamr
