@@ -274,8 +274,8 @@ BEGIN
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Effacer l'historique de remplacement"
     IDS_MUI_SEARCHCLIPIFEMPTY
-                            "Search by Clipboard if empty selection"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
+                            "Chercher depuis le presse-papiers si sélection vide"
+    IDS_MUI_REPLCLIPTAG     "Remplacer par le presse-papiers au raccourci [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Correspondre en boucle par le haut"
     IDS_MUI_WRAPSEARCH_BCK  "Correspondre en boucle par le bas"
 END
