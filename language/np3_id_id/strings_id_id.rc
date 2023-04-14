@@ -179,8 +179,8 @@ BEGIN
     IDS_MUI_FILECHANGENOTIFY
                             "Berkas ini telah dimodifikasi oleh program lain.\n[Batal]:\tAbaikan setiap perubahan (heningkan pemberitahuan).\n[Coba Lagi]:\tMuat ulang berkas.\n[Lanjutkan]:\tBeralih ke Pemantauan Berkas."
     IDS_MUI_FILECHANGENOTIFY2 "Berkas ini telah dihapus. Simpan sekarang?"
-    IDS_MUI_FILELOCK_ERROR 	"Tidak bisa mendapatkan kunci berkas eksklusif untuk ""%s""!"
-    IDS_MUI_STICKYWINPOS 	"Posisi Jendela Tetap diaktifkan. Setiap jendela Notepad3 baru akan menggunakan pengaturan jendela saat ini."
+    IDS_MUI_FILELOCK_ERROR  "Tidak bisa mendapatkan kunci berkas eksklusif untuk ""%s""!"
+    IDS_MUI_STICKYWINPOS    "Posisi Jendela Tetap diaktifkan. Setiap jendela Notepad3 baru akan menggunakan pengaturan jendela saat ini."
     IDS_MUI_SAVEDSETTINGS   "Pengaturan program telah disimpan."
     IDS_MUI_CREATEINI_FAIL  "Kesalahan membuat berkas konfigurasi."
     IDS_MUI_WRITEINI_FAIL   "Kesalahan menyimpan pengaturan ke berkas konfigurasi."
@@ -204,7 +204,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Klik untuk membuka berkas."
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klik untuk membuka tautan di browser."
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Mempertahankan berkas dari Modifikasi Stempel Waktu telah diaktifkan.\nOpsi ini hanya akan berlangsung untuk sesi ini saja!
+                             "Mempertahankan berkas dari Modifikasi Stempel Waktu telah diaktifkan.\nOpsi ini hanya akan berlangsung untuk sesi ini saja!"
     IDS_MUI_OUT_OFF_OCCMRK   "Penanda Pengulangan Kata telah habis (Markah/Sorotan)!"
     IDS_MUI_DOCUMENT_READONLY
                              "Dokumen dikunci hanya untuk dilihat saja. Tetap kunci untuk mencegah pengeditan?"
@@ -223,26 +223,26 @@ BEGIN
     IDS_MUI_WARN_STYLE_RESET
                             "Tindakan ini akan mengatur ulang gaya tampilan dan berkas tema yang aktif saat ini akan disetel ke konfigurasi standar .ini!"
     IDS_MUI_ASK_INSTANCE_EXISTS
-                            "Mode instansi berkas tunggal: \n\nBeralih ke berkas instansi yang sudah dimuat?"
+                            "Mode instansi berkas tunggal:\n\nBeralih ke berkas instansi yang sudah dimuat?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY 	"Dokumen ini tidak berisi teks yang akan dicetak."
-	IDS_MUI_PRINT_ERROR 	"Kesalahan mencetak ""%s""!"
-    IDS_MUI_FAV_SUCCESS 	"Pintasan ke berkas ini telah dibuat di direktori favorit."
-    IDS_MUI_FAV_GAGAL 		"Pintasan ke berkas ini tidak dapat dibuat.\nPastikan tidak ada berkas lain dengan nama yang sama."
+    IDS_MUI_PRINT_EMPTY     "Dokumen ini tidak berisi teks yang akan dicetak."
+    IDS_MUI_PRINT_ERROR     "Kesalahan mencetak ""%s""!"
+    IDS_MUI_FAV_SUCCESS     "Pintasan ke berkas ini telah dibuat di direktori favorit."
+    IDS_MUI_FAV_FAILURE     "Pintasan ke berkas ini tidak dapat dibuat.\nPastikan tidak ada berkas lain dengan nama yang sama."
     IDS_MUI_READONLY_MODIFY "Atribut ""%s"" tidak dapat diubah."
-    IDS_MUI_SAVEPOS 		"&Simpan Posisi\tCtrl+S"
-    IDS_MUI_RESETPOS 		"&Setel Ulang Posisi\tCtrl+R"
-	IDS_MUI_PREVIEW 		"&Pratinjau Pengaturan\tCtrl+P"
-    IDS_MUI_PASS_FAILURE 	"Sandi frasa salah.\nCoba ulang dengan frasa sandi yang lain?"
-    IDS_MUI_NOPASS 			"Dekripsi Dibatalkan!\nBaca data mentahan yang dienkripsi?"
-    IDS_MUI_STY_BASESTD 	"BASE (Gaya Baku):"
-	IDS_MUI_STY_BASE2ND 	"BASE (Gaya Baku ke-2):"
-	IDS_MUI_STY_LEXDEF 		"%s - Gaya Baku:"
-    IDS_MUI_STY_LEXSTYLE 	"Gaya %s:"
-    IDS_MUI_TITLE_RELBASE 	"+++ BASE (%s) +++"
+    IDS_MUI_SAVEPOS         "&Simpan Posisi\tCtrl+S"
+    IDS_MUI_RESETPOS        "&Setel Ulang Posisi\tCtrl+R"
+    IDS_MUI_PREVIEW         "&Pratinjau Pengaturan\tCtrl+P"
+    IDS_MUI_PASS_FAILURE    "Sandi frasa salah.\nCoba ulang dengan frasa sandi yang lain?"
+    IDS_MUI_NOPASS          "Dekripsi Dibatalkan!\nBaca data mentahan yang dienkripsi?"
+    IDS_MUI_STY_BASESTD     "BASE (Gaya Baku):"
+    IDS_MUI_STY_BASE2ND     "BASE (Gaya Baku ke-2):"
+    IDS_MUI_STY_LEXDEF      "%s - Gaya Baku:"
+    IDS_MUI_STY_LEXSTYLE    "Gaya %s:"
+    IDS_MUI_TITLE_RELBASE   "+++ BASE (%s) +++"
 END
 
 STRINGTABLE
@@ -266,7 +266,7 @@ BEGIN
     IDS_MUI_MENU_THEMES     "&Koleksi Skema"
     IDM_THEMES_FACTORY_RESET "&Reset Tema"
     IDM_THEMES_STD_CFG       "&Konfigurasi Standar"
-    IDS_MUI_STATUSBAR_PREFIXES "Baris  ,Kolom  ,Seleksi  ,Seleksi Multi  ,Seleksi Baris  ,Ulang Kata  ,,,,,,,Karakter  ,Ganti  ,Ekspresi  ,U+,"
+    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Bersihkan Semua"
     IDS_MUI_CLEAR_FIND_HISTORY
@@ -298,7 +298,7 @@ Penggunaan:\r\n\
 Notepad3 [/?] [...[Encoding]] [...[Akhir baris]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][jalur]nama_berkas[...]]\r\n\r\n\
-nama_berkas\tHarus sebagai argumen terakhir,\r\n\tboleh untuk tidak menggunakan tanda kutip.\r\n\
+berkas\tHarus sebagai argumen terakhir,\r\n\tboleh untuk tidak menggunakan tanda kutip.\r\n\
 +\tDapat menerima banyak berkas (perlu tanda kutip).\r\n\
 -\tHanya menerima satu berkas (tanpa tanda kutip).\r\n\r\n\
 Opsi:\r\n\
@@ -361,7 +361,7 @@ IDS_MUI_ABOUT_RTF_1  "\
 \\cf0 \\fs20\\b1\\ul1 Kontributor:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_2  "\
-\\cf0 \\fs20\\b1\\ul1 Sumber Terbuka / Pustaka:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Open Source / Pustaka:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
 \\cf0 \\fs20\\b1\\ul1 Ucapan Terima Kasih:\\ul0\\b0\\fs18\\par\
