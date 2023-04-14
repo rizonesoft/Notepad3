@@ -118,8 +118,8 @@ BEGIN
     IDS_MUI_FILTER_BITMAP   "Berkas bitmap (*.bmp)|*.bmp|Semua berkas (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Buka direktori aplikasi favorit Anda."
     IDS_MUI_FAVORITES       "Buka direktori berkas favorit Anda."
-    IDS_MUI_BACKSLASHHELP   "Konversi garis miring\n\n\\a\tAlarm (BEL, ASCII 7)\n\\b\tHapus (BS, ASCII 8)\n\\f\tPemisah Halaman (FF, ASCII 12)\n\\n\tBaris baru (LF, ASCII 10)\n\\r\tBaris Baru (CR, ASCII 13)\n\\t\tTab Horizontal (HT, ASCII 9)\n\\v\tTab Vertikal (VT, ASCII 11)\n\\0oo\tNotasi Oktal\n\\u####\tNotasi Heksadesimal\n\\xhh\tNotasi Heksadesimal\n\\\\\tGaris Miring"
-    IDS_MUI_REGEXPHELP      "Sintaks Ekspresi Reguler (Multi Baris)\n\n.\tSemua karakter\n^\tAwal baris\n$\tAkhir baris\n\\<\tAwal kata\n\\>\tAkhir kata\n\\b\tBatas kata\n[...]\tSatu set karakter ([abc]) atau rentang ([a-z])\n[^...]\tKarakter yang BUKAN dari set atau rentang\n\\d\tSetiap digit desimal\n\\D\tSetiap karakter non-digit\n\\s\tKarakter spasi\n\\S\tBukan karakter spasi\n\\w\tKarakter ""huruf""\n\\W\tKarakter ""non-huruf""\n\\x\tEscape character with otherwise special meaning\n\\xHH\tKarakter dengan notasi kode Hex HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n itu 1-9)\n"
+    IDS_MUI_BACKSLASHHELP   "Konversi garis miring\n\n\\a\tAlarm (BEL, ASCII 7)\n\\b\tHapus (BS, ASCII 8)\n\\f\tPemisah Halaman (FF, ASCII 12)\n\\n\tBaris Baru (LF, ASCII 10)\n\\r\tBaris Baru (CR, ASCII 13)\n\\t\tTab Horizontal (HT, ASCII 9)\n\\v\tTab Vertikal (VT, ASCII 11)\n\\0oo\tNotasi Oktal\n\\u####\tNotasi Heksadesimal\n\\xhh\tNotasi Heksadesimal\n\\\\\tGaris Miring"
+    IDS_MUI_REGEXPHELP      "Sintaks Ekspresi Reguler (Multi Baris)\n\n.\tSemua karakter\n^\tAwal baris\n$\tAkhir baris\n\\<\tAwal kata\n\\>\tAkhir kata\n\\b\tBatas kata\n[...]\tSatu set karakter ([abc]) atau rentang ([a-z])\n[^...]\tKarakter yang BUKAN dari set atau rentang\n\\d\tSetiap digit desimal\n\\D\tSetiap karakter non-digit\n\\s\tKarakter spasi\n\\S\tBukan karakter spasi\n\\w\tKarakter ""huruf""\n\\W\tKarakter ""non-huruf""\n\\x\tEscape karakter dengan makna khusus\n\\xHH\tKarakter dengan notasi Hex HH\n?\tMencocokkan dengan sebelumnya sebanyak 0 atau 1 kali\n*\tMencocokkan dengan sebelumnya sebanyak 0 kali atau lebih\n+\tMencocokkan dengan sebelumnya sebanyak 1 kali atau lebih\n*? or +?\tPencocokan mode malas, memakai ""?"" dan ""+""\n(\tAwal suatu bagian\n)\tAkhir suatu bagian\n\\n\tMerujuk ke suatu bagian saat mengganti (n untuk 1-9)\n"
     IDS_MUI_WILDCARDHELP    "Pencarian wildcard\n\n*\tCocokkan nol atau lebih karakter.\n?\tCocokkan dengan satu karakter."
 END
 
@@ -138,16 +138,16 @@ BEGIN
     IDS_MUI_ERR_UNICODE     "Kesalahan saat mengonversi berkas Unicode ini.\nData akan hilang apabila berkas disimpan!"
     IDS_MUI_ERR_BITMAP      "Kesalahan memuat bitmap ""%s"".\nDimensi yang dibutuhkan: %i x %i (lebar >= %i x tinggi)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Kesalahan prioritas hak pengguna!"
+                            "Kesalahan hak akses pengguna!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "Certain characters in the current text are not supported by the selected encoding, and may be replaced by default placeholders when saving. It's recommended to choose another file encoding. Continue?"
+    IDS_MUI_ERR_UNICODE2    "Beberapa karakter dalam berkas ini tidak didukung oleh encoding yang dipilih, dan mungkin akan digantikan dengan placeholder baku saat disimpan. Disarankan untuk memilih encoding berkas lain. Apakah Anda ingin melanjutkan?"
     IDS_MUI_ERR_DROP        "Hanya satu berkas yang dapat dihapus dalam satu waktu!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "The berkas ""%s"" cannot be saved and may be protected.\n\nDo you want to launch %s as 'Elevated' application?"
-    IDS_MUI_ERR_ADMINEXE    "No administration executable found.\nCheck website https://rizonesoft.com?"
+                            "Berkas ""%s"" tidak dapat disimpan karena diproteksi.\n\nApakah kamu ingin membuka %s dengan hak akses 'Administrator'?"
+    IDS_MUI_ERR_ADMINEXE    "Tidak ditemukan eksekusi administrasi.\nPeriksa situs web https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Apa kamu yakin ingin membuka berkas berukuran besar ini?\n\t(ukuran: %s >= %s)!\n(Tampilan Gaya and Sorotan Sintaksis tidak dapat diterapkan!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -177,82 +177,82 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Operasi ini dapat menghapus riwayat kembali. Lanjutkan?"
     IDS_MUI_READONLY_SAVE   """%s"" hanya baca saja. Simpan dalam berkas berbeda?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Berkas ini telah dimodifikasi oleh program lain.\n[Cancel]:\tIgnore any changes (silent indicator).\n[Try Again]:\tReload File.\n[Continue]:\tSwitch to File Monitoring."
+                            "Berkas ini telah dimodifikasi oleh program lain.\n[Batal]:\tAbaikan setiap perubahan (heningkan pemberitahuan).\n[Coba Lagi]:\tMuat ulang berkas.\n[Lanjutkan]:\tBeralih ke Pemantauan Berkas."
     IDS_MUI_FILECHANGENOTIFY2 "Berkas ini telah dihapus. Simpan sekarang?"
-    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive berkas lock for ""%s""!"
-    IDS_MUI_STICKYWINPOS    "Sticky Window Position is enabled. Any new Notepad3 windows will use the current window placement settings."
-    IDS_MUI_SAVEDSETTINGS   "The current program settings have been saved."
-    IDS_MUI_CREATEINI_FAIL  "Error creating configuration berkas."
-    IDS_MUI_WRITEINI_FAIL   "Error writing settings to configuration berkas."
+    IDS_MUI_FILELOCK_ERROR 	"Tidak bisa mendapatkan kunci berkas eksklusif untuk ""%s""!"
+    IDS_MUI_STICKYWINPOS 	"Posisi Jendela Tetap diaktifkan. Setiap jendela Notepad3 baru akan menggunakan pengaturan jendela saat ini."
+    IDS_MUI_SAVEDSETTINGS   "Pengaturan program telah disimpan."
+    IDS_MUI_CREATEINI_FAIL  "Kesalahan membuat berkas konfigurasi."
+    IDS_MUI_WRITEINI_FAIL   "Kesalahan menyimpan pengaturan ke berkas konfigurasi."
     IDS_MUI_INIFILE_READONLY
-                            "Berkas konfigurasi hanya dapat dibaca saja - abikan dan timpa pengaturan?"
+                            "Berkas konfigurasi hanya dapat dibaca saja. Abaikan pemberitahuan dan timpa pengaturan?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Tidak ada berkas konfigurasi yang ditemukan.\nUntuk menyimpan gaya tampilan, simpan pengaturan sekarang (F7) atau kembali ke konfigurasi skema (Ctrl+F12) dan ekspor gaya tampilan."
+                            "Tidak ada berkas konfigurasi yang ditemukan.\nUntuk menyimpan gaya tampilan, simpan pengaturan sekarang (F7) atau kembali ke konfigurasi skema dan ekspor gaya tampilan (Ctrl+F12)."
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "Activate saved settings by program relaunch?\n\n%s"
-    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
-    IDS_MUI_EXPORT_FAIL      "Error exporting style settings to ""%s""."
-    IDS_MUI_REGEX_INVALID    "Error evaluating regular expression. Expression is invalid!"
-    IDS_MUI_DROP_NO_FILE     "No valid filename retrieved.\nIf dropping from 32-bit application,\nplease drag and drop to Notepad3's tool bar."
-    IDS_MUI_URL_DIR_EXISTS   "URL direktori yang dituju ada!"
-    IDS_MUI_URL_FILE_EXISTS  "URL berkas yang dituju ada!"
+    IDS_MUI_RELOADSETTINGS   "Jalankan pengaturan yang telah disimpan dengan peluncuran ulang program?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "Jika melanjutkan tanpa memulai ulang program, pengaturan yang telah tersimpan tidak akan diterapkan dan akan ditimpa oleh pengaturan internal saat keluar!"
+    IDS_MUI_EXPORT_FAIL      "Kesalahan mengekspor pengaturan gaya ke ""%s""."
+    IDS_MUI_REGEX_INVALID    "Kesalahan mengevaluasi ekspresi reguler. Ekspresi tidak valid!"
+    IDS_MUI_DROP_NO_FILE     "Tidak ada nama berkas yang valid diambil.\nJika telah lepas dari penggunaan aplikasi 32-bit,\nsilahkan seret berkas dan lepaskan ke bilah alat Notepad3."
+    IDS_MUI_URL_DIR_EXISTS   "URL direktori yang dituju tersedia!"
+    IDS_MUI_URL_FILE_EXISTS  "URL berkas yang dituju tersedia!"
     IDS_MUI_URL_PATH_NOT_FOUND
                              "Jalur URL yang dituju tidak ditemukan!"
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click untuk membuka berkas."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click untk membuka tautan di browser."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Klik untuk membuka berkas."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klik untuk membuka tautan di browser."
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Preserving original berkas Modification Timestamp enabled.\nThis option will stay for this session!"
-    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highlight)!"
+                             "Mempertahankan berkas dari Modifikasi Stempel Waktu telah diaktifkan.\nOpsi ini hanya akan berlangsung untuk sesi ini saja!
+    IDS_MUI_OUT_OFF_OCCMRK   "Penanda Pengulangan Kata telah habis (Markah/Sorotan)!"
     IDS_MUI_DOCUMENT_READONLY
                              "Dokumen dikunci hanya untuk dilihat saja. Tetap kunci untuk mencegah pengeditan?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "Save changes to:\n""%s""?"
-    IDS_MUI_ASK_REVERT      "Revert berkas to last saved state?"
-    IDS_MUI_ASK_RECODE      "Recoding requires reloading berkas from disk, unsaved changes will be lost!"
-    IDS_MUI_ASK_CREATE      """%s"" not found.\nWould you like to create this berkas?"
-    IDS_MUI_PRINT_HEADER    "Filename, Current Date and Time|Filename, Current Date|Filename|Leave blank"
+    IDS_MUI_ASK_SAVE        "Simpan perubahan ke:\n""%s""?"
+    IDS_MUI_ASK_REVERT      "Kembalikan semula berkas ke kondisi tersimpan?"
+    IDS_MUI_ASK_RECODE      "Pengkodean ulang akan memuat ulang berkas, perubahan yang tidak disimpan akan hilang!"
+    IDS_MUI_ASK_CREATE      """%s"" tidak ditemukan.\nApakah Anda ingin membuat berkas ini?"
+    IDS_MUI_PRINT_HEADER    "Nama Berkas, Tanggal dan Waktu Sekarang|Nama Berkas, Tanggal Sekarang|Nama Berkas|Tinggalkan Kosong"
     IDS_MUI_PRINT_FOOTER    "Nomor Halaman|Biarkan kosong"
-    IDS_MUI_PRINT_COLOR     "Normal|Invert light (dark background)|Black on white|Colour on white|Colour on white (except line numbers)|Screen Colours"
+    IDS_MUI_PRINT_COLOR     "Normal|Balikkan kecerahan (latar hitam)|Hitam pada latar putih|Warna pada latar putih|Warna pada latar putih (kecuali nomor baris)|Warna Layar"
     IDS_MUI_PRINT_PAGENUM   "Halaman %i"
     IDS_MUI_WARN_STYLE_RESET
-                            "This action will reset style to factory defaults of desired colour mode and switch active theme berkas to standard config .ini!"
+                            "Tindakan ini akan mengatur ulang gaya tampilan dan berkas tema yang aktif saat ini akan disetel ke konfigurasi standar .ini!"
     IDS_MUI_ASK_INSTANCE_EXISTS
-                            "Single berkas Instance Mode:\n\nSet focus on already loaded berkas instance?"
+                            "Mode instansi berkas tunggal: \n\nBeralih ke berkas instansi yang sudah dimuat?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "This document doesn't contain any text to be printed."
-    IDS_MUI_PRINT_ERROR     "Error printing ""%s""!"
-    IDS_MUI_FAV_SUCCESS     "A shortcut to the current berkas has been created in the favourites directory."
-    IDS_MUI_FAV_FAILURE     "The shortcut to the current berkas could not be created.\nMake sure there's no other berkas with the same name."
-    IDS_MUI_READONLY_MODIFY "The attributes of ""%s"" could not be modified."
-    IDS_MUI_SAVEPOS         "&Save Position\tCtrl+S"
-    IDS_MUI_RESETPOS        "&Reset Position\tCtrl+R"
-    IDS_MUI_PREVIEW         "&Preview Settings\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "The Passphrase is incorrect.\nRetry another Passphrase?"
-    IDS_MUI_NOPASS          "Decryption Cancelled!\nRead encrypted raw data?"
-    IDS_MUI_STY_BASESTD     "BASE (Default Style):"
-    IDS_MUI_STY_BASE2ND     "BASE (2nd Default Style):"
-    IDS_MUI_STY_LEXDEF      "%s - Default Style:"
-    IDS_MUI_STY_LEXSTYLE    "%s's  Style:"
-    IDS_MUI_TITLE_RELBASE   "+++ BASE (%s) +++"
+    IDS_MUI_PRINT_EMPTY 	"Dokumen ini tidak berisi teks yang akan dicetak."
+	IDS_MUI_PRINT_ERROR 	"Kesalahan mencetak ""%s""!"
+    IDS_MUI_FAV_SUCCESS 	"Pintasan ke berkas ini telah dibuat di direktori favorit."
+    IDS_MUI_FAV_GAGAL 		"Pintasan ke berkas ini tidak dapat dibuat.\nPastikan tidak ada berkas lain dengan nama yang sama."
+    IDS_MUI_READONLY_MODIFY "Atribut ""%s"" tidak dapat diubah."
+    IDS_MUI_SAVEPOS 		"&Simpan Posisi\tCtrl+S"
+    IDS_MUI_RESETPOS 		"&Setel Ulang Posisi\tCtrl+R"
+	IDS_MUI_PREVIEW 		"&Pratinjau Pengaturan\tCtrl+P"
+    IDS_MUI_PASS_FAILURE 	"Sandi frasa salah.\nCoba ulang dengan frasa sandi yang lain?"
+    IDS_MUI_NOPASS 			"Dekripsi Dibatalkan!\nBaca data mentahan yang dienkripsi?"
+    IDS_MUI_STY_BASESTD 	"BASE (Gaya Baku):"
+	IDS_MUI_STY_BASE2ND 	"BASE (Gaya Baku ke-2):"
+	IDS_MUI_STY_LEXDEF 		"%s - Gaya Baku:"
+    IDS_MUI_STY_LEXSTYLE 	"Gaya %s:"
+    IDS_MUI_TITLE_RELBASE 	"+++ BASE (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(id-ID) Terjemahan bahasa Indonesia oleh fadzikri"
     IDS_MUI_TITLE_FIXBASE   "BASE (%s)"
-    IDS_MUI_TITLE_RELCUR    "+++ %s: %s Style +++"
-    IDS_MUI_TITLE_FIXCUR    "%s: %s Style"
-    IDS_MUI_TITLE_RELARB    "+++ Style '%s' (%s) +++"
-    IDS_MUI_TITLE_FIXARB    "Style '%s' (%s)"
+    IDS_MUI_TITLE_RELCUR    "+++ %s: %s Gaya tampilan +++"
+    IDS_MUI_TITLE_FIXCUR    "%s: %s Gaya tampilan"
+    IDS_MUI_TITLE_RELARB    "+++ Gaya tampilan '%s' (%s) +++"
+    IDS_MUI_TITLE_FIXARB    "Gaya tampilan '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Ekstensi berkas:"
     IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
     IDS_MUI_GOTO_LINE       "Baris (1 - %s):"
@@ -266,29 +266,29 @@ BEGIN
     IDS_MUI_MENU_THEMES     "&Koleksi Skema"
     IDM_THEMES_FACTORY_RESET "&Reset Tema"
     IDM_THEMES_STD_CFG       "&Konfigurasi Standar"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
+    IDS_MUI_STATUSBAR_PREFIXES "Baris  ,Kolom  ,Seleksi  ,Seleksi Multi  ,Seleksi Baris  ,Ulang Kata  ,,,,,,,Karakter  ,Ganti  ,Ekspresi  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
-    IDS_CLEAR_ALL           "Clear All"
+    IDS_CLEAR_ALL           "Bersihkan Semua"
     IDS_MUI_CLEAR_FIND_HISTORY
-                            "Clear Find History"
+                            "Bersihkan Riwayat Pencarian"
     IDS_MUI_CLEAR_REPL_HISTORY
-                            "Clear Replace History"
+                            "Bersihkan Riwayat Pergantian"
     IDS_MUI_SEARCHCLIPIFEMPTY
-                            "Search by Clipboard if empty selection"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom"
+                            "Cari dengan Papan Klip jika pemilihan kosong"
+    IDS_MUI_REPLCLIPTAG     "Ganti dengan Papan Klip pada pintasan [^c]"
+    IDS_MUI_WRAPSEARCH_FWD  "Bungkus kecocokan dari atas"
+    IDS_MUI_WRAPSEARCH_BCK  "Bungkus kecocokan dari bawah"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "Mark All Occurrences..."
-    IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
-    IDS_MUI_SB_REPLACE_ALL    "Replace all..."
-    IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
-    IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
-    IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
+    IDS_MUI_SB_MARK_ALL_OCC   "Tandai Semua Pengulangan Kata..."
+    IDS_MUI_SB_TOGGLE_VIEW    "Alihkan Tampilan..."
+    IDS_MUI_SB_REPLACE_ALL    "Ganti Semua..."
+    IDS_MUI_SB_WRAP_LINES     "Bungkus Baris..."
+    IDS_MUI_SB_CONV_LNBRK     "Konversi Akhir Baris..."
+    IDS_MUI_SB_RECODING_DOC   "Pengkodean Ulang Dokumen..."
+    IDS_MUI_SB_LEXER_STYLING  "Terapkan Gaya Lexer..."
 END
 
 STRINGTABLE
@@ -298,48 +298,48 @@ Penggunaan:\r\n\
 Notepad3 [/?] [...[Encoding]] [...[Akhir baris]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][jalur]nama_berkas[...]]\r\n\r\n\
-berkas\tHarus sebagai argumen terakhir, tidak apa untuk tidak menggunakan tanda kutip.\r\n\
-+\tDapat menerima banyak berkas (dengan tanda kutip).\r\n\
--\tDapat menerima satu berkas (tanpa tanda kutip).\r\n\r\n\
+nama_berkas\tHarus sebagai argumen terakhir,\r\n\tboleh untuk tidak menggunakan tanda kutip.\r\n\
++\tDapat menerima banyak berkas (perlu tanda kutip).\r\n\
+-\tHanya menerima satu berkas (tanpa tanda kutip).\r\n\r\n\
 Opsi:\r\n\
-/?\tTampilkam halaman bantuan ini.\r\n\
+/?\tTampilkan halaman bantuan.\r\n\
 ...\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
 ...\tMode akhir baris (/crlf, /cr, /lf).\r\n\
 /e\tEncoding berkas.\r\n\
 /g\tPergi ke baris yang ditentukan (/g -1 akhir berkas).\r\n\
-/m\tMatch specified text (/m- last, /mr regex, /mb backslash).\r\n\
+/m\tCocokkan teks yang ditentukan (/m- akhir, /mr regex, /mb garis miring terbalik).\r\n\
 /l\tOtomatis mulai ulang berkas yang berubah.\r\n\
-/q\tForce creation of new berkas without prompt.\r\n\
+/q\tMemaksa pembuatan berkas baru tanpa konfirmasi.\r\n\
 /s\tPilih skema sintaks yang ditentukan.\r\n\
 /d\tPilih skema teks baku.\r\n\
 /h\tPilih skema Kode Sumber Web.\r\n\
 /x\tPilih skema Dokumen XML.\r\n\
-/c\tOpen new window and paste clipboard contents.\r\n\
-/b\tOpen new paste board to collect clipboard entries.\r\n\
+/c\tBuka jendela baru dan tempel konten dari papan klip.\r\n\
+/b\tBuka papan tempel baru untuk mengumpulkan entri papan klip.\r\n\
 /n\tSelalu buka jendela baru (/ns satu aplikasi untuk berkas).\r\n\
 /r\tGunakan kembali jendela (/rs satu aplikasi untuk berkas).\r\n\
-/p\tSet window position and size (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
-\tor /p <left>,<top>,<width>,<height>[,<dpi>[,<max>]]  (all integers).\r\n\
+/p\tAtur posisi jendela dan ukuran (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tatau /p <kiri>,<atas>,<lebar>,<tinggi>[,<dpi>[,<maksimal>]]  (bilangan bulat).\r\n\
 /t\tAtur judul jendela.\r\n\
 /i\tMulai sebagai ikon tray.\r\n\
 /o\tPertahankan jendela tetap di atas.\r\n\
 /f\tTentukan berkas .ini (/f0 tanpa berkas .ini).\r\n\
-/u\tBuka dengan hak akses tertinggi.\r\n\
-/v\tSegera mencetak berkas dan keluar.\r\n\
+/u\tBuka dengan hak akses Administrator.\r\n\
+/v\tSegera mencetak berkas dan tutup jendela.\r\n\
 /vd\tCetak berkas (buka dialog printer).\r\n\
-/y\tSearch environment PATH in case of relative filename.\r\n\
-/z\tSkip next (usable for registry-based Notepad replacement).\r\n\r\n\
+/y\tCari berkas di environment PATH.\r\n\
+/z\tLewati berikutnya (dapat digunakan untuk pengganti Notepad berbasis registri).\r\n\r\n\
 Contoh:\r\n\
-Notepad3 /utf8sig /crlf D:\\temp\\Test.txt\r\n\
- \t... Buka berkas baru: ""Tes.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+Notepad3 /utf8sig /crlf D:\\temp\\Tes.txt\r\n\
+ \t... Buat berkas baru ""Tes.txt"" dengan Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v D:\\temp\\Tes.txt\r\n\
- \t... Cetak berkas: ""Tes.txt"" segera.\
+ \t... Segera mencetak berkas ""Tes.txt"".\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Ekstensi nama berkas harus dipisahkan dengan ';'\r\n\
-gunakan \\<regex>; untuk menentukan pola pencocokan berkas:\r\n\
-   \\xyz$;   => berasal dari nama berkas (nama + ekstensi) dengan 'xyz' sebagai teks terakhir.\r\n\r\n\
+Ekstensi nama berkas harus dipisah dengan ';'\r\n\
+gunakan \\<regex>$; untuk menentukan polanya:\r\n\
+   \\xyz$;   => nama berkas (nama dasar + ekstensi), 'xyz' adalah ekstensinya.\r\n\r\n\
 Gaya format tampilan:\r\n\
 font:nama font; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
@@ -361,7 +361,7 @@ IDS_MUI_ABOUT_RTF_1  "\
 \\cf0 \\fs20\\b1\\ul1 Kontributor:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_2  "\
-\\cf0 \\fs20\\b1\\ul1 Open Source / Pustaka:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Sumber Terbuka / Pustaka:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
 \\cf0 \\fs20\\b1\\ul1 Ucapan Terima Kasih:\\ul0\\b0\\fs18\\par\
