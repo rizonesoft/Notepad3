@@ -338,7 +338,7 @@ BEGIN
     CONTROL         "Sisipkan tab sebagai &spasi.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
     CONTROL         "Tombol Ta&b untuk format ulang indentasi.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
     CONTROL         "Tombol &Hapus untuk format ulang indentasi.",IDC_BACKTAB_INDENTS,
-					"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
     CONTROL         "&Peringati inkonsisten indentasi.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
     CONTROL         "&Otomatis deteksi Tab atau Indentasi Spasi.",IDC_AUTO_DETECT_INDENTS,
@@ -394,7 +394,7 @@ BEGIN
     COMBOBOX        103,7,58,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,83,79,50,14
     PUSHBUTTON      "Batal",IDCANCEL,139,79,50,14
-	LTEXT           "Tanpa pembungkusan indentasi|Indentasi pembungkusan dengan 1 karakter|Indentasi pembungkusan dengan 2 karakter|Indentasi pembungkusan dengan 1 tab|Indentasi pembungkusan dengan 2 tab|Indentasi pembungkusan sesuai tab baris awal|Indentasi pembungkusan 1 tab lebih dari tab baris awal",200,0,0,615,8,NOT WS_VISIBLE
+    LTEXT           "Tanpa pembungkusan indentasi|Indentasi pembungkusan dengan 1 karakter|Indentasi pembungkusan dengan 2 karakter|Indentasi pembungkusan dengan 1 tab|Indentasi pembungkusan dengan 2 tab|Indentasi pembungkusan sesuai tab baris awal|Indentasi pembungkusan 1 tab lebih dari tab baris awal",200,0,0,615,8,NOT WS_VISIBLE
     LTEXT           "Tanpa indikator visual sebelum pembungkusan|Tampilkan indikator visual sebelum pembungkusan (dekat teks)|Tampilkan indikator visual sebelum pembungkusan (dekat bilah gulir)",201,0,0,418,8,NOT WS_VISIBLE
     LTEXT           "Tanpa indikator visual setelah pembungkusan|Tampilkan indikator visual setelah pembungkusan (dekat teks)|Tampilkan indikator visual setelah pembungkusan (dekat bilah nomor)",202,0,0,402,8,NOT WS_VISIBLE
     LTEXT           "Bungkus teks diantara kata|Bungkus teks diantara glif apapun",203,0,0,187,8,NOT WS_VISIBLE

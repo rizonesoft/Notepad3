@@ -94,7 +94,7 @@ BEGIN
             MENUITEM "Buka &File Explorer",                  IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
-        MENUITEM "K&embalikan Semula\tF5",          		 IDM_FILE_REVERT
+        MENUITEM "K&embalikan Semula\tF5",                   IDM_FILE_REVERT
         MENUITEM "Abaikan &Variabel Berkas",                 CMD_IGNORE_FILE_VARS
         POPUP "Encodin&g"
         BEGIN
@@ -238,16 +238,16 @@ BEGIN
             MENUITEM "&Duplikasi Baris/Seleksi\tCtrl+D",     IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
             MENUITEM "I&si Kekosongan dengan Spasi\tAlt+B",  IDM_EDIT_PADWITHSPACES
-            MENUITEM "Hapus dari &Awal\tAlt+Z",      		 IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Hapus dari Ak&hir\tAlt+U",         	 IDM_EDIT_STRIPLASTCHAR
+            MENUITEM "Hapus dari &Awal\tAlt+Z",              IDM_EDIT_STRIP1STCHAR
+            MENUITEM "Hapus dari Ak&hir\tAlt+U",             IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Hapus K&ekosongan Spasi\tAlt+W",       IDM_EDIT_TRIMLINES
             MENUITEM "Kompres Baris &Kosong\tCtrl+Alt+P",    IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
-            MENUITEM "&Ubah Baris...\tAlt+M",            	 IDM_EDIT_MODIFYLINES
+            MENUITEM "&Ubah Baris...\tAlt+M",                IDM_EDIT_MODIFYLINES
             MENUITEM "Pe&rataan Baris...\tAlt+J",            IDM_EDIT_ALIGN
             MENUITEM "Uru&tkan Baris...\tAlt+O",             IDM_EDIT_SORTLINES
             MENUITEM SEPARATOR
-            MENUITEM "Pergi ke A&wal Seleksi\tCtrl+,",   	 CMD_JUMP2SELSTART
+            MENUITEM "Pergi ke A&wal Seleksi\tCtrl+,",       CMD_JUMP2SELSTART
             MENUITEM "Pergi ke A&khir Seleksi\tCtrl+.",      CMD_JUMP2SELEND
         END
         POPUP "&Konversi"
@@ -307,7 +307,7 @@ BEGIN
             MENUITEM "Pilih &isi Pengurung\tCtrl+Shift+B",           IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
             MENUITEM "Pilih Se&lanjutnya\tCtrl+Alt+F2",              IDM_EDIT_SELTONEXT
-            MENUITEM "Pilih Se&belumnya\tCtrl+Alt+Shift+F2",		 IDM_EDIT_SELTOPREV
+            MENUITEM "Pilih Se&belumnya\tCtrl+Alt+Shift+F2",         IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
             MENUITEM "Pilih Kata a&tau Baris\tCtrl+Spc",             IDM_EDIT_SELECTWORD
             MENUITEM "Pilih Semua yang &Sesuai\tCtrl+Shift+Spc",     IDM_EDIT_SELECTALLMATCHES
@@ -317,27 +317,27 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Pe&markahan"
         BEGIN
-            MENUITEM "&Alihkan\tCtrl+F2",            		BME_EDIT_BOOKMARKTOGGLE
+            MENUITEM "&Alihkan\tCtrl+F2",                   BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR
-            MENUITEM "Pergi ke &Berikutnyat\tF2",        	BME_EDIT_BOOKMARKNEXT
-            MENUITEM "Pergi ke &Sebelumnya\tShift+F2",    	BME_EDIT_BOOKMARKPREV
+            MENUITEM "Pergi ke &Berikutnyat\tF2",           BME_EDIT_BOOKMARKNEXT
+            MENUITEM "Pergi ke &Sebelumnya\tShift+F2",      BME_EDIT_BOOKMARKPREV
             MENUITEM SEPARATOR
-            MENUITEM "&Bersihkan Semua\tAlt+F2",          	BME_EDIT_BOOKMARKCLEAR
+            MENUITEM "&Bersihkan Semua\tAlt+F2",            BME_EDIT_BOOKMARKCLEAR
         END
         MENUITEM SEPARATOR
         POPUP "&Cari"
         BEGIN
-            MENUITEM "Me&ncari...\tCtrl+F",                        		IDM_EDIT_FIND
-            MENUITEM "&Simpan Teks untuk Pencarian\tAlt+F3",          	IDM_EDIT_SAVEFIND
-            MENUITEM "Cari Ber&ikutnya\tF3",                          	IDM_EDIT_FINDNEXT
-            MENUITEM "Cari Sebe&lumnya\tShift+F3",                		IDM_EDIT_FINDPREV
-            MENUITEM "Cari Teks yang dipilih Be&rikutnya\tCtrl+F3",   	CMD_FINDNEXTSEL
-            MENUITEM "Cari Se&belumnya Selected\tCtrl+Shift+F3",  		CMD_FINDPREVSEL
-            MENUITEM "&Ganti...\tCtrl+H",                     			IDM_EDIT_REPLACE
-            MENUITEM "Ganti Se&lanjutnya\tF4",                       	IDM_EDIT_REPLACENEXT
-            MENUITEM "&Pergi ke...\tCtrl+G",                        	IDM_EDIT_GOTOLINE
+            MENUITEM "Me&ncari...\tCtrl+F",                             IDM_EDIT_FIND
+            MENUITEM "&Simpan Teks untuk Pencarian\tAlt+F3",            IDM_EDIT_SAVEFIND
+            MENUITEM "Cari Ber&ikutnya\tF3",                            IDM_EDIT_FINDNEXT
+            MENUITEM "Cari Sebe&lumnya\tShift+F3",                      IDM_EDIT_FINDPREV
+            MENUITEM "Cari Teks yang dipilih Be&rikutnya\tCtrl+F3",     CMD_FINDNEXTSEL
+            MENUITEM "Cari Se&belumnya Selected\tCtrl+Shift+F3",        CMD_FINDPREVSEL
+            MENUITEM "&Ganti...\tCtrl+H",                               IDM_EDIT_REPLACE
+            MENUITEM "Ganti Se&lanjutnya\tF4",                          IDM_EDIT_REPLACENEXT
+            MENUITEM "&Pergi ke...\tCtrl+G",                            IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Cari dalam Berkas\tCtrl+Shift+F",          		IDM_GREP_WIN_SEARCH
+            MENUITEM "&Cari dalam Berkas\tCtrl+Shift+F",                IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Tampilan"
@@ -347,7 +347,7 @@ BEGIN
         MENUITEM "Garis Bantu Indentasi\tCtrl+Shift+G",                 IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Tampilkan Simbol Bungkus Kata\tCtrl+Shift+7",         IDM_VIEW_WORDWRAPSYMBOLS
-        MENUITEM "Tampilkan Kekosongan\tCtrl+Shift+8",                	IDM_VIEW_SHOWBLANKS
+        MENUITEM "Tampilkan Kekosongan\tCtrl+Shift+8",                  IDM_VIEW_SHOWBLANKS
         MENUITEM "Tampilkan Akhir Baris\tCtrl+Shift+9",                 IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         POPUP "Penanda Riwayat"
@@ -357,7 +357,7 @@ BEGIN
             MENUITEM "Tampilkan dalam Berkas",              IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Tampilkan semua Tanda Perubahan",     IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Hapus Perubahan Riwayat"         			IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Hapus Perubahan Riwayat"                  IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Tampilkan &Pranala Aktif\tCtrl+Alt+W",    IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Pratinjau Warna"
@@ -367,8 +367,8 @@ BEGIN
             MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
             MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
         END
-        MENUITEM "Soroti &Unicode",            			 IDM_VIEW_UNICODE_POINTS
-        MENUITEM "Soroti &Pengurung\tCtrl+Shift+V", 	 IDM_VIEW_MATCHBRACES
+        MENUITEM "Soroti &Unicode",                      IDM_VIEW_UNICODE_POINTS
+        MENUITEM "Soroti &Pengurung\tCtrl+Shift+V",      IDM_VIEW_MATCHBRACES
         POPUP "Soroti &Baris\tCtrl+Shift+I"
         BEGIN
             MENUITEM "&Tanpa Sorotan",                   IDM_VIEW_HILITCURLN_NONE
@@ -377,23 +377,23 @@ BEGIN
         END
         POPUP "Tandai Peng&ulangan Kata"
         BEGIN
-            MENUITEM "&Aktif\tAlt+A",                    	 IDM_VIEW_MARKOCCUR_ONOFF
-            MENUITEM "Gunakan &Pemarkahan",               	 IDM_VIEW_MARKOCCUR_BOOKMARKS
+            MENUITEM "&Aktif\tAlt+A",                        IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "Gunakan &Pemarkahan",                  IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
-            MENUITEM "&Tandai yang Terlihat",              	 IDM_VIEW_MARKOCCUR_VISIBLE
+            MENUITEM "&Tandai yang Terlihat",                IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
             MENUITEM "Peka &Huruf Besar-Kecil",              IDM_VIEW_MARKOCCUR_CASE
             POPUP "Cocokkan &Seluruh Kata"
             BEGIN
                 MENUITEM "&Matikan",                         IDM_VIEW_MARKOCCUR_WNONE
-                MENUITEM "Cocokkan Kata yang di &Pilih",  	 IDM_VIEW_MARKOCCUR_WORD
+                MENUITEM "Cocokkan Kata yang di &Pilih",     IDM_VIEW_MARKOCCUR_WORD
                 MENUITEM "Cocokkan Kata saat &Ini",          IDM_VIEW_MARKOCCUR_CURRENT
             END
         END
         MENUITEM SEPARATOR
         MENUITEM "Baris &Nomor\tCtrl+Shift+N",               IDM_VIEW_LINENUMBERS
         MENUITEM "&Margin Markah\tCtrl+Shift+M",             IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Tampilan Margin Riwayat",               	 IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Tampilan Margin Riwayat",                  IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Lipatan"
         BEGIN
@@ -442,13 +442,13 @@ BEGIN
         END
         POPUP "Po&sisi"
         BEGIN
-            MENUITEM "Salin Posisi &Jendela\tCtrl+Shift+K",           	CMD_COPYWINPOS
-            MENUITEM "Pindah ke Posisi &Baku\tCtrl+Shift+P",     		CMD_DEFAULTWINPOS
-            MENUITEM "&Simpan sebagai Posisi Baku",                   	CMD_SAVEASDEFWINPOS
-            MENUITEM "&Hapus simpanan Posisi Baku",               		CMD_CLEARSAVEDWINPOS
-            MENUITEM "Pindah ke Posisi &Awal\tCtrl+F11",         		CMD_INITIALWINPOS
-            MENUITEM "Alihkan Posisi &Layar Penuh\tF11",             	CMD_FULLSCRWINPOS
-            MENUITEM "Posisi Jendela &Tetap",                     		IDM_VIEW_STICKYWINPOS
+            MENUITEM "Salin Posisi &Jendela\tCtrl+Shift+K",             CMD_COPYWINPOS
+            MENUITEM "Pindah ke Posisi &Baku\tCtrl+Shift+P",            CMD_DEFAULTWINPOS
+            MENUITEM "&Simpan sebagai Posisi Baku",                     CMD_SAVEASDEFWINPOS
+            MENUITEM "&Hapus simpanan Posisi Baku",                     CMD_CLEARSAVEDWINPOS
+            MENUITEM "Pindah ke Posisi &Awal\tCtrl+F11",                CMD_INITIALWINPOS
+            MENUITEM "Alihkan Posisi &Layar Penuh\tF11",                CMD_FULLSCRWINPOS
+            MENUITEM "Posisi Jendela &Tetap",                           IDM_VIEW_STICKYWINPOS
         END
     END
     POPUP "Pe&nampilan"
@@ -467,7 +467,7 @@ BEGIN
     BEGIN
         MENUITEM "Sisipkan Tab sebagai &Spasi",                      IDM_SET_TABSASSPACES
         MENUITEM "Pengaturan &Tab...\tCtrl+T",                       IDM_SET_TABSETTINGS
-        MENUITEM "Pengaturan Bungkus &Kata...",                 	 IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "Pengaturan Bungkus &Kata...",                      IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Pengaturan &Garis Panjang ...",                    IDM_SET_LONGLINESETTINGS
         MENUITEM "Otomatis In&dentasi Teks",                         IDM_SET_AUTOINDENTTEXT
         MENUITEM "Otomatis Tutup Tanda &Kutip",                      IDM_SET_AUTOCLOSEQUOTES
@@ -487,8 +487,8 @@ BEGIN
             MENUITEM "&Minimalkan Notepad3",                         IDM_SET_ESCMINIMIZE
             MENUITEM "&Keluar Notepad3",                             IDM_SET_ESCEXIT
         END
-        MENUITEM "&Simpan sebelum Menggunakan Alat",        		 IDM_SET_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Hitung &Ekspresi Kecil",                  		 IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "&Simpan sebelum Menggunakan Alat",                 IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Hitung &Ekspresi Kecil",                           IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "Meng&ingat"
         BEGIN
