@@ -90,7 +90,7 @@ STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Eksekusi Dokumen"
     IDT_VIEW_TOGGLE_VIEW     "Tampilan Fokus"
-    IDT_VIEW_CHASING_DOCTAIL "Pemantauan Log"
+    IDT_VIEW_CHASING_DOCTAIL "Catatan Pemantauan"
     IDT_VIEW_PIN_ON_TOP      "Selalu di Atas"
     IDT_GREP_WIN_TOOL        "Cari dalam Berkas"
 END
@@ -120,7 +120,7 @@ BEGIN
     IDS_MUI_FAVORITES       "Buka direktori berkas favorit Anda."
     IDS_MUI_BACKSLASHHELP   "Konversi garis miring\n\n\\a\tAlarm (BEL, ASCII 7)\n\\b\tHapus (BS, ASCII 8)\n\\f\tPemisah Halaman (FF, ASCII 12)\n\\n\tBaris Baru (LF, ASCII 10)\n\\r\tBaris Baru (CR, ASCII 13)\n\\t\tTab Horizontal (HT, ASCII 9)\n\\v\tTab Vertikal (VT, ASCII 11)\n\\0oo\tNotasi Oktal\n\\u####\tNotasi Heksadesimal\n\\xhh\tNotasi Heksadesimal\n\\\\\tGaris Miring"
     IDS_MUI_REGEXPHELP      "Sintaks Ekspresi Reguler (Multi Baris)\n\n.\tSemua karakter\n^\tAwal baris\n$\tAkhir baris\n\\<\tAwal kata\n\\>\tAkhir kata\n\\b\tBatas kata\n[...]\tSatu set karakter ([abc]) atau rentang ([a-z])\n[^...]\tKarakter yang BUKAN dari set atau rentang\n\\d\tSetiap digit desimal\n\\D\tSetiap karakter non-digit\n\\s\tKarakter spasi\n\\S\tBukan karakter spasi\n\\w\tKarakter ""huruf""\n\\W\tKarakter ""non-huruf""\n\\x\tEscape karakter dengan makna khusus\n\\xHH\tKarakter dengan notasi Hex HH\n?\tMencocokkan dengan sebelumnya sebanyak 0 atau 1 kali\n*\tMencocokkan dengan sebelumnya sebanyak 0 kali atau lebih\n+\tMencocokkan dengan sebelumnya sebanyak 1 kali atau lebih\n*? or +?\tPencocokan mode malas, memakai ""?"" dan ""+""\n(\tAwal suatu bagian\n)\tAkhir suatu bagian\n\\n\tMerujuk ke suatu bagian saat mengganti (n untuk 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Pencarian wildcard\n\n*\tCocokkan nol atau lebih karakter.\n?\tCocokkan dengan satu karakter."
+    IDS_MUI_WILDCARDHELP    "Mode wildcard\n\n*\tCocokkan nol atau lebih karakter.\n?\tCocokkan dengan satu karakter."
 END
 
 STRINGTABLE
@@ -234,7 +234,7 @@ BEGIN
     IDS_MUI_FAV_FAILURE     "Pintasan ke berkas ini tidak dapat dibuat.\nPastikan tidak ada berkas lain dengan nama yang sama."
     IDS_MUI_READONLY_MODIFY "Atribut ""%s"" tidak dapat diubah."
     IDS_MUI_SAVEPOS         "&Simpan Posisi\tCtrl+S"
-    IDS_MUI_RESETPOS        "&Setel Ulang Posisi\tCtrl+R"
+    IDS_MUI_RESETPOS        "Setel &Ulang Posisi\tCtrl+R"
     IDS_MUI_PREVIEW         "&Pratinjau Pengaturan\tCtrl+P"
     IDS_MUI_PASS_FAILURE    "Sandi frasa salah.\nCoba ulang dengan frasa sandi yang lain?"
     IDS_MUI_NOPASS          "Dekripsi Dibatalkan!\nBaca data mentahan yang dienkripsi?"
@@ -265,8 +265,8 @@ BEGIN
     IDS_USE_LOCALE_DATEFMT  "Bahasa menentukan &Format Tanggal"
     IDS_MUI_MENU_THEMES     "&Koleksi Skema"
     IDM_THEMES_FACTORY_RESET "&Reset Tema"
-    IDM_THEMES_STD_CFG       "&Konfigurasi Standar"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
+    IDM_THEMES_STD_CFG       "Konfi&gurasi Standar"
+    IDS_MUI_STATUSBAR_PREFIXES "Brs  ,Kol  ,Sel  ,SelM  ,SelBr  ,Ulg  ,,,,,,,Kar  ,Gnt  ,Eks  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Bersihkan Semua"
     IDS_MUI_CLEAR_FIND_HISTORY
