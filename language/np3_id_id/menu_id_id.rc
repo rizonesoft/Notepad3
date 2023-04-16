@@ -67,7 +67,7 @@ BEGIN
         MENUITEM "Hanya Ba&ca",                              IDM_FILE_READONLY
         MENUITEM "&Kunci Berkas",                            IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
-        MENUITEM "Enk&ripsi Frasa Berkas...",               IDM_SETPASS
+        MENUITEM "Enk&ripsi Frasa Sandi Berkas...",          IDM_SETPASS
         MENUITEM SEPARATOR
         POPUP "Jalur Berkas ke &Papan Klip"
         BEGIN
@@ -79,8 +79,8 @@ BEGIN
         BEGIN
             MENUITEM "&Cari dalam Berkas\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "Buka &Window Baru\tAlt+N",            IDM_FILE_NEWWINDOW
-            MENUITEM "Du&plikasikan Window\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
+            MENUITEM "Buka &Jendela Baru\tAlt+N",            IDM_FILE_NEWWINDOW
+            MENUITEM "Du&plikasikan Jendela\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "Mulai dengan hak &Administrator",      IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
@@ -94,8 +94,8 @@ BEGIN
             MENUITEM "Buka &File Explorer",                  IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
-        MENUITEM "K&embalikan Semula\tF5",          IDM_FILE_REVERT
-        MENUITEM "Abaikan &Variabel Berkas",                    CMD_IGNORE_FILE_VARS
+        MENUITEM "K&embalikan Semula\tF5",          		 IDM_FILE_REVERT
+        MENUITEM "Abaikan &Variabel Berkas",                 CMD_IGNORE_FILE_VARS
         POPUP "Encodin&g"
         BEGIN
             POPUP "&Kembalikan Semula sebagai"
@@ -144,13 +144,13 @@ BEGIN
         MENUITEM "Telu&suri...\tCtrl+M",             IDM_FILE_BROWSE
         POPUP "Fa&vorit"
         BEGIN
-            MENUITEM "&Buka Favorit...\tAlt+I",              IDM_FILE_OPENFAV
-            MENUITEM "Tam&bahkan Berkas...\tAlt+K",      IDM_FILE_ADDTOFAV
-            MENUITEM "Ke&lola...\tAlt+F9",                   IDM_FILE_MANAGEFAV
+            MENUITEM "&Buka Favorit...\tAlt+I",      IDM_FILE_OPENFAV
+            MENUITEM "Tam&bahkan Berkas...\tAlt+K",  IDM_FILE_ADDTOFAV
+            MENUITEM "Ke&lola...\tAlt+F9",           IDM_FILE_MANAGEFAV
         END
-        MENUITEM "Terk&ini...\tCtrl+Alt+H",        IDM_FILE_RECENT
+        MENUITEM "Terk&ini...\tCtrl+Alt+H",          IDM_FILE_RECENT
         MENUITEM SEPARATOR
-        MENUITEM "&Keluar\tAlt+F4",                          IDM_FILE_EXIT
+        MENUITEM "&Keluar\tAlt+F4",                  IDM_FILE_EXIT
     END
     POPUP "&Sunting"
     BEGIN
@@ -180,8 +180,8 @@ BEGIN
         END
         POPUP "&Baris"
         BEGIN
-            MENUITEM "Pindah ke &Atas\tAlt+ ↑",                                   IDM_EDIT_MOVELINEUP
-            MENUITEM "Pindah ke &Bawah\tAlt+ ↓",                                 IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Pindah ke &Atas\tAlt+ ↑",                              IDM_EDIT_MOVELINEUP
+            MENUITEM "Pindah ke &Bawah\tAlt+ ↓",                             IDM_EDIT_MOVELINEDOWN
             MENUITEM SEPARATOR
             MENUITEM "&Potong Dalam Seleksi\tCtrl+X",                        IDM_EDIT_CUT
             MENUITEM "Potong Ba&ris\tCtrl+Shift+X",                          IDM_EDIT_CUTLINE
@@ -227,9 +227,9 @@ BEGIN
                 MENUITEM "Petik &Satu\tCtrl+1",              CMD_STRINGIFY
                 MENUITEM "Petik &Dua\tCtrl+2",               CMD_STRINGIFY2
                 MENUITEM SEPARATOR
-                MENUITEM "( )\tCtrl+3",                     CMD_EMBRACE
-                MENUITEM "[ ]\tCtrl+4",                     CMD_EMBRACE2
-                MENUITEM "{ }\tCtrl+5",                     CMD_EMBRACE3
+                MENUITEM "( )\tCtrl+3",                      CMD_EMBRACE
+                MENUITEM "[ ]\tCtrl+4",                      CMD_EMBRACE2
+                MENUITEM "{ }\tCtrl+5",                      CMD_EMBRACE3
                 MENUITEM SEPARATOR
                 MENUITEM "&Backtick\tCtrl+6",                CMD_EMBRACE4
                 MENUITEM SEPARATOR
@@ -237,17 +237,17 @@ BEGIN
             END
             MENUITEM "&Duplikasi Baris/Seleksi\tCtrl+D",     IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "I&si Kekosongan dengan Spasi\tAlt+B",              IDM_EDIT_PADWITHSPACES
-            MENUITEM "Hapus dari &Awal\tAlt+Z",      IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Hapus dari Ak&hir\tAlt+U",         IDM_EDIT_STRIPLASTCHAR
+            MENUITEM "I&si Kekosongan dengan Spasi\tAlt+B",  IDM_EDIT_PADWITHSPACES
+            MENUITEM "Hapus dari &Awal\tAlt+Z",      		 IDM_EDIT_STRIP1STCHAR
+            MENUITEM "Hapus dari Ak&hir\tAlt+U",         	 IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Hapus K&ekosongan Spasi\tAlt+W",       IDM_EDIT_TRIMLINES
-            MENUITEM "Kompres Baris &Kosong\tCtrl+Alt+P",        IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Kompres Baris &Kosong\tCtrl+Alt+P",    IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
-            MENUITEM "&Ubah Baris...\tAlt+M",            IDM_EDIT_MODIFYLINES
-            MENUITEM "Pe&rataan Baris...\tAlt+J",                IDM_EDIT_ALIGN
-            MENUITEM "Uru&tkan Baris...\tAlt+O",                 IDM_EDIT_SORTLINES
+            MENUITEM "&Ubah Baris...\tAlt+M",            	 IDM_EDIT_MODIFYLINES
+            MENUITEM "Pe&rataan Baris...\tAlt+J",            IDM_EDIT_ALIGN
+            MENUITEM "Uru&tkan Baris...\tAlt+O",             IDM_EDIT_SORTLINES
             MENUITEM SEPARATOR
-            MENUITEM "Pergi ke A&wal Seleksi\tCtrl+,",   CMD_JUMP2SELSTART
+            MENUITEM "Pergi ke A&wal Seleksi\tCtrl+,",   	 CMD_JUMP2SELSTART
             MENUITEM "Pergi ke A&khir Seleksi\tCtrl+.",      CMD_JUMP2SELEND
         END
         POPUP "&Konversi"
@@ -262,15 +262,15 @@ BEGIN
             MENUITEM "Indentasi Baris dengan &Tab\tCtrl+Shift+T",       IDM_EDIT_CONVERTSPACES
             MENUITEM "Indentasi Baris dengan S&pasi\tCtrl+Shift+S",     IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
-            MENUITEM "Indentasi dengan T&ab\tCtrl+Alt+T",                       IDM_EDIT_CONVERTSPACES2
-            MENUITEM "Indentasi dengan Spas&i\tCtrl+Alt+S",                     IDM_EDIT_CONVERTTABS2
+            MENUITEM "Indentasi dengan T&ab\tCtrl+Alt+T",               IDM_EDIT_CONVERTSPACES2
+            MENUITEM "Indentasi dengan Spas&i\tCtrl+Alt+S",             IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
-            MENUITEM "Encode Base&64",                                   IDM_EDIT_BASE64ENCODE
-            MENUITEM "Decode Base6&4",                                   IDM_EDIT_BASE64DECODE
-            MENUITEM "Decode Base64 ke Enc&ode...",                      IDM_EDIT_B64DECODESEL
+            MENUITEM "Encode Base&64",                                  IDM_EDIT_BASE64ENCODE
+            MENUITEM "Decode Base6&4",                                  IDM_EDIT_BASE64DECODE
+            MENUITEM "Decode Base64 ke Enc&ode...",                     IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
-            MENUITEM "&Encode URL\tCtrl+Shift+E",                        IDM_EDIT_URLENCODE
-            MENUITEM "&Decode URL\tCtrl+Shift+R",                        IDM_EDIT_URLDECODE
+            MENUITEM "&Encode URL\tCtrl+Shift+E",                       IDM_EDIT_URLENCODE
+            MENUITEM "&Decode URL\tCtrl+Shift+R",                       IDM_EDIT_URLDECODE
             MENUITEM "Jalur Sistem Berkas ke URL\tCtrl+F10",            IDM_EDIT_PATH2URL
             MENUITEM "URL ke Jalur Sistem Berkas\tAlt+F10",             IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
@@ -317,27 +317,27 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Pe&markahan"
         BEGIN
-            MENUITEM "&Alihkan\tCtrl+F2",            BME_EDIT_BOOKMARKTOGGLE
+            MENUITEM "&Alihkan\tCtrl+F2",            		BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR
-            MENUITEM "Pergi ke &Berikutnyat\tF2",              BME_EDIT_BOOKMARKNEXT
-            MENUITEM "Pergi ke &Sebelumnya\tShift+F2",    BME_EDIT_BOOKMARKPREV
+            MENUITEM "Pergi ke &Berikutnyat\tF2",        	BME_EDIT_BOOKMARKNEXT
+            MENUITEM "Pergi ke &Sebelumnya\tShift+F2",    	BME_EDIT_BOOKMARKPREV
             MENUITEM SEPARATOR
-            MENUITEM "&Bersihkan Semua\tAlt+F2",          BME_EDIT_BOOKMARKCLEAR
+            MENUITEM "&Bersihkan Semua\tAlt+F2",          	BME_EDIT_BOOKMARKCLEAR
         END
         MENUITEM SEPARATOR
         POPUP "&Cari"
         BEGIN
-            MENUITEM "Me&ncari...\tCtrl+F",                        IDM_EDIT_FIND
-            MENUITEM "&Simpan Teks untuk Pencarian\tAlt+F3",                 IDM_EDIT_SAVEFIND
-            MENUITEM "Cari Ber&ikutnya\tF3",                          IDM_EDIT_FINDNEXT
-            MENUITEM "Cari Sebe&lumnya\tShift+F3",                IDM_EDIT_FINDPREV
-            MENUITEM "Cari Teks yang dipilih Be&rikutnya\tCtrl+F3",            CMD_FINDNEXTSEL
-            MENUITEM "Cari Se&belumnya Selected\tCtrl+Shift+F3",  CMD_FINDPREVSEL
-            MENUITEM "&Ganti...\tCtrl+H",                     IDM_EDIT_REPLACE
-            MENUITEM "Ganti Se&lanjutnya\tF4",                       IDM_EDIT_REPLACENEXT
-            MENUITEM "&Pergi ke...\tCtrl+G",                        IDM_EDIT_GOTOLINE
+            MENUITEM "Me&ncari...\tCtrl+F",                        		IDM_EDIT_FIND
+            MENUITEM "&Simpan Teks untuk Pencarian\tAlt+F3",          	IDM_EDIT_SAVEFIND
+            MENUITEM "Cari Ber&ikutnya\tF3",                          	IDM_EDIT_FINDNEXT
+            MENUITEM "Cari Sebe&lumnya\tShift+F3",                		IDM_EDIT_FINDPREV
+            MENUITEM "Cari Teks yang dipilih Be&rikutnya\tCtrl+F3",   	CMD_FINDNEXTSEL
+            MENUITEM "Cari Se&belumnya Selected\tCtrl+Shift+F3",  		CMD_FINDPREVSEL
+            MENUITEM "&Ganti...\tCtrl+H",                     			IDM_EDIT_REPLACE
+            MENUITEM "Ganti Se&lanjutnya\tF4",                       	IDM_EDIT_REPLACENEXT
+            MENUITEM "&Pergi ke...\tCtrl+G",                        	IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Cari dalam Berkas\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH
+            MENUITEM "&Cari dalam Berkas\tCtrl+Shift+F",          		IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Tampilan"
@@ -347,7 +347,7 @@ BEGIN
         MENUITEM "Garis Bantu Indentasi\tCtrl+Shift+G",                 IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Tampilkan Simbol Bungkus Kata\tCtrl+Shift+7",         IDM_VIEW_WORDWRAPSYMBOLS
-        MENUITEM "Tampilkan Kosong\tCtrl+Shift+8",                      IDM_VIEW_SHOWBLANKS
+        MENUITEM "Tampilkan Kekosongan\tCtrl+Shift+8",                	IDM_VIEW_SHOWBLANKS
         MENUITEM "Tampilkan Akhir Baris\tCtrl+Shift+9",                 IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         POPUP "Penanda Riwayat"
@@ -357,9 +357,9 @@ BEGIN
             MENUITEM "Tampilkan dalam Berkas",              IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Tampilkan semua Tanda Perubahan",     IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Hapus Perubahan/Urungkan Riwayat"         IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Hapus Perubahan Riwayat"         			IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
-        MENUITEM "Tampilkan &Pranala Aktif\tCtrl+Alt+W",     IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "Tampilkan &Pranala Aktif\tCtrl+Alt+W",    IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Pratinjau Warna"
         BEGIN
             MENUITEM "&Matikan",                         IDM_VIEW_COLORDEFHOTSPOTS
@@ -367,8 +367,8 @@ BEGIN
             MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
             MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
         END
-        MENUITEM "Soroti &Unicode",            IDM_VIEW_UNICODE_POINTS
-        MENUITEM "Soroti &Pengurung\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
+        MENUITEM "Soroti &Unicode",            			 IDM_VIEW_UNICODE_POINTS
+        MENUITEM "Soroti &Pengurung\tCtrl+Shift+V", 	 IDM_VIEW_MATCHBRACES
         POPUP "Soroti &Baris\tCtrl+Shift+I"
         BEGIN
             MENUITEM "&Tanpa Sorotan",                   IDM_VIEW_HILITCURLN_NONE
@@ -377,23 +377,23 @@ BEGIN
         END
         POPUP "Tandai Peng&ulangan Kata"
         BEGIN
-            MENUITEM "&Aktif\tAlt+A",                    IDM_VIEW_MARKOCCUR_ONOFF
-            MENUITEM "Gunakan &Pemarkahan",               IDM_VIEW_MARKOCCUR_BOOKMARKS
+            MENUITEM "&Aktif\tAlt+A",                    	 IDM_VIEW_MARKOCCUR_ONOFF
+            MENUITEM "Gunakan &Pemarkahan",               	 IDM_VIEW_MARKOCCUR_BOOKMARKS
             MENUITEM SEPARATOR
-            MENUITEM "&Tandai yang Terlihat",              IDM_VIEW_MARKOCCUR_VISIBLE
+            MENUITEM "&Tandai yang Terlihat",              	 IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
-            MENUITEM "Peka &Huruf Besar-Kecil",            IDM_VIEW_MARKOCCUR_CASE
+            MENUITEM "Peka &Huruf Besar-Kecil",              IDM_VIEW_MARKOCCUR_CASE
             POPUP "Cocokkan &Seluruh Kata"
             BEGIN
                 MENUITEM "&Matikan",                         IDM_VIEW_MARKOCCUR_WNONE
-                MENUITEM "Cocokkan Kata yang di &Pilih",         IDM_VIEW_MARKOCCUR_WORD
+                MENUITEM "Cocokkan Kata yang di &Pilih",  	 IDM_VIEW_MARKOCCUR_WORD
                 MENUITEM "Cocokkan Kata saat &Ini",          IDM_VIEW_MARKOCCUR_CURRENT
             END
         END
         MENUITEM SEPARATOR
         MENUITEM "Baris &Nomor\tCtrl+Shift+N",               IDM_VIEW_LINENUMBERS
         MENUITEM "&Margin Markah\tCtrl+Shift+M",             IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Ubah Margin Riwayat",                      IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Tampilan Margin Riwayat",               	 IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Lipatan"
         BEGIN
@@ -411,11 +411,11 @@ BEGIN
             MENUITEM "Tampilan &Fokus\tCtrl+Alt+V",          IDM_VIEW_TOGGLE_VIEW
             POPUP "Mode Tampilan"
             BEGIN
-                MENUITEM "Lipat",                           IDM_VIEW_FV_FOLD
-                MENUITEM "Markahi",                         IDM_VIEW_FV_BOOKMARK
-                MENUITEM "Soroti",                          IDM_VIEW_FV_HIGHLIGHT
-                MENUITEM "Markahi && Lipat",                IDM_VIEW_FV_BKMRKFOLD
-                MENUITEM "Soroti && Lipat",                 IDM_VIEW_FV_HIGHLGFOLD
+                MENUITEM "Lipat",                            IDM_VIEW_FV_FOLD
+                MENUITEM "Markahi",                          IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Soroti",                           IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Markahi && Lipat",                 IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Soroti && Lipat",                  IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
             MENUITEM "&Catatan Pemantauan",                  IDM_VIEW_CHASING_DOCTAIL
@@ -442,13 +442,13 @@ BEGIN
         END
         POPUP "Po&sisi"
         BEGIN
-            MENUITEM "Salin Posisi &Window\tCtrl+Shift+K",           CMD_COPYWINPOS
-            MENUITEM "Pindah ke Posisi &Baku\tCtrl+Shift+P",     CMD_DEFAULTWINPOS
-            MENUITEM "&Simpan sebagai Posisi Baku",                   CMD_SAVEASDEFWINPOS
-            MENUITEM "&Hapus simpanan Posisi Baku",               CMD_CLEARSAVEDWINPOS
-            MENUITEM "Pindah ke Posisi &Awal\tCtrl+F11",         CMD_INITIALWINPOS
-            MENUITEM "Alihkan Posisi &Layar Penuh\tF11",             CMD_FULLSCRWINPOS
-            MENUITEM "Posisi Window &Tetap",                     IDM_VIEW_STICKYWINPOS
+            MENUITEM "Salin Posisi &Jendela\tCtrl+Shift+K",           	CMD_COPYWINPOS
+            MENUITEM "Pindah ke Posisi &Baku\tCtrl+Shift+P",     		CMD_DEFAULTWINPOS
+            MENUITEM "&Simpan sebagai Posisi Baku",                   	CMD_SAVEASDEFWINPOS
+            MENUITEM "&Hapus simpanan Posisi Baku",               		CMD_CLEARSAVEDWINPOS
+            MENUITEM "Pindah ke Posisi &Awal\tCtrl+F11",         		CMD_INITIALWINPOS
+            MENUITEM "Alihkan Posisi &Layar Penuh\tF11",             	CMD_FULLSCRWINPOS
+            MENUITEM "Posisi Jendela &Tetap",                     		IDM_VIEW_STICKYWINPOS
         END
     END
     POPUP "Pe&nampilan"
@@ -461,52 +461,52 @@ BEGIN
         MENUITEM "Font Baku &Global...\tAlt+F12",                    IDM_VIEW_FONT
         MENUITEM "Font Baku Skema Saat &Ini...\tCtrl+Alt+F12",       IDM_VIEW_CURRENTSCHEME
         MENUITEM SEPARATOR
-        MENUITEM "Mode Gelap Windows",                              IDM_VIEW_WIN_DARK_MODE
+        MENUITEM "Mode Gelap Windows",                               IDM_VIEW_WIN_DARK_MODE
     END 
     POPUP "&Pengaturan"
     BEGIN
         MENUITEM "Sisipkan Tab sebagai &Spasi",                      IDM_SET_TABSASSPACES
         MENUITEM "Pengaturan &Tab...\tCtrl+T",                       IDM_SET_TABSETTINGS
-        MENUITEM "Pengaturan Pembungkusan &Kata...",                 IDM_SET_WORDWRAPSETTINGS
-        MENUITEM "Pengaturan &Baris ...",                            IDM_SET_LONGLINESETTINGS
+        MENUITEM "Pengaturan Bungkus &Kata...",                 	 IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "Pengaturan &Garis Panjang ...",                    IDM_SET_LONGLINESETTINGS
         MENUITEM "Otomatis In&dentasi Teks",                         IDM_SET_AUTOINDENTTEXT
         MENUITEM "Otomatis Tutup Tanda &Kutip",                      IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Otomatis Tutup Tanda Ku&rung",                     IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Otomatis Tutup &HTML/XML\tCtrl+Shift+H",           IDM_SET_AUTOCLOSETAGS
         MENUITEM "Otomatis &Lengkapi Kata",                          IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Otomatis Lengkapi Kata Le&xer",                    IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "&Pemisah Kata Alternatif\tCtrl+Alt+A",           IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "&Pemisah Kata Alternatif\tCtrl+Alt+A",             IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Jalankan Hanya &Satu Aplikasi",                    IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "&Notifikasi Berkas Berubah...\tAlt+F5",            IDM_SET_CHANGENOTIFY
-        ///MENUITEM "Pengaturan Otomatis Simpan / Cadangkan ...",   IDM_SET_AUTOSAVE_BACKUP
+        ///MENUITEM "Pengaturan Otomatis Simpan / Cadangkan ...",       IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Bisukan Bun&yi Pesan Bip",                         IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Fungsi Tombol &Escape"
         BEGIN
-            MENUITEM "&Tidak Ada",                               IDM_SET_NOESCFUNC
-            MENUITEM "&Minimalkan Notepad3",                     IDM_SET_ESCMINIMIZE
-            MENUITEM "&Keluar Notepad3",                         IDM_SET_ESCEXIT
+            MENUITEM "&Tidak Ada",                                   IDM_SET_NOESCFUNC
+            MENUITEM "&Minimalkan Notepad3",                         IDM_SET_ESCMINIMIZE
+            MENUITEM "&Keluar Notepad3",                             IDM_SET_ESCEXIT
         END
-        MENUITEM "&Simpan sebelum Menggunakan Alat",        		IDM_SET_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "Hitung &Ekspresi Kecil",                  		IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "&Simpan sebelum Menggunakan Alat",        		 IDM_SET_SAVEBEFORERUNNINGTOOLS
+        MENUITEM "Hitung &Ekspresi Kecil",                  		 IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "Meng&ingat"
         BEGIN
-            MENUITEM "Mengingat Berkas &Terkini",                IDM_SET_NOSAVERECENT
-            MENUITEM "Menjaga Posisi &Kursor",                   IDM_SET_NOPRESERVECARET
-            MENUITEM "Mengingat &Pola Pencarian",                IDM_SET_NOSAVEFINDREPL
-            MENUITEM "Muat &Otomatis Berkas Terkini",            IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "Mengingat Berkas &Terkini",                    IDM_SET_NOSAVERECENT
+            MENUITEM "Pertahankan Posisi &Caret",                    IDM_SET_NOPRESERVECARET
+            MENUITEM "Mengingat &Pola Pencarian",                    IDM_SET_NOSAVEFINDREPL
+            MENUITEM "Muat &Otomatis Berkas Terkini",                IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "&Jendela"
         BEGIN
-            POPUP "&Tampilan Judul Window"
+            POPUP "&Tampilan Judul Jendela"
             BEGIN
                 MENUITEM "&Nama Berkas",                             IDM_SET_SHOWFILENAMEONLY
                 MENUITEM "Nama Berkas dan &Direktori",               IDM_SET_SHOWFILENAMEFIRST
                 MENUITEM "&Jalur Berkas Lengkap",                    IDM_SET_SHOWFULLPATH
                 MENUITEM "Kutipan &Teks\tCtrl+9",                    IDM_SET_SHOWEXCERPT
             END
-            MENUITEM "Gunakan Kembali &Window\tCtrl+Shift+L",        IDM_SET_REUSEWINDOW
+            MENUITEM "Gunakan Kembali &Jendela\tCtrl+Shift+L",       IDM_SET_REUSEWINDOW
             MENUITEM "Selalu di &Atas\tAlt+T",                       IDM_SET_ALWAYSONTOP
             MENUITEM "Minimalkan ke &Baki",                          IDM_SET_MINTOTRAY
             MENUITEM "Mode &Transparan\tAlt+G",                      IDM_SET_TRANSPARENT
@@ -522,28 +522,28 @@ BEGIN
             END
             POPUP "&Tata Letak RTL (GDI)"
             BEGIN
-                MENUITEM "Sunting &Area",                IDM_SET_RTL_LAYOUT_EDIT
-                MENUITEM "&Dialog Lainnya",              IDM_SET_RTL_LAYOUT_DLG
+                MENUITEM "Sunting &Area",               IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Dialog Lainnya",             IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "&Arah Penulisan"
             BEGIN
-                MENUITEM "Tidak &Ada",                   IDM_SET_BIDIRECTIONAL_NONE
-                MENUITEM "K&iri ke Kanan",               IDM_SET_BIDIRECTIONAL_L2R
-                MENUITEM "K&anan ke Kiri",               IDM_SET_BIDIRECTIONAL_R2L
+                MENUITEM "Tidak &Ada",                  IDM_SET_BIDIRECTIONAL_NONE
+                MENUITEM "K&iri ke Kanan",              IDM_SET_BIDIRECTIONAL_L2R
+                MENUITEM "K&anan ke Kiri",              IDM_SET_BIDIRECTIONAL_R2L
             END
         END
         POPUP "Konfigurasi &Lanjutan"
         BEGIN
-            MENUITEM "Simpan Pengaturan setelah &Keluar",        IDM_SET_SAVESETTINGS
+            MENUITEM "Simpan Pengaturan setelah &Keluar",       IDM_SET_SAVESETTINGS
             MENUITEM "Simpan Pengaturan &Sekarang\tF7",         IDM_SET_SAVESETTINGSNOW
-            MENUITEM "Buka &Berkas Pengaturan\tCtrl+F7",         CMD_OPENINIFILE
+            MENUITEM "Buka &Berkas Pengaturan\tCtrl+F7",        CMD_OPENINIFILE
         END
     END
     POPUP "&Bantuan"
     BEGIN
         MENUITEM "&Dokumentasi Daring\tF1",              IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
-        MENUITEM "Luncurkan Alat &Administrasi...",       IDM_HELP_ADMINEXE
+        MENUITEM "Luncurkan Alat &Administrasi...",      IDM_HELP_ADMINEXE
         MENUITEM "Periksa Situs &Web untuk Pembaruan",   IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
         MENUITEM "&Bantuan Baris Perintah...",           IDM_HELP_CMD
@@ -595,7 +595,7 @@ BEGIN
         MENUITEM "Lipatan",                    IDM_VIEW_FOLDING
         MENUITEM "Nomor Baris",                IDM_VIEW_LINENUMBERS
         MENUITEM "Margin Markah",              IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Ubah Margin Riwayat",        IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Tampilan Margin Riwayat",    IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN
