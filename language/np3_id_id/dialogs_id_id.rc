@@ -395,8 +395,8 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,83,79,50,14
     PUSHBUTTON      "Batal",IDCANCEL,139,79,50,14
     LTEXT           "Tanpa indentasi|Indentasi 1 karakter|Indentasi 2 karakter|Indentasi 1 tab|Indentasi 2 tab|Indentasi sesuai tab awal|Indentasi 1 tab lebih dari tab awal",200,0,0,615,8,NOT WS_VISIBLE
-    LTEXT           "(sebelum pembungkusan) Tanpa indikator visual|\" Tampilkan indikator visual (dekat teks)|\" Tampilkan indikator visual (dekat gulir)",201,0,0,418,8,NOT WS_VISIBLE
-    LTEXT           "(setelah pembungkusan) Tanpa indikator visual|\" Tampilkan indikator visual (dekat teks)|\" Tampilkan indikator visual (dekat nomor)",202,0,0,402,8,NOT WS_VISIBLE
+    LTEXT           "(sebelum pembungkusan) Tanpa indikator visual|Tampilkan indikator visual (dekat teks)|Tampilkan indikator visual (dekat gulir)",201,0,0,418,8,NOT WS_VISIBLE
+    LTEXT           "(setelah pembungkusan) Tanpa indikator visual|Tampilkan indikator visual (dekat teks)|Tampilkan indikator visual (dekat nomor)",202,0,0,402,8,NOT WS_VISIBLE
     LTEXT           "Bungkus teks diantara kata-kata|Bungkus teks diantara glif apapun",203,0,0,187,8,NOT WS_VISIBLE
 END
 
