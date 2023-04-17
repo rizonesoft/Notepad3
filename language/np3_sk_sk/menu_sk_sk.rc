@@ -64,8 +64,8 @@ BEGIN
         MENUITEM "Uložiť &kópiu...\tCtrl+F6",                       IDM_FILE_SAVECOPY
         MENUITEM "Uložiť s pôvodným &dátumom a časom\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Len na čítanie",					 	            IDM_FILE_READONLY
-        MENUITEM "&Zamknúť súbor (Zdieľané čítanie)",  	            IDM_FILE_LOCK_SHARE_READ
+        MENUITEM "&Len na čítanie",                                 IDM_FILE_READONLY
+        MENUITEM "&Zamknúť súbor (Zdieľané čítanie)",               IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Nastaviť šifrovanie prístupovou frázou...",       IDM_SETPASS
         MENUITEM SEPARATOR
@@ -100,7 +100,7 @@ BEGIN
         BEGIN
             POPUP "V&rátiť zo súboru ako"
             BEGIN
-                MENUITEM "&Predvolené nastavenie",	       CMD_RECODEDEFAULT
+                MENUITEM "&Predvolené nastavenie",         CMD_RECODEDEFAULT
                 MENUITEM "&ANSI\tCtrl+Shift+A",            CMD_RECODEANSI
                 MENUITEM "&OEM\tCtrl+Shift+O",             CMD_RECODEOEM
                 MENUITEM "&GB18030\tCtrl+Shift+F10",       CMD_RECODEGB18030
@@ -231,7 +231,7 @@ BEGIN
                 MENUITEM "[ ]\tCtrl+4",                     CMD_EMBRACE2
                 MENUITEM "{ }\tCtrl+5",                     CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "``\tCtrl+6",      		    CMD_EMBRACE4
+                MENUITEM "``\tCtrl+6",                  CMD_EMBRACE4
                 MENUITEM SEPARATOR
                 MENUITEM "&S...\tAlt+Q", IDM_EDIT_ENCLOSESELECTION
             END
@@ -259,8 +259,8 @@ BEGIN
             MENUITEM "Prvý &znak slova veľký\tCtrl+Alt+I",  IDM_EDIT_TITLECASE
             MENUITEM "V&eľký na začiatku vety\tCtrl+Alt+O", IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
-            MENUITEM "&Tabify výber\tCtrl+Shift+T", 	    IDM_EDIT_CONVERTSPACES
-            MENUITEM "U&ntabify výber\tCtrl+Shift+S",   	IDM_EDIT_CONVERTTABS
+            MENUITEM "&Tabify výber\tCtrl+Shift+T",         IDM_EDIT_CONVERTSPACES
+            MENUITEM "U&ntabify výber\tCtrl+Shift+S",       IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
             MENUITEM "Ta&bify odsadenie\tCtrl+Alt+T",       IDM_EDIT_CONVERTSPACES2
             MENUITEM "Untabi&fy odsadenie\tCtrl+Alt+S",     IDM_EDIT_CONVERTTABS2

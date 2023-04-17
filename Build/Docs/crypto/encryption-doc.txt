@@ -30,8 +30,8 @@ key to be used for a very long time in a lot of different files.
 
 Recommendation: Use a master passphrase that will be very hard for anyone to guess
 and very hard for you to forget.  For example:
-	"My Favorite movie is Gone with the Wind"
-	"When it rains in New York, even Chicago is a better place to be"
+    "My Favorite movie is Gone with the Wind"
+    "When it rains in New York, even Chicago is a better place to be"
 Never tell anyone what it is or write it down. It's an EMERGENCY measure to prevent 
 catastrophic data loss, so treat it that way. Never use it to read or open any encrypted 
 file except for testing, or if you have really lost the file passphrase.

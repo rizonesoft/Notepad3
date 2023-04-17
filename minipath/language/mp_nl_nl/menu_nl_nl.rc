@@ -58,7 +58,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "&Openen",                     IDM_FILE_OPEN
-        MENUITEM "Openen &met...",   			IDM_FILE_OPENWITH
+        MENUITEM "Openen &met...",              IDM_FILE_OPENWITH
         MENUITEM "&Voorbeeld",                  IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
         MENUITEM "&Naam kopiëren",              IDM_POP_COPYNAME
@@ -69,20 +69,20 @@ BEGIN
         MENUITEM "He&rnoemen...",               IDM_FILE_RENAME
         MENUITEM SEPARATOR
         MENUITEM "&Starten",                    IDM_FILE_LAUNCH
-        MENUITEM "&Uitvoeren...",        		IDM_FILE_RUN
+        MENUITEM "&Uitvoeren...",               IDM_FILE_RUN
         MENUITEM SEPARATOR
         MENUITEM "&Eigenschappen",              IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
         MENUITEM "&Nieuw bestand...",           IDM_FILE_NEW
-        MENUITEM "Nieuwe &map...",           	IDM_FILE_NEWDIR
+        MENUITEM "Nieuwe &map...",              IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "&Filteren...",      			IDM_VIEW_FILTER
-        MENUITEM "Filter &wissen",         		IDM_VIEW_FILTERALL
+        MENUITEM "&Filteren...",                IDM_VIEW_FILTER
+        MENUITEM "Filter &wissen",              IDM_VIEW_FILTERALL
         POPUP "&Weergeven/verbergen"
         BEGIN
-            MENUITEM "&Mappen",            		IDM_VIEW_FOLDERS
+            MENUITEM "&Mappen",                 IDM_VIEW_FOLDERS
             MENUITEM "&Bestanden",              IDM_VIEW_FILES
             MENUITEM "&Systeemobjecten",        IDM_VIEW_HIDDEN
         END
@@ -97,22 +97,22 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Ga &naar...",                 IDM_FILE_GOTO
-        MENUITEM "&Favorieten",             	IDM_VIEW_FAVORITES
+        MENUITEM "&Favorieten",                 IDM_VIEW_FAVORITES
         MENUITEM "Favorieten b&ewerken",        IDM_VIEW_EDITFAVORITES
-        MENUITEM "&Mappen...",               	IDM_FILE_CHANGEDIR
+        MENUITEM "&Mappen...",                  IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "Schij&ven",                	IDM_VIEW_DRIVEBOX
+        MENUITEM "Schij&ven",                   IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
         MENUITEM "Instellingen opsl&aan",       IDM_VIEW_SAVESETTINGS
-        MENUITEM "Doel ins&tellen...",       	IDM_VIEW_FINDTARGET
+        MENUITEM "Doel ins&tellen...",          IDM_VIEW_FINDTARGET
         MENUITEM "O&pties...",                  IDM_VIEW_OPTIONS
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&Mappen...",               	IDM_FILE_CHANGEDIR
+        MENUITEM "&Mappen...",                  IDM_FILE_CHANGEDIR
         MENUITEM "Schijfeigenscha&ppen",        IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "Schij&ven",                	IDM_VIEW_DRIVEBOX
+        MENUITEM "Schij&ven",                   IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN
