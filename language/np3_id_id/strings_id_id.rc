@@ -322,7 +322,7 @@ Opsi:\r\n\
 \tatau /p <kiri>,<atas>,<lebar>,<tinggi>[,<dpi>[,<maks>]]  (bilangan bulat).\r\n\
 /t\tAtur judul jendela.\r\n\
 /i\tMulai sebagai ikon tray.\r\n\
-/o\tPertahankan jendela tetap di atas.\r\n\
+/o\tPertahankan jendela agar tetap diatas.\r\n\
 /f\tTentukan berkas .ini (/f0 tanpa berkas .ini).\r\n\
 /u\tBuka dengan hak akses Administrator.\r\n\
 /v\tSegera mencetak berkas dan tutup jendela.\r\n\
