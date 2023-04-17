@@ -207,7 +207,7 @@ BEGIN
                              "Mempertahankan berkas dari Modifikasi Stempel Waktu telah diaktifkan.\nOpsi ini hanya akan berlangsung untuk sesi ini saja!"
     IDS_MUI_OUT_OFF_OCCMRK   "Penanda Pengulangan Kata telah habis (Markah/Sorotan)!"
     IDS_MUI_DOCUMENT_READONLY
-                             "Dokumen dikunci hanya untuk dilihat saja. Tetap kunci untuk mencegah pengeditan?"
+                             "Dokumen dikunci dan hanya dilihat saja. Tetap kunci untuk mencegah pengeditan?"
 END
 
 STRINGTABLE
@@ -216,9 +216,9 @@ BEGIN
     IDS_MUI_ASK_REVERT      "Kembalikan semula berkas ke kondisi tersimpan?"
     IDS_MUI_ASK_RECODE      "Pengkodean ulang akan memuat ulang berkas, perubahan yang tidak disimpan akan hilang!"
     IDS_MUI_ASK_CREATE      """%s"" tidak ditemukan.\nApakah Anda ingin membuat berkas ini?"
-    IDS_MUI_PRINT_HEADER    "Nama Berkas, Tanggal dan Waktu Sekarang|Nama Berkas, Tanggal Sekarang|Nama Berkas|Tinggalkan Kosong"
+    IDS_MUI_PRINT_HEADER    "Nama Berkas, Tanggal dan Waktu Sekarang|Nama Berkas, Tanggal Sekarang|Nama Berkas|Biarkan Kosong"
     IDS_MUI_PRINT_FOOTER    "Nomor Halaman|Biarkan kosong"
-    IDS_MUI_PRINT_COLOR     "Normal|Balikkan kecerahan (latar hitam)|Hitam pada latar putih|Warna pada latar putih|Warna pada latar putih (kecuali nomor baris)|Warna Layar"
+    IDS_MUI_PRINT_COLOR     "Normal|Balikkan kecerahan (latar hitam)|Hitam pada latar putih|Berwarna pada latar putih|Berwarna pada latar putih (kecuali nomor baris)|Berwarna sesuai Layar"
     IDS_MUI_PRINT_PAGENUM   "Halaman %i"
     IDS_MUI_WARN_STYLE_RESET
                             "Tindakan ini akan mengatur ulang gaya tampilan dan berkas tema yang aktif saat ini akan disetel ke konfigurasi standar .ini!"
@@ -236,25 +236,25 @@ BEGIN
     IDS_MUI_SAVEPOS         "&Simpan Posisi\tCtrl+S"
     IDS_MUI_RESETPOS        "Setel &Ulang Posisi\tCtrl+R"
     IDS_MUI_PREVIEW         "&Pratinjau Pengaturan\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "Sandi frasa salah.\nCoba ulang dengan frasa sandi yang lain?"
+    IDS_MUI_PASS_FAILURE    "Frasa sandi salah.\nCoba ulang dengan frasa yang lain?"
     IDS_MUI_NOPASS          "Dekripsi Dibatalkan!\nBaca data mentahan yang dienkripsi?"
-    IDS_MUI_STY_BASESTD     "BASE (Gaya Baku):"
-    IDS_MUI_STY_BASE2ND     "BASE (Gaya Baku ke-2):"
-    IDS_MUI_STY_LEXDEF      "%s - Gaya Baku:"
-    IDS_MUI_STY_LEXSTYLE    "Gaya %s:"
-    IDS_MUI_TITLE_RELBASE   "+++ BASE (%s) +++"
+    IDS_MUI_STY_BASESTD     "Konfigurasi Dasar (Gaya Tampilan Baku):"
+    IDS_MUI_STY_BASE2ND     "Konfigurasi Dasar (Gaya Tampilan Baku ke-2):"
+    IDS_MUI_STY_LEXDEF      "%s - Gaya Tampilan Baku:"
+    IDS_MUI_STY_LEXSTYLE    "Gaya Tampilan %s:"
+    IDS_MUI_TITLE_RELBASE   "+++ Konfigurasi Dasar (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(id-ID) Terjemahan bahasa Indonesia oleh fadzikri"
-    IDS_MUI_TITLE_FIXBASE   "BASE (%s)"
-    IDS_MUI_TITLE_RELCUR    "+++ %s: %s Gaya tampilan +++"
-    IDS_MUI_TITLE_FIXCUR    "%s: %s Gaya tampilan"
+    IDS_MUI_TITLE_FIXBASE   "Konfigurasi Dasar (%s)"
+    IDS_MUI_TITLE_RELCUR    "+++ %s: Gaya tampilan %s +++"
+    IDS_MUI_TITLE_FIXCUR    "%s: Gaya tampilan %s"
     IDS_MUI_TITLE_RELARB    "+++ Gaya tampilan '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB    "Gaya tampilan '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Ekstensi berkas:"
-    IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
+    IDS_MUI_ZERO_LEN_MATCH  "^ Kecocokan Panjang Nol"
     IDS_MUI_GOTO_LINE       "Baris (1 - %s):"
     IDS_MUI_GOTO_COLUMN     "Kolom (1 - %s):"
 END
@@ -298,7 +298,7 @@ Penggunaan:\r\n\
 Notepad3 [/?] [...[Encoding]] [...[Akhir baris]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][jalur]nama_berkas[...]]\r\n\r\n\
-berkas\tHarus sebagai argumen terakhir,\r\n\tboleh untuk tidak menggunakan tanda kutip.\r\n\
+nama_berkas\tHarus sebagai argumen terakhir,\r\n\tboleh untuk tidak menggunakan tanda kutip.\r\n\
 +\tDapat menerima banyak berkas (perlu tanda kutip).\r\n\
 -\tHanya menerima satu berkas (tanpa tanda kutip).\r\n\r\n\
 Opsi:\r\n\
@@ -319,7 +319,7 @@ Opsi:\r\n\
 /n\tSelalu buka jendela baru (/ns satu aplikasi untuk berkas).\r\n\
 /r\tGunakan kembali jendela (/rs satu aplikasi untuk berkas).\r\n\
 /p\tAtur posisi jendela dan ukuran (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
-\tatau /p <kiri>,<atas>,<lebar>,<tinggi>[,<dpi>[,<maksimal>]]  (bilangan bulat).\r\n\
+\tatau /p <kiri>,<atas>,<lebar>,<tinggi>[,<dpi>[,<maks>]]  (bilangan bulat).\r\n\
 /t\tAtur judul jendela.\r\n\
 /i\tMulai sebagai ikon tray.\r\n\
 /o\tPertahankan jendela tetap di atas.\r\n\
@@ -361,7 +361,7 @@ IDS_MUI_ABOUT_RTF_1  "\
 \\cf0 \\fs20\\b1\\ul1 Kontributor:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_2  "\
-\\cf0 \\fs20\\b1\\ul1 Open Source / Pustaka:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Sumber Terbuka / Pustaka:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
 \\cf0 \\fs20\\b1\\ul1 Ucapan Terima Kasih:\\ul0\\b0\\fs18\\par\

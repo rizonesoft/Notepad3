@@ -267,7 +267,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Encode Base&64",                                  IDM_EDIT_BASE64ENCODE
             MENUITEM "Decode Base6&4",                                  IDM_EDIT_BASE64DECODE
-            MENUITEM "Decode Base64 ke Enc&ode...",                     IDM_EDIT_B64DECODESEL
+            MENUITEM "Decode Base64 ke Enc&ode Dokumen...",                     IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
             MENUITEM "&Encode URL\tCtrl+Shift+E",                       IDM_EDIT_URLENCODE
             MENUITEM "&Decode URL\tCtrl+Shift+R",                       IDM_EDIT_URLDECODE
@@ -319,7 +319,7 @@ BEGIN
         BEGIN
             MENUITEM "&Alihkan\tCtrl+F2",                   BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR
-            MENUITEM "Pergi ke &Berikutnyat\tF2",           BME_EDIT_BOOKMARKNEXT
+            MENUITEM "Pergi ke &Berikutnya\tF2",           BME_EDIT_BOOKMARKNEXT
             MENUITEM "Pergi ke &Sebelumnya\tShift+F2",      BME_EDIT_BOOKMARKPREV
             MENUITEM SEPARATOR
             MENUITEM "&Bersihkan Semua\tAlt+F2",            BME_EDIT_BOOKMARKCLEAR
@@ -327,17 +327,17 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Cari"
         BEGIN
-            MENUITEM "Me&ncari...\tCtrl+F",                             IDM_EDIT_FIND
-            MENUITEM "&Simpan Teks untuk Pencarian\tAlt+F3",            IDM_EDIT_SAVEFIND
-            MENUITEM "Cari Ber&ikutnya\tF3",                            IDM_EDIT_FINDNEXT
-            MENUITEM "Cari Sebe&lumnya\tShift+F3",                      IDM_EDIT_FINDPREV
-            MENUITEM "Cari Teks yang dipilih Be&rikutnya\tCtrl+F3",     CMD_FINDNEXTSEL
-            MENUITEM "Cari Se&belumnya Selected\tCtrl+Shift+F3",        CMD_FINDPREVSEL
-            MENUITEM "&Ganti...\tCtrl+H",                               IDM_EDIT_REPLACE
-            MENUITEM "Ganti Se&lanjutnya\tF4",                          IDM_EDIT_REPLACENEXT
-            MENUITEM "&Pergi ke...\tCtrl+G",                            IDM_EDIT_GOTOLINE
+            MENUITEM "Me&ncari...\tCtrl+F",                             	IDM_EDIT_FIND
+            MENUITEM "&Simpan Teks untuk Pencarian\tAlt+F3",            	IDM_EDIT_SAVEFIND
+            MENUITEM "Cari Ber&ikutnya\tF3",                            	IDM_EDIT_FINDNEXT
+            MENUITEM "Cari Sebe&lumnya\tShift+F3",                      	IDM_EDIT_FINDPREV
+            MENUITEM "Cari Teks yang dipilih Be&rikutnya\tCtrl+F3",     	CMD_FINDNEXTSEL
+            MENUITEM "Cari Teks yang dipilih Se&belumnya\tCtrl+Shift+F3",	CMD_FINDPREVSEL
+            MENUITEM "&Ganti...\tCtrl+H",                               	IDM_EDIT_REPLACE
+            MENUITEM "Ganti Se&lanjutnya\tF4",                          	IDM_EDIT_REPLACENEXT
+            MENUITEM "&Pergi ke...\tCtrl+G",                            	IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Cari dalam Berkas\tCtrl+Shift+F",                IDM_GREP_WIN_SEARCH
+            MENUITEM "&Cari dalam Berkas\tCtrl+Shift+F",                	IDM_GREP_WIN_SEARCH
         END
     END
     POPUP "&Tampilan"
@@ -382,7 +382,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Tandai yang Terlihat",                IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
-            MENUITEM "Peka &Huruf Besar-Kecil",              IDM_VIEW_MARKOCCUR_CASE
+            MENUITEM "Peka &Huruf",              			 IDM_VIEW_MARKOCCUR_CASE
             POPUP "Cocokkan &Seluruh Kata"
             BEGIN
                 MENUITEM "&Matikan",                         IDM_VIEW_MARKOCCUR_WNONE
@@ -393,7 +393,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Baris &Nomor\tCtrl+Shift+N",               IDM_VIEW_LINENUMBERS
         MENUITEM "&Margin Markah\tCtrl+Shift+M",             IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Tampilan Margin Riwayat",                  IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Margin Riwayat",                  		 IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Lipatan"
         BEGIN
@@ -522,8 +522,8 @@ BEGIN
             END
             POPUP "&Tata Letak RTL (GDI)"
             BEGIN
-                MENUITEM "Sunting &Area",               IDM_SET_RTL_LAYOUT_EDIT
-                MENUITEM "&Dialog Lainnya",             IDM_SET_RTL_LAYOUT_DLG
+                MENUITEM "&Area Penyuntingan",               IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Dialog Program",             IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "&Arah Penulisan"
             BEGIN

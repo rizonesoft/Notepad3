@@ -190,7 +190,7 @@ BEGIN
     GROUPBOX        "Deteksi Encoding: ",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
     CONTROL         "Buka berkas 7-bit &ASCII di mode UTF-8.",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,136,10
-    CONTROL         "Gunakan hanya hasil &deteksi yang andal.",IDC_RELIABLE_DETECTION_RES,
+    CONTROL         "Gunakan hasil &deteksi yang andal.",IDC_RELIABLE_DETECTION_RES,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
     CONTROL         "Buka berkas 8-bit *.&nfo/diz di mode DOS-437.",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
@@ -310,11 +310,11 @@ BEGIN
     EDITTEXT        IDC_STYLEEDIT_ROOT,181,152,279,12,ES_AUTOHSCROLL
     LTEXT           "",IDC_STYLELABEL,181,171,279,8
     EDITTEXT        IDC_STYLEEDIT,181,183,279,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "Latar &Depan...",IDC_STYLEFORE,181,201,46,14
-    PUSHBUTTON      "Latar &Belakang...",IDC_STYLEBACK,232,201,46,14
+    PUSHBUTTON      "&Depn...",IDC_STYLEFORE,181,201,46,14
+    PUSHBUTTON      "&Blkg...",IDC_STYLEBACK,232,201,46,14
     PUSHBUTTON      "&Font...",IDC_STYLEFONT,283,201,42,14
     PUSHBUTTON      "&Pratinjau",IDC_PREVIEW,330,201,42,14
-    PUSHBUTTON      "&Setel Ulang",IDC_STYLEDEFAULT,377,201,42,14
+    PUSHBUTTON      "&Reset",IDC_STYLEDEFAULT,377,201,42,14
     PUSHBUTTON      "",IDC_PREVSTYLE,426,201,15,14,BS_BITMAP
     PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14,BS_BITMAP
     PUSHBUTTON      "&Impor...",IDC_IMPORT,181,232,50,14
@@ -394,10 +394,10 @@ BEGIN
     COMBOBOX        103,7,58,182,196,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,83,79,50,14
     PUSHBUTTON      "Batal",IDCANCEL,139,79,50,14
-    LTEXT           "Tanpa pembungkusan indentasi|Indentasi pembungkusan dengan 1 karakter|Indentasi pembungkusan dengan 2 karakter|Indentasi pembungkusan dengan 1 tab|Indentasi pembungkusan dengan 2 tab|Indentasi pembungkusan sesuai tab baris awal|Indentasi pembungkusan 1 tab lebih dari tab baris awal",200,0,0,615,8,NOT WS_VISIBLE
-    LTEXT           "Tanpa indikator visual sebelum pembungkusan|Tampilkan indikator visual sebelum pembungkusan (dekat teks)|Tampilkan indikator visual sebelum pembungkusan (dekat bilah gulir)",201,0,0,418,8,NOT WS_VISIBLE
-    LTEXT           "Tanpa indikator visual setelah pembungkusan|Tampilkan indikator visual setelah pembungkusan (dekat teks)|Tampilkan indikator visual setelah pembungkusan (dekat bilah nomor)",202,0,0,402,8,NOT WS_VISIBLE
-    LTEXT           "Bungkus teks diantara kata|Bungkus teks diantara glif apapun",203,0,0,187,8,NOT WS_VISIBLE
+    LTEXT           "Tanpa indentasi|Indentasi 1 karakter|Indentasi 2 karakter|Indentasi 1 tab|Indentasi 2 tab|Indentasi sesuai tab awal|Indentasi 1 tab lebih dari tab awal",200,0,0,615,8,NOT WS_VISIBLE
+    LTEXT           "(sebelum pembungkusan) Tanpa indikator visual|\" Tampilkan indikator visual (dekat teks)|\" Tampilkan indikator visual (dekat gulir)",201,0,0,418,8,NOT WS_VISIBLE
+    LTEXT           "(setelah pembungkusan) Tanpa indikator visual|\" Tampilkan indikator visual (dekat teks)|\" Tampilkan indikator visual (dekat nomor)",202,0,0,402,8,NOT WS_VISIBLE
+    LTEXT           "Bungkus teks diantara kata-kata|Bungkus teks diantara glif apapun",203,0,0,187,8,NOT WS_VISIBLE
 END
 
 IDD_MUI_PAGESETUP DIALOGEX 5, 5, 356, 260
@@ -479,8 +479,8 @@ BEGIN
     CONTROL         "Setel Kunci Utama Baru",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,84,10
     EDITTEXT        IDC_PWD_EDIT1,17,35,276,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
-    LTEXT           "Kunci Utama (Opsional):",IDC_STATIC2,17,61,72,10,NOT WS_GROUP
-    CONTROL         "Enkripsi menggunakan frasa sandi",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
+    LTEXT           "Kunci Utama (Opsional):",IDC_STATIC2,17,61,80,10,NOT WS_GROUP
+    CONTROL         "Enkripsi dengan frasa sandi",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
     CONTROL         "Gunakan Kembali Kunci Utama",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
     CONTROL         "tampilkan frasa sandi",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,75,10
 END
@@ -494,8 +494,8 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,233,58,50,14
     PUSHBUTTON      "Batal",IDCANCEL,175,58,50,14
     EDITTEXT        IDC_PWD_EDIT3,16,23,267,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
-    CONTROL         "dekripsi menggunakan kunci utama",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,117,10
-    LTEXT           "Berkas ini terdapat kunci utama",IDC_PWD_STATMPW,16,41,89,11,NOT WS_GROUP
+    CONTROL         "dekripsi dengan kunci utama",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,117,10
+    LTEXT           "Terdapat kunci utama",IDC_PWD_STATMPW,16,41,89,11,NOT WS_GROUP
     CONTROL         "tampilkan frasa sandi",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,75,10
 END
 
@@ -531,7 +531,7 @@ BEGIN
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,17,8
     LTEXT           "Nomor berkelanjutan (dari nol).",IDC_STATIC5,57,92,109,8
     LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,35,8
-    LTEXT           "${<expr>} menentukan rumus matematika.",IDC_STATIC6,57,102,132,8
+    LTEXT           "${<expr>} untuk matematika.",IDC_STATIC6,57,102,132,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
@@ -751,7 +751,7 @@ BEGIN
 
     GROUPBOX        "Efek", grp1, 7, 97, 98, 76, WS_GROUP
     AUTOCHECKBOX    "&Coret", chx1, 13, 111, 90, 10, WS_TABSTOP
-    AUTOCHECKBOX    "Ba&ris Bawah", chx2, 13, 127, 90, 10
+    AUTOCHECKBOX    "Ga&ris Bawah", chx2, 13, 127, 90, 10
 
     LTEXT           "&Warna:", stc4, 13, 144, 89, 9
     COMBOBOX        cmb4, 13, 155, 85, 100,
