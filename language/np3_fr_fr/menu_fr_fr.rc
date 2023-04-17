@@ -274,8 +274,8 @@ BEGIN
             MENUITEM "Chemin du système de fichiers vers URL",           IDM_EDIT_PATH2URL
             MENUITEM "URL vers le chemin du système de fichiers",        IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Inverser ""\\""",   						         IDM_EDIT_INVERTBACKSLASH
-            MENUITEM "Inverser ""/""",         					         IDM_EDIT_INVERTSLASH
+            MENUITEM "Inverser ""\\""",                                  IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Inverser ""/""",                                   IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "&Caractère vers hexa\tCtrl+Alt+X",                 IDM_EDIT_CHAR2HEX
             MENUITEM "&Hexa vers caractère\tCtrl+Alt+C",                 IDM_EDIT_HEX2CHAR

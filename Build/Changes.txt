@@ -114,7 +114,7 @@ FIXES:
 [.221.1]- Repair jump to line (Alt+Click) and related command line search.
 [.221.1]- Correction to LineSpace evaluation TEXT files.
 [.221.1]- Lexer TEXT using own Default but inheriting from Common Base.
-[.220.1]- WSL2 simple path and NP3 otions given with slash.
+[.220.1]- WSL2 simple path and NP3 options given with slash.
 [.220.1]- Representation of EOLs in case of GDI technology (use default).
 [.220.1]- Find previous skips finding at begin.
 [.220.1]- Use random IV for np3encrypt.
@@ -1365,7 +1365,7 @@ CHANGES:
 ENHANCEMENT:
 --------------------------------------------------------
 - Allow customizable fileName-RegEx to extensionlist
-	( \rc$; = all filenames (incl. ext) which ends on 'rc').
+    ( \rc$; = all filenames (incl. ext) which ends on 'rc').
 - Hand cursor coupled with indicator hover style only on modifier keys.
 - Allow indicator styling for Hyperlink hover rendering.
 - Find/Replace dialog <-> "Focused View" enhancements.
