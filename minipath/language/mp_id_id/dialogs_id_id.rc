@@ -209,8 +209,8 @@ BEGIN
     CONTROL         "&Jangan konfirmasikan penghapusan berkas (tidak disarankan).",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,170,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         "Aktifkan kunci ""&Esc"" ke...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
-    CONTROL         "Minimalkan jen&denla.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
+    CONTROL         "Aktifkan tombol ""&Esc"" ke...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
+    CONTROL         "Minimalkan jen&dela.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
     CONTROL         "&Keluar dari MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,63,10
 END
 
