@@ -111,7 +111,7 @@ BEGIN
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,193,85,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,130,259,9,WS_EX_STATICEDGE
-    PUSHBUTTON      "Tampilan &Fokus",IDC_TOGGLE_VISIBILITY,211,65,55,14
+    PUSHBUTTON      "Tmpiln &Fkus",IDC_TOGGLE_VISIBILITY,211,65,55,14
 END
 
 IDD_MUI_REPLACE DIALOGEX 0, 0, 273, 168
@@ -137,8 +137,8 @@ BEGIN
     CONTROL         "Mode W&ildcard",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,65,10
     CONTROL         "Mode transparan ketika tidak fokus",IDC_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
-    DEFPUSHBUTTON   "Cari B&erikutnya",IDOK,211,7,55,14
-    PUSHBUTTON      "Cari &Sebelu&mnya",IDC_FINDPREV,211,23,55,14
+    DEFPUSHBUTTON   "Cari B&erktnya",IDOK,211,7,55,14
+    PUSHBUTTON      "Cari &Sbl&mnya",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "&Ganti",IDC_REPLACE,211,43,55,14
     PUSHBUTTON      "Dalam Se&leksi",IDC_REPLACEINSEL,211,59,55,14
     PUSHBUTTON      "Ganti &Semua",IDC_REPLACEALL,211,75,55,14
@@ -149,7 +149,7 @@ BEGIN
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
     CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,193,114,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,156,259,9,WS_EX_STATICEDGE
-    PUSHBUTTON      "Tampilan &Fokus",IDC_TOGGLE_VISIBILITY,211,94,55,14
+    PUSHBUTTON      "Tmpiln &Fkus",IDC_TOGGLE_VISIBILITY,211,94,55,14
 END
 
 IDD_MUI_RUN DIALOGEX 0, 0, 229, 96
@@ -263,7 +263,7 @@ BEGIN
     CONTROL         "&Simpan daftar berkas terakhir.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,120,10
     CONTROL         "&Pertahankan posisi caret.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
     CONTROL         "&Ingat pola pencarian.",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,120,10
-    CONTROL         "&Muat otomatis berkas terbaru saat mulai.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,160,10
+    CONTROL         "&Muat otomatis berkas teratas saat mulai.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,160,10
     CONTROL         "Buang", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
     DEFPUSHBUTTON   "OK",IDOK,154,158,50,14,WS_DISABLED
     PUSHBUTTON      "Tutup",IDCANCEL,212,158,50,14
@@ -395,8 +395,8 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,83,79,50,14
     PUSHBUTTON      "Batal",IDCANCEL,139,79,50,14
     LTEXT           "Tanpa indentasi|Indentasi 1 karakter|Indentasi 2 karakter|Indentasi 1 tab|Indentasi 2 tab|Indentasi sesuai tab awal|Indentasi 1 tab lebih dari tab awal",200,0,0,615,8,NOT WS_VISIBLE
-    LTEXT           "(sebelum pembungkusan) Tanpa indikator visual|Tampilkan indikator visual (dekat teks)|Tampilkan indikator visual (dekat gulir)",201,0,0,418,8,NOT WS_VISIBLE
-    LTEXT           "(setelah pembungkusan) Tanpa indikator visual|Tampilkan indikator visual (dekat teks)|Tampilkan indikator visual (dekat nomor)",202,0,0,402,8,NOT WS_VISIBLE
+    LTEXT           "(kanan) Tanpa indikator visual|(kanan) Tampilkan indikator visual (dekat teks)|(kanan) Tampilkan indikator visual (dekat gulir)",201,0,0,418,8,NOT WS_VISIBLE
+    LTEXT           "(kiri) Tanpa indikator visual|(kiri) Tampilkan indikator visual (dekat teks)|(kiri) Tampilkan indikator visual (dekat nomor)",202,0,0,402,8,NOT WS_VISIBLE
     LTEXT           "Bungkus teks diantara kata-kata|Bungkus teks diantara glif apapun",203,0,0,187,8,NOT WS_VISIBLE
 END
 

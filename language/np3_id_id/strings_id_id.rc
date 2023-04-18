@@ -119,8 +119,8 @@ BEGIN
     IDS_MUI_OPENWITH        "Buka direktori aplikasi favorit Anda."
     IDS_MUI_FAVORITES       "Buka direktori berkas favorit Anda."
     IDS_MUI_BACKSLASHHELP   "Konversi garis miring\n\n\\a\tAlarm (BEL, ASCII 7)\n\\b\tHapus (BS, ASCII 8)\n\\f\tPemisah Halaman (FF, ASCII 12)\n\\n\tBaris Baru (LF, ASCII 10)\n\\r\tBaris Baru (CR, ASCII 13)\n\\t\tTab Horizontal (HT, ASCII 9)\n\\v\tTab Vertikal (VT, ASCII 11)\n\\0oo\tNotasi Oktal\n\\u####\tNotasi Heksadesimal\n\\xhh\tNotasi Heksadesimal\n\\\\\tGaris Miring"
-    IDS_MUI_REGEXPHELP      "Sintaks Ekspresi Reguler (Multi Baris)\n\n.\tSemua karakter\n^\tAwal baris\n$\tAkhir baris\n\\<\tAwal kata\n\\>\tAkhir kata\n\\b\tBatas kata\n[...]\tSatu set karakter ([abc]) atau rentang ([a-z])\n[^...]\tKarakter yang BUKAN dari set atau rentang\n\\d\tSetiap digit desimal\n\\D\tSetiap karakter non-digit\n\\s\tKarakter spasi\n\\S\tBukan karakter spasi\n\\w\tKarakter ""huruf""\n\\W\tKarakter ""non-huruf""\n\\x\tEscape karakter dengan makna khusus\n\\xHH\tKarakter dengan notasi Hex HH\n?\tMencocokkan dengan sebelumnya sebanyak 0 atau 1 kali\n*\tMencocokkan dengan sebelumnya sebanyak 0 kali atau lebih\n+\tMencocokkan dengan sebelumnya sebanyak 1 kali atau lebih\n*? or +?\tPencocokan mode malas, memakai ""?"" dan ""+""\n(\tAwal suatu bagian\n)\tAkhir suatu bagian\n\\n\tMerujuk ke suatu bagian saat mengganti (n untuk 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Mode wildcard\n\n*\tCocokkan nol atau lebih karakter.\n?\tCocokkan dengan satu karakter."
+    IDS_MUI_REGEXPHELP      "Sintaks Ekspresi Reguler (Multi Baris)\n\n.\tSemua karakter\n^\tAwal baris\n$\tAkhir baris\n\\<\tAwal kata\n\\>\tAkhir kata\n\\b\tBatas kata\n[...]\tSatu set karakter ([abc]) atau rentang ([a-z])\n[^...]\tKarakter yang BUKAN dari set atau rentang\n\\d\tSetiap digit desimal\n\\D\tSetiap karakter non-digit\n\\s\tKarakter spasi\n\\S\tBukan karakter spasi\n\\w\tKarakter ""huruf""\n\\W\tKarakter ""non-huruf""\n\\x\tEscape karakter dengan makna khusus\n\\xHH\tKarakter dengan notasi Hex HH\n?\tCocokkan dengan sebelumnya 0 atau 1 kali\n*\tCocokkan dengan sebelumnya 0 kali atau lebih\n+\tCocokkan dengan sebelumnya 1 kali atau lebih\n*? or +?\tPencocokan mode malas, memakai ""?"" dan ""+""\n(\tAwal suatu bagian\n)\tAkhir suatu bagian\n\\n\tRujuk ke suatu bagian saat mengganti (n itu 1-9)\n"
+    IDS_MUI_WILDCARDHELP    "Pencarian wildcard\n\n*\tCocokkan nol atau lebih karakter.\n?\tCocokkan dengan satu karakter."
 END
 
 STRINGTABLE
@@ -218,7 +218,7 @@ BEGIN
     IDS_MUI_ASK_CREATE      """%s"" tidak ditemukan.\nApakah Anda ingin membuat berkas ini?"
     IDS_MUI_PRINT_HEADER    "Nama Berkas, Tanggal dan Waktu Sekarang|Nama Berkas, Tanggal Sekarang|Nama Berkas|Biarkan Kosong"
     IDS_MUI_PRINT_FOOTER    "Nomor Halaman|Biarkan kosong"
-    IDS_MUI_PRINT_COLOR     "Normal|Balikkan kecerahan (latar hitam)|Hitam pada latar putih|Berwarna pada latar putih|Berwarna pada latar putih (kecuali nomor baris)|Berwarna sesuai Layar"
+    IDS_MUI_PRINT_COLOR     "Normal|Balikkan kecerahan (latar hitam)|Hitam pada latar putih|Berwarna pada latar putih|Berwarna pada latar putih (kecuali nomor baris)|Berwarna sesuai layar"
     IDS_MUI_PRINT_PAGENUM   "Halaman %i"
     IDS_MUI_WARN_STYLE_RESET
                             "Tindakan ini akan mengatur ulang gaya tampilan dan berkas tema yang aktif saat ini akan disetel ke konfigurasi standar .ini!"
@@ -297,8 +297,8 @@ IDS_MUI_CMDLINEHELP "\
 Penggunaan:\r\n\
 Notepad3 [/?] [...[Encoding]] [...[Akhir baris]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][jalur]nama_berkas[...]]\r\n\r\n\
-nama_berkas\tHarus sebagai argumen terakhir,\r\n\tboleh untuk tidak menggunakan tanda kutip.\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][jalur]berkas[...]]\r\n\r\n\
+berkas\tHarus sebagai argumen terakhir,\r\n\tboleh untuk tidak menggunakan tanda kutip.\r\n\
 +\tDapat menerima banyak berkas (perlu tanda kutip).\r\n\
 -\tHanya menerima satu berkas (tanpa tanda kutip).\r\n\r\n\
 Opsi:\r\n\

@@ -65,7 +65,7 @@ BEGIN
         MENUITEM "Kunci Tanggal/&Waktu Berkas\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "Hanya Ba&ca",                              IDM_FILE_READONLY
-        MENUITEM "&Kunci Berkas",                            IDM_FILE_LOCK_SHARE_READ
+        MENUITEM "&Kunci Berkas dari Berbagi",               IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Enk&ripsi Frasa Sandi Berkas...",          IDM_SETPASS
         MENUITEM SEPARATOR
@@ -148,7 +148,7 @@ BEGIN
             MENUITEM "Tam&bahkan Berkas...\tAlt+K",  IDM_FILE_ADDTOFAV
             MENUITEM "Ke&lola...\tAlt+F9",           IDM_FILE_MANAGEFAV
         END
-        MENUITEM "Terk&ini...\tCtrl+Alt+H",          IDM_FILE_RECENT
+        MENUITEM "Berkas Terk&ini...\tCtrl+Alt+H",          IDM_FILE_RECENT
         MENUITEM SEPARATOR
         MENUITEM "&Keluar\tAlt+F4",                  IDM_FILE_EXIT
     END
