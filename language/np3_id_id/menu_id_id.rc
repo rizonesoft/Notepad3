@@ -455,7 +455,7 @@ BEGIN
     BEGIN
         MENUITEM "&Sesuaikan Skema...\tCtrl+F12",                    IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "&Pilih Skema Sintaks..\tF12",                      IDM_VIEW_SCHEME
+        MENUITEM "&Pilih Skema Sintaks...\tF12",                     IDM_VIEW_SCHEME
         MENUITEM "Basis &Umum ke-2\tShift+F12",                      IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Font Baku &Global...\tAlt+F12",                    IDM_VIEW_FONT
