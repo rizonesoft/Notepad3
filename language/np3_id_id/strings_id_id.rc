@@ -307,7 +307,7 @@ Opsi:\r\n\
 ...\tMode akhir baris (/crlf, /cr, /lf).\r\n\
 /e\tEncoding berkas.\r\n\
 /g\tPergi ke baris yang ditentukan (/g -1 akhir berkas).\r\n\
-/m\tCocokkan teks yang ditentukan (/m- akhir, /mr regex, /mb garis miring terbalik).\r\n\
+/m\tCocokkan teks yang ditentukan (/m- akhir, /mr regex, /mb garis \r\n\tmiring terbalik).\r\n\
 /l\tOtomatis mulai ulang berkas yang berubah.\r\n\
 /q\tMemaksa pembuatan berkas baru tanpa konfirmasi.\r\n\
 /s\tPilih skema sintaks yang ditentukan.\r\n\
@@ -328,7 +328,7 @@ Opsi:\r\n\
 /v\tSegera mencetak berkas dan tutup jendela.\r\n\
 /vd\tCetak berkas (buka dialog printer).\r\n\
 /y\tCari berkas di environment PATH.\r\n\
-/z\tLewati berikutnya (dapat digunakan untuk pengganti Notepad berbasis registri).\r\n\r\n\
+/z\tLewati berikutnya (dapat digunakan untuk pengganti Notepad \r\n\tberbasis registri).\r\n\r\n\
 Contoh:\r\n\
 Notepad3 /utf8sig /crlf D:\\temp\\Tes.txt\r\n\
  \t... Buat berkas baru ""Tes.txt"" dengan Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
@@ -361,7 +361,7 @@ IDS_MUI_ABOUT_RTF_1  "\
 \\cf0 \\fs20\\b1\\ul1 Kontributor:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_2  "\
-\\cf0 \\fs20\\b1\\ul1 Sumber Terbuka / Pustaka:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Open Source / Pustaka:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
 \\cf0 \\fs20\\b1\\ul1 Ucapan Terima Kasih:\\ul0\\b0\\fs18\\par\
