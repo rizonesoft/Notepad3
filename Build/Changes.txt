@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.419.(build_#) (2023-04-19)
+Current BETA/RC Version 6.23.424.(build_#) (2023-04-24)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.424.1]- Localization in INNO Setup of "Open with Notepad3" (SUP).
 [.406.1]- Enhanced File-Change Notification Messagebox.
 [.327.1]- Menu entry to clear change/undo history.
 [.321.1]- Split Verilog Lexer (Verilog and SystemVerilog).
