@@ -6,38 +6,55 @@
 ; Inno Setup: https://www.jrsoftware.org/isdl.php
 
 ; Preprocessor related stuff
-#if VER < EncodeVer(6,0,5)
+// if you compile a "beta, rc or rc2" version, then comment/un-comment the appropriate setting:
+;#define VRSN=" beta"
+;#define VRSN=" rc"
+;#define VRSN=" rc2"
+// but, if not a "beta, rc or rc2" version, then comment above settings and un-comment below setting :)
+#define VRSN
+
+#define sse_required
+#define sse2_required
+
+// 6.0.5 in hex: 0x06000500
+#if VER < 0x06000500
   #error Update your Inno Setup version (6.0.5 or newer)
 #endif
 
-#define bindir "..\Bin"
+#define bindir "..\Bin\"
+#define RLSdir "Release_x64_v143"
 
-#ifnexist bindir + "\Release_x64_v143\Notepad3.exe"
+#ifnexist bindir + RLSdir + "\Notepad3.exe"
   #error Compile Notepad3 x64 first
 #endif
 
-#ifnexist bindir + "\Release_x64_v143\minipath.exe"
+#ifnexist bindir + RLSdir + "\minipath.exe"
   #error Compile MiniPath x64 first
 #endif
 
-#ifnexist bindir + "\Release_x64_v143\grepWinNP3.exe"
+#ifnexist bindir + RLSdir + "\grepWinNP3.exe"
   #error Compile grepWinNP3 x64 first
 #endif
 
-#ifnexist bindir + "\Release_x64_v143\np3encrypt.exe"
+#ifnexist bindir + RLSdir + "\np3encrypt.exe"
   #error Compile np3encrypt x64 first
 #endif
 
 #define app_name "Notepad3"
 #define app_publisher "Rizonesoft"
-#define app_version GetVersionNumbersString(bindir + "\Release_x64_v143\Notepad3.exe")
-#define app_copyright "Copyright © 2008-2023 Rizonesoft"
+// 6.2.0 in hex: 0x06020000
+#if VER < 0x06020000
+  #define app_version GetFileVersion(bindir + RLSdir + "\Notepad3.exe")
+#Else
+  #define app_version GetVersionNumbersString(bindir + RLSdir + "\Notepad3.exe")
+#EndIf
+#define app_copyright "Copyright © 2008-" + GetDateTimeString("yyyy", "", "") + " Rizonesoft"
 #define quick_launch "{userappdata}\Microsoft\Internet Explorer\Quick Launch"
 
 [Setup]
 AppId={#app_name}
-AppName={#app_name} (x64)
-AppVersion={#app_version}
+AppName={#app_name} (x64){#VRSN}
+AppVersion={#app_version}{#VRSN}
 AppVerName={#app_name} {#app_version}
 AppPublisher={#app_publisher}
 AppPublisherURL=https://rizonesoft.com
@@ -47,11 +64,11 @@ AppContact=https://rizonesoft.com
 AppCopyright={#app_copyright}
 VersionInfoVersion={#app_version}
 UninstallDisplayIcon={app}\Notepad3.exe
-UninstallDisplayName={#app_name} (x64) {#app_version}
+UninstallDisplayName={#app_name} (x64) {#app_version}{#VRSN}
 DefaultDirName={commonpf}\Notepad3
 LicenseFile="..\License.txt"
 OutputDir=.\Packages
-OutputBaseFilename={#app_name}_{#app_version}_x64_Setup
+OutputBaseFilename={#app_name}_{#app_version}{#StringChange(VRSN, " ", "_")}_x64_Setup
 WizardStyle=modern
 WizardSmallImageFile=.\Resources\WizardSmallImageFile.bmp
 Compression=lzma2/max
@@ -65,39 +82,40 @@ DisableReadyPage=yes
 DisableWelcomePage=yes
 AllowCancelDuringInstall=yes
 UsedUserAreasWarning=no
-MinVersion=0,6.1sp1
+MinVersion=0,6.1.7601
 ArchitecturesAllowed=x64 arm64
 ArchitecturesInstallIn64BitMode=x64 arm64
 CloseApplications=true
-SetupMutex='{#app_name}' + '_setup_mutex'
+SetupMutex={#app_name}_setup_mutex,Global\{#app_name}_setup_mutex
+SetupIconFile=.\Resources\Notepad3.ico
 
 [Languages]
 Name: "enu"; MessagesFile: "compiler:Default.isl"
-Name: "afk"; MessagesFile: "compiler:Notepad3\Afrikaans.isl"
-Name: "bel"; MessagesFile: "compiler:Notepad3\Belarusian.isl"
-Name: "deu"; MessagesFile: "compiler:Notepad3\German.isl"
-Name: "ell"; MessagesFile: "compiler:Notepad3\Greek.isl"
-Name: "eng"; MessagesFile: "compiler:Notepad3\EnglishBritish.isl"
-Name: "esn"; MessagesFile: "compiler:Notepad3\Spanish.isl"
-Name: "esm"; MessagesFile: "compiler:Notepad3\SpanishMexican.isl"
-Name: "fra"; MessagesFile: "compiler:Notepad3\French.isl"
-Name: "hin"; MessagesFile: "compiler:Notepad3\Hindi.isl"
-Name: "hun"; MessagesFile: "compiler:Notepad3\Hungarian.isl"
-Name: "ind"; MessagesFile: "compiler:Notepad3\Indonesian.isl"
-Name: "ita"; MessagesFile: "compiler:Notepad3\Italian.isl"
-Name: "jpn"; MessagesFile: "compiler:Notepad3\Japanese.isl"
-Name: "kor"; MessagesFile: "compiler:Notepad3\Korean.isl"
-Name: "nld"; MessagesFile: "compiler:Notepad3\Dutch.isl"
-Name: "plk"; MessagesFile: "compiler:Notepad3\Polish.isl"
-Name: "ptb"; MessagesFile: "compiler:Notepad3\BrazilianPortuguese.isl"
-Name: "ptg"; MessagesFile: "compiler:Notepad3\Portuguese.isl"
-Name: "rus"; MessagesFile: "compiler:Notepad3\Russian.isl"
-Name: "sky"; MessagesFile: "compiler:Notepad3\Slovak.isl"
-Name: "sve"; MessagesFile: "compiler:Notepad3\Swedish.isl"
-Name: "trk"; MessagesFile: "compiler:Notepad3\Turkish.isl"
-Name: "vit"; MessagesFile: "compiler:Notepad3\Vietnamese.isl"
-Name: "chs"; MessagesFile: "compiler:Notepad3\ChineseSimplified.isl"
-Name: "cht"; MessagesFile: "compiler:Notepad3\ChineseTraditional.isl"
+Name: "afk"; MessagesFile: "compiler:Languages-mod\Afrikaans.isl"
+Name: "bel"; MessagesFile: "compiler:Languages-mod\Belarusian.isl"
+Name: "deu"; MessagesFile: "compiler:Languages-mod\German.isl"
+Name: "ell"; MessagesFile: "compiler:Languages-mod\Greek.isl"
+Name: "eng"; MessagesFile: "compiler:Languages-mod\EnglishBritish.isl"
+Name: "esn"; MessagesFile: "compiler:Languages-mod\Spanish.isl"
+Name: "esm"; MessagesFile: "compiler:Languages-mod\SpanishMexican.isl"
+Name: "fra"; MessagesFile: "compiler:Languages-mod\French.isl"
+Name: "hin"; MessagesFile: "compiler:Languages-mod\Hindi.isl"
+Name: "hun"; MessagesFile: "compiler:Languages-mod\Hungarian.isl"
+Name: "ind"; MessagesFile: "compiler:Languages-mod\Indonesian.isl"
+Name: "ita"; MessagesFile: "compiler:Languages-mod\Italian.isl"
+Name: "jpn"; MessagesFile: "compiler:Languages-mod\Japanese.isl"
+Name: "kor"; MessagesFile: "compiler:Languages-mod\Korean.isl"
+Name: "nld"; MessagesFile: "compiler:Languages-mod\Dutch.isl"
+Name: "plk"; MessagesFile: "compiler:Languages-mod\Polish.isl"
+Name: "ptb"; MessagesFile: "compiler:Languages-mod\BrazilianPortuguese.isl"
+Name: "ptg"; MessagesFile: "compiler:Languages-mod\Portuguese.isl"
+Name: "rus"; MessagesFile: "compiler:Languages-mod\Russian.isl"
+Name: "sky"; MessagesFile: "compiler:Languages-mod\Slovak.isl"
+Name: "sve"; MessagesFile: "compiler:Languages-mod\Swedish.isl"
+Name: "trk"; MessagesFile: "compiler:Languages-mod\Turkish.isl"
+Name: "vit"; MessagesFile: "compiler:Languages-mod\Vietnamese.isl"
+Name: "chs"; MessagesFile: "compiler:Languages-mod\ChineseSimplified.isl"
+Name: "cht"; MessagesFile: "compiler:Languages-mod\ChineseTraditional.isl"
 
 [Messages]
 enu.BeveledLabel=English (US)
@@ -129,9 +147,10 @@ cht.BeveledLabel=Chinese (TW)
 
 [CustomMessages]
 enu.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
-#if defined(sse_required)
+#ifdef sse_required
 enu.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 enu.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
 #endif
 enu.tsk_AllUsers=For all users
@@ -144,28 +163,32 @@ enu.tsk_StartMenuIcon=Create a Start Menu shortcut
 enu.tsk_LaunchWelcomePage=Important Release Information!
 enu.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
 enu.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+enu.reg_Open_with_NP3=Open with {#app_name}
 
 afk.msg_DeleteSettings=Wil jy ook {#app_name} se instellings en temas uitvee?%n%nAs jy beplan om {#app_name} weer te installeer, hoef jy dit nie uit te vee nie.
-#if defined(sse_required)
+#ifdef sse_required
 afk.msg_simd_sse=Hierdie bou van {#app_name} vereis 'n SVE met SSE-uitbreidingsteun.%n%nJou SVE het nie daardie vermoëns nie.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 afk.msg_simd_sse2=Hierdie bou van {#app_name} vereis 'n SVE met SSE2-uitbreidingsteun.%n%nJou SVE het nie daardie vermoëns nie.
 #endif
 afk.tsk_AllUsers=Vir alle gebruikers
 afk.tsk_CurrentUser=Slegs vir die huidige gebruiker
-afk.tsk_Other=
+afk.tsk_Other=Ander take:
 afk.tsk_ResetSettings=Stel {#app_name} se instellings en temas terug
 afk.tsk_RemoveDefault=Herstel Windows Notepad
 afk.tsk_SetDefault=Vervang Windows Notepad met {#app_name}
 afk.tsk_StartMenuIcon=Skep 'n Start Menu-kortpad
 afk.tsk_LaunchWelcomePage=Belangrike vrystelling-inligting!
-afk.tsk_RemoveOpenWith=Verwyder "Verwyder Maak oop met {#app_name}" uit die kontekskieslys
-afk.tsk_SetOpenWith=Sit "Maak oop met {#app_name}" in die kontekskieslys
+afk.tsk_RemoveOpenWith=Verwyder "Maak oop met {#app_name}" uit die kontekskieslys
+afk.tsk_SetOpenWith=Voeg "Maak oop met {#app_name}" in die kontekskieslys
+afk.reg_Open_with_NP3=Maak oop met {#app_name}
 
 bel.msg_DeleteSettings=Вы хочаце таксама выдаліць налады і тэмы {#app_name}?%n%nКалі вы плануеце ўсталяваць {#app_name} зноў, то вам не трэба іх выдаляць.
-#if defined(sse_required)
+#ifdef sse_required
 bel.msg_simd_sse=Гэтая зборка {#app_name} патрабуе працэсар з падтрымкай набору каманд SSE.%n%nВаш працэсар не мае такой падтрымкі.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 bel.msg_simd_sse2=Гэтая зборка {#app_name} патрабуе працэсар з падтрымкай набору каманд SSE2.%n%nВаш працэсар не мае такой падтрымкі.
 #endif
 bel.tsk_AllUsers=Для ўсіх карыстальнікаў
@@ -178,11 +201,13 @@ bel.tsk_StartMenuIcon=Стварыць ярлык у меню Пуск
 bel.tsk_LaunchWelcomePage=Важная інфармацыя пра выпуск!
 bel.tsk_RemoveOpenWith=Выдаліць "Адкрыць з дапамогай {#app_name}" з кантэкставага меню
 bel.tsk_SetOpenWith=Дадаць "Адкрыць з дапамогай {#app_name}" у кантэкставае меню
+bel.reg_Open_with_NP3=Адкрыць з дапамогай {#app_name}
 
 deu.msg_DeleteSettings=Wollen sie die Einstellungen und Themen von {#app_name} löschen?%n%nWenn sie planen {#app_name} erneut zu installieren, dann müssen diese Einstellungen nicht gelöscht werden.
-#if defined(sse_required)
+#ifdef sse_required
 deu.msg_simd_sse=Diese Version von {#app_name} benötigt eine CPU mit welche die SSE Erweiterung unterstützt.%n%nIhre CPU hat diese Fähigkeiten nicht.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 deu.msg_simd_sse2=Diese Version von {#app_name} benötigt eine CPU mit welche die SSE2 Erweiterung unterstützt.%n%nIhre CPU hat diese Fähigkeiten nicht.
 #endif
 deu.tsk_AllUsers=Für alle Benutzer
@@ -195,11 +220,13 @@ deu.tsk_StartMenuIcon=Erstelle einen Start-Menü Eintrag
 deu.tsk_LaunchWelcomePage=Wichtige Release Information!
 deu.tsk_RemoveOpenWith=Entferne "Öffnen mit {#app_name}" aus dem Kontextmenü
 deu.tsk_SetOpenWith=Füge "Öffnen mit {#app_name}" zum Kontextmenü hinzu.
+deu.reg_Open_with_NP3=Öffnen mit {#app_name}
 
 ell.msg_DeleteSettings=Θέλετε επίσης να διαγράψετε τις ρυθμίσεις και τα θέματα του {#app_name};%n%nΕάν σκοπεύετε να εγκαταστήσετε ξανά το {#app_name}, τότε δεν χρειάζεται να τα διαγράψετε.
-#if defined(sse_required)
+#ifdef sse_required
 ell.msg_simd_sse=Αυτή η έκδοση του {#app_name} απαιτεί CPU με υποστήριξη επέκτασης SSE.%n%nΗ CPU σας δεν έχει αυτές τις δυνατότητες.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 ell.msg_simd_sse2=Αυτή η έκδοση του {#app_name} απαιτεί CPU με υποστήριξη επέκτασης SSE2.%n%nΗ CPU σας δεν έχει αυτές τις δυνατότητες.
 #endif
 ell.tsk_AllUsers=Για όλους τους χρήστες
@@ -212,11 +239,13 @@ ell.tsk_StartMenuIcon=Δημιουργία συντόμευσης στο μεν�
 ell.tsk_LaunchWelcomePage=Σημαντικές πληροφορίες έκδοσης!
 ell.tsk_RemoveOpenWith=Κατάργηση της επιλογής «Άνοιγμα με {#app_name}» από το μενού περιβάλλοντος
 ell.tsk_SetOpenWith=Προσθήκη της επιλογής «Άνοιγμα με {#app_name}» στο μενού περιβάλλοντος
+ell.reg_Open_with_NP3=Άνοιγμα με {#app_name}
 
 eng.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
-#if defined(sse_required)
+#ifdef sse_required
 eng.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 eng.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
 #endif
 eng.tsk_AllUsers=For all users
@@ -229,11 +258,13 @@ eng.tsk_StartMenuIcon=Create a Start Menu shortcut
 eng.tsk_LaunchWelcomePage=Important Release Information!
 eng.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
 eng.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+eng.reg_Open_with_NP3=Open with {#app_name}
 
 esn.msg_DeleteSettings=¿También quieres eliminar la configuración y los temas de {#app_name}?%n%nSi planeas instalar {#app_name} nuevamente, no tienes que eliminarlos.
-#if defined(sse_required)
+#ifdef sse_required
 esn.msg_simd_sse=Esta compilación de {#app_name} requiere una CPU compatible con la extensión SSE.%n%nTu CPU no tiene esas capacidades.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 esn.msg_simd_sse2=Esta compilación de {#app_name} requiere una CPU compatible con la extensión SSE2.%n%nTu CPU no tiene esas capacidades.
 #endif
 esn.tsk_AllUsers=Para todos los usuarios
@@ -246,11 +277,13 @@ esn.tsk_StartMenuIcon=Crear un acceso directo al menú de inicio
 esn.tsk_LaunchWelcomePage=¡Información importante de lanzamiento!
 esn.tsk_RemoveOpenWith=Eliminar "Abrir con {#app_name}" del menú contextual
 esn.tsk_SetOpenWith=Añade "Abrir con {#app_name}" al menú contextual
+esn.reg_Open_with_NP3=Abrir con {#app_name}
 
 esm.msg_DeleteSettings=¿También quieres eliminar la configuración y los temas de {#app_name}?%n%nSi planeas instalar {#app_name} nuevamente, no tienes que eliminarlos.
-#if defined(sse_required)
+#ifdef sse_required
 esm.msg_simd_sse=Esta compilación de {#app_name} requiere una CPU compatible con la extensión SSE.%n%nTu CPU no tiene esas capacidades.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 esm.msg_simd_sse2=Esta compilación de {#app_name} requiere una CPU compatible con la extensión SSE2.%n%nTu CPU no tiene esas capacidades.
 #endif
 esm.tsk_AllUsers=Para todos los usuarios
@@ -263,11 +296,13 @@ esm.tsk_StartMenuIcon=Crear un acceso directo al menú de inicio
 esm.tsk_LaunchWelcomePage=¡Información importante de lanzamiento!
 esm.tsk_RemoveOpenWith=Eliminar "Abrir con {#app_name}" del menú contextual
 esm.tsk_SetOpenWith=Añade "Abrir con {#app_name}" al menú contextual
+esm.reg_Open_with_NP3=Abrir con {#app_name}
 
 fra.msg_DeleteSettings=Voulez-vous également supprimer tous les réglages et thèmes de {#app_name} ?%n%nSi vous comptez réinstaller {#app_name}, vous pouvez les garder.
-#if defined(sse_required)
+#ifdef sse_required
 fra.msg_simd_sse=Cette édition de {#app_name} nécessite un CPU supportant l'extension SSE.%n%nVotre CPU ne dispose pas de ces capacités.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 fra.msg_simd_sse2=Cette édition de {#app_name} nécessite un CPU supportant l'extension SSE2.%n%nVotre CPU ne dispose pas de ces capacités.
 #endif
 fra.tsk_AllUsers=Pour tous les utilisateurs
@@ -280,11 +315,13 @@ fra.tsk_StartMenuIcon=Créer un raccourci dans le menu de démarrage
 fra.tsk_LaunchWelcomePage=Information importante de publication !
 fra.tsk_RemoveOpenWith=Retirer "Ouvrir avec {#app_name}" du menu contextuel
 fra.tsk_SetOpenWith=Ajouter "Ouvrir avec {#app_name}" au menu contextuel
+fra.reg_Open_with_NP3=Ouvrir avec {#app_name}
 
 hin.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
-#if defined(sse_required)
+#ifdef sse_required
 hin.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 hin.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
 #endif
 hin.tsk_AllUsers=For all users
@@ -297,11 +334,13 @@ hin.tsk_StartMenuIcon=Create a Start Menu shortcut
 hin.tsk_LaunchWelcomePage=Important Release Information!
 hin.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
 hin.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+hin.reg_Open_with_NP3={#app_name} से खोलें
 
 hun.msg_DeleteSettings=Törölni szeretné {#app_name} beállításait is?%n%nHa újra szeretné telepíteni {#app_name}-t, akkor nem szükséges törölni.
-#if defined(sse_required)
+#ifdef sse_required
 hun.msg_simd_sse=Ahhoz, hogy {#app_name} ezen változata jól fusson, SSE kiterjesztés támogatással bíró CPU szükséges.%n%nA jelenlegi CPU nem megfelelő.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 hun.msg_simd_sse2=Ahhoz, hogy {#app_name} ezen változata jól fusson, SSE2 kiterjesztés támogatással bíró CPU szükséges.%n%nA jelenlegi CPU nem megfelelő.
 #endif
 hun.tsk_AllUsers=Minden felhasználónak
@@ -314,11 +353,13 @@ hun.tsk_StartMenuIcon=Start menü ikon létrehozása
 hun.tsk_LaunchWelcomePage=Fontos kiadási információk!
 hun.tsk_RemoveOpenWith="Megnyitás ezzel: {#app_name}" bejegyzés eltávolítása a helyi menüből
 hun.tsk_SetOpenWith="Megnyitás ezzel: {#app_name}" bejegyzés hozzáadása a helyi menühöz
+hun.reg_Open_with_NP3=Megnyitás ezzel: {#app_name}
 
 ind.msg_DeleteSettings=Apakah Anda juga ingin menghapus pengaturan dan tema {#app_name}?%n%nJika Anda berencana untuk memasang kembali {#app_name}, Anda tidak perlu menghapusnya.
-#if defined(sse_required)
+#ifdef sse_required
 ind.msg_simd_sse=Versi {#app_name} ini memerlukan CPU dengan dukungan ekstensi SSE.%n%nTampaknya CPU Anda tidak memiliki kemampuan tersebut.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 ind.msg_simd_sse2=Versi {#app_name} ini memerlukan CPU dengan dukungan ekstensi SSE2.%n%nTampaknya CPU Anda tidak memiliki kemampuan tersebut.
 #endif
 ind.tsk_AllUsers=Untuk semua pengguna
@@ -329,13 +370,15 @@ ind.tsk_RemoveDefault=Pulihkan Windows Notepad
 ind.tsk_SetDefault=Gantikan Windows Notepad dengan {#app_name}
 ind.tsk_StartMenuIcon=Buat pintasan pada Start Menu
 ind.tsk_LaunchWelcomePage=Informasi Rilis yang Penting!
-ind.tsk_RemoveOpenWith=Hapus "Open with {#app_name}" dari menu konteks
-ind.tsk_SetOpenWith=Tambahkan "Open with {#app_name}" ke menu konteks
+ind.tsk_RemoveOpenWith=Hapus "Buka dengan {#app_name}" dari menu konteks
+ind.tsk_SetOpenWith=Tambahkan "Buka dengan {#app_name}" ke menu konteks
+ind.reg_Open_with_NP3=Buka dengan {#app_name}
 
 ita.msg_DeleteSettings=Volete eliminare anche le impostazioni e i temi di {#app_name}? %n%nSe intendete installare nuovamente {#app_name}, non è necessario eliminarli.
-#if defined(sse_required)
+#ifdef sse_required
 ita.msg_simd_sse=Questa versione di {#app_name} richiede una CPU con supporto per le estensioni SSE.%n%nLa vostra CPU non ha queste capacità.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 ita.msg_simd_sse2=Questa versione di {#app_name} richiede una CPU con supporto per le estensioni SSE2.%n%nLa vostra CPU non ha queste capacità.
 #endif
 ita.tsk_AllUsers=Per tutti gli utenti
@@ -348,11 +391,13 @@ ita.tsk_StartMenuIcon=Creare un collegamento al Menu Start
 ita.tsk_LaunchWelcomePage=Informazioni importanti sul rilascio!
 ita.tsk_RemoveOpenWith=Rimuovere l'opzione "Apri con {#app_name}" dal menu contestuale.
 ita.tsk_SetOpenWith=Aggiungete "Apri con {#app_name}" al menu contestuale
+ita.reg_Open_with_NP3=Apri con {#app_name}
 
 jpn.msg_DeleteSettings={#app_name} の設定とテーマも削除しますか？%n%n{#app_name} を再度インストールする予定なら削除する必要はありません。
-#if defined(sse_required)
+#ifdef sse_required
 jpn.msg_simd_sse={#app_name} のこのビルドには、SSE 拡張命令に対応した CPU が必要です。%n%nこの CPU は対応していません。
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 jpn.msg_simd_sse2={#app_name} のこのビルドには、SSE2 拡張命令に対応した CPU が必要です。%n%nこの CPU は対応していません。
 #endif
 jpn.tsk_AllUsers=すべてのユーザー
@@ -365,11 +410,13 @@ jpn.tsk_StartMenuIcon=スタートメニューにショートカットを作成
 jpn.tsk_LaunchWelcomePage=リリース時の重要な情報！
 jpn.tsk_RemoveOpenWith=右クリックメニューから「{#app_name} で開く」を削除
 jpn.tsk_SetOpenWith=右クリックメニューに「{#app_name} で開く」を追加
+jpn.reg_Open_with_NP3={#app_name} で開く
 
 kor.msg_DeleteSettings={#app_name}의 설정 및 테마도 삭제하시겠습니까?%n%n{#app_name}을 다시 설치할 계획이라면 삭제할 필요가 없습니다.
-#if defined(sse_required)
+#ifdef sse_required
 kor.msg_simd_sse=이 {#app_name} 빌드에는 SSE 확장을 지원하는 CPU가 필요합니다.%n%nCPU에 이러한 기능이 없습니다.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 kor.msg_simd_sse2=이 {#app_name} 빌드에는 SSE2 확장을 지원하는 CPU가 필요합니다.%n%nCPU에 이러한 기능이 없습니다.
 #endif
 kor.tsk_AllUsers=모든 사용자용
@@ -382,11 +429,13 @@ kor.tsk_StartMenuIcon=시작 메뉴에 바로가기 만들기
 kor.tsk_LaunchWelcomePage=중요한 릴리스 정보!
 kor.tsk_RemoveOpenWith=상황에 맞는 메뉴에서 "{#app_name}으로 열기" 제거
 kor.tsk_SetOpenWith=상황에 맞는 메뉴 메뉴에 "{#app_name}으로 열기" 추가
+kor.reg_Open_with_NP3={#app_name}으로 열기
 
 nld.msg_DeleteSettings=Wilt u ook de instellingen en thema's van {#app_name} verwijderen?%n%nAls u van plan bent {#app_name} opnieuw te installeren, hoeft u deze niet te verwijderen.
-#if defined(sse_required)
+#ifdef sse_required
 nld.msg_simd_sse=Deze versie van {#app_name} vereist een CPU met ondersteuning voor SSE-extensies.%n%nUw CPU heeft die mogelijkheden niet.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 nld.msg_simd_sse2=Deze versie van {#app_name} vereist een CPU met ondersteuning voor SSE2-extensies.%n%nUw CPU heeft die mogelijkheden niet.
 #endif
 nld.tsk_AllUsers=Voor alle gebruikers
@@ -399,11 +448,13 @@ nld.tsk_StartMenuIcon=Maak een snelkoppeling naar het startmenu
 nld.tsk_LaunchWelcomePage=Belangrijke informatie bij deze uitgave!
 nld.tsk_RemoveOpenWith="Openen met {#app_name}" verwijderen van het contextmenu
 nld.tsk_SetOpenWith="Openen met {#app_name}" toevoegen van het contextmenu
+nld.reg_Open_with_NP3=Openen met {#app_name}
 
 plk.msg_DeleteSettings=Czy chcesz również usunąć ustawienia i motywy {#app_name}? Jeśli zamierzasz zainstalować {#app_name} ponownie, to nie musisz ich usuwać.
-#if defined(sse_required)
+#ifdef sse_required
 plk.msg_simd_sse=Ta kompilacja {#app_name} wymaga procesora z rozszerzeniem wsparcia SSE. Twój procesor nie posiada takiej zdolności.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 plk.msg_simd_sse2=Ta kompilacja {#app_name} wymaga procesora z rozszerzeniem wsparcia SSE2. Twój procesor nie posiada takiej zdolności.
 #endif
 plk.tsk_AllUsers=Dla wszystkich użytkowników
@@ -416,11 +467,13 @@ plk.tsk_StartMenuIcon=Utwórz skrót w Menu Start
 plk.tsk_LaunchWelcomePage=Ważne informacje o wydaniu!
 plk.tsk_RemoveOpenWith=Usuń "Otwórz z {#app_name}" z menu kontekstowego
 plk.tsk_SetOpenWith=Dodaj "Otwórz z {#app_name}" do menu kontekstowego
+plk.reg_Open_with_NP3=Otwórz z {#app_name}
 
 ptb.msg_DeleteSettings=Você também deseja excluir as configurações e temas do {#app_name}?%n%nSe você planeja instalar o {#app_name} novamente, então você não precisa excluí-los.
-#if defined(sse_required)
+#ifdef sse_required
 ptb.msg_simd_sse=Esta versão do {#app_name} requer uma CPU com suporte à extensão SSE.%n%nSua CPU não possui este recurso.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 ptb.msg_simd_sse2=Esta versão do {#app_name} requer uma CPU com suporte à extensão SSE2.%n%nSua CPU não possui este recurso.
 #endif
 ptb.tsk_AllUsers=Para todos os usuários
@@ -432,12 +485,14 @@ ptb.tsk_SetDefault=Substituir Bloco de notas do Windows pelo {#app_name}
 ptb.tsk_StartMenuIcon=Criar atalho no Menu Iniciar
 ptb.tsk_LaunchWelcomePage=Informações importantes sobre esta versão!
 ptb.tsk_RemoveOpenWith=Remover "Abrir com o {#app_name}" do menu de contexto
-ptb.tsk_SetOpenWith=Adicionar "Abrir com {#app_name} ao menu de contexto 
+ptb.tsk_SetOpenWith=Adicionar "Abrir com {#app_name}" ao menu de contexto
+ptb.reg_Open_with_NP3=Abrir com {#app_name}
 
 ptg.msg_DeleteSettings=Também pretende eliminar as definições e temas do {#app_name}?%n%nSe planeia instalar novamente o {#app_name} não necessita eliminá-los.
-#if defined(sse_required)
+#ifdef sse_required
 ptg.msg_simd_sse=Esta versão do {#app_name} requer um CPU com suporte de extensão SSE.%n%nO seu CPU não possui essas capacidades.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 ptg.msg_simd_sse2=Esta versão do {#app_name} requer um CPU com suporte de extensão SSE2.%n%nO seu CPU não possui essas capacidades.
 #endif
 ptg.tsk_AllUsers=Para todos os utilizadores
@@ -450,11 +505,13 @@ ptg.tsk_StartMenuIcon=Criar um atalho no Menu Iniciar
 ptg.tsk_LaunchWelcomePage=Informações Importantes do Lançamento!
 ptg.tsk_RemoveOpenWith=Remover "Abrir com o {#app_name}" do menu de contexto
 ptg.tsk_SetOpenWith=Adicionar "Abrir com o {#app_name}" ao menu de contexto
+ptg.reg_Open_with_NP3=Abrir com o {#app_name}
 
 rus.msg_DeleteSettings=Вы хотите также удалить настройки и темы {#app_name}?%n%nЕсли вы планируете установить {#app_name} снова, то вам не нужно их удалять.
-#if defined(sse_required)
+#ifdef sse_required
 rus.msg_simd_sse=Эта сборка {#app_name} требует процессор с поддержкой набора команд SSE.%n%nВаш процессор не имеет такой поддержки.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 rus.msg_simd_sse2=Эта сборка {#app_name} требует процессор с поддержкой набора команд SSE2.%n%nВаш процессор не имеет такой поддержки.
 #endif
 rus.tsk_AllUsers=Для всех пользователей
@@ -467,11 +524,13 @@ rus.tsk_StartMenuIcon=Создать значок в меню Пуск
 rus.tsk_LaunchWelcomePage=Важная информация о выпуске!
 rus.tsk_RemoveOpenWith=Удалить "Открыть с помощью {#app_name}" из контекстного меню
 rus.tsk_SetOpenWith=Добавить "Открыть с помощью {#app_name}" в контекстное меню
+rus.reg_Open_with_NP3=Открыть с помощью {#app_name}
 
 sky.msg_DeleteSettings=Chcete odstrániť aj nastavenia a témy {#app_name}?%n%nAk plánujete opätovnú inštaláciu {#app_name}, nemusíte ich odstraňovať.
-#if defined(sse_required)
+#ifdef sse_required
 sky.msg_simd_sse=Táto zostava {#app_name} vyžaduje procesor s podporou rozšírenia SSE.%n%nVáš procesor tieto možnosti nemá.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 sky.msg_simd_sse2=Táto zostava {#app_name} vyžaduje procesor s podporou rozšírenia SSE2.%n%nVáš procesor tieto možnosti nemá.
 #endif
 sky.tsk_AllUsers=Pre všetkých užívateľov
@@ -482,13 +541,15 @@ sky.tsk_RemoveDefault=Obnoviť Poznámkový blok Windows
 sky.tsk_SetDefault=Nahradiť Poznámkový blok Windows s {#app_name}
 sky.tsk_StartMenuIcon=Vytvoriť odkaz v ponuke Štart
 sky.tsk_LaunchWelcomePage=Dôležité informácie o vydaní!
-sky.tsk_RemoveOpenWith=Odstrániť z kontextového menu položku "Otvoriť v {#app_name}" 
+sky.tsk_RemoveOpenWith=Odstrániť z kontextového menu položku "Otvoriť v {#app_name}"
 sky.tsk_SetOpenWith=Pridať do kontextového menu položku "Otvoriť v {#app_name}"
+sky.reg_Open_with_NP3=Otvoriť v {#app_name}
 
 sve.msg_DeleteSettings=Vill du även ta bort {#app_name} inställningar och teman?%n%nOm du tänker installera {#app_name} igen behöver du inte ta bort inställningarna.
-#if defined(sse_required)
+#ifdef sse_required
 sve.msg_simd_sse=Den här versionen av {#app_name} kräver processor med SSE stöd.%n%n din processor har inte denna funktionalitet.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 sve.msg_simd_sse2=Den här versionen av {#app_name} kräver processor med SSE2 stöd.%n%n din processor har inte denna funktionalitet.
 #endif
 sve.tsk_AllUsers=För alla användare
@@ -501,11 +562,13 @@ sve.tsk_StartMenuIcon=Skapa en genväg till Startmeny
 sve.tsk_LaunchWelcomePage=Viktig information för denna version!
 sve.tsk_RemoveOpenWith=Ta bort "Öppna med {#app_name}" från snabbmenyn
 sve.tsk_SetOpenWith=Lägg till "Öppna med {#app_name}" från snabbmenyn
+sve.reg_Open_with_NP3=Öppna med {#app_name}
 
 trk.msg_DeleteSettings={#app_name} ayarlarının ve temalarının da silinmesini ister misiniz?%n%n{#app_name} uygulamasını yeniden kurmayı düşünüyorsanız bu verileri silmeniz gerekmez.
-#if defined(sse_required)
+#ifdef sse_required
 trk.msg_simd_sse=Bu {#app_name} sürümü için SSE eklentileri desteği olan bir işlemci gereklidir.%n%nİşlemcinizde bu özellik bulunmuyor.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 trk.msg_simd_sse2=Bu {#app_name} sürümü için SSE2 eklentileri desteği olan bir işlemci gereklidir.%n%nİşlemcinizde bu özellik bulunmuyor.
 #endif
 trk.tsk_AllUsers=Tüm kullanıcılar için
@@ -518,11 +581,13 @@ trk.tsk_StartMenuIcon=Başlat menüsü kısayolu oluşturulsun
 trk.tsk_LaunchWelcomePage=Önemli sürüm bilgileri
 trk.tsk_RemoveOpenWith=Sağ tık menüsünden "{#app_name} ile aç" seçeneği kaldırılsın
 trk.tsk_SetOpenWith=Sağ tık menüsüne "{#app_name} ile aç" seçeneği eklensin
+trk.reg_Open_with_NP3={#app_name} ile aç
 
 vit.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
-#if defined(sse_required)
+#ifdef sse_required
 vit.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 vit.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
 #endif
 vit.tsk_AllUsers=For all users
@@ -535,11 +600,13 @@ vit.tsk_StartMenuIcon=Create a Start Menu shortcut
 vit.tsk_LaunchWelcomePage=Important Release Information!
 vit.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
 vit.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+vit.reg_Open_with_NP3=Mở bằng {#app_name}
 
 chs.msg_DeleteSettings=是否希望删除 {#app_name} 的设置和主题？%n%n如果您稍后将要重新安装 {#app_name}，您不需要删除以前的配置。
-#if defined(sse_required)
+#ifdef sse_required
 chs.msg_simd_sse=这个版本的 {#app_name} 需要支持 SSE 扩展指令集的 CPU。%n%n您的 CPU 缺少该支持。
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 chs.msg_simd_sse2=这个版本的 {#app_name} 需要支持 SSE2 扩展指令集的 CPU。%n%n您的 CPU 缺少该支持。
 #endif
 chs.tsk_AllUsers=为所有用户
@@ -550,13 +617,15 @@ chs.tsk_RemoveDefault=恢复 Windows 记事本
 chs.tsk_SetDefault=将 Windows 记事本替换为 {#app_name}
 chs.tsk_StartMenuIcon=在开始菜单中创建快捷方式
 chs.tsk_LaunchWelcomePage=重要更新信息！
-chs.tsk_RemoveOpenWith=从上下文菜单中删除“用 {#app_name} 打开”
-chs.tsk_SetOpenWith=在上下文菜单中添加“用 {#app_name} 打开”
+chs.tsk_RemoveOpenWith=从上下文菜单中删除"用 {#app_name} 打开"
+chs.tsk_SetOpenWith=在上下文菜单中添加"用 {#app_name} 打开"
+chs.reg_Open_with_NP3=用 {#app_name} 打开
 
 cht.msg_DeleteSettings=是否希望刪除 {#app_name} 的設定和主題？%n%n如果您稍後將要重新安裝 {#app_name}，您不需要刪除以前的設定。
-#if defined(sse_required)
+#ifdef sse_required
 cht.msg_simd_sse=這個版本的 {#app_name} 需要支援 SSE 擴充指令集的 CPU。%n%n您的 CPU 缺少該支援。
-#elif defined(sse2_required)
+#EndIf
+#ifdef sse2_required
 cht.msg_simd_sse2=這個版本的 {#app_name} 需要支援 SSE2 擴充指令集的 CPU。%n%n您的 CPU 缺少該支援。
 #endif
 cht.tsk_AllUsers=為所有使用者
@@ -567,8 +636,9 @@ cht.tsk_RemoveDefault=恢復 Windows 記事本
 cht.tsk_SetDefault=將 Windows 記事本替換為 {#app_name}
 cht.tsk_StartMenuIcon=於開始功能表中建立快捷方式
 cht.tsk_LaunchWelcomePage=重要更新資訊！
-cht.tsk_RemoveOpenWith=從上下文選單中刪除“用 {#app_name} 開啟”
-cht.tsk_SetOpenWith=在上下文選單中新增“用 {#app_name} 開啟”
+cht.tsk_RemoveOpenWith=從上下文選單中刪除"用 {#app_name} 開啟"
+cht.tsk_SetOpenWith=在上下文選單中新增"用 {#app_name} 開啟"
+cht.reg_Open_with_NP3=用 {#app_name} 開啟
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
@@ -582,11 +652,12 @@ Name: "remove_default"; Description: "{cm:tsk_RemoveDefault}"; GroupDescription:
 Name: "set_openwith"; Description: "{cm:tsk_SetOpenWith}"; GroupDescription: "{cm:tsk_Other}"; Check: not OpenWithCheck()
 Name: "remove_openwith"; Description: "{cm:tsk_RemoveOpenWith}"; GroupDescription: "{cm:tsk_Other}"; Flags: checkedonce unchecked; Check: OpenWithCheck()
 
+
 [Files]
-Source: "{#bindir}\Release_x64_v143\Notepad3.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\minipath.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\grepWinNP3.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\np3encrypt.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\Notepad3.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\minipath.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\grepWinNP3.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\np3encrypt.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\License.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Readme.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\grepWinNP3\grepWinLicense.txt"; DestDir: "{app}"; Flags: ignoreversion
@@ -595,59 +666,59 @@ Source: "minipath.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3"; Flags: onl
 Source: "Themes\Dark.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3\Themes"; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "Themes\Obsidian.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3\Themes"; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "Themes\Sombra.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3\Themes"; Flags: onlyifdoesntexist uninsneveruninstall
-Source: "{#bindir}\Release_x64_v143\lng\mplng.dll"; DestDir: "{app}\lng"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\np3lng.dll"; DestDir: "{app}\lng"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\gwLng\*.lang"; DestDir: "{app}\lng\gwLng"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\af-ZA\mplng.dll.mui"; DestDir: "{app}\lng\af-ZA"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\af-ZA\np3lng.dll.mui"; DestDir: "{app}\lng\af-ZA"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\be-BY\mplng.dll.mui"; DestDir: "{app}\lng\be-BY"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\be-BY\np3lng.dll.mui"; DestDir: "{app}\lng\be-BY"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\de-DE\mplng.dll.mui"; DestDir: "{app}\lng\de-DE"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\de-DE\np3lng.dll.mui"; DestDir: "{app}\lng\de-DE"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\el-GR\mplng.dll.mui"; DestDir: "{app}\lng\el-GR"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\el-GR\np3lng.dll.mui"; DestDir: "{app}\lng\el-GR"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\en-GB\mplng.dll.mui"; DestDir: "{app}\lng\en-GB"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\en-GB\np3lng.dll.mui"; DestDir: "{app}\lng\en-GB"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\es-ES\mplng.dll.mui"; DestDir: "{app}\lng\es-ES"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\es-ES\np3lng.dll.mui"; DestDir: "{app}\lng\es-ES"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\es-MX\mplng.dll.mui"; DestDir: "{app}\lng\es-MX"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\es-MX\np3lng.dll.mui"; DestDir: "{app}\lng\es-MX"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\fr-FR\mplng.dll.mui"; DestDir: "{app}\lng\fr-FR"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\fr-FR\np3lng.dll.mui"; DestDir: "{app}\lng\fr-FR"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\hi-IN\mplng.dll.mui"; DestDir: "{app}\lng\hi-IN"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\hi-IN\np3lng.dll.mui"; DestDir: "{app}\lng\hi-IN"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\hu-HU\mplng.dll.mui"; DestDir: "{app}\lng\hu-HU"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\hu-HU\np3lng.dll.mui"; DestDir: "{app}\lng\hu-HU"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\id-ID\mplng.dll.mui"; DestDir: "{app}\lng\id-ID"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\id-ID\np3lng.dll.mui"; DestDir: "{app}\lng\id-ID"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\it-IT\mplng.dll.mui"; DestDir: "{app}\lng\it-IT"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\it-IT\np3lng.dll.mui"; DestDir: "{app}\lng\it-IT"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\ja-JP\mplng.dll.mui"; DestDir: "{app}\lng\ja-JP"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\ja-JP\np3lng.dll.mui"; DestDir: "{app}\lng\ja-JP"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\ko-KR\mplng.dll.mui"; DestDir: "{app}\lng\ko-KR"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\ko-KR\np3lng.dll.mui"; DestDir: "{app}\lng\ko-KR"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\nl-NL\mplng.dll.mui"; DestDir: "{app}\lng\nl-NL"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\nl-NL\np3lng.dll.mui"; DestDir: "{app}\lng\nl-NL"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\pl-PL\mplng.dll.mui"; DestDir: "{app}\lng\pl-PL"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\pl-PL\np3lng.dll.mui"; DestDir: "{app}\lng\pl-PL"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\pt-BR\mplng.dll.mui"; DestDir: "{app}\lng\pt-BR"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\pt-BR\np3lng.dll.mui"; DestDir: "{app}\lng\pt-BR"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\pt-PT\mplng.dll.mui"; DestDir: "{app}\lng\pt-PT"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\pt-PT\np3lng.dll.mui"; DestDir: "{app}\lng\pt-PT"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\ru-RU\mplng.dll.mui"; DestDir: "{app}\lng\ru-RU"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\ru-RU\np3lng.dll.mui"; DestDir: "{app}\lng\ru-RU"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\sk-SK\mplng.dll.mui"; DestDir: "{app}\lng\sk-SK"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\sk-SK\np3lng.dll.mui"; DestDir: "{app}\lng\sk-SK"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\sv-SE\mplng.dll.mui"; DestDir: "{app}\lng\sv-SE"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\sv-SE\np3lng.dll.mui"; DestDir: "{app}\lng\sv-SE"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\tr-TR\mplng.dll.mui"; DestDir: "{app}\lng\tr-TR"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\tr-TR\np3lng.dll.mui"; DestDir: "{app}\lng\tr-TR"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\vi-VN\mplng.dll.mui"; DestDir: "{app}\lng\vi-VN"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\vi-VN\np3lng.dll.mui"; DestDir: "{app}\lng\vi-VN"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\zh-CN\mplng.dll.mui"; DestDir: "{app}\lng\zh-CN"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\zh-CN\np3lng.dll.mui"; DestDir: "{app}\lng\zh-CN"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\zh-TW\mplng.dll.mui"; DestDir: "{app}\lng\zh-TW"; Flags: ignoreversion
-Source: "{#bindir}\Release_x64_v143\lng\zh-TW\np3lng.dll.mui"; DestDir: "{app}\lng\zh-TW"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\mplng.dll"; DestDir: "{app}\lng"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\np3lng.dll"; DestDir: "{app}\lng"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\gwLng\*.lang"; DestDir: "{app}\lng\gwLng"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\af-ZA\mplng.dll.mui"; DestDir: "{app}\lng\af-ZA"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\af-ZA\np3lng.dll.mui"; DestDir: "{app}\lng\af-ZA"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\be-BY\mplng.dll.mui"; DestDir: "{app}\lng\be-BY"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\be-BY\np3lng.dll.mui"; DestDir: "{app}\lng\be-BY"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\de-DE\mplng.dll.mui"; DestDir: "{app}\lng\de-DE"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\de-DE\np3lng.dll.mui"; DestDir: "{app}\lng\de-DE"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\el-GR\mplng.dll.mui"; DestDir: "{app}\lng\el-GR"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\el-GR\np3lng.dll.mui"; DestDir: "{app}\lng\el-GR"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\en-GB\mplng.dll.mui"; DestDir: "{app}\lng\en-GB"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\en-GB\np3lng.dll.mui"; DestDir: "{app}\lng\en-GB"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\es-ES\mplng.dll.mui"; DestDir: "{app}\lng\es-ES"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\es-ES\np3lng.dll.mui"; DestDir: "{app}\lng\es-ES"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\es-MX\mplng.dll.mui"; DestDir: "{app}\lng\es-MX"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\es-MX\np3lng.dll.mui"; DestDir: "{app}\lng\es-MX"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\fr-FR\mplng.dll.mui"; DestDir: "{app}\lng\fr-FR"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\fr-FR\np3lng.dll.mui"; DestDir: "{app}\lng\fr-FR"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\hi-IN\mplng.dll.mui"; DestDir: "{app}\lng\hi-IN"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\hi-IN\np3lng.dll.mui"; DestDir: "{app}\lng\hi-IN"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\hu-HU\mplng.dll.mui"; DestDir: "{app}\lng\hu-HU"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\hu-HU\np3lng.dll.mui"; DestDir: "{app}\lng\hu-HU"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\id-ID\mplng.dll.mui"; DestDir: "{app}\lng\id-ID"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\id-ID\np3lng.dll.mui"; DestDir: "{app}\lng\id-ID"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\it-IT\mplng.dll.mui"; DestDir: "{app}\lng\it-IT"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\it-IT\np3lng.dll.mui"; DestDir: "{app}\lng\it-IT"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\ja-JP\mplng.dll.mui"; DestDir: "{app}\lng\ja-JP"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\ja-JP\np3lng.dll.mui"; DestDir: "{app}\lng\ja-JP"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\ko-KR\mplng.dll.mui"; DestDir: "{app}\lng\ko-KR"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\ko-KR\np3lng.dll.mui"; DestDir: "{app}\lng\ko-KR"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\nl-NL\mplng.dll.mui"; DestDir: "{app}\lng\nl-NL"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\nl-NL\np3lng.dll.mui"; DestDir: "{app}\lng\nl-NL"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\pl-PL\mplng.dll.mui"; DestDir: "{app}\lng\pl-PL"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\pl-PL\np3lng.dll.mui"; DestDir: "{app}\lng\pl-PL"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\pt-BR\mplng.dll.mui"; DestDir: "{app}\lng\pt-BR"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\pt-BR\np3lng.dll.mui"; DestDir: "{app}\lng\pt-BR"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\pt-PT\mplng.dll.mui"; DestDir: "{app}\lng\pt-PT"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\pt-PT\np3lng.dll.mui"; DestDir: "{app}\lng\pt-PT"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\ru-RU\mplng.dll.mui"; DestDir: "{app}\lng\ru-RU"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\ru-RU\np3lng.dll.mui"; DestDir: "{app}\lng\ru-RU"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\sk-SK\mplng.dll.mui"; DestDir: "{app}\lng\sk-SK"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\sk-SK\np3lng.dll.mui"; DestDir: "{app}\lng\sk-SK"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\sv-SE\mplng.dll.mui"; DestDir: "{app}\lng\sv-SE"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\sv-SE\np3lng.dll.mui"; DestDir: "{app}\lng\sv-SE"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\tr-TR\mplng.dll.mui"; DestDir: "{app}\lng\tr-TR"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\tr-TR\np3lng.dll.mui"; DestDir: "{app}\lng\tr-TR"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\vi-VN\mplng.dll.mui"; DestDir: "{app}\lng\vi-VN"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\vi-VN\np3lng.dll.mui"; DestDir: "{app}\lng\vi-VN"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\zh-CN\mplng.dll.mui"; DestDir: "{app}\lng\zh-CN"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\zh-CN\np3lng.dll.mui"; DestDir: "{app}\lng\zh-CN"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\zh-TW\mplng.dll.mui"; DestDir: "{app}\lng\zh-TW"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\zh-TW\np3lng.dll.mui"; DestDir: "{app}\lng\zh-TW"; Flags: ignoreversion
 Source: "Changes.txt"; DestDir: "{app}\Docs"; Flags: ignoreversion
 Source: "Docs\*.txt"; DestDir: "{app}\Docs"; Flags: ignoreversion
 Source: "Docs\crypto\*.txt"; DestDir: "{app}\Docs\crypto"; Flags: ignoreversion
@@ -806,23 +877,30 @@ const
   IFEO = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe';
   APPH = 'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\Notepad3.exe';
 
+#if defined sse_required || defined sse2_required
+function IsProcessorFeaturePresent(Feature: DWORD): BOOL;
+external 'IsProcessorFeaturePresent@kernel32.dll stdcall';
+
+const
+  PF_XMMI_INSTRUCTIONS_AVAILABLE = 6;// The SSE instruction set is available.
+  PF_XMMI64_INSTRUCTIONS_AVAILABLE = 10;// The SSE2 instruction set is available.
+#endif
+
 function InitializeSetup: Boolean;
-begin
-  Result := True;
-
-   //Check for Processor SSE2 support.
-  #if defined(sse2_required)
-    if not IsSSE2Supported() then begin
-      SuppressibleMsgBox(CustomMessage('msg_simd_sse2'), mbCriticalError, MB_OK, MB_OK);
-      Result := False;
-    end;
-  #elif defined(sse_required)
-    if not IsSSESupported() then begin
-      SuppressibleMsgBox(CustomMessage('msg_simd_sse'), mbCriticalError, MB_OK, MB_OK);
-      Result := False;
-    end;
-  #endif
-
+  begin
+    Result := True;
+    #ifdef sse_required
+    // Check for Processor SSE support.
+    If Result then
+      if not IsProcessorFeaturePresent(PF_XMMI_INSTRUCTIONS_AVAILABLE) then
+        Result := SuppressibleMsgBox(CustomMessage('msg_simd_sse'), mbCriticalError, MB_OK, IDOK) = IDABORT;
+    #endif
+    #ifdef sse2_required
+    // Check for Processor SSE2 support.
+    If Result then
+      if not IsProcessorFeaturePresent(PF_XMMI64_INSTRUCTIONS_AVAILABLE) then
+        Result := SuppressibleMsgBox(CustomMessage('msg_simd_sse2'), mbCriticalError, MB_OK, IDOK) = IDABORT;
+    #EndIf
 end;
 
 // Check if Notepad3 has replaced Windows Notepad
@@ -831,11 +909,13 @@ var
   sDebugger: String;
 begin
   if RegQueryStringValue(HKLM, IFEO, 'Debugger', sDebugger) and
-  (sDebugger = (ExpandConstant('"{app}\Notepad3.exe" /z'))) then begin
+    (sDebugger = (ExpandConstant('"{app}\Notepad3.exe" /z'))) then
+  begin
     Log('Custom Code: {#app_name} is set as the default notepad');
     Result := True;
   end
-  else begin
+  else
+  begin
     Log('Custom Code: {#app_name} is NOT set as the default notepad');
     Result := False;
   end;
@@ -845,115 +925,98 @@ end;
 function OpenWithCheck(): Boolean;
 var
   sOpenWith: String;
+  reg_Open_with_NP3: String;
 begin
-  if RegQueryStringValue(HKEY_CLASSES_ROOT, '*\shell\Open with Notepad3', 'Icon', sOpenWith) and
-  (sOpenWith = (ExpandConstant('{app}\Notepad3.exe,0'))) then begin
-    Log('Custom Code: {#app_name} Open with Notepad3 is set.');
+  reg_Open_with_NP3 := CustomMessage('reg_Open_with_NP3');
+  if RegQueryStringValue(HKEY_CLASSES_ROOT, '*\shell\' + reg_Open_with_NP3, 'Icon', sOpenWith) and
+      (sOpenWith = (ExpandConstant('{app}\Notepad3.exe,0'))) then
+  begin
+    Log('Custom Code: {#app_name} '+reg_Open_with_NP3+' is set.');
     Result := True;
   end
-  else begin
-    Log('Custom Code: {#app_name} Open with Notepad3 is not set.');
+  else
+  begin
+    Log('Custom Code: {#app_name} '+reg_Open_with_NP3+' is not set.');
     Result := False;
   end;
 end;
 
-#if defined(sse_required) || defined(sse2_required)
-function IsProcessorFeaturePresent(Feature: Integer): Boolean;
-external 'IsProcessorFeaturePresent@kernel32.dll stdcall';
-#endif
-
-#if defined(sse_required)
-function IsSSESupported(): Boolean;
-begin
-  // PF_XMMI_INSTRUCTIONS_AVAILABLE
-  Result := IsProcessorFeaturePresent(6);
-end;
-
-#elif defined(sse2_required)
-
-function IsSSE2Supported(): Boolean;
-begin
-  // PF_XMMI64_INSTRUCTIONS_AVAILABLE
-  Result := IsProcessorFeaturePresent(10);
-end;
-
-#endif
-
 function IsOldBuildInstalled(sInfFile: String): Boolean;
 begin
   if RegKeyExists(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Notepad2') and
-  FileExists(ExpandConstant('{commonpf}\Notepad2\' + sInfFile)) then
+      FileExists(ExpandConstant('{commonpf}\Notepad2\' + sInfFile)) then
     Result := True
   else
     Result := False;
 end;
 
 function IsUpgrade(): Boolean;
-var
-  sPrevPath: String;
-begin
-  sPrevPath := WizardForm.PrevAppDir;
-  Result := (sPrevPath <> '');
+  Var
+    PrevAppDir: String;
+  begin
+    PrevAppDir := WizardForm.PrevAppDir;
+    Result := Length( PrevAppDir ) > 0;
+    If Result then
+      Result := FileExists( AddBackslash(PrevAppDir) + '{#app_name}.exe' );
 end;
 
 // Check if Notepad3's settings exist
 function SettingsExistCheck(): Boolean;
 begin
-  if FileExists(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Notepad3.ini')) then begin
-    Log('Custom Code: Settings are present');
-    Result := True;
-  end
-  else begin
+  Result := FileExists(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Notepad3.ini'));
+  If Result Then
+    Log('Custom Code: Settings are present')
+  else
     Log('Custom Code: Settings are NOT present');
-    Result := False;
-  end;
 end;
 
 function UninstallOldVersion(sInfFile: String): Integer;
-var
-  iResultCode: Integer;
-begin
-  // Return Values:
-  // 0 - no idea
-  // 1 - error executing the command
-  // 2 - successfully executed the command
+  begin
+    // Return Values:
+    // -1 - exec(...) failed!
+    // return value of the executing command (0 - AllOK, 1 - SysErrorMessage(1), etc.)
 
-  // default return value
-  Result := 0;
-  // TODO: use RegQueryStringValue
-  if not Exec('rundll32.exe', ExpandConstant('advpack.dll,LaunchINFSectionEx ' + '"{commonpf}\Notepad2\' + sInfFile +'",DefaultUninstall,,8,N'), '', SW_HIDE, ewWaitUntilTerminated, iResultCode) then begin
-    Result := 1;
-  end
-  else begin
-    Result := 2;
-    Sleep(200);
-  end;
+    // default return value
+    Result := -1;
+    // TODO: use RegQueryStringValue
+    Exec('rundll32.exe', ExpandConstant('advpack.dll,LaunchINFSectionEx ' + '"{commonpf}\Notepad2\' + sInfFile +'",DefaultUninstall,,8,N'), '', SW_HIDE, ewWaitUntilTerminated, Result);
 end;
 
 function ShouldSkipPage(PageID: Integer): Boolean;
 begin
-  // Hide the license page if IsUpgrade()
-  if IsUpgrade() and (PageID = wpLicense) then
-    Result := True;
+  // Skip the license page if IsUpgrade()
+  // if IsUpgrade() and (PageID = wpLicense) then
+  if PageID = wpLicense then
+    if IsUpgrade() then
+    begin
+      Result := True;
+      WizardForm.LicenseAcceptedRadio.Checked := Result;
+    end;
 end;
 
 procedure AddReg();
+Var
+  APP: String;
 begin
+  APP := ExpandConstant('{app}');
   RegWriteStringValue(HKCR, 'Applications\notepad3.exe', 'AppUserModelID', 'Rizonesoft.Notepad3');
-  RegWriteStringValue(HKCR, 'Applications\notepad3.exe\shell\open\command', '', ExpandConstant('"{app}\Notepad3.exe" "%1"'));
+  RegWriteStringValue(HKCR, 'Applications\notepad3.exe\shell\open\command', '', '"'+APP+'\Notepad3.exe" "%1"');
   RegWriteStringValue(HKCR, '*\OpenWithList\notepad3.exe', '', '');
-  RegWriteStringValue(HKLM, APPH, '', ExpandConstant('{app}\Notepad3.exe'));
-  RegWriteStringValue(HKLM, APPH, 'Path', ExpandConstant('{app}'));
+  RegWriteStringValue(HKLM, APPH, '', APP+'\Notepad3.exe');
+  RegWriteStringValue(HKLM, APPH, 'Path', APP);
 end;
 
 procedure CleanUpSettings();
+Var
+  userappdata: String;
 begin
-  DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Notepad3.ini'));
-  DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\minipath.ini'));
-  DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\grepWinNP3.ini'));
-  DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Themes\Dark.ini'));
-  DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Themes\Obsidian.ini'));
-  DeleteFile(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Themes\Sombra.ini'));
+  userappdata := ExpandConstant('{userappdata}');
+  DeleteFile(userappdata + '\Rizonesoft\Notepad3\Notepad3.ini');
+  DeleteFile(userappdata + '\Rizonesoft\Notepad3\minipath.ini');
+  DeleteFile(userappdata + '\Rizonesoft\Notepad3\grepWinNP3.ini');
+  DeleteFile(userappdata + '\Rizonesoft\Notepad3\Themes\Dark.ini');
+  DeleteFile(userappdata + '\Rizonesoft\Notepad3\Themes\Obsidian.ini');
+  DeleteFile(userappdata + '\Rizonesoft\Notepad3\Themes\Sombra.ini');
 end;
 
 procedure RemoveReg();
@@ -961,6 +1024,7 @@ begin
   RegDeleteKeyIncludingSubkeys(HKCR, 'Applications\notepad3.exe');
   RegDeleteKeyIncludingSubkeys(HKCR, '*\OpenWithList\notepad3.exe');
   RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\Open with Notepad3');
+  RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + CustomMessage('reg_Open_with_NP3'));
   RegDeleteKeyIncludingSubkeys(HKLM, APPH);
 end;
 
@@ -968,18 +1032,30 @@ procedure CurPageChanged(CurPageID: Integer);
 begin
   if CurPageID = wpSelectTasks then
     WizardForm.NextButton.Caption := SetupMessage(msgButtonInstall)
-  else if CurPageID = wpFinished then
+  else
+  if CurPageID = wpFinished then
     WizardForm.NextButton.Caption := SetupMessage(msgButtonFinish);
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
+Var
+  reg_Open_with_NP3, APP: String;
 begin
-  if CurStep = ssInstall then begin
+  if (CurStep = ssInstall) or (CurStep = ssPostInstall) then
+  begin
+    reg_Open_with_NP3 := CustomMessage('reg_Open_with_NP3');
+    APP := ExpandConstant('{app}');
+  end;
+
+  if CurStep = ssInstall then
+  begin
     if WizardIsTaskSelected('reset_settings') then
       CleanUpSettings();
 
-    if IsOldBuildInstalled('Uninstall.inf') or IsOldBuildInstalled('Notepad2.inf') then begin
-      if IsOldBuildInstalled('Uninstall.inf') then begin
+    if IsOldBuildInstalled('Uninstall.inf') or IsOldBuildInstalled('Notepad2.inf') then
+    begin
+      if IsOldBuildInstalled('Uninstall.inf') then
+      begin
         Log('Custom Code: The old build is installed, will try to uninstall it');
         if UninstallOldVersion('Uninstall.inf') = 2 then
           Log('Custom Code: The old build was successfully uninstalled')
@@ -987,7 +1063,8 @@ begin
           Log('Custom Code: Something went wrong when uninstalling the old build');
       end;
 
-      if IsOldBuildInstalled('Notepad2.inf') then begin
+      if IsOldBuildInstalled('Notepad2.inf') then
+      begin
         Log('Custom Code: The official Notepad2 build is installed, will try to uninstall it');
         if UninstallOldVersion('Notepad2.inf') = 2 then
           Log('Custom Code: The official Notepad2 build was successfully uninstalled')
@@ -997,49 +1074,61 @@ begin
 
       // This is the case where the old build is installed; the DefaulNotepadCheck() returns true
       // and the set_default task isn't selected
-      if not WizardIsTaskSelected('remove_default') then begin
-        RegWriteStringValue(HKLM, IFEO, 'Debugger', ExpandConstant('"{app}\Notepad3.exe" /z'));
+      if not WizardIsTaskSelected('remove_default') then
+      begin
+        RegWriteStringValue(HKLM, IFEO, 'Debugger', '"'+app+'\Notepad3.exe" /z');
         RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 0);
       end;
     end;
   end;
 
-  if CurStep = ssPostInstall then begin
+  if CurStep = ssPostInstall then
+  begin
     if WizardIsTaskSelected('set_default') then begin
-      RegWriteStringValue(HKLM, IFEO, 'Debugger', ExpandConstant('"{app}\Notepad3.exe" /z'));
+      RegWriteStringValue(HKLM, IFEO, 'Debugger', '"'+app+'\Notepad3.exe" /z');
       RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 0);
     end;
-    if WizardIsTaskSelected('remove_default') then begin
+    if WizardIsTaskSelected('remove_default') then
+    begin
       RegDeleteValue(HKLM, IFEO, 'Debugger');
       RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 1);
-    end else begin
-      If RegValueExists (HKLM, IFEO, 'Debugger') then begin
-        RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 0);
-      end else begin
+    end
+    else
+    begin
+      If RegValueExists (HKLM, IFEO, 'Debugger') then
+        RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 0)
+      else
         RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 1);
-      end;
     end;
-    if WizardIsTaskSelected('set_openwith') then begin
-      RegWriteStringValue(HKCR, '*\shell\Open with Notepad3', 'Icon', ExpandConstant('{app}\Notepad3.exe,0'));
-      RegWriteStringValue(HKCR, '*\shell\Open with Notepad3\command', '', ExpandConstant('"{app}\Notepad3.exe" "%1"'));
-    end;
-    if WizardIsTaskSelected('remove_openwith') then begin
+    if WizardIsTaskSelected('set_openwith') then
+    begin
       RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\Open with Notepad3');
+      RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + reg_Open_with_NP3);
+      RegWriteStringValue(HKCR, '*\shell\' + reg_Open_with_NP3, 'Icon', app+'\Notepad3.exe,0');
+      RegWriteStringValue(HKCR, '*\shell\' + reg_Open_with_NP3 + '\command', '', '"'+app+'\Notepad3.exe" "%1"');
     end;
+    if WizardIsTaskSelected('remove_openwith') then
+      RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + reg_Open_with_NP3);
     // Always add Notepad3's AppUserModelID and the rest registry values
     AddReg();
   end;
 end;
 
+Var
+  SettingsCleanUp: Boolean;
+
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 begin
   // When uninstalling, ask the user to delete Notepad3's settings and themes
-  if CurUninstallStep = usUninstall then begin
-    if SettingsExistCheck() then begin
-      if SuppressibleMsgBox(CustomMessage('msg_DeleteSettings'), mbConfirmation, MB_YESNO or MB_DEFBUTTON2, IDNO) = IDYES then
-        CleanUpSettings();
-    end;
-    if DefaulNotepadCheck() then begin
+  if CurUninstallStep = usUninstall then
+    if SettingsExistCheck() then
+      SettingsCleanUp := SuppressibleMsgBox(CustomMessage('msg_DeleteSettings'), mbConfirmation, MB_YESNO or MB_DEFBUTTON2, IDNO) = IDYES;
+  if CurUninstallStep = usPostUninstall then
+  begin
+    If SettingsCleanUp then
+      CleanUpSettings();
+    if DefaulNotepadCheck() then
+    begin
       RegDeleteValue(HKLM, IFEO, 'Debugger');
       RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 1);
     end;
@@ -1049,7 +1138,15 @@ end;
 
 procedure InitializeWizard();
 begin
-  WizardForm.SelectTasksLabel.Hide;
-  WizardForm.TasksList.Top    := 0;
-  WizardForm.TasksList.Height := PageFromID(wpSelectTasks).SurfaceHeight;
+  With WizardForm do
+  begin
+    SelectTasksLabel.Hide;
+    With TasksList do
+    begin
+      Top := 0;
+      Height := PageFromID(wpSelectTasks).SurfaceHeight;
+    end;
+  end;
 end;
+
+// #expr SaveToFile( AddBackSlash(SourcePath) +  SetupSetting("OutputBaseFilename") + ".iss")
