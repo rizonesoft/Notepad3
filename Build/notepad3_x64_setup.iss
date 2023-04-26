@@ -3,7 +3,10 @@
 ;* (c) Rizonesoft 2008-2023
 
 ; Requirements:
-; Inno Setup: https://www.jrsoftware.org/isdl.php
+; Inno Setup: https://jrsoftware.org/isinfo.php
+
+;Acknowledgments:
+;Thanks to "Wilenty" for his great help in improving the INNO Setup installer
 
 ; Preprocessor related stuff
 // if you compile a "beta, rc or rc2" version, then comment/un-comment the appropriate setting:
@@ -57,10 +60,10 @@ AppName={#app_name} (x64){#VRSN}
 AppVersion={#app_version}{#VRSN}
 AppVerName={#app_name} {#app_version}
 AppPublisher={#app_publisher}
-AppPublisherURL=https://rizonesoft.com
-AppSupportURL=https://rizonesoft.com
-AppUpdatesURL=https://rizonesoft.com
-AppContact=https://rizonesoft.com
+AppPublisherURL=https://rizonesoft.com/
+AppSupportURL=https://www.rizonesoft.com/documents/
+AppUpdatesURL=https://www.rizonesoft.com/downloads/notepad3/
+AppContact=https://www.rizonesoft.com/#contact
 AppCopyright={#app_copyright}
 VersionInfoVersion={#app_version}
 UninstallDisplayIcon={app}\Notepad3.exe
@@ -79,7 +82,7 @@ AllowNoIcons=yes
 ShowTasksTreeLines=yes
 DisableProgramGroupPage=yes
 DisableReadyPage=yes
-DisableWelcomePage=yes
+DisableWelcomePage=no
 AllowCancelDuringInstall=yes
 UsedUserAreasWarning=no
 MinVersion=0,6.1.7601
@@ -87,7 +90,9 @@ ArchitecturesAllowed=x64 arm64
 ArchitecturesInstallIn64BitMode=x64 arm64
 CloseApplications=true
 SetupMutex={#app_name}_setup_mutex,Global\{#app_name}_setup_mutex
-SetupIconFile=.\Resources\Notepad3.ico
+SetupIconFile=.\Resources\Notepad3SetupIconFile.ico
+WizardImageFile=.\Resources\WizardImageFileSmall.bmp
+
 
 [Languages]
 Name: "enu"; MessagesFile: "compiler:Default.isl"
@@ -117,6 +122,7 @@ Name: "vit"; MessagesFile: "compiler:Languages-mod\Vietnamese.isl"
 Name: "chs"; MessagesFile: "compiler:Languages-mod\ChineseSimplified.isl"
 Name: "cht"; MessagesFile: "compiler:Languages-mod\ChineseTraditional.isl"
 
+
 [Messages]
 enu.BeveledLabel=English (US)
 afk.BeveledLabel=Afrikaans
@@ -144,6 +150,7 @@ trk.BeveledLabel=Turkish
 vit.BeveledLabel=Vietnamese
 chs.BeveledLabel=Chinese (CN)
 cht.BeveledLabel=Chinese (TW)
+
 
 [CustomMessages]
 enu.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
@@ -646,6 +653,7 @@ Name: "desktopicon\user"; Description: "{cm:tsk_CurrentUser}"; GroupDescription:
 Name: "desktopicon\common"; Description: "{cm:tsk_AllUsers}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked exclusive
 Name: "startup_icon"; Description: "{cm:tsk_StartMenuIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 6.01
+
 Name: "reset_settings"; Description: "{cm:tsk_ResetSettings}"; GroupDescription: "{cm:tsk_Other}"; Flags: checkedonce unchecked; Check: SettingsExistCheck()
 Name: "set_default"; Description: "{cm:tsk_SetDefault}"; GroupDescription: "{cm:tsk_Other}"; Check: not DefaulNotepadCheck()
 Name: "remove_default"; Description: "{cm:tsk_RemoveDefault}"; GroupDescription: "{cm:tsk_Other}"; Flags: checkedonce unchecked; Check: DefaulNotepadCheck()
@@ -724,9 +732,11 @@ Source: "Docs\*.txt"; DestDir: "{app}\Docs"; Flags: ignoreversion
 Source: "Docs\crypto\*.txt"; DestDir: "{app}\Docs\crypto"; Flags: ignoreversion
 Source: "Docs\uthash\*.txt"; DestDir: "{app}\Docs\uthash"; Flags: ignoreversion
 
+
 [Dirs]
 Name: "{userappdata}\Rizonesoft\Notepad3\Favorites"
 Name: "{userappdata}\Rizonesoft\Notepad3\Themes"
+
 
 [Icons]
 Name: "{commondesktop}\{#app_name}"; Filename: "{app}\Notepad3.exe"; WorkingDir: "{app}"; AppUserModelID: "{#app_publisher}.{#app_name}"; IconFilename: "{app}\Notepad3.exe"; Comment: "{#app_name} {#app_version}"; Tasks: desktopicon\common
@@ -734,10 +744,12 @@ Name: "{userdesktop}\{#app_name}"; Filename: "{app}\Notepad3.exe"; WorkingDir: "
 Name: "{commonprograms}\{#app_name}"; Filename: "{app}\Notepad3.exe"; WorkingDir: "{app}"; AppUserModelID: "{#app_publisher}.{#app_name}"; IconFilename: "{app}\Notepad3.exe"; IconIndex: 0; Comment: "{#app_name} {#app_version}"; Tasks: startup_icon
 Name: "{#quick_launch}\{#app_name}"; Filename: "{app}\Notepad3.exe"; WorkingDir: "{app}"; IconFilename: "{app}\Notepad3.exe"; IconIndex: 0; Comment: "{#app_name} {#app_version}"; Tasks: quicklaunchicon
 
+
 [INI]
 Filename: "{app}\Notepad3.ini"; Section: "Notepad3"; Key: "Notepad3.ini"; String: "%APPDATA%\Rizonesoft\Notepad3\Notepad3.ini"
 Filename: "{app}\minipath.ini"; Section: "minipath"; Key: "minipath.ini"; String: "%APPDATA%\Rizonesoft\Notepad3\minipath.ini"
 Filename: "{userappdata}\Rizonesoft\Notepad3\Notepad3.ini"; Section: "Settings"; Key: "Favorites"; String: "%APPDATA%\Rizonesoft\Notepad3\Favorites\"
+
 
 [Registry]
 Root: "HKLM"; Subkey: "SYSTEM\CurrentControlSet\Control\FileSystem"; ValueType: dword; ValueName: "LongPathsEnabled"; ValueData: "1"
@@ -852,9 +864,11 @@ Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\ApplicationAsso
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts"; ValueType: dword; ValueName: "Applications\Notepad3.exe_.txt"; ValueData: "0"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts"; ValueType: dword; ValueName: "Applications\Notepad3.exe_.wtx"; ValueData: "0"
 
+
 [Run]
 Filename: "{app}\Notepad3.exe"; WorkingDir: "{app}"; Flags: nowait postinstall skipifsilent unchecked; Description: "{cm:LaunchProgram,{#app_name}}"
 Filename: "https://www.rizonesoft.com/downloads/notepad3/update/"; Flags: nowait postinstall shellexec skipifsilent unchecked; Description: "{cm:tsk_LaunchWelcomePage}"
+
 
 [InstallDelete]
 Type: files; Name: "{userdesktop}\{#app_name}.lnk"; Check: not WizardIsTaskSelected('desktopicon\user') and IsUpgrade()
@@ -866,11 +880,13 @@ Type: files; Name: "{app}\Readme.txt"
 Type: files; Name: "{app}\minipath.ini"
 Type: files; Name: "{app}\grepWinNP3.ini"
 
+
 [UninstallDelete]
 Type: files; Name: "{app}\Notepad3.ini"
 Type: files; Name: "{app}\minipath.ini"
 Type: files; Name: "{app}\grepWinNP3.ini"
 Type: dirifempty; Name: "{app}"
+
 
 [Code]
 const
@@ -879,7 +895,7 @@ const
 
 #if defined sse_required || defined sse2_required
 function IsProcessorFeaturePresent(Feature: DWORD): BOOL;
-external 'IsProcessorFeaturePresent@kernel32.dll stdcall';
+  external 'IsProcessorFeaturePresent@kernel32.dll stdcall';
 
 const
   PF_XMMI_INSTRUCTIONS_AVAILABLE = 6;// The SSE instruction set is available.
@@ -905,69 +921,55 @@ end;
 
 // Check if Notepad3 has replaced Windows Notepad
 function DefaulNotepadCheck(): Boolean;
-var
-  sDebugger: String;
-begin
-  if RegQueryStringValue(HKLM, IFEO, 'Debugger', sDebugger) and
-    (sDebugger = (ExpandConstant('"{app}\Notepad3.exe" /z'))) then
+  var
+    sDebugger: String;
   begin
-    Log('Custom Code: {#app_name} is set as the default notepad');
-    Result := True;
-  end
-  else
-  begin
-    Log('Custom Code: {#app_name} is NOT set as the default notepad');
-    Result := False;
-  end;
+    Result := RegQueryStringValue(HKLM, IFEO, 'Debugger', sDebugger) and
+        (sDebugger = ExpandConstant('"{app}\Notepad3.exe" /z'));
+    If Result then
+      Log('Custom Code: {#app_name} is set as the default notepad')
+    else
+      Log('Custom Code: {#app_name} is NOT set as the default notepad');
 end;
+
+Var
+  reg_Open_with_NP3: String;
 
 // Check if "Open with Notepad3" is installed.
 function OpenWithCheck(): Boolean;
-var
-  sOpenWith: String;
-  reg_Open_with_NP3: String;
-begin
-  reg_Open_with_NP3 := CustomMessage('reg_Open_with_NP3');
-  if RegQueryStringValue(HKEY_CLASSES_ROOT, '*\shell\' + reg_Open_with_NP3, 'Icon', sOpenWith) and
-      (sOpenWith = (ExpandConstant('{app}\Notepad3.exe,0'))) then
+  var
+    sOpenWith: String;
   begin
-    Log('Custom Code: {#app_name} '+reg_Open_with_NP3+' is set.');
-    Result := True;
-  end
-  else
-  begin
-    Log('Custom Code: {#app_name} '+reg_Open_with_NP3+' is not set.');
-    Result := False;
-  end;
+    Result := RegQueryStringValue(HKEY_CLASSES_ROOT, '*\shell\' + reg_Open_with_NP3, 'Icon', sOpenWith) and
+        (sOpenWith = ExpandConstant('{app}\Notepad3.exe,0'));
+    If Result then
+      Log('Custom Code: {#app_name} '+reg_Open_with_NP3+' is set.')
+    else
+      Log('Custom Code: {#app_name} '+reg_Open_with_NP3+' is not set.');
 end;
 
 function IsOldBuildInstalled(sInfFile: String): Boolean;
-begin
-  if RegKeyExists(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Notepad2') and
-      FileExists(ExpandConstant('{commonpf}\Notepad2\' + sInfFile)) then
-    Result := True
-  else
-    Result := False;
+  begin
+    Result := RegKeyExists(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Notepad2') and
+        FileExists(ExpandConstant('{commonpf}\Notepad2\' + sInfFile));
 end;
 
+Var
+  Upgrade: Boolean;
+
 function IsUpgrade(): Boolean;
-  Var
-    PrevAppDir: String;
   begin
-    PrevAppDir := WizardForm.PrevAppDir;
-    Result := Length( PrevAppDir ) > 0;
-    If Result then
-      Result := FileExists( AddBackslash(PrevAppDir) + '{#app_name}.exe' );
+    Result := Upgrade;
 end;
 
 // Check if Notepad3's settings exist
 function SettingsExistCheck(): Boolean;
-begin
-  Result := FileExists(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Notepad3.ini'));
-  If Result Then
-    Log('Custom Code: Settings are present')
-  else
-    Log('Custom Code: Settings are NOT present');
+  begin
+    Result := FileExists(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Notepad3.ini'));
+    If Result Then
+      Log('Custom Code: Settings are present')
+    else
+      Log('Custom Code: Settings are NOT present');
 end;
 
 function UninstallOldVersion(sInfFile: String): Integer;
@@ -983,170 +985,216 @@ function UninstallOldVersion(sInfFile: String): Integer;
 end;
 
 function ShouldSkipPage(PageID: Integer): Boolean;
-begin
-  // Skip the license page if IsUpgrade()
-  // if IsUpgrade() and (PageID = wpLicense) then
-  if PageID = wpLicense then
-    if IsUpgrade() then
-    begin
-      Result := True;
-      WizardForm.LicenseAcceptedRadio.Checked := Result;
-    end;
+  begin
+    // Skip the license page if IsUpgrade()
+    if PageID = wpLicense then
+      if IsUpgrade() then
+      begin
+        Result := True;
+        WizardForm.LicenseAcceptedRadio.Checked := Result;
+      end;
 end;
 
 procedure AddReg();
-Var
-  APP: String;
-begin
-  APP := ExpandConstant('{app}');
-  RegWriteStringValue(HKCR, 'Applications\notepad3.exe', 'AppUserModelID', 'Rizonesoft.Notepad3');
-  RegWriteStringValue(HKCR, 'Applications\notepad3.exe\shell\open\command', '', '"'+APP+'\Notepad3.exe" "%1"');
-  RegWriteStringValue(HKCR, '*\OpenWithList\notepad3.exe', '', '');
-  RegWriteStringValue(HKLM, APPH, '', APP+'\Notepad3.exe');
-  RegWriteStringValue(HKLM, APPH, 'Path', APP);
+  Var
+    APP: String;
+  begin
+    APP := ExpandConstant('{app}');
+    RegWriteStringValue(HKCR, 'Applications\notepad3.exe', 'AppUserModelID', 'Rizonesoft.Notepad3');
+    RegWriteStringValue(HKCR, 'Applications\notepad3.exe\shell\open\command', '', '"'+APP+'\Notepad3.exe" "%1"');
+    RegWriteStringValue(HKCR, '*\OpenWithList\notepad3.exe', '', '');
+    RegWriteStringValue(HKLM, APPH, '', APP+'\Notepad3.exe');
+    RegWriteStringValue(HKLM, APPH, 'Path', APP);
 end;
 
 procedure CleanUpSettings();
-Var
-  userappdata: String;
-begin
-  userappdata := ExpandConstant('{userappdata}');
-  DeleteFile(userappdata + '\Rizonesoft\Notepad3\Notepad3.ini');
-  DeleteFile(userappdata + '\Rizonesoft\Notepad3\minipath.ini');
-  DeleteFile(userappdata + '\Rizonesoft\Notepad3\grepWinNP3.ini');
-  DeleteFile(userappdata + '\Rizonesoft\Notepad3\Themes\Dark.ini');
-  DeleteFile(userappdata + '\Rizonesoft\Notepad3\Themes\Obsidian.ini');
-  DeleteFile(userappdata + '\Rizonesoft\Notepad3\Themes\Sombra.ini');
+  Var
+    userappdata: String;
+  begin
+    userappdata := ExpandConstant('{userappdata}');
+    DeleteFile(userappdata + '\Rizonesoft\Notepad3\Notepad3.ini');
+    DeleteFile(userappdata + '\Rizonesoft\Notepad3\minipath.ini');
+    DeleteFile(userappdata + '\Rizonesoft\Notepad3\grepWinNP3.ini');
+    DeleteFile(userappdata + '\Rizonesoft\Notepad3\Themes\Dark.ini');
+    DeleteFile(userappdata + '\Rizonesoft\Notepad3\Themes\Obsidian.ini');
+    DeleteFile(userappdata + '\Rizonesoft\Notepad3\Themes\Sombra.ini');
 end;
 
+Var
+  PreviousDataOf_Open_with_NP3: String;
+
 procedure RemoveReg();
-begin
-  RegDeleteKeyIncludingSubkeys(HKCR, 'Applications\notepad3.exe');
-  RegDeleteKeyIncludingSubkeys(HKCR, '*\OpenWithList\notepad3.exe');
-  RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\Open with Notepad3');
-  RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + CustomMessage('reg_Open_with_NP3'));
-  RegDeleteKeyIncludingSubkeys(HKLM, APPH);
+  begin
+    If Length( PreviousDataOf_Open_with_NP3 ) > 0 then
+      If RegKeyExists(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3) then
+        RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3);
+    If RegKeyExists(HKCR, 'Applications\notepad3.exe') then
+      RegDeleteKeyIncludingSubkeys(HKCR, 'Applications\notepad3.exe');
+    If RegKeyExists(HKCR, '*\OpenWithList\notepad3.exe') then
+      RegDeleteKeyIncludingSubkeys(HKCR, '*\OpenWithList\notepad3.exe');
+    If RegKeyExists(HKCR, '*\shell\Open with Notepad3') then
+      RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\Open with Notepad3');
+    If Length( reg_Open_with_NP3 ) > 0 then
+      If RegKeyExists(HKCR, '*\shell\' + reg_Open_with_NP3) then
+        RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + reg_Open_with_NP3);
+    If RegKeyExists(HKLM, APPH) then
+      RegDeleteKeyIncludingSubkeys(HKLM, APPH);
 end;
 
 procedure CurPageChanged(CurPageID: Integer);
-begin
-  if CurPageID = wpSelectTasks then
-    WizardForm.NextButton.Caption := SetupMessage(msgButtonInstall)
-  else
-  if CurPageID = wpFinished then
-    WizardForm.NextButton.Caption := SetupMessage(msgButtonFinish);
+  begin
+    if CurPageID = wpSelectTasks then
+      WizardForm.NextButton.Caption := SetupMessage(msgButtonInstall)
+    else
+    if CurPageID = wpFinished then
+      WizardForm.NextButton.Caption := SetupMessage(msgButtonFinish);
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
-Var
-  reg_Open_with_NP3, APP: String;
-begin
-  if (CurStep = ssInstall) or (CurStep = ssPostInstall) then
+  Var
+    app: String;
   begin
-    reg_Open_with_NP3 := CustomMessage('reg_Open_with_NP3');
-    APP := ExpandConstant('{app}');
-  end;
-
-  if CurStep = ssInstall then
-  begin
-    if WizardIsTaskSelected('reset_settings') then
-      CleanUpSettings();
-
-    if IsOldBuildInstalled('Uninstall.inf') or IsOldBuildInstalled('Notepad2.inf') then
+    if (CurStep = ssInstall) or (CurStep = ssPostInstall) then
     begin
-      if IsOldBuildInstalled('Uninstall.inf') then
+      APP := ExpandConstant('{app}');
+
+      if CurStep = ssInstall then
       begin
-        Log('Custom Code: The old build is installed, will try to uninstall it');
-        if UninstallOldVersion('Uninstall.inf') = 2 then
-          Log('Custom Code: The old build was successfully uninstalled')
+        PreviousDataOf_Open_with_NP3 := GetPreviousData('reg_Open_with_NP3', '');
+
+        if IsOldBuildInstalled('Uninstall.inf') or IsOldBuildInstalled('Notepad2.inf') then
+        begin
+          if IsOldBuildInstalled('Uninstall.inf') then
+          begin
+            Log('Custom Code: The old build is installed, will try to uninstall it...');
+            if UninstallOldVersion('Uninstall.inf') = 0 then
+              Log('Custom Code: The old build was successfully uninstalled')
+            else
+              Log('Custom Code: Something went wrong when uninstalling the old build');
+          end;
+
+          if IsOldBuildInstalled('Notepad2.inf') then
+          begin
+            Log('Custom Code: The official Notepad2 build is installed, will try to uninstall it...');
+            if UninstallOldVersion('Notepad2.inf') = 0 then
+              Log('Custom Code: The official Notepad2 build was successfully uninstalled')
+            else
+              Log('Custom Code: Something went wrong when uninstalling the official Notepad2 build');
+          end;
+
+          // This is the case where the old build is installed; the DefaulNotepadCheck() returns true
+          // and the set_default task isn't selected
+          if not WizardIsTaskSelected('remove_default') then
+          begin
+            RegWriteStringValue(HKLM, IFEO, 'Debugger', '"'+app+'\Notepad3.exe" /z');
+            RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 0);
+          end;
+        end;
+      end;
+
+      if CurStep = ssPostInstall then
+      begin
+        if WizardIsTaskSelected('reset_settings') then
+          CleanUpSettings();
+
+        if WizardIsTaskSelected('set_default') then begin
+          RegWriteStringValue(HKLM, IFEO, 'Debugger', '"'+app+'\Notepad3.exe" /z');
+          RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 0);
+        end
         else
-          Log('Custom Code: Something went wrong when uninstalling the old build');
-      end;
-
-      if IsOldBuildInstalled('Notepad2.inf') then
-      begin
-        Log('Custom Code: The official Notepad2 build is installed, will try to uninstall it');
-        if UninstallOldVersion('Notepad2.inf') = 2 then
-          Log('Custom Code: The official Notepad2 build was successfully uninstalled')
+        if WizardIsTaskSelected('remove_default') then
+        begin
+          RegDeleteValue(HKLM, IFEO, 'Debugger');
+          RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 1);
+        end
         else
-          Log('Custom Code: Something went wrong when uninstalling the official Notepad2 build');
-      end;
+        begin
+          If RegValueExists (HKLM, IFEO, 'Debugger') then
+            RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 0)
+          else
+            RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 1);
+        end;
 
-      // This is the case where the old build is installed; the DefaulNotepadCheck() returns true
-      // and the set_default task isn't selected
-      if not WizardIsTaskSelected('remove_default') then
-      begin
-        RegWriteStringValue(HKLM, IFEO, 'Debugger', '"'+app+'\Notepad3.exe" /z');
-        RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 0);
+        if WizardIsTaskSelected('set_openwith') then
+        begin
+          If Length( PreviousDataOf_Open_with_NP3 ) > 0 then
+            If RegKeyExists(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3) then
+              RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3);
+          If RegKeyExists(HKCR, '*\shell\Open with Notepad3') then
+            RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\Open with Notepad3');
+          If Length( reg_Open_with_NP3 ) > 0 then
+            If RegKeyExists(HKCR, '*\shell\' + reg_Open_with_NP3) then
+              RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + reg_Open_with_NP3);
+          RegWriteStringValue(HKCR, '*\shell\' + reg_Open_with_NP3, 'Icon', app+'\Notepad3.exe,0');
+          RegWriteStringValue(HKCR, '*\shell\' + reg_Open_with_NP3 + '\command', '', '"'+app+'\Notepad3.exe" "%1"');
+        end
+        else
+        if WizardIsTaskSelected('remove_openwith') then
+        begin
+          If Length( reg_Open_with_NP3 ) > 0 then
+            If RegKeyExists(HKCR, '*\shell\' + reg_Open_with_NP3) then
+              RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + reg_Open_with_NP3);
+        end
+        else
+        If Length( PreviousDataOf_Open_with_NP3 ) > 0 then
+          If RegKeyExists(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3) then
+            RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3);
+
+      // Always add Notepad3's AppUserModelID and the rest registry values
+        AddReg();
       end;
     end;
-  end;
-
-  if CurStep = ssPostInstall then
-  begin
-    if WizardIsTaskSelected('set_default') then begin
-      RegWriteStringValue(HKLM, IFEO, 'Debugger', '"'+app+'\Notepad3.exe" /z');
-      RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 0);
-    end;
-    if WizardIsTaskSelected('remove_default') then
-    begin
-      RegDeleteValue(HKLM, IFEO, 'Debugger');
-      RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 1);
-    end
-    else
-    begin
-      If RegValueExists (HKLM, IFEO, 'Debugger') then
-        RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 0)
-      else
-        RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 1);
-    end;
-    if WizardIsTaskSelected('set_openwith') then
-    begin
-      RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\Open with Notepad3');
-      RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + reg_Open_with_NP3);
-      RegWriteStringValue(HKCR, '*\shell\' + reg_Open_with_NP3, 'Icon', app+'\Notepad3.exe,0');
-      RegWriteStringValue(HKCR, '*\shell\' + reg_Open_with_NP3 + '\command', '', '"'+app+'\Notepad3.exe" "%1"');
-    end;
-    if WizardIsTaskSelected('remove_openwith') then
-      RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + reg_Open_with_NP3);
-    // Always add Notepad3's AppUserModelID and the rest registry values
-    AddReg();
-  end;
 end;
 
 Var
   SettingsCleanUp: Boolean;
 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
-begin
-  // When uninstalling, ask the user to delete Notepad3's settings and themes
-  if CurUninstallStep = usUninstall then
-    if SettingsExistCheck() then
-      SettingsCleanUp := SuppressibleMsgBox(CustomMessage('msg_DeleteSettings'), mbConfirmation, MB_YESNO or MB_DEFBUTTON2, IDNO) = IDYES;
-  if CurUninstallStep = usPostUninstall then
   begin
-    If SettingsCleanUp then
-      CleanUpSettings();
-    if DefaulNotepadCheck() then
+    // When uninstalling, ask the user to delete Notepad3's settings and themes
+    if CurUninstallStep = usUninstall then
+      if SettingsExistCheck() then
+        SettingsCleanUp := SuppressibleMsgBox(CustomMessage('msg_DeleteSettings'), mbConfirmation, MB_YESNO or MB_DEFBUTTON2, IDNO) = IDYES;
+
+    if CurUninstallStep = usPostUninstall then
     begin
-      RegDeleteValue(HKLM, IFEO, 'Debugger');
-      RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 1);
+      If SettingsCleanUp then
+        CleanUpSettings();
+
+      if DefaulNotepadCheck() then
+      begin
+        RegDeleteValue(HKLM, IFEO, 'Debugger');
+        RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 1);
+      end;
+
+      RemoveReg();
     end;
-    RemoveReg();
-  end;
 end;
 
 procedure InitializeWizard();
-begin
-  With WizardForm do
   begin
-    SelectTasksLabel.Hide;
-    With TasksList do
+    reg_Open_with_NP3 := CustomMessage('reg_Open_with_NP3');
+
+    With WizardForm do
     begin
-      Top := 0;
-      Height := PageFromID(wpSelectTasks).SurfaceHeight;
+      Upgrade := FileExists( AddBackslash(PrevAppDir) + '{#app_name}.exe' );
+      SelectTasksLabel.Hide;
+      With TasksList do
+      begin
+        Top := 0;
+        Height := SelectTasksPage.ClientHeight;
+      end;
     end;
-  end;
+end;
+
+procedure RegisterPreviousData(PreviousDataKey: Integer);
+  begin
+    SetPreviousData(PreviousDataKey, 'reg_Open_with_NP3', reg_Open_with_NP3);
+end;
+
+procedure InitializeUninstallProgressForm();
+  begin
+    reg_Open_with_NP3 := CustomMessage('reg_Open_with_NP3');
 end;
 
 // #expr SaveToFile( AddBackSlash(SourcePath) +  SetupSetting("OutputBaseFilename") + ".iss")
