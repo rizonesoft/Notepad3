@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.424.(build_#) (2023-04-24)
+Current BETA/RC Version 6.23.426.(build_#) (2023-04-26)
 ========================================================
 
 --------------------------------------------------------
@@ -86,6 +86,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.426.1]- Minor bugs in localization of "Open with Notepad3"  (SUP).
 [.406.1]- Some more issues around "File Change Monitoring".
 [.406.1]- Integration and Notification of DirectoryObserver and FileChanged-Polling.
 [.406.1]- Issue "file changed on disk" for silent mode on closing.
