@@ -1921,6 +1921,9 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
 
     if (!s_flagStartAsTrayIcon) {
         UpdateWindow(hwndMain);
+        if (!Settings.ShowTitlebar) {
+            SetWindowLong(hwndMain, GWL_STYLE, GetWindowLong(hwndMain, GWL_STYLE) & ~WS_CAPTION);
+        }
         ShowWindow(hwndMain, nCmdShow);
     }
     else {
@@ -3437,7 +3440,7 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     UpdateStatusbar(true);
     UpdateMargins(true);
     UpdateTitlebar(hwnd);
-    //~UpdateUI(); ~ recursion
+    //~UpdateUI(); //~ recursion
     
     return FALSE;
 }
@@ -4352,6 +4355,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, IDM_VIEW_SHOWBLANKS, Settings.ViewWhiteSpace);
     CheckCmd(hmenu, IDM_VIEW_SHOWEOLS, Settings.ViewEOLs);
     CheckCmd(hmenu, IDM_VIEW_WORDWRAPSYMBOLS, Settings.ShowWordWrapSymbols);
+    CheckCmd(hmenu, IDM_VIEW_TITLEBAR, Settings.ShowTitlebar);
     CheckCmd(hmenu, IDM_VIEW_MENUBAR, Settings.ShowMenubar);
     CheckCmd(hmenu, IDM_VIEW_TOOLBAR, Settings.ShowToolbar);
     EnableCmd(hmenu, IDM_VIEW_CUSTOMIZETB, Settings.ShowToolbar);
@@ -5798,7 +5802,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SetForegroundWindow(Globals.hwndDlgCustomizeSchemes);
         }
         SendWMCommand(Globals.hwndDlgCustomizeSchemes, IDC_SETCURLEXERTV);
-        UpdateUI(hwnd);
         break;
 
 
@@ -5808,7 +5811,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             Style_SetDefaultFont(Globals.hwndEdit, (iLoWParam == IDM_VIEW_FONT));
         }
         UpdateMargins(true);
-        UpdateUI(hwnd);
         break;
 
 
@@ -6239,6 +6241,18 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
         break;
 
+    case IDM_VIEW_TITLEBAR:
+        Settings.ShowTitlebar = !Settings.ShowTitlebar;
+        if (Settings.ShowTitlebar) {
+            SetWindowLong(hwnd, GWL_STYLE, GetWindowLong(hwnd, GWL_STYLE) | WS_CAPTION);
+            UpdateTitlebar(hwnd);
+        }
+        else {
+            SetWindowLong(hwnd, GWL_STYLE, GetWindowLong(hwnd, GWL_STYLE) & ~WS_CAPTION);
+        }
+        UpdateUI(hwnd);      
+        break;
+
     case IDM_VIEW_MENUBAR:
         Settings.ShowMenubar = !Settings.ShowMenubar;
         SetMenu(hwnd, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
@@ -6253,6 +6267,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_CUSTOMIZETB:
         SendMessage(Globals.hwndToolbar,TB_CUSTOMIZE,0,0);
+        UpdateUI(hwnd);
         break;
 
     case IDM_VIEW_TOGGLETB:
@@ -9740,7 +9755,7 @@ void UpdateTitlebar(const HWND hwnd)
 //
 static void _UpdateTitlebarDelayed(const HWND hwnd)
 {
-    if (hwnd == Globals.hwndMain) {
+    if (hwnd == Globals.hwndMain && Settings.ShowTitlebar) {
         bool const bFileLocked = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
         SetWindowTitle(Globals.hwndMain, Paths.CurrentFile, Settings.PathNameFormat,
             s_flagPasteBoard, s_bIsProcessElevated, IsSaveNeeded(),

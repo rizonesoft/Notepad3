@@ -642,6 +642,7 @@ typedef struct SETTINGS_T {
     bool FindReplaceTransparentMode;
     int  RenderingTechnology;
     int  Bidirectional;
+    bool ShowTitlebar;
     bool ShowMenubar;
     bool ShowToolbar;
     bool ShowStatusbar;
