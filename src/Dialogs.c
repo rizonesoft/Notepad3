@@ -4758,7 +4758,9 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
         Settings.AlwaysOnTop = true;
         s_bPrevFullScreenFlag = true;
     }
-
+    SetMenu(hwnd, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
+    DrawMenuBar(hwnd);
+    ShowWindow(Globals.hwndRebar, (Settings.ShowToolbar ? SW_SHOWNORMAL : SW_HIDE));
     UpdateUI(hwnd);
 }
 
