@@ -963,14 +963,14 @@ static void _SetEncodingTitleInfo(const ENC_DET_T* pEncDetInfo)
 //
 static void _SetFileVars(char* buffer, size_t cch, LPFILEVARS lpfv)
 {
-    bool bDisableFileVar = Flags.NoFileVariables;
+    bool bEnableFileVar = !Flags.NoFileVariables;
 
-    if (!bDisableFileVar) {
+    if (bEnableFileVar) {
         int i;
         if (FileVars_ParseInt(buffer, "enable-local-variables", &i) && (!i)) {
-            bDisableFileVar = true;
+            bEnableFileVar = false;
         }
-        if (!bDisableFileVar) {
+        if (bEnableFileVar) {
 
             if (FileVars_ParseInt(buffer, "tab-width", &i)) {
                 lpfv->iTabWidth = clampi(i, 1, 256);

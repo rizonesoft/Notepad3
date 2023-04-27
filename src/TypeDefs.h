@@ -220,6 +220,7 @@ typedef enum BUFFER_SIZES {
 
 typedef enum FR_STATES { FND_NOP = 0, NXT_NOT_FND, NXT_FND, NXT_WRP_FND, PRV_NOT_FND, PRV_FND, PRV_WRP_FND } FR_STATES;
 typedef enum FR_UPD_MODES { FRMOD_IGNORE = 0, FRMOD_NORM, FRMOD_WRAPED } FR_UPD_MODES;
+typedef enum WIN_DISPL_MODE { WINDSPMOD_AUTO = 0, WINDSPMOD_DARK, WINDSPMOD_LIGHT } WIN_DISPL_MODE;
 
 //==== Statusbar ==============================================================
 
@@ -676,7 +677,7 @@ typedef struct SETTINGS_T {
     AutoSaveBackupOptions AutoSaveOptions;
 
 #ifdef D_NP3_WIN10_DARK_MODE
-    bool WinThemeDarkMode;
+    WIN_DISPL_MODE WinThemeDarkMode; // auto(0), true(1), false(2)
 #endif
 
     RECT PrintMargin;
@@ -695,6 +696,15 @@ extern SETTINGS_T Settings;
 #define IsMarkOccurrencesEnabled() (Settings.MarkOccurrences)
 #define IsFocusedViewAllowed() (IsMarkOccurrencesEnabled() && !Settings.MarkOccurrencesMatchVisible)
 #define IsColorDefHotspotEnabled() (Settings.ColorDefHotspot != 0)
+
+//inline bool IsSettingDarkMode()
+//{
+//    return ((Settings.WinThemeDarkMode == WINDSPMOD_AUTO) ? ShouldAppsUseDarkModeEx() : ((Settings.WinThemeDarkMode == WINDSPMOD_DARK) ? true : false));
+//}
+
+#define IsSettingDarkMode() (((Settings.WinThemeDarkMode == WINDSPMOD_AUTO) ? \
+                            ShouldAppsUseDarkModeEx() : \
+                            ((Settings.WinThemeDarkMode == WINDSPMOD_DARK) ? true : false)) && IsDarkModeSupported())
 
 //=============================================================================
 
