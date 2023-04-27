@@ -11773,21 +11773,16 @@ bool FileSave(FileSaveFlags fSaveFlags)
     bool const bIsEmptyNewFile = (Path_IsEmpty(Paths.CurrentFile) && (SciCall_GetTextLength() <= 0LL));
 #endif
 
-    bool const bSaveAs = (fSaveFlags & FSF_SaveAs);
-    bool const bSaveAsk = (fSaveFlags & FSF_Ask);
-    bool const bSaveCopy = (fSaveFlags & FSF_SaveCopy);
-    bool const bSaveAlways = (fSaveFlags & FSF_SaveAlways);
     bool const bSaveNeeded = (IsSaveNeeded() || IsFileChangedFlagSet()) && !bIsEmptyNewFile;
 
-
-    if (!bSaveAs  && !bSaveAlways && !bSaveNeeded) {
+    if (!(fSaveFlags & FSF_SaveAs) && !(fSaveFlags & FSF_SaveAlways) && !bSaveNeeded) {
         _MRU_UpdateSession();
         AutoSaveStop();
         ResetFileObservationData(true);
         return true;
     }
 
-    if (bSaveAsk) {
+    if (fSaveFlags & FSF_Ask) {
         // File or "Untitled" ...
         WCHAR wchFileName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
 
@@ -11812,7 +11807,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
     }
 
     // Read only...
-    if (!bSaveAs && !bSaveCopy && Path_IsNotEmpty(Paths.CurrentFile)) {
+    if (!(fSaveFlags & FSF_SaveAs) && !(fSaveFlags & FSF_SaveCopy) && Path_IsNotEmpty(Paths.CurrentFile)) {
         if (IsFileReadOnly()) {
             UpdateToolbar();
             INT_PTR const answer = (Settings.MuteMessageBeep) ?
@@ -11827,7 +11822,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
     }
 
     // Save As...
-    if (bSaveAs || bSaveCopy || Path_IsEmpty(Paths.CurrentFile)) {
+    if ((fSaveFlags & FSF_SaveAs) || (fSaveFlags & FSF_SaveCopy) || Path_IsEmpty(Paths.CurrentFile)) {
 
         static HPATHL _hpthLastSaveCopyDir = NULL; // session remember copyTo dir
         if (!_hpthLastSaveCopyDir) {
@@ -11885,7 +11880,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
 
     if (fSuccess) {
 
-        if (!bSaveCopy && !Flags.bDoRelaunchElevated) {
+        if (!(fSaveFlags & FSF_SaveCopy) && !Flags.bDoRelaunchElevated) {
             _MRU_AddSession();
             AddFilePathToRecentDocs(Paths.CurrentFile);
             // Install watching of the current file
