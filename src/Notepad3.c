@@ -1129,7 +1129,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     Scintilla_RegisterClasses(hInstance);
 
 #ifdef D_NP3_WIN10_DARK_MODE
-    SetDarkMode(IsDarkModeSupported() && Settings.WinThemeDarkMode); // settings
+    SetDarkMode(IsDarkModeSupported() && IsSettingDarkMode()); // settings
 #endif
 
     HRSRC const hRes = FindResourceEx(hInstance, RT_RCDATA, MAKEINTRESOURCE(IDR_STD_DARKMODE_THEME), 
@@ -4320,7 +4320,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 #ifdef D_NP3_WIN10_DARK_MODE
     EnableCmd(hmenu, IDM_VIEW_WIN_DARK_MODE, IsDarkModeSupported());
-    CheckCmd(hmenu, IDM_VIEW_WIN_DARK_MODE, Settings.WinThemeDarkMode);
+    CheckCmd(hmenu, IDM_VIEW_WIN_DARK_MODE, IsSettingDarkMode());
 #else
     RemoveMenu(hmenu, IDM_VIEW_WIN_DARK_MODE, 0);
 #endif
@@ -6421,8 +6421,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
            break;
         }
 
-        Settings.WinThemeDarkMode = !Settings.WinThemeDarkMode; // toggle
-        SetDarkMode(Settings.WinThemeDarkMode);
+        Settings.WinThemeDarkMode = IsSettingDarkMode() ? WINDSPMOD_LIGHT : WINDSPMOD_DARK; // toggle non auto!
+        SetDarkMode(IsSettingDarkMode());
 
         Style_DynamicThemesMenuCmd(IDM_THEMES_FACTORY_RESET);
 

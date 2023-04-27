@@ -1652,8 +1652,7 @@ void LoadSettings()
     Globals.fvCurFile.iEncoding = Settings.DefaultEncoding;
 
 #ifdef D_NP3_WIN10_DARK_MODE
-    Defaults.WinThemeDarkMode = ShouldAppsUseDarkModeEx();
-    Settings.WinThemeDarkMode = IniSectionGetBool(IniSecSettings, L"WinThemeDarkMode", Defaults.WinThemeDarkMode) && IsDarkModeSupported();
+    GET_CAST_INT_VALUE_FROM_INISECTION(WIN_DISPL_MODE, WinThemeDarkMode, 0, 0, 2);
 #endif
 
     GET_BOOL_VALUE_FROM_INISECTION(UseDefaultForFileEncoding, false);
@@ -1669,7 +1668,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(FixTrailingBlanks, false);
     GET_INT_VALUE_FROM_INISECTION(PrintHeader, 1, 0, 3);
     GET_INT_VALUE_FROM_INISECTION(PrintFooter, 0, 0, 1);
-    int const defPrtColMod = Settings.WinThemeDarkMode ? SC_PRINT_INVERTLIGHT : SC_PRINT_COLOURONWHITE;
+    int const defPrtColMod = IsSettingDarkMode() ? SC_PRINT_INVERTLIGHT : SC_PRINT_COLOURONWHITE;
     GET_INT_VALUE_FROM_INISECTION(PrintColorMode, defPrtColMod, SC_PRINT_NORMAL, SC_PRINT_SCREENCOLOURS);
 
     //int const zoomScale = 100;
@@ -2147,7 +2146,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ReplaceByClipboardTag);
 
 #ifdef D_NP3_WIN10_DARK_MODE
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WinThemeDarkMode);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, WinThemeDarkMode);
 #endif
 
     ///~IniSectionSetInt(IniSecSettings, L"IMEInteraction", Settings2.IMEInteraction);
