@@ -4699,6 +4699,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
     if (!hwnd) {
         return;
     }
+    static bool            s_bPrevShowTitlebar = true;
     static bool            s_bPrevShowMenubar = true;
     static bool            s_bPrevShowToolbar = true;
     static bool            s_bPrevShowStatusbar = true;
@@ -4717,6 +4718,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
         if (s_bPrevFullScreenFlag) {
             SetWindowPlacement(hwnd, &s_wndplPrev); // 1st set correct screen (DPI Aware)
             SetWindowPlacement(hwnd, &s_wndplPrev); // 2nd resize position to correct DPI settings
+            Settings.ShowTitlebar = s_bPrevShowTitlebar;
             Settings.ShowMenubar = s_bPrevShowMenubar;
             Settings.ShowToolbar = s_bPrevShowToolbar;
             Settings.ShowStatusbar = s_bPrevShowStatusbar;
@@ -4735,6 +4737,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
         s_bPrevFullScreenFlag = false;
     }
     else { // full screen mode
+        s_bPrevShowTitlebar = Settings.ShowTitlebar;
         s_bPrevShowMenubar = Settings.ShowMenubar;
         s_bPrevShowToolbar = Settings.ShowToolbar;
         s_bPrevShowStatusbar = Settings.ShowStatusbar;
@@ -4751,7 +4754,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
         SetWindowPos(hwnd, HWND_TOPMOST, mi.rcMonitor.left, mi.rcMonitor.top,
             mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top,
             SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
-        Settings.ShowMenubar = Settings.ShowToolbar = Settings.ShowStatusbar = false;
+        Settings.ShowTitlebar = Settings.ShowMenubar = Settings.ShowToolbar = Settings.ShowStatusbar = false;
         Settings.AlwaysOnTop = true;
         s_bPrevFullScreenFlag = true;
     }
@@ -6456,6 +6459,7 @@ LRESULT SendWMSize(HWND hwnd, RECT* rc)
 void UpdateUI(HWND hwnd)
 {
     SendWMSize(hwnd, NULL);
+    SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
     PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
     PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
 }
