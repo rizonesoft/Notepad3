@@ -425,6 +425,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "П&аліцы"
         BEGIN
+            MENUITEM "Show Titlebar",                 IDM_VIEW_TITLEBAR
             MENUITEM "Паказаць паліцу &меню",         IDM_VIEW_MENUBAR
             MENUITEM "Паказаць &паліцу прыладаў",     IDM_VIEW_TOOLBAR
             MENUITEM "Паказаць &радок стану",         IDM_VIEW_STATUSBAR
@@ -576,6 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show Titlebar",                IDM_VIEW_TITLEBAR
         MENUITEM "Паказаць паліцу меню",         IDM_VIEW_MENUBAR
         MENUITEM "Паказаць паліцу прыладаў",     IDM_VIEW_TOOLBAR
         MENUITEM "Паказаць радок стану",         IDM_VIEW_STATUSBAR

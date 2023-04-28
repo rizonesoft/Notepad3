@@ -425,6 +425,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Fält"
         BEGIN
+            MENUITEM "Show Titlebar",                               IDM_VIEW_TITLEBAR
             MENUITEM "Visa menyfält",                               IDM_VIEW_MENUBAR
             MENUITEM "Visa verktygsfält",                           IDM_VIEW_TOOLBAR
             MENUITEM "Visa statusfält",                             IDM_VIEW_STATUSBAR
@@ -576,6 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show Titlebar",                                   IDM_VIEW_TITLEBAR
         MENUITEM "Visa menyfält",                                   IDM_VIEW_MENUBAR
         MENUITEM "Visa verktygsfält",                               IDM_VIEW_TOOLBAR
         MENUITEM "Visa statusfält",                                 IDM_VIEW_STATUSBAR

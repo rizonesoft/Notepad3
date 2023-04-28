@@ -425,6 +425,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Πίνακες"
         BEGIN
+            MENUITEM "Show Titlebar",                      IDM_VIEW_TITLEBAR
             MENUITEM "Εμφάνιση γραμμής &μενού",            IDM_VIEW_MENUBAR
             MENUITEM "Εμφάνιση γραμμής &εργαλείων",        IDM_VIEW_TOOLBAR
             MENUITEM "Εμφάνιση γραμμής &κατάστασης",       IDM_VIEW_STATUSBAR
@@ -576,6 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show Titlebar",                     IDM_VIEW_TITLEBAR
         MENUITEM "Εμφάνιση γραμμής μενού",            IDM_VIEW_MENUBAR
         MENUITEM "Εμφάνιση γραμμής εργαλείων",        IDM_VIEW_TOOLBAR
         MENUITEM "Εμφάνιση γραμμής κατάστασης",       IDM_VIEW_STATUSBAR

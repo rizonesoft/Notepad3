@@ -425,6 +425,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "P&aneles"
         BEGIN
+            MENUITEM "Mostrar la barra de título",                      IDM_VIEW_TITLEBAR
             MENUITEM "Mostrar la barra de &menú",                       IDM_VIEW_MENUBAR
             MENUITEM "&Mostrar la barra de herramientas",               IDM_VIEW_TOOLBAR
             MENUITEM "Mostrar barra de &estado",                        IDM_VIEW_STATUSBAR
@@ -576,6 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Mostrar la barra de título",                 IDM_VIEW_TITLEBAR
         MENUITEM "Mostrar la barra de menú",                   IDM_VIEW_MENUBAR
         MENUITEM "Mostrar la barra de herramientas",           IDM_VIEW_TOOLBAR
         MENUITEM "Mostrar barra de estado",                    IDM_VIEW_STATUSBAR

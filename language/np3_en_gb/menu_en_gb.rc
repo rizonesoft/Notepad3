@@ -154,7 +154,7 @@ BEGIN
     END
     POPUP "&Edit"
     BEGIN
-        MENUITEM "Document &Read Only"                   IDM_VIEW_READONLY
+        MENUITEM "Document &Read Only"          IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "&Undo\tCtrl+Z",               IDM_EDIT_UNDO
         MENUITEM "&Redo\tCtrl+Y",               IDM_EDIT_REDO
@@ -352,10 +352,10 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Change History Marker"
         BEGIN
-            MENUITEM "No Change Markers",                   IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+            MENUITEM "No Change Markers",                IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Show in Margin only",              IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "Show in Document only",            IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "Show All Change Markers",          IDM_VIEW_CHGHIST_ALL
         END
         MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
@@ -425,6 +425,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "P&anels"
         BEGIN
+            MENUITEM "Show Titlebar",                   IDM_VIEW_TITLEBAR
             MENUITEM "Show &Menubar",                   IDM_VIEW_MENUBAR
             MENUITEM "Show &Toolbar",                   IDM_VIEW_TOOLBAR
             MENUITEM "Show &Statusbar",                 IDM_VIEW_STATUSBAR
@@ -576,6 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show Titlebar",              IDM_VIEW_TITLEBAR
         MENUITEM "Show Menubar",               IDM_VIEW_MENUBAR
         MENUITEM "Show Toolbar",               IDM_VIEW_TOOLBAR
         MENUITEM "Show Statusbar",             IDM_VIEW_STATUSBAR

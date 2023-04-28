@@ -425,18 +425,19 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "पैनल (&A)"
         BEGIN
-            MENUITEM "मेनूपट्टी दिखाएं (&M)",                   IDM_VIEW_MENUBAR
-            MENUITEM "औज़ारपट्टी दिखाएं (&T)",                   IDM_VIEW_TOOLBAR
+            MENUITEM "Show Titlebar",                      IDM_VIEW_TITLEBAR
+            MENUITEM "मेनूपट्टी दिखाएं (&M)",                    IDM_VIEW_MENUBAR
+            MENUITEM "औज़ारपट्टी दिखाएं (&T)",                  IDM_VIEW_TOOLBAR
             MENUITEM "अवस्था पट्टी दिखाएं (&S)",                 IDM_VIEW_STATUSBAR
             MENUITEM SEPARATOR
             MENUITEM "औज़ारपट्टी थीम लोड करें (&L)...",          IDM_VIEW_LOADTHEMETB
-            MENUITEM "मनपसंद औज़ार पट्टी बनाएं (&C)...",           IDM_VIEW_CUSTOMIZETB
+            MENUITEM "मनपसंद औज़ार पट्टी बनाएं (&C)...",         IDM_VIEW_CUSTOMIZETB
             MENUITEM "औज़ार पट्टी टॉगल करें (&G)",                IDM_VIEW_TOGGLETB
-            MENUITEM "DPI स्तर औज़ारपट्टी (&D)",              IDM_VIEW_DPISCALETB
+            MENUITEM "DPI स्तर औज़ारपट्टी (&D)",                 IDM_VIEW_DPISCALETB
         END
         POPUP "ज़ूम (&Z)"
         BEGIN
-            MENUITEM "ज़ूम करें (&I)\tCtrl+ +",               IDM_VIEW_ZOOMIN
+            MENUITEM "ज़ूम करें (&I)\tCtrl+ +",                 IDM_VIEW_ZOOMIN
             MENUITEM "ज़ूम कम करें (&O)\tCtrl+ –",              IDM_VIEW_ZOOMOUT
             MENUITEM "ज़ूम सामान्य करें (&R)\tCtrl+0",             IDM_VIEW_RESETZOOM
         END
@@ -576,14 +577,15 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show Titlebar",            IDM_VIEW_TITLEBAR
         MENUITEM "मेनुपट्टी दिखाएं",               IDM_VIEW_MENUBAR
         MENUITEM "टूलपट्टी दिखाएं",               IDM_VIEW_TOOLBAR
         MENUITEM "अवस्था पट्टी दिखाएं",             IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
         MENUITEM "टूलपट्टी थीम लोड करें...",      IDM_VIEW_LOADTHEMETB
         MENUITEM "टूलपट्टी मनपसंद बनाएं...",       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "टॉगल टूलपट्टी",            IDM_VIEW_TOGGLETB
-        MENUITEM "DPI स्तर औज़ारपट्टी",          IDM_VIEW_DPISCALETB
+        MENUITEM "टॉगल टूलपट्टी",                 IDM_VIEW_TOGGLETB
+        MENUITEM "DPI स्तर औज़ारपट्टी",           IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

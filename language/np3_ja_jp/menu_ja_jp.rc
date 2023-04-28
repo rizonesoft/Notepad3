@@ -413,18 +413,19 @@ BEGIN
             BEGIN
                 MENUITEM "折りたたみ",                                IDM_VIEW_FV_FOLD
                 MENUITEM "しおり",                            IDM_VIEW_FV_BOOKMARK
-                MENUITEM "強調",                           IDM_VIEW_FV_HIGHLIGHT
-                MENUITEM "しおり&&折りたたみ",                    IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "強調",                            IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "しおり&&折りたたみ",                   IDM_VIEW_FV_BKMRKFOLD
                 MENUITEM "強調&&折りたたみ",                   IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
-            MENUITEM "ログ監視用モード(&M)",                         IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "文書の終端以降へスクロール(&S)",               IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "ログ監視用モード(&M)",                      IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "文書の終端以降へスクロール(&S)",              IDM_VIEW_SCROLLPASTEOF
             MENUITEM "ハイパーリンクのツールチップを表示(&H)",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         MENUITEM SEPARATOR
         POPUP "ウィンドウ構成(&A)"
         BEGIN
+            MENUITEM "Show Titlebar",                         IDM_VIEW_TITLEBAR
             MENUITEM "メニューバーを表示(&M)",                       IDM_VIEW_MENUBAR
             MENUITEM "ツールバーを表示(&T)",                        IDM_VIEW_TOOLBAR
             MENUITEM "ステータスバーを表示(&S)",                     IDM_VIEW_STATUSBAR
@@ -576,6 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show Titlebar",                     IDM_VIEW_TITLEBAR
         MENUITEM "メニューバーを表示",                       IDM_VIEW_MENUBAR
         MENUITEM "ツールバーを表示",                        IDM_VIEW_TOOLBAR
         MENUITEM "ステータスバーを表示",                     IDM_VIEW_STATUSBAR

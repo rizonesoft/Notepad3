@@ -425,6 +425,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "P&anele"
         BEGIN
+            MENUITEM "Show Titlebar",                       IDM_VIEW_TITLEBAR
             MENUITEM "Wys &Menubalk",                       IDM_VIEW_MENUBAR
             MENUITEM "Wys &Nutsbalk",                       IDM_VIEW_TOOLBAR
             MENUITEM "Wys &Statusbalk",                     IDM_VIEW_STATUSBAR
@@ -495,7 +496,7 @@ BEGIN
             MENUITEM "&Onthou Onlangse Lêers",              IDM_SET_NOSAVERECENT
             MENUITEM "Bewaar &Caret Posisie",               IDM_SET_NOPRESERVECARET
             MENUITEM "On&thou Soekpatroon",                 IDM_SET_NOSAVEFINDREPL
-            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "&Autoload Recent File",               IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "&Venster"
         BEGIN
@@ -576,6 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show Titlebar",                           IDM_VIEW_TITLEBAR
         MENUITEM "Wys Menubalk",                            IDM_VIEW_MENUBAR
         MENUITEM "Wys Nutsbalk",                            IDM_VIEW_TOOLBAR
         MENUITEM "Wys Statusbalk",                          IDM_VIEW_STATUSBAR
@@ -595,7 +597,7 @@ BEGIN
         MENUITEM "Kode Vou",                                IDM_VIEW_FOLDING
         MENUITEM "Lyn Nommer",                              IDM_VIEW_LINENUMBERS
         MENUITEM "Bookmerk Ruglyn",                         IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Change History Margin",                   IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN
