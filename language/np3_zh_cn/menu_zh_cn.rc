@@ -425,6 +425,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "面板(&A)"
         BEGIN
+            MENUITEM "Show Titlebar",                      IDM_VIEW_TITLEBAR
             MENUITEM "显示菜单栏(&M)",                       IDM_VIEW_MENUBAR
             MENUITEM "显示工具栏(&T)",                       IDM_VIEW_TOOLBAR
             MENUITEM "显示状态栏(&S)",                       IDM_VIEW_STATUSBAR
@@ -576,14 +577,15 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-         MENUITEM "显示菜单栏",                            IDM_VIEW_MENUBAR
-         MENUITEM "显示工具栏",                            IDM_VIEW_TOOLBAR
-         MENUITEM "显示状态栏",                            IDM_VIEW_STATUSBAR
-         MENUITEM SEPARATOR
-         MENUITEM "加载工具栏主题...",                     IDM_VIEW_LOADTHEMETB
-         MENUITEM "自定义工具栏...",                       IDM_VIEW_CUSTOMIZETB
-         MENUITEM "切换工具栏",                            IDM_VIEW_TOGGLETB
-         MENUITEM "DPI 自适应",                           IDM_VIEW_DPISCALETB
+        MENUITEM "Show Titlebar",                       IDM_VIEW_TITLEBAR
+        MENUITEM "显示菜单栏",                            IDM_VIEW_MENUBAR
+        MENUITEM "显示工具栏",                            IDM_VIEW_TOOLBAR
+        MENUITEM "显示状态栏",                            IDM_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        MENUITEM "加载工具栏主题...",                     IDM_VIEW_LOADTHEMETB
+        MENUITEM "自定义工具栏...",                       IDM_VIEW_CUSTOMIZETB
+        MENUITEM "切换工具栏",                            IDM_VIEW_TOGGLETB
+        MENUITEM "DPI 自适应",                           IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN

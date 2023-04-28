@@ -425,14 +425,15 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "面板(&A)"
         BEGIN
-            MENUITEM "顯示功能表列(&M)",                       IDM_VIEW_MENUBAR
+            MENUITEM "Show Titlebar",                      IDM_VIEW_TITLEBAR
+            MENUITEM "顯示功能表列(&M)",                     IDM_VIEW_MENUBAR
             MENUITEM "顯示工具列(&T)",                       IDM_VIEW_TOOLBAR
             MENUITEM "顯示狀態列(&S)",                       IDM_VIEW_STATUSBAR
             MENUITEM SEPARATOR
             MENUITEM "載入工具列主題(&L)...",                IDM_VIEW_LOADTHEMETB
             MENUITEM "自訂工具列(&C)...",                    IDM_VIEW_CUSTOMIZETB
             MENUITEM "切換工具列(&G)",                       IDM_VIEW_TOGGLETB
-            MENUITEM "DPI 自動調整(&D)",                       IDM_VIEW_DPISCALETB
+            MENUITEM "DPI 自動調整(&D)",                     IDM_VIEW_DPISCALETB
         END
         POPUP "縮放(&Z)"
         BEGIN
@@ -488,14 +489,14 @@ BEGIN
             MENUITEM "結束 Notepad3(&X)",                     IDM_SET_ESCEXIT
         END
         MENUITEM "執行工具前先儲存(&V)",                       IDM_SET_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "計算微小表達式(&x)",               IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "計算微小表達式(&x)",                         IDM_SET_EVALTINYEXPRONSEL
         MENUITEM SEPARATOR
         POPUP "記憶(&R)"
         BEGIN
             MENUITEM "記憶最近使用的檔案(&R)",                 IDM_SET_NOSAVERECENT
             MENUITEM "記憶插入游標位置(&C)",                   IDM_SET_NOPRESERVECARET
             MENUITEM "記憶查詢方式(&S)",                       IDM_SET_NOSAVEFINDREPL
-            MENUITEM "自動載入最後開啟的檔案(&A)",       IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "自動載入最後開啟的檔案(&A)",               IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "視窗(&N)"
         BEGIN
@@ -576,6 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show Titlebar",                       IDM_VIEW_TITLEBAR
         MENUITEM "顯示選單列",                            IDM_VIEW_MENUBAR
         MENUITEM "顯示工具列",                            IDM_VIEW_TOOLBAR
         MENUITEM "顯示狀態列",                            IDM_VIEW_STATUSBAR

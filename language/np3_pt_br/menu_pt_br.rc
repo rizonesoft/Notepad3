@@ -425,6 +425,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "P&ainéis"
         BEGIN
+            MENUITEM "Show Titlebar",                               IDM_VIEW_TITLEBAR
             MENUITEM "Mostrar &Menu",                               IDM_VIEW_MENUBAR
             MENUITEM "Mostrar &Barra de Ferramentas",               IDM_VIEW_TOOLBAR
             MENUITEM "Mostrar Barra de &Status",                    IDM_VIEW_STATUSBAR
@@ -556,7 +557,7 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "Abrir Hyperlink",     CMD_OPEN_HYPERLINK
+        MENUITEM "Abrir Hyperlink",                            CMD_OPEN_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Desfazer",                                   IDM_EDIT_UNDO
         MENUITEM "Refazer",                                    IDM_EDIT_REDO
@@ -576,6 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show Titlebar",              IDM_VIEW_TITLEBAR
         MENUITEM "Mostrar Menu",                               IDM_VIEW_MENUBAR
         MENUITEM "Mostrar Barra de Ferramentas",               IDM_VIEW_TOOLBAR
         MENUITEM "Mostrar Barra de Status",                    IDM_VIEW_STATUSBAR

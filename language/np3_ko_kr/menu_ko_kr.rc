@@ -425,14 +425,15 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "패널(&A)"
         BEGIN
-            MENUITEM "메뉴 표시줄 표시",                      IDM_VIEW_MENUBAR
-            MENUITEM "도구 모음 표시(&T)",               IDM_VIEW_TOOLBAR
-            MENUITEM "상태 표시줄 표시(&S)",             IDM_VIEW_STATUSBAR
+            MENUITEM "Show Titlebar",                   IDM_VIEW_TITLEBAR
+            MENUITEM "메뉴 표시줄 표시",                  IDM_VIEW_MENUBAR
+            MENUITEM "도구 모음 표시(&T)",                IDM_VIEW_TOOLBAR
+            MENUITEM "상태 표시줄 표시(&S)",              IDM_VIEW_STATUSBAR
             MENUITEM SEPARATOR
-            MENUITEM "도구 모음 테마 불러오기(&L)...",          IDM_VIEW_LOADTHEMETB
+            MENUITEM "도구 모음 테마 불러오기(&L)...",      IDM_VIEW_LOADTHEMETB
             MENUITEM "도구 모음 사용자 지정(&U)...",        IDM_VIEW_CUSTOMIZETB
             MENUITEM "도구 모음 전환(&G)",                 IDM_VIEW_TOGGLETB
-            MENUITEM "DPI 비율 도구 모음(&D)",                 IDM_VIEW_DPISCALETB
+            MENUITEM "DPI 비율 도구 모음(&D)",             IDM_VIEW_DPISCALETB
         END
         POPUP "확대/축소(&Z)"
         BEGIN
@@ -576,26 +577,27 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "메뉴 표시줄 표시",                   IDM_VIEW_MENUBAR
-        MENUITEM "도구 모음 표시",                IDM_VIEW_TOOLBAR
+        MENUITEM "Show Titlebar",              IDM_VIEW_TITLEBAR
+        MENUITEM "메뉴 표시줄 표시",             IDM_VIEW_MENUBAR
+        MENUITEM "도구 모음 표시",               IDM_VIEW_TOOLBAR
         MENUITEM "상태 표시줄 표시",             IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
-        MENUITEM "도구 모음 테마 불러오기...",           IDM_VIEW_LOADTHEMETB
-        MENUITEM "도구 모음 사용자 지정...",         IDM_VIEW_CUSTOMIZETB
+        MENUITEM "도구 모음 테마 불러오기...",        IDM_VIEW_LOADTHEMETB
+        MENUITEM "도구 모음 사용자 지정...",          IDM_VIEW_CUSTOMIZETB
         MENUITEM "도구 모음 전환",                   IDM_VIEW_TOGGLETB
-        MENUITEM "DPI 비율 도구 모음",                  IDM_VIEW_DPISCALETB
+        MENUITEM "DPI 비율 도구 모음",               IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
         MENUITEM "마커 지우기",                    IDM_EDIT_CLEAR_MARKER
         MENUITEM "마커 유형의 줄 잘라내기",        IDM_EDIT_CUT_MARKED
-        MENUITEM "마커 유형의 줄 복사",       IDM_EDIT_COPY_MARKED
-        MENUITEM "마커 유형의 줄 삭제",     IDM_EDIT_DELETE_MARKED
+        MENUITEM "마커 유형의 줄 복사",           IDM_EDIT_COPY_MARKED
+        MENUITEM "마커 유형의 줄 삭제",           IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
         MENUITEM "접기",                        IDM_VIEW_FOLDING
-        MENUITEM "줄 번호",                          IDM_VIEW_LINENUMBERS
-        MENUITEM "책갈피 여백",                 IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "사용 내역 여백 변경",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "줄 번호",                     IDM_VIEW_LINENUMBERS
+        MENUITEM "책갈피 여백",                  IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "사용 내역 여백 변경",           IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN

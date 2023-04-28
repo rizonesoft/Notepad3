@@ -425,6 +425,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Panel"
         BEGIN
+            MENUITEM "Show Titlebar",                        IDM_VIEW_TITLEBAR
             MENUITEM "Tampilkan &Menubar",                   IDM_VIEW_MENUBAR
             MENUITEM "Tampilkan Tool&bar",                   IDM_VIEW_TOOLBAR
             MENUITEM "Tampilkan S&tatusbar",                 IDM_VIEW_STATUSBAR
@@ -576,6 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show Titlebar",              IDM_VIEW_TITLEBAR
         MENUITEM "Tampilkan Bilah Menu",       IDM_VIEW_MENUBAR
         MENUITEM "Tampilkan Bilah Alat",       IDM_VIEW_TOOLBAR
         MENUITEM "Tampilkan Bar Status",       IDM_VIEW_STATUSBAR
