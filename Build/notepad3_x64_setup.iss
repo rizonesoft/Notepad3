@@ -279,11 +279,11 @@ esn.tsk_CurrentUser=Sólo para el usuario actual
 esn.tsk_Other=Otras tareas:
 esn.tsk_ResetSettings=Restablecer la configuración y los temas de {#app_name}
 esn.tsk_RemoveDefault=Restaurar el Notepad de Windows
-esn.tsk_SetDefault=Reemplace el Notepad de Windows con {#app_name}
+esn.tsk_SetDefault=Reemplazar el Notepad de Windows con {#app_name}
 esn.tsk_StartMenuIcon=Crear un acceso directo al menú de inicio
 esn.tsk_LaunchWelcomePage=¡Información importante de lanzamiento!
 esn.tsk_RemoveOpenWith=Eliminar "Abrir con {#app_name}" del menú contextual
-esn.tsk_SetOpenWith=Añade "Abrir con {#app_name}" al menú contextual
+esn.tsk_SetOpenWith=Añadir "Abrir con {#app_name}" al menú contextual
 esn.reg_Open_with_NP3=Abrir con {#app_name}
 
 esm.msg_DeleteSettings=¿También quieres eliminar la configuración y los temas de {#app_name}?%n%nSi planeas instalar {#app_name} nuevamente, no tienes que eliminarlos.
@@ -298,11 +298,11 @@ esm.tsk_CurrentUser=Sólo para el usuario actual
 esm.tsk_Other=Otras tareas:
 esm.tsk_ResetSettings=Restablecer la configuración y los temas de {#app_name}
 esm.tsk_RemoveDefault=Restaurar el Notepad de Windows
-esm.tsk_SetDefault=Reemplace el Notepad de Windows con {#app_name}
+esm.tsk_SetDefault=Reemplazar el Notepad de Windows con {#app_name}
 esm.tsk_StartMenuIcon=Crear un acceso directo al menú de inicio
 esm.tsk_LaunchWelcomePage=¡Información importante de lanzamiento!
 esm.tsk_RemoveOpenWith=Eliminar "Abrir con {#app_name}" del menú contextual
-esm.tsk_SetOpenWith=Añade "Abrir con {#app_name}" al menú contextual
+esm.tsk_SetOpenWith=Añadir "Abrir con {#app_name}" al menú contextual
 esm.reg_Open_with_NP3=Abrir con {#app_name}
 
 fra.msg_DeleteSettings=Voulez-vous également supprimer tous les réglages et thèmes de {#app_name} ?%n%nSi vous comptez réinstaller {#app_name}, vous pouvez les garder.
