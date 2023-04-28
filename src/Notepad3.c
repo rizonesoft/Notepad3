@@ -4914,7 +4914,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 break;
             }
         }
-        BeginWaitCursorUID(true, IDS_MUI_SB_RECODING_DOC);
+        BeginWaitCursorUID(Flags.bHugeFileLoadState, IDS_MUI_SB_RECODING_DOC);
         if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE))) {
             UpdateMargins(true);
             SetSaveNeeded(true);
@@ -4955,7 +4955,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_LINEENDINGS_CR:
     case IDM_LINEENDINGS_LF: {
         int const _eol_mode = (iLoWParam - IDM_LINEENDINGS_CRLF); // SC_EOL_CRLF(0), SC_EOL_CR(1), SC_EOL_LF(2)
-        BeginWaitCursorUID(true, IDS_MUI_SB_CONV_LNBRK);
+        BeginWaitCursorUID(Flags.bHugeFileLoadState, IDS_MUI_SB_CONV_LNBRK);
         SciCall_SetEOLMode(_eol_mode);
         EditEnsureConsistentLineEndings(Globals.hwndEdit);
         EndWaitCursor();
@@ -11464,8 +11464,10 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
         }
 
         // set historic caret/selection  pos
-        if ((iCaretPos >= 0) && (iAnchorPos >= 0) && (SciCall_GetCurrentPos() == 0)) {
-            EditSetSelectionEx(iAnchorPos, iCaretPos, -1, -1);
+        if (!FileWatching.MonitoringLog && !(s_flagChangeNotify == FWM_AUTORELOAD)) {
+            if ((iCaretPos >= 0) && (iAnchorPos >= 0) && (SciCall_GetCurrentPos() == 0)) {
+                EditSetSelectionEx(iAnchorPos, iCaretPos, -1, -1);
+            }
         }
 
         UpdateSaveSettingsCmds();
@@ -11570,10 +11572,8 @@ bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc)
     if (result) {
 
         if (FileWatching.FileWatchingMode == FWM_AUTORELOAD) {
-            if (bIsAtDocEnd || FileWatching.MonitoringLog) {
+            if (bIsAtDocEnd || FileWatching.MonitoringLog || (s_flagChangeNotify == FWM_AUTORELOAD)) {
                 bPreserveView = false;
-                SciCall_DocumentEnd();
-                Sci_ScrollSelectionToView();
             }
         }
 
@@ -11581,16 +11581,18 @@ bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc)
             char tch[5] = { '\0', '\0', '\0', '\0', '\0' };
             SciCall_GetText(COUNTOF(tch) - 1, tch);
             if (StringCchCompareXA(tch, ".LOG") == 0) {
-                SciCall_ClearSelections();
                 bPreserveView = false;
-                SciCall_DocumentEnd();
-                Sci_ScrollSelectionToView();
             }
         }
   
         if (bPreserveView) {
             SciCall_SetFirstVisibleLine(firstVisibleLine);
             Sci_GotoPosChooseCaret(SciCall_FindColumn(curLineNum, curColumnNum));
+        }
+        else {
+            // watch document end
+            SciCall_DocumentEnd();
+            SciCall_ScrollToEnd();
         }
     }
 
@@ -12585,13 +12587,13 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (bRevertFile) {
             SetForegroundWindow(hwnd);
             FileRevert(Paths.CurrentFile, false);
-            if (FileWatching.MonitoringLog) {
+            if (FileWatching.MonitoringLog || (s_flagChangeNotify == FWM_AUTORELOAD)) {
                 SciCall_SetReadOnly(FileWatching.MonitoringLog);
             }
             else {
                 Sci_GotoPosChooseCaret(iCurPos);
+                Sci_ScrollSelectionToView();
             }
-            Sci_ScrollSelectionToView();
         }
     }
     else { // file has been deleted

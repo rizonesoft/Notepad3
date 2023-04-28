@@ -2828,7 +2828,7 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
 //  EditSetDocumentBuffer() - Set Document Buffer for Scintilla Edit Component
 //
 
-#if TRUE
+#if FALSE
 static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOptions, bool reload)
 {
 #define RELEASE_RETURN(ret)  { pDocLoad->Release(); return(ret); }
@@ -2854,7 +2854,7 @@ static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOpt
     return true;
 }
 #else
-static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOptions)
+static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOptions, bool reload)
 {
     UNREFERENCED_PARAMETER(docOptions);
     if (!lpstrText || (lenText == 0)) {
