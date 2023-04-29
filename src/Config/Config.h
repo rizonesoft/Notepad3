@@ -109,8 +109,8 @@ size_t IniFileGetString(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR
                         LPWSTR lpReturnedString, size_t cchReturnedString);
 bool   IniFileSetString(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString);
 
-int  IniFileGetInt(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault);
-bool IniFileSetInt(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue);
+long IniFileGetLong(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, long lDefault);
+bool IniFileSetLong(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, long lValue);
 
 bool IniFileGetBool(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bDefault);
 bool IniFileSetBool(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bValue);

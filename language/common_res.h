@@ -463,6 +463,7 @@
 #define IDC_AS_BACKUP_AUTOSAVE          18131
 #define IDC_AS_BACKUP_SIDEBYSIDE        18132
 #define IDC_AS_BACKUP_OPENFOLDER        18133
+#define IDC_FILE_CHECK_INTERVAL         18134
 
 #define IDC_RADIO_BTN_A                 18200
 #define IDC_RADIO_BTN_B                 18201

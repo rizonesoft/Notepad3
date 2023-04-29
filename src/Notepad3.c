@@ -6209,26 +6209,32 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         InstallFileWatching(false);
 
+        static DocPos _lastCaretPos = -1;
+        if (_lastCaretPos == -1) {
+            _lastCaretPos = SciCall_GetCurrentPos();
+        }
         static FILE_WATCHING_MODE _saveChgNotify = FWM_NO_INIT;
         if (_saveChgNotify == FWM_NO_INIT) {
             _saveChgNotify = FileWatching.FileWatchingMode;    
         }
+
         FileWatching.MonitoringLog = !FileWatching.MonitoringLog; // toggle
-        SciCall_SetReadOnly(FileWatching.MonitoringLog);
 
         if (FileWatching.MonitoringLog) {
             SetForegroundWindow(hwnd);
-            SendWMCommand(hwnd, IDM_FILE_REVERT);
+            _lastCaretPos = SciCall_GetCurrentPos();
             _saveChgNotify = FileWatching.FileWatchingMode;
             FileWatching.FileWatchingMode = FWM_AUTORELOAD;
-            FileWatching.FileCheckInterval = MIN_FC_POLL_INTERVAL << 2;
-            SciCall_SetEndAtLastLine(false);
-        } else {
-            FileWatching.FileWatchingMode = _saveChgNotify;
-            FileWatching.FileCheckInterval = Settings2.FileCheckInterval;
-            SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
+            SciCall_SetEndAtLastLine(true);
+            FileRevert(Paths.CurrentFile, true);
+            SciCall_SetReadOnly(FileWatching.MonitoringLog);
         }
-        Sci_ScrollSelectionToView();
+        else {
+            FileWatching.FileWatchingMode = _saveChgNotify;
+            SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
+            SciCall_SetReadOnly(Settings.DocReadOnlyMode);
+            SciCall_GotoPos(_lastCaretPos);
+        }
 
         InstallFileWatching(true);
 
@@ -6308,7 +6314,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 SaveWindowPositionSettings(!Flags.bStickyWindowPosition);
 
                 if (Flags.bStickyWindowPosition != DefaultFlags.bStickyWindowPosition) {
-                    IniSectionSetBool(Constants.Settings2_Section, L"StickyWindowPosition", Flags.bStickyWindowPosition);
+                    if (Globals.bCanSaveIniFile) {
+                        IniSectionSetBool(Constants.Settings2_Section, L"StickyWindowPosition", Flags.bStickyWindowPosition);
+                    }
                 }
                 else {
                     IniSectionDelete(Constants.Settings2_Section, L"StickyWindowPosition", false);
@@ -6338,7 +6346,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             Flags.bSingleFileInstance = !Flags.bSingleFileInstance; // reverse
             if (Globals.bCanSaveIniFile) {
                 if (Flags.bSingleFileInstance != DefaultFlags.bSingleFileInstance) {
-                    IniFileSetInt(Paths.IniFile, Constants.Settings2_Section, L"SingleFileInstance", Flags.bSingleFileInstance);
+                    IniFileSetBool(Paths.IniFile, Constants.Settings2_Section, L"SingleFileInstance", Flags.bSingleFileInstance);
                 } else {
                     IniFileDelete(Paths.IniFile, Constants.Settings2_Section, L"SingleFileInstance", false);
                 }
@@ -6507,6 +6515,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case IDM_SET_CHANGENOTIFY:
+        InstallFileWatching(false);
         if (ChangeNotifyDlg(hwnd)) {
             InstallFileWatching(true);
         }
@@ -6868,7 +6877,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         Flags.NoFileVariables = !Flags.NoFileVariables;
         if (Globals.bCanSaveIniFile) {
             if (Flags.NoFileVariables != DefaultFlags.NoFileVariables) {
-                IniFileSetInt(Paths.IniFile, Constants.Settings2_Section, L"NoFileVariables", Flags.NoFileVariables);
+                IniFileSetBool(Paths.IniFile, Constants.Settings2_Section, L"NoFileVariables", Flags.NoFileVariables);
             } else {
                 IniFileDelete(Paths.IniFile, Constants.Settings2_Section, L"NoFileVariables", false);
             }
@@ -11145,7 +11154,7 @@ bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
 
     if (fLoad) {
         bSuccess = EditLoadFile(Globals.hwndEdit, hfile_pth, status, fLoadFlags, bSetSavePoint);
-        SciCall_SetReadOnly(Settings.DocReadOnlyMode);
+        SciCall_SetReadOnly(Settings.DocReadOnlyMode || FileWatching.MonitoringLog);
     }
     else {
         int idx;
@@ -11213,6 +11222,16 @@ bool ConsistentIndentationCheck(EditFileIOStatus* status)
 //  FileLoad()
 //
 //
+
+static inline bool IsFileVarLogFile()
+{
+    if (SciCall_GetTextLength() >= 4) {
+        char tch[5] = { '\0', '\0', '\0', '\0', '\0' };
+        SciCall_GetText(COUNTOF(tch) - 1, tch);
+        return (StringCchCompareXA(tch, ".LOG") == 0); 
+    }
+    return false;
+}
 
 static inline void _ResetFileWatchingMode() {
     FileWatching.FileWatchingMode = (s_flagChangeNotify != FWM_NO_INIT) ? s_flagChangeNotify : Settings.FileWatchingMode;
@@ -11378,13 +11397,8 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
         else {
             fioStatus.iEncoding = Encoding_GetCurrent();
         }
-        if (bReloadFile && !FileWatching.MonitoringLog) {
-            Sci_GotoPosChooseCaret(0);
-            fSuccess = FileIO(true, hopen_file, &fioStatus, fLoadFlags, FSF_None, !bReloadFile);
-        }
-        else {
-            fSuccess = FileIO(true, hopen_file, &fioStatus, fLoadFlags, FSF_None, !s_IsThisAnElevatedRelaunch);
-        }
+
+        fSuccess = FileIO(true, hopen_file, &fioStatus, fLoadFlags, FSF_None, !(bReloadFile || s_IsThisAnElevatedRelaunch));
     }
 
     bool bUnknownLexer = s_flagLexerSpecified;
@@ -11395,8 +11409,6 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
         if (!bReloadFile) {
             UndoRedoReset();
         }
-
-        Sci_GotoPosChooseCaret(0);
 
         if (!s_IsThisAnElevatedRelaunch) {
             Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime;
@@ -11448,31 +11460,32 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
         Flags.bSettingsFileSoftLocked = (Path_StrgComparePathNormalized(Paths.CurrentFile, Paths.IniFile) == 0);
 
         // the .LOG feature ...
-        if (SciCall_GetTextLength() >= 4) {
-            char tchLog[5] = { '\0', '\0', '\0', '\0', '\0' };
-            SciCall_GetText(COUNTOF(tchLog) - 1, tchLog);
-            if (StringCchCompareXA(tchLog, ".LOG") == 0) {
-                SciCall_DocumentEnd();
-                UndoTransActionBegin();
-                SciCall_NewLine();
-                SendWMCommand(Globals.hwndMain, IDM_EDIT_INSERT_SHORTDATE);
-                SciCall_DocumentEnd();
-                SciCall_NewLine();
-                EndUndoTransAction();
-                SciCall_ScrollToEnd();
-            }
+        if (IsFileVarLogFile()) {
+            SciCall_DocumentEnd();
+            UndoTransActionBegin();
+            SciCall_NewLine();
+            SendWMCommand(Globals.hwndMain, IDM_EDIT_INSERT_SHORTDATE);
+            SciCall_DocumentEnd();
+            SciCall_NewLine();
+            EndUndoTransAction();
+            SciCall_ScrollToEnd();
+        }
+
+        if (!bReloadFile) {
+            UpdateSaveSettingsCmds();
         }
 
         // set historic caret/selection  pos
-        if (!FileWatching.MonitoringLog && !(s_flagChangeNotify == FWM_AUTORELOAD)) {
+        if (!FileWatching.MonitoringLog && (s_flagChangeNotify != FWM_AUTORELOAD)) {
             if ((iCaretPos >= 0) && (iAnchorPos >= 0) && (SciCall_GetCurrentPos() == 0)) {
                 EditSetSelectionEx(iAnchorPos, iCaretPos, -1, -1);
             }
-        }
-
-        UpdateSaveSettingsCmds();
-        if (SciCall_GetZoom() != 100) {
-            ShowZoomCallTip();
+            else {
+                Sci_GotoPosChooseCaret(0);
+            }
+            if (SciCall_GetZoom() != 100) {
+                ShowZoomCallTip();
+            }
         }
 
         // Show warning: Unicode file loaded as ANSI
@@ -11548,7 +11561,6 @@ bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc)
         return false;
     }
 
-    bool bPreserveView = true;
     DocLn const curLineNum = Sci_GetCurrentLineNumber();
     DocPos const curColumnNum = Sci_GetCurrentColumnNumber();
     DocLn const  firstVisibleLine = SciCall_GetFirstVisibleLine();
@@ -11571,20 +11583,14 @@ bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc)
 
     if (result) {
 
+        bool bPreserveView = !IsFileVarLogFile();
+
         if (FileWatching.FileWatchingMode == FWM_AUTORELOAD) {
             if (bIsAtDocEnd || FileWatching.MonitoringLog || (s_flagChangeNotify == FWM_AUTORELOAD)) {
                 bPreserveView = false;
             }
         }
-
-        if (SciCall_GetTextLength() >= 4) {
-            char tch[5] = { '\0', '\0', '\0', '\0', '\0' };
-            SciCall_GetText(COUNTOF(tch) - 1, tch);
-            if (StringCchCompareXA(tch, ".LOG") == 0) {
-                bPreserveView = false;
-            }
-        }
-  
+ 
         if (bPreserveView) {
             SciCall_SetFirstVisibleLine(firstVisibleLine);
             Sci_GotoPosChooseCaret(SciCall_FindColumn(curLineNum, curColumnNum));
@@ -12553,7 +12559,7 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             case IDCONTINUE:
                 UndoRedoReset();
                 FileRevert(Paths.CurrentFile, false);
-                SciCall_SetReadOnly(true);
+                SciCall_SetReadOnly(FileWatching.MonitoringLog);
                 FileWatching.MonitoringLog = false; // will be reset in IDM_VIEW_CHASING_DOCTAIL
                 PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
                 bRevertFile = false; // done already

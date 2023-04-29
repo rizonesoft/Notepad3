@@ -421,7 +421,7 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
     UndoTransActionBegin();
 
     SciCall_Cancel();
-    SciCall_SetReadOnly(false);
+    SciCall_SetReadOnly(FileWatching.MonitoringLog);
     EditClearAllBookMarks(hwnd);
     EditClearAllOccurrenceMarkers(hwnd);
     SciCall_SetScrollWidth(1);
@@ -430,8 +430,6 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
     FileVars_Apply(&Globals.fvCurFile);
 
     EditSetDocumentBuffer(lpstrText, lenText, bReload);
-
-    Sci_GotoPosChooseCaret(0);
 
     EndUndoTransAction();
 
