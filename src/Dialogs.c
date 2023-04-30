@@ -282,6 +282,8 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
             SetBitmapControl(hwnd, IDC_INFOBOXICON, hIconBmp);
         }
 
+        //UINT const tabStopDist[3] = { 4, 4, 8 };
+        //SendMessage(GetDlgItem(hwnd, IDC_INFOBOXTEXT), EM_SETTABSTOPS, 3, (LPARAM)tabStopDist);
         SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpMsgBox->lpstrMessage);
 
         if (lpMsgBox->bDisableCheckBox) {
@@ -522,6 +524,10 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
         idDlg = IDD_MUI_INFOBOX7;
         break;
 
+    case MB_FILECHANGEDNOTIFY:
+        idDlg = IDD_MUI_INFOBOX_FILECHANGED;
+        break;
+    
     default:
         idDlg = IDD_MUI_INFOBOX;
         break;

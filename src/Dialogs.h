@@ -34,6 +34,9 @@
 #define UpdateWindowEx(hwnd) /* UpdateWindow(hwnd) */ \
   RedrawWindow((hwnd), NULL, NULL, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_INTERNALPAINT /* | RDW_UPDATENOW */)
 
+// additional InfoBoxLng() state (MB_CANCELTRYCONTINUE == 0x00000006L)
+#define MB_FILECHANGEDNOTIFY 0x0000000EL
+
 // ----------------------------------------------------------------------------
 
 // === MinimizeToTray Functions - see comments in Dialogs.c  ===

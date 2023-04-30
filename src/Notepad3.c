@@ -1897,6 +1897,10 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
                         }
                     }
                 }
+                else if (s_flagChangeNotify == FWM_AUTORELOAD) {
+                    FileWatching.MonitoringLog = false; // will be reset in IDM_VIEW_CHASING_DOCTAIL
+                    PostWMCommand(hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+                }
             }
         }
 
@@ -12544,7 +12548,7 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case FWM_MSGBOX: {
             SetForegroundWindow(hwnd);
             /// LONG const answer = MessageBoxExW(Globals.hwndMain, L"File change, Cancel, Retry, Continue", L"NP3", MB_ABORTRETRYIGNORE, GetLangIdByLocaleName(Globals.CurrentLngLocaleName));
-            LONG const answer = InfoBoxLng(MB_CANCELTRYCONTINUE | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY);
+            LONG const answer = InfoBoxLng(MB_FILECHANGEDNOTIFY | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY);
             switch (LOWORD(answer)) {
             case IDCANCEL:
             case IDABORT:
