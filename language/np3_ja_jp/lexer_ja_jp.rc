@@ -498,21 +498,21 @@ BEGIN
     IDS_LEX_STR_63383       "メタデータ"
     IDS_LEX_STR_Enum        "列挙 (enum)"
     IDS_LEX_STR_63385       "文字列 (トリプル・クォート)"
-    IDS_LEX_STR_63386       "Symbol Identifier"
-    IDS_LEX_STR_63387       "Symbol Operator"
+    IDS_LEX_STR_63386       "シンボル 識別子"
+    IDS_LEX_STR_63387       "シンボル 演算子"
 END
 
 STRINGTABLE
 BEGIN
     IDS_LEX_STR_StrgEOL     "文字列 EOL"
-    IDS_LEX_STR_Backticks   "Backticks"
+    IDS_LEX_STR_Backticks   "バッククォート"
     IDS_LEX_STR_GUIDStrg    "GUID 文字列"
-    IDS_LEX_STR_Global      "Global"
+    IDS_LEX_STR_Global      "グローバル"
     IDS_LEX_STR_Input       "Input"
     IDS_LEX_STR_Output      "Output"
     IDS_LEX_STR_InOut       "InOut"
-    IDS_LEX_STR_PortConn    "Port Connection"
-    IDS_LEX_STR_SysTasks    "System Tasks"
+    IDS_LEX_STR_PortConn    "ポート接続"
+    IDS_LEX_STR_SysTasks    "システムタスク"
 END
 
 STRINGTABLE
