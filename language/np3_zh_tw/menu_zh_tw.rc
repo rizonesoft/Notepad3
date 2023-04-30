@@ -425,7 +425,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "面板(&A)"
         BEGIN
-            MENUITEM "Show Titlebar",                      IDM_VIEW_TITLEBAR
+            MENUITEM "顯示標題列(&I)",                      IDM_VIEW_TITLEBAR
             MENUITEM "顯示功能表列(&M)",                     IDM_VIEW_MENUBAR
             MENUITEM "顯示工具列(&T)",                       IDM_VIEW_TOOLBAR
             MENUITEM "顯示狀態列(&S)",                       IDM_VIEW_STATUSBAR
@@ -577,8 +577,8 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show Titlebar",                       IDM_VIEW_TITLEBAR
-        MENUITEM "顯示選單列",                            IDM_VIEW_MENUBAR
+        MENUITEM "顯示標題列",                       IDM_VIEW_TITLEBAR
+        MENUITEM "顯示功能表列",                            IDM_VIEW_MENUBAR
         MENUITEM "顯示工具列",                            IDM_VIEW_TOOLBAR
         MENUITEM "顯示狀態列",                            IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
