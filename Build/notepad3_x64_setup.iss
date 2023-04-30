@@ -5,7 +5,6 @@
 ; Requirements:
 ; Inno Setup: https://jrsoftware.org/isinfo.php
 
-;Acknowledgments:
 ;Thanks to "Wilenty" for his great help in improving the INNO Setup installer
 
 ; Preprocessor related stuff
