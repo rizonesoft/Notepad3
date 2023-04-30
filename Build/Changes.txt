@@ -34,13 +34,15 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.426.(build_#) (2023-04-26)
+Current BETA/RC Version 6.23.430.(build_#) (2023-04-30)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.430.1]- Some enhancements for Logfile Monitoring.
+[.430.1]- Option to show/hide titlebar.
 [.424.1]- Localization in INNO Setup of "Open with Notepad3" (SUP).
 [.406.1]- Enhanced File-Change Notification Messagebox.
 [.327.1]- Menu entry to clear change/undo history.
@@ -58,6 +60,9 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.430.1]- Changed message box for file change notification.
+[.430.1]- Keep Dark/Light Win Mode settings (if once set manually - else auto detect).
+[.430.1]- Disable menubar in fullscreen mode too.
 [.327.1]- Migrate GetTickCount() -> QueryPerformanceCounter().
 [.325.1]- Option for ASAN Dbg to not throw exception.
 [.321.2]- Default Print Colour Mode depending on Dark/Light Mode.
@@ -86,6 +91,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.430.1]- Switch to "Log Monitoring" id commandline option "/l" is given.
+[.430.1]- Regression: save readonly file.
 [.426.1]- Minor bugs in localization of "Open with Notepad3"  (SUP).
 [.406.1]- Some more issues around "File Change Monitoring".
 [.406.1]- Integration and Notification of DirectoryObserver and FileChanged-Polling.
