@@ -266,9 +266,10 @@
 #define IDS_MUI_SB_TOGGLE_VIEW          15501
 #define IDS_MUI_SB_REPLACE_ALL          15502
 #define IDS_MUI_SB_WRAP_LINES           15503
-#define IDS_MUI_SB_CONV_LNBRK           15504
-#define IDS_MUI_SB_RECODING_DOC         15505
-#define IDS_MUI_SB_LEXER_STYLING        15506
+#define IDS_MUI_SB_SORTING_LINES        15504
+#define IDS_MUI_SB_CONV_LNBRK           15505
+#define IDS_MUI_SB_RECODING_DOC         15506
+#define IDS_MUI_SB_LEXER_STYLING        15507
 
 #define IDI_MUI_RUN                     16100
 #define IDI_MUI_STYLES                  16101
@@ -462,6 +463,7 @@
 #define IDC_AS_BACKUP_AUTOSAVE          18131
 #define IDC_AS_BACKUP_SIDEBYSIDE        18132
 #define IDC_AS_BACKUP_OPENFOLDER        18133
+#define IDC_FILE_CHECK_INTERVAL         18134
 
 #define IDC_RADIO_BTN_A                 18200
 #define IDC_RADIO_BTN_B                 18201

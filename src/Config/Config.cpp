@@ -669,10 +669,10 @@ extern "C" bool IniFileSetString(const HPATHL hpthIniFile, LPCWSTR lpSectionName
 // ============================================================================
 
 
-extern "C" int IniFileGetInt(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault)
+extern "C" long IniFileGetLong(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, long lDefault)
 {
     if (Path_IsEmpty(hpthIniFile)) {
-        return iDefault;
+        return lDefault;
     }
 
     CSimpleIni Ini(s_bIsUTF8, s_bUseMultiKey, s_bUseMultiLine);
@@ -680,7 +680,7 @@ extern "C" int IniFileGetInt(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LP
     OVERLAPPED ovrLpd = { 0 };
     HANDLE     hFile = AcquireReadFileLock(Path_Get(hpthIniFile), ovrLpd);
     if (!IS_VALID_HANDLE(hFile)) {
-        return iDefault;
+        return lDefault;
     }
 
     SI_Error rc = Ini.LoadFile(hFile);
@@ -688,16 +688,16 @@ extern "C" int IniFileGetInt(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LP
 
     if (SI_Success(rc)) {
         bool bHasMultiple = false;
-        int const iValue = Ini.GetLongValue(lpSectionName, lpKeyName, (long)iDefault, &bHasMultiple);
+        int const iValue = Ini.GetLongValue(lpSectionName, lpKeyName, lDefault, &bHasMultiple);
         //assert(!bHasMultiple);
         return iValue;
     }
-    return iDefault;
+    return lDefault;
 }
 // ============================================================================
 
 
-extern "C" bool IniFileSetInt(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue)
+extern "C" bool IniFileSetLong(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, long lValue)
 {
     if (Path_IsEmpty(hpthIniFile)) {
         return false;
@@ -714,7 +714,7 @@ extern "C" bool IniFileSetInt(const HPATHL hpthIniFile, LPCWSTR lpSectionName, L
 
     SI_Error rc = Ini.LoadFile(hFile);
     if (SI_Success(rc)) {
-        Ini.SetLongValue(lpSectionName, lpKeyName, (long)iValue, nullptr, false, !s_bUseMultiKey);
+        Ini.SetLongValue(lpSectionName, lpKeyName, lValue, nullptr, false, !s_bUseMultiKey);
         rc = Ini.SaveFile(hFile, s_bWriteSIG);
     }
     ReleaseFileLock(hFile, ovrLpd);
@@ -1215,7 +1215,7 @@ void LoadSettings()
     Flags.SimpleIndentGuides = IniSectionGetBool(IniSecSettings2, L"SimpleIndentGuides", DefaultFlags.SimpleIndentGuides);
     Flags.NoHTMLGuess = IniSectionGetBool(IniSecSettings2, L"NoHTMLGuess", DefaultFlags.NoHTMLGuess);
     Flags.NoCGIGuess = IniSectionGetBool(IniSecSettings2, L"NoCGIGuess", DefaultFlags.NoCGIGuess);
-    Flags.NoFileVariables = IniSectionGetInt(IniSecSettings2, L"NoFileVariables", DefaultFlags.NoFileVariables);
+    Flags.NoFileVariables = IniSectionGetBool(IniSecSettings2, L"NoFileVariables", DefaultFlags.NoFileVariables);
 
     Flags.PrintFileAndLeave = Globals.CmdLnFlag_PrintFileAndLeave;
 
@@ -2831,7 +2831,8 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
 #if TRUE
 static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOptions, bool reload)
 {
-#define RELEASE_RETURN(ret)  { pDocLoad->Release(); return(ret); }
+    bool const bReadOnly = SciCall_GetReadOnly();
+    SciCall_SetReadOnly(false);
 
     if (!lpstrText || (lenText == 0)) {
         SciCall_SetDocPointer(0);
@@ -2851,12 +2852,15 @@ static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOpt
             SciCall_ReplaceTarget(lenText, lpstrText);
         }
     }
+    SciCall_SetReadOnly(bReadOnly);
     return true;
 }
 #else
-static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOptions)
+static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOptions, bool reload)
 {
     UNREFERENCED_PARAMETER(docOptions);
+    bool const bReadOnly = SciCall_GetReadOnly();
+    SciCall_SetReadOnly(false);
     if (!lpstrText || (lenText == 0)) {
         SciCall_ClearAll();
     } else {
@@ -2867,6 +2871,7 @@ static bool CreateNewDocument(const char* lpstrText, DocPosU lenText, int docOpt
             SciCall_ReplaceTarget(lenText, lpstrText);
         }
     }
+    SciCall_SetReadOnly(bReadOnly);
     return true;
 }
 #endif
@@ -2878,11 +2883,12 @@ extern "C" bool EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText, bo
     bool const bLargeFileLoaded = (lenText >= ((DocPosU)Settings2.FileLoadWarningMB << 20));
     int const docOptions = bLargeFileLoaded ? (bLargerThan2GB ? SC_DOCUMENTOPTION_TEXT_LARGE : SC_DOCUMENTOPTION_STYLES_NONE)
                                                               : SC_DOCUMENTOPTION_DEFAULT;
-
     if (SciCall_GetDocumentOptions() != docOptions) {
         // we have to create a new document with changed options
         return CreateNewDocument(lpstrText, lenText, docOptions, reload);
     }
+    bool const bReadOnly = SciCall_GetReadOnly();
+    SciCall_SetReadOnly(false);
     if (!lpstrText || (lenText == 0)) {
         SciCall_ClearAll();
     } else {
@@ -2893,6 +2899,7 @@ extern "C" bool EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText, bo
             SciCall_ReplaceTarget(lenText, lpstrText);
         }
     }
+    SciCall_SetReadOnly(bReadOnly);
     return true;
 }
 

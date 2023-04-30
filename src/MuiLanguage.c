@@ -413,7 +413,7 @@ unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
 
         const WCHAR *const suprMsg = L"MsgPrefLanguageNotAvailable";
         InfoBoxLng(MB_ICONWARNING, suprMsg, IDS_WARN_PREF_LNG_NOT_AVAIL, pLocaleName);
-        int const noMsg = IniFileGetInt(Paths.IniFile, Constants.SectionSuppressedMessages, suprMsg, 0);
+        int const noMsg = IniFileGetLong(Paths.IniFile, Constants.SectionSuppressedMessages, suprMsg, 0);
         if (noMsg && Globals.bCanSaveIniFile) {
             IniFileSetString(Paths.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", MUI_LanguageDLLs[iInternalLngIndex].LocaleName);
         }

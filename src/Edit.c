@@ -421,7 +421,7 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
     UndoTransActionBegin();
 
     SciCall_Cancel();
-    SciCall_SetReadOnly(false);
+    SciCall_SetReadOnly(FileWatching.MonitoringLog);
     EditClearAllBookMarks(hwnd);
     EditClearAllOccurrenceMarkers(hwnd);
     SciCall_SetScrollWidth(1);
@@ -430,8 +430,6 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
     FileVars_Apply(&Globals.fvCurFile);
 
     EditSetDocumentBuffer(lpstrText, lenText, bReload);
-
-    Sci_GotoPosChooseCaret(0);
 
     EndUndoTransAction();
 
@@ -1132,6 +1130,19 @@ void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status)
 
 //=============================================================================
 //
+//  EditLoadFile()::StatDisplLoadFile()
+//
+static inline WCHAR* StatDisplLoadFile(const HPATHL hfile_pth)
+{
+    static WCHAR wchMsg[128];
+    WCHAR        wchFName[64];
+    Path_GetDisplayName(wchFName, COUNTOF(wchFName), hfile_pth, L"...", true);
+    FormatLngStringW(wchMsg, COUNTOF(wchMsg), IDS_MUI_LOADFILE, wchFName);
+    return wchMsg;
+}
+
+//----------------------------------------------------------------------------
+//
 //  EditLoadFile()
 //
 bool EditLoadFile(
@@ -1150,16 +1161,10 @@ bool EditLoadFile(
     status->bEncryptedRaw = false;
     Flags.bHugeFileLoadState = false;
 
+    bool       bReadSuccess = false;
     bool const bReloadFile = (fLoadFlags & FLF_Reload);
 
-    WCHAR wchFName[64];
-    Path_GetDisplayName(wchFName, COUNTOF(wchFName), hfile_pth, L"...", true);
-    WCHAR wchMsg[128];
-    FormatLngStringW(wchMsg, COUNTOF(wchMsg), IDS_MUI_LOADFILE, wchFName);
-
-    bool bReadSuccess = false;
-
-    BeginWaitCursor(true, wchMsg);
+    BeginWaitCursor(Flags.bHugeFileLoadState, StatDisplLoadFile(hfile_pth));
 
     HANDLE const hFile = CreateFileW(Path_Get(hfile_pth),
                                     GENERIC_READ,
@@ -5160,7 +5165,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
         return;
     }
 
-    BeginWaitCursor(iLineCount > 10000, L" Sorting Lines...");
+    BeginWaitCursorUID((iLineCount > 10000), IDS_MUI_SB_SORTING_LINES);
     UndoTransActionBegin();
 
     DocPos      iMaxLineLen = Sci_GetRangeMaxLineLength(iLineStart, iLineEnd);

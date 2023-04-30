@@ -282,13 +282,14 @@ END
 
 STRINGTABLE
 BEGIN
-IDS_MUI_SB_MARK_ALL_OCC   "Markiere alle Fundstellen..."
-IDS_MUI_SB_TOGGLE_VIEW    "Toggle Code-Folding..."
-IDS_MUI_SB_REPLACE_ALL    "Ersetze alle Stellen..."
-IDS_MUI_SB_WRAP_LINES     "Setze Zeilen Umbruch..."
-IDS_MUI_SB_CONV_LNBRK     "Konvertiere Zeilen Umbruch Zeichen..."
-IDS_MUI_SB_RECODING_DOC   "Rekodiere Dokument..."
-IDS_MUI_SB_LEXER_STYLING  "Setze Lexer Styling..."
+    IDS_MUI_SB_MARK_ALL_OCC   "Markiere alle Fundstellen..."
+    IDS_MUI_SB_TOGGLE_VIEW    "Toggle Code-Folding..."
+    IDS_MUI_SB_REPLACE_ALL    "Ersetze alle Stellen..."
+    IDS_MUI_SB_WRAP_LINES     "Setze Zeilen Umbruch..."
+    IDS_MUI_SB_SORTING_LINES  "Sortiere Zeilen..."
+    IDS_MUI_SB_CONV_LNBRK     "Konvertiere Zeilen Umbruch Zeichen..."
+    IDS_MUI_SB_RECODING_DOC   "Rekodiere Dokument..."
+    IDS_MUI_SB_LEXER_STYLING  "Setze Lexer Styling..."
 END
 
 STRINGTABLE

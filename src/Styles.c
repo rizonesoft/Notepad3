@@ -1240,7 +1240,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     //~ ! dont check for (pLexNew == s_pLexCurrent) <= "reapply current lexer"
     //~ assert(pLexNew != s_pLexCurrent);
 
-    BeginWaitCursorUID(true, IDS_MUI_SB_LEXER_STYLING);
+    BeginWaitCursorUID(Flags.bHugeFileLoadState, IDS_MUI_SB_LEXER_STYLING);
 
     int const idleStylingMode = SciCall_GetIdleStyling();
     SciCall_SetIdleStyling(SC_IDLESTYLING_ALL);

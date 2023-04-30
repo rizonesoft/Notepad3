@@ -869,7 +869,7 @@ typedef struct FCOBSRVDATA_T {
 
 #define INIT_FCOBSRV_T { 0LL, { 0 }, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, { NULL, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, NULL } }
 
-#define MIN_FC_POLL_INTERVAL (500LL)
+#define MIN_FC_POLL_INTERVAL (200LL)
 #define MAX_FC_POLL_INTERVAL ((24LL * 60 * 60 * 1000) << 1) // max: 48h
 
 //=============================================================================

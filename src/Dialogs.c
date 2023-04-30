@@ -364,7 +364,7 @@ CASE_WM_CTLCOLOR_SET:
         case IDTRYAGAIN:
         case IDCONTINUE:
             if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting) && Globals.bCanSaveIniFile) {
-                IniFileSetInt(Paths.IniFile, Constants.SectionSuppressedMessages, lpMsgBox->lpstrSetting, LOWORD(wParam));
+                IniFileSetLong(Paths.IniFile, Constants.SectionSuppressedMessages, lpMsgBox->lpstrSetting, LOWORD(wParam));
             }
             //[FallThrough]
         case IDNO:
@@ -404,7 +404,7 @@ CASE_WM_CTLCOLOR_SET:
 
 LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 {
-    int const iMode = StrIsEmpty(lpstrSetting) ? 0 : IniFileGetInt(Paths.IniFile, Constants.SectionSuppressedMessages, lpstrSetting, 0);
+    int const iMode = StrIsEmpty(lpstrSetting) ? 0 : IniFileGetLong(Paths.IniFile, Constants.SectionSuppressedMessages, lpstrSetting, 0);
 
     if (Settings.DialogsLayoutRTL) {
         uType |= MB_RTLREADING;
@@ -2691,6 +2691,9 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
             s_FWM = FileWatching.FileWatchingMode;
             CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_E, IDC_RADIO_BTN_A + s_FWM);
         }
+        
+        SetDlgItemInt(hwnd, IDC_FILE_CHECK_INTERVAL, (UINT)FileWatching.FileCheckInterval, FALSE);
+
         CenterDlgInParent(hwnd, NULL);
     }
     return TRUE;
@@ -2761,36 +2764,67 @@ CASE_WM_CTLCOLOR_SET:
             break;
 
 
-        case IDOK:
-            if (FileWatching.MonitoringLog) {
-                FileWatching.MonitoringLog = false; // will be toggled in IDM_VIEW_CHASING_DOCTAIL
-                PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+        case IDC_FILE_CHECK_INTERVAL: {
+            BOOL       bTranslated = FALSE;
+            UINT const fChkIntv = GetDlgItemInt(hwnd, IDC_FILE_CHECK_INTERVAL, &bTranslated, FALSE);
+            if (bTranslated) {
+                LONG64 const clampedFCIValue = clampll((LONG64)fChkIntv, 0, MAX_FC_POLL_INTERVAL);
+                if (clampedFCIValue != fChkIntv) {
+                    SetDlgItemInt(hwnd, IDC_FILE_CHECK_INTERVAL, (UINT)clampedFCIValue, FALSE);
+                }
+            }
+            else {
+                SetDlgItemInt(hwnd, IDC_FILE_CHECK_INTERVAL, (UINT)Settings2.FileCheckInterval, FALSE);
+            }}
+            break;
+
+
+        case IDOK: {
+                if (FileWatching.MonitoringLog) {
+                    FileWatching.MonitoringLog = false; // will be toggled in IDM_VIEW_CHASING_DOCTAIL
+                    PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+                    EndDialog(hwnd, IDOK);
+                    break;
+                }
+
+                if (IsButtonChecked(hwnd, IDC_RADIO_BTN_A)) {
+                    s_FWM = FWM_DONT_CARE;
+                }
+                else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_B)) {
+                    s_FWM = FWM_INDICATORSILENT;
+                }
+                else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_C)) {
+                    s_FWM = FWM_MSGBOX;
+                }
+                else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_D)) {
+                    s_FWM = FWM_AUTORELOAD;
+                }
+                else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_E)) {
+                    s_FWM = FWM_EXCLUSIVELOCK;
+                }
+
+                Settings.ResetFileWatching = IsButtonChecked(hwnd, IDC_CHECK_BOX_A);
+
+                if (!FileWatching.MonitoringLog) {
+                    FileWatching.FileWatchingMode = s_FWM;
+                }
+                if (!Settings.ResetFileWatching) {
+                    Settings.FileWatchingMode = s_FWM;
+                }
+
+                BOOL       bTranslated = FALSE;
+                UINT const fChkIntv = GetDlgItemInt(hwnd, IDC_FILE_CHECK_INTERVAL, &bTranslated, FALSE);
+                if (bTranslated) {
+                    LONG64 const newFCIValue = clampll((LONG64)fChkIntv, MIN_FC_POLL_INTERVAL, MAX_FC_POLL_INTERVAL);
+                    if (newFCIValue != Settings2.FileCheckInterval) {
+                        FileWatching.FileCheckInterval = Settings2.FileCheckInterval = newFCIValue;
+                        if (Globals.bCanSaveIniFile) {
+                            IniFileSetLong(Paths.IniFile, Constants.Settings2_Section, L"FileCheckInterval", (long)newFCIValue);
+                        }
+                    }
+                }
                 EndDialog(hwnd, IDOK);
-                break;
             }
-
-            if (IsButtonChecked(hwnd, IDC_RADIO_BTN_A)) {
-                s_FWM = FWM_DONT_CARE;
-            } else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_B)) {
-                s_FWM = FWM_INDICATORSILENT;
-            } else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_C)) {
-                s_FWM = FWM_MSGBOX;
-            } else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_D)) {
-                s_FWM = FWM_AUTORELOAD;
-            } else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_E)) {
-                s_FWM = FWM_EXCLUSIVELOCK;
-            }
-
-            Settings.ResetFileWatching = IsButtonChecked(hwnd, IDC_CHECK_BOX_A);
-
-            if (!FileWatching.MonitoringLog) {
-                FileWatching.FileWatchingMode = s_FWM;
-            }
-            if (!Settings.ResetFileWatching) {
-                Settings.FileWatchingMode = s_FWM;
-            }
-
-            EndDialog(hwnd, IDOK);
             break;
 
 
