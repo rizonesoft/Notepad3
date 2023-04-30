@@ -286,6 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Växla vy..."
     IDS_MUI_SB_REPLACE_ALL    "Ersätt alla..."
     IDS_MUI_SB_WRAP_LINES     "Omslut rader..."
+    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
     IDS_MUI_SB_CONV_LNBRK     "Konvertera alla radbrytningar..."
     IDS_MUI_SB_RECODING_DOC   "Koda om dokument..."
     IDS_MUI_SB_LEXER_STYLING  "Applicera Lexer-stil..."

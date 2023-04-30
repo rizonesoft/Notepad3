@@ -286,6 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Wissel Beskou..."
     IDS_MUI_SB_REPLACE_ALL    "Vervang alles..."
     IDS_MUI_SB_WRAP_LINES     "Wrap Lyne..."
+    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
     IDS_MUI_SB_CONV_LNBRK     "Skakel lynbreuke om..."
     IDS_MUI_SB_RECODING_DOC   "Herkodering van Dokument..."
     IDS_MUI_SB_LEXER_STYLING  "Pas Lexer Styling toe..."

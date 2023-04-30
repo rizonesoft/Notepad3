@@ -286,6 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "보기 전환..."
     IDS_MUI_SB_REPLACE_ALL    "모두 바꾸기..."
     IDS_MUI_SB_WRAP_LINES     "줄바꿈..."
+    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
     IDS_MUI_SB_CONV_LNBRK     "줄바꿈 변환 ..."
     IDS_MUI_SB_RECODING_DOC   "문서 기록..."
     IDS_MUI_SB_LEXER_STYLING  "렉서 스타일링 적용..."

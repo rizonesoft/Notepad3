@@ -286,6 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Cambiar de vista..."
     IDS_MUI_SB_REPLACE_ALL    "Reemplazar todo..."
     IDS_MUI_SB_WRAP_LINES     "Ajuste de líneas..."
+    IDS_MUI_SB_SORTING_LINES  "Ordenar líneas..."
     IDS_MUI_SB_CONV_LNBRK     "Convertir saltos de línea..."
     IDS_MUI_SB_RECODING_DOC   "Recodificar documento..."
     IDS_MUI_SB_LEXER_STYLING  "Aplicar el estilo de Lexer..."

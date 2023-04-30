@@ -214,7 +214,7 @@ This allows you to perform much more powerful search and replace operations in f
 
 The interval (in milliseconds) to check for external modification of the currently opened file. 
 - Defaults is 2000 msec.
-- Min: 500[msec] - if equal or less, notify immediately.
+- Min: 200[msec] - if equal or less, notify immediately.
 
 #### `FileChangedIndicator=[@]`
 

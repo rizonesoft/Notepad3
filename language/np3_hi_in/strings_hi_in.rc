@@ -286,6 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "दृश्य टॉगल करें..."
     IDS_MUI_SB_REPLACE_ALL    "सारा बदलें..."
     IDS_MUI_SB_WRAP_LINES     "पंक्ति लपेटें..."
+    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
     IDS_MUI_SB_CONV_LNBRK     "Line Breaks परिवर्तित करें..."
     IDS_MUI_SB_RECODING_DOC   "दस्तावेज़ रिकोड किया जा रहा है..."
     IDS_MUI_SB_LEXER_STYLING  "Lexer Styling लागू करें..."

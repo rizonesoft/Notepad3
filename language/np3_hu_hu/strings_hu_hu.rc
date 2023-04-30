@@ -286,6 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Nézet váltása..."
     IDS_MUI_SB_REPLACE_ALL    "Összes cseréje..."
     IDS_MUI_SB_WRAP_LINES     "Sorok törése..."
+    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
     IDS_MUI_SB_CONV_LNBRK     "Sorvégek átalakítása..."
     IDS_MUI_SB_RECODING_DOC   "Dokumentum újrakódolása..."
     IDS_MUI_SB_LEXER_STYLING  "Lexer stílus alkalmazása..."

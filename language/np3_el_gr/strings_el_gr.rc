@@ -286,6 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Εναλλαγή προβολής..."
     IDS_MUI_SB_REPLACE_ALL    "Αντικατάσταση όλων..."
     IDS_MUI_SB_WRAP_LINES     "Αναδίπλωση γραμμών..."
+    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
     IDS_MUI_SB_CONV_LNBRK     "Μετατροπή αλλαγών γραμμών..."
     IDS_MUI_SB_RECODING_DOC   "Αλλαγή κωδικοποίησης εγγράφου..."
     IDS_MUI_SB_LEXER_STYLING  "Εφαρμογή στυλ του Lexer..."

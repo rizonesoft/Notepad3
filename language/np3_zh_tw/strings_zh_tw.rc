@@ -286,6 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "切換檢視..."
     IDS_MUI_SB_REPLACE_ALL    "替換全部..."
     IDS_MUI_SB_WRAP_LINES     "換行..."
+    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
     IDS_MUI_SB_CONV_LNBRK     "轉換分行符號..."
     IDS_MUI_SB_RECODING_DOC   "文件重新編碼..."
     IDS_MUI_SB_LEXER_STYLING  "套用語彙分析器樣式..."
