@@ -94,7 +94,7 @@ BEGIN
             MENUITEM "打开资源管理器(&F)",                      IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
-        MENUITEM "从文件恢复(&V)\tF5",                  IDM_FILE_REVERT
+        MENUITEM "从文件还原(&V)\tF5",                  IDM_FILE_REVERT
         MENUITEM "忽略文件变量(&I)",                      CMD_IGNORE_FILE_VARS
         POPUP "编码(&E)"
         BEGIN
@@ -425,7 +425,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "面板(&A)"
         BEGIN
-            MENUITEM "Show Titlebar",                      IDM_VIEW_TITLEBAR
+            MENUITEM "显示标题栏(&I)",                      IDM_VIEW_TITLEBAR
             MENUITEM "显示菜单栏(&M)",                       IDM_VIEW_MENUBAR
             MENUITEM "显示工具栏(&T)",                       IDM_VIEW_TOOLBAR
             MENUITEM "显示状态栏(&S)",                       IDM_VIEW_STATUSBAR
@@ -577,7 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show Titlebar",                       IDM_VIEW_TITLEBAR
+        MENUITEM "显示标题栏",                       IDM_VIEW_TITLEBAR
         MENUITEM "显示菜单栏",                            IDM_VIEW_MENUBAR
         MENUITEM "显示工具栏",                            IDM_VIEW_TOOLBAR
         MENUITEM "显示状态栏",                            IDM_VIEW_STATUSBAR

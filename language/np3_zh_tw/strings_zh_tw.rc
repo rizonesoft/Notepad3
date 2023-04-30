@@ -118,8 +118,8 @@ BEGIN
     IDS_MUI_FILTER_BITMAP   "點陣圖檔案(*.bmp)|*.bmp|所有檔案(*.*)|*.*|"
     IDS_MUI_OPENWITH        "請選擇用於收藏應用程式的資料夾。"
     IDS_MUI_FAVORITES       "請選擇用於收藏檔案的資料夾。"
-    IDS_MUI_BACKSLASHHELP   "反斜槓逸出序列：\n\n\\a\t響鈴符 (BEL, ASCII 7)\n\\b\t退格符 (BS, ASCII 8)\n\\f\t跳頁符 (FF, ASCII 12)\n\\n\t換行符 (LF, ASCII 10)\n\\r\t回車符 (CR, ASCII 13)\n\\t\t水平製表符 (HT, ASCII 9)\n\\v\t垂直製表符 (VT, ASCII 11)\n\\ooo\t八進制數值 ooo 對應的字元\n\\uHHHH\t十六進制數值 HHHH 對應的字元\n\\xHH\t十六進制數值 HH 對應的字元\n\\\\\t反斜槓"
-    IDS_MUI_REGEXPHELP      "正規表示式語法（支援多行符合）：\n\n.\t任意字元\n^\t行首\n$\t行尾\n\\<\t詞首\n\\>\t詞尾\n\\b\t詞首或詞尾\n[...]\t集合（[abc]）或範圍（[a-z]）中的任一字元\n[^...]\t除集合或範圍以外的任一字元\n\\d\t單個十進制數字\n\\D\t單個除十進制數字以外的任意字元\n\\s\t單個空格字元\n\\S\t單個除空格字元以外的任意字元\n\\w\t任一可出現於識別符號中的字元\n\\W\t任一不可出現於識別符號中的字元\n\\\\\t反斜槓\n\\xHH\t十六進制數值 HH 對應的字元\n?\t符合它前面的單元至多 1 次\n*\t符合它前面的單元 0 次或任意次\n+\t符合它前面的單元至少 1 次\n*? 和 +?\t非貪婪符合的? 和 +\n(\t分組開始\n)\t分組結束\n\\1 - \\9\t引用指定序號的已符合分組\n"
+    IDS_MUI_BACKSLASHHELP   "反斜槓逸出序列：\n\n\\a\t響鈴符 (BEL, ASCII 7)\n\\b\t退格符 (BS, ASCII 8)\n\\f\t跳頁符 (FF, ASCII 12)\n\\n\t換行符 (LF, ASCII 10)\n\\r\t回車符 (CR, ASCII 13)\n\\t\t水平製表符 (HT, ASCII 9)\n\\v\t垂直製表符 (VT, ASCII 11)\n\\ooo\t八進制數值 ooo 對應的字元\n\\uHHHH\t十六進位數值 HHHH 對應的字元\n\\xHH\t十六進位數值 HH 對應的字元\n\\\\\t反斜槓"
+    IDS_MUI_REGEXPHELP      "正規表示式語法（支援多行符合）：\n\n.\t任意字元\n^\t行首\n$\t行尾\n\\<\t詞首\n\\>\t詞尾\n\\b\t詞首或詞尾\n[...]\t集合（[abc]）或範圍（[a-z]）中的任一字元\n[^...]\t除集合或範圍以外的任一字元\n\\d\t單個十進制數字\n\\D\t單個除十進制數字以外的任意字元\n\\s\t單個空格字元\n\\S\t單個除空格字元以外的任意字元\n\\w\t任一可出現於識別符號中的字元\n\\W\t任一不可出現於識別符號中的字元\n\\\\\t反斜槓\n\\xHH\t十六進位數值 HH 對應的字元\n?\t符合它前面的單元至多 1 次\n*\t符合它前面的單元 0 次或任意次\n+\t符合它前面的單元至少 1 次\n*? 和 +?\t非貪婪符合的? 和 +\n(\t分組開始\n)\t分組結束\n\\1 - \\9\t引用指定序號的已符合分組\n"
     IDS_MUI_WILDCARDHELP    "萬用字元：\n\n*\t符合 0 或任意個字元\n?\t符合恰好一個字元"
 END
 
