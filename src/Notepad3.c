@@ -1897,6 +1897,10 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
                         }
                     }
                 }
+                else if (s_flagChangeNotify == FWM_AUTORELOAD) {
+                    FileWatching.MonitoringLog = false; // will be reset in IDM_VIEW_CHASING_DOCTAIL
+                    PostWMCommand(hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+                }
             }
         }
 
