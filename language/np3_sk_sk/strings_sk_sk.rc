@@ -286,6 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Prepnúť zobrazenie..."
     IDS_MUI_SB_REPLACE_ALL    "Nahradiť všetko..."
     IDS_MUI_SB_WRAP_LINES     "Zalomiť riadky..."
+    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
     IDS_MUI_SB_CONV_LNBRK     "Konvertovať zalomenie riadkov..."
     IDS_MUI_SB_RECODING_DOC   "Prekódovať dokument..."
     IDS_MUI_SB_LEXER_STYLING  "Použiť Lexer štýl..."

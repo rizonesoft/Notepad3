@@ -286,6 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Переключение вида..."
     IDS_MUI_SB_REPLACE_ALL    "Замена всего..."
     IDS_MUI_SB_WRAP_LINES     "Перенос строк..."
+    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
     IDS_MUI_SB_CONV_LNBRK     "Преобразование окончания строк..."
     IDS_MUI_SB_RECODING_DOC   "Перекодирование документа..."
     IDS_MUI_SB_LEXER_STYLING  "Применение стиля лексера..."
