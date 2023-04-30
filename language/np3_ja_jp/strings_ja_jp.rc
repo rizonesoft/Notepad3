@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "この操作は「元に戻す」の履歴を消去します。続行しますか?"
     IDS_MUI_READONLY_SAVE   "「%s」は読み取り専用です。別のファイル名で保存しますか?"
     IDS_MUI_FILECHANGENOTIFY
-                            "ファイルが他のプログラムによって変更されました。\n[Cancel]:\tIgnore any changes (silent indicator).\n[Try Again]:\tReload File.\n[Continue]:\tSwitch to File Monitoring."
+                            "ファイルが他のプログラムによって変更されました。\n[キャンセル]:\tすべての変更を無視 (再び表示しない).\n[再試行]:\tファイルを再読み込み\n[続行]:\tログ監視モードに切り替え"
     IDS_MUI_FILECHANGENOTIFY2 "ファイルが削除されました。保存しますか?"
     IDS_MUI_FILELOCK_ERROR  "ファイル %s を排他ロックできませんでした !"
     IDS_MUI_STICKYWINPOS    "ウィンドウ位置の固定を有効にします。新しいウインドウは、現在のウインドウ位置の設定にて開かれます。"
@@ -274,8 +274,8 @@ BEGIN
     IDS_MUI_CLEAR_REPL_HISTORY
                             "置換履歴を消去"
     IDS_MUI_SEARCHCLIPIFEMPTY
-                            "Search by Clipboard if empty selection"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
+                            "選択範囲なしならクリップボード内容で検索"
+    IDS_MUI_REPLCLIPTAG     "ショートカットキーでクリップボード内容に置換 [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "先頭に戻り一致した行"
     IDS_MUI_WRAPSEARCH_BCK  "終端に行き一致した行"
 END

@@ -357,7 +357,7 @@ BEGIN
             MENUITEM "文書にのみ表示",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "すべて表示",             IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "変更/元に戻すの履歴を消去"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "アドレスをリンク(&H)\tCtrl+Alt+W",              IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "色をプレビュー(&C)"
@@ -425,7 +425,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "ウィンドウ構成(&A)"
         BEGIN
-            MENUITEM "Show Titlebar",                         IDM_VIEW_TITLEBAR
+            MENUITEM "タイトルバーを表示",                         IDM_VIEW_TITLEBAR
             MENUITEM "メニューバーを表示(&M)",                       IDM_VIEW_MENUBAR
             MENUITEM "ツールバーを表示(&T)",                        IDM_VIEW_TOOLBAR
             MENUITEM "ステータスバーを表示(&S)",                     IDM_VIEW_STATUSBAR
@@ -471,7 +471,7 @@ BEGIN
         MENUITEM "折り返し方の設定(&W)...",                        IDM_SET_WORDWRAPSETTINGS
         MENUITEM "行の長さガイドの設定(&O)...",                     IDM_SET_LONGLINESETTINGS
         MENUITEM "自動インデント(&I)",                             IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close &Quotes",                         IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "自動で引用符を閉じる(&Q)",                         IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "自動で括弧を閉じる(&B)",                          IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "自動閉じHTML/XMLタグ(&H)\tCtrl+Shift+H",        IDM_SET_AUTOCLOSETAGS
         MENUITEM "単語補完(&U)",                                 IDM_SET_AUTOCOMPLETEWORDS
@@ -577,7 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show Titlebar",                     IDM_VIEW_TITLEBAR
+        MENUITEM "タイトルバーを表示",                     IDM_VIEW_TITLEBAR
         MENUITEM "メニューバーを表示",                       IDM_VIEW_MENUBAR
         MENUITEM "ツールバーを表示",                        IDM_VIEW_TOOLBAR
         MENUITEM "ステータスバーを表示",                     IDM_VIEW_STATUSBAR
