@@ -282,7 +282,7 @@ BEGIN
     CONTROL         "Bloqueio de Arquivo &Exclusivo.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,120,10
     CONTROL         "&Redefinir se novo arquivo for aberto.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,135,10
     CONTROL         "Registro de &Monitoramento.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
-    LTEXT           "File Check Interval [ms]",IDC_LINE_TEXT,7,102,120,10
+    LTEXT           "Intervalo de Verificação de Arquivo [ms]",IDC_LINE_TEXT,7,102,120,10
     EDITTEXT        IDC_FILE_CHECK_INTERVAL,127,100,50,12,ES_AUTOHSCROLL | ES_NUMBER
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,127,24,50,14
@@ -672,11 +672,11 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,53,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Não mostrar mensagem novamente.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
-    DEFPUSHBUTTON   "&Reload",IDRETRY,186,82,50,14
-    PUSHBUTTON      "&Cancel", IDCANCEL, 130, 82, 50, 14
-    PUSHBUTTON      "&Continue",IDCONTINUE,242,82,50,14
+    DEFPUSHBUTTON   "&Recarregar",IDRETRY,186,82,50,14
+    PUSHBUTTON      "&Cancelar", IDCANCEL, 130, 82, 50, 14
+    PUSHBUTTON      "&Continuar",IDCONTINUE,242,82,50,14
 END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 188
