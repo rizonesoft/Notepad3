@@ -282,7 +282,7 @@ BEGIN
     CONTROL         "&Bloquear de archivo exclusivo.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,140,10
     CONTROL         "&Restablecer si se abre un nuevo archivo.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,150,10
     CONTROL         "&Monitoreo de Log.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
-    LTEXT           "Intervalo de verificación de archivos [ms]",IDC_LINE_TEXT,7,102,120,10
+    LTEXT           "Intervalo de verificación [ms]",IDC_LINE_TEXT,7,102,120,10
     EDITTEXT        IDC_FILE_CHECK_INTERVAL,127,100,50,12,ES_AUTOHSCROLL | ES_NUMBER
     DEFPUSHBUTTON   "Aceptar",IDOK,127,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,127,24,50,14

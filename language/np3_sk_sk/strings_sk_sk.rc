@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Táto operácia vymaže históriu spätných krokov. Pokračovať?"
     IDS_MUI_READONLY_SAVE   """%s"" je iba na čítanie. Uložiť súbor pod iným názvom?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Aktuálny súbor bol upravený externým programom.\n[Cancel]:\tIgnore any changes (silent indicator).\n[Try Again]:\tReload File.\n[Continue]:\tSwitch to File Monitoring."
+                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
     IDS_MUI_FILECHANGENOTIFY2 "Aktuálny súbor bol odstránený. Uložiť ho znovu?"
     IDS_MUI_FILELOCK_ERROR  "Nedá sa exkluzívne zamknúť súbor ""%s""!"
     IDS_MUI_STICKYWINPOS    "Fixovanie polohy okna je povolené. Všetky nové okná Notepad2 budú používať aktuálne nastavenie umiestnenia okna."
@@ -264,7 +264,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Jazyk"
     IDS_USE_LOCALE_DATEFMT  "Definovať jazyk a formát dátumu"
     IDS_MUI_MENU_THEMES     "&Výber motívu"
-    IDM_THEMES_FACTORY_RESET "&Predvolené nastavenia"
+    IDM_THEMES_FACTORY_RESET "&Factory Reset"
     IDM_THEMES_STD_CFG       "&Štandardná konfigurácia"
     IDS_MUI_STATUSBAR_PREFIXES "Riadok  ,Stĺpec  ,Výber  ,Sb  ,SLn  ,Occ  ,,,,,,,Znaky  ,Repl  ,Eval  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"

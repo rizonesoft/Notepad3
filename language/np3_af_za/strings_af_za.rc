@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Hierdie bewerking sal die ontdoengeskiedenis uitvee. Gaan voort?"
     IDS_MUI_READONLY_SAVE   """%s"" is beskermd. Stoor na 'n ander lêer?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Die huidige lêer is gewysig deur 'n eksterne program.\n[Cancel]:\tIgnore any changes (silent indicator).\n[Try Again]:\tReload File.\n[Continue]:\tSwitch to File Monitoring."
+                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
     IDS_MUI_FILECHANGENOTIFY2 "Die huidige lêer is verwyder. Stoor nou?"
     IDS_MUI_FILELOCK_ERROR  "Kan nie eksklusiewe lêerslot vir ""%s"" kry nie!"
     IDS_MUI_STICKYWINPOS    "Sticky Window Posisie is aangeskakel. Enige nuwe Notepad3-vensters sal die huidige vensterplasinginstellings gebruik."
@@ -264,7 +264,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Taal"
     IDS_USE_LOCALE_DATEFMT  "Taal Definieer &Datumformaat"
     IDS_MUI_MENU_THEMES     "&Skema-versameling"
-    IDM_THEMES_FACTORY_RESET "&Fabriek Verstek"
+    IDM_THEMES_FACTORY_RESET "&Factory Reset"
     IDM_THEMES_STD_CFG       "&Standaard Config"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"

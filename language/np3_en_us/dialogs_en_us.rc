@@ -356,7 +356,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Statistics: ",IDC_STATIC,7,7,182,48,WS_GROUP
     LTEXT           "Tabs[%s]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
-    LTEXT           "Blanks[%s]:",IDC_INDENT_WIDTH_SPC,,50,30,34,8
+    LTEXT           "Blanks[%s]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
     LTEXT           "Mixed[x]:",IDC_STATIC3,54,42,30,8
     RTEXT           "%s line(s)",IDC_INDENT_SUM_TAB,84,18,52,8
     RTEXT           "%s line(s)",IDC_INDENT_SUM_SPC,84,30,52,8

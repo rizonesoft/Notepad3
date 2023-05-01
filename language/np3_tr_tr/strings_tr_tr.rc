@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Bu işlem geri alma geçmişini temizleyecek. İlerlemek istiyor musunuz?"
     IDS_MUI_READONLY_SAVE   """%s"" salt okunur. Başka bir dosyaya kaydetmek ister misiniz?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Geçerli dosya başka bir uygulama tarafından değiştirilmiş.\n[Cancel]:\tIgnore any changes (silent indicator).\n[Try Again]:\tReload File.\n[Continue]:\tSwitch to File Monitoring."
+                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
     IDS_MUI_FILECHANGENOTIFY2 "Geçerli dosya silinmiş. Yeniden kaydetmek ister misiniz?"
     IDS_MUI_FILELOCK_ERROR  """%s"" dosyası ayrıcalıklı olarak kilitlenemedi!"
     IDS_MUI_STICKYWINPOS    "Sabit pencere konumu etkinleştirildi. Yeni Notepad3 pencereleri geçerli pencere konumu ayarlarını kullanacak."
@@ -264,7 +264,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Dil"
     IDS_USE_LOCALE_DATEFMT  "&Tarih biçimi dile uygun ayarlansın"
     IDS_MUI_MENU_THEMES     "Şema &teması"
-    IDM_THEMES_FACTORY_RESET "&Fabrika ayarları"
+    IDM_THEMES_FACTORY_RESET "&Factory Reset"
     IDM_THEMES_STD_CFG       "Standart yapılandırma"
     IDS_MUI_STATUSBAR_PREFIXES "Sat  ,Süt  ,Seç  ,Haz  ,SSat  ,Kop  ,,,,,,,Krk  ,Değ  ,Dene  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"

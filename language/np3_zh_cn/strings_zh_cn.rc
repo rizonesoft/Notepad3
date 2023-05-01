@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "该操作将会清空撤销历史。是否继续？"
     IDS_MUI_READONLY_SAVE   "“%s”是只读的。是否尝试使用其它名字保存？"
     IDS_MUI_FILECHANGENOTIFY
-                            "当前文件已被其它程序修改。\n[Cancel]:\tIgnore any changes (silent indicator).\n[Try Again]:\tReload File.\n[Continue]:\tSwitch to File Monitoring."
+                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
     IDS_MUI_FILECHANGENOTIFY2 "当前文件已被删除。是否保存？"
     IDS_MUI_FILELOCK_ERROR  "无法以独占模式锁定文件“%s”。"
     IDS_MUI_STICKYWINPOS    "粘性窗口位置已启用。新的 Notepad3 窗口将使用和当前窗口一致的位置设置。"
@@ -264,7 +264,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "语言(&L)"
     IDS_USE_LOCALE_DATEFMT  "使用本地化的日期格式(&D)"
     IDS_MUI_MENU_THEMES     "语法高亮方案集(&S)"
-    IDM_THEMES_FACTORY_RESET "工厂默认(&F)"
+    IDM_THEMES_FACTORY_RESET "&Factory Reset"
     IDM_THEMES_STD_CFG       "标准配置 (&S)"  // Keep blank space before (&S)
     IDS_MUI_STATUSBAR_PREFIXES "行  ,列  ,选定  ,字节  ,选行  ,匹配  ,,,,,,,字符  ,改写  ,求值  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"

@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Ta operacja wyczyści historię cofania. Kontynuować?"
     IDS_MUI_READONLY_SAVE   """%s"" tylko do odczytu. Zapisać do innego pliku?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Bieżący plik został zmieniony przez zewnętrzny program.\n[Cancel]:\tIgnore any changes (silent indicator).\n[Try Again]:\tReload File.\n[Continue]:\tSwitch to File Monitoring."
+                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
     IDS_MUI_FILECHANGENOTIFY2 "Bieżący plik został usunięty. Zapisać teraz?"
     IDS_MUI_FILELOCK_ERROR  "Nie można uzyskać wyłącznej blokady plików dla ""%s""!"
     IDS_MUI_STICKYWINPOS    "Zamrożona pozycja okna jest włączona. Jakiekolwiek nowe okno Notepad3 zastosuje ustawienia bieżącego umiejscowienia okna."
@@ -264,7 +264,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Język"
     IDS_USE_LOCALE_DATEFMT  "Język definiuje Format &Daty"
     IDS_MUI_MENU_THEMES     "Wybór &schematów"
-    IDM_THEMES_FACTORY_RESET "&Domyślne"
+    IDM_THEMES_FACTORY_RESET "&Factory Reset"
     IDM_THEMES_STD_CFG       "&Standardowa konfiguracja"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,kol  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Podn  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"

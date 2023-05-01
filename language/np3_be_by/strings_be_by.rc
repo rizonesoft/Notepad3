@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
     IDS_MUI_READONLY_SAVE   "«%s» толькі для чытання. Захваць у іншы файл?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Гэты файл быў зменены вонкавай праграмай.\n[Cancel]:\tIgnore any changes (silent indicator).\n[Try Again]:\tReload File.\n[Continue]:\tSwitch to File Monitoring."
+                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
     IDS_MUI_FILECHANGENOTIFY2 "Гэты файл быў выдалены. Захаваць нанава?"
     IDS_MUI_FILELOCK_ERROR  "Немагчыма атрымаць выключнае блакаванне для ""%s""!"
     IDS_MUI_STICKYWINPOS    "Фіксаваная пазіцыя акна задзейнічана. Усякае новае акно Notepad3 запусціцца з цяперашнімі наладамі пазіцыі."
@@ -264,7 +264,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Мова"
     IDS_USE_LOCALE_DATEFMT  "Мова вызначае &фармат даты"
     IDS_MUI_MENU_THEMES     "&Калекцыя схем"
-    IDM_THEMES_FACTORY_RESET "&Завадскія налады"
+    IDM_THEMES_FACTORY_RESET "&Factory Reset"
     IDM_THEMES_STD_CFG       "&Стандартны канфіг"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
