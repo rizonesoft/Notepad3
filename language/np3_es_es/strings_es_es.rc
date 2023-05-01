@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Esta operación borrará el historial de deshacer. ¿Continuar?"
     IDS_MUI_READONLY_SAVE   """%s"" es de sólo lectura. ¿Guardar en un archivo diferente?"
     IDS_MUI_FILECHANGENOTIFY
-                            "El archivo actual ha sido modificado por un programa externo.\n[Cancel]:\tIgnore any changes (silent indicator).\n[Try Again]:\tReload File.\n[Continue]:\tSwitch to File Monitoring."
+                            "El archivo actual ha sido modificado por un programa externo.\nSeleccione:\n\nCancelar -\t\tIgnorar más cambios\nRecargar -\t\tRecargar archivo\nContinuar -\tCambiar a monitoreo de archivos"
     IDS_MUI_FILECHANGENOTIFY2 "El archivo actual ha sido eliminado. ¿Guardar ahora?"
     IDS_MUI_FILELOCK_ERROR  "No se puede adquirir un bloqueo de archivo exclusivo para ""%s""!"
     IDS_MUI_STICKYWINPOS    "La posición de la ventana fija está activada. Cualquier nueva ventana de Notepad3 utilizará la configuración de ubicación de la ventana actual."
@@ -264,7 +264,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Idioma"
     IDS_USE_LOCALE_DATEFMT  "Idioma &define Formato Fecha"
     IDS_MUI_MENU_THEMES     "&Colección de Esquemas"
-    IDM_THEMES_FACTORY_RESET "&Defecto de fábrica"
+    IDM_THEMES_FACTORY_RESET "&Restablecimiento de fábrica"
     IDM_THEMES_STD_CFG       "Config. &Estándar"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
