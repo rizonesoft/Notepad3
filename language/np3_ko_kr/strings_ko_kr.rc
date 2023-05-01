@@ -131,9 +131,9 @@ BEGIN
     IDS_MUI_ERR_BROWSE      "파일 탐색기 플러그인을 찾을 수 없습니다.\nMiniPath 파일 탐색기 플러그인은 https://rizonesoft.com에서 다운로드할 수 있습니다."
     IDS_MUI_ERR_GREPWIN     "파일 검색 플러그인을 찾을 수 없습니다.\ngrepWinNP3 파일 검색 플러그인은 https://rizonesoft.com에서 다운로드할 수 있습니다."
     IDS_MUI_ERR_MRUDLG      "선택한 파일에 접근할 수 없습니다!\n목록에서 제거하시겠습니까?"
-    IDS_MUI_ERR_CREATELINK  "데스크톱 링크를 만드는 중에 오류가 발생하였습니다."
+    IDS_MUI_ERR_CREATELINK  "바탕 화면 링크를 만드는 중에 오류가 발생하였습니다."
     IDS_MUI_ERR_PREVWINDISABLED
-                            "기존 Notepad3 창이 사용 중이거나 대화 상자가 열려 있습니다.\n다른 Notepad3 창을 여시겠습니까?"
+                            "기존 Notepad3 창이 사용 중이거나 대화상자가 열려 있습니다.\n다른 Notepad3 창을 여시겠습니까?"
     IDS_MUI_ERR_ENCODINGNA  "선택한 인코딩에 대한 코드 페이지 변환 테이블을 시스템에서 사용할 수 없습니다."
     IDS_MUI_ERR_UNICODE     "이 유니코드 파일을 변환하는 동안 오류가 발생했습니다.\n파일을 저장하면 데이터가 손실됩니다!"
     IDS_MUI_ERR_BITMAP      """%s"" 비트맵을 불러오는 도중 오류가 발생하였습니다.\n필요한 크기: %i x %i (너비 >= %i x 높이)."
@@ -143,10 +143,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "현재 텍스트의 특정 문자는 선택한 인코딩에서 지원되지 않으며 저장할 때 기본 자리 표시 자로 대체될 수 있습니다. 다른 파일 인코딩을 선택하는 것이 좋습니다. 계속하시겠습니까"
-    IDS_MUI_ERR_DROP        "한 번에 하나의 파일만 끌어서 놓을 수 있습니다.!"
+    IDS_MUI_ERR_UNICODE2    "현재 텍스트의 특정 문자는 선택한 인코딩에서 지원되지 않으며 저장할 때 기본 자리 표시자로 대체될 수 있습니다. 다른 파일 인코딩을 선택하는 것이 좋습니다. 계속하시겠습니까"
+    IDS_MUI_ERR_DROP        "한 번에 하나의 파일만 끌어서 놓을 수 있습니다!"
     IDS_MUI_ERR_ACCESSDENIED
-                            """%s"" 파일을 저장할 수 없으며 보호할 수 있습니다.\n\n%s을 '상승된 권한' 응용프로그램으로 시작하시겠습니까?"
+                            """%s"" 파일을 저장할 수 없으며 보호할 수 있습니다.\n\n%s을 '상승된 권한' 응용 프로그램으로 시작하시겠습니까?"
     IDS_MUI_ERR_ADMINEXE    "관리 실행 파일이 없습니다.\nhttps://rizonesoft.com에서 확인하시겠습니까?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "이 큰 파일을 여시겠습니까?\n\t(크기: %s >= %s)!\n(스타일링 및 구문 강조가 적용되지 않습니다!)"
@@ -171,13 +171,13 @@ BEGIN
     IDS_MUI_FIND_WRAPFW     "문서의 끝에 도달하여 검색을 처음부터 다시 시작합니다."
     IDS_MUI_FIND_WRAPRE     "문서의 시작 부분에 도달하여 끝에서 검색을 다시 시작합니다."
     IDS_MUI_NOTFOUND        "지정한 검색 패턴에 일치하는 항목을 찾을 수 없습니다."
-    IDS_MUI_REPLCOUNT       "지정한 검색 패턴의 %s개 발생이 대체되었습니다."
+    IDS_MUI_REPLCOUNT       "지정한 검색 패턴의 %s개의 발생이 대체되었습니다."
     IDS_MUI_ASK_ENCODING    "파일 인코딩을 한 인코딩에서 다른 인코딩으로 전환하면 지원되지 않는 텍스트가 기본 문자로 대체될 수 있으며 실행 취소 기록이 지워집니다. 계속하시겠습니까?"
     IDS_MUI_ASK_ENCODING2   "빈 파일의 인코딩을 변경하려고 합니다. 새 인코딩과 동기화할 수 없기 때문에 실행 취소 기록이 지워집니다. 계속하시겠습니까?"
     IDS_MUI_ASK_CLEAR_UNDO  "이 작업을 수행하면 실행 취소 기록이 지워집니다. 계속하시겠습니까?"
     IDS_MUI_READONLY_SAVE   """%s""은 읽기 전용입니다. 다른 파일로 저장하시겠습니까?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
+                            "현재 파일이 외부 프로그램에 의해 수정되었습니다.\n선택하십시오:\n\취소 -\t\t추가 변경사항 무시\nReload -\t\t파일 다시 불러오기\n계속 -\t파일 모니터링으로 전환"
     IDS_MUI_FILECHANGENOTIFY2 "현재 파일이 삭제되었습니다. 지금 저장하시겠습니까?"
     IDS_MUI_FILELOCK_ERROR  """%s""에 대한 독점적인 파일 잠금을 얻을 수 없습니다."
     IDS_MUI_STICKYWINPOS    "고정 창 위치가 활성화되었습니다. 새 Notepad3 창은 현재 창 배치 설정을 사용합니다."
