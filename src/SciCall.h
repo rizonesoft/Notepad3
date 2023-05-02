@@ -313,10 +313,14 @@ DeclareSciCallV0(ZoomIn, ZOOMIN);
 DeclareSciCallV0(ZoomOut, ZOOMOUT);
 
 // Keyboard Commands
+// The SCI_HOME* commands move the caret to the start of the line,
+// while the SCI_VCHOME* commands move the caret to the first non-blank character of the line
+// (ie. just after the indentation) unless it is already there; in this case, it acts as SCI_HOME*.
+DeclareSciCallV0(Home, HOME);
+DeclareSciCallV0(VCHome, VCHOME);
 DeclareSciCallV0(NewLine, NEWLINE);
 DeclareSciCallV0(Tab, TAB);
 DeclareSciCallV0(BackTab, BACKTAB);
-DeclareSciCallV0(VCHome, VCHOME);
 DeclareSciCallV0(LineUp, LINEUP);
 DeclareSciCallV0(LineDown, LINEDOWN);
 DeclareSciCallV0(LineUpExtend, LINEUPEXTEND);
@@ -772,10 +776,11 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
 
 #define Sci_HaveUndoRedoHistory() (SciCall_CanUndo() || SciCall_CanRedo())
 
+#define Sci_GetCurrentLineNumber() SciCall_LineFromPosition(SciCall_GetCurrentPos())
 #define Sci_GetCurrentColumnNumber() SciCall_GetColumn(SciCall_GetCurrentPos())
 #define Sci_GetAnchorLineNumber() SciCall_LineFromPosition(SciCall_GetAnchor())
-#define Sci_GetCurrentLineNumber() SciCall_LineFromPosition(SciCall_GetCurrentPos())
 #define Sci_GetLastDocLineNumber() (SciCall_GetLineCount() - 1)
+#define Sci_InLastLine() (SciCall_GetLineCount() == (Sci_GetCurrentLineNumber() + 1))
 
 #define Sci_GetLineStartPosition(position) SciCall_PositionFromLine(SciCall_LineFromPosition(position))
 #define Sci_GetLineEndPosition(position) SciCall_GetLineEndPosition(SciCall_LineFromPosition(position))
@@ -812,11 +817,13 @@ inline void Sci_GotoPosChooseCaret(const DocPos pos)
     SciCall_GotoPos(pos);
     SciCall_ChooseCaretX();
 }
+
 inline void Sci_ScrollChooseCaret()
 {
     SciCall_ScrollCaret();
     SciCall_ChooseCaretX();
 }
+
 inline void Sci_ScrollToLine(const DocLn line)
 {
     if (!SciCall_GetLineVisible(line)) {
@@ -824,14 +831,16 @@ inline void Sci_ScrollToLine(const DocLn line)
     }
     SciCall_ScrollRange(SciCall_GetLineEndPosition(line), SciCall_PositionFromLine(line));
 }
+
 inline void Sci_ScrollToCurrentLine()
 {
     Sci_ScrollToLine(Sci_GetCurrentLineNumber());
 }
+
 inline void Sci_EnsureVisibleSelection()
 {
+    DocLn const iCurrentLn = Sci_GetCurrentLineNumber();
     DocLn const iAnchorLn = SciCall_LineFromPosition(SciCall_GetAnchor());
-    DocLn const iCurrentLn = SciCall_LineFromPosition(SciCall_GetCurrentPos());
     if (!SciCall_GetLineVisible(iAnchorLn)) {
         if (iAnchorLn == iCurrentLn) {
             SciCall_EnsureVisibleEnforcePolicy(iAnchorLn);
@@ -843,6 +852,7 @@ inline void Sci_EnsureVisibleSelection()
         SciCall_EnsureVisibleEnforcePolicy(iCurrentLn);
     }
 }
+
 inline void Sci_ScrollSelectionToView()
 {
     Sci_EnsureVisibleSelection();
