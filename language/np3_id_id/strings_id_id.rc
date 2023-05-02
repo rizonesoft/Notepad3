@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Operasi ini dapat menghapus riwayat kembali. Lanjutkan?"
     IDS_MUI_READONLY_SAVE   """%s"" hanya baca saja. Simpan dalam berkas berbeda?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
+                            "Berkas ini telah dimodifikasi oleh program lain.\nSilahkan pilih:\n\nBatal -\t\tAbaikan setiap perubahan\nMuat Ulang -\t\tMuat ulang berkas\nLanjutkan -\tBeralih ke pemantauan berkas"
     IDS_MUI_FILECHANGENOTIFY2 "Berkas ini telah dihapus. Simpan sekarang?"
     IDS_MUI_FILELOCK_ERROR  "Tidak bisa mendapatkan kunci berkas eksklusif untuk ""%s""!"
     IDS_MUI_STICKYWINPOS    "Posisi Jendela Tetap diaktifkan. Setiap jendela Notepad3 baru akan menggunakan pengaturan jendela saat ini."
@@ -286,7 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Alihkan Tampilan..."
     IDS_MUI_SB_REPLACE_ALL    "Ganti Semua..."
     IDS_MUI_SB_WRAP_LINES     "Bungkus Baris..."
-    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
+    IDS_MUI_SB_SORTING_LINES  "Urutkan Baris..."
     IDS_MUI_SB_CONV_LNBRK     "Konversi Akhir Baris..."
     IDS_MUI_SB_RECODING_DOC   "Pengkodean Ulang Dokumen..."
     IDS_MUI_SB_LEXER_STYLING  "Terapkan Gaya Lexer..."
