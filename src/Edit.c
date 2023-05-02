@@ -5435,7 +5435,7 @@ void EditJumpTo(DocLn iNewLine, DocPos iNewCol)
 
     // jump to end with line set to -1
     if ((iNewLine < 0) || (iNewLine > iMaxLine)) {
-        SciCall_DocumentEnd();
+        Sci_SetCaretScrollDocEnd();
         return;
     }
     if (iNewLine == 0) {

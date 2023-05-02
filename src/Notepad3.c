@@ -698,9 +698,17 @@ static bool                  s_flagJumpTo = false;
 static FILE_WATCHING_MODE    s_flagChangeNotify = FWM_NO_INIT;
 static bool                  s_flagQuietCreate = false;
 static bool                  s_flagLexerSpecified = false;
-static bool                  s_flagAppIsClosing = false;
 static bool                  s_flagDisplayHelp = false;
 static int                   s_iCaretPolicyV = CARET_EVEN;
+
+
+//==============================================================================
+
+static volatile HANDLE    s_hFlagAppIsClosing = INVALID_HANDLE_VALUE;
+static __forceinline bool IsAppClosing() {
+    return (WaitForSingleObject(s_hFlagAppIsClosing, 0) == WAIT_OBJECT_0);
+}
+
 
 //==============================================================================
 
@@ -1779,6 +1787,9 @@ bool InitWndClass(const HINSTANCE hInstance, LPCWSTR lpszWndClassName, LPCWSTR l
 //
 HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
 {
+    // manual (not automatic) reset & initial state: not signaled (TRUE, FALSE)
+    s_hFlagAppIsClosing = CreateEvent(NULL, TRUE, FALSE, NULL);
+
     // init w/o hwnd
     g_IniWinInfo = GetWinInfoByFlag(NULL, Globals.CmdLnFlag_WindowPos);
 
@@ -2005,7 +2016,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
 
             if (g_flagMatchText & 2) {
                 if (!s_flagJumpTo) {
-                    SciCall_DocumentEnd();
+                    Sci_SetCaretScrollDocEnd();
                 }
                 EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
             } else {
@@ -2064,7 +2075,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
         }
     }
 
-    if (s_flagAppIsClosing || Globals.CmdLnFlag_PrintFileAndLeave) {
+    if (Globals.CmdLnFlag_PrintFileAndLeave || IsAppClosing()) {
         CloseApplication();
     }
 
@@ -2091,9 +2102,14 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_CLOSE:
+        SetEvent(s_hFlagAppIsClosing);
+        InstallFileWatching(false);
         if (FileSave(FSF_Ask)) {
-            s_flagAppIsClosing = true;
             DestroyWindow(Globals.hwndMain);
+        }
+        else {
+            ResetEvent(s_hFlagAppIsClosing);
+            InstallFileWatching(true);
         }
         break;
 
@@ -3264,13 +3280,13 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     if (!bShutdownOK) {
 
+        // Terminate file watching
+        InstallFileWatching(false);
+
         RestorePrevScreenPos(hwnd);
 
         // Terminate AutoSave
         AutoSaveStop();
-
-        // Terminate file watching
-        InstallFileWatching(false);
 
         DragAcceptFiles(hwnd, FALSE);
 
@@ -3298,7 +3314,10 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     assert(!IsIniFileCached());
 
-    if (umsg == WM_DESTROY) {
+    if (WM_DESTROY == umsg) {
+        if (IS_VALID_HANDLE(s_hFlagAppIsClosing)) {
+            CloseHandle(s_hFlagAppIsClosing);
+        }
         PostQuitMessage(0);
     }
 
@@ -3773,7 +3792,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
                 if (g_flagMatchText & 2) {
                     if (!s_flagJumpTo) {
-                        SciCall_DocumentEnd();
+                        Sci_SetCaretScrollDocEnd();
                     }
                     EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
                 } else {
@@ -6233,7 +6252,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             _lastCaretPos = SciCall_GetCurrentPos();
             _saveChgNotify = FileWatching.FileWatchingMode;
             FileWatching.FileWatchingMode = FWM_AUTORELOAD;
-            SciCall_SetEndAtLastLine(true);
+            SciCall_SetEndAtLastLine(false); // false(!)
             FileRevert(Paths.CurrentFile, true);
             SciCall_SetReadOnly(FileWatching.MonitoringLog);
         }
@@ -9634,7 +9653,7 @@ static void ParseCmdLnOption(LPWSTR lp1, LPWSTR lp2, const size_t len)
 
         case L'U':
             if (*CharUpper(lp1 + 1) == L'C') {
-                s_flagAppIsClosing = true;
+                SetEvent(s_hFlagAppIsClosing);
             }
             else {
                 Flags.bDoRelaunchElevated = true;
@@ -11469,14 +11488,13 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
 
         // the .LOG feature ...
         if (IsFileVarLogFile()) {
-            SciCall_DocumentEnd();
+            Sci_SetCaretScrollDocEnd();
             UndoTransActionBegin();
             SciCall_NewLine();
             SendWMCommand(Globals.hwndMain, IDM_EDIT_INSERT_SHORTDATE);
             SciCall_DocumentEnd();
             SciCall_NewLine();
             EndUndoTransAction();
-            SciCall_ScrollToEnd();
         }
 
         if (!bReloadFile) {
@@ -11605,8 +11623,7 @@ bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc)
         }
         else {
             // watch document end
-            SciCall_DocumentEnd();
-            SciCall_ScrollToEnd();
+            Sci_SetCaretScrollDocEnd();
         }
     }
 
@@ -11663,7 +11680,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
     // ----------------------------------------------
 
     WCHAR wchFlags[32] = { L'\0' };
-    if (s_flagAppIsClosing) {
+    if (IsAppClosing()) {
         StringCchCat(wchFlags, COUNTOF(wchFlags), L"/UC ");
     }
     if (bAutoSaveOnRelaunch) {
@@ -11910,7 +11927,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
         }
 
         // if current file is settings/config file: ask to start
-        if (Flags.bSettingsFileSoftLocked && !s_flagAppIsClosing) {
+        if (Flags.bSettingsFileSoftLocked && !IsAppClosing()) {
             ///~ LoadSettings(); NOT all settings will be applied ...
             WCHAR tch[256] = { L'\0' };
             if (Settings.SaveSettings) { LoadLngStringW(IDS_MUI_RELOADCFGSEX, tch, COUNTOF(tch)); }
@@ -11935,7 +11952,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
                 if (DoElevatedRelaunch(&fioStatus, true)) {
                     CloseApplication();
                 } else {
-                    s_flagAppIsClosing = false;
+                    ResetEvent(s_hFlagAppIsClosing);
                     if (Settings.MuteMessageBeep) {
                         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
                     } else {
@@ -12536,6 +12553,8 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     UNREFERENCED_PARAMETER(wParam);
     UNREFERENCED_PARAMETER(lParam);
 
+    if (IsAppClosing()) { return TRUE; }
+
     SET_FCT_GUARD(TRUE);
 
     DocPos const iCurPos = SciCall_GetCurrentPos();
@@ -12745,6 +12764,7 @@ void InstallFileWatching(const bool bInstall) {
         _hCurrFileHandle = INVALID_HANDLE_VALUE;
     }
 
+    // static init
     if (!IS_VALID_HANDLE(s_FileChgObsvrData.worker.eventCancel)) {
         BackgroundWorker_Init(&(s_FileChgObsvrData.worker), NULL, NULL);
     }

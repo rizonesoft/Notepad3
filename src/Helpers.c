@@ -569,17 +569,14 @@ void BackgroundWorker_Start(BackgroundWorker* worker, _beginthreadex_proc_type r
         ResetEvent(worker->eventCancel); // init should be 'not signaled'
         //~worker->workerThread = CreateThread(NULL, 0, routine, property, 0, NULL);  // MD(d) dll
         uintptr_t const thread = _beginthreadex(NULL, 0, routine, property, 0, NULL); // MT(d) static
-        worker->workerThread = (thread != 0LL) ? (HANDLE)thread : INVALID_HANDLE_VALUE;
+        InterlockedExchangePointer(&(worker->workerThread), (thread != 0LL) ? (HANDLE)thread : INVALID_HANDLE_VALUE);
     }
 }
 
-// inline void BackgroundWorker_End(BackgroundWorker* worker, unsigned int retcode);
-
-static void _BckgrdWrkr_Stop(BackgroundWorker* worker)
-{
+void BackgroundWorker_Cancel(BackgroundWorker* worker) {
     if (worker) {
         SetEvent(worker->eventCancel); // signal
-        HANDLE const workerThread = worker->workerThread;
+        HANDLE const workerThread = InterlockedExchangePointer(&(worker->workerThread), INVALID_HANDLE_VALUE);
         if (IS_VALID_HANDLE(workerThread)) {
             // Optimize: MsgDispatch only in case of hwnd ?
             // DWORD const wait = SignalObjectAndWait(worker->eventCancel, workerThread, 100 /*INFINITE*/, FALSE);
@@ -591,23 +588,17 @@ static void _BckgrdWrkr_Stop(BackgroundWorker* worker)
                 }
             }
             CloseHandle(workerThread);
-            worker->workerThread = INVALID_HANDLE_VALUE;
         }
     }
 }
 
-void BackgroundWorker_Cancel(BackgroundWorker* worker) {
-    if (worker) {
-        _BckgrdWrkr_Stop(worker);
-        ResetEvent(worker->eventCancel);
-    }
-}
+// inline void BackgroundWorker_End(BackgroundWorker* worker, unsigned int retcode);
 
-void BackgroundWorker_Destroy(BackgroundWorker* worker) {
+void BackgroundWorker_Destroy(BackgroundWorker* worker)
+{
     if (worker) {
-        _BckgrdWrkr_Stop(worker);
-        CloseHandle(worker->eventCancel);
-        worker->eventCancel = INVALID_HANDLE_VALUE;
+        BackgroundWorker_Cancel(worker);
+        CloseHandle(InterlockedExchangePointer(&(worker->eventCancel), INVALID_HANDLE_VALUE));
         Path_Release(worker->hFilePath);
         worker->hFilePath = NULL;
     }
