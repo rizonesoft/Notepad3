@@ -7376,9 +7376,16 @@ bool EditReplace(HWND hwnd, LPEDITFINDREPLACE lpefr)
     UndoTransActionBegin();
 
     SciCall_TargetFromSelection();
+    DocPos const posTargetStart = SciCall_GetTargetStart();
     Sci_ReplaceTargetEx(iReplaceMsg, -1, pszReplace);
     // move caret behind replacement
-    SciCall_SetCurrentPos(SciCall_GetTargetEnd());
+    if (SCI_REPLACETARGETMINIMAL == iReplaceMsg) {
+        SciCall_SetCurrentPos(posTargetStart + strlen(pszReplace));
+    }
+    else {
+        SciCall_SetCurrentPos(SciCall_GetTargetEnd());
+    }
+
     Globals.iReplacedOccurrences = 1;
 
     EndUndoTransAction();
@@ -7395,9 +7402,6 @@ bool EditReplace(HWND hwnd, LPEDITFINDREPLACE lpefr)
 //  EditReplaceAllInRange()
 //
 //
-
-// force NOT minimal replacement to calculate next match correctly
-#define REPLACE_ALL_MSG(M) ((M) == SCI_REPLACETARGETRE ? SCI_REPLACETARGETRE : SCI_REPLACETARGET)
 
 int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, DocPos iEndPos, DocPos *enlargement)
 {
@@ -7438,21 +7442,30 @@ int EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, 
     int iCount = 0;
 
     UndoTransActionBegin();
+
     while ((iPos >= 0LL) && (start <= iEndPos)) {
         DocLn const lnCnt = bRegexStartOfLine ? SciCall_GetLineCount() : 0;
         SciCall_SetTargetRange(iPos, end);
-        DocPos const replLen = Sci_ReplaceTargetEx(REPLACE_ALL_MSG(iReplaceMsg), -1, pszReplace);
+        DocPos const replLen = Sci_ReplaceTargetEx(iReplaceMsg, -1, pszReplace);
         ++iCount;
         // start next search behind replacement
-        iStartPos = SciCall_GetTargetEnd();
-        if (bRegexStartOfLine && (Sci_GetLineStartPosition(iStartPos) == iStartPos) && (SciCall_GetLineCount() == lnCnt)) {
-            iStartPos = SciCall_PositionAfter(iStartPos);
+        if (SCI_REPLACETARGETMINIMAL == iReplaceMsg) {
+            DocPos const replLength = strlen(pszReplace);
+            iStartPos = iPos + replLength;
+            iEndPos += replLength - (end - iPos);
         }
-        iEndPos += replLen - (end - iPos);
+        else {
+            iStartPos = SciCall_GetTargetEnd();
+            if (bRegexStartOfLine && (SciCall_GetLineCount() == lnCnt) && (Sci_GetLineStartPosition(iStartPos) == iStartPos)) {
+                iStartPos = SciCall_PositionAfter(iStartPos);
+            }
+            iEndPos += replLen - (end - iPos);
+        }
         start = iStartPos;
         end   = iEndPos;
         iPos = (start <= end) ? _FindInTarget(wchFind, sFlags, &start, &end, true, FRMOD_NORM) : -1LL;
     }
+
     EndUndoTransAction();
 
     FreeMem(pszReplace);
