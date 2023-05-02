@@ -1052,14 +1052,16 @@ end;
 procedure CurStepChanged(CurStep: TSetupStep);
   Var
     app: String;
+    TMP, userappdata: String;
+    FindRec: TFindRec;
   begin
     if (CurStep = ssInstall) or (CurStep = ssPostInstall) then
     begin
       APP := ExpandConstant('{app}');
+      PreviousDataOf_Open_with_NP3 := GetPreviousData('reg_Open_with_NP3', '');
 
       if CurStep = ssInstall then
       begin
-        PreviousDataOf_Open_with_NP3 := GetPreviousData('reg_Open_with_NP3', '');
 
         if IsOldBuildInstalled('Uninstall.inf') or IsOldBuildInstalled('Notepad2.inf') then
         begin
@@ -1094,7 +1096,34 @@ procedure CurStepChanged(CurStep: TSetupStep);
       if CurStep = ssPostInstall then
       begin
         if WizardIsTaskSelected('reset_settings') then
+        begin
           CleanUpSettings();
+          ExtractTemporaryFiles( '{userappdata}\*' );
+          userappdata := ExpandConstant('{userappdata}')+'\';
+          TMP := ExpandConstant('{tmp}')+'\';
+          If FindFirst(TMP+'{userappdata}\Rizonesoft\Notepad3\*.*', FindRec) then
+          begin
+            If not DirExists(userappdata+'Rizonesoft\Notepad3') then
+              CreateDir(userappdata+'Rizonesoft\Notepad3');
+            If DirExists(userappdata+'Rizonesoft\Notepad3') then
+              With FindRec do
+                repeat
+                  RenameFile( TMP+'{userappdata}\Rizonesoft\Notepad3\'+Name, userappdata+'Rizonesoft\Notepad3\'+Name );
+                until not FindNext(FindRec);
+            FindClose( FindRec );
+          end;
+          If FindFirst(TMP+'{userappdata}\Rizonesoft\Notepad3\Themes\*.*', FindRec) then
+          begin
+            If not DirExists(userappdata+'Rizonesoft\Notepad3\Themes') then
+              CreateDir(userappdata+'Rizonesoft\Notepad3\Themes');
+            If DirExists(userappdata+'Rizonesoft\Notepad3\Themes') then
+              With FindRec do
+                repeat
+                  RenameFile( TMP+'{userappdata}\Rizonesoft\Notepad3\Themes\'+Name, userappdata+'Rizonesoft\Notepad3\Themes\'+Name );
+                until not FindNext(FindRec);
+            FindClose( FindRec );
+          end;
+        end;
 
         if WizardIsTaskSelected('set_default') then begin
           RegWriteStringValue(HKLM, IFEO, 'Debugger', '"'+app+'\Notepad3.exe" /z');
