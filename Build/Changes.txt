@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.501.(build_#) (2023-05-01)
+Current BETA/RC Version 6.23.502.(build_#) (2023-05-02)
 ========================================================
 
 --------------------------------------------------------
@@ -92,6 +92,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.502.1]- Multi-replace: correct advance next insertion point in case of SCI_REPLACETARGETMINIMAL.
+[.502.1]- Cut (Ctrl+X) and Delete (Ctrl+D) last line (EOF -> EOL).
+[.502.1]- Minor bugs in "Reset Notepad3's settings and themes" (SUP).
 [.430.1]- Switch to "Log Monitoring" id commandline option "/l" is given.
 [.430.1]- Regression: save readonly file.
 [.426.1]- Minor bugs in localization of "Open with Notepad3"  (SUP).
