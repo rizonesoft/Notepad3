@@ -215,7 +215,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
     CONTROL         "&Pastikan konsistensi akhir baris saat disimpan.",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,182,10
-    CONTROL         "&Hapus kekosongan baris saat disimpan.",IDC_AUTOSTRIPBLANKS,
+    CONTROL         "&Hapus baris kosong saat disimpan.",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,173,10
     DEFPUSHBUTTON   "OK",IDOK,139,7,50,14
     PUSHBUTTON      "Batal",IDCANCEL,139,24,50,14
@@ -282,7 +282,7 @@ BEGIN
     CONTROL         "&Kunci Berkas Eksklusif.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,99,10
     CONTROL         "&Atur ulang jika berkas baru dibuka.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,125,10
     CONTROL         "&Catatan Pemantauan.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
-    LTEXT           "File Check Interval [ms]",IDC_LINE_TEXT,7,102,120,10
+    LTEXT           "Interval Cek Berkas [md]",IDC_LINE_TEXT,7,102,120,10
     EDITTEXT        IDC_FILE_CHECK_INTERVAL,127,100,50,12,ES_AUTOHSCROLL | ES_NUMBER
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Batal",IDCANCEL,127,24,50,14
@@ -356,7 +356,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Statistik: ",IDC_STATIC,7,7,182,48,WS_GROUP
     LTEXT           "Tab[%s]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
-    LTEXT           "Kekosong.[%s]:",IDC_INDENT_WIDTH_SPC,32,30,45,8
+    LTEXT           "Spasi[%s]:",IDC_INDENT_WIDTH_SPC,32,30,45,8
     LTEXT           "Campuran[x]:",IDC_STATIC3,32,42,45,8
     RTEXT           "%s baris",IDC_INDENT_SUM_TAB,84,18,52,8
     RTEXT           "%s baris",IDC_INDENT_SUM_SPC,84,30,52,8
@@ -672,11 +672,11 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,53,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Jangan tampilkan pesan ini lagi.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
-    DEFPUSHBUTTON   "&Reload",IDRETRY,186,82,50,14
-    PUSHBUTTON      "&Cancel", IDCANCEL, 130, 82, 50, 14
-    PUSHBUTTON      "&Continue",IDCONTINUE,242,82,50,14
+    DEFPUSHBUTTON   "&Muat Ulang",IDRETRY,186,82,50,14
+    PUSHBUTTON      "&Batal", IDCANCEL, 130, 82, 50, 14
+    PUSHBUTTON      "&Lanjutkan",IDCONTINUE,242,82,50,14
 END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 188

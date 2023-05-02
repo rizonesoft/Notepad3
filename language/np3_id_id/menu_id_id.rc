@@ -148,7 +148,7 @@ BEGIN
             MENUITEM "Tam&bahkan Berkas...\tAlt+K",  IDM_FILE_ADDTOFAV
             MENUITEM "Ke&lola...\tAlt+F9",           IDM_FILE_MANAGEFAV
         END
-        MENUITEM "Berkas Terk&ini...\tCtrl+Alt+H",          IDM_FILE_RECENT
+        MENUITEM "Berkas Terk&ini...\tCtrl+Alt+H",   IDM_FILE_RECENT
         MENUITEM SEPARATOR
         MENUITEM "&Keluar\tAlt+F4",                  IDM_FILE_EXIT
     END
@@ -209,46 +209,46 @@ BEGIN
         END
             POPUP "&Seleksi"
         BEGIN
-            MENUITEM "&Indentasi",                           IDM_EDIT_INDENT
-            MENUITEM "&Batal Indentasi",                     IDM_EDIT_UNINDENT
+            MENUITEM "&Indentasi",                                      IDM_EDIT_INDENT
+            MENUITEM "&Batal Indentasi",                                IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             POPUP "&Komentar Baris"
             BEGIN
-                MENUITEM "&Alihkan\tCtrl+Q",                         IDM_EDIT_LINECOMMENT
-                MENUITEM "&Tambahkan\tCtrl+Alt+Q",                   IDM_EDIT_LINECOMMENT_ADD
-                MENUITEM "&Hapus\tCtrl+Alt+Shift+Q",                 IDM_EDIT_LINECOMMENT_REMOVE
-                MENUITEM "&Sunting (multi-baris)\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
+                MENUITEM "&Alihkan\tCtrl+Q",                            IDM_EDIT_LINECOMMENT
+                MENUITEM "&Tambahkan\tCtrl+Alt+Q",                      IDM_EDIT_LINECOMMENT_ADD
+                MENUITEM "&Hapus\tCtrl+Alt+Shift+Q",                    IDM_EDIT_LINECOMMENT_REMOVE
+                MENUITEM "&Sunting (multi-baris)\tAlt+Shift+Q",         IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
             MENUITEM SEPARATOR
-            MENUITEM "Komentar &Multi-baris\tCtrl+Shift+Q",          IDM_EDIT_STREAMCOMMENT
+            MENUITEM "Komentar &Multi-baris\tCtrl+Shift+Q",             IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Apit Seleksi"
             BEGIN
-                MENUITEM "Petik &Satu\tCtrl+1",              CMD_STRINGIFY
-                MENUITEM "Petik &Dua\tCtrl+2",               CMD_STRINGIFY2
+                MENUITEM "Petik &Satu\tCtrl+1",                         CMD_STRINGIFY
+                MENUITEM "Petik &Dua\tCtrl+2",                          CMD_STRINGIFY2
                 MENUITEM SEPARATOR
-                MENUITEM "( )\tCtrl+3",                      CMD_EMBRACE
-                MENUITEM "[ ]\tCtrl+4",                      CMD_EMBRACE2
-                MENUITEM "{ }\tCtrl+5",                      CMD_EMBRACE3
+                MENUITEM "( )\tCtrl+3",                                 CMD_EMBRACE
+                MENUITEM "[ ]\tCtrl+4",                                 CMD_EMBRACE2
+                MENUITEM "{ }\tCtrl+5",                                 CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "&Backtick\tCtrl+6",                CMD_EMBRACE4
+                MENUITEM "&Backtick\tCtrl+6",                           CMD_EMBRACE4
                 MENUITEM SEPARATOR
-                MENUITEM "Den&gan...\tAlt+Q",                IDM_EDIT_ENCLOSESELECTION
+                MENUITEM "Den&gan...\tAlt+Q",                           IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "&Duplikasi Baris/Seleksi\tCtrl+D",     IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "&Duplikasi Baris/Seleksi\tCtrl+D",                IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "I&si Kekosongan dengan Spasi\tAlt+B",  IDM_EDIT_PADWITHSPACES
-            MENUITEM "Hapus dari &Awal\tAlt+Z",              IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Hapus dari Ak&hir\tAlt+U",             IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Hapus K&ekosongan Spasi\tAlt+W",       IDM_EDIT_TRIMLINES
-            MENUITEM "Kompres Baris &Kosong\tCtrl+Alt+P",    IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "I&si Baris Kosong dengan Spasi\tAlt+B",           IDM_EDIT_PADWITHSPACES
+            MENUITEM "Hapus dari &Awal\tAlt+Z",                         IDM_EDIT_STRIP1STCHAR
+            MENUITEM "Hapus dari Ak&hir\tAlt+U",                        IDM_EDIT_STRIPLASTCHAR
+            MENUITEM "Hapus K&ekosongan Spasi\tAlt+W",                  IDM_EDIT_TRIMLINES
+            MENUITEM "Kompres Baris &Kosong\tCtrl+Alt+P",               IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
-            MENUITEM "&Ubah Baris...\tAlt+M",                IDM_EDIT_MODIFYLINES
-            MENUITEM "Pe&rataan Baris...\tAlt+J",            IDM_EDIT_ALIGN
-            MENUITEM "Uru&tkan Baris...\tAlt+O",             IDM_EDIT_SORTLINES
+            MENUITEM "&Ubah Baris...\tAlt+M",                           IDM_EDIT_MODIFYLINES
+            MENUITEM "Pe&rataan Baris...\tAlt+J",                       IDM_EDIT_ALIGN
+            MENUITEM "Uru&tkan Baris...\tAlt+O",                        IDM_EDIT_SORTLINES
             MENUITEM SEPARATOR
-            MENUITEM "Pergi ke A&wal Seleksi\tCtrl+,",       CMD_JUMP2SELSTART
-            MENUITEM "Pergi ke A&khir Seleksi\tCtrl+.",      CMD_JUMP2SELEND
+            MENUITEM "Pergi ke A&wal Seleksi\tCtrl+,",                  CMD_JUMP2SELSTART
+            MENUITEM "Pergi ke A&khir Seleksi\tCtrl+.",                 CMD_JUMP2SELEND
         END
         POPUP "&Konversi"
         BEGIN
@@ -319,7 +319,7 @@ BEGIN
         BEGIN
             MENUITEM "&Alihkan\tCtrl+F2",                   BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR
-            MENUITEM "Pergi ke &Berikutnya\tF2",           BME_EDIT_BOOKMARKNEXT
+            MENUITEM "Pergi ke &Berikutnya\tF2",            BME_EDIT_BOOKMARKNEXT
             MENUITEM "Pergi ke &Sebelumnya\tShift+F2",      BME_EDIT_BOOKMARKPREV
             MENUITEM SEPARATOR
             MENUITEM "&Bersihkan Semua\tAlt+F2",            BME_EDIT_BOOKMARKCLEAR
@@ -347,7 +347,7 @@ BEGIN
         MENUITEM "Garis Bantu Indentasi\tCtrl+Shift+G",                 IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Tampilkan Simbol Bungkus Kata\tCtrl+Shift+7",         IDM_VIEW_WORDWRAPSYMBOLS
-        MENUITEM "Tampilkan Kekosongan\tCtrl+Shift+8",                  IDM_VIEW_SHOWBLANKS
+        MENUITEM "Tampilkan Spasi\tCtrl+Shift+8",                       IDM_VIEW_SHOWBLANKS
         MENUITEM "Tampilkan Akhir Baris\tCtrl+Shift+9",                 IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
         POPUP "Penanda Riwayat"
@@ -425,10 +425,10 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Panel"
         BEGIN
-            MENUITEM "Show Titlebar",                        IDM_VIEW_TITLEBAR
-            MENUITEM "Tampilkan &Menubar",                   IDM_VIEW_MENUBAR
-            MENUITEM "Tampilkan Tool&bar",                   IDM_VIEW_TOOLBAR
-            MENUITEM "Tampilkan S&tatusbar",                 IDM_VIEW_STATUSBAR
+            MENUITEM "Tampilkan Bilah &Judul",               IDM_VIEW_TITLEBAR
+            MENUITEM "Tampilkan Bilah &Menu",                IDM_VIEW_MENUBAR
+            MENUITEM "Tampilkan Bilah A&lat",                IDM_VIEW_TOOLBAR
+            MENUITEM "Tampilkan Bilah &Status",              IDM_VIEW_STATUSBAR
             MENUITEM SEPARATOR
             MENUITEM "Muat &Tema Bilah Alat...",             IDM_VIEW_LOADTHEMETB
             MENUITEM "&Sesuaikan Bilah Alat...",             IDM_VIEW_CUSTOMIZETB
@@ -523,7 +523,7 @@ BEGIN
             END
             POPUP "&Tata Letak RTL (GDI)"
             BEGIN
-                MENUITEM "&Area Penyuntingan",               IDM_SET_RTL_LAYOUT_EDIT
+                MENUITEM "&Area Penyuntingan",          IDM_SET_RTL_LAYOUT_EDIT
                 MENUITEM "&Dialog Program",             IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "&Arah Penulisan"
@@ -577,7 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show Titlebar",              IDM_VIEW_TITLEBAR
+        MENUITEM "Tampilkan Bilah Judul",      IDM_VIEW_TITLEBAR
         MENUITEM "Tampilkan Bilah Menu",       IDM_VIEW_MENUBAR
         MENUITEM "Tampilkan Bilah Alat",       IDM_VIEW_TOOLBAR
         MENUITEM "Tampilkan Bar Status",       IDM_VIEW_STATUSBAR
