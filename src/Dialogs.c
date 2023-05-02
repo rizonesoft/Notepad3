@@ -2786,13 +2786,6 @@ CASE_WM_CTLCOLOR_SET:
 
 
         case IDOK: {
-                if (FileWatching.MonitoringLog) {
-                    FileWatching.MonitoringLog = false; // will be toggled in IDM_VIEW_CHASING_DOCTAIL
-                    PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
-                    EndDialog(hwnd, IDOK);
-                    break;
-                }
-
                 if (IsButtonChecked(hwnd, IDC_RADIO_BTN_A)) {
                     s_FWM = FWM_DONT_CARE;
                 }
@@ -2829,6 +2822,12 @@ CASE_WM_CTLCOLOR_SET:
                         }
                     }
                 }
+
+                if (FileWatching.MonitoringLog) {
+                    FileWatching.MonitoringLog = false; // will be toggled in IDM_VIEW_CHASING_DOCTAIL
+                    PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+                }
+
                 EndDialog(hwnd, IDOK);
             }
             break;

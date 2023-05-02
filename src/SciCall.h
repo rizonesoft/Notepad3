@@ -791,8 +791,7 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
 // length of line w/o line-end chars (full use SciCall_LineLength()
 #define Sci_GetNetLineLength(line) (SciCall_GetLineEndPosition(line) - SciCall_PositionFromLine(line))
 
-#define Sci_GoToDocEnd() { SciCall_DocumentEnd(); SciCall_ScrollToEnd(); }
-//~#define Sci_GetDocEndPosition() SciCall_GetTextLength()
+//~define Sci_GetDocEndPosition() SciCall_GetTextLength()
 #define Sci_GetDocEndPosition() SciCall_PositionAfter(SciCall_GetTextLength() - 1)
 
 #define Sci_ClampAlpha(alpha) clampi((alpha), SC_ALPHA_TRANSPARENT, SC_ALPHA_OPAQUE) //~SC_ALPHA_NOALPHA
@@ -812,13 +811,13 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine)
 }
 
 // respect VSlop settings
-inline void Sci_GotoPosChooseCaret(const DocPos pos)
+__forceinline void Sci_GotoPosChooseCaret(const DocPos pos)
 {
     SciCall_GotoPos(pos);
     SciCall_ChooseCaretX();
 }
 
-inline void Sci_ScrollChooseCaret()
+__forceinline void Sci_ScrollChooseCaret()
 {
     SciCall_ScrollCaret();
     SciCall_ChooseCaretX();
@@ -832,7 +831,7 @@ inline void Sci_ScrollToLine(const DocLn line)
     SciCall_ScrollRange(SciCall_GetLineEndPosition(line), SciCall_PositionFromLine(line));
 }
 
-inline void Sci_ScrollToCurrentLine()
+__forceinline void Sci_ScrollToCurrentLine()
 {
     Sci_ScrollToLine(Sci_GetCurrentLineNumber());
 }
@@ -859,13 +858,21 @@ inline void Sci_ScrollSelectionToView()
     SciCall_ScrollRange(SciCall_GetAnchor(), SciCall_GetCurrentPos());
 }
 
-inline void Sci_RedrawScrollbars()
+__forceinline void Sci_SetCaretScrollDocEnd()
+{
+    SciCall_DocumentEnd();
+    //~SciCall_ScrollToEnd();
+    SciCall_ScrollCaret(); // enforce visible slop policy
+}
+
+__forceinline void Sci_RedrawScrollbars()
 {
     SciCall_SetHScrollbar(false);
     SciCall_SetHScrollbar(true);
     SciCall_SetVScrollbar(false);
     SciCall_SetVScrollbar(true);
 }
+
 
 //  if iRangeEnd == -1 : apply style from iRangeStart to document end
 #define Sci_ColouriseAll() SciCall_Colourise(0, -1)
