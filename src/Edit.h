@@ -35,6 +35,7 @@ size_t EditGetSelectedText(LPWSTR pwchBuffer, size_t wchCount);
 char* EditGetClipboardText(HWND hwnd,bool,int* pLineCount,int* pLenLastLn);
 void EditGetClipboardW(LPWSTR pwchBuffer, size_t wchLength);
 bool EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText);
+bool EditAppendToClipboard(HWND hwnd, const char* pszText, size_t cchText);
 bool EditClearClipboard(HWND hwnd);
 bool EditSwapClipboard(HWND hwnd,bool);
 bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend);
