@@ -1182,7 +1182,7 @@ void SurfaceGDI::AlphaRectangle(PRectangle rc, XYPOSITION cornerSize, FillStroke
 				section.SetSymmetric(x, corner - x, valOutline);
 			}
 
-			AlphaBlend(hdc, rcw.left, rcw.top, size.cx, size.cy, section.DC(), 0, 0, size.cx, size.cy, mergeAlpha);
+			GdiAlphaBlend(hdc, rcw.left, rcw.top, size.cx, size.cy, section.DC(), 0, 0, size.cx, size.cy, mergeAlpha);
 		}
 	} else {
 		BrushColour(fillStroke.stroke.colour);
@@ -1221,7 +1221,7 @@ void SurfaceGDI::GradientRectangle(PRectangle rc, const std::vector<ColourStop> 
 			}
 		}
 
-		AlphaBlend(hdc, rcw.left, rcw.top, size.cx, size.cy, section.DC(), 0, 0, size.cx, size.cy, mergeAlpha);
+		GdiAlphaBlend(hdc, rcw.left, rcw.top, size.cx, size.cy, section.DC(), 0, 0, size.cx, size.cy, mergeAlpha);
 	}
 }
 
@@ -1238,7 +1238,7 @@ void SurfaceGDI::DrawRGBAImage(PRectangle rc, int width, int height, const unsig
 		DIBSection section(hdc, size);
 		if (section) {
 			RGBAImage::BGRAFromRGBA(section.Bytes(), pixelsImage, static_cast<size_t>(width) * height);
-			AlphaBlend(hdc, static_cast<int>(rc.left), static_cast<int>(rc.top),
+			GdiAlphaBlend(hdc, static_cast<int>(rc.left), static_cast<int>(rc.top),
 				static_cast<int>(rc.Width()), static_cast<int>(rc.Height()), section.DC(),
 				0, 0, width, height, mergeAlpha);
 		}
@@ -1937,19 +1937,19 @@ void SurfaceD2D::RoundedRectangle(PRectangle rc, FillStroke fillStroke) {
 		const FLOAT minDimension = static_cast<FLOAT>(std::min(rc.Width(), rc.Height())) / 2.0f;
 		const FLOAT radius = std::min(4.0f, minDimension);
 		if (fillStroke.fill.colour == fillStroke.stroke.colour) {
-			D2D1_ROUNDED_RECT roundedRectFill = {
+			const D2D1_ROUNDED_RECT roundedRectFill = {
 				RectangleFromPRectangle(rc),
 				radius, radius };
 			D2DPenColourAlpha(fillStroke.fill.colour);
 			pRenderTarget->FillRoundedRectangle(roundedRectFill, pBrush);
 		} else {
-			D2D1_ROUNDED_RECT roundedRectFill = {
+			const D2D1_ROUNDED_RECT roundedRectFill = {
 				RectangleFromPRectangle(rc.Inset(1.0)),
 				radius-1, radius-1 };
 			D2DPenColourAlpha(fillStroke.fill.colour);
 			pRenderTarget->FillRoundedRectangle(roundedRectFill, pBrush);
 
-			D2D1_ROUNDED_RECT roundedRect = {
+			const D2D1_ROUNDED_RECT roundedRect = {
 				RectangleFromPRectangle(rc.Inset(0.5)),
 				radius, radius };
 			D2DPenColourAlpha(fillStroke.stroke.colour);
@@ -1973,12 +1973,12 @@ void SurfaceD2D::AlphaRectangle(PRectangle rc, XYPOSITION cornerSize, FillStroke
 			pRenderTarget->DrawRectangle(rectOutline, pBrush, fillStroke.stroke.WidthF());
 		} else {
 			const float cornerSizeF = static_cast<float>(cornerSize);
-			D2D1_ROUNDED_RECT roundedRectFill = {
+			const D2D1_ROUNDED_RECT roundedRectFill = {
 				rectFill, cornerSizeF - 1.0f, cornerSizeF - 1.0f };
 			D2DPenColourAlpha(fillStroke.fill.colour);
 			pRenderTarget->FillRoundedRectangle(roundedRectFill, pBrush);
 
-			D2D1_ROUNDED_RECT roundedRect = {
+			const D2D1_ROUNDED_RECT roundedRect = {
 				rectOutline, cornerSizeF, cornerSizeF};
 			D2DPenColourAlpha(fillStroke.stroke.colour);
 			pRenderTarget->DrawRoundedRectangle(roundedRect, pBrush, fillStroke.stroke.WidthF());
@@ -2038,7 +2038,7 @@ void SurfaceD2D::DrawRGBAImage(PRectangle rc, int width, int height, const unsig
 
 		ID2D1Bitmap *bitmap = nullptr;
 		const D2D1_SIZE_U size = D2D1::SizeU(width, height);
-		D2D1_BITMAP_PROPERTIES props = {{DXGI_FORMAT_B8G8R8A8_UNORM,
+		const D2D1_BITMAP_PROPERTIES props = {{DXGI_FORMAT_B8G8R8A8_UNORM,
 		    D2D1_ALPHA_MODE_PREMULTIPLIED}, 72.0, 72.0};
 		const HRESULT hr = pRenderTarget->CreateBitmap(size, image.data(),
                   width * 4, &props, &bitmap);
@@ -2081,12 +2081,12 @@ void SurfaceD2D::Stadium(PRectangle rc, FillStroke fillStroke, Ends ends) {
 	const FLOAT halfStroke = fillStroke.stroke.WidthF() / 2.0f;
 	if (ends == Surface::Ends::semiCircles) {
 		const D2D1_RECT_F rect = RectangleFromPRectangle(rc);
-		D2D1_ROUNDED_RECT roundedRectFill = { RectangleInset(rect, fillStroke.stroke.WidthF()),
+		const D2D1_ROUNDED_RECT roundedRectFill = { RectangleInset(rect, fillStroke.stroke.WidthF()),
 			radiusFill, radiusFill };
 		D2DPenColourAlpha(fillStroke.fill.colour);
 		pRenderTarget->FillRoundedRectangle(roundedRectFill, pBrush);
 
-		D2D1_ROUNDED_RECT roundedRect = { RectangleInset(rect, halfStroke),
+		const D2D1_ROUNDED_RECT roundedRect = { RectangleInset(rect, halfStroke),
 			radius, radius };
 		D2DPenColourAlpha(fillStroke.stroke.colour);
 		pRenderTarget->DrawRoundedRectangle(roundedRect, pBrush, fillStroke.stroke.WidthF());
@@ -2178,7 +2178,7 @@ void SurfaceD2D::Copy(PRectangle rc, Point from, Surface &surfaceSource) {
 	}
 }
 
-class BlobInline : public IDWriteInlineObject {
+class BlobInline final : public IDWriteInlineObject {
 	XYPOSITION width;
 
 	// IUnknown
@@ -2204,12 +2204,6 @@ class BlobInline : public IDWriteInlineObject {
 public:
 	BlobInline(XYPOSITION width_=0.0f) noexcept : width(width_) {
 	}
-	// Defaulted so BlobInline objects can be copied.
-	BlobInline(const BlobInline &) = default;
-	BlobInline(BlobInline &&) = default;
-	BlobInline &operator=(const BlobInline &) = default;
-	BlobInline &operator=(BlobInline &&) = default;
-	virtual ~BlobInline() noexcept = default;
 };
 
 /// Implement IUnknown
@@ -2343,7 +2337,7 @@ void ScreenLineLayout::FillTextLayoutFormats(const IScreenLine *screenLine, IDWr
 			representationWidth = nextTab - realPt.x;
 		}
 		if (representationWidth > 0.0f) {
-			blobs.push_back(BlobInline(representationWidth));
+			blobs.emplace_back(representationWidth);
 			textLayout->SetInlineObject(&blobs.back(), textRange);
 		};
 
@@ -3093,7 +3087,7 @@ void Window::SetCursor(Cursor curs) {
    coordinates */
 PRectangle Window::GetMonitorRect(Point pt) {
 	const PRectangle rcPosition = GetPosition();
-	POINT ptDesktop = {static_cast<LONG>(pt.x + rcPosition.left),
+	const POINT ptDesktop = {static_cast<LONG>(pt.x + rcPosition.left),
 		static_cast<LONG>(pt.y + rcPosition.top)};
 	HMONITOR hMonitor = MonitorFromPoint(ptDesktop, MONITOR_DEFAULTTONEAREST);
 
@@ -3139,7 +3133,7 @@ public:
 	}
 
 	void AllocItem(const char *text, int pixId) {
-		ListItemData lid = { text, pixId };
+		const ListItemData lid = { text, pixId };
 		data.push_back(lid);
 	}
 
