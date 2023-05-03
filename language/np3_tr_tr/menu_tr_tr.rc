@@ -425,9 +425,9 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Araç çubukları"
         BEGIN
-            MENUITEM "Show Titlebar",                                 IDM_VIEW_TITLEBAR
+            MENUITEM "Araç çubuğunu görüntüle",                       IDM_VIEW_TITLEBAR
             MENUITEM "&Menü çubuğu görüntülensin",                    IDM_VIEW_MENUBAR
-            MENUITEM "&Araç çubuğunu görüntülensin",                  IDM_VIEW_TOOLBAR
+            MENUITEM "&Araç çubuğu görüntülensin",                    IDM_VIEW_TOOLBAR
             MENUITEM "&Durum çubuğu görüntülensin",                   IDM_VIEW_STATUSBAR
             MENUITEM SEPARATOR
             MENUITEM "Araç çubuğu teması &yükle...",                  IDM_VIEW_LOADTHEMETB
@@ -577,7 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show Titlebar",                                     IDM_VIEW_TITLEBAR
+        MENUITEM "Başlık çubuğu görüntülensin",                       IDM_VIEW_TITLEBAR
         MENUITEM "Menü çubuğu görüntülensin",                         IDM_VIEW_MENUBAR
         MENUITEM "Araç çubuğu görüntülensin",                         IDM_VIEW_TOOLBAR
         MENUITEM "Durum çubuğu görüntülensin",                        IDM_VIEW_STATUSBAR

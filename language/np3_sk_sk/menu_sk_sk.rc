@@ -411,21 +411,21 @@ BEGIN
             MENUITEM "Zobraziť zameranie\tCtrl+Alt+V",      IDM_VIEW_TOGGLE_VIEW
             POPUP "Režim zobrazenia"
             BEGIN
-                MENUITEM "Uzol",                         IDM_VIEW_FV_FOLD
+                MENUITEM "Uzol",                            IDM_VIEW_FV_FOLD
                 MENUITEM "Záložka",                         IDM_VIEW_FV_BOOKMARK
                 MENUITEM "Zvýraznenie",                     IDM_VIEW_FV_HIGHLIGHT
-                MENUITEM "Záložka a uzol",               IDM_VIEW_FV_BKMRKFOLD
-                MENUITEM "Zvýraznenie a uzol",           IDM_VIEW_FV_HIGHLGFOLD
+                MENUITEM "Záložka a uzol",                  IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "Zvýraznenie a uzol",              IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
-            MENUITEM "&Denník monitorovania",              IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "&Rolovať za koniec súboru",         IDM_VIEW_SCROLLPASTEOF
-            MENUITEM "Nápovedný &tip na odkaze",         IDM_VIEW_SHOW_HYPLNK_CALLTIP
+            MENUITEM "&Denník monitorovania",               IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "&Rolovať za koniec súboru",           IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "Nápovedný &tip na odkaze",            IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         MENUITEM SEPARATOR
         POPUP "P&anely"
         BEGIN
-            MENUITEM "Show Titlebar",                       IDM_VIEW_TITLEBAR
+            MENUITEM "Zobraziť tit&ulkový panel",           IDM_VIEW_TITLEBAR
             MENUITEM "Zobraziť &textové menu",              IDM_VIEW_MENUBAR
             MENUITEM "Zobraziť pan&el nástrojov",           IDM_VIEW_TOOLBAR
             MENUITEM "Zobraziť &stavový riadok",            IDM_VIEW_STATUSBAR
@@ -577,7 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show Titlebar",                          IDM_VIEW_TITLEBAR
+        MENUITEM "Zobraziť titulkový panel",               IDM_VIEW_TITLEBAR
         MENUITEM "Zobraziť textové menu",                  IDM_VIEW_MENUBAR
         MENUITEM "Zobraziť panel nástrojov",               IDM_VIEW_TOOLBAR
         MENUITEM "Zobraziť stavový riadok",                IDM_VIEW_STATUSBAR
@@ -594,7 +594,7 @@ BEGIN
         MENUITEM "Kopírovať riadky so značkami",           IDM_EDIT_COPY_MARKED
         MENUITEM "Zmazať riadky so značkami",              IDM_EDIT_DELETE_MARKED
         MENUITEM SEPARATOR
-        MENUITEM "Skladanie",                        IDM_VIEW_FOLDING
+        MENUITEM "Skladanie",                              IDM_VIEW_FOLDING
         MENUITEM "Číslovanie riadkov",                     IDM_VIEW_LINENUMBERS
         MENUITEM "Okraj záložky",                          IDM_VIEW_BOOKMARK_MARGIN
         MENUITEM "Okraj histórie zmien",                   IDM_VIEW_CHGHIST_TOGGLE_MARGIN
