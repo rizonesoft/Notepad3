@@ -21,7 +21,6 @@
 #include "TextFile.h"
 #include "PathUtils.h"
 #include "maxpath.h"
-#include <cassert>
 #include <memory>
 
 static wchar_t WideCharSwap(wchar_t nValue)
@@ -86,7 +85,7 @@ bool CTextFile::Save(LPCWSTR path, bool keepFileDate) const
     return true;
 }
 
-bool CTextFile::Load(LPCWSTR path, UnicodeType &type, bool bUTF8, std::atomic_bool& bCancelled)
+bool CTextFile::Load(LPCWSTR path, UnicodeType &type, bool bUTF8, std::atomic_bool &bCancelled)
 {
     encoding = AutoType;
     type     = AutoType;
@@ -284,7 +283,7 @@ bool CTextFile::Load(LPCWSTR path, UnicodeType &type, bool bUTF8, std::atomic_bo
             return false;
         }
     }
-    else //if (encoding == ANSI)
+    else // if (encoding == ANSI)
     {
         try
         {
@@ -436,12 +435,12 @@ CTextFile::UnicodeType CTextFile::CheckUnicodeType(BYTE *pBuffer, int cb) const
 {
     if (cb < 2)
         return Ansi;
-    UINT16 *pVal16 = reinterpret_cast<UINT16 *>(pBuffer);
-    UINT8 * pVal8  = reinterpret_cast<UINT8 *>(pVal16 + 1);
+    UINT16 *pVal16   = reinterpret_cast<UINT16 *>(pBuffer);
+    UINT8  *pVal8    = reinterpret_cast<UINT8 *>(pVal16 + 1);
     // scan the whole buffer for a 0x0000 sequence
     // if found, we assume a binary file
-    int nNull    = 0;
-    int nDblNull = 0;
+    int     nNull    = 0;
+    int     nDblNull = 0;
     for (int i = 0; i < (cb - 2); i = i + 2)
     {
         if (0x0000 == *pVal16++)
@@ -523,7 +522,7 @@ CTextFile::UnicodeType CTextFile::CheckUnicodeType(BYTE *pBuffer, int cb) const
     return Ansi;
 }
 
-bool CTextFile::CalculateLines(std::atomic_bool& bCancelled)
+bool CTextFile::CalculateLines(std::atomic_bool &bCancelled)
 {
     // fill an array with starting positions for every line in the loaded file
     if (pFileBuf == nullptr)

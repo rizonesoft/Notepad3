@@ -78,7 +78,7 @@ bool CLanguage::LoadFile(const std::wstring& path)
         file.getline(line.get(), 2 * MAX_STRING_LENGTH);
         if (line.get()[0] == 0)
         {
-            //empty line means end of entry!
+            // empty line means end of entry!
             std::wstring msgId;
             std::wstring msgStr;
             int          type = 0;
@@ -86,24 +86,24 @@ bool CLanguage::LoadFile(const std::wstring& path)
             {
                 if (wcsncmp(I->c_str(), L"# ", 2) == 0)
                 {
-                    //user comment
+                    // user comment
                     type = 0;
                 }
                 if (wcsncmp(I->c_str(), L"#.", 2) == 0)
                 {
-                    //automatic comments
+                    // automatic comments
                     type = 0;
                 }
                 if (wcsncmp(I->c_str(), L"#,", 2) == 0)
                 {
-                    //flag
+                    // flag
                     type = 0;
                 }
                 if (wcsncmp(I->c_str(), L"msgid", 5) == 0)
                 {
-                    //message id
-                    msgId = I->c_str();
-                    msgId = std::wstring(msgId.substr(7, msgId.size() - 8));
+                    // message id
+                    msgId          = I->c_str();
+                    msgId          = std::wstring(msgId.substr(7, msgId.size() - 8));
 
                     std::wstring s = msgId;
                     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](wint_t c) { return !iswspace(c); }));
@@ -273,7 +273,7 @@ BOOL CALLBACK CLanguage::TranslateWindowProc(HWND hwnd, LPARAM lParam)
                         // now we have the rectangle the control really needs
                         if ((controlRectOrig.right - controlRectOrig.left) > (controlRect.right - controlRect.left))
                         {
-                                    controlRectOrig.right = controlRectOrig.left + (controlRect.right - controlRect.left);
+                            controlRectOrig.right = controlRectOrig.left + (controlRect.right - controlRect.left);
                             MoveWindow(hwnd, controlRectOrig.left, controlRectOrig.top, controlRectOrig.right - controlRectOrig.left, controlRectOrig.bottom - controlRectOrig.top, TRUE);
                         }
                     }
@@ -303,7 +303,7 @@ BOOL CALLBACK CLanguage::TranslateWindowProc(HWND hwnd, LPARAM lParam)
         {
             // translate hint texts in edit controls
             constexpr int bufCount = 4096;
-            auto      buf      = std::make_unique<wchar_t[]>(bufCount);
+            auto          buf      = std::make_unique<wchar_t[]>(bufCount);
             SecureZeroMemory(buf.get(), bufCount * sizeof(wchar_t));
             Edit_GetCueBannerText(hwnd, buf.get(), bufCount);
             auto sTranslated = GetTranslatedString(buf.get(), pLangMap);
@@ -312,8 +312,8 @@ BOOL CALLBACK CLanguage::TranslateWindowProc(HWND hwnd, LPARAM lParam)
         else if (wcscmp(className, TOOLTIPS_CLASS) == 0)
         {
             constexpr int bufCount  = 4096;
-            auto      buf       = std::make_unique<wchar_t[]>(bufCount);
-            auto      toolCount = static_cast<int>(SendMessage(hwnd, TTM_GETTOOLCOUNT, 0, 0));
+            auto          buf       = std::make_unique<wchar_t[]>(bufCount);
+            auto          toolCount = static_cast<int>(SendMessage(hwnd, TTM_GETTOOLCOUNT, 0, 0));
             for (int i = 0; i < toolCount; ++i)
             {
                 SecureZeroMemory(buf.get(), bufCount * sizeof(wchar_t));
