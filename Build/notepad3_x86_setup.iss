@@ -53,6 +53,7 @@
 #define app_copyright "Copyright © 2008-" + GetDateTimeString("yyyy", "", "") + " Rizonesoft"
 #define quick_launch "{userappdata}\Microsoft\Internet Explorer\Quick Launch"
 
+
 [Setup]
 AppId={#app_name}
 AppName={#app_name} (x86){#VRSN}
@@ -646,18 +647,19 @@ cht.tsk_RemoveOpenWith=從上下文選單中刪除"用 {#app_name} 開啟"
 cht.tsk_SetOpenWith=在上下文選單中新增"用 {#app_name} 開啟"
 cht.reg_Open_with_NP3=用 {#app_name} 開啟
 
-[Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-Name: "desktopicon\user"; Description: "{cm:tsk_CurrentUser}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked exclusive
-Name: "desktopicon\common"; Description: "{cm:tsk_AllUsers}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked exclusive
-Name: "startup_icon"; Description: "{cm:tsk_StartMenuIcon}"; GroupDescription: "{cm:AdditionalIcons}"
-Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 6.01
 
+[Tasks]
 Name: "reset_settings"; Description: "{cm:tsk_ResetSettings}"; GroupDescription: "{cm:tsk_Other}"; Flags: checkedonce unchecked; Check: SettingsExistCheck()
 Name: "set_default"; Description: "{cm:tsk_SetDefault}"; GroupDescription: "{cm:tsk_Other}"; Check: not DefaulNotepadCheck()
 Name: "remove_default"; Description: "{cm:tsk_RemoveDefault}"; GroupDescription: "{cm:tsk_Other}"; Flags: checkedonce unchecked; Check: DefaulNotepadCheck()
 Name: "set_openwith"; Description: "{cm:tsk_SetOpenWith}"; GroupDescription: "{cm:tsk_Other}"; Check: not OpenWithCheck()
 Name: "remove_openwith"; Description: "{cm:tsk_RemoveOpenWith}"; GroupDescription: "{cm:tsk_Other}"; Flags: checkedonce unchecked; Check: OpenWithCheck()
+
+Name: "startup_icon"; Description: "{cm:tsk_StartMenuIcon}"; GroupDescription: "{cm:AdditionalIcons}"
+Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 6.01
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "desktopicon\user"; Description: "{cm:tsk_CurrentUser}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked exclusive
+Name: "desktopicon\common"; Description: "{cm:tsk_AllUsers}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked exclusive
 
 
 [Files]
