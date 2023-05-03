@@ -59,17 +59,17 @@ public:
      * \param newLen length of the new file content in bytes
      * \note the old buffer is automatically freed.
      */
-    bool ContentsModified(std::unique_ptr<BYTE[]> pBuf, DWORD newLen);
+    bool                ContentsModified(std::unique_ptr<BYTE[]> pBuf, DWORD newLen);
 
     /**
      * Returns the line number from a given character position inside the file.
      */
-    long LineFromPosition(long pos) const;
+    long                LineFromPosition(long pos) const;
 
     /**
      * Returns the line from a given line number
      */
-    std::wstring GetLineString(long lineNumber) const;
+    std::wstring        GetLineString(long lineNumber) const;
 
     /**
      * Returns the file content as a text string.
@@ -81,17 +81,17 @@ public:
      * Returns a pointer to the file contents. Call GetFileLength() to get
      * the size in number of bytes of this buffer.
      */
-    LPVOID GetFileContent() const { return pFileBuf.get(); }
+    LPVOID              GetFileContent() const { return pFileBuf.get(); }
 
     /**
      * Returns the size of the file in bytes
      */
-    long GetFileLength() const { return fileLen; }
+    long                GetFileLength() const { return fileLen; }
 
     /**
      * Returns the encoding of the file
      */
-    UnicodeType GetEncoding() const { return encoding; }
+    UnicodeType         GetEncoding() const { return encoding; }
 
     /**
      * Returns a string representation of the encoding
@@ -106,26 +106,26 @@ public:
     /**
      * Returns the filename without the extension (if any)
      */
-    std::wstring GetFileNameWithoutExtension() const;
+    std::wstring        GetFileNameWithoutExtension() const;
 
     /**
      * Returns the filename extension (if any)
      */
-    std::wstring GetFileNameExtension() const;
+    std::wstring        GetFileNameExtension() const;
 
     /**
      * Replaces the file content.
      */
-    void SetFileContent(const std::wstring& content);
+    void                SetFileContent(const std::wstring& content);
 
-    bool HasBOM() const { return hasBOM; }
+    bool                HasBOM() const { return hasBOM; }
 
     /**
      * Sets the number of null bytes that are allowed for
      * a file to still be considered text instead of binary
      * in the encoding detection. Default is 2.
      */
-    void SetNullbyteCountForBinary(int count) { nullByteCount = count; }
+    void                SetNullbyteCountForBinary(int count) { nullByteCount = count; }
 
 protected:
     /**

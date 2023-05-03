@@ -172,7 +172,7 @@ private:
 #ifdef _DEBUG
         m_bActive = true;
 #else
-        m_bActive  = !!CRegStdDWORD(DEBUGOUTPUTREGPATH, FALSE);
+        m_bActive = !!CRegStdDWORD(DEBUGOUTPUTREGPATH, FALSE);
 #endif
     }
     ~CTraceToOutputDebugString()
@@ -186,7 +186,7 @@ private:
     static CTraceToOutputDebugString* m_pInstance;
 
     // Non Unicode output helper
-    void TraceV(PCSTR pszFormat, va_list args) const
+    void                              TraceV(PCSTR pszFormat, va_list args) const
     {
         // Format the output buffer
         char szBuffer[1024];

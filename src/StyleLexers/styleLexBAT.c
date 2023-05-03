@@ -30,6 +30,7 @@ EDITLEXER lexBAT =
         { {SCE_BAT_OPERATOR}, IDS_LEX_STR_Operator, L"Operator", L"fore:#B000B0", L"" },
         { {MULTI_STYLE(SCE_BAT_COMMAND,SCE_BAT_HIDE,0,0)}, IDS_LEX_STR_Cmd, L"Command", L"bold", L"" },
         { {SCE_BAT_LABEL}, IDS_LEX_STR_Label, L"Label", L"fore:#C80000; back:#F4F4F4; eolfilled", L"" },
+        { {SCE_BAT_AFTER_LABEL}, IDS_LEX_STR_AfterLabel, L"After Label", L"fore:#00ACAC;", L"" },
         EDITLEXER_SENTINEL
     }
 };

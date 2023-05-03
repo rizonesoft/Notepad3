@@ -16,11 +16,11 @@ def HeaderFromIncludeLine(s):
 
 def ExtractHeaders(file):
     with file.open(encoding="cp437") as infile:
-        return [HeaderFromIncludeLine(l) for l in infile if IsHeader(l)]
+        return [HeaderFromIncludeLine(h) for h in infile if IsHeader(h)]
 
 def ExtractWithPrefix(file, prefix):
     with file.open(encoding="cp437") as infile:
-        return [l.strip()[len(prefix):] for l in infile if l.startswith(prefix)]
+        return [s.strip()[len(prefix):] for s in infile if s.startswith(prefix)]
 
 def ExcludeName(name, excludes):
     return any(exclude in name for exclude in excludes)

@@ -12,6 +12,13 @@
     <meta name="Date.Modified" content="20230308" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type="text/css">
+        .logo {
+            background: url(https://www.scintilla.org/ScintillaLogo.png) no-repeat;
+            background-image: image-set(
+                        url(https://www.scintilla.org/ScintillaLogo.png) 1x,
+                        url(https://www.scintilla.org/ScintillaLogo2x.png) 2x  );
+            height:150px;
+        }
         #versionlist {
             margin: 0;
             padding: .5em;
@@ -48,9 +55,6 @@
   <body bgcolor="#FFFFFF" text="#000000">
     <table bgcolor="#000000" width="100%" cellspacing="0" cellpadding="0" border="0">
       <tr>
-        <td width="256">
-          <img src="SciWord.jpg" height="78" width="256" alt="Scintilla" />
-        </td>
         <td width="40%" align="left">
           <font color="#FFCC99" size="4"> A free source code editing component for Win32,
           GTK, and macOS</font>
@@ -66,7 +70,7 @@
     </table>
     <table bgcolor="#000000" width="100%" cellspacing="0" cellpadding="0" border="0">
       <tr>
-        <td width="100%" style="background: url(SciBreak.jpg) no-repeat;height:150px;">
+        <td width="100%" class="logo">
           &nbsp;
         </td>
       </tr>

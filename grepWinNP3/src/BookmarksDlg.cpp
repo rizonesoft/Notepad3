@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2010, 2012-2017, 2019-2022 - Stefan Kueng
+// Copyright (C) 2007-2010, 2012-2017, 2019-2023 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -246,9 +246,7 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
                     if (nameDlg.GetName().compare(buf.get()))
                     {
                         Bookmark bk = m_bookmarks.GetBookmark(buf.get());
-                        RemoveQuotes(bk.Search);
-                        RemoveQuotes(bk.Replace);
-                        bk.Name = nameDlg.GetName();
+                        bk.Name     = nameDlg.GetName();
                         m_bookmarks.AddBookmark(bk);
                         m_bookmarks.RemoveBookmark(buf.get());
                         m_bookmarks.Save();
@@ -298,8 +296,8 @@ void CBookmarksDlg::InitBookmarks()
     {
         std::wstring searchString = m_bookmarks.GetValue(section.pItem, L"searchString", L"");
         std::wstring replaceString = m_bookmarks.GetValue(section.pItem, L"replaceString", L"");
-        RemoveQuotes(searchString);
-        RemoveQuotes(replaceString);
+        CBookmarks::RemoveQuotes(searchString);
+        CBookmarks::RemoveQuotes(replaceString);
 
         LVITEM lv = {0};
         lv.mask   = LVIF_TEXT;
@@ -329,20 +327,6 @@ void CBookmarksDlg::InitBookmarks()
     ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
 }
 
-void CBookmarksDlg::RemoveQuotes(std::wstring& str)
-{
-    if (!str.empty())
-    {
-        if (str[0] == '"')
-            str = str.substr(1);
-        if (!str.empty())
-        {
-            if (str[str.size()-1] == '"')
-                str = str.substr(0, str.size()-1);
-        }
-    }
-}
-
 void CBookmarksDlg::PrepareSelected()
 {
     m_bookmarks.Save();
@@ -360,11 +344,11 @@ void CBookmarksDlg::PrepareSelected()
         m_path          = m_bookmarks.GetValue(buf.get(), L"searchpath", L"");
         m_replaceString = m_bookmarks.GetValue(buf.get(), L"replaceString", L"");
         m_sExcludeDirs = m_bookmarks.GetValue(buf.get(), L"excludedirs", L"");
-        m_sFileMatch = m_bookmarks.GetValue(buf.get(), L"filematch", L"");
-        RemoveQuotes(m_searchString);
-        RemoveQuotes(m_replaceString);
-        RemoveQuotes(m_sExcludeDirs);
-        RemoveQuotes(m_sFileMatch);
+        m_sFileMatch   = m_bookmarks.GetValue(buf.get(), L"filematch", L"");
+        CBookmarks::RemoveQuotes(m_searchString);
+        CBookmarks::RemoveQuotes(m_replaceString);
+        CBookmarks::RemoveQuotes(m_sExcludeDirs);
+        CBookmarks::RemoveQuotes(m_sFileMatch);
         m_bUseRegex          = wcscmp(m_bookmarks.GetValue(buf.get(), L"useregex", L"false"), L"true") == 0;
         m_bCaseSensitive     = wcscmp(m_bookmarks.GetValue(buf.get(), L"casesensitive", L"false"), L"true") == 0;
         m_bDotMatchesNewline = wcscmp(m_bookmarks.GetValue(buf.get(), L"dotmatchesnewline", L"false"), L"true") == 0;

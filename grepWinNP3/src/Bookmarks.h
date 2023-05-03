@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2012-2013, 2020-2022 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012-2013, 2020-2023 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -72,11 +72,13 @@ public:
     CBookmarks();
     ~CBookmarks();
 
-    void     Load();
-    void     Save();
-    void     AddBookmark(const Bookmark& bm);
-    void     RemoveBookmark(const std::wstring& name);
-    Bookmark GetBookmark(const std::wstring& name) const;
+    void        InitPath();
+    void        Load();
+    void        Save();
+    void        AddBookmark(const Bookmark& bm);
+    void        RemoveBookmark(const std::wstring& name);
+    Bookmark    GetBookmark(const std::wstring& name) const;
+    static void RemoveQuotes(std::wstring& str);
 
 protected:
     std::wstring m_iniPath;

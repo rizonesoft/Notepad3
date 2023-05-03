@@ -238,7 +238,7 @@
 #endif // SI_SUPPORT_IOSTREAMS
 
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
-#ifndef assert
+# ifndef assert
 #  include <cassert>
 # endif
 # define SI_ASSERT(x)   assert(x)
@@ -256,13 +256,13 @@
 //constexpr int SI_NOMEM = -2;    //!< Out of memory error
 //constexpr int SI_FILE = -3;     //!< File error (see errno for detail error)
 enum class SI_Error : int {
-    SI_OK = 0,       //!< No error
-    SI_UPDATED = 1,  //!< An existing value was updated
-    SI_INSERTED = 2, //!< A new value was inserted
+    SI_OK       =  0,   //!< No error
+    SI_UPDATED  =  1,   //!< An existing value was updated
+    SI_INSERTED =  2,   //!< A new value was inserted
     // note: test for any error with (retval < 0)
-    SI_FAIL = -1,  //!< Generic failure
-    SI_NOMEM = -2, //!< Out of memory error
-    SI_FILE = -3   //!< File error (see errno for detail error)
+    SI_FAIL     = -1,   //!< Generic failure
+    SI_NOMEM    = -2,   //!< Out of memory error
+    SI_FILE     = -3    //!< File error (see errno for detail error)
 };
 
 #define SI_UTF8_SIGNATURE      "\xEF\xBB\xBF"
@@ -2954,10 +2954,10 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
 
                 // write the value as long 
                 if (*iValue->pItem || !m_bAllowKeyOnly) {
-	                if (!convert.ConvertToStore(iValue->pItem)) {
-	                    return SI_Error::SI_FAIL;
-	                }
-	                a_oOutput.Write(m_bSpaces ? " = " : "=");
+                if (!convert.ConvertToStore(iValue->pItem)) {
+                    return SI_Error::SI_FAIL;
+                }
+                a_oOutput.Write(m_bSpaces ? " = " : "=");
                     if (m_bParseQuotes && IsSingleLineQuotedValue(iValue->pItem)) {
                         // the only way to preserve external whitespace on a value (i.e. before or after)
                         // is to quote it. This is simple quoting, we don't escape quotes within the data. 
@@ -2966,21 +2966,21 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
                         a_oOutput.Write("\"");
                     }
                     else if (m_bAllowMultiLine && IsMultiLineData(iValue->pItem)) {
-	                    // multi-line data needs to be processed specially to ensure
-	                    // that we use the correct newline format for the current system
-	                    a_oOutput.Write("<<<END_OF_TEXT" SI_NEWLINE_A);
-	                    if (!OutputMultiLineText(a_oOutput, convert, iValue->pItem)) {
-	                        return SI_Error::SI_FAIL;
-	                    }
-	                    a_oOutput.Write("END_OF_TEXT");
-	                }
-	                else {
-	                    a_oOutput.Write(convert.Data());
+                    // multi-line data needs to be processed specially to ensure
+                    // that we use the correct newline format for the current system
+                    a_oOutput.Write("<<<END_OF_TEXT" SI_NEWLINE_A);
+                    if (!OutputMultiLineText(a_oOutput, convert, iValue->pItem)) {
+                        return SI_Error::SI_FAIL;
+                    }
+                    a_oOutput.Write("END_OF_TEXT");
+                }
+                else {
+                    a_oOutput.Write(convert.Data());
 	                }
                 }
                 a_oOutput.Write(SI_NEWLINE_A);
                 bNeedNewLine = false;
-	        }
+            }
         }
         //???bNeedNewLine = true;
     }

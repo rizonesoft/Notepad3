@@ -26,7 +26,7 @@
 
 static HWND g_hDlgCurrent = nullptr;
 
-INT_PTR CDialog::DoModal(HINSTANCE hInstance, int resID, HWND hWndParent)
+INT_PTR     CDialog::DoModal(HINSTANCE hInstance, int resID, HWND hWndParent)
 {
     m_bPseudoModal = false;
     hResource      = hInstance;
@@ -142,7 +142,7 @@ void CDialog::InitDialog(HWND hwndDlg, UINT iconID, bool bPosition /* = true*/)
     WINDOWPLACEMENT placement;
     placement.length = sizeof(WINDOWPLACEMENT);
 
-    HWND hwndOwner = ::GetParent(hwndDlg);
+    HWND hwndOwner   = ::GetParent(hwndDlg);
     GetWindowPlacement(hwndOwner, &placement);
     if ((hwndOwner == nullptr) || (placement.showCmd == SW_SHOWMINIMIZED) || (placement.showCmd == SW_SHOWMINNOACTIVE))
         hwndOwner = ::GetDesktopWindow();
@@ -204,8 +204,8 @@ INT_PTR CALLBACK CDialog::stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPAR
         {
             // get the pointer to the window from lpCreateParams
             SetWindowLongPtr(hwndDlg, GWLP_USERDATA, lParam);
-            pWnd         = reinterpret_cast<CDialog*>(lParam);
-            pWnd->m_hwnd = hwndDlg;
+            pWnd              = reinterpret_cast<CDialog*>(lParam);
+            pWnd->m_hwnd      = hwndDlg;
             // create the tooltip control
             pWnd->m_hToolTips = CreateWindowEx(0,
                                                TOOLTIPS_CLASS, nullptr,
@@ -242,7 +242,7 @@ INT_PTR CALLBACK CDialog::stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPAR
                     bInDlgProc = true;
                     DefDlgProc(hwndDlg, uMsg, wParam, lParam);
                     bInDlgProc = false;
-                    HDC hdc    = reinterpret_cast<HDC>(wParam);
+                    HDC  hdc   = reinterpret_cast<HDC>(wParam);
                     // draw the frame margins in black
                     RECT rc;
                     GetClientRect(hwndDlg, &rc);
@@ -539,7 +539,7 @@ BOOL CDialog::IsDialogMessage(LPMSG lpMsg)
 
 void CDialog::AdjustControlSize(UINT nID)
 {
-    HWND hwndDlgItem = GetDlgItem(*this, nID);
+    HWND hwndDlgItem  = GetDlgItem(*this, nID);
     // adjust the size of the control to fit its content
     auto sControlText = GetDlgItemText(nID);
     // next step: find the rectangle the control text needs to
@@ -553,11 +553,11 @@ void CDialog::AdjustControlSize(UINT nID)
     RECT controlRectOrig = controlRect;
     if (hDC)
     {
-                HFONT hFont    = GetWindowFont(hwndDlgItem);
+        HFONT hFont    = GetWindowFont(hwndDlgItem);
         HFONT hOldFont = static_cast<HFONT>(SelectObject(hDC, hFont));
         OffsetRect(&controlRect, -controlRect.left, -controlRect.top);
         if (DrawText(hDC, sControlText.get(), -1, &controlRect, DT_WORDBREAK | DT_EXPANDTABS | DT_LEFT | DT_CALCRECT))
-                {
+        {
             // we're dealing with radio buttons and check boxes,
             // which means we have to add a little space for the checkbox
             const int checkWidth = GetSystemMetrics(SM_CXMENUCHECK) + 2 * GetSystemMetrics(SM_CXEDGE) + CDPIAware::Instance().Scale(*this, 3);
@@ -565,7 +565,7 @@ void CDialog::AdjustControlSize(UINT nID)
             // now we have the rectangle the control really needs
             if ((controlRectOrig.right - controlRectOrig.left) > (controlRect.right - controlRect.left))
             {
-                        controlRectOrig.right = controlRectOrig.left + (controlRect.right - controlRect.left);
+                controlRectOrig.right = controlRectOrig.left + (controlRect.right - controlRect.left);
                 MoveWindow(hwndDlgItem, controlRectOrig.left, controlRectOrig.top, controlRectOrig.right - controlRectOrig.left, controlRectOrig.bottom - controlRectOrig.top, TRUE);
             }
         }

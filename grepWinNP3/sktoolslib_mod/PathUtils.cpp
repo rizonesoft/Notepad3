@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2013-2015, 2017, 2020-2022 - Stefan Kueng
+// Copyright (C) 2013-2015, 2017, 2020-2023 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -121,6 +121,17 @@ std::wstring CPathUtils::GetLongPathname(const std::wstring& path)
     }
     if (ret == 0)
         return path;
+    if (sRet.starts_with('\\'))
+    {
+        ret = GetFullPathName(sRet.c_str(), 0, nullptr, nullptr);
+        if (ret)
+        {
+            auto fullPath = std::make_unique<wchar_t[]>(ret + 2);
+            ret           = GetFullPathName(sRet.c_str(), ret + 1, fullPath.get(), nullptr);
+            if (ret)
+                sRet = std::wstring(fullPath.get(), ret);
+        }
+    }
     return sRet;
 }
 
