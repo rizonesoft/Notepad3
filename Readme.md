@@ -318,6 +318,10 @@ Set to 0 to disable recent files on the same drive or network share as Notepad3.
 This items are managed by Notepad3. (`Menu->Settings->Window->Reuse Window  Ctrl+Shift+L`)
 - If set, another started Notepad3 instance will try to give control to the currently opened Window and quit.
 
+#### `SaveBlankNewFile=true`
+
+New file (not exists on file system ("Untitled")) asking('true')/not asking('false') for file save if document contains any whitespace (blank/space, tab, line-break) character.
+
 #### `SciFontQuality=3`
 
 #### `SimpleIndentGuides=0`

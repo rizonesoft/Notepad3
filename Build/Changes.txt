@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.503.(build_#) (2023-05-03)
+Current BETA/RC Version 6.23.504.(build_#) (2023-05-04)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.504.1]- Option: do not save blank new files.
 [.503.1]- Minor enhancement on log file monitoring.
 [.430.1]- Some enhancements for Logfile Monitoring.
 [.430.1]- Option to show/hide titlebar.
