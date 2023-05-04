@@ -1216,6 +1216,8 @@ void LoadSettings()
     Flags.NoHTMLGuess = IniSectionGetBool(IniSecSettings2, L"NoHTMLGuess", DefaultFlags.NoHTMLGuess);
     Flags.NoCGIGuess = IniSectionGetBool(IniSecSettings2, L"NoCGIGuess", DefaultFlags.NoCGIGuess);
     Flags.NoFileVariables = IniSectionGetBool(IniSecSettings2, L"NoFileVariables", DefaultFlags.NoFileVariables);
+    
+    Flags.SaveBlankNewFile = IniSectionGetBool(IniSecSettings2, L"SaveBlankNewFile", DefaultFlags.SaveBlankNewFile);
 
     Flags.PrintFileAndLeave = Globals.CmdLnFlag_PrintFileAndLeave;
 
