@@ -779,6 +779,7 @@ static void _InitGlobals()
     Flags.NoHTMLGuess =DefaultFlags.NoHTMLGuess = false;
     Flags.NoCGIGuess = DefaultFlags.NoCGIGuess = false;
     Flags.NoFileVariables = DefaultFlags.NoFileVariables = false;
+    Flags.SaveBlankNewFile = DefaultFlags.SaveBlankNewFile = true;
     Flags.ShellUseSystemMRU = DefaultFlags.ShellUseSystemMRU = true;
     Flags.PrintFileAndLeave = DefaultFlags.PrintFileAndLeave = 0;
     Flags.bPreserveFileModTime = DefaultFlags.bPreserveFileModTime = false;
@@ -11787,24 +11788,24 @@ bool FileSave(FileSaveFlags fSaveFlags)
     fioStatus.iEncoding        = Encoding_GetCurrent();
     fioStatus.iEOLMode         = SciCall_GetEOLMode();
 
-#if 0
     bool bIsEmptyNewFile = false;
-    if (Path_IsEmpty(Paths.CurrentFile)) {
-        DocPos const cchText = SciCall_GetTextLength();
-        if (cchText <= 0) {
-            bIsEmptyNewFile = true;
-        } else if (cchText < 2048) {
-            char chTextBuf[2048] = { '\0' };
-            SciCall_GetText(COUNTOF(chTextBuf) - 1, chTextBuf);
-            StrTrimA(chTextBuf, " \t\n\r");
-            if (StrIsEmptyA(chTextBuf)) {
+    if (Flags.SaveBlankNewFile) {
+        bIsEmptyNewFile = (Path_IsEmpty(Paths.CurrentFile) && (SciCall_GetTextLength() <= 0LL));
+    }
+    else {
+        if (Path_IsEmpty(Paths.CurrentFile)) {
+            DocPos const cchText = SciCall_GetTextLength();
+            if (cchText <= 0) {
                 bIsEmptyNewFile = true;
+            }
+            else {
+                struct Sci_TextToFindFull ft = { { 0, 0 }, "\\S+", { 0, 0 } };
+                ft.chrg.cpMax = Sci_GetDocEndPosition();
+                DocPos const iPos = SciCall_FindTextFull(SCFIND_REGEXP, &ft);
+                bIsEmptyNewFile = ((iPos < 0) || (iPos >= ft.chrg.cpMax));
             }
         }
     }
-#else
-    bool const bIsEmptyNewFile = (Path_IsEmpty(Paths.CurrentFile) && (SciCall_GetTextLength() <= 0LL));
-#endif
 
     bool const bSaveNeeded = (IsSaveNeeded() || IsFileChangedFlagSet()) && !bIsEmptyNewFile;
 

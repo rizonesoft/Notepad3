@@ -722,6 +722,7 @@ typedef struct FLAGS_T {
     bool RelativeFileMRU;
     bool PortableMyDocs;
     bool NoFadeHidden;
+    bool SaveBlankNewFile;
     bool SimpleIndentGuides;
     bool NoHTMLGuess;
     bool NoCGIGuess;
