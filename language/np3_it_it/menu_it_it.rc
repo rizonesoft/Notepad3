@@ -425,10 +425,10 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "P&annelli"
         BEGIN
-            MENUITEM "Show Titlebar",                              IDM_VIEW_TITLEBAR
+            MENUITEM "Mostra la barra del &Titolo",                IDM_VIEW_TITLEBAR
             MENUITEM "Mostra barra dei &Menu",                     IDM_VIEW_MENUBAR
             MENUITEM "Mostra barra degli S&trumenti",              IDM_VIEW_TOOLBAR
-            MENUITEM "Mostra Barra di &Stato",                     IDM_VIEW_STATUSBAR
+            MENUITEM "Mostra barra di &Stato",                     IDM_VIEW_STATUSBAR
             MENUITEM SEPARATOR
             MENUITEM "&Carica Tema barra degli Strumenti...",       IDM_VIEW_LOADTHEMETB
             MENUITEM "&Personalizza barra degli Strumenti...",      IDM_VIEW_CUSTOMIZETB
@@ -577,7 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show Titlebar",                 IDM_VIEW_TITLEBAR
+        MENUITEM "Mostra la barra del &Titolo",   IDM_VIEW_TITLEBAR
         MENUITEM "Mostra barra dei Menu",         IDM_VIEW_MENUBAR
         MENUITEM "Mostra barra degli Strumenti",  IDM_VIEW_TOOLBAR
         MENUITEM "Mostra barra di Stato",         IDM_VIEW_STATUSBAR

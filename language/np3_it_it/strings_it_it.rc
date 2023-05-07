@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Questa operazione cancella la cronologia delle modifiche. Continuare?"
     IDS_MUI_READONLY_SAVE   """%s"" è in sola lettura. Salvare in un file differente?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
+                            "Il file corrente è stato modificato da un programma esterno.\nScegliere:\n\Annulla -\t\tIgnora ulteriori modifiche\nRicarica -\t\tRicarica File\nContinua -\tPassa al monitoraggio del file"
     IDS_MUI_FILECHANGENOTIFY2 "Il file corrente è stato cancellato. Salvarlo adesso?"
     IDS_MUI_FILELOCK_ERROR  "Impossibile ottenere il lock esclusivo per ""%s""!"
     IDS_MUI_STICKYWINPOS    "La posizione della finestra ""sticky"" è abilitata. Qualunque finestra Notepad3 userà le attuali impostazioni di posizione finestra."
@@ -286,7 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Commuta visualizzazione..."
     IDS_MUI_SB_REPLACE_ALL    "Sostituisci tutto..."
     IDS_MUI_SB_WRAP_LINES     "A capo automatico..."
-    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
+    IDS_MUI_SB_SORTING_LINES  "Ordinamento linee..."
     IDS_MUI_SB_CONV_LNBRK     "Converti interruzioni di linea..."
     IDS_MUI_SB_RECODING_DOC   "Ricodifica documento..."
     IDS_MUI_SB_LEXER_STYLING  "Applica Lexer Styling..."
