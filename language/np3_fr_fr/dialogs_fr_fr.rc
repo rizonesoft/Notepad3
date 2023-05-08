@@ -659,8 +659,8 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     CONTROL         "&Ne plus afficher ce message.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
-    DEFPUSHBUTTON   "&Eéessayer",IDRETRY,186,70,50,14
-    PUSHBUTTON      "&Annule", IDCANCEL, 130, 70, 50, 14
+    DEFPUSHBUTTON   "&Réessayer",IDRETRY,186,70,50,14
+    PUSHBUTTON      "&Annuler", IDCANCEL, 130, 70, 50, 14
     PUSHBUTTON      "&Continuer",IDCONTINUE,242,70,50,14
 END
 
