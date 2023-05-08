@@ -667,9 +667,13 @@ Source: "{#bindir}{#RLSdir}\Notepad3.exe"; DestDir: "{app}"; Flags: ignoreversio
 Source: "{#bindir}{#RLSdir}\minipath.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#bindir}{#RLSdir}\grepWinNP3.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#bindir}{#RLSdir}\np3encrypt.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\License.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\Readme.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\grepWinNP3\grepWinLicense.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\License.txt"; DestDir: "{app}\Docs"; Flags: ignoreversion
+Source: "..\Readme.txt"; DestDir: "{app}\Docs"; Flags: ignoreversion
+Source: "..\grepWinNP3\grepWinLicense.txt"; DestDir: "{app}\Docs"; Flags: ignoreversion
+Source: "Changes.txt"; DestDir: "{app}\Docs"; Flags: ignoreversion
+Source: "Docs\*.txt"; DestDir: "{app}\Docs"; Flags: ignoreversion
+Source: "Docs\crypto\*.txt"; DestDir: "{app}\Docs\crypto"; Flags: ignoreversion
+Source: "Docs\uthash\*.txt"; DestDir: "{app}\Docs\uthash"; Flags: ignoreversion
 Source: "Notepad3.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3"; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "minipath.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3"; Flags: onlyifdoesntexist uninsneveruninstall
 Source: "Themes\Dark.ini"; DestDir: "{userappdata}\Rizonesoft\Notepad3\Themes"; Flags: onlyifdoesntexist uninsneveruninstall
@@ -728,10 +732,6 @@ Source: "{#bindir}{#RLSdir}\lng\zh-CN\mplng.dll.mui"; DestDir: "{app}\lng\zh-CN"
 Source: "{#bindir}{#RLSdir}\lng\zh-CN\np3lng.dll.mui"; DestDir: "{app}\lng\zh-CN"; Flags: ignoreversion
 Source: "{#bindir}{#RLSdir}\lng\zh-TW\mplng.dll.mui"; DestDir: "{app}\lng\zh-TW"; Flags: ignoreversion
 Source: "{#bindir}{#RLSdir}\lng\zh-TW\np3lng.dll.mui"; DestDir: "{app}\lng\zh-TW"; Flags: ignoreversion
-Source: "Changes.txt"; DestDir: "{app}\Docs"; Flags: ignoreversion
-Source: "Docs\*.txt"; DestDir: "{app}\Docs"; Flags: ignoreversion
-Source: "Docs\crypto\*.txt"; DestDir: "{app}\Docs\crypto"; Flags: ignoreversion
-Source: "Docs\uthash\*.txt"; DestDir: "{app}\Docs\uthash"; Flags: ignoreversion
 
 
 [Dirs]
