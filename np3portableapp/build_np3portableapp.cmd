@@ -123,7 +123,6 @@ if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\uthash\" (
 :: Copy all current "Docs" files
 copy "%NP3_DISTRIB_DIR%\Changes.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Changes.txt" /Y /V
 copy "%SCRIPT_DIR%..\License.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\License.txt" /Y /V
-copy "%SCRIPT_DIR%..\License.txt" "%NP3_PORTAPP_DIR%\App\AppInfo\EULA.txt" /Y /V
 copy "%SCRIPT_DIR%..\Readme.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Readme.txt" /Y /V
 copy "%NP3_DOC_DIR%\*.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\*.txt" /Y /V
 copy "%NP3_DOC_DIR%\crypto\*.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\crypto\*.txt" /Y /V
