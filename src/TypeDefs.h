@@ -286,6 +286,7 @@ typedef struct EDITFINDREPLACE {
     bool bRegExprSearch;
     bool bWildcardSearch;
     bool bMarkOccurences;
+    bool bInstantIncrementalSearch;
     bool bHideNonMatchedLines;
     bool bStateChanged;
     HWND hwnd;
@@ -296,7 +297,7 @@ typedef struct EDITFINDREPLACE {
 
 typedef const EDITFINDREPLACE* const CLPCEDITFINDREPLACE;
 
-#define INIT_EFR_DATA  { 0, false, false, false, false, false, false, false, false, true, NULL, NULL, NULL }
+#define INIT_EFR_DATA  { 0, false, false, false, false, false, false, false, true, false, true, NULL, NULL, NULL }
 // USE: void DuplicateEFR(LPEDITFINDREPLACE dst, CLPCEDITFINDREPLACE src);
 //      void ReleaseEFR(LPEDITFINDREPLACE efr);
 
