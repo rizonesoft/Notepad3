@@ -1546,6 +1546,8 @@ void LoadSettings()
     Settings.EFR_Data.bWildcardSearch = IniSectionGetBool(IniSecSettings, L"WildcardSearch", Defaults.EFR_Data.bWildcardSearch);
     Defaults.EFR_Data.bMarkOccurences = true;
     Settings.EFR_Data.bMarkOccurences = IniSectionGetBool(IniSecSettings, L"FindMarkAllOccurrences", Defaults.EFR_Data.bMarkOccurences);
+    Defaults.EFR_Data.bInstantIncrementalSearch = true;
+    Settings.EFR_Data.bInstantIncrementalSearch = IniSectionGetBool(IniSecSettings, L"InstantIncrementalSearch", Defaults.EFR_Data.bInstantIncrementalSearch);
     Defaults.EFR_Data.bHideNonMatchedLines = false;
     Settings.EFR_Data.bHideNonMatchedLines = IniSectionGetBool(IniSecSettings, L"HideNonMatchedLines", Defaults.EFR_Data.bHideNonMatchedLines);
     Defaults.EFR_Data.fuFlags = 0;
@@ -1998,6 +2000,11 @@ static bool _SaveSettings(bool bForceSaveSettings)
         IniSectionSetBool(IniSecSettings, L"FindMarkAllOccurrences", Settings.EFR_Data.bMarkOccurences);
     } else {
         IniSectionDelete(IniSecSettings, L"FindMarkAllOccurrences", false);
+    }
+    if (Settings.EFR_Data.bInstantIncrementalSearch != Defaults.EFR_Data.bInstantIncrementalSearch) {
+        IniSectionSetBool(IniSecSettings, L"InstantIncrementalSearch", Settings.EFR_Data.bInstantIncrementalSearch);
+    } else {
+        IniSectionDelete(IniSecSettings, L"InstantIncrementalSearch", false);
     }
     if (Settings.EFR_Data.bHideNonMatchedLines != Defaults.EFR_Data.bHideNonMatchedLines) {
         IniSectionSetBool(IniSecSettings, L"HideNonMatchedLines", Settings.EFR_Data.bHideNonMatchedLines);
