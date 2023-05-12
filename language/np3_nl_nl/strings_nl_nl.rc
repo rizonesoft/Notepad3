@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Deze actie zal de geschiedenis wissen. Doorgaan?"
     IDS_MUI_READONLY_SAVE   """%s"" is alleen-lezen. Opslaan als een ander bestand?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
+                            "Het huidige bestand is gewijzigd door een extern programma..\nKies:\n\nAnnuleren -\t\tVerdere aanpassingen negeren\nOpnieuw laden -\t\tBestand opnieuw laden\nDoorgaan -\tSchakelen naar bestandscontrole"
     IDS_MUI_FILECHANGENOTIFY2 "Het huidige bestand is verwijderd. Nu opslaan?"
     IDS_MUI_FILELOCK_ERROR  "Kan geen exclusieve bestandsvergrendeling verkrijgen voor ""%s""!"
     IDS_MUI_STICKYWINPOS    "Kleverige vensterpositie is ingeschakeld. Alle nieuwe Notepad3 vensters gebruiken de huidige instellingen voor vensterplaatsing."
@@ -286,7 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Weergave wisselen..."
     IDS_MUI_SB_REPLACE_ALL    "Alles vervangen..."
     IDS_MUI_SB_WRAP_LINES     "Regelterugloop..."
-    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
+    IDS_MUI_SB_SORTING_LINES  "Regels sorteren..."
     IDS_MUI_SB_CONV_LNBRK     "Regeleindes converteren..."
     IDS_MUI_SB_RECODING_DOC   "Document hercoderen..."
     IDS_MUI_SB_LEXER_STYLING  "Lexer Styling toepassen..."

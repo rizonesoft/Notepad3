@@ -1250,7 +1250,7 @@
 #define IDS_LEX_STR_63345               63345
 #define IDS_LEX_STR_63346               63346
 #define IDS_LEX_STR_Obj                 63347
-#define IDS_LEX_STR_Key                   63348
+#define IDS_LEX_STR_Key                 63348
 #define IDS_LEX_STR_HotKey              63349
 #define IDS_LEX_STR_HotStrg             63350
 #define IDS_LEX_STR_HotStrgOp           63351
@@ -1290,7 +1290,7 @@
 #define IDS_LEX_STR_63385               63385
 #define IDS_LEX_STR_63386               63386
 #define IDS_LEX_STR_63387               63387
-#define IDS_LEX_STR_StrgEOL           63388
+#define IDS_LEX_STR_StrgEOL             63388
 #define IDS_LEX_STD_CH_SAVED            63389
 #define IDS_LEX_STD_CH_MODIFIED         63390
 #define IDS_LEX_STD_CH_REV_TO_ORG       63391
@@ -1307,6 +1307,7 @@
 #define IDS_LEX_STR_InOut               63402
 #define IDS_LEX_STR_PortConn            63403
 #define IDS_LEX_STR_SysTasks            63404
+#define IDS_LEX_STR_AfterLabel          63405
 
 
 #define IDS_LEX_CSV_COL_0               63490

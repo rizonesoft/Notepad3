@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010-2022 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010-2023 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -178,7 +178,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
 
     CCmdLineParser parser(lpCmdLine);
 
-    //MessageBox(NULL, L"", L"", MB_OK);
+    // MessageBox(NULL, L"", L"", MB_OK);
 
     if (parser.HasKey(L"register"))
     {
@@ -253,46 +253,35 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
     {
         bool bOnlyOne = bPortable ? g_iniFile.GetBoolValue(L"global", L"onlyone", L"false") : 
                                     !!DWORD(CRegStdDWORD(L"Software\\grepWinNP3\\onlyone", 0));
-        bool bCopyData = false;
+                                    
+        //auto searchfor = parser.HasVal(L"searchfor") ? parser.GetVal(L"searchfor") :
+        //                        (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L"");
+
+        auto sPath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : 
+                            (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : CPathUtils::GetCWD());
+        sPath      = SanitizeSearchPaths(sPath);
+        SearchReplace(sPath, L"/", L"\\");
+        sPath = SanitizeSearchPaths(sPath);
+
         if (SendMessage(hWnd, GREPWIN_STARTUPMSG, 1, 0)) // check if grepWin was started moments ago
         {
             SendMessage(hWnd, GREPWIN_STARTUPMSG, 0, 0); // reset the timer
-            bCopyData = true;
-            bQuit     = true;
-        }
-        else if (bOnlyOne)
-        {
-            bCopyData = true;
-            bQuit     = true;
-        }
-        if (bCopyData) {
+
+            //CopyData_t data2copy = {0};
+            //StringCchCopyW(data2copy.searchFor, _countof(data2copy.searchFor), searchfor.c_str());
+            //StringCchCopyW(data2copy.searchPath, _countof(data2copy.searchPath), sPath.c_str());
+
             // grepWin was started just moments ago:
             // add the new path to the existing search path in that grepWin instance
-            std::wstring searchfor = parser.HasVal(L"searchfor") ?
-                                     parser.GetVal(L"searchfor") :
-                                     (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L"");
-
-            std::wstring sPath     = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : 
-                (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : L"");
-            SearchReplace(sPath, L"/", L"\\");
-            sPath = SanitizeSearchPaths(sPath);
-
-            CopyData_t data2copy = {0};
-            StringCchCopyW(data2copy.searchFor, _countof(data2copy.searchFor), searchfor.c_str());
-            StringCchCopyW(data2copy.searchPath, _countof(data2copy.searchPath), sPath.c_str());
-
             COPYDATASTRUCT copyData = {0};
             copyData.lpData         = static_cast<LPVOID>(const_cast<LPWSTR>(sPath.c_str()));
             copyData.cbData         = static_cast<DWORD>(sPath.size()) * sizeof(wchar_t);
             SendMessage(hWnd, WM_COPYDATA, 0, reinterpret_cast<LPARAM>(&copyData));
-            SetForegroundWindow(hWnd); //set the window to front
+            SetForegroundWindow(hWnd); // set the window to front
             bQuit = true;
         }
         else if (bOnlyOne)
         {
-            std::wstring sPath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : L"";
-            SearchReplace(sPath, L"/", L"\\");
-            sPath                   = SanitizeSearchPaths(sPath);
             COPYDATASTRUCT copyData = {0};
             copyData.lpData         = static_cast<LPVOID>(const_cast<LPWSTR>(sPath.c_str()));
             copyData.cbData         = static_cast<DWORD>(sPath.size()) * sizeof(wchar_t);
@@ -338,6 +327,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
         }
         else
         {
+            bool       searchPathSet = false;
             CSearchDlg searchDlg(nullptr);
             if (parser.HasVal(L"searchini"))
             {
@@ -354,6 +344,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     std::wstring sPath = searchIni.GetValue(section.c_str(), L"searchpath");
                     sPath              = SanitizeSearchPaths(sPath);
                     searchDlg.SetSearchPath(sPath);
+                    searchPathSet = true;
                 }
                 if (searchIni.GetValue(section.c_str(), L"searchfor"))
                     searchDlg.SetSearchString(searchIni.GetValue(section.c_str(), L"searchfor"));
@@ -448,6 +439,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                                          (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : L"");
                 sPath = SanitizeSearchPaths(sPath);
                 searchDlg.SetSearchPath(sPath);
+                searchPathSet = true;
             }
             if (parser.HasKey(L"searchfor"))
                 searchDlg.SetSearchString(parser.GetVal(L"searchfor") ? parser.GetVal(L"searchfor") : 
@@ -539,7 +531,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                 searchDlg.SetDateLimit(parser.GetLongVal(L"datelimit"), date1, date2);
             }
 
-            if (!parser.HasKey(L"searchpath"))
+            if (!searchPathSet)
             {
                 auto cmdLineSize = wcslen(lpCmdLine);
                 auto cmdLinePath = std::make_unique<wchar_t[]>(cmdLineSize + 1);
@@ -549,6 +541,12 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                 {
                     std::wstring sPath = cmdLinePath.get();
                     sPath              = SanitizeSearchPaths(sPath);
+                    searchDlg.SetSearchPath(sPath);
+                }
+                else
+                {
+                    auto sPath = CPathUtils::GetCWD();
+                    sPath      = SanitizeSearchPaths(sPath);
                     searchDlg.SetSearchPath(sPath);
                 }
             }

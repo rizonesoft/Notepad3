@@ -13,6 +13,7 @@
 #include <cstdio>
 #include <cmath>
 
+#include <ranges>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -26,6 +27,7 @@
 #include <memory>
 #include <chrono>
 #include <atomic>
+#include <mutex>
 #include <thread>
 #include <future>
 
@@ -632,7 +634,7 @@ SelectionRange Editor::LineSelectionRange(SelectionPosition currentPos_, Selecti
 		anchor_ = SelectionPosition(
 			pdoc->LineEnd(pdoc->LineFromPosition(anchor_.Position())));
 	}
-	return SelectionRange(currentPos_, anchor_);
+	return {currentPos_, anchor_};
 }
 
 void Editor::SetSelection(SelectionPosition currentPos_, SelectionPosition anchor_) {
@@ -1914,7 +1916,7 @@ Sci::Position Editor::FormatRange(Scintilla::Message iMessage, Scintilla::uptr_t
 	void *ptr = PtrFromSPtr(lParam);
 	if (iMessage == Message::FormatRange) {
 		RangeToFormat *pfr = static_cast<RangeToFormat *>(ptr);
-		CharacterRangeFull chrg{ pfr->chrg.cpMin,pfr->chrg.cpMax };
+		const CharacterRangeFull chrg{ pfr->chrg.cpMin,pfr->chrg.cpMax };
 		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		AutoSurface surface(pfr->hdc, this, Technology::Default, true);
 		AutoSurface surfaceMeasure(pfr->hdcTarget, this, Technology::Default, true);
@@ -2043,10 +2045,8 @@ void Editor::InsertCharacter(std::string_view sv, CharacterSource charSource) {
 			[](const SelectionRange *a, const SelectionRange *b) noexcept {return *a < *b;});
 
 		// Loop in reverse to avoid disturbing positions of selections yet to be processed.
-		for (std::vector<SelectionRange *>::reverse_iterator rit = selPtrs.rbegin();
-			rit != selPtrs.rend(); ++rit) {
-			SelectionRange *currentSel = *rit;
-			if (!RangeContainsProtected(currentSel->Start().Position(),
+		for (Scintilla::Internal::SelectionRange * currentSel : std::ranges::reverse_view(selPtrs)) {
+				if (!RangeContainsProtected(currentSel->Start().Position(),
 				currentSel->End().Position())) {
 				Sci::Position positionInsert = currentSel->Start().Position();
 				if (!currentSel->Empty()) {
@@ -4341,7 +4341,7 @@ std::string Editor::RangeText(Sci::Position start, Sci::Position end) const {
 		pdoc->GetCharRange(ret.data(), start, len);
 		return ret;
 	}
-	return std::string();
+	return {};
 }
 
 void Editor::CopySelectionRange(SelectionText *ss, bool allowLineCopy) {

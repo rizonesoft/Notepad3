@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Táto operácia vymaže históriu spätných krokov. Pokračovať?"
     IDS_MUI_READONLY_SAVE   """%s"" je iba na čítanie. Uložiť súbor pod iným názvom?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
+                            "Aktuálny súbor bol upravený externým programom.\nVyberte ďalší postup:\n\nZrušiť -\t\tIgnorovať ďalšie zmeny\nZnovu načítať -\t\tZnovu načítať súbor\nPokračovať -\tPrepnúť monitorovanie súboru"
     IDS_MUI_FILECHANGENOTIFY2 "Aktuálny súbor bol odstránený. Uložiť ho znovu?"
     IDS_MUI_FILELOCK_ERROR  "Nedá sa exkluzívne zamknúť súbor ""%s""!"
     IDS_MUI_STICKYWINPOS    "Fixovanie polohy okna je povolené. Všetky nové okná Notepad2 budú používať aktuálne nastavenie umiestnenia okna."
@@ -286,7 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Prepnúť zobrazenie..."
     IDS_MUI_SB_REPLACE_ALL    "Nahradiť všetko..."
     IDS_MUI_SB_WRAP_LINES     "Zalomiť riadky..."
-    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
+    IDS_MUI_SB_SORTING_LINES  "Zoradiť riadky..."
     IDS_MUI_SB_CONV_LNBRK     "Konvertovať zalomenie riadkov..."
     IDS_MUI_SB_RECODING_DOC   "Prekódovať dokument..."
     IDS_MUI_SB_LEXER_STYLING  "Použiť Lexer štýl..."

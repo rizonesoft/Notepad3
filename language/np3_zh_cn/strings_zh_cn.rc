@@ -282,14 +282,14 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "标记全部匹配..."
-    IDS_MUI_SB_TOGGLE_VIEW    "切换视图..."
-    IDS_MUI_SB_REPLACE_ALL    "替换全部..."
-    IDS_MUI_SB_WRAP_LINES     "自动换行..."
-    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "转换换行符..."
-    IDS_MUI_SB_RECODING_DOC   "转换文档编码..."
-    IDS_MUI_SB_LEXER_STYLING  "应用词法样式..."
+    IDS_MUI_SB_MARK_ALL_OCC   "正在标记全部匹配..."
+    IDS_MUI_SB_TOGGLE_VIEW    "正在切换视图..."
+    IDS_MUI_SB_REPLACE_ALL    "正在替换全部..."
+    IDS_MUI_SB_WRAP_LINES     "正在自动换行..."
+    IDS_MUI_SB_SORTING_LINES  "正在排序行..."
+    IDS_MUI_SB_CONV_LNBRK     "正在转换换行符..."
+    IDS_MUI_SB_RECODING_DOC   "正在转换文档编码..."
+    IDS_MUI_SB_LEXER_STYLING  "正在应用词法样式..."
 END
 
 STRINGTABLE

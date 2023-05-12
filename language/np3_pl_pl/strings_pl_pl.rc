@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Ta operacja wyczyści historię cofania. Kontynuować?"
     IDS_MUI_READONLY_SAVE   """%s"" tylko do odczytu. Zapisać do innego pliku?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
+                            "Bieżący plik został zmodyfikowany przez zewnętrzny program.\nWybierz:\n\nAnuluj -\t\tIgnoruj dalsze zmiany\nZaładuj ponownie -\t\tZaładuj ponownie plik\nKontynuuj -\tPrzełącz na monitorowanie pliku"
     IDS_MUI_FILECHANGENOTIFY2 "Bieżący plik został usunięty. Zapisać teraz?"
     IDS_MUI_FILELOCK_ERROR  "Nie można uzyskać wyłącznej blokady plików dla ""%s""!"
     IDS_MUI_STICKYWINPOS    "Zamrożona pozycja okna jest włączona. Jakiekolwiek nowe okno Notepad3 zastosuje ustawienia bieżącego umiejscowienia okna."
@@ -286,7 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Przełącz widok..."
     IDS_MUI_SB_REPLACE_ALL    "Zamień wszystko..."
     IDS_MUI_SB_WRAP_LINES     "Zawiń linie..."
-    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
+    IDS_MUI_SB_SORTING_LINES  "Sortowanie Linii..."
     IDS_MUI_SB_CONV_LNBRK     "Konwertuj podziały wierszy..."
     IDS_MUI_SB_RECODING_DOC   "Ponowne kodowanie dokumentu..."
     IDS_MUI_SB_LEXER_STYLING  "Zastosuj stylizację Lexera..."

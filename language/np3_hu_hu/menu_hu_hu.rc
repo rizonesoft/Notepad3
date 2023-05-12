@@ -425,7 +425,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "P&anelek"
         BEGIN
-            MENUITEM "Show Titlebar",                           IDM_VIEW_TITLEBAR
+            MENUITEM "&Címsor megjelenítése",                   IDM_VIEW_TITLEBAR
             MENUITEM "Menü&sor megjelenítése",                  IDM_VIEW_MENUBAR
             MENUITEM "Esz&köztár megjelenítése",                IDM_VIEW_TOOLBAR
             MENUITEM "Állapotso&r megjelenítése",               IDM_VIEW_STATUSBAR
@@ -577,7 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show Titlebar",                          IDM_VIEW_TITLEBAR
+        MENUITEM "Címsor megjelenítése",                   IDM_VIEW_TITLEBAR
         MENUITEM "Menüsor megjelenítése",                  IDM_VIEW_MENUBAR
         MENUITEM "Eszköztár megjelenítése",                IDM_VIEW_TOOLBAR
         MENUITEM "Állapotsor megjelenítése",               IDM_VIEW_STATUSBAR

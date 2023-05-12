@@ -272,17 +272,17 @@ END
 
 IDD_MUI_CHANGENOTIFY DIALOGEX 0, 0, 184, 118
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Notification de modification de fichier"
+CAPTION "Notification de modification du fichier"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "Aucu&ne.", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
     CONTROL         "&Indicateur (silencieux).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
     CONTROL         "Afficher un &message.", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
     CONTROL         "&Auto-rechargement.", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
-    CONTROL         "&Verrouillage exclusif de fichier.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,125,10
+    CONTROL         "&Verrouillage exclusif du fichier.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,125,10
     CONTROL         "&Rétablir si un nouveau fichier est ouvert.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,145,10
     CONTROL         "Journal de surveillance.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
-    LTEXT           "File Check Interval [ms]",IDC_LINE_TEXT,7,102,120,10
+    LTEXT           "Intervalle de contrôle du fichier [ms]",IDC_LINE_TEXT,7,102,120,10
     EDITTEXT        IDC_FILE_CHECK_INTERVAL,127,100,50,12,ES_AUTOHSCROLL | ES_NUMBER
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Annuler",IDCANCEL,127,24,50,14
@@ -642,11 +642,11 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Ne plus afficher ce message.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
-    DEFPUSHBUTTON   "&Retry",IDRETRY,186,70,50,14
-    PUSHBUTTON      "&Abort",IDABORT, 130, 70, 50, 14
-    PUSHBUTTON      "&Ignore",IDIGNORE,242,70,50,14
+    DEFPUSHBUTTON   "&Réessayer",IDRETRY,186,70,50,14
+    PUSHBUTTON      "&Interrompre",IDABORT, 130, 70, 50, 14
+    PUSHBUTTON      "&Ignorer",IDIGNORE,242,70,50,14
 END
 
 IDD_MUI_INFOBOX7 DIALOGEX 0, 0, 299, 91
@@ -657,11 +657,11 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Ne plus afficher ce message.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
-    DEFPUSHBUTTON   "&Try Again",IDRETRY,186,70,50,14
-    PUSHBUTTON      "&Cancel", IDCANCEL, 130, 70, 50, 14
-    PUSHBUTTON      "&Continue",IDCONTINUE,242,70,50,14
+    DEFPUSHBUTTON   "&Réessayer",IDRETRY,186,70,50,14
+    PUSHBUTTON      "&Annuler", IDCANCEL, 130, 70, 50, 14
+    PUSHBUTTON      "&Continuer",IDCONTINUE,242,70,50,14
 END
 
 IDD_MUI_INFOBOX_FILECHANGED DIALOGEX 0, 0, 299, 103
@@ -672,11 +672,11 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,53,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Ne plus afficher ce message.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
-    DEFPUSHBUTTON   "&Reload",IDRETRY,186,82,50,14
-    PUSHBUTTON      "&Cancel", IDCANCEL, 130, 82, 50, 14
-    PUSHBUTTON      "&Continue",IDCONTINUE,242,82,50,14
+    DEFPUSHBUTTON   "&Recharger",IDRETRY,186,82,50,14
+    PUSHBUTTON      "&Annuler", IDCANCEL, 130, 82, 50, 14
+    PUSHBUTTON      "&Continuer",IDCONTINUE,242,82,50,14
 END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 188

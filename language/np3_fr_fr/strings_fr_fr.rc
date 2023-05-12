@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Cette opération videra l'historique ""Défaire"". Continuer ?"
     IDS_MUI_READONLY_SAVE   """%s"" est en lecture seule. Sauvegarder dans un fichier différent ?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
+                            "Le fichier actuel a été modifié par un programme externe.\nChoisissez :\n\nAnnuler -\t\tIgnorer aussi les futures modifications ""externes""\nRecharger -\t\tRecharger le fichier modifié\nContinuer -\tBasculer en mode ""surveillance fichier"""
     IDS_MUI_FILECHANGENOTIFY2 "Le fichier actuel a été supprimé. Sauvegarder maintenant ?"
     IDS_MUI_FILELOCK_ERROR  "Ne peut acquérir un verrouillage de fichier exclusif pour ""%s"" !"
     IDS_MUI_STICKYWINPOS    "Le gel de la position de la fenêtre est activée. Toute nouvelle fenêtre Notepad3 utilisera les paramètres de placement de fenêtre en cours."
@@ -286,7 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Basculer la vue..."
     IDS_MUI_SB_REPLACE_ALL    "Remplacer tout..."
     IDS_MUI_SB_WRAP_LINES     "Ajuster le saut de ligne..."
-    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
+    IDS_MUI_SB_SORTING_LINES  "Triage des lignes..."
     IDS_MUI_SB_CONV_LNBRK     "Convertir les sauts de ligne..."
     IDS_MUI_SB_RECODING_DOC   "Réencodage du document..."
     IDS_MUI_SB_LEXER_STYLING  "Appliquer le style Lexer..."

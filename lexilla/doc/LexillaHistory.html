@@ -586,6 +586,31 @@
     </table>
     <h2>Releases</h2>
     <h3>
+       <a href="https://www.scintilla.org/lexilla525.zip">Release 5.2.5</a>
+    </h3>
+    <ul>
+	<li>
+	Released 13 March 2023.
+	</li>
+	<li>
+	Add CharacterSetArray constructor without setBase initial argument for common case
+	where this is setNone and the initialSet argument completely defines the characters.
+	This shortens and clarifies use of CharacterSetArray.
+	</li>
+	<li>
+	Bash: fix nesting of parameters (SCE_SH_PARAM) like ${var/$sub/"${rep}}"}.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/154">Issue #154</a>.
+	</li>
+	<li>
+	Batch: style SCE_BAT_AFTER_LABEL used for rest of line after label which is not executed.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/148">Issue #148</a>.
+	</li>
+	<li>
+	VB: allow multiline strings when lexer.vb.strings.multiline set.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/151">Issue #151</a>.
+	</li>
+    </ul>
+    <h3>
        <a href="https://www.scintilla.org/lexilla524.zip">Release 5.2.4</a>
     </h3>
     <ul>

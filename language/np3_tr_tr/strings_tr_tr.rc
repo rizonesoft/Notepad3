@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Bu işlem geri alma geçmişini temizleyecek. İlerlemek istiyor musunuz?"
     IDS_MUI_READONLY_SAVE   """%s"" salt okunur. Başka bir dosyaya kaydetmek ister misiniz?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
+                            "Bu dosya başka bir uygulama tarafından değiştirilmiş.\nLütfen yapılacak işlemi seçin:\n\nİptal -\t\tSonraki değişiklikleri yok say\nYeniden yükle -\t\tDosyayı yeniden yükle\nİlerle -\tDosya izlemeye geç"
     IDS_MUI_FILECHANGENOTIFY2 "Geçerli dosya silinmiş. Yeniden kaydetmek ister misiniz?"
     IDS_MUI_FILELOCK_ERROR  """%s"" dosyası ayrıcalıklı olarak kilitlenemedi!"
     IDS_MUI_STICKYWINPOS    "Sabit pencere konumu etkinleştirildi. Yeni Notepad3 pencereleri geçerli pencere konumu ayarlarını kullanacak."
@@ -286,7 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Görünümü değiştir..."
     IDS_MUI_SB_REPLACE_ALL    "Tümünü değiştir..."
     IDS_MUI_SB_WRAP_LINES     "Satırları kaydır..."
-    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
+    IDS_MUI_SB_SORTING_LINES  "Satırları sırala..."
     IDS_MUI_SB_CONV_LNBRK     "Satır sonlarını dönüştür..."
     IDS_MUI_SB_RECODING_DOC   "Belge yeniden kodlanıyor..."
     IDS_MUI_SB_LEXER_STYLING  "Lexer biçemlerini uygula..."
