@@ -4007,11 +4007,10 @@ LRESULT MsgEnterMenuLoop(HWND hwnd, WPARAM wParam)
 {
     if ((BOOL)wParam == FALSE) { // is main menu
         HMENU const hCurMenu = GetMenu(hwnd);
-        if (!hCurMenu) {
+        if (!hCurMenu && Settings.ShowMenubar) {
             SetMenu(hwnd, Globals.hMainMenu);
-            DrawMenuBar(hwnd);
-            //SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
         }
+        DrawMenuBar(hwnd);
     }
     return (LRESULT)wParam;
 }
@@ -4029,9 +4028,8 @@ LRESULT MsgExitMenuLoop(HWND hwnd, WPARAM wParam)
         HMENU const hCurMenu = GetMenu(hwnd);
         if (hCurMenu && !Settings.ShowMenubar) {
             SetMenu(hwnd, NULL);
-            DrawMenuBar(hwnd);
-            //SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
         }
+        DrawMenuBar(hwnd);
     }
     return (LRESULT)wParam;
 }

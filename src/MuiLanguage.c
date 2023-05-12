@@ -537,6 +537,7 @@ void DynamicLanguageMenuCmd(int cmd) {
 
         InsertLanguageMenu(Globals.hMainMenu);
         SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
+        DrawMenuBar(Globals.hwndMain);
     }
 }
 
