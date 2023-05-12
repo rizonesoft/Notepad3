@@ -704,9 +704,9 @@ static int                   s_iCaretPolicyV = CARET_EVEN;
 
 //==============================================================================
 
-static volatile HANDLE    s_hFlagAppIsClosing = INVALID_HANDLE_VALUE;
+static volatile HANDLE    s_hEventAppIsClosing = INVALID_HANDLE_VALUE;
 static __forceinline bool IsAppClosing() {
-    return (WaitForSingleObject(s_hFlagAppIsClosing, 0) == WAIT_OBJECT_0);
+    return (WaitForSingleObject(s_hEventAppIsClosing, 0) == WAIT_OBJECT_0);
 }
 
 
@@ -1789,7 +1789,7 @@ bool InitWndClass(const HINSTANCE hInstance, LPCWSTR lpszWndClassName, LPCWSTR l
 HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
 {
     // manual (not automatic) reset & initial state: not signaled (TRUE, FALSE)
-    s_hFlagAppIsClosing = CreateEvent(NULL, TRUE, FALSE, NULL);
+    s_hEventAppIsClosing = CreateEvent(NULL, TRUE, FALSE, NULL);
 
     // init w/o hwnd
     g_IniWinInfo = GetWinInfoByFlag(NULL, Globals.CmdLnFlag_WindowPos);
@@ -2103,13 +2103,13 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_CLOSE:
-        SetEvent(s_hFlagAppIsClosing);
+        SetEvent(s_hEventAppIsClosing);
         InstallFileWatching(false);
         if (FileSave(FSF_Ask)) {
             DestroyWindow(Globals.hwndMain);
         }
         else {
-            ResetEvent(s_hFlagAppIsClosing);
+            ResetEvent(s_hEventAppIsClosing);
             InstallFileWatching(true);
         }
         break;
@@ -3316,8 +3316,8 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     assert(!IsIniFileCached());
 
     if (WM_DESTROY == umsg) {
-        if (IS_VALID_HANDLE(s_hFlagAppIsClosing)) {
-            CloseHandle(s_hFlagAppIsClosing);
+        if (IS_VALID_HANDLE(s_hEventAppIsClosing)) {
+            CloseHandle(s_hEventAppIsClosing);
         }
         PostQuitMessage(0);
     }
@@ -4007,11 +4007,10 @@ LRESULT MsgEnterMenuLoop(HWND hwnd, WPARAM wParam)
 {
     if ((BOOL)wParam == FALSE) { // is main menu
         HMENU const hCurMenu = GetMenu(hwnd);
-        if (!hCurMenu) {
+        if (!hCurMenu && Settings.ShowMenubar) {
             SetMenu(hwnd, Globals.hMainMenu);
-            DrawMenuBar(hwnd);
-            //SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
         }
+        DrawMenuBar(hwnd);
     }
     return (LRESULT)wParam;
 }
@@ -4029,9 +4028,8 @@ LRESULT MsgExitMenuLoop(HWND hwnd, WPARAM wParam)
         HMENU const hCurMenu = GetMenu(hwnd);
         if (hCurMenu && !Settings.ShowMenubar) {
             SetMenu(hwnd, NULL);
-            DrawMenuBar(hwnd);
-            //SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
         }
+        DrawMenuBar(hwnd);
     }
     return (LRESULT)wParam;
 }
@@ -9654,7 +9652,7 @@ static void ParseCmdLnOption(LPWSTR lp1, LPWSTR lp2, const size_t len)
 
         case L'U':
             if (*CharUpper(lp1 + 1) == L'C') {
-                SetEvent(s_hFlagAppIsClosing);
+                SetEvent(s_hEventAppIsClosing);
             }
             else {
                 Flags.bDoRelaunchElevated = true;
@@ -11953,7 +11951,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
                 if (DoElevatedRelaunch(&fioStatus, true)) {
                     CloseApplication();
                 } else {
-                    ResetEvent(s_hFlagAppIsClosing);
+                    ResetEvent(s_hEventAppIsClosing);
                     if (Settings.MuteMessageBeep) {
                         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
                     } else {
