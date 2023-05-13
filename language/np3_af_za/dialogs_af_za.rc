@@ -100,9 +100,9 @@ BEGIN
     CONTROL         "&Moenie omdraai nie",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,37,77,10
     CONTROL         "Maak toe &na vind",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,49,67,10
     CONTROL         "Merk &gebeurtenisse",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,61,75,10
+    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
     CONTROL         "W&isselkarakter Soek",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,85,75,10
-    CONTROL         "Deursigtige modus waneer fokus verloor",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,150,10
+    CONTROL         "Deursigtige modus waneer fokus verloor",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,150,10
     DEFPUSHBUTTON   "&Vind Volgende",IDOK,221,7,55,14
     PUSHBUTTON      "Vind V&orige",IDC_FINDPREV,221,24,55,14
     PUSHBUTTON      "Maak toe",IDCANCEL,221,99,55,14
@@ -134,9 +134,9 @@ BEGIN
     CONTROL         "&Moenie omdraai nie",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,66,77,10
     CONTROL         "Maak toe &na vervang",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,78,80,10
     CONTROL         "Merk &gebeurtenisse",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,90,75,10
+    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,73,10
     CONTROL         "W&isselkarakter Soek",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,114,75,10
-    CONTROL         "Deursigtige modus waneer fokus verloor",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,150,10
+    CONTROL         "Deursigtige modus waneer fokus verloor",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,150,10
     DEFPUSHBUTTON   "&Vind Volgende",IDOK,221,7,55,14
     PUSHBUTTON      "Vind V&orige",IDC_FINDPREV,221,23,55,14
     PUSHBUTTON      "Ve&rvang",IDC_REPLACE,221,43,55,14

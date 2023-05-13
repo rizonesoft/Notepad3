@@ -100,9 +100,9 @@ BEGIN
     CONTROL         "&Ne menjen körbe",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
     CONTROL         "Ta&lálat után bezárás",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,80,10
     CONTROL         "Ere&dmények jelölése",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,78,10
+    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
     CONTROL         "&Joker keresés",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,65,10
-    CONTROL         "Átlátszó mód, ha nincs fókuszban",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
+    CONTROL         "Átlátszó mód, ha nincs fókuszban",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
     DEFPUSHBUTTON   "&Köv. keresése",IDOK,211,7,55,14
     PUSHBUTTON      "&Előző keresése",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Bezárás",IDCANCEL,211,99,55,14
@@ -134,9 +134,9 @@ BEGIN
     CONTROL         "&Ne menjen körbe",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
     CONTROL         "Csere után bezár",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,80,10
     CONTROL         "Ere&dmények jelölése",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,78,10
+    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,73,10
     CONTROL         "&Joker keresés",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,65,10
-    CONTROL         "Átlátszó mód, ha nincs fókuszban",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
+    CONTROL         "Átlátszó mód, ha nincs fókuszban",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
     DEFPUSHBUTTON   "K&öv. keresése",IDOK,211,7,55,14
     PUSHBUTTON      "Előző keresése",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "&Csere",IDC_REPLACE,211,43,55,14

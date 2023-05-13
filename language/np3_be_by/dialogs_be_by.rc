@@ -100,9 +100,9 @@ BEGIN
     CONTROL         "Не з&ацыкліваць",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,37,69,10
     CONTROL         "&Закрыць пасля пошуку",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,49,94,10
     CONTROL         "Адзначыць ува&ходжанні",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,61,99,10
+    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
     CONTROL         "&Wildcard пошук",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,85,67,10
-    CONTROL         "Празрыстасць, калі няма фокусу",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,127,10
+    CONTROL         "Празрыстасць, калі няма фокусу",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,127,10
     DEFPUSHBUTTON   "Знайсці &далей",IDOK,246,7,60,14
     PUSHBUTTON      "&Папярэдняе",IDC_FINDPREV,246,23,60,14
     PUSHBUTTON      "Закрыць",IDCANCEL,246,99,60,14
@@ -134,9 +134,9 @@ BEGIN
     CONTROL         "Не з&ацыкліваць",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,66,69,10
     CONTROL         "&Закрыць пасля замены",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,78,93,10
     CONTROL         "Адзначыць ува&ходжанні",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,90,99,10
+    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,73,10
     CONTROL         "&Wildcard пошук",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,114,67,10
-    CONTROL         "Празрыстасць, калі няма фокусу",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,127,10
+    CONTROL         "Празрыстасць, калі няма фокусу",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,127,10
     DEFPUSHBUTTON   "Знайсці &далей",IDOK,246,7,60,14
     PUSHBUTTON      "&Папярэдняе",IDC_FINDPREV,246,23,60,14
     PUSHBUTTON      "За&мяніць",IDC_REPLACE,246,43,60,14
