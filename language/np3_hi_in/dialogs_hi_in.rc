@@ -100,9 +100,9 @@ BEGIN
     CONTROL         "लपेटें नहीं (&D)",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
     CONTROL         "ढूँढने के बाद बंद करें (&L)",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,83,10
     CONTROL         "उपस्थिति चिन्हित करें (&K)",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,83,10
+    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
     CONTROL         "Wildcard ढूँढें (&I)",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,65,10
-    CONTROL         "केंद्र खोने पर पारदर्शी मोड",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
+    CONTROL         "केंद्र खोने पर पारदर्शी मोड",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
     DEFPUSHBUTTON   "अगला खोजें (&F)",IDOK,211,7,55,14
     PUSHBUTTON      "पिछला खोजें (&P)",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "बंद करें",IDCANCEL,211,99,55,14
@@ -134,9 +134,9 @@ BEGIN
     CONTROL         "लपेटे नहीं (&D)",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
     CONTROL         "बदलने के बाद बंद करें (&L)",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,84,10
     CONTROL         "उपस्थिति चिन्हित करें (&K)",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,83,10
+    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,73,10
     CONTROL         "Wildcard खोजें (I)",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,65,10
-    CONTROL         "केंद्र खोने पर पारदर्शी मोड",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
+    CONTROL         "केंद्र खोने पर पारदर्शी मोड",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
     DEFPUSHBUTTON   "अगला खोजें (&F)",IDOK,211,7,55,14
     PUSHBUTTON      "पिछला खोजें (&P)",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "बदलें (&R)",IDC_REPLACE,211,43,55,14

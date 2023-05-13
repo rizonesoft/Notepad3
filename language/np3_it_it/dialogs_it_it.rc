@@ -100,9 +100,9 @@ BEGIN
     CONTROL         "&Non andare a capo",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,90,10
     CONTROL         "C&hiudi dopo aver trovato",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,95,10
     CONTROL         "Evidenzia &occorrenze",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,90,10
+    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
     CONTROL         "Ricerca con caratter&i Jolly",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,95,10
-    CONTROL         "Modalità trasparente quando inattiva",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,135,10
+    CONTROL         "Modalità trasparente quando inattiva",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,135,10
     DEFPUSHBUTTON   "Successivo &>",IDOK,221,7,63,14
     PUSHBUTTON      "&< Precedente",IDC_FINDPREV,221,24,63,14
     PUSHBUTTON      "Chiudi",IDCANCEL,221,99,63,14
@@ -134,9 +134,9 @@ BEGIN
     CONTROL         "&Non andare a capo",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,90,10
     CONTROL         "C&hiudi dopo sostituzione",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,95,10
     CONTROL         "Evidenzia &occorrenze",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,90,10
+    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,73,10
     CONTROL         "Ricerca con caratter&i Jolly",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,95,10
-    CONTROL         "Modalità trasparente quando inattiva",IDC_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,135,10
+    CONTROL         "Modalità trasparente quando inattiva",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,135,10
     DEFPUSHBUTTON   "Successivo &>",IDOK,221,7,63,14
     PUSHBUTTON      "&< Precedente",IDC_FINDPREV,221,23,63,14
     PUSHBUTTON      "&Sostituisci",IDC_REPLACE,221,43,63,14
