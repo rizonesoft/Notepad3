@@ -132,6 +132,7 @@ WCHAR Default_PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1] = { L'\0' 
 
 HPATHL s_hpthRelaunchElevatedFile = NULL;
 
+static bool      s_bInitAppDone = false;
 static bool      s_bIsProcessElevated = false;
 static bool      s_bIsUserInAdminGroup = false;
 static bool      s_bIsRunAsAdmin = false;
@@ -1518,11 +1519,14 @@ WININFO GetWinInfoByFlag(HWND hwnd, const int flagsPos)
 }
 
 
+//=============================================================================
+//
+//  _EnumWndProc : find other Notepad3 window 
 //
 static BOOL CALLBACK _EnumWndProc(HWND hwnd, LPARAM lParam)
 {
     BOOL  bContinue = TRUE;
-    WCHAR szClassName[64] = { L'\0' };
+    WCHAR szClassName[128] = { L'\0' };
 
     if (GetClassName(hwnd, szClassName, COUNTOF(szClassName))) {
 
@@ -1545,12 +1549,12 @@ static BOOL CALLBACK _EnumWndProc(HWND hwnd, LPARAM lParam)
 
 //=============================================================================
 //
-//  _EnumWndProc()s : find other Notepad3 windows
+//  _EnumWndProc2 : find other Notepad3 window w/ same file loaded
 //
 static BOOL CALLBACK _EnumWndProc2(HWND hwnd, LPARAM lParam)
 {
     BOOL  bContinue = TRUE;
-    WCHAR szClassName[64] = { L'\0' };
+    WCHAR szClassName[128] = { L'\0' };
 
     if (GetClassName(hwnd, szClassName, COUNTOF(szClassName))) {
 
@@ -1562,21 +1566,20 @@ static BOOL CALLBACK _EnumWndProc2(HWND hwnd, LPARAM lParam)
                 if (IsWindowEnabled(hwnd)) {
                     bContinue = FALSE;
                 }
+            }
 
-                WCHAR wchFileName[INTERNET_MAX_URL_LENGTH] = { L'\0' };
-                GetDlgItemText(hwnd, IDC_FILENAME, wchFileName, COUNTOF(wchFileName));
+            WCHAR wchFileName[INTERNET_MAX_URL_LENGTH] = { L'\0' };
+            GetDlgItemText(hwnd, IDC_FILENAME, wchFileName, COUNTOF(wchFileName));
 
-                if (StringCchCompareXI(wchFileName, Path_Get(s_pthCheckFilePath)) == 0) {
-                    *(HWND*)lParam = hwnd;
-                }
-                else {
-                    bContinue = TRUE;
-                }
+            if (StringCchCompareXI(wchFileName, Path_Get(s_pthCheckFilePath)) == 0) {
+                *(HWND*)lParam = hwnd;
+                bContinue = FALSE;
             }
         }
     }
     return bContinue;
 }
+
 
 //=============================================================================
 //
@@ -1924,6 +1927,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
             Encoding_Current(forcedEncoding);
         }
     }
+
     if (!bOpened) {
         Path_Reset(hfile_pth, L"");
         fLoadFlags = FLF_DontSave | FLF_New | FLF_SkipUnicodeDetect | FLF_SkipANSICPDetection;
@@ -2081,6 +2085,8 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     }
 
     Path_Release(hfile_pth);
+
+    s_bInitAppDone = true;
 
     return Globals.hwndMain;
 }
@@ -11360,7 +11366,14 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
         HWND hwnd = NULL;
         EnumWindows(_EnumWndProc2, (LPARAM)&hwnd);
         if (hwnd != NULL) {
-            if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, L"InfoInstanceExist", IDS_MUI_ASK_INSTANCE_EXISTS))) {
+            if (!s_bInitAppDone || IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, L"InfoInstanceExist", IDS_MUI_ASK_INSTANCE_EXISTS))) {
+                if (IsIconic(hwnd)) {
+                    ShowWindowAsync(hwnd, SW_RESTORE);
+                }
+                if (!IsWindowVisible(hwnd)) {
+                    SendMessage(hwnd, WM_TRAYMESSAGE, 0, WM_LBUTTONDBLCLK);
+                    SendMessage(hwnd, WM_TRAYMESSAGE, 0, WM_LBUTTONUP);
+                }
                 SetForegroundWindow(hwnd);
             }
             Path_Release(hopen_file);
@@ -12042,7 +12055,6 @@ bool ActivatePrevInst()
                     SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONDBLCLK);
                     SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONUP);
                 }
-
                 SetForegroundWindow(hwnd);
 
                 size_t cb = sizeof(np3params);
