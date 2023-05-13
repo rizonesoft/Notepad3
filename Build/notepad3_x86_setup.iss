@@ -14,6 +14,16 @@
 ;#define VRSN=" rc2"
 // but, if not a "beta, rc or rc2" version, then comment above settings and un-comment below setting :)
 #define VRSN
+#IfnDef VRSN
+  #error Please set any of the above: #define VRSN(...)
+#EndIf
+
+// choose which architecture should be compiled (one of below)
+#define Arch="x86"
+;#define Arch="x64"
+#IfnDef Arch
+  #error Please set any of the above: #define Arch=(...)
+#EndIf
 
 #define sse_required
 #define sse2_required
@@ -24,22 +34,22 @@
 #endif
 
 #define bindir "..\Bin\"
-#define RLSdir "Release_x86_v143"
+#define RLSdir "Release_"+Arch+"_v143"
 
 #ifnexist bindir + RLSdir + "\Notepad3.exe"
-  #error Compile Notepad3 x86 first
+  #pragma error "Compile Notepad3 "+Arch+" first"
 #endif
 
 #ifnexist bindir + RLSdir + "\minipath.exe"
-  #error Compile MiniPath x86 first
+  #pragma error "Compile MiniPath "+Arch+" first"
 #endif
 
 #ifnexist bindir + RLSdir + "\grepWinNP3.exe"
-  #error Compile grepWinNP3 x86 first
+  #pragma error "Compile grepWinNP3 "+Arch+" first"
 #endif
 
 #ifnexist bindir + RLSdir + "\np3encrypt.exe"
-  #error Compile np3encrypt x86 first
+  #pragma error "Compile np3encrypt "+Arch+" first"
 #endif
 
 #define app_name "Notepad3"
@@ -56,7 +66,7 @@
 
 [Setup]
 AppId={#app_name}
-AppName={#app_name} (x86){#VRSN}
+AppName={#app_name} ({#Arch}){#VRSN}
 AppVersion={#app_version}{#VRSN}
 AppVerName={#app_name} {#app_version}
 AppPublisher={#app_publisher}
@@ -67,11 +77,11 @@ AppContact=https://www.rizonesoft.com/#contact
 AppCopyright={#app_copyright}
 VersionInfoVersion={#app_version}
 UninstallDisplayIcon={app}\Notepad3.exe
-UninstallDisplayName={#app_name} (x86) {#app_version}{#VRSN}
+UninstallDisplayName={#app_name} ({#Arch}) {#app_version}{#VRSN}
 DefaultDirName={commonpf}\Notepad3
 LicenseFile="..\License.txt"
 OutputDir=.\Packages
-OutputBaseFilename={#app_name}_{#app_version}{#StringChange(VRSN, " ", "_")}_x86_Setup
+OutputBaseFilename={#app_name}_{#app_version}{#StringChange(VRSN, " ", "_")}_{#Arch}_Setup
 WizardStyle=modern
 WizardSmallImageFile=.\Resources\WizardSmallImageFile.bmp
 Compression=lzma2/max
@@ -86,8 +96,14 @@ DisableWelcomePage=no
 AllowCancelDuringInstall=yes
 UsedUserAreasWarning=no
 MinVersion=0,6.1.7601
+#If Arch == "x86"
 ArchitecturesAllowed=x86 x64 arm64
 ArchitecturesInstallIn64BitMode=
+#EndIf
+#If Arch == "x64"
+ArchitecturesAllowed=x64 arm64
+ArchitecturesInstallIn64BitMode=x64 arm64
+#EndIf
 CloseApplications=true
 SetupMutex={#app_name}_setup_mutex,Global\{#app_name}_setup_mutex
 SetupIconFile=.\Resources\Notepad3SetupIconFile.ico
@@ -1060,10 +1076,10 @@ procedure CurStepChanged(CurStep: TSetupStep);
     if (CurStep = ssInstall) or (CurStep = ssPostInstall) then
     begin
       APP := ExpandConstant('{app}');
-      PreviousDataOf_Open_with_NP3 := GetPreviousData('reg_Open_with_NP3', '');
 
       if CurStep = ssInstall then
       begin
+        PreviousDataOf_Open_with_NP3 := GetPreviousData('reg_Open_with_NP3', '');
 
         if IsOldBuildInstalled('Uninstall.inf') or IsOldBuildInstalled('Notepad2.inf') then
         begin
@@ -1166,9 +1182,15 @@ procedure CurStepChanged(CurStep: TSetupStep);
               RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + reg_Open_with_NP3);
         end
         else
-        If Length( PreviousDataOf_Open_with_NP3 ) > 0 then
-          If RegKeyExists(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3) then
-            RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3);
+        begin
+          WizardSelectTasks('remove_openwith');
+          if WizardIsTaskSelected('remove_openwith') then
+            WizardSelectTasks('!remove_openwith')
+          else
+            If Length( PreviousDataOf_Open_with_NP3 ) > 0 then
+              If RegKeyExists(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3) then
+                RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3);
+        end;
 
       // Always add Notepad3's AppUserModelID and the rest registry values
         AddReg();
