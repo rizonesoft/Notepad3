@@ -171,7 +171,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
     icEx.dwICC  = ICC_LINK_CLASS | ICC_LISTVIEW_CLASSES | ICC_PAGESCROLLER_CLASS | ICC_PROGRESS_CLASS | ICC_STANDARD_CLASSES | ICC_TAB_CLASSES | ICC_TREEVIEW_CLASSES | ICC_UPDOWN_CLASS | ICC_USEREX_CLASSES | ICC_WIN95_CLASSES;
     InitCommonControlsEx(&icEx);
 
-    g_hDlgIcon128 = NULL;
+    g_hDlgIcon128 = nullptr;
     LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_GREPWIN), 128, 128, &g_hDlgIcon128);
 
     HMODULE hRichEdt = LoadLibrary(L"Riched20.dll");
@@ -224,22 +224,38 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
             timeout--;
         } while ((hWnd == nullptr) && alreadyRunning && timeout);
     }
+
+    
+    auto moduleDir  = CPathUtils::GetModuleDir(nullptr);
     auto moduleName = CPathUtils::GetFileName(CPathUtils::GetModulePath(nullptr));
+
     bPortable       = ((wcsstr(moduleName.c_str(), L"portable")) || (parser.HasKey(L"portable")) || (wcsstr(moduleName.c_str(), L"NP3")));
 
-    g_iniPath       = CPathUtils::GetModuleDir(nullptr);
-    g_iniPath += L"\\grepwinNP3.ini";
+    g_iniPath       = moduleDir;
+    g_iniPath      += L"\\grepwinNP3.ini";
     if (parser.HasVal(L"inipath")) {
         g_iniPath = parser.GetVal(L"inipath");
         bPortable = true;
     }
+
+    auto origCwd = CPathUtils::GetCWD();
+    // attempt to change the working directory to the installation directory
+    //
+    // This is a helper when launching grepWin using context menus. When
+    // launching from a context menu, the working directory will be set to the
+    // folder grepWin has been invoked from. With the process now having an
+    // association with this directory, actively attempting to manipulate
+    // (e.g. move/delete) will fail due to an "in use" error. To allow users
+    // to freely manipulate their file systems (without having to close
+    // grepWin), change the working directory to the install path of grepWin.
+    _wchdir(moduleDir.c_str());
 
     if (bPortable)
     {
         if (PathIsRelative(g_iniPath.c_str()))
         {
             WCHAR absPath[MAX_PATH] = {L'\0'};
-            StringCchCopy(absPath, MAX_PATH, CPathUtils::GetModuleDir(nullptr).c_str());
+            StringCchCopy(absPath, MAX_PATH, moduleDir.c_str());
             PathAppend(absPath, g_iniPath.c_str());
             g_iniPath = absPath;
         }
@@ -251,41 +267,42 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
 
     if (hWnd)
     {
-        bool bOnlyOne = bPortable ? g_iniFile.GetBoolValue(L"global", L"onlyone", L"false") : 
-                                    !!DWORD(CRegStdDWORD(L"Software\\grepWinNP3\\onlyone", 0));
-                                    
-        //auto searchfor = parser.HasVal(L"searchfor") ? parser.GetVal(L"searchfor") :
-        //                        (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L"");
+        auto searchfor = parser.HasVal(L"searchfor") ? parser.GetVal(L"searchfor") :
+                                (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L"");
 
-        auto sPath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : 
-                            (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : CPathUtils::GetCWD());
-        sPath      = SanitizeSearchPaths(sPath);
+        std::wstring sPath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : 
+                                    (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : origCwd);
+
+        sPath = SanitizeSearchPaths(sPath);
         SearchReplace(sPath, L"/", L"\\");
         sPath = SanitizeSearchPaths(sPath);
 
-        if (SendMessage(hWnd, GREPWIN_STARTUPMSG, 1, 0)) // check if grepWin was started moments ago
+        bool const bOnlyOne = bPortable ? g_iniFile.GetBoolValue(L"global", L"onlyone", L"false") : 
+                                          !!DWORD(CRegStdDWORD(L"Software\\grepWinNP3\\onlyone", 0));
+        bool const bSendStartupMsg = static_cast<bool>(SendMessage(hWnd, GREPWIN_STARTUPMSG, 1, 0));
+                                    
+        if (bSendStartupMsg || bOnlyOne)
         {
-            SendMessage(hWnd, GREPWIN_STARTUPMSG, 0, 0); // reset the timer
+            CopyData_t data2copy = {0};
+            StringCchCopyW(data2copy.searchFor, _countof(data2copy.searchFor), searchfor);
+            StringCchCopyW(data2copy.searchPath, _countof(data2copy.searchPath), sPath.c_str());
 
-            //CopyData_t data2copy = {0};
-            //StringCchCopyW(data2copy.searchFor, _countof(data2copy.searchFor), searchfor.c_str());
-            //StringCchCopyW(data2copy.searchPath, _countof(data2copy.searchPath), sPath.c_str());
+            COPYDATASTRUCT copyData = {0};
+            copyData.dwData         = static_cast<ULONG_PTR>(GREPWINNP3_CPYDAT);
+            copyData.cbData         = static_cast<DWORD>(sizeof(CopyData_t));
+            copyData.lpData         = static_cast<LPVOID>(&data2copy);
 
-            // grepWin was started just moments ago:
-            // add the new path to the existing search path in that grepWin instance
-            COPYDATASTRUCT copyData = {0};
-            copyData.lpData         = static_cast<LPVOID>(const_cast<LPWSTR>(sPath.c_str()));
-            copyData.cbData         = static_cast<DWORD>(sPath.size()) * sizeof(wchar_t);
-            SendMessage(hWnd, WM_COPYDATA, 0, reinterpret_cast<LPARAM>(&copyData));
-            SetForegroundWindow(hWnd); // set the window to front
-            bQuit = true;
-        }
-        else if (bOnlyOne)
-        {
-            COPYDATASTRUCT copyData = {0};
-            copyData.lpData         = static_cast<LPVOID>(const_cast<LPWSTR>(sPath.c_str()));
-            copyData.cbData         = static_cast<DWORD>(sPath.size()) * sizeof(wchar_t);
-            SendMessage(hWnd, WM_COPYDATA, 1, reinterpret_cast<LPARAM>(&copyData));
+            if (bSendStartupMsg)
+            {
+                SendMessage(hWnd, GREPWIN_STARTUPMSG, 0, 0); // reset the timer
+                // grepWin was started just moments ago:
+                // add the new path to the existing search path in that grepWin instance
+                SendMessage(hWnd, WM_COPYDATA, 0, reinterpret_cast<LPARAM>(&copyData));
+            }
+            else if (bOnlyOne)
+            {
+                SendMessage(hWnd, WM_COPYDATA, 1, reinterpret_cast<LPARAM>(&copyData));
+            }
             SetForegroundWindow(hWnd); // set the window to front
             bQuit = true;
         }
@@ -433,17 +450,18 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     searchDlg.SetDateLimit(_wtoi(searchIni.GetValue(section.c_str(), L"datelimit")), date1, date2);
                 }
             }
-            if (parser.HasKey(L"searchpath"))
-            {
-                std::wstring sPath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : 
-                                         (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : L"");
-                sPath = SanitizeSearchPaths(sPath);
-                searchDlg.SetSearchPath(sPath);
-                searchPathSet = true;
-            }
-            if (parser.HasKey(L"searchfor"))
-                searchDlg.SetSearchString(parser.GetVal(L"searchfor") ? parser.GetVal(L"searchfor") : 
-                                          (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L""));
+
+            ///  NP3 special >>>>>>>>
+            std::wstring searchPath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") :
+                                             (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : L"");
+            searchPath              = SanitizeSearchPaths(searchPath);
+            searchDlg.SetSearchPath(searchPath);
+            searchPathSet = !searchPath.empty();
+
+            searchDlg.SetSearchString(parser.HasVal(L"searchfor") ? parser.GetVal(L"searchfor") : 
+                                             (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L""));
+            /// <<<<<<<< NP3 special
+
             if (parser.HasKey(L"filemaskregex"))
                 searchDlg.SetFileMask(parser.GetVal(L"filemaskregex") ? parser.GetVal(L"filemaskregex") : L"", true);
             if (parser.HasKey(L"filemask"))
@@ -545,7 +563,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                 }
                 else
                 {
-                    auto sPath = CPathUtils::GetCWD();
+                    auto sPath = origCwd;
                     sPath      = SanitizeSearchPaths(sPath);
                     searchDlg.SetSearchPath(sPath);
                 }
