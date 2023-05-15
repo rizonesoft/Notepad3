@@ -4956,7 +4956,7 @@ typedef struct _grepwin_ini {
 }
 grepWin_t;
 
-static grepWin_t grepWinIniSettings[13] = {
+static grepWin_t grepWinIniSettings[] = {
     { L"onlyone",           L"1" },
     { L"AllSize",           L"0" },
     { L"Size",           L"2000" },
