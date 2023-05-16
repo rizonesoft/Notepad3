@@ -103,7 +103,7 @@ HWND EditFindReplaceDlg(HWND hwnd, LPEDITFINDREPLACE lpefr, bool);
 bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd, bool bFillEmpty);
 bool EditFindPrev(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd, bool bFillEmpty);
 bool EditReplace(HWND hwnd, LPEDITFINDREPLACE lpefr);
-int  EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, DocPos iEndPos, DocPos *enlargement);
+DocPosU EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, DocPos iEndPos, DocPos *enlargement);
 bool EditReplaceAll(HWND hwnd, LPEDITFINDREPLACE lpefr, bool);
 bool EditReplaceAllInSelection(HWND hwnd, LPEDITFINDREPLACE lpefr, bool);
 bool EditLinenumDlg(HWND hwnd);
