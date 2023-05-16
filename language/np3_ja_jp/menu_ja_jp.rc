@@ -100,7 +100,7 @@ BEGIN
         BEGIN
             POPUP "文字コード指定しファイル読み直し(&R)"
             BEGIN
-                MENUITEM "デフォルト (設定を使用) (&D)",          CMD_RECODEDEFAULT
+                MENUITEM "既定 (設定を使用) (&D)",          CMD_RECODEDEFAULT
                 MENUITEM "ANSI (&N)\tCtrl+Shift+A",         CMD_RECODEANSI
                 MENUITEM "OEM (&O)\tCtrl+Shift+O",          CMD_RECODEOEM
                 MENUITEM "GB18030 (&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
@@ -122,7 +122,7 @@ BEGIN
                 MENUITEM "ほかの文字コード(&M)...\tF9",            IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
-            MENUITEM "デフォルトの文字コードを設定(&D)...",             IDM_ENCODING_SETDEFAULT
+            MENUITEM "既定の文字コードを設定(&D)...",             IDM_ENCODING_SETDEFAULT
         END
         POPUP "改行コード(&G)"
         BEGIN
@@ -130,7 +130,7 @@ BEGIN
             MENUITEM "Mac(&M) (CR)",                         IDM_LINEENDINGS_CR
             MENUITEM "Unix(&U) (LF)",                        IDM_LINEENDINGS_LF
             MENUITEM SEPARATOR
-            MENUITEM "デフォルトを設定(&D)...",                 IDM_LINEENDINGS_SETDEFAULT
+            MENUITEM "既定を設定(&D)...",                 IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
         MENUITEM "インデントの検査(&I)...",                      CMD_CHECK_INDENTATION
