@@ -2059,9 +2059,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     if (s_flagStartAsTrayIcon) {
         SetNotifyIconTitle(Globals.hwndMain);
     }
-    Globals.iReplacedOccurrences = 0;
-    Globals.iSelectionMarkNumber = 0;
-    Globals.iMarkOccurrencesCount = 0;
+    Globals.iSelectionMarkNumber = Globals.iMarkOccurrencesCount = Globals.iReplacedOccurrences = 0;
 
     ResetMouseDWellTime();
 
@@ -6001,8 +5999,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             MarkAllOccurrences(_MQ_FAST, true);
         } else {
             EditClearAllOccurrenceMarkers(Globals.hwndEdit);
-            Globals.iSelectionMarkNumber = 0;
-            Globals.iMarkOccurrencesCount = 0;
         }
         break;
 
@@ -8766,7 +8762,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
                     if (bValidSel || Settings.MarkOccurrencesCurrentWord) {
                         MarkAllOccurrences(-1, true);
                     } else {
-                        if (Globals.iMarkOccurrencesCount > 0) {
+                        if (Globals.iMarkOccurrencesCount) {
                             EditClearAllOccurrenceMarkers(Globals.hwndEdit);
                         }
                     }
@@ -10358,7 +10354,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         if (bForceRedraw || ((s_bMOVisible != Settings.MarkOccurrencesMatchVisible) ||
                              (s_iSeletionMarkNumber != Globals.iSelectionMarkNumber) ||
                              (s_iMarkOccurrencesCount != Globals.iMarkOccurrencesCount))) {
-            if (Globals.iMarkOccurrencesCount > 0) {
+            if (Globals.iMarkOccurrencesCount) {
                 StringCchPrintf(tchOccOf, COUNTOF(tchOccOf), DOCPOSFMTW, Globals.iSelectionMarkNumber);
                 FormatNumberStr(tchOccOf, COUNTOF(tchOccOf), 0);
                 StringCchPrintf(tchOcc2, COUNTOF(tchOcc2), DOCPOSFMTW, Globals.iMarkOccurrencesCount);
@@ -10386,12 +10382,11 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     // number of replaced pattern
     if (g_iStatusbarVisible[STATUS_OCCREPLACE] || bIsWindowFindReplace) {
-        static int s_iReplacedOccurrences = -1;
-
+        static DocPosU s_iReplacedOccurrences = 0;
         if (bForceRedraw || (s_iReplacedOccurrences != Globals.iReplacedOccurrences)) {
-            static WCHAR tchRepl[32] = { L'\0' };
-            if (Globals.iReplacedOccurrences > 0) {
-                StringCchPrintf(tchRepl, COUNTOF(tchRepl), L"%i", Globals.iReplacedOccurrences);
+            static WCHAR tchRepl[64] = { L'\0' };
+            if (Globals.iReplacedOccurrences) {
+                StringCchPrintf(tchRepl, COUNTOF(tchRepl), DOCPOSFMTW, Globals.iReplacedOccurrences);
                 FormatNumberStr(tchRepl, COUNTOF(tchRepl), 0);
             } else {
                 StringCchCopy(tchRepl, COUNTOF(tchRepl), L"--");
@@ -10568,10 +10563,12 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     // update Find/Replace dialog (if any)
     if (bIsWindowFindReplace) {
-        static WCHAR tchReplOccs[32] = { L'\0' };
-        if (Globals.iReplacedOccurrences > 0) {
-            StringCchPrintf(tchReplOccs, COUNTOF(tchReplOccs), L"%i", Globals.iReplacedOccurrences);
-        } else {
+        static WCHAR tchReplOccs[64] = { L'\0' };
+        if (Globals.iReplacedOccurrences) {
+            StringCchPrintf(tchReplOccs, COUNTOF(tchReplOccs), DOCPOSFMTW, Globals.iReplacedOccurrences);
+            FormatNumberStr(tchReplOccs, COUNTOF(tchReplOccs), 0);
+        }
+        else {
             StringCchCopy(tchReplOccs, COUNTOF(tchReplOccs), L"--");
         }
 
