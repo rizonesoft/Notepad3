@@ -4,7 +4,7 @@
   regint.h -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2022  K.Kosako
+ * Copyright (c) 2002-2023  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -470,8 +470,8 @@ typedef Bits*     BitSetRef;
 /* operation code */
 enum OpCode {
   OP_FINISH = 0,  /* matching process terminator (no more alternative) */
-  OP_END    = 1,  /* pattern code terminator (success end) */
-  OP_STR_1 = 2,   /* single byte, N = 1 */
+  OP_END,         /* pattern code terminator (success end) */
+  OP_STR_1,       /* single byte, N = 1 */
   OP_STR_2,       /* single byte, N = 2 */
   OP_STR_3,       /* single byte, N = 3 */
   OP_STR_4,       /* single byte, N = 4 */
