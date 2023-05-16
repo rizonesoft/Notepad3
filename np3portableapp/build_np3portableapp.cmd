@@ -42,7 +42,6 @@ if exist D:\PortableApps\PortableApps.comInstaller\ (
 )
 
 set SCRIPT_DIR=%~dp0
-set PORTAPP_APP_COMPACTOR=%PORTAPP_ROOT_DIR%\PortableApps.comAppCompactor\PortableApps.comAppCompactor.exe
 set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\PortableApps.comLauncherGenerator.exe
 set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\PortableApps.comInstaller.exe
 
@@ -181,9 +180,6 @@ del /f /q "%NP3_PORTAPP_INFO%_tmp.ini"
 :: ---------------------------------------------------------------------------------------------------
 
 :: --- build Launcher and Installer Package ---
-
-:: - compact app -
-::"%PORTAPP_APP_COMPACTOR%" "%NP3_PORTAPP_DIR%"
 
 :: - build Launcher -
 "%PORTAPP_LAUNCHER_CREATOR%" "%NP3_PORTAPP_DIR%"
