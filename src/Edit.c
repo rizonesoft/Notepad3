@@ -7814,7 +7814,8 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
                 SciCall_MarkerAdd(SciCall_LineFromPosition(iPos), MARKER_NP3_OCCURRENCE);
             }
             ++count;
-            if (!found && ((iSelStart <= end) && (start <= iSelEnd))) {  // intersect
+            if (!found && ((iSelStart <= end) && (start <= iSelEnd))) {
+                // intersect = (max_p(iSelStart, start) < min_p(iSelEnd, end))
                 found = count;
             }
             start = end;

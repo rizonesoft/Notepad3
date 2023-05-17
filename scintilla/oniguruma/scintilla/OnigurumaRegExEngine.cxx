@@ -145,9 +145,11 @@ public:
     , m_MatchPos(ONIG_MISMATCH)
     , m_MatchLen(0)
   {
-    m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END; // xcluded from ONIG_SYNTAX_DEFAULT ?
     onig_initialize(s_UsedEncodingsTypes, _ARRAYSIZE(s_UsedEncodingsTypes));
-    onig_set_default_syntax(NP3_ONIG_SYNTAX_FLAVOR); // std is: ONIG_SYNTAX_ONIGURUMA
+
+    m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END; // xcluded from ONIG_SYNTAX_DEFAULT ?
+    onig_set_default_syntax(&m_OnigSyntax);                 // std is: ONIG_SYNTAX_ONIGURUMA
+
     onig_region_init(&m_Region);
   }
 
@@ -702,7 +704,6 @@ std::string OnigurumaRegExEngine::convertReplExpr(const std::string& replStr)
 
 
 
-
 // ============================================================================
 // ============================================================================
 
@@ -721,9 +722,11 @@ public:
     , m_MatchPos(ONIG_MISMATCH)
     , m_MatchLen(0)
   {
-    m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END; // xcluded from ONIG_SYNTAX_DEFAULT ?
     onig_initialize(s_UsedEncodingsTypes, _ARRAYSIZE(s_UsedEncodingsTypes));
-    onig_set_default_syntax(NP3_ONIG_SYNTAX_FLAVOR); // std is: ONIG_SYNTAX_ONIGURUMA
+
+    m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END; // xcluded from ONIG_SYNTAX_DEFAULT ?
+    onig_set_default_syntax(&m_OnigSyntax);                 // std is: ONIG_SYNTAX_ONIGURUMA
+
     onig_region_init(&m_Region);
   }
 
