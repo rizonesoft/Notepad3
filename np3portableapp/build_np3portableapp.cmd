@@ -17,8 +17,6 @@ chcp 65001 >nul 2>&1
 ::
 :: Prerequisites: (portable) intallation of:
 :: -----------------------------------------
-:: + PortableApps.com App Compactor (https://portableapps.com/apps/utilities/appcompactor)
-::
 :: + PortableApps.com Launcher (https://portableapps.com/apps/development/portableapps.com_launcher)
 ::   (needed to create the Notepad3Portable.exe Launcher from the sources)
 ::
@@ -31,11 +29,11 @@ set NP3_LANGUAGE_SET=af-ZA be-BY de-DE el-GR en-GB es-ES es-MX fr-FR hi-IN hu-HU
 :: ===================================================================================================
 
 :: --- Environment ---
-if exist D:\PortableApps\PortableApps.comInstaller\ (
-    set PORTAPP_ROOT_DIR=D:\PortableApps
+if exist %~d0\PortableApps\PortableApps.comInstaller\ (
+    set PORTAPP_ROOT_DIR=%~d0\PortableApps
 ) else (
-    if exist D:\Rizonesoft\PortableApps\PortableApps\PortableApps.comInstaller\ (
-        set PORTAPP_ROOT_DIR=D:\Rizonesoft\PortableApps\PortableApps
+    if exist %~d0\Rizonesoft\PortableApps\PortableApps\PortableApps.comInstaller\ (
+        set PORTAPP_ROOT_DIR=%~d0\Rizonesoft\PortableApps\PortableApps
     ) else (
       goto :END
     )
@@ -178,6 +176,11 @@ call :REPLACE "xxxDEVNAMExxx" "%NP3_PORTAPP_INSTALL%_template.ini" "" "%NP3_PORT
 del /f /q "%NP3_PORTAPP_INFO%_tmp.ini"
 
 :: ---------------------------------------------------------------------------------------------------
+
+:: - Copy "Additional Notepad3Portable.cmd Launcher" to "Notepad3Portable PAF [ROOT]" -
+if exist "%NP3_PORTAPP_DIR%\Other\Source\Notepad3Portable.cmd" (
+copy /B "%NP3_PORTAPP_DIR%\Other\Source\Notepad3Portable.cmd" "%NP3_PORTAPP_DIR%\Notepad3Portable.cmd" /Y /V 
+)
 
 :: --- build Launcher and Installer Package ---
 
