@@ -221,7 +221,7 @@ BEGIN
     IDS_MUI_PRINT_COLOR     "通常|明るさの反転 (暗い背景)|白背景に黒|白背景にカラー|白背景にカラー (行番号以外)|モニタ上の色"
     IDS_MUI_PRINT_PAGENUM   "%i ページ"
     IDS_MUI_WARN_STYLE_RESET
-                            "この操作は、配色設定をそのカラーモードの初期値へと初期化し、テーマファイルを標準の .ini ファイルに切り替えます!"
+                            "この操作は、テーマを標準設定の .ini ファイルに切り替え、配色設定を初期値へと初期化します!"
     IDS_MUI_ASK_INSTANCE_EXISTS
                             "ファイルの単一インスタンスモード:\n\n読み込み済みのファイルのインスタンスにフォーカスを移しますか?"
 END
@@ -264,7 +264,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "言語(&L)"
     IDS_USE_LOCALE_DATEFMT  "言語を日付の書式に反映(&D)"
     IDS_MUI_MENU_THEMES     "配色テーマ(&S)"
-    IDM_THEMES_FACTORY_RESET "&Factory Reset"
+    IDM_THEMES_FACTORY_RESET "初期化(&F)"
     IDM_THEMES_STD_CFG       "標準設定 (&S)"  // Keep blank space before (&S)
     IDS_MUI_STATUSBAR_PREFIXES "行 ,列 ,選 ,選B ,選行 ,見 ,,,,,,,字 ,置 ,式 ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
