@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.516.(build_#) (2023-05-16)
+Current BETA/RC Version 6.23.521.(build_#) (2023-05-21)
 ========================================================
 
 --------------------------------------------------------
@@ -42,7 +42,7 @@ NEW:
 --------------------------------------------------------
 [.###.#]- .
 [.513.1]- Option on F/R dialog: incremental search ON/OFF.
-[.512.1]- Add an "Alternative Notepad3Portable PAF Launcher".
+[.512.1]- Add an "Additional Notepad3Portable.cmd Launcher".
 [.504.1]- Option: do not save blank new files.
 [.503.1]- Minor enhancement on log file monitoring.
 [.430.1]- Some enhancements for Logfile Monitoring.
@@ -64,6 +64,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.521.1]- Copy an "Additional Notepad3Portable.cmd Launcher" in PAF file [Root].
 [.501.1]- Add some new sentences for Logfile Monitoring.
 [.430.1]- Changed message box for file change notification.
 [.430.1]- Keep Dark/Light Win Mode settings (if once set manually - else auto detect).
@@ -96,6 +97,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.521.1]- Minor issue in "Favorites" in INNO Setup (SUP).
 [.516.1]- Minor issue related to match selection counters.
 [.516.1]- "grepWinNP3" <-> Notepad3 interface regression.
 [.513.1]- Single File Instance' flag handling.
@@ -153,10 +155,10 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
+[.521.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2023-03-27).
 [.503.1]- Update Lexilla Library (LEX) version 5.2.4+ dev. (2023-03-13).
 [.503.1]- Update Scintilla Library (SCI) version 5.3.4+ dev. (2023-03-08).
 [.320.1]- Update grepWinNP3 (GRE) version 2.1.13.46 (2023-03-16).
-[.224.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2023-02-21).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
 
 --------------------------------------------------------

@@ -9,7 +9,7 @@
 
 ; Preprocessor related stuff
 // if you compile a "beta, rc or rc2" version, then comment/un-comment the appropriate setting:
-;#define VRSN=" beta"
+#define VRSN=" beta"
 ;#define VRSN=" rc"
 ;#define VRSN=" rc2"
 // but, if not a "beta, rc or rc2" version, then comment above settings and un-comment below setting :)
@@ -683,9 +683,9 @@ Source: "{#bindir}{#RLSdir}\Notepad3.exe"; DestDir: "{app}"; Flags: ignoreversio
 Source: "{#bindir}{#RLSdir}\minipath.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#bindir}{#RLSdir}\grepWinNP3.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#bindir}{#RLSdir}\np3encrypt.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\License.txt"; DestDir: "{app}\Docs"; Flags: ignoreversion
-Source: "..\Readme.txt"; DestDir: "{app}\Docs"; Flags: ignoreversion
-Source: "..\grepWinNP3\grepWinLicense.txt"; DestDir: "{app}\Docs"; Flags: ignoreversion
+Source: "..\License.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Readme.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\grepWinNP3\grepWinLicense.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "Changes.txt"; DestDir: "{app}\Docs"; Flags: ignoreversion
 Source: "Docs\*.txt"; DestDir: "{app}\Docs"; Flags: ignoreversion
 Source: "Docs\crypto\*.txt"; DestDir: "{app}\Docs\crypto"; Flags: ignoreversion
@@ -1130,6 +1130,9 @@ procedure CurStepChanged(CurStep: TSetupStep);
                 until not FindNext(FindRec);
             FindClose( FindRec );
           end;
+
+          SetIniString('Settings', 'Favorites', '%APPDATA%\Rizonesoft\Notepad3\Favorites\', userappdata+'Rizonesoft\Notepad3\Notepad3.ini');
+
           If FindFirst(TMP+'{userappdata}\Rizonesoft\Notepad3\Themes\*.*', FindRec) then
           begin
             If not DirExists(userappdata+'Rizonesoft\Notepad3\Themes') then
