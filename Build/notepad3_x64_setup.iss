@@ -9,7 +9,7 @@
 
 ; Preprocessor related stuff
 // if you compile a "beta, rc or rc2" version, then comment/un-comment the appropriate setting:
-#define VRSN=" beta"
+;#define VRSN=" beta"
 ;#define VRSN=" rc"
 ;#define VRSN=" rc2"
 // but, if not a "beta, rc or rc2" version, then comment above settings and un-comment below setting :)
