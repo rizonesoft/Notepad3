@@ -6387,6 +6387,22 @@ HBITMAP ResampleIconToBitmap(HWND hwnd, HBITMAP hOldBmp, const HICON hIcon, cons
 
 //=============================================================================
 //
+//  _MakeMenuIcon()
+//
+static MENUITEMINFO _MakeMenuIcon(const HICON hIcon, const UINT dpi)
+{
+    int const scx = Scintilla_GetSystemMetricsForDpi(SM_CXSMICON, dpi);
+    int const scy = Scintilla_GetSystemMetricsForDpi(SM_CYSMICON, dpi);
+    MENUITEMINFO mii = { 0 };
+    mii.cbSize = sizeof(MENUITEMINFO);
+    mii.fMask = MIIM_BITMAP;
+    mii.hbmpItem = ConvertIconToBitmap(hIcon, scx, scy);
+    return mii;
+}
+
+
+//=============================================================================
+//
 //  SetUACIcon()
 //
 void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
@@ -6397,25 +6413,35 @@ void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
     UINT const cur_dpi = Scintilla_GetWindowDPI(hwnd);
 
     if (dpi != cur_dpi) {
-
-        int const scx = Scintilla_GetSystemMetricsForDpi(SM_CXSMICON, cur_dpi);
-        int const scy = Scintilla_GetSystemMetricsForDpi(SM_CYSMICON, cur_dpi);
-
-        if (!mii.cbSize) {
-            mii.cbSize = sizeof(MENUITEMINFO);
-        }
-        if (!mii.fMask)  {
-            mii.fMask = MIIM_BITMAP;
-        }
         if (mii.hbmpItem) {
             DeleteObject(mii.hbmpItem);
         }
-        mii.hbmpItem = ConvertIconToBitmap(Globals.hIconMsgShield, scx, scy);
-
-        SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
-
+        mii = _MakeMenuIcon(Globals.hIconMsgShield, cur_dpi);
         dpi = cur_dpi;
     }
+    SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
+}
+
+
+//=============================================================================
+//
+//  SetWinIcon()
+//
+void SetWinIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
+{
+    static UINT dpi = 0; // (!) initially, to force first calculation 
+    static MENUITEMINFO mii = { 0 };
+
+    UINT const cur_dpi = Scintilla_GetWindowDPI(hwnd);
+
+    if (dpi != cur_dpi) {
+        if (mii.hbmpItem) {
+            DeleteObject(mii.hbmpItem);
+        }
+        mii = _MakeMenuIcon(Globals.hIconMsgWinCmd, cur_dpi);
+        dpi = cur_dpi;
+    }
+    SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
 }
 
 

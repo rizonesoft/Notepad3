@@ -568,6 +568,7 @@ DeclareSciCallR1(StyleGetFore, STYLEGETFORE, COLORREF, int, style);
 DeclareSciCallV2(StyleSetFore, STYLESETFORE, int, style, COLORREF, rgb);
 DeclareSciCallR1(StyleGetBack, STYLEGETBACK, COLORREF, int, style);
 DeclareSciCallV2(StyleSetBack, STYLESETBACK, int, style, COLORREF, rgb);
+DeclareSciCallR1(GetStyleAt, GETSTYLEAT, int, DocPos, position);
 DeclareSciCallR1(GetStyleIndexAt, GETSTYLEINDEXAT, int, DocPos, position);
 DeclareSciCallV2(SetStyling, SETSTYLING, DocPos, length, int, style);
 DeclareSciCallV1(StartStyling, STARTSTYLING, DocPos, position);
