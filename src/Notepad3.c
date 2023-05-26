@@ -1003,7 +1003,9 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     if (Globals.hIconMsgShield) {
         DestroyIcon(Globals.hIconMsgShield);
     }
-
+    if (Globals.hIconMsgWinCmd) {
+        DestroyIcon(Globals.hIconMsgWinCmd);
+    }
 
     // install previous handler
     if (_hOldInvalidParamHandler) {
@@ -1185,65 +1187,66 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     UINT const fuLoad = LR_DEFAULTCOLOR | LR_SHARED;
 
     if (!Globals.hDlgIcon256) {
-        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 256, 256, &(Globals.hDlgIcon256)))) {
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 256, 256, &(Globals.hDlgIcon256))))
             Globals.hDlgIcon256 = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 256, 256, fuLoad);
-        }
     }
     if (!Globals.hDlgIcon128) {
-        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 128, 128, &(Globals.hDlgIcon128)))) {
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), 128, 128, &(Globals.hDlgIcon128))))
             Globals.hDlgIcon128 = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, 128, 128, fuLoad);
-        }
     }
     if (!Globals.hDlgIconBig) {
-        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxb, cyb, &(Globals.hDlgIconBig)))) {
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxb, cyb, &(Globals.hDlgIconBig))))
             Globals.hDlgIconBig = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, cxb, cyb, fuLoad);
-        }
     }
     if (!Globals.hDlgIconSmall) {
-        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxs, cys, &(Globals.hDlgIconSmall)))) {
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxs, cys, &(Globals.hDlgIconSmall))))
             Globals.hDlgIconSmall = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, cxs, cys, fuLoad);
-        }
     }
 
     if (!Globals.hDlgIconPrefs256) {
-        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 256, 256, &(Globals.hDlgIconPrefs256)))) {
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 256, 256, &(Globals.hDlgIconPrefs256))))
             Globals.hDlgIconPrefs256 = LoadImage(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), IMAGE_ICON, 256, 256, fuLoad);
-        }
     }
     if (!Globals.hDlgIconPrefs128) {
-        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 128, 128, &(Globals.hDlgIconPrefs128)))) {
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 128, 128, &(Globals.hDlgIconPrefs128))))
             Globals.hDlgIconPrefs128 = LoadImage(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), IMAGE_ICON, 128, 128, fuLoad);
-        }
     }
     if (!Globals.hDlgIconPrefs64) {
-        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 64, 64, &(Globals.hDlgIconPrefs64)))) {
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), 64, 64, &(Globals.hDlgIconPrefs64))))
             Globals.hDlgIconPrefs64 = LoadImage(hInstance, MAKEINTRESOURCE(IDI_MUI_STYLES), IMAGE_ICON, 64, 64, fuLoad);
-        }
     }
 
     if (!Globals.hIconMsgUser) {
-        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxb, cyb, &(Globals.hIconMsgUser)))) {
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDR_MAINWND), cxb, cyb, &(Globals.hIconMsgUser))))
             Globals.hIconMsgUser = LoadImage(hInstance, MAKEINTRESOURCE(IDR_MAINWND), IMAGE_ICON, cxb, cyb, fuLoad);
-        }
     }
     if (!Globals.hIconMsgInfo) {
-        LoadIconWithScaleDown(NULL, IDI_INFORMATION, cxb, cyb, &(Globals.hIconMsgInfo));
+        if (FAILED(LoadIconWithScaleDown(NULL, IDI_INFORMATION, cxb, cyb, &(Globals.hIconMsgInfo))))
+            Globals.hIconMsgInfo = LoadImage(NULL, IDI_INFORMATION, IMAGE_ICON, cxb, cyb, fuLoad);
     }
     if (!Globals.hIconMsgWarn) {
-        LoadIconWithScaleDown(NULL, IDI_WARNING, cxb, cyb, &(Globals.hIconMsgWarn));
+        if (FAILED(LoadIconWithScaleDown(NULL, IDI_WARNING, cxb, cyb, &(Globals.hIconMsgWarn))))
+            Globals.hIconMsgWarn = LoadImage(NULL, IDI_WARNING, IMAGE_ICON, cxb, cyb, fuLoad);
     }
     if (!Globals.hIconMsgError) {
-        LoadIconWithScaleDown(NULL, IDI_ERROR, cxb, cyb, &(Globals.hIconMsgError));
+        if (FAILED(LoadIconWithScaleDown(NULL, IDI_ERROR, cxb, cyb, &(Globals.hIconMsgError))))
+            Globals.hIconMsgError = LoadImage(NULL, IDI_ERROR, IMAGE_ICON, cxb, cyb, fuLoad);
     }
     if (!Globals.hIconMsgQuest) {
-        LoadIconWithScaleDown(NULL, IDI_QUESTION, cxb, cyb, &(Globals.hIconMsgQuest));
+        if (FAILED(LoadIconWithScaleDown(NULL, IDI_QUESTION, cxb, cyb, &(Globals.hIconMsgQuest))))
+            Globals.hIconMsgQuest = LoadImage(NULL, IDI_QUESTION, IMAGE_ICON, cxb, cyb, fuLoad);
     }
     if (!Globals.hIconMsgShield) {
-        LoadIconWithScaleDown(NULL, IDI_SHIELD, cxb, cyb, &(Globals.hIconMsgShield));
+        if (FAILED(LoadIconWithScaleDown(NULL, IDI_SHIELD, cxb, cyb, &(Globals.hIconMsgShield))))
+            Globals.hIconMsgShield = LoadImage(NULL, IDI_SHIELD, IMAGE_ICON, cxb, cyb, fuLoad);
     }
-    //if (!Globals.hIconMsgWinLogo) {
-    //  LoadIconWithScaleDown(NULL, IDI_WINLOGO, cxl, cyl, &(Globals.hIconMsgWinLogo));
-    //}
+    // if (!Globals.hIconMsgWinCmd) {
+    //     Globals.hIconMsgWinLogo = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MUI_RUN));
+    // }
+    if (!Globals.hIconMsgWinCmd) {
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_RUN), cxb, cyb, &(Globals.hIconMsgWinCmd))))
+            Globals.hIconMsgWinCmd = LoadImage(hInstance, MAKEINTRESOURCE(IDI_MUI_RUN), IMAGE_ICON, cxb, cyb, fuLoad);
+    }
 
     if (s_IsThisAnElevatedRelaunch && !IsRunAsAdmin()) {
         InfoBoxLng(MB_ICONSHIELD, NULL, IDS_MUI_ERR_ELEVATED_RIGHTS);
@@ -4083,11 +4086,15 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, CMD_RECODEGB18030, cf);
 
     EnableCmd(hmenu, IDM_FILE_NEWWINDOW2, !(cf && si));
+
+    SetWinIcon(hwnd, hmenu, IDM_FILE_LAUNCH);
     EnableCmd(hmenu, IDM_FILE_LAUNCH, cf);
 
     SetUACIcon(hwnd, hmenu, IDM_FILE_LAUNCH_ELEVATED);
     CheckCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, s_bIsProcessElevated);
     EnableCmd(hmenu, IDM_FILE_LAUNCH_ELEVATED, !s_bIsProcessElevated);
+
+    SetWinIcon(hwnd, hmenu, IDM_FILE_RUN);
 
     CheckCmd(hmenu, CMD_IGNORE_FILE_VARS, Flags.NoFileVariables);
 

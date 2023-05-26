@@ -100,9 +100,10 @@ static LPCWSTR const s_pUnicodeRegEx = L"(\\\\[uU|xX]([0-9a-fA-F]){4}|\\\\[xX]([
 // \p{N} :  any kind of numeric character in any script
 // \p{S} :  math symbols, currency signs, dingbats, box-drawing characters, etc.
 
-//#define HYPLNK_REGEX_VALID_CDPT   L"a-zA-Z0-9\\u00A0-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFEF+&@#/%=~_|$"
-
-#define HYPLNK_REGEX_VALID_CDPT    "\\p{L}\\p{N}\\p{Sc}\\p{So}\\*\\[\\];^°+§&@#/%=~_|'"
+// ---  URL valid codepoints  ---
+//~#define HYPLNK_REGEX_VALID_CDPT    "\\p{L}\\p{N}\\p{Sc}\\p{So}\\*\\[\\];^°+§&@#/%=~_|'"
+// URL valid codepoints w/o square-brackets
+#define HYPLNK_REGEX_VALID_CDPT "\\p{L}\\p{N}\\p{Sc}\\p{So}\\*;^°+§&@#/%=~_|'"
 
 #define HYPLNK_REGEX_FULL   "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"\
                             "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*\\)|[-" HYPLNK_REGEX_VALID_CDPT "?!:,.])*"\

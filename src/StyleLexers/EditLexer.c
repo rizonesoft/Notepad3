@@ -1,4 +1,6 @@
 
+#include <assert.h>
+#include "Helpers.h"
 #include "lexers_x/SciXLexer.h"
 
 #include "SciCall.h"
@@ -22,13 +24,23 @@ void Lexer_GetStreamCommentStrgs(LPWSTR beg_out, LPWSTR end_out, size_t maxlen)
         case SCLEX_JSON:
         case SCLEX_KOTLIN:
         case SCLEX_NSIS:
+        case SCLEX_PHPSCRIPT:
         case SCLEX_RUST:
         case SCLEX_SQL:
         case SCLEX_VHDL:
             StringCchCopy(beg_out, maxlen, L"/*");
             StringCchCopy(end_out, maxlen, L"*/");
             break;
-        case SCLEX_HTML:
+        case SCLEX_HTML: {
+            int const cStyleBeg = SciCall_GetStyleAt(Sci_GetLineStartPosition(SciCall_GetSelectionStart()));
+            int const cStyleEnd = SciCall_GetStyleAt(SciCall_GetSelectionEnd());
+            if ((min_i(cStyleBeg, cStyleEnd) >= SCE_HPHP_DEFAULT) && (max_i(cStyleBeg, cStyleEnd) <= SCE_HPHP_OPERATOR)) {
+                StringCchCopy(beg_out, maxlen, L"/*");
+                StringCchCopy(end_out, maxlen, L"*/");
+                break;
+            }
+        }
+        // [[fallthrough]] // -> XML
         case SCLEX_XML:
             StringCchCopy(beg_out, maxlen, L"<!--");
             StringCchCopy(end_out, maxlen, L"-->");
@@ -50,6 +62,9 @@ void Lexer_GetStreamCommentStrgs(LPWSTR beg_out, LPWSTR end_out, size_t maxlen)
             StringCchCopy(beg_out, maxlen, L"%{");
             StringCchCopy(end_out, maxlen, L"%}");
             break;
+        // ------------------
+        case SCLEX_CONTAINER:
+            assert("SciCall_GetLexer() UNDEFINED!" && 0);
         // ------------------
         case SCLEX_NULL:
         case SCLEX_AHK:
@@ -110,6 +125,7 @@ bool Lexer_GetLineCommentStrg(LPWSTR pre_out, size_t maxlen)
         case SCLEX_MAKEFILE:
         case SCLEX_NIM:
         case SCLEX_PERL:
+        case SCLEX_PHPSCRIPT:
         case SCLEX_POWERSHELL:
         case SCLEX_PYTHON:
         case SCLEX_R:
@@ -145,11 +161,22 @@ bool Lexer_GetLineCommentStrg(LPWSTR pre_out, size_t maxlen)
             StringCchCopy(pre_out, maxlen, L"!");
             return true;
         // ------------------
+        case SCLEX_CONTAINER:
+            assert("SciCall_GetLexer() UNDEFINED!" && 0);
+        // ------------------
         case SCLEX_NULL:
         case SCLEX_CSS:
         case SCLEX_DIFF:
         case SCLEX_MARKDOWN:
-        case SCLEX_HTML:
+        case SCLEX_HTML: {
+            int const cStyleBeg = SciCall_GetStyleAt(Sci_GetLineStartPosition(SciCall_GetSelectionStart()));
+            int const cStyleEnd = SciCall_GetStyleAt(SciCall_GetSelectionEnd());
+            if ((min_i(cStyleBeg, cStyleEnd) >= SCE_HPHP_DEFAULT) && (max_i(cStyleBeg, cStyleEnd) <= SCE_HPHP_OPERATOR)) {
+                StringCchCopy(pre_out, maxlen, L"//");
+                return false;
+            }
+        }
+        // [[fallthrough]] // -> XML
         case SCLEX_XML:
         default:
             StringCchCopy(pre_out, maxlen, L"");
