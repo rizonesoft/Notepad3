@@ -32,9 +32,10 @@ void Lexer_GetStreamCommentStrgs(LPWSTR beg_out, LPWSTR end_out, size_t maxlen)
             StringCchCopy(end_out, maxlen, L"*/");
             break;
         case SCLEX_HTML: {
-            int const cStyleBeg = SciCall_GetStyleAt(Sci_GetLineStartPosition(SciCall_GetSelectionStart()));
-            int const cStyleEnd = SciCall_GetStyleAt(SciCall_GetSelectionEnd());
-            if ((min_i(cStyleBeg, cStyleEnd) >= SCE_HPHP_DEFAULT) && (max_i(cStyleBeg, cStyleEnd) <= SCE_HPHP_OPERATOR)) {
+            int const cStyleBeg = SciCall_GetStyleIndexAt(Sci_GetLineStartPosition(SciCall_GetSelectionStart()));
+            int const cStyleEnd = SciCall_GetStyleIndexAt(SciCall_GetSelectionEnd());
+            if (((min_i(cStyleBeg, cStyleEnd) >= SCE_HPHP_DEFAULT) && (max_i(cStyleBeg, cStyleEnd) <= SCE_HPHP_OPERATOR)) ||
+                ((min_i(cStyleBeg, cStyleEnd) >= SCE_HJ_START) && (max_i(cStyleBeg, cStyleEnd) <= SCE_HJA_REGEX))) {
                 StringCchCopy(beg_out, maxlen, L"/*");
                 StringCchCopy(end_out, maxlen, L"*/");
                 break;
@@ -169,10 +170,16 @@ bool Lexer_GetLineCommentStrg(LPWSTR pre_out, size_t maxlen)
         case SCLEX_DIFF:
         case SCLEX_MARKDOWN:
         case SCLEX_HTML: {
-            int const cStyleBeg = SciCall_GetStyleAt(Sci_GetLineStartPosition(SciCall_GetSelectionStart()));
-            int const cStyleEnd = SciCall_GetStyleAt(SciCall_GetSelectionEnd());
-            if ((min_i(cStyleBeg, cStyleEnd) >= SCE_HPHP_DEFAULT) && (max_i(cStyleBeg, cStyleEnd) <= SCE_HPHP_OPERATOR)) {
+            int const cStyleBeg = SciCall_GetStyleIndexAt(Sci_GetLineStartPosition(SciCall_GetSelectionStart()));
+            int const cStyleEnd = SciCall_GetStyleIndexAt(SciCall_GetSelectionEnd());
+            if (((min_i(cStyleBeg, cStyleEnd) >= SCE_HPHP_DEFAULT) && (max_i(cStyleBeg, cStyleEnd) <= SCE_HPHP_OPERATOR)) || (min_i(cStyleBeg, cStyleEnd) == SCE_HPHP_COMPLEX_VARIABLE) ||
+                ((min_i(cStyleBeg, cStyleEnd) >= SCE_HJ_START) && (max_i(cStyleBeg, cStyleEnd) <= SCE_HJA_REGEX))) {
                 StringCchCopy(pre_out, maxlen, L"//");
+                return false;
+            }
+            if (((min_i(cStyleBeg, cStyleEnd) >= SCE_HP_START) && (max_i(cStyleBeg, cStyleEnd) <= SCE_HP_IDENTIFIER)) ||
+                ((min_i(cStyleBeg, cStyleEnd) >= SCE_HPA_START) && (max_i(cStyleBeg, cStyleEnd) <= SCE_HPA_IDENTIFIER))) {
+                StringCchCopy(pre_out, maxlen, L"#");
                 return false;
             }
         }
