@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.521.(build_#) (2023-05-21)
+Current BETA/RC Version 6.23.526.(build_#) (2023-05-26)
 ========================================================
 
 --------------------------------------------------------
@@ -64,6 +64,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.526.1]- Removing square brackets from being valid codepoints of URL (hyperlink) regex.
 [.521.1]- Copy an "Additional Notepad3Portable.cmd Launcher" in PAF file [Root].
 [.501.1]- Add some new sentences for Logfile Monitoring.
 [.430.1]- Changed message box for file change notification.
@@ -97,6 +98,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.526.1]- PHP commenting embedded Web Source Code.
 [.521.1]- Minor issue in "Favorites" in INNO Setup (SUP).
 [.516.1]- Minor issue related to match selection counters.
 [.516.1]- "grepWinNP3" <-> Notepad3 interface regression.
