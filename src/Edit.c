@@ -7995,7 +7995,6 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 
             ft.chrg.cpMin = (DocPosCR)iWordEndPos;
             iPosFind = SciCall_FindTextFull(SCFIND_WORDSTART, &ft);
-            //iPosFind = SciCall_FindText(SCFIND_WORDSTART, &ft);
         }
         FreeMem(pwlNewWord);
         pwlNewWord = NULL;
@@ -8047,9 +8046,14 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 
     // --------------------------------------------------------------------------
 
-    if (iNumWords > 0) {
+    SciCall_AutoCCancel();
 
-        SciCall_AutoCCancel();
+    if (iNumWords) {
+
+        //if ((iNumWords == 1) && (StringCchCompareXIA(pRoot, pListHead->word) == 0)) {
+        //    return true;
+        //}
+
         SciCall_AutoCSetChooseSingle(autoInsert);
 
         const char* const sep = " ";

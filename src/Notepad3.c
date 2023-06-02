@@ -12492,7 +12492,7 @@ void ShowZoomCallTip()
         DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
 
         int const iXOff = SciCall_GetXOffset();
-        SciCall_SetXOffset(0);
+        SciCall_SetXOffset(-4); // move away from margin
         SciCall_CallTipShow(iPos, chToolTip);
         SciCall_SetXOffset(iXOff);
         _DelayClearCallTip(delayClr);
