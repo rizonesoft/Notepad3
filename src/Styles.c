@@ -2328,6 +2328,8 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
         SciCall_MarkerSetBackSelected(FoldMarkerID[i], fldHiLight);
         SciCall_MarkerSetStrokeWidth(FoldMarkerID[i], strokeWidth);
     }
+    SciCall_SetElementColour(SC_ELEMENT_FOLD_LINE, AxRGB(255, clrLineNumFore));
+
     SciCall_MarkerEnableHighlight(true); // highlight folding block
 
     // background 
