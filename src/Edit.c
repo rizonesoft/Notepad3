@@ -7868,7 +7868,7 @@ static int  wordcmpi(PWLIST a, PWLIST b) {
 
 // ----------------------------------------------
 
-static const char*  _strNextLexKeyWord(const char* strg, const char* const wdroot, DocPosCR* pwdlen)
+static __forceinline const char*  _strNextLexKeyWord(const char* strg, const char* const wdroot, DocPosCR* pwdlen)
 {
     char const sep = ' ';
     bool found = false;
