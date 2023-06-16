@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.526.(build_#) (2023-05-26)
+Current BETA/RC Version 6.23.616.(build_#) (2023-06-16)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.616.1]- Web Source Code: enhancement for commenting in embedded scripts.
 [.513.1]- Option on F/R dialog: incremental search ON/OFF.
 [.512.1]- Add an "Additional Notepad3Portable.cmd Launcher".
 [.504.1]- Option: do not save blank new files.
@@ -98,6 +99,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.616.1]- Set color of horizontal ruler (folded block) to line number coloring.
+[.616.1]- Zoom tooltip moved out of margin area.
+[.616.1]- Don't show auto-completion list if typed word matches the one and only word in list.
 [.526.1]- PHP commenting embedded Web Source Code.
 [.521.1]- Minor issue in "Favorites" in INNO Setup (SUP).
 [.516.1]- Minor issue related to match selection counters.
