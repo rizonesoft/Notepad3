@@ -89,7 +89,6 @@ static void ColouriseInnoDoc(Sci_PositionU startPos, Sci_Position length, int, W
 	// using the hand-written state machine shown below
 	styler.StartAt(startPos);
 	styler.StartSegment(startPos);
-
 	for (Sci_Position i = startPos; i < lengthDoc; i++) {
 		chPrev = ch;
 		ch = chNext;
