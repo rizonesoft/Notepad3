@@ -335,6 +335,8 @@ class ScintillaWin :
 
 	bool capturedMouse;
 	bool trackedMouseLeave;
+	BOOL typingWithoutCursor;
+	bool cursorIsHidden;
 	SetCoalescableTimerSig SetCoalescableTimerFn;
 
 	unsigned int linesPerScroll;	///< Intellimouse support
@@ -418,6 +420,7 @@ class ScintillaWin :
 	void ImeStartComposition();
 	void ImeEndComposition();
 	LRESULT ImeOnReconvert(LPARAM lParam);
+	LRESULT ImeOnDocumentFeed(LPARAM lParam) const;
 	sptr_t HandleCompositionWindowed(uptr_t wParam, sptr_t lParam);
 	sptr_t HandleCompositionInline(uptr_t wParam, sptr_t lParam);
 	static bool KoreanIME() noexcept;
@@ -446,6 +449,7 @@ class ScintillaWin :
 	void SetMouseCapture(bool on) override;
 	bool HaveMouseCapture() override;
 	void SetTrackMouseLeaveEvent(bool on) noexcept;
+	void HideCursorIfPreferred() noexcept;
 	void UpdateBaseElements() override;
 	bool PaintContains(PRectangle rc) const noexcept override;
 	void ScrollText(Sci::Line linesToMove) override;
@@ -475,7 +479,7 @@ class ScintillaWin :
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	void ClaimSelection() override;
 
-	void GetIntelliMouseParameters() noexcept;
+	void GetMouseParameters() noexcept;
 	void CopyToGlobal(GlobalMemory &gmUnicode, const SelectionText &selectedText);
 	void CopyToClipboard(const SelectionText &selectedText) override;
 	void ScrollMessage(WPARAM wParam);
@@ -560,6 +564,8 @@ ScintillaWin::ScintillaWin(HWND hwnd) {
 
 	capturedMouse = false;
 	trackedMouseLeave = false;
+	typingWithoutCursor = false;
+	cursorIsHidden = false;
 	SetCoalescableTimerFn = nullptr;
 
 	linesPerScroll = 0;
@@ -1269,6 +1275,7 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 	}
 
 	view.imeCaretBlockOverride = false;
+	HideCursorIfPreferred();
 
 	if (lParam & GCS_RESULTSTR) {
 		AddWString(imc.GetCompositionString(GCS_RESULTSTR), CharacterSource::ImeResult);
@@ -1597,6 +1604,7 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 		break;
 
 	case WM_MOUSEMOVE: {
+			cursorIsHidden = false; // to be shown by ButtonMoveWithModifiers
 			const Point pt = PointFromLParam(lParam);
 
 			// Windows might send WM_MOUSEMOVE even though the mouse has not been moved:
@@ -1733,6 +1741,7 @@ sptr_t ScintillaWin::KeyMessage(unsigned int iMessage, uptr_t wParam, sptr_t lPa
 		return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 
 	case WM_CHAR:
+		HideCursorIfPreferred();
 		if (((wParam >= 128) || !iscntrl(static_cast<int>(wParam))) || !lastKeyDownConsumed) {
 			wchar_t wcs[3] = { static_cast<wchar_t>(wParam), 0 };
 			unsigned int wclen = 1;
@@ -1813,6 +1822,9 @@ sptr_t ScintillaWin::IMEMessage(unsigned int iMessage, uptr_t wParam, sptr_t lPa
 	case WM_IME_REQUEST: {
 			if (wParam == IMR_RECONVERTSTRING) {
 				return ImeOnReconvert(lParam);
+			}
+			if (wParam == IMR_DOCUMENTFEED) {
+				return ImeOnDocumentFeed(lParam);
 			}
 			return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 		}
@@ -2042,7 +2054,7 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 			ctrlID = ::GetDlgCtrlID(HwndFromWindow(wMain));
 			UpdateBaseElements();
 			// Get Intellimouse scroll line parameters
-			GetIntelliMouseParameters();
+			GetMouseParameters();
 			::RegisterDragDrop(MainHWND(), &dt);
 			break;
 
@@ -2100,10 +2112,12 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 
 		case WM_SETCURSOR:
 			if (LOWORD(lParam) == HTCLIENT) {
-				POINT pt;
-				if (::GetCursorPos(&pt)) {
-					::ScreenToClient(MainHWND(), &pt);
-					DisplayCursor(ContextCursor(PointFromPOINT(pt)));
+				if (!cursorIsHidden) {
+					POINT pt;
+					if (::GetCursorPos(&pt)) {
+						::ScreenToClient(MainHWND(), &pt);
+						DisplayCursor(ContextCursor(PointFromPOINT(pt)));
+					}
 				}
 				return TRUE;
 			} else {
@@ -2126,7 +2140,7 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 #endif
 			UpdateBaseElements();
 			// Get Intellimouse scroll line parameters
-			GetIntelliMouseParameters();
+			GetMouseParameters();
 			InvalidateStyleRedraw();
 			break;
 
@@ -2368,6 +2382,14 @@ void ScintillaWin::SetTrackMouseLeaveEvent(bool on) noexcept {
 		TrackMouseEvent(&tme);
 	}
 	trackedMouseLeave = on;
+}
+
+void ScintillaWin::HideCursorIfPreferred() noexcept {
+	// SPI_GETMOUSEVANISH from OS.
+	if (typingWithoutCursor && !cursorIsHidden) {
+		::SetCursor(NULL);
+		cursorIsHidden = true;
+	}
 }
 
 void ScintillaWin::UpdateBaseElements() {
@@ -3178,13 +3200,58 @@ LRESULT ScintillaWin::ImeOnReconvert(LPARAM lParam) {
 	return rcSize;
 }
 
-void ScintillaWin::GetIntelliMouseParameters() noexcept {
+LRESULT ScintillaWin::ImeOnDocumentFeed(LPARAM lParam) const {
+	// This is called while typing preedit string in.
+	// So there is no selection.
+	// Limit feed within one line without EOL.
+	// Look around:   lineStart |<--  |compStart| - caret - compEnd|  -->| lineEnd.
+
+	const Sci::Position curPos = CurrentPosition();
+	const Sci::Line curLine = pdoc->SciLineFromPosition(curPos);
+	const Sci::Position lineStart = pdoc->LineStart(curLine);
+	const Sci::Position lineEnd = pdoc->LineEnd(curLine);
+
+	const std::wstring rcFeed = StringDecode(RangeText(lineStart, lineEnd), CodePageOfDocument());
+	const int rcFeedLen = static_cast<int>(rcFeed.length()) * sizeof(wchar_t);
+	const int rcSize = sizeof(RECONVERTSTRING) + rcFeedLen + sizeof(wchar_t);
+
+	RECONVERTSTRING *rc = static_cast<RECONVERTSTRING *>(PtrFromSPtr(lParam));
+	if (!rc)
+		return rcSize;
+
+	wchar_t *rcFeedStart = reinterpret_cast<wchar_t*>(rc + 1);
+	memcpy(rcFeedStart, &rcFeed[0], rcFeedLen);
+
+	IMContext imc(MainHWND());
+	if (!imc.hIMC)
+		return 0;
+
+	const size_t compStrLen = imc.GetCompositionString(GCS_COMPSTR).size();
+	const int imeCaretPos = imc.GetImeCaretPos();
+	const Sci::Position compStart = pdoc->GetRelativePositionUTF16(curPos, -imeCaretPos);
+	const Sci::Position compStrOffset = pdoc->CountUTF16(lineStart, compStart);
+
+	// Fill in reconvert structure.
+	// Let IME to decide what the target is.
+	rc->dwVersion = 0; //constant
+	rc->dwStrLen = static_cast<DWORD>(rcFeed.length());
+	rc->dwStrOffset = sizeof(RECONVERTSTRING); //constant
+	rc->dwCompStrLen = static_cast<DWORD>(compStrLen);
+	rc->dwCompStrOffset = static_cast<DWORD>(compStrOffset) * sizeof(wchar_t);
+	rc->dwTargetStrLen = rc->dwCompStrLen;
+	rc->dwTargetStrOffset = rc->dwCompStrOffset;
+
+	return rcSize; // MS API says reconv structure to be returned.
+}
+
+void ScintillaWin::GetMouseParameters() noexcept {
 	// This retrieves the number of lines per scroll as configured in the Mouse Properties sheet in Control Panel
 	::SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, &linesPerScroll, 0);
 	if (!::SystemParametersInfo(SPI_GETWHEELSCROLLCHARS, 0, &charsPerScroll, 0)) {
 		// no horizontal scrolling configuration on Windows XP
 		charsPerScroll = (linesPerScroll == WHEEL_PAGESCROLL) ? 3 : linesPerScroll;
 	}
+	::SystemParametersInfo(SPI_GETMOUSEVANISH, 0, &typingWithoutCursor, 0);
 }
 
 void ScintillaWin::CopyToGlobal(GlobalMemory &gmUnicode, const SelectionText &selectedText) {
