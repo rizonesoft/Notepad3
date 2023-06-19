@@ -15,11 +15,11 @@ def HeaderFromIncludeLine(s):
     return s.strip()[1:].strip()[7:].strip()
 
 def ExtractHeaders(file):
-    with file.open(encoding="cp437") as infile:
+    with file.open(encoding="iso-8859-1") as infile:
         return [HeaderFromIncludeLine(h) for h in infile if IsHeader(h)]
 
 def ExtractWithPrefix(file, prefix):
-    with file.open(encoding="cp437") as infile:
+    with file.open(encoding="iso-8859-1") as infile:
         return [s.strip()[len(prefix):] for s in infile if s.startswith(prefix)]
 
 def ExcludeName(name, excludes):

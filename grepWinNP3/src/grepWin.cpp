@@ -28,6 +28,8 @@
 #include "PathUtils.h"
 #pragma warning(push)
 #pragma warning(disable : 4458) // declaration of 'xxx' hides class member
+#include "OnOutOfScope.h"
+
 #include <gdiplus.h>
 #include "WinUser.h"
 #pragma warning(pop)
@@ -42,6 +44,68 @@ HANDLE              hInitProtection    = nullptr;
 
 ULONGLONG           g_startTime        = GetTickCount64();
 UINT                GREPWIN_STARTUPMSG = RegisterWindowMessage(L"grepWinNP3_StartupMessage");
+
+static std::wstring GetPathFromCommandLine()
+{
+    int                nArgs;
+    const std::wstring commandLine = GetCommandLineW();
+    LPWSTR*            szArgList   = CommandLineToArgvW(commandLine.c_str(), &nArgs);
+    std::wstring       directlyPassedSearchPath;
+    if (szArgList)
+    {
+        OnOutOfScope(LocalFree(szArgList));
+        bool bOmitNext = false;
+        for (int i = 1; i < nArgs; ++i)
+        {
+            if (bOmitNext)
+            {
+                bOmitNext = false;
+                continue;
+            }
+            if ((szArgList[i][0] != '/') && (szArgList[i][0] != '-'))
+            {
+                auto pathPos = commandLine.find(szArgList[i]);
+                if (pathPos != std::wstring::npos)
+                {
+                    auto tempPath = commandLine.substr(pathPos);
+                    if (PathFileExists(tempPath.c_str()))
+                    {
+                        CPathUtils::NormalizeFolderSeparators(tempPath);
+                        auto path                = CPathUtils::GetLongPathname(tempPath);
+                        directlyPassedSearchPath = path;
+                        break;
+                    }
+                }
+
+                std::wstring path = szArgList[i];
+                CPathUtils::NormalizeFolderSeparators(path);
+                path = CPathUtils::GetLongPathname(path);
+                if (!PathFileExists(path.c_str()))
+                {
+                    pathPos = commandLine.find(szArgList[i]);
+                    if (pathPos != std::wstring::npos)
+                    {
+                        auto tempPath = commandLine.substr(pathPos);
+                        if (PathFileExists(tempPath.c_str()))
+                        {
+                            CPathUtils::NormalizeFolderSeparators(tempPath);
+                            path                     = CPathUtils::GetLongPathname(tempPath);
+                            directlyPassedSearchPath = path;
+                            break;
+                        }
+                    }
+                }
+                directlyPassedSearchPath = path;
+            }
+            else
+            {
+                if (wcscmp(&szArgList[i][1], L"z") == 0)
+                    bOmitNext = true;
+            }
+        }
+    }
+    return directlyPassedSearchPath;
+}
 
 static std::wstring SanitizeSearchPaths(const std::wstring& searchpath)
 {
@@ -131,16 +195,16 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
     // uncomment the following lines for low-memory tests.
     // note: process needs to run elevated for this to work.
     //
-    //auto job = CreateJobObject(NULL, NULL);
-    //JOBOBJECT_EXTENDED_LIMIT_INFORMATION joblimit = { 0 };
-    //joblimit.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_WORKINGSET;
-    //joblimit.JobMemoryLimit = 30 * 1024 * 1024;
-    //joblimit.ProcessMemoryLimit = 30 * 1024 * 1024;
-    //joblimit.PeakProcessMemoryUsed = 30 * 1024 * 1024;
-    //joblimit.BasicLimitInformation.MaximumWorkingSetSize = 30 * 1024 * 1024;
-    //joblimit.BasicLimitInformation.MinimumWorkingSetSize = 30 * 1024;
-    //SetInformationJobObject(job, JobObjectExtendedLimitInformation, &joblimit, sizeof(joblimit));
-    //AssignProcessToJobObject(job, GetCurrentProcess());
+    // auto job = CreateJobObject(NULL, NULL);
+    // JOBOBJECT_EXTENDED_LIMIT_INFORMATION joblimit = { 0 };
+    // joblimit.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_WORKINGSET;
+    // joblimit.JobMemoryLimit = 30 * 1024 * 1024;
+    // joblimit.ProcessMemoryLimit = 30 * 1024 * 1024;
+    // joblimit.PeakProcessMemoryUsed = 30 * 1024 * 1024;
+    // joblimit.BasicLimitInformation.MaximumWorkingSetSize = 30 * 1024 * 1024;
+    // joblimit.BasicLimitInformation.MinimumWorkingSetSize = 30 * 1024;
+    // SetInformationJobObject(job, JobObjectExtendedLimitInformation, &joblimit, sizeof(joblimit));
+    // AssignProcessToJobObject(job, GetCurrentProcess());
 
     SetDllDirectory(L"");
     // if multiple items are selected in explorer and grepWin is started for all of them,
@@ -225,12 +289,10 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
         } while ((hWnd == nullptr) && alreadyRunning && timeout);
     }
 
-    
-    auto moduleDir  = CPathUtils::GetModuleDir(nullptr);
     auto moduleName = CPathUtils::GetFileName(CPathUtils::GetModulePath(nullptr));
-
     bPortable       = ((wcsstr(moduleName.c_str(), L"portable")) || (parser.HasKey(L"portable")) || (wcsstr(moduleName.c_str(), L"NP3")));
 
+    auto moduleDir  = CPathUtils::GetModuleDir(nullptr);
     g_iniPath       = moduleDir;
     g_iniPath      += L"\\grepwinNP3.ini";
     if (parser.HasVal(L"inipath")) {
@@ -238,7 +300,37 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
         bPortable = true;
     }
 
-    auto origCwd = CPathUtils::GetCWD();
+    // extract the current working directory (before it can be changed
+    // below) as a fallback directory for the target search path (if
+    // a path is not explicitly provided in the arguments)
+    std::wstring targetCwd                     = CPathUtils::GetCWD();
+
+    // get a path that's passed on the command line without the /searchpath switch
+    // we have to do that before changing the CWD, so that grepWin can be
+    // started from a command line like this:
+    // grepwin .
+    // to search the current dir
+    auto         directlyPassedSearchPath      = GetPathFromCommandLine();
+
+    // ignore a system directory fallback path
+    //
+    // grepWin will fallback onto the working directory if not path
+    // argument is provided from the command line. This can lead to
+    // search path being unexpectedly configured to the Window's
+    // System32 path when a "pinned" (or start-menu-invoked) grepWin
+    // is launch (since Explorer's working directory is the system
+    // path). In these cases, having the search path fall back to
+    // the last directory saved (in the registry) can be preferred;
+    // so if a Windows system path is detected, ignore it.
+    WCHAR        systemDirectory[MAX_PATH + 1] = {0};
+    if (GetSystemDirectoryW(systemDirectory, MAX_PATH) > 0)
+    {
+        if (!targetCwd.compare(systemDirectory))
+        {
+            targetCwd = L"";
+        }
+    }
+
     // attempt to change the working directory to the installation directory
     //
     // This is a helper when launching grepWin using context menus. When
@@ -267,18 +359,20 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
 
     if (hWnd)
     {
+        bool bOnlyOne = !!static_cast<DWORD>(CRegStdDWORD(L"Software\\grepWinNP3\\onlyone", 0));
+        if (bPortable)
+            bOnlyOne = g_iniFile.GetBoolValue(L"global", L"onlyone", L"false");
+        //~auto sPath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : targetCwd;
+        std::wstring sPath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : 
+                                    (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : targetCwd);
+        sPath      = SanitizeSearchPaths(sPath);
+
         auto searchfor = parser.HasVal(L"searchfor") ? parser.GetVal(L"searchfor") :
                                 (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L"");
 
-        std::wstring sPath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : 
-                                    (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : origCwd);
-
-        sPath = SanitizeSearchPaths(sPath);
         SearchReplace(sPath, L"/", L"\\");
         sPath = SanitizeSearchPaths(sPath);
 
-        bool const bOnlyOne = bPortable ? g_iniFile.GetBoolValue(L"global", L"onlyone", L"false") : 
-                                          !!DWORD(CRegStdDWORD(L"Software\\grepWinNP3\\onlyone", 0));
         bool const bSendStartupMsg = static_cast<bool>(SendMessage(hWnd, GREPWIN_STARTUPMSG, 1, 0));
                                     
         if (bSendStartupMsg || bOnlyOne)
@@ -344,7 +438,6 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
         }
         else
         {
-            bool       searchPathSet = false;
             CSearchDlg searchDlg(nullptr);
             if (parser.HasVal(L"searchini"))
             {
@@ -361,7 +454,6 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     std::wstring sPath = searchIni.GetValue(section.c_str(), L"searchpath");
                     sPath              = SanitizeSearchPaths(sPath);
                     searchDlg.SetSearchPath(sPath);
-                    searchPathSet = true;
                 }
                 if (searchIni.GetValue(section.c_str(), L"searchfor"))
                     searchDlg.SetSearchString(searchIni.GetValue(section.c_str(), L"searchfor"));
@@ -450,17 +542,25 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     searchDlg.SetDateLimit(_wtoi(searchIni.GetValue(section.c_str(), L"datelimit")), date1, date2);
                 }
             }
-
+            if (parser.HasKey(L"searchpath"))
+            {
+                std::wstring sPath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : L"";
+                sPath              = SanitizeSearchPaths(sPath);
+                searchDlg.SetSearchPath(sPath);
+            }
             ///  NP3 special >>>>>>>>
-            std::wstring searchPath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") :
-                                             (bPortable ? g_iniFile.GetValue(L"global", L"searchpath", L"") : L"");
-            searchPath              = SanitizeSearchPaths(searchPath);
-            searchDlg.SetSearchPath(searchPath);
-            searchPathSet = !searchPath.empty();
-
+            else if (bPortable) {
+                std::wstring sPath = g_iniFile.GetValue(L"global", L"searchpath", L"");
+                sPath              = SanitizeSearchPaths(sPath);
+                searchDlg.SetSearchPath(sPath);
+            }
+            /// <<<<<<<< NP3 special
+            else if (!directlyPassedSearchPath.empty())
+            {
+                searchDlg.SetSearchPath(directlyPassedSearchPath);
+            }
             searchDlg.SetSearchString(parser.HasVal(L"searchfor") ? parser.GetVal(L"searchfor") : 
                                              (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L""));
-            /// <<<<<<<< NP3 special
 
             if (parser.HasKey(L"filemaskregex"))
                 searchDlg.SetFileMask(parser.GetVal(L"filemaskregex") ? parser.GetVal(L"filemaskregex") : L"", true);
@@ -549,25 +649,6 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                 searchDlg.SetDateLimit(parser.GetLongVal(L"datelimit"), date1, date2);
             }
 
-            if (!searchPathSet)
-            {
-                auto cmdLineSize = wcslen(lpCmdLine);
-                auto cmdLinePath = std::make_unique<wchar_t[]>(cmdLineSize + 1);
-                wcscpy_s(cmdLinePath.get(), cmdLineSize + 1, lpCmdLine);
-                PathUnquoteSpaces(cmdLinePath.get());
-                if (PathFileExists(cmdLinePath.get()))
-                {
-                    std::wstring sPath = cmdLinePath.get();
-                    sPath              = SanitizeSearchPaths(sPath);
-                    searchDlg.SetSearchPath(sPath);
-                }
-                else
-                {
-                    auto sPath = origCwd;
-                    sPath      = SanitizeSearchPaths(sPath);
-                    searchDlg.SetSearchPath(sPath);
-                }
-            }
             if (parser.HasKey(L"nosavesettings"))
                 searchDlg.SetNoSaveSettings(true);
 

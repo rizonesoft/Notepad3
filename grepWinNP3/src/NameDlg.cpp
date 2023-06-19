@@ -59,25 +59,10 @@ LRESULT CNameDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
             SetDlgItemText(*this, IDC_NAME, m_name.c_str());
             SetFocus(GetDlgItem(hwndDlg, IDC_NAME));
-
-            m_resizer.Init(hwndDlg);
-            m_resizer.UseSizeGrip(!CTheme::Instance().IsDarkTheme());
         }
             return FALSE;
         case WM_COMMAND:
             return DoCommand(LOWORD(wParam), HIWORD(wParam));
-        case WM_SIZE:
-        {
-            m_resizer.DoResize(LOWORD(lParam), HIWORD(lParam));
-        }
-        break;
-        case WM_GETMINMAXINFO:
-        {
-            MINMAXINFO* mmi       = reinterpret_cast<MINMAXINFO*>(lParam);
-            mmi->ptMinTrackSize.x = m_resizer.GetDlgRect()->right;
-            mmi->ptMinTrackSize.y = m_resizer.GetDlgRect()->bottom;
-            return 0;
-        }
         case WM_CLOSE:
             CTheme::Instance().RemoveRegisteredCallback(m_themeCallbackId);
             break;

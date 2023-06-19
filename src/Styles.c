@@ -1349,6 +1349,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         if (Style_StrGetStrokeWidth(hwnd, INDIC_NP3_MATCH_BRACE, pCurrentStandard->Styles[STY_BRACE_OK].szValue, &iValue)) {
             SciCall_IndicSetStrokeWidth(INDIC_NP3_MATCH_BRACE, iValue);
         }
+
+        // Indentation Guide
+        SciCall_StyleSetBack(STYLE_BRACELIGHT, dColor);
     }
     if (Settings2.UseOldStyleBraceMatching) {
         Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_BAD].iStyle,
@@ -2173,10 +2176,15 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
 
 
     // ---  CallTips  ---
-    SciCall_CallTipSetBack(clrMarginBack);
-    SciCall_CallTipSetFore(RGB(0x80, 0x80, 0x80));
+    //SciCall_CallTipSetFore(RGB(0x80, 0x80, 0x80)); // clrLineNumFore
+    //SciCall_CallTipSetBack(clrMarginBack);
+    SciCall_StyleSetFont(STYLE_CALLTIP, "Segoe UI");
+    SciCall_StyleSetItalic(STYLE_CALLTIP, false);
+    SciCall_StyleSetBold(STYLE_CALLTIP, false);
+    SciCall_StyleSetFore(STYLE_CALLTIP, RGB(0x80, 0x80, 0x80)); // clrLineNumFore
+    SciCall_StyleSetBack(STYLE_CALLTIP, clrMarginBack);
+    SciCall_CallTipUseStyle(24); // tabsize
     SciCall_CallTipSetForeHlt(clrLineNumFore);
-
 
     // ---  Bookmarks  ---
     LPCWSTR const wchBookMarkStyleStrg = GetCurrentStdLexer()->Styles[STY_BOOK_MARK].szValue;
