@@ -111,7 +111,7 @@ bool CLanguage::LoadFile(const std::wstring& path)
                 }
                 if (wcsncmp(I->c_str(), L"msgstr", 6) == 0)
                 {
-                    //message string
+                    // message string
                     msgStr = I->c_str();
                     msgStr = msgStr.substr(8, msgStr.length() - 9);
                     type   = 2;

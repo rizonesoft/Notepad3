@@ -121,23 +121,12 @@ std::wstring CPathUtils::GetLongPathname(const std::wstring& path)
     }
     if (ret == 0)
         return path;
-    if (sRet.starts_with('\\'))
-    {
-        ret = GetFullPathName(sRet.c_str(), 0, nullptr, nullptr);
-        if (ret)
-        {
-            auto fullPath = std::make_unique<wchar_t[]>(ret + 2);
-            ret           = GetFullPathName(sRet.c_str(), ret + 1, fullPath.get(), nullptr);
-            if (ret)
-                sRet = std::wstring(fullPath.get(), ret);
-        }
-    }
     return sRet;
 }
 
-std::wstring CPathUtils::AdjustForMaxPath(const std::wstring& path)
+std::wstring CPathUtils::AdjustForMaxPath(const std::wstring& path, bool force)
 {
-    if (path.size() < 248) // 248 instead of MAX_PATH because 248 is the limit for directories
+    if (!force && path.size() < 248) // 248 instead of MAX_PATH because 248 is the limit for directories
         return path;
     if (path.substr(0, 4).compare(L"\\\\?\\") == 0)
         return path;
@@ -708,7 +697,7 @@ bool CPathUtils::CreateRecursiveDirectory(const std::wstring& path)
 public:
     CPathTests()
     {
-        assert(CPathUtils::AdjustForMaxPath(L"c:\\") == L"c:\\");
+        assert(CPathUtils::AdjustForMaxPath(L"c:\\", false) == L"c:\\");
         assert(CPathUtils::AdjustForMaxPath(L"c:\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz") == L"\\\\?\\c:\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz\\abcdefghijklmnopqrstuvwxyz");
         assert(CPathUtils::GetParentDirectory(L"c:\\windows\\system32") == L"c:\\windows");
         assert(CPathUtils::GetParentDirectory(L"c:\\") == L"");

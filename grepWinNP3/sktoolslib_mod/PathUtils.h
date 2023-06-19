@@ -1,6 +1,6 @@
 ﻿// sktoolslib - common files for SK tools
 
-// Copyright (C) 2013-2014, 2017, 2020-2021 - Stefan Kueng
+// Copyright (C) 2013-2014, 2017, 2020-2021, 2023 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@ class CPathUtils
 {
 public:
     static std::wstring GetLongPathname(const std::wstring& path);
-    static std::wstring AdjustForMaxPath(const std::wstring& path);
+    static std::wstring AdjustForMaxPath(const std::wstring& path, bool force = true);
 
     static std::wstring GetParentDirectory(const std::wstring& path);
     static std::wstring GetFileExtension(const std::wstring& path);
