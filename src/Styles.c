@@ -1349,6 +1349,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         if (Style_StrGetStrokeWidth(hwnd, INDIC_NP3_MATCH_BRACE, pCurrentStandard->Styles[STY_BRACE_OK].szValue, &iValue)) {
             SciCall_IndicSetStrokeWidth(INDIC_NP3_MATCH_BRACE, iValue);
         }
+
+        // Indentation Guide
+        SciCall_StyleSetBack(STYLE_BRACELIGHT, dColor);
     }
     if (Settings2.UseOldStyleBraceMatching) {
         Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_BAD].iStyle,
