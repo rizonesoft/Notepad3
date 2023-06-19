@@ -474,6 +474,7 @@ DeclareSciCallV2(CallTipShow, CALLTIPSHOW, DocPos, position, const char*, text);
 DeclareSciCallV2(CallTipSetHlt, CALLTIPSETHLT, int, beg, int, end);
 DeclareSciCallR0(CallTipActive, CALLTIPACTIVE, bool);
 DeclareSciCallV0(CallTipCancel, CALLTIPCANCEL);
+DeclareSciCallV1(CallTipUseStyle, CALLTIPUSESTYLE, int, tabsize);
 DeclareSciCallV1(SetMouseDWellTime, SETMOUSEDWELLTIME, int, millisec);
 
 DeclareSciCallR0(AutoCActive, AUTOCACTIVE, bool);
@@ -584,7 +585,8 @@ DeclareSciCallV1(SetViewEOL, SETVIEWEOL, bool, eols);
 DeclareSciCallR2(StyleGetFont, STYLEGETFONT, int, int, style, char*, fontname);
 DeclareSciCallV2(StyleSetFont, STYLESETFONT, int, style, const char*, fontname);
 DeclareSciCallV2(StyleSetWeight, STYLESETWEIGHT, int, style, int, weight);
-DeclareSciCallV2(StyleSetItalic, STYLESETITALIC, int, style, bool, oblique);
+DeclareSciCallV2(StyleSetBold, STYLESETBOLD, int, style, bool, bold);
+DeclareSciCallV2(StyleSetItalic, STYLESETITALIC, int, style, bool, italic);
 DeclareSciCallV1(SetFontQuality, SETFONTQUALITY, int, qual);
 DeclareSciCallV01(SetFontLocale, SETFONTLOCALE, const char*, localeName);
 

@@ -18,6 +18,7 @@ Makefile.in
 *.la
 *.pc
 *.log
+*.trs
 *.dll
 *.lib
 *.exe
