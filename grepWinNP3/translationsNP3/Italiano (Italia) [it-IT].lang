@@ -35,7 +35,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld file, saltati %ld file. %ld risultati selezionati."
 
 #. Resource IDs: (149)
 #, c-format
@@ -242,7 +242,7 @@ msgstr "File"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr ""
+msgstr "Trovati %ld file, saltati %ld file."
 
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
@@ -270,7 +270,7 @@ msgstr "Includi sottocartelle"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "Includi i collegamenti simbolici"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
@@ -290,7 +290,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "Mantenere la data del file quando si sostituisce"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -608,7 +608,7 @@ msgstr "vengono cercati solo i file che corrispondono a questo pattern.\nUsa '|'
 
 #. Resource IDs: (176)
 msgid "Open list with recent entries"
-msgstr ""
+msgstr "Aprire l'elenco con le voci recenti"
 
 #. Resource IDs: (129)
 msgid "read error"
