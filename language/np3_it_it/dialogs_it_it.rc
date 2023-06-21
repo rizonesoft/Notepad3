@@ -100,7 +100,7 @@ BEGIN
     CONTROL         "&Non andare a capo",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,90,10
     CONTROL         "C&hiudi dopo aver trovato",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,95,10
     CONTROL         "Evidenzia &occorrenze",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,90,10
-    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
+    CONTROL         "Ricerca incrementale", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
     CONTROL         "Ricerca con caratter&i Jolly",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,95,10
     CONTROL         "Modalità trasparente quando inattiva",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,135,10
     DEFPUSHBUTTON   "Successivo &>",IDOK,221,7,63,14
@@ -134,7 +134,7 @@ BEGIN
     CONTROL         "&Non andare a capo",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,90,10
     CONTROL         "C&hiudi dopo sostituzione",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,95,10
     CONTROL         "Evidenzia &occorrenze",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,90,10
-    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,73,10
+    CONTROL         "Ricerca incrementale", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,73,10
     CONTROL         "Ricerca con caratter&i Jolly",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,95,10
     CONTROL         "Modalità trasparente quando inattiva",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,135,10
     DEFPUSHBUTTON   "Successivo &>",IDOK,221,7,63,14
@@ -642,11 +642,11 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Non mostrare ancora questo messaggio.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
-    DEFPUSHBUTTON   "&Retry",IDRETRY,186,70,50,14
-    PUSHBUTTON      "&Abort",IDABORT, 130, 70, 50, 14
-    PUSHBUTTON      "&Ignore",IDIGNORE,242,70,50,14
+    DEFPUSHBUTTON   "&Riprova",IDRETRY,186,70,50,14
+    PUSHBUTTON      "&Annulla",IDABORT, 130, 70, 50, 14
+    PUSHBUTTON      "&Ignora",IDIGNORE,242,70,50,14
 END
 
 IDD_MUI_INFOBOX7 DIALOGEX 0, 0, 299, 91
@@ -657,11 +657,11 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Non mostrare ancora questo messaggio.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
-    DEFPUSHBUTTON   "&Try Again",IDRETRY,186,70,50,14
-    PUSHBUTTON      "&Cancel", IDCANCEL, 130, 70, 50, 14
-    PUSHBUTTON      "&Continue",IDCONTINUE,242,70,50,14
+    DEFPUSHBUTTON   "&Riprova",IDRETRY,186,70,50,14
+    PUSHBUTTON      "&Annulla", IDCANCEL, 130, 70, 50, 14
+    PUSHBUTTON      "&Continua",IDCONTINUE,242,70,50,14
 END
 
 IDD_MUI_INFOBOX_FILECHANGED DIALOGEX 0, 0, 299, 103
@@ -674,7 +674,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,53,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     CONTROL         "&Non mostrare ancora questo messaggio.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
-    DEFPUSHBUTTON   "&Ricarica",IDRETRY,186,82,50,14
+    DEFPUSHBUTTON   "&Riprova",IDRETRY,186,82,50,14
     PUSHBUTTON      "&Annulla", IDCANCEL, 130, 82, 50, 14
     PUSHBUTTON      "&Continua",IDCONTINUE,242,82,50,14
 END
