@@ -99,8 +99,8 @@ BEGIN
     CONTROL         "Le point correspond à tous",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,98,10
     CONTROL         "Ne pas &boucler",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
     CONTROL         "&Fermer après rechercher",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,90,10
-    CONTROL         "Toutes les &occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,83,10
-    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
+    CONTROL         "Toutes les &occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,85,10
+    CONTROL         "Incrémentiellement", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,88,10
     CONTROL         "Avec ""jokers""",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,65,10
     CONTROL         "Mode transparent si perte de focus",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,134,10
     DEFPUSHBUTTON   "Suivant",IDOK,216,7,55,14
@@ -133,8 +133,8 @@ BEGIN
     CONTROL         "Le point correspond à tous",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,124,98,10
     CONTROL         "Ne pas &boucler",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
     CONTROL         "&Fermer après remplacer",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,89,10
-    CONTROL         "Toutes les occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,83,10
-    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,73,10
+    CONTROL         "Toutes les occurrences",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,85,10
+    CONTROL         "Incrémentiellement", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,88,10
     CONTROL         "Avec ""jokers""",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,65,10
     CONTROL         "Mode transparent si perte de focus",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,134,10
     DEFPUSHBUTTON   "Suivant",IDOK,216,7,55,14
