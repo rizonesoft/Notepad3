@@ -7132,7 +7132,7 @@ bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelectio
     DocPos start = SciCall_GetCurrentPos();
     DocPos end = iDocEndPos;
 
-    SciCall_CallTipCancel();
+    Sci_CallTipCancelEx();
 
     DocPos iPos = _FindInTarget(wchFind, sFlags, &start, &end, true, FRMOD_NORM);
 
@@ -7224,7 +7224,7 @@ bool EditFindPrev(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
     DocPos start = SciCall_GetCurrentPos();
     DocPos end = 0LL;
 
-    SciCall_CallTipCancel();
+    Sci_CallTipCancelEx();
 
     DocPos iPos = _FindInTarget(wchFind, sFlags, &start, &end, true, FRMOD_NORM);
 

@@ -741,6 +741,43 @@ bool IsFontAvailable(LPCWSTR lpszFontName) {
 }
 
 
+//=============================================================================
+//
+//  GetNonClientMetricsA()
+//
+static LPNONCLIENTMETRICSA _GetNonClientMetricsA(bool bForceRefresh)
+{
+    static NONCLIENTMETRICSA ncm = { 0 };
+    if (!ncm.cbSize || bForceRefresh) {
+        size_t const cbSize = sizeof(NONCLIENTMETRICSA);
+        ZeroMemory(&ncm, cbSize);
+        ncm.cbSize = (UINT)cbSize;
+        SystemParametersInfoA(SPI_GETNONCLIENTMETRICS, (UINT)cbSize, &ncm, 0);
+    }
+    return &ncm;
+}
+
+void GetSystemCaptionFontA(LPSTR fontFaceName_out, bool bForceRefresh)
+{
+    LPNONCLIENTMETRICSA const pncm = _GetNonClientMetricsA(bForceRefresh);
+    StringCchCopyA(fontFaceName_out, LF_FACESIZE, pncm->lfCaptionFont.lfFaceName);
+}
+void GetSystemMenuFontA(LPSTR fontFaceName_out, bool bForceRefresh)
+{
+    LPNONCLIENTMETRICSA const pncm = _GetNonClientMetricsA(bForceRefresh);
+    StringCchCopyA(fontFaceName_out, LF_FACESIZE, pncm->lfMenuFont.lfFaceName);
+}
+void GetSystemMessageFontA(LPSTR fontFaceName_out, bool bForceRefresh)
+{
+    LPNONCLIENTMETRICSA const pncm = _GetNonClientMetricsA(bForceRefresh);
+    StringCchCopyA(fontFaceName_out, LF_FACESIZE, pncm->lfMessageFont.lfFaceName);
+}
+void GetSystemStatusFontA(LPSTR fontFaceName_out, bool bForceRefresh)
+{
+    LPNONCLIENTMETRICSA const pncm = _GetNonClientMetricsA(bForceRefresh);
+    StringCchCopyA(fontFaceName_out, LF_FACESIZE, pncm->lfStatusFont.lfFaceName);
+}
+
 
 //=============================================================================
 //

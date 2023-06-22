@@ -441,6 +441,11 @@ bool BitmapGrayScale(HBITMAP hbmp);
 bool VerifyContrast(COLORREF cr1,COLORREF cr2);
 bool IsFontAvailable(LPCWSTR lpszFontName);
 
+void GetSystemCaptionFontA(LPSTR fontFaceName_out, bool bForceRefresh);
+void GetSystemMenuFontA(LPSTR fontFaceName_out, bool bForceRefresh);
+void GetSystemMessageFontA(LPSTR fontFaceName_out, bool bForceRefresh);
+void GetSystemStatusFontA(LPSTR fontFaceName_out, bool bForceRefresh);
+
 bool IsCmdEnabled(HWND hwnd, UINT uId);
 
 
