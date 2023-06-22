@@ -1353,6 +1353,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         // Indentation Guide
         SciCall_StyleSetBack(STYLE_BRACELIGHT, dColor);
     }
+
     if (Settings2.UseOldStyleBraceMatching) {
         Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_BRACE_BAD].iStyle,
             pCurrentStandard->Styles[STY_BRACE_BAD].szValue, fBaseFontSize); // brace bad
@@ -2176,13 +2177,14 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
 
 
     // ---  CallTips  ---
-    //SciCall_CallTipSetFore(RGB(0x80, 0x80, 0x80)); // clrLineNumFore
-    //SciCall_CallTipSetBack(clrMarginBack);
-    SciCall_StyleSetFont(STYLE_CALLTIP, "Segoe UI");
+    //~SciCall_CallTipSetBack(clrMarginBack);
+    //~SciCall_CallTipSetFore(CalcContrastColor(clrMarginBack, 0)); // clrLineNumFore
+    char fontFaceName[LF_FACESIZE] = { '\0' };
+    GetSystemMessageFontA(fontFaceName, false);  // "Segoe UI"
     SciCall_StyleSetItalic(STYLE_CALLTIP, false);
     SciCall_StyleSetBold(STYLE_CALLTIP, false);
-    SciCall_StyleSetFore(STYLE_CALLTIP, RGB(0x80, 0x80, 0x80)); // clrLineNumFore
     SciCall_StyleSetBack(STYLE_CALLTIP, clrMarginBack);
+    SciCall_StyleSetFore(STYLE_CALLTIP, CalcContrastColor(clrMarginBack, 0)); // clrLineNumFore
     SciCall_CallTipUseStyle(24); // tabsize
     SciCall_CallTipSetForeHlt(clrLineNumFore);
 

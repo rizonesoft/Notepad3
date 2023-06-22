@@ -4599,7 +4599,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case IDT_TIMER_CLEAR_CALLTIP:
-        SciCall_CallTipCancel();
+        Sci_CallTipCancelEx();
         break;
 
     case IDT_TIMER_UNDO_TRANSACTION:
@@ -6631,7 +6631,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SciCall_AutoCCancel();
             --skipLevel;
         } else if (SciCall_CallTipActive()) {
-            SciCall_CallTipCancel();
+            Sci_CallTipCancelEx();
             s_bCallTipEscDisabled = true;
             --skipLevel;
         } else if (s_bInMultiEditMode) {
@@ -7721,7 +7721,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
     case SCN_DWELLSTART: {
 
         if (position < 0) {
-            SciCall_CallTipCancel();
+            Sci_CallTipCancelEx();
             prevCursorPosition = -1;
             return;
         }
@@ -7730,7 +7730,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
             if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position) > 0) {
                 indicator_id = INDIC_NP3_HYPERLINK;
                 if (position != prevCursorPosition) {
-                    SciCall_CallTipCancel();
+                    Sci_CallTipCancelEx();
                 }
             }
         }
@@ -7845,8 +7845,8 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                 }
 
                 if (!StrIsEmptyA(chCallTip)) {
-                    //SciCall_CallTipSetPosition(true);
                     // first show, then set highlight range
+                    // SciCall_CallTipSetPosition(true);
                     SciCall_CallTipShow(position, chCallTip);
                     SciCall_CallTipSetHlt(0, (int)cch);
                 }
@@ -7909,8 +7909,8 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                     break;
                 }
 
-                //SciCall_CallTipSetPosition(true);
                 // first show, then set highlight range
+                // SciCall_CallTipSetPosition(true);
                 SciCall_CallTipShow(position, chHex2Char);
                 SciCall_CallTipSetHlt(0, (int)length);
             }
@@ -7927,7 +7927,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
             return;    // avoid flickering
         }
 
-        SciCall_CallTipCancel();
+        Sci_CallTipCancelEx();
 
         DocPos const curPos = SciCall_GetCurrentPos();
         if ((curPos >= prevStartPosition) && ((curPos <= prevEndPosition))) {
@@ -7968,7 +7968,7 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
     }
 
     //~SciCall_PostMsg(WM_LBUTTONUP, MK_LBUTTON, 0);
-    SciCall_CallTipCancel();
+    Sci_CallTipCancelEx();
 
     bool bHandled = false;
     if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position)) {
@@ -8848,7 +8848,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
     case SCN_CHARADDED: {
         int const ich = scn->ch;
-        SciCall_CallTipCancel();
+        Sci_CallTipCancelEx();
 
         if (Sci_IsMultiSelection()) {
             SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
@@ -11334,15 +11334,15 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
 
         Flags.bSettingsFileSoftLocked = false;
         UpdateSaveSettingsCmds();
-        if (SciCall_GetZoom() != 100) {
-            ShowZoomCallTip();
-        }
 
         UndoRedoReset();
 
         UpdateToolbar();
         UpdateMargins(true);
         UpdateStatusbar(true);
+        if (SciCall_GetZoom() != 100) {
+            ShowZoomCallTip();
+        }
 
         return true;
     }
@@ -11525,9 +11525,6 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
             else {
                 Sci_GotoPosChooseCaret(0);
             }
-            if (SciCall_GetZoom() != 100) {
-                ShowZoomCallTip();
-            }
         }
 
         // Show warning: Unicode file loaded as ANSI
@@ -11582,6 +11579,9 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
     UpdateToolbar();
     UpdateMargins(true);
     UpdateStatusbar(true);
+    if (SciCall_GetZoom() != 100) {
+        ShowZoomCallTip();
+    }
 
     Path_Release(hopen_file);
 
@@ -12482,22 +12482,24 @@ void ResetMouseDWellTime()
 //
 void ShowZoomCallTip()
 {
-    int const delayClr = Settings2.ZoomTooltipTimeout;
+    static char chToolTip[64] = { '\0' };
+    int const   delayClr = Settings2.ZoomTooltipTimeout;
     if (delayClr >= (_MQ_TIMER_CYCLE << 3)) {
-        int const iZoomLevelPercent = SciCall_GetZoom();
 
-        static char chToolTip[32] = { '\0' };
-        StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", iZoomLevelPercent);
+        StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", SciCall_GetZoom());
 
         DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
 
         int const iXOff = SciCall_GetXOffset();
         SciCall_SetXOffset(-4); // move away from margin
+
+        SciCall_CallTipSetPosition(true);  // show above
         SciCall_CallTipShow(iPos, chToolTip);
+        
         SciCall_SetXOffset(iXOff);
         _DelayClearCallTip(delayClr);
     } else {
-        SciCall_CallTipCancel();
+        Sci_CallTipCancelEx();
     }
 }
 
@@ -12508,10 +12510,10 @@ void ShowZoomCallTip()
 //
 void ShowWrapAroundCallTip(bool forwardSearch)
 {
-    int const delayClr = Settings2.WrapAroundTooltipTimeout;
+    static char chToolTip[80<<2] = { '\0' };
+    int const   delayClr = Settings2.WrapAroundTooltipTimeout;
     if (delayClr >= (_MQ_TIMER_CYCLE << 3)) {
         WCHAR wchToolTip[80] = { '\0' };
-        static char chToolTip[80*3] = { '\0' };
         if (forwardSearch) {
             GetLngString(IDS_MUI_WRAPSEARCH_FWD, wchToolTip, COUNTOF(wchToolTip));
         } else {
@@ -12522,7 +12524,7 @@ void ShowWrapAroundCallTip(bool forwardSearch)
         SciCall_CallTipShow(SciCall_GetCurrentPos(), chToolTip);
         _DelayClearCallTip(delayClr);
     } else {
-        SciCall_CallTipCancel();
+        Sci_CallTipCancelEx();
     }
 }
 

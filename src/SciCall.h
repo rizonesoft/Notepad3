@@ -761,6 +761,8 @@ DeclareSciCallR0(IsIMEModeCJK, ISIMEMODECJK, bool);
 DeclareSciCallR0(IsSelectionEmpty, GETSELECTIONEMPTY, bool);
 DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
 
+#define Sci_CallTipCancelEx() { SciCall_CallTipCancel(); SciCall_CallTipSetPosition(false); }
+
 #define Sci_IsDocEmpty() (SciCall_GetTextLength() <= 0LL)
 
 #define Sci_IsThinSelection() (SciCall_GetSelectionMode() == SC_SEL_THIN)
