@@ -513,7 +513,7 @@ BEGIN
     IDS_LEX_STR_InOut       "Wejście/wyjście"
     IDS_LEX_STR_PortConn    "Połączenie portu"
     IDS_LEX_STR_SysTasks    "Zadania systemowe"
-    IDS_LEX_STR_AfterLabel  "After Label"
+    IDS_LEX_STR_AfterLabel  "Po etykiecie"
 END
 
 STRINGTABLE
