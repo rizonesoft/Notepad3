@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Operasi ini dapat menghapus riwayat kembali. Lanjutkan?"
     IDS_MUI_READONLY_SAVE   """%s"" hanya baca saja. Simpan dalam berkas berbeda?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Berkas ini telah dimodifikasi oleh program lain.\nSilahkan pilih:\n\nBatal -\t\tAbaikan setiap perubahan\nMuat Ulang -\t\tMuat ulang berkas\nLanjutkan -\tBeralih ke pemantauan berkas"
+                            "Berkas ini telah dimodifikasi oleh program lain.\nSilahkan pilih:\n\nBatal\t\t\t-\t\tAbaikan setiap perubahan\nMuat Ulang\t-\tMuat ulang berkas\nLanjutkan\t-\tBeralih ke pemantauan berkas"
     IDS_MUI_FILECHANGENOTIFY2 "Berkas ini telah dihapus. Simpan sekarang?"
     IDS_MUI_FILELOCK_ERROR  "Tidak bisa mendapatkan kunci berkas eksklusif untuk ""%s""!"
     IDS_MUI_STICKYWINPOS    "Posisi Jendela Tetap diaktifkan. Setiap jendela Notepad3 baru akan menggunakan pengaturan jendela saat ini."
@@ -264,7 +264,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Bahasa"
     IDS_USE_LOCALE_DATEFMT  "Bahasa menentukan &Format Tanggal"
     IDS_MUI_MENU_THEMES     "&Koleksi Skema"
-    IDM_THEMES_FACTORY_RESET "&Factory Reset"
+    IDM_THEMES_FACTORY_RESET "&Setel Ulang Tema"
     IDM_THEMES_STD_CFG       "Konfi&gurasi Standar"
     IDS_MUI_STATUSBAR_PREFIXES "Brs  ,Kol  ,Sel  ,SelM  ,SelBr  ,Ulg  ,,,,,,,Kar  ,Gnt  ,Eks  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
