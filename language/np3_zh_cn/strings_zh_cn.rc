@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "该操作将会清空撤销历史。是否继续？"
     IDS_MUI_READONLY_SAVE   "“%s”是只读的。是否尝试使用其它名字保存？"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
+                            "当前文件已被其它程序所修改。\n请选择：\n\n取消 -\t\t忽略之后的更改\n重新加载 -\t\t重新加载文件\n继续 -\t\t切换为监控模式"
     IDS_MUI_FILECHANGENOTIFY2 "当前文件已被删除。是否保存？"
     IDS_MUI_FILELOCK_ERROR  "无法以独占模式锁定文件“%s”。"
     IDS_MUI_STICKYWINPOS    "粘性窗口位置已启用。新的 Notepad3 窗口将使用和当前窗口一致的位置设置。"
