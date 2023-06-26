@@ -493,8 +493,8 @@ msgstr "文本查找"
 
 #. Resource IDs: (160)
 #, c-format
-msgid "路径“%s”不存在或无法访问。"
-msgstr ""
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr "路径“%s”不存在或无法访问。"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
