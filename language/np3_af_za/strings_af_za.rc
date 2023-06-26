@@ -177,7 +177,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Hierdie bewerking sal die ontdoengeskiedenis uitvee. Gaan voort?"
     IDS_MUI_READONLY_SAVE   """%s"" is beskermd. Stoor na 'n ander lêer?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
+                            "Die huidige lêer is deur 'n eksterne program gewysig.\nKies asseblief:\n\nKanselleer -\t\tIgnoreer verdere veranderinge\nHerlaai -\t\tHerlaai lêer\nGaan voort -\tSkakel oor na lêermonitering"
     IDS_MUI_FILECHANGENOTIFY2 "Die huidige lêer is verwyder. Stoor nou?"
     IDS_MUI_FILELOCK_ERROR  "Kan nie eksklusiewe lêerslot vir ""%s"" kry nie!"
     IDS_MUI_STICKYWINPOS    "Sticky Window Posisie is aangeskakel. Enige nuwe Notepad3-vensters sal die huidige vensterplasinginstellings gebruik."
@@ -274,8 +274,8 @@ BEGIN
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Vee die vervang geskiedenis uit"
     IDS_MUI_SEARCHCLIPIFEMPTY
-                            "Search by Clipboard if empty selection"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
+                            "Soek volgens Knipbord as dit leeg is"
+    IDS_MUI_REPLCLIPTAG     "Vervang deur Knipbord op Kortpad [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Draai om pas van bo"
     IDS_MUI_WRAPSEARCH_BCK  "Draai om pas van onder"
 END
@@ -286,7 +286,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Wissel Beskou..."
     IDS_MUI_SB_REPLACE_ALL    "Vervang alles..."
     IDS_MUI_SB_WRAP_LINES     "Wrap Lyne..."
-    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
+    IDS_MUI_SB_SORTING_LINES  "Sorteer tans lyne..."
     IDS_MUI_SB_CONV_LNBRK     "Skakel lynbreuke om..."
     IDS_MUI_SB_RECODING_DOC   "Herkodering van Dokument..."
     IDS_MUI_SB_LEXER_STYLING  "Pas Lexer Styling toe..."

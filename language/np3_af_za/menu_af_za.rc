@@ -357,7 +357,7 @@ BEGIN
             MENUITEM "Wys slegs in Dokument",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Wys alle Veranderingsmerkers",        IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Vee Verandering/Ontdoen Geskiedenis"      IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Skakel &Hotspots\tCtrl+Alt+W",            IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Kleur Definisie Hotspots",
@@ -425,7 +425,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "P&anele"
         BEGIN
-            MENUITEM "Show Titlebar",                       IDM_VIEW_TITLEBAR
+            MENUITEM "Wys Titelbalk",                       IDM_VIEW_TITLEBAR
             MENUITEM "Wys &Menubalk",                       IDM_VIEW_MENUBAR
             MENUITEM "Wys &Nutsbalk",                       IDM_VIEW_TOOLBAR
             MENUITEM "Wys &Statusbalk",                     IDM_VIEW_STATUSBAR
@@ -462,7 +462,7 @@ BEGIN
         MENUITEM "Globale Standaard Font...\tAlt+F12",                   IDM_VIEW_FONT
         MENUITEM "Huidige Skema se Verstek Font...\tCtrl+Alt+F12",       IDM_VIEW_CURRENTSCHEME
         MENUITEM SEPARATOR
-        MENUITEM "Windows Dark Mode",                                    IDM_VIEW_WIN_DARK_MODE
+        MENUITEM "Windows Donker Modus",                                 IDM_VIEW_WIN_DARK_MODE
     END
     POPUP "&Instellings"
     BEGIN
@@ -471,7 +471,7 @@ BEGIN
         MENUITEM "&Woord Omslag Instellings...",                    IDM_SET_WORDWRAPSETTINGS
         MENUITEM "L&ang Lyn Instellings...",                        IDM_SET_LONGLINESETTINGS
         MENUITEM "Outo-In&dent Teks",                               IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close &Quotes",                              IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Outotoemaak &Aanhalings",                         IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Outomatiese Toe&beugel",                          IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Outo-Sluit &HTML/XML\tCtrl+Shift+H",              IDM_SET_AUTOCLOSETAGS
         MENUITEM "O&uto-Voltooi Woorde",                            IDM_SET_AUTOCOMPLETEWORDS
@@ -577,7 +577,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show Titlebar",                           IDM_VIEW_TITLEBAR
+        MENUITEM "Wys Titlebalk",                           IDM_VIEW_TITLEBAR
         MENUITEM "Wys Menubalk",                            IDM_VIEW_MENUBAR
         MENUITEM "Wys Nutsbalk",                            IDM_VIEW_TOOLBAR
         MENUITEM "Wys Statusbalk",                          IDM_VIEW_STATUSBAR

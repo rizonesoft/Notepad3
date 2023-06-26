@@ -35,7 +35,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld lêers, %ld lêers oorgeslaan. %ld resultate gekies."
 
 #. Resource IDs: (149)
 #, c-format
@@ -157,11 +157,11 @@ msgstr "Kopieer teksresultaat na klembord"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr ""
+msgstr "Kopieer kolom vir alle items"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr ""
+msgstr "Kopieer kolom vir geselekteerde items"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
@@ -242,7 +242,7 @@ msgstr "Lêers"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr ""
+msgstr "Het %ld lêers gevind, %ld lêers oorgeslaan."
 
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
@@ -270,7 +270,7 @@ msgstr "Sluit ondervouers in"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "Sluit simboliese skakels in"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
@@ -290,7 +290,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "Hou lêer datum wanneer jy vervang"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -608,7 +608,7 @@ msgstr "slegs lêers wat by hierdie patroon ooreenstem, word deursoek\nGebruik '
 
 #. Resource IDs: (176)
 msgid "Open list with recent entries"
-msgstr ""
+msgstr "Maak lys oop met onlangse inskrywings"
 
 #. Resource IDs: (129)
 msgid "read error"
