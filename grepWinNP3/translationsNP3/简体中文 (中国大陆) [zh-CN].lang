@@ -169,7 +169,7 @@ msgstr "创建备份文件"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
-msgstr "在单独的目录创建备份文件"
+msgstr "在单独的目录中创建备份文件"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
@@ -620,7 +620,7 @@ msgstr "正则 OK"
 
 #. Resource IDs: (117)
 msgid "reuse grepWinNP3 instances."
-msgstr "复用 grepWinNP3 实例。"
+msgstr "复用 grepWinNP3 实例"
 
 #. Resource IDs: (151)
 #, c-format
