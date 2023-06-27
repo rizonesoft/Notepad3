@@ -357,7 +357,7 @@ BEGIN
             MENUITEM "Mostrar apenas no documento",                        IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Mostrar todos os marcadores de alteração",           IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Limpar Alteração/Histórico de Anulações"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Realçar &hiperligações\tCtrl+Alt+W",                     IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Definição de &cor do realce"

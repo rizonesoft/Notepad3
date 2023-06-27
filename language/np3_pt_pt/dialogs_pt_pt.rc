@@ -100,7 +100,7 @@ BEGIN
     CONTROL         "Não &fazer procura contínua",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,105,10
     CONTROL         "Fechar após &localizar",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,81,10
     CONTROL         "Marcar &ocorrências",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
-    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
+    CONTROL         "Pesquisa Incremental", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
     CONTROL         "Com &joker",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,65,10
     CONTROL         "Modo transparente ao perder o foco",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,132,10
     DEFPUSHBUTTON   "&Local. seguinte",IDOK,211,7,55,14
@@ -134,7 +134,7 @@ BEGIN
     CONTROL         "Sem procura contínua",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,83,10
     CONTROL         "Fechar após substitui&r",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,85,10
     CONTROL         "Marcar &ocorrências",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
-    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,73,10
+    CONTROL         "Pesquisa Incremental", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,73,10
     CONTROL         "Com &joker",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,65,10
     CONTROL         "Modo transparente ao perder o foco",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,132,10
     DEFPUSHBUTTON   "&Local. seguinte",IDOK,211,7,55,14
