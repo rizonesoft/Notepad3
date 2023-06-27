@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.619.(build_#) (2023-06-19)
+Current BETA/RC Version 6.23.627.(build_#) (2023-06-27)
 ========================================================
 
 --------------------------------------------------------
@@ -62,6 +62,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.627.1]- Minor changes: CallTip/ToolTip (zoom).
 [.619.1]- Tooltip/Calltip style using Segoe UI font.
 [.616.1]- Web Source Code: enhancement for commenting in embedded scripts.
 [.526.1]- Removing square brackets from being valid codepoints of URL (hyperlink) regex.
