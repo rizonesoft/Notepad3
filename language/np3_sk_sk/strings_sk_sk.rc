@@ -264,7 +264,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Jazyk"
     IDS_USE_LOCALE_DATEFMT  "Definovať jazyk a formát dátumu"
     IDS_MUI_MENU_THEMES     "&Výber motívu"
-    IDM_THEMES_FACTORY_RESET "&Factory Reset"
+    IDM_THEMES_FACTORY_RESET "&Obnoviť predvolené"
     IDM_THEMES_STD_CFG       "&Štandardná konfigurácia"
     IDS_MUI_STATUSBAR_PREFIXES "Riadok  ,Stĺpec  ,Výber  ,Sb  ,SLn  ,Occ  ,,,,,,,Znaky  ,Repl  ,Eval  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
