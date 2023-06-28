@@ -2001,6 +2001,9 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
             EditJumpTo(s_iInitialLine, s_iInitialColumn);
             SciCall_SetYCaretPolicy(s_iCaretPolicyV, Settings2.CurrentLineVerticalSlop);
         }
+        else {
+            Sci_ScrollSelectionToView();
+        }
     }
 
     // Encoding
@@ -11525,8 +11528,9 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
 
         // set historic caret/selection  pos
         if (!FileWatching.MonitoringLog && (s_flagChangeNotify != FWM_AUTORELOAD)) {
-            if ((iCaretPos >= 0) && (iAnchorPos >= 0) && (SciCall_GetCurrentPos() == 0)) {
-                EditSetSelectionEx(iAnchorPos, iCaretPos, -1, -1);
+            if ((iCaretPos >= 0) && (iAnchorPos >= 0)) {
+                //SciCall_ScrollToEnd(); // (!) move at top-slope not bottom-slope
+                EditSetAndScrollSelection(iAnchorPos, iCaretPos, true);
             }
             else {
                 Sci_GotoPosChooseCaret(0);

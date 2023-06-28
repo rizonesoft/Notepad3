@@ -856,9 +856,10 @@ inline void Sci_EnsureVisibleSelection()
     }
 }
 
-inline void Sci_ScrollSelectionToView()
+__forceinline void Sci_ScrollSelectionToView()
 {
     Sci_EnsureVisibleSelection();
+    SciCall_ScrollToEnd(); // (!) move at top-slope not bottom-slope
     SciCall_ScrollRange(SciCall_GetAnchor(), SciCall_GetCurrentPos());
 }
 
