@@ -100,7 +100,7 @@ BEGIN
     CONTROL         "Başta/sonda &sürdürülsün",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,90,10
     CONTROL         "B&ulunca kapatılsın",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,75,10
     CONTROL         "Ko&pyalar işaretlensin",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,80,10
-    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
+    CONTROL         "Artımlı arama", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
     CONTROL         "&Genel arama",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,65,10
     CONTROL         "Odak kaybolduğunda saydam kipe geçilsin",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,155,10
     DEFPUSHBUTTON   "S&onrakini bul",IDOK,221,7,57,14
@@ -134,7 +134,7 @@ BEGIN
     CONTROL         "Başta/sonda &sürdürülsün",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,90,10
     CONTROL         "D&eğiştirince kapatılsın",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,85,10
     CONTROL         "Ko&pyalar işaretlensin",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,80,10
-    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,73,10
+    CONTROL         "Artımlı arama", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,73,10
     CONTROL         "&Genel arama",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,65,10
     CONTROL         "Odak kaybolduğunda saydam kipe geçilsin",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,155,10
     DEFPUSHBUTTON   "S&onrakini bul",IDOK,221,7,57,14

@@ -357,7 +357,7 @@ BEGIN
             MENUITEM "Yalnızca belgede görüntülensin",                IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Tüm değişiklik işaretleri görüntülensin",       IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Değişiklik/geri alma geçmişini temizle"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "&Bağlantı noktaları görüntülensin\tCtrl+Alt+W",     IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Renk tanımı noktaları görüntülensin"
@@ -470,9 +470,9 @@ BEGIN
         MENUITEM "&Sekme ayarları...\tCtrl+T",                        IDM_SET_TABSETTINGS
         MENUITEM "Sözcük &kaydırma ayarları...",                      IDM_SET_WORDWRAPSETTINGS
         MENUITEM "&Uzun satır ayarları...",                           IDM_SET_LONGLINESETTINGS
-        MENUITEM "Otomatik girinti kullanılsın",                      IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close &Quotes",                                IDM_SET_AUTOCLOSEQUOTES
-        MENUITEM "Parantezler otomatik kapatılsın",                   IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Otomatik &girinti kullanılsın",                      IDM_SET_AUTOINDENTTEXT
+        MENUITEM "&Tırnaklar otomatik kapatılsın",                                IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "&Parantezler otomatik kapatılsın",                   IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "HTML/&XML kod imleri otomatik kapatılsın\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
         MENUITEM "Sözcükler &otomatik tamamlansın",                   IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "&Lexer-&anahtar sözcükleri otomatik tamamlansın",   IDM_SET_AUTOCLEXKEYWORDS
