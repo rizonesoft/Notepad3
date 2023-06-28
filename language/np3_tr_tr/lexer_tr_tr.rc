@@ -507,13 +507,13 @@ BEGIN
     IDS_LEX_STR_StrgEOL     "Dizge satır sonu"
     IDS_LEX_STR_Backticks   "Ters tik"
     IDS_LEX_STR_GUIDStrg    "GUID dizgesi"
-    IDS_LEX_STR_Global      "Global"
-    IDS_LEX_STR_Input       "Input"
-    IDS_LEX_STR_Output      "Output"
-    IDS_LEX_STR_InOut       "InOut"
-    IDS_LEX_STR_PortConn    "Port Connection"
-    IDS_LEX_STR_SysTasks    "System Tasks"
-    IDS_LEX_STR_AfterLabel  "After Label"
+    IDS_LEX_STR_Global      "Genel"
+    IDS_LEX_STR_Input       "Giriş"
+    IDS_LEX_STR_Output      "Çıkış"
+    IDS_LEX_STR_InOut       "GirişÇıkış"
+    IDS_LEX_STR_PortConn    "Bağlantı noktası"
+    IDS_LEX_STR_SysTasks    "Sistem görevleri"
+    IDS_LEX_STR_AfterLabel  "Sonraki etiketi"
 END
 
 STRINGTABLE

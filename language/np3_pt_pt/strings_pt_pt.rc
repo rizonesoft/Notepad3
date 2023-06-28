@@ -274,8 +274,8 @@ BEGIN
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Limpar histórico de substituir"
     IDS_MUI_SEARCHCLIPIFEMPTY
-                            "Search by Clipboard if empty selection"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
+                            "Procurar na área de notificações se não existir selecção"
+    IDS_MUI_REPLCLIPTAG     "Substituir pela área de notificações no atalho [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "A partir do topo"
     IDS_MUI_WRAPSEARCH_BCK  "A partir da base"
 END

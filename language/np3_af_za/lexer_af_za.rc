@@ -507,13 +507,13 @@ BEGIN
     IDS_LEX_STR_StrgEOL     "String EOL"
     IDS_LEX_STR_Backticks   "Backticks"
     IDS_LEX_STR_GUIDStrg    "GUID String"
-    IDS_LEX_STR_Global      "Global"
-    IDS_LEX_STR_Input       "Input"
-    IDS_LEX_STR_Output      "Output"
-    IDS_LEX_STR_InOut       "InOut"
-    IDS_LEX_STR_PortConn    "Port Connection"
-    IDS_LEX_STR_SysTasks    "System Tasks"
-    IDS_LEX_STR_AfterLabel  "After Label"
+    IDS_LEX_STR_Global      "Globale"
+    IDS_LEX_STR_Input       "Inset"
+    IDS_LEX_STR_Output      "Uitset"
+    IDS_LEX_STR_InOut       "InUit"
+    IDS_LEX_STR_PortConn    "Poortverbinding"
+    IDS_LEX_STR_SysTasks    "Stelseltake"
+    IDS_LEX_STR_AfterLabel  "Na Etiket"
 END
 
 STRINGTABLE

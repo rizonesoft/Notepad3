@@ -35,7 +35,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld dosya, %ld dosya atlandı. %ld sonuç seçildi."
 
 #. Resource IDs: (149)
 #, c-format
@@ -157,11 +157,11 @@ msgstr "Metin sonuçlarını panoya kopyala"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr ""
+msgstr "Sütunu tüm ögelere kopyala"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr ""
+msgstr "Sütunu seçilmiş ögelere kopyala"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
@@ -242,7 +242,7 @@ msgstr "Dosyalar"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr ""
+msgstr "%ld dosya bulundu, %ld dosya atlandı."
 
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
@@ -270,7 +270,7 @@ msgstr "Alt klasörler katılsın"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "Sembolik bağlantılar katılsın"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
@@ -290,7 +290,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "Değiştirilirken dosya tarihi korunsun"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -608,7 +608,7 @@ msgstr "yalnızca bu kalıpla eşleşen dosyalar aranır.\nSınırlayıcı olara
 
 #. Resource IDs: (176)
 msgid "Open list with recent entries"
-msgstr ""
+msgstr "Son kayıtlar listesini aç"
 
 #. Resource IDs: (129)
 msgid "read error"
