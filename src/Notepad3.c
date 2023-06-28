@@ -1820,7 +1820,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
         hInstance,
         NULL);
 
-    ShowWindow(hwndMain, SW_HIDE); // force to be hidden
+    ShowWindow(hwndMain, SW_HIDE); // force to be hidden first
 
     // correct infos based on hwnd
     g_DefWinInfo = _GetDefaultWinInfoByStrg(hwndMain, Settings2.DefaultWindowPosition);
@@ -1938,7 +1938,6 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     }
 
     // now, after FileLoad() do ShowWindow()
-    SnapToWinInfoPos(hwndMain, g_IniWinInfo, SCR_NORMAL);
     ShowWindowAsync(s_hwndEditFrame, SW_SHOW);
     ShowWindowAsync(Globals.hwndEdit, SW_SHOW);
 
