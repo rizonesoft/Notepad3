@@ -181,61 +181,68 @@ static char*    s_SelectionBuffer = NULL;
 
 static int const INISECTIONBUFCNT = 32; // .ini file load buffer in KB
 
+// ----------------------------------------------------------------------------
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// (!) ENSURE  IDT_FILE_NEW -> IDT_VIEW_RESETZOOM corresponds to order of Toolbar.bmp
+#define NUMTOOLBITMAPS (31)
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 static TBBUTTON  s_tbbMainWnd[] = {
-    { 0,IDT_FILE_NEW,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 1,IDT_FILE_OPEN,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 3,IDT_FILE_SAVE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 2,IDT_FILE_BROWSE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 27,IDT_FILE_RECENT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 0,0,0,BTNS_SEP,{0},0,0 },
-    { 4,IDT_EDIT_UNDO,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 5,IDT_EDIT_REDO,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 0,0,0,BTNS_SEP,{0},0,0 },
-    { 6,IDT_EDIT_CUT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 7,IDT_EDIT_COPY,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 8,IDT_EDIT_PASTE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 0,0,0,BTNS_SEP,{0},0,0 },
-    { 9,IDT_EDIT_FIND,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 10,IDT_EDIT_REPLACE,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 0,0,0,BTNS_SEP,{0},0,0 },
-    { 29,IDT_GREP_WIN_TOOL,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 0,0,0,BTNS_SEP,{0},0,0 },
-    { 11,IDT_VIEW_WORDWRAP,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 0,0,0,BTNS_SEP,{0},0,0 },
-    { 23,IDT_VIEW_TOGGLEFOLDS,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 25,IDT_VIEW_TOGGLE_VIEW,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 0,0,0,BTNS_SEP,{0},0,0 },
-    { 21,IDT_FILE_OPENFAV,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 22,IDT_FILE_ADDTOFAV,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 0,0,0,BTNS_SEP,{0},0,0 },
-    { 12,IDT_VIEW_ZOOMIN,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 13,IDT_VIEW_ZOOMOUT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 0,0,0,BTNS_SEP,{0},0,0 },
-    { 14,IDT_VIEW_SCHEME,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 0,0,0,BTNS_SEP,{0},0,0 },
-    { 24,IDT_FILE_LAUNCH,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 0,0,0,BTNS_SEP,{0},0,0 },
-    { 28,IDT_VIEW_PIN_ON_TOP,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 0,0,0,BTNS_SEP,{0},0,0 },
-    { 16,IDT_FILE_EXIT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 0,0,0,BTNS_SEP,{0},0,0 },
-    { 15,IDT_VIEW_SCHEMECONFIG,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 17,IDT_FILE_SAVEAS,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 18,IDT_FILE_SAVECOPY,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 19,IDT_EDIT_CLEAR,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 20,IDT_FILE_PRINT,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
-    { 26,IDT_VIEW_CHASING_DOCTAIL,TBSTATE_ENABLED,BTNS_BUTTON,{0},0,0 },
+    { 0, IDT_FILE_NEW, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 1, IDT_FILE_OPEN, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 3, IDT_FILE_SAVE, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 2, IDT_FILE_BROWSE, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 27, IDT_FILE_RECENT, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 0, 0, 0, BTNS_SEP, { 0 }, 0, 0 },
+    { 4, IDT_EDIT_UNDO, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 5, IDT_EDIT_REDO, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 0, 0, 0, BTNS_SEP, { 0 }, 0, 0 },
+    { 6, IDT_EDIT_CUT, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 7, IDT_EDIT_COPY, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 8, IDT_EDIT_PASTE, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 0, 0, 0, BTNS_SEP, { 0 }, 0, 0 },
+    { 9, IDT_EDIT_FIND, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 10, IDT_EDIT_REPLACE, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 0, 0, 0, BTNS_SEP, { 0 }, 0, 0 },
+    { 29, IDT_GREP_WIN_TOOL, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 0, 0, 0, BTNS_SEP, { 0 }, 0, 0 },
+    { 11, IDT_VIEW_WORDWRAP, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 0, 0, 0, BTNS_SEP, { 0 }, 0, 0 },
+    { 23, IDT_VIEW_TOGGLEFOLDS, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 25, IDT_VIEW_TOGGLE_VIEW, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 0, 0, 0, BTNS_SEP, { 0 }, 0, 0 },
+    { 21, IDT_FILE_OPENFAV, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 22, IDT_FILE_ADDTOFAV, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 0, 0, 0, BTNS_SEP, { 0 }, 0, 0 },
+    { 12, IDT_VIEW_ZOOMIN, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 30, IDT_VIEW_RESETZOOM, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 13, IDT_VIEW_ZOOMOUT, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 0, 0, 0, BTNS_SEP, { 0 }, 0, 0 },
+    { 14, IDT_VIEW_SCHEME, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 0, 0, 0, BTNS_SEP, { 0 }, 0, 0 },
+    { 24, IDT_FILE_LAUNCH, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 0, 0, 0, BTNS_SEP, { 0 }, 0, 0 },
+    { 28, IDT_VIEW_PIN_ON_TOP, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 0, 0, 0, BTNS_SEP, { 0 }, 0, 0 },
+    { 16, IDT_FILE_EXIT, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 0, 0, 0, BTNS_SEP, { 0 }, 0, 0 },
+    { 15, IDT_VIEW_SCHEMECONFIG, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 17, IDT_FILE_SAVEAS, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 18, IDT_FILE_SAVECOPY, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 19, IDT_EDIT_CLEAR, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 20, IDT_FILE_PRINT, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 26, IDT_VIEW_CHASING_DOCTAIL, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 }
 };
-static const int NUMTOOLBITMAPS = 30;
+// don't show buttons beyond this TBBUTTON[] index:
+#define TBBUTTON_LAST_DEFAULT (37)
+
+WCHAR              TBBUTTON_DEFAULT_IDS[256] = { L'\0' };  // filled in _InitGlobals()
+const WCHAR* const TBBUTTON_DEFAULT_IDS_OLD = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
 
 // ----------------------------------------------------------------------------
 
 const char chr_currency[6] = { '$', 0x80, 0xA2, 0xA3, 0xA5, '\0' }; // "$€¢£¥" CP-1252
-
-// ----------------------------------------------------------------------------
-
-const WCHAR *const TBBUTTON_DEFAULT_IDS_V1 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
-const WCHAR* const TBBUTTON_DEFAULT_IDS_V2 = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 15 0 25 0 29 0 17";
 
 //==============================================================================
 //
@@ -828,6 +835,21 @@ static void _InitGlobals()
     g_tchToolbarBitmap = Path_Allocate(NULL);
     g_tchToolbarBitmapHot = Path_Allocate(NULL);
     g_tchToolbarBitmapDisabled = Path_Allocate(NULL);
+
+    // --- dynamicly created globals ---
+
+    WCHAR tchIndex[16] = { L'\0' };
+    StringCchPrintf(tchIndex, COUNTOF(tchIndex), L"%i", s_tbbMainWnd[0].iBitmap + 1);
+    StringCchCopy(TBBUTTON_DEFAULT_IDS, COUNTOF(TBBUTTON_DEFAULT_IDS), tchIndex);
+    assert(TBBUTTON_LAST_DEFAULT <= COUNTOF(s_tbbMainWnd));
+    for (int i = 1; i < TBBUTTON_LAST_DEFAULT; ++i) {
+        if (s_tbbMainWnd[i].idCommand) {
+            StringCchPrintf(tchIndex, COUNTOF(tchIndex), L" %i", s_tbbMainWnd[i].iBitmap + 1);
+            StringCchCat(TBBUTTON_DEFAULT_IDS, COUNTOF(TBBUTTON_DEFAULT_IDS), tchIndex);
+        } else {
+            StringCchCat(TBBUTTON_DEFAULT_IDS, COUNTOF(TBBUTTON_DEFAULT_IDS), L" 0");
+        }
+    }
 
     // --- static locals ---
 
@@ -3154,15 +3176,15 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     }
 
     // Load toolbar labels
-    WCHAR tchDesc[256] = { L'\0' };
-    WCHAR tchIndex[256] = { L'\0' };
+    WCHAR tchIndex[16] = { L'\0' };
+    WCHAR tchDesc[80] = { L'\0' };
     for (int i = 0; i < COUNTOF(s_tbbMainWnd); ++i) {
+
         if (s_tbbMainWnd[i].fsStyle == BTNS_SEP) {
             continue;
         }
 
-        int n = s_tbbMainWnd[i].iBitmap + 1;
-        StringCchPrintf(tchIndex, COUNTOF(tchIndex), L"%02i", n);
+        StringCchPrintf(tchIndex, COUNTOF(tchIndex), L"%02i", s_tbbMainWnd[i].iBitmap + 1);
 
         if (IniSectionGetString(L"Toolbar Labels", tchIndex, L"", tchDesc, COUNTOF(tchDesc)) > 0) {
             s_tbbMainWnd[i].iString = SendMessage(Globals.hwndToolbar, TB_ADDSTRING, 0, (LPARAM)tchDesc);
@@ -7352,6 +7374,14 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         break;
 
+    case IDT_VIEW_RESETZOOM:
+        if (IsCmdEnabled(hwnd, IDM_VIEW_RESETZOOM)) {
+            SendWMCommand(hwnd, IDM_VIEW_RESETZOOM);
+        } else {
+            SimpleBeep();
+        }
+        break;
+
 
     case IDT_VIEW_ZOOMOUT:
         if (IsCmdEnabled(hwnd,IDM_VIEW_ZOOMOUT)) {
@@ -9852,8 +9882,6 @@ static void  _UpdateToolbarDelayed()
     bool const b2 = !Sci_IsDocEmpty();
     bool const ro = SciCall_GetReadOnly();
     bool const tv = FocusedView.HideNonMatchedLines;
-    bool const zi = (SciCall_GetZoom() > 100);
-    bool const zo = (SciCall_GetZoom() < 100);
 
     EnableTool(Globals.hwndToolbar, IDT_EDIT_UNDO, SciCall_CanUndo() && !ro);
     EnableTool(Globals.hwndToolbar, IDT_EDIT_REDO, SciCall_CanRedo() && !ro);
@@ -9875,8 +9903,10 @@ static void  _UpdateToolbarDelayed()
     EnableTool(Globals.hwndToolbar, IDT_VIEW_TOGGLE_VIEW, b2 && IsFocusedViewAllowed());
     CheckTool(Globals.hwndToolbar, IDT_VIEW_TOGGLE_VIEW, tv);
 
-    CheckTool(Globals.hwndToolbar, IDT_VIEW_ZOOMIN, zi);
-    CheckTool(Globals.hwndToolbar, IDT_VIEW_ZOOMOUT, zo);
+    int const zoom = SciCall_GetZoom();
+    CheckTool(Globals.hwndToolbar, IDT_VIEW_ZOOMIN,    (zoom > 100));
+    CheckTool(Globals.hwndToolbar, IDT_VIEW_RESETZOOM, (zoom == 100));
+    CheckTool(Globals.hwndToolbar, IDT_VIEW_ZOOMOUT,   (zoom < 100));
 }
 
 

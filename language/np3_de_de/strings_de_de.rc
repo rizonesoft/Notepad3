@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Ersetze"
     IDT_VIEW_WORDWRAP       "Wort Umbruch"
     IDT_VIEW_ZOOMIN         "Hinein Zoomen"
+    IDT_VIEW_RESETZOOM      "Kein Zoom"
     IDT_VIEW_ZOOMOUT        "Heraus Zoomen"
     IDT_VIEW_SCHEME         "Wähle Schema"
     IDT_VIEW_SCHEMECONFIG   "Bearbeite Schemata"

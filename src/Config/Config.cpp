@@ -62,8 +62,8 @@ extern "C" {
 
 #include "DarkMode/DarkMode.h"
 
-extern "C" const WCHAR* const TBBUTTON_DEFAULT_IDS_V1;
-extern "C" const WCHAR* const TBBUTTON_DEFAULT_IDS_V2;
+extern "C" WCHAR              TBBUTTON_DEFAULT_IDS[];
+extern "C" const WCHAR* const TBBUTTON_DEFAULT_IDS_OLD;
 
 extern "C" bool      g_iStatusbarVisible[STATUS_SECTOR_COUNT];
 extern "C" int       g_iStatusbarWidthSpec[STATUS_SECTOR_COUNT];
@@ -1734,7 +1734,7 @@ void LoadSettings()
     ///~Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings, L"IMEInteraction", Settings2.IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
 
     // see TBBUTTON  s_tbbMainWnd[] for initial/reset set of buttons
-    StringCchCopy(Defaults.ToolbarButtons, COUNTOF(Defaults.ToolbarButtons), (Globals.iCfgVersionRead < CFG_VER_0002) ? TBBUTTON_DEFAULT_IDS_V1 : TBBUTTON_DEFAULT_IDS_V2);
+    StringCchCopy(Defaults.ToolbarButtons, COUNTOF(Defaults.ToolbarButtons), (Globals.iCfgVersionRead < CFG_VER_0002) ? TBBUTTON_DEFAULT_IDS_OLD : TBBUTTON_DEFAULT_IDS);
     IniSectionGetStringNoQuotes(IniSecSettings, L"ToolbarButtons", Defaults.ToolbarButtons, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
 
     GET_BOOL_VALUE_FROM_INISECTION(ShowTitlebar, true);
