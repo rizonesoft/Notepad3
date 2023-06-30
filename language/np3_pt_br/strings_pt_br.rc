@@ -73,7 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Substituir"
     IDT_VIEW_WORDWRAP       "Quebra de Parágrafo"
     IDT_VIEW_ZOOMIN         "+ Zoom"
-    IDT_VIEW_RESETZOOM      "Reset Zoom"
+    IDT_VIEW_RESETZOOM      "Redefinir Zoom"
     IDT_VIEW_ZOOMOUT        "- Zoom"
     IDT_VIEW_SCHEME         "Selecionar Esquema"
     IDT_VIEW_SCHEMECONFIG   "Customizar Esquema"
