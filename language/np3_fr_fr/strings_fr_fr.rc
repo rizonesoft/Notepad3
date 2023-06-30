@@ -73,7 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Remplacer"
     IDT_VIEW_WORDWRAP       "Saut de ligne automatique"
     IDT_VIEW_ZOOMIN         "Zoom avant"
-    IDT_VIEW_RESETZOOM      "Reset Zoom"
+    IDT_VIEW_RESETZOOM      "Réinitialiser le zoom"
     IDT_VIEW_ZOOMOUT        "Zoom arrière"
     IDT_VIEW_SCHEME         "Sélectionner un thème"
     IDT_VIEW_SCHEMECONFIG   "Personnaliser des thèmes"
