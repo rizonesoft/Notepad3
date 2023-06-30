@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Vervangen"
     IDT_VIEW_WORDWRAP       "Automatische terugloop"
     IDT_VIEW_ZOOMIN         "Inzoomen"
+    IDT_VIEW_RESETZOOM      "Reset Zoom"
     IDT_VIEW_ZOOMOUT        "Uitzoomen"
     IDT_VIEW_SCHEME         "Schema selecteren"
     IDT_VIEW_SCHEMECONFIG   "Schema's aanpassen"

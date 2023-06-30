@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Substituir"
     IDT_VIEW_WORDWRAP       "Moldar texto"
     IDT_VIEW_ZOOMIN         "Zoom +"
+    IDT_VIEW_RESETZOOM      "Reset Zoom"
     IDT_VIEW_ZOOMOUT        "Zoom -"
     IDT_VIEW_SCHEME         "Seleccionar esquema"
     IDT_VIEW_SCHEMECONFIG   "Personalizar esquemas"

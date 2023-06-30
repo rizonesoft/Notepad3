@@ -3,7 +3,7 @@
 ==  This file is intended for the "Translators" to communicate to them the "Line Numbers" of        ==
 ==  the "Added or Modified" lines in "Resource" files ("filename_xx_yy.rc" and "grepWinNP3.lang").  ==
 ==                                                                                                  ==
-==                                                                       Last update:  2023-05-13   ==
+==                                                                       Last update:  2023-06-30   ==
 ======================================================================================================
 
 January 2022: Line numbers to translate_2022-01 - https://workupload.com/file/3kmZN49gB9w (2022-01-29)
@@ -24,7 +24,7 @@ Februar 2023: Line numbers to translate_2023-02 - https://workupload.com/file/Wu
 March   2023: Line numbers to translate_2023-03 - https://workupload.com/file/hPZnCQnTWF9 (2023-03-27)
 April   2023: Line numbers to translate_2023-04 - https://workupload.com/file/J6zhvZU2cGs (2023-04-30)
 May     2023: Line numbers to translate_2023-05 - https://workupload.com/file/m6FWgG8FNaW (2023-05-13)
-June    2023: Line numbers to translate_2023-06 -  (2023-06-xx)
+June    2023: Line numbers to translate_2023-06 - https://workupload.com/file/XxuNPw4GSMm (2023-06-30)
 July    2023: Line numbers to translate_2023-07 -  (2023-07-xx)
 August  2023: Line numbers to translate_2023-08 -  (2023-08-xx)
 Septemb 2023: Line numbers to translate_2023-09 -  (2023-09-xx)

@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "바꾸기"
     IDT_VIEW_WORDWRAP       "줄 바꿈"
     IDT_VIEW_ZOOMIN         "확대"
+    IDT_VIEW_RESETZOOM      "Reset Zoom"
     IDT_VIEW_ZOOMOUT        "축소"
     IDT_VIEW_SCHEME         "구성표 선택"
     IDT_VIEW_SCHEMECONFIG   "사용자 지정 구성표"

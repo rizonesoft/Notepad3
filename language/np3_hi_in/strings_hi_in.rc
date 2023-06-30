@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "बदलें"
     IDT_VIEW_WORDWRAP       "शब्द लपटें"
     IDT_VIEW_ZOOMIN         "ज़ूम इन करें"
+    IDT_VIEW_RESETZOOM      "Reset Zoom"
     IDT_VIEW_ZOOMOUT        "ज़ूम आउट करें"
     IDT_VIEW_SCHEME         "स्कीम चुनें"
     IDT_VIEW_SCHEMECONFIG   "अपनी पसंद की स्कीम बनाएं"

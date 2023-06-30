@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "替换"
     IDT_VIEW_WORDWRAP       "自动换行"
     IDT_VIEW_ZOOMIN         "放大"
+    IDT_VIEW_RESETZOOM      "Reset Zoom"
     IDT_VIEW_ZOOMOUT        "缩小"
     IDT_VIEW_SCHEME         "选择语法高亮方案"
     IDT_VIEW_SCHEMECONFIG   "自定义语法高亮方案"

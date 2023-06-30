@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Zameniť"
     IDT_VIEW_WORDWRAP       "Zalomiť text"
     IDT_VIEW_ZOOMIN         "Zväčšiť"
+    IDT_VIEW_RESETZOOM      "Reset Zoom"
     IDT_VIEW_ZOOMOUT        "Zmenšiť"
     IDT_VIEW_SCHEME         "Výber schémy"
     IDT_VIEW_SCHEMECONFIG   "Prispôsobiť schémy"
