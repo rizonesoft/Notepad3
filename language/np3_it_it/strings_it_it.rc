@@ -73,7 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Sostituisci"
     IDT_VIEW_WORDWRAP       "A capo automatico"
     IDT_VIEW_ZOOMIN         "Aumenta Zoom"
-    IDT_VIEW_RESETZOOM      "Reset Zoom"
+    IDT_VIEW_RESETZOOM      "Ripristina Zoom"
     IDT_VIEW_ZOOMOUT        "Riduci Zoom"
     IDT_VIEW_SCHEME         "Seleziona Schema"
     IDT_VIEW_SCHEMECONFIG   "Personalizza Schemi"
