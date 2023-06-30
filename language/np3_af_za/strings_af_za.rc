@@ -73,7 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Vervang"
     IDT_VIEW_WORDWRAP       "Woordomslag"
     IDT_VIEW_ZOOMIN         "Inzoem"
-    IDT_VIEW_RESETZOOM      "Reset Zoom"
+    IDT_VIEW_RESETZOOM      "Stel Zoom Terug"
     IDT_VIEW_ZOOMOUT        "Uitzoem"
     IDT_VIEW_SCHEME         "Kies Skema"
     IDT_VIEW_SCHEMECONFIG   "Pas Skemas Aan"
