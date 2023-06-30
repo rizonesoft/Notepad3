@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Csere"
     IDT_VIEW_WORDWRAP       "Sortörés"
     IDT_VIEW_ZOOMIN         "Nagyítás"
+    IDT_VIEW_RESETZOOM      "Reset Zoom"
     IDT_VIEW_ZOOMOUT        "Kicsinyítés"
     IDT_VIEW_SCHEME         "Sémaválasztás"
     IDT_VIEW_SCHEMECONFIG   "Sémák testreszabása"

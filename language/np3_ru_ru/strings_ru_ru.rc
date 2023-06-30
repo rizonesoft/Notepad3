@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Заменить"
     IDT_VIEW_WORDWRAP       "Перенос строк"
     IDT_VIEW_ZOOMIN         "Крупнее"
+    IDT_VIEW_RESETZOOM      "Reset Zoom"
     IDT_VIEW_ZOOMOUT        "Мельче"
     IDT_VIEW_SCHEME         "Выбрать схему"
     IDT_VIEW_SCHEMECONFIG   "Настроить схему"

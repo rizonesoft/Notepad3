@@ -576,6 +576,7 @@ This section offers the possibility to display the name of the function to the r
 28=History
 29=Always On Top
 30=Search in Files
+31=Reset Zoom
 ```
 
 

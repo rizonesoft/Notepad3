@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Değiştir"
     IDT_VIEW_WORDWRAP       "Sözcük kaydır"
     IDT_VIEW_ZOOMIN         "Yakınlaştır"
+    IDT_VIEW_RESETZOOM      "Reset Zoom"
     IDT_VIEW_ZOOMOUT        "Uzaklaştır"
     IDT_VIEW_SCHEME         "Şema seç"
     IDT_VIEW_SCHEMECONFIG   "Şemaları özelleştir"

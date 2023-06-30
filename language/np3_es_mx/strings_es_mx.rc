@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Reemplazar"
     IDT_VIEW_WORDWRAP       "Ajuste automático de línea"
     IDT_VIEW_ZOOMIN         "Acercar zoom"
+    IDT_VIEW_RESETZOOM      "Anular Zoom"
     IDT_VIEW_ZOOMOUT        "Alejar zoom"
     IDT_VIEW_SCHEME         "Seleccionar esquema"
     IDT_VIEW_SCHEMECONFIG   "Personalizar esquemas"

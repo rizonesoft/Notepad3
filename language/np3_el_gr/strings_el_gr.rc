@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Αντικατάσταση"
     IDT_VIEW_WORDWRAP       "Αναδίπλωση λέξεων"
     IDT_VIEW_ZOOMIN         "Μεγέθυνση"
+    IDT_VIEW_RESETZOOM      "Reset Zoom"
     IDT_VIEW_ZOOMOUT        "Σμίκρυνση"
     IDT_VIEW_SCHEME         "Επιλογή συνδυασμού"
     IDT_VIEW_SCHEMECONFIG   "Προσαρμογή συνδυασμών"

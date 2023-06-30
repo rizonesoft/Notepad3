@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "置換"
     IDT_VIEW_WORDWRAP       "右端で折り返す"
     IDT_VIEW_ZOOMIN         "拡大"
+    IDT_VIEW_RESETZOOM      "Reset Zoom"
     IDT_VIEW_ZOOMOUT        "縮小"
     IDT_VIEW_SCHEME         "文書の種類を選択"
     IDT_VIEW_SCHEMECONFIG   "配色の編集"

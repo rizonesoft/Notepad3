@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Replace"
     IDT_VIEW_WORDWRAP       "Word Wrap"
     IDT_VIEW_ZOOMIN         "Zoom In"
+    IDT_VIEW_RESETZOOM      "Reset Zoom"
     IDT_VIEW_ZOOMOUT        "Zoom Out"
     IDT_VIEW_SCHEME         "Select Scheme"
     IDT_VIEW_SCHEMECONFIG   "Customise Schemes"

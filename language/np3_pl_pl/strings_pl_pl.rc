@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Zamień"
     IDT_VIEW_WORDWRAP       "Zawijanie tekstu"
     IDT_VIEW_ZOOMIN         "Powiększ"
+    IDT_VIEW_RESETZOOM      "Reset Zoom"
     IDT_VIEW_ZOOMOUT        "Pomniejsz"
     IDT_VIEW_SCHEME         "Wybierz schemat"
     IDT_VIEW_SCHEMECONFIG   "Dostosuj schematy"
