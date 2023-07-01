@@ -697,6 +697,9 @@
     <Image Include="..\res\ToolbarHot.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\res\grepWinNP3.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Notepad3.rc">

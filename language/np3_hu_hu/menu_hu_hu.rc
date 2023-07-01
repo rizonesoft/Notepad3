@@ -337,7 +337,7 @@ BEGIN
             MENUITEM "Következő cse&réje\tF4",                 IDM_EDIT_REPLACENEXT
             MENUITEM "&Ugrás...\tCtrl+G",                      IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "Keresés &fájlokban\tCtrl+Shift+F",         IDM_GREP_WIN_SEARCH
+            MENUITEM "Keresés &fájlokban\tCtrl+Shift+F",       IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Nézet"

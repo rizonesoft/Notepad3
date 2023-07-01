@@ -337,7 +337,7 @@ BEGIN
             MENUITEM "Αντι&κατάσταση επόμενου\tF4",                      IDM_EDIT_REPLACENEXT
             MENUITEM "Μετά&βαση...\tCtrl+G",                             IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "Ανα&ζήτηση σε αρχεία\tCtrl+Shift+F",               IDM_GREP_WIN_SEARCH
+            MENUITEM "Ανα&ζήτηση σε αρχεία\tCtrl+Shift+F",               IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "Πρ&οβολή"

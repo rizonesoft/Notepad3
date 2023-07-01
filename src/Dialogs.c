@@ -6447,6 +6447,28 @@ void SetWinIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
 
 //=============================================================================
 //
+//  SetGrepWinIcon()
+//
+void SetGrepWinIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
+{
+    static UINT dpi = 0; // (!) initially, to force first calculation 
+    static MENUITEMINFO mii = { 0 };
+
+    UINT const cur_dpi = Scintilla_GetWindowDPI(hwnd);
+
+    if (dpi != cur_dpi) {
+        if (mii.hbmpItem) {
+            DeleteObject(mii.hbmpItem);
+        }
+        mii = _MakeMenuIcon(Globals.hIconGrepWinNP3, cur_dpi);
+        dpi = cur_dpi;
+    }
+    SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
+}
+
+
+//=============================================================================
+//
 //  UpdateWindowLayoutForDPI()
 //
 

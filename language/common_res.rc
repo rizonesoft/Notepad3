@@ -49,6 +49,7 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_MUI_RUN             ICON                    "Run.ico"
+IDI_MUI_GREPWINNP3      ICON                    "grepWinNP3.ico"
 IDI_MUI_STYLES          ICON                    "Preferences.ico"
 
 

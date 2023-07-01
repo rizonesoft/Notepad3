@@ -337,7 +337,7 @@ BEGIN
             MENUITEM "Sostituisci successivo\tF4",                IDM_EDIT_REPLACENEXT
             MENUITEM "&Vai a...\tCtrl+G",                         IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Cerca nei file\tCtrl+Shift+F",              IDM_GREP_WIN_SEARCH
+            MENUITEM "&Cerca nei file\tCtrl+Shift+F",             IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Visualizza"

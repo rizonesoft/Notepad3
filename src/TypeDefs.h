@@ -500,6 +500,7 @@ typedef struct GLOBALS_T {
     HICON     hIconMsgQuest;
     HICON     hIconMsgShield;
     HICON     hIconMsgWinCmd;
+    HICON     hIconGrepWinNP3;
     HWND      hwndDlgFindReplace;
     HWND      hwndDlgCustomizeSchemes;
     int       iDefaultCharSet;

@@ -337,7 +337,7 @@ BEGIN
             MENUITEM "Remplacer le sui&vant\tF4",                           IDM_EDIT_REPLACENEXT
             MENUITEM "&Aller à...\tCtrl+G",                                 IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "C&hercher DANS les fichiers\tCtrl+Maj+F",             IDM_GREP_WIN_SEARCH
+            MENUITEM "C&hercher DANS les fichiers\tCtrl+Maj+F",             IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Affichage"

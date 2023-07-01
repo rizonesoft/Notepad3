@@ -337,7 +337,7 @@ BEGIN
             MENUITEM "替换下一个(&E)\tF4",                   IDM_EDIT_REPLACENEXT
             MENUITEM "跳转到(&G)...\tCtrl+G",                IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "在文件中查找(&S)...\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
+            MENUITEM "在文件中查找(&S)...\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "查看(&V)"
