@@ -73,7 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Ganti"
     IDT_VIEW_WORDWRAP       "Bungkus Kata"
     IDT_VIEW_ZOOMIN         "Perbesar"
-    IDT_VIEW_RESETZOOM      "Reset Zoom"
+    IDT_VIEW_RESETZOOM      "Atur Ulang Zum"
     IDT_VIEW_ZOOMOUT        "Perkecil"
     IDT_VIEW_SCHEME         "Pilih Skema"
     IDT_VIEW_SCHEMECONFIG   "Sesuaikan Skema"
