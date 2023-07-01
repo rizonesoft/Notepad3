@@ -327,17 +327,17 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "खोजें (&R)"
         BEGIN
-            MENUITEM "ढूँढें (&F)...\tCtrl+F",                        IDM_EDIT_FIND
-            MENUITEM "ढूंढा हुआ शब्द सहेजें (&A)\tAlt+F3",                 IDM_EDIT_SAVEFIND
-            MENUITEM "अगला ढूँढें (&N)\tF3",                          IDM_EDIT_FINDNEXT
+            MENUITEM "ढूँढें (&F)...\tCtrl+F",                    IDM_EDIT_FIND
+            MENUITEM "ढूंढा हुआ शब्द सहेजें (&A)\tAlt+F3",          IDM_EDIT_SAVEFIND
+            MENUITEM "अगला ढूँढें (&N)\tF3",                      IDM_EDIT_FINDNEXT
             MENUITEM "पिछला ढूँढें (&P)\tShift+F3",                IDM_EDIT_FINDPREV
             MENUITEM "अगला चयनित ढूँढें (&X)\tCtrl+F3",            CMD_FINDNEXTSEL
-            MENUITEM "पिछला चयनित ढूँढें (&V)\tCtrl+Shift+F3",  CMD_FINDPREVSEL
-            MENUITEM "बदलें (&R)...\tCtrl+H",                     IDM_EDIT_REPLACE
-            MENUITEM "अगला शब्द बदलें (&E)\tF4",                       IDM_EDIT_REPLACENEXT
-            MENUITEM "यहाँ पर जाएं (&G)...\tCtrl+G",                        IDM_EDIT_GOTOLINE
+            MENUITEM "पिछला चयनित ढूँढें (&V)\tCtrl+Shift+F3",      CMD_FINDPREVSEL
+            MENUITEM "बदलें (&R)...\tCtrl+H",                    IDM_EDIT_REPLACE
+            MENUITEM "अगला शब्द बदलें (&E)\tF4",                  IDM_EDIT_REPLACENEXT
+            MENUITEM "यहाँ पर जाएं (&G)...\tCtrl+G",              IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "फ़ाइलों में ढूँढें (&S)\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH
+            MENUITEM "फ़ाइलों में ढूँढें (&S)\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "दृश्य (&V)"

@@ -337,7 +337,7 @@ BEGIN
             MENUITEM "Sonra&kini değiştir\tF4",                       IDM_EDIT_REPLACENEXT
             MENUITEM "&Git...\tCtrl+G",                               IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Dosyalarda ara\tCtrl+Shift+F",                 IDM_GREP_WIN_SEARCH
+            MENUITEM "&Dosyalarda ara\tCtrl+Shift+F",                 IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Görünüm"

@@ -233,6 +233,7 @@ HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
 HBITMAP ResampleIconToBitmap(HWND hwnd, HBITMAP hOldBmp, const HICON hIcon, const int cx, const int cy);
 void    SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem);
 void    SetWinIcon(HWND hwnd, const HMENU hMenu, const UINT nItem);
+void    SetGrepWinIcon(HWND hwnd, const HMENU hMenu, const UINT nItem);
 void    UpdateWindowLayoutForDPI(HWND hwnd, const RECT *pRC, const UINT dpi);
 //#define HandleDpiChangedMessage(hW,wP,lP) { UINT dpi; dpi = LOWORD(wP); /*dpi = HIWORD(wP);*/ \
 //                                            UpdateWindowLayoutForDPI(hW, (RECT*)lP, dpi); }

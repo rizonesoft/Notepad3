@@ -1028,6 +1028,9 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     if (Globals.hIconMsgWinCmd) {
         DestroyIcon(Globals.hIconMsgWinCmd);
     }
+    if (Globals.hIconGrepWinNP3) {
+        DestroyIcon(Globals.hIconGrepWinNP3);
+    }
 
     // install previous handler
     if (_hOldInvalidParamHandler) {
@@ -1199,12 +1202,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     // ----------------------------------------------------
 
-    // ICON_BIG
-    int const cxb = GetSystemMetrics(SM_CXICON) << 2;
-    int const cyb = GetSystemMetrics(SM_CYICON) << 2;
-    // ICON_SMALL
-    int const cxs = GetSystemMetrics(SM_CXSMICON) << 1;
-    int const cys = GetSystemMetrics(SM_CYSMICON) << 1;
+    // ICON_BIG (32x32)
+    int const cxb = GetSystemMetrics(SM_CXICON);
+    int const cyb = GetSystemMetrics(SM_CYICON);
+    // ICON_SMALL (16x16)
+    int const cxs = GetSystemMetrics(SM_CXSMICON);
+    int const cys = GetSystemMetrics(SM_CYSMICON);
 
     UINT const fuLoad = LR_DEFAULTCOLOR | LR_SHARED;
 
@@ -1262,12 +1265,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         if (FAILED(LoadIconWithScaleDown(NULL, IDI_SHIELD, cxb, cyb, &(Globals.hIconMsgShield))))
             Globals.hIconMsgShield = LoadImage(NULL, IDI_SHIELD, IMAGE_ICON, cxb, cyb, fuLoad);
     }
-    // if (!Globals.hIconMsgWinCmd) {
-    //     Globals.hIconMsgWinLogo = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MUI_RUN));
-    // }
     if (!Globals.hIconMsgWinCmd) {
         if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_RUN), cxb, cyb, &(Globals.hIconMsgWinCmd))))
             Globals.hIconMsgWinCmd = LoadImage(hInstance, MAKEINTRESOURCE(IDI_MUI_RUN), IMAGE_ICON, cxb, cyb, fuLoad);
+    }
+    if (!Globals.hIconGrepWinNP3) {
+        if (FAILED(LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_MUI_GREPWINNP3), cxs, cys, &(Globals.hIconGrepWinNP3))))
+            Globals.hIconGrepWinNP3 = LoadImage(hInstance, MAKEINTRESOURCE(IDI_MUI_GREPWINNP3), IMAGE_ICON, cxs, cys, fuLoad);
     }
 
     if (s_IsThisAnElevatedRelaunch && !IsRunAsAdmin()) {
@@ -4110,6 +4114,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, CMD_RECODEDEFAULT, cf);
     EnableCmd(hmenu, CMD_RECODEGB18030, cf);
 
+    SetGrepWinIcon(hwnd, hmenu, IDM_GREP_WIN_SEARCH);
+
     EnableCmd(hmenu, IDM_FILE_NEWWINDOW2, !(cf && si));
 
     SetWinIcon(hwnd, hmenu, IDM_FILE_LAUNCH);
@@ -4290,6 +4296,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_EDIT_SELTOPREV, !te);
     EnableCmd(hmenu, IDM_EDIT_FINDMATCHINGBRACE, !te);
     EnableCmd(hmenu, IDM_EDIT_SELTOMATCHINGBRACE, !te);
+
+    SetGrepWinIcon(hwnd, hmenu, IDM_GREP_WIN_SEARCH2);
 
     CheckCmd(hmenu, IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK, Settings.SplitUndoTypingSeqOnLnBreak);
 
@@ -4736,7 +4744,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
 
-    case IDM_GREP_WIN_SEARCH: {
+    case IDM_GREP_WIN_SEARCH:
+    case IDM_GREP_WIN_SEARCH2: {
         WCHAR wchBuffer[MIDSZ_BUFFER] = { L'\0' };
         EditGetSelectedText(wchBuffer, COUNTOF(wchBuffer));
         DialogGrepWin(hwnd, wchBuffer);

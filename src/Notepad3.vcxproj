@@ -679,6 +679,7 @@
     </Manifest>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\res\grepWinNP3.ico" />
     <Image Include="..\res\Notepad3.ico" />
     <Image Include="..\res\rizonesoft.bmp" />
     <Image Include="..\res\Toolbar2.bmp" />

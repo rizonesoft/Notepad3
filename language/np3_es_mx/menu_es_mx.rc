@@ -337,7 +337,7 @@ BEGIN
             MENUITEM "Ree&mplazar siguiente\tF4",                       IDM_EDIT_REPLACENEXT
             MENUITEM "&Ir a...\tCtrl+G",                                IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "B&uscar en archivos\tCtrl+Shift+F",                    IDM_GREP_WIN_SEARCH
+            MENUITEM "B&uscar en archivos\tCtrl+Shift+F",               IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Vista"

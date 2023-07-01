@@ -337,7 +337,7 @@ BEGIN
             MENUITEM "Z&ameniť ďalej\tF4",                      IDM_EDIT_REPLACENEXT
             MENUITEM "Pr&ejsť na...\tCtrl+G",                   IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Vyhľadávať v súboroch\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH
+            MENUITEM "&Vyhľadávať v súboroch\tCtrl+Shift+F",    IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Zobraziť"
