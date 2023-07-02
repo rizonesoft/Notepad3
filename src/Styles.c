@@ -5090,7 +5090,7 @@ HWND Style_CustomizeSchemesDlg(HWND hwnd)
                                         Style_CustomizeSchemesDlgProc,
                                         (LPARAM)hwnd);
     if (IS_VALID_HANDLE(hDlg)) {
-        ShowWindow(hDlg, SW_SHOW);
+        ShowWindow(hDlg, SW_SHOWDEFAULT);
     }
     return hDlg;
 }
