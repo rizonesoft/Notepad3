@@ -34,13 +34,15 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.627.(build_#) (2023-06-27)
+Current BETA/RC Version 6.23.702.(build_#) (2023-07-02)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.702.1]- Add grepWinNP3 icon for menu display.
+[.702.1]- Add Reset Zoom toolbar button.
 [.619.1]- Indentation guide coloring on matching brace highlight.
 [.513.1]- Option on F/R dialog: incremental search ON/OFF.
 [.512.1]- Add an "Additional Notepad3Portable.cmd Launcher".
@@ -102,6 +104,10 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.702.1]- Minor optimizations on initial window startup.
+[.702.1]- Scroll to preserved caret position on file load.
+[.702.1]- Menu View: correct positioning of active marks.
+[.702.1]- Initial show window at final position w/o repositioning.
 [.616.1]- Set color of horizontal ruler (folded block) to line number coloring.
 [.616.1]- Zoom tooltip moved out of margin area.
 [.616.1]- Don't show auto-completion list if typed word matches the one and only word in list.
