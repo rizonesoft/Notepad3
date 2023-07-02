@@ -4689,7 +4689,7 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO *hMonitorInfo, const int off
 //  WindowPlacementFromInfo()
 //
 //
-WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode)
+WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode, UINT nCmdShow)
 {
     WINDOWPLACEMENT wndpl = {0};
     wndpl.length = sizeof(WINDOWPLACEMENT);
@@ -4706,7 +4706,6 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
         if (pWinInfo->max) {
             wndpl.flags &= WPF_RESTORETOMAXIMIZED;
         }
-        wndpl.showCmd = SW_RESTORE;
     } else {
         RECT rc = { 0 };
         if (hwnd) {
@@ -4720,8 +4719,8 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
         } else {
             WinInfoFromRect(&rc, &winfo);
         }
-        wndpl.showCmd = SW_SHOW;
     }
+    wndpl.showCmd = nCmdShow;
     RectFromWinInfo(&winfo, &(wndpl.rcNormalPosition));
     return wndpl;
 }
@@ -4733,7 +4732,7 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
 //
 static bool s_bPrevFullScreenFlag = false;
 
-void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
+void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode, UINT nCmdShow)
 {
     if (!hwnd) {
         return;
@@ -4764,8 +4763,8 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
             Settings.AlwaysOnTop = s_bPrevAlwaysOnTop;
         }
         else {
-            WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hwnd, &winInfo, mode);
-            if (GetDoAnimateMinimize()) {
+            WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hwnd, &winInfo, mode, nCmdShow);
+            if (GetDoAnimateMinimize() && wndpl.showCmd) {
                 DrawAnimatedRects(hwnd, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
             }
             SetWindowPlacement(hwnd, &wndpl); // 1st set correct screen (DPI Aware)
@@ -4785,8 +4784,8 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
         MONITORINFO mi = { sizeof(mi) };
         GetMonitorInfo(MonitorFromWindow(hwnd, MONITOR_DEFAULTTOPRIMARY), &mi);
         SetWindowLong(hwnd, GWL_STYLE, dwStyle & ~dwRmvFScrStyle);
-        WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hwnd, NULL, mode);
-        if (GetDoAnimateMinimize()) {
+        WINDOWPLACEMENT const wndpl = WindowPlacementFromInfo(hwnd, NULL, mode, nCmdShow);
+        if (GetDoAnimateMinimize() && wndpl.showCmd) {
             DrawAnimatedRects(hwnd, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
         }
         SetWindowPlacement(hwnd, &wndpl);
@@ -4799,7 +4798,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode)
     }
     SetMenu(hwnd, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
     DrawMenuBar(hwnd);
-    ShowWindow(Globals.hwndRebar, (Settings.ShowToolbar ? SW_SHOWNORMAL : SW_HIDE));
+    ShowWindow(Globals.hwndRebar, (Settings.ShowToolbar ? SW_RESTORE : SW_HIDE));
     UpdateUI(hwnd);
 }
 

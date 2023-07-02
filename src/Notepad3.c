@@ -1832,11 +1832,14 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
 
     Globals.hwndMain = NULL;
 
+    // initialy hidden/not visible
+    DWORD const dwStyle = ((WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN) & ~WS_VISIBLE); // | (g_IniWinInfo.max ? WS_MAXIMIZE : 0);
+
     HWND const hwndMain = CreateWindowEx(
         WS_EX_ACCEPTFILES,
         s_wchWndClass,
         _W(SAPPNAME),
-        (WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN) & ~WS_VISIBLE,
+        dwStyle,
         srcninfo.x,
         srcninfo.y,
         srcninfo.cx,
@@ -1846,18 +1849,15 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
         hInstance,
         NULL);
 
-    ShowWindow(hwndMain, SW_HIDE); // force to be hidden first
+    InitWindowCommon(hwndMain, true);
+    SetDialogIconNP3(hwndMain);
 
     // correct infos based on hwnd
     g_DefWinInfo = _GetDefaultWinInfoByStrg(hwndMain, Settings2.DefaultWindowPosition);
-    g_IniWinInfo = GetWinInfoByFlag(hwndMain, Globals.CmdLnFlag_WindowPos);
     s_WinCurrentWidth = g_IniWinInfo.cx;
     if (g_IniWinInfo.max) {
         nCmdShow = SW_SHOWMAXIMIZED;
     }
-
-    SetDialogIconNP3(hwndMain);
-    InitWindowCommon(hwndMain, true);
 
     // manual (not automatic) reset & initial state: not signaled (TRUE, FALSE)
     s_FileChgObsvrData.hEventFileChanged = CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -1964,26 +1964,28 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     }
 
     // now, after FileLoad() do ShowWindow()
-    ShowWindowAsync(s_hwndEditFrame, SW_SHOW);
-    ShowWindowAsync(Globals.hwndEdit, SW_SHOW);
+    ShowWindowAsync(s_hwndEditFrame, SW_SHOWDEFAULT);
+    ShowWindowAsync(Globals.hwndEdit, SW_SHOWDEFAULT);
+    //~SnapToWinInfoPos(hwndMain, g_IniWinInfo, SCR_NORMAL, SW_HIDE); ~ instead set all needed properties  here:
+    SetWindowPos(hwndMain, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
     if (!s_flagStartAsTrayIcon) {
         UpdateWindow(hwndMain);
         if (!Settings.ShowTitlebar) {
             SetWindowLong(hwndMain, GWL_STYLE, GetWindowLong(hwndMain, GWL_STYLE) & ~WS_CAPTION);
         }
-        ShowWindow(hwndMain, nCmdShow);
     }
     else {
         if (Settings.MinimizeToTray) {
             MinimizeWndToTray(hwndMain);
         }
         else {
-            ShowWindow(hwndMain, SW_MINIMIZE);
+            nCmdShow = SW_MINIMIZE;
         }
         ShowNotifyIcon(hwndMain, true);
         SetNotifyIconTitle(hwndMain);
     }
+    ShowWindow(hwndMain, nCmdShow);
 
     // reset
     Encoding_Forced(CPI_NONE);
@@ -3259,7 +3261,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     s_cyReBar = (rc.bottom - rc.top);
     s_cyReBarFrame = s_bIsAppThemed ? 0 : 2;  // (!) frame color is same as INITIAL title-bar ???
 
-    ShowWindow(Globals.hwndRebar, Settings.ShowToolbar ? SW_SHOWNORMAL : SW_HIDE);
+    ShowWindow(Globals.hwndRebar, Settings.ShowToolbar ? SW_SHOWDEFAULT : SW_HIDE);
 
     // -------------------
     // Create Statusbar
@@ -3299,7 +3301,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     //~ReleaseDC(Globals.hwndStatus, hdc);
 #endif
 
-    ShowWindow(Globals.hwndStatus, Settings.ShowStatusbar ? SW_SHOWNORMAL : SW_HIDE);
+    ShowWindow(Globals.hwndStatus, Settings.ShowStatusbar ? SW_SHOWDEFAULT : SW_HIDE);
 }
 
 
@@ -6342,7 +6344,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_TOOLBAR:
         Settings.ShowToolbar = !Settings.ShowToolbar;
-        ShowWindow(Globals.hwndRebar, (Settings.ShowToolbar ? SW_SHOWNORMAL : SW_HIDE));
+        ShowWindow(Globals.hwndRebar, (Settings.ShowToolbar ? SW_SHOWDEFAULT : SW_HIDE));
         UpdateUI(hwnd);
         break;
 
@@ -6371,7 +6373,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_VIEW_STATUSBAR:
         Settings.ShowStatusbar = !Settings.ShowStatusbar;
-        ShowWindow(Globals.hwndStatus, (Settings.ShowStatusbar ? SW_SHOWNORMAL : SW_HIDE));
+        ShowWindow(Globals.hwndStatus, (Settings.ShowStatusbar ? SW_SHOWDEFAULT : SW_HIDE));
         UpdateUI(hwnd);
         break;
 
@@ -7185,17 +7187,17 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_INITIALWINPOS:
-        SnapToWinInfoPos(hwnd, g_IniWinInfo, SCR_NORMAL);
+        SnapToWinInfoPos(hwnd, g_IniWinInfo, SCR_NORMAL, SW_SHOWDEFAULT);
         break;
 
     case CMD_FULLSCRWINPOS: {
         WININFO wi = GetMyWindowPlacement(hwnd, NULL, 0);
-        SnapToWinInfoPos(hwnd, wi, SCR_FULL_SCREEN);
+        SnapToWinInfoPos(hwnd, wi, SCR_FULL_SCREEN, SW_SHOWDEFAULT);
     }
     break;
 
     case CMD_DEFAULTWINPOS:
-        SnapToWinInfoPos(hwnd, g_DefWinInfo, SCR_NORMAL);
+        SnapToWinInfoPos(hwnd, g_DefWinInfo, SCR_NORMAL, SW_SHOWDEFAULT);
         break;
 
     case CMD_SAVEASDEFWINPOS: {
