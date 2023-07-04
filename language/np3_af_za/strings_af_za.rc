@@ -90,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Voer Dokument Uit"
+    /// IDT_FILE_NEW_EMPTY_NP3   "Nuwe Leë Venster"
     IDT_VIEW_TOGGLE_VIEW     "Gefokusde Aansig"
     IDT_VIEW_CHASING_DOCTAIL "Moniteringslogboek"
     IDT_VIEW_PIN_ON_TOP      "Altyd Bo-op"

@@ -90,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Dokument ausführen"
+    /// IDT_FILE_NEW_EMPTY_NP3   "Neues Leeres Fenster"
     IDT_VIEW_TOGGLE_VIEW     "Fokussierte Ansicht"
     IDT_VIEW_CHASING_DOCTAIL "Logfile Monitoring"
     IDT_VIEW_PIN_ON_TOP      "Immer im Vordergrung"

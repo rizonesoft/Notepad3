@@ -90,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "运行当前文档"
+    /// IDT_FILE_NEW_EMPTY_NP3   "新建空窗口"
     IDT_VIEW_TOGGLE_VIEW     "仅显示匹配行"
     IDT_VIEW_CHASING_DOCTAIL "日志监控"
     IDT_VIEW_PIN_ON_TOP      "总是置顶"
