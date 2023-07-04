@@ -90,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Kör fil"
+    /// IDT_FILE_NEW_EMPTY_NP3   "Nytt tomt fönster"
     IDT_VIEW_TOGGLE_VIEW     "Växla vy"
     IDT_VIEW_CHASING_DOCTAIL "Övervaknigslogg"
     IDT_VIEW_PIN_ON_TOP      "Alltid överst"

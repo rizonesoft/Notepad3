@@ -577,6 +577,7 @@ This section offers the possibility to display the name of the function to the r
 29=Always On Top
 30=Search in Files
 31=Reset Zoom
+32=New Empty Window
 ```
 
 

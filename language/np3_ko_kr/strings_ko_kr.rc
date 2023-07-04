@@ -90,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "문서 실행"
+    /// IDT_FILE_NEW_EMPTY_NP3   "새 빈 창"
     IDT_VIEW_TOGGLE_VIEW     "집중 보기"
     IDT_VIEW_CHASING_DOCTAIL "모니터링 로그(&M)"
     IDT_VIEW_PIN_ON_TOP      "항상 맨 위에"

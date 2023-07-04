@@ -90,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Spustiť dokument"
+    /// IDT_FILE_NEW_EMPTY_NP3   "Nové prázdne okno"
     IDT_VIEW_TOGGLE_VIEW     "Zobraziť zameranie"
     IDT_VIEW_CHASING_DOCTAIL "Denník monitorovania"
     IDT_VIEW_PIN_ON_TOP      "Vždy na vrchu"
