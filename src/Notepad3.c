@@ -2946,6 +2946,7 @@ static HBITMAP LoadBitmapFile(const HPATHL hpath)
     if (Path_IsExistingFile(hpath)) {
 
         hbmp = (HBITMAP)LoadImage(NULL, Path_Get(hpath), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+
         bool bDimOK = false;
         int  height = 16;
         if (hbmp) {
@@ -2955,12 +2956,8 @@ static HBITMAP LoadBitmapFile(const HPATHL hpath)
             bDimOK = (bmp.bmWidth >= (height * NUMTOOLBITMAPS));
         }
         if (!bDimOK) {
-            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_BITMAP, Path_Get(hpath),
+            InfoBoxLng(MB_ICONWARNING, L"NotSuitableToolbarDim", IDS_MUI_ERR_BITMAP, Path_Get(hpath),
                 (height * NUMTOOLBITMAPS), height, NUMTOOLBITMAPS);
-            if (hbmp) {
-                DeleteObject(hbmp);
-            }
-            hbmp = NULL;
         }
     }
     else {
@@ -2977,7 +2974,7 @@ static HBITMAP LoadBitmapFile(const HPATHL hpath)
 //
 //  CreateScaledImageListFromBitmap()
 //
-static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
+static HIMAGELIST XXX_CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
 {
     BITMAP bmp = { 0 };
     GetObject(hBmp, sizeof(BITMAP), &bmp);
@@ -3001,6 +2998,47 @@ static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
     HIMAGELIST hsciml = ImageList_Create(scx, scy, ILC_COLOR32 | ILC_MASK | ILC_HIGHQUALITYSCALE, NUMTOOLBITMAPS, NUMTOOLBITMAPS);
 
     for (int i = 0; i < NUMTOOLBITMAPS; ++i) {
+        HICON const hicon = ImageList_GetIcon(himl, i, ILD_TRANSPARENT | ILD_PRESERVEALPHA | ILD_SCALE);
+        ImageList_AddIcon(hsciml, hicon);
+        DestroyIcon(hicon);
+    }
+
+    ImageList_Destroy(himl);
+
+    return hsciml;
+}
+
+
+//=============================================================================
+//
+//  CreateScaledImageListFromBitmap()
+//
+static HIMAGELIST CreateScaledImageListFromBitmap(HWND hWnd, HBITMAP hBmp)
+{
+    BITMAP bmp = { 0 };
+    GetObject(hBmp, sizeof(BITMAP), &bmp);
+
+    int const numOfToolBitmaps = (int)(bmp.bmWidth / bmp.bmHeight);
+
+    int const mod = bmp.bmWidth % numOfToolBitmaps;
+    int const cx = (bmp.bmWidth - mod) / numOfToolBitmaps;
+    int const cy = bmp.bmHeight;
+
+    HIMAGELIST himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, numOfToolBitmaps, numOfToolBitmaps);
+    ImageList_AddMasked(himl, hBmp, CLR_DEFAULT);
+
+    UINT const dpi = Scintilla_GetWindowDPI(hWnd);
+    if (!Settings.DpiScaleToolBar || (dpi == USER_DEFAULT_SCREEN_DPI)) {
+        return himl; // default DPI, we are done
+    }
+
+    // Scale button icons/images
+    int const scx = ScaleIntToDPI(hWnd, cx);
+    int const scy = ScaleIntToDPI(hWnd, cy);
+
+    HIMAGELIST hsciml = ImageList_Create(scx, scy, ILC_COLOR32 | ILC_MASK | ILC_HIGHQUALITYSCALE, numOfToolBitmaps, numOfToolBitmaps);
+
+    for (int i = 0; i < numOfToolBitmaps; ++i) {
         HICON const hicon = ImageList_GetIcon(himl, i, ILD_TRANSPARENT | ILD_PRESERVEALPHA | ILD_SCALE);
         ImageList_AddIcon(hsciml, hicon);
         DestroyIcon(hicon);
