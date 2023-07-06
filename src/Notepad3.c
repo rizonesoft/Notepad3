@@ -1828,8 +1828,15 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     // init w/o hwnd
     g_IniWinInfo = GetWinInfoByFlag(NULL, Globals.CmdLnFlag_WindowPos);
 
+    if (Settings2.LaunchInstanceFullVisible) {
+        RECT rc = { 0 };
+        RectFromWinInfo(&g_IniWinInfo, &rc);
+        FitIntoMonitorGeometry(&rc, &g_IniWinInfo, SCR_NORMAL, false);
+    }
+
     // get monitor coordinates from g_IniWinInfo
     WININFO srcninfo = g_IniWinInfo;
+
     WinInfoToScreenCoord(&srcninfo);
 
     Globals.hwndMain = NULL;
