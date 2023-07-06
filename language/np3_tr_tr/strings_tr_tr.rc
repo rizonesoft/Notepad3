@@ -90,7 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Belgeyi yürüt"
-    /// IDT_VIEW_NEW_WINDOW   "Yeni boş pencere"
+    IDT_VIEW_NEW_WINDOW      "Yeni boş pencere"
     IDT_VIEW_TOGGLE_VIEW     "Odaklanmış görünüm"
     IDT_VIEW_CHASING_DOCTAIL "İzleme günlüğü"
     IDT_VIEW_PIN_ON_TOP      "Pencereyi üste sabitle"

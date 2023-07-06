@@ -90,7 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "執行目前文件"
-    /// IDT_VIEW_NEW_WINDOW   "新增空視窗"
+    IDT_VIEW_NEW_WINDOW      "新增空視窗"
     IDT_VIEW_TOGGLE_VIEW     "僅顯示符合行"
     IDT_VIEW_CHASING_DOCTAIL "記錄監控"
     IDT_VIEW_PIN_ON_TOP      "總是置頂"

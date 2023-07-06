@@ -90,7 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "開いている文書を実行"
-    /// IDT_VIEW_NEW_WINDOW   "白紙の新規ウィンドウ"
+    IDT_VIEW_NEW_WINDOW      "白紙の新規ウィンドウ"
     IDT_VIEW_TOGGLE_VIEW     "単語一望モード"
     IDT_VIEW_CHASING_DOCTAIL "ログ監視用モード"
     IDT_VIEW_PIN_ON_TOP      "常に手前に表示"
