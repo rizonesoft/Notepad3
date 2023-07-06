@@ -138,7 +138,7 @@ BEGIN
                             "Το τρέχον παράθυρο του Notepad3 είναι απασχολημένο ή έχει ενεργό παράθυρο διαλόγου.\nΘέλετε να ανοίξετε ένα άλλο παράθυρο του Notepad3;"
     IDS_MUI_ERR_ENCODINGNA  "Οι πίνακες μετατροπής κωδικοσελίδας για την επιλεγμένη κωδικοποίηση δεν είναι διαθέσιμοι στο σύστημά σας."
     IDS_MUI_ERR_UNICODE     "Σφάλμα κατά τη μετατροπή αυτού του Unicode αρχείου.\nΤα δεδομένα θα χαθούν εάν αποθηκευτεί το αρχείο!"
-    IDS_MUI_ERR_BITMAP      "Σφάλμα φόρτωσης της εικόνας bitmap ""%s"".\nΑπαιτούμενες διαστάσεις: %i x %i (πλάτος >= %i x ύψος)."
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Σφάλμα αναβάθμισης των δικαιωμάτων χρήστη!"
 END

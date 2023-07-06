@@ -138,7 +138,7 @@ BEGIN
                             "मौजूद Notepad3 विंडो कार्यरत है या पहले से कोई चालू डायलॉग डिब्बा खुला है\nक्या आप दूसरी Notepad3 विंडो खोलना चाहते हैं?"
     IDS_MUI_ERR_ENCODINGNA  "आपके सिस्टम पर चुनी हुई एन्कोडिंग के लिए कोड पृष्ठ रूपांतरण तालिका मौजूद नहीं है"
     IDS_MUI_ERR_UNICODE     "इस युनिकोड फ़ाईल के रूपांतरण में त्रुटि है\nफ़ाईल सहेजेने में डेटा खो जाएगा!"
-    IDS_MUI_ERR_BITMAP      "बिटमैप ""%s"" लोड करने में त्रुटि|\n लंबाई-चोड़ाई चाहिए: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "उपयोगकर्ता अधिकार वयस्थापक रूप मे करने मे त्रुटि!"
 END

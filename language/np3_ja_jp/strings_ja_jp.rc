@@ -138,7 +138,7 @@ BEGIN
                             "現在 Notepad3 のウィンドウはビジー状態か､ダイアログを表示しています。\nNotepad3 のウィンドウを新たに開きますか?"
     IDS_MUI_ERR_ENCODINGNA  "このパソコンでは、選択した文字コード用のコードページ変換テーブルが利用できません。"
     IDS_MUI_ERR_UNICODE     "Unicode への変換中にエラーが発生しました。\nファイルを保存するとデータが失われるかもしれません。"
-    IDS_MUI_ERR_BITMAP      "ビットマップファイルの読み込みエラー: %s\n必要な寸法: %i x %i (横幅 >= %i x 高さ)."
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "権限取得のエラー。"
 END

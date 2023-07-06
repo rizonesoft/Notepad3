@@ -138,7 +138,7 @@ BEGIN
                             "Bestaande Notepad3-venster is besig of het 'n aktiewe dialoog.\nWil jy 'n ander Notepad3-venster oopmaak?"
     IDS_MUI_ERR_ENCODINGNA  "Kodeblad-omskakelingstabelle vir die geselekteerde enkodering is nie op u stelsel beskikbaar nie."
     IDS_MUI_ERR_UNICODE     "Kon nie hierdie Unicode-lêer omskakel nie. \nData sal verlore wees as die lêer gestoor word!"
-    IDS_MUI_ERR_BITMAP      "Kon nie bitmap ""%s"" laai nie.\nBenodig afmetings: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Fout die verhoging van gebruikersregte!"
 END

@@ -138,7 +138,7 @@ BEGIN
                             "Fönstret för Notepad3 är uppdaget eller har en öppe aktiv dialogruta.\nVill du öppna ett nytt Notepad3-fönster?"
     IDS_MUI_ERR_ENCODINGNA  "Tabeller för teckenkodning för vald teckenkodning saknas på ditt system."
     IDS_MUI_ERR_UNICODE     "Fel vid konvertering av denna Unicode-fil.\nData kommer att förloras om filen sparas!"
-    IDS_MUI_ERR_BITMAP      "Bitmappen ""%s"" kunde inte laddas.\nKrävt format: %i x %i (höjd >= %i x bredd)."
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Användarrättigheter kunde inte höjas!"
 END

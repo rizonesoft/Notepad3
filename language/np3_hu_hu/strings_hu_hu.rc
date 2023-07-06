@@ -138,7 +138,7 @@ BEGIN
                             "A futó Notepad3 ablak nem válaszol vagy van egy aktív dialógusablaka.\nMeg szeretné nyitni egy új Notepad3 ablakban?"
     IDS_MUI_ERR_ENCODINGNA  "A kódlap konverziós táblák nem elérhetőek a kiválasztott kódoláshoz az ön rendszerén."
     IDS_MUI_ERR_UNICODE     "Hiba e Unicode fájl konvertálásakor.\nAz adat el fog veszni, amikor a fájl mentve lesz!"
-    IDS_MUI_ERR_BITMAP      "Hiba a bitkép ""%s"" betöltése közben.\nSzükséges méret: %i x %i (szélesség >= %i x magasság)."
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Hiba felhasználói jogok emelése közben!"
 END

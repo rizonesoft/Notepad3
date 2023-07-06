@@ -138,7 +138,7 @@ BEGIN
                             "目前已存在的 Notepad3 視窗忙碌中，或有一個已打開的對話方塊正在阻止它回應。\n\n開啟一個新的 Notepad3 視窗嗎？"
     IDS_MUI_ERR_ENCODINGNA  "用於選定的編碼轉換的內碼表表在目前系統上不可用。"
     IDS_MUI_ERR_UNICODE     "轉換該 Unicode 檔案時遇到錯誤。\n\n警告：儲存該檔案會導致資料遺失。"
-    IDS_MUI_ERR_BITMAP      "載入點陣圖檔案 ""%s"" 失敗。\n需求大小：%i×%i（寬度 ≥ %i × 高度）"
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "提升使用者權限時出錯。"
 END

@@ -138,7 +138,7 @@ BEGIN
                             "Terdapat jendela Notepad3 lain yang sedang sibuk atau aktif.\nApakan Anda ingin membuka jendela Notepad3 baru?"
     IDS_MUI_ERR_ENCODINGNA  "Tabel konversi halaman kode untuk encoding yang dipilih tidak tersedia di sistem Anda."
     IDS_MUI_ERR_UNICODE     "Kesalahan saat mengonversi berkas Unicode ini.\nData akan hilang apabila berkas disimpan!"
-    IDS_MUI_ERR_BITMAP      "Kesalahan memuat bitmap ""%s"".\nDimensi yang dibutuhkan: %i x %i (lebar >= %i x tinggi)."
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Kesalahan hak akses pengguna!"
 END
