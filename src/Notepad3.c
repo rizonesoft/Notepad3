@@ -184,12 +184,14 @@ static int const INISECTIONBUFCNT = 32; // .ini file load buffer in KB
 // ----------------------------------------------------------------------------
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// (!) ENSURE  IDT_FILE_NEW -> IDT_VIEW_RESETZOOM corresponds to order of Toolbar.bmp
+// (!) ENSURE  IDT_FILE_NEW -> IDT_VIEW_NEW_WINDOW corresponds to order of Toolbar.bmp
 #define NUMTOOLBITMAPS (31)
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 static TBBUTTON  s_tbbMainWnd[] = {
     { 0, IDT_FILE_NEW, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 31, IDT_VIEW_NEW_WINDOW, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 0, 0, 0, BTNS_SEP, { 0 }, 0, 0 },
     { 1, IDT_FILE_OPEN, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
     { 3, IDT_FILE_SAVE, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
     { 2, IDT_FILE_BROWSE, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
@@ -235,10 +237,10 @@ static TBBUTTON  s_tbbMainWnd[] = {
     { 26, IDT_VIEW_CHASING_DOCTAIL, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 }
 };
 // don't show buttons beyond this TBBUTTON[] index:
-#define TBBUTTON_LAST_DEFAULT (37)
+#define TBBUTTON_LAST_DEFAULT (39)
 
 WCHAR              TBBUTTON_DEFAULT_IDS[256] = { L'\0' };  // filled in _InitGlobals()
-const WCHAR* const TBBUTTON_DEFAULT_IDS_OLD = L"1 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
+const WCHAR* const TBBUTTON_DEFAULT_IDS_OLD = L"1 32 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 30 0 12 0 24 26 0 22 23 0 13 14 0 27 0 15 0 25 0 17";
 
 // ----------------------------------------------------------------------------
 
@@ -7254,6 +7256,15 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDT_FILE_NEW:
         if (IsCmdEnabled(hwnd,IDM_FILE_NEW)) {
             SendWMCommand(hwnd, IDM_FILE_NEW);
+        } else {
+            SimpleBeep();
+        }
+        break;
+
+
+    case IDT_VIEW_NEW_WINDOW:
+        if (IsCmdEnabled(hwnd, IDM_FILE_NEWWINDOW)) {
+            SendWMCommand(hwnd, IDM_FILE_NEWWINDOW);
         } else {
             SimpleBeep();
         }

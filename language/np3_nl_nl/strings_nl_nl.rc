@@ -90,7 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Bestand uitvoeren"
-    /// IDT_FILE_NEW_EMPTY_NP3   "Nieuw leeg venster"
+    /// IDT_VIEW_NEW_WINDOW   "Nieuw leeg venster"
     IDT_VIEW_TOGGLE_VIEW     "Gefocust beeld"
     IDT_VIEW_CHASING_DOCTAIL "Log Monitoren"
     IDT_VIEW_PIN_ON_TOP      "Altijd bovenop"

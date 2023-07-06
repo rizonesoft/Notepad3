@@ -90,7 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "दस्तावेज़ चलाएं"
-    /// IDT_FILE_NEW_EMPTY_NP3   "ख़ाली नई विंडो"
+    /// IDT_VIEW_NEW_WINDOW   "ख़ाली नई विंडो"
     IDT_VIEW_TOGGLE_VIEW     "केंद्रित दृश्य"
     IDT_VIEW_CHASING_DOCTAIL "लॉग निगरानी"
     IDT_VIEW_PIN_ON_TOP      "हमेशा ऊपर रखें"
