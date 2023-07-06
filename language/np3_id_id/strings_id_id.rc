@@ -90,7 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Eksekusi Dokumen"
-    /// IDT_VIEW_NEW_WINDOW   "Buka Jendela Baru"
+    IDT_VIEW_NEW_WINDOW      "Buka Jendela Baru"
     IDT_VIEW_TOGGLE_VIEW     "Tampilan Fokus"
     IDT_VIEW_CHASING_DOCTAIL "Catatan Pemantauan"
     IDT_VIEW_PIN_ON_TOP      "Selalu di Atas"
