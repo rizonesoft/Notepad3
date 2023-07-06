@@ -90,7 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Εκτέλεση εγγράφου"
-    /// IDT_FILE_NEW_EMPTY_NP3   "Νέο κενό παράθυρο"
+    /// IDT_VIEW_NEW_WINDOW   "Νέο κενό παράθυρο"
     IDT_VIEW_TOGGLE_VIEW     "Εστιασμένη προβολή"
     IDT_VIEW_CHASING_DOCTAIL "Καταγραφή εποπτείας"
     IDT_VIEW_PIN_ON_TOP      "Πάντα στην κορυφή"

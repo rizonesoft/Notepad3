@@ -90,7 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Выканаць дакумент"
-    /// IDT_FILE_NEW_EMPTY_NP3   "Новае пустое акно"
+    /// IDT_VIEW_NEW_WINDOW   "Новае пустое акно"
     IDT_VIEW_TOGGLE_VIEW     "Факусаваны прагляд"
     IDT_VIEW_CHASING_DOCTAIL "Назіранне за файлам"
     IDT_VIEW_PIN_ON_TOP      "Зверху іншых вокнаў"
