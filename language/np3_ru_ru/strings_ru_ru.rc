@@ -138,7 +138,7 @@ BEGIN
                             "Существующий экземпляр Notepad3 либо занят, либо имеет открытое диалоговое окно.\nЖелаете открыть новый экземпляр Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "Таблицы преобразования кодовой страницы не существуют для выбранной кодировки в этой системе."
     IDS_MUI_ERR_UNICODE     "Ошибка преобразования Unicode-файла.\nДанные будут утеряны, если файл будет сохранен!"
-    IDS_MUI_ERR_BITMAP      "Ошибка загрузки bitmap изображения ""%s"".\nНеобходимые размеры: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Ошибка повышения прав пользователя!"
 END

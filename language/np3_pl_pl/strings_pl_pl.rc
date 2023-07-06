@@ -138,7 +138,7 @@ BEGIN
                             "Istniejące okno Notepad3 jest zajęte lub posiada aktywne okno dialogowe.\nCzy chcesz otworzyć kolejne okno Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "Tablice konwersji strony kodowej dla wybranego kodowania nie są dostępne na tym systemie."
     IDS_MUI_ERR_UNICODE     "Błąd podczas kodowania pliku Unicode.\nDane zostaną utracone jeśli plik zapisano!"
-    IDS_MUI_ERR_BITMAP      "Błąd podczas ładowania mapy bitowej ""%s"".\nWymagany rozmiar: %i x %i (szer. >= %i x wys.)."
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Błąd podczas nadawania praw użytkownika!"
 END

@@ -138,7 +138,7 @@ BEGIN
                             "A janela do Notepad3 existente está ocupada ou com uma caixa de diálogo ativa.\nVocê gostaria de abrir outra janela do Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "A tabela de conversão de página de código para a codificação selecionada não está disponível no seu sistema."
     IDS_MUI_ERR_UNICODE     "Erro convertendo este arquivo Unicode.\nDados serão pedidos se o arquivo for salvo!"
-    IDS_MUI_ERR_BITMAP      "Erro carregando bitmap ""%s"".\nDimensions necessárias: %i x %i (largura >= %i x altura)."
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Erro ao tentar ampliar direitos de usuário!"
 END
