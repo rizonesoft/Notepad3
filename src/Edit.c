@@ -6361,9 +6361,9 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                     MRU_Add(Globals.pMRUfind, StrgGet(s_pEfrData->chFindPattern), 0, -1, -1, NULL);
                     SetFindPattern(StrgGet(s_pEfrData->chFindPattern));
                 }
-                if (StrgIsNotEmpty(s_pEfrData->chReplaceTemplate)) {
+                //~if (StrgIsNotEmpty(s_pEfrData->chReplaceTemplate)) {
                     MRU_Add(Globals.pMRUreplace, StrgGet(s_pEfrData->chReplaceTemplate), 0, -1, -1, NULL);
-                }
+                //~}
             }
 
             Globals.iReplacedOccurrences = 0;
@@ -6835,9 +6835,9 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                     MRU_Add(Globals.pMRUfind, StrgGet(s_pEfrData->chFindPattern), 0, -1, -1, NULL);
                     SetFindPattern(StrgGet(s_pEfrData->chFindPattern));
                 }
-                if (StrgIsNotEmpty(s_pEfrData->chReplaceTemplate)) {
+                //~if (StrgIsNotEmpty(s_pEfrData->chReplaceTemplate)) {
                     MRU_Add(Globals.pMRUreplace, StrgGet(s_pEfrData->chReplaceTemplate), 0, -1, -1, NULL);
-                }
+                //~}
             }
 
             if (!s_bSwitchedFindReplace) {
