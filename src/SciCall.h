@@ -844,27 +844,34 @@ __forceinline void Sci_ScrollToCurrentLine()
     Sci_ScrollToLine(Sci_GetCurrentLineNumber());
 }
 
-inline void Sci_EnsureVisibleSelection()
+inline bool Sci_EnsureVisibleSelection()
 {
+    bool        bMoveViewToCaret = false;
     DocLn const iCurrentLn = Sci_GetCurrentLineNumber();
     DocLn const iAnchorLn = SciCall_LineFromPosition(SciCall_GetAnchor());
     if (!SciCall_GetLineVisible(iAnchorLn)) {
         if (iAnchorLn == iCurrentLn) {
             SciCall_EnsureVisibleEnforcePolicy(iAnchorLn);
-        } else {
+            bMoveViewToCaret = true;
+        }
+        else {
             SciCall_EnsureVisible(iAnchorLn);
         }
     }
     if ((iAnchorLn != iCurrentLn) && !SciCall_GetLineVisible(iCurrentLn)) {
         SciCall_EnsureVisibleEnforcePolicy(iCurrentLn);
+        bMoveViewToCaret = true;
     }
+    return bMoveViewToCaret;
 }
 
 __forceinline void Sci_ScrollSelectionToView()
 {
-    Sci_EnsureVisibleSelection();
-    SciCall_ScrollToEnd(); // (!) move at top-slope not bottom-slope
-    SciCall_ScrollRange(SciCall_GetAnchor(), SciCall_GetCurrentPos());
+    if (Sci_EnsureVisibleSelection()) {
+        SciCall_ScrollToEnd(); // (!) jump at top-slope not bottom-slope
+    }
+    //~SciCall_ScrollRange(SciCall_GetAnchor(), SciCall_GetCurrentPos());
+    SciCall_ScrollRange(SciCall_GetCurrentPos(), SciCall_GetAnchor());
 }
 
 __forceinline void Sci_SetCaretScrollDocEnd()

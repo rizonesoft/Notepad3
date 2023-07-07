@@ -11626,7 +11626,6 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
         // set historic caret/selection  pos
         if (!FileWatching.MonitoringLog && (s_flagChangeNotify != FWM_AUTORELOAD)) {
             if ((iCaretPos >= 0) && (iAnchorPos >= 0)) {
-                //SciCall_ScrollToEnd(); // (!) move at top-slope not bottom-slope
                 EditSetAndScrollSelection(iAnchorPos, iCaretPos, true);
             }
             else {
