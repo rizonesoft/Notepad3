@@ -34,15 +34,16 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.702.(build_#) (2023-07-02)
+Current BETA/RC Version 6.23.707.(build_#) (2023-07-07)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
-[.702.1]- Add grepWinNP3 icon for menu display.
-[.702.1]- Add Reset Zoom toolbar button.
+[.707.1]- Add new Toolbar button "New Empty Window".
+[.702.1]- Add new "grepWinNP3" icon for Launch and Search menu's.
+[.702.1]- Add new Toolbar button "Reset Zoom".
 [.619.1]- Indentation guide coloring on matching brace highlight.
 [.513.1]- Option on F/R dialog: incremental search ON/OFF.
 [.512.1]- Add an "Additional Notepad3Portable.cmd Launcher".
@@ -64,6 +65,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.707.1]- Allow not suitable toolbar dimension.
 [.627.1]- Minor changes: CallTip/ToolTip (zoom).
 [.619.1]- Tooltip/Calltip style using Segoe UI font.
 [.616.1]- Web Source Code: enhancement for commenting in embedded scripts.
@@ -104,6 +106,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.707.1]- Save also an "Empty" Replace string in history.
+[.707.1]- "LaunchInstanceFullVisible" feature.
 [.702.1]- Minor optimizations on initial window startup.
 [.702.1]- Scroll to preserved caret position on file load.
 [.702.1]- Menu View: correct positioning of active marks.
