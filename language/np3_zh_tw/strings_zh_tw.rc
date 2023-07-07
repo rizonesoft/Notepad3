@@ -138,7 +138,7 @@ BEGIN
                             "目前已存在的 Notepad3 視窗忙碌中，或有一個已打開的對話方塊正在阻止它回應。\n\n開啟一個新的 Notepad3 視窗嗎？"
     IDS_MUI_ERR_ENCODINGNA  "用於選定的編碼轉換的內碼表表在目前系統上不可用。"
     IDS_MUI_ERR_UNICODE     "轉換該 Unicode 檔案時遇到錯誤。\n\n警告：儲存該檔案會導致資料遺失。"
-    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      "點陣圖 ""%s"" 的寬高比不合適。\n合適的寬高比：%i × %i 寬度 ≥ %i × 高度）"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "提升使用者權限時出錯。"
 END
@@ -151,7 +151,7 @@ BEGIN
                             "檔案 ""%s"" 不能被儲存，它可能是受保護的。\n\n是否希望提升 %s 的權限？"
     IDS_MUI_ERR_ADMINEXE    "無管理工具可用。\n\n存取 https://rizonesoft.com/ 看看？"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "是否確定要開啟一個如此龐大的檔案？\n\t（大小 %s >= %s）\n樣式和語法高亮將被停用。"
+                            "是否確定要開啟一個如此龐大的檔案？\n\t（大小 %s ≥ %s）\n樣式和語法高亮將被停用。"
     IDS_MUI_ERR_FILE_TOO_LARGE
                             "無法處理如此龐大的檔案（大小 %s）！"
     IDS_MUI_WARN_UNKNOWN_EXT
