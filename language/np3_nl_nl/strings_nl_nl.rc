@@ -138,7 +138,7 @@ BEGIN
                             "Het huidige Notepad3-venster is bezet of heeft een actief dialoogvenster.\nWil je een ander Notepad3-venster openen?"
     IDS_MUI_ERR_ENCODINGNA  "Codepage-conversietabellen voor de geselecteerde codering zijn niet beschikbaar op jouw systeem."
     IDS_MUI_ERR_UNICODE     "Fout bij het converteren van dit Unicode-bestand.\nGegevens gaan verloren als het bestand wordt opgeslagen!"
-    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      "Geen geschikte afmeting van bitmap ""%s"".\nGeschikte afmeting: %i x %i (breedte >= %i x hoogte)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Fout bij het ophogen van de gebruikersrechten!"
 END
