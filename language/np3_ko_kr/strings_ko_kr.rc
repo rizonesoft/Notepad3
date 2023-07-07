@@ -138,7 +138,7 @@ BEGIN
                             "기존 Notepad3 창이 사용 중이거나 대화상자가 열려 있습니다.\n다른 Notepad3 창을 여시겠습니까?"
     IDS_MUI_ERR_ENCODINGNA  "선택한 인코딩에 대한 코드 페이지 변환 테이블을 시스템에서 사용할 수 없습니다."
     IDS_MUI_ERR_UNICODE     "이 유니코드 파일을 변환하는 동안 오류가 발생했습니다.\n파일을 저장하면 데이터가 손실됩니다!"
-    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      "비트맵 ""%s""의 치수가 적합하지 않습니다.\n적합한 치수: %i x %i (너비 >= %i x 높이)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "사용자 권한 상승 중 오류가 발생하였습니다!"
 END
