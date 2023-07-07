@@ -800,6 +800,10 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
 
 #define Sci_ClampAlpha(alpha) clampi((alpha), SC_ALPHA_TRANSPARENT, SC_ALPHA_OPAQUE) //~SC_ALPHA_NOALPHA
 
+__forceinline bool Sci_IsValidPos(DocPos pos, bool fwd)
+{
+    return (pos == ((pos > 0) ? (fwd ? SciCall_PositionAfter(SciCall_PositionBefore(pos)) : SciCall_PositionBefore(SciCall_PositionAfter(pos))) : pos));
+}
 
 // max. line length in range (incl. line-breaks)
 inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine)

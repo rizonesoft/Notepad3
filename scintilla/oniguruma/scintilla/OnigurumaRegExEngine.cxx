@@ -87,9 +87,8 @@ static void SetSimpleOptions(OnigOptionType& onigOptions, EOLmode /*eolMode*/,
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_EXTEND);
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_FIND_LONGEST);
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_MATCH_WHOLE_STRING);
-  ONIG_OPTION_OFF(onigOptions, ONIG_SYN_OP_DOT_ANYCHAR); // (!!!)
-  //ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_ASCII_RANGE);
-  //ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_CAPTURE_GROUP);
+  //~ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_ASCII_RANGE);
+  //~ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_CAPTURE_GROUP);
 
   // dynamic options
   //switch (eolMode) {
@@ -101,11 +100,9 @@ static void SetSimpleOptions(OnigOptionType& onigOptions, EOLmode /*eolMode*/,
   //}
 
   if (FlagSet(searchFlags, FindOption::DotMatchAll)) {
-    //~ONIG_OPTION_ON(onigOptions, ONIG_SYN_OP_DOT_ANYCHAR);
     ONIG_OPTION_ON(onigOptions, ONIG_OPTION_MULTILINE);
   }
   else {
-    //~ONIG_OPTION_OFF(onigOptions, ONIG_SYN_OP_DOT_ANYCHAR);
     ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_MULTILINE);
   }
 
@@ -314,8 +311,7 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
     m_ErrorInfo[0] = '\0';
     try {
 
-      // OnigEncoding const onigEncType = ONIG_ENCODING_UTF8;
-      OnigEncoding const onigEncType = (eolMode == EOLmode::CR) ? ONIG_ENCODING_UTF8_CR : ONIG_ENCODING_UTF8;
+      OnigEncoding const onigEncType = (eolMode == EOLmode::LF) ? ONIG_ENCODING_UTF8 : ONIG_ENCODING_UTF8_CR;
 
       OnigErrorInfo einfo;
       int const res = onig_new(&m_RegExpr, UCharCPtr(m_RegExprStrg.c_str()), UCharCPtr(m_RegExprStrg.c_str() + m_RegExprStrg.length()),
@@ -548,6 +544,8 @@ void OnigurumaRegExEngine::clear() {
 
 std::string OnigurumaRegExEngine::translateRegExpr(const std::string & regExprStr, bool wholeWord, bool wordStart, EndOfLine eolMode, OnigOptionType & /*rxOptions*/)
 {
+  UNREFERENCED_PARAMETER(eolMode);
+
   std::string	transRegExpr;
 
   if (wholeWord || wordStart) {      // push '\b' at the begin of regexpr
@@ -564,11 +562,13 @@ std::string OnigurumaRegExEngine::translateRegExpr(const std::string & regExprSt
     transRegExpr.append(regExprStr);
   }
 
-  //if (wholeString) {
-  //  ONIG_OPTION_ON(rxOptions, ONIG_OPTION_MATCH_WHOLE_STRING);
-  //} else {
-  //  ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_MATCH_WHOLE_STRING);
-  //}
+#if 0
+  if (wholeString) {
+    ONIG_OPTION_ON(rxOptions, ONIG_OPTION_MATCH_WHOLE_STRING);
+  } else {
+    ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_MATCH_WHOLE_STRING);
+  }
+#endif
 
   // Oniguruma supports LTGT word boundary by: ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END
   //
@@ -577,18 +577,19 @@ std::string OnigurumaRegExEngine::translateRegExpr(const std::string & regExprSt
   //~replaceAll(transRegExpr, R"(\>)", R"((?<=\w)(?!\w))"); // word end
   //~replaceAll(transRegExpr, R"(\(?<=\w)(?!\w))", R"(\\>)"); // esc'd
 
-
-  // EOL modes
+  #if 0
+  // EOL modes is controlled by 
   switch (eolMode) {
   case EndOfLine::Lf:
   case EndOfLine::Cr:
-    //ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_CRLF_AS_LINE_SEPARATOR);
+    ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_CRLF_AS_LINE_SEPARATOR);
     break;
 
   case EndOfLine::CrLf:
-    //ONIG_OPTION_ON(rxOptions, ONIG_OPTION_CRLF_AS_LINE_SEPARATOR);
+    ONIG_OPTION_ON(rxOptions, ONIG_OPTION_CRLF_AS_LINE_SEPARATOR);
     break;
   }
+  #endif
 
   return transRegExpr;
 }

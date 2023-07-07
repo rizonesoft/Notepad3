@@ -80,6 +80,7 @@ typedef struct {
 #define ASCII_LIMIT            127
 #define NEWLINE_CODE           0x0a
 #define CARRIAGE_RET           0x0d
+#define END_OF_FILE            0x00
 
 #define enclen(enc,p)          ONIGENC_MBC_ENC_LEN(enc,p)
 
@@ -117,6 +118,7 @@ struct PropertyNameCtype {
   int ctype;
 };
 
+#define USE_END_OF_FILE_AS_LINE_TERMINATOR
 #define USE_CRNL_AS_LINE_TERMINATOR
 #define USE_UNICODE_PROPERTIES
 #define USE_UNICODE_EXTENDED_GRAPHEME_CLUSTER

@@ -5918,12 +5918,17 @@ static char* _GetReplaceString(HWND hwnd, CLPCEDITFINDREPLACE lpefr, int* iRepla
 //
 //  _FindInTarget()
 //
+// ONIG_MISMATCH
+#define NOT_FOUND ((DocPos)(-1LL))
+#define VALIDATE_FOUND_POS(pos, nxt, stp) (((nxt) ? ((pos) > (stp)) : ((pos) < (stp))) ? NOT_FOUND : (pos))
+
+
 static DocPos  _FindInTarget(LPCWSTR wchFind, int sFlags,
                              DocPos* begin, DocPos* end, bool bForceNext, FR_UPD_MODES fMode)
 {
     static char chFind[8192] = { '\0' }; // max find buffer
 
-    DocPos iPos = -1LL; // not found
+    DocPos iPos = NOT_FOUND;
 
     if (StrIsEmpty(wchFind)) {
         return iPos;
@@ -5933,18 +5938,37 @@ static DocPos  _FindInTarget(LPCWSTR wchFind, int sFlags,
     DocPos const saveTargetBeg = SciCall_GetTargetStart();
     DocPos const saveTargetEnd = SciCall_GetTargetEnd();
 
-    DocPos start = *begin;
-    DocPos stop  = *end;
+    DocPos const start = *begin;
+    DocPos const stop  = *end;
     bool const bFindNext = (start <= stop); // else find previous
+
+    DocPos const len = (DocPos)(WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, chFind, COUNTOF(chFind), NULL, NULL) - 1);
 
     SciCall_SetSearchFlags(sFlags);
     SciCall_SetTargetRange(start, stop);
+    iPos = SciCall_SearchInTarget(len, chFind);
+    iPos = VALIDATE_FOUND_POS(iPos, bFindNext, stop); // not found if beyond stop
 
-    DocPos const len = (DocPos)WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, chFind, COUNTOF(chFind), NULL, NULL);
-
-    iPos = SciCall_SearchInTarget(len - 1, chFind);
-    iPos = (bFindNext ? (iPos > stop) : (iPos < stop)) ? -1LL : iPos; // not found if beyond stop
-
+#if 1
+    //  handle next in case of zero-length-matches or invalid position (regex) !
+    bool const bZeroLenMatch = ((iPos == start) && (start == SciCall_GetTargetEnd()));
+    bool       bValidPos = !(bForceNext && bZeroLenMatch) && Sci_IsValidPos(iPos, bFindNext);
+    DocPos     oldStart = start;
+    while (!bValidPos) {
+        DocPos const newStart = (bFindNext ? SciCall_PositionAfter(oldStart) : SciCall_PositionBefore(oldStart));
+        bool const   bProceed = (bFindNext ? (newStart < stop) : (newStart > stop)) && (newStart != oldStart);
+        if (bProceed) {
+            SciCall_SetTargetRange(newStart, stop);
+            iPos = SciCall_SearchInTarget(len, chFind);
+            iPos = VALIDATE_FOUND_POS(iPos, bFindNext, stop); // not found if beyond stop
+        }
+        else {
+            iPos = NOT_FOUND; // already at document begin, end or stuck => not found
+        }
+        bValidPos = Sci_IsValidPos(iPos, bFindNext); // NOT_FOUND is a valid pos
+        oldStart = newStart;
+    }
+#else
     //  handle next in case of zero-length-matches (regex) !
     if (iPos == start) {
         DocPos const nstop = SciCall_GetTargetEnd();
@@ -5959,6 +5983,7 @@ static DocPos  _FindInTarget(LPCWSTR wchFind, int sFlags,
             }
         }
     }
+#endif
 
     if (iPos >= 0) {
         if (fMode != FRMOD_IGNORE) {
@@ -7136,7 +7161,7 @@ bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelectio
 
     DocPos iPos = _FindInTarget(wchFind, sFlags, &start, &end, true, FRMOD_NORM);
 
-    if ((iPos < -1LL) && (lpefr->fuFlags & SCFIND_REGEXP)) {
+    if ((iPos < NOT_FOUND) && (lpefr->fuFlags & SCFIND_REGEXP)) {
         InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
         bSuppressNotFound = true;
     } else if ((iPos < 0LL) && (start >= 0LL) && !bExtendSelection) {
@@ -7157,7 +7182,7 @@ bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelectio
             } else {
                 LONG const result = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap1", IDS_MUI_FIND_WRAPFW);
                 if (!IsYesOkay(result)) {
-                    iPos = -1LL;
+                    iPos = NOT_FOUND;
                     bSuppressNotFound = true;
                 }
                 bFoundWrapAround = (INFOBOX_MODE(result) != 0);
@@ -7228,7 +7253,7 @@ bool EditFindPrev(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
 
     DocPos iPos = _FindInTarget(wchFind, sFlags, &start, &end, true, FRMOD_NORM);
 
-    if ((iPos < -1LL) && (sFlags & SCFIND_REGEXP)) {
+    if ((iPos < NOT_FOUND) && (sFlags & SCFIND_REGEXP)) {
         InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
         bSuppressNotFound = true;
     } else if ((iPos < 0LL) && (start <= iDocEndPos) &&  !bExtendSelection) {
@@ -7242,14 +7267,14 @@ bool EditFindPrev(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
             iPos = _FindInTarget(wchFind, sFlags, &start, &end, false, FRMOD_WRAPED);
 
             if ((iPos < 0LL) || (start == _start)) {
-                if ((iPos < -1LL) && (sFlags & SCFIND_REGEXP)) {
+                if ((iPos < NOT_FOUND) && (sFlags & SCFIND_REGEXP)) {
                     InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
                     bSuppressNotFound = true;
                 }
             } else {
                 LONG const result = InfoBoxLng(MB_OKCANCEL, L"MsgFindWrap2", IDS_MUI_FIND_WRAPRE);
                 if (!IsYesOkay(result)) {
-                    iPos = -1LL;
+                    iPos = NOT_FOUND;
                     bSuppressNotFound = true;
                 }
                 bFoundWrapAround = (INFOBOX_MODE(result) != 0);
@@ -7479,7 +7504,7 @@ DocPosU EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartP
     DocPos end   = iEndPos;
     DocPos iPos = _FindInTarget(wchFind, sFlags, &start, &end, false, FRMOD_NORM);
 
-    if ((iPos < -1LL) && bIsRegExpr) {
+    if ((iPos < NOT_FOUND) && bIsRegExpr) {
         InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
         return 0;
     }
@@ -7508,7 +7533,7 @@ DocPosU EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartP
         }
         start = iStartPos;
         end   = iEndPos;
-        iPos = (start <= end) ? _FindInTarget(wchFind, sFlags, &start, &end, true, FRMOD_NORM) : -1LL;
+        iPos = (start <= end) ? _FindInTarget(wchFind, sFlags, &start, &end, true, FRMOD_NORM) : NOT_FOUND;
     }
 
     EndUndoTransAction();
