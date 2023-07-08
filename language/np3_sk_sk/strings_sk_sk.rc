@@ -138,7 +138,7 @@ BEGIN
                             "Existujúce okno Notepad3 je zaneprázdnené, alebo má aktívne dialógové okno.\nChcete otvoriť ďalšie okno programu Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "Konverzné tabuľky kódových stránok pre vybraté kódovanie nie sú vo vašom systéme k dispozícii."
     IDS_MUI_ERR_UNICODE     "Pri prevode tohto súboru Unicode došlo k chybe.\nAk sa súbor uloží, údaje sa stratia!"
-    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      "Nevhodný rozmer bitmapy ""%s"".\nVhodný rozmer: %i x %i (šírka >= %i x výška)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Chyba pri zvyšovaní užívateľských práv!"
 END
