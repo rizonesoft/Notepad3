@@ -1,6 +1,4 @@
 [![Build Status](https://travis-ci.org/kkos/oniguruma.svg?branch=master)](https://travis-ci.org/kkos/oniguruma)
-[![Code Quality: Cpp](https://img.shields.io/lgtm/grade/cpp/g/kkos/oniguruma.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/kkos/oniguruma/context:cpp)
-[![Total Alerts](https://img.shields.io/lgtm/alerts/g/kkos/oniguruma.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/kkos/oniguruma/alerts)
 [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/oniguruma.svg)](https://oss-fuzz-build-logs.storage.googleapis.com/index.html#oniguruma)
 [![TrustInSoft CI](https://ci.trust-in-soft.com/projects/kkos/oniguruma.svg?branch=master)](https://ci.trust-in-soft.com/projects/kkos/oniguruma)
 
