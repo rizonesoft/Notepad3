@@ -6735,7 +6735,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if ((!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) && (skipLevel == Settings2.ExitOnESCSkipLevel)) {
             Sci_GotoPosChooseCaret(iCurPos);
-            Sci_ScrollSelectionToView();
             skipLevel -= Default_ExitOnESCSkipLevel;
         }
 
@@ -6751,7 +6750,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
             default:
                 Sci_GotoPosChooseCaret(iCurPos);
-                Sci_ScrollSelectionToView();
                 break;
             }
         }
@@ -11625,7 +11623,8 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
         // set historic caret/selection  pos
         if (!FileWatching.MonitoringLog && (s_flagChangeNotify != FWM_AUTORELOAD)) {
             if ((iCaretPos >= 0) && (iAnchorPos >= 0)) {
-                EditSetAndScrollSelection(iAnchorPos, iCaretPos, true);
+                Sci_SetStreamSelection(iAnchorPos, iCaretPos, true);
+                Sci_ScrollSelectionToView();
             }
             else {
                 Sci_GotoPosChooseCaret(0);
@@ -12747,7 +12746,6 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             }
             else {
                 Sci_GotoPosChooseCaret(iCurPos);
-                Sci_ScrollSelectionToView();
             }
         }
     }
