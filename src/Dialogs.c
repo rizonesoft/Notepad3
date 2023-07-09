@@ -3830,53 +3830,29 @@ CASE_WM_CTLCOLOR_SET:
 //
 //  SelectEncodingDlg()
 //
-bool SelectEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding)
+bool SelectEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding, bool bRecode)
 {
     ENCODEDLG dd = { 0 };
-    dd.bRecodeOnly = false;
+    dd.bRecodeOnly = bRecode;
     dd.idEncoding = *pidREncoding;
-    dd.cxDlg = Settings.EncodingDlgSizeX;
-    dd.cyDlg = Settings.EncodingDlgSizeY;
+    dd.cxDlg = bRecode ? Settings.RecodeDlgSizeX : Settings.EncodingDlgSizeX;
+    dd.cyDlg = bRecode ? Settings.RecodeDlgSizeY : Settings.EncodingDlgSizeY;
 
     INT_PTR const iResult = ThemedDialogBoxParam(
                               Globals.hLngResContainer,
-                              MAKEINTRESOURCE(IDD_MUI_ENCODING),
+                              MAKEINTRESOURCE(bRecode ? IDD_MUI_RECODE : IDD_MUI_ENCODING),
                               hwnd,
                               SelectEncodingDlgProc,
                               (LPARAM)&dd);
 
-    Settings.EncodingDlgSizeX = dd.cxDlg;
-    Settings.EncodingDlgSizeY = dd.cyDlg;
-
-    if (IsYesOkay(iResult)) {
-        *pidREncoding = dd.idEncoding;
-        return TRUE;
+    if (bRecode) {
+        Settings.RecodeDlgSizeX = dd.cxDlg;
+        Settings.RecodeDlgSizeY = dd.cyDlg;
     }
-    return FALSE;
-}
-
-
-//=============================================================================
-//
-//  RecodeDlg()
-//
-bool RecodeDlg(HWND hwnd, cpi_enc_t* pidREncoding)
-{
-    ENCODEDLG dd = { 0 };
-    dd.bRecodeOnly = true;
-    dd.idEncoding = *pidREncoding;
-    dd.cxDlg = Settings.RecodeDlgSizeX;
-    dd.cyDlg = Settings.RecodeDlgSizeY;
-
-    INT_PTR const iResult = ThemedDialogBoxParam(
-                              Globals.hLngResContainer,
-                              MAKEINTRESOURCE(IDD_MUI_RECODE),
-                              hwnd,
-                              SelectEncodingDlgProc,
-                              (LPARAM)&dd);
-
-    Settings.RecodeDlgSizeX = dd.cxDlg;
-    Settings.RecodeDlgSizeY = dd.cyDlg;
+    else {
+        Settings.EncodingDlgSizeX = dd.cxDlg;
+        Settings.EncodingDlgSizeY = dd.cyDlg;
+    }
 
     if (IsYesOkay(iResult)) {
         *pidREncoding = dd.idEncoding;

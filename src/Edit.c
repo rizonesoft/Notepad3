@@ -1430,14 +1430,12 @@ bool EditLoadFile(
                         EditDetectEOLMode(lpData, cbData, status);
                         FreeMem(lpDataWide);
                     } else {
-                        Encoding_Forced(CPI_NONE);
                         FreeMem(lpDataWide);
                         FreeMem(lpData);
                         bReadSuccess = false;
                         goto observe;
                     }
                 } else {
-                    Encoding_Forced(CPI_NONE);
                     FreeMem(lpDataWide);
                     FreeMem(lpData);
                     bReadSuccess = false;
@@ -1452,14 +1450,12 @@ bool EditLoadFile(
 
     SciCall_SetCharacterCategoryOptimization(Encoding_IsCJK(encDetection.analyzedEncoding) ? 0x10000 : 0x1000);
 
-    Encoding_Forced(CPI_NONE);
-
     FreeMem(lpData);
 
 observe:
 
+    Encoding_Forced(CPI_NONE);
     EndWaitCursor();
-
     return bReadSuccess;
 }
 
