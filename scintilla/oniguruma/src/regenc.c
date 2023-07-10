@@ -708,7 +708,7 @@ onigenc_is_mbc_newline_0x0a(const UChar* p, const UChar* end)
 #endif
   }
 #ifdef USE_END_OF_FILE_AS_LINE_TERMINATOR
-  // if (p == end)
+  //if (p == end)
   //  return 1;
 #endif
   return 0;
@@ -725,7 +725,7 @@ onigenc_is_mbc_newline_0x0d(const UChar* p, const UChar* end)
 #endif
   }
 #ifdef USE_END_OF_FILE_AS_LINE_TERMINATOR
-  // if (p == end)
+  //if (p == end)
   //  return 1;
 #endif
   return 0;
