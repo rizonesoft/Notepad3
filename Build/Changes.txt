@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.709.(build_#) (2023-07-09)
+Current BETA/RC Version 6.23.710.(build_#) (2023-07-10)
 ========================================================
 
 --------------------------------------------------------
@@ -65,6 +65,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.710.1]- Try to minimize scrolling to view.
 [.709.1]- Patch Oniguruma engine to accept EOF as line-terminator.
 [.707.1]- Allow not suitable toolbar dimension.
 [.627.1]- Minor changes: CallTip/ToolTip (zoom).
@@ -107,6 +108,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.710.1]- Recoding for UTF-16.
 [.709.1]- Do not generally move selection to top on view.
 [.707.1]- Save also an "Empty" Replace string in history.
 [.707.1]- "LaunchInstanceFullVisible" feature.
