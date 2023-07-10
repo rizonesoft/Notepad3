@@ -1279,11 +1279,6 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
 
     encDetRes.forcedEncoding = (Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_Forced(CPI_GET);
 
-    encDetRes.bHasBOM = (bBOM_LE || bBOM_BE);
-    encDetRes.bIsReverse = bBOM_BE;
-    encDetRes.bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false);
-    encDetRes.bValidUTF8 = IsValidUTF8(lpData, cbData);
-
     if (!IS_ENC_ENFORCED()) {
         // force file vars ?
         encDetRes.fileVarEncoding = (FileVars_IsValidEncoding(&Globals.fvCurFile)) ? FileVars_GetEncoding(&Globals.fvCurFile) : CPI_NONE;
@@ -1291,6 +1286,11 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
             encDetRes.forcedEncoding = encDetRes.fileVarEncoding;
         }
     }
+
+    encDetRes.bHasBOM = (bBOM_LE || bBOM_BE) || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UNICODE_BOM));
+    encDetRes.bIsReverse = bBOM_BE || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UNICODE_REVERSE));
+    encDetRes.bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false) || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UTF8_SIGN));
+    encDetRes.bValidUTF8 = IsValidUTF8(lpData, cbData);
 
     // --- 2nd Use Encoding Analysis if applicable
 

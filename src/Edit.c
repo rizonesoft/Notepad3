@@ -1430,14 +1430,12 @@ bool EditLoadFile(
                         EditDetectEOLMode(lpData, cbData, status);
                         FreeMem(lpDataWide);
                     } else {
-                        Encoding_Forced(CPI_NONE);
                         FreeMem(lpDataWide);
                         FreeMem(lpData);
                         bReadSuccess = false;
                         goto observe;
                     }
                 } else {
-                    Encoding_Forced(CPI_NONE);
                     FreeMem(lpDataWide);
                     FreeMem(lpData);
                     bReadSuccess = false;
@@ -1452,14 +1450,12 @@ bool EditLoadFile(
 
     SciCall_SetCharacterCategoryOptimization(Encoding_IsCJK(encDetection.analyzedEncoding) ? 0x10000 : 0x1000);
 
-    Encoding_Forced(CPI_NONE);
-
     FreeMem(lpData);
 
 observe:
 
+    Encoding_Forced(CPI_NONE);
     EndWaitCursor();
-
     return bReadSuccess;
 }
 
@@ -1945,7 +1941,7 @@ void EditURLEncode(const bool isPathConvert)
     SciCall_TargetFromSelection();
     Sci_ReplaceTargetTestChgHist(cchEscapedEnc, pszEscaped);
 
-    EditSetAndScrollSelection(iSelStart, iSelStart + cchEscapedEnc, bStraightSel);
+    Sci_SetStreamSelection(iSelStart, iSelStart + cchEscapedEnc, bStraightSel);
 
     EndUndoTransAction();
 
@@ -2022,7 +2018,7 @@ void EditURLDecode(const bool isPathConvert)
         SciCall_TargetFromSelection();
         Sci_ReplaceTargetTestChgHist(cchUnescapedDec, pszUnescaped);
 
-        EditSetAndScrollSelection(iSelStart, iSelStart + cchUnescapedDec, bStraightSel);
+        Sci_SetStreamSelection(iSelStart, iSelStart + cchUnescapedDec, bStraightSel);
 
         EndUndoTransAction();
     }
@@ -2077,7 +2073,7 @@ void EditReplaceAllChr(const WCHAR chSearch, const WCHAR chReplace) {
     SciCall_TargetFromSelection();
     Sci_ReplaceTargetTestChgHist(cchRepl, pchReplace);
 
-    EditSetAndScrollSelection(iSelStart, iSelEnd, bStraightSel);
+    Sci_SetStreamSelection(iSelStart, iSelEnd, bStraightSel);
     
     EndUndoTransAction();
 
@@ -2151,10 +2147,9 @@ void EditBase64Code(HWND hwnd, const bool bEncode, cpi_enc_t cpi) {
     DocPos const len = (base64Size ? Sci_ReplaceTargetTestChgHist(base64Size, pBase64CodedTxt) : SciCall_ReplaceTarget(0, ""));
     FreeMem(pBase64CodedTxt);
 
-    EditSetAndScrollSelection(iSelStart, iSelStart + len, bStraightSel);
+    Sci_SetStreamSelection(iSelStart, iSelStart + len, bStraightSel);
 
     EndUndoTransAction();
-
 }
 
 
@@ -2378,7 +2373,6 @@ void EditFindMatchingBrace()
     if (iMatchingBracePos != (DocPos)-1) {
         iMatchingBracePos = bIsAfter ? iMatchingBracePos : SciCall_PositionAfter(iMatchingBracePos);
         Sci_GotoPosChooseCaret(iMatchingBracePos);
-        Sci_ScrollSelectionToView();
     }
 }
 
@@ -3714,7 +3708,7 @@ void EditEncloseSelection(LPCWSTR pszOpen, LPCWSTR pszClose) {
     }
 
     // Move selection
-    EditSetAndScrollSelection(iSelStart + iLenOpen, iSelEnd + iLenOpen, bStraightSel);
+    Sci_SetStreamSelection(iSelStart + iLenOpen, iSelEnd + iLenOpen, bStraightSel);
 
     EndUndoTransAction();
 
@@ -3835,10 +3829,9 @@ void EditToggleLineCommentsSimple(LPCWSTR pwszComment, bool bInsertAtStart, LnCm
         }
     }
 
-    EditSetAndScrollSelection(iSelStart + iSelStartOffset, iSelEnd + iSelEndOffset, bStraightSel);
+    Sci_SetStreamSelection(iSelStart + iSelStartOffset, iSelEnd + iSelEndOffset, bStraightSel);
 
     EndUndoTransAction();
-
 }
 
 
@@ -5360,21 +5353,6 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
 //=============================================================================
 //
-//  EditSetAndScrollSelection()
-//
-void EditSetAndScrollSelection(DocPos iSelStart, DocPos iSelEnd, bool bStraightSel)
-{
-    SciCall_SetSelectionStart(iSelStart);
-    SciCall_SetSelectionEnd(iSelEnd);
-    if (!bStraightSel) {
-        SciCall_SwapMainAnchorCaret();
-    }
-    Sci_ScrollSelectionToView();
-}
-
-
-//=============================================================================
-//
 //  EditSetSelectionEx()
 //
 void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent)
@@ -5452,7 +5430,6 @@ void EditJumpTo(DocLn iNewLine, DocPos iNewCol)
     iNewCol = clampp((iNewCol - colOffset), 0, iLineEndPos);
 
     Sci_GotoPosChooseCaret(SciCall_FindColumn(iNewLine, iNewCol));
-    Sci_ScrollSelectionToView();
 }
 
 

@@ -804,6 +804,7 @@ __forceinline bool Sci_IsValidPos(DocPos pos, bool fwd)
 {
     return (pos == ((pos > 0) ? (fwd ? SciCall_PositionAfter(SciCall_PositionBefore(pos)) : SciCall_PositionBefore(SciCall_PositionAfter(pos))) : pos));
 }
+// ----------------------------------------------------------------------------
 
 // max. line length in range (incl. line-breaks)
 inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine)
@@ -817,32 +818,7 @@ inline DocPos Sci_GetRangeMaxLineLength(DocLn iBeginLine, DocLn iEndLine)
     }
     return iMaxLineLen;
 }
-
-// respect VSlop settings
-__forceinline void Sci_GotoPosChooseCaret(const DocPos pos)
-{
-    SciCall_GotoPos(pos);
-    SciCall_ChooseCaretX();
-}
-
-__forceinline void Sci_ScrollChooseCaret()
-{
-    SciCall_ScrollCaret();
-    SciCall_ChooseCaretX();
-}
-
-inline void Sci_ScrollToLine(const DocLn line)
-{
-    if (!SciCall_GetLineVisible(line)) {
-        SciCall_EnsureVisible(line);
-    }
-    SciCall_ScrollRange(SciCall_GetLineEndPosition(line), SciCall_PositionFromLine(line));
-}
-
-__forceinline void Sci_ScrollToCurrentLine()
-{
-    Sci_ScrollToLine(Sci_GetCurrentLineNumber());
-}
+// ----------------------------------------------------------------------------
 
 inline bool Sci_EnsureVisibleSelection()
 {
@@ -864,8 +840,9 @@ inline bool Sci_EnsureVisibleSelection()
     }
     return bMoveViewToCaret;
 }
+// ----------------------------------------------------------------------------
 
-__forceinline void Sci_ScrollSelectionToView()
+inline void Sci_ScrollSelectionToView()
 {
     if (Sci_EnsureVisibleSelection()) {
         SciCall_ScrollToEnd(); // (!) jump at top-slope not bottom-slope
@@ -873,6 +850,47 @@ __forceinline void Sci_ScrollSelectionToView()
     //~SciCall_ScrollRange(SciCall_GetAnchor(), SciCall_GetCurrentPos());
     SciCall_ScrollRange(SciCall_GetCurrentPos(), SciCall_GetAnchor());
 }
+// ----------------------------------------------------------------------------
+
+// respect VSlop settings
+inline void Sci_GotoPosChooseCaret(const DocPos pos)
+{
+    SciCall_GotoPos(pos);
+    Sci_ScrollSelectionToView();
+    SciCall_ChooseCaretX();
+}
+// ----------------------------------------------------------------------------
+
+__forceinline void Sci_ScrollChooseCaret()
+{
+    SciCall_ScrollCaret();
+    SciCall_ChooseCaretX();
+}
+// ----------------------------------------------------------------------------
+
+inline void Sci_ScrollToLine(const DocLn line)
+{
+    if (!SciCall_GetLineVisible(line)) {
+        SciCall_EnsureVisible(line);
+    }
+    SciCall_ScrollRange(SciCall_GetLineEndPosition(line), SciCall_PositionFromLine(line));
+}
+// ----------------------------------------------------------------------------
+
+#define Sci_ScrollToCurrentLine() Sci_ScrollToLine(Sci_GetCurrentLineNumber())
+
+// ----------------------------------------------------------------------------
+
+inline void Sci_SetStreamSelection(DocPos iSelStart, DocPos iSelEnd, bool bStraightSel)
+{
+    SciCall_SetSelectionStart(iSelStart);
+    SciCall_SetSelectionEnd(iSelEnd);
+    if (!bStraightSel) {
+        SciCall_SwapMainAnchorCaret();
+    }
+    SciCall_ChooseCaretX();
+}
+// ----------------------------------------------------------------------------
 
 __forceinline void Sci_SetCaretScrollDocEnd()
 {
@@ -880,6 +898,7 @@ __forceinline void Sci_SetCaretScrollDocEnd()
     //~SciCall_ScrollToEnd();
     SciCall_ScrollCaret(); // enforce visible slop policy
 }
+// ----------------------------------------------------------------------------
 
 __forceinline void Sci_RedrawScrollbars()
 {
@@ -888,6 +907,7 @@ __forceinline void Sci_RedrawScrollbars()
     SciCall_SetVScrollbar(false);
     SciCall_SetVScrollbar(true);
 }
+// ----------------------------------------------------------------------------
 
 
 //  if iRangeEnd == -1 : apply style from iRangeStart to document end
@@ -1001,6 +1021,7 @@ __forceinline DocPos Sci_ReplaceTargetTestChgHist(const DocPos length, const cha
 {
     return SciCall_GetChangeHistory() ? SciCall_ReplaceTargetMinimal(length, text) : SciCall_ReplaceTarget(length, text);
 }
+// ----------------------------------------------------------------------------
 
 inline DocPos Sci_ReplaceTargetEx(const int mode, const DocPos length, const char* text)
 {
@@ -1014,7 +1035,6 @@ inline DocPos Sci_ReplaceTargetEx(const int mode, const DocPos length, const cha
         return SciCall_ReplaceTarget(length, text);
     }
 }
-
 // ----------------------------------------------------------------------------
 
 inline LRESULT Sci_ForceNotifyUpdateUI(HWND hwnd, uptr_t idc)
@@ -1026,7 +1046,6 @@ inline LRESULT Sci_ForceNotifyUpdateUI(HWND hwnd, uptr_t idc)
     scn.updated = SC_UPDATE_CONTENT;
     return SendMessageW(hwnd, WM_NOTIFY, idc, (LPARAM)&scn);
 }
-
 // ----------------------------------------------------------------------------
 
 //=============================================================================

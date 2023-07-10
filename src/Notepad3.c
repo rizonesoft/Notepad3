@@ -5014,7 +5014,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                                  (cpi_enc_t)(HIWORD(wParam) - IDM_ENCODING_SELECT) : Encoding_GetCurrent();
 
         if (iLoWParam == IDM_ENCODING_SELECT) {
-            if ((HIWORD(wParam) < IDM_ENCODING_SELECT) && !SelectEncodingDlg(hwnd, &iNewEncoding)) {
+            if ((HIWORD(wParam) < IDM_ENCODING_SELECT) && !SelectEncodingDlg(hwnd, &iNewEncoding, false)) {
                 break; // no change
             }
         } else {
@@ -5033,7 +5033,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 break;
             case IDM_ENCODING_ANSI:
                 iNewEncoding = CPI_ANSI_DEFAULT;
-                break;
             }
         }
         BeginWaitCursorUID(Flags.bHugeFileLoadState, IDS_MUI_SB_RECODING_DOC);
@@ -5056,7 +5055,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                     break;
                 }
             }
-            if (RecodeDlg(hwnd,&iNewEncoding)) {
+            if (SelectEncodingDlg(hwnd, &iNewEncoding, true)) {
                 Encoding_Forced(iNewEncoding);
                 FileLoadFlags const fLoadFlags = FLF_DontSave | FLF_Reload | FLF_SkipUnicodeDetect | FLF_SkipANSICPDetection;
                 FileLoad(Paths.CurrentFile, fLoadFlags);
@@ -5667,7 +5666,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_B64DECODESEL: {
         cpi_enc_t iEncoding = Encoding_GetCurrent();
-        if (!SelectEncodingDlg(hwnd, &iEncoding)) {
+        if (!SelectEncodingDlg(hwnd, &iEncoding, false)) {
             break; // no selection
         }
         EditBase64Code(Globals.hwndEdit, false, iEncoding);
@@ -6736,7 +6735,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if ((!SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) && (skipLevel == Settings2.ExitOnESCSkipLevel)) {
             Sci_GotoPosChooseCaret(iCurPos);
-            Sci_ScrollSelectionToView();
             skipLevel -= Default_ExitOnESCSkipLevel;
         }
 
@@ -6752,7 +6750,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
             default:
                 Sci_GotoPosChooseCaret(iCurPos);
-                Sci_ScrollSelectionToView();
                 break;
             }
         }
@@ -11391,7 +11388,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
 
     EditFileIOStatus fioStatus = INIT_FILEIO_STATUS;
     fioStatus.iEOLMode = Settings.DefaultEOLMode;
-    fioStatus.iEncoding = CPI_ANSI_DEFAULT;
+    fioStatus.iEncoding = Settings.DefaultEncoding;
 
     if (!(fLoadFlags & FLF_DontSave)) {
         if (!FileSave(FSF_Ask)) {
@@ -11626,7 +11623,8 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
         // set historic caret/selection  pos
         if (!FileWatching.MonitoringLog && (s_flagChangeNotify != FWM_AUTORELOAD)) {
             if ((iCaretPos >= 0) && (iAnchorPos >= 0)) {
-                EditSetAndScrollSelection(iAnchorPos, iCaretPos, true);
+                Sci_SetStreamSelection(iAnchorPos, iCaretPos, true);
+                Sci_ScrollSelectionToView();
             }
             else {
                 Sci_GotoPosChooseCaret(0);
@@ -11642,7 +11640,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags)
         Globals.bDocHasInconsistentEOLs = fioStatus.bInconsistentEOLs;
 
         bool const bCheckFile = !Globals.CmdLnFlag_PrintFileAndLeave && !fioStatus.bEncryptedRaw && !(fioStatus.bUnknownExt && bUnknownLexer) && !bReloadFile;
-        //&& (fioStatus.iEncoding == CPI_ANSI_DEFAULT) ???
+        //&& (fioStatus.iEncoding == Settings.DefaultEncoding) ???
 
         bool const bCheckEOL = bCheckFile && Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs;
 
@@ -12748,7 +12746,6 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             }
             else {
                 Sci_GotoPosChooseCaret(iCurPos);
-                Sci_ScrollSelectionToView();
             }
         }
     }
