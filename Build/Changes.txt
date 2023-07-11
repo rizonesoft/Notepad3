@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.710.(build_#) (2023-07-10)
+Current BETA/RC Version 6.23.711.(build_#) (2023-07-11)
 ========================================================
 
 --------------------------------------------------------
@@ -108,6 +108,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.711.1]- RegEx search with begin/end line meta chars.
 [.710.1]- Recoding for UTF-16.
 [.709.1]- Do not generally move selection to top on view.
 [.707.1]- Save also an "Empty" Replace string in history.
