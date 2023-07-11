@@ -800,9 +800,11 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
 
 #define Sci_ClampAlpha(alpha) clampi((alpha), SC_ALPHA_TRANSPARENT, SC_ALPHA_OPAQUE) //~SC_ALPHA_NOALPHA
 
-__forceinline bool Sci_IsValidPos(DocPos pos, bool fwd)
+// ----------------------------------------------------------------------------
+
+__forceinline bool Sci_IsPosValid(const DocPos pos)
 {
-    return (pos == ((pos > 0) ? (fwd ? SciCall_PositionAfter(SciCall_PositionBefore(pos)) : SciCall_PositionBefore(SciCall_PositionAfter(pos))) : pos));
+    return (pos == ((pos > 0) ? SciCall_PositionAfter(SciCall_PositionBefore(pos)) : pos));
 }
 // ----------------------------------------------------------------------------
 

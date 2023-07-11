@@ -5897,7 +5897,18 @@ static char* _GetReplaceString(HWND hwnd, CLPCEDITFINDREPLACE lpefr, int* iRepla
 //
 // ONIG_MISMATCH
 #define NOT_FOUND ((DocPos)(-1LL))
-#define VALIDATE_FOUND_POS(pos, nxt, stp) (((nxt) ? ((pos) > (stp)) : ((pos) < (stp))) ? NOT_FOUND : (pos))
+
+__forceinline DocPos validate_found_pos(DocPos pos, const DocPos rbeg, const DocPos rend)
+{
+    if (pos >= 0LL) {
+        if (rbeg <= rend) { // forward search
+            if ((pos < rbeg) || (pos > rend)) { pos = NOT_FOUND; }
+        } else {
+            if ((pos < rend) || (pos > rbeg)) { pos = NOT_FOUND; }
+        }
+    }
+    return pos;
+}
 
 
 static DocPos  _FindInTarget(LPCWSTR wchFind, int sFlags,
@@ -5923,27 +5934,23 @@ static DocPos  _FindInTarget(LPCWSTR wchFind, int sFlags,
 
     SciCall_SetSearchFlags(sFlags);
     SciCall_SetTargetRange(start, stop);
-    iPos = SciCall_SearchInTarget(len, chFind);
-    iPos = VALIDATE_FOUND_POS(iPos, bFindNext, stop); // not found if beyond stop
+    iPos = validate_found_pos(SciCall_SearchInTarget(len, chFind), start, stop); // not found if beyond stop
 
 #if 1
     //  handle next in case of zero-length-matches or invalid position (regex) !
     bool const bZeroLenMatch = ((iPos == start) && (start == SciCall_GetTargetEnd()));
-    bool       bValidPos = !(bForceNext && bZeroLenMatch) && Sci_IsValidPos(iPos, bFindNext);
-    DocPos     oldStart = start;
+    bool       bValidPos = !(bForceNext && bZeroLenMatch) && Sci_IsPosValid(iPos);
     while (!bValidPos) {
-        DocPos const newStart = (bFindNext ? SciCall_PositionAfter(oldStart) : SciCall_PositionBefore(oldStart));
-        bool const   bProceed = (bFindNext ? (newStart < stop) : (newStart > stop)) && (newStart != oldStart);
+        DocPos const newStart = (bFindNext ? SciCall_PositionAfter(iPos) : SciCall_PositionBefore(iPos));
+        bool const   bProceed = (bFindNext ? (newStart < stop) : (newStart > stop)) && (newStart != iPos);
         if (bProceed) {
             SciCall_SetTargetRange(newStart, stop);
-            iPos = SciCall_SearchInTarget(len, chFind);
-            iPos = VALIDATE_FOUND_POS(iPos, bFindNext, stop); // not found if beyond stop
+            iPos = validate_found_pos(SciCall_SearchInTarget(len, chFind), newStart, stop); // not found if beyond stop
         }
         else {
             iPos = NOT_FOUND; // already at document begin, end or stuck => not found
         }
-        bValidPos = Sci_IsValidPos(iPos, bFindNext); // NOT_FOUND is a valid pos
-        oldStart = newStart;
+        bValidPos = Sci_IsPosValid(iPos); // NOT_FOUND is a valid pos
     }
 #else
     //  handle next in case of zero-length-matches (regex) !
@@ -7192,6 +7199,13 @@ bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelectio
     if (iPos == end) {
         _ShowZeroLengthCallTip(iPos);
     }
+    if ((iPos+1) == end) {
+        char const p = SciCall_GetCharAt(iPos);
+        char const e = SciCall_GetCharAt(end);
+        if (p == 0x0d && e == 0x0a) {
+            _ShowZeroLengthCallTip(iPos);
+        }
+    }
     if (bFoundWrapAround) {
         ShowWrapAroundCallTip(true);
     }
@@ -7223,8 +7237,9 @@ bool EditFindPrev(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
     DocPos const iDocEndPos = Sci_GetDocEndPosition();
 
     EditSetCaretToSelectionStart(); // fluent switch between Next/Prev
-    DocPos start = SciCall_GetCurrentPos();
-    DocPos end = 0LL;
+    DocPos const curPos = SciCall_GetCurrentPos();
+    DocPos       start = (curPos > 0) ? SciCall_PositionBefore(curPos) : SciCall_PositionBefore(iDocEndPos);
+    DocPos       end = 0LL;
 
     Sci_CallTipCancelEx();
 
@@ -7283,6 +7298,13 @@ bool EditFindPrev(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
 
     if (iPos == end) {
         _ShowZeroLengthCallTip(iPos);
+    }
+    if ((iPos + 1) == end) {
+        char const p = SciCall_GetCharAt(iPos);
+        char const e = SciCall_GetCharAt(end);
+        if (p == 0x0d && e == 0x0a) {
+            _ShowZeroLengthCallTip(iPos);
+        }
     }
     if (bFoundWrapAround) {
         ShowWrapAroundCallTip(false);
