@@ -65,6 +65,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.711.2]- Try to speed-up large file loading.
 [.710.1]- Try to minimize scrolling to view.
 [.709.1]- Patch Oniguruma engine to accept EOF as line-terminator.
 [.707.1]- Allow not suitable toolbar dimension.
