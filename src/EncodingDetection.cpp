@@ -1073,7 +1073,6 @@ extern "C" bool FileVars_GetFromData(const char* lpData, size_t cbData, LPFILEVA
 //
 extern "C" bool FileVars_Apply(LPFILEVARS lpfv)
 {
-
     int const _iTabWidth = (lpfv->mask & FV_TABWIDTH) ? lpfv->iTabWidth : Settings.TabWidth;
     SciCall_SetTabWidth(_iTabWidth);
 
@@ -1087,9 +1086,8 @@ extern "C" bool FileVars_Apply(LPFILEVARS lpfv)
     SciCall_SetTabIndents(_bTabIndents);
     SciCall_SetBackSpaceUnIndents(Settings.BackspaceUnindents);
 
-    bool const bWordWrap = (lpfv->mask & FV_WORDWRAP) ? lpfv->bWordWrap : Settings.WordWrap;
-    int const  iWrapMode = bWordWrap ? ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR) : SC_WRAP_NONE;
-    SciCall_SetWrapMode(iWrapMode);
+    Globals.fvCurFile.bWordWrap = (lpfv->mask & FV_WORDWRAP) ? lpfv->bWordWrap : Settings.WordWrap;
+    Sci_SetWrapModeEx(GET_WRAP_MODE());
 
     int edgeColumns[SMALL_BUFFER];
     size_t const cnt = ReadVectorFromString(lpfv->wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);

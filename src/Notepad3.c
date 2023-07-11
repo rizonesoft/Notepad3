@@ -1901,7 +1901,32 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
         break;
     }
 
-    // Initial FileLoad() moved in front of ShowWindow()
+    // initial set text in front of ShowWindow()
+    EditSetNewText(Globals.hwndEdit, "", 0, false, false);
+
+    ShowWindowAsync(s_hwndEditFrame, SW_SHOWDEFAULT);
+    ShowWindowAsync(Globals.hwndEdit, SW_SHOWDEFAULT);
+    //~SnapToWinInfoPos(hwndMain, g_IniWinInfo, SCR_NORMAL, SW_HIDE); ~ instead set all needed properties  here:
+    SetWindowPos(hwndMain, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+
+    if (!s_flagStartAsTrayIcon) {
+        UpdateWindow(hwndMain);
+        if (!Settings.ShowTitlebar) {
+            SetWindowLong(hwndMain, GWL_STYLE, GetWindowLong(hwndMain, GWL_STYLE) & ~WS_CAPTION);
+        }
+    }
+    else {
+        if (Settings.MinimizeToTray) {
+            MinimizeWndToTray(hwndMain);
+        }
+        else {
+            nCmdShow = SW_MINIMIZE;
+        }
+        ShowNotifyIcon(hwndMain, true);
+        SetNotifyIconTitle(hwndMain);
+    }
+    ShowWindow(hwndMain, nCmdShow);
+
     bool bOpened = false;
 
     // Pathname parameter
@@ -1971,30 +1996,6 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
         fLoadFlags = FLF_DontSave | FLF_New | FLF_SkipUnicodeDetect | FLF_SkipANSICPDetection;
         FileLoad(hfile_pth, fLoadFlags); // init editor frame
     }
-
-    // now, after FileLoad() do ShowWindow()
-    ShowWindowAsync(s_hwndEditFrame, SW_SHOWDEFAULT);
-    ShowWindowAsync(Globals.hwndEdit, SW_SHOWDEFAULT);
-    //~SnapToWinInfoPos(hwndMain, g_IniWinInfo, SCR_NORMAL, SW_HIDE); ~ instead set all needed properties  here:
-    SetWindowPos(hwndMain, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-
-    if (!s_flagStartAsTrayIcon) {
-        UpdateWindow(hwndMain);
-        if (!Settings.ShowTitlebar) {
-            SetWindowLong(hwndMain, GWL_STYLE, GetWindowLong(hwndMain, GWL_STYLE) & ~WS_CAPTION);
-        }
-    }
-    else {
-        if (Settings.MinimizeToTray) {
-            MinimizeWndToTray(hwndMain);
-        }
-        else {
-            nCmdShow = SW_MINIMIZE;
-        }
-        ShowNotifyIcon(hwndMain, true);
-        SetNotifyIconTitle(hwndMain);
-    }
-    ShowWindow(hwndMain, nCmdShow);
 
     // reset
     Encoding_Forced(CPI_NONE);
@@ -2389,9 +2390,7 @@ static void  _SetWrapIndentMode()
 {
     BeginWaitCursorUID(Flags.bHugeFileLoadState, IDS_MUI_SB_WRAP_LINES);
 
-    int const wrap_mode = (!Globals.fvCurFile.bWordWrap ? SC_WRAP_NONE : ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR));
-
-    SciCall_SetWrapMode(wrap_mode);
+    Sci_SetWrapModeEx(GET_WRAP_MODE());
 
     if (Settings.WordWrapIndent == 5) {
         SciCall_SetWrapIndentMode(SC_WRAPINDENT_SAME);
