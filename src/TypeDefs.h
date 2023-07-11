@@ -963,6 +963,11 @@ typedef struct THEMEFILES {
 #define NP3_VIRTUAL_SPACE_ACCESS_OPTIONS (Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION)
 
 
+//=============================================================================
+
+#define GET_WRAP_MODE() (!Globals.fvCurFile.bWordWrap ? SC_WRAP_NONE : ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR))
+
+
 // The possible notification types are the same as the modificationType bit flags used by SCN_MODIFIED:
 // SC_MOD_INSERTTEXT, SC_MOD_DELETETEXT, SC_MOD_CHANGESTYLE, SC_MOD_CHANGEFOLD, SC_PERFORMED_USER,
 // SC_PERFORMED_UNDO, SC_PERFORMED_REDO, SC_MULTISTEPUNDOREDO, SC_LASTSTEPINUNDOREDO, SC_MOD_CHANGEMARKER,

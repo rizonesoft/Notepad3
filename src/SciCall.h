@@ -984,6 +984,14 @@ inline int Sci_GetCurrentEOL_W(LPWCH eol)
     }
 }
 // ----------------------------------------------------------------------------
+ 
+inline void Sci_SetWrapModeEx(const int wrapmode) {
+    if (wrapmode != SciCall_GetWrapMode()) {
+        SciCall_SetWrapMode(wrapmode);
+    }
+}
+
+// ----------------------------------------------------------------------------
 
 inline DocPos Sci_GetSelectionStartEx()
 {

@@ -404,6 +404,18 @@ void EditInitWordDelimiter(HWND hwnd)
 //
 extern bool s_bFreezeAppTitle;
 
+static void _PrepareDocBuffer(HWND hwnd)
+{
+    SciCall_Cancel();
+    SciCall_SetReadOnly(FileWatching.MonitoringLog);
+    EditClearAllBookMarks(hwnd);
+    EditClearAllOccurrenceMarkers(hwnd);
+    SciCall_SetScrollWidth(1);
+    SciCall_SetXOffset(0);
+    FileVars_Apply(&Globals.fvCurFile);
+    Sci_SetWrapModeEx(SC_WRAP_NONE);
+}
+
 void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bClearUndoHistory, bool bReload)
 {
     if (!lpstrText) {
@@ -416,25 +428,21 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
         EditToggleView(hwnd);
     }
 
-    if (bClearUndoHistory) {
+    if (Flags.bHugeFileLoadState)
+    {
         UndoRedoReset();
+        _PrepareDocBuffer(hwnd);
+        EditSetDocumentBuffer(lpstrText, lenText, bReload);
     }
-
-    UndoTransActionBegin();
-
-    SciCall_Cancel();
-    SciCall_SetReadOnly(FileWatching.MonitoringLog);
-    EditClearAllBookMarks(hwnd);
-    EditClearAllOccurrenceMarkers(hwnd);
-    SciCall_SetScrollWidth(1);
-    SciCall_SetXOffset(0);
-
-    FileVars_Apply(&Globals.fvCurFile);
-
-    EditSetDocumentBuffer(lpstrText, lenText, bReload);
-
-    EndUndoTransAction();
-
+    else {
+        if (bClearUndoHistory) {
+            UndoRedoReset();
+        }
+        _PrepareDocBuffer(hwnd);
+        UndoTransActionBegin();
+        EditSetDocumentBuffer(lpstrText, lenText, bReload);
+        EndUndoTransAction();
+    }
     s_bFreezeAppTitle = false;
 }
 

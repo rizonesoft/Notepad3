@@ -1744,6 +1744,8 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     SciCall_SetLayoutCache(SC_CACHE_PAGE); //~SC_CACHE_DOCUMENT ~ memory consumption !
     SciCall_SetPositionCache(SciCall_GetPositionCache()); // clear - default=1024
 
+    Sci_SetWrapModeEx(GET_WRAP_MODE());
+
     SciCall_StartStyling(0);
     //~SciCall_Colourise(0, -1);
 
