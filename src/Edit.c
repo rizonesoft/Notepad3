@@ -5906,19 +5906,6 @@ static char* _GetReplaceString(HWND hwnd, CLPCEDITFINDREPLACE lpefr, int* iRepla
 // ONIG_MISMATCH
 #define NOT_FOUND ((DocPos)(-1LL))
 
-__forceinline DocPos validate_found_pos(DocPos pos, const DocPos rbeg, const DocPos rend)
-{
-    if (pos >= 0LL) {
-        if (rbeg <= rend) { // forward search
-            if ((pos < rbeg) || (pos > rend)) { pos = NOT_FOUND; }
-        } else {
-            if ((pos < rend) || (pos > rbeg)) { pos = NOT_FOUND; }
-        }
-    }
-    return pos;
-}
-
-
 static DocPos  _FindInTarget(LPCWSTR wchFind, int sFlags,
                              DocPos* begin, DocPos* end, bool bForceNext, FR_UPD_MODES fMode)
 {
@@ -5942,7 +5929,7 @@ static DocPos  _FindInTarget(LPCWSTR wchFind, int sFlags,
 
     SciCall_SetSearchFlags(sFlags);
     SciCall_SetTargetRange(start, stop);
-    iPos = validate_found_pos(SciCall_SearchInTarget(len, chFind), start, stop); // not found if beyond stop
+    iPos = SciCall_SearchInTarget(len, chFind);
 
 #if 1
     //  handle next in case of zero-length-matches or invalid position (regex) !
@@ -5953,7 +5940,7 @@ static DocPos  _FindInTarget(LPCWSTR wchFind, int sFlags,
         bool const   bProceed = (bFindNext ? (newStart < stop) : (newStart > stop)) && (newStart != iPos);
         if (bProceed) {
             SciCall_SetTargetRange(newStart, stop);
-            iPos = validate_found_pos(SciCall_SearchInTarget(len, chFind), newStart, stop); // not found if beyond stop
+            iPos = SciCall_SearchInTarget(len, chFind); // not found if beyond stop
         }
         else {
             iPos = NOT_FOUND; // already at document begin, end or stuck => not found

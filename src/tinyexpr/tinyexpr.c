@@ -332,7 +332,7 @@ static double parse_number(const char *pstrg, char **pendptr) {
             break;
         }
     }
-    return strtod(pstrg, pendptr);
+    return (double)strtold(pstrg, pendptr);
 }
 
 #ifndef COUNTOF

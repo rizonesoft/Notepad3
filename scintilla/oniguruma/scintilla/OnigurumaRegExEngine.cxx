@@ -23,6 +23,7 @@
 #include <mbstring.h>
 
 #define VC_EXTRALEAN 1
+#define NOMINMAX 1
 #include <windows.h>
 
 #include "Geometry.h"
@@ -88,7 +89,11 @@ static void SetSimpleOptions(OnigOptionType &onigOptions, EOLmode /*eolMode*/,
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_NOTBOL);
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_NOTEOL);
   // ----------------------------------------------------------
-
+  //~ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_ASCII_RANGE);
+  //~ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_CAPTURE_GROUP);
+  //~ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_NOT_BEGIN_POSITION);
+  // ----------------------------------------------------------
+  
   if (rangeBegIsDocBeg) {
     ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_NOT_BEGIN_STRING);
   } else {
@@ -100,10 +105,7 @@ static void SetSimpleOptions(OnigOptionType &onigOptions, EOLmode /*eolMode*/,
     ONIG_OPTION_ON(onigOptions, ONIG_OPTION_NOT_END_STRING);
   }
 
-  //~ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_ASCII_RANGE);
-  //~ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_CAPTURE_GROUP);
-  //~ONIG_OPTION_ON(onigOptions, ONIG_OPTION_NOT_BEGIN_POSITION);
-
+  
   // dynamic options
   //switch (eolMode) {
   //  case EOLmode::CR:
@@ -296,18 +298,18 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
 
   auto const docBegPos = SciPos(0);
   auto const docEndPos = SciPos(doc->Length());
-  EOLmode const eolMode = static_cast<EOLmode>(doc->eolMode);
 
   bool const findForward = (minPos <= maxPos);
   int const increment = findForward ? 1 : -1;
-
   // Range endpoints should not be inside DBCS characters, but just in case, move them.
   minPos = doc->MovePositionOutsideChar(minPos, increment, true);
-  maxPos = doc->MovePositionOutsideChar(maxPos, increment, true);
+  maxPos = doc->MovePositionOutsideChar(maxPos, -increment, true);
 
   Sci::Position const rangeBeg = (findForward) ? minPos : maxPos;
   Sci::Position const rangeEnd = (findForward) ? maxPos : minPos;
   Sci::Position const rangeLen = (rangeEnd - rangeBeg);
+
+  EOLmode const eolMode = static_cast<EOLmode>(doc->eolMode);
 
   OnigOptionType onigOptions;
   SetSimpleOptions(onigOptions, eolMode, caseSensitive, findForward, searchFlags, (rangeBeg == docBegPos), (rangeEnd == docEndPos));
@@ -353,8 +355,8 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
 
   // ---  search document range for pattern match   ---
   // !!! Performance issue: Scintilla: moving Gap needs memcopy - high costs for find/replace in large document
-  auto const docBegPtr = UCharCPtr(doc->RangePointer(0, docEndPos));
-  auto const docEndPtr = UCharCPtr(doc->RangePointer(docEndPos, 0));
+  auto const docBegPtr = UCharCPtr(doc->BufferPointer());
+  auto const docEndPtr = UCharCPtr(doc->RangePointer(docEndPos, 1));
   auto const rangeBegPtr = UCharCPtr(doc->RangePointer(rangeBeg, rangeLen));
   auto const rangeEndPtr = UCharCPtr(doc->RangePointer(rangeEnd, 0));
 
@@ -377,9 +379,9 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
     return SciPos(-3);
   }
 
-  if ((m_Result >= 0) && (m_Region.num_regs >= 1))
+  if ((m_Result >= rangeBeg) && (m_Result <= rangeEnd) && (m_Region.num_regs >= 1))
   {
-    //~m_MatchPos = SciPos(m_Result); //
+    //~m_MatchPos = SciPos(m_Result);
     m_MatchPos = SciPos(m_Region.beg[0]);
     //~m_MatchLen = SciPos(m_Region.end[0] - m_Result);
     m_MatchLen = SciPos(m_Region.end[0]) - m_MatchPos;
@@ -742,6 +744,7 @@ public:
     onig_initialize(s_UsedEncodingsTypes, _ARRAYSIZE(s_UsedEncodingsTypes));
 
     m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END; // xcluded from ONIG_SYNTAX_DEFAULT ?
+
     onig_set_default_syntax(&m_OnigSyntax);                 // std is: ONIG_SYNTAX_ONIGURUMA
 
     onig_region_init(&m_Region);
