@@ -677,6 +677,34 @@ static inline void ResetFileObservationData(const bool bResetEvt) {
 }
 // ----------------------------------------------------------------------------
 
+#define TE_ZERO (1.0E-8)
+#define TE_FMTA  "%.8G"
+#define TE_FMTW  L"%.8G"
+
+void TinyExprToStringA(LPSTR pszDest, size_t cchDest, const double dExprEval)
+{
+    double intpart = 0.0;
+    if ((fabs(modf(dExprEval, &intpart)) < TE_ZERO) && (fabs(intpart) < 1.0E+21)) {
+        StringCchPrintfA(pszDest, cchDest, "%.21G", intpart); // integer full number display
+    }
+    else {
+        StringCchPrintfA(pszDest, cchDest, TE_FMTA, dExprEval);
+    }
+}
+// ----------------------------------------------------------------------------
+
+void TinyExprToString(LPWSTR pszDest, size_t cchDest, const double dExprEval)
+{
+    double intpart = 0.0;
+    if ((fabs(modf(dExprEval, &intpart)) < TE_ZERO) && (fabs(intpart) < 1.0E+21)) {
+        StringCchPrintf(pszDest, cchDest, L"%.21G", intpart); // integer full number display
+    }
+    else {
+        StringCchPrintf(pszDest, cchDest, TE_FMTW, dExprEval);
+    }
+}
+// ----------------------------------------------------------------------------
+
 
 //=============================================================================
 //
@@ -2688,12 +2716,7 @@ static bool _EvalTinyExpr(bool qmark)
 
             if (!exprErr) {
                 char chExpr[80] = { '\0' };
-                double intpart;
-                if ((modf(dExprEval, &intpart) == 0) && (fabs(intpart) < 1.0E+21)) {
-                    StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.21G", intpart); // integer full number display
-                } else {
-                    StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.7G", dExprEval);
-                }
+                TinyExprToStringA(chExpr, COUNTOF(chExpr), dExprEval);
                 SciCall_ReplaceSel("");
                 SciCall_SetSel(posBegin, posSelStart);
                 SciCall_ReplaceSel(chExpr);
@@ -9251,12 +9274,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             case STATUS_TINYEXPR: {
                 char chExpr[80] = { '\0' };
                 if (s_iExprError == 0) {
-                    double intpart;
-                    if ((modf(s_dExpression, &intpart) == 0) && (fabs(intpart) < 1.0E+21)) {
-                        StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.21G", intpart); // integer full number display
-                    } else {
-                        StringCchPrintfA(chExpr, COUNTOF(chExpr), "%.7G", s_dExpression);
-                    }
+                    TinyExprToStringA(chExpr, COUNTOF(chExpr), s_dExpression);
                 } else if (s_iExprError > 0) {
                     StringCchPrintfA(chExpr, COUNTOF(chExpr), "^[" TE_INT_FMT "]", s_iExprError);
                     SciCall_CopyText((DocPos)StringCchLenA(chExpr, COUNTOF(chExpr)), chExpr);
@@ -10437,7 +10455,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         }
 
         if (!s_iExprError) {
-            StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%.7G", s_dExpression);
+            TinyExprToString(tchExpression, COUNTOF(tchExpression), s_dExpression);
         } else if (s_iExprError > 0) {
             StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"^[" _W(TE_INT_FMT) L"]", s_iExprError);
         }
