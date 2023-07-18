@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Hapus Baris dari K&anan\tCtrl+Shift+Del",              IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Bungkus Baris (dari Ko&lom)...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
-            MENUITEM "Pi&sahkan Baris\tCtrl+I",                              IDM_EDIT_SPLITLINES
-            MENUITEM "Gabungkan B&aris\tCtrl+J",                             IDM_EDIT_JOINLINES
-            MENUITEM "Gabungkan Baris (Tan&pa Spasi)\tCtrl+Alt+J",           IDM_EDIT_JOINLN_NOSP
-            MENUITEM "Per&tahankan Paragraf\tCtrl+Shift+J",                  IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Gabungkan Baris Koson&g\tAlt+Y",                       IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Gabungka&n Baris Kosong (Ada Spasi)\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "Kompres Baris &Kosong\tCtrl+Alt+P",               IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Ubah Baris...\tAlt+M",                           IDM_EDIT_MODIFYLINES
-            MENUITEM "Pe&rataan Baris...\tAlt+J",                       IDM_EDIT_ALIGN
             MENUITEM "Uru&tkan Baris...\tAlt+O",                        IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Pe&rataan Baris...\tAlt+J",                       IDM_EDIT_ALIGN
+            MENUITEM "Pi&sahkan Baris\tCtrl+I",                         IDM_EDIT_SPLITLINES
+            MENUITEM "Gabungkan B&aris\tCtrl+J",                        IDM_EDIT_JOINLINES
+            MENUITEM "Gabungkan Baris (Tan&pa Spasi)\tCtrl+Alt+J",      IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Pertahankan Para&graf\tCtrl+Shift+J",             IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Pergi ke A&wal Seleksi\tCtrl+,",                  CMD_JUMP2SELSTART
             MENUITEM "Pergi ke A&khir Seleksi\tCtrl+.",                 CMD_JUMP2SELEND

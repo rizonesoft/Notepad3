@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Usuń wiersz z prawej\tCtrl+Shift+Del",      IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Zawijanie kolumn...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Rozdziel wiersze\tCtrl+I",                 IDM_EDIT_SPLITLINES
-            MENUITEM "Połącz wiersze\tCtrl+J",                    IDM_EDIT_JOINLINES
-            MENUITEM "&Scal wiersze\tCtrl+Alt+J",                 IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Zachowaj akapity\tCtrl+Shift+J",           IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Połącz puste wiersze\tAlt+Y",                   IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Połącz puste miejsca po wierszach\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "Skompresuj niewidoczne znaki\tCtrl+Alt+P", IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modyfikuj wiersze...\tAlt+M",             IDM_EDIT_MODIFYLINES
-            MENUITEM "&Wyrównaj wiersze...\tAlt+J",              IDM_EDIT_ALIGN
             MENUITEM "&Posortuj wiersze...\tAlt+O",              IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "&Wyrównaj wiersze...\tAlt+J",              IDM_EDIT_ALIGN
+            MENUITEM "&Rozdziel wiersze\tCtrl+I",                IDM_EDIT_SPLITLINES
+            MENUITEM "Połącz wiersze\tCtrl+J",                   IDM_EDIT_JOINLINES
+            MENUITEM "&Scal wiersze\tCtrl+Alt+J",                IDM_EDIT_JOINLN_NOSP
+            MENUITEM "&Zachowaj akapity\tCtrl+Shift+J",          IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Skocz na początek wyboru\tCtrl+,",      CMD_JUMP2SELSTART
             MENUITEM "Skocz na koniec wyboru\tCtrl+.",        CMD_JUMP2SELEND

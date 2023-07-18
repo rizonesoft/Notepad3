@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Zmazať riadok vpravo od kurzora\tCtrl+Shift+Del",   IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Zalomenie &stĺpca...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Rozdeliť riadky\tCtrl+I",                 IDM_EDIT_SPLITLINES
-            MENUITEM "&Pripojiť riadky\tCtrl+J",                 IDM_EDIT_JOINLINES
-            MENUITEM "Z&lúčiť riadky\tCtrl+Alt+J",               IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Zachovať odseky\tCtrl+Shift+J",           IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Zlúčiť práz&dne riadky\tAlt+Y",            IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Zlúčiť nepopísané riadky\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
@@ -237,15 +233,20 @@ BEGIN
             END
             MENUITEM "&Duplikovať výber/riadok\tCtrl+D",    IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "&Podčiarnik\tAlt+B",             IDM_EDIT_PADWITHSPACES
+            MENUITEM "&Podčiarnik\tAlt+B",               IDM_EDIT_PADWITHSPACES
             MENUITEM "Odobrať &prvý znak\tAlt+Z",        IDM_EDIT_STRIP1STCHAR
             MENUITEM "Odobrať p&osledný znak\tAlt+U",    IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Odobrať &koncové prázdne miesta\tAlt+W",   IDM_EDIT_TRIMLINES
             MENUITEM "Komp&resia medzier\tCtrl+Alt+P",      IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
-            MENUITEM "&Upraviť riadky...\tAlt+M",        IDM_EDIT_MODIFYLINES
-            MENUITEM "&Zarovnať riadky...\tAlt+J",          IDM_EDIT_ALIGN
+            MENUITEM "&Upraviť riadky...\tAlt+M",           IDM_EDIT_MODIFYLINES
             MENUITEM "Zor&adiť riadky...\tAlt+O",           IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Z&arovnať riadky...\tAlt+J",          IDM_EDIT_ALIGN
+            MENUITEM "&Rozdeliť riadky\tCtrl+I",            IDM_EDIT_SPLITLINES
+            MENUITEM "&Pripojiť riadky\tCtrl+J",            IDM_EDIT_JOINLINES
+            MENUITEM "Z&lúčiť riadky\tCtrl+Alt+J",          IDM_EDIT_JOINLN_NOSP
+            MENUITEM "&Zachovať odseky\tCtrl+Shift+J",      IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Prejsť na &začiatok výberu\tCtrl+,",  CMD_JUMP2SELSTART
             MENUITEM "Prejsť na &koniec výberu\tCtrl+.",    CMD_JUMP2SELEND

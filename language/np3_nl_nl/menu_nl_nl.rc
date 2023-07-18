@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Regel rechts verwijderen\tCtrl+Shift+Del",    IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Kolom &aanpassen...\tCtrl+Shift+W",           IDM_EDIT_COLUMNWRAP
-            MENUITEM "Regels &splitsen\tCtrl+I",                    IDM_EDIT_SPLITLINES
-            MENUITEM "Regels samen&voegen\tCtrl+J",                 IDM_EDIT_JOINLINES
-            MENUITEM "Regels samenvoegen &zonder spatie\tCtrl+Alt+J",    IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Paragrafen behouden\tCtrl+Shift+J",          IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Lege regels samenvoe&gen\tAlt+Y",             IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Blanco regels samenvoegen\tCtrl+Alt+Y",       IDM_EDIT_MERGEBLANKLINES
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "Blanco's samenvoegen\tCtrl+Alt+P",            IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "Regels &aanpassen...\tAlt+M",                 IDM_EDIT_MODIFYLINES
-            MENUITEM "Regels &uitlijnen...\tAlt+J",                 IDM_EDIT_ALIGN
             MENUITEM "Regels &sorteren...\tAlt+O",                  IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Regels &uitlijnen...\tAlt+J",                 IDM_EDIT_ALIGN
+            MENUITEM "Regels spli&tsen\tCtrl+I",                    IDM_EDIT_SPLITLINES
+            MENUITEM "Regels samen&voegen\tCtrl+J",                 IDM_EDIT_JOINLINES
+            MENUITEM "Regels samenvoegen &zonder spatie\tCtrl+Alt+J",    IDM_EDIT_JOINLN_NOSP
+            MENUITEM "&Paragrafen behouden\tCtrl+Shift+J",          IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Naar begin van sele&ctie\tCtrl+,",            CMD_JUMP2SELSTART
             MENUITEM "Naar ei&nde van selectie\tCtrl+.",            CMD_JUMP2SELEND

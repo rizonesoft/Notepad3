@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "カーソルから行末まで削除(&H)\tCtrl+Shift+Del",   IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "空白で折り返し(&W)...\tCtrl+Shift+W",     IDM_EDIT_COLUMNWRAP
-            MENUITEM "長い行を分割し折り返し(&S)\tCtrl+I",       IDM_EDIT_SPLITLINES
-            MENUITEM "行を結合(空白で)(&J)\tCtrl+J",           IDM_EDIT_JOINLINES
-            MENUITEM "行を融合(空白なし)(&F)\tCtrl+Alt+J",      IDM_EDIT_JOINLN_NOSP
-            MENUITEM "段落を温存して結合(&P)\tCtrl+Shift+J",    IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "空の行をまとめる(&G)\tAlt+Y",              IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "スペースの行もまとめる(&K)\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "空白をまとめる(&W)\tCtrl+Alt+P",           IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "行の修飾(&M)...\tAlt+M",                 IDM_EDIT_MODIFYLINES
-            MENUITEM "行の整列(&A)...\tAlt+J",                 IDM_EDIT_ALIGN
             MENUITEM "行の並べ替え(&S)...\tAlt+O",              IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "行の整列(&A)...\tAlt+J",                 IDM_EDIT_ALIGN
+            MENUITEM "長い行を分割し折り返し(&I)\tCtrl+I",       IDM_EDIT_SPLITLINES
+            MENUITEM "行を結合(空白で)(&J)\tCtrl+J",           IDM_EDIT_JOINLINES
+            MENUITEM "行を融合(空白なし)(&E)\tCtrl+Alt+J",      IDM_EDIT_JOINLN_NOSP
+            MENUITEM "段落を温存して結合(&V)\tCtrl+Shift+J",    IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "選択範囲の先頭へ移動(&C)\tCtrl+,",      CMD_JUMP2SELSTART
             MENUITEM "選択範囲の末端へ移動(&N)\tCtrl+.",        CMD_JUMP2SELEND

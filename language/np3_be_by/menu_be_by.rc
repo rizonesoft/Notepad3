@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Выдаліць даныя справа\tCtrl+Shift+Del", IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Разбіць па &шырыні...\tCtrl+Shift+W",           IDM_EDIT_COLUMNWRAP
-            MENUITEM "Падзяліць &радкі\tCtrl+I",                      IDM_EDIT_SPLITLINES
-            MENUITEM "Аб'&яднаць радкі\tCtrl+J",                      IDM_EDIT_JOINLINES
-            MENUITEM "Пасклейваць радкі\tCtrl+Alt+J",                 IDM_EDIT_JOINLN_NOSP
-            MENUITEM "Аб'яднаць з захоўваннем абзацаў\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Аб'яднаць пустыя радкі\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Аб'яднаць радкі з прабеламі\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "Аб'яднаць прабелы\tCtrl+Alt+P",   IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Змяніць радкі...\tAlt+M",        IDM_EDIT_MODIFYLINES
-            MENUITEM "Выраў&наваць радкі...\tAlt+J",    IDM_EDIT_ALIGN
             MENUITEM "Сар&таваць радкі...\tAlt+O",      IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Выраў&наваць радкі...\tAlt+J",                  IDM_EDIT_ALIGN
+            MENUITEM "Падзяліць &радкі\tCtrl+I",                      IDM_EDIT_SPLITLINES
+            MENUITEM "Аб'&яднаць радкі\tCtrl+J",                      IDM_EDIT_JOINLINES
+            MENUITEM "Пасклейваць радкі\tCtrl+Alt+J",                 IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Аб'яднаць з захоўваннем абзацаў\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Перайсці &ў пачатак вылучэння\tCtrl+,",   CMD_JUMP2SELSTART
             MENUITEM "Перайсці ў кане&ц вылучэння\tCtrl+.",     CMD_JUMP2SELEND

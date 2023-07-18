@@ -240,13 +240,13 @@ BEGIN
             MENUITEM "Vereinige &Leerzeichen\tCtrl+Alt+P",       IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modifiziere Zeilen...\tAlt+M",            IDM_EDIT_MODIFYLINES
-            MENUITEM "&Sortiere Zeilen...\tAlt+O", IDM_EDIT_SORTLINES
+            MENUITEM "&Sortiere Zeilen...\tAlt+O",               IDM_EDIT_SORTLINES
             MENUITEM SEPARATOR
-            MENUITEM "&Zeilen &ausrichten...\tAlt+J",            IDM_EDIT_ALIGN
+            MENUITEM "Ze&ilen ausrichten...\tAlt+J",             IDM_EDIT_ALIGN
             MENUITEM "&Zeilen umbrechen\tCtrl+I",                IDM_EDIT_SPLITLINES
             MENUITEM "Ver&binde Zeilen\tCtrl+J",                 IDM_EDIT_JOINLINES
             MENUITEM "&Verschmelze Zeilen\tCtrl+Alt+J",          IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Erhalte Abschnitte\tCtrl+Shift+J",        IDM_EDIT_JOINLINES_PARA
+            MENUITEM "Er&halte Abschnitte\tCtrl+Shift+J",        IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Bewege Textcursor zum Anfang\tCtrl+,",     CMD_JUMP2SELSTART
             MENUITEM "Bewege Textcursor zum Ende\tCtrl+.",       CMD_JUMP2SELEND

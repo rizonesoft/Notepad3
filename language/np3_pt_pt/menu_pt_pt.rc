@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Eliminar linha para a direita\tCtrl+Shift+Del",     IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Moldar coluna...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
-            MENUITEM "Dividir linha&s\tCtrl+I",                IDM_EDIT_SPLITLINES
-            MENUITEM "&Unir linhas\tCtrl+J",                   IDM_EDIT_JOINLINES
-            MENUITEM "&Fundir linhas\tCtrl+Alt+J",             IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Preservar parágrafos\tCtrl+Shift+J",    IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Fundir linhas vazias\tAlt+Y",            IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Fundir linhas em branco\tCtrl+Alt+Y",    IDM_EDIT_MERGEBLANKLINES
@@ -244,11 +240,16 @@ BEGIN
             MENUITEM "Comprimir &espaços\tCtrl+Alt+P",          IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modificar linhas...\tAlt+M",             IDM_EDIT_MODIFYLINES
-            MENUITEM "&Alinhar linhas...\tAlt+J",               IDM_EDIT_ALIGN
             MENUITEM "Ordenar linha&s...\tAlt+O",               IDM_EDIT_SORTLINES
             MENUITEM SEPARATOR
+            MENUITEM "&Alinhar linhas...\tAlt+J",              IDM_EDIT_ALIGN
+            MENUITEM "Dividir lin&has\tCtrl+I",                IDM_EDIT_SPLITLINES
+            MENUITEM "&Unir linhas\tCtrl+J",                   IDM_EDIT_JOINLINES
+            MENUITEM "&Fundir linhas\tCtrl+Alt+J",             IDM_EDIT_JOINLN_NOSP
+            MENUITEM "&Preservar parágrafos\tCtrl+Shift+J",    IDM_EDIT_JOINLINES_PARA
+            MENUITEM SEPARATOR
             MENUITEM "Saltar para o início da sele&cção\tCtrl+,",  CMD_JUMP2SELSTART
-            MENUITEM "Saltar para o &fim da selecção\tCtrl+.",     CMD_JUMP2SELEND
+            MENUITEM "Sal&tar para o fim da selecção\tCtrl+.",     CMD_JUMP2SELEND
         END
         POPUP "Co&nverter"
         BEGIN
