@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Удалить данные справа\tCtrl+Shift+Del",       IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Разбить по &ширине...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Разделить строки\tCtrl+I",                   IDM_EDIT_SPLITLINES
-            MENUITEM "&Объединить строки\tCtrl+J",                  IDM_EDIT_JOINLINES
-            MENUITEM "Склеить строки\tCtrl+Alt+J",                  IDM_EDIT_JOINLN_NOSP
-            MENUITEM "Объединить, сохранив &абзацы\tCtrl+Shift+J",  IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Объединить пустые строки\tAlt+Y",             IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Объединить строки с пробелами\tCtrl+Alt+Y",   IDM_EDIT_MERGEBLANKLINES
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "Объединить пробелы\tCtrl+Alt+P",          IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Изменить строки...\tAlt+M",              IDM_EDIT_MODIFYLINES
-            MENUITEM "Выров&нять строки...\tAlt+J",             IDM_EDIT_ALIGN
             MENUITEM "&Сортировать строки...\tAlt+O",           IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Выров&нять строки...\tAlt+J",                 IDM_EDIT_ALIGN
+            MENUITEM "&Разделить строки\tCtrl+I",                   IDM_EDIT_SPLITLINES
+            MENUITEM "&Объединить строки\tCtrl+J",                  IDM_EDIT_JOINLINES
+            MENUITEM "Склеить строки\tCtrl+Alt+J",                  IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Объединить, сохранив &абзацы\tCtrl+Shift+J",  IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Перейти к началу в&ыделения\tCtrl+,",     CMD_JUMP2SELSTART
             MENUITEM "Перейти в конец выделени&я\tCtrl+.",      CMD_JUMP2SELEND

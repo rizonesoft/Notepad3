@@ -243,9 +243,9 @@ BEGIN
             MENUITEM "&Sort Lines...\tAlt+O",             IDM_EDIT_SORTLINES
             MENUITEM SEPARATOR
             MENUITEM "&Align Lines...\tAlt+J",            IDM_EDIT_ALIGN
-            MENUITEM "S&plit Lines\tCtrl+I",              IDM_EDIT_SPLITLINES
+            MENUITEM "Spl&it Lines\tCtrl+I",              IDM_EDIT_SPLITLINES
             MENUITEM "&Join Lines\tCtrl+J",               IDM_EDIT_JOINLINES
-            MENUITEM "&Fuse Lines\tCtrl+Alt+J",           IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Fus&e Lines\tCtrl+Alt+J",           IDM_EDIT_JOINLN_NOSP
             MENUITEM "Preser&ve Paragraphs\tCtrl+Shift+J",IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Jump to Sele&ction Start\tCtrl+,",  CMD_JUMP2SELSTART

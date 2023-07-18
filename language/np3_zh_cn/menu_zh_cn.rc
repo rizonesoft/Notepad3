@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "向右删除直到行尾(&H)\tCtrl+Shift+Delete",     IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "硬换行处理(&W)...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
-            MENUITEM "拆分行(&S)\tCtrl+I",                      IDM_EDIT_SPLITLINES
-            MENUITEM "拼接行（用空格隔开）(&J)\tCtrl+J",          IDM_EDIT_JOINLINES
-            MENUITEM "拼接行（不添加空格）(&F)\tCtrl+Alt+J",      IDM_EDIT_JOINLN_NOSP
-            MENUITEM "拼接行（保留段落）(&P)\tCtrl+Shift+J",      IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "合并空行(&G)\tAlt+Y",                     IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "合并只有空白字符的行(&K)\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "压缩空白字符(&W)\tCtrl+Alt+P",            IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "修改(&M)...\tAlt+M",                     IDM_EDIT_MODIFYLINES
-            MENUITEM "对齐(&A)...\tAlt+J",                     IDM_EDIT_ALIGN
             MENUITEM "排序(&S)...\tAlt+O",                     IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "对齐(&A)...\tAlt+J",                     IDM_EDIT_ALIGN
+            MENUITEM "拆分行(&I)\tCtrl+I",                      IDM_EDIT_SPLITLINES
+            MENUITEM "拼接行（用空格隔开）(&J)\tCtrl+J",          IDM_EDIT_JOINLINES
+            MENUITEM "拼接行（不添加空格）(&E)\tCtrl+Alt+J",      IDM_EDIT_JOINLN_NOSP
+            MENUITEM "拼接行（保留段落）(&V)\tCtrl+Shift+J",      IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "跳转到选区开始\tCtrl+,",         CMD_JUMP2SELSTART
             MENUITEM "跳转到选区结束\tCtrl+.",         CMD_JUMP2SELEND

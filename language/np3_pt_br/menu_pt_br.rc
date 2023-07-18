@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Apagar Linha a Direita\tCtrl+Shift+Del",     IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "&Quebra de Coluna...\tCtrl+Shift+W",     IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Dividir Linhas\tCtrl+I",                IDM_EDIT_SPLITLINES
-            MENUITEM "&Unir Linhas\tCtrl+J",                   IDM_EDIT_JOINLINES
-            MENUITEM "&Unir Linhas\tCtrl+Alt+J",               IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Preservar Parágrafos\tCtrl+Shift+J",    IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "&Unir Linhas Vazias\tAlt+Y",             IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Unir Linhas em Branco\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
@@ -238,14 +234,19 @@ BEGIN
             MENUITEM "&Duplicar Seleção/Linha\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
             MENUITEM "&Preencher Com Espaços\tAlt+B",                 IDM_EDIT_PADWITHSPACES
-            MENUITEM "Remover o &Primeiro Caractere\tAlt+Z",          IDM_EDIT_STRIP1STCHAR
+            MENUITEM "Remover o Primei&ro Caractere\tAlt+Z",          IDM_EDIT_STRIP1STCHAR
             MENUITEM "Remover o &Último Caractere\tAlt+U",            IDM_EDIT_STRIPLASTCHAR
             MENUITEM "Remover Espaços nos &Finais de Linha\tAlt+W",   IDM_EDIT_TRIMLINES
             MENUITEM "Comprimir &Espaços\tCtrl+Alt+P",                IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modificar Linhas ...\tAlt+M",    IDM_EDIT_MODIFYLINES
-            MENUITEM "&Alinhar Linhas ...\tAlt+J",      IDM_EDIT_ALIGN
             MENUITEM "&Ordenar Linhas ...\tAlt+O",      IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "&Alinhar Linhas ...\tAlt+J",             IDM_EDIT_ALIGN
+            MENUITEM "D&ividir Linhas\tCtrl+I",                IDM_EDIT_SPLITLINES
+            MENUITEM "&Unir Linhas\tCtrl+J",                   IDM_EDIT_JOINLINES
+            MENUITEM "Unir Lin&has\tCtrl+Alt+J",               IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Preser&var Parágrafos\tCtrl+Shift+J",    IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "&Pular para Início da Seleção\tCtrl+,",   CMD_JUMP2SELSTART
             MENUITEM "Pular para &Fim da Seleção\tCtrl+.",      CMD_JUMP2SELEND
