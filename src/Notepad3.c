@@ -4113,14 +4113,13 @@ LRESULT MsgEnterMenuLoop(HWND hwnd, WPARAM wParam)
 {
     if ((BOOL)wParam == FALSE) { // is main menu
         HMENU const hCurMenu = GetMenu(hwnd);
-        if (!hCurMenu && Settings.ShowMenubar) {
+        if (!hCurMenu) {
             SetMenu(hwnd, Globals.hMainMenu);
+            DrawMenuBar(hwnd);
         }
-        DrawMenuBar(hwnd);
     }
     return (LRESULT)wParam;
 }
-
 
 
 //=============================================================================
@@ -4134,8 +4133,8 @@ LRESULT MsgExitMenuLoop(HWND hwnd, WPARAM wParam)
         HMENU const hCurMenu = GetMenu(hwnd);
         if (hCurMenu && !Settings.ShowMenubar) {
             SetMenu(hwnd, NULL);
+            DrawMenuBar(hwnd);
         }
-        DrawMenuBar(hwnd);
     }
     return (LRESULT)wParam;
 }
