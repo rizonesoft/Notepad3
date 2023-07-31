@@ -12,7 +12,7 @@
 			</requestedPrivileges>
 		</security>
 	</trustInfo>
-	<msix xmlns="urn:schemas-microsoft-com:msix.v1" publisher="CN=Rizonesoft" packageName="RizonesoftNotepad3" applicationId="RizonesoftNotepad3"/>
+    <!-- <msix xmlns="urn:schemas-microsoft-com:msix.v1" publisher="CN=Rizonesoft" packageName="RizonesoftNotepad3" applicationId="RizonesoftNotepad3"/> (issue #4949) -->
 	<asmv3:application xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns="urn:schemas-microsoft-com:asm.v3">
 		<asmv3:windowsSettings>
 			<dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">true/PM</dpiAware>

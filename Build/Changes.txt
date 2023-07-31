@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.718.(build_#) (2023-07-18)
+Current BETA/RC Version 6.23.731.(build_#) (2023-07-31)
 ========================================================
 
 --------------------------------------------------------
@@ -65,6 +65,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.731.1]- Comment out "MSIX" attributes in applications manifest.
 [.718.1]- Move Join Lines, Split Lines, Fuse Lines, Preserve Paragr. from Lines to Selection menu.
 [.711.2]- Try to speed-up large file loading.
 [.710.1]- Try to minimize scrolling to view.
