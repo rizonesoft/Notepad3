@@ -21,8 +21,6 @@
 #define MUI_BASE_LNG_ID L"en-GB"
 #elif defined(MUI_BASE_LNG_ES_ES)
 #define MUI_BASE_LNG_ID L"es-ES"
-#elif defined(MUI_BASE_LNG_ES_MX)
-#define MUI_BASE_LNG_ID L"es-MX"
 #elif defined(MUI_BASE_LNG_FR_FR)
 #define MUI_BASE_LNG_ID L"fr-FR"
 #elif defined(MUI_BASE_LNG_HI_IN)
@@ -563,7 +561,6 @@
 #define IDS_MUI_LANG_EL_GR              34505
 #define IDS_MUI_LANG_EN_GB              34506
 #define IDS_MUI_LANG_ES_ES              34507
-#define IDS_MUI_LANG_ES_MX              34508
 #define IDS_MUI_LANG_FR_FR              34509
 #define IDS_MUI_LANG_HI_IN              34510
 #define IDS_MUI_LANG_HU_HU              34511

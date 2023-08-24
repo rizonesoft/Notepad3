@@ -118,7 +118,6 @@ Name: "deu"; MessagesFile: "compiler:Languages-mod\German.isl"
 Name: "ell"; MessagesFile: "compiler:Languages-mod\Greek.isl"
 Name: "eng"; MessagesFile: "compiler:Languages-mod\EnglishBritish.isl"
 Name: "esn"; MessagesFile: "compiler:Languages-mod\Spanish.isl"
-Name: "esm"; MessagesFile: "compiler:Languages-mod\SpanishMexican.isl"
 Name: "fra"; MessagesFile: "compiler:Languages-mod\French.isl"
 Name: "hin"; MessagesFile: "compiler:Languages-mod\Hindi.isl"
 Name: "hun"; MessagesFile: "compiler:Languages-mod\Hungarian.isl"
@@ -147,7 +146,6 @@ deu.BeveledLabel=German
 ell.BeveledLabel=Greek
 eng.BeveledLabel=English (GB)
 esn.BeveledLabel=Spanish
-esm.BeveledLabel=Spanish (MX)
 fra.BeveledLabel=French
 hin.BeveledLabel=Hindi
 hun.BeveledLabel=Hungarian
@@ -301,25 +299,6 @@ esn.tsk_LaunchWelcomePage=¡Información importante de lanzamiento!
 esn.tsk_RemoveOpenWith=Eliminar "Abrir con {#app_name}" del menú contextual
 esn.tsk_SetOpenWith=Añadir "Abrir con {#app_name}" al menú contextual
 esn.reg_Open_with_NP3=Abrir con {#app_name}
-
-esm.msg_DeleteSettings=¿También quieres eliminar la configuración y los temas de {#app_name}?%n%nSi planeas instalar {#app_name} nuevamente, no tienes que eliminarlos.
-#ifdef sse_required
-esm.msg_simd_sse=Esta compilación de {#app_name} requiere una CPU compatible con la extensión SSE.%n%nTu CPU no tiene esas capacidades.
-#EndIf
-#ifdef sse2_required
-esm.msg_simd_sse2=Esta compilación de {#app_name} requiere una CPU compatible con la extensión SSE2.%n%nTu CPU no tiene esas capacidades.
-#endif
-esm.tsk_AllUsers=Para todos los usuarios
-esm.tsk_CurrentUser=Sólo para el usuario actual
-esm.tsk_Other=Otras tareas:
-esm.tsk_ResetSettings=Restablecer la configuración y los temas de {#app_name}
-esm.tsk_RemoveDefault=Restaurar el Notepad de Windows
-esm.tsk_SetDefault=Reemplazar el Notepad de Windows con {#app_name}
-esm.tsk_StartMenuIcon=Crear un acceso directo al menú de inicio
-esm.tsk_LaunchWelcomePage=¡Información importante de lanzamiento!
-esm.tsk_RemoveOpenWith=Eliminar "Abrir con {#app_name}" del menú contextual
-esm.tsk_SetOpenWith=Añadir "Abrir con {#app_name}" al menú contextual
-esm.reg_Open_with_NP3=Abrir con {#app_name}
 
 fra.msg_DeleteSettings=Voulez-vous également supprimer tous les réglages et thèmes de {#app_name} ?%n%nSi vous comptez réinstaller {#app_name}, vous pouvez les garder.
 #ifdef sse_required
@@ -710,8 +689,6 @@ Source: "{#bindir}{#RLSdir}\lng\en-GB\mplng.dll.mui"; DestDir: "{app}\lng\en-GB"
 Source: "{#bindir}{#RLSdir}\lng\en-GB\np3lng.dll.mui"; DestDir: "{app}\lng\en-GB"; Flags: ignoreversion
 Source: "{#bindir}{#RLSdir}\lng\es-ES\mplng.dll.mui"; DestDir: "{app}\lng\es-ES"; Flags: ignoreversion
 Source: "{#bindir}{#RLSdir}\lng\es-ES\np3lng.dll.mui"; DestDir: "{app}\lng\es-ES"; Flags: ignoreversion
-Source: "{#bindir}{#RLSdir}\lng\es-MX\mplng.dll.mui"; DestDir: "{app}\lng\es-MX"; Flags: ignoreversion
-Source: "{#bindir}{#RLSdir}\lng\es-MX\np3lng.dll.mui"; DestDir: "{app}\lng\es-MX"; Flags: ignoreversion
 Source: "{#bindir}{#RLSdir}\lng\fr-FR\mplng.dll.mui"; DestDir: "{app}\lng\fr-FR"; Flags: ignoreversion
 Source: "{#bindir}{#RLSdir}\lng\fr-FR\np3lng.dll.mui"; DestDir: "{app}\lng\fr-FR"; Flags: ignoreversion
 Source: "{#bindir}{#RLSdir}\lng\hi-IN\mplng.dll.mui"; DestDir: "{app}\lng\hi-IN"; Flags: ignoreversion
