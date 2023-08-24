@@ -24,7 +24,7 @@ chcp 65001 >nul 2>&1
 ::
 :: ===================================================================================================
 
-set NP3_LANGUAGE_SET=af-ZA be-BY de-DE el-GR en-GB es-ES es-MX fr-FR hi-IN hu-HU id-ID it-IT ja-JP ko-KR nl-NL pl-PL pt-BR pt-PT ru-RU sk-SK sv-SE tr-TR vi-VN zh-CN zh-TW
+set NP3_LANGUAGE_SET=af-ZA be-BY de-DE el-GR en-GB es-ES fr-FR hi-IN hu-HU id-ID it-IT ja-JP ko-KR nl-NL pl-PL pt-BR pt-PT ru-RU sk-SK sv-SE tr-TR vi-VN zh-CN zh-TW
 
 :: ===================================================================================================
 
