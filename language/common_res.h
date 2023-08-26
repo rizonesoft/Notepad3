@@ -561,6 +561,7 @@
 #define IDS_MUI_LANG_EL_GR              34505
 #define IDS_MUI_LANG_EN_GB              34506
 #define IDS_MUI_LANG_ES_ES              34507
+#define IDS_MUI_LANG_ES_MX              34508
 #define IDS_MUI_LANG_FR_FR              34509
 #define IDS_MUI_LANG_HI_IN              34510
 #define IDS_MUI_LANG_HU_HU              34511
