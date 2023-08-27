@@ -1344,8 +1344,6 @@ void LoadSettings()
 
     Settings2.OpacityLevel = clampi(IniSectionGetInt(IniSecSettings2, L"OpacityLevel", 75), 10, 100);
 
-    Settings2.DarkModeHiglightContrast = (float)clampi(IniSectionGetInt(IniSecSettings2, L"DarkModeHiglightContrast", 75), 0, 1000) / 100.0f;
-
     Settings2.FindReplaceOpacityLevel = clampi(IniSectionGetInt(IniSecSettings2, L"FindReplaceOpacityLevel", 50), 10, 100);
 
     IniSectionGetStringNoQuotes(IniSecSettings2, L"filebrowser.exe", L"", pPathBuffer, PATHLONG_MAX_CCH);
@@ -1499,13 +1497,6 @@ void LoadSettings()
 
 #endif
 
-    // ---  remove deprecated  ---
-    constexpr const WCHAR* const mocc = L"MarkOccurrencesMaxCount";
-    if (IniSectionGetLong(IniSecSettings2, mocc, -111) != -111) {
-        IniSectionDelete(IniSecSettings2, mocc, true);
-        bDirtyFlag = true;
-    }
-
     // --------------------------------------------------------------------------
     // Settings: IniSecSettings
     // --------------------------------------------------------------------------
@@ -1525,6 +1516,26 @@ void LoadSettings()
 #define GET_ENC_VALUE_FROM_INISECTION(VARNAME, DEFAULT, MIN, MAX) \
   Defaults.VARNAME = (cpi_enc_t)DEFAULT;                          \
   Settings.VARNAME = (cpi_enc_t)clampi(IniSectionGetInt(IniSecSettings, _W(_STRG(VARNAME)), (int)Defaults.VARNAME), (int)MIN, (int)MAX)
+
+    // ---  remove deprecated  --------------------------------------------------
+
+    GET_INT_VALUE_FROM_INISECTION(DarkModeHiglightContrast, 75, 0, 6000);
+    constexpr const WCHAR* const dmhlctrst = L"DarkModeHiglightContrast";
+    int const deprecatedDmHlC = IniSectionGetInt(IniSecSettings2, dmhlctrst, 0);
+    if (deprecatedDmHlC != 0) {
+        Settings.DarkModeHiglightContrast = clampi(deprecatedDmHlC, 0, 6000);
+        IniSectionDelete(IniSecSettings2, dmhlctrst, true);
+        bDirtyFlag = true;
+    }
+
+    constexpr const WCHAR* const mocc = L"MarkOccurrencesMaxCount";
+    if (IniSectionGetLong(IniSecSettings2, mocc, -111) != -111) {
+        IniSectionDelete(IniSecSettings2, mocc, true);
+        bDirtyFlag = true;
+    }
+
+    // --------------------------------------------------------------------------
+
 
     GET_BOOL_VALUE_FROM_INISECTION(SaveRecentFiles, true);
     GET_BOOL_VALUE_FROM_INISECTION(PreserveCaretPos, false);
@@ -2153,6 +2164,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, PreferredLocale4DateFmt);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SearchByClipboardIfEmpty);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ReplaceByClipboardTag);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, DarkModeHiglightContrast);
 
 #ifdef D_NP3_WIN10_DARK_MODE
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, WinThemeDarkMode);

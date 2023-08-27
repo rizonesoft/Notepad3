@@ -675,6 +675,7 @@ typedef struct SETTINGS_T {
     int  AutoSaveInterval;
     bool SearchByClipboardIfEmpty;
     bool ReplaceByClipboardTag;
+    int  DarkModeHiglightContrast;
 
     AutoSaveBackupOptions AutoSaveOptions;
 
@@ -767,10 +768,10 @@ typedef struct SETTINGS2_T {
     int     ZoomTooltipTimeout;
     int     WrapAroundTooltipTimeout;
     int     LargeIconScalePrecent;
+    int     DarkModeHiglightContrast;
 
     float   AnalyzeReliableConfidenceLevel;
     float   LocaleAnsiCodePageAnalysisBonus;
-    float   DarkModeHiglightContrast;
            
 #ifdef D_NP3_WIN10_DARK_MODE
     COLORREF DarkModeBkgColor;

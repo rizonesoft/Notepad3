@@ -467,6 +467,7 @@
 #define IDC_AS_BACKUP_SIDEBYSIDE        18133
 #define IDC_AS_BACKUP_OPENFOLDER        18134
 #define IDC_FILE_CHECK_INTERVAL         18135
+#define IDC_DARK_MODE_CONTRAST          18136
 
 #define IDC_RADIO_BTN_A                 18200
 #define IDC_RADIO_BTN_B                 18201
