@@ -37,6 +37,7 @@
 #include "Notepad3.h"
 #include "Config/Config.h"
 #include "DarkMode/DarkMode.h"
+#include "tinyexpr/tinyexpr.h"
 
 #include "SciCall.h"
 
@@ -3392,7 +3393,7 @@ bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORALPHAREF* rgba
         *rgbaOrig = color;
     }
     if (bFGLayer && UseDarkMode()) {
-        color = AxRGB(GetAValue(color), ContrastColor(ARGB_TO_COLREF(color), Settings2.DarkModeHiglightContrast));
+        color = AxRGB(GetAValue(color), ContrastColor(ARGB_TO_COLREF(color), ((float)Settings.DarkModeHiglightContrast / 100.0f)));
     }
     if (rgba) {
         *rgba = color;
@@ -4312,12 +4313,12 @@ void Style_AddLexerToListView(HWND hwnd,PEDITLEXER plex)
 //  Style_CustomizeSchemesDlgProc()
 //
 
-static bool  _ApplyDialogItemText(HWND hwnd,
-                                  PEDITLEXER pDlgLexer, PEDITSTYLE pDlgStyle, int iDlgStyleIdx, bool bIsStyleSelected)
+static bool  _ApplyDialogItemText(HWND hwnd, PEDITLEXER pDlgLexer, PEDITSTYLE pDlgStyle, int iDlgStyleIdx, bool bIsStyleSelected)
 {
     UNREFERENCED_PARAMETER(iDlgStyleIdx);
 
     bool bChgNfy = false;
+    bool bForce = false;
 
     WCHAR szBuf[max(BUFSIZE_STYLE_VALUE, STYLE_EXTENTIONS_BUFFER)] = { L'\0' };
     GetDlgItemText(hwnd, IDC_STYLEEDIT, szBuf, COUNTOF(szBuf));
@@ -4338,7 +4339,22 @@ static bool  _ApplyDialogItemText(HWND hwnd,
             bChgNfy = true;
         }
     }
-    if (bChgNfy && (IsLexerStandard(pDlgLexer) || (pDlgLexer == s_pLexCurrent))) {
+
+    char chDMHlContrast[96];
+    GetDlgItemTextA(hwnd, IDC_DARK_MODE_CONTRAST, chDMHlContrast, COUNTOF(chDMHlContrast));
+    te_int_t iExprError = 0;
+    int iDmHlCntrst = clampi((int)round(te_interp(chDMHlContrast, &iExprError)), 0, 6000);
+    if (iExprError > 1) {
+        chDMHlContrast[iExprError - 1] = '\0';
+        iDmHlCntrst = clampi((int)round(te_interp(chDMHlContrast, &iExprError)), 0, 6000);
+    }
+    if ((iExprError == 0) && (iDmHlCntrst != Settings.DarkModeHiglightContrast)) {
+        Settings.DarkModeHiglightContrast = iDmHlCntrst;
+        bForce = true;
+    }
+    SetDlgItemInt(hwnd, IDC_DARK_MODE_CONTRAST, Settings.DarkModeHiglightContrast, false);
+
+    if (bForce || (bChgNfy && (IsLexerStandard(pDlgLexer) || (pDlgLexer == s_pLexCurrent)))) {
         Style_ResetCurrentLexer(Globals.hwndEdit);
     }
     return bChgNfy;
@@ -4390,6 +4406,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     static HBRUSH     hbrBack = { 0 };
     static bool       bIsStyleSelected = false;
     static bool       bWarnedNoIniFile = false;
+    static int        iDMHighliteContrast = 75;
 
     static WCHAR      tchTmpBuffer[max(BUFSIZE_STYLE_VALUE, STYLE_EXTENTIONS_BUFFER)] = {L'\0'};
     static UT_array  *pStylesBackup = NULL;
@@ -4420,6 +4437,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SetExplorerTheme(GetDlgItem(hwnd, IDC_STYLEDEFAULT));
             SetExplorerTheme(GetDlgItem(hwnd, IDC_PREVSTYLE));
             SetExplorerTheme(GetDlgItem(hwnd, IDC_NEXTSTYLE));
+            SetExplorerTheme(GetDlgItem(hwnd, IDC_DARK_MODE_CONTRAST));
             SetExplorerTheme(GetDlgItem(hwnd, IDC_IMPORT));
             SetExplorerTheme(GetDlgItem(hwnd, IDC_EXPORT));
             //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
@@ -4528,6 +4546,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETFONT, (WPARAM)hFontTitle, true);
             SendDlgItemMessageW(hwnd, IDC_TITLE, WM_SETTEXT, 0, (LPARAM)s_TitleTxt);
         }
+
+        iDMHighliteContrast = Settings.DarkModeHiglightContrast;
+        SetDlgItemInt(hwnd, IDC_DARK_MODE_CONTRAST, iDMHighliteContrast, false);
+        SendDlgItemMessage(hwnd, IDC_DARK_MODE_CONTRAST, EM_LIMITTEXT, 80, 0);
+        EnableItem(hwnd, IDC_DARK_MODE_CONTRAST, UseDarkMode()); 
     }
     return TRUE;
 
@@ -5028,6 +5051,9 @@ CASE_WM_CTLCOLOR_SET:
             if (fDragging) {
                 SendMessage(hwnd, WM_CANCELMODE, 0, 0);
             } else {
+                Settings.DarkModeHiglightContrast = iDMHighliteContrast;
+                SetDlgItemInt(hwnd, IDC_DARK_MODE_CONTRAST, iDMHighliteContrast, false);
+
                 _ApplyDialogItemText(hwnd, pCurrentLexer, pCurrentStyle, iCurStyleIdx, bIsStyleSelected);
 
                 // Restore Styles from Backup

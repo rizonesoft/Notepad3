@@ -344,7 +344,7 @@ static inline int SetModeTextColor(const HDC hdc, const bool bDarkMode)
 {
 #ifdef D_NP3_WIN10_DARK_MODE
     //return SetTextColor(hdc, bDarkMode ? Settings2.DarkModeTxtColor : GetSysColor(COLOR_WINDOWTEXT));
-    return SetTextColor(hdc, bDarkMode ? ContrastColor(Settings2.DarkModeTxtColor, Settings2.DarkModeHiglightContrast) : GetSysColor(COLOR_WINDOWTEXT));
+    return SetTextColor(hdc, bDarkMode ? ContrastColor(Settings2.DarkModeTxtColor, ((float)Settings.DarkModeHiglightContrast / 100.0f)) : GetSysColor(COLOR_WINDOWTEXT));
 #else
     UNREFERENCED_PARAMETER(bDarkMode);
     return SetTextColor(hdc, GetSysColor(COLOR_WINDOWTEXT));
@@ -355,7 +355,7 @@ static inline COLORREF GetModeTextColor(const bool bDarkMode)
 {
 #ifdef D_NP3_WIN10_DARK_MODE
     //return bDarkMode ? Settings2.DarkModeTxtColor : (COLORREF)GetSysColor(COLOR_WINDOWTEXT);
-    return bDarkMode ? ContrastColor(Settings2.DarkModeTxtColor, Settings2.DarkModeHiglightContrast) : (COLORREF)GetSysColor(COLOR_WINDOWTEXT);
+    return bDarkMode ? ContrastColor(Settings2.DarkModeTxtColor, ((float)Settings.DarkModeHiglightContrast / 100.0f)) : (COLORREF)GetSysColor(COLOR_WINDOWTEXT);
 #else
     UNREFERENCED_PARAMETER(bDarkMode);
     return (COLORREF)GetSysColor(COLOR_WINDOWTEXT);
