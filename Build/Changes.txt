@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.731.(build_#) (2023-07-31)
+Current BETA/RC Version 6.23.827.(build_#) (2023-08-27)
 ========================================================
 
 --------------------------------------------------------
@@ -179,7 +179,7 @@ FIXES:
 REMOVED:
 --------------------------------------------------------
 [.###.#]- .
-[.###.#]- .
+[.827.1]- Removal of the "es-MX" language to keep only the "es-ES" language (MUI).
 
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
@@ -203,7 +203,6 @@ to resume "(incomplete...)" translation projects:
 
 - Greek (el-GR) (incomplete...)
 - Hindi (hi-IN) (incomplete...)
-- Spanish Mexican (es-MX) (incomplete...)
 - Vietnamese (vi-VN) (incomplete...)
 - etc...
 
