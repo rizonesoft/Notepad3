@@ -674,19 +674,30 @@ static bool GetTrayWndRect(LPRECT lpTrayRect) {
     return false;
 }
 
-// Check to see if the animation has been disabled
-/*static */ bool GetDoAnimateMinimize(VOID) {
-    ANIMATIONINFO ai;
 
+// Check to see if the animation has been disabled
+bool GetSetDoAnimateMinimize(const int flag)
+{
+    ANIMATIONINFO ai;
     ai.cbSize = sizeof(ai);
     SystemParametersInfo(SPI_GETANIMATION, sizeof(ai), &ai, 0);
-
-    return ai.iMinAnimate ? true : false;
+    bool const bRes = ai.iMinAnimate ? true : false;
+    if (flag == 0 && bRes) {
+        ai.iMinAnimate = 0;
+        SystemParametersInfo(SPI_SETANIMATION, sizeof(ai), &ai, 0);
+    }
+    else if (flag > 0 && !bRes) {
+        ai.iMinAnimate = 1;
+        SystemParametersInfo(SPI_SETANIMATION, sizeof(ai), &ai, 0);
+    }
+    return bRes;
 }
+
+
 
 void MinimizeWndToTray(HWND hWnd) {
 
-    bool const bAnimate = GetDoAnimateMinimize();
+    bool const bAnimate = GetSetDoAnimateMinimize(-1);
 
     if (bAnimate) {
 
@@ -714,7 +725,7 @@ void MinimizeWndToTray(HWND hWnd) {
 
 void RestoreWndFromTray(HWND hWnd) {
 
-    if (GetDoAnimateMinimize()) {
+    if (GetSetDoAnimateMinimize(-1)) {
 
         // Get the rect of the tray and the window. Note that the window rect
         // is still valid even though the window is hidden
@@ -4740,7 +4751,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode, UINT n
         }
         else {
             WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hwnd, &winInfo, mode, nCmdShow);
-            if (GetDoAnimateMinimize() && wndpl.showCmd) {
+            if (GetSetDoAnimateMinimize(-1) && wndpl.showCmd) {
                 DrawAnimatedRects(hwnd, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
             }
             SetWindowPlacement(hwnd, &wndpl); // 1st set correct screen (DPI Aware)
@@ -4761,7 +4772,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode, UINT n
         GetMonitorInfo(MonitorFromWindow(hwnd, MONITOR_DEFAULTTOPRIMARY), &mi);
         SetWindowLong(hwnd, GWL_STYLE, dwStyle & ~dwRmvFScrStyle);
         WINDOWPLACEMENT const wndpl = WindowPlacementFromInfo(hwnd, NULL, mode, nCmdShow);
-        if (GetDoAnimateMinimize() && wndpl.showCmd) {
+        if (GetSetDoAnimateMinimize(-1) && wndpl.showCmd) {
             DrawAnimatedRects(hwnd, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
         }
         SetWindowPlacement(hwnd, &wndpl);

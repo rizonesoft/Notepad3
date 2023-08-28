@@ -40,7 +40,7 @@
 // ----------------------------------------------------------------------------
 
 // === MinimizeToTray Functions - see comments in Dialogs.c  ===
-bool GetDoAnimateMinimize();
+bool GetSetDoAnimateMinimize(const int flag);
 void MinimizeWndToTray(HWND hWnd);
 void RestoreWndFromTray(HWND hWnd);
 

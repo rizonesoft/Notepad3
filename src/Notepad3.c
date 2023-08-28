@@ -1936,6 +1936,8 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     // initial set text in front of ShowWindow()
     EditSetNewText(Globals.hwndEdit, "", 0, false, false);
 
+    GetSetDoAnimateMinimize(Settings2.DrawAnimatedWindow ? 1 : 0);
+
     ShowWindowAsync(s_hwndEditFrame, SW_SHOWDEFAULT);
     ShowWindowAsync(Globals.hwndEdit, SW_SHOWDEFAULT);
     //~SnapToWinInfoPos(hwndMain, g_IniWinInfo, SCR_NORMAL, SW_HIDE); ~ instead set all needed properties  here:
