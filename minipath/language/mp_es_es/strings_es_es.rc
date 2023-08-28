@@ -132,7 +132,7 @@ BEGIN
     IDS_COPYMOVE            "Seleccionar una carpeta de destino."
     IDS_CREATELINK          "Seleccionar una carpeta de destino para el nuevo enlace."
     IDS_SAVESETTINGS        "Guardar configuración\nLa configuración actual del programa se ha guardado."
-    IDS_MUI_TRANSL_AUTHOR   "(es-ES) Traducción española por hpwamr"
+    IDS_MUI_TRANSL_AUTHOR   "(es-ES) Traducción española por Giulidan"
 END
 
 

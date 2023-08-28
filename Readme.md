@@ -456,8 +456,6 @@ New parameter "[Settings2] ExitOnESCSkipLevel = 2"
 
 #### `DarkModeTxtColor=0xEFEFEF`
 
-#### `DarkModeHiglightContrast=75`
-
 #### `HyperlinkShellExURLWithApp=""`
 
 - If not defined or empty the default behavior on `Ctrl+Click` URL is performed:

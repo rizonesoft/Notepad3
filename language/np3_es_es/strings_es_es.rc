@@ -249,7 +249,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(es-ES) Traducción española por hpwamr"
+    IDS_MUI_TRANSL_AUTHOR   "(es-ES) Traducción española por Giulidan"
     IDS_MUI_TITLE_FIXBASE   "BASE (%s)"
     IDS_MUI_TITLE_RELCUR    "+++ %s: %s Estilo +++"
     IDS_MUI_TITLE_FIXCUR    "%s: %s Estilo"
