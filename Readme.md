@@ -182,6 +182,10 @@ Specify the default extension for saved files (omit the leading dot, just like t
 
 #### `DenyVirtualSpaceAccess=0`
 
+#### `DrawAnimatedWindow=true`
+
+Option to disable animated maximum/minimum window.
+
 #### `filebrowser.exe=minipath.exe`
 
 Specify the path of an external program that is launched when pressing the Browse toolbar button. 
