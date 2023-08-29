@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_SAVE        "この編集を保存しますか?\n「%s」"
     IDS_MUI_ASK_REVERT      "最後に保存された内容で再読み込みしますか?"
     IDS_MUI_ASK_RECODE      "読み直しはファイルを再読み込みするため、変更内容は失われます!"
-    IDS_MUI_ASK_CREATE      "「%s」は存在しません。\nこのファイルを作成しますか?"
+    IDS_MUI_ASK_CREATE      "次のファイルは存在しません。作成しますか?\n%s"
     IDS_MUI_PRINT_HEADER    "ファイル名, 現在の日付と時刻|ファイル名, 現在の日付|ファイル名|空欄のまま"
     IDS_MUI_PRINT_FOOTER    "ページ番号|空欄のまま"
     IDS_MUI_PRINT_COLOR     "通常|明るさの反転 (暗い背景)|白背景に黒|白背景にカラー|白背景にカラー (行番号以外)|モニタ上の色"
