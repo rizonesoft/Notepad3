@@ -3741,10 +3741,10 @@ void EditToggleLineCommentsSimple(LPCWSTR pwszComment, bool bInsertAtStart, LnCm
 
     if (StrIsNotEmpty(pwszComment)) {
         char mszPostfix[64 * 3] = { '\0' };
-        WideCharToMultiByteEx(Encoding_SciCP, 0, pwszComment, -1, mszPrefix, COUNTOF(mszPrefix), NULL, NULL);
+        WideCharToMultiByte(Encoding_SciCP, 0, pwszComment, -1, mszPrefix, COUNTOF(mszPrefix), NULL, NULL);
         StringCchCopyA(mszComment, COUNTOF(mszComment), mszPrefix);
         if (StrIsNotEmpty(Settings2.LineCommentPostfixStrg)) {
-            WideCharToMultiByteEx(Encoding_SciCP, 0, Settings2.LineCommentPostfixStrg, -1, mszPostfix, COUNTOF(mszPostfix), NULL, NULL);
+            WideCharToMultiByte(Encoding_SciCP, 0, Settings2.LineCommentPostfixStrg, -1, mszPostfix, COUNTOF(mszPostfix), NULL, NULL);
             StringCchCatA(mszComment, COUNTOF(mszComment), mszPostfix);
         }
     }
