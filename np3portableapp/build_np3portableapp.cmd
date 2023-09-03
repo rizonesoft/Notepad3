@@ -177,11 +177,6 @@ del /f /q "%NP3_PORTAPP_INFO%_tmp.ini"
 
 :: ---------------------------------------------------------------------------------------------------
 
-:: - Copy "Additional Notepad3Portable.cmd Launcher" to "Notepad3Portable PAF [ROOT]" -
-if exist "%NP3_PORTAPP_DIR%\Other\Source\Notepad3Portable.cmd" (
-copy /B "%NP3_PORTAPP_DIR%\Other\Source\Notepad3Portable.cmd" "%NP3_PORTAPP_DIR%\Notepad3Portable.cmd" /Y /V 
-)
-
 :: --- build Launcher and Installer Package ---
 
 :: - build Launcher -
