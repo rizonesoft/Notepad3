@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.830.(build_#) (2023-08-30)
+Current BETA/RC Version 6.23.903.(build_#) (2023-09-03)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.903.1]- Python stream comment hack.
 [.830.1]- "DrawAnimatedWindow": Option to disable animated max./min. window.
 [.827.1]- Add Dark-Mode Contrast control for Schemes configuration.
 [.707.1]- Add new Toolbar button "New Empty Window".
@@ -48,7 +49,6 @@ NEW:
 [.702.1]- Add new Toolbar button "Reset Zoom".
 [.619.1]- Indentation guide coloring on matching brace highlight.
 [.513.1]- Option on F/R dialog: incremental search ON/OFF.
-[.512.1]- Add an "Additional Notepad3Portable.cmd Launcher".
 [.504.1]- Option: do not save blank new files.
 [.430.1]- Option to show/hide titlebar.
 [.424.1]- Localization in INNO Setup of "Open with Notepad3" (SUP).
@@ -114,7 +114,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
-[.718.1]- Show hidden menu bar on Alt or F10 key.
+[.903.1]- Python Line Comment : respect indents.
 [.718.1]- TinyExpr Output formatter.
 [.711.1]- RegEx search with begin/end line meta chars.
 [.710.1]- Recoding for UTF-16.
