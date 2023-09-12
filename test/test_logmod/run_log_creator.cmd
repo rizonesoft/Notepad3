@@ -6,8 +6,8 @@ setlocal EnableExtensions EnableDelayedExpansion
 set _SCRIPTDIR_=%~dp0
 pushd %_SCRIPTDIR_%
 
-::call :RESOLVE_PATH  _EXE_PATH_  "..\..\Bin\Debug_x64_v143\Notepad3.exe"
-call :RESOLVE_PATH  _EXE_PATH_  "..\..\Bin\Release_x64_v143\Notepad3.exe"
+call :RESOLVE_PATH  _EXE_PATH_  "..\..\Bin\Debug_x64_v143\Notepad3.exe"
+::call :RESOLVE_PATH  _EXE_PATH_  "..\..\Bin\Release_x64_v143\Notepad3.exe"
 
 call :RESOLVE_PATH  _LOG_FILE_  ".\log.txt"
 
@@ -15,7 +15,7 @@ rem - create new/overwrite logfile
 echo. New Log Line 1 > "%_LOG_FILE_%"
 
 rem - start Notepad3
-start "NP3" /D "%_SCRIPTDIR_%" /B /I "%_EXE_PATH_%" /l "%_LOG_FILE_%"
+::start "NP3" /D "%_SCRIPTDIR_%" /B /I "%_EXE_PATH_%" /l "%_LOG_FILE_%"
 
 rem - append to logfile
 for /L %%a in (2,1,60) do (
