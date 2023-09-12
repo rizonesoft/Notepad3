@@ -1,7 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # gperf_fold_key_conv.py
-# Copyright (c) 2016-2018  K.Kosako
+# Copyright (c) 2016-2023  K.Kosako
 
 import sys
 import re
@@ -52,7 +52,7 @@ def parse_line(s, key_len):
     return s
 
 def parse_file(f, key_len):
-    print "/* This file was converted by gperf_fold_key_conv.py\n      from gperf output file. */"
+    print("/* This file was converted by gperf_fold_key_conv.py\n      from gperf output file. */")
 
     while True:
         line = f.readline()
@@ -60,7 +60,7 @@ def parse_file(f, key_len):
             break
 
         s = parse_line(line, key_len)
-        print s
+        print(s)
 
 
 # main

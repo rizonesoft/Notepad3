@@ -16,8 +16,8 @@ typedef unsigned long long st_data_t;
 typedef struct st_table st_table;
 
 struct st_hash_type {
-    int (*compare)();
-    int (*hash)();
+    int (*compare)(st_data_t, st_data_t);
+    int (*hash)(st_data_t);
 };
 
 struct st_table {

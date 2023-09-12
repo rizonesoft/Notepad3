@@ -35,6 +35,7 @@ m4/*.m4
 /coverage
 /coverage.info
 /fuzzers
+/.vscode
 
 # src/
 /src/unicode_fold?_key.gperf
