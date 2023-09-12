@@ -1,7 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # gperf_unfold_key_conv.py
-# Copyright (c) 2016-2018  K.Kosako
+# Copyright (c) 2016-2023  K.Kosako
 
 import sys
 import re
@@ -44,12 +44,12 @@ def parse_line(s):
     return s
 
 def parse_file(f):
-    print "/* This file was converted by gperf_unfold_key_conv.py\n      from gperf output file. */"
+    print("/* This file was converted by gperf_unfold_key_conv.py\n      from gperf output file. */")
 
     line = f.readline()
     while line:
         s = parse_line(line)
-        print s
+        print(s)
         line = f.readline()
 
 
