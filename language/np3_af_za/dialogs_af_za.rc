@@ -96,7 +96,7 @@ BEGIN
     CONTROL         "Pas slegs &begin van die woord aan",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,123,10
     CONTROL         "&Transformeer terugslag",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,90,10
     CONTROL         "Gereelde &uitdrukkingssoektog",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,108,10
-    CONTROL         "&Dot pas alles by",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
+    CONTROL         "Dot &matches line-breaks",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,65,10
     CONTROL         "&Moenie omdraai nie",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,37,77,10
     CONTROL         "Maak toe &na vind",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,49,67,10
     CONTROL         "Merk &gebeurtenisse",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,61,75,10
@@ -130,7 +130,7 @@ BEGIN
     CONTROL         "Pas slegs &begin van die woord aan",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,123,10
     CONTROL         "&Transformeer terugslag",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
     CONTROL         "Gereelde &uitdrukkingssoektog",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,108,10
-    CONTROL         "&Dot pas alles by",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
+    CONTROL         "Dot &matches line-breaks",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,65,10
     CONTROL         "&Moenie omdraai nie",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,66,77,10
     CONTROL         "Maak toe &na vervang",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,78,80,10
     CONTROL         "Merk &gebeurtenisse",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,90,75,10
