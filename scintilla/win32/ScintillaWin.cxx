@@ -366,7 +366,10 @@ class ScintillaWin :
 	static ATOM scintillaClassAtom;
 	static ATOM callClassAtom;
 
-	int deviceScaleFactor = 1;
+	float deviceScaleFactor = 1.f;
+	int GetFirstIntegralMultipleDeviceScaleFactor() const noexcept {
+		 return static_cast<int>(std::ceil(deviceScaleFactor));
+	}
 
 #if defined(USE_D2D)
 	ID2D1RenderTarget *pRenderTarget;
@@ -733,14 +736,15 @@ void ScintillaWin::EnsureRenderTarget(HDC hdc) {
 			}
 
 		} else {
-			drtp.dpiX = 96.f * deviceScaleFactor;
-			drtp.dpiY = 96.f * deviceScaleFactor;
+			const int integralDeviceScaleFactor = GetFirstIntegralMultipleDeviceScaleFactor();
+			drtp.dpiX = 96.f * integralDeviceScaleFactor;
+			drtp.dpiY = 96.f * integralDeviceScaleFactor;
 			drtp.pixelFormat = D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN,
 				D2D1_ALPHA_MODE_UNKNOWN);
 
 			D2D1_HWND_RENDER_TARGET_PROPERTIES dhrtp {};
 			dhrtp.hwnd = hw;
-			dhrtp.pixelSize = ::GetSizeUFromRect(rc, deviceScaleFactor);
+			dhrtp.pixelSize = ::GetSizeUFromRect(rc, integralDeviceScaleFactor);
 			dhrtp.presentOptions = (technology == Technology::DirectWriteRetain) ?
 			D2D1_PRESENT_OPTIONS_RETAIN_CONTENTS : D2D1_PRESENT_OPTIONS_NONE;
 
@@ -785,7 +789,7 @@ void ScintillaWin::DisplayCursor(Window::Cursor c) {
 		c = static_cast<Window::Cursor>(cursorMode);
 	}
 	if (c == Window::Cursor::reverseArrow) {
-		::SetCursor(reverseArrowCursor.Load(dpi));
+		::SetCursor(reverseArrowCursor.Load(static_cast<UINT>(dpi * deviceScaleFactor)));
 	} else {
 		wMain.SetCursor(c);
 	}
@@ -1330,11 +1334,6 @@ sptr_t ScintillaWin::HandleCompositionInline(uptr_t, sptr_t lParam) {
 				const Sci::Position imeCaretPosDoc = pdoc->GetRelativePositionUTF16(currentPos, imeEndToImeCaretU16);
 
 				MoveImeCarets(-currentPos + imeCaretPosDoc);
-
-				if (std::find(imeIndicator.begin(), imeIndicator.end(), IndicatorTarget) != imeIndicator.end()) {
-					// set candidate window left aligned to beginning of target string.
-					SetCandidateWindowPos();
-				}
 			}
 		}
 
@@ -3077,7 +3076,7 @@ void ScintillaWin::ImeStartComposition() {
 		// Move IME Window to current caret position
 		IMContext imc(MainHWND());
 		const Point pos = PointMainCaret();
-		COMPOSITIONFORM CompForm;
+		COMPOSITIONFORM CompForm {};
 		CompForm.dwStyle = CFS_POINT;
 		CompForm.ptCurrentPos = POINTFromPoint(pos);
 
@@ -3703,7 +3702,7 @@ LRESULT PASCAL ScintillaWin::CTWndProc(
 					surfaceWindow->Init(ps.hdc, hWnd);
 				} else {
 #if defined(USE_D2D)
-					const int scaleFactor = sciThis->deviceScaleFactor;
+					const int scaleFactor = sciThis->GetFirstIntegralMultipleDeviceScaleFactor();
 
 					// Create a Direct2D render target.
 					D2D1_HWND_RENDER_TARGET_PROPERTIES dhrtp {};
