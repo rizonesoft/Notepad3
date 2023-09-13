@@ -96,7 +96,7 @@ BEGIN
     CONTROL         "Ταίριασμα μόνο α&ρχής λέξης",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,108,10
     CONTROL         "&Μετασχ. ανάστρ. καθέτων",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,100,10
     CONTROL         "&Αναζ. κανονικής έκφρασης",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,102,10
-    CONTROL         "Η &τελεία ταιριάζει σε όλα",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,94,10
+    CONTROL         "Dot &matches line-breaks",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,94,10
     CONTROL         "Χωρίς επανέναρ&ξη",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
     CONTROL         "&Κλείσιμο μετά την εύρεση",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,97,10
     CONTROL         "Σήμανση εμ&φανίσεων",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,84,10
@@ -130,7 +130,7 @@ BEGIN
     CONTROL         "Ταίριασμα μόνο α&ρχής λέξης",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,108,10
     CONTROL         "&Μετασχ. ανάστρ. καθέτων",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,100,10
     CONTROL         "&Αναζ. κανονικής έκφρασης",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,102,10
-    CONTROL         "Η &τελεία ταιριάζει σε όλα",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,94,10
+    CONTROL         "Dot &matches line-breaks",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,94,10
     CONTROL         "Χωρίς επανέναρ&ξη",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
     CONTROL         "&Κλείσιμο μετά αντικ/ση",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,89,10
     CONTROL         "Σήμανση εμ&φανίσεων",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,84,10
