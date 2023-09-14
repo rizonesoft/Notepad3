@@ -130,7 +130,7 @@ BEGIN
     CONTROL         "Толькі па&чаткі слоў",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,82,10
     CONTROL         "С&імвалы кіравання",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,79,10
     CONTROL         "Рэгулярныя &выразы",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,84,10
-    CONTROL         "Dot &matches line-breaks",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,93,10
+    CONTROL         "Dot &matches line-breaks",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,124,93,10
     CONTROL         "Не з&ацыкліваць",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,66,69,10
     CONTROL         "&Закрыць пасля замены",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,78,93,10
     CONTROL         "Адзначыць ува&ходжанні",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,90,99,10
