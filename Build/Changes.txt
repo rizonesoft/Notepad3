@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.903.(build_#) (2023-09-03)
+Current BETA/RC Version 6.23.913.(build_#) (2023-09-13)
 ========================================================
 
 --------------------------------------------------------
@@ -67,6 +67,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.913.1]- Line comment indentation for complaint prog. lng (issue #4983).
 [.827.1]- Python default dark-mode colors for comment and keywords.
 [.731.1]- Comment out "MSIX" attributes in applications manifest.
 [.718.1]- Move Join Lines, Split Lines, Fuse Lines, Preserve Paragr. from Lines to Selection menu.
@@ -114,7 +115,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.913.1]- RegularExpression broken.
 [.903.1]- Python Line Comment : respect indents.
+[.718.1]- Show hidden menu bar on Alt or F10 key.
 [.718.1]- TinyExpr Output formatter.
 [.711.1]- RegEx search with begin/end line meta chars.
 [.710.1]- Recoding for UTF-16.
@@ -187,10 +190,10 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
+[.913.1]- Update Lexilla Library (LEX) version 5.2.6 dev. (2023-07-26).
+[.913.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2023-03-27) (intermediate).
 [.619.1]- Update grepWinNP3 (GRE) version 2.1.15.47 (2023-06-19).
-[.619.1]- Update Lexilla Library (LEX) version 5.2.5 dev. (2023-05-31).
 [.619.1]- Update Scintilla Library (SCI) version 5.3.5 dev. (2023-05-31).
-[.521.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2023-03-27).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
 
 --------------------------------------------------------

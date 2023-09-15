@@ -114,37 +114,39 @@ bool Lexer_GetLineCommentStrg(LPWSTR pre_out, size_t maxlen)
         case SCLEX_VBSCRIPT:
             SET_COMMENT_STRG(L"'", false);
         case SCLEX_AVS:
-        case SCLEX_BASH:
-        case SCLEX_CMAKE:
         case SCLEX_COFFEESCRIPT:
         case SCLEX_CONF:
-        case SCLEX_MAKEFILE:
         case SCLEX_NIM:
-        case SCLEX_PERL:
         case SCLEX_PHPSCRIPT:
-        case SCLEX_POWERSHELL:
         case SCLEX_R:
-        case SCLEX_RUBY:
         case SCLEX_TCL:
         case SCLEX_TOML:
         case SCLEX_YAML:
             SET_COMMENT_STRG(L"#", true);
+        case SCLEX_BASH:
+        case SCLEX_CMAKE:
+        case SCLEX_MAKEFILE:
+        case SCLEX_PERL:
         case SCLEX_PYTHON:
+        case SCLEX_POWERSHELL:
+        case SCLEX_RUBY:
             SET_COMMENT_STRG(L"#", false);
-        case SCLEX_AHK:
         case SCLEX_ASM:
-        case SCLEX_AU3:
         case SCLEX_INNOSETUP:
         case SCLEX_NSIS: // "#" could also be used instead
         case SCLEX_PROPERTIES:
-        case SCLEX_REGISTRY:
             SET_COMMENT_STRG(L";", true);
+        case SCLEX_AHK:
+        case SCLEX_AU3:
+        case SCLEX_REGISTRY:
+            SET_COMMENT_STRG(L";", false);
         case SCLEX_LUA:
         case SCLEX_SQL:
         case SCLEX_VHDL:
             SET_COMMENT_STRG(L"--", true);
-        case SCLEX_BATCH: // "::" could also be used instead
-            SET_COMMENT_STRG(L"rem ", true);
+        case SCLEX_BATCH:
+            //SET_COMMENT_STRG(L":: ", true);
+            SET_COMMENT_STRG(L"rem ", false);
         case SCLEX_LATEX:
         case SCLEX_MATLAB:
             SET_COMMENT_STRG(L"%", true);
@@ -170,7 +172,6 @@ bool Lexer_GetLineCommentStrg(LPWSTR pre_out, size_t maxlen)
                 SET_COMMENT_STRG(L"#", false);
             }
         }
-        // [[fallthrough]] // -> XML
         case SCLEX_XML:
         default:
             SET_COMMENT_STRG(L"", false);

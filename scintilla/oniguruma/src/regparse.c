@@ -548,8 +548,10 @@ typedef struct {
 } st_str_end_key;
 
 static int
-str_end_cmp(st_str_end_key* x, st_str_end_key* y)
+str_end_cmp(st_data_t ax, st_data_t ay)
 {
+  st_str_end_key* x = (st_str_end_key* )ax;
+  st_str_end_key* y = (st_str_end_key* )ay;
   UChar *p, *q;
   int c;
 
@@ -569,8 +571,9 @@ str_end_cmp(st_str_end_key* x, st_str_end_key* y)
 }
 
 static int
-str_end_hash(st_str_end_key* x)
+str_end_hash(st_data_t ax)
 {
+  st_str_end_key* x = (st_str_end_key* )ax;
   UChar *p;
   unsigned val = 0;
 
@@ -635,8 +638,10 @@ typedef struct {
 } st_callout_name_key;
 
 static int
-callout_name_table_cmp(st_callout_name_key* x, st_callout_name_key* y)
+callout_name_table_cmp(st_data_t ax, st_data_t ay)
 {
+  st_callout_name_key* x = (st_callout_name_key* )ax;
+  st_callout_name_key* y = (st_callout_name_key* )ay;
   UChar *p, *q;
   int c;
 
@@ -658,8 +663,9 @@ callout_name_table_cmp(st_callout_name_key* x, st_callout_name_key* y)
 }
 
 static int
-callout_name_table_hash(st_callout_name_key* x)
+callout_name_table_hash(st_data_t ax)
 {
+  st_callout_name_key* x = (st_callout_name_key* )ax;
   UChar *p;
   unsigned int val = 0;
 

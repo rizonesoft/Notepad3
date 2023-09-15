@@ -96,7 +96,7 @@ BEGIN
     CONTROL         "Только &начало слов",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,83,10
     CONTROL         "&Управляющие символы",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,95,10
     CONTROL         "Регулярные &выражения",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,97,10
-    CONTROL         "Т&очка — любой символ",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,94,10
+    CONTROL         "Dot &matches line-breaks",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,94,10
     CONTROL         "Не з&ацикливать",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,37,70,10
     CONTROL         "&Закрыть после поиска",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,49,92,10
     CONTROL         "Отметить в&хождения",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,61,89,10
@@ -130,7 +130,7 @@ BEGIN
     CONTROL         "Только &начало слов",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,83,10
     CONTROL         "&Управляющие символы",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,95,10
     CONTROL         "Регулярные &выражения",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
-    CONTROL         "Т&очка — любой символ",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,125,94,10
+    CONTROL         "Dot &matches line-breaks",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,124,94,10
     CONTROL         "Не з&ацикливать",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,66,70,10
     CONTROL         "&Закрыть после замены",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,78,93,10
     CONTROL         "Отметить в&хождения",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,133,90,89,10

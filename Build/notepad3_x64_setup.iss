@@ -5,8 +5,6 @@
 ; Requirements:
 ; Inno Setup: https://jrsoftware.org/isinfo.php
 
-;Thanks to "Wilenty" for his great help in improving the INNO Setup installer
-
 ; Preprocessor related stuff
 // if you compile a "beta, rc or rc2" version, then comment/un-comment the appropriate setting:
 ;#define VRSN=" beta"
@@ -14,16 +12,16 @@
 ;#define VRSN=" rc2"
 // but, if not a "beta, rc or rc2" version, then comment above settings and un-comment below setting :)
 #define VRSN
-#IfnDef VRSN
+#ifndef VRSN
   #error Please set any of the above: #define VRSN(...)
-#EndIf
+#endif
 
 // choose which architecture should be compiled (one of below)
 ;#define Arch="x86"
 #define Arch="x64"
-#IfnDef Arch
+#ifndef Arch
   #error Please set any of the above: #define Arch=(...)
-#EndIf
+#endif
 
 #define sse_required
 #define sse2_required
@@ -57,9 +55,9 @@
 // 6.2.0 in hex: 0x06020000
 #if VER < 0x06020000
   #define app_version GetFileVersion(bindir + RLSdir + "\Notepad3.exe")
-#Else
+#else
   #define app_version GetVersionNumbersString(bindir + RLSdir + "\Notepad3.exe")
-#EndIf
+#endif
 #define app_copyright "Copyright © 2008-" + GetDateTimeString("yyyy", "", "") + " Rizonesoft"
 #define quick_launch "{userappdata}\Microsoft\Internet Explorer\Quick Launch"
 
@@ -95,20 +93,19 @@ DisableReadyPage=yes
 DisableWelcomePage=no
 AllowCancelDuringInstall=yes
 UsedUserAreasWarning=no
-MinVersion=0,6.1.7601
-#If Arch == "x86"
+MinVersion=0,6.1sp1
+#if Arch == "x86"
 ArchitecturesAllowed=x86 x64 arm64
 ArchitecturesInstallIn64BitMode=
-#EndIf
-#If Arch == "x64"
+#endif
+#if Arch == "x64"
 ArchitecturesAllowed=x64 arm64
 ArchitecturesInstallIn64BitMode=x64 arm64
-#EndIf
+#endif
 CloseApplications=true
 SetupMutex={#app_name}_setup_mutex,Global\{#app_name}_setup_mutex
 SetupIconFile=.\Resources\Notepad3SetupIconFile.ico
 WizardImageFile=.\Resources\WizardImageFileSmall.bmp
-
 
 [Languages]
 Name: "enu"; MessagesFile: "compiler:Default.isl"
@@ -170,7 +167,7 @@ cht.BeveledLabel=Chinese (TW)
 enu.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
 #ifdef sse_required
 enu.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
-#EndIf
+#endif
 #ifdef sse2_required
 enu.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
 #endif
@@ -189,7 +186,7 @@ enu.reg_Open_with_NP3=Open with {#app_name}
 afk.msg_DeleteSettings=Wil jy ook {#app_name} se instellings en temas uitvee?%n%nAs jy beplan om {#app_name} weer te installeer, hoef jy dit nie uit te vee nie.
 #ifdef sse_required
 afk.msg_simd_sse=Hierdie bou van {#app_name} vereis 'n SVE met SSE-uitbreidingsteun.%n%nJou SVE het nie daardie vermoëns nie.
-#EndIf
+#endif
 #ifdef sse2_required
 afk.msg_simd_sse2=Hierdie bou van {#app_name} vereis 'n SVE met SSE2-uitbreidingsteun.%n%nJou SVE het nie daardie vermoëns nie.
 #endif
@@ -208,7 +205,7 @@ afk.reg_Open_with_NP3=Maak oop met {#app_name}
 bel.msg_DeleteSettings=Вы хочаце таксама выдаліць налады і тэмы {#app_name}?%n%nКалі вы плануеце ўсталяваць {#app_name} зноў, то вам не трэба іх выдаляць.
 #ifdef sse_required
 bel.msg_simd_sse=Гэтая зборка {#app_name} патрабуе працэсар з падтрымкай набору каманд SSE.%n%nВаш працэсар не мае такой падтрымкі.
-#EndIf
+#endif
 #ifdef sse2_required
 bel.msg_simd_sse2=Гэтая зборка {#app_name} патрабуе працэсар з падтрымкай набору каманд SSE2.%n%nВаш працэсар не мае такой падтрымкі.
 #endif
@@ -227,7 +224,7 @@ bel.reg_Open_with_NP3=Адкрыць з дапамогай {#app_name}
 deu.msg_DeleteSettings=Wollen sie die Einstellungen und Themen von {#app_name} löschen?%n%nWenn sie planen {#app_name} erneut zu installieren, dann müssen diese Einstellungen nicht gelöscht werden.
 #ifdef sse_required
 deu.msg_simd_sse=Diese Version von {#app_name} benötigt eine CPU mit welche die SSE Erweiterung unterstützt.%n%nIhre CPU hat diese Fähigkeiten nicht.
-#EndIf
+#endif
 #ifdef sse2_required
 deu.msg_simd_sse2=Diese Version von {#app_name} benötigt eine CPU mit welche die SSE2 Erweiterung unterstützt.%n%nIhre CPU hat diese Fähigkeiten nicht.
 #endif
@@ -246,7 +243,7 @@ deu.reg_Open_with_NP3=Öffnen mit {#app_name}
 ell.msg_DeleteSettings=Θέλετε επίσης να διαγράψετε τις ρυθμίσεις και τα θέματα του {#app_name};%n%nΕάν σκοπεύετε να εγκαταστήσετε ξανά το {#app_name}, τότε δεν χρειάζεται να τα διαγράψετε.
 #ifdef sse_required
 ell.msg_simd_sse=Αυτή η έκδοση του {#app_name} απαιτεί CPU με υποστήριξη επέκτασης SSE.%n%nΗ CPU σας δεν έχει αυτές τις δυνατότητες.
-#EndIf
+#endif
 #ifdef sse2_required
 ell.msg_simd_sse2=Αυτή η έκδοση του {#app_name} απαιτεί CPU με υποστήριξη επέκτασης SSE2.%n%nΗ CPU σας δεν έχει αυτές τις δυνατότητες.
 #endif
@@ -265,7 +262,7 @@ ell.reg_Open_with_NP3=Άνοιγμα με {#app_name}
 eng.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
 #ifdef sse_required
 eng.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
-#EndIf
+#endif
 #ifdef sse2_required
 eng.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
 #endif
@@ -283,10 +280,10 @@ eng.reg_Open_with_NP3=Open with {#app_name}
 
 esn.msg_DeleteSettings=¿También quieres eliminar la configuración y los temas de {#app_name}?%n%nSi planeas instalar {#app_name} nuevamente, no tienes que eliminarlos.
 #ifdef sse_required
-esn.msg_simd_sse=Esta compilación de {#app_name} requiere una CPU compatible con la extensión SSE.%n%nTu CPU no tiene esas capacidades.
-#EndIf
+esn.msg_simd_sse=Esta compilación de {#app_name} requiere una CPU compatible con la extensión SSE.%n%nSu CPU no tiene esas capacidades.
+#endif
 #ifdef sse2_required
-esn.msg_simd_sse2=Esta compilación de {#app_name} requiere una CPU compatible con la extensión SSE2.%n%nTu CPU no tiene esas capacidades.
+esn.msg_simd_sse2=Esta compilación de {#app_name} requiere una CPU compatible con la extensión SSE2.%n%nSu CPU no tiene esas capacidades.
 #endif
 esn.tsk_AllUsers=Para todos los usuarios
 esn.tsk_CurrentUser=Sólo para el usuario actual
@@ -303,7 +300,7 @@ esn.reg_Open_with_NP3=Abrir con {#app_name}
 fra.msg_DeleteSettings=Voulez-vous également supprimer tous les réglages et thèmes de {#app_name} ?%n%nSi vous comptez réinstaller {#app_name}, vous pouvez les garder.
 #ifdef sse_required
 fra.msg_simd_sse=Cette édition de {#app_name} nécessite un CPU supportant l'extension SSE.%n%nVotre CPU ne dispose pas de ces capacités.
-#EndIf
+#endif
 #ifdef sse2_required
 fra.msg_simd_sse2=Cette édition de {#app_name} nécessite un CPU supportant l'extension SSE2.%n%nVotre CPU ne dispose pas de ces capacités.
 #endif
@@ -322,7 +319,7 @@ fra.reg_Open_with_NP3=Ouvrir avec {#app_name}
 hin.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
 #ifdef sse_required
 hin.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
-#EndIf
+#endif
 #ifdef sse2_required
 hin.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
 #endif
@@ -341,7 +338,7 @@ hin.reg_Open_with_NP3={#app_name} से खोलें
 hun.msg_DeleteSettings=Törölni szeretné {#app_name} beállításait is?%n%nHa újra szeretné telepíteni {#app_name}-t, akkor nem szükséges törölni.
 #ifdef sse_required
 hun.msg_simd_sse=Ahhoz, hogy {#app_name} ezen változata jól fusson, SSE kiterjesztés támogatással bíró CPU szükséges.%n%nA jelenlegi CPU nem megfelelő.
-#EndIf
+#endif
 #ifdef sse2_required
 hun.msg_simd_sse2=Ahhoz, hogy {#app_name} ezen változata jól fusson, SSE2 kiterjesztés támogatással bíró CPU szükséges.%n%nA jelenlegi CPU nem megfelelő.
 #endif
@@ -360,7 +357,7 @@ hun.reg_Open_with_NP3=Megnyitás ezzel: {#app_name}
 ind.msg_DeleteSettings=Apakah Anda juga ingin menghapus pengaturan dan tema {#app_name}?%n%nJika Anda berencana untuk memasang kembali {#app_name}, Anda tidak perlu menghapusnya.
 #ifdef sse_required
 ind.msg_simd_sse=Versi {#app_name} ini memerlukan CPU dengan dukungan ekstensi SSE.%n%nTampaknya CPU Anda tidak memiliki kemampuan tersebut.
-#EndIf
+#endif
 #ifdef sse2_required
 ind.msg_simd_sse2=Versi {#app_name} ini memerlukan CPU dengan dukungan ekstensi SSE2.%n%nTampaknya CPU Anda tidak memiliki kemampuan tersebut.
 #endif
@@ -379,7 +376,7 @@ ind.reg_Open_with_NP3=Buka dengan {#app_name}
 ita.msg_DeleteSettings=Volete eliminare anche le impostazioni e i temi di {#app_name}? %n%nSe intendete installare nuovamente {#app_name}, non è necessario eliminarli.
 #ifdef sse_required
 ita.msg_simd_sse=Questa versione di {#app_name} richiede una CPU con supporto per le estensioni SSE.%n%nLa vostra CPU non ha queste capacità.
-#EndIf
+#endif
 #ifdef sse2_required
 ita.msg_simd_sse2=Questa versione di {#app_name} richiede una CPU con supporto per le estensioni SSE2.%n%nLa vostra CPU non ha queste capacità.
 #endif
@@ -398,7 +395,7 @@ ita.reg_Open_with_NP3=Apri con {#app_name}
 jpn.msg_DeleteSettings={#app_name} の設定とテーマも削除しますか？%n%n{#app_name} を再度インストールする予定なら削除する必要はありません。
 #ifdef sse_required
 jpn.msg_simd_sse={#app_name} のこのビルドには、SSE 拡張命令に対応した CPU が必要です。%n%nこの CPU は対応していません。
-#EndIf
+#endif
 #ifdef sse2_required
 jpn.msg_simd_sse2={#app_name} のこのビルドには、SSE2 拡張命令に対応した CPU が必要です。%n%nこの CPU は対応していません。
 #endif
@@ -417,7 +414,7 @@ jpn.reg_Open_with_NP3={#app_name} で開く
 kor.msg_DeleteSettings={#app_name}의 설정 및 테마도 삭제하시겠습니까?%n%n{#app_name}을 다시 설치할 계획이라면 삭제할 필요가 없습니다.
 #ifdef sse_required
 kor.msg_simd_sse=이 {#app_name} 빌드에는 SSE 확장을 지원하는 CPU가 필요합니다.%n%nCPU에 이러한 기능이 없습니다.
-#EndIf
+#endif
 #ifdef sse2_required
 kor.msg_simd_sse2=이 {#app_name} 빌드에는 SSE2 확장을 지원하는 CPU가 필요합니다.%n%nCPU에 이러한 기능이 없습니다.
 #endif
@@ -436,7 +433,7 @@ kor.reg_Open_with_NP3={#app_name}으로 열기
 nld.msg_DeleteSettings=Wilt u ook de instellingen en thema's van {#app_name} verwijderen?%n%nAls u van plan bent {#app_name} opnieuw te installeren, hoeft u deze niet te verwijderen.
 #ifdef sse_required
 nld.msg_simd_sse=Deze versie van {#app_name} vereist een CPU met ondersteuning voor SSE-extensies.%n%nUw CPU heeft die mogelijkheden niet.
-#EndIf
+#endif
 #ifdef sse2_required
 nld.msg_simd_sse2=Deze versie van {#app_name} vereist een CPU met ondersteuning voor SSE2-extensies.%n%nUw CPU heeft die mogelijkheden niet.
 #endif
@@ -455,7 +452,7 @@ nld.reg_Open_with_NP3=Openen met {#app_name}
 plk.msg_DeleteSettings=Czy chcesz również usunąć ustawienia i motywy {#app_name}? Jeśli zamierzasz zainstalować {#app_name} ponownie, to nie musisz ich usuwać.
 #ifdef sse_required
 plk.msg_simd_sse=Ta kompilacja {#app_name} wymaga procesora z rozszerzeniem wsparcia SSE. Twój procesor nie posiada takiej zdolności.
-#EndIf
+#endif
 #ifdef sse2_required
 plk.msg_simd_sse2=Ta kompilacja {#app_name} wymaga procesora z rozszerzeniem wsparcia SSE2. Twój procesor nie posiada takiej zdolności.
 #endif
@@ -474,7 +471,7 @@ plk.reg_Open_with_NP3=Otwórz z {#app_name}
 ptb.msg_DeleteSettings=Você também deseja excluir as configurações e temas do {#app_name}?%n%nSe você planeja instalar o {#app_name} novamente, então você não precisa excluí-los.
 #ifdef sse_required
 ptb.msg_simd_sse=Esta versão do {#app_name} requer uma CPU com suporte à extensão SSE.%n%nSua CPU não possui este recurso.
-#EndIf
+#endif
 #ifdef sse2_required
 ptb.msg_simd_sse2=Esta versão do {#app_name} requer uma CPU com suporte à extensão SSE2.%n%nSua CPU não possui este recurso.
 #endif
@@ -493,7 +490,7 @@ ptb.reg_Open_with_NP3=Abrir com {#app_name}
 ptg.msg_DeleteSettings=Também pretende eliminar as definições e temas do {#app_name}?%n%nSe planeia instalar novamente o {#app_name} não necessita eliminá-los.
 #ifdef sse_required
 ptg.msg_simd_sse=Esta versão do {#app_name} requer um CPU com suporte de extensão SSE.%n%nO seu CPU não possui essas capacidades.
-#EndIf
+#endif
 #ifdef sse2_required
 ptg.msg_simd_sse2=Esta versão do {#app_name} requer um CPU com suporte de extensão SSE2.%n%nO seu CPU não possui essas capacidades.
 #endif
@@ -512,7 +509,7 @@ ptg.reg_Open_with_NP3=Abrir com o {#app_name}
 rus.msg_DeleteSettings=Вы хотите также удалить настройки и темы {#app_name}?%n%nЕсли вы планируете установить {#app_name} снова, то вам не нужно их удалять.
 #ifdef sse_required
 rus.msg_simd_sse=Эта сборка {#app_name} требует процессор с поддержкой набора команд SSE.%n%nВаш процессор не имеет такой поддержки.
-#EndIf
+#endif
 #ifdef sse2_required
 rus.msg_simd_sse2=Эта сборка {#app_name} требует процессор с поддержкой набора команд SSE2.%n%nВаш процессор не имеет такой поддержки.
 #endif
@@ -531,7 +528,7 @@ rus.reg_Open_with_NP3=Открыть с помощью {#app_name}
 sky.msg_DeleteSettings=Chcete odstrániť aj nastavenia a témy {#app_name}?%n%nAk plánujete opätovnú inštaláciu {#app_name}, nemusíte ich odstraňovať.
 #ifdef sse_required
 sky.msg_simd_sse=Táto zostava {#app_name} vyžaduje procesor s podporou rozšírenia SSE.%n%nVáš procesor tieto možnosti nemá.
-#EndIf
+#endif
 #ifdef sse2_required
 sky.msg_simd_sse2=Táto zostava {#app_name} vyžaduje procesor s podporou rozšírenia SSE2.%n%nVáš procesor tieto možnosti nemá.
 #endif
@@ -550,7 +547,7 @@ sky.reg_Open_with_NP3=Otvoriť v {#app_name}
 sve.msg_DeleteSettings=Vill du även ta bort {#app_name} inställningar och teman?%n%nOm du tänker installera {#app_name} igen behöver du inte ta bort inställningarna.
 #ifdef sse_required
 sve.msg_simd_sse=Den här versionen av {#app_name} kräver processor med SSE stöd.%n%n din processor har inte denna funktionalitet.
-#EndIf
+#endif
 #ifdef sse2_required
 sve.msg_simd_sse2=Den här versionen av {#app_name} kräver processor med SSE2 stöd.%n%n din processor har inte denna funktionalitet.
 #endif
@@ -569,7 +566,7 @@ sve.reg_Open_with_NP3=Öppna med {#app_name}
 trk.msg_DeleteSettings={#app_name} ayarlarının ve temalarının da silinmesini ister misiniz?%n%n{#app_name} uygulamasını yeniden kurmayı düşünüyorsanız bu verileri silmeniz gerekmez.
 #ifdef sse_required
 trk.msg_simd_sse=Bu {#app_name} sürümü için SSE eklentileri desteği olan bir işlemci gereklidir.%n%nİşlemcinizde bu özellik bulunmuyor.
-#EndIf
+#endif
 #ifdef sse2_required
 trk.msg_simd_sse2=Bu {#app_name} sürümü için SSE2 eklentileri desteği olan bir işlemci gereklidir.%n%nİşlemcinizde bu özellik bulunmuyor.
 #endif
@@ -588,7 +585,7 @@ trk.reg_Open_with_NP3={#app_name} ile aç
 vit.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
 #ifdef sse_required
 vit.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
-#EndIf
+#endif
 #ifdef sse2_required
 vit.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
 #endif
@@ -607,7 +604,7 @@ vit.reg_Open_with_NP3=Mở bằng {#app_name}
 chs.msg_DeleteSettings=是否希望删除 {#app_name} 的设置和主题？%n%n如果您稍后将要重新安装 {#app_name}，您不需要删除以前的配置。
 #ifdef sse_required
 chs.msg_simd_sse=这个版本的 {#app_name} 需要支持 SSE 扩展指令集的 CPU。%n%n您的 CPU 缺少该支持。
-#EndIf
+#endif
 #ifdef sse2_required
 chs.msg_simd_sse2=这个版本的 {#app_name} 需要支持 SSE2 扩展指令集的 CPU。%n%n您的 CPU 缺少该支持。
 #endif
@@ -626,7 +623,7 @@ chs.reg_Open_with_NP3=用 {#app_name} 打开
 cht.msg_DeleteSettings=是否希望刪除 {#app_name} 的設定和主題？%n%n如果您稍後將要重新安裝 {#app_name}，您不需要刪除以前的設定。
 #ifdef sse_required
 cht.msg_simd_sse=這個版本的 {#app_name} 需要支援 SSE 擴充指令集的 CPU。%n%n您的 CPU 缺少該支援。
-#EndIf
+#endif
 #ifdef sse2_required
 cht.msg_simd_sse2=這個版本的 {#app_name} 需要支援 SSE2 擴充指令集的 CPU。%n%n您的 CPU 缺少該支援。
 #endif
@@ -901,16 +898,16 @@ function InitializeSetup: Boolean;
     Result := True;
     #ifdef sse_required
     // Check for Processor SSE support.
-    If Result then
+    if Result then
       if not IsProcessorFeaturePresent(PF_XMMI_INSTRUCTIONS_AVAILABLE) then
         Result := SuppressibleMsgBox(CustomMessage('msg_simd_sse'), mbCriticalError, MB_OK, IDOK) = IDABORT;
     #endif
     #ifdef sse2_required
     // Check for Processor SSE2 support.
-    If Result then
+    if Result then
       if not IsProcessorFeaturePresent(PF_XMMI64_INSTRUCTIONS_AVAILABLE) then
         Result := SuppressibleMsgBox(CustomMessage('msg_simd_sse2'), mbCriticalError, MB_OK, IDOK) = IDABORT;
-    #EndIf
+    #endif
 end;
 
 // Check if Notepad3 has replaced Windows Notepad
@@ -920,7 +917,7 @@ function DefaulNotepadCheck(): Boolean;
   begin
     Result := RegQueryStringValue(HKLM, IFEO, 'Debugger', sDebugger) and
         (sDebugger = ExpandConstant('"{app}\Notepad3.exe" /z'));
-    If Result then
+    if Result then
       Log('Custom Code: {#app_name} is set as the default notepad')
     else
       Log('Custom Code: {#app_name} is NOT set as the default notepad');
@@ -936,7 +933,7 @@ function OpenWithCheck(): Boolean;
   begin
     Result := RegQueryStringValue(HKEY_CLASSES_ROOT, '*\shell\' + reg_Open_with_NP3, 'Icon', sOpenWith) and
         (sOpenWith = ExpandConstant('{app}\Notepad3.exe,0'));
-    If Result then
+    if Result then
       Log('Custom Code: {#app_name} '+reg_Open_with_NP3+' is set.')
     else
       Log('Custom Code: {#app_name} '+reg_Open_with_NP3+' is not set.');
@@ -960,7 +957,7 @@ end;
 function SettingsExistCheck(): Boolean;
   begin
     Result := FileExists(ExpandConstant('{userappdata}\Rizonesoft\Notepad3\Notepad3.ini'));
-    If Result Then
+    if Result Then
       Log('Custom Code: Settings are present')
     else
       Log('Custom Code: Settings are NOT present');
@@ -1019,19 +1016,19 @@ Var
 
 procedure RemoveReg();
   begin
-    If Length( PreviousDataOf_Open_with_NP3 ) > 0 then
-      If RegKeyExists(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3) then
+    if Length( PreviousDataOf_Open_with_NP3 ) > 0 then
+      if RegKeyExists(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3) then
         RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3);
-    If RegKeyExists(HKCR, 'Applications\notepad3.exe') then
+    if RegKeyExists(HKCR, 'Applications\notepad3.exe') then
       RegDeleteKeyIncludingSubkeys(HKCR, 'Applications\notepad3.exe');
-    If RegKeyExists(HKCR, '*\OpenWithList\notepad3.exe') then
+    if RegKeyExists(HKCR, '*\OpenWithList\notepad3.exe') then
       RegDeleteKeyIncludingSubkeys(HKCR, '*\OpenWithList\notepad3.exe');
-    If RegKeyExists(HKCR, '*\shell\Open with Notepad3') then
+    if RegKeyExists(HKCR, '*\shell\Open with Notepad3') then
       RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\Open with Notepad3');
-    If Length( reg_Open_with_NP3 ) > 0 then
-      If RegKeyExists(HKCR, '*\shell\' + reg_Open_with_NP3) then
+    if Length( reg_Open_with_NP3 ) > 0 then
+      if RegKeyExists(HKCR, '*\shell\' + reg_Open_with_NP3) then
         RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + reg_Open_with_NP3);
-    If RegKeyExists(HKLM, APPH) then
+    if RegKeyExists(HKLM, APPH) then
       RegDeleteKeyIncludingSubkeys(HKLM, APPH);
 end;
 
@@ -1096,11 +1093,11 @@ procedure CurStepChanged(CurStep: TSetupStep);
           ExtractTemporaryFiles( '{userappdata}\*' );
           userappdata := ExpandConstant('{userappdata}')+'\';
           TMP := ExpandConstant('{tmp}')+'\';
-          If FindFirst(TMP+'{userappdata}\Rizonesoft\Notepad3\*.*', FindRec) then
+          if FindFirst(TMP+'{userappdata}\Rizonesoft\Notepad3\*.*', FindRec) then
           begin
-            If not DirExists(userappdata+'Rizonesoft\Notepad3') then
+            if not DirExists(userappdata+'Rizonesoft\Notepad3') then
               CreateDir(userappdata+'Rizonesoft\Notepad3');
-            If DirExists(userappdata+'Rizonesoft\Notepad3') then
+            if DirExists(userappdata+'Rizonesoft\Notepad3') then
               With FindRec do
                 repeat
                   RenameFile( TMP+'{userappdata}\Rizonesoft\Notepad3\'+Name, userappdata+'Rizonesoft\Notepad3\'+Name );
@@ -1110,11 +1107,11 @@ procedure CurStepChanged(CurStep: TSetupStep);
 
           SetIniString('Settings', 'Favorites', '%APPDATA%\Rizonesoft\Notepad3\Favorites\', userappdata+'Rizonesoft\Notepad3\Notepad3.ini');
 
-          If FindFirst(TMP+'{userappdata}\Rizonesoft\Notepad3\Themes\*.*', FindRec) then
+          if FindFirst(TMP+'{userappdata}\Rizonesoft\Notepad3\Themes\*.*', FindRec) then
           begin
-            If not DirExists(userappdata+'Rizonesoft\Notepad3\Themes') then
+            if not DirExists(userappdata+'Rizonesoft\Notepad3\Themes') then
               CreateDir(userappdata+'Rizonesoft\Notepad3\Themes');
-            If DirExists(userappdata+'Rizonesoft\Notepad3\Themes') then
+            if DirExists(userappdata+'Rizonesoft\Notepad3\Themes') then
               With FindRec do
                 repeat
                   RenameFile( TMP+'{userappdata}\Rizonesoft\Notepad3\Themes\'+Name, userappdata+'Rizonesoft\Notepad3\Themes\'+Name );
@@ -1135,7 +1132,7 @@ procedure CurStepChanged(CurStep: TSetupStep);
         end
         else
         begin
-          If RegValueExists (HKLM, IFEO, 'Debugger') then
+          if RegValueExists (HKLM, IFEO, 'Debugger') then
             RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 0)
           else
             RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 1);
@@ -1143,13 +1140,13 @@ procedure CurStepChanged(CurStep: TSetupStep);
 
         if WizardIsTaskSelected('set_openwith') then
         begin
-          If Length( PreviousDataOf_Open_with_NP3 ) > 0 then
-            If RegKeyExists(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3) then
+          if Length( PreviousDataOf_Open_with_NP3 ) > 0 then
+            if RegKeyExists(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3) then
               RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3);
-          If RegKeyExists(HKCR, '*\shell\Open with Notepad3') then
+          if RegKeyExists(HKCR, '*\shell\Open with Notepad3') then
             RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\Open with Notepad3');
-          If Length( reg_Open_with_NP3 ) > 0 then
-            If RegKeyExists(HKCR, '*\shell\' + reg_Open_with_NP3) then
+          if Length( reg_Open_with_NP3 ) > 0 then
+            if RegKeyExists(HKCR, '*\shell\' + reg_Open_with_NP3) then
               RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + reg_Open_with_NP3);
           RegWriteStringValue(HKCR, '*\shell\' + reg_Open_with_NP3, 'Icon', app+'\Notepad3.exe,0');
           RegWriteStringValue(HKCR, '*\shell\' + reg_Open_with_NP3 + '\command', '', '"'+app+'\Notepad3.exe" "%1"');
@@ -1157,8 +1154,8 @@ procedure CurStepChanged(CurStep: TSetupStep);
         else
         if WizardIsTaskSelected('remove_openwith') then
         begin
-          If Length( reg_Open_with_NP3 ) > 0 then
-            If RegKeyExists(HKCR, '*\shell\' + reg_Open_with_NP3) then
+          if Length( reg_Open_with_NP3 ) > 0 then
+            if RegKeyExists(HKCR, '*\shell\' + reg_Open_with_NP3) then
               RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + reg_Open_with_NP3);
         end
         else
@@ -1167,8 +1164,8 @@ procedure CurStepChanged(CurStep: TSetupStep);
           if WizardIsTaskSelected('remove_openwith') then
             WizardSelectTasks('!remove_openwith')
           else
-            If Length( PreviousDataOf_Open_with_NP3 ) > 0 then
-              If RegKeyExists(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3) then
+            if Length( PreviousDataOf_Open_with_NP3 ) > 0 then
+              if RegKeyExists(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3) then
                 RegDeleteKeyIncludingSubkeys(HKCR, '*\shell\' + PreviousDataOf_Open_with_NP3);
         end;
 
@@ -1190,7 +1187,7 @@ procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 
     if CurUninstallStep = usPostUninstall then
     begin
-      If SettingsCleanUp then
+      if SettingsCleanUp then
         CleanUpSettings();
 
       if DefaulNotepadCheck() then

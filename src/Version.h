@@ -149,7 +149,9 @@ inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
 
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1937)
-        #if (_MSC_FULL_VER >= 193732822)
+        #if (_MSC_FULL_VER >= 193732824)
+            #define VER_CPL     MS Visual C++ 2022 v17.7.4
+        #elif (_MSC_FULL_VER >= 193732822)
             #define VER_CPL     MS Visual C++ 2022 v17.7.(0-3)
         #endif
     #elif (_MSC_VER == 1936)
@@ -213,7 +215,15 @@ inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
             #define VER_CPL     MS Visual C++ 2022 v17.0.(0-1)
         #endif
     #elif (_MSC_VER == 1929)
-        #if (_MSC_FULL_VER >= 192930148)
+        #if (_MSC_FULL_VER >= 192930152)
+            #define VER_CPL     MS Visual C++ 2019 v16.11.30
+        #elif (_MSC_FULL_VER >= 192930151)
+            #define VER_CPL     MS Visual C++ 2019 v16.11.29
+        #elif (_MSC_FULL_VER >= 192930150)
+            #define VER_CPL     MS Visual C++ 2019 v16.11.28
+        #elif (_MSC_FULL_VER >= 192930149)
+            #define VER_CPL     MS Visual C++ 2019 v16.11.(26-27)
+        #elif (_MSC_FULL_VER >= 192930148)
             #define VER_CPL     MS Visual C++ 2019 v16.11.(24-25)
         #elif (_MSC_FULL_VER >= 192930147)
             #define VER_CPL MS Visual C++ 2019 v16 .11.(21-23)

@@ -177,6 +177,9 @@ GetWindowDpiAwarenessContextSig fnGetWindowDpiAwarenessContext = nullptr;
 using GetScaleFactorForMonitorSig = HRESULT(WINAPI *)(HMONITOR, DEVICE_SCALE_FACTOR *);
 GetScaleFactorForMonitorSig fnGetScaleFactorForMonitor = nullptr;
 
+using GetThreadDpiAwarenessContextSig = DPI_AWARENESS_CONTEXT(WINAPI *)();
+GetThreadDpiAwarenessContextSig fnGetThreadDpiAwarenessContext = nullptr;
+
 using SetThreadDpiAwarenessContextSig = DPI_AWARENESS_CONTEXT(WINAPI *)(DPI_AWARENESS_CONTEXT);
 SetThreadDpiAwarenessContextSig fnSetThreadDpiAwarenessContext = nullptr;
 
@@ -185,6 +188,7 @@ void LoadDpiForWindow() noexcept {
 	fnGetDpiForWindow = DLLFunction<GetDpiForWindowSig>(user32, "GetDpiForWindow");
 	fnGetSystemMetricsForDpi = DLLFunction<GetSystemMetricsForDpiSig>(user32, "GetSystemMetricsForDpi");
 	fnAdjustWindowRectExForDpi = DLLFunction<AdjustWindowRectExForDpiSig>(user32, "AdjustWindowRectExForDpi");
+	fnGetThreadDpiAwarenessContext = DLLFunction<GetThreadDpiAwarenessContextSig>(user32, "GetThreadDpiAwarenessContext");
 	fnSetThreadDpiAwarenessContext = DLLFunction<SetThreadDpiAwarenessContextSig>(user32, "SetThreadDpiAwarenessContext");
 
 	using GetDpiForSystemSig = UINT(WINAPI *)(void);
@@ -527,7 +531,7 @@ HMONITOR MonitorFromWindowHandleScaling(HWND hWnd) noexcept {
 	return monitor;
 }
 
-int GetDeviceScaleFactorWhenGdiScalingActive(HWND hWnd) noexcept {
+float GetDeviceScaleFactorWhenGdiScalingActive(HWND hWnd) noexcept {
 	if (fnAreDpiAwarenessContextsEqual) {
 		PLATFORM_ASSERT(fnGetWindowDpiAwarenessContext && fnGetScaleFactorForMonitor);
 		if (fnAreDpiAwarenessContextsEqual(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED, fnGetWindowDpiAwarenessContext(hWnd))) {
@@ -535,10 +539,10 @@ int GetDeviceScaleFactorWhenGdiScalingActive(HWND hWnd) noexcept {
 			const HMONITOR hMonitor = MonitorFromWindowHandleScaling(hRootWnd);
 			DEVICE_SCALE_FACTOR deviceScaleFactor;
 			if (S_OK == fnGetScaleFactorForMonitor(hMonitor, &deviceScaleFactor))
-				return (static_cast<int>(deviceScaleFactor) + 99) / 100; // increase to first integral multiple of 1
+				return static_cast<float>(deviceScaleFactor) / 100.f;
 		}
 	}
-	return 1;
+	return 1.f;
 }
 
 
@@ -630,7 +634,7 @@ class VarBuffer {
 	T bufferStandard[lengthStandard];
 public:
 	T *buffer;
-	explicit VarBuffer(size_t length) : buffer(nullptr) {
+	explicit VarBuffer(size_t length) : bufferStandard{{}}, buffer(nullptr) {
 		if (length > lengthStandard) {
 			buffer = new T[length];
 		} else {
@@ -3002,56 +3006,102 @@ void Window::InvalidateRectangle(PRectangle rc) {
 	::InvalidateRect(HwndFromWindowID(wid), &rcw, FALSE);
 }
 
-namespace {
-
-void FlipBitmap(HBITMAP bitmap, int width, int height) noexcept {
-	HDC hdc = ::CreateCompatibleDC({});
-	if (hdc) {
-		HBITMAP prevBmp = SelectBitmap(hdc, bitmap);
-		::StretchBlt(hdc, width - 1, 0, -width, height, hdc, 0, 0, width, height, SRCCOPY);
-		SelectBitmap(hdc, prevBmp);
-		::DeleteDC(hdc);
-	}
-}
-
-}
-
 HCURSOR LoadReverseArrowCursor(UINT dpi) noexcept {
-	HCURSOR reverseArrowCursor {};
-
-	bool created = false;
-	HCURSOR cursor = ::LoadCursor({}, IDC_ARROW);
-
-	if (dpi != uSystemDPI) {
-		const int width = SystemMetricsForDpi(SM_CXCURSOR, dpi);
-		const int height = SystemMetricsForDpi(SM_CYCURSOR, dpi);
-		HCURSOR copy = static_cast<HCURSOR>(::CopyImage(cursor, IMAGE_CURSOR, width, height, LR_COPYFROMRESOURCE | LR_COPYRETURNORG));
-		if (copy) {
-			created = copy != cursor;
-			cursor = copy;
+	class CursorHelper {
+	public:
+		ICONINFO info{};
+		BITMAP bmp{};
+		bool HasBitmap() const noexcept {
+			return bmp.bmWidth > 0;
 		}
-	}
 
-	ICONINFO info;
-	if (::GetIconInfo(cursor, &info)) {
-		BITMAP bmp {};
-		if (::GetObject(info.hbmMask, sizeof(bmp), &bmp)) {
-			FlipBitmap(info.hbmMask, bmp.bmWidth, bmp.bmHeight);
+		CursorHelper(const HCURSOR cursor) noexcept {
+			Init(cursor);
+		}
+		~CursorHelper() {
+			CleanUp();
+		}
+
+		CursorHelper &operator=(const HCURSOR cursor) noexcept {
+			CleanUp();
+			Init(cursor);
+			return *this;
+		}
+
+		bool MatchesSize(const int width, const int height) noexcept {
+			return bmp.bmWidth == width && bmp.bmHeight == height;
+		}
+
+		HCURSOR CreateFlippedCursor() noexcept {
+			if (info.hbmMask)
+				FlipBitmap(info.hbmMask, bmp.bmWidth, bmp.bmHeight);
 			if (info.hbmColor)
 				FlipBitmap(info.hbmColor, bmp.bmWidth, bmp.bmHeight);
 			info.xHotspot = bmp.bmWidth - 1 - info.xHotspot;
 
-			reverseArrowCursor = ::CreateIconIndirect(&info);
+			return ::CreateIconIndirect(&info);
 		}
 
-		::DeleteObject(info.hbmMask);
-		if (info.hbmColor)
-			::DeleteObject(info.hbmColor);
+	private:
+		void Init(const HCURSOR &cursor) noexcept {
+			if (::GetIconInfo(cursor, &info)) {
+				::GetObject(info.hbmMask, sizeof(bmp), &bmp);
+				PLATFORM_ASSERT(HasBitmap());
+			}
+		}
+
+		void CleanUp() noexcept {
+			if (info.hbmMask)
+				::DeleteObject(info.hbmMask);
+			if (info.hbmColor)
+				::DeleteObject(info.hbmColor);
+			info = {};
+			bmp = {};
+		}
+
+		static void FlipBitmap(const HBITMAP bitmap, const int width, const int height) noexcept {
+			HDC hdc = ::CreateCompatibleDC({});
+			if (hdc) {
+				HBITMAP prevBmp = SelectBitmap(hdc, bitmap);
+				::StretchBlt(hdc, width - 1, 0, -width, height, hdc, 0, 0, width, height, SRCCOPY);
+				SelectBitmap(hdc, prevBmp);
+				::DeleteDC(hdc);
+			}
+		}
+	};
+
+	HCURSOR reverseArrowCursor {};
+
+	const int width = SystemMetricsForDpi(SM_CXCURSOR, dpi);
+	const int height = SystemMetricsForDpi(SM_CYCURSOR, dpi);
+
+	DPI_AWARENESS_CONTEXT oldContext = nullptr;
+	if (fnAreDpiAwarenessContextsEqual && fnAreDpiAwarenessContextsEqual(fnGetThreadDpiAwarenessContext(), DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED)) {
+		oldContext = fnSetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+		PLATFORM_ASSERT(oldContext != nullptr);
 	}
 
-	if (created) {
-		::DestroyCursor(cursor);
+	const HCURSOR cursor = static_cast<HCURSOR>(::LoadImage({}, IDC_ARROW, IMAGE_CURSOR, width, height, LR_SHARED));
+	if (cursor) {
+		CursorHelper cursorHelper(cursor);
+
+		if (cursorHelper.HasBitmap() && !cursorHelper.MatchesSize(width, height)) {
+			const HCURSOR copy = static_cast<HCURSOR>(::CopyImage(cursor, IMAGE_CURSOR, width, height, LR_COPYFROMRESOURCE | LR_COPYRETURNORG));
+			if (copy) {
+				cursorHelper = copy;
+				::DestroyCursor(copy);
+			}
+		}
+
+		if (cursorHelper.HasBitmap()) {
+			reverseArrowCursor = cursorHelper.CreateFlippedCursor();
+		}
 	}
+
+	if (oldContext) {
+		fnSetThreadDpiAwarenessContext(oldContext);
+	}
+
 	return reverseArrowCursor;
 }
 
