@@ -135,7 +135,7 @@ BEGIN
     IDS_MUI_ERR_MRUDLG      "No access to the selected file!\nWould you like to remove it from the list?"
     IDS_MUI_ERR_CREATELINK  "Error creating the Desktop link."
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Existing Notepad3 window is busy or has an active dialog box.\nWould you like to open another Notepad3 window?"
+                            "Existing Notepad3 window is busy or has an active dialogue box.\nWould you like to open another Notepad3 window?"
     IDS_MUI_ERR_ENCODINGNA  "Code page conversion tables for the selected encoding are not available on your system."
     IDS_MUI_ERR_UNICODE     "Error converting this Unicode file.\nData will be lost if the file is saved!"
     IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
@@ -329,7 +329,7 @@ Options:\r\n\
 /f\tSpecify ini-file (/f0 no ini-file).\r\n\
 /u\tLaunch with elevated privileges.\r\n\
 /v\tPrint file immediately and quit.\r\n\
-/vd\tPrint file (open printer dialog).\r\n\
+/vd\tPrint file (open printer dialogue).\r\n\
 /y\tSearch environment PATH in case of relative filename.\r\n\
 /z\tSkip next (usable for registry-based Notepad replacement).\r\n\r\n\
 Examples:\r\n\

@@ -237,7 +237,7 @@ BEGIN
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Yes",IDOK,138,63,50,14
     PUSHBUTTON      "&No",IDCANCEL,138,80,50,14
-    CONTROL         "&Always show this dialog.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "&Always show this dialogue.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -371,7 +371,7 @@ BEGIN
     RTEXT           "%s line(s) w/ irregular indent depth",IDC_INDENT_SPC_MODX,50,84,124,8
     PUSHBUTTON      "&Yes",IDOK,80,98,50,14
     PUSHBUTTON      "&No",IDCANCEL,134,98,50,14
-    CONTROL         "&Always show this dialog.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Always show this dialogue.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
@@ -735,7 +735,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "&Left.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,31,10
     CONTROL         "&Right.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,35,10
-    CONTROL         "&Center.",102,"Button",BS_AUTORADIOBUTTON,7,31,41,10
+    CONTROL         "&Centre.",102,"Button",BS_AUTORADIOBUTTON,7,31,41,10
     CONTROL         "&Justify.",103,"Button",BS_AUTORADIOBUTTON,7,43,40,10
     CONTROL         "Justify (&Paragraph mode).",104,"Button",BS_AUTORADIOBUTTON,7,55,100,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
@@ -744,7 +744,7 @@ END
 
 
 //
-// Font Dialog with Syslink (copied from Font.dlg)
+// Font Dialogue with Syslink (copied from Font.dlg)
 //
 IDD_MUI_SYSFONT_WITHLINK DIALOGEX 13, 54, 243, 234
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
@@ -799,7 +799,7 @@ END
 
 
 //
-//  ChooseColor Dialog  (copied from Color.dlg).
+//  ChooseColour Dialogue  (copied from Colour.dlg).
 //
 
 IDD_MUI_SYSCOLOR_DLG DIALOGEX LOADONCALL MOVEABLE DISCARDABLE 2, 0, 298, 184
@@ -861,7 +861,7 @@ END
 
 
 //
-//  AutoSave and Backup Dialog
+//  AutoSave and Backup Dialogue
 //
 IDD_MUI_AUTOSAVE_BACKUP DIALOGEX 0, 0, 184, 166
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
