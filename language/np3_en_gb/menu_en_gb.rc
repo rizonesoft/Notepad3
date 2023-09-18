@@ -525,7 +525,7 @@ BEGIN
             POPUP "R&TL Layout (GDI)"
             BEGIN
                 MENUITEM "&Edit Area",                  IDM_SET_RTL_LAYOUT_EDIT
-                MENUITEM "&Other Dialogs",              IDM_SET_RTL_LAYOUT_DLG
+                MENUITEM "&Other Dialogues",              IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "&Bidirectional"
             BEGIN
@@ -584,7 +584,7 @@ BEGIN
         MENUITEM "Show Statusbar",             IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
         MENUITEM "Load Toolbar Theme...",      IDM_VIEW_LOADTHEMETB
-        MENUITEM "Customize Toolbar...",       IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Customise Toolbar...",       IDM_VIEW_CUSTOMIZETB
         MENUITEM "Toggle Toolbars",            IDM_VIEW_TOGGLETB
         MENUITEM "DPI Scale Toolbar",          IDM_VIEW_DPISCALETB
     END
