@@ -96,7 +96,7 @@ BEGIN
     CONTROL         "Yalnızca sözcük &başına &uyulsun",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "&Ters bölü dönüştürülsün",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,88,10
     CONTROL         "&Kurallı ifade arama",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
-    CONTROL         "Dot &matches line-breaks",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,90,10
+    CONTROL         "Nokta &satır sonu ile eşleşsin",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,105,10
     CONTROL         "Başta/sonda &sürdürülsün",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,90,10
     CONTROL         "B&ulunca kapatılsın",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,75,10
     CONTROL         "Ko&pyalar işaretlensin",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,80,10
@@ -130,7 +130,7 @@ BEGIN
     CONTROL         "Yalnızca sözcük &başına &uyulsun",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "&Ters bölü dönüştürülsün",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
     CONTROL         "&Kurallı ifade arama",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
-    CONTROL         "Dot &matches line-breaks",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,124,90,10
+    CONTROL         "Nokta &satır sonu ile eşleşsin",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,124,105,10
     CONTROL         "Başta/sonda &sürdürülsün",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,90,10
     CONTROL         "D&eğiştirince kapatılsın",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,85,10
     CONTROL         "Ko&pyalar işaretlensin",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,80,10
@@ -319,9 +319,9 @@ BEGIN
     PUSHBUTTON      "&Sıfırla",IDC_STYLEDEFAULT,377,201,42,14
     PUSHBUTTON      "",IDC_PREVSTYLE,426,201,15,14,BS_BITMAP
     PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14,BS_BITMAP
-    LTEXT           "Dark-Mode Contrast(%):", IDC_STATIC2,181,222,80,8
+    LTEXT           "Koyu kip karşıtlığı (%):", IDC_STATIC2,181,222,80,8
     EDITTEXT        IDC_DARK_MODE_CONTRAST,265,221,24,12,ES_AUTOHSCROLL
-    LTEXT           "[0-6000] Default: 75%",IDC_STATIC3,300,222,80,8
+    LTEXT           "[0-6000] Varsayılan: 75%",IDC_STATIC3,300,222,90,8
     PUSHBUTTON      "İç&e aktar...",IDC_IMPORT,181,240,50,14
     PUSHBUTTON      "&Dışa aktar...",IDC_EXPORT,237,240,50,14
     DEFPUSHBUTTON   "Tamam",IDOK,355,240,50,14
