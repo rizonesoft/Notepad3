@@ -138,7 +138,7 @@ BEGIN
                             "Var olan Notepad3 penceresi meşgul veya bir iletişim penceresi açık.\nBaşka bir Notepad3 penceresi açmak ister misiniz?"
     IDS_MUI_ERR_ENCODINGNA  "Sisteminizde seçim kodlaması için kod sayfası dönüşüm tabloları bulunamadı."
     IDS_MUI_ERR_UNICODE     "Bu unikod dosyası dönüştürülürken sorun çıktı.\nDosya kaydedilirse veriler kaybolur!"
-    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      """%s"" bitmap boyutu uygun değil.\nUygun boyut: %i x %i (genişlik >= %i x yükseklik)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Kullanıcı yetkileri yükseltilirken sorun çıktı!"
 END
