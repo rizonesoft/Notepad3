@@ -91,25 +91,25 @@ BEGIN
     LTEXT           "Söksträng:",IDC_STATIC,7,7,46,8
     CONTROL         "<a>Esc Ctrl Chr</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Matcha versaler och gemener",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,105,10
+    CONTROL         "Matcha versaler och gemener",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,108,10
     CONTROL         "Matcha endast hela ord",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
-    CONTROL         "Matcha endast början av ordet",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
-    CONTROL         "Förvandla bakåt snedstreck",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,95,10
+    CONTROL         "Matcha endast början av ordet",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,115,10
+    CONTROL         "Förvandla bakåt snedstreck",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,100,10
     CONTROL         "Sök med reguljära uttryck",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
-    CONTROL         "Dot &matches line-breaks",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,90,10
+    CONTROL         "Punkt &matchar radbrytning",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,98,10
     CONTROL         "Omslut inte",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
-    CONTROL         "Stäng efter hitta",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
+    CONTROL         "Stäng efter hitta",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,68,10
     CONTROL         "Markera träffar",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
-    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
-    CONTROL         "Sökning med joker",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,66,10
-    CONTROL         "Bli genomskinlig när fönstret inte har fokus",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,150,10
+    CONTROL         "Stegvis sökning", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
+    CONTROL         "Sökning med joker",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,72,10
+    CONTROL         "Bli genomskinlig när fönstret inte har fokus",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,155,10
     DEFPUSHBUTTON   "Hitta nästa",IDOK,211,7,55,14
-    PUSHBUTTON      "Hitta föregående",IDC_FINDPREV,211,24,55,14
+    PUSHBUTTON      "Hitta föregåen.",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Stäng",IDCANCEL,211,99,55,14
     CONTROL         "<a>Gå till utbyte (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,105,74,10
-    CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
-    CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,195,85,14,10
+    CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,108,85,14,10
+    CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,108,73,14,10
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,198,85,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,130,259,9,WS_EX_STATICEDGE
     PUSHBUTTON      "Fokuserad vy",IDC_TOGGLE_VISIBILITY,211,65,55,14
 END
@@ -125,29 +125,29 @@ BEGIN
     LTEXT           "Byt ut med:",IDC_STATIC2,7,36,46,8
     CONTROL         "<a>Esc Ctrl Chr</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Matcha versaler och gemener",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,105,10
+    CONTROL         "Matcha versaler och gemener",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,108,10
     CONTROL         "Matcha endast hela ord",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
-    CONTROL         "Matcha endast början av ordet",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
-    CONTROL         "Förvandla bakåt snedstreck",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,95,10
+    CONTROL         "Matcha endast början av ordet",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,115,10
+    CONTROL         "Förvandla bakåt snedstreck",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,100,10
     CONTROL         "Sök med reguljära uttryck",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
-    CONTROL         "Dot &matches line-breaks",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,124,90,10
+    CONTROL         "Punkt &matchar radbrytning",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,124,98,10
     CONTROL         "Omslut inte",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
     CONTROL         "Stäng efter ersätt",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
     CONTROL         "Markera träffar",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
-    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,73,10
-    CONTROL         "Sökning med joker",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,66,10
-    CONTROL         "Bli genomskinlig när fönstret inte har fokus",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,150,10
+    CONTROL         "Stegvis sökning", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,73,10
+    CONTROL         "Sökning med joker",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,72,10
+    CONTROL         "Bli genomskinlig när fönstret inte har fokus",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,155,10
     DEFPUSHBUTTON   "Hitta nästa",IDOK,211,7,55,14
-    PUSHBUTTON      "Hitta föregående",IDC_FINDPREV,211,23,55,14
+    PUSHBUTTON      "Hitta föregåen.",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "Ersätt",IDC_REPLACE,211,43,55,14
     PUSHBUTTON      "I markeringen",IDC_REPLACEINSEL,211,59,55,14
     PUSHBUTTON      "Ersätt alla",IDC_REPLACEALL,211,75,55,14
-    PUSHBUTTON      "Ersätt strängar",IDC_SWAPSTRG,150,32,49,12
+    PUSHBUTTON      "Ersätt strängar",IDC_SWAPSTRG,145,32,54,12
     PUSHBUTTON      "Stäng",IDCANCEL,211,126,55,14
     CONTROL         "<a>Gå till hitta (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,132,74,10
-    CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
-    CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,195,114,14,10
+    CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,108,102,14,10
+    CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,108,114,14,10
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,198,114,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,156,259,9,WS_EX_STATICEDGE
     PUSHBUTTON      "Fokuserad vy",IDC_TOGGLE_VISIBILITY,211,94,55,14
 END
@@ -282,7 +282,7 @@ BEGIN
     CONTROL         "&Exklusivt fillås.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,99,10
     CONTROL         "Återställ om en ny fil öppnas.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,120,10
     CONTROL         "&Övervakar log.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
-    LTEXT           "File Check Interval [ms]",IDC_LINE_TEXT,7,102,120,10
+    LTEXT           "Intervall mellan kontroll av fil [ms]",IDC_LINE_TEXT,7,102,120,10
     EDITTEXT        IDC_FILE_CHECK_INTERVAL,127,100,50,12,ES_AUTOHSCROLL | ES_NUMBER
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,127,24,50,14
@@ -319,9 +319,9 @@ BEGIN
     PUSHBUTTON      "Återställ",IDC_STYLEDEFAULT,378,201,42,14
     PUSHBUTTON      "",IDC_PREVSTYLE,426,201,15,14,BS_BITMAP
     PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14,BS_BITMAP
-    LTEXT           "Dark-Mode Contrast(%):", IDC_STATIC2,181,222,80,8
-    EDITTEXT        IDC_DARK_MODE_CONTRAST,265,221,24,12,ES_AUTOHSCROLL
-    LTEXT           "[0-6000] Default: 75%",IDC_STATIC3,300,222,80,8
+    LTEXT           "Kontrast för mörkt läge (%):", IDC_STATIC2,181,222,93,8
+    EDITTEXT        IDC_DARK_MODE_CONTRAST,275,221,24,12,ES_AUTOHSCROLL
+    LTEXT           "[0-6000] Standardvärde: 75%",IDC_STATIC3,305,222,100,8
     PUSHBUTTON      "Importera...",IDC_IMPORT,181,240,50,14
     PUSHBUTTON      "Exportera...",IDC_EXPORT,237,240,50,14
     DEFPUSHBUTTON   "OK",IDOK,355,240,50,14
@@ -380,7 +380,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Långa rader"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Mulirads gränsposition:",IDC_STATIC,7,10,80,8
+    LTEXT           "Multi-rad gränsposition:",IDC_STATIC,7,10,80,8
     EDITTEXT        IDC_MULTIEDGELINE,92,7,180,14,ES_AUTOHSCROLL
     CONTROL         "Visa gränsrad.",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
     CONTROL         "Ändra bakgrundsfärg.",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
@@ -645,11 +645,11 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "Visa inte detta meddelande igen.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
-    DEFPUSHBUTTON   "&Retry",IDRETRY,186,70,50,14
-    PUSHBUTTON      "&Abort",IDABORT, 130, 70, 50, 14
-    PUSHBUTTON      "&Ignore",IDIGNORE,242,70,50,14
+    DEFPUSHBUTTON   "&Försök igen",IDRETRY,186,70,50,14
+    PUSHBUTTON      "&Avbryt",IDABORT, 130, 70, 50, 14
+    PUSHBUTTON      "&Ignorera",IDIGNORE,242,70,50,14
 END
 
 IDD_MUI_INFOBOX7 DIALOGEX 0, 0, 299, 91
@@ -660,11 +660,11 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Visa inte detta meddelande igen.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
-    DEFPUSHBUTTON   "&Try Again",IDRETRY,186,70,50,14
-    PUSHBUTTON      "&Cancel", IDCANCEL, 130, 70, 50, 14
-    PUSHBUTTON      "&Continue",IDCONTINUE,242,70,50,14
+    DEFPUSHBUTTON   "&Försök igen",IDRETRY,186,70,50,14
+    PUSHBUTTON      "&Avbryt", IDCANCEL, 130, 70, 50, 14
+    PUSHBUTTON      "&Fortsätt",IDCONTINUE,242,70,50,14
 END
 
 IDD_MUI_INFOBOX_FILECHANGED DIALOGEX 0, 0, 299, 103
@@ -675,11 +675,11 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,53,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Visa inte detta meddelande igen.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
-    DEFPUSHBUTTON   "&Reload",IDRETRY,186,82,50,14
-    PUSHBUTTON      "&Cancel", IDCANCEL, 130, 82, 50, 14
-    PUSHBUTTON      "&Continue",IDCONTINUE,242,82,50,14
+    DEFPUSHBUTTON   "&Ladda om",IDRETRY,186,82,50,14
+    PUSHBUTTON      "&Avbryt", IDCANCEL, 130, 82, 50, 14
+    PUSHBUTTON      "&Fortsätt",IDCONTINUE,242,82,50,14
 END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 188
