@@ -154,7 +154,7 @@ BEGIN
     END
     POPUP "Redigera"
     BEGIN
-        MENUITEM "Document &Read Only"                              IDM_VIEW_READONLY
+        MENUITEM "Endast läsbart dokument"                              IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Ångra\tCtrl+Z",                                   IDM_EDIT_UNDO
         MENUITEM "Gör om\tCtrl+Y",                                  IDM_EDIT_REDO
