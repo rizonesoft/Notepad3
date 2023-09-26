@@ -3797,8 +3797,8 @@ void EditToggleLineCommentsSimple(LPCWSTR pwszComment, bool bInsertAtStart, LnCm
         }
 
         const char* tchBuf = SciCall_GetRangePointer(iIndentPos, cchComment + 1);
-        bool const bHasLnCmnt = (StrCmpNA(tchBuf, mszComment, (int)cchComment) == 0);
-        bool const bHasPrefix = (StrCmpNA(tchBuf, mszPrefix, (int)cchPrefix) == 0);
+        bool const bHasLnCmnt = IsSameCharSequence(tchBuf, mszComment, cchComment);
+        bool const  bHasPrefix = IsSameCharSequence(tchBuf, mszPrefix, (int)cchPrefix);
         int iAction = (mode == LNC_TOGGLE) ? ((bHasLnCmnt || bHasPrefix) ? LNC_REMOVE : LNC_ADD) : mode;
 
         switch (iAction) {
@@ -3918,7 +3918,7 @@ void EditToggleLineCommentsExtended(LPCWSTR pwszComment, bool bInsertAtStart)
         }
 
         const char* tchBuf = SciCall_GetRangePointer(iIndentPos, cchComment + 1);
-        if (StrCmpNIA(tchBuf, mszComment, (int)cchComment) == 0) {
+        if (IsSameCharSequence(tchBuf, mszComment, cchComment)) {
             // remove comment chars
             DocPos const iSelPos = iIndentPos + cchComment;
             switch (iAction) {
@@ -4615,9 +4615,8 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
                 if (bRemoveEmptyLines || (iCmpLnLen > 0)) {
                     DocPos const iBegCmpLine = SciCall_PositionFromLine(iCompareLine);
                     const char* const pCompareLine = SciCall_GetRangePointer(iBegCmpLine, iCmpLnLen + 1);
-
                     if (iCurLnLen == iCmpLnLen) {
-                        if (StringCchCompareNA(pCurrentLine, iCurLnLen, pCompareLine, iCmpLnLen) == 0) {
+                        if (IsSameCharSequence(pCurrentLine, pCompareLine, iCmpLnLen)) {
                             SciCall_SetTargetRange(SciCall_GetLineEndPosition(iPrevLine), SciCall_GetLineEndPosition(iCompareLine));
                             SciCall_ReplaceTarget(0, "");
                             --iCompareLine; // proactive preventing progress to avoid comparison line skip
@@ -5879,7 +5878,7 @@ static LPCWSTR _EditGetFindStrg(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool b
 static char* _GetReplaceString(HWND hwnd, CLPCEDITFINDREPLACE lpefr, int* iReplaceMsg)
 {
     char* pszReplace = NULL; // replace text of arbitrary size
-    if (Settings.ReplaceByClipboardTag && (StringCchCompareXW(StrgGet(lpefr->chReplaceTemplate), L"^c")) == 0)
+    if (Settings.ReplaceByClipboardTag && (StrCmpW(StrgGet(lpefr->chReplaceTemplate), L"^c")) == 0)
     {
         *iReplaceMsg = SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
         pszReplace = EditGetClipboardText(hwnd, true, NULL, NULL);
@@ -7878,11 +7877,11 @@ typedef struct WLIST {
 
 
 static int  wordcmp(PWLIST a, PWLIST b) {
-    return StringCchCompareXA(a->word, b->word);
+    return StrCmpA(a->word, b->word);
 }
 
 static int  wordcmpi(PWLIST a, PWLIST b) {
-  return StringCchCompareXIA(a->word, b->word);
+    return StrCmpIA(a->word, b->word);
 }
 
 // ----------------------------------------------
@@ -8069,7 +8068,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
 
     if (iNumWords) {
 
-        //if ((iNumWords == 1) && (StringCchCompareXIA(pRoot, pListHead->word) == 0)) {
+        //if ((iNumWords == 1) && (StrCmpIA(pRoot, pListHead->word) == 0)) {
         //    return true;
         //}
 

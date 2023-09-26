@@ -1593,7 +1593,7 @@ static BOOL CALLBACK _EnumWndProc(HWND hwnd, LPARAM lParam)
 
     if (GetClassName(hwnd, szClassName, COUNTOF(szClassName))) {
 
-        if (StringCchCompareNIW(szClassName, COUNTOF(szClassName), s_wchWndClass, COUNTOF(s_wchWndClass)) == 0) {
+        if (StrCmpW(szClassName, s_wchWndClass) == 0) {
 
             UINT const iReuseLock = GetDlgItemInt(hwnd, IDC_REUSELOCK, NULL, FALSE);
             if ((GetTicks_ms() - iReuseLock) >= REUSEWINDOWLOCKTIMEOUT) {
@@ -1621,7 +1621,7 @@ static BOOL CALLBACK _EnumWndProc2(HWND hwnd, LPARAM lParam)
 
     if (GetClassName(hwnd, szClassName, COUNTOF(szClassName))) {
 
-        if (StringCchCompareNIW(szClassName, COUNTOF(szClassName), s_wchWndClass, COUNTOF(s_wchWndClass)) == 0) {
+        if (StrCmpW(szClassName, s_wchWndClass) == 0) {
 
             UINT const iReuseLock = GetDlgItemInt(hwnd, IDC_REUSELOCK, NULL, FALSE);
             if ((GetTicks_ms() - iReuseLock) >= REUSEWINDOWLOCKTIMEOUT) {
@@ -8456,7 +8456,7 @@ static void _HandleAutoCloseTags()
 
             bool isNonClosingTag = false;
             for (int i = 0; ((i < cntCount) && !isNonClosingTag); ++i) {
-                isNonClosingTag = (StringCchCompareXIA(replaceBuf, nonClosingTags[i]) == 0);
+                isNonClosingTag = (StrCmpIA(replaceBuf, nonClosingTags[i]) == 0);
             }
             if ((cchIns > 3) && !isNonClosingTag) {
                 EditReplaceSelection(replaceBuf, false);
@@ -11389,7 +11389,7 @@ static inline bool IsFileVarLogFile()
     if (SciCall_GetTextLength() >= 4) {
         char tch[5] = { '\0', '\0', '\0', '\0', '\0' };
         SciCall_GetText(COUNTOF(tch) - 1, tch);
-        return (StringCchCompareXA(tch, ".LOG") == 0); 
+        return (StrCmpA(tch, ".LOG") == 0); 
     }
     return false;
 }
@@ -12131,7 +12131,7 @@ static BOOL CALLBACK _EnumWndCountProc(HWND hwnd, LPARAM lParam)
 {
     WCHAR szClassName[64] = { L'\0' };
     if (GetClassName(hwnd, szClassName, COUNTOF(szClassName))) {
-        if (StringCchCompareNIW(szClassName, COUNTOF(szClassName), s_wchWndClass, COUNTOF(s_wchWndClass)) == 0) {
+        if (StrCmpW(szClassName, s_wchWndClass) == 0) {
             *(int*)lParam += 1;
         }
     }

@@ -2539,8 +2539,7 @@ bool Style_SetLexerFromFile(HWND hwnd, const HPATHL hpath)
         WCHAR wchMode[MICRO_BUFFER] = { L'\0' };
         MultiByteToWideCharEx(Encoding_SciCP, 0, Globals.fvCurFile.chMode, -1, wchMode, MICRO_BUFFER);
 
-        if (!Flags.NoCGIGuess && (StringCchCompareNI(wchMode,COUNTOF(wchMode),L"cgi", CONSTSTRGLEN(L"cgi")) == 0 ||
-                                  StringCchCompareNI(wchMode,COUNTOF(wchMode),L"fcgi", CONSTSTRGLEN(L"fcgi")) == 0)) {
+        if (!Flags.NoCGIGuess && (StrCmpIW(wchMode, L"cgi") == 0 || StrCmpIW(wchMode, L"fcgi") == 0)) {
             char tchText[256] = { '\0' };
             SciCall_GetText(COUNTOF(tchText) - 1, tchText);
             StrTrimA(tchText," \t\n\r");

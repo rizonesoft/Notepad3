@@ -731,33 +731,19 @@ static inline void StrReplChrA(CHAR* pStrg, const CHAR chSearch, const CHAR chRe
 
 //==== StrSafe lstrcmp(),lstrcmpi() =============================================
 
-// NOTE: !!! differences in AutoCompleteList depending compare functions (CRT vs. Shlwapi)) !!!
-#define StringCchCompareNW(s1, l1, s2, l2) StrCmpNW((s1), (s2), min_i((int)(l1), (int)(l2)))
-#define StringCchCompareXW(s1, s2) StrCmpW((s1), (s2))
+__forceinline bool IsSameCharSequence(const char* pSrc, const char* pCmp, CONST DocPos len) {
+    DocPos i = 0;
+    for (i = 0; (i < len) && (pSrc[i] == pCmp[i]); ++i) {}
+    return (i == len);
+}
 
-#define StringCchCompareNIW(s1, l1, s2, l2) StrCmpNIW((s1), (s2), min_i((int)(l1), (int)(l2)))
-#define StringCchCompareXIW(s1, s2) StrCmpIW((s1), (s2))
-
-#define StringCchCompareNA(s1, l1, s2, l2) StrCmpNA((s1), (s2), min_i((int)(l1), (int)(l2)))
-// #define StringCchCompareNA(s1,l1,s2,l2)   strncmp((s1),(s2),min_s((l1),(l2)))
-#define StringCchCompareXA(s1, s2) StrCmpA((s1), (s2))
-// #define StringCchCompareXA(s1,s2)         strcmp((s1),(s2))
-
-#define StringCchCompareNIA(s1, l1, s2, l2) StrCmpNIA((s1), (s2), min_i((int)(l1), (int)(l2)))
-// #define StringCchCompareNIA(s1,l1,s2,l2)  _strnicmp((s1),(s2),min_s((l1),(l2)))
-#define StringCchCompareXIA(s1, s2) StrCmpIA((s1), (s2))
-// #define StringCchCompareXIA(s1,s2)        _stricmp((s1),(s2))
-
+// NOTE: !!! differences in AutoCompleteList depending compare functions (CRT (lstrcmp(),lstrcmpi()) vs. Shlwapi)) !!!
 #if defined(UNICODE) || defined(_UNICODE)
-#define StringCchCompareN(s1,l1,s2,l2)   StringCchCompareNW((s1),(l1),(s2),(l2))
-#define StringCchCompareX(s1,s2)         StringCchCompareXW((s1),(s2))
-#define StringCchCompareNI(s1,l1,s2,l2)  StringCchCompareNIW((s1),(l1),(s2),(l2))
-#define StringCchCompareXI(s1,s2)        StringCchCompareXIW((s1),(s2))
+#define StringCchCompareX(s1, s2)        StrCmpW((s1), (s2))
+#define StringCchCompareXI(s1, s2)       StrCmpIW((s1), (s2))
 #else
-#define StringCchCompareN(s1,l1,s2,l2)   StringCchCompareNA((s1),(l1),(s2),(l2))
-#define StringCchCompareX(s1,s2)         StringCchCompareXA((s1),(s2))
-#define StringCchCompareNI(s1,l1,s2,l2)  StringCchCompareNIA((s1),(l1),(s2),(l2))
-#define StringCchCompareXI(s1,s2)        StringCchCompareXIA((s1),(s2))
+#define StringCchCompareX(s1, s2)        StrCmpA((s1), (s2))
+#define StringCchCompareXI(s1, s2)       StrCmpIA((s1), (s2))
 #endif
 
 
