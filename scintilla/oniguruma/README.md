@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.org/kkos/oniguruma.svg?branch=master)](https://travis-ci.org/kkos/oniguruma)
 [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/oniguruma.svg)](https://oss-fuzz-build-logs.storage.googleapis.com/index.html#oniguruma)
-[![TrustInSoft CI](https://ci.trust-in-soft.com/projects/kkos/oniguruma.svg?branch=master)](https://ci.trust-in-soft.com/projects/kkos/oniguruma)
 
 Oniguruma
 =========
@@ -37,7 +35,7 @@ When using configure script, if you have the POSIX API enabled in an earlier ver
 
 Master branch
 -------------
-* Update Unicode version 15.0.0
+* Update Unicode version 15.1.0
 * NEW API: ONIG_OPTION_MATCH_WHOLE_STRING
 * Fixed: (?I) option was not enabled for character classes (Issue #264).
 * Changed specification to check for incorrect POSIX bracket (Issue #253).

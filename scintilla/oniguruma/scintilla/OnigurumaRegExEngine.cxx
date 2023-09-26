@@ -46,7 +46,6 @@
 #undef ONIG_ESCAPE_UCHAR_COLLISION
 #endif
 #include "../oniguruma/src/oniguruma.h"   // Oniguruma - Regular Expression Engine
-typedef int OnigPos;
 // ---------------------------------------------------------------
 
 #define UCharPtr(pchar) reinterpret_cast<OnigUChar*>(pchar)

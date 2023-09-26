@@ -179,12 +179,15 @@ def merge_dic(to_dic, from_dic):
 
   to_dic.update(from_dic)
 
-def merge_props(to_props, from_props):
-  common = list(set(to_props) & set(from_props))
+def merge_props(to_dic, from_dic):
+  to_keys   = to_dic.keys()
+  from_keys = from_dic.keys()
+  common = list(set(to_keys) & set(from_keys))
   if len(common) != 0:
     print("merge_props: collision: %s" % sorted(common), file=sys.stderr)
 
-  to_props.extend(from_props)
+  for k in from_keys:
+    to_dic[k] = True
 
 def add_range_into_dic(dic, name, start, end):
   d = dic.get(name, None)
@@ -235,7 +238,6 @@ def parse_properties(path, klass, prop_prefix = None, version_reg = None):
   with open(path, 'r') as f:
     dic = { }
     prop = None
-    props = []
     for line in f:
       s = line.strip()
       if len(s) == 0:
@@ -262,10 +264,9 @@ def parse_properties(path, klass, prop_prefix = None, version_reg = None):
 
       elif PR_TOTAL_REG.match(s) is not None:
         KDIC[prop] = klass
-        props.append(prop)
 
   normalize_ranges_in_dic(dic)
-  return (dic, props, version_match)
+  return (dic, version_match)
 
 def parse_property_aliases(path):
   a = { }
@@ -414,10 +415,10 @@ def entry_and_print_prop_and_index(name, index):
   print_prop_and_index(nname, index)
 
 def parse_and_merge_properties(path, klass, prop_prefix = None, version_reg = None):
-  dic, props, ver_m = parse_properties(path, klass, prop_prefix, version_reg)
+  dic, ver_m = parse_properties(path, klass, prop_prefix, version_reg)
   merge_dic(DIC, dic)
-  merge_props(PROPS, props)
-  return dic, props, ver_m
+  merge_props(PROPS, dic)
+  return dic, ver_m
 
 
 ### main ###
@@ -472,26 +473,26 @@ with open('UnicodeData.txt', 'r') as f:
   DIC = dic
   add_primitive_props(assigned)
 
-PROPS = DIC.keys()
-PROPS = list_sub(PROPS, POSIX_LIST)
+PROPS = DIC.fromkeys(DIC, True)
+PROPS = {k: v for k, v in PROPS.items() if k not in POSIX_LIST}
 
-_, _, ver_m = parse_and_merge_properties('DerivedCoreProperties.txt', 'Derived Property', None, UNICODE_VERSION_REG)
+_, ver_m = parse_and_merge_properties('DerivedCoreProperties.txt', 'Derived Property', None, UNICODE_VERSION_REG)
 if ver_m is not None:
   VERSION_INFO[0] = int(ver_m.group(1))
   VERSION_INFO[1] = int(ver_m.group(2))
   VERSION_INFO[2] = int(ver_m.group(3))
 
-dic, props, _ = parse_and_merge_properties('Scripts.txt', 'Script')
+dic, _ = parse_and_merge_properties('Scripts.txt', 'Script')
 DIC['Unknown'] = inverse_ranges(add_ranges_in_dic(dic))
 
 parse_and_merge_properties('PropList.txt',   'Binary Property')
 
-_, _, ver_m = parse_and_merge_properties('emoji-data.txt', 'Emoji Property', None, EMOJI_VERSION_REG)
+_, ver_m = parse_and_merge_properties('emoji-data.txt', 'Emoji Property', None, EMOJI_VERSION_REG)
 if ver_m is not None:
   EMOJI_VERSION_INFO[0] = int(ver_m.group(1))
   EMOJI_VERSION_INFO[1] = int(ver_m.group(2))
 
-PROPS.append('Unknown')
+PROPS['Unknown'] = True
 KDIC['Unknown'] = 'Script'
 
 ALIASES = parse_property_aliases('PropertyAliases.txt')
@@ -502,18 +503,18 @@ dic, BLOCKS = parse_blocks('Blocks.txt')
 merge_dic(DIC, dic)
 
 if INCLUDE_GRAPHEME_CLUSTER_DATA:
-  dic, props, _ = parse_properties('GraphemeBreakProperty.txt',
-                                   'GraphemeBreak Property',
-                                   GRAPHEME_CLUSTER_BREAK_NAME_PREFIX)
+  dic, _ = parse_properties('GraphemeBreakProperty.txt',
+                            'GraphemeBreak Property',
+                            GRAPHEME_CLUSTER_BREAK_NAME_PREFIX)
   merge_dic(DIC, dic)
-  merge_props(PROPS, props)
+  merge_props(PROPS, dic)
   #prop = GRAPHEME_CLUSTER_BREAK_NAME_PREFIX + 'Other'
   #DIC[prop] = inverse_ranges(add_ranges_in_dic(dic))
-  #PROPS.append(prop)
+  #PROPS[prop] = True
   #KDIC[prop] = 'GrapemeBreak Property'
 
 add_posix_props(DIC)
-PROPS = sorted(PROPS)
+PROP_LIST = sorted(PROPS.keys())
 
 
 s = '''%{
@@ -534,7 +535,7 @@ for prop in POSIX_LIST:
 print('')
 
 if not(POSIX_ONLY):
-  for prop in PROPS:
+  for prop in PROP_LIST:
     klass = KDIC.get(prop, None)
     if klass is None:
       n = len(prop)
@@ -558,7 +559,7 @@ for prop in POSIX_LIST:
   print("  CR_%s," % prop)
 
 if not(POSIX_ONLY):
-  for prop in PROPS:
+  for prop in PROP_LIST:
     print("  CR_%s," % prop)
 
   for prop in BLOCKS:
@@ -594,7 +595,7 @@ for prop in POSIX_LIST:
   entry_and_print_prop_and_index(prop, index)
 
 if not(POSIX_ONLY):
-  for prop in PROPS:
+  for prop in PROP_LIST:
     index += 1
     entry_and_print_prop_and_index(prop, index)
 

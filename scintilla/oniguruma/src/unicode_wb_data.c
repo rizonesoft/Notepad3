@@ -25,7 +25,7 @@
  * SUCH DAMAGE.
  */
 
-#define WORD_BREAK_PROPERTY_VERSION  150000
+#define WORD_BREAK_PROPERTY_VERSION  150100
 
 /*
 ALetter
@@ -48,7 +48,7 @@ WSegSpace
 ZWJ
 */
 
-static int WB_RANGE_NUM = 1053;
+static int WB_RANGE_NUM = 1052;
 static WB_RANGE_TYPE WB_RANGES[] = {
  {0x00000a, 0x00000a, WB_LF },
  {0x00000b, 0x00000c, WB_Newline },
@@ -105,7 +105,7 @@ static WB_RANGE_TYPE WB_RANGES[] = {
  {0x0005ef, 0x0005f2, WB_Hebrew_Letter },
  {0x0005f3, 0x0005f3, WB_ALetter },
  {0x0005f4, 0x0005f4, WB_MidLetter },
- {0x000600, 0x000605, WB_Format },
+ {0x000600, 0x000605, WB_Numeric },
  {0x00060c, 0x00060d, WB_MidNum },
  {0x000610, 0x00061a, WB_Extend },
  {0x00061c, 0x00061c, WB_Format },
@@ -119,7 +119,7 @@ static WB_RANGE_TYPE WB_RANGES[] = {
  {0x000671, 0x0006d3, WB_ALetter },
  {0x0006d5, 0x0006d5, WB_ALetter },
  {0x0006d6, 0x0006dc, WB_Extend },
- {0x0006dd, 0x0006dd, WB_Format },
+ {0x0006dd, 0x0006dd, WB_Numeric },
  {0x0006df, 0x0006e4, WB_Extend },
  {0x0006e5, 0x0006e6, WB_ALetter },
  {0x0006e7, 0x0006e8, WB_Extend },
@@ -128,8 +128,7 @@ static WB_RANGE_TYPE WB_RANGES[] = {
  {0x0006f0, 0x0006f9, WB_Numeric },
  {0x0006fa, 0x0006fc, WB_ALetter },
  {0x0006ff, 0x0006ff, WB_ALetter },
- {0x00070f, 0x00070f, WB_Format },
- {0x000710, 0x000710, WB_ALetter },
+ {0x00070f, 0x000710, WB_ALetter },
  {0x000711, 0x000711, WB_Extend },
  {0x000712, 0x00072f, WB_ALetter },
  {0x000730, 0x00074a, WB_Extend },
@@ -156,11 +155,11 @@ static WB_RANGE_TYPE WB_RANGES[] = {
  {0x000860, 0x00086a, WB_ALetter },
  {0x000870, 0x000887, WB_ALetter },
  {0x000889, 0x00088e, WB_ALetter },
- {0x000890, 0x000891, WB_Format },
+ {0x000890, 0x000891, WB_Numeric },
  {0x000898, 0x00089f, WB_Extend },
  {0x0008a0, 0x0008c9, WB_ALetter },
  {0x0008ca, 0x0008e1, WB_Extend },
- {0x0008e2, 0x0008e2, WB_Format },
+ {0x0008e2, 0x0008e2, WB_Numeric },
  {0x0008e3, 0x000903, WB_Extend },
  {0x000904, 0x000939, WB_ALetter },
  {0x00093a, 0x00093c, WB_Extend },
@@ -779,9 +778,9 @@ static WB_RANGE_TYPE WB_RANGES[] = {
  {0x01107f, 0x011082, WB_Extend },
  {0x011083, 0x0110af, WB_ALetter },
  {0x0110b0, 0x0110ba, WB_Extend },
- {0x0110bd, 0x0110bd, WB_Format },
+ {0x0110bd, 0x0110bd, WB_Numeric },
  {0x0110c2, 0x0110c2, WB_Extend },
- {0x0110cd, 0x0110cd, WB_Format },
+ {0x0110cd, 0x0110cd, WB_Numeric },
  {0x0110d0, 0x0110e8, WB_ALetter },
  {0x0110f0, 0x0110f9, WB_Numeric },
  {0x011100, 0x011102, WB_Extend },

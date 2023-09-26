@@ -183,9 +183,6 @@
     <ClCompile Include="src\ChangeHistory.cxx">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="oniguruma\src\regext.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ILexer.h">

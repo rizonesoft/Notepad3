@@ -28,7 +28,7 @@
 
 #include "regenc.h"
 
-#define UNICODE_CASEFOLD_VERSION  150000
+#define UNICODE_CASEFOLD_VERSION  150100
 
 
 OnigCodePoint OnigUnicodeFolds1[] = {
