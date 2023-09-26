@@ -90,6 +90,7 @@
 #define IDS_OPEN_MRU                    176
 #define IDS_COPY_COLUMN                 177
 #define IDS_COPY_COLUMN_SEL             178
+#define IDS_REGEXEXCEPTION              179
 #define IDC_SEARCHTEXT                  1000
 #define IDC_REGEXRADIO                  1001
 #define IDC_TEXTRADIO                   1002

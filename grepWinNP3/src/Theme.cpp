@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2020-2021 - Stefan Kueng
+// Copyright (C) 2020-2021, 2023 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -37,17 +37,17 @@ constexpr COLORREF darkBkColor           = 0x202020;
 constexpr COLORREF darkTextColor         = 0xDDDDDD;
 constexpr COLORREF darkDisabledTextColor = 0x808080;
 
-constexpr auto SubclassID = 1234;
+constexpr auto     SubclassID            = 1234;
 
-static int  GetStateFromBtnState(LONG_PTR dwStyle, BOOL bHot, BOOL bFocus, LRESULT dwCheckState, int iPartId, BOOL bHasMouseCapture);
-static void GetRoundRectPath(Gdiplus::GraphicsPath* pPath, const Gdiplus::Rect& r, int dia);
-static void DrawRect(LPRECT prc, HDC hdcPaint, Gdiplus::DashStyle dashStyle, Gdiplus::Color clr, Gdiplus::REAL width);
-static void DrawFocusRect(LPRECT prcFocus, HDC hdcPaint);
-static void PaintControl(HWND hWnd, HDC hdc, RECT* prc, bool bDrawBorder);
-static BOOL DetermineGlowSize(int* piSize, LPCWSTR pszClassIdList = nullptr);
-static BOOL GetEditBorderColor(HWND hWnd, COLORREF* pClr);
+static int         GetStateFromBtnState(LONG_PTR dwStyle, BOOL bHot, BOOL bFocus, LRESULT dwCheckState, int iPartId, BOOL bHasMouseCapture);
+static void        GetRoundRectPath(Gdiplus::GraphicsPath* pPath, const Gdiplus::Rect& r, int dia);
+static void        DrawRect(LPRECT prc, HDC hdcPaint, Gdiplus::DashStyle dashStyle, Gdiplus::Color clr, Gdiplus::REAL width);
+static void        DrawFocusRect(LPRECT prcFocus, HDC hdcPaint);
+static void        PaintControl(HWND hWnd, HDC hdc, RECT* prc, bool bDrawBorder);
+static BOOL        DetermineGlowSize(int* piSize, LPCWSTR pszClassIdList = nullptr);
+static BOOL        GetEditBorderColor(HWND hWnd, COLORREF* pClr);
 
-HBRUSH CTheme::m_sBackBrush = nullptr;
+HBRUSH             CTheme::m_sBackBrush = nullptr;
 
 CTheme::CTheme()
     : m_bLoaded(false)
@@ -182,6 +182,9 @@ bool CTheme::SetThemeForDialog(HWND hWnd, bool bDark)
 
 BOOL CTheme::AdjustThemeForChildrenProc(HWND hwnd, LPARAM lParam)
 {
+    if (reinterpret_cast<LPARAM>(GetProp(hwnd, L"grepWinDarkMode")) == lParam)
+        return TRUE;
+    SetProp(hwnd, L"grepWinDarkMode", reinterpret_cast<HANDLE>(lParam));
     DarkModeHelper::Instance().AllowDarkModeForWindow(hwnd, static_cast<BOOL>(lParam));
     wchar_t szWndClassName[MAX_PATH] = {0};
     GetClassName(hwnd, szWndClassName, _countof(szWndClassName));
@@ -599,13 +602,13 @@ LRESULT CTheme::ButtonSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
                         BP_PAINTPARAMS params = {sizeof(BP_PAINTPARAMS)};
                         params.dwFlags        = BPPF_ERASE;
 
-                        RECT rcExclusion  = rcClient;
-                        params.prcExclude = &rcExclusion;
+                        RECT rcExclusion      = rcClient;
+                        params.prcExclude     = &rcExclusion;
 
                         // We have to calculate the exclusion rect and therefore
                         // calculate the font height. We select the control's font
                         // into the DC and fake a drawing operation:
-                        HFONT hFontOld = reinterpret_cast<HFONT>(SendMessage(hWnd, WM_GETFONT, 0L, NULL));
+                        HFONT hFontOld        = reinterpret_cast<HFONT>(SendMessage(hWnd, WM_GETFONT, 0L, NULL));
                         if (hFontOld)
                             hFontOld = static_cast<HFONT>(SelectObject(hdc, hFontOld));
 
@@ -658,7 +661,7 @@ LRESULT CTheme::ButtonSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
                             std::unique_ptr<Gdiplus::Graphics> myGraphics(new Gdiplus::Graphics(hdcPaint));
                             int                                iY = RECTHEIGHT(rcDraw) / 2;
                             Gdiplus::Rect                      rr = Gdiplus::Rect(rcClient.left, rcClient.top + iY,
-                                                             RECTWIDTH(rcClient), RECTHEIGHT(rcClient) - iY - 1);
+                                                                                  RECTWIDTH(rcClient), RECTHEIGHT(rcClient) - iY - 1);
                             Gdiplus::GraphicsPath              path;
                             GetRoundRectPath(&path, rr, 5);
                             myGraphics->DrawPath(myPen.get(), &path);
@@ -727,22 +730,22 @@ LRESULT CTheme::ButtonSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
                             RECT    rc;
                             GetWindowRect(hWnd, &rc);
                             GetCursorPos(&pt);
-                            BOOL bHot   = PtInRect(&rc, pt);
-                            BOOL bFocus = GetFocus() == hWnd;
+                            BOOL bHot    = PtInRect(&rc, pt);
+                            BOOL bFocus  = GetFocus() == hWnd;
 
-                            int iPartId = BP_CHECKBOX;
+                            int  iPartId = BP_CHECKBOX;
                             if (dwButtonType == BS_RADIOBUTTON || dwButtonType == BS_AUTORADIOBUTTON)
                                 iPartId = BP_RADIOBUTTON;
 
-                            int iState = GetStateFromBtnState(dwStyle, bHot, bFocus, dwCheckState, iPartId, FALSE);
+                            int  iState      = GetStateFromBtnState(dwStyle, bHot, bFocus, dwCheckState, iPartId, FALSE);
 
-                            int bmWidth = static_cast<int>(ceil(13.0 * CDPIAware::Instance().GetDPI(hWnd) / 96.0));
+                            int  bmWidth     = static_cast<int>(ceil(13.0 * CDPIAware::Instance().GetDPI(hWnd) / 96.0));
 
                             UINT uiHalfWidth = (RECTWIDTH(rcClient) - bmWidth) / 2;
 
                             // we have to use the whole client area, otherwise we get only partially
                             // drawn areas:
-                            RECT rcPaint = rcClient;
+                            RECT rcPaint     = rcClient;
 
                             if (dwButtonStyle & BS_LEFTTEXT)
                             {
@@ -949,7 +952,7 @@ bool CTheme::IsDarkModeAllowed()
         auto major = std::stol(tokens[0]);
         auto minor = std::stol(tokens[1]);
         auto micro = std::stol(tokens[2]);
-        //auto build = std::stol(tokens[3]);
+        // auto build = std::stol(tokens[3]);
 
         // the windows 10 update 1809 has the version
         // number as 10.0.17763.1
@@ -1037,7 +1040,7 @@ void CTheme::RGBtoHSL(COLORREF color, float& h, float& s, float& l)
     const float gPercent = static_cast<float>(GetGValue(color)) / 255;
     const float bPercent = static_cast<float>(GetBValue(color)) / 255;
 
-    float maxColor = 0;
+    float       maxColor = 0;
     if ((rPercent >= gPercent) && (rPercent >= bPercent))
         maxColor = rPercent;
     else if ((gPercent >= rPercent) && (gPercent >= bPercent))

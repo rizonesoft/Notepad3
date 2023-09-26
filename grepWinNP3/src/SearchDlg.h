@@ -47,10 +47,11 @@
 
 using namespace Microsoft::WRL;
 
-#define SEARCH_START         (WM_APP+1)
-#define SEARCH_PROGRESS      (WM_APP+2)
-#define SEARCH_END           (WM_APP+3)
-#define WM_GREPWIN_THREADEND (WM_APP+4)
+#define SEARCH_FOUND         (WM_APP + 1)
+#define SEARCH_START         (WM_APP + 2)
+#define SEARCH_PROGRESS      (WM_APP + 3)
+#define SEARCH_END           (WM_APP + 4)
+#define WM_GREPWIN_THREADEND (WM_APP + 5)
 
 #define ID_ABOUTBOX         0x0010
 #define ID_CLONE            0x0011
@@ -140,6 +141,8 @@ public:
     inline void  SetEndDialog() { m_endDialog = true; }
     inline void  SetShowContent() { m_showContent = true; m_showContentSet = true; }
     inline bool  isRegexValid() const { return m_isRegexValid; };
+    inline bool  isExcludeDirsRegexValid() const { return m_isExcludeDirsRegexValid; };
+    inline bool  isFileNameMatchRegexValid() const { return m_isFileNameMatchingRegexValid; };
 
 protected:
     LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
@@ -247,6 +250,8 @@ private:
     std::wstring                      m_toolTipReplaceString;
     std::unique_ptr<CInfoRtfDialog>   m_rtfDialog;
     bool                              m_isRegexValid;
+    bool                              m_isExcludeDirsRegexValid;
+    bool                              m_isFileNameMatchingRegexValid;
 
     bool                              m_bStayOnTop;
     BYTE                              m_OpacityNoFocus;

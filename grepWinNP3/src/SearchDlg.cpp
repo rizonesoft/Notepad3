@@ -105,6 +105,23 @@ static SearchThreadMap s_SearchThreadMap;
 
 // ==================================================================================
 
+void drawRedEditBox(HWND hWnd, WPARAM wParam)
+{
+    // make the border of the edit control red in case
+    // the regex is invalid
+    HDC hdc = nullptr;
+    if (wParam == NULLREGION)
+        hdc = GetDC(hWnd);
+    else
+        hdc = GetDCEx(hWnd, reinterpret_cast<HRGN>(wParam), DCX_WINDOW | DCX_INTERSECTRGN);
+    RECT rc = {0};
+    GetWindowRect(hWnd, &rc);
+    MapWindowPoints(nullptr, hWnd, reinterpret_cast<LPPOINT>(&rc), 2);
+    ::SetBkColor(hdc, RGB(255, 0, 0));
+    ::ExtTextOut(hdc, 0, 0, ETO_OPAQUE, &rc, nullptr, 0, nullptr);
+    ReleaseDC(hWnd, hdc);
+}
+
 LRESULT CALLBACK SearchEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR dwRefData)
 {
     switch (uMsg)
@@ -114,19 +131,47 @@ LRESULT CALLBACK SearchEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
             auto searchDlg = reinterpret_cast<CSearchDlg*>(dwRefData);
             if (!searchDlg->isRegexValid())
             {
-                // make the border of the edit control red in case
-                // the regex is invalid
-                HDC hdc = nullptr;
-                if (wParam == NULLREGION)
-                    hdc = GetDC(hWnd);
-                else
-                    hdc = GetDCEx(hWnd, reinterpret_cast<HRGN>(wParam), DCX_WINDOW | DCX_INTERSECTRGN);
-                RECT rc = {0};
-                GetWindowRect(hWnd, &rc);
-                MapWindowPoints(nullptr, hWnd, reinterpret_cast<LPPOINT>(&rc), 2);
-                ::SetBkColor(hdc, RGB(255, 0, 0));
-                ::ExtTextOut(hdc, 0, 0, ETO_OPAQUE, &rc, nullptr, 0, nullptr);
-                ReleaseDC(hWnd, hdc);
+                drawRedEditBox(hWnd, wParam);
+                return 0;
+            }
+        }
+        default:
+            break;
+    }
+
+    return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+}
+
+LRESULT CALLBACK ExcludeDirEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR dwRefData)
+{
+    switch (uMsg)
+    {
+        case WM_NCPAINT:
+        {
+            auto searchDlg = reinterpret_cast<CSearchDlg*>(dwRefData);
+            if (!searchDlg->isExcludeDirsRegexValid())
+            {
+                drawRedEditBox(hWnd, wParam);
+                return 0;
+            }
+        }
+        default:
+            break;
+    }
+
+    return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+}
+
+LRESULT CALLBACK FileNameMatchEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR dwRefData)
+{
+    switch (uMsg)
+    {
+        case WM_NCPAINT:
+        {
+            auto searchDlg = reinterpret_cast<CSearchDlg*>(dwRefData);
+            if (!searchDlg->isFileNameMatchRegexValid())
+            {
+                drawRedEditBox(hWnd, wParam);
                 return 0;
             }
         }
@@ -197,6 +242,8 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_selectedItems(0)
     , m_bAscending(true)
     , m_isRegexValid(true)
+    , m_isExcludeDirsRegexValid(true)
+    , m_isFileNameMatchingRegexValid(true)
     , m_themeCallbackId(0)
     , m_pDropTarget(nullptr)
     , m_autoCompleteFilePatterns(bPortable ? &g_iniFile : nullptr)
@@ -318,6 +365,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             AddToolTip(IDC_REPLACETEXT, LPSTR_TEXTCALLBACK);
 
             SetWindowSubclass(GetDlgItem(*this, IDC_SEARCHTEXT), SearchEditWndProc, SearchEditSubclassID, reinterpret_cast<DWORD_PTR>(this));
+            SetWindowSubclass(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), ExcludeDirEditWndProc, SearchEditSubclassID, reinterpret_cast<DWORD_PTR>(this));
+            SetWindowSubclass(GetDlgItem(*this, IDC_PATTERN), FileNameMatchEditWndProc, SearchEditSubclassID, reinterpret_cast<DWORD_PTR>(this));
 
             if (m_searchPath.empty())
             {
@@ -468,7 +517,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 m_date2.dwLowDateTime  = bPortable ? g_iniFile.GetLongValue(L"global", L"Date2Low", 0) : static_cast<DWORD>(m_regDate2Low);
                 m_date2.dwHighDateTime = bPortable ? g_iniFile.GetLongValue(L"global", L"Date2High", 0) : static_cast<DWORD>(m_regDate2High);
             }
-            else
+            else if (m_date1.dwHighDateTime == 0 && m_date1.dwLowDateTime == 0)
             {
                 // use the current date as default
                 SYSTEMTIME st{};
@@ -895,8 +944,17 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             SendDlgItemMessage(*this, IDC_PROGRESS, PBM_SETMARQUEE, 1, 0);
         }
         break;
-    //case SEARCH_FOUND:
-    case SEARCH_PROGRESS:
+        case SEARCH_FOUND:
+        {
+            auto searchInfo = reinterpret_cast<CSearchInfo*>(lParam);
+            m_totalMatches += static_cast<int>(searchInfo->matchCount);
+            if ((wParam != 0) || (m_searchString.empty()) || searchInfo->readError || !searchInfo->exception.empty() || IsNOTSearch())
+            {
+                AddFoundEntry(searchInfo);
+            }
+        }
+        break;
+        case SEARCH_PROGRESS:
         {
             const auto* const sInfo = (const CSearchInfo* const)(wParam);
             auto const nFound = static_cast<int>(lParam);
@@ -943,6 +1001,17 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 m_rtfDialog = std::make_unique<CInfoRtfDialog>();
             }
             m_rtfDialog->ShowModeless(g_hInst, *this, "grepWinNP3 help", IDR_INFODLG, L"RTF", IDI_GREPWIN, 400, 600);
+            // ensure that the dialog is not too big and always visible on the screen
+            RECT dlgRect{};
+            GetWindowRect(*this, &dlgRect);
+            WINDOWPLACEMENT placement{};
+            placement.length           = sizeof(WINDOWPLACEMENT);
+            placement.showCmd          = SW_SHOW;
+            placement.rcNormalPosition = dlgRect;
+            auto quarterWidth          = (dlgRect.right - dlgRect.left) / 4;
+            placement.rcNormalPosition.left += quarterWidth;
+            placement.rcNormalPosition.right -= quarterWidth;
+            SetWindowPlacement(*m_rtfDialog, &placement);
         }
         break;
         case WM_SYSCOMMAND:
@@ -1108,6 +1177,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 SetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, m_excludeDirsPatternRegex.c_str());
                 SetDlgItemText(*this, IDC_PATTERN, m_patternRegex.c_str());
                 DialogEnableWindow(IDC_WHOLEWORDS, IsDlgButtonChecked(hwndDlg, IDC_TEXTRADIO));
+                CheckRegex();
             }
         }
     break;
@@ -1551,18 +1621,14 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         break;
         case IDC_REGEXRADIO:
         case IDC_TEXTRADIO:
+        case IDC_FILEPATTERNREGEX:
+        case IDC_FILEPATTERNTEXT:
         {
             CheckRegex();
             DialogEnableWindow(IDC_TESTREGEX, !IsDlgButtonChecked(*this, IDC_TEXTRADIO));
             DialogEnableWindow(IDC_WHOLEWORDS, IsDlgButtonChecked(*this, IDC_TEXTRADIO));
         }
         break;
-    case IDC_FILEPATTERNTEXT:
-    case IDC_FILEPATTERNREGEX:
-        {
-            m_bUseRegexForPaths = (IsDlgButtonChecked(*this, IDC_FILEPATTERNREGEX) == BST_CHECKED);
-        }
-    break;
     case IDC_ADDTOBOOKMARKS:
         {
             auto buf                  = GetDlgItemText(IDC_SEARCHTEXT);
@@ -1708,6 +1774,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             {
                 if (m_autoCompleteFilePatterns.GetOptions() & ACO_NOPREFIXFILTERING)
                     m_autoCompleteFilePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
+                CheckRegex();
             }
         }
         break;
@@ -1717,6 +1784,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             {
                 if (m_autoCompleteExcludeDirsPatterns.GetOptions() & ACO_NOPREFIXFILTERING)
                     m_autoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
+                CheckRegex();
             }
         }
         break;
@@ -2169,6 +2237,8 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
                                 case 2: // match count or read error
                                     if (pInfo->readError)
                                         copyText += sReadError.c_str();
+                                    else if (!pInfo->exception.empty())
+                                        copyText += pInfo->exception.c_str();
                                     else
                                         copyText += std::to_wstring(pInfo->matchCount);
                                     break;
@@ -2621,7 +2691,12 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             CSearchInfo inf = m_items[iItem];
 
             std::wstring matchString = inf.filePath + L"\n";
-            std::wstring sFormat     = TranslatedString(hResource, IDS_CONTEXTLINE);
+            if (!inf.exception.empty())
+            {
+                matchString += inf.exception;
+                matchString += L"\n";
+            }
+            std::wstring sFormat = TranslatedString(hResource, IDS_CONTEXTLINE);
             for (size_t i = 0; i < std::min<size_t>(inf.matchLines.size(), 5); ++i)
             {
                 std::wstring matchText = inf.matchLines[i];
@@ -2639,13 +2714,15 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
     }
     if (lpNMItemActivate->hdr.code == LVN_GETDISPINFO)
     {
-        static const std::wstring sBinary = TranslatedString(hResource, IDS_BINARY);
+        static const std::wstring sBinary         = TranslatedString(hResource, IDS_BINARY);
+        static const std::wstring sReadError      = TranslatedString(hResource, IDS_READERROR);
+        static const std::wstring sRegexException = TranslatedString(hResource, IDS_REGEXEXCEPTION);
 
-        auto* pDispInfo = reinterpret_cast<NMLVDISPINFO*>(lpNMItemActivate);
-        LV_ITEM*      pItem     = &(pDispInfo)->item;
+        NMLVDISPINFO*             pDispInfo       = reinterpret_cast<NMLVDISPINFO*>(lpNMItemActivate);
+        LV_ITEM*                  pItem           = &(pDispInfo)->item;
 
-        int  iItem    = pItem->iItem;
-        bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+        int                       iItem           = pItem->iItem;
+        bool                      fileList        = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
 
         if (fileList)
         {
@@ -2663,7 +2740,9 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                         break;
                     case 2: // match count or read error
                         if (pInfo->readError)
-                            wcsncpy_s(pItem->pszText, pItem->cchTextMax, TranslatedString(hResource, IDS_READERROR).c_str(), pItem->cchTextMax - 1LL);
+                            wcsncpy_s(pItem->pszText, pItem->cchTextMax, sReadError.c_str(), pItem->cchTextMax - 1LL);
+                        else if (!pInfo->exception.empty())
+                            wcsncpy_s(pItem->pszText, pItem->cchTextMax, sRegexException.c_str(), pItem->cchTextMax - 1LL);
                         else
                             swprintf_s(pItem->pszText, pItem->cchTextMax, L"%lld", pInfo->matchCount);
                         break;
@@ -4164,7 +4243,9 @@ int CSearchDlg::SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wst
         }
         catch (const std::exception&)
         {
-            //SendMessage(*this, SEARCH_PROGRESS, 0, 0);
+            //sInfo.exception = CUnicodeUtils::StdGetUnicode(ex.what());
+            //SendMessage(*this, SEARCH_FOUND, 0, reinterpret_cast<LPARAM>(&sInfo));
+            //SendMessage(*this, SEARCH_PROGRESS, 1, 0);
             return -1;
         }
     }
@@ -4402,10 +4483,14 @@ int CSearchDlg::SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wst
             }
             catch (const std::exception&)
             {
+                //sInfo.exception = CUnicodeUtils::StdGetUnicode(ex.what());
+                //SendMessage(*this, SEARCH_FOUND, 0, reinterpret_cast<LPARAM>(&sInfo));
+                //SendMessage(*this, SEARCH_PROGRESS, 1, 0);
                 return -1;
             }
             catch (...)
             {
+                //SendMessage(*this, SEARCH_PROGRESS, 0, 0);
                 return -1;
             }
         }
@@ -4452,9 +4537,12 @@ void CSearchDlg::FormatDate(wchar_t dateNative[], const FILETIME& fileTime, bool
 
 int CSearchDlg::CheckRegex()
 {
-    m_isRegexValid = true;
-    auto buf       = GetDlgItemText(IDC_SEARCHTEXT);
-    auto  len       = static_cast<int>(wcslen(buf.get()));
+    m_isRegexValid                 = true;
+    m_isExcludeDirsRegexValid      = true;
+    m_isFileNameMatchingRegexValid = true;
+
+    auto buf                       = GetDlgItemText(IDC_SEARCHTEXT);
+    int  len                       = static_cast<int>(wcslen(buf.get()));
     if (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED)
     {
         m_bUseRegex = true;
@@ -4515,6 +4603,42 @@ int CSearchDlg::CheckRegex()
         DialogEnableWindow(IDC_CREATEBACKUP, len > 0);
         RedrawWindow(GetDlgItem(*this, IDC_SEARCHTEXT), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
     }
+
+    {
+        buf = GetDlgItemText(IDC_EXCLUDEDIRSPATTERN);
+        len = static_cast<int>(wcslen(buf.get()));
+        if (len)
+        {
+            try
+            {
+                std::wstring  sRegex     = buf.get();
+                boost::wregex expression = boost::wregex(sRegex);
+            }
+            catch (const std::exception&)
+            {
+                m_isExcludeDirsRegexValid = false;
+            }
+        }
+        RedrawWindow(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
+    }
+    if (IsDlgButtonChecked(*this, IDC_FILEPATTERNREGEX) == BST_CHECKED)
+    {
+        buf = GetDlgItemText(IDC_PATTERN);
+        len = static_cast<int>(wcslen(buf.get()));
+        if (len)
+        {
+            try
+            {
+                std::wstring  sRegex     = buf.get();
+                boost::wregex expression = boost::wregex(sRegex);
+            }
+            catch (const std::exception&)
+            {
+                m_isFileNameMatchingRegexValid = false;
+            }
+        }
+    }
+    RedrawWindow(GetDlgItem(*this, IDC_PATTERN), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
 
     return len;
 }

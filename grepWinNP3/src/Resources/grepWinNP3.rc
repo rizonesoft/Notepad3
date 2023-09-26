@@ -437,6 +437,7 @@ BEGIN
     IDS_OPEN_MRU            "Open list with recent entries"
     IDS_COPY_COLUMN         "Copy column for all items"
     IDS_COPY_COLUMN_SEL     "Copy column for selected items"
+    IDS_REGEXEXCEPTION      "Regex stack error"
 END
 
 #endif    // Neutral resources
