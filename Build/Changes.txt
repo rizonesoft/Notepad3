@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.913.(build_#) (2023-09-13)
+Current BETA/RC Version 6.23.926.(build_#) (2023-09-26)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.926.1]- Some refactoring regarding string comparison.
 [.903.1]- Python stream comment hack.
 [.830.1]- "DrawAnimatedWindow": Option to disable animated max./min. window.
 [.827.1]- Add Dark-Mode Contrast control for Schemes configuration.
@@ -190,10 +191,10 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.913.1]- Update Lexilla Library (LEX) version 5.2.6 dev. (2023-07-26).
+[.926.1]- Update Lexilla Library (LEX) version 5.2.7 dev. (2023-09-22).
+[.926.1]- Update Scintilla Library (SCI) version 5.3.7 dev. (2023-09-22).
 [.913.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2023-03-27) (intermediate).
 [.619.1]- Update grepWinNP3 (GRE) version 2.1.15.47 (2023-06-19).
-[.619.1]- Update Scintilla Library (SCI) version 5.3.5 dev. (2023-05-31).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
 
 --------------------------------------------------------
