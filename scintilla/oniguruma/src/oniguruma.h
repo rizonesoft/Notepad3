@@ -80,6 +80,7 @@ extern "C" {
 #define UChar OnigUChar
 #endif
 
+typedef int            OnigPos;
 typedef unsigned int   OnigCodePoint;
 typedef unsigned char  OnigUChar;
 typedef unsigned int   OnigCtype;
@@ -262,7 +263,7 @@ typedef enum {
 #define ONIGENC_MAX_STD_CTYPE  ONIGENC_CTYPE_ASCII
 
 
-#define onig_enc_len(enc,p,end)        ONIGENC_MBC_ENC_LEN(enc,p)
+//#define onig_enc_len(enc,p,end)        ONIGENC_MBC_ENC_LEN(enc,p)
 
 #define ONIGENC_IS_UNDEF(enc)          ((enc) == ONIG_ENCODING_UNDEF)
 #define ONIGENC_IS_SINGLEBYTE(enc)     (ONIGENC_MBC_MAXLEN(enc) == 1)

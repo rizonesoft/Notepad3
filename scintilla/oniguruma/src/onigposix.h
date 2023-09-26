@@ -4,7 +4,7 @@
   onigposix.h - Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2020  K.Kosako
+ * Copyright (c) 2002-2021  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -74,7 +74,7 @@ extern "C" {
 #define REG_POSIX_ENCODING_UTF16_LE  5
 
 
-typedef int onig_posix_regoff_t;
+typedef ptrdiff_t  onig_posix_regoff_t;
 
 typedef struct {
   onig_posix_regoff_t  rm_so;
