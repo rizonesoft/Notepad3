@@ -454,6 +454,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     std::wstring sPath = searchIni.GetValue(section.c_str(), L"searchpath");
                     sPath              = SanitizeSearchPaths(sPath);
                     searchDlg.SetSearchPath(sPath);
+                    directlyPassedSearchPath.clear();
                 }
                 if (searchIni.GetValue(section.c_str(), L"searchfor"))
                     searchDlg.SetSearchString(searchIni.GetValue(section.c_str(), L"searchfor"));

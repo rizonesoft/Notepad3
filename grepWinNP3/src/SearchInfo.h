@@ -53,6 +53,7 @@ public:
     __int64                   matchCount;
     CTextFile::UnicodeType    encoding;
     FILETIME                  modifiedTime;
+    std::wstring              exception;
     bool                      readError;
     bool                      folder;
 };
