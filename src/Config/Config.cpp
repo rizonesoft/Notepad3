@@ -401,7 +401,7 @@ static inline void popCheckStackHead(LPCSTR fctname)
     UNREFERENCED_PARAMETER(fctname); // NDEBUG mode
     iniOpen_t* pOpenBy = NULL;
     STACK_POP(s_pOpenStackHead, pOpenBy);
-    assert(StringCchCompareXA(fctname, pOpenBy->fctname) == 0);
+    assert(StrCmpA(fctname, pOpenBy->fctname) == 0);
     FreeMem(pOpenBy);
 }
 
@@ -589,12 +589,10 @@ extern "C" bool IniSectionClear(LPCWSTR lpSectionName, bool bRemoveEmpty)
 
 extern "C" bool IniClearAllSections(LPCWSTR lpPrefix, bool bRemoveEmpty)
 {
-    size_t const len = StringCchLen(lpPrefix, 0);
-
     CSimpleIni::TNamesDepend Sections;
     s_INI.GetAllSections(Sections);
     for (const auto& section : Sections) {
-        if (StringCchCompareNI(section.pItem, len, lpPrefix, len) == 0) {
+        if (StrCmpIW(section.pItem, lpPrefix) == 0) {
             IniSectionClear(section.pItem, bRemoveEmpty);
         }
     }

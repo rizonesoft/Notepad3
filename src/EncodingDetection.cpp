@@ -1212,8 +1212,7 @@ extern "C" bool FileVars_ParseStr(const char* pszData, const char* pszName, char
 extern "C" bool FileVars_IsUTF8(LPFILEVARS lpfv)
 {
     if (lpfv->mask & FV_ENCODING) {
-        if (StringCchCompareNIA(lpfv->chEncoding, COUNTOF(lpfv->chEncoding), "utf-8", CONSTSTRGLEN("utf-8")) == 0 ||
-                StringCchCompareNIA(lpfv->chEncoding, COUNTOF(lpfv->chEncoding), "utf8", CONSTSTRGLEN("utf8")) == 0) {
+        if (StrCmpIA(lpfv->chEncoding, "utf-8") == 0 || StrCmpIA(lpfv->chEncoding, "utf8") == 0) {
             return true;
         }
     }

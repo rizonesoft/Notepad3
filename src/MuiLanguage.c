@@ -187,7 +187,7 @@ void SetMuiLanguage(const unsigned muiLngIndex) {
             StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), pLocaleName);
 
             if (Globals.bCanSaveIniFile) {
-                if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Default_PreferredLanguageLocaleName) != 0) {
+                if (StrCmpIW(Settings2.PreferredLanguageLocaleName, Default_PreferredLanguageLocaleName) != 0) {
                     IniFileSetString(Paths.IniFile, Constants.Settings2_Section, SettingName, Settings2.PreferredLanguageLocaleName);
                 } else {
                     IniFileDelete(Paths.IniFile, Constants.Settings2_Section, SettingName, false);
@@ -349,7 +349,7 @@ unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
     unsigned iLngIndex = MuiLanguages_CountOf();
     WCHAR tchAvailLngs[2 * (LOCALE_NAME_MAX_LENGTH + 1)] = { L'\0' };
     for (unsigned lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
-        if (StringCchCompareXIW(MUI_LanguageDLLs[lng].LocaleName, pLocaleName) == 0) {
+        if (StrCmpIW(MUI_LanguageDLLs[lng].LocaleName, pLocaleName) == 0) {
             if (MUI_LanguageDLLs[lng].bHasDLL && (lng > 0)) {
                 StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[lng].LocaleName);
                 StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), L";");
