@@ -1496,23 +1496,33 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     Style_SetStyles(hwnd, pCurrentStandard->Styles[STY_INDENT_GUIDE].iStyle, pCurrentStandard->Styles[STY_INDENT_GUIDE].szValue, fBaseFontSize); // indent guide
 
     if (Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, FOREGROUND_LAYER, &rgb, NULL, false)) { // selection fore
-        SciCall_SetElementColour(SC_ELEMENT_SELECTION_TEXT, RGB2RGBAREF(rgb));
-        SciCall_SetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_TEXT, RGB2RGBAREF(rgb));
+        COLORALPHAREF const argb = RGB2RGBAREF(rgb); // opaque
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_TEXT, argb);
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_SECONDARY_TEXT, argb);
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_INACTIVE_TEXT, argb);
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_TEXT, argb);
     }
     else {
         SciCall_ResetElementColour(SC_ELEMENT_SELECTION_TEXT);
+        SciCall_ResetElementColour(SC_ELEMENT_SELECTION_SECONDARY_TEXT);
+        SciCall_ResetElementColour(SC_ELEMENT_SELECTION_INACTIVE_TEXT);
         SciCall_ResetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_TEXT);
     }
 
     rgb = RGB(0xC0, 0xC0, 0xC0);
     SciCall_SetSelectionLayer(SC_LAYER_UNDER_TEXT); // selection back
     if (Style_StrGetColor(pCurrentStandard->Styles[STY_SEL_TXT].szValue, BACKGROUND_LAYER, &rgb, NULL, true)) {
-        Style_StrGetAlpha(pCurrentStandard->Styles[STY_SEL_TXT].szValue, &iValue, SC_ALPHA_OPAQUE, true);
-        SciCall_SetElementColour(SC_ELEMENT_SELECTION_BACK, AxRGB(iValue, rgb));
-        SciCall_SetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_BACK, AxRGB(iValue * 2 / 3, rgb));
+        Style_StrGetAlpha(pCurrentStandard->Styles[STY_SEL_TXT].szValue, &iValue, SC_ALPHA_OPAQUE * 2 / 3, true);
+        COLORALPHAREF const argb = AxRGB(iValue, rgb);
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_BACK, argb);
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_SECONDARY_BACK, argb);
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_INACTIVE_BACK, argb);
+        SciCall_SetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_BACK, argb);
     }
     else {
         SciCall_ResetElementColour(SC_ELEMENT_SELECTION_BACK);
+        SciCall_ResetElementColour(SC_ELEMENT_SELECTION_SECONDARY_BACK);
+        SciCall_ResetElementColour(SC_ELEMENT_SELECTION_INACTIVE_BACK);
         SciCall_ResetElementColour(SC_ELEMENT_SELECTION_ADDITIONAL_BACK);
     }
 
