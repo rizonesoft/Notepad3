@@ -34,14 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.926.(build_#) (2023-09-26)
+Current BETA/RC Version 6.23.927.(build_#) (2023-09-27)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
-[.926.1]- Some refactoring regarding string comparison.
+[.927.1]- Update grepWinNP3 from current grepWin dev (GRE).
 [.903.1]- Python stream comment hack.
 [.830.1]- "DrawAnimatedWindow": Option to disable animated max./min. window.
 [.827.1]- Add Dark-Mode Contrast control for Schemes configuration.
@@ -68,7 +68,9 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[.913.1]- Line comment indentation for complaint prog. lng (issue #4983).
+[.927.1]- Using selection color also for not focused selections (secondary and inactive).
+[.926.1]- Some refactoring regarding string comparison.
+[.913.1]- Line comment indentation for complaint prog. lng (issue 4983).
 [.827.1]- Python default dark-mode colors for comment and keywords.
 [.731.1]- Comment out "MSIX" attributes in applications manifest.
 [.718.1]- Move Join Lines, Split Lines, Fuse Lines, Preserve Paragr. from Lines to Selection menu.
@@ -260,7 +262,7 @@ CHANGES:
 [1220.1]- Update Lexer "AutoIt3 Script" to Autoit v3.3.16.1.
 [1220.1]- Adjust All dialogboxes for all Languages to fit at display scale of 125%.
 [1216.1]- Replacing SCI_REPLACETARGET calls by SCI_REPLACETARGETMINIMAL calls where appropriate.
-[1212.1]- Extend AutoCloseBrackets (by Matteo-Nigro PR #4318) for Selection.
+[1212.1]- Extend AutoCloseBrackets (by Matteo-Nigro PR 4318) for Selection.
 [1118.2]- Using new AviSynth+ keyword lists and AviSynth colors (light/dark mode).
 [1029.1]- Refactored of undo/redo and document modify handler.
 [1020.1]- Standard DarkMode Theme.
@@ -722,7 +724,7 @@ NEW:
 --------------------------------------------------------
 [.205.1]- Use user locale for date/time insert format: can be menu switched to preferred UI language.
 [.124.1]- Enable horizontal scrolling by "Shift + Mouse-Wheel".
-[.117.1]- Show search wrap-around tooltip (issue #3038).
+[.117.1]- Show search wrap-around tooltip (issue 3038).
 [1222.1]- Kotlin Source Lexer based on Zufuliu's Kotlin Lexer code base.
 [1222.1]- Dart Lexer based on Zufuliu's Dart Lexer code base.
 [1221.1]- TinyExpr: additional number parsing for binary (0b...) and octal (0o...) number formats.
@@ -808,7 +810,7 @@ FIXES:
 [.124.1]- InfoBox message icon DPI scaling.
 [.122.1]- Tinyexpr functions and constants parsing.
 [.116.1]- Buffer overrun while initializing structures.
-[.116.1]- Fix Font Dialog (Size handling) problems (issue #3012).
+[.116.1]- Fix Font Dialog (Size handling) problems (issue 3012).
 [1219.1]- F/R dialog: Transform Backslash option glitch.
 [1219.1]- F/R dialog: message box in case of not matching pattern.
 [1218.1]- Multi-Replace using RegExpr and Group-References.
@@ -828,7 +830,7 @@ FIXES:
 [1004.1]- Initial directory for open/save file Explorer dialog.
 [1001.1]- TOML Lexer performance leak.
 [.928.2]- Freezing of main window caused by mixed usage of Lexer Interfaces.
-[.928.1]- Setting new IFace5 Lexer (should fix line/stream comment toggle issue #2912).
+[.928.1]- Setting new IFace5 Lexer (should fix line/stream comment toggle issue 2912).
 [.927.1]- Lexer file extensions maintained in standard config.
 [.927.1]- grepWin language switching (github.com/stefankueng/grepWin/issues/199) (GRE).
 [.926.1]- Clone full .ini-file path for forked new instance (GRE).
@@ -952,7 +954,7 @@ FIXES:
 [.830.1]- F/R Dialog: Clear F/R History - remove entries from .ini-file too.
 [.829.1]- Buffer to small in case of auto-esc ctrl-chars in find/replace edit-control.
 [.825.2]- Wrong Focused-View Mode shown in menu.
-[.825.2]- Try to fix (hardly reproducible) "copy Hyperlink issue (#2202).
+[.825.2]- Try to fix (hardly reproducible) "copy Hyperlink" issue 2202.
 [.825.1]- Regression: initial calculation of Print-Zoom factor.
 [.824.1]- Not intended bookmarker on F/R dialog mark findings.
 [.823.1]- Bookmark Occurrences too menu checked.
@@ -1516,7 +1518,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 - Do not reset scroll-width tracking on saving file
-    (issue #539: https://github.com/rizonesoft/Notepad3/issues/539).
+    (issue 539: https://github.com/rizonesoft/Notepad3/issues/539).
 - Fixed portable MiniPath redirector .ini files.
 - Support Scintilla's new indicator box styles
     ("INDIC_GRADIENT" and "INDIC_CRADIENTCENTRE").
@@ -2182,7 +2184,7 @@ Version 3.17.1202.715 (2 December 2017)
 - Fix: Minipath full path display in titlebar (no dbl-slash in case of drive letter only).
 - Fix: Mark occurrences: Outline frame of indicator box shouls have same aplpha channel color (configurable alpha2:nnn).
 - Fix: Find/replace dialog: mark occurrences: use standard save/restore settings behavior.
-- Fix: #192 Drag n' drop from 32-bit process on Notepad3 x64 window
+- Fix: issue 192 Drag n' drop from 32-bit process on Notepad3 x64 window
 
 
 ========================================================
@@ -2224,7 +2226,7 @@ Version 3.17.1124.690 (24 November 2017)
 - Fix: lookaround regex (DeelX) matches were not replaced.
 - Fix: Issue regarding find/replace empty-string.
 - Fix: Adapt DeelX RE interface according to enhanced find/replace dialog.
-- Fix: Issue #173 - regex/wildcard search: replacement string not used if "Check All Occurrences" is active.
+- Fix: issue 173 - regex/wildcard search: replacement string not used if "Check All Occurrences" is active.
 - Fix: Recoding minipath's version.h to UTF-8-Sig, because it contains codepage dependant copyright sign.
 - Fix: Corrections to .vcproj settings inconsistencies (reported in release build process).
 - Fix: undo/redo issues (if no selection choosen).
@@ -2237,9 +2239,9 @@ Version 3.17.1124.690 (24 November 2017)
 - Fix: Problem with regex line start and replacements at line end.
 - Fix: Issues regarding selection undo/redo.
 - Fix: Issues regarding margins configuration.
-- Fix: Issue #139 and #143 (remove selection undo/redo for non-text-changing operations on selections).
-- Fix: issue #144 (Left arrow no longer moves to previous line).
-- Fix: issue #145 (Mark Occurrences Counter is broken).
+- Fix: issue 139 and 143 (remove selection undo/redo for non-text-changing operations on selections).
+- Fix: issue 144 (Left arrow no longer moves to previous line).
+- Fix: issue 145 (Mark Occurrences Counter is broken).
 - Fix: Pasting clipboard content into selection box should replace text and cancel selection then.
 - Minor bug fixes and more...
 
@@ -2251,7 +2253,7 @@ Version 2.17.1023.632 (23 October 2017)
 - Added switch ([Settings2] UseOldStyleBraceMatching) to preserve old style
     brace matching behavior.
 - Applied patch from Neil Hodgson (Master of Scintilla Lib - respond to
-    scintilla lib issue report #1976).
+    scintilla lib issue report 1976).
 - Changed buffers for operating edit box in customize schemes.
 - Documentation: Minor changes to Notepad3.txt.
 - Documentation: doc/Notepad3.txt - add description of [Section2] .ini settings
@@ -2260,7 +2262,7 @@ Version 2.17.1023.632 (23 October 2017)
     : SciDirectWriteTech=1, SciFontQuality=3
 - First prottotype of VirtualSpace RectangularSelection by default (very old
     behavior can be turned on by [Settings2] DenyVirtualSpaceAccess=1).
-- Implemented Feature Request #51 (buffer size of file extension edit box).
+- Implemented Feature Request issue 51 (buffer size of file extension edit box).
 - New: Show warning before loading file with unknown (custom schemes) file name extension.
 - License.txt: switch to UTF-8 encoding.
 - Restore wrongly discarded np3portableapps .ini files for NP3Portable,
@@ -2472,7 +2474,7 @@ Version 2 Build 432 (10 August 2017)
 - Enlarge some string buffers for dialogs.
 - Initial version of PortableApps.com Launche and Installer build.
 - Build environment, to create Notepad3Portable (according to Portableapps.com) (x86/x64).
-- Fixed issue #35 (preserve FileExtension settings while switching Styles / 2nd Default Scheme).
+- Fixed issue 35 (preserve FileExtension settings while switching Styles / 2nd Default Scheme).
 - Fixed np3encrypt vcxproj files.
 
 
@@ -2500,8 +2502,8 @@ Version 2 Build 398 (13 June 2017)
 ========================================================
 - Added Microsoft Visual C++ 2017 (vc141) support.
 - Updated Scintilla to version 3.7.5
-- Don't use 2nd default syntax scheme by default. (Issue #21)
-- Bigger Toolbar Buttons (24px). Should be big enough now. (Issue #21)
+- Don't use 2nd default syntax scheme by default. (issue 21)
+- Bigger Toolbar Buttons (24px). Should be big enough now. (issue 21)
 
 
 ========================================================
