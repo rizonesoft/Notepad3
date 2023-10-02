@@ -1089,7 +1089,7 @@ extern "C" bool FileVars_Apply(LPFILEVARS lpfv)
     Globals.fvCurFile.bWordWrap = (lpfv->mask & FV_WORDWRAP) ? lpfv->bWordWrap : Settings.WordWrap;
     Sci_SetWrapModeEx(GET_WRAP_MODE());
 
-    int edgeColumns[SMALL_BUFFER];
+    int          edgeColumns[EDGELINE_NUM_LIMIT];
     size_t const cnt = ReadVectorFromString(lpfv->wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
     Style_SetMultiEdgeLine(edgeColumns, cnt);
 

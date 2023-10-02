@@ -4309,7 +4309,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_EDIT_SORTLINES, mls && !ro);
 
     //EnableCmd(hmenu,IDM_EDIT_COLUMNWRAP,i /*&& IsWindowsNT()*/);
-    EnableCmd(hmenu, IDM_EDIT_SPLITLINES, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_JOINLINES, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_JOINLN_NOSP, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_JOINLINES_PARA, !se && !ro);
@@ -5479,7 +5478,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_SORTLINES:
         if (EditSortDlg(hwnd,&s_iSortOptions)) {
-            EditSortLines(Globals.hwndEdit,s_iSortOptions);
+            EditSortLines(Globals.hwndEdit, s_iSortOptions);
         }
         break;
 
@@ -5488,7 +5487,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         UINT uWrpCol = Globals.iWrapCol;
         if (ColumnWrapDlg(hwnd, IDD_MUI_COLUMNWRAP, &uWrpCol)) {
             Globals.iWrapCol = clampi((int)uWrpCol, SciCall_GetTabWidth(), LONG_LINES_MARKER_LIMIT);
-            EditWrapToColumn(Globals.iWrapCol);
+            EditWrapToColumnEx(Globals.hwndEdit, Globals.iWrapCol);
         }
     }
     break;
@@ -6000,7 +5999,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_LONGLINEMARKER: {
         Settings.MarkLongLines = !Settings.MarkLongLines;
         size_t cnt = 0;
-        int edgeColumns[SMALL_BUFFER] = { 0 };
+        int    edgeColumns[EDGELINE_NUM_LIMIT] = { 0 };
         if (Settings.MarkLongLines) {
             cnt = ReadVectorFromString(Globals.fvCurFile.wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
         }
@@ -6014,7 +6013,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (LongLineSettingsDlg(hwnd, IDD_MUI_LONGLINES, Globals.fvCurFile.wchMultiEdgeLines)) {
 
-            int edgeColumns[SMALL_BUFFER];
+            int          edgeColumns[EDGELINE_NUM_LIMIT];
             size_t const cnt = ReadVectorFromString(Globals.fvCurFile.wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
 
             if (cnt == 0) {

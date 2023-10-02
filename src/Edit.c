@@ -4744,8 +4744,49 @@ void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete)
 //
 //  EditWrapToColumn()
 //
-void EditWrapToColumn(DocPosU nColumn)
+void EditWrapToColumn(HWND hwnd, DocPosU nColumn)
 {
+    UNREFERENCED_PARAMETER(hwnd);
+
+    if (Sci_IsMultiOrRectangleSelection()) {
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+        return;
+    }
+
+    size_t const size = (size_t)nColumn + 1LL;
+    char const   spc = ' ';
+    char* const  pTxt = (char* const)AllocMem(size + 1, HEAP_ZERO_MEMORY);
+    memset(pTxt, spc, size);
+    int const width_pix = SciCall_TextWidth(STYLE_DEFAULT, pTxt);
+    FreeMem(pTxt);
+
+    UndoTransActionBegin();
+
+    if (SciCall_IsSelectionEmpty()) {
+        SciCall_TargetWholeDocument();
+    }
+    else {
+        SciCall_TargetFromSelection();
+    }
+    SciCall_LinesSplit(width_pix);
+
+    EndUndoTransAction();
+}
+
+
+//=============================================================================
+//
+//  EditWrapToColumnEx()
+//
+void EditWrapToColumnEx(HWND hwnd, DocPosU nColumn)
+{
+    UNREFERENCED_PARAMETER(hwnd);
+
+    if (Sci_IsMultiOrRectangleSelection()) {
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+        return;
+    }
+
     DocPosU const tabWidth = SciCall_GetTabWidth();
     nColumn = clamppu(nColumn, tabWidth, LONG_LINES_MARKER_LIMIT);
 
@@ -4787,13 +4828,13 @@ void EditWrapToColumn(DocPosU nColumn)
     // --------------------------------------------------------------------------
     //#define W_DELIMITER  L"!\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~"  // underscore counted as part of word
     const WCHAR* const W_DELIMITER  = Settings.AccelWordNavigation ? W_DelimCharsAccel : W_DelimChars;
-#define ISDELIMITER(wc) (!(wc) || StrChrW(W_DELIMITER,(wc)))
+    #define ISDELIMITER(wc) (!(wc) || StrChrW(W_DELIMITER,(wc)))
     //#define ISWHITE(wc) StrChr(L" \t\f",wc)
     const WCHAR* const W_WHITESPACE = Settings.AccelWordNavigation ? W_WhiteSpaceCharsAccelerated : W_WhiteSpaceCharsDefault;
-#define ISWHITE(wc) (!(wc) || StrChrW(W_WHITESPACE,(wc)))
-#define ISLINEBREAK(wc) (!(wc) || ((wc) == wszEOL[0]) || ((wc) == wszEOL[1]))
-#define ISWORDCHAR(wc) (!ISWHITE(wc) && !ISLINEBREAK(wc) && !ISDELIMITER(wc))
-#define ISTAB(wc) ((wc) == L'\t')
+    #define ISWHITE(wc) (!(wc) || StrChrW(W_WHITESPACE,(wc)))
+    #define ISLINEBREAK(wc) (!(wc) || ((wc) == wszEOL[0]) || ((wc) == wszEOL[1]))
+    #define ISWORDCHAR(wc) (!ISWHITE(wc) && !ISLINEBREAK(wc) && !ISDELIMITER(wc))
+    #define ISTAB(wc) ((wc) == L'\t')
     // --------------------------------------------------------------------------
 
     DocPos iCaretShift = 0;
@@ -4895,55 +4936,38 @@ void EditWrapToColumn(DocPosU nColumn)
 }
 
 
-#if FALSE
-//=============================================================================
-//
-//  EditWrapToColumnForce()
-//
-void EditWrapToColumnForce(HWND hwnd, DocPosU nColumn/*,int nTabWidth*/)
-{
-    UNREFERENCED_PARAMETER(hwnd);
-
-    if (Sci_IsMultiOrRectangleSelection()) {
-        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
-        return;
-    }
-
-    size_t const size = (size_t)nColumn + 1LL;
-    char const spc = ' ';
-    char* const pTxt = (char* const)AllocMem(size + 1, HEAP_ZERO_MEMORY);
-    memset(pTxt, spc, size);
-    int const width_pix = SciCall_TextWidth(STYLE_DEFAULT, pTxt);
-    FreeMem(pTxt);
-
-    UndoTransActionBegin();
-
-    if (SciCall_IsSelectionEmpty()) {
-        SciCall_TargetWholeDocument();
-    } else {
-        SciCall_TargetFromSelection();
-    }
-    SciCall_LinesSplit(width_pix);
-
-    EndUndoTransAction();
-}
-#endif
-
-
 //=============================================================================
 //
 //  EditSplitLines()
 //
 void EditSplitLines(HWND hwnd)
 {
-    UNREFERENCED_PARAMETER(hwnd);
+    if (Sci_IsMultiOrRectangleSelection()) {
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+        return;
+    }
 
-    UndoTransActionBegin();
+    switch (SciCall_GetEdgeMode()) {
+        case EDGE_LINE:
+        case EDGE_BACKGROUND: {
+            EditWrapToColumn(hwnd, SciCall_GetEdgeColumn());
+        }
+        break;
 
-    SciCall_TargetFromSelection();
-    SciCall_LinesSplit(0);
+        case EDGE_MULTILINE: {
+            int n = 0;
+            for (n = 0; (n < EDGELINE_NUM_LIMIT) && (SciCall_GetMultiEdgeColumn(n) > 0); ++n) {}
+            DocPos const wrapColumn = SciCall_GetMultiEdgeColumn(clampi(n-1, 0, EDGELINE_NUM_LIMIT - 1));
+            if (wrapColumn > 0) {
+                EditWrapToColumn(hwnd, wrapColumn);
+            }
+        }
+        break;
 
-    EndUndoTransAction();
+        case EDGE_NONE:
+        default:
+        break;
+    }
 }
 
 
