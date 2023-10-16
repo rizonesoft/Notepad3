@@ -1669,7 +1669,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     StringCchCopy(pCurrentStandard->Styles[STY_CARET].szValue,
                   COUNTOF(pCurrentStandard->Styles[STY_CARET].szValue),wchStylesBuffer);
 
-    int edgeColumns[MIDSZ_BUFFER] = { 0 };
+    int          edgeColumns[EDGELINE_NUM_LIMIT] = { 0 };
     size_t const cnt = ReadVectorFromString(Globals.fvCurFile.wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
     Style_SetMultiEdgeLine(edgeColumns, cnt);
 

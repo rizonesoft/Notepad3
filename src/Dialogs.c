@@ -4623,7 +4623,7 @@ void FitIntoMonitorGeometry(LPRECT pRect, WININFO *pWinInfo, SCREEN_MODE mode, b
 //
 //  GetMyWindowPlacement()
 //
-WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO *hMonitorInfo, const int offset) {
+WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO *hMonitorInfo, const int offset, const bool bFullVisible) {
     RECT rc;
     GetWindowRect(hwnd, &rc);
 
@@ -4662,7 +4662,7 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO *hMonitorInfo, const int off
     wi.zoom = hwnd ? SciCall_GetZoom() : 100;
     wi.dpi = Scintilla_GetWindowDPI(hwnd);
 
-    if (Settings2.LaunchInstanceFullVisible) {
+    if (bFullVisible) {
         RECT rci;
         RectFromWinInfo(&wi, &rci);
         FitIntoMonitorGeometry(&rci, &wi, SCR_NORMAL, false);
@@ -4834,7 +4834,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, const HPATHL hFilePath, WI
     StrgCat(hparam_str, Flags.bSingleFileInstance ? L" -ns" : L" -n");
 
     WININFO const _wi = (Flags.bStickyWindowPosition ? g_IniWinInfo : 
-                         (wi ? *wi : GetMyWindowPlacement(hwnd, NULL, Settings2.LaunchInstanceWndPosOffset)));
+                         (wi ? *wi : GetMyWindowPlacement(hwnd, NULL, Settings2.LaunchInstanceWndPosOffset, Settings2.LaunchInstanceFullVisible)));
 
     StringCchPrintf(wch, COUNTOF(wch), L" -pos " WINDOWPOS_STRGFORMAT, _wi.x, _wi.y, _wi.cx, _wi.cy, _wi.dpi, (int)_wi.max);
     StrgCat(hparam_str, wch);
@@ -6700,7 +6700,9 @@ INT_PTR CALLBACK ColorDialogHookProc(
         const CHOOSECOLOR *const pChooseColor = ((CHOOSECOLOR *)lParam);
         if (pChooseColor && pChooseColor->lCustData) {
             POINT const pt = *(POINT*)pChooseColor->lCustData;
-            SetWindowPos(hdlg, NULL, pt.x, pt.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+            SetWindowPos(hdlg, NULL, pt.x, pt.y, 0, 0, (SWP_NOZORDER | SWP_NOSIZE | SWP_HIDEWINDOW) & ~SWP_SHOWWINDOW);
+            WININFO wi = GetMyWindowPlacement(hdlg, NULL, 0, true);
+            SetWindowPos(hdlg, NULL, wi.x, wi.y, wi.cx, wi.cy, SWP_NOZORDER | SWP_NOSIZE | SWP_SHOWWINDOW);
             SetForegroundWindow(hdlg);
         } else {
             CenterDlgInParent(hdlg, NULL);

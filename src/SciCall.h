@@ -617,6 +617,7 @@ DeclareSciCallV1(SetEdgeColour, SETEDGECOLOUR, int, colour);
 DeclareSciCallR0(GetEdgeColour, GETEDGECOLOUR, int);
 DeclareSciCallV2(MultiEdgeAddLine, MULTIEDGEADDLINE, int, column, int, colour);
 DeclareSciCallV0(MultiEdgeClearAll, MULTIEDGECLEARALL);
+DeclareSciCallR1(GetMultiEdgeColumn, GETMULTIEDGECOLUMN, DocPos, int, which);
 
 DeclareSciCallV1(SetTabWidth, SETTABWIDTH, int, width);
 DeclareSciCallR0(GetTabWidth, GETTABWIDTH, int);

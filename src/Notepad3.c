@@ -1506,7 +1506,7 @@ WININFO GetWinInfoByFlag(HWND hwnd, const int flagsPos)
     
     WININFO winfo = INIT_WININFO;
     if (flagsPos < 0) {
-        winfo = GetMyWindowPlacement(hwnd, NULL, 0); // current window position
+        winfo = GetMyWindowPlacement(hwnd, NULL, 0, false); // current window position
     } else if (flagsPos == 0) {
         winfo = g_IniWinInfo; // initial window position
     } else if (flagsPos == 1) {
@@ -3732,9 +3732,9 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
         UINT const     cnt = DragQueryFileW(hDrop, UINT_MAX, NULL, 0);
 
         int const offset = Settings2.LaunchInstanceWndPosOffset;
-
+        bool const bFullVisible = Settings2.LaunchInstanceFullVisible;
         for (UINT i = 0; i < cnt; ++i) {
-            WININFO wi = GetMyWindowPlacement(hwnd, NULL, (vkCtrlDown ? (offset * (i + 1)) : 0));
+            WININFO wi = GetMyWindowPlacement(hwnd, NULL, (vkCtrlDown ? (offset * (i + 1)) : 0), bFullVisible);
             DragQueryFileW(hDrop, i, drop_buf, (UINT)Path_GetBufCount(hdrop_pth));
             _OnDropOneFile(hwnd, hdrop_pth, (((0 == i) && !IsKeyDown(VK_CONTROL)) ? NULL : &wi));
         }
@@ -4309,7 +4309,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_EDIT_SORTLINES, mls && !ro);
 
     //EnableCmd(hmenu,IDM_EDIT_COLUMNWRAP,i /*&& IsWindowsNT()*/);
-    EnableCmd(hmenu, IDM_EDIT_SPLITLINES, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_JOINLINES, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_JOINLN_NOSP, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_JOINLINES_PARA, !se && !ro);
@@ -5479,7 +5478,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_SORTLINES:
         if (EditSortDlg(hwnd,&s_iSortOptions)) {
-            EditSortLines(Globals.hwndEdit,s_iSortOptions);
+            EditSortLines(Globals.hwndEdit, s_iSortOptions);
         }
         break;
 
@@ -5488,7 +5487,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         UINT uWrpCol = Globals.iWrapCol;
         if (ColumnWrapDlg(hwnd, IDD_MUI_COLUMNWRAP, &uWrpCol)) {
             Globals.iWrapCol = clampi((int)uWrpCol, SciCall_GetTabWidth(), LONG_LINES_MARKER_LIMIT);
-            EditWrapToColumn(Globals.iWrapCol);
+            EditWrapToColumnEx(Globals.hwndEdit, Globals.iWrapCol);
         }
     }
     break;
@@ -6000,7 +5999,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_LONGLINEMARKER: {
         Settings.MarkLongLines = !Settings.MarkLongLines;
         size_t cnt = 0;
-        int edgeColumns[SMALL_BUFFER] = { 0 };
+        int    edgeColumns[EDGELINE_NUM_LIMIT] = { 0 };
         if (Settings.MarkLongLines) {
             cnt = ReadVectorFromString(Globals.fvCurFile.wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
         }
@@ -6010,26 +6009,26 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_SET_LONGLINESETTINGS: {
-        int _iLongLinesLimit = Defaults.LongLinesLimit;
+        int iLongLinesLimit = Defaults.LongLinesLimit;
 
         if (LongLineSettingsDlg(hwnd, IDD_MUI_LONGLINES, Globals.fvCurFile.wchMultiEdgeLines)) {
 
-            int edgeColumns[SMALL_BUFFER];
+            int          edgeColumns[EDGELINE_NUM_LIMIT];
             size_t const cnt = ReadVectorFromString(Globals.fvCurFile.wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
 
             if (cnt == 0) {
                 Settings.MarkLongLines = false;
             } else if (cnt == 1) {
-                _iLongLinesLimit = edgeColumns[0];
+                iLongLinesLimit = edgeColumns[0];
                 Settings.MarkLongLines = true;
                 //~Settings.LongLineMode = EDGE_LINE|EDGE_BACKGROUND; // set by Dlg
             } else {
-                _iLongLinesLimit = edgeColumns[cnt - 1];
+                iLongLinesLimit = edgeColumns[cnt - 1];
                 Settings.MarkLongLines = true;
                 Settings.LongLineMode = EDGE_MULTILINE;
             }
-            Globals.iWrapCol = _iLongLinesLimit;
-            Settings.LongLinesLimit = _iLongLinesLimit;
+            Globals.iWrapCol = iLongLinesLimit;
+            Settings.LongLinesLimit = iLongLinesLimit;
 
             // new multi-edge lines setting
             WCHAR col[32];
@@ -7249,7 +7248,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_COPYWINPOS: {
-        WININFO wi = GetMyWindowPlacement(Globals.hwndMain, NULL, 0);
+        WININFO wi = GetMyWindowPlacement(Globals.hwndMain, NULL, 0, false);
         WCHAR   wchBuf[128] = { L'\0' };
         StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"/pos " WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, (int)wi.max);
         SetClipboardText(hwnd, wchBuf, StringCchLen(wchBuf, 0));
@@ -7262,7 +7261,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case CMD_FULLSCRWINPOS: {
-        WININFO wi = GetMyWindowPlacement(hwnd, NULL, 0);
+        WININFO wi = GetMyWindowPlacement(hwnd, NULL, 0, false);
         SnapToWinInfoPos(hwnd, wi, SCR_FULL_SCREEN, SW_SHOWDEFAULT);
     }
     break;
@@ -7272,7 +7271,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case CMD_SAVEASDEFWINPOS: {
-        WININFO const wi = GetMyWindowPlacement(hwnd, NULL, 0);
+        WININFO const wi = GetMyWindowPlacement(hwnd, NULL, 0, false);
         StringCchPrintf(Settings2.DefaultWindowPosition, COUNTOF(Settings2.DefaultWindowPosition), 
                         WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, (int)wi.max);
         if (Globals.bCanSaveIniFile) {
@@ -8312,7 +8311,7 @@ void HandleColorDefClicked(HWND hwnd, const DocPos position)
         // custom hook
         cc.Flags |= CC_ENABLEHOOK;
         cc.lpfnHook = (LPCCHOOKPROC)ColorDialogHookProc;
-        WININFO const wi = GetMyWindowPlacement(Globals.hwndEdit, NULL, 0);
+        WININFO const wi = GetMyWindowPlacement(Globals.hwndEdit, NULL, 0, false);
         int const offset = f2int(Style_GetCurrentLexerFontSize()) << 1;
         POINT pt = { 0L, 0L };
         pt.x = wi.x + SciCall_PointXFromPosition(SciCall_GetCurrentPos()) + offset;
@@ -11835,7 +11834,7 @@ bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch)
     DocPos const iCurPos = SciCall_GetCurrentPos();
     int const iCurLn = (int)SciCall_LineFromPosition(iCurPos) + 1;
     int const iCurCol = (int)SciCall_GetColumn(iCurPos) + 1;
-    WININFO const wi = GetMyWindowPlacement(Globals.hwndMain, NULL, 0);
+    WININFO const wi = GetMyWindowPlacement(Globals.hwndMain, NULL, 0, false);
 
     HSTRINGW hstr_args = StrgCreate(NULL);
     StrgFormat(hstr_args, L"%s/pos " WINDOWPOS_STRGFORMAT L" /g %i,%i %s",
@@ -12346,8 +12345,9 @@ bool LaunchNewInstance(HWND hwnd, LPCWSTR lpszParameter, LPCWSTR lpszFilePath)
     }
     else {
         int const offset = Settings2.LaunchInstanceWndPosOffset;
+        int const bFullVisible = Settings2.LaunchInstanceFullVisible;
         int const instCnt = CountRunningInstances();
-        WININFO wi = GetMyWindowPlacement(hwnd, NULL, offset * instCnt);
+        WININFO wi = GetMyWindowPlacement(hwnd, NULL, offset * instCnt, bFullVisible);
         WCHAR wchPos[80] = { L'\0' };
         StringCchPrintf(wchPos, COUNTOF(wchPos), L"-pos " WINDOWPOS_STRGFORMAT, wi.x, wi.y, wi.cx, wi.cy, wi.dpi, (int)wi.max);
 

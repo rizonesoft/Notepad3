@@ -85,8 +85,8 @@ void EditCompressBlanks();
 void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace);
 void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines);
 void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete);
-void EditWrapToColumn(DocPosU nColumn);
-//void  EditWrapToColumnForce(HWND hwnd, DocPosU nColumn);
+void EditWrapToColumn(HWND hwnd, DocPosU nColumn);
+void EditWrapToColumnEx(HWND hwnd, DocPosU nColumn);
 
 void EditSplitLines(HWND hwnd);
 void EditJoinLinesEx(bool,bool);

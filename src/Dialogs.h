@@ -67,7 +67,7 @@ void            RelAdjustRectForDPI(LPRECT rc, const UINT oldDPI, const UINT new
 void            MapRectClientToWndCoords(HWND hwnd, LPRECT rc);
 bool            GetMonitorInfoFromRect(const LPRECT rc, MONITORINFO* hMonitorInfo);
 void            WinInfoToScreenCoord(WININFO* pWinInfo);
-WININFO         GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo, const int offset);
+WININFO         GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo, const int offset, const bool bFullVisible);
 bool            GetWindowRectEx(HWND hwnd, LPRECT pRect);
 void            FitIntoMonitorGeometry(LPRECT pRect, WININFO* pWinInfo, SCREEN_MODE mode, bool bTopLeft);
 WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode, UINT nCmdShow);
