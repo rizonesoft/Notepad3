@@ -6009,7 +6009,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_SET_LONGLINESETTINGS: {
-        int _iLongLinesLimit = Defaults.LongLinesLimit;
+        int iLongLinesLimit = Defaults.LongLinesLimit;
 
         if (LongLineSettingsDlg(hwnd, IDD_MUI_LONGLINES, Globals.fvCurFile.wchMultiEdgeLines)) {
 
@@ -6019,16 +6019,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             if (cnt == 0) {
                 Settings.MarkLongLines = false;
             } else if (cnt == 1) {
-                _iLongLinesLimit = edgeColumns[0];
+                iLongLinesLimit = edgeColumns[0];
                 Settings.MarkLongLines = true;
                 //~Settings.LongLineMode = EDGE_LINE|EDGE_BACKGROUND; // set by Dlg
             } else {
-                _iLongLinesLimit = edgeColumns[cnt - 1];
+                iLongLinesLimit = edgeColumns[cnt - 1];
                 Settings.MarkLongLines = true;
                 Settings.LongLineMode = EDGE_MULTILINE;
             }
-            Globals.iWrapCol = _iLongLinesLimit;
-            Settings.LongLinesLimit = _iLongLinesLimit;
+            Globals.iWrapCol = iLongLinesLimit;
+            Settings.LongLinesLimit = iLongLinesLimit;
 
             // new multi-edge lines setting
             WCHAR col[32];

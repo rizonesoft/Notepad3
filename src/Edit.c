@@ -4753,12 +4753,15 @@ void EditWrapToColumn(HWND hwnd, DocPosU nColumn)
         return;
     }
 
-    size_t const size = (size_t)nColumn + 1LL;
-    char const   spc = ' ';
-    char* const  pTxt = (char* const)AllocMem(size + 1, HEAP_ZERO_MEMORY);
-    memset(pTxt, spc, size);
-    int const width_pix = SciCall_TextWidth(STYLE_DEFAULT, pTxt);
-    FreeMem(pTxt);
+    int width_pix = 0;
+    if (nColumn > 0) {
+        size_t const size = (size_t)nColumn + 1LL;
+        char const   spc = ' ';
+        char* const  pTxt = (char* const)AllocMem(size + 1, HEAP_ZERO_MEMORY);
+        memset(pTxt, spc, size);
+        width_pix = SciCall_TextWidth(STYLE_DEFAULT, pTxt);
+        FreeMem(pTxt);
+    }
 
     UndoTransActionBegin();
 
@@ -4958,7 +4961,7 @@ void EditSplitLines(HWND hwnd)
             int n = 0;
             for (n = 0; (n < EDGELINE_NUM_LIMIT) && (SciCall_GetMultiEdgeColumn(n) > 0); ++n) {}
             DocPos const wrapColumn = SciCall_GetMultiEdgeColumn(clampi(n-1, 0, EDGELINE_NUM_LIMIT - 1));
-            if (wrapColumn > 0) {
+            if (wrapColumn >= 0) {
                 EditWrapToColumn(hwnd, wrapColumn);
             }
         }
@@ -4966,6 +4969,7 @@ void EditSplitLines(HWND hwnd)
 
         case EDGE_NONE:
         default:
+            EditWrapToColumn(hwnd, 0);
         break;
     }
 }
@@ -5530,7 +5534,7 @@ void EditGetExcerpt(HWND hwnd, LPWSTR lpszExcerpt, DWORD cchExcerpt)
     if (pszText && pszTextW) {
         tr.lpstrText = pszText;
         DocPos const rlen = SciCall_GetTextRangeFull(&tr);
-        MultiByteToWideCharEx(Encoding_SciCP,0,pszText,rlen,pszTextW,len);
+        MultiByteToWideCharEx(Encoding_SciCP, 0, pszText, rlen, pszTextW, len);
 
         for (WCHAR* p = pszTextW; *p && cch < COUNTOF(tch)-1; p++) {
             if (*p == L'\r' || *p == L'\n' || *p == L'\t' || *p == L' ') {
