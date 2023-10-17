@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.927.(build_#) (2023-09-27)
+Current BETA/RC Version 6.23.1017.(build_#) (2023-10-17)
 ========================================================
 
 --------------------------------------------------------
@@ -68,6 +68,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[1017.1]- Wrappimg at long line marker.
+[1017.1]- Ctrl+I wraps according to highest column long-line-edge-marker, if defined.
 [.927.1]- Using selection color also for not focused selections (secondary and inactive).
 [.926.1]- Some refactoring regarding string comparison.
 [.913.1]- Line comment indentation for complaint prog. lng (issue 4983).
@@ -118,6 +120,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1017.1]- Show ColorDef Dlg always full visible.
 [.913.1]- RegularExpression broken.
 [.903.1]- Python Line Comment : respect indents.
 [.718.1]- Show hidden menu bar on Alt or F10 key.
