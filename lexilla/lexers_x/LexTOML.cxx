@@ -236,13 +236,13 @@ constexpr bool IsAssignChar(const int ch) noexcept
 }
 // ----------------------------------------------------------------------------
 
-inline bool IsAIdentifierChar(const int ch)
+constexpr bool IsAIdentifierChar(const int ch) noexcept
 {
     return (IsAlphaNumeric(ch) || ch == '_' || ch == '.');
 }
 // ----------------------------------------------------------------------------
 
-inline bool IsAKeywordChar(const int ch)
+constexpr bool IsAKeywordChar(const int ch) noexcept
 {
     return (IsAIdentifierChar(ch) || ch == '+' || ch == '-');
 }

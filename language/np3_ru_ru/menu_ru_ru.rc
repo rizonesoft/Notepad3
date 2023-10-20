@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Удалить данные справа\tCtrl+Shift+Del",       IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Разбить по &ширине...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Разделить строки\tCtrl+I",                   IDM_EDIT_SPLITLINES
-            MENUITEM "&Объединить строки\tCtrl+J",                  IDM_EDIT_JOINLINES
-            MENUITEM "Склеить строки\tCtrl+Alt+J",                  IDM_EDIT_JOINLN_NOSP
-            MENUITEM "Объединить, сохранив &абзацы\tCtrl+Shift+J",  IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Объединить пустые строки\tAlt+Y",             IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Объединить строки с пробелами\tCtrl+Alt+Y",   IDM_EDIT_MERGEBLANKLINES
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "Объединить пробелы\tCtrl+Alt+P",          IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Изменить строки...\tAlt+M",              IDM_EDIT_MODIFYLINES
-            MENUITEM "Выров&нять строки...\tAlt+J",             IDM_EDIT_ALIGN
             MENUITEM "&Сортировать строки...\tAlt+O",           IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Выров&нять строки...\tAlt+J",                 IDM_EDIT_ALIGN
+            MENUITEM "&Разделить строки\tCtrl+I",                   IDM_EDIT_SPLITLINES
+            MENUITEM "&Объединить строки\tCtrl+J",                  IDM_EDIT_JOINLINES
+            MENUITEM "Склеить строки\tCtrl+Alt+J",                  IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Объединить, сохранив &абзацы\tCtrl+Shift+J",  IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Перейти к началу в&ыделения\tCtrl+,",     CMD_JUMP2SELSTART
             MENUITEM "Перейти в конец выделени&я\tCtrl+.",      CMD_JUMP2SELEND
@@ -337,7 +338,7 @@ BEGIN
             MENUITEM "За&менить далее\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "Пе&рейти...\tCtrl+G",                         IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Искать в файлах\tCtrl+Shift+F",                IDM_GREP_WIN_SEARCH
+            MENUITEM "&Искать в файлах\tCtrl+Shift+F",              IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Вид"
@@ -357,6 +358,7 @@ BEGIN
             MENUITEM "Показывать только в документе",       IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Показывать везде",                    IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Отмечать &гиперссылки\tCtrl+Alt+W",               IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Отмечать области выбора &цвета"
@@ -424,6 +426,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Панел&и"
         BEGIN
+            MENUITEM "Show Titlebar",                       IDM_VIEW_TITLEBAR
             MENUITEM "Показать панель &меню",               IDM_VIEW_MENUBAR
             MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
             MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
@@ -469,6 +472,7 @@ BEGIN
         MENUITEM "Настройка переноса &строк...",                IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Настро&йка длинных строк...",                 IDM_SET_LONGLINESETTINGS
         MENUITEM "Авто&матический отступ текста",               IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Auto Close &Quotes",                          IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Автозакрытие скобок",                         IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Автозакрытие тегов &HTML/XML\tCtrl+Shift+H",  IDM_SET_AUTOCLOSETAGS
         MENUITEM "Авто&завершение слов",                        IDM_SET_AUTOCOMPLETEWORDS
@@ -574,6 +578,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show Titlebar",                      IDM_VIEW_TITLEBAR
         MENUITEM "Показать панель меню",               IDM_VIEW_MENUBAR
         MENUITEM "Показать панель инструментов",       IDM_VIEW_TOOLBAR
         MENUITEM "Показать строку состояния",          IDM_VIEW_STATUSBAR

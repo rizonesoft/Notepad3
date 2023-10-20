@@ -8,7 +8,7 @@
 *   Definitions for Directory Listing APIs                                    *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -36,7 +36,7 @@ typedef struct tagLV_ITEMDATA { // lvid
 
 //==== DlInit() ===============================================================
 
-bool DirList_Init(HWND hwnd, LPCWSTR pszHeader, HPATHL hFilePath);
+bool DirList_Init(HWND hwnd, LPCWSTR pszHeader, const HPATHL hFilePath);
 
 
 //==== DlDestroy() ============================================================

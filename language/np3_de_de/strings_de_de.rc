@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Ersetze"
     IDT_VIEW_WORDWRAP       "Wort Umbruch"
     IDT_VIEW_ZOOMIN         "Hinein Zoomen"
+    IDT_VIEW_RESETZOOM      "Kein Zoom"
     IDT_VIEW_ZOOMOUT        "Heraus Zoomen"
     IDT_VIEW_SCHEME         "Wähle Schema"
     IDT_VIEW_SCHEMECONFIG   "Bearbeite Schemata"
@@ -89,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Dokument ausführen"
+    IDT_VIEW_NEW_WINDOW      "Neues Leeres Fenster"
     IDT_VIEW_TOGGLE_VIEW     "Fokussierte Ansicht"
     IDT_VIEW_CHASING_DOCTAIL "Logfile Monitoring"
     IDT_VIEW_PIN_ON_TOP      "Immer im Vordergrung"
@@ -136,7 +138,7 @@ BEGIN
                             "Die existierende Notepad3-Instanz ist entweder beschäftigt oder hat eine geöffnete Dialogbox.\nMöchtest Du eine andere Notepad3-Instanz öffnen?"
     IDS_MUI_ERR_ENCODINGNA  "Die Code-Page Konvertierungstabellen sind für die ausgewählte Codierung auf diesem System nicht vorhanden."
     IDS_MUI_ERR_UNICODE     "Fehler bei der Konvertierung dieser Unicode Datei.\nDaten werden verloren gehen, wenn diese Datei gespeichert wird!"
-    IDS_MUI_ERR_BITMAP      "Fehler beim laden der Bitmap ""%s"".\nNotwendige Dimensionen: %i x %i (Breite >= %i x Höhe)."
+    IDS_MUI_ERR_BITMAP      "Ungeeignete Dimension der Bitmap ""%s"".\nGeeignete Dimension: %i x %i (Breite >= %i x Höhe)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Fehler beim anheben der Benutzerrechte!"
 END
@@ -172,11 +174,12 @@ BEGIN
     IDS_MUI_FIND_WRAPRE     "Der Anfang des Dokumentes wurde erreicht, Rückwärtssuche vom Ende her weiter führen."
     IDS_MUI_NOTFOUND        "Der gegebene Suchbegriff führte zu keiner passenden Textstelle."
     IDS_MUI_REPLCOUNT       "%s Fundstelle(n) des gegebenen Suchbegriffs wurde(n) ersetzt."
-    IDS_MUI_ASK_ENCODING    "Der Wechsel zwischen verschiedenen Codierungen kann die Ersetzung nicht unterstützter Zeichen mit voreingestellten Zeichen zur folge haben, wobei die Historie gelöscht wird. Weiter machen?"
-    IDS_MUI_ASK_ENCODING2   "Du bist dabei die Codierung eines leeren Dokumentes zu ändern. Beachte bitte, daß dabei die Historie gelöscht wird, da diese nicht mit der neuen Codierung synchronisiert werden kann. Weiter machen?"
+    IDS_MUI_ASK_ENCODING    "Der Wechsel zwischen verschiedenen Codierungen kann die Ersetzung nicht unterstützter Zeichen mit voreingestellten Zeichen zur folge haben, wobei die Undo-Historie gelöscht wird. Weiter machen?"
+    IDS_MUI_ASK_ENCODING2   "Du bist dabei die Codierung eines leeren Dokumentes zu ändern. Beachte bitte, daß dabei die Undo-Historie gelöscht wird, da diese nicht mit der neuen Codierung synchronisiert werden kann. Weiter machen?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Diese Operation wird die Undo-History löschen. Weiter machen?"
     IDS_MUI_READONLY_SAVE   """%s"" ist schreibgeschützt. Dokument unter einem anderen Dateipfad speichern?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Die geladene Datei wurde durch ein anderes Programm auf dem Datenträger verändert. Neu laden?"
+                            "Die geladene Datei wurde durch ein anderes Programm auf dem Datenträger verändert. Bitte wähle:\n\nAbbrechen - \tIgnoriere alle Änderungen\nNeu Laden - \tDatei neu laden\nWeiter - \t\tWechsle zum Logfile Monitoring"
     IDS_MUI_FILECHANGENOTIFY2 "Die geladene Datei wurde auf dem Datenträger gelöscht. Nochmals speichern?"
     IDS_MUI_FILELOCK_ERROR  "Es konnte keine exklusive Dateisperre auf ""%s"" gesetzt werden!"
     IDS_MUI_STICKYWINPOS    "Eingefrorene Fensterpositionierung is eingeschaltet worden. Jede neue Notepad3 Instanz wird nun diese Fensterpositionierung initial verwenden."
@@ -265,27 +268,30 @@ BEGIN
     IDS_MUI_MENU_THEMES     "&Schema Sammlung"
     IDM_THEMES_FACTORY_RESET "&Zurücksetzen auf Fabrik Schema"
     IDM_THEMES_STD_CFG       "&Standard Config Schema"
-    IDS_MUI_STATUSBAR_PREFIXES  "Z  ,Sp  ,Sel  ,GrB  ,SelZ  ,Vork  ,,,,,,,Zch  ,Ersz  ,Ergb  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES  "Z  ,Sp  ,Sel  ,GrB  ,SelZ  ,Vork  ,,,,,,,Zch  ,Ersz  ,Ergb  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Alle löschen"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Suchen-Historie löschen"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Ersetzen-Historie löschen"
-    IDS_MUI_REPLCLIPTAG     "Ersetzen durch Clipboard Shortcut [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Suche Clipboardinhalt wenn keine Selektion"
+    IDS_MUI_REPLCLIPTAG     "Ersetzen durch Clipboard mittels Shortcut [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around Fund von Oben"
     IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around Fund von Unten"
 END
 
 STRINGTABLE
 BEGIN
-IDS_MUI_SB_MARK_ALL_OCC   "Markiere alle Fundstellen..."
-IDS_MUI_SB_TOGGLE_VIEW    "Toggle Code-Folding..."
-IDS_MUI_SB_REPLACE_ALL    "Ersetze alle Stellen..."
-IDS_MUI_SB_WRAP_LINES     "Setze Zeilen Umbruch..."
-IDS_MUI_SB_CONV_LNBRK     "Konvertiere Zeilen Umbruch Zeichen..."
-IDS_MUI_SB_RECODING_DOC   "Rekodiere Dokument..."
-IDS_MUI_SB_LEXER_STYLING  "Setze Lexer Styling..."
+    IDS_MUI_SB_MARK_ALL_OCC   "Markiere alle Fundstellen..."
+    IDS_MUI_SB_TOGGLE_VIEW    "Toggle Code-Folding..."
+    IDS_MUI_SB_REPLACE_ALL    "Ersetze alle Stellen..."
+    IDS_MUI_SB_WRAP_LINES     "Setze Zeilen Umbruch..."
+    IDS_MUI_SB_SORTING_LINES  "Sortiere Zeilen..."
+    IDS_MUI_SB_CONV_LNBRK     "Konvertiere Zeilen Umbruch Zeichen..."
+    IDS_MUI_SB_RECODING_DOC   "Rekodiere Dokument..."
+    IDS_MUI_SB_LEXER_STYLING  "Setze Lexer Styling..."
 END
 
 STRINGTABLE
@@ -295,7 +301,7 @@ Nutzung:\r\n\
 Notepad3 [/?] [...[Codierung]] [...[Zeilenumbruch Modus]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[Laufwerk:][Pfad]Datei[...]]\r\n\r\n\
-Datei\tMuss das letzte Argument sein, normalerweise\r\n\tkeine gequoteten Leerstellen.\r\n\
+Datei\tMuss das letzte Argument sein, normalerweise keine gequoteten Leerstellen.\r\n\
 +\tAkzeptiere mehrere Dateien (mit gequoteten Leerstellen).\r\n\
 -\tAkzeptiere ein einzelne Datei (ohne gequotete Leerstellen).\r\n\r\n\
 Optionen:\r\n\
@@ -304,19 +310,19 @@ Optionen:\r\n\
 ...\tZeilenumbruch Modus (/crlf, /cr, /lf).\r\n\
 /e\tDatei Quellen Codierung.\r\n\
 /g\tSpringe zur gegebenen Position (/g -1 Ende der Datei).\r\n\
-/m\tFinde gegebenen Suchbegriff (/m- letzter, /mr regex,\r\n\t/mb backslash).\r\n\
+/m\tFinde gegebenen Suchbegriff (/m- letzter, /mr regex, /mb backslash).\r\n\
 /l\tAuto-Neu-Laden einer veränderten Datei.\r\n\
 /q\tErzwinge die Erzeugung einer neuen Datei ohne Nachfrage.\r\n\
 /s\tSetze das gegebene Syntax Schema.\r\n\
 /d\tSetze das Standard-Text Schema.\r\n\
 /h\tSetze das Web Quellcode Schema.\r\n\
 /x\tSetze das XML Dokument Schema.\r\n\
-/c\tÖffne ein neues Fenster und füge den Inhalt\r\n\tder Zwischenablage ein.\r\n\
-/b\tÖffne ein neues 'Paste Board' um die Einträge\r\n\tder Zwischenablage zu sammeln.\r\n\
+/c\tÖffne ein neues Fenster und füge den Inhalt der Zwischenablage ein.\r\n\
+/b\tÖffne ein neues 'Paste Board' um die Einträge der Zwischenablage \r\n\tzu sammeln.\r\n\
 /n\tÖffne immer ein neues Fenster (/ns single file instance).\r\n\
 /r\tBenutze geöffnetes Fenster erneut (/rs single file instance).\r\n\
-/p\tSetze Fenster: Position und Größe (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\toder /p <links>,<oben>,<breite>,<höhe>,<max>    [ganzzahlig].\r\n\
+/p\tSetze Fenster: Position und Größe (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\toder /p <links>,<oben>,<breite>,<höhe>[,<dpi>[,<max>]]  (ganzzahlig).\r\n\
 /t\tSetze Fenster-Titel.\r\n\
 /i\tStarte als 'Tray-Icon'.\r\n\
 /o\tHalte Fenster immer auf oberster Ebene.\r\n\
@@ -325,10 +331,10 @@ Optionen:\r\n\
 /v\tDrucke Datei und beende Programm.\r\n\
 /vd\tDrucke Datei (öffne Drucker-Dialog).\r\n\
 /y\tSuche relative Dateinamen im Umgebungs PATH.\r\n\
-/z\tÜberspringe Nächstes (nützlich für Registy-Basierte\r\n\tNotepad Ersetzung).\r\n\r\n\
+/z\tÜberspringe Nächstes (nützlich für Registy-Basierte Notepad Ersetzung).\r\n\r\n\
 Beispiele:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Eine neue Datei öffnen: ""Test.txt"" Codierung=UTF-8-BOM,\r\n\tEoL=CRLF.\r\n\
+ \t... Eine neue Datei öffnen: ""Test.txt"" Codierung=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
  \t... Drucke Datei: ""Test.txt"" direkt.\
 "

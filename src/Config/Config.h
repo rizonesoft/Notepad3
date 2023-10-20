@@ -7,7 +7,7 @@
 * Config.h                                                                    *
 *   Methods to read and write configuration                                   *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -43,7 +43,7 @@ bool CloseSettingsFile(LPCSTR fctname, bool bSaveSettings);
 
 bool CopyToTmpCache(LPCSTR lpIniFileResource);
 size_t TmpCacheGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
-    LPWSTR lpReturnedString, size_t cchReturnedString);
+    LPWSTR lpReturnedString, const size_t cchReturnedString);
 bool TmpCacheSetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString);
 bool ResetTmpCache();
 
@@ -55,9 +55,9 @@ bool SaveIniFileCache(const HPATHL hpthIniFile);
 bool ResetIniFileCache();
 
 size_t IniSectionGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
-                           LPWSTR lpReturnedString, size_t cchReturnedString);
+                           LPWSTR lpReturnedString, const size_t cchReturnedString);
 size_t IniSectionGetStringNoQuotes(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
-                                   LPWSTR lpReturnedString, size_t cchReturnedString);
+                                   LPWSTR lpReturnedString, const size_t cchReturnedString);
 int IniSectionGetInt(LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault);
 long IniSectionGetLong(LPCWSTR lpSectionName, LPCWSTR lpKeyName, long lDefault);
 long long IniSectionGetLongLong(LPCWSTR lpSectionName, LPCWSTR lpKeyName, long long llDefault);
@@ -109,8 +109,8 @@ size_t IniFileGetString(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR
                         LPWSTR lpReturnedString, size_t cchReturnedString);
 bool   IniFileSetString(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpString);
 
-int  IniFileGetInt(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iDefault);
-bool IniFileSetInt(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, int iValue);
+long IniFileGetLong(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, long lDefault);
+bool IniFileSetLong(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, long lValue);
 
 bool IniFileGetBool(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bDefault);
 bool IniFileSetBool(const HPATHL hpthIniFile, LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bValue);
@@ -150,6 +150,9 @@ bool      MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool
 #define   MRU_Count(pmru) MRU_Enum((pmru), 0, NULL, 0)
 
 // ----------------------------------------------------------------------------
+
+extern const WCHAR* const g_CodeFontPrioList[10];
+extern const WCHAR* const g_TextFontPrioList[7];
 
 #ifdef __cplusplus
 }

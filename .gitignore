@@ -34,13 +34,13 @@ Thumbs.db
 /packages
 /other_sln/packages
 
+### changes by Version.ps1 script ###
 /_Version_*.cmd
+/_Version_*.lnk
 /Versions/build.txt
 /Versions/day.txt
-/Versions/commit_id.txt
-
-/res/Notepad3.exe.manifest.conf
-/minipath/res/Notepad3.exe.manifest.conf
+/res/Notepad3.exe.conf.manifest
+/minipath/res/MiniPath.exe.manifest.conf
 /src/VersionEx.h
 /minipath/src/VersionEx.h
 
@@ -53,8 +53,9 @@ Thumbs.db
 /np3portableapp/Signing_for*.cmd
 /np3portableapp/Signing_log*.txt
 /np3portableapp/Notepad3Portable/Data
-/np3portableapp/Notepad3Portable/Notepad3Portable.exe
+/np3portableapp/Notepad3Portable/Notepad3Portable.*
 /np3portableapp/Notepad3Portable/App/AppInfo/appinfo.ini
+/np3portableapp/Notepad3Portable/App/AppInfo/installer.ini
 /np3portableapp/Notepad3Portable/App/DefaultData/settings
 /np3portableapp/Notepad3Portable/App/Notepad3/Docs
 /np3portableapp/Notepad3Portable/App/Notepad3/x64/*.exe

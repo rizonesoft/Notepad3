@@ -8,7 +8,7 @@
 *   Text File Editing Helper Stuff                                            *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -35,6 +35,7 @@ size_t EditGetSelectedText(LPWSTR pwchBuffer, size_t wchCount);
 char* EditGetClipboardText(HWND hwnd,bool,int* pLineCount,int* pLenLastLn);
 void EditGetClipboardW(LPWSTR pwchBuffer, size_t wchLength);
 bool EditSetClipboardText(HWND hwnd, const char* pszText, size_t cchText);
+bool EditAppendToClipboard(HWND hwnd, const char* pszText, size_t cchText);
 bool EditClearClipboard(HWND hwnd);
 bool EditSwapClipboard(HWND hwnd,bool);
 bool EditCopyRangeAppend(HWND hwnd, DocPos posBegin, DocPos posEnd, bool bAppend);
@@ -84,16 +85,14 @@ void EditCompressBlanks();
 void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace);
 void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines);
 void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete);
-void EditWrapToColumn(DocPosU nColumn);
-//void  EditWrapToColumnForce(HWND hwnd, DocPosU nColumn);
+void EditWrapToColumn(HWND hwnd, DocPosU nColumn);
+void EditWrapToColumnEx(HWND hwnd, DocPosU nColumn);
 
 void EditSplitLines(HWND hwnd);
 void EditJoinLinesEx(bool,bool);
 void EditSortLines(HWND hwnd,int iSortFlags);
 
 void EditJumpTo(DocLn iNewLine, DocPos iNewCol);
-void EditScrollSelectionToView();
-void EditSetAndScrollSelection(DocPos iSelStart, DocPos iSelEnd, bool bStraightSel);
 void EditSetSelectionEx(DocPos iAnchorPos, DocPos iCurrentPos, DocPos vSpcAnchor, DocPos vSpcCurrent);
 void EditFixPositions();
 void EditEnsureConsistentLineEndings(HWND hwnd);
@@ -103,7 +102,7 @@ HWND EditFindReplaceDlg(HWND hwnd, LPEDITFINDREPLACE lpefr, bool);
 bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd, bool bFillEmpty);
 bool EditFindPrev(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd, bool bFillEmpty);
 bool EditReplace(HWND hwnd, LPEDITFINDREPLACE lpefr);
-int  EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, DocPos iEndPos, DocPos *enlargement);
+DocPosU EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, DocPos iEndPos, DocPos *enlargement);
 bool EditReplaceAll(HWND hwnd, LPEDITFINDREPLACE lpefr, bool);
 bool EditReplaceAllInSelection(HWND hwnd, LPEDITFINDREPLACE lpefr, bool);
 bool EditLinenumDlg(HWND hwnd);

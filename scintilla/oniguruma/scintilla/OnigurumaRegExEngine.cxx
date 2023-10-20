@@ -23,6 +23,7 @@
 #include <mbstring.h>
 
 #define VC_EXTRALEAN 1
+#define NOMINMAX 1
 #include <windows.h>
 
 #include "Geometry.h"
@@ -45,7 +46,6 @@
 #undef ONIG_ESCAPE_UCHAR_COLLISION
 #endif
 #include "../oniguruma/src/oniguruma.h"   // Oniguruma - Regular Expression Engine
-typedef int OnigPos;
 // ---------------------------------------------------------------
 
 #define UCharPtr(pchar) reinterpret_cast<OnigUChar*>(pchar)
@@ -62,10 +62,9 @@ using namespace Scintilla::Internal;
 // ***   Oningmo configuration   ***
 // ============================================================================
 
-enum class EOLmode : int { CRLF = SC_EOL_CRLF, CR = SC_EOL_CR, LF = SC_EOL_LF };
+enum class EOLmode : int { UDEF = -1, CRLF = SC_EOL_CRLF, CR = SC_EOL_CR, LF = SC_EOL_LF };
 
-//static OnigEncoding s_UsedEncodingsTypes[] = { ONIG_ENCODING_UTF8 };
-static OnigEncoding s_UsedEncodingsTypes[] = { ONIG_ENCODING_UTF8, ONIG_ENCODING_UTF8_CR, ONIG_ENCODING_UTF8_CRLF };
+static OnigEncoding s_UsedEncodingsTypes[] = { ONIG_ENCODING_UTF8, ONIG_ENCODING_UTF8_CR };
 
 // ============================================================================
 // ============================================================================
@@ -73,27 +72,40 @@ static OnigEncoding s_UsedEncodingsTypes[] = { ONIG_ENCODING_UTF8, ONIG_ENCODING
 // ------------------------------------
 // --- Onigmo Engine Simple Options ---
 // ------------------------------------
-static void SetSimpleOptions(OnigOptionType& onigOptions, EOLmode /*eolMode*/,
-  const bool caseSensitive, const bool forwardSearch,
-  const FindOption searchFlags = FindOption::None)
-{
+static void SetSimpleOptions(OnigOptionType &onigOptions, EOLmode /*eolMode*/,
+    const bool caseSensitive, const bool forwardSearch,
+    const FindOption searchFlags = FindOption::None,
+    const bool rangeBegIsDocBeg = true, const bool rangeEndIsDocEnd = true) {
   // fixed options
   onigOptions = ONIG_OPTION_DEFAULT;
 
   // Notepad3 forced options
-  ONIG_OPTION_ON(onigOptions, ONIG_OPTION_NEGATE_SINGLELINE);
-
+  ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_SINGLELINE);
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_POSIX_REGION);
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_EXTEND);
-  ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_SINGLELINE);
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_FIND_LONGEST);
-
-  //ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_ASCII_RANGE);
-  //ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_CAPTURE_GROUP);
-
-  // dynamic options
   ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_MATCH_WHOLE_STRING);
+  ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_NOTBOL);
+  ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_NOTEOL);
+  // ----------------------------------------------------------
+  //~ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_ASCII_RANGE);
+  //~ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_CAPTURE_GROUP);
+  //~ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_NOT_BEGIN_POSITION);
+  // ----------------------------------------------------------
+  
+  if (rangeBegIsDocBeg) {
+    ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_NOT_BEGIN_STRING);
+  } else {
+    ONIG_OPTION_ON(onigOptions, ONIG_OPTION_NOT_BEGIN_STRING);
+  }
+  if (rangeEndIsDocEnd) {
+    ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_NOT_END_STRING);
+  } else {
+    ONIG_OPTION_ON(onigOptions, ONIG_OPTION_NOT_END_STRING);
+  }
 
+  
+  // dynamic options
   //switch (eolMode) {
   //  case EOLmode::CR:
   //  case EOLmode::LF:
@@ -102,14 +114,10 @@ static void SetSimpleOptions(OnigOptionType& onigOptions, EOLmode /*eolMode*/,
   //    break;
   //}
 
-  bool const bDotMatchesAll = FlagSet(searchFlags, FindOption::DotMatchAll);
-
-  if (bDotMatchesAll) {
-    ONIG_OPTION_ON(onigOptions, ONIG_SYN_OP_DOT_ANYCHAR);
+  if (FlagSet(searchFlags, FindOption::DotMatchAll)) {
     ONIG_OPTION_ON(onigOptions, ONIG_OPTION_MULTILINE);
   }
   else {
-    ONIG_OPTION_OFF(onigOptions, ONIG_SYN_OP_DOT_ANYCHAR);
     ONIG_OPTION_OFF(onigOptions, ONIG_OPTION_MULTILINE);
   }
 
@@ -124,36 +132,43 @@ static void SetSimpleOptions(OnigOptionType& onigOptions, EOLmode /*eolMode*/,
   }
   else {
   }
+
 }
 // ============================================================================
 
 
+#define NP3_ONIG_SYNTAX_FLAVOR (ONIG_SYNTAX_DEFAULT) // default is: ONIG_SYNTAX_ONIGURUMA
 
-
+// -----------------------------------------------------------------------------
 
 class OnigurumaRegExEngine : public RegexSearchBase
 {
 public:
 
   explicit OnigurumaRegExEngine(CharClassify* /*charClassTable*/)
-    : m_OnigSyntax(*ONIG_SYNTAX_DEFAULT)
+    : m_OnigSyntax(*NP3_ONIG_SYNTAX_FLAVOR)
     , m_CmplOptions(ONIG_OPTION_DEFAULT)
     , m_RegExpr(nullptr)
     , m_Region({0,0,nullptr,nullptr,nullptr})
+    , m_EOLmode(EOLmode::UDEF)
+    , m_RangeBeg(-1)
+    , m_RangeEnd(-1)
     , m_ErrorInfo()
+    , m_Result(ONIG_MISMATCH)
     , m_MatchPos(ONIG_MISMATCH)
     , m_MatchLen(0)
   {
-    m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END; // xcluded from ONIG_SYNTAX_DEFAULT ?
     onig_initialize(s_UsedEncodingsTypes, _ARRAYSIZE(s_UsedEncodingsTypes));
-    ///onig_set_default_syntax(ONIG_SYNTAX_ONIGURUMA); // std is: ONIG_SYNTAX_ONIGURUMA
+    onig_set_default_syntax(NP3_ONIG_SYNTAX_FLAVOR);        // std is: ONIG_SYNTAX_ONIGURUMA
+
+    m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END; // xcluded from ONIG_SYNTAX_DEFAULT ?
+
     onig_region_init(&m_Region);
   }
 
   ~OnigurumaRegExEngine() override
   {
-    onig_region_free(&m_Region, 0); /* 1:free self, 0:free contents only */
-    onig_free(m_RegExpr);
+    clear();
     onig_end();
   }
 
@@ -166,9 +181,11 @@ public:
 
 private:
 
-  std::string &translateRegExpr(std::string &regExprStr, bool wholeWord, bool wordStart, EndOfLine eolMode, OnigOptionType &rxOptions);
+  void clear();
 
-  std::string& convertReplExpr(std::string& replStr);
+  std::string translateRegExpr(const std::string & regExprStr, bool wholeWord, bool wordStart, EndOfLine eolMode, OnigOptionType & rxOptions);
+
+  std::string convertReplExpr(const std::string & replStr);
 
   //void regexFindAndReplace(std::string& inputStr_inout, const std::string& patternStr, const std::string& replStr);
 
@@ -180,9 +197,14 @@ private:
   OnigOptionType  m_CmplOptions;
   OnigRegex       m_RegExpr;
   OnigRegion      m_Region;
+  EOLmode         m_EOLmode;
+
+  Sci::Position   m_RangeBeg;
+  Sci::Position   m_RangeEnd;
 
   char            m_ErrorInfo[ONIG_MAX_ERROR_MESSAGE_LEN];
 
+  OnigPos         m_Result;
   Sci::Position   m_MatchPos;
   Sci::Position   m_MatchLen;
 
@@ -273,90 +295,98 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
     return SciPos(-1);
   }
 
+  auto const docBegPos = SciPos(0);
   auto const docEndPos = SciPos(doc->Length());
-  EOLmode const eolMode = static_cast<EOLmode>(doc->eolMode);
 
   bool const findForward = (minPos <= maxPos);
   int const increment = findForward ? 1 : -1;
-
   // Range endpoints should not be inside DBCS characters, but just in case, move them.
-  minPos = doc->MovePositionOutsideChar(minPos + (findForward ? 0 : -1), increment, false);
-  maxPos = doc->MovePositionOutsideChar(maxPos, increment, false);
-
+  minPos = doc->MovePositionOutsideChar(minPos, increment, true);
+  maxPos = doc->MovePositionOutsideChar(maxPos, -increment, true);
 
   Sci::Position const rangeBeg = (findForward) ? minPos : maxPos;
   Sci::Position const rangeEnd = (findForward) ? maxPos : minPos;
   Sci::Position const rangeLen = (rangeEnd - rangeBeg);
 
-  OnigOptionType onigOptions;
-  SetSimpleOptions(onigOptions, eolMode, caseSensitive, findForward, searchFlags);
-  ONIG_OPTION_ON(onigOptions, (rangeBeg > 0) ? ONIG_OPTION_NOTBOL : ONIG_OPTION_NONE);
-  ONIG_OPTION_ON(onigOptions, (rangeEnd < docEndPos) ? ONIG_OPTION_NOTEOL : ONIG_OPTION_NONE);
-  
-  std::string sPattern(pattern);
-  std::string const & sRegExprStrg = translateRegExpr(sPattern, word, wordStart, doc->eolMode, onigOptions);
+  EOLmode const eolMode = static_cast<EOLmode>(doc->eolMode);
 
-  bool const bReCompile = (m_RegExpr == nullptr) || (m_CmplOptions != onigOptions) || (m_RegExprStrg.compare(sRegExprStrg) != 0);
+  OnigOptionType onigOptions;
+  SetSimpleOptions(onigOptions, eolMode, caseSensitive, findForward, searchFlags, (rangeBeg == docBegPos), (rangeEnd == docEndPos));
+
+  std::string const sRegExprStrg = translateRegExpr(pattern, word, wordStart, doc->eolMode, onigOptions);
+
+  bool const bReCompile = (m_RegExpr == nullptr) || (m_CmplOptions != onigOptions) || (m_RegExprStrg.compare(sRegExprStrg) != 0) || (m_EOLmode != eolMode);
 
   if (bReCompile) {
-    m_RegExprStrg.clear();
+    clear();
     m_RegExprStrg = sRegExprStrg;
     m_CmplOptions = onigOptions;
+    m_RangeBeg = rangeBeg;
+    m_RangeEnd = rangeEnd;
+    m_EOLmode = eolMode;
     m_ErrorInfo[0] = '\0';
-    try {
-      OnigErrorInfo einfo;
-      onig_free(m_RegExpr);
 
-      //OnigEncoding const onigEncType = ONIG_ENCODING_UTF8;
-      OnigEncoding const onigEncType = (eolMode == EOLmode::LF) ? ONIG_ENCODING_UTF8 : 
-                                      ((eolMode == EOLmode::CR) ? ONIG_ENCODING_UTF8_CR : ONIG_ENCODING_UTF8_CRLF);
-      int res = onig_new(&m_RegExpr, UCharCPtr(m_RegExprStrg.c_str()), UCharCPtr(m_RegExprStrg.c_str() + m_RegExprStrg.length()),
-                         m_CmplOptions, onigEncType, &m_OnigSyntax, &einfo);
+    try {
+
+      OnigEncoding const onigEncType = ((eolMode == EOLmode::CR) ? ONIG_ENCODING_UTF8_CR : ONIG_ENCODING_UTF8);
+      
+      OnigErrorInfo einfo;
+      int const res = onig_new(&m_RegExpr, UCharCPtr(m_RegExprStrg.c_str()), UCharCPtr(m_RegExprStrg.c_str() + m_RegExprStrg.length()),
+                                m_CmplOptions, onigEncType, &m_OnigSyntax, &einfo);
+
       if (res != ONIG_NORMAL) {
         onig_error_code_to_str(UCharPtr(m_ErrorInfo), res, &einfo);
+        clear();
         return SciPos(-2);   // -1 is normally used for not found, -2 is used here for invalid regex
       }
     }
     catch (...) {
+      clear();
       return SciPos(-2);
+    }
+  } else {
+    // check if already searched for
+    if ((m_RangeBeg == rangeBeg) && (m_RangeEnd == rangeEnd)) {
+      *length = m_MatchLen;
+      return m_MatchPos;
     }
   }
 
-  m_MatchPos = SciPos(ONIG_MISMATCH); // not found
-  m_MatchLen = SciPos(0);
-
   // ---  search document range for pattern match   ---
   // !!! Performance issue: Scintilla: moving Gap needs memcopy - high costs for find/replace in large document
-  auto const docBegPtr = UCharCPtr(doc->RangePointer(0, docEndPos));
-  auto const docEndPtr = UCharCPtr(doc->RangePointer(docEndPos, 0));
+  auto const docBegPtr = UCharCPtr(doc->BufferPointer());
+  auto const docEndPtr = UCharCPtr(doc->RangePointer(docEndPos, 1));
   auto const rangeBegPtr = UCharCPtr(doc->RangePointer(rangeBeg, rangeLen));
   auto const rangeEndPtr = UCharCPtr(doc->RangePointer(rangeEnd, 0));
 
-  OnigPos result = ONIG_MISMATCH;
+  m_Result = ONIG_MISMATCH;
   try {
     onig_region_free(&m_Region, 0);  /* 1:free self, 0:free contents only */
     onig_region_init(&m_Region);
 
     if (findForward)
-      result = onig_search(m_RegExpr, docBegPtr, docEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, onigOptions);
+      m_Result = onig_search(m_RegExpr, docBegPtr, docEndPtr, rangeBegPtr, rangeEndPtr, &m_Region, onigOptions);
     else //                                                              X                                    //
-      result = onig_search(m_RegExpr, docBegPtr, docEndPtr, rangeEndPtr, rangeBegPtr, &m_Region, onigOptions);
+      m_Result = onig_search(m_RegExpr, docBegPtr, docEndPtr, rangeEndPtr, rangeBegPtr, &m_Region, onigOptions);
   }
   catch (...) {
     return SciPos(-3);  // -1 is normally used for not found, -3 is used here for exception
   }
 
-  if (result < ONIG_MISMATCH) {
-    onig_error_code_to_str(UCharPtr(m_ErrorInfo), result);
+  if (m_Result < ONIG_MISMATCH) {
+    onig_error_code_to_str(UCharPtr(m_ErrorInfo), m_Result);
     return SciPos(-3);
   }
 
-  if ((result >= 0) && (rangeBegPtr <= rangeEndPtr)) 
+  if ((m_Result >= rangeBeg) && (m_Result <= rangeEnd) && (m_Region.num_regs >= 1))
   {
-    //~m_MatchPos = SciPos(result); //
+    //~m_MatchPos = SciPos(m_Result);
     m_MatchPos = SciPos(m_Region.beg[0]);
-    //~m_MatchLen = SciPos(m_Region.end[0] - result);
-    m_MatchLen = SciPos(m_Region.end[0]) - SciPos(m_Region.beg[0]);
+    //~m_MatchLen = SciPos(m_Region.end[0] - m_Result);
+    m_MatchLen = SciPos(m_Region.end[0]) - m_MatchPos;
+  } else {
+    m_MatchPos = SciPos(ONIG_MISMATCH);
+    m_MatchLen = SciPos(0);
   }
 
   //NOTE: potential 64-bit-size issue at interface here:
@@ -514,63 +544,79 @@ void OnigurumaRegExEngine::regexFindAndReplace(std::string& inputStr_inout, cons
 */
 
 
-
-std::string &OnigurumaRegExEngine::translateRegExpr(std::string &regExprStr, bool wholeWord, bool wordStart, EndOfLine eolMode, OnigOptionType & /*rxOptions*/) {
-  std::string	tmpStr;
-  bool bUseTmpStrg = false;
-
-  if (wholeWord || wordStart) {      // push '\b' at the begin of regexpr
-    tmpStr.push_back('\\');
-    tmpStr.push_back('b');
-    tmpStr.append(regExprStr);
-    if (wholeWord) {               // push '\b' at the end of regexpr
-      tmpStr.push_back('\\');
-      tmpStr.push_back('b');
-    }
-    replaceAll(tmpStr, ".", R"(\w)");
-    bUseTmpStrg = true;
-  }
-  else {
-    tmpStr.append(regExprStr);
-  }
-
-  //if (wholeString) {
-  //  ONIG_OPTION_ON(rxOptions, ONIG_OPTION_MATCH_WHOLE_STRING);
-  //} else {
-  //  ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_MATCH_WHOLE_STRING);
-  //}
-
-  // Oniguruma supports LTGT word boundary by: ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END
-  //
-  //~replaceAll(tmpStr, R"(\<)", R"((?<!\w)(?=\w))");  // word begin
-  //~replaceAll(tmpStr, R"(\(?<!\w)(?=\w))", R"(\\<)"); // esc'd
-  //~replaceAll(tmpStr, R"(\>)", R"((?<=\w)(?!\w))"); // word end
-  //~replaceAll(tmpStr, R"(\(?<=\w)(?!\w))", R"(\\>)"); // esc'd
-  //~bUseTmpStrg = true;
-
-
-  // EOL modes
-  switch (eolMode) {
-  case EndOfLine::Lf:
-  case EndOfLine::Cr:
-    //ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_CRLF_AS_LINE_SEPARATOR);
-    break;
-
-  case EndOfLine::CrLf:
-    //ONIG_OPTION_ON(rxOptions, ONIG_OPTION_CRLF_AS_LINE_SEPARATOR);
-    break;
-  }
-
-  if (bUseTmpStrg) { std::swap(regExprStr, tmpStr); }
-
-  return regExprStr;
+void OnigurumaRegExEngine::clear() {
+  m_RegExprStrg.clear();
+  onig_region_free(&m_Region, 0); /* 1:free self, 0:free contents only */
+  onig_free(m_RegExpr);
+  m_RegExpr = nullptr;
+  // reset
+  m_RangeBeg = SciPos(ONIG_MISMATCH);
+  m_RangeEnd = SciPos(ONIG_MISMATCH);
+  m_Result   = ONIG_MISMATCH;
+  m_MatchPos = SciPos(ONIG_MISMATCH);
+  m_MatchLen = SciPos(0);
 }
 // ----------------------------------------------------------------------------
 
 
-std::string& OnigurumaRegExEngine::convertReplExpr(std::string& replStr)
+std::string OnigurumaRegExEngine::translateRegExpr(const std::string & regExprStr, bool wholeWord, bool wordStart, EndOfLine eolMode, OnigOptionType & /*rxOptions*/)
 {
-  std::string	tmpStr;
+  UNREFERENCED_PARAMETER(eolMode);
+
+  std::string	transRegExpr;
+
+  if (wholeWord || wordStart) {      // push '\b' at the begin of regexpr
+    transRegExpr.push_back('\\');
+    transRegExpr.push_back('b');
+    transRegExpr.append(regExprStr);
+    if (wholeWord) {               // push '\b' at the end of regexpr
+      transRegExpr.push_back('\\');
+      transRegExpr.push_back('b');
+    }
+    replaceAll(transRegExpr, ".", R"(\w)");
+  }
+  else {
+    transRegExpr.append(regExprStr);
+  }
+
+#if 0
+  if (wholeString) {
+    ONIG_OPTION_ON(rxOptions, ONIG_OPTION_MATCH_WHOLE_STRING);
+  } else {
+    ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_MATCH_WHOLE_STRING);
+  }
+#endif
+
+  // Oniguruma supports LTGT word boundary by: ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END
+  //
+  //~replaceAll(transRegExpr, R"(\<)", R"((?<!\w)(?=\w))");  // word begin
+  //~replaceAll(transRegExpr, R"(\(?<!\w)(?=\w))", R"(\\<)"); // esc'd
+  //~replaceAll(transRegExpr, R"(\>)", R"((?<=\w)(?!\w))"); // word end
+  //~replaceAll(transRegExpr, R"(\(?<=\w)(?!\w))", R"(\\>)"); // esc'd
+
+  #if 0
+  // EOL modes is controlled by 
+  switch (eolMode) {
+  case EndOfLine::Lf:
+  case EndOfLine::Cr:
+    ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_CRLF_AS_LINE_SEPARATOR);
+    break;
+
+  case EndOfLine::CrLf:
+    ONIG_OPTION_ON(rxOptions, ONIG_OPTION_CRLF_AS_LINE_SEPARATOR);
+    break;
+  }
+  #endif
+
+  return transRegExpr;
+}
+// ----------------------------------------------------------------------------
+
+
+std::string OnigurumaRegExEngine::convertReplExpr(const std::string& replStr)
+{
+  std::string	convReplExpr;
+
   for (size_t i = 0; i < replStr.length(); ++i) {
     char ch = replStr[i];
     if (ch == '\\') {
@@ -578,36 +624,36 @@ std::string& OnigurumaRegExEngine::convertReplExpr(std::string& replStr)
       if (ch >= '1' && ch <= '9') {
         // former behavior convenience: 
         // change "\\<n>" to deelx's group reference ($<n>)
-        tmpStr.push_back('$');
-        tmpStr.push_back(ch);
+        convReplExpr.push_back('$');
+        convReplExpr.push_back(ch);
         continue;
       }
       switch (ch) {
         // check for escape seq:
       case 'a':
-        tmpStr.push_back('\a');
+        convReplExpr.push_back('\a');
         break;
       case 'b':
-        tmpStr.push_back('\x1B');
+        convReplExpr.push_back('\x1B');
         break;
       case 'f':
-        tmpStr.push_back('\f');
+        convReplExpr.push_back('\f');
         break;
       case 'n':
-        tmpStr.push_back('\n');
+        convReplExpr.push_back('\n');
         break;
       case 'r':
-        tmpStr.push_back('\r');
+        convReplExpr.push_back('\r');
         break;
       case 't':
-        tmpStr.push_back('\t');
+        convReplExpr.push_back('\t');
         break;
       case 'v':
-        tmpStr.push_back('\v');
+        convReplExpr.push_back('\v');
         break;
       case '\\':
-        tmpStr.push_back('\\'); // preserve escd "\"
-        tmpStr.push_back('\\'); 
+        convReplExpr.push_back('\\'); // preserve escd "\"
+        convReplExpr.push_back('\\'); 
         break;
       case 'x':
       case 'u':
@@ -646,34 +692,32 @@ std::string& OnigurumaRegExEngine::convertReplExpr(std::string& replStr)
             if (val[0]) {
               val[1] = 0;
               WideCharToMultiByte(CP_UTF8, 0, val, -1, buf, ARRAYSIZE(val), nullptr, nullptr);
-              tmpStr.push_back(*pch++);
+              convReplExpr.push_back(*pch++);
               while (*pch)
-                tmpStr.push_back(*pch++);
+                convReplExpr.push_back(*pch++);
             }
             else
-              tmpStr.push_back(ch); // unknown hex seq
+              convReplExpr.push_back(ch); // unknown hex seq
           }
           else
-            tmpStr.push_back(ch); // unknown hex seq
+            convReplExpr.push_back(ch); // unknown hex seq
         }
         break;
 
       default: // unknown ctrl seq
-        tmpStr.push_back('\\'); // revert
-        tmpStr.push_back(ch);
+          convReplExpr.push_back('\\'); // revert
+          convReplExpr.push_back(ch);
         break;
       }
     }
     else {
-      tmpStr.push_back(ch);
+      convReplExpr.push_back(ch);
     }
   } //for
 
-  std::swap(replStr,tmpStr);
-  return replStr;
+  return convReplExpr;
 }
 // ============================================================================
-
 
 
 
@@ -687,17 +731,20 @@ class SimpleRegExEngine
 public:
 
   explicit SimpleRegExEngine(const EOLmode eolMode)
-    : m_EOLmode(eolMode)
-    , m_OnigSyntax(*ONIG_SYNTAX_DEFAULT)
+    : m_OnigSyntax(*NP3_ONIG_SYNTAX_FLAVOR)
     , m_Options(ONIG_OPTION_DEFAULT)
     , m_RegExpr(nullptr)
     , m_Region({ 0,0,nullptr,nullptr,nullptr })
+    , m_EOLmode(eolMode)
     , m_ErrorInfo()
     , m_MatchPos(ONIG_MISMATCH)
     , m_MatchLen(0)
   {
-    m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END; // xcluded from ONIG_SYNTAX_DEFAULT ?
     onig_initialize(s_UsedEncodingsTypes, _ARRAYSIZE(s_UsedEncodingsTypes));
+    onig_set_default_syntax(NP3_ONIG_SYNTAX_FLAVOR); // std is: ONIG_SYNTAX_ONIGURUMA
+
+    m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END; // xcluded from ONIG_SYNTAX_DEFAULT ?
+
     onig_region_init(&m_Region);
   }
 
@@ -720,11 +767,11 @@ private:
 
 private:
 
-  EOLmode         m_EOLmode;
   OnigSyntaxType  m_OnigSyntax;
   OnigOptionType  m_Options;
   OnigRegex       m_RegExpr;
   OnigRegion      m_Region;
+  EOLmode         m_EOLmode;
 
   OnigUChar       m_ErrorInfo[ONIG_MAX_ERROR_MESSAGE_LEN];
 
@@ -747,16 +794,16 @@ OnigPos SimpleRegExEngine::Find(const OnigUChar* pattern, const OnigUChar* docum
     return OnigPos(-1);
   }
 
+  bool const findForward = true;
+
   // init search options
-  SetSimpleOptions(m_Options, m_EOLmode, caseSensitive, true);
+  SetSimpleOptions(m_Options, m_EOLmode, caseSensitive, findForward);
   m_ErrorInfo[0] = '\0';
 
   try {
     onig_free(m_RegExpr);
 
-    //OnigEncoding const onigEncType = ONIG_ENCODING_UTF8;
-    OnigEncoding const onigEncType = (m_EOLmode == EOLmode::LF) ? ONIG_ENCODING_UTF8 :
-                                    ((m_EOLmode == EOLmode::CR) ? ONIG_ENCODING_UTF8_CR : ONIG_ENCODING_UTF8_CRLF);
+    OnigEncoding const onigEncType = ((m_EOLmode == EOLmode::CR) ? ONIG_ENCODING_UTF8_CR : ONIG_ENCODING_UTF8);
 
     OnigErrorInfo einfo;
     int res = onig_new(&m_RegExpr, pattern, (pattern + patternLen), m_Options, onigEncType, &m_OnigSyntax, &einfo);
@@ -775,8 +822,7 @@ OnigPos SimpleRegExEngine::Find(const OnigUChar* pattern, const OnigUChar* docum
     const UChar* rangeEnd = strgEnd;
 
     // start search
-    OnigPos result = onig_search(m_RegExpr, strgBeg, strgEnd,
-      rangeBeg, rangeEnd, &m_Region, m_Options);
+    OnigPos result = onig_search(m_RegExpr, strgBeg, strgEnd, rangeBeg, rangeEnd, &m_Region, m_Options);
 
     if (result < ONIG_MISMATCH) {
       //onig_error_code_to_str(m_ErrorInfo, result);
@@ -791,7 +837,7 @@ OnigPos SimpleRegExEngine::Find(const OnigUChar* pattern, const OnigUChar* docum
       //~m_MatchPos = result; //
       m_MatchPos = m_Region.beg[0];
       //~m_MatchLen = (m_Region.end[0] - result);
-      m_MatchLen = (m_Region.end[0] - m_Region.beg[0]);
+      m_MatchLen = m_Region.end[0] - m_MatchPos;
     }
     //else if (result == ONIG_MISMATCH) // not found
     //{

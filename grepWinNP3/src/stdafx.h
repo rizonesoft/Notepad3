@@ -23,6 +23,10 @@
 #include "Language.h"
 #include "SimpleIni.h"
 
+#define BOOST_REGEX_BLOCKSIZE        4096
+#define BOOST_REGEX_MAX_BLOCKS       (1024 * 32)
+#define BOOST_REGEX_MAX_CACHE_BLOCKS (16 * 32)
+
 extern HINSTANCE    g_hInst;
 extern bool         bPortable;
 extern CSimpleIni   g_iniFile;

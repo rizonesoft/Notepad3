@@ -8,7 +8,7 @@
 *   Definitions for Notepad3 dialog boxes                                     *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -34,10 +34,13 @@
 #define UpdateWindowEx(hwnd) /* UpdateWindow(hwnd) */ \
   RedrawWindow((hwnd), NULL, NULL, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_INTERNALPAINT /* | RDW_UPDATENOW */)
 
+// additional InfoBoxLng() state (MB_CANCELTRYCONTINUE == 0x00000006L)
+#define MB_FILECHANGEDNOTIFY 0x0000000EL
+
 // ----------------------------------------------------------------------------
 
 // === MinimizeToTray Functions - see comments in Dialogs.c  ===
-bool GetDoAnimateMinimize();
+bool GetSetDoAnimateMinimize(const int flag);
 void MinimizeWndToTray(HWND hWnd);
 void RestoreWndFromTray(HWND hWnd);
 
@@ -54,8 +57,7 @@ bool WordWrapSettingsDlg(HWND hwnd,UINT uidDlg,int * iNumber);
 bool LongLineSettingsDlg(HWND hwnd,UINT uidDlg, LPWSTR pColList);
 bool TabSettingsDlg(HWND hwnd,UINT uidDlg,int * iNumber);
 bool SelectDefEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding);
-bool SelectEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding);
-bool RecodeDlg(HWND hwnd, cpi_enc_t* pidREncoding);
+bool SelectEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding, bool bRecode);
 bool SelectDefLineEndingDlg(HWND hwnd,LPARAM piOption);
 bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus);
 bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus);
@@ -65,10 +67,12 @@ void            RelAdjustRectForDPI(LPRECT rc, const UINT oldDPI, const UINT new
 void            MapRectClientToWndCoords(HWND hwnd, LPRECT rc);
 bool            GetMonitorInfoFromRect(const LPRECT rc, MONITORINFO* hMonitorInfo);
 void            WinInfoToScreenCoord(WININFO* pWinInfo);
-WININFO         GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo, const int offset);
+WININFO         GetMyWindowPlacement(HWND hwnd, MONITORINFO* hMonitorInfo, const int offset, const bool bFullVisible);
 bool            GetWindowRectEx(HWND hwnd, LPRECT pRect);
 void            FitIntoMonitorGeometry(LPRECT pRect, WININFO* pWinInfo, SCREEN_MODE mode, bool bTopLeft);
-WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode);
+WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode, UINT nCmdShow);
+void            SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode, UINT nCmdShow);
+void            RestorePrevScreenPos(HWND hwnd);
 
 void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, const HPATHL hFilePath, WININFO* wi);
 void DialogFileBrowse(HWND hwnd);
@@ -81,14 +85,15 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...);
 #define INFOBOX_ANSW(_R_) LOWORD(_R_)
 #define INFOBOX_MODE(_R_) HIWORD(_R_)
-inline bool IsYesOkay(LONG answ) {
+
+inline bool IsYesOkay(INT_PTR answ) {
     return ((LOWORD(answ) == IDOK) || (LOWORD(answ) == IDYES));
 }
-inline bool IsRetryContinue(LONG answ) {
+inline bool IsRetryContinue(INT_PTR answ) {
     return ((LOWORD(answ) == IDRETRY) || (LOWORD(answ) == IDCONTINUE));
 }
-inline bool IsNoCancel(LONG answ) {
-    return ((LOWORD(answ) == IDNO) || (LOWORD(answ) == IDCANCEL));
+inline bool IsNoCancelClose(INT_PTR answ) {
+    return ((LOWORD(answ) == IDNO) || (LOWORD(answ) == IDCANCEL) || (LOWORD(answ) == 0));
 }
 
 void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, int iFormat,
@@ -156,7 +161,7 @@ void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam);
 void ResizeDlg_SetAttr(HWND hwnd, int index, int value);
 int ResizeDlg_GetAttr(HWND hwnd, int index);
 
-void ResizeDlg_InitY2Ex(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_DIR iDirection, int nCtlId1, int nCtlId2);
+void        ResizeDlg_InitY2Ex(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int iDirection, int nCtlId1, int nCtlId2);
 inline void ResizeDlg_InitY2(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, int nCtlId1, int nCtlId2)
 {
     ResizeDlg_InitY2Ex(hwnd, cxFrame, cyFrame, nIdGrip, RSZ_BOTH, nCtlId1, nCtlId2);
@@ -225,8 +230,10 @@ inline unsigned LargeIconDPI()
 
 HBITMAP ConvertIconToBitmap(const HICON hIcon, const int cx, const int cy);
 HBITMAP ResampleIconToBitmap(HWND hwnd, HBITMAP hOldBmp, const HICON hIcon, const int cx, const int cy);
-void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem);
-void UpdateWindowLayoutForDPI(HWND hwnd, const RECT *pRC, const UINT dpi);
+void    SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem);
+void    SetWinIcon(HWND hwnd, const HMENU hMenu, const UINT nItem);
+void    SetGrepWinIcon(HWND hwnd, const HMENU hMenu, const UINT nItem);
+void    UpdateWindowLayoutForDPI(HWND hwnd, const RECT *pRC, const UINT dpi);
 //#define HandleDpiChangedMessage(hW,wP,lP) { UINT dpi; dpi = LOWORD(wP); /*dpi = HIWORD(wP);*/ \
 //                                            UpdateWindowLayoutForDPI(hW, (RECT*)lP, dpi); }
 
@@ -234,7 +241,8 @@ void UpdateWindowLayoutForDPI(HWND hwnd, const RECT *pRC, const UINT dpi);
 //#define BMP_RESAMPLE_FILTER   STOCK_FILTER_QUADRATICBSPLINE
 HBITMAP ResampleImageBitmap(HWND hwnd, HBITMAP hbmp, int width, int height);
 LRESULT SendWMSize(HWND hwnd, RECT* rc);
-//HFONT   CreateAndSetFontDlgItemDPI(HWND hdlg, const int idDlgItem, int fontSize, bool bold);
+void    UpdateUI(HWND hwnd);
+// HFONT   CreateAndSetFontDlgItemDPI(HWND hdlg, const int idDlgItem, int fontSize, bool bold);
 
 // ----------------------------------------------------------------------------
 

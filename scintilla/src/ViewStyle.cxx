@@ -406,7 +406,7 @@ void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 	maxDescent = std::max(0.0, maxDescent + extraDescent);
 	lineHeight = static_cast<int>(std::lround(maxAscent + maxDescent));
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	lineOverlap = std::clamp(lineHeight / 10, 2, lineHeight);
+	lineOverlap = std::clamp(lineHeight / 10, 1, std::max(1, lineHeight));
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	someStylesProtected = std::any_of(styles.cbegin(), styles.cend(),

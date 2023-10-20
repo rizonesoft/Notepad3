@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "替換"
     IDT_VIEW_WORDWRAP       "自動換行"
     IDT_VIEW_ZOOMIN         "放大"
+    IDT_VIEW_RESETZOOM      "重置縮放"
     IDT_VIEW_ZOOMOUT        "縮小"
     IDT_VIEW_SCHEME         "選擇語法高亮方案"
     IDT_VIEW_SCHEMECONFIG   "自訂語法高亮方案"
@@ -89,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "執行目前文件"
+    IDT_VIEW_NEW_WINDOW      "新增空視窗"
     IDT_VIEW_TOGGLE_VIEW     "僅顯示符合行"
     IDT_VIEW_CHASING_DOCTAIL "記錄監控"
     IDT_VIEW_PIN_ON_TOP      "總是置頂"
@@ -118,8 +120,8 @@ BEGIN
     IDS_MUI_FILTER_BITMAP   "點陣圖檔案(*.bmp)|*.bmp|所有檔案(*.*)|*.*|"
     IDS_MUI_OPENWITH        "請選擇用於收藏應用程式的資料夾。"
     IDS_MUI_FAVORITES       "請選擇用於收藏檔案的資料夾。"
-    IDS_MUI_BACKSLASHHELP   "反斜槓逸出序列：\n\n\\a\t響鈴符 (BEL, ASCII 7)\n\\b\t退格符 (BS, ASCII 8)\n\\f\t跳頁符 (FF, ASCII 12)\n\\n\t換行符 (LF, ASCII 10)\n\\r\t回車符 (CR, ASCII 13)\n\\t\t水平製表符 (HT, ASCII 9)\n\\v\t垂直製表符 (VT, ASCII 11)\n\\ooo\t八進制數值 ooo 對應的字元\n\\uHHHH\t十六進制數值 HHHH 對應的字元\n\\xHH\t十六進制數值 HH 對應的字元\n\\\\\t反斜槓"
-    IDS_MUI_REGEXPHELP      "正規表示式語法（支援多行符合）：\n\n.\t任意字元\n^\t行首\n$\t行尾\n\\<\t詞首\n\\>\t詞尾\n\\b\t詞首或詞尾\n[...]\t集合（[abc]）或範圍（[a-z]）中的任一字元\n[^...]\t除集合或範圍以外的任一字元\n\\d\t單個十進制數字\n\\D\t單個除十進制數字以外的任意字元\n\\s\t單個空格字元\n\\S\t單個除空格字元以外的任意字元\n\\w\t任一可出現於識別符號中的字元\n\\W\t任一不可出現於識別符號中的字元\n\\\\\t反斜槓\n\\xHH\t十六進制數值 HH 對應的字元\n?\t符合它前面的單元至多 1 次\n*\t符合它前面的單元 0 次或任意次\n+\t符合它前面的單元至少 1 次\n*? 和 +?\t非貪婪符合的? 和 +\n(\t分組開始\n)\t分組結束\n\\1 - \\9\t引用指定序號的已符合分組\n"
+    IDS_MUI_BACKSLASHHELP   "反斜槓逸出序列：\n\n\\a\t響鈴符 (BEL, ASCII 7)\n\\b\t退格符 (BS, ASCII 8)\n\\f\t跳頁符 (FF, ASCII 12)\n\\n\t換行符 (LF, ASCII 10)\n\\r\t回車符 (CR, ASCII 13)\n\\t\t水平製表符 (HT, ASCII 9)\n\\v\t垂直製表符 (VT, ASCII 11)\n\\ooo\t八進制數值 ooo 對應的字元\n\\uHHHH\t十六進位數值 HHHH 對應的字元\n\\xHH\t十六進位數值 HH 對應的字元\n\\\\\t反斜槓"
+    IDS_MUI_REGEXPHELP      "正規表示式語法（支援多行符合）：\n\n.\t任意字元\n^\t行首\n$\t行尾\n\\<\t詞首\n\\>\t詞尾\n\\b\t詞首或詞尾\n[...]\t集合（[abc]）或範圍（[a-z]）中的任一字元\n[^...]\t除集合或範圍以外的任一字元\n\\d\t單個十進制數字\n\\D\t單個除十進制數字以外的任意字元\n\\s\t單個空格字元\n\\S\t單個除空格字元以外的任意字元\n\\w\t任一可出現於識別符號中的字元\n\\W\t任一不可出現於識別符號中的字元\n\\\\\t反斜槓\n\\xHH\t十六進位數值 HH 對應的字元\n?\t符合它前面的單元至多 1 次\n*\t符合它前面的單元 0 次或任意次\n+\t符合它前面的單元至少 1 次\n*? 和 +?\t非貪婪符合的? 和 +\n(\t分組開始\n)\t分組結束\n\\1 - \\9\t引用指定序號的已符合分組\n"
     IDS_MUI_WILDCARDHELP    "萬用字元：\n\n*\t符合 0 或任意個字元\n?\t符合恰好一個字元"
 END
 
@@ -136,7 +138,7 @@ BEGIN
                             "目前已存在的 Notepad3 視窗忙碌中，或有一個已打開的對話方塊正在阻止它回應。\n\n開啟一個新的 Notepad3 視窗嗎？"
     IDS_MUI_ERR_ENCODINGNA  "用於選定的編碼轉換的內碼表表在目前系統上不可用。"
     IDS_MUI_ERR_UNICODE     "轉換該 Unicode 檔案時遇到錯誤。\n\n警告：儲存該檔案會導致資料遺失。"
-    IDS_MUI_ERR_BITMAP      "載入點陣圖檔案 ""%s"" 失敗。\n需求大小：%i×%i（寬度 ≥ %i × 高度）"
+    IDS_MUI_ERR_BITMAP      "點陣圖 ""%s"" 的寬高比不合適。\n合適的寬高比：%i × %i 寬度 ≥ %i × 高度）"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "提升使用者權限時出錯。"
 END
@@ -149,7 +151,7 @@ BEGIN
                             "檔案 ""%s"" 不能被儲存，它可能是受保護的。\n\n是否希望提升 %s 的權限？"
     IDS_MUI_ERR_ADMINEXE    "無管理工具可用。\n\n存取 https://rizonesoft.com/ 看看？"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "是否確定要開啟一個如此龐大的檔案？\n\t（大小 %s >= %s）\n樣式和語法高亮將被停用。"
+                            "是否確定要開啟一個如此龐大的檔案？\n\t（大小 %s ≥ %s）\n樣式和語法高亮將被停用。"
     IDS_MUI_ERR_FILE_TOO_LARGE
                             "無法處理如此龐大的檔案（大小 %s）！"
     IDS_MUI_WARN_UNKNOWN_EXT
@@ -174,9 +176,10 @@ BEGIN
     IDS_MUI_REPLCOUNT       "%s 次出現的指定搜索模式已被替換。"
     IDS_MUI_ASK_ENCODING    "切換檔案編碼可能導致部分無法表示的字元被替換為其它字元，並且該操作會清空取消歷程記錄。是否繼續？"
     IDS_MUI_ASK_ENCODING2   "切換檔案編碼會清空取消歷程記錄。是否繼續？"
+    IDS_MUI_ASK_CLEAR_UNDO  "該操作將會清空取消歷程記錄。是否繼續？"
     IDS_MUI_READONLY_SAVE   """%s"" 是唯讀。是否嘗試使用其它名字儲存？"
     IDS_MUI_FILECHANGENOTIFY
-                            "目前檔案已被其它程式修改。是否重新載入？"
+                            "當前檔案已被其它程式所修改。\n請選擇：\n\n取消 -\t\t忽略之後的變更\n重新載入 -\t\t重新載入檔案\n繼續 -\t\t切換為監控模式"
     IDS_MUI_FILECHANGENOTIFY2 "目前檔案已被刪除。是否儲存？"
     IDS_MUI_FILELOCK_ERROR  "無法以獨佔模式鎖定檔案 ""%s""!"
     IDS_MUI_STICKYWINPOS    "黏性視窗位置已啟用。新的 Notepad3 視窗將使用和目前視窗一樣的位置設定。"
@@ -263,29 +266,32 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "語言(&L)"
     IDS_USE_LOCALE_DATEFMT  "使用本地化的日期格式(&D)"
     IDS_MUI_MENU_THEMES     "語法高亮方案(&S)"
-    IDM_THEMES_FACTORY_RESET "工廠預設(&F)"
+    IDM_THEMES_FACTORY_RESET "&Factory Reset"
     IDM_THEMES_STD_CFG       "標準設定 (&S)"  // Keep blank space before (&S)
-    IDS_MUI_STATUSBAR_PREFIXES "行  ,列  ,選定  ,位元組  ,選行  ,符合  ,,,,,,,字元  ,改寫  ,求值  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "行  ,列  ,選定  ,位元組  ,選行  ,符合  ,,,,,,,字元  ,改寫  ,求值  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "全部清除"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "清除尋找歷程記錄"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "清除替換歷程記錄"
-    IDS_MUI_REPLCLIPTAG     "^c 快捷替換為剪貼簿"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "當選定為空時依照剪貼簿尋找"
+    IDS_MUI_REPLCLIPTAG     "[^c] 依照剪貼簿替換"
     IDS_MUI_WRAPSEARCH_FWD  "從頂部循環比對"
     IDS_MUI_WRAPSEARCH_BCK  "從底部循環比對"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "標記所有發生次數..."
-    IDS_MUI_SB_TOGGLE_VIEW    "切換檢視..."
-    IDS_MUI_SB_REPLACE_ALL    "替換全部..."
-    IDS_MUI_SB_WRAP_LINES     "換行..."
-    IDS_MUI_SB_CONV_LNBRK     "轉換分行符號..."
-    IDS_MUI_SB_RECODING_DOC   "文件重新編碼..."
-    IDS_MUI_SB_LEXER_STYLING  "套用語彙分析器樣式..."
+    IDS_MUI_SB_MARK_ALL_OCC   "正在標記所有發生次數..."
+    IDS_MUI_SB_TOGGLE_VIEW    "正在切換檢視..."
+    IDS_MUI_SB_REPLACE_ALL    "正在替換全部..."
+    IDS_MUI_SB_WRAP_LINES     "正在換行..."
+    IDS_MUI_SB_SORTING_LINES  "正在排序行..."
+    IDS_MUI_SB_CONV_LNBRK     "正在轉換分行符號..."
+    IDS_MUI_SB_RECODING_DOC   "正在文件重新編碼..."
+    IDS_MUI_SB_LEXER_STYLING  "正在套用語彙分析器樣式..."
 END
 
 STRINGTABLE
@@ -315,8 +321,8 @@ Notepad3 [/?] [...[編碼]] [...[分行符號模式]] [/e] [/g] [/m] [/l]\r\n\
 /b\t開啟剪貼簿收集視窗（自動貼上加入到剪貼簿中的內容）。\r\n\
 /n\t總是開啟新視窗（/ns 對於每個檔案只允許開啟一個實例）。\r\n\
 /r\t重新使用已存在的視窗（/rs 對於每個檔案只允許開啟一個實例）。\r\n\
-/p\t設定視窗位置和大小（/p0, /ps, /pf,左,上,寬,高,最大化）\r\n\
-\t或 /p <左>,<上>,<寬>,<高>,<最大化>    ［均為整數］。\r\n\
+/p\t設定視窗位置和大小（/p0,/ps,/pd,f,l,t,r,b,m）\r\n\
+\t或 /p <左>,<上>,<寬>,<高>[,<DPI>,[<最大化>]]  （均為整數）。\r\n\
 /t\t設定視窗標題。\r\n\
 /i\t以系統匣圖示狀態啟動。\r\n\
 /o\t視窗置頂。\r\n\

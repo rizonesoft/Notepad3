@@ -177,6 +177,9 @@ GetWindowDpiAwarenessContextSig fnGetWindowDpiAwarenessContext = nullptr;
 using GetScaleFactorForMonitorSig = HRESULT(WINAPI *)(HMONITOR, DEVICE_SCALE_FACTOR *);
 GetScaleFactorForMonitorSig fnGetScaleFactorForMonitor = nullptr;
 
+using GetThreadDpiAwarenessContextSig = DPI_AWARENESS_CONTEXT(WINAPI *)();
+GetThreadDpiAwarenessContextSig fnGetThreadDpiAwarenessContext = nullptr;
+
 using SetThreadDpiAwarenessContextSig = DPI_AWARENESS_CONTEXT(WINAPI *)(DPI_AWARENESS_CONTEXT);
 SetThreadDpiAwarenessContextSig fnSetThreadDpiAwarenessContext = nullptr;
 
@@ -185,6 +188,7 @@ void LoadDpiForWindow() noexcept {
 	fnGetDpiForWindow = DLLFunction<GetDpiForWindowSig>(user32, "GetDpiForWindow");
 	fnGetSystemMetricsForDpi = DLLFunction<GetSystemMetricsForDpiSig>(user32, "GetSystemMetricsForDpi");
 	fnAdjustWindowRectExForDpi = DLLFunction<AdjustWindowRectExForDpiSig>(user32, "AdjustWindowRectExForDpi");
+	fnGetThreadDpiAwarenessContext = DLLFunction<GetThreadDpiAwarenessContextSig>(user32, "GetThreadDpiAwarenessContext");
 	fnSetThreadDpiAwarenessContext = DLLFunction<SetThreadDpiAwarenessContextSig>(user32, "SetThreadDpiAwarenessContext");
 
 	using GetDpiForSystemSig = UINT(WINAPI *)(void);
@@ -527,7 +531,7 @@ HMONITOR MonitorFromWindowHandleScaling(HWND hWnd) noexcept {
 	return monitor;
 }
 
-int GetDeviceScaleFactorWhenGdiScalingActive(HWND hWnd) noexcept {
+float GetDeviceScaleFactorWhenGdiScalingActive(HWND hWnd) noexcept {
 	if (fnAreDpiAwarenessContextsEqual) {
 		PLATFORM_ASSERT(fnGetWindowDpiAwarenessContext && fnGetScaleFactorForMonitor);
 		if (fnAreDpiAwarenessContextsEqual(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED, fnGetWindowDpiAwarenessContext(hWnd))) {
@@ -535,10 +539,10 @@ int GetDeviceScaleFactorWhenGdiScalingActive(HWND hWnd) noexcept {
 			const HMONITOR hMonitor = MonitorFromWindowHandleScaling(hRootWnd);
 			DEVICE_SCALE_FACTOR deviceScaleFactor;
 			if (S_OK == fnGetScaleFactorForMonitor(hMonitor, &deviceScaleFactor))
-				return (static_cast<int>(deviceScaleFactor) + 99) / 100; // increase to first integral multiple of 1
+				return static_cast<float>(deviceScaleFactor) / 100.f;
 		}
 	}
-	return 1;
+	return 1.f;
 }
 
 
@@ -630,7 +634,7 @@ class VarBuffer {
 	T bufferStandard[lengthStandard];
 public:
 	T *buffer;
-	explicit VarBuffer(size_t length) : buffer(nullptr) {
+	explicit VarBuffer(size_t length) : bufferStandard{{}}, buffer(nullptr) {
 		if (length > lengthStandard) {
 			buffer = new T[length];
 		} else {
@@ -1182,7 +1186,7 @@ void SurfaceGDI::AlphaRectangle(PRectangle rc, XYPOSITION cornerSize, FillStroke
 				section.SetSymmetric(x, corner - x, valOutline);
 			}
 
-			AlphaBlend(hdc, rcw.left, rcw.top, size.cx, size.cy, section.DC(), 0, 0, size.cx, size.cy, mergeAlpha);
+			GdiAlphaBlend(hdc, rcw.left, rcw.top, size.cx, size.cy, section.DC(), 0, 0, size.cx, size.cy, mergeAlpha);
 		}
 	} else {
 		BrushColour(fillStroke.stroke.colour);
@@ -1221,7 +1225,7 @@ void SurfaceGDI::GradientRectangle(PRectangle rc, const std::vector<ColourStop> 
 			}
 		}
 
-		AlphaBlend(hdc, rcw.left, rcw.top, size.cx, size.cy, section.DC(), 0, 0, size.cx, size.cy, mergeAlpha);
+		GdiAlphaBlend(hdc, rcw.left, rcw.top, size.cx, size.cy, section.DC(), 0, 0, size.cx, size.cy, mergeAlpha);
 	}
 }
 
@@ -1238,7 +1242,7 @@ void SurfaceGDI::DrawRGBAImage(PRectangle rc, int width, int height, const unsig
 		DIBSection section(hdc, size);
 		if (section) {
 			RGBAImage::BGRAFromRGBA(section.Bytes(), pixelsImage, static_cast<size_t>(width) * height);
-			AlphaBlend(hdc, static_cast<int>(rc.left), static_cast<int>(rc.top),
+			GdiAlphaBlend(hdc, static_cast<int>(rc.left), static_cast<int>(rc.top),
 				static_cast<int>(rc.Width()), static_cast<int>(rc.Height()), section.DC(),
 				0, 0, width, height, mergeAlpha);
 		}
@@ -1937,19 +1941,19 @@ void SurfaceD2D::RoundedRectangle(PRectangle rc, FillStroke fillStroke) {
 		const FLOAT minDimension = static_cast<FLOAT>(std::min(rc.Width(), rc.Height())) / 2.0f;
 		const FLOAT radius = std::min(4.0f, minDimension);
 		if (fillStroke.fill.colour == fillStroke.stroke.colour) {
-			D2D1_ROUNDED_RECT roundedRectFill = {
+			const D2D1_ROUNDED_RECT roundedRectFill = {
 				RectangleFromPRectangle(rc),
 				radius, radius };
 			D2DPenColourAlpha(fillStroke.fill.colour);
 			pRenderTarget->FillRoundedRectangle(roundedRectFill, pBrush);
 		} else {
-			D2D1_ROUNDED_RECT roundedRectFill = {
+			const D2D1_ROUNDED_RECT roundedRectFill = {
 				RectangleFromPRectangle(rc.Inset(1.0)),
 				radius-1, radius-1 };
 			D2DPenColourAlpha(fillStroke.fill.colour);
 			pRenderTarget->FillRoundedRectangle(roundedRectFill, pBrush);
 
-			D2D1_ROUNDED_RECT roundedRect = {
+			const D2D1_ROUNDED_RECT roundedRect = {
 				RectangleFromPRectangle(rc.Inset(0.5)),
 				radius, radius };
 			D2DPenColourAlpha(fillStroke.stroke.colour);
@@ -1973,12 +1977,12 @@ void SurfaceD2D::AlphaRectangle(PRectangle rc, XYPOSITION cornerSize, FillStroke
 			pRenderTarget->DrawRectangle(rectOutline, pBrush, fillStroke.stroke.WidthF());
 		} else {
 			const float cornerSizeF = static_cast<float>(cornerSize);
-			D2D1_ROUNDED_RECT roundedRectFill = {
+			const D2D1_ROUNDED_RECT roundedRectFill = {
 				rectFill, cornerSizeF - 1.0f, cornerSizeF - 1.0f };
 			D2DPenColourAlpha(fillStroke.fill.colour);
 			pRenderTarget->FillRoundedRectangle(roundedRectFill, pBrush);
 
-			D2D1_ROUNDED_RECT roundedRect = {
+			const D2D1_ROUNDED_RECT roundedRect = {
 				rectOutline, cornerSizeF, cornerSizeF};
 			D2DPenColourAlpha(fillStroke.stroke.colour);
 			pRenderTarget->DrawRoundedRectangle(roundedRect, pBrush, fillStroke.stroke.WidthF());
@@ -2038,7 +2042,7 @@ void SurfaceD2D::DrawRGBAImage(PRectangle rc, int width, int height, const unsig
 
 		ID2D1Bitmap *bitmap = nullptr;
 		const D2D1_SIZE_U size = D2D1::SizeU(width, height);
-		D2D1_BITMAP_PROPERTIES props = {{DXGI_FORMAT_B8G8R8A8_UNORM,
+		const D2D1_BITMAP_PROPERTIES props = {{DXGI_FORMAT_B8G8R8A8_UNORM,
 		    D2D1_ALPHA_MODE_PREMULTIPLIED}, 72.0, 72.0};
 		const HRESULT hr = pRenderTarget->CreateBitmap(size, image.data(),
                   width * 4, &props, &bitmap);
@@ -2081,12 +2085,12 @@ void SurfaceD2D::Stadium(PRectangle rc, FillStroke fillStroke, Ends ends) {
 	const FLOAT halfStroke = fillStroke.stroke.WidthF() / 2.0f;
 	if (ends == Surface::Ends::semiCircles) {
 		const D2D1_RECT_F rect = RectangleFromPRectangle(rc);
-		D2D1_ROUNDED_RECT roundedRectFill = { RectangleInset(rect, fillStroke.stroke.WidthF()),
+		const D2D1_ROUNDED_RECT roundedRectFill = { RectangleInset(rect, fillStroke.stroke.WidthF()),
 			radiusFill, radiusFill };
 		D2DPenColourAlpha(fillStroke.fill.colour);
 		pRenderTarget->FillRoundedRectangle(roundedRectFill, pBrush);
 
-		D2D1_ROUNDED_RECT roundedRect = { RectangleInset(rect, halfStroke),
+		const D2D1_ROUNDED_RECT roundedRect = { RectangleInset(rect, halfStroke),
 			radius, radius };
 		D2DPenColourAlpha(fillStroke.stroke.colour);
 		pRenderTarget->DrawRoundedRectangle(roundedRect, pBrush, fillStroke.stroke.WidthF());
@@ -2178,7 +2182,7 @@ void SurfaceD2D::Copy(PRectangle rc, Point from, Surface &surfaceSource) {
 	}
 }
 
-class BlobInline : public IDWriteInlineObject {
+class BlobInline final : public IDWriteInlineObject {
 	XYPOSITION width;
 
 	// IUnknown
@@ -2204,12 +2208,6 @@ class BlobInline : public IDWriteInlineObject {
 public:
 	BlobInline(XYPOSITION width_=0.0f) noexcept : width(width_) {
 	}
-	// Defaulted so BlobInline objects can be copied.
-	BlobInline(const BlobInline &) = default;
-	BlobInline(BlobInline &&) = default;
-	BlobInline &operator=(const BlobInline &) = default;
-	BlobInline &operator=(BlobInline &&) = default;
-	virtual ~BlobInline() noexcept = default;
 };
 
 /// Implement IUnknown
@@ -2343,7 +2341,7 @@ void ScreenLineLayout::FillTextLayoutFormats(const IScreenLine *screenLine, IDWr
 			representationWidth = nextTab - realPt.x;
 		}
 		if (representationWidth > 0.0f) {
-			blobs.push_back(BlobInline(representationWidth));
+			blobs.emplace_back(representationWidth);
 			textLayout->SetInlineObject(&blobs.back(), textRange);
 		};
 
@@ -3008,56 +3006,102 @@ void Window::InvalidateRectangle(PRectangle rc) {
 	::InvalidateRect(HwndFromWindowID(wid), &rcw, FALSE);
 }
 
-namespace {
-
-void FlipBitmap(HBITMAP bitmap, int width, int height) noexcept {
-	HDC hdc = ::CreateCompatibleDC({});
-	if (hdc) {
-		HBITMAP prevBmp = SelectBitmap(hdc, bitmap);
-		::StretchBlt(hdc, width - 1, 0, -width, height, hdc, 0, 0, width, height, SRCCOPY);
-		SelectBitmap(hdc, prevBmp);
-		::DeleteDC(hdc);
-	}
-}
-
-}
-
 HCURSOR LoadReverseArrowCursor(UINT dpi) noexcept {
-	HCURSOR reverseArrowCursor {};
-
-	bool created = false;
-	HCURSOR cursor = ::LoadCursor({}, IDC_ARROW);
-
-	if (dpi != uSystemDPI) {
-		const int width = SystemMetricsForDpi(SM_CXCURSOR, dpi);
-		const int height = SystemMetricsForDpi(SM_CYCURSOR, dpi);
-		HCURSOR copy = static_cast<HCURSOR>(::CopyImage(cursor, IMAGE_CURSOR, width, height, LR_COPYFROMRESOURCE | LR_COPYRETURNORG));
-		if (copy) {
-			created = copy != cursor;
-			cursor = copy;
+	class CursorHelper {
+	public:
+		ICONINFO info{};
+		BITMAP bmp{};
+		bool HasBitmap() const noexcept {
+			return bmp.bmWidth > 0;
 		}
-	}
 
-	ICONINFO info;
-	if (::GetIconInfo(cursor, &info)) {
-		BITMAP bmp {};
-		if (::GetObject(info.hbmMask, sizeof(bmp), &bmp)) {
-			FlipBitmap(info.hbmMask, bmp.bmWidth, bmp.bmHeight);
+		CursorHelper(const HCURSOR cursor) noexcept {
+			Init(cursor);
+		}
+		~CursorHelper() {
+			CleanUp();
+		}
+
+		CursorHelper &operator=(const HCURSOR cursor) noexcept {
+			CleanUp();
+			Init(cursor);
+			return *this;
+		}
+
+		bool MatchesSize(const int width, const int height) noexcept {
+			return bmp.bmWidth == width && bmp.bmHeight == height;
+		}
+
+		HCURSOR CreateFlippedCursor() noexcept {
+			if (info.hbmMask)
+				FlipBitmap(info.hbmMask, bmp.bmWidth, bmp.bmHeight);
 			if (info.hbmColor)
 				FlipBitmap(info.hbmColor, bmp.bmWidth, bmp.bmHeight);
 			info.xHotspot = bmp.bmWidth - 1 - info.xHotspot;
 
-			reverseArrowCursor = ::CreateIconIndirect(&info);
+			return ::CreateIconIndirect(&info);
 		}
 
-		::DeleteObject(info.hbmMask);
-		if (info.hbmColor)
-			::DeleteObject(info.hbmColor);
+	private:
+		void Init(const HCURSOR &cursor) noexcept {
+			if (::GetIconInfo(cursor, &info)) {
+				::GetObject(info.hbmMask, sizeof(bmp), &bmp);
+				PLATFORM_ASSERT(HasBitmap());
+			}
+		}
+
+		void CleanUp() noexcept {
+			if (info.hbmMask)
+				::DeleteObject(info.hbmMask);
+			if (info.hbmColor)
+				::DeleteObject(info.hbmColor);
+			info = {};
+			bmp = {};
+		}
+
+		static void FlipBitmap(const HBITMAP bitmap, const int width, const int height) noexcept {
+			HDC hdc = ::CreateCompatibleDC({});
+			if (hdc) {
+				HBITMAP prevBmp = SelectBitmap(hdc, bitmap);
+				::StretchBlt(hdc, width - 1, 0, -width, height, hdc, 0, 0, width, height, SRCCOPY);
+				SelectBitmap(hdc, prevBmp);
+				::DeleteDC(hdc);
+			}
+		}
+	};
+
+	HCURSOR reverseArrowCursor {};
+
+	const int width = SystemMetricsForDpi(SM_CXCURSOR, dpi);
+	const int height = SystemMetricsForDpi(SM_CYCURSOR, dpi);
+
+	DPI_AWARENESS_CONTEXT oldContext = nullptr;
+	if (fnAreDpiAwarenessContextsEqual && fnAreDpiAwarenessContextsEqual(fnGetThreadDpiAwarenessContext(), DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED)) {
+		oldContext = fnSetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+		PLATFORM_ASSERT(oldContext != nullptr);
 	}
 
-	if (created) {
-		::DestroyCursor(cursor);
+	const HCURSOR cursor = static_cast<HCURSOR>(::LoadImage({}, IDC_ARROW, IMAGE_CURSOR, width, height, LR_SHARED));
+	if (cursor) {
+		CursorHelper cursorHelper(cursor);
+
+		if (cursorHelper.HasBitmap() && !cursorHelper.MatchesSize(width, height)) {
+			const HCURSOR copy = static_cast<HCURSOR>(::CopyImage(cursor, IMAGE_CURSOR, width, height, LR_COPYFROMRESOURCE | LR_COPYRETURNORG));
+			if (copy) {
+				cursorHelper = copy;
+				::DestroyCursor(copy);
+			}
+		}
+
+		if (cursorHelper.HasBitmap()) {
+			reverseArrowCursor = cursorHelper.CreateFlippedCursor();
+		}
 	}
+
+	if (oldContext) {
+		fnSetThreadDpiAwarenessContext(oldContext);
+	}
+
 	return reverseArrowCursor;
 }
 
@@ -3093,7 +3137,7 @@ void Window::SetCursor(Cursor curs) {
    coordinates */
 PRectangle Window::GetMonitorRect(Point pt) {
 	const PRectangle rcPosition = GetPosition();
-	POINT ptDesktop = {static_cast<LONG>(pt.x + rcPosition.left),
+	const POINT ptDesktop = {static_cast<LONG>(pt.x + rcPosition.left),
 		static_cast<LONG>(pt.y + rcPosition.top)};
 	HMONITOR hMonitor = MonitorFromPoint(ptDesktop, MONITOR_DEFAULTTONEAREST);
 
@@ -3139,7 +3183,7 @@ public:
 	}
 
 	void AllocItem(const char *text, int pixId) {
-		ListItemData lid = { text, pixId };
+		const ListItemData lid = { text, pixId };
 		data.push_back(lid);
 	}
 
@@ -4084,7 +4128,7 @@ void Platform::DebugPrintf(const char *format, ...) noexcept {
 	char buffer[2000];
 	va_list pArguments;
 	va_start(pArguments, format);
-	vsprintf_s(buffer,format,pArguments);
+	vsnprintf(buffer, std::size(buffer), format, pArguments);
 	va_end(pArguments);
 	Platform::DebugDisplay(buffer);
 }
@@ -4103,7 +4147,7 @@ bool Platform::ShowAssertionPopUps(bool assertionPopUps_) noexcept {
 
 void Platform::Assert(const char *c, const char *file, int line) noexcept {
 	char buffer[2000] {};
-	sprintf(buffer, "Assertion [%s] failed at %s %d%s", c, file, line, assertionPopUps ? "" : "\r\n");
+	snprintf(buffer, std::size(buffer), "Assertion [%s] failed at %s %d%s", c, file, line, assertionPopUps ? "" : "\r\n");
 	if (assertionPopUps) {
 		const int idButton = ::MessageBoxA(0, buffer, "Assertion failure",
 			MB_ABORTRETRYIGNORE|MB_ICONHAND|MB_SETFOREGROUND|MB_TASKMODAL);

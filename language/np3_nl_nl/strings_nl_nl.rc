@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Vervangen"
     IDT_VIEW_WORDWRAP       "Automatische terugloop"
     IDT_VIEW_ZOOMIN         "Inzoomen"
+    IDT_VIEW_RESETZOOM      "Zoom herstellen"
     IDT_VIEW_ZOOMOUT        "Uitzoomen"
     IDT_VIEW_SCHEME         "Schema selecteren"
     IDT_VIEW_SCHEMECONFIG   "Schema's aanpassen"
@@ -89,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Bestand uitvoeren"
+    IDT_VIEW_NEW_WINDOW      "Nieuw leeg venster"
     IDT_VIEW_TOGGLE_VIEW     "Gefocust beeld"
     IDT_VIEW_CHASING_DOCTAIL "Log Monitoren"
     IDT_VIEW_PIN_ON_TOP      "Altijd bovenop"
@@ -136,7 +138,7 @@ BEGIN
                             "Het huidige Notepad3-venster is bezet of heeft een actief dialoogvenster.\nWil je een ander Notepad3-venster openen?"
     IDS_MUI_ERR_ENCODINGNA  "Codepage-conversietabellen voor de geselecteerde codering zijn niet beschikbaar op jouw systeem."
     IDS_MUI_ERR_UNICODE     "Fout bij het converteren van dit Unicode-bestand.\nGegevens gaan verloren als het bestand wordt opgeslagen!"
-    IDS_MUI_ERR_BITMAP      "Fout bij laden van bitmap ""%s"".\nDimensies nodig: %i x %i (breedte >= %i x hoogte)."
+    IDS_MUI_ERR_BITMAP      "Geen geschikte afmeting van bitmap ""%s"".\nGeschikte afmeting: %i x %i (breedte >= %i x hoogte)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Fout bij het ophogen van de gebruikersrechten!"
 END
@@ -174,9 +176,10 @@ BEGIN
     IDS_MUI_REPLCOUNT       "%s exempla(a)r(en) van het opgegeven zoekpatroon vervangen."
     IDS_MUI_ASK_ENCODING    "Bij het omzetten van de ene naar de andere codering kan niet-ondersteunde tekst worden vervangen door standaardtekens. Dit kan niet ongedaan worden. Doorgaan?"
     IDS_MUI_ASK_ENCODING2   "Je staat op het punt de codering van een leeg bestand te wijzigen. Dit kan niet ongedaan worden. Doorgaan?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Deze actie zal de geschiedenis wissen. Doorgaan?"
     IDS_MUI_READONLY_SAVE   """%s"" is alleen-lezen. Opslaan als een ander bestand?"
     IDS_MUI_FILECHANGENOTIFY
-                           "Het huidige bestand is gewijzigd door een extern programma. Opnieuw laden?"
+                            "Het huidige bestand is gewijzigd door een extern programma.\nKies:\n\nAnnuleren -\t\tVerdere aanpassingen negeren\nOpnieuw laden -\t\tBestand opnieuw laden\nDoorgaan -\tSchakelen naar bestandscontrole"
     IDS_MUI_FILECHANGENOTIFY2 "Het huidige bestand is verwijderd. Nu opslaan?"
     IDS_MUI_FILELOCK_ERROR  "Kan geen exclusieve bestandsvergrendeling verkrijgen voor ""%s""!"
     IDS_MUI_STICKYWINPOS    "Kleverige vensterpositie is ingeschakeld. Alle nieuwe Notepad3 vensters gebruiken de huidige instellingen voor vensterplaatsing."
@@ -263,16 +266,18 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Taal"
     IDS_USE_LOCALE_DATEFMT  "&Datumformaat naar taal"
     IDS_MUI_MENU_THEMES     "&Schema's"
-    IDM_THEMES_FACTORY_RESET "&Standaardinstelling"
+    IDM_THEMES_FACTORY_RESET "&Factory Reset"
     IDM_THEMES_STD_CFG       "&Standaard Config"
-    IDS_MUI_STATUSBAR_PREFIXES "Rg  ,Kol  ,Sel  ,Sb  ,SRg  ,Occ  ,,,,,,,Ch  ,Verv  ,Eval  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Rg  ,Kol  ,Sel  ,Sb  ,SRg  ,Occ  ,,,,,,,Ch  ,Verv  ,Eval  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Alles wissen"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Zoekgeschiedenis wissen"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Vervanggeschiedenis wissen"
-    IDS_MUI_REPLCLIPTAG     "Vervangen door klembord-sneltoets [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Zoeken vanuit klembord bij lege selectie"
+    IDS_MUI_REPLCLIPTAG     "Vervangen door klembord bij sneltoets [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Zoekopdracht bovenaan voortzetten"
     IDS_MUI_WRAPSEARCH_BCK  "Zoekopdracht onderaan voorzetten"
 END
@@ -283,6 +288,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Weergave wisselen..."
     IDS_MUI_SB_REPLACE_ALL    "Alles vervangen..."
     IDS_MUI_SB_WRAP_LINES     "Regelterugloop..."
+    IDS_MUI_SB_SORTING_LINES  "Regels sorteren..."
     IDS_MUI_SB_CONV_LNBRK     "Regeleindes converteren..."
     IDS_MUI_SB_RECODING_DOC   "Document hercoderen..."
     IDS_MUI_SB_LEXER_STYLING  "Lexer Styling toepassen..."
@@ -295,9 +301,9 @@ Gebruik:\r\n\
 Notepad3 [/?] [...[Codering]] [...[Regeleinde-modus]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[schijf:][pad]bestand[...]]\r\n\r\n\
-bestand\tMoet het laatste argument zijn, geen aanhalingstekens\r\n\tspaties standaard.\r\n\
-+\tAccepteer meerdere bestandsargumenten (met\r\n\taanhalingstekens spaties).\r\n\
--\tAccepteer argument voor een enkel bestand (zonder\r\n\taanhalingstekens).\r\n\r\n\
+bestand\tMoet het laatste argument zijn, geen aanhalingstekens spaties standaard.\r\n\
++\tAccepteer meerdere bestandsargumenten (met aanhalingstekens spaties).\r\n\
+-\tAccepteer argument voor een enkel bestand (zonder aanhalingstekens).\r\n\r\n\
 Opties:\r\n\
 /?\tDeze gebruiksaanwijzing weergeven.\r\n\
 ...\tCodering (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
@@ -315,8 +321,8 @@ Opties:\r\n\
 /b\tOpen nieuw plakbord om de klemborditems te verzamelen.\r\n\
 /n\tOpen altijd een nieuw venster (/ns één bestand instantie).\r\n\
 /r\tHergebruik venster (/rs één bestand instantie).\r\n\
-/p\tVensterpositie en -grootte instellen (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tof /p <links>,<top>,<breedte>,<hoogte>,<max>    [gehele getallen].\r\n\
+/p\tVensterpositie en -grootte instellen (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tof /p <links>,<top>,<breedte>,<hoogte>[,<dpi>[,<max>]]  (gehele\r\n\tgetallen).\r\n\
 /t\tVenstertitel instellen.\r\n\
 /i\tStart als systeemvakpictogram.\r\n\
 /o\tVenster bovenop houden.\r\n\
@@ -325,7 +331,7 @@ Opties:\r\n\
 /v\tBestand direct afdrukken en afsluiten.\r\n\
 /vd\tBestand afdrukken (via printerdialoog).\r\n\
 /y\tZoekomgeving PAD in geval van relatieve bestandsnaam.\r\n\
-/z\tVolgende overslaan (bruikbaar voor het register-gebaseerde\r\n\tNotepad vervanging).\r\n\r\n\
+/z\tVolgende overslaan (bruikbaar voor het register-gebaseerde Notepad\r\n\tvervanging).\r\n\r\n\
 Voorbeelden:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
  \t... Nieuw bestand openen: ""Test.txt"" Codering=UTF-8-BOM, EoL=CRLF.\r\n\

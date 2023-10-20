@@ -4,7 +4,7 @@
   regint.h -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2022  K.Kosako
+ * Copyright (c) 2002-2023  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -288,6 +288,10 @@ typedef unsigned __int64 uint64_t;
 #endif
 #endif /* _WIN32 */
 
+typedef size_t   OnigSize;
+
+#define INFINITE_SIZE  ~((OnigSize )0)
+
 #if SIZEOF_VOIDP == SIZEOF_LONG
 typedef unsigned long hash_data_type;
 #elif SIZEOF_VOIDP == SIZEOF_LONG_LONG
@@ -470,8 +474,8 @@ typedef Bits*     BitSetRef;
 /* operation code */
 enum OpCode {
   OP_FINISH = 0,  /* matching process terminator (no more alternative) */
-  OP_END    = 1,  /* pattern code terminator (success end) */
-  OP_STR_1 = 2,   /* single byte, N = 1 */
+  OP_END,         /* pattern code terminator (success end) */
+  OP_STR_1,       /* single byte, N = 1 */
   OP_STR_2,       /* single byte, N = 2 */
   OP_STR_3,       /* single byte, N = 3 */
   OP_STR_4,       /* single byte, N = 4 */
@@ -927,7 +931,7 @@ struct re_pattern_buffer {
   unsigned char  map[CHAR_MAP_SIZE]; /* used as BMH skip or char-map */
   int            map_offset;
   OnigLen        dist_min;           /* min-distance of exact or map */
-  OnigLen        dist_max;           /* max-distance of exact or map */
+  OnigSize       dist_max;           /* max-distance of exact or map */
   RegexExt*      extp;
 };
 
@@ -939,7 +943,7 @@ struct re_pattern_buffer {
 
 extern void onig_add_end_call(void (*func)(void));
 extern void onig_warning(const char* s);
-extern UChar* onig_error_code_to_format P_((int code));
+extern UChar* onig_error_code_to_format P_((OnigPos code));
 extern void ONIG_VARIADIC_FUNC_ATTR onig_snprintf_with_pattern PV_((UChar buf[], int bufsize, OnigEncoding enc, UChar* pat, UChar* pat_end, const UChar *fmt, ...));
 extern int onig_compile P_((regex_t* reg, const UChar* pattern, const UChar* pattern_end, OnigErrorInfo* einfo));
 extern int onig_is_code_in_cc_len P_((int enclen, OnigCodePoint code, void* /* CClassNode* */ cc));

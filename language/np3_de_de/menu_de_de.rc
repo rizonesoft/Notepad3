@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Lösche alles Rechts\tCtrl+Shift+Del",      IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "&Spalten angleichen...\tCtrl+Shift+W",     IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Zeilen umbrechen\tCtrl+I",                IDM_EDIT_SPLITLINES
-            MENUITEM "&Verbinde Zeilen\tCtrl+J",                 IDM_EDIT_JOINLINES
-            MENUITEM "Ver&schmelze Zeilen\tCtrl+Alt+J",          IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Erhalte Abschnitte\tCtrl+Shift+J",        IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Vereinige &Leerzeilen\tAlt+Y",             IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Vereinige Leerzeichen Zeilen\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "Vereinige &Leerzeichen\tCtrl+Alt+P",       IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modifiziere Zeilen...\tAlt+M",            IDM_EDIT_MODIFYLINES
-            MENUITEM "&Zeilen &ausrichten...\tAlt+J",            IDM_EDIT_ALIGN
             MENUITEM "&Sortiere Zeilen...\tAlt+O",               IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Ze&ilen ausrichten...\tAlt+J",             IDM_EDIT_ALIGN
+            MENUITEM "&Zeilen umbrechen\tCtrl+I",                IDM_EDIT_SPLITLINES
+            MENUITEM "Ver&binde Zeilen\tCtrl+J",                 IDM_EDIT_JOINLINES
+            MENUITEM "&Verschmelze Zeilen\tCtrl+Alt+J",          IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Er&halte Abschnitte\tCtrl+Shift+J",        IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Bewege Textcursor zum Anfang\tCtrl+,",     CMD_JUMP2SELSTART
             MENUITEM "Bewege Textcursor zum Ende\tCtrl+.",       CMD_JUMP2SELEND
@@ -337,7 +338,7 @@ BEGIN
             MENUITEM "Ersetze Nächstes\tF4",                    IDM_EDIT_REPLACENEXT
             MENUITEM "&Gehe zu...\tCtrl+G",                     IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "Suche in &Dateien\tCtrl+Shift+F",         IDM_GREP_WIN_SEARCH
+            MENUITEM "Suche in &Dateien\tCtrl+Shift+F",         IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Ansicht"
@@ -357,6 +358,7 @@ BEGIN
             MENUITEM "Zeige Änderungen im Dokument",        IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Zeige alle Änderungen",               IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Lösche Änderungshistorie"                 IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink Indikator\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Farb-Definition Indikator"
@@ -424,6 +426,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Leisten"
         BEGIN
+            MENUITEM "Zeige &Titelleiste",                      IDM_VIEW_TITLEBAR
             MENUITEM "Zeige &Menüleiste",                       IDM_VIEW_MENUBAR
             MENUITEM "Zeige &Werkzeugleiste",                   IDM_VIEW_TOOLBAR
             MENUITEM "Zeige &Statusleiste",                     IDM_VIEW_STATUSBAR
@@ -469,6 +472,7 @@ BEGIN
         MENUITEM "&Wort Umbruch Einstellungen...",              IDM_SET_WORDWRAPSETTINGS
         MENUITEM "&Lang Zeilen Einstellungen...",               IDM_SET_LONGLINESETTINGS
         MENUITEM "Auto Text &Einrückung",                       IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Auto Hochkomma Schließen",                    IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Auto Klammer Schließen",                      IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Auto Tagabschluss &HTML/XML\tCtrl+Shift+H",   IDM_SET_AUTOCLOSETAGS
         MENUITEM "Auto Wort &Vorschläge",                       IDM_SET_AUTOCOMPLETEWORDS
@@ -574,6 +578,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Zeige Titelleiste",                          IDM_VIEW_TITLEBAR
         MENUITEM "Zeige Menüleiste",                           IDM_VIEW_MENUBAR
         MENUITEM "Zeige Werkzeugleiste",                       IDM_VIEW_TOOLBAR
         MENUITEM "Zeige Statusleiste",                         IDM_VIEW_STATUSBAR

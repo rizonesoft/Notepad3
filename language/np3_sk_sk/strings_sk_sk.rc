@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Zameniť"
     IDT_VIEW_WORDWRAP       "Zalomiť text"
     IDT_VIEW_ZOOMIN         "Zväčšiť"
+    IDT_VIEW_RESETZOOM      "Obnoviť priblíženie"
     IDT_VIEW_ZOOMOUT        "Zmenšiť"
     IDT_VIEW_SCHEME         "Výber schémy"
     IDT_VIEW_SCHEMECONFIG   "Prispôsobiť schémy"
@@ -89,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Spustiť dokument"
+    IDT_VIEW_NEW_WINDOW      "Nové prázdne okno"
     IDT_VIEW_TOGGLE_VIEW     "Zobraziť zameranie"
     IDT_VIEW_CHASING_DOCTAIL "Denník monitorovania"
     IDT_VIEW_PIN_ON_TOP      "Vždy na vrchu"
@@ -136,7 +138,7 @@ BEGIN
                             "Existujúce okno Notepad3 je zaneprázdnené, alebo má aktívne dialógové okno.\nChcete otvoriť ďalšie okno programu Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "Konverzné tabuľky kódových stránok pre vybraté kódovanie nie sú vo vašom systéme k dispozícii."
     IDS_MUI_ERR_UNICODE     "Pri prevode tohto súboru Unicode došlo k chybe.\nAk sa súbor uloží, údaje sa stratia!"
-    IDS_MUI_ERR_BITMAP      "Chyba pri načítaní bitmapy ""%s"".\nPotrebné rozmery: %i x %i (šírka >= %i x výška)."
+    IDS_MUI_ERR_BITMAP      "Nevhodný rozmer bitmapy ""%s"".\nVhodný rozmer: %i x %i (šírka >= %i x výška)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Chyba pri zvyšovaní užívateľských práv!"
 END
@@ -174,9 +176,10 @@ BEGIN
     IDS_MUI_REPLCOUNT       "%s výskytov zadaného vyhľadávania bolo nahradených."
     IDS_MUI_ASK_ENCODING    "Prepínanie kódovania súboru z jedného na iné môže spôsobiť, že nepodporované znaky budú nahradené predvolenými znakmi a história spätných krokov sa vymaže. Chcete pokračovať?"
     IDS_MUI_ASK_ENCODING2   "Chystáte sa zmeniť kódovanie prázdneho súboru. Upozorňujeme, že týmto sa vymaže história spätných krokov, pretože sa nedá synchronizovať s novým kódovaním. Pokračovať?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Táto operácia vymaže históriu spätných krokov. Pokračovať?"
     IDS_MUI_READONLY_SAVE   """%s"" je iba na čítanie. Uložiť súbor pod iným názvom?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Aktuálny súbor bol upravený externým programom. Znovu ho načítať?"
+                            "Aktuálny súbor bol upravený externým programom.\nVyberte ďalší postup:\n\nZrušiť -\t\tIgnorovať ďalšie zmeny\nZnovu načítať -\t\tZnovu načítať súbor\nPokračovať -\tPrepnúť monitorovanie súboru"
     IDS_MUI_FILECHANGENOTIFY2 "Aktuálny súbor bol odstránený. Uložiť ho znovu?"
     IDS_MUI_FILELOCK_ERROR  "Nedá sa exkluzívne zamknúť súbor ""%s""!"
     IDS_MUI_STICKYWINPOS    "Fixovanie polohy okna je povolené. Všetky nové okná Notepad2 budú používať aktuálne nastavenie umiestnenia okna."
@@ -263,16 +266,18 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Jazyk"
     IDS_USE_LOCALE_DATEFMT  "Definovať jazyk a formát dátumu"
     IDS_MUI_MENU_THEMES     "&Výber motívu"
-    IDM_THEMES_FACTORY_RESET "&Predvolené nastavenia"
+    IDM_THEMES_FACTORY_RESET "&Obnoviť predvolené"
     IDM_THEMES_STD_CFG       "&Štandardná konfigurácia"
-    IDS_MUI_STATUSBAR_PREFIXES "Riadok  ,Stĺpec  ,Výber  ,Sb  ,SLn  ,Occ  ,,,,,,,Znaky  ,Repl  ,Eval  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Riadok  ,Stĺpec  ,Výber  ,Sb  ,SLn  ,Occ  ,,,,,,,Znaky  ,Repl  ,Eval  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Vymazať všetko"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Vymazať históriu vyhľadávania"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Vymazať históriu nahradenia"
-    IDS_MUI_REPLCLIPTAG     "Nahradiť skratkou schránky [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Vyhľadávať podľa schránky, ak je výber prázdny"
+    IDS_MUI_REPLCLIPTAG     "Nahradiť schránkou na skratke [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Zviňovať zvrchu"
     IDS_MUI_WRAPSEARCH_BCK  "Zviňovať zospodu"
 END
@@ -283,6 +288,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Prepnúť zobrazenie..."
     IDS_MUI_SB_REPLACE_ALL    "Nahradiť všetko..."
     IDS_MUI_SB_WRAP_LINES     "Zalomiť riadky..."
+    IDS_MUI_SB_SORTING_LINES  "Zoradiť riadky..."
     IDS_MUI_SB_CONV_LNBRK     "Konvertovať zalomenie riadkov..."
     IDS_MUI_SB_RECODING_DOC   "Prekódovať dokument..."
     IDS_MUI_SB_LEXER_STYLING  "Použiť Lexer štýl..."
@@ -295,7 +301,7 @@ Použitie:\r\n\
 Notepad3 [/?] [...[Kódovanie]] [...[Režim ukončenia riadku]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[disk:][cesta]názov súboru[...]]\r\n\r\n\
-súbor\tMusí to byť posledný argument, v predvolenom nastavení nie sú\r\n\tmedzery.\r\n\
+súbor\tMusí to byť posledný argument, v predvolenom nastavení nie sú medzery.\r\n\
 +\tAkceptuje viac argumentov súborov (s medzerami).\r\n\
 -\tAkceptuje argument jedného súboru (bez medzier).\r\n\r\n\
 Možnosti:\r\n\
@@ -315,8 +321,8 @@ Možnosti:\r\n\
 /b\tOtvorenie nového panela na vkladanie a zber záznamov zo schránky.\r\n\
 /n\tVždy otvoriť nové okno (/ns inštancia jedného súboru).\r\n\
 /r\tOpätovné použitie okna (/rs inštancia jedného súboru).\r\n\
-/p\tNastavenie polohy a veľkosti okna (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\talebo /p <vľavo>,<hore>,<šírka>,<výška>,<max> [všetky čísla celé].\r\n\
+/p\tNastavenie polohy a veľkosti okna (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\talebo /p <vľavo>,<hore>,<šírka>,<výška>[,<dpi>[,<max>]]  (všetky čísla).\r\n\
 /t\tNastavenie titulku okna.\r\n\
 /i\tZačať ako ikona na paneli úloh.\r\n\
 /o\tPonechanie okna vždy na vrchu.\r\n\
@@ -325,7 +331,7 @@ Možnosti:\r\n\
 /v\tOkamžité vytlačenie súboru a ukončenie.\r\n\
 /vd\tTlač súboru cez dialógové okno tlačiarne.\r\n\
 /y\tVyhľadanie prostredia cesty v prípade relatívneho názvu súboru.\r\n\
-/z\tPreskočiť ďalej (použiteľné pri zámene Poznámkového bloku\r\n\tWindows pomocou registrov).\r\n\r\n\
+/z\tPreskočiť ďalej (použiteľné pri zámene Poznámkového bloku Windows \r\n\tpomocou registrov).\r\n\r\n\
 Príklady:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
  \t... Otvoriť nový súbor: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\

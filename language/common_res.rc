@@ -49,6 +49,7 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_MUI_RUN             ICON                    "Run.ico"
+IDI_MUI_GREPWINNP3      ICON                    "grepWinNP3.ico"
 IDI_MUI_STYLES          ICON                    "Preferences.ico"
 
 
@@ -71,7 +72,7 @@ IDC_COPY                CURSOR                  "Copy.cur"
 // =============================================================================
 // Following Text is streamed to RichEdit Control supporting ANSI CP-1252 only
 // Unicode characters have to be encoded using '\\uN<ch>' sequences.
-// Example: Küng => K\\u252nng
+// Example: Kï¿½ng => K\\u252nng
 // =============================================================================
 
 STRINGTABLE
@@ -122,6 +123,7 @@ IDS_MUI_ABOUT_ACKNOWLEDGES  "\
 \\cf0 craigo-\\tab https://github.com/craigo-/\\par\
 \\cf0 Crane70\\tab https://github.com/Crane70\\par\
 \\cf0 engelhro\\tab https://github.com/engelhro\\par\
+\\cf0 fadzikri\\tab https://github.com/fadzikri\\par\
 \\cf0 geogeo-gr\\tab https://github.com/geogeo-gr\\par\
 \\cf0 Hexaae\\tab https://github.com/Hexaae\\par\
 \\cf0 hpwamr\\tab https://github.com/hpwamr\\par\
@@ -175,7 +177,7 @@ IDS_MUI_ABOUT_LICENSES  "\
 IDS_MUI_ABOUT_RTF_6  "\
 \\cf0 \\fs20\\b1\\ul1 Notepad3 License:\\ul0\\b0\\fs18\\par\
 \\cf0 \\par\
-\\cf0 Notepad3 and MiniPath Copyright \\u0169   2008-2022 Rizonesoft, All rights reserved.\\par\
+\\cf0 Notepad3 and MiniPath Copyright \\u0169   2008-2023 Rizonesoft, All rights reserved.\\par\
 \\cf0 https://www.rizonesoft.com\\par\
 \\cf0 \\par\
 \\cf0 Redistribution and use in source and binary forms, with or without modification,\\par\

@@ -97,6 +97,14 @@ double a5(double a) {
     return a+5;
 }
 
+double a55(double a) {
+    return 5+a+5;
+}
+
+double a5abs(double a) {
+    return fabs(a+5);
+}
+
 double a52(double a) {
     return (a+5)*2;
 }
@@ -116,8 +124,11 @@ double al(double a) {
 int main(int argc, char *argv[])
 {
 
-    bench("sqrt(a^1.5+a^2.5)", as);
     bench("a+5", a5);
+    bench("5+a+5", a55);
+    bench("abs(a+5)", a5abs);
+
+    bench("sqrt(a^1.5+a^2.5)", as);
     bench("a+(5*2)", a10);
     bench("(a+5)*2", a52);
     bench("(1/(a+1)+2/(a+2)+3/(a+3))", al);

@@ -1,4 +1,4 @@
-Unicode Properties (Unicode Version: 15.0.0,  Emoji: 15.0)
+Unicode Properties (Unicode Version: 15.1.0,  Emoji: 15.1)
 
 ASCII_Hex_Digit
 Adlam
@@ -90,10 +90,14 @@ Hiragana
 Hyphen
 IDS_Binary_Operator
 IDS_Trinary_Operator
+IDS_Unary_Operator
+ID_Compat_Math_Continue
+ID_Compat_Math_Start
 ID_Continue
 ID_Start
 Ideographic
 Imperial_Aramaic
+InCB
 Inherited
 Inscriptional_Pahlavi
 Inscriptional_Parthian
@@ -354,6 +358,7 @@ Ideo
 IDS
 IDSB
 IDST
+IDSU
 Initial_Punctuation
 Ital
 Java
@@ -831,6 +836,7 @@ In_CJK_Unified_Ideographs_Extension_C
 In_CJK_Unified_Ideographs_Extension_D
 In_CJK_Unified_Ideographs_Extension_E
 In_CJK_Unified_Ideographs_Extension_F
+In_CJK_Unified_Ideographs_Extension_I
 In_CJK_Compatibility_Ideographs_Supplement
 In_CJK_Unified_Ideographs_Extension_G
 In_CJK_Unified_Ideographs_Extension_H

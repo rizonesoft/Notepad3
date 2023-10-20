@@ -8,7 +8,7 @@
 *   Notepad3 dialog boxes implementation                                      *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -31,10 +31,10 @@
 #include <richedit.h>
 #pragma warning( pop )
 
+#include "VersionEx.h"
 #include "PathLib.h"
 #include "Edit.h"
 #include "Dlapi.h"
-#include "Version.h"
 #include "Encoding.h"
 #include "Styles.h"
 #include "MuiLanguage.h"
@@ -282,6 +282,8 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
             SetBitmapControl(hwnd, IDC_INFOBOXICON, hIconBmp);
         }
 
+        //UINT const tabStopDist[3] = { 4, 4, 8 };
+        //SendMessage(GetDlgItem(hwnd, IDC_INFOBOXTEXT), EM_SETTABSTOPS, 3, (LPARAM)tabStopDist);
         SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpMsgBox->lpstrMessage);
 
         if (lpMsgBox->bDisableCheckBox) {
@@ -310,6 +312,10 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
     }
     return TRUE;
 
+
+    case WM_CLOSE:
+        EndDialog(hwnd, LOWORD(IDCLOSE));
+        break;
 
     case WM_DESTROY:
         if (hIconBmp) {
@@ -360,7 +366,7 @@ CASE_WM_CTLCOLOR_SET:
         case IDTRYAGAIN:
         case IDCONTINUE:
             if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting) && Globals.bCanSaveIniFile) {
-                IniFileSetInt(Paths.IniFile, Constants.SectionSuppressedMessages, lpMsgBox->lpstrSetting, LOWORD(wParam));
+                IniFileSetLong(Paths.IniFile, Constants.SectionSuppressedMessages, lpMsgBox->lpstrSetting, LOWORD(wParam));
             }
             //[FallThrough]
         case IDNO:
@@ -374,6 +380,8 @@ CASE_WM_CTLCOLOR_SET:
             bool const isChecked = IsButtonChecked(hwnd, IDC_INFOBOXCHECK);
             DialogEnableControl(hwnd, IDNO, !isChecked);
             DialogEnableControl(hwnd, IDABORT, !isChecked);
+            DialogEnableControl(hwnd, IDIGNORE, !isChecked);
+            DialogEnableControl(hwnd, IDCONTINUE, !isChecked);
             DialogEnableControl(hwnd, IDCLOSE, !isChecked);
             DialogEnableControl(hwnd, IDCANCEL, !isChecked);
             SendMessage(hwnd, WM_NEXTDLGCTL, 0, FALSE);
@@ -398,7 +406,7 @@ CASE_WM_CTLCOLOR_SET:
 
 LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
 {
-    int const iMode = StrIsEmpty(lpstrSetting) ? 0 : IniFileGetInt(Paths.IniFile, Constants.SectionSuppressedMessages, lpstrSetting, 0);
+    int const iMode = StrIsEmpty(lpstrSetting) ? 0 : IniFileGetLong(Paths.IniFile, Constants.SectionSuppressedMessages, lpstrSetting, 0);
 
     if (Settings.DialogsLayoutRTL) {
         uType |= MB_RTLREADING;
@@ -488,7 +496,11 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
     int idDlg;
     switch (uType & MB_TYPEMASK) {
 
-    case MB_YESNO:  // contains two push buttons : Yes and No.
+    case MB_OK:    // one push button : OK. This is the default.
+        idDlg = IDD_MUI_INFOBOX;
+        break;
+
+    case MB_YESNO: // contains two push buttons : Yes and No.
         idDlg = IDD_MUI_INFOBOX2;
         break;
 
@@ -505,9 +517,17 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
         break;
 
     case MB_ABORTRETRYIGNORE:   // three push buttons : Abort, Retry, and Ignore.
-    case MB_CANCELTRYCONTINUE:  // three push buttons : Cancel, Try Again, Continue.Use this message box type instead of MB_ABORTRETRYIGNORE.
+        idDlg = IDD_MUI_INFOBOX6;
+        break;
+    // Use this message box type instead of MB_ABORTRETRYIGNORE.
+    case MB_CANCELTRYCONTINUE:  // three push buttons : Cancel, Try Again, Continue.
+        idDlg = IDD_MUI_INFOBOX7;
+        break;
 
-    case MB_OK:  // one push button : OK. This is the default.
+    case MB_FILECHANGEDNOTIFY:
+        idDlg = IDD_MUI_INFOBOX_FILECHANGED;
+        break;
+    
     default:
         idDlg = IDD_MUI_INFOBOX;
         break;
@@ -654,18 +674,32 @@ static bool GetTrayWndRect(LPRECT lpTrayRect) {
     return false;
 }
 
-// Check to see if the animation has been disabled
-/*static */ bool GetDoAnimateMinimize(VOID) {
-    ANIMATIONINFO ai;
 
+// Check to see if the animation has been disabled
+bool GetSetDoAnimateMinimize(const int flag)
+{
+    ANIMATIONINFO ai;
     ai.cbSize = sizeof(ai);
     SystemParametersInfo(SPI_GETANIMATION, sizeof(ai), &ai, 0);
-
-    return ai.iMinAnimate ? true : false;
+    bool const bRes = ai.iMinAnimate ? true : false;
+    if (flag == 0 && bRes) {
+        ai.iMinAnimate = 0;
+        SystemParametersInfo(SPI_SETANIMATION, sizeof(ai), &ai, 0);
+    }
+    else if (flag > 0 && !bRes) {
+        ai.iMinAnimate = 1;
+        SystemParametersInfo(SPI_SETANIMATION, sizeof(ai), &ai, 0);
+    }
+    return bRes;
 }
 
+
+
 void MinimizeWndToTray(HWND hWnd) {
-    if (GetDoAnimateMinimize()) {
+
+    bool const bAnimate = GetSetDoAnimateMinimize(-1);
+
+    if (bAnimate) {
 
         // Get the rect of the window. It is safe to use the rect of the whole
         // window - DrawAnimatedRects will only draw the caption
@@ -683,12 +717,15 @@ void MinimizeWndToTray(HWND hWnd) {
     // This looks untidy, so call the functions in this order
 
     // Hide the window
+    ShowWindow(hWnd, SW_MINIMIZE);
+    if (bAnimate) { Sleep(500); }
     ShowWindow(hWnd, SW_HIDE);
     Globals.bMinimizedToTray = true;
 }
 
 void RestoreWndFromTray(HWND hWnd) {
-    if (GetDoAnimateMinimize()) {
+
+    if (GetSetDoAnimateMinimize(-1)) {
 
         // Get the rect of the tray and the window. Note that the window rect
         // is still valid even though the window is hidden
@@ -703,6 +740,7 @@ void RestoreWndFromTray(HWND hWnd) {
 
     // Show the window, and make sure we're the foreground window
     ShowWindow(hWnd, SW_SHOW);
+    ShowWindow(hWnd, SW_RESTORE);
     SetActiveWindow(hWnd);
     SetForegroundWindow(hWnd);
     Globals.bMinimizedToTray = false;
@@ -1033,6 +1071,10 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
     }
     break;
 
+    case WM_CLOSE:
+        EndDialog(hwnd, IDCLOSE);
+        break;
+
     case WM_DESTROY:
         if (hVersionFont) {
             DeleteObject(hVersionFont);
@@ -1322,6 +1364,10 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
         return TRUE;
 
 
+    case WM_CLOSE:
+        EndDialog(hwnd, IDCLOSE);
+        break;
+
     case WM_DESTROY:
         DeleteBitmapButton(hwnd, IDC_SEARCHEXE);
         return FALSE;
@@ -1575,6 +1621,10 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         return TRUE;
 
 
+    case WM_CLOSE:
+        EndDialog(hwnd, IDCLOSE);
+        break;
+
     case WM_DESTROY:
         DirList_Destroy(hwndLV);
         hwndLV = NULL;
@@ -1732,8 +1782,8 @@ bool OpenWithDlg(HWND hwnd, LPCWSTR lpstrFile)
     Path_GetDisplayName(chDispayName, COUNTOF(chDispayName), hpthFileName, NULL, true);
     dliOpenWith.strDisplayName = chDispayName;
 
-    if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_OPENWITH),
-                                     hwnd,OpenWithDlgProc,(LPARAM)&dliOpenWith)) {
+    if (IsYesOkay(ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_OPENWITH),
+                                       hwnd,OpenWithDlgProc,(LPARAM)&dliOpenWith))) {
 
         Path_Sanitize(hpthFileName);
         if (Path_IsLnkFile(hpthFileName)) {
@@ -1829,6 +1879,11 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
     case WM_DPICHANGED:
         UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
+
+
+    case WM_CLOSE:
+        EndDialog(hwnd, IDCLOSE);
+        break;
 
 
     case WM_DESTROY:
@@ -1988,8 +2043,8 @@ bool FavoritesDlg(HWND hwnd, HPATHL hpath_in_out)
     dliFavorite.strDisplayName = StrgWriteAccessBuf(hstrDisplayName, INTERNET_MAX_URL_LENGTH);
 
     bool res = false;
-    if (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_FAVORITES),
-                                     hwnd,FavoritesDlgProc,(LPARAM)&dliFavorite)) {
+    if (IsYesOkay(ThemedDialogBoxParam(Globals.hLngResContainer,MAKEINTRESOURCE(IDD_MUI_FAVORITES),
+                                       hwnd,FavoritesDlgProc,(LPARAM)&dliFavorite))) {
         Path_Sanitize(hpthFileName);
         Path_Swap(hpath_in_out, hpthFileName);
         res = true;
@@ -2037,6 +2092,11 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
         CenterDlgInParent(hwnd, NULL);
     }
     return TRUE;
+
+
+    case WM_CLOSE:
+        EndDialog(hwnd, IDCLOSE);
+        break;
 
 
     case WM_DESTROY:
@@ -2138,7 +2198,7 @@ bool AddToFavDlg(HWND hwnd, const HPATHL hTargetPth)
         hwnd,
         AddToFavDlgProc, (LPARAM)szDisplayName);
 
-    if (iResult == IDOK) {
+    if (IsYesOkay(iResult)) {
         StringCchCat(szDisplayName, COUNTOF(szDisplayName), L".lnk");
         if (!Path_CreateFavLnk(szDisplayName, hTargetPth, Settings.FavoritesDir)) {
             InfoBoxLng(MB_ICONWARNING,NULL,IDS_MUI_FAV_FAILURE);
@@ -2229,7 +2289,7 @@ unsigned int WINAPI FileMRUIconThread(LPVOID lpParam)
     }
 
     CoUninitialize();
-    BackgroundWorker_End(0);
+    BackgroundWorker_End(worker, 0);
     return 0;
 }
 
@@ -2238,7 +2298,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
 {
     static HWND hwndLV = NULL;
     static HPATHL hFilePath = NULL;
-
+    
     switch (umsg) {
     case WM_INITDIALOG: {
         SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
@@ -2309,6 +2369,10 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
     }
     return TRUE;
 
+    case WM_CLOSE:
+        EndDialog(hwnd, IDCLOSE);
+        break;
+
     case WM_DESTROY: {
         BackgroundWorker *worker = (BackgroundWorker *)GetProp(hwnd, L"it");
         BackgroundWorker_Destroy(worker);
@@ -2324,9 +2388,9 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
         Settings.SaveFindReplace  = IsButtonChecked(hwnd, IDC_REMEMBERSEARCHPATTERN);
         Settings.AutoLoadMRUFile  = IsButtonChecked(hwnd, IDC_AUTOLOAD_MRU_FILE);
 
-        Path_Release(hFilePath);
-
         ResizeDlg_Destroy(hwnd, &Settings.FileMRUDlgSizeX, &Settings.FileMRUDlgSizeY);
+
+        Path_Release(hFilePath);
     }
     return FALSE;
 
@@ -2541,7 +2605,7 @@ CASE_WM_CTLCOLOR_SET:
                     }
 
                     // Ask...
-                    LONG const answer = (LOWORD(wParam) == IDOK) ? InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_MRUDLG)
+                    LONG const answer = IsYesOkay(wParam) ? InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_MRUDLG)
                                         : ((iCur == lvi.iItem) ? IDNO : IDYES);
 
                     if (IsYesOkay(answer)) {
@@ -2586,8 +2650,8 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool FileMRUDlg(HWND hwnd, HPATHL hFilePath_out)
 {
-    return (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_FILEMRU),
-                        hwnd, FileMRUDlgProc, (LPARAM)hFilePath_out));
+    return (IsYesOkay(ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_FILEMRU),
+                      hwnd, FileMRUDlgProc, (LPARAM)hFilePath_out)));
 }
 
 
@@ -2644,6 +2708,9 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
             s_FWM = FileWatching.FileWatchingMode;
             CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_E, IDC_RADIO_BTN_A + s_FWM);
         }
+        
+        SetDlgItemInt(hwnd, IDC_FILE_CHECK_INTERVAL, (UINT)FileWatching.FileCheckInterval, FALSE);
+
         CenterDlgInParent(hwnd, NULL);
     }
     return TRUE;
@@ -2714,36 +2781,66 @@ CASE_WM_CTLCOLOR_SET:
             break;
 
 
-        case IDOK:
-            if (FileWatching.MonitoringLog) {
-                FileWatching.MonitoringLog = false; // will be toggled in IDM_VIEW_CHASING_DOCTAIL
-                PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+        case IDC_FILE_CHECK_INTERVAL: {
+            BOOL       bTranslated = FALSE;
+            UINT const fChkIntv = GetDlgItemInt(hwnd, IDC_FILE_CHECK_INTERVAL, &bTranslated, FALSE);
+            if (bTranslated) {
+                LONG64 const clampedFCIValue = clampll((LONG64)fChkIntv, 0, MAX_FC_POLL_INTERVAL);
+                if (clampedFCIValue != fChkIntv) {
+                    SetDlgItemInt(hwnd, IDC_FILE_CHECK_INTERVAL, (UINT)clampedFCIValue, FALSE);
+                }
+            }
+            else {
+                SetDlgItemInt(hwnd, IDC_FILE_CHECK_INTERVAL, (UINT)Settings2.FileCheckInterval, FALSE);
+            }}
+            break;
+
+
+        case IDOK: {
+                if (IsButtonChecked(hwnd, IDC_RADIO_BTN_A)) {
+                    s_FWM = FWM_DONT_CARE;
+                }
+                else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_B)) {
+                    s_FWM = FWM_INDICATORSILENT;
+                }
+                else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_C)) {
+                    s_FWM = FWM_MSGBOX;
+                }
+                else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_D)) {
+                    s_FWM = FWM_AUTORELOAD;
+                }
+                else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_E)) {
+                    s_FWM = FWM_EXCLUSIVELOCK;
+                }
+
+                Settings.ResetFileWatching = IsButtonChecked(hwnd, IDC_CHECK_BOX_A);
+
+                if (!FileWatching.MonitoringLog) {
+                    FileWatching.FileWatchingMode = s_FWM;
+                }
+                if (!Settings.ResetFileWatching) {
+                    Settings.FileWatchingMode = s_FWM;
+                }
+
+                BOOL       bTranslated = FALSE;
+                UINT const fChkIntv = GetDlgItemInt(hwnd, IDC_FILE_CHECK_INTERVAL, &bTranslated, FALSE);
+                if (bTranslated) {
+                    LONG64 const newFCIValue = clampll((LONG64)fChkIntv, MIN_FC_POLL_INTERVAL, MAX_FC_POLL_INTERVAL);
+                    if (newFCIValue != Settings2.FileCheckInterval) {
+                        FileWatching.FileCheckInterval = Settings2.FileCheckInterval = newFCIValue;
+                        if (Globals.bCanSaveIniFile) {
+                            IniFileSetLong(Paths.IniFile, Constants.Settings2_Section, L"FileCheckInterval", (long)newFCIValue);
+                        }
+                    }
+                }
+
+                if (FileWatching.MonitoringLog) {
+                    FileWatching.MonitoringLog = false; // will be toggled in IDM_VIEW_CHASING_DOCTAIL
+                    PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+                }
+
                 EndDialog(hwnd, IDOK);
-                break;
             }
-
-            if (IsButtonChecked(hwnd, IDC_RADIO_BTN_A)) {
-                s_FWM = FWM_DONT_CARE;
-            } else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_B)) {
-                s_FWM = FWM_INDICATORSILENT;
-            } else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_C)) {
-                s_FWM = FWM_MSGBOX;
-            } else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_D)) {
-                s_FWM = FWM_AUTORELOAD;
-            } else if (IsButtonChecked(hwnd, IDC_RADIO_BTN_E)) {
-                s_FWM = FWM_EXCLUSIVELOCK;
-            }
-
-            Settings.ResetFileWatching = IsButtonChecked(hwnd, IDC_CHECK_BOX_A);
-
-            if (!FileWatching.MonitoringLog) {
-                FileWatching.FileWatchingMode = s_FWM;
-            }
-            if (!Settings.ResetFileWatching) {
-                Settings.FileWatchingMode = s_FWM;
-            }
-
-            EndDialog(hwnd, IDOK);
             break;
 
 
@@ -2764,17 +2861,14 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool ChangeNotifyDlg(HWND hwnd)
 {
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                              Globals.hLngResContainer,
+                              MAKEINTRESOURCEW(IDD_MUI_CHANGENOTIFY),
+                              hwnd,
+                              ChangeNotifyDlgProc,
+                              0);
 
-    INT_PTR iResult;
-
-    iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCEW(IDD_MUI_CHANGENOTIFY),
-                  hwnd,
-                  ChangeNotifyDlgProc,
-                  0);
-
-    return (iResult == IDOK) ? true : false;
+    return IsYesOkay(iResult);
 
 }
 
@@ -2882,16 +2976,13 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool ColumnWrapDlg(HWND hwnd,UINT uidDlg, UINT *iNumber)
 {
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                              Globals.hLngResContainer,
+                              MAKEINTRESOURCE(uidDlg),
+                              hwnd,
+                              ColumnWrapDlgProc,(LPARAM)iNumber);
 
-    INT_PTR iResult;
-
-    iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCE(uidDlg),
-                  hwnd,
-                  ColumnWrapDlgProc,(LPARAM)iNumber);
-
-    return (iResult == IDOK) ? true : false;
+    return IsYesOkay(iResult);
 
 }
 
@@ -3035,17 +3126,13 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool WordWrapSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
 {
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                              Globals.hLngResContainer,
+                              MAKEINTRESOURCE(uidDlg),
+                              hwnd,
+                              WordWrapSettingsDlgProc,(LPARAM)iNumber);
 
-    INT_PTR iResult;
-
-    iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCE(uidDlg),
-                  hwnd,
-                  WordWrapSettingsDlgProc,(LPARAM)iNumber);
-
-    return (iResult == IDOK) ? true : false;
-
+    return IsYesOkay(iResult);
 }
 
 
@@ -3204,7 +3291,7 @@ bool LongLineSettingsDlg(HWND hwnd,UINT uidDlg, LPWSTR pColList)
                                 hwnd,
                                 LongLineSettingsDlgProc, (LPARAM)pColList);
 
-    return (iResult == IDOK) ? true : false;
+    return IsYesOkay(iResult);
 }
 
 
@@ -3347,17 +3434,13 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool TabSettingsDlg(HWND hwnd,UINT uidDlg,int *iNumber)
 {
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                              Globals.hLngResContainer,
+                              MAKEINTRESOURCE(uidDlg),
+                              hwnd,
+                              TabSettingsDlgProc,(LPARAM)iNumber);
 
-    INT_PTR iResult;
-
-    iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCE(uidDlg),
-                  hwnd,
-                  TabSettingsDlgProc,(LPARAM)iNumber);
-
-    return (iResult == IDOK) ? true : false;
-
+    return IsYesOkay(iResult);
 }
 
 
@@ -3558,23 +3641,22 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool SelectDefEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding)
 {
-    INT_PTR iResult;
     ENCODEDLG dd = { 0 };
     dd.bRecodeOnly = false;
     dd.idEncoding = *pidREncoding;
 
-    iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCE(IDD_MUI_DEFENCODING),
-                  hwnd,
-                  SelectDefEncodingDlgProc,
-                  (LPARAM)&dd);
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                              Globals.hLngResContainer,
+                              MAKEINTRESOURCE(IDD_MUI_DEFENCODING),
+                              hwnd,
+                              SelectDefEncodingDlgProc,
+                              (LPARAM)&dd);
 
-    if (iResult == IDOK) {
+    if (IsYesOkay(iResult)) {
         *pidREncoding = dd.idEncoding;
-        return TRUE;
+        return true;
     }
-    return FALSE;
+    return false;
 }
 
 
@@ -3634,6 +3716,11 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
     case WM_DPICHANGED:
         UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
+
+
+    case WM_CLOSE:
+        EndDialog(hwnd, IDCLOSE);
+        break;
 
 
     case WM_DESTROY: {
@@ -3754,59 +3841,31 @@ CASE_WM_CTLCOLOR_SET:
 //
 //  SelectEncodingDlg()
 //
-bool SelectEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding)
+bool SelectEncodingDlg(HWND hwnd, cpi_enc_t* pidREncoding, bool bRecode)
 {
-
-    INT_PTR iResult;
     ENCODEDLG dd = { 0 };
-    dd.bRecodeOnly = false;
+    dd.bRecodeOnly = bRecode;
     dd.idEncoding = *pidREncoding;
-    dd.cxDlg = Settings.EncodingDlgSizeX;
-    dd.cyDlg = Settings.EncodingDlgSizeY;
+    dd.cxDlg = bRecode ? Settings.RecodeDlgSizeX : Settings.EncodingDlgSizeX;
+    dd.cyDlg = bRecode ? Settings.RecodeDlgSizeY : Settings.EncodingDlgSizeY;
 
-    iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCE(IDD_MUI_ENCODING),
-                  hwnd,
-                  SelectEncodingDlgProc,
-                  (LPARAM)&dd);
+    INT_PTR const iResult = ThemedDialogBoxParam(
+                              Globals.hLngResContainer,
+                              MAKEINTRESOURCE(bRecode ? IDD_MUI_RECODE : IDD_MUI_ENCODING),
+                              hwnd,
+                              SelectEncodingDlgProc,
+                              (LPARAM)&dd);
 
-    Settings.EncodingDlgSizeX = dd.cxDlg;
-    Settings.EncodingDlgSizeY = dd.cyDlg;
-
-    if (iResult == IDOK) {
-        *pidREncoding = dd.idEncoding;
-        return TRUE;
+    if (bRecode) {
+        Settings.RecodeDlgSizeX = dd.cxDlg;
+        Settings.RecodeDlgSizeY = dd.cyDlg;
     }
-    return FALSE;
-}
+    else {
+        Settings.EncodingDlgSizeX = dd.cxDlg;
+        Settings.EncodingDlgSizeY = dd.cyDlg;
+    }
 
-
-//=============================================================================
-//
-//  RecodeDlg()
-//
-bool RecodeDlg(HWND hwnd, cpi_enc_t* pidREncoding)
-{
-
-    INT_PTR iResult = 0;
-    ENCODEDLG dd = { 0 };
-    dd.bRecodeOnly = true;
-    dd.idEncoding = *pidREncoding;
-    dd.cxDlg = Settings.RecodeDlgSizeX;
-    dd.cyDlg = Settings.RecodeDlgSizeY;
-
-    iResult = ThemedDialogBoxParam(
-                  Globals.hLngResContainer,
-                  MAKEINTRESOURCE(IDD_MUI_RECODE),
-                  hwnd,
-                  SelectEncodingDlgProc,
-                  (LPARAM)&dd);
-
-    Settings.RecodeDlgSizeX = dd.cxDlg;
-    Settings.RecodeDlgSizeY = dd.cyDlg;
-
-    if (iResult == IDOK) {
+    if (IsYesOkay(iResult)) {
         *pidREncoding = dd.idEncoding;
         return TRUE;
     }
@@ -3931,7 +3990,7 @@ bool SelectDefLineEndingDlg(HWND hwnd, LPARAM piOption)
                             SelectDefLineEndingDlgProc,
                             piOption);
 
-    return (iResult == IDOK);
+    return IsYesOkay(iResult);
 }
 
 
@@ -4043,12 +4102,12 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool WarnLineEndingDlg(HWND hwnd, EditFileIOStatus* fioStatus)
 {
-    const INT_PTR iResult = ThemedDialogBoxParam(Globals.hLngResContainer,
-                            MAKEINTRESOURCE(IDD_MUI_WARNLINEENDS),
-                            hwnd,
-                            WarnLineEndingDlgProc,
-                            (LPARAM)fioStatus);
-    return (iResult == IDOK);
+    INT_PTR const iResult = ThemedDialogBoxParam(Globals.hLngResContainer,
+                                MAKEINTRESOURCE(IDD_MUI_WARNLINEENDS),
+                                hwnd,
+                                WarnLineEndingDlgProc,
+                                (LPARAM)fioStatus);
+    return IsYesOkay(iResult);
 }
 
 
@@ -4196,12 +4255,12 @@ CASE_WM_CTLCOLOR_SET:
 //
 bool WarnIndentationDlg(HWND hwnd, EditFileIOStatus* fioStatus)
 {
-    const INT_PTR iResult = ThemedDialogBoxParam(Globals.hLngResContainer,
-                            MAKEINTRESOURCE(IDD_MUI_WARNINDENTATION),
-                            hwnd,
-                            WarnIndentationDlgProc,
-                            (LPARAM)fioStatus);
-    return (iResult == IDOK);
+    INT_PTR const iResult = ThemedDialogBoxParam(Globals.hLngResContainer,
+                                MAKEINTRESOURCE(IDD_MUI_WARNINDENTATION),
+                                hwnd,
+                                WarnIndentationDlgProc,
+                                (LPARAM)fioStatus);
+    return IsYesOkay(iResult);
 }
 
 
@@ -4319,7 +4378,7 @@ static INT_PTR CALLBACK AutoSaveBackupSettingsDlgProc(HWND hwnd, UINT umsg, WPAR
             if (iExprErr) {
                 WCHAR wch[32];
                 GetDlgItemText(hwnd, IDC_AUTOSAVE_INTERVAL, wch, COUNTOF(wch));
-                StrToFloat(wch, &interval);
+                StrToFloatEx(wch, &interval);
             }
             Settings.AutoSaveInterval = clampi(f2int(interval * 1000.0f), 2000, USER_TIMER_MAXIMUM);
             EndDialog(hwnd, IDOK);
@@ -4366,13 +4425,13 @@ static INT_PTR CALLBACK AutoSaveBackupSettingsDlgProc(HWND hwnd, UINT umsg, WPAR
 
 bool AutoSaveBackupSettingsDlg(HWND hwnd)
 {
-    const INT_PTR iResult = ThemedDialogBoxParam(Globals.hLngResContainer,
-        MAKEINTRESOURCE(IDD_MUI_AUTOSAVE_BACKUP),
-        hwnd, 
-        AutoSaveBackupSettingsDlgProc,
-        0);
+    INT_PTR const iResult = ThemedDialogBoxParam(Globals.hLngResContainer,
+                                MAKEINTRESOURCE(IDD_MUI_AUTOSAVE_BACKUP),
+                                hwnd, 
+                                AutoSaveBackupSettingsDlgProc,
+                                0);
 
-    return (iResult == IDOK);
+    return IsYesOkay(iResult);
 }
 
 
@@ -4381,6 +4440,7 @@ bool AutoSaveBackupSettingsDlg(HWND hwnd)
 //  RelAdjustRectForDPI()
 //
 void RelAdjustRectForDPI(LPRECT rc, const UINT oldDPI, const UINT newDPI) {
+    if (oldDPI == newDPI) { return; }
     float const scale = (float)newDPI / (float)(oldDPI != 0 ? oldDPI : 1);
     LONG const oldWidth = (rc->right - rc->left);
     LONG const oldHeight = (rc->bottom - rc->top);
@@ -4397,7 +4457,7 @@ void RelAdjustRectForDPI(LPRECT rc, const UINT oldDPI, const UINT newDPI) {
 //
 //  MapRectClientToWndCoords()
 //
-void MapRectClientToWndCoords(HWND hwnd, RECT* rc)
+void MapRectClientToWndCoords(HWND hwnd, LPRECT rc)
 {
     // map to screen (left-top as point)
     MapWindowPoints(hwnd, NULL, (POINT*)rc, 2);
@@ -4563,7 +4623,7 @@ void FitIntoMonitorGeometry(LPRECT pRect, WININFO *pWinInfo, SCREEN_MODE mode, b
 //
 //  GetMyWindowPlacement()
 //
-WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO *hMonitorInfo, const int offset) {
+WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO *hMonitorInfo, const int offset, const bool bFullVisible) {
     RECT rc;
     GetWindowRect(hwnd, &rc);
 
@@ -4602,10 +4662,10 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO *hMonitorInfo, const int off
     wi.zoom = hwnd ? SciCall_GetZoom() : 100;
     wi.dpi = Scintilla_GetWindowDPI(hwnd);
 
-    if (Settings2.LaunchInstanceFullVisible) {
+    if (bFullVisible) {
         RECT rci;
         RectFromWinInfo(&wi, &rci);
-        FitIntoMonitorGeometry(&rci, &wi, SCR_NORMAL, true);
+        FitIntoMonitorGeometry(&rci, &wi, SCR_NORMAL, false);
     }
     return wi;
 }
@@ -4616,7 +4676,7 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO *hMonitorInfo, const int off
 //  WindowPlacementFromInfo()
 //
 //
-WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode)
+WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCREEN_MODE mode, UINT nCmdShow)
 {
     WINDOWPLACEMENT wndpl = {0};
     wndpl.length = sizeof(WINDOWPLACEMENT);
@@ -4633,7 +4693,6 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
         if (pWinInfo->max) {
             wndpl.flags &= WPF_RESTORETOMAXIMIZED;
         }
-        wndpl.showCmd = SW_RESTORE;
     } else {
         RECT rc = { 0 };
         if (hwnd) {
@@ -4647,17 +4706,107 @@ WINDOWPLACEMENT WindowPlacementFromInfo(HWND hwnd, const WININFO* pWinInfo, SCRE
         } else {
             WinInfoFromRect(&rc, &winfo);
         }
-        wndpl.showCmd = SW_SHOW;
     }
+    wndpl.showCmd = nCmdShow;
     RectFromWinInfo(&winfo, &(wndpl.rcNormalPosition));
     return wndpl;
+}
+
+//=============================================================================
+//
+//  SnapToWinInfoPos()
+//  Aligns Notepad3 to the given window position on the screen
+//
+static bool s_bPrevFullScreenFlag = false;
+
+void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode, UINT nCmdShow)
+{
+    if (!hwnd) {
+        return;
+    }
+    static bool            s_bPrevShowTitlebar = true;
+    static bool            s_bPrevShowMenubar = true;
+    static bool            s_bPrevShowToolbar = true;
+    static bool            s_bPrevShowStatusbar = true;
+    static bool            s_bPrevAlwaysOnTop = false;
+    static WINDOWPLACEMENT s_wndplPrev = { 0 };
+    s_wndplPrev.length = sizeof(WINDOWPLACEMENT);
+
+    DWORD const dwRmvFScrStyle = WS_OVERLAPPEDWINDOW | WS_BORDER;
+
+    DWORD dwStyle = GetWindowLong(hwnd, GWL_STYLE);
+    RECT  rcCurrent;
+    GetWindowRect(hwnd, &rcCurrent);
+
+    if ((mode == SCR_NORMAL) || s_bPrevFullScreenFlag) {
+        SetWindowLong(hwnd, GWL_STYLE, dwStyle | dwRmvFScrStyle);
+        if (s_bPrevFullScreenFlag) {
+            SetWindowPlacement(hwnd, &s_wndplPrev); // 1st set correct screen (DPI Aware)
+            SetWindowPlacement(hwnd, &s_wndplPrev); // 2nd resize position to correct DPI settings
+            Settings.ShowTitlebar = s_bPrevShowTitlebar;
+            Settings.ShowMenubar = s_bPrevShowMenubar;
+            Settings.ShowToolbar = s_bPrevShowToolbar;
+            Settings.ShowStatusbar = s_bPrevShowStatusbar;
+            Settings.AlwaysOnTop = s_bPrevAlwaysOnTop;
+        }
+        else {
+            WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hwnd, &winInfo, mode, nCmdShow);
+            if (GetSetDoAnimateMinimize(-1) && wndpl.showCmd) {
+                DrawAnimatedRects(hwnd, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
+            }
+            SetWindowPlacement(hwnd, &wndpl); // 1st set correct screen (DPI Aware)
+            RelAdjustRectForDPI(&wndpl.rcNormalPosition, winInfo.dpi, Scintilla_GetWindowDPI(hwnd));
+            SetWindowPlacement(hwnd, &wndpl); // 2nd resize position to correct DPI settings
+        }
+        SetWindowPos(hwnd, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        s_bPrevFullScreenFlag = false;
+    }
+    else { // full screen mode
+        s_bPrevShowTitlebar = Settings.ShowTitlebar;
+        s_bPrevShowMenubar = Settings.ShowMenubar;
+        s_bPrevShowToolbar = Settings.ShowToolbar;
+        s_bPrevShowStatusbar = Settings.ShowStatusbar;
+        s_bPrevAlwaysOnTop = Settings.AlwaysOnTop;
+        GetWindowPlacement(hwnd, &s_wndplPrev);
+        MONITORINFO mi = { sizeof(mi) };
+        GetMonitorInfo(MonitorFromWindow(hwnd, MONITOR_DEFAULTTOPRIMARY), &mi);
+        SetWindowLong(hwnd, GWL_STYLE, dwStyle & ~dwRmvFScrStyle);
+        WINDOWPLACEMENT const wndpl = WindowPlacementFromInfo(hwnd, NULL, mode, nCmdShow);
+        if (GetSetDoAnimateMinimize(-1) && wndpl.showCmd) {
+            DrawAnimatedRects(hwnd, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
+        }
+        SetWindowPlacement(hwnd, &wndpl);
+        SetWindowPos(hwnd, HWND_TOPMOST, mi.rcMonitor.left, mi.rcMonitor.top,
+            mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top,
+            SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+        Settings.ShowTitlebar = Settings.ShowMenubar = Settings.ShowToolbar = Settings.ShowStatusbar = false;
+        Settings.AlwaysOnTop = true;
+        s_bPrevFullScreenFlag = true;
+    }
+    SetMenu(hwnd, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
+    DrawMenuBar(hwnd);
+    ShowWindow(Globals.hwndRebar, (Settings.ShowToolbar ? SW_RESTORE : SW_HIDE));
+    UpdateUI(hwnd);
+}
+
+
+//=============================================================================
+//
+//  RestorePrevScreenPos()
+//
+void RestorePrevScreenPos(HWND hwnd)
+{
+    if (hwnd == Globals.hwndMain) {
+        if (s_bPrevFullScreenFlag) {
+            SendWMCommand(hwnd, CMD_FULLSCRWINPOS);
+        }
+    }
 }
 
 
 //=============================================================================
 //
 //  DialogNewWindow()
-//
 //
 void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, const HPATHL hFilePath, WININFO* wi)
 {
@@ -4685,14 +4834,15 @@ void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, const HPATHL hFilePath, WI
     StrgCat(hparam_str, Flags.bSingleFileInstance ? L" -ns" : L" -n");
 
     WININFO const _wi = (Flags.bStickyWindowPosition ? g_IniWinInfo : 
-                         (wi ? *wi : GetMyWindowPlacement(hwnd, NULL, Settings2.LaunchInstanceWndPosOffset)));
+                         (wi ? *wi : GetMyWindowPlacement(hwnd, NULL, Settings2.LaunchInstanceWndPosOffset, Settings2.LaunchInstanceFullVisible)));
 
-    StringCchPrintf(wch, COUNTOF(wch), L" -pos %i,%i,%i,%i,%i ", _wi.x, _wi.y, _wi.cx, _wi.cy, (int)_wi.max);
+    StringCchPrintf(wch, COUNTOF(wch), L" -pos " WINDOWPOS_STRGFORMAT, _wi.x, _wi.y, _wi.cx, _wi.cy, _wi.dpi, (int)_wi.max);
     StrgCat(hparam_str, wch);
 
     if (Path_IsNotEmpty(hFilePath)) {
         HPATHL hfile_pth = Path_Copy(hFilePath);
         Path_QuoteSpaces(hfile_pth, true);
+        StrgCat(hparam_str, L" ");
         StrgCat(hparam_str, Path_Get(hfile_pth));
         Path_Release(hfile_pth);
     }
@@ -4792,7 +4942,7 @@ typedef struct _grepwin_ini {
 }
 grepWin_t;
 
-static grepWin_t grepWinIniSettings[13] = {
+static grepWin_t grepWinIniSettings[] = {
     { L"onlyone",           L"1" },
     { L"AllSize",           L"0" },
     { L"Size",           L"2000" },
@@ -5728,30 +5878,34 @@ void MakeColorPickButton(HWND hwnd, int nCtrlId, HINSTANCE hInstance, COLORREF c
     if (SendMessage(hwndCtl, BCM_GETIMAGELIST, 0, (LPARAM)&bi)) {
         himlOld = bi.himl;
     }
+
+    COLORREF const MASK_NONE = RGB(0x00, 0x00, 0x00);
+    COLORREF const MASK_FULL = RGB(0xFF, 0xFF, 0xFF);
+    COLORREF const CNTRST = RGB(0xFF, 0xFF, 0xFE);
+
     if (IsWindowEnabled(hwndCtl) && (crColor != COLORREF_MAX)) {
-        colormap[0].from = RGB(0x00, 0x00, 0x00);
+        colormap[0].from = MASK_NONE;
         colormap[0].to = GetSysColor(COLOR_3DSHADOW);
     } else {
-        colormap[0].from = RGB(0x00, 0x00, 0x00);
-        colormap[0].to = RGB(0xFF, 0xFF, 0xFF);
+        colormap[0].from = MASK_NONE;
+        colormap[0].to = MASK_FULL;
     }
 
     if (IsWindowEnabled(hwndCtl) && (crColor != COLORREF_MAX)) {
-
-        if (crColor == RGB(0xFF, 0xFF, 0xFF)) {
-            crColor = RGB(0xFF, 0xFF, 0xFE);
-        }
-        colormap[1].from = RGB(0xFF, 0xFF, 0xFF);
+        if (crColor == MASK_FULL) { crColor = CNTRST; }
+        colormap[1].from = MASK_FULL;
         colormap[1].to = crColor;
     } else {
-        colormap[1].from = RGB(0xFF, 0xFF, 0xFF);
-        colormap[1].to = RGB(0xFF, 0xFF, 0xFF);
+        colormap[1].from = MASK_FULL;
+        colormap[1].to = MASK_FULL;
     }
 
     HBITMAP hBmp = CreateMappedBitmap(hInstance, IDB_PICK, 0, colormap, 2);
 
-    bi.himl = ImageList_Create(10, 10, ILC_COLORDDB | ILC_MASK, 1, 0);
-    ImageList_AddMasked(bi.himl, hBmp, RGB(0xFF, 0xFF, 0xFF));
+    BITMAP bmp = { 0 };
+    GetObject(hBmp, sizeof(BITMAP), &bmp);
+    bi.himl = ImageList_Create(bmp.bmWidth, bmp.bmHeight, ILC_COLORDDB | ILC_MASK, 1, 0);
+    ImageList_AddMasked(bi.himl, hBmp, MASK_FULL);
     DeleteObject(hBmp);
 
     SetRect(&bi.margin, 0, 0, 4, 0);
@@ -6081,7 +6235,7 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
         pTemplate->style |= DS_SHELLFONT;
     }
 
-    size_t const cbNew = cbFontAttr + ((StringCchLenW(wchFaceName, COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
+    size_t const cbNew = cbFontAttr + ((StringCchLen(wchFaceName, COUNTOF(wchFaceName)) + 1) * sizeof(WCHAR));
     BYTE* const pbNew = (BYTE*)wchFaceName;
 
     BYTE* pb = DialogTemplate_GetFontSizeField(pTemplate);
@@ -6219,6 +6373,22 @@ HBITMAP ResampleIconToBitmap(HWND hwnd, HBITMAP hOldBmp, const HICON hIcon, cons
 
 //=============================================================================
 //
+//  _MakeMenuIcon()
+//
+static MENUITEMINFO _MakeMenuIcon(const HICON hIcon, const UINT dpi)
+{
+    int const scx = Scintilla_GetSystemMetricsForDpi(SM_CXSMICON, dpi);
+    int const scy = Scintilla_GetSystemMetricsForDpi(SM_CYSMICON, dpi);
+    MENUITEMINFO mii = { 0 };
+    mii.cbSize = sizeof(MENUITEMINFO);
+    mii.fMask = MIIM_BITMAP;
+    mii.hbmpItem = ConvertIconToBitmap(hIcon, scx, scy);
+    return mii;
+}
+
+
+//=============================================================================
+//
 //  SetUACIcon()
 //
 void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
@@ -6229,25 +6399,57 @@ void SetUACIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
     UINT const cur_dpi = Scintilla_GetWindowDPI(hwnd);
 
     if (dpi != cur_dpi) {
-
-        int const scx = Scintilla_GetSystemMetricsForDpi(SM_CXSMICON, cur_dpi);
-        int const scy = Scintilla_GetSystemMetricsForDpi(SM_CYSMICON, cur_dpi);
-
-        if (!mii.cbSize) {
-            mii.cbSize = sizeof(MENUITEMINFO);
-        }
-        if (!mii.fMask)  {
-            mii.fMask = MIIM_BITMAP;
-        }
         if (mii.hbmpItem) {
             DeleteObject(mii.hbmpItem);
         }
-        mii.hbmpItem = ConvertIconToBitmap(Globals.hIconMsgShield, scx, scy);
-
-        SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
-
+        mii = _MakeMenuIcon(Globals.hIconMsgShield, cur_dpi);
         dpi = cur_dpi;
     }
+    SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
+}
+
+
+//=============================================================================
+//
+//  SetWinIcon()
+//
+void SetWinIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
+{
+    static UINT dpi = 0; // (!) initially, to force first calculation 
+    static MENUITEMINFO mii = { 0 };
+
+    UINT const cur_dpi = Scintilla_GetWindowDPI(hwnd);
+
+    if (dpi != cur_dpi) {
+        if (mii.hbmpItem) {
+            DeleteObject(mii.hbmpItem);
+        }
+        mii = _MakeMenuIcon(Globals.hIconMsgWinCmd, cur_dpi);
+        dpi = cur_dpi;
+    }
+    SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
+}
+
+
+//=============================================================================
+//
+//  SetGrepWinIcon()
+//
+void SetGrepWinIcon(HWND hwnd, const HMENU hMenu, const UINT nItem)
+{
+    static UINT dpi = 0; // (!) initially, to force first calculation 
+    static MENUITEMINFO mii = { 0 };
+
+    UINT const cur_dpi = Scintilla_GetWindowDPI(hwnd);
+
+    if (dpi != cur_dpi) {
+        if (mii.hbmpItem) {
+            DeleteObject(mii.hbmpItem);
+        }
+        mii = _MakeMenuIcon(Globals.hIconGrepWinNP3, cur_dpi);
+        dpi = cur_dpi;
+    }
+    SetMenuItemInfo(hMenu, nItem, FALSE, &mii);
 }
 
 
@@ -6325,6 +6527,17 @@ LRESULT SendWMSize(HWND hwnd, RECT* rc)
     return SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(wndrc.right, wndrc.bottom));
 }
 
+//=============================================================================
+//
+//  UpdateUI()
+//
+void UpdateUI(HWND hwnd)
+{
+    SendWMSize(hwnd, NULL);
+    SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+    PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
+    PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
+}
 
 
 //=============================================================================
@@ -6487,7 +6700,9 @@ INT_PTR CALLBACK ColorDialogHookProc(
         const CHOOSECOLOR *const pChooseColor = ((CHOOSECOLOR *)lParam);
         if (pChooseColor && pChooseColor->lCustData) {
             POINT const pt = *(POINT*)pChooseColor->lCustData;
-            SetWindowPos(hdlg, NULL, pt.x, pt.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+            SetWindowPos(hdlg, NULL, pt.x, pt.y, 0, 0, (SWP_NOZORDER | SWP_NOSIZE | SWP_HIDEWINDOW) & ~SWP_SHOWWINDOW);
+            WININFO wi = GetMyWindowPlacement(hdlg, NULL, 0, true);
+            SetWindowPos(hdlg, NULL, wi.x, wi.y, wi.cx, wi.cy, SWP_NOZORDER | SWP_NOSIZE | SWP_SHOWWINDOW);
             SetForegroundWindow(hdlg);
         } else {
             CenterDlgInParent(hdlg, NULL);
@@ -6710,12 +6925,15 @@ bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     if (!hfile_pth_io) {
         return false;
     }
-
+    if (!Path_IsEmpty(hinidir_pth)) {
+        // clear output path, so that GetOpenFileName does not use the contents of szFile to initialize itself.
+        Path_Empty(hfile_pth_io, false);
+    }
     WCHAR szDefExt[64] = { L'\0' };
     WCHAR szFilter[EXTENTIONS_FILTER_BUFFER];
     Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), false);
 
-    HPATHL hpth_dir = Path_Allocate(Path_Get(hinidir_pth));
+    HPATHL hpth_dir = Path_Copy(hinidir_pth);
     _CanonicalizeInitialDir(hpth_dir);
 
     OPENFILENAME ofn = { sizeof(OPENFILENAME) };

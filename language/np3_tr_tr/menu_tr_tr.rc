@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "İmlecin s&ağ tarafını sil\tCtrl+Shift+Del",     IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Sütun &kaydır...\tCtrl+Shift+W",                IDM_EDIT_COLUMNWRAP
-            MENUITEM "Satırları &ayır\tCtrl+I",                       IDM_EDIT_SPLITLINES
-            MENUITEM "Satırları &birleştir\tCtrl+J",                  IDM_EDIT_JOINLINES
-            MENUITEM "Satırları &ekle\tCtrl+Alt+J",                   IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Paragrafları koru\tCtrl+Shift+J",              IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "&Boş satırları birleştir\tAlt+Y",               IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "&Yazı olmayan satırları birleştir\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "Baştaki ve sondaki boşlukları sil\tCtrl+Alt+P", IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "Satırları &düzenle...\tAlt+M",                  IDM_EDIT_MODIFYLINES
-            MENUITEM "Satırları &hizala...\tAlt+J",                   IDM_EDIT_ALIGN
             MENUITEM "Satırları &sırala...\tAlt+O",                   IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Satırları &hizala...\tAlt+J",                   IDM_EDIT_ALIGN
+            MENUITEM "Satırları &ayır\tCtrl+I",                       IDM_EDIT_SPLITLINES
+            MENUITEM "Satırları bir&leştir\tCtrl+J",                  IDM_EDIT_JOINLINES
+            MENUITEM "Satırları &ekle\tCtrl+Alt+J",                   IDM_EDIT_JOINLN_NOSP
+            MENUITEM "&Paragrafları koru\tCtrl+Shift+J",              IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Seçim &başına git\tCtrl+,",                     CMD_JUMP2SELSTART
             MENUITEM "Seçim &sonuna git\tCtrl+.",                     CMD_JUMP2SELEND
@@ -337,7 +338,7 @@ BEGIN
             MENUITEM "Sonra&kini değiştir\tF4",                       IDM_EDIT_REPLACENEXT
             MENUITEM "&Git...\tCtrl+G",                               IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Dosyalarda ara\tCtrl+Shift+F",                 IDM_GREP_WIN_SEARCH
+            MENUITEM "&Dosyalarda ara\tCtrl+Shift+F",                 IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Görünüm"
@@ -357,6 +358,7 @@ BEGIN
             MENUITEM "Yalnızca belgede görüntülensin",                IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Tüm değişiklik işaretleri görüntülensin",       IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Değişiklik/geri alma geçmişini temizle"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "&Bağlantı noktaları görüntülensin\tCtrl+Alt+W",     IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Renk tanımı noktaları görüntülensin"
@@ -424,8 +426,9 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Araç çubukları"
         BEGIN
+            MENUITEM "Araç çubuğunu görüntüle",                       IDM_VIEW_TITLEBAR
             MENUITEM "&Menü çubuğu görüntülensin",                    IDM_VIEW_MENUBAR
-            MENUITEM "&Araç çubuğunu görüntülensin",                  IDM_VIEW_TOOLBAR
+            MENUITEM "&Araç çubuğu görüntülensin",                    IDM_VIEW_TOOLBAR
             MENUITEM "&Durum çubuğu görüntülensin",                   IDM_VIEW_STATUSBAR
             MENUITEM SEPARATOR
             MENUITEM "Araç çubuğu teması &yükle...",                  IDM_VIEW_LOADTHEMETB
@@ -468,8 +471,9 @@ BEGIN
         MENUITEM "&Sekme ayarları...\tCtrl+T",                        IDM_SET_TABSETTINGS
         MENUITEM "Sözcük &kaydırma ayarları...",                      IDM_SET_WORDWRAPSETTINGS
         MENUITEM "&Uzun satır ayarları...",                           IDM_SET_LONGLINESETTINGS
-        MENUITEM "Otomatik girinti kullanılsın",                      IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close Brackets",                      IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Otomatik &girinti kullanılsın",                      IDM_SET_AUTOINDENTTEXT
+        MENUITEM "&Tırnaklar otomatik kapatılsın",                                IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "&Parantezler otomatik kapatılsın",                   IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "HTML/&XML kod imleri otomatik kapatılsın\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
         MENUITEM "Sözcükler &otomatik tamamlansın",                   IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "&Lexer-&anahtar sözcükleri otomatik tamamlansın",   IDM_SET_AUTOCLEXKEYWORDS
@@ -574,6 +578,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Başlık çubuğu görüntülensin",                       IDM_VIEW_TITLEBAR
         MENUITEM "Menü çubuğu görüntülensin",                         IDM_VIEW_MENUBAR
         MENUITEM "Araç çubuğu görüntülensin",                         IDM_VIEW_TOOLBAR
         MENUITEM "Durum çubuğu görüntülensin",                        IDM_VIEW_STATUSBAR

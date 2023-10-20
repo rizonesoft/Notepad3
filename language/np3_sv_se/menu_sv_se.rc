@@ -154,7 +154,7 @@ BEGIN
     END
     POPUP "Redigera"
     BEGIN
-        MENUITEM "Document &Read Only"                              IDM_VIEW_READONLY
+        MENUITEM "Endast läsbart dokument"                              IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Ångra\tCtrl+Z",                                   IDM_EDIT_UNDO
         MENUITEM "Gör om\tCtrl+Y",                                  IDM_EDIT_REDO
@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Radera tecken till höger\tCtrl+Shift+Del",    IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Radbryt kolumn...\tCtrl+Shift+W",             IDM_EDIT_COLUMNWRAP
-            MENUITEM "Dela rader\tCtrl+I",                          IDM_EDIT_SPLITLINES
-            MENUITEM "Slå ihop rader\tCtrl+J",                      IDM_EDIT_JOINLINES
-            MENUITEM "Sammanfoga rader\tCtrl+Alt+J",                IDM_EDIT_JOINLN_NOSP
-            MENUITEM "Bevara paragrafer\tCtrl+Shift+J",             IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Sammanfoga tomma rader\tAlt+Y",               IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Sammanfoga blanka rader\tCtrl+Alt+Y",         IDM_EDIT_MERGEBLANKLINES
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "Komprimera blanksteg\tCtrl+Alt+P",            IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "Modifiera rader...\tAlt+M",                   IDM_EDIT_MODIFYLINES
-            MENUITEM "Justera rader...\tAlt+J",                     IDM_EDIT_ALIGN
             MENUITEM "Sortera rader...\tAlt+O",                     IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Justera rader...\tAlt+J",                     IDM_EDIT_ALIGN
+            MENUITEM "Dela rader\tCtrl+I",                          IDM_EDIT_SPLITLINES
+            MENUITEM "Slå ihop rader\tCtrl+J",                      IDM_EDIT_JOINLINES
+            MENUITEM "Sammanfoga rader\tCtrl+Alt+J",                IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Bevara paragrafer\tCtrl+Shift+J",             IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Hoppa till början av markeringen\tCtrl+,",    CMD_JUMP2SELSTART
             MENUITEM "Hoppa till slutet av markeringen\tCtrl+.",    CMD_JUMP2SELEND
@@ -337,7 +338,7 @@ BEGIN
             MENUITEM "Ersätt nästa\tF4",                            IDM_EDIT_REPLACENEXT
             MENUITEM "Gå till...\tCtrl+G",                          IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "Sök i filer\tCtrl+Shift+F",                   IDM_GREP_WIN_SEARCH
+            MENUITEM "Sök i filer\tCtrl+Shift+F",                   IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "Visa"
@@ -357,6 +358,7 @@ BEGIN
             MENUITEM "Visa endast i dokument",                  IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Visa alla markörer",                      IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Hyperlänkpunkt\tCtrl+Alt+W",                      IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Färgpunkter"
@@ -424,6 +426,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Fält"
         BEGIN
+            MENUITEM "Show Titlebar",                               IDM_VIEW_TITLEBAR
             MENUITEM "Visa menyfält",                               IDM_VIEW_MENUBAR
             MENUITEM "Visa verktygsfält",                           IDM_VIEW_TOOLBAR
             MENUITEM "Visa statusfält",                             IDM_VIEW_STATUSBAR
@@ -469,15 +472,16 @@ BEGIN
         MENUITEM "Automatiskt radbyte...",                          IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Långa rader...",                                  IDM_SET_LONGLINESETTINGS
         MENUITEM "Automatiskt indrag",                              IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close Brackets",                      IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Stäng citattecken automatiskt",                   IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Stäng paranteser automatiskt",                    IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Stäng HTML/XML automatiskt\tCtrl+Shift+H",        IDM_SET_AUTOCLOSETAGS
         MENUITEM "Kompletera ord automatiskt",                      IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Komplettera Lexer-&Key-Words automatiskt",        IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",          IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Alternativa ordavgränsare\tCtrl+Alt+A",           IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
-        MENUITEM "Bara en instans per fil",              IDM_SET_SINGLEFILEINSTANCE
-        MENUITEM "Notifiering vid filändring...\tAlt+F5",            IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
+        MENUITEM "Bara en instans per fil",                         IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "Notifiering vid filändring...\tAlt+F5",           IDM_SET_CHANGENOTIFY
+        ///MENUITEM "AutoSave / Backup Settings...",                IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Stäng av ljud vid meddelande",                    IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Esc-tangentens funktion"
         BEGIN
@@ -502,7 +506,7 @@ BEGIN
                 MENUITEM "Endast filnamn",                          IDM_SET_SHOWFILENAMEONLY
                 MENUITEM "Filnamn och mapp",                        IDM_SET_SHOWFILENAMEFIRST
                 MENUITEM "Fullständig sökväg",                      IDM_SET_SHOWFULLPATH
-                MENUITEM "Urdrag ur text\tCtrl+9",                  IDM_SET_SHOWEXCERPT
+                MENUITEM "Utdrag ur text\tCtrl+9",                  IDM_SET_SHOWEXCERPT
             END
             MENUITEM "Återanvänd fönster\tCtrl+Shift+L",            IDM_SET_REUSEWINDOW
             MENUITEM "Alltid överst\tAlt+T",                        IDM_SET_ALWAYSONTOP
@@ -574,6 +578,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show Titlebar",                                   IDM_VIEW_TITLEBAR
         MENUITEM "Visa menyfält",                                   IDM_VIEW_MENUBAR
         MENUITEM "Visa verktygsfält",                               IDM_VIEW_TOOLBAR
         MENUITEM "Visa statusfält",                                 IDM_VIEW_STATUSBAR

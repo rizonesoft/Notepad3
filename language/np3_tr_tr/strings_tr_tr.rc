@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Değiştir"
     IDT_VIEW_WORDWRAP       "Sözcük kaydır"
     IDT_VIEW_ZOOMIN         "Yakınlaştır"
+    IDT_VIEW_RESETZOOM      "Yakınlaştırmayı sıfırla"
     IDT_VIEW_ZOOMOUT        "Uzaklaştır"
     IDT_VIEW_SCHEME         "Şema seç"
     IDT_VIEW_SCHEMECONFIG   "Şemaları özelleştir"
@@ -89,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Belgeyi yürüt"
+    IDT_VIEW_NEW_WINDOW      "Yeni boş pencere"
     IDT_VIEW_TOGGLE_VIEW     "Odaklanmış görünüm"
     IDT_VIEW_CHASING_DOCTAIL "İzleme günlüğü"
     IDT_VIEW_PIN_ON_TOP      "Pencereyi üste sabitle"
@@ -136,7 +138,7 @@ BEGIN
                             "Var olan Notepad3 penceresi meşgul veya bir iletişim penceresi açık.\nBaşka bir Notepad3 penceresi açmak ister misiniz?"
     IDS_MUI_ERR_ENCODINGNA  "Sisteminizde seçim kodlaması için kod sayfası dönüşüm tabloları bulunamadı."
     IDS_MUI_ERR_UNICODE     "Bu unikod dosyası dönüştürülürken sorun çıktı.\nDosya kaydedilirse veriler kaybolur!"
-    IDS_MUI_ERR_BITMAP      """%s"" bitmap dosyası yüklenirken sorun çıktı.\nBoyutlar gerekli: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      """%s"" bitmap boyutu uygun değil.\nUygun boyut: %i x %i (genişlik >= %i x yükseklik)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Kullanıcı yetkileri yükseltilirken sorun çıktı!"
 END
@@ -174,9 +176,10 @@ BEGIN
     IDS_MUI_REPLCOUNT       "Belirtilen aramaya uygun %s eşleşme bulundu."
     IDS_MUI_ASK_ENCODING    "Dosya kodlamasını değiştirmek desteklenmeyen karakterlerin varsayılanlar ile değiştirilmesine yol açar ve geri alma geçmişini temizler. Devam etmek istiyor musunuz?"
     IDS_MUI_ASK_ENCODING2   "Boş bir dosyanın kodlamasını değiştirmek üzeresiniz. Yeni kodlama ile eşitlenemeyeceğinden bu işlemin geri alma geçmişini sileceğini unutmayın. Devam etmek istiyor musunuz?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Bu işlem geri alma geçmişini temizleyecek. İlerlemek istiyor musunuz?"
     IDS_MUI_READONLY_SAVE   """%s"" salt okunur. Başka bir dosyaya kaydetmek ister misiniz?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Geçerli dosya başka bir uygulama tarafından değiştirilmiş Yeniden yüklemek ister misiniz?"
+                            "Bu dosya başka bir uygulama tarafından değiştirilmiş.\nLütfen yapılacak işlemi seçin:\n\nİptal -\t\tSonraki değişiklikleri yok say\nYeniden yükle -\t\tDosyayı yeniden yükle\nİlerle -\tDosya izlemeye geç"
     IDS_MUI_FILECHANGENOTIFY2 "Geçerli dosya silinmiş. Yeniden kaydetmek ister misiniz?"
     IDS_MUI_FILELOCK_ERROR  """%s"" dosyası ayrıcalıklı olarak kilitlenemedi!"
     IDS_MUI_STICKYWINPOS    "Sabit pencere konumu etkinleştirildi. Yeni Notepad3 pencereleri geçerli pencere konumu ayarlarını kullanacak."
@@ -263,16 +266,18 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Dil"
     IDS_USE_LOCALE_DATEFMT  "&Tarih biçimi dile uygun ayarlansın"
     IDS_MUI_MENU_THEMES     "Şema &teması"
-    IDM_THEMES_FACTORY_RESET "&Fabrika ayarları"
+    IDM_THEMES_FACTORY_RESET "&Factory Reset"
     IDM_THEMES_STD_CFG       "Standart yapılandırma"
-    IDS_MUI_STATUSBAR_PREFIXES "Sat  ,Süt  ,Seç  ,Haz  ,SSat  ,Kop  ,,,,,,,Krk  ,Değ  ,Dene  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Sat  ,Süt  ,Seç  ,Haz  ,SSat  ,Kop  ,,,,,,,Krk  ,Değ  ,Dene  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Tümünü temizle"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Arama geçmişini temizle"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Değiştirme geçmişini temizle"
-    IDS_MUI_REPLCLIPTAG     "Pano kısayolu ile değiştir [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Seçim yapılmamışsa panoya göre aransın"
+    IDS_MUI_REPLCLIPTAG     "Kısayolda pano ile değiştirilsin [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Baştan aramayı sürdür"
     IDS_MUI_WRAPSEARCH_BCK  "Sondan aramayı sürdür"
 END
@@ -283,6 +288,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Görünümü değiştir..."
     IDS_MUI_SB_REPLACE_ALL    "Tümünü değiştir..."
     IDS_MUI_SB_WRAP_LINES     "Satırları kaydır..."
+    IDS_MUI_SB_SORTING_LINES  "Satırları sırala..."
     IDS_MUI_SB_CONV_LNBRK     "Satır sonlarını dönüştür..."
     IDS_MUI_SB_RECODING_DOC   "Belge yeniden kodlanıyor..."
     IDS_MUI_SB_LEXER_STYLING  "Lexer biçemlerini uygula..."
@@ -315,8 +321,8 @@ Seçenekler:\r\n\
 /b\tPano kayıtlarını derlemek için yeni yapıştırma panosu açar.\r\n\
 /n\tHer zaman yeni pencerede açar (/ns tek dosya kopyası).\r\n\
 /r\tPencereyi yeniden kullanır (/rs tek dosya kopyası).\r\n\
-/p\tPencere konumunu ve boyutunu ayarlar (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tor /p <left>,<top>,<width>,<height>,<max>    [tümü tam sayı].\r\n\
+/p\tPencere konumunu ve boyutunu ayarlar (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tor /p <left>,<top>,<width>,<height>[,<dpi>[,<max>]]  (tümü tam sayı).\r\n\
 /t\tPencere başlığını ayarlar.\r\n\
 /i\tSistem tepsisinde başlatır.\r\n\
 /o\tPencereyi üste sabitler.\r\n\
@@ -325,7 +331,7 @@ Seçenekler:\r\n\
 /v\tDosyayı hemen yazdırır ve çıkar.\r\n\
 /vd\tDosyayı yazdırır (yazıcı penceresini açar).\r\n\
 /y\tGöreli dosya adı durumuna karşı PATH ortam değişkeninde arar.\r\n\
-/z\tSonrakine geçer (kayıt defteri temelli Notepad değişikliği\r\n\tiçin kullanışlı).\r\n\r\n\
+/z\tSonrakine geçer (kayıt defteri temelli Notepad değişikliği için kullanışlı).\r\n\r\n\
 Örnekler:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Deneme.txt\r\n\
  \t... Yeni bir dosya açar: ""Deneme.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\

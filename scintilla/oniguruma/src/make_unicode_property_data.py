@@ -1,13 +1,13 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # make_unicode_property_data.py
-# Copyright (c) 2016-2022  K.Kosako
+# Copyright (c) 2016-2023  K.Kosako
 
 import sys
 import re
 
 POSIX_LIST = [
-    'NEWLINE', 'Alpha', 'Blank', 'Cntrl', 'Digit', 'Graph', 'Lower',
+  'NEWLINE', 'Alpha', 'Blank', 'Cntrl', 'Digit', 'Graph', 'Lower',
   'Print', 'PosixPunct', 'Space', 'Upper', 'XDigit', 'Word', 'Alnum',
   'ASCII'
 ]
@@ -46,31 +46,31 @@ def fix_block_name(name):
 
 def print_ranges(ranges):
   for (start, end) in ranges:
-    print "0x%06x, 0x%06x" % (start, end)
+    print("0x%06x, 0x%06x" % (start, end))
 
-  print len(ranges)
+  print(len(ranges))
 
 def print_prop_and_index(prop, i):
-  print "%-35s %3d" % (prop + ',', i)
+  print("%-35s %3d" % (prop + ',', i))
   PropIndex[prop] = i
 
 PRINT_CACHE = { }
 
 def print_property(prop, data, desc):
-  print ''
-  print "/* PROPERTY: '%s': %s */" % (prop, desc)
+  print('')
+  print("/* PROPERTY: '%s': %s */" % (prop, desc))
 
   prev_prop = dic_find_by_value(PRINT_CACHE, data)
   if prev_prop is not None:
-    print "#define CR_%s CR_%s" % (prop, prev_prop)
+    print("#define CR_%s CR_%s" % (prop, prev_prop))
   else:
     PRINT_CACHE[prop] = data
-    print "static const OnigCodePoint"
-    print "CR_%s[] = { %d," % (prop, len(data))
+    print("static const OnigCodePoint")
+    print("CR_%s[] = { %d," % (prop, len(data)))
     for (start, end) in data:
-      print "0x%04x, 0x%04x," % (start, end)
+      print("0x%04x, 0x%04x," % (start, end))
 
-    print "}; /* END of CR_%s */" % prop
+    print("}; /* END of CR_%s */" % prop)
 
 
 def dic_find_by_value(dic, v):
@@ -100,7 +100,7 @@ def normalize_ranges(in_ranges, sort=False):
   r = []
   prev = None
   for (start, end) in ranges:
-    if prev >= start - 1:
+    if prev is not None and prev >= start - 1:
       (pstart, pend) = r.pop()
       end = max(pend, end)
       start = pstart
@@ -175,16 +175,19 @@ def merge_dic(to_dic, from_dic):
   from_keys = from_dic.keys()
   common = list(set(to_keys) & set(from_keys))
   if len(common) != 0:
-    print >> sys.stderr, "merge_dic: collision: %s" % sorted(common)
+    print("merge_dic: collision: %s" % sorted(common), file=sys.stderr)
 
   to_dic.update(from_dic)
 
-def merge_props(to_props, from_props):
-  common = list(set(to_props) & set(from_props))
+def merge_props(to_dic, from_dic):
+  to_keys   = to_dic.keys()
+  from_keys = from_dic.keys()
+  common = list(set(to_keys) & set(from_keys))
   if len(common) != 0:
-    print >> sys.stderr, "merge_props: collision: %s" % sorted(common)
+    print("merge_props: collision: %s" % sorted(common), file=sys.stderr)
 
-  to_props.extend(from_props)
+  for k in from_keys:
+    to_dic[k] = True
 
 def add_range_into_dic(dic, name, start, end):
   d = dic.get(name, None)
@@ -235,7 +238,6 @@ def parse_properties(path, klass, prop_prefix = None, version_reg = None):
   with open(path, 'r') as f:
     dic = { }
     prop = None
-    props = []
     for line in f:
       s = line.strip()
       if len(s) == 0:
@@ -262,10 +264,9 @@ def parse_properties(path, klass, prop_prefix = None, version_reg = None):
 
       elif PR_TOTAL_REG.match(s) is not None:
         KDIC[prop] = klass
-        props.append(prop)
 
   normalize_ranges_in_dic(dic)
-  return (dic, props, version_match)
+  return (dic, version_match)
 
 def parse_property_aliases(path):
   a = { }
@@ -406,7 +407,7 @@ def set_max_prop_name(name):
 def entry_prop_name(name, index):
   set_max_prop_name(name)
   if OUTPUT_LIST_MODE and index >= len(POSIX_LIST):
-    print >> UPF, "%s" % (name)
+    print("%s" % (name), file=UPF)
 
 def entry_and_print_prop_and_index(name, index):
   entry_prop_name(name, index)
@@ -414,10 +415,10 @@ def entry_and_print_prop_and_index(name, index):
   print_prop_and_index(nname, index)
 
 def parse_and_merge_properties(path, klass, prop_prefix = None, version_reg = None):
-  dic, props, ver_m = parse_properties(path, klass, prop_prefix, version_reg)
+  dic, ver_m = parse_properties(path, klass, prop_prefix, version_reg)
   merge_dic(DIC, dic)
-  merge_props(PROPS, props)
-  return dic, props, ver_m
+  merge_props(PROPS, dic)
+  return dic, ver_m
 
 
 ### main ###
@@ -426,7 +427,7 @@ argc = len(argv)
 
 COPYRIGHT = '''
 /*-
- * Copyright (c) 2016-2022  K.Kosako
+ * Copyright (c) 2016-2023  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -462,7 +463,7 @@ for i in range(1, argc):
   elif arg == '-gc':
     INCLUDE_GRAPHEME_CLUSTER_DATA = True
   else:
-    print >> sys.stderr, "Invalid argument: %s" % arg
+    print("Invalid argument: %s" % arg, file=sys.stderr)
 
 
 OUTPUT_LIST_MODE = not(POSIX_ONLY)
@@ -472,26 +473,26 @@ with open('UnicodeData.txt', 'r') as f:
   DIC = dic
   add_primitive_props(assigned)
 
-PROPS = DIC.keys()
-PROPS = list_sub(PROPS, POSIX_LIST)
+PROPS = DIC.fromkeys(DIC, True)
+PROPS = {k: v for k, v in PROPS.items() if k not in POSIX_LIST}
 
-_, _, ver_m = parse_and_merge_properties('DerivedCoreProperties.txt', 'Derived Property', None, UNICODE_VERSION_REG)
+_, ver_m = parse_and_merge_properties('DerivedCoreProperties.txt', 'Derived Property', None, UNICODE_VERSION_REG)
 if ver_m is not None:
   VERSION_INFO[0] = int(ver_m.group(1))
   VERSION_INFO[1] = int(ver_m.group(2))
   VERSION_INFO[2] = int(ver_m.group(3))
 
-dic, props, _ = parse_and_merge_properties('Scripts.txt', 'Script')
+dic, _ = parse_and_merge_properties('Scripts.txt', 'Script')
 DIC['Unknown'] = inverse_ranges(add_ranges_in_dic(dic))
 
 parse_and_merge_properties('PropList.txt',   'Binary Property')
 
-_, _, ver_m = parse_and_merge_properties('emoji-data.txt', 'Emoji Property', None, EMOJI_VERSION_REG)
+_, ver_m = parse_and_merge_properties('emoji-data.txt', 'Emoji Property', None, EMOJI_VERSION_REG)
 if ver_m is not None:
   EMOJI_VERSION_INFO[0] = int(ver_m.group(1))
   EMOJI_VERSION_INFO[1] = int(ver_m.group(2))
 
-PROPS.append('Unknown')
+PROPS['Unknown'] = True
 KDIC['Unknown'] = 'Script'
 
 ALIASES = parse_property_aliases('PropertyAliases.txt')
@@ -502,26 +503,26 @@ dic, BLOCKS = parse_blocks('Blocks.txt')
 merge_dic(DIC, dic)
 
 if INCLUDE_GRAPHEME_CLUSTER_DATA:
-  dic, props, _ = parse_properties('GraphemeBreakProperty.txt',
-                                   'GraphemeBreak Property',
-                                   GRAPHEME_CLUSTER_BREAK_NAME_PREFIX)
+  dic, _ = parse_properties('GraphemeBreakProperty.txt',
+                            'GraphemeBreak Property',
+                            GRAPHEME_CLUSTER_BREAK_NAME_PREFIX)
   merge_dic(DIC, dic)
-  merge_props(PROPS, props)
+  merge_props(PROPS, dic)
   #prop = GRAPHEME_CLUSTER_BREAK_NAME_PREFIX + 'Other'
   #DIC[prop] = inverse_ranges(add_ranges_in_dic(dic))
-  #PROPS.append(prop)
+  #PROPS[prop] = True
   #KDIC[prop] = 'GrapemeBreak Property'
 
 add_posix_props(DIC)
-PROPS = sorted(PROPS)
+PROP_LIST = sorted(PROPS.keys())
 
 
 s = '''%{
 /* Generated by make_unicode_property_data.py. */
 '''
-print s
-print COPYRIGHT
-print ''
+print(s)
+print(COPYRIGHT)
+print('')
 
 for prop in POSIX_LIST:
   if prop == 'PosixPunct':
@@ -531,10 +532,10 @@ for prop in POSIX_LIST:
 
   print_property(prop, DIC[prop], desc)
 
-print ''
+print('')
 
 if not(POSIX_ONLY):
-  for prop in PROPS:
+  for prop in PROP_LIST:
     klass = KDIC.get(prop, None)
     if klass is None:
       n = len(prop)
@@ -551,18 +552,18 @@ if not(POSIX_ONLY):
     print_property(block, DIC[block], 'Block')
 
 
-print ''
-print "static const OnigCodePoint*\nconst CodeRanges[] = {"
+print('')
+print("static const OnigCodePoint*\nconst CodeRanges[] = {")
 
 for prop in POSIX_LIST:
-  print "  CR_%s," % prop
+  print("  CR_%s," % prop)
 
 if not(POSIX_ONLY):
-  for prop in PROPS:
-    print "  CR_%s," % prop
+  for prop in PROP_LIST:
+    print("  CR_%s," % prop)
 
   for prop in BLOCKS:
-    print "  CR_%s," % prop
+    print("  CR_%s," % prop)
 
 s = '''};
 
@@ -585,8 +586,8 @@ if OUTPUT_LIST_MODE:
   if EMOJI_VERSION_INFO[0] < 0:
     raise RuntimeError("Emoji Version is not found")
 
-  print >> UPF, "Unicode Properties (Unicode Version: %d.%d.%d,  Emoji: %d.%d)" % (VERSION_INFO[0], VERSION_INFO[1], VERSION_INFO[2], EMOJI_VERSION_INFO[0], EMOJI_VERSION_INFO[1])
-  print >> UPF, ''
+  print("Unicode Properties (Unicode Version: %d.%d.%d,  Emoji: %d.%d)" % (VERSION_INFO[0], VERSION_INFO[1], VERSION_INFO[2], EMOJI_VERSION_INFO[0], EMOJI_VERSION_INFO[1]), file=UPF)
+  print('', file=UPF)
 
 index = -1
 for prop in POSIX_LIST:
@@ -594,20 +595,20 @@ for prop in POSIX_LIST:
   entry_and_print_prop_and_index(prop, index)
 
 if not(POSIX_ONLY):
-  for prop in PROPS:
+  for prop in PROP_LIST:
     index += 1
     entry_and_print_prop_and_index(prop, index)
 
-  NALIASES = map(lambda (k,v):(normalize_prop_name(k), k, v), ALIASES.items())
+  NALIASES = map(lambda x:(normalize_prop_name(x[0]), x[0], x[1]), ALIASES.items())
   NALIASES = sorted(NALIASES)
   for (nk, k, v) in NALIASES:
     nv = normalize_prop_name(v)
     if PropIndex.get(nk, None) is not None:
-      print >> sys.stderr, "ALIASES: already exists: %s => %s" % (k, v)
+      print("ALIASES: already exists: %s => %s" % (k, v), file=sys.stderr)
       continue
     aindex = PropIndex.get(nv, None)
     if aindex is None:
-      #print >> sys.stderr, "ALIASES: value is not exist: %s => %s" % (k, v)
+      #print("ALIASES: value is not exist: %s => %s" % (k, v), file=sys.stderr)
       continue
 
     entry_prop_name(k, aindex)
@@ -617,26 +618,26 @@ if not(POSIX_ONLY):
     index += 1
     entry_and_print_prop_and_index(name, index)
 
-print '%%'
-print ''
+print('%%')
+print('')
 if not(POSIX_ONLY):
   if VERSION_INFO[0] < 0:
     raise RuntimeError("Unicode Version is not found")
   if EMOJI_VERSION_INFO[0] < 0:
     raise RuntimeError("Emoji Version is not found")
 
-  print "#define UNICODE_PROPERTY_VERSION  %02d%02d%02d" % (VERSION_INFO[0], VERSION_INFO[1], VERSION_INFO[2])
-  print "#define UNICODE_EMOJI_VERSION     %02d%02d" % (EMOJI_VERSION_INFO[0], EMOJI_VERSION_INFO[1])
-  print ''
+  print("#define UNICODE_PROPERTY_VERSION  %02d%02d%02d" % (VERSION_INFO[0], VERSION_INFO[1], VERSION_INFO[2]))
+  print("#define UNICODE_EMOJI_VERSION     %02d%02d" % (EMOJI_VERSION_INFO[0], EMOJI_VERSION_INFO[1]))
+  print('')
 
-print "#define PROPERTY_NAME_MAX_SIZE  %d" % (PROPERTY_NAME_MAX_LEN + 10)
-print "#define CODE_RANGES_NUM         %d" % (index + 1)
+print("#define PROPERTY_NAME_MAX_SIZE  %d" % (PROPERTY_NAME_MAX_LEN + 10))
+print("#define CODE_RANGES_NUM         %d" % (index + 1))
 
 index_props = make_reverse_dic(PropIndex)
-print ''
+print('')
 for i in range(index + 1):
   for p in index_props[i]:
-    print "#define PROP_INDEX_%s %d" % (p.upper(), i)
+    print("#define PROP_INDEX_%s %d" % (p.upper(), i))
 
 if OUTPUT_LIST_MODE:
   UPF.close()

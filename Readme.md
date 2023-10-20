@@ -89,7 +89,7 @@ or a to have user-specific settings:
 These settings are read and written by Notepad3’s user interface.
 For example, all Menu ? Settings will go here.
 
-#### `SettingsVersion=4`
+#### `SettingsVersion=5`
 
 #### `Favorites=%APPDATA%\Rizonesoft\Notepad3\Favorites\`
 
@@ -114,7 +114,6 @@ German/Germany (de-DE)
 Greek/Greece (el-GR)
 English/United Kingdom (en-GB)
 Spanish/Spain (es-ES)
-Spanish/Mexico (es-MX)
 French/France (fr-FR)
 Hindi/India (hi-IN)
 Hungarian/Hungary (hu-HU)
@@ -181,13 +180,11 @@ Specify the default directory for the open and save dialogs, used if no file is 
 
 Specify the default extension for saved files (omit the leading dot, just like txt or html).
 
-#### `DefaultWindowPosition=`
-
-This items are managed by Notepad3. (`Menu->View->Position->Save as Default Position`)
-(Will set current window position as "Default Position" - can be recalled by `Ctrl+Shift+P` Hotkey)
-
-
 #### `DenyVirtualSpaceAccess=0`
+
+#### `DrawAnimatedWindow=true`
+
+Option to disable animated maximum/minimum window.
 
 #### `filebrowser.exe=minipath.exe`
 
@@ -205,7 +202,6 @@ If you don't like it, you can configure e.g.
 - [Settings2] filebrowser.exe=Explorer++.exe (https://explorerplusplus.com/) (side-by-side Notepad3), or
 - [Settings2] filebrowser.exe=Q-Dir_x64+.exe (https://www.softwareok.de/?seite=Freeware/Q-Dir/) (side-by-side Notepad3)
 
-
 #### `grepWin.exe=grepWinNP3.exe`
 
 We have integrated a powerful external tool called **grepWinNP3**. 
@@ -217,10 +213,11 @@ This allows you to perform much more powerful search and replace operations in f
 - or from "Edit --> Search --> Search in Files"
 - or simply with "`Ctrl+Shift+F`"
 
-#### `FileCheckInverval=0`
+#### `FileCheckInterval=2000`
 
 The interval (in milliseconds) to check for external modification of the currently opened file. 
-- Defaults is 0 ms.
+- Defaults is 2000 msec.
+- Min: 200[msec] - if equal or less, notify immediately.
 
 #### `FileChangedIndicator=[@]`
 
@@ -324,6 +321,10 @@ Set to 0 to disable recent files on the same drive or network share as Notepad3.
 This items are managed by Notepad3. (`Menu->Settings->Window->Reuse Window  Ctrl+Shift+L`)
 - If set, another started Notepad3 instance will try to give control to the currently opened Window and quit.
 
+#### `SaveBlankNewFile=true`
+
+New file (not exists on file system ("Untitled")) asking('true')/not asking('false') for file save if document contains any whitespace (blank/space, tab, line-break) character.
+
 #### `SciFontQuality=3`
 
 #### `SimpleIndentGuides=0`
@@ -399,6 +400,11 @@ If the string contains spaces, you have to double-quote it,
 
 #### `UndoTransactionTimeout=0`
 
+- in [msec]
+
+UndoTransactionTimeout=1 (will be clamped to 10msec min.) will separate nearly every keystroke as single undo action.
+(UndoTransactionTimeout=0 will switch this timer OFF)
+
 #### `AdministrationTool.exe=`  
 
 This parameter is not used at the moment.
@@ -407,7 +413,7 @@ This parameter is not used at the moment.
 
 Encoding Detector information in Titlebar. This parameter is used to "debug" UCHARDET.
 
-#### `AnalyzeReliableConfidenceLevel=75`
+#### `AnalyzeReliableConfidenceLevel=90`
 
 Confidence/Reliability level for reliability switch in encoding dialog.
 
@@ -436,7 +442,13 @@ New parameter "[Settings2] ExitOnESCSkipLevel = 2"
 
 #### `ZoomTooltipTimeout=3200`
 
-- A value of zero (0) (or less than 100 ms) will disable the tooltip display.
+- in [msec]
+- A value of zero (0) (or less than 100 msec) will disable the tooltip display.
+
+#### `WrapAroundTooltipTimeout=2000`
+
+- in [msec]
+- A value of zero (0) (or less than 100 msec) will disable the tooltip display.
 
 #### `LargeIconScalePrecent=150`
 
@@ -447,8 +459,6 @@ New parameter "[Settings2] ExitOnESCSkipLevel = 2"
 #### `DarkModeBtnFaceColor=0x333333`
 
 #### `DarkModeTxtColor=0xEFEFEF`
-
-#### `DarkModeHiglightContrast=75`
 
 #### `HyperlinkShellExURLWithApp=""`
 
@@ -467,13 +477,21 @@ You can specify more command line parameter for the app here. The token `${URL}`
 
 - `ShellExecuteEx()::lpVerb (""=default, "edit", "explore", "find", "open", "print", "properties", "runas")`
 
+#### `CodeFontPrefPrioList="Cascadia Code,Cascadia Mono,Cousine,Fira Code,Source Code Pro,Roboto Mono,DejaVu Sans Mono,Inconsolata,Consolas,Lucida Console"`
+
+Configurable Fonts priority list for for "Common Base" Scheme.
+
+#### `TextFontPrefPrioList="Cascadia Mono,Cousine,Roboto Mono,DejaVu Sans Mono,Inconsolata,Consolas,Lucida Console"`
+
+Configurable Fonts priority list for "Text Files" Scheme.
+
 
 ## **`[Statusbar Settings]`**
 
 This section provides the ability to set the number, order and width of columns, 
 and the prefix text of the status bar fields.
 
-#### `VisibleSections=0 1 12 14 2 4 5 6 7 8 9 10 11`  (internal default)
+#### `VisibleSections=0 1 15 14 2 4 5 6 7 8 9 10 11`  (internal default)
 
 This parameter is used to define, which fields of the Status Bar should be visible. 
 If used, this setting also defines the field ordering.
@@ -483,36 +501,37 @@ If used, this setting also defines the field ordering.
 - Section  2 = Sel : Number of characters selected
 - Section  3 = Sb : Number of bytes (Bytes in [UTF-8]) selected
 - Section  4 = SLn : Number of selected lines
-- Section  5 =  Occ : Number of Marked Occurrences 
+- Section  5 = Occ : Number of Marked Occurrences 
 - Section  6 = Size of file in [UTF-8] Mode
 - Section  7 = Encoding Mode  (double click to open `Encoding F9` )
 - Section  8 = EOL Mode (Toggle CR+LF, LF, CR)
 - Section  9 = Toggle INS/OVR Mode
 - Section 10 = Toggle STD/2ND Text Mode (Default Text or 2nd Default Text)
 - Section 11 = Current Scheme  (double click to open `Select Scheme` )
-- Section 12 = Character Count (per line)
+- Section 12 = Character Count (per line from line start)
 - Section 13 = Replaced Occurrences
 - Section 14 = TinyExpr Evaluation
+- Section 15 = Unicode point display (UTF-16 encoding) of current (caret pos) character.
 
-#### `SectionPrefixes=Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,`  (internal default)
+#### `SectionPrefixes=Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,`  (internal default)
 
 This parameter is used to redefines the displayed Prefixes in the sections of the Status Bar
 - A “,” (comma) is used as separator. Spaces are **NOT** ignored.
 
-#### `SectionPostfixes=,,,,,,,,,,,,,,,`  (internal default)
+#### `SectionPostfixes=,,,,,,,,,,,,,,,,`  (internal default)
 
 This parameter is used to redefines the displayed Postfixes in the sections of the Status Bar
 - A “,” (comma) is used as separator. Spaces are **NOT** ignored.
 
-#### `SectionWidthSpecs=30 20 20 20 20 20 0 0 0 0 0 0 20 20 20`  (internal default)
+#### `SectionWidthSpecs=30 20 20 20 20 20 20 0 0 0 0 0 0 0 20 24`  (internal default)
 
 This parameter is used to define the relative width of each field of the Status Bar
 - 0 = space optimized fit to text (dynamically adapted to width changes)
 - -n (neg. val) = fixed width of section [pix] , longer text is truncated
 
 Fine tuning: increase, decrease or modify the value of numbers,
-- e.g.: `;;;;;;;;;;;;;;;;;  0  1  2  3  4  5 6 7 8 9 10  11 12 13  14`
-- `SectionWidthSpecs=50 40 42 40 36 40 0 0 0 0  0 -10 40 40 -40`
+- e.g.: `;;;;;;;;;;;;;;;;;  0  1  2  3  4  5 6 7 8 9 10 11 12 13 14 15`
+- `SectionWidthSpecs=50 40 42 40 36 40 0 0 0 0 0 -10 40 40 -40 40`
 
 #### `ZeroBasedColumnIndex=0`
 
@@ -558,6 +577,17 @@ This section offers the possibility to display the name of the function to the r
 28=History
 29=Always On Top
 30=Search in Files
+31=Reset Zoom
+32=New Empty Window
 ```
+
+
+## **`[Window]`**
+
+#### `<ResX>x<ResY> DefaultWindowPosition=`
+
+This items are managed by Notepad3. (`Menu->View->Position->Save as Default Position`)
+(Will set current window position as "Default Position" - can be recalled by `Ctrl+Shift+P` Hotkey)
+
 
 <hr/>

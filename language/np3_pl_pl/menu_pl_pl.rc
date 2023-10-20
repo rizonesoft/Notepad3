@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Usuń wiersz z prawej\tCtrl+Shift+Del",      IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Zawijanie kolumn...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Rozdziel wiersze\tCtrl+I",                 IDM_EDIT_SPLITLINES
-            MENUITEM "Połącz wiersze\tCtrl+J",                    IDM_EDIT_JOINLINES
-            MENUITEM "&Scal wiersze\tCtrl+Alt+J",                 IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Zachowaj akapity\tCtrl+Shift+J",           IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Połącz puste wiersze\tAlt+Y",                   IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Połącz puste miejsca po wierszach\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "Skompresuj niewidoczne znaki\tCtrl+Alt+P", IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modyfikuj wiersze...\tAlt+M",             IDM_EDIT_MODIFYLINES
-            MENUITEM "&Wyrównaj wiersze...\tAlt+J",              IDM_EDIT_ALIGN
             MENUITEM "&Posortuj wiersze...\tAlt+O",              IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "&Wyrównaj wiersze...\tAlt+J",              IDM_EDIT_ALIGN
+            MENUITEM "&Rozdziel wiersze\tCtrl+I",                IDM_EDIT_SPLITLINES
+            MENUITEM "Połącz wiersze\tCtrl+J",                   IDM_EDIT_JOINLINES
+            MENUITEM "&Scal wiersze\tCtrl+Alt+J",                IDM_EDIT_JOINLN_NOSP
+            MENUITEM "&Zachowaj akapity\tCtrl+Shift+J",          IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Skocz na początek wyboru\tCtrl+,",      CMD_JUMP2SELSTART
             MENUITEM "Skocz na koniec wyboru\tCtrl+.",        CMD_JUMP2SELEND
@@ -337,7 +338,7 @@ BEGIN
             MENUITEM "Zamień następny\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "&Przejdź do wiersza...\tCtrl+G",              IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Szukaj w plikach\tCtrl+Shift+F",             IDM_GREP_WIN_SEARCH
+            MENUITEM "&Szukaj w plikach\tCtrl+Shift+F",             IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Widok"
@@ -350,13 +351,14 @@ BEGIN
         MENUITEM "Pokaż niewidoczne znaki \tCtrl+Shift+8",          IDM_VIEW_SHOWBLANKS
         MENUITEM "Pokaż znaki końca wiersza\tCtrl+Shift+9",         IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        POPUP "Change History Marker"
+        POPUP "Zmień marker historii"
         BEGIN
-            MENUITEM "No Change Markers",                   IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+            MENUITEM "Bez zmiany markerów",                       IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Pokaż tylko na marginesie",                 IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "Pokaż tylko w dokumencie",                  IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "Pokaż wszystkie markery zmain",             IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Wyczyść zmiany/Cofnij historię"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Aktywne miejsca hiperpłącza\tCtrl+Alt+W",         IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Definicja kolorów Hotspotów"
@@ -392,7 +394,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Numery wierszy\tCtrl+Shift+N",                    IDM_VIEW_LINENUMBERS
         MENUITEM "&Margines zakładki\tCtrl+Shift+M",                IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Zmień margines historii",                         IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "&Składanie"
         BEGIN
@@ -424,6 +426,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "P&anele"
         BEGIN
+            MENUITEM "Pokaż pasek tytułu",                          IDM_VIEW_TITLEBAR
             MENUITEM "Pokaż pasek menu",                            IDM_VIEW_MENUBAR
             MENUITEM "Pokaż pasek narzędzi",                        IDM_VIEW_TOOLBAR
             MENUITEM "Pokaż pasek stanu",                           IDM_VIEW_STATUSBAR
@@ -469,13 +472,14 @@ BEGIN
         MENUITEM "&Ustawienia zawijania wierszy...",                IDM_SET_WORDWRAPSETTINGS
         MENUITEM "&Ustawienia długości wierszy...",                 IDM_SET_LONGLINESETTINGS
         MENUITEM "Automatyczne wcięcie",                            IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close Brackets",                      IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Automatyczne zamknięcie cytatów",                              IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Automatyczne zamknięcie nawiasów",                IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Automatyczne zamykanie &HTML/XML\tCtrl+Shift+H",  IDM_SET_AUTOCLOSETAGS
         MENUITEM "A&utouzupełnianie wyrazów",                       IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Autouzupełnianie Lekserem",                       IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",          IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Alternatywne separatory słów\tCtrl+Alt+A",        IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
-        MENUITEM "Tylko jedna istancja pliku",              IDM_SET_SINGLEFILEINSTANCE
+        MENUITEM "Tylko jedna instancja pliku",                     IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Powiadomienie o zmianie pliku...\tAlt+F5",        IDM_SET_CHANGENOTIFY
         ///MENUITEM "Ustawienia Autozapisu/ kopii zapasowej...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Wycisz sygnał dźwiękowy",                         IDM_SET_MUTE_MESSAGEBEEP
@@ -493,7 +497,7 @@ BEGIN
             MENUITEM "Zapamiętaj ostatnie pliki",                   IDM_SET_NOSAVERECENT
             MENUITEM "Zachowaj pozycję znaku wstawienia",           IDM_SET_NOPRESERVECARET
             MENUITEM "Zapamiętaj wzór wyszukiwania",                IDM_SET_NOSAVEFINDREPL
-            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "&Autoładowanie ostatniego pliku",             IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "&Okno"
         BEGIN
@@ -574,6 +578,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Pokaż pasek tytułu",                        IDM_VIEW_TITLEBAR
         MENUITEM "Pokaż pasek menu",                          IDM_VIEW_MENUBAR
         MENUITEM "Pokaż pasek narzędzi",                      IDM_VIEW_TOOLBAR
         MENUITEM "Pokaż pasek stanu",                         IDM_VIEW_STATUSBAR
@@ -593,7 +598,7 @@ BEGIN
         MENUITEM "Składanie kodu",                            IDM_VIEW_FOLDING
         MENUITEM "Numery wierszy",                            IDM_VIEW_LINENUMBERS
         MENUITEM "Margines zakładki",                         IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Zmień margines historii",                   IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN

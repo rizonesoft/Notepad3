@@ -7,7 +7,7 @@
 * Version.h                                                                   *
 *   Based on code from Notepad2-mod, (c) XhmikosR 2010-2015                   *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                 https://www.rizonesoft.com  *
 *                                                                             *
 *                                                                             *
@@ -23,16 +23,15 @@
 #define _STRINGIFY(s) #s
 #define _STRG(s)  _STRINGIFY(s)
 
-#include "VersionEx.h"
-
 // ----------------------------------------------------------------------------
+
 #define VERSION_FILEVERSION          VERSION_MAJOR.VERSION_MINOR.VERSION_REV.VERSION_BUILD
 #define VERSION_FILEVERSION_NUM      VERSION_MAJOR,VERSION_MINOR,VERSION_REV,VERSION_BUILD
 
 #if defined(_WIN64)
-#define VERSION_FILEVERSION_LONG     APPNAME (x64)  _V(VERSION_FILEVERSION)  VERSION_PATCH
+#define VERSION_FILEVERSION_LONG     APPNAME (x64)  VERSION_FILEVERSION  VERSION_PATCH
 #else
-#define VERSION_FILEVERSION_LONG     APPNAME (x86)  _V(VERSION_FILEVERSION)  VERSION_PATCH
+#define VERSION_FILEVERSION_LONG     APPNAME (x86)  VERSION_FILEVERSION  VERSION_PATCH
 #endif
 
 
@@ -42,8 +41,8 @@
 #pragma message("Release Build: " _STRG(VERSION_FILEVERSION_LONG))
 #endif
 
-#define VERSION_LEGALCOPYRIGHT         "Copyright © 2008-2022 Rizonesoft"
-//#define VERSION_LEGALCOPYRIGHT_LONG  "© Rizonesoft 2008-2022"
+#define VERSION_LEGALCOPYRIGHT         "Copyright © 2008-2023 Rizonesoft"
+//#define VERSION_LEGALCOPYRIGHT_LONG  "© Rizonesoft 2008-2023"
 #define VERSION_AUTHORNAME             "© Rizonesoft"
 #define VERSION_WEBPAGEDISPLAY         "https://www.rizonesoft.com"
 #define VERSION_COMPANYNAME            "© Rizonesoft"
@@ -72,13 +71,13 @@
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// https://docs.microsoft.com/en-us/windows/release-health/  (Windows releases health)
+// https://docs.microsoft.com/en-us/windows/release-health  (Windows releases health)
 // https://docs.microsoft.com/en-us/windows/release-health/release-information  (Windows 10)
 // https://docs.microsoft.com/en-us/windows/release-health/windows11-release-information  (Windows 11)
 // https://docs.microsoft.com/en-us/windows/release-health/windows-server-release-info  (Windows Server)
-// https://docs.microsoft.com/en-us/windows-insider/flight-hub/  (Windows Insider Preview Builds)
-// https://en.wikipedia.org/wiki/Windows_10/ (Wikipedia: Windows 10)
-// https://en.wikipedia.org/wiki/Windows_11/ (Wikipedia: Windows 11)
+// https://docs.microsoft.com/en-us/windows-insider/flight-hub  (Windows Insider Preview Builds)
+// https://en.wikipedia.org/wiki/Windows_10 (Wikipedia: Windows 10)
+// https://en.wikipedia.org/wiki/Windows_11 (Wikipedia: Windows 11)
 // ----------------------------------------------------------------------------
 
 inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
@@ -149,9 +148,37 @@ inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
 #undef VER_CPL
 
 #if defined(_MSC_VER)
-    #if (_MSC_VER == 1934)
-        #if (_MSC_FULL_VER >= 193431937)
-            #define VER_CPL     MS Visual C++ 2022 v17.4.3
+    #if (_MSC_VER == 1937)
+        #if (_MSC_FULL_VER >= 193732825)
+            #define VER_CPL     MS Visual C++ 2022 v17.7.5
+        #elif (_MSC_FULL_VER >= 193732824)
+            #define VER_CPL     MS Visual C++ 2022 v17.7.4
+        #elif (_MSC_FULL_VER >= 193732822)
+            #define VER_CPL     MS Visual C++ 2022 v17.7.(0-3)
+        #endif
+    #elif (_MSC_VER == 1936)
+        #if (_MSC_FULL_VER >= 193632537)
+            #define VER_CPL     MS Visual C++ 2022 v17.6.5
+        #elif (_MSC_FULL_VER >= 193632535)
+            #define VER_CPL     MS Visual C++ 2022 v17.6.4
+        #elif (_MSC_FULL_VER >= 193632534)
+            #define VER_CPL     MS Visual C++ 2022 v17.6.3
+        #elif (_MSC_FULL_VER >= 193632532)
+            #define VER_CPL     MS Visual C++ 2022 v17.6.(0-2)
+        #endif
+    #elif (_MSC_VER == 1935)
+        #if (_MSC_FULL_VER >= 193532217)
+            #define VER_CPL     MS Visual C++ 2022 v17.5.(4-5)
+        #elif (_MSC_FULL_VER >= 193532216)
+            #define VER_CPL     MS Visual C++ 2022 v17.5.3
+        #elif (_MSC_FULL_VER >= 193532215)
+            #define VER_CPL     MS Visual C++ 2022 v17.5.(0-2)
+        #endif
+    #elif (_MSC_VER == 1934)
+        #if (_MSC_FULL_VER >= 193431942)
+            #define VER_CPL     MS Visual C++ 2022 v17.4.5
+        #elif (_MSC_FULL_VER >= 193431937)
+            #define VER_CPL     MS Visual C++ 2022 v17.4.(3-4)
         #elif (_MSC_FULL_VER >= 193431935)
             #define VER_CPL     MS Visual C++ 2022 v17.4.2
         #elif (_MSC_FULL_VER >= 193431933)
@@ -190,8 +217,18 @@ inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
             #define VER_CPL     MS Visual C++ 2022 v17.0.(0-1)
         #endif
     #elif (_MSC_VER == 1929)
-        #if (_MSC_FULL_VER >= 192930147)
-            #define VER_CPL     MS Visual C++ 2019 v16.11.(21-22)
+        #if (_MSC_FULL_VER >= 192930152)
+            #define VER_CPL     MS Visual C++ 2019 v16.11.30
+        #elif (_MSC_FULL_VER >= 192930151)
+            #define VER_CPL     MS Visual C++ 2019 v16.11.29
+        #elif (_MSC_FULL_VER >= 192930150)
+            #define VER_CPL     MS Visual C++ 2019 v16.11.28
+        #elif (_MSC_FULL_VER >= 192930149)
+            #define VER_CPL     MS Visual C++ 2019 v16.11.(26-27)
+        #elif (_MSC_FULL_VER >= 192930148)
+            #define VER_CPL     MS Visual C++ 2019 v16.11.(24-25)
+        #elif (_MSC_FULL_VER >= 192930147)
+            #define VER_CPL MS Visual C++ 2019 v16 .11.(21-23)
         #elif (_MSC_FULL_VER >= 192930146)
             #define VER_CPL     MS Visual C++ 2019 v16.11.(17-20)
         #elif (_MSC_FULL_VER >= 192930145)

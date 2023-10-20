@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Supprimer la ligne à gauche du curseur\tCtrl+Maj+Arr.",     IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Ajus&ter le saut de ligne...\tCtrl+Maj+W",         IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Scinder les lignes\tCtrl+I",                      IDM_EDIT_SPLITLINES
-            MENUITEM "&Souder les lignes\tCtrl+J",                       IDM_EDIT_JOINLINES
-            MENUITEM "&Fusionner les lignes\tCtrl+Alt+J",                IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Préserver les paragraphes\tCtrl+Maj+J",           IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Fusio&nner les lignes vides\tAlt+Y",               IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Fusionner les lignes ""blanches""\tCtrl+Alt+Y",    IDM_EDIT_MERGEBLANKLINES
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "Compresser les &blancs\tCtrl+Alt+P",              IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modifier les lignes...\tAlt+M",                  IDM_EDIT_MODIFYLINES
-            MENUITEM "&Aligner les lignes...\tAlt+J",                   IDM_EDIT_ALIGN
             MENUITEM "&Trier les lignes...\tAlt+O",                     IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "&Aligner les lignes...\tAlt+J",                   IDM_EDIT_ALIGN
+            MENUITEM "Scinde&r les lignes\tCtrl+I",                     IDM_EDIT_SPLITLINES
+            MENUITEM "&Souder les lignes\tCtrl+J",                      IDM_EDIT_JOINLINES
+            MENUITEM "&Fusionner les lignes\tCtrl+Alt+J",               IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Préser&ver les paragraphes\tCtrl+Maj+J",          IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Sauter au début de la séle&ction\tCtrl+,",        CMD_JUMP2SELSTART
             MENUITEM "Sauter à la fin de la sélectio&n\tCtrl+.",        CMD_JUMP2SELEND
@@ -274,8 +275,8 @@ BEGIN
             MENUITEM "Chemin du système de fichiers vers URL",           IDM_EDIT_PATH2URL
             MENUITEM "URL vers le chemin du système de fichiers",        IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Inverser ""\\""",   						         IDM_EDIT_INVERTBACKSLASH
-            MENUITEM "Inverser ""/""",         					         IDM_EDIT_INVERTSLASH
+            MENUITEM "Inverser ""\\""",                                  IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Inverser ""/""",                                   IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "&Caractère vers hexa\tCtrl+Alt+X",                 IDM_EDIT_CHAR2HEX
             MENUITEM "&Hexa vers caractère\tCtrl+Alt+C",                 IDM_EDIT_HEX2CHAR
@@ -337,7 +338,7 @@ BEGIN
             MENUITEM "Remplacer le sui&vant\tF4",                           IDM_EDIT_REPLACENEXT
             MENUITEM "&Aller à...\tCtrl+G",                                 IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "C&hercher DANS les fichiers\tCtrl+Maj+F",             IDM_GREP_WIN_SEARCH
+            MENUITEM "C&hercher DANS les fichiers\tCtrl+Maj+F",             IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Affichage"
@@ -357,6 +358,7 @@ BEGIN
             MENUITEM "Afficher uniquement dans le document",                IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Afficher tous les marqueurs de modification",         IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Vider l'historique de 'Changer/Défaire'"                  IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Points d'accès hyperliens\tCtrl+Alt+W",                   IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Points d'accès définition de &couleurs"
@@ -424,6 +426,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "P&anneaux"
         BEGIN
+            MENUITEM "Afficher la barre de titre"           IDM_VIEW_TITLEBAR
             MENUITEM "Afficher la barre de menus",          IDM_VIEW_MENUBAR
             MENUITEM "&Afficher la barre d'outils",         IDM_VIEW_TOOLBAR
             MENUITEM "Affic&her la barre d'état",           IDM_VIEW_STATUSBAR
@@ -469,6 +472,7 @@ BEGIN
         MENUITEM "&Paramètres de saut de ligne automatique...",         IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Paramètres de ligne l&ongue...",                      IDM_SET_LONGLINESETTINGS
         MENUITEM "Retrait automatique &du texte",                       IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Auto-fermeture des &guillemets",                      IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Auto-fermeture des parenthèses",                      IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Auto-fermeture des balises &HTML/XML\tCtrl+Maj+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "A&uto-complétion des mots",                           IDM_SET_AUTOCOMPLETEWORDS
@@ -574,6 +578,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Afficher la barre de titre",              IDM_VIEW_TITLEBAR
         MENUITEM "Afficher la barre de &menus",             IDM_VIEW_MENUBAR
         MENUITEM "&Afficher la barre d'outils",             IDM_VIEW_TOOLBAR
         MENUITEM "Afficher la barre d'état",                IDM_VIEW_STATUSBAR

@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Csere"
     IDT_VIEW_WORDWRAP       "Sortörés"
     IDT_VIEW_ZOOMIN         "Nagyítás"
+    IDT_VIEW_RESETZOOM      "Nagyítás visszaállítása"
     IDT_VIEW_ZOOMOUT        "Kicsinyítés"
     IDT_VIEW_SCHEME         "Sémaválasztás"
     IDT_VIEW_SCHEMECONFIG   "Sémák testreszabása"
@@ -89,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Futattás"
+    IDT_VIEW_NEW_WINDOW      "Új üres ablak"
     IDT_VIEW_TOGGLE_VIEW     "Fókuszált nézet"
     IDT_VIEW_CHASING_DOCTAIL "Naplófájl követése"
     IDT_VIEW_PIN_ON_TOP      "Mindig felül"
@@ -136,7 +138,7 @@ BEGIN
                             "A futó Notepad3 ablak nem válaszol vagy van egy aktív dialógusablaka.\nMeg szeretné nyitni egy új Notepad3 ablakban?"
     IDS_MUI_ERR_ENCODINGNA  "A kódlap konverziós táblák nem elérhetőek a kiválasztott kódoláshoz az ön rendszerén."
     IDS_MUI_ERR_UNICODE     "Hiba e Unicode fájl konvertálásakor.\nAz adat el fog veszni, amikor a fájl mentve lesz!"
-    IDS_MUI_ERR_BITMAP      "Hiba a bitkép ""%s"" betöltése közben.\nSzükséges méret: %i x %i (szélesség >= %i x magasság)."
+    IDS_MUI_ERR_BITMAP      "Nem megfelelő méretű bitmap ""%s"".\nA megfelelő méret: %i x %i (szélesség >= %i x magasság)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Hiba felhasználói jogok emelése közben!"
 END
@@ -174,9 +176,10 @@ BEGIN
     IDS_MUI_REPLCOUNT       "A keresési minta %s db. találata cserélve lett."
     IDS_MUI_ASK_ENCODING    "A fájl kódolásának megváltoztatása lecserélhet nem támogatott karaktereket alapértelmezettek karakterekkel, valamint a visszavonási történet törölve lesz. Folytatja?"
     IDS_MUI_ASK_ENCODING2   "Egy üres fájl kódolását változtatja meg. Ne feledje, hogy ez a visszavonási történetet törli, mert azt nem lehet szinkronizálni az új kódolással. Folytatja?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Ez a művelet törli a visszavonási előzményeket. Folytatja?"
     IDS_MUI_READONLY_SAVE   """%s"" csak olvastható. Legyen mentés egy másik fájlba?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Az aktuális fájl egy külső progarm által módosítva lett. Újratöltsük?"
+                            "Az aktuális fájlt egy külső program megváltoztatta.\nKérem válaszon:\n\nMégsem -\t\tVáltoztatások figyelmen kívül hagyása\nÚjratöltés -\t\tA fájl újratöltése\nFolytatás -\tFájl figyelése"
     IDS_MUI_FILECHANGENOTIFY2 "Az aktuális fájl törölve lett. Elmentsük?"
     IDS_MUI_FILELOCK_ERROR  "Nem tudok exklúzív zárolást szerezni erre a fájlra: ""%s""!"
     IDS_MUI_STICKYWINPOS    "A ragadós ablakpozíciók be van kapcsolva. Az új Notepad3 ablakok a jelenlegi ablakhelyzetét használják majd."
@@ -263,16 +266,18 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "N&yelv"
     IDS_USE_LOCALE_DATEFMT  "Nyelvi beállítás szerinti &Dátumformátum"
     IDS_MUI_MENU_THEMES     "&Sablon gyűjtemény"
-    IDM_THEMES_FACTORY_RESET "&Gyári érték"
+    IDM_THEMES_FACTORY_RESET "&Gyári visszaállítás"
     IDM_THEMES_STD_CFG       "&Standard konfiguráció"
-    IDS_MUI_STATUSBAR_PREFIXES "Sor ,Oszl ,Kij  ,Sb  ,SKij ,Tal  ,,,,,,,Ch  ,Csere ,Eval  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Sor ,Oszl ,Kij  ,Sb  ,SKij ,Tal  ,,,,,,,Ch  ,Csere ,Eval  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Mind törlése"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Keresési előzmények törlése"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Csere előzmények törlése"
-    IDS_MUI_REPLCLIPTAG     "Csere a vágólap gyorsbill. szerint [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Vágólap tartalmának keresése, ha nincs kijelölés"
+    IDS_MUI_REPLCLIPTAG     "Cserélje a vágólap tartalmára a [^c] gyorsbillentyűvel"
     IDS_MUI_WRAPSEARCH_FWD  "Keresés folytatása az elejéről"
     IDS_MUI_WRAPSEARCH_BCK  "Keresés folytatása a végéről"
 END
@@ -283,6 +288,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Nézet váltása..."
     IDS_MUI_SB_REPLACE_ALL    "Összes cseréje..."
     IDS_MUI_SB_WRAP_LINES     "Sorok törése..."
+    IDS_MUI_SB_SORTING_LINES  "Sorok rendezése..."
     IDS_MUI_SB_CONV_LNBRK     "Sorvégek átalakítása..."
     IDS_MUI_SB_RECODING_DOC   "Dokumentum újrakódolása..."
     IDS_MUI_SB_LEXER_STYLING  "Lexer stílus alkalmazása..."
@@ -295,7 +301,7 @@ Használat:\r\n\
 Notepad3 [/?] [...[kódolás]] [...[sorvég mód]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[meghajtó:][útvonal]fájlnév[...]]\r\n\r\n\
-fájl\tAz utolsó paraméter kell legyen, alapból nincsenek idézőjelezett\r\n\tszóközök.\r\n\
+fájl\tAz utolsó paraméter kell legyen, alapból nincsenek idézőjelezett szóközök.\r\n\
 +\tTöbb fájlt is elfogad (idézőjelezett szóközökkel).\r\n\
 -\tEgy fájlt fogad el paraméterként (idézőjelezett szóközök nélkül).\r\n\r\n\
 Opciók:\r\n\
@@ -315,8 +321,8 @@ Opciók:\r\n\
 /b\tÚj dokumentum megnyitása, ahova a vágólap tartalma gyűlik.\r\n\
 /n\tMindig nyisson új ablakot (/ns egyetlen fájl példány).\r\n\
 /r\tAblak újrahasznosítása (/rs egyetlen fájl példány).\r\n\
-/p\tAblak pozíció és méret beállítása (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tor /p <bal>,<teteje>,<szélesség>,<magasság>,<max>    [mindegyik\r\n\tegész szám].\r\n\
+/p\tAblak pozíció és méret beállítása (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tor /p <bal>,<teteje>,<szélesség>,<magasság>[,<dpi>[,<max>]]  (mindegyik \r\n\tegész szám).\r\n\
 /t\tCímsor szövegének beállítása.\r\n\
 /i\tIndítás óra melé kicsinyítve.\r\n\
 /o\tAblak mindig felül.\r\n\
@@ -325,7 +331,7 @@ Opciók:\r\n\
 /v\tFájl nyomtatása rögtön és kilépés.\r\n\
 /vd\tFájl nyomtatása (Nyomtatási ablak megnyitása).\r\n\
 /y\tRelatív fájlnév esetén keressen az útvonalon (PATH) belül.\r\n\
-/z\tKövetkező kihagyása (registry alapú Notepad lecserélésnél lehet\r\n\thasznos).\r\n\r\n\
+/z\tKövetkező kihagyása (registry alapú Notepad lecserélésnél lehet hasznos).\r\n\r\n\
 Példák:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
  \t... Egy új fájlt nyit meg: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
@@ -386,3 +392,4 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
+

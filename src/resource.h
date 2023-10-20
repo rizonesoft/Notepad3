@@ -26,7 +26,6 @@
 ///#define MUI_BASE_LNG_EL_GR 1
 ///#define MUI_BASE_LNG_EN_GB 1
 ///#define MUI_BASE_LNG_ES_ES 1
-///#define MUI_BASE_LNG_ES_MX 1
 ///#define MUI_BASE_LNG_FR_FR 1
 ///#define MUI_BASE_LNG_HI_IN 1
 ///#define MUI_BASE_LNG_HU_HU 1
@@ -98,7 +97,8 @@
 #define IDACC_PREVIEW                   313
 #define IDACC_CLEAR_FIND_HISTORY        314
 #define IDACC_CLEAR_REPL_HISTORY        315
-#define IDACC_REPLCLIPTAG               316
+#define IDACC_SEARCHCLIPIFEMPTY         316
+#define IDACC_REPLCLIPTAG               317
 
 #define IDC_SETCURLEXERTV               402
 

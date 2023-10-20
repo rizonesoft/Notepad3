@@ -43,5 +43,4 @@ private:
     std::wstring m_name;
     bool         m_bIncludePath;
     int          m_themeCallbackId;
-    CDlgResizer  m_resizer;
 };

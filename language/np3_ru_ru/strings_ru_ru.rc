@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Заменить"
     IDT_VIEW_WORDWRAP       "Перенос строк"
     IDT_VIEW_ZOOMIN         "Крупнее"
+    IDT_VIEW_RESETZOOM      "Reset Zoom"
     IDT_VIEW_ZOOMOUT        "Мельче"
     IDT_VIEW_SCHEME         "Выбрать схему"
     IDT_VIEW_SCHEMECONFIG   "Настроить схему"
@@ -89,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Выполнить документ"
+    IDT_VIEW_NEW_WINDOW      "Копия экземпляра"
     IDT_VIEW_TOGGLE_VIEW     "Фокусировка просмотра"
     IDT_VIEW_CHASING_DOCTAIL "Слежение за файлом"
     IDT_VIEW_PIN_ON_TOP      "Поверх других окон"
@@ -136,7 +138,7 @@ BEGIN
                             "Существующий экземпляр Notepad3 либо занят, либо имеет открытое диалоговое окно.\nЖелаете открыть новый экземпляр Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "Таблицы преобразования кодовой страницы не существуют для выбранной кодировки в этой системе."
     IDS_MUI_ERR_UNICODE     "Ошибка преобразования Unicode-файла.\nДанные будут утеряны, если файл будет сохранен!"
-    IDS_MUI_ERR_BITMAP      "Ошибка загрузки bitmap изображения ""%s"".\nНеобходимые размеры: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Ошибка повышения прав пользователя!"
 END
@@ -174,9 +176,10 @@ BEGIN
     IDS_MUI_REPLCOUNT       "Заменено вхождений указанного шаблона поиска: %s."
     IDS_MUI_ASK_ENCODING    "Переключение кодировки файла с одной на другую может заменить неподдерживаемый текст заполнителями, а история отмены будет очищена. Все равно продолжить?"
     IDS_MUI_ASK_ENCODING2   "Вы собираетесь изменить кодировку пустого файла. Обратите внимание, что это очистит историю отмены, поскольку она не может быть синхронизирована с новой кодировкой. Все равно продолжить?"
+    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
     IDS_MUI_READONLY_SAVE   "«%s» только для чтения. Сохранить в другой файл?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Этот файл был изменен внешней программой. Переоткрыть его?"
+                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
     IDS_MUI_FILECHANGENOTIFY2 "Этот файл был удален. Пересохранить?"
     IDS_MUI_FILELOCK_ERROR  "Невозможно получить исключительную блокировку для ""%s""!"
     IDS_MUI_STICKYWINPOS    "Фиксированное положение окна включено. Любое новое окно Notepad3 будет запущено с текущими настройками положения."
@@ -263,16 +266,18 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Язык"
     IDS_USE_LOCALE_DATEFMT  "Язык определяет &формат даты"
     IDS_MUI_MENU_THEMES     "&Коллекция схем"
-    IDM_THEMES_FACTORY_RESET "&Заводские настройки"
+    IDM_THEMES_FACTORY_RESET "&Factory Reset"
     IDM_THEMES_STD_CFG       "&Стандартный конфиг"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Очистить всё"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Очистить историю поиска"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Очистить историю замен"
-    IDS_MUI_REPLCLIPTAG     "Заменять ярлык буфера обмена [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Search by Clipboard if empty selection"
+    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Совпадение в начале"
     IDS_MUI_WRAPSEARCH_BCK  "Совпадение в конце"
 END
@@ -283,6 +288,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Переключение вида..."
     IDS_MUI_SB_REPLACE_ALL    "Замена всего..."
     IDS_MUI_SB_WRAP_LINES     "Перенос строк..."
+    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
     IDS_MUI_SB_CONV_LNBRK     "Преобразование окончания строк..."
     IDS_MUI_SB_RECODING_DOC   "Перекодирование документа..."
     IDS_MUI_SB_LEXER_STYLING  "Применение стиля лексера..."
@@ -315,8 +321,8 @@ Notepad3 [/?] [...[Кодировка]] [...[Окончания строк]] [/e
 /b\tОткрыть новое окно для сбора изменений буфера обмена.\r\n\
 /n\tВсегда открывать новое окно (/ns один экземпляр файла).\r\n\
 /r\tПереиспользовать окно (/rs один экземпляр файла).\r\n\
-/p\tЗадать положение и размер окна (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tили /p <left>,<top>,<width>,<height>,<max>    [целые числа].\r\n\
+/p\tЗадать положение и размер окна (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tили /p <left>,<top>,<width>,<height>[,<dpi>[,<max>]]  (целые числа).\r\n\
 /t\tЗадать заголовок окна.\r\n\
 /i\tЗапустить иконкой в области уведомлений.\r\n\
 /o\tПоверх других окон.\r\n\

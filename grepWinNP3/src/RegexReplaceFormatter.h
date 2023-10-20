@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2011-2012, 2014-2015, 2021 - Stefan Kueng
+// Copyright (C) 2011-2012, 2014-2015, 2021, 2023 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,11 +21,12 @@
 #include <stdio.h>
 #include <algorithm>
 #include <map>
+#include "StringUtils.h"
 #pragma warning(push)
 #pragma warning(disable : 4996) // warning STL4010: Various members of std::allocator are deprecated in C++17
 #include <boost/regex.hpp>
-#include <boost/spirit/include/classic_file_iterator.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
+
 #pragma warning(pop)
 
 class NumberReplacer
@@ -83,7 +84,7 @@ public:
         // is replaced with numbers starting from n, incremented by m
         // 0 and L are optional and specify the size of the right-aligned
         // number string. If 0 is specified, zeros are used for padding, otherwise spaces.
-        //boost::wregex expression = boost::wregex(L"(?<!\\\\)\\$\\{count(?<leadzero>0)?(?<length>\\d+)?(\\((?<startval>[-0-9]+)\\)||\\((?<startval>[-0-9]+),(?<increment>[-0-9]+)\\))?\\}", boost::regex::normal);
+        // boost::wregex expression = boost::wregex(L"(?<!\\\\)\\$\\{count(?<leadzero>0)?(?<length>\\d+)?(\\((?<startval>[-0-9]+)\\)||\\((?<startval>[-0-9]+),(?<increment>[-0-9]+)\\))?\\}", boost::regex::normal);
         boost::wregex                                      expression = boost::wregex(L"\\$\\{count(?<leadzero>0)?(?<length>\\d+)?(\\((?<startval>[-0-9]+)\\)||\\((?<startval>[-0-9]+),(?<increment>[-0-9]+)\\))?\\}", boost::regex::normal);
         boost::match_results<std::wstring::const_iterator> whatc;
         std::wstring::const_iterator                       start = m_sReplace.begin();
@@ -160,7 +161,7 @@ public:
                     if ((itBegin == sReplace.begin()) || ((*(itBegin - 1)) != '\\'))
                     {
                         auto    itEnd      = itBegin + it->expression.size();
-                        wchar_t format[10] = {0};
+                        wchar_t format[20] = {0};
                         if (it->padding)
                         {
                             if (it->leadZero)
@@ -170,9 +171,18 @@ public:
                         }
                         else
                             wcscpy_s(format, L"%d");
-                        wchar_t buf[50] = {0};
-                        swprintf_s(buf, _countof(buf), format, it->start);
-                        sReplace.replace(itBegin, itEnd, buf);
+                        if (it->padding < 50)
+                        {
+                            // for small strings, reserve space on the stack
+                            wchar_t buf[128] = {0};
+                            swprintf_s(buf, _countof(buf), format, it->start);
+                            sReplace.replace(itBegin, itEnd, buf);
+                        }
+                        else
+                        {
+                            auto s = CStringUtils::Format(format, it->start);
+                            sReplace.replace(itBegin, itEnd, s);
+                        }
                         it->start += it->increment;
                     }
                     else if ((*(itBegin - 1)) == '\\')
@@ -183,7 +193,7 @@ public:
             }
         }
 
-        //sReplace = boost::regex_replace(what[0].str(), sReplace, boost::match_default);
+        // sReplace = boost::regex_replace(what[0].str(), sReplace, boost::match_default);
 
         return sReplace;
     }
@@ -209,7 +219,7 @@ public:
         // is replaced with numbers starting from n, incremented by m
         // 0 and L are optional and specify the size of the right-aligned
         // number string. If 0 is specified, zeros are used for padding, otherwise spaces.
-        //boost::wregex expression = boost::wregex(L"(?<!\\\\)\\$\\{count(?<leadzero>0)?(?<length>\\d+)?(\\((?<startval>[-0-9]+)\\)||\\((?<startval>[-0-9]+),(?<increment>[-0-9]+)\\))?\\}", boost::regex::normal);
+        // boost::wregex expression = boost::wregex(L"(?<!\\\\)\\$\\{count(?<leadzero>0)?(?<length>\\d+)?(\\((?<startval>[-0-9]+)\\)||\\((?<startval>[-0-9]+),(?<increment>[-0-9]+)\\))?\\}", boost::regex::normal);
         boost::regex                                      expression = boost::regex("\\$\\{count(?<leadzero>0)?(?<length>\\d+)?(\\((?<startval>[-0-9]+)\\)||\\((?<startval>[-0-9]+),(?<increment>[-0-9]+)\\))?\\}", boost::regex::normal);
         boost::match_results<std::string::const_iterator> whatc;
         std::string::const_iterator                       start = m_sReplace.begin();
@@ -287,7 +297,7 @@ public:
                     if ((itBegin == sReplace.begin()) || ((*(itBegin - 1)) != '\\'))
                     {
                         auto itEnd      = itBegin + it->expression.size();
-                        char format[10] = {0};
+                        char format[20] = {0};
                         if (it->padding)
                         {
                             if (it->leadZero)
@@ -297,9 +307,18 @@ public:
                         }
                         else
                             strcpy_s(format, "%d");
-                        char buf[50] = {0};
-                        sprintf_s(buf, _countof(buf), format, it->start);
-                        sReplace.replace(itBegin, itEnd, buf);
+                        if (it->padding < 50)
+                        {
+                            // for small strings, reserve space on the stack
+                            char buf[128] = {0};
+                            sprintf_s(buf, _countof(buf), format, it->start);
+                            sReplace.replace(itBegin, itEnd, buf);
+                        }
+                        else
+                        {
+                            auto s = CStringUtils::Format(format, it->start);
+                            sReplace.replace(itBegin, itEnd, s);
+                        }
                         it->start += it->increment;
                     }
                     else if ((*(itBegin - 1)) == '\\')

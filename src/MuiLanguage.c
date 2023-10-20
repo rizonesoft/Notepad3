@@ -7,7 +7,7 @@
 * MuiLanguage.c                                                               *
 *   General MUI Language support functions                                    *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -63,7 +63,6 @@ grepWinLng_t grepWinLangResName[] = {
     { L"el-GR",  L".\\lng\\gwLng\\Ελληνικά (Ελλάδα) [el-GR].lang" },
     { L"en-GB",  L".\\lng\\gwLng\\English (United Kingdom) [en-GB].lang" },
     { L"es-ES",  L".\\lng\\gwLng\\Español (España) [es-ES].lang" },
-    { L"es-MX",  L".\\lng\\gwLng\\Español Mexicano (Mexico) [es-MX].lang" },
     { L"fr-FR",  L".\\lng\\gwLng\\Français (France) [fr-FR].lang" },
     { L"hi-IN",  L".\\lng\\gwLng\\हिन्दी (भारत) [hi-IN].lang" },
     { L"hu-HU",  L".\\lng\\gwLng\\Magyar (Magyarország) [hu-HU].lang" },
@@ -98,7 +97,7 @@ static bool _LngStrToMultiLngStr(LPWSTR const pLngStr, LPWSTR pLngMultiStr, size
 
     bool rtnVal = true;
 
-    size_t strLen = StringCchLenW(pLngStr, 0);
+    size_t strLen = StringCchLen(pLngStr, 0);
 
     if ((strLen > 0) && pLngMultiStr && (cchLngMultiStrCnt > 0)) {
 
@@ -110,7 +109,7 @@ static bool _LngStrToMultiLngStr(LPWSTR const pLngStr, LPWSTR pLngMultiStr, size
             if (next) {
                 *next = L'\0';
             }
-            strLen = StringCchLenW(last, LOCALE_NAME_MAX_LENGTH);
+            strLen = StringCchLen(last, LOCALE_NAME_MAX_LENGTH);
             if (strLen && IsValidLocaleName(last)) {
                 lngMultiStrPtr[0] = L'\0';
                 rtnVal &= SUCCEEDED(StringCchCatW(lngMultiStrPtr, (cchLngMultiStrCnt - (lngMultiStrPtr - pLngMultiStr)), last));
@@ -188,7 +187,7 @@ void SetMuiLanguage(const unsigned muiLngIndex) {
             StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), pLocaleName);
 
             if (Globals.bCanSaveIniFile) {
-                if (StringCchCompareXIW(Settings2.PreferredLanguageLocaleName, Default_PreferredLanguageLocaleName) != 0) {
+                if (StrCmpIW(Settings2.PreferredLanguageLocaleName, Default_PreferredLanguageLocaleName) != 0) {
                     IniFileSetString(Paths.IniFile, Constants.Settings2_Section, SettingName, Settings2.PreferredLanguageLocaleName);
                 } else {
                     IniFileDelete(Paths.IniFile, Constants.Settings2_Section, SettingName, false);
@@ -216,14 +215,13 @@ MUILANGUAGE MUI_LanguageDLLs[] = {
     { IDS_MUI_LANG_EL_GR,  L"el-GR",   L"Ελληνικά (Ελλάδα)\t\t\t[%s]",             false, false },
     { IDS_MUI_LANG_EN_GB,  L"en-GB",   L"English (United Kingdom)\t\t\t[%s]",      false, false },
     { IDS_MUI_LANG_ES_ES,  L"es-ES",   L"Español (España)\t\t\t[%s]",              false, false },
-    { IDS_MUI_LANG_ES_MX,  L"es-MX",   L"Español Mexicano (Mexico)\t\t\t[%s]",      false, false },
     { IDS_MUI_LANG_FR_FR,  L"fr-FR",   L"Français (France)\t\t\t[%s]",             false, false },
     { IDS_MUI_LANG_HI_IN,  L"hi-IN",   L"हिन्दी (भारत)\t\t\t[%s]",                    false, false },
     { IDS_MUI_LANG_HU_HU,  L"hu-HU",   L"Magyar (Magyarország)\t\t\t[%s]",         false, false },
     { IDS_MUI_LANG_ID_ID,  L"id-ID",   L"Bahasa Indonesia (Indonesia)\t\t\t[%s]",  false, false },
     { IDS_MUI_LANG_IT_IT,  L"it-IT",   L"Italiano (Italia)\t\t\t[%s]",             false, false },
-    { IDS_MUI_LANG_JP_JP,  L"ja-JP",   L"日本語 (日本)\t\t\t[%s]",                  false, false },
-    { IDS_MUI_LANG_KO_KR,  L"ko-KR",   L"한국어 (대한민국)\t\t\t[%s]",              false, false },
+    { IDS_MUI_LANG_JP_JP,  L"ja-JP",   L"日本語 (日本)\t\t\t[%s]",                   false, false },
+    { IDS_MUI_LANG_KO_KR,  L"ko-KR",   L"한국어 (대한민국)\t\t\t[%s]",                false, false },
     { IDS_MUI_LANG_NL_NL,  L"nl-NL",   L"Nederlands (Nederland)\t\t\t[%s]",        false, false },
     { IDS_MUI_LANG_PL_PL,  L"pl-PL",   L"Polski (Polska)\t\t\t[%s]",               false, false },
     { IDS_MUI_LANG_PT_BR,  L"pt-BR",   L"Português Brasileiro (Brasil)\t\t\t[%s]", false, false },
@@ -233,8 +231,8 @@ MUILANGUAGE MUI_LanguageDLLs[] = {
     { IDS_MUI_LANG_SV_SE,  L"sv-SE",   L"Svenska (Sverige)\t\t\t[%s]",             false, false },
     { IDS_MUI_LANG_TR_TR,  L"tr-TR",   L"Türkçe (Türkiye)\t\t\t[%s]",              false, false },
     { IDS_MUI_LANG_VI_VN,  L"vi-VN",   L"Tiếng Việt (Việt Nam)\t\t\t[%s]",         false, false },
-    { IDS_MUI_LANG_ZH_CN,  L"zh-CN",   L"简体中文 (中国大陆)\t\t\t[%s]",                false, false },
-    { IDS_MUI_LANG_ZH_TW,  L"zh-TW",   L"正體中文 (中國台灣)\t\t\t[%s]",                false, false }
+    { IDS_MUI_LANG_ZH_CN,  L"zh-CN",   L"简体中文 (中国大陆)\t\t\t[%s]",              false, false },
+    { IDS_MUI_LANG_ZH_TW,  L"zh-TW",   L"正體中文 (中國台灣)\t\t\t[%s]",              false, false }
 };
 
 //NUM_OF_MUI_LANGUAGES
@@ -351,7 +349,7 @@ unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
     unsigned iLngIndex = MuiLanguages_CountOf();
     WCHAR tchAvailLngs[2 * (LOCALE_NAME_MAX_LENGTH + 1)] = { L'\0' };
     for (unsigned lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
-        if (StringCchCompareXIW(MUI_LanguageDLLs[lng].LocaleName, pLocaleName) == 0) {
+        if (StrCmpIW(MUI_LanguageDLLs[lng].LocaleName, pLocaleName) == 0) {
             if (MUI_LanguageDLLs[lng].bHasDLL && (lng > 0)) {
                 StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[lng].LocaleName);
                 StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), L";");
@@ -413,7 +411,7 @@ unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
 
         const WCHAR *const suprMsg = L"MsgPrefLanguageNotAvailable";
         InfoBoxLng(MB_ICONWARNING, suprMsg, IDS_WARN_PREF_LNG_NOT_AVAIL, pLocaleName);
-        int const noMsg = IniFileGetInt(Paths.IniFile, Constants.SectionSuppressedMessages, suprMsg, 0);
+        int const noMsg = IniFileGetLong(Paths.IniFile, Constants.SectionSuppressedMessages, suprMsg, 0);
         if (noMsg && Globals.bCanSaveIniFile) {
             IniFileSetString(Paths.IniFile, Constants.Settings2_Section, L"PreferredLanguageLocaleName", MUI_LanguageDLLs[iInternalLngIndex].LocaleName);
         }
@@ -537,6 +535,7 @@ void DynamicLanguageMenuCmd(int cmd) {
 
         InsertLanguageMenu(Globals.hMainMenu);
         SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
+        DrawMenuBar(Globals.hwndMain);
     }
 }
 
@@ -596,7 +595,7 @@ int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
             StringCchVPrintfW(lpOutput, nOutput, pBuffer, (LPVOID)((PUINT_PTR)& uIdFormat + 1));
         }
         FreeMem(pBuffer);
-        return (int)StringCchLenW(lpOutput, nOutput);
+        return (int)StringCchLen(lpOutput, nOutput);
     }
     return 0;
 }

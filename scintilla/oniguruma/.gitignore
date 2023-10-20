@@ -4,7 +4,6 @@ ltmain.sh
 stamp-h1
 configure
 config.status
-config.h
 config.h.in
 onig-config
 libtool
@@ -18,6 +17,7 @@ Makefile.in
 *.la
 *.pc
 *.log
+*.trs
 *.dll
 *.lib
 *.exe
@@ -34,6 +34,7 @@ m4/*.m4
 /coverage
 /coverage.info
 /fuzzers
+/.vscode
 
 # src/
 /src/unicode_fold?_key.gperf

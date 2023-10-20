@@ -57,73 +57,73 @@ IDR_MAINWND MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "&Open",                       IDM_FILE_OPEN
-        MENUITEM "Open &w/ Alternate App...",   IDM_FILE_OPENWITH
+        MENUITEM "&Buka",                       IDM_FILE_OPEN
+        MENUITEM "B&uka dengan...",             IDM_FILE_OPENWITH
         MENUITEM "&Quickview",                  IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "&Copy Name",                  IDM_POP_COPYNAME
-        MENUITEM "Create Lin&k...",             IDM_FILE_CREATELINK
-        MENUITEM "&Save As...",                 IDM_FILE_SAVEAS
-        MENUITEM "Copy/&Move...",               IDM_FILE_COPYMOVE
-        MENUITEM "D&elete...",                  IDM_FILE_DELETE
-        MENUITEM "Re&name...",                  IDM_FILE_RENAME
+        MENUITEM "&Salin Jalur",                IDM_POP_COPYNAME
+        MENUITEM "Buat &Pintasan...",           IDM_FILE_CREATELINK
+        MENUITEM "Simpan s&ebagai...",          IDM_FILE_SAVEAS
+        MENUITEM "Salin/&Pindah...",            IDM_FILE_COPYMOVE
+        MENUITEM "&Hapus...",                   IDM_FILE_DELETE
+        MENUITEM "&Ganti nama...",              IDM_FILE_RENAME
         MENUITEM SEPARATOR
-        MENUITEM "&Launch",                     IDM_FILE_LAUNCH
-        MENUITEM "&Run w/ Arguments...",        IDM_FILE_RUN
+        MENUITEM "&Luncurkan",                  IDM_FILE_LAUNCH
+        MENUITEM "Jalankan dengan A&rgumen...", IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "&Properties",                 IDM_FILE_PROPERTIES
+        MENUITEM "&Properti",                   IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&New File...",                IDM_FILE_NEW
-        MENUITEM "Ne&w Directory...",           IDM_FILE_NEWDIR
+        MENUITEM "&Berkas Baru...",             IDM_FILE_NEW
+        MENUITEM "Direktori B&aru...",          IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "&File Filter...",             IDM_VIEW_FILTER
-        MENUITEM "&Reset Filter",               IDM_VIEW_FILTERALL
-        POPUP "&Show"
+        MENUITEM "Sa&ring Berkas...",           IDM_VIEW_FILTER
+        MENUITEM "Setel &Ulang Penyaringan",    IDM_VIEW_FILTERALL
+        POPUP "&Tampilkan"
         BEGIN
-            MENUITEM "&Directories",            IDM_VIEW_FOLDERS
-            MENUITEM "&Files",                  IDM_VIEW_FILES
-            MENUITEM "&System Objects",         IDM_VIEW_HIDDEN
+            MENUITEM "&Direktori",              IDM_VIEW_FOLDERS
+            MENUITEM "&Berkas",                 IDM_VIEW_FILES
+            MENUITEM "&Objek Sistem",           IDM_VIEW_HIDDEN
         END
-        POPUP "S&ort"
+        POPUP "&Urutkan dengan"
         BEGIN
-            MENUITEM "by &Name",                IDM_SORT_NAME
-            MENUITEM "by &Size",                IDM_SORT_SIZE
-            MENUITEM "by &Type",                IDM_SORT_TYPE
-            MENUITEM "by &Date",                IDM_SORT_DATE
+            MENUITEM "&Nama",                   IDM_SORT_NAME
+            MENUITEM "&Ukuran",                 IDM_SORT_SIZE
+            MENUITEM "Ti&pe Berkas",            IDM_SORT_TYPE
+            MENUITEM "&Waktu",                  IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "&Reverse",                IDM_SORT_REVERSE
+            MENUITEM "&Balikkan",               IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "Go&to...",                    IDM_FILE_GOTO
-        MENUITEM "&Goto Favourites",             IDM_VIEW_FAVORITES
-        MENUITEM "&Edit Favourites",             IDM_VIEW_EDITFAVORITES
-        MENUITEM "&Directory...",               IDM_FILE_CHANGEDIR
+        MENUITEM "Pergi &ke...",                IDM_FILE_GOTO
+        MENUITEM "Pergi ke &Favorit",           IDM_VIEW_FAVORITES
+        MENUITEM "&Buka folder favorit",        IDM_VIEW_EDITFAVORITES
+        MENUITEM "&Direktori...",               IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "Show Dri&ves",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Tampilkan Dri&ve",            IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
-        MENUITEM "S&ave Settings",              IDM_VIEW_SAVESETTINGS
-        MENUITEM "Setup &Target...",            IDM_VIEW_FINDTARGET
-        MENUITEM "O&ptions...",                 IDM_VIEW_OPTIONS
+        MENUITEM "S&impan Pengaturan",          IDM_VIEW_SAVESETTINGS
+        MENUITEM "Siapkan Tar&get...",          IDM_VIEW_FINDTARGET
+        MENUITEM "&Opsi...",                    IDM_VIEW_OPTIONS
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&Directory...",               IDM_FILE_CHANGEDIR
-        MENUITEM "Drive &Properties",           IDM_FILE_DRIVEPROP
+        MENUITEM "&Direktori...",               IDM_FILE_CHANGEDIR
+        MENUITEM "Properti &Drive",             IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "Show Dri&ves",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Tampilkan Dri&ve",            IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "&Edit Toolbar...",            IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
+        MENUITEM "Tampilkan Bilah &Alat",       IDM_VIEW_TOOLBAR
+        MENUITEM "&Sunting Bilah Alat...",      IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Tampilkan &Status",           IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Open MiniPath",               IDM_TRAY_RESTORE
-        MENUITEM "Exit MiniPath",               IDM_TRAY_EXIT
+        MENUITEM "Buka MiniPath",               IDM_TRAY_RESTORE
+        MENUITEM "Keluar MiniPath",             IDM_TRAY_EXIT
     END
 END
 

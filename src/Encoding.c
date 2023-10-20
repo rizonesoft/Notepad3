@@ -10,7 +10,7 @@
 *                                                                             *
 *                                                                             *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -90,7 +90,7 @@ cpi_enc_t Encoding_Forced(cpi_enc_t iEncoding)
         if (Encoding_IsValid(iEncoding)) {
             SourceEncoding = iEncoding;
         } else {
-            SourceEncoding = CPI_ANSI_DEFAULT;
+            SourceEncoding = Settings.DefaultEncoding;
         }
     } else if (iEncoding == CPI_NONE) {
         SourceEncoding = CPI_NONE;
@@ -108,7 +108,7 @@ cpi_enc_t  Encoding_SrcWeak(cpi_enc_t iSrcWeakEnc)
         if (Encoding_IsValid(iSrcWeakEnc)) {
             SourceWeakEncoding = iSrcWeakEnc;
         } else {
-            SourceWeakEncoding = CPI_ANSI_DEFAULT;
+            SourceWeakEncoding = Settings.DefaultEncoding;
         }
     } else if (iSrcWeakEnc == CPI_NONE) {
         SourceWeakEncoding = CPI_NONE;
@@ -204,7 +204,7 @@ int Encoding_MapIniSetting(bool bLoad, int iSetting)
                     return (int)i;
                 }
             }
-            return CPI_ANSI_DEFAULT;
+            return Settings.DefaultEncoding;
         }
         }
     } else {
@@ -233,7 +233,7 @@ int Encoding_MapIniSetting(bool bLoad, int iSetting)
             if (Encoding_IsValid((cpi_enc_t)iSetting)) {
                 return (int)g_Encodings[iSetting].uCodePage;
             }
-            return CPI_ANSI_DEFAULT;
+            return Settings.DefaultEncoding;
         }
     }
 }

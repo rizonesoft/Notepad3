@@ -122,9 +122,9 @@ void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, W
 		const int lineState = styler.GetLineState(sc.currentLine - 1);
 		matchingDelimiter = lineState & 0xff;
 		dashCount = lineState >> 8;
-		}
+	}
 
-	for (; sc.More(); sc.Forward()) {
+	while (sc.More()) {
 		// Determine if the current state should terminate.
 		switch (sc.state) {
 		case SCE_R_OPERATOR:
@@ -174,7 +174,7 @@ void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, W
 					sc.Forward();
 					if (sc.chNext == '{' && AnyOf(sc.ch, 'u', 'U')) {
 						escapeSeq.brace = true;
-					sc.Forward();
+						sc.Forward();
 					} else if (sc.MatchLineEnd()) {
 						// don't highlight line ending as escape sequence:
 						// escapeSeq.outerState is lost when editing on next line.
@@ -187,7 +187,7 @@ void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, W
 				|| (sc.state == SCE_R_STRING2 && sc.ch == '\'')
 				|| (sc.state == SCE_R_BACKTICKS && sc.ch == '`')) {
 				sc.ForwardSetState(SCE_R_DEFAULT);
-				}
+			}
 			break;
 
 		case SCE_R_ESCAPESEQUENCE:
@@ -212,9 +212,9 @@ void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, W
 				if (count == 0 && sc.ch == ((sc.state == SCE_R_RAWSTRING) ? '\"' : '\'')) {
 					matchingDelimiter = 0;
 					dashCount = 0;
-				sc.ForwardSetState(SCE_R_DEFAULT);
+					sc.ForwardSetState(SCE_R_DEFAULT);
 					break;
-			}
+				}
 			}
 			break;
 
@@ -223,7 +223,7 @@ void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, W
 				sc.ForwardSetState(SCE_R_DEFAULT);
 			} else if (sc.atLineEnd) {
 				sc.ChangeState(SCE_R_INFIXEOL);
-				}
+			}
 			break;
 
 		case SCE_R_INFIXEOL:
@@ -254,7 +254,7 @@ void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, W
 			} else if (IsAWordStart(sc.ch) ) {
 				sc.SetState(SCE_R_IDENTIFIER);
 			} else if (sc.Match('#')) {
-					sc.SetState(SCE_R_COMMENT);
+				sc.SetState(SCE_R_COMMENT);
 			} else if (sc.ch == '\"') {
 				sc.SetState(SCE_R_STRING);
 			} else if (sc.ch == '%') {
@@ -272,6 +272,7 @@ void ColouriseRDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, W
 			const int lineState = matchingDelimiter | (dashCount << 8);
 			styler.SetLineState(sc.currentLine, lineState);
 		}
+		sc.Forward();
 	}
 	sc.Complete();
 }
@@ -336,13 +337,13 @@ void FoldRDoc(Sci_PositionU startPos, Sci_Position length, int, WordList *[],
 
 
 const char * const RWordLists[] = {
-            "Language Keywords",
-            "Base / Default package function",
-            "Other Package Functions",
-            "Unused",
-            "Unused",
+		"Language Keywords",
+		"Base / Default package function",
+		"Other Package Functions",
+		"Unused",
+		"Unused",
 		nullptr,
-        };
+};
 
 }
 

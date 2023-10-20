@@ -10,7 +10,7 @@
 *	Parts taken from SciTE, (c) Neil Hodgson                                  *
 *	MinimizeToTray, (c) 2000 Matthew Ellis                                    *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -171,8 +171,8 @@ inline bool IsDBCSCodePage(UINT cp)
 
 bool       FileVars_GetFromData(const char* lpData, size_t cbData, LPFILEVARS lpfv);
 bool       FileVars_Apply(LPFILEVARS lpfv);
-bool       FileVars_ParseInt(char* pszData, char* pszName, int* piValue);
-bool       FileVars_ParseStr(char* pszData, char* pszName, char* pszValue, int cchValue);
+bool       FileVars_ParseInt(const char* pszData, const char* pszName, int* piValue);
+bool       FileVars_ParseStr(const char* pszData, const char* pszName, char* pszValue, int cchValue);
 bool       FileVars_IsUTF8(LPFILEVARS lpfv);
 bool       FileVars_IsValidEncoding(LPFILEVARS lpfv);
 cpi_enc_t  FileVars_GetEncoding(LPFILEVARS lpfv);

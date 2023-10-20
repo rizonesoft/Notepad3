@@ -312,6 +312,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	Point GetVisibleOriginInMain() const override;
 	PointDocument DocumentPointFromView(Point ptView) const;  // Convert a point from view space to document
 	Sci::Line TopLineOfMain() const noexcept final;   // Return the line at Main's y coordinate 0
+	virtual Point ClientSize() const;
 	virtual PRectangle GetClientRectangle() const;
 	virtual PRectangle GetClientDrawingRectangle();
 	PRectangle GetTextRectangle() const;
@@ -403,6 +404,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	bool Wrapping() const noexcept;
 	void NeedWrapping(Sci::Line docLineStart=0, Sci::Line docLineEnd=WrapPending::lineLarge);
 	bool WrapOneLine(Surface *surface, Sci::Line lineToWrap);
+	bool WrapBlock(Surface *surface, Sci::Line lineToWrap, Sci::Line lineToWrapEnd);
 	enum class WrapScope {wsAll, wsVisible, wsIdle};
 	bool WrapLines(WrapScope ws);
 	void LinesJoin();
@@ -437,7 +439,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	virtual void Cut();
 	void PasteRectangular(SelectionPosition pos, const char *ptr, Sci::Position len);
 	virtual void Copy() = 0;
-	virtual void CopyAllowLine();
+	void CopyAllowLine();
 	virtual bool CanPaste();
 	virtual void Paste() = 0;
 	void Clear();
@@ -450,7 +452,9 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	virtual void NotifyChange() = 0;
 	virtual void NotifyFocus(bool focus);
 	virtual void SetCtrlID(int identifier);
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	virtual int GetCtrlID() const noexcept { return ctrlID; }
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	virtual void NotifyParent(Scintilla::NotificationData scn) = 0;
 	virtual void NotifyStyleToNeeded(Sci::Position endStyleNeeded);
 	void NotifyChar(int ch, Scintilla::CharacterSource charSource);
@@ -519,7 +523,9 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void CopyText(size_t length, const char *text);
 	void SetDragPosition(SelectionPosition newPos);
 	virtual void DisplayCursor(Window::Cursor c);
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	virtual bool DragThreshold(Point ptStart, Point ptNow) noexcept;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	virtual void StartDrag();
 	void DropAt(SelectionPosition position, const char *value, size_t lengthValue, bool moving, bool rectangular);
 	void DropAt(SelectionPosition position, const char *value, bool moving, bool rectangular);
@@ -562,9 +568,11 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	virtual void IdleWork();
 	virtual void QueueIdleWork(WorkItems items, Sci::Position upTo=0);
 
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	virtual int SupportsFeature(Scintilla::Supports feature) const noexcept;
 	virtual bool PaintContains(PRectangle rc) const noexcept;
 	bool PaintContainsMargin() const noexcept;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	void CheckForChangeOutsidePaint(Range r);
 	void SetBraceHighlight(Sci::Position pos0, Sci::Position pos1, int matchStyle);
 
@@ -613,8 +621,6 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void StyleSetMessage(Scintilla::Message iMessage, Scintilla::uptr_t wParam, Scintilla::sptr_t lParam);
 	Scintilla::sptr_t StyleGetMessage(Scintilla::Message iMessage, Scintilla::uptr_t wParam, Scintilla::sptr_t lParam);
 	void SetSelectionNMessage(Scintilla::Message iMessage, Scintilla::uptr_t wParam, Scintilla::sptr_t lParam);
-
-	static const char *StringFromEOLMode(Scintilla::EndOfLine eolMode) noexcept;
 
 	// Coercion functions for transforming WndProc parameters into pointers
 	static void *PtrFromSPtr(Scintilla::sptr_t lParam) noexcept {
@@ -706,7 +712,7 @@ public:
 		surf(ed->CreateMeasurementSurface())  {
 	}
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	AutoSurface(SurfaceID sid, Editor *ed, std::optional<Scintilla::Technology> technology = {}, bool printing = false) :
+	AutoSurface(SurfaceID sid, const Editor *ed, std::optional<Scintilla::Technology> technology = {}, bool printing = false) :
 		surf(ed->CreateDrawingSurface(sid, technology, printing)) {
 	}
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<

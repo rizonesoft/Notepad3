@@ -8,7 +8,7 @@
 *   Main application window functionality                                     *
 *   Based on code from metapath, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -120,7 +120,7 @@ HMODULE              g_hLngResContainer = NULL;
 WCHAR                g_UsedLngLocaleName[LOCALE_NAME_MAX_LENGTH] = { L'\0' };
 
 #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-static WCHAR* const  g_tchAvailableLanguages = L"af-ZA be-BY de-DE el-GR en-GB en-US es-ES es-MX fr-FR hi-IN hu-HU id-ID it-IT ja-JP ko-KR nl-NL pl-PL pt-BR pt-PT ru-RU sk-SK sv-SE tr-TR vi-VN zh-CN zh-TW";
+static WCHAR* const  g_tchAvailableLanguages = L"af-ZA be-BY de-DE el-GR en-GB en-US es-ES fr-FR hi-IN hu-HU id-ID it-IT ja-JP ko-KR nl-NL pl-PL pt-BR pt-PT ru-RU sk-SK sv-SE tr-TR vi-VN zh-CN zh-TW";
 #endif
 
 

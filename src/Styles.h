@@ -8,7 +8,7 @@
 *   Scintilla Style Management                                                *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -63,9 +63,11 @@ void   Style_SetUrlHotSpot(HWND hwnd);
 void   Style_SetInvisible(HWND hwnd, bool);
 //void   Style_SetReadonly(HWND hwnd, bool);
 void   Style_HighlightCurrentLine(HWND hwnd, int);
-void   Style_UpdateFoldingMargin(HWND hwnd, bool bShowMargin);
+void   Style_UpdateLineNumberMargin(const bool bForce);
 void   Style_UpdateBookmarkMargin(HWND hwnd);
 void   Style_UpdateChangeHistoryMargin(HWND hwnd);
+void   Style_UpdateFoldingMargin(HWND hwnd, bool bShowMargin);
+void   Style_UpdateAllMargins(HWND hwnd, const bool bForce);
 void   Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle);
 bool   Style_SetLexerFromFile(HWND hwnd,const HPATHL hpath);
 bool   Style_MaybeBinaryFile(HWND hwnd, const HPATHL hpath);
@@ -80,19 +82,20 @@ void   Style_ToggleUse2ndDefault(HWND hwnd);
 bool   Style_GetUse2ndDefault();
 void   Style_SetUse2ndDefault(bool);
 void   Style_SetIndentGuides(HWND hwnd,bool);
-void   Style_SetExtraLineSpace(HWND hwnd, LPWSTR lpszStyle, int cch);
+void   Style_SetExtraLineSpace(int iValue);
 bool   Style_GetFileFilterStr(LPWSTR lpszFilter, int cchFilter, LPWSTR lpszDefExt, int cchExt, bool bSaveAs);
 bool   Style_StrGetFontName(LPCWSTR lpszStyle,LPWSTR lpszFont,int cchFont);
 bool   Style_StrGetFontQuality(LPCWSTR lpszStyle, LPWSTR lpszQuality, int cchQuality, int* iSciQuality_out);
 bool   Style_StrGetCharSet(LPCWSTR lpszStyle,int* i);
 bool   Style_StrGetSizeInt(LPCWSTR lpszStyle, int* i);
+bool   Style_StrGetSizeIntEx(LPCWSTR lpszStyle, int* i);
 bool   Style_StrGetSizeFloat(LPCWSTR lpszStyle, float* f);
 bool   Style_StrGetSizeFloatEx(LPCWSTR lpszStyle,float* f);
 bool   Style_StrGetSizeStr(LPCWSTR lpszStyle,LPWSTR lpszSize,int cchSize);
 void   Style_AppendSizeAttribute(LPWSTR lpszSize, int cchSize, const float fFontSize, const float fBaseFontSize);
 bool   Style_StrGetWeightValue(LPCWSTR lpszWeight, int *weight);
 void   Style_AppendWeightAttribute(LPWSTR lpszWeight, int cchSize, int fontWeight);
-bool   Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORREF *rgb, COLORREF *rgbOrig, bool useDefault);
+bool   Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORALPHAREF* rgba, COLORALPHAREF* rgbaOrig, bool useDefault);
 bool   Style_StrGetStrokeWidth(HWND hwnd, int indicID, LPCWSTR lpszStyle, int *piStrokeWidth);
 bool   Style_StrGetCase(LPCWSTR lpszStyle, int *i);
 bool   Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, const int defAlpha, const bool bAlpha1st);

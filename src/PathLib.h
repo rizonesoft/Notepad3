@@ -8,7 +8,7 @@
 *   Definition for dynamic wide char Long Path handling                       *
 *   Based on DynStrg module                                                   *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -91,6 +91,7 @@ bool PTHAPI            Path_Append(HPATHL hpth, LPCWSTR more);
 void PTHAPI            Path_Swap(HPATHL hpth1, HPATHL hpth2);
 void PTHAPI            Path_FreeExtra(HPATHL hpth_in_out, size_t keep_length);
 
+bool PTHAPI            Path_FixBackslashes(HPATHL hpth_in_out);
 bool PTHAPI            Path_Canonicalize(HPATHL hpth_in_out);
 bool PTHAPI            Path_IsEmpty(const HPATHL hpth);
 inline bool PTHAPI     Path_IsNotEmpty(const HPATHL hpth) { return !Path_IsEmpty(hpth); };
@@ -100,7 +101,6 @@ bool PTHAPI            Path_IsExistingDirectory(const HPATHL hpth);
 
 int PTHAPI             Path_StrgComparePathNormalized(const HPATHL hpth1, const HPATHL hpth2);
 int PTHAPI             Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2, const HPATHL hpth_wrkdir);
-bool PTHAPI            Path_RemoveBackslash(HPATHL hpth_in_out);
 bool PTHAPI            Path_RemoveFileSpec(HPATHL hpth_in_out);
 bool PTHAPI            Path_RenameExtension(HPATHL hpth, LPCWSTR ext);
 void PTHAPI            Path_ExpandEnvStrings(HPATHL hpth_in_out);

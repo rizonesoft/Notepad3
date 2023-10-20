@@ -32,6 +32,11 @@ msgstr ""
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
 
+#. Resource IDs: (175)
+#, c-format
+msgid "%ld files, skipped %ld files. %ld results selected."
+msgstr "%ld súborov, preskočených %ld súborov. %ld vybraných výsledkov."
+
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
@@ -61,7 +66,7 @@ msgstr "&Celé slovo"
 msgid "..."
 msgstr "..."
 
-#. Resource IDs: (1061, 1063, 1064, 1066, 1067)
+#. Resource IDs: (1061, 1063)
 msgid "/"
 msgstr "/"
 
@@ -150,6 +155,14 @@ msgstr "Kopírovať výsledok do schránky"
 msgid "Copy text results to clipboard"
 msgstr "Kopírovať výsledky do schránky"
 
+#. Resource IDs: (177)
+msgid "Copy column for all items"
+msgstr "Kopírovať stĺpec pre všetky položky"
+
+#. Resource IDs: (178)
+msgid "Copy column for selected items"
+msgstr "Kopírovať stĺpec pre vybrané položky"
+
 #. Resource IDs: (1029)
 msgid "Create backup files"
 msgstr "Vytvoriť záložné súbory"
@@ -226,6 +239,11 @@ msgstr "Zhoda názvov súborov:\nznak '|' oddelí viac vzorov text. zhody, na &z
 msgid "Files"
 msgstr "Súbory"
 
+#. Resource IDs: (174)
+#, c-format
+msgid "Found %ld files, skipped %ld files."
+msgstr "%ld nájdených súborov, %ld vynechaných súborov."
+
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
 msgstr "GREPWINNP3"
@@ -250,6 +268,10 @@ msgstr "Zahrnúť vyhľadávaciu cestu"
 msgid "Include subfolders"
 msgstr "Zahrnúť podpriečinky"
 
+#. Resource IDs: (1092)
+msgid "Include symbolic links"
+msgstr "Zahrnúť symbolické odkazy"
+
 #. Resource IDs: (1009)
 msgid "Include system items"
 msgstr "Zahrnúť systémové položky"
@@ -265,6 +287,10 @@ msgstr "Inverzné hľadanie (nie pre reťazec)"
 #. Resource IDs: (1019)
 msgid "KB"
 msgstr "kB"
+
+#. Resource IDs: (1062)
+msgid "Keep file date when replacing"
+msgstr "Pri zámene súboru zachovať dátum"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -580,6 +606,10 @@ msgstr "Počet NULL bajtov na MB, ktorý umožňuje, aby sa súbor považoval za
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
 msgstr "prehľadajú sa len súbory, ktoré zodpovedajú tomuto vzoru.\nPoužite '|' ako oddeľovač.\nPríklad: *.cpp|*.h"
 
+#. Resource IDs: (176)
+msgid "Open list with recent entries"
+msgstr "Otvoriť zoznam s použitými položkami"
+
 #. Resource IDs: (129)
 msgid "read error"
 msgstr "chyba pri čítaní"
@@ -613,6 +643,10 @@ msgstr "cesta(y), ktorá je prehľadávaná rekurzívne.\nOddeľte cesty týmto 
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "môžete vylúčiť adresáre, napr. CVS a obrázky.\nPríklad: ^(CVS|obrázky)$\nPoznámka, '.svn' priečinky sú v systéme Windows 'skryté', takže zvyčajne nie sú skenované."
 
+#. Resource IDs: (1064, 1066, 1067)
+msgid "|"
+msgstr "|"
+
 #. Resource IDs: (1024)
 msgid "Y"
 msgstr "Y"
@@ -623,7 +657,7 @@ msgstr "Reset"
 
 #. Resource IDs: (3001)
 msgid "Notepad3's grepWin(NP3)-mod of Stefan Küng's great tool!"
-msgstr "grepWin(NP3)-mod programu Notepad3 - skvelý nástroj od Stefan Küng!"
+msgstr "grepWin(NP3)-modul programu Notepad3 - skvelý nástroj od Štefana Künga!"
 
 #. Resource IDs: (3004)
 msgid "Max # of concurrent worker"

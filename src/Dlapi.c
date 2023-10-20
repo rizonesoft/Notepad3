@@ -8,7 +8,7 @@
 *   Directory Listing APIs used in Notepad3                                   *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -55,7 +55,7 @@ static const WCHAR *pDirListProp = L"DirListData";
 //
 //  Initializes the DLDATA structure and sets up the listview control
 //
-bool DirList_Init(HWND hwnd,LPCWSTR pszHeader, HPATHL hFilePath)
+bool DirList_Init(HWND hwnd,LPCWSTR pszHeader, const HPATHL hFilePath)
 {
     UNREFERENCED_PARAMETER(pszHeader);
 
@@ -68,7 +68,7 @@ bool DirList_Init(HWND hwnd,LPCWSTR pszHeader, HPATHL hFilePath)
         lpdl->cbidl = 0;
         lpdl->pidl = NULL;
         lpdl->lpsf = NULL;
-        lpdl->hDirectoryPath = hFilePath;
+        lpdl->hDirectoryPath = Path_Copy(hFilePath);
         Path_Empty(lpdl->hDirectoryPath, false);
 
         // Add Imagelists
@@ -120,6 +120,7 @@ bool DirList_Destroy(HWND hwnd)
     }
     // Free DirListData Property
     RemoveProp(hwnd,pDirListProp);
+    Path_Release(lpdl->hDirectoryPath);
     GlobalFree(lpdl);
 
     return false;
@@ -432,7 +433,7 @@ unsigned int WINAPI DirList_IconThread(LPVOID lpParam)
     }
 
     CoUninitialize();
-    BackgroundWorker_End(0);
+    BackgroundWorker_End(worker, 0);
     return 0;
 }
 

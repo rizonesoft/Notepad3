@@ -4,7 +4,7 @@
   regenc.h -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2020  K.Kosako
+ * Copyright (c) 2002-2021  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -80,6 +80,7 @@ typedef struct {
 #define ASCII_LIMIT            127
 #define NEWLINE_CODE           0x0a
 #define CARRIAGE_RET           0x0d
+#define END_OF_FILE            0x00
 
 #define enclen(enc,p)          ONIGENC_MBC_ENC_LEN(enc,p)
 
@@ -117,7 +118,8 @@ struct PropertyNameCtype {
   int ctype;
 };
 
-//~#define USE_CRNL_AS_LINE_TERMINATOR ~ solved by is_new_line() fct-ptr
+#define USE_END_OF_FILE_AS_LINE_TERMINATOR
+#define USE_CRNL_AS_LINE_TERMINATOR
 #define USE_UNICODE_PROPERTIES
 #define USE_UNICODE_EXTENDED_GRAPHEME_CLUSTER
 #define USE_UNICODE_WORD_BREAK
@@ -158,7 +160,6 @@ extern int onigenc_get_case_fold_codes_by_str_with_map P_((int map_size, const O
 extern int onigenc_not_support_get_ctype_code_range P_((OnigCtype ctype, OnigCodePoint* sb_out, const OnigCodePoint* ranges[]));
 extern int onigenc_is_mbc_newline_0x0a P_((const UChar* p, const UChar* end));
 extern int onigenc_is_mbc_newline_0x0d P_((const UChar* p, const UChar* end));
-extern int onigenc_is_mbc_newline_0x0d_0x0a P_((const UChar* p, const UChar* end));
 
 /* methods for single byte encoding */
 extern int onigenc_ascii_mbc_case_fold P_((OnigCaseFoldType flag, const UChar** p, const UChar* end, UChar* lower));

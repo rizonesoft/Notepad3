@@ -1,0 +1,8 @@
+test
+
+Pattern: [^],[$],[t],[test],[t.*$],[.*$],[^.*],[^.*$]
+
+testabc
+
+abctest
+

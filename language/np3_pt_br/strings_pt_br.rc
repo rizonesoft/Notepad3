@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Substituir"
     IDT_VIEW_WORDWRAP       "Quebra de Parágrafo"
     IDT_VIEW_ZOOMIN         "+ Zoom"
+    IDT_VIEW_RESETZOOM      "Redefinir Zoom"
     IDT_VIEW_ZOOMOUT        "- Zoom"
     IDT_VIEW_SCHEME         "Selecionar Esquema"
     IDT_VIEW_SCHEMECONFIG   "Customizar Esquema"
@@ -89,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Executar Documento"
+    IDT_VIEW_NEW_WINDOW      "Nova Janela Vazia"
     IDT_VIEW_TOGGLE_VIEW     "Visão Focada"
     IDT_VIEW_CHASING_DOCTAIL "Log de Monitoramento"
     IDT_VIEW_PIN_ON_TOP      "Sempre no Topo"
@@ -136,7 +138,7 @@ BEGIN
                             "A janela do Notepad3 existente está ocupada ou com uma caixa de diálogo ativa.\nVocê gostaria de abrir outra janela do Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "A tabela de conversão de página de código para a codificação selecionada não está disponível no seu sistema."
     IDS_MUI_ERR_UNICODE     "Erro convertendo este arquivo Unicode.\nDados serão pedidos se o arquivo for salvo!"
-    IDS_MUI_ERR_BITMAP      "Erro carregando bitmap ""%s"".\nDimensions necessárias: %i x %i (largura >= %i x altura)."
+    IDS_MUI_ERR_BITMAP      "Dimensão não adequada do bitmap ""%s"".\nDimensão adequada: %i x %i (largura >= %i x altura)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Erro ao tentar ampliar direitos de usuário!"
 END
@@ -174,9 +176,10 @@ BEGIN
     IDS_MUI_REPLCOUNT       "%s ocorrência(s) substituída(s) do termo de pesquisa especificado."
     IDS_MUI_ASK_ENCODING    "Mudar a codificação de um arquivo de uma codificação para outra pode levar à substituição de textos não suportados por caracteres padrão, e o histórico de ações para desfazer será apagado. Continuar?"
     IDS_MUI_ASK_ENCODING2   "Você está para mudar a codificação de um arquivo vazio. Note que isso apagará o histórico de ações para desfazer, já que ela não pode ser sincronizada com a nova codificação. Continuar?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Esta operação irá limpar o histórico de desfazer. Continuar?"
     IDS_MUI_READONLY_SAVE   """%s"" é somente leitura. Salvar em um arquivo diferente?"
     IDS_MUI_FILECHANGENOTIFY
-                            "O presente arquivo foi modificado por um programa externo. Recarregar?"
+                            "O arquivo atual foi modificado por um programa externo.\nPor favor, escolha:\n\nCancelar -\t\tIgnorar modificações\nRecarregar -\t\tRecarregar arquivo\nContinuar -\tMudar para monitoramento de arquivo"
     IDS_MUI_FILECHANGENOTIFY2 "O presente arquivo foi apagado. Salvar agora?"
     IDS_MUI_FILELOCK_ERROR  "Não foi possível adquirir bloqueio de arquivo exclusivo para ""%s""!"
     IDS_MUI_STICKYWINPOS    "Posição de Janela Fixada foi ativada. Qualquer nova janela do Notepad3 usará as configurações de posicionamento de janela correntes."
@@ -263,16 +266,18 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Idioma"
     IDS_USE_LOCALE_DATEFMT  "Idioma define Formato da &Data"
     IDS_MUI_MENU_THEMES     "&Coleção de Esquemas"
-    IDM_THEMES_FACTORY_RESET "&Padrão de Fábrica"
+    IDM_THEMES_FACTORY_RESET "Restaurar Padrão de &Fábrica"
     IDM_THEMES_STD_CFG       "Config. &Padrão"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Limpar Tudo"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Limpar Histórico Localizar"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Limpar Histórico Substituir"
-    IDS_MUI_REPLCLIPTAG     "Substituir pelo Atalho da Área de Transferência [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Pesquisar pela Área de Transferência se a seleção estiver vazia"
+    IDS_MUI_REPLCLIPTAG     "Substituir pela Área de Transferência no Atalho [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Pesquisa circular - correspondência a partir do início"
     IDS_MUI_WRAPSEARCH_BCK  "Pesquisa circular - correspondência a partir do final"
 END
@@ -283,6 +288,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Alternar Visualização..."
     IDS_MUI_SB_REPLACE_ALL    "Substituir todos..."
     IDS_MUI_SB_WRAP_LINES     "Quebrar Linhas..."
+    IDS_MUI_SB_SORTING_LINES  "Classificar Linhas..."
     IDS_MUI_SB_CONV_LNBRK     "Converter Quebras de Linha..."
     IDS_MUI_SB_RECODING_DOC   "Recodificação de Documento..."
     IDS_MUI_SB_LEXER_STYLING  "Aplicar Estilo Lexer..."
@@ -315,8 +321,8 @@ Opções:\r\n\
 /b\tAbre um novo quadro de colagem para coletar entradas da área \r\n\tde transferência.\r\n\
 /n\tSempre abre uma nova janela (/ns instância de único arquivo).\r\n\
 /r\tReusa a janela (/rs instância de único arquivo).\r\n\
-/p\tDefine a posição e o tamanho da janela (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tou /p <left>,<top>,<width>,<height>,<max>    [all integers].\r\n\
+/p\tDefine a posição e o tamanho da janela (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tou /p <left>,<top>,<width>,<height>[,<dpi>[,<max>]]  (todos os números \r\n\tinteiros).\r\n\
 /t\tDefine o título da janela.\r\n\
 /i\tInicia como ícone na área de notificação.\r\n\
 /o\tMantém a janela sobre as outras.\r\n\
@@ -324,8 +330,8 @@ Opções:\r\n\
 /u\tExecuta com privilégios elevados.\r\n\
 /v\tImprime o arquivo imediatamente e fecha.\r\n\
 /vd\tImprime o arquivo (abre o diálogo de impressão).\r\n\
-/y\tCAMINHO do ambiente de pesquisa em caso de nome de\r\n\tarquivo relativo.\r\n\
-/z\tPular próximo (utilizável para substituição de Bloco de Notas\r\n\tcom base no registro).\r\n\r\n\
+/y\tCAMINHO do ambiente de pesquisa em caso de nome de tarquivo relativo.\r\n\
+/z\tPular próximo (utilizável para substituição de Bloco de Notas com base \r\n\tno registro).\r\n\r\n\
 Exemplos:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
  \t... Abre um novo arquivo: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\

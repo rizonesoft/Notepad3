@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Replace"
     IDT_VIEW_WORDWRAP       "Word Wrap"
     IDT_VIEW_ZOOMIN         "Zoom In"
+    IDT_VIEW_RESETZOOM      "Reset Zoom"
     IDT_VIEW_ZOOMOUT        "Zoom Out"
     IDT_VIEW_SCHEME         "Select Scheme"
     IDT_VIEW_SCHEMECONFIG   "Customize Schemes"
@@ -89,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Execute Document"
+    IDT_VIEW_NEW_WINDOW      "New Empty Window"
     IDT_VIEW_TOGGLE_VIEW     "Focused View"
     IDT_VIEW_CHASING_DOCTAIL "Monitoring Log"
     IDT_VIEW_PIN_ON_TOP      "Always On Top"
@@ -136,7 +138,7 @@ BEGIN
                             "Existing Notepad3 window is busy or has an active dialog box.\nWould you like to open another Notepad3 window?"
     IDS_MUI_ERR_ENCODINGNA  "Code page conversion tables for the selected encoding are not available on your system."
     IDS_MUI_ERR_UNICODE     "Error converting this Unicode file.\nData will be lost if the file is saved!"
-    IDS_MUI_ERR_BITMAP      "Error loading bitmap ""%s"".\nNeed dimensions: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Error elevating user rights!"
 END
@@ -174,9 +176,10 @@ BEGIN
     IDS_MUI_REPLCOUNT       "%s occurrence(s) of specified search pattern replaced."
     IDS_MUI_ASK_ENCODING    "Switching the file encoding from one encoding to another may replace unsupported text with default characters, and the undo history will be cleared. Continue?"
     IDS_MUI_ASK_ENCODING2   "You are about to change the encoding of an empty file. Note that this will clear the undo history, as it can't be synchronized with the new encoding. Continue?"
+    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
     IDS_MUI_READONLY_SAVE   """%s"" is read only. Save to a different file?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program. Reload?"
+                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
     IDS_MUI_FILECHANGENOTIFY2 "The current file has been deleted. Save now?"
     IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
     IDS_MUI_STICKYWINPOS    "Sticky Window Position is enabled. Any new Notepad3 windows will use the current window placement settings."
@@ -265,14 +268,16 @@ BEGIN
     IDS_MUI_MENU_THEMES     "&Scheme Collection"
     IDM_THEMES_FACTORY_RESET "&Factory Reset"
     IDM_THEMES_STD_CFG       "&Standard Config"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Clear All"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Clear Find History"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Clear Replace History"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard Shortcut [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Search by Clipboard if empty selection"
+    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top"
     IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom"
 END
@@ -283,6 +288,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
     IDS_MUI_SB_REPLACE_ALL    "Replace all..."
     IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
+    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
     IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
     IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
     IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
@@ -299,7 +305,7 @@ file\tMust be the last argument, no quoted spaces by default.\r\n\
 +\tAccept multiple file arguments (with quoted spaces).\r\n\
 -\tAccept single file argument (without quoted spaces).\r\n\r\n\
 Options:\r\n\
-/?\tDispay this help message.\r\n\
+/?\tDisplay this help message.\r\n\
 ...\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
 ...\tLine ending mode (/crlf, /cr, /lf).\r\n\
 /e\tFile source encoding.\r\n\
@@ -315,8 +321,8 @@ Options:\r\n\
 /b\tOpen new paste board to collect clipboard entries.\r\n\
 /n\tAlways open a new window (/ns single file instance).\r\n\
 /r\tReuse window (/rs single file instance).\r\n\
-/p\tSet window position and size (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tor /p <left>,<top>,<width>,<height>,<max>    [all integers].\r\n\
+/p\tSet window position and size (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tor /p <left>,<top>,<width>,<height>[,<dpi>[,<max>]]  (all integers).\r\n\
 /t\tSet window title.\r\n\
 /i\tStart as tray icon.\r\n\
 /o\tKeep window on top.\r\n\

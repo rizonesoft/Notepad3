@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Verwyder Lyn Regs\tCtrl+Shift+Del",    IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Kolom &Wrap...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
-            MENUITEM "V&erdeel Lyne\tCtrl+I",                IDM_EDIT_SPLITLINES
-            MENUITEM "Ko&mbineer Lyne\tCtrl+J",              IDM_EDIT_JOINLINES
-            MENUITEM "Smel&t Lyne Saam\tCtrl+Alt+J",         IDM_EDIT_JOINLN_NOSP
-            MENUITEM "Behou &Paragrawe\tCtrl+Shift+J",       IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Voeg Lêer Lyne &Saam\tAlt+Y",          IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Voeg &Blank Lyne Saam\tCtrl+Alt+Y",    IDM_EDIT_MERGEBLANKLINES
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "&Kompres Spasies\tCtrl+Alt+P",        IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modifiseer Lyne...\tAlt+M",          IDM_EDIT_MODIFYLINES
-            MENUITEM "&Bring Lyne in Lyn...\tAlt+J",        IDM_EDIT_ALIGN
             MENUITEM "&Sorteer Lyne...\tAlt+O",             IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "&Bring Lyne in Lyn...\tAlt+J",        IDM_EDIT_ALIGN
+            MENUITEM "V&erdeel Lyne\tCtrl+I",               IDM_EDIT_SPLITLINES
+            MENUITEM "K&ombineer Lyne\tCtrl+J",             IDM_EDIT_JOINLINES
+            MENUITEM "Smel&t Lyne Saam\tCtrl+Alt+J",        IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Behou Paragra&we\tCtrl+Shift+J",      IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Spring na die &Seleksie Begin\tCtrl+,",    CMD_JUMP2SELSTART
             MENUITEM "Sprin&g na die Seleksie Einde\tCtrl+.",      CMD_JUMP2SELEND
@@ -337,7 +338,7 @@ BEGIN
             MENUITEM "Vervang Volge&nde\tF4",                        IDM_EDIT_REPLACENEXT
             MENUITEM "&Gaan na...\tCtrl+G",                          IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Soek in lêers\tCtrl+Shift+F",                 IDM_GREP_WIN_SEARCH
+            MENUITEM "&Soek in lêers\tCtrl+Shift+F",                 IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Aansig"
@@ -357,6 +358,7 @@ BEGIN
             MENUITEM "Wys slegs in Dokument",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Wys alle Veranderingsmerkers",        IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Vee Verandering/Ontdoen Geskiedenis"      IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Skakel &Hotspots\tCtrl+Alt+W",            IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Kleur Definisie Hotspots",
@@ -424,6 +426,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "P&anele"
         BEGIN
+            MENUITEM "Wys Titelbalk",                       IDM_VIEW_TITLEBAR
             MENUITEM "Wys &Menubalk",                       IDM_VIEW_MENUBAR
             MENUITEM "Wys &Nutsbalk",                       IDM_VIEW_TOOLBAR
             MENUITEM "Wys &Statusbalk",                     IDM_VIEW_STATUSBAR
@@ -460,7 +463,7 @@ BEGIN
         MENUITEM "Globale Standaard Font...\tAlt+F12",                   IDM_VIEW_FONT
         MENUITEM "Huidige Skema se Verstek Font...\tCtrl+Alt+F12",       IDM_VIEW_CURRENTSCHEME
         MENUITEM SEPARATOR
-        MENUITEM "Windows Dark Mode",                                    IDM_VIEW_WIN_DARK_MODE
+        MENUITEM "Windows Donker Modus",                                 IDM_VIEW_WIN_DARK_MODE
     END
     POPUP "&Instellings"
     BEGIN
@@ -469,6 +472,7 @@ BEGIN
         MENUITEM "&Woord Omslag Instellings...",                    IDM_SET_WORDWRAPSETTINGS
         MENUITEM "L&ang Lyn Instellings...",                        IDM_SET_LONGLINESETTINGS
         MENUITEM "Outo-In&dent Teks",                               IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Outotoemaak &Aanhalings",                         IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Outomatiese Toe&beugel",                          IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Outo-Sluit &HTML/XML\tCtrl+Shift+H",              IDM_SET_AUTOCLOSETAGS
         MENUITEM "O&uto-Voltooi Woorde",                            IDM_SET_AUTOCOMPLETEWORDS
@@ -477,7 +481,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Slegs Een Keer per &Lêer",                        IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Lêerverandering-&Kennisgewing...\tAlt+F5",        IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
+        MENUITEM "AutoSave / Backup Settings...",                   IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "&Mute Message Beeps",                             IDM_SET_MUTE_MESSAGEBEEP
         POPUP "&Esc Sleutel Funksie"
         BEGIN
@@ -493,7 +497,7 @@ BEGIN
             MENUITEM "&Onthou Onlangse Lêers",              IDM_SET_NOSAVERECENT
             MENUITEM "Bewaar &Caret Posisie",               IDM_SET_NOPRESERVECARET
             MENUITEM "On&thou Soekpatroon",                 IDM_SET_NOSAVEFINDREPL
-            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "&Autoload Recent File",               IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "&Venster"
         BEGIN
@@ -574,6 +578,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Wys Titlebalk",                           IDM_VIEW_TITLEBAR
         MENUITEM "Wys Menubalk",                            IDM_VIEW_MENUBAR
         MENUITEM "Wys Nutsbalk",                            IDM_VIEW_TOOLBAR
         MENUITEM "Wys Statusbalk",                          IDM_VIEW_STATUSBAR
@@ -593,7 +598,7 @@ BEGIN
         MENUITEM "Kode Vou",                                IDM_VIEW_FOLDING
         MENUITEM "Lyn Nommer",                              IDM_VIEW_LINENUMBERS
         MENUITEM "Bookmerk Ruglyn",                         IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Change History Margin",                   IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN

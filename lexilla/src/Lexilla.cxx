@@ -11,7 +11,7 @@
 #include <vector>
 #include <initializer_list>
 
-#if _WIN32
+#if defined(_WIN32)
 #define EXPORT_FUNCTION __declspec(dllexport)
 #define CALLING_CONVENTION __stdcall
 #else
@@ -73,10 +73,12 @@ extern LexerModule lmRegistry;
 extern LexerModule lmRuby;
 extern LexerModule lmRust;
 extern LexerModule lmSQL;
+extern LexerModule lmSysVerilog;
 extern LexerModule lmTCL;
 extern LexerModule lmTOML;
 extern LexerModule lmVB;
 extern LexerModule lmVBScript;
+extern LexerModule lmVerilog;
 extern LexerModule lmVHDL;
 extern LexerModule lmXML;
 extern LexerModule lmYAML;
@@ -141,10 +143,12 @@ void AddEachLexer() {
 		&lmRuby,
 		&lmRust,
 		&lmSQL,
+		&lmSysVerilog,
 		&lmTCL,
 		&lmTOML,
 		&lmVB,
 		&lmVBScript,
+		&lmVerilog,
 		&lmVHDL,
 		&lmXML,
 		&lmYAML,
@@ -160,7 +164,7 @@ extern "C" {
 
 EXPORT_FUNCTION int CALLING_CONVENTION GetLexerCount() {
 	AddEachLexer();
-	return catalogueLexilla.Count();
+	return static_cast<int>(catalogueLexilla.Count());
 }
 
 EXPORT_FUNCTION void CALLING_CONVENTION GetLexerName(unsigned int index, char *name, int buflength) {
@@ -179,7 +183,7 @@ EXPORT_FUNCTION LexerFactoryFunction CALLING_CONVENTION GetLexerFactory(unsigned
 
 EXPORT_FUNCTION Scintilla::ILexer5 * CALLING_CONVENTION CreateLexer(const char *name) {
 	AddEachLexer();
-	for (unsigned int i = 0; i < catalogueLexilla.Count(); i++) {
+	for (size_t i = 0; i < catalogueLexilla.Count(); i++) {
 		const char *lexerName = catalogueLexilla.Name(i);
 		if (0 == strcmp(lexerName, name)) {
 			return catalogueLexilla.Create(i);
@@ -193,9 +197,8 @@ EXPORT_FUNCTION const char * CALLING_CONVENTION LexerNameFromID(int identifier) 
 	const LexerModule *pModule = catalogueLexilla.Find(identifier);
 	if (pModule) {
 		return pModule->languageName;
-	} else {
-		return nullptr;
 	}
+	return nullptr;
 }
 
 EXPORT_FUNCTION const char * CALLING_CONVENTION GetLibraryPropertyNames() {

@@ -52,18 +52,18 @@ EDITLEXER lexINNO =
 {
     SCLEX_INNOSETUP, "inno", IDS_LEX_INNO, L"Inno Setup Script", L"iss; isl; islu", L"",
     &KeyWords_INNO, {
-        { {STYLE_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        //{ {SCE_INNO_DEFAULT}, IDS_LEX_STR_63126, L"Default", L"", L"" },
-        { {SCE_INNO_COMMENT}, IDS_LEX_STR_63127, L"Comment", L"fore:#008000", L"" },
-        { {SCE_INNO_KEYWORD}, IDS_LEX_STR_63128, L"Keyword", L"fore:#0000FF", L"" },
-        { {SCE_INNO_PARAMETER}, IDS_LEX_STR_63281, L"Parameter", L"fore:#0000FF", L"" },
-        { {SCE_INNO_SECTION}, IDS_LEX_STR_63232, L"Section", L"bold; fore:#000080", L"" },
-        { {SCE_INNO_PREPROC}, IDS_LEX_STR_63133, L"Preprocessor", L"fore:#CC0000", L"" },
+        { {STYLE_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        //{ {SCE_INNO_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
+        { {SCE_INNO_COMMENT}, IDS_LEX_STR_Comment, L"Comment", L"fore:#008000", L"" },
+        { {SCE_INNO_KEYWORD}, IDS_LEX_STR_Keyword, L"Keyword", L"fore:#0000FF", L"" },
+        { {SCE_INNO_PARAMETER}, IDS_LEX_STR_Param, L"Parameter", L"fore:#0000FF", L"" },
+        { {SCE_INNO_SECTION}, IDS_LEX_STR_Section, L"Section", L"bold; fore:#000080", L"" },
+        { {SCE_INNO_PREPROC}, IDS_LEX_STR_PreProc, L"Preprocessor", L"fore:#CC0000", L"" },
         { {SCE_INNO_INLINE_EXPANSION}, IDS_LEX_STR_63282, L"Inline Expansion", L"fore:#800080", L"" },
         { {SCE_INNO_COMMENT_PASCAL}, IDS_LEX_STR_63283, L"Pascal Comment", L"fore:#008000", L"" },
         { {SCE_INNO_KEYWORD_PASCAL}, IDS_LEX_STR_63284, L"Pascal Keyword", L"fore:#0000FF", L"" },
-        { {MULTI_STYLE(SCE_INNO_STRING_DOUBLE,SCE_INNO_STRING_SINGLE,0,0)}, IDS_LEX_STR_63131, L"String", L"", L"" },
-        //{ {SCE_INNO_IDENTIFIER}, IDS_LEX_STR_63129, L"Identifier", L"", L"" },
+        { {MULTI_STYLE(SCE_INNO_STRING_DOUBLE,SCE_INNO_STRING_SINGLE,0,0)}, IDS_LEX_STR_String, L"String", L"", L"" },
+        //{ {SCE_INNO_IDENTIFIER}, IDS_LEX_STR_Identifier, L"Identifier", L"", L"" },
         //{ {SCE_INNO_KEYWORD_USER}, L"User Defined", L"", L"" },
         EDITLEXER_SENTINEL
     }

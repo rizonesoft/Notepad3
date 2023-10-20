@@ -49,8 +49,6 @@ BEGIN
   "#include ""../language/np3_en_gb/np3_en_gb.rc""\r\n"
 #elif defined(MUI_BASE_LNG_ES_ES)
   "#include ""../language/np3_es_es/np3_es_es.rc""\r\n"
-#elif defined(MUI_BASE_LNG_ES_MX)
-  "#include ""../language/np3_es_mx/np3_es_mx.rc""\r\n"
 #elif defined(MUI_BASE_LNG_FR_FR)
   "#include ""../language/np3_fr_fr/np3_fr_fr.rc""\r\n"
 #elif defined(MUI_BASE_LNG_HI_IN)
@@ -216,6 +214,9 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //     After Win10 1903 upgrade, Ctrl+Alt+Shift+F hotkey is intercepted by File Explorer (issue #1609)
 //
 //
+// --------------------------------------------------------------------------------------------------------------------
+// Reference: https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+// --------------------------------------------------------------------------------------------------------------------
 
 IDR_MAINWND ACCELERATORS
 BEGIN
@@ -439,6 +440,8 @@ BEGIN
     VK_RETURN,      IDM_EDIT_COMPLETEWORD,            VIRTKEY, CONTROL, ALT, NOINVERT
     VK_SPACE,       IDM_EDIT_SELECTWORD,              VIRTKEY, CONTROL, NOINVERT
     VK_SPACE,       IDM_EDIT_SELECTALLMATCHES,        VIRTKEY, SHIFT, CONTROL, NOINVERT
+    VK_PRIOR,       CMD_PARAGRAPH_UP,                 VIRTKEY, ALT, NOINVERT
+    VK_NEXT,        CMD_PARAGRAPH_DOWN,               VIRTKEY, ALT, NOINVERT
     VK_SUBTRACT,    IDM_VIEW_ZOOMOUT,                 VIRTKEY, CONTROL, NOINVERT
     //~VK_SUBTRACT,    CMD_DECLINELIMIT,                 VIRTKEY, ALT, NOINVERT
     VK_SUBTRACT,    CMD_DECREASENUM,                  VIRTKEY, CONTROL, ALT, NOINVERT
@@ -508,8 +511,6 @@ END
   #include "../language/np3_en_gb/np3_en_gb.rc"
 #elif defined(MUI_BASE_LNG_ES_ES)
   #include "../language/np3_es_es/np3_es_es.rc"
-#elif defined(MUI_BASE_LNG_ES_MX)
-  #include "../language/np3_es_mx/np3_es_mx.rc"
 #elif defined(MUI_BASE_LNG_FR_FR)
   #include "../language/np3_fr_fr/np3_fr_fr.rc"
 #elif defined(MUI_BASE_LNG_HI_IN)

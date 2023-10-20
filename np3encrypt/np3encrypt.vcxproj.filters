@@ -24,30 +24,30 @@
     <ClInclude Include="targetver.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\crypto\crypto.h">
+    <ClInclude Include="..\src\crypto\crypto.h">
       <Filter>crypto</Filter>
     </ClInclude>
-    <ClInclude Include="..\crypto\rijndael-alg-fst.h">
+    <ClInclude Include="..\src\crypto\rijndael-alg-fst.h">
       <Filter>crypto</Filter>
     </ClInclude>
-    <ClInclude Include="..\crypto\rijndael-api-fst.h">
+    <ClInclude Include="..\src\crypto\rijndael-api-fst.h">
       <Filter>crypto</Filter>
     </ClInclude>
-    <ClInclude Include="..\crypto\sha-256.h">
+    <ClInclude Include="..\src\crypto\sha-256.h">
       <Filter>crypto</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\crypto\rijndael-alg-fst.c">
+    <ClCompile Include="..\src\crypto\rijndael-alg-fst.c">
       <Filter>crypto</Filter>
     </ClCompile>
-    <ClCompile Include="..\crypto\rijndael-api-fst.c">
+    <ClCompile Include="..\src\crypto\rijndael-api-fst.c">
       <Filter>crypto</Filter>
     </ClCompile>
-    <ClCompile Include="..\crypto\sha-256.c">
+    <ClCompile Include="..\src\crypto\sha-256.c">
       <Filter>crypto</Filter>
     </ClCompile>
-    <ClCompile Include="..\crypto\notepadcrypt.c">
+    <ClCompile Include="..\src\crypto\notepadcrypt.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

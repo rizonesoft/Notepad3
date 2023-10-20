@@ -7,7 +7,7 @@
 *                                                                             *
 * TypeDefs.h                                                                  *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -145,20 +145,27 @@ extern WININFO g_DefWinInfo;
 
 // ----------------------------------------------------------------------------
 // see windef.h  and wingdi.h
-//-typedef DWORD COLORREF;
-typedef int COLORALPHAREF;
-//-#define RGB(r, g, b) ((COLORREF)(((BYTE)(r) | ((WORD)((BYTE)(g)) << 8)) | (((DWORD)(BYTE)(b)) << 16)))
-#define RGBA(r, g, b, a) ((COLORALPHAREF)(((BYTE)(((r)&0xff)) | ((WORD)((BYTE)((g)&0xff)) << 8)) | (((DWORD)(BYTE)((b)&0xff)) << 16) | (((DWORD)(BYTE)((a)&0xff)) << 24)))
-#define RGBxA(rgb, a) ((COLORALPHAREF)(((DWORD)((rgb)&0xffffff)) | (((DWORD)(BYTE)((a)&0xff)) << 24)))
-//-#define GetRValue(rgba) (LOBYTE(rgba))                 
-//-#define GetGValue(rgba) (LOBYTE(((WORD)(rgba)) >> 8))
-//-#define GetBValue(rgba) (LOBYTE((rgba) >> 16))
+//::typedef DWORD COLORREF;
+typedef COLORREF COLORALPHAREF;
+// typedef unsigned __int32 COLORALPHAREF; //: warning(C4057) different base types
+//::#define RGB(r, g, b) ((COLORREF)(((BYTE)(r) | ((WORD)((BYTE)(g)) << 8)) | (((DWORD)(BYTE)(b)) << 16)))
+#define ARGB(a, r, g, b) ((COLORALPHAREF)(((BYTE)(((r)&0xff)) | ((WORD)((BYTE)((g)&0xff)) << 8)) | (((DWORD)(BYTE)((b)&0xff)) << 16) | (((DWORD)(BYTE)((a)&0xff)) << 24)))
+#define AxRGB(a, rgb) ((COLORALPHAREF)(((COLORREF)((rgb)&0xffffff)) | (((COLORALPHAREF)(BYTE)((a)&0xff)) << 24)))
+#define RGB2RGBAREF(rgb) AxRGB(SC_ALPHA_OPAQUE, (COLORREF)((rgb)&0xffffff))
+//::#define GetRValue(rgba) (LOBYTE(rgba))
+//::#define GetGValue(rgba) (LOBYTE(((WORD)(rgba)) >> 8))
+//::#define GetBValue(rgba) (LOBYTE((rgba) >> 16))
 #define GetAValue(rgba) (LOBYTE((rgba) >> 24))
 
-#define ARGB_TO_COLREF(X) (RGB(((X) >> 16) & 0xff, ((X) >> 8) & 0xff, (X)&0xff))
-#define RGBA_TO_COLREF(X) (RGB(((X) >> 24) & 0xff, ((X) >> 16) & 0xff, ((X) >> 8) & 0xff))
-#define BGRA_TO_COLREF(X) (RGB(((X) >> 8) & 0xff, ((X) >> 16) & 0xff, ((X) >> 24) & 0xff))
-#define ARGB_GET_ALPHA(A) (((A) >> 24) & 0xff)
+#define ARGB_TO_COLREF(X) ((X) & 0xffffff)
+#define RGBA_TO_COLREF(X) RGB(((X) >> 24)&0xff, ((X) >> 16)&0xff, ((X) >> 8)&0xff)
+#define BGRA_TO_COLREF(X) RGB(((X) >> 8)&0xff, ((X) >> 16)&0xff, ((X) >> 24)&0xff)
+
+//#define ARGB_TO_COLORALPHAREF(X) (X)
+#define RGBA_TO_COLORALPHAREF(X) AxRGB((X)&0xff, RGBA_TO_COLREF(X))
+#define BGRA_TO_COLORALPHAREF(X) AxRGB((X)&0xff, BGRA_TO_COLREF(X))
+
+#define ARGB_GET_ALPHA(A) (((A) >> 24)&0xff)
 #define RGBA_GET_ALPHA(A) ((A)&0xff)
 #define BGRA_GET_ALPHA(A) RGBA_GET_ALPHA(A)
 
@@ -201,6 +208,7 @@ typedef enum BUFFER_SIZES {
     XHUGE_BUFFER = 2048,
     XXXL_BUFFER = 4096,
 
+    EDGELINE_NUM_LIMIT = 256,
     ANSI_CHAR_BUFFER = 258,
     STYLE_EXTENTIONS_BUFFER = 512,
     EXTENTIONS_FILTER_BUFFER = (STYLE_EXTENTIONS_BUFFER << 1),
@@ -213,6 +221,7 @@ typedef enum BUFFER_SIZES {
 
 typedef enum FR_STATES { FND_NOP = 0, NXT_NOT_FND, NXT_FND, NXT_WRP_FND, PRV_NOT_FND, PRV_FND, PRV_WRP_FND } FR_STATES;
 typedef enum FR_UPD_MODES { FRMOD_IGNORE = 0, FRMOD_NORM, FRMOD_WRAPED } FR_UPD_MODES;
+typedef enum WIN_DISPL_MODE { WINDSPMOD_AUTO = 0, WINDSPMOD_DARK, WINDSPMOD_LIGHT } WIN_DISPL_MODE;
 
 //==== Statusbar ==============================================================
 
@@ -222,17 +231,16 @@ typedef enum STATUS_SECTOR_T {
 
     STATUS_DOCLINE = 0, STATUS_DOCCOLUMN, STATUS_SELECTION, STATUS_SELCTBYTES, STATUS_SELCTLINES,
     STATUS_OCCURRENCE, STATUS_DOCSIZE, STATUS_CODEPAGE, STATUS_EOLMODE, STATUS_OVRMODE, STATUS_2ND_DEF,
-    STATUS_LEXER, STATUS_DOCCHAR, STATUS_OCCREPLACE, STATUS_TINYEXPR,
+    STATUS_LEXER, STATUS_DOCCHAR, STATUS_OCCREPLACE, STATUS_TINYEXPR, STATUS_UNICODEPT,
     STATUS_SECTOR_COUNT,
     STATUS_HELP = SB_SIMPLEID // (!)
 } STATUS_SECTOR_T;
 
-#define SBS_INIT_ZERO  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-#define SBS_INIT_MINUS { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 }
-#define SBS_INIT_ORDER { 0, 1, 2, 3, 4, 5, 6, 7. 8. 9, 10, 11, 12, 13, 14 }
+#define SBS_INIT_ZERO  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+#define SBS_INIT_MINUS { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 }
 
-#define STATUSBAR_DEFAULT_IDS  L"0 1 12 14 2 4 5 6 7 8 9 10 11"
-#define STATUSBAR_SECTION_WIDTH_SPECS L"30 20 20 20 20 20 0 0 0 0 0 0 20 20 20"
+#define STATUSBAR_DEFAULT_IDS  L"0 1 15 14 2 4 5 6 7 8 9 10 11"
+#define STATUSBAR_SECTION_WIDTH_SPECS L"30 20 20 20 20 20 20 0 0 0 0 0 0 0 20 24"
 #define STAUSBAR_RIGHT_MARGIN 20
 
 #define MB_ICONSHIELD 0x000000B0L
@@ -279,6 +287,7 @@ typedef struct EDITFINDREPLACE {
     bool bRegExprSearch;
     bool bWildcardSearch;
     bool bMarkOccurences;
+    bool bInstantIncrementalSearch;
     bool bHideNonMatchedLines;
     bool bStateChanged;
     HWND hwnd;
@@ -289,7 +298,7 @@ typedef struct EDITFINDREPLACE {
 
 typedef const EDITFINDREPLACE* const CLPCEDITFINDREPLACE;
 
-#define INIT_EFR_DATA  { 0, false, false, false, false, false, false, false, false, true, NULL, NULL, NULL }
+#define INIT_EFR_DATA  { 0, false, false, false, false, false, false, false, true, false, true, NULL, NULL, NULL }
 // USE: void DuplicateEFR(LPEDITFINDREPLACE dst, CLPCEDITFINDREPLACE src);
 //      void ReleaseEFR(LPEDITFINDREPLACE efr);
 
@@ -324,7 +333,7 @@ typedef struct CmdMessageQueue_t {
     UINT  cmd;
     WPARAM wparam;
     LPARAM lparam;
-    int delay;
+    LONG64                    delay;
     struct CmdMessageQueue_t* next;
     struct CmdMessageQueue_t* prev;
 
@@ -383,6 +392,9 @@ typedef enum MARKER_ID {
 #define OCCURRENCE_MARKER_BITMASK() BITMASK_GEN(int, 0, MARKER_NP3_8 + 1)
 #define ALL_MARKERS_BITMASK() BITMASK_GEN(int, 0, MARKER_NP3_BOOKMARK + 1)
 
+#define CHANGE_HISTORY_MARKER_BITMASK() BITMASK_GEN(int, SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN, \
+                                                    (SC_MARKNUM_HISTORY_REVERTED_TO_MODIFIED - SC_MARKNUM_HISTORY_REVERTED_TO_ORIGIN + 1))
+
 extern LPCWSTR WordBookMarks[];
 
 // --------------------------------------------------------------------------
@@ -440,19 +452,6 @@ typedef enum AutoSaveBackupOptions {
 
 //=============================================================================
 
-typedef enum ChangeHistory {
-
-    ChgHist_NONE   = SC_CHANGE_HISTORY_DISABLED,
-    ChgHist_ON     = SC_CHANGE_HISTORY_ENABLED,
-    ChgHist_MARGIN = SC_CHANGE_HISTORY_MARKERS,
-    ChgHist_DOCTXT = SC_CHANGE_HISTORY_INDICATORS,
-
-    ChgHist_ALL = ChgHist_ON | ChgHist_MARGIN | ChgHist_DOCTXT
-
-} ChangeHistory;
-
-//=============================================================================
-
 typedef struct CONSTANTS_T {
 
     int const          StdDefaultLexerID; // Pure Text Files
@@ -467,6 +466,9 @@ typedef struct CONSTANTS_T {
 } CONSTANTS_T, *PCONSTANTS_T;
 
 extern CONSTANTS_T const Constants;
+
+#define DEF_WIN_POSITION_STRG L"DefaultWindowPosition"
+#define WINDOWPOS_STRGFORMAT  L"%i,%i,%i,%i,%i,%i"
 
 // ------------------------------------
 
@@ -498,7 +500,8 @@ typedef struct GLOBALS_T {
     HICON     hIconMsgError;
     HICON     hIconMsgQuest;
     HICON     hIconMsgShield;
-    //HICON     hIconMsgWinLogo;
+    HICON     hIconMsgWinCmd;
+    HICON     hIconGrepWinNP3;
     HWND      hwndDlgFindReplace;
     HWND      hwndDlgCustomizeSchemes;
     int       iDefaultCharSet;
@@ -521,7 +524,7 @@ typedef struct GLOBALS_T {
     bool      bMinimizedToTray;
     bool      bZeroBasedColumnIndex;
     bool      bZeroBasedCharacterCount;
-    int       iReplacedOccurrences;
+    DocPosU   iReplacedOccurrences;
     DocPosU   iSelectionMarkNumber;
     DocPosU   iMarkOccurrencesCount;
     bool      bUseLimitedAutoCCharSet;
@@ -581,10 +584,10 @@ typedef struct SETTINGS_T {
     bool DocReadOnlyMode;
     bool MatchBraces;
     bool AutoCloseTags;
+    bool AutoCloseQuotes;
     bool AutoCloseBrackets;
     int  HighlightCurrentLine;
     int  ChangeHistoryMode;
-    bool ChangeHistoryMargin;
     bool HyperlinkHotspot;
     int  ColorDefHotspot;
     bool ScrollPastEOF;
@@ -643,6 +646,7 @@ typedef struct SETTINGS_T {
     bool FindReplaceTransparentMode;
     int  RenderingTechnology;
     int  Bidirectional;
+    bool ShowTitlebar;
     bool ShowMenubar;
     bool ShowToolbar;
     bool ShowStatusbar;
@@ -670,12 +674,14 @@ typedef struct SETTINGS_T {
     int  FocusViewMarkerMode;
     bool PreferredLocale4DateFmt;
     int  AutoSaveInterval;
+    bool SearchByClipboardIfEmpty;
     bool ReplaceByClipboardTag;
+    int  DarkModeHiglightContrast;
 
     AutoSaveBackupOptions AutoSaveOptions;
 
 #ifdef D_NP3_WIN10_DARK_MODE
-    bool WinThemeDarkMode;
+    WIN_DISPL_MODE WinThemeDarkMode; // auto(0), true(1), false(2)
 #endif
 
     RECT PrintMargin;
@@ -695,6 +701,15 @@ extern SETTINGS_T Settings;
 #define IsFocusedViewAllowed() (IsMarkOccurrencesEnabled() && !Settings.MarkOccurrencesMatchVisible)
 #define IsColorDefHotspotEnabled() (Settings.ColorDefHotspot != 0)
 
+//inline bool IsSettingDarkMode()
+//{
+//    return ((Settings.WinThemeDarkMode == WINDSPMOD_AUTO) ? ShouldAppsUseDarkModeEx() : ((Settings.WinThemeDarkMode == WINDSPMOD_DARK) ? true : false));
+//}
+
+#define IsSettingDarkMode() (((Settings.WinThemeDarkMode == WINDSPMOD_AUTO) ? \
+                            ShouldAppsUseDarkModeEx() : \
+                            ((Settings.WinThemeDarkMode == WINDSPMOD_DARK) ? true : false)) && IsDarkModeSupported())
+
 //=============================================================================
 
 typedef struct FLAGS_T {
@@ -711,6 +726,7 @@ typedef struct FLAGS_T {
     bool RelativeFileMRU;
     bool PortableMyDocs;
     bool NoFadeHidden;
+    bool SaveBlankNewFile;
     bool SimpleIndentGuides;
     bool NoHTMLGuess;
     bool NoCGIGuess;
@@ -732,32 +748,33 @@ extern FLAGS_T DefaultFlags;
 
 typedef struct SETTINGS2_T {
 
-    int    FileLoadWarningMB;
-    int    OpacityLevel;
-    int    FindReplaceOpacityLevel;
-    DWORD  FileCheckInverval;
-    DWORD  UndoTransactionTimeout;
-    int    IMEInteraction;
-    int    SciFontQuality;
-    int    LaunchInstanceWndPosOffset;
-    bool   LaunchInstanceFullVisible;
-    int    UpdateDelayMarkAllOccurrences;
-    bool   DenyVirtualSpaceAccess;
-    bool   UseOldStyleBraceMatching;
-    int    CurrentLineHorizontalSlop;
-    int    CurrentLineVerticalSlop;
-    bool   NoCopyLineOnEmptySelection;
-    bool   NoCutLineOnEmptySelection;
-    bool   LexerSQLNumberSignAsComment;
-    int    ExitOnESCSkipLevel;
-    int    ZoomTooltipTimeout;
-    int    WrapAroundTooltipTimeout;
-    int    LargeIconScalePrecent;
+    int     FileLoadWarningMB;
+    int     OpacityLevel;
+    int     FindReplaceOpacityLevel;
+    LONG64  FileCheckInterval;
+    LONG64  UndoTransactionTimeout;
+    int     IMEInteraction;
+    int     SciFontQuality;
+    int     LaunchInstanceWndPosOffset;
+    bool    LaunchInstanceFullVisible;
+    int     UpdateDelayMarkAllOccurrences;
+    bool    DenyVirtualSpaceAccess;
+    bool    UseOldStyleBraceMatching;
+    int     CurrentLineHorizontalSlop;
+    int     CurrentLineVerticalSlop;
+    bool    NoCopyLineOnEmptySelection;
+    bool    NoCutLineOnEmptySelection;
+    bool    LexerSQLNumberSignAsComment;
+    int     ExitOnESCSkipLevel;
+    int     ZoomTooltipTimeout;
+    int     WrapAroundTooltipTimeout;
+    int     LargeIconScalePrecent;
+    int     DarkModeHiglightContrast;
+    bool    DrawAnimatedWindow;
 
-    float  AnalyzeReliableConfidenceLevel;
-    float  LocaleAnsiCodePageAnalysisBonus;
-    float  DarkModeHiglightContrast;
-
+    float   AnalyzeReliableConfidenceLevel;
+    float   LocaleAnsiCodePageAnalysisBonus;
+           
 #ifdef D_NP3_WIN10_DARK_MODE
     COLORREF DarkModeBkgColor;
     COLORREF DarkModeBtnFaceColor;
@@ -799,6 +816,9 @@ typedef struct SETTINGS2_T {
 
     WCHAR HyperlinkFileProtocolVerb[MICRO_BUFFER];
 
+    const WCHAR* CodeFontPrefPrioList[MICRO_BUFFER];
+    const WCHAR* TextFontPrefPrioList[MICRO_BUFFER];
+
 } SETTINGS2_T, *PSETTINGS2_T;
 
 #define Default_ExitOnESCSkipLevel 2
@@ -831,11 +851,39 @@ extern FOCUSEDVIEW_T FocusedView;
 
 //=============================================================================
 
+typedef struct BackgroundWorker {
+    HWND   hwnd;
+    HANDLE eventCancel;
+    HANDLE workerThread;
+    HPATHL hFilePath; // PATHLONG_MAX_CCH
+} BackgroundWorker;
+
+//=============================================================================
+
+typedef struct FCOBSRVDATA_T {
+
+    volatile LONG64   iFileChangeNotifyTime; // multi-threaded
+
+    WIN32_FIND_DATA   fdCurFile;
+    HANDLE            hEventFileChanged;
+    HANDLE            hEventFileDeleted;
+
+    HANDLE            hFileChanged;  // FindFirstChangeNotification()
+    BackgroundWorker  worker;
+
+} FCOBSRVDATA_T, *PFCOBSRVDATA_T;
+
+#define INIT_FCOBSRV_T { 0LL, { 0 }, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, { NULL, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, NULL } }
+
+#define MIN_FC_POLL_INTERVAL (200LL)
+#define MAX_FC_POLL_INTERVAL ((24LL * 60 * 60 * 1000) << 1) // max: 48h
+
+//=============================================================================
+
 typedef struct FILEWATCHING_T {
 
-    FILE_WATCHING_MODE flagChangeNotify;  // <-> s_flagChangeNotify;
     FILE_WATCHING_MODE FileWatchingMode;  // <-> Settings.FileWatchingMode;
-    DWORD              FileCheckInverval; // <-> Settings2.FileCheckInverval;
+    LONG64             FileCheckInterval; // <-> clampll(Settings2.FileCheckInterval, MIN_FC_POLL_INTERVAL, MAX_FC_POLL_INTERVAL);
     bool               MonitoringLog;
 
 } FILEWATCHING_T, *PFILEWATCHING_T;
@@ -918,6 +966,11 @@ typedef struct THEMEFILES {
 #define NP3_VIRTUAL_SPACE_ACCESS_OPTIONS (Settings2.DenyVirtualSpaceAccess ? SCVS_NONE : SCVS_RECTANGULARSELECTION)
 
 
+//=============================================================================
+
+#define GET_WRAP_MODE() (!Globals.fvCurFile.bWordWrap ? SC_WRAP_NONE : ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR))
+
+
 // The possible notification types are the same as the modificationType bit flags used by SCN_MODIFIED:
 // SC_MOD_INSERTTEXT, SC_MOD_DELETETEXT, SC_MOD_CHANGESTYLE, SC_MOD_CHANGEFOLD, SC_PERFORMED_USER,
 // SC_PERFORMED_UNDO, SC_PERFORMED_REDO, SC_MULTISTEPUNDOREDO, SC_LASTSTEPINUNDOREDO, SC_MOD_CHANGEMARKER,
@@ -966,7 +1019,7 @@ inline void SetDialogIconNP3(HWND hwnd)
         SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)Globals.hDlgIconSmall);
     }
     if (Globals.hDlgIconBig) {
-        SendMessage((hwnd), WM_SETICON, ICON_BIG, (LPARAM)Globals.hDlgIconBig);
+        SendMessage(hwnd, WM_SETICON, ICON_BIG, (LPARAM)Globals.hDlgIconBig);
     }
 }
 

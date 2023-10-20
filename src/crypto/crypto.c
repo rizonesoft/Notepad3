@@ -25,7 +25,6 @@ see ecryption-doc.txt for details
 #define WIN32_LEAN_AND_MEAN 1
 #define NOMINMAX 1
 #include <windows.h>
-#include <intsafe.h>
 #include <shellapi.h>
 #include <time.h>
 #include "../src/Dialogs.h"
@@ -443,16 +442,16 @@ CASE_WM_CTLCOLOR_SET:
 // set passphrases for output
 bool GetFileKey(HWND hwnd)
 {
-    return (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_PASSWORDS),
-                                         GetParent(hwnd), SetKeysDlgProc, (LPARAM)hwnd));
+    return (IsYesOkay(ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_PASSWORDS),
+                                           GetParent(hwnd), SetKeysDlgProc, (LPARAM)hwnd)));
 }
 
 // set passphrases for file being input
 bool ReadFileKey(HWND hwnd, bool master)
 {
     masterKeyAvailable = master;
-    return (IDOK == ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_READPW),
-                                         GetParent(hwnd), GetKeysDlgProc, (LPARAM)hwnd));
+    return (IsYesOkay(ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_READPW),
+                                           GetParent(hwnd), GetKeysDlgProc, (LPARAM)hwnd)));
 }
 
 
@@ -667,10 +666,9 @@ bool EncryptAndWriteFile(HWND hwnd, HANDLE hFile, BYTE *data, size_t size, size_
                 AES_bin_setup(&masterencode, AES_DIR_ENCRYPT, KEY_BYTES * 8, binMasterKey);
                 {
                     // generate another IV for the master key
-
                     for (int i = 0; i < sizeof(masterFileIV); i++)
                     {
-                        masterFileIV[i] = (BYTE)(rand() & BYTE_MAX);
+                        masterFileIV[i] = ((i % 2) == 0) ? HIBYTE(rand()) : LOBYTE(rand());
                     }
                 }
 

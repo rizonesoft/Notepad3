@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Delete Line Rig&ht\tCtrl+Shift+Del",  IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Column &Wrap...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Split Lines\tCtrl+I",                IDM_EDIT_SPLITLINES
-            MENUITEM "&Join Lines\tCtrl+J",                 IDM_EDIT_JOINLINES
-            MENUITEM "&Fuse Lines\tCtrl+Alt+J",             IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Preserve Paragraphs\tCtrl+Shift+J",  IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Mer&ge Empty Lines\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Merge Blan&k Lines\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
@@ -220,7 +216,7 @@ BEGIN
                 MENUITEM "&Block Edit\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
             MENUITEM SEPARATOR
-            MENUITEM "St&ream Comment\tCtrl+Shift+Q",        IDM_EDIT_STREAMCOMMENT
+            MENUITEM "St&ream Comment\tCtrl+Shift+Q",     IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Enclose Selection"
             BEGIN
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "Compress &Blanks\tCtrl+Alt+P",      IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modify Lines...\tAlt+M",           IDM_EDIT_MODIFYLINES
-            MENUITEM "&Align Lines...\tAlt+J",            IDM_EDIT_ALIGN
             MENUITEM "&Sort Lines...\tAlt+O",             IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "&Align Lines...\tAlt+J",            IDM_EDIT_ALIGN
+            MENUITEM "Spl&it Lines\tCtrl+I",              IDM_EDIT_SPLITLINES
+            MENUITEM "&Join Lines\tCtrl+J",               IDM_EDIT_JOINLINES
+            MENUITEM "Fus&e Lines\tCtrl+Alt+J",           IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Preser&ve Paragraphs\tCtrl+Shift+J",IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Jump to Sele&ction Start\tCtrl+,",  CMD_JUMP2SELSTART
             MENUITEM "Jump to Selectio&n End\tCtrl+.",    CMD_JUMP2SELEND
@@ -337,7 +338,7 @@ BEGIN
             MENUITEM "R&eplace Next\tF4",                       IDM_EDIT_REPLACENEXT
             MENUITEM "&Goto...\tCtrl+G",                        IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Search in Files\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH
+            MENUITEM "&Search in Files\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&View"
@@ -352,11 +353,12 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Change History Marker"
         BEGIN
-            MENUITEM "No Change Markers",                   IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+            MENUITEM "No Change Markers",                IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Show in Margin only",              IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "Show in Document only",            IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "Show All Change Markers",          IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "&Hyperlink Hotspots\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Color Definition Hotspots"
@@ -424,6 +426,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "P&anels"
         BEGIN
+            MENUITEM "Show Titlebar",                   IDM_VIEW_TITLEBAR
             MENUITEM "Show &Menubar",                   IDM_VIEW_MENUBAR
             MENUITEM "Show &Toolbar",                   IDM_VIEW_TOOLBAR
             MENUITEM "Show &Statusbar",                 IDM_VIEW_STATUSBAR
@@ -469,6 +472,7 @@ BEGIN
         MENUITEM "&Word Wrap Settings...",                   IDM_SET_WORDWRAPSETTINGS
         MENUITEM "L&ong Line Settings...",                   IDM_SET_LONGLINESETTINGS
         MENUITEM "Auto &Indent Text",                        IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Auto Close &Quotes",                       IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Auto Close &Brackets",                     IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Auto Close &HTML/XML\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
         MENUITEM "A&uto Complete Words",                     IDM_SET_AUTOCOMPLETEWORDS
@@ -574,6 +578,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show Titlebar",              IDM_VIEW_TITLEBAR
         MENUITEM "Show Menubar",               IDM_VIEW_MENUBAR
         MENUITEM "Show Toolbar",               IDM_VIEW_TOOLBAR
         MENUITEM "Show Statusbar",             IDM_VIEW_STATUSBAR

@@ -44,7 +44,7 @@ VIAddVersionKey FileDescription "Based on code from Notepad2, Florian Balmer© 1
 VIAddVersionKey FileVersion "${VER}"
 VIAddVersionKey ProductVersion "${VER}"
 VIAddVersionKey InternalName "${PORTABLEAPPNAME}"
-VIAddVersionKey LegalTrademarks "Rizonesoft © 2008-2022"
+VIAddVersionKey LegalTrademarks "Rizonesoft © 2008-2023"
 VIAddVersionKey OriginalFilename "${DEFAULTEXE}"
 ;VIAddVersionKey PrivateBuild ""
 ;VIAddVersionKey SpecialBuild ""

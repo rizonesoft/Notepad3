@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Remplacer"
     IDT_VIEW_WORDWRAP       "Saut de ligne automatique"
     IDT_VIEW_ZOOMIN         "Zoom avant"
+    IDT_VIEW_RESETZOOM      "Réinitialiser le zoom"
     IDT_VIEW_ZOOMOUT        "Zoom arrière"
     IDT_VIEW_SCHEME         "Sélectionner un thème"
     IDT_VIEW_SCHEMECONFIG   "Personnaliser des thèmes"
@@ -89,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Exécuter un document"
+    IDT_VIEW_NEW_WINDOW      "Ouvrir une nouvelle fenêtre vide"
     IDT_VIEW_TOGGLE_VIEW     "Vue focalisée"
     IDT_VIEW_CHASING_DOCTAIL "Journal de surveillance"
     IDT_VIEW_PIN_ON_TOP      "Toujours visible"
@@ -136,7 +138,7 @@ BEGIN
                             "La fenêtre Notepad3 existante est occupée ou possède une boîte de dialogue active.\nVoulez-vous ouvrir une autre fenêtre Notepad3 ?"
     IDS_MUI_ERR_ENCODINGNA  "Les tables de conversion des codes page pour l'encodage sélectionné ne sont pas disponibles sur votre système."
     IDS_MUI_ERR_UNICODE     "Erreur lors de la conversion de ce fichier Unicode.\nLes données seront perdues si le fichier est sauvegardé !"
-    IDS_MUI_ERR_BITMAP      "Erreur au chargement de la bitmap ""%s"".\nDimensions nécessaires : %i x %i (largeur >= %i x hauteur)."
+    IDS_MUI_ERR_BITMAP      "Dimension inadéquate de l'image bitmap ""%s"".\nDimension appropriée : %i x %i (largeur >= %i x hauteur)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Erreur d'élévation des droits de l'utilisateur !"
 END
@@ -174,9 +176,10 @@ BEGIN
     IDS_MUI_REPLCOUNT       "%s occurrence(s) du modèle de recherche spécifié remplacée(s)."
     IDS_MUI_ASK_ENCODING    "Changer l'encodage du fichier d'un encodage à un autre peut remplacer le texte non pris en charge par des caractères par défaut et l'historique de ""Défaire"" sera effacé. Continuer ?"
     IDS_MUI_ASK_ENCODING2   "Vous êtes sur le point de changer l'encodage d'un fichier vide. Notez que cela effacera l'historique de ""Défaire"", car il ne peut pas être synchronisé avec le nouvel encodage. Continuer ?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Cette opération videra l'historique ""Défaire"". Continuer ?"
     IDS_MUI_READONLY_SAVE   """%s"" est en lecture seule. Sauvegarder dans un fichier différent ?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Le fichier actuel a été modifié par un programme externe. Recharger ?"
+                            "Le fichier actuel a été modifié par un programme externe.\nChoisissez :\n\nAnnuler -\t\tIgnorer aussi les futures modifications ""externes""\nRecharger -\t\tRecharger le fichier modifié\nContinuer -\tBasculer en mode ""surveillance fichier"""
     IDS_MUI_FILECHANGENOTIFY2 "Le fichier actuel a été supprimé. Sauvegarder maintenant ?"
     IDS_MUI_FILELOCK_ERROR  "Ne peut acquérir un verrouillage de fichier exclusif pour ""%s"" !"
     IDS_MUI_STICKYWINPOS    "Le gel de la position de la fenêtre est activée. Toute nouvelle fenêtre Notepad3 utilisera les paramètres de placement de fenêtre en cours."
@@ -265,14 +268,16 @@ BEGIN
     IDS_MUI_MENU_THEMES     "&Collection de thèmes"
     IDM_THEMES_FACTORY_RESET "Réinitialisation d’&usine"
     IDM_THEMES_STD_CFG       "Configuration &standard"
-    IDS_MUI_STATUSBAR_PREFIXES "Lgn  ,Col  ,Sel  ,Sb  ,SLgn  ,Occ  ,,,,,,,Car  ,Repl  ,Eval  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Lgn  ,Col  ,Sel  ,Sb  ,SLgn  ,Occ  ,,,,,,,Car  ,Repl  ,Eval  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Effacer tout"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Effacer l'historique de recherche"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Effacer l'historique de remplacement"
-    IDS_MUI_REPLCLIPTAG     "Remplacer par raccourci du presse-papiers [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Chercher depuis le presse-papiers si sélection vide"
+    IDS_MUI_REPLCLIPTAG     "Remplacer par le presse-papiers au raccourci [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Correspondre en boucle par le haut"
     IDS_MUI_WRAPSEARCH_BCK  "Correspondre en boucle par le bas"
 END
@@ -283,6 +288,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Basculer la vue..."
     IDS_MUI_SB_REPLACE_ALL    "Remplacer tout..."
     IDS_MUI_SB_WRAP_LINES     "Ajuster le saut de ligne..."
+    IDS_MUI_SB_SORTING_LINES  "Triage des lignes..."
     IDS_MUI_SB_CONV_LNBRK     "Convertir les sauts de ligne..."
     IDS_MUI_SB_RECODING_DOC   "Réencodage du document..."
     IDS_MUI_SB_LEXER_STYLING  "Appliquer le style Lexer..."
@@ -295,8 +301,8 @@ Utilisation :\r\n\
 Notepad3 [/?] [...[Encodage]] [...[Mode de fin de ligne]] [/e] [/g] [/m]\r\n\
  \t[/l] [/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[lecteur:][chemin]fichier[...]]\r\n\r\n\
-fichier\tDoit être le dernier argument, aucun espace entre guillemets\r\n\tpar défaut.\r\n\
-+\tAccepte plusieurs arguments de fichier (avec des espaces entre\r\n\tguillemets).\r\n\
+fichier\tDoit être le dernier argument, aucun espace entre guillemets par défaut.\r\n\
++\tAccepte plusieurs arguments de fichier (avec des espaces entre guillemets).\r\n\
 -\tAccepte un seul argument de fichier (sans espaces entre guillemets).\r\n\r\n\
 Options :\r\n\
 /?\tAffiche ce message d'aide.\r\n\
@@ -304,7 +310,7 @@ Options :\r\n\
 ...\tMode de fin de ligne (/crlf, /cr, /lf).\r\n\
 /e\tEncodage du fichier source.\r\n\
 /g\tVa à la position spécifiée (/g -1 fin de fichier).\r\n\
-/m\tTrouve le texte spécifié (/m- dernier, /mr regex,\r\n\t/mb oblique inverse).\r\n\
+/m\tTrouve le texte spécifié (/m- dernier, /mr regex, /mb oblique inverse).\r\n\
 /l\tRecharge automatiquement les fichiers modifiés.\r\n\
 /q\tForce la création de nouveaux fichiers sans confirmation.\r\n\
 /s\tSélectionne le modèle de syntaxe spécifié.\r\n\
@@ -312,11 +318,11 @@ Options :\r\n\
 /h\tSélectionne un modèle de Code Source Web.\r\n\
 /x\tSélectionne un modèle de Document XML.\r\n\
 /c\tOuvre une nouvelle fenêtre et colle le contenu du presse-papiers.\r\n\
-/b\tOuvre un nouveau tableau de collage pour collecter les entrées du\r\n\tpresse-papiers.\r\n\
-/n\tOuvre toujours une nouvelle fenêtre (/ns instance\r\n\tde fichier unique).\r\n\
+/b\tOuvre un nouveau tableau de collage pour collecter les entrées du \r\n\tpresse-papiers.\r\n\
+/n\tOuvre toujours une nouvelle fenêtre (/ns instance de fichier unique).\r\n\
 /r\tRéutilise la fenêtre (/rs instance de fichier unique).\r\n\
-/p\tDéfinit la position et la taille de la fenêtre (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tou /p <gauche>,<haut>,<largeur>,<hauteur>,<max>    [tous entiers].\r\n\
+/p\tDéfinit la position et la taille de la fenêtre (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tou /p <gauche>,<haut>,<largeur>,<hauteur>[,<dpi>[,<max>]]  (tous entiers).\r\n\
 /t\tDéfinit un titre de fenêtre.\r\n\
 /i\tDémarre en icône dans la zone de notifications.\r\n\
 /o\tGarde la fenêtre toujours visible.\r\n\
@@ -324,11 +330,11 @@ Options :\r\n\
 /u\tDémarre avec des privilèges élevés.\r\n\
 /v\tImprime le fichier immédiatement et quitte.\r\n\
 /vd\tImprime le fichier (ouvre le dialogue de l'imprimante).\r\n\
-/y\tCherche dans le PATH (environnement) en cas de nom de fichier\r\n\trelatif.\r\n\
-/z\tPasse au suivant (utilisable avec le remplacement de Notepad via\r\n\tle registre).\r\n\r\n\
+/y\tCherche dans le PATH (environnement) en cas de nom de fichier relatif.\r\n\
+/z\tPasse au suivant (utilisable avec le remplacement de Notepad via le registre).\r\n\r\n\
 Exemples :\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Ouvre un nouveau fichier : ""Test.txt"" Encodage=UTF-8-BOM,\r\n\tEoL=CRLF.\r\n\
+ \t... Ouvre un nouveau fichier : ""Test.txt"" Encodage=UTF-8-BOM, EoL=CRLF.\r\n\
  Notepad3 /v d:\\temp\\Test.txt\r\n\
   \t... Imprime le fichier : ""Test.txt"" immédiatement.\
 "

@@ -80,6 +80,7 @@ extern "C" {
 #define UChar OnigUChar
 #endif
 
+typedef int            OnigPos;
 typedef unsigned int   OnigCodePoint;
 typedef unsigned char  OnigUChar;
 typedef unsigned int   OnigCtype;
@@ -189,15 +190,12 @@ ONIG_EXTERN OnigEncodingType OnigEncodingGB18030;
 #else // lean and mean
 ONIG_EXTERN OnigEncodingType OnigEncodingASCII;
 ONIG_EXTERN OnigEncodingType OnigEncodingASCII_CR;
-ONIG_EXTERN OnigEncodingType OnigEncodingASCII_CRLF;
 ONIG_EXTERN OnigEncodingType OnigEncodingUTF8;
 ONIG_EXTERN OnigEncodingType OnigEncodingUTF8_CR;
-ONIG_EXTERN OnigEncodingType OnigEncodingUTF8_CRLF;
 #endif
 
+#if 0
 #define ONIG_ENCODING_ASCII        (&OnigEncodingASCII)
-#define ONIG_ENCODING_ASCII_CR     (&OnigEncodingASCII_CR)
-#define ONIG_ENCODING_ASCII_CRLF   (&OnigEncodingASCII_CRLF)
 #define ONIG_ENCODING_ISO_8859_1   (&OnigEncodingISO_8859_1)
 #define ONIG_ENCODING_ISO_8859_2   (&OnigEncodingISO_8859_2)
 #define ONIG_ENCODING_ISO_8859_3   (&OnigEncodingISO_8859_3)
@@ -214,8 +212,6 @@ ONIG_EXTERN OnigEncodingType OnigEncodingUTF8_CRLF;
 #define ONIG_ENCODING_ISO_8859_15  (&OnigEncodingISO_8859_15)
 #define ONIG_ENCODING_ISO_8859_16  (&OnigEncodingISO_8859_16)
 #define ONIG_ENCODING_UTF8         (&OnigEncodingUTF8)
-#define ONIG_ENCODING_UTF8_CR      (&OnigEncodingUTF8_CR)
-#define ONIG_ENCODING_UTF8_CRLF    (&OnigEncodingUTF8_CRLF)
 #define ONIG_ENCODING_UTF16_BE     (&OnigEncodingUTF16_BE)
 #define ONIG_ENCODING_UTF16_LE     (&OnigEncodingUTF16_LE)
 #define ONIG_ENCODING_UTF32_BE     (&OnigEncodingUTF32_BE)
@@ -230,6 +226,12 @@ ONIG_EXTERN OnigEncodingType OnigEncodingUTF8_CRLF;
 #define ONIG_ENCODING_CP1251       (&OnigEncodingCP1251)
 #define ONIG_ENCODING_BIG5         (&OnigEncodingBIG5)
 #define ONIG_ENCODING_GB18030      (&OnigEncodingGB18030)
+#else // lean and mean
+#define ONIG_ENCODING_ASCII        (&OnigEncodingASCII)
+#define ONIG_ENCODING_ASCII_CR     (&OnigEncodingASCII_CR)
+#define ONIG_ENCODING_UTF8         (&OnigEncodingUTF8)
+#define ONIG_ENCODING_UTF8_CR      (&OnigEncodingUTF8_CR)
+#endif
 
 #define ONIG_ENCODING_UNDEF    ((OnigEncoding )0)
 
@@ -261,7 +263,7 @@ typedef enum {
 #define ONIGENC_MAX_STD_CTYPE  ONIGENC_CTYPE_ASCII
 
 
-#define onig_enc_len(enc,p,end)        ONIGENC_MBC_ENC_LEN(enc,p)
+//#define onig_enc_len(enc,p,end)        ONIGENC_MBC_ENC_LEN(enc,p)
 
 #define ONIGENC_IS_UNDEF(enc)          ((enc) == ONIG_ENCODING_UNDEF)
 #define ONIGENC_IS_SINGLEBYTE(enc)     (ONIGENC_MBC_MAXLEN(enc) == 1)
@@ -546,6 +548,7 @@ ONIG_EXTERN OnigSyntaxType*   OnigDefaultSyntax;
 #define ONIG_SYN_VARIABLE_LEN_LOOK_BEHIND        (1U<<11)  /* (?<=a+|..) */
 #define ONIG_SYN_PYTHON                          (1U<<12)  /* \UHHHHHHHH */
 #define ONIG_SYN_WHOLE_OPTIONS                   (1U<<13)  /* (?Ie) */
+#define ONIG_SYN_BRE_ANCHOR_AT_EDGE_OF_SUBEXP    (1U<<14)  /* \(^abc$\) */
 
 /* syntax (behavior) in char class [...] */
 #define ONIG_SYN_NOT_NEWLINE_IN_NEGATIVE_CC      (1U<<20) /* [^...] */

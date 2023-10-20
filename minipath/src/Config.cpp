@@ -7,7 +7,7 @@
 * Config.cpp                                                                  *
 *   Methods to read and write configuration                                   *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -750,7 +750,7 @@ int CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
     return 0;
 }
 
-int CheckIniFileRedirect(LPWSTR lpszAppName, LPWSTR lpszKeyName, LPWSTR lpszFile, LPCWSTR lpszModule)
+int CheckIniFileRedirect(LPCWSTR lpszAppName, LPCWSTR lpszKeyName, LPWSTR lpszFile, LPCWSTR lpszModule)
 {
     WCHAR tch[MAX_PATH];
 

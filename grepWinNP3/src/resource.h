@@ -85,6 +85,12 @@
 #define IDS_NEWINSTANCE_TT              171
 #define IDS_REPLACEUTF8                 172
 #define IDS_INFOLABELSEL                173
+#define IDS_INFOLABELEMPTY              174
+#define IDS_INFOLABELSELEMPTY           175
+#define IDS_OPEN_MRU                    176
+#define IDS_COPY_COLUMN                 177
+#define IDS_COPY_COLUMN_SEL             178
+#define IDS_REGEXEXCEPTION              179
 #define IDC_SEARCHTEXT                  1000
 #define IDC_REGEXRADIO                  1001
 #define IDC_TEXTRADIO                   1002
@@ -148,6 +154,7 @@
 #define IDC_CHECK1                      1062
 #define IDC_ESCKEY                      1062
 #define IDC_INCLUDEPATH                 1062
+#define IDC_KEEPFILEDATECHECK           1062
 #define IDC_EDITMULTILINE2              1063
 #define IDC_ONLYONE                     1063
 #define IDC_PATHMRU                     1064
@@ -184,6 +191,7 @@
 #define IDC_EDIT1                       1090
 #define IDC_NUMNULL                     1090
 #define IDC_SYSLINK1                    1091
+#define IDC_INCLUDESYMLINK              1092
 
 #define IDC_RESETDEFAULT                3000
 #define IDC_NP3_DISCLAIMER              3001
@@ -206,7 +214,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        140
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1092
+#define _APS_NEXT_CONTROL_VALUE         1093
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

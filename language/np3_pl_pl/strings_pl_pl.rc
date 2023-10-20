@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Zamień"
     IDT_VIEW_WORDWRAP       "Zawijanie tekstu"
     IDT_VIEW_ZOOMIN         "Powiększ"
+    IDT_VIEW_RESETZOOM      "Resetuj powiększenie"
     IDT_VIEW_ZOOMOUT        "Pomniejsz"
     IDT_VIEW_SCHEME         "Wybierz schemat"
     IDT_VIEW_SCHEMECONFIG   "Dostosuj schematy"
@@ -89,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Ten Dokument"
+    IDT_VIEW_NEW_WINDOW      "Nowe puste okno"
     IDT_VIEW_TOGGLE_VIEW     "Widok skupiony"
     IDT_VIEW_CHASING_DOCTAIL "Dziennik monitorowania"
     IDT_VIEW_PIN_ON_TOP      "Zawsze na wierzchu"
@@ -118,8 +120,8 @@ BEGIN
     IDS_MUI_FILTER_BITMAP   "Pliki bitmap (*.bmp)|*.bmp|Wszystkie pliki (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Wybierz katalog ze skrótami do ulubionych aplikacji."
     IDS_MUI_FAVORITES       "Wybierz katalog ze skrótami do ulubionych plików."
-    IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tPasuje każdy znak\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
+    IDS_MUI_BACKSLASHHELP   "Transformacje ukośnika wstecznego\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
+    IDS_MUI_REGEXPHELP      "Składnia wyrażenia regularnego (Wiele linii)\n\n.\tPasuje każdy znak\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
     IDS_MUI_WILDCARDHELP    "Szukaj wieloznacznika\n\n*\tPasuje zero lub więcej znaków.\n?\tPasuje dokładnie jeden znak. "
 END
 
@@ -136,7 +138,7 @@ BEGIN
                             "Istniejące okno Notepad3 jest zajęte lub posiada aktywne okno dialogowe.\nCzy chcesz otworzyć kolejne okno Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "Tablice konwersji strony kodowej dla wybranego kodowania nie są dostępne na tym systemie."
     IDS_MUI_ERR_UNICODE     "Błąd podczas kodowania pliku Unicode.\nDane zostaną utracone jeśli plik zapisano!"
-    IDS_MUI_ERR_BITMAP      "Błąd podczas ładowania mapy bitowej ""%s"".\nWymagany rozmiar: %i x %i (szer. >= %i x wys.)."
+    IDS_MUI_ERR_BITMAP      "Nieodpowiedni wymiar mapy bitowej ""%s"".\nOdpowiedni wymiar: %i x %i (szer. >= %i x wys.)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Błąd podczas nadawania praw użytkownika!"
 END
@@ -174,9 +176,10 @@ BEGIN
     IDS_MUI_REPLCOUNT       "Zamieniono %s wystąpień określonego wzorca wyszukiwania."
     IDS_MUI_ASK_ENCODING    "Przełączanie kodowania pliku z jednego kodowania na drugie może zamienić tekst na domyślne znaki, i przywrócenie historii zostanie wymazane. Kontynuować?"
     IDS_MUI_ASK_ENCODING2   "Właśnie chcesz zmienić kodowanie pustego pliku. Spowoduje to wyczyszczenie historii, jak i również nie będzie możliwe zsynchronizowanie nowego kodowania. Kontynuować?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Ta operacja wyczyści historię cofania. Kontynuować?"
     IDS_MUI_READONLY_SAVE   """%s"" tylko do odczytu. Zapisać do innego pliku?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Bieżący plik został zmieniony przez zewnętrzny program. Załadować ponownie?"
+                            "Bieżący plik został zmodyfikowany przez zewnętrzny program.\nWybierz:\n\nAnuluj -\t\tIgnoruj dalsze zmiany\nZaładuj ponownie -\t\tZaładuj ponownie plik\nKontynuuj -\tPrzełącz na monitorowanie pliku"
     IDS_MUI_FILECHANGENOTIFY2 "Bieżący plik został usunięty. Zapisać teraz?"
     IDS_MUI_FILELOCK_ERROR  "Nie można uzyskać wyłącznej blokady plików dla ""%s""!"
     IDS_MUI_STICKYWINPOS    "Zamrożona pozycja okna jest włączona. Jakiekolwiek nowe okno Notepad3 zastosuje ustawienia bieżącego umiejscowienia okna."
@@ -206,7 +209,7 @@ BEGIN
                              "Włączono zachowanie znacznika czasu w modyfikacji pliku.\nTa opcja pozostanie dla tej sesji!"
     IDS_MUI_OUT_OFF_OCCMRK   "Kończą się znaczniki występowania (Zakładka/Podświetlenie)!"
     IDS_MUI_DOCUMENT_READONLY
-                             "The document is locked for view only. Keep the lock to prevent editing?"
+                             "Dokument jest zablokowany tylko do przeglądania. Zachowaj blokadę, aby uniemożliwić edycję?"
 END
 
 STRINGTABLE
@@ -222,7 +225,7 @@ BEGIN
     IDS_MUI_WARN_STYLE_RESET
                             "Ta czynność zresetuje styl do domyślnych ustawień fabrycznych żądanego trybu kolorów i przełączy aktywny plik motywu do standardowego config.ini!"
     IDS_MUI_ASK_INSTANCE_EXISTS
-                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
+                            "Tryb pojedynczej instancji pliku:\n\nUstaw fokus na już załadowanej instancji pliku?"
 END
 
 STRINGTABLE
@@ -263,16 +266,18 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Język"
     IDS_USE_LOCALE_DATEFMT  "Język definiuje Format &Daty"
     IDS_MUI_MENU_THEMES     "Wybór &schematów"
-    IDM_THEMES_FACTORY_RESET "&Domyślne"
+    IDM_THEMES_FACTORY_RESET "&Factory Reset"
     IDM_THEMES_STD_CFG       "&Standardowa konfiguracja"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,kol  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Podn  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,kol  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Podn  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Wyczyść wszystko"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Wyczyść Znajdź Historię"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Wyczyść Zamień Historię"
-    IDS_MUI_REPLCLIPTAG     "Zamień przez skrót schowka [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Szukaj według schowka, jeśli wybór jest pusty"
+    IDS_MUI_REPLCLIPTAG     "Zastąp skrótem przez schowek  [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Zawijaj pasujące od góry"
     IDS_MUI_WRAPSEARCH_BCK  "Zawijaj pasujące od spodu"
 END
@@ -283,6 +288,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Przełącz widok..."
     IDS_MUI_SB_REPLACE_ALL    "Zamień wszystko..."
     IDS_MUI_SB_WRAP_LINES     "Zawiń linie..."
+    IDS_MUI_SB_SORTING_LINES  "Sortowanie Linii..."
     IDS_MUI_SB_CONV_LNBRK     "Konwertuj podziały wierszy..."
     IDS_MUI_SB_RECODING_DOC   "Ponowne kodowanie dokumentu..."
     IDS_MUI_SB_LEXER_STYLING  "Zastosuj stylizację Lexera..."
@@ -299,7 +305,7 @@ file\tMust be the last argument, no quoted spaces by default.\r\n\
 +\tAccept multiple file arguments (with quoted spaces).\r\n\
 -\tAccept single file argument (without quoted spaces).\r\n\r\n\
 Opcje:\r\n\
-/?\tDispay this help message.\r\n\
+/?\tDisplay this help message.\r\n\
 ...\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
 ...\tLine ending mode (/crlf, /cr, /lf).\r\n\
 /e\tFile source encoding.\r\n\
@@ -315,8 +321,8 @@ Opcje:\r\n\
 /b\tOpen new paste board to collect clipboard entries.\r\n\
 /n\tAlways open a new window (/ns single file instance).\r\n\
 /r\tReuse window (/rs single file instance).\r\n\
-/p\tSet window position and size (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tor /p <lewy>,<góra>,<szer.>,<wys.>,<maks>    [wszystkie liczby].\r\n\
+/p\tSet window position and size (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tor /p <lewy>,<góra>,<szer.>,<wys.>[,<dpi>[,<maks>]]  (wszystkie liczby).\r\n\
 /t\tSet window title.\r\n\
 /i\tStart as tray icon.\r\n\
 /o\tKeep window on top.\r\n\

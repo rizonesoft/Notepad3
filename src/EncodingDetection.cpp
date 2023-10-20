@@ -8,7 +8,7 @@
 *   Interface to Encoding Detector  (CED or UCHARDET)                         *
 *                                                                             *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -963,14 +963,14 @@ static void _SetEncodingTitleInfo(const ENC_DET_T* pEncDetInfo)
 //
 static void _SetFileVars(char* buffer, size_t cch, LPFILEVARS lpfv)
 {
-    bool bDisableFileVar = Flags.NoFileVariables;
+    bool bEnableFileVar = !Flags.NoFileVariables;
 
-    if (!bDisableFileVar) {
+    if (bEnableFileVar) {
         int i;
         if (FileVars_ParseInt(buffer, "enable-local-variables", &i) && (!i)) {
-            bDisableFileVar = true;
+            bEnableFileVar = false;
         }
-        if (!bDisableFileVar) {
+        if (bEnableFileVar) {
 
             if (FileVars_ParseInt(buffer, "tab-width", &i)) {
                 lpfv->iTabWidth = clampi(i, 1, 256);
@@ -1073,7 +1073,6 @@ extern "C" bool FileVars_GetFromData(const char* lpData, size_t cbData, LPFILEVA
 //
 extern "C" bool FileVars_Apply(LPFILEVARS lpfv)
 {
-
     int const _iTabWidth = (lpfv->mask & FV_TABWIDTH) ? lpfv->iTabWidth : Settings.TabWidth;
     SciCall_SetTabWidth(_iTabWidth);
 
@@ -1087,11 +1086,10 @@ extern "C" bool FileVars_Apply(LPFILEVARS lpfv)
     SciCall_SetTabIndents(_bTabIndents);
     SciCall_SetBackSpaceUnIndents(Settings.BackspaceUnindents);
 
-    bool const _bWordWrap = (lpfv->mask & FV_WORDWRAP) ? lpfv->bWordWrap : Settings.WordWrap;
-    int const  _iWrapMode = _bWordWrap ? ((Settings.WordWrapMode == 0) ? SC_WRAP_WHITESPACE : SC_WRAP_CHAR) : SC_WRAP_NONE;
-    SciCall_SetWrapMode(_iWrapMode);
+    Globals.fvCurFile.bWordWrap = (lpfv->mask & FV_WORDWRAP) ? lpfv->bWordWrap : Settings.WordWrap;
+    Sci_SetWrapModeEx(GET_WRAP_MODE());
 
-    int edgeColumns[SMALL_BUFFER];
+    int          edgeColumns[EDGELINE_NUM_LIMIT];
     size_t const cnt = ReadVectorFromString(lpfv->wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
     Style_SetMultiEdgeLine(edgeColumns, cnt);
 
@@ -1103,7 +1101,7 @@ extern "C" bool FileVars_Apply(LPFILEVARS lpfv)
 //
 //  FileVars_ParseInt()
 //
-extern "C" bool FileVars_ParseInt(char* pszData, char* pszName, int* piValue)
+extern "C" bool FileVars_ParseInt(const char* pszData, const char* pszName, int* piValue)
 {
 
     char* pvStart = StrStrIA(pszData, pszName);
@@ -1159,7 +1157,7 @@ extern "C" bool FileVars_ParseInt(char* pszData, char* pszName, int* piValue)
 //
 //  FileVars_ParseStr()
 //
-extern "C" bool FileVars_ParseStr(char* pszData, char* pszName, char* pszValue, int cchValue)
+extern "C" bool FileVars_ParseStr(const char* pszData, const char* pszName, char* pszValue, int cchValue)
 {
 
     const char* pvStart = StrStrIA(pszData, pszName);
@@ -1214,8 +1212,7 @@ extern "C" bool FileVars_ParseStr(char* pszData, char* pszName, char* pszValue, 
 extern "C" bool FileVars_IsUTF8(LPFILEVARS lpfv)
 {
     if (lpfv->mask & FV_ENCODING) {
-        if (StringCchCompareNIA(lpfv->chEncoding, COUNTOF(lpfv->chEncoding), "utf-8", CONSTSTRGLEN("utf-8")) == 0 ||
-                StringCchCompareNIA(lpfv->chEncoding, COUNTOF(lpfv->chEncoding), "utf8", CONSTSTRGLEN("utf8")) == 0) {
+        if (StrCmpIA(lpfv->chEncoding, "utf-8") == 0 || StrCmpIA(lpfv->chEncoding, "utf8") == 0) {
             return true;
         }
     }
@@ -1279,11 +1276,6 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
 
     encDetRes.forcedEncoding = (Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_Forced(CPI_GET);
 
-    encDetRes.bHasBOM = (bBOM_LE || bBOM_BE);
-    encDetRes.bIsReverse = bBOM_BE;
-    encDetRes.bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false);
-    encDetRes.bValidUTF8 = IsValidUTF8(lpData, cbData);
-
     if (!IS_ENC_ENFORCED()) {
         // force file vars ?
         encDetRes.fileVarEncoding = (FileVars_IsValidEncoding(&Globals.fvCurFile)) ? FileVars_GetEncoding(&Globals.fvCurFile) : CPI_NONE;
@@ -1291,6 +1283,11 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
             encDetRes.forcedEncoding = encDetRes.fileVarEncoding;
         }
     }
+
+    encDetRes.bHasBOM = (bBOM_LE || bBOM_BE) || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UNICODE_BOM));
+    encDetRes.bIsReverse = bBOM_BE || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UNICODE_REVERSE));
+    encDetRes.bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false) || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UTF8_SIGN));
+    encDetRes.bValidUTF8 = IsValidUTF8(lpData, cbData);
 
     // --- 2nd Use Encoding Analysis if applicable
 

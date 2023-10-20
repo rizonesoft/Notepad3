@@ -1,4 +1,6 @@
 
+#include <assert.h>
+#include "Helpers.h"
 #include "lexers_x/SciXLexer.h"
 
 #include "SciCall.h"
@@ -7,12 +9,13 @@
 
 void Lexer_GetStreamCommentStrgs(LPWSTR beg_out, LPWSTR end_out, size_t maxlen)
 {
+#define SET_STREAMCOMMENT_STRG(X,Y) { StringCchCopy(beg_out, maxlen, (X)); StringCchCopy(end_out, maxlen, (Y)); }
+
     if (beg_out && end_out && maxlen) {
 
         switch (SciCall_GetLexer()) {
         case SCLEX_AU3:
-            StringCchCopy(beg_out, maxlen, L"#cs");
-            StringCchCopy(end_out, maxlen, L"#ce");
+            SET_STREAMCOMMENT_STRG(L"#cs", L"#ce");
             break;
         case SCLEX_AVS:
         case SCLEX_CPP:
@@ -22,34 +25,44 @@ void Lexer_GetStreamCommentStrgs(LPWSTR beg_out, LPWSTR end_out, size_t maxlen)
         case SCLEX_JSON:
         case SCLEX_KOTLIN:
         case SCLEX_NSIS:
+        case SCLEX_PHPSCRIPT:
         case SCLEX_RUST:
         case SCLEX_SQL:
         case SCLEX_VHDL:
-            StringCchCopy(beg_out, maxlen, L"/*");
-            StringCchCopy(end_out, maxlen, L"*/");
+            SET_STREAMCOMMENT_STRG(L"/*", L"*/");
             break;
-        case SCLEX_HTML:
+        case SCLEX_HTML: {
+            int const cStyleBeg = SciCall_GetStyleIndexAt(Sci_GetLineStartPosition(SciCall_GetSelectionStart()));
+            int const cStyleEnd = SciCall_GetStyleIndexAt(SciCall_GetSelectionEnd());
+            if (((min_i(cStyleBeg, cStyleEnd) >= SCE_HPHP_DEFAULT) && (max_i(cStyleBeg, cStyleEnd) <= SCE_HPHP_OPERATOR)) ||
+                ((min_i(cStyleBeg, cStyleEnd) >= SCE_HJ_START) && (max_i(cStyleBeg, cStyleEnd) <= SCE_HJA_REGEX))) {
+                SET_STREAMCOMMENT_STRG(L"/*", L"*/");
+                break;
+            }
+        }
+        // [[fallthrough]] // -> XML
         case SCLEX_XML:
-            StringCchCopy(beg_out, maxlen, L"<!--");
-            StringCchCopy(end_out, maxlen, L"-->");
+            SET_STREAMCOMMENT_STRG(L"<!--", L"-->");
             break;
         case SCLEX_INNOSETUP:
         case SCLEX_PASCAL:
-            StringCchCopy(beg_out, maxlen, L"{");
-            StringCchCopy(end_out, maxlen, L"}");
+            SET_STREAMCOMMENT_STRG(L"{", L"}");
             break;
         case SCLEX_LUA:
-            StringCchCopy(beg_out, maxlen, L"--[[");
-            StringCchCopy(end_out, maxlen, L"]]");
+            SET_STREAMCOMMENT_STRG(L"--[[", L"]]");
             break;
         case SCLEX_COFFEESCRIPT:
-            StringCchCopy(beg_out, maxlen, L"###");
-            StringCchCopy(end_out, maxlen, L"###");
+            SET_STREAMCOMMENT_STRG(L"###", L"###");
             break;
         case SCLEX_MATLAB:
-            StringCchCopy(beg_out, maxlen, L"%{");
-            StringCchCopy(end_out, maxlen, L"%}");
+            SET_STREAMCOMMENT_STRG(L"%{", L"%}");
             break;
+        case SCLEX_PYTHON:
+            SET_STREAMCOMMENT_STRG(L"_=\"\"\"", L"\"\"\"");
+            break;
+        // ------------------
+        case SCLEX_CONTAINER:
+            assert("SciCall_GetLexer() UNDEFINED!" && 0);
         // ------------------
         case SCLEX_NULL:
         case SCLEX_AHK:
@@ -66,7 +79,6 @@ void Lexer_GetStreamCommentStrgs(LPWSTR beg_out, LPWSTR end_out, size_t maxlen)
         case SCLEX_PERL:
         case SCLEX_POWERSHELL:
         case SCLEX_PROPERTIES:
-        case SCLEX_PYTHON:
         case SCLEX_R:
         case SCLEX_REGISTRY:
         case SCLEX_RUBY:
@@ -76,8 +88,7 @@ void Lexer_GetStreamCommentStrgs(LPWSTR beg_out, LPWSTR end_out, size_t maxlen)
         case SCLEX_VBSCRIPT:
         case SCLEX_YAML:
         default:
-            StringCchCopy(beg_out, maxlen, L"");
-            StringCchCopy(end_out, maxlen, L"");
+            SET_STREAMCOMMENT_STRG(L"", L"");
             break;
         }
     }
@@ -86,6 +97,8 @@ void Lexer_GetStreamCommentStrgs(LPWSTR beg_out, LPWSTR end_out, size_t maxlen)
 
 bool Lexer_GetLineCommentStrg(LPWSTR pre_out, size_t maxlen)
 {
+#define SET_COMMENT_STRG(X,S) { StringCchCopy(pre_out, maxlen, (X)); return (S); }
+
     if (pre_out && maxlen) {
 
         switch (SciCall_GetLexer()) {
@@ -96,64 +109,72 @@ bool Lexer_GetLineCommentStrg(LPWSTR pre_out, size_t maxlen)
         case SCLEX_KOTLIN:
         case SCLEX_PASCAL:
         case SCLEX_RUST:
-            StringCchCopy(pre_out, maxlen, L"//");
-            return false;
+            SET_COMMENT_STRG(L"//", false);
         case SCLEX_VB:
         case SCLEX_VBSCRIPT:
-            StringCchCopy(pre_out, maxlen, L"'");
-            return false;
+            SET_COMMENT_STRG(L"'", false);
         case SCLEX_AVS:
-        case SCLEX_BASH:
-        case SCLEX_CMAKE:
         case SCLEX_COFFEESCRIPT:
         case SCLEX_CONF:
-        case SCLEX_MAKEFILE:
         case SCLEX_NIM:
-        case SCLEX_PERL:
-        case SCLEX_POWERSHELL:
-        case SCLEX_PYTHON:
+        case SCLEX_PHPSCRIPT:
         case SCLEX_R:
-        case SCLEX_RUBY:
         case SCLEX_TCL:
         case SCLEX_TOML:
         case SCLEX_YAML:
-            StringCchCopy(pre_out, maxlen, L"#");
-            return true;
-        case SCLEX_AHK:
+            SET_COMMENT_STRG(L"#", true);
+        case SCLEX_BASH:
+        case SCLEX_CMAKE:
+        case SCLEX_MAKEFILE:
+        case SCLEX_PERL:
+        case SCLEX_PYTHON:
+        case SCLEX_POWERSHELL:
+        case SCLEX_RUBY:
+            SET_COMMENT_STRG(L"#", false);
         case SCLEX_ASM:
-        case SCLEX_AU3:
         case SCLEX_INNOSETUP:
         case SCLEX_NSIS: // "#" could also be used instead
         case SCLEX_PROPERTIES:
+            SET_COMMENT_STRG(L";", true);
+        case SCLEX_AHK:
+        case SCLEX_AU3:
         case SCLEX_REGISTRY:
-            StringCchCopy(pre_out, maxlen, L";");
-            return true;
+            SET_COMMENT_STRG(L";", false);
         case SCLEX_LUA:
         case SCLEX_SQL:
         case SCLEX_VHDL:
-            StringCchCopy(pre_out, maxlen, L"--");
-            return true;
-        case SCLEX_BATCH: // "::" could also be used instead
-            StringCchCopy(pre_out, maxlen, L"rem ");
-            return true;
+            SET_COMMENT_STRG(L"--", true);
+        case SCLEX_BATCH:
+            //SET_COMMENT_STRG(L":: ", true);
+            SET_COMMENT_STRG(L"rem ", false);
         case SCLEX_LATEX:
         case SCLEX_MATLAB:
-            StringCchCopy(pre_out, maxlen, L"%");
-            return true;
+            SET_COMMENT_STRG(L"%", true);
         case SCLEX_FORTRAN:
         case SCLEX_F77:
-            StringCchCopy(pre_out, maxlen, L"!");
-            return true;
+            SET_COMMENT_STRG(L"!", true);
+        // ------------------
+        case SCLEX_CONTAINER:
+            assert("SciCall_GetLexer() UNDEFINED!" && 0);
         // ------------------
         case SCLEX_NULL:
         case SCLEX_CSS:
         case SCLEX_DIFF:
         case SCLEX_MARKDOWN:
-        case SCLEX_HTML:
+        case SCLEX_HTML: {
+            int const cStyleBeg = SciCall_GetStyleIndexAt(Sci_GetLineStartPosition(SciCall_GetSelectionStart()));
+            int const cStyleEnd = SciCall_GetStyleIndexAt(SciCall_GetSelectionEnd());
+            if (((min_i(cStyleBeg, cStyleEnd) >= SCE_HPHP_DEFAULT) && (max_i(cStyleBeg, cStyleEnd) <= SCE_HPHP_OPERATOR)) || (min_i(cStyleBeg, cStyleEnd) == SCE_HPHP_COMPLEX_VARIABLE) ||
+                ((min_i(cStyleBeg, cStyleEnd) >= SCE_HJ_START) && (max_i(cStyleBeg, cStyleEnd) <= SCE_HJA_REGEX)))
+                SET_COMMENT_STRG(L"//", false);
+            if (((min_i(cStyleBeg, cStyleEnd) >= SCE_HP_START) && (max_i(cStyleBeg, cStyleEnd) <= SCE_HP_IDENTIFIER)) ||
+                ((min_i(cStyleBeg, cStyleEnd) >= SCE_HPA_START) && (max_i(cStyleBeg, cStyleEnd) <= SCE_HPA_IDENTIFIER))) {
+                SET_COMMENT_STRG(L"#", false);
+            }
+        }
         case SCLEX_XML:
         default:
-            StringCchCopy(pre_out, maxlen, L"");
-            break;
+            SET_COMMENT_STRG(L"", false);
         }
     }
     return false;
@@ -234,6 +255,10 @@ void Lexer_SetLexerSpecificProperties(const int lexerId) {
         //SciCall_SetProperty("lexer.sql.allow.dotted.word", "0");
         break;
 
+    case SCLEX_MARKDOWN:
+        SciCall_SetProperty("lexer.markdown.header.eolfill", "1");
+        break;
+
     case SCLEX_NSIS:
         SciCall_SetProperty("nsis.ignorecase", "1");
         break;
@@ -244,13 +269,21 @@ void Lexer_SetLexerSpecificProperties(const int lexerId) {
         break;
 
     case SCLEX_JSON:
-        SciCall_SetProperty("json.allow.comments", "1");
-        SciCall_SetProperty("json.escape.sequence", "1");
+        SciCall_SetProperty("lexer.json.allow.comments", "1");
+        SciCall_SetProperty("lexer.json.escape.sequence", "1");
         break;
 
     case SCLEX_PYTHON:
         SciCall_SetProperty("tab.timmy.whinge.level", "1");
         SciCall_SetProperty("lexer.python.strings.f", "1");
+        break;
+
+    case SCLEX_VERILOG:
+    case SCLEX_SYSVERILOG:
+        SciCall_SetProperty("lexer.verilog.track.preprocessor", "1");
+        SciCall_SetProperty("lexer.verilog.update.preprocessor", "1");
+        SciCall_SetProperty("lexer.verilog.portstyling", "1");
+        SciCall_SetProperty("lexer.verilog.allupperkeywords", "1");
         break;
 
     case SCLEX_XML:

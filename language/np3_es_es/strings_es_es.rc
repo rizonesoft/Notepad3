@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Reemplazar"
     IDT_VIEW_WORDWRAP       "Ajuste automático de línea"
     IDT_VIEW_ZOOMIN         "Zoom Acercar"
+    IDT_VIEW_RESETZOOM      "Anular Zoom"
     IDT_VIEW_ZOOMOUT        "Zoom Alejar"
     IDT_VIEW_SCHEME         "Seleccionar esquema"
     IDT_VIEW_SCHEMECONFIG   "Personalizar esquemas"
@@ -89,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Ejecutar Documento"
+    IDT_VIEW_NEW_WINDOW      "Nueva ventana vacía"
     IDT_VIEW_TOGGLE_VIEW     "Vista enfocada"
     IDT_VIEW_CHASING_DOCTAIL "Monitoreo de Log"
     IDT_VIEW_PIN_ON_TOP      "Siempre visible"
@@ -136,7 +138,7 @@ BEGIN
                             "La ventana de Notepad3 existente está ocupada o tiene un cuadro de diálogo activo.\n¿Quiere abrir otra ventana de Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "Las tablas de conversión de páginas de códigos para la codificación seleccionada no están disponibles en su sistema."
     IDS_MUI_ERR_UNICODE     "Error al convertir este archivo Unicode.\n¡Los datos se perderán si se guarda el archivo!"
-    IDS_MUI_ERR_BITMAP      "Error cargando bitmap ""%s"".\nDimensiones necesarias: %i x %i (ancho >= %i x alto)."
+    IDS_MUI_ERR_BITMAP      "Dimensión no adecuada del bitmap ""%s"".\nDimensión adecuada: %i x %i (ancho >= %i x alto)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "¡Error al elevar los privilegios de usuario!"
 END
@@ -174,9 +176,10 @@ BEGIN
     IDS_MUI_REPLCOUNT       "Se han reemplazado %s ocurrencia(s) del patrón de búsqueda especificado."
     IDS_MUI_ASK_ENCODING    "Cambiar la codificación del archivo de una codificación a otra puede reemplazar el texto no compatible con caracteres predeterminados, y el historial de deshacer se borrará. ¿Continuar?"
     IDS_MUI_ASK_ENCODING2   "Está a punto de cambiar la codificación de un archivo vacío. Tenga en cuenta que esto borrará el historial de deshacer, ya que no se puede sincronizar con la nueva codificación. ¿Continuar?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Esta operación borrará el historial de deshacer. ¿Continuar?"
     IDS_MUI_READONLY_SAVE   """%s"" es de sólo lectura. ¿Guardar en un archivo diferente?"
     IDS_MUI_FILECHANGENOTIFY
-                            "El archivo actual ha sido modificado por un programa externo. ¿Recargar?"
+                            "El archivo actual ha sido modificado por un programa externo.\nSeleccione:\n\nCancelar -\t\tIgnorar más cambios\nRecargar -\t\tRecargar archivo\nContinuar -\tCambiar a monitoreo de archivos"
     IDS_MUI_FILECHANGENOTIFY2 "El archivo actual ha sido eliminado. ¿Guardar ahora?"
     IDS_MUI_FILELOCK_ERROR  "No se puede adquirir un bloqueo de archivo exclusivo para ""%s""!"
     IDS_MUI_STICKYWINPOS    "La posición de la ventana fija está activada. Cualquier nueva ventana de Notepad3 utilizará la configuración de ubicación de la ventana actual."
@@ -246,7 +249,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(es-ES) Traducción española por hpwamr"
+    IDS_MUI_TRANSL_AUTHOR   "(es-ES) Traducción española por Giulidan"
     IDS_MUI_TITLE_FIXBASE   "BASE (%s)"
     IDS_MUI_TITLE_RELCUR    "+++ %s: %s Estilo +++"
     IDS_MUI_TITLE_FIXCUR    "%s: %s Estilo"
@@ -263,16 +266,18 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Idioma"
     IDS_USE_LOCALE_DATEFMT  "Idioma &define Formato Fecha"
     IDS_MUI_MENU_THEMES     "&Colección de Esquemas"
-    IDM_THEMES_FACTORY_RESET "&Defecto de fábrica"
+    IDM_THEMES_FACTORY_RESET "&Restablecimiento de fábrica"
     IDM_THEMES_STD_CFG       "Config. &Estándar"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Borrar todo"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Borrar historial de búsqueda"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Borrar historial de reemplazo"
-    IDS_MUI_REPLCLIPTAG     "Reemplazar por acceso directo del portapapeles [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Buscar por portapapeles si la selección está vacía"
+    IDS_MUI_REPLCLIPTAG     "Reemplazar con acceso directo al portapapeles [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Coincidencia de bucle desde arriba"
     IDS_MUI_WRAPSEARCH_BCK  "Coincidencia de bucle desde abajo"
 END
@@ -283,6 +288,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Cambiar de vista..."
     IDS_MUI_SB_REPLACE_ALL    "Reemplazar todo..."
     IDS_MUI_SB_WRAP_LINES     "Ajuste de líneas..."
+    IDS_MUI_SB_SORTING_LINES  "Ordenar líneas..."
     IDS_MUI_SB_CONV_LNBRK     "Convertir saltos de línea..."
     IDS_MUI_SB_RECODING_DOC   "Recodificar documento..."
     IDS_MUI_SB_LEXER_STYLING  "Aplicar el estilo de Lexer..."
@@ -295,8 +301,8 @@ Uso:\r\n\
 Notepad3 [/?] [...[Codificación]] [...[Modo de final de línea]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[unidad:][ruta]archivo[...]]\r\n\r\n\
-archivo\tDebe ser el último argumento, sin espacios entre\r\n\tcomillas por defecto.\r\n\
-+\tAceptar múltiples argumentos de archivo (con espacios\r\n\tentre comillas).\r\n\
+archivo\tDebe ser el último argumento, sin espacios entre comillas por defecto.\r\n\
++\tAceptar múltiples argumentos de archivo (con espacios entre comillas).\r\n\
 -\tAceptar argumento de archivo único (sin espacios entre comillas).\r\n\r\n\
 Opciones:\r\n\
 /?\tMostrar este mensaje de ayuda.\r\n\
@@ -304,7 +310,7 @@ Opciones:\r\n\
 ...\tModo de final de línea (/crlf, /cr, /lf).\r\n\
 /e\tCodificación de la fuente del archivo.\r\n\
 /g\tSaltar a la posición especificada (/g -1 fin de archivo).\r\n\
-/m\tCoincidencia de texto especificado (/m- último, /mr regex,\r\n\t/mb backslash).\r\n\
+/m\tCoincidencia de texto especificado (/m- último, /mr regex, /mb backslash).\r\n\
 /l\tAuto recargar archivos modificados.\r\n\
 /q\tForzar la creación de nuevos archivos sin aviso.\r\n\
 /s\tSeleccione el esquema de sintaxis especificado.\r\n\
@@ -312,11 +318,11 @@ Opciones:\r\n\
 /h\tSeleccione un esquema de código fuente Web.\r\n\
 /x\tSeleccione el esquema de documento XML.\r\n\
 /c\tAbrir nueva ventana y pegar contenido del portapapeles.\r\n\
-/b\tAbre una nueva tabla de pegar para recoger las entradas\r\n\tdel portapapeles.\r\n\
+/b\tAbre una nueva tabla de pegar para recoger las entradas del portapapeles.\r\n\
 /n\tSiempre abre una nueva ventana (/ns instancia de archivo único).\r\n\
 /r\tReutilizar la ventana (/rs instancia de archivo único).\r\n\
-/p\tEstablecer el tamaño y la posición de la ventana (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\to /p <izquierda>,<arriba>,<ancho>,<altura>,<max>    [todos\r\n\tenteros].\r\n\
+/p\tEstablecer el tamaño y la posición de la ventana  (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\to /p <izquierda>,<arriba>,<ancho>,<altura>[,<dpi>[,<max>]]  (todos enteros).\r\n\
 /t\tEstablecer el título de la ventana.\r\n\
 /i\tComenzar como un icono de la barra de tareas.\r\n\
 /o\tVentana siempre visible.\r\n\
@@ -325,10 +331,10 @@ Opciones:\r\n\
 /v\tImprimir el archivo inmediatamente y salir.\r\n\
 /vd\tImprimir archivo (abrir el cuadro de diálogo de la impresora).\r\n\
 /y\tEntorno de búsqueda PATH en caso de nombre de archivo relativo..\r\n\
-/z\tIr a la siguiente (usar para reemplazar el Notepad basado\r\n\ten el registro).\r\n\r\n\
+/z\tIr a la siguiente (usar para reemplazar el Notepad basado en el registro).\r\n\r\n\
 Ejemplos:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Abrir un nuevo archivo: ""Test.txt"" Codificación=UTF-8-BOM,\r\n\tEoL=CRLF.\r\n\
+ \t... Abrir un nuevo archivo: ""Test.txt"" Codificación=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
  \t... Imprimir el archivo: ""Test.txt"" inmediatamente.\
 "

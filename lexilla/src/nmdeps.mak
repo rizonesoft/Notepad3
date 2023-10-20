@@ -364,6 +364,18 @@ $(DIR_O)/LexMake.obj: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
+$(DIR_O)/LexMarkdown.obj: \
+	../lexers/LexMarkdown.cxx \
+	../../scintilla/include/ILexer.h \
+	../../scintilla/include/Sci_Position.h \
+	../../scintilla/include/Scintilla.h \
+	../include/SciLexer.h \
+	../lexlib/WordList.h \
+	../lexlib/LexAccessor.h \
+	../lexlib/Accessor.h \
+	../lexlib/StyleContext.h \
+	../lexlib/CharacterSet.h \
+	../lexlib/LexerModule.h
 $(DIR_O)/LexMatlab.obj: \
 	../lexers/LexMatlab.cxx \
 	../../scintilla/include/ILexer.h \
@@ -464,6 +476,23 @@ $(DIR_O)/LexProps.obj: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
+$(DIR_O)/LexPython.obj: \
+	../lexers/LexPython.cxx \
+	../../scintilla/include/ILexer.h \
+	../../scintilla/include/Sci_Position.h \
+	../../scintilla/include/Scintilla.h \
+	../include/SciLexer.h \
+	../lexlib/StringCopy.h \
+	../lexlib/WordList.h \
+	../lexlib/LexAccessor.h \
+	../lexlib/Accessor.h \
+	../lexlib/StyleContext.h \
+	../lexlib/CharacterSet.h \
+	../lexlib/CharacterCategory.h \
+	../lexlib/LexerModule.h \
+	../lexlib/OptionSet.h \
+	../lexlib/SubStyles.h \
+	../lexlib/DefaultLexer.h
 $(DIR_O)/LexR.obj: \
 	../lexers/LexR.cxx \
 	../../scintilla/include/ILexer.h \
@@ -681,36 +710,6 @@ $(DIR_O)/LexKotlin.obj: \
 	../include/SciLexer.h \
 	../lexers_x/StringUtils.h \
 	../lexers_x/LexerUtils.h
-$(DIR_O)/LexMarkdown.obj: \
-	../lexers_x/LexMarkdown.cxx \
-	../../scintilla/include/ILexer.h \
-	../../scintilla/include/Sci_Position.h \
-	../../scintilla/include/Scintilla.h \
-	../include/SciLexer.h \
-	../lexlib/WordList.h \
-	../lexlib/LexAccessor.h \
-	../lexlib/Accessor.h \
-	../lexlib/StyleContext.h \
-	../lexers_x/CharSetX.h \
-	../lexlib/CharacterSet.h \
-	../lexlib/LexerModule.h
-$(DIR_O)/LexPython.obj: \
-	../lexers_x/LexPython.cxx \
-	../../scintilla/include/ILexer.h \
-	../../scintilla/include/Sci_Position.h \
-	../../scintilla/include/Scintilla.h \
-	../include/SciLexer.h \
-	../lexlib/StringCopy.h \
-	../lexlib/WordList.h \
-	../lexlib/LexAccessor.h \
-	../lexlib/Accessor.h \
-	../lexlib/StyleContext.h \
-	../lexlib/CharacterSet.h \
-	../lexlib/CharacterCategory.h \
-	../lexlib/LexerModule.h \
-	../lexlib/OptionSet.h \
-	../lexlib/SubStyles.h \
-	../lexlib/DefaultLexer.h
 $(DIR_O)/LexTOML.obj: \
 	../lexers_x/LexTOML.cxx \
 	../../scintilla/include/ILexer.h \
@@ -729,3 +728,19 @@ $(DIR_O)/LexTOML.obj: \
 	../lexlib/CharacterSet.h \
 	../lexers_x/SciXLexer.h \
 	../include/SciLexer.h
+$(DIR_O)/LexVerilog.obj: \
+	../lexers_x/LexVerilog.cxx \
+	../../scintilla/include/ILexer.h \
+	../../scintilla/include/Sci_Position.h \
+	../../scintilla/include/Scintilla.h \
+	../include/SciLexer.h \
+	../lexers_x/SciXLexer.h \
+	../lexlib/WordList.h \
+	../lexlib/LexAccessor.h \
+	../lexlib/Accessor.h \
+	../lexlib/StyleContext.h \
+	../lexlib/CharacterSet.h \
+	../lexlib/LexerModule.h \
+	../lexlib/OptionSet.h \
+	../lexlib/SubStyles.h \
+	../lexlib/DefaultLexer.h

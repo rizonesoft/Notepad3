@@ -1,6 +1,6 @@
 // sktoolslib - common files for SK tools
 
-// Copyright (C) 2012, 2014, 2017-2022 - Stefan Kueng
+// Copyright (C) 2012, 2014, 2017-2023 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -22,6 +22,7 @@
 #include "PathUtils.h"
 #include "maxpath.h"
 #include <memory>
+#include <cassert>
 
 static wchar_t WideCharSwap(wchar_t nValue)
 {
@@ -47,25 +48,45 @@ CTextFile::~CTextFile()
     pFileBuf = nullptr;
 }
 
-bool CTextFile::Save(LPCWSTR path) const
+bool CTextFile::Save(LPCWSTR path, bool keepFileDate) const
 {
     if (pFileBuf == nullptr)
         return false;
+    FILETIME creationTime{};
+    FILETIME lastAccessTime{};
+    FILETIME lastWriteTime{};
+    if (keepFileDate)
+    {
+        HANDLE hFile = CreateFile(path, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+                                  nullptr, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
+        if (hFile != INVALID_HANDLE_VALUE)
+        {
+            GetFileTime(hFile, &creationTime, &lastAccessTime, &lastWriteTime);
+            CloseHandle(hFile);
+        }
+    }
+
     HANDLE hFile = CreateFile(path, GENERIC_WRITE, FILE_SHARE_READ,
                               nullptr, CREATE_ALWAYS, FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
     if (hFile == INVALID_HANDLE_VALUE)
+    {
+        assert(false);
         return false;
+    }
+
     DWORD byteswritten;
     if (!WriteFile(hFile, pFileBuf.get(), fileLen, &byteswritten, nullptr))
     {
         CloseHandle(hFile);
         return false;
     }
+    if (keepFileDate)
+        SetFileTime(hFile, &creationTime, &lastAccessTime, &lastWriteTime);
     CloseHandle(hFile);
     return true;
 }
 
-bool CTextFile::Load(LPCWSTR path, UnicodeType &type, bool bUTF8, std::atomic_bool& bCancelled)
+bool CTextFile::Load(LPCWSTR path, UnicodeType &type, bool bUTF8, std::atomic_bool &bCancelled)
 {
     encoding = AutoType;
     type     = AutoType;
@@ -263,7 +284,7 @@ bool CTextFile::Load(LPCWSTR path, UnicodeType &type, bool bUTF8, std::atomic_bo
             return false;
         }
     }
-    else //if (encoding == ANSI)
+    else // if (encoding == ANSI)
     {
         try
         {
@@ -415,12 +436,12 @@ CTextFile::UnicodeType CTextFile::CheckUnicodeType(BYTE *pBuffer, int cb) const
 {
     if (cb < 2)
         return Ansi;
-    UINT16 *pVal16 = reinterpret_cast<UINT16 *>(pBuffer);
-    UINT8 * pVal8  = reinterpret_cast<UINT8 *>(pVal16 + 1);
+    UINT16 *pVal16   = reinterpret_cast<UINT16 *>(pBuffer);
+    UINT8  *pVal8    = reinterpret_cast<UINT8 *>(pVal16 + 1);
     // scan the whole buffer for a 0x0000 sequence
     // if found, we assume a binary file
-    int nNull    = 0;
-    int nDblNull = 0;
+    int     nNull    = 0;
+    int     nDblNull = 0;
     for (int i = 0; i < (cb - 2); i = i + 2)
     {
         if (0x0000 == *pVal16++)
@@ -502,7 +523,7 @@ CTextFile::UnicodeType CTextFile::CheckUnicodeType(BYTE *pBuffer, int cb) const
     return Ansi;
 }
 
-bool CTextFile::CalculateLines(std::atomic_bool& bCancelled)
+bool CTextFile::CalculateLines(std::atomic_bool &bCancelled)
 {
     // fill an array with starting positions for every line in the loaded file
     if (pFileBuf == nullptr)
@@ -571,6 +592,26 @@ std::wstring CTextFile::GetLineString(long lineNumber) const
         line = std::wstring(textContent.begin() + startPos, textContent.end());
 
     return line;
+}
+
+std::wstring CTextFile::GetEncodingString(UnicodeType type)
+{
+    switch (type)
+    {
+        case CTextFile::Ansi:
+            return L"ANSI";
+        case CTextFile::Unicode_Le:
+            return L"UTF-16-LE";
+        case CTextFile::Unicode_Be:
+            return L"UTF-16-BE";
+        case CTextFile::UTF8:
+            return L"UTF8";
+        case CTextFile::Binary:
+            return L"BINARY";
+        default:
+            break;
+    }
+    return {};
 }
 
 std::wstring CTextFile::GetFileNameWithoutExtension() const

@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Διαγραφή γραμμής δε&ξιά\tCtrl+Shift+Del",                    IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Αναδίπλ&ωση στήλης...\tCtrl+Shift+W",                        IDM_EDIT_COLUMNWRAP
-            MENUITEM "Δια&χωρισμός γραμμών\tCtrl+I",                               IDM_EDIT_SPLITLINES
-            MENUITEM "&Σύνδεση γραμμών\tCtrl+J",                                   IDM_EDIT_JOINLINES
-            MENUITEM "Σ&υγχώνευση γραμμών\tCtrl+Alt+J",                            IDM_EDIT_JOINLN_NOSP
-            MENUITEM "Διατήρηση παραγρά&φων\tCtrl+Shift+J",                        IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Συγχών&ευση κενών γραμμών\tAlt+Y",                           IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Συγχώνευσ&η γραμμών με διαστήματα\tCtrl+Alt+Y",              IDM_EDIT_MERGEBLANKLINES
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "Συ&μπίεση κενών\tCtrl+Alt+P",               IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "Τροποποίηση γρ&αμμών...\tAlt+M",            IDM_EDIT_MODIFYLINES
-            MENUITEM "Στοί&χιση γραμμών...\tAlt+J",               IDM_EDIT_ALIGN
             MENUITEM "Τα&ξινόμηση γραμμών...\tAlt+O",             IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "Στοί&χιση γραμμών...\tAlt+J",               IDM_EDIT_ALIGN
+            MENUITEM "Διαχ&ωρισμός γραμμών\tCtrl+I",              IDM_EDIT_SPLITLINES
+            MENUITEM "&Σύνδεση γραμμών\tCtrl+J",                  IDM_EDIT_JOINLINES
+            MENUITEM "Συ&γχώνευση γραμμών\tCtrl+Alt+J",           IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Διατήρηση παραγρά&φων\tCtrl+Shift+J",       IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Μετάβασ&η στην αρχή της επιλογής\tCtrl+,",  CMD_JUMP2SELSTART
             MENUITEM "Μετά&βαση στο τέλος της επιλογής\tCtrl+.",  CMD_JUMP2SELEND
@@ -337,7 +338,7 @@ BEGIN
             MENUITEM "Αντι&κατάσταση επόμενου\tF4",                      IDM_EDIT_REPLACENEXT
             MENUITEM "Μετά&βαση...\tCtrl+G",                             IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "Ανα&ζήτηση σε αρχεία\tCtrl+Shift+F",               IDM_GREP_WIN_SEARCH
+            MENUITEM "Ανα&ζήτηση σε αρχεία\tCtrl+Shift+F",               IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "Πρ&οβολή"
@@ -357,6 +358,7 @@ BEGIN
             MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Ενεργά σημεία &υπερσυνδέσεων\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Χρώμα ορισμού υπερσυνδέσεων"
@@ -424,6 +426,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Πίνακες"
         BEGIN
+            MENUITEM "Show Titlebar",                      IDM_VIEW_TITLEBAR
             MENUITEM "Εμφάνιση γραμμής &μενού",            IDM_VIEW_MENUBAR
             MENUITEM "Εμφάνιση γραμμής &εργαλείων",        IDM_VIEW_TOOLBAR
             MENUITEM "Εμφάνιση γραμμής &κατάστασης",       IDM_VIEW_STATUSBAR
@@ -469,7 +472,8 @@ BEGIN
         MENUITEM "Ρυθμίσεις αναδίπλωσης &λέξεων...",                IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Ρυθμίσεις &μεγάλης γραμμής...",                   IDM_SET_LONGLINESETTINGS
         MENUITEM "Αυτόματη εσ&οχή κειμένου",                        IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close Brackets",                      IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Auto Close &Quotes",                              IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Auto Close Brackets",                             IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Αυτόματο κλείσιμο Η&ΤΜL/XML\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
         MENUITEM "Αυτόματη συμπλήρωση λέ&ξεων",                     IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Α&υτόμ. συμπλήρωση λέ&ξεων-κλειδιών του Lexer",   IDM_SET_AUTOCLEXKEYWORDS
@@ -574,6 +578,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Show Titlebar",                     IDM_VIEW_TITLEBAR
         MENUITEM "Εμφάνιση γραμμής μενού",            IDM_VIEW_MENUBAR
         MENUITEM "Εμφάνιση γραμμής εργαλείων",        IDM_VIEW_TOOLBAR
         MENUITEM "Εμφάνιση γραμμής κατάστασης",       IDM_VIEW_STATUSBAR

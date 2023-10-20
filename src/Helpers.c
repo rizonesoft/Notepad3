@@ -10,7 +10,7 @@
 *   Parts taken from SciTE, (c) Neil Hodgson                                  *
 *   MinimizeToTray, (c) 2000 Matthew Ellis                                    *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -552,51 +552,59 @@ bool IsRunAsAdmin()
 //=============================================================================
 
 
-void BackgroundWorker_Init(BackgroundWorker* worker, HWND hwnd, HPATHL hFilePath)
+void BackgroundWorker_Init(BackgroundWorker* worker, HWND hwnd, const HPATHL hFilePath)
 {
-    worker->hwnd = hwnd;
-    worker->eventCancel = CreateEvent(NULL, TRUE, FALSE, NULL);
-    worker->workerThread = NULL;
-    worker->hFilePath = hFilePath;
+    if (worker) {
+        worker->hwnd = hwnd;
+        // manual (not automatic) reset & initial state: not signaled (TRUE, FALSE)
+        worker->eventCancel = CreateEvent(NULL, TRUE, FALSE, NULL);
+        worker->workerThread = INVALID_HANDLE_VALUE;
+        worker->hFilePath = Path_Allocate(Path_Get(hFilePath));
+    }
 }
 
 void BackgroundWorker_Start(BackgroundWorker* worker, _beginthreadex_proc_type routine, LPVOID property)
 {
-    //~worker->workerThread = CreateThread(NULL, 0, routine, property, 0, NULL);  // MD(d) dll
-    worker->workerThread = (HANDLE)_beginthreadex(NULL, 0, routine, property, 0, NULL);  // MT(d) static
-}
-
-void BackgroundWorker_End(unsigned int retcode)
-{
-    _endthreadex(retcode);
-}
-
-static void _BackgroundWorker_Stop(BackgroundWorker* worker) {
-    SetEvent(worker->eventCancel);
-    HANDLE const workerThread = worker->workerThread;
-    if (workerThread) {
-        worker->workerThread = NULL;
-        while (WaitForSingleObject(workerThread, 0) != WAIT_OBJECT_0) {
-            MSG msg;
-            if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-            }
-        }
-        CloseHandle(workerThread);
+    if (worker) {
+        ResetEvent(worker->eventCancel); // init should be 'not signaled'
+        //~worker->workerThread = CreateThread(NULL, 0, routine, property, 0, NULL);  // MD(d) dll
+        uintptr_t const thread = _beginthreadex(NULL, 0, routine, property, 0, NULL); // MT(d) static
+        InterlockedExchangePointer(&(worker->workerThread), (thread != 0LL) ? (HANDLE)thread : INVALID_HANDLE_VALUE);
     }
 }
 
 void BackgroundWorker_Cancel(BackgroundWorker* worker) {
-    _BackgroundWorker_Stop(worker);
-    ResetEvent(worker->eventCancel);
+    if (worker) {
+        SetEvent(worker->eventCancel); // signal
+        HANDLE const workerThread = InterlockedExchangePointer(&(worker->workerThread), INVALID_HANDLE_VALUE);
+        if (IS_VALID_HANDLE(workerThread)) {
+            // Optimize: MsgDispatch only in case of hwnd ?
+            // DWORD const wait = SignalObjectAndWait(worker->eventCancel, workerThread, 100 /*INFINITE*/, FALSE);
+            while (WaitForSingleObject(workerThread, 0) != WAIT_OBJECT_0) {
+                MSG msg;
+                if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+                    TranslateMessage(&msg);
+                    DispatchMessage(&msg);
+                }
+            }
+            CloseHandle(workerThread);
+        }
+    }
 }
 
-void BackgroundWorker_Destroy(BackgroundWorker* worker) {
-    _BackgroundWorker_Stop(worker);
-    CloseHandle(worker->eventCancel);
+// inline void BackgroundWorker_End(BackgroundWorker* worker, unsigned int retcode);
+
+void BackgroundWorker_Destroy(BackgroundWorker* worker)
+{
+    if (worker) {
+        BackgroundWorker_Cancel(worker);
+        CloseHandle(InterlockedExchangePointer(&(worker->eventCancel), INVALID_HANDLE_VALUE));
+        Path_Release(worker->hFilePath);
+        worker->hFilePath = NULL;
+    }
 }
 
+// inline bool BackgroundWorker_Continue(BackgroundWorker* worker);
 
 //=============================================================================
 //
@@ -717,7 +725,9 @@ static int CALLBACK EnumFontFamExProcFound(CONST LOGFONT *plf, CONST TEXTMETRIC 
 
 bool IsFontAvailable(LPCWSTR lpszFontName) {
 
-    bool fFound = FALSE;
+    BOOL fFound = FALSE;
+    if (!lpszFontName)
+        return fFound;
 
     LOGFONT lf = { 0 };
     StringCchCopy(lf.lfFaceName, LF_FACESIZE, lpszFontName);
@@ -730,6 +740,43 @@ bool IsFontAvailable(LPCWSTR lpszFontName) {
     return fFound;
 }
 
+
+//=============================================================================
+//
+//  GetNonClientMetricsA()
+//
+static LPNONCLIENTMETRICSA _GetNonClientMetricsA(bool bForceRefresh)
+{
+    static NONCLIENTMETRICSA ncm = { 0 };
+    if (!ncm.cbSize || bForceRefresh) {
+        size_t const cbSize = sizeof(NONCLIENTMETRICSA);
+        ZeroMemory(&ncm, cbSize);
+        ncm.cbSize = (UINT)cbSize;
+        SystemParametersInfoA(SPI_GETNONCLIENTMETRICS, (UINT)cbSize, &ncm, 0);
+    }
+    return &ncm;
+}
+
+void GetSystemCaptionFontA(LPSTR fontFaceName_out, bool bForceRefresh)
+{
+    LPNONCLIENTMETRICSA const pncm = _GetNonClientMetricsA(bForceRefresh);
+    StringCchCopyA(fontFaceName_out, LF_FACESIZE, pncm->lfCaptionFont.lfFaceName);
+}
+void GetSystemMenuFontA(LPSTR fontFaceName_out, bool bForceRefresh)
+{
+    LPNONCLIENTMETRICSA const pncm = _GetNonClientMetricsA(bForceRefresh);
+    StringCchCopyA(fontFaceName_out, LF_FACESIZE, pncm->lfMenuFont.lfFaceName);
+}
+void GetSystemMessageFontA(LPSTR fontFaceName_out, bool bForceRefresh)
+{
+    LPNONCLIENTMETRICSA const pncm = _GetNonClientMetricsA(bForceRefresh);
+    StringCchCopyA(fontFaceName_out, LF_FACESIZE, pncm->lfMessageFont.lfFaceName);
+}
+void GetSystemStatusFontA(LPSTR fontFaceName_out, bool bForceRefresh)
+{
+    LPNONCLIENTMETRICSA const pncm = _GetNonClientMetricsA(bForceRefresh);
+    StringCchCopyA(fontFaceName_out, LF_FACESIZE, pncm->lfStatusFont.lfFaceName);
+}
 
 
 //=============================================================================
@@ -806,7 +853,7 @@ bool StrLTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars)
         ++psz;
     }
 
-    MoveMemory(pszSource, psz, sizeof(WCHAR)*(StringCchLenW(psz,0) + 1));
+    MoveMemory(pszSource, psz, sizeof(WCHAR)*(StringCchLen(psz,0) + 1));
 
     return (psz != pszSource);
 }
@@ -821,7 +868,7 @@ bool StrRTrimI(LPWSTR pszSource, LPCWSTR pszTrimChars)
     if (!pszSource || !*pszSource) {
         return false;
     }
-    size_t const length = StringCchLenW(pszSource, 0);
+    size_t const length = StringCchLen(pszSource, 0);
 
     size_t len = length;
     while ((len > 0) && StrChrI(pszTrimChars, pszSource[--len])) {
@@ -1632,7 +1679,7 @@ static int _CheckRegExReplTargetA(LPSTR pszInput)
             ++pszInput;
         }
     }
-    return SCI_REPLACETARGET;
+    return SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
 }
 
 static int _CheckRegExReplTargetW(LPWSTR pszInput)
@@ -1652,7 +1699,7 @@ static int _CheckRegExReplTargetW(LPWSTR pszInput)
             ++pszInput;
         }
     }
-    return SCI_REPLACETARGET;
+    return SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
 }
 
 
@@ -1663,12 +1710,11 @@ void TransformBackslashesA(LPSTR pszInput, bool bRegEx, UINT cpEdit, int* iRepla
             UnSlashLowOctalA(pszInput);
             *iReplaceMsg = _CheckRegExReplTargetA(pszInput);
         } else {
-            *iReplaceMsg = SCI_REPLACETARGET;  // uses SCI std replacement
+            *iReplaceMsg = SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
         }
     }
-    bool const bStdReplace = (iReplaceMsg && (SCI_REPLACETARGET == *iReplaceMsg));
-
     // regex handles backslashes itself
+    bool const bStdReplace = (iReplaceMsg && (SCI_REPLACETARGETRE != *iReplaceMsg));
     if (!bRegEx || bStdReplace) {
         UnSlashA(pszInput, cpEdit);
     }
@@ -1681,12 +1727,11 @@ void TransformBackslashesW(LPWSTR pszInput, bool bRegEx, UINT cpEdit, int* iRepl
             UnSlashLowOctalW(pszInput);
             *iReplaceMsg = _CheckRegExReplTargetW(pszInput);
         } else {
-            *iReplaceMsg = SCI_REPLACETARGET;  // uses SCI std replacement
+            *iReplaceMsg = SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
         }
     }
-    bool const bStdReplace = (iReplaceMsg && (SCI_REPLACETARGET == *iReplaceMsg));
-
     // regex handles backslashes itself
+    bool const bStdReplace = (iReplaceMsg && (SCI_REPLACETARGETRE != *iReplaceMsg));
     if (!bRegEx || bStdReplace) {
         UnSlashW(pszInput, cpEdit);
     }
@@ -1984,7 +2029,7 @@ void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
 
     DWORD posIn = 0;
     WCHAR buf[5] = { L'\0' };
-    DWORD lastEsc = (DWORD)StringCchLenW(lpURL,0) - 2;
+    DWORD lastEsc = (DWORD)StringCchLen(lpURL,0) - 2;
     unsigned int code;
 
     DWORD posOut = 0;
@@ -2118,11 +2163,11 @@ size_t ReadVectorFromString(LPCWSTR wchStrg, int iVector[], size_t iCount, int i
     // ensure single spaces only
     const WCHAR *p = StrStr(wchTmpBuff, L"  ");
     while (p) {
-        MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (StringCchLenW(p,0) + 1) * sizeof(WCHAR));
+        MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (StringCchLen(p,0) + 1) * sizeof(WCHAR));
         p = StrStr(wchTmpBuff, L"  ");  // next
     }
     // separate values
-    int const len = (int)StringCchLenW(wchTmpBuff, COUNTOF(wchTmpBuff));
+    int const len = (int)StringCchLen(wchTmpBuff, COUNTOF(wchTmpBuff));
     for (int i = 0; i < len; ++i) {
         if (wchTmpBuff[i] == L' ') {
             wchTmpBuff[i] = L'\0';
@@ -2182,7 +2227,7 @@ size_t NormalizeColumnVector(LPSTR chStrg_in, LPWSTR wchStrg_out, size_t iCount)
 //  StrToFloat()
 //  Locale indpendant simple character to float conversion
 //
-bool StrToFloat(WCHAR* wnumber, float* fresult)
+bool StrToFloatEx(WCHAR* wnumber, float* fresult)
 {
     if (!wnumber || !fresult) {
         return false;
@@ -2227,7 +2272,7 @@ bool StrToFloat(WCHAR* wnumber, float* fresult)
     if (wnumber[i] == L'e' || wnumber[i] == L'E') {
         ++i;
         float fexp = 0.0f;
-        if (StrToFloat(&(wnumber[i]), &fexp)) {
+        if (StrToFloatEx(&(wnumber[i]), &fexp)) {
             exponent = powf(10, fexp);
         }
     }

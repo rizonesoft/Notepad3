@@ -100,7 +100,7 @@ BEGIN
         BEGIN
             POPUP "文字コード指定しファイル読み直し(&R)"
             BEGIN
-                MENUITEM "デフォルト (設定を使用) (&D)",          CMD_RECODEDEFAULT
+                MENUITEM "既定 (設定を使用) (&D)",          CMD_RECODEDEFAULT
                 MENUITEM "ANSI (&N)\tCtrl+Shift+A",         CMD_RECODEANSI
                 MENUITEM "OEM (&O)\tCtrl+Shift+O",          CMD_RECODEOEM
                 MENUITEM "GB18030 (&G)\tCtrl+Shift+F10",    CMD_RECODEGB18030
@@ -122,7 +122,7 @@ BEGIN
                 MENUITEM "ほかの文字コード(&M)...\tF9",            IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
-            MENUITEM "デフォルトの文字コードを設定(&D)...",             IDM_ENCODING_SETDEFAULT
+            MENUITEM "既定の文字コードを設定(&D)...",             IDM_ENCODING_SETDEFAULT
         END
         POPUP "改行コード(&G)"
         BEGIN
@@ -130,7 +130,7 @@ BEGIN
             MENUITEM "Mac(&M) (CR)",                         IDM_LINEENDINGS_CR
             MENUITEM "Unix(&U) (LF)",                        IDM_LINEENDINGS_LF
             MENUITEM SEPARATOR
-            MENUITEM "デフォルトを設定(&D)...",                 IDM_LINEENDINGS_SETDEFAULT
+            MENUITEM "既定を設定(&D)...",                 IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
         MENUITEM "インデントの検査(&I)...",                      CMD_CHECK_INDENTATION
@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "カーソルから行末まで削除(&H)\tCtrl+Shift+Del",   IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "空白で折り返し(&W)...\tCtrl+Shift+W",     IDM_EDIT_COLUMNWRAP
-            MENUITEM "長い行を分割し折り返し(&S)\tCtrl+I",       IDM_EDIT_SPLITLINES
-            MENUITEM "行を結合(空白で)(&J)\tCtrl+J",           IDM_EDIT_JOINLINES
-            MENUITEM "行を融合(空白なし)(&F)\tCtrl+Alt+J",      IDM_EDIT_JOINLN_NOSP
-            MENUITEM "段落を温存して結合(&P)\tCtrl+Shift+J",    IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "空の行をまとめる(&G)\tAlt+Y",              IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "スペースの行もまとめる(&K)\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "空白をまとめる(&W)\tCtrl+Alt+P",           IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "行の修飾(&M)...\tAlt+M",                 IDM_EDIT_MODIFYLINES
-            MENUITEM "行の整列(&A)...\tAlt+J",                 IDM_EDIT_ALIGN
             MENUITEM "行の並べ替え(&S)...\tAlt+O",              IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "行の整列(&A)...\tAlt+J",                 IDM_EDIT_ALIGN
+            MENUITEM "長い行を分割し折り返し(&I)\tCtrl+I",       IDM_EDIT_SPLITLINES
+            MENUITEM "行を結合(空白で)(&J)\tCtrl+J",           IDM_EDIT_JOINLINES
+            MENUITEM "行を融合(空白なし)(&E)\tCtrl+Alt+J",      IDM_EDIT_JOINLN_NOSP
+            MENUITEM "段落を温存して結合(&V)\tCtrl+Shift+J",    IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "選択範囲の先頭へ移動(&C)\tCtrl+,",      CMD_JUMP2SELSTART
             MENUITEM "選択範囲の末端へ移動(&N)\tCtrl+.",        CMD_JUMP2SELEND
@@ -337,7 +338,7 @@ BEGIN
             MENUITEM "置換し次へ(&E)\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "指定行へジャンプ(&G)...\tCtrl+G",            IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "ファイル群から検索(&S)\tCtrl+Shift+F",              IDM_GREP_WIN_SEARCH
+            MENUITEM "ファイル群から検索(&S)\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "表示(&V)"
@@ -357,6 +358,7 @@ BEGIN
             MENUITEM "文書にのみ表示",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "すべて表示",             IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "変更/元に戻すの履歴を消去"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "アドレスをリンク(&H)\tCtrl+Alt+W",              IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "色をプレビュー(&C)"
@@ -412,18 +414,19 @@ BEGIN
             BEGIN
                 MENUITEM "折りたたみ",                                IDM_VIEW_FV_FOLD
                 MENUITEM "しおり",                            IDM_VIEW_FV_BOOKMARK
-                MENUITEM "強調",                           IDM_VIEW_FV_HIGHLIGHT
-                MENUITEM "しおり&&折りたたみ",                    IDM_VIEW_FV_BKMRKFOLD
+                MENUITEM "強調",                            IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "しおり&&折りたたみ",                   IDM_VIEW_FV_BKMRKFOLD
                 MENUITEM "強調&&折りたたみ",                   IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
-            MENUITEM "ログ監視用モード(&M)",                         IDM_VIEW_CHASING_DOCTAIL
-            MENUITEM "文書の終端以降へスクロール(&S)",               IDM_VIEW_SCROLLPASTEOF
+            MENUITEM "ログ監視用モード(&M)",                      IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "文書の終端以降へスクロール(&S)",              IDM_VIEW_SCROLLPASTEOF
             MENUITEM "ハイパーリンクのツールチップを表示(&H)",           IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         MENUITEM SEPARATOR
         POPUP "ウィンドウ構成(&A)"
         BEGIN
+            MENUITEM "タイトルバーを表示",                         IDM_VIEW_TITLEBAR
             MENUITEM "メニューバーを表示(&M)",                       IDM_VIEW_MENUBAR
             MENUITEM "ツールバーを表示(&T)",                        IDM_VIEW_TOOLBAR
             MENUITEM "ステータスバーを表示(&S)",                     IDM_VIEW_STATUSBAR
@@ -469,7 +472,8 @@ BEGIN
         MENUITEM "折り返し方の設定(&W)...",                        IDM_SET_WORDWRAPSETTINGS
         MENUITEM "行の長さガイドの設定(&O)...",                     IDM_SET_LONGLINESETTINGS
         MENUITEM "自動インデント(&I)",                             IDM_SET_AUTOINDENTTEXT
-        MENUITEM "自動で括弧を閉じる(&B)",                      IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "自動で引用符を閉じる(&Q)",                         IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "自動で括弧を閉じる(&B)",                          IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "自動閉じHTML/XMLタグ(&H)\tCtrl+Shift+H",        IDM_SET_AUTOCLOSETAGS
         MENUITEM "単語補完(&U)",                                 IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "予約語を自動補完(&K)",                          IDM_SET_AUTOCLEXKEYWORDS
@@ -574,6 +578,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "タイトルバーを表示",                     IDM_VIEW_TITLEBAR
         MENUITEM "メニューバーを表示",                       IDM_VIEW_MENUBAR
         MENUITEM "ツールバーを表示",                        IDM_VIEW_TOOLBAR
         MENUITEM "ステータスバーを表示",                     IDM_VIEW_STATUSBAR

@@ -57,32 +57,32 @@ IDR_MAINWND MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "&Maak Oop",                       		IDM_FILE_OPEN
-        MENUITEM "Maak Oop m/ &Gunsteling Program...",    	IDM_FILE_OPENWITH
-        MENUITEM "&Quickview",                  			IDM_FILE_QUICKVIEW
+        MENUITEM "&Maak Oop",                               IDM_FILE_OPEN
+        MENUITEM "Maak Oop m/ &Gunsteling Program...",      IDM_FILE_OPENWITH
+        MENUITEM "&Quickview",                              IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "K&opie Naam",                  			IDM_POP_COPYNAME
-        MENUITEM "Skep S&kakel...",             			IDM_FILE_CREATELINK
-        MENUITEM "&Stoor As...",                 			IDM_FILE_SAVEAS
-        MENUITEM "Kopieer/Sk&uif...",               		IDM_FILE_COPYMOVE
-        MENUITEM "V&erwyder...",                  			IDM_FILE_DELETE
-        MENUITEM "Her&noem...",                  			IDM_FILE_RENAME
+        MENUITEM "K&opie Naam",                             IDM_POP_COPYNAME
+        MENUITEM "Skep S&kakel...",                         IDM_FILE_CREATELINK
+        MENUITEM "&Stoor As...",                            IDM_FILE_SAVEAS
+        MENUITEM "Kopieer/Sk&uif...",                       IDM_FILE_COPYMOVE
+        MENUITEM "V&erwyder...",                            IDM_FILE_DELETE
+        MENUITEM "Her&noem...",                             IDM_FILE_RENAME
         MENUITEM SEPARATOR
-        MENUITEM "&Begin",                     				IDM_FILE_LAUNCH
-        MENUITEM "&Hardloop m/ Argumente...",        		IDM_FILE_RUN
+        MENUITEM "&Begin",                                  IDM_FILE_LAUNCH
+        MENUITEM "&Hardloop m/ Argumente...",               IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "&Eienska&ppe",                 			IDM_FILE_PROPERTIES
+        MENUITEM "&Eienska&ppe",                            IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
         MENUITEM "&Nuwe Lêer...",               IDM_FILE_NEW
-        MENUITEM "Nu&we Gids...",           	IDM_FILE_NEWDIR
+        MENUITEM "Nu&we Gids...",               IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
         MENUITEM "Lêer &Filter...",             IDM_VIEW_FILTER
         MENUITEM "Stel Filte&r Terug",          IDM_VIEW_FILTERALL
         POPUP "Wy&s"
         BEGIN
-            MENUITEM "&Gidse",           		IDM_VIEW_FOLDERS
+            MENUITEM "&Gidse",                  IDM_VIEW_FOLDERS
             MENUITEM "&Lêers",                  IDM_VIEW_FILES
             MENUITEM "&Stelsel Voorwerpe",      IDM_VIEW_HIDDEN
         END
@@ -99,20 +99,20 @@ BEGIN
         MENUITEM "Ga&an na...",                 IDM_FILE_GOTO
         MENUITEM "&Gaan na Gunstelinge",        IDM_VIEW_FAVORITES
         MENUITEM "Wysig Gunst&elinge",          IDM_VIEW_EDITFAVORITES
-        MENUITEM "&Gidse...",               	IDM_FILE_CHANGEDIR
+        MENUITEM "&Gidse...",                   IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "Wys Dri&ves",                	IDM_VIEW_DRIVEBOX
+        MENUITEM "Wys Dri&ves",                 IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
         MENUITEM "Stoor &Instellings",          IDM_VIEW_SAVESETTINGS
         MENUITEM "Stel &Teiken Op...",          IDM_VIEW_FINDTARGET
-        MENUITEM "O&psies...",                 	IDM_VIEW_OPTIONS
+        MENUITEM "O&psies...",                  IDM_VIEW_OPTIONS
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&Gidse...",               	IDM_FILE_CHANGEDIR
-        MENUITEM "Dryf &Eienskappe",           	IDM_FILE_DRIVEPROP
+        MENUITEM "&Gidse...",                   IDM_FILE_CHANGEDIR
+        MENUITEM "Dryf &Eienskappe",            IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "Wys Dri&ves",                	IDM_VIEW_DRIVEBOX
+        MENUITEM "Wys Dri&ves",                 IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN

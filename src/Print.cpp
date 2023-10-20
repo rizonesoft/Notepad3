@@ -10,7 +10,7 @@
 *                                                                             *
 * Mostly taken from SciTE, (c) Neil Hodgson                                   *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -88,8 +88,8 @@ static UINT_PTR CALLBACK _LPPrintHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
             SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
             SetExplorerTheme(GetDlgItem(hwnd, 0x401));
             int const ctl[] = { chx1, rad1, rad2, rad3, grp1, grp2, grp4, cmb4 };
-            for (int i = 0; i < COUNTOF(ctl); ++i) {
-                SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+            for (int i : ctl) {
+                SetWindowTheme(GetDlgItem(hwnd, i), L"", L""); // remove theme for BS_AUTORADIOBUTTON
             }
         }
 #endif
@@ -104,7 +104,7 @@ static UINT_PTR CALLBACK _LPPrintHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-CASE_WM_CTLCOLOR_SET:
+    CASE_WM_CTLCOLOR_SET:
         return SetDarkModeCtlColors((HDC)wParam, UseDarkMode());
         break;
 
@@ -121,8 +121,8 @@ CASE_WM_CTLCOLOR_SET:
             RefreshTitleBarThemeColor(hwnd);
 
             int const buttons[] = { IDOK, IDCANCEL, 0x401 };
-            for (int id = 0; id < COUNTOF(buttons); ++id) {
-                HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
+            for (int button : buttons) {
+                HWND const hBtn = GetDlgItem(hwnd, button);
                 AllowDarkModeForWindowEx(hBtn, darkModeEnabled);
                 SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
             }
@@ -133,7 +133,7 @@ CASE_WM_CTLCOLOR_SET:
 #endif
 
     case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK) {
+        if (IsYesOkay(wParam)) {
         }
         break;
 
@@ -155,6 +155,8 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_PRINT_EMPTY);
         return true;
     }
+    constexpr COLORREF const colorBlack = RGB(0x00, 0x00, 0x00);
+    constexpr COLORREF const colorWhite = RGB(0xFF, 0xFF, 0xFF);
 
     PRINTDLG pdlg = { sizeof(PRINTDLG), nullptr, nullptr, nullptr, nullptr,
                       0, 0, 0, 0, 0, 0, nullptr, 0, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr
@@ -342,7 +344,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     }
 
     // Set print color mode
-    int printColorModes[6] = {
+    constexpr int const printColorModes[6] = {
         SC_PRINT_NORMAL,
         SC_PRINT_INVERTLIGHT,
         SC_PRINT_BLACKONWHITE,
@@ -380,7 +382,7 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     }
 
     // We must substract the physical margins from the printable area
-    struct Sci_RangeToFormat frPrint;
+    struct Sci_RangeToFormat frPrint = { nullptr };
     frPrint.hdc = hdc;
     frPrint.hdcTarget = hdc;
     frPrint.rc.left = rectMargins.left - rectPhysMargins.left;
@@ -414,8 +416,8 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 
             StartPage(hdc);
 
-            SetTextColor(hdc, RGB(0,0,0));
-            SetBkColor(hdc, RGB(0xFF, 0xFF, 0xFF));
+            SetTextColor(hdc, colorBlack);
+            SetBkColor(hdc, colorWhite);
             SelectObject(hdc, fontHeader);
             UINT ta = SetTextAlign(hdc, TA_BOTTOM);
             RECT rcw = {frPrint.rc.left, frPrint.rc.top - headerLineHeight - headerLineHeight / 2,
@@ -426,23 +428,23 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
             if (Settings.PrintHeader < 3) {
                 ExtTextOut(hdc, frPrint.rc.left + 5, frPrint.rc.top - headerLineHeight / 2,
                            /*ETO_OPAQUE*/0, &rcw, pszDocTitle,
-                           (UINT)StringCchLenW(pszDocTitle,0), nullptr);
+                           (UINT)StringCchLen(pszDocTitle,0), nullptr);
             }
 
             // Print date in header
             if (Settings.PrintHeader == 0 || Settings.PrintHeader == 1) {
                 SIZE sizeInfo;
                 SelectObject(hdc,fontFooter);
-                GetTextExtentPoint32(hdc,dateString,(int)StringCchLenW(dateString,COUNTOF(dateString)),&sizeInfo);
+                GetTextExtentPoint32(hdc,dateString,(int)StringCchLen(dateString,COUNTOF(dateString)),&sizeInfo);
                 ExtTextOut(hdc, frPrint.rc.right - 5 - sizeInfo.cx, frPrint.rc.top - headerLineHeight / 2,
                            /*ETO_OPAQUE*/0, &rcw, dateString,
-                           (UINT)StringCchLenW(dateString,COUNTOF(dateString)), nullptr);
+                           (UINT)StringCchLen(dateString,COUNTOF(dateString)), nullptr);
             }
 
             if (Settings.PrintHeader < 3) {
                 SetTextAlign(hdc, ta);
                 HPEN pen = CreatePen(0, 1, RGB(0,0,0));
-                HPEN const penOld = (HPEN)SelectObject(hdc, pen);
+                auto const penOld = (HPEN)SelectObject(hdc, pen);
                 MoveToEx(hdc, frPrint.rc.left, frPrint.rc.top - headerLineHeight / 4, nullptr);
                 LineTo(hdc, frPrint.rc.right, frPrint.rc.top - headerLineHeight / 4);
                 SelectObject(hdc, penOld);
@@ -456,8 +458,8 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
         lengthPrinted = (int)SendMessage(hwnd, SCI_FORMATRANGE, printPage, (LPARAM)&frPrint);
 
         if (printPage) {
-            SetTextColor(hdc, RGB(0,0,0));
-            SetBkColor(hdc, RGB(0xFF, 0xFF, 0xFF));
+            SetTextColor(hdc, colorBlack);
+            SetBkColor(hdc, colorWhite);
             SelectObject(hdc, fontFooter);
             UINT ta = SetTextAlign(hdc, TA_TOP);
             RECT rcw = {frPrint.rc.left, frPrint.rc.bottom + footerLineHeight / 2,
@@ -466,15 +468,15 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
 
             if (Settings.PrintFooter == 0) {
                 SIZE sizeFooter;
-                GetTextExtentPoint32(hdc,pageString,(int)StringCchLenW(pageString,COUNTOF(pageString)),&sizeFooter);
+                GetTextExtentPoint32(hdc,pageString,(int)StringCchLen(pageString,COUNTOF(pageString)),&sizeFooter);
                 ExtTextOut(hdc, frPrint.rc.right - 5 - sizeFooter.cx, frPrint.rc.bottom + footerLineHeight / 2,
                            /*ETO_OPAQUE*/0, &rcw, pageString,
-                           (UINT)StringCchLenW(pageString,COUNTOF(pageString)), nullptr);
+                           (UINT)StringCchLen(pageString,COUNTOF(pageString)), nullptr);
 
                 SetTextAlign(hdc, ta);
                 HPEN pen = ::CreatePen(0, 1, RGB(0,0,0));
-                HPEN const penOld = (HPEN)SelectObject(hdc, pen);
-                SetBkColor(hdc, RGB(0,0,0));
+                auto const penOld = (HPEN)SelectObject(hdc, pen);
+                SetBkColor(hdc, colorWhite);
                 MoveToEx(hdc, frPrint.rc.left, frPrint.rc.bottom + footerLineHeight / 4, nullptr);
                 LineTo(hdc, frPrint.rc.right, frPrint.rc.bottom + footerLineHeight / 4);
                 SelectObject(hdc, penOld);
@@ -543,8 +545,8 @@ static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
             int const ctl[] = { 30, 31, 32, 33, 34, cmb2, cmb3, 1037, 1038, 1056, 1057, 1072, 1073, 1074, 1075, 1076, 1089, 1090,
                                 IDC_STATIC, IDC_STATIC2, IDC_STATIC3, IDC_STATIC4, IDC_STATIC5, IDC_STATIC6
                               };
-            for (int i = 0; i < COUNTOF(ctl); ++i) {
-                SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
+            for (int i : ctl) {
+                SetWindowTheme(GetDlgItem(hwnd, i), L"", L""); // remove theme for BS_AUTORADIOBUTTON
             }
         }
 #endif
@@ -634,8 +636,8 @@ CASE_WM_CTLCOLOR_SET:
             RefreshTitleBarThemeColor(hwnd);
 
             int const buttons[] = { IDOK, IDCANCEL, IDC_PRINTER };
-            for (int id = 0; id < COUNTOF(buttons); ++id) {
-                HWND const hBtn = GetDlgItem(hwnd, buttons[id]);
+            for (int button : buttons) {
+                HWND const hBtn = GetDlgItem(hwnd, button);
                 AllowDarkModeForWindowEx(hBtn, darkModeEnabled);
                 SendMessage(hBtn, WM_THEMECHANGED, 0, 0);
             }
@@ -645,14 +647,14 @@ CASE_WM_CTLCOLOR_SET:
 
 #endif
     case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK) {
+        if (IsYesOkay(wParam)) {
             BOOL bError = FALSE;
-            int const iZoom = (int)SendDlgItemMessage(hwnd, 31, UDM_GETPOS32, 0, (LPARAM)&bError);
+            auto const iZoom = static_cast<int>(SendDlgItemMessage(hwnd, 31, UDM_GETPOS32, 0, (LPARAM)&bError));
             Settings.PrintZoom = bError ? Defaults.PrintZoom : iZoom;
             /*int const iFontSize = (int)*/ SendDlgItemMessage(hwnd, 41, UDM_GETPOS32, 0, (LPARAM)&bError);
-            Settings.PrintHeader = (int)SendDlgItemMessage(hwnd, 32, CB_GETCURSEL, 0, 0);
-            Settings.PrintFooter = (int)SendDlgItemMessage(hwnd, 33, CB_GETCURSEL, 0, 0);
-            Settings.PrintColorMode = (int)SendDlgItemMessage(hwnd, 34, CB_GETCURSEL, 0, 0);
+            Settings.PrintHeader = static_cast<int>(SendDlgItemMessage(hwnd, 32, CB_GETCURSEL, 0, 0));
+            Settings.PrintFooter = static_cast<int>(SendDlgItemMessage(hwnd, 33, CB_GETCURSEL, 0, 0));
+            Settings.PrintColorMode = static_cast<int>(SendDlgItemMessage(hwnd, 34, CB_GETCURSEL, 0, 0));
         } else if (LOWORD(wParam) == IDC_PRINTER) {
             PostWMCommand(hwnd, 1026);
         }

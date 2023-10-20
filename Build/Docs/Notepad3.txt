@@ -3,7 +3,7 @@
 =                                                                     =
 =   Notepad3 - light-weight Scintilla-based text editor for Windows   =
 =                                                                     =
-=                                          (c) Rizonesoft 2008-2022   =
+=                                          (c) Rizonesoft 2008-2023   =
 =                                            https://rizonesoft.com   =
 =                                                                     =
 =                          forked from Notepad2-mod                   =
@@ -212,7 +212,7 @@ FileDlgFilters
 Specify filters for the open and save dialogs 
 (Example: Text Files|*.txt;*.wtx;*.log;*.asc;*.doc;*.diz;*.nfo|All Files|*.*).
 
-FileCheckInverval
+FileCheckInterval
 The interval (in milliseconds) to check for external modification 
 of the currently opened file. Defaults to 2000 ms.
 

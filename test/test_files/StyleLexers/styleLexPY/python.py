@@ -75,6 +75,7 @@ def check_read_access(input_file):
 
     if not os.access(input_file, os.R_OK):
         eprint("Input file ({}) is not readable!".format(input_file))
+        eprint(f"Input file ({input_file}) is not readable!")
         return False
 
     return True
@@ -89,14 +90,14 @@ def check_write_access(output_path):
     # check if file exists
     if os.path.isfile(output_path):
 
-        if not os.access(output_path, os.W_OK):
-            eprint("Output file ({}) is not writable!".format(output_path))
-            return False
-        try:
-            os.rename(output_path, output_path)   # hack alert
-        except OSError as err:
-            eprint("Error on write access: {}".format(err))
-            return False
+        #if not os.access(output_path, os.W_OK):
+        #    eprint("Output file ({}) is not writable!".format(output_path))
+        #    return False
+        #try:
+        #    os.rename(output_path, output_path)   # hack alert
+        #except OSError as err:
+        #    eprint("Error on write access: {}".format(err))
+        #    return False
 
     else:   # check if directory is writable
         try:

@@ -48,7 +48,6 @@ public:
  */
 class LineLayout {
 private:
-	friend class LineLayoutCache;
 	std::unique_ptr<int []>lineStarts;
 	int lenLineStarts;
 	/// Drawing is only performed for @a maxLineLength characters on each line.
@@ -84,6 +83,7 @@ public:
 	void operator=(LineLayout &&) = delete;
 	virtual ~LineLayout();
 	void Resize(int maxLineLength_);
+	void ReSet(Sci::Line lineNumber_, Sci::Position maxLineLength_);
 	void EnsureBidiData();
 	void Free() noexcept;
 	void ClearPositions();
@@ -105,7 +105,10 @@ public:
 	int FindPositionFromX(XYPOSITION x, Range range, bool charPosition) const noexcept;
 	Point PointFromPosition(int posInLine, int lineHeight, PointEnd pe) const noexcept;
 	XYPOSITION XInLine(Sci::Position index) const noexcept;
+	Interval Span(int start, int end) const noexcept;
+	Interval SpanByte(int index) const noexcept;
 	int EndLineStyle() const noexcept;
+	void WrapLine(const Document *pdoc, Sci::Position posLineStart, Wrap wrapState, XYPOSITION wrapWidth);
 };
 
 struct ScreenLine : public IScreenLine {
@@ -136,6 +139,14 @@ struct ScreenLine : public IScreenLine {
 	const Font *FontOfPosition(size_t position) const noexcept override;
 	XYPOSITION RepresentationWidth(size_t position) const noexcept override;
 	XYPOSITION TabPositionAfter(XYPOSITION xPosition) const noexcept override;
+};
+
+struct SignificantLines {
+	Sci::Line lineCaret;
+	Sci::Line lineTop;
+	Sci::Line linesOnScreen;
+	Scintilla::LineCache level;
+	bool LineMayCache(Sci::Line line) const noexcept;
 };
 
 /**
@@ -179,6 +190,9 @@ public:
 
 typedef std::map<unsigned int, Representation> MapRepresentation;
 
+const char *ControlCharacterString(unsigned char ch) noexcept;
+void Hexits(char *hexits, int ch) noexcept;
+
 class SpecialRepresentations {
 	MapRepresentation mapReprs;
 	unsigned short startByteHasReprs[0x100] {};
@@ -198,6 +212,7 @@ public:
 		return startByteHasReprs[ch] != 0;
 	}
 	void Clear();
+	void SetDefaultRepresentations(int dbcsCodePage);
 };
 
 struct TextSegment {
@@ -256,7 +271,7 @@ public:
 	virtual void SetSize(size_t size_) = 0;
 	virtual size_t GetSize() const noexcept = 0;
 	virtual void MeasureWidths(Surface *surface, const ViewStyle &vstyle, unsigned int styleNumber,
-		std::string_view sv, XYPOSITION *positions, bool needsLocking) = 0;
+		bool unicode, std::string_view sv, XYPOSITION *positions, bool needsLocking) = 0;
 };
 
 std::unique_ptr<IPositionCache> CreatePositionCache();

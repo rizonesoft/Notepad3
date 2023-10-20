@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Törlés sor végéig\tCtrl+Shift+Del",   IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "&Oszlop sortörés...\tCtrl+Shift+W",   IDM_EDIT_COLUMNWRAP
-            MENUITEM "Sorok szét&vágása\tCtrl+I",           IDM_EDIT_SPLITLINES
-            MENUITEM "Sorok összefű&zése\tCtrl+J",          IDM_EDIT_JOINLINES
-            MENUITEM "Sorok eg&ybeolvasztása\tCtrl+Alt+J",  IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Bekezdések megőrzése\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "&Üres sorok egyesítése\tAlt+Y",        IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Üres kar.-eket tart. sorok egyes&ítése\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
@@ -244,11 +240,16 @@ BEGIN
             MENUITEM "Üres kar. &tömörítése\tCtrl+Alt+P", IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "Sorok &módosítása...\tAlt+M",       IDM_EDIT_MODIFYLINES
-            MENUITEM "Sorok i&gazítása...\tAlt+J",        IDM_EDIT_ALIGN
             MENUITEM "Sorok &rendezése...\tAlt+O",        IDM_EDIT_SORTLINES
             MENUITEM SEPARATOR
-            MENUITEM "Ugrás a kijelölés &elejére\tCtrl+,", CMD_JUMP2SELSTART
-            MENUITEM "Ugrás a kijelölés &végére\tCtrl+.",  CMD_JUMP2SELEND
+            MENUITEM "Sorok i&gazítása...\tAlt+J",          IDM_EDIT_ALIGN
+            MENUITEM "Sorok szétv&ágása\tCtrl+I",           IDM_EDIT_SPLITLINES
+            MENUITEM "Sorok összefű&zése\tCtrl+J",          IDM_EDIT_JOINLINES
+            MENUITEM "Sorok eg&ybeolvasztása\tCtrl+Alt+J",  IDM_EDIT_JOINLN_NOSP
+            MENUITEM "&Bekezdések megőrzése\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
+            MENUITEM SEPARATOR
+            MENUITEM "Ugrás a kijelölés &elejére\tCtrl+,",  CMD_JUMP2SELSTART
+            MENUITEM "Ugrás a kijelölés &végére\tCtrl+.",   CMD_JUMP2SELEND
         END
         POPUP "Ko&nvertálás"
         BEGIN
@@ -337,7 +338,7 @@ BEGIN
             MENUITEM "Következő cse&réje\tF4",                 IDM_EDIT_REPLACENEXT
             MENUITEM "&Ugrás...\tCtrl+G",                      IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "Keresés &fájlokban\tCtrl+Shift+F",         IDM_GREP_WIN_SEARCH
+            MENUITEM "Keresés &fájlokban\tCtrl+Shift+F",       IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Nézet"
@@ -357,6 +358,7 @@ BEGIN
             MENUITEM "Megjelenítés a dokumentumban",         IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Összes előzmény-jelölő megjelenítése", IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Változás/Visszavonás előzmények törlése"   IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Hivatkoz&ások kiemelése\tCtrl+Alt+W",   IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Szín&választó területek"
@@ -424,6 +426,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "P&anelek"
         BEGIN
+            MENUITEM "&Címsor megjelenítése",                   IDM_VIEW_TITLEBAR
             MENUITEM "Menü&sor megjelenítése",                  IDM_VIEW_MENUBAR
             MENUITEM "Esz&köztár megjelenítése",                IDM_VIEW_TOOLBAR
             MENUITEM "Állapotso&r megjelenítése",               IDM_VIEW_STATUSBAR
@@ -469,11 +472,12 @@ BEGIN
         MENUITEM "&Sortörés beállítások...",                    IDM_SET_WORDWRAPSETTINGS
         MENUITEM "&Hosszú sorok beállításai...",                IDM_SET_LONGLINESETTINGS
         MENUITEM "A&utomatikus behúzás",                        IDM_SET_AUTOINDENTTEXT
+        MENUITEM "Automatikus záró i&dézőjelek",                IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Automatikus záró zárójelek",                  IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "HTML/&XML aut. lezárás\tCtrl+Shift+H",        IDM_SET_AUTOCLOSETAGS
         MENUITEM "Szó kie&gészítés",                            IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Lexer kul&csszavak kiegészítése",             IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",      IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Szó el&választók váltása\tCtrl+Alt+A",        IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Egy &példány fájlonként",                     IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Figyel&meztetés fájl változásról...\tAlt+F5", IDM_SET_CHANGENOTIFY
@@ -574,6 +578,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Címsor megjelenítése",                   IDM_VIEW_TITLEBAR
         MENUITEM "Menüsor megjelenítése",                  IDM_VIEW_MENUBAR
         MENUITEM "Eszköztár megjelenítése",                IDM_VIEW_TOOLBAR
         MENUITEM "Állapotsor megjelenítése",               IDM_VIEW_STATUSBAR

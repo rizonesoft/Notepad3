@@ -224,6 +224,9 @@ STDMETHODIMP CAutoCompleteEnum::Next(ULONG celt, LPOLESTR* rgelt, ULONG* pceltFe
     if (!celt)
         celt = 1;
 
+    if (pceltFetched)
+        *pceltFetched = 0;
+
     ULONG i = 0;
     for (; i < celt; i++)
     {

@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Vervang"
     IDT_VIEW_WORDWRAP       "Woordomslag"
     IDT_VIEW_ZOOMIN         "Inzoem"
+    IDT_VIEW_RESETZOOM      "Stel Zoom Terug"
     IDT_VIEW_ZOOMOUT        "Uitzoem"
     IDT_VIEW_SCHEME         "Kies Skema"
     IDT_VIEW_SCHEMECONFIG   "Pas Skemas Aan"
@@ -89,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Voer Dokument Uit"
+    IDT_VIEW_NEW_WINDOW      "Nuwe Leë Venster"
     IDT_VIEW_TOGGLE_VIEW     "Gefokusde Aansig"
     IDT_VIEW_CHASING_DOCTAIL "Moniteringslogboek"
     IDT_VIEW_PIN_ON_TOP      "Altyd Bo-op"
@@ -136,7 +138,7 @@ BEGIN
                             "Bestaande Notepad3-venster is besig of het 'n aktiewe dialoog.\nWil jy 'n ander Notepad3-venster oopmaak?"
     IDS_MUI_ERR_ENCODINGNA  "Kodeblad-omskakelingstabelle vir die geselekteerde enkodering is nie op u stelsel beskikbaar nie."
     IDS_MUI_ERR_UNICODE     "Kon nie hierdie Unicode-lêer omskakel nie. \nData sal verlore wees as die lêer gestoor word!"
-    IDS_MUI_ERR_BITMAP      "Kon nie bitmap ""%s"" laai nie.\nBenodig afmetings: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      "Nie geskikte afmeting van bitmap ""%s"".\nGeskikte afmeting: %i x %i (breedte >= %i x hoogte)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Fout die verhoging van gebruikersregte!"
 END
@@ -174,9 +176,10 @@ BEGIN
     IDS_MUI_REPLCOUNT       "%s voorkoms(e) van gespesifiseerde soekpatroon vervang."
     IDS_MUI_ASK_ENCODING    "As u die lêer kodering van een kodering na 'n ander skuif, kan u nie-ondersteunde teks vervang met verstek karakters, en die ongedaan geskiedenis sal skoongemaak word. Gaan aan?"
     IDS_MUI_ASK_ENCODING2   "Jy is op die punt om die kodering van 'n leÃ« lêer te verander. Let daarop dat dit die geskiedenis ongedaan maak, aangesien dit nie met die nuwe enkodering gesinkroniseer kan word nie. Gaan aan?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Hierdie bewerking sal die ontdoengeskiedenis uitvee. Gaan voort?"
     IDS_MUI_READONLY_SAVE   """%s"" is beskermd. Stoor na 'n ander lêer?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Die huidige lêer is gewysig deur 'n eksterne program. Herlaai?"
+                            "Die huidige lêer is deur 'n eksterne program gewysig.\nKies asseblief:\n\nKanselleer -\t\tIgnoreer verdere veranderinge\nHerlaai -\t\tHerlaai lêer\nGaan voort -\tSkakel oor na lêermonitering"
     IDS_MUI_FILECHANGENOTIFY2 "Die huidige lêer is verwyder. Stoor nou?"
     IDS_MUI_FILELOCK_ERROR  "Kan nie eksklusiewe lêerslot vir ""%s"" kry nie!"
     IDS_MUI_STICKYWINPOS    "Sticky Window Posisie is aangeskakel. Enige nuwe Notepad3-vensters sal die huidige vensterplasinginstellings gebruik."
@@ -263,16 +266,18 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Taal"
     IDS_USE_LOCALE_DATEFMT  "Taal Definieer &Datumformaat"
     IDS_MUI_MENU_THEMES     "&Skema-versameling"
-    IDM_THEMES_FACTORY_RESET "&Fabriek Verstek"
+    IDM_THEMES_FACTORY_RESET "&Factory Reset"
     IDM_THEMES_STD_CFG       "&Standaard Config"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Maak alles skoon"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Vee geskiedenis uit"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Vee die vervang geskiedenis uit"
-    IDS_MUI_REPLCLIPTAG     "Vervang deur knipbordkortpad [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Soek volgens Knipbord as dit leeg is"
+    IDS_MUI_REPLCLIPTAG     "Vervang deur Knipbord op Kortpad [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Draai om pas van bo"
     IDS_MUI_WRAPSEARCH_BCK  "Draai om pas van onder"
 END
@@ -283,6 +288,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Wissel Beskou..."
     IDS_MUI_SB_REPLACE_ALL    "Vervang alles..."
     IDS_MUI_SB_WRAP_LINES     "Wrap Lyne..."
+    IDS_MUI_SB_SORTING_LINES  "Sorteer tans lyne..."
     IDS_MUI_SB_CONV_LNBRK     "Skakel lynbreuke om..."
     IDS_MUI_SB_RECODING_DOC   "Herkodering van Dokument..."
     IDS_MUI_SB_LEXER_STYLING  "Pas Lexer Styling toe..."
@@ -315,8 +321,8 @@ Opsies:\r\n\
 /b\tMaak 'n nuwe plakbord oop om klipbordinskrywings te versamel.\r\n\
 /n\tMaak altyd 'n nuwe venster oop (/ns enkele lêer instansie).\r\n\
 /r\tHergebruik venster (/rs enkele lêer instansie).\r\n\
-/p\tStel venster posisie en grootte (/p0, /ps, /pf,l,t,r,b,m)\r\n\
-\tor /p <left>,<top>,<width>,<height>,<max>    [alle heelgetalle].\r\n\
+/p\tStel venster posisie en grootte (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tor /p <left>,<top>,<width>,<height>[,<dpi>[,<max>]]  (alle heelgetalle).\r\n\
 /t\tStel venster titel.\r\n\
 /i\tBegin as tray ikoon.\r\n\
 /o\tHou venster bo-op.\r\n\

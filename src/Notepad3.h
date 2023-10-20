@@ -8,7 +8,7 @@
 *   Global definitions and declarations                                       *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -107,17 +107,16 @@ typedef enum {
 //==== Function Declarations ==================================================
 bool InitApplication(const HINSTANCE hInstance);
 //~bool InitToolbarWndClass(const HINSTANCE hInstance);
-HWND InitInstance(const HINSTANCE hInstance, LPCWSTR pszCmdLine, int nCmdShow);
+HWND InitInstance(const HINSTANCE hInstance, int nCmdShow);
 void CreateBars(HWND hwnd, HINSTANCE hInstance);
-WININFO GetFactoryDefaultWndPos(const int flagsPos);
-WININFO GetWinInfoByFlag(const int flagsPos);
+WININFO GetFactoryDefaultWndPos(HWND hwnd, const int flagsPos);
+WININFO GetWinInfoByFlag(HWND hwnd, const int flagsPos);
 int  CountRunningInstances();
 bool ActivatePrevInst();
 bool LaunchNewInstance(HWND hwnd, LPCWSTR lpszParameter, LPCWSTR lpszFilePath);
 bool RelaunchMultiInst();
 bool RelaunchElevated(LPCWSTR lpNewCmdLnArgs);
 bool DoElevatedRelaunch(EditFileIOStatus* pFioStatus, bool bAutoSaveOnRelaunch);
-void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode);
 void ShowNotifyIcon(HWND hwnd, bool bAdd);
 void SetNotifyIconTitle(HWND hwnd);
 void SetSaveDone();
@@ -127,14 +126,16 @@ void CheckAutoLoadMostRecent();
 void ShowZoomCallTip();
 void ShowWrapAroundCallTip(bool forwardSearch);
 
-void MarkAllOccurrences(const int delay, const bool bForceClear);
-void UpdateUI();
+void MarkAllOccurrences(const LONG64 delay, const bool bForceClear);
+
 void UpdateToolbar();
 void UpdateStatusbar(const bool bForceRedraw);
 void UpdateMargins(const bool bForce);
 void UpdateSaveSettingsCmds();
-void ResetMouseDWellTime();
 void UpdateTitlebar(const HWND hwnd);
+void UpdateContentArea();
+
+void ResetMouseDWellTime();
 
 void UndoRedoReset();
 LONG BeginUndoActionSelection();
@@ -198,8 +199,8 @@ LRESULT MsgUahMenuBar(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam);
 int  DisableDocChangeNotification();
 void EnableDocChangeNotification(const int evm);
 
-#define LimitNotifyEvents()     { int _evm_ = 0; __try { _evm_ = DisableDocChangeNotification();
-#define RestoreNotifyEvents()   ;} __finally { EnableDocChangeNotification(_evm_); } }
+#define LimitNotifyEvents()     { int _evm_ = 0; __try { _evm_ = DisableDocChangeNotification(); SendMessage(Globals.hwndEdit, WM_SETREDRAW, FALSE, 0);
+#define RestoreNotifyEvents()   ;} __finally { EnableDocChangeNotification(_evm_); SendMessage(Globals.hwndEdit, WM_SETREDRAW, TRUE, 0); InvalidateRect(Globals.hwndEdit, NULL, TRUE); } }
 
 // ----------------------------------------------------------------------------
 
@@ -212,6 +213,8 @@ void EnableDocChangeNotification(const int evm);
 #define BeginWaitCursor(cond, text) {                               \
         if (cond) {                                                 \
             SciCall_SetCursor(SC_CURSORWAIT);                       \
+            SciCall_SetVScrollbar(false);                           \
+            SciCall_SetHScrollbar(false);                           \
             StatusSetText(Globals.hwndStatus, STATUS_HELP, (text)); \
         }                                                           \
         LimitNotifyEvents()
@@ -219,17 +222,20 @@ void EnableDocChangeNotification(const int evm);
 #define BeginWaitCursorUID(cond, uid) {                              \
         if (cond) {                                                  \
             SciCall_SetCursor(SC_CURSORWAIT);                        \
+            SciCall_SetVScrollbar(false);                            \
+            SciCall_SetHScrollbar(false);                            \
             StatusSetTextID(Globals.hwndStatus, STATUS_HELP, (uid)); \
         }                                                            \
         LimitNotifyEvents()
 
-#define EndWaitCursor()                       \
-        SciCall_SetCursor(SC_CURSORNORMAL);   \
-        POINT pt;                             \
-        GetCursorPos(&pt);                    \
-        SetCursorPos(pt.x, pt.y);             \
-        RestoreNotifyEvents();                \
-        UpdateStatusbar(true);                \
+#define EndWaitCursor()                                        \
+        RestoreNotifyEvents();                                 \
+        SciCall_SetCursor(SC_CURSORNORMAL);                    \
+        POINT pt; GetCursorPos(&pt);                           \
+        SetCursorPos(pt.x, pt.y);                              \
+        SciCall_SetHScrollbar(true);                           \
+        SciCall_SetVScrollbar(true);                           \
+        UpdateStatusbar(true);                                 \
     }
 
 // ----------------------------------------------------------------------------

@@ -196,10 +196,6 @@ BEGIN
             MENUITEM "Elimina linea a DX\tCtrl+Shift+Canc",    IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
             MENUITEM "Colonna a capo...\tCtrl+Shift+W",      IDM_EDIT_COLUMNWRAP
-            MENUITEM "&Dividi linee\tCtrl+I",                IDM_EDIT_SPLITLINES
-            MENUITEM "&Unisci linee\tCtrl+J",                IDM_EDIT_JOINLINES
-            MENUITEM "&Fondi linee\tCtrl+Alt+J",             IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Conserva i paragrafi\tCtrl+Shift+J",  IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Unisci linee &vuote\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Unisci linee &blank\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
@@ -244,8 +240,13 @@ BEGIN
             MENUITEM "Comprimi i blanks\tCtrl+Alt+P",        IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modifica linee...\tAlt+M",     IDM_EDIT_MODIFYLINES
-            MENUITEM "&Allinea linee...\tAlt+J",      IDM_EDIT_ALIGN
             MENUITEM "&Ordina linee...\tAlt+O",       IDM_EDIT_SORTLINES
+            MENUITEM SEPARATOR
+            MENUITEM "&Allinea linee...\tAlt+J",             IDM_EDIT_ALIGN
+            MENUITEM "Di&vidi linee\tCtrl+I",                IDM_EDIT_SPLITLINES
+            MENUITEM "U&nisci linee\tCtrl+J",                IDM_EDIT_JOINLINES
+            MENUITEM "Fondi &linee\tCtrl+Alt+J",             IDM_EDIT_JOINLN_NOSP
+            MENUITEM "&Conserva i paragrafi\tCtrl+Shift+J",  IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             MENUITEM "Vai all'&Inizio della selezione\tCtrl+,",  CMD_JUMP2SELSTART
             MENUITEM "Vai alla &Fine della selezione\tCtrl+.",   CMD_JUMP2SELEND
@@ -337,7 +338,7 @@ BEGIN
             MENUITEM "Sostituisci successivo\tF4",                IDM_EDIT_REPLACENEXT
             MENUITEM "&Vai a...\tCtrl+G",                         IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Cerca nei file\tCtrl+Shift+F",              IDM_GREP_WIN_SEARCH
+            MENUITEM "&Cerca nei file\tCtrl+Shift+F",             IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Visualizza"
@@ -357,6 +358,7 @@ BEGIN
             MENUITEM "Mostra solo nel documento",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Mostra tutti i marcatori modifiche",             IDM_VIEW_CHGHIST_ALL
         END
+        MENUITEM "Cancella Cronologia Modifiche/Annullamenti"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Evidenzia h&yperlink\tCtrl+Alt+W",                   IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Hotspot definizione colore"
@@ -397,7 +399,7 @@ BEGIN
         POPUP "&Folding"
         BEGIN
             MENUITEM "Code &Folding",                              IDM_VIEW_FOLDING
-            MENUITEM "&Attiva/Disattiva Folds\tCtrl+Alt+F",        IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "Esp&andi/Collassa tutti i Folds\tCtrl+Alt+F",        IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "Salta al Prossimo Fold\tAlt+ +",             CMD_FOLDJUMPDOWN
             MENUITEM "Salta al Precedente Fold\tAlt+ –",           CMD_FOLDJUMPUP
@@ -424,13 +426,14 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "P&annelli"
         BEGIN
-            MENUITEM "Mostra barra dei &Menu",        IDM_VIEW_MENUBAR
-            MENUITEM "Mostra barra degli S&trumenti",               IDM_VIEW_TOOLBAR
-            MENUITEM "Mostra Barra di &Stato",        IDM_VIEW_STATUSBAR
+            MENUITEM "Mostra la barra del &Titolo",                IDM_VIEW_TITLEBAR
+            MENUITEM "Mostra barra dei &Menu",                     IDM_VIEW_MENUBAR
+            MENUITEM "Mostra barra degli S&trumenti",              IDM_VIEW_TOOLBAR
+            MENUITEM "Mostra barra di &Stato",                     IDM_VIEW_STATUSBAR
             MENUITEM SEPARATOR
             MENUITEM "&Carica Tema barra degli Strumenti...",       IDM_VIEW_LOADTHEMETB
             MENUITEM "&Personalizza barra degli Strumenti...",      IDM_VIEW_CUSTOMIZETB
-            MENUITEM "Ca&mbia barre degli Strumenti",              IDM_VIEW_TOGGLETB
+            MENUITEM "Ca&mbia barre degli Strumenti",               IDM_VIEW_TOGGLETB
             MENUITEM "Scala &DPI barra degli Strumenti",            IDM_VIEW_DPISCALETB
         END
         POPUP "&Zoom"
@@ -464,16 +467,17 @@ BEGIN
     END
     POPUP "&Impostazioni"
     BEGIN
-        MENUITEM "Inserisci Tab come &Spazi",                IDM_SET_TABSASSPACES
-        MENUITEM "Impostazioni &Tab...\tCtrl+T",             IDM_SET_TABSETTINGS
-        MENUITEM "Impostazioni &A capo automatico...",               IDM_SET_WORDWRAPSETTINGS
+        MENUITEM "Inserisci Tab come &Spazi",                        IDM_SET_TABSASSPACES
+        MENUITEM "Impostazioni &Tab...\tCtrl+T",                     IDM_SET_TABSETTINGS
+        MENUITEM "Impostazioni A &capo automatico...",               IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Impostazioni &Linee lunghe...",                    IDM_SET_LONGLINESETTINGS
         MENUITEM "In&dentazione automatica",                         IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Chiusura automatica Parentesi",                    IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Chiusura automatica &Virgolette",                  IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Chiusura automatica &Parentesi",                   IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Chiusura automatica &HTML/XML\tCtrl+Shift+H",      IDM_SET_AUTOCLOSETAGS
-        MENUITEM "&Autocompletamento delle parole",           IDM_SET_AUTOCOMPLETEWORDS
-        MENUITEM "Autocompletamento &keywords lexer",         IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Alterna Se&paratori parola\tCtrl+Alt+A",           IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "&Autocompletamento delle parole",                  IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Autocompletamento &keywords lexer",                IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "Alterna S&eparatori parola\tCtrl+Alt+A",           IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Solo una istanza per &File",                       IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Notifica le modifi&che al file...\tAlt+F5",        IDM_SET_CHANGENOTIFY
@@ -574,13 +578,14 @@ BEGIN
     END
     POPUP "+"
     BEGIN
+        MENUITEM "Mostra la barra del &Titolo",   IDM_VIEW_TITLEBAR
         MENUITEM "Mostra barra dei Menu",         IDM_VIEW_MENUBAR
-        MENUITEM "Mostra barra degli Strumenti",                IDM_VIEW_TOOLBAR
+        MENUITEM "Mostra barra degli Strumenti",  IDM_VIEW_TOOLBAR
         MENUITEM "Mostra barra di Stato",         IDM_VIEW_STATUSBAR
         MENUITEM SEPARATOR
         MENUITEM "Carica Tema barra degli Strumenti...",        IDM_VIEW_LOADTHEMETB
         MENUITEM "Personalizza barra degli Strumenti...",       IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Cambia barre degli Strumenti",               IDM_VIEW_TOGGLETB
+        MENUITEM "Cambia barre degli Strumenti",                IDM_VIEW_TOGGLETB
         MENUITEM "Scala DPI barre degli Strumenti",             IDM_VIEW_DPISCALETB
     END
     POPUP "+"

@@ -2,7 +2,7 @@
 =                                                                              =
 =            Notepad3 - light-weight Scintilla-based text editor for Windows   =
 =                                                                              =
-=                                                   (c) Rizonesoft 2008-2022   =
+=                                                   (c) Rizonesoft 2008-2023   =
 =                                                 https://www.rizonesoft.com   =
 =                                                                              =
 ================================================================================
@@ -34,13 +34,205 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 5.22.1220.(build_#) (2022-12-20)
+Current BETA/RC Version 6.23.1017.(build_#) (2023-10-17)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.927.1]- Update grepWinNP3 from current grepWin dev (GRE).
+[.903.1]- Python stream comment hack.
+[.830.1]- "DrawAnimatedWindow": Option to disable animated max./min. window.
+[.827.1]- Add Dark-Mode Contrast control for Schemes configuration.
+[.707.1]- Add new Toolbar button "New Empty Window".
+[.702.1]- Add new "grepWinNP3" icon for Launch and Search menu's.
+[.702.1]- Add new Toolbar button "Reset Zoom".
+[.619.1]- Indentation guide coloring on matching brace highlight.
+[.513.1]- Option on F/R dialog: incremental search ON/OFF.
+[.504.1]- Option: do not save blank new files.
+[.430.1]- Option to show/hide titlebar.
+[.424.1]- Localization in INNO Setup of "Open with Notepad3" (SUP).
+[.406.1]- Enhanced File-Change Notification Messagebox.
+[.327.1]- Menu entry to clear change/undo history.
+[.321.1]- Split Verilog Lexer (Verilog and SystemVerilog).
+[.320.1]- Add Lexer Verilog HDL.
+[.315.1]- Cooperation of Alt+LClick on Hyperlinks vs. extend selection.
+[.315.1]- Option to fill empty search text in F/R dialog.
+[.221.1]- Unicode point display (status bar) of current (caret pos) character.
+[.221.1]- Quotation Mark Auto-Close Functionality.
+[.220.1]- Add "np3encrypt" project to solution (cmd-ln tool).
+[.217.1]- Localization of the INNO Setup / Installer menus (SUP).
+
+--------------------------------------------------------
+CHANGES:
+--------------------------------------------------------
+[.###.#]- .
+[1017.1]- Wrappimg at long line marker.
+[1017.1]- Ctrl+I wraps according to highest column long-line-edge-marker, if defined.
+[.927.1]- Using selection color also for not focused selections (secondary and inactive).
+[.926.1]- Some refactoring regarding string comparison.
+[.913.1]- Line comment indentation for complaint prog. lng (issue 4983).
+[.827.1]- Python default dark-mode colors for comment and keywords.
+[.731.1]- Comment out "MSIX" attributes in applications manifest.
+[.718.1]- Move Join Lines, Split Lines, Fuse Lines, Preserve Paragr. from Lines to Selection menu.
+[.711.2]- Try to speed-up large file loading.
+[.710.1]- Try to minimize scrolling to view.
+[.709.1]- Patch Oniguruma engine to accept EOF as line-terminator.
+[.707.1]- Allow not suitable toolbar dimension.
+[.627.1]- Minor changes: CallTip/ToolTip (zoom).
+[.619.1]- Tooltip/Calltip style using Segoe UI font.
+[.616.1]- Web Source Code: enhancement for commenting in embedded scripts.
+[.526.1]- Removing square brackets from being valid codepoints of URL (hyperlink) regex.
+[.521.1]- Copy an "Additional Notepad3Portable.cmd Launcher" in PAF file [Root].
+[.503.1]- Minor enhancement on log file monitoring.
+[.501.1]- Add some new sentences for Logfile Monitoring.
+[.430.1]- Some enhancements for Logfile Monitoring.
+[.430.1]- Changed message box for file change notification.
+[.430.1]- Keep Dark/Light Win Mode settings (if once set manually - else auto detect).
+[.430.1]- Disable menubar in fullscreen mode too.
+[.327.1]- Migrate GetTickCount() -> QueryPerformanceCounter().
+[.325.1]- Option for ASAN Dbg to not throw exception.
+[.321.2]- Default Print Colour Mode depending on Dark/Light Mode.
+[.321.2]- Renaming for Lexer related resource string IDs (defined names).
+[.321.2]- Verilog: split 'System Tasks' from 'Keywords'.
+[.320.1]- Update VHDL Lexer.
+[.320.1]- Dialog windows with special system menu: add 'burger' symbol.
+[.320.1]- Use relaxing default FileCheckInterval (2000[msec]).
+[.320.1]- Refactoring: use background worker helper.
+[.315.1]- RegExpr enhancements.
+[.315.1]- Use larger color bitmaps within color select buttons (customize schemes).
+[.315.1]- SCI add SendMessage macro (SCI).
+[.301.1]- Generic font names $Code/$Text prepend by number referring to priority list position.
+[.301.1]- Goto next/prev markers: respect last searched markers.
+[.224.1]- Delete matching brace/quote, if content in between is empty.
+[.224.1]- Make Code/Text font priority list configurable.
+[.224.1]- Enhance Display of Unicode Point.
+[.223.1]- In Statusbar remove "Ch" because the values are almost similar with "Col".
+[.223.1]- Use change-history-markers for bookmark find next/previous.
+[.223.1]- Enhancement for auto-close char-pairs.
+[.221.1]- All "Margins and Line Numbers" to "font:Consolas; size:-2; fore:#008080".
+[.220.1]- AnalyzeConfidenceLevel at least 90%.
+[.220.1]- Lexer TEXT using own Default settings (corresponding to ANSI Lexer).
+[.207.1]- Installer script resets "Theme files" only on user decision (SUP).
+
+--------------------------------------------------------
+FIXES:
+--------------------------------------------------------
+[.###.#]- .
+[1017.1]- Show ColorDef Dlg always full visible.
+[.913.1]- RegularExpression broken.
+[.903.1]- Python Line Comment : respect indents.
+[.718.1]- Show hidden menu bar on Alt or F10 key.
+[.718.1]- TinyExpr Output formatter.
+[.711.1]- RegEx search with begin/end line meta chars.
+[.710.1]- Recoding for UTF-16.
+[.709.1]- Do not generally move selection to top on view.
+[.707.1]- Save also an "Empty" Replace string in history.
+[.707.1]- "LaunchInstanceFullVisible" feature.
+[.702.1]- Minor optimizations on initial window startup.
+[.702.1]- Scroll to preserved caret position on file load.
+[.702.1]- Menu View: correct positioning of active marks.
+[.702.1]- Initial show window at final position w/o repositioning.
+[.616.1]- Set color of horizontal ruler (folded block) to line number coloring.
+[.616.1]- Zoom tooltip moved out of margin area.
+[.616.1]- Don't show auto-completion list if typed word matches the one and only word in list.
+[.526.1]- PHP commenting embedded Web Source Code.
+[.521.1]- Minor issue in "Favorites" in INNO Setup (SUP).
+[.516.1]- Minor issue related to match selection counters.
+[.516.1]- "grepWinNP3" <-> Notepad3 interface regression.
+[.513.1]- Single File Instance' flag handling.
+[.513.1]- Minor bugs in "Open with Notepad3" in foreign languages (SUP).
+[.512.1]- Enforce hidden menu bar (if option selected).
+[.502.1]- Multi-replace: correct advance next insertion point in case of SCI_REPLACETARGETMINIMAL.
+[.502.1]- Cut (Ctrl+X) and Delete (Ctrl+D) last line (EOF -> EOL).
+[.502.1]- Minor bugs in "Reset Notepad3's settings and themes" (SUP).
+[.430.1]- Switch to "Log Monitoring" id commandline option "/l" is given.
+[.430.1]- Regression: save readonly file.
+[.426.1]- Minor bugs in localization of "Open with Notepad3"  (SUP).
+[.406.1]- Some more issues around "File Change Monitoring".
+[.406.1]- Integration and Notification of DirectoryObserver and FileChanged-Polling.
+[.406.1]- Issue "file changed on disk" for silent mode on closing.
+[.327.1]- Some clean-up in uninstalling "Notepad3_setup" (SUP).
+[.327.1]- Oniguruma line-break handling (CRLF & CR) support.
+[.325.1]- Book/Change-Mmarker search: high prio on Book-Marker.
+[.325.1]- Fallback on LoadIconWithScaleDown() failed.
+[.320.2]- Deprecated settings key-names handling ('FileCheckInverval').
+[.320.1]- Notification adjustment in case of externally deleted file.
+[.320.1]- Min. FileCheckInterval 500msec, else notify immediately.
+[.320.1]- Missing file path display name.
+[.320.1]- "_beginthreadex_proc_type" correction for Win32(x86).
+[.320.1]- Reactivate FileChangeInterval (used on dir changed notification too).
+[.315.1]- Shift+Alt+Click on Hyperlink should not fire Hyperlink action.
+[.315.1]- In case of no file args: open empty doc instead of file open dialog.
+[.315.1]- Creating New file in current working directory.
+[.315.1]- Don't reset "dirty flag" after file loading (in case of EOL or indent correction).
+[.302.1]- Remove session state from default font from list retrieval.
+[.301.1]- Backward compat. for .ini param 'FileCheckInverval' (typo).
+[.301.1]- 'FileCheckInterval' instead of 'FileCheckInverval' (typo).
+[.301.1]- Find marker next/prev.
+[.301.1]- Find consecutive change marker begin.
+[.228.1]- grepWinNP3: properly search from the file beginning again (grepWin bugfix) (GRE).
+[.228.1]- Navigate marker: consecutive change-marker handled as single mark.
+[.224.1]- SplitUndoTypingSeqOnLnBreak and UndoTransactionTimeout.
+[.223.1]- Minor changes for Unicode Point display.
+[.221.1]- Repair jump to line (Alt+Click) and related command line search.
+[.221.1]- Correction to LineSpace evaluation TEXT files.
+[.221.1]- Lexer TEXT using own Default but inheriting from Common Base.
+[.220.1]- WSL2 simple path and NP3 options given with slash.
+[.220.1]- Representation of EOLs in case of GDI technology (use default).
+[.220.1]- Find previous skips finding at begin.
+[.220.1]- Use random IV for np3encrypt.
+[.217.2]- Encoding as "UTF-8 Signature" for Korean INNO Setup menus (SUP).
+[.207.1]- Line spacing in TEXT Lexer.
+[.204.1]- Don't force top-left if window does not fit to monitor.
+
+--------------------------------------------------------
+REMOVED:
+--------------------------------------------------------
+[.###.#]- .
+[.827.1]- Removal of the "es-MX" language to keep only the "es-ES" language (MUI).
+
+--------------------------------------------------------
+CHANGES Versions in Tools or Libraries:
+--------------------------------------------------------
+[.926.1]- Update Lexilla Library (LEX) version 5.2.7 dev. (2023-09-22).
+[.926.1]- Update Scintilla Library (SCI) version 5.3.7 dev. (2023-09-22).
+[.913.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2023-03-27) (intermediate).
+[.619.1]- Update grepWinNP3 (GRE) version 2.1.15.47 (2023-06-19).
+[1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
+
+--------------------------------------------------------
+TRANSLATIONS (MUI):
+--------------------------------------------------------
+[.###.#]- .
+[.419.1]- Indonesian (id-ID).
+
+--------------------------------------------------------
+Hello everybody ! 😀
+For our "Notepad3 Translation Projects", we are looking for motivated volunteers, with a priority
+to resume "(incomplete...)" translation projects:
+
+- Greek (el-GR) (incomplete...)
+- Hindi (hi-IN) (incomplete...)
+- Vietnamese (vi-VN) (incomplete...)
+- etc...
+
+Please, send me a PM (mailto:hpwamr51 @ gmail.com) if you are willing to help. 🤔
+--------------------------------------------------------
+
+
+========================================================
+Version 6.23.203.2 (3 February 2023) (Hotfix)
+========================================================
+
+--------------------------------------------------------
+NEW:
+--------------------------------------------------------
+[.120.1]- Paragraph navigation (Alt+PageUp, Alt+PageDown).
+[.109.1]- Allow "dotbox" instead of "horiz. line" for folded text.
+[.102.1]- Allow Line Number color to be alpha blended (e.g. DarkMode).
+[1223.1]- Allow "Notepad3 x64 Setup" to install on Win11 Arm (64-bit emulation) (SUP).
 [1212.1]- Implementation of automatic parenthesis closure.
 [1029.1]- Darkmode highlight (foreground) contrast settings + default reduction to 75%.
 [1018.1]- Add example for tinyexpr in Modify Lines dialog.
@@ -61,12 +253,21 @@ NEW:
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
-[.###.#]- .
+[.120.1]- Allow coloralpharef read from scheme properties.
+[.104.1]- Move DefaultWindowPosition to Window section (deprecated: Settings2 section).
+[1230.1]- Revert to Lexilla's standard Markdown lexer (LEX).
+[1230.1]- Change background color for Heading 1 to enhance contrast to std Hyperlink (LEX).
+[1230.1]- Visible representation of EOL characters.
+[1230.1]- Refactoring of using SCI_REPLACETARGET(MINIMAL).
+[1230.1]- Lexer Registry-Files: split string and GUID String coloring (LEX).
+[1228.1]- JSON lexer: Same style for SCE_JSON_COMPACTIRI and SCE_JSON_PROPERTYNAME (LEX).
+[1228.1]- Status-bar double-click line-break mode: Cycle only between CR+LF <-> LF modes.
 [1220.1]- Update Lexer "AutoIt3 Script" to Autoit v3.3.16.1.
 [1220.1]- Adjust All dialogboxes for all Languages to fit at display scale of 125%.
 [1216.1]- Replacing SCI_REPLACETARGET calls by SCI_REPLACETARGETMINIMAL calls where appropriate.
-[1212.1]- Extend AutoCloseBrackets (by Matteo-Nigro PR #4318) for Selection.
+[1212.1]- Extend AutoCloseBrackets (by Matteo-Nigro PR 4318) for Selection.
 [1118.2]- Using new AviSynth+ keyword lists and AviSynth colors (light/dark mode).
+[1029.1]- Refactored of undo/redo and document modify handler.
 [1020.1]- Standard DarkMode Theme.
 [1020.1]- Minor adjustment of grepWinNP3's layout and correction of some strings (GRE).
 [1018.1]- Simplify WordList Set according to (https://github.com/ScintillaOrg/lexilla/issues/103).
@@ -96,18 +297,24 @@ CHANGES:
 [1130.1]- Default settings: LaunchInstanceWndPosOffset=28 and LaunchInstanceFullVisible=true.
 
 --------------------------------------------------------
-CHANGES Versions in Tools or Libraries:
---------------------------------------------------------
-[1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
-[1212.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2022-12-09).
-[1212.1]- Update Scintilla Library (SCI) version 5.3.2 (2022-12-06).
-[1212.1]- Update Lexilla Library (LEX) version 5.2.1 (2022-12-06).
-[1018.1]- Update grepWinNP3 (GRE) version 2.1.11.42 (2022-10-14).
-
---------------------------------------------------------
 FIXES:
 --------------------------------------------------------
-[.###.#]- .
+[.203.1]- Infinite loop using SCI_REPLACEMINIMAL in replace all loop in range (Hotfix).
+[.124.1]- Speedup loading files with very long lines.
+[.124.1]- Dependencies for version-file inclusion.
+[.124.1]- Remove files generated by Version.ps1 and tracking disabled by .gitignore.
+[.120.1]- Get git commit id for local build  (ID= in Help Dlg).
+[.115.1]- Initial white display (splash) in case of Dark Mode Win
+[.115.1]- Animated minimize (taskbar or tray), restore w/o white splash.
+[.109.1]- Trigger mark-all-occ after transform backslash (EscCtrlChr) in F/R-Box is used.
+[.105.1]- Some WSL2 (Linux) path issues.
+[.104.1]- Handling of editing own settings (in this case: disable file watching).
+[.104.1]- Path to module relative representation.
+[.103.1]- Load Toolbar-Bitmap handling.
+[.102.1]- Minor design change and some fixes for Margin and Bookmark handling.
+[1230.1]- (re)setting default window position in case of non std DPI resolution.
+[1228.1]- Speedup search&replace in large text files.
+[1227.1]- Use alternate path, if Path_GetKnownFolder() failed.
 [1215.1]- Set alpha (80) for "highlight current line" translucency, if not given.
 [1212.1]- "Notepad3 Replacement" after Win11 22H2 update (SUP).
 [1212.1]- Oniguruma fix (ONIG_OPTION_FIND_LONGEST behavior) (ONI).
@@ -122,7 +329,6 @@ FIXES:
 [1104.1]- Modification marker based on selection history.
 [1104.1]- Disable events from edit-window while in Begin/End-WaitCursor.
 [1102.1]- Error message on loading empty file.
-[1029.1]- Refactored of undo/redo and document modify handler.
 [1028.1]- Broken reload file (broken by check for single file instance)".
 [1023.1]- A warning message in "dialogs_xx_yy.rc".
 [1020.1]- Respect single file instance mode for internal file loading.
@@ -197,31 +403,21 @@ FIXES:
 --------------------------------------------------------
 REMOVED:
 --------------------------------------------------------
-[.###.#]- .
-[.###.#]- .
+-
+
+--------------------------------------------------------
+CHANGES Versions in Tools or Libraries:
+--------------------------------------------------------
+[1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
+[1212.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2022-12-09).
+[1212.1]- Update Scintilla Library (SCI) version 5.3.2 (2022-12-06).
+[1212.1]- Update Lexilla Library (LEX) version 5.2.1 (2022-12-06).
+[1018.1]- Update grepWinNP3 (GRE) version 2.1.11.42 (2022-10-14).
 
 --------------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------------
-[.###.#]- .
 [.208.1]- Turkish (tr-TR).
-
---------------------------------------------------------
-Hello everybody ! 😀
-For our "Notepad3 Translation Projects", we are looking for motivated volunteers, with a priority
-to resume "(incomplete...)" translation projects:
-
-- Greek (el-GR) (incomplete...)
-- Hindi (hi-IN) (incomplete...)
-- Indonesian (id-ID) (incomplete...)
-- Polish (pl-PL) (incomplete...)
-- Portuguese (pt-PT) (incomplete...)
-- Spanish Mexican (es-MX) (incomplete...)
-- Vietnamese (vi-VN) (incomplete...)
-- etc...
-
-Please, send me a PM (mailto:hpwamr51 @ gmail.com) if you are willing to help. 🤔
---------------------------------------------------------
 
 
 ========================================================
@@ -239,7 +435,7 @@ CHANGES:
 [1015.1]- Remove the max win version check for undocumented DarkMode UxTheme methods.
 [1015.1]- SQL Lexer bright and dark mode highlight color enhanced.
 [.924.1]- Disable actively file change polling - rely on directory change notification by default.
-[.924.1]- Allow [Settings2] "FileCheckInverval" to be zero(0), means no active file change polling.
+[.924.1]- Allow [Settings2] "FileCheckInterval" to be zero(0), means no active file change polling.
 [.923.2]- Enable context menu for Statusbar.
 [.923.1]- Enable context menu for Menubar.
 [.916.1]- Use "round nearest displayed digit" method for estimated file size display.
@@ -531,7 +727,7 @@ NEW:
 --------------------------------------------------------
 [.205.1]- Use user locale for date/time insert format: can be menu switched to preferred UI language.
 [.124.1]- Enable horizontal scrolling by "Shift + Mouse-Wheel".
-[.117.1]- Show search wrap-around tooltip (issue #3038).
+[.117.1]- Show search wrap-around tooltip (issue 3038).
 [1222.1]- Kotlin Source Lexer based on Zufuliu's Kotlin Lexer code base.
 [1222.1]- Dart Lexer based on Zufuliu's Dart Lexer code base.
 [1221.1]- TinyExpr: additional number parsing for binary (0b...) and octal (0o...) number formats.
@@ -617,7 +813,7 @@ FIXES:
 [.124.1]- InfoBox message icon DPI scaling.
 [.122.1]- Tinyexpr functions and constants parsing.
 [.116.1]- Buffer overrun while initializing structures.
-[.116.1]- Fix Font Dialog (Size handling) problems (issue #3012).
+[.116.1]- Fix Font Dialog (Size handling) problems (issue 3012).
 [1219.1]- F/R dialog: Transform Backslash option glitch.
 [1219.1]- F/R dialog: message box in case of not matching pattern.
 [1218.1]- Multi-Replace using RegExpr and Group-References.
@@ -637,7 +833,7 @@ FIXES:
 [1004.1]- Initial directory for open/save file Explorer dialog.
 [1001.1]- TOML Lexer performance leak.
 [.928.2]- Freezing of main window caused by mixed usage of Lexer Interfaces.
-[.928.1]- Setting new IFace5 Lexer (should fix line/stream comment toggle issue #2912).
+[.928.1]- Setting new IFace5 Lexer (should fix line/stream comment toggle issue 2912).
 [.927.1]- Lexer file extensions maintained in standard config.
 [.927.1]- grepWin language switching (github.com/stefankueng/grepWin/issues/199) (GRE).
 [.926.1]- Clone full .ini-file path for forked new instance (GRE).
@@ -761,7 +957,7 @@ FIXES:
 [.830.1]- F/R Dialog: Clear F/R History - remove entries from .ini-file too.
 [.829.1]- Buffer to small in case of auto-esc ctrl-chars in find/replace edit-control.
 [.825.2]- Wrong Focused-View Mode shown in menu.
-[.825.2]- Try to fix (hardly reproducible) "copy Hyperlink issue (#2202).
+[.825.2]- Try to fix (hardly reproducible) "copy Hyperlink" issue 2202.
 [.825.1]- Regression: initial calculation of Print-Zoom factor.
 [.824.1]- Not intended bookmarker on F/R dialog mark findings.
 [.823.1]- Bookmark Occurrences too menu checked.
@@ -1232,7 +1428,7 @@ CHANGES:
 ENHANCEMENT:
 --------------------------------------------------------
 - Allow customizable fileName-RegEx to extensionlist
-	( \rc$; = all filenames (incl. ext) which ends on 'rc').
+    ( \rc$; = all filenames (incl. ext) which ends on 'rc').
 - Hand cursor coupled with indicator hover style only on modifier keys.
 - Allow indicator styling for Hyperlink hover rendering.
 - Find/Replace dialog <-> "Focused View" enhancements.
@@ -1325,7 +1521,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 - Do not reset scroll-width tracking on saving file
-    (issue #539: https://github.com/rizonesoft/Notepad3/issues/539).
+    (issue 539: https://github.com/rizonesoft/Notepad3/issues/539).
 - Fixed portable MiniPath redirector .ini files.
 - Support Scintilla's new indicator box styles
     ("INDIC_GRADIENT" and "INDIC_CRADIENTCENTRE").
@@ -1991,7 +2187,7 @@ Version 3.17.1202.715 (2 December 2017)
 - Fix: Minipath full path display in titlebar (no dbl-slash in case of drive letter only).
 - Fix: Mark occurrences: Outline frame of indicator box shouls have same aplpha channel color (configurable alpha2:nnn).
 - Fix: Find/replace dialog: mark occurrences: use standard save/restore settings behavior.
-- Fix: #192 Drag n' drop from 32-bit process on Notepad3 x64 window
+- Fix: issue 192 Drag n' drop from 32-bit process on Notepad3 x64 window
 
 
 ========================================================
@@ -2033,7 +2229,7 @@ Version 3.17.1124.690 (24 November 2017)
 - Fix: lookaround regex (DeelX) matches were not replaced.
 - Fix: Issue regarding find/replace empty-string.
 - Fix: Adapt DeelX RE interface according to enhanced find/replace dialog.
-- Fix: Issue #173 - regex/wildcard search: replacement string not used if "Check All Occurrences" is active.
+- Fix: issue 173 - regex/wildcard search: replacement string not used if "Check All Occurrences" is active.
 - Fix: Recoding minipath's version.h to UTF-8-Sig, because it contains codepage dependant copyright sign.
 - Fix: Corrections to .vcproj settings inconsistencies (reported in release build process).
 - Fix: undo/redo issues (if no selection choosen).
@@ -2046,9 +2242,9 @@ Version 3.17.1124.690 (24 November 2017)
 - Fix: Problem with regex line start and replacements at line end.
 - Fix: Issues regarding selection undo/redo.
 - Fix: Issues regarding margins configuration.
-- Fix: Issue #139 and #143 (remove selection undo/redo for non-text-changing operations on selections).
-- Fix: issue #144 (Left arrow no longer moves to previous line).
-- Fix: issue #145 (Mark Occurrences Counter is broken).
+- Fix: issue 139 and 143 (remove selection undo/redo for non-text-changing operations on selections).
+- Fix: issue 144 (Left arrow no longer moves to previous line).
+- Fix: issue 145 (Mark Occurrences Counter is broken).
 - Fix: Pasting clipboard content into selection box should replace text and cancel selection then.
 - Minor bug fixes and more...
 
@@ -2060,7 +2256,7 @@ Version 2.17.1023.632 (23 October 2017)
 - Added switch ([Settings2] UseOldStyleBraceMatching) to preserve old style
     brace matching behavior.
 - Applied patch from Neil Hodgson (Master of Scintilla Lib - respond to
-    scintilla lib issue report #1976).
+    scintilla lib issue report 1976).
 - Changed buffers for operating edit box in customize schemes.
 - Documentation: Minor changes to Notepad3.txt.
 - Documentation: doc/Notepad3.txt - add description of [Section2] .ini settings
@@ -2069,7 +2265,7 @@ Version 2.17.1023.632 (23 October 2017)
     : SciDirectWriteTech=1, SciFontQuality=3
 - First prottotype of VirtualSpace RectangularSelection by default (very old
     behavior can be turned on by [Settings2] DenyVirtualSpaceAccess=1).
-- Implemented Feature Request #51 (buffer size of file extension edit box).
+- Implemented Feature Request issue 51 (buffer size of file extension edit box).
 - New: Show warning before loading file with unknown (custom schemes) file name extension.
 - License.txt: switch to UTF-8 encoding.
 - Restore wrongly discarded np3portableapps .ini files for NP3Portable,
@@ -2281,7 +2477,7 @@ Version 2 Build 432 (10 August 2017)
 - Enlarge some string buffers for dialogs.
 - Initial version of PortableApps.com Launche and Installer build.
 - Build environment, to create Notepad3Portable (according to Portableapps.com) (x86/x64).
-- Fixed issue #35 (preserve FileExtension settings while switching Styles / 2nd Default Scheme).
+- Fixed issue 35 (preserve FileExtension settings while switching Styles / 2nd Default Scheme).
 - Fixed np3encrypt vcxproj files.
 
 
@@ -2309,8 +2505,8 @@ Version 2 Build 398 (13 June 2017)
 ========================================================
 - Added Microsoft Visual C++ 2017 (vc141) support.
 - Updated Scintilla to version 3.7.5
-- Don't use 2nd default syntax scheme by default. (Issue #21)
-- Bigger Toolbar Buttons (24px). Should be big enough now. (Issue #21)
+- Don't use 2nd default syntax scheme by default. (issue 21)
+- Bigger Toolbar Buttons (24px). Should be big enough now. (issue 21)
 
 
 ========================================================

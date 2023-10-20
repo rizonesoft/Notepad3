@@ -76,13 +76,13 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "새 파일(&N)...",                IDM_FILE_NEW
-        MENUITEM "새 디렉토리(&W)...",            IDM_FILE_NEWDIR
+        MENUITEM "새 디렉터리(&W)...",            IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
         MENUITEM "파일 필터(&F)...",              IDM_VIEW_FILTER
         MENUITEM "필터 재설정(&R)",               IDM_VIEW_FILTERALL
         POPUP "보기(&S)"
         BEGIN
-            MENUITEM "디렉토리(&D)",              IDM_VIEW_FOLDERS
+            MENUITEM "디렉터리(&D)",              IDM_VIEW_FOLDERS
             MENUITEM "파일(&F)",                  IDM_VIEW_FILES
             MENUITEM "시스템 개체(&S)",           IDM_VIEW_HIDDEN
         END
@@ -99,7 +99,7 @@ BEGIN
         MENUITEM "이동(&T)...",                  IDM_FILE_GOTO
         MENUITEM "즐겨찾기로 이동(&G)",           IDM_VIEW_FAVORITES
         MENUITEM "즐겨찾기 편집(&E)",             IDM_VIEW_EDITFAVORITES
-        MENUITEM "디렉토리(&D)...",               IDM_FILE_CHANGEDIR
+        MENUITEM "디렉터리(&D)...",               IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
         MENUITEM "드라이브 보이기(&V)",           IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
@@ -109,7 +109,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "디렉토리(&D)...",              IDM_FILE_CHANGEDIR
+        MENUITEM "디렉터리(&D)...",              IDM_FILE_CHANGEDIR
         MENUITEM "드라이브 속성(&P)",            IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
         MENUITEM "드라이브 보이기(&V)",          IDM_VIEW_DRIVEBOX

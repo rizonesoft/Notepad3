@@ -2453,10 +2453,17 @@ cvs history -T
 cvs rtag "VERSION_X_X_X" oniguruma
 
 
+<Homebrew install autotools>
+> brew install autoconf
+> brew install automake
+> brew install libtool
+
+
 <GNU Autotools: bootstrap>
 * write Makefile.am and configure.in.
+> libtoolize  or  glibtoolize
 > aclocal
-> libtoolize   or   glibtoolize
+> autoheader
 > automake --foreign --add-missing
 > autoconf
 > configure --with-rubydir=... CFLAGS="-O2 -Wall"

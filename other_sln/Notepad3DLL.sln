@@ -331,16 +331,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_hi_in", "..\language\np
 		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_es_mx", "..\minipath\language\mp_es_mx\mp_es_mx.vcxproj", "{2AD33E48-FEC6-47B1-8FEF-A0CF1F23DD58}"
-	ProjectSection(ProjectDependencies) = postProject
-		{29AB36E1-284E-4E0B-9DF4-F4F84760BD9B} = {29AB36E1-284E-4E0B-9DF4-F4F84760BD9B}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "np3_es_mx", "..\language\np3_es_mx\np3_es_mx.vcxproj", "{B6757299-D2DD-4103-834D-45227AC13CB7}"
-	ProjectSection(ProjectDependencies) = postProject
-		{9DC82B0D-2484-4925-92AD-1237C64CCB78} = {9DC82B0D-2484-4925-92AD-1237C64CCB78}
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32

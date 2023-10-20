@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Substituir"
     IDT_VIEW_WORDWRAP       "Moldar texto"
     IDT_VIEW_ZOOMIN         "Zoom +"
+    IDT_VIEW_RESETZOOM      "Repor Zoom"
     IDT_VIEW_ZOOMOUT        "Zoom -"
     IDT_VIEW_SCHEME         "Seleccionar esquema"
     IDT_VIEW_SCHEMECONFIG   "Personalizar esquemas"
@@ -89,10 +90,11 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Executar documento"
+    IDT_VIEW_NEW_WINDOW      "New Empty Window"
     IDT_VIEW_TOGGLE_VIEW     "Vista focada"
     IDT_VIEW_CHASING_DOCTAIL "Registo de monitorização"
     IDT_VIEW_PIN_ON_TOP      "Sempre visível"
-    IDT_GREP_WIN_TOOL        "Procurar em ficheiro"
+    IDT_GREP_WIN_TOOL        "Procurar em ficheiros"
 END
 
 STRINGTABLE
@@ -136,7 +138,7 @@ BEGIN
                             "A janela existente do Notepad3 está ocupada ou tem uma caixa de diálogo activa.\nDeseja abrir outra janela do Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "As tabelas de conversão da página de código para a codificação seleccionada, não estão disponíveis no seu sistema."
     IDS_MUI_ERR_UNICODE     "Erro ao converter este ficheiro Unicode.\nSerão perdidos dados se o ficheiro for guardado!"
-    IDS_MUI_ERR_BITMAP      "Erro ao carregar o bitmap ""%s"".\nDimensões necessárias: %i x %i (largura >= %i x altura)."
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Erro na elevação dos direitos do utilizador!"
 END
@@ -170,13 +172,14 @@ BEGIN
     IDS_MUI_BUFFERTOOSMALL  "Esta operação não pode ser efectuada (linhas demasiado longas)."
     IDS_MUI_FIND_WRAPFW     "Atingido o fim do documento, reiniciar procura no pricípio."
     IDS_MUI_FIND_WRAPRE     "Atingido o início do documento, reiniciar procura no fim."
-    IDS_MUI_NOTFOUND        "Nenhuma correspondência encontrada para o padrão de procura especificado."
-    IDS_MUI_REPLCOUNT       "Foram substituídas %s ocorrência(s) do padrão de procura especificado."
+    IDS_MUI_NOTFOUND        "Não foi encontrado o texto especificado."
+    IDS_MUI_REPLCOUNT       "Foram substituídas %s ocorrências do texto especificado."
     IDS_MUI_ASK_ENCODING    "A alteração da codificação do ficheiro de uma para outra, pode substituir texto não suportado com caracteres padrão e será limpo o histórico de anulações. Continuar?"
     IDS_MUI_ASK_ENCODING2   "Está prestes a alterar a codificação de um ficheiro vazio. Tenha em atenção de que isto irá limpar o histórico de anulações e que não pode ser sincronizado com a nova codificação. Continuar?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Esta operação vai limpar o histórico de anulações. Continuar?"
     IDS_MUI_READONLY_SAVE   """%s"" é só de leitura. Guardar noutro ficheiro?"
     IDS_MUI_FILECHANGENOTIFY
-                            "O ficheiro actual foi modificado por um programa externo. Recarregar?"
+                            "O ficheiro actual foi modificado por um programa externo.\nPor favor escolha:\n\nCancelar -\t\tIgnorar alterações futuras\nRecarregar -\t\tRecarregar ficheiro\nContinuar -\tMudar para monitorzação do ficheiro"
     IDS_MUI_FILECHANGENOTIFY2 "O ficheiro actual foi eliminado. Guardar agora?"
     IDS_MUI_FILELOCK_ERROR  "Não foi possível obter bloqueio de ficheiro exclusivo para ""%s""!"
     IDS_MUI_STICKYWINPOS    "A posição fixa da janela está activada. Todas as novas janelas do Notepad3 irão utilizar as actuais definições de posicionamento."
@@ -206,7 +209,7 @@ BEGIN
                              "Manter a data/hora de modificação original do ficheiro activada.\nEsta opção será válida para esta sessão!"
     IDS_MUI_OUT_OFF_OCCMRK   "Não existem outros marcadores de ocorrência (Marcador/Realce)!"
     IDS_MUI_DOCUMENT_READONLY
-                             "The document is locked for view only. Keep the lock to prevent editing?"
+                             "O documento está bloqueado só para ver. Manter bloqueio para impedir edição?"
 END
 
 STRINGTABLE
@@ -222,7 +225,7 @@ BEGIN
     IDS_MUI_WARN_STYLE_RESET
                             "Esta acção vai repor o estilo para os padrões originais do modo de cor desejado e mudar o ficheiro de tema activo para o config .ini padrão!"
     IDS_MUI_ASK_INSTANCE_EXISTS
-                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
+                            "Modo instância de ficheiro único:\n\nDefinir foco na instância do ficheiro já aberto?"
 END
 
 STRINGTABLE
@@ -263,16 +266,18 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Idioma"
     IDS_USE_LOCALE_DATEFMT  "O idioma define o Formato da &Data"
     IDS_MUI_MENU_THEMES     "Colecção de e&squemas"
-    IDM_THEMES_FACTORY_RESET "&Padrão da fabrico"
-    IDM_THEMES_STD_CFG       "&Padrão Config"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDM_THEMES_FACTORY_RESET "Repor dados de &Fábrica"
+    IDM_THEMES_STD_CFG       "Configuração &Padrão"
+    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Limpar tudo"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Limpar histórico de localizar"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Limpar histórico de substituir"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard Shortcut [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Procurar na área de notificações se não existir selecção"
+    IDS_MUI_REPLCLIPTAG     "Substituir pela área de notificações no atalho [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "A partir do topo"
     IDS_MUI_WRAPSEARCH_BCK  "A partir da base"
 END
@@ -283,6 +288,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Alternar Vista..."
     IDS_MUI_SB_REPLACE_ALL    "Substituir tudo..."
     IDS_MUI_SB_WRAP_LINES     "Quebrar linhas..."
+    IDS_MUI_SB_SORTING_LINES  "Ordenar linhas..."
     IDS_MUI_SB_CONV_LNBRK     "Converter quebras de linha..."
     IDS_MUI_SB_RECODING_DOC   "A Recodificar Documento..."
     IDS_MUI_SB_LEXER_STYLING  "Aplicar estilo de Lexer..."
@@ -304,7 +310,7 @@ Opções:\r\n\
 ...\tModo fim de linha (/crlf, /cr, /lf).\r\n\
 /e\tCodificação do ficheiro de origem.\r\n\
 /g\tSalta para posição indicada (/g -1 fim do ficheiro).\r\n\
-/m\tCorresponde ao texto especificado (/m- último, /mr regex,\r\n\t/mb backslash).\r\n\
+/m\tCorresponde ao texto especificado (/m- último, /mr regex, /mb backslash).\r\n\
 /l\tAuto-recarrega ficheiros modificados.\r\n\
 /q\tForça a criação de novos ficheiros sem perguntar.\r\n\
 /s\tSelecciona esquema de sintaxe especificado.\r\n\
@@ -315,8 +321,8 @@ Opções:\r\n\
 /b\tAbre novo quadro de colagem para recolher entradas da área \r\n\tde transferência.\r\n\
 /n\tAbre sempre uma nova janela (/ns instância de único ficheiro).\r\n\
 /r\tReutiliza a janela (/rs instância de único ficheiro).\r\n\
-/p\tDefine tamanho e posição da janela (/p0, /ps, /pf,l,t,r,b,m) ou /p\r\n\
-\t<esquerda>,<superior>,<largura>,<altura>,<máx>    [todos inteiros].\r\n\
+/p\tDefine tamanho e posição da janela (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tou /p <esquerda>,<superior>,<largura>,<altura>[,<dpi>[,<máx>]]  (todos \r\n\tinteiros).\r\n\
 /t\tDefine título da janela.\r\n\
 /i\tInicia como ícone na área de notificação.\r\n\
 /o\tMantém a janela sempre visível.\r\n\
@@ -328,7 +334,7 @@ Opções:\r\n\
 /z\tIgnora seguinte (utilizável para substituição do Notepad com base \r\n\tno registro).\r\n\r\n\
 Exemplos:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Abre um novo ficheiro: ""Test.txt"" Codificação=UTF-8-BOM,\r\n\tEoL=CRLF.\r\n\
+ \t... Abre um novo ficheiro: ""Test.txt"" Codificação=UTF-8-BOM, EoL=CRLF.\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
  \t... Imprime o ficheiro: ""Test.txt"" imediatamente.\
 "
@@ -340,7 +346,7 @@ usar \\<regex>; para definir um padrão de correspondência ao nome do ficheiro:
 Formato do estilo:\r\n\
 tipo de letra:Nome; tamanho:[+/-]nn.mm; negrito; itálico; sublinhado;\r\n\
 1º plano:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Propriedades do estilo podem ser copiadas usando copiar/colar ou arrast./largar.\
+Propriedades do estilo podem ser copiadas usando copiar/colar ou arrastar/largar.\
 "
 
 END

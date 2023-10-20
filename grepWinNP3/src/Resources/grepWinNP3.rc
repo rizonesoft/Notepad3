@@ -48,12 +48,13 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 // Dialog
 //
 
-IDD_SEARCHDLG DIALOGEX 0, 0, 600, 339
+IDD_SEARCHDLG DIALOGEX 0, 0, 600, 351
 STYLE DS_SETFONT | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "grepWinNP3"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Press F1 for help...",IDC_HELPLABEL,395,51,100,8
+    CONTROL         "",IDC_UPDATELINK,"SysLink",LWS_RIGHT | NOT WS_VISIBLE | WS_TABSTOP | WS_DISABLED,252,110,190,11
     CONTROL         "<a>about grepWinNP3...</a>",IDC_ABOUTLINK,"SysLink",LWS_RIGHT | WS_TABSTOP,486,2,87,8
     PUSHBUTTON      "\\",IDC_PATHMRU,14,20,11,12
     EDITTEXT        IDC_SEARCHPATH,31,20,495,12,ES_AUTOHSCROLL,WS_EX_ACCEPTFILES
@@ -75,11 +76,11 @@ BEGIN
     CONTROL         "Dot matches newline",IDC_DOTMATCHNEWLINE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,123,97,110,10
     CONTROL         "Create backup files",IDC_CREATEBACKUP,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,236,97,104,10
     CONTROL         "Treat files as UTF-8",IDC_UTF8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,342,97,107,10
-    CONTROL         "Treat files as binary",IDC_BINARY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,450,97,115,10
     PUSHBUTTON      "Test regex...",IDC_TESTREGEX,14,109,60,14
     PUSHBUTTON      "Add to Presets...",IDC_ADDTOBOOKMARKS,89,109,90,14
     PUSHBUTTON      "Presets...",IDC_BOOKMARKS,183,109,60,14
-    CONTROL         "",IDC_UPDATELINK,"SysLink",LWS_RIGHT | NOT WS_VISIBLE | WS_TABSTOP | WS_DISABLED,262,110,292,11
+    CONTROL         "Treat files as binary",IDC_BINARY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,450,97,125,10
+    CONTROL         "Keep file date when replacing",IDC_KEEPFILEDATECHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,450,109,125,10
     GROUPBOX        "Search",IDC_GROUPSEARCHFOR,7,41,587,86
     CONTROL         "All sizes",IDC_ALLSIZERADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,139,98,10
     CONTROL         "Size is",IDC_SIZERADIO,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,152,48,10
@@ -90,6 +91,7 @@ BEGIN
     CONTROL         "Include hidden items",IDC_INCLUDEHIDDEN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,117,166,104,10
     CONTROL         "Include subfolders",IDC_INCLUDESUBFOLDERS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,178,98,10
     CONTROL         "Include binary files",IDC_INCLUDEBINARY,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,117,178,104,10
+    CONTROL         "Include symbolic links",IDC_INCLUDESYMLINK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,190,115,10
     CONTROL         "All dates",IDC_RADIO_DATE_ALL,"Button",BS_AUTORADIOBUTTON,228,139,100,10
     CONTROL         "Newer than",IDC_RADIO_DATE_NEWER,"Button",BS_AUTORADIOBUTTON,228,152,62,10
     CONTROL         "Older than",IDC_RADIO_DATE_OLDER,"Button",BS_AUTORADIOBUTTON,228,165,62,10
@@ -98,23 +100,23 @@ BEGIN
     CONTROL         "",IDC_DATEPICK2,"SysDateTimePick32",DTS_RIGHTALIGN | DTS_APPCANPARSE | NOT WS_VISIBLE | WS_TABSTOP,291,173,56,15
     LTEXT           "Exclude dirs (Regex):",IDC_EXCLUDE_DIRS_PATTERNLABEL,350,138,104,8
     EDITTEXT        IDC_EXCLUDEDIRSPATTERN,458,136,109,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "/",IDC_EXCLUDEDIRMRU,573,136,12,12
+    PUSHBUTTON      "|",IDC_EXCLUDEDIRMRU,573,136,12,12
     LTEXT           "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude",IDC_PATTERNLABEL,350,153,104,36
     EDITTEXT        IDC_PATTERN,458,155,109,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "/",IDC_PATTERNMRU,573,155,12,12
+    PUSHBUTTON      "|",IDC_PATTERNMRU,573,155,12,12
     CONTROL         "Regex match",IDC_FILEPATTERNREGEX,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,458,174,61,10
     CONTROL         "Text match",IDC_FILEPATTERNTEXT,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,522,174,61,10
-    PUSHBUTTON      "Settings...",IDC_SETTINGSBUTTON,14,197,103,14
-    PUSHBUTTON      "&Replace",IDC_REPLACE,457,198,62,14
-    CONTROL         "Search",IDOK,"Button",BS_DEFSPLITBUTTON | WS_TABSTOP,523,198,62,14
-    GROUPBOX        "Limit search",IDC_GROUPLIMITSEARCH,7,128,587,65
-    CONTROL         "",IDC_RESULTLIST,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_OWNERDATA | WS_BORDER | WS_TABSTOP,14,234,571,81
-    LTEXT           "",IDC_SEARCHINFOLABEL,14,321,580,8
-    GROUPBOX        "Search results",IDC_GROUPSEARCHRESULTS,7,214,587,118
-    CONTROL         "Files",IDC_RESULTFILES,"Button",BS_AUTORADIOBUTTON | WS_GROUP,84,222,89,10
-    CONTROL         "Content",IDC_RESULTCONTENT,"Button",BS_AUTORADIOBUTTON,200,222,104,10
-    CONTROL         "",IDC_PROGRESS,"msctls_progress32",PBS_SMOOTH | PBS_SMOOTHREVERSE | PBS_MARQUEE | NOT WS_VISIBLE,130,198,310,14
-    PUSHBUTTON      ">>>",IDC_EXPORT,316,222,28,10,NOT WS_VISIBLE
+    PUSHBUTTON      "Settings...",IDC_SETTINGSBUTTON,14,210,103,14
+    PUSHBUTTON      "&Replace",IDC_REPLACE,457,210,62,14
+    CONTROL         "Search",IDOK,"Button",BS_DEFSPLITBUTTON | WS_TABSTOP,523,210,62,14
+    GROUPBOX        "Limit search",IDC_GROUPLIMITSEARCH,7,128,587,77
+    CONTROL         "",IDC_RESULTLIST,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_OWNERDATA | WS_BORDER | WS_TABSTOP,14,248,571,82
+    LTEXT           "",IDC_SEARCHINFOLABEL,14,332,560,8
+    GROUPBOX        "Search results",IDC_GROUPSEARCHRESULTS,7,230,587,114
+    CONTROL         "Files",IDC_RESULTFILES,"Button",BS_AUTORADIOBUTTON | WS_GROUP,84,236,89,10
+    CONTROL         "Content",IDC_RESULTCONTENT,"Button",BS_AUTORADIOBUTTON,200,236,104,10
+    CONTROL         "",IDC_PROGRESS,"msctls_progress32",PBS_SMOOTH | PBS_SMOOTHREVERSE | PBS_MARQUEE | NOT WS_VISIBLE,130,210,310,14
+    PUSHBUTTON      ">>>",IDC_EXPORT,316,236,28,10,NOT WS_VISIBLE
 END
 
 IDD_REGEXTEST DIALOGEX 0, 0, 401, 316
@@ -192,7 +194,7 @@ BEGIN
     PUSHBUTTON      "Reset",IDC_RESETDEFAULT,225,14,57,14
     EDITTEXT        IDC_EDITORCMD,13,31,269,14,ES_AUTOHSCROLL
     PUSHBUTTON      "...",IDC_SEARCHPATHBROWSE,286,31,15,14
-    LTEXT           "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string.",IDC_STATIC2,13,47,290,17
+    LTEXT           "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string.",IDC_STATIC2,13,47,292,17
     LTEXT           "This adds a new entry to the context menu named 'Open with Editor'",IDC_ENTRYCONTEXTMENU,13,66,288,16
     LTEXT           "Language:",IDC_STATIC4,16,92,119,8
     COMBOBOX        IDC_LANGUAGE,151,90,159,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
@@ -202,7 +204,7 @@ BEGIN
     CONTROL         "Create backup files in a separate folder",IDC_BACKUPINFOLDER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,141,250,10
     CONTROL         "Don't warn when replacing without creating backups",IDC_NOWARNINGIFNOBACKUP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,153,250,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,153,260,10
     CONTROL         "Only one instance",IDC_ONLYONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,165,150,10
     CONTROL         "Check for updates",IDC_DOUPDATECHECKS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP | WS_DISABLED,7,177,150,10
     CONTROL         "Dark mode",IDC_DARKMODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,189,157,10
@@ -236,6 +238,7 @@ BEGIN
         VERTGUIDE, 344
         VERTGUIDE, 348
         VERTGUIDE, 458
+        VERTGUIDE, 528
         VERTGUIDE, 548
         VERTGUIDE, 594
         TOPMARGIN, 7
@@ -425,6 +428,16 @@ BEGIN
     IDS_STAY_ON_TOP         "Stay On Top"
     IDS_REPLACEUTF8         "You have the option ""%s"" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
     IDS_INFOLABELSEL        "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
+    IDS_INFOLABELEMPTY      "Found %ld files, skipped %ld files."
+    IDS_INFOLABELSELEMPTY   "%ld files, skipped %ld files. %ld results selected."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_OPEN_MRU            "Open list with recent entries"
+    IDS_COPY_COLUMN         "Copy column for all items"
+    IDS_COPY_COLUMN_SEL     "Copy column for selected items"
+    IDS_REGEXEXCEPTION      "Regex stack error"
 END
 
 #endif    // Neutral resources

@@ -73,6 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "置換"
     IDT_VIEW_WORDWRAP       "右端で折り返す"
     IDT_VIEW_ZOOMIN         "拡大"
+    IDT_VIEW_RESETZOOM      "拡大縮小リセット"
     IDT_VIEW_ZOOMOUT        "縮小"
     IDT_VIEW_SCHEME         "文書の種類を選択"
     IDT_VIEW_SCHEMECONFIG   "配色の編集"
@@ -89,6 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "開いている文書を実行"
+    IDT_VIEW_NEW_WINDOW      "白紙の新規ウィンドウ"
     IDT_VIEW_TOGGLE_VIEW     "単語一望モード"
     IDT_VIEW_CHASING_DOCTAIL "ログ監視用モード"
     IDT_VIEW_PIN_ON_TOP      "常に手前に表示"
@@ -136,7 +138,7 @@ BEGIN
                             "現在 Notepad3 のウィンドウはビジー状態か､ダイアログを表示しています。\nNotepad3 のウィンドウを新たに開きますか?"
     IDS_MUI_ERR_ENCODINGNA  "このパソコンでは、選択した文字コード用のコードページ変換テーブルが利用できません。"
     IDS_MUI_ERR_UNICODE     "Unicode への変換中にエラーが発生しました。\nファイルを保存するとデータが失われるかもしれません。"
-    IDS_MUI_ERR_BITMAP      "ビットマップファイルの読み込みエラー: %s\n必要な寸法: %i x %i (横幅 >= %i x 高さ)."
+    IDS_MUI_ERR_BITMAP      "ビットマップ「%s」の寸法が適切ではありません。\n適切な寸法: %i x %i (幅 >= %i x 高さ)."
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "権限取得のエラー。"
 END
@@ -172,11 +174,12 @@ BEGIN
     IDS_MUI_FIND_WRAPRE     "文書の先頭に到達しました。終端から検索しますか?"
     IDS_MUI_NOTFOUND        "指定の検索条件には一致しませんでした。"
     IDS_MUI_REPLCOUNT       "一致する %s か所を指定の検索条件で置換しました。"
-    IDS_MUI_ASK_ENCODING    "他の文字コードに変換すると、未対応の文字は所定の文字に置換され、また「元に戻す」の履歴もリセットされます。\n変換を続行しますか?"
-    IDS_MUI_ASK_ENCODING2   "空のファイルの文字コードを変更しようとしています。「元に戻す」の履歴もリセットされます。変更を続行しますか?"
+    IDS_MUI_ASK_ENCODING    "他の文字コードに変換すると、未対応の文字は所定の文字に置換され、また「元に戻す」の履歴が消去されます。\n変換を続行しますか?"
+    IDS_MUI_ASK_ENCODING2   "空のファイルの文字コードを変更しようとしています。「元に戻す」の履歴が消去されます。変更を続行しますか?"
+    IDS_MUI_ASK_CLEAR_UNDO  "この操作は「元に戻す」の履歴を消去します。続行しますか?"
     IDS_MUI_READONLY_SAVE   "「%s」は読み取り専用です。別のファイル名で保存しますか?"
     IDS_MUI_FILECHANGENOTIFY
-                            "ファイルが他のプログラムによって変更されました。再読み込みしますか?"
+                            "このファイルは外部のプラグラムにより修正されました。\n次から選択してください:\n\nキャンセル -\t\t以降の変更を無視\n再読み込み -\t\tファイルを再読み込み\n続行 -\tファイル監視モードに切り替え"
     IDS_MUI_FILECHANGENOTIFY2 "ファイルが削除されました。保存しますか?"
     IDS_MUI_FILELOCK_ERROR  "ファイル %s を排他ロックできませんでした !"
     IDS_MUI_STICKYWINPOS    "ウィンドウ位置の固定を有効にします。新しいウインドウは、現在のウインドウ位置の設定にて開かれます。"
@@ -214,13 +217,13 @@ BEGIN
     IDS_MUI_ASK_SAVE        "この編集を保存しますか?\n「%s」"
     IDS_MUI_ASK_REVERT      "最後に保存された内容で再読み込みしますか?"
     IDS_MUI_ASK_RECODE      "読み直しはファイルを再読み込みするため、変更内容は失われます!"
-    IDS_MUI_ASK_CREATE      "「%s」は存在しません。\nこのファイルを作成しますか?"
+    IDS_MUI_ASK_CREATE      "次のファイルは存在しません。作成しますか?\n%s"
     IDS_MUI_PRINT_HEADER    "ファイル名, 現在の日付と時刻|ファイル名, 現在の日付|ファイル名|空欄のまま"
     IDS_MUI_PRINT_FOOTER    "ページ番号|空欄のまま"
     IDS_MUI_PRINT_COLOR     "通常|明るさの反転 (暗い背景)|白背景に黒|白背景にカラー|白背景にカラー (行番号以外)|モニタ上の色"
     IDS_MUI_PRINT_PAGENUM   "%i ページ"
     IDS_MUI_WARN_STYLE_RESET
-                            "この操作は、配色設定をそのカラーモードの初期値へと初期化し、テーマファイルを標準の .ini ファイルに切り替えます!"
+                            "この操作は、選択しているカラーモードの初期値へと配色設定を初期化し、テーマを標準設定の .ini ファイルに切り替えます!"
     IDS_MUI_ASK_INSTANCE_EXISTS
                             "ファイルの単一インスタンスモード:\n\n読み込み済みのファイルのインスタンスにフォーカスを移しますか?"
 END
@@ -263,16 +266,18 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "言語(&L)"
     IDS_USE_LOCALE_DATEFMT  "言語を日付の書式に反映(&D)"
     IDS_MUI_MENU_THEMES     "配色テーマ(&S)"
-    IDM_THEMES_FACTORY_RESET "初期設定(&F)"
+    IDM_THEMES_FACTORY_RESET "初期化(&F)"
     IDM_THEMES_STD_CFG       "標準設定 (&S)"  // Keep blank space before (&S)
-    IDS_MUI_STATUSBAR_PREFIXES "行 ,列 ,選 ,選B ,選行 ,見 ,,,,,,,字 ,置 ,式 ,"
-    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,"
+    IDS_MUI_STATUSBAR_PREFIXES "行 ,列 ,選 ,選B ,選行 ,見 ,,,,,,,字 ,置 ,式 ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "すべて削除"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "検索履歴を消去"
     IDS_MUI_CLEAR_REPL_HISTORY
                             "置換履歴を消去"
-    IDS_MUI_REPLCLIPTAG     "クリップボードの内容で置換 [^c]"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "選択範囲なしならクリップボード内容で検索"
+    IDS_MUI_REPLCLIPTAG     "ショートカットキーでクリップボード内容に置換 [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "先頭に戻り一致した行"
     IDS_MUI_WRAPSEARCH_BCK  "終端に行き一致した行"
 END
@@ -283,6 +288,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "表示を切替中..."
     IDS_MUI_SB_REPLACE_ALL    "すべて置換中..."
     IDS_MUI_SB_WRAP_LINES     "折り返し中..."
+    IDS_MUI_SB_SORTING_LINES  "行の並び替え中..."
     IDS_MUI_SB_CONV_LNBRK     "改行コードを変換中..."
     IDS_MUI_SB_RECODING_DOC   "文書を再コード中..."
     IDS_MUI_SB_LEXER_STYLING  "配色を適用中..."
@@ -295,7 +301,7 @@ IDS_MUI_CMDLINEHELP "\
 Notepad3 [/?] [...[文字コード]] [...[改行コード]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[ドライブ:][パス]ファイル名[...]]\r\n\r\n\
-ファイル\t相対パス可能. 最後の引数にする必要がある.\r\n\tデフォルトでは空白があっても引用符は不要.\r\n\
+ファイル\t相対パス可能. 最後の引数にする必要がある.\r\n\t通常は空白があっても引用符は不要.\r\n\
 +\t複数のファイルの引数を許容 (要・引用符)\r\n\
 -\tファイル引数をひとつだけ許容 (引用符不要)\r\n\r\n\
 引数（省略可）:\r\n\
@@ -304,7 +310,7 @@ Notepad3 [/?] [...[文字コード]] [...[改行コード]] [/e] [/g] [/m] [/l]\
 ...\t改行コード (/crlf, /cr, /lf)\r\n\
 /e\tファイルの文字コードを指定 [/e id]\r\n\
 /g\t指定位置にジャンプ (/g 行[,列] -1で終端)\r\n\
-/m\t文字列一致 [/m text] (/m- 最後, /mr 正規表現,\r\n\t/mb バックスラッシュ変換)\r\n\
+/m\t文字列一致 [/m text] (/m- 最後, /mr 正規表現, /mb バックスラッシュ変換)\r\n\
 /l\tファイル変更時に自動で最新内容に再読み込み\r\n\
 /q\tファイルがない場合、問い合わせずファイル作成\r\n\
 /s\t配色設定を指定 [/s ext]\r\n\
@@ -315,8 +321,8 @@ Notepad3 [/?] [...[文字コード]] [...[改行コード]] [/e] [/g] [/m] [/l]\
 /b\tクリップボード履歴表示モードで開く\r\n\
 /n\t新規ウィンドウで開く (/ns ファイルは単一のインスタンス)\r\n\
 /r\tウインドウを再利用 (/rs 同じく単一のインスタンス\r\n\
-/p\tウィンドウの位置とサイズを指定 [/p x,y,sizex,y[,max]] (/p0, /ps, /pf,\r\n\
-\tl,t,r,b,m) or /p <left>,<top>,<width>,<height>,<max>    [すべて整数]\r\n\
+/p\tウィンドウの位置とサイズを指定 (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tor /p <left>,<top>,<width>,<height>[,<dpi>[,<max>]]  (すべて整数)\r\n\
 /t\tタイトルバーの文字列を指定 [/t text]\r\n\
 /i\tシステムトレイ内に起動\r\n\
 /o\t常に手前に表示\r\n\

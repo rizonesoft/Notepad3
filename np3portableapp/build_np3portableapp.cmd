@@ -17,8 +17,6 @@ chcp 65001 >nul 2>&1
 ::
 :: Prerequisites: (portable) intallation of:
 :: -----------------------------------------
-:: + PortableApps.com App Compactor (https://portableapps.com/apps/utilities/appcompactor)
-::
 :: + PortableApps.com Launcher (https://portableapps.com/apps/development/portableapps.com_launcher)
 ::   (needed to create the Notepad3Portable.exe Launcher from the sources)
 ::
@@ -26,23 +24,22 @@ chcp 65001 >nul 2>&1
 ::
 :: ===================================================================================================
 
-set NP3_LANGUAGE_SET=af-ZA be-BY de-DE el-GR en-GB es-ES es-MX fr-FR hi-IN hu-HU id-ID it-IT ja-JP ko-KR nl-NL pl-PL pt-BR pt-PT ru-RU sk-SK sv-SE tr-TR vi-VN zh-CN zh-TW
+set NP3_LANGUAGE_SET=af-ZA be-BY de-DE el-GR en-GB es-ES fr-FR hi-IN hu-HU id-ID it-IT ja-JP ko-KR nl-NL pl-PL pt-BR pt-PT ru-RU sk-SK sv-SE tr-TR vi-VN zh-CN zh-TW
 
 :: ===================================================================================================
 
 :: --- Environment ---
-if exist D:\PortableApps\PortableApps.comInstaller\ (
-    set PORTAPP_ROOT_DIR=D:\PortableApps
+if exist %~d0\PortableApps\PortableApps.comInstaller\ (
+    set PORTAPP_ROOT_DIR=%~d0\PortableApps
 ) else (
-    if exist D:\Rizonesoft\PortableApps\PortableApps\PortableApps.comInstaller\ (
-        set PORTAPP_ROOT_DIR=D:\Rizonesoft\PortableApps\PortableApps
+    if exist %~d0\Rizonesoft\PortableApps\PortableApps\PortableApps.comInstaller\ (
+        set PORTAPP_ROOT_DIR=%~d0\Rizonesoft\PortableApps\PortableApps
     ) else (
       goto :END
     )
 )
 
 set SCRIPT_DIR=%~dp0
-set PORTAPP_APP_COMPACTOR=%PORTAPP_ROOT_DIR%\PortableApps.comAppCompactor\PortableApps.comAppCompactor.exe
 set PORTAPP_LAUNCHER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comLauncher\PortableApps.comLauncherGenerator.exe
 set PORTAPP_INSTALLER_CREATOR=%PORTAPP_ROOT_DIR%\PortableApps.comInstaller\PortableApps.comInstaller.exe
 
@@ -158,14 +155,16 @@ for /d %%d in (%NP3_LANGUAGE_SET%) do (
 copy /B "%NP3_X64_DIR%\lng\np3lng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
 copy /B "%NP3_X64_DIR%\lng\mplng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
 
-:: Copy all current "grepWinNP3" files
+:: Copy all current "grepWinNP3" and "np3encrypt" files
 if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng"
 copy /B "%NP3_WIN32_DIR%\lng\gwLng\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" /Y /V
 copy /B "%NP3_WIN32_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
+copy /B "%NP3_WIN32_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
 
 if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng"
 copy /B "%NP3_X64_DIR%\lng\gwLng\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" /Y /V
 copy /B "%NP3_X64_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
+copy /B "%NP3_X64_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
 :: ---------------------------------------------------------------------------------------------------
 
@@ -179,9 +178,6 @@ del /f /q "%NP3_PORTAPP_INFO%_tmp.ini"
 :: ---------------------------------------------------------------------------------------------------
 
 :: --- build Launcher and Installer Package ---
-
-:: - compact app -
-::"%PORTAPP_APP_COMPACTOR%" "%NP3_PORTAPP_DIR%"
 
 :: - build Launcher -
 "%PORTAPP_LAUNCHER_CREATOR%" "%NP3_PORTAPP_DIR%"

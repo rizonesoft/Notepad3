@@ -2,13 +2,13 @@
 =                                                                              =
 =            Notepad3 - light-weight Scintilla-based text editor for Windows   =
 =                                                                              =
-=                                                   (c) Rizonesoft 2008-2022   =
+=                                                   (c) Rizonesoft 2008-2023   =
 =                                                 https://www.rizonesoft.com   =
 =                                                                              =
 ================================================================================
 
 
-*** Keyboard Shortcuts for Notepad3 ***              date: 2021-08-30
+*** Keyboard Shortcuts for Notepad3 ***              date: 2023-01-31
 ---------------------------------------------------------------------
 
 
@@ -38,8 +38,8 @@
       Launch
       ------
         Ctrl+Shift+F          Search in Files.
-        Alt+N                 Open Document in New Window.
-        Alt+Shift+N           Open New Empty Window.
+        Alt+N                 Open New Empty Window.
+        Alt+Shift+N           Duplicate Current Document in New Window (If Not "Only One Instance").
         Ctrl+L                Launch Document.
         Alt+L                 Open With...
         Ctrl+R                Run Command...
@@ -244,6 +244,8 @@
         Ctrl+Alt+V            Focused View.
         Ctrl+PgUp/PgDn        Goto Previous/Next.
         Ctrl+Shift+PgUp/PgDn  Select to Previous/Next.
+        Alt+PageUp            Paragraph navigation Up.
+        Alt+PageDown          Paragraph navigation Down.
 
       Zoom
       ----
@@ -300,7 +302,7 @@
 
 ================================================================================
 
-*** Keyboard Shortcuts for Minipath ***             date: 2020/09/29
+*** Keyboard Shortcuts for Minipath ***             date: 2023-01-20
 ---------------------------------------------------------------------
 
 
@@ -313,10 +315,11 @@
   Alt+Right       Go to next directory.
   Tab             Move to next control.
   Shift+Tab       Move to previous control.
-  Esc             Exit or minimize metapath (optional).
+  Esc             Exit or minimize MiniPath (optional).
   Ctrl+D          Change to another directory.
   Ctrl+E          Toggle "Activate target window" option.
   Ctrl+F          Launch target application without any file.
+  Ctrl+G          Goto...
   Ctrl+H          Save settings.
   Ctrl+K          Create link.
   Ctrl+L          Launch selected file.
@@ -347,7 +350,7 @@
   Alt+Up          Goto next file.
   Alt+Down        Goto previous file.
   F1              Display version info.
-  F2              Rename seletced object.
+  F2              Rename selected object.
   F5              Update view of directory.
   F6              Copy/move selected object to another location.
   F7              Save settings now.
@@ -355,7 +358,7 @@
   F9              Edit "Favorites" folder.
   F11             Jump to "Favorites" folder.
   F12             View program settings.
-  Ctrl+F12        Setup metapath target application.
+  Ctrl+F12        Setup MiniPath target application.
 
 
 
@@ -444,7 +447,7 @@
     -         Accept single file argument (without quoted spaces).
 
   Options:
-    /?         Dispay this help message.
+    /?         Display this help message.
     …          Encoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).
     …          Line ending mode (/crlf, /cr, /lf).
     /e         File source encoding.

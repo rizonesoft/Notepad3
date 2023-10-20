@@ -8,7 +8,7 @@
 *   Implementation for dynamic wide char Long Path handling                   *
 *   Based on DynStrg module                                                   *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2022   *
+*                                                  (c) Rizonesoft 2008-2023   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -742,7 +742,7 @@ bool PTHAPI Path_Append(HPATHL hpth_in_out, LPCWSTR more)
         return false;
 
     size_t const hstr_len = StrgGetLength(hstr_io);
-    size_t const hmore_len = StringCchLenW(more, 0);
+    size_t const hmore_len = StringCchLen(more, 0);
     if (!hmore_len) {
         return true;
     }
@@ -766,9 +766,7 @@ bool PTHAPI Path_Append(HPATHL hpth_in_out, LPCWSTR more)
     StringCchCatW(wbuf, cch, more);
     StrgSanitize(hstr_io);
 
-    Path_Canonicalize(hpth_in_out);
-
-    return true;
+    return Path_Canonicalize(hpth_in_out);
 }
 // ----------------------------------------------------------------------------
 
@@ -795,6 +793,37 @@ void PTHAPI Path_FreeExtra(HPATHL hpth_in_out, size_t keep_length)
 // ----------------------------------------------------------------------------
 
 
+//=============================================================================
+//
+// PathFixBackslashes() - in place conversion
+//
+bool PTHAPI Path_FixBackslashes(HPATHL hpth_in_out)
+{
+    HSTRINGW hstr_io = ToHStrgW(hpth_in_out); // inplace hpth_in_out
+    if (!hstr_io)
+        return false;
+
+    LPWSTR const lpsz = StrgWriteAccessBuf(hstr_io, 0);
+
+    WCHAR* c = lpsz;
+    bool   bFixed = false;
+    while ((c = StrChr(c, L'/')) != NULL) {
+        if (c != lpsz && c[-1] == L':' && c[1] == L'/') {
+            c += 2;
+        }
+        else {
+            *c++ = L'\\';
+            bFixed = true;
+        }
+    }
+    //~StrgSanitize(hstr_io); : '/' replaced by '\' only
+    return bFixed;
+}
+
+
+//=============================================================================
+
+
 // With untrusted input, this function by itself, cannot be used to convert
 // paths into a form that can be compared with other paths for sub-path or identity.
 // Callers that need that ability should convert forward to back slashes before
@@ -805,6 +834,7 @@ bool PTHAPI Path_Canonicalize(HPATHL hpth_in_out)
     if (!hpth_in_out) {
         return false;
     }
+    Path_FixBackslashes(hpth_in_out);
 
     HPATHL hpth_cpy = Path_Allocate(PathGet(hpth_in_out));
     HSTRINGW hstr_cpy = ToHStrgW(hpth_cpy);
@@ -967,29 +997,6 @@ int PTHAPI Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2, const HP
 // ----------------------------------------------------------------------------
 
 
-bool PTHAPI Path_RemoveBackslash(HPATHL hpth_in_out)
-{
-    HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
-    if (!hstr_io)
-        return false;
-
-    LPWSTR       wbuf = StrgWriteAccessBuf(hstr_io, 0); // no need to ReAlloc
-    //size_t const cch = StrgGetAllocLength(hstr_io);
-    size_t const hstr_len = StrgGetLength(hstr_io);
-
-    ///bool const res = SUCCEEDED(PathXCchRemoveBackslashEx(wbuf, cch, NULL, NULL));
-    if (hstr_len > 0) {
-        if ((wbuf[hstr_len - 1] == L'/') || (wbuf[hstr_len - 1] == L'\\')) {
-            wbuf[hstr_len] = L'\0';
-        }
-    }
-    StrgSanitize(hstr_io);
-
-    return true;
-}
-// ----------------------------------------------------------------------------
-
-
 bool PTHAPI Path_RemoveFileSpec(HPATHL hpth_in_out)
 {
     HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
@@ -1095,14 +1102,13 @@ void PTHAPI Path_GetModuleFilePath(HPATHL hpth_out)
 {
     static HPATHL mod_path = NULL;
 
-    HSTRINGW hstr = ToHStrgW(hpth_out);
-    if (!hstr) {
+    if (!hpth_out) {
         if (mod_path) {
             Path_Release(mod_path);
             mod_path = NULL;
         }
         else {
-            assert(hstr != NULL);
+            assert(hpth_out != NULL);
         }
         return;
     }
@@ -1662,10 +1668,13 @@ bool PTHAPI Path_CreateDeskLnk(const HPATHL hDocumentPath, LPCWSTR pszDescriptio
         return true;
     }
 
-    bool bSucceeded = false;
-
     HPATHL hdsk_pth = Path_Allocate(NULL);
-    Path_GetKnownFolder(&FOLDERID_Desktop, hdsk_pth);
+    if (!Path_GetKnownFolder(&FOLDERID_Desktop, hdsk_pth)) {
+        Path_Release(hdsk_pth);
+        return false;
+    }
+
+    bool bSucceeded = false;
 
     // Try to construct a valid filename...
     HPATHL       hlnkfile_pth = Path_Allocate(NULL);
@@ -1790,11 +1799,17 @@ bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out, const HPATHL hdir_rel_base)
     HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
     if (!hstr_io)
         return false;
+    
+    Path_FixBackslashes(hpth_in_out);
 
     if (StrgFind(hstr_io, PATH_CSIDL_MYDOCUMENTS, 0) == 0) {
 
         HPATHL hfld_pth = Path_Allocate(NULL);
-        Path_GetKnownFolder(&FOLDERID_Documents, hfld_pth);
+        if (!Path_GetKnownFolder(&FOLDERID_Documents, hfld_pth)) {
+            if (!Path_GetCurrentDirectory(hfld_pth)) {
+                Path_GetAppDirectory(hfld_pth);
+            }
+        }
         StrgReplace(hstr_io, PATH_CSIDL_MYDOCUMENTS, PathGet(hfld_pth));
         Path_Release(hfld_pth);
     }
@@ -1803,16 +1818,13 @@ bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out, const HPATHL hdir_rel_base)
     bool res = false;
     if (!Path_IsEmpty(hdir_rel_base) && _Path_IsRelative(hpth_in_out)) {
         HPATHL hmod_pth = Path_Copy(hdir_rel_base);
-        Path_Append(hmod_pth, Path_Get(hpth_in_out));
-        res = Path_Canonicalize(hmod_pth);
+        res = Path_Append(hmod_pth, Path_Get(hpth_in_out));
         Path_Swap(hpth_in_out, hmod_pth);
         Path_Release(hmod_pth);
     }
     else {
         res = Path_Canonicalize(hpth_in_out);
     }
-
-    Path_RemoveBackslash(hpth_in_out);
 
     return res;
 }
@@ -1832,28 +1844,31 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
     ExpandEnvironmentStrgs(hstr_io, true);
 
     if (_Path_IsRelative(hpth_in_out)) {
-        HPATHL hsrch_pth = Path_Allocate(PathGet(hpth_wrkdir));
-        Path_Append(hsrch_pth, Path_Get(hpth_in_out));
-        if (bSearchPathIfRelative) {
-            if (Path_IsExistingFile(hsrch_pth)) {
+        
+        HPATHL hsrch_pth = Path_Allocate(PathGet(hpth_in_out));
+        Path_CanonicalizeEx(hsrch_pth, hpth_wrkdir);
+
+        if (Path_IsExistingFile(hsrch_pth)) {
+            Path_Swap(hpth_in_out, hsrch_pth);
+        }
+        else if (bSearchPathIfRelative) {
+            Path_StripPath(hsrch_pth);
+            HSTRINGW       hsrch_str = StrgCreate(NULL);
+            LPWSTR const buf = StrgWriteAccessBuf(hsrch_str, PATHLONG_MAX_CCH);
+            if (SearchPathW(NULL, PathGet(hsrch_pth), NULL, PATHLONG_MAX_CCH, buf, NULL) != 0) {
+                //~StrgSanitize(hsrch_str);
+                Path_Reset(hpth_in_out, buf);
+                //~PrependLongPathPrefix(hpth_in_out, false);
+            }
+            else { // not found, use file name only (!)
+                Path_Sanitize(hsrch_pth);
                 Path_Swap(hpth_in_out, hsrch_pth);
             }
-            else {
-                Path_StripPath(hsrch_pth);
-                HSTRINGW       hsrch_str = StrgCreate(NULL);
-                LPWSTR const buf = StrgWriteAccessBuf(hsrch_str, PATHLONG_MAX_CCH);
-                if (SearchPathW(NULL, PathGet(hsrch_pth), NULL, PATHLONG_MAX_CCH, buf, NULL) != 0) {
-                    //~StrgSanitize(hsrch_str);
-                    Path_Reset(hpth_in_out, buf);
-                    //~PrependLongPathPrefix(hpth_in_out, false);
-                }
-                else {
-                    StrgSanitize(hsrch_str);
-                    Path_Swap(hpth_in_out, hsrch_pth);
-                }
-                StrgDestroy(hsrch_str);
-            }
+            StrgDestroy(hsrch_str);
         }
+        //else {
+        //    //~~~Path_CanonicalizeEx(hpth_in_out, hpth_wrkdir);
+        //}
         Path_Release(hsrch_pth);
     }
 
@@ -1920,16 +1935,6 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
     bool from_is_dir = (attr_from & FILE_ATTRIBUTE_DIRECTORY);
     bool to_is_dir = (attr_to & FILE_ATTRIBUTE_DIRECTORY);
 
-#if 0
-    // DEBUG
-    {
-        Path_Reset(hfrom, L"\\FolderA\\FolderB\\FolderC\\abab");
-        //from_is_dir = true;
-        Path_Reset(hto, L"\\FolderA\\FolderD\\FolderE\\blah");
-        //to_is_dir = false;
-    }
-#endif
-
     // ensure comparable paths (no relatives(..\)
     HPATHL hfrom_cpy = Path_Allocate(PathGet(hfrom));
     Path_Canonicalize(hfrom_cpy);
@@ -1940,11 +1945,13 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
     if (from_is_dir) {
         HSTRINGW hstr_from = ToHStrgW(hfrom_cpy);
         StrgTrimRight(hstr_from, L'\\');
+        StrgTrimRight(hstr_from, L'/');
         StrgCat(hstr_from, L"\\");
     }
     if (to_is_dir) {
         HSTRINGW hstr_cpy = ToHStrgW(hto_cpy);
         StrgTrimRight(hstr_cpy, L'\\');
+        StrgTrimRight(hstr_cpy, L'/');
         StrgCat(hstr_cpy, L"\\");
     }
 
@@ -1976,8 +1983,8 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
         // back to prev sync point
         LPCWSTR p = &hfrom_buf[i];
         while (p > r) {
-            if ((*p == L'\\') || (*p == L':')) {
-                break;
+            if ((*p == L'\\') || (*p == L'/') || (*p == L':')) {
+                ++p; break;
             }
             --p;
         }
@@ -1986,29 +1993,24 @@ static bool _Path_RelativePathTo(HPATHL hrecv, const HPATHL hfrom, DWORD attr_fr
         // count dirs of from-path reverse to sync point
         size_t dir_cnt = 0;
         while (*p != L'\0') {
-            if ((*p == L'\\')) {
-                // ignore trailing backslash
-                if (*(p + 1)) {
-                    ++dir_cnt;
-                }
+            if ((*p == L'\\') || (*p == L'/')) {
+                ++dir_cnt;
             }
             ++p;
         }
 
         // prepare buffer for prefix "..\" x dir_cnt
-
-        size_t const   alloc_add = wcslen(&hto_buf[prefix]) + 1;
-        size_t const   len = (wcslen(PATHPARENT_PREFIX) * dir_cnt) + alloc_add;
-        LPWSTR const out_buf = StrgWriteAccessBuf(hrecv_str, len);
+        size_t const alloc_add = wcslen(&hto_buf[prefix]) + 1;
+        size_t const len = (wcslen(PATHPARENT_PREFIX) * dir_cnt) + alloc_add;
+        LPWSTR const hrecv_buf = StrgWriteAccessBuf(hrecv_str, len);
         for (size_t d = 0; d < dir_cnt; ++d) {
-            StringCchCatW(out_buf, len, PATHPARENT_PREFIX);
+            StringCchCatW(hrecv_buf, len, PATHPARENT_PREFIX);
         }
-        //~Path_RemoveBackslash(hpath_in_out);
-        if (hto_buf[prefix] == L'\\') {
+        if ((hto_buf[prefix] == L'\\') || (hto_buf[prefix] == L'/')) {
             ++prefix;
         }
         // copy rest of to-path (excluding first seperator)
-        StringCchCatW(out_buf, len, &hto_buf[prefix]);
+        StringCchCatW(hrecv_buf, len, &hto_buf[prefix]);
     }
     else {
         Path_Swap(hrecv, hto_cpy);
@@ -2042,13 +2044,21 @@ void PTHAPI Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpa
     Path_GetAppDirectory(happdir_pth);
 
     HPATHL const husrdoc_pth = Path_Allocate(NULL);
-    Path_GetKnownFolder(&FOLDERID_Documents, husrdoc_pth);
+    if (!Path_GetKnownFolder(&FOLDERID_Documents, husrdoc_pth)) {
+        if (!Path_GetCurrentDirectory(husrdoc_pth)) {
+            Path_GetAppDirectory(husrdoc_pth);
+        }
+    }
 
     HPATHL const hprgs_pth = Path_Allocate(NULL);
 #ifdef _WIN64
-    Path_GetKnownFolder(&FOLDERID_ProgramFiles, hprgs_pth);
+    if (!Path_GetKnownFolder(&FOLDERID_ProgramFiles, hprgs_pth)) {
+        Path_GetAppDirectory(hprgs_pth);
+    }
 #else
-    Path_GetKnownFolder(&FOLDERID_ProgramFilesX86, hprgs_pth);
+    if (!Path_GetKnownFolder(&FOLDERID_ProgramFilesX86, hprgs_pth)) {
+        Path_GetAppDirectory(hprgs_pth);
+    }
 #endif
     //~HPATHL const hwindows_pth = Path_Allocate(NULL);
     //~Path_GetKnownFolder(&FOLDERID_Windows, hwindows_pth); // deprecated
@@ -2117,9 +2127,6 @@ void PTHAPI ExpandEnvironmentStrgs(HSTRINGW hstr_in_out, bool bStripQ)
         StrgTrim(hstr_in_out, L'"');
         StrgTrim(hstr_in_out, L'\'');
     }
-    
-    //StrgReplace(hstr_in_out, L"~", L"%USERPROFILE%");
-
     size_t const min_len = ExpandEnvironmentStrings(StrgGet(hstr_in_out), NULL, 0);
     LPWSTR       buf_io = StrgWriteAccessBuf(hstr_in_out, min_len);
     DWORD const  cch_io = (DWORD)StrgGetAllocLength(hstr_in_out);
@@ -2200,7 +2207,11 @@ void PTHAPI Path_AbsoluteFromApp(HPATHL hpth_in_out, bool bExpandEnv)
     if (StrgFind(hstr_in_out, PATH_CSIDL_MYDOCUMENTS, 0) == 0) {
 
         HPATHL hfld_pth = Path_Allocate(NULL);
-        Path_GetKnownFolder(&FOLDERID_Documents, hfld_pth);
+        if (!Path_GetKnownFolder(&FOLDERID_Documents, hfld_pth)) {
+            if (!Path_GetCurrentDirectory(hfld_pth)) {
+                Path_GetAppDirectory(hfld_pth);
+            }
+        }
         StrgReplace(htmp_str, PATH_CSIDL_MYDOCUMENTS, PathGet(hfld_pth));
         Path_Release(hfld_pth);
     }
@@ -2211,14 +2222,13 @@ void PTHAPI Path_AbsoluteFromApp(HPATHL hpth_in_out, bool bExpandEnv)
 
     if (_Path_IsRelative(htmp_pth)) {
         Path_GetAppDirectory(hpth_in_out);
-        Path_Append(hpth_in_out, Path_Get(htmp_pth));
+        Path_Append(hpth_in_out, Path_Get(htmp_pth)); // does Path_Canonicalize()
     }
     else {
         Path_Swap(hpth_in_out, htmp_pth);
+        Path_Canonicalize(hpth_in_out);
     }
     Path_Release(htmp_pth);
-
-    Path_Canonicalize(hpth_in_out);
 
     // TODO:
     //if (PathGetDriveNumber(wchResult) != -1) {
