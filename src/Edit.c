@@ -2949,14 +2949,14 @@ static int utsort_ln(const void *a, const void *b) {
     return (_a < _b) ? -1 : ((_a > _b) ? 1 : 0);
 }
 
-void EditCutLines(HWND hwnd)
+void EditCutLines(HWND hwnd, const bool bMSBehavSelEmpty)
 {
     if (!Sci_IsMultiOrRectangleSelection())
     {
         bool const bInLastLine = Sci_InLastLine();
         bool const bClearCB = bInLastLine ? (Sci_GetNetLineLength(Sci_GetCurrentLineNumber()) == 0) : false;
         UndoTransActionBegin();
-        if (SciCall_IsSelectionEmpty()) {
+        if (SciCall_IsSelectionEmpty() && bMSBehavSelEmpty) {
             SciCall_CopyAllowLine(); // (!) VisualStudio behavior
             // On Windows, an extra "MSDEVLineSelect" marker is added to the clipboard
             // which is then used in SCI_PASTE to paste the whole line before the current line.
