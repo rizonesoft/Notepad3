@@ -68,7 +68,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[1017.1]- Wrappimg at long line marker.
+[1017.1]- Wrapping at long line marker.
 [1017.1]- Ctrl+I wraps according to highest column long-line-edge-marker, if defined.
 [.927.1]- Using selection color also for not focused selections (secondary and inactive).
 [.926.1]- Some refactoring regarding string comparison.
