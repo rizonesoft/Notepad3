@@ -5155,7 +5155,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (s_flagPasteBoard) {
             s_bLastCopyFromMe = true;
         }
-        // explicit(!): ignore (SciCall_IsSelectionEmpty()) && Settings2.NoCutLineOnEmptySelection) 
+        //~ explicit(!): ignore (SciCall_IsSelectionEmpty()) && Settings2.NoCutLineOnEmptySelection) 
         EditDeleteMarkerInSelection();
         EditCutLines(Globals.hwndEdit);
     }

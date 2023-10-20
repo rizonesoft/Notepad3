@@ -2956,7 +2956,14 @@ void EditCutLines(HWND hwnd)
         bool const bInLastLine = Sci_InLastLine();
         bool const bClearCB = bInLastLine ? (Sci_GetNetLineLength(Sci_GetCurrentLineNumber()) == 0) : false;
         UndoTransActionBegin();
-        SciCall_LineCut();
+        if (SciCall_IsSelectionEmpty()) {
+            SciCall_CopyAllowLine(); // (!) VisualStudio behavior
+            // On Windows, an extra "MSDEVLineSelect" marker is added to the clipboard
+            // which is then used in SCI_PASTE to paste the whole line before the current line.
+            SciCall_LineDelete();
+        } else {
+            SciCall_LineCut();
+        }
         if (bInLastLine) {
             SciCall_DeleteBack();
             SciCall_Home();
