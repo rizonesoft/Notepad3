@@ -69,7 +69,7 @@ void EditMoveUp(HWND hwnd);
 void EditMoveDown(HWND hwnd);
 bool EditSetCaretToSelectionStart();
 bool EditSetCaretToSelectionEnd();
-void EditCutLines(HWND hwnd);
+void EditCutLines(HWND hwnd, const bool bMSBehavSelEmpty);
 void EditCopyMultiSelection(HWND hwnd);
 void EditModifyLines(const PENCLOSESELDATA pEnclData);
 void EditIndentBlock(HWND hwnd,int cmd, bool bFormatIndentation, bool bForceAll);
