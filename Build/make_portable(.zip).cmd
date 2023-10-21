@@ -75,9 +75,9 @@ POPD
 TITLE Finished!
 ECHO.
 
-:: Pause of 4 seconds to verify the logfile before exiting 
+:: Pause of 8 seconds to verify the logfile before exiting 
 :: ===========================================================================================
-ping -n 5 127.0.0.1>nul
+ping -n 9 127.0.0.1>nul
 
 ENDLOCAL
 EXIT /B

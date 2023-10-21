@@ -86,6 +86,7 @@ try
 
 	$CompleteVer = "$Major.$Minor.$Revis.$Build"
 	DebugOutput("Notepad3 version number: 'v$CompleteVer $VerPatch'")
+	DebugOutput("Notepad3 commit ID: '$CommitID'")
 	
 	if ($AppVeyorEnv) {
 		# AppVeyor needs unique artefact build number
