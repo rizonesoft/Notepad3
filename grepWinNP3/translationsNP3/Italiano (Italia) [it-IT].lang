@@ -661,7 +661,7 @@ msgstr "grepWin(NP3)-mod dell'ottimo tool di Stefan Küng per Notepad3!"
 
 #. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
-msgstr "Max # di lavoratori simultanei"
+msgstr "Max # di task simultanei"
 
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
