@@ -84,7 +84,6 @@ CHANGES:
 [.619.1]- Tooltip/Calltip style using Segoe UI font.
 [.616.1]- Web Source Code: enhancement for commenting in embedded scripts.
 [.526.1]- Removing square brackets from being valid codepoints of URL (hyperlink) regex.
-[.521.1]- Copy an "Additional Notepad3Portable.cmd Launcher" in PAF file [Root].
 [.503.1]- Minor enhancement on log file monitoring.
 [.501.1]- Add some new sentences for Logfile Monitoring.
 [.430.1]- Some enhancements for Logfile Monitoring.
