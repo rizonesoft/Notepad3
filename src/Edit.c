@@ -2954,7 +2954,7 @@ void EditCutLines(HWND hwnd, const bool bMSBehavSelEmpty)
     if (!Sci_IsMultiOrRectangleSelection())
     {
         bool const bInLastLine = Sci_InLastLine();
-        bool const bClearCB = bInLastLine ? (Sci_GetNetLineLength(Sci_GetCurrentLineNumber()) == 0) : false;
+        bool const bIsLineEmpty = Sci_GetNetLineLength(Sci_GetCurrentLineNumber()) == 0;
         UndoTransActionBegin();
         if (SciCall_IsSelectionEmpty() && bMSBehavSelEmpty) {
             SciCall_CopyAllowLine(); // (!) VisualStudio behavior
@@ -2969,11 +2969,9 @@ void EditCutLines(HWND hwnd, const bool bMSBehavSelEmpty)
             SciCall_Home();
         }
         EndUndoTransAction();
-        if (bInLastLine) {
-            if (bClearCB) {
-                EditClearClipboard(hwnd);
-            }
-            EditAppendToClipboard(hwnd, "", 0); // adds EOL instead of EOF
+        if (bInLastLine && bIsLineEmpty) {
+            EditClearClipboard(hwnd);
+            EditAppendToClipboard(hwnd, "", 0); // adds EOL
         }
         return;
     }
