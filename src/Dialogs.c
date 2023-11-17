@@ -5211,22 +5211,73 @@ static HPATHL s_pthCachedFilePath = NULL;
 
 // ----------------------------------------------------------------------------
 
-void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, int iFormat, 
-                    bool bPasteBoard, bool bIsElevated, bool bModified,
-                    bool bFileLocked, bool bFileChanged, bool bFileDeleted, bool bReadOnly, LPCWSTR lpszExcerpt) {
+void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, const TITLEPROPS_T properties, LPCWSTR lpszExcerpt, bool forceRedraw)
+{
+    static TITLEPROPS_T s_properties = { 0 };
+    static size_t       s_hashFileName = 0;
+    static size_t       s_hashExcerpt = 0;
 
     if (s_bFreezeAppTitle) {
         return;
     }
+
+    if (!forceRedraw) {
+        if (s_properties.iFormat != properties.iFormat) {
+            forceRedraw = true;
+        }
+        else if (s_properties.bPasteBoard != properties.bPasteBoard) {
+            forceRedraw = true;
+        }
+        else if (s_properties.bIsElevated != properties.bIsElevated) {
+            forceRedraw = true;
+        }
+        else if (s_properties.bModified != properties.bModified) {
+            forceRedraw = true;
+        }
+        else if (s_properties.bFileLocked != properties.bFileLocked) {
+            forceRedraw = true;
+        }
+        else if (s_properties.bFileChanged != properties.bFileChanged) {
+            forceRedraw = true;
+        }
+        else if (s_properties.bFileDeleted != properties.bFileDeleted) {
+            forceRedraw = true;
+        }
+        else if (s_properties.bReadOnly != properties.bReadOnly) {
+            forceRedraw = true;
+        }
+        else {
+            size_t const hashExcerpt = SimpleHash(lpszExcerpt);
+            if (s_hashExcerpt != hashExcerpt) {
+                forceRedraw = true;
+            }
+            else {
+                size_t const hashFileName = SimpleHash(Path_Get(pthFilePath));
+                if (s_hashFileName != hashFileName) {
+                    forceRedraw = true;
+                }
+            }
+        }
+    }
+
+    if (!forceRedraw) {
+        return;
+    }
+
+    // save current state
+    s_properties = properties;
+    s_hashExcerpt = SimpleHash(lpszExcerpt);
+    s_hashFileName = SimpleHash(Path_Get(pthFilePath));
+
     if (!s_pthCachedFilePath) {
         s_pthCachedFilePath = Path_Allocate(L"");
     }
 
     WCHAR szAppName[SMALL_BUFFER] = { L'\0' };
-    if (bPasteBoard) {
+    if (properties.bPasteBoard) {
         FormatLngStringW(szAppName, COUNTOF(szAppName), IDS_MUI_APPTITLE_PASTEBOARD, _W(SAPPNAME));
     }
-    else if (bIsElevated) {
+    else if (properties.bIsElevated) {
         WCHAR szElevatedAppName[SMALL_BUFFER] = { L'\0' };
         FormatLngStringW(szElevatedAppName, COUNTOF(szElevatedAppName), IDS_MUI_APPTITLE_ELEVATED, _W(SAPPNAME));
         StringCchCopy(szAppName, COUNTOF(szAppName), szElevatedAppName);
@@ -5241,35 +5292,34 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, int iFormat,
 
     WCHAR szTitle[MIDSZ_BUFFER] = { L'\0' };
 
-    if (bModified) {
+    if (properties.bModified) {
         StringCchCat(szTitle, COUNTOF(szTitle), pszMod);
     }
-    if (bFileChanged) {
-        if (bFileDeleted) {
+    if (properties.bFileChanged) {
+        if (properties.bFileDeleted) {
             StringCchCatN(szTitle, COUNTOF(szTitle), Settings2.FileDeletedIndicator, 3);
-        } else {
+        }
+        else {
             StringCchCatN(szTitle, COUNTOF(szTitle), Settings2.FileChangedIndicator, 3);
         }
         StringCchCat(szTitle, COUNTOF(szTitle), L" ");
     }
     if (StrIsNotEmpty(lpszExcerpt)) {
-
         WCHAR szExcrptFmt[32] = { L'\0' };
         WCHAR szExcrptQuot[SMALL_BUFFER] = { L'\0' };
         GetLngString(IDS_MUI_TITLEEXCERPT, szExcrptFmt, COUNTOF(szExcrptFmt));
         StringCchPrintf(szExcrptQuot, COUNTOF(szExcrptQuot), szExcrptFmt, lpszExcerpt);
         StringCchCat(szTitle, COUNTOF(szTitle), szExcrptQuot);
-
     }
     else if (Path_IsNotEmpty(pthFilePath)) {
 
-        if (iFormat < 2) {
+        if (properties.iFormat < 2) {
             if (Path_StrgComparePath(s_pthCachedFilePath, pthFilePath, Paths.WorkingDirectory) != 0) {
                 Path_Reset(s_pthCachedFilePath, Path_Get(pthFilePath));
                 Path_GetDisplayName(s_wchCachedDisplayName, COUNTOF(s_wchCachedDisplayName), s_pthCachedFilePath, s_szUntitled, true);
             }
             StringCchCat(szTitle, COUNTOF(szTitle), Path_FindFileName(s_pthCachedFilePath));
-            if (iFormat == 1) {
+            if (properties.iFormat == 1) {
                 HPATHL hdir = Path_Copy(s_pthCachedFilePath);
                 if (Path_IsNotEmpty(hdir)) {
                     Path_RemoveFileSpec(hdir);
@@ -5279,22 +5329,24 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, int iFormat,
                 StringCchCat(szTitle, COUNTOF(szTitle), L"]");
                 Path_Release(hdir);
             }
-        } else {
+        }
+        else {
             StringCchCat(szTitle, COUNTOF(szTitle), Path_Get(pthFilePath));
         }
-    } else {
+    }
+    else {
         Path_Empty(s_pthCachedFilePath, false);
         s_wchCachedDisplayName[0] = L'\0';
         StringCchCat(szTitle, COUNTOF(szTitle), s_szUntitled);
     }
 
     WCHAR wchModeEx[64] = { L'\0' };
-    if (bFileLocked) {
+    if (properties.bFileLocked) {
         GetLngString(IDS_MUI_FILELOCKED, wchModeEx, COUNTOF(wchModeEx));
         StringCchCat(szTitle, COUNTOF(szTitle), L" ");
         StringCchCat(szTitle, COUNTOF(szTitle), wchModeEx);
     }
-    if (bReadOnly) {
+    if (properties.bReadOnly) {
         GetLngString(IDS_MUI_READONLY, wchModeEx, COUNTOF(wchModeEx));
         StringCchCat(szTitle, COUNTOF(szTitle), L" ");
         StringCchCat(szTitle, COUNTOF(szTitle), wchModeEx);
@@ -6535,8 +6587,10 @@ void UpdateUI(HWND hwnd)
 {
     SendWMSize(hwnd, NULL);
     SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
-    PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
-    PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
+    //if (!IsWindows10OrGreater()) {
+    //    PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
+    //    PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
+    //}
 }
 
 

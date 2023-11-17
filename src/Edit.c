@@ -5514,7 +5514,7 @@ void EditGetExcerpt(HWND hwnd, LPWSTR lpszExcerpt, DWORD cchExcerpt)
     const DocPos iAnchorPos = SciCall_GetAnchor();
 
     if ((iCurPos == iAnchorPos) || Sci_IsMultiOrRectangleSelection()) {
-        StringCchCopy(lpszExcerpt,cchExcerpt,L"");
+        StringCchCopy(lpszExcerpt, cchExcerpt, L"");
         return;
     }
 
@@ -5564,7 +5564,7 @@ void EditGetExcerpt(HWND hwnd, LPWSTR lpszExcerpt, DWORD cchExcerpt)
         tch[cchExcerpt-3] = L'.';
         tch[cchExcerpt-4] = L'.';
     }
-    StringCchCopyN(lpszExcerpt,cchExcerpt,tch,cchExcerpt);
+    StringCchCopyN(lpszExcerpt, cchExcerpt, tch, cchExcerpt);
 
     FreeMem(pszText);
     FreeMem(pszTextW);

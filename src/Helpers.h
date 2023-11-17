@@ -848,7 +848,9 @@ size_t NormalizeColumnVector(LPSTR chStrg_in, LPWSTR wchStrg_out, size_t iCount)
 #define MAX_ESCAPE_HEX_DIGIT 4
 int Hex2Char(char* ch, int cnt);
 
-void CloseNonModalDialogs();
+size_t SimpleHash(LPCWSTR string);
+
+    void CloseNonModalDialogs();
 void CloseApplication();
 
 // ----------------------------------------------------------------------------
