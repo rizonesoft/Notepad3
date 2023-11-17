@@ -2954,7 +2954,7 @@ void EditCutLines(HWND hwnd, const bool bMSBehavSelEmpty)
     if (!Sci_IsMultiOrRectangleSelection())
     {
         bool const bInLastLine = Sci_InLastLine();
-        bool const bClearCB = bInLastLine ? (Sci_GetNetLineLength(Sci_GetCurrentLineNumber()) == 0) : false;
+        bool const bIsLineEmpty = Sci_GetNetLineLength(Sci_GetCurrentLineNumber()) == 0;
         UndoTransActionBegin();
         if (SciCall_IsSelectionEmpty() && bMSBehavSelEmpty) {
             SciCall_CopyAllowLine(); // (!) VisualStudio behavior
@@ -2969,11 +2969,9 @@ void EditCutLines(HWND hwnd, const bool bMSBehavSelEmpty)
             SciCall_Home();
         }
         EndUndoTransAction();
-        if (bInLastLine) {
-            if (bClearCB) {
-                EditClearClipboard(hwnd);
-            }
-            EditAppendToClipboard(hwnd, "", 0); // adds EOL instead of EOF
+        if (bInLastLine && bIsLineEmpty) {
+            EditClearClipboard(hwnd);
+            EditAppendToClipboard(hwnd, "", 0); // adds EOL
         }
         return;
     }
@@ -5516,7 +5514,7 @@ void EditGetExcerpt(HWND hwnd, LPWSTR lpszExcerpt, DWORD cchExcerpt)
     const DocPos iAnchorPos = SciCall_GetAnchor();
 
     if ((iCurPos == iAnchorPos) || Sci_IsMultiOrRectangleSelection()) {
-        StringCchCopy(lpszExcerpt,cchExcerpt,L"");
+        StringCchCopy(lpszExcerpt, cchExcerpt, L"");
         return;
     }
 
@@ -5566,7 +5564,7 @@ void EditGetExcerpt(HWND hwnd, LPWSTR lpszExcerpt, DWORD cchExcerpt)
         tch[cchExcerpt-3] = L'.';
         tch[cchExcerpt-4] = L'.';
     }
-    StringCchCopyN(lpszExcerpt,cchExcerpt,tch,cchExcerpt);
+    StringCchCopyN(lpszExcerpt, cchExcerpt, tch, cchExcerpt);
 
     FreeMem(pszText);
     FreeMem(pszTextW);

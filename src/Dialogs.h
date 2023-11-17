@@ -96,9 +96,19 @@ inline bool IsNoCancelClose(INT_PTR answ) {
     return ((LOWORD(answ) == IDNO) || (LOWORD(answ) == IDCANCEL) || (LOWORD(answ) == 0));
 }
 
-void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, int iFormat,
-    bool bPasteBoard, bool bIsElevated, bool bModified,
-    bool bFileLocked, bool bFileChanged, bool bFileDeleted, bool bReadOnly, LPCWSTR lpszExcerpt);
+typedef struct TITLEPROPS_T {
+    int  iFormat;
+    bool bPasteBoard;
+    bool bIsElevated;
+    bool bModified;
+    bool bFileLocked;
+    bool bFileChanged;
+    bool bFileDeleted;
+    bool bReadOnly;
+} TITLEPROPS_T;
+
+void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, TITLEPROPS_T properties, LPCWSTR lpszExcerpt, bool forceRedraw);
+
 void SetAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void AppendAdditionalTitleInfo(LPCWSTR lpszAddTitleInfo);
 void SetWindowTransparentMode(HWND hwnd, bool bTransparentMode, int iOpacityLevel);
@@ -181,9 +191,9 @@ void StatusSetText(HWND hwnd, BYTE nPart, LPCWSTR lpszText);
 void StatusSetTextID(HWND hwnd, BYTE nPart, UINT uID);
 
 int Toolbar_GetButtons(HANDLE hwnd, int cmdBase, LPWSTR lpszButtons, int cchButtons);
-int Toolbar_SetButtons(HANDLE, int, LPCWSTR, void*, int);
+int Toolbar_SetButtons(HANDLE hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTON ptbb, int ctbb);
 
-// ----------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------
 
 inline int GetDlgCtrlWidth(HWND hwndDlg, int nCtrlId)
 {

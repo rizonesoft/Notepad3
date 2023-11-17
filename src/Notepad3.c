@@ -252,7 +252,7 @@ const char chr_currency[6] = { '$', 0x80, 0xA2, 0xA3, 0xA5, '\0' }; // "$€¢£
 //
 static bool s_NeedSavingForced = false; // dirty-flag
 
-inline static bool IsSaveNeeded()
+static inline bool IsSaveNeeded()
 {
     return SciCall_GetModify() || s_NeedSavingForced;
 }
@@ -6595,8 +6595,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             //~SendMessage(Globals.hwndDlgCustomizeSchemes, WM_CLOSE, 0, 0); ~ no need for restart
             //~PostWMCommand(hwnd, IDM_VIEW_SCHEMECONFIG);
             SendMessage(Globals.hwndDlgCustomizeSchemes, WM_THEMECHANGED, 0, 0);
-            PostMessage(Globals.hwndDlgCustomizeSchemes, WM_NCACTIVATE, FALSE, -1); // (!)
-            PostMessage(Globals.hwndDlgCustomizeSchemes, WM_NCACTIVATE, TRUE, 0);
+            //PostMessage(Globals.hwndDlgCustomizeSchemes, WM_NCACTIVATE, FALSE, -1); // (!)
+            //PostMessage(Globals.hwndDlgCustomizeSchemes, WM_NCACTIVATE, TRUE, 0);
             PostMessage(hwnd, WM_SETFOCUS, 0, 0);
         }
 
@@ -8884,6 +8884,8 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
 
     case SCN_UPDATEUI: {
+        static DocPos selCnt = 0;
+
         int const iUpd = scn->updated;
 
         if (iUpd & (SC_UPDATE_SELECTION | SC_UPDATE_CONTENT)) {
@@ -8903,14 +8905,19 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
                         }
                     }
                 }
+                DocPos const selDiff = (SciCall_GetSelectionEnd() - SciCall_GetSelectionStart());
+                if (selDiff != selCnt) {
+                    selCnt = selDiff;
+                    UpdateToolbar();
+                }
             }
             if (iUpd & SC_UPDATE_CONTENT) {
                 UpdateMargins(false);
+                UpdateTitlebar(Globals.hwndMain);
                 //~ Style and Marker are out of scope here => using WM_COMMAND -> SCEN_CHANGE  instead!
                 //~MarkAllOccurrences(-1, false);
                 //~EditUpdateVisibleIndicators(); // will lead to recursion
             }
-            UpdateToolbar();
             UpdateStatusbar(false);
 
         } else if (iUpd & SC_UPDATE_V_SCROLL) {
@@ -9921,18 +9928,27 @@ void UpdateTitlebar(const HWND hwnd)
 //
 //  _UpdateTitlebarDelayed()
 //
+
 static void _UpdateTitlebarDelayed(const HWND hwnd)
 {
     if (hwnd == Globals.hwndMain && Settings.ShowTitlebar) {
-        bool const bFileLocked = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
-        SetWindowTitle(Globals.hwndMain, Paths.CurrentFile, Settings.PathNameFormat,
-            s_flagPasteBoard, s_bIsProcessElevated, IsSaveNeeded(),
-            bFileLocked, IsFileChangedFlagSet(), IsFileDeletedFlagSet(), IsFileReadOnly(), s_wchTitleExcerpt);
+
+        TITLEPROPS_T props = { 0 };
+        props.iFormat = Settings.PathNameFormat;
+        props.bPasteBoard = s_flagPasteBoard;
+        props.bIsElevated = s_bIsProcessElevated;
+        props.bModified = IsSaveNeeded();
+        props.bFileLocked = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
+        props.bFileChanged = IsFileChangedFlagSet();
+        props.bFileDeleted = IsFileDeletedFlagSet();
+        props.bReadOnly = IsFileReadOnly();
+
+        SetWindowTitle(Globals.hwndMain, Paths.CurrentFile, props, s_wchTitleExcerpt, false);
     }
-    if (!IsWindows10OrGreater()) {
-        PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
-        PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
-    }
+    //if (!IsWindows10OrGreater()) {
+    //    PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
+    //    PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
+    //}
 }
 
 
