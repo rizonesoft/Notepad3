@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.23.1020.(build_#) (2023-10-20)
+Current BETA/RC Version 6.23.1117.(build_#) (2023-11-27)
 ========================================================
 
 --------------------------------------------------------
@@ -119,6 +119,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1117.1]- Reduce window flickering, fix cut last line.
 [1020.1]- Same behavior of "Ctrl+Shift+X".
 [1020.1]- MS Visual Studio "Line-Cut" (Ctrl+X) behavior on empty selection.
 [1017.1]- Show ColorDef Dlg always full visible.
