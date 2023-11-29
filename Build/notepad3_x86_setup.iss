@@ -5,6 +5,8 @@
 ; Requirements:
 ; Inno Setup: https://jrsoftware.org/isinfo.php
 
+;Thanks to "Wilenty" for his great help in improving the INNO Setup installer
+
 ; Preprocessor related stuff
 // if you compile a "beta, rc or rc2" version, then comment/un-comment the appropriate setting:
 ;#define VRSN=" beta"

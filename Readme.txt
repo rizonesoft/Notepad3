@@ -98,10 +98,11 @@ alex-ilin               https://github.com/alex-ilin
 alexantr                https://github.com/alexantr
 ashish12phnx            https://github.com/ashish12phnx
 bravo-hero              https://github.com/bravo-hero
+chuanliwen              https://github.com/chuanliwen
 craigo-                 https://github.com/craigo-
 Crane70                 https://github.com/Crane70
+dzikrl                  https://github.com/dzikrl
 engelhro                https://github.com/engelhro
-fadzikri                https://github.com/fadzikri
 geogeo-gr               https://github.com/geogeo-gr
 Hexaae                  https://github.com/Hexaae
 hpwamr                  https://github.com/hpwamr
@@ -125,6 +126,7 @@ Rudolfin                https://github.com/Rudolfin
 Stephan-P               https://github.com/Stephan-P
 ThreeLightsBeyond       https://github.com/ThreeLightsBeyond
 VenusGirl               https://github.com/VenusGirl
+Wilenty                 https://github.com/Wilenty
 xsak                    https://github.com/xsak
 zufuliu                 https://github.com/zufuliu
 
