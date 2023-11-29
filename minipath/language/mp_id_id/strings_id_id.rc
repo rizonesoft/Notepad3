@@ -132,7 +132,7 @@ BEGIN
     IDS_COPYMOVE            "Pilih direktori tujuan."
     IDS_CREATELINK          "Pilih direktori tujuan untuk pintasan baru."
     IDS_SAVESETTINGS        "Simpan Pengaturan\nPengaturan program tersimpan."
-    IDS_MUI_TRANSL_AUTHOR   "(id-ID) Terjemahan bahasa Indonesia oleh fadzikri"
+    IDS_MUI_TRANSL_AUTHOR   "(id-ID) Terjemahan bahasa Indonesia oleh dzikrl"
 END
 
 
