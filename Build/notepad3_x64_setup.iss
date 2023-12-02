@@ -109,6 +109,7 @@ SetupMutex={#app_name}_setup_mutex,Global\{#app_name}_setup_mutex
 SetupIconFile=.\Resources\Notepad3SetupIconFile.ico
 WizardImageFile=.\Resources\WizardImageFileSmall.bmp
 
+
 [Languages]
 Name: "enu"; MessagesFile: "compiler:Default.isl"
 Name: "afk"; MessagesFile: "compiler:Languages-mod\Afrikaans.isl"
@@ -356,21 +357,21 @@ hun.tsk_RemoveOpenWith="Megnyitás ezzel: {#app_name}" bejegyzés eltávolítás
 hun.tsk_SetOpenWith="Megnyitás ezzel: {#app_name}" bejegyzés hozzáadása a helyi menühöz
 hun.reg_Open_with_NP3=Megnyitás ezzel: {#app_name}
 
-ind.msg_DeleteSettings=Apakah Anda juga ingin menghapus pengaturan dan tema {#app_name}?%n%nJika Anda berencana untuk memasang kembali {#app_name}, Anda tidak perlu menghapusnya.
+ind.msg_DeleteSettings=Apakah Anda juga ingin menghapus pengaturan serta tema {#app_name}?%n%nJika berencana untuk memasang {#app_name} kembali, Anda tidak perlu menghapusnya.
 #ifdef sse_required
-ind.msg_simd_sse=Versi {#app_name} ini memerlukan CPU dengan dukungan ekstensi SSE.%n%nTampaknya CPU Anda tidak memiliki kemampuan tersebut.
+ind.msg_simd_sse=Versi {#app_name} berikut memerlukan sebuah CPU dengan dukungan ekstensi SSE.%n%nTampaknya CPU Anda tidak memiliki kemampuan tersebut.
 #endif
 #ifdef sse2_required
-ind.msg_simd_sse2=Versi {#app_name} ini memerlukan CPU dengan dukungan ekstensi SSE2.%n%nTampaknya CPU Anda tidak memiliki kemampuan tersebut.
+ind.msg_simd_sse2=Versi {#app_name} berikut memerlukan sebuah CPU dengan dukungan ekstensi SSE2.%n%nTampaknya CPU Anda tidak memiliki kemampuan tersebut.
 #endif
 ind.tsk_AllUsers=Untuk semua pengguna
 ind.tsk_CurrentUser=Untuk pengguna saat ini
 ind.tsk_Other=Lainnya:
 ind.tsk_ResetSettings=Setel ulang pengaturan dan tema {#app_name}
-ind.tsk_RemoveDefault=Pulihkan Windows Notepad
-ind.tsk_SetDefault=Gantikan Windows Notepad dengan {#app_name}
-ind.tsk_StartMenuIcon=Buat pintasan pada Start Menu
-ind.tsk_LaunchWelcomePage=Informasi Rilis yang Penting!
+ind.tsk_RemoveDefault=Pulihkan Notepad Windows
+ind.tsk_SetDefault=Ganti Notepad Windows dengan {#app_name}
+ind.tsk_StartMenuIcon=Buat sebuah pintasan di Start Menu
+ind.tsk_LaunchWelcomePage=Informasi Penting Terkait Rilis Ini!
 ind.tsk_RemoveOpenWith=Hapus "Buka dengan {#app_name}" dari menu konteks
 ind.tsk_SetOpenWith=Tambahkan "Buka dengan {#app_name}" ke menu konteks
 ind.reg_Open_with_NP3=Buka dengan {#app_name}
