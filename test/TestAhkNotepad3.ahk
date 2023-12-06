@@ -36,9 +36,9 @@ if (v_ErrLevel != 0)
 ; -----------------------------------------------------------------------------
 
 GoSub CHECK_NP3_STARTS
-Sleep, 500
+Sleep, 1000
 GoSub CHECK_WIN_TITLE
-Sleep, 500
+Sleep, 1000
 GoSub CHECK_ABOUT_BOX
 
 
