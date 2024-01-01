@@ -7,7 +7,7 @@
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Rizonesoft")]
 [assembly: AssemblyProduct("Notepad3")]
-[assembly: AssemblyCopyright("Copyright © Rizonesoft 2008-2023")]
+[assembly: AssemblyCopyright("Copyright © Rizonesoft 2008-2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

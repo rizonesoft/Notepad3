@@ -2,7 +2,7 @@
 =                                                                              =
 =            Notepad3 - light-weight Scintilla-based text editor for Windows   =
 =                                                                              =
-=                                                   (c) Rizonesoft 2008-2023   =
+=                                                   (c) Rizonesoft 2008-2024   =
 =                                                 https://www.rizonesoft.com   =
 =                                                                              =
 ================================================================================
@@ -151,7 +151,7 @@ Notepad3 icon by Vexels.com     https://www.vexels.com
 --------------------------------------------------------------------------------
 Notepad3 Licence:
 -----------------
-Notepad3 and MiniPath Copyright © 2008-2023 Rizonesoft, All rights reserved.
+Notepad3 and MiniPath Copyright © 2008-2024 Rizonesoft, All rights reserved.
 https://www.rizonesoft.com
 
 Redistribution and use in source and binary forms, with or without modification,

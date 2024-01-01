@@ -12,7 +12,7 @@
 *   The use of these inline wrapper functions with declared types will        *
 *   ensure that we get the benefit of the compiler's type checking.           *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2023   *
+*                                                  (c) Rizonesoft 2008-2024   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *

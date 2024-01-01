@@ -8,7 +8,7 @@
 *   OLE drop source functionality                                             *
 *   Based on code from metapath, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2023   *
+*                                                  (c) Rizonesoft 2008-2024   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
