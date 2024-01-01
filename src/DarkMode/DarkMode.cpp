@@ -8,7 +8,7 @@
 *   Based on code from win32-darkmode by Richard Yu                           *
 *            https://github.com/ysc3839/win32-darkmode/tree/delayload         *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2023   *
+*                                                  (c) Rizonesoft 2008-2024   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *

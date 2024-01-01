@@ -8,7 +8,7 @@
 *   Directory Listing APIs used in Notepad3                                   *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2023   *
+*                                                  (c) Rizonesoft 2008-2024   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *

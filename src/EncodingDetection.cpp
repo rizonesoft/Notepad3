@@ -8,7 +8,7 @@
 *   Interface to Encoding Detector  (CED or UCHARDET)                         *
 *                                                                             *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2023   *
+*                                                  (c) Rizonesoft 2008-2024   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *

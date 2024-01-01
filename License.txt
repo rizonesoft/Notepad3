@@ -1,6 +1,6 @@
 License for Notepad3 and MiniPath.
 =====================
-Notepad3 and MiniPath Copyright (c) 2008-2023 Rizonesoft, All rights reserved.
+Notepad3 and MiniPath Copyright (c) 2008-2024 Rizonesoft, All rights reserved.
 https://www.rizonesoft.com
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

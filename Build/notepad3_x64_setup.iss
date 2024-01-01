@@ -1,6 +1,6 @@
 ﻿;* Notepad3 - Installer script x64 and arm64
 ;*
-;* (c) Rizonesoft 2008-2023
+;* (c) Rizonesoft 2008-2024
 
 ; Requirements:
 ; Inno Setup: https://jrsoftware.org/isinfo.php
