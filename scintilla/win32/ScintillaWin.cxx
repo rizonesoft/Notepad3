@@ -321,6 +321,13 @@ struct HorizontalScrollRange {
 	int documentWidth;
 };
 
+CLIPFORMAT RegisterClipboardType(LPCWSTR lpszFormat) noexcept {
+	// Registered clipboard format values are 0xC000 through 0xFFFF.
+	// RegisterClipboardFormatW returns 32-bit unsigned and CLIPFORMAT is 16-bit
+	// unsigned so choose the low 16-bits with &.
+	return ::RegisterClipboardFormatW(lpszFormat) & 0xFFFF;
+}
+
 }
 
 namespace Scintilla::Internal {
@@ -582,16 +589,12 @@ ScintillaWin::ScintillaWin(HWND hwnd) {
 
 	// There does not seem to be a real standard for indicating that the clipboard
 	// contains a rectangular selection, so copy Developer Studio and Borland Delphi.
-	cfColumnSelect = static_cast<CLIPFORMAT>(
-		::RegisterClipboardFormat(TEXT("MSDEVColumnSelect")));
-	cfBorlandIDEBlockType = static_cast<CLIPFORMAT>(
-		::RegisterClipboardFormat(TEXT("Borland IDE Block Type")));
+	cfColumnSelect = RegisterClipboardType(L"MSDEVColumnSelect");
+	cfBorlandIDEBlockType = RegisterClipboardType(L"Borland IDE Block Type");
 
 	// Likewise for line-copy (copies a full line when no text is selected)
-	cfLineSelect = static_cast<CLIPFORMAT>(
-		::RegisterClipboardFormat(TEXT("MSDEVLineSelect")));
-	cfVSLineTag = static_cast<CLIPFORMAT>(
-		::RegisterClipboardFormat(TEXT("VisualStudioEditorOperationsLineCutCopyClipboardTag")));
+	cfLineSelect = RegisterClipboardType(L"MSDEVLineSelect");
+	cfVSLineTag = RegisterClipboardType(L"VisualStudioEditorOperationsLineCutCopyClipboardTag");
 	hrOle = E_FAIL;
 
 	wMain = hwnd;
@@ -625,10 +628,10 @@ ScintillaWin::ScintillaWin(HWND hwnd) {
 	HMODULE user32 = ::GetModuleHandleW(L"user32.dll");
 	SetCoalescableTimerFn = DLLFunction<SetCoalescableTimerSig>(user32, "SetCoalescableTimer");
 
-	vs.indicators[IndicatorUnknown] = Indicator(IndicatorStyle::Hidden, ColourRGBA(0, 0, 0xff));
-	vs.indicators[IndicatorInput] = Indicator(IndicatorStyle::Dots, ColourRGBA(0, 0, 0xff));
-	vs.indicators[IndicatorConverted] = Indicator(IndicatorStyle::CompositionThick, ColourRGBA(0, 0, 0xff));
-	vs.indicators[IndicatorTarget] = Indicator(IndicatorStyle::StraightBox, ColourRGBA(0, 0, 0xff));
+	vs.indicators[IndicatorUnknown] = Indicator(IndicatorStyle::Hidden, colourIME);
+	vs.indicators[IndicatorInput] = Indicator(IndicatorStyle::Dots, colourIME);
+	vs.indicators[IndicatorConverted] = Indicator(IndicatorStyle::CompositionThick, colourIME);
+	vs.indicators[IndicatorTarget] = Indicator(IndicatorStyle::StraightBox, colourIME);
 }
 
 ScintillaWin::~ScintillaWin() {
@@ -3186,7 +3189,7 @@ LRESULT ScintillaWin::ImeOnReconvert(LPARAM lParam) {
 		} else {
 			// Ensure docCompStart+docCompLen be not beyond lineEnd.
 			// since docCompLen by byte might break eol.
-			const Sci::Position lineEnd = pdoc->LineEnd(pdoc->LineFromPosition(rBase));
+			const Sci::Position lineEnd = pdoc->LineEndPosition(rBase);
 			const Sci::Position overflow = (docCompStart + docCompLen) - lineEnd;
 			if (overflow > 0) {
 				pdoc->DeleteChars(docCompStart, docCompLen - overflow);

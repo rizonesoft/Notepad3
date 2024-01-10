@@ -81,6 +81,7 @@
 // lexlib
 #include "StringCopy.h"
 #include "PropSetSimple.h"
+#include "InList.h"
 #include "WordList.h"
 #include "LexAccessor.h"
 #include "Accessor.h"
@@ -97,7 +98,7 @@
 #include "LexerSimple.h"
 #include "LexerNoExceptions.h"
 
-// src
+// test
 
 #include "TestDocument.h"
 

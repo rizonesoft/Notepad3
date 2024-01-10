@@ -187,10 +187,10 @@ ViewStyle::ViewStyle(size_t stylesSize_) :
 	controlCharWidth = 0;
 	selbar = Platform::Chrome();
 	selbarlight = Platform::ChromeHighlight();
-	styles[StyleLineNumber].fore = ColourRGBA(0, 0, 0);
+	styles[StyleLineNumber].fore = black;
 	styles[StyleLineNumber].back = Platform::Chrome();
 
-	elementBaseColours[Element::Caret] = ColourRGBA(0, 0, 0);
+	elementBaseColours[Element::Caret] = black;
 	elementBaseColours[Element::CaretAdditional] = ColourRGBA(0x7f, 0x7f, 0x7f);
 	elementAllowsTranslucent.insert({
 		Element::Caret,
@@ -463,7 +463,7 @@ void ViewStyle::ClearStyles() {
 	styles[StyleLineNumber].back = Platform::Chrome();
 
 	// Set call tip fore/back to match the values previously set for call tips
-	styles[StyleCallTip].back = ColourRGBA(0xff, 0xff, 0xff);
+	styles[StyleCallTip].back = white;
 	styles[StyleCallTip].fore = ColourRGBA(0x80, 0x80, 0x80);
 }
 
@@ -626,8 +626,7 @@ ColourRGBA ViewStyle::ElementColourForced(Element element) const {
 	// This method avoids warnings for unwrapping potentially empty optionals from
 	// Visual C++ Code Analysis
 	const ColourOptional colour = ElementColour(element);
-	constexpr ColourRGBA opaqueBlack(0, 0, 0, 0xff);
-	return colour.value_or(opaqueBlack);
+	return colour.value_or(black);
 }
 
 bool ViewStyle::ElementAllowsTranslucent(Element element) const {
@@ -717,8 +716,7 @@ bool ViewStyle::SetWrapIndentMode(WrapIndentMode wrapIndentMode_) noexcept {
 
 bool ViewStyle::IsBlockCaretStyle() const noexcept {
 	return ((caret.style & CaretStyle::InsMask) == CaretStyle::Block) ||
-		FlagSet(caret.style, CaretStyle::OverstrikeBlock) ||
-		FlagSet(caret.style, CaretStyle::Curses);
+		FlagSet(caret.style, (CaretStyle::OverstrikeBlock | CaretStyle::Curses));
 }
 
 bool ViewStyle::IsCaretVisible(bool isMainSelection) const noexcept {

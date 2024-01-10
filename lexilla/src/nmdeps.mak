@@ -33,6 +33,10 @@ $(DIR_O)/DefaultLexer.obj: \
 	../lexlib/Accessor.h \
 	../lexlib/LexerModule.h \
 	../lexlib/DefaultLexer.h
+$(DIR_O)/InList.obj: \
+	../lexlib/InList.cxx \
+	../lexlib/InList.h \
+	../lexlib/CharacterSet.h
 $(DIR_O)/LexAccessor.obj: \
 	../lexlib/LexAccessor.cxx \
 	../../scintilla/include/ILexer.h \
@@ -148,6 +152,7 @@ $(DIR_O)/LexBash.obj: \
 	../../scintilla/include/Scintilla.h \
 	../include/SciLexer.h \
 	../lexlib/StringCopy.h \
+	../lexlib/InList.h \
 	../lexlib/WordList.h \
 	../lexlib/LexAccessor.h \
 	../lexlib/StyleContext.h \
@@ -162,6 +167,7 @@ $(DIR_O)/LexBatch.obj: \
 	../../scintilla/include/Sci_Position.h \
 	../../scintilla/include/Scintilla.h \
 	../include/SciLexer.h \
+	../lexlib/InList.h \
 	../lexlib/WordList.h \
 	../lexlib/LexAccessor.h \
 	../lexlib/Accessor.h \
@@ -351,7 +357,9 @@ $(DIR_O)/LexLua.obj: \
 	../lexlib/Accessor.h \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
-	../lexlib/LexerModule.h
+	../lexlib/LexerModule.h \
+	../lexlib/OptionSet.h \
+	../lexlib/DefaultLexer.h
 $(DIR_O)/LexMake.obj: \
 	../lexers/LexMake.cxx \
 	../../scintilla/include/ILexer.h \

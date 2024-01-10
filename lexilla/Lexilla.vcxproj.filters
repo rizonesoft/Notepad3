@@ -96,6 +96,9 @@
     <ClInclude Include="lexers_x\StringUtils.h">
       <Filter>lexers_x</Filter>
     </ClInclude>
+    <ClInclude Include="lexlib\InList.h">
+      <Filter>lexlib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Lexilla.cxx">
@@ -277,6 +280,9 @@
     </ClCompile>
     <ClCompile Include="lexers_x\LexVerilog.cxx">
       <Filter>lexers_x</Filter>
+    </ClCompile>
+    <ClCompile Include="lexlib\InList.cxx">
+      <Filter>lexlib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

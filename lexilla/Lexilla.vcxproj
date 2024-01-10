@@ -30,6 +30,7 @@
     <ClInclude Include="lexlib\CharacterCategory.h" />
     <ClInclude Include="lexlib\CharacterSet.h" />
     <ClInclude Include="lexlib\DefaultLexer.h" />
+    <ClInclude Include="lexlib\InList.h" />
     <ClInclude Include="lexlib\LexAccessor.h" />
     <ClInclude Include="lexlib\LexerBase.h" />
     <ClInclude Include="lexlib\LexerModule.h" />
@@ -95,6 +96,7 @@
     <ClCompile Include="lexlib\CharacterCategory.cxx" />
     <ClCompile Include="lexlib\CharacterSet.cxx" />
     <ClCompile Include="lexlib\DefaultLexer.cxx" />
+    <ClCompile Include="lexlib\InList.cxx" />
     <ClCompile Include="lexlib\LexAccessor.cxx" />
     <ClCompile Include="lexlib\LexerBase.cxx" />
     <ClCompile Include="lexlib\LexerModule.cxx" />
