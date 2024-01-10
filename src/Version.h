@@ -86,7 +86,12 @@ inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
 
     if (build >= 22000) { // Win11
 
-        if (build >= 22621) {
+         if (build >= 22631)
+        {
+            lpcReleaseID = L"23H2";
+        }
+        else if (build >= 22621)
+        {
             lpcReleaseID = L"22H2";
         }
         else {
@@ -225,8 +230,10 @@ inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
             #define VER_CPL     MS Visual C++ 2022 v17.0.(0-1)
         #endif
     #elif (_MSC_VER == 1929)
-        #if (_MSC_FULL_VER >= 192930152)
-            #define VER_CPL     MS Visual C++ 2019 v16.11.30
+        #if (_MSC_FULL_VER >= 192930153)
+            #define VER_CPL     MS Visual C++ 2019 v16.11.33
+        #elif (_MSC_FULL_VER >= 192930152)
+            #define VER_CPL     MS Visual C++ 2019 v16.11.(30-32)
         #elif (_MSC_FULL_VER >= 192930151)
             #define VER_CPL     MS Visual C++ 2019 v16.11.29
         #elif (_MSC_FULL_VER >= 192930150)
