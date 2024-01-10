@@ -1650,8 +1650,10 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 
 			MouseWheelDelta &wheelDelta = (iMessage == WM_MOUSEHWHEEL) ? horizontalWheelDelta : verticalWheelDelta;
 			if (wheelDelta.Accumulate(wParam)) {
-				const int scrollDirectionAdjustment  = (iMessage == WM_MOUSEHWHEEL) ? -1 : 1;
+				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+				const int scrollDirectionAdjustment = (iMessage == WM_MOUSEHWHEEL) ? -1 : 1;
 				const int charsToScroll = charsPerScroll * wheelDelta.Actions() * scrollDirectionAdjustment;
+				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 				const int widthToScroll = static_cast<int>(std::lround(charsToScroll * vs.aveCharWidth));
 				HorizontalScrollToClamped(xOffset + widthToScroll);
 			}

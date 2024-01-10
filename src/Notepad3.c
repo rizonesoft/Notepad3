@@ -6849,7 +6849,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (Sci_IsMultiSelection()) {
             SciCall_LineUpExtend();
         } else {
-            SciCall_LineScrollUp();
+            //~SciCall_LineScrollUp();
+            SciCall_LineScroll(0, -1LL);
         }
         break;
 
@@ -6858,7 +6859,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (Sci_IsMultiSelection()) {
             SciCall_LineDownExtend();
         } else {
-            SciCall_LineScrollDown();
+            //~SciCall_LineScrollDown();
+            SciCall_LineScroll(0, 1LL);
         }
         break;
 
