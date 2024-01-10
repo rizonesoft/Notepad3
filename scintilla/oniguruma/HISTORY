@@ -1,6 +1,24 @@
 History
 
-2022/04/2X: Version 6.9.8
+2023/10/1X: Version 6.9.9
+
+2023/09/17: Update to Unicode 15.1.0
+2023/07/11: Make sure oniguruma.pc is removed on distclean
+2023/05/20: fix #284: .{0,99} and .* behave differently on short input
+2023/03/27: fix call by number (?n), (?+n), (?-n) of ONIG_SYNTAX_PERL_NG
+2023/03/27: fix #282: Dynamic library generated failed to support '(?-i)'
+2022/12/30: add a new behavior ONIG_SYN_BRE_ANCHOR_AT_EDGE_OF_SUBEXP
+2022/11/16: Changed the behavior of the FIND_LONGEST option to follow all alternatives
+2022/09/16: Update to Unicode 15.0.0
+2022/08/30: add ONIG_OPTION_MATCH_WHOLE_STRING
+2022/08/28: fix ctype punct in Unicode encodings
+2022/08/28: fix #268: [[:punct:]] isn't matching all expected symbols. [[:punct:]] = \p{PosixPunct} = \p{P} + \p{S}
+2022/06/25: Make the behavior of \p{Word} exactly the same as \w for ignorecase
+2022/06/24: (?I) invalid results for charcter classes (Issue #264)
+2022/06/15: fix negative POSIX bracket bug
+2022/06/03: Build tests with cmake+msvc
+
+2022/04/29: Version 6.9.8
 
 2022/04/11: implement whole option: (?C)
 2022/04/07: implement whole option: (?L)

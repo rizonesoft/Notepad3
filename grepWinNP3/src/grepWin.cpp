@@ -556,12 +556,12 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                 searchDlg.SetSearchPath(sPath);
             }
             /// <<<<<<<< NP3 special
-            else if (!directlyPassedSearchPath.empty())
+            if (!directlyPassedSearchPath.empty())
             {
                 searchDlg.SetSearchPath(directlyPassedSearchPath);
             }
             searchDlg.SetSearchString(parser.HasVal(L"searchfor") ? parser.GetVal(L"searchfor") : 
-                                             (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L""));
+                                        (bPortable ? g_iniFile.GetValue(L"global", L"searchfor", L"") : L""));
 
             if (parser.HasKey(L"filemaskregex"))
                 searchDlg.SetFileMask(parser.GetVal(L"filemaskregex") ? parser.GetVal(L"filemaskregex") : L"", true);
