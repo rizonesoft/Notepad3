@@ -2005,8 +2005,9 @@ compile_anchor_look_behind_node(AnchorNode* node, regex_t* reg, ParseEnv* env)
     COP(reg)->cut_to_mark.restore_pos = FALSE;
   }
   else {
-    MemNumType mid1, mid2, mid3;
     OnigLen diff;
+    MemNumType mid1, mid2;
+    MemNumType mid3 = 0; /* ignore uninitialized warning */
 
     if (IS_NOT_NULL(node->lead_node)) {
       MinMaxCharLen ci;
@@ -2144,8 +2145,9 @@ compile_anchor_look_behind_not_node(AnchorNode* node, regex_t* reg,
     r = add_op(reg, OP_POP);
   }
   else {
-    MemNumType mid1, mid2, mid3;
     OnigLen diff;
+    MemNumType mid1, mid2;
+    MemNumType mid3 = 0; /* ignore uninitialized warning */
 
     ID_ENTRY(env, mid1);
     r = add_op(reg, OP_SAVE_VAL);
@@ -8043,9 +8045,9 @@ detect_can_be_slow(Node* node, SlowElementCount* ct, int ncall, int calls[])
 
   case ND_QUANT:
     {
-      int prev_heavy_element;
       QuantNode* qn;
       Node* body;
+      int prev_heavy_element = 0;
 
       qn = QUANT_(node);
       body = ND_BODY(node);

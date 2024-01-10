@@ -579,14 +579,6 @@ std::string OnigurumaRegExEngine::translateRegExpr(const std::string & regExprSt
     transRegExpr.append(regExprStr);
   }
 
-#if 0
-  if (wholeString) {
-    ONIG_OPTION_ON(rxOptions, ONIG_OPTION_MATCH_WHOLE_STRING);
-  } else {
-    ONIG_OPTION_OFF(rxOptions, ONIG_OPTION_MATCH_WHOLE_STRING);
-  }
-#endif
-
   // Oniguruma supports LTGT word boundary by: ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END
   //
   //~replaceAll(transRegExpr, R"(\<)", R"((?<!\w)(?=\w))");  // word begin
