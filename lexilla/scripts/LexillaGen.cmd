@@ -10,9 +10,9 @@ pushd %_THISDIR_%
 
 
 set _EXITCODE_=0
-::set _PYTHON_EXE=d:\DEV\Python_Embed_311_x64\python.exe
+::set _PYTHON_EXE=python.exe
+set _PYTHON_EXE=c:\PortablePrograms\Python3_12_1_x64_emb\python.exe
 rem call :RESOLVE_PATH _PYTHON_EXE "%_THISDIR_%..\..\..\..\_python_emb\python.exe"
-set _PYTHON_EXE=python.exe
 
 set _CMD_="%_PYTHON_EXE%" "%~dpn0.py"
 echo.Calling: %_CMD_%

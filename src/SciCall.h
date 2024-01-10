@@ -280,6 +280,7 @@ DeclareSciCallV1(SetRectangularSelectionAnchorVirtualSpace, SETRECTANGULARSELECT
 DeclareSciCallV0(ClearSelections, CLEARSELECTIONS);
 DeclareSciCallR0(GetSelectionMode, GETSELECTIONMODE, int);
 DeclareSciCallV1(SetSelectionMode, SETSELECTIONMODE, int, mode);
+DeclareSciCallV1(ChangeSelectionMode, CHANGESELECTIONMODE, int, mode);
 DeclareSciCallR0(GetSelections, GETSELECTIONS, DocPosU);
 DeclareSciCallR0(GetSelectionEmpty, GETSELECTIONS, bool);
 DeclareSciCallV2(SetSelection, SETSELECTION, DocPos, caretPos, DocPos, anchorPos);

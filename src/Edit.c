@@ -2828,15 +2828,25 @@ void EditSpacesToTabs(int nTabWidth,bool bOnlyIndentingWS)
 //
 static void  _EditMoveLines(bool bMoveUp)
 {
-    if (Sci_IsMultiOrRectangleSelection()) {
-        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
+    if (Sci_IsMultiSelection()) {
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELMULTI);
         return;
     }
 
-    DocPos const iSelBeg = SciCall_GetSelectionStart();
-    DocLn  const iBegLine = SciCall_LineFromPosition(iSelBeg);
-    DocPos const iSelEnd = SciCall_GetSelectionEnd();
-    DocLn const iEndLine = SciCall_LineFromPosition(iSelEnd);
+    DocLn const  iBegLine = SciCall_LineFromPosition(SciCall_GetSelectionStart());
+    DocPos const iSelEnd  = SciCall_GetSelectionEnd();
+    DocLn const  iEndLine = SciCall_LineFromPosition(iSelEnd);
+
+    bool const   bIsRectSel = SciCall_IsSelectionRectangle();
+
+    DocPos const iSelAnchor = bIsRectSel ? SciCall_GetRectangularSelectionAnchor() : SciCall_GetAnchor();
+    DocPos const iSelCaret  = bIsRectSel ? SciCall_GetRectangularSelectionCaret() : SciCall_GetCurrentPos();
+
+    DocPos const iAnchorVS = SciCall_GetRectangularSelectionAnchorVirtualSpace();
+    DocPos const iCaretVS  = SciCall_GetRectangularSelectionCaretVirtualSpace();
+
+    DocLn const anchorLine = SciCall_LineFromPosition(iSelAnchor);
+    DocLn const caretLine  = SciCall_LineFromPosition(iSelCaret);
 
     DocLn lastLine = Sci_GetLastDocLineNumber();
 
@@ -2846,30 +2856,33 @@ static void  _EditMoveLines(bool bMoveUp)
         }
     }
 
+
     bool const bCanMove = bMoveUp ? (iBegLine > 0) : (iEndLine < lastLine);
     if (bCanMove) {
 
-        bool const bForwardSelection = Sci_IsForwardSelection();
+        //bool const bForwardSelection = (iSelAnchor <= iSelCaret);
         int const direction = (bMoveUp ? -1 : 1);
 
-        DocPos const iBegChCount = SciCall_CountCharacters(SciCall_PositionFromLine(iBegLine), iSelBeg);
-        DocPos const iEndChCount = SciCall_CountCharacters(SciCall_PositionFromLine(iEndLine), iSelEnd);
+        DocPos const iAnchorChCount = SciCall_CountCharacters(SciCall_PositionFromLine(anchorLine), iSelAnchor);
+        DocPos const iCaretChCount = SciCall_CountCharacters(SciCall_PositionFromLine(caretLine), iSelCaret);
 
         UndoTransActionBegin();
 
-        if (bMoveUp) {
+        if (bMoveUp)
             SciCall_MoveSelectedLinesUp();
-        } else {
+        else
             SciCall_MoveSelectedLinesDown();
-        }
 
-        DocPos const iNewSelBeg = SciCall_PositionRelative(SciCall_PositionFromLine(iBegLine + direction), iBegChCount);
-        DocPos const iNewSelEnd = SciCall_PositionRelative(SciCall_PositionFromLine(iEndLine + direction), iEndChCount);
+        DocPos const newSelAnchor = SciCall_PositionRelative(SciCall_PositionFromLine(anchorLine + direction), iAnchorChCount);
+        DocPos const newSelCaret = SciCall_PositionRelative(SciCall_PositionFromLine(caretLine + direction), iCaretChCount);
 
-        if (bForwardSelection) {
-            SciCall_SetSel(iNewSelBeg, iNewSelEnd);
-        } else {
-            SciCall_SetSel(iNewSelEnd, iNewSelBeg);
+        if (!bIsRectSel)
+            SciCall_SetSel(newSelAnchor, newSelCaret);
+        else {
+            SciCall_SetRectangularSelectionAnchor(newSelAnchor);
+            SciCall_SetRectangularSelectionCaret(newSelCaret);
+            SciCall_SetRectangularSelectionAnchorVirtualSpace(iAnchorVS);
+            SciCall_SetRectangularSelectionCaretVirtualSpace(iCaretVS);
         }
 
         EndUndoTransAction();
