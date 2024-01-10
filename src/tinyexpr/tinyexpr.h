@@ -48,7 +48,10 @@ extern "C" {
   #define TE_INT_FMT      "%i"
 #endif
 
-typedef struct te_expr {
+#pragma warning(push)
+#pragma warning(disable:4201)
+
+  typedef struct te_expr {
     int type;
     union {double value; const double * bound; const void * function;};
 #if defined(TINYEXPR_USE_STATIC_MEMORY)
@@ -58,6 +61,7 @@ typedef struct te_expr {
 #endif
 } te_expr;
 
+#pragma warning(pop)
 
 enum {
     TE_VARIABLE = 0,
