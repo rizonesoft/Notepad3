@@ -331,17 +331,19 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
             break;
             case 5:
             {
-                if (!m_lineVector.empty())
+                if (m_lineVector.size() > 1)
                 {
                     for (auto it = m_lineVector.cbegin(); it != m_lineVector.cend(); ++it)
                     {
                         for (auto it2 = it->lines.cbegin(); it2 != it->lines.cend(); ++it2)
                         {
                             std::wstring cmd = editorCmd;
-                            SearchReplace(cmd, L"%path%", it->path.c_str());
+                            SearchReplace(cmd, L"/%mode%", L"");
+                            SearchReplace(cmd, L"\"%pattern%\"", L"");
                             wchar_t buf[40] = {0};
                             swprintf_s(buf, L"%ld", it2->number);
                             SearchReplace(cmd, L"%line%", buf);
+                            SearchReplace(cmd, L"%path%", it->path.c_str());
 
                             STARTUPINFO         startupInfo;
                             PROCESS_INFORMATION processInfo;
@@ -359,7 +361,8 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                     for (auto it = m_strVector.begin(); it != m_strVector.end(); ++it)
                     {
                         std::wstring cmd = editorCmd;
-                        SearchReplace(cmd, L"%path%", it->filePath.c_str());
+                        SearchReplace(cmd, L"/%mode%", L"");
+                        SearchReplace(cmd, L"\"%pattern%\"", L"");
                         if (!it->matchLinesNumbers.empty())
                         {
                             wchar_t buf[40] = {0};
@@ -368,6 +371,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                         }
                         else
                             SearchReplace(cmd, L"%line%", L"0");
+                        SearchReplace(cmd, L"%path%", it->filePath.c_str());
 
                         STARTUPINFO         startupInfo;
                         PROCESS_INFORMATION processInfo;
