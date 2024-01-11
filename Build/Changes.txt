@@ -34,19 +34,21 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.24.0109.(build_#) (2024-01-09)
+Current BETA/RC Version 6.24.0111.(build_#) (2024-01-11)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
-[.927.1]- Update grepWinNP3 from current grepWin dev (GRE).
+[.111.1]- Allow selected lines movement for rectangular selection also.
+[.111.1]- Add detection of Windows 11 Version information.
+[.927.1]- Update "grepWinNP3" from current "grepWin" dev (GRE).
 [.903.1]- Python stream comment hack.
 [.830.1]- "DrawAnimatedWindow": Option to disable animated max./min. window.
 [.827.1]- Add Dark-Mode Contrast control for Schemes configuration.
 [.707.1]- Add new Toolbar button "New Empty Window".
-[.702.1]- Add new "grepWinNP3" icon for Launch and Search menu's.
+[.702.1]- Add new "grepWinNP3" icon for Launch and Search menu's (GRE).
 [.702.1]- Add new Toolbar button "Reset Zoom".
 [.619.1]- Indentation guide coloring on matching brace highlight.
 [.513.1]- Option on F/R dialog: incremental search ON/OFF.
@@ -119,6 +121,10 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.111.1]- Horizontal mouse wheel scrolling direction.
+[.111.1]- Ctrl+Up/Down should keep selection.
+[.111.1]- "grepWinNP3": Search results context menu "Fix Open with Editor" (GRE).
+[.111.1]- "grepWinNP3": bug directly passed search path (GRE).
 [1117.1]- Reduce window flickering, fix cut last line.
 [1020.1]- Same behavior of "Ctrl+Shift+X".
 [1020.1]- MS Visual Studio "Line-Cut" (Ctrl+X) behavior on empty selection.
@@ -142,7 +148,7 @@ FIXES:
 [.526.1]- PHP commenting embedded Web Source Code.
 [.521.1]- Minor issue in "Favorites" in INNO Setup (SUP).
 [.516.1]- Minor issue related to match selection counters.
-[.516.1]- "grepWinNP3" <-> Notepad3 interface regression.
+[.516.1]- "grepWinNP3" <-> Notepad3 interface regression (GRE).
 [.513.1]- Single File Instance' flag handling.
 [.513.1]- Minor bugs in "Open with Notepad3" in foreign languages (SUP).
 [.512.1]- Enforce hidden menu bar (if option selected).
@@ -174,7 +180,7 @@ FIXES:
 [.301.1]- 'FileCheckInterval' instead of 'FileCheckInverval' (typo).
 [.301.1]- Find marker next/prev.
 [.301.1]- Find consecutive change marker begin.
-[.228.1]- grepWinNP3: properly search from the file beginning again (grepWin bugfix) (GRE).
+[.228.1]- "grepWinNP3": properly search from the file beginning again ("grepWin" bugfix) (GRE).
 [.228.1]- Navigate marker: consecutive change-marker handled as single mark.
 [.224.1]- SplitUndoTypingSeqOnLnBreak and UndoTransactionTimeout.
 [.223.1]- Minor changes for Unicode Point display.
@@ -198,10 +204,10 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.926.1]- Update Lexilla Library (LEX) version 5.2.7 dev. (2023-09-22).
-[.926.1]- Update Scintilla Library (SCI) version 5.3.7 dev. (2023-09-22).
-[.913.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2023-03-27) (intermediate).
-[.619.1]- Update grepWinNP3 (GRE) version 2.1.15.47 (2023-06-19).
+[.101.1]- Update grepWinNP3 (GRE) version 2.1.15.48 (2024-01-10).
+[.101.1]- Update Lexilla Library (LEX) version 5.3.0 dev. (2023-12-27).
+[.101.1]- Update Scintilla Library (SCI) version 5.4.1 dev. (2023-12-27).
+[.101.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2023-10-14).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
 
 --------------------------------------------------------
@@ -547,7 +553,7 @@ CHANGES:
 [.526.1]- Batch-Lexer + patching Markdown-Lexer (eolfilled header lines) (LEX).
 [.526.1]- Scheme-Dlg: dynamic (alloc) Style-Backup handling.
 [.525.1]- Update Lexilla Lib (bug fixes for Lexer: Markdown, Cmd/Batch) (LEX).
-[.515.1]- "grepWinNP3" based on current grepWin ver (boost v1.76 , upd: sktoolslib).
+[.515.1]- "grepWinNP3" based on current grepWin ver (boost v1.76 , upd: sktoolslib) (GRE).
 [.515.1]- Add some more coding fonts to prefer over Consolas (if installed).
 [.515.1]- Linker: hardware-enforced stack-protection.
 [.513.1]- Canonicalize style section of .ini-settings.
@@ -783,7 +789,7 @@ CHANGES:
 [.920.1]- grepWinNP3: save changed "Stay On Top" settings on exit (GRE).
 [.920.1]- First part of DarkMode Theme for MiniPath.
 [.917.4]- Separate DarkMode window-backgr color from button-facecolor.
-[.916.1]- Opacity level on loosing focus for grepWinNP3.
+[.916.1]- Opacity level on loosing focus for grepWinNP3 (GRE).
 [.916.1]- TinyExpr: '%' operator: distinguish between modulo and percent operation by context.
 [.915.3]- Due to lack of interest, "Notepad3DLL" is discontinued.
 [.915.2]- User configurable "Web Action" menu item names.
@@ -882,7 +888,7 @@ Version 5.20.915.1 (15 September 2020)
 NEW:
 --------------------------------------------------------
 [.911.1]- Allow colon (:) as alternate divide operator to calculate TinyExpr.
-[.825.1]- grepWinNP3: default extension on saving search result list.
+[.825.1]- grepWinNP3: default extension on saving search result list (GRE).
 [.824.1]- Focused-View: mode Fold-Only.
 [.823.1]- Mark Occurrences: show additional Bookmark (Arrows).
 [.823.1]- Bookmark context menu: clear marker type.
@@ -908,13 +914,13 @@ CHANGES:
 [.914.1]- F/R Dialog: toggle "Esc Ctrl Chr", try reverse operation if no length change
 [.913.1]- Bad design: F/R dialog: remove auto Esc Ctrl Chr (changed to manual explicit).
 [.901.1]- Open Recent File: Rename the Cancel button to Close button.
-[.901.1]- grepWinNP3: alpha transparency on losing focus.
+[.901.1]- grepWinNP3: alpha transparency on losing focus (GRE).
 [.828.1]- Rearange and review "File Encoding" menu to clarify behavior.
 [.826.1]- Default for file-encoding-tag parsing -> OFF.
 [.826.1]- Swap file-encoding-tag parsing priority (encoding <-> coding).
 [.825.1]- Revert Initial Font-Size based on DeviceCaps.
 [.825.1]- Initial Font Size based on DeviceCaps (=> FullHD unchanged).
-[.824.2]- grepWinNP3: Export search result list (NP3 enhancements).
+[.824.2]- grepWinNP3: Export search result list (NP3 enhancements) (GRE).
 [.823.1]- Delete Bookmarks (Alt+F2): 1st delete occurrence markers then std. bookmarks.
 [.822.1]- Remove max count limitation for "Mark Occurrences" feature.
 [.821.1]- Bookmark context menu on alpha-blend FocusedView marker line.
@@ -1011,7 +1017,7 @@ NEW:
 --------------------------------------------------------
 - grepWinNP3: export search results (GRE).
 - changed grepWinNP3 icon (GRE).
-- Add Toolbar icon for grepWinNP3.
+- Add Toolbar icon for grepWinNP3 (GRE).
 - Configurable Zoom-Tooltip display timeout ([Settings2] ZoomTooltipTimeout=3200).
 - Add Install/Remove "Open with Notepad3" to Notepad3 Setup/Installer (SUP).
 - Add additional Dark Theme "Sombra".
@@ -1019,7 +1025,7 @@ NEW:
 - Open default browser while clicking tooltip (hovering hyperlink).
 - Regex multi-select feature.
 - Toolbar hot-button if view is zoomed (<>100%).
-- Call-Back Notepad3 (from grepWinNP3) with case-sensitive and dot-match-all flag (if applicable).
+- Call-Back Notepad3 (from grepWinNP3) with case-sensitive and dot-match-all flag (if applicable) (GRE).
 - Add "Overlapping Search" in Find/Replace dialog window.
 - Integration of external Search-In-Files tool named "grepWinNP3" (GRE).
 
@@ -1040,7 +1046,7 @@ CHANGES:
 - Font style/face-name handling.
 - Extended Font selection dialog (Effects).
 - Font selection refactoring.
-- Revised grepWinNP3.ini file creation.
+- Revised grepWinNP3.ini file creation (GRE).
 - Minor changes for dialog handling on DPI changed.
 - Preparations for dpi-aware resizable "Customize Schemes..." dialog.
 - DPI change handling: About & Schemes dialog.
