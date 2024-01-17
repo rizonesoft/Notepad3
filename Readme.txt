@@ -109,6 +109,7 @@ hpwamr                  https://github.com/hpwamr
 igorruckert             https://github.com/igorruckert
 jupester                https://github.com/jupester
 kayazeren               https://github.com/kayazeren
+kidzgy                  https://github.com/kidzgy
 kofifus                 https://github.com/kofifus
 Lacn0755                https://github.com/Lacn0755
 leeoniya                https://github.com/leeoniya
@@ -120,6 +121,7 @@ MadDogVachon            https://github.com/MadDogVachon
 Matteo-Nigro            https://github.com/Matteo-Nigro
 MelchiorGaspar          https://github.com/MelchiorGaspar
 Mitezuss                https://github.com/Mitezuss
+np3fan                  https://github.com/np3fan
 RaiKoHoff               https://github.com/RaiKoHoff
 rizonesoft              https://github.com/rizonesoft
 Rudolfin                https://github.com/Rudolfin
