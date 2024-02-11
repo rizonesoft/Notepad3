@@ -226,7 +226,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Inkonsistensi Akhir Baris"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Inkonsisten akhir baris ditemukan di berkas:",IDC_STATIC,7,7,180,8
+    LTEXT           "Inkonsistensi akhir baris ditemukan dalam berkas:",IDC_STATIC,7,7,180,8
     RTEXT           "CR+LF:",IDC_STATIC2,10,18,34,8
     RTEXT           "CR:",IDC_STATIC3,10,28,34,8
     RTEXT           "LF:",IDC_STATIC4,10,38,34,8
@@ -364,9 +364,9 @@ BEGIN
     RTEXT           "%s baris",IDC_INDENT_SUM_TAB,84,18,52,8
     RTEXT           "%s baris",IDC_INDENT_SUM_SPC,84,30,52,8
     RTEXT           "%s baris",IDC_INDENT_SUM_MIX,84,42,52,8
-    GROUPBOX        "Indentasi Ulang Semua? ",IDC_STATIC2,7,60,182,56,WS_GROUP
+    GROUPBOX        "Indentasikan Ulang Semua? ",IDC_STATIC2,7,60,182,56,WS_GROUP
     CONTROL         "&Tab",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
-    CONTROL         "&Kekos.",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,32,10
+    CONTROL         "&Spasi",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,32,10
     RTEXT           "%s baris dengan indentasi tidak teratur",IDC_INDENT_TAB_MODX,50,72,130,8
     RTEXT           "%s baris dengan indentasi tidak teratur",IDC_INDENT_SPC_MODX,50,84,130,8
     PUSHBUTTON      "&Ya",IDOK,80,98,50,14
