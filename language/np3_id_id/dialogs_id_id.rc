@@ -358,7 +358,7 @@ CAPTION "Inkonsisten Indentasi"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Statistik: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Tab[%s]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
+    LTEXT           "Tab[%s]:",IDC_INDENT_WIDTH_TAB,32,18,30,8
     LTEXT           "Spasi[%s]:",IDC_INDENT_WIDTH_SPC,32,30,45,8
     LTEXT           "Campuran[x]:",IDC_STATIC3,32,42,45,8
     RTEXT           "%s baris",IDC_INDENT_SUM_TAB,84,18,52,8
