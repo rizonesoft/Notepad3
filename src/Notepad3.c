@@ -7630,16 +7630,16 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             return FALSE; // swallowed
         }
         else {
-            SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow ? 1 : -1);
+            SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow);
         }
         break;
 
     case SC_MAXIMIZE:
-        SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow ? 1 : -1);
+        SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow);
         break;
 
     case SC_RESTORE: {
-        SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow ? 1 : -1);
+        SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow);
         LRESULT lrv = DefWindowProc(hwnd, umsg, wParam, lParam);
         ShowOwnedPopups(hwnd, true);
         return (lrv);

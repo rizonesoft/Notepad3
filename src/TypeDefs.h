@@ -770,7 +770,7 @@ typedef struct SETTINGS2_T {
     int     WrapAroundTooltipTimeout;
     int     LargeIconScalePrecent;
     int     DarkModeHiglightContrast;
-    bool    DrawAnimatedWindow;
+    int     DrawAnimatedWindow;
 
     float   AnalyzeReliableConfidenceLevel;
     float   LocaleAnsiCodePageAnalysisBonus;
