@@ -3741,6 +3741,7 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         DragFinish(hDrop);
         Path_Release(hdrop_pth);
+        UpdateToolbar(hwnd);
     }
     return 0;
 }
