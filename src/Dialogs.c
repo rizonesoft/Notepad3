@@ -676,30 +676,44 @@ static bool GetTrayWndRect(LPRECT lpTrayRect) {
 
 
 // Check to see if the animation has been disabled
-bool GetSetDoAnimateMinimize(const int flag)
+// call SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow ? 1 : -1 | 0 for reset); 
+bool SetAnimateMinimizeRestore(const int flag)
 {
+    static int systemFlag = 0;
+    bool       bAnim = false;
+    
     ANIMATIONINFO ai;
     ai.cbSize = sizeof(ai);
     SystemParametersInfo(SPI_GETANIMATION, sizeof(ai), &ai, 0);
-    bool const bRes = ai.iMinAnimate ? true : false;
-    if (flag == 0 && bRes) {
-        ai.iMinAnimate = 0;
-        SystemParametersInfo(SPI_SETANIMATION, sizeof(ai), &ai, 0);
+
+    if (systemFlag == 0) {
+        systemFlag = ai.iMinAnimate ? 1 : -1;
+        bAnim = ai.iMinAnimate ? true : false;
     }
-    else if (flag > 0 && !bRes) {
+    if (flag == 0) { // reset
+        ai.iMinAnimate = (systemFlag == 1) ? 1 : 0;
+        SystemParametersInfo(SPI_SETANIMATION, sizeof(ai), &ai, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
+        bAnim = ai.iMinAnimate ? true : false;
+        systemFlag = 0;
+    }
+    else if (flag > 0) { // set animation
         ai.iMinAnimate = 1;
-        SystemParametersInfo(SPI_SETANIMATION, sizeof(ai), &ai, 0);
+        SystemParametersInfo(SPI_SETANIMATION, sizeof(ai), &ai, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
+        bAnim = true;
     }
-    return bRes;
+    else { // disable animation
+        ai.iMinAnimate = 0;
+        SystemParametersInfo(SPI_SETANIMATION, sizeof(ai), &ai, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
+        bAnim = false;
+    }
+    return bAnim;
 }
 
 
 
 void MinimizeWndToTray(HWND hWnd) {
 
-    bool const bAnimate = GetSetDoAnimateMinimize(-1);
-
-    if (bAnimate) {
+    if (SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow ? 1 : -1)) {
 
         // Get the rect of the window. It is safe to use the rect of the whole
         // window - DrawAnimatedRects will only draw the caption
@@ -718,14 +732,14 @@ void MinimizeWndToTray(HWND hWnd) {
 
     // Hide the window
     ShowWindow(hWnd, SW_MINIMIZE);
-    if (bAnimate) { Sleep(500); }
     ShowWindow(hWnd, SW_HIDE);
     Globals.bMinimizedToTray = true;
+    SetAnimateMinimizeRestore(0); // reset
 }
 
 void RestoreWndFromTray(HWND hWnd) {
 
-    if (GetSetDoAnimateMinimize(-1)) {
+    if (SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow ? 1 : -1)) {
 
         // Get the rect of the tray and the window. Note that the window rect
         // is still valid even though the window is hidden
@@ -744,6 +758,7 @@ void RestoreWndFromTray(HWND hWnd) {
     SetActiveWindow(hWnd);
     SetForegroundWindow(hWnd);
     Globals.bMinimizedToTray = false;
+    SetAnimateMinimizeRestore(0); // reset
 
     // Remove the tray icon. As described above, remove the icon after the
     // call to DrawAnimatedRects, or the taskbar will not refresh itself
@@ -4751,12 +4766,13 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode, UINT n
         }
         else {
             WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hwnd, &winInfo, mode, nCmdShow);
-            if (GetSetDoAnimateMinimize(-1) && wndpl.showCmd) {
+            if (SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow ? 1 : -1) && wndpl.showCmd) {
                 DrawAnimatedRects(hwnd, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
             }
             SetWindowPlacement(hwnd, &wndpl); // 1st set correct screen (DPI Aware)
             RelAdjustRectForDPI(&wndpl.rcNormalPosition, winInfo.dpi, Scintilla_GetWindowDPI(hwnd));
             SetWindowPlacement(hwnd, &wndpl); // 2nd resize position to correct DPI settings
+            SetAnimateMinimizeRestore(0);
         }
         SetWindowPos(hwnd, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         s_bPrevFullScreenFlag = false;
@@ -4772,13 +4788,14 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode, UINT n
         GetMonitorInfo(MonitorFromWindow(hwnd, MONITOR_DEFAULTTOPRIMARY), &mi);
         SetWindowLong(hwnd, GWL_STYLE, dwStyle & ~dwRmvFScrStyle);
         WINDOWPLACEMENT const wndpl = WindowPlacementFromInfo(hwnd, NULL, mode, nCmdShow);
-        if (GetSetDoAnimateMinimize(-1) && wndpl.showCmd) {
+        if (SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow ? 1 : -1) && wndpl.showCmd) {
             DrawAnimatedRects(hwnd, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
         }
         SetWindowPlacement(hwnd, &wndpl);
         SetWindowPos(hwnd, HWND_TOPMOST, mi.rcMonitor.left, mi.rcMonitor.top,
             mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top,
             SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+        SetAnimateMinimizeRestore(0);
         Settings.ShowTitlebar = Settings.ShowMenubar = Settings.ShowToolbar = Settings.ShowStatusbar = false;
         Settings.AlwaysOnTop = true;
         s_bPrevFullScreenFlag = true;

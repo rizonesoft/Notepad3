@@ -1936,8 +1936,6 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     // initial set text in front of ShowWindow()
     EditSetNewText(Globals.hwndEdit, "", 0, false, false);
 
-    GetSetDoAnimateMinimize(Settings2.DrawAnimatedWindow ? 1 : 0);
-
     ShowWindowAsync(s_hwndEditFrame, SW_SHOWDEFAULT);
     ShowWindowAsync(Globals.hwndEdit, SW_SHOWDEFAULT);
     //~SnapToWinInfoPos(hwndMain, g_IniWinInfo, SCR_NORMAL, SW_HIDE); ~ instead set all needed properties  here:
@@ -3522,8 +3520,16 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam,LPARAM lParam)
 //
 LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    if (wParam == SIZE_MINIMIZED) {
+    switch (wParam) {
+    case SIZE_MINIMIZED:
+        SetAnimateMinimizeRestore(0); // reset
         return FALSE;
+    case SIZE_MAXIMIZED:
+    case SIZE_RESTORED:
+        SetAnimateMinimizeRestore(0); // reset
+        break;
+    default:
+        break;
     }
 
     int x = 0;
@@ -7623,12 +7629,20 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SetNotifyIconTitle(hwnd);
             return FALSE; // swallowed
         }
+        else {
+            SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow ? 1 : -1);
+        }
+        break;
+
+    case SC_MAXIMIZE:
+        SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow ? 1 : -1);
         break;
 
     case SC_RESTORE: {
+        SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow ? 1 : -1);
         LRESULT lrv = DefWindowProc(hwnd, umsg, wParam, lParam);
         ShowOwnedPopups(hwnd, true);
-        return(lrv);
+        return (lrv);
     }
 
     default:
