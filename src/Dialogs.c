@@ -676,8 +676,7 @@ static bool GetTrayWndRect(LPRECT lpTrayRect) {
 
 
 // Check to see if the animation has been disabled
-// call SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow ? 1 : -1 | 0 for reset); 
-bool SetAnimateMinimizeRestore(const int flag)
+bool SetAnimateMinimizeRestore(const unsigned flag)
 {
     static int systemFlag = 0;
     bool       bAnim = false;
@@ -696,7 +695,7 @@ bool SetAnimateMinimizeRestore(const int flag)
         bAnim = ai.iMinAnimate ? true : false;
         systemFlag = 0;
     }
-    else if (flag > 0) { // set animation
+    else if (flag == 1) { // set animation
         ai.iMinAnimate = 1;
         SystemParametersInfo(SPI_SETANIMATION, sizeof(ai), &ai, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
         bAnim = true;
@@ -713,7 +712,7 @@ bool SetAnimateMinimizeRestore(const int flag)
 
 void MinimizeWndToTray(HWND hWnd) {
 
-    if (SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow ? 1 : -1)) {
+    if (SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow)) {
 
         // Get the rect of the window. It is safe to use the rect of the whole
         // window - DrawAnimatedRects will only draw the caption
@@ -739,7 +738,7 @@ void MinimizeWndToTray(HWND hWnd) {
 
 void RestoreWndFromTray(HWND hWnd) {
 
-    if (SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow ? 1 : -1)) {
+    if (SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow)) {
 
         // Get the rect of the tray and the window. Note that the window rect
         // is still valid even though the window is hidden
@@ -4766,7 +4765,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode, UINT n
         }
         else {
             WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hwnd, &winInfo, mode, nCmdShow);
-            if (SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow ? 1 : -1) && wndpl.showCmd) {
+            if (SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow) && wndpl.showCmd) {
                 DrawAnimatedRects(hwnd, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
             }
             SetWindowPlacement(hwnd, &wndpl); // 1st set correct screen (DPI Aware)
@@ -4788,7 +4787,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode, UINT n
         GetMonitorInfo(MonitorFromWindow(hwnd, MONITOR_DEFAULTTOPRIMARY), &mi);
         SetWindowLong(hwnd, GWL_STYLE, dwStyle & ~dwRmvFScrStyle);
         WINDOWPLACEMENT const wndpl = WindowPlacementFromInfo(hwnd, NULL, mode, nCmdShow);
-        if (SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow ? 1 : -1) && wndpl.showCmd) {
+        if (SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow) && wndpl.showCmd) {
             DrawAnimatedRects(hwnd, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
         }
         SetWindowPlacement(hwnd, &wndpl);
