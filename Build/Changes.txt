@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.24.0111.(build_#) (2024-01-11)
+Current BETA/RC Version 6.24.0224.(build_#) (2024-02-24)
 ========================================================
 
 --------------------------------------------------------
@@ -70,6 +70,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.224.1]- Explicit update toolbar and titlebar on drag n drop file.
 [1017.1]- Wrapping at long line marker.
 [1017.1]- Ctrl+I wraps according to highest column long-line-edge-marker, if defined.
 [.927.1]- Using selection color also for not focused selections (secondary and inactive).
@@ -121,6 +122,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.224.1]- Settings2:DrawAnimatedWindow - support system settings.
+[.224.1]- Correction for settings2 DrawAnimatedWindow.
 [.111.1]- Horizontal mouse wheel scrolling direction.
 [.111.1]- Ctrl+Up/Down should keep selection.
 [.111.1]- "grepWinNP3": Search results context menu "Fix Open with Editor" (GRE).
