@@ -6,7 +6,7 @@
         <tr><th>File        <td>SimpleIni.h
         <tr><th>Author      <td>Brodie Thiesfield
         <tr><th>Source      <td>https://github.com/brofield/simpleini
-        <tr><th>Version     <td>4.19
+        <tr><th>Version     <td>4.22
     </table>
 
     Jump to the @link CSimpleIniTempl CSimpleIni @endlink interface documentation.
@@ -16,7 +16,6 @@
     This component allows an INI-style configuration file to be used on both
     Windows and Linux/Unix. It is fast, simple and source code using this
     component will compile unchanged on either OS.
-
 
     @section features FEATURES
 
@@ -39,13 +38,14 @@
     - support for non-standard character types or file encodings
       via user-written converter classes
     - support for adding/modifying values programmatically
-    - compiles cleanly in the following compilers:
+    - should compile cleanly without warning usually at the strictest warning level
+    - it has been tested with the following compilers:
         - Windows/VC6 (warning level 3)
         - Windows/VC.NET 2003 (warning level 4)
         - Windows/VC 2005 (warning level 4)
         - Windows/VC 2019 (warning level 4)
         - Linux/gcc (-Wall)
-
+        - Mac OS/c++ (-Wall)
 
     @section usage USAGE SUMMARY
 
@@ -64,7 +64,7 @@
         definitions are just shortcuts for commonly used types. Other types
         (PRUnichar, unsigned short, unsigned char) are also possible.
         <table>
-            <tr><th>Interface   <th>Case-sensitive  <th>Load UTF-8  <th>Load MBCS   <th>Typedef
+        <tr><th>Interface       <th>Case-sensitive  <th>Load UTF-8  <th>Load MBCS   <th>Typedef
         <tr><th>SI_NO_CONVERSION
             <tr><td>char        <td>No              <td>Yes         <td>No          <td>CSimpleIniA
             <tr><td>char        <td>Yes             <td>Yes         <td>No          <td>CSimpleIniCaseA
@@ -87,6 +87,8 @@
         #1  On Windows you are better to use CSimpleIniA with SI_CONVERT_WIN32.<br>
         #2  Only affects Windows. On Windows this uses MBCS functions and
             so may fold case incorrectly leading to uncertain results.
+    -# Set all the options that you require, see all the Set*() options below. 
+        The SetUnicode() option is very common and can be specified in the constructor.
     -# Call LoadData() or LoadFile() to load and parse the INI configuration file
     -# Access and modify the data of the file using the following functions
         <table>
@@ -176,15 +178,18 @@
     - Not thread-safe so manage your own locking
 
     @section contrib CONTRIBUTIONS
+
+    Many thanks to the following contributors:
     
     - 2010/05/03: Tobias Gehrig: added GetDoubleValue()
+    - See list of many contributors in github
 
     @section licence MIT LICENCE
 
     The licence text below is the boilerplate "MIT Licence" used from:
     http://www.opensource.org/licenses/mit-license.php
 
-    Copyright (c) 2006-2012, Brodie Thiesfield
+    Copyright (c) 2006-2024, Brodie Thiesfield
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -1476,28 +1481,25 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 SI_Error
 CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
-  const SI_WCHAR_T* a_pwszFile
-)
+    const SI_WCHAR_T* a_pwszFile)
 {
-  if (a_pwszFile && a_pwszFile[0])
-  {
-    HANDLE hFile = CreateFile(a_pwszFile,
-      GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
-      nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (a_pwszFile && a_pwszFile[0]) {
+        HANDLE hFile = CreateFile(a_pwszFile,
+            GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+            nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-    //~SI_ASSERT(hFile != INVALID_HANDLE_VALUE); // maybe .ini does not exist: allowed here
+        //~SI_ASSERT(hFile != INVALID_HANDLE_VALUE); // maybe .ini does not exist: allowed here
 
-    if (!IS_VALID_HANDLE(hFile))
-    {
-      return SI_Error::SI_FILE;
+        if (!IS_VALID_HANDLE(hFile)) {
+            return SI_Error::SI_FILE;
+        }
+
+        SI_Error rc = LoadFile(hFile);
+
+        CloseHandle(hFile);
+        return rc;
     }
-
-    SI_Error rc = LoadFile(hFile);
-
-    CloseHandle(hFile);
-    return rc;
-  }
-  return SI_Error::SI_FILE;
+    return SI_Error::SI_FILE;
 }
 
 #else
@@ -1537,34 +1539,33 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 SI_Error
 CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadFile(
-  HANDLE a_hFile
-)
+    HANDLE a_hFile)
 {
-  DWORD dwFileSizeHigh = 0UL;
-  DWORD const dwFileSize = GetFileSize(a_hFile, &dwFileSizeHigh);
-  if ((dwFileSize == INVALID_FILE_SIZE) || (dwFileSizeHigh != 0UL)) {
-    return SI_Error::SI_FILE;
-  }
+    DWORD       dwFileSizeHigh = 0UL;
+    DWORD const dwFileSize = GetFileSize(a_hFile, &dwFileSizeHigh);
+    if ((dwFileSize == INVALID_FILE_SIZE) || (dwFileSizeHigh != 0UL)) {
+        return SI_Error::SI_FILE;
+    }
 
-  // allocate and ensure NULL terminated
-  auto* pData = new(std::nothrow) char[(size_t)dwFileSize + static_cast<size_t>(1)];
-  if (!pData) {
-    return SI_Error::SI_NOMEM;
-  }
-  pData[dwFileSize] = '\0';
+    // allocate and ensure NULL terminated
+    auto* pData = new (std::nothrow) char[(size_t)dwFileSize + static_cast<size_t>(1)];
+    if (!pData) {
+        return SI_Error::SI_NOMEM;
+    }
+    pData[dwFileSize] = '\0';
 
-  // load the raw file data
-  DWORD nBytesRead = 0UL;
-  BOOL const result = ReadFile(a_hFile, pData, dwFileSize, &nBytesRead, nullptr);
-  if ((result == FALSE) || (nBytesRead != dwFileSize)) {
+    // load the raw file data
+    DWORD      nBytesRead = 0UL;
+    BOOL const result = ReadFile(a_hFile, pData, dwFileSize, &nBytesRead, nullptr);
+    if ((result == FALSE) || (nBytesRead != dwFileSize)) {
+        delete[] pData;
+        return SI_Error::SI_FILE;
+    }
+
+    // convert the raw data to unicode
+    SI_Error const rc = LoadData(pData, (size_t)nBytesRead);
     delete[] pData;
-    return SI_Error::SI_FILE;
-  }
-
-  // convert the raw data to unicode
-  SI_Error const rc = LoadData(pData, (size_t)nBytesRead);
-  delete[] pData;
-  return rc;
+    return rc;
 }
 
 #else
@@ -1613,10 +1614,9 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
 
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 SI_Error
-CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadData(
-    const char *    a_pData,
-    size_t          a_uDataLen
-    )
+CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::LoadData(
+    const char* a_pData,
+    size_t      a_uDataLen)
 {
     if (!a_pData) {
         return SI_Error::SI_OK;
@@ -1628,38 +1628,36 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadData(
     // already loaded data and try to change mode half-way through then this will
     // be ignored and we will assert in debug versions
     if (a_uDataLen >= 3 && memcmp(a_pData, SI_UTF8_SIGNATURE, 3) == 0) {
-        a_pData    += 3;
+        a_pData += 3;
         a_uDataLen -= 3;
         SI_ASSERT(m_bStoreIsUtf8 || !m_pData); // we don't expect mixed mode data
         SetUnicode();
     }
-    else {  // check for UTF-16 LE/BE
+    else { // check for UTF-16 LE/BE
 
-      if (a_uDataLen >= 2 && memcmp(a_pData, SI_UTF16BE_SIGNATURE, 2) == 0)
-      {
-          _swab((char*)a_pData, (char*)a_pData, (int)a_uDataLen);
-      }
-      if (a_uDataLen >= 2 && memcmp(a_pData, SI_UTF16LE_SIGNATURE, 2) == 0)
-      {
-          // convert to UTF-8
-          pDataUTF16toUTF8 = new(std::nothrow) char[a_uDataLen * 3 + 1];
-          if (!pDataUTF16toUTF8) {
-            return SI_Error::SI_NOMEM;
-          }
+        if (a_uDataLen >= 2 && memcmp(a_pData, SI_UTF16BE_SIGNATURE, 2) == 0) {
+            _swab((char*)a_pData, (char*)a_pData, (int)a_uDataLen);
+        }
+        if (a_uDataLen >= 2 && memcmp(a_pData, SI_UTF16LE_SIGNATURE, 2) == 0) {
+            // convert to UTF-8
+            pDataUTF16toUTF8 = new (std::nothrow) char[a_uDataLen * 3 + 1];
+            if (!pDataUTF16toUTF8) {
+                return SI_Error::SI_NOMEM;
+            }
 
-          auto const convCnt = (size_t)::WideCharToMultiByte(CP_UTF8, 0, (LPCWSTR)a_pData + 1, (int)(a_uDataLen / sizeof(WCHAR) - 1),
-                                                             (LPSTR)pDataUTF16toUTF8, (int)(a_uDataLen * 3 + 1), nullptr, nullptr);
-          if (convCnt == 0) {
-            delete[] pDataUTF16toUTF8;
-            return SI_Error::SI_FAIL;
-          }
-          pDataUTF16toUTF8[convCnt] = '\0';
+            auto const convCnt = (size_t)::WideCharToMultiByte(CP_UTF8, 0, (LPCWSTR)a_pData + 1, (int)(a_uDataLen / sizeof(WCHAR) - 1),
+                (LPSTR)pDataUTF16toUTF8, (int)(a_uDataLen * 3 + 1), nullptr, nullptr);
+            if (convCnt == 0) {
+                delete[] pDataUTF16toUTF8;
+                return SI_Error::SI_FAIL;
+            }
+            pDataUTF16toUTF8[convCnt] = '\0';
 
-          a_pData = pDataUTF16toUTF8;
-          a_uDataLen = convCnt;
-          SI_ASSERT(m_bStoreIsUtf8 || !m_pData); // we don't expect mixed mode data
-          SetUnicode();
-      }
+            a_pData = pDataUTF16toUTF8;
+            a_uDataLen = convCnt;
+            SI_ASSERT(m_bStoreIsUtf8 || !m_pData); // we don't expect mixed mode data
+            SetUnicode();
+        }
     }
 
     if (a_uDataLen == 0) {
@@ -1669,7 +1667,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadData(
 
     // determine the length of the converted data
     SI_CONVERTER converter(m_bStoreIsUtf8);
-    size_t uLen = converter.SizeFromStore(a_pData, a_uDataLen);
+    size_t       uLen = converter.SizeFromStore(a_pData, a_uDataLen);
     if (uLen == (size_t)(-1)) {
         delete[] pDataUTF16toUTF8;
         return SI_Error::SI_FAIL;
@@ -1677,12 +1675,12 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadData(
 
     // allocate memory for the data, ensure that there is a NULL
     // terminator wherever the converted data ends
-    auto * pData = new(std::nothrow) SI_CHAR[uLen+1];
+    auto* pData = new (std::nothrow) SI_CHAR[uLen + 1];
     if (!pData) {
         delete[] pDataUTF16toUTF8;
         return SI_Error::SI_NOMEM;
     }
-    memset(pData, 0, sizeof(SI_CHAR)*(uLen+1));
+    memset(pData, 0, sizeof(SI_CHAR) * (uLen + 1));
 
     // convert the data
     if (!converter.ConvertFromStore(a_pData, a_uDataLen, pData, uLen)) {
@@ -1696,11 +1694,11 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadData(
 
     // parse it
     const static SI_CHAR empty = 0;
-    SI_CHAR * pWork = pData;
-    const SI_CHAR * pSection = &empty;
-    const SI_CHAR * pItem = NULL;
-    const SI_CHAR * pVal = NULL;
-    const SI_CHAR * pComment = NULL;
+    SI_CHAR*             pWork = pData;
+    const SI_CHAR*       pSection = &empty;
+    const SI_CHAR*       pItem = NULL;
+    const SI_CHAR*       pVal = NULL;
+    const SI_CHAR*       pComment = NULL;
 
     // We copy the strings if we are loading data into this class when we
     // already have stored some.
@@ -1709,12 +1707,14 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadData(
     // find a file comment if it exists, this is a comment that starts at the
     // beginning of the file and continues until the first blank line.
     SI_Error rc = FindFileComment(pWork, bCopyStrings);
-    if (rc < SI_Error::SI_OK) return rc;
+    if (rc < SI_Error::SI_OK)
+        return rc;
 
     // add every entry in the file to the data table
     while (FindEntry(pWork, pSection, pItem, pVal, pComment)) {
         rc = AddEntry(pSection, pItem, pVal, pComment, false, bCopyStrings);
-        if (rc < SI_Error::SI_OK) return rc;
+        if (rc < SI_Error::SI_OK)
+            return rc;
     }
 
     // store these strings if we didn't copy them
@@ -1723,7 +1723,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadData(
     }
     else {
         m_pData = pData;
-        m_uDataLen = uLen+1;
+        m_uDataLen = uLen + 1;
     }
     return SI_Error::SI_OK;
 }
@@ -1774,19 +1774,17 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindFileComment(
 }
 
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
-bool
-CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindEntry(
-    SI_CHAR *&        a_pData,
-    const SI_CHAR *&  a_pSection,
-    const SI_CHAR *&  a_pKey,
-    const SI_CHAR *&  a_pVal,
-    const SI_CHAR *&  a_pComment
-    ) const
+bool CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::FindEntry(
+    SI_CHAR*&       a_pData,
+    const SI_CHAR*& a_pSection,
+    const SI_CHAR*& a_pKey,
+    const SI_CHAR*& a_pVal,
+    const SI_CHAR*& a_pComment) const
 {
     a_pComment = NULL;
 
-    bool bHaveValue = false;
-    SI_CHAR * pTrail = NULL;
+    bool     bHaveValue = false;
+    SI_CHAR* pTrail = NULL;
     while (*a_pData) {
         // skip spaces and empty lines
         while (*a_pData && IsSpace(*a_pData)) {
@@ -1832,7 +1830,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindEntry(
             *pTrail = 0;
 
             // skip to the end of the line
-            ++a_pData;  // safe as checked that it == ']' above
+            ++a_pData; // safe as checked that it == ']' above
             while (*a_pData && !IsNewLineChar(*a_pData)) {
                 ++a_pData;
             }
@@ -1872,38 +1870,38 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindEntry(
         ++pTrail;
 
         if (bHaveValue) {
-            // process the value 
-        *pTrail = 0;
+            // process the value
+            *pTrail = 0;
 
-        // skip leading whitespace on the value
-        ++a_pData;  // safe as checked that it == '=' above
-        while (*a_pData && !IsNewLineChar(*a_pData) && IsSpace(*a_pData)) {
-            ++a_pData;
-        }
+            // skip leading whitespace on the value
+            ++a_pData; // safe as checked that it == '=' above
+            while (*a_pData && !IsNewLineChar(*a_pData) && IsSpace(*a_pData)) {
+                ++a_pData;
+            }
 
-        // find the end of the value which is the end of this line
-        a_pVal = a_pData;
-        while (*a_pData && !IsNewLineChar(*a_pData)) {
-            ++a_pData;
-        }
+            // find the end of the value which is the end of this line
+            a_pVal = a_pData;
+            while (*a_pData && !IsNewLineChar(*a_pData)) {
+                ++a_pData;
+            }
 
-        // remove trailing spaces from the value
-        pTrail = a_pData - 1;
-        if (*a_pData) { // prepare for the next round
-            SkipNewLine(a_pData);
-        }
-        while (pTrail >= a_pVal && IsSpace(*pTrail)) {
-            --pTrail;
-        }
-        ++pTrail;
-        *pTrail = 0;
+            // remove trailing spaces from the value
+            pTrail = a_pData - 1;
+            if (*a_pData) { // prepare for the next round
+                SkipNewLine(a_pData);
+            }
+            while (pTrail >= a_pVal && IsSpace(*pTrail)) {
+                --pTrail;
+            }
+            ++pTrail;
+            *pTrail = 0;
 
-        // check for multi-line entries
-        if (m_bAllowMultiLine && IsMultiLineTag(a_pVal)) {
-            // skip the "<<<" to get the tag that will end the multiline
-            const SI_CHAR * pTagName = a_pVal + 3;
-            return LoadMultiLineText(a_pData, a_pVal, pTagName);
-        }
+            // check for multi-line entries
+            if (m_bAllowMultiLine && IsMultiLineTag(a_pVal)) {
+                // skip the "<<<" to get the tag that will end the multiline
+                const SI_CHAR* pTagName = a_pVal + 3;
+                return LoadMultiLineText(a_pData, a_pVal, pTagName);
+            }
 
             // check for quoted values, we are not supporting escapes in quoted values (yet)
             if (m_bParseQuotes) {
@@ -1916,7 +1914,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindEntry(
         }
         else {
             // no value to process, just prepare for the next
-            if (*a_pData) { 
+            if (*a_pData) {
                 SkipNewLine(a_pData);
             }
             *pTrail = 0;
@@ -2362,8 +2360,10 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetLongValue(
     }
 
     // any invalid strings will return the default value
-    if (*pszSuffix) { 
-        return a_nDefault; 
+    if (*pszSuffix) {
+        if (!IsSpace(*pszSuffix) && !IsComment(*pszSuffix)) {
+            return a_nDefault;
+        }
     }
 
     return nValue;
@@ -2388,7 +2388,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SetLongValue(
 #if __STDC_WANT_SECURE_LIB__ && !_WIN32_WCE
     sprintf_s(szInput, a_bUseHex ? "0x%lx" : "%ld", a_nValue);
 #else // !__STDC_WANT_SECURE_LIB__
-    sprintf(szInput, a_bUseHex ? "0x%lx" : "%ld", a_nValue);
+    snprintf(szInput, sizeof(szInput), a_bUseHex ? "0x%lx" : "%ld", a_nValue);
 #endif // __STDC_WANT_SECURE_LIB__
 
     // convert to output text
@@ -2404,40 +2404,43 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SetLongValue(
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 long long
 CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::GetLongLongValue(
-  const SI_CHAR* a_pSection,
-  const SI_CHAR* a_pKey,
-  long long      a_nDefault,
-  bool* a_pHasMultiple
-) const
+    const SI_CHAR* a_pSection,
+    const SI_CHAR* a_pKey,
+    long long      a_nDefault,
+    bool*          a_pHasMultiple) const
 {
-  // return the default if we don't have a value
-  const SI_CHAR* pszValue = GetValue(a_pSection, a_pKey, NULL, a_pHasMultiple);
-  if (!pszValue || !*pszValue) return a_nDefault;
+    // return the default if we don't have a value
+    const SI_CHAR* pszValue = GetValue(a_pSection, a_pKey, NULL, a_pHasMultiple);
+    if (!pszValue || !*pszValue)
+        return a_nDefault;
 
-  // convert to UTF-8/MBCS which for a numeric value will be the same as ASCII
-  char szValue[128] = { 0 };
-  SI_CONVERTER c(m_bStoreIsUtf8);
-  if (!c.ConvertToStore(pszValue, szValue, sizeof(szValue))) {
-    return a_nDefault;
-  }
+    // convert to UTF-8/MBCS which for a numeric value will be the same as ASCII
+    char         szValue[128] = { 0 };
+    SI_CONVERTER c(m_bStoreIsUtf8);
+    if (!c.ConvertToStore(pszValue, szValue, sizeof(szValue))) {
+        return a_nDefault;
+    }
 
-  // handle the value as hex if prefaced with "0x"
-  long long nValue = a_nDefault;
-  char* pszSuffix = szValue;
-  if (szValue[0] == '0' && (szValue[1] == 'x' || szValue[1] == 'X')) {
-    if (!szValue[2]) return a_nDefault;
-    nValue = strtoll(&szValue[2], &pszSuffix, 16);
-  }
-  else {
-    nValue = strtoll(szValue, &pszSuffix, 10);
-  }
+    // handle the value as hex if prefaced with "0x"
+    long long nValue = a_nDefault;
+    char*     pszSuffix = szValue;
+    if (szValue[0] == '0' && (szValue[1] == 'x' || szValue[1] == 'X')) {
+        if (!szValue[2])
+            return a_nDefault;
+        nValue = strtoll(&szValue[2], &pszSuffix, 16);
+    }
+    else {
+        nValue = strtoll(szValue, &pszSuffix, 10);
+    }
 
-  // any invalid strings will return the default value
-  if (*pszSuffix) {
-    return a_nDefault;
-  }
+    // any invalid strings will return the default value
+    if (*pszSuffix) {
+        if (!IsSpace(*pszSuffix) && !IsComment(*pszSuffix)) {
+            return a_nDefault;
+        }
+    }
 
-  return nValue;
+    return nValue;
 }
 
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
@@ -2459,7 +2462,7 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::SetLongLongValue(
 #if __STDC_WANT_SECURE_LIB__ && !_WIN32_WCE
   sprintf_s(szInput, a_bUseHex ? "0x%llx" : "%lld", a_nValue);
 #else // !__STDC_WANT_SECURE_LIB__
-  sprintf(szInput, a_bUseHex ? "0x%llx" : "%lld", a_nValue);
+  snprintf(szInput, sizeof(szInput), a_bUseHex ? "0x%llx" : "%lld", a_nValue);
 #endif // __STDC_WANT_SECURE_LIB__
 
   // convert to output text
@@ -2497,7 +2500,9 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetDoubleValue(
 
     // any invalid strings will return the default value
     if (!pszSuffix || *pszSuffix) { 
-        return a_nDefault; 
+        if (!IsSpace(*pszSuffix) && !IsComment(*pszSuffix)) {
+            return a_nDefault;
+        }
     }
 
     return nValue;
@@ -2521,7 +2526,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SetDoubleValue(
 #if __STDC_WANT_SECURE_LIB__ && !_WIN32_WCE
 	sprintf_s(szInput, "%f", a_nValue);
 #else // !__STDC_WANT_SECURE_LIB__
-	sprintf(szInput, "%f", a_nValue);
+    snprintf(szInput, sizeof(szInput), "%f", a_nValue);
 #endif // __STDC_WANT_SECURE_LIB__
 
 	// convert to output text
@@ -2836,10 +2841,9 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::SaveFile(
 
 template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 SI_Error
-CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
-    OutputWriter &  a_oOutput,
-    bool            a_bAddSignature
-    ) const
+CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::Save(
+    OutputWriter& a_oOutput,
+    bool          a_bAddSignature) const
 {
     Converter convert(m_bStoreIsUtf8);
 
@@ -2883,7 +2887,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
 
     // iterate through our sections and output the data
     typename TNamesDepend::const_iterator iSection = oSections.begin();
-    for ( ; iSection != oSections.end(); ++iSection ) {
+    for (; iSection != oSections.end(); ++iSection) {
         // write out the comment if there is one
         if (iSection->pComment) {
             if (bNeedNewLine) {
@@ -2907,7 +2911,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
             if (!convert.ConvertToStore(iSection->pItem)) {
                 return SI_Error::SI_FAIL;
             }
-            //a_oOutput.Write(SI_NEWLINE_A); // before new section
+            // a_oOutput.Write(SI_NEWLINE_A); // before new section
             a_oOutput.Write("[");
             a_oOutput.Write(convert.Data());
             a_oOutput.Write("]");
@@ -2928,13 +2932,13 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
 
         // write all keys and values
         typename TNamesDepend::const_iterator iKey = oKeys.begin();
-        for ( ; iKey != oKeys.end(); ++iKey) {
+        for (; iKey != oKeys.end(); ++iKey) {
             // get all values for this key
             TNamesDepend oValues;
             GetAllValues(iSection->pItem, iKey->pItem, oValues);
 
             typename TNamesDepend::const_iterator iValue = oValues.begin();
-            for ( ; iValue != oValues.end(); ++iValue) {
+            for (; iValue != oValues.end(); ++iValue) {
                 // write out the comment if there is one
                 if (iValue->pComment) {
                     if (bNeedNewLine) {
@@ -2952,31 +2956,31 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::Save(
                 }
                 a_oOutput.Write(convert.Data());
 
-                // write the value as long 
+                // write the value as long
                 if (*iValue->pItem || !m_bAllowKeyOnly) {
-                if (!convert.ConvertToStore(iValue->pItem)) {
-                    return SI_Error::SI_FAIL;
-                }
-                a_oOutput.Write(m_bSpaces ? " = " : "=");
+                    if (!convert.ConvertToStore(iValue->pItem)) {
+                        return SI_Error::SI_FAIL;
+                    }
+                    a_oOutput.Write(m_bSpaces ? " = " : "=");
                     if (m_bParseQuotes && IsSingleLineQuotedValue(iValue->pItem)) {
                         // the only way to preserve external whitespace on a value (i.e. before or after)
-                        // is to quote it. This is simple quoting, we don't escape quotes within the data. 
+                        // is to quote it. This is simple quoting, we don't escape quotes within the data.
                         a_oOutput.Write("\"");
                         a_oOutput.Write(convert.Data());
                         a_oOutput.Write("\"");
                     }
                     else if (m_bAllowMultiLine && IsMultiLineData(iValue->pItem)) {
-                    // multi-line data needs to be processed specially to ensure
-                    // that we use the correct newline format for the current system
-                    a_oOutput.Write("<<<END_OF_TEXT" SI_NEWLINE_A);
-                    if (!OutputMultiLineText(a_oOutput, convert, iValue->pItem)) {
-                        return SI_Error::SI_FAIL;
+                        // multi-line data needs to be processed specially to ensure
+                        // that we use the correct newline format for the current system
+                        a_oOutput.Write("<<<END_OF_TEXT" SI_NEWLINE_A);
+                        if (!OutputMultiLineText(a_oOutput, convert, iValue->pItem)) {
+                            return SI_Error::SI_FAIL;
+                        }
+                        a_oOutput.Write("END_OF_TEXT");
                     }
-                    a_oOutput.Write("END_OF_TEXT");
-                }
-                else {
-                    a_oOutput.Write(convert.Data());
-	                }
+                    else {
+                        a_oOutput.Write(convert.Data());
+                    }
                 }
                 a_oOutput.Write(SI_NEWLINE_A);
                 bNeedNewLine = false;
