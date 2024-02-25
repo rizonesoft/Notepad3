@@ -773,8 +773,14 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
 #define Sci_IsMultiSelection() ((SciCall_GetSelections() > 1) && !SciCall_IsSelectionRectangle())
 #define Sci_IsMultiOrRectangleSelection() ((SciCall_GetSelections() > 1) || SciCall_IsSelectionRectangle())
 
-#define Sci_IsSelectionSingleLine() (SciCall_LineFromPosition(SciCall_GetSelectionEnd()) == SciCall_LineFromPosition(SciCall_GetSelectionStart()))
-#define Sci_IsSelectionMultiLine() ((SciCall_LineFromPosition(SciCall_GetSelectionEnd()) -  SciCall_LineFromPosition(SciCall_GetSelectionStart())) > 1)
+#define Sci_GetLineStartPosition(position) SciCall_PositionFromLine(SciCall_LineFromPosition(position))
+#define Sci_GetLineEndPosition(position) SciCall_GetLineEndPosition(SciCall_LineFromPosition(position))
+
+#define Sci_IsCompleteLineSelected() ((Sci_GetLineStartPosition(SciCall_GetSelectionStart()) == SciCall_GetSelectionStart()) && \
+                                      (Sci_GetLineEndPosition(SciCall_GetSelectionEnd()) == SciCall_GetSelectionEnd()))
+
+#define Sci_IsSelectionSingleLine() (SciCall_LineFromPosition(SciCall_GetSelectionEnd()) == SciCall_LineFromPosition(SciCall_GetSelectionStart())) 
+#define Sci_IsSelectionMultiLine() ((SciCall_LineFromPosition(SciCall_GetSelectionEnd()) - SciCall_LineFromPosition(SciCall_GetSelectionStart())) > 1)
 
 #define Sci_IsPosInSelection(position) ((position >= SciCall_GetSelectionStart()) && (position <= SciCall_GetSelectionEnd()))
 
@@ -787,9 +793,6 @@ DeclareSciCallR0(IsSelectionRectangle, SELECTIONISRECTANGLE, bool);
 #define Sci_GetAnchorLineNumber() SciCall_LineFromPosition(SciCall_GetAnchor())
 #define Sci_GetLastDocLineNumber() (SciCall_GetLineCount() - 1)
 #define Sci_InLastLine() (SciCall_GetLineCount() == (Sci_GetCurrentLineNumber() + 1))
-
-#define Sci_GetLineStartPosition(position) SciCall_PositionFromLine(SciCall_LineFromPosition(position))
-#define Sci_GetLineEndPosition(position) SciCall_GetLineEndPosition(SciCall_LineFromPosition(position))
 
 #define Sci_GetCurrChar() SciCall_GetCharAt(SciCall_GetCurrentPos())
 #define Sci_GetNextChar() SciCall_GetCharAt(SciCall_PositionAfter(SciCall_GetCurrentPos()))

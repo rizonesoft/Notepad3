@@ -3398,10 +3398,13 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
 
     DocLn const iCurLine = SciCall_LineFromPosition(iCurPos);
     DocLn const iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
-    bool const bSingleLine = Sci_IsSelectionSingleLine();
+    bool const  bSingleLine = Sci_IsSelectionSingleLine();
+    bool const  bCompleteLine = Sci_IsCompleteLineSelected();
 
-    bool const _bTabIndents = SciCall_GetTabIndents();
-    bool const _bBSpUnindents = SciCall_GetBackSpaceUnIndents();
+    bool const bTabIndents = SciCall_GetTabIndents();
+    bool const bBSpUnindents = SciCall_GetBackSpaceUnIndents();
+
+    bFormatIndentation = bFormatIndentation || bCompleteLine;
 
     DocPos iDiffCurrent = 0;
     DocPos iDiffAnchor = 0;
@@ -3426,23 +3429,32 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
     }
 
     if (cmd == SCI_TAB) {
-        SciCall_SetTabIndents(bFormatIndentation ? true : _bTabIndents);
+        SciCall_SetTabIndents(bFormatIndentation ? true : bTabIndents);
         SciCall_Tab();
         if (bFormatIndentation) {
-            SciCall_SetTabIndents(_bTabIndents);
+            SciCall_SetTabIndents(bTabIndents);
         }
     } else { // SCI_BACKTAB
-        SciCall_SetBackSpaceUnIndents(bFormatIndentation ? true : _bBSpUnindents);
+        SciCall_SetBackSpaceUnIndents(bFormatIndentation ? true : bBSpUnindents);
         SciCall_BackTab();
         if (bFormatIndentation) {
-            SciCall_SetBackSpaceUnIndents(_bBSpUnindents);
+            SciCall_SetBackSpaceUnIndents(bBSpUnindents);
         }
     }
 
     if (!bForceAll) {
         if (bSingleLine) {
             if (bFormatIndentation) {
-                EditSetSelectionEx(SciCall_GetCurrentPos() + iDiffCurrent + (iAnchorPos - iCurPos), SciCall_GetCurrentPos() + iDiffCurrent, -1, -1);
+                if (bCompleteLine) {
+                    if (iCurPos < iAnchorPos) {
+                        EditSetSelectionEx(SciCall_GetLineEndPosition(iCurLine), SciCall_PositionFromLine(iCurLine), -1, -1);
+                    } else {
+                        EditSetSelectionEx(SciCall_PositionFromLine(iCurLine), SciCall_GetLineEndPosition(iCurLine), -1, -1);
+                    }
+                }
+                else {
+                    EditSetSelectionEx(SciCall_GetCurrentPos() + iDiffCurrent + (iAnchorPos - iCurPos), SciCall_GetCurrentPos() + iDiffCurrent, -1, -1);
+                }
             }
         } else { // on multiline indentation, anchor and current positions are moved to line begin resp. end
             if (bFixStart) {
@@ -5212,7 +5224,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     char mszEOL[3] = { '\0' };
     Sci_GetCurrentEOL_A(mszEOL);
 
-    int const _iTabWidth = SciCall_GetTabWidth();
+    int const iTabWidth = SciCall_GetTabWidth();
 
     if (bIsMultiSel) {
         EditPadWithSpaces(hwnd, !(iSortFlags & SORT_SHUFFLE));
@@ -5256,7 +5268,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
         int const cchw = MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, NULL, 0);
         if (cchw > 1) {
-            DocLn tabs = _iTabWidth;
+            DocLn tabs = iTabWidth;
             ptrdiff_t const lnLen = (sizeof(WCHAR) * cchw);
             pLines[i].pwszLine = AllocMem(lnLen, HEAP_ZERO_MEMORY);
             MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, pLines[i].pwszLine, cchw);
@@ -5267,7 +5279,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
                     if (*(pLines[i].pwszSortEntry) == L'\t') {
                         if (col + tabs <= iSortColumn) {
                             col += tabs;
-                            tabs = _iTabWidth;
+                            tabs = iTabWidth;
                             pLines[i].pwszSortEntry = CharNext(pLines[i].pwszSortEntry);
                         } else {
                             break;
@@ -5275,7 +5287,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
                     } else if (col < iSortColumn) {
                         col++;
                         if (--tabs == 0) {
-                            tabs = _iTabWidth;
+                            tabs = iTabWidth;
                         }
                         pLines[i].pwszSortEntry = CharNext(pLines[i].pwszSortEntry);
                     } else {
