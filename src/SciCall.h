@@ -662,6 +662,8 @@ DeclareSciCallV2(SetMarginCursorN, SETMARGINCURSORN, uintptr_t, margin, int, cur
 DeclareSciCallV2(SetFoldMarginColour, SETFOLDMARGINCOLOUR, bool, useSetting, COLORREF, colour);
 DeclareSciCallV2(SetFoldMarginHiColour, SETFOLDMARGINHICOLOUR, bool, useSetting, COLORREF, colour);
 DeclareSciCallV01(SetDefaultFoldDisplayText, SETDEFAULTFOLDDISPLAYTEXT, const char*, text);
+DeclareSciCallV01(SetMarginLeft, SETMARGINLEFT, int, width);
+DeclareSciCallV01(SetMarginRight, SETMARGINRIGHT, int, width);
 
 DeclareSciCallR2(TextWidth, TEXTWIDTH, int, int, styleNumber, const char *, text);
 
