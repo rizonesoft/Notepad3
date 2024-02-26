@@ -5073,11 +5073,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         }
         BeginWaitCursorUID(Flags.bHugeFileLoadState, IDS_MUI_SB_RECODING_DOC);
         if (EditSetNewEncoding(Globals.hwndEdit, iNewEncoding, (s_flagSetEncoding != CPI_NONE))) {
-            UpdateMargins(true);
             SetSaveNeeded(true);
         }
         EndWaitCursor();
-        UpdateToolbar();
+        PostMessage(hwnd, WM_THEMECHANGED, 0, 0);
     }
     break;
 
@@ -5103,8 +5102,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_ENCODING_SETDEFAULT:
         SelectDefEncodingDlg(hwnd, &Settings.DefaultEncoding);
-        UpdateToolbar();
-        UpdateStatusbar(false);
+        PostMessage(hwnd, WM_THEMECHANGED, 0, 0);
         break;
 
 
@@ -5117,6 +5115,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         EditEnsureConsistentLineEndings(Globals.hwndEdit);
         EndWaitCursor();
         UpdateToolbar();
+        UpdateStatusbar(false);
     }
     break;
 
@@ -6314,8 +6313,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_CHGHIST_CLEAR_UNDOREDO:
         if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"AllowClearUndoHistory", IDS_MUI_ASK_CLEAR_UNDO))) {
             UndoRedoReset();
-            UpdateMargins(true);
             UpdateToolbar();
+            UpdateMargins(true);
         }
         break;
 
