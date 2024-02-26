@@ -64,7 +64,7 @@ using namespace Scintilla::Internal;
 
 enum class EOLmode : int { UDEF = -1, CRLF = SC_EOL_CRLF, CR = SC_EOL_CR, LF = SC_EOL_LF };
 
-static OnigEncoding s_UsedEncodingsTypes[] = { ONIG_ENCODING_UTF8, ONIG_ENCODING_UTF8_CR };
+static OnigEncoding s_UsedEncodingsTypes[] = { ONIG_ENCODING_UTF8 };
 
 // ============================================================================
 // ============================================================================
@@ -328,11 +328,9 @@ Sci::Position OnigurumaRegExEngine::FindText(Document* doc, Sci::Position minPos
 
     try {
 
-      OnigEncoding const onigEncType = ((eolMode == EOLmode::CR) ? ONIG_ENCODING_UTF8_CR : ONIG_ENCODING_UTF8);
-      
       OnigErrorInfo einfo;
       int const res = onig_new(&m_RegExpr, UCharCPtr(m_RegExprStrg.c_str()), UCharCPtr(m_RegExprStrg.c_str() + m_RegExprStrg.length()),
-                                m_CmplOptions, onigEncType, &m_OnigSyntax, &einfo);
+                               m_CmplOptions, ONIG_ENCODING_UTF8, &m_OnigSyntax, &einfo);
 
       if (res != ONIG_NORMAL) {
         onig_error_code_to_str(UCharPtr(m_ErrorInfo), res, &einfo);
@@ -795,10 +793,8 @@ OnigPos SimpleRegExEngine::Find(const OnigUChar* pattern, const OnigUChar* docum
   try {
     onig_free(m_RegExpr);
 
-    OnigEncoding const onigEncType = ((m_EOLmode == EOLmode::CR) ? ONIG_ENCODING_UTF8_CR : ONIG_ENCODING_UTF8);
-
     OnigErrorInfo einfo;
-    int res = onig_new(&m_RegExpr, pattern, (pattern + patternLen), m_Options, onigEncType, &m_OnigSyntax, &einfo);
+    int res = onig_new(&m_RegExpr, pattern, (pattern + patternLen), m_Options, ONIG_ENCODING_UTF8, &m_OnigSyntax, &einfo);
 
     if (res != ONIG_NORMAL) {
       //onig_error_code_to_str(m_ErrorInfo, res, &einfo);

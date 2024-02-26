@@ -261,6 +261,50 @@ get_case_fold_codes_by_str(OnigCaseFoldType flag,
                                                     flag, p, end, items);
 }
 
+static int
+is_utf8_newline(const UChar *p, const UChar *end)
+{
+#ifdef USE_CRNL_AS_LINE_TERMINATOR
+  if (p + 1 < end) {
+    if ((*p == CARRIAGE_RET) && (*(p+1) == NEWLINE_CODE))  // CRLF
+      return 1;
+  }
+#endif
+
+#ifdef USE_UNICODE_ALL_LINE_TERMINATORS
+  if (p + 2 < end) {
+    if ((*p == 0xe2) && (*(p+1) == 0x80) && ((*(p+2) == 0xa8) || (*(p+2) == 0xa9))) // LS or PS
+      return 1;
+  }
+  if (p + 1 < end) {
+    if ((*p == 0xc2) && (*(p+1) == 0x85))  // NEL
+      return 1;
+  }
+#endif
+
+  if (p < end) {
+#ifdef USE_END_OF_FILE_AS_LINE_TERMINATOR
+    if ((*p == CARRIAGE_RET) || (*p == NEWLINE_CODE) || (*p == END_OF_FILE))
+      return 1;
+#else
+    if ((*p == CARRIAGE_RET) || (*p == NEWLINE_CODE))
+      return 1;
+#endif
+#ifdef USE_UNICODE_ALL_LINE_TERMINATORS
+    if ((*p == 0x0b) || (*p == 0x0c))  // VT or FF
+      return 1;
+#endif
+  }
+
+#ifdef USE_END_OF_FILE_AS_LINE_TERMINATOR
+  if (p == end)
+    return 1;
+#endif
+
+  return 0;
+}
+
+
 OnigEncodingType OnigEncodingUTF8 = {
   mbc_enc_len,
   "UTF-8",     /* name */
@@ -270,7 +314,7 @@ OnigEncodingType OnigEncodingUTF8 = {
   6,
 #endif
   1,           /* min enc length */
-  onigenc_is_mbc_newline_0x0a,
+  is_utf8_newline,
   mbc_to_code,
   code_to_mbclen,
   code_to_mbc,
@@ -288,34 +332,3 @@ OnigEncodingType OnigEncodingUTF8 = {
   ENC_FLAG_ASCII_COMPATIBLE|ENC_FLAG_UNICODE|ENC_FLAG_SKIP_OFFSET_1_OR_0,
   0, 0
 };
-
-
-OnigEncodingType OnigEncodingUTF8_CR = {
-  mbc_enc_len,
-  "UTF-8",     /* name */
-#ifdef USE_RFC3629_RANGE
-  4,           /* max enc length */
-#else
-  6,
-#endif
-  1,           /* min enc length */
-  //is_mbc_newline,
-  onigenc_is_mbc_newline_0x0d,
-  mbc_to_code,
-  code_to_mbclen,
-  code_to_mbc,
-  mbc_case_fold,
-  onigenc_unicode_apply_all_case_fold,
-  get_case_fold_codes_by_str,
-  onigenc_unicode_property_name_to_ctype,
-  onigenc_unicode_is_code_ctype,
-  get_ctype_code_range,
-  left_adjust_char_head,
-  onigenc_always_true_is_allowed_reverse_match,
-  NULL, /* init */
-  NULL, /* is_initialized */
-  is_valid_mbc_string,
-  ENC_FLAG_ASCII_COMPATIBLE|ENC_FLAG_UNICODE|ENC_FLAG_SKIP_OFFSET_1_OR_0,
-  0, 0
-};
-

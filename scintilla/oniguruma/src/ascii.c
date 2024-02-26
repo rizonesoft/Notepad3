@@ -93,12 +93,37 @@ ascii_is_code_ctype(OnigCodePoint code, unsigned int ctype)
     return FALSE;
 }
 
+static int
+ascii_is_newline(const UChar *p, const UChar *end) {
+#ifdef USE_CRNL_AS_LINE_TERMINATOR
+  if (p + 1 < end) {
+    if ((*p == CARRIAGE_RET) && (*(p+1) == NEWLINE_CODE))
+      return 1;
+  }
+#endif
+  if (p < end) {
+#ifdef USE_END_OF_FILE_AS_LINE_TERMINATOR
+    if ((*p == CARRIAGE_RET) || (*p == NEWLINE_CODE) || (*p == END_OF_FILE))
+      return 1;
+#else
+    if ((*p == CARRIAGE_RET) || (*p == NEWLINE_CODE))
+      return 1;
+#endif
+  }
+#ifdef USE_END_OF_FILE_AS_LINE_TERMINATOR
+  if (p == end)
+    return 1;
+#endif
+  return 0;
+}
+
+
 OnigEncodingType OnigEncodingASCII = {
   onigenc_single_byte_mbc_enc_len,
   "US-ASCII",  /* name */
   1,           /* max enc length */
   1,           /* min enc length */
-  onigenc_is_mbc_newline_0x0a,
+  ascii_is_newline,
   onigenc_single_byte_mbc_to_code,
   onigenc_single_byte_code_to_mbclen,
   onigenc_single_byte_code_to_mbc,
@@ -116,29 +141,3 @@ OnigEncodingType OnigEncodingASCII = {
   ENC_FLAG_ASCII_COMPATIBLE|ENC_FLAG_SKIP_OFFSET_1,
   0, 0
 };
-
-
-OnigEncodingType OnigEncodingASCII_CR = {
-  onigenc_single_byte_mbc_enc_len,
-  "US-ASCII",  /* name */
-  1,           /* max enc length */
-  1,           /* min enc length */
-  onigenc_is_mbc_newline_0x0d,
-  onigenc_single_byte_mbc_to_code,
-  onigenc_single_byte_code_to_mbclen,
-  onigenc_single_byte_code_to_mbc,
-  onigenc_ascii_mbc_case_fold,
-  onigenc_ascii_apply_all_case_fold,
-  onigenc_ascii_get_case_fold_codes_by_str,
-  onigenc_minimum_property_name_to_ctype,
-  ascii_is_code_ctype,
-  onigenc_not_support_get_ctype_code_range,
-  onigenc_single_byte_left_adjust_char_head,
-  onigenc_always_true_is_allowed_reverse_match,
-  init,
-  0, /* is_initialized */
-  onigenc_always_true_is_valid_mbc_string,
-  ENC_FLAG_ASCII_COMPATIBLE|ENC_FLAG_SKIP_OFFSET_1,
-  0, 0
-};
-
