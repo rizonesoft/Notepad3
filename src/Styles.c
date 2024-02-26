@@ -4100,9 +4100,17 @@ void Style_SetStyles(HWND hwnd, const int iStyle, LPCWSTR lpszStyle, const float
     }
 
     // Size values are relative to BaseFontSize/CurrentFontSize
-    float fFontSize = fBaseFontSize;
-    Style_StrGetSizeFloatEx(lpszStyle, &fFontSize);
-    SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, f2int(fFontSize * SC_FONT_SIZE_MULTIPLIER));
+    if (iStyle != STYLE_INDENTGUIDE) {
+        float fFontSize = fBaseFontSize;
+        Style_StrGetSizeFloatEx(lpszStyle, &fFontSize);
+        SendMessage(hwnd, SCI_STYLESETSIZEFRACTIONAL, iStyle, f2int(fFontSize * SC_FONT_SIZE_MULTIPLIER));
+    }
+    else {
+        float fWidth = 1.0;
+        Style_StrGetSizeFloatEx(lpszStyle, &fWidth);
+        int const width = clampi(f2int(fWidth), 0, 256);
+        SciCall_SetMarginLeft(width);
+    }
 
     char localeNameA[LOCALE_NAME_MAX_LENGTH] = "en-us\0";
 #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)

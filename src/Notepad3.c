@@ -2520,6 +2520,9 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_SetMarginTypeN(MARGIN_SCI_FOLDING, SC_MARGIN_COLOUR);
     SciCall_SetMarginMaskN(MARGIN_SCI_FOLDING, SC_MASK_FOLDERS);
 
+    //~SciCall_SetMarginLeft(1); ~ set by STYLE_INDENTGUIDE
+    //~SciCall_SetMarginRight(1);
+
     SciCall_SetEOLMode(Settings.DefaultEOLMode);
     SciCall_SetPasteConvertEndings(true);
     SciCall_UsePopUp(SC_POPUP_TEXT);
