@@ -299,6 +299,8 @@ enum class SI_Error : int {
 #define IS_VALID_HANDLE(HNDL) ((HNDL) && ((HNDL) != INVALID_HANDLE_VALUE))
 #endif
 
+#define DEFAULT_BUFFER_SIZE (1025)
+
 // ---------------------------------------------------------------------------
 //                              MAIN TEMPLATE CLASS
 // ---------------------------------------------------------------------------
@@ -468,7 +470,7 @@ public:
     class Converter : private SI_CONVERTER {
     public:
         explicit Converter(bool a_bStoreIsUtf8) : SI_CONVERTER(a_bStoreIsUtf8) {
-            m_scratch.resize(1024);
+            m_scratch.resize(DEFAULT_BUFFER_SIZE);
         }
         Converter(const Converter & rhs) { operator=(rhs); }
         Converter & operator=(const Converter & rhs) {
@@ -2342,7 +2344,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetLongValue(
     if (!pszValue || !*pszValue) return a_nDefault;
 
     // convert to UTF-8/MBCS which for a numeric value will be the same as ASCII
-    char szValue[64] = { 0 };
+    char szValue[DEFAULT_BUFFER_SIZE] = { 0 };
     SI_CONVERTER c(m_bStoreIsUtf8);
     if (!c.ConvertToStore(pszValue, szValue, sizeof(szValue))) {
         return a_nDefault;
@@ -2415,7 +2417,7 @@ CSimpleIniTempl<SI_CHAR, SI_STRLESS, SI_CONVERTER>::GetLongLongValue(
         return a_nDefault;
 
     // convert to UTF-8/MBCS which for a numeric value will be the same as ASCII
-    char         szValue[128] = { 0 };
+    char szValue[DEFAULT_BUFFER_SIZE] = { 0 };
     SI_CONVERTER c(m_bStoreIsUtf8);
     if (!c.ConvertToStore(pszValue, szValue, sizeof(szValue))) {
         return a_nDefault;
@@ -2489,7 +2491,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetDoubleValue(
     if (!pszValue || !*pszValue) return a_nDefault;
 
     // convert to UTF-8/MBCS which for a numeric value will be the same as ASCII
-    char szValue[64] = { 0 };
+    char szValue[DEFAULT_BUFFER_SIZE] = { 0 };
     SI_CONVERTER c(m_bStoreIsUtf8);
     if (!c.ConvertToStore(pszValue, szValue, sizeof(szValue))) {
         return a_nDefault;
