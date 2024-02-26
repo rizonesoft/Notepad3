@@ -697,6 +697,7 @@ onigenc_not_support_get_ctype_code_range(OnigCtype ctype ARG_UNUSED,
   return ONIG_NO_SUPPORT_CONFIG;
 }
 
+
 extern int
 onigenc_is_mbc_newline_0x0a(const UChar* p, const UChar* end)
 {
@@ -714,22 +715,6 @@ onigenc_is_mbc_newline_0x0a(const UChar* p, const UChar* end)
   return 0;
 }
 
-extern int
-onigenc_is_mbc_newline_0x0d(const UChar* p, const UChar* end)
-{
-  if (p < end) {
-#ifdef USE_END_OF_FILE_AS_LINE_TERMINATOR
-    if ((*p == CARRIAGE_RET)||(*p == END_OF_FILE)) return 1; // CR
-#else
-    if (*p == CARRIAGE_RET) return 1; // CR
-#endif
-  }
-#ifdef USE_END_OF_FILE_AS_LINE_TERMINATOR
-  if (p == end)
-    return 1;
-#endif
-  return 0;
-}
 
 /* for single byte encodings */
 extern int
