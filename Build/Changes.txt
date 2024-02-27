@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.24.0224.(build_#) (2024-02-24)
+Current BETA/RC Version 6.24.0227.(build_#) (2024-02-27)
 ========================================================
 
 --------------------------------------------------------
@@ -70,6 +70,10 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.227.1]- Reusing size: definition of "Indentation Guide" scheme settings for text area offset to margin area.
+[.227.1]- Ini-Filereader: allow long suffix comments for numeric values.
+[.227.1]- Config-File: allow space or comment char after integer and float values.
+[.227.1]- Change indentation in case of complete line selected.
 [.224.1]- Explicit update toolbar and titlebar on drag n drop file.
 [1017.1]- Wrapping at long line marker.
 [1017.1]- Ctrl+I wraps according to highest column long-line-edge-marker, if defined.
@@ -122,6 +126,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.227.1]- Need PostMessage(WM_THEMECHANGED) event after recoding document.
+[.227.1]- Regex dot(.) not matching linefeed(LF)/newline character, if not enabled for line-breaks.
 [.224.1]- Settings2:DrawAnimatedWindow - support system settings.
 [.224.1]- Correction for settings2 DrawAnimatedWindow.
 [.111.1]- Horizontal mouse wheel scrolling direction.
