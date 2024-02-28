@@ -524,11 +524,13 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest)
                 if (pchText) {
                     WideCharToMultiByteEx(Encoding_SciCP, 0, pwchText, -1, pchText, cbText, NULL, NULL);
                     FreeMem(pwchText);
+                    DocLn const  vis1stLine = SciCall_GetFirstVisibleLine();
                     DocPos const curPos = SciCall_GetCurrentPos();
                     EditSetNewText(hwnd, pchText, (cbText - 1), true, false);
                     Encoding_Current(encDest);
+                    SciCall_GotoPos(curPos);
+                    SciCall_SetFirstVisibleLine(vis1stLine);
                     FreeMem(pchText);
-                    Sci_GotoPosTop(curPos);
                     return true;
                 }
                 else {
