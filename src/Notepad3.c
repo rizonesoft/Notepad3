@@ -6746,6 +6746,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case CMD_ESCAPE: {
+
+        DocLn const  vis1stLine = SciCall_GetFirstVisibleLine();
         DocPos const iCurPos = SciCall_GetCurrentPos();
 
         int skipLevel = Settings2.ExitOnESCSkipLevel;
@@ -6764,6 +6766,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             SciCall_ClearSelections();
             //~EndUndoTransAction();
             SciCall_GotoPos(iCurPos);
+            SciCall_SetFirstVisibleLine(vis1stLine);
             s_bInMultiEditMode = false;
             --skipLevel;
         }
@@ -6919,7 +6922,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (iPos != iAnchor) {
             UndoTransActionBegin();
-            SciCall_SetSel(iPos, iPos);
+            SciCall_GotoPos(iPos);
             EndUndoTransAction();
         } else {
             if (iPos == iStartPos) {
@@ -6943,7 +6946,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (iPos != iAnchor) {
             UndoTransActionBegin();
-            SciCall_SetSel(iPos, iPos);
+            SciCall_GotoPos(iPos);
             EndUndoTransAction();
         } else {
             if (iStartPos != iEndPos) {
@@ -8440,6 +8443,7 @@ static void _HandleAutoCloseTags()
     /// int const lexerID = SciCall_GetLexer();
     /// if (lexerID == SCLEX_HTML || lexerID == SCLEX_XML)
     DocPos const maxSearchBackward = 8192;
+    DocLn const  vis1stLine = SciCall_GetFirstVisibleLine();
     DocPos const iCurPos = SciCall_GetCurrentPos();
     DocPos const iHelper = iCurPos - maxSearchBackward;
     DocPos const iStartPos = max_p(0, iHelper);
@@ -8478,7 +8482,8 @@ static void _HandleAutoCloseTags()
             }
             if ((cchIns > 3) && !isNonClosingTag) {
                 EditReplaceSelection(replaceBuf, false);
-                SciCall_SetSel(iCurPos, iCurPos);
+                SciCall_GotoPos(iCurPos);
+                SciCall_SetFirstVisibleLine(vis1stLine);
             }
         }
     }
