@@ -6919,7 +6919,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (iPos != iAnchor) {
             UndoTransActionBegin();
-            SciCall_SetSel(iPos, iPos);
+            SciCall_GotoPos(iPos);
             EndUndoTransAction();
         } else {
             if (iPos == iStartPos) {
@@ -6943,7 +6943,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         if (iPos != iAnchor) {
             UndoTransActionBegin();
-            SciCall_SetSel(iPos, iPos);
+            SciCall_GotoPos(iPos);
             EndUndoTransAction();
         } else {
             if (iStartPos != iEndPos) {
@@ -8478,7 +8478,7 @@ static void _HandleAutoCloseTags()
             }
             if ((cchIns > 3) && !isNonClosingTag) {
                 EditReplaceSelection(replaceBuf, false);
-                SciCall_SetSel(iCurPos, iCurPos);
+                SciCall_GotoPos(iCurPos);
             }
         }
     }
