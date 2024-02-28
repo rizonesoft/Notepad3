@@ -528,6 +528,7 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest)
                     DocPos const curPos = SciCall_GetCurrentPos();
                     EditSetNewText(hwnd, pchText, (cbText - 1), true, false);
                     Encoding_Current(encDest);
+                    Style_ResetCurrentLexer(hwnd);
                     SciCall_GotoPos(curPos);
                     SciCall_SetFirstVisibleLine(vis1stLine);
                     FreeMem(pchText);
@@ -1328,7 +1329,6 @@ bool EditLoadFile(
         } else {
             EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory, bReloadFile);
         }
-
         SciCall_SetEOLMode(Settings.DefaultEOLMode);
 
         FreeMem(lpData);
