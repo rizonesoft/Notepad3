@@ -903,8 +903,8 @@ inline void Sci_SetStreamSelection(DocPos iSelStart, DocPos iSelEnd, bool bStrai
 
 __forceinline void Sci_SetCaretScrollDocEnd()
 {
-    SciCall_DocumentEnd();
     //~SciCall_ScrollToEnd();
+    SciCall_GotoPos(Sci_GetDocEndPosition());
     SciCall_ScrollCaret(); // enforce visible slop policy
 }
 // ----------------------------------------------------------------------------
