@@ -44,7 +44,7 @@ namespace Lexilla {
         while (back) {
             const int style = styler.StyleAt(back);
             if (style > maxSpaceStyle) {
-                chPrevNonWhite = static_cast<unsigned char>(styler.SafeGetCharAt(back));
+                chPrevNonWhite = static_cast<unsigned char>(styler.SafeGetCharAt(back, '\0'));
                 stylePrevNonWhite = style;
                 break;
             }

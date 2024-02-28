@@ -95,14 +95,13 @@ namespace Lexilla {
         if (!IsWhiteSpace(sc.chNext)) {
             return sc.chNext;
         }
-        Sci_Position pos = sc.currentPos + 2;
-        do {
-            const char ch = styler.SafeGetCharAt(pos);
-            if (!IsWhiteSpace(ch)) {
-                return ch;
-            }
-            ++pos;
-        } while (true);
+		// currentPos + width + widthNext
+		for (Sci_PositionU pos = sc.currentPos + 2; ; pos++) {
+			const unsigned char chPos = styler[pos];
+			if (!IsWhiteSpace(chPos)) {
+				return chPos;
+			}
+		}
     }
 
 
@@ -116,15 +115,15 @@ namespace Lexilla {
         if (!IsWhiteSpace(sc.chNext)) {
             return sc.chNext;
         }
-        Sci_Position pos = sc.currentPos + 2;
-        while (pos < sc.lineStartNext) {
-            const char ch = styler.SafeGetCharAt(pos);
-            if (!IsWhiteSpace(ch)) {
-                return ch;
-            }
-            ++pos;
-        }
-        return '\0';
+		// currentPos + width + widthNext
+		Sci_PositionU const lineStartNext = static_cast<Sci_PositionU>(sc.lineStartNext);
+		for (Sci_PositionU pos = sc.currentPos + 2; pos < lineStartNext; pos++) {
+			const unsigned char chPos = styler[pos];
+			if (!IsWhiteSpace(chPos)) {
+				return chPos;
+			}
+		}
+		return '\0';
     }
 
 

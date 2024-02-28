@@ -55,22 +55,42 @@ constexpr bool IsWhiteSpace(const int ch) noexcept
     return Lexilla::isspacechar(ch);
 }
 
-constexpr bool IsAHexDigit(int ch) noexcept
+constexpr bool IsHexDigit(int ch) noexcept
 {
-    return ((ch >= '0') && (ch <= '9'))
-           || ((ch >= 'A') && (ch <= 'F'))
-           || ((ch >= 'a') && (ch <= 'f'));
+	return Lexilla::IsAHeXDigit(ch);
 }
 
 constexpr bool IsALetter(const int ch) noexcept
 {
     // 97 to 122 || 65 to 90
-    return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+	return Lexilla::IsUpperOrLowerCase(ch);
 }
 
-constexpr bool IsNewline(const int ch) {
+constexpr bool IsEOLChar(const int ch) noexcept
+{
+	return (ch == '\n' || ch == '\r');
+}
+
+constexpr bool IsNewline(const int ch) noexcept
+{
 	// sc.GetRelative(i) returns '\0' if out of range
-	return (ch == '\n' || ch == '\r' || ch == '\0');
+	return IsEOLChar(ch) || (ch == '\0');
+}
+
+constexpr bool IsAGraphic(int ch) noexcept
+{
+	// excludes C0 control characters and whitespace
+	return ch > 32 && ch < 127;
+}
+
+constexpr bool IsGraphic(int ch) noexcept
+{
+	// excludes C0 control characters and whitespace
+	return ch > 32 && ch != 127;
+}
+
+constexpr bool IsJumpLabelPrevChar(int chPrev) noexcept {
+	return chPrev == ';' || chPrev == '{' || chPrev == '}';
 }
 
 constexpr bool IsLineEndUTF8(const unsigned char ch0, 

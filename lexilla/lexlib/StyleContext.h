@@ -187,14 +187,18 @@ public:
 
     // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 
-    bool Match(char ch0, char ch1, char ch2) const noexcept {
-        return Match(ch0, ch1) && ch2 == styler.SafeGetCharAt(currentPos + 2);
-    }
-    bool MatchNext(char ch0, char ch1) const noexcept {
-        return chNext == static_cast<unsigned char>(ch0) && ch1 == styler.SafeGetCharAt(currentPos + 2);
-    }
+	bool Match(char ch0, char ch1, char ch2) const noexcept {
+		return Match(ch0, ch1) && ch2 == styler.SafeGetCharAt(currentPos + 2, '\0');
+	}
+
+	bool MatchNext() const noexcept {
+		return ch == chNext && ch == static_cast<unsigned char>(styler[currentPos + 2]);
+	}
+	bool MatchNext(char ch0, char ch1) const noexcept {
+		return chNext == static_cast<unsigned char>(ch0) && ch1 == styler.SafeGetCharAt(currentPos + 2, '\0');
+	}
     bool MatchNext(char ch0, char ch1, char ch2) const noexcept {
-        return MatchNext(ch0, ch1) && ch2 == styler.SafeGetCharAt(currentPos + 3);
+        return MatchNext(ch0, ch1) && ch2 == styler.SafeGetCharAt(currentPos + 3, '\0');
     }
 
     // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
