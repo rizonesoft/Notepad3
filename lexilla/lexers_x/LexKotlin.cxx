@@ -237,6 +237,7 @@ struct EscapeSequence {
 
 	int outerState = SCE_KOTLIN_DEFAULT;
     int digitsLeft = 0;
+	bool brace = false;
 
 	// highlight any character as escape sequence.
     bool resetEscapeState(int state, int chNext) noexcept {
@@ -244,7 +245,8 @@ struct EscapeSequence {
             return false;
         }
         outerState = state;
-        digitsLeft = (chNext == 'u') ? 5 : 1;
+		brace = false;
+		digitsLeft = (chNext == 'x') ? 3 : ((chNext == 'u') ? 5 : 1);
         return true;
     }
     bool atEscapeEnd(int ch) noexcept {
