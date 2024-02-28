@@ -4108,8 +4108,8 @@ void Style_SetStyles(HWND hwnd, const int iStyle, LPCWSTR lpszStyle, const float
     else {
         float fWidth = 1.0;
         Style_StrGetSizeFloatEx(lpszStyle, &fWidth);
-        int const width = clampi(f2int(fWidth), 0, 256);
-        SciCall_SetMarginLeft(width);
+        int const width = clampi(f2int(fWidth), 0, f2int(fBaseFontSize));
+        SciCall_SetMarginLeft(width);  // dead margin
     }
 
     char localeNameA[LOCALE_NAME_MAX_LENGTH] = "en-us\0";
