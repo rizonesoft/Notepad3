@@ -188,59 +188,18 @@ public:
     // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 
 	bool Match(char ch0, char ch1, char ch2) const noexcept {
-		return Match(ch0, ch1) && ch2 == styler.SafeGetCharAt(currentPos + 2);
+		return Match(ch0, ch1) && ch2 == styler.SafeGetCharAt(currentPos + 2, '\0');
 	}
 
 	bool MatchNext() const noexcept {
 		return ch == chNext && ch == static_cast<unsigned char>(styler[currentPos + 2]);
 	}
 	bool MatchNext(char ch0, char ch1) const noexcept {
-		return chNext == static_cast<unsigned char>(ch0) && ch1 == styler.SafeGetCharAt(currentPos + 2);
+		return chNext == static_cast<unsigned char>(ch0) && ch1 == styler.SafeGetCharAt(currentPos + 2, '\0');
 	}
     bool MatchNext(char ch0, char ch1, char ch2) const noexcept {
-        return MatchNext(ch0, ch1) && ch2 == styler.SafeGetCharAt(currentPos + 3);
+        return MatchNext(ch0, ch1) && ch2 == styler.SafeGetCharAt(currentPos + 3, '\0');
     }
-
-	constexpr bool IsWhiteSpace(int ch0) const noexcept {
-		return (ch0 == ' ') || ((ch0 >= 0x09) && (ch0 <= 0x0d));
-	}
-
-	int GetDocNextChar(bool ignoreCurrent = false) const noexcept {
-		if (!ignoreCurrent && !IsWhiteSpace(ch)) {
-			return ch;
-		}
-		if (!IsWhiteSpace(chNext)) {
-			return chNext;
-		}
-		// currentPos + width + widthNext
-		for (Sci_PositionU pos = currentPos + 2; ; pos++) {
-			const unsigned char chPos = styler[pos];
-			if (!IsWhiteSpace(chPos)) {
-				return chPos;
-			}
-		}
-	}
-
-	int GetLineNextChar(bool ignoreCurrent = false) const noexcept {
-		if (!ignoreCurrent && !IsWhiteSpace(ch)) {
-			return ch;
-		}
-		// currentPos + width for Unicode line ending
-		if (currentPos + 1 == static_cast<Sci_PositionU>(lineStartNext)) {
-			return '\0';
-		}
-		if (!IsWhiteSpace(chNext)) {
-			return chNext;
-		}
-		// currentPos + width + widthNext
-		for (Sci_PositionU pos = currentPos + 2; pos < static_cast<Sci_PositionU>(lineStartNext); pos++) {
-			const unsigned char chPos = styler[pos];
-			if (!IsWhiteSpace(chPos)) {
-				return chPos;
-			}
-		}
-		return '\0';
-	}
 
     // <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 

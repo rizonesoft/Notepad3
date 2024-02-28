@@ -97,7 +97,7 @@ namespace Lexilla {
         }
         Sci_Position pos = sc.currentPos + 2;
         do {
-            const char ch = styler.SafeGetCharAt(pos);
+            const char ch = styler.SafeGetCharAt(pos, '\0');
             if (!IsWhiteSpace(ch)) {
                 return ch;
             }
@@ -118,7 +118,7 @@ namespace Lexilla {
         }
         Sci_Position pos = sc.currentPos + 2;
         while (pos < sc.lineStartNext) {
-            const char ch = styler.SafeGetCharAt(pos);
+            const char ch = styler.SafeGetCharAt(pos, '\0');
             if (!IsWhiteSpace(ch)) {
                 return ch;
             }

@@ -63,7 +63,7 @@ constexpr bool IsHexDigit(int ch) noexcept
 constexpr bool IsALetter(const int ch) noexcept
 {
     // 97 to 122 || 65 to 90
-    return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+	return Lexilla::IsUpperOrLowerCase(ch);
 }
 
 constexpr bool IsEOLChar(const int ch) noexcept

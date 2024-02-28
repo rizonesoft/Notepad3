@@ -393,7 +393,7 @@ void SCI_METHOD LexerDart::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
                             kwType = KeywordType::Return;
                         }
                         if (kwType > KeywordType::None && kwType < KeywordType::Return) {
-                            const int chNext = sc.GetLineNextChar();
+                            const int chNext = GetLineNextChar(styler, sc);
                             if (!IsIdentifierStartEx(chNext)) {
                                 kwType = KeywordType::None;
                             }
@@ -414,7 +414,7 @@ void SCI_METHOD LexerDart::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
                         if (kwType > KeywordType::None && kwType < KeywordType::Return) {
                             sc.ChangeState(static_cast<int>(kwType));
                         } else {
-                            const int chNext = sc.GetDocNextChar(sc.ch == '?');
+                            const int chNext = GetDocNextChar(styler, sc, sc.ch == '?');
                             if (chNext == '(') {
                                 // type method()
                                 // type[] method()
@@ -519,7 +519,7 @@ void SCI_METHOD LexerDart::Lex(Sci_PositionU startPos, Sci_Position lengthDoc, i
                 }
                 sc.Forward();
                 if (sc.state <= SCE_DART_STRING_DQ && (chBefore == ',' || chBefore == '{')) {
-                    const int chNext = sc.GetLineNextChar();
+                    const int chNext = GetLineNextChar(styler, sc);
                     if (chNext == ':') {
                         sc.ChangeState(SCE_DART_KEY);
                     }

@@ -235,10 +235,10 @@ Sci_Position SCI_METHOD LexerKotlin::WordListSet(int n, const char* wl)
 
 struct EscapeSequence {
 
-    int outerState = SCE_KOTLIN_DEFAULT;
+	int outerState = SCE_KOTLIN_DEFAULT;
     int digitsLeft = 0;
 
-    // highlight any character as escape sequence.
+	// highlight any character as escape sequence.
     bool resetEscapeState(int state, int chNext) noexcept {
         if (IsNewline(chNext)) {
             return false;
@@ -377,7 +377,7 @@ void SCI_METHOD LexerKotlin::Lex(Sci_PositionU startPos, Sci_Position lengthDoc,
                             kwType = KeywordType::Return;
                         }
                         if (kwType > KeywordType::None && kwType < KeywordType::Return) {
-                            const int chNext = sc.GetDocNextChar();
+                            const int chNext = GetDocNextChar(styler, sc);
                             if (!((kwType == KeywordType::Label) ? (chNext == '@') : IsIdentifierStartEx(chNext))) {
                                 kwType = KeywordType::None;
                             }
@@ -395,7 +395,7 @@ void SCI_METHOD LexerKotlin::Lex(Sci_PositionU startPos, Sci_Position lengthDoc,
                         if (kwType > KeywordType::None && kwType < KeywordType::Return) {
                             sc.ChangeState(static_cast<int>(kwType));
                         } else {
-                            const int chNext = sc.GetDocNextChar(sc.ch == '?');
+                            const int chNext = GetDocNextChar(styler, sc, sc.ch == '?');
                             if (chNext == '(') {
                                 // type function()
                                 // type[] function()
