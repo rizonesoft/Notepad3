@@ -1952,6 +1952,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
             MinimizeWndToTray(hwndMain);
         }
         else {
+            MinimizeWndToTaskbar(hwndMain);
             nCmdShow = SW_MINIMIZE;
         }
         ShowNotifyIcon(hwndMain, true);
@@ -3523,17 +3524,16 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam,LPARAM lParam)
 //
 LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    switch (wParam) {
-    case SIZE_MINIMIZED:
-        SetAnimateMinimizeRestore(0); // reset
-        return FALSE;
-    case SIZE_MAXIMIZED:
-    case SIZE_RESTORED:
-        SetAnimateMinimizeRestore(0); // reset
-        break;
-    default:
-        break;
-    }
+    UNREFERENCED_PARAMETER(wParam);
+    //switch (wParam) {
+    //case SIZE_MINIMIZED:
+    //    return FALSE;
+    //case SIZE_MAXIMIZED:
+    //case SIZE_RESTORED:
+    //    break;
+    //default:
+    //    break;
+    //}
 
     int x = 0;
     int y = 0;
@@ -7630,24 +7630,25 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             MinimizeWndToTray(hwnd);
             ShowNotifyIcon(hwnd, true);
             SetNotifyIconTitle(hwnd);
-            return FALSE; // swallowed
         }
         else {
-            SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow);
+            MinimizeWndToTaskbar(hwnd);
         }
-        break;
-
-    case SC_MAXIMIZE:
-        SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow);
-        break;
+        return FALSE; // swallowed
 
     case SC_RESTORE: {
-        SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow);
-        LRESULT lrv = DefWindowProc(hwnd, umsg, wParam, lParam);
+        if (Globals.bMinimizedToTray) {
+            RestoreWndFromTray(hwnd);
+        }
+        else {
+            RestoreWndFromTaskbar(hwnd);
+        }
         ShowOwnedPopups(hwnd, true);
-        return (lrv);
+        return FALSE; // swallowed
     }
 
+    case SC_MAXIMIZE:
+        break;
     default:
         break;
     }

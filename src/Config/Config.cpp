@@ -1314,7 +1314,7 @@ void LoadSettings()
         Settings2.IMEInteraction = ((codePage == 949 || codePage == 1361) ? SC_IME_INLINE : SC_IME_WINDOWED);
     }
 
-    Settings2.DrawAnimatedWindow = clampi(IniSectionGetInt(IniSecSettings2, L"DrawAnimatedWindow", 0), 0, 2);
+    Settings2.DrawAnimatedWindow = IniSectionGetBool(IniSecSettings2, L"DrawAnimatedWindow", true);
 
     Settings2.LaunchInstanceWndPosOffset = clampi(IniSectionGetInt(IniSecSettings2, L"LaunchInstanceWndPosOffset", 28), -10000, 10000);
     Settings2.LaunchInstanceFullVisible = IniSectionGetBool(IniSecSettings2, L"LaunchInstanceFullVisible", true);

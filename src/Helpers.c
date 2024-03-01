@@ -2335,7 +2335,6 @@ void CloseNonModalDialogs()
 void CloseApplication()
 {
     CloseNonModalDialogs();
-    SetAnimateMinimizeRestore(0); // reset to system settings
     PostMessage(Globals.hwndMain, WM_CLOSE, 0, 0);
 }
 
