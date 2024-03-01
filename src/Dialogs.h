@@ -40,9 +40,12 @@
 // ----------------------------------------------------------------------------
 
 // === MinimizeToTray Functions - see comments in Dialogs.c  ===
-bool SetAnimateMinimizeRestore(const unsigned flag);
+bool HasDrawAnimation();
 void MinimizeWndToTray(HWND hWnd);
+void MinimizeWndToTaskbar(HWND hWnd);
 void RestoreWndFromTray(HWND hWnd);
+void RestoreWndFromTaskbar(HWND hWnd);
+
 
 INT_PTR DisplayCmdLineHelp(HWND hwnd);
 INT_PTR CALLBACK AboutDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam);

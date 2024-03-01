@@ -675,52 +675,27 @@ static bool GetTrayWndRect(LPRECT lpTrayRect) {
 }
 
 
-// Check to see if the animation has been disabled
-bool SetAnimateMinimizeRestore(const unsigned flag)
+// Check to see if the system animation has been enabled/disabled
+static bool IsSystemDrawAnimation()
 {
-    static int systemFlag = 0;
-    bool       bAnim = false;
-    
-    ANIMATIONINFO ai;
-    ai.cbSize = sizeof(ai);
+    ANIMATIONINFO ai = { sizeof(ANIMATIONINFO), 0 };
     SystemParametersInfo(SPI_GETANIMATION, sizeof(ai), &ai, 0);
-
-    if (systemFlag == 0) {
-        systemFlag = ai.iMinAnimate ? 1 : -1;
-        bAnim = ai.iMinAnimate ? true : false;
-    }
-    if (flag == 0) { // reset
-        ai.iMinAnimate = (systemFlag == 1) ? 1 : 0;
-        SystemParametersInfo(SPI_SETANIMATION, sizeof(ai), &ai, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
-        bAnim = ai.iMinAnimate ? true : false;
-        systemFlag = 0;
-    }
-    else if (flag == 1) { // set animation
-        ai.iMinAnimate = 1;
-        SystemParametersInfo(SPI_SETANIMATION, sizeof(ai), &ai, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
-        bAnim = true;
-    }
-    else { // disable animation
-        ai.iMinAnimate = 0;
-        SystemParametersInfo(SPI_SETANIMATION, sizeof(ai), &ai, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
-        bAnim = false;
-    }
-    return bAnim;
+    return ai.iMinAnimate;
 }
 
-
+bool HasDrawAnimation() {
+    return IsSystemDrawAnimation() && Settings2.DrawAnimatedWindow;
+}
 
 void MinimizeWndToTray(HWND hWnd) {
 
-    if (SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow)) {
-
+    if (HasDrawAnimation()) {
         // Get the rect of the window. It is safe to use the rect of the whole
         // window - DrawAnimatedRects will only draw the caption
         RECT rcFrom;
         GetWindowRect(hWnd, &rcFrom);
         RECT rcTo;
         GetTrayWndRect(&rcTo);
-
         // Get the system to draw our animation for us
         DrawAnimatedRects(hWnd, IDANI_CAPTION, &rcFrom, &rcTo);
     }
@@ -730,38 +705,55 @@ void MinimizeWndToTray(HWND hWnd) {
     // This looks untidy, so call the functions in this order
 
     // Hide the window
-    ShowWindow(hWnd, SW_MINIMIZE);
     ShowWindow(hWnd, SW_HIDE);
     Globals.bMinimizedToTray = true;
-    SetAnimateMinimizeRestore(0); // reset
+}
+
+void MinimizeWndToTaskbar(HWND hWnd)
+{
+    if (!Settings2.DrawAnimatedWindow) {
+        ShowWindow(hWnd, SW_HIDE); // hide first, before minimize
+    }
+    ShowWindow(hWnd, SW_MINIMIZE);
+    ShowWindow(hWnd, SW_SHOW);  // show taskbar icon
 }
 
 void RestoreWndFromTray(HWND hWnd) {
 
-    if (SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow)) {
-
+    if (HasDrawAnimation()) {
         // Get the rect of the tray and the window. Note that the window rect
         // is still valid even though the window is hidden
         RECT rcFrom;
         GetTrayWndRect(&rcFrom);
         RECT rcTo;
         GetWindowRect(hWnd, &rcTo);
-
+        // needed, if minimized: WININFO wi = GetMyWindowPlacement(hWnd, NULL, 0, false); RectFromWinInfo(&wi, &rcTo);
         // Get the system to draw our animation for us
         DrawAnimatedRects(hWnd, IDANI_CAPTION, &rcFrom, &rcTo);
     }
 
     // Show the window, and make sure we're the foreground window
     ShowWindow(hWnd, SW_SHOW);
-    ShowWindow(hWnd, SW_RESTORE);
+
     SetActiveWindow(hWnd);
     SetForegroundWindow(hWnd);
     Globals.bMinimizedToTray = false;
-    SetAnimateMinimizeRestore(0); // reset
 
     // Remove the tray icon. As described above, remove the icon after the
     // call to DrawAnimatedRects, or the taskbar will not refresh itself
     // properly until DAR finished
+}
+
+void RestoreWndFromTaskbar(HWND hWnd)
+{
+    if (!Settings2.DrawAnimatedWindow) {
+        ShowWindow(hWnd, SW_HIDE); // hide first, before restore
+    }
+    ShowWindow(hWnd, SW_RESTORE);
+    ShowWindow(hWnd, SW_SHOW);
+
+    SetActiveWindow(hWnd);
+    SetForegroundWindow(hWnd);
 }
 
 
@@ -4765,13 +4757,15 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode, UINT n
         }
         else {
             WINDOWPLACEMENT wndpl = WindowPlacementFromInfo(hwnd, &winInfo, mode, nCmdShow);
-            if (SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow) && wndpl.showCmd) {
+            if (HasDrawAnimation() && wndpl.showCmd) {
                 DrawAnimatedRects(hwnd, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
+            } else {
+                ShowWindow(hwnd, SW_HIDE);
             }
             SetWindowPlacement(hwnd, &wndpl); // 1st set correct screen (DPI Aware)
             RelAdjustRectForDPI(&wndpl.rcNormalPosition, winInfo.dpi, Scintilla_GetWindowDPI(hwnd));
             SetWindowPlacement(hwnd, &wndpl); // 2nd resize position to correct DPI settings
-            SetAnimateMinimizeRestore(0);
+            ShowWindow(hwnd, wndpl.showCmd);
         }
         SetWindowPos(hwnd, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         s_bPrevFullScreenFlag = false;
@@ -4787,14 +4781,16 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode, UINT n
         GetMonitorInfo(MonitorFromWindow(hwnd, MONITOR_DEFAULTTOPRIMARY), &mi);
         SetWindowLong(hwnd, GWL_STYLE, dwStyle & ~dwRmvFScrStyle);
         WINDOWPLACEMENT const wndpl = WindowPlacementFromInfo(hwnd, NULL, mode, nCmdShow);
-        if (SetAnimateMinimizeRestore(Settings2.DrawAnimatedWindow) && wndpl.showCmd) {
+        if (HasDrawAnimation() && wndpl.showCmd) {
             DrawAnimatedRects(hwnd, IDANI_CAPTION, &rcCurrent, &wndpl.rcNormalPosition);
+        } else {
+            ShowWindow(hwnd, SW_HIDE);
         }
         SetWindowPlacement(hwnd, &wndpl);
         SetWindowPos(hwnd, HWND_TOPMOST, mi.rcMonitor.left, mi.rcMonitor.top,
             mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top,
             SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
-        SetAnimateMinimizeRestore(0);
+        ShowWindow(hwnd, wndpl.showCmd);
         Settings.ShowTitlebar = Settings.ShowMenubar = Settings.ShowToolbar = Settings.ShowStatusbar = false;
         Settings.AlwaysOnTop = true;
         s_bPrevFullScreenFlag = true;
@@ -4802,6 +4798,7 @@ void SnapToWinInfoPos(HWND hwnd, const WININFO winInfo, SCREEN_MODE mode, UINT n
     SetMenu(hwnd, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
     DrawMenuBar(hwnd);
     ShowWindow(Globals.hwndRebar, (Settings.ShowToolbar ? SW_RESTORE : SW_HIDE));
+
     UpdateUI(hwnd);
 }
 
