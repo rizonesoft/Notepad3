@@ -185,7 +185,8 @@ Specify the default extension for saved files (omit the leading dot, just like t
 #### `DrawAnimatedWindow=true`
 
 Option to enable/disable animated maximum/minimum window.
-- 0 or undefined = use system settings, 1 = draw animated, 2 = do not draw animated
+- DrawAnimatedWindow=true   -->  = **use** system settings
+- DrawAnimatedWindow=false  -->  = **do NOT draw** animated regardless of system settings
 
 #### `filebrowser.exe=minipath.exe`
 

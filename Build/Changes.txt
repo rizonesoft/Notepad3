@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.24.0228.(build_#) (2024-02-28)
+Current BETA/RC Version 6.24.030µ.(build_#) (2024-03-0µ)
 ========================================================
 
 --------------------------------------------------------
@@ -70,6 +70,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.30µ.1]- DrawAnimatedWindow: only toggle between system settings and suppress-animation if used in system settings.
 [.228.1]- Limit width of left dead margin text area to max base font width (char width).
 [.228.1]- Try to preserve caret position and visible line positions after recoding.
 [.228.1]- Merging Zufuliu's non Lexilla custom Lexers for Kotlin and Dart.
