@@ -7190,18 +7190,21 @@ bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelectio
         return false;
     }
     int const sFlags = (int)(lpefr->fuFlags);
+    bool const bIsRegExpr = (sFlags & SCFIND_REGEXP);
 
     DocPos const iDocEndPos = Sci_GetDocEndPosition();
 
     EditSetCaretToSelectionEnd(); // fluent switch between Prev/Next
-    DocPos start = SciCall_GetCurrentPos();
+    DocPos const curPos = SciCall_GetCurrentPos();
+    DocPos       start = (curPos < iDocEndPos) ? curPos : 0;
+
     DocPos end = iDocEndPos;
 
     Sci_CallTipCancelEx();
 
     DocPos iPos = _FindInTarget(wchFind, sFlags, &start, &end, true, FRMOD_NORM);
 
-    if ((iPos < NOT_FOUND) && (lpefr->fuFlags & SCFIND_REGEXP)) {
+    if ((iPos < NOT_FOUND) && bIsRegExpr) {
         InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
         bSuppressNotFound = true;
     } else if ((iPos < 0LL) && (start >= 0LL) && !bExtendSelection) {
@@ -7215,7 +7218,7 @@ bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelectio
             iPos = _FindInTarget(wchFind, sFlags, &start, &end, false, FRMOD_WRAPED);
 
             if ((iPos < 0LL) || (end == _start)) {
-                if ((iPos < -1) && (lpefr->fuFlags & SCFIND_REGEXP)) {
+                if ((iPos < -1) && bIsRegExpr) {
                     InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
                     bSuppressNotFound = true;
                 }
@@ -7289,19 +7292,20 @@ bool EditFindPrev(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
         return false;
     }
     int const sFlags = (int)(lpefr->fuFlags);
+    bool const bIsRegExpr = (sFlags & SCFIND_REGEXP);
 
     DocPos const iDocEndPos = Sci_GetDocEndPosition();
 
     EditSetCaretToSelectionStart(); // fluent switch between Next/Prev
     DocPos const curPos = SciCall_GetCurrentPos();
-    DocPos       start = (curPos > 0) ? SciCall_PositionBefore(curPos) : SciCall_PositionBefore(iDocEndPos);
+    DocPos       start = (curPos > 0) ? (SciCall_IsSelectionEmpty() ? curPos : SciCall_PositionBefore(curPos)) : SciCall_PositionBefore(iDocEndPos);
     DocPos       end = 0LL;
 
     Sci_CallTipCancelEx();
 
     DocPos iPos = _FindInTarget(wchFind, sFlags, &start, &end, true, FRMOD_NORM);
 
-    if ((iPos < NOT_FOUND) && (sFlags & SCFIND_REGEXP)) {
+    if ((iPos < NOT_FOUND) && bIsRegExpr) {
         InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
         bSuppressNotFound = true;
     } else if ((iPos < 0LL) && (start <= iDocEndPos) &&  !bExtendSelection) {
@@ -7315,7 +7319,7 @@ bool EditFindPrev(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bExtendSelection, boo
             iPos = _FindInTarget(wchFind, sFlags, &start, &end, false, FRMOD_WRAPED);
 
             if ((iPos < 0LL) || (start == _start)) {
-                if ((iPos < NOT_FOUND) && (sFlags & SCFIND_REGEXP)) {
+                if ((iPos < NOT_FOUND) && bIsRegExpr) {
                     InfoBoxLng(MB_ICONWARNING, L"MsgInvalidRegex", IDS_MUI_REGEX_INVALID);
                     bSuppressNotFound = true;
                 }
