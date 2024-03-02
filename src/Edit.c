@@ -3403,12 +3403,12 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
     DocLn const iCurLine = SciCall_LineFromPosition(iCurPos);
     DocLn const iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
     bool const  bSingleLine = Sci_IsSelectionSingleLine();
-    bool const  bCompleteLine = Sci_IsCompleteLineSelected();
+    bool const  bCompleteLineSel = !SciCall_IsSelectionEmpty() && Sci_IsCompleteLineSelected();
 
     bool const bTabIndents = SciCall_GetTabIndents();
     bool const bBSpUnindents = SciCall_GetBackSpaceUnIndents();
 
-    bFormatIndentation = bFormatIndentation || bCompleteLine;
+    bFormatIndentation = bFormatIndentation || bCompleteLineSel;
 
     DocPos iDiffCurrent = 0;
     DocPos iDiffAnchor = 0;
@@ -3449,7 +3449,7 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
     if (!bForceAll) {
         if (bSingleLine) {
             if (bFormatIndentation) {
-                if (bCompleteLine) {
+                if (bCompleteLineSel) {
                     if (iCurPos < iAnchorPos) {
                         EditSetSelectionEx(SciCall_GetLineEndPosition(iCurLine), SciCall_PositionFromLine(iCurLine), -1, -1);
                     } else {

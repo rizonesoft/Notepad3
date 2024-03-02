@@ -1893,6 +1893,8 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     InitWindowCommon(hwndMain, true);
     SetDialogIconNP3(hwndMain);
 
+    //assert("Attach Debugger" && 0);
+
     // correct infos based on hwnd
     g_DefWinInfo = _GetDefaultWinInfoByStrg(hwndMain, Settings2.DefaultWindowPosition);
     s_WinCurrentWidth = g_IniWinInfo.cx;
@@ -1907,6 +1909,8 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     if (Settings.TransparentMode) {
         SetWindowTransparentMode(hwndMain, true, Settings2.OpacityLevel);
     }
+
+    CreateBars(hwndMain, hInstance);
 
     SetMenu(hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
     DrawMenuBar(hwndMain);
@@ -1941,24 +1945,22 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     //~SnapToWinInfoPos(hwndMain, g_IniWinInfo, SCR_NORMAL, SW_HIDE); ~ instead set all needed properties  here:
     SetWindowPos(hwndMain, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
-    if (!s_flagStartAsTrayIcon) {
-        UpdateWindow(hwndMain);
-        if (!Settings.ShowTitlebar) {
-            SetWindowLong(hwndMain, GWL_STYLE, GetWindowLong(hwndMain, GWL_STYLE) & ~WS_CAPTION);
-        }
+    UpdateWindow(hwndMain);
+    if (!Settings.ShowTitlebar) {
+        SetWindowLong(hwndMain, GWL_STYLE, GetWindowLong(hwndMain, GWL_STYLE) & ~WS_CAPTION);
     }
-    else {
+
+    if (s_flagStartAsTrayIcon || (nCmdShow & SW_MINIMIZE)) {
         if (Settings.MinimizeToTray) {
             MinimizeWndToTray(hwndMain);
         }
         else {
             MinimizeWndToTaskbar(hwndMain);
-            nCmdShow = SW_MINIMIZE;
         }
-        ShowNotifyIcon(hwndMain, true);
-        SetNotifyIconTitle(hwndMain);
     }
-    ShowWindow(hwndMain, nCmdShow);
+    else {
+        ShowWindow(hwndMain, nCmdShow);
+    }
 
     bool bOpened = false;
 
@@ -3417,7 +3419,7 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         // call SaveAllSettings() when Globals.hwndToolbar is still valid
         SaveAllSettings(false);
 
-        // Remove tray icon if necessary
+        // Remove tray icon in any case
         ShowNotifyIcon(hwnd, false);
 
         //if (IS_VALID_HANDLE(s_hEvent)) {
@@ -4100,7 +4102,7 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
             RestoreWndFromTray(hwnd);
             ShowOwnedPopups(hwnd, true);
         } else if (iCmd == IDM_TRAY_EXIT) {
-            //ShowNotifyIcon(hwnd,false);
+            ShowNotifyIcon(hwnd,false);
             CloseApplication();
         }
     }
@@ -7628,8 +7630,6 @@ LRESULT MsgSysCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         ShowOwnedPopups(hwnd, false);
         if (Settings.MinimizeToTray) {
             MinimizeWndToTray(hwnd);
-            ShowNotifyIcon(hwnd, true);
-            SetNotifyIconTitle(hwnd);
         }
         else {
             MinimizeWndToTaskbar(hwnd);

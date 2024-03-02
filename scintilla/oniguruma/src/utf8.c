@@ -264,13 +264,6 @@ get_case_fold_codes_by_str(OnigCaseFoldType flag,
 static int
 is_utf8_newline(const UChar *p, const UChar *end)
 {
-#ifdef USE_CRNL_AS_LINE_TERMINATOR
-  if (p + 1 < end) {
-    if ((*p == CARRIAGE_RET) && (*(p+1) == NEWLINE_CODE))  // CRLF
-      return 1;
-  }
-#endif
-
 #ifdef USE_UNICODE_ALL_LINE_TERMINATORS
   if (p + 2 < end) {
     if ((*p == 0xe2) && (*(p+1) == 0x80) && ((*(p+2) == 0xa8) || (*(p+2) == 0xa9))) // LS or PS
@@ -278,6 +271,13 @@ is_utf8_newline(const UChar *p, const UChar *end)
   }
   if (p + 1 < end) {
     if ((*p == 0xc2) && (*(p+1) == 0x85))  // NEL
+      return 1;
+  }
+#endif
+
+#ifdef USE_CRNL_AS_LINE_TERMINATOR
+  if (p + 1 < end) {
+    if ((*p == CARRIAGE_RET) && (*(p+1) == NEWLINE_CODE))  // CRLF
       return 1;
   }
 #endif

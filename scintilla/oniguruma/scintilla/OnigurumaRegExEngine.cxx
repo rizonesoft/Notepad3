@@ -69,6 +69,28 @@ static OnigEncoding s_UsedEncodingsTypes[] = { ONIG_ENCODING_UTF8 };
 // ============================================================================
 // ============================================================================
 
+// https://stackoverflow.com/questions/22937618/reference-what-does-this-regex-mean/
+
+#define NP3_ONIG_SYNTAX_FLAVOR ONIG_SYNTAX_DEFAULT // default is ONIG_SYNTAX_ONIGURUMA
+
+// ensure some from special syntax options are excluded/included
+
+const unsigned int RemSynOptions_1[1] = { 0 };
+const unsigned int RemSynOptions_2[] = {
+  ONIG_SYN_OP2_ESC_H_XDIGIT                 // remove to replace \h\H with [^\S\n\v\f\r\u2028\u2029]
+};
+
+const unsigned int AddSynOptions_1[] = {
+  ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END       // \<. \>
+};
+const unsigned int AddSynOptions_2[] = {
+  ONIG_SYN_OP2_ESC_U_HEX4                   // \uHHHH
+};
+
+// -----------------------------------------------------------------------------
+
+
+
 // ------------------------------------
 // --- Onigmo Engine Simple Options ---
 // ------------------------------------
@@ -134,12 +156,8 @@ static void SetSimpleOptions(OnigOptionType &onigOptions, EOLmode /*eolMode*/,
   }
 
 }
+
 // ============================================================================
-
-
-#define NP3_ONIG_SYNTAX_FLAVOR (ONIG_SYNTAX_DEFAULT) // default is: ONIG_SYNTAX_ONIGURUMA
-
-// -----------------------------------------------------------------------------
 
 class OnigurumaRegExEngine : public RegexSearchBase
 {
@@ -161,7 +179,19 @@ public:
     onig_initialize(s_UsedEncodingsTypes, _ARRAYSIZE(s_UsedEncodingsTypes));
     onig_set_default_syntax(NP3_ONIG_SYNTAX_FLAVOR);        // std is: ONIG_SYNTAX_ONIGURUMA
 
-    m_OnigSyntax.op |= ONIG_SYN_OP_ESC_LTGT_WORD_BEGIN_END; // xcluded from ONIG_SYNTAX_DEFAULT ?
+    for (const auto op1 : RemSynOptions_1) {
+      m_OnigSyntax.op &= ~op1;
+    }
+    for (const auto op2 : RemSynOptions_2) {
+      m_OnigSyntax.op2 &= ~op2;
+    }
+
+    for (const auto op1 : AddSynOptions_1) {
+      m_OnigSyntax.op |= op1;
+    }
+    for (const auto op2 : AddSynOptions_2) {
+      m_OnigSyntax.op2 |= op2;
+    }
 
     onig_region_init(&m_Region);
   }
@@ -557,7 +587,8 @@ void OnigurumaRegExEngine::clear() {
 // ----------------------------------------------------------------------------
 
 
-std::string OnigurumaRegExEngine::translateRegExpr(const std::string & regExprStr, bool wholeWord, bool wordStart, EndOfLine eolMode, OnigOptionType & /*rxOptions*/)
+std::string OnigurumaRegExEngine::translateRegExpr(const std::string & regExprStr, bool wholeWord, bool wordStart,
+                                                   EndOfLine eolMode, OnigOptionType & /*rxOptions*/)
 {
   UNREFERENCED_PARAMETER(eolMode);
 
@@ -583,6 +614,9 @@ std::string OnigurumaRegExEngine::translateRegExpr(const std::string & regExprSt
   //~replaceAll(transRegExpr, R"(\(?<!\w)(?=\w))", R"(\\<)"); // esc'd
   //~replaceAll(transRegExpr, R"(\>)", R"((?<=\w)(?!\w))"); // word end
   //~replaceAll(transRegExpr, R"(\(?<=\w)(?!\w))", R"(\\>)"); // esc'd
+
+  replaceAll(transRegExpr, R"(\h)", R"([^\S\n\v\f\r\u2028\u2029])"); // horizontal space
+  replaceAll(transRegExpr, R"(\H)", R"([^\t\p{Zs}])");               // not horizontal space
 
   #if 0
   // EOL modes is controlled by 

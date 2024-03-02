@@ -703,9 +703,12 @@ void MinimizeWndToTray(HWND hWnd) {
     // Add the tray icon. If we add it before the call to DrawAnimatedRects,
     // the taskbar gets erased, but doesn't get redrawn until DAR finishes.
     // This looks untidy, so call the functions in this order
+    ShowNotifyIcon(hWnd, true);
+    SetNotifyIconTitle(hWnd);
 
     // Hide the window
     ShowWindow(hWnd, SW_HIDE);
+
     Globals.bMinimizedToTray = true;
 }
 
@@ -737,11 +740,13 @@ void RestoreWndFromTray(HWND hWnd) {
 
     SetActiveWindow(hWnd);
     SetForegroundWindow(hWnd);
-    Globals.bMinimizedToTray = false;
 
     // Remove the tray icon. As described above, remove the icon after the
     // call to DrawAnimatedRects, or the taskbar will not refresh itself
     // properly until DAR finished
+    ShowNotifyIcon(hWnd, false);
+
+    Globals.bMinimizedToTray = false;
 }
 
 void RestoreWndFromTaskbar(HWND hWnd)
