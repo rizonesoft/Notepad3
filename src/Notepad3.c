@@ -1950,7 +1950,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
         SetWindowLong(hwndMain, GWL_STYLE, GetWindowLong(hwndMain, GWL_STYLE) & ~WS_CAPTION);
     }
 
-    if (s_flagStartAsTrayIcon || (nCmdShow & SW_MINIMIZE)) {
+    if (s_flagStartAsTrayIcon || (nCmdShow == SW_MINIMIZE) || (nCmdShow == SW_SHOWMINIMIZED)) {
         if (Settings.MinimizeToTray) {
             MinimizeWndToTray(hwndMain);
         }
