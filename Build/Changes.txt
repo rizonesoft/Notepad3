@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.24.0301.(build_#) (2024-03-01)
+Current BETA/RC Version 6.24.0302.(build_#) (2024-03-02)
 ========================================================
 
 --------------------------------------------------------
@@ -70,6 +70,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.302.1]- RegEx syntax for horizontal space matching.
 [.301.1]- DrawAnimatedWindow: only toggle between system settings and suppress-animation if used in system settings.
 [.228.1]- Limit width of left dead margin text area to max base font width (char width).
 [.228.1]- Try to preserve caret position and visible line positions after recoding.
@@ -130,6 +131,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.302.1]- Toolbar missing if started minimized.
+[.302.1]- TAB selection on empty line.
+[.302.1]- Initial show NP3 window minimized.
 [.228.1]- Preserve caret position after re-encoding.
 [.227.1]- Need PostMessage(WM_THEMECHANGED) event after recoding document.
 [.227.1]- Regex dot(.) not matching linefeed(LF)/newline character, if not enabled for line-breaks.
