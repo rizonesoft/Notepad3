@@ -131,9 +131,10 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.302.2]- Regression: RegEx: find previous line start (^) - skips empty lines.
 [.302.1]- Toolbar missing if started minimized.
 [.302.1]- TAB selection on empty line.
-[.302.1]- Initial show NP3 window minimized.
+[.302.1]- Regression:Initial show NP3 window minimized.
 [.228.1]- Preserve caret position after re-encoding.
 [.227.1]- Need PostMessage(WM_THEMECHANGED) event after recoding document.
 [.227.1]- Regex dot(.) not matching linefeed(LF)/newline character, if not enabled for line-breaks.
