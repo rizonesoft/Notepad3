@@ -4648,7 +4648,7 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
         DocPos const      iCurLnLen = Sci_GetNetLineLength(iCurLine);
         DocPos const      iBegCurLine = SciCall_PositionFromLine(iCurLine);
         // range-pointer may move during line deletion, so copy current line for const comparison
-        strncpy_s(pCurrentLine, iMaxLineLen, SciCall_GetRangePointer(iBegCurLine, iCurLnLen + 1), iCurLnLen);
+        StringCchCopyNA(pCurrentLine, SizeOfMem(pCurrentLine), SciCall_GetRangePointer(iBegCurLine, iCurLnLen + 1), iCurLnLen);
         pCurrentLine[iCurLnLen] = '\0';
 
         DocLn iPrevLine = iCurLine;
