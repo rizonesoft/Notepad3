@@ -9082,7 +9082,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
         //~SciCall_GotoLine(SciCall_LineFromPosition(scn->position));
         // fallthrough
         default:
-            return 0;
+            return FALSE; // not swallowed
         }
     }
     break;
@@ -9120,9 +9120,9 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 #endif
 
     default:
-        return FALSE;
+        return FALSE; // not swallowed
     }
-    return TRUE;
+    return TRUE; // swallowed
 }
 
 
