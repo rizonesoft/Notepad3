@@ -4616,55 +4616,69 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
     DocPos const iSelEnd = SciCall_GetSelectionEnd();
 
     DocLn iStartLine = 0;
-    DocLn iEndLine = 0;
+    DocLn iEndLine = Sci_GetLastDocLineNumber();
+
+    // correction for stream selection
     if (iSelStart != iSelEnd) {
         iStartLine = SciCall_LineFromPosition(iSelStart);
         if (iSelStart > SciCall_PositionFromLine(iStartLine)) {
-            ++iStartLine;
+            ++iStartLine;  // not beginning of line
         }
         iEndLine = SciCall_LineFromPosition(iSelEnd);
-        if (iSelEnd <= SciCall_PositionFromLine(iEndLine)) {
-            --iEndLine;
+        if (iSelEnd < SciCall_GetLineEndPosition(iEndLine)) {
+            --iEndLine; 
         }
-    } else {
-        iEndLine = Sci_GetLastDocLineNumber();
     }
 
-    if ((iEndLine - iStartLine) <= 1) {
+    if (iStartLine == iEndLine) {
         return;
     }
+    assert(iStartLine < iEndLine);
+
+    DocPos const iMaxLineLen = Sci_GetRangeMaxLineLength(iStartLine, iEndLine) + 1;
+    char* const pCurrentLine = AllocMem(iMaxLineLen, HEAP_ZERO_MEMORY);
+    if (!pCurrentLine)
+        return;
 
     UndoTransActionBegin();
 
-    for (DocLn iCurLine = iStartLine; iCurLine < iEndLine; ++iCurLine) {
-        DocPos const iCurLnLen = Sci_GetNetLineLength(iCurLine);
-        DocPos const iBegCurLine = SciCall_PositionFromLine(iCurLine);
-        const char* const pCurrentLine = SciCall_GetRangePointer(iBegCurLine, iCurLnLen + 1);
+    DocLn iCurLine = iStartLine;
+    while (iCurLine < iEndLine) {
 
-        if (bRemoveEmptyLines || (iCurLnLen > 0)) {
-            DocLn iPrevLine = iCurLine;
+        DocPos const      iCurLnLen = Sci_GetNetLineLength(iCurLine);
+        DocPos const      iBegCurLine = SciCall_PositionFromLine(iCurLine);
+        // range-pointer may move during line deletion, so copy current line for const comparison
+        StringCchCopyNA(pCurrentLine, SizeOfMem(pCurrentLine), SciCall_GetRangePointer(iBegCurLine, iCurLnLen + 1), iCurLnLen);
+        pCurrentLine[iCurLnLen] = '\0';
 
-            for (DocLn iCompareLine = iCurLine + 1; iCompareLine <= iEndLine; ++iCompareLine) {
-                DocPos const iCmpLnLen = Sci_GetNetLineLength(iCompareLine);
-                if (bRemoveEmptyLines || (iCmpLnLen > 0)) {
-                    DocPos const iBegCmpLine = SciCall_PositionFromLine(iCompareLine);
-                    const char* const pCompareLine = SciCall_GetRangePointer(iBegCmpLine, iCmpLnLen + 1);
-                    if (iCurLnLen == iCmpLnLen) {
-                        if (IsSameCharSequence(pCurrentLine, pCompareLine, iCmpLnLen)) {
-                            SciCall_SetTargetRange(SciCall_GetLineEndPosition(iPrevLine), SciCall_GetLineEndPosition(iCompareLine));
-                            SciCall_ReplaceTarget(0, "");
-                            --iCompareLine; // proactive preventing progress to avoid comparison line skip
-                            --iEndLine;
-                        }
-                    }
-                } // empty
-                iPrevLine = iCompareLine;
+        DocLn iPrevLine = iCurLine;
+        DocLn iCompareLine = iCurLine;
+        while (++iCompareLine <= iEndLine) {
+
+            DocPos const iCmpLnLen = Sci_GetNetLineLength(iCompareLine);
+            if (bRemoveEmptyLines || (iCmpLnLen > 0)) {
+
+                DocPos const      iBegCmpLine = SciCall_PositionFromLine(iCompareLine);
+                const char* const pCompareLine = SciCall_GetRangePointer(iBegCmpLine, iCmpLnLen);
+
+                if ((iCurLnLen == iCmpLnLen) && IsSameCharSequence(pCurrentLine, pCompareLine, iCmpLnLen)) {
+                    DocPos const posPrev = SciCall_GetLineEndPosition(iPrevLine);
+                    DocPos const posComp = SciCall_GetLineEndPosition(iCompareLine);
+                    assert(posPrev != posComp);
+                    SciCall_SetTargetRange(posPrev, posComp);
+                    SciCall_ReplaceTarget(0, "");
+                    --iEndLine; // line inbetween removed
+                    --iCompareLine; // don't proceed compare-line
+                }
             }
-        } // empty
+            iPrevLine = iCompareLine;
+        }
+        ++iCurLine;
     }
 
     EndUndoTransAction();
 
+    FreeMem(pCurrentLine);
 }
 
 
