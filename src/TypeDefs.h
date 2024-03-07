@@ -764,6 +764,7 @@ typedef struct SETTINGS2_T {
     int     CurrentLineVerticalSlop;
     bool    NoCopyLineOnEmptySelection;
     bool    NoCutLineOnEmptySelection;
+    bool    SubWrappedLineSelectOnMarginClick;
     bool    LexerSQLNumberSignAsComment;
     int     ExitOnESCSkipLevel;
     int     ZoomTooltipTimeout;
