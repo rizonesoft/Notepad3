@@ -683,10 +683,9 @@ static inline void ResetFileObservationData(const bool bResetEvt) {
 
 void TinyExprToStringA(LPSTR pszDest, size_t cchDest, const double dExprEval)
 {
-    double idbl = 0.0;
-    double const fracpart = fabs(modf(dExprEval, &idbl));
-    double const intpart = fabs(idbl);
-    if ((fracpart < TE_ZERO) && (intpart < 1.0E+21)) {
+    double       intpart = 0.0;
+    double const fracpart = modf(dExprEval, &intpart);
+    if ((fabs(fracpart) < TE_ZERO) && (fabs(intpart) < 1.0E+21)) {
         StringCchPrintfA(pszDest, cchDest, "%.21G", intpart); // integer full number display
     }
     else {
@@ -697,10 +696,9 @@ void TinyExprToStringA(LPSTR pszDest, size_t cchDest, const double dExprEval)
 
 void TinyExprToString(LPWSTR pszDest, size_t cchDest, const double dExprEval)
 {
-    double       idbl = 0.0;
-    double const fracpart = fabs(modf(dExprEval, &idbl));
-    double const intpart = fabs(idbl);
-    if ((fracpart < TE_ZERO) && (intpart < 1.0E+21)) {
+    double       intpart = 0.0;
+    double const fracpart = modf(dExprEval, &intpart);
+    if ((fabs(fracpart) < TE_ZERO) && (fabs(intpart) < 1.0E+21)) {
         StringCchPrintf(pszDest, cchDest, L"%.21G", intpart); // integer full number display
     }
     else {
