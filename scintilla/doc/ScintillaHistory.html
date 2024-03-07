@@ -584,6 +584,39 @@
     </table>
     <h2>Releases</h2>
     <h3>
+       <a href="https://www.scintilla.org/scintilla542.zip">Release 5.4.2</a>
+    </h3>
+    <ul>
+	<li>
+	Released 5 March 2024.
+	</li>
+	<li>
+	Significantly reduce memory used for undo actions, often to a half or quarter of previous versions.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1458/">Feature #1458</a>.
+	</li>
+	<li>
+	Add APIs for saving and restoring undo history.
+	</li>
+	<li>
+	For GTK, when laying out text, detect runs with both left-to-right and right-to-left ranges and divide into an ASCII prefix and
+	more complex suffix. Lay out the ASCII prefix in the standard manner but, for the suffix, measure the whole width
+	and spread that over the suffix bytes. This produces more usable results where the caret moves over the ASCII prefix correctly
+	and over the suffix reasonably but not accurately.
+	</li>
+	<li>
+	For ScintillaEdit on Qt, fix reference from ScintillaDocument to Document to match change in 5.4.1
+	using IDocumentEditable for SCI_GETDOCPOINTER and SCI_SETDOCPOINTER.
+	</li>
+	<li>
+	For Direct2D on Win32, use the multi-threaded option to avoid crashes when Scintilla instances
+	created on different threads. There may be more problems with this scenario so it should be avoided.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2420/">Bug #2420</a>.
+	</li>
+	<li>
+	For Win32, ensure keyboard-initiated context menu appears in multi-screen situations.
+	</li>
+    </ul>
+    <h3>
        <a href="https://www.scintilla.org/scintilla541.zip">Release 5.4.1</a>
     </h3>
     <ul>

@@ -183,6 +183,9 @@
     <ClCompile Include="src\ChangeHistory.cxx">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\UndoHistory.cxx">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ILexer.h">
@@ -360,6 +363,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="src\ChangeHistory.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UndoHistory.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
