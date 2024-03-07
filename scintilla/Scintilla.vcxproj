@@ -279,6 +279,7 @@
     <ClCompile Include="src\ScintillaBase.cxx" />
     <ClCompile Include="src\Selection.cxx" />
     <ClCompile Include="src\Style.cxx" />
+    <ClCompile Include="src\UndoHistory.cxx" />
     <ClCompile Include="src\UniConversion.cxx" />
     <ClCompile Include="src\UniqueString.cxx" />
     <ClCompile Include="src\ViewStyle.cxx" />
@@ -340,6 +341,7 @@
     <ClInclude Include="src\SparseVector.h" />
     <ClInclude Include="src\SplitVector.h" />
     <ClInclude Include="src\Style.h" />
+    <ClInclude Include="src\UndoHistory.h" />
     <ClInclude Include="src\UnicodeFromUTF8.h" />
     <ClInclude Include="src\UniConversion.h" />
     <ClInclude Include="src\UniqueString.h" />

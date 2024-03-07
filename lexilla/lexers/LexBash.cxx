@@ -1189,10 +1189,17 @@ void SCI_METHOD LexerBash::Fold(Sci_PositionU startPos_, Sci_Position length, in
 
 	LexAccessor styler(pAccess);
 
-	const Sci_Position startPos = startPos_;
+	Sci_Position startPos = startPos_;
 	const Sci_Position endPos = startPos + length;
 	int visibleChars = 0;
 	Sci_Position lineCurrent = styler.GetLine(startPos);
+	// Backtrack to previous line in case need to fix its fold status
+	if (lineCurrent > 0) {
+		lineCurrent--;
+		startPos = styler.LineStart(lineCurrent);
+		initStyle = (startPos > 0) ? styler.StyleIndexAt(startPos - 1) : 0;
+	}
+
 	int levelPrev = styler.LevelAt(lineCurrent) & SC_FOLDLEVELNUMBERMASK;
 	int levelCurrent = levelPrev;
 	char chNext = styler[startPos];
@@ -1217,7 +1224,9 @@ void SCI_METHOD LexerBash::Fold(Sci_PositionU startPos_, Sci_Position length, in
 					 && !IsCommentLine(lineCurrent + 1, styler))
 				levelCurrent--;
 		}
-		if (style == SCE_SH_WORD) {
+
+		switch (style) {
+		case SCE_SH_WORD:
 			if ((wordlen + 1) < sizeof(word))
 				word[wordlen++] = ch;
 			if (styleNext != style) {
@@ -1229,16 +1238,18 @@ void SCI_METHOD LexerBash::Fold(Sci_PositionU startPos_, Sci_Position length, in
 					levelCurrent--;
 				}
 			}
-		}
-		if (style == SCE_SH_OPERATOR) {
+			break;
+
+		case SCE_SH_OPERATOR:
 			if (ch == '{') {
 				levelCurrent++;
 			} else if (ch == '}') {
 				levelCurrent--;
 			}
-		}
+			break;
+
 		// Here Document folding
-		if (style == SCE_SH_HERE_DELIM) {
+		case SCE_SH_HERE_DELIM:
 			if (stylePrev == SCE_SH_HERE_Q) {
 				levelCurrent--;
 			} else if (stylePrev != SCE_SH_HERE_DELIM) {
@@ -1248,9 +1259,14 @@ void SCI_METHOD LexerBash::Fold(Sci_PositionU startPos_, Sci_Position length, in
 					}
 				}
 			}
-		} else if (style == SCE_SH_HERE_Q && styleNext == SCE_SH_DEFAULT) {
-			levelCurrent--;
+			break;
+		case SCE_SH_HERE_Q:
+			if (styleNext == SCE_SH_DEFAULT) {
+				levelCurrent--;
+			}
+			break;
 		}
+
 		if (atEOL) {
 			int lev = levelPrev;
 			if (visibleChars == 0 && options.foldCompact)

@@ -593,10 +593,14 @@
     </h3>
     <ul>
 	<li>
-	Released 27 December 2023.
+	Released 5 March 2024.
 	</li>
 	<li>
 	Assembler: After comments, treat \r\n line ends the same as \n. This makes testing easier.
+	</li>
+	<li>
+	Bash: Fix folding when line changed to/from comment and previous line is comment.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/224">Issue #224</a>.
 	</li>
 	<li>
 	Batch: Fix handling ':' next to keywords.
@@ -606,6 +610,15 @@
 	JavaScript: in cpp lexer, add lexer.cpp.backquoted.strings=2 mode to treat ` back-quoted
 	strings as template literals which allow embedded ${expressions}.
 	<a href="https://github.com/ScintillaOrg/lexilla/issues/94">Issue #94</a>.
+	</li>
+	<li>
+	Python: fix lexing of rb'' and rf'' strings.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/223">Issue #223</a>,
+	<a href="https://github.com/ScintillaOrg/lexilla/pull/227">Pull request #227</a>.
+	</li>
+	<li>
+	Ruby: fix lexing of methods on numeric literals like '3.times' so the '.' and method name do not appear in numeric style.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/225">Issue #225</a>.
 	</li>
     </ul>
     <h3>
