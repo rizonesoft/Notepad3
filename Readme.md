@@ -355,6 +355,12 @@ See Replacing Windows Notepad for detailed explanations.
 This items are managed by Notepad3. 
 - `Menu->View->Position->Sticky Window Position` (Will remember current window position on restart, instead of last closed position (save on exit))
 
+#### `SubWrappedLineSelectOnMarginClick=false`
+
+Set to `true` to revert to old selection behavior:
+- 1 click on line-number margin selects the entire corresponding line
+- 1 double click on line-number margin selects the entire line with all sub-lines.
+
 #### `LaunchInstanceWndPosOffset=28`
 
 #### `LaunchInstanceFullVisible=true`
