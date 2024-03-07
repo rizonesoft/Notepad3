@@ -2644,7 +2644,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_SetEdgeColumn(Settings.LongLinesLimit);
 
     // general margin
-    SciCall_SetMarginOptions(SC_MARGINOPTION_SUBLINESELECT);
+    SciCall_SetMarginOptions(Settings2.SubWrappedLineSelectOnMarginClick ? SC_MARGINOPTION_SUBLINESELECT : SC_MARGINOPTION_NONE);
 
     // Nonprinting characters
     SciCall_SetViewWS(Settings.ViewWhiteSpace ? SCWS_VISIBLEALWAYS : SCWS_INVISIBLE);
