@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.24.0302.(build_#) (2024-03-02)
+Current BETA/RC Version 6.24.0307.(build_#) (2024-03-07)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.307.1]- Option to choose between sub-line and whole-line selection on line-number margin click.
 [.111.1]- Allow selected lines movement for rectangular selection also.
 [.111.1]- Add detection of Windows 11 Version information.
 [.927.1]- Update "grepWinNP3" from current "grepWin" dev (GRE).
@@ -70,7 +71,9 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
-[.302.1]- RegEx syntax for horizontal space matching.
+[.307.1]- Line number margin option: switched from sub-line selection to whole-line selection.
+[.307.1]- [internal] Change memory copy method.
+[.302.1]- RegEx syntax for horizontal space matching (ONI).
 [.301.1]- DrawAnimatedWindow: only toggle between system settings and suppress-animation if used in system settings.
 [.228.1]- Limit width of left dead margin text area to max base font width (char width).
 [.228.1]- Try to preserve caret position and visible line positions after recoding.
@@ -111,7 +114,7 @@ CHANGES:
 [.320.1]- Dialog windows with special system menu: add 'burger' symbol.
 [.320.1]- Use relaxing default FileCheckInterval (2000[msec]).
 [.320.1]- Refactoring: use background worker helper.
-[.315.1]- RegExpr enhancements.
+[.315.1]- RegExpr enhancements (ONI).
 [.315.1]- Use larger color bitmaps within color select buttons (customize schemes).
 [.315.1]- SCI add SendMessage macro (SCI).
 [.301.1]- Generic font names $Code/$Text prepend by number referring to priority list position.
@@ -131,13 +134,15 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
-[.302.2]- Regression: RegEx: find previous line start (^) - skips empty lines.
+[.307.1]- Tinyexpr: integer values always shown in abs() format.
+[.307.1]- Remove duplicate lines.
+[.302.2]- Regression: RegEx: find previous line start (^) - skips empty lines (ONI).
 [.302.1]- Toolbar missing if started minimized.
 [.302.1]- TAB selection on empty line.
 [.302.1]- Regression:Initial show NP3 window minimized.
 [.228.1]- Preserve caret position after re-encoding.
 [.227.1]- Need PostMessage(WM_THEMECHANGED) event after recoding document.
-[.227.1]- Regex dot(.) not matching linefeed(LF)/newline character, if not enabled for line-breaks.
+[.227.1]- Regex dot(.) not matching linefeed(LF)/newline character, if not enabled for line-breaks (ONI).
 [.224.1]- Settings2:DrawAnimatedWindow - support system settings.
 [.224.1]- Correction for settings2 DrawAnimatedWindow.
 [.111.1]- Horizontal mouse wheel scrolling direction.
@@ -223,9 +228,9 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
+[.307.1]- Update Lexilla Library (LEX) version 5.3.1 dev. (2024-03-05).
+[.307.1]- Update Scintilla Library (SCI) version 5.4.2 dev. (2024-03-05).
 [.101.1]- Update grepWinNP3 (GRE) version 2.1.15.48 (2024-01-10).
-[.101.1]- Update Lexilla Library (LEX) version 5.3.0 dev. (2023-12-27).
-[.101.1]- Update Scintilla Library (SCI) version 5.4.1 dev. (2023-12-27).
 [.101.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2023-10-14).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
 
