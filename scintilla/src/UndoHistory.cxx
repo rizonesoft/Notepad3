@@ -316,6 +316,8 @@ const char *UndoHistory::AppendAction(ActionType at, Sci::Position position, con
 	const char *dataNew = lengthData ? scraps->Push(data, lengthData) : nullptr;
 	if (currentAction >= actions.SSize()) {
 		actions.PushBack();
+	} else {
+		actions.Truncate(currentAction+1);
 	}
 	actions.Create(currentAction, at, position, lengthData, mayCoalesce);
 	currentAction++;

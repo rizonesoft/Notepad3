@@ -12,6 +12,7 @@
 ;#define VRSN=" beta"
 ;#define VRSN=" rc"
 ;#define VRSN=" rc2"
+;#define VRSN=" rc3"
 // but, if not a "beta, rc or rc2" version, then comment above settings and un-comment below setting :)
 #define VRSN
 #ifndef VRSN

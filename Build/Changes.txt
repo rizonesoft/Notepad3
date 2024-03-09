@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.24.0307.(build_#) (2024-03-07)
+Current BETA/RC Version 6.24.0309.(build_#) (2024-03-09)
 ========================================================
 
 --------------------------------------------------------
@@ -134,6 +134,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.309.1]- Redo failure introduced with Scintilla v5.4.2 Bug 2432 (SCI).
 [.307.1]- Tinyexpr: integer values always shown in abs() format.
 [.307.1]- Remove duplicate lines.
 [.302.2]- Regression: RegEx: find previous line start (^) - skips empty lines (ONI).
