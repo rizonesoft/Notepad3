@@ -119,6 +119,7 @@ Name: "deu"; MessagesFile: "compiler:Languages-mod\German.isl"
 Name: "ell"; MessagesFile: "compiler:Languages-mod\Greek.isl"
 Name: "eng"; MessagesFile: "compiler:Languages-mod\EnglishBritish.isl"
 Name: "esn"; MessagesFile: "compiler:Languages-mod\Spanish.isl"
+Name: "fin"; MessagesFile: "compiler:Languages-mod\Finnish.isl"
 Name: "fra"; MessagesFile: "compiler:Languages-mod\French.isl"
 Name: "hin"; MessagesFile: "compiler:Languages-mod\Hindi.isl"
 Name: "hun"; MessagesFile: "compiler:Languages-mod\Hungarian.isl"
@@ -147,6 +148,7 @@ deu.BeveledLabel=German
 ell.BeveledLabel=Greek
 eng.BeveledLabel=English (GB)
 esn.BeveledLabel=Spanish
+fin.BeveledLabel=Finnish
 fra.BeveledLabel=French
 hin.BeveledLabel=Hindi
 hun.BeveledLabel=Hungarian
@@ -300,6 +302,25 @@ esn.tsk_LaunchWelcomePage=¡Información importante de lanzamiento!
 esn.tsk_RemoveOpenWith=Eliminar "Abrir con {#app_name}" del menú contextual
 esn.tsk_SetOpenWith=Añadir "Abrir con {#app_name}" al menú contextual
 esn.reg_Open_with_NP3=Abrir con {#app_name}
+
+fin.msg_DeleteSettings=Haluatko myös poistaa {#app_name} asetukset ja teemat?%n%nJos aiot asentaa {#app_name} uudelleen, sinun ei tarvitse poistaa niitä.
+#ifdef sse_required
+fin.msg_simd_sse=Tämä {#app_name} versio vaatii suorittimen, jossa on SSE-laajennustuki.%n%nSuorittimellasi ei ole näitä ominaisuuksia.
+#endif
+#ifdef sse2_required
+fin.msg_simd_sse2=Tämä {#app_name} versio vaatii suorittimen, jossa on SSE2-laajennustuki.%n%nSuorittimellasi ei ole näitä ominaisuuksia.
+#endif
+fin.tsk_AllUsers=Kaikille käyttäjille
+fin.tsk_CurrentUser=Vain nykyiselle käyttäjälle
+fin.tsk_Other=Muut tehtävät:
+fin.tsk_ResetSettings=Palauta {#app_name} asetukset ja teemat
+fin.tsk_RemoveDefault=Palauta Windows Notepad
+fin.tsk_SetDefault=Korvaa Windows Notepad {#app_name} sovelluksella
+fin.tsk_StartMenuIcon=Luo Käynnistä-valikon pikakuvake
+fin.tsk_LaunchWelcomePage=Tärkeää tietoa julkaisusta!
+fin.tsk_RemoveOpenWith=Poista "Avaa {#app_name}" kontekstivalikosta.
+fin.tsk_SetOpenWith=Lisää kontekstivalikkoon "Avaa {#app_name}".
+fin.reg_Open_with_NP3=Avaa {#app_name}
 
 fra.msg_DeleteSettings=Voulez-vous également supprimer tous les réglages et thèmes de {#app_name} ?%n%nSi vous comptez réinstaller {#app_name}, vous pouvez les garder.
 #ifdef sse_required
@@ -690,6 +711,8 @@ Source: "{#bindir}{#RLSdir}\lng\en-GB\mplng.dll.mui"; DestDir: "{app}\lng\en-GB"
 Source: "{#bindir}{#RLSdir}\lng\en-GB\np3lng.dll.mui"; DestDir: "{app}\lng\en-GB"; Flags: ignoreversion
 Source: "{#bindir}{#RLSdir}\lng\es-ES\mplng.dll.mui"; DestDir: "{app}\lng\es-ES"; Flags: ignoreversion
 Source: "{#bindir}{#RLSdir}\lng\es-ES\np3lng.dll.mui"; DestDir: "{app}\lng\es-ES"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\fi-FI\mplng.dll.mui"; DestDir: "{app}\lng\fi-FI"; Flags: ignoreversion
+Source: "{#bindir}{#RLSdir}\lng\fi-FI\np3lng.dll.mui"; DestDir: "{app}\lng\fi-FI"; Flags: ignoreversion
 Source: "{#bindir}{#RLSdir}\lng\fr-FR\mplng.dll.mui"; DestDir: "{app}\lng\fr-FR"; Flags: ignoreversion
 Source: "{#bindir}{#RLSdir}\lng\fr-FR\np3lng.dll.mui"; DestDir: "{app}\lng\fr-FR"; Flags: ignoreversion
 Source: "{#bindir}{#RLSdir}\lng\hi-IN\mplng.dll.mui"; DestDir: "{app}\lng\hi-IN"; Flags: ignoreversion

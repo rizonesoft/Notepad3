@@ -47,6 +47,8 @@ BEGIN
   "#include ""../language/mp_en_gb/mp_en_gb.rc""\r\n"
 #elif defined(MUI_BASE_LNG_ES_ES)
   "#include ""../language/mp_es_es/mp_es_es.rc""\r\n"
+#elif defined(MUI_BASE_LNG_FI_FI)
+  "#include ""../language/mp_fi_fi/mp_fi_fi.rc""\r\n"
 #elif defined(MUI_BASE_LNG_FR_FR)
   "#include ""../language/mp_fr_fr/mp_fr_fr.rc""\r\n"
 #elif defined(MUI_BASE_LNG_HI_IN)
@@ -234,6 +236,8 @@ END
   #include "../language/mp_en_gb/mp_en_gb.rc"
 #elif defined(MUI_BASE_LNG_ES_ES)
   #include "../language/mp_es_es/mp_es_es.rc"
+#elif defined(MUI_BASE_LNG_FI_FI)
+  #include "../language/mp_fi_fi/mp_fi_fi.rc"
 #elif defined(MUI_BASE_LNG_FR_FR)
   #include "../language/mp_fr_fr/mp_fr_fr.rc"
 #elif defined(MUI_BASE_LNG_HI_IN)

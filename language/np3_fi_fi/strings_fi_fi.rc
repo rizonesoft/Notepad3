@@ -1,0 +1,395 @@
+// Microsoft Visual C++ generated resource script.
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winresrc.h"
+#include "../common_res.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Finnish (Finland) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FIN)
+LANGUAGE LANG_FINNISH, SUBLANG_FINNISH_FINLAND
+#pragma code_page(65001)  // UTF-8
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+    "#include ""winresrc.h""\r\n"
+    "#include ""../common_res.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDT_FILE_NEW            "New"
+    IDT_FILE_OPEN           "Open"
+    IDT_FILE_BROWSE         "Browse"
+    IDT_FILE_SAVE           "Save"
+    IDT_FILE_RECENT         "History"
+    IDT_EDIT_UNDO           "Undo"
+    IDT_EDIT_REDO           "Redo"
+    IDT_EDIT_CUT            "Cut"
+    IDT_EDIT_COPY           "Copy"
+END
+
+STRINGTABLE
+BEGIN
+    IDT_EDIT_PASTE          "Paste"
+    IDT_EDIT_FIND           "Find"
+    IDT_EDIT_REPLACE        "Replace"
+    IDT_VIEW_WORDWRAP       "Word Wrap"
+    IDT_VIEW_ZOOMIN         "Zoom In"
+    IDT_VIEW_RESETZOOM      "Reset Zoom"
+    IDT_VIEW_ZOOMOUT        "Zoom Out"
+    IDT_VIEW_SCHEME         "Select Scheme"
+    IDT_VIEW_SCHEMECONFIG   "Customise Schemes"
+    IDT_FILE_EXIT           "Exit"
+    IDT_FILE_SAVEAS         "Save As"
+    IDT_FILE_SAVECOPY       "Save Copy"
+    IDT_EDIT_CLEAR          "Delete"
+    IDT_FILE_PRINT          "Print"
+    IDT_FILE_OPENFAV        "Favourites"
+    IDT_FILE_ADDTOFAV       "Add to Favourites"
+    IDT_VIEW_TOGGLEFOLDS    "Toggle Folds"
+END
+
+STRINGTABLE
+BEGIN
+    IDT_FILE_LAUNCH          "Execute Document"
+    IDT_VIEW_NEW_WINDOW      "New Empty Window"
+    IDT_VIEW_TOGGLE_VIEW     "Focused View"
+    IDT_VIEW_CHASING_DOCTAIL "Monitoring Log"
+    IDT_VIEW_PIN_ON_TOP      "Always On Top"
+    IDT_GREP_WIN_TOOL        "Search in Files"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_APPTITLE_ELEVATED "%s : Elevated"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s : Clipboard"
+    IDS_MUI_UNTITLED        "Untitled"
+    IDS_MUI_TITLEEXCERPT    """%s"""
+    IDS_MUI_READONLY        "(Read Only)"
+    IDS_MUI_FILELOCKED      "<Exclusive>"
+    IDS_MUI_LOADFILE        "Loading ""%s""..."
+    IDS_MUI_SAVEFILE        "Saving ""%s""..."
+    IDS_MUI_PRINTFILE       "Printing page %i..."
+    IDS_MUI_SAVINGSETTINGS  "Saving settings..."
+    IDS_MUI_LINKDESCRIPTION "Edit with Notepad3"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_FILTER_ALL      "All files (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE      "Executable files (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_INI      "Configuration files (*.ini)|*.ini|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
+    IDS_MUI_OPENWITH        "Select the directory with links to your favourite applications."
+    IDS_MUI_FAVORITES       "Select the directory with links to your favourite files."
+    IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
+    IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
+    IDS_MUI_WILDCARDHELP    "Wildcard Search\n\n*\tMatches zero or more characters.\n?\tMatches exactly one character. "
+END
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_ERR_LOADFILE    "Error loading ""%s""."
+    IDS_MUI_ERR_SAVEFILE    "Error saving ""%s""."
+    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
+    IDS_MUI_ERR_BROWSE      "No file browser plugin was found.\nThe MiniPath file browser plugin can be downloaded from https://rizonesoft.com."
+    IDS_MUI_ERR_GREPWIN     "No file search plugin was found.\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com."
+    IDS_MUI_ERR_MRUDLG      "No access to the selected file!\nWould you like to remove it from the list?"
+    IDS_MUI_ERR_CREATELINK  "Error creating the Desktop link."
+    IDS_MUI_ERR_PREVWINDISABLED
+                            "Existing Notepad3 window is busy or has an active dialogue box.\nWould you like to open another Notepad3 window?"
+    IDS_MUI_ERR_ENCODINGNA  "Code page conversion tables for the selected encoding are not available on your system."
+    IDS_MUI_ERR_UNICODE     "Error converting this Unicode file.\nData will be lost if the file is saved!"
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_ELEVATED_RIGHTS
+                            "Error elevating user rights!"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_ERR_UNICODE2    "Certain characters in the current text are not supported by the selected encoding, and may be replaced by default placeholders when saving. It's recommended to choose another file encoding. Continue?"
+    IDS_MUI_ERR_DROP        "Only one file can be dropped at the same time!"
+    IDS_MUI_ERR_ACCESSDENIED
+                            "The file ""%s"" cannot be saved and may be protected.\n\nDo you want to launch %s as 'Elevated' application?"
+    IDS_MUI_ERR_ADMINEXE    "No administration executable found.\nCheck website https://rizonesoft.com?"
+    IDS_MUI_WARN_LOAD_BIG_FILE
+                            "Are you sure you want to open this large file?\n\t(size: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
+    IDS_MUI_ERR_FILE_TOO_LARGE
+                            "Can't handle that huge file (size: %s)!"
+    IDS_MUI_WARN_UNKNOWN_EXT
+                            "Unknown file name extension (%s)!\nLoading data anyway?"
+    IDS_MUI_INDENT_CONSISTENT  "The file has a consistent indentation!"
+    IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
+    IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
+    IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
+    IDS_MUI_WARN_NORMALIZE_EOLS
+                            "Do you want to normalise all line endings to be '%s'?"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_SELRECT         "This operation can't be performed within a rectangular selection."
+    IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection."
+    IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection."
+    IDS_MUI_BUFFERTOOSMALL  "This operation can't be performed (lines too long)."
+    IDS_MUI_FIND_WRAPFW     "Reached the end of the document, restarting search at the beginning."
+    IDS_MUI_FIND_WRAPRE     "Reached the beginning of the document, restarting search at the end."
+    IDS_MUI_NOTFOUND        "No match found for specified search pattern."
+    IDS_MUI_REPLCOUNT       "%s occurrence(s) of specified search pattern replaced."
+    IDS_MUI_ASK_ENCODING    "Switching the file encoding from one encoding to another may replace unsupported text with default characters, and the undo history will be cleared. Continue?"
+    IDS_MUI_ASK_ENCODING2   "You are about to change the encoding of an empty file. Note that this will clear the undo history, as it can't be synchronised with the new encoding. Continue?"
+    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
+    IDS_MUI_READONLY_SAVE   """%s"" is read only. Save to a different file?"
+    IDS_MUI_FILECHANGENOTIFY
+                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
+    IDS_MUI_FILECHANGENOTIFY2 "The current file has been deleted. Save now?"
+    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
+    IDS_MUI_STICKYWINPOS    "Sticky Window Position is enabled. Any new Notepad3 windows will use the current window placement settings."
+    IDS_MUI_SAVEDSETTINGS   "The current program settings have been saved."
+    IDS_MUI_CREATEINI_FAIL  "Error creating configuration file."
+    IDS_MUI_WRITEINI_FAIL   "Error writing settings to configuration file."
+    IDS_MUI_INIFILE_READONLY
+                            "Configuration file is readonly - ignore and override settings?"
+    IDS_MUI_SETTINGSNOTSAVED
+                            "No existing configuration file was found.\nTo keep your style modifications, save settings now (F7) or go back to scheme configuration (Ctrl+F12) and export your styles."
+END
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_RELOADSETTINGS   "Activate saved settings by program relaunch?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
+    IDS_MUI_EXPORT_FAIL      "Error exporting style settings to ""%s""."
+    IDS_MUI_REGEX_INVALID    "Error evaluating regular expression. Expression is invalid!"
+    IDS_MUI_DROP_NO_FILE     "No valid filename retrieved.\nIf dropping from 32-bit application,\nplease drag and drop to Notepad3's tool bar."
+    IDS_MUI_URL_DIR_EXISTS   "URL specified directory exists!"
+    IDS_MUI_URL_FILE_EXISTS  "URL specified file exists!"
+    IDS_MUI_URL_PATH_NOT_FOUND
+                             "URL specified path not found!"
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file."
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser."
+    IDS_MUI_INF_PRSVFILEMODTM
+                             "Preserving original File Modification Timestamp enabled.\nThis option will stay for this session!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highlight)!"
+    IDS_MUI_DOCUMENT_READONLY
+                             "The document is locked for view only. Keep the lock to prevent editing?"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_ASK_SAVE        "Save changes to:\n""%s""?"
+    IDS_MUI_ASK_REVERT      "Revert file to last saved state?"
+    IDS_MUI_ASK_RECODE      "Recoding requires reloading file from disk, unsaved changes will be lost!"
+    IDS_MUI_ASK_CREATE      """%s"" not found.\nWould you like to create this file?"
+    IDS_MUI_PRINT_HEADER    "Filename, Current Date and Time|Filename, Current Date|Filename|Leave blank"
+    IDS_MUI_PRINT_FOOTER    "Page Number|Leave blank"
+    IDS_MUI_PRINT_COLOR     "Normal|Invert light (dark background)|Black on white|Colour on white|Colour on white (except line numbers)|Screen Colours"
+    IDS_MUI_PRINT_PAGENUM   "Page %i"
+    IDS_MUI_WARN_STYLE_RESET
+                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
+    IDS_MUI_ASK_INSTANCE_EXISTS
+                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_PRINT_EMPTY     "This document doesn't contain any text to be printed."
+    IDS_MUI_PRINT_ERROR     "Error printing ""%s""!"
+    IDS_MUI_FAV_SUCCESS     "A shortcut to the current file has been created in the favourites directory."
+    IDS_MUI_FAV_FAILURE     "The shortcut to the current file could not be created.\nMake sure there's no other file with the same name."
+    IDS_MUI_READONLY_MODIFY "The attributes of ""%s"" could not be modified."
+    IDS_MUI_SAVEPOS         "&Save Position\tCtrl+S"
+    IDS_MUI_RESETPOS        "&Reset Position\tCtrl+R"
+    IDS_MUI_PREVIEW         "&Preview Settings\tCtrl+P"
+    IDS_MUI_PASS_FAILURE    "The Passphrase is incorrect.\nRetry another Passphrase?"
+    IDS_MUI_NOPASS          "Decryption Cancelled!\nRead encrypted raw data?"
+    IDS_MUI_STY_BASESTD     "BASE (Default Style):"
+    IDS_MUI_STY_BASE2ND     "BASE (2nd Default Style):"
+    IDS_MUI_STY_LEXDEF      "%s - Default Style:"
+    IDS_MUI_STY_LEXSTYLE    "%s's  Style:"
+    IDS_MUI_TITLE_RELBASE   "+++ BASE (%s) +++"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_TRANSL_AUTHOR   "(fi-FI) Käännös VeikkoM"
+    IDS_MUI_TITLE_FIXBASE   "BASE (%s)"
+    IDS_MUI_TITLE_RELCUR    "+++ %s: %s Style +++"
+    IDS_MUI_TITLE_FIXCUR    "%s: %s Style"
+    IDS_MUI_TITLE_RELARB    "+++ Style '%s' (%s) +++"
+    IDS_MUI_TITLE_FIXARB    "Style '%s' (%s)"
+    IDS_MUI_ASSOCIATED_EXT  "Associated filename extensions:"
+    IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
+    IDS_MUI_GOTO_LINE       "Line (1 - %s):"
+    IDS_MUI_GOTO_COLUMN     "Column (1 - %s):"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_MENU_LANGUAGE   "&Language"
+    IDS_USE_LOCALE_DATEFMT  "Language defines &Date Format"
+    IDS_MUI_MENU_THEMES     "&Scheme Collection"
+    IDM_THEMES_FACTORY_RESET "&Factory Reset"
+    IDM_THEMES_STD_CFG       "&Standard Config"
+    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
+    IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
+    IDS_CLEAR_ALL           "Clear All"
+    IDS_MUI_CLEAR_FIND_HISTORY
+                            "Clear Find History"
+    IDS_MUI_CLEAR_REPL_HISTORY
+                            "Clear Replace History"
+    IDS_MUI_SEARCHCLIPIFEMPTY
+                            "Search by Clipboard if empty selection"
+    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
+    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top"
+    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_MUI_SB_MARK_ALL_OCC   "Mark All Occurrences..."
+    IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
+    IDS_MUI_SB_REPLACE_ALL    "Replace all..."
+    IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
+    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
+    IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
+    IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
+    IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
+END
+
+STRINGTABLE
+BEGIN
+IDS_MUI_CMDLINEHELP "\
+Usage:\r\n\
+Notepad3 [/?] [...[Encoding]] [...[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
+ \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]filename[...]]\r\n\r\n\
+file\tMust be the last argument, no quoted spaces by default.\r\n\
++\tAccept multiple file arguments (with quoted spaces).\r\n\
+-\tAccept single file argument (without quoted spaces).\r\n\r\n\
+Options:\r\n\
+/?\tDisplay this help message.\r\n\
+...\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
+...\tLine ending mode (/crlf, /cr, /lf).\r\n\
+/e\tFile source encoding.\r\n\
+/g\tJump to specified position (/g -1 end of file).\r\n\
+/m\tMatch specified text (/m- last, /mr regex, /mb backslash).\r\n\
+/l\tAuto-reload modified files.\r\n\
+/q\tForce creation of new files without prompt.\r\n\
+/s\tSelect specified syntax scheme.\r\n\
+/d\tSelect default text scheme.\r\n\
+/h\tSelect Web Source Code scheme.\r\n\
+/x\tSelect XML Document scheme.\r\n\
+/c\tOpen new window and paste clipboard contents.\r\n\
+/b\tOpen new paste board to collect clipboard entries.\r\n\
+/n\tAlways open a new window (/ns single file instance).\r\n\
+/r\tReuse window (/rs single file instance).\r\n\
+/p\tSet window position and size (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tor /p <left>,<top>,<width>,<height>[,<dpi>[,<max>]]  (all integers).\r\n\
+/t\tSet window title.\r\n\
+/i\tStart as tray icon.\r\n\
+/o\tKeep window on top.\r\n\
+/f\tSpecify ini-file (/f0 no ini-file).\r\n\
+/u\tLaunch with elevated privileges.\r\n\
+/v\tPrint file immediately and quit.\r\n\
+/vd\tPrint file (open printer dialogue).\r\n\
+/y\tSearch environment PATH in case of relative filename.\r\n\
+/z\tSkip next (usable for registry-based Notepad replacement).\r\n\r\n\
+Examples:\r\n\
+Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
+ \t... Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+Notepad3 /v d:\\temp\\Test.txt\r\n\
+ \t... Print the file: ""Test.txt"" immediately.\
+"
+
+IDS_MUI_STYLEEDIT_HELP "\
+Filename extensions must be separated by ';'\r\n\
+use \\<regex>; to define a filename matching pattern:\r\n\
+   \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars.\r\n\r\n\
+Style format:\r\n\
+font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
+fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
+Style properties can be copied using copy and paste or drag and drop.\
+"
+
+END
+
+STRINGTABLE
+BEGIN
+
+IDS_MUI_ABOUT_RTF_0  "{\
+\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Segoe UI;}}\
+{\\colortbl ;\\red80\\green160\\blue80;}\
+\\tx3500\\tx7000\\fs18\
+\\cf0 \\fs20\\b1\\ul1 Development:\\ul0\\b0\\fs18\\par\
+"
+IDS_MUI_ABOUT_RTF_1  "\
+\\cf0 \\fs20\\b1\\ul1 Contributors:\\ul0\\b0\\fs18\\par\
+"
+IDS_MUI_ABOUT_RTF_2  "\
+\\cf0 \\fs20\\b1\\ul1 Open Source / Libraries:\\ul0\\b0\\fs18\\par\
+"
+IDS_MUI_ABOUT_RTF_3  "\
+\\cf0 \\fs20\\b1\\ul1 Acknowledgments:\\ul0\\b0\\fs18\\par\
+"
+IDS_MUI_ABOUT_RTF_4  "\
+\\cf0 \\fs20\\b1\\ul1 Resources:\\ul0\\b0\\fs18\\par\
+"
+IDS_MUI_ABOUT_RTF_5  "\
+\\cf0 \\fs20\\b1\\ul1 Licences:\\ul0\\b0\\fs18\\par\
+"
+
+END
+
+#endif    // Finnish (Finland) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

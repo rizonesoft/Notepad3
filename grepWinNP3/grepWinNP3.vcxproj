@@ -366,6 +366,7 @@
     <None Include="translationsNP3\English (United Kingdom) [en-GB].lang" />
     <None Include="translationsNP3\English (United States) [en-US].lang" />
     <None Include="translationsNP3\Español (España) [es-ES].lang" />
+    <None Include="translationsNP3\suomi (Suomi) [fi-FI].lang" />
     <None Include="translationsNP3\Français (France) [fr-FR].lang" />
     <None Include="translationsNP3\Italiano (Italia) [it-IT].lang" />
     <None Include="translationsNP3\Magyar (Magyarország) [hu-HU].lang" />
