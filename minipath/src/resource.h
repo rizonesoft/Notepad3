@@ -28,6 +28,7 @@
 ///#define MUI_BASE_LNG_EL_GR 1
 ///#define MUI_BASE_LNG_EN_GB 1
 ///#define MUI_BASE_LNG_ES_ES 1
+///#define MUI_BASE_LNG_FI_FI 1
 ///#define MUI_BASE_LNG_FR_FR 1
 ///#define MUI_BASE_LNG_HI_IN 1
 ///#define MUI_BASE_LNG_HU_HU 1

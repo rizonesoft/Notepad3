@@ -347,6 +347,9 @@
     <None Include="translationsNP3\Español (España) [es-ES].lang">
       <Filter>translationsNP3</Filter>
     </None>
+    <None Include="translationsNP3\suomi (Suomi) [fi-FI].lang">
+      <Filter>translationsNP3</Filter>
+    </None>
     <None Include="translationsNP3\Français (France) [fr-FR].lang">
       <Filter>translationsNP3</Filter>
     </None>

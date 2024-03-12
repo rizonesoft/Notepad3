@@ -21,6 +21,8 @@
 #define MUI_BASE_LNG_ID L"en-GB"
 #elif defined(MUI_BASE_LNG_ES_ES)
 #define MUI_BASE_LNG_ID L"es-ES"
+#elif defined(MUI_BASE_LNG_FI_FI)
+#define MUI_BASE_LNG_ID L"fi-FI"
 #elif defined(MUI_BASE_LNG_FR_FR)
 #define MUI_BASE_LNG_ID L"fr-FR"
 #elif defined(MUI_BASE_LNG_HI_IN)
@@ -562,24 +564,25 @@
 #define IDS_MUI_LANG_EL_GR              34505
 #define IDS_MUI_LANG_EN_GB              34506
 #define IDS_MUI_LANG_ES_ES              34507
-#define IDS_MUI_LANG_FR_FR              34508
-#define IDS_MUI_LANG_HI_IN              34509
-#define IDS_MUI_LANG_HU_HU              34510
-#define IDS_MUI_LANG_ID_ID              34511
-#define IDS_MUI_LANG_IT_IT              34512
-#define IDS_MUI_LANG_JP_JP              34513
-#define IDS_MUI_LANG_KO_KR              34514
-#define IDS_MUI_LANG_NL_NL              34515
-#define IDS_MUI_LANG_PL_PL              34516
-#define IDS_MUI_LANG_PT_BR              34517
-#define IDS_MUI_LANG_PT_PT              34518
-#define IDS_MUI_LANG_RU_RU              34519
-#define IDS_MUI_LANG_SK_SK              34520
-#define IDS_MUI_LANG_SV_SE              34521
-#define IDS_MUI_LANG_TR_TR              34522
-#define IDS_MUI_LANG_VI_VN              34523
-#define IDS_MUI_LANG_ZH_CN              34524
-#define IDS_MUI_LANG_ZH_TW              34525
+#define IDS_MUI_LANG_FI_FI              34508
+#define IDS_MUI_LANG_FR_FR              34509
+#define IDS_MUI_LANG_HI_IN              34510
+#define IDS_MUI_LANG_HU_HU              34511
+#define IDS_MUI_LANG_ID_ID              34512
+#define IDS_MUI_LANG_IT_IT              34513
+#define IDS_MUI_LANG_JP_JP              34514
+#define IDS_MUI_LANG_KO_KR              34515
+#define IDS_MUI_LANG_NL_NL              34516
+#define IDS_MUI_LANG_PL_PL              34517
+#define IDS_MUI_LANG_PT_BR              34518
+#define IDS_MUI_LANG_PT_PT              34519
+#define IDS_MUI_LANG_RU_RU              34520
+#define IDS_MUI_LANG_SK_SK              34521
+#define IDS_MUI_LANG_SV_SE              34522
+#define IDS_MUI_LANG_TR_TR              34523
+#define IDS_MUI_LANG_VI_VN              34524
+#define IDS_MUI_LANG_ZH_CN              34525
+#define IDS_MUI_LANG_ZH_TW              34526
 #define IDS_USE_LOCALE_DATEFMT          34700
 
 #define IDS_MUI_MENU_THEMES             37000
