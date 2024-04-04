@@ -75,7 +75,7 @@ BEGIN
             MENUITEM "Kopioi vain &hakemistopolku",          IDM_EDIT_INSERT_DIRNAME
             MENUITEM "Kopioi &koko polku\tCtrl+Shift+F9",     IDM_EDIT_INSERT_PATHNAME
         END
-        POPUP "&Launch"
+        POPUP "&Käynnistä"
         BEGIN
             MENUITEM "Etsi tiedo&stoista\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
@@ -100,7 +100,7 @@ BEGIN
         BEGIN
             POPUP "&Palauta tiedostosta..."
             BEGIN
-                MENUITEM "&&Oletus (asetus)",             CMD_RECODEDEFAULT
+                MENUITEM "&Oletus (asetus)",             CMD_RECODEDEFAULT
                 MENUITEM "A&NSI\tCtrl+Shift+A",            CMD_RECODEANSI
                 MENUITEM "&OEM\tCtrl+Shift+O",             CMD_RECODEOEM
                 MENUITEM "&GB18030\tCtrl+Shift+F10",       CMD_RECODEGB18030
@@ -216,7 +216,7 @@ BEGIN
                 MENUITEM "Lo&hkon muokkaus\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
             MENUITEM SEPARATOR
-            MENUITEM "Vi&rran kommentti\tCtrl+Shift+Q",     IDM_EDIT_STREAMCOMMENT
+            MENUITEM "Vi&rtakommentti\tCtrl+Shift+Q",     IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "Sis&ällytä valinta"
             BEGIN
@@ -231,12 +231,12 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "&Yhdessä...\tAlt+Q",               IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "&Duplicate Selection/Line\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "&Monista valinta/rivi\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
             MENUITEM "&Täytä tyhjillä\tAlt+B",           IDM_EDIT_PADWITHSPACES
             MENUITEM "Poista &ensimmäinen merkki\tAlt+Z",     IDM_EDIT_STRIP1STCHAR
             MENUITEM "Poista &viimeinen merkki\tAlt+U",      IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Poista lopun &tyhjät\tAlt+W",     IDM_EDIT_TRIMLINES
+            MENUITEM "Poista &tyhjät lopusta\tAlt+W",     IDM_EDIT_TRIMLINES
             MENUITEM "Pakkaa &tyhjät\tCtrl+Alt+P",      IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Muokkaa rivejä...\tAlt+M",           IDM_EDIT_MODIFYLINES
@@ -310,7 +310,7 @@ BEGIN
             MENUITEM "Valitse &seuraavaan\tCtrl+Alt+F2",               IDM_EDIT_SELTONEXT
             MENUITEM "Valitse &edelliseen\tCtrl+Alt+Shift+F2",     IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "Valitse %sana tai rivi\tCtrl+Spc",            IDM_EDIT_SELECTWORD
+            MENUITEM "Valitse &sana tai rivi\tCtrl+Spc",            IDM_EDIT_SELECTWORD
             MENUITEM "Monivalitse k&aikki täsmäävät\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
             MENUITEM "Jaa kumous&tapahtuma rivinvaihdon kohdalla",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
@@ -323,7 +323,7 @@ BEGIN
             MENUITEM "Siirry &seuraavaan\tF2",              BME_EDIT_BOOKMARKNEXT
             MENUITEM "Siirry &edelliseen\tShift+F2",    BME_EDIT_BOOKMARKPREV
             MENUITEM SEPARATOR
-            MENUITEM "&&Poista kaikki\tAlt+F2",          BME_EDIT_BOOKMARKCLEAR
+            MENUITEM "&Poista kaikki\tAlt+F2",          BME_EDIT_BOOKMARKCLEAR
         END
         MENUITEM SEPARATOR
         POPUP "Ha&ku"
@@ -358,17 +358,17 @@ BEGIN
             MENUITEM "Näytä vain dokumentissa",            IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Näytä kaikki muutosmerkit",          IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Tyhjennä muutos/kumoushistoria"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Tyhjennä muutos-/kumoushistoria"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
-        MENUITEM "&Hyperlinkkien valintakohdat\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
-        POPUP "&Värimääritelmän valintakohdat "
+        MENUITEM "&Hyperlinkkien valintapaikat\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
+        POPUP "&Värimääritelmän valintapaikat"
         BEGIN
             MENUITEM "&POIS",                             IDM_VIEW_COLORDEFHOTSPOTS
             MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
             MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
             MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
         END
-        MENUITEM "Korosta &Unicode-kohdat",            IDM_VIEW_UNICODE_POINTS
+        MENUITEM "Korosta &Unicode",            IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visuaalisten sulkeiden täsmäys\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES
         POPUP "Korosta nyky&inen rivi\tCtrl+Shift+I"
         BEGIN
@@ -455,13 +455,13 @@ BEGIN
     END
     POPUP "U&lkonäkö"
     BEGIN
-        MENUITEM "&Mukauta järjestelyjä...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
+        MENUITEM "&Mukauta määrityksiä...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "Valitse synta&ksikaavio...\tF12",                   IDM_VIEW_SCHEME
+        MENUITEM "Valitse synta&ksimalli...\tF12",                   IDM_VIEW_SCHEME
         MENUITEM "&2. Common Base\tShift+F12",                     IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "Globaali &oletusfontti...\tAlt+F12",                IDM_VIEW_FONT
-        MENUITEM "Nykyisen &järjestelyn oletusfontti...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
+        MENUITEM "Nykyisen &määrityksen oletusfontti...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
         MENUITEM SEPARATOR
         MENUITEM "Windowsin tumma tila",                               IDM_VIEW_WIN_DARK_MODE
     END
@@ -483,7 +483,7 @@ BEGIN
         MENUITEM "Tiedoston &muutosilmoitus...\tAlt+F5",     IDM_SET_CHANGENOTIFY
         ///MENUITEM "Automaattitallennus / varmuuskopiointiasetukset...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "&Mykistä viestin äänimerkit",                      IDM_SET_MUTE_MESSAGEBEEP
-        POPUP "&Esc avaintoiminto"
+        POPUP "&Esc-toiminta"
         BEGIN
             MENUITEM "&Ei mitään",                       IDM_SET_NOESCFUNC
             MENUITEM "&Minimoi Notepad3",          IDM_SET_ESCMINIMIZE
@@ -505,11 +505,11 @@ BEGIN
             BEGIN
                 MENUITEM "&Vain tiedostonimi",              IDM_SET_SHOWFILENAMEONLY
                 MENUITEM "Tiedostonimi ja &hakemisto",     IDM_SET_SHOWFILENAMEFIRST
-                MENUITEM "Täydellinen &polunnimi",              IDM_SET_SHOWFULLPATH
+                MENUITEM "Täydellinen &polun nimi",              IDM_SET_SHOWFULLPATH
                 MENUITEM "&Ote &tekstistä\tCtrl+9",       IDM_SET_SHOWEXCERPT
             END
             MENUITEM "&Käytä ikkunaa &uudelleen\tCtrl+Shift+L",     IDM_SET_REUSEWINDOW
-            MENUITEM "&&Aina päällimmäisenä\tAlt+T",           IDM_SET_ALWAYSONTOP
+            MENUITEM "&Aina päällimmäisenä\tAlt+T",           IDM_SET_ALWAYSONTOP
             MENUITEM "&Pienennä il&moitusalueelle",               IDM_SET_MINTOTRAY
             MENUITEM "Läpinäkyvä &toimintatila\tAlt+G",        IDM_SET_TRANSPARENT
         END
@@ -574,7 +574,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Avaa verkkotoiminto 1",          CMD_WEBACTION1
         MENUITEM "Avaa verkkotoiminto 2",          CMD_WEBACTION2
-        MENUITEM "Avaa Tiedostonhallinta",         IDM_FILE_EXPLORE_DIR
+        MENUITEM "Avaa tiedostonhallinta",         IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"
     BEGIN

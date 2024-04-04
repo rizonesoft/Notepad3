@@ -57,73 +57,73 @@ IDR_MAINWND MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "&Open",                       IDM_FILE_OPEN
-        MENUITEM "Open &w/ Alternate App...",   IDM_FILE_OPENWITH
-        MENUITEM "&Quickview",                  IDM_FILE_QUICKVIEW
+        MENUITEM "&Avaa",                       IDM_FILE_OPEN
+        MENUITEM "Avaa &vaihtoehtoisessa sovelluksessa...",   IDM_FILE_OPENWITH
+        MENUITEM "&Pikakatselu",                  IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "&Copy Name",                  IDM_POP_COPYNAME
-        MENUITEM "Create Lin&k...",             IDM_FILE_CREATELINK
-        MENUITEM "&Save As...",                 IDM_FILE_SAVEAS
-        MENUITEM "Copy/&Move...",               IDM_FILE_COPYMOVE
-        MENUITEM "D&elete...",                  IDM_FILE_DELETE
-        MENUITEM "Re&name...",                  IDM_FILE_RENAME
+        MENUITEM "&Kopioi nimi",                  IDM_POP_COPYNAME
+        MENUITEM "Luo lin&kki...",             IDM_FILE_CREATELINK
+        MENUITEM "&Tallenna nimellä...",                 IDM_FILE_SAVEAS
+        MENUITEM "Kopioi/&siirrä...",               IDM_FILE_COPYMOVE
+        MENUITEM "&Poista...",                  IDM_FILE_DELETE
+        MENUITEM "&Nimeä uudelleen...",                  IDM_FILE_RENAME
         MENUITEM SEPARATOR
-        MENUITEM "&Launch",                     IDM_FILE_LAUNCH
-        MENUITEM "&Run w/ Arguments...",        IDM_FILE_RUN
+        MENUITEM "&Käynnistä",                     IDM_FILE_LAUNCH
+        MENUITEM "&Suorita a&rgumenteilla...",        IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "&Properties",                 IDM_FILE_PROPERTIES
+        MENUITEM "&Ominaisuudet",                 IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&New File...",                IDM_FILE_NEW
-        MENUITEM "Ne&w Directory...",           IDM_FILE_NEWDIR
+        MENUITEM "&Uusi tiedosto...",                IDM_FILE_NEW
+        MENUITEM "Uu&si hakemisto...",           IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "&File Filter...",             IDM_VIEW_FILTER
-        MENUITEM "&Reset Filter",               IDM_VIEW_FILTERALL
-        POPUP "&Show"
+        MENUITEM "&Tiedostosuodatin...",             IDM_VIEW_FILTER
+        MENUITEM "&Nollaa suodatin",               IDM_VIEW_FILTERALL
+        POPUP "&Näytä"
         BEGIN
-            MENUITEM "&Directories",            IDM_VIEW_FOLDERS
-            MENUITEM "&Files",                  IDM_VIEW_FILES
-            MENUITEM "&System Objects",         IDM_VIEW_HIDDEN
+            MENUITEM "&Hakemistot",            IDM_VIEW_FOLDERS
+            MENUITEM "&Tiedostot",                  IDM_VIEW_FILES
+            MENUITEM "Järje&stelmäobjektit",         IDM_VIEW_HIDDEN
         END
-        POPUP "S&ort"
+        POPUP "La&jittelu"
         BEGIN
-            MENUITEM "by &Name",                IDM_SORT_NAME
-            MENUITEM "by &Size",                IDM_SORT_SIZE
-            MENUITEM "by &Type",                IDM_SORT_TYPE
-            MENUITEM "by &Date",                IDM_SORT_DATE
+            MENUITEM "&Nimen mukaan",                IDM_SORT_NAME
+            MENUITEM "&Koon mukaan",                IDM_SORT_SIZE
+            MENUITEM "&Tyypin mukaan",                IDM_SORT_TYPE
+            MENUITEM "&Päiväyksen mukaan",                IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "&Reverse",                IDM_SORT_REVERSE
+            MENUITEM "K&äänteinen",                IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "Go&to...",                    IDM_FILE_GOTO
-        MENUITEM "&Goto Favourites",            IDM_VIEW_FAVORITES
-        MENUITEM "&Edit Favourites",            IDM_VIEW_EDITFAVORITES
-        MENUITEM "&Directory...",               IDM_FILE_CHANGEDIR
+        MENUITEM "Sii&rry...",                    IDM_FILE_GOTO
+        MENUITEM "Siirry &suosikkeihin",            IDM_VIEW_FAVORITES
+        MENUITEM "Muokkaa suosikk&eja",            IDM_VIEW_EDITFAVORITES
+        MENUITEM "&Hakemisto...",               IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "Show Dri&ves",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Näytä &asemat",                IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
-        MENUITEM "S&ave Settings",              IDM_VIEW_SAVESETTINGS
-        MENUITEM "Setup &Target...",            IDM_VIEW_FINDTARGET
-        MENUITEM "O&ptions...",                 IDM_VIEW_OPTIONS
+        MENUITEM "Tallenna a&setukset",              IDM_VIEW_SAVESETTINGS
+        MENUITEM "Asetuskoh&de...",            IDM_VIEW_FINDTARGET
+        MENUITEM "As&etukset...",                 IDM_VIEW_OPTIONS
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&Directory...",               IDM_FILE_CHANGEDIR
-        MENUITEM "Drive &Properties",           IDM_FILE_DRIVEPROP
+        MENUITEM "&Hakemisto...",               IDM_FILE_CHANGEDIR
+        MENUITEM "Aseman &ominaisuudet",           IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "Show Dri&ves",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Näytä &asemat",                IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "&Edit Toolbar...",            IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
+        MENUITEM "Näytä &työkalurivi",               IDM_VIEW_TOOLBAR
+        MENUITEM "&Muokkaa työkaluriviä...",            IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Näytä tila&palkki",             IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Open MiniPath",               IDM_TRAY_RESTORE
-        MENUITEM "Exit MiniPath",               IDM_TRAY_EXIT
+        MENUITEM "Avaa MiniPath",               IDM_TRAY_RESTORE
+        MENUITEM "Sulje MiniPath",               IDM_TRAY_EXIT
     END
 END
 
