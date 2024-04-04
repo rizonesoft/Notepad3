@@ -161,7 +161,7 @@ msgstr "Kopioi sarake kaikille kohteille"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr "Kopioi sarake valitulle kohteelle"
+msgstr "Kopioi sarake valituille kohteille"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
@@ -185,7 +185,7 @@ msgstr "Dialogi"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr "Älä varoita korvattaessa luomatta varmuuskopioita"
+msgstr "Älä varoita korvattaessa varmuuskopioita luomatta"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -217,7 +217,7 @@ msgstr "Escape sulkee grepWinNP3:n."
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr "Jätä hakemistot pois (Regex)"
+msgstr "Ohita hakemistot (Regex)"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
@@ -286,7 +286,7 @@ msgstr "Käänteinen haku ( EI hakusana)"
 
 #. Resource IDs: (1019)
 msgid "KB"
-msgstr "KB"
+msgstr "Kt"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
@@ -311,7 +311,7 @@ msgstr "Rivi %5ld : %30s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
-msgstr "Täsmäykset "
+msgstr "Osumat"
 
 #. Resource IDs: (104)
 msgid "Name"
@@ -383,7 +383,7 @@ msgstr "Regex testi"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Regex täsmäys"
+msgstr "Regex osuma"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
@@ -411,7 +411,7 @@ msgstr "Korvaa merkkijono"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "Korvaa/\nKaappausmuoto:"
+msgstr "Korvaava/\nKaappausmuoto:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -485,7 +485,7 @@ msgstr "Teksti"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Tekstin täsmäys"
+msgstr "Tekstiosuma"
 
 #. Resource IDs: (1002)
 msgid "Text search"
@@ -588,7 +588,7 @@ msgstr "pienempi kuin"
 
 #. Resource IDs: (111)
 msgid "no match"
-msgstr "ei täsmäystä"
+msgstr "ei osumaa"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
@@ -604,7 +604,7 @@ msgstr "NULL-tavujen määrä megatavua kohden sallittu, jotta tiedostoa voidaan
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\nUse '|' as the delimiter.\nExample: *.cpp|*.h"
-msgstr "vain tiedostot, jotka vastaavat tätä mallia, etsitään.\nKäytä erotinmerkkinä '|'.\nEsimerkki: *cpp|*.h"
+msgstr "vain tiedostoja, jotka vastaavat tätä mallia, etsitään.\nKäytä erotinmerkkinä '|'.\nEsimerkki: *cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "Open list with recent entries"
@@ -637,7 +637,7 @@ msgstr "Käynnistä uusi grepWinNP3-ikkuna"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
-msgstr "polku(t), jota etsitään rekursiivisesti.\nErottele polut '|'-symbolilla.\n Esimerkki: c:\\temp|d:\\logs"
+msgstr "polut, joita etsitään rekursiivisesti.\nErottele polut '|'-symbolilla.\n Esimerkki: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
@@ -661,7 +661,7 @@ msgstr "Notepad3:n grepWin(NP3)-mod Stefan Küngin hieno työkalu!"
 
 #. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
-msgstr "Samanaikaisten työntekijöiden maksimimäärä"
+msgstr "Samanaikaisten tekijöiden maksimimäärä"
 
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"

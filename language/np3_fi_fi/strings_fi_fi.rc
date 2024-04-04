@@ -75,8 +75,8 @@ BEGIN
     IDT_VIEW_ZOOMIN         "Lähennä"
     IDT_VIEW_RESETZOOM      "Nollaa zoomaus"
     IDT_VIEW_ZOOMOUT        "Loitonna"
-    IDT_VIEW_SCHEME         "Valitse järjestely"
-    IDT_VIEW_SCHEMECONFIG   "Muokkaa järjestelyä"
+    IDT_VIEW_SCHEME         "Valitse määrittely"
+    IDT_VIEW_SCHEMECONFIG   "Muokkaa määrittelyä"
     IDT_FILE_EXIT           "Sulje"
     IDT_FILE_SAVEAS         "Tallenna nimellä"
     IDT_FILE_SAVECOPY       "Tallenna kopio"
@@ -301,9 +301,9 @@ Käyttö:\r\n\
 Notepad3 [/?] [...[Koodaus]] [...[Rivin lopetustila]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][polku]tiedostonimi[...]]\r\n\r\n\
-tiedosto\tPitäisi olla viimeinen argumentti, ei lainausmerkkejä oletuksena.\r\n\
+Tiedosto\tPitäisi olla viimeinen argumentti, ei lainausmerkkejä oletuksena.\r\n\
 +\tHyväksy useita tiedostoargumentteja (välilyöntien kanssa).\r\n\
--\tHyväksyy yksi tiedostoargumentti (ilman välilyöntejä).\r\n\r\n\
+-\tHyväksy yksi tiedostoargumentti (ilman välilyöntejä).\r\n\r\n\
 Vaihtoehdot:\r\n\
 /?\tNäytä tämä ohjeviesti.\r\n\
 ...\tKoodaus (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
@@ -340,13 +340,13 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Tiedostonimipäätteet on erotettava toisistaan ';':lla.\r\n\
-käytä \\<regex>; määrittääksesi tiedostonimen täsmäytysmallin:\r\n\
-   \\xyz$;   => tiedostonimet(kantanimi+ext) ja 'xyz' viimeisinä merkkeinä.\r\n\r\n\
+Tiedostonimipäätteet on erotettava toisistaan merkillä ';'.\r\n\
+Käytä \\<regex>; määrittääksesi tiedostonimen täsmäytysmallin:\r\n\
+   \\xyz$;   => tiedostonimet(kantanimi+pääte) ja 'xyz' viimeisinä merkkeinä.\r\n\r\n\
 Tyylin muoto:\r\n\
 fontti:Nimi; koko:[+/-]nn.mm; lihavoitu; kursiivi; alleviivaus;\r\n\
-edus:#ffffff; taus:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Tyyliominaisuuksia voidaan kopioida käyttämällä kopioi ja liitä tai vedä ja pudota.\
+teksti:#ffffff; tausta:#bbbbbb; lopputäyttö; indic_gradient\r\n\r\n\
+Tyyliominaisuuksia voi kopioida käyttämällä ""Kopioi/liitä"" tai ""Vedä/pudota"".\
 "
 
 END

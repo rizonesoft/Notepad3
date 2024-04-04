@@ -296,7 +296,7 @@ BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,130
     CONTROL         "Aseta valittu malli &oletukseksi.",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,118,10
-    CONTROL         "Valitse automaattisesti tiedostopäätteen mukaan.",IDC_AUTOSELECT,
+    CONTROL         "Valitse autom. päätteen mukaan.",IDC_AUTOSELECT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,127,10
     DEFPUSHBUTTON   "OK",IDOK,53,173,50,14,WS_DISABLED
     PUSHBUTTON      "Peruuta",IDCANCEL,108,173,50,14
@@ -312,7 +312,7 @@ BEGIN
     EDITTEXT        IDC_STYLEEDIT_ROOT,181,152,279,12,ES_AUTOHSCROLL
     LTEXT           "",IDC_STYLELABEL,181,171,279,8
     EDITTEXT        IDC_STYLEEDIT,181,183,279,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "&Edusta...",IDC_STYLEFORE,181,201,46,14
+    PUSHBUTTON      "&Teksti...",IDC_STYLEFORE,181,201,46,14
     PUSHBUTTON      "&Tausta...",IDC_STYLEBACK,232,201,46,14
     PUSHBUTTON      "&Fontti...",IDC_STYLEFONT,283,201,42,14
     PUSHBUTTON      "&Esikatselu",IDC_PREVIEW,330,201,42,14
@@ -321,7 +321,7 @@ BEGIN
     PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14,BS_BITMAP
     LTEXT           "Tumma-tilan kontrasti(%):", IDC_STATIC2,181,222,80,8
     EDITTEXT        IDC_DARK_MODE_CONTRAST,265,221,24,12,ES_AUTOHSCROLL
-    LTEXT           "[0-6000] Default: 75%",IDC_STATIC3,300,222,80,8
+    LTEXT           "[0-6000] Oletus: 75%",IDC_STATIC3,300,222,80,8
     PUSHBUTTON      "&Tuo...",IDC_IMPORT,181,240,50,14
     PUSHBUTTON      "&Vie...",IDC_EXPORT,237,240,50,14
     DEFPUSHBUTTON   "OK",IDOK,355,240,50,14
@@ -346,7 +346,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
     CONTROL         "&Varoitus epäjohdonmukaisesta sisennyksestä.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
-    CONTROL         "Tunnista &automaattisesti sarkain- tai välilyönti sisennys.",IDC_AUTO_DETECT_INDENTS,
+    CONTROL         "Tunnista &autom. sarkain-/välilyöntisisennys.",IDC_AUTO_DETECT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Peruuta",IDCANCEL,117,27,50,14
