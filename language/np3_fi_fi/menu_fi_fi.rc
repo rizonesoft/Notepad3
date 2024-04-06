@@ -98,7 +98,7 @@ BEGIN
         MENUITEM "Oh&ita tiedosto-merkinnät",                      CMD_IGNORE_FILE_VARS
         POPUP "&Koodaus"
         BEGIN
-            POPUP "&Palauta tiedostosta..."
+            POPUP "&Palauta tiedostosta"
             BEGIN
                 MENUITEM "&Oletus (asetus)",             CMD_RECODEDEFAULT
                 MENUITEM "A&NSI\tCtrl+Shift+A",            CMD_RECODEANSI
@@ -111,7 +111,7 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "&Lisää koodauksia...\tF8",         IDM_ENCODING_RECODE
             END
-            POPUP "&Määritä dokumentti..."
+            POPUP "&Määritä dokumentti"
             BEGIN
                 MENUITEM "&ANSI",                          IDM_ENCODING_ANSI
                 MENUITEM "&Unicode",                       IDM_ENCODING_UNICODE
