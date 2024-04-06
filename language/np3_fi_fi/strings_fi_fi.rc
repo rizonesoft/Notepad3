@@ -331,7 +331,8 @@ Vaihtoehdot:\r\n\
 /v\tTulosta tiedosto välittömästi ja lopeta.\r\n\
 /vd\tTulosta tiedosto (avaa tulostindialogi).\r\n\
 /y\tEtsi ympäristöPOLKU, jos kyseessä on suhteellinen tiedostonimi.\r\n\
-/z\tOhita seuraava (käytettävissä rekisteripohjaiseen Notepad-korvaukseen).\r\n\r\n\
+/z\tOhita seuraava (käytettävissä rekisteripohjaiseen Notepad-\r\n\
+\tkorvaukseen).\r\n\r\n\
 Esimerkkejä:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
  \t... Avaa uusi tiedosto: ""Test.txt"" Koodaus=UTF-8-BOM, EoL=CRLF.\r\n\
@@ -358,22 +359,22 @@ IDS_MUI_ABOUT_RTF_0  "{\
 \\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Segoe UI;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
-\\cf0 \\fs20\\b1\\ul1 Development:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Kehitystyö:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_1  "\
-\\cf0 \\fs20\\b1\\ul1 Contributors:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Avustajat:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_2  "\
-\\cf0 \\fs20\\b1\\ul1 Open Source / Libraries:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Open Source / kirjastot:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
-\\cf0 \\fs20\\b1\\ul1 Acknowledgments:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Kiitokset seuraaville:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_4  "\
-\\cf0 \\fs20\\b1\\ul1 Resources:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Resurssit:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_5  "\
-\\cf0 \\fs20\\b1\\ul1 Licences:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Lisenssit:\\ul0\\b0\\fs18\\par\
 "
 
 END

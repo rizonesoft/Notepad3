@@ -91,27 +91,27 @@ BEGIN
     LTEXT           "Haku&sana:",IDC_STATIC,7,7,46,8
     CONTROL         "<a>Esc Ctrl Chr</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
     COMBOBOX        IDC_FINDTEXT,7,17,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Sama kirjain&koko",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,53,10
+    CONTROL         "Sama kirjain&koko",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,70,10
     CONTROL         "&Vain kokonaiset sanat",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
     CONTROL         "Täsmää vain sanan &alku",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "Muunna kenoviiva&t",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
-    CONTROL         "Säännöllinen laus&eke-haku",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
-    CONTROL         "Piste täs&mää rivinvaihtoon",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,90,10
+    CONTROL         "Säännöllinen lausekehaku",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,97,10
+    CONTROL         "Piste täs&mää rivinvaihtoon",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,100,10
     CONTROL         "&Älä kierrä ympäri",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
-    CONTROL         "&Sulje löydön jälkeen",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
-    CONTROL         "Mer&kitse esiintymät",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
+    CONTROL         "&Sulje löydön jälkeen",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,75,10
+    CONTROL         "Mer&kitse esiintymät",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,75,10
     CONTROL         "Lisäävä haku", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
-    CONTROL         "Joker&imerkkihaku",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,65,10
-    CONTROL         "Läpinäkyvä-tila keskityksen hävitessä",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
+    CONTROL         "Joker&imerkkihaku",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,68,10
+    CONTROL         "Läpinäkyvätila keskityksen hävitessä",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,130,10
     DEFPUSHBUTTON   "&Etsi seuraava",IDOK,211,7,55,14
     PUSHBUTTON      "E&tsi edellinen",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Sulje",IDCANCEL,211,99,55,14
-    CONTROL         "<a>Siirry korvaukseen (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,105,74,10
+    CONTROL         "<a>Siirry korvaukseen (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,115,105,88,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,193,85,14,10
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,195,85,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,130,259,9,WS_EX_STATICEDGE
-    PUSHBUTTON      "Keskitetty &näkymä",IDC_TOGGLE_VISIBILITY,211,65,55,14
+    PUSHBUTTON      "Kesk. &näkymä",IDC_TOGGLE_VISIBILITY,211,65,55,14
 END
 
 IDD_MUI_REPLACE DIALOGEX 0, 0, 273, 168
@@ -125,31 +125,31 @@ BEGIN
     LTEXT           "K&orvaava:",IDC_STATIC2,7,36,46,8
     CONTROL         "<a>Esc Ctrl Chr</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
     COMBOBOX        IDC_REPLACETEXT,7,47,192,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Sama kirjain&koko",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,53,10
+    CONTROL         "Sama kirjain&koko",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,70,10
     CONTROL         "&Vain kokonaiset sanat",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
     CONTROL         "Täsmää vain sanan &alku",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "Muunna kenoviiva&t",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
-    CONTROL         "Säännöllinen laus&eke-haku",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
-    CONTROL         "Piste täs&mää rivinvaihtoon",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,124,90,10
+    CONTROL         "Säännöllinen lausekehaku",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
+    CONTROL         "Piste täs&mää rivinvaihtoon",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,124,100,10
     CONTROL         "&Älä kierrä ympäri",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
-    CONTROL         "Sulje korvauksen jälkeen",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
-    CONTROL         "Mer&kitse esiintymät",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
+    CONTROL         "Sulje korvauksen jälk.",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,82,10
+    CONTROL         "Mer&kitse esiintymät",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,75,10
     CONTROL         "Lisäävä haku", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,73,10
-    CONTROL         "Joker&imerkkihaku",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,65,10
-    CONTROL         "Läpinäkyvä-tila keskityksen hävitessä",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
+    CONTROL         "Joker&imerkkihaku",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,68,10
+    CONTROL         "Läpinäkyvätila keskityksen hävitessä",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,130,10
     DEFPUSHBUTTON   "&Etsi seuraava",IDOK,211,7,55,14
     PUSHBUTTON      "E&tsi edellinen",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "Ko&rvaa",IDC_REPLACE,211,43,55,14
     PUSHBUTTON      "Valinna&ssa",IDC_REPLACEINSEL,211,59,55,14
     PUSHBUTTON      "Korvaa k&aikki",IDC_REPLACEALL,211,75,55,14
-    PUSHBUTTON      "Vaihda merkkijonot",IDC_SWAPSTRG,150,32,49,12
+    PUSHBUTTON      "Vaihda lauseke",IDC_SWAPSTRG,146,32,53,12
     PUSHBUTTON      "Sulje",IDCANCEL,211,126,55,14
-    CONTROL         "<a>Siirry hakuun (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,132,74,10
+    CONTROL         "<a>Siirry hakuun (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,132,80,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,193,114,14,10
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,195,114,14,10
     CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,156,259,9,WS_EX_STATICEDGE
-    PUSHBUTTON      "Keskitetty &näkymä",IDC_TOGGLE_VISIBILITY,211,94,55,14
+    PUSHBUTTON      "Kesk. &näkymä",IDC_TOGGLE_VISIBILITY,211,94,55,14
 END
 
 IDD_MUI_RUN DIALOGEX 0, 0, 229, 96
@@ -158,7 +158,7 @@ CAPTION "Suorita"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_MUI_RUN,IDC_STATIC,10,7,21,20
-    LTEXT           "Kirjoita ohjelman, kansion, dokumentin tai Internet-resurssin nimi, ja Windows avaa sen puolestasi.",IDC_STATIC,39,7,179,17
+    LTEXT           "Kirjoita ohjelman, kansion, dokumentin tai Internet-resurssin nimi, ja Windows avaa sen puolestasi.",IDC_STATIC,39,7,189,17
     EDITTEXT        IDC_COMMANDLINE,10,35,208,13,ES_AUTOHSCROLL
     PUSHBUTTON      "Selaa...",IDC_SEARCHEXE,163,69,55,16
     DEFPUSHBUTTON   "OK",IDOK,47,69,55,16
@@ -172,36 +172,36 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Klikkaa tästä määrittääksesi hakemiston, jossa on linkkejä suosikkisovelluksiisi.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Klikkaa tästä määrittääksesi hakemiston, jossa on linkkejä suosikkisovelluksiisi.",IDC_OPENWITHDESCR,26,83,135,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Peruuta",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
 END
 
-IDD_MUI_DEFENCODING DIALOGEX 0, 0, 197, 172
+IDD_MUI_DEFENCODING DIALOGEX 0, 0, 203, 172
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Koodaus"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Oletuskoodaus (uusi tiedosto):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
-    CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
+    GROUPBOX        "Oletuskoodaus (uusi tiedosto):",IDC_STATIC,7,7,188,48,0,WS_EX_TRANSPARENT
+    CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,172,128
     CONTROL         "Käytä varajärjestelmänä, jos tunnistus epäonnistuu.",IDC_USEASREADINGFALLBACK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
-    GROUPBOX        "Koodauksen tunnistus: ",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,177,10
+    GROUPBOX        "Koodauksen tunnistus: ",IDC_STATIC2,7,58,188,88,0,WS_EX_TRANSPARENT
     CONTROL         "Avaa 7-bittiset &ASCII-tiedostot UTF 8-tilassa.",IDC_ASCIIASUTF8,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,136,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,160,10
     CONTROL         "Käytä vain &luotettavia tunnistustuloksia.",IDC_RELIABLE_DETECTION_RES,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,146,10
     CONTROL         "Avaa 8-bittiset *.&nfo/diz-tiedostot DOS 437-tilassa.",IDC_NFOASOEM,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,155,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,178,10
     CONTROL         "Jäsennä koodaustiedoston tagit.",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,126,10
     CONTROL         "Suorita &ANSI-koodisivuanalyysi.",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,122,10
     CONTROL         "Ota &UNICODE-tunnistus käyttöön.",IDC_NOUNICODEDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
-    DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
-    PUSHBUTTON      "Peruuta",IDCANCEL,140,151,50,14
+    DEFPUSHBUTTON   "OK",IDOK,92,151,50,14
+    PUSHBUTTON      "Peruuta",IDCANCEL,145,151,50,14
 END
 
 IDD_MUI_DEFEOLMODE DIALOGEX 0, 0, 196, 80
@@ -212,9 +212,9 @@ BEGIN
     LTEXT           "&Oletusarvoinen rivin lopetustila:",IDC_STATIC,7,7,116,8
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Näytä epäjohdonmukaisten rivinvaihtojen varoitus.",IDC_WARN_INCONSISTENT_EOLS,
-                    "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
+                    "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,180,10
     CONTROL         "Varmista johdonmukaiset rivinvaihdot tall&ennettaessa.",IDC_CONSISTENT_EOLS,
-                    "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,182,10
+                    "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,187,10
     CONTROL         "Poista lopun tyhjät tallennettaessa.",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,173,10
     DEFPUSHBUTTON   "OK",IDOK,139,7,50,14
@@ -260,10 +260,10 @@ CAPTION "Avaa viimeisin tiedosto"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
-    CONTROL         "Tallenna viimeisimpien tiedostojen luettelo poistuttaessa.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,120,10
+    CONTROL         "Tallenna viimeisimpien tiedostojen luettelo poistuttaessa.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,200,10
     CONTROL         "Säilytä kursorin &paikka.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
     CONTROL         "&Muista hakumalli.",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,120,10
-    CONTROL         "Lataa viimeisin tiedosto automaattisesti käynnistettäessä.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,160,10
+    CONTROL         "Lataa viimeisin tiedosto automaattisesti käynnistettäessä.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,200,10
     CONTROL         "Hylkää", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
     DEFPUSHBUTTON   "OK",IDOK,154,158,50,14,WS_DISABLED
     PUSHBUTTON      "Sulje",IDCANCEL,212,158,50,14
@@ -278,7 +278,7 @@ BEGIN
     CONTROL         "Ei mitää&n.", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
     CONTROL         "&Ilmaisin (äänetön).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
     CONTROL         "&Näytä viesti.", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&Automaattinen uudelleenlataus.", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
+    CONTROL         "&Automaattinen uudelleenlataus.", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,120,10
     CONTROL         "&Erillinen tiedostolukitus.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,99,10
     CONTROL         "&Nollaa, jos uusi tiedosto avataan.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,120,10
     CONTROL         "&Seurantaloki.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
@@ -319,16 +319,16 @@ BEGIN
     PUSHBUTTON      "&Nollaa",IDC_STYLEDEFAULT,377,201,42,14
     PUSHBUTTON      "",IDC_PREVSTYLE,426,201,15,14,BS_BITMAP
     PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14,BS_BITMAP
-    LTEXT           "Tumma-tilan kontrasti(%):", IDC_STATIC2,181,222,80,8
-    EDITTEXT        IDC_DARK_MODE_CONTRAST,265,221,24,12,ES_AUTOHSCROLL
-    LTEXT           "[0-6000] Oletus: 75%",IDC_STATIC3,300,222,80,8
+    LTEXT           "Tumma-tilan kontrasti(%):", IDC_STATIC2,181,222,90,8
+    EDITTEXT        IDC_DARK_MODE_CONTRAST,275,221,24,12,ES_AUTOHSCROLL
+    LTEXT           "[0-6000] Oletus: 75%",IDC_STATIC3,310,222,80,8
     PUSHBUTTON      "&Tuo...",IDC_IMPORT,181,240,50,14
     PUSHBUTTON      "&Vie...",IDC_EXPORT,237,240,50,14
     DEFPUSHBUTTON   "OK",IDOK,355,240,50,14
     PUSHBUTTON      "Peruuta",IDCANCEL,410,240,50,14
     GROUPBOX        "Info",IDC_INFO_GROUPBOX,181,7,280,127
     CTEXT           "-",IDC_TITLE,240,20,180,24,SS_CENTERIMAGE
-    EDITTEXT        IDC_STYLEEDIT_HELP,197,54,252,74,ES_MULTILINE | ES_READONLY | NOT WS_BORDER
+    EDITTEXT        IDC_STYLEEDIT_HELP,187,54,262,74,ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
 IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 114
@@ -338,16 +338,16 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "&Sarkainleveys:",IDC_STATIC,7,10,54,8
     EDITTEXT        IDC_TAB_WIDTH,67,7,30,14,ES_AUTOHSCROLL
-    LTEXT           "S&isennyksen koko:",IDC_STATIC2,7,30,55,8
+    LTEXT           "S&isennyksen koko:",IDC_STATIC2,7,30,60,8
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
     CONTROL         "Lisää &sarkaimet välilyönteinä.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
     CONTROL         "Tab-&näppäin muuttaa sisennystä.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
     CONTROL         "Takaisin-nä&ppäin muuttaa sisennystä.",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
     CONTROL         "&Varoitus epäjohdonmukaisesta sisennyksestä.",IDC_WARN_INCONSISTENT_INDENTS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,160,10
     CONTROL         "Tunnista &autom. sarkain-/välilyöntisisennys.",IDC_AUTO_DETECT_INDENTS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,160,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Peruuta",IDCANCEL,117,27,50,14
 END
@@ -358,14 +358,14 @@ CAPTION "Epäjohdonmukainen sisennys"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Tilastot: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "Sarkaimet[%s]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
+    LTEXT           "Sarkaimet[%s]:",IDC_INDENT_WIDTH_TAB,40,18,44,8
     LTEXT           "Tyhjät[%s]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
-    LTEXT           "Sekoitus[x]:",IDC_STATIC3,54,42,30,8
+    LTEXT           "Sekoitus[x]:",IDC_STATIC3,46,42,38,8
     RTEXT           "%s rivi(ä)",IDC_INDENT_SUM_TAB,84,18,52,8
     RTEXT           "%s rivi(ä)",IDC_INDENT_SUM_SPC,84,30,52,8
     RTEXT           "%s rivi(ä)",IDC_INDENT_SUM_MIX,84,42,52,8
     GROUPBOX        "Sisennetäänkö kaikki uudelleen?",IDC_STATIC2,7,60,182,56,WS_GROUP
-    CONTROL         "Sarkaime&t",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
+    CONTROL         "Sar&kai.",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,35,10
     CONTROL         "&Tyhjät",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,32,10
     RTEXT           "%s rivi(ä) epätasaisella sisennyksellä",IDC_INDENT_TAB_MODX,50,72,124,8
     RTEXT           "%s rivi(ä) epätasaisella sisennyksellä",IDC_INDENT_SPC_MODX,50,84,124,8
@@ -380,8 +380,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Pitkien rivien asetukset"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Usean reunaviivan sijainti:",IDC_STATIC,7,10,80,8
-    EDITTEXT        IDC_MULTIEDGELINE,92,7,180,14,ES_AUTOHSCROLL
+    LTEXT           "&Usean reunaviivan sijainti:",IDC_STATIC,7,10,90,8
+    EDITTEXT        IDC_MULTIEDGELINE,102,7,170,14,ES_AUTOHSCROLL
     CONTROL         "Näytä r&eunaviiva.",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
     CONTROL         "Vaihda &taustaväri.",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
     DEFPUSHBUTTON   "OK",IDOK,166,34,50,14
@@ -428,9 +428,9 @@ BEGIN
     LTEXT           "&Ala:",1105,164,104,32,8
     EDITTEXT        1158,196,103,28,12,WS_GROUP
     GROUPBOX        "Ylä- ja alatunnisteet",1074,8,130,224,56,WS_GROUP
-    LTEXT           "&Ylätunniste:",IDC_STATIC,16,146,36,8
+    LTEXT           "&Ylätunniste:",IDC_STATIC,16,146,37,8
     COMBOBOX        32,64,145,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    LTEXT           "&Alatunniste:",IDC_STATIC3,16,167,36,8
+    LTEXT           "&Alatunniste:",IDC_STATIC3,16,167,38,8
     COMBOBOX        33,64,164,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     GROUPBOX        "Tulosta värit",1076,8,191,224,37,WS_GROUP
     LTEXT           "&Tila:",IDC_STATIC4,16,207,36,8
@@ -455,7 +455,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
-    LTEXT           "Klikkaa tästä määrittääksesi hakemiston, jossa on linkkejä suosikkitiedostoihisi.",IDC_FAVORITESDESCR,26,83,132,18
+    LTEXT           "Klikkaa tästä määrittääksesi hakemiston, jossa on linkkejä suosikkitiedostoihisi.",IDC_FAVORITESDESCR,26,83,135,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Peruuta",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
@@ -486,7 +486,7 @@ BEGIN
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
     LTEXT           "Valinnainen pääavain:",IDC_STATIC2,17,61,72,10,NOT WS_GROUP
     CONTROL         "Salaa salasanalla",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
-    CONTROL         "Käytä pääavainta uudelleen",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
+    CONTROL         "Käytä pääavainta uudelleen",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,199,60,103,10
     CONTROL         "näytä salasanat",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,75,10
 END
 
@@ -500,7 +500,7 @@ BEGIN
     PUSHBUTTON      "Peruuta",IDCANCEL,175,58,50,14
     EDITTEXT        IDC_PWD_EDIT3,16,23,267,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     CONTROL         "pura salaus pääavaimella",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,163,40,117,10
-    LTEXT           "Tällä tiedostolla on pääavain",IDC_PWD_STATMPW,16,41,89,11,NOT WS_GROUP
+    LTEXT           "Tällä tiedostolla on pääavain",IDC_PWD_STATMPW,16,41,100,11,NOT WS_GROUP
     CONTROL         "näytä salasana",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,75,10
 END
 
@@ -515,28 +515,28 @@ BEGIN
     PUSHBUTTON      "Peruuta",IDCANCEL,73,24,50,14
 END
 
-IDD_MUI_MODIFYLINES DIALOGEX 0, 0, 182, 120
+IDD_MUI_MODIFYLINES DIALOGEX 0, 0, 200, 120
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Muokkaa rivejä"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "&Tekstin etuliite riveille:",IDC_STATIC,7,7,72,8
+    LTEXT           "&Tekstin etuliite riveille:",IDC_STATIC,7,7,90,8
     EDITTEXT        IDC_MODLNS_ED_PREPEND,7,18,98,14,ES_AUTOHSCROLL
     LTEXT           "&Lisää tekstiä riveille:",IDC_STATIC2,7,37,72,8
     EDITTEXT        IDC_MODLNS_ED_APPEND,7,48,98,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
-    PUSHBUTTON      "Peruuta",IDCANCEL,125,24,50,14
+    DEFPUSHBUTTON   "OK",IDOK,143,7,50,14
+    PUSHBUTTON      "Peruuta",IDCANCEL,143,24,50,14
     LTEXT           "${L}",IDC_MODLNS_DOCLN_CANONIC,7,72,14,8
     LTEXT           "${0L}",IDC_MODLNS_DOCLN_ZEROFLD,30,72,18,8
-    LTEXT           "Dokumentin rivinumero.",IDC_STATIC3,57,72,74,8
+    LTEXT           "Dokumentin rivinumero.",IDC_STATIC3,57,72,100,8
     LTEXT           "${N}",IDC_MODLNS_CNTLN1_CANONIC,7,82,15,8
     LTEXT           "${0N}",IDC_MODLNS_CNTLN1_ZEROFLD,30,82,19,8
     LTEXT           "Juokseva numero.",IDC_STATIC4,57,82,66,8
     LTEXT           "${I}",IDC_MODLNS_CNTLN0_CANONIC,7,92,13,8
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,17,8
-    LTEXT           "Juokseva numero (nollapohjainen).",IDC_STATIC5,57,92,109,8
+    LTEXT           "Juokseva numero (nollapohjainen).",IDC_STATIC5,57,92,130,8
     LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,35,8
-    LTEXT           "${<expr>} määrittelee matemaattisia kaavoja.",IDC_STATIC6,57,102,132,8
+    LTEXT           "${<expr>} määrittelee matemaat. kaavoja.",IDC_STATIC6,57,102,150,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
@@ -561,7 +561,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Lisää &ennen valintaa:",IDC_STATIC,7,7,76,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "Lisää valinnan &jälkeen:",IDC_STATIC2,7,37,71,8
+    LTEXT           "Lisää valinnan &jälkeen:",IDC_STATIC2,7,37,90,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",IDOK,125,7,50,14
     PUSHBUTTON      "Peruuta",IDCANCEL,125,24,50,14
@@ -631,7 +631,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    DEFPUSHBUTTON   "Uudelleeny&ritys",IDRETRY,131,50,50,14
+    DEFPUSHBUTTON   "Uudelleeny&ritys",IDRETRY,128,50,53,14
     PUSHBUTTON      "&Peruuta",IDCANCEL,187,50,50,14
     CONTROL         "&Älä näytä tätä viestiä uudelleen.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
@@ -647,7 +647,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     CONTROL         "&Älä näytä tätä viestiä uudelleen.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
-    DEFPUSHBUTTON   "Uudelleeny&ritys",IDRETRY,186,70,50,14
+    DEFPUSHBUTTON   "Uudelleeny&ritys",IDRETRY,183,70,53,14
     PUSHBUTTON      "&Keskeytä",IDABORT, 130, 70, 50, 14
     PUSHBUTTON      "Oh&ita",IDIGNORE,242,70,50,14
 END
@@ -662,7 +662,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     CONTROL         "&Älä näytä tätä viestiä uudelleen.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
-    DEFPUSHBUTTON   "Uudelleeny&ritys",IDRETRY,186,70,50,14
+    DEFPUSHBUTTON   "Uudelleeny&ritys",IDRETRY,183,70,53,14
     PUSHBUTTON      "&Peruuta", IDCANCEL, 130, 70, 50, 14
     PUSHBUTTON      "&Jatka",IDCONTINUE,242,70,50,14
 END
@@ -677,7 +677,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,53,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     CONTROL         "&Älä näytä tätä viestiä uudelleen.",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
-    DEFPUSHBUTTON   "&Lataa uudelleen",IDRETRY,186,82,50,14
+    DEFPUSHBUTTON   "&Lataa uudelleen",IDRETRY,183,82,53,14
     PUSHBUTTON      "&Peruuta", IDCANCEL, 130, 82, 50, 14
     PUSHBUTTON      "&Jatka",IDCONTINUE,242,82,50,14
 END
@@ -695,25 +695,25 @@ BEGIN
     CONTROL         "P&oista yksilölliset rivit.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
     CONTROL         "Poista &tyhjät rivit.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
     CONTROL         "Poista välilyönti&viivat.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
-    CONTROL         "&Sama kirjainkoko",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
+    CONTROL         "&Sama kirjainkoko.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
     CONTROL         "&Kirjainkoosta riippumaton.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
     CONTROL         "Looginen &numerovertailu.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
     CONTROL         "&Leksikografinen vertailu.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
-    CONTROL         "&Sarakelajittelu (suorakulmainen valinta).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10
+    CONTROL         "&Sarakelajittelu (suorakulmainen valinta).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,141,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Peruuta",IDCANCEL,128,24,50,14
 END
 
-IDD_MUI_RECODE DIALOGEX 0, 0, 165, 135
+IDD_MUI_RECODE DIALOGEX 0, 0, 190, 135
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Palauta takaisin"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Valitse lähd&ekoodaus ladataksesi tiedoston uudelleen:",IDC_STATIC,7,7,130,8
-    CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
-    DEFPUSHBUTTON   "OK",IDOK,53,114,50,14,WS_DISABLED
-    PUSHBUTTON      "Peruuta",IDCANCEL,108,114,50,14
-    SCROLLBAR       IDC_RESIZEGRIP,7,118,10,10
+    LTEXT           "Valitse lähd&ekoodaus ladataksesi tiedoston uudelleen:",IDC_STATIC,7,7,205,8
+    CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,176,87
+    DEFPUSHBUTTON   "OK",IDOK,78,114,50,14,WS_DISABLED
+    PUSHBUTTON      "Peruuta",IDCANCEL,133,114,50,14
+    SCROLLBAR       IDC_RESIZEGRIP,7,143,10,10
 END
 
 IDD_MUI_ENCODING DIALOGEX 0, 0, 165, 135
