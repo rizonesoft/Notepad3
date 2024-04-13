@@ -222,12 +222,12 @@ BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
     LTEXT           "Appearance of items in directory list.",IDC_STATIC,40,15,140,8
     GROUPBOX        "Colours",IDC_STATIC,10,41,205,134
-    LTEXT           "Use this text colour when NO FILTER is set:",IDC_STATIC,20,54,136,8
+    LTEXT           "Use this text colour when NO FILTER is set:",IDC_STATIC,20,54,140,8
     CONTROL         "Default &windows colour.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
     CONTROL         "Custom &colour:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Pick Colour...",IDC_COLOR_PICK1,119,80,50,14
-    LTEXT           "Use this text colour when a FILTER IS ACTIVE:",IDC_STATIC,20,105,146,8
+    LTEXT           "Use this text colour when a FILTER IS ACTIVE:",IDC_STATIC,20,105,150,8
     CONTROL         "D&efault windows colour.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
     CONTROL         "C&ustom colour:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
