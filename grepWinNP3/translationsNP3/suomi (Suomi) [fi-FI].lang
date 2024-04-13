@@ -213,7 +213,7 @@ msgstr "Anna nimi regexille:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWinNP3"
-msgstr "Escape sulkee grepWinNP3:n."
+msgstr "Escape sulkee grepWinNP3:n"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
@@ -233,7 +233,7 @@ msgstr "Pääte"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Tiedostonimet täsmäävät:\nKäytä '|'-merkkiä erottamaan useita tekstin täsmääviä kuvioita toisistaan, liit&ä '-' poissulkemiseen."
+msgstr "Tiedostonimet täsmäävät:\nKäytä '|'-merkkiä erottamaan useita tekstin täsmääviä kuvioita toisistaan, liit&ä '-' poissulkemiseen"
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -250,7 +250,7 @@ msgstr "GREPWINNP3"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "Jos tämä on käytössä, varmuuskopiokansio luodaan sen kansion sisälle, jossa hakuja/korvauksia tehdään, ja tiedostot varmuuskopioidaan tähän kansioon."
+msgstr "Jos tämä on käytössä, varmuuskopiokansio luodaan sen kansion sisälle, jossa hakuja/korvauksia tehdään, ja tiedostot varmuuskopioidaan tähän kansioon"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
@@ -395,7 +395,7 @@ msgstr "Regex haku"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr "Regex hakusana"
+msgstr "Regex hakusana:"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
@@ -564,7 +564,7 @@ msgstr "grepWinNP3 asetukset"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "pitämällä shift-näppäintä alhaalla voit etsiä tiedostoja, jotka EIVÄT sisällä hakusanaa."
+msgstr "pitämällä shift-näppäintä alhaalla voit etsiä tiedostoja, jotka EIVÄT sisällä hakusanaa"
 
 #. Resource IDs: (165)
 msgid "include file paths"
@@ -641,7 +641,7 @@ msgstr "polut, joita etsitään rekursiivisesti.\nErottele polut '|'-symbolilla.
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\nExample: ^(CVS|images)$\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "voit sulkea pois hakemistoja, esim. CVS ja kuvat.\nEsimerkki: ^(CVS|images)$\nHuomaa, ".svn"-kansiot ovat "piilotettuja" Windowsissa, joten niitä ei yleensä skannata."
+msgstr "voit sulkea pois hakemistoja, esim. CVS ja kuvat.\nEsimerkki: ^(CVS|images)$\nHuomaa, '.svn'-kansiot ovat 'piilotettuja' Windowsissa, joten niitä ei yleensä skannata."
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
@@ -661,11 +661,11 @@ msgstr "Notepad3:n grepWin(NP3)-mod Stefan Küngin hieno työkalu!"
 
 #. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
-msgstr "Samanaikaisten tekijöiden maksimimäärä"
+msgstr "Samanaikaisten tekijöiden maks."
 
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
-msgstr "Tämä lisää kontekstivalikkoon uuden kohdan nimeltä "Avaa editorilla"."
+msgstr "Tämä lisää kontekstivalikkoon uuden kohdan nimeltä 'Avaa editorilla'."
 
 #. Resource IDs: (3006)
 msgid "Stay On Top"

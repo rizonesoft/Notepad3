@@ -174,19 +174,19 @@ BEGIN
     LTEXT           "Määritä MiniPath-ohjelman yleiset asetukset.",IDC_STATIC,40,15,153,8
     CONTROL         "S&alli vain yksi hiiren klikkaus kohteiden avaamiseen.",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,180,10
-    CONTROL         "&Ota raidan valinta käyttöön.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
-    CONTROL         "Ota käyttöön &koko rivin valinta.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
+    CONTROL         "&Ota raidan valinta käyttöön.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,105,10
+    CONTROL         "Ota käyttöön &koko rivin valinta.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,120,10
     CONTROL         "A&ktivoi kohdeikkuna aina, kun tiedosto avataan.",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,187,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
     CONTROL         "Pidä MiniPath-i&kkuna aina päällimmäisenä.",IDC_ALWAYSONTOP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,155,10
     CONTROL         "&Pienennä ilmoitusalueelle (aktivoi uudelleen klikkaamalla).",IDC_MINIMIZETOTRAY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,157,10
-    CONTROL         "Yri&tä käyttää olemassa olevaa ikkunaa uudelleen, kun MiniPath käynnistetään.",IDC_REUSEWINDOW,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,195,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,205,10
+    CONTROL         "Yri&tä käyttää olemassa ikkunaa, kun MiniPath käynnistetään.",IDC_REUSEWINDOW,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,210,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "Tallenna a&setukset poistuttaessa.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,86,10
+    CONTROL         "Tallenna a&setukset poistuttaessa.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,120,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
@@ -196,22 +196,22 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
     LTEXT           "Määritä MiniPath-ohjelman lisäasetukset.",IDC_STATIC,40,15,160,8
-    CONTROL         "K&äytä käynnistyshakemistoa:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
-    CONTROL         "&Viimeksi käytetty.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
-    CONTROL         """Suosikit"" kansio.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
+    CONTROL         "K&äytä käynnistyshakemistoa:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,100,10
+    CONTROL         "&Viimeksi käytetty.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,125,46,79,10
+    CONTROL         """Suosikit"" kansio.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,125,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
     CONTROL         "&Poista tallennettujen tiedostojen vain lukuominaisuus.",IDC_CLEARREADONLY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,143,10
-    CONTROL         "Nimeä kopioidut tiedostot uudelleen, jos niiden &nimet ovat ristiriidassa.",IDC_RENAMEONCOLLISION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,150,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,190,10
+    CONTROL         "&Nimeä kopioidut tiedostot uudelleen nimiristiriitojen varalta.",IDC_RENAMEONCOLLISION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,210,10
     CONTROL         "&Siirrä poistetut tiedostot roskakoriin.",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
     CONTROL         "Älä &vahvista tiedoston poistoa (ei suositella).",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,170,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         "Ota ""&Esc"" -näppäin käyttöön...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
-    CONTROL         "Pienennä &ikkuna.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
-    CONTROL         "&Sulje MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,63,10
+    CONTROL         "Ota ""&Esc"" -näppäin käyttöön...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,105,10
+    CONTROL         "Pienennä &ikkuna.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,125,148,71,10
+    CONTROL         "&Sulje MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,125,160,63,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 225, 185
@@ -220,16 +220,16 @@ CAPTION "Kohteet"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Kohteiden näkyminen hakemistoluettelossa.",IDC_STATIC,40,15,140,8
+    LTEXT           "Kohteiden näkyminen hakemistoluettelossa.",IDC_STATIC,40,15,160,8
     GROUPBOX        "Värit",IDC_STATIC,10,41,205,134
-    LTEXT           "Käytä tätä tekstiväriä, kun EI SUODATUSTA on asetettu:",IDC_STATIC,20,54,136,8
+    LTEXT           "Käytä tätä tekstiväriä, kun EI SUODATUSTA on asetettu:",IDC_STATIC,20,54,190,8
     CONTROL         "&Windowsin oletusväri.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
-    CONTROL         "Mukautettu &väri:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
-    EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
-    PUSHBUTTON      "Poimi väri...",IDC_COLOR_PICK1,119,80,50,14
-    LTEXT           "Käytä tätä tekstiväriä, kun SUODATIN ON AKTIIVINEN:",IDC_STATIC,20,105,146,8
+    CONTROL         "Mukautettu &väri:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,65,10
+    EDITTEXT        IDC_COLOR_SAMP1,86,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
+    PUSHBUTTON      "Poimi väri...",IDC_COLOR_PICK1,120,80,50,14
+    LTEXT           "Käytä tätä tekstiväriä, kun SUODATIN ON AKTIIVINEN:",IDC_STATIC,20,105,180,8
     CONTROL         "Windowsin ol&etusväri.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
-    CONTROL         "M&ukautettu väri:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
+    CONTROL         "M&ukautettu väri:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,65,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Poimi väri...",IDC_COLOR_PICK2,120,130,50,14
 END
@@ -255,7 +255,7 @@ CAPTION "Kohdesovellus"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "Älä käytä mitään tiettyä kohdesovellusta, vaan käynnistä vain valittu tiedosto.",IDC_LAUNCH,
-                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,250,10
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,265,10
     CONTROL         "Käytä seuraavaa kohdesovellusta:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
     LTEXT           "Määritä toiminto, jos kohdesovellus on jo käynnissä:",IDC_STATIC,7,64,220,8
@@ -277,18 +277,18 @@ BEGIN
     PUSHBUTTON      "Peruuta",IDCANCEL,219,159,50,14
 END
 
-IDD_FINDWIN DIALOGEX 0, 0, 210, 85
+IDD_FINDWIN DIALOGEX 0, 0, 215, 85
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Hakuikkuna"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "Vedä ristikko sen ikkunan päälle, jonka haluat valita uudeksi kohteeksi, tai peruuta valinta painamalla Esc.",IDC_STATIC,35,7,168,22
-    EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
+    LTEXT           "Vedä ristikko sen ikkunan päälle, jonka haluat valita uudeksi kohteeksi, tai peruuta valinta painamalla Esc.",IDC_STATIC,35,7,175,22
+    EDITTEXT        IDC_WINTITLE,35,35,173,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Window Class",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Window Module",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE
-    DEFPUSHBUTTON   "OK",IDOK,99,64,50,14,WS_DISABLED
-    PUSHBUTTON      "Peruuta",IDCANCEL,153,64,50,14
+    DEFPUSHBUTTON   "OK",IDOK,104,64,50,14,WS_DISABLED
+    PUSHBUTTON      "Peruuta",IDCANCEL,158,64,50,14
 END
 
 
