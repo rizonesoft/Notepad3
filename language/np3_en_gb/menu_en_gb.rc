@@ -525,7 +525,7 @@ BEGIN
             POPUP "R&TL Layout (GDI)"
             BEGIN
                 MENUITEM "&Edit Area",                  IDM_SET_RTL_LAYOUT_EDIT
-                MENUITEM "&Other Dialogues",              IDM_SET_RTL_LAYOUT_DLG
+                MENUITEM "&Other Dialogs",              IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "&Bidirectional"
             BEGIN

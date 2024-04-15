@@ -237,7 +237,7 @@ BEGIN
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Yes",IDOK,138,63,50,14
     PUSHBUTTON      "&No",IDCANCEL,138,80,50,14
-    CONTROL         "&Always show this dialogue.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "&Always show this dialog.",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -371,7 +371,7 @@ BEGIN
     RTEXT           "%s line(s) w/ irregular indent depth",IDC_INDENT_SPC_MODX,50,84,124,8
     PUSHBUTTON      "&Yes",IDOK,80,98,50,14
     PUSHBUTTON      "&No",IDCANCEL,134,98,50,14
-    CONTROL         "&Always show this dialogue.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Always show this dialog.",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
@@ -744,7 +744,7 @@ END
 
 
 //
-// Font Dialogue with Syslink (copied from Font.dlg)
+// Font Dialog with Syslink (copied from Font.dlg)
 //
 IDD_MUI_SYSFONT_WITHLINK DIALOGEX 13, 54, 243, 234
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
@@ -799,7 +799,7 @@ END
 
 
 //
-//  ChooseColour Dialogue  (copied from Colour.dlg).
+//  ChooseColour Dialog  (copied from Colour.dlg).
 //
 
 IDD_MUI_SYSCOLOR_DLG DIALOGEX LOADONCALL MOVEABLE DISCARDABLE 2, 0, 298, 184
@@ -861,7 +861,7 @@ END
 
 
 //
-//  AutoSave and Backup Dialogue
+//  AutoSave and Backup Dialog
 //
 IDD_MUI_AUTOSAVE_BACKUP DIALOGEX 0, 0, 184, 166
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU

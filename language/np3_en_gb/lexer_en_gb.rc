@@ -452,7 +452,7 @@ BEGIN
     IDS_LEX_STR_63345       "Other Keyword"
     IDS_LEX_STR_63346       "Rust Lifetime"
     IDS_LEX_STR_Obj         "Object"
-    IDS_LEX_STR_Key           "Key"
+    IDS_LEX_STR_Key         "Key"
     IDS_LEX_STR_HotKey      "HotKey"
     IDS_LEX_STR_HotStrg     "HotString"
     IDS_LEX_STR_HotStrgOp   "HotStringOption"
