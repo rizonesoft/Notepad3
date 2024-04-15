@@ -91,17 +91,17 @@ BEGIN
     IDS_ERR_STARTUPDIR      "MiniPath\nNo access to startup directory."
     IDS_ERR_DROP1           "MiniPath\nNo access to dropped file or directory."
     IDS_ERR_DROP2           "MiniPath\nOnly a single file or directory can be dropped at a time."
-    IDS_ERR_FAVORITES       "Favourites\nNo access to ""Favourites"" folder.\nSpecify a valid directory in the ""Options"" dialogue box."
+    IDS_ERR_FAVORITES       "Favourites\nNo access to ""Favourites"" folder.\nSpecify a valid directory in the ""Options"" dialog box."
     IDS_ERR_LNK_GETPATH     "Link Error\nNo valid filesystem-path available for linked object.\nProbably the link doesn't refer to a file or directory."
     IDS_ERR_LNK_NOACCESS    "Link Error\nNo access to filesystem-path of linked object.\nCheck the disk or the network connection."
     IDS_ERR_CREATELINK      "Link Error\nError creating the specified link.\nProbably the destination directory is write-protected."
     IDS_ERR_FILTER          "File Filter Error\nNo additional filters specified.\nPlease refer to the MiniPath readme file for more information."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nExisting MiniPath window is busy or has an active dialogue box.\nDo you want to open another MiniPath window?"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nExisting MiniPath window is busy or has an active dialog box.\nDo you want to open another MiniPath window?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nExisting target window is busy or has an active dialogue box.\nWould you like to open a new window?"
+    IDS_ERR_TARGETDISABLED  "MiniPath\nExisting target window is busy or has an active dialog box.\nWould you like to open a new window?"
     IDS_ERR_INVALIDTARGET   "MiniPath\nPlease make sure all the required fields are completed.\nYou will also have to find a target window if the appropriate option is enabled."
     IDS_ERR_INIOPEN         "MiniPath\nNo access to MiniPath configuration file."
     IDS_ERR_INICREATE       "Save Settings\nError creating configuration file."
