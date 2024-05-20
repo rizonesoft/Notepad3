@@ -44,7 +44,6 @@ void VectorTruncate(std::vector<T> &v, size_t length) noexcept {
 
 constexpr size_t byteMask = UINT8_MAX;
 constexpr size_t byteBits = 8;
-constexpr size_t maxElementSize = 8;
 
 size_t ReadValue(const uint8_t *bytes, size_t length) noexcept {
 	size_t value = 0;
@@ -55,8 +54,9 @@ size_t ReadValue(const uint8_t *bytes, size_t length) noexcept {
 }
 
 void WriteValue(uint8_t *bytes, size_t length, size_t value) noexcept {
-	for (size_t i = 0; i < length; i++) {
-		bytes[length - i - 1] = value & byteMask;
+	while (length != 0) {
+		--length;
+		bytes[length] = value & byteMask;
 		value = value >> byteBits;
 	}
 }
@@ -75,13 +75,13 @@ intptr_t ScaledVector::SignedValueAt(size_t index) const noexcept {
 
 constexpr SizeMax ElementForValue(size_t value) noexcept {
 	size_t maxN = byteMask;
-	for (size_t i = 1; i < maxElementSize; i++) {
-		if (value <= maxN) {
-			return { i, maxN };
-		}
+	size_t i = 1;
+	while (value > byteMask) {
+		i++;
+		value >>= byteBits;
 		maxN = (maxN << byteBits) + byteMask;
 	}
-	return { 1, byteMask };
+	return { i, maxN };
 }
 
 void ScaledVector::SetValueAt(size_t index, size_t value) {
@@ -102,7 +102,7 @@ void ScaledVector::SetValueAt(size_t index, size_t value) {
 }
 
 void ScaledVector::ClearValueAt(size_t index) noexcept {
-	// 0 fits in any size element so no expansion needed so no exceptions 
+	// 0 fits in any size element so no expansion needed so no exceptions
 	WriteValue(bytes.data() + index * element.size, element.size, 0);
 }
 
@@ -120,7 +120,7 @@ void ScaledVector::ReSize(size_t length) {
 }
 
 void ScaledVector::PushBack() {
-	ReSize(Size() + 1);
+	bytes.resize(bytes.size() + element.size);
 }
 
 size_t ScaledVector::SizeInBytes() const noexcept {
@@ -175,6 +175,13 @@ size_t UndoActions::LengthTo(size_t index) const noexcept {
 		sum += lengths.ValueAt(act);
 	}
 	return sum;
+}
+
+Sci::Position UndoActions::Position(int action) const noexcept {
+	return positions.SignedValueAt(action);
+}
+Sci::Position UndoActions::Length(int action) const noexcept {
+	return lengths.SignedValueAt(action);
 }
 
 void ScrapStack::Clear() noexcept {
@@ -279,14 +286,14 @@ const char *UndoHistory::AppendAction(ActionType at, Sci::Position position, con
 			} else if ((at != actions.types[targetAct].at)) { // } && (!actions.AtStart(targetAct))) {
 				coalesce = false;
 			} else if ((at == ActionType::insert) &&
-			           (position != (actions.positions.SignedValueAt(targetAct) + actions.lengths.SignedValueAt(targetAct)))) {
+			           (position != (actions.Position(targetAct) + actions.Length(targetAct)))) {
 				// Insertions must be immediately after to coalesce
 				coalesce = false;
 			} else if (at == ActionType::remove) {
 				if ((lengthData == 1) || (lengthData == 2)) {
-					if ((position + lengthData) == actions.positions.SignedValueAt(targetAct)) {
+					if ((position + lengthData) == actions.Position(targetAct)) {
 						; // Backspace -> OK
-					} else if (position == actions.positions.SignedValueAt(targetAct)) {
+					} else if (position == actions.Position(targetAct)) {
 						; // Delete -> OK
 					} else {
 						// Removals must be at same position to coalesce
@@ -413,16 +420,16 @@ bool UndoHistory::AfterOrAtDetachPoint() const noexcept {
 	return detach && (*detach <= currentAction);
 }
 
-intptr_t UndoHistory::Delta(int action) noexcept {
+intptr_t UndoHistory::Delta(int action) const noexcept {
 	intptr_t sizeChange = 0;
 	for (int act = 0; act < action; act++) {
-		const intptr_t lengthChange = actions.lengths.SignedValueAt(act);
+		const intptr_t lengthChange = actions.Length(act);
 		sizeChange += (actions.types[act].at == ActionType::insert) ? lengthChange : -lengthChange;
 	}
 	return sizeChange;
 }
 
-bool UndoHistory::Validate(intptr_t lengthDocument) noexcept {
+bool UndoHistory::Validate(intptr_t lengthDocument) const noexcept {
 	// Check history for validity
 	const intptr_t sizeChange = Delta(currentAction);
 	if (sizeChange > lengthDocument) {
@@ -432,8 +439,8 @@ bool UndoHistory::Validate(intptr_t lengthDocument) noexcept {
 	const intptr_t lengthOriginal = lengthDocument - sizeChange;
 	intptr_t lengthCurrent = lengthOriginal;
 	for (int act = 0; act < actions.SSize(); act++) {
-		const intptr_t lengthChange = actions.lengths.SignedValueAt(act);
-		if (actions.positions.SignedValueAt(act) > lengthCurrent) {
+		const intptr_t lengthChange = actions.Length(act);
+		if (actions.Position(act) > lengthCurrent) {
 			// Change outside document.
 			return false;
 		}
@@ -469,11 +476,11 @@ int UndoHistory::Type(int action) const noexcept {
 }
 
 Sci::Position UndoHistory::Position(int action) const noexcept {
-	return actions.positions.SignedValueAt(action);
+	return actions.Position(action);
 }
 
 Sci::Position UndoHistory::Length(int action) const noexcept {
-	return actions.lengths.SignedValueAt(action);
+	return actions.Length(action);
 }
 
 std::string_view UndoHistory::Text(int action) noexcept {
@@ -489,9 +496,9 @@ std::string_view UndoHistory::Text(int action) noexcept {
 		position = memory->position;
 	}
 	for (; act < action; act++) {
-		position += actions.lengths.ValueAt(act);
+		position += actions.Length(act);
 	}
-	const size_t length = actions.lengths.ValueAt(action);
+	const size_t length = actions.Length(action);
 	const char *scrap = scraps->TextAt(position);
 	memory = {action, position};
 	return {scrap, length};
@@ -563,9 +570,9 @@ Action UndoHistory::GetUndoStep() const noexcept {
 	Action acta {
 		actions.types[previousAction].at,
 		actions.types[previousAction].mayCoalesce,
-		actions.positions.SignedValueAt(previousAction),
+		actions.Position(previousAction),
 		nullptr,
-		actions.lengths.SignedValueAt(previousAction)
+		actions.Length(previousAction)
 	};
 	if (acta.lenData) {
 		acta.data = scraps->CurrentText() - acta.lenData;
@@ -574,7 +581,7 @@ Action UndoHistory::GetUndoStep() const noexcept {
 }
 
 void UndoHistory::CompletedUndoStep() noexcept {
-	scraps->MoveBack(actions.lengths.ValueAt(PreviousAction()));
+	scraps->MoveBack(actions.Length(PreviousAction()));
 	currentAction--;
 }
 
@@ -606,9 +613,9 @@ Action UndoHistory::GetRedoStep() const noexcept {
 	Action acta{
 		actions.types[currentAction].at,
 		actions.types[currentAction].mayCoalesce,
-		actions.positions.SignedValueAt(currentAction),
+		actions.Position(currentAction),
 		nullptr,
-		actions.lengths.SignedValueAt(currentAction)
+		actions.Length(currentAction)
 	};
 	if (acta.lenData) {
 		acta.data = scraps->CurrentText();
@@ -617,7 +624,7 @@ Action UndoHistory::GetRedoStep() const noexcept {
 }
 
 void UndoHistory::CompletedRedoStep() noexcept {
-	scraps->MoveForward(actions.lengths.ValueAt(currentAction));
+	scraps->MoveForward(actions.Length(currentAction));
 	currentAction++;
 }
 

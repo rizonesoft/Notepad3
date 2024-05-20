@@ -431,7 +431,7 @@ public:
 	[[nodiscard]] unsigned int EditionDeletesAt(Sci::Position pos) const noexcept { return cb.EditionDeletesAt(pos); }
 	[[nodiscard]] Sci::Position EditionNextDelete(Sci::Position pos) const noexcept { return cb.EditionNextDelete(pos); }
 
-	const char * SCI_METHOD BufferPointer() override { return cb.BufferPointer(); }
+	const char *SCI_METHOD BufferPointer() override { return cb.BufferPointer(); }
 	const char *RangePointer(Sci::Position position, Sci::Position rangeLength) noexcept { return cb.RangePointer(position, rangeLength); }
 	Sci::Position GapPosition() const noexcept { return cb.GapPosition(); }
 
