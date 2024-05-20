@@ -60,9 +60,6 @@
     <ClInclude Include="lexlib\LexerModule.h">
       <Filter>lexlib</Filter>
     </ClInclude>
-    <ClInclude Include="lexlib\LexerNoExceptions.h">
-      <Filter>lexlib</Filter>
-    </ClInclude>
     <ClInclude Include="lexlib\LexerSimple.h">
       <Filter>lexlib</Filter>
     </ClInclude>
@@ -237,9 +234,6 @@
       <Filter>lexlib</Filter>
     </ClCompile>
     <ClCompile Include="lexlib\LexerModule.cxx">
-      <Filter>lexlib</Filter>
-    </ClCompile>
-    <ClCompile Include="lexlib\LexerNoExceptions.cxx">
       <Filter>lexlib</Filter>
     </ClCompile>
     <ClCompile Include="lexlib\LexerSimple.cxx">
