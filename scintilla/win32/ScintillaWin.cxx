@@ -279,6 +279,11 @@ public:
 		return attr;
 	}
 
+	LONG GetCompositionStringLength(DWORD dwIndex) const noexcept {
+		const LONG byteLen = ::ImmGetCompositionStringW(hIMC, dwIndex, nullptr, 0);
+		return byteLen / sizeof(wchar_t);
+	}
+
 	std::wstring GetCompositionString(DWORD dwIndex) {
 		const LONG byteLen = ::ImmGetCompositionStringW(hIMC, dwIndex, nullptr, 0);
 		std::wstring wcs(byteLen / 2, 0);
@@ -290,8 +295,8 @@ public:
 class GlobalMemory;
 
 class ReverseArrowCursor {
-	UINT dpi = USER_DEFAULT_SCREEN_DPI;
 	HCURSOR cursor {};
+	bool valid = false;
 
 public:
 	ReverseArrowCursor() noexcept {}
@@ -306,16 +311,20 @@ public:
 		}
 	}
 
-	HCURSOR Load(UINT dpi_) noexcept {
+	void Invalidate() noexcept {
+		valid = false;
+	}
+
+	HCURSOR Load(UINT dpi) noexcept {
 		if (cursor)	 {
-			if (dpi == dpi_) {
+			if (valid) {
 				return cursor;
 			}
 			::DestroyCursor(cursor);
 		}
 
-		dpi = dpi_;
-		cursor = LoadReverseArrowCursor(dpi_);
+		valid = true;
+		cursor = LoadReverseArrowCursor(dpi);
 		return cursor ? cursor : ::LoadCursor({}, IDC_ARROW);
 	}
 };
@@ -2188,6 +2197,7 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 
 		case WM_DPICHANGED:
 			dpi = HIWORD(wParam);
+			reverseArrowCursor.Invalidate();
 			InvalidateStyleRedraw();
 			break;
 
@@ -2196,6 +2206,7 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 				const UINT dpiNow = DpiForWindow(wMain.GetID());
 				if (dpi != dpiNow) {
 					dpi = dpiNow;
+					reverseArrowCursor.Invalidate();
 					InvalidateStyleRedraw();
 				}
 			}
@@ -2599,10 +2610,11 @@ void ScintillaWin::NotifyDoubleClick(Point pt, KeyMod modifiers) {
 	//Platform::DebugPrintf("ScintillaWin Double click 0\n");
 	ScintillaBase::NotifyDoubleClick(pt, modifiers);
 	// Send myself a WM_LBUTTONDBLCLK, so the container can handle it too.
+	const POINT point = POINTFromPoint(pt);
 	::SendMessage(MainHWND(),
 			  WM_LBUTTONDBLCLK,
 			  FlagSet(modifiers, KeyMod::Shift) ? MK_SHIFT : 0,
-			  MAKELPARAM(pt.x, pt.y));
+			  MAKELPARAM(point.x, point.y));
 }
 
 namespace {
@@ -3258,9 +3270,14 @@ LRESULT ScintillaWin::ImeOnDocumentFeed(LPARAM lParam) const {
 	if (!imc.hIMC)
 		return 0;
 
-	const size_t compStrLen = imc.GetCompositionString(GCS_COMPSTR).size();
-	const int imeCaretPos = imc.GetImeCaretPos();
-	const Sci::Position compStart = pdoc->GetRelativePositionUTF16(curPos, -imeCaretPos);
+	DWORD compStrLen = 0;
+	Sci::Position compStart = curPos;
+	if (pdoc->TentativeActive()) {
+		// rcFeed contains current composition string
+		compStrLen = imc.GetCompositionStringLength(GCS_COMPSTR);
+		const int imeCaretPos = imc.GetImeCaretPos();
+		compStart = pdoc->GetRelativePositionUTF16(curPos, -imeCaretPos);
+	}
 	const Sci::Position compStrOffset = pdoc->CountUTF16(lineStart, compStart);
 
 	// Fill in reconvert structure.
@@ -3268,7 +3285,7 @@ LRESULT ScintillaWin::ImeOnDocumentFeed(LPARAM lParam) const {
 	rc->dwVersion = 0; //constant
 	rc->dwStrLen = static_cast<DWORD>(rcFeed.length());
 	rc->dwStrOffset = sizeof(RECONVERTSTRING); //constant
-	rc->dwCompStrLen = static_cast<DWORD>(compStrLen);
+	rc->dwCompStrLen = compStrLen;
 	rc->dwCompStrOffset = static_cast<DWORD>(compStrOffset) * sizeof(wchar_t);
 	rc->dwTargetStrLen = rc->dwCompStrLen;
 	rc->dwTargetStrOffset = rc->dwCompStrOffset;
@@ -3277,6 +3294,8 @@ LRESULT ScintillaWin::ImeOnDocumentFeed(LPARAM lParam) const {
 }
 
 void ScintillaWin::GetMouseParameters() noexcept {
+	// mouse pointer size and colour may changed
+	reverseArrowCursor.Invalidate();
 	// This retrieves the number of lines per scroll as configured in the Mouse Properties sheet in Control Panel
 	::SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, &linesPerScroll, 0);
 	if (!::SystemParametersInfo(SPI_GETWHEELSCROLLCHARS, 0, &charsPerScroll, 0)) {
