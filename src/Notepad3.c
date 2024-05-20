@@ -2231,7 +2231,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_SIZE:
         return MsgSize(hwnd, wParam, lParam);
 
-
 #ifdef D_NP3_WIN10_DARK_MODE
     case WM_SETTINGCHANGE: {
         if (IsColorSchemeChangeMessage(lParam)) {
@@ -2323,7 +2322,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         return MsgSysCommand(hwnd, umsg, wParam, lParam);
 
     case WM_MBUTTONDOWN: {
-        DocPos const pos = SciCall_CharPositionFromPointClose(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+        POINT const  cpt = POINTFromLParam(lParam);
+        DocPos const pos = SciCall_CharPositionFromPointClose(cpt.x, cpt.y);
         if (pos >= 0) {
             HandleHotSpotURLClicked(pos, OPEN_WITH_BROWSER);
         }
@@ -3967,7 +3967,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         return FALSE;
     }
 
-    POINT pt = { 0, 0 };
+    POINT pt = { -1, -1 };
     pt.x = (int)((short)LOWORD(bMargin ? wParam : lParam));
     pt.y = (int)((short)HIWORD(bMargin ? wParam : lParam));
     #define IS_CTX_PT_VALID(P) (((P).x != -1 || (P).y != -1))
@@ -4080,14 +4080,12 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
         HMENU hTrayMenu  = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
         HMENU hMenuPopup = GetSubMenu(hTrayMenu, 3);
 
-        POINT pt;
-        int iCmd;
-
         SetForegroundWindow(hwnd);
 
+        POINT pt = { -1, -1 };
         GetCursorPos(&pt);
         SetMenuDefaultItem(hMenuPopup, IDM_TRAY_RESTORE, false);
-        iCmd = TrackPopupMenu(hMenuPopup,
+        int iCmd = TrackPopupMenu(hMenuPopup,
                               TPM_NONOTIFY | TPM_RETURNCMD | TPM_LEFTBUTTON | TPM_RIGHTBUTTON,
                               pt.x, pt.y, 0, hwnd, NULL);
 
@@ -7844,7 +7842,7 @@ LRESULT MsgUahMenuBar(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 //
 //  HandleDWellStartEnd()
 //
-static DocPos prevCursorPosition = -1;
+static DocPos prevCaretPosition = -1;
 
 void HandleDWellStartEnd(const DocPos position, const UINT uid)
 {
@@ -7852,8 +7850,8 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
     static DocPos prevEndPosition = -1;
 
     if (position >= 0) {
-        if (prevCursorPosition < 0) {
-            prevCursorPosition = position;
+        if (prevCaretPosition < 0) {
+            prevCaretPosition = position;
         }
         if (prevStartPosition < 0) {
             prevStartPosition = position;
@@ -7870,14 +7868,14 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 
         if (position < 0) {
             Sci_CallTipCancelEx();
-            prevCursorPosition = -1;
+            prevCaretPosition = -1;
             return;
         }
 
         if (Settings.HyperlinkHotspot) {
             if (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, position) > 0) {
                 indicator_id = INDIC_NP3_HYPERLINK;
-                if (position != prevCursorPosition) {
+                if (position != prevCaretPosition) {
                     Sci_CallTipCancelEx();
                 }
             }
@@ -8064,13 +8062,14 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
             }
         }
 
-        prevCursorPosition = position;
+        prevCaretPosition = position;
         prevStartPosition = firstPos;
         prevEndPosition = lastPos;
     }
     break;
 
     case SCN_DWELLEND: {
+
         if ((position >= prevStartPosition) && ((position <= prevEndPosition))) {
             return;    // avoid flickering
         }
@@ -8082,7 +8081,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
             return;    // no change for if caret in range
         }
         s_bCallTipEscDisabled = false;
-        prevCursorPosition = -1;
+        prevCaretPosition = -1;
 
         // clear SCN_DWELLSTART visual styles
         SciCall_SetIndicatorCurrent(INDIC_NP3_COLOR_DEF_T);
@@ -8708,111 +8707,112 @@ static bool  _IsIMEOpenInNoNativeMode()
 //  !!! Set correct SCI_SETMODEVENTMASK in _InitializeSciEditCtrl()
 //
 
-inline static LRESULT _MsgNotifyLean(const SCNotification *const scn, bool* bModified) {
+inline static LRESULT _MsgNotifyLean(const SCNotification* const scn, bool* bModified)
+{
 
     const LPNMHDR pnmh = (LPNMHDR)scn;
 
     static LONG _urtoken = URTok_NoTransaction;
 
     // --- check only mandatory events (must be fast !!!) ---
-    if (pnmh->idFrom == IDC_EDIT) {
+    if (pnmh->idFrom != IDC_EDIT) {
+        return FALSE;
+    }
 
-        switch (pnmh->code) {
+    switch (pnmh->code) {
 
-        case SCN_MODIFIED: {
-            *bModified = false; // init
-            int const iModType = scn->modificationType;
-            if ((iModType & SC_MULTISTEPUNDOREDO) && !(iModType & SC_LASTSTEPINUNDOREDO)) {
-                return TRUE; // wait for last step in multi-step-undo/redo
+    case SCN_MODIFIED: {
+        *bModified = false; // init
+        int const iModType = scn->modificationType;
+        if ((iModType & SC_MULTISTEPUNDOREDO) && !(iModType & SC_LASTSTEPINUNDOREDO)) {
+            return TRUE; // wait for last step in multi-step-undo/redo
+        }
+        bool const bInUndoRedoStep = (iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO));
+        if (iModType & SC_MOD_INSERTCHECK) {
+            if (!bInUndoRedoStep) {
+                _HandleInsertCheck(scn);
             }
-            bool const bInUndoRedoStep = (iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO));
-            if (iModType & SC_MOD_INSERTCHECK) {
+        }
+        if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
+            *bModified = false; // not yet
+            if (!bInUndoRedoStep) {
+                if (!_InUndoRedoTransaction() && (_urtoken < URTok_TokenStart)) {
+                    _SaveSelectionToBuffer();
+                    bool const bSelEmpty = SciCall_IsSelectionEmpty();
+                    bool const bIsMultiRectSel = Sci_IsMultiOrRectangleSelection();
+                    if (!bSelEmpty || bIsMultiRectSel) {
+                        LONG const tok = _SaveUndoSelection();
+                        _urtoken = (tok >= URTok_TokenStart ? tok : _urtoken);
+                    }
+                    // TODO: @@@ Find reason for why this NOP workaround is needed:
+                    if (!bSelEmpty && bIsMultiRectSel) {
+                        // need to trigger SCI:InvalidateCaret()
+                        bool const bAddSelTyping = SciCall_GetAdditionalSelectionTyping();
+                        //~SciCall_SetAdditionalSelectionTyping(!bAddSelTyping); // v5.1.1: no check for change, so:
+                        SciCall_SetAdditionalSelectionTyping(bAddSelTyping);
+                    }
+                }
+            }
+        }
+        else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
+            if (!bInUndoRedoStep) {
+                if (!_InUndoRedoTransaction() && (_urtoken >= URTok_TokenStart)) {
+                    _SaveRedoSelection(_urtoken, SciCall_GetModify());
+                    _urtoken = URTok_NoTransaction;
+                }
+                if (iModType & SC_MOD_DELETETEXT) {
+                    _HandleDeleteCheck(scn);
+                }
+            }
+            *bModified = true;
+        }
+        // check for ADDUNDOACTION step
+        if (iModType & SC_MOD_CONTAINER) {
+            // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
+            if (iModType & SC_PERFORMED_UNDO) {
+                PostMessage(Globals.hwndMain, WM_RESTORE_UNDOREDOACTION, (WPARAM)UNDO, (LPARAM)scn->token);
+            }
+            else if (iModType & SC_PERFORMED_REDO) {
+                PostMessage(Globals.hwndMain, WM_RESTORE_UNDOREDOACTION, (WPARAM)REDO, (LPARAM)scn->token);
+            }
+        }
+        if (*bModified) {
+            LONG64 const timeout = Settings2.UndoTransactionTimeout;
+            if (timeout != 0LL) {
                 if (!bInUndoRedoStep) {
-                    _HandleInsertCheck(scn);
+                    _DelaySplitUndoTransaction(max_ll(_MQ_IMMEDIATE, timeout));
                 }
             }
-            if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
-                *bModified = false; // not yet
-                if (!bInUndoRedoStep) {
-                    if (!_InUndoRedoTransaction() && (_urtoken < URTok_TokenStart)) {
-                        _SaveSelectionToBuffer();
-                        bool const bSelEmpty = SciCall_IsSelectionEmpty();
-                        bool const bIsMultiRectSel = Sci_IsMultiOrRectangleSelection();
-                        if (!bSelEmpty || bIsMultiRectSel) {
-                            LONG const tok = _SaveUndoSelection();
-                            _urtoken = (tok >= URTok_TokenStart ? tok : _urtoken);
-                        }
-                        // TODO: @@@ Find reason for why this NOP workaround is needed:
-                        if (!bSelEmpty && bIsMultiRectSel) {
-                            // need to trigger SCI:InvalidateCaret()
-                            bool const bAddSelTyping = SciCall_GetAdditionalSelectionTyping();
-                            //~SciCall_SetAdditionalSelectionTyping(!bAddSelTyping); // v5.1.1: no check for change, so:
-                            SciCall_SetAdditionalSelectionTyping(bAddSelTyping);
-                        }
-                    }
-                }
-            } else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
-                if (!bInUndoRedoStep) {
-                    if (!_InUndoRedoTransaction() && (_urtoken >= URTok_TokenStart)) {
-                        _SaveRedoSelection(_urtoken, SciCall_GetModify());
-                        _urtoken = URTok_NoTransaction;
-                    }
-                    if (iModType & SC_MOD_DELETETEXT) {
-                        _HandleDeleteCheck(scn);
-                    }
-                }
-                *bModified = true;
-            }
-            // check for ADDUNDOACTION step
-            if (iModType & SC_MOD_CONTAINER) {
-                // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
-                if (iModType & SC_PERFORMED_UNDO) {
-                    PostMessage(Globals.hwndMain, WM_RESTORE_UNDOREDOACTION, (WPARAM)UNDO, (LPARAM)scn->token);
-                } else if (iModType & SC_PERFORMED_REDO) {
-                    PostMessage(Globals.hwndMain, WM_RESTORE_UNDOREDOACTION, (WPARAM)REDO, (LPARAM)scn->token);
-                }
-            }
-            if (*bModified) {
-                LONG64 const timeout = Settings2.UndoTransactionTimeout;
-                if (timeout != 0LL) {
-                    if (!bInUndoRedoStep) {
-                        _DelaySplitUndoTransaction(max_ll(_MQ_IMMEDIATE, timeout));
-                    }
-                }
-            }
-        } break;
+        }
+    } break;
 
-        case SCN_SAVEPOINTREACHED: {
-            SetSaveDone();
-        } break;
+    case SCN_SAVEPOINTREACHED: {
+        SetSaveDone();
+    } break;
 
-        case SCN_SAVEPOINTLEFT: {
-            SetSaveNeeded(false);
-        } break;
+    case SCN_SAVEPOINTLEFT: {
+        SetSaveNeeded(false);
+    } break;
 
-        case SCN_MODIFYATTEMPTRO: {
-            if (FocusedView.HideNonMatchedLines) {
-                EditToggleView(Globals.hwndEdit);
+    case SCN_MODIFYATTEMPTRO: {
+        if (FocusedView.HideNonMatchedLines) {
+            EditToggleView(Globals.hwndEdit);
+        }
+        else {
+            if (!FileWatching.MonitoringLog && !IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"QuietKeepReadonlyLock", IDS_MUI_DOCUMENT_READONLY))) {
+                SendWMCommand(Globals.hwndMain, IDM_VIEW_READONLY);
             }
             else {
-                if (!FileWatching.MonitoringLog 
-                    && !IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"QuietKeepReadonlyLock", IDS_MUI_DOCUMENT_READONLY)))
-                {
-                    SendWMCommand(Globals.hwndMain, IDM_VIEW_READONLY);
-                }
-                else {
-                    AttentionBeep(MB_YESNO | MB_ICONINFORMATION);
-                }
+                AttentionBeep(MB_YESNO | MB_ICONINFORMATION);
             }
-        } break;
+        }
+    } break;
 
-        default:
-            break;
+    default:
+        break;
 
-        } // switch
-        return TRUE;
-    }
-    return FALSE;
+    } // switch
+    return TRUE;
 }
 
 
@@ -8899,7 +8899,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
     case SCN_STYLENEEDED: { 
         // this event needs SCI_SETLEXER(SCLEX_CONTAINER)
-        //EditUpdateIndicators(SciCall_GetEndStyled(), scn->position, false);
+        //~EditUpdateIndicators(SciCall_GetEndStyled(), scn->position, false);
     }
     break;
 
@@ -8966,9 +8966,9 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
 
     case SCN_CALLTIPCLICK: {
-        if (prevCursorPosition >= 0) {
+        if (prevCaretPosition >= 0) {
             //~HandleHotSpotURLClicked(SciCall_CallTipPosStart(), OPEN_WITH_BROWSER);
-            HandleHotSpotURLClicked(prevCursorPosition, OPEN_WITH_BROWSER);
+            HandleHotSpotURLClicked(prevCaretPosition, OPEN_WITH_BROWSER);
         }
     }
     break;
@@ -9007,6 +9007,10 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
         int const ich = scn->ch;
         Sci_CallTipCancelEx();
 
+        //if (IsMouseVanish()) {
+        //    showMouseCursor(false);
+        //}
+
         if (Sci_IsMultiSelection()) {
             SciCall_SetIndicatorCurrent(INDIC_NP3_MULTI_EDIT);
             DocPosU const selCount = SciCall_GetSelections();
@@ -9043,7 +9047,6 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
         }
     }
     break;
-
 
     case SCN_AUTOCCHARDELETED:
         if ((Settings.AutoCompleteWords || Settings.AutoCLexerKeyWords)) {
@@ -9323,7 +9326,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         break;
 
         case NM_RCLICK: {
-            POINT pt = { 0, 0 };
+            POINT pt = { -1, -1 };
             GetCursorPos(&pt);
             MsgContextMenu(hwnd, 0, (WPARAM)Globals.hwndStatus, MAKELPARAM(pt.x, pt.y));
         } break;
@@ -10725,7 +10728,6 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         SendMessage(Globals.hwndStatus, WM_SETREDRAW, TRUE, 0);
         InvalidateRect(Globals.hwndStatus, NULL, TRUE);
 
-        //PostMessage(Globals.hwndStatus, WM_SIZE, 0, 0);
     }
     // --------------------------------------------------------------------------
 
@@ -12633,13 +12635,13 @@ void SetNotifyIconTitle(HWND hwnd)
 //
 void ResetMouseDWellTime()
 {
-    if (Settings.ShowHypLnkToolTip || IsColorDefHotspotEnabled() || Settings.HighlightUnicodePoints) {
-        SciCall_SetMouseDWellTime(USER_TIMER_MINIMUM << 4);
-    } else {
-        Sci_DisableMouseDWellNotification();
-    }
+    //~if (Settings.ShowHypLnkToolTip || IsColorDefHotspotEnabled() || Settings.HighlightUnicodePoints) {
+    //~    SciCall_SetMouseDWellTime(USER_TIMER_MINIMUM << 4);
+    //~} else {
+    //~    Sci_DisableMouseDWellNotification();
+    //~}
+    SciCall_SetMouseDWellTime(500); // needed for "Mouse cursor vanish handling (hide while typing)"
 }
-
 
 //=============================================================================
 //

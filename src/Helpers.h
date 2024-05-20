@@ -876,6 +876,31 @@ static inline LONG64 GetTicks_ms() {
 
 // ----------------------------------------------------------------------------
 
+__forceinline POINT POINTFromLParam(LPARAM lParam)
+{
+    POINT const pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+    return pt;
+};
+
+// ----------------------------------------------------------------------------
+
+#if 0
+__forceinline bool IsCursorVisible()
+{
+    CURSORINFO ci = { sizeof(CURSORINFO) };
+    return GetCursorInfo(&ci) ? (ci.flags != 0UL) : true;
+}
+
+__forceinline bool IsMouseVanish()
+{
+    BOOL bMouseVanish = FALSE;
+    return SystemParametersInfoW(SPI_GETMOUSEVANISH, 0, &bMouseVanish, 0) ? bMouseVanish : false;
+}
+
+// ----------------------------------------------------------------------------
+#endif
+
+
 #endif //_NP3_HELPERS_H_
 
 ///   End of Helpers.h   ///
