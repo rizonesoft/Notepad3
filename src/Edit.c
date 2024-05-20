@@ -423,6 +423,7 @@ void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bCle
     }
     s_bFreezeAppTitle = true;
 
+
     // clear markers, flags and positions
     if (FocusedView.HideNonMatchedLines) {
         EditToggleView(hwnd);
@@ -497,6 +498,8 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest)
         Encoding_Current(encDest);
         return true;
     }
+    bool ok = false;
+    LimitNotifyEvents();
 
     // moves the gap within Scintilla so that the text of the document is stored consecutively and
     // ensure there is a NUL character after the text
@@ -532,7 +535,7 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest)
                     SciCall_GotoPos(curPos);
                     SciCall_SetFirstVisibleLine(vis1stLine);
                     FreeMem(pchText);
-                    return true;
+                    ok = true;
                 }
                 else {
                     FreeMem(pwchText);
@@ -546,7 +549,8 @@ bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest)
             FreeMem(pwchText);
         }
     }
-    return false;
+    RestoreNotifyEvents();
+    return ok;
 }
 
 
@@ -7545,7 +7549,6 @@ bool EditReplace(HWND hwnd, LPEDITFINDREPLACE lpefr)
 //  EditReplaceAllInRange()
 //
 //
-
 DocPosU EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, DocPos iEndPos, DocPos *enlargement)
 {
     if (iStartPos > iEndPos) {
@@ -7583,7 +7586,7 @@ DocPosU EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartP
     }
 
     DocPosU iCount = 0;
-
+    LimitNotifyEvents();
     UndoTransActionBegin();
 
     while ((iPos >= 0LL) && (start <= iEndPos)) {
@@ -7615,6 +7618,8 @@ DocPosU EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartP
 
     *enlargement = (iEndPos - iOrigEndPos);
     SciCall_SetTargetRange(_saveTargetBeg_, _saveTargetEnd_ + *enlargement); //restore
+
+    RestoreNotifyEvents();
 
     return iCount;
 }

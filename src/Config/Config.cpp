@@ -2904,25 +2904,32 @@ extern "C" bool EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText, bo
 {
     bool const bLargerThan2GB = (lenText >= ((DocPosU)INT32_MAX));
     bool const bLargeFileLoaded = (lenText >= ((DocPosU)Settings2.FileLoadWarningMB << 20));
-    int const docOptions = bLargeFileLoaded ? (bLargerThan2GB ? SC_DOCUMENTOPTION_TEXT_LARGE : SC_DOCUMENTOPTION_STYLES_NONE)
-                                                              : SC_DOCUMENTOPTION_DEFAULT;
+    int const  docOptions = bLargeFileLoaded ? (bLargerThan2GB ? SC_DOCUMENTOPTION_TEXT_LARGE : SC_DOCUMENTOPTION_STYLES_NONE)
+                                             : SC_DOCUMENTOPTION_DEFAULT;
+    bool ok = true;
+    LimitNotifyEvents();
     if (SciCall_GetDocumentOptions() != docOptions) {
         // we have to create a new document with changed options
-        return CreateNewDocument(lpstrText, lenText, docOptions, reload);
+        ok = CreateNewDocument(lpstrText, lenText, docOptions, reload);
     }
-    bool const bReadOnly = SciCall_GetReadOnly();
-    SciCall_SetReadOnly(false);
-    if (!lpstrText || (lenText == 0)) {
-        SciCall_ClearAll();
-    } else {
-        SciCall_TargetWholeDocument();
-        if (reload) {
-            SciCall_ReplaceTargetMinimal(lenText, lpstrText);
-        } else {
-            SciCall_ReplaceTarget(lenText, lpstrText);
+    else {
+        bool const bReadOnly = SciCall_GetReadOnly();
+        SciCall_SetReadOnly(false);
+        if (!lpstrText || (lenText == 0)) {
+            SciCall_ClearAll();
         }
+        else {
+            SciCall_TargetWholeDocument();
+            if (reload) {
+                SciCall_ReplaceTargetMinimal(lenText, lpstrText);
+            }
+            else {
+                SciCall_ReplaceTarget(lenText, lpstrText);
+            }
+        }
+        SciCall_SetReadOnly(bReadOnly);
     }
-    SciCall_SetReadOnly(bReadOnly);
-    return true;
+    RestoreNotifyEvents();
+    return ok;
 }
 

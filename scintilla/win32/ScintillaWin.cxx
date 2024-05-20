@@ -347,7 +347,9 @@ class ScintillaWin :
 	bool capturedMouse;
 	bool trackedMouseLeave;
 	BOOL typingWithoutCursor;
-	bool cursorIsHidden;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	//bool cursorIsHidden;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	SetCoalescableTimerSig SetCoalescableTimerFn;
 
 	unsigned int linesPerScroll;	///< Intellimouse support
@@ -494,6 +496,9 @@ class ScintillaWin :
 	void ClaimSelection() override;
 
 	void GetMouseParameters() noexcept;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	bool IsMouseCursorHidden() noexcept;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	void CopyToGlobal(GlobalMemory &gmUnicode, const SelectionText &selectedText);
 	void CopyToClipboard(const SelectionText &selectedText) override;
 	void ScrollMessage(WPARAM wParam);
@@ -579,7 +584,9 @@ ScintillaWin::ScintillaWin(HWND hwnd) {
 	capturedMouse = false;
 	trackedMouseLeave = false;
 	typingWithoutCursor = false;
-	cursorIsHidden = false;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	//cursorIsHidden = false;
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	SetCoalescableTimerFn = nullptr;
 
 	linesPerScroll = 0;
@@ -1612,19 +1619,27 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 		break;
 
 	case WM_MOUSEMOVE: {
-			cursorIsHidden = false; // to be shown by ButtonMoveWithModifiers
+			// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 			const Point pt = PointFromLParam(lParam);
 
 			// Windows might send WM_MOUSEMOVE even though the mouse has not been moved:
 			// http://blogs.msdn.com/b/oldnewthing/archive/2003/10/01/55108.aspx
 			if (ptMouseLast != pt) {
+				if (IsMouseCursorHidden()) {
+					::ShowCursor(TRUE);
+					//cursorIsHidden = false; // to be shown by ButtonMoveWithModifiers
+				}
 				SetTrackMouseLeaveEvent(true);
 				ButtonMoveWithModifiers(pt, ::GetMessageTime(), MouseModifiers(wParam));
 			}
+			// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		}
 		break;
 
 	case WM_MOUSELEAVE:
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		if (IsMouseCursorHidden()) { ::ShowCursor(TRUE); }
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		SetTrackMouseLeaveEvent(false);
 		MouseLeave();
 		return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
@@ -2123,7 +2138,10 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 
 		case WM_SETCURSOR:
 			if (LOWORD(lParam) == HTCLIENT) {
-				if (!cursorIsHidden) {
+				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+				//if (!cursorIsHidden) {
+				if (!IsMouseCursorHidden()) {
+				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 					POINT pt;
 					if (::GetCursorPos(&pt)) {
 						::ScreenToClient(MainHWND(), &pt);
@@ -2397,10 +2415,13 @@ void ScintillaWin::SetTrackMouseLeaveEvent(bool on) noexcept {
 
 void ScintillaWin::HideCursorIfPreferred() noexcept {
 	// SPI_GETMOUSEVANISH from OS.
-	if (typingWithoutCursor && !cursorIsHidden) {
-		::SetCursor(NULL);
-		cursorIsHidden = true;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	if (typingWithoutCursor && !IsMouseCursorHidden()) {
+		//::SetCursor(NULL);
+		::ShowCursor(FALSE);
+		//cursorIsHidden = true;
 	}
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 }
 
 void ScintillaWin::UpdateBaseElements() {
@@ -3264,6 +3285,13 @@ void ScintillaWin::GetMouseParameters() noexcept {
 	}
 	::SystemParametersInfo(SPI_GETMOUSEVANISH, 0, &typingWithoutCursor, 0);
 }
+
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+bool ScintillaWin::IsMouseCursorHidden() noexcept {
+	CURSORINFO curInfo = { sizeof(CURSORINFO) };
+	return GetCursorInfo(&curInfo) ? (curInfo.flags == 0UL) : false;
+}
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 void ScintillaWin::CopyToGlobal(GlobalMemory &gmUnicode, const SelectionText &selectedText) {
 	const std::string_view svSelected(selectedText.Data(), selectedText.LengthWithTerminator());
