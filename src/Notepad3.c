@@ -9400,6 +9400,8 @@ void ParseCommandLine()
 
         while (bContinue && ExtractFirstArgument(lp3, lp1, lp2, (int)len)) {
             // options
+            size_t const lp3_len = StringCchLen(lp3, len);
+            bIsFileArg = bIsFileArg || (lp3[0] == L'"') && (lp3[lp3_len - 1] == L'"');
             if (!bIsFileArg && (lp1[0] == L'+') && (lp1[1] == L'\0')) {
                 Globals.CmdLnFlag_MultiFileArg = 2;
                 bIsFileArg = true;
