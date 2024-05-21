@@ -3684,8 +3684,9 @@ static LRESULT _OnDropOneFile(HWND hwnd, HPATHL hFilePath, WININFO* wi)
     }
     else if (Path_IsExistingFile(hFilePath)) {
         //~ ignore Flags.bReuseWindow
+        bool const sameFile = (Path_StrgComparePath(hFilePath, Paths.CurrentFile, Paths.ModuleDirectory) == 0);
         if (IsKeyDown(VK_CONTROL) || wi) {
-            DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, hFilePath, wi);
+            DialogNewWindow(hwnd, sameFile, hFilePath, wi);
         } else {
             FileLoad(hFilePath, fLoadFlags, 0, 0);
         }
@@ -4840,7 +4841,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_FILE_NEWWINDOW2: {
         SaveAllSettings(false);
         HPATHL hpth = (iLoWParam == IDM_FILE_NEWWINDOW2) ? Paths.CurrentFile : NULL;
-        DialogNewWindow(hwnd, Settings.SaveBeforeRunningTools, hpth, NULL);
+        DialogNewWindow(hwnd, (hpth != NULL), hpth, NULL);
     }
     break;
 
@@ -12117,7 +12118,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
             LONG const answer = InfoBoxLng(typ, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, tch);
             if (IsYesOkay(answer)) {
                 ///~SaveAllSettings(true); ~ already saved (CurrentFile)
-                DialogNewWindow(Globals.hwndMain, false, Paths.CurrentFile, NULL);
+                DialogNewWindow(Globals.hwndMain, true, Paths.CurrentFile, NULL);
                 CloseApplication();
             }
         }
