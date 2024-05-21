@@ -4765,7 +4765,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_SAVE:
-        FileSave(FSF_SaveAlways);
+        FileSave(FSF_None);
         break;
 
 
