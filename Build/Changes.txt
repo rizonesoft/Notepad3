@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.24.414.(build_#) (2024-04-14)
+Current BETA/RC Version 6.24.522.(build_#) (2024-05-22)
 ========================================================
 
 --------------------------------------------------------
@@ -71,6 +71,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.522.1]- Ctrl+S does not forced saving doc any longer - only saves file, if save needed (doc changed).
+[.522.1]- No need to save current file (doc changed) for open new (empty) np3 window.
 [.307.1]- Line number margin option: switched from sub-line selection to whole-line selection.
 [.307.1]- [internal] Change memory copy method.
 [.302.1]- RegEx syntax for horizontal space matching (ONI).
@@ -134,6 +136,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.522.1]- Adjust the fields for the RGB color values for a Display Scale of 125%.
+[.522.1]- Accept file args with leading dash (needs quotes in any dash case).
+[.522.1]- Mouse cursor flickering in case of "hide mouse while typing".
 [.309.1]- Redo failure introduced with Scintilla v5.4.2 Bug 2432 (SCI).
 [.307.1]- Tinyexpr: integer values always shown in abs() format.
 [.307.1]- Remove duplicate lines.
@@ -229,8 +234,8 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.307.1]- Update Lexilla Library (LEX) version 5.3.1 dev. (2024-03-05).
-[.307.1]- Update Scintilla Library (SCI) version 5.4.2 dev. (2024-03-05).
+[.522.1]- Update Lexilla Library (LEX) version 5.3.2 dev. (2024-04-23).
+[.522.1]- Update Scintilla Library (SCI) version 5.5.0 dev. (2024-04-23).
 [.101.1]- Update grepWinNP3 (GRE) version 2.1.15.48 (2024-01-10).
 [.101.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2023-10-14).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
