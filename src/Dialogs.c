@@ -4826,9 +4826,9 @@ void RestorePrevScreenPos(HWND hwnd)
 //
 //  DialogNewWindow()
 //
-void DialogNewWindow(HWND hwnd, bool bSaveOnRunTools, const HPATHL hFilePath, WININFO* wi)
+void DialogNewWindow(HWND hwnd, bool bSaveBeforeOpen, const HPATHL hFilePath, WININFO* wi)
 {
-    if (bSaveOnRunTools && !FileSave(FSF_Ask)) {
+    if (bSaveBeforeOpen && !FileSave(FSF_Ask)) {
         return;
     }
     WCHAR wch[80] = { L'\0' };
