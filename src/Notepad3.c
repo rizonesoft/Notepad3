@@ -5981,7 +5981,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_WORDWRAP:
         Globals.fvCurFile.bWordWrap = Settings.WordWrap = !Settings.WordWrap;
         _SetWrapIndentMode(Globals.hwndEdit);
-        Sci_ScrollSelectionToView();
+        //~Sci_ScrollSelectionToView(); // does not work here bug ?
+        SciCall_SetFirstVisibleLine(max_ln(0, Sci_GetCurrentLineNumber() - Settings2.CurrentLineVerticalSlop));
         UpdateToolbar();
         break;
 

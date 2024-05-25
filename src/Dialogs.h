@@ -127,9 +127,9 @@ void ComboBox_SetTextHW(HWND hDlg, int nIDDlgItem, const HSTRINGW hstr);
 void ComboBox_SetTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString);
 //void ComboBox_AddStringMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString);
 
-POINT GetCenterOfDlgInParent(const RECT* rcDlg, const RECT* rcParent);
+POINT GetCenterOfDlgInParent(const RECT* rcDlg, const HWND hwndParent);
 HWND GetParentOrDesktop(HWND hDlg);
-void CenterDlgInParent(HWND hDlg, HWND hDlgParent);
+void CenterDlgInParent(HWND hDlg, HWND hDlgParent, bool bLock);
 void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg);
 void SetDlgPos(HWND hDlg, int xDlg, int yDlg);
 
