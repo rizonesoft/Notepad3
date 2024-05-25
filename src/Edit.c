@@ -6377,7 +6377,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         }
         else {
             if (Settings.FindReplaceDlgPosX == CW_USEDEFAULT || Settings.FindReplaceDlgPosY == CW_USEDEFAULT) {
-                CenterDlgInParent(hwnd, NULL);
+                CenterDlgInParent(hwnd, NULL, false);
             }
             else {
                 SetDlgPos(hwnd, Settings.FindReplaceDlgPosX, Settings.FindReplaceDlgPosY);
@@ -7028,7 +7028,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             break;
 
         case IDACC_RESETPOS:
-            CenterDlgInParent(hwnd, NULL);
+            CenterDlgInParent(hwnd, NULL, false);
             Settings.FindReplaceDlgPosX = Settings.FindReplaceDlgPosY = CW_USEDEFAULT;
             break;
 
@@ -8503,7 +8503,7 @@ static INT_PTR CALLBACK EditLinenumDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
         SetDlgItemInt(hwnd, IDC_COLNUM, (int)clampp(iCurColumn, 0, INT_MAX), false);
         SendDlgItemMessage(hwnd,IDC_LINENUM,EM_LIMITTEXT,80,0);
         SendDlgItemMessage(hwnd,IDC_COLNUM,EM_LIMITTEXT,80,0);
-        CenterDlgInParent(hwnd, NULL);
+        CenterDlgInParent(hwnd, NULL, false);
     }
     return true;
 
@@ -8680,7 +8680,7 @@ static INT_PTR CALLBACK EditModifyLinesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         SendDlgItemMessage(hwnd,IDC_MODLNS_ED_PREPEND, EM_LIMITTEXT, ENCLDATA_SIZE - 1, 0);
         SetDlgItemTextW(hwnd,IDC_MODLNS_ED_APPEND, pData->pwsz2);
         SendDlgItemMessage(hwnd,IDC_MODLNS_ED_APPEND, EM_LIMITTEXT, ENCLDATA_SIZE - 1, 0);
-        CenterDlgInParent(hwnd, NULL);
+        CenterDlgInParent(hwnd, NULL, false);
     }
     return true;
 
@@ -8898,7 +8898,7 @@ static INT_PTR CALLBACK EditAlignDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         }
 #endif
         CheckRadioButton(hwnd,100,104,*piAlignMode+100);
-        CenterDlgInParent(hwnd, NULL);
+        CenterDlgInParent(hwnd, NULL, false);
     }
     return true;
 
@@ -9010,7 +9010,7 @@ static INT_PTR CALLBACK EditEncloseSelectionDlgProc(HWND hwnd, UINT umsg, WPARAM
         SetDlgItemTextW(hwnd, 100, pData->pwsz1);
         SendDlgItemMessage(hwnd, 101, EM_LIMITTEXT, ENCLDATA_SIZE - 1, 0);
         SetDlgItemTextW(hwnd, 101, pData->pwsz2);
-        CenterDlgInParent(hwnd, NULL);
+        CenterDlgInParent(hwnd, NULL, false);
     }
     return TRUE;
 
@@ -9129,7 +9129,7 @@ static INT_PTR CALLBACK EditInsertTagDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,L
         SetDlgItemInt(hwnd, 102, pData->repeat, FALSE);
         SetFocus(GetDlgItem(hwnd,100));
         PostMessageW(GetDlgItem(hwnd, 100), EM_SETSEL, 1, (LPARAM)(StringCchLen(pData->pwsz1, 0) - 1));
-        CenterDlgInParent(hwnd, NULL);
+        CenterDlgInParent(hwnd, NULL, false);
     }
     return FALSE;
 
@@ -9350,7 +9350,7 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
             *piSortFlags |= SORT_COLUMN;
             CheckDlgButton(hwnd,112,BST_CHECKED);
         }
-        CenterDlgInParent(hwnd, NULL);
+        CenterDlgInParent(hwnd, NULL, false);
     }
     return TRUE;
 
