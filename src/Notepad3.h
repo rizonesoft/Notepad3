@@ -122,7 +122,7 @@ void SetNotifyIconTitle(HWND hwnd);
 void SetSaveDone();
 
 void ParseCommandLine();
-void CheckAutoLoadMostRecent();
+bool CheckAutoLoadMostRecent();
 void ShowZoomCallTip();
 void ShowWrapAroundCallTip(bool forwardSearch);
 
