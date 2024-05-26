@@ -1183,9 +1183,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     }
     LoadSettings();
 
-    // Autoload recent file on close
-    CheckAutoLoadMostRecent();
-
     PrivateSetCurrentProcessExplicitAppUserModelID(Settings2.AppUserModelID);
 
     (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
@@ -1311,6 +1308,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         s_flagSaveOnRelaunch = false;
     }
 
+    // try autoload most recent file, if activated
+    bool const bIsAutoLoadMostRecent = CheckAutoLoadMostRecent();
+
     // Try to Relaunch with elevated privileges
     if (RelaunchElevated(NULL)) {
         return FALSE;
@@ -1322,7 +1322,12 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     }
     // Try to activate another window
     if (ActivatePrevInst()) {
-        return FALSE;
+        if (!bIsAutoLoadMostRecent) {
+            return FALSE;
+        }
+        // instance with most recent exists,
+        // so open empty new instance
+        Path_Empty(s_pthArgFilePath, false);
     }
 
     // Command Line Help Dialog
@@ -1632,10 +1637,12 @@ static BOOL CALLBACK _EnumWndProc2(HWND hwnd, LPARAM lParam)
             WCHAR wchFileName[INTERNET_MAX_URL_LENGTH] = { L'\0' };
             GetDlgItemText(hwnd, IDC_FILENAME, wchFileName, COUNTOF(wchFileName));
 
-            if (StringCchCompareXI(wchFileName, Path_Get(s_pthCheckFilePath)) == 0) {
+            HPATHL hpthFileName = Path_Allocate(wchFileName);
+            if (Path_StrgComparePath(hpthFileName, s_pthCheckFilePath, Paths.WorkingDirectory) == 0) {
                 *(HWND*)lParam = hwnd;
                 bContinue = FALSE;
             }
+            Path_Release(hpthFileName);
         }
     }
     return bContinue;
@@ -4180,6 +4187,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     bool const te = Sci_IsDocEmpty();
     bool const mls = Sci_IsSelectionMultiLine();
     bool const moe = IsMarkOccurrencesEnabled();
+    bool const isn = IsSaveNeeded();
+
     //bool const lfl = Flags.bHugeFileLoadState;
 
     //~bool const sav = Globals.bCanSaveIniFile; ~ done by UpdateSaveSettingsCmds()
@@ -4201,7 +4210,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     SetGrepWinIcon(hwnd, hmenu, IDM_GREP_WIN_SEARCH);
 
-    EnableCmd(hmenu, IDM_FILE_NEWWINDOW2, !(cf && si));
+    EnableCmd(hmenu, IDM_FILE_NEWWINDOW2, !(cf && si) && !isn);
 
     SetWinIcon(hwnd, hmenu, IDM_FILE_LAUNCH);
     EnableCmd(hmenu, IDM_FILE_LAUNCH, cf);
@@ -9377,6 +9386,8 @@ static void ParseCmdLnOption(LPWSTR lp1, LPWSTR lp2, const size_t len); // forwa
 
 void ParseCommandLine()
 {
+    Path_Empty(s_pthArgFilePath, false);
+
     LPWSTR lpCmdLine = GetCommandLine();
     if (StrIsEmpty(lpCmdLine)) {
         return;
@@ -9859,10 +9870,10 @@ static void ParseCmdLnOption(LPWSTR lp1, LPWSTR lp2, const size_t len)
 //
 //  CheckAutoLoadMostRecent()
 //
-void CheckAutoLoadMostRecent()
+bool CheckAutoLoadMostRecent()
 {
     // Add most recent from file history
-    if (Path_IsEmpty(s_pthArgFilePath) && Settings.AutoLoadMRUFile) {
+    if (Settings.AutoLoadMRUFile && !Globals.CmdLnFlag_SingleFileInstance && Path_IsEmpty(s_pthArgFilePath)) {
         if (MRU_Count(Globals.pFileMRU) > 0) {
             LPWSTR const szFileBuf = Path_WriteAccessBuf(s_pthArgFilePath, PATHLONG_MAX_CCH); // reserve buffer
             int const    cchFileBuf = (int)Path_GetBufCount(s_pthArgFilePath);
@@ -9870,8 +9881,10 @@ void CheckAutoLoadMostRecent()
             Path_Sanitize(s_pthArgFilePath);
             Path_UnQuoteSpaces(s_pthArgFilePath);
             Path_AbsoluteFromApp(s_pthArgFilePath, true);
+            return true;
         }
     }
+    return false;
 }
 
 
