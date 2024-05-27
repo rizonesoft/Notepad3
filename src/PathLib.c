@@ -964,7 +964,7 @@ bool PTHAPI Path_IsExistingDirectory(const HPATHL hpth)
 // ----------------------------------------------------------------------------
 
 
-int PTHAPI Path_StrgComparePathNormalized(const HPATHL hpth1, const HPATHL hpth2)
+static int _StrgComparePathNormalized(const HPATHL hpth1, const HPATHL hpth2)
 {
     if (Path_IsEmpty(hpth1)) { return -1; }
     if (Path_IsEmpty(hpth2)) { return +1; }
@@ -987,7 +987,7 @@ int PTHAPI Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2, const HP
     Path_NormalizeEx(hpth1_tmp, hpth_wrkdir, true, false);
     Path_NormalizeEx(hpth2_tmp, hpth_wrkdir, true, false);
 
-    int const cmp = Path_StrgComparePathNormalized(hpth1_tmp, hpth2_tmp);
+    int const cmp = _StrgComparePathNormalized(hpth1_tmp, hpth2_tmp);
 
     Path_Release(hpth1_tmp);
     Path_Release(hpth2_tmp);

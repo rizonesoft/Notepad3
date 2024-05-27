@@ -112,7 +112,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance);
 WININFO GetFactoryDefaultWndPos(HWND hwnd, const int flagsPos);
 WININFO GetWinInfoByFlag(HWND hwnd, const int flagsPos);
 int  CountRunningInstances();
-bool ActivatePrevInst();
+bool ActivatePrevInst(const bool bSetForground);
 bool LaunchNewInstance(HWND hwnd, LPCWSTR lpszParameter, LPCWSTR lpszFilePath);
 bool RelaunchMultiInst();
 bool RelaunchElevated(LPCWSTR lpNewCmdLnArgs);

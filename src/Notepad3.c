@@ -1321,7 +1321,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         return FALSE;
     }
     // Try to activate another window
-    if (ActivatePrevInst()) {
+    if (ActivatePrevInst(!bIsAutoLoadMostRecent)) {
         if (!bIsAutoLoadMostRecent) {
             return FALSE;
         }
@@ -1626,14 +1626,6 @@ static BOOL CALLBACK _EnumWndProc2(HWND hwnd, LPARAM lParam)
 
         if (StrCmpW(szClassName, s_wchWndClass) == 0) {
 
-            UINT const iReuseLock = GetDlgItemInt(hwnd, IDC_REUSELOCK, NULL, FALSE);
-            if ((GetTicks_ms() - iReuseLock) >= REUSEWINDOWLOCKTIMEOUT) {
-
-                if (IsWindowEnabled(hwnd)) {
-                    bContinue = FALSE;
-                }
-            }
-
             WCHAR wchFileName[INTERNET_MAX_URL_LENGTH] = { L'\0' };
             GetDlgItemText(hwnd, IDC_FILENAME, wchFileName, COUNTOF(wchFileName));
 
@@ -1646,6 +1638,15 @@ static BOOL CALLBACK _EnumWndProc2(HWND hwnd, LPARAM lParam)
         }
     }
     return bContinue;
+}
+
+
+static bool FindOtherInstance(HWND* phwnd, HPATHL hpthFileName)
+{
+    Path_Reset(s_pthCheckFilePath, Path_Get(hpthFileName));
+    *phwnd = NULL;
+    EnumWindows(_EnumWndProc2, (LPARAM)phwnd);
+    return (*phwnd != NULL);
 }
 
 
@@ -2782,6 +2783,13 @@ static void _InitEditWndFrame()
 }
 
 
+static void _SetEnumWindowsItems(HWND hwnd)
+{
+    SetDlgItemText(hwnd, IDC_FILENAME, Path_Get(Paths.CurrentFile));
+    SetDlgItemInt(hwnd, IDC_REUSELOCK, (UINT)GetTicks_ms(), false);
+}
+
+
 //=============================================================================
 //
 //  MsgCreate() - Handles WM_CREATE
@@ -2845,8 +2853,6 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
         hInstance,
         NULL);
 
-    SetDlgItemText(hwnd,IDC_FILENAME,Path_Get(Paths.CurrentFile));
-
     (void)CreateWindow(
         WC_STATIC,
         NULL,
@@ -2857,7 +2863,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
         hInstance,
         NULL);
 
-    SetDlgItemInt(hwnd,IDC_REUSELOCK,(UINT)GetTicks_ms(),false);
+    _SetEnumWindowsItems(hwnd);
 
     // Menu
     //~SetMenuDefaultItem(GetSubMenu(GetMenu(hwnd),0),0);
@@ -4709,6 +4715,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     }
 
     switch(iLoWParam) {
+
     case SCEN_CHANGE:
         EditUpdateVisibleIndicators();
         MarkAllOccurrences(-1, false);
@@ -4737,7 +4744,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDT_TIMER_UNDO_TRANSACTION:
         _SplitUndoTransaction();
         break;
-
 
     case IDM_FILE_NEW: {
         HPATHL hfile_pth = Path_Allocate(L"");
@@ -11488,8 +11494,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
         }
 
         Path_Empty(Paths.CurrentFile, false);
-        SetDlgItemText(Globals.hwndMain, IDC_FILENAME, Path_Get(Paths.CurrentFile));
-        SetDlgItemInt(Globals.hwndMain, IDC_REUSELOCK, (UINT)GetTicks_ms(), false);
+        _SetEnumWindowsItems(Globals.hwndMain);
         if (!s_flagKeepTitleExcerpt) {
             StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
         }
@@ -11541,15 +11546,14 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
 
     Path_NormalizeEx(hopen_file, Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
 
-    if (!bReloadFile && Path_StrgComparePathNormalized(hopen_file, Paths.CurrentFile) == 0) {
+    if (!bReloadFile && Path_StrgComparePath(hopen_file, Paths.CurrentFile, Paths.WorkingDirectory) == 0) {
         Path_Release(hopen_file);
         return false;
     }
     if (!bReloadFile && Flags.bSingleFileInstance) {
-        Path_Reset(s_pthCheckFilePath, Path_Get(hopen_file));
+
         HWND hwnd = NULL;
-        EnumWindows(_EnumWndProc2, (LPARAM)&hwnd);
-        if (hwnd != NULL) {
+        if (FindOtherInstance(&hwnd, hopen_file)) {
             if (!s_bInitAppDone || IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, L"InfoInstanceExist", IDS_MUI_ASK_INSTANCE_EXISTS))) {
                 if (IsIconic(hwnd)) {
                     ShowWindowAsync(hwnd, SW_RESTORE);
@@ -11558,6 +11562,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
                     SendMessage(hwnd, WM_TRAYMESSAGE, 0, WM_LBUTTONDBLCLK);
                     SendMessage(hwnd, WM_TRAYMESSAGE, 0, WM_LBUTTONUP);
                 }
+                LockSetForegroundWindow(LSFW_UNLOCK);
                 SetForegroundWindow(hwnd);
             }
             Path_Release(hopen_file);
@@ -11640,8 +11645,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
         //~Path_Swap(Paths.CurrentFile, hopen_file); ~ hopen_file needed later
         Path_Reset(Paths.CurrentFile, Path_Get(hopen_file)); // dup
 
-        SetDlgItemText(Globals.hwndMain, IDC_FILENAME, Path_Get(Paths.CurrentFile));
-        SetDlgItemInt(Globals.hwndMain, IDC_REUSELOCK, (UINT)GetTicks_ms(), false);
+        _SetEnumWindowsItems(Globals.hwndMain);
 
         if (!s_flagKeepTitleExcerpt) {
             StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
@@ -11680,7 +11684,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
         }
 
         // consistent settings file handling (if loaded in editor)
-        Flags.bSettingsFileSoftLocked = (Path_StrgComparePathNormalized(Paths.CurrentFile, Paths.IniFile) == 0);
+        Flags.bSettingsFileSoftLocked = (Path_StrgComparePath(Paths.CurrentFile, Paths.IniFile, Paths.WorkingDirectory) == 0);
 
         // the .LOG feature ...
         if (IsFileVarLogFile()) {
@@ -12087,8 +12091,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
             if (fSuccess) {
                 if (!(fSaveFlags & FSF_SaveCopy)) {
                     Path_Swap(Paths.CurrentFile, hfile_pth);
-                    SetDlgItemText(Globals.hwndMain, IDC_FILENAME, Path_Get(Paths.CurrentFile));
-                    SetDlgItemInt(Globals.hwndMain, IDC_REUSELOCK, (UINT)GetTicks_ms(), false);
+                    _SetEnumWindowsItems(Globals.hwndMain);
                     if (!s_flagKeepTitleExcerpt) {
                         StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
                     }
@@ -12212,7 +12215,7 @@ int CountRunningInstances() {
 *
 ******************************************************************************/
 
-bool ActivatePrevInst()
+bool ActivatePrevInst(const bool bSetForground)
 {
     HWND           hwnd = NULL;
     COPYDATASTRUCT cds = { 0 };
@@ -12225,10 +12228,8 @@ bool ActivatePrevInst()
 
         Path_NormalizeEx(s_pthArgFilePath, Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
 
-        Path_Reset(s_pthCheckFilePath, Path_Get(s_pthArgFilePath));
+        if (FindOtherInstance(&hwnd, s_pthArgFilePath)) {
 
-        EnumWindows(_EnumWndProc2,(LPARAM)&hwnd);
-        if (hwnd != NULL) {
             // Enabled
             if (IsWindowEnabled(hwnd)) {
 
@@ -12242,8 +12243,9 @@ bool ActivatePrevInst()
                     SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONDBLCLK);
                     SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONUP);
                 }
-                SetForegroundWindow(hwnd);
-
+                if (bSetForground) {
+                    SetForegroundWindow(hwnd);
+                }
                 size_t cb = sizeof(np3params);
                 if (s_lpSchemeArg) {
                     cb += ((StringCchLen(s_lpSchemeArg, 0) + 1) * sizeof(WCHAR));
@@ -12298,11 +12300,9 @@ bool ActivatePrevInst()
         return false;
     }
 
-    hwnd = NULL;
-    EnumWindows(_EnumWndProc,(LPARAM)&hwnd);
 
-    // Found a window
-    if (hwnd != NULL) {
+    hwnd = NULL;
+    if (EnumWindows(_EnumWndProc, (LPARAM)&hwnd)) {
         // Enabled
         if (IsWindowEnabled(hwnd)) {
 
@@ -12316,7 +12316,7 @@ bool ActivatePrevInst()
                 SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONDBLCLK);
                 SendMessage(hwnd,WM_TRAYMESSAGE,0,WM_LBUTTONUP);
             }
-
+            // always set foreground (ignoring: bSetForground here)
             SetForegroundWindow(hwnd);
 
             if (Path_IsNotEmpty(s_pthArgFilePath))
