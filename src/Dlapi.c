@@ -813,6 +813,7 @@ bool DirList_SelectItem(HWND hwnd,LPCWSTR lpszDisplayName,LPCWSTR lpszFullPath)
 
         DirList_GetItem(hwnd,i,&dli);
         GetShortPathNameW(dli.pthFileName, dli.pthFileName, (DWORD)Path_GetBufCount(hpthFileName));
+        Path_Sanitize(hpthFileName);
 
         if (StringCchCompareXI(dli.pthFileName, Path_Get(hshort_pth)) == 0) {
             ListView_SetItemState(hwnd,i,LVIS_FLAGS,LVIS_FLAGS);
