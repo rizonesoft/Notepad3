@@ -1523,6 +1523,7 @@ CASE_WM_CTLCOLOR_SET:
             wchar_t* const args_buf = StrgWriteAccessBuf(hargs_str, CMDLN_LENGTH_LIMIT);
 
             if (GetDlgItemText(hwnd, IDC_COMMANDLINE, file_buf, (int)Path_GetBufCount(hfile_pth))) {
+
                 Path_Sanitize(hfile_pth);
 
                 bool bQuickExit = false;
@@ -2628,6 +2629,7 @@ CASE_WM_CTLCOLOR_SET:
 
                 ListView_GetItem(hwndLV, &lvi);
 
+                Path_Sanitize(hFilePath);
                 Path_UnQuoteSpaces(hFilePath);
                 Path_AbsoluteFromApp(hFilePath, true);
 
@@ -5079,8 +5081,11 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
             if (lngIdx >= 0) {
                 IniSectionGetString(globalSection, L"languagefile", grepWinLangResName[lngIdx].filename, wchLngPathBuf, Path_GetBufCount(hLngFilePath));
                 IniSectionSetString(globalSection, L"languagefile", wchLngPathBuf);
-            } else {
+                Path_Sanitize(hLngFilePath);
+            }
+            else {
                 IniSectionGetString(globalSection, L"languagefile", L"", wchLngPathBuf, Path_GetBufCount(hLngFilePath));
+                Path_Sanitize(hLngFilePath);
                 if (Path_IsEmpty(hLngFilePath)) {
                     IniSectionDelete(globalSection, L"languagefile", false);
                 }

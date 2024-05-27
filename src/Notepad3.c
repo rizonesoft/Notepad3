@@ -3759,6 +3759,7 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
         for (UINT i = 0; i < cnt; ++i) {
             WININFO wi = GetMyWindowPlacement(hwnd, NULL, (vkCtrlDown ? (offset * (i + 1)) : 0), bFullVisible);
             DragQueryFileW(hDrop, i, drop_buf, (UINT)Path_GetBufCount(hdrop_pth));
+            Path_Sanitize(hdrop_pth);
             _OnDropOneFile(hwnd, hdrop_pth, (((0 == i) && !IsKeyDown(VK_CONTROL)) ? NULL : &wi));
         }
 
@@ -7976,9 +7977,11 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                     LPWSTR const url_buf = Path_WriteAccessBuf(hurl_pth, cchPath);
 
                     if (FAILED(PathCreateFromUrlW(wchUrl, url_buf, &cchPath, 0))) {
+                        Path_Sanitize(hurl_pth);
                         const char *p = &pUrlBegin[CONSTSTRGLEN("file://")];
                         while (p && (*p == '/')) { ++p; }
                         StringCchCopyN(url_buf, Path_GetBufCount(hurl_pth), wchUrl, cchUrl); // no op
+                        Path_Sanitize(hurl_pth);
                         cchPath = (DWORD)Path_GetLength(hurl_pth);
                     }
                     Path_Sanitize(hurl_pth);
@@ -9131,6 +9134,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
         HPATHL         hfile_pth = Path_Allocate(NULL);
         wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, STRINGW_MAX_URL_LENGTH);
         int const      cnt = MultiByteToWideChar(CP_UTF8, 0, scn->text, -1, file_buf, (int)Path_GetBufCount(hfile_pth));
+        Path_Sanitize(hfile_pth);
         LRESULT const  result = (cnt > 0) ? _OnDropOneFile(hwnd, hfile_pth, NULL) : FALSE;
         Path_Release(hfile_pth);
         return result;
