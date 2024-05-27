@@ -699,28 +699,32 @@ static bool GetTrayWndRect(LPRECT lpTrayRect) {
 
 
 // Check to see if the system animation has been enabled/disabled
-static bool IsSystemDrawAnimation()
+bool HasDrawAnimation()
 {
     ANIMATIONINFO ai = { sizeof(ANIMATIONINFO), 0 };
     SystemParametersInfo(SPI_GETANIMATION, sizeof(ai), &ai, 0);
     return ai.iMinAnimate;
 }
 
-bool HasDrawAnimation() {
-    return IsSystemDrawAnimation() && Settings2.DrawAnimatedWindow;
+void MinimizeWndToTaskbar(HWND hWnd)
+{
+    ShowWindow(hWnd, SW_MINIMIZE);
 }
 
-void MinimizeWndToTray(HWND hWnd) {
+void MinimizeWndToTray(HWND hWnd)
+{
+    MinimizeWndToTaskbar(hWnd);
 
     if (HasDrawAnimation()) {
         // Get the rect of the window. It is safe to use the rect of the whole
         // window - DrawAnimatedRects will only draw the caption
-        RECT rcFrom;
-        GetWindowRect(hWnd, &rcFrom);
-        RECT rcTo;
-        GetTrayWndRect(&rcTo);
+        RECT rcMiniMized;
+        GetTrayWndRect(&rcMiniMized);
+        WINDOWPLACEMENT wp = { sizeof(WINDOWPLACEMENT) };
+        GetWindowPlacement(hWnd, &wp);
         // Get the system to draw our animation for us
-        DrawAnimatedRects(hWnd, IDANI_CAPTION, &rcFrom, &rcTo);
+        Sleep(100);  // but give SW_MINIMIZE some time to do its stuff
+        DrawAnimatedRects(hWnd, IDANI_CAPTION, &wp.rcNormalPosition, &rcMiniMized);
     }
 
     // Add the tray icon. If we add it before the call to DrawAnimatedRects,
@@ -731,58 +735,42 @@ void MinimizeWndToTray(HWND hWnd) {
 
     // Hide the window
     ShowWindow(hWnd, SW_HIDE);
-
     Globals.bMinimizedToTray = true;
 }
 
-void MinimizeWndToTaskbar(HWND hWnd)
+
+void RestoreWndFromTaskbar(HWND hWnd)
 {
-    if (!Settings2.DrawAnimatedWindow) {
-        ShowWindow(hWnd, SW_HIDE); // hide first, before minimize
-    }
-    ShowWindow(hWnd, SW_MINIMIZE);
-    ShowWindow(hWnd, SW_SHOW);  // show taskbar icon
+    ShowWindow(hWnd, SW_RESTORE);
+    SetActiveWindow(hWnd);
+    SetForegroundWindow(hWnd);
 }
 
-void RestoreWndFromTray(HWND hWnd) {
+
+void RestoreWndFromTray(HWND hWnd)
+{
+    ShowWindow(hWnd, SW_SHOW);
 
     if (HasDrawAnimation()) {
         // Get the rect of the tray and the window. Note that the window rect
         // is still valid even though the window is hidden
-        RECT rcFrom;
-        GetTrayWndRect(&rcFrom);
-        RECT rcTo;
-        GetWindowRect(hWnd, &rcTo);
-        // needed, if minimized: WININFO wi = GetMyWindowPlacement(hWnd, NULL, 0, false); RectFromWinInfo(&wi, &rcTo);
-        // Get the system to draw our animation for us
-        DrawAnimatedRects(hWnd, IDANI_CAPTION, &rcFrom, &rcTo);
+        RECT rcMiniMized;
+        GetTrayWndRect(&rcMiniMized);
+        WINDOWPLACEMENT wp = { sizeof(WINDOWPLACEMENT) };
+        GetWindowPlacement(hWnd, &wp);
+        DrawAnimatedRects(hWnd, IDANI_CAPTION, &rcMiniMized, &wp.rcNormalPosition);
     }
 
     // Show the window, and make sure we're the foreground window
-    ShowWindow(hWnd, SW_SHOW);
-
-    SetActiveWindow(hWnd);
-    SetForegroundWindow(hWnd);
+    RestoreWndFromTaskbar(hWnd);
 
     // Remove the tray icon. As described above, remove the icon after the
     // call to DrawAnimatedRects, or the taskbar will not refresh itself
     // properly until DAR finished
     ShowNotifyIcon(hWnd, false);
-
     Globals.bMinimizedToTray = false;
 }
 
-void RestoreWndFromTaskbar(HWND hWnd)
-{
-    if (!Settings2.DrawAnimatedWindow) {
-        ShowWindow(hWnd, SW_HIDE); // hide first, before restore
-    }
-    ShowWindow(hWnd, SW_RESTORE);
-    ShowWindow(hWnd, SW_SHOW);
-
-    SetActiveWindow(hWnd);
-    SetForegroundWindow(hWnd);
-}
 
 
 //=============================================================================
