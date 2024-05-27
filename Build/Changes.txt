@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.24.522.(build_#) (2024-05-22)
+Current BETA/RC Version 6.24.527.(build_#) (2024-05-27)
 ========================================================
 
 --------------------------------------------------------
@@ -71,6 +71,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.527.1]- Updating Lexer Style "NewSombra" from MadDogVachon.
 [.522.1]- Ctrl+S does not forced saving doc any longer - only saves file, if save needed (doc changed).
 [.522.1]- No need to save current file (doc changed) for open new (empty) np3 window.
 [.307.1]- Line number margin option: switched from sub-line selection to whole-line selection.
@@ -136,6 +137,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.527.1]- Finding np3 instance holding same file-path (only one instance).
+[.527.1]- Minor issues related to "autoload recent file" feature.
+[.527.1]- Center popup dialogs and show current line on word-wrap toggle.
 [.522.1]- Adjust the fields for the RGB color values for a Display Scale of 125%.
 [.522.1]- Accept file args with leading dash (needs quotes in any dash case).
 [.522.1]- Mouse cursor flickering in case of "hide mouse while typing".
