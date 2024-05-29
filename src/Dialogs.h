@@ -127,11 +127,10 @@ void ComboBox_SetTextHW(HWND hDlg, int nIDDlgItem, const HSTRINGW hstr);
 void ComboBox_SetTextMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString);
 //void ComboBox_AddStringMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString);
 
-POINT GetCenterOfDlgInParent(const RECT* rcDlg, const HWND hwndParent);
-HWND GetParentOrDesktop(HWND hDlg);
-void CenterDlgInParent(HWND hDlg, HWND hDlgParent, bool bLock);
-void GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg);
-void SetDlgPos(HWND hDlg, int xDlg, int yDlg);
+void  CenterDlgInParent(HWND hDlg, bool bLock);
+void  GetDlgPos(HWND hDlg, LPINT xDlg, LPINT yDlg);
+void  SetDlgPos(HWND hDlg, int xDlg, int yDlg);
+POINT GetCenterOfDlgInParent(const RECT* const rcDlg, const HWND hParent);
 
 
 inline void InitWindowCommon(HWND hwnd, bool bSetExplorerTheme)

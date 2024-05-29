@@ -4532,7 +4532,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         MakeBitmapButton(hwnd, IDC_NEXTSTYLE, IDB_NEXT, -1, -1);
 
         if (Settings.CustomSchemesDlgPosX == CW_USEDEFAULT || Settings.CustomSchemesDlgPosY == CW_USEDEFAULT) {
-            CenterDlgInParent(hwnd, NULL, false);
+            CenterDlgInParent(hwnd, false);
         } else {
             SetDlgPos(hwnd, Settings.CustomSchemesDlgPosX, Settings.CustomSchemesDlgPosY);
         }
@@ -5107,7 +5107,7 @@ CASE_WM_CTLCOLOR_SET:
             break;
 
         case IDACC_RESETPOS:
-            CenterDlgInParent(hwnd, NULL, false);
+            CenterDlgInParent(hwnd, false);
             Settings.CustomSchemesDlgPosX = Settings.CustomSchemesDlgPosY = CW_USEDEFAULT;
             break;
 
@@ -5225,7 +5225,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         iInternalDefault = s_iDefaultLexer;
         CheckDlgButton(hwnd,IDC_AUTOSELECT, SetBtn(s_bAutoSelect));
 
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
     }
     return TRUE;
 

@@ -2193,6 +2193,9 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_CLOSE:
         SetEvent(s_hEventAppIsClosing);
         InstallFileWatching(false);
+        if (IsIconic(hwnd)) {
+            ShowWindowAsync(hwnd, SW_RESTORE);
+        }
         if (FileSave(FSF_Ask)) {
             DestroyWindow(Globals.hwndMain);
         }
