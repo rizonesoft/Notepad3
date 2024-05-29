@@ -74,6 +74,20 @@
 
 //=============================================================================
 //
+//  GetParentOrDesktop()
+//
+HWND GetParentOrDesktop(HWND hDlg)
+{
+    if (!hDlg) {
+        return GetDesktopWindow();
+    }
+    HWND const hParent = GetParent(hDlg);
+    return hParent ? hParent : GetDesktopWindow();
+}
+
+
+//=============================================================================
+//
 //  MessageBoxLng()
 //
 static HHOOK s_hCBThook = NULL;
@@ -90,6 +104,7 @@ static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPA
 
             // get window handles
             LPCREATESTRUCT const pCreateStruct = ((LPCBT_CREATEWND)lParam)->lpcs;
+
             HWND const hParentWnd = pCreateStruct->hwndParent ? pCreateStruct->hwndParent : GetParentOrDesktop(hThisWnd);
 
             if (hParentWnd) {
@@ -317,7 +332,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
         FreeMem(lpMsgBox->lpstrMessage);
         lpMsgBox->lpstrMessage = NULL;
 
-        CenterDlgInParent(hwnd, NULL, true);
+        CenterDlgInParent(hwnd, true);
         AttentionBeep(lpMsgBox->uType);
     }
     return TRUE;
@@ -822,7 +837,7 @@ static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
         WCHAR szText[4096] = { L'\0' };
         GetLngString(IDS_MUI_CMDLINEHELP, szText, COUNTOF(szText));
         SetDlgItemText(hwnd, IDC_CMDLINEHELP, szText);
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
     }
     return TRUE;
 
@@ -1053,7 +1068,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
         StringCchCatA(pAboutResource, COUNTOF(pAboutResource), pAboutRes);
         //~}
 
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
 
         HFONT const hFont = (HFONT)SendDlgItemMessage(hwnd, IDC_SCI_VERSION, WM_GETFONT, 0, 0);
         if (hFont) {
@@ -1376,7 +1391,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
         SetDlgItemText(hwnd, IDC_COMMANDLINE, (LPCWSTR)lParam);
         SHAutoComplete(GetDlgItem(hwnd, IDC_COMMANDLINE), SHACF_FILESYSTEM);
 
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
     }
     return TRUE;
 
@@ -1634,7 +1649,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
         MakeBitmapButton(hwnd,IDC_GETOPENWITHDIR,IDB_OPEN, -1, -1);
 
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
     }
     return TRUE;
 
@@ -1894,7 +1909,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
         MakeBitmapButton(hwnd,IDC_GETFAVORITESDIR,IDB_OPEN, -1, -1);
 
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
     }
     return TRUE;
 
@@ -2112,7 +2127,7 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
         SendDlgItemMessage(hwnd, IDC_ADDFAV_FILES, EM_LIMITTEXT, INTERNET_MAX_URL_LENGTH, 0); // max
         SetDlgItemTextW(hwnd, IDC_ADDFAV_FILES, wchNamePth);
 
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
     }
     return TRUE;
 
@@ -2388,7 +2403,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
 
         DialogEnableControl(hwnd, IDC_PRESERVECARET, Settings.SaveRecentFiles);
 
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
     }
     return TRUE;
 
@@ -2735,7 +2750,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
         
         SetDlgItemInt(hwnd, IDC_FILE_CHECK_INTERVAL, (UINT)FileWatching.FileCheckInterval, FALSE);
 
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
     }
     return TRUE;
 
@@ -2923,7 +2938,7 @@ static INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
         UINT const uiNumber = *((UINT*)lParam);
         SetDlgItemInt(hwnd, IDC_COLUMNWRAP, uiNumber, false);
         SendDlgItemMessage(hwnd, IDC_COLUMNWRAP, EM_LIMITTEXT, 15, 0);
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
     }
     return TRUE;
 
@@ -3067,7 +3082,7 @@ static INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
         SendDlgItemMessage(hwnd, 102, CB_SETCURSEL, (WPARAM)(Settings.ShowWordWrapSymbols ? ((Settings.WordWrapSymbols % 100) - (Settings.WordWrapSymbols % 10)) / 10 : 0), 0);
         SendDlgItemMessage(hwnd, 103, CB_SETCURSEL, (WPARAM)Settings.WordWrapMode, 0);
 
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
     }
     return TRUE;
 
@@ -3207,7 +3222,7 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
             DialogEnableControl(hwnd, IDC_SHOWEDGELINE, false);
             DialogEnableControl(hwnd, IDC_BACKGRDCOLOR, false);
         }
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
     }
     return TRUE;
 
@@ -3365,7 +3380,7 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
         CheckDlgButton(hwnd,IDC_WARN_INCONSISTENT_INDENTS, SetBtn(Settings.WarnInconsistentIndents));
         CheckDlgButton(hwnd,IDC_AUTO_DETECT_INDENTS, SetBtn(Settings.AutoDetectIndentSettings));
 
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
     }
     return TRUE;
 
@@ -3536,7 +3551,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
         CheckDlgButton(hwnd, IDC_NOUNICODEDETECTION, SetBtn(!Settings.SkipUnicodeDetection));
         CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, SetBtn(!Settings.SkipANSICodePageDetection));
 
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
     }
     return TRUE;
 
@@ -3732,7 +3747,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
         ListView_SetColumnWidth(hwndLV,0,LVSCW_AUTOSIZE_USEHEADER);
 
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
     }
     return TRUE;
 
@@ -3939,7 +3954,7 @@ static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wP
         CheckDlgButton(hwnd,IDC_CONSISTENT_EOLS, SetBtn(Settings.FixLineEndings));
         CheckDlgButton(hwnd,IDC_AUTOSTRIPBLANKS, SetBtn(Settings.FixTrailingBlanks));
 
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
     }
     return TRUE;
 
@@ -4066,7 +4081,7 @@ static INT_PTR CALLBACK WarnLineEndingDlgProc(HWND hwnd, UINT umsg, WPARAM wPara
         }
 
         CheckDlgButton(hwnd, IDC_WARN_INCONSISTENT_EOLS, SetBtn(Settings.WarnInconsistEOLs));
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
 
         AttentionBeep(MB_ICONEXCLAMATION);
     }
@@ -4213,7 +4228,7 @@ static INT_PTR CALLBACK WarnIndentationDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
         CheckDlgButton(hwnd, Globals.fvCurFile.bTabsAsSpaces ? IDC_INDENT_BY_SPCS : IDC_INDENT_BY_TABS, true);
         CheckDlgButton(hwnd, IDC_WARN_INCONSISTENT_INDENTS, SetBtn(Settings.WarnInconsistentIndents));
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
 
         AttentionBeep(MB_ICONEXCLAMATION);
     }
@@ -4345,7 +4360,7 @@ static INT_PTR CALLBACK AutoSaveBackupSettingsDlgProc(HWND hwnd, UINT umsg, WPAR
         }
         SetDlgItemText(hwnd, IDC_AUTOSAVE_INTERVAL, wch);
 
-        CenterDlgInParent(hwnd, NULL, false);
+        CenterDlgInParent(hwnd, false);
     }
     return TRUE;
 
@@ -5520,25 +5535,26 @@ void ComboBox_AddStringMB2W(HWND hDlg, int nIDDlgItem, LPCSTR lpString)
 }
 #endif
 
+
+
 //=============================================================================
 //
 //  GetCenterOfDlgInParent()
 //
-POINT GetCenterOfDlgInParent(const RECT* rcDlg, const HWND hwndParent)
+POINT GetCenterOfDlgInParent(const RECT* const rcDlg, const HWND hParent)
 {
     RECT rcParent = { 0 };
-
-    WINDOWPLACEMENT wp = { sizeof(WINDOWPLACEMENT) };
-    if (GetWindowPlacement(hwndParent, &wp)) {
-        rcParent = wp.rcNormalPosition;
-    }
-    else {
-        GetWindowRectEx(hwndParent, &rcParent);
-    }
+    GetWindowRectEx(hParent, &rcParent);
 
     HMONITOR const hMonitor = MonitorFromRect(&rcParent, MONITOR_DEFAULTTONEAREST);
-    MONITORINFO mi = { sizeof(MONITORINFO) };
+    MONITORINFO    mi = { sizeof(MONITORINFO) };
     GetMonitorInfo(hMonitor, &mi);
+
+    WINDOWPLACEMENT wp = { sizeof(WINDOWPLACEMENT) };
+    if (GetWindowPlacement(hParent, &wp)) {
+        rcParent = (wp.showCmd == SW_MAXIMIZE) ? mi.rcWork : wp.rcNormalPosition;
+    }
+
     int const xMin = mi.rcWork.left;
     int const xMax = (mi.rcWork.right) - (rcDlg->right - rcDlg->left);
     int const yMin = mi.rcWork.top;
@@ -5556,28 +5572,16 @@ POINT GetCenterOfDlgInParent(const RECT* rcDlg, const HWND hwndParent)
 
 //=============================================================================
 //
-//  GetParentOrDesktop()
-//
-HWND GetParentOrDesktop(HWND hDlg)
-{
-    HWND const hParent = GetParent(hDlg);
-    return hParent ? hParent : GetDesktopWindow();
-}
-
-
-//=============================================================================
-//
 //  CenterDlgInParent()
 //
-void CenterDlgInParent(HWND hDlg, HWND hDlgParent, bool bLock)
+void CenterDlgInParent(HWND hDlg, bool bLock)
 {
     if (!hDlg) { return; }
 
+    HWND const hParentWnd = GetParentOrDesktop(hDlg);
+
     RECT rcDlg = { 0 };
     GetWindowRect(hDlg, &rcDlg);
-
-    HWND const hParentWnd = hDlgParent ? hDlgParent : GetParentOrDesktop(hDlg);
-
     POINT const ptTopLeft = GetCenterOfDlgInParent(&rcDlg, hParentWnd);
 
     SetWindowPos(hDlg, NULL, ptTopLeft.x, ptTopLeft.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
@@ -6702,7 +6706,7 @@ INT_PTR CALLBACK FontDialogHookProc(
         //~  PostMessage(hdlg, WM_CLOSE, 0, 0);
         //~}
 
-        CenterDlgInParent(hdlg, NULL, false);
+        CenterDlgInParent(hdlg, false);
 
         PostMessage(hdlg, WM_THEMECHANGED, 0, 0);
     } break;
@@ -6803,7 +6807,7 @@ INT_PTR CALLBACK ColorDialogHookProc(
             SetWindowPos(hdlg, NULL, wi.x, wi.y, wi.cx, wi.cy, SWP_NOZORDER | SWP_NOSIZE | SWP_SHOWWINDOW);
             SetForegroundWindow(hdlg);
         } else {
-            CenterDlgInParent(hdlg, NULL, false);
+            CenterDlgInParent(hdlg, false);
         }
 
         PostMessage(hdlg, WM_THEMECHANGED, 0, 0);
