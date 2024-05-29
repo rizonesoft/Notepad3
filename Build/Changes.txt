@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.24.527.(build_#) (2024-05-27)
+Current BETA/RC Version 6.24.529.(build_#) (2024-05-29)
 ========================================================
 
 --------------------------------------------------------
@@ -137,6 +137,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.529.1]- Center dialog if window is maximized.
+[.529.1]- Some missing Path_Sanitize() calls.
 [.527.1]- Finding np3 instance holding same file-path (only one instance).
 [.527.1]- Minor issues related to "autoload recent file" feature.
 [.527.1]- Center popup dialogs and show current line on word-wrap toggle.
@@ -233,6 +235,7 @@ FIXES:
 REMOVED:
 --------------------------------------------------------
 [.###.#]- .
+[.529.1]- Due to problems, remove "DrawAnimatedWindow" settings feature and rely on system window animation configuration.
 [.827.1]- Removal of the "es-MX" language to keep only the "es-ES" language (MUI).
 
 --------------------------------------------------------
