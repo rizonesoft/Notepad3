@@ -491,6 +491,7 @@ BEGIN
         END
         MENUITEM "Sa&ve Before Running Tools",      IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Calculate Tiny-E&xpressions",     IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "Enable Multiple Selection",       IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "&Remember"
         BEGIN

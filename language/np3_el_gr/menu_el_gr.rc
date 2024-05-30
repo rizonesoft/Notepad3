@@ -491,6 +491,7 @@ BEGIN
         END
         MENUITEM "Αποθήκευση π&ριν την εκτέλεση εργαλείων",   IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Υπολογισμός μικροσκοπικών εκ&φράσεων",      IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "Enable Multiple Selection",                   IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "Απομ&νημόνευση"
         BEGIN

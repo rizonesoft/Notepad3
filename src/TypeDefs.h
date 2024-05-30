@@ -605,6 +605,7 @@ typedef struct SETTINGS_T {
     int  IndentWidth;
     bool WarnInconsistentIndents;
     bool AutoDetectIndentSettings;
+    bool MultipleSelection;
     bool MarkLongLines;
     int  LongLinesLimit;
     int  LongLineMode;

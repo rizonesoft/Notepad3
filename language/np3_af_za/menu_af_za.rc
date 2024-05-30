@@ -491,6 +491,7 @@ BEGIN
         END
         MENUITEM "Stoor Voor L&opende Tools",                   IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Bereken Tiny-E&xpressions",                   IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "Enable Multiple Selection",                   IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "Ont&hou"
         BEGIN

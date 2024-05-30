@@ -490,7 +490,8 @@ BEGIN
             MENUITEM "Notepad3 종료(&X)",                  IDM_SET_ESCEXIT
         END
         MENUITEM "도구 실행 전에 저장(&V)",                 IDM_SET_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "작은 표현식 계산",           IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "작은 표현식 계산",                        IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "Enable Multiple Selection",             IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "기억(&R)"
         BEGIN

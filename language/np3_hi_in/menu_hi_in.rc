@@ -491,6 +491,7 @@ BEGIN
         END
         MENUITEM "टूल चलाने से पूर्व सहेजें (&V)",      IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "लघु व्यंजक की गणना करें (&X)",     IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "Enable Multiple Selection",   IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "स्मरण (&R)"
         BEGIN

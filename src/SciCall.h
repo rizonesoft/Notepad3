@@ -187,6 +187,7 @@ DeclareSciCallV1(SetMargins, SETMARGINS, int, nmarg);
 DeclareSciCallV1(SetPasteConvertEndings, SETPASTECONVERTENDINGS, bool, flag);
 DeclareSciCallV1(UsePopUp, USEPOPUP, int, option);
 // Multi Selection
+DeclareSciCallR0(GetMultipleSelection, GETMULTIPLESELECTION, bool);
 DeclareSciCallV1(SetMultipleSelection, SETMULTIPLESELECTION, bool, flag);
 DeclareSciCallV1(SetMultiPaste, SETMULTIPASTE, int, option);
 DeclareSciCallR0(GetAdditionalSelectionTyping, GETADDITIONALSELECTIONTYPING, bool);

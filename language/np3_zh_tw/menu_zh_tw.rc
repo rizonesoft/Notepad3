@@ -472,7 +472,7 @@ BEGIN
         MENUITEM "自動換行設定(&W)...",                         IDM_SET_WORDWRAPSETTINGS
         MENUITEM "長行標記設定(&O)...",                         IDM_SET_LONGLINESETTINGS
         MENUITEM "自動縮排(&I)",                                IDM_SET_AUTOINDENTTEXT
-        MENUITEM "自動關閉引號(&Q)",                        IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "自動關閉引號(&Q)",                            IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "自動關閉括弧(&B)",                            IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "自動關閉 HTML/XML 標記(&H)\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "自動完成單詞(&U)",                            IDM_SET_AUTOCOMPLETEWORDS
@@ -491,6 +491,7 @@ BEGIN
         END
         MENUITEM "執行工具前先儲存(&V)",                       IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "計算微小表達式(&x)",                         IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "Enable Multiple Selection",                IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "記憶(&R)"
         BEGIN

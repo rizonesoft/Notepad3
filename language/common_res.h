@@ -844,6 +844,7 @@
 #define IDM_SET_EVALTINYEXPRONSEL       42041
 #define IDM_SET_AUTOCLOSEBRACKETS       42042
 #define IDM_SET_AUTOCLOSEQUOTES         42043
+#define IDM_SET_MULTIPLE_SELECTION      42044
 
 #define IDM_HELP_ABOUT                  43000
 #define IDM_HELP_CMD                    43001

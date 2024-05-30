@@ -491,6 +491,7 @@ BEGIN
         END
         MENUITEM "Eszközök &futtatása előtt mentés", IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Mi&ni kifejezések kiszámítása",    IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "Enable Multiple Selection",        IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "&Emlékezés"
         BEGIN

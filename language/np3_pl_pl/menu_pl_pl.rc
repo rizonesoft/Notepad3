@@ -491,6 +491,7 @@ BEGIN
         END
         MENUITEM "Zapisz przed uruchomieniem narzędzi",             IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Przelicz niewielkie wyrażenia",                   IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "Enable Multiple Selection",                       IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "&Zapamiętaj"
         BEGIN
