@@ -491,6 +491,7 @@ BEGIN
         END
         MENUITEM "Spara innan verktyg används",                     IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Räkna ut Tiny-E&xpressions",                      IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "Enable Multiple Selection",                       IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "Kom ihåg"
         BEGIN

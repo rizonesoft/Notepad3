@@ -2541,7 +2541,7 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_SetScrollWidthTracking(true);
     // SciCall_SetScrollWidth(2000);
 
-    SciCall_SetMultipleSelection(true);
+    SciCall_SetMultipleSelection(Settings.MultipleSelection);
     SciCall_SetMultiPaste(SC_MULTIPASTE_EACH); // paste into rectangular selection
     SciCall_SetAdditionalSelectionTyping(true);
     SciCall_SetMouseSelectionRectangularSwitch(true);
@@ -4564,6 +4564,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, IDM_SET_ALTERNATE_WORD_SEPS, Settings.AccelWordNavigation);
     CheckCmd(hmenu, IDM_SET_AUTOSAVE_BACKUP, (Settings.AutoSaveOptions & (ASB_Periodic | ASB_Backup)));
 
+    CheckCmd(hmenu, IDM_SET_MULTIPLE_SELECTION, Settings.MultipleSelection);
+
     bool const dwr = (Settings.RenderingTechnology > SC_TECHNOLOGY_DEFAULT);
     //bool const gdi = ((Settings.RenderingTechnology % SC_TECHNOLOGY_DIRECTWRITEDC) == 0);
 
@@ -6107,6 +6109,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_SET_AUTOINDENTTEXT:
         Settings.AutoIndent = !Settings.AutoIndent;
+        break;
+
+
+    case IDM_SET_MULTIPLE_SELECTION:
+        Settings.MultipleSelection = !Settings.MultipleSelection;
+        SciCall_SetMultipleSelection(Settings.MultipleSelection);
         break;
 
 
@@ -12311,7 +12319,7 @@ bool ActivatePrevInst(const bool bSetForground)
     hwnd = NULL;
     if (EnumWindows(_EnumWndProc, (LPARAM)&hwnd)) {
         // Enabled
-        if (IsWindowEnabled(hwnd)) {
+        if (hwnd && IsWindowEnabled(hwnd)) {
 
             // Make sure the previous window won't pop up a change notification message
             //SendMessage(hwnd,WM_CHANGENOTIFYCLEAR,0,0);

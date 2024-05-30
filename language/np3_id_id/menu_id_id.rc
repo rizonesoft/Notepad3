@@ -491,6 +491,7 @@ BEGIN
         END
         MENUITEM "&Simpan sebelum Menggunakan Alat",                 IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Hitung &Ekspresi Kecil",                           IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "Enable Multiple Selection",                        IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "Meng&ingat"
         BEGIN

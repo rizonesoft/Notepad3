@@ -491,6 +491,7 @@ BEGIN
         END
         MENUITEM "Speichern vor Werkzeug Start",                IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Berechne Tiny-Expressions",                   IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "Erlaube Mehrfach Selektion",                  IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "&Erinnern an"
         BEGIN

@@ -491,6 +491,7 @@ BEGIN
         END
         MENUITEM "O&pslaan voor uitvoeren",                         IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Tiny-E&xpressies berekenen",                      IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "Enable Multiple Selection",                       IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "&Onthouden"
         BEGIN
