@@ -491,7 +491,7 @@ BEGIN
         END
         MENUITEM "執行工具前先儲存(&V)",                       IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "計算微小表達式(&x)",                         IDM_SET_EVALTINYEXPRONSEL
-        MENUITEM "Enable Multiple Selection",                IDM_SET_MULTIPLE_SELECTION
+        MENUITEM "啟用多重游標選定",                IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "記憶(&R)"
         BEGIN
