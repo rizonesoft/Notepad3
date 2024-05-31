@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.24.529.(build_#) (2024-05-29)
+Current BETA/RC Version 6.24.531.(build_#) (2024-05-31)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[.531.1]- New settings option to enable/disable feature Multiple Selection.
 [.307.1]- Option to choose between sub-line and whole-line selection on line-number margin click.
 [.111.1]- Allow selected lines movement for rectangular selection also.
 [.111.1]- Add detection of Windows 11 Version information.
