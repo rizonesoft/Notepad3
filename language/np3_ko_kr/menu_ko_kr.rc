@@ -139,7 +139,7 @@ BEGIN
         MENUITEM "인쇄(&P)...\tCtrl+P",                      IDM_FILE_PRINT
         MENUITEM SEPARATOR
         MENUITEM "속성(&T)...",                              IDM_FILE_PROPERTIES
-        MENUITEM "바탕화면 링크 만들기(&K)",                 IDM_FILE_CREATELINK
+        MENUITEM "바탕 화면 링크 만들기(&K)",                 IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
         MENUITEM "찾아보기(&B)...\tCtrl+M",           IDM_FILE_BROWSE
         POPUP "즐겨찾기(&F)"
@@ -491,7 +491,7 @@ BEGIN
         END
         MENUITEM "도구 실행 전에 저장(&V)",                 IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "작은 표현식 계산",                        IDM_SET_EVALTINYEXPRONSEL
-        MENUITEM "Enable Multiple Selection",             IDM_SET_MULTIPLE_SELECTION
+        MENUITEM "다중 선택 사용",             IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "기억(&R)"
         BEGIN
@@ -537,7 +537,7 @@ BEGIN
         END
         POPUP "고급 구성(&A)"
         BEGIN
-            MENUITEM "종료시 설정 저장(&X)",              IDM_SET_SAVESETTINGS
+            MENUITEM "종료 시 설정 저장(&X)",              IDM_SET_SAVESETTINGS
             MENUITEM "지금 설정 저장(&N)\tF7",             IDM_SET_SAVESETTINGSNOW
             MENUITEM "설정 파일 열기(&O)\tCtrl+F7",        CMD_OPENINIFILE
         END
