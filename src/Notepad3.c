@@ -1645,8 +1645,7 @@ static bool FindOtherInstance(HWND* phwnd, HPATHL hpthFileName)
 {
     Path_Reset(s_pthCheckFilePath, Path_Get(hpthFileName));
     *phwnd = NULL;
-    EnumWindows(_EnumWndProc2, (LPARAM)phwnd);
-    return (*phwnd != NULL);
+    return !EnumWindows(_EnumWndProc2, (LPARAM)phwnd) && (*phwnd != NULL);
 }
 
 
@@ -12317,7 +12316,7 @@ bool ActivatePrevInst(const bool bSetForground)
 
 
     hwnd = NULL;
-    if (EnumWindows(_EnumWndProc, (LPARAM)&hwnd)) {
+    if (!EnumWindows(_EnumWndProc, (LPARAM)&hwnd) && (hwnd != NULL)) {
         // Enabled
         if (hwnd && IsWindowEnabled(hwnd)) {
 
