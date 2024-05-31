@@ -491,7 +491,7 @@ BEGIN
         END
         MENUITEM "Sauvegarder avant d'exécuter les outils",             IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Calculer des mini-e&xpressions",                      IDM_SET_EVALTINYEXPRONSEL
-        MENUITEM "Enable Multiple Selection",                           IDM_SET_MULTIPLE_SELECTION
+        MENUITEM "Activer la sélection multiple",                       IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "Mémoriser"
         BEGIN
