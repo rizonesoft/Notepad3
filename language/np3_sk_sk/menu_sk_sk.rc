@@ -491,7 +491,7 @@ BEGIN
         END
         MENUITEM "Uložiť pred spustením &nástrojov",        IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Výpočet drobných výrazov",                IDM_SET_EVALTINYEXPRONSEL
-        MENUITEM "Enable Multiple Selection",               IDM_SET_MULTIPLE_SELECTION
+        MENUITEM "Povoliť viacnásobný výber",               IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "&Pamätať si"
         BEGIN
