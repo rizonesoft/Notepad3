@@ -289,8 +289,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Pen&genal Encoding\tCtrl+F8",                  IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
-            MENUITEM "Waktu/Tanggal (Pe&ndek)\tCtrl+F5",             IDM_EDIT_INSERT_SHORTDATE
-            MENUITEM "Waktu/Tanggal (Pan&jang)\tCtrl+Shift+F5",      IDM_EDIT_INSERT_LONGDATE
+            MENUITEM "Waktu/Tanggal (Si&ngkat)\tCtrl+F5",             IDM_EDIT_INSERT_SHORTDATE
+            MENUITEM "Waktu/Tanggal (Leng&kap)\tCtrl+Shift+F5",      IDM_EDIT_INSERT_LONGDATE
             MENUITEM "&Stempel Waktu Saat Ini",                      CMD_INSERT_TIMESTAMP
             MENUITEM "&Perbarui Stempel Waktu\tShift+F5",            CMD_UPDATE_TIMESTAMPS
         END
@@ -491,7 +491,7 @@ BEGIN
         END
         MENUITEM "&Simpan sebelum Menggunakan Alat",                 IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Hitung &Ekspresi Kecil",                           IDM_SET_EVALTINYEXPRONSEL
-        MENUITEM "Enable Multiple Selection",                        IDM_SET_MULTIPLE_SELECTION
+        MENUITEM "Aktifkan Multiseleksi",                            IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "Meng&ingat"
         BEGIN
