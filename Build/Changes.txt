@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.24.531.(build_#) (2024-05-31)
+Current BETA/RC Version 6.24.601.(build_#) (2024-06-01)
 ========================================================
 
 --------------------------------------------------------
@@ -138,6 +138,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.601.1]- Regression for "Reuse Window" flag.
 [.529.1]- Center dialog if window is maximized.
 [.529.1]- Some missing Path_Sanitize() calls.
 [.527.1]- Finding np3 instance holding same file-path (only one instance).
