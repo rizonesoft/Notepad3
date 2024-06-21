@@ -65,8 +65,8 @@ clone_folder: c:\projects\notepad3
 # set clone depth
 #clone_depth: 5                      # clone entire repository history if not defined
 
-# environment variables
-#environment:                        # Recent Git security releases break git clone on repositories using LFS
+# environment variables              # Recent Git security releases break git clone on repositories using LFS
+environment:
   GIT_CLONE_PROTECTION_ACTIVE: false
 #  my_var1: value1
 #  my_var2: value2
