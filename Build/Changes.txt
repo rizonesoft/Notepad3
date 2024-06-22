@@ -138,6 +138,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.###.#]- Fix and test of AppVeyor verification.
 [.601.1]- Regression for "Reuse Window" flag.
 [.529.1]- Center dialog if window is maximized.
 [.529.1]- Some missing Path_Sanitize() calls.
