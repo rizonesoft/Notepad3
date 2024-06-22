@@ -84,7 +84,7 @@ matrix:
 
 # scripts that run after cloning repository
 install:
-  - cinst autohotkey.install
+  - choco install autohotkey.install
 #  - ps: Update-AppveyorBuild -Version "2.$(Get-Date -format yy.Md).$env:appveyor_build_number"
   - ps: '& "$env:appveyor_build_folder\Version.ps1" -AppVeyorEnv'
 #  - ps: |
