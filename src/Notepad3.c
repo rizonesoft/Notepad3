@@ -5132,7 +5132,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         EditEnsureConsistentLineEndings(Globals.hwndEdit);
         EndWaitCursor();
         UpdateToolbar();
-        UpdateStatusbar(false);
     }
     break;
 
@@ -5147,6 +5146,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             //LimitNotifyEvents(EVM_UndoRedo);
             SciCall_Undo();
             //RestoreNotifyEvents();
+            UpdateToolbar();
         }
         break;
 
@@ -5156,6 +5156,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             //LimitNotifyEvents(EVM_UndoRedo);
             SciCall_Redo();
             //RestoreNotifyEvents();
+            UpdateToolbar();
         }
         break;
 
@@ -10020,6 +10021,7 @@ static void _UpdateTitlebarDelayed(const HWND hwnd)
 void UpdateToolbar()
 {
     _DelayUpdateToolbar(_MQ_STD);
+    _DelayUpdateStatusbar(_MQ_STD, false);
     _DelayUpdateTitlebar(_MQ_STD, Globals.hwndMain);
 }
 
