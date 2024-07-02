@@ -197,11 +197,12 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Zalomenie &stĺpca...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
+            MENUITEM "Odstrániť &duplicitné riadky\tCtrl+Alt+D", IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "Remo&ve Duplicate Lines",                  IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "Zlúčiť práz&dne riadky\tAlt+Y",            IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Zlúčiť nepopísané riadky\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
             MENUITEM "&Odstrániť prázdne riadky\tAlt+R",         IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Odstrániť &nepopísané riadky\tCtrl+Alt+B", IDM_EDIT_REMOVEBLANKLINES
-            MENUITEM "Odstrániť &duplicitné riadky\tCtrl+Alt+D", IDM_EDIT_REMOVEDUPLICATELINES
         END
         POPUP "&Výber"
         BEGIN

@@ -126,8 +126,8 @@ enum SortOrderMask {
     SORT_ASCENDING   = 0x001,
     SORT_DESCENDING  = 0x002,
     SORT_SHUFFLE     = 0x004,
-    SORT_MERGEDUP    = 0x008,
-    SORT_UNIQDUP     = 0x010,
+    SORT_UNITEDUP    = 0x008,
+    SORT_REMDUP      = 0x010,
     SORT_UNIQUNIQ    = 0x020,
     SORT_REMZEROLEN  = 0x040,
     SORT_REMWSPACELN = 0x080,
@@ -4605,9 +4605,9 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
 
 //=============================================================================
 //
-//  EditRemoveDuplicateLines()
+//  EditUniteDuplicateLines()
 //
-void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
+void EditUniteDuplicateLines(HWND hwnd, bool bRemoveEmptyLines, bool bRemoveLastDup)
 {
     UNREFERENCED_PARAMETER(hwnd);
 
@@ -4657,6 +4657,7 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
 
         DocLn iPrevLine = iCurLine;
         DocLn iCompareLine = iCurLine;
+        bool bFoundDup = false;
         while (++iCompareLine <= iEndLine) {
 
             DocPos const iCmpLnLen = Sci_GetNetLineLength(iCompareLine);
@@ -4666,6 +4667,7 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
                 const char* const pCompareLine = SciCall_GetRangePointer(iBegCmpLine, iCmpLnLen);
 
                 if ((iCurLnLen == iCmpLnLen) && IsSameCharSequence(pCurrentLine, pCompareLine, iCmpLnLen)) {
+                    bFoundDup = true;
                     DocPos const posPrev = SciCall_GetLineEndPosition(iPrevLine);
                     DocPos const posComp = SciCall_GetLineEndPosition(iCompareLine);
                     assert(posPrev != posComp);
@@ -4677,7 +4679,15 @@ void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines)
             }
             iPrevLine = iCompareLine;
         }
-        ++iCurLine;
+        if (bRemoveLastDup && bFoundDup) {
+            DocPos const posBeg = SciCall_PositionFromLine(iCurLine);
+            DocPos const posEnd = SciCall_PositionFromLine(iCurLine + 1);
+            SciCall_SetTargetRange(posBeg, posEnd);
+            SciCall_ReplaceTarget(0, "");
+        }
+        else {
+            ++iCurLine;
+        }
     }
 
     EndUndoTransAction();
@@ -5212,17 +5222,18 @@ int CmpStdLogicalRev(const void* s1, const void* s2)
 
 void EditSortLines(HWND hwnd, int iSortFlags)
 {
-    if (SciCall_IsSelectionEmpty()) {
-        return;    // no selection
+    DocPos const iResetPos = SciCall_GetCurrentPos();
+    bool const   bSelEmpty = SciCall_IsSelectionEmpty();
+    if (bSelEmpty) {
+        SciCall_SelectAll();
     }
-
     bool const bIsMultiSel = Sci_IsMultiOrRectangleSelection();
 
     DocPos const iSelStart = SciCall_GetSelectionStart(); //~iSelStart = SciCall_PositionFromLine(iLine);
     DocPos const iSelEnd = SciCall_GetSelectionEnd();
     //DocLn const iLine = SciCall_LineFromPosition(iSelStart);
 
-    DocPos iCurPos = bIsMultiSel ? SciCall_GetRectangularSelectionCaret() : SciCall_GetCurrentPos();
+    DocPos iCurPos = bIsMultiSel ? SciCall_GetRectangularSelectionCaret() : iResetPos;
     DocPos iAnchorPos = bIsMultiSel ? SciCall_GetRectangularSelectionAnchor() : SciCall_GetAnchor();
     DocPos iCurPosVS = bIsMultiSel ? SciCall_GetRectangularSelectionCaretVirtualSpace() : 0;
     DocPos iAnchorPosVS = bIsMultiSel ? SciCall_GetRectangularSelectionAnchorVirtualSpace() : 0;
@@ -5238,6 +5249,9 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     DocLn const _lnend = bIsMultiSel ? max_ln(iRcCurLine, iRcAnchorLine) : SciCall_LineFromPosition(iSelEnd);
     DocLn const iLineEnd = (iSelEnd <= SciCall_PositionFromLine(_lnend)) ? (_lnend - 1) : _lnend;
     if (iLineEnd <= iLineStart) {
+        if (bSelEmpty) {
+            SciCall_SetSel(iResetPos, iResetPos);
+        }
         return;
     }
 
@@ -5259,6 +5273,9 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
     SORTLINE* const pLines = AllocMem(sizeof(SORTLINE) * iLineCount, HEAP_ZERO_MEMORY);
     if (!pLines) {
+        if (bSelEmpty) {
+            SciCall_SetSel(iResetPos, iResetPos);
+        }
         return;
     }
 
@@ -5282,7 +5299,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
         if (iSortFlags & SORT_REMWSPACELN) {
             StrTrimA(pmsz, "\t\v \r\n"); // try clean line
             if (StrIsEmptyA(pmsz)) {
-                // white-space only - remove
+                // blank (white-space only) - remove
                 continue;
             }
         }
@@ -5369,17 +5386,17 @@ void EditSortLines(HWND hwnd, int iSortFlags)
         if (pLines[i].pwszLine && ((iSortFlags & SORT_SHUFFLE) || StrIsNotEmpty(pLines[i].pwszLine))) {
             bool bDropLine = false;
             if (!(iSortFlags & SORT_SHUFFLE)) {
-                if (iSortFlags & SORT_MERGEDUP || iSortFlags & SORT_UNIQDUP || iSortFlags & SORT_UNIQUNIQ) {
+                if (iSortFlags & SORT_UNITEDUP || iSortFlags & SORT_REMDUP || iSortFlags & SORT_UNIQUNIQ) {
                     if (i < (iLineCount - 1)) {
                         if (pFctStrCmp(pLines[i].pwszLine, pLines[i + 1].pwszLine) == 0) {
                             bLastDup = true;
-                            bDropLine = (iSortFlags & SORT_MERGEDUP || iSortFlags & SORT_UNIQDUP);
+                            bDropLine = (iSortFlags & SORT_UNITEDUP || iSortFlags & SORT_REMDUP);
                         } else {
-                            bDropLine = (!bLastDup && (iSortFlags & SORT_UNIQUNIQ)) || (bLastDup && (iSortFlags & SORT_UNIQDUP));
+                            bDropLine = (!bLastDup && (iSortFlags & SORT_UNIQUNIQ)) || (bLastDup && (iSortFlags & SORT_REMDUP));
                             bLastDup = false;
                         }
                     } else {
-                        bDropLine = (!bLastDup && (iSortFlags & SORT_UNIQUNIQ)) || (bLastDup && (iSortFlags & SORT_UNIQDUP));
+                        bDropLine = (!bLastDup && (iSortFlags & SORT_UNIQUNIQ)) || (bLastDup && (iSortFlags & SORT_REMDUP));
                         bLastDup = false;
                     }
                 }
@@ -5394,10 +5411,10 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     FreeMem(pmszBuf);
 
     // Handle empty (no whitespace or other char) lines (always at the end)
-    if (!(iSortFlags & SORT_UNIQDUP) || (iZeroLenLineCount == 0)) {
+    if (!(iSortFlags & SORT_REMDUP) || (iZeroLenLineCount == 0)) {
         StrTrimA(pmszResOffset, "\r\n"); // trim end only
     }
-    if (((iSortFlags & SORT_UNIQDUP) && (iZeroLenLineCount > 1)) || (iSortFlags & SORT_MERGEDUP)) {
+    if (((iSortFlags & SORT_REMDUP) && (iZeroLenLineCount > 1)) || (iSortFlags & SORT_UNITEDUP)) {
         iZeroLenLineCount = 1; // removes duplicate empty lines
     }
     if (!(iSortFlags & SORT_REMZEROLEN)) {
@@ -5427,7 +5444,10 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     SciCall_SetTargetRange(SciCall_PositionFromLine(iLineStart), SciCall_GetLineEndPosition(iLineEnd));
     Sci_ReplaceTargetTestChgHist(-1, pmszResult);
     FreeMem(pmszResult);
-    if (bIsMultiSel) {
+    if (bSelEmpty) {
+        SciCall_SetSel(iResetPos, iResetPos);
+    }
+    else if (bIsMultiSel) {
         EditSetSelectionEx(iAnchorPos, iCurPos, iAnchorPosVS, iCurPosVS);
     } else {
         EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
@@ -9315,10 +9335,10 @@ static INT_PTR CALLBACK EditSortDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         } else {
             CheckRadioButton(hwnd, 100, 102, 100);
         }
-        if (*piSortFlags & SORT_MERGEDUP) {
+        if (*piSortFlags & SORT_UNITEDUP) {
             CheckDlgButton(hwnd, 103, BST_CHECKED);
         }
-        if (*piSortFlags & SORT_UNIQDUP) {
+        if (*piSortFlags & SORT_REMDUP) {
             CheckDlgButton(hwnd, 104, BST_CHECKED);
             DialogEnableControl(hwnd, 103, false);
         }
@@ -9414,10 +9434,10 @@ CASE_WM_CTLCOLOR_SET:
                 *piSortFlags |= SORT_SHUFFLE;
             }
             if (IsButtonChecked(hwnd,103)) {
-                *piSortFlags |= SORT_MERGEDUP;
+                *piSortFlags |= SORT_UNITEDUP;
             }
             if (IsButtonChecked(hwnd,104)) {
-                *piSortFlags |= SORT_UNIQDUP;
+                *piSortFlags |= SORT_REMDUP;
             }
             if (IsButtonChecked(hwnd,105)) {
                 *piSortFlags |= SORT_UNIQUNIQ;

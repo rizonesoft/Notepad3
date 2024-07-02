@@ -694,7 +694,7 @@ BEGIN
     CONTROL         "&Rimuovi le linee duplicate.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
     CONTROL         "Rimuovi le linee &uniche.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
     CONTROL         "Rimuovi le linee &vuote.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
-    CONTROL         "Rimuovi le linee &white-space.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,110,10
+    CONTROL         "Rimuovi le linee &bianco.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,110,10
     CONTROL         "Con&sidera Maiuscole\\Minuscole.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,120,10
     CONTROL         "Ignora Maiuscole\\Minus&cole.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,110,10
     CONTROL         "Comparazione logica dei &numeri.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,120,10

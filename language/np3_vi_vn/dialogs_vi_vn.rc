@@ -694,7 +694,7 @@ BEGIN
     CONTROL         "&Remove duplicate lines.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
     CONTROL         "Remove &unique lines.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
     CONTROL         "Remove &empty lines.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
-    CONTROL         "Remove &white-space lines.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
+    CONTROL         "Remove &blank lines.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
     CONTROL         "Case &sensitive.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
     CONTROL         "&Case insensitive.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
     CONTROL         "Logical &number comparison.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10

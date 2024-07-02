@@ -83,7 +83,7 @@ void EditStripFirstCharacter(HWND hwnd);
 void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlanksOnly);
 void EditCompressBlanks();
 void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace);
-void EditRemoveDuplicateLines(HWND hwnd, bool bRemoveEmptyLines);
+void EditUniteDuplicateLines(HWND hwnd, bool bRemoveEmptyLines, bool bRemoveLastDup);
 void EditFocusMarkedLinesCmd(HWND hwnd, bool bCopy, bool bDelete);
 void EditWrapToColumn(HWND hwnd, DocPosU nColumn);
 void EditWrapToColumnEx(HWND hwnd, DocPosU nColumn);

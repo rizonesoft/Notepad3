@@ -1706,9 +1706,9 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 				// Zoom! We play with the font sizes in the styles.
 				// Number of steps/line is ignored, we just care if sizing up or down
 					if (linesToScroll < 0)
-					KeyCommand(Message::ZoomIn);
+						KeyCommand(Message::ZoomIn);
 					else
-					KeyCommand(Message::ZoomOut);
+						KeyCommand(Message::ZoomOut);
 				}
 				// send to main window (trigger zoom callTip or undo/redo history) !
 				::DefWindowProc(MainHWND(), iMessage, wParam, lParam);

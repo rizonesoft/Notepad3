@@ -197,11 +197,12 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Αναδίπλ&ωση στήλης...\tCtrl+Shift+W",                        IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
+            MENUITEM "Κατάργηση δ&ιπλότυπων γραμμών\tCtrl+Alt+D",                  IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "Remo&ve Duplicate Lines",                                    IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "Συγχών&ευση κενών γραμμών\tAlt+Y",                           IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Συγχώνευσ&η γραμμών με διαστήματα\tCtrl+Alt+Y",              IDM_EDIT_MERGEBLANKLINES
             MENUITEM "Κα&τάργηση κενών γραμμών\tAlt+R",                            IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Κατάργηση γρα&μμών με διαστήματα\tCtrl+Alt+B",               IDM_EDIT_REMOVEBLANKLINES
-            MENUITEM "Κατάργηση δ&ιπλότυπων γραμμών\tCtrl+Alt+D",                  IDM_EDIT_REMOVEDUPLICATELINES
         END
         POPUP "&Επιλογή"
         BEGIN
