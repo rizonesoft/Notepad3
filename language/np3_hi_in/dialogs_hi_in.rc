@@ -690,8 +690,8 @@ BEGIN
     CONTROL         "आरोही क्रमानुसार (&A)",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
     CONTROL         "अवरोही क्रमानुसार (&D)",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
     CONTROL         "रेखाओं का मिश्रण करें (&F)",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
-    CONTROL         "प्रतिरूपी रेखाएं एक में मिलाएं (&M)",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,110,10
-    CONTROL         "प्रतिरूपी रेखाएं हटाएं (&R)",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "&Unite duplicate lines (&U)",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,110,10
+    CONTROL         "&Remove duplicate lines (&R)",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
     CONTROL         "विशिष्ट रेखाएं हटाएं (&U)",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
     CONTROL         "रिक्त रेखाएं हटाएं (&E)",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
     CONTROL         "व्हाइट-स्पेस रेखाएं हटाएं (&W)",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10

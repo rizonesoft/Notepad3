@@ -690,7 +690,7 @@ BEGIN
     CONTROL         "Sorteer &ascending.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
     CONTROL         "Sorteer &descending.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
     CONTROL         "Skui&fel lyne.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
-    CONTROL         "Voeg &dubbele lyne saam.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "Verenig duplikaatlyne.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
     CONTROL         "&Verwyder dubbele lyne.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
     CONTROL         "Verwyder &unieke lyne.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
     CONTROL         "Verwyder &leë lyne.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10

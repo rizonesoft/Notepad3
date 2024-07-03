@@ -197,14 +197,14 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Ajus&ter le saut de ligne...\tCtrl+Maj+W",         IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
-            MENUITEM "Suppri&mer les lignes en double\tCtrl+Alt+D",      IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "&Unite Duplicate Lines\tCtrl+Alt+D",               IDM_EDIT_UNITEDUPLICATELINES
             MENUITEM "Remo&ve Duplicate Lines",                          IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "Fusio&nner les lignes vides\tAlt+Y",               IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Fusionner les lignes ""blanches""\tCtrl+Alt+Y",    IDM_EDIT_MERGEBLANKLINES
             MENUITEM "&Retirer les lignes vides\tAlt+R",                 IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Retirer les lignes ""blanches""\tCtrl+Alt+B",      IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "&Sélection"
+        POPUP "Adva&nced"
         BEGIN
             MENUITEM "&Placer en retrait",                               IDM_EDIT_INDENT
             MENUITEM "Défaire le retrait",                               IDM_EDIT_UNINDENT

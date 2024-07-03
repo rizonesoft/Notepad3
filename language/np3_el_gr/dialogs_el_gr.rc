@@ -690,8 +690,8 @@ BEGIN
     CONTROL         "&Αύξουσα ταξινόμηση",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
     CONTROL         "&Φθίνουσα ταξινόμηση",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
     CONTROL         "&Τυχαία σειρά γραμμών",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
-    CONTROL         "&Συγχώνευση διπλότυπων γραμμών",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,130,10
-    CONTROL         "Αφ&αίρεση διπλότυπων γραμμών",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,125,10
+    CONTROL         "&Unite duplicate lines",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,130,10
+    CONTROL         "&Remove duplicate lines",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,125,10
     CONTROL         "Αφαίρεση &μεμονωμένων γραμμών",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,130,10
     CONTROL         "Αφαίρεση κε&νών γραμμών",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
     CONTROL         "Αφαίρεση γραμμών με &λευκά διαστήματα",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,155,10

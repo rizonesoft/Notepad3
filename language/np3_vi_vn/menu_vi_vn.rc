@@ -204,7 +204,7 @@ BEGIN
             MENUITEM "&Remove Empty Lines\tAlt+R",          IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Remove &Blank Lines\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "Selectio&n"
+        POPUP "Adva&nced"
         BEGIN
             MENUITEM "&Indent",                              IDM_EDIT_INDENT
             MENUITEM "&Unindent",                            IDM_EDIT_UNINDENT
