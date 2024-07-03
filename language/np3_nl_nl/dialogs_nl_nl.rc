@@ -690,8 +690,8 @@ BEGIN
     CONTROL         "&Oplopend sorteren.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
     CONTROL         "&Aflopend sorteren.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
     CONTROL         "Regels &vermengen.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
-    CONTROL         "&Unite duplicate lines.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,110,10
-    CONTROL         "&Remove duplicate lines.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "Duplicaatregels &samenvoegen.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,110,10
+    CONTROL         "Duplicaatregels &verwijderen.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
     CONTROL         "&Unieke regels verwijderen.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
     CONTROL         "L&ege regels verwijderen.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
     CONTROL         "&Blanco regels verwijderen.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
