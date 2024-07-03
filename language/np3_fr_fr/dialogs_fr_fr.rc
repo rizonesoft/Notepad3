@@ -690,8 +690,8 @@ BEGIN
     CONTROL         "Tri &ascendant.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
     CONTROL         "Tri &descendant.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
     CONTROL         "Mélan&ger les lignes.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
-    CONTROL         "&Unite duplicate lines.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,120,10
-    CONTROL         "&Remove duplicate lines.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,110,10
+    CONTROL         "&Unifier les lignes en double.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,120,10
+    CONTROL         "&Retirer les lignes en double.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,110,10
     CONTROL         "Retirer les lignes &uniques.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
     CONTROL         "Retirer les lignes &vides.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
     CONTROL         "Retirer les lignes &blanches.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,120,10
