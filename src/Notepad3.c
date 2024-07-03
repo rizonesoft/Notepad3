@@ -4313,11 +4313,12 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_EDIT_COPYLINE, !mrs);
     EnableCmd(hmenu, IDM_EDIT_DELETELINE, !ro);
 
+    EnableCmd(hmenu, IDM_EDIT_UNITEDUPLICATELINES, !ro);
+    EnableCmd(hmenu, IDM_EDIT_REMOVEDUPLICATELINES, !ro);
     EnableCmd(hmenu, IDM_EDIT_MERGEBLANKLINES, !ro);
     EnableCmd(hmenu, IDM_EDIT_MERGEEMPTYLINES, !ro);
     EnableCmd(hmenu, IDM_EDIT_REMOVEBLANKLINES, !ro);
     EnableCmd(hmenu, IDM_EDIT_REMOVEEMPTYLINES, !ro);
-    EnableCmd(hmenu, IDM_EDIT_REMOVEDUPLICATELINES, !ro);
 
     EnableCmd(hmenu, IDM_EDIT_INDENT, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_UNINDENT, !se && !ro);
@@ -4333,7 +4334,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     EnableCmd(hmenu, IDM_EDIT_MODIFYLINES, !ro);
     EnableCmd(hmenu, IDM_EDIT_ALIGN, mls && !ro);
-    EnableCmd(hmenu, IDM_EDIT_SORTLINES, mls && !ro);
+    EnableCmd(hmenu, IDM_EDIT_SORTLINES, !ro);
 
     //EnableCmd(hmenu,IDM_EDIT_COLUMNWRAP,i /*&& IsWindowsNT()*/);
     EnableCmd(hmenu, IDM_EDIT_JOINLINES, !se && !ro);
@@ -5462,8 +5463,12 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
 
+    case IDM_EDIT_UNITEDUPLICATELINES:
+        EditUniteDuplicateLines(Globals.hwndEdit, false, false);
+        break;
+
     case IDM_EDIT_REMOVEDUPLICATELINES:
-        EditRemoveDuplicateLines(Globals.hwndEdit, false);
+        EditUniteDuplicateLines(Globals.hwndEdit, false, true);
         break;
 
 
