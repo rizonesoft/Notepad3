@@ -204,7 +204,7 @@ BEGIN
             MENUITEM "Lösche Leerzeilen\tAlt+R",                 IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Lösche Leerzeichen Zeilen\tCtrl+Alt+B",    IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "&Selektion"
+        POPUP "Adva&nced"
         BEGIN
             MENUITEM "&Text Einrückung",                         IDM_EDIT_INDENT
             MENUITEM "Text &Rückzug",                            IDM_EDIT_UNINDENT

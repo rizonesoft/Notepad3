@@ -690,8 +690,8 @@ BEGIN
     CONTROL         "У &прамым парадку",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,79,10
     CONTROL         "У &адваротным парадку",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,95,10
     CONTROL         "Перамя&шаць радкі",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,78,10
-    CONTROL         "А&б'яднаць дублікаты радкоў",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,115,10
-    CONTROL         "Вы&даліць дублікаты радкоў",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,111,10
+    CONTROL         "&Unite Duplicate Lines",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,115,10
+    CONTROL         "&Remove duplicate lines",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,111,10
     CONTROL         "Выдаліць &унікальныя радкі",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,108,10
     CONTROL         "Выдал&іць пустыя радкі",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,94,10
     CONTROL         "Выдаліць радкі толькі &з прабеламі",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,131,10

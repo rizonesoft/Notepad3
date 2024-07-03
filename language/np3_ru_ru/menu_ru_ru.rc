@@ -197,14 +197,14 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Разбить по &ширине...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
-            MENUITEM "Удалить одинаковые строки\tCtrl+Alt+D",       IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "&Unite Duplicate Lines\tCtrl+Alt+D",          IDM_EDIT_UNITEDUPLICATELINES
             MENUITEM "Remo&ve Duplicate Lines",                     IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "Объединить пустые строки\tAlt+Y",             IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Объединить строки с пробелами\tCtrl+Alt+Y",   IDM_EDIT_MERGEBLANKLINES
             MENUITEM "Удалить пустые строки\tAlt+R",                IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Удалить строки с пробелами\tCtrl+Alt+B",      IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "Выделение"
+        POPUP "Adva&nced"
         BEGIN
             MENUITEM "&Добавить отступ",                  IDM_EDIT_INDENT
             MENUITEM "&Удалить отступ",                   IDM_EDIT_UNINDENT

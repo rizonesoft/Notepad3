@@ -197,14 +197,14 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Columna &ajustada...\tCtrl+Shift+W",              IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
-            MENUITEM "Elimin&ar las líneas duplicadas\tCtrl+Alt+D",     IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "&Unite Duplicate Lines\tCtrl+Alt+D",              IDM_EDIT_UNITEDUPLICATELINES
             MENUITEM "Remo&ve Duplicate Lines",                         IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "Fusionar las líneas &vacías\tAlt+Y",              IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Fusionar las líneas con blanco\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
             MENUITEM "Eliminar las &líneas vacías\tAlt+R",              IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Eliminar las líneas con blanco\tCtrl+Alt+B",      IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "&Selección"
+        POPUP "Adva&nced"
         BEGIN
             MENUITEM "&Aumentar la sangría",                            IDM_EDIT_INDENT
             MENUITEM "&Reducir la sangría",                             IDM_EDIT_UNINDENT

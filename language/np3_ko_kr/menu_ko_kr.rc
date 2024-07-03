@@ -197,14 +197,14 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "열 바꿈(&W)...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
-            MENUITEM "중복 줄 제거(&O)\tCtrl+Alt+D",      IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Remo&ve Duplicate Lines",         IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "&Unite Duplicate Lines(&U)\tCtrl+Alt+D",      IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "Remo&ve Duplicate Lines(&V)",         IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "빈 줄 병합(&G)\tAlt+Y",             IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "공백 줄 병합(&K)\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
             MENUITEM "빈 줄 제거(&R)\tAlt+R",             IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "공백 줄 제거(&B)\tCtrl+Alt+B",      IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "선택(&N)"
+        POPUP "Adva&nced(&N)"
         BEGIN
             MENUITEM "들여쓰기(&I)",                           IDM_EDIT_INDENT
             MENUITEM "들여쓰기 취소(&U)",                           IDM_EDIT_UNINDENT

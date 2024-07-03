@@ -690,8 +690,8 @@ BEGIN
     CONTROL         "По &возрастанию",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,71,10
     CONTROL         "По &убыванию",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,62,10
     CONTROL         "Переме&шать строки",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,83,10
-    CONTROL         "&Объединить дублирующиеся строки",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,142,10
-    CONTROL         "У&далить дублирующиеся строки",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,129,10
+    CONTROL         "&Unite duplicate lines",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,142,10
+    CONTROL         "&Remove duplicate lines",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,129,10
     CONTROL         "Удалить у&никальные строки",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,114,10
     CONTROL         "Удалить &пустые строки",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,97,10
     CONTROL         "Удалить строки только с п&робелами",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,140,10
