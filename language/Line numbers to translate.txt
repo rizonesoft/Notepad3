@@ -25,7 +25,7 @@ March   2024: Line numbers to translate_2024-03 - No "Added or Modified" items i
 April   2024: Line numbers to translate_2024-04 - No "Added or Modified" items in April 2024
 May     2024: Line numbers to translate_2024-05 - https://workupload.com/file/gTG3tx8xeDn (2024-05-31)
 June    2024: Line numbers to translate_2024-06 - No "Added or Modified" items in June 2024
-July    2024: Line numbers to translate_2024-07 -  (2024-07-03)
+July    2024: Line numbers to translate_2024-07 - https://workupload.com/file/CrBAXqPmbRp (2024-07-03)
 August  2024: Line numbers to translate_2024-08 -  (2024-08-xx)
 Septemb 2024: Line numbers to translate_2024-09 -  (2024-09-xx)
 October 2024: Line numbers to translate_2024-10 -  (2024-10-xx)
