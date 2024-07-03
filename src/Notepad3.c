@@ -5343,9 +5343,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_DELETELINE: {
+        bool const bInLastLn = Sci_InLastLine();
         UserMarkerDeleteAll(Sci_GetCurrentLineNumber());
         SciCall_LineDelete();
-        if (Sci_InLastLine()) {
+        if (bInLastLn) {
             SciCall_DeleteBack();
             SciCall_Home();
         }
