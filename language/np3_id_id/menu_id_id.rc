@@ -197,14 +197,14 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Bungkus Baris (dari Ko&lom)...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
-            MENUITEM "&Unite Duplicate Lines\tCtrl+Alt+D",                   IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Remo&ve Duplicate Lines",                              IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "Sa&tukan Baris Duplikat\tCtrl+Alt+D",                  IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "Hapus Baris &Duplikat",                                IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "Gabungkan Baris Koson&g\tAlt+Y",                       IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Gabungka&n Baris Kosong (Ada Spasi)\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
             MENUITEM "Hapus Baris K&osong\tAlt+R",                           IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Hapus Baris &Kosong (Ada Spasi)\tCtrl+Alt+B",          IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "Adva&nced"
+        POPUP "Lan&jutan"
         BEGIN
             MENUITEM "&Indentasi",                                      IDM_EDIT_INDENT
             MENUITEM "&Batal Indentasi",                                IDM_EDIT_UNINDENT
