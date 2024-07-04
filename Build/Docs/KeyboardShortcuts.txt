@@ -8,7 +8,7 @@
 ================================================================================
 
 
-*** Keyboard Shortcuts for Notepad3 ***              date: 2023-01-31
+*** Keyboard Shortcuts for Notepad3 ***              date: 2024-07-03
 ---------------------------------------------------------------------
 
 
@@ -108,14 +108,14 @@
         Ctrl+J                Join Lines.
         Ctrl+Alt+J            Fuse Lines.
         Ctrl+Shift+J          Preserve Paragraphs.
+        Ctrl+Alt+D            Unite Duplicate Lines.
         Alt+Y                 Merge Empty Lines.
         Ctrl+Alt+Y            Merge Blank Lines.
         Alt+R                 Remove Empty Lines.
         Ctrl+Alt+B            Remove Blank Lines.
-        Ctrl+Alt+D            Remove Duplicate Lines.
 
-      Selection
-      ---------
+      Advanced
+      --------
         Ctrl+Shift+Q          Stream Comment.
         Ctrl+D                Duplicate Selection or Line.
         Alt+B                 Pad with Blanks.
