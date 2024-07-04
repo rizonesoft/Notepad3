@@ -419,11 +419,11 @@ msgstr "Pysäy&tä"
 
 #. Resource IDs: (1, 1016)
 msgid "Search"
-msgstr "Etsi"
+msgstr "Haku"
 
 #. Resource IDs: (1026)
 msgid "Search &for:"
-msgstr "Haettava:"
+msgstr "Haetta&va:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
@@ -506,11 +506,11 @@ msgstr "Tulosteksti korvaamisen jälkeen:"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF-8"
-msgstr "UTF 8-käsittely"
+msgstr "Käsittele tiedostoja UTF-8-muodossa"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr "Binääri-käsittely"
+msgstr "Käsittele tiedostoja binäärisinä"
 
 #. Resource IDs: (172)
 #, c-format
@@ -661,7 +661,7 @@ msgstr "Notepad3:n grepWin(NP3)-mod Stefan Küngin hieno työkalu!"
 
 #. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
-msgstr "Samanaikaisten tekijöiden maks."
+msgstr "Samanaikaisten tekijöiden maks. määrä"
 
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
