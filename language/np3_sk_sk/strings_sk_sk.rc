@@ -122,7 +122,7 @@ BEGIN
     IDS_MUI_FAVORITES       "Vyberte adresár s odkazmi na vaše obľúbené súbory."
     IDS_MUI_BACKSLASHHELP   "Transformácie spätného lomítka\n\n\\a\tVýstraha (BEL, Ascii 7)\n\\b\tKrok vzad (BS, Ascii 8)\n\\f\tInformačný formulár (FF, Ascii 12)\n\\n\tNový riadok (LF, Ascii 10)\n\\r\tMedzera (CR, Ascii 13)\n\\t\tVodorovná karta (HT, Ascii 9)\n\\v\tZvislá karta (VT, Ascii 11)\n\\0oo\tOktálna hodnota\n\\u####\tHexadecimálna hodnota\n\\xhh\tHexadecimálna hodnota\n\\\\\tSpätné lomítko"
     IDS_MUI_REGEXPHELP      "Syntax zhody RegExp (viac riadkov)\n\n.\tZodpovedá ľubovoľnému znaku\n^\tPrázdny reťazec hneď po novom riadku\n$\tPrázdny reťazec tesne pred koncom riadku\n\\<\tZačiatok slova\n\\>\tKoniec slova\n\\b\tHranica slova\n[...]\tSada znakov ([abc]) alebo rozsah ([a-z])\n[^...]\tZnaky NIE sú v sade alebo rozsahu\n\\d\tAkákoľvek desatinná číslica\n\\D\tAkýkoľvek znak bez číslice\n\\s\tAkýkoľvek znak medzery\n\\S\tNie je znak medzery\n\\w\tAkýkoľvek znak ako ""slovo""\n\\W\tAkýkoľvek znak ktorý ""nie je slovo""\n\\x\tÚnikový znak s iným zvláštnym významom\n\\xHH\tZnak so šestnástkovým kódom HH\n?\tZhody predchádzajúce 0 alebo 1-krát\n*\tZhody predchádzajúce 0 alebo viackrát\n+\tZhody predchádzajúce 1 alebo viackrát\n*? or +?\tNespravodlivé porovnávanie kvantifikátorov ""?"" a ""+""\n(\tZačiatok regiónu\n)\tKoniec regiónu\n\\n\tPri zámene odkazuje na región (n je 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Vyhľadávanie zástupných znakov\n\n*\tZodpovedá nule alebo viacerým znakom.\n?\tZhoduje sa presne s jedným znakom."
+    IDS_MUI_WILDCARDHELP    "Vyhľadávanie zástupných znakov\n\n*\tZodpovedá nule alebo viacerým znakom\n?\tZhoduje sa presne s jedným znakom"
 END
 
 STRINGTABLE
