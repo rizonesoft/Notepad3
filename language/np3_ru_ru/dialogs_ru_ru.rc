@@ -158,7 +158,7 @@ CAPTION "Выполнить"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_MUI_RUN,IDC_STATIC,10,7,21,20
-    LTEXT           "Введите название программы, папки, документа или ресурса Интернета, которые требуется открыть.",IDC_STATIC,39,7,189,17
+    LTEXT           "Введите название программы, папки, документа или ресурса Интернета, которые требуется открыть",IDC_STATIC,39,7,189,17
     EDITTEXT        IDC_COMMANDLINE,10,35,214,13,ES_AUTOHSCROLL
     PUSHBUTTON      "Обзор...",IDC_SEARCHEXE,169,69,55,16
     DEFPUSHBUTTON   "OK",IDOK,53,69,55,16
@@ -187,7 +187,7 @@ BEGIN
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,181,128
     CONTROL         "Как &резервная при ошибке определения",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
-    GROUPBOX        "Определение кодировки: ",IDC_STATIC2,7,58,197,88,0,WS_EX_TRANSPARENT
+    GROUPBOX        "Определение кодировки:",IDC_STATIC2,7,58,197,88,0,WS_EX_TRANSPARENT
     CONTROL         "Открывать 7-битные файлы A&SCII как UTF-8",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,169,10
     CONTROL         "Только &надежные результаты определения",IDC_RELIABLE_DETECTION_RES,
@@ -263,7 +263,7 @@ BEGIN
     CONTROL         "&Сохранять историю открытых файлов",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,150,10
     CONTROL         "&Восстанавливать положение каретки",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,140,10
     CONTROL         "&Запоминать поисковые запросы",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,140,10
-    CONTROL         "&Автозагрузка последнего файла при старте.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,165,10
+    CONTROL         "&Автозагрузка последнего файла при старте",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,165,10
     CONTROL         "Убрать", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
     DEFPUSHBUTTON   "OK",IDOK,154,158,50,14,WS_DISABLED
     PUSHBUTTON      "Закрыть",IDCANCEL,212,158,50,14
@@ -276,7 +276,7 @@ CAPTION "Уведомление об изменении файла"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "&Нет", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
-    CONTROL         "&Индикатор (тихо).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
+    CONTROL         "&Индикатор (тихо)", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
     CONTROL         "&Показать сообщение", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
     CONTROL         "&Автообновление", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
     CONTROL         "&Исключительная блокировка", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,120,10
@@ -307,7 +307,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "  ☰   Схема"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,239
+    CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,250
     LTEXT           "",IDC_STYLELABEL_ROOT,181,141,279,8
     EDITTEXT        IDC_STYLEEDIT_ROOT,181,152,279,12,ES_AUTOHSCROLL
     LTEXT           "",IDC_STYLELABEL,181,171,279,8
@@ -357,14 +357,14 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Разные отступы"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Статистика по строкам: ",IDC_STATIC,7,7,217,48,WS_GROUP
+    GROUPBOX        "Статистика по строкам:",IDC_STATIC,7,7,217,48,WS_GROUP
     LTEXT           "Табуляция[%s]:",IDC_INDENT_WIDTH_TAB,40,18,55,8
     LTEXT           "Пробелы[%s]:",IDC_INDENT_WIDTH_SPC,42,30,55,8
     LTEXT           "Смешанные[x]:",IDC_STATIC3,33,42,55,8
     RTEXT           "%s",IDC_INDENT_SUM_TAB,90,18,46,8
     RTEXT           "%s",IDC_INDENT_SUM_SPC,90,30,46,8
     RTEXT           "%s",IDC_INDENT_SUM_MIX,90,42,46,8
-    GROUPBOX        "Переформатировать все? ",IDC_STATIC2,7,60,217,56,WS_GROUP
+    GROUPBOX        "Переформатировать все?",IDC_STATIC2,7,60,217,56,WS_GROUP
     CONTROL         "&Табуляция",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,52,10
     CONTROL         "&Пробелы",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,52,10
     RTEXT           "Cтрок с нестандартным размером: %s",IDC_INDENT_TAB_MODX,71,72,145,8
@@ -536,7 +536,7 @@ BEGIN
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,17,8
     LTEXT           "Последовательное число (с нуля)",IDC_STATIC5,57,92,125,8
     LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,35,8
-    LTEXT           "${<expr>} определяет матем. формулы.",IDC_STATIC6,57,102,132,8
+    LTEXT           "${<expr>} определяет матем. формулы",IDC_STATIC6,57,102,132,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 210, 70
@@ -619,7 +619,7 @@ BEGIN
     DEFPUSHBUTTON   "&Да",IDOK,7,70,50,14
     PUSHBUTTON      "&Нет",IDNO,61,70,50,14
     PUSHBUTTON      "&Отмена",IDCANCEL,115,70,50,14
-    CONTROL         "Н&е показывать снова.",IDC_INFOBOXCHECK,
+    CONTROL         "Н&е показывать снова",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,54,140,10
 END
 
@@ -645,7 +645,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Don't display this message again",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
     DEFPUSHBUTTON   "&Retry",IDRETRY,186,70,50,14
     PUSHBUTTON      "&Abort",IDABORT, 130, 70, 50, 14
@@ -660,7 +660,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Don't display this message again",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
     DEFPUSHBUTTON   "&Try Again",IDRETRY,186,70,50,14
     PUSHBUTTON      "&Cancel", IDCANCEL, 130, 70, 50, 14
@@ -675,7 +675,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,53,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Don't display this message again",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
     DEFPUSHBUTTON   "&Reload",IDRETRY,186,82,50,14
     PUSHBUTTON      "&Cancel", IDCANCEL, 130, 82, 50, 14
@@ -868,13 +868,13 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Автосохранение и резервные копии"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-GROUPBOX        "Автосохранение: ", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
+GROUPBOX        "Автосохранение:", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
 AUTOCHECKBOX    "Включить автосохранение", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
 LTEXT           "Интервал [сек]:", IDC_STATIC2, 14, 30, 108, 10, SS_RIGHT
 EDITTEXT        IDC_AUTOSAVE_INTERVAL, 130, 28, 40, 12, ES_AUTOHSCROLL
 AUTOCHECKBOX    "Сохранять при переходе системы в сон", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
 AUTOCHECKBOX    "Сохранять при выключении системы", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
-GROUPBOX        "Резервное копирование: ", IDC_STATIC3, 7, 74, 170, 66, 0, WS_EX_TRANSPARENT
+GROUPBOX        "Резервное копирование:", IDC_STATIC3, 7, 74, 170, 66, 0, WS_EX_TRANSPARENT
 AUTOCHECKBOX    "Включить резервное копирование", IDC_AS_BACKUP_ENABLE, 14, 85, 155, 10, WS_GROUP | WS_TABSTOP
 AUTOCHECKBOX    "Резервная копия при автосохранении", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 155, 10, WS_GROUP | WS_TABSTOP
 AUTOCHECKBOX    "Резервные копии рядом", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP

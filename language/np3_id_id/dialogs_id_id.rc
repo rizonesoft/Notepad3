@@ -104,7 +104,7 @@ BEGIN
     CONTROL         "Mode W&ildcard",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,65,10
     CONTROL         "Mode transparan ketika tidak fokus",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,134,10
     DEFPUSHBUTTON   "Cari B&erikutnya",IDOK,211,7,55,14
-    PUSHBUTTON      "Cari &Sebelumn.",IDC_FINDPREV,211,24,55,14
+    PUSHBUTTON      "Cari &Sebelumn",IDC_FINDPREV,211,24,55,14
     PUSHBUTTON      "Tutup",IDCANCEL,211,99,55,14
     CONTROL         "<a>Buka Pengganti (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,105,84,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
@@ -138,7 +138,7 @@ BEGIN
     CONTROL         "Mode W&ildcard",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,65,10
     CONTROL         "Mode transparan ketika tidak fokus",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,134,10
     DEFPUSHBUTTON   "Cari B&erikutnya",IDOK,211,7,55,14
-    PUSHBUTTON      "Cari &Sebelumn.",IDC_FINDPREV,211,23,55,14
+    PUSHBUTTON      "Cari &Sebelumn",IDC_FINDPREV,211,23,55,14
     PUSHBUTTON      "&Ganti",IDC_REPLACE,211,43,55,14
     PUSHBUTTON      "Dalam Se&leksi",IDC_REPLACEINSEL,211,59,55,14
     PUSHBUTTON      "Ganti &Semua",IDC_REPLACEALL,211,75,55,14
@@ -158,7 +158,7 @@ CAPTION "Jalankan"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_MUI_RUN,IDC_STATIC,10,7,21,20
-    LTEXT           "Ketikkan nama program, folder, dokumen atau sumber dari internet. Windows akan membuka itu nanti.",IDC_STATIC,39,7,190,17
+    LTEXT           "Ketikkan nama program, folder, dokumen atau sumber dari internet. Windows akan membuka itu nanti",IDC_STATIC,39,7,190,17
     EDITTEXT        IDC_COMMANDLINE,10,35,208,13,ES_AUTOHSCROLL
     PUSHBUTTON      "Telusuri...",IDC_SEARCHEXE,163,69,55,16
     DEFPUSHBUTTON   "OK",IDOK,47,69,55,16
@@ -172,7 +172,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Klik disini untuk menentukan tempat direktori aplikasi favorit Anda.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Klik disini untuk menentukan tempat direktori aplikasi favorit Anda",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Batal",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
@@ -185,20 +185,20 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Encoding Baku (berkas baru):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
-    CONTROL         "Gunakan sebagai &cadangan baku Encoding.",IDC_USEASREADINGFALLBACK,
+    CONTROL         "Gunakan sebagai &cadangan baku Encoding",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
-    GROUPBOX        "Deteksi Encoding: ",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
-    CONTROL         "Buka berkas 7-bit &ASCII di mode UTF-8.",IDC_ASCIIASUTF8,
+    GROUPBOX        "Deteksi Encoding:",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
+    CONTROL         "Buka berkas 7-bit &ASCII di mode UTF-8",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,140,10
-    CONTROL         "Gunakan hasil &deteksi yang andal.",IDC_RELIABLE_DETECTION_RES,
+    CONTROL         "Gunakan hasil &deteksi yang andal",IDC_RELIABLE_DETECTION_RES,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,122,10
-    CONTROL         "Buka berkas 8-bit *.&nfo/diz di mode DOS-437.",IDC_NFOASOEM,
+    CONTROL         "Buka berkas 8-bit *.&nfo/diz di mode DOS-437",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,165,10
-    CONTROL         "Mengurai berkas &tag encoding.",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "Mengurai berkas &tag encoding",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,126,10
-    CONTROL         "Lakukan analisis Halaman Kode &ANSI.",IDC_NOANSICPDETECTION,
+    CONTROL         "Lakukan analisis Halaman Kode &ANSI",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,140,10
-    CONTROL         "Aktifkan deteksi &UNICODE.",IDC_NOUNICODEDETECTION,
+    CONTROL         "Aktifkan deteksi &UNICODE",IDC_NOUNICODEDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
     PUSHBUTTON      "Batal",IDCANCEL,140,151,50,14
@@ -211,11 +211,11 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "&Mode akhir baris baku:",IDC_STATIC,7,7,116,8
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Tampilkan peringatan inkonsistensi akhir baris.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "Tampilkan peringatan inkonsistensi akhir baris",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
-    CONTROL         "&Pastikan konsistensi akhir baris saat disimpan.",IDC_CONSISTENT_EOLS,
+    CONTROL         "&Pastikan konsistensi akhir baris saat disimpan",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,182,10
-    CONTROL         "&Hapus baris kosong saat disimpan.",IDC_AUTOSTRIPBLANKS,
+    CONTROL         "&Hapus baris kosong saat disimpan",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,173,10
     DEFPUSHBUTTON   "OK",IDOK,139,7,50,14
     PUSHBUTTON      "Batal",IDCANCEL,139,24,50,14
@@ -230,14 +230,14 @@ BEGIN
     RTEXT           "CR+LF:",IDC_STATIC2,10,18,34,8
     RTEXT           "CR:",IDC_STATIC3,10,28,34,8
     RTEXT           "LF:",IDC_STATIC4,10,38,34,8
-    LTEXT           "%s baris.",IDC_EOL_SUM_CRLF,48,18,136,8
-    LTEXT           "%s baris.",IDC_EOL_SUM_CR,48,28,136,8
-    LTEXT           "%s baris.",IDC_EOL_SUM_LF,48,38,136,8
+    LTEXT           "%s baris",IDC_EOL_SUM_CRLF,48,18,136,8
+    LTEXT           "%s baris",IDC_EOL_SUM_CR,48,28,136,8
+    LTEXT           "%s baris",IDC_EOL_SUM_LF,48,38,136,8
     LTEXT           "Apakah Anda ingin menormalkan akhir baris?",IDC_STATIC5,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Ya",IDOK,138,63,50,14
     PUSHBUTTON      "&Tidak",IDCANCEL,138,80,50,14
-    CONTROL         "&Selalu tampilkan dialog ini.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "&Selalu tampilkan dialog ini",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -260,10 +260,10 @@ CAPTION "Berkas Terkini"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
-    CONTROL         "&Simpan daftar berkas terakhir.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,120,10
-    CONTROL         "&Pertahankan posisi caret.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
-    CONTROL         "&Ingat pola pencarian.",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,120,10
-    CONTROL         "&Muat otomatis berkas teratas saat mulai.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,160,10
+    CONTROL         "&Simpan daftar berkas terakhir",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,120,10
+    CONTROL         "&Pertahankan posisi caret",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
+    CONTROL         "&Ingat pola pencarian",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,120,10
+    CONTROL         "&Muat otomatis berkas teratas saat mulai",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,160,10
     CONTROL         "Buang", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
     DEFPUSHBUTTON   "OK",IDOK,154,158,50,14,WS_DISABLED
     PUSHBUTTON      "Tutup",IDCANCEL,212,158,50,14
@@ -275,13 +275,13 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Notifikasi Perubahan Berkas"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "&Tidak ada.", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
-    CONTROL         "&Indikator (senyap).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
-    CONTROL         "Tampilkan &pesan.", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&Muat Ulang Langsung.", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
-    CONTROL         "&Kunci Berkas Eksklusif.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,99,10
-    CONTROL         "&Atur ulang jika berkas baru dibuka.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,125,10
-    CONTROL         "&Catatan Pemantauan.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
+    CONTROL         "&Tidak ada", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
+    CONTROL         "&Indikator (senyap)", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
+    CONTROL         "Tampilkan &pesan", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
+    CONTROL         "&Muat Ulang Langsung", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
+    CONTROL         "&Kunci Berkas Eksklusif", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,99,10
+    CONTROL         "&Atur ulang jika berkas baru dibuka", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,125,10
+    CONTROL         "&Catatan Pemantauan", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
     LTEXT           "Interval Cek Berkas [md]",IDC_LINE_TEXT,7,102,120,10
     EDITTEXT        IDC_FILE_CHECK_INTERVAL,127,100,50,12,ES_AUTOHSCROLL | ES_NUMBER
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
@@ -294,9 +294,9 @@ CAPTION "Pilih Skema Sintaks"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,130
-    CONTROL         "Setel skema terpilih sebagai &baku.",IDC_DEFAULTSCHEME,
+    CONTROL         "Setel skema terpilih sebagai &baku",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,127,10
-    CONTROL         "&Otomatis pilih dari ektensi berkas.",IDC_AUTOSELECT,
+    CONTROL         "&Otomatis pilih dari ektensi berkas",IDC_AUTOSELECT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,127,10
     DEFPUSHBUTTON   "OK",IDOK,53,173,50,14,WS_DISABLED
     PUSHBUTTON      "Batal",IDCANCEL,108,173,50,14
@@ -307,7 +307,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "  ☰   Skema"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,239
+    CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,250
     LTEXT           "",IDC_STYLELABEL_ROOT,181,141,279,8
     EDITTEXT        IDC_STYLEEDIT_ROOT,181,152,279,12,ES_AUTOHSCROLL
     LTEXT           "",IDC_STYLELABEL,181,171,279,8
@@ -340,13 +340,13 @@ BEGIN
     EDITTEXT        IDC_TAB_WIDTH,67,7,30,14,ES_AUTOHSCROLL
     LTEXT           "Ukuran &indentasi:",IDC_STATIC2,7,30,58,8
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
-    CONTROL         "Sisipkan tab sebagai &spasi.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
-    CONTROL         "Tombol Ta&b untuk format ulang indentasi.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
-    CONTROL         "Tombol &Hapus untuk format ulang indentasi.",IDC_BACKTAB_INDENTS,
+    CONTROL         "Sisipkan tab sebagai &spasi",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
+    CONTROL         "Tombol Ta&b untuk format ulang indentasi",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "Tombol &Hapus untuk format ulang indentasi",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,158,10
-    CONTROL         "&Peringati inkonsisten indentasi.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Peringati inkonsisten indentasi",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
-    CONTROL         "&Otomatis deteksi Tab atau Indentasi Spasi.",IDC_AUTO_DETECT_INDENTS,
+    CONTROL         "&Otomatis deteksi Tab atau Indentasi Spasi",IDC_AUTO_DETECT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Batal",IDCANCEL,117,27,50,14
@@ -357,21 +357,21 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Inkonsisten Indentasi"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Statistik: ",IDC_STATIC,7,7,182,48,WS_GROUP
+    GROUPBOX        "Statistik:",IDC_STATIC,7,7,182,48,WS_GROUP
     LTEXT           "Tab[%s]:",IDC_INDENT_WIDTH_TAB,32,18,30,8
     LTEXT           "Spasi[%s]:",IDC_INDENT_WIDTH_SPC,32,30,45,8
     LTEXT           "Campuran[x]:",IDC_STATIC3,32,42,45,8
     RTEXT           "%s baris",IDC_INDENT_SUM_TAB,84,18,52,8
     RTEXT           "%s baris",IDC_INDENT_SUM_SPC,84,30,52,8
     RTEXT           "%s baris",IDC_INDENT_SUM_MIX,84,42,52,8
-    GROUPBOX        "Indentasikan Ulang Semua? ",IDC_STATIC2,7,60,182,56,WS_GROUP
+    GROUPBOX        "Indentasikan Ulang Semua?",IDC_STATIC2,7,60,182,56,WS_GROUP
     CONTROL         "&Tab",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
     CONTROL         "&Spasi",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,32,10
     RTEXT           "%s baris dengan indentasi tidak teratur",IDC_INDENT_TAB_MODX,50,72,130,8
     RTEXT           "%s baris dengan indentasi tidak teratur",IDC_INDENT_SPC_MODX,50,84,130,8
     PUSHBUTTON      "&Ya",IDOK,80,98,50,14
     PUSHBUTTON      "&Tidak",IDCANCEL,134,98,50,14
-    CONTROL         "&Selalu tampilkan dialog ini.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Selalu tampilkan dialog ini",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
@@ -382,8 +382,8 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "&Batas karakter garis:",IDC_STATIC,7,10,80,8
     EDITTEXT        IDC_MULTIEDGELINE,92,7,180,14,ES_AUTOHSCROLL
-    CONTROL         "Tampilkan &garis.",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
-    CONTROL         "Ubah warna &latar.",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
+    CONTROL         "Tampilkan &garis",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
+    CONTROL         "Ubah warna &latar",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
     DEFPUSHBUTTON   "OK",IDOK,166,34,50,14
     PUSHBUTTON      "Batal",IDCANCEL,222,34,50,14
 END
@@ -455,7 +455,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
-    LTEXT           "Klik disini untuk menentukan tempat direktori berkas favorit Anda.",IDC_FAVORITESDESCR,26,83,132,18
+    LTEXT           "Klik disini untuk menentukan tempat direktori berkas favorit Anda",IDC_FAVORITESDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Batal",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
@@ -528,15 +528,15 @@ BEGIN
     PUSHBUTTON      "Batal",IDCANCEL,125,24,50,14
     LTEXT           "${L}",IDC_MODLNS_DOCLN_CANONIC,7,72,14,8
     LTEXT           "${0L}",IDC_MODLNS_DOCLN_ZEROFLD,30,72,18,8
-    LTEXT           "Nomor baris dokumen.",IDC_STATIC3,57,72,80,8
+    LTEXT           "Nomor baris dokumen",IDC_STATIC3,57,72,80,8
     LTEXT           "${N}",IDC_MODLNS_CNTLN1_CANONIC,7,82,15,8
     LTEXT           "${0N}",IDC_MODLNS_CNTLN1_ZEROFLD,30,82,19,8
-    LTEXT           "Nomor berkelanjutan.",IDC_STATIC4,57,82,80,8
+    LTEXT           "Nomor berkelanjutan",IDC_STATIC4,57,82,80,8
     LTEXT           "${I}",IDC_MODLNS_CNTLN0_CANONIC,7,92,13,8
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,17,8
-    LTEXT           "Nomor berkelanjutan (dari nol).",IDC_STATIC5,57,92,109,8
+    LTEXT           "Nomor berkelanjutan (dari nol)",IDC_STATIC5,57,92,109,8
     LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,35,8
-    LTEXT           "${<expr>} untuk matematika.",IDC_STATIC6,57,102,132,8
+    LTEXT           "${<expr>} untuk matematika",IDC_STATIC6,57,102,132,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
@@ -576,7 +576,7 @@ BEGIN
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     DEFPUSHBUTTON   "&OK",IDOK,187,50,50,14
-    CONTROL         "&Jangan tampilkan pesan ini lagi.",IDC_INFOBOXCHECK,
+    CONTROL         "&Jangan tampilkan pesan ini lagi",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -590,7 +590,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     PUSHBUTTON      "&Ya",IDYES,131,50,50,14
     PUSHBUTTON      "&Tidak",IDNO,187,50,50,14
-    CONTROL         "&Jangan tampilkan pesan ini lagi.",IDC_INFOBOXCHECK,
+    CONTROL         "&Jangan tampilkan pesan ini lagi",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -604,7 +604,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     DEFPUSHBUTTON   "&OK",IDOK,131,50,50,14
     PUSHBUTTON      "&Batal",IDCANCEL,187,50,50,14
-    CONTROL         "&Jangan tampilkan pesan ini lagi.",IDC_INFOBOXCHECK,
+    CONTROL         "&Jangan tampilkan pesan ini lagi",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -619,7 +619,7 @@ BEGIN
     DEFPUSHBUTTON   "&Ya",IDOK,7,70,50,14
     PUSHBUTTON      "&Tidak",IDNO,61,70,50,14
     PUSHBUTTON      "&Batal",IDCANCEL,115,70,50,14
-    CONTROL         "&Jangan tampilkan pesan ini lagi.",IDC_INFOBOXCHECK,
+    CONTROL         "&Jangan tampilkan pesan ini lagi",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,54,140,10
 END
 
@@ -633,7 +633,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     DEFPUSHBUTTON   "&Coba Lagi",IDRETRY,131,50,50,14
     PUSHBUTTON      "&Batal",IDCANCEL,187,50,50,14
-    CONTROL         "&Jangan tampilkan pesan ini lagi.",IDC_INFOBOXCHECK,
+    CONTROL         "&Jangan tampilkan pesan ini lagi",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -645,7 +645,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Jangan tampilkan pesan ini lagi.",IDC_INFOBOXCHECK,
+    CONTROL         "&Jangan tampilkan pesan ini lagi",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
     DEFPUSHBUTTON   "&Coba Lagi",IDRETRY,186,70,50,14
     PUSHBUTTON      "&Batalkan",IDABORT, 130, 70, 50, 14
@@ -660,7 +660,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Jangan tampilkan pesan ini lagi.",IDC_INFOBOXCHECK,
+    CONTROL         "&Jangan tampilkan pesan ini lagi",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
     DEFPUSHBUTTON   "&Coba Lagi",IDRETRY,186,70,50,14
     PUSHBUTTON      "&Batal", IDCANCEL, 130, 70, 50, 14
@@ -675,7 +675,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,53,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Jangan tampilkan pesan ini lagi.",IDC_INFOBOXCHECK,
+    CONTROL         "&Jangan tampilkan pesan ini lagi",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
     DEFPUSHBUTTON   "&Muat Ulang",IDRETRY,186,82,50,14
     PUSHBUTTON      "&Batal", IDCANCEL, 130, 82, 50, 14
@@ -687,19 +687,19 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Urutkan Baris"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "Urutkan me&naik.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
-    CONTROL         "Urutkan menu&run.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
-    CONTROL         "&Acak baris.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
-    CONTROL         "Sa&tukan baris duplikat.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
-    CONTROL         "&Hapus baris duplikat.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
-    CONTROL         "Hapus baris &unik.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
-    CONTROL         "Hapus baris &kosong.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
-    CONTROL         "Hapus baris &spasi kosong.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
-    CONTROL         "P&eka Huruf.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
-    CONTROL         "Ti&dak Peka Huruf.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
-    CONTROL         "Perbandingan an&gka logika.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
-    CONTROL         "Perbandingan leksik&ografi.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
-    CONTROL         "Urutkan ko&lom (seleksi area).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10
+    CONTROL         "Urutkan me&naik",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
+    CONTROL         "Urutkan menu&run",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
+    CONTROL         "&Acak baris",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
+    CONTROL         "Sa&tukan baris duplikat",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "&Hapus baris duplikat",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "Hapus baris &unik",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
+    CONTROL         "Hapus baris &kosong",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
+    CONTROL         "Hapus baris &spasi kosong",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
+    CONTROL         "P&eka Huruf",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
+    CONTROL         "Ti&dak Peka Huruf",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
+    CONTROL         "Perbandingan an&gka logika",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
+    CONTROL         "Perbandingan leksik&ografi",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
+    CONTROL         "Urutkan ko&lom (seleksi area)",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Batal",IDCANCEL,128,24,50,14
 END
@@ -733,11 +733,11 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Sejajarkan Baris"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "K&iri.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,31,10
-    CONTROL         "K&anan.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,35,10
-    CONTROL         "&Tengah.",102,"Button",BS_AUTORADIOBUTTON,7,31,41,10
-    CONTROL         "&Rata.",103,"Button",BS_AUTORADIOBUTTON,7,43,40,10
-    CONTROL         "Rata (Mode &Pragraf).",104,"Button",BS_AUTORADIOBUTTON,7,55,100,10
+    CONTROL         "K&iri",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,31,10
+    CONTROL         "K&anan",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,35,10
+    CONTROL         "&Tengah",102,"Button",BS_AUTORADIOBUTTON,7,31,41,10
+    CONTROL         "&Rata",103,"Button",BS_AUTORADIOBUTTON,7,43,40,10
+    CONTROL         "Rata (Mode &Pragraf)",104,"Button",BS_AUTORADIOBUTTON,7,55,100,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Batal",IDCANCEL,127,24,50,14
 END
@@ -868,16 +868,16 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Pengaturan Simpan Otomatis & Cadangan"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-GROUPBOX        "Simpan Otomatis: ", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
-AUTOCHECKBOX    "Aktifkan simpan otomatis.", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
+GROUPBOX        "Simpan Otomatis:", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
+AUTOCHECKBOX    "Aktifkan simpan otomatis", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
 LTEXT           "Selang waktu simpan otomatis [dtk]:", IDC_STATIC2, 14, 30, 108, 10, SS_RIGHT
 EDITTEXT        IDC_AUTOSAVE_INTERVAL, 130, 28, 40, 12, ES_AUTOHSCROLL
-AUTOCHECKBOX    "Simpan otomatis saat sistem suspend.", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Simpan otomatis saat sistem shutdown.", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
-GROUPBOX        "Cadangkan: ", IDC_STATIC3, 7, 74, 170, 66, 0, WS_EX_TRANSPARENT
-AUTOCHECKBOX    "Aktifkan cadangan.", IDC_AS_BACKUP_ENABLE, 14, 85, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Cadangkan pada simpan otomatis.", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Cadangkan secara bersamaan.", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Simpan otomatis saat sistem suspend", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Simpan otomatis saat sistem shutdown", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
+GROUPBOX        "Cadangkan:", IDC_STATIC3, 7, 74, 170, 66, 0, WS_EX_TRANSPARENT
+AUTOCHECKBOX    "Aktifkan cadangan", IDC_AS_BACKUP_ENABLE, 14, 85, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Cadangkan pada simpan otomatis", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Cadangkan secara bersamaan", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP
 PUSHBUTTON      "Buka Folder", IDC_AS_BACKUP_OPENFOLDER, 110, 122, 60, 14
 DEFPUSHBUTTON   "OK", IDOK, 71, 146, 50, 14
 PUSHBUTTON      "Batal", IDCANCEL, 127, 146, 50, 14

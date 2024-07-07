@@ -187,7 +187,7 @@ BEGIN
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
     CONTROL         "पहचान में असमर्थ होने पर पीछे हटें (&F)",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
-    GROUPBOX        "एन्कोडिंग पहचान: ",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
+    GROUPBOX        "एन्कोडिंग पहचान:",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
     CONTROL         "7-bit &ASCII फ़ाइल UTF-8 मोड में खोलें (&A)",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,156,10
     CONTROL         "पहचान के लिए विश्वशनीय नतीजे ही प्रयोग में लें (&R)",IDC_RELIABLE_DETECTION_RES,
@@ -263,7 +263,7 @@ BEGIN
     CONTROL         "हाल की फ़ाइल बाहर निकलते समय सहेजें (&S)",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,140,10
     CONTROL         "कैरट स्तिथि संरक्षित करें (&P)",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
     CONTROL         "खोज तरीका याद रखें (&R)",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,120,10
-    CONTROL         "&Autoload most recent file on startup.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,160,10
+    CONTROL         "&Autoload most recent file on startup",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,160,10
     CONTROL         "छोड़ें", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
     DEFPUSHBUTTON   "सही है",IDOK,154,158,50,14,WS_DISABLED
     PUSHBUTTON      "रद्द करें",IDCANCEL,212,158,50,14
@@ -276,7 +276,7 @@ CAPTION "फ़ाइल परिवर्तन सूचना"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "कुछ नहीं (&N)", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
-    CONTROL         "संकेतक  (शांत ) (&I).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
+    CONTROL         "संकेतक  (शांत ) (&I)", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
     CONTROL         "संदेश दिखाएं (&D)", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
     CONTROL         "स्वतः रीलोड करें (&A)", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
     CONTROL         "विशिष्ट फ़ाइल लॉक (&E)", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,99,10
@@ -307,7 +307,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "  ☰   प्रणाली"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,239
+    CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,250
     LTEXT           "",IDC_STYLELABEL_ROOT,181,141,279,8
     EDITTEXT        IDC_STYLEEDIT_ROOT,181,152,279,12,ES_AUTOHSCROLL
     LTEXT           "",IDC_STYLELABEL,181,171,279,8
@@ -340,7 +340,7 @@ BEGIN
     EDITTEXT        IDC_TAB_WIDTH,67,7,30,14,ES_AUTOHSCROLL
     LTEXT           "इंडेंट का नाप: (&I)",IDC_STATIC2,7,30,55,8
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
-    CONTROL         "टैब को खाली जगह के रूप में डालें (&S).",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
+    CONTROL         "टैब को खाली जगह के रूप में डालें (&S)",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
     CONTROL         "टैब कुंजी इंडेंटेशन रिफॉर्मैट करे (&K)",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
     CONTROL         "Backspace कुंजी से इंडेंटेशन रिफॉर्मैट करें (&B)",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
@@ -357,14 +357,14 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "असंगत इडेंटेशन"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "आँकड़े: ",IDC_STATIC,7,7,182,48,WS_GROUP
-    LTEXT           "टैब[%s]: ",IDC_INDENT_WIDTH_TAB,54,18,30,8
+    GROUPBOX        "आँकड़े:",IDC_STATIC,7,7,182,48,WS_GROUP
+    LTEXT           "टैब[%s]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
     LTEXT           "रिक्त[%s]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
     LTEXT           "मिश्रित[x]:",IDC_STATIC3,54,42,30,8
     RTEXT           "%s रेखा/रेखाएं",IDC_INDENT_SUM_TAB,84,18,52,8
     RTEXT           "%s रेखा/रेखाएं",IDC_INDENT_SUM_SPC,84,30,52,8
     RTEXT           "%s रेखा/रेखाएं",IDC_INDENT_SUM_MIX,84,42,52,8
-    GROUPBOX        "सारा पुनः इंडेंट करें? ",IDC_STATIC2,7,60,182,56,WS_GROUP
+    GROUPBOX        "सारा पुनः इंडेंट करें?",IDC_STATIC2,7,60,182,56,WS_GROUP
     CONTROL         "टैब (&T)",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,30,10
     CONTROL         "रिक्त (&B)",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,35,10
     RTEXT           "%s रेखा/रेखाएं अस्थायी इडेंट डेप्थ के साथ",IDC_INDENT_TAB_MODX,50,72,132,8
@@ -466,7 +466,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "पसंदीदा मे जोड़ें"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "नए पसंदीदा आइटम के नाम लिखें: ",IDC_FAVORITESDESCR,7,7,158,8
+    LTEXT           "नए पसंदीदा आइटम के नाम लिखें:",IDC_FAVORITESDESCR,7,7,158,8
     EDITTEXT        IDC_ADDFAV_FILES,7,22,158,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "सही है",IDOK,59,45,50,14,WS_DISABLED
     PUSHBUTTON      "रद्द करें",IDCANCEL,115,45,50,14
@@ -484,7 +484,7 @@ BEGIN
     CONTROL         "नया मुख्य कूटशब्द बनाएं",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,84,10
     EDITTEXT        IDC_PWD_EDIT1,17,35,276,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
-    LTEXT           "वैकल्पिक मुख्य कूटशब्द: ",IDC_STATIC2,17,61,72,10,NOT WS_GROUP
+    LTEXT           "वैकल्पिक मुख्य कूटशब्द:",IDC_STATIC2,17,61,72,10,NOT WS_GROUP
     CONTROL         "मुख्य कूटशब्द से एनक्रिप्ट करें",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
     CONTROL         "मुख्य कूटशब्द पुनः प्रयोग करें",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,60,95,10
     CONTROL         "पासफ्रेज़ दिखाएं",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,75,10
@@ -536,7 +536,7 @@ BEGIN
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,17,8
     LTEXT           "अनवरत संख्या (शून्य-आधारित)",IDC_STATIC5,57,92,109,8
     LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,35,8
-    LTEXT           "${<expr>} defines math formulas.",IDC_STATIC6,57,102,132,8
+    LTEXT           "${<expr>} defines math formulas",IDC_STATIC6,57,102,132,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
@@ -645,7 +645,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Don't display this message again",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
     DEFPUSHBUTTON   "&Retry",IDRETRY,186,70,50,14
     PUSHBUTTON      "&Abort",IDABORT, 130, 70, 50, 14
@@ -660,7 +660,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Don't display this message again",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
     DEFPUSHBUTTON   "&Try Again",IDRETRY,186,70,50,14
     PUSHBUTTON      "&Cancel", IDCANCEL, 130, 70, 50, 14
@@ -675,7 +675,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,53,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Don't display this message again",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
     DEFPUSHBUTTON   "&Reload",IDRETRY,186,82,50,14
     PUSHBUTTON      "&Cancel", IDCANCEL, 130, 82, 50, 14
@@ -868,16 +868,16 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Auto-Save & Backup Settings"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-GROUPBOX        "Auto-Save: ", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
-AUTOCHECKBOX    "Enable Auto-Save.", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
+GROUPBOX        "Auto-Save:", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
+AUTOCHECKBOX    "Enable Auto-Save", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
 LTEXT           "Auto-Save interval [sec]:", IDC_STATIC2, 14, 30, 108, 10, SS_RIGHT
 EDITTEXT        IDC_AUTOSAVE_INTERVAL, 130, 28, 40, 12, ES_AUTOHSCROLL
-AUTOCHECKBOX    "Auto-Save on system suspend.", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Auto-Save on system shutdown.", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
-GROUPBOX        "Backup: ", IDC_STATIC3, 7, 74, 170, 66, 0, WS_EX_TRANSPARENT
-AUTOCHECKBOX    "Enable Backup.", IDC_AS_BACKUP_ENABLE, 14, 85, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Backup on Auto-Save.", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Side-by-Side Backup.", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Auto-Save on system suspend", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Auto-Save on system shutdown", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
+GROUPBOX        "Backup:", IDC_STATIC3, 7, 74, 170, 66, 0, WS_EX_TRANSPARENT
+AUTOCHECKBOX    "Enable Backup", IDC_AS_BACKUP_ENABLE, 14, 85, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Backup on Auto-Save", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Side-by-Side Backup", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP
 PUSHBUTTON      "Open Folder", IDC_AS_BACKUP_OPENFOLDER, 110, 122, 60, 14
 DEFPUSHBUTTON   "OK", IDOK, 71, 146, 50, 14
 PUSHBUTTON      "Cancel", IDCANCEL, 127, 146, 50, 14

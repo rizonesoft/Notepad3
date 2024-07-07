@@ -103,8 +103,8 @@ BEGIN
     CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
     CONTROL         "Αναζ. με μπα&λαντέρ",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,77,10
     CONTROL         "Λειτ. &διαφάνειας σε απώλεια εστίασης",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,138,10
-    DEFPUSHBUTTON   "&Εύρεση επόμ.",IDOK,216,7,60,14
-    PUSHBUTTON      "Εύρεση &προηγ.",IDC_FINDPREV,216,24,60,14
+    DEFPUSHBUTTON   "&Εύρεση επόμ",IDOK,216,7,60,14
+    PUSHBUTTON      "Εύρεση &προηγ",IDC_FINDPREV,216,24,60,14
     PUSHBUTTON      "Κλείσιμο",IDCANCEL,216,99,60,14
     CONTROL         "<a>Μετάβαση στην αντικ/ση (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,95,105,115,10
     CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,111,85,14,10
@@ -137,8 +137,8 @@ BEGIN
     CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,73,10
     CONTROL         "Αναζ. με μπα&λαντέρ",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,77,10
     CONTROL         "Λειτ. &διαφάνειας σε απώλεια εστίασης",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,138,10
-    DEFPUSHBUTTON   "&Εύρεση επόμ.",IDOK,216,7,60,14
-    PUSHBUTTON      "Εύρεση &προηγ.",IDC_FINDPREV,216,23,60,14
+    DEFPUSHBUTTON   "&Εύρεση επόμ",IDOK,216,7,60,14
+    PUSHBUTTON      "Εύρεση &προηγ",IDC_FINDPREV,216,23,60,14
     PUSHBUTTON      "Α&ντικατάσταση",IDC_REPLACE,216,43,60,14
     PUSHBUTTON      "Στο επιλε&γμένο",IDC_REPLACEINSEL,216,59,60,14
     PUSHBUTTON      "Αντικ/ση όλ&ων",IDC_REPLACEALL,216,75,60,14
@@ -158,7 +158,7 @@ CAPTION "Εκτέλεση"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_MUI_RUN,IDC_STATIC,10,7,21,20
-    LTEXT           "Εισαγάγετε το όνομα προγράμματος, φακέλου, εγγράφου ή πόρου διαδικτύου και τα Windows θα το ανοίξουν.",IDC_STATIC,35,7,198,17
+    LTEXT           "Εισαγάγετε το όνομα προγράμματος, φακέλου, εγγράφου ή πόρου διαδικτύου και τα Windows θα το ανοίξουν",IDC_STATIC,35,7,198,17
     EDITTEXT        IDC_COMMANDLINE,10,35,213,13,ES_AUTOHSCROLL
     PUSHBUTTON      "Εύ&ρεση...",IDC_SEARCHEXE,168,69,55,16
     DEFPUSHBUTTON   "&Εντάξει",IDOK,52,69,55,16
@@ -172,7 +172,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,161,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,85,13,13
-    LTEXT           "Κλικ εδώ για επιλογή φακέλου με συνδέσεις προς τις αγαπημένες σας εφαρμογές.",IDC_OPENWITHDESCR,24,83,150,18
+    LTEXT           "Κλικ εδώ για επιλογή φακέλου με συνδέσεις προς τις αγαπημένες σας εφαρμογές",IDC_OPENWITHDESCR,24,83,150,18
     DEFPUSHBUTTON   "&Εντάξει",IDOK,62,108,50,14
     PUSHBUTTON      "Ά&κυρο",IDCANCEL,118,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,122,10,10
@@ -183,22 +183,22 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Κωδικοποίηση"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Προεπιλεγμένη κωδικοποποίηση (νέο αρχείο): ",IDC_STATIC,7,7,198,48,0,WS_EX_TRANSPARENT
+    GROUPBOX        "Προεπιλεγμένη κωδικοποποίηση (νέο αρχείο):",IDC_STATIC,7,7,198,48,0,WS_EX_TRANSPARENT
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,182,128
-    CONTROL         "Χρήση ως ενα&λλακτική σε αποτυχία εντοπισμού.",IDC_USEASREADINGFALLBACK,
+    CONTROL         "Χρήση ως ενα&λλακτική σε αποτυχία εντοπισμού",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,175,10
-    GROUPBOX        "Εντοπισμός κωδικοποίησης: ",IDC_STATIC2,7,58,198,88,0,WS_EX_TRANSPARENT
-    CONTROL         "Άνοιγμα αρχείων &ΑSCII 7-bit σε λειτουργία UTF-8.",IDC_ASCIIASUTF8,
+    GROUPBOX        "Εντοπισμός κωδικοποίησης:",IDC_STATIC2,7,58,198,88,0,WS_EX_TRANSPARENT
+    CONTROL         "Άνοιγμα αρχείων &ΑSCII 7-bit σε λειτουργία UTF-8",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,178,10
-    CONTROL         "Χρήση μόνο α&ξιόπιστων αποτελεσμ. εντοπισμού.",IDC_RELIABLE_DETECTION_RES,
+    CONTROL         "Χρήση μόνο α&ξιόπιστων αποτελεσμ. εντοπισμού",IDC_RELIABLE_DETECTION_RES,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,178,10
-    CONTROL         "Άνοιγμα αρχείων *.nf&ο/diz 8-bit σε λειτ/γία DOS-437.",IDC_NFOASOEM,
+    CONTROL         "Άνοιγμα αρχείων *.nf&ο/diz 8-bit σε λειτ/γία DOS-437",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,189,10
-    CONTROL         "Ανάλυση ε&τικετών κωδικοποίησης αρχείων.",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "Ανάλυση ε&τικετών κωδικοποίησης αρχείων",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,160,10
-    CONTROL         "Εκτέλεση ανάλυσης κωδικοσελίδας A&ΝSI.",IDC_NOANSICPDETECTION,
+    CONTROL         "Εκτέλεση ανάλυσης κωδικοσελίδας A&ΝSI",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,150,10
-    CONTROL         "Ενεργοποίηση εντοπισμού UN&ΙCODE.",IDC_NOUNICODEDETECTION,
+    CONTROL         "Ενεργοποίηση εντοπισμού UN&ΙCODE",IDC_NOUNICODEDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,138,10
     DEFPUSHBUTTON   "&Εντάξει",IDOK,102,151,50,14
     PUSHBUTTON      "Ά&κυρο",IDCANCEL,155,151,50,14
@@ -211,11 +211,11 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "&Προεπιλ. λειτ/γία κατάληξης γραμμής:",IDC_STATIC,7,7,120,8
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Εμφ. π&ροειδοποίησης ασυνεπών αλλαγών γραμμής.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "Εμφ. π&ροειδοποίησης ασυνεπών αλλαγών γραμμής",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
-    CONTROL         "Ε&ξασφ. συνεπών αλλαγών γραμμής στην αποθήκευση.",IDC_CONSISTENT_EOLS,
+    CONTROL         "Ε&ξασφ. συνεπών αλλαγών γραμμής στην αποθήκευση",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,195,10
-    CONTROL         "&Αφαίρεση κενών διαστημάτων στην αποθήκευση.",IDC_AUTOSTRIPBLANKS,
+    CONTROL         "&Αφαίρεση κενών διαστημάτων στην αποθήκευση",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,180,10
     DEFPUSHBUTTON   "&Εντάξει",IDOK,147,7,50,14
     PUSHBUTTON      "Ά&κυρο",IDCANCEL,147,24,50,14
@@ -230,14 +230,14 @@ BEGIN
     RTEXT           "CR+LF:",IDC_STATIC2,10,18,34,8
     RTEXT           "CR:",IDC_STATIC3,10,28,34,8
     RTEXT           "LF:",IDC_STATIC4,10,38,34,8
-    LTEXT           "%s γραμμή(ές).",IDC_EOL_SUM_CRLF,48,18,136,8
-    LTEXT           "%s γραμμή(ές).",IDC_EOL_SUM_CR,48,28,136,8
-    LTEXT           "%s γραμμή(ές).",IDC_EOL_SUM_LF,48,38,136,8
+    LTEXT           "%s γραμμή(ές)",IDC_EOL_SUM_CRLF,48,18,136,8
+    LTEXT           "%s γραμμή(ές)",IDC_EOL_SUM_CR,48,28,136,8
+    LTEXT           "%s γραμμή(ές)",IDC_EOL_SUM_LF,48,38,136,8
     LTEXT           "&Θέλετε να ομαλοποιήσετε τις καταλήξεις γραμμών;",IDC_STATIC5,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Ναι",IDOK,148,63,50,14
     PUSHBUTTON      "Ό&χι",IDCANCEL,148,80,50,14
-    CONTROL         "&Πάντα εμφάνιση αυτού του διαλόγου.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "&Πάντα εμφάνιση αυτού του διαλόγου",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,138,10
 END
 
@@ -260,10 +260,10 @@ CAPTION "Άνοιγμα πρόσφατου αρχείου"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
-    CONTROL         "&Αποθήκευση λίστας πρόσφατων αρχείων κατά τη έξοδο.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,205,10
-    CONTROL         "Απομνημόνευση &θέσης δρομέα.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
-    CONTROL         "Απομνημόνευση &μοτίβου αναζήτησης.",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,140,10
-    CONTROL         "&Autoload most recent file on startup.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,180,10
+    CONTROL         "&Αποθήκευση λίστας πρόσφατων αρχείων κατά τη έξοδο",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,205,10
+    CONTROL         "Απομνημόνευση &θέσης δρομέα",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
+    CONTROL         "Απομνημόνευση &μοτίβου αναζήτησης",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,140,10
+    CONTROL         "&Autoload most recent file on startup",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,180,10
     CONTROL         "Από&ρριψη", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212 107, 50, 14
     DEFPUSHBUTTON   "&Εντάξει",IDOK,154,158,50,14,WS_DISABLED
     PUSHBUTTON      "&Κλείσιμο",IDCANCEL,212,158,50,14
@@ -275,13 +275,13 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Ειδοποίηση μεταβολής αρχείου"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "Κα&μία.", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
-    CONTROL         "Έν&δειξη (σιωπηρή).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
-    CONTROL         "Εμ&φάνιση μηνύματος.", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&Αυτόματη επαναφόρτωση.", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,105,10
-    CONTROL         "Αποκ&λειστικό κλείδωμα αρχείου.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,120,10
-    CONTROL         "Επαναφ&ορά εάν ανοίξει ένα νέο αρχείο.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,145,10
-    CONTROL         "Κατα&γραφή εποπτείας.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
+    CONTROL         "Κα&μία", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
+    CONTROL         "Έν&δειξη (σιωπηρή)", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
+    CONTROL         "Εμ&φάνιση μηνύματος", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
+    CONTROL         "&Αυτόματη επαναφόρτωση", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,105,10
+    CONTROL         "Αποκ&λειστικό κλείδωμα αρχείου", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,120,10
+    CONTROL         "Επαναφ&ορά εάν ανοίξει ένα νέο αρχείο", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,145,10
+    CONTROL         "Κατα&γραφή εποπτείας", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
     LTEXT           "File Check Interval [ms]",IDC_LINE_TEXT,7,102,120,10
     EDITTEXT        IDC_FILE_CHECK_INTERVAL,127,100,50,12,ES_AUTOHSCROLL | ES_NUMBER
     DEFPUSHBUTTON   "&Εντάξει",IDOK,127,7,50,14
@@ -294,9 +294,9 @@ CAPTION "Επιλογή συνδυασμού σύνταξης"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,158,130
-    CONTROL         "Ορισμός επιλεγ. συνδυασμού ως &προεπιλογή.",IDC_DEFAULTSCHEME,
+    CONTROL         "Ορισμός επιλεγ. συνδυασμού ως &προεπιλογή",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,164,10
-    CONTROL         "&Αυτόματη επιλογή βάσει επέκτασης αρχείου.",IDC_AUTOSELECT,
+    CONTROL         "&Αυτόματη επιλογή βάσει επέκτασης αρχείου",IDC_AUTOSELECT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,163,10
     DEFPUSHBUTTON   "&Εντάξει",IDOK,60,173,50,14,WS_DISABLED
     PUSHBUTTON      "Ά&κυρο",IDCANCEL,115,173,50,14
@@ -307,7 +307,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "  ☰   Συνδυασμός"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,239
+    CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,250
     LTEXT           "",IDC_STYLELABEL_ROOT,181,141,279,8
     EDITTEXT        IDC_STYLEEDIT_ROOT,181,152,279,12,ES_AUTOHSCROLL
     LTEXT           "",IDC_STYLELABEL,181,171,279,8
@@ -315,7 +315,7 @@ BEGIN
     PUSHBUTTON      "Κεί&μενο...",IDC_STYLEFORE,181,201,46,14
     PUSHBUTTON      "&Φόντο...",IDC_STYLEBACK,232,201,46,14
     PUSHBUTTON      "&Γραμ/σειρά...",IDC_STYLEFONT,282,201,46,14
-    PUSHBUTTON      "&Προεπισκ.",IDC_PREVIEW,331,201,42,14
+    PUSHBUTTON      "&Προεπισκ",IDC_PREVIEW,331,201,42,14
     PUSHBUTTON      "Επ&αναφορά",IDC_STYLEDEFAULT,377,201,42,14
     PUSHBUTTON      "",IDC_PREVSTYLE,426,201,15,14,BS_BITMAP
     PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14,BS_BITMAP
@@ -326,7 +326,7 @@ BEGIN
     PUSHBUTTON      "Ε&ξαγωγή...",IDC_EXPORT,237,240,50,14
     DEFPUSHBUTTON   "&Εντάξει",IDOK,355,240,50,14
     PUSHBUTTON      "Ά&κυρο",IDCANCEL,410,240,50,14
-    GROUPBOX        "Πληροφορίες ",IDC_INFO_GROUPBOX,181,7,280,127
+    GROUPBOX        "Πληροφορίες",IDC_INFO_GROUPBOX,181,7,280,127
     CTEXT           "-",IDC_TITLE,240,20,180,24,SS_CENTERIMAGE
     EDITTEXT        IDC_STYLEEDIT_HELP,182,54,275,74,ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
@@ -357,21 +357,21 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Ασυνεπής εσοχή"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Στατιστικά: ",IDC_STATIC,7,7,182,48,WS_GROUP
+    GROUPBOX        "Στατιστικά:",IDC_STATIC,7,7,182,48,WS_GROUP
     LTEXT           "Εσοχές[%s]:",IDC_INDENT_WIDTH_TAB,54,18,36,8
     LTEXT           "Κενά[%s]:",IDC_INDENT_WIDTH_SPC,54,30,36,8
     LTEXT           "Μεικτά[x]:",IDC_STATIC3,54,42,36,8
     RTEXT           "%s γραμμή(ές)",IDC_INDENT_SUM_TAB,91,18,52,8
     RTEXT           "%s γραμμή(ές)",IDC_INDENT_SUM_SPC,91,30,52,8
     RTEXT           "%s γραμμή(ές)",IDC_INDENT_SUM_MIX,91,42,52,8
-    GROUPBOX        "Επανασύνταξη όλων των εσοχών; ",IDC_STATIC2,7,60,182,56,WS_GROUP
+    GROUPBOX        "Επανασύνταξη όλων των εσοχών;",IDC_STATIC2,7,60,182,56,WS_GROUP
     CONTROL         "&Εσοχές",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,35,10
     CONTROL         "&Κενά",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,28,10
     RTEXT           "%s γραμμή(ές) με ακανόνιστο βάθος",IDC_INDENT_TAB_MODX,48,72,132,8
     RTEXT           "%s γραμμή(ές) με ακανόνιστο βάθος",IDC_INDENT_SPC_MODX,48,84,132,8
     PUSHBUTTON      "&Ναι",IDOK,80,98,50,14
     PUSHBUTTON      "Ό&χι",IDCANCEL,134,98,50,14
-    CONTROL         "&Πάντα εμφάνιση αυτού του διαλόγου.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Πάντα εμφάνιση αυτού του διαλόγου",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,140,10
 END
 
@@ -382,8 +382,8 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "&Θέση πολλαπλών άκρων γραμμής:",IDC_STATIC,7,10,120,8
     EDITTEXT        IDC_MULTIEDGELINE,132,7,140,14,ES_AUTOHSCROLL
-    CONTROL         "Εμφάνιση άκ&ρου γραμμής.",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
-    CONTROL         "Αλλαγή χρώματος &φόντου.",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
+    CONTROL         "Εμφάνιση άκ&ρου γραμμής",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
+    CONTROL         "Αλλαγή χρώματος &φόντου",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
     DEFPUSHBUTTON   "&Εντάξει",IDOK,166,34,50,14
     PUSHBUTTON      "Ά&κυρο",IDCANCEL,222,34,50,14
 END
@@ -410,7 +410,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Διαμόρφωση σελίδας"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Χαρτί ",1073,8,8,224,56,WS_GROUP
+    GROUPBOX        "Χαρτί",1073,8,8,224,56,WS_GROUP
     LTEXT           "&Μέγεθος:",1089,16,24,36,8
     COMBOBOX        1137,64,23,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     LTEXT           "&Προέλευση:",1090,16,45,36,8
@@ -455,7 +455,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,161,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
-    LTEXT           "Κλικ εδώ για επιλογή του καταλόγου με συνδέσεις προς τα αγαπημένα σας αρχεία.",IDC_FAVORITESDESCR,26,83,146,18
+    LTEXT           "Κλικ εδώ για επιλογή του καταλόγου με συνδέσεις προς τα αγαπημένα σας αρχεία",IDC_FAVORITESDESCR,26,83,146,18
     DEFPUSHBUTTON   "&Εντάξει",IDOK,62,108,50,14
     PUSHBUTTON      "Ά&κυρο",IDCANCEL,118,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,122,10,10
@@ -528,15 +528,15 @@ BEGIN
     PUSHBUTTON      "Ά&κυρο",IDCANCEL,125,24,50,14
     LTEXT           "${L}",IDC_MODLNS_DOCLN_CANONIC,7,72,14,8
     LTEXT           "${0L}",IDC_MODLNS_DOCLN_ZEROFLD,30,72,18,8
-    LTEXT           "Αριθμός γραμμής εγγράφου.",IDC_STATIC3,57,72,100,8
+    LTEXT           "Αριθμός γραμμής εγγράφου",IDC_STATIC3,57,72,100,8
     LTEXT           "${N}",IDC_MODLNS_CNTLN1_CANONIC,7,82,15,8
     LTEXT           "${0N}",IDC_MODLNS_CNTLN1_ZEROFLD,30,82,19,8
-    LTEXT           "Συνεχείς αριθμοί (με αρχή το 1).",IDC_STATIC4,57,82,110,8
+    LTEXT           "Συνεχείς αριθμοί (με αρχή το 1)",IDC_STATIC4,57,82,110,8
     LTEXT           "${I}",IDC_MODLNS_CNTLN0_CANONIC,7,92,13,8
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,17,8
-    LTEXT           "Συνεχείς αριθμοί (με αρχή το 0).",IDC_STATIC5,57,92,110,8
+    LTEXT           "Συνεχείς αριθμοί (με αρχή το 0)",IDC_STATIC5,57,92,110,8
     LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,35,8
-    LTEXT           "${<expr>} defines math formulas.",IDC_STATIC6,57,102,124,8
+    LTEXT           "${<expr>} defines math formulas",IDC_STATIC6,57,102,124,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
@@ -576,7 +576,7 @@ BEGIN
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     DEFPUSHBUTTON   "&Εντάξει",IDOK,187,50,50,14
-    CONTROL         "Να &μην εμφανιστεί αυτό ξανά.",IDC_INFOBOXCHECK,
+    CONTROL         "Να &μην εμφανιστεί αυτό ξανά",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -590,7 +590,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     PUSHBUTTON      "&Ναι",IDYES,131,50,50,14
     PUSHBUTTON      "Ό&χι",IDNO,187,50,50,14
-    CONTROL         "Να &μην εμφανιστεί αυτό ξανά.",IDC_INFOBOXCHECK,
+    CONTROL         "Να &μην εμφανιστεί αυτό ξανά",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -604,7 +604,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     DEFPUSHBUTTON   "&Εντάξει",IDOK,131,50,50,14
     PUSHBUTTON      "Ά&κυρο",IDCANCEL,187,50,50,14
-    CONTROL         "Να &μην εμφανιστεί αυτό ξανά.",IDC_INFOBOXCHECK,
+    CONTROL         "Να &μην εμφανιστεί αυτό ξανά",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -619,7 +619,7 @@ BEGIN
     DEFPUSHBUTTON   "&Ναι",IDOK,7,70,50,14
     PUSHBUTTON      "Ό&χι",IDNO,61,70,50,14
     PUSHBUTTON      "Ά&κυρο",IDCANCEL,115,70,50,14
-    CONTROL         "Να &μην εμφανιστεί αυτό ξανά.",IDC_INFOBOXCHECK,
+    CONTROL         "Να &μην εμφανιστεί αυτό ξανά",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,54,140,10
 END
 
@@ -633,7 +633,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     DEFPUSHBUTTON   "&Επανάληψη",IDRETRY,131,50,50,14
     PUSHBUTTON      "Ά&κυρο",IDCANCEL,187,50,50,14
-    CONTROL         "Να &μην εμφανιστεί αυτό ξανά.",IDC_INFOBOXCHECK,
+    CONTROL         "Να &μην εμφανιστεί αυτό ξανά",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -645,7 +645,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Don't display this message again",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
     DEFPUSHBUTTON   "&Retry",IDRETRY,186,70,50,14
     PUSHBUTTON      "&Abort",IDABORT, 130, 70, 50, 14
@@ -660,7 +660,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Don't display this message again",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
     DEFPUSHBUTTON   "&Try Again",IDRETRY,186,70,50,14
     PUSHBUTTON      "&Cancel", IDCANCEL, 130, 70, 50, 14
@@ -675,7 +675,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,53,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Don't display this message again.",IDC_INFOBOXCHECK,
+    CONTROL         "&Don't display this message again",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
     DEFPUSHBUTTON   "&Reload",IDRETRY,186,82,50,14
     PUSHBUTTON      "&Cancel", IDCANCEL, 130, 82, 50, 14
@@ -769,7 +769,7 @@ BEGIN
     CBS_SORT | WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
     CBS_OWNERDRAWFIXED
 
-    GROUPBOX        "Εφέ ", grp1, 7, 97, 98, 76, WS_GROUP
+    GROUPBOX        "Εφέ", grp1, 7, 97, 98, 76, WS_GROUP
     AUTOCHECKBOX    "&Διακριτή γραφή", chx1, 13, 111, 90, 10, WS_TABSTOP
     AUTOCHECKBOX    "&Υπογράμμιση", chx2, 13, 127, 90, 10
 
@@ -778,7 +778,7 @@ BEGIN
     CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | CBS_AUTOHSCROLL |
     CBS_HASSTRINGS | WS_BORDER | WS_VSCROLL | WS_TABSTOP
 
-    GROUPBOX        "Δείγμα ", grp2, 114, 97, 120, 43, WS_GROUP
+    GROUPBOX        "Δείγμα", grp2, 114, 97, 120, 43, WS_GROUP
     CTEXT           "AaBbYyZz", stc5, 116, 106, 117, 33,
     SS_NOPREFIX | NOT WS_VISIBLE
     LTEXT           "", stc6, 7, 178, 227, 20, SS_NOPREFIX | NOT WS_GROUP
@@ -868,16 +868,16 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Auto-Save & Backup Settings"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-GROUPBOX        "Auto-Save: ", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
-AUTOCHECKBOX    "Enable Auto-Save.", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
+GROUPBOX        "Auto-Save:", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
+AUTOCHECKBOX    "Enable Auto-Save", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
 LTEXT           "Auto-Save interval [sec]:", IDC_STATIC2, 14, 30, 108, 10, SS_RIGHT
 EDITTEXT        IDC_AUTOSAVE_INTERVAL, 130, 28, 40, 12, ES_AUTOHSCROLL
-AUTOCHECKBOX    "Auto-Save on system suspend.", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Auto-Save on system shutdown.", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
-GROUPBOX        "Backup: ", IDC_STATIC3, 7, 74, 170, 66, 0, WS_EX_TRANSPARENT
-AUTOCHECKBOX    "Enable Backup.", IDC_AS_BACKUP_ENABLE, 14, 85, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Backup on Auto-Save.", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Side-by-Side Backup.", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Auto-Save on system suspend", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Auto-Save on system shutdown", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
+GROUPBOX        "Backup:", IDC_STATIC3, 7, 74, 170, 66, 0, WS_EX_TRANSPARENT
+AUTOCHECKBOX    "Enable Backup", IDC_AS_BACKUP_ENABLE, 14, 85, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Backup on Auto-Save", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Side-by-Side Backup", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP
 PUSHBUTTON      "Open Folder", IDC_AS_BACKUP_OPENFOLDER, 110, 122, 60, 14
 DEFPUSHBUTTON   "OK", IDOK, 71, 146, 50, 14
 PUSHBUTTON      "Cancel", IDCANCEL, 127, 146, 50, 14
