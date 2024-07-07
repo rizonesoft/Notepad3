@@ -158,7 +158,7 @@ CAPTION "Spustiť"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_MUI_RUN,IDC_STATIC,10,7,21,20
-    LTEXT           "Zadajte názov programu, priečinka, dokumentu alebo internetového zdroja a systém Windows vám ho otvorí.",IDC_STATIC,39,7,179,26
+    LTEXT           "Zadajte názov programu, priečinka, dokumentu alebo internetového zdroja a systém Windows vám ho otvorí",IDC_STATIC,39,7,179,26
     EDITTEXT        IDC_COMMANDLINE,10,35,208,13,ES_AUTOHSCROLL
     PUSHBUTTON      "Vyhľadať...",IDC_SEARCHEXE,163,69,55,16
     DEFPUSHBUTTON   "OK",IDOK,47,69,55,16
@@ -172,7 +172,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Kliknutím sem určíte adresár s odkazmi na vaše obľúbené aplikácie.",IDC_OPENWITHDESCR,26,83,138,18
+    LTEXT           "Kliknutím sem určíte adresár s odkazmi na vaše obľúbené aplikácie",IDC_OPENWITHDESCR,26,83,138,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Zrušiť",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
@@ -183,22 +183,22 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Kódovanie"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "&Predvolené kódovanie (nový súbor): ",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
+    GROUPBOX        "&Predvolené kódovanie (nový súbor):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
-    CONTROL         "Použiť ako &náhradu pri zlyhaní detekcie.",IDC_USEASREADINGFALLBACK,
+    CONTROL         "Použiť ako &náhradu pri zlyhaní detekcie",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
-    GROUPBOX        "Detekcia kódovania: ",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
-    CONTROL         "Otvoriť 7-bit &ASCII súbory v režime UTF-8.",IDC_ASCIIASUTF8,
+    GROUPBOX        "Detekcia kódovania:",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
+    CONTROL         "Otvoriť 7-bit &ASCII súbory v režime UTF-8",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,150,10
-    CONTROL         "Použiť iba &spoľahlivé výsledky detekcie.",IDC_RELIABLE_DETECTION_RES,
+    CONTROL         "Použiť iba &spoľahlivé výsledky detekcie",IDC_RELIABLE_DETECTION_RES,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,145,10
-    CONTROL         "Otvoriť 8-bit *.nfo/diz súbory v režime &DOS-437.",IDC_NFOASOEM,
+    CONTROL         "Otvoriť 8-bit *.nfo/diz súbory v režime &DOS-437",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,175,10
-    CONTROL         "Analyzovať kódovanie &tagov súboru.",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "Analyzovať kódovanie &tagov súboru",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,135,10
-    CONTROL         "A&nalyzovať ANSI kódovanej stránky.",IDC_NOANSICPDETECTION,
+    CONTROL         "A&nalyzovať ANSI kódovanej stránky",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,130,10
-    CONTROL         "Povoliť &UNICODE detekciu.",IDC_NOUNICODEDETECTION,
+    CONTROL         "Povoliť &UNICODE detekciu",IDC_NOUNICODEDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,122,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
     PUSHBUTTON      "Zrušiť",IDCANCEL,140,151,50,14
@@ -211,11 +211,11 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "&Predvolený režim ukončenia riadku:",IDC_STATIC,7,7,120,8
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Upozorniť na nekonzistentné zlomy riadkov.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "Upozorniť na nekonzistentné zlomy riadkov",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
-    CONTROL         "Zabezpečiť konzistentné zlomy riadkov pri ukladaní.",IDC_CONSISTENT_EOLS,
+    CONTROL         "Zabezpečiť konzistentné zlomy riadkov pri ukladaní",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,185,10
-    CONTROL         "&Pri ukladaní izolovať medzery.",IDC_AUTOSTRIPBLANKS,
+    CONTROL         "&Pri ukladaní izolovať medzery",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,173,10
     DEFPUSHBUTTON   "OK",IDOK,139,7,50,14
     PUSHBUTTON      "Zrušiť",IDCANCEL,139,24,50,14
@@ -230,14 +230,14 @@ BEGIN
     RTEXT           "CR+LF:",IDC_STATIC2,10,18,34,8
     RTEXT           "CR:",IDC_STATIC3,10,28,34,8
     RTEXT           "LF:",IDC_STATIC4,10,38,34,8
-    LTEXT           "%s riadok(y).",IDC_EOL_SUM_CRLF,48,18,136,8
-    LTEXT           "%s riadok(y).",IDC_EOL_SUM_CR,48,28,136,8
-    LTEXT           "%s riadok(y).",IDC_EOL_SUM_LF,48,38,136,8
+    LTEXT           "%s riadok(y)",IDC_EOL_SUM_CRLF,48,18,136,8
+    LTEXT           "%s riadok(y)",IDC_EOL_SUM_CR,48,28,136,8
+    LTEXT           "%s riadok(y)",IDC_EOL_SUM_LF,48,38,136,8
     LTEXT           "&Chcete normalizovať zakončenie riadkov?",IDC_STATIC5,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Áno",IDOK,138,63,50,14
     PUSHBUTTON      "&Nie",IDCANCEL,138,80,50,14
-    CONTROL         "&Vždy zobrazovať tento dialóg.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "&Vždy zobrazovať tento dialóg",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -260,10 +260,10 @@ CAPTION "Naposledy použité súbory"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
-    CONTROL         "&Uložte zoznam naposledy použitých súborov pri ukončení.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,202,10
-    CONTROL         "&Zachovať pozíciu kurzora.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
-    CONTROL         "&Pamätať si voľbu hľadania.",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,120,10
-    CONTROL         "&Automaticky načítať pri spustení naposledy použitý súbor.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,202,10
+    CONTROL         "&Uložte zoznam naposledy použitých súborov pri ukončení",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,202,10
+    CONTROL         "&Zachovať pozíciu kurzora",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
+    CONTROL         "&Pamätať si voľbu hľadania",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,120,10
+    CONTROL         "&Automaticky načítať pri spustení naposledy použitý súbor",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,202,10
     CONTROL         "Zahodiť", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
     DEFPUSHBUTTON   "OK",IDOK,154,158,50,14,WS_DISABLED
     PUSHBUTTON      "Zatvoriť",IDCANCEL,212,158,50,14
@@ -275,13 +275,13 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Oznámenie o zmene súboru"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "&Neoznamovať.", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
-    CONTROL         "&Indikátor (tiché).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
-    CONTROL         "&Zobraziť správu.", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&Auto-načítanie.", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
-    CONTROL         "&Exkluzívny zámok súboru.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,99,10
-    CONTROL         "&Resetovať pri otvorení nového súboru.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,140,10
-    CONTROL         "&Monitorovací denník.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
+    CONTROL         "&Neoznamovať", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
+    CONTROL         "&Indikátor (tiché)", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
+    CONTROL         "&Zobraziť správu", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
+    CONTROL         "&Auto-načítanie", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
+    CONTROL         "&Exkluzívny zámok súboru", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,99,10
+    CONTROL         "&Resetovať pri otvorení nového súboru", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,140,10
+    CONTROL         "&Monitorovací denník", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
     LTEXT           "Interval kontroly súboru [ms]",IDC_LINE_TEXT,7,102,120,10
     EDITTEXT        IDC_FILE_CHECK_INTERVAL,127,100,50,12,ES_AUTOHSCROLL | ES_NUMBER
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
@@ -294,9 +294,9 @@ CAPTION "Výber schémy syntaxie"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,130
-    CONTROL         "Nastaviť vybratú schému ako &predvolenú.",IDC_DEFAULTSCHEME,
+    CONTROL         "Nastaviť vybratú schému ako &predvolenú",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,154,10
-    CONTROL         "&Automatický výber podľa prípony súboru.",IDC_AUTOSELECT,
+    CONTROL         "&Automatický výber podľa prípony súboru",IDC_AUTOSELECT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,154,10
     DEFPUSHBUTTON   "OK",IDOK,53,173,50,14,WS_DISABLED
     PUSHBUTTON      "Zrušiť",IDCANCEL,108,173,50,14
@@ -340,13 +340,13 @@ BEGIN
     EDITTEXT        IDC_TAB_WIDTH,74,7,30,14,ES_AUTOHSCROLL
     LTEXT           "Veľkosť &odsadenia:",IDC_STATIC2,7,30,63,8
     EDITTEXT        IDC_INDENT_DEPTH,74,27,30,14,ES_AUTOHSCROLL
-    CONTROL         "&Vkladať tabulátor ako medzeru.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
-    CONTROL         "Klávesou &Tab preformátovať odsadenie.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
-    CONTROL         "Klávesou &Backspace preformátovať odsadenie.",IDC_BACKTAB_INDENTS,
+    CONTROL         "&Vkladať tabulátor ako medzeru",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
+    CONTROL         "Klávesou &Tab preformátovať odsadenie",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "Klávesou &Backspace preformátovať odsadenie",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,166,10
-    CONTROL         "&Upozorniť na nekonzistentné odsadenie.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Upozorniť na nekonzistentné odsadenie",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
-    CONTROL         "&Autodetekcia odsadenia.",IDC_AUTO_DETECT_INDENTS,
+    CONTROL         "&Autodetekcia odsadenia",IDC_AUTO_DETECT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Zrušiť",IDCANCEL,117,27,50,14
@@ -364,14 +364,14 @@ BEGIN
     RTEXT           "%s riadok(y)",IDC_INDENT_SUM_TAB,84,18,52,8
     RTEXT           "%s riadok(y)",IDC_INDENT_SUM_SPC,88,30,48,8
     RTEXT           "%s riadok(y)",IDC_INDENT_SUM_MIX,84,42,52,8
-    GROUPBOX        "Preodsadiť všetko? ",IDC_STATIC2,7,60,182,56,WS_GROUP
-    CONTROL         "&Tabulát.",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,38,10
+    GROUPBOX        "Preodsadiť všetko?",IDC_STATIC2,7,60,182,56,WS_GROUP
+    CONTROL         "&Tabulát",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,38,10
     CONTROL         "&Prázdne",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,38,10
     RTEXT           "%s riadok(y) w/ nepravidelná hĺbka odsadenia",IDC_INDENT_TAB_MODX,60,72,124,8
     RTEXT           "%s riadok(y) w/ nepravidelná hĺbka odsadenia",IDC_INDENT_SPC_MODX,60,84,124,8
     PUSHBUTTON      "&Áno",IDOK,80,98,50,14
     PUSHBUTTON      "&Nie",IDCANCEL,134,98,50,14
-    CONTROL         "&Vždy zobrazovať tento dialóg.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Vždy zobrazovať tento dialóg",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
@@ -382,8 +382,8 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Poz. s &viacerými okrajmi:",IDC_STATIC,7,10,91,8
     EDITTEXT        IDC_MULTIEDGELINE,100,7,172,14,ES_AUTOHSCROLL
-    CONTROL         "Zobraziť &okraj riadku.",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
-    CONTROL         "Zmeniť &farbu pozadia.",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
+    CONTROL         "Zobraziť &okraj riadku",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
+    CONTROL         "Zmeniť &farbu pozadia",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
     DEFPUSHBUTTON   "OK",IDOK,166,34,50,14
     PUSHBUTTON      "Zrušiť",IDCANCEL,222,34,50,14
 END
@@ -455,7 +455,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
-    LTEXT           "Kliknutím sem určíte priečinok s odkazmi na vaše obľúbené súbory.",IDC_FAVORITESDESCR,26,83,132,18
+    LTEXT           "Kliknutím sem určíte priečinok s odkazmi na vaše obľúbené súbory",IDC_FAVORITESDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Zrušiť",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
@@ -487,7 +487,7 @@ BEGIN
     LTEXT           "Voľby hlavného kľúča:",IDC_STATIC2,17,61,75,10,NOT WS_GROUP
     CONTROL         "Šifrovať pomocou prístupovej frázy",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,130,10
     CONTROL         "Znova použiť hlavný kľúč",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,195,60,95,10
-    CONTROL         "Zobraziť prístupovú frázu ",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,100,10
+    CONTROL         "Zobraziť prístupovú frázu",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,100,10
 END
 
 IDD_MUI_READPW DIALOGEX 0, 0, 299, 81
@@ -528,15 +528,15 @@ BEGIN
     PUSHBUTTON      "Zrušiť",IDCANCEL,135,24,50,14
     LTEXT           "${L}",IDC_MODLNS_DOCLN_CANONIC,7,72,14,8
     LTEXT           "${0L}",IDC_MODLNS_DOCLN_ZEROFLD,30,72,18,8
-    LTEXT           "Číslo riadku dokumentu.",IDC_STATIC3,57,72,80,8
+    LTEXT           "Číslo riadku dokumentu",IDC_STATIC3,57,72,80,8
     LTEXT           "${N}",IDC_MODLNS_CNTLN1_CANONIC,7,82,15,8
     LTEXT           "${0N}",IDC_MODLNS_CNTLN1_ZEROFLD,30,82,19,8
-    LTEXT           "Kontinuálne číslovanie.",IDC_STATIC4,57,82,77,8
+    LTEXT           "Kontinuálne číslovanie",IDC_STATIC4,57,82,77,8
     LTEXT           "${I}",IDC_MODLNS_CNTLN0_CANONIC,7,92,13,8
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,17,8
-    LTEXT           "Kontin. číslovanie (so základom nula).",IDC_STATIC5,57,92,124,16
+    LTEXT           "Kontin. číslovanie (so základom nula)",IDC_STATIC5,57,92,124,16
     LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,35,8
-    LTEXT           "${<expr>} definuje matematické vzorce.",IDC_STATIC6,57,102,134,8
+    LTEXT           "${<expr>} definuje matematické vzorce",IDC_STATIC6,57,102,134,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
@@ -576,7 +576,7 @@ BEGIN
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     DEFPUSHBUTTON   "&OK",IDOK,187,50,50,14
-    CONTROL         "&Túto správu už nezobrazovať.",IDC_INFOBOXCHECK,
+    CONTROL         "&Túto správu už nezobrazovať",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -590,7 +590,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     PUSHBUTTON      "&Áno",IDYES,131,50,50,14
     PUSHBUTTON      "&Nie",IDNO,187,50,50,14
-    CONTROL         "&Túto správu už nezobrazovať.",IDC_INFOBOXCHECK,
+    CONTROL         "&Túto správu už nezobrazovať",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -604,7 +604,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     DEFPUSHBUTTON   "&OK",IDOK,131,50,50,14
     PUSHBUTTON      "&Zrušiť",IDCANCEL,187,50,50,14
-    CONTROL         "&Túto správu už nezobrazovať.",IDC_INFOBOXCHECK,
+    CONTROL         "&Túto správu už nezobrazovať",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -619,7 +619,7 @@ BEGIN
     DEFPUSHBUTTON   "&Áno",IDOK,7,70,50,14
     PUSHBUTTON      "&Nie",IDNO,61,70,50,14
     PUSHBUTTON      "&Zrušiť",IDCANCEL,115,70,50,14
-    CONTROL         "&Túto správu už nezobrazovať.",IDC_INFOBOXCHECK,
+    CONTROL         "&Túto správu už nezobrazovať",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,54,140,10
 END
 
@@ -633,7 +633,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     DEFPUSHBUTTON   "Z&nova",IDRETRY,131,50,50,14
     PUSHBUTTON      "&Zrušiť",IDCANCEL,187,50,50,14
-    CONTROL         "&Túto správu už nezobrazovať.",IDC_INFOBOXCHECK,
+    CONTROL         "&Túto správu už nezobrazovať",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -645,7 +645,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Túto správu už nezobrazovať.",IDC_INFOBOXCHECK,
+    CONTROL         "&Túto správu už nezobrazovať",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
     DEFPUSHBUTTON   "Z&nova",IDRETRY,186,70,50,14
     PUSHBUTTON      "&Zrušiť",IDABORT, 130, 70, 50, 14
@@ -660,7 +660,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Túto správu už nezobrazovať.",IDC_INFOBOXCHECK,
+    CONTROL         "&Túto správu už nezobrazovať",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
     DEFPUSHBUTTON   "Z&nova",IDRETRY,186,70,50,14
     PUSHBUTTON      "&Zrušiť", IDCANCEL, 130, 70, 50, 14
@@ -675,7 +675,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,53,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Túto správu už nezobrazovať.",IDC_INFOBOXCHECK,
+    CONTROL         "&Túto správu už nezobrazovať",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
     DEFPUSHBUTTON   "Z&novu načítať",IDRETRY,186,82,50,14
     PUSHBUTTON      "&Zrušiť", IDCANCEL, 130, 82, 50, 14
@@ -687,19 +687,19 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Zoradiť riadky"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "&Vzostupne.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
-    CONTROL         "&Zostupne.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
-    CONTROL         "Z&miešane.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
-    CONTROL         "Zj&ednotiť duplicitné riadky.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
-    CONTROL         "&Odstrániť duplicitné riadky.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
-    CONTROL         "Odstrániť &jedinečné riadky.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
-    CONTROL         "Odstrániť &prázdne riadky.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
-    CONTROL         "Odstrániť &medzery medzi riadkami.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,130,10
-    CONTROL         "&Rozlišovať malé a veľké písmená.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,130,10
-    CONTROL         "&Nerozlišovať malé a veľké písmená.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,126,10
-    CONTROL         "Lo&gické porovnanie čísel.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
-    CONTROL         "Le&xikografické porovnanie.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
-    CONTROL         "Zoradenie &stĺpcov (obdĺžnikový výber).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,135,10
+    CONTROL         "&Vzostupne",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
+    CONTROL         "&Zostupne",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
+    CONTROL         "Z&miešane",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
+    CONTROL         "Zj&ednotiť duplicitné riadky",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "&Odstrániť duplicitné riadky",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "Odstrániť &jedinečné riadky",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
+    CONTROL         "Odstrániť &prázdne riadky",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
+    CONTROL         "Odstrániť &medzery medzi riadkami",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,130,10
+    CONTROL         "&Rozlišovať malé a veľké písmená",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,130,10
+    CONTROL         "&Nerozlišovať malé a veľké písmená",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,126,10
+    CONTROL         "Lo&gické porovnanie čísel",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
+    CONTROL         "Le&xikografické porovnanie",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
+    CONTROL         "Zoradenie &stĺpcov (obdĺžnikový výber)",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,135,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Zrušiť",IDCANCEL,128,24,50,14
 END
@@ -733,11 +733,11 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Zarovnanie riadkov"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "&Vľavo.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,35,10
-    CONTROL         "V&pravo.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,39,10
-    CONTROL         "&Na stred.",102,"Button",BS_AUTORADIOBUTTON,7,31,45,10
-    CONTROL         "&Do bloku.",103,"Button",BS_AUTORADIOBUTTON,7,43,47,10
-    CONTROL         "&Režim odsekov.",104,"Button",BS_AUTORADIOBUTTON,7,55,67,10
+    CONTROL         "&Vľavo",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,35,10
+    CONTROL         "V&pravo",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,39,10
+    CONTROL         "&Na stred",102,"Button",BS_AUTORADIOBUTTON,7,31,45,10
+    CONTROL         "&Do bloku",103,"Button",BS_AUTORADIOBUTTON,7,43,47,10
+    CONTROL         "&Režim odsekov",104,"Button",BS_AUTORADIOBUTTON,7,55,67,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Zrušiť",IDCANCEL,127,24,50,14
 END
@@ -868,16 +868,16 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Auto-ukladanie a zálohovanie"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-GROUPBOX        "Auto-ukladanie: ", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
-AUTOCHECKBOX    "Povoliť Auto-ukladanie.", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
+GROUPBOX        "Auto-ukladanie:", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
+AUTOCHECKBOX    "Povoliť Auto-ukladanie", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
 LTEXT           "Interval Auto-ukladania [sek.]:", IDC_STATIC2, 14, 30, 108, 10, SS_RIGHT
 EDITTEXT        IDC_AUTOSAVE_INTERVAL, 130, 28, 40, 12, ES_AUTOHSCROLL
-AUTOCHECKBOX    "Automaticky ukladať pri uspatí systému.", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Automaticky ukladať pri vypnutí systému.", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
-GROUPBOX        "Zálohovanie: ", IDC_STATIC3, 7, 74, 170, 66, 0, WS_EX_TRANSPARENT
-AUTOCHECKBOX    "Povoliť zálohovanie.", IDC_AS_BACKUP_ENABLE, 14, 85, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Zálohovať po automatickom uložení.", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Súbežne zálohovať.", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Automaticky ukladať pri uspatí systému", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Automaticky ukladať pri vypnutí systému", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
+GROUPBOX        "Zálohovanie:", IDC_STATIC3, 7, 74, 170, 66, 0, WS_EX_TRANSPARENT
+AUTOCHECKBOX    "Povoliť zálohovanie", IDC_AS_BACKUP_ENABLE, 14, 85, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Zálohovať po automatickom uložení", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Súbežne zálohovať", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP
 PUSHBUTTON      "Otvoriť priečinok", IDC_AS_BACKUP_OPENFOLDER, 110, 122, 60, 14
 DEFPUSHBUTTON   "OK", IDOK, 71, 146, 50, 14
 PUSHBUTTON      "Zrušiť", IDCANCEL, 127, 146, 50, 14

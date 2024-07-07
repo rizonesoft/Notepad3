@@ -158,7 +158,7 @@ CAPTION "Run"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_MUI_RUN,IDC_STATIC,10,7,21,20
-    LTEXT           "Tik die naam van 'n program, gids, dokument of internetbron, en Windows sal dit vir jou oopmaak.",IDC_STATIC,39,7,179,17
+    LTEXT           "Tik die naam van 'n program, gids, dokument of internetbron, en Windows sal dit vir jou oopmaak",IDC_STATIC,39,7,179,17
     EDITTEXT        IDC_COMMANDLINE,10,35,208,13,ES_AUTOHSCROLL
     PUSHBUTTON      "Snuffel...",IDC_SEARCHEXE,163,69,55,16
     DEFPUSHBUTTON   "OK",IDOK,47,69,55,16
@@ -172,7 +172,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Klik hier om die gids te spesifiseer met skakels na jou gunsteling programme.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Klik hier om die gids te spesifiseer met skakels na jou gunsteling programme",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
@@ -185,20 +185,20 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Standaard Kodering (nuwe lêer):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
-    CONTROL         "Gebruik as en terug&val op opsporing mislukking.",IDC_USEASREADINGFALLBACK,
+    CONTROL         "Gebruik as en terug&val op opsporing mislukking",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,170,10
-    GROUPBOX        "Kodering Deteksie: ",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
-    CONTROL         "Maak 7-bit &ASCII-lêers in UTF-8 wyse oop.",IDC_ASCIIASUTF8,
+    GROUPBOX        "Kodering Deteksie:",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
+    CONTROL         "Maak 7-bit &ASCII-lêers in UTF-8 wyse oop",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,155,10
-    CONTROL         "Gebruik &betroubare opsporing resultate alleenlik.",IDC_RELIABLE_DETECTION_RES,
+    CONTROL         "Gebruik &betroubare opsporing resultate alleenlik",IDC_RELIABLE_DETECTION_RES,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,172,10
-    CONTROL         "Maak 8-bit *.&nfo/diz lêers in DOS-437 wyse oop.",IDC_NFOASOEM,
+    CONTROL         "Maak 8-bit *.&nfo/diz lêers in DOS-437 wyse oop",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,170,10
-    CONTROL         "Ontleed enkoderinglêer &tags.",IDC_ENCODINGFROMFILEVARS,
+    CONTROL         "Ontleed enkoderinglêer &tags",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,155,10
-    CONTROL         "Voer &ANSI-kodebladanalise uit.",IDC_NOANSICPDETECTION,
+    CONTROL         "Voer &ANSI-kodebladanalise uit",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,155,10
-    CONTROL         "Aktiveer opsporing van &UNICODE.",IDC_NOUNICODEDETECTION,
+    CONTROL         "Aktiveer opsporing van &UNICODE",IDC_NOUNICODEDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,130,155,10
     DEFPUSHBUTTON   "OK",IDOK,87,151,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,140,151,50,14
@@ -211,11 +211,11 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "&Standaard lyn eindig wyse:",IDC_STATIC,7,7,116,8
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Wys inkonsekwente lynbreukwaarskuwing.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "Wys inkonsekwente lynbreukwaarskuwing",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
-    CONTROL         "&Verseker konstante lyn eindes wanneer jy stoor.",IDC_CONSISTENT_EOLS,
+    CONTROL         "&Verseker konstante lyn eindes wanneer jy stoor",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,182,10
-    CONTROL         "&Slaan agterliggende spasies oor wanneer jy stoor.",IDC_AUTOSTRIPBLANKS,
+    CONTROL         "&Slaan agterliggende spasies oor wanneer jy stoor",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,64,175,10
     DEFPUSHBUTTON   "OK",IDOK,139,7,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,139,24,50,14
@@ -230,14 +230,14 @@ BEGIN
     RTEXT           "CR+LF:",IDC_STATIC2,10,18,34,8
     RTEXT           "CR:",IDC_STATIC3,10,28,34,8
     RTEXT           "LF:",IDC_STATIC4,10,38,34,8
-    LTEXT           "%s lyn(e).",IDC_EOL_SUM_CRLF,48,18,136,8
-    LTEXT           "%s lyn(e).",IDC_EOL_SUM_CR,48,28,136,8
-    LTEXT           "%s lyn(e).",IDC_EOL_SUM_LF,48,38,136,8
+    LTEXT           "%s lyn(e)",IDC_EOL_SUM_CRLF,48,18,136,8
+    LTEXT           "%s lyn(e)",IDC_EOL_SUM_CR,48,28,136,8
+    LTEXT           "%s lyn(e)",IDC_EOL_SUM_LF,48,38,136,8
     LTEXT           "&Wil jy die lyn eindes normaliseer?",IDC_STATIC5,7,52,180,8
     COMBOBOX        IDC_EOLMODELIST,7,64,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Ja",IDOK,138,63,50,14
     PUSHBUTTON      "&Nee",IDCANCEL,138,80,50,14
-    CONTROL         "&Toon altyd hierdie dialoog.",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "&Toon altyd hierdie dialoog",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,82,118,10
 END
 
@@ -260,10 +260,10 @@ CAPTION "Maak Onlangse Lêer Oop?"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
-    CONTROL         "&Stoor onlangse lêerlys by uitgang.",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,126,10
-    CONTROL         "&Behou caret &posisie.",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
-    CONTROL         "&Onthou soekpatroon.",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,120,10
-    CONTROL         "&Laai die mees onlangse lêer outomaties by opstart.",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,180,10
+    CONTROL         "&Stoor onlangse lêerlys by uitgang",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,126,10
+    CONTROL         "&Behou caret &posisie",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
+    CONTROL         "&Onthou soekpatroon",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,120,10
+    CONTROL         "&Laai die mees onlangse lêer outomaties by opstart",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,180,10
     CONTROL         "Gooi weg", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212, 107, 50, 14
     DEFPUSHBUTTON   "OK",IDOK,154,158,50,14,WS_DISABLED
     PUSHBUTTON      "Maak toe",IDCANCEL,212,158,50,14
@@ -275,13 +275,13 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Lêererveranderingkennisgewing"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "&Geen.", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
-    CONTROL         "&Aanwyser (stil).", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
-    CONTROL         "&Wys boodskap.", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
-    CONTROL         "&Herlaai outomaties.", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
-    CONTROL         "&Eksklusiewe lêerslot.", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,99,10
-    CONTROL         "&Stel terug as 'n nuwe lêer oopgemaak word.", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,160,10
-    CONTROL         "&Moniteringslogboek.", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
+    CONTROL         "&Geen", IDC_RADIO_BTN_A,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,99,10
+    CONTROL         "&Aanwyser (stil)", IDC_RADIO_BTN_B, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 19, 99, 10
+    CONTROL         "&Wys boodskap", IDC_RADIO_BTN_C,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,99,10
+    CONTROL         "&Herlaai outomaties", IDC_RADIO_BTN_D,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,43,99,10
+    CONTROL         "&Eksklusiewe lêerslot", IDC_RADIO_BTN_E,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,55,99,10
+    CONTROL         "&Stel terug as 'n nuwe lêer oopgemaak word", IDC_CHECK_BOX_A,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,72,160,10
+    CONTROL         "&Moniteringslogboek", IDC_CHECK_BOX_B,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,120,10
     LTEXT           "Lêer Kontrole Interval [ms]",IDC_LINE_TEXT,7,102,120,10
     EDITTEXT        IDC_FILE_CHECK_INTERVAL,127,100,50,12,ES_AUTOHSCROLL | ES_NUMBER
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
@@ -294,9 +294,9 @@ CAPTION "Kies Sintakseskema"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_STYLELIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,130
-    CONTROL         "Stel geselekteerde skema as &standaard.",IDC_DEFAULTSCHEME,
+    CONTROL         "Stel geselekteerde skema as &standaard",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,150,10
-    CONTROL         "&Outo-kies volgens lêernaam uitbreiding.",IDC_AUTOSELECT,
+    CONTROL         "&Outo-kies volgens lêernaam uitbreiding",IDC_AUTOSELECT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,145,10
     DEFPUSHBUTTON   "OK",IDOK,53,173,50,14,WS_DISABLED
     PUSHBUTTON      "Kanselleer",IDCANCEL,108,173,50,14
@@ -307,7 +307,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "  ☰   Skema"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,239
+    CONTROL         "",IDC_STYLELIST,"SysTreeView32",TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,7,164,250
     LTEXT           "",IDC_STYLELABEL_ROOT,181,141,279,8
     EDITTEXT        IDC_STYLEEDIT_ROOT,181,152,279,12,ES_AUTOHSCROLL
     LTEXT           "",IDC_STYLELABEL,181,171,279,8
@@ -340,13 +340,13 @@ BEGIN
     EDITTEXT        IDC_TAB_WIDTH,67,7,30,14,ES_AUTOHSCROLL
     LTEXT           "&Indentasie grootte:",IDC_STATIC2,7,30,55,8
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
-    CONTROL         "Voeg tabs as &spasies in.",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
-    CONTROL         "Tab sleutel hervorm indentasie.",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
-    CONTROL         "&Backspace-sleutel hervorm indentasie.",IDC_BACKTAB_INDENTS,
+    CONTROL         "Voeg tabs as &spasies in",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
+    CONTROL         "Tab sleutel hervorm indentasie",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "&Backspace-sleutel hervorm indentasie",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
-    CONTROL         "&Waarskuwing teen strydige indentasie.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Waarskuwing teen strydige indentasie",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
-    CONTROL         "&Spoor Tab of Space indentation op.",IDC_AUTO_DETECT_INDENTS,
+    CONTROL         "&Spoor Tab of Space indentation op",IDC_AUTO_DETECT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,117,24,50,14
@@ -357,21 +357,21 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Inkonsekwente Indentasie"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Statistieke: ",IDC_STATIC,7,7,182,48,WS_GROUP
+    GROUPBOX        "Statistieke:",IDC_STATIC,7,7,182,48,WS_GROUP
     LTEXT           "Tabs[%s]:",IDC_INDENT_WIDTH_TAB,44,18,30,8
     LTEXT           "Spasies[%s]:",IDC_INDENT_WIDTH_SPC,44,30,35,8
     LTEXT           "Gemengde[x]:",IDC_STATIC3,30,42,505,8
     RTEXT           "%s lyn(e)",IDC_INDENT_SUM_TAB,84,18,52,8
     RTEXT           "%s lyn(e)",IDC_INDENT_SUM_SPC,84,30,52,8
     RTEXT           "%s lyn(e)",IDC_INDENT_SUM_MIX,84,42,52,8
-    GROUPBOX        "Re-Indent Alles ? ",IDC_STATIC2,7,60,182,56,WS_GROUP
+    GROUPBOX        "Re-Indent Alles ?",IDC_STATIC2,7,60,182,56,WS_GROUP
     CONTROL         "&Tabs",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
     CONTROL         "&Spasies",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,32,10
     RTEXT           "%s lyn(e) w/ onreëlmatige indentdiepte",IDC_INDENT_TAB_MODX,40,72,124,8
     RTEXT           "%s lyn(e) w/ onreëlmatige indentdiepte",IDC_INDENT_SPC_MODX,40,84,124,8
     PUSHBUTTON      "&Ja",IDOK,80,98,50,14
     PUSHBUTTON      "&Nee",IDCANCEL,134,98,50,14
-    CONTROL         "&Toon altyd hierdie dialoog.",IDC_WARN_INCONSISTENT_INDENTS,
+    CONTROL         "&Toon altyd hierdie dialoog",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,122,122,10
 END
 
@@ -382,8 +382,8 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "&Veelrand-lyn pos:",IDC_STATIC,7,10,80,8
     EDITTEXT        IDC_MULTIEDGELINE,92,7,180,14,ES_AUTOHSCROLL
-    CONTROL         "&Wys randlyn.",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
-    CONTROL         "&Verander agtergrondkleur.",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
+    CONTROL         "&Wys randlyn",IDC_SHOWEDGELINE,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,27,140,10
+    CONTROL         "&Verander agtergrondkleur",IDC_BACKGRDCOLOR,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,38,140,10
     DEFPUSHBUTTON   "OK",IDOK,166,34,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,222,34,50,14
 END
@@ -455,7 +455,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FAVORITESDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETFAVORITESDIR,7,83,13,13
-    LTEXT           "Klik hier om die gids te spesifiseer met skakels na jou gunsteling lêers.",IDC_FAVORITESDESCR,26,83,132,18
+    LTEXT           "Klik hier om die gids te spesifiseer met skakels na jou gunsteling lêers",IDC_FAVORITESDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
@@ -528,15 +528,15 @@ BEGIN
     PUSHBUTTON      "Kanselleer",IDCANCEL,138,24,50,14
     LTEXT           "${L}",IDC_MODLNS_DOCLN_CANONIC,7,72,14,8
     LTEXT           "${0L}",IDC_MODLNS_DOCLN_ZEROFLD,30,72,18,8
-    LTEXT           "Dokumenlynnommer.",IDC_STATIC3,57,72,130,8
+    LTEXT           "Dokumenlynnommer",IDC_STATIC3,57,72,130,8
     LTEXT           "${N}",IDC_MODLNS_CNTLN1_CANONIC,7,82,15,8
     LTEXT           "${0N}",IDC_MODLNS_CNTLN1_ZEROFLD,30,82,19,8
-    LTEXT           "Deurlopende nommer.",IDC_STATIC4,57,82,130,8
+    LTEXT           "Deurlopende nommer",IDC_STATIC4,57,82,130,8
     LTEXT           "${I}",IDC_MODLNS_CNTLN0_CANONIC,7,92,13,8
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,17,8
-    LTEXT           "Deurlopende nommer (nul-gebaseer).",IDC_STATIC5,57,92,132,8
+    LTEXT           "Deurlopende nommer (nul-gebaseer)",IDC_STATIC5,57,92,132,8
     LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,35,8
-    LTEXT           "${<expr>} definieer wiskundige formules.",IDC_STATIC6,57,102,137,8
+    LTEXT           "${<expr>} definieer wiskundige formules",IDC_STATIC6,57,102,137,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
@@ -576,7 +576,7 @@ BEGIN
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     DEFPUSHBUTTON   "&OK",IDOK,193,50,50,14
-    CONTROL         "&Moenie hierdie boodskap weer wys nie.",IDC_INFOBOXCHECK,
+    CONTROL         "&Moenie hierdie boodskap weer wys nie",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,128,10
 END
 
@@ -590,7 +590,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     PUSHBUTTON      "&Ja",IDYES,137,50,50,14
     PUSHBUTTON      "&Nee",IDNO,193,50,50,14
-    CONTROL         "&Moenie hierdie boodskap weer wys nie.",IDC_INFOBOXCHECK,
+    CONTROL         "&Moenie hierdie boodskap weer wys nie",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,128,10
 END
 
@@ -604,7 +604,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     DEFPUSHBUTTON   "&OK",IDOK,137,50,50,14
     PUSHBUTTON      "&Kanselleer",IDCANCEL,193,50,50,14
-    CONTROL         "&Moenie hierdie boodskap weer wys nie.",IDC_INFOBOXCHECK,
+    CONTROL         "&Moenie hierdie boodskap weer wys nie",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,128,10
 END
 
@@ -619,7 +619,7 @@ BEGIN
     DEFPUSHBUTTON   "&Ja",IDOK,7,70,50,14
     PUSHBUTTON      "&Nee",IDNO,61,70,50,14
     PUSHBUTTON      "&Kanselleer",IDCANCEL,115,70,50,14
-    CONTROL         "&Moenie hierdie boodskap weer wys nie.",IDC_INFOBOXCHECK,
+    CONTROL         "&Moenie hierdie boodskap weer wys nie",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,54,140,10
 END
 
@@ -633,7 +633,7 @@ BEGIN
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
     DEFPUSHBUTTON   "&Probeer",IDRETRY,131,50,50,14
     PUSHBUTTON      "&Kanselleer",IDCANCEL,187,50,50,14
-    CONTROL         "&Moenie hierdie boodskap weer wys nie.",IDC_INFOBOXCHECK,
+    CONTROL         "&Moenie hierdie boodskap weer wys nie",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
 END
 
@@ -645,7 +645,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Moenie hierdie boodskap weer wys nie.",IDC_INFOBOXCHECK,
+    CONTROL         "&Moenie hierdie boodskap weer wys nie",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
     DEFPUSHBUTTON   "&Probeer weer",IDRETRY,186,70,50,14
     PUSHBUTTON      "&Staak",IDABORT, 130, 70, 50, 14
@@ -660,7 +660,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,41,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Moenie hierdie boodskap weer wys nie.",IDC_INFOBOXCHECK,
+    CONTROL         "&Moenie hierdie boodskap weer wys nie",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
     DEFPUSHBUTTON   "&Probeer weer",IDRETRY,186,70,50,14
     PUSHBUTTON      "&Kanselleer", IDCANCEL, 130, 70, 50, 14
@@ -675,7 +675,7 @@ BEGIN
     //~ICON            IDR_MAINWND,IDC_INFOBOXICON,7,7,0,0
     CONTROL         IDR_MAINWND, IDC_INFOBOXICON, "Static", SS_BITMAP | SS_NOTIFY, 7, 7, 24, 24, WS_EX_TRANSPARENT
     LTEXT           "",IDC_INFOBOXTEXT,35,7,202,53,SS_EDITCONTROL | SS_NOPREFIX | SS_LEFT
-    CONTROL         "&Moenie hierdie boodskap weer wys nie.",IDC_INFOBOXCHECK,
+    CONTROL         "&Moenie hierdie boodskap weer wys nie",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
     DEFPUSHBUTTON   "&Herlaai",IDRETRY,186,82,50,14
     PUSHBUTTON      "&Kanselleer", IDCANCEL, 130, 82, 50, 14
@@ -687,19 +687,19 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Sorteer Lyne"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "Sorteer &ascending.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
-    CONTROL         "Sorteer &descending.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
-    CONTROL         "Skui&fel lyne.",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
-    CONTROL         "Verenig duplikaatlyne.",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
-    CONTROL         "&Verwyder dubbele lyne.",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
-    CONTROL         "Verwyder &unieke lyne.",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
-    CONTROL         "Verwyder &leë lyne.",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
-    CONTROL         "Verwyder &wit-spasie lyne.",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
-    CONTROL         "Case &sensitief.",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
-    CONTROL         "&Case onsensitief.",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
-    CONTROL         "Logiese &getalvergelyking.",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
-    CONTROL         "&Leksikografiese vergelyking.",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
-    CONTROL         "Kolom &sorteer (reghoekige seleksie).",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10
+    CONTROL         "Sorteer &ascending",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
+    CONTROL         "Sorteer &descending",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
+    CONTROL         "Skui&fel lyne",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
+    CONTROL         "Verenig duplikaatlyne",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "&Verwyder dubbele lyne",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "Verwyder &unieke lyne",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
+    CONTROL         "Verwyder &leë lyne",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
+    CONTROL         "Verwyder &wit-spasie lyne",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
+    CONTROL         "Case &sensitief",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
+    CONTROL         "&Case onsensitief",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
+    CONTROL         "Logiese &getalvergelyking",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
+    CONTROL         "&Leksikografiese vergelyking",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
+    CONTROL         "Kolom &sorteer (reghoekige seleksie)",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10
     DEFPUSHBUTTON   "OK",IDOK,128,7,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,128,24,50,14
 END
@@ -733,11 +733,11 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Belyn Lyne"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "&Links.",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,31,10
-    CONTROL         "&Regs.",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,35,10
-    CONTROL         "&Senter.",102,"Button",BS_AUTORADIOBUTTON,7,31,55,10
-    CONTROL         "R&egverdig.",103,"Button",BS_AUTORADIOBUTTON,7,43,55,10
-    CONTROL         "Regverdig (&Paragraaf modus).",104,"Button",BS_AUTORADIOBUTTON,7,55,120,10
+    CONTROL         "&Links",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,31,10
+    CONTROL         "&Regs",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,35,10
+    CONTROL         "&Senter",102,"Button",BS_AUTORADIOBUTTON,7,31,55,10
+    CONTROL         "R&egverdig",103,"Button",BS_AUTORADIOBUTTON,7,43,55,10
+    CONTROL         "Regverdig (&Paragraaf modus)",104,"Button",BS_AUTORADIOBUTTON,7,55,120,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,127,24,50,14
 END
@@ -868,16 +868,16 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Outo-stoor en rugsteun instellings"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-GROUPBOX        "Outo-stoor: ", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
-AUTOCHECKBOX    "Aktiveer Outo-stoor.", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
+GROUPBOX        "Outo-stoor:", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
+AUTOCHECKBOX    "Aktiveer Outo-stoor", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
 LTEXT           "Outo-stoor interval [sek]:", IDC_STATIC2, 14, 30, 108, 10, SS_RIGHT
 EDITTEXT        IDC_AUTOSAVE_INTERVAL, 130, 28, 40, 12, ES_AUTOHSCROLL
-AUTOCHECKBOX    "Outo-stoor op stelselopskorting.", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Outo-stoor tydens stelselafskakeling.", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
-GROUPBOX        "Backup: ", IDC_STATIC3, 7, 74, 170, 66, 0, WS_EX_TRANSPARENT
-AUTOCHECKBOX    "Aktiveer Backup.", IDC_AS_BACKUP_ENABLE, 14, 85, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Backup op Outo-stoor.", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Backup langs mekaar.", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Outo-stoor op stelselopskorting", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Outo-stoor tydens stelselafskakeling", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
+GROUPBOX        "Backup:", IDC_STATIC3, 7, 74, 170, 66, 0, WS_EX_TRANSPARENT
+AUTOCHECKBOX    "Aktiveer Backup", IDC_AS_BACKUP_ENABLE, 14, 85, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Backup op Outo-stoor", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Backup langs mekaar", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP
 PUSHBUTTON      "Maak vouer oop", IDC_AS_BACKUP_OPENFOLDER, 110, 122, 60, 14
 DEFPUSHBUTTON   "OK", IDOK, 71, 146, 50, 14
 PUSHBUTTON      "Kanselleer", IDCANCEL, 127, 146, 50, 14
