@@ -122,23 +122,23 @@ BEGIN
     IDS_MUI_FAVORITES       "अपनी पसंदीदा फ़ाईल की निदेशिका चुनें"
     IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
     IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Wildcard खोज\n\n*\tशून्य या उससे ज्यादा वर्णों का मिलान\n?\tसिर्फ़ एक वर्ण का मिलान "
+    IDS_MUI_WILDCARDHELP    "Wildcard खोज\n\n*\tशून्य या उससे ज्यादा वर्णों का मिलान\n?\tसिर्फ़ एक वर्ण का मिलान"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    """%s"" शुरू करने में त्रुटि."
-    IDS_MUI_ERR_SAVEFILE    """%s"" सहेजने में त्रुटि."
+    IDS_MUI_ERR_LOADFILE    """%s"" शुरू करने में त्रुटि"
+    IDS_MUI_ERR_SAVEFILE    """%s"" सहेजने में त्रुटि"
     IDS_MUI_ERR_DLG_FORMAT  "त्रुटि '%s', कारण:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "कोई फ़ाईल ब्राउज़र plugin नहीं मिला।\nकृपया MiniPath फ़ाईल ब्राउज़र plugin यहाँ से डाउनलोड करें: https://rizonesoft.com."
-    IDS_MUI_ERR_GREPWIN     "कोई फ़ाईल सर्च plugin नहीं मिला।\ngrepWinNP3 सर्च plugin कृपया यहाँ से डाउनलोड करें: https://rizonesoft.com."
+    IDS_MUI_ERR_BROWSE      "कोई फ़ाईल ब्राउज़र plugin नहीं मिला।\nकृपया MiniPath फ़ाईल ब्राउज़र plugin यहाँ से डाउनलोड करें: https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "कोई फ़ाईल सर्च plugin नहीं मिला।\ngrepWinNP3 सर्च plugin कृपया यहाँ से डाउनलोड करें: https://rizonesoft.com"
     IDS_MUI_ERR_MRUDLG      "चुनी हुई फ़ाईल तक पहुंचना संभव नहीं!\nक्या आप इस फ़ाईल को सूची में से हटाना चाहते हैं?"
     IDS_MUI_ERR_CREATELINK  "डेस्कटॉप लिंक बनाने में त्रुटि"
     IDS_MUI_ERR_PREVWINDISABLED
                             "मौजूद Notepad3 विंडो कार्यरत है या पहले से कोई चालू डायलॉग डिब्बा खुला है\nक्या आप दूसरी Notepad3 विंडो खोलना चाहते हैं?"
     IDS_MUI_ERR_ENCODINGNA  "आपके सिस्टम पर चुनी हुई एन्कोडिंग के लिए कोड पृष्ठ रूपांतरण तालिका मौजूद नहीं है"
     IDS_MUI_ERR_UNICODE     "इस युनिकोड फ़ाईल के रूपांतरण में त्रुटि है\nफ़ाईल सहेजेने में डेटा खो जाएगा!"
-    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "उपयोगकर्ता अधिकार वयस्थापक रूप मे करने मे त्रुटि!"
 END
@@ -182,29 +182,29 @@ BEGIN
                             "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
     IDS_MUI_FILECHANGENOTIFY2 "चालू फ़ाईल मिटा दी गई है। अभी सहेजें?"
     IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
-    IDS_MUI_STICKYWINPOS    "Sticky विंडो की स्तिथि सक्षम है. कोई भी नई Notepad3 विंडो इस विंडो की स्तिथि सेटिंग को प्रयोग मे लेगी."
-    IDS_MUI_SAVEDSETTINGS   "चालू प्रोग्राम सेटिंग सहेजी जा चुकी हैं."
-    IDS_MUI_CREATEINI_FAIL  "कन्फ़िगरेशन फ़ाईल बनाने में त्रुटि."
-    IDS_MUI_WRITEINI_FAIL   "कन्फ़िगरेशन फ़ाईल में सेटिंग लिखने में त्रुटि."
+    IDS_MUI_STICKYWINPOS    "Sticky विंडो की स्तिथि सक्षम है. कोई भी नई Notepad3 विंडो इस विंडो की स्तिथि सेटिंग को प्रयोग मे लेगी"
+    IDS_MUI_SAVEDSETTINGS   "चालू प्रोग्राम सेटिंग सहेजी जा चुकी हैं"
+    IDS_MUI_CREATEINI_FAIL  "कन्फ़िगरेशन फ़ाईल बनाने में त्रुटि"
+    IDS_MUI_WRITEINI_FAIL   "कन्फ़िगरेशन फ़ाईल में सेटिंग लिखने में त्रुटि"
     IDS_MUI_INIFILE_READONLY
                             "कन्फ़िगरेशन फ़ाईल सिर्फ़ पढ़ने लायक है - नजरंदाज करें और नियंत्रण में लेके सेटिंग बदलें?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "पहले से मौजूद कोई कन्फ़िगरेशन फ़ाईल नहीं पाई गई.\nअपनी बदली हुई शैली को रखने के लिए, अभी सेटिंग सहेजें (F7) या स्कीम कन्फ़िगरेशन में वापस जाएं (Ctrl+F12) और अपनी शैली निर्यात करें."
+                            "पहले से मौजूद कोई कन्फ़िगरेशन फ़ाईल नहीं पाई गई.\nअपनी बदली हुई शैली को रखने के लिए, अभी सेटिंग सहेजें (F7) या स्कीम कन्फ़िगरेशन में वापस जाएं (Ctrl+F12) और अपनी शैली निर्यात करें"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_RELOADSETTINGS   "प्रोग्राम पुनः प्रक्षेपित करने पर सहेजी हुई सेटिंग सक्रिय करें?\n\n%s"
     IDS_MUI_RELOADCFGSEX     "पुनः प्रक्षेपित किए बिना, सहेजी हुई सेटिंग सक्रिय नहीं होंगी और प्रोग्राम से बाहर निकलते समय प्रोग्राम की अंदरूनी सेटिंग द्वारा निरस्त कर दी जाएंगी!"
-    IDS_MUI_EXPORT_FAIL      "शैली सेटिंग ""%s"" को निर्यात करने में त्रुटि."
+    IDS_MUI_EXPORT_FAIL      "शैली सेटिंग ""%s"" को निर्यात करने में त्रुटि"
     IDS_MUI_REGEX_INVALID    "सामान्य व्यंजक मूल्यांकन करने में त्रुटि। व्यंजक अवैध है!"
-    IDS_MUI_DROP_NO_FILE     "प्राप्त हुआ फ़ाईलनाम वैध नहीं है.\nअगर 32-बिट एपलिकेशन से ड्रॉप कर रहे है,\nतो कृपया Notepad3 की औज़ार पट्टी पर ड्रैग और ड्रॉप करें."
+    IDS_MUI_DROP_NO_FILE     "प्राप्त हुआ फ़ाईलनाम वैध नहीं है.\nअगर 32-बिट एपलिकेशन से ड्रॉप कर रहे है,\nतो कृपया Notepad3 की औज़ार पट्टी पर ड्रैग और ड्रॉप करें"
     IDS_MUI_URL_DIR_EXISTS   "URL निर्दिष्ट निदेशिका मौजूद है!"
     IDS_MUI_URL_FILE_EXISTS  "URL निर्दिष्ट फ़ाईल मौजूद है!"
     IDS_MUI_URL_PATH_NOT_FOUND
                              "URL निर्दिष्ट स्थान मौजूद नहीं है!"
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + फ़ाईल खोलने के लिए क्लिक करें."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + ब्राउज़र में लिंक खोलने के लिए क्लिक करें."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + फ़ाईल खोलने के लिए क्लिक करें"
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + ब्राउज़र में लिंक खोलने के लिए क्लिक करें"
     IDS_MUI_INF_PRSVFILEMODTM
                              "फ़ाईल परिवर्तन का मौलिक समय संरक्षण सक्षम है.\nयह विकल्प इस सत्र के लिए बना रहेगा!"
     IDS_MUI_OUT_OFF_OCCMRK   "उपस्तिथि चिन्हक खत्म हो रहे है (बुकमार्क/हाइलाइट)!"
@@ -301,52 +301,52 @@ IDS_MUI_CMDLINEHELP "\
 Notepad3 [/?] [...[एन्कोडिंग]] [...[रेखा समाप्ति मोड]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[ड्राइव:][पथ]फ़ाइलनाम [...]]\r\n\r\n\
-फ़ाइल\tआखरी कोणांक होना चाहिए, डिफ़ॉल्ट रूप में quoted spaces न हों.\r\n\
-+\tएक से ज्यादा फ़ाइल के कोणांक मान्य (quoted spaces के साथ).\r\n\
--\tएक फ़ाइल का कोणांक मान्य (quoted spaces के बिना).\r\n\r\n\
+फ़ाइल\tआखरी कोणांक होना चाहिए, डिफ़ॉल्ट रूप में quoted spaces न हों\r\n\
++\tएक से ज्यादा फ़ाइल के कोणांक मान्य (quoted spaces के साथ)\r\n\
+-\tएक फ़ाइल का कोणांक मान्य (quoted spaces के बिना)\r\n\r\n\
 विकल्प:\r\n\
-/?\tइस मदद संदेश को दिखाएं.\r\n\
-...\tएन्कोडिंग (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-...\tरेखा एन्कोडिंग मोड (/crlf, /cr, /lf).\r\n\
-/e\tफ़ाइल स्रोत एन्कोडिंग.\r\n\
-/g\tनिर्देशित स्थान पे कूदें (/g -1 end of file).\r\n\
-/m\tनिर्देशित टेक्स्ट का मिलान करें (/m- last, /mr regex, /mb backslash).\r\n\
-/l\tपरिवर्तित फ़ाइल स्वतः लोड करें.\r\n\
-/q\tबिना प्रॉम्प्ट के अबाध्य नई फ़ाइलें बनाएं.\r\n\
-/s\tनिर्देशित सिन्टैक्स स्कीम को चुनें.\r\n\
-/d\tनिर्देशित डिफॉल्ट टेक्स्ट स्कीम को चुनें.\r\n\
-/h\tवेब स्रोत कोड स्कीम को चुनें.\r\n\
-/x\tXML दस्तावेज़ की स्कीम को चुनें.\r\n\
-/c\tनई विंडो खोलें और क्लिपबोर्ड सामग्री चिपकाएं.\r\n\
-/b\tक्लिपबोर्ड प्रविष्टियाँ जमा करने हेतु नए पेस्ट बोर्ड को खोलें.\r\n\
-/n\tसदैव एक नई विंडो खोलें (/ns एकल फ़ाइल अवस्था).\r\n\
-/r\tविंडो पुनः इस्तमएआल करें (/rs एकल फ़ाइल अवस्था).\r\n\
+/?\tइस मदद संदेश को दिखाएं\r\n\
+...\tएन्कोडिंग (/ansi, /unicode, /unicodebe, /utf8, /utf8sig)\r\n\
+...\tरेखा एन्कोडिंग मोड (/crlf, /cr, /lf)\r\n\
+/e\tफ़ाइल स्रोत एन्कोडिंग\r\n\
+/g\tनिर्देशित स्थान पे कूदें (/g -1 end of file)\r\n\
+/m\tनिर्देशित टेक्स्ट का मिलान करें (/m- last, /mr regex, /mb backslash)\r\n\
+/l\tपरिवर्तित फ़ाइल स्वतः लोड करें\r\n\
+/q\tबिना प्रॉम्प्ट के अबाध्य नई फ़ाइलें बनाएं\r\n\
+/s\tनिर्देशित सिन्टैक्स स्कीम को चुनें\r\n\
+/d\tनिर्देशित डिफॉल्ट टेक्स्ट स्कीम को चुनें\r\n\
+/h\tवेब स्रोत कोड स्कीम को चुनें\r\n\
+/x\tXML दस्तावेज़ की स्कीम को चुनें\r\n\
+/c\tनई विंडो खोलें और क्लिपबोर्ड सामग्री चिपकाएं\r\n\
+/b\tक्लिपबोर्ड प्रविष्टियाँ जमा करने हेतु नए पेस्ट बोर्ड को खोलें\r\n\
+/n\tसदैव एक नई विंडो खोलें (/ns एकल फ़ाइल अवस्था)\r\n\
+/r\tविंडो पुनः इस्तमएआल करें (/rs एकल फ़ाइल अवस्था)\r\n\
 /p\tविंडो स्तिथि और आकार तय करें (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
-\tया /p <बाएं>,<शीर्ष>,<चोड़ाई>,<ऊंचाई>[,<dpi>[,<अत्यधिक>]]  (समस्त पूर्णांक).\r\n\
-/t\tविंडो शीर्षक तय करें.\r\n\
-/i\tट्रे आइकान के रूप में शुरू करें.\r\n\
-/o\tविंडो ऊपर रखें.\r\n\
-/f\tini-फ़ाईल बताएं (/f0 ini-फ़ाईल नहीं है).\r\n\
-/u\tवस्थापक विशेषाधिकार के रूप में प्रक्षेपित करें.\r\n\
-/v\tफ़ाईल को शीघ्र मुद्रित करें और बाहर निकलें.\r\n\
-/vd\tफ़ाईल मुद्रण (प्रिंटर डायलॉग डिब्बा खोलें).\r\n\
-/y\tसापेक्ष फ़ाईलनाम की स्तिथि में खोज परिवेश PATH.\r\n\
-/z\tअगला छोड़ें (registry आधार पे Notepad को बदलने में प्रयोग हेतु).\r\n\r\n\
+\tया /p <बाएं>,<शीर्ष>,<चोड़ाई>,<ऊंचाई>[,<dpi>[,<अत्यधिक>]]  (समस्त पूर्णांक)\r\n\
+/t\tविंडो शीर्षक तय करें\r\n\
+/i\tट्रे आइकान के रूप में शुरू करें\r\n\
+/o\tविंडो ऊपर रखें\r\n\
+/f\tini-फ़ाईल बताएं (/f0 ini-फ़ाईल नहीं है)\r\n\
+/u\tवस्थापक विशेषाधिकार के रूप में प्रक्षेपित करें\r\n\
+/v\tफ़ाईल को शीघ्र मुद्रित करें और बाहर निकलें\r\n\
+/vd\tफ़ाईल मुद्रण (प्रिंटर डायलॉग डिब्बा खोलें)\r\n\
+/y\tसापेक्ष फ़ाईलनाम की स्तिथि में खोज परिवेश PATH\r\n\
+/z\tअगला छोड़ें (registry आधार पे Notepad को बदलने में प्रयोग हेतु)\r\n\r\n\
 उदाहरण:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... एक नई फ़ाइल खोलें: ""Test.txt"" एन्कोडिंग=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... एक नई फ़ाइल खोलें: ""Test.txt"" एन्कोडिंग=UTF-8-BOM, EoL=CRLF\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... फ़ाइल मुद्रित करें: ""Test.txt"" तुरंत ही.\
+ \t... फ़ाइल मुद्रित करें: ""Test.txt"" तुरंत ही\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
 फ़ाईलनाम प्रकार ';' से अलग होने चाहिए\r\n\
 इसे प्रयोग मे लें \\<regex>; फ़ाईलनाम के मिलान तरीके को परिभाषित करने के लिए:\r\n\
-   \\xyz$;   => filenames(basename+ext) आखिरी वर्णों के रूप में 'xyz'.\r\n\r\n\
+   \\xyz$;   => filenames(basename+ext) आखिरी वर्णों के रूप में 'xyz'\r\n\r\n\
 शैली फॉर्मैट:\r\n\
 फॉन्ट:नाम; आकार:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-शैली के गुण कॉपी करने के लिए कॉपी/चिपकाने या ड्रैग/ड्रॉप का प्रयोग करें.\
+शैली के गुण कॉपी करने के लिए कॉपी/चिपकाने या ड्रैग/ड्रॉप का प्रयोग करें\
 "
 
 END

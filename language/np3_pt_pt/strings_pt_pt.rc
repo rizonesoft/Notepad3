@@ -118,27 +118,27 @@ BEGIN
     IDS_MUI_FILTER_EXE      "Ficheiros executáveis (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Todos os ficheiros (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "Ficheiros de configuração (*.ini)|*.ini|Todos os ficheiros (*.*)|*.*|"
     IDS_MUI_FILTER_BITMAP   "Ficheiros Bitmap (*.bmp)|*.bmp|Todos os ficheiros (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Seleccione a pasta com ligações para os seus programas favoritos."
-    IDS_MUI_FAVORITES       "Seleccione a pasta com ligações para os seus ficheiros favoritos."
+    IDS_MUI_OPENWITH        "Seleccione a pasta com ligações para os seus programas favoritos"
+    IDS_MUI_FAVORITES       "Seleccione a pasta com ligações para os seus ficheiros favoritos"
     IDS_MUI_BACKSLASHHELP   "Transformações de barra invertida\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
     IDS_MUI_REGEXPHELP      "Correspondência de sintaxe RegExp (Multi Linhas)\n\n.\tCorresponde a qualquer caractere\n^\tCadeia vazia imediatamente após nova linha\n$\tCadeia vazia imediatamente antes do fim da linha\n\\<\tInício de uma palavra\n\\>\tFim de uma palavra\n\\b\tLimite da palavra\n[...]\tUm conjunto de caracteres ([abc]) ou um intervalo ([a-z])\n[^...]\tCaracteres NÃO incluidos no conjunto ou intervalo\n\\d\tQualquer dígito decimal\n\\D\tQualquer caractere não-dígito\n\\s\tQualquer caractere de espaço em branco\n\\S\tNão é um caractere de espaço em branco\n\\w\tQualquer caractere ""palavra""\n\\W\tQualquer caractere ""não-palavra""\n\\x\tCaractere Escape com qualquer outro significado especial\n\\xHH\tCaractere com código hex HH\n?\tCorrespondência precedente 0 ou 1 vezes\n*\tCorrespondência precedente 0 ou mais vezes\n+\tCorrespondência precedente 1 ou mais vezes\n*? ou +?\tCorrespondência de quantificadores 'Non greedy' ""?"" e ""+""\n(\tInício de uma região\n)\tFim de uma região\n\\n\tRefere-se a uma região ao substituir (n é 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Procura com jokers\n\n*\tCorresponde a zero ou mais caracteres.\n?\tCorresponde exactamente a um caractere. "
+    IDS_MUI_WILDCARDHELP    "Procura com jokers\n\n*\tCorresponde a zero ou mais caracteres\n?\tCorresponde exactamente a um caractere"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "Erro ao carregar ""%s""."
-    IDS_MUI_ERR_SAVEFILE    "Erro ao guardar ""%s""."
+    IDS_MUI_ERR_LOADFILE    "Erro ao carregar ""%s"""
+    IDS_MUI_ERR_SAVEFILE    "Erro ao guardar ""%s"""
     IDS_MUI_ERR_DLG_FORMAT  "Erro '%s', causa:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Não foi encontrado nenhum plugin de navegador de ficheiros.\nO plugin do navegador de ficheiros MiniPath pode ser transferido de https://rizonesoft.com."
-    IDS_MUI_ERR_GREPWIN     "Não foi encontrado nenhum plugin de procura de ficheiros.\nO plugin de procura de ficheiros grepWinNP3 pode ser transferido de https://rizonesoft.com."
+    IDS_MUI_ERR_BROWSE      "Não foi encontrado nenhum plugin de navegador de ficheiros.\nO plugin do navegador de ficheiros MiniPath pode ser transferido de https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Não foi encontrado nenhum plugin de procura de ficheiros.\nO plugin de procura de ficheiros grepWinNP3 pode ser transferido de https://rizonesoft.com"
     IDS_MUI_ERR_MRUDLG      "Não foi possível aceder ao ficheiro seleccionado!\nDeseja removê-lo da lista?"
-    IDS_MUI_ERR_CREATELINK  "Erro ao criar a ligação ao ambiente de trabalho."
+    IDS_MUI_ERR_CREATELINK  "Erro ao criar a ligação ao ambiente de trabalho"
     IDS_MUI_ERR_PREVWINDISABLED
                             "A janela existente do Notepad3 está ocupada ou tem uma caixa de diálogo activa.\nDeseja abrir outra janela do Notepad3?"
-    IDS_MUI_ERR_ENCODINGNA  "As tabelas de conversão da página de código para a codificação seleccionada, não estão disponíveis no seu sistema."
+    IDS_MUI_ERR_ENCODINGNA  "As tabelas de conversão da página de código para a codificação seleccionada, não estão disponíveis no seu sistema"
     IDS_MUI_ERR_UNICODE     "Erro ao converter este ficheiro Unicode.\nSerão perdidos dados se o ficheiro for guardado!"
-    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Erro na elevação dos direitos do utilizador!"
 END
@@ -166,14 +166,14 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "Esta operação não pode ser efectuada numa selecção rectangular."
-    IDS_MUI_SELMULTI        "Esta operação não pode ser efectuada numa multi-selecção."
-    IDS_MUI_SELRECTORMULTI  "Esta operação não pode ser efectuada numa selecção rectangular or múltipla."
-    IDS_MUI_BUFFERTOOSMALL  "Esta operação não pode ser efectuada (linhas demasiado longas)."
-    IDS_MUI_FIND_WRAPFW     "Atingido o fim do documento, reiniciar procura no pricípio."
-    IDS_MUI_FIND_WRAPRE     "Atingido o início do documento, reiniciar procura no fim."
-    IDS_MUI_NOTFOUND        "Não foi encontrado o texto especificado."
-    IDS_MUI_REPLCOUNT       "Foram substituídas %s ocorrências do texto especificado."
+    IDS_MUI_SELRECT         "Esta operação não pode ser efectuada numa selecção rectangular"
+    IDS_MUI_SELMULTI        "Esta operação não pode ser efectuada numa multi-selecção"
+    IDS_MUI_SELRECTORMULTI  "Esta operação não pode ser efectuada numa selecção rectangular or múltipla"
+    IDS_MUI_BUFFERTOOSMALL  "Esta operação não pode ser efectuada (linhas demasiado longas)"
+    IDS_MUI_FIND_WRAPFW     "Atingido o fim do documento, reiniciar procura no pricípio"
+    IDS_MUI_FIND_WRAPRE     "Atingido o início do documento, reiniciar procura no fim"
+    IDS_MUI_NOTFOUND        "Não foi encontrado o texto especificado"
+    IDS_MUI_REPLCOUNT       "Foram substituídas %s ocorrências do texto especificado"
     IDS_MUI_ASK_ENCODING    "A alteração da codificação do ficheiro de uma para outra, pode substituir texto não suportado com caracteres padrão e será limpo o histórico de anulações. Continuar?"
     IDS_MUI_ASK_ENCODING2   "Está prestes a alterar a codificação de um ficheiro vazio. Tenha em atenção de que isto irá limpar o histórico de anulações e que não pode ser sincronizado com a nova codificação. Continuar?"
     IDS_MUI_ASK_CLEAR_UNDO  "Esta operação vai limpar o histórico de anulações. Continuar?"
@@ -182,29 +182,29 @@ BEGIN
                             "O ficheiro actual foi modificado por um programa externo.\nPor favor escolha:\n\nCancelar -\t\tIgnorar alterações futuras\nRecarregar -\t\tRecarregar ficheiro\nContinuar -\tMudar para monitorzação do ficheiro"
     IDS_MUI_FILECHANGENOTIFY2 "O ficheiro actual foi eliminado. Guardar agora?"
     IDS_MUI_FILELOCK_ERROR  "Não foi possível obter bloqueio de ficheiro exclusivo para ""%s""!"
-    IDS_MUI_STICKYWINPOS    "A posição fixa da janela está activada. Todas as novas janelas do Notepad3 irão utilizar as actuais definições de posicionamento."
-    IDS_MUI_SAVEDSETTINGS   "As actuais definições do programa foram guardadas."
-    IDS_MUI_CREATEINI_FAIL  "Erro ao criar o ficheiro de configuração."
-    IDS_MUI_WRITEINI_FAIL   "Erro ao gravar definições no ficheiro de configuração."
+    IDS_MUI_STICKYWINPOS    "A posição fixa da janela está activada. Todas as novas janelas do Notepad3 irão utilizar as actuais definições de posicionamento"
+    IDS_MUI_SAVEDSETTINGS   "As actuais definições do programa foram guardadas"
+    IDS_MUI_CREATEINI_FAIL  "Erro ao criar o ficheiro de configuração"
+    IDS_MUI_WRITEINI_FAIL   "Erro ao gravar definições no ficheiro de configuração"
     IDS_MUI_INIFILE_READONLY
                             "O ficheiro de configuração é só de leitura - ignorar e sobrescrever definições?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Não foi encontrado nenhum ficheiro de configuração.\nPara manter as suas modificações de estilo, guarde as definições agora (F7) ou regresse à configuração do esquema (Ctrl+F12) e exporte os seus estilos."
+                            "Não foi encontrado nenhum ficheiro de configuração.\nPara manter as suas modificações de estilo, guarde as definições agora (F7) ou regresse à configuração do esquema (Ctrl+F12) e exporte os seus estilos"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_RELOADSETTINGS   "Activar definições guardadas reiniciando o programa?\n\n%s"
     IDS_MUI_RELOADCFGSEX     "Se continuar sem reiniciar, as definições guardadas não serão aplicadas e serão substituídas pelas definições internas ao sair do programa!"
-    IDS_MUI_EXPORT_FAIL      "Erro ao exportar as definições de estilo para ""%s""."
+    IDS_MUI_EXPORT_FAIL      "Erro ao exportar as definições de estilo para ""%s"""
     IDS_MUI_REGEX_INVALID    "Erro a avaliar expressão regular. A expressão é inválida!"
-    IDS_MUI_DROP_NO_FILE     "Nenhum nome de ficheiro válido recuperado.\nSe for proveniente de um programa 32-bit,\narraste e largue na barra de ferramentas do Notepad3."
+    IDS_MUI_DROP_NO_FILE     "Nenhum nome de ficheiro válido recuperado.\nSe for proveniente de um programa 32-bit,\narraste e largue na barra de ferramentas do Notepad3"
     IDS_MUI_URL_DIR_EXISTS   "Pasta especificada da URL já existe!"
     IDS_MUI_URL_FILE_EXISTS  "Ficheiro especificado da URL já existe!"
     IDS_MUI_URL_PATH_NOT_FOUND
                              "Caminho especificado da URL não encontrado!"
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Clique para abrir o ficheiro."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Clique para abrir a ligação no navegador."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Clique para abrir o ficheiro"
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Clique para abrir a ligação no navegador"
     IDS_MUI_INF_PRSVFILEMODTM
                              "Manter a data/hora de modificação original do ficheiro activada.\nEsta opção será válida para esta sessão!"
     IDS_MUI_OUT_OFF_OCCMRK   "Não existem outros marcadores de ocorrência (Marcador/Realce)!"
@@ -230,11 +230,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "Este documento não contém texto para ser impresso."
+    IDS_MUI_PRINT_EMPTY     "Este documento não contém texto para ser impresso"
     IDS_MUI_PRINT_ERROR     "Erro ao imprimir ""%s""!"
-    IDS_MUI_FAV_SUCCESS     "Foi criado na pasta favoritos um atalho para o ficheiro actual."
-    IDS_MUI_FAV_FAILURE     "Não foi possível criar o atalho para o ficheiro actual.\nCertifique-se de que não existe outro ficheiro com o mesmo nome."
-    IDS_MUI_READONLY_MODIFY "Os atributos do ""%s"" não podem ser modificados."
+    IDS_MUI_FAV_SUCCESS     "Foi criado na pasta favoritos um atalho para o ficheiro actual"
+    IDS_MUI_FAV_FAILURE     "Não foi possível criar o atalho para o ficheiro actual.\nCertifique-se de que não existe outro ficheiro com o mesmo nome"
+    IDS_MUI_READONLY_MODIFY "Os atributos do ""%s"" não podem ser modificados"
     IDS_MUI_SAVEPOS         "&Guardar posição\tCtrl+S"
     IDS_MUI_RESETPOS        "&Repor posição\tCtrl+R"
     IDS_MUI_PREVIEW         "&Pré-visualizar definições\tCtrl+P"
@@ -301,52 +301,52 @@ Utilização:\r\n\
 Notepad3 [/?] [...[Codificação]] [...[Modo fim de linha]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[unidade:][caminho]ficheiro[...]]\r\n\r\n\
-ficheiro\tDeve ser o último argumento, sem espaços entre aspas por defeito.\r\n\
-+\tAceita vários argumentos (com espaços entre aspas).\r\n\
--\tAceita um só argumento (sem espaços entre aspas).\r\n\r\n\
+ficheiro\tDeve ser o último argumento, sem espaços entre aspas por defeito\r\n\
++\tAceita vários argumentos (com espaços entre aspas)\r\n\
+-\tAceita um só argumento (sem espaços entre aspas)\r\n\r\n\
 Opções:\r\n\
-/?\tExibe esta mensagem de ajuda.\r\n\
-...\tCodificação (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-...\tModo fim de linha (/crlf, /cr, /lf).\r\n\
-/e\tCodificação do ficheiro de origem.\r\n\
-/g\tSalta para posição indicada (/g -1 fim do ficheiro).\r\n\
-/m\tCorresponde ao texto especificado (/m- último, /mr regex, /mb backslash).\r\n\
-/l\tAuto-recarrega ficheiros modificados.\r\n\
-/q\tForça a criação de novos ficheiros sem perguntar.\r\n\
-/s\tSelecciona esquema de sintaxe especificado.\r\n\
-/d\tSelecciona esquema padrão de texto.\r\n\
-/h\tSelecciona esquema código fonte Web.\r\n\
-/x\tSelecciona esquema de documento XML.\r\n\
-/c\tAbre nova janela e cola conteúdo da área de transferência.\r\n\
-/b\tAbre novo quadro de colagem para recolher entradas da área \r\n\tde transferência.\r\n\
-/n\tAbre sempre uma nova janela (/ns instância de único ficheiro).\r\n\
-/r\tReutiliza a janela (/rs instância de único ficheiro).\r\n\
+/?\tExibe esta mensagem de ajuda\r\n\
+...\tCodificação (/ansi, /unicode, /unicodebe, /utf8, /utf8sig)\r\n\
+...\tModo fim de linha (/crlf, /cr, /lf)\r\n\
+/e\tCodificação do ficheiro de origem\r\n\
+/g\tSalta para posição indicada (/g -1 fim do ficheiro)\r\n\
+/m\tCorresponde ao texto especificado (/m- último, /mr regex, /mb backslash)\r\n\
+/l\tAuto-recarrega ficheiros modificados\r\n\
+/q\tForça a criação de novos ficheiros sem perguntar\r\n\
+/s\tSelecciona esquema de sintaxe especificado\r\n\
+/d\tSelecciona esquema padrão de texto\r\n\
+/h\tSelecciona esquema código fonte Web\r\n\
+/x\tSelecciona esquema de documento XML\r\n\
+/c\tAbre nova janela e cola conteúdo da área de transferência\r\n\
+/b\tAbre novo quadro de colagem para recolher entradas da área \r\n\tde transferência\r\n\
+/n\tAbre sempre uma nova janela (/ns instância de único ficheiro)\r\n\
+/r\tReutiliza a janela (/rs instância de único ficheiro)\r\n\
 /p\tDefine tamanho e posição da janela (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
-\tou /p <esquerda>,<superior>,<largura>,<altura>[,<dpi>[,<máx>]]  (todos \r\n\tinteiros).\r\n\
-/t\tDefine título da janela.\r\n\
-/i\tInicia como ícone na área de notificação.\r\n\
-/o\tMantém a janela sempre visível.\r\n\
-/f\tEspecifica ficheiro ini (/f0 sem ficheiro ini).\r\n\
-/u\tCarrega com previlégios elevados.\r\n\
-/v\tImprime ficheiro de imediato e sai.\r\n\
-/vd\tImprime ficheiro (abre o diálogo da impressora).\r\n\
-/y\tProcura ambiente PATH em caso de nome de ficheiro relativo.\r\n\
-/z\tIgnora seguinte (utilizável para substituição do Notepad com base \r\n\tno registro).\r\n\r\n\
+\tou /p <esquerda>,<superior>,<largura>,<altura>[,<dpi>[,<máx>]]  (todos \r\n\tinteiros)\r\n\
+/t\tDefine título da janela\r\n\
+/i\tInicia como ícone na área de notificação\r\n\
+/o\tMantém a janela sempre visível\r\n\
+/f\tEspecifica ficheiro ini (/f0 sem ficheiro ini)\r\n\
+/u\tCarrega com previlégios elevados\r\n\
+/v\tImprime ficheiro de imediato e sai\r\n\
+/vd\tImprime ficheiro (abre o diálogo da impressora)\r\n\
+/y\tProcura ambiente PATH em caso de nome de ficheiro relativo\r\n\
+/z\tIgnora seguinte (utilizável para substituição do Notepad com base \r\n\tno registro)\r\n\r\n\
 Exemplos:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Abre um novo ficheiro: ""Test.txt"" Codificação=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Abre um novo ficheiro: ""Test.txt"" Codificação=UTF-8-BOM, EoL=CRLF\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Imprime o ficheiro: ""Test.txt"" imediatamente.\
+ \t... Imprime o ficheiro: ""Test.txt"" imediatamente\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
 As extensões de ficheiro devem ser separadas por ';'\r\n\
 usar \\<regex>; para definir um padrão de correspondência ao nome do ficheiro:\r\n\
-   \\xyz$;   => nomes de ficheiro(nome+ext) com 'xyz' como últimos caracteres.\r\n\r\n\
+   \\xyz$;   => nomes de ficheiro(nome+ext) com 'xyz' como últimos caracteres\r\n\r\n\
 Formato do estilo:\r\n\
 tipo de letra:Nome; tamanho:[+/-]nn.mm; negrito; itálico; sublinhado;\r\n\
 1º plano:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Propriedades do estilo podem ser copiadas usando copiar/colar ou arrastar/largar.\
+Propriedades do estilo podem ser copiadas usando copiar/colar ou arrastar/largar\
 "
 
 END
