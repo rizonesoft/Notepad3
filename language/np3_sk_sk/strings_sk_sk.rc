@@ -118,8 +118,8 @@ BEGIN
     IDS_MUI_FILTER_EXE      "Spustiteľné súbory (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Všetky súbory (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "Konfiguračné súbory (*.ini)|*.ini|Všetky súbory (*.*)|*.*|"
     IDS_MUI_FILTER_BITMAP   "Bitmapové súbory (*.bmp)|*.bmp|Všetky súbory (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Vyberte adresár s odkazmi na vaše obľúbené aplikácie."
-    IDS_MUI_FAVORITES       "Vyberte adresár s odkazmi na vaše obľúbené súbory."
+    IDS_MUI_OPENWITH        "Vyberte adresár s odkazmi na vaše obľúbené aplikácie"
+    IDS_MUI_FAVORITES       "Vyberte adresár s odkazmi na vaše obľúbené súbory"
     IDS_MUI_BACKSLASHHELP   "Transformácie spätného lomítka\n\n\\a\tVýstraha (BEL, Ascii 7)\n\\b\tKrok vzad (BS, Ascii 8)\n\\f\tInformačný formulár (FF, Ascii 12)\n\\n\tNový riadok (LF, Ascii 10)\n\\r\tMedzera (CR, Ascii 13)\n\\t\tVodorovná karta (HT, Ascii 9)\n\\v\tZvislá karta (VT, Ascii 11)\n\\0oo\tOktálna hodnota\n\\u####\tHexadecimálna hodnota\n\\xhh\tHexadecimálna hodnota\n\\\\\tSpätné lomítko"
     IDS_MUI_REGEXPHELP      "Syntax zhody RegExp (viac riadkov)\n\n.\tZodpovedá ľubovoľnému znaku\n^\tPrázdny reťazec hneď po novom riadku\n$\tPrázdny reťazec tesne pred koncom riadku\n\\<\tZačiatok slova\n\\>\tKoniec slova\n\\b\tHranica slova\n[...]\tSada znakov ([abc]) alebo rozsah ([a-z])\n[^...]\tZnaky NIE sú v sade alebo rozsahu\n\\d\tAkákoľvek desatinná číslica\n\\D\tAkýkoľvek znak bez číslice\n\\s\tAkýkoľvek znak medzery\n\\S\tNie je znak medzery\n\\w\tAkýkoľvek znak ako ""slovo""\n\\W\tAkýkoľvek znak ktorý ""nie je slovo""\n\\x\tÚnikový znak s iným zvláštnym významom\n\\xHH\tZnak so šestnástkovým kódom HH\n?\tZhody predchádzajúce 0 alebo 1-krát\n*\tZhody predchádzajúce 0 alebo viackrát\n+\tZhody predchádzajúce 1 alebo viackrát\n*? or +?\tNespravodlivé porovnávanie kvantifikátorov ""?"" a ""+""\n(\tZačiatok regiónu\n)\tKoniec regiónu\n\\n\tPri zámene odkazuje na región (n je 1-9)\n"
     IDS_MUI_WILDCARDHELP    "Vyhľadávanie zástupných znakov\n\n*\tZodpovedá nule alebo viacerým znakom\n?\tZhoduje sa presne s jedným znakom"
@@ -127,18 +127,18 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "Chyba načítania ""%s""."
-    IDS_MUI_ERR_SAVEFILE    "Chyba ukladania ""%s""."
+    IDS_MUI_ERR_LOADFILE    "Chyba načítania ""%s"""
+    IDS_MUI_ERR_SAVEFILE    "Chyba ukladania ""%s"""
     IDS_MUI_ERR_DLG_FORMAT  "Chyba '%s', príčina:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Nenašiel sa doplnok na prehľadávanie súborov.\nDoplnok MiniPath si môžete stiahnuť z https://rizonesoft.com."
-    IDS_MUI_ERR_GREPWIN     "Nenašiel sa vyhľadávací doplnok.\nDoplnok na vyhľadávanie súborov grepWinNP3 si môžete stiahnuť z https://rizonesoft.com."
+    IDS_MUI_ERR_BROWSE      "Nenašiel sa doplnok na prehľadávanie súborov.\nDoplnok MiniPath si môžete stiahnuť z https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Nenašiel sa vyhľadávací doplnok.\nDoplnok na vyhľadávanie súborov grepWinNP3 si môžete stiahnuť z https://rizonesoft.com"
     IDS_MUI_ERR_MRUDLG      "Žiadny prístup k vybranému súboru!\nChcete ho odstrániť zo zoznamu?"
-    IDS_MUI_ERR_CREATELINK  "Chyba pri vytváraní odkazu na pracovnú plochu."
+    IDS_MUI_ERR_CREATELINK  "Chyba pri vytváraní odkazu na pracovnú plochu"
     IDS_MUI_ERR_PREVWINDISABLED
                             "Existujúce okno Notepad3 je zaneprázdnené, alebo má aktívne dialógové okno.\nChcete otvoriť ďalšie okno programu Notepad3?"
-    IDS_MUI_ERR_ENCODINGNA  "Konverzné tabuľky kódových stránok pre vybraté kódovanie nie sú vo vašom systéme k dispozícii."
+    IDS_MUI_ERR_ENCODINGNA  "Konverzné tabuľky kódových stránok pre vybraté kódovanie nie sú vo vašom systéme k dispozícii"
     IDS_MUI_ERR_UNICODE     "Pri prevode tohto súboru Unicode došlo k chybe.\nAk sa súbor uloží, údaje sa stratia!"
-    IDS_MUI_ERR_BITMAP      "Nevhodný rozmer bitmapy ""%s"".\nVhodný rozmer: %i x %i (šírka >= %i x výška)."
+    IDS_MUI_ERR_BITMAP      "Nevhodný rozmer bitmapy ""%s"".\nVhodný rozmer: %i x %i (šírka >= %i x výška)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Chyba pri zvyšovaní užívateľských práv!"
 END
@@ -166,14 +166,14 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "Táto operácia nemôže byť vykonaná s týmto výberom."
-    IDS_MUI_SELMULTI        "Táto operácia nemôže byť vykonaná s viacnásobným výberom."
-    IDS_MUI_SELRECTORMULTI  "Táto operácia nemôže byť vykonaná s obdĺžnikovým alebo viacnásobným výberom."
-    IDS_MUI_BUFFERTOOSMALL  "Túto operáciu nie je možné vykonať (riadky sú príliš dlhé)."
-    IDS_MUI_FIND_WRAPFW     "Bol dosiahnutý koniec dokumentu. Vyhľadávanie bude pokračovať od začiatku."
-    IDS_MUI_FIND_WRAPRE     "Bol dosiahnutý začiatok dokumentu. Vyhľadávanie bude pokračovať od konca."
-    IDS_MUI_NOTFOUND        "Nenašla sa žiadna zhoda pre zadané vyhľadávanie."
-    IDS_MUI_REPLCOUNT       "%s výskytov zadaného vyhľadávania bolo nahradených."
+    IDS_MUI_SELRECT         "Táto operácia nemôže byť vykonaná s týmto výberom"
+    IDS_MUI_SELMULTI        "Táto operácia nemôže byť vykonaná s viacnásobným výberom"
+    IDS_MUI_SELRECTORMULTI  "Táto operácia nemôže byť vykonaná s obdĺžnikovým alebo viacnásobným výberom"
+    IDS_MUI_BUFFERTOOSMALL  "Túto operáciu nie je možné vykonať (riadky sú príliš dlhé)"
+    IDS_MUI_FIND_WRAPFW     "Bol dosiahnutý koniec dokumentu. Vyhľadávanie bude pokračovať od začiatku"
+    IDS_MUI_FIND_WRAPRE     "Bol dosiahnutý začiatok dokumentu. Vyhľadávanie bude pokračovať od konca"
+    IDS_MUI_NOTFOUND        "Nenašla sa žiadna zhoda pre zadané vyhľadávanie"
+    IDS_MUI_REPLCOUNT       "%s výskytov zadaného vyhľadávania bolo nahradených"
     IDS_MUI_ASK_ENCODING    "Prepínanie kódovania súboru z jedného na iné môže spôsobiť, že nepodporované znaky budú nahradené predvolenými znakmi a história spätných krokov sa vymaže. Chcete pokračovať?"
     IDS_MUI_ASK_ENCODING2   "Chystáte sa zmeniť kódovanie prázdneho súboru. Upozorňujeme, že týmto sa vymaže história spätných krokov, pretože sa nedá synchronizovať s novým kódovaním. Pokračovať?"
     IDS_MUI_ASK_CLEAR_UNDO  "Táto operácia vymaže históriu spätných krokov. Pokračovať?"
@@ -182,29 +182,29 @@ BEGIN
                             "Aktuálny súbor bol upravený externým programom.\nVyberte ďalší postup:\n\nZrušiť -\t\tIgnorovať ďalšie zmeny\nZnovu načítať -\t\tZnovu načítať súbor\nPokračovať -\tPrepnúť monitorovanie súboru"
     IDS_MUI_FILECHANGENOTIFY2 "Aktuálny súbor bol odstránený. Uložiť ho znovu?"
     IDS_MUI_FILELOCK_ERROR  "Nedá sa exkluzívne zamknúť súbor ""%s""!"
-    IDS_MUI_STICKYWINPOS    "Fixovanie polohy okna je povolené. Všetky nové okná Notepad2 budú používať aktuálne nastavenie umiestnenia okna."
-    IDS_MUI_SAVEDSETTINGS   "Aktuálne nastavenie programu bolo uložené."
-    IDS_MUI_CREATEINI_FAIL  "Chyba pri vytváraní konfiguračného súboru."
-    IDS_MUI_WRITEINI_FAIL   "Chyba pri zápise do konfiguračného súboru."
+    IDS_MUI_STICKYWINPOS    "Fixovanie polohy okna je povolené. Všetky nové okná Notepad2 budú používať aktuálne nastavenie umiestnenia okna"
+    IDS_MUI_SAVEDSETTINGS   "Aktuálne nastavenie programu bolo uložené"
+    IDS_MUI_CREATEINI_FAIL  "Chyba pri vytváraní konfiguračného súboru"
+    IDS_MUI_WRITEINI_FAIL   "Chyba pri zápise do konfiguračného súboru"
     IDS_MUI_INIFILE_READONLY
                             "Konfiguračný súbor je iba na čítanie - ignorovať a prepísať nastavenia?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Nebol nájdený žiadny existujúci konfiguračný súbor.\nAk chcete zachovať svoje úpravy štýlov, uložte nastavenia teraz (F7), alebo sa vráťte do konfigurácie schémy (Ctrl+F12) a exportujte svoje štýly."
+                            "Nebol nájdený žiadny existujúci konfiguračný súbor.\nAk chcete zachovať svoje úpravy štýlov, uložte nastavenia teraz (F7), alebo sa vráťte do konfigurácie schémy (Ctrl+F12) a exportujte svoje štýly"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_RELOADSETTINGS   "Aktivovať uložené nastavenia opätovným spustením aplikácie?\n\n%s"
     IDS_MUI_RELOADCFGSEX     "Pri pokračovaní bez opätovného spustenia sa uložené nastavenia nepoužijú a pri ukončení programu budú prepísané vnútornými nastaveniami!"
-    IDS_MUI_EXPORT_FAIL      "Chyba pri exportovaní nastavenia štýlu do ""%s""."
+    IDS_MUI_EXPORT_FAIL      "Chyba pri exportovaní nastavenia štýlu do ""%s"""
     IDS_MUI_REGEX_INVALID    "Chyba pri vyhodnocovaní regulárneho výrazu. Výraz je neplatný!"
-    IDS_MUI_DROP_NO_FILE     "Nebol získaný žiadny platný názov súboru.\nAk sa spúšťa 32-bitová aplikácia,\npresuňte myšou na panel nástrojov programu Notepad3."
+    IDS_MUI_DROP_NO_FILE     "Nebol získaný žiadny platný názov súboru.\nAk sa spúšťa 32-bitová aplikácia,\npresuňte myšou na panel nástrojov programu Notepad3"
     IDS_MUI_URL_DIR_EXISTS   "URL zadaný adresár existuje!"
     IDS_MUI_URL_FILE_EXISTS  "URL zadaný súbor existuje!"
     IDS_MUI_URL_PATH_NOT_FOUND
                              "URL zadaná cesta nebola nájdená!"
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + kliknutím otvoríte súbor."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + kliknutím otvoríte prepojenie."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + kliknutím otvoríte súbor"
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + kliknutím otvoríte prepojenie"
     IDS_MUI_INF_PRSVFILEMODTM
                              "Zachovanie pôvodnej časovej pečiatky pri úprave súboru je povolené.\nTáto možnosť zostane len pre túto reláciu!"
     IDS_MUI_OUT_OFF_OCCMRK   "Dochádzajú označené výskyty (záložka/zvýraznenie)!"
@@ -230,11 +230,11 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "Tento dokument neobsahuje žiadny text na vytlačenie."
+    IDS_MUI_PRINT_EMPTY     "Tento dokument neobsahuje žiadny text na vytlačenie"
     IDS_MUI_PRINT_ERROR     "Chyba tlače ""%s""!"
-    IDS_MUI_FAV_SUCCESS     "Zástupca aktuálneho súboru bol vytvorený v priečinku Obľúbené."
-    IDS_MUI_FAV_FAILURE     "Zástupca aktuálneho súboru nebol vytvorený.\nUistite sa, či už neexistuje súbor s rovnakým názvom."
-    IDS_MUI_READONLY_MODIFY "Atribúty ""%s"" nemôžu byť zmenené."
+    IDS_MUI_FAV_SUCCESS     "Zástupca aktuálneho súboru bol vytvorený v priečinku Obľúbené"
+    IDS_MUI_FAV_FAILURE     "Zástupca aktuálneho súboru nebol vytvorený.\nUistite sa, či už neexistuje súbor s rovnakým názvom"
+    IDS_MUI_READONLY_MODIFY "Atribúty ""%s"" nemôžu byť zmenené"
     IDS_MUI_SAVEPOS         "&Uložiť pozíciu\tCtrl+S"
     IDS_MUI_RESETPOS        "&Reset pozície\tCtrl+R"
     IDS_MUI_PREVIEW         "&Tlač...\tCtrl+P"
@@ -301,52 +301,52 @@ Použitie:\r\n\
 Notepad3 [/?] [...[Kódovanie]] [...[Režim ukončenia riadku]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[disk:][cesta]názov súboru[...]]\r\n\r\n\
-súbor\tMusí to byť posledný argument, v predvolenom nastavení nie sú medzery.\r\n\
-+\tAkceptuje viac argumentov súborov (s medzerami).\r\n\
--\tAkceptuje argument jedného súboru (bez medzier).\r\n\r\n\
+súbor\tMusí to byť posledný argument, v predvolenom nastavení nie sú medzery\r\n\
++\tAkceptuje viac argumentov súborov (s medzerami)\r\n\
+-\tAkceptuje argument jedného súboru (bez medzier)\r\n\r\n\
 Možnosti:\r\n\
-/?\tZobrazenie tejto správy nápovedy.\r\n\
-...\tKódovanie (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-...\tRežim ukončenia riadku (/crlf, /cr, /lf).\r\n\
-/e\tKódovanie súboru zdroja.\r\n\
-/g\tPrejsť na zadanú pozíciu (/g -1 koniec súboru).\r\n\
-/m\tZhoda zadaného textu (/m- last, /mr regex, /mb backslash).\r\n\
-/l\tAutomatické načítanie upravených súborov.\r\n\
-/q\tVynútenie vytvárania nových súborov bez výzvy.\r\n\
-/s\tVýber zadanej syntaktickej schémy.\r\n\
-/d\tVýber predvolenej textovej schémy.\r\n\
-/h\tVýber schémy webového zdrojového kódu.\r\n\
-/x\tVýber schémy XML dokumentu.\r\n\
-/c\tOtvorenie nového okna a vloženie obsahu schránky.\r\n\
-/b\tOtvorenie nového panela na vkladanie a zber záznamov zo schránky.\r\n\
-/n\tVždy otvoriť nové okno (/ns inštancia jedného súboru).\r\n\
-/r\tOpätovné použitie okna (/rs inštancia jedného súboru).\r\n\
+/?\tZobrazenie tejto správy nápovedy\r\n\
+...\tKódovanie (/ansi, /unicode, /unicodebe, /utf8, /utf8sig)\r\n\
+...\tRežim ukončenia riadku (/crlf, /cr, /lf)\r\n\
+/e\tKódovanie súboru zdroja\r\n\
+/g\tPrejsť na zadanú pozíciu (/g -1 koniec súboru)\r\n\
+/m\tZhoda zadaného textu (/m- last, /mr regex, /mb backslash)\r\n\
+/l\tAutomatické načítanie upravených súborov\r\n\
+/q\tVynútenie vytvárania nových súborov bez výzvy\r\n\
+/s\tVýber zadanej syntaktickej schémy\r\n\
+/d\tVýber predvolenej textovej schémy\r\n\
+/h\tVýber schémy webového zdrojového kódu\r\n\
+/x\tVýber schémy XML dokumentu\r\n\
+/c\tOtvorenie nového okna a vloženie obsahu schránky\r\n\
+/b\tOtvorenie nového panela na vkladanie a zber záznamov zo schránky\r\n\
+/n\tVždy otvoriť nové okno (/ns inštancia jedného súboru)\r\n\
+/r\tOpätovné použitie okna (/rs inštancia jedného súboru)\r\n\
 /p\tNastavenie polohy a veľkosti okna (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
-\talebo /p <vľavo>,<hore>,<šírka>,<výška>[,<dpi>[,<max>]]  (všetky čísla).\r\n\
-/t\tNastavenie titulku okna.\r\n\
-/i\tZačať ako ikona na paneli úloh.\r\n\
-/o\tPonechanie okna vždy na vrchu.\r\n\
-/f\tUrčenie ini-súboru (/f0 bez ini-súboru).\r\n\
-/u\tSpustenie so zvýšenými oprávneniami.\r\n\
-/v\tOkamžité vytlačenie súboru a ukončenie.\r\n\
-/vd\tTlač súboru cez dialógové okno tlačiarne.\r\n\
-/y\tVyhľadanie prostredia cesty v prípade relatívneho názvu súboru.\r\n\
-/z\tPreskočiť ďalej (použiteľné pri zámene Poznámkového bloku Windows \r\n\tpomocou registrov).\r\n\r\n\
+\talebo /p <vľavo>,<hore>,<šírka>,<výška>[,<dpi>[,<max>]]  (všetky čísla)\r\n\
+/t\tNastavenie titulku okna\r\n\
+/i\tZačať ako ikona na paneli úloh\r\n\
+/o\tPonechanie okna vždy na vrchu\r\n\
+/f\tUrčenie ini-súboru (/f0 bez ini-súboru)\r\n\
+/u\tSpustenie so zvýšenými oprávneniami\r\n\
+/v\tOkamžité vytlačenie súboru a ukončenie\r\n\
+/vd\tTlač súboru cez dialógové okno tlačiarne\r\n\
+/y\tVyhľadanie prostredia cesty v prípade relatívneho názvu súboru\r\n\
+/z\tPreskočiť ďalej (použiteľné pri zámene Poznámkového bloku Windows \r\n\tpomocou registrov)\r\n\r\n\
 Príklady:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Otvoriť nový súbor: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Otvoriť nový súbor: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Tlač súboru: ""Test.txt"" immediately.\
+ \t... Tlač súboru: ""Test.txt"" immediately\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
 Prípony názvov súborov musia byť oddelené znakom ';'\r\n\
 použiť \\<regex>; na definovanie vzoru zodpovedajúceho názvu súboru:\r\n\
-   \\xyz$;   => názov súboru (meno.prípona) s 'xyz' ako posledné znaky.\r\n\r\n\
+   \\xyz$;   => názov súboru (meno.prípona) s 'xyz' ako posledné znaky\r\n\r\n\
 Štýl formátovania:\r\n\
 font:Názov; veľkosť:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Vlastnosti štýlu je možné kopírovať a vkladať, alebo pretiahnuť myšou.\
+Vlastnosti štýlu je možné kopírovať a vkladať, alebo pretiahnuť myšou\
 "
 
 END

@@ -118,27 +118,27 @@ BEGIN
     IDS_MUI_FILTER_EXE      "Exekverbara filer (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "Konfigurationsfiler (*.ini)|*.ini|All files (*.*)|*.*|"
     IDS_MUI_FILTER_BITMAP   "Bitmap filer (*.bmp)|*.bmp|Alla filer (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Välj mappen med länkar till dina favoritprogram."
-    IDS_MUI_FAVORITES       "Välj mappen med länkar till dina favoritfiler."
+    IDS_MUI_OPENWITH        "Välj mappen med länkar till dina favoritprogram"
+    IDS_MUI_FAVORITES       "Välj mappen med länkar till dina favoritfiler"
     IDS_MUI_BACKSLASHHELP   "Bakåtlutande snedstreck transformation\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBaksteg (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNyrad (LF, Ascii 10)\n\\r\tVagnretur (CR, Ascii 13)\n\\t\tHorisontell tab (HT, Ascii 9)\n\\v\tVertikal tab (VT, Ascii 11)\n\\0oo\tOktalt värde\n\\u####\tHexadecimalt värde\n\\xhh\tHexadecimalt värde\n\\\\\tBakåtlutande snedstreck"
     IDS_MUI_REGEXPHELP      "RegExp Matcning Syntax (multirad)\n\n.\tMatchar bokstav\n^\tTom rad efter nyrad\n$\tTom rad före radslut\n\\<\tBörjan av ord\n\\>\tSlut av ord\n\\b\tOrdgräns\n[...]\tEn mängd tecken ([abc]) eller intervall ([a-z])\n[^...]\tTecken som inte finns\n\\d\tAlla decimaltal\n\\D\tEj decimaltalstecken\n\\s\tAlla tomrumstecken\n\\S\tEj tomrumstecken\n\\w\tAlla ""ord""-tecken\n\\W\tAlla ""icke-ord""-tecken\n\\x\tLägg till bakåtlutande snedstreck till tecken med \n\tspeciell betydelse\n\\xHH\tTecken med hexadecimal kod HH\n?\tMatchar föregående 0 eller 1 gånger\n*\tMatchar föregående 0 eller mer än 1 gånger\n+\tMatchar föregående 1 eller fler gånger\n*? eller \n+?\tIcke girig matchning av kvantifierare ""?"" och ""+""\n(\tbörjan av region\n)\tslut av region\n\\n\tRefererar till en region vid ersättning (n är 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Sökning med jokertecken\n\n*\tMatchar noll eller fler tecken.\n?\tMatchar exakt ett tecken. "
+    IDS_MUI_WILDCARDHELP    "Sökning med jokertecken\n\n*\tMatchar noll eller fler tecken\n?\tMatchar exakt ett tecken"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "Fel vid laddning ""%s""."
-    IDS_MUI_ERR_SAVEFILE    "Fel vid sparande ""%s""."
+    IDS_MUI_ERR_LOADFILE    "Fel vid laddning ""%s"""
+    IDS_MUI_ERR_SAVEFILE    "Fel vid sparande ""%s"""
     IDS_MUI_ERR_DLG_FORMAT  "Fel '%s', orsak:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Inget plugin för filbläddring hittades.\nMinipath filbläddrare kan laddas ner från https://rizonesoft.com."
-    IDS_MUI_ERR_GREPWIN     "Inget sökplugin hittades.\ngrepWinNP3 filsökningsplugin kan hämtas från https://rizonesoft.com."
+    IDS_MUI_ERR_BROWSE      "Inget plugin för filbläddring hittades.\nMinipath filbläddrare kan laddas ner från https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Inget sökplugin hittades.\ngrepWinNP3 filsökningsplugin kan hämtas från https://rizonesoft.com"
     IDS_MUI_ERR_MRUDLG      "Tillgång saknas för vald fil!\nVill du ta bort den från listan?"
-    IDS_MUI_ERR_CREATELINK  "Fel vi skapande av skrivbordslänk."
+    IDS_MUI_ERR_CREATELINK  "Fel vi skapande av skrivbordslänk"
     IDS_MUI_ERR_PREVWINDISABLED
                             "Fönstret för Notepad3 är uppdaget eller har en öppe aktiv dialogruta.\nVill du öppna ett nytt Notepad3-fönster?"
-    IDS_MUI_ERR_ENCODINGNA  "Tabeller för teckenkodning för vald teckenkodning saknas på ditt system."
+    IDS_MUI_ERR_ENCODINGNA  "Tabeller för teckenkodning för vald teckenkodning saknas på ditt system"
     IDS_MUI_ERR_UNICODE     "Fel vid konvertering av denna Unicode-fil.\nData kommer att förloras om filen sparas!"
-    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)."
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Användarrättigheter kunde inte höjas!"
 END
@@ -166,14 +166,14 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "Åtgärden kan inte utföras inom en rektangulär markering."
-    IDS_MUI_SELMULTI        "Åtgärden kan inte utföras med multipla markeringar."
-    IDS_MUI_SELRECTORMULTI  "Åtgärden kan inte utföras med en rektangular markering eller multipla markeringar."
-    IDS_MUI_BUFFERTOOSMALL  "Åtgärden kan inte utföras eftersom raderna är för långa."
-    IDS_MUI_FIND_WRAPFW     "Kommit till slutet av dokumentet, börjar från början."
-    IDS_MUI_FIND_WRAPRE     "Kommit till slutet av dokumentet, startar om sökning från slutet."
-    IDS_MUI_NOTFOUND        "Ingen träff för angivet sökmönster."
-    IDS_MUI_REPLCOUNT       "%s träff(ar) för angivet sökmönster ersatta."
+    IDS_MUI_SELRECT         "Åtgärden kan inte utföras inom en rektangulär markering"
+    IDS_MUI_SELMULTI        "Åtgärden kan inte utföras med multipla markeringar"
+    IDS_MUI_SELRECTORMULTI  "Åtgärden kan inte utföras med en rektangular markering eller multipla markeringar"
+    IDS_MUI_BUFFERTOOSMALL  "Åtgärden kan inte utföras eftersom raderna är för långa"
+    IDS_MUI_FIND_WRAPFW     "Kommit till slutet av dokumentet, börjar från början"
+    IDS_MUI_FIND_WRAPRE     "Kommit till slutet av dokumentet, startar om sökning från slutet"
+    IDS_MUI_NOTFOUND        "Ingen träff för angivet sökmönster"
+    IDS_MUI_REPLCOUNT       "%s träff(ar) för angivet sökmönster ersatta"
     IDS_MUI_ASK_ENCODING    "Att byta teckenkodning från en kodning till en annan kommer att ersätta tecken som inte stöds med standardtecken och ångerhistoriken kommer att rensas. Vill du fortsätta?"
     IDS_MUI_ASK_ENCODING2   "Du kommer att ändra teckenkodning i en tom fil. Notera att detta kommer att rensa ångerhistoriken. Vill du fortsätta?"
     IDS_MUI_ASK_CLEAR_UNDO  "Denna åtgärd rensar ångra-historiken. Fortsätta?"
@@ -182,29 +182,29 @@ BEGIN
                             "Öppnad fil har modifierats av ett externt program.\nVälj:\n\nAvbryt -\t\tIgnorera ytterligare förändringar\nLadda om -\tLadda om fil\nFortsätt -\t\tByt till filövervakning"
     IDS_MUI_FILECHANGENOTIFY2 "Aktuell fil har tagits bort. Vill du spara nu?"
     IDS_MUI_FILELOCK_ERROR  "Kan inte få exklusivt fillås för ""%s""!"
-    IDS_MUI_STICKYWINPOS    "Fast fönsterposition är aktiverad. Alla nya Notepad3-fönster kommer att använda aktuella fösterplaceringsinställningar."
-    IDS_MUI_SAVEDSETTINGS   "Inställningarna har sparats."
-    IDS_MUI_CREATEINI_FAIL  "Kunde inte skapa konfigurationsfil."
-    IDS_MUI_WRITEINI_FAIL   "Kunde inte skriva inställningar till konigurationsfil."
+    IDS_MUI_STICKYWINPOS    "Fast fönsterposition är aktiverad. Alla nya Notepad3-fönster kommer att använda aktuella fösterplaceringsinställningar"
+    IDS_MUI_SAVEDSETTINGS   "Inställningarna har sparats"
+    IDS_MUI_CREATEINI_FAIL  "Kunde inte skapa konfigurationsfil"
+    IDS_MUI_WRITEINI_FAIL   "Kunde inte skriva inställningar till konigurationsfil"
     IDS_MUI_INIFILE_READONLY
                             "Konfigurationsfilen är ej skrivbar - vill du ignorera och implementera inställningar?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Inga existerande konfigurationsfiler kunde hittas.\nFör att spara dina stiländringar, spara nu (F7) eller gå tillbaka till schemakonfiguration (Ctrl+F12) och exportera din stilmall."
+                            "Inga existerande konfigurationsfiler kunde hittas.\nFör att spara dina stiländringar, spara nu (F7) eller gå tillbaka till schemakonfiguration (Ctrl+F12) och exportera din stilmall"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_RELOADSETTINGS   "Vill du ladda om applikationen med sparade inställningar?\n\n%s"
     IDS_MUI_RELOADCFGSEX     "Om du fortsätter utan att starta om kommer inställningarna inte sparas!"
-    IDS_MUI_EXPORT_FAIL      "Fel vid exportering av stilinställningar ""%s""."
+    IDS_MUI_EXPORT_FAIL      "Fel vid exportering av stilinställningar ""%s"""
     IDS_MUI_REGEX_INVALID    "Fel vid utvärdering av reguljärt uttryck. Uttrycket är ogiltigt!"
-    IDS_MUI_DROP_NO_FILE     "Inget giltigt filnamn kunde hittas.\nOm du drar-och-släpper från en 32-bits applikation,\nvar vänligt släpp på Notepad3s verktygsfält."
+    IDS_MUI_DROP_NO_FILE     "Inget giltigt filnamn kunde hittas.\nOm du drar-och-släpper från en 32-bits applikation,\nvar vänligt släpp på Notepad3s verktygsfält"
     IDS_MUI_URL_DIR_EXISTS   "Angiven URL-mapp existerar redan!"
     IDS_MUI_URL_FILE_EXISTS  "Angiven URL-fil existerar redan!"
     IDS_MUI_URL_PATH_NOT_FOUND
                              "Angiven URL-sökväg existerar redan!"
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Klicka för att öppna fil."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klicka för att öppna länken i webbläsaren."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Klicka för att öppna fil"
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klicka för att öppna länken i webbläsaren"
     IDS_MUI_INF_PRSVFILEMODTM
                              "Bevarande av tidsstämpel för filmodifiering är aktiverad.\nInställningen är giltig för denna session!"
     IDS_MUI_OUT_OFF_OCCMRK   "Inga fler markeringar (bokmärke/markering)!"
@@ -232,9 +232,9 @@ STRINGTABLE
 BEGIN
     IDS_MUI_PRINT_EMPTY     "Detta dokument inehåller ingen text att skriva ut"
     IDS_MUI_PRINT_ERROR     "Fel vid utskrift ""%s""!"
-    IDS_MUI_FAV_SUCCESS     "En snabblänk till denna fil har lagts till dina favoriter."
-    IDS_MUI_FAV_FAILURE     "En snabblänk till denna fil kunde inte sparas.\nFörsäkra dig att det inte redan finns en fil med samma filnamn."
-    IDS_MUI_READONLY_MODIFY "Attribut för ""%s"" kunde inte ändras."
+    IDS_MUI_FAV_SUCCESS     "En snabblänk till denna fil har lagts till dina favoriter"
+    IDS_MUI_FAV_FAILURE     "En snabblänk till denna fil kunde inte sparas.\nFörsäkra dig att det inte redan finns en fil med samma filnamn"
+    IDS_MUI_READONLY_MODIFY "Attribut för ""%s"" kunde inte ändras"
     IDS_MUI_SAVEPOS         "Spara position\tCtrl+S"
     IDS_MUI_RESETPOS        "Återställ position\tCtrl+R"
     IDS_MUI_PREVIEW         "Förhandsgranska\tCtrl+P"
@@ -301,52 +301,52 @@ Instruktioner:\r\n\
 Notepad3 [/?] [...[Teckenkodning]] [...[Radslutsläge]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[volym:][sökväg]filnamn[...]]\r\n\r\n\
-fil\tMåste vara det sista argumentet, inga citerade mellanslag.\r\n\
-+\tAcceptera många filargument (med citerade mellanslag).\r\n\
--\tAccepera enstaka filargument (utan citerade mellanslag).\r\n\r\n\
+fil\tMåste vara det sista argumentet, inga citerade mellanslag\r\n\
++\tAcceptera många filargument (med citerade mellanslag)\r\n\
+-\tAccepera enstaka filargument (utan citerade mellanslag)\r\n\r\n\
 Tillval:\r\n\
-/?\tVisa detta hjälpmeddelande.\r\n\
-...\tTeckenkodning (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-...\tRadslutsläge (/crlf, /cr, /lf).\r\n\
-/e\tRadslut för källkod.\r\n\
-/g\tHoppa till position (/g -1 end of file).\r\n\
-/m\tMatcha angiven text (/m- last, /mr regex, /mb backslash).\r\n\
-/l\tLadda om modifierade filer automatiskt.\r\n\
-/q\tTvinga skapande av nya filer utan bekräftelse.\r\n\
-/s\tVälj syntaxschema.\r\n\
-/d\tVälj förvalt syntaxschema.\r\n\
-/h\tVälj källkodschema för webben..\r\n\
-/x\tVälj XML dokumentschema.\r\n\
-/c\tÖppna nytt fönster och klistra in urklipp.\r\n\
-/b\tÖppna urklippsbordet för att samla alla urklipp.\r\n\
-/n\tÖppna alltid nytt fönster (/ns enkel filinstans).\r\n\
-/r\tÅteranvänd fönster (/rs enkel filinstans).\r\n\
+/?\tVisa detta hjälpmeddelande\r\n\
+...\tTeckenkodning (/ansi, /unicode, /unicodebe, /utf8, /utf8sig)\r\n\
+...\tRadslutsläge (/crlf, /cr, /lf)\r\n\
+/e\tRadslut för källkod\r\n\
+/g\tHoppa till position (/g -1 end of file)\r\n\
+/m\tMatcha angiven text (/m- last, /mr regex, /mb backslash)\r\n\
+/l\tLadda om modifierade filer automatiskt\r\n\
+/q\tTvinga skapande av nya filer utan bekräftelse\r\n\
+/s\tVälj syntaxschema\r\n\
+/d\tVälj förvalt syntaxschema\r\n\
+/h\tVälj källkodschema för webben.\r\n\
+/x\tVälj XML dokumentschema\r\n\
+/c\tÖppna nytt fönster och klistra in urklipp\r\n\
+/b\tÖppna urklippsbordet för att samla alla urklipp\r\n\
+/n\tÖppna alltid nytt fönster (/ns enkel filinstans)\r\n\
+/r\tÅteranvänd fönster (/rs enkel filinstans)\r\n\
 /p\tAnge fönsterposition och storlek (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
-\teller /p <vänster>,<topp>,<bredd>,<höjd>[,<dpi>[,<max>]]  (alla heltal).\r\n\
-/t\tAnge fönstertitel.\r\n\
-/i\tStarta som ikon i verktygsfältet.\r\n\
-/o\tVisa alltid fönstret överst.\r\n\
-/f\tAnge ini-fil (/f0 ingen ini-fil).\r\n\
-/u\tKör med utökade privilegier.\r\n\
-/v\tSpara fil och avsluta.\r\n\
-/vd\tSkriv ut fil (öppna skrivardialogen).\r\n\
-/y\tSök miljövariable vid relativt filnamn.\r\n\
-/z\tHoppa över nästa (användbart för registerbaserad notepad-ersättning).\r\n\r\n\
+\teller /p <vänster>,<topp>,<bredd>,<höjd>[,<dpi>[,<max>]]  (alla heltal)\r\n\
+/t\tAnge fönstertitel\r\n\
+/i\tStarta som ikon i verktygsfältet\r\n\
+/o\tVisa alltid fönstret överst\r\n\
+/f\tAnge ini-fil (/f0 ingen ini-fil)\r\n\
+/u\tKör med utökade privilegier\r\n\
+/v\tSpara fil och avsluta\r\n\
+/vd\tSkriv ut fil (öppna skrivardialogen)\r\n\
+/y\tSök miljövariable vid relativt filnamn\r\n\
+/z\tHoppa över nästa (användbart för registerbaserad notepad-ersättning)\r\n\r\n\
 Exempel:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Öppna ny fil: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Öppna ny fil: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Skriv ut filen: ""Test.txt"" omedelbart.\
+ \t... Skriv ut filen: ""Test.txt"" omedelbart\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
 Filändelser måste sepeareras med ';'\r\n\
 använd \\<regex>; för att definiera matchande mönster:\r\n\
-   \\xyz$;   => filnamn(basnamn+ändelse) med 'xyz' som sista tecken.\r\n\r\n\
+   \\xyz$;   => filnamn(basnamn+ändelse) med 'xyz' som sista tecken\r\n\r\n\
 Stilformat:\r\n\
 font:Namn; storlek:[+/-]nn.mm; fet; kursiv; understrykning;\r\n\
 förgrund:#ffffff; bakgrund:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Stilegenskaper kan kopieras genom kopiera-klistra in eller drag-släpp.\
+Stilegenskaper kan kopieras genom kopiera-klistra in eller drag-släpp\
 "
 
 END
