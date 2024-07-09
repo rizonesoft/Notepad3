@@ -67,7 +67,7 @@ BEGIN
     LTEXT           "",IDC_AUTHORNAME,65,51,116,8
     LTEXT           "",IDC_EMAIL2,65,75,116,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_EMAIL,"SysLink",WS_TABSTOP,65,61,116,10
-    LTEXT           "", IDC_TRANSL_AUTH, 50, 78, 200, 8
+    LTEXT           "",IDC_TRANSL_AUTH, 50, 78, 200, 8
 END
 
 IDD_RUN DIALOGEX 0, 0, 224, 85
@@ -76,7 +76,7 @@ CAPTION "Εκτέλεση"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Εισάγετε το όνομα ενός εκτελέσιμου αρχείου εφαρμογής, ενός φακέλου ή ενός εγγράφου για άνοιγμα.",IDC_STATIC,35,7,188,26
+    LTEXT           "Εισάγετε το όνομα ενός εκτελέσιμου αρχείου εφαρμογής, ενός φακέλου ή ενός εγγράφου για άνοιγμα",IDC_STATIC,35,7,188,26
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "Εντάξει",IDOK,112,64,50,14
@@ -90,7 +90,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Κλικ εδώ για ορισμό του καταλόγου με συνδέσμους σε αγαπημένες εφαρμογές.",IDC_OPENWITHDESCR,26,83,138,18
+    LTEXT           "Κλικ εδώ για ορισμό του καταλόγου με συνδέσμους σε αγαπημένες εφαρμογές",IDC_OPENWITHDESCR,26,83,138,18
     DEFPUSHBUTTON   "Εντάξει",IDOK,52,108,50,14
     PUSHBUTTON      "Άκυρο",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -102,7 +102,7 @@ CAPTION "Μετάβαση"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Εισάγετε όνομα αρχείου ή καταλόγου για άνοιγμα ή επιλέξτε κατάλογο από την παρακάτω λίστα προσφάτων.",IDC_STATIC,35,7,182,26
+    LTEXT           "Εισάγετε όνομα αρχείου ή καταλόγου για άνοιγμα ή επιλέξτε κατάλογο από την παρακάτω λίστα προσφάτων",IDC_STATIC,35,7,182,26
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "Εντάξει",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "Άκυρο",IDCANCEL,167,66,50,14
@@ -117,7 +117,7 @@ BEGIN
     LTEXT           "Ορίστε ένα νέο &φίλτρο. Χωρίστε πολλαπλά φίλτρα με ;",IDC_STATIC,7,7,186,8
     EDITTEXT        IDC_FILTER,7,22,163,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,174,22,13,13
-    CONTROL         "&Εξαίρεση αρχείων που ταιριάζουν με το φίλτρο.",IDC_NEGFILTER,
+    CONTROL         "&Εξαίρεση αρχείων που ταιριάζουν με το φίλτρο",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,182,10
     DEFPUSHBUTTON   "Εντάξει",IDOK,82,58,50,14
     PUSHBUTTON      "Άκυρο",IDCANCEL,137,58,50,14
@@ -171,22 +171,22 @@ CAPTION "Γενικές"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "Ορισμός γενικών ρυθμίσεων του MiniPath.",IDC_STATIC,40,15,153,8
-    CONTROL         "&Να επιτρέπεται μόνο μονό κλικ για άνοιγμα αντικειμένων.",IDC_SINGLECLICK,
+    LTEXT           "Ορισμός γενικών ρυθμίσεων του MiniPath",IDC_STATIC,40,15,153,8
+    CONTROL         "&Να επιτρέπεται μόνο μονό κλικ για άνοιγμα αντικειμένων",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,210,10
-    CONTROL         "Ενεργοποίηση επιλογής &κομματιού.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,140,10
-    CONTROL         "Ενεργοποίηση επιλογής πλήρους &γραμμής.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,160,10
-    CONTROL         "Ενεργ. πάντα &παραθύρου προορισμού στο άνοιγμα αρχείου.",IDC_FOCUSEDIT,
+    CONTROL         "Ενεργοποίηση επιλογής &κομματιού",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,140,10
+    CONTROL         "Ενεργοποίηση επιλογής πλήρους &γραμμής",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,160,10
+    CONTROL         "Ενεργ. πάντα &παραθύρου προορισμού στο άνοιγμα αρχείου",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,220,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,218,1
-    CONTROL         "&Διατήρηση παραθύρου MiniPath πάντα στην κορυφή.",IDC_ALWAYSONTOP,
+    CONTROL         "&Διατήρηση παραθύρου MiniPath πάντα στην κορυφή",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,195,10
-    CONTROL         "&Ελαχ/ποίηση στην περιοχή ειδοποιήσεων (κλικ για επαναφορά).",IDC_MINIMIZETOTRAY,
+    CONTROL         "&Ελαχ/ποίηση στην περιοχή ειδοποιήσεων (κλικ για επαναφορά)",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,227,10
-    CONTROL         "Προσπάθεια επανάχρησης τρέχ. παρα&θύρου κατά την εκκίνηση.",IDC_REUSEWINDOW,
+    CONTROL         "Προσπάθεια επανάχρησης τρέχ. παρα&θύρου κατά την εκκίνηση",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,228,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,218,1
-    CONTROL         "&Αποθήκευση ρυθμίσεων στην έξοδο.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,140,10
+    CONTROL         "&Αποθήκευση ρυθμίσεων στην έξοδο",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,140,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 238, 185
@@ -195,23 +195,23 @@ CAPTION "Προηγμένες"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
-    LTEXT           "Ορισμός προηγμένων ρυθμίσεων του MiniPath.",IDC_STATIC,40,15,180,8
+    LTEXT           "Ορισμός προηγμένων ρυθμίσεων του MiniPath",IDC_STATIC,40,15,180,8
     CONTROL         "&Χρήση καταλ. εκκίνησης:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,95,10
-    CONTROL         "Πιο &πρόσφατα χρησιμοποιημένος.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,108,46,127,10
-    CONTROL         "Φάκελος ""Α&γαπημένα"".",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,108,58,90,10
+    CONTROL         "Πιο &πρόσφατα χρησιμοποιημένος",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,108,46,127,10
+    CONTROL         "Φάκελος ""Α&γαπημένα""",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,108,58,90,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,218,1
-    CONTROL         "&Απαλοιφή χαρακτ. μόνο για ανάγνωση των αποθηκ. αρχείων.",IDC_CLEARREADONLY,
+    CONTROL         "&Απαλοιφή χαρακτ. μόνο για ανάγνωση των αποθηκ. αρχείων",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,220,10
-    CONTROL         "Μετ&ονομασία αντιγραμμένων αρχείων σε διενέξεις ονομάτων.",IDC_RENAMEONCOLLISION,
+    CONTROL         "Μετ&ονομασία αντιγραμμένων αρχείων σε διενέξεις ονομάτων",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,224,10
-    CONTROL         "&Μετακίνηση διαγραμμένων αρχείων στον κάδο ανακύκλωσης.",IDC_USERECYCLEBIN,
+    CONTROL         "&Μετακίνηση διαγραμμένων αρχείων στον κάδο ανακύκλωσης",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,2240,10
-    CONTROL         "&Διαγραφή αρχείων χωρίς επιβεβαίωση (δεν συνιστάται).",IDC_NOCONFIRMDELETE,
+    CONTROL         "&Διαγραφή αρχείων χωρίς επιβεβαίωση (δεν συνιστάται)",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,204,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,218,1
-    CONTROL         "Χρήση του ""&Εsc"" για...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
-    CONTROL         "Ε&λαχιστοποίηση παραθύρου.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,110,10
-    CONTROL         "Έ&ξοδο από το MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,90,10
+    CONTROL         "Χρήση του ""&Εsc"" για:",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
+    CONTROL         "Ε&λαχιστοποίηση παραθύρου",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,110,10
+    CONTROL         "Έ&ξοδο από το MiniPath",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,90,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 238, 185
@@ -220,15 +220,15 @@ CAPTION "Στοιχεία"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Εμφάνιση των στοιχείων στη λίστα καταλόγων.",IDC_STATIC,40,15,180,8
+    LTEXT           "Εμφάνιση των στοιχείων στη λίστα καταλόγων",IDC_STATIC,40,15,180,8
     GROUPBOX        "Χρώματα",IDC_STATIC,10,41,218,134
     LTEXT           "Χρώμα κειμένου όταν ΔΕΝ ΕΧΕΙ ΟΡΙΣΤΕΙ ΦΙΛΤΡΟ:",IDC_STATIC,20,54,175,8
-    CONTROL         "&Προεπιλεγμένο χρώμα των Windows.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,140,10
+    CONTROL         "&Προεπιλεγμένο χρώμα των Windows",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,140,10
     CONTROL         "Π&ροσαρ. χρώμα:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,70,10
     EDITTEXT        IDC_COLOR_SAMP1,95,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Λήψη χρώματος...",IDC_COLOR_PICK1,130,80,65,14
     LTEXT           "Χρώμα κειμένου όταν είναι ένα ΦΙΛΤΡΟ ΕΝΕΡΓΟ:",IDC_STATIC,20,105,180,8
-    CONTROL         "Προεπι&λεγμένο χρώμα των Windows.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,140,10
+    CONTROL         "Προεπι&λεγμένο χρώμα των Windows",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,140,10
     CONTROL         "Προ&σαρ. χρώμα:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,70,10
     EDITTEXT        IDC_COLOR_SAMP2,95,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Λήψη χρώματος...",IDC_COLOR_PICK2,130,130,65,14
@@ -254,7 +254,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Εφαρμογή προορισμού"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "Όχι χρήση συγκεκρ. εφαρμογής προορισμού. Απλά εκκίνηση του επιλ. αρχείου.",IDC_LAUNCH,
+    CONTROL         "Όχι χρήση συγκεκρ. εφαρμογής προορισμού. Απλά εκκίνηση του επιλ. αρχείου",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,280,10
     CONTROL         "Χρήση της ακόλουθης εφαρμογής προορισμού:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,175,10
@@ -262,7 +262,7 @@ BEGIN
     EDITTEXT        IDC_TARGETPATH,20,35,245,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,269,35,15,14,BS_BITMAP
     LTEXT           "Μήνυμα:",IDC_STATIC,20,120,32,8
-    CONTROL         "Καμία. Εκτέλεση της εφαρμογής προορισμού κάθε φορά που ανοίγει ένα αρχείο.",IDC_ALWAYSRUN,
+    CONTROL         "Καμία. Εκτέλεση της εφαρμογής προορισμού κάθε φορά που ανοίγει ένα αρχείο",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,283,10
     CONTROL         "Αποστολή μηνύματος στο παράθυρο της εφαρμογής:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,198,10
@@ -283,7 +283,7 @@ CAPTION "Εύρεση παραθύρου"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "Σύρετε το σταυρόνημα πάνω από το παράθυρο που θέλετε ως νέο προορισμό ή πατήστε Esc για ακύρωση.",IDC_STATIC,35,7,168,26
+    LTEXT           "Σύρετε το σταυρόνημα πάνω από το παράθυρο που θέλετε ως νέο προορισμό ή πατήστε Esc για ακύρωση",IDC_STATIC,35,7,168,26
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Κλάση παραθύρου",IDC_WINCLASS,7,60,65,8,NOT WS_VISIBLE
     LTEXT           "Λειτ. μονάδα παραθύρου",IDC_WINMODULE,7,70,81,8,NOT WS_VISIBLE

@@ -67,7 +67,7 @@ BEGIN
     LTEXT           "",IDC_AUTHORNAME,65,51,116,8
     LTEXT           "",IDC_EMAIL2,65,75,116,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_EMAIL,"SysLink",WS_TABSTOP,65,61,116,10
-    LTEXT           "", IDC_TRANSL_AUTH, 65, 78, 200, 8
+    LTEXT           "",IDC_TRANSL_AUTH, 65, 78, 200, 8
 END
 
 IDD_RUN DIALOGEX 0, 0, 224, 85
@@ -76,7 +76,7 @@ CAPTION "Futtatás"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Adja meg a futtatható programfájl nevét,\negy mappát vagy egy dokumentumot megnyitásra.",IDC_STATIC,35,7,188,17
+    LTEXT           "Adja meg a futtatható programfájl nevét,\negy mappát vagy egy dokumentumot megnyitásra",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,112,64,50,14
@@ -90,7 +90,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Kattinson ide a kedvenc alkalmazásaira mutató hivatkozásokat tartalmazó mappa megadásához.",IDC_OPENWITHDESCR,26,83,132,26
+    LTEXT           "Kattinson ide a kedvenc alkalmazásaira mutató hivatkozásokat tartalmazó mappa megadásához",IDC_OPENWITHDESCR,26,83,132,26
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Mégsem",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -102,7 +102,7 @@ CAPTION "Ugrás"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Adja meg a megnyitandó fájl vagy mappa nevét,\nvagy válasszon egyet a korábban meglátogatott könyvtárak listájából.",IDC_STATIC,35,7,182,26
+    LTEXT           "Adja meg a megnyitandó fájl vagy mappa nevét,\nvagy válasszon egyet a korábban meglátogatott könyvtárak listájából",IDC_STATIC,35,7,182,26
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "Mégsem",IDCANCEL,167,66,50,14
@@ -114,10 +114,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Fájl szűrő"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Adjon meg egy új fájl s&zűrőt. Több szűrőt ;-vel válassza el.",IDC_STATIC,7,7,175,8
+    LTEXT           "Adjon meg egy új fájl s&zűrőt. Több szűrőt ;-vel válassza el",IDC_STATIC,7,7,175,8
     EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
-    CONTROL         "Szűrőre illeszkedő fájlok ki&hagyása.",IDC_NEGFILTER,
+    CONTROL         "Szűrőre illeszkedő fájlok ki&hagyása",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,130,10
     DEFPUSHBUTTON   "OK",IDOK,77,58,50,14
     PUSHBUTTON      "Mégsem",IDCANCEL,132,58,50,14
@@ -171,22 +171,22 @@ CAPTION "Általános"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "Adja meg a MiniPath általános beállításait.",IDC_STATIC,40,15,153,8
-    CONTROL         "&Egyszeres kattintással nyitja meg az objektumokat.",IDC_SINGLECLICK,
+    LTEXT           "Adja meg a MiniPath általános beállításait",IDC_STATIC,40,15,153,8
+    CONTROL         "&Egyszeres kattintással nyitja meg az objektumokat",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,180,10
-    CONTROL         "&Track kiválasztás engedélyezése.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,120,10
-    CONTROL         "Teljes s&oros kijelölés.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
-    CONTROL         "Mindig aktiválja a célablakot, amikor a fájl nyitva van.",IDC_FOCUSEDIT,
+    CONTROL         "&Track kiválasztás engedélyezése",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,120,10
+    CONTROL         "Teljes s&oros kijelölés",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
+    CONTROL         "Mindig aktiválja a célablakot, amikor a fájl nyitva van",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,187,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
-    CONTROL         "Tartsa a &MiniPath ablakot mindig felül.",IDC_ALWAYSONTOP,
+    CONTROL         "Tartsa a &MiniPath ablakot mindig felül",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
-    CONTROL         "&Lekicsinyítés az óra mellé (kattintás az újranyitáshoz).",IDC_MINIMIZETOTRAY,
+    CONTROL         "&Lekicsinyítés az óra mellé (kattintás az újranyitáshoz)",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,175,10
-    CONTROL         "&Használja újra a meglévő ablakot, amikor a MiniPath elindul.",IDC_REUSEWINDOW,
+    CONTROL         "&Használja újra a meglévő ablakot, amikor a MiniPath elindul",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,210,17
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "&Beállítások mentése kilépéskor.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,120,10
+    CONTROL         "&Beállítások mentése kilépéskor",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,120,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
@@ -195,23 +195,23 @@ CAPTION "Haladó"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
-    LTEXT           "Adja meg a MiniPath haladó beállításait.",IDC_STATIC,40,15,160,8
+    LTEXT           "Adja meg a MiniPath haladó beállításait",IDC_STATIC,40,15,160,8
     CONTROL         "&Kezdőmappa használata:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,95,10
-    CONTROL         "Legutoljára &használtak.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,105,46,95,10
-    CONTROL         """&Kedvencek"" mappa.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,105,58,780,10
+    CONTROL         "Legutoljára &használtak",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,105,46,95,10
+    CONTROL         """&Kedvencek"" mappa",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,105,58,780,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
-    CONTROL         "&Csak olvasható attribútum törlése a mentett fájlokról.",IDC_CLEARREADONLY,
+    CONTROL         "&Csak olvasható attribútum törlése a mentett fájlokról",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,195,10
-    CONTROL         "Másoláskor átne&vezés, ha a név egyezik.",IDC_RENAMEONCOLLISION,
+    CONTROL         "Másoláskor átne&vezés, ha a név egyezik",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,150,10
-    CONTROL         "&Törölt fájlok mozgatása a Lomtárba.",IDC_USERECYCLEBIN,
+    CONTROL         "&Törölt fájlok mozgatása a Lomtárba",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
-    CONTROL         "&Ne kérjen megerősítést törléskor (nem ajánlott).",IDC_NOCONFIRMDELETE,
+    CONTROL         "&Ne kérjen megerősítést törléskor (nem ajánlott)",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,170,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         "Az ""&Esc"" gombbal...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
-    CONTROL         "Ablak le&kicsinyítése.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,80,10
-    CONTROL         "Kilé&pés a MiniPath-ból.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,90,10
+    CONTROL         "Az ""&Esc"" gombbal:",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
+    CONTROL         "Ablak le&kicsinyítése",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,80,10
+    CONTROL         "Kilé&pés a MiniPath-ból",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,90,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 225, 185
@@ -220,15 +220,15 @@ CAPTION "Elemek"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Az elemek megjelenése a mappalistában.",IDC_STATIC,40,15,140,8
+    LTEXT           "Az elemek megjelenése a mappalistában",IDC_STATIC,40,15,140,8
     GROUPBOX        "Színek",IDC_STATIC,10,41,205,134
     LTEXT           "Használja ezt a szöveg színt, ha NINCS SZŰRŐ beállítva:",IDC_STATIC,20,54,189,8
-    CONTROL         "Alapértelmezett a&blak szín.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,100,10
+    CONTROL         "Alapértelmezett a&blak szín",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,100,10
     CONTROL         "&Egyedi szín:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Szín választása...",IDC_COLOR_PICK1,119,80,60,14
     LTEXT           "Használja ezt a szöveg színt, amikor egy SZŰRŐ AKTÍV:",IDC_STATIC,20,105,190,8
-    CONTROL         "Alapértelme&zett ablak szín.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,100,10
+    CONTROL         "Alapértelme&zett ablak szín",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,100,10
     CONTROL         "E&gyedi szín:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Szín választása...",IDC_COLOR_PICK2,120,130,60,14
@@ -240,7 +240,7 @@ CAPTION "Helyek"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Adja meg a külső programokat és útvonalakat.",IDC_STATIC,40,15,180,8
+    LTEXT           "Adja meg a külső programokat és útvonalakat",IDC_STATIC,40,15,180,8
     LTEXT           "&Alapértelmezett ""Gyorsnézet"" program (Ctrl+Q):",IDC_STATIC,10,41,170,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
@@ -254,7 +254,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Cél alkalmazás"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "Ne használjon más cél alkalmazást, csak egyszerűen indítsa el a kijelölt fájlt.",IDC_LAUNCH,
+    CONTROL         "Ne használjon más cél alkalmazást, csak egyszerűen indítsa el a kijelölt fájlt",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,270,10
     CONTROL         "A következő cél alkalmazás használata:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,140,10
@@ -262,7 +262,7 @@ BEGIN
     EDITTEXT        IDC_TARGETPATH,20,35,235,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,259,35,15,14,BS_BITMAP
     LTEXT           "Üzenet:",IDC_STATIC,20,120,32,8
-    CONTROL         "Semmi, indítsa a cél alkalmazást minden alkalommal, amikor megnyitjuk a fájlt.",IDC_ALWAYSRUN,
+    CONTROL         "Semmi, indítsa a cél alkalmazást minden alkalommal, amikor megnyitjuk a fájlt",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,273,10
     CONTROL         "Küldjön egy megnyitás üzenetet a cél alkalmazásablaknak:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,203,10
@@ -283,7 +283,7 @@ CAPTION "Keresés ablak"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "Húzza a célkeresztet arra az ablakra, amit új célként szeretne kiválasztani, vagy nyomja meg az Esc gombot az elvetéshez.",IDC_STATIC,35,7,168,26
+    LTEXT           "Húzza a célkeresztet arra az ablakra, amit új célként szeretne kiválasztani, vagy nyomja meg az Esc gombot az elvetéshez",IDC_STATIC,35,7,168,26
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Ablak osztály",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Ablak modul",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE

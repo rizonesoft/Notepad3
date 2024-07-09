@@ -67,7 +67,7 @@ BEGIN
     LTEXT           "",IDC_AUTHORNAME,65,51,116,8
     LTEXT           "",IDC_EMAIL2,65,75,116,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_EMAIL,"SysLink",WS_TABSTOP,65,61,116,10
-    LTEXT           "", IDC_TRANSL_AUTH, 65, 78, 200, 8
+    LTEXT           "",IDC_TRANSL_AUTH, 65, 78, 200, 8
 END
 
 IDD_RUN DIALOGEX 0, 0, 224, 85
@@ -76,7 +76,7 @@ CAPTION "Hardloop"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Voer die naam van 'n uitvoerbare programlêer,\n'n gids of 'n dokument in om oop te maak.",IDC_STATIC,35,7,188,17
+    LTEXT           "Voer die naam van 'n uitvoerbare programlêer,\n'n gids of 'n dokument in om oop te maak",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,112,64,50,14
@@ -90,7 +90,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Klik hier om die gids te spesifiseer met skakels na jou gunsteling programme.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Klik hier om die gids te spesifiseer met skakels na jou gunsteling programme",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -102,7 +102,7 @@ CAPTION "Gaan Na"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Voer die naam van 'n lêer of gids in om oop te maak,\nof kies 'n onlangs besoekde gids uit die lys.",IDC_STATIC,35,7,182,17
+    LTEXT           "Voer die naam van 'n lêer of gids in om oop te maak,\nof kies 'n onlangs besoekde gids uit die lys",IDC_STATIC,35,7,182,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "Kanselleer",IDCANCEL,167,66,50,14
@@ -117,7 +117,7 @@ BEGIN
     LTEXT           "Spesifiseer 'n nuwe lêer &filter. Skei meervoudige filters deur ;",IDC_STATIC,7,7,202,8
     EDITTEXT        IDC_FILTER,7,22,179,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,190,22,13,13
-    CONTROL         "&Sluit lêers wat ooreenstem met die filter uit.",IDC_NEGFILTER,
+    CONTROL         "&Sluit lêers wat ooreenstem met die filter uit",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,158,10
     DEFPUSHBUTTON   "OK",IDOK,98,58,50,14
     PUSHBUTTON      "Kanselleer",IDCANCEL,153,58,50,14
@@ -171,22 +171,22 @@ CAPTION "Algemeen"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "Spesifiseer algemene programinstellings vir MiniPath.",IDC_STATIC,40,15,193,8
-    CONTROL         "&Laat slegs enkele muisklikte toe om voorwerpe oop te maak.",IDC_SINGLECLICK,
+    LTEXT           "Spesifiseer algemene programinstellings vir MiniPath",IDC_STATIC,40,15,193,8
+    CONTROL         "&Laat slegs enkele muisklikte toe om voorwerpe oop te maak",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,210,10
-    CONTROL         "&Aktiveer spoorseleksie.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
-    CONTROL         "Aktiveer &volle ry seleksie.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
-    CONTROL         "A&ktiveer altyd die teikenvenster wanneer 'n lêer geopen word.",IDC_FOCUSEDIT,
+    CONTROL         "&Aktiveer spoorseleksie",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
+    CONTROL         "Aktiveer &volle ry seleksie",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,95,10
+    CONTROL         "A&ktiveer altyd die teikenvenster wanneer 'n lêer geopen word",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,215,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,210,1
-    CONTROL         "&Hou MiniPath-venster altyd bo-op.",IDC_ALWAYSONTOP,
+    CONTROL         "&Hou MiniPath-venster altyd bo-op",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
-    CONTROL         "&Minimeer na die system tray (klik om te heraktiveer).",IDC_MINIMIZETOTRAY,
+    CONTROL         "&Minimeer na die system tray (klik om te heraktiveer)",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,187,10
-    CONTROL         "&Probeer bestaande venster hergebruik wanneer MiniPath begin.",IDC_REUSEWINDOW,
+    CONTROL         "&Probeer bestaande venster hergebruik wanneer MiniPath begin",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,219,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,210,1
-    CONTROL         "&Stoor instellings by uitgang.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,105,10
+    CONTROL         "&Stoor instellings by uitgang",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,105,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 230, 185
@@ -195,23 +195,23 @@ CAPTION "Gevorderde"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
-    LTEXT           "Spesifiseer gevorderde programinstellings vir MiniPath.",IDC_STATIC,40,15,200,8
+    LTEXT           "Spesifiseer gevorderde programinstellings vir MiniPath",IDC_STATIC,40,15,200,8
     CONTROL         "Gebruik &opstart gids:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
-    CONTROL         "&Mees onlangs gebruik.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,90,10
-    CONTROL         """&Gunstelinge"" gids.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
+    CONTROL         "&Mees onlangs gebruik",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,90,10
+    CONTROL         """&Gunstelinge"" gids",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,210,1
-    CONTROL         "Maak &leesalleen eienskappe van gestoorde lêers skoon.",IDC_CLEARREADONLY,
+    CONTROL         "Maak &leesalleen eienskappe van gestoorde lêers skoon",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,200,10
-    CONTROL         "Hernoem gekopieerde lêers op &naam botsings.",IDC_RENAMEONCOLLISION,
+    CONTROL         "Hernoem gekopieerde lêers op &naam botsings",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,200,10
-    CONTROL         "&Skuif geskrapte lêers na die recycle bin.",IDC_USERECYCLEBIN,
+    CONTROL         "&Skuif geskrapte lêers na die recycle bin",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
-    CONTROL         "Moenie lêer-&uitvee bevestig nie (word nie aanbeveel nie).",IDC_NOCONFIRMDELETE,
+    CONTROL         "Moenie lêer-&uitvee bevestig nie (word nie aanbeveel nie)",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,200,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,210,1
-    CONTROL         "Aktiveer ""&Esc"" sleutel om...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,98,10
-    CONTROL         "Minimaliseer &venster.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,110,148,100,10
-    CONTROL         "M&aak MiniPath toe.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,110,160,100,10
+    CONTROL         "Aktiveer ""&Esc"" sleutel om:",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,98,10
+    CONTROL         "Minimaliseer &venster",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,110,148,100,10
+    CONTROL         "M&aak MiniPath toe",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,110,160,100,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 230, 185
@@ -220,15 +220,15 @@ CAPTION "Items"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Voorkoms van items in die lys.",IDC_STATIC,40,15,140,8
+    LTEXT           "Voorkoms van items in die lys",IDC_STATIC,40,15,140,8
     GROUPBOX        "Kleure",IDC_STATIC,10,41,210,134
     LTEXT           "Gebruik hierdie teks kleur wanneer GEEN FILTER ingestel is nie:",IDC_STATIC,20,54,210,8
-    CONTROL         "Standaard &vensters kleur.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,95,10
+    CONTROL         "Standaard &vensters kleur",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,95,10
     CONTROL         "Pasmaak &kleur:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Kies Kleur...",IDC_COLOR_PICK1,119,80,50,14
     LTEXT           "Gebruik hierdie teks kleur wanneer 'n FILTER AKTIEF is:",IDC_STATIC,20,105,180,8
-    CONTROL         "Vers&tek vensters kle&ur.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
+    CONTROL         "Vers&tek vensters kle&ur",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
     CONTROL         "Pasmaak Kle&ur:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Kies Kleur...",IDC_COLOR_PICK2,120,130,50,14
@@ -240,7 +240,7 @@ CAPTION "Plekke"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Spesifiseer eksterne programme en plekke.",IDC_STATIC,40,15,152,8
+    LTEXT           "Spesifiseer eksterne programme en plekke",IDC_STATIC,40,15,152,8
     LTEXT           "&Verstek ""Vinnige Vertoning"" program (Ctrl+Q):",IDC_STATIC,10,41,156,8
     EDITTEXT        IDC_QUICKVIEW,10,52,196,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,208,52,13,13,BS_BITMAP
@@ -254,7 +254,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Teikentoepassing"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "Moenie spesifieke teikentoepassing gebruik nie, bloot die gekose lêer begin.",IDC_LAUNCH,
+    CONTROL         "Moenie spesifieke teikentoepassing gebruik nie, bloot die gekose lêer begin",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,265,10
     CONTROL         "Gebruik die volgende teikenprogram:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,140,10
@@ -262,7 +262,7 @@ BEGIN
     EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "Boodskap:",IDC_STATIC,20,120,40,8
-    CONTROL         "Geen, voer teikenprogram elke keer as 'n lêer oopgemaak word.",IDC_ALWAYSRUN,
+    CONTROL         "Geen, voer teikenprogram elke keer as 'n lêer oopgemaak word",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,225,10
     CONTROL         "Stuur 'n lêer oop boodskap na die toepassing venster:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,198,10
@@ -283,7 +283,7 @@ CAPTION "Vind Venster"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "Sleep die kruishare oor die venster wat u as die nuwe teiken wil kies, of druk Esc om te kanselleer.",IDC_STATIC,35,7,168,22
+    LTEXT           "Sleep die kruishare oor die venster wat u as die nuwe teiken wil kies, of druk Esc om te kanselleer",IDC_STATIC,35,7,168,22
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Venster Klas",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Venster Module",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE

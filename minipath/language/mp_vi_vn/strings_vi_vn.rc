@@ -81,31 +81,31 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Directory Access Error\nNo access to specified directory.\nCheck the disk or the network connection."
-    IDS_ERR_FILE            "File Access Error\nNo access to ""%s"".\nThe file may be used by another application.\nCheck the disk or the network connection."
-    IDS_ERR_NEW             "File Access Error\nFile could not be created.\nCheck the disk or the network connection."
-    IDS_ERR_NEWDIR          "Directory Access Error\nDirectory could not be created.\nCheck the disk or the network connection."
-    IDS_ERR_SAVEAS1         "File Save Error\nError saving ""%s"".\nProbably an already existing file is write-protected."
-    IDS_ERR_SAVEAS2         "File Save Error\nError removing read-only attribute of saved file."
-    IDS_ERR_CMDLINE         "MiniPath\nError accessing file or directory specified in command line."
-    IDS_ERR_STARTUPDIR      "MiniPath\nNo access to startup directory."
-    IDS_ERR_DROP1           "MiniPath\nNo access to dropped file or directory."
-    IDS_ERR_DROP2           "MiniPath\nOnly a single file or directory can be dropped at a time."
-    IDS_ERR_FAVORITES       "Favourites\nNo access to ""Favourites"" folder.\nSpecify a valid directory in the ""Options"" dialog box."
-    IDS_ERR_LNK_GETPATH     "Link Error\nNo valid filesystem-path available for linked object.\nProbably the link doesn't refer to a file or directory."
-    IDS_ERR_LNK_NOACCESS    "Link Error\nNo access to filesystem-path of linked object.\nCheck the disk or the network connection."
-    IDS_ERR_CREATELINK      "Link Error\nError creating the specified link.\nProbably the destination directory is write-protected."
-    IDS_ERR_FILTER          "File Filter Error\nNo additional filters specified.\nPlease refer to the MiniPath readme file for more information."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nExisting MiniPath window is busy or has an active dialog box.\nDo you want to open another MiniPath window?"
+    IDS_ERR_CD              "Directory Access Error\nNo access to specified directory\nCheck the disk or the network connection"
+    IDS_ERR_FILE            "File Access Error\nNo access to ""%s""\nThe file may be used by another application\nCheck the disk or the network connection"
+    IDS_ERR_NEW             "File Access Error\nFile could not be created\nCheck the disk or the network connection"
+    IDS_ERR_NEWDIR          "Directory Access Error\nDirectory could not be created\nCheck the disk or the network connection"
+    IDS_ERR_SAVEAS1         "File Save Error\nError saving ""%s""\nProbably an already existing file is write-protected"
+    IDS_ERR_SAVEAS2         "File Save Error\nError removing read-only attribute of saved file"
+    IDS_ERR_CMDLINE         "MiniPath\nError accessing file or directory specified in command line"
+    IDS_ERR_STARTUPDIR      "MiniPath\nNo access to startup directory"
+    IDS_ERR_DROP1           "MiniPath\nNo access to dropped file or directory"
+    IDS_ERR_DROP2           "MiniPath\nOnly a single file or directory can be dropped at a time"
+    IDS_ERR_FAVORITES       "Favourites\nNo access to ""Favourites"" folder\nSpecify a valid directory in the ""Options"" dialog box"
+    IDS_ERR_LNK_GETPATH     "Link Error\nNo valid filesystem-path available for linked object\nProbably the link doesn't refer to a file or directory"
+    IDS_ERR_LNK_NOACCESS    "Link Error\nNo access to filesystem-path of linked object\nCheck the disk or the network connection"
+    IDS_ERR_CREATELINK      "Link Error\nError creating the specified link\nProbably the destination directory is write-protected"
+    IDS_ERR_FILTER          "File Filter Error\nNo additional filters specified\nPlease refer to the MiniPath readme file for more information"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nExisting MiniPath window is busy or has an active dialog box\nDo you want to open another MiniPath window?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nExisting target window is busy or has an active dialog box.\nWould you like to open a new window?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nPlease make sure all the required fields are completed.\nYou will also have to find a target window if the appropriate option is enabled."
-    IDS_ERR_INIOPEN         "MiniPath\nNo access to MiniPath configuration file."
-    IDS_ERR_INICREATE       "Save Settings\nError creating configuration file."
-    IDS_ERR_INIWRITE        "Save Settings\nSettings not saved!\nNo write access to configuration file."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nExisting target window is busy or has an active dialog box\nWould you like to open a new window?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nPlease make sure all the required fields are completed\nYou will also have to find a target window if the appropriate option is enabled"
+    IDS_ERR_INIOPEN         "MiniPath\nNo access to MiniPath configuration file"
+    IDS_ERR_INICREATE       "Save Settings\nError creating configuration file"
+    IDS_ERR_INIWRITE        "Save Settings\nSettings not saved!\nNo write access to configuration file"
 END
 
 STRINGTABLE
@@ -116,8 +116,8 @@ BEGIN
     IDS_NEWFILE             "New File"
     IDS_FILTER_ALL          "All files (*.*)\n*.*\n"
     IDS_FILTER_EXE          "Executable files (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nAll files (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Select a new directory."
-    IDS_FAVORITES           "Specify the ""Favourites"" directory."
+    IDS_GETDIRECTORY        "Select a new directory"
+    IDS_FAVORITES           "Specify the ""Favourites"" directory"
 END
 
 STRINGTABLE
@@ -128,10 +128,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "Select the directory with links to your favourite applications."
-    IDS_COPYMOVE            "Select a destination directory."
-    IDS_CREATELINK          "Select a destination directory for the new link."
-    IDS_SAVESETTINGS        "Save Settings\nThe current program settings have been saved."
+    IDS_OPENWITH            "Select the directory with links to your favourite applications"
+    IDS_COPYMOVE            "Select a destination directory"
+    IDS_CREATELINK          "Select a destination directory for the new link"
+    IDS_SAVESETTINGS        "Save Settings\nThe current program settings have been saved"
     IDS_MUI_TRANSL_AUTHOR   "(vi-VN) Bản dịch tiếng Việt của Ghost"
 END
 

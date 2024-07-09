@@ -67,7 +67,7 @@ BEGIN
     LTEXT           "",IDC_AUTHORNAME,65,51,116,8
     LTEXT           "",IDC_EMAIL2,65,75,116,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_EMAIL,"SysLink",WS_TABSTOP,65,61,116,10
-    LTEXT           "", IDC_TRANSL_AUTH, 65, 78, 200, 8
+    LTEXT           "",IDC_TRANSL_AUTH, 65, 78, 200, 8
 END
 
 IDD_RUN DIALOGEX 0, 0, 224, 85
@@ -90,7 +90,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "单击这里设置用于收藏应用程序的文件夹。",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "单击这里设置用于收藏应用程序的文件夹",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "确定",IDOK,52,108,50,14
     PUSHBUTTON      "取消",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -171,7 +171,7 @@ CAPTION "常规"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "设置 MiniPath 的常规参数。",IDC_STATIC,40,15,153,8
+    LTEXT           "设置 MiniPath 的常规参数",IDC_STATIC,40,15,153,8
     CONTROL         "单击打开项目(&A)",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,194,10
     CONTROL         "鼠标滑过时选定(&E)",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,194,10
@@ -195,7 +195,7 @@ CAPTION "高级"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
-    LTEXT           "设置 MiniPath 的高级参数。",IDC_STATIC,40,15,160,8
+    LTEXT           "设置 MiniPath 的高级参数",IDC_STATIC,40,15,160,8
     CONTROL         "启动文件夹(&U)：",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,86,10
     CONTROL         "最后一次使用的(&R)",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,110,10
     CONTROL         "收藏夹(&F)",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,110,10
@@ -209,7 +209,7 @@ BEGIN
     CONTROL         "不显示删除确认对话框（不推荐）(&D)",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,200,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         "当按 Esc 键时(&E)...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,86,10
+    CONTROL         "当按 Esc 键时(&E):",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,86,10
     CONTROL         "最小化 MiniPath(&W)",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,110,10
     CONTROL         "退出 MiniPath(&X)",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,110,10
 END
@@ -220,7 +220,7 @@ CAPTION "文件列表"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,20,20
-    LTEXT           "设置文件列表中项目的外观。",IDC_STATIC,40,15,140,8
+    LTEXT           "设置文件列表中项目的外观",IDC_STATIC,40,15,140,8
     GROUPBOX        "文本颜色",IDC_STATIC,10,41,205,134
     LTEXT           "当文件过滤器未启用时，使用：",IDC_STATIC,20,54,172,8
     CONTROL         "系统默认颜色(&W)",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,82,10
@@ -240,7 +240,7 @@ CAPTION "位置"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "设置其它应用程序的路径。",IDC_STATIC,40,15,140,8
+    LTEXT           "设置其它应用程序的路径",IDC_STATIC,40,15,140,8
     LTEXT           "“快速查看”(Ctrl+Q) 程序(&D)：",IDC_STATIC,10,41,200,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
@@ -283,7 +283,7 @@ CAPTION "查找窗口"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "将准星拖放到目标窗口上，或按 Esc 取消。",IDC_STATIC,35,7,168,22
+    LTEXT           "将准星拖放到目标窗口上，或按 Esc 取消",IDC_STATIC,35,7,168,22
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Window Class",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Window Module",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE

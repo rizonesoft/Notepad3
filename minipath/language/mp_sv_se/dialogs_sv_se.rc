@@ -67,7 +67,7 @@ BEGIN
     LTEXT           "",IDC_AUTHORNAME,65,51,116,8
     LTEXT           "",IDC_EMAIL2,65,75,116,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_EMAIL,"SysLink",WS_TABSTOP,65,61,116,10
-    LTEXT           "", IDC_TRANSL_AUTH, 65, 78, 200, 8
+    LTEXT           "",IDC_TRANSL_AUTH, 65, 78, 200, 8
 END
 
 IDD_RUN DIALOGEX 0, 0, 224, 85
@@ -76,7 +76,7 @@ CAPTION "Kör"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Angen namnet på en programfil,\nmapp eller dokument att öppna.",IDC_STATIC,35,7,188,17
+    LTEXT           "Angen namnet på en programfil,\nmapp eller dokument att öppna",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,112,64,50,14
@@ -90,7 +90,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Klicka här för att ange mappen med länkar till dina favoritprogram.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Klicka här för att ange mappen med länkar till dina favoritprogram",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -102,7 +102,7 @@ CAPTION "Gå till"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-        LTEXT           "Ange namnet på filen eller mappen att öppna, eller välj en mapp från listan med senast besökta platser.",IDC_STATIC,35,7,182,17
+        LTEXT           "Ange namnet på filen eller mappen att öppna, eller välj en mapp från listan med senast besökta platser",IDC_STATIC,35,7,182,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "Avbryt",IDCANCEL,167,66,50,14
@@ -117,7 +117,7 @@ BEGIN
     LTEXT           "Ange ett nytt filfilter. Separera  ;",IDC_STATIC,7,7,175,8
     EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
-    CONTROL         "Excludera filer som matchar filtret.",IDC_NEGFILTER,
+    CONTROL         "Excludera filer som matchar filtret",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,125,10
     DEFPUSHBUTTON   "OK",IDOK,77,58,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,132,58,50,14
@@ -171,22 +171,22 @@ CAPTION "Allmänt"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "Generella inställningar för MiniPath.",IDC_STATIC,40,15,153,8
-    CONTROL         "Tillåt endast enkelklick för att öppna.",IDC_SINGLECLICK,
+    LTEXT           "Generella inställningar för MiniPath",IDC_STATIC,40,15,153,8
+    CONTROL         "Tillåt endast enkelklick för att öppna",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,180,10
-    CONTROL         "Aktivera spårmarkering.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,90,10
-    CONTROL         "Aktivera full radmarkering.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,99,10
-    CONTROL         "Aktivera alltid målfönster när en fil öppnas.",IDC_FOCUSEDIT,
+    CONTROL         "Aktivera spårmarkering",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,90,10
+    CONTROL         "Aktivera full radmarkering",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,99,10
+    CONTROL         "Aktivera alltid målfönster när en fil öppnas",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,187,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
-    CONTROL         "MiniPath-fönstret alltid överst.",IDC_ALWAYSONTOP,
+    CONTROL         "MiniPath-fönstret alltid överst",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
-    CONTROL         "Minimera till systemfältet (klicka för att aktivera).",IDC_MINIMIZETOTRAY,
+    CONTROL         "Minimera till systemfältet (klicka för att aktivera)",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,175,10
-    CONTROL         "Försök använda existerande fönster när MiniPath öppnas.",IDC_REUSEWINDOW,
+    CONTROL         "Försök använda existerande fönster när MiniPath öppnas",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,200,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "Spara inställningar vid avslut.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,106,10
+    CONTROL         "Spara inställningar vid avslut",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,106,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
@@ -195,23 +195,23 @@ CAPTION "Avancerat"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
-    LTEXT           "Ange avancerade programinställningar för MiniPath.",IDC_STATIC,40,15,180,8
+    LTEXT           "Ange avancerade programinställningar för MiniPath",IDC_STATIC,40,15,180,8
     CONTROL         "Använd startmapp:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
-    CONTROL         "Senast använda.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
-    CONTROL         """Favorit"" mapp.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
+    CONTROL         "Senast använda",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
+    CONTROL         """Favorit"" mapp",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
-    CONTROL         "Rensa skrivskydd för sparade filer.",IDC_CLEARREADONLY,
+    CONTROL         "Rensa skrivskydd för sparade filer",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,143,10
-    CONTROL         "Döp om fil vid namnkonflikt.",IDC_RENAMEONCOLLISION,
+    CONTROL         "Döp om fil vid namnkonflikt",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,150,10
-    CONTROL         "Flytta raderade filer till papperskorgen.",IDC_USERECYCLEBIN,
+    CONTROL         "Flytta raderade filer till papperskorgen",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
-    CONTROL         "Radera filer utan att bekräfta (ej rekommenderad).",IDC_NOCONFIRMDELETE,
+    CONTROL         "Radera filer utan att bekräfta (ej rekommenderad)",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,180,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         "Aktivera ""Esc"" till...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
-    CONTROL         "Minimera fönstret.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
-    CONTROL         "Avsluta MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,70,10
+    CONTROL         "Aktivera ""Esc"" till:",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
+    CONTROL         "Minimera fönstret",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,71,10
+    CONTROL         "Avsluta MiniPath",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,70,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 225, 185
@@ -220,15 +220,15 @@ CAPTION "Objekt"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Utseende för object i mapplistan.",IDC_STATIC,40,15,140,8
+    LTEXT           "Utseende för object i mapplistan",IDC_STATIC,40,15,140,8
     GROUPBOX        "Färger",IDC_STATIC,10,41,205,134
     LTEXT           "Använd denna textfärg när INGET FILTER är valt:",IDC_STATIC,20,54,165,8
-    CONTROL         "Standardfärg för fönster.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,95,10
+    CONTROL         "Standardfärg för fönster",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,95,10
     CONTROL         "Anpassad färg:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Välj färg...",IDC_COLOR_PICK1,119,80,50,14
     LTEXT           "Använd denna textfärg när ett FILTER ÄR AKTIVERAT:",IDC_STATIC,20,105,175,8
-    CONTROL         "Anpassad fönsterfärg.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
+    CONTROL         "Anpassad fönsterfärg",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
     CONTROL         "Anpassad färg:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Välj färg...",IDC_COLOR_PICK2,120,130,50,14
@@ -240,7 +240,7 @@ CAPTION "Platser"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Ange externa program och mappar.",IDC_STATIC,40,15,140,8
+    LTEXT           "Ange externa program och mappar",IDC_STATIC,40,15,140,8
     LTEXT           "Standard ""Quick View"" program (Ctrl+Q):",IDC_STATIC,10,41,140,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
@@ -254,7 +254,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Målprogram"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "Använd inte en specifik applikation, kör vald fil normalt.",IDC_LAUNCH,
+    CONTROL         "Använd inte en specifik applikation, kör vald fil normalt",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,250,10
     CONTROL         "Använd målprogram:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
@@ -262,7 +262,7 @@ BEGIN
     EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "Meddelande:",IDC_STATIC,20,120,45,8
-    CONTROL         "Inget, kör målprogrammet varje gång filen öppnas.",IDC_ALWAYSRUN,
+    CONTROL         "Inget, kör målprogrammet varje gång filen öppnas",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,220,10
     CONTROL         "Skicka ett öppet fil meddelande till mål fönstret:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,198,10
@@ -283,7 +283,7 @@ CAPTION "Hitta fönster"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "Drag hårkors över fönstret du väljer som nytt mål, eller tryck Esc för att avbryta.",IDC_STATIC,35,7,168,22
+    LTEXT           "Drag hårkors över fönstret du väljer som nytt mål, eller tryck Esc för att avbryta",IDC_STATIC,35,7,168,22
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Fönsterklass",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Fönstermodul",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE

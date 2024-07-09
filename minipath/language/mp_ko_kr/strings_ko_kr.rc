@@ -81,31 +81,31 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "디렉터리 접근 오류\n선택한 디렉터리에 접근할 수 없습니다.\n디스크 혹은 네트워크 연결을 확인하세요."
-    IDS_ERR_FILE            "파일 접근 오류\n""%s""에 접근할 수 없습니다.\n다른 응용 프로그램에서 파일을 사용할 수 있습니다.\n디스크 또는 네트워크 연결을 확인하세요."
-    IDS_ERR_NEW             "파일 접근 오류\n파일을 만들 수 없습니다.\n디스크 또는 네트워크 연결을 확인하세요."
-    IDS_ERR_NEWDIR          "디렉토리 접근 오류\n디렉터리를 만들 수 없습니다.\n디스크 또는 네트워크 연결을 확인하세요."
-    IDS_ERR_SAVEAS1         "파일 저장 오류\n""%s"" 저장 중 오류입니다.\n이미 존재하는 파일이 쓰기 금지되어 있을 수 있습니다."
-    IDS_ERR_SAVEAS2         "파일 저장 오류\n저장된 파일의 읽기 전용 속성을 제거하는 동안 오류가 발생했습니다."
-    IDS_ERR_CMDLINE         "MiniPath\n명령줄에 지정된 파일 또는 디렉터리에 접근하는 동안 오류가 발생했습니다."
-    IDS_ERR_STARTUPDIR      "MiniPath\n시작 디렉터리에 접근할 수 없습니다."
-    IDS_ERR_DROP1           "MiniPath\n끌어 놓은 파일 또는 디렉터리에 접근할 수 없습니다."
-    IDS_ERR_DROP2           "MiniPath\n한 번에 하나의 파일 또는 디렉터리만 끌어 놓을 수 있습니다."
-    IDS_ERR_FAVORITES       "즐겨찾기\n""즐겨찾기"" 폴더에 접근할 수 없습니다.\n""옵션"" 대화 상자에서 유효한 디렉터리를 지정하세요."
-    IDS_ERR_LNK_GETPATH     "링크 오류\n링크된 개체에 유효한 파일 시스템 경로가 없습니다.\n링크가 파일이나 디렉터리를 참조하지 않는 것 같습니다."
-    IDS_ERR_LNK_NOACCESS    "링크 오류\n링크된 개체에 파일 시스템 경로에 대한 접근 권한이 없습니다.\n디스크 또는 네트워크 연결을 확인하세요."
-    IDS_ERR_CREATELINK      "링크 오류\n지정한 링크를 만드는 동안 오류가 발생했습니다.\n대상 디렉터리가 쓰기 금지되어 있을 수 있습니다."
-    IDS_ERR_FILTER          "파일 필터 오류\n추가 필터를 지정하지 않았습니다.\n자세한 내용은 MiniPath readme 파일을 참조하세요."
-    IDS_ERR_PREVWINDISABLED "MiniPath\n기존 MiniPath 창이 사용 중이거나 활성 대화 상자가 있습니다.\n다른 MiniPath 창을여시겠습니까?"
+    IDS_ERR_CD              "디렉터리 접근 오류\n선택한 디렉터리에 접근할 수 없습니다\n디스크 혹은 네트워크 연결을 확인하세요"
+    IDS_ERR_FILE            "파일 접근 오류\n""%s""에 접근할 수 없습니다\n다른 응용 프로그램에서 파일을 사용할 수 있습니다\n디스크 또는 네트워크 연결을 확인하세요"
+    IDS_ERR_NEW             "파일 접근 오류\n파일을 만들 수 없습니다\n디스크 또는 네트워크 연결을 확인하세요"
+    IDS_ERR_NEWDIR          "디렉토리 접근 오류\n디렉터리를 만들 수 없습니다\n디스크 또는 네트워크 연결을 확인하세요"
+    IDS_ERR_SAVEAS1         "파일 저장 오류\n""%s"" 저장 중 오류입니다\n이미 존재하는 파일이 쓰기 금지되어 있을 수 있습니다"
+    IDS_ERR_SAVEAS2         "파일 저장 오류\n저장된 파일의 읽기 전용 속성을 제거하는 동안 오류가 발생했습니다"
+    IDS_ERR_CMDLINE         "MiniPath\n명령줄에 지정된 파일 또는 디렉터리에 접근하는 동안 오류가 발생했습니다"
+    IDS_ERR_STARTUPDIR      "MiniPath\n시작 디렉터리에 접근할 수 없습니다"
+    IDS_ERR_DROP1           "MiniPath\n끌어 놓은 파일 또는 디렉터리에 접근할 수 없습니다"
+    IDS_ERR_DROP2           "MiniPath\n한 번에 하나의 파일 또는 디렉터리만 끌어 놓을 수 있습니다"
+    IDS_ERR_FAVORITES       "즐겨찾기\n""즐겨찾기"" 폴더에 접근할 수 없습니다\n""옵션"" 대화 상자에서 유효한 디렉터리를 지정하세요"
+    IDS_ERR_LNK_GETPATH     "링크 오류\n링크된 개체에 유효한 파일 시스템 경로가 없습니다\n링크가 파일이나 디렉터리를 참조하지 않는 것 같습니다"
+    IDS_ERR_LNK_NOACCESS    "링크 오류\n링크된 개체에 파일 시스템 경로에 대한 접근 권한이 없습니다\n디스크 또는 네트워크 연결을 확인하세요"
+    IDS_ERR_CREATELINK      "링크 오류\n지정한 링크를 만드는 동안 오류가 발생했습니다\n대상 디렉터리가 쓰기 금지되어 있을 수 있습니다"
+    IDS_ERR_FILTER          "파일 필터 오류\n추가 필터를 지정하지 않았습니다\n자세한 내용은 MiniPath readme 파일을 참조하세요"
+    IDS_ERR_PREVWINDISABLED "MiniPath\n기존 MiniPath 창이 사용 중이거나 활성 대화 상자가 있습니다\n다른 MiniPath 창을여시겠습니까?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\n기존 대상 창이 사용 중이거나 활성 대화 상자가 있습니다.\n새 창을 여시겠습니까?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\n모든 필수 필드가 완료되었는지 확인하세요.\n또한 적절한 옵션이 활성화된 경우 대상 창을 찾아야 합니다."
-    IDS_ERR_INIOPEN         "MiniPath\nMiniPath 구성 파일에 접근할 수 없습니다."
-    IDS_ERR_INICREATE       "설정 저장\n구성 파일을 만드는 동안 오류가 발생했습니다."
-    IDS_ERR_INIWRITE        "설정 저장\n설정이 저장되지 않았습니다!\n구성 파일에 대한 쓰기 접근 권한이 없습니다."
+    IDS_ERR_TARGETDISABLED  "MiniPath\n기존 대상 창이 사용 중이거나 활성 대화 상자가 있습니다\n새 창을 여시겠습니까?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\n모든 필수 필드가 완료되었는지 확인하세요\n또한 적절한 옵션이 활성화된 경우 대상 창을 찾아야 합니다"
+    IDS_ERR_INIOPEN         "MiniPath\nMiniPath 구성 파일에 접근할 수 없습니다"
+    IDS_ERR_INICREATE       "설정 저장\n구성 파일을 만드는 동안 오류가 발생했습니다"
+    IDS_ERR_INIWRITE        "설정 저장\n설정이 저장되지 않았습니다!\n구성 파일에 대한 쓰기 접근 권한이 없습니다"
 END
 
 STRINGTABLE
@@ -116,8 +116,8 @@ BEGIN
     IDS_NEWFILE             "새 파일"
     IDS_FILTER_ALL          "모든 파일 (*.*)\n*.*\n"
     IDS_FILTER_EXE          "실행 파일 (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\n모든 파일 (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "새 디렉터리 선택."
-    IDS_FAVORITES           """즐겨찾기"" 디렉터리를 지정합니다."
+    IDS_GETDIRECTORY        "새 디렉터리 선택"
+    IDS_FAVORITES           """즐겨찾기"" 디렉터리를 지정합니다"
 END
 
 STRINGTABLE
@@ -128,10 +128,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "즐겨찾는 응용프로그램에 대한 링크가 있는 디렉터리를 선택합니다."
-    IDS_COPYMOVE            "대상 디렉터리를 선택합니다."
-    IDS_CREATELINK          "새 링크의 대상 디렉터리를 선택합니다."
-    IDS_SAVESETTINGS        "설정 저장\n현재 프로그램 설정이 저장되었습니다."
+    IDS_OPENWITH            "즐겨찾는 응용프로그램에 대한 링크가 있는 디렉터리를 선택합니다"
+    IDS_COPYMOVE            "대상 디렉터리를 선택합니다"
+    IDS_CREATELINK          "새 링크의 대상 디렉터리를 선택합니다"
+    IDS_SAVESETTINGS        "설정 저장\n현재 프로그램 설정이 저장되었습니다"
     IDS_MUI_TRANSL_AUTHOR   "(ko-KR) 한국어 번역: VenusGirl"
 END
 
