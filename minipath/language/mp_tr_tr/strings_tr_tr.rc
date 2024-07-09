@@ -81,31 +81,31 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Klasör erişimi sorunu\nBelirtilen klasöre erişilemedi.\nDisk ya da ağ bağlantısını denetleyin."
-    IDS_ERR_FILE            "Dosya erişimi sorunu\n""%s"" dosyasına erişilemedi.\nDosya başka bir uygulama tarafından kullanılıyor olabilir.\nDisk ya da ağ bağlantısını denetleyin."
-    IDS_ERR_NEW             "Dosya erişimi sorunu\nDosya oluşturulamadı.\nDisk ya da ağ bağlantısını denetleyin."
-    IDS_ERR_NEWDIR          "Klasör erişimi sorunu\nKlasör oluşturulamadı.\nDisk ya da ağ bağlantısını denetleyin."
-    IDS_ERR_SAVEAS1         "Dosya kaydetme sorunu\n""%s"" kaydedilirken sorun çıktı.\nBüyük olasılıkla aynı adlı ve yazmaya karşı korumalı bir dosya var."
-    IDS_ERR_SAVEAS2         "Dosya kaydetme sorunu\nKaydedilen dosyanın salt okunur özniteliği değiştirilirken sorun çıktı."
-    IDS_ERR_CMDLINE         "MiniPath\nKomut satırında belirtilen dosya ya da klasöre erişilirken sorun çıktı."
-    IDS_ERR_STARTUPDIR      "MiniPath\nBaşlangıç klasörüne erişilemedi."
-    IDS_ERR_DROP1           "MiniPath\nSürüklenip bırakılan dosya ya da klasöre erişilemedi."
-    IDS_ERR_DROP2           "MiniPath\nAynı anda yalnız tek bir dosya ya da klasör sürüklenip bırakılabilir."
-    IDS_ERR_FAVORITES       "Sık kullanılanlar\n""Sık kullanılanlar"" klasörüne erişilemedi.\n""Seçenekler"" bölümünden geçerli bir klasör belirtin."
-    IDS_ERR_LNK_GETPATH     "Bağlantı sorunu\nBağlantılı nesne için geçerli bir dosya sistemi yolu bulunamadı.\nBüyük olasılıkla bağlantı bir dosya ya da klasörü göstermiyor."
-    IDS_ERR_LNK_NOACCESS    "Bağlantı sorunu\nBağlantılı nesnenin dosya sistemi yoluna erişilemedi.\nDisk ya da ağ bağlantısını denetleyin."
-    IDS_ERR_CREATELINK      "Bağlantı sorunu\nBelirtilen bağlantı oluşturulurken sorun çıktı.\nBüyük olasılıkla hedef klasör yazmaya karşı korumalı."
-    IDS_ERR_FILTER          "Dosya süzgeci sorunu\nHerhangi bir ek süzgeç belirtilmemiş.\nAyrıntılı bilgi almak için MiniPath readme dosyasına bakabilirsiniz."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nVar olan MiniPath penceresi meşgul ya da bir pencere açık.\nBaşka bir MiniPath penceresi açmak ister misiniz?"
+    IDS_ERR_CD              "Klasör erişimi sorunu\nBelirtilen klasöre erişilemedi\nDisk ya da ağ bağlantısını denetleyin"
+    IDS_ERR_FILE            "Dosya erişimi sorunu\n""%s"" dosyasına erişilemedi\nDosya başka bir uygulama tarafından kullanılıyor olabilir\nDisk ya da ağ bağlantısını denetleyin"
+    IDS_ERR_NEW             "Dosya erişimi sorunu\nDosya oluşturulamadı\nDisk ya da ağ bağlantısını denetleyin"
+    IDS_ERR_NEWDIR          "Klasör erişimi sorunu\nKlasör oluşturulamadı\nDisk ya da ağ bağlantısını denetleyin"
+    IDS_ERR_SAVEAS1         "Dosya kaydetme sorunu\n""%s"" kaydedilirken sorun çıktı\nBüyük olasılıkla aynı adlı ve yazmaya karşı korumalı bir dosya var"
+    IDS_ERR_SAVEAS2         "Dosya kaydetme sorunu\nKaydedilen dosyanın salt okunur özniteliği değiştirilirken sorun çıktı"
+    IDS_ERR_CMDLINE         "MiniPath\nKomut satırında belirtilen dosya ya da klasöre erişilirken sorun çıktı"
+    IDS_ERR_STARTUPDIR      "MiniPath\nBaşlangıç klasörüne erişilemedi"
+    IDS_ERR_DROP1           "MiniPath\nSürüklenip bırakılan dosya ya da klasöre erişilemedi"
+    IDS_ERR_DROP2           "MiniPath\nAynı anda yalnız tek bir dosya ya da klasör sürüklenip bırakılabilir"
+    IDS_ERR_FAVORITES       "Sık kullanılanlar\n""Sık kullanılanlar"" klasörüne erişilemedi\n""Seçenekler"" bölümünden geçerli bir klasör belirtin"
+    IDS_ERR_LNK_GETPATH     "Bağlantı sorunu\nBağlantılı nesne için geçerli bir dosya sistemi yolu bulunamadı\nBüyük olasılıkla bağlantı bir dosya ya da klasörü göstermiyor"
+    IDS_ERR_LNK_NOACCESS    "Bağlantı sorunu\nBağlantılı nesnenin dosya sistemi yoluna erişilemedi\nDisk ya da ağ bağlantısını denetleyin"
+    IDS_ERR_CREATELINK      "Bağlantı sorunu\nBelirtilen bağlantı oluşturulurken sorun çıktı\nBüyük olasılıkla hedef klasör yazmaya karşı korumalı"
+    IDS_ERR_FILTER          "Dosya süzgeci sorunu\nHerhangi bir ek süzgeç belirtilmemiş\nAyrıntılı bilgi almak için MiniPath readme dosyasına bakabilirsiniz"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nVar olan MiniPath penceresi meşgul ya da bir pencere açık\nBaşka bir MiniPath penceresi açmak ister misiniz?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nVar olan hedef penceresi meşgul ya da açık bir pencere var.\nYeni bir pencere açılmasını ister misiniz?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nLütfen gerekli tüm alanları doldurduğunuzdan emin olun.\nİlgili seçeneği etkinleştirdiyseniz ayrıca bir hedef pencere bulmanız gerekir."
-    IDS_ERR_INIOPEN         "MiniPath\nMiniPath yapılandırma dosyasına erişilemedi."
-    IDS_ERR_INICREATE       "Ayar kaydı\nYapılandırma dosyası oluşturulurken sorun çıktı."
-    IDS_ERR_INIWRITE        "Ayar kaydı\nAyarlar kaydedilemedi!\nYapılandırma dosyası yazmaya karşı korunmuş."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nVar olan hedef penceresi meşgul ya da açık bir pencere var\nYeni bir pencere açılmasını ister misiniz?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nLütfen gerekli tüm alanları doldurduğunuzdan emin olun\nİlgili seçeneği etkinleştirdiyseniz ayrıca bir hedef pencere bulmanız gerekir"
+    IDS_ERR_INIOPEN         "MiniPath\nMiniPath yapılandırma dosyasına erişilemedi"
+    IDS_ERR_INICREATE       "Ayar kaydı\nYapılandırma dosyası oluşturulurken sorun çıktı"
+    IDS_ERR_INIWRITE        "Ayar kaydı\nAyarlar kaydedilemedi!\nYapılandırma dosyası yazmaya karşı korunmuş"
 END
 
 STRINGTABLE
@@ -116,8 +116,8 @@ BEGIN
     IDS_NEWFILE             "Yeni dosya"
     IDS_FILTER_ALL          "Tüm dosyalar (*.*)\n*.*\n"
     IDS_FILTER_EXE          "Yürütülebilir dosyalar (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nTüm dosyalar (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Yeni bir klasör seçin."
-    IDS_FAVORITES           """Sık kullanılanlar"" klasörünü belirtin."
+    IDS_GETDIRECTORY        "Yeni bir klasör seçin"
+    IDS_FAVORITES           """Sık kullanılanlar"" klasörünü belirtin"
 END
 
 STRINGTABLE
@@ -128,10 +128,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "Sık kullandığınız uygulama bağlantılarının olduğu klasörü seçin."
-    IDS_COPYMOVE            "Bir hedef klasör seçin."
-    IDS_CREATELINK          "Yeni bağlantı için bir hedef klasör seçin."
-    IDS_SAVESETTINGS        "Ayar kaydı\nGeçerli uygulama ayarları kaydedildi."
+    IDS_OPENWITH            "Sık kullandığınız uygulama bağlantılarının olduğu klasörü seçin"
+    IDS_COPYMOVE            "Bir hedef klasör seçin"
+    IDS_CREATELINK          "Yeni bağlantı için bir hedef klasör seçin"
+    IDS_SAVESETTINGS        "Ayar kaydı\nGeçerli uygulama ayarları kaydedildi"
     IDS_MUI_TRANSL_AUTHOR   "(tr-TR) kayazeren tarafından Türkçe'ye çevirildi"
 END
 

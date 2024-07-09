@@ -67,7 +67,7 @@ BEGIN
     LTEXT           "",IDC_AUTHORNAME,65,51,116,8
     LTEXT           "",IDC_EMAIL2,65,75,116,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_EMAIL,"SysLink",WS_TABSTOP,65,61,116,10
-    LTEXT           "", IDC_TRANSL_AUTH, 40, 78, 200, 8
+    LTEXT           "",IDC_TRANSL_AUTH, 40, 78, 200, 8
 END
 
 IDD_RUN DIALOGEX 0, 0, 224, 85
@@ -76,7 +76,7 @@ CAPTION "Jalankan"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Masukkan nama berkas program untuk dieksekusi,\nfolder atau dokumen untuk dibuka.",IDC_STATIC,35,7,188,17
+    LTEXT           "Masukkan nama berkas program untuk dieksekusi,\nfolder atau dokumen untuk dibuka",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,112,64,50,14
@@ -90,7 +90,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Klik disini untuk menentukan tempat direktori aplikasi favorit Anda.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Klik disini untuk menentukan tempat direktori aplikasi favorit Anda",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Batal",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -102,7 +102,7 @@ CAPTION "Pergi ke"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Masukkan nama berkas atau direktori yang akan dibuka,\natau pilih kunjungan direktori dari daftar terkini.",IDC_STATIC,35,7,182,17
+    LTEXT           "Masukkan nama berkas atau direktori yang akan dibuka,\natau pilih kunjungan direktori dari daftar terkini",IDC_STATIC,35,7,182,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "Batal",IDCANCEL,167,66,50,14
@@ -117,7 +117,7 @@ BEGIN
     LTEXT           "Tentukan pen&yaringan baru berkas. Pisahkan beberapa dengan ;",IDC_STATIC,7,7,175,18
     EDITTEXT        IDC_FILTER,7,32,158,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,169,32,13,13
-    CONTROL         "&Kecualikan berkas yang cocok.",IDC_NEGFILTER,
+    CONTROL         "&Kecualikan berkas yang cocok",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,118,10
     DEFPUSHBUTTON   "OK",IDOK,77,68,50,14
     PUSHBUTTON      "Batal",IDCANCEL,132,68,50,14
@@ -171,22 +171,22 @@ CAPTION "Umum"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "Tentukan pengaturan program umum untuk MiniPath.",IDC_STATIC,40,15,180,8
-    CONTROL         "&Izinkan hanya satu klik untuk membuka objek.",IDC_SINGLECLICK,
+    LTEXT           "Tentukan pengaturan program umum untuk MiniPath",IDC_STATIC,40,15,180,8
+    CONTROL         "&Izinkan hanya satu klik untuk membuka objek",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,180,10
-    CONTROL         "&Aktifkan pemilihan trek.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
-    CONTROL         "Aktifkan &pemilihan baris penuh.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,120,10
-    CONTROL         "Selalu a&ktifkan jendela target saat berkas dibuka.",IDC_FOCUSEDIT,
+    CONTROL         "&Aktifkan pemilihan trek",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
+    CONTROL         "Aktifkan &pemilihan baris penuh",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,120,10
+    CONTROL         "Selalu a&ktifkan jendela target saat berkas dibuka",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,187,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
-    CONTROL         "&Pertahankan jendela MiniPath agar tetap diatas.",IDC_ALWAYSONTOP,
+    CONTROL         "&Pertahankan jendela MiniPath agar tetap diatas",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,170,10
-    CONTROL         "&Minimalkan ke baki (klik untuk membuka).",IDC_MINIMIZETOTRAY,
+    CONTROL         "&Minimalkan ke baki (klik untuk membuka)",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,157,10
-    CONTROL         "&Coba untuk gunakan kembali jendela saat MiniPath dimulai.",IDC_REUSEWINDOW,
+    CONTROL         "&Coba untuk gunakan kembali jendela saat MiniPath dimulai",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,208,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "&Simpan pengaturan saat keluar.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,120,10
+    CONTROL         "&Simpan pengaturan saat keluar",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,120,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
@@ -195,23 +195,23 @@ CAPTION "Lanjutan"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
-    LTEXT           "Tentukan pengaturan program lanjutan untuk MiniPath.",IDC_STATIC,40,15,185,8
+    LTEXT           "Tentukan pengaturan program lanjutan untuk MiniPath",IDC_STATIC,40,15,185,8
     CONTROL         "G&unakan direktori startup:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,95,10
-    CONTROL         "Ba&ru saja digunakan.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,110,46,79,10
-    CONTROL         "Folder ""&Favorit"".",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,110,58,75,10
+    CONTROL         "Ba&ru saja digunakan",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,110,46,79,10
+    CONTROL         "Folder ""&Favorit""",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,110,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
-    CONTROL         "&Hapus atribut hanya baca dari berkas yang disimpan.",IDC_CLEARREADONLY,
+    CONTROL         "&Hapus atribut hanya baca dari berkas yang disimpan",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,185,10
-    CONTROL         "Ganti &nama berkas yang disalin saat tabrakan nama.",IDC_RENAMEONCOLLISION,
+    CONTROL         "Ganti &nama berkas yang disalin saat tabrakan nama",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,185,10
-    CONTROL         "&Pindahkan berkas yang dihapus ke tempat sampah.",IDC_USERECYCLEBIN,
+    CONTROL         "&Pindahkan berkas yang dihapus ke tempat sampah",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,185,10
-    CONTROL         "&Jangan konfirmasikan penghapusan berkas (tidak disarankan).",IDC_NOCONFIRMDELETE,
+    CONTROL         "&Jangan konfirmasikan penghapusan berkas (tidak disarankan)",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,215,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         "Aktifkan tombol ""&Esc"" ke...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,98,10
-    CONTROL         "Minimalkan jen&dela.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,110,148,80,10
-    CONTROL         "&Keluar dari MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,110,160,80,10
+    CONTROL         "Aktifkan tombol ""&Esc"" ke:",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,98,10
+    CONTROL         "Minimalkan jen&dela",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,110,148,80,10
+    CONTROL         "&Keluar dari MiniPath",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,110,160,80,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 225, 185
@@ -220,15 +220,15 @@ CAPTION "Item"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Penampilan item dalam daftar direktori.",IDC_STATIC,40,15,140,8
+    LTEXT           "Penampilan item dalam daftar direktori",IDC_STATIC,40,15,140,8
     GROUPBOX        "Warna",IDC_STATIC,10,41,205,134
     LTEXT           "Gunakan warna teks ini apabila TIDAK ADA FILTER disetel:",IDC_STATIC,20,54,193,8
-    CONTROL         "Warna &windows baku.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
+    CONTROL         "Warna &windows baku",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
     CONTROL         "&Warna Kustom:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Pilih Warna...",IDC_COLOR_PICK1,119,80,50,14
     LTEXT           "Gunakan warna teks ini ketika FILTER AKTIF:",IDC_STATIC,20,105,146,8
-    CONTROL         "Warna windows &baku.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
+    CONTROL         "Warna windows &baku",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
     CONTROL         "Warna K&ustom:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Pilih Warna...",IDC_COLOR_PICK2,120,130,50,14
@@ -240,7 +240,7 @@ CAPTION "Lokasi"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Tentukan program eksternal dan jalur.",IDC_STATIC,40,15,140,8
+    LTEXT           "Tentukan program eksternal dan jalur",IDC_STATIC,40,15,140,8
     LTEXT           "Program ""Quick View"" &baku (Ctrl+Q):",IDC_STATIC,10,41,140,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
@@ -254,7 +254,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Target Aplikasi"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "Jangan gunakan aplikasi target tertentu, cukup luncurkan berkas yang dipilih.",IDC_LAUNCH,
+    CONTROL         "Jangan gunakan aplikasi target tertentu, cukup luncurkan berkas yang dipilih",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,262,10
     CONTROL         "Gunakan aplikasi target berikut:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
@@ -262,7 +262,7 @@ BEGIN
     EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "Pesan:",IDC_STATIC,20,120,32,8
-    CONTROL         "Tidak ada, jalankan aplikasi target setiap kali berkas dibuka.",IDC_ALWAYSRUN,
+    CONTROL         "Tidak ada, jalankan aplikasi target setiap kali berkas dibuka",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,220,10
     CONTROL         "Kirim pesan buka berkas ke jendela aplikasi target:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,198,10
@@ -283,7 +283,7 @@ CAPTION "Temukan Jendela"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "Geser kursor ke jendela yang ingin dipilih sebagai target baru, atau tekan Esc untuk Batal.",IDC_STATIC,35,7,168,22
+    LTEXT           "Geser kursor ke jendela yang ingin dipilih sebagai target baru, atau tekan Esc untuk Batal",IDC_STATIC,35,7,168,22
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Window Class",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Window Module",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE

@@ -1,15 +1,15 @@
 // Microsoft Visual C++ generated resource script.
 // encoding: UTF-8
 #pragma code_page(65001)  // UTF-8
-#include "resource.h"
+#include"resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "winresrc.h"
-#include "../common_res.h"
+#include"winresrc.h"
+#include"../common_res.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -34,8 +34,8 @@ END
 
 2 TEXTINCLUDE
 BEGIN
-    "#include ""winresrc.h""\r\n"
-    "#include ""../common_res.h""\r\n"
+    "#include""winresrc.h""\r\n"
+    "#include""../common_res.h""\r\n"
     "\0"
 END
 
@@ -91,12 +91,12 @@ BEGIN
     IDS_ERR_STARTUPDIR      "MiniPath\nस्टार्ट-अप निदेशिका तक पहुँच संभव नहीं है"
     IDS_ERR_DROP1           "MiniPath\nडाली गई फ़ाइल या निदेशिका तक पहुँच संभव नहीं है"
     IDS_ERR_DROP2           "MiniPath\nएक बार में सिर्फ़ एक ही फ़ाइल या निदेशिका डाली जा सकती है"
-    IDS_ERR_FAVORITES       "पसंदीदा\n""पसंदीदा"" फ़ोल्डर तक पहुँच संभव नहीं है\nकृपया ""चुनाव"" डायलॉग डिब्बे में मान्य निदेशिका बताएं "
+    IDS_ERR_FAVORITES       "पसंदीदा\n""पसंदीदा"" फ़ोल्डर तक पहुँच संभव नहीं है\nकृपया""चुनाव"" डायलॉग डिब्बे में मान्य निदेशिका बताएं"
     IDS_ERR_LNK_GETPATH     "लिंक त्रुटि\nलिंक हुए ऑब्जेक्ट के लिए कोई मान्य फ़ाइल सिस्टम-पथ उपलब्ध नहीं है।\nसंभवतः लिंक किसी फ़ाइल या निदेशिका से संबंध नहीं रखता।"
     IDS_ERR_LNK_NOACCESS    "लिंक त्रुटि\nलिंक हुए ऑब्जेक्ट तक पहुँच संभव नहीं है।\nकृपया डिस्क या नेटवर्क संपर्क जाँचें।"
     IDS_ERR_CREATELINK      "लिंक त्रुटि\nनिर्देशित लिंक बनाने में त्रुटि\nसंभवतः निदेशिका परिवर्तन-वर्जित है"
     IDS_ERR_FILTER          "फ़ाइल फ़िल्टर त्रुटि\nकोई अतिरिक्त फ़िल्टर नहीं बताए\nकृपया अधिक जानकारी के लिए MiniPath से संबंधित दिशानिर्देश फ़ाइल देखें"
-    IDS_ERR_PREVWINDISABLED "MiniPath\nमौजूदा MiniPath विंडो कार्यरत है या कोई संबंधित डायलॉग डिब्बा पहले से खुला है\nक्या आप दसूरी MiniPath विंडो खोलना चाहते हैं?"
+    IDS_ERR_PREVWINDISABLED"MiniPath\nमौजूदा MiniPath विंडो कार्यरत है या कोई संबंधित डायलॉग डिब्बा पहले से खुला है\nक्या आप दसूरी MiniPath विंडो खोलना चाहते हैं?"
 END
 
 STRINGTABLE
@@ -111,8 +111,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_SEARCHEXE           "चलाने लायक ढूँढें"
-    IDS_GETQUICKVIEWER      "Quickview ढूँढें "
-    IDS_GETTARGET           "संपादक ढूँढें "
+    IDS_GETQUICKVIEWER      "Quickview ढूँढें"
+    IDS_GETTARGET           "संपादक ढूँढें"
     IDS_NEWFILE             "नई फ़ाइल"
     IDS_FILTER_ALL          "समस्त फ़ाइल (*.*)\n*.*\n"
     IDS_FILTER_EXE          "चलाने लायक फ़ाइल (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nAll files (*.*)\n*.*\n"

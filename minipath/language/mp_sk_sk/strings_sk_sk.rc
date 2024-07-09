@@ -81,31 +81,31 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Chyba prístupu k adresáru\nŽiadny prístup k zadanému adresáru.\nSkontrolujte disk alebo sieťové pripojenie."
-    IDS_ERR_FILE            "Chyba prístupu k súboru\nŽiadny prístup k ""%s"".\nSúbor môže používať iná aplikácia.\nSkontrolujte disk alebo sieťové pripojenie."
-    IDS_ERR_NEW             "Chyba prístupu k súboru\nSúbor sa nepodarilo vytvoriť.\nSkontrolujte disk alebo sieťové pripojenie."
-    IDS_ERR_NEWDIR          "Chyba prístupu k adresáru\nAdresár sa nepodarilo vytvoriť.\nSkontrolujte disk alebo sieťové pripojenie."
-    IDS_ERR_SAVEAS1         "Chyba uloženia súboru\nChyba ukladania ""%s"".\nPravdepodobne už existujúci súbor je chránený proti zápisu."
-    IDS_ERR_SAVEAS2         "Chyba uloženia súboru\nChyba pri odstraňovaní atribútu uloženého súboru iba na čítanie."
-    IDS_ERR_CMDLINE         "MiniPath\nChyba pri prístupe k súboru alebo adresáru zadanému v príkazovom riadku."
-    IDS_ERR_STARTUPDIR      "MiniPath\nŽiadny prístup k spúšťaciemu adresáru."
-    IDS_ERR_DROP1           "MiniPath\nŽiadny prístup k zrušenému súboru alebo adresáru."
-    IDS_ERR_DROP2           "MiniPath\nNaraz môže byť zrušený iba jeden súbor alebo adresár."
-    IDS_ERR_FAVORITES       "Obľúbené\nŽiadny prístup do priečinka ""Obľúbené"".\nV dialógovom okne ""Možnosti"" zadajte platný adresár."
-    IDS_ERR_LNK_GETPATH     "Chyba odkazu\nPre prepojený objekt nie je žiadna platná cesta k súboru.\nOdkaz pravdepodobne neodkazuje na súbor alebo adresár."
-    IDS_ERR_LNK_NOACCESS    "Chyba odkazu\nŽiadny prístup k súboru prepojeného objektu.\nSkontrolujte disk alebo sieťové pripojenie."
-    IDS_ERR_CREATELINK      "Chyba odkazu\nChyba pri vytváraní zadaného odkazu.\nCieľový adresár je pravdepodobne chránený proti zápisu."
-    IDS_ERR_FILTER          "Chyba filtra súborov\nNeboli zadané žiadne ďalšie filtre.\nĎalšie informácie nájdete v súbore Readme MiniPath."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nExistujúce okno MiniPath je zaneprázdnené alebo má aktívne dialógové okno.\nChcete otvoriť ďalšie okno MiniPath?"
+    IDS_ERR_CD              "Chyba prístupu k adresáru\nŽiadny prístup k zadanému adresáru\nSkontrolujte disk alebo sieťové pripojenie"
+    IDS_ERR_FILE            "Chyba prístupu k súboru\nŽiadny prístup k ""%s""\nSúbor môže používať iná aplikácia\nSkontrolujte disk alebo sieťové pripojenie"
+    IDS_ERR_NEW             "Chyba prístupu k súboru\nSúbor sa nepodarilo vytvoriť\nSkontrolujte disk alebo sieťové pripojenie"
+    IDS_ERR_NEWDIR          "Chyba prístupu k adresáru\nAdresár sa nepodarilo vytvoriť\nSkontrolujte disk alebo sieťové pripojenie"
+    IDS_ERR_SAVEAS1         "Chyba uloženia súboru\nChyba ukladania ""%s""\nPravdepodobne už existujúci súbor je chránený proti zápisu"
+    IDS_ERR_SAVEAS2         "Chyba uloženia súboru\nChyba pri odstraňovaní atribútu uloženého súboru iba na čítanie"
+    IDS_ERR_CMDLINE         "MiniPath\nChyba pri prístupe k súboru alebo adresáru zadanému v príkazovom riadku"
+    IDS_ERR_STARTUPDIR      "MiniPath\nŽiadny prístup k spúšťaciemu adresáru"
+    IDS_ERR_DROP1           "MiniPath\nŽiadny prístup k zrušenému súboru alebo adresáru"
+    IDS_ERR_DROP2           "MiniPath\nNaraz môže byť zrušený iba jeden súbor alebo adresár"
+    IDS_ERR_FAVORITES       "Obľúbené\nŽiadny prístup do priečinka ""Obľúbené""\nV dialógovom okne ""Možnosti"" zadajte platný adresár"
+    IDS_ERR_LNK_GETPATH     "Chyba odkazu\nPre prepojený objekt nie je žiadna platná cesta k súboru\nOdkaz pravdepodobne neodkazuje na súbor alebo adresár"
+    IDS_ERR_LNK_NOACCESS    "Chyba odkazu\nŽiadny prístup k súboru prepojeného objektu\nSkontrolujte disk alebo sieťové pripojenie"
+    IDS_ERR_CREATELINK      "Chyba odkazu\nChyba pri vytváraní zadaného odkazu\nCieľový adresár je pravdepodobne chránený proti zápisu"
+    IDS_ERR_FILTER          "Chyba filtra súborov\nNeboli zadané žiadne ďalšie filtre\nĎalšie informácie nájdete v súbore Readme MiniPath"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nExistujúce okno MiniPath je zaneprázdnené alebo má aktívne dialógové okno\nChcete otvoriť ďalšie okno MiniPath?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nExistujúce cieľové okno je zaneprázdnené alebo má aktívne dialógové okno.\nChcete otvoriť nové okno?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nSkontrolujte, či sú vyplnené všetky povinné polia.\nAk je príslušná možnosť povolená, budete musieť tiež nájsť cieľové okno."
-    IDS_ERR_INIOPEN         "MiniPath\nŽiadny prístup ku konfiguračnému súboru MiniPath."
-    IDS_ERR_INICREATE       "Uložiť nastavenia\nChyba pri vytváraní konfiguračného súboru."
-    IDS_ERR_INIWRITE        "Uložiť nastavenia\nNastavenia sa neuložili!\nKu konfiguračnému súboru nie je prístup na zápis."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nExistujúce cieľové okno je zaneprázdnené alebo má aktívne dialógové okno\nChcete otvoriť nové okno?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nSkontrolujte, či sú vyplnené všetky povinné polia\nAk je príslušná možnosť povolená, budete musieť tiež nájsť cieľové okno"
+    IDS_ERR_INIOPEN         "MiniPath\nŽiadny prístup ku konfiguračnému súboru MiniPath"
+    IDS_ERR_INICREATE       "Uložiť nastavenia\nChyba pri vytváraní konfiguračného súboru"
+    IDS_ERR_INIWRITE        "Uložiť nastavenia\nNastavenia sa neuložili!\nKu konfiguračnému súboru nie je prístup na zápis"
 END
 
 STRINGTABLE
@@ -116,8 +116,8 @@ BEGIN
     IDS_NEWFILE             "Nový súbor"
     IDS_FILTER_ALL          "Všetky súbory (*.*)\n*.*\n"
     IDS_FILTER_EXE          "Spustiteľné súbory (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nVšetky súbory (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Vybrať nový adresár."
-    IDS_FAVORITES           "Zadať adresár ""Obľúbené""."
+    IDS_GETDIRECTORY        "Vybrať nový adresár"
+    IDS_FAVORITES           "Zadať adresár ""Obľúbené"""
 END
 
 STRINGTABLE
@@ -128,10 +128,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "Vyberte adresár s odkazmi na vaše obľúbené aplikácie."
-    IDS_COPYMOVE            "Vyberte cieľový adresár."
-    IDS_CREATELINK          "Vyberte cieľový adresár pre nový odkaz."
-    IDS_SAVESETTINGS        "Uložiť nastavenia\nAktuálne nastavenie programu bolo uložené."
+    IDS_OPENWITH            "Vyberte adresár s odkazmi na vaše obľúbené aplikácie"
+    IDS_COPYMOVE            "Vyberte cieľový adresár"
+    IDS_CREATELINK          "Vyberte cieľový adresár pre nový odkaz"
+    IDS_SAVESETTINGS        "Uložiť nastavenia\nAktuálne nastavenie programu bolo uložené"
     IDS_MUI_TRANSL_AUTHOR   "(sk-SK) Slovenský preklad Rudolfin"
 END
 

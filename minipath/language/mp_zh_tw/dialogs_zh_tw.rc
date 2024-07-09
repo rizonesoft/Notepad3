@@ -67,7 +67,7 @@ BEGIN
     LTEXT           "",IDC_AUTHORNAME,65,51,116,8
     LTEXT           "",IDC_EMAIL2,65,75,116,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_EMAIL,"SysLink",WS_TABSTOP,65,61,116,10
-    LTEXT           "", IDC_TRANSL_AUTH, 65, 78, 200, 8
+    LTEXT           "",IDC_TRANSL_AUTH, 65, 78, 200, 8
 END
 
 IDD_RUN DIALOGEX 0, 0, 224, 85
@@ -76,7 +76,7 @@ CAPTION "執行"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "輸入 MiniPath 要開啟的可執行檔、資料夾或文件名稱。",IDC_STATIC,35,7,188,17
+    LTEXT           "輸入 MiniPath 要開啟的可執行檔、資料夾或文件名稱",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "確定",IDOK,112,64,50,14
@@ -90,7 +90,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "按一下此處設定用於連結到您常用應用程式的目錄。",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "按一下此處設定用於連結到您常用應用程式的目錄",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "確定",IDOK,52,108,50,14
     PUSHBUTTON      "取消",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -102,7 +102,7 @@ CAPTION "移至"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "輸入要開啟的檔案或目錄名稱，或從清單中選擇最近使用過的目錄。",IDC_STATIC,35,7,182,17
+    LTEXT           "輸入要開啟的檔案或目錄名稱，或從清單中選擇最近使用過的目錄",IDC_STATIC,35,7,182,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "確定",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "取消",IDCANCEL,167,66,50,14
@@ -171,7 +171,7 @@ CAPTION "一般"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "指定 MiniPath 的一般程式設定。",IDC_STATIC,40,15,153,8
+    LTEXT           "指定 MiniPath 的一般程式設定",IDC_STATIC,40,15,153,8
     CONTROL         "僅允許按一下開啟物件(&A)",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,194,10
     CONTROL         "啟用滑鼠滑過時選擇(&E)",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,194,10
@@ -209,7 +209,7 @@ BEGIN
     CONTROL         "不確認檔案刪除 (不建議)(&D)",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,200,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         "當按 Esc 鍵時(&E)...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,86,10
+    CONTROL         "當按 Esc 鍵時(&E):",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,86,10
     CONTROL         "最小化視窗(&W)",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,110,10
     CONTROL         "結束 MiniPath(&X)",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,110,10
 END
@@ -220,7 +220,7 @@ CAPTION "項目"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,20,20
-    LTEXT           "目錄清單中的項目外觀。",IDC_STATIC,40,15,140,8
+    LTEXT           "目錄清單中的項目外觀",IDC_STATIC,40,15,140,8
     GROUPBOX        "顏色",IDC_STATIC,10,41,205,134
     LTEXT           "當篩選未啟用時，使用此文字顏色:",IDC_STATIC,20,54,172,8
     CONTROL         "系統預設顏色(&W)",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
@@ -240,7 +240,7 @@ CAPTION "位置"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "指定外部程式和路徑。",IDC_STATIC,40,15,140,8
+    LTEXT           "指定外部程式和路徑",IDC_STATIC,40,15,140,8
     LTEXT           "預設「快速檢視」程式 (Ctrl+Q)(&D):",IDC_STATIC,10,41,200,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
@@ -254,7 +254,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "目標應用程式"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "不要使用任何指定的目標應用程式，只需啟動選定的檔案。",IDC_LAUNCH,
+    CONTROL         "不要使用任何指定的目標應用程式，只需啟動選定的檔案",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,251,10
     CONTROL         "使用下面的目標應用程式:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,251,10
@@ -262,7 +262,7 @@ BEGIN
     EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "訊息:",IDC_STATIC,20,120,52,8
-    CONTROL         "每次開啟檔案時執行目標應用程式。",IDC_ALWAYSRUN,
+    CONTROL         "每次開啟檔案時執行目標應用程式",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,251,10
     CONTROL         "發送檔案開啟訊息給目標應用程式視窗:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,198,10
@@ -283,7 +283,7 @@ CAPTION "尋找視窗"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "將交叉線拖曳到要選擇為新目標的視窗上，或按 Esc 取消。",IDC_STATIC,35,7,168,22
+    LTEXT           "將交叉線拖曳到要選擇為新目標的視窗上，或按 Esc 取消",IDC_STATIC,35,7,168,22
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "視窗類別",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "視窗模組",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE

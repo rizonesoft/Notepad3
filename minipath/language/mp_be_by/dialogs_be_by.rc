@@ -67,7 +67,7 @@ BEGIN
     LTEXT           "",IDC_AUTHORNAME,65,51,116,8
     LTEXT           "",IDC_EMAIL2,65,75,116,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_EMAIL,"SysLink",WS_TABSTOP,65,61,116,10
-    LTEXT           "", IDC_TRANSL_AUTH, 65, 78, 200, 8
+    LTEXT           "",IDC_TRANSL_AUTH, 65, 78, 200, 8
 END
 
 IDD_RUN DIALOGEX 0, 0, 238, 85
@@ -76,7 +76,7 @@ CAPTION "Выканаць"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Увядзіце імя праграмы, папкі, дакумента ці рэсурса інтэрнэту, якія патрэбна адкрыць.",IDC_STATIC,35,7,196,17
+    LTEXT           "Увядзіце імя праграмы, папкі, дакумента ці рэсурса інтэрнэту, якія патрэбна адкрыць",IDC_STATIC,35,7,196,17
     EDITTEXT        IDC_COMMANDLINE,35,35,179,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,218,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,126,64,50,14
@@ -102,7 +102,7 @@ CAPTION "Перайсці"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Увядзіце імя файла ці папкі каб іх адкрыць альбо\nвыберыце са спісу нядаўна наведаную папку.",IDC_STATIC,35,7,196,17
+    LTEXT           "Увядзіце імя файла ці папкі каб іх адкрыць альбо\nвыберыце са спісу нядаўна наведаную папку",IDC_STATIC,35,7,196,17
     COMBOBOX        IDC_GOTO,35,35,196,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,126,64,50,14,WS_DISABLED
     PUSHBUTTON      "Скасаваць",IDCANCEL,181,64,50,14
@@ -171,7 +171,7 @@ CAPTION "Асноўныя"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "Асноўныя налады MiniPath.",IDC_STATIC,40,15,110,8
+    LTEXT           "Асноўныя налады MiniPath",IDC_STATIC,40,15,110,8
     CONTROL         "&Адкрываць аб'екты адным клікам",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,131,10
     CONTROL         "&Вылучэнне ходзіць за курсорам",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,123,10
@@ -195,7 +195,7 @@ CAPTION "Пашыраныя"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
-    LTEXT           "Пашыраныя налады MiniPath.",IDC_STATIC,40,15,160,8
+    LTEXT           "Пашыраныя налады MiniPath",IDC_STATIC,40,15,160,8
     CONTROL         "Па&чатковая папка:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,81,10
     CONTROL         "&Апошняя адкрытая",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,82,10
     CONTROL         "Папка «А&бранае»",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,80,10
@@ -209,7 +209,7 @@ BEGIN
     CONTROL         "&Не пытаць у час выдалення (не рэкамендуецца)",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,181,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         "Клаві&ша Esc...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,64,10
+    CONTROL         "Клаві&ша Esc:",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,64,10
     CONTROL         "Згортвае а&кно",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,65,10
     CONTROL         "&Закрывае MiniPath",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,78,10
 END
@@ -220,7 +220,7 @@ CAPTION "Аб'екты"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,20,20
-    LTEXT           "Адлюстроўванне аб'ектаў у спісе.",IDC_STATIC,40,15,140,8
+    LTEXT           "Адлюстроўванне аб'ектаў у спісе",IDC_STATIC,40,15,140,8
     GROUPBOX        "Колеры",IDC_STATIC,10,41,205,134
     LTEXT           "Выкарыстоўваць колер, калі НЯМА фільтра:",IDC_STATIC,20,54,152,8
     CONTROL         "&Прадвызначаны колер",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,93,10
@@ -240,7 +240,7 @@ CAPTION "Размяшчэнне"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Вызначце вонкавыя праграмы і шляхі.",IDC_STATIC,40,15,150,8
+    LTEXT           "Вызначце вонкавыя праграмы і шляхі",IDC_STATIC,40,15,150,8
     LTEXT           "&Праграма хуткага прагляду (Ctrl+Q):",IDC_STATIC,10,41,128,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
@@ -283,7 +283,7 @@ CAPTION "Знайсці акно"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,20,20,SS_CENTERIMAGE
-    LTEXT           "Перацягніце скрыжаванне на выбранае мэтавае акно\nальбо націсніце Esc, каб скасаваць дзеянне.",IDC_STATIC,35,7,196,17
+    LTEXT           "Перацягніце скрыжаванне на выбранае мэтавае акно\nальбо націсніце Esc, каб скасаваць дзеянне",IDC_STATIC,35,7,196,17
     EDITTEXT        IDC_WINTITLE,35,35,196,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Window Class",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Window Module",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE

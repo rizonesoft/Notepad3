@@ -67,7 +67,7 @@ BEGIN
     LTEXT           "",IDC_AUTHORNAME,65,51,116,8
     LTEXT           "",IDC_EMAIL2,65,75,116,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_EMAIL,"SysLink",WS_TABSTOP,65,61,116,10
-    LTEXT           "", IDC_TRANSL_AUTH, 50, 78, 200, 8
+    LTEXT           "",IDC_TRANSL_AUTH, 50, 78, 200, 8
 END
 
 IDD_RUN DIALOGEX 0, 0, 224, 85
@@ -76,7 +76,7 @@ CAPTION "Uitvoeren"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Voer de naam in van een uitvoerbaar programma,\neen map of een te openen document.",IDC_STATIC,35,7,188,17
+    LTEXT           "Voer de naam in van een uitvoerbaar programma,\neen map of een te openen document",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,112,64,50,14
@@ -90,7 +90,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,156,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Klik hier om de map met koppelingen naar je favoriete applicaties te specificeren.",IDC_OPENWITHDESCR,26,83,143,18
+    LTEXT           "Klik hier om de map met koppelingen naar je favoriete applicaties te specificeren",IDC_OPENWITHDESCR,26,83,143,18
     DEFPUSHBUTTON   "OK",IDOK,58,108,50,14
     PUSHBUTTON      "Annuleren",IDCANCEL,115,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,118,10,10
@@ -102,7 +102,7 @@ CAPTION "Ga naar"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Voer de naam in van een bestand of map,\nof een recente map uit de lijst.",IDC_STATIC,35,7,182,17
+    LTEXT           "Voer de naam in van een bestand of map,\nof een recente map uit de lijst",IDC_STATIC,35,7,182,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "Annuleren",IDCANCEL,167,66,50,14
@@ -117,7 +117,7 @@ BEGIN
     LTEXT           "Geef een nieuw bestanden&filter op. Scheid filters met ';'",IDC_STATIC,7,7,187,8
     EDITTEXT        IDC_FILTER,7,22,164,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,175,22,13,13
-    CONTROL         "Bestanden door filtering &uitsluiten.",IDC_NEGFILTER,
+    CONTROL         "Bestanden door filtering &uitsluiten",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,158,10
     DEFPUSHBUTTON   "OK",IDOK,83,58,50,14
     PUSHBUTTON      "Annuleren",IDCANCEL,138,58,50,14
@@ -171,22 +171,22 @@ CAPTION "Algemeen"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "Algemene programmainstellingen voor MiniPath.",IDC_STATIC,40,15,195,8
-    CONTROL         "Objecten openen met een enkele &muisklik.",IDC_SINGLECLICK,
+    LTEXT           "Algemene programmainstellingen voor MiniPath",IDC_STATIC,40,15,195,8
+    CONTROL         "Objecten openen met een enkele &muisklik",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,171,10
-    CONTROL         "&Spoorselectie inschakelen.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,100,10
-    CONTROL         "&Volledige rij-selectie inschakelen.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,125,10
-    CONTROL         "Doelvenster a&ctiveren wanneer een bestand wordt geopend.",IDC_FOCUSEDIT,
+    CONTROL         "&Spoorselectie inschakelen",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,100,10
+    CONTROL         "&Volledige rij-selectie inschakelen",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,125,10
+    CONTROL         "Doelvenster a&ctiveren wanneer een bestand wordt geopend",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,220,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,215,1
-    CONTROL         "MiniPath-venster altijd bovenop &houden.",IDC_ALWAYSONTOP,
+    CONTROL         "MiniPath-venster altijd bovenop &houden",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,150,10
-    CONTROL         "&Minimaliseren naar systeemvak (klik om te reactiveren).",IDC_MINIMIZETOTRAY,
+    CONTROL         "&Minimaliseren naar systeemvak (klik om te reactiveren)",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,195,10
-    CONTROL         "&Bestaand venster hergebruiken wanneer MiniPath wordt gestart.",IDC_REUSEWINDOW,
+    CONTROL         "&Bestaand venster hergebruiken wanneer MiniPath wordt gestart",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,220,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,215,1
-    CONTROL         "Instellingen op&slaan bij afsluiten.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,125,10
+    CONTROL         "Instellingen op&slaan bij afsluiten",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,125,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 235, 185
@@ -195,23 +195,23 @@ CAPTION "Geavanceerd"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
-    LTEXT           "Geavanceerde instellingen voor MiniPath.",IDC_STATIC,40,15,160,8
+    LTEXT           "Geavanceerde instellingen voor MiniPath",IDC_STATIC,40,15,160,8
     CONTROL         "Op&startmap:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
-    CONTROL         "&Recent gebruikt.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
-    CONTROL         "Map ""&Favorieten"".",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
+    CONTROL         "&Recent gebruikt",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,79,10
+    CONTROL         "Map ""&Favorieten""",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,215,1
-    CONTROL         "Alleen-lezen kenmerk &wissen van opgeslagen bestanden.",IDC_CLEARREADONLY,
+    CONTROL         "Alleen-lezen kenmerk &wissen van opgeslagen bestanden",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,200,10
-    CONTROL         "Gekopieerde bestanden hernoemen bij gelijke &naam.",IDC_RENAMEONCOLLISION,
+    CONTROL         "Gekopieerde bestanden hernoemen bij gelijke &naam",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,190,10
-    CONTROL         "Verwijderde bestanden naar de prullenbak &verplaatsen.",IDC_USERECYCLEBIN,
+    CONTROL         "Verwijderde bestanden naar de prullenbak &verplaatsen",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,200,10
-    CONTROL         "Bestanden verwijderen ZONDER &bevestiging (niet aanbevolen).",IDC_NOCONFIRMDELETE,
+    CONTROL         "Bestanden verwijderen ZONDER &bevestiging (niet aanbevolen)",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,220,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,215,1
-    CONTROL         """&Esc""-toets instellen...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
-    CONTROL         "Venster &minimaliseren.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,90,10
-    CONTROL         "MiniPath af&sluiten.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,90,10
+    CONTROL         """&Esc""-toets instellen:",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
+    CONTROL         "Venster &minimaliseren",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,90,10
+    CONTROL         "MiniPath af&sluiten",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,90,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 235, 185
@@ -220,15 +220,15 @@ CAPTION "Items"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Weergave in de mappenlijst.",IDC_STATIC,40,15,150,8
+    LTEXT           "Weergave in de mappenlijst",IDC_STATIC,40,15,150,8
     GROUPBOX        "Kleuren",IDC_STATIC,10,41,215,134
     LTEXT           "Gebruik deze tekstkleur wanneer GEEN FILTER is ingesteld:",IDC_STATIC,20,54,195,8
-    CONTROL         "Standaard &windows.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
+    CONTROL         "Standaard &windows",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
     CONTROL         "Aan&gepast:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Kies kleur...",IDC_COLOR_PICK1,119,80,50,14
     LTEXT           "Gebruik deze tekstkleur bij een ACTIEF FILTER:",IDC_STATIC,20,105,195,8
-    CONTROL         "S&tandaard windows.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
+    CONTROL         "S&tandaard windows",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
     CONTROL         "Aange&past:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Kies kleur...",IDC_COLOR_PICK2,120,130,50,14
@@ -240,7 +240,7 @@ CAPTION "Locaties"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Geef externe programma's en paden op.",IDC_STATIC,40,15,140,8
+    LTEXT           "Geef externe programma's en paden op",IDC_STATIC,40,15,140,8
     LTEXT           "&Standaard ""Voorbeeld""-programma (Ctrl+Q):",IDC_STATIC,10,41,175,8
     EDITTEXT        IDC_QUICKVIEW,10,52,201,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,213,52,13,13,BS_BITMAP
@@ -254,7 +254,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Doeltoepassing"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "Gebruik geen specifieke doeltoepassing, start gewoon het geselecteerde bestand.",IDC_LAUNCH,
+    CONTROL         "Gebruik geen specifieke doeltoepassing, start gewoon het geselecteerde bestand",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,280,10
     CONTROL         "Gebruik de volgende doeltoepassing:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,135,10
@@ -262,7 +262,7 @@ BEGIN
     EDITTEXT        IDC_TARGETPATH,20,35,246,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,270,35,15,14,BS_BITMAP
     LTEXT           "Bericht:",IDC_STATIC,20,120,32,8
-    CONTROL         "Geen, voer doeltoepassing uit elke keer dat een bestand wordt geopend.",IDC_ALWAYSRUN,
+    CONTROL         "Geen, voer doeltoepassing uit elke keer dat een bestand wordt geopend",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,255,10
     CONTROL         "Verzend bericht Open bestand naar doeltoepassingsvenster:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,208,10
@@ -283,7 +283,7 @@ CAPTION "Venster aanwijzen"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "Sleep de aanwijzer naar het doelvenster of druk op Esc om te annuleren.",IDC_STATIC,35,7,168,22
+    LTEXT           "Sleep de aanwijzer naar het doelvenster of druk op Esc om te annuleren",IDC_STATIC,35,7,168,22
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Window Class",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Window Module",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE

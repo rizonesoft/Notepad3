@@ -81,31 +81,31 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "フォルダアクセスエラー\n指定したフォルダにアクセスできません。\nディスクあるいはネットワーク接続を確認してください。"
-    IDS_ERR_FILE            "ファイルアクセスエラー\n""%s""にアクセスできません。\nこのファイルはほかのプログラムに使用されれています。\nディスクあるいはネットワーク接続を確認してください。"
-    IDS_ERR_NEW             "ファイルアクセスエラー\nファイルを作成できませんでした。\nディスクあるいはネットワーク接続を確認してください。"
-    IDS_ERR_NEWDIR          "フォルダアクセスエラー\nフォルダを作成できませんでした。\nディスクあるいはネットワーク接続を確認してください。"
-    IDS_ERR_SAVEAS1         "ファイル保存エラー\n""%s""の保存に失敗しました。\nファイルはおそらく書き込み保護されています。"
-    IDS_ERR_SAVEAS2         "ファイル保存エラー\nファイルの保存時に読み取り専用属性を解除できませんでした。"
-    IDS_ERR_CMDLINE         "MiniPath\nコマンドラインで指定されたファイルやフォルダにアクセスできません。"
-    IDS_ERR_STARTUPDIR      "MiniPath\n起動時に読み込むフォルダがありません。\n設定から存在するフォルダを指定してください。"
-    IDS_ERR_DROP1           "MiniPath\n\nドロップしたファイルやフォルダにアクセスできません。"
-    IDS_ERR_DROP2           "MiniPath\n一度にひとつのフォルダやファイルしかドロップできません。"
-    IDS_ERR_FAVORITES       "お気に入り\n「お気に入り」フォルダにアクセスできません。\n設定から存在するフォルダを指定してください。"
-    IDS_ERR_LNK_GETPATH     "ショートカット作成エラー\nショートカットする対象のパスが正しくありません。\nおそらくファイルやフォルダではありません。"
-    IDS_ERR_LNK_NOACCESS    "ショートカット作成エラー\nショートカットの対象のパスにアクセスできません。\nディスクあるいはネットワーク接続を確認してください。"
-    IDS_ERR_CREATELINK      "ショートカット作成エラー\n指定したショートカットを作成できません。\nおそらくフォルダが書き込み保護されています。"
-    IDS_ERR_FILTER          "ファイルフィルター・エラー\n追加のフィルタの指定がありません。\n詳細は MiniPath の readmeファイルを参照してください。"
-    IDS_ERR_PREVWINDISABLED "MiniPath\nMiniPathウインドウがビジー状態、あるいはダイアログを使用しています。\n新しい MiniPath のウインドウを開きますか？"
+    IDS_ERR_CD              "フォルダアクセスエラー\n指定したフォルダにアクセスできません\nディスクあるいはネットワーク接続を確認してください"
+    IDS_ERR_FILE            "ファイルアクセスエラー\n""%s""にアクセスできません\nこのファイルはほかのプログラムに使用されれています\nディスクあるいはネットワーク接続を確認してください"
+    IDS_ERR_NEW             "ファイルアクセスエラー\nファイルを作成できませんでした\nディスクあるいはネットワーク接続を確認してください"
+    IDS_ERR_NEWDIR          "フォルダアクセスエラー\nフォルダを作成できませんでした\nディスクあるいはネットワーク接続を確認してください"
+    IDS_ERR_SAVEAS1         "ファイル保存エラー\n""%s""の保存に失敗しました\nファイルはおそらく書き込み保護されています"
+    IDS_ERR_SAVEAS2         "ファイル保存エラー\nファイルの保存時に読み取り専用属性を解除できませんでした"
+    IDS_ERR_CMDLINE         "MiniPath\nコマンドラインで指定されたファイルやフォルダにアクセスできません"
+    IDS_ERR_STARTUPDIR      "MiniPath\n起動時に読み込むフォルダがありません\n設定から存在するフォルダを指定してください"
+    IDS_ERR_DROP1           "MiniPath\n\nドロップしたファイルやフォルダにアクセスできません"
+    IDS_ERR_DROP2           "MiniPath\n一度にひとつのフォルダやファイルしかドロップできません"
+    IDS_ERR_FAVORITES       "お気に入り\n「お気に入り」フォルダにアクセスできません\n設定から存在するフォルダを指定してください"
+    IDS_ERR_LNK_GETPATH     "ショートカット作成エラー\nショートカットする対象のパスが正しくありません\nおそらくファイルやフォルダではありません"
+    IDS_ERR_LNK_NOACCESS    "ショートカット作成エラー\nショートカットの対象のパスにアクセスできません\nディスクあるいはネットワーク接続を確認してください"
+    IDS_ERR_CREATELINK      "ショートカット作成エラー\n指定したショートカットを作成できません\nおそらくフォルダが書き込み保護されています"
+    IDS_ERR_FILTER          "ファイルフィルター・エラー\n追加のフィルタの指定がありません\n詳細は MiniPath の readmeファイルを参照してください"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nMiniPathウインドウがビジー状態、あるいはダイアログを使用しています\n新しい MiniPath のウインドウを開きますか？"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\n対象ウインドウがビジー状態、あるいはダイアログを使用しています。\n新しいウインドウを開きますか？"
-    IDS_ERR_INVALIDTARGET   "MiniPath\n必須項目の設定が完了していません。\n対象プログラムのウインドウを指定する必要があります。"
-    IDS_ERR_INIOPEN         "MiniPath\n設定ファイルにアクセスできません。"
-    IDS_ERR_INICREATE       "設定の保存\n設定ファイル作成時にエラーが発生しました。"
-    IDS_ERR_INIWRITE        "設定の保存\n設定が保存されていません！\n設定ファイルに書き込めませんでした。"
+    IDS_ERR_TARGETDISABLED  "MiniPath\n対象ウインドウがビジー状態、あるいはダイアログを使用しています\n新しいウインドウを開きますか？"
+    IDS_ERR_INVALIDTARGET   "MiniPath\n必須項目の設定が完了していません\n対象プログラムのウインドウを指定する必要があります"
+    IDS_ERR_INIOPEN         "MiniPath\n設定ファイルにアクセスできません"
+    IDS_ERR_INICREATE       "設定の保存\n設定ファイル作成時にエラーが発生しました"
+    IDS_ERR_INIWRITE        "設定の保存\n設定が保存されていません！\n設定ファイルに書き込めませんでした"
 END
 
 STRINGTABLE
@@ -128,10 +128,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "選択項目を開くプログラムがあるフォルダを指定します。"
-    IDS_COPYMOVE            "対象のフォルダを選択してください。"
-    IDS_CREATELINK          "選択項目のショートカットを作成するフォルダを選択します。"
-    IDS_SAVESETTINGS        "設定の保存\n現在の設定を保存しました。"
+    IDS_OPENWITH            "選択項目を開くプログラムがあるフォルダを指定します"
+    IDS_COPYMOVE            "対象のフォルダを選択してください"
+    IDS_CREATELINK          "選択項目のショートカットを作成するフォルダを選択します"
+    IDS_SAVESETTINGS        "設定の保存\n現在の設定を保存しました"
     IDS_MUI_TRANSL_AUTHOR   "(ja-JP) 日本語翻訳 maboroshin"
 END
 

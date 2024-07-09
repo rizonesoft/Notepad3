@@ -81,31 +81,31 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Fel vid mappårkomst\nIngen mapp specificerades.\nKontrollera disk eller nätverkstillgång."
-    IDS_ERR_FILE            "Fel vid filåtkomst\nIngen tillgång till ""%s"".\nFilen kanske används av ett annat program.\nKontrollera disk eller nätverkstillgång."
-    IDS_ERR_NEW             "Fel vid filåtkomst\nFilen kunde inte skapas.\nKontrollera disk eller nätverkstillgång."
-    IDS_ERR_NEWDIR          "Fel vid mappårkomst\nMappen kunde inte skapas.\nKontrollera disk eller nätverkstillgång."
-    IDS_ERR_SAVEAS1         "Fel vid sparande\nFel vid sparande ""%s"".\nDet finns troligtvis en existerande fil som inte kan skrivas över."
-    IDS_ERR_SAVEAS2         "Fel vid sparande\nKunde inte ta bort skrivskyddsflaggan."
-    IDS_ERR_CMDLINE         "MiniPath\nKunde inte komma åt fil eller mapp som angivits i kommandoraden."
-    IDS_ERR_STARTUPDIR      "MiniPath\nKunde inte komma åt startmapp."
-    IDS_ERR_DROP1           "MiniPath\nKunde inte komma åt borttagen fil eller mapp."
-    IDS_ERR_DROP2           "MiniPath\nBara en enstaka fil eller mapp kan tas bort åt gången."
-    IDS_ERR_FAVORITES       "Favoriter\nIngen tillgång till ""favoriter""-mappen.\nAnge en giltig mapp i ""alternativ""-rutan."
-    IDS_ERR_LNK_GETPATH     "Länkfel\nIngen giltig sökväg tillgänglig för länkat objekt.\nTroligtvis är sökvägen felaktig."
-    IDS_ERR_LNK_NOACCESS    "Länkfel\nIngen tillgång till sökväg till länkat objekt.\nKontrollera disk- eller nätverkstillgång."
-    IDS_ERR_CREATELINK      "Länkfel\nFel vid skapande av länk.\nTroligtvis är målmappen skrivskyddad."
-    IDS_ERR_FILTER          "Fel på filfilter\nInga ytterligare filter angavs.\nLäs MiniPath:s readme-fil för mer information."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nMiniPath fönstret är upptaget eller har en aktiv dialogruta.\nVill du öppna ett nytta MiniPath-fönster?"
+    IDS_ERR_CD              "Fel vid mappårkomst\nIngen mapp specificerades\nKontrollera disk eller nätverkstillgång"
+    IDS_ERR_FILE            "Fel vid filåtkomst\nIngen tillgång till ""%s""\nFilen kanske används av ett annat program\nKontrollera disk eller nätverkstillgång"
+    IDS_ERR_NEW             "Fel vid filåtkomst\nFilen kunde inte skapas\nKontrollera disk eller nätverkstillgång"
+    IDS_ERR_NEWDIR          "Fel vid mappårkomst\nMappen kunde inte skapas\nKontrollera disk eller nätverkstillgång"
+    IDS_ERR_SAVEAS1         "Fel vid sparande\nFel vid sparande ""%s""\nDet finns troligtvis en existerande fil som inte kan skrivas över"
+    IDS_ERR_SAVEAS2         "Fel vid sparande\nKunde inte ta bort skrivskyddsflaggan"
+    IDS_ERR_CMDLINE         "MiniPath\nKunde inte komma åt fil eller mapp som angivits i kommandoraden"
+    IDS_ERR_STARTUPDIR      "MiniPath\nKunde inte komma åt startmapp"
+    IDS_ERR_DROP1           "MiniPath\nKunde inte komma åt borttagen fil eller mapp"
+    IDS_ERR_DROP2           "MiniPath\nBara en enstaka fil eller mapp kan tas bort åt gången"
+    IDS_ERR_FAVORITES       "Favoriter\nIngen tillgång till ""favoriter""-mappen\nAnge en giltig mapp i ""alternativ""-rutan"
+    IDS_ERR_LNK_GETPATH     "Länkfel\nIngen giltig sökväg tillgänglig för länkat objekt\nTroligtvis är sökvägen felaktig"
+    IDS_ERR_LNK_NOACCESS    "Länkfel\nIngen tillgång till sökväg till länkat objekt\nKontrollera disk- eller nätverkstillgång"
+    IDS_ERR_CREATELINK      "Länkfel\nFel vid skapande av länk\nTroligtvis är målmappen skrivskyddad"
+    IDS_ERR_FILTER          "Fel på filfilter\nInga ytterligare filter angavs\nLäs MiniPath:s readme-fil för mer information"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nMiniPath fönstret är upptaget eller har en aktiv dialogruta\nVill du öppna ett nytta MiniPath-fönster?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nExisterande målfönster är upptaget eller har en aktiv dialogbox.\nVill du öppna ett nytt filfönster?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nFörsäkra dig om att alla fält är ifyllda.\nDu måste hitta ett målfönster om lämplig inställning är aktiv."
-    IDS_ERR_INIOPEN         "MiniPath\nIngen tillgång till konfigurationsfilen för MiniPath."
-    IDS_ERR_INICREATE       "Spara inställningar\nKunde inte skapa konfigurationsfil."
-    IDS_ERR_INIWRITE        "Spara inställningar\nInställningarna kunde inte sparas!\nIngen tillgång till konfigurationsfil."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nExisterande målfönster är upptaget eller har en aktiv dialogbox\nVill du öppna ett nytt filfönster?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nFörsäkra dig om att alla fält är ifyllda\nDu måste hitta ett målfönster om lämplig inställning är aktiv"
+    IDS_ERR_INIOPEN         "MiniPath\nIngen tillgång till konfigurationsfilen för MiniPath"
+    IDS_ERR_INICREATE       "Spara inställningar\nKunde inte skapa konfigurationsfil"
+    IDS_ERR_INIWRITE        "Spara inställningar\nInställningarna kunde inte sparas!\nIngen tillgång till konfigurationsfil"
 END
 
 STRINGTABLE
@@ -116,8 +116,8 @@ BEGIN
     IDS_NEWFILE             "Ny fil"
     IDS_FILTER_ALL          "Alla filer (*.*)\n*.*\n"
     IDS_FILTER_EXE          "Exekverbar fil (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nAlla filer (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Markera ny mapp."
-    IDS_FAVORITES           "Ange ""Favoriter""-mapp."
+    IDS_GETDIRECTORY        "Markera ny mapp"
+    IDS_FAVORITES           "Ange ""Favoriter""-mapp"
 END
 
 STRINGTABLE
@@ -128,10 +128,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "Välj mapp med länkar till dina favoritprogram."
-    IDS_COPYMOVE            "Välj målmapp."
-    IDS_CREATELINK          "Välj målmapp för den nya länken."
-    IDS_SAVESETTINGS        "Spara inställningar\nInställningarna kunde inte sparas."
+    IDS_OPENWITH            "Välj mapp med länkar till dina favoritprogram"
+    IDS_COPYMOVE            "Välj målmapp"
+    IDS_CREATELINK          "Välj målmapp för den nya länken"
+    IDS_SAVESETTINGS        "Spara inställningar\nInställningarna kunde inte sparas"
     IDS_MUI_TRANSL_AUTHOR   "(sv-SE) Svensk översättning av ThreeLightsBeyond"
 END
 

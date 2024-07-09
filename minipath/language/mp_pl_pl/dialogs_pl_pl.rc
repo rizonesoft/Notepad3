@@ -67,7 +67,7 @@ BEGIN
     LTEXT           "",IDC_AUTHORNAME,65,51,116,8
     LTEXT           "",IDC_EMAIL2,65,75,116,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_EMAIL,"SysLink",WS_TABSTOP,65,61,116,10
-    LTEXT           "", IDC_TRANSL_AUTH, 65, 78, 200, 8
+    LTEXT           "",IDC_TRANSL_AUTH, 65, 78, 200, 8
 END
 
 IDD_RUN DIALOGEX 0, 0, 224, 85
@@ -76,7 +76,7 @@ CAPTION "Uruchom"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Wpisz nazwę pliku,\na folderu lub dokumentu, aby go otworzyć.",IDC_STATIC,35,7,188,17
+    LTEXT           "Wpisz nazwę pliku,\na folderu lub dokumentu, aby go otworzyć",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,112,64,50,14
@@ -90,7 +90,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Kliknij aby określić katalog z linkami do ulubionych programów.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Kliknij aby określić katalog z linkami do ulubionych programów",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Anuluj",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -102,7 +102,7 @@ CAPTION "Idź do"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Wpisz nazwę pliku lub katalogu, aby otworzyć,\nlub wybrać ostatnio odwiedzony katalog z listy.",IDC_STATIC,35,7,182,17
+    LTEXT           "Wpisz nazwę pliku lub katalogu, aby otworzyć,\nlub wybrać ostatnio odwiedzony katalog z listy",IDC_STATIC,35,7,182,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "Anuluj",IDCANCEL,167,66,50,14
@@ -117,7 +117,7 @@ BEGIN
     LTEXT           "Określ nowy filtr pliku. Oddziel poszczególne filty znakiem ;",IDC_STATIC,7,7,201,8
     EDITTEXT        IDC_FILTER,7,22,178,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,189,22,13,13
-    CONTROL         "&Wyklucz pliki pasujące do filtra.",IDC_NEGFILTER,
+    CONTROL         "&Wyklucz pliki pasujące do filtra",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,118,10
     DEFPUSHBUTTON   "OK",IDOK,97,58,50,14
     PUSHBUTTON      "Anuluj",IDCANCEL,152,58,50,14
@@ -171,22 +171,22 @@ CAPTION "Ogólne"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "Określ ogólne ustawienia MiniPath.",IDC_STATIC,40,15,153,8
-    CONTROL         "&Pojedyncze kliknięcie aby otworzyć objekt.",IDC_SINGLECLICK,
+    LTEXT           "Określ ogólne ustawienia MiniPath",IDC_STATIC,40,15,153,8
+    CONTROL         "&Pojedyncze kliknięcie aby otworzyć objekt",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,180,10
-    CONTROL         "&Włącz wybór ścieżki.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
-    CONTROL         "Włącz wybór całego rzędu.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,100,10
-    CONTROL         "Zawsze aktywuj okno docelowe gdy plik jest otwarty.",IDC_FOCUSEDIT,
+    CONTROL         "&Włącz wybór ścieżki",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,88,10
+    CONTROL         "Włącz wybór całego rzędu",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,100,10
+    CONTROL         "Zawsze aktywuj okno docelowe gdy plik jest otwarty",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,187,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
-    CONTROL         "Okno MiniPath zawsze na wierzchu.",IDC_ALWAYSONTOP,
+    CONTROL         "Okno MiniPath zawsze na wierzchu",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
-    CONTROL         "&Minimalizuj do zasobnika (kliknij aby reaktywować).",IDC_MINIMIZETOTRAY,
+    CONTROL         "&Minimalizuj do zasobnika (kliknij aby reaktywować)",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,185,10
-    CONTROL         "&Użyj ponownie istniejącego okna po uruchomieniu MiniPath.",IDC_REUSEWINDOW,
+    CONTROL         "&Użyj ponownie istniejącego okna po uruchomieniu MiniPath",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,234,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "&Zapisz ustawienia przy wyjściu.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,115,10
+    CONTROL         "&Zapisz ustawienia przy wyjściu",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,115,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
@@ -195,23 +195,23 @@ CAPTION "Zaawansowane"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
-    LTEXT           "Ustawienia zaawansowane dla MiniPath.",IDC_STATIC,40,15,160,8
+    LTEXT           "Ustawienia zaawansowane dla MiniPath",IDC_STATIC,40,15,160,8
     CONTROL         "&Użyj katalogu do uruchomienia:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,115,10
-    CONTROL         "Ostatnio używane.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,130,46,79,10
-    CONTROL         """&Ulubione"" folder.",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,130,58,75,10
+    CONTROL         "Ostatnio używane",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,130,46,79,10
+    CONTROL         """&Ulubione"" folder",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,130,58,75,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
-    CONTROL         "&Wyczyść Tylko do odczytu w zapisanych plikach.",IDC_CLEARREADONLY,
+    CONTROL         "&Wyczyść Tylko do odczytu w zapisanych plikach",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,180,10
-    CONTROL         "Zmień nazwę kopiowanych plików jeśli wystąpił konflikt nazw.",IDC_RENAMEONCOLLISION,
+    CONTROL         "Zmień nazwę kopiowanych plików jeśli wystąpił konflikt nazw",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,214,10
-    CONTROL         "&Przenieś usunięte pliki do kosza.",IDC_USERECYCLEBIN,
+    CONTROL         "&Przenieś usunięte pliki do kosza",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,134,10
-    CONTROL         "&Nie potwierdzaj usunięcia pliku (niezalecane).",IDC_NOCONFIRMDELETE,
+    CONTROL         "&Nie potwierdzaj usunięcia pliku (niezalecane)",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,170,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         "Włącz klawisz ""&Esc"" aby...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,95,10
-    CONTROL         "Zminimalizować okno.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,110,148,85,10
-    CONTROL         "Zamknąć MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,110,160,80,10
+    CONTROL         "Włącz klawisz ""&Esc"" aby:",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,95,10
+    CONTROL         "Zminimalizować okno",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,110,148,85,10
+    CONTROL         "Zamknąć MiniPath",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,110,160,80,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 225, 185
@@ -220,15 +220,15 @@ CAPTION "Składniki"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Pojawienie sie na liście katalogów.",IDC_STATIC,40,15,140,8
+    LTEXT           "Pojawienie sie na liście katalogów",IDC_STATIC,40,15,140,8
     GROUPBOX        "Kolory",IDC_STATIC,10,41,205,134
     LTEXT           "Użyj tego koloru tekstu gdy NIE WYBRANO FILTRA:",IDC_STATIC,20,54,186,8
-    CONTROL         "D&omyślny kolor okna.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
+    CONTROL         "D&omyślny kolor okna",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
     CONTROL         "Kolory użytkownika:",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,79,10
     EDITTEXT        IDC_COLOR_SAMP1,100,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Wybierz kolor...",IDC_COLOR_PICK1,135,80,55,14
     LTEXT           "Użyj tego koloru tekstu gdy FILTR jest włączony:",IDC_STATIC,20,105,186,8
-    CONTROL         "D&omyślny kolor okna.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
+    CONTROL         "D&omyślny kolor okna",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
     CONTROL         "Kolory użytkownika:",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,79,10
     EDITTEXT        IDC_COLOR_SAMP2,100,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Wybierz kolor...",IDC_COLOR_PICK2,135,130,55,14
@@ -240,7 +240,7 @@ CAPTION "Lokalizacja"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Określ zewnętrzne programy i ścieżki.",IDC_STATIC,40,15,140,8
+    LTEXT           "Określ zewnętrzne programy i ścieżki",IDC_STATIC,40,15,140,8
     LTEXT           "&Domyślnie ""Szybki podgląd"" (Ctrl+Q):",IDC_STATIC,10,41,140,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
@@ -254,7 +254,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Aplikacja docelowa"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "Nie używaj żadnej aplikacji docelowej, tylko uruchom wybrany plik.",IDC_LAUNCH,
+    CONTROL         "Nie używaj żadnej aplikacji docelowej, tylko uruchom wybrany plik",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,250,10
     CONTROL         "Użyj następ. aplikacji docelowej:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
@@ -262,7 +262,7 @@ BEGIN
     EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "Wiadomość:",IDC_STATIC,20,120,45,8
-    CONTROL         "None, uruchom aplikacje zawsze gdy plik jest otwarty.",IDC_ALWAYSRUN,
+    CONTROL         "None, uruchom aplikacje zawsze gdy plik jest otwarty",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,220,10
     CONTROL         "Wyślij wiadomość do okna aplikacji docelowej:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,198,10
@@ -283,7 +283,7 @@ CAPTION "Znajdź okno"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "Przeciągnij celownik do okna jeśli chcesz wybrac nowy cel, lub naciśnij Esc aby anulować.",IDC_STATIC,35,7,168,22
+    LTEXT           "Przeciągnij celownik do okna jeśli chcesz wybrac nowy cel, lub naciśnij Esc aby anulować",IDC_STATIC,35,7,168,22
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Window Class",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Window Module",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE
