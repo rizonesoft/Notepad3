@@ -204,7 +204,7 @@ BEGIN
             MENUITEM "Üres so&rok törlése\tAlt+R",           IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Üres kar.-eket &tar. sorok törlése\tCtrl+Alt+B", IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "Adva&nced"
+        POPUP "Hala&dó"
         BEGIN
             MENUITEM "&Behúzás",                           IDM_EDIT_INDENT
             MENUITEM "Behúzás törlése",                    IDM_EDIT_UNINDENT
