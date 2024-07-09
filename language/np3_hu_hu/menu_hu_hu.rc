@@ -197,8 +197,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Oszlop sortörés...\tCtrl+Shift+W",   IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
-            MENUITEM "&Unite Duplicate Lines\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Remo&ve Duplicate Lines",              IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "&Duplikált sorok egyesítése\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "D&uplikált sorok törlése",              IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "&Üres sorok egyesítése\tAlt+Y",        IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Üres kar.-eket tart. sorok egyes&ítése\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
             MENUITEM "Üres so&rok törlése\tAlt+R",           IDM_EDIT_REMOVEEMPTYLINES
