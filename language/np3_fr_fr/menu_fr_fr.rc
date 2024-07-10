@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "E&xécuter l'action"
         BEGIN
-            MENUITEM "Rec&hercher DANS les fichiers\tCtrl+Maj+F",   IDM_GREP_WIN_SEARCH
+            MENUITEM "Rec&hercher dans les fichiers...\tCtrl+Maj+F",   IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "Ouvrir une &nouvelle fenêtre vide\tAlt+N",    IDM_FILE_NEWWINDOW
             MENUITEM "&Dupliquer l'instance\tAlt+Maj+N",            IDM_FILE_NEWWINDOW2
@@ -122,7 +122,7 @@ BEGIN
                 MENUITEM "&Plus d'encodages...\tF9",                 IDM_ENCODING_SELECT
             END
             MENUITEM SEPARATOR
-            MENUITEM "Définir les valeurs par défaut de l'encodage...\tF9",            IDM_ENCODING_SETDEFAULT
+            MENUITEM "Définir les valeurs par défaut de l'encodage...",   IDM_ENCODING_SETDEFAULT
         END
         POPUP "&Fins de lignes"
         BEGIN
@@ -339,7 +339,7 @@ BEGIN
             MENUITEM "Remplacer le sui&vant\tF4",                           IDM_EDIT_REPLACENEXT
             MENUITEM "&Aller à...\tCtrl+G",                                 IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "C&hercher DANS les fichiers\tCtrl+Maj+F",             IDM_GREP_WIN_SEARCH2
+            MENUITEM "C&hercher dans les fichiers...\tCtrl+Maj+F",          IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Affichage"

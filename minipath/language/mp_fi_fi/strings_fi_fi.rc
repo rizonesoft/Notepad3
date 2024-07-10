@@ -96,12 +96,12 @@ BEGIN
     IDS_ERR_LNK_NOACCESS    "Linkkivirhe\nPääsyä linkitetyn objektin tiedostojärjestelmäpolkuun ei ole\nTarkista levy tai verkkoyhteys"
     IDS_ERR_CREATELINK      "Linkkivirhe\nVirhe määritetyn linkin luomisessa\nMahdollisesti kohdehakemisto on kirjoitussuojattu"
     IDS_ERR_FILTER          "Tiedostosuodatinvirhe\nLisäsuodattimia ei ole määritetty\nLue lisätietoja MiniPath readme-tiedostosta"
-    IDS_ERR_PREVWINDISABLED "MiniPath\nOlemassa oleva MiniPath-ikkuna on varattu tai siinä on aktiivinen valintaikkuna. \nHaluatko avata toisen MiniPath-ikkunan?"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nOlemassa oleva MiniPath-ikkuna on varattu tai siinä on aktiivinen valintaikkuna\nHaluatko avata toisen MiniPath-ikkunan?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nOlemassa oleva kohdeikkuna on varattu tai siinä on aktiivinen valintaikkuna. \nHaluatko avata uuden ikkunan?"
+    IDS_ERR_TARGETDISABLED  "MiniPath\nOlemassa oleva kohdeikkuna on varattu tai siinä on aktiivinen valintaikkuna\nHaluatko avata uuden ikkunan?"
     IDS_ERR_INVALIDTARGET   "MiniPath\nVarmista, että kaikki vaaditut kentät on täytetty\nSinun on myös löydettävä kohdeikkuna, jos kyseinen vaihtoehto on käytössä"
     IDS_ERR_INIOPEN         "MiniPath\nMiniPath-konfiguraatiotiedostoon ei ole pääsyä"
     IDS_ERR_INICREATE       "Tallenna asetukset\nVirhe asetustiedoston luomisessa"

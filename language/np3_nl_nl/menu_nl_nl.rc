@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "Op&starten"
         BEGIN
-            MENUITEM "&grepWin bestanden doorzoeken\tCtrl+Shift+F", IDM_GREP_WIN_SEARCH
+            MENUITEM "&grepWin bestanden doorzoeken...\tCtrl+Shift+F", IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nieuw leeg venster\tAlt+N",                  IDM_FILE_NEWWINDOW
             MENUITEM "&Duplicaat\tAlt+Shift+N",                     IDM_FILE_NEWWINDOW2
@@ -339,7 +339,7 @@ BEGIN
             MENUITEM "Volgen&de vervangen\tF4",                     IDM_EDIT_REPLACENEXT
             MENUITEM "&Ga naar...\tCtrl+G",                         IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "grepWin &bestanden doorzoeken\tCtrl+Shift+F", IDM_GREP_WIN_SEARCH2
+            MENUITEM "grepWin &bestanden doorzoeken...\tCtrl+Shift+F", IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "Beel&d"

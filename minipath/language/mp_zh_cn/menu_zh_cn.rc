@@ -65,7 +65,7 @@ BEGIN
         MENUITEM "创建快捷方式(&K)...",             IDM_FILE_CREATELINK
         MENUITEM "另存为(&A)...",                   IDM_FILE_SAVEAS
         MENUITEM "复制/移动(&C)...",                IDM_FILE_COPYMOVE
-        MENUITEM "删除(&D)",                        IDM_FILE_DELETE
+        MENUITEM "删除(&D)...",                     IDM_FILE_DELETE
         MENUITEM "重命名(&M)...",                   IDM_FILE_RENAME
         MENUITEM SEPARATOR
         MENUITEM "运行(&L)",                       IDM_FILE_LAUNCH

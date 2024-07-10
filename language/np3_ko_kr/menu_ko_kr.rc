@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "실행(&L)"
         BEGIN
-            MENUITEM "파일에서 검색(&S) \tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
+            MENUITEM "파일에서 검색(&S) ...\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "새 빈 창(&N)\tAlt+N",           IDM_FILE_NEWWINDOW
             MENUITEM "인스턴스 복제(&D)\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
@@ -85,7 +85,7 @@ BEGIN
             MENUITEM "관리자로 다시 실행(&R)",         IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR
             MENUITEM "문서 실행(&D)\tCtrl+L",                IDM_FILE_LAUNCH
-            MENUITEM "다음으로 열기...(&O)...\tAlt+L",  IDM_FILE_OPENWITH
+            MENUITEM "다음으로 열기...(&O)\tAlt+L",  IDM_FILE_OPENWITH
             MENUITEM "명령(&C)...\tCtrl+R",                IDM_FILE_RUN
             MENUITEM SEPARATOR
             MENUITEM "웹 템플릿 1(&1)\tCtrl+Shift+1",        CMD_WEBACTION1
@@ -339,7 +339,7 @@ BEGIN
             MENUITEM "다음 바꾸기(&E)\tF4",                      IDM_EDIT_REPLACENEXT
             MENUITEM "이동(&G)...\tCtrl+G",                     IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "파일에서 검색(&S)\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH2
+            MENUITEM "파일에서 검색(&S)...\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "보기(&V)"

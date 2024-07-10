@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Käynnistä"
         BEGIN
-            MENUITEM "Etsi tiedo&stoista\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
+            MENUITEM "Etsi tiedo&stoista...\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "Uusi tyhjä ikku&na\tAlt+N",           IDM_FILE_NEWWINDOW
             MENUITEM "&Monista instanssi\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
@@ -339,7 +339,7 @@ BEGIN
             MENUITEM "Korvaa s&euraava\tF4",                       IDM_EDIT_REPLACENEXT
             MENUITEM "&Siirry...\tCtrl+G",                        IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "Et&si tiedostoista\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH2
+            MENUITEM "Et&si tiedostoista...\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Näkymä"

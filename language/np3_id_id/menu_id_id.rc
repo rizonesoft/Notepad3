@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "Luncurka&n"
         BEGIN
-            MENUITEM "&Cari dalam Berkas\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
+            MENUITEM "&Cari dalam Berkas...\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "Buka &Jendela Baru\tAlt+N",            IDM_FILE_NEWWINDOW
             MENUITEM "Du&plikasikan Jendela\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
@@ -339,7 +339,7 @@ BEGIN
             MENUITEM "Ganti Se&lanjutnya\tF4",                              IDM_EDIT_REPLACENEXT
             MENUITEM "&Pergi ke...\tCtrl+G",                                IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Cari dalam Berkas\tCtrl+Shift+F",                    IDM_GREP_WIN_SEARCH2
+            MENUITEM "&Cari dalam Berkas...\tCtrl+Shift+F",                    IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Tampilan"

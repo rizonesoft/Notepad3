@@ -130,15 +130,15 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Erro carregando ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Erro salvando ""%s"""
     IDS_MUI_ERR_DLG_FORMAT  "Erro '%s', causa:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Nenhum plugin de gerenciador de arquivos foi encontrado.\nO plugin de gerenciador de arquivos MiniPath pode ser baixado de https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "Nenhum plugin de localizador em arquivos foi encontrado.\nO plugin de localizador em arquivos grepWinNP3 pode ser baixado de https://rizonesoft.com"
+    IDS_MUI_ERR_BROWSE      "Nenhum plugin de gerenciador de arquivos foi encontrado\nO plugin de gerenciador de arquivos MiniPath pode ser baixado de https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Nenhum plugin de localizador em arquivos foi encontrado\nO plugin de localizador em arquivos grepWinNP3 pode ser baixado de https://rizonesoft.com"
     IDS_MUI_ERR_MRUDLG      "Sem acesso ao arquivo selecionado!\nVocê quer remover ele da lista?"
     IDS_MUI_ERR_CREATELINK  "Erro criando o link para Área de Trabalho"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "A janela do Notepad3 existente está ocupada ou com uma caixa de diálogo ativa.\nVocê gostaria de abrir outra janela do Notepad3?"
+                            "A janela do Notepad3 existente está ocupada ou com uma caixa de diálogo ativa\nVocê gostaria de abrir outra janela do Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "A tabela de conversão de página de código para a codificação selecionada não está disponível no seu sistema"
-    IDS_MUI_ERR_UNICODE     "Erro convertendo este arquivo Unicode.\nDados serão pedidos se o arquivo for salvo!"
-    IDS_MUI_ERR_BITMAP      "Dimensão não adequada do bitmap ""%s"".\nDimensão adequada: %i x %i (largura >= %i x altura)"
+    IDS_MUI_ERR_UNICODE     "Erro convertendo este arquivo Unicode\nDados serão pedidos se o arquivo for salvo!"
+    IDS_MUI_ERR_BITMAP      "Dimensão não adequada do bitmap ""%s""\nDimensão adequada: %i x %i (largura >= %i x altura)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Erro ao tentar ampliar direitos de usuário!"
 END
@@ -148,8 +148,8 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Alguns caracteres no texto corrente não são suportados pela codificação selecionada, e podem ser substituídas por caracteres padrão ao salvar. É recomendável escolher outra codificação de arquivo. Continuar?"
     IDS_MUI_ERR_DROP        "Apenas um arquivo pode ser carregado a cada momento!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "O arquivo ""%s"" não pode ser salvo e pode estar protegido contra escrita.\n\nVocê deseja inicializar %s como uma aplicação direitos de administrador?"
-    IDS_MUI_ERR_ADMINEXE    "Nenhum executável com direitos de administrador encontrado.\nVerifique no website https://rizonesoft.com?"
+                            "O arquivo ""%s"" não pode ser salvo e pode estar protegido contra escrita\n\nVocê deseja inicializar %s como uma aplicação direitos de administrador?"
+    IDS_MUI_ERR_ADMINEXE    "Nenhum executável com direitos de administrador encontrado\nVerifique no website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Tem certeza que deseja abrir este arquivo grande?\n\t(tamanho: %s >= %s)!\n(Estilo e Destaque de Sintaxe não serão aplicados!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Esta operação irá limpar o histórico de desfazer. Continuar?"
     IDS_MUI_READONLY_SAVE   """%s"" é somente leitura. Salvar em um arquivo diferente?"
     IDS_MUI_FILECHANGENOTIFY
-                            "O arquivo atual foi modificado por um programa externo.\nPor favor, escolha:\n\nCancelar -\t\tIgnorar modificações\nRecarregar -\t\tRecarregar arquivo\nContinuar -\tMudar para monitoramento de arquivo"
+                            "O arquivo atual foi modificado por um programa externo\nPor favor, escolha:\n\nCancelar -\t\tIgnorar modificações\nRecarregar -\t\tRecarregar arquivo\nContinuar -\tMudar para monitoramento de arquivo"
     IDS_MUI_FILECHANGENOTIFY2 "O presente arquivo foi apagado. Salvar agora?"
     IDS_MUI_FILELOCK_ERROR  "Não foi possível adquirir bloqueio de arquivo exclusivo para ""%s""!"
     IDS_MUI_STICKYWINPOS    "Posição de Janela Fixada foi ativada. Qualquer nova janela do Notepad3 usará as configurações de posicionamento de janela correntes"
@@ -189,7 +189,7 @@ BEGIN
     IDS_MUI_INIFILE_READONLY
                             "Arquivo de configuração é somente leitura - ignore e sobreponha as configurações?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Nenhum arquivo de configuração anterior foi encontrado.\nPara manter suas modificações de estilo, salve as configurações agora (F7) ou volte à configuração de esquema (Ctrl+F12) e exporte seus estilos"
+                            "Nenhum arquivo de configuração anterior foi encontrado\nPara manter suas modificações de estilo, salve as configurações agora (F7) ou volte à configuração de esquema (Ctrl+F12) e exporte seus estilos"
 END
 
 STRINGTABLE
@@ -198,7 +198,7 @@ BEGIN
     IDS_MUI_RELOADCFGSEX     "Ao continuar sem reiniciar, as configurações salvas não serão aplicadas e serão sobrepostas por configurações internas quando sair do programa!"
     IDS_MUI_EXPORT_FAIL      "Erro exportando configurações de estilo para ""%s"""
     IDS_MUI_REGEX_INVALID    "Erro avaliando expressão regular. Expressão é invalida!"
-    IDS_MUI_DROP_NO_FILE     "Nenhum nome de arquivo válido foi obtido.\nSe estiver carregando de uma applicação 32-bits,\npor favor, carregue e solte na barra de ferramentas do Notepad3"
+    IDS_MUI_DROP_NO_FILE     "Nenhum nome de arquivo válido foi obtido\nSe estiver carregando de uma applicação 32-bits,\npor favor, carregue e solte na barra de ferramentas do Notepad3"
     IDS_MUI_URL_DIR_EXISTS   "Pasta especificada pelo URL existe!"
     IDS_MUI_URL_FILE_EXISTS  "Arquivo especificado pelo URL existe!"
     IDS_MUI_URL_PATH_NOT_FOUND
@@ -206,7 +206,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Clique para abrir o arquivo"
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Clique para abrir o link no navegador"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Preservação do Timestamp original de Modificação de Arquivo habilitado.\nEsta opção ficará ativa durante esta sessão!"
+                             "Preservação do Timestamp original de Modificação de Arquivo habilitado\nEsta opção ficará ativa durante esta sessão!"
     IDS_MUI_OUT_OFF_OCCMRK   "Ficando sem marcadores de ocorrência (Marcador/Destacado)!"
     IDS_MUI_DOCUMENT_READONLY
                              "O documento está bloqueado para somente visualização. Manter o bloqueio para prevenir a edição?"
@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_SAVE        "Salvar alterações para:\n""%s""?"
     IDS_MUI_ASK_REVERT      "Reverter arquivo à último estado gravado?"
     IDS_MUI_ASK_RECODE      "Gravação requer recarregar arquivo do disco, mudanças não salvas serão perdidas!"
-    IDS_MUI_ASK_CREATE      """%s"" não encontrado.\nVocê gostaria de criar este arquivo?"
+    IDS_MUI_ASK_CREATE      """%s"" não encontrado\nVocê gostaria de criar este arquivo?"
     IDS_MUI_PRINT_HEADER    "Arquivo, Data e Hora Atual|Arquivo, Data Atual|Arquivo|Deixar em branco"
     IDS_MUI_PRINT_FOOTER    "Número de Página|Deixar em branco"
     IDS_MUI_PRINT_COLOR     "Normal|Luz Invertida (Fundo Escuro)|Preto em branco|Cor em branco|Cor em branco (exceto número de linhas)|Cores da Tela"
@@ -233,12 +233,12 @@ BEGIN
     IDS_MUI_PRINT_EMPTY     "Este documento não contém texto para ser impresso"
     IDS_MUI_PRINT_ERROR     "Erro imprimindo ""%s""!"
     IDS_MUI_FAV_SUCCESS     "Um atalho para o presente arquivo foi criado na pasta de favoritos"
-    IDS_MUI_FAV_FAILURE     "Um atalho para o presente arquivo não pode ser criado.\nVerifique se não há outro arquivo com o mesmo nome"
+    IDS_MUI_FAV_FAILURE     "Um atalho para o presente arquivo não pode ser criado\nVerifique se não há outro arquivo com o mesmo nome"
     IDS_MUI_READONLY_MODIFY "Os atributos de ""%s"" não puderam ser modificados"
     IDS_MUI_SAVEPOS         "&Salvar Posição\tCtrl+S"
     IDS_MUI_RESETPOS        "&Redefinir Posição\tCtrl+R"
     IDS_MUI_PREVIEW         "&Pré-visualizar Configurações\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "Frase de Acesso incorreta.\nTentar outra Frase de Acesso?"
+    IDS_MUI_PASS_FAILURE    "Frase de Acesso incorreta\nTentar outra Frase de Acesso?"
     IDS_MUI_NOPASS          "Decriptação Cancelada!\nLer os dados brutos encriptados?"
     IDS_MUI_STY_BASESTD     "BASE (Estilo Padrão):"
     IDS_MUI_STY_BASE2ND     "BASE (Segundo Estilo Padrão):"

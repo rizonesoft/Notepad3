@@ -130,15 +130,15 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Ошибка загрузки «%s»"
     IDS_MUI_ERR_SAVEFILE    "Ошибка сохранения «%s»"
     IDS_MUI_ERR_DLG_FORMAT  "Ошибка '%s', причина:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Не найден плагин браузера файлов.\nПлагин MiniPath можно загрузить с сайта https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "Не найден плагин поиска в файлах.\nПлагин grepWinNP3 можно загрузить с сайта https://rizonesoft.com"
+    IDS_MUI_ERR_BROWSE      "Не найден плагин браузера файлов\nПлагин MiniPath можно загрузить с сайта https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Не найден плагин поиска в файлах\nПлагин grepWinNP3 можно загрузить с сайта https://rizonesoft.com"
     IDS_MUI_ERR_MRUDLG      "Нет доступа к выбранному файлу!\nХотите удалить его из списка?"
     IDS_MUI_ERR_CREATELINK  "Ошибка создания ярлыка на Рабочем столе"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Существующий экземпляр Notepad3 либо занят, либо имеет открытое диалоговое окно.\nЖелаете открыть новый экземпляр Notepad3?"
+                            "Существующий экземпляр Notepad3 либо занят, либо имеет открытое диалоговое окно\nЖелаете открыть новый экземпляр Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "Таблицы преобразования кодовой страницы не существуют для выбранной кодировки в этой системе"
-    IDS_MUI_ERR_UNICODE     "Ошибка преобразования Unicode-файла.\nДанные будут утеряны, если файл будет сохранен!"
-    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)"
+    IDS_MUI_ERR_UNICODE     "Ошибка преобразования Unicode-файла\nДанные будут утеряны, если файл будет сохранен!"
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s""\nSuitable dimension: %i x %i (width >= %i x height)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Ошибка повышения прав пользователя!"
 END
@@ -148,7 +148,7 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Определенные символы в текущем тексте не поддерживаются выбранной кодировкой и будут заменены заполнителями при сохранении. Рекомендуется выбрать другую кодировку файла. Все равно продолжить?"
     IDS_MUI_ERR_DROP        "За один раз можно перетащить только один файл!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Файл «%s» не может быть сохранен и может быть защищен.\n\nХотите запустить %s с повышенными правами?"
+                            "Файл «%s» не может быть сохранен и может быть защищен\n\nХотите запустить %s с повышенными правами?"
     IDS_MUI_ERR_ADMINEXE    "Не найден инструмент администратора\nПосетить сайт https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Вы уверены, что хотите открыть этот очень большой файл?\n\t(размер: %s >= %s)!\n(Стили и схема синтаксиса не будут применены!)"
@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
     IDS_MUI_READONLY_SAVE   "«%s» только для чтения. Сохранить в другой файл?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
+                            "The current file has been modified by an external program\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
     IDS_MUI_FILECHANGENOTIFY2 "Этот файл был удален. Пересохранить?"
     IDS_MUI_FILELOCK_ERROR  "Невозможно получить исключительную блокировку для ""%s""!"
     IDS_MUI_STICKYWINPOS    "Фиксированное положение окна включено. Любое новое окно Notepad3 будет запущено с текущими настройками положения"
@@ -189,7 +189,7 @@ BEGIN
     IDS_MUI_INIFILE_READONLY
                             "Конфигурационный файл только для чтения - игнорировать и перезаписать настройки?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Конфигурационный файл не найден.\nДля сохранения изменений стилей сохраните настройки (F7) или вернитесь к настройке схем (Ctrl+F12) и экспортируйте их"
+                            "Конфигурационный файл не найден\nДля сохранения изменений стилей сохраните настройки (F7) или вернитесь к настройке схем (Ctrl+F12) и экспортируйте их"
 END
 
 STRINGTABLE
@@ -198,7 +198,7 @@ BEGIN
     IDS_MUI_RELOADCFGSEX     "Если продолжить без перезапуска, сохраненные настройки не применятся и будут переписаны внутренними настройками при выходе!"
     IDS_MUI_EXPORT_FAIL      "Ошибка экспорта настроек стилей в «%s»"
     IDS_MUI_REGEX_INVALID    "Ошибка обработки регулярного выражения. Выражение недействительно!"
-    IDS_MUI_DROP_NO_FILE     "Не удается получить имя файла. \nЕсли перетаскиваете из 32-битного приложения,\nперетащите на панели инструментов Notepad3"
+    IDS_MUI_DROP_NO_FILE     "Не удается получить имя файла\nЕсли перетаскиваете из 32-битного приложения,\nперетащите на панели инструментов Notepad3"
     IDS_MUI_URL_DIR_EXISTS   "Указанная в URL папка существует!"
     IDS_MUI_URL_FILE_EXISTS  "Указанный в URL файл существует!"
     IDS_MUI_URL_PATH_NOT_FOUND
@@ -206,7 +206,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Click, чтобы открыть файл"
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click, чтобы открыть ссылку в браузере"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Сохранение исходной метки времени изменения файла включено.\nЭта опция останется включенной для текущей сессии!"
+                             "Сохранение исходной метки времени изменения файла включено\nЭта опция останется включенной для текущей сессии!"
     IDS_MUI_OUT_OFF_OCCMRK   "Маркеры вхождения (закладка/отметка) на исходе!"
     IDS_MUI_DOCUMENT_READONLY
                              "Документ заблокирован только для просмотра. Продолжить блокировку для предотвращения редактирования?"
@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_SAVE        "Сохранить изменения в:\n«%s»?"
     IDS_MUI_ASK_REVERT      "Восстановить файл до последнего сохраненного состояния?"
     IDS_MUI_ASK_RECODE      "Для переоткрытия в другой кодировке требуется перезагрузка файла с диска, несохраненные изменения будут утеряны!"
-    IDS_MUI_ASK_CREATE      "«%s» не найден.\nХотите создать этот файл?"
+    IDS_MUI_ASK_CREATE      "«%s» не найден\nХотите создать этот файл?"
     IDS_MUI_PRINT_HEADER    "Имя файла, текущие дата и время|Имя файла, текущая дата|Имя файла|Оставить пустым"
     IDS_MUI_PRINT_FOOTER    "Номер страницы|Оставить пустым"
     IDS_MUI_PRINT_COLOR     "Обычный|Инвертировать (темный фон)|Черное на белом|Цветное на белом|Цветное на белом (кроме номеров строк)|Цвета экрана"
@@ -233,12 +233,12 @@ BEGIN
     IDS_MUI_PRINT_EMPTY     "Эта страница не содержит какого-либо текста для печати"
     IDS_MUI_PRINT_ERROR     "Ошибка печати «%s»!"
     IDS_MUI_FAV_SUCCESS     "Ярлык текущего файла был добавлен в папку избранного"
-    IDS_MUI_FAV_FAILURE     "Невозможно добавить ярлык текущего файла.\nУбедитесь, что нет другого файла с таким же именем"
+    IDS_MUI_FAV_FAILURE     "Невозможно добавить ярлык текущего файла\nУбедитесь, что нет другого файла с таким же именем"
     IDS_MUI_READONLY_MODIFY "Атрибуты «%s» нельзя изменить"
     IDS_MUI_SAVEPOS         "&Сохранить положение\tCtrl+S"
     IDS_MUI_RESETPOS        "С&бросить положение\tCtrl+R"
     IDS_MUI_PREVIEW         "&Предпросмотр настроек\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "Парольная фраза недействительна.\nПопробовать с другой?"
+    IDS_MUI_PASS_FAILURE    "Парольная фраза недействительна\nПопробовать с другой?"
     IDS_MUI_NOPASS          "Расшифровка отменена!\nПрочитать зашифрованные данные как есть?"
     IDS_MUI_STY_BASESTD     "БАЗОВЫЙ (стиль по умолчанию):"
     IDS_MUI_STY_BASE2ND     "БАЗОВЫЙ (стиль по умолчанию второй схемы):"

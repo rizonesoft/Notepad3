@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "प्रक्षेपित करें (&L)"
         BEGIN
-            MENUITEM "फ़ाइल में खोजें (&S)\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
+            MENUITEM "फ़ाइल में खोजें (&S)...\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "ख़ाली नई विंडो  (&N)\tAlt+N",           IDM_FILE_NEWWINDOW
             MENUITEM "अवस्था का प्रतिरूप  (&D)\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
@@ -339,7 +339,7 @@ BEGIN
             MENUITEM "अगला शब्द बदलें (&E)\tF4",                  IDM_EDIT_REPLACENEXT
             MENUITEM "यहाँ पर जाएं (&G)...\tCtrl+G",              IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "फ़ाइलों में ढूँढें (&S)\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH2
+            MENUITEM "फ़ाइलों में ढूँढें (&S)...\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "दृश्य (&V)"

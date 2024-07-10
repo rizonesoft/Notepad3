@@ -138,7 +138,7 @@ BEGIN
                             "मौजूद Notepad3 विंडो कार्यरत है या पहले से कोई चालू डायलॉग डिब्बा खुला है\nक्या आप दूसरी Notepad3 विंडो खोलना चाहते हैं?"
     IDS_MUI_ERR_ENCODINGNA  "आपके सिस्टम पर चुनी हुई एन्कोडिंग के लिए कोड पृष्ठ रूपांतरण तालिका मौजूद नहीं है"
     IDS_MUI_ERR_UNICODE     "इस युनिकोड फ़ाईल के रूपांतरण में त्रुटि है\nफ़ाईल सहेजेने में डेटा खो जाएगा!"
-    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)"
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s""\nSuitable dimension: %i x %i (width >= %i x height)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "उपयोगकर्ता अधिकार वयस्थापक रूप मे करने मे त्रुटि!"
 END
@@ -148,7 +148,7 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "चुनी हुई एन्कोडिंग द्वारा चालू टेक्स्ट के कुछ वर्ण समर्थित नहीं है और सहेजने में डिफ़ॉल्ट प्लेसहोल्डर द्वारा बदल सकते हैं। आपको अनुशंसित है कि अन्य फ़ाईल एन्कोडिंग विकल्प चुनें। शुरू करें?"
     IDS_MUI_ERR_DROP        "एक बार में सिर्फ़ एक ही फ़ाईल डाली जा सकती है!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "यह  फ़ाईल ""%s"" सहेजी नहीं जा सकती और संभवतः बचाई जा सकती है। \n\nक्या आप %s एपलिकेशन को 'वस्वस्थापक' के रूप मे प्रक्षेपित करना चाहते हैं?"
+                            "यह  फ़ाईल ""%s"" सहेजी नहीं जा सकती और संभवतः बचाई जा सकती है।\n\nक्या आप %s एपलिकेशन को 'वस्वस्थापक' के रूप मे प्रक्षेपित करना चाहते हैं?"
     IDS_MUI_ERR_ADMINEXE    "कोई व्यवस्थापक executable नहीं मिला।\n कृपया वेबसाईट पर देखें https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "क्या आप इस बड़ी फ़ाईल को खोलना चाहते है?\n\t(size: %s >= %s)!\n(शैली और सिन्टैक्स हाइलाइट लागू नहीं होगा!)"
@@ -172,14 +172,14 @@ BEGIN
     IDS_MUI_BUFFERTOOSMALL  "यह कार्य नहीं किया जा सकता (रेखाएं अत्यधिक लंबी हैं)"
     IDS_MUI_FIND_WRAPFW     "दस्तावेज़ के अंत तक पहुँच गए हैं, आरंभ से खोज पुनः शुरू कर रहे हैं"
     IDS_MUI_FIND_WRAPRE     "दस्तावेज़ के आरंभ में पहुँच गए हैं, अंत से खोज पुनः शुरू कर रहे हैं"
-    IDS_MUI_NOTFOUND        "खोज पैटर्न के अनुसार कोई नतीजा नहीं मिला "
-    IDS_MUI_REPLCOUNT       "निर्देशित खोज पैटर्न के अनुसार %s उपस्थितियाँ बदल दी गई हैं "
+    IDS_MUI_NOTFOUND        "खोज पैटर्न के अनुसार कोई नतीजा नहीं मिला"
+    IDS_MUI_REPLCOUNT       "निर्देशित खोज पैटर्न के अनुसार %s उपस्थितियाँ बदल दी गई हैं"
     IDS_MUI_ASK_ENCODING    "फ़ाईल एन्कोडिंग बदलने के स्वरूप निराधार टेक्स्ट डिफ़ॉल्ट वर्णों से बदल सकते हैं, और पूर्ववत करने का इतिहास भी साफ़ हो जाएगा। शुरू करें?"
     IDS_MUI_ASK_ENCODING2   "आप एक खाली फ़ाईल की एन्कोडिंग बदलने जा रहे हैं। ध्यान दें कि यह कार्य पूर्ववत करने का इतिहास भी साफ़ कर देगा, क्यूंकि यह नई एन्कोडिंग के साथ sync नहीं हो सकता. शुरू करें?"
     IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
     IDS_MUI_READONLY_SAVE   """%s"" सिर्फ़ पढ़ने-लायक है। अन्य फ़ाईल के रूप में सहेजें?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program.\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
+                            "The current file has been modified by an external program\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
     IDS_MUI_FILECHANGENOTIFY2 "चालू फ़ाईल मिटा दी गई है। अभी सहेजें?"
     IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
     IDS_MUI_STICKYWINPOS    "Sticky विंडो की स्तिथि सक्षम है. कोई भी नई Notepad3 विंडो इस विंडो की स्तिथि सेटिंग को प्रयोग मे लेगी"
@@ -189,7 +189,7 @@ BEGIN
     IDS_MUI_INIFILE_READONLY
                             "कन्फ़िगरेशन फ़ाईल सिर्फ़ पढ़ने लायक है - नजरंदाज करें और नियंत्रण में लेके सेटिंग बदलें?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "पहले से मौजूद कोई कन्फ़िगरेशन फ़ाईल नहीं पाई गई.\nअपनी बदली हुई शैली को रखने के लिए, अभी सेटिंग सहेजें (F7) या स्कीम कन्फ़िगरेशन में वापस जाएं (Ctrl+F12) और अपनी शैली निर्यात करें"
+                            "पहले से मौजूद कोई कन्फ़िगरेशन फ़ाईल नहीं पाई गई\nअपनी बदली हुई शैली को रखने के लिए, अभी सेटिंग सहेजें (F7) या स्कीम कन्फ़िगरेशन में वापस जाएं (Ctrl+F12) और अपनी शैली निर्यात करें"
 END
 
 STRINGTABLE
@@ -198,7 +198,7 @@ BEGIN
     IDS_MUI_RELOADCFGSEX     "पुनः प्रक्षेपित किए बिना, सहेजी हुई सेटिंग सक्रिय नहीं होंगी और प्रोग्राम से बाहर निकलते समय प्रोग्राम की अंदरूनी सेटिंग द्वारा निरस्त कर दी जाएंगी!"
     IDS_MUI_EXPORT_FAIL      "शैली सेटिंग ""%s"" को निर्यात करने में त्रुटि"
     IDS_MUI_REGEX_INVALID    "सामान्य व्यंजक मूल्यांकन करने में त्रुटि। व्यंजक अवैध है!"
-    IDS_MUI_DROP_NO_FILE     "प्राप्त हुआ फ़ाईलनाम वैध नहीं है.\nअगर 32-बिट एपलिकेशन से ड्रॉप कर रहे है,\nतो कृपया Notepad3 की औज़ार पट्टी पर ड्रैग और ड्रॉप करें"
+    IDS_MUI_DROP_NO_FILE     "प्राप्त हुआ फ़ाईलनाम वैध नहीं है\nअगर 32-बिट एपलिकेशन से ड्रॉप कर रहे है,\nतो कृपया Notepad3 की औज़ार पट्टी पर ड्रैग और ड्रॉप करें"
     IDS_MUI_URL_DIR_EXISTS   "URL निर्दिष्ट निदेशिका मौजूद है!"
     IDS_MUI_URL_FILE_EXISTS  "URL निर्दिष्ट फ़ाईल मौजूद है!"
     IDS_MUI_URL_PATH_NOT_FOUND
@@ -206,7 +206,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + फ़ाईल खोलने के लिए क्लिक करें"
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + ब्राउज़र में लिंक खोलने के लिए क्लिक करें"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "फ़ाईल परिवर्तन का मौलिक समय संरक्षण सक्षम है.\nयह विकल्प इस सत्र के लिए बना रहेगा!"
+                             "फ़ाईल परिवर्तन का मौलिक समय संरक्षण सक्षम है\nयह विकल्प इस सत्र के लिए बना रहेगा!"
     IDS_MUI_OUT_OFF_OCCMRK   "उपस्तिथि चिन्हक खत्म हो रहे है (बुकमार्क/हाइलाइट)!"
     IDS_MUI_DOCUMENT_READONLY
                              "The document is locked for view only. Keep the lock to prevent editing?"
@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_SAVE        "परिवर्तन इसमें सहेजें:\n""%s""?"
     IDS_MUI_ASK_REVERT      "पिछली सहेजी हुई अवस्था में फ़ाईल को वापस लाएं?"
     IDS_MUI_ASK_RECODE      "पुनः कोडिंग के दौरान फ़ाईल डिस्क से पुनः लोड करनी होगी, बिना सहेजे हुए परिवर्तन खो जाएंगे!"
-    IDS_MUI_ASK_CREATE      """%s"" नहीं मिली.\nक्या आप इस फ़ाईल को बनाना चाहते हैं?"
+    IDS_MUI_ASK_CREATE      """%s"" नहीं मिली\nक्या आप इस फ़ाईल को बनाना चाहते हैं?"
     IDS_MUI_PRINT_HEADER    "फ़ाईलनाम, चालू दिनाँक और समय|फ़ाईलनाम, चालू दिनाँक|फ़ाईलनाम|रिक्त छोड़ें"
     IDS_MUI_PRINT_FOOTER    "प्रष्ठ संख्या|रिक्त छोड़ें"
     IDS_MUI_PRINT_COLOR     "सामान्य|प्रकाश उलट करें (गहरे रंग की पृष्ठभूमि)|सफेद पर काला|सफ़ेद पर रंगा हुआ|सफ़ेद पर रंगा हुआ (रेखा संख्या छोड़ कर)|स्क्रीन के रंग"
@@ -233,12 +233,12 @@ BEGIN
     IDS_MUI_PRINT_EMPTY     "इस दस्तावेज़ में मुद्रित करने हेतु कोई टेक्स्ट नहीं है"
     IDS_MUI_PRINT_ERROR     """%s"" मुद्रण में त्रुटि!"
     IDS_MUI_FAV_SUCCESS     "पसंदीदा निदेशिका में चालू फ़ाईल का एक शॉर्टकट बना दिया गया है"
-    IDS_MUI_FAV_FAILURE     "चालू फ़ाईल का शॉर्टकट नहीं बनाया जा सका.\nकृपया सुनिश्चित करें की उसी नाम की अन्य फ़ाईल पहले से मोजूद नहीं है"
+    IDS_MUI_FAV_FAILURE     "चालू फ़ाईल का शॉर्टकट नहीं बनाया जा सका\nकृपया सुनिश्चित करें की उसी नाम की अन्य फ़ाईल पहले से मोजूद नहीं है"
     IDS_MUI_READONLY_MODIFY """%s"" के गुण परिवर्तित नहीं किए जा सके"
     IDS_MUI_SAVEPOS         "स्तिथि सहेजें (&S)\tCtrl+S"
     IDS_MUI_RESETPOS        "स्तिथि रीसेट करें (&R)\tCtrl+R"
     IDS_MUI_PREVIEW         "सेटिंग्स पूर्वावलोकन (&P)\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "यह पासफ्रेज़ गलत है.\nअन्य पासफ्रेज़ कोशिश करें?"
+    IDS_MUI_PASS_FAILURE    "यह पासफ्रेज़ गलत है\nअन्य पासफ्रेज़ कोशिश करें?"
     IDS_MUI_NOPASS          "डिक्रिप्ट रद्द कर दिया गया!\n एनक्रिप्ट किया हुआ कच्चा डेटा पढ़ें?"
     IDS_MUI_STY_BASESTD     "बेस (डिफ़ॉल्ट शैली):"
     IDS_MUI_STY_BASE2ND     "बेस (दूसरी डिफ़ॉल्ट शैली):"

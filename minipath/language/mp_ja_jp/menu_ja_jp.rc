@@ -75,7 +75,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "新規作成(&N)",                 IDM_FILE_NEW
+        MENUITEM "新規作成(&N)...",                 IDM_FILE_NEW
         MENUITEM "フォルダの作成(&W)...",          IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
         MENUITEM "ファイルフィルター(&F)...",         IDM_VIEW_FILTER

@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "Kör"
         BEGIN
-            MENUITEM "&Sök i filer\tCtrl+Shift+F",                  IDM_GREP_WIN_SEARCH
+            MENUITEM "&Sök i filer...\tCtrl+Shift+F",                  IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "Nytt tomt fönster\tAlt+N",           IDM_FILE_NEWWINDOW
             MENUITEM "Duplicera denna instans\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
@@ -339,7 +339,7 @@ BEGIN
             MENUITEM "Ersätt nästa\tF4",                            IDM_EDIT_REPLACENEXT
             MENUITEM "Gå till...\tCtrl+G",                          IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "Sök i filer\tCtrl+Shift+F",                   IDM_GREP_WIN_SEARCH2
+            MENUITEM "Sök i filer...\tCtrl+Shift+F",                   IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "Visa"

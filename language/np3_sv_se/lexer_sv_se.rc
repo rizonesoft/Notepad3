@@ -293,7 +293,7 @@ BEGIN
     IDS_LEX_STR_63218       "Symboltabell *var"
     IDS_LEX_STR_63219       "Regex /re/ or m{re}"
     IDS_LEX_STR_63220       "Ersättning s/re/ore/"
-    IDS_LEX_STR_63221       "Baklängescitationstecken "
+    IDS_LEX_STR_63221       "Baklängescitationstecken"
     IDS_LEX_STR_63222       "Datasektion"
     IDS_LEX_STR_63223       "Here-Doc (avgränsare)"
     IDS_LEX_STR_63224       "Here-Doc (enkelciterad, q)"

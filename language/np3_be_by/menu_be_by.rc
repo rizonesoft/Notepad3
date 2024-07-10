@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Запусціць"
         BEGIN
-            MENUITEM "&Шукаць у файлах\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
+            MENUITEM "&Шукаць у файлах...\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Новае пустое акно\tAlt+N",          IDM_FILE_NEWWINDOW
             MENUITEM "Копія &экзэмпляра\tAlt+Shift+N",     IDM_FILE_NEWWINDOW2
@@ -339,7 +339,7 @@ BEGIN
             MENUITEM "За&мяніць далей\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "Пе&райсці...\tCtrl+G",                        IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Шукаць у файлах\tCtrl+Shift+F",              IDM_GREP_WIN_SEARCH2
+            MENUITEM "&Шукаць у файлах...\tCtrl+Shift+F",              IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Выгляд"

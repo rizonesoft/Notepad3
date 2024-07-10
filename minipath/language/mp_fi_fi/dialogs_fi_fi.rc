@@ -76,7 +76,7 @@ CAPTION "Suorita"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Anna avattavan suoritettavan ohjelmatiedoston, \nkansion tai asiakirjan nimi",IDC_STATIC,35,7,188,17
+    LTEXT           "Anna avattavan suoritettavan ohjelmatiedoston,\nkansion tai asiakirjan nimi",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,112,64,50,14

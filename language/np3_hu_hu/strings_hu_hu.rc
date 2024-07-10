@@ -130,15 +130,15 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Hiba ""%s"" betöltésekor"
     IDS_MUI_ERR_SAVEFILE    "Hiba ""%s"" mentésekor"
     IDS_MUI_ERR_DLG_FORMAT  "Hiba '%s', oka:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Fájlböngésző plugin nem található.\nA MiniPath fájlböngésző plugin letölthető a https://rizonesoft.com címről"
-    IDS_MUI_ERR_GREPWIN     "Fájlkereső plugin nem található.\nA grepWinNP3 fájlkereső plugin letölthető a https://rizonesoft.com címről"
+    IDS_MUI_ERR_BROWSE      "Fájlböngésző plugin nem található\nA MiniPath fájlböngésző plugin letölthető a https://rizonesoft.com címről"
+    IDS_MUI_ERR_GREPWIN     "Fájlkereső plugin nem található\nA grepWinNP3 fájlkereső plugin letölthető a https://rizonesoft.com címről"
     IDS_MUI_ERR_MRUDLG      "A kijelölt fájlhoz nincs hozzáférésünk!\nEl szeretné távolítani a listából?"
     IDS_MUI_ERR_CREATELINK  "Hiba az asztali parancsikon létrehozásakor"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "A futó Notepad3 ablak nem válaszol vagy van egy aktív dialógusablaka.\nMeg szeretné nyitni egy új Notepad3 ablakban?"
+                            "A futó Notepad3 ablak nem válaszol vagy van egy aktív dialógusablaka\nMeg szeretné nyitni egy új Notepad3 ablakban?"
     IDS_MUI_ERR_ENCODINGNA  "A kódlap konverziós táblák nem elérhetőek a kiválasztott kódoláshoz az ön rendszerén"
-    IDS_MUI_ERR_UNICODE     "Hiba e Unicode fájl konvertálásakor.\nAz adat el fog veszni, amikor a fájl mentve lesz!"
-    IDS_MUI_ERR_BITMAP      "Nem megfelelő méretű bitmap ""%s"".\nA megfelelő méret: %i x %i (szélesség >= %i x magasság)"
+    IDS_MUI_ERR_UNICODE     "Hiba e Unicode fájl konvertálásakor\nAz adat el fog veszni, amikor a fájl mentve lesz!"
+    IDS_MUI_ERR_BITMAP      "Nem megfelelő méretű bitmap ""%s""\nA megfelelő méret: %i x %i (szélesség >= %i x magasság)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Hiba felhasználói jogok emelése közben!"
 END
@@ -148,8 +148,8 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Egyes karakterek a jelenlegi szövegben nem támogatottak a kiválasztott kódolásban, ezért le kéne cserélni őket az alapértelmezett helykitöltővel mentéskor.Ajánlott egy másik kódolást választani. Folytatja?"
     IDS_MUI_ERR_DROP        "Csak egy fájlt lehet egyszerre ide ejteni!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "A következő fájlt: ""%s"" nem lehet menteni, lehet, hogy védett.\n\nElindítsuk a %s alkalmazást adminisztrátorként?"
-    IDS_MUI_ERR_ADMINEXE    "Adminisztrátor végrehajtható nem található.\nFelkeressük ezt a weboldalt: https://rizonesoft.com ?"
+                            "A következő fájlt: ""%s"" nem lehet menteni, lehet, hogy védett\n\nElindítsuk a %s alkalmazást adminisztrátorként?"
+    IDS_MUI_ERR_ADMINEXE    "Adminisztrátor végrehajtható nem található\nFelkeressük ezt a weboldalt: https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Biztosan meg szeretné nyitni ezt a nagy fájlt?\n\t(méret: %s >= %s)!\n(A stílus és a szintaxis kiemelés nem lesz alkalmazva!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Ez a művelet törli a visszavonási előzményeket. Folytatja?"
     IDS_MUI_READONLY_SAVE   """%s"" csak olvastható. Legyen mentés egy másik fájlba?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Az aktuális fájlt egy külső program megváltoztatta.\nKérem válaszon:\n\nMégsem -\t\tVáltoztatások figyelmen kívül hagyása\nÚjratöltés -\t\tA fájl újratöltése\nFolytatás -\tFájl figyelése"
+                            "Az aktuális fájlt egy külső program megváltoztatta\nKérem válaszon:\n\nMégsem -\t\tVáltoztatások figyelmen kívül hagyása\nÚjratöltés -\t\tA fájl újratöltése\nFolytatás -\tFájl figyelése"
     IDS_MUI_FILECHANGENOTIFY2 "Az aktuális fájl törölve lett. Elmentsük?"
     IDS_MUI_FILELOCK_ERROR  "Nem tudok exklúzív zárolást szerezni erre a fájlra: ""%s""!"
     IDS_MUI_STICKYWINPOS    "A ragadós ablakpozíciók be van kapcsolva. Az új Notepad3 ablakok a jelenlegi ablakhelyzetét használják majd"
@@ -189,7 +189,7 @@ BEGIN
     IDS_MUI_INIFILE_READONLY
                             "A beállításfájl csak olvasható - Kihagyás és beállítások felülbírálása?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Nincs létező beállításfájl..\nAhhoz, hogy megtartsa a stílusbéli módosításokat, mentse a beállításokat most (F7) vagy menjen vissza a színkiemelés konfigurációjához (Ctrl+F12) és exportálja a stílusokat"
+                            "Nincs létező beállításfájl\nAhhoz, hogy megtartsa a stílusbéli módosításokat, mentse a beállításokat most (F7) vagy menjen vissza a színkiemelés konfigurációjához (Ctrl+F12) és exportálja a stílusokat"
 END
 
 STRINGTABLE
@@ -198,7 +198,7 @@ BEGIN
     IDS_MUI_RELOADCFGSEX     "Ha újraindítás nélkül folytatja, a mentett beállítások nem jutnak érvényre és a belső beállítások felülírják azt a program kilépésekor!"
     IDS_MUI_EXPORT_FAIL      "Hiba a színkiemelések beállításainak exportálásakor ide ""%s"""
     IDS_MUI_REGEX_INVALID    "Hiba a reguláris kifejezés feldolgozásakor. A kifejezés érvénytelen!"
-    IDS_MUI_DROP_NO_FILE     "Nem sikerült érvényes fájlnevet kapni.\nHa egy 32 bites alkalmazásból lett átdobva,\nkérem, ejtse újra a Notepad3 eszköztárra"
+    IDS_MUI_DROP_NO_FILE     "Nem sikerült érvényes fájlnevet kapni\nHa egy 32 bites alkalmazásból lett átdobva,\nkérem, ejtse újra a Notepad3 eszköztárra"
     IDS_MUI_URL_DIR_EXISTS   "Az URL-ben megadott könyvtár létezik!"
     IDS_MUI_URL_FILE_EXISTS  "Az URL-ben megadott fájl létezik!"
     IDS_MUI_URL_PATH_NOT_FOUND
@@ -206,7 +206,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Kattintás a fájl megnyitásához"
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Kattintás a böngészőben való megnyitáshoz"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Az eredeti fájl módosítási idejeének megőrzése opció be van kapcsolva.\nA beállítás így marad erre a munkamenetre!"
+                             "Az eredeti fájl módosítási idejeének megőrzése opció be van kapcsolva\nA beállítás így marad erre a munkamenetre!"
     IDS_MUI_OUT_OFF_OCCMRK   "Elfogytak a találatjelölők (Könyvjelző/Kiemelés)!"
     IDS_MUI_DOCUMENT_READONLY
                              "A dokumentum csak olvasható, zárolva van. Maradjon a zárolás a szerkesztés megakadályozására?"
@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_SAVE        "Mentsük e módosításokat:\n""%s""?"
     IDS_MUI_ASK_REVERT      "Viszaállítsuk a fájlt az utolsó mentett állapotra? A változtatások elvesznek!"
     IDS_MUI_ASK_RECODE      "A felvételhez a fájl újra be kell olvasni lemezről, így a nem mentett változtatások el fognak veszni!"
-    IDS_MUI_ASK_CREATE      """%s"" nem található.\nSzeretné létrehozni a fájlt?"
+    IDS_MUI_ASK_CREATE      """%s"" nem található\nSzeretné létrehozni a fájlt?"
     IDS_MUI_PRINT_HEADER    "Fájlnév, Aktuális dátum és idő|Fájlnév, aktuális dátum|Fájlnév|Maradjon üres"
     IDS_MUI_PRINT_FOOTER    "Oldalszámok|Maradjon üres"
     IDS_MUI_PRINT_COLOR     "Rendes|Színek invertálása (sötét háttér)|Fekete a fehéren|Szín a fehéren|Szín a fehéren (kivéve a sorszámok)|Képernyő színei"
@@ -233,12 +233,12 @@ BEGIN
     IDS_MUI_PRINT_EMPTY     "A dokumentum nem tartalmaz semmilyen nyomtatható szöveget"
     IDS_MUI_PRINT_ERROR     "Hiba ""%s"" nyomtatásakor!"
     IDS_MUI_FAV_SUCCESS     "Készült egy hivatkozás az aktuális fájlról a kedvencek mappájában"
-    IDS_MUI_FAV_FAILURE     "Nem lehet hivatkozást készíteni az aktuális fájlról.\nGyőződjön meg róla, hogy nincs egy ugyanilyen nevű fájl"
+    IDS_MUI_FAV_FAILURE     "Nem lehet hivatkozást készíteni az aktuális fájlról\nGyőződjön meg róla, hogy nincs egy ugyanilyen nevű fájl"
     IDS_MUI_READONLY_MODIFY """%s"" attribútumait nem lehet módosítani"
     IDS_MUI_SAVEPOS         "&Pozíció mentése\tCtrl+S"
     IDS_MUI_RESETPOS        "Pozíció &visszaállítása\tCtrl+R"
     IDS_MUI_PREVIEW         "Beállítások &előnézete\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "A jelmondat helytelen.\nMegad egy másik jelmondatot?"
+    IDS_MUI_PASS_FAILURE    "A jelmondat helytelen\nMegad egy másik jelmondatot?"
     IDS_MUI_NOPASS          "Dekódolás megszakítva!\nBeolvassuk a nyers, kódolt adatot?"
     IDS_MUI_STY_BASESTD     "BASE (alapért. stílus):"
     IDS_MUI_STY_BASE2ND     "BASE (2. alap stílus):"
