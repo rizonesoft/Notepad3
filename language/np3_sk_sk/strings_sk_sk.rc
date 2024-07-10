@@ -130,15 +130,15 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Chyba načítania ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Chyba ukladania ""%s"""
     IDS_MUI_ERR_DLG_FORMAT  "Chyba '%s', príčina:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Nenašiel sa doplnok na prehľadávanie súborov.\nDoplnok MiniPath si môžete stiahnuť z https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "Nenašiel sa vyhľadávací doplnok.\nDoplnok na vyhľadávanie súborov grepWinNP3 si môžete stiahnuť z https://rizonesoft.com"
+    IDS_MUI_ERR_BROWSE      "Nenašiel sa doplnok na prehľadávanie súborov\nDoplnok MiniPath si môžete stiahnuť z https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Nenašiel sa vyhľadávací doplnok\nDoplnok na vyhľadávanie súborov grepWinNP3 si môžete stiahnuť z https://rizonesoft.com"
     IDS_MUI_ERR_MRUDLG      "Žiadny prístup k vybranému súboru!\nChcete ho odstrániť zo zoznamu?"
     IDS_MUI_ERR_CREATELINK  "Chyba pri vytváraní odkazu na pracovnú plochu"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Existujúce okno Notepad3 je zaneprázdnené, alebo má aktívne dialógové okno.\nChcete otvoriť ďalšie okno programu Notepad3?"
+                            "Existujúce okno Notepad3 je zaneprázdnené, alebo má aktívne dialógové okno\nChcete otvoriť ďalšie okno programu Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "Konverzné tabuľky kódových stránok pre vybraté kódovanie nie sú vo vašom systéme k dispozícii"
-    IDS_MUI_ERR_UNICODE     "Pri prevode tohto súboru Unicode došlo k chybe.\nAk sa súbor uloží, údaje sa stratia!"
-    IDS_MUI_ERR_BITMAP      "Nevhodný rozmer bitmapy ""%s"".\nVhodný rozmer: %i x %i (šírka >= %i x výška)"
+    IDS_MUI_ERR_UNICODE     "Pri prevode tohto súboru Unicode došlo k chybe\nAk sa súbor uloží, údaje sa stratia!"
+    IDS_MUI_ERR_BITMAP      "Nevhodný rozmer bitmapy ""%s""\nVhodný rozmer: %i x %i (šírka >= %i x výška)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Chyba pri zvyšovaní užívateľských práv!"
 END
@@ -148,8 +148,8 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Vybrané kódovanie nepodporuje niektoré znaky v aktuálnom texte a pri ukladaní môžu byť nahradené predvolenými zástupnými symbolmi. Odporúča sa zvoliť iné kódovanie súborov. Pokračovať?"
     IDS_MUI_ERR_DROP        "Len jeden súbor môže byť zmazaný v rovnakom čase!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Súbor ""%s"" nie je možné uložiť, môže byť chránený.\n\nChcete spustiť aplikáciu %s so 'Zvýšeným oprávnením'?"
-    IDS_MUI_ERR_ADMINEXE    "Nenašiel sa žiadny spustiteľný súbor správy.\nSkontrolujte webovú stránku https://rizonesoft.com?"
+                            "Súbor ""%s"" nie je možné uložiť, môže byť chránený\n\nChcete spustiť aplikáciu %s so 'Zvýšeným oprávnením'?"
+    IDS_MUI_ERR_ADMINEXE    "Nenašiel sa žiadny spustiteľný súbor správy\nSkontrolujte webovú stránku https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Súbor je príliš veľký. Chcete ho otvoriť?\n\t(veľkosť: %s >= %s)!\n(Štýly a zvýraznenie syntaxie sa nepoužijú!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Táto operácia vymaže históriu spätných krokov. Pokračovať?"
     IDS_MUI_READONLY_SAVE   """%s"" je iba na čítanie. Uložiť súbor pod iným názvom?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Aktuálny súbor bol upravený externým programom.\nVyberte ďalší postup:\n\nZrušiť -\t\tIgnorovať ďalšie zmeny\nZnovu načítať -\t\tZnovu načítať súbor\nPokračovať -\tPrepnúť monitorovanie súboru"
+                            "Aktuálny súbor bol upravený externým programom\nVyberte ďalší postup:\n\nZrušiť -\t\tIgnorovať ďalšie zmeny\nZnovu načítať -\t\tZnovu načítať súbor\nPokračovať -\tPrepnúť monitorovanie súboru"
     IDS_MUI_FILECHANGENOTIFY2 "Aktuálny súbor bol odstránený. Uložiť ho znovu?"
     IDS_MUI_FILELOCK_ERROR  "Nedá sa exkluzívne zamknúť súbor ""%s""!"
     IDS_MUI_STICKYWINPOS    "Fixovanie polohy okna je povolené. Všetky nové okná Notepad2 budú používať aktuálne nastavenie umiestnenia okna"
@@ -189,7 +189,7 @@ BEGIN
     IDS_MUI_INIFILE_READONLY
                             "Konfiguračný súbor je iba na čítanie - ignorovať a prepísať nastavenia?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Nebol nájdený žiadny existujúci konfiguračný súbor.\nAk chcete zachovať svoje úpravy štýlov, uložte nastavenia teraz (F7), alebo sa vráťte do konfigurácie schémy (Ctrl+F12) a exportujte svoje štýly"
+                            "Nebol nájdený žiadny existujúci konfiguračný súbor\nAk chcete zachovať svoje úpravy štýlov, uložte nastavenia teraz (F7), alebo sa vráťte do konfigurácie schémy (Ctrl+F12) a exportujte svoje štýly"
 END
 
 STRINGTABLE
@@ -198,7 +198,7 @@ BEGIN
     IDS_MUI_RELOADCFGSEX     "Pri pokračovaní bez opätovného spustenia sa uložené nastavenia nepoužijú a pri ukončení programu budú prepísané vnútornými nastaveniami!"
     IDS_MUI_EXPORT_FAIL      "Chyba pri exportovaní nastavenia štýlu do ""%s"""
     IDS_MUI_REGEX_INVALID    "Chyba pri vyhodnocovaní regulárneho výrazu. Výraz je neplatný!"
-    IDS_MUI_DROP_NO_FILE     "Nebol získaný žiadny platný názov súboru.\nAk sa spúšťa 32-bitová aplikácia,\npresuňte myšou na panel nástrojov programu Notepad3"
+    IDS_MUI_DROP_NO_FILE     "Nebol získaný žiadny platný názov súboru\nAk sa spúšťa 32-bitová aplikácia,\npresuňte myšou na panel nástrojov programu Notepad3"
     IDS_MUI_URL_DIR_EXISTS   "URL zadaný adresár existuje!"
     IDS_MUI_URL_FILE_EXISTS  "URL zadaný súbor existuje!"
     IDS_MUI_URL_PATH_NOT_FOUND
@@ -206,7 +206,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + kliknutím otvoríte súbor"
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + kliknutím otvoríte prepojenie"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Zachovanie pôvodnej časovej pečiatky pri úprave súboru je povolené.\nTáto možnosť zostane len pre túto reláciu!"
+                             "Zachovanie pôvodnej časovej pečiatky pri úprave súboru je povolené\nTáto možnosť zostane len pre túto reláciu!"
     IDS_MUI_OUT_OFF_OCCMRK   "Dochádzajú označené výskyty (záložka/zvýraznenie)!"
     IDS_MUI_DOCUMENT_READONLY
                              "Dokument je uzamknutý len na čítanie. Ponechať uzamknutie na zabránenie úprav?"
@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_SAVE        "Uložiť zmeny do:\n""%s""?"
     IDS_MUI_ASK_REVERT      "Navrátiť súbor do naposledy uloženého stavu?"
     IDS_MUI_ASK_RECODE      "Záznam vyžaduje načítanie súboru z disku, neuložené zmeny sa stratia!"
-    IDS_MUI_ASK_CREATE      """%s"" nebol nájdený.\nChcete tento súbor vytvoriť?"
+    IDS_MUI_ASK_CREATE      """%s"" nebol nájdený\nChcete tento súbor vytvoriť?"
     IDS_MUI_PRINT_HEADER    "Názov súboru, aktuálny dátum a čas|Názov súboru, aktuálny dátum|Názov súboru|Nechať prázdne"
     IDS_MUI_PRINT_FOOTER    "Číslo strany|Nechať prázdne"
     IDS_MUI_PRINT_COLOR     "Normálne|Inverzne (tmavé pozadie)|Čiernobiele| Farebne | Farebne (okrem čísel riadkov)|Farby obrazovky"
@@ -233,12 +233,12 @@ BEGIN
     IDS_MUI_PRINT_EMPTY     "Tento dokument neobsahuje žiadny text na vytlačenie"
     IDS_MUI_PRINT_ERROR     "Chyba tlače ""%s""!"
     IDS_MUI_FAV_SUCCESS     "Zástupca aktuálneho súboru bol vytvorený v priečinku Obľúbené"
-    IDS_MUI_FAV_FAILURE     "Zástupca aktuálneho súboru nebol vytvorený.\nUistite sa, či už neexistuje súbor s rovnakým názvom"
+    IDS_MUI_FAV_FAILURE     "Zástupca aktuálneho súboru nebol vytvorený\nUistite sa, či už neexistuje súbor s rovnakým názvom"
     IDS_MUI_READONLY_MODIFY "Atribúty ""%s"" nemôžu byť zmenené"
     IDS_MUI_SAVEPOS         "&Uložiť pozíciu\tCtrl+S"
     IDS_MUI_RESETPOS        "&Reset pozície\tCtrl+R"
-    IDS_MUI_PREVIEW         "&Tlač...\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "Prístupová fráza je neplatná.\nNačítať ďalšiu?"
+    IDS_MUI_PREVIEW         "&Nastav. ukážky\tCtrl+P"
+    IDS_MUI_PASS_FAILURE    "Prístupová fráza je neplatná\nNačítať ďalšiu?"
     IDS_MUI_NOPASS          "Dešifrovanie bolo zrušené!\nČítať šifrované nespracované údaje?"
     IDS_MUI_STY_BASESTD     "BASE (Predvolený štýl):"
     IDS_MUI_STY_BASE2ND     "BASE (2. predvolený štýl):"

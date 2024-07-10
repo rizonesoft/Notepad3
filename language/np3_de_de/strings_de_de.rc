@@ -130,15 +130,15 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Fehler beim laden ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Fehler beim speichern ""%s"""
     IDS_MUI_ERR_DLG_FORMAT  "Fehler '%s', weil:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Kein Datei-Browser-Plugin gefunden.\nDas MiniPath Datei-Browser-Plugin kann hier https://rizonesoft.com herunter geladen werden"
-    IDS_MUI_ERR_GREPWIN     "Kein Datei-Suchen-Plugin gefunden.\nDas grepWinNP3 Datei-Suchen-Plugin kann hier https://rizonesoft.com herunter geladen werden"
+    IDS_MUI_ERR_BROWSE      "Kein Datei-Browser-Plugin gefunden\nDas MiniPath Datei-Browser-Plugin kann hier https://rizonesoft.com herunter geladen werden"
+    IDS_MUI_ERR_GREPWIN     "Kein Datei-Suchen-Plugin gefunden\nDas grepWinNP3 Datei-Suchen-Plugin kann hier https://rizonesoft.com herunter geladen werden"
     IDS_MUI_ERR_MRUDLG      "Es kann nicht auf die ausgewählte Datei zugegriffen werden!\nMöchtest Du den Eintrag aus der Liste entfernen?"
     IDS_MUI_ERR_CREATELINK  "Fehler beim erzeugen des Desktop-Links"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Die existierende Notepad3-Instanz ist entweder beschäftigt oder hat eine geöffnete Dialogbox.\nMöchtest Du eine andere Notepad3-Instanz öffnen?"
+                            "Die existierende Notepad3-Instanz ist entweder beschäftigt oder hat eine geöffnete Dialogbox\nMöchtest Du eine andere Notepad3-Instanz öffnen?"
     IDS_MUI_ERR_ENCODINGNA  "Die Code-Page Konvertierungstabellen sind für die ausgewählte Codierung auf diesem System nicht vorhanden"
-    IDS_MUI_ERR_UNICODE     "Fehler bei der Konvertierung dieser Unicode Datei.\nDaten werden verloren gehen, wenn diese Datei gespeichert wird!"
-    IDS_MUI_ERR_BITMAP      "Ungeeignete Dimension der Bitmap ""%s"".\nGeeignete Dimension: %i x %i (Breite >= %i x Höhe)"
+    IDS_MUI_ERR_UNICODE     "Fehler bei der Konvertierung dieser Unicode Datei\nDaten werden verloren gehen, wenn diese Datei gespeichert wird!"
+    IDS_MUI_ERR_BITMAP      "Ungeeignete Dimension der Bitmap ""%s""\nGeeignete Dimension: %i x %i (Breite >= %i x Höhe)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Fehler beim anheben der Benutzerrechte!"
 END
@@ -148,8 +148,8 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Bestimmte Zeichen im aktuellen Text werden von der gewählten Codierung nicht unterstützt und werden evtl. durch Standardplatzhalter ersetzt wenn die Datei gespeichert wird. Es wird empfolen eine andere Codierung zu wählen. Weiter machen?"
     IDS_MUI_ERR_DROP        "Es kann immer nur eine Datei gleichzeitig verworfen werden!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Die Datei ""%s"" kann nicht gespeichert werden und ist evtl. geschützt.\n\nMöchtest Du %s mit erhöhten Rechten starten?"
-    IDS_MUI_ERR_ADMINEXE    "Kein Verwaltungswerkzeug gefunden.\nBitte auf der Website https://rizonesoft.com prüfen"
+                            "Die Datei ""%s"" kann nicht gespeichert werden und ist evtl. geschützt\n\nMöchtest Du %s mit erhöhten Rechten starten?"
+    IDS_MUI_ERR_ADMINEXE    "Kein Verwaltungswerkzeug gefunden\nBitte auf der Website https://rizonesoft.com prüfen"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Bist Du sicher, dass Du diese sehr große Datei öffnen möchtest?\n\t(Größe: %s >= %s)!\n(Styling und Syntax Highlighting wird nicht angewendet!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -189,7 +189,7 @@ BEGIN
     IDS_MUI_INIFILE_READONLY
                             "Die Konfigurationsdatei ist schreibgeschützt - ignorieren und Konfiguration überschreiben?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Es wurde keine Konfigurationsdatei gefunden.\nUm die Veränderungen der Stilanpassungen zu behalten, sollten die Einstellungen gespeichert werden (F7) oder über die Schematakonfiguration (Ctrl+F12) exportiert werden"
+                            "Es wurde keine Konfigurationsdatei gefunden\nUm die Veränderungen der Stilanpassungen zu behalten, sollten die Einstellungen gespeichert werden (F7) oder über die Schematakonfiguration (Ctrl+F12) exportiert werden"
 END
 
 STRINGTABLE
@@ -206,7 +206,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Click um die Datei zu  öffnen"
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click um die URL im Browser zu öffnen"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Die Speicherung mit originalem Zeitstempel wurde aktiviert.\nDiese Option gilt nun für die gesamte Sitzung (Datei)!"
+                             "Die Speicherung mit originalem Zeitstempel wurde aktiviert\nDiese Option gilt nun für die gesamte Sitzung (Datei)!"
     IDS_MUI_OUT_OFF_OCCMRK   "Es stehen keine weiteren Fundstellen Markierungen/Lesezeichen mehr zur Verfügung!"
     IDS_MUI_DOCUMENT_READONLY
                              "Das Dokument ist im 'Nur Lesen' Modus gesperrt. Soll dieser Modus beibehalten werden?"
@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_SAVE        "Speichere die Änderungen nach:\n""%s""?"
     IDS_MUI_ASK_REVERT      "Soll das Dokument aus dem zuletzt gespeicherten Zustand wieder hergestellt werden?"
     IDS_MUI_ASK_RECODE      "Eine Recodierung erzwingt ein erneutes Laden der Datei vom Speichermedium, nicht gesicherte Änderungen werden verloren gehen!"
-    IDS_MUI_ASK_CREATE      """%s"" wurde nicht gefunden.\nMöchtest Du diese Datei neu erzeugen?"
+    IDS_MUI_ASK_CREATE      """%s"" wurde nicht gefunden\nMöchtest Du diese Datei neu erzeugen?"
     IDS_MUI_PRINT_HEADER    "Dateiname, aktuelles Datum und Zeit|Dateiname, aktuelles Datum|Dateiname|Frei lassen"
     IDS_MUI_PRINT_FOOTER    "Seiten-Nummerierung|Frei lassen"
     IDS_MUI_PRINT_COLOR     "Normal|Invertiere (dunkler Hintergrund)|Schwarz auf Weiss|Farbig auf Weiss|Farbig auf Weiss (außer Zeilennummerierung)|Bildschirmfarben"
@@ -238,7 +238,7 @@ BEGIN
     IDS_MUI_SAVEPOS         "&Speichere Position\tCtrl+S"
     IDS_MUI_RESETPOS        "&Position zurück setzen\tCtrl+R"
     IDS_MUI_PREVIEW         "&Vorschau der Einstellungen\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "Das Entschlüsselungs-Passwort ist nicht korrekt.\nEin anderes Passwort versuchen?"
+    IDS_MUI_PASS_FAILURE    "Das Entschlüsselungs-Passwort ist nicht korrekt\nEin anderes Passwort versuchen?"
     IDS_MUI_NOPASS          "Entschlüsselung abgebrochen!\nSollen die verschlüsselten Rohdaten gelesen werden?"
     IDS_MUI_STY_BASESTD     "BASIS (Standard Stil):"
     IDS_MUI_STY_BASE2ND     "BASIS (2nd Standard Stil):"

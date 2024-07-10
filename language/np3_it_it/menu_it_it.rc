@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Esegui"
         BEGIN
-            MENUITEM "&Cerca nei file\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH
+            MENUITEM "&Cerca nei file...\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nuova finestra vuota\tAlt+N",           IDM_FILE_NEWWINDOW
             MENUITEM "&Duplica istanza\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
@@ -339,7 +339,7 @@ BEGIN
             MENUITEM "Sostituisci successivo\tF4",                IDM_EDIT_REPLACENEXT
             MENUITEM "&Vai a...\tCtrl+G",                         IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Cerca nei file\tCtrl+Shift+F",             IDM_GREP_WIN_SEARCH2
+            MENUITEM "&Cerca nei file...\tCtrl+Shift+F",             IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Visualizza"

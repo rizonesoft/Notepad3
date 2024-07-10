@@ -130,15 +130,15 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Kesalahan memuat ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Kesalahan menyimpan ""%s"""
     IDS_MUI_ERR_DLG_FORMAT  "Kesalahan pada '%s', penyebab:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Tidak ditemukan plugin penelusuran berkas.\nPlugin penelusuran berkas MiniPath dapat diunduh di https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "Tidak ditemukan plugin pencarian berkas.\nPlugin pencarian berkas grepWinNP3 dapat diunduh di https://rizonesoft.com"
+    IDS_MUI_ERR_BROWSE      "Tidak ditemukan plugin penelusuran berkas\nPlugin penelusuran berkas MiniPath dapat diunduh di https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Tidak ditemukan plugin pencarian berkas\nPlugin pencarian berkas grepWinNP3 dapat diunduh di https://rizonesoft.com"
     IDS_MUI_ERR_MRUDLG      "Tidak ada akses ke berkas yang dipilih!\nApakah Anda ingin menghapusnya dari daftar?"
     IDS_MUI_ERR_CREATELINK  "Kesalahan saat membuat pintasan Desktop"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Terdapat jendela Notepad3 lain yang sedang sibuk atau aktif.\nApakan Anda ingin membuka jendela Notepad3 baru?"
+                            "Terdapat jendela Notepad3 lain yang sedang sibuk atau aktif\nApakan Anda ingin membuka jendela Notepad3 baru?"
     IDS_MUI_ERR_ENCODINGNA  "Tabel konversi halaman kode untuk encoding yang dipilih tidak tersedia di sistem Anda"
-    IDS_MUI_ERR_UNICODE     "Kesalahan saat mengonversi berkas Unicode ini.\nData akan hilang apabila berkas disimpan!"
-    IDS_MUI_ERR_BITMAP      "Dimensi bitmap ""%s"" tidak sesuai.\nDimensi yang tepat: %i x %i (lebar >= %i x tinggi)"
+    IDS_MUI_ERR_UNICODE     "Kesalahan saat mengonversi berkas Unicode ini\nData akan hilang apabila berkas disimpan!"
+    IDS_MUI_ERR_BITMAP      "Dimensi bitmap ""%s"" tidak sesuai\nDimensi yang tepat: %i x %i (lebar >= %i x tinggi)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Kesalahan hak akses pengguna!"
 END
@@ -148,8 +148,8 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Beberapa karakter dalam berkas ini tidak didukung oleh encoding yang dipilih, dan mungkin akan digantikan dengan placeholder baku saat disimpan. Disarankan untuk memilih encoding berkas lain. Apakah Anda ingin melanjutkan?"
     IDS_MUI_ERR_DROP        "Hanya satu berkas yang dapat dihapus dalam satu waktu!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Berkas ""%s"" tidak dapat disimpan karena diproteksi.\n\nApakah kamu ingin membuka %s dengan hak akses 'Administrator'?"
-    IDS_MUI_ERR_ADMINEXE    "Tidak ditemukan eksekusi administrasi.\nPeriksa situs web https://rizonesoft.com?"
+                            "Berkas ""%s"" tidak dapat disimpan karena diproteksi\n\nApakah kamu ingin membuka %s dengan hak akses 'Administrator'?"
+    IDS_MUI_ERR_ADMINEXE    "Tidak ditemukan eksekusi administrasi\nPeriksa situs web https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Apa kamu yakin ingin membuka berkas berukuran besar ini?\n\t(ukuran: %s >= %s)!\n(Tampilan Gaya and Sorotan Sintaksis tidak dapat diterapkan!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Operasi ini dapat menghapus riwayat kembali. Lanjutkan?"
     IDS_MUI_READONLY_SAVE   """%s"" hanya baca saja. Simpan dalam berkas berbeda?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Berkas ini telah dimodifikasi oleh program lain.\nSilahkan pilih:\n\nBatal -\t\tAbaikan setiap perubahan\nMuat Ulang -\tMuat ulang berkas\nLanjutkan -\tBeralih ke pemantauan berkas"
+                            "Berkas ini telah dimodifikasi oleh program lain\nSilahkan pilih:\n\nBatal -\t\tAbaikan setiap perubahan\nMuat Ulang -\tMuat ulang berkas\nLanjutkan -\tBeralih ke pemantauan berkas"
     IDS_MUI_FILECHANGENOTIFY2 "Berkas ini telah dihapus. Simpan sekarang?"
     IDS_MUI_FILELOCK_ERROR  "Tidak bisa mendapatkan kunci berkas eksklusif untuk ""%s""!"
     IDS_MUI_STICKYWINPOS    "Posisi Jendela Tetap diaktifkan. Setiap jendela Notepad3 baru akan menggunakan pengaturan jendela saat ini"
@@ -189,7 +189,7 @@ BEGIN
     IDS_MUI_INIFILE_READONLY
                             "Berkas konfigurasi hanya dapat dibaca saja. Abaikan pemberitahuan dan timpa pengaturan?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Tidak ada berkas konfigurasi yang ditemukan.\nUntuk menyimpan gaya tampilan, simpan pengaturan sekarang (F7) atau kembali ke konfigurasi skema dan ekspor gaya tampilan (Ctrl+F12)"
+                            "Tidak ada berkas konfigurasi yang ditemukan\nUntuk menyimpan gaya tampilan, simpan pengaturan sekarang (F7) atau kembali ke konfigurasi skema dan ekspor gaya tampilan (Ctrl+F12)"
 END
 
 STRINGTABLE
@@ -198,7 +198,7 @@ BEGIN
     IDS_MUI_RELOADCFGSEX     "Jika melanjutkan tanpa memulai ulang program, pengaturan yang telah tersimpan tidak akan diterapkan dan akan ditimpa oleh pengaturan internal saat keluar!"
     IDS_MUI_EXPORT_FAIL      "Kesalahan mengekspor pengaturan gaya ke ""%s"""
     IDS_MUI_REGEX_INVALID    "Kesalahan mengevaluasi ekspresi reguler. Ekspresi tidak valid!"
-    IDS_MUI_DROP_NO_FILE     "Tidak ada nama berkas yang valid diambil.\nJika telah lepas dari penggunaan aplikasi 32-bit,\nsilahkan seret berkas dan lepaskan ke bilah alat Notepad3"
+    IDS_MUI_DROP_NO_FILE     "Tidak ada nama berkas yang valid diambil\nJika telah lepas dari penggunaan aplikasi 32-bit,\nsilahkan seret berkas dan lepaskan ke bilah alat Notepad3"
     IDS_MUI_URL_DIR_EXISTS   "URL direktori yang dituju tersedia!"
     IDS_MUI_URL_FILE_EXISTS  "URL berkas yang dituju tersedia!"
     IDS_MUI_URL_PATH_NOT_FOUND
@@ -206,7 +206,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Klik untuk membuka berkas"
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klik untuk membuka tautan di browser"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Mempertahankan berkas dari Modifikasi Stempel Waktu telah diaktifkan.\nOpsi ini hanya akan berlangsung untuk sesi ini saja!"
+                             "Mempertahankan berkas dari Modifikasi Stempel Waktu telah diaktifkan\nOpsi ini hanya akan berlangsung untuk sesi ini saja!"
     IDS_MUI_OUT_OFF_OCCMRK   "Penanda Pengulangan Kata telah habis (Markah/Sorotan)!"
     IDS_MUI_DOCUMENT_READONLY
                              "Dokumen dikunci dan hanya dilihat saja. Tetap kunci untuk mencegah pengeditan?"
@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_SAVE        "Simpan perubahan ke:\n""%s""?"
     IDS_MUI_ASK_REVERT      "Kembalikan semula berkas ke kondisi tersimpan?"
     IDS_MUI_ASK_RECODE      "Pengkodean ulang akan memuat ulang berkas, perubahan yang tidak disimpan akan hilang!"
-    IDS_MUI_ASK_CREATE      """%s"" tidak ditemukan.\nApakah Anda ingin membuat berkas ini?"
+    IDS_MUI_ASK_CREATE      """%s"" tidak ditemukan\nApakah Anda ingin membuat berkas ini?"
     IDS_MUI_PRINT_HEADER    "Nama Berkas, Tanggal dan Waktu Sekarang|Nama Berkas, Tanggal Sekarang|Nama Berkas|Biarkan Kosong"
     IDS_MUI_PRINT_FOOTER    "Nomor Halaman|Biarkan kosong"
     IDS_MUI_PRINT_COLOR     "Normal|Balikkan kecerahan (latar hitam)|Hitam pada latar putih|Berwarna pada latar putih|Berwarna pada latar putih (kecuali nomor baris)|Berwarna sesuai layar"
@@ -233,12 +233,12 @@ BEGIN
     IDS_MUI_PRINT_EMPTY     "Dokumen ini tidak berisi teks yang akan dicetak"
     IDS_MUI_PRINT_ERROR     "Kesalahan mencetak ""%s""!"
     IDS_MUI_FAV_SUCCESS     "Pintasan ke berkas ini telah dibuat di direktori favorit"
-    IDS_MUI_FAV_FAILURE     "Pintasan ke berkas ini tidak dapat dibuat.\nPastikan tidak ada berkas lain dengan nama yang sama"
+    IDS_MUI_FAV_FAILURE     "Pintasan ke berkas ini tidak dapat dibuat\nPastikan tidak ada berkas lain dengan nama yang sama"
     IDS_MUI_READONLY_MODIFY "Atribut ""%s"" tidak dapat diubah"
     IDS_MUI_SAVEPOS         "&Simpan Posisi\tCtrl+S"
     IDS_MUI_RESETPOS        "Setel &Ulang Posisi\tCtrl+R"
     IDS_MUI_PREVIEW         "&Pratinjau Pengaturan\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "Frasa sandi salah.\nCoba ulang dengan frasa yang lain?"
+    IDS_MUI_PASS_FAILURE    "Frasa sandi salah\nCoba ulang dengan frasa yang lain?"
     IDS_MUI_NOPASS          "Dekripsi Dibatalkan!\nBaca data mentahan yang dienkripsi?"
     IDS_MUI_STY_BASESTD     "Konfigurasi Dasar (Gaya Tampilan Baku):"
     IDS_MUI_STY_BASE2ND     "Konfigurasi Dasar (Gaya Tampilan Baku ke-2):"

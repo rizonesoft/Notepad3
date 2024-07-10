@@ -130,15 +130,15 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Erreur de chargement de ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Erreur de sauvegarde de ""%s"""
     IDS_MUI_ERR_DLG_FORMAT  "Erreur '%s', cause :\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Aucun plugin de navigateur de fichiers n'a été trouvé.\nLe plugin du navigateur de fichiers MiniPath peut être téléchargé à partir de https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "Aucun plugin de recherche de fichiers n'a été trouvé.\nLe plugin de recherche de fichiers grepWinNP3 peut être téléchargé depuis https://rizonesoft.com"
+    IDS_MUI_ERR_BROWSE      "Aucun plugin de navigateur de fichiers n'a été trouvé\nLe plugin du navigateur de fichiers MiniPath peut être téléchargé à partir de https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Aucun plugin de recherche de fichiers n'a été trouvé\nLe plugin de recherche de fichiers grepWinNP3 peut être téléchargé depuis https://rizonesoft.com"
     IDS_MUI_ERR_MRUDLG      "Pas d'accès au fichier sélectionné !\nVoulez-vous le retirer de la liste ?"
     IDS_MUI_ERR_CREATELINK  "Erreur lors de la création du lien sur le bureau"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "La fenêtre Notepad3 existante est occupée ou possède une boîte de dialogue active.\nVoulez-vous ouvrir une autre fenêtre Notepad3 ?"
+                            "La fenêtre Notepad3 existante est occupée ou possède une boîte de dialogue active\nVoulez-vous ouvrir une autre fenêtre Notepad3 ?"
     IDS_MUI_ERR_ENCODINGNA  "Les tables de conversion des codes page pour l'encodage sélectionné ne sont pas disponibles sur votre système"
-    IDS_MUI_ERR_UNICODE     "Erreur lors de la conversion de ce fichier Unicode.\nLes données seront perdues si le fichier est sauvegardé !"
-    IDS_MUI_ERR_BITMAP      "Dimension inadéquate de l'image bitmap ""%s"".\nDimension appropriée : %i x %i (largeur >= %i x hauteur)"
+    IDS_MUI_ERR_UNICODE     "Erreur lors de la conversion de ce fichier Unicode\nLes données seront perdues si le fichier est sauvegardé !"
+    IDS_MUI_ERR_BITMAP      "Dimension inadéquate de l'image bitmap ""%s""\nDimension appropriée : %i x %i (largeur >= %i x hauteur)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Erreur d'élévation des droits de l'utilisateur !"
 END
@@ -148,8 +148,8 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Certains caractères dans le texte courant ne sont pas supportés par le codage sélectionné et peuvent être remplacés par des espaces réservés par défaut lors de la sauvegarde. Il est recommandé de choisir un autre encodage de fichier. Continuer ?"
     IDS_MUI_ERR_DROP        "Seulement un fichier peut être déposé à la fois !"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Le fichier ""%s"" ne peut pas être sauvegardé et est peut-être protégé.\n\nVoulez-vous lancer %s en tant qu'application ""élevée"" ?"
-    IDS_MUI_ERR_ADMINEXE    "Aucun exécutable d'administration trouvé.\nVérifier sur le site https://rizonesoft.com ?"
+                            "Le fichier ""%s"" ne peut pas être sauvegardé et est peut-être protégé\n\nVoulez-vous lancer %s en tant qu'application ""élevée"" ?"
+    IDS_MUI_ERR_ADMINEXE    "Aucun exécutable d'administration trouvé\nVérifier sur le site https://rizonesoft.com ?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Etes-vous sûr de vouloir ouvrir ce gros fichier ?\n\t(taille : %s >= %s)!\n(Le style et la coloration syntaxique ne seront pas appliqués !)"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Cette opération videra l'historique ""Défaire"". Continuer ?"
     IDS_MUI_READONLY_SAVE   """%s"" est en lecture seule. Sauvegarder dans un fichier différent ?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Le fichier actuel a été modifié par un programme externe.\nChoisissez :\n\nAnnuler -\t\tIgnorer aussi les futures modifications ""externes""\nRecharger -\t\tRecharger le fichier modifié\nContinuer -\tBasculer en mode ""surveillance fichier"""
+                            "Le fichier actuel a été modifié par un programme externe\nChoisissez :\n\nAnnuler -\t\tIgnorer aussi les futures modifications ""externes""\nRecharger -\t\tRecharger le fichier modifié\nContinuer -\tBasculer en mode ""surveillance fichier"""
     IDS_MUI_FILECHANGENOTIFY2 "Le fichier actuel a été supprimé. Sauvegarder maintenant ?"
     IDS_MUI_FILELOCK_ERROR  "Ne peut acquérir un verrouillage de fichier exclusif pour ""%s"" !"
     IDS_MUI_STICKYWINPOS    "Le gel de la position de la fenêtre est activée. Toute nouvelle fenêtre Notepad3 utilisera les paramètres de placement de fenêtre en cours"
@@ -189,7 +189,7 @@ BEGIN
     IDS_MUI_INIFILE_READONLY
                             "Le fichier de configuration est en lecture seule - Ignorer et écraser les paramètres ?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Aucun fichier de configuration existant n'a été trouvé.\nPour conserver vos modifications de style, enregistrez les paramètres maintenant (F7) ou revenez à la configuration du thème (Ctrl+F12) et exportez vos styles"
+                            "Aucun fichier de configuration existant n'a été trouvé\nPour conserver vos modifications de style, enregistrez les paramètres maintenant (F7) ou revenez à la configuration du thème (Ctrl+F12) et exportez vos styles"
 END
 
 STRINGTABLE
@@ -198,7 +198,7 @@ BEGIN
     IDS_MUI_RELOADCFGSEX     "En poursuivant sans redémarrage, les paramètres sauvegardés ne seront pas appliqués et seront remplacés par les paramètres internes à la sortie du programme !"
     IDS_MUI_EXPORT_FAIL      "Erreur d'exportation des paramètres de style vers ""%s"""
     IDS_MUI_REGEX_INVALID    "Erreur dans l'évaluation de l'expression régulière. L'expression est invalide !"
-    IDS_MUI_DROP_NO_FILE     "Aucun nom de fichier valide récupéré.\nSi une application 32 bits est utilisée,\nessayez de faire glisser le fichier sur la barre d'outils de Notepad3"
+    IDS_MUI_DROP_NO_FILE     "Aucun nom de fichier valide récupéré\nSi une application 32 bits est utilisée,\nessayez de faire glisser le fichier sur la barre d'outils de Notepad3"
     IDS_MUI_URL_DIR_EXISTS   "Le répertoire spécifié par l'URL existe !"
     IDS_MUI_URL_FILE_EXISTS  "Le fichier spécifié par l'URL existe !"
     IDS_MUI_URL_PATH_NOT_FOUND
@@ -206,7 +206,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Clic pour ouvrir le fichier"
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Clic pour ouvrir le lien dans le navigateur"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Préservation de l'horodatage de modification original du fichier activée.\nCette option restera active pour cette session !"
+                             "Préservation de l'horodatage de modification original du fichier activée\nCette option restera active pour cette session !"
     IDS_MUI_OUT_OFF_OCCMRK   "Il n'y a pas d'autres marqueurs d'occurrence (Signet/Surlignage) !"
     IDS_MUI_DOCUMENT_READONLY
                              "Le document est verrouillé en lecture seule. Garder ce mode pour éviter l'édition ?"
@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_SAVE        "Sauvegarder les modification vers :\n""%s"" ?"
     IDS_MUI_ASK_REVERT      "Rétablir le fichier dans le dernier état sauvegardé ?"
     IDS_MUI_ASK_RECODE      "Le réencodage nécessite le rechargement du fichier à partir du disque, les modifications non sauvegardées seront perdues !"
-    IDS_MUI_ASK_CREATE      """%s"" introuvable.\nVoulez-vous créer ce fichier ?"
+    IDS_MUI_ASK_CREATE      """%s"" introuvable\nVoulez-vous créer ce fichier ?"
     IDS_MUI_PRINT_HEADER    "Nom du fichier, date et heure actuelles|Nom du fichier, date actuelle|Nom du fichier|Laisser vide"
     IDS_MUI_PRINT_FOOTER    "Numéro de page|Laisser vide"
     IDS_MUI_PRINT_COLOR     "Normal|Inversion (fond sombre)|Noir sur blanc|Couleur sur blanc|Couleur sur blanc (excepté numéros de ligne)|Couleurs d'écran"
@@ -233,12 +233,12 @@ BEGIN
     IDS_MUI_PRINT_EMPTY     "Ce document ne contient aucun texte à imprimer"
     IDS_MUI_PRINT_ERROR     "Erreur d'impression de ""%s"" !"
     IDS_MUI_FAV_SUCCESS     "Un raccourci vers le fichier actuel a été créé dans le dossier des favoris"
-    IDS_MUI_FAV_FAILURE     "Le raccourci vers le fichier actuel n'a pas pu être créé.\nAssurez-vous qu'il n'y a pas d'autre fichier de même nom"
+    IDS_MUI_FAV_FAILURE     "Le raccourci vers le fichier actuel n'a pas pu être créé\nAssurez-vous qu'il n'y a pas d'autre fichier de même nom"
     IDS_MUI_READONLY_MODIFY "Les attributs de ""%s"" n'ont pas pu être modifiés"
     IDS_MUI_SAVEPOS         "&Sauvegarder la position\tCtrl+S"
     IDS_MUI_RESETPOS        "&Réinitialiser la position\tCtrl+R"
     IDS_MUI_PREVIEW         "&Aperçu des réglages\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "La phrase secrète est incorrecte.\nRéessayez une autre phrase secrète ?"
+    IDS_MUI_PASS_FAILURE    "La phrase secrète est incorrecte\nRéessayez une autre phrase secrète ?"
     IDS_MUI_NOPASS          "Décryptage annulé !\nLire les données brutes cryptées ?"
     IDS_MUI_STY_BASESTD     "BASE (Style par défaut) :"
     IDS_MUI_STY_BASE2ND     "BASE (2ème style par défaut) :"

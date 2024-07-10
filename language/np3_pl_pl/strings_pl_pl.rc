@@ -130,15 +130,15 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Błąd podczas ładowania ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Błąd podczas zapisu ""%s"""
     IDS_MUI_ERR_DLG_FORMAT  "Błąd '%s', powód:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Nie znaleziono wtyczki przeglądarki pliku.\nWtyczkę przeglądarki pliku do MiniPath można pobrać z https://rizonesoft.com"
+    IDS_MUI_ERR_BROWSE      "Nie znaleziono wtyczki przeglądarki pliku\nWtyczkę przeglądarki pliku do MiniPath można pobrać z https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Nie znaleziono wtyczki wyszukiwania pliku.\Wtyczkę wyszukiwania pliku programu grepWinNP3 można pobrać ze strony https://rizonesoft.com"
     IDS_MUI_ERR_MRUDLG      "Brak dostępu do wybranego pliku!\nCzy chcesz usunąć go z listy?"
     IDS_MUI_ERR_CREATELINK  "Błąd podczas tworzenia skrótu na Pulpicie"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Istniejące okno Notepad3 jest zajęte lub posiada aktywne okno dialogowe.\nCzy chcesz otworzyć kolejne okno Notepad3?"
+                            "Istniejące okno Notepad3 jest zajęte lub posiada aktywne okno dialogowe\nCzy chcesz otworzyć kolejne okno Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "Tablice konwersji strony kodowej dla wybranego kodowania nie są dostępne na tym systemie"
-    IDS_MUI_ERR_UNICODE     "Błąd podczas kodowania pliku Unicode.\nDane zostaną utracone jeśli plik zapisano!"
-    IDS_MUI_ERR_BITMAP      "Nieodpowiedni wymiar mapy bitowej ""%s"".\nOdpowiedni wymiar: %i x %i (szer. >= %i x wys.)"
+    IDS_MUI_ERR_UNICODE     "Błąd podczas kodowania pliku Unicode\nDane zostaną utracone jeśli plik zapisano!"
+    IDS_MUI_ERR_BITMAP      "Nieodpowiedni wymiar mapy bitowej ""%s""\nOdpowiedni wymiar: %i x %i (szer. >= %i x wys.)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Błąd podczas nadawania praw użytkownika!"
 END
@@ -148,8 +148,8 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Niektóre znaki w tym tekście nie są obsługiwane przez wybrane kodowanie, i mogą zostanie zamienione na standardowe znaki po zapisaniu. Zaleca się wybrać inne kodowanie pliku. Kontynuować?"
     IDS_MUI_ERR_DROP        "Tylko jeden plik może być upuszczony w tym samym czasie!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Plik ""%s"" nie może zostać zapisany i może być zabezpieczony.\n\nCzy chcesz uruchomić %s jako 'Podniesiony'?"
-    IDS_MUI_ERR_ADMINEXE    "Nie znaleziono narzędzia administracyjnego.\nSprawdź stronę https://rizonesoft.com?"
+                            "Plik ""%s"" nie może zostać zapisany i może być zabezpieczony\n\nCzy chcesz uruchomić %s jako 'Podniesiony'?"
+    IDS_MUI_ERR_ADMINEXE    "Nie znaleziono narzędzia administracyjnego\nSprawdź stronę https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Czy na pewno chcesz otworzyć ten duży plik?\n\t(rozmiar: %s >= %s)!\n(Projekt i podświetlenie składni nie będzie zastosowane!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Ta operacja wyczyści historię cofania. Kontynuować?"
     IDS_MUI_READONLY_SAVE   """%s"" tylko do odczytu. Zapisać do innego pliku?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Bieżący plik został zmodyfikowany przez zewnętrzny program.\nWybierz:\n\nAnuluj -\t\tIgnoruj dalsze zmiany\nZaładuj ponownie -\t\tZaładuj ponownie plik\nKontynuuj -\tPrzełącz na monitorowanie pliku"
+                            "Bieżący plik został zmodyfikowany przez zewnętrzny program\nWybierz:\n\nAnuluj -\t\tIgnoruj dalsze zmiany\nZaładuj ponownie -\t\tZaładuj ponownie plik\nKontynuuj -\tPrzełącz na monitorowanie pliku"
     IDS_MUI_FILECHANGENOTIFY2 "Bieżący plik został usunięty. Zapisać teraz?"
     IDS_MUI_FILELOCK_ERROR  "Nie można uzyskać wyłącznej blokady plików dla ""%s""!"
     IDS_MUI_STICKYWINPOS    "Zamrożona pozycja okna jest włączona. Jakiekolwiek nowe okno Notepad3 zastosuje ustawienia bieżącego umiejscowienia okna"
@@ -189,7 +189,7 @@ BEGIN
     IDS_MUI_INIFILE_READONLY
                             "Plik konfiguracyjny tylko do odczytu - zignorować (pominąć) ustawienia?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Nie znaleziono istniejącego pliku konfiguracyjnego.\nAby zachować zmiany stylów, zapisz ustawienia (F7) lub wróć do schematu konfiguracji (Ctrl+F12) i eksportuj style"
+                            "Nie znaleziono istniejącego pliku konfiguracyjnego\nAby zachować zmiany stylów, zapisz ustawienia (F7) lub wróć do schematu konfiguracji (Ctrl+F12) i eksportuj style"
 END
 
 STRINGTABLE
@@ -198,7 +198,7 @@ BEGIN
     IDS_MUI_RELOADCFGSEX     "Przy kontynuacji bez restartu zapisane ustawienia nie będą używane i zostaną zastąpione przez wewnętrzne ustawienia po wyjściu z programu!"
     IDS_MUI_EXPORT_FAIL      "Błąd podczas eksportowania ustawień styu do ""%s"""
     IDS_MUI_REGEX_INVALID    "Błąd podczas oceny regularnego wyrażenia. Wyrażenie jest nieuzasadnione!"
-    IDS_MUI_DROP_NO_FILE     "Nie rozpoznano żadnej sensownej nazwy pliku.\nJeśli upuścisz aplikację 32-bitową,\nprzeciągnij i upuść do paska narzędzi Notepad3'a"
+    IDS_MUI_DROP_NO_FILE     "Nie rozpoznano żadnej sensownej nazwy pliku\nJeśli upuścisz aplikację 32-bitową,\nprzeciągnij i upuść do paska narzędzi Notepad3'a"
     IDS_MUI_URL_DIR_EXISTS   "URL określony katalog istnieje!"
     IDS_MUI_URL_FILE_EXISTS  "URL określony plik istnieje!"
     IDS_MUI_URL_PATH_NOT_FOUND
@@ -206,7 +206,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Kliknij, aby otworzyć plik"
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Kliknij, aby otworzyć link w przeglądarce"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Włączono zachowanie znacznika czasu w modyfikacji pliku.\nTa opcja pozostanie dla tej sesji!"
+                             "Włączono zachowanie znacznika czasu w modyfikacji pliku\nTa opcja pozostanie dla tej sesji!"
     IDS_MUI_OUT_OFF_OCCMRK   "Kończą się znaczniki występowania (Zakładka/Podświetlenie)!"
     IDS_MUI_DOCUMENT_READONLY
                              "Dokument jest zablokowany tylko do przeglądania. Zachowaj blokadę, aby uniemożliwić edycję?"
@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_SAVE        "Zapisać zmiany w:\n""%s""?"
     IDS_MUI_ASK_REVERT      "Przywrócić plik do poprzedniego stanu? Zmiany zostaną utracone!"
     IDS_MUI_ASK_RECODE      "Ponowne kodowanie wymaga ponownego załadowania pliku z dysku, niezapisane zmiany zostaną utracone!"
-    IDS_MUI_ASK_CREATE      """%s"" nie znaleziono.\nCzy chcesz utworzyć ten plik?"
+    IDS_MUI_ASK_CREATE      """%s"" nie znaleziono\nCzy chcesz utworzyć ten plik?"
     IDS_MUI_PRINT_HEADER    "Nazwa pliku, bieżąca data i czas|Nazwa pliku, bieżąca data|Nazwa pliku|Zostaw czysty"
     IDS_MUI_PRINT_FOOTER    "Numer strony|Pozostaw czysty"
     IDS_MUI_PRINT_COLOR     "Normalny|Odwróć jasne (ciemne tło)|Czarny na biały|Kolorowy na biały|Kolorowy na biały (z wyjątkiem numerów wierszy)|Kolory ekranu"
@@ -233,12 +233,12 @@ BEGIN
     IDS_MUI_PRINT_EMPTY     "Ten dokument nie zawiera żadnego tekstu do wydrukowania"
     IDS_MUI_PRINT_ERROR     "Błąd drukowania ""%s""!"
     IDS_MUI_FAV_SUCCESS     "Skrót do bieżącego pliku utworzono w katalogu Ulubione"
-    IDS_MUI_FAV_FAILURE     "Nie można utworzyć skrótu do bieżącego pliku.\nUpewnij się, czy nie ma innego pliku o tej samej nazwie"
-    IDS_MUI_READONLY_MODIFY "Nie można zmienić atrybutów  ""%s"" "
+    IDS_MUI_FAV_FAILURE     "Nie można utworzyć skrótu do bieżącego pliku\nUpewnij się, czy nie ma innego pliku o tej samej nazwie"
+    IDS_MUI_READONLY_MODIFY "Nie można zmienić atrybutów  ""%s"""
     IDS_MUI_SAVEPOS         "&Zapisz pozycję\tCtrl+S"
     IDS_MUI_RESETPOS        "&Resetuj pozycję\tCtrl+R"
     IDS_MUI_PREVIEW         "&Zobacz ustawienia\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "Hasło nieprawidłowe.\nWprowadzić ponownie hasło?"
+    IDS_MUI_PASS_FAILURE    "Hasło nieprawidłowe\nWprowadzić ponownie hasło?"
     IDS_MUI_NOPASS          "Odkodowywanie anulowane!\nCzy odczytać zakodowane pierwotne dane?"
     IDS_MUI_STY_BASESTD     "BASE (Styl domyślny):"
     IDS_MUI_STY_BASE2ND     "BASE (drugi styl domyślny):"

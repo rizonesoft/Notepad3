@@ -130,26 +130,26 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "載入 ""%s"" 時遇到錯誤"
     IDS_MUI_ERR_SAVEFILE    "儲存 ""%"" 時遇到錯誤"
     IDS_MUI_ERR_DLG_FORMAT  "錯誤 ""%s"" ，原因：\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "無可用檔案瀏覽器外掛。\nMiniPath 外掛可由 https://rizonesoft.com/ 下載"
-    IDS_MUI_ERR_GREPWIN     "無可用檔案尋找外掛。\ngrepWinNP3 外掛可由 https://rizonesoft.com 下載"
-    IDS_MUI_ERR_MRUDLG      "指定的檔案無法存取。它可能已被改名、刪除或移動。\n\n從清單中刪除它嗎？"
+    IDS_MUI_ERR_BROWSE      "無可用檔案瀏覽器外掛\nMiniPath 外掛可由 https://rizonesoft.com/ 下載"
+    IDS_MUI_ERR_GREPWIN     "無可用檔案尋找外掛\ngrepWinNP3 外掛可由 https://rizonesoft.com 下載"
+    IDS_MUI_ERR_MRUDLG      "指定的檔案無法存取。它可能已被改名、刪除或移動\n\n從清單中刪除它嗎？"
     IDS_MUI_ERR_CREATELINK  "建立桌面捷徑時遇到錯誤"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "目前已存在的 Notepad3 視窗忙碌中，或有一個已打開的對話方塊正在阻止它回應。\n\n開啟一個新的 Notepad3 視窗嗎？"
+                            "目前已存在的 Notepad3 視窗忙碌中，或有一個已打開的對話方塊正在阻止它回應\n\n開啟一個新的 Notepad3 視窗嗎？"
     IDS_MUI_ERR_ENCODINGNA  "用於選定的編碼轉換的內碼表表在目前系統上不可用"
-    IDS_MUI_ERR_UNICODE     "轉換該 Unicode 檔案時遇到錯誤。\n\n警告：儲存該檔案會導致資料遺失"
-    IDS_MUI_ERR_BITMAP      "點陣圖 ""%s"" 的寬高比不合適。\n合適的寬高比：%i × %i 寬度 ≥ %i × 高度）"
+    IDS_MUI_ERR_UNICODE     "轉換該 Unicode 檔案時遇到錯誤\n\n警告：儲存該檔案會導致資料遺失"
+    IDS_MUI_ERR_BITMAP      "點陣圖 ""%s"" 的寬高比不合適\n合適的寬高比：%i × %i 寬度 ≥ %i × 高度）"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "提升使用者權限時出錯"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "在目前文件中的某些字元不能使用選定的編碼表示。在儲存檔案時，它們可能被替換為其它字元。因此，建議選擇其它編碼。\n\n是否繼續？"
+    IDS_MUI_ERR_UNICODE2    "在目前文件中的某些字元不能使用選定的編碼表示。在儲存檔案時，它們可能被替換為其它字元。因此，建議選擇其它編碼\n\n是否繼續？"
     IDS_MUI_ERR_DROP        "一次只能拖放一個檔案"
     IDS_MUI_ERR_ACCESSDENIED
-                            "檔案 ""%s"" 不能被儲存，它可能是受保護的。\n\n是否希望提升 %s 的權限？"
-    IDS_MUI_ERR_ADMINEXE    "無管理工具可用。\n\n存取 https://rizonesoft.com/ 看看？"
+                            "檔案 ""%s"" 不能被儲存，它可能是受保護的\n\n是否希望提升 %s 的權限？"
+    IDS_MUI_ERR_ADMINEXE    "無管理工具可用\n\n存取 https://rizonesoft.com/ 看看？"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "是否確定要開啟一個如此龐大的檔案？\n\t（大小 %s ≥ %s）\n樣式和語法高亮將被停用"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "該操作將會清空取消歷程記錄。是否繼續？"
     IDS_MUI_READONLY_SAVE   """%s"" 是唯讀。是否嘗試使用其它名字儲存？"
     IDS_MUI_FILECHANGENOTIFY
-                            "當前檔案已被其它程式所修改。\n請選擇：\n\n取消 -\t\t忽略之後的變更\n重新載入 -\t\t重新載入檔案\n繼續 -\t\t切換為監控模式"
+                            "當前檔案已被其它程式所修改\n請選擇：\n\n取消 -\t\t忽略之後的變更\n重新載入 -\t\t重新載入檔案\n繼續 -\t\t切換為監控模式"
     IDS_MUI_FILECHANGENOTIFY2 "目前檔案已被刪除。是否儲存？"
     IDS_MUI_FILELOCK_ERROR  "無法以獨佔模式鎖定檔案 ""%s""!"
     IDS_MUI_STICKYWINPOS    "黏性視窗位置已啟用。新的 Notepad3 視窗將使用和目前視窗一樣的位置設定"
@@ -189,7 +189,7 @@ BEGIN
     IDS_MUI_INIFILE_READONLY
                             "設定檔為唯讀 - 忽略並覆寫設定?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "目前無設定檔案可用。\n\n若要儲存已修改的樣式，請按 F7 儲存設定，或按 Ctrl+F12 匯出樣式"
+                            "目前無設定檔案可用\n\n若要儲存已修改的樣式，請按 F7 儲存設定，或按 Ctrl+F12 匯出樣式"
 END
 
 STRINGTABLE
@@ -198,7 +198,7 @@ BEGIN
     IDS_MUI_RELOADCFGSEX     "如果繼續而不重新啟動應用程式，已儲存的設定將不會生效，並且當結束時會被內部設定覆寫"
     IDS_MUI_EXPORT_FAIL      "匯出樣式設定到檔案 ""%s"" 時遇到錯誤"
     IDS_MUI_REGEX_INVALID    "正規表示式無效"
-    IDS_MUI_DROP_NO_FILE     "未能獲取檔名。\n\n如果從 32 位應用程式拖放檔案，請拖放到 Notepad3 的工具列上"
+    IDS_MUI_DROP_NO_FILE     "未能獲取檔名\n\n如果從 32 位應用程式拖放檔案，請拖放到 Notepad3 的工具列上"
     IDS_MUI_URL_DIR_EXISTS   "URL 指定目錄存在!"
     IDS_MUI_URL_FILE_EXISTS  "URL 指定檔案存在!"
     IDS_MUI_URL_PATH_NOT_FOUND
@@ -206,7 +206,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\n按住 Alt 同時點選以開啟檔案"
     IDS_MUI_URL_OPEN_BROWSER "\n按住 Ctrl 同時點選以在瀏覽器中開啟連結"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "已啟用維持檔案最後修改時間功能。\n\n本選項將在目前工作階段期間生效"
+                             "已啟用維持檔案最後修改時間功能\n\n本選項將在目前工作階段期間生效"
     IDS_MUI_OUT_OFF_OCCMRK   "書籤/高亮標記已用完!"
     IDS_MUI_DOCUMENT_READONLY
                              "該檔案已被鎖定僅供閱覽。保持鎖定以防止修改嗎？"

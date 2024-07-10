@@ -102,7 +102,7 @@ CAPTION "Ir para"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Introduza o nome de um ficheiro ou pasta para abrir, \nou seleccione uma pasta recentemente visitada da lista",IDC_STATIC,35,7,188,17
+    LTEXT           "Introduza o nome de um ficheiro ou pasta para abrir,\nou seleccione uma pasta recentemente visitada da lista",IDC_STATIC,35,7,188,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "Cancelar",IDCANCEL,167,66,50,14
@@ -114,7 +114,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Filtrar ficheiros"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Especifique um novo &filtro de ficheiro. Separare \nvários filtros com ;",IDC_STATIC,7,7,170,18
+    LTEXT           "Especifique um novo &filtro de ficheiro. Separare\nvários filtros com ;",IDC_STATIC,7,7,170,18
     EDITTEXT        IDC_FILTER,7,25,158,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,169,25,13,13
     CONTROL         "&Excluir ficheiros correspondentes ao filtro",IDC_NEGFILTER,

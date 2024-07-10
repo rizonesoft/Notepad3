@@ -102,7 +102,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_ERR_TARGETDISABLED  "MiniPath\nA létező cél-ablak foglalt vagy nyitva van egy párbeszédablaka\nSzeretne egy újabb ablakot megnyitni?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nKérem, győződjön meg róla, hogy minden szükséges mező ki van töltve\nUgyancsak találnia kell egy cél ablakot, ha a megfelelő opció be van kapcsolva."
+    IDS_ERR_INVALIDTARGET   "MiniPath\nKérem, győződjön meg róla, hogy minden szükséges mező ki van töltve\nUgyancsak találnia kell egy cél ablakot, ha a megfelelő opció be van kapcsolva"
     IDS_ERR_INIOPEN         "MiniPath\nNincs hozzáférésem a MiniPath konfigurációs fájljához"
     IDS_ERR_INICREATE       "Beállítások mentése\nHiba a konfigurációs fájl létrehozásakor"
     IDS_ERR_INIWRITE        "Beállítások mentése\nA beállítások nincsenek mentve!\nNincs írási jogom a konfigurációs fájlhoz"

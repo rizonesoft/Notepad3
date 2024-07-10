@@ -130,15 +130,15 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Error cargando ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Error guardando ""%s"""
     IDS_MUI_ERR_DLG_FORMAT  "Error '%s', causa:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "No se encontró plug-in para el navegador de archivos.\nEl plug-in de navegador de archivos MiniPath se puede descargar desde https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "No se encontró plug-in de búsqueda de archivos.\nEl plug-in grepWinNP3 de búsqueda de archivos se puede descargar desde https://rizonesoft.com"
+    IDS_MUI_ERR_BROWSE      "No se encontró plug-in para el navegador de archivos\nEl plug-in de navegador de archivos MiniPath se puede descargar desde https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "No se encontró plug-in de búsqueda de archivos\nEl plug-in grepWinNP3 de búsqueda de archivos se puede descargar desde https://rizonesoft.com"
     IDS_MUI_ERR_MRUDLG      "¡No hay acceso al archivo seleccionado!\n¿Desea eliminarlo de la lista?"
     IDS_MUI_ERR_CREATELINK  "Error al crear el enlace de escritorio"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "La ventana de Notepad3 existente está ocupada o tiene un cuadro de diálogo activo.\n¿Quiere abrir otra ventana de Notepad3?"
+                            "La ventana de Notepad3 existente está ocupada o tiene un cuadro de diálogo activo\n¿Quiere abrir otra ventana de Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "Las tablas de conversión de páginas de códigos para la codificación seleccionada no están disponibles en su sistema"
-    IDS_MUI_ERR_UNICODE     "Error al convertir este archivo Unicode.\n¡Los datos se perderán si se guarda el archivo!"
-    IDS_MUI_ERR_BITMAP      "Dimensión no adecuada del bitmap ""%s"".\nDimensión adecuada: %i x %i (ancho >= %i x alto)"
+    IDS_MUI_ERR_UNICODE     "Error al convertir este archivo Unicode\n¡Los datos se perderán si se guarda el archivo!"
+    IDS_MUI_ERR_BITMAP      "Dimensión no adecuada del bitmap ""%s""\nDimensión adecuada: %i x %i (ancho >= %i x alto)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "¡Error al elevar los privilegios de usuario!"
 END
@@ -148,8 +148,8 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Ciertos caracteres en el texto actual no son compatibles con la codificación seleccionada, y pueden ser reemplazados por marcadores de posición predeterminados al guardar. Se recomienda elegir otra codificación de archivo. ¿Continuar?"
     IDS_MUI_ERR_DROP        "¡Sólo se puede eliminar un archivo al mismo tiempo!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "El archivo ""%s"" no se puede guardar y puede estar protegido.\n\n¿Quiere lanzar %s como aplicación elevada?"
-    IDS_MUI_ERR_ADMINEXE    "No se ha encontrado administración ejecutable.\n¿Consultar website https://rizonesoft.com?"
+                            "El archivo ""%s"" no se puede guardar y puede estar protegido\n\n¿Quiere lanzar %s como aplicación elevada?"
+    IDS_MUI_ERR_ADMINEXE    "No se ha encontrado administración ejecutable\n¿Consultar website https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "¿Seguro que quiere abrir este archivo tan grande?\n\t(tamaño: %s >= %s)!\n(¡No se aplicarán el estilo y el resaltado de sintaxis!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Esta operación borrará el historial de deshacer. ¿Continuar?"
     IDS_MUI_READONLY_SAVE   """%s"" es de sólo lectura. ¿Guardar en un archivo diferente?"
     IDS_MUI_FILECHANGENOTIFY
-                            "El archivo actual ha sido modificado por un programa externo.\nSeleccione:\n\nCancelar -\t\tIgnorar más cambios\nRecargar -\t\tRecargar archivo\nContinuar -\tCambiar a monitoreo de archivos"
+                            "El archivo actual ha sido modificado por un programa externo\nSeleccione:\n\nCancelar -\t\tIgnorar más cambios\nRecargar -\t\tRecargar archivo\nContinuar -\tCambiar a monitoreo de archivos"
     IDS_MUI_FILECHANGENOTIFY2 "El archivo actual ha sido eliminado. ¿Guardar ahora?"
     IDS_MUI_FILELOCK_ERROR  "No se puede adquirir un bloqueo de archivo exclusivo para ""%s""!"
     IDS_MUI_STICKYWINPOS    "La posición de la ventana fija está activada. Cualquier nueva ventana de Notepad3 utilizará la configuración de ubicación de la ventana actual"
@@ -189,7 +189,7 @@ BEGIN
     IDS_MUI_INIFILE_READONLY
                             "El archivo de configuración es de sólo lectura: ¿ignorar y anular la configuración?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Ningún archivo de configuración existente encontrado.\nPara mantener los cambios de estilo, guardar la configuración ahora (F7) o volver a la configuración del esquema (Ctrl+F12) y exportar sus estilos"
+                            "Ningún archivo de configuración existente encontrado\nPara mantener los cambios de estilo, guardar la configuración ahora (F7) o volver a la configuración del esquema (Ctrl+F12) y exportar sus estilos"
 END
 
 STRINGTABLE
@@ -198,7 +198,7 @@ BEGIN
     IDS_MUI_RELOADCFGSEX     "¡Al continuar sin reiniciar, las configuraciones guardadas no se aplican y serán anuladas por las configuraciones internas al salir del programa!"
     IDS_MUI_EXPORT_FAIL      "Error al exportar la configuración de estilo a ""%s"""
     IDS_MUI_REGEX_INVALID    "Error al evaluar la expresión regular. ¡La expresión es inválida!"
-    IDS_MUI_DROP_NO_FILE     "No se recuperó un nombre de archivo válido.\nSi se usa una aplicación de 32 bits,\nintente arrastrar el archivo a la barra de herramientas Notepad3"
+    IDS_MUI_DROP_NO_FILE     "No se recuperó un nombre de archivo válido\nSi se usa una aplicación de 32 bits,\nintente arrastrar el archivo a la barra de herramientas Notepad3"
     IDS_MUI_URL_DIR_EXISTS   "¡Directorio especificado por URL existe!"
     IDS_MUI_URL_FILE_EXISTS  "¡Archivo especificado por URL existe!"
     IDS_MUI_URL_PATH_NOT_FOUND
@@ -206,7 +206,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Cliquear para abrir el archivo"
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Cliquear para abrir el enlace en navegador"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Conservar la marca de tiempo de modificación del archivo original habilitada.\n¡Esta opción permanecerá para esta sesión!"
+                             "Conservar la marca de tiempo de modificación del archivo original habilitada\n¡Esta opción permanecerá para esta sesión!"
     IDS_MUI_OUT_OFF_OCCMRK   "¡No hay más marcadores de ocurrencia (Marcador/Resaltar)!"
     IDS_MUI_DOCUMENT_READONLY
                              "El documento está bloqueado para sólo lectura. ¿Quiere mantener este modo?"
@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_SAVE        "¿Guardar cambios a:\n""%s""?"
     IDS_MUI_ASK_REVERT      "¿Revertir archivo al último estado guardado?"
     IDS_MUI_ASK_RECODE      "¡La recodificación requiere volver a cargar el archivo desde el disco y los cambios no guardados se perderán!"
-    IDS_MUI_ASK_CREATE      """%s"" no encontrado.\n¿Quiere crear este archivo?"
+    IDS_MUI_ASK_CREATE      """%s"" no encontrado\n¿Quiere crear este archivo?"
     IDS_MUI_PRINT_HEADER    "Nombre de archivo, fecha y hora actual|Nombre del archivo, fecha actual|Nombre del archivo|Dejar en blanco"
     IDS_MUI_PRINT_FOOTER    "Número de página|Dejar en blanco"
     IDS_MUI_PRINT_COLOR     "Normal|Inversión (fondo oscuro)|Negro sobre blanco|Color en blanco|Color en blanco (excepto números de línea)|Colores de pantalla"
@@ -233,12 +233,12 @@ BEGIN
     IDS_MUI_PRINT_EMPTY     "Este documento no contiene ningún texto para imprimir"
     IDS_MUI_PRINT_ERROR     "¡Error de impresión ""%s""!"
     IDS_MUI_FAV_SUCCESS     "Se ha creado un acceso directo al archivo actual en la carpeta de favoritos"
-    IDS_MUI_FAV_FAILURE     "No se pudo crear el acceso directo al archivo actual.\nAsegúrase de que no haya otro archivo con el mismo nombre"
+    IDS_MUI_FAV_FAILURE     "No se pudo crear el acceso directo al archivo actual\nAsegúrase de que no haya otro archivo con el mismo nombre"
     IDS_MUI_READONLY_MODIFY "Los atributos de ""%s"" no se pudieron modificar"
     IDS_MUI_SAVEPOS         "&Guardar posición\tCtrl+S"
     IDS_MUI_RESETPOS        "&Reiniciar posición\tCtrl+R"
     IDS_MUI_PREVIEW         "Vista &previa configuración\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "La frase de contraseña es incorrecta.\n¿Reintentar otra frase de contraseña?"
+    IDS_MUI_PASS_FAILURE    "La frase de contraseña es incorrecta\n¿Reintentar otra frase de contraseña?"
     IDS_MUI_NOPASS          "¡Descifrado cancelado!\n¿Leer la información encriptada en bruto?"
     IDS_MUI_STY_BASESTD     "BASE (Estilo por Defecto ):"
     IDS_MUI_STY_BASE2ND     "BASE (2º Estilo por Defecto ):"
@@ -330,7 +330,7 @@ Opciones:\r\n\
 /u\tLanzar con privilegios elevados\r\n\
 /v\tImprimir el archivo inmediatamente y salir\r\n\
 /vd\tImprimir archivo (abrir el cuadro de diálogo de la impresora)\r\n\
-/y\tEntorno de búsqueda PATH en caso de nombre de archivo relativo.\r\n\
+/y\tEntorno de búsqueda PATH en caso de nombre de archivo relativo\r\n\
 /z\tIr a la siguiente (usar para reemplazar el Notepad basado en el registro)\r\n\r\n\
 Ejemplos:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\

@@ -130,26 +130,26 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "加载“%s”时遇到错误"
     IDS_MUI_ERR_SAVEFILE    "保存“%s”时遇到错误"
     IDS_MUI_ERR_DLG_FORMAT  "错误“%s”，原因：\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "无可用文件浏览器插件。\n\nMiniPath 插件可以从 https://rizonesoft.com/ 下载"
-    IDS_MUI_ERR_GREPWIN     "无可用文件查找插件。\n\ngrepWinNP3 插件可以从 https://rizonesoft.com 下载"
-    IDS_MUI_ERR_MRUDLG      "指定的文件无法访问。它可能已被改名、删除或移动。\n\n从列表中删除它吗？"
+    IDS_MUI_ERR_BROWSE      "无可用文件浏览器插件\n\nMiniPath 插件可以从 https://rizonesoft.com/ 下载"
+    IDS_MUI_ERR_GREPWIN     "无可用文件查找插件\n\ngrepWinNP3 插件可以从 https://rizonesoft.com 下载"
+    IDS_MUI_ERR_MRUDLG      "指定的文件无法访问。它可能已被改名、删除或移动\n\n从列表中删除它吗？"
     IDS_MUI_ERR_CREATELINK  "创建桌面快捷方式时遇到错误"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "当前已存在的 Notepad3 窗口正忙，或有一个已打开的对话框正在阻止它响应。\n\n打开一个新的 Notepad3 窗口吗？"
+                            "当前已存在的 Notepad3 窗口正忙，或有一个已打开的对话框正在阻止它响应\n\n打开一个新的 Notepad3 窗口吗？"
     IDS_MUI_ERR_ENCODINGNA  "用于选定的编码转换的代码页表在当前系统上不可用"
-    IDS_MUI_ERR_UNICODE     "转换该 Unicode 文件时遇到错误。\n\n警告：保存该文件会导致数据丢失"
-    IDS_MUI_ERR_BITMAP      "位图“%s”的宽高比不合适。\n合适的宽高比：%i × %i （宽度 ≥ %i × 高度）"
+    IDS_MUI_ERR_UNICODE     "转换该 Unicode 文件时遇到错误\n\n警告：保存该文件会导致数据丢失"
+    IDS_MUI_ERR_BITMAP      "位图“%s”的宽高比不合适\n合适的宽高比：%i × %i （宽度 ≥ %i × 高度）"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "提升用户权限时出错"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "在当前文档中的某些字符不能使用选定的编码表示。在保存文件时，它们可能被替换为其它字符。因此，建议选择其它编码。\n\n是否继续？"
+    IDS_MUI_ERR_UNICODE2    "在当前文档中的某些字符不能使用选定的编码表示。在保存文件时，它们可能被替换为其它字符。因此，建议选择其它编码\n\n是否继续？"
     IDS_MUI_ERR_DROP        "一次只能拖放一个文件"
     IDS_MUI_ERR_ACCESSDENIED
-                            "文件“%s”不能被保存，它可能是受保护的。\n\n是否希望提升 %s 的权限？"
-    IDS_MUI_ERR_ADMINEXE    "无管理工具可用。\n\n访问 https://rizonesoft.com/ 看看？"
+                            "文件“%s”不能被保存，它可能是受保护的\n\n是否希望提升 %s 的权限？"
+    IDS_MUI_ERR_ADMINEXE    "无管理工具可用\n\n访问 https://rizonesoft.com/ 看看？"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "是否确实要打开一个如此庞大的文件？\n\t（大小 %s ≥ %s）\n样式和语法高亮将被禁用"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "该操作将会清空撤销历史。是否继续？"
     IDS_MUI_READONLY_SAVE   "“%s”是只读的。是否尝试使用其它名字保存？"
     IDS_MUI_FILECHANGENOTIFY
-                            "当前文件已被其它程序所修改。\n请选择：\n\n取消 -\t\t忽略之后的更改\n重新加载 -\t\t重新加载文件\n继续 -\t\t切换为监控模式"
+                            "当前文件已被其它程序所修改\n请选择：\n\n取消 -\t\t忽略之后的更改\n重新加载 -\t\t重新加载文件\n继续 -\t\t切换为监控模式"
     IDS_MUI_FILECHANGENOTIFY2 "当前文件已被删除。是否保存？"
     IDS_MUI_FILELOCK_ERROR  "无法以独占模式锁定文件“%s”"
     IDS_MUI_STICKYWINPOS    "粘性窗口位置已启用。新的 Notepad3 窗口将使用和当前窗口一致的位置设置"
@@ -189,7 +189,7 @@ BEGIN
     IDS_MUI_INIFILE_READONLY
                             "配置文件是只读的。是否忽略并替换设置？"
     IDS_MUI_SETTINGSNOTSAVED
-                            "当前无配置文件可用。\n\n若要保存已修改的样式，请按 F7 保存设置，或按 Ctrl+F12 导出样式"
+                            "当前无配置文件可用\n\n若要保存已修改的样式，请按 F7 保存设置，或按 Ctrl+F12 导出样式"
 END
 
 STRINGTABLE
@@ -198,7 +198,7 @@ BEGIN
     IDS_MUI_RELOADCFGSEX     "如果继续而不重启应用程序，已保存的设置将不会生效，并且当退出时会被内部设置覆盖"
     IDS_MUI_EXPORT_FAIL      "导出样式设置到文件“%s”时遇到错误"
     IDS_MUI_REGEX_INVALID    "正则表达式无效"
-    IDS_MUI_DROP_NO_FILE     "未能获取文件名。\n\n如果从 32 位应用程序拖放文件，请拖放到 Notepad3 的工具栏上"
+    IDS_MUI_DROP_NO_FILE     "未能获取文件名\n\n如果从 32 位应用程序拖放文件，请拖放到 Notepad3 的工具栏上"
     IDS_MUI_URL_DIR_EXISTS   "URL 指定的目录已存在"
     IDS_MUI_URL_FILE_EXISTS  "URL 指定的文件已存在"
     IDS_MUI_URL_PATH_NOT_FOUND
@@ -206,7 +206,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\n按住 Alt 同时点击以打开文件"
     IDS_MUI_URL_OPEN_BROWSER "\n按住 Ctrl 同时点击以在浏览器中打开链接"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "已启用维持文件最后修改时间功能。\n\n本选项将在当前会话期间生效"
+                             "已启用维持文件最后修改时间功能\n\n本选项将在当前会话期间生效"
     IDS_MUI_OUT_OFF_OCCMRK   "书签/高亮标记已用完"
     IDS_MUI_DOCUMENT_READONLY
                              "该文档已被锁定仅供阅览。保持锁定以防止修改吗？"

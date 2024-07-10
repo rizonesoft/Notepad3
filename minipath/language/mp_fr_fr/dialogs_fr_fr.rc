@@ -114,7 +114,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Filtre de fichier"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Spécifiez un nouveau filtre.\nNB : Séparez plusieurs filtres par un "";""",IDC_STATIC,7,7,175,8
+    LTEXT           "Spécifiez un nouveau filtre\nNB : Séparez plusieurs filtres par un "";""",IDC_STATIC,7,7,175,8
     EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
     CONTROL         "&Exclure les fichiers correspondants au filtre",IDC_NEGFILTER,

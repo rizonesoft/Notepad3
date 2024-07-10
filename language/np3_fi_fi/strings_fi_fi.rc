@@ -130,15 +130,15 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Virhe ladattaessa ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Virhe tallennettaessa ""%s"""
     IDS_MUI_ERR_DLG_FORMAT  "Virhe '%s', syy:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Tiedostoselaimen laajennusta ei löytynyt.\nMiniPath-tiedostoselaimen laajennuksen voi ladata osoitteesta https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "Tiedostonhakulaajennusta ei löytynyt.\nGrepWinNP3-tiedostonhakulaajennuksen voi ladata osoitteesta https://rizonesoft.com"
+    IDS_MUI_ERR_BROWSE      "Tiedostoselaimen laajennusta ei löytynyt\nMiniPath-tiedostoselaimen laajennuksen voi ladata osoitteesta https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Tiedostonhakulaajennusta ei löytynyt\nGrepWinNP3-tiedostonhakulaajennuksen voi ladata osoitteesta https://rizonesoft.com"
     IDS_MUI_ERR_MRUDLG      "Valittuun tiedostoon ei ole pääsyä!\nTahdotko poistaa sen luettelosta?"
     IDS_MUI_ERR_CREATELINK  "Virhe työpöytälinkin luomisessa"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Nykyinen Notepad3-ikkuna on varattu tai siinä on aktiivinen valintaikkuna.\nTahdotko avata toisen Notepad3-ikkunan?"
+                            "Nykyinen Notepad3-ikkuna on varattu tai siinä on aktiivinen valintaikkuna\nTahdotko avata toisen Notepad3-ikkunan?"
     IDS_MUI_ERR_ENCODINGNA  "Valitun koodisivun muuntotaulukot eivät ole käytettävissä järjestelmässäsi"
-    IDS_MUI_ERR_UNICODE     "Virhe Unicode-tiedoston muuntamisessa.\nTiedot menetetään, jos tiedosto tallennetaan!"
-    IDS_MUI_ERR_BITMAP      "Bittikartan ""%s"" mitat eivät ole sopivia.\nSopiva mitoitus: %i x %i (leveys >= %i x korkeus)"
+    IDS_MUI_ERR_UNICODE     "Virhe Unicode-tiedoston muuntamisessa\nTiedot menetetään, jos tiedosto tallennetaan!"
+    IDS_MUI_ERR_BITMAP      "Bittikartan ""%s"" mitat eivät ole sopivia\nSopiva mitoitus: %i x %i (leveys >= %i x korkeus)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Käyttäjän oikeuksien korottamisvirhe!"
 END
@@ -148,8 +148,8 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Valittu koodaus ei tue tiettyjä nykyisen tekstin merkkejä, ja ne saatetaan korvata oletusarvoisilla sijoittimilla tallennettaessa. On suositeltavaa valita toinen tiedostokoodaus. Jatketaanko?"
     IDS_MUI_ERR_DROP        "Vain yksi tiedosto voidaan pudottaa samanaikaisesti!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Tiedostoa ""%s"" ei voi tallentaa, ja se voi olla suojattu. \n\nHaluatko käynnistää %s:n 'korotettuna' sovelluksena?"
-    IDS_MUI_ERR_ADMINEXE    "Suoritettavaa hallinnointisovellusta ei löytynyt.\nTarkista verkkosivustolta https://rizonesoft.com?"
+                            "Tiedostoa ""%s"" ei voi tallentaa, ja se voi olla suojattu\n\nHaluatko käynnistää %s:n 'korotettuna' sovelluksena?"
+    IDS_MUI_ERR_ADMINEXE    "Suoritettavaa hallinnointisovellusta ei löytynyt\nTarkista verkkosivustolta https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Haluatko varmasti avata tämän suuren tiedoston?\n\t(size: %s >= %s)!\n(Tyyliä ja syntaksin korostusta ei käytetä!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Tämä toiminto tyhjentää peruutushistorian. Jatketaanko?"
     IDS_MUI_READONLY_SAVE   """%s"" on vain luettavissa. Tallennetaanko toiseen tiedostoon?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Ulkoinen ohjelma on muokannut nykyistä tiedostoa.\nValitse:\n\nPeruuta -\t\tOhita lisämuutokset\nLataa uudelleen -\t\tLataa tiedosto uudelleen\nJatka -\tVaihda tiedostoseurantaan"
+                            "Ulkoinen ohjelma on muokannut nykyistä tiedostoa\nValitse:\n\nPeruuta -\t\tOhita lisämuutokset\nLataa uudelleen -\t\tLataa tiedosto uudelleen\nJatka -\tVaihda tiedostoseurantaan"
     IDS_MUI_FILECHANGENOTIFY2 "Nykyinen tiedosto on poistettu. Tallennetaanko nyt?"
     IDS_MUI_FILELOCK_ERROR  "Tiedoston ""%s"" yksinoikeuslukkoa ei voi hakea!"
     IDS_MUI_STICKYWINPOS    "Ikkunan pysyvä sijainti on käytössä. Kaikki uudet Notepad3-ikkunat käyttävät nykyisiä ikkunan sijoitusasetuksia"
@@ -189,7 +189,7 @@ BEGIN
     IDS_MUI_INIFILE_READONLY
                             "Määritystiedosto on vain luettavissa - sivuutetaanko ja ohitetaan asetukset?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Olemassa olevaa määritystiedostoa ei löytynyt.\nJos haluat säilyttää tyylimuutoksesi, tallenna asetukset nyt (F7) tai palaa järjestelmämääritykseen (Ctrl+F12) ja vie tyylisi"
+                            "Olemassa olevaa määritystiedostoa ei löytynyt\nJos haluat säilyttää tyylimuutoksesi, tallenna asetukset nyt (F7) tai palaa järjestelmämääritykseen (Ctrl+F12) ja vie tyylisi"
 END
 
 STRINGTABLE
@@ -198,7 +198,7 @@ BEGIN
     IDS_MUI_RELOADCFGSEX     "Jatkaessasi ilman uudelleenkäynnistystä, tallennettuja asetuksia ei käytetä, vaan sisäiset asetukset ohittavat ne ohjelmasta poistuttaessa!"
     IDS_MUI_EXPORT_FAIL      "Virhe tyyliasetusten viemisessä kohteeseen ""%s"""
     IDS_MUI_REGEX_INVALID    "Virhe säännöllisen lausekkeen käytössä. Lauseke on virheellinen!"
-    IDS_MUI_DROP_NO_FILE     "Kelvollista tiedostonimeä ei saatu.\nJos pudotat tiedoston 32-bittisestä sovelluksesta, vedä ja pudota se Notepad3:n työkalupalkkiin"
+    IDS_MUI_DROP_NO_FILE     "Kelvollista tiedostonimeä ei saatu\nJos pudotat tiedoston 32-bittisestä sovelluksesta, vedä ja pudota se Notepad3:n työkalupalkkiin"
     IDS_MUI_URL_DIR_EXISTS   "URL-osoitteessa määritetty hakemisto on olemassa!"
     IDS_MUI_URL_FILE_EXISTS  "URL-osoitteessa määritetty tiedosto on olemassa!"
     IDS_MUI_URL_PATH_NOT_FOUND
@@ -206,7 +206,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Avaa tiedosto klikkaamalla"
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Avaa linkki selaimessa klikkaamalla"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Alkuperäisen tiedoston muokkausaikaleiman säilyttäminen käytössä.\nVaihtoehto säilyy tämän istunnon ajan!"
+                             "Alkuperäisen tiedoston muokkausaikaleiman säilyttäminen käytössä\nVaihtoehto säilyy tämän istunnon ajan!"
     IDS_MUI_OUT_OFF_OCCMRK   "Esiintymämerkit loppumassa (kirjanmerkki/korostus)!"
     IDS_MUI_DOCUMENT_READONLY
                              "Asiakirja on lukittu vain katseltavaksi. Pidätkö lukituksen muokkaamisen estämiseksi?"
@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_SAVE        "Tallennetaanko muutokset tiedostoon:\n""%s""?"
     IDS_MUI_ASK_REVERT      "Palautetaanko tiedosto viimeksi tallennettuun tilaan?"
     IDS_MUI_ASK_RECODE      "Uudelleenkoodaus edellyttää tiedoston lataamista uudelleen levyltä, tallentamattomat muutokset menetetään!"
-    IDS_MUI_ASK_CREATE      """%s"" ei löytynyt.\nHaluatko luoda tämän tiedoston?"
+    IDS_MUI_ASK_CREATE      """%s"" ei löytynyt\nHaluatko luoda tämän tiedoston?"
     IDS_MUI_PRINT_HEADER    "Tiedostonimi, nykyinen päivä ja aika|Tiedostonimi, Nykyinen päivä|Tiedostonimi|Jätä tyhjäksi"
     IDS_MUI_PRINT_FOOTER    "Sivunumero|Jätä tyhjäksi"
     IDS_MUI_PRINT_COLOR     "Normaali|Käänteinen vaaleus (tumma tausta)|Musta valkoisella|Väri valkoisella|Väri valkoisella (paitsi rivinumerot)|Ruudun värit"
@@ -233,12 +233,12 @@ BEGIN
     IDS_MUI_PRINT_EMPTY     "Tämä dokumentti ei sisällä tulostettavaa tekstiä"
     IDS_MUI_PRINT_ERROR     "Virhe tulostettessa ""%s""!"
     IDS_MUI_FAV_SUCCESS     "Nykyisen tiedoston pikakuvake on luotu suosikkihakemistoon"
-    IDS_MUI_FAV_FAILURE     "Nykyisen tiedoston pikakuvaketta ei voitu luoda.\nVarmista, ettei ole olemassa toista samannimistä tiedostoa"
+    IDS_MUI_FAV_FAILURE     "Nykyisen tiedoston pikakuvaketta ei voitu luoda\nVarmista, ettei ole olemassa toista samannimistä tiedostoa"
     IDS_MUI_READONLY_MODIFY "Attribuutteja ""%s"" ei voitu muuttaa"
     IDS_MUI_SAVEPOS         "Tallenna &sijainti\tCtrl+S"
     IDS_MUI_RESETPOS        "&Palauta sijainti\tCtrl+R"
     IDS_MUI_PREVIEW         "&Esilatseluasetukset\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "Salasana on virheellinen.\nHaluatko kokeilla toista salasanaa?"
+    IDS_MUI_PASS_FAILURE    "Salasana on virheellinen\nHaluatko kokeilla toista salasanaa?"
     IDS_MUI_NOPASS          "Salakirjoituksen purku peruutettu!\nLuetaanko salattuja raakatietoja?"
     IDS_MUI_STY_BASESTD     "BASE (oletustyyli):"
     IDS_MUI_STY_BASE2ND     "BASE (2. oletustyyli):"

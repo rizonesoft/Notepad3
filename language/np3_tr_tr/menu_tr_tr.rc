@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "Ç&alıştır"
         BEGIN
-            MENUITEM "&Dosyalarda ara\tCtrl+Shift+F",                 IDM_GREP_WIN_SEARCH
+            MENUITEM "&Dosyalarda ara...\tCtrl+Shift+F",                 IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Yeni boş pencere\tAlt+N",                      IDM_FILE_NEWWINDOW
             MENUITEM "&Pencereyi kopyala\tAlt+Shift+N",               IDM_FILE_NEWWINDOW2
@@ -339,7 +339,7 @@ BEGIN
             MENUITEM "Sonra&kini değiştir\tF4",                       IDM_EDIT_REPLACENEXT
             MENUITEM "&Git...\tCtrl+G",                               IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Dosyalarda ara\tCtrl+Shift+F",                 IDM_GREP_WIN_SEARCH2
+            MENUITEM "&Dosyalarda ara...\tCtrl+Shift+F",                 IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Görünüm"

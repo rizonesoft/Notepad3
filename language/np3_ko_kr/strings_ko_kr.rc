@@ -130,15 +130,15 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    """%s"" 파일을 불러오는 동안 오류가 발생하였습니다"
     IDS_MUI_ERR_SAVEFILE    """%s"" 파일을 저장하는 동안 오류가 발생하였습니다"
     IDS_MUI_ERR_DLG_FORMAT  "오류 '%s', 원인:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "파일 탐색기 플러그인을 찾을 수 없습니다.\nMiniPath 파일 탐색기 플러그인은 https://rizonesoft.com에서 다운로드할 수 있습니다"
-    IDS_MUI_ERR_GREPWIN     "파일 검색 플러그인을 찾을 수 없습니다.\ngrepWinNP3 파일 검색 플러그인은 https://rizonesoft.com에서 다운로드할 수 있습니다"
+    IDS_MUI_ERR_BROWSE      "파일 탐색기 플러그인을 찾을 수 없습니다\nMiniPath 파일 탐색기 플러그인은 https://rizonesoft.com에서 다운로드할 수 있습니다"
+    IDS_MUI_ERR_GREPWIN     "파일 검색 플러그인을 찾을 수 없습니다\ngrepWinNP3 파일 검색 플러그인은 https://rizonesoft.com에서 다운로드할 수 있습니다"
     IDS_MUI_ERR_MRUDLG      "선택한 파일에 접근할 수 없습니다!\n목록에서 제거하시겠습니까?"
     IDS_MUI_ERR_CREATELINK  "바탕 화면 링크를 만드는 중에 오류가 발생하였습니다"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "기존 Notepad3 창이 사용 중이거나 대화상자가 열려 있습니다.\n다른 Notepad3 창을 여시겠습니까?"
+                            "기존 Notepad3 창이 사용 중이거나 대화상자가 열려 있습니다\n다른 Notepad3 창을 여시겠습니까?"
     IDS_MUI_ERR_ENCODINGNA  "선택한 인코딩에 대한 코드 페이지 변환 테이블을 시스템에서 사용할 수 없습니다"
-    IDS_MUI_ERR_UNICODE     "이 유니코드 파일을 변환하는 동안 오류가 발생했습니다.\n파일을 저장하면 데이터가 손실됩니다!"
-    IDS_MUI_ERR_BITMAP      "비트맵 ""%s""의 치수가 적합하지 않습니다.\n적합한 치수: %i x %i (너비 >= %i x 높이)"
+    IDS_MUI_ERR_UNICODE     "이 유니코드 파일을 변환하는 동안 오류가 발생했습니다\n파일을 저장하면 데이터가 손실됩니다!"
+    IDS_MUI_ERR_BITMAP      "비트맵 ""%s""의 치수가 적합하지 않습니다\n적합한 치수: %i x %i (너비 >= %i x 높이)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "사용자 권한 상승 중 오류가 발생하였습니다!"
 END
@@ -148,8 +148,8 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "현재 텍스트의 특정 문자는 선택한 인코딩에서 지원되지 않으며 저장할 때 기본 자리 표시자로 대체될 수 있습니다. 다른 파일 인코딩을 선택하는 것이 좋습니다. 계속하시겠습니까"
     IDS_MUI_ERR_DROP        "한 번에 하나의 파일만 끌어서 놓을 수 있습니다!"
     IDS_MUI_ERR_ACCESSDENIED
-                            """%s"" 파일을 저장할 수 없으며 보호할 수 있습니다.\n\n%s을 '상승된 권한' 응용 프로그램으로 시작하시겠습니까?"
-    IDS_MUI_ERR_ADMINEXE    "관리 실행 파일이 없습니다.\nhttps://rizonesoft.com에서 확인하시겠습니까?"
+                            """%s"" 파일을 저장할 수 없으며 보호할 수 있습니다\n\n%s을 '상승된 권한' 응용 프로그램으로 시작하시겠습니까?"
+    IDS_MUI_ERR_ADMINEXE    "관리 실행 파일이 없습니다\nhttps://rizonesoft.com에서 확인하시겠습니까?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "이 큰 파일을 여시겠습니까?\n\t(크기: %s >= %s)!\n(스타일링 및 구문 강조가 적용되지 않습니다!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "이 작업을 수행하면 실행 취소 기록이 지워집니다. 계속하시겠습니까?"
     IDS_MUI_READONLY_SAVE   """%s""은 읽기 전용입니다. 다른 파일로 저장하시겠습니까?"
     IDS_MUI_FILECHANGENOTIFY
-                            "현재 파일이 외부 프로그램에 의해 수정되었습니다.\n선택하십시오:\n\취소 -\t\t추가 변경사항 무시\nReload -\t\t파일 다시 불러오기\n계속 -\t파일 모니터링으로 전환"
+                            "현재 파일이 외부 프로그램에 의해 수정되었습니다\n선택하십시오:\n\취소 -\t\t추가 변경사항 무시\nReload -\t\t파일 다시 불러오기\n계속 -\t파일 모니터링으로 전환"
     IDS_MUI_FILECHANGENOTIFY2 "현재 파일이 삭제되었습니다. 지금 저장하시겠습니까?"
     IDS_MUI_FILELOCK_ERROR  """%s""에 대한 독점적인 파일 잠금을 얻을 수 없습니다"
     IDS_MUI_STICKYWINPOS    "고정 창 위치가 활성화되었습니다. 새 Notepad3 창은 현재 창 배치 설정을 사용합니다"
@@ -189,7 +189,7 @@ BEGIN
     IDS_MUI_INIFILE_READONLY
                             "구성 파일이 읽기 전용입니다. 설정을 무시하고 재정의하시겠습니까?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "기존 구성 파일을 찾을 수 없습니다. \n스타일 수정 사항을 유지하려면 지금 설정을 저장 (F7)하거나 구성표 구성 (Ctrl+F12)으로 돌아가 스타일을 내보내십시오"
+                            "기존 구성 파일을 찾을 수 없습니다\n스타일 수정 사항을 유지하려면 지금 설정을 저장 (F7)하거나 구성표 구성 (Ctrl+F12)으로 돌아가 스타일을 내보내십시오"
 END
 
 STRINGTABLE
@@ -198,7 +198,7 @@ BEGIN
     IDS_MUI_RELOADCFGSEX     "다시 시작하지 않고 계속하면 저장된 설정이 적용되지 않으며 프로그램 종료시 내부 설정이 무시됩니다!"
     IDS_MUI_EXPORT_FAIL      "스타일 설정을 ""%s""으로 내보내는 중 오류가 발생하였습니다"
     IDS_MUI_REGEX_INVALID    "정규 표현식을 평가하는 동안 오류가 발생했습니다. 표현식이 잘못되었습니다!"
-    IDS_MUI_DROP_NO_FILE     "검색된 유효한 파일 이름이 없습니다. \n32비트 응용 프로그램에서 드롭하는 경우 \nNotepad3의 도구 모음으로 끌어서 놓으십시오"
+    IDS_MUI_DROP_NO_FILE     "검색된 유효한 파일 이름이 없습니다\n32비트 응용 프로그램에서 드롭하는 경우\nNotepad3의 도구 모음으로 끌어서 놓으십시오"
     IDS_MUI_URL_DIR_EXISTS   "URL 지정 디렉터리가 있습니다!"
     IDS_MUI_URL_FILE_EXISTS  "URL 지정 파일이 있습니다!"
     IDS_MUI_URL_PATH_NOT_FOUND
@@ -206,7 +206,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt+클릭하여 파일을 엽니다"
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl+클릭하여 탐색기에서 링크를 엽니다"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "원래 파일 수정 타임스탬프를 보존할 수 있습니다.\n이 옵션은 이 세션에 유지됩니다!"
+                             "원래 파일 수정 타임스탬프를 보존할 수 있습니다\n이 옵션은 이 세션에 유지됩니다!"
     IDS_MUI_OUT_OFF_OCCMRK   "발생 마커 (책갈피/강조)가 부족합니다!"
     IDS_MUI_DOCUMENT_READONLY
                              "문서는 보기 전용으로 잠겨 있습니다. 편집을 방지하기 위해 잠금을 유지하시겠습니까?"""
@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_SAVE        "변경 사항을 저장하시겠습니까:\n""%s""?"
     IDS_MUI_ASK_REVERT      "파일을 마지막으로 저장된 상태로 되돌리시겠습니까?"
     IDS_MUI_ASK_RECODE      "기록하려면 디스크에서 파일을 다시 불러와야 합니다. 저장하지 않은 변경 사항은 손실됩니다!"
-    IDS_MUI_ASK_CREATE      """%s"" 파일을 찾을 수 없습니다.\n이 파일을 만드시겠습니까?"
+    IDS_MUI_ASK_CREATE      """%s"" 파일을 찾을 수 없습니다\n이 파일을 만드시겠습니까?"
     IDS_MUI_PRINT_HEADER    "파일 이름, 현재 날짜 및 시간|파일 이름, 현재 날짜|파일 이름|비워 두기"
     IDS_MUI_PRINT_FOOTER    "페이지 번호|비워 두기"
     IDS_MUI_PRINT_COLOR     "일반|색상 반전 (어두운 배경)|하얀색에 검은색|하얀색|하얀색(줄 번호 제외)|화면 색상"
@@ -233,13 +233,13 @@ BEGIN
     IDS_MUI_PRINT_EMPTY     "이 문서에는 인쇄할 텍스트가 없습니다"
     IDS_MUI_PRINT_ERROR     """%s"" 인쇄 오류!"
     IDS_MUI_FAV_SUCCESS     "현재 파일에 대한 바로가기가 즐겨찾기 디렉터리에 만들어졌습니다"
-    IDS_MUI_FAV_FAILURE     "현재 파일에 대한 바로가기를 만들 수 없습니다.\n같은 이름의 다른 파일이 없는지 확인하십시오"
+    IDS_MUI_FAV_FAILURE     "현재 파일에 대한 바로가기를 만들 수 없습니다\n같은 이름의 다른 파일이 없는지 확인하십시오"
     IDS_MUI_READONLY_MODIFY """%s""의 속성을 수정할 수 없습니다"
     IDS_MUI_SAVEPOS         "위치 저장(&S)\tCtrl+S"
     IDS_MUI_RESETPOS        "위치 재설정(&R)\tCtrl+R"
     IDS_MUI_PREVIEW         "미리 보기 설정(&P)\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "암호가 잘못되었습니다. \n다른 암호로 다시 시도하시겠습니까?"
-    IDS_MUI_NOPASS          "암호 해독이 취소되었습니다. \n암호화된 원시 데이터를 읽으시겠습니까?"
+    IDS_MUI_PASS_FAILURE    "암호가 잘못되었습니다\n다른 암호로 다시 시도하시겠습니까?"
+    IDS_MUI_NOPASS          "암호 해독이 취소되었습니다\n암호화된 원시 데이터를 읽으시겠습니까?"
     IDS_MUI_STY_BASESTD     "BASE (기본 스타일):"
     IDS_MUI_STY_BASE2ND     "BASE (두 번째 기본 스타일):"
     IDS_MUI_STY_LEXDEF      "%s - 기본 스타일:"

@@ -121,7 +121,7 @@ BEGIN
     IDS_MUI_OPENWITH        "Välj mappen med länkar till dina favoritprogram"
     IDS_MUI_FAVORITES       "Välj mappen med länkar till dina favoritfiler"
     IDS_MUI_BACKSLASHHELP   "Bakåtlutande snedstreck transformation\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBaksteg (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNyrad (LF, Ascii 10)\n\\r\tVagnretur (CR, Ascii 13)\n\\t\tHorisontell tab (HT, Ascii 9)\n\\v\tVertikal tab (VT, Ascii 11)\n\\0oo\tOktalt värde\n\\u####\tHexadecimalt värde\n\\xhh\tHexadecimalt värde\n\\\\\tBakåtlutande snedstreck"
-    IDS_MUI_REGEXPHELP      "RegExp Matcning Syntax (multirad)\n\n.\tMatchar bokstav\n^\tTom rad efter nyrad\n$\tTom rad före radslut\n\\<\tBörjan av ord\n\\>\tSlut av ord\n\\b\tOrdgräns\n[...]\tEn mängd tecken ([abc]) eller intervall ([a-z])\n[^...]\tTecken som inte finns\n\\d\tAlla decimaltal\n\\D\tEj decimaltalstecken\n\\s\tAlla tomrumstecken\n\\S\tEj tomrumstecken\n\\w\tAlla ""ord""-tecken\n\\W\tAlla ""icke-ord""-tecken\n\\x\tLägg till bakåtlutande snedstreck till tecken med \n\tspeciell betydelse\n\\xHH\tTecken med hexadecimal kod HH\n?\tMatchar föregående 0 eller 1 gånger\n*\tMatchar föregående 0 eller mer än 1 gånger\n+\tMatchar föregående 1 eller fler gånger\n*? eller \n+?\tIcke girig matchning av kvantifierare ""?"" och ""+""\n(\tbörjan av region\n)\tslut av region\n\\n\tRefererar till en region vid ersättning (n är 1-9)\n"
+    IDS_MUI_REGEXPHELP      "RegExp Matcning Syntax (multirad)\n\n.\tMatchar bokstav\n^\tTom rad efter nyrad\n$\tTom rad före radslut\n\\<\tBörjan av ord\n\\>\tSlut av ord\n\\b\tOrdgräns\n[...]\tEn mängd tecken ([abc]) eller intervall ([a-z])\n[^...]\tTecken som inte finns\n\\d\tAlla decimaltal\n\\D\tEj decimaltalstecken\n\\s\tAlla tomrumstecken\n\\S\tEj tomrumstecken\n\\w\tAlla ""ord""-tecken\n\\W\tAlla ""icke-ord""-tecken\n\\x\tLägg till bakåtlutande snedstreck till tecken med\n\tspeciell betydelse\n\\xHH\tTecken med hexadecimal kod HH\n?\tMatchar föregående 0 eller 1 gånger\n*\tMatchar föregående 0 eller mer än 1 gånger\n+\tMatchar föregående 1 eller fler gånger\n*? eller\n+?\tIcke girig matchning av kvantifierare ""?"" och ""+""\n(\tbörjan av region\n)\tslut av region\n\\n\tRefererar till en region vid ersättning (n är 1-9)\n"
     IDS_MUI_WILDCARDHELP    "Sökning med jokertecken\n\n*\tMatchar noll eller fler tecken\n?\tMatchar exakt ett tecken"
 END
 
@@ -130,15 +130,15 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Fel vid laddning ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Fel vid sparande ""%s"""
     IDS_MUI_ERR_DLG_FORMAT  "Fel '%s', orsak:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Inget plugin för filbläddring hittades.\nMinipath filbläddrare kan laddas ner från https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "Inget sökplugin hittades.\ngrepWinNP3 filsökningsplugin kan hämtas från https://rizonesoft.com"
+    IDS_MUI_ERR_BROWSE      "Inget plugin för filbläddring hittades\nMinipath filbläddrare kan laddas ner från https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Inget sökplugin hittades\ngrepWinNP3 filsökningsplugin kan hämtas från https://rizonesoft.com"
     IDS_MUI_ERR_MRUDLG      "Tillgång saknas för vald fil!\nVill du ta bort den från listan?"
     IDS_MUI_ERR_CREATELINK  "Fel vi skapande av skrivbordslänk"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Fönstret för Notepad3 är uppdaget eller har en öppe aktiv dialogruta.\nVill du öppna ett nytt Notepad3-fönster?"
+                            "Fönstret för Notepad3 är uppdaget eller har en öppe aktiv dialogruta\nVill du öppna ett nytt Notepad3-fönster?"
     IDS_MUI_ERR_ENCODINGNA  "Tabeller för teckenkodning för vald teckenkodning saknas på ditt system"
-    IDS_MUI_ERR_UNICODE     "Fel vid konvertering av denna Unicode-fil.\nData kommer att förloras om filen sparas!"
-    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s"".\nSuitable dimension: %i x %i (width >= %i x height)"
+    IDS_MUI_ERR_UNICODE     "Fel vid konvertering av denna Unicode-fil\nData kommer att förloras om filen sparas!"
+    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s""\nSuitable dimension: %i x %i (width >= %i x height)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Användarrättigheter kunde inte höjas!"
 END
@@ -148,8 +148,8 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Vissa tecken stöds inte av vald teckenkodning och kommer att ersättas av platshållare när filen sparas. Vi rekommenderar att du väljer en annan teckenkodning. Vill du fortsätta?"
     IDS_MUI_ERR_DROP        "Endast en fil kan slängas på en gång!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Filen ""%s"" kan inte sparas och kan vara skyddad.\n\nVill du köra %s med utökade privilegier?"
-    IDS_MUI_ERR_ADMINEXE    "Ingen exekverbar fil för administratör kan hittas.\nGå till websidan https://rizonesoft.com?"
+                            "Filen ""%s"" kan inte sparas och kan vara skyddad\n\nVill du köra %s med utökade privilegier?"
+    IDS_MUI_ERR_ADMINEXE    "Ingen exekverbar fil för administratör kan hittas\nGå till websidan https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Vill du öppna denna stora fil?\n\t(storlek: %s >= %s)!\n(Stil och syntaxmarkering kommer inte användas!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Denna åtgärd rensar ångra-historiken. Fortsätta?"
     IDS_MUI_READONLY_SAVE   """%s"" är inte skrivbar. Vill du spara till en annan fil?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Öppnad fil har modifierats av ett externt program.\nVälj:\n\nAvbryt -\t\tIgnorera ytterligare förändringar\nLadda om -\tLadda om fil\nFortsätt -\t\tByt till filövervakning"
+                            "Öppnad fil har modifierats av ett externt program\nVälj:\n\nAvbryt -\t\tIgnorera ytterligare förändringar\nLadda om -\tLadda om fil\nFortsätt -\t\tByt till filövervakning"
     IDS_MUI_FILECHANGENOTIFY2 "Aktuell fil har tagits bort. Vill du spara nu?"
     IDS_MUI_FILELOCK_ERROR  "Kan inte få exklusivt fillås för ""%s""!"
     IDS_MUI_STICKYWINPOS    "Fast fönsterposition är aktiverad. Alla nya Notepad3-fönster kommer att använda aktuella fösterplaceringsinställningar"
@@ -189,7 +189,7 @@ BEGIN
     IDS_MUI_INIFILE_READONLY
                             "Konfigurationsfilen är ej skrivbar - vill du ignorera och implementera inställningar?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Inga existerande konfigurationsfiler kunde hittas.\nFör att spara dina stiländringar, spara nu (F7) eller gå tillbaka till schemakonfiguration (Ctrl+F12) och exportera din stilmall"
+                            "Inga existerande konfigurationsfiler kunde hittas\nFör att spara dina stiländringar, spara nu (F7) eller gå tillbaka till schemakonfiguration (Ctrl+F12) och exportera din stilmall"
 END
 
 STRINGTABLE
@@ -198,7 +198,7 @@ BEGIN
     IDS_MUI_RELOADCFGSEX     "Om du fortsätter utan att starta om kommer inställningarna inte sparas!"
     IDS_MUI_EXPORT_FAIL      "Fel vid exportering av stilinställningar ""%s"""
     IDS_MUI_REGEX_INVALID    "Fel vid utvärdering av reguljärt uttryck. Uttrycket är ogiltigt!"
-    IDS_MUI_DROP_NO_FILE     "Inget giltigt filnamn kunde hittas.\nOm du drar-och-släpper från en 32-bits applikation,\nvar vänligt släpp på Notepad3s verktygsfält"
+    IDS_MUI_DROP_NO_FILE     "Inget giltigt filnamn kunde hittas\nOm du drar-och-släpper från en 32-bits applikation,\nvar vänligt släpp på Notepad3s verktygsfält"
     IDS_MUI_URL_DIR_EXISTS   "Angiven URL-mapp existerar redan!"
     IDS_MUI_URL_FILE_EXISTS  "Angiven URL-fil existerar redan!"
     IDS_MUI_URL_PATH_NOT_FOUND
@@ -206,7 +206,7 @@ BEGIN
     IDS_MUI_URL_OPEN_FILE    "\nAlt + Klicka för att öppna fil"
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klicka för att öppna länken i webbläsaren"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Bevarande av tidsstämpel för filmodifiering är aktiverad.\nInställningen är giltig för denna session!"
+                             "Bevarande av tidsstämpel för filmodifiering är aktiverad\nInställningen är giltig för denna session!"
     IDS_MUI_OUT_OFF_OCCMRK   "Inga fler markeringar (bokmärke/markering)!"
     IDS_MUI_DOCUMENT_READONLY
                              "Dokumentet är låst i läsläge. Skall läslägeslåset behållas?"
@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_SAVE        "Spara ändringar till:\n""%s""?"
     IDS_MUI_ASK_REVERT      "Återgå till senast sparade fil?"
     IDS_MUI_ASK_RECODE      "Omkodning kräver att filen laddas om från disk och alla osparade ändringar förloras!"
-    IDS_MUI_ASK_CREATE      """%s"" hittades inte.\nVill du skapa denna fil?"
+    IDS_MUI_ASK_CREATE      """%s"" hittades inte\nVill du skapa denna fil?"
     IDS_MUI_PRINT_HEADER    "Filnamn, aktuellt datum och tid|Filnamn aktuellt datum|Filenamn|Lämna tom"
     IDS_MUI_PRINT_FOOTER    "Sidnummer|Lämna tom"
     IDS_MUI_PRINT_COLOR     "Normal|Mörk (Inverterade färger)|Svart på vit|Färg på vit|Färg på vit (förutom radnummer)|Skärmfärger"
@@ -233,12 +233,12 @@ BEGIN
     IDS_MUI_PRINT_EMPTY     "Detta dokument inehåller ingen text att skriva ut"
     IDS_MUI_PRINT_ERROR     "Fel vid utskrift ""%s""!"
     IDS_MUI_FAV_SUCCESS     "En snabblänk till denna fil har lagts till dina favoriter"
-    IDS_MUI_FAV_FAILURE     "En snabblänk till denna fil kunde inte sparas.\nFörsäkra dig att det inte redan finns en fil med samma filnamn"
+    IDS_MUI_FAV_FAILURE     "En snabblänk till denna fil kunde inte sparas\nFörsäkra dig att det inte redan finns en fil med samma filnamn"
     IDS_MUI_READONLY_MODIFY "Attribut för ""%s"" kunde inte ändras"
     IDS_MUI_SAVEPOS         "Spara position\tCtrl+S"
     IDS_MUI_RESETPOS        "Återställ position\tCtrl+R"
     IDS_MUI_PREVIEW         "Förhandsgranska\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "Lösenfrasen är fel.\nVill du försöka med en annan lösenfras?"
+    IDS_MUI_PASS_FAILURE    "Lösenfrasen är fel\nVill du försöka med en annan lösenfras?"
     IDS_MUI_NOPASS          "Avkryptering avbruten!\nVill du läsa krypterad rådata?"
     IDS_MUI_STY_BASESTD     "BASE (standardstil):"
     IDS_MUI_STY_BASE2ND     "BASE (2a standardstil):"
@@ -315,7 +315,7 @@ Tillval:\r\n\
 /q\tTvinga skapande av nya filer utan bekräftelse\r\n\
 /s\tVälj syntaxschema\r\n\
 /d\tVälj förvalt syntaxschema\r\n\
-/h\tVälj källkodschema för webben.\r\n\
+/h\tVälj källkodschema för webben\r\n\
 /x\tVälj XML dokumentschema\r\n\
 /c\tÖppna nytt fönster och klistra in urklipp\r\n\
 /b\tÖppna urklippsbordet för att samla alla urklipp\r\n\

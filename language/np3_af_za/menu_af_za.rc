@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Begin"
         BEGIN
-            MENUITEM "&Soek in lêers\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
+            MENUITEM "&Soek in lêers...\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nuwe Leë Venster\tAlt+N",            IDM_FILE_NEWWINDOW
             MENUITEM "&Dubbele Instansie\tAlt+Shift+N",     IDM_FILE_NEWWINDOW2
@@ -339,7 +339,7 @@ BEGIN
             MENUITEM "Vervang Volge&nde\tF4",                        IDM_EDIT_REPLACENEXT
             MENUITEM "&Gaan na...\tCtrl+G",                          IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Soek in lêers\tCtrl+Shift+F",                 IDM_GREP_WIN_SEARCH2
+            MENUITEM "&Soek in lêers...\tCtrl+Shift+F",                 IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Aansig"

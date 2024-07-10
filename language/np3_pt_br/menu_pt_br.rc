@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Executar"
         BEGIN
-            MENUITEM "&Localizar em Arquivos\tCtrl+Shift+F",    IDM_GREP_WIN_SEARCH
+            MENUITEM "&Localizar em Arquivos...\tCtrl+Shift+F",    IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nova Janela Vazia\tAlt+N",           IDM_FILE_NEWWINDOW
             MENUITEM "&Duplicar Instância\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
@@ -339,7 +339,7 @@ BEGIN
             MENUITEM "Substituir Pró&ximo\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "&Ir para...\tCtrl+G",                             IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Localizar em Arquivos\tCtrl+Shift+F",            IDM_GREP_WIN_SEARCH2
+            MENUITEM "&Localizar em Arquivos...\tCtrl+Shift+F",            IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Visualizar"
