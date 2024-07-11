@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "In&dítás"
         BEGIN
-            MENUITEM "Keresés &fájlokban\tCtrl+Shift+F",   IDM_GREP_WIN_SEARCH
+            MENUITEM "Keresés &fájlokban...\tCtrl+Shift+F",   IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Új üres ablak\tAlt+N",              IDM_FILE_NEWWINDOW
             MENUITEM "&Példány duplikálás\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
@@ -197,14 +197,14 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Oszlop sortörés...\tCtrl+Shift+W",   IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
-            MENUITEM "&Unite Duplicate Lines\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Remo&ve Duplicate Lines",              IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "&Duplikált sorok egyesítése\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "D&uplikált sorok törlése",              IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "&Üres sorok egyesítése\tAlt+Y",        IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Üres kar.-eket tart. sorok egyes&ítése\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
             MENUITEM "Üres so&rok törlése\tAlt+R",           IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Üres kar.-eket &tar. sorok törlése\tCtrl+Alt+B", IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "Adva&nced"
+        POPUP "Hala&dó"
         BEGIN
             MENUITEM "&Behúzás",                           IDM_EDIT_INDENT
             MENUITEM "Behúzás törlése",                    IDM_EDIT_UNINDENT
@@ -339,7 +339,7 @@ BEGIN
             MENUITEM "Következő cse&réje\tF4",                 IDM_EDIT_REPLACENEXT
             MENUITEM "&Ugrás...\tCtrl+G",                      IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "Keresés &fájlokban\tCtrl+Shift+F",       IDM_GREP_WIN_SEARCH2
+            MENUITEM "Keresés &fájlokban...\tCtrl+Shift+F",       IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Nézet"

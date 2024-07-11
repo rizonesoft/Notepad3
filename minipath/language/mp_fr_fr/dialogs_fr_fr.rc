@@ -67,7 +67,7 @@ BEGIN
     LTEXT           "",IDC_AUTHORNAME,65,51,116,8
     LTEXT           "",IDC_EMAIL2,65,75,116,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_EMAIL,"SysLink",WS_TABSTOP,65,61,116,10
-    LTEXT           "", IDC_TRANSL_AUTH, 65, 78, 200, 8
+    LTEXT           "",IDC_TRANSL_AUTH, 65, 78, 200, 8
 END
 
 IDD_RUN DIALOGEX 0, 0, 224, 85
@@ -76,7 +76,7 @@ CAPTION "Exécuter"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Entrez le nom d'un fichier programme exécutable,\nun dossier ou un document à ouvrir.",IDC_STATIC,35,7,188,17
+    LTEXT           "Entrez le nom d'un fichier programme exécutable,\nun dossier ou un document à ouvrir",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,112,64,50,14
@@ -90,7 +90,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "Cliquez ici pour désigner le répertoire ayant des liens vers vos applications favorites.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "Cliquez ici pour désigner le répertoire ayant des liens vers vos applications favorites",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "OK",IDOK,52,108,50,14
     PUSHBUTTON      "Annuler",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -102,7 +102,7 @@ CAPTION "Aller à"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "Entrez le nom d'un fichier ou d'un dossier à ouvrir,\nou sélectionnez dans la liste un dossier récemment visité.",IDC_STATIC,35,7,182,26
+    LTEXT           "Entrez le nom d'un fichier ou d'un dossier à ouvrir,\nou sélectionnez dans la liste un dossier récemment visité",IDC_STATIC,35,7,182,26
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "OK",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "Annuler",IDCANCEL,167,66,50,14
@@ -114,10 +114,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Filtre de fichier"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Spécifiez un nouveau filtre.\nNB : Séparez plusieurs filtres par un "";""",IDC_STATIC,7,7,175,8
+    LTEXT           "Spécifiez un nouveau filtre\nNB : Séparez plusieurs filtres par un "";""",IDC_STATIC,7,7,175,8
     EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
-    CONTROL         "&Exclure les fichiers correspondants au filtre.",IDC_NEGFILTER,
+    CONTROL         "&Exclure les fichiers correspondants au filtre",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,155,10
     DEFPUSHBUTTON   "OK",IDOK,77,58,50,14
     PUSHBUTTON      "Annuler",IDCANCEL,132,58,50,14
@@ -171,22 +171,22 @@ CAPTION "Généraux"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "Spécifiez les paramètres généraux de MiniPath.",IDC_STATIC,40,15,170,8
-    CONTROL         "N'autoriser qu'un seul clic de souris pour ouvrir les objets.",IDC_SINGLECLICK,
+    LTEXT           "Spécifiez les paramètres généraux de MiniPath",IDC_STATIC,40,15,170,8
+    CONTROL         "N'autoriser qu'un seul clic de souris pour ouvrir les objets",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,200,10
-    CONTROL         "&Activer la sélection de pistage.",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,140,10
-    CONTROL         "Activer la &sélection de ligne complète.",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,140,10
-    CONTROL         "Toujours ac&tiver la fenêtre cible quand un fichier est ouvert.",IDC_FOCUSEDIT,
+    CONTROL         "&Activer la sélection de pistage",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,140,10
+    CONTROL         "Activer la &sélection de ligne complète",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,140,10
+    CONTROL         "Toujours ac&tiver la fenêtre cible quand un fichier est ouvert",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,205,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
-    CONTROL         "&Garder la fenêtre MiniPath toujours visible.",IDC_ALWAYSONTOP,
+    CONTROL         "&Garder la fenêtre MiniPath toujours visible",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,160,10
-    CONTROL         "&Minimiser -> zone de notification (cliquer pour réactiver).",IDC_MINIMIZETOTRAY,
+    CONTROL         "&Minimiser -> zone de notification (cliquer pour réactiver)",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,200,10
-    CONTROL         "Réutiliser la fenêtre existante au démarrage de MiniPath.",IDC_REUSEWINDOW,
+    CONTROL         "Réutiliser la fenêtre existante au démarrage de MiniPath",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,200,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "&Sauvegarder la configuration en quittant.",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,150,10
+    CONTROL         "&Sauvegarder la configuration en quittant",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,150,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
@@ -195,23 +195,23 @@ CAPTION "Avancés"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
-    LTEXT           "Spécifiez les paramètres avancés de MiniPath.",IDC_STATIC,40,15,160,8
+    LTEXT           "Spécifiez les paramètres avancés de MiniPath",IDC_STATIC,40,15,160,8
     CONTROL         "&Dossier de démarrage :",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,87,10
-    CONTROL         "&Utilisé le plus récemment.",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,100,10
-    CONTROL         "Dossier des ""&Favoris"".",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,80,10
+    CONTROL         "&Utilisé le plus récemment",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,100,46,100,10
+    CONTROL         "Dossier des ""&Favoris""",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,100,58,80,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
-    CONTROL         "&Effacer l'attribut ""lecture seule"" des fichiers sauvés.",IDC_CLEARREADONLY,
+    CONTROL         "&Effacer l'attribut ""lecture seule"" des fichiers sauvés",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,180,10
-    CONTROL         "Reno&mmer les fichiers copiés si collision de nom.",IDC_RENAMEONCOLLISION,
+    CONTROL         "Reno&mmer les fichiers copiés si collision de nom",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,174,10
-    CONTROL         "&Déplacer les fichiers supprimés dans la corbeille.",IDC_USERECYCLEBIN,
+    CONTROL         "&Déplacer les fichiers supprimés dans la corbeille",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,174,10
-    CONTROL         "&Ne pas confirmer la suppression de fichier (déconseillé).",IDC_NOCONFIRMDELETE,
+    CONTROL         "&Ne pas confirmer la suppression de fichier (déconseillé)",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,200,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         "Activer ""&Echap"" pour...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
-    CONTROL         "Minimiser la &fenêtre.",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,80,10
-    CONTROL         "Q&uitter MiniPath.",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,70,10
+    CONTROL         "Activer ""&Echap"" pour :",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
+    CONTROL         "Minimiser la &fenêtre",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,80,10
+    CONTROL         "Q&uitter MiniPath",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,70,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 225, 185
@@ -220,15 +220,15 @@ CAPTION "Eléments"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Apparence des éléments dans la liste de répertoire.",IDC_STATIC,40,15,180,8
+    LTEXT           "Apparence des éléments dans la liste de répertoire",IDC_STATIC,40,15,180,8
     GROUPBOX        "Couleurs",IDC_STATIC,10,41,205,134
     LTEXT           "Utiliser cette couleur de texte si PAS DE FILTRE défini :",IDC_STATIC,20,54,190,8
-    CONTROL         "Couleur par défaut des fenêtres.",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,120,10
+    CONTROL         "Couleur par défaut des fenêtres",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,120,10
     CONTROL         "&Couleur perso :",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,60,10
     EDITTEXT        IDC_COLOR_SAMP1,85,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "&Choisir...",IDC_COLOR_PICK1,119,80,50,14
     LTEXT           "Utiliser cette couleur de texte si un FILTRE EST ACTIF :",IDC_STATIC,20,105,200,8
-    CONTROL         "Couleur par défaut des fenêtres.",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,120,10
+    CONTROL         "Couleur par défaut des fenêtres",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,120,10
     CONTROL         "Co&uleur perso :",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,60,10
     EDITTEXT        IDC_COLOR_SAMP2,86,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "C&hoisir...",IDC_COLOR_PICK2,120,130,50,14
@@ -240,7 +240,7 @@ CAPTION "Emplacements"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Spécifiez les programmes externes et leur chemin.",IDC_STATIC,40,15,170,8
+    LTEXT           "Spécifiez les programmes externes et leur chemin",IDC_STATIC,40,15,170,8
     LTEXT           "Programme ""Aperçu""  par défaut (Ctrl+Q) :",IDC_STATIC,10,41,146,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
@@ -254,7 +254,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Application cible"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "Pas d'application cible spécifique, lancer simplement le fichier indiqué.",IDC_LAUNCH,
+    CONTROL         "Pas d'application cible spécifique, lancer simplement le fichier indiqué",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,250,10
     CONTROL         "Utiliser l'application cible suivante :",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
@@ -262,13 +262,13 @@ BEGIN
     EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "Message :",IDC_STATIC,20,120,40,8
-    CONTROL         "Rien, exécuter l'application cible chaque fois qu'un fichier est ouvert.",IDC_ALWAYSRUN,
+    CONTROL         "Rien, exécuter l'application cible chaque fois qu'un fichier est ouvert",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,245,10
     CONTROL         "Message 'Fichier ouvert' --> fenêtre de l'appli. cible :",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,198,10
     CONTROL         "Exécuter la commande DDE suivante :",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,135,10
     LTEXT           "Application :",IDC_STATIC,133,120,45,8
-    PUSHBUTTON      "Trouver la fenêtre",IDC_FINDWIN,207,91,62,14
+    PUSHBUTTON      "Trouver la fenêtre...",IDC_FINDWIN,200,91,69,14
     LTEXT           "Sujet :",IDC_STATIC,203,120,20,8
     EDITTEXT        IDC_DDEMSG,20,130,109,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_DDEAPP,133,130,66,14,ES_AUTOHSCROLL
@@ -283,7 +283,7 @@ CAPTION "Chercher une fenêtre"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "Faites glisser le réticule sur la fenêtre à prendre comme nouvelle cible ou appuyez sur ""Echap"" pour annuler.",IDC_STATIC,35,7,168,26
+    LTEXT           "Faites glisser le réticule sur la fenêtre à prendre comme nouvelle cible ou appuyez sur ""Echap"" pour annuler",IDC_STATIC,35,7,168,26
     EDITTEXT        IDC_WINTITLE,35,36,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "Classe de fenêtre",IDC_WINCLASS,7,60,45,8,NOT WS_VISIBLE
     LTEXT           "Module de fenêtre",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE

@@ -118,27 +118,27 @@ BEGIN
     IDS_MUI_FILTER_EXE      "Ausführbare Dateien (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "Konfigurations Dateien (*.ini)|*.ini|All files (*.*)|*.*|"
     IDS_MUI_FILTER_BITMAP   "Bitmap Dateien (*.bmp)|*.bmp|All files (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Wähle das Verzeichnis mit den Links zu den favorisierten Applikationen."
-    IDS_MUI_FAVORITES       "Wähle das Verzeichnis mit den Links zu den favorisierten Dateien."
+    IDS_MUI_OPENWITH        "Wähle das Verzeichnis mit den Links zu den favorisierten Applikationen"
+    IDS_MUI_FAVORITES       "Wähle das Verzeichnis mit den Links zu den favorisierten Dateien"
     IDS_MUI_BACKSLASHHELP   "Backslash Transformationen\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
     IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Wildcard Suche\n\n*\tPasst zu keinem oder mehr Zeichen.\n?\tPasst zu genau einem Zeichen. "
+    IDS_MUI_WILDCARDHELP    "Wildcard Suche\n\n*\tPasst zu keinem oder mehr Zeichen\n?\tPasst zu genau einem Zeichen"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "Fehler beim laden ""%s""."
-    IDS_MUI_ERR_SAVEFILE    "Fehler beim speichern ""%s""."
+    IDS_MUI_ERR_LOADFILE    "Fehler beim laden ""%s"""
+    IDS_MUI_ERR_SAVEFILE    "Fehler beim speichern ""%s"""
     IDS_MUI_ERR_DLG_FORMAT  "Fehler '%s', weil:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Kein Datei-Browser-Plugin gefunden.\nDas MiniPath Datei-Browser-Plugin kann hier https://rizonesoft.com herunter geladen werden."
-    IDS_MUI_ERR_GREPWIN     "Kein Datei-Suchen-Plugin gefunden.\nDas grepWinNP3 Datei-Suchen-Plugin kann hier https://rizonesoft.com herunter geladen werden."
+    IDS_MUI_ERR_BROWSE      "Kein Datei-Browser-Plugin gefunden\nDas MiniPath Datei-Browser-Plugin kann hier https://rizonesoft.com herunter geladen werden"
+    IDS_MUI_ERR_GREPWIN     "Kein Datei-Suchen-Plugin gefunden\nDas grepWinNP3 Datei-Suchen-Plugin kann hier https://rizonesoft.com herunter geladen werden"
     IDS_MUI_ERR_MRUDLG      "Es kann nicht auf die ausgewählte Datei zugegriffen werden!\nMöchtest Du den Eintrag aus der Liste entfernen?"
-    IDS_MUI_ERR_CREATELINK  "Fehler beim erzeugen des Desktop-Links."
+    IDS_MUI_ERR_CREATELINK  "Fehler beim erzeugen des Desktop-Links"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Die existierende Notepad3-Instanz ist entweder beschäftigt oder hat eine geöffnete Dialogbox.\nMöchtest Du eine andere Notepad3-Instanz öffnen?"
-    IDS_MUI_ERR_ENCODINGNA  "Die Code-Page Konvertierungstabellen sind für die ausgewählte Codierung auf diesem System nicht vorhanden."
-    IDS_MUI_ERR_UNICODE     "Fehler bei der Konvertierung dieser Unicode Datei.\nDaten werden verloren gehen, wenn diese Datei gespeichert wird!"
-    IDS_MUI_ERR_BITMAP      "Ungeeignete Dimension der Bitmap ""%s"".\nGeeignete Dimension: %i x %i (Breite >= %i x Höhe)."
+                            "Die existierende Notepad3-Instanz ist entweder beschäftigt oder hat eine geöffnete Dialogbox\nMöchtest Du eine andere Notepad3-Instanz öffnen?"
+    IDS_MUI_ERR_ENCODINGNA  "Die Code-Page Konvertierungstabellen sind für die ausgewählte Codierung auf diesem System nicht vorhanden"
+    IDS_MUI_ERR_UNICODE     "Fehler bei der Konvertierung dieser Unicode Datei\nDaten werden verloren gehen, wenn diese Datei gespeichert wird!"
+    IDS_MUI_ERR_BITMAP      "Ungeeignete Dimension der Bitmap ""%s""\nGeeignete Dimension: %i x %i (Breite >= %i x Höhe)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Fehler beim anheben der Benutzerrechte!"
 END
@@ -148,8 +148,8 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Bestimmte Zeichen im aktuellen Text werden von der gewählten Codierung nicht unterstützt und werden evtl. durch Standardplatzhalter ersetzt wenn die Datei gespeichert wird. Es wird empfolen eine andere Codierung zu wählen. Weiter machen?"
     IDS_MUI_ERR_DROP        "Es kann immer nur eine Datei gleichzeitig verworfen werden!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Die Datei ""%s"" kann nicht gespeichert werden und ist evtl. geschützt.\n\nMöchtest Du %s mit erhöhten Rechten starten?"
-    IDS_MUI_ERR_ADMINEXE    "Kein Verwaltungswerkzeug gefunden.\nBitte auf der Website https://rizonesoft.com prüfen."
+                            "Die Datei ""%s"" kann nicht gespeichert werden und ist evtl. geschützt\n\nMöchtest Du %s mit erhöhten Rechten starten?"
+    IDS_MUI_ERR_ADMINEXE    "Kein Verwaltungswerkzeug gefunden\nBitte auf der Website https://rizonesoft.com prüfen"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Bist Du sicher, dass Du diese sehr große Datei öffnen möchtest?\n\t(Größe: %s >= %s)!\n(Styling und Syntax Highlighting wird nicht angewendet!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -166,14 +166,14 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "Diese Operation kann nicht mit einer Rechteck-Selektion durchgeführt werden."
-    IDS_MUI_SELMULTI        "Diese Operation kann nicht mit einer Multi-Selektion durchgeführt werden."
-    IDS_MUI_SELRECTORMULTI  "Diese Operation kann nicht mit einer Rechteck- oder Multi-Selektion durchgeführt werden."
-    IDS_MUI_BUFFERTOOSMALL  "Diese Operation kann nicht durchgeführt werden (die Zeilen sind zu lang)."
-    IDS_MUI_FIND_WRAPFW     "Das Ende des Dokumentes wurde erreicht, Vorwärtssuche vom Anfang her weiter führen."
-    IDS_MUI_FIND_WRAPRE     "Der Anfang des Dokumentes wurde erreicht, Rückwärtssuche vom Ende her weiter führen."
-    IDS_MUI_NOTFOUND        "Der gegebene Suchbegriff führte zu keiner passenden Textstelle."
-    IDS_MUI_REPLCOUNT       "%s Fundstelle(n) des gegebenen Suchbegriffs wurde(n) ersetzt."
+    IDS_MUI_SELRECT         "Diese Operation kann nicht mit einer Rechteck-Selektion durchgeführt werden"
+    IDS_MUI_SELMULTI        "Diese Operation kann nicht mit einer Multi-Selektion durchgeführt werden"
+    IDS_MUI_SELRECTORMULTI  "Diese Operation kann nicht mit einer Rechteck- oder Multi-Selektion durchgeführt werden"
+    IDS_MUI_BUFFERTOOSMALL  "Diese Operation kann nicht durchgeführt werden (die Zeilen sind zu lang)"
+    IDS_MUI_FIND_WRAPFW     "Das Ende des Dokumentes wurde erreicht, Vorwärtssuche vom Anfang her weiter führen"
+    IDS_MUI_FIND_WRAPRE     "Der Anfang des Dokumentes wurde erreicht, Rückwärtssuche vom Ende her weiter führen"
+    IDS_MUI_NOTFOUND        "Der gegebene Suchbegriff führte zu keiner passenden Textstelle"
+    IDS_MUI_REPLCOUNT       "%s Fundstelle(n) des gegebenen Suchbegriffs wurde(n) ersetzt"
     IDS_MUI_ASK_ENCODING    "Der Wechsel zwischen verschiedenen Codierungen kann die Ersetzung nicht unterstützter Zeichen mit voreingestellten Zeichen zur folge haben, wobei die Undo-Historie gelöscht wird. Weiter machen?"
     IDS_MUI_ASK_ENCODING2   "Du bist dabei die Codierung eines leeren Dokumentes zu ändern. Beachte bitte, daß dabei die Undo-Historie gelöscht wird, da diese nicht mit der neuen Codierung synchronisiert werden kann. Weiter machen?"
     IDS_MUI_ASK_CLEAR_UNDO  "Diese Operation wird die Undo-History löschen. Weiter machen?"
@@ -182,31 +182,31 @@ BEGIN
                             "Die geladene Datei wurde durch ein anderes Programm auf dem Datenträger verändert. Bitte wähle:\n\nAbbrechen - \tIgnoriere alle Änderungen\nNeu Laden - \tDatei neu laden\nWeiter - \t\tWechsle zum Logfile Monitoring"
     IDS_MUI_FILECHANGENOTIFY2 "Die geladene Datei wurde auf dem Datenträger gelöscht. Nochmals speichern?"
     IDS_MUI_FILELOCK_ERROR  "Es konnte keine exklusive Dateisperre auf ""%s"" gesetzt werden!"
-    IDS_MUI_STICKYWINPOS    "Eingefrorene Fensterpositionierung is eingeschaltet worden. Jede neue Notepad3 Instanz wird nun diese Fensterpositionierung initial verwenden."
-    IDS_MUI_SAVEDSETTINGS   "Die aktuellen Notepad3 Einstellungen wurden gespeichert."
-    IDS_MUI_CREATEINI_FAIL  "Fehler bei der Erzeugung einer Konfigurationsdatei."
-    IDS_MUI_WRITEINI_FAIL   "Fehler beim schreiben der Einstellungen in die Konfigurationsdatei."
+    IDS_MUI_STICKYWINPOS    "Eingefrorene Fensterpositionierung is eingeschaltet worden. Jede neue Notepad3 Instanz wird nun diese Fensterpositionierung initial verwenden"
+    IDS_MUI_SAVEDSETTINGS   "Die aktuellen Notepad3 Einstellungen wurden gespeichert"
+    IDS_MUI_CREATEINI_FAIL  "Fehler bei der Erzeugung einer Konfigurationsdatei"
+    IDS_MUI_WRITEINI_FAIL   "Fehler beim schreiben der Einstellungen in die Konfigurationsdatei"
     IDS_MUI_INIFILE_READONLY
                             "Die Konfigurationsdatei ist schreibgeschützt - ignorieren und Konfiguration überschreiben?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Es wurde keine Konfigurationsdatei gefunden.\nUm die Veränderungen der Stilanpassungen zu behalten, sollten die Einstellungen gespeichert werden (F7) oder über die Schematakonfiguration (Ctrl+F12) exportiert werden."
+                            "Es wurde keine Konfigurationsdatei gefunden\nUm die Veränderungen der Stilanpassungen zu behalten, sollten die Einstellungen gespeichert werden (F7) oder über die Schematakonfiguration (Ctrl+F12) exportiert werden"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_RELOADSETTINGS  "Die aktuellen Notepad3 Einstellungen durch einen Neustart aktivieren?\n\n%s"
     IDS_MUI_RELOADCFGSEX    "Bei Fortsetzung ohne Neustart werden die gespeicherten Einstellungen nicht genutzt und beim Verlassen von Notepad3 von den internen Einstellungen überschrieben!"
-    IDS_MUI_EXPORT_FAIL     "Fehler beim Export der Stil Einstellungen nach ""%s""."
+    IDS_MUI_EXPORT_FAIL     "Fehler beim Export der Stil Einstellungen nach ""%s"""
     IDS_MUI_REGEX_INVALID   "Fehler bei der Evaluierung des regulären Ausdrucks (RegEx), der Ausruck ist ungültig!"
-    IDS_MUI_DROP_NO_FILE    "Es wurde kein gültiger Dateiname erkannt. Falls aus einer 32-bit Applikation gedropped wurde, dann versuche die Datei auf die Werkzeugleiste zu ziehen."
+    IDS_MUI_DROP_NO_FILE    "Es wurde kein gültiger Dateiname erkannt. Falls aus einer 32-bit Applikation gedropped wurde, dann versuche die Datei auf die Werkzeugleiste zu ziehen"
     IDS_MUI_URL_DIR_EXISTS  "URL spezifiziertes Verzeichnis existiert!"
     IDS_MUI_URL_FILE_EXISTS "URL spezifizierte Datei existiert!"
     IDS_MUI_URL_PATH_NOT_FOUND
                             "URL spezifizierter Pfad nicht gefunden!"
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click um die Datei zu  öffnen."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click um die URL im Browser zu öffnen."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click um die Datei zu  öffnen"
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click um die URL im Browser zu öffnen"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Die Speicherung mit originalem Zeitstempel wurde aktiviert.\nDiese Option gilt nun für die gesamte Sitzung (Datei)!"
+                             "Die Speicherung mit originalem Zeitstempel wurde aktiviert\nDiese Option gilt nun für die gesamte Sitzung (Datei)!"
     IDS_MUI_OUT_OFF_OCCMRK   "Es stehen keine weiteren Fundstellen Markierungen/Lesezeichen mehr zur Verfügung!"
     IDS_MUI_DOCUMENT_READONLY
                              "Das Dokument ist im 'Nur Lesen' Modus gesperrt. Soll dieser Modus beibehalten werden?"
@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_SAVE        "Speichere die Änderungen nach:\n""%s""?"
     IDS_MUI_ASK_REVERT      "Soll das Dokument aus dem zuletzt gespeicherten Zustand wieder hergestellt werden?"
     IDS_MUI_ASK_RECODE      "Eine Recodierung erzwingt ein erneutes Laden der Datei vom Speichermedium, nicht gesicherte Änderungen werden verloren gehen!"
-    IDS_MUI_ASK_CREATE      """%s"" wurde nicht gefunden.\nMöchtest Du diese Datei neu erzeugen?"
+    IDS_MUI_ASK_CREATE      """%s"" wurde nicht gefunden\nMöchtest Du diese Datei neu erzeugen?"
     IDS_MUI_PRINT_HEADER    "Dateiname, aktuelles Datum und Zeit|Dateiname, aktuelles Datum|Dateiname|Frei lassen"
     IDS_MUI_PRINT_FOOTER    "Seiten-Nummerierung|Frei lassen"
     IDS_MUI_PRINT_COLOR     "Normal|Invertiere (dunkler Hintergrund)|Schwarz auf Weiss|Farbig auf Weiss|Farbig auf Weiss (außer Zeilennummerierung)|Bildschirmfarben"
@@ -230,15 +230,15 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "Dieses Dokument enthält keinen Text der gedruckt werden kann."
+    IDS_MUI_PRINT_EMPTY     "Dieses Dokument enthält keinen Text der gedruckt werden kann"
     IDS_MUI_PRINT_ERROR     "Fehler beim Drucken ""%s""!"
-    IDS_MUI_FAV_SUCCESS     "Es wurde ein Link (Shortcut) zur geladenen Datei im Favoriten-Verzeichnis erzeugt."
-    IDS_MUI_FAV_FAILURE     "Es konnte kein Link (Shortcut) zur geladenen Datei erzeugt werden. Stelle sicher, daß keine andere Datei dort mit gleichem Namen existert."
-    IDS_MUI_READONLY_MODIFY "Die Attribute von ""%s"" konnten nicht verändert werden."
+    IDS_MUI_FAV_SUCCESS     "Es wurde ein Link (Shortcut) zur geladenen Datei im Favoriten-Verzeichnis erzeugt"
+    IDS_MUI_FAV_FAILURE     "Es konnte kein Link (Shortcut) zur geladenen Datei erzeugt werden. Stelle sicher, daß keine andere Datei dort mit gleichem Namen existert"
+    IDS_MUI_READONLY_MODIFY "Die Attribute von ""%s"" konnten nicht verändert werden"
     IDS_MUI_SAVEPOS         "&Speichere Position\tCtrl+S"
     IDS_MUI_RESETPOS        "&Position zurück setzen\tCtrl+R"
     IDS_MUI_PREVIEW         "&Vorschau der Einstellungen\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "Das Entschlüsselungs-Passwort ist nicht korrekt.\nEin anderes Passwort versuchen?"
+    IDS_MUI_PASS_FAILURE    "Das Entschlüsselungs-Passwort ist nicht korrekt\nEin anderes Passwort versuchen?"
     IDS_MUI_NOPASS          "Entschlüsselung abgebrochen!\nSollen die verschlüsselten Rohdaten gelesen werden?"
     IDS_MUI_STY_BASESTD     "BASIS (Standard Stil):"
     IDS_MUI_STY_BASE2ND     "BASIS (2nd Standard Stil):"
@@ -301,48 +301,48 @@ Nutzung:\r\n\
 Notepad3 [/?] [...[Codierung]] [...[Zeilenumbruch Modus]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[Laufwerk:][Pfad]Datei[...]]\r\n\r\n\
-Datei\tMuss das letzte Argument sein, normalerweise keine gequoteten Leerstellen.\r\n\
-+\tAkzeptiere mehrere Dateien (mit gequoteten Leerstellen).\r\n\
--\tAkzeptiere ein einzelne Datei (ohne gequotete Leerstellen).\r\n\r\n\
+Datei\tMuss das letzte Argument sein, normalerweise keine gequoteten Leerstellen\r\n\
++\tAkzeptiere mehrere Dateien (mit gequoteten Leerstellen)\r\n\
+-\tAkzeptiere ein einzelne Datei (ohne gequotete Leerstellen)\r\n\r\n\
 Optionen:\r\n\
-/?\tDiesen Hilfetext anzeigen.\r\n\
-...\tCodierung (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-...\tZeilenumbruch Modus (/crlf, /cr, /lf).\r\n\
-/e\tDatei Quellen Codierung.\r\n\
-/g\tSpringe zur gegebenen Position (/g -1 Ende der Datei).\r\n\
-/m\tFinde gegebenen Suchbegriff (/m- letzter, /mr regex, /mb backslash).\r\n\
-/l\tAuto-Neu-Laden einer veränderten Datei.\r\n\
-/q\tErzwinge die Erzeugung einer neuen Datei ohne Nachfrage.\r\n\
-/s\tSetze das gegebene Syntax Schema.\r\n\
-/d\tSetze das Standard-Text Schema.\r\n\
-/h\tSetze das Web Quellcode Schema.\r\n\
-/x\tSetze das XML Dokument Schema.\r\n\
-/c\tÖffne ein neues Fenster und füge den Inhalt der Zwischenablage ein.\r\n\
-/b\tÖffne ein neues 'Paste Board' um die Einträge der Zwischenablage \r\n\tzu sammeln.\r\n\
-/n\tÖffne immer ein neues Fenster (/ns single file instance).\r\n\
-/r\tBenutze geöffnetes Fenster erneut (/rs single file instance).\r\n\
+/?\tDiesen Hilfetext anzeigen\r\n\
+...\tCodierung (/ansi, /unicode, /unicodebe, /utf8, /utf8sig)\r\n\
+...\tZeilenumbruch Modus (/crlf, /cr, /lf)\r\n\
+/e\tDatei Quellen Codierung\r\n\
+/g\tSpringe zur gegebenen Position (/g -1 Ende der Datei)\r\n\
+/m\tFinde gegebenen Suchbegriff (/m- letzter, /mr regex, /mb backslash)\r\n\
+/l\tAuto-Neu-Laden einer veränderten Datei\r\n\
+/q\tErzwinge die Erzeugung einer neuen Datei ohne Nachfrage\r\n\
+/s\tSetze das gegebene Syntax Schema\r\n\
+/d\tSetze das Standard-Text Schema\r\n\
+/h\tSetze das Web Quellcode Schema\r\n\
+/x\tSetze das XML Dokument Schema\r\n\
+/c\tÖffne ein neues Fenster und füge den Inhalt der Zwischenablage ein\r\n\
+/b\tÖffne ein neues 'Paste Board' um die Einträge der Zwischenablage \r\n\tzu sammeln\r\n\
+/n\tÖffne immer ein neues Fenster (/ns single file instance)\r\n\
+/r\tBenutze geöffnetes Fenster erneut (/rs single file instance)\r\n\
 /p\tSetze Fenster: Position und Größe (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
-\toder /p <links>,<oben>,<breite>,<höhe>[,<dpi>[,<max>]]  (ganzzahlig).\r\n\
-/t\tSetze Fenster-Titel.\r\n\
-/i\tStarte als 'Tray-Icon'.\r\n\
-/o\tHalte Fenster immer auf oberster Ebene.\r\n\
-/f\tSpezifiziere .ini-Datei (/f0 keine .ini-Datei).\r\n\
-/u\tStarte mit erhöhten Benutzerrechten.\r\n\
-/v\tDrucke Datei und beende Programm.\r\n\
-/vd\tDrucke Datei (öffne Drucker-Dialog).\r\n\
-/y\tSuche relative Dateinamen im Umgebungs PATH.\r\n\
-/z\tÜberspringe Nächstes (nützlich für Registy-Basierte Notepad Ersetzung).\r\n\r\n\
+\toder /p <links>,<oben>,<breite>,<höhe>[,<dpi>[,<max>]]  (ganzzahlig)\r\n\
+/t\tSetze Fenster-Titel\r\n\
+/i\tStarte als 'Tray-Icon'\r\n\
+/o\tHalte Fenster immer auf oberster Ebene\r\n\
+/f\tSpezifiziere .ini-Datei (/f0 keine .ini-Datei)\r\n\
+/u\tStarte mit erhöhten Benutzerrechten\r\n\
+/v\tDrucke Datei und beende Programm\r\n\
+/vd\tDrucke Datei (öffne Drucker-Dialog)\r\n\
+/y\tSuche relative Dateinamen im Umgebungs PATH\r\n\
+/z\tÜberspringe Nächstes (nützlich für Registy-Basierte Notepad Ersetzung)\r\n\r\n\
 Beispiele:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Eine neue Datei öffnen: ""Test.txt"" Codierung=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Eine neue Datei öffnen: ""Test.txt"" Codierung=UTF-8-BOM, EoL=CRLF\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Drucke Datei: ""Test.txt"" direkt.\
+ \t... Drucke Datei: ""Test.txt"" direkt\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Trennung von Dateinamen-Erweiterungen mittels ';'.\r\n\
+Trennung von Dateinamen-Erweiterungen mittels ';'\r\n\
 nutze \\<regex>; um ein Regular Expression für Dateinamen zu definieren:\r\n\
-   \\xyz$;   => Dateinamen(basename+ext) mit 'xyz' am Ende.\r\n\r\n\
+   \\xyz$;   => Dateinamen(basename+ext) mit 'xyz' am Ende\r\n\r\n\
 Stil-Format:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\

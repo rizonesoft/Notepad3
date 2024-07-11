@@ -118,27 +118,27 @@ BEGIN
     IDS_MUI_FILTER_EXE      "Suoritettavat tiedostot (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "Määritystiedostot (*.ini)|*.ini|All files (*.*)|*.*|"
     IDS_MUI_FILTER_BITMAP   "Bittikarttatiedostot (*.bmp)|*.bmp|All files (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Valitse hakemisto, jossa on linkkejä suosikkisovelluksiisi."
-    IDS_MUI_FAVORITES       "Select the directory with links to your favourite files."
+    IDS_MUI_OPENWITH        "Valitse hakemisto, jossa on linkkejä suosikkisovelluksiisi"
+    IDS_MUI_FAVORITES       "Select the directory with links to your favourite files"
     IDS_MUI_BACKSLASHHELP   "Kenoviivan muunnokset\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
     IDS_MUI_REGEXPHELP      "RegExp-täsmäyssyntaksi (useita rivejä)\n\n.\tVastaa mitä tahansa merkkiä\n^\tTyhjä merkkijono välittömästi rivinvaihdon jälkeen\n$\tTyhjä merkkijono välittömästi ennen rivin loppua\n\\<\tSanan alku\n\\>\tSanan loppu\n\\b\tSanan raja\n[...]\tMerkkijoukko ([abc]) tai alue ([a-z])\n[^...]\tMerkit EIVÄT joukossa tai alueella\n\\d\tMikä tahansa desimaalinumero\n\\D\tMikä tahansa ei-numeraali merkki\n\\s\tKaikki välilyönnit\n\\S\tEi välilyöntimerkki\n\\w\tMikä tahansa ""sana""-merkki\n\\W\tMikä tahansa ""ei-sana""-merkki\n\\x\tEscape-merkki, jolla on muuten erityinen merkitys\n\\xHH\tMerkki heksadesimaalikoodilla HH\n?\tVastaavat numeroa 0 tai 1 kertaa\n*\tOsauma, joka edeltää 0 tai useammin\n+\tEdeltävät yhtä tai useampaa kertaa\n*? tai +?\tKvantoijien ""?"" ja ""+"" ei ahne vastaavuus\n(\tAlueen alku\n)\tAlueen loppu\n\\n\tViittaa alueeseen korvattaessa (n on 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Jokerimerkkihaku\n\n*\tVastaa nollaa tai useampaa merkkiä.\n?\tVastaa täsmälleen yhtä merkkiä. "
+    IDS_MUI_WILDCARDHELP    "Jokerimerkkihaku\n\n*\tVastaa nollaa tai useampaa merkkiä\n?\tVastaa täsmälleen yhtä merkkiä"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "Virhe ladattaessa ""%s""."
-    IDS_MUI_ERR_SAVEFILE    "Virhe tallennettaessa ""%s""."
+    IDS_MUI_ERR_LOADFILE    "Virhe ladattaessa ""%s"""
+    IDS_MUI_ERR_SAVEFILE    "Virhe tallennettaessa ""%s"""
     IDS_MUI_ERR_DLG_FORMAT  "Virhe '%s', syy:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Tiedostoselaimen laajennusta ei löytynyt.\nMiniPath-tiedostoselaimen laajennuksen voi ladata osoitteesta https://rizonesoft.com."
-    IDS_MUI_ERR_GREPWIN     "Tiedostonhakulaajennusta ei löytynyt.\nGrepWinNP3-tiedostonhakulaajennuksen voi ladata osoitteesta https://rizonesoft.com."
+    IDS_MUI_ERR_BROWSE      "Tiedostoselaimen laajennusta ei löytynyt\nMiniPath-tiedostoselaimen laajennuksen voi ladata osoitteesta https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Tiedostonhakulaajennusta ei löytynyt\nGrepWinNP3-tiedostonhakulaajennuksen voi ladata osoitteesta https://rizonesoft.com"
     IDS_MUI_ERR_MRUDLG      "Valittuun tiedostoon ei ole pääsyä!\nTahdotko poistaa sen luettelosta?"
-    IDS_MUI_ERR_CREATELINK  "Virhe työpöytälinkin luomisessa."
+    IDS_MUI_ERR_CREATELINK  "Virhe työpöytälinkin luomisessa"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Nykyinen Notepad3-ikkuna on varattu tai siinä on aktiivinen valintaikkuna.\nTahdotko avata toisen Notepad3-ikkunan?"
-    IDS_MUI_ERR_ENCODINGNA  "Valitun koodisivun muuntotaulukot eivät ole käytettävissä järjestelmässäsi."
-    IDS_MUI_ERR_UNICODE     "Virhe Unicode-tiedoston muuntamisessa.\nTiedot menetetään, jos tiedosto tallennetaan!"
-    IDS_MUI_ERR_BITMAP      "Bittikartan ""%s"" mitat eivät ole sopivia.\nSopiva mitoitus: %i x %i (leveys >= %i x korkeus)."
+                            "Nykyinen Notepad3-ikkuna on varattu tai siinä on aktiivinen valintaikkuna\nTahdotko avata toisen Notepad3-ikkunan?"
+    IDS_MUI_ERR_ENCODINGNA  "Valitun koodisivun muuntotaulukot eivät ole käytettävissä järjestelmässäsi"
+    IDS_MUI_ERR_UNICODE     "Virhe Unicode-tiedoston muuntamisessa\nTiedot menetetään, jos tiedosto tallennetaan!"
+    IDS_MUI_ERR_BITMAP      "Bittikartan ""%s"" mitat eivät ole sopivia\nSopiva mitoitus: %i x %i (leveys >= %i x korkeus)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Käyttäjän oikeuksien korottamisvirhe!"
 END
@@ -148,8 +148,8 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Valittu koodaus ei tue tiettyjä nykyisen tekstin merkkejä, ja ne saatetaan korvata oletusarvoisilla sijoittimilla tallennettaessa. On suositeltavaa valita toinen tiedostokoodaus. Jatketaanko?"
     IDS_MUI_ERR_DROP        "Vain yksi tiedosto voidaan pudottaa samanaikaisesti!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Tiedostoa ""%s"" ei voi tallentaa, ja se voi olla suojattu. \n\nHaluatko käynnistää %s:n 'korotettuna' sovelluksena?"
-    IDS_MUI_ERR_ADMINEXE    "Suoritettavaa hallinnointisovellusta ei löytynyt.\nTarkista verkkosivustolta https://rizonesoft.com?"
+                            "Tiedostoa ""%s"" ei voi tallentaa, ja se voi olla suojattu\n\nHaluatko käynnistää %s:n 'korotettuna' sovelluksena?"
+    IDS_MUI_ERR_ADMINEXE    "Suoritettavaa hallinnointisovellusta ei löytynyt\nTarkista verkkosivustolta https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Haluatko varmasti avata tämän suuren tiedoston?\n\t(size: %s >= %s)!\n(Tyyliä ja syntaksin korostusta ei käytetä!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -166,47 +166,47 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "Tätä toimintoa ei voi suorittaa suorakulmaisen valinnan sisällä."
-    IDS_MUI_SELMULTI        "Tätä toimintoa ei voi suorittaa monivalinnassa."
-    IDS_MUI_SELRECTORMULTI  "Tätä toimintoa ei voi suorittaa suorakulmaisen tai monivalinnan sisällä."
-    IDS_MUI_BUFFERTOOSMALL  "Tätä toimintoa ei voida suorittaa (liian pitkät rivit)."
-    IDS_MUI_FIND_WRAPFW     "Dokumentin loppu saavutettiin, haku aloitetaan alusta."
-    IDS_MUI_FIND_WRAPRE     "Dokumentin alku saavutettu, haku aloitetaan uudelleen sen lopusta."
-    IDS_MUI_NOTFOUND        "Määritellylle hakumallille ei löytynyt vastaavuutta."
-    IDS_MUI_REPLCOUNT       "Määritetyn hakumallin %s esiintymä(ä) korvattu."
+    IDS_MUI_SELRECT         "Tätä toimintoa ei voi suorittaa suorakulmaisen valinnan sisällä"
+    IDS_MUI_SELMULTI        "Tätä toimintoa ei voi suorittaa monivalinnassa"
+    IDS_MUI_SELRECTORMULTI  "Tätä toimintoa ei voi suorittaa suorakulmaisen tai monivalinnan sisällä"
+    IDS_MUI_BUFFERTOOSMALL  "Tätä toimintoa ei voida suorittaa (liian pitkät rivit)"
+    IDS_MUI_FIND_WRAPFW     "Dokumentin loppu saavutettiin, haku aloitetaan alusta"
+    IDS_MUI_FIND_WRAPRE     "Dokumentin alku saavutettu, haku aloitetaan uudelleen sen lopusta"
+    IDS_MUI_NOTFOUND        "Määritellylle hakumallille ei löytynyt vastaavuutta"
+    IDS_MUI_REPLCOUNT       "Määritetyn hakumallin %s esiintymä(ä) korvattu"
     IDS_MUI_ASK_ENCODING    "Tiedostokoodauksen vaihtaminen koodauksesta toiseen saattaa korvata tukemattoman tekstin oletusmerkeillä, ja peruutushistoria tyhjennetään. Jatketaanko?"
     IDS_MUI_ASK_ENCODING2   "Olet muuttamassa tyhjän tiedoston koodausta. Huomaa, että tämä tyhjentää peruutushistorian, koska sitä ei voida synkronoida uuden koodauksen kanssa. Jatketaanko?"
     IDS_MUI_ASK_CLEAR_UNDO  "Tämä toiminto tyhjentää peruutushistorian. Jatketaanko?"
     IDS_MUI_READONLY_SAVE   """%s"" on vain luettavissa. Tallennetaanko toiseen tiedostoon?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Ulkoinen ohjelma on muokannut nykyistä tiedostoa.\nValitse:\n\nPeruuta -\t\tOhita lisämuutokset\nLataa uudelleen -\t\tLataa tiedosto uudelleen\nJatka -\tVaihda tiedostoseurantaan"
+                            "Ulkoinen ohjelma on muokannut nykyistä tiedostoa\nValitse:\n\nPeruuta -\t\tOhita lisämuutokset\nLataa uudelleen -\t\tLataa tiedosto uudelleen\nJatka -\tVaihda tiedostoseurantaan"
     IDS_MUI_FILECHANGENOTIFY2 "Nykyinen tiedosto on poistettu. Tallennetaanko nyt?"
     IDS_MUI_FILELOCK_ERROR  "Tiedoston ""%s"" yksinoikeuslukkoa ei voi hakea!"
-    IDS_MUI_STICKYWINPOS    "Ikkunan pysyvä sijainti on käytössä. Kaikki uudet Notepad3-ikkunat käyttävät nykyisiä ikkunan sijoitusasetuksia."
-    IDS_MUI_SAVEDSETTINGS   "Nykyiset ohjelma-asetukset on tallennettu."
-    IDS_MUI_CREATEINI_FAIL  "Virhe määritystiedoston luomisessa."
-    IDS_MUI_WRITEINI_FAIL   "Virhe asetusten kirjoittamisessa määritystiedostoon."
+    IDS_MUI_STICKYWINPOS    "Ikkunan pysyvä sijainti on käytössä. Kaikki uudet Notepad3-ikkunat käyttävät nykyisiä ikkunan sijoitusasetuksia"
+    IDS_MUI_SAVEDSETTINGS   "Nykyiset ohjelma-asetukset on tallennettu"
+    IDS_MUI_CREATEINI_FAIL  "Virhe määritystiedoston luomisessa"
+    IDS_MUI_WRITEINI_FAIL   "Virhe asetusten kirjoittamisessa määritystiedostoon"
     IDS_MUI_INIFILE_READONLY
                             "Määritystiedosto on vain luettavissa - sivuutetaanko ja ohitetaan asetukset?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Olemassa olevaa määritystiedostoa ei löytynyt.\nJos haluat säilyttää tyylimuutoksesi, tallenna asetukset nyt (F7) tai palaa järjestelmämääritykseen (Ctrl+F12) ja vie tyylisi."
+                            "Olemassa olevaa määritystiedostoa ei löytynyt\nJos haluat säilyttää tyylimuutoksesi, tallenna asetukset nyt (F7) tai palaa järjestelmämääritykseen (Ctrl+F12) ja vie tyylisi"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_RELOADSETTINGS   "Aktivoidaanko tallennetut asetukset käynnistämällä ohjelma uudelleen?\n\n%s"
     IDS_MUI_RELOADCFGSEX     "Jatkaessasi ilman uudelleenkäynnistystä, tallennettuja asetuksia ei käytetä, vaan sisäiset asetukset ohittavat ne ohjelmasta poistuttaessa!"
-    IDS_MUI_EXPORT_FAIL      "Virhe tyyliasetusten viemisessä kohteeseen ""%s""."
+    IDS_MUI_EXPORT_FAIL      "Virhe tyyliasetusten viemisessä kohteeseen ""%s"""
     IDS_MUI_REGEX_INVALID    "Virhe säännöllisen lausekkeen käytössä. Lauseke on virheellinen!"
-    IDS_MUI_DROP_NO_FILE     "Kelvollista tiedostonimeä ei saatu.\nJos pudotat tiedoston 32-bittisestä sovelluksesta, vedä ja pudota se Notepad3:n työkalupalkkiin."
+    IDS_MUI_DROP_NO_FILE     "Kelvollista tiedostonimeä ei saatu\nJos pudotat tiedoston 32-bittisestä sovelluksesta, vedä ja pudota se Notepad3:n työkalupalkkiin"
     IDS_MUI_URL_DIR_EXISTS   "URL-osoitteessa määritetty hakemisto on olemassa!"
     IDS_MUI_URL_FILE_EXISTS  "URL-osoitteessa määritetty tiedosto on olemassa!"
     IDS_MUI_URL_PATH_NOT_FOUND
                              "URL määriteltyä polkua ei löydy!"
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Avaa tiedosto klikkaamalla."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Avaa linkki selaimessa klikkaamalla."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Avaa tiedosto klikkaamalla"
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Avaa linkki selaimessa klikkaamalla"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Alkuperäisen tiedoston muokkausaikaleiman säilyttäminen käytössä.\nVaihtoehto säilyy tämän istunnon ajan!"
+                             "Alkuperäisen tiedoston muokkausaikaleiman säilyttäminen käytössä\nVaihtoehto säilyy tämän istunnon ajan!"
     IDS_MUI_OUT_OFF_OCCMRK   "Esiintymämerkit loppumassa (kirjanmerkki/korostus)!"
     IDS_MUI_DOCUMENT_READONLY
                              "Asiakirja on lukittu vain katseltavaksi. Pidätkö lukituksen muokkaamisen estämiseksi?"
@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_SAVE        "Tallennetaanko muutokset tiedostoon:\n""%s""?"
     IDS_MUI_ASK_REVERT      "Palautetaanko tiedosto viimeksi tallennettuun tilaan?"
     IDS_MUI_ASK_RECODE      "Uudelleenkoodaus edellyttää tiedoston lataamista uudelleen levyltä, tallentamattomat muutokset menetetään!"
-    IDS_MUI_ASK_CREATE      """%s"" ei löytynyt.\nHaluatko luoda tämän tiedoston?"
+    IDS_MUI_ASK_CREATE      """%s"" ei löytynyt\nHaluatko luoda tämän tiedoston?"
     IDS_MUI_PRINT_HEADER    "Tiedostonimi, nykyinen päivä ja aika|Tiedostonimi, Nykyinen päivä|Tiedostonimi|Jätä tyhjäksi"
     IDS_MUI_PRINT_FOOTER    "Sivunumero|Jätä tyhjäksi"
     IDS_MUI_PRINT_COLOR     "Normaali|Käänteinen vaaleus (tumma tausta)|Musta valkoisella|Väri valkoisella|Väri valkoisella (paitsi rivinumerot)|Ruudun värit"
@@ -230,15 +230,15 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "Tämä dokumentti ei sisällä tulostettavaa tekstiä."
+    IDS_MUI_PRINT_EMPTY     "Tämä dokumentti ei sisällä tulostettavaa tekstiä"
     IDS_MUI_PRINT_ERROR     "Virhe tulostettessa ""%s""!"
-    IDS_MUI_FAV_SUCCESS     "Nykyisen tiedoston pikakuvake on luotu suosikkihakemistoon."
-    IDS_MUI_FAV_FAILURE     "Nykyisen tiedoston pikakuvaketta ei voitu luoda.\nVarmista, ettei ole olemassa toista samannimistä tiedostoa."
-    IDS_MUI_READONLY_MODIFY "Attribuutteja ""%s"" ei voitu muuttaa."
+    IDS_MUI_FAV_SUCCESS     "Nykyisen tiedoston pikakuvake on luotu suosikkihakemistoon"
+    IDS_MUI_FAV_FAILURE     "Nykyisen tiedoston pikakuvaketta ei voitu luoda\nVarmista, ettei ole olemassa toista samannimistä tiedostoa"
+    IDS_MUI_READONLY_MODIFY "Attribuutteja ""%s"" ei voitu muuttaa"
     IDS_MUI_SAVEPOS         "Tallenna &sijainti\tCtrl+S"
     IDS_MUI_RESETPOS        "&Palauta sijainti\tCtrl+R"
     IDS_MUI_PREVIEW         "&Esilatseluasetukset\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "Salasana on virheellinen.\nHaluatko kokeilla toista salasanaa?"
+    IDS_MUI_PASS_FAILURE    "Salasana on virheellinen\nHaluatko kokeilla toista salasanaa?"
     IDS_MUI_NOPASS          "Salakirjoituksen purku peruutettu!\nLuetaanko salattuja raakatietoja?"
     IDS_MUI_STY_BASESTD     "BASE (oletustyyli):"
     IDS_MUI_STY_BASE2ND     "BASE (2. oletustyyli):"
@@ -301,53 +301,53 @@ Käyttö:\r\n\
 Notepad3 [/?] [...[Koodaus]] [...[Rivin lopetustila]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][polku]tiedostonimi[...]]\r\n\r\n\
-Tiedosto\tPitäisi olla viimeinen argumentti, ei lainausmerkkejä oletuksena.\r\n\
-+\tHyväksy useita tiedostoargumentteja (välilyöntien kanssa).\r\n\
--\tHyväksy yksi tiedostoargumentti (ilman välilyöntejä).\r\n\r\n\
+Tiedosto\tPitäisi olla viimeinen argumentti, ei lainausmerkkejä oletuksena\r\n\
++\tHyväksy useita tiedostoargumentteja (välilyöntien kanssa)\r\n\
+-\tHyväksy yksi tiedostoargumentti (ilman välilyöntejä)\r\n\r\n\
 Vaihtoehdot:\r\n\
-/?\tNäytä tämä ohjeviesti.\r\n\
-...\tKoodaus (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-...\tRivin lopetus (/crlf, /cr, /lf).\r\n\
-/e\tTiedoston lähdekoodaus.\r\n\
-/g\tHyppää määritettyyn kohtaan (/g -1 tiedoston loppu).\r\n\
-/m\tTäsmää määritetty teksti (/m- last, /mr regex, /mb kenoviiva).\r\n\
-/l\tLataa muutetut tiedostot automaattisesti.\r\n\
-/q\tPakota uusien tiedostojen luominen ilman kehotusta.\r\n\
-/s\tValitse määritetty syntaksirakenne.\r\n\
-/d\tValitse oletustekstirakenne.\r\n\
-/h\tValitse verkkolähdekoodin rakenne.\r\n\
-/x\tValitse XML-dokumentin rakenne.\r\n\
-/c\tAvaa uusi ikkuna ja liitä leikepöydän sisältö.\r\n\
-/b\tAvaa uusi liitetaulu leikepöydän merkintöjen keräämistä varten.\r\n\
-/n\tAvaa aina uusi ikkuna (/ns yhden tiedoston esiintymä).\r\n\
-/r\tKäytä ikkunaa uudelleen (/rs yhden tiedoston esiintymä).\r\n\
+/?\tNäytä tämä ohjeviesti\r\n\
+...\tKoodaus (/ansi, /unicode, /unicodebe, /utf8, /utf8sig)\r\n\
+...\tRivin lopetus (/crlf, /cr, /lf)\r\n\
+/e\tTiedoston lähdekoodaus\r\n\
+/g\tHyppää määritettyyn kohtaan (/g -1 tiedoston loppu)\r\n\
+/m\tTäsmää määritetty teksti (/m- last, /mr regex, /mb kenoviiva)\r\n\
+/l\tLataa muutetut tiedostot automaattisesti\r\n\
+/q\tPakota uusien tiedostojen luominen ilman kehotusta\r\n\
+/s\tValitse määritetty syntaksirakenne\r\n\
+/d\tValitse oletustekstirakenne\r\n\
+/h\tValitse verkkolähdekoodin rakenne\r\n\
+/x\tValitse XML-dokumentin rakenne\r\n\
+/c\tAvaa uusi ikkuna ja liitä leikepöydän sisältö\r\n\
+/b\tAvaa uusi liitetaulu leikepöydän merkintöjen keräämistä varten\r\n\
+/n\tAvaa aina uusi ikkuna (/ns yhden tiedoston esiintymä)\r\n\
+/r\tKäytä ikkunaa uudelleen (/rs yhden tiedoston esiintymä)\r\n\
 /p\tAseta ikkunan sijainti ja koko (/p0,/ps,/pd,f,l,t,r,b,m) tai /p <vasen>,\r\n\
-\t<ylä>,<leveys>,<korkeus>[,<dpi>[,<max>]]  (kaikki kokonaisluvut).\r\n\
-/t\tAseta ikkunan otsikko.\r\n\
-/i\tKäynnistä ilmoitusalueen kuvakkeella.\r\n\
-/o\tPidä ikkuna päällimmäisenä.\r\n\
-/f\tMääritä ini-tiedosto (/f0 ei ini-tiedosto).\r\n\
-/u\tKäynnistä korotetuilla oikeuksilla.\r\n\
-/v\tTulosta tiedosto välittömästi ja lopeta.\r\n\
-/vd\tTulosta tiedosto (avaa tulostindialogi).\r\n\
-/y\tEtsi ympäristöPOLKU, jos kyseessä on suhteellinen tiedostonimi.\r\n\
+\t<ylä>,<leveys>,<korkeus>[,<dpi>[,<max>]]  (kaikki kokonaisluvut)\r\n\
+/t\tAseta ikkunan otsikko\r\n\
+/i\tKäynnistä ilmoitusalueen kuvakkeella\r\n\
+/o\tPidä ikkuna päällimmäisenä\r\n\
+/f\tMääritä ini-tiedosto (/f0 ei ini-tiedosto)\r\n\
+/u\tKäynnistä korotetuilla oikeuksilla\r\n\
+/v\tTulosta tiedosto välittömästi ja lopeta\r\n\
+/vd\tTulosta tiedosto (avaa tulostindialogi)\r\n\
+/y\tEtsi ympäristöPOLKU, jos kyseessä on suhteellinen tiedostonimi\r\n\
 /z\tOhita seuraava (käytettävissä rekisteripohjaiseen Notepad-\r\n\
-\tkorvaukseen).\r\n\r\n\
+\tkorvaukseen)\r\n\r\n\
 Esimerkkejä:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Avaa uusi tiedosto: ""Test.txt"" Koodaus=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Avaa uusi tiedosto: ""Test.txt"" Koodaus=UTF-8-BOM, EoL=CRLF\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Tulosta tiedosto: ""Test.txt"" välittömästi.\
+ \t... Tulosta tiedosto: ""Test.txt"" välittömästi\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Tiedostonimipäätteet on erotettava toisistaan merkillä ';'.\r\n\
+Tiedostonimipäätteet on erotettava toisistaan merkillä ';'\r\n\
 Käytä \\<regex>; määrittääksesi tiedostonimen täsmäytysmallin:\r\n\
-   \\xyz$;   => tiedostonimet(kantanimi+pääte) ja 'xyz' viimeisinä merkkeinä.\r\n\r\n\
+   \\xyz$;   => tiedostonimet(kantanimi+pääte) ja 'xyz' viimeisinä merkkeinä\r\n\r\n\
 Tyylin muoto:\r\n\
 fontti:Nimi; koko:[+/-]nn.mm; lihavoitu; kursiivi; alleviivaus;\r\n\
 teksti:#ffffff; tausta:#bbbbbb; lopputäyttö; indic_gradient\r\n\r\n\
-Tyyliominaisuuksia voi kopioida käyttämällä ""Kopioi/liitä"" tai ""Vedä/pudota"".\
+Tyyliominaisuuksia voi kopioida käyttämällä ""Kopioi/liitä"" tai ""Vedä/pudota""\
 "
 
 END

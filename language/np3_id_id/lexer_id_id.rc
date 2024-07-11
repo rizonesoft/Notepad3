@@ -68,7 +68,7 @@ BEGIN
     IDS_LEX_CSS_STYLE       "Lembar Gaya CSS"
     IDS_LEX_PRISM_CSV       "Kolom CSV"
     IDS_LEX_CPP_SRC         "Kode Sumber C/C++"
-    IDS_LEX_CSHARP_SRC      "Kode Sumber C# "
+    IDS_LEX_CSHARP_SRC      "Kode Sumber C#"
     IDS_LEX_RESOURCE_SCR    "Skrip Resource"
     IDS_LEX_MAKEFILES       "Makefile"
 END

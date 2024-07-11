@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Starte"
         BEGIN
-            MENUITEM "Suche in &Dateien\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
+            MENUITEM "Suche in &Dateien...\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Neues Leeres Fenster\tAlt+N",        IDM_FILE_NEWWINDOW
             MENUITEM "&Dupliziere Instanz\tAlt+Shift+N",    IDM_FILE_NEWWINDOW2
@@ -204,7 +204,7 @@ BEGIN
             MENUITEM "Lösche Leerzeilen\tAlt+R",                 IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Lösche Leerzeichen Zeilen\tCtrl+Alt+B",    IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "Adva&nced"
+        POPUP "&Fortgeschritten"
         BEGIN
             MENUITEM "&Text Einrückung",                         IDM_EDIT_INDENT
             MENUITEM "Text &Rückzug",                            IDM_EDIT_UNINDENT
@@ -339,7 +339,7 @@ BEGIN
             MENUITEM "Ersetze Nächstes\tF4",                    IDM_EDIT_REPLACENEXT
             MENUITEM "&Gehe zu...\tCtrl+G",                     IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "Suche in &Dateien\tCtrl+Shift+F",         IDM_GREP_WIN_SEARCH2
+            MENUITEM "Suche in &Dateien...\tCtrl+Shift+F",         IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Ansicht"

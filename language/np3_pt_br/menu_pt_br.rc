@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Executar"
         BEGIN
-            MENUITEM "&Localizar em Arquivos\tCtrl+Shift+F",    IDM_GREP_WIN_SEARCH
+            MENUITEM "&Localizar em Arquivos...\tCtrl+Shift+F",    IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nova Janela Vazia\tAlt+N",           IDM_FILE_NEWWINDOW
             MENUITEM "&Duplicar Instância\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
@@ -197,14 +197,14 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Quebra de Coluna...\tCtrl+Shift+W",     IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
-            MENUITEM "&Unite Duplicate Lines\tCtrl+Alt+D",     IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Remo&ve Duplicate Lines",                IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "&Unir linhas duplicadas\tCtrl+Alt+D",    IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "Remo&ver linhas duplicadas",             IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "&Unir Linhas Vazias\tAlt+Y",             IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Unir Linhas em Branco\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
             MENUITEM "&Remover Linhas Vazias\tAlt+R",          IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Remover Linhas em Branco\tCtrl+Alt+B",   IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "Adva&nced"
+        POPUP "Ava&nçado"
         BEGIN
             MENUITEM "&Indentar",                         IDM_EDIT_INDENT
             MENUITEM "&Remover Indentar",                 IDM_EDIT_UNINDENT
@@ -339,7 +339,7 @@ BEGIN
             MENUITEM "Substituir Pró&ximo\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "&Ir para...\tCtrl+G",                             IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Localizar em Arquivos\tCtrl+Shift+F",            IDM_GREP_WIN_SEARCH2
+            MENUITEM "&Localizar em Arquivos...\tCtrl+Shift+F",            IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Visualizar"

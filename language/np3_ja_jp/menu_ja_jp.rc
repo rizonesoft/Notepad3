@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "起動(&L)"
         BEGIN
-            MENUITEM "ファイル群から検索(&S)\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH
+            MENUITEM "ファイル群から検索(&S)...\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "白紙の新規ウィンドウ(&N)\tAlt+N",           IDM_FILE_NEWWINDOW
             MENUITEM "インスタンスを複製(&D)\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
@@ -339,7 +339,7 @@ BEGIN
             MENUITEM "置換し次へ(&E)\tF4",                         IDM_EDIT_REPLACENEXT
             MENUITEM "指定行へジャンプ(&G)...\tCtrl+G",            IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "ファイル群から検索(&S)\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH2
+            MENUITEM "ファイル群から検索(&S)...\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "表示(&V)"

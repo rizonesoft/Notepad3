@@ -81,31 +81,31 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Mappa hozzáférési hiba\nNincs hozzáférésem a megadott mappához.\nEllenőrizze a lemezt vagy a hálózati kapcsoaltot."
-    IDS_ERR_FILE            "Fáj hozzáférési hiba\nNincs hozzáférésem ehhez: ""%s"".\nLehet, hogy a fájlt egy másik alkalmazás használja.\nEllenőrizze a lemezt vagy a hálózati kapcsolatot."
-    IDS_ERR_NEW             "Fáj hozzáférési hiba\nA fájlt nem lehet létrehozni.\nEllenőrizze a lemezt vagy a hálózati kapcsolatot."
-    IDS_ERR_NEWDIR          "Mappa hozzáférési hiba\nA mappát nem lehet létrehozni.\nEllenőrizze a lemezt vagy a hálózati kapcsolatot."
-    IDS_ERR_SAVEAS1         "Fájl mentési hiba\nHiba ""%s"" mentésekor.\nLehet, hogy egy már létező fájl írásvédett."
-    IDS_ERR_SAVEAS2         "Fájl mentési hiba\nHiba a mentett fájlnál a csak-olvasható attribútum törlésekor."
-    IDS_ERR_CMDLINE         "MiniPath\nHiba a parancssorban megadott fájl vagy mappa elérésekor."
-    IDS_ERR_STARTUPDIR      "MiniPath\nNincs hozzáférés az indítási mappához."
-    IDS_ERR_DROP1           "MiniPath\nNincs hozzáférés az ejtett fájlhoz vagy mappához."
-    IDS_ERR_DROP2           "MiniPath\nEgyszerre csak egy fájlt vagy mappát lehet az ablakra ejteni."
-    IDS_ERR_FAVORITES       "Kedvencek\nNincs hozzáférés a ""Kedvencek"" mappához.\nAdjon meg egy érvényes mappát a ""Beállítások"" ablakban."
-    IDS_ERR_LNK_GETPATH     "Hivatkozási hiba\nNincs érvényes fájlrendszer-útvonal a hivatkozott objektumhoz.\nTalán a hivatkozás nem egy fájlra vagy mappára mutat."
-    IDS_ERR_LNK_NOACCESS    "Hivatkozási hiba\nNincs hozzáférésem a hivatkozott objektum fájlrendszeri útvonalához.\nEllenőrizze a lemezt vagy a hálózati kapcsolatot."
-    IDS_ERR_CREATELINK      "Hivatkozási hiba\nHiba a megadott hivatkozás létrehozásakor.\nTalán a célmappa írásvédett."
-    IDS_ERR_FILTER          "Fájlszűrő hiba\nNincs további szűrő megadva.\nKérem, nézze meg a MiniPath readme fájlban a további információkat."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nA már futó MiniPath ablak foglalt vagy nyitva van egy párbeszédablaka.\nSzeretne egy újabb Minipath ablakot megnyitni?"
+    IDS_ERR_CD              "Mappa hozzáférési hiba\nNincs hozzáférésem a megadott mappához\nEllenőrizze a lemezt vagy a hálózati kapcsoaltot"
+    IDS_ERR_FILE            "Fáj hozzáférési hiba\nNincs hozzáférésem ehhez: ""%s""\nLehet, hogy a fájlt egy másik alkalmazás használja\nEllenőrizze a lemezt vagy a hálózati kapcsolatot"
+    IDS_ERR_NEW             "Fáj hozzáférési hiba\nA fájlt nem lehet létrehozni\nEllenőrizze a lemezt vagy a hálózati kapcsolatot"
+    IDS_ERR_NEWDIR          "Mappa hozzáférési hiba\nA mappát nem lehet létrehozni\nEllenőrizze a lemezt vagy a hálózati kapcsolatot"
+    IDS_ERR_SAVEAS1         "Fájl mentési hiba\nHiba ""%s"" mentésekor\nLehet, hogy egy már létező fájl írásvédett"
+    IDS_ERR_SAVEAS2         "Fájl mentési hiba\nHiba a mentett fájlnál a csak-olvasható attribútum törlésekor"
+    IDS_ERR_CMDLINE         "MiniPath\nHiba a parancssorban megadott fájl vagy mappa elérésekor"
+    IDS_ERR_STARTUPDIR      "MiniPath\nNincs hozzáférés az indítási mappához"
+    IDS_ERR_DROP1           "MiniPath\nNincs hozzáférés az ejtett fájlhoz vagy mappához"
+    IDS_ERR_DROP2           "MiniPath\nEgyszerre csak egy fájlt vagy mappát lehet az ablakra ejteni"
+    IDS_ERR_FAVORITES       "Kedvencek\nNincs hozzáférés a ""Kedvencek"" mappához\nAdjon meg egy érvényes mappát a ""Beállítások"" ablakban"
+    IDS_ERR_LNK_GETPATH     "Hivatkozási hiba\nNincs érvényes fájlrendszer-útvonal a hivatkozott objektumhoz\nTalán a hivatkozás nem egy fájlra vagy mappára mutat"
+    IDS_ERR_LNK_NOACCESS    "Hivatkozási hiba\nNincs hozzáférésem a hivatkozott objektum fájlrendszeri útvonalához\nEllenőrizze a lemezt vagy a hálózati kapcsolatot"
+    IDS_ERR_CREATELINK      "Hivatkozási hiba\nHiba a megadott hivatkozás létrehozásakor\nTalán a célmappa írásvédett"
+    IDS_ERR_FILTER          "Fájlszűrő hiba\nNincs további szűrő megadva\nKérem, nézze meg a MiniPath readme fájlban a további információkat"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nA már futó MiniPath ablak foglalt vagy nyitva van egy párbeszédablaka\nSzeretne egy újabb Minipath ablakot megnyitni?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nA létező cél-ablak foglalt vagy nyitva van egy párbeszédablaka.\nSzeretne egy újabb ablakot megnyitni?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nKérem, győződjön meg róla, hogy minden szükséges mező ki van töltve.\nUgyancsak találnia kell egy cél ablakot, ha a megfelelő opció be van kapcsolva.."
-    IDS_ERR_INIOPEN         "MiniPath\nNincs hozzáférésem a MiniPath konfigurációs fájljához."
-    IDS_ERR_INICREATE       "Beállítások mentése\nHiba a konfigurációs fájl létrehozásakor."
-    IDS_ERR_INIWRITE        "Beállítások mentése\nA beállítások nincsenek mentve!\nNincs írási jogom a konfigurációs fájlhoz."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nA létező cél-ablak foglalt vagy nyitva van egy párbeszédablaka\nSzeretne egy újabb ablakot megnyitni?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nKérem, győződjön meg róla, hogy minden szükséges mező ki van töltve\nUgyancsak találnia kell egy cél ablakot, ha a megfelelő opció be van kapcsolva"
+    IDS_ERR_INIOPEN         "MiniPath\nNincs hozzáférésem a MiniPath konfigurációs fájljához"
+    IDS_ERR_INICREATE       "Beállítások mentése\nHiba a konfigurációs fájl létrehozásakor"
+    IDS_ERR_INIWRITE        "Beállítások mentése\nA beállítások nincsenek mentve!\nNincs írási jogom a konfigurációs fájlhoz"
 END
 
 STRINGTABLE
@@ -116,8 +116,8 @@ BEGIN
     IDS_NEWFILE             "Új fájl"
     IDS_FILTER_ALL          "Minden fájl (*.*)\n*.*\n"
     IDS_FILTER_EXE          "Végrehajtható fájlok (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nMinden fájl (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Válasszon egy új mappát."
-    IDS_FAVORITES           "Adja meg a ""Kedvencek"" mappát."
+    IDS_GETDIRECTORY        "Válasszon egy új mappát"
+    IDS_FAVORITES           "Adja meg a ""Kedvencek"" mappát"
 END
 
 STRINGTABLE
@@ -128,10 +128,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "Válassza ki a kedvenc alkalmazásaira mutató mappát."
-    IDS_COPYMOVE            "Válasszon egy célmappát."
-    IDS_CREATELINK          "Válasszon egy célmappát az új hivatkozásnak."
-    IDS_SAVESETTINGS        "Beállítások mentése\nA jelenlegi program beállítások el lettek mentve."
+    IDS_OPENWITH            "Válassza ki a kedvenc alkalmazásaira mutató mappát"
+    IDS_COPYMOVE            "Válasszon egy célmappát"
+    IDS_CREATELINK          "Válasszon egy célmappát az új hivatkozásnak"
+    IDS_SAVESETTINGS        "Beállítások mentése\nA jelenlegi program beállítások el lettek mentve"
     IDS_MUI_TRANSL_AUTHOR   "(hu-HU) Magyar fordítás: xsak"
 END
 

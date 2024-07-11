@@ -67,7 +67,7 @@ BEGIN
     LTEXT           "",IDC_AUTHORNAME,65,51,116,8
     LTEXT           "",IDC_EMAIL2,65,75,116,8,NOT WS_VISIBLE | WS_DISABLED
     CONTROL         "",IDC_EMAIL,"SysLink",WS_TABSTOP,65,61,116,10
-    LTEXT           "", IDC_TRANSL_AUTH, 65, 78, 200, 8
+    LTEXT           "",IDC_TRANSL_AUTH, 65, 78, 200, 8
 END
 
 IDD_RUN DIALOGEX 0, 0, 224, 85
@@ -76,7 +76,7 @@ CAPTION "실행"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "실행할 프로그램 파일,\n폴더 또는 열려는 문서의 이름을 입력합니다.",IDC_STATIC,35,7,188,17
+    LTEXT           "실행할 프로그램 파일,\n폴더 또는 열려는 문서의 이름을 입력합니다",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "확인",IDOK,112,64,50,14
@@ -85,12 +85,12 @@ END
 
 IDD_OPENWITH DIALOGEX 0, 0, 165, 129
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "다른 프로그램으로 열기"
+CAPTION "다른 프로그램으로 열기..."
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "즐겨찾기 응용프로그램에 대한 링크가 있는 디렉터리를 지정하려면 여기를 클릭하세요.",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "즐겨찾기 응용프로그램에 대한 링크가 있는 디렉터리를 지정하려면 여기를 클릭하세요",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "확인",IDOK,52,108,50,14
     PUSHBUTTON      "취소",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -102,7 +102,7 @@ CAPTION "이동"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "열려는 파일 또는 디렉터리의 이름을 입력하거나,\n목록에서 최근에 방문한 디렉터리를 선택합니다.",IDC_STATIC,35,7,182,17
+    LTEXT           "열려는 파일 또는 디렉터리의 이름을 입력하거나,\n목록에서 최근에 방문한 디렉터리를 선택합니다",IDC_STATIC,35,7,182,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "확인",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "취소",IDCANCEL,167,66,50,14
@@ -117,7 +117,7 @@ BEGIN
     LTEXT           "새 파일 필터를 지정합니다. 여러 필터를 ;으로 구분(&F)",IDC_STATIC,7,7,175,8
     EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
-    CONTROL         "필터와 일치하는 파일을 제외합니다(&E).",IDC_NEGFILTER,
+    CONTROL         "필터와 일치하는 파일을 제외합니다(&E)",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,131,10
     DEFPUSHBUTTON   "확인",IDOK,77,58,50,14
     PUSHBUTTON      "취소",IDCANCEL,132,58,50,14
@@ -171,22 +171,22 @@ CAPTION "일반"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
-    LTEXT           "MiniPath에 대한 일반 프로그램 설정을 지정합니다.",IDC_STATIC,40,15,180,8
-    CONTROL         "마우스를 한 번만 클릭하여 개체를 열도록 허용합니다(&A).",IDC_SINGLECLICK,
+    LTEXT           "MiniPath에 대한 일반 프로그램 설정을 지정합니다",IDC_STATIC,40,15,180,8
+    CONTROL         "마우스를 한 번만 클릭하여 개체를 열도록 허용합니다(&A)",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,195,10
-    CONTROL         "추적 선택을 사용합니다(&E).",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,195,10
-    CONTROL         "전체 행 선택을 사용합니다(&F).",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,195,10
-    CONTROL         "파일이 열리면 항상 대상 창을 활성화합니다(&C).",IDC_FOCUSEDIT,
+    CONTROL         "추적 선택을 사용합니다(&E)",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,195,10
+    CONTROL         "전체 행 선택을 사용합니다(&F)",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,195,10
+    CONTROL         "파일이 열리면 항상 대상 창을 활성화합니다(&C)",IDC_FOCUSEDIT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,82,195,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100,205,1
-    CONTROL         "MiniPath 창을 항상 맨 위에 둡니다(&K).",IDC_ALWAYSONTOP,
+    CONTROL         "MiniPath 창을 항상 맨 위에 둡니다(&K)",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,195,10
-    CONTROL         "시스템 트레이로 최소화합니다 (재활성화하려면 클릭)(&M).",IDC_MINIMIZETOTRAY,
+    CONTROL         "시스템 트레이로 최소화합니다 (재활성화하려면 클릭)(&M)",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,195,10
-    CONTROL         "MiniPath가 시작될 때 기존 창을 다시 사용합니다(&T).",IDC_REUSEWINDOW,
+    CONTROL         "MiniPath가 시작될 때 기존 창을 다시 사용합니다(&T)",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133,195,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,151,205,1
-    CONTROL         "종료 시 설정을 저장합니다(&S).",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,195,10
+    CONTROL         "종료 시 설정을 저장합니다(&S)",IDC_SAVESETTINGS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,160,195,10
 END
 
 IDPP_ADVANCED DIALOGEX 0, 0, 225, 185
@@ -195,23 +195,23 @@ CAPTION "고급"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
-    LTEXT           "MiniPath에 대한 고급 프로그램 설정을 지정합니다.",IDC_STATIC,40,15,160,8
+    LTEXT           "MiniPath에 대한 고급 프로그램 설정을 지정합니다",IDC_STATIC,40,15,160,8
     CONTROL         "시작 디렉터리 사용(&U):",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,92,10
-    CONTROL         "가장 최근에 사용한(&R).",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,108,46,86,10
-    CONTROL         """즐겨찾기"" 폴더(&F).",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,108,58,86,10
+    CONTROL         "가장 최근에 사용한(&R)",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,108,46,86,10
+    CONTROL         """즐겨찾기"" 폴더(&F)",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,108,58,86,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
-    CONTROL         "저장된 파일의 읽기 전용 속성을 지웁니다(&C).",IDC_CLEARREADONLY,
+    CONTROL         "저장된 파일의 읽기 전용 속성을 지웁니다(&C)",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,159,10
-    CONTROL         "이름 충돌 시 복사된 파일의 이름을 바꿉니다(&N).",IDC_RENAMEONCOLLISION,
+    CONTROL         "이름 충돌 시 복사된 파일의 이름을 바꿉니다(&N)",IDC_RENAMEONCOLLISION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,159,10
-    CONTROL         "삭제된 파일을 휴지통으로 이동합니다(&M).",IDC_USERECYCLEBIN,
+    CONTROL         "삭제된 파일을 휴지통으로 이동합니다(&M)",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,159,10
-    CONTROL         "파일 삭제를 확인하지 않습니다 (권장하지 않음)(&D).",IDC_NOCONFIRMDELETE,
+    CONTROL         "파일 삭제를 확인하지 않습니다 (권장하지 않음)(&D)",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,170,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
-    CONTROL         """Esc"" 키 사용(&E)...",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
-    CONTROL         "창을 최소화(&W).",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,78,10
-    CONTROL         "MiniPath를 종료(&X).",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,78,10
+    CONTROL         """Esc"" 키 사용(&E):",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
+    CONTROL         "창을 최소화(&W)",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,78,10
+    CONTROL         "MiniPath를 종료(&X)",IDC_ESCEXIT,"Button",BS_AUTORADIOBUTTON,100,160,78,10
 END
 
 IDPP_ITEMS DIALOGEX 0, 0, 225, 185
@@ -220,15 +220,15 @@ CAPTION "항목"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "디렉터리 목록에 있는 항목의 모양입니다.",IDC_STATIC,40,15,140,8
+    LTEXT           "디렉터리 목록에 있는 항목의 모양입니다",IDC_STATIC,40,15,140,8
     GROUPBOX        "색상",IDC_STATIC,10,41,205,134
     LTEXT           "필터 없음이 설정된 경우 이 텍스트 색 사용:",IDC_STATIC,20,54,136,8
-    CONTROL         "Windows 기본 색상(&W).",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
+    CONTROL         "Windows 기본 색상(&W)",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
     CONTROL         "사용자 지정 색상(&C):",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,80,10
     EDITTEXT        IDC_COLOR_SAMP1,105,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "색상 선택...",IDC_COLOR_PICK1,140,80,50,14
     LTEXT           "필터가 활성 상태인 경우 이 텍스트 색 사용:",IDC_STATIC,20,105,146,8
-    CONTROL         "Windows 기본 색상(&E).",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
+    CONTROL         "Windows 기본 색상(&E)",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
     CONTROL         "사용자 지정 색상(&U):",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,80,10
     EDITTEXT        IDC_COLOR_SAMP2,105,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "색상 선택...",IDC_COLOR_PICK2,140,130,50,14
@@ -240,7 +240,7 @@ CAPTION "위치"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "외부 프로그램 및 경로를 지정합니다.",IDC_STATIC,40,15,140,8
+    LTEXT           "외부 프로그램 및 경로를 지정합니다",IDC_STATIC,40,15,140,8
     LTEXT           "기본 ""빠른 보기"" 프로그램(&D) (Ctrl+Q):",IDC_STATIC,10,41,136,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
@@ -254,7 +254,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "대상 응용 프로그램"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "특정 대상 응용 프로그램을 사용하지 않고 선택한 파일을 실행합니다.",IDC_LAUNCH,
+    CONTROL         "특정 대상 응용 프로그램을 사용하지 않고 선택한 파일을 실행합니다",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,250,10
     CONTROL         "다음 대상 응용 프로그램을 사용:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
@@ -262,7 +262,7 @@ BEGIN
     EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "메시지:",IDC_STATIC,20,120,32,8
-    CONTROL         "안함. 파일을 열 때마다 대상 응용 프로그램을 실행합니다.",IDC_ALWAYSRUN,
+    CONTROL         "안함. 파일을 열 때마다 대상 응용 프로그램을 실행합니다",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,220,10
     CONTROL         "대상 응용 프로그램 창에 파일 열기 메시지 보내기:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,198,10
@@ -283,7 +283,7 @@ CAPTION "창 찾기"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_CROSS1,IDC_CROSSCURSOR,7,7,21,20,SS_CENTERIMAGE
-    LTEXT           "새 대상으로 선택하려는 창 위로 십자선을 끌거나 취소하려면 Esc 키를 누릅니다.",IDC_STATIC,35,7,168,22
+    LTEXT           "새 대상으로 선택하려는 창 위로 십자선을 끌거나 취소하려면 Esc 키를 누릅니다",IDC_STATIC,35,7,168,22
     EDITTEXT        IDC_WINTITLE,35,35,168,14,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
     LTEXT           "창 클래스",IDC_WINCLASS,7,60,51,8,NOT WS_VISIBLE
     LTEXT           "창 모듈",IDC_WINMODULE,7,70,51,8,NOT WS_VISIBLE

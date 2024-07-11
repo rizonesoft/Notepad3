@@ -189,7 +189,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_STR_63136       "Tag HTML"
-    IDS_LEX_STR_63137       "Tag HTML Sconosciuto "
+    IDS_LEX_STR_63137       "Tag HTML Sconosciuto"
     IDS_LEX_STR_63138       "Attributo HTML"
     IDS_LEX_STR_63139       "Attributo HTML Sconosciuto"
     IDS_LEX_STR_63140       "Valore HTML"

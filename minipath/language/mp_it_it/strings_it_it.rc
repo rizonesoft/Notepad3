@@ -81,31 +81,31 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Errore di accesso alla cartella\nImpossibile accedere alla cartella specificata.\nControlla il disco o la connessione di rete."
-    IDS_ERR_FILE            "Errore di accesso al file\nNessun accesso a ""%s"".\nIl file potrebbe essere in uso da un'altra applicazione.\nControlla il disco o la connessione di rete."
-    IDS_ERR_NEW             "Errore di accesso al file\nImpossibile creare il file.\nControlla il disco o la connessione di rete."
-    IDS_ERR_NEWDIR          "Errore di accesso alla cartella\nImpossibile creare la cartella.\nControlla il disco o la connessione di rete."
-    IDS_ERR_SAVEAS1         "Errore nel salvataggio del file\nErrore salvando ""%s"".\nProbabilmente un file già esistente è protetto da scrittura."
-    IDS_ERR_SAVEAS2         "Errore nel salvataggio del file\nErrore nella rimozione dell'attributo di sola lettura sul file salvato."
-    IDS_ERR_CMDLINE         "MiniPath\nErrore di accesso alla cartella o file specificato nella riga di comando."
-    IDS_ERR_STARTUPDIR      "MiniPath\nImpossibile accedere alla cartella di avvio."
-    IDS_ERR_DROP1           "MiniPath\nImpossibile accedere alla cartella o file rilasciato con drag'n'drop."
-    IDS_ERR_DROP2           "MiniPath\nE' possibile fare drag'n'drop solamente di una singola cartella o file."
-    IDS_ERR_FAVORITES       "Favourites\nImpossibile accedere alla cartella ""Preferiti"".\nSpecificare una cartella valida nella dialog box ""Opzioni""."
-    IDS_ERR_LNK_GETPATH     "Errore link\nNessun path valido disponibile per l'oggetto linkato.\nProbabilmente il link non si riferisce ad un file o cartella."
-    IDS_ERR_LNK_NOACCESS    "Errore link\nImpossibile accedere al path dell'oggetto linkato.\nControlla il disco o la connessione di rete."
-    IDS_ERR_CREATELINK      "Errore link\nErrore nella creazione del link specificato.\nProbabilmente la cartella di destinazione è in sola lettura."
-    IDS_ERR_FILTER          "Errore nel filtro file\nNessun filtro aggiuntivo specificato.\nConsulta il file readme di MiniPath per informazioni aggiuntive."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nLa finestra MiniPath esistente è occupata oppure ha una dialog box attiva.\nVuoi aprire un'altra finestra MiniPath?"
+    IDS_ERR_CD              "Errore di accesso alla cartella\nImpossibile accedere alla cartella specificata\nControlla il disco o la connessione di rete"
+    IDS_ERR_FILE            "Errore di accesso al file\nNessun accesso a ""%s""\nIl file potrebbe essere in uso da un'altra applicazione\nControlla il disco o la connessione di rete"
+    IDS_ERR_NEW             "Errore di accesso al file\nImpossibile creare il file\nControlla il disco o la connessione di rete"
+    IDS_ERR_NEWDIR          "Errore di accesso alla cartella\nImpossibile creare la cartella\nControlla il disco o la connessione di rete"
+    IDS_ERR_SAVEAS1         "Errore nel salvataggio del file\nErrore salvando ""%s""\nProbabilmente un file già esistente è protetto da scrittura"
+    IDS_ERR_SAVEAS2         "Errore nel salvataggio del file\nErrore nella rimozione dell'attributo di sola lettura sul file salvato"
+    IDS_ERR_CMDLINE         "MiniPath\nErrore di accesso alla cartella o file specificato nella riga di comando"
+    IDS_ERR_STARTUPDIR      "MiniPath\nImpossibile accedere alla cartella di avvio"
+    IDS_ERR_DROP1           "MiniPath\nImpossibile accedere alla cartella o file rilasciato con drag'n'drop"
+    IDS_ERR_DROP2           "MiniPath\nE' possibile fare drag'n'drop solamente di una singola cartella o file"
+    IDS_ERR_FAVORITES       "Favourites\nImpossibile accedere alla cartella ""Preferiti""\nSpecificare una cartella valida nella dialog box ""Opzioni"""
+    IDS_ERR_LNK_GETPATH     "Errore link\nNessun path valido disponibile per l'oggetto linkato\nProbabilmente il link non si riferisce ad un file o cartella"
+    IDS_ERR_LNK_NOACCESS    "Errore link\nImpossibile accedere al path dell'oggetto linkato\nControlla il disco o la connessione di rete"
+    IDS_ERR_CREATELINK      "Errore link\nErrore nella creazione del link specificato\nProbabilmente la cartella di destinazione è in sola lettura"
+    IDS_ERR_FILTER          "Errore nel filtro file\nNessun filtro aggiuntivo specificato\nConsulta il file readme di MiniPath per informazioni aggiuntive"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nLa finestra MiniPath esistente è occupata oppure ha una dialog box attiva\nVuoi aprire un'altra finestra MiniPath?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nLa finestra di destinazione è occupata oppure ha una dialog box attiva.\nVuoi aprire un'altra finestra?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nVerifica che tutti i campi richiesti siano compilati.\nDovrai anche identificare una finestra di destinazione se la relativa opzione è attiva."
-    IDS_ERR_INIOPEN         "MiniPath\nImpossibile accedere al file di configurazione di MiniPath."
-    IDS_ERR_INICREATE       "Salva impostazioni\nErrore nella creazione del file delle impostazioni."
-    IDS_ERR_INIWRITE        "Salva impostazioni\nImpostazioni non salvate!\nImpossibile scrivere il file delle impostazioni."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nLa finestra di destinazione è occupata oppure ha una dialog box attiva\nVuoi aprire un'altra finestra?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nVerifica che tutti i campi richiesti siano compilati\nDovrai anche identificare una finestra di destinazione se la relativa opzione è attiva"
+    IDS_ERR_INIOPEN         "MiniPath\nImpossibile accedere al file di configurazione di MiniPath"
+    IDS_ERR_INICREATE       "Salva impostazioni\nErrore nella creazione del file delle impostazioni"
+    IDS_ERR_INIWRITE        "Salva impostazioni\nImpostazioni non salvate!\nImpossibile scrivere il file delle impostazioni"
 END
 
 STRINGTABLE
@@ -116,8 +116,8 @@ BEGIN
     IDS_NEWFILE             "Nuovo file"
     IDS_FILTER_ALL          "Tutti i file (*.*)\n*.*\n"
     IDS_FILTER_EXE          "File eseguibili (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nTutti i file (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Seleziona una nuova cartella."
-    IDS_FAVORITES           "Specifica la cartella ""Preferiti."""
+    IDS_GETDIRECTORY        "Seleziona una nuova cartella"
+    IDS_FAVORITES           "Specifica la cartella ""Preferiti"""
 END
 
 STRINGTABLE
@@ -128,10 +128,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "Seleziona la cartella con i link alle tue applicazioni preferite."
-    IDS_COPYMOVE            "Seleziona una cartella di destinazione."
-    IDS_CREATELINK          "Seleziona una cartella di destinazione per il nuovo link."
-    IDS_SAVESETTINGS        "Salva impostazioni\nLe impostazioni correnti sono state salvate."
+    IDS_OPENWITH            "Seleziona la cartella con i link alle tue applicazioni preferite"
+    IDS_COPYMOVE            "Seleziona una cartella di destinazione"
+    IDS_CREATELINK          "Seleziona una cartella di destinazione per il nuovo link"
+    IDS_SAVESETTINGS        "Salva impostazioni\nLe impostazioni correnti sono state salvate"
     IDS_MUI_TRANSL_AUTHOR   "(it-IT) Traduzione italiana di Matteo-Nigro"
 END
 

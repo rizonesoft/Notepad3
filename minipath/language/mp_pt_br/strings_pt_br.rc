@@ -81,31 +81,31 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Erro de Acesso ao Diretório\nSem acesso à´pasta especificada.\nVerifique a unidade ou conexão de rede."
-    IDS_ERR_FILE            "Erro de Acesso ao Arquivo\nSem acesso à ""%s"".\nO arquivo pode estar sendo usado por outro programa.\nVerifique a unidade ou conexão de rede."
-    IDS_ERR_NEW             "Erro de Acesso ao Arquivo\nO arquivo não pôde ser criado.\nVerifique a unidade ou conexão de rede."
-    IDS_ERR_NEWDIR          "Erro de Acesso à Pasta\nA pasta não pôde ser criada.\nVerifique a unidade ou conexão de rede."
-    IDS_ERR_SAVEAS1         "Erro de Gravação de Arquivo\nErro ao salvar ""%s"".\nProvavelmente um arquivo pré-existente está protegido contra escrita."
-    IDS_ERR_SAVEAS2         "Erro de Gravação de Arquivo\nErro ao remover um atributo de somente leitura do arquivo a ser salvo."
-    IDS_ERR_CMDLINE         "MiniPath\nErro ao acessar arquivo ou pasta especificada na linha de comando."
-    IDS_ERR_STARTUPDIR      "MiniPath\nSem acesso à pasta de inicialização."
-    IDS_ERR_DROP1           "MiniPath\nSem acesso ao arquivo ou pasta selecionada."
-    IDS_ERR_DROP2           "MiniPath\nApenas um arquivo ou pasta pode ser selecionado por vez."
-    IDS_ERR_FAVORITES       "Favoritos\nSem acesso à pasta ""Favoritos"".\nEscolha uma pasta válida na caixa de diálogo ""Opções""."
-    IDS_ERR_LNK_GETPATH     "Erro de Link\nSem caminho de sistema de arquivos válido disponível para o objeto vinculado.\nProvavelmente o link não se refere a um arquivo ou pasta."
-    IDS_ERR_LNK_NOACCESS    "Erro de Link\nSem acesso ao caminho de sistema de arquivos do objeto vinculado.\nVerifique a unidade ou conexão de rede."
-    IDS_ERR_CREATELINK      "Erro de Link\nErro ao criar o link especificado.\nProvavalmente a pasta de destino está protegida contra gravação."
-    IDS_ERR_FILTER          "Erro de Filtro de Arquivo\nFiltro adicional não especificado.\nPor favor, consulte o arquivo Readme do MiniPath para mais informações."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nA janela existente do MiniPath está ocupada agora ou tem uma caixa de diálogo ativa.\nVocê quer abrir uma nova janela do MiniPath?"
+    IDS_ERR_CD              "Erro de Acesso ao Diretório\nSem acesso à´pasta especificada\nVerifique a unidade ou conexão de rede"
+    IDS_ERR_FILE            "Erro de Acesso ao Arquivo\nSem acesso à ""%s""\nO arquivo pode estar sendo usado por outro programa\nVerifique a unidade ou conexão de rede"
+    IDS_ERR_NEW             "Erro de Acesso ao Arquivo\nO arquivo não pôde ser criado\nVerifique a unidade ou conexão de rede"
+    IDS_ERR_NEWDIR          "Erro de Acesso à Pasta\nA pasta não pôde ser criada\nVerifique a unidade ou conexão de rede"
+    IDS_ERR_SAVEAS1         "Erro de Gravação de Arquivo\nErro ao salvar ""%s""\nProvavelmente um arquivo pré-existente está protegido contra escrita"
+    IDS_ERR_SAVEAS2         "Erro de Gravação de Arquivo\nErro ao remover um atributo de somente leitura do arquivo a ser salvo"
+    IDS_ERR_CMDLINE         "MiniPath\nErro ao acessar arquivo ou pasta especificada na linha de comando"
+    IDS_ERR_STARTUPDIR      "MiniPath\nSem acesso à pasta de inicialização"
+    IDS_ERR_DROP1           "MiniPath\nSem acesso ao arquivo ou pasta selecionada"
+    IDS_ERR_DROP2           "MiniPath\nApenas um arquivo ou pasta pode ser selecionado por vez"
+    IDS_ERR_FAVORITES       "Favoritos\nSem acesso à pasta ""Favoritos""\nEscolha uma pasta válida na caixa de diálogo ""Opções"""
+    IDS_ERR_LNK_GETPATH     "Erro de Link\nSem caminho de sistema de arquivos válido disponível para o objeto vinculado\nProvavelmente o link não se refere a um arquivo ou pasta"
+    IDS_ERR_LNK_NOACCESS    "Erro de Link\nSem acesso ao caminho de sistema de arquivos do objeto vinculado\nVerifique a unidade ou conexão de rede"
+    IDS_ERR_CREATELINK      "Erro de Link\nErro ao criar o link especificado\nProvavalmente a pasta de destino está protegida contra gravação"
+    IDS_ERR_FILTER          "Erro de Filtro de Arquivo\nFiltro adicional não especificado\nPor favor, consulte o arquivo Readme do MiniPath para mais informações"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nA janela existente do MiniPath está ocupada agora ou tem uma caixa de diálogo ativa\nVocê quer abrir uma nova janela do MiniPath?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nA janela existente está ocupada ou ou tem uma caixa de diálogo ativa.\nVocê gostaria de abrir uma nova janela?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nPor favor, certifique-se de que todos os campos necessários estão completos.\nVocê também terá que definir uma janela de destino se esta opção for ativada."
-    IDS_ERR_INIOPEN         "MiniPath\nSem acesso ao arquivo de configuração do MiniPath."
-    IDS_ERR_INICREATE       "Salvar Configurações\nErro criando arquivo de configurações."
-    IDS_ERR_INIWRITE        "Salvar Configurações\nConfigurações não foram gravadas!\nSem acesso de escrita ao arquivo de configurações."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nA janela existente está ocupada ou ou tem uma caixa de diálogo ativa\nVocê gostaria de abrir uma nova janela?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nPor favor, certifique-se de que todos os campos necessários estão completos\nVocê também terá que definir uma janela de destino se esta opção for ativada"
+    IDS_ERR_INIOPEN         "MiniPath\nSem acesso ao arquivo de configuração do MiniPath"
+    IDS_ERR_INICREATE       "Salvar Configurações\nErro criando arquivo de configurações"
+    IDS_ERR_INIWRITE        "Salvar Configurações\nConfigurações não foram gravadas!\nSem acesso de escrita ao arquivo de configurações"
 END
 
 STRINGTABLE
@@ -116,8 +116,8 @@ BEGIN
     IDS_NEWFILE             "Novo Arquivo"
     IDS_FILTER_ALL          "Todos os arquivos (*.*)\n*.*\n"
     IDS_FILTER_EXE          "Arquivos executáveis (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nTodos os arquivos (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Selecione uma nova pasta."
-    IDS_FAVORITES           "Especifique a pasta de ""Favoritos""."
+    IDS_GETDIRECTORY        "Selecione uma nova pasta"
+    IDS_FAVORITES           "Especifique a pasta de ""Favoritos"""
 END
 
 STRINGTABLE
@@ -128,10 +128,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "Selecione as pastas com links para seus aplicativos favoritas."
-    IDS_COPYMOVE            "Selecione a pasta de destino."
-    IDS_CREATELINK          "Selecione a pasta de destino para o novo link."
-    IDS_SAVESETTINGS        "Salvar Configurações\nAs configurações atuais do programa foram gravadas."
+    IDS_OPENWITH            "Selecione as pastas com links para seus aplicativos favoritas"
+    IDS_COPYMOVE            "Selecione a pasta de destino"
+    IDS_CREATELINK          "Selecione a pasta de destino para o novo link"
+    IDS_SAVESETTINGS        "Salvar Configurações\nAs configurações atuais do programa foram gravadas"
     IDS_MUI_TRANSL_AUTHOR   "(pt-BR) Tradução em português brasileiro por igorruckert"
 END
 

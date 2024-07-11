@@ -81,31 +81,31 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "目錄存取錯誤\n無法存取指定目錄。\n檢查磁碟或網路連線。"
-    IDS_ERR_FILE            "檔案存取錯誤\n無法存取 ""%s""。\n該檔可能被其他應用程式使用。\n檢查磁碟或網路連線。"
-    IDS_ERR_NEW             "檔案存取錯誤\n無法建立檔案。\n檢查磁碟或網路連線。"
-    IDS_ERR_NEWDIR          "目錄存取錯誤\n無法建立目錄。\n檢查磁碟或網路連線。"
-    IDS_ERR_SAVEAS1         "檔案儲存錯誤\n無法儲存 ""%s""。\n可能已存在的檔案受防寫保護。"
-    IDS_ERR_SAVEAS2         "檔案儲存錯誤\n無法移除已儲存檔案的唯讀屬性。"
-    IDS_ERR_CMDLINE         "MiniPath\n無法存取命令列中指定的檔案或目錄。"
-    IDS_ERR_STARTUPDIR      "MiniPath\n無法存取「啟動」目錄。"
-    IDS_ERR_DROP1           "MiniPath\n無法存取拖放的檔案或目錄。"
-    IDS_ERR_DROP2           "MiniPath\n一次僅能拖放單一檔案或目錄。"
-    IDS_ERR_FAVORITES       "常用\n無法存取「常用」資料夾。\n請在「選項」對話方塊中指定有效目錄。"
-    IDS_ERR_LNK_GETPATH     "連結錯誤\n連結物件沒有有效的檔案系統路徑可用。\n可能連結未指定檔案或目錄。"
-    IDS_ERR_LNK_NOACCESS    "連結錯誤\n無法存取連結物件的檔案系統路徑。\n檢查磁碟或網路連線。"
-    IDS_ERR_CREATELINK      "連結錯誤\n無法建立指定連結。\n可能目的地目錄有防寫保護。"
-    IDS_ERR_FILTER          "檔案篩選錯誤\n未指定其他篩選。\n有關更多檔案，請參閱 MiniPath 讀我檔案。"
-    IDS_ERR_PREVWINDISABLED "MiniPath\n現有 MiniPath 視窗忙碌或有使用中對話方塊。\n您要開啟另一個 MiniPath 視窗嗎?"
+    IDS_ERR_CD              "目錄存取錯誤\n無法存取指定目錄\n檢查磁碟或網路連線"
+    IDS_ERR_FILE            "檔案存取錯誤\n無法存取 ""%s""\n該檔可能被其他應用程式使用\n檢查磁碟或網路連線"
+    IDS_ERR_NEW             "檔案存取錯誤\n無法建立檔案\n檢查磁碟或網路連線"
+    IDS_ERR_NEWDIR          "目錄存取錯誤\n無法建立目錄\n檢查磁碟或網路連線"
+    IDS_ERR_SAVEAS1         "檔案儲存錯誤\n無法儲存 ""%s""\n可能已存在的檔案受防寫保護"
+    IDS_ERR_SAVEAS2         "檔案儲存錯誤\n無法移除已儲存檔案的唯讀屬性"
+    IDS_ERR_CMDLINE         "MiniPath\n無法存取命令列中指定的檔案或目錄"
+    IDS_ERR_STARTUPDIR      "MiniPath\n無法存取「啟動」目錄"
+    IDS_ERR_DROP1           "MiniPath\n無法存取拖放的檔案或目錄"
+    IDS_ERR_DROP2           "MiniPath\n一次僅能拖放單一檔案或目錄"
+    IDS_ERR_FAVORITES       "常用\n無法存取「常用」資料夾\n請在「選項」對話方塊中指定有效目錄"
+    IDS_ERR_LNK_GETPATH     "連結錯誤\n連結物件沒有有效的檔案系統路徑可用\n可能連結未指定檔案或目錄"
+    IDS_ERR_LNK_NOACCESS    "連結錯誤\n無法存取連結物件的檔案系統路徑\n檢查磁碟或網路連線"
+    IDS_ERR_CREATELINK      "連結錯誤\n無法建立指定連結\n可能目的地目錄有防寫保護"
+    IDS_ERR_FILTER          "檔案篩選錯誤\n未指定其他篩選\n有關更多檔案，請參閱 MiniPath 讀我檔案"
+    IDS_ERR_PREVWINDISABLED "MiniPath\n現有 MiniPath 視窗忙碌或有使用中對話方塊\n您要開啟另一個 MiniPath 視窗嗎?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\n現有目標視窗忙碌或有使用中對話方塊。\n您要開啟新視窗嗎?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\n請確定填寫所有必填欄位。\n如果啟用了適當的選項，您還必須找到目標視窗。"
-    IDS_ERR_INIOPEN         "MiniPath\n無法存取 MiniPath 設定檔。"
-    IDS_ERR_INICREATE       "儲存設定\n無法建立設定檔。"
-    IDS_ERR_INIWRITE        "儲存設定\n設定未儲存!\n無法寫入設定檔。"
+    IDS_ERR_TARGETDISABLED  "MiniPath\n現有目標視窗忙碌或有使用中對話方塊\n您要開啟新視窗嗎?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\n請確定填寫所有必填欄位\n如果啟用了適當的選項，您還必須找到目標視窗"
+    IDS_ERR_INIOPEN         "MiniPath\n無法存取 MiniPath 設定檔"
+    IDS_ERR_INICREATE       "儲存設定\n無法建立設定檔"
+    IDS_ERR_INIWRITE        "儲存設定\n設定未儲存!\n無法寫入設定檔"
 END
 
 STRINGTABLE
@@ -116,8 +116,8 @@ BEGIN
     IDS_NEWFILE             "新增檔案"
     IDS_FILTER_ALL          "所有檔案 (*.*)\n*.*\n"
     IDS_FILTER_EXE          "可執行檔 (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\n所有檔案 (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "選擇新目錄。"
-    IDS_FAVORITES           "指定「常用」目錄。"
+    IDS_GETDIRECTORY        "選擇新目錄"
+    IDS_FAVORITES           "指定「常用」目錄"
 END
 
 STRINGTABLE
@@ -128,10 +128,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "選擇連結到您常用應用程式的目錄。"
-    IDS_COPYMOVE            "選擇目的地目錄。"
-    IDS_CREATELINK          "為新連結選擇目的地目錄。"
-    IDS_SAVESETTINGS        "儲存設定\n目前程式設定已儲存。"
+    IDS_OPENWITH            "選擇連結到您常用應用程式的目錄"
+    IDS_COPYMOVE            "選擇目的地目錄"
+    IDS_CREATELINK          "為新連結選擇目的地目錄"
+    IDS_SAVESETTINGS        "儲存設定\n目前程式設定已儲存"
     IDS_MUI_TRANSL_AUTHOR   "(zh-TW) 正體中文翻譯 by lhmouse"
 END
 

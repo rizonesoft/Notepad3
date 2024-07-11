@@ -81,31 +81,31 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Hakemiston käyttövirhe\nPääsyä määritettyyn hakemistoon ei ole.\nTarkista levy tai verkkoyhteys."
-    IDS_ERR_FILE            "Tiedoston käyttövirhe\nPääsyä tiedostoon ""%s"" ei ole.\nTiedostoa voi käyttää jokin toinen sovellus.\nTarkista levy tai verkkoyhteys."
-    IDS_ERR_NEW             "Tiedoston käyttövirhe\nTiedostoa ei voitu luoda.\nTarkista levy tai verkkoyhteys."
-    IDS_ERR_NEWDIR          "Hakemiston käyttövirhe\nHakemistoa ei voitu luoda.\nTarkista levy tai verkkoyhteys."
-    IDS_ERR_SAVEAS1         "Tiedoston tallennusvirhe\nVirhe ""%s"" tallennuksessa.\nMahdollisesti jo olemassa oleva tiedosto on kirjoitussuojattu."
-    IDS_ERR_SAVEAS2         "Tiedoston tallennusvirhe\nVirhe tallennetun tiedoston lukuattribuutin poistamisessa."
-    IDS_ERR_CMDLINE         "MiniPath\nVirhe komentorivillä määritetyn tiedoston tai hakemiston käytössä."
-    IDS_ERR_STARTUPDIR      "MiniPath\nKäynnistyshakemistoon ei ole pääsyä."
-    IDS_ERR_DROP1           "MiniPath\nPudotettuun tiedostoon tai hakemistoon ei ole pääsyä."
-    IDS_ERR_DROP2           "MiniPath\nVain yksi tiedosto tai hakemisto voidaan pudottaa kerralla."
-    IDS_ERR_FAVORITES       "Favourites\nEi pääsyä ""Suosikit"" -kansioon.\nMääritä kelvollinen hakemisto ""Asetukset"" -valintaikkunassa."
-    IDS_ERR_LNK_GETPATH     "Linkkivirhe\nLinkitylle objektille ei ole käytettävissä kelvollista tiedostopolkua.\nLinkki ei todennäköisesti viittaa tiedostoon eikä hakemistoon."
-    IDS_ERR_LNK_NOACCESS    "Linkkivirhe\nPääsyä linkitetyn objektin tiedostojärjestelmäpolkuun ei ole.\nTarkista levy tai verkkoyhteys."
-    IDS_ERR_CREATELINK      "Linkkivirhe\nVirhe määritetyn linkin luomisessa.\nMahdollisesti kohdehakemisto on kirjoitussuojattu."
-    IDS_ERR_FILTER          "Tiedostosuodatinvirhe\nLisäsuodattimia ei ole määritetty.\nLue lisätietoja MiniPath readme-tiedostosta."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nOlemassa oleva MiniPath-ikkuna on varattu tai siinä on aktiivinen valintaikkuna. \nHaluatko avata toisen MiniPath-ikkunan?"
+    IDS_ERR_CD              "Hakemiston käyttövirhe\nPääsyä määritettyyn hakemistoon ei ole\nTarkista levy tai verkkoyhteys"
+    IDS_ERR_FILE            "Tiedoston käyttövirhe\nPääsyä tiedostoon ""%s"" ei ole\nTiedostoa voi käyttää jokin toinen sovellus\nTarkista levy tai verkkoyhteys"
+    IDS_ERR_NEW             "Tiedoston käyttövirhe\nTiedostoa ei voitu luoda\nTarkista levy tai verkkoyhteys"
+    IDS_ERR_NEWDIR          "Hakemiston käyttövirhe\nHakemistoa ei voitu luoda\nTarkista levy tai verkkoyhteys"
+    IDS_ERR_SAVEAS1         "Tiedoston tallennusvirhe\nVirhe ""%s"" tallennuksessa\nMahdollisesti jo olemassa oleva tiedosto on kirjoitussuojattu"
+    IDS_ERR_SAVEAS2         "Tiedoston tallennusvirhe\nVirhe tallennetun tiedoston lukuattribuutin poistamisessa"
+    IDS_ERR_CMDLINE         "MiniPath\nVirhe komentorivillä määritetyn tiedoston tai hakemiston käytössä"
+    IDS_ERR_STARTUPDIR      "MiniPath\nKäynnistyshakemistoon ei ole pääsyä"
+    IDS_ERR_DROP1           "MiniPath\nPudotettuun tiedostoon tai hakemistoon ei ole pääsyä"
+    IDS_ERR_DROP2           "MiniPath\nVain yksi tiedosto tai hakemisto voidaan pudottaa kerralla"
+    IDS_ERR_FAVORITES       "Favourites\nEi pääsyä ""Suosikit"" -kansioon\nMääritä kelvollinen hakemisto ""Asetukset"" -valintaikkunassa"
+    IDS_ERR_LNK_GETPATH     "Linkkivirhe\nLinkitylle objektille ei ole käytettävissä kelvollista tiedostopolkua\nLinkki ei todennäköisesti viittaa tiedostoon eikä hakemistoon"
+    IDS_ERR_LNK_NOACCESS    "Linkkivirhe\nPääsyä linkitetyn objektin tiedostojärjestelmäpolkuun ei ole\nTarkista levy tai verkkoyhteys"
+    IDS_ERR_CREATELINK      "Linkkivirhe\nVirhe määritetyn linkin luomisessa\nMahdollisesti kohdehakemisto on kirjoitussuojattu"
+    IDS_ERR_FILTER          "Tiedostosuodatinvirhe\nLisäsuodattimia ei ole määritetty\nLue lisätietoja MiniPath readme-tiedostosta"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nOlemassa oleva MiniPath-ikkuna on varattu tai siinä on aktiivinen valintaikkuna\nHaluatko avata toisen MiniPath-ikkunan?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nOlemassa oleva kohdeikkuna on varattu tai siinä on aktiivinen valintaikkuna. \nHaluatko avata uuden ikkunan?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nVarmista, että kaikki vaaditut kentät on täytetty.\nSinun on myös löydettävä kohdeikkuna, jos kyseinen vaihtoehto on käytössä."
-    IDS_ERR_INIOPEN         "MiniPath\nMiniPath-konfiguraatiotiedostoon ei ole pääsyä."
-    IDS_ERR_INICREATE       "Tallenna asetukset\nVirhe asetustiedoston luomisessa."
-    IDS_ERR_INIWRITE        "Tallenna asetukset\nAsetuksia ei ole tallennettu!\nKirjoitusoikeutta asetustiedostoon ei ole."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nOlemassa oleva kohdeikkuna on varattu tai siinä on aktiivinen valintaikkuna\nHaluatko avata uuden ikkunan?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nVarmista, että kaikki vaaditut kentät on täytetty\nSinun on myös löydettävä kohdeikkuna, jos kyseinen vaihtoehto on käytössä"
+    IDS_ERR_INIOPEN         "MiniPath\nMiniPath-konfiguraatiotiedostoon ei ole pääsyä"
+    IDS_ERR_INICREATE       "Tallenna asetukset\nVirhe asetustiedoston luomisessa"
+    IDS_ERR_INIWRITE        "Tallenna asetukset\nAsetuksia ei ole tallennettu!\nKirjoitusoikeutta asetustiedostoon ei ole"
 END
 
 STRINGTABLE
@@ -116,8 +116,8 @@ BEGIN
     IDS_NEWFILE             "Uusi tiedosto"
     IDS_FILTER_ALL          "Kaikki tiedostot (*.*)\n*.*\n"
     IDS_FILTER_EXE          "Suoritettavat tiedostot (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nKaikki tiedostot (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Valitse uusi hakemisto."
-    IDS_FAVORITES           "Määritä ""Suosikit"" -hakemisto."
+    IDS_GETDIRECTORY        "Valitse uusi hakemisto"
+    IDS_FAVORITES           "Määritä ""Suosikit"" -hakemisto"
 END
 
 STRINGTABLE
@@ -128,10 +128,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "Valitse hakemisto, jossa on linkkejä suosikkisovelluksiisi."
-    IDS_COPYMOVE            "Valitse kohdehakemisto."
-    IDS_CREATELINK          "Valitse uuden linkin kohdehakemisto."
-    IDS_SAVESETTINGS        "Tallenna asetukset\nTämänhetkiset ohjelma-asetukset on tallennettu."
+    IDS_OPENWITH            "Valitse hakemisto, jossa on linkkejä suosikkisovelluksiisi"
+    IDS_COPYMOVE            "Valitse kohdehakemisto"
+    IDS_CREATELINK          "Valitse uuden linkin kohdehakemisto"
+    IDS_SAVESETTINGS        "Tallenna asetukset\nTämänhetkiset ohjelma-asetukset on tallennettu"
     IDS_MUI_TRANSL_AUTHOR   "(fi-FI) Käännös Veikko-M"
 END
 

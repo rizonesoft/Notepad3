@@ -81,31 +81,31 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "切换当前文件夹\n无法访问当前文件夹。\n\n请检查它的访问权限。如果它位于网络驱动器上，请检查网络连接。"
-    IDS_ERR_FILE            "访问文件\n无法访问文件“%s”。\n\n请检查它的访问权限。如果它位于网络驱动器上，请检查网络连接。"
-    IDS_ERR_NEW             "创建文件\n无法创建文件。\n\n请检查其所在文件夹的访问权限。如果它位于网络驱动器上，请检查网络连接。"
-    IDS_ERR_NEWDIR          "创建文件夹\n无法创建文件夹。\n\n请检查其所在文件夹的访问权限。如果它位于网络驱动器上，请检查网络连接。"
-    IDS_ERR_SAVEAS1         "保存文件\n无法写入目标文件“%s”。\n\n该文件或其所在文件夹可能是受保护的。"
-    IDS_ERR_SAVEAS2         "保存文件\n未能重置已保存文件的只读属性。"
-    IDS_ERR_CMDLINE         "MiniPath\n无法访问命令行参数中指定的文件或文件夹。"
-    IDS_ERR_STARTUPDIR      "MiniPath\n无法访问启动文件夹。"
-    IDS_ERR_DROP1           "MiniPath\n无法访问拖放的文件或文件夹。"
-    IDS_ERR_DROP2           "MiniPath\n一次只能拖放一个文件或文件夹。"
-    IDS_ERR_FAVORITES       "收藏夹\n无法访问“收藏夹”文件夹。\n\n请在“选项”中指定一个其它文件夹。"
-    IDS_ERR_LNK_GETPATH     "快捷方式\n快捷方式的目标无法解析为文件系统路径。\n\n它可能并不是一个普通的文件或文件夹。"
-    IDS_ERR_LNK_NOACCESS    "快捷方式\n无法访问快捷方式的目标。\n\n请检查它的访问权限。如果它位于网络驱动器上，请检查网络连接。"
-    IDS_ERR_CREATELINK      "快捷方式\n没有权限在该文件夹中创建快捷方式。\n\n该文件夹可能是受保护的。"
-    IDS_ERR_FILTER          "文件过滤器\n配置文件中无自定义的过滤器可用。\n\n请查阅 MiniPath 手册以了解如何自定义过滤器。"
-    IDS_ERR_PREVWINDISABLED "MiniPath\n当前已存在的 MiniPath 窗口正忙，或有一个已打开的对话框正在阻止它响应。\n\n打开一个新的 MiniPath 窗口吗？"
+    IDS_ERR_CD              "切换当前文件夹\n无法访问当前文件夹\n\n请检查它的访问权限。如果它位于网络驱动器上，请检查网络连接"
+    IDS_ERR_FILE            "访问文件\n无法访问文件“%s”\n\n请检查它的访问权限。如果它位于网络驱动器上，请检查网络连接"
+    IDS_ERR_NEW             "创建文件\n无法创建文件\n\n请检查其所在文件夹的访问权限。如果它位于网络驱动器上，请检查网络连接"
+    IDS_ERR_NEWDIR          "创建文件夹\n无法创建文件夹\n\n请检查其所在文件夹的访问权限。如果它位于网络驱动器上，请检查网络连接"
+    IDS_ERR_SAVEAS1         "保存文件\n无法写入目标文件“%s”\n\n该文件或其所在文件夹可能是受保护的"
+    IDS_ERR_SAVEAS2         "保存文件\n未能重置已保存文件的只读属性"
+    IDS_ERR_CMDLINE         "MiniPath\n无法访问命令行参数中指定的文件或文件夹"
+    IDS_ERR_STARTUPDIR      "MiniPath\n无法访问启动文件夹"
+    IDS_ERR_DROP1           "MiniPath\n无法访问拖放的文件或文件夹"
+    IDS_ERR_DROP2           "MiniPath\n一次只能拖放一个文件或文件夹"
+    IDS_ERR_FAVORITES       "收藏夹\n无法访问“收藏夹”文件夹\n\n请在“选项”中指定一个其它文件夹"
+    IDS_ERR_LNK_GETPATH     "快捷方式\n快捷方式的目标无法解析为文件系统路径\n\n它可能并不是一个普通的文件或文件夹"
+    IDS_ERR_LNK_NOACCESS    "快捷方式\n无法访问快捷方式的目标\n\n请检查它的访问权限。如果它位于网络驱动器上，请检查网络连接"
+    IDS_ERR_CREATELINK      "快捷方式\n没有权限在该文件夹中创建快捷方式\n\n该文件夹可能是受保护的"
+    IDS_ERR_FILTER          "文件过滤器\n配置文件中无自定义的过滤器可用\n\n请查阅 MiniPath 手册以了解如何自定义过滤器"
+    IDS_ERR_PREVWINDISABLED "MiniPath\n当前已存在的 MiniPath 窗口正忙，或有一个已打开的对话框正在阻止它响应\n\n打开一个新的 MiniPath 窗口吗？"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\n当前已存在的目标应用程序的窗口正忙，或有一个已打开的对话框正在阻止它响应。\n\n打开一个新的窗口吗？"
-    IDS_ERR_INVALIDTARGET   "MiniPath\n请确保所有必需的参数都被填写完整。\n\n另外，如果你选择了“发送打开文件消息”的选项，你需要为它选择一个窗口。"
-    IDS_ERR_INIOPEN         "MiniPath\n无法读取配置文件。"
-    IDS_ERR_INICREATE       "保存设置\n创建配置文件失败。"
-    IDS_ERR_INIWRITE        "保存设置\n无法写入配置文件。"
+    IDS_ERR_TARGETDISABLED  "MiniPath\n当前已存在的目标应用程序的窗口正忙，或有一个已打开的对话框正在阻止它响应\n\n打开一个新的窗口吗？"
+    IDS_ERR_INVALIDTARGET   "MiniPath\n请确保所有必需的参数都被填写完整\n\n另外，如果你选择了“发送打开文件消息”的选项，你需要为它选择一个窗口"
+    IDS_ERR_INIOPEN         "MiniPath\n无法读取配置文件"
+    IDS_ERR_INICREATE       "保存设置\n创建配置文件失败"
+    IDS_ERR_INIWRITE        "保存设置\n无法写入配置文件"
 END
 
 STRINGTABLE
@@ -116,8 +116,8 @@ BEGIN
     IDS_NEWFILE             "新建文件"
     IDS_FILTER_ALL          "所有文件(*.*)\n*.*\n"
     IDS_FILTER_EXE          "可执行文件(*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\n所有文件 (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "请选择一个新文件夹。"
-    IDS_FAVORITES           "请指定作为“收藏夹”使用的文件夹。"
+    IDS_GETDIRECTORY        "请选择一个新文件夹"
+    IDS_FAVORITES           "请指定作为“收藏夹”使用的文件夹"
 END
 
 STRINGTABLE
@@ -128,10 +128,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "请选择用于收藏应用程序的文件夹。"
-    IDS_COPYMOVE            "请选择目标文件夹。"
-    IDS_CREATELINK          "请选择保存新快捷方式的文件夹。"
-    IDS_SAVESETTINGS        "保存设置\n当前设置已保存。"
+    IDS_OPENWITH            "请选择用于收藏应用程序的文件夹"
+    IDS_COPYMOVE            "请选择目标文件夹"
+    IDS_CREATELINK          "请选择保存新快捷方式的文件夹"
+    IDS_SAVESETTINGS        "保存设置\n当前设置已保存"
     IDS_MUI_TRANSL_AUTHOR   "(zh-CN) 简体中文翻译 by lhmouse"
 END
 

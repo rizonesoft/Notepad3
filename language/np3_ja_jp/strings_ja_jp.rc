@@ -118,8 +118,8 @@ BEGIN
     IDS_MUI_FILTER_EXE      "実行ファイル (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|すべてのファイル (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "設定ファイル (*.ini)|*.ini|すべてのファイル (*.*)|*.*|"
     IDS_MUI_FILTER_BITMAP   "ビットマップファイル (*.bmp)|*.bmp|すべてのファイル (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "開きたいプログラムがあるフォルダを指定してください。"
-    IDS_MUI_FAVORITES       "お気に入りのフォルダを指定してください。"
+    IDS_MUI_OPENWITH        "開きたいプログラムがあるフォルダを指定してください"
+    IDS_MUI_FAVORITES       "お気に入りのフォルダを指定してください"
     IDS_MUI_BACKSLASHHELP   "バックスラッシュ変換\n\n\\a\tアラート (BEL, Ascii 7, ベル)\n\\b\tバックスペース (BS, Ascii 8)\n\\f\t改ページ (FF, Ascii 12)\n\\n\t改行文字 (LF, Ascii 10)\n\\r\t復帰文字 (CR, Ascii 13, キャリッジリターン)\n\\t\tタブ (HT, Ascii 9, 水平タブ)\n\\v\t垂直タブ (VT, Ascii 11)\n\\0oo\t8進数表記\n\\u####\t16進数表記\n\\xhh\t16進数表記\n\\\\\tバックスラッシュ自体"
     IDS_MUI_REGEXPHELP      "正規表現の構文 (複数行)\n\n.\t何らかの1文字\n^\t行の先頭\n$\t行の末尾\n\\<\t単語の先頭\n\\>\t単語の末尾\n\\b\t単語の区切り(アルファベットの単語)\n[...]\t指定した文字群 ([abc]) または - で範囲 ([a-z])\n[^...]\t上記で指定した文字ではない(^で除外)\n\\d\t10進数1文字(半角数字)\n\\D\t10進数ではない(上記以外)\n\\s\t空白文字(何らか)\n\\S\t空白文字ではない(上記以外)\n\\w\t言葉の1文字(日本語含む)\n\\W\t非言語文字(上記以外)\n\\x\t下記用のエスケープ文字\n\\xHH\t16進コードHHで1文字\n?\t直前文字0回か1回に合致\n*\t直前文字0回以上の繰り返し\n+\t直前文字1回以上の繰り返し\n*? か +?\t上記記号 ""?"" と ""+"" を最長合致ではなくする\n{n}\t繰り返し回数を指定 , 区切りで上限も\n(\t範囲指定の括弧開始\n)\t範囲指定の閉じ括弧\n|\tor 範囲括弧内でも使用可能\n\\n\t上記の括弧内を記憶し置換時に参照する\n\t\\1から\\9まで順に対応括弧内の文字列を呼び出す\n"
     IDS_MUI_WILDCARDHELP    "ワイルドカード検索\n\n*\t0文字以上の文字列に合致\n?\tちょうど1文字に合致"
@@ -130,33 +130,33 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "読込失敗 ""%s"""
     IDS_MUI_ERR_SAVEFILE    "保存失敗 ""%s"""
     IDS_MUI_ERR_DLG_FORMAT  "エラー '%s', 原因:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "ファイラーのプラグインがありません。\nこのプラグイン MiniPath は以下からダウンロードできます。 https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "ファイル検索プラグインが見つかりません。\nファイル検索プラグインの grepWinNP3 は以下からダウンロードできます。https://rizonesoft.com"
-    IDS_MUI_ERR_MRUDLG      "選択したファイルにアクセスできません。\n一覧から除去しますか?"
-    IDS_MUI_ERR_CREATELINK  "デスクトップへのショートカット作成時にエラーが発生しました。"
+    IDS_MUI_ERR_BROWSE      "ファイラーのプラグインがありません\nこのプラグイン MiniPath は以下からダウンロードできます https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "ファイル検索プラグインが見つかりません\nファイル検索プラグインの grepWinNP3 は以下からダウンロードできます https://rizonesoft.com"
+    IDS_MUI_ERR_MRUDLG      "選択したファイルにアクセスできません\n一覧から除去しますか?"
+    IDS_MUI_ERR_CREATELINK  "デスクトップへのショートカット作成時にエラーが発生しました"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "現在 Notepad3 のウィンドウはビジー状態か､ダイアログを表示しています。\nNotepad3 のウィンドウを新たに開きますか?"
-    IDS_MUI_ERR_ENCODINGNA  "このパソコンでは、選択した文字コード用のコードページ変換テーブルが利用できません。"
-    IDS_MUI_ERR_UNICODE     "Unicode への変換中にエラーが発生しました。\nファイルを保存するとデータが失われるかもしれません。"
-    IDS_MUI_ERR_BITMAP      "ビットマップ「%s」の寸法が適切ではありません。\n適切な寸法: %i x %i (幅 >= %i x 高さ)."
+                            "現在 Notepad3 のウィンドウはビジー状態か､ダイアログを表示しています\nNotepad3 のウィンドウを新たに開きますか?"
+    IDS_MUI_ERR_ENCODINGNA  "このパソコンでは、選択した文字コード用のコードページ変換テーブルが利用できません"
+    IDS_MUI_ERR_UNICODE     "Unicode への変換中にエラーが発生しました\nファイルを保存するとデータが失われるかもしれません"
+    IDS_MUI_ERR_BITMAP      "ビットマップ「%s」の寸法が適切ではありません\n適切な寸法: %i x %i (幅 >= %i x 高さ)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "権限取得のエラー。"
+                            "権限取得のエラー"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "現在の文書に含まれる一部の文字が、選択した文字コードに対応していません。保存した場合、所定の文字に置換される可能性があります。他の文字コードを推奨します。\n変換を続行しますか?"
-    IDS_MUI_ERR_DROP        "一度にひとつのファイルしかドロップできません。"
+    IDS_MUI_ERR_UNICODE2    "現在の文書に含まれる一部の文字が、選択した文字コードに対応していません。保存した場合、所定の文字に置換される可能性があります。他の文字コードを推奨します\n変換を続行しますか?"
+    IDS_MUI_ERR_DROP        "一度にひとつのファイルしかドロップできません"
     IDS_MUI_ERR_ACCESSDENIED
-                            "「%s」を保存できませんでした。保護されている可能性があります。\n\n権限を昇格して %s を起動しますか?"
-    IDS_MUI_ERR_ADMINEXE    "管理ツールが見つかりません。\nNotepad3 の公式サイトを開きますか? https://rizonesoft.com"
+                            "「%s」を保存できませんでした。保護されている可能性があります\n\n権限を昇格して %s を起動しますか?"
+    IDS_MUI_ERR_ADMINEXE    "管理ツールが見つかりません\nNotepad3 の公式サイトを開きますか? https://rizonesoft.com"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "大容量のファイルです。このファイルを開きますか?\n\t(サイズ: %s >= %s)!\n(配色や構文ハイライトは適用されません!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
                             "大容量すぎて処理できません! (サイズ: %s)"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "%s は設定のない拡張子です。\n読み込みますか?"
-    IDS_MUI_INDENT_CONSISTENT  "インデントは一貫しています。"
+                            "%s は設定のない拡張子です\n読み込みますか?"
+    IDS_MUI_INDENT_CONSISTENT  "インデントは一貫しています"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
@@ -167,46 +167,46 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_SELRECT         "この操作は矩形選択では使えません"
-    IDS_MUI_SELMULTI        "この操作は複数選択では使えません。"
-    IDS_MUI_SELRECTORMULTI  "この操作は矩形選択や複数選択では使えません。"
-    IDS_MUI_BUFFERTOOSMALL  "この操作は実行できません。行が長すぎます。"
+    IDS_MUI_SELMULTI        "この操作は複数選択では使えません"
+    IDS_MUI_SELRECTORMULTI  "この操作は矩形選択や複数選択では使えません"
+    IDS_MUI_BUFFERTOOSMALL  "この操作は実行できません。行が長すぎます"
     IDS_MUI_FIND_WRAPFW     "文書の最後に到達しました。先頭から検索しますか?"
     IDS_MUI_FIND_WRAPRE     "文書の先頭に到達しました。終端から検索しますか?"
-    IDS_MUI_NOTFOUND        "指定の検索条件には一致しませんでした。"
-    IDS_MUI_REPLCOUNT       "一致する %s か所を指定の検索条件で置換しました。"
-    IDS_MUI_ASK_ENCODING    "他の文字コードに変換すると、未対応の文字は所定の文字に置換され、また「元に戻す」の履歴が消去されます。\n変換を続行しますか?"
+    IDS_MUI_NOTFOUND        "指定の検索条件には一致しませんでした"
+    IDS_MUI_REPLCOUNT       "一致する %s か所を指定の検索条件で置換しました"
+    IDS_MUI_ASK_ENCODING    "他の文字コードに変換すると、未対応の文字は所定の文字に置換され、また「元に戻す」の履歴が消去されます\n変換を続行しますか?"
     IDS_MUI_ASK_ENCODING2   "空のファイルの文字コードを変更しようとしています。「元に戻す」の履歴が消去されます。変更を続行しますか?"
     IDS_MUI_ASK_CLEAR_UNDO  "この操作は「元に戻す」の履歴を消去します。続行しますか?"
     IDS_MUI_READONLY_SAVE   "「%s」は読み取り専用です。別のファイル名で保存しますか?"
     IDS_MUI_FILECHANGENOTIFY
-                            "このファイルは外部のプラグラムにより修正されました。\n次から選択してください:\n\nキャンセル -\t\t以降の変更を無視\n再読み込み -\t\tファイルを再読み込み\n続行 -\tファイル監視モードに切り替え"
+                            "このファイルは外部のプラグラムにより修正されました\n次から選択してください:\n\nキャンセル -\t\t以降の変更を無視\n再読み込み -\t\tファイルを再読み込み\n続行 -\tファイル監視モードに切り替え"
     IDS_MUI_FILECHANGENOTIFY2 "ファイルが削除されました。保存しますか?"
     IDS_MUI_FILELOCK_ERROR  "ファイル %s を排他ロックできませんでした !"
-    IDS_MUI_STICKYWINPOS    "ウィンドウ位置の固定を有効にします。新しいウインドウは、現在のウインドウ位置の設定にて開かれます。"
-    IDS_MUI_SAVEDSETTINGS   "設定が保存されました。"
-    IDS_MUI_CREATEINI_FAIL  "設定ファイルの作成に失敗しました。"
-    IDS_MUI_WRITEINI_FAIL   "設定ファイルへの書き込みに失敗しました。"
+    IDS_MUI_STICKYWINPOS    "ウィンドウ位置の固定を有効にします。新しいウインドウは、現在のウインドウ位置の設定にて開かれます"
+    IDS_MUI_SAVEDSETTINGS   "設定が保存されました"
+    IDS_MUI_CREATEINI_FAIL  "設定ファイルの作成に失敗しました"
+    IDS_MUI_WRITEINI_FAIL   "設定ファイルへの書き込みに失敗しました"
     IDS_MUI_INIFILE_READONLY
                             "設定ファイルは読み取り専用です。無視して設定を上書しますか?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "設定ファイルがありません。\n配色の変更を保存するには、すぐに設定を保存するか(F7)、配色の設定(Ctrl+F12)から配色設定をエクスポートしてください。"
+                            "設定ファイルがありません\n配色の変更を保存するには、すぐに設定を保存するか(F7)、配色の設定(Ctrl+F12)から配色設定をエクスポートしてください"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_RELOADSETTINGS   "アプリケーションを再起動して保存した設定を有効にしますか?\n\n%s"
     IDS_MUI_RELOADCFGSEX     "再起動せずに続行すると、保存した設定は反映されず、プログラム終了時の内部設定に上書きされてしまいます!"
-    IDS_MUI_EXPORT_FAIL      """%s"" への配色設定のエクスポートに失敗しました。"
+    IDS_MUI_EXPORT_FAIL      """%s"" への配色設定のエクスポートに失敗しました"
     IDS_MUI_REGEX_INVALID    "正規表現の構文が正しくありません!"
-    IDS_MUI_DROP_NO_FILE     "読み込んだファイル名が正しくありません。(仮訳)\n32-bit のプログラムからドロップしたのであれば、\nNotepad3 のツールバーにドラッグ&&ドロップしてください。"
+    IDS_MUI_DROP_NO_FILE     "読み込んだファイル名が正しくありません。(仮訳)\n32-bit のプログラムからドロップしたのであれば、\nNotepad3 のツールバーにドラッグ&&ドロップしてください"
     IDS_MUI_URL_DIR_EXISTS   "URL で指定されたフォルダは存在します!"
     IDS_MUI_URL_FILE_EXISTS  "URL で指定されたファイルは存在します!"
     IDS_MUI_URL_PATH_NOT_FOUND
                              "URL で指定されたパスが見つかりません!"
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + クリック : ファイルを開きます。"
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + クリック : ブラウザーでリンクを開きます。"
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + クリック : ファイルを開きます"
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + クリック : ブラウザーでリンクを開きます"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "元ファイルの更新日時のままにします。\nこのセッションでのみ有効となります。"
+                             "元ファイルの更新日時のままにします\nこのセッションでのみ有効となります"
     IDS_MUI_OUT_OFF_OCCMRK   "単語出現マーカーが枯渇しています (しおり/強調表示)!"
     IDS_MUI_DOCUMENT_READONLY
                              "この文書は閲覧専用にされています。編集を防ぐためにこのままロックを続けますか?"
@@ -230,16 +230,16 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "この文書には、印刷のための文章が含まれていません。"
+    IDS_MUI_PRINT_EMPTY     "この文書には、印刷のための文章が含まれていません"
     IDS_MUI_PRINT_ERROR     "印刷失敗! 「%s」"
-    IDS_MUI_FAV_SUCCESS     "このファイルへのショートカットが、お気に入りフォルダ内に作成されました。"
-    IDS_MUI_FAV_FAILURE     "このファイルへのショートカットは作成できませんでした。\n同じ名前の他のファイルがないことを確認してください。"
-    IDS_MUI_READONLY_MODIFY "「%s」の属性を変更できませんでした。"
+    IDS_MUI_FAV_SUCCESS     "このファイルへのショートカットが、お気に入りフォルダ内に作成されました"
+    IDS_MUI_FAV_FAILURE     "このファイルへのショートカットは作成できませんでした\n同じ名前の他のファイルがないことを確認してください"
+    IDS_MUI_READONLY_MODIFY "「%s」の属性を変更できませんでした"
     IDS_MUI_SAVEPOS         "ウインドウ位置の保存(&S)\tCtrl+S"
     IDS_MUI_RESETPOS        "ウインドウ位置のリセット(&R)\tCtrl+R"
     IDS_MUI_PREVIEW         "設定のプレビュー(&P)\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "パスワードが正しくありません。\nほかのパスワードを試しますか?"
-    IDS_MUI_NOPASS          "複合化がキャンセルされました。\n暗号化されたままの生データを読み込みますか?"
+    IDS_MUI_PASS_FAILURE    "パスワードが正しくありません\nほかのパスワードを試しますか?"
+    IDS_MUI_NOPASS          "複合化がキャンセルされました\n暗号化されたままの生データを読み込みますか?"
     IDS_MUI_STY_BASESTD     "ベース (標準配色):"
     IDS_MUI_STY_BASE2ND     "ベース (標準配色2):"
     IDS_MUI_STY_LEXDEF      "%s - 標準配色:"
@@ -267,7 +267,7 @@ BEGIN
     IDS_USE_LOCALE_DATEFMT  "言語を日付の書式に反映(&D)"
     IDS_MUI_MENU_THEMES     "配色テーマ(&S)"
     IDM_THEMES_FACTORY_RESET "初期化(&F)"
-    IDM_THEMES_STD_CFG       "標準設定 (&S)"  // Keep blank space before (&S)
+    IDM_THEMES_STD_CFG       "標準設定 (&S)"  // Keep blank space before (&S)"
     IDS_MUI_STATUSBAR_PREFIXES "行 ,列 ,選 ,選B ,選行 ,見 ,,,,,,,字 ,置 ,式 ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "すべて削除"
@@ -301,7 +301,7 @@ IDS_MUI_CMDLINEHELP "\
 Notepad3 [/?] [...[文字コード]] [...[改行コード]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[ドライブ:][パス]ファイル名[...]]\r\n\r\n\
-ファイル\t相対パス可能. 最後の引数にする必要がある.\r\n\t通常は空白があっても引用符は不要.\r\n\
+ファイル\t相対パス可能. 最後の引数にする必要がある\r\n\t通常は空白があっても引用符は不要\r\n\
 +\t複数のファイルの引数を許容 (要・引用符)\r\n\
 -\tファイル引数をひとつだけ許容 (引用符不要)\r\n\r\n\
 引数（省略可）:\r\n\
@@ -340,13 +340,13 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-拡張子の区切りは ; です。\r\n\
+拡張子の区切りは ; です\r\n\
 \\正規表現記法; という書式でファイル名の一致パターンを定義できます:\r\n\
    例 \\xyz$;   ファイル名(ベースファイル名+拡張子)の末尾が xyz に合致\r\n\r\n\
 設定書式(各指定は省略可能, foreは文字色):\r\n\
 font:フォント名; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-コピーペーストやドラッグドロップでも指定を変更できます。\
+コピーペーストやドラッグドロップでも指定を変更できます\
 "
 
 END

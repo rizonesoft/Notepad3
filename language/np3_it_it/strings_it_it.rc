@@ -118,27 +118,27 @@ BEGIN
     IDS_MUI_FILTER_EXE      "File eseguibili (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Tutti i file (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "File di configurazione (*.ini)|*.ini|Tutti i file (*.*)|*.*|"
     IDS_MUI_FILTER_BITMAP   "File Bitmap (*.bmp)|*.bmp|Tutti i file (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Scegli la cartella con i collegamenti alle tue applicazioni preferite."
-    IDS_MUI_FAVORITES       "Scegli la cartella con i collegamenti ai tuoi file preferiti."
+    IDS_MUI_OPENWITH        "Scegli la cartella con i collegamenti alle tue applicazioni preferite"
+    IDS_MUI_FAVORITES       "Scegli la cartella con i collegamenti ai tuoi file preferiti"
     IDS_MUI_BACKSLASHHELP   "Trasformazioni backslash\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage Return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
     IDS_MUI_REGEXPHELP      "Sintassi occorrenze RegExp (Multi lines)\n\n.\tTrova qualunque carattere\n^\tStringa vuota immediatamente dopo un Newline\n$\tStringa vuota immediatamente prima dell'EOL\n\\<\tInizio di parola\n\\>\tFine di parola\n\\b\tConfini di parola\n[...]\tSet di caratteri ([abc]) o range ([a-z])\n[^...]\tCaratteri NON nel set o range\n\\d\tQualunque cifra numerica\n\\D\tQualunque carattere alfabetico\n\\s\tQualunque carattere whitespace\n\\S\tCarattere NON whitespace\n\\w\tQualunque carattere ""parola""\n\\W\tQualunque carattere ""non-parola""\n\\x\tCarattere di Escape con significato\n\taltrimenti speciale\n\\xHH\tChar con codice hex HH\n?\tTrova corrispondenza precedente 0 o 1 volta\n*\tTrova corrispondenza precedente 0 o più volte\n+\tTrova corrispondenza precedente 1 o più volte\n*? or +?\tNon-greedy-matching dei quantificatori ""?"" e ""+""\n(\tInizio region\n)\tFine region\n\\n\tRiferimento a una region quando\n\tsostituisce (n è 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Cerca con caratteri Jolly\n\n*\tTrova 0 o più caratteri.\n?\tTrova esattamente 1 carattere. "
+    IDS_MUI_WILDCARDHELP    "Cerca con caratteri Jolly\n\n*\tTrova 0 o più caratteri\n?\tTrova esattamente 1 carattere"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "Errore aprendo ""%s""."
-    IDS_MUI_ERR_SAVEFILE    "Errore salvando ""%s""."
+    IDS_MUI_ERR_LOADFILE    "Errore aprendo ""%s"""
+    IDS_MUI_ERR_SAVEFILE    "Errore salvando ""%s"""
     IDS_MUI_ERR_DLG_FORMAT  "Errore '%s', causa:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "Nessun plugin file browser trovato.\nMiniPath può essere scaricato da https://rizonesoft.com."
-    IDS_MUI_ERR_GREPWIN     "Nessun plugin ricerca file trovato.\nIl plugin ricerca file grepWinNP3 può esssere scaricato da https://rizonesoft.com."
+    IDS_MUI_ERR_BROWSE      "Nessun plugin file browser trovato\nMiniPath può essere scaricato da https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Nessun plugin ricerca file trovato\nIl plugin ricerca file grepWinNP3 può esssere scaricato da https://rizonesoft.com"
     IDS_MUI_ERR_MRUDLG      "Nessun accesso al file selezionato!\nVuoi rimuoverlo dalla lista?"
-    IDS_MUI_ERR_CREATELINK  "Errore nella creazione del collegamento su Desktop."
+    IDS_MUI_ERR_CREATELINK  "Errore nella creazione del collegamento su Desktop"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "La finestra Notepad3 è impegnata oppure ha una dialog box in attesa di input.\nVuoi aprire una nuova finestra Notepad3?"
-    IDS_MUI_ERR_ENCODINGNA  "Le tabelle di conversione di Code page per la codifica selezionata non sono disponibili nel tuo sistema."
-    IDS_MUI_ERR_UNICODE     "Errore nella conversione di questo file Unicode.\nCi sarà una perdita di dati se salvi il file!"
-    IDS_MUI_ERR_BITMAP      "Dimensione bitmap inadeguata ""%s"".\nDimensione corretta: %i x %i (larghezza >= %i x altezza)."
+                            "La finestra Notepad3 è impegnata oppure ha una dialog box in attesa di input\nVuoi aprire una nuova finestra Notepad3?"
+    IDS_MUI_ERR_ENCODINGNA  "Le tabelle di conversione di Code page per la codifica selezionata non sono disponibili nel tuo sistema"
+    IDS_MUI_ERR_UNICODE     "Errore nella conversione di questo file Unicode\nCi sarà una perdita di dati se salvi il file!"
+    IDS_MUI_ERR_BITMAP      "Dimensione bitmap inadeguata ""%s""\nDimensione corretta: %i x %i (larghezza >= %i x altezza)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Errore di elevazione dei diritti utente!"
 END
@@ -148,8 +148,8 @@ BEGIN
     IDS_MUI_ERR_UNICODE2    "Alcuni caratteri nel testo corrente non sono supportati dalla codifica selezionata, e potrebbero essere rimpiazzati da segnaposto di default al salvataggio. E' opportuno selezionare una codifica differente. Continuare?"
     IDS_MUI_ERR_DROP        "Solo un file può essere rilasciato con una unica operazione!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Il file ""%s"" non può essere salvato e potrebbe essere protetto.\n\nVuoi aprire %s con diritti amministrativi?"
-    IDS_MUI_ERR_ADMINEXE    "Nessun eseguibile di administration trovato.\nControllare https://rizonesoft.com?"
+                            "Il file ""%s"" non può essere salvato e potrebbe essere protetto\n\nVuoi aprire %s con diritti amministrativi?"
+    IDS_MUI_ERR_ADMINEXE    "Nessun eseguibile di administration trovato\nControllare https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
                             "Sei sicuro di voler aprire questo file grande?\n\t(dimensione: %s >= %s)!\n(Le evidenziature di stile e sintassi non saranno applicate!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
@@ -166,47 +166,47 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "Questa operazione non può essere eseguita in una selezione rettangolare."
-    IDS_MUI_SELMULTI        "Questa operazione non può essere eseguita in una multi-selezione."
-    IDS_MUI_SELRECTORMULTI  "Questa operazione non può essere eseguita in una selezione rettangolare o in una multi-selezione."
-    IDS_MUI_BUFFERTOOSMALL  "Questa operazione non può essere eseguita (linee troppo lunghe)."
-    IDS_MUI_FIND_WRAPFW     "Raggiunta la fine del documento, la ricerca riprende dall'inizio."
-    IDS_MUI_FIND_WRAPRE     "Raggiunto l'inizio del documento, la ricerca riprende dalla fine."
-    IDS_MUI_NOTFOUND        "Nessuna corrispondenza trovata per il pattern di ricerca specificato."
-    IDS_MUI_REPLCOUNT       "%s occorrenze del pattern di ricerca specificato sono state sostituite."
+    IDS_MUI_SELRECT         "Questa operazione non può essere eseguita in una selezione rettangolare"
+    IDS_MUI_SELMULTI        "Questa operazione non può essere eseguita in una multi-selezione"
+    IDS_MUI_SELRECTORMULTI  "Questa operazione non può essere eseguita in una selezione rettangolare o in una multi-selezione"
+    IDS_MUI_BUFFERTOOSMALL  "Questa operazione non può essere eseguita (linee troppo lunghe)"
+    IDS_MUI_FIND_WRAPFW     "Raggiunta la fine del documento, la ricerca riprende dall'inizio"
+    IDS_MUI_FIND_WRAPRE     "Raggiunto l'inizio del documento, la ricerca riprende dalla fine"
+    IDS_MUI_NOTFOUND        "Nessuna corrispondenza trovata per il pattern di ricerca specificato"
+    IDS_MUI_REPLCOUNT       "%s occorrenze del pattern di ricerca specificato sono state sostituite"
     IDS_MUI_ASK_ENCODING    "Cambiare la codifica del file potrebbe sostituire testo non supportato con un carattere di default, e la cronologia delle modifiche (undo) sarà svuotata. Continuare?"
     IDS_MUI_ASK_ENCODING2   "Stai per cambiare la codifica di un file vuoto. Questo cancellerà la cronologia delle modifiche (undo), perché non può essere sincronizzata con la nuova codifica. Continuare?"
     IDS_MUI_ASK_CLEAR_UNDO  "Questa operazione cancella la cronologia delle modifiche. Continuare?"
     IDS_MUI_READONLY_SAVE   """%s"" è in sola lettura. Salvare in un file differente?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Il file corrente è stato modificato da un programma esterno.\nScegliere:\n\Annulla -\t\tIgnora ulteriori modifiche\nRicarica -\t\tRicarica File\nContinua -\tPassa al monitoraggio del file"
+                            "Il file corrente è stato modificato da un programma esterno\nScegliere:\n\Annulla -\t\tIgnora ulteriori modifiche\nRicarica -\t\tRicarica File\nContinua -\tPassa al monitoraggio del file"
     IDS_MUI_FILECHANGENOTIFY2 "Il file corrente è stato cancellato. Salvarlo adesso?"
     IDS_MUI_FILELOCK_ERROR  "Impossibile ottenere il lock esclusivo per ""%s""!"
-    IDS_MUI_STICKYWINPOS    "La posizione della finestra ""sticky"" è abilitata. Qualunque finestra Notepad3 userà le attuali impostazioni di posizione finestra."
-    IDS_MUI_SAVEDSETTINGS   "Le impostazioni correnti di Notepad3 sono state salvate."
-    IDS_MUI_CREATEINI_FAIL  "Errore nella creazione del file delle impostazioni."
-    IDS_MUI_WRITEINI_FAIL   "Errore nella scrittura del file delle impostazioni."
+    IDS_MUI_STICKYWINPOS    "La posizione della finestra ""sticky"" è abilitata. Qualunque finestra Notepad3 userà le attuali impostazioni di posizione finestra"
+    IDS_MUI_SAVEDSETTINGS   "Le impostazioni correnti di Notepad3 sono state salvate"
+    IDS_MUI_CREATEINI_FAIL  "Errore nella creazione del file delle impostazioni"
+    IDS_MUI_WRITEINI_FAIL   "Errore nella scrittura del file delle impostazioni"
     IDS_MUI_INIFILE_READONLY
                             "Il file di configurazione è in Sola Lettura - Ignorare e sovrascrivere le impostazioni?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "Non è stato trovato un file delle impostazioni.\nPer conservare le modifiche agli Stili, salva le impostazioni adesso (F7) oppure ritorna alla configurazione degli Schemi (Ctrl+F12) ed esporta i tuoi Stili."
+                            "Non è stato trovato un file delle impostazioni\nPer conservare le modifiche agli Stili, salva le impostazioni adesso (F7) oppure ritorna alla configurazione degli Schemi (Ctrl+F12) ed esporta i tuoi Stili"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_RELOADSETTINGS   "Attivare le impostazioni salvate riavviando l'applicazione?\n\n%s"
     IDS_MUI_RELOADCFGSEX     "Continuando senza riavviare, le impostazioni salvate non sono applicate e saranno sovrascritte dalle impostazioni interne all'uscita del programma!"
-    IDS_MUI_EXPORT_FAIL      "Errore nell'esportazione degli Stili su ""%s""."
+    IDS_MUI_EXPORT_FAIL      "Errore nell'esportazione degli Stili su ""%s"""
     IDS_MUI_REGEX_INVALID    "Errore nella valutazione della regular expression. La RegExp non è valida!"
-    IDS_MUI_DROP_NO_FILE     "Nessun nomefile valido.\nSe stai facendo drag-n-drop da una applicazione 32-bit,\nrilascia il file sulla toolbar di Notepad3."
+    IDS_MUI_DROP_NO_FILE     "Nessun nomefile valido\nSe stai facendo drag-n-drop da una applicazione 32-bit,\nrilascia il file sulla toolbar di Notepad3"
     IDS_MUI_URL_DIR_EXISTS   "La cartella specificata nella URL esiste!"
     IDS_MUI_URL_FILE_EXISTS  "Il file specificato nella URL esiste!"
     IDS_MUI_URL_PATH_NOT_FOUND
                              "Il percorso specificato nella URL non è stato trovato!"
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click per aprire il file."
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click per aprire il link nel browser."
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click per aprire il file"
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click per aprire il link nel browser"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Conservazione della data di ultima modifica originale abilitata.\nQuesta opzione rimarrà attiva per questa sessione!"
+                             "Conservazione della data di ultima modifica originale abilitata\nQuesta opzione rimarrà attiva per questa sessione!"
     IDS_MUI_OUT_OFF_OCCMRK   "Marcatori di occorrenza in esaurimento (Bookmark/Evidenziatura)!"
     IDS_MUI_DOCUMENT_READONLY
                              "Il documento è bloccato per la sola visualizzazione. Mantenere il blocco per prevenire le modifiche?"
@@ -217,7 +217,7 @@ BEGIN
     IDS_MUI_ASK_SAVE        "Salvare le modifiche a:\n""%s""?"
     IDS_MUI_ASK_REVERT      "Ripristinare il file all'ultimo salvataggio effettuato?"
     IDS_MUI_ASK_RECODE      "La ricodifica richiede di ricaricare il file dal disco: eventuali modifiche non salvate saranno perse!"
-    IDS_MUI_ASK_CREATE      """%s"" non trovato.\nVuoi creare questo file?"
+    IDS_MUI_ASK_CREATE      """%s"" non trovato\nVuoi creare questo file?"
     IDS_MUI_PRINT_HEADER    "Nome file, data e ora correnti|Nome file, Data corrente|Nome file|Lascia vuoto"
     IDS_MUI_PRINT_FOOTER    "Numero di pagina|Lascia vuoto"
     IDS_MUI_PRINT_COLOR     "Normale|Inverti (sfondo scuro)|Nero su bianco|Colore su bianco|Colore su bianco (tranne i numeri di linea)|Colori a schermo"
@@ -230,15 +230,15 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "Questo documento non contiene alcun testo da stampare."
+    IDS_MUI_PRINT_EMPTY     "Questo documento non contiene alcun testo da stampare"
     IDS_MUI_PRINT_ERROR     "Errore nella stampa di ""%s""!"
-    IDS_MUI_FAV_SUCCESS     "Un collegamento al file corrente è stato creato nella cartella Preferiti."
-    IDS_MUI_FAV_FAILURE     "Impossibile creare un collegamento al file corrente.\nControlla che non ci sia già un file con lo stesso nome."
-    IDS_MUI_READONLY_MODIFY "Impossibile modificare gli attributi di ""%s""."
+    IDS_MUI_FAV_SUCCESS     "Un collegamento al file corrente è stato creato nella cartella Preferiti"
+    IDS_MUI_FAV_FAILURE     "Impossibile creare un collegamento al file corrente\nControlla che non ci sia già un file con lo stesso nome"
+    IDS_MUI_READONLY_MODIFY "Impossibile modificare gli attributi di ""%s"""
     IDS_MUI_SAVEPOS         "&Salva posizione\tCtrl+S"
     IDS_MUI_RESETPOS        "&Ripristina posizione\tCtrl+R"
     IDS_MUI_PREVIEW         "&Anteprima impostazioni\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "La frase d'accesso è sbagliata.\nRiprovre con una frase d'accesso diversa?"
+    IDS_MUI_PASS_FAILURE    "La frase d'accesso è sbagliata\nRiprovre con una frase d'accesso diversa?"
     IDS_MUI_NOPASS          "Decrittazione annullata!\nLeggere i dati grezzi crittati?"
     IDS_MUI_STY_BASESTD     "BASE (Stile di Default):"
     IDS_MUI_STY_BASE2ND     "BASE (2° Stile di Default):"
@@ -301,52 +301,52 @@ Utilizzo:\r\n\
 Notepad3 [/?] [...[Codifica]] [...[Terminazioni di linea]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[disco:][percorso]Nome file[...]]\r\n\r\n\
-file\tDeve essere l'ultimo argomento, nessuno spazio tra virgolette\r\n\tper impostazione predefinita.\r\n\
-+\tAccetta argomenti multipli di tipo file (con spazi tra virgolette).\r\n\
--\tAccetta un solo argomento di tipo file (senza spazi tra virgolette).\r\n\r\n\
+file\tDeve essere l'ultimo argomento, nessuno spazio tra virgolette\r\n\tper impostazione predefinita\r\n\
++\tAccetta argomenti multipli di tipo file (con spazi tra virgolette)\r\n\
+-\tAccetta un solo argomento di tipo file (senza spazi tra virgolette)\r\n\r\n\
 Opzioni:\r\n\
-/?\tVisualizza questo messaggio di aiuto.\r\n\
-...\tCodifica (/ansi, /unicode, /unicodebe, /utf8, /utf8sig).\r\n\
-...\tTerminazioni di linea (/crlf, /cr, /lf).\r\n\
-/e\tCodifica del file sorgente.\r\n\
-/g\tSalta alla posizione specificata (/g -1 EOF).\r\n\
-/m\tTrova il testo specificato (/m- ultimo, /mr regex, /mb backslash).\r\n\
-/l\tRicarica automaticamente i file modificati.\r\n\
-/q\tForza la creazione di nuovi file, senza richiedere conferma.\r\n\
-/s\tSeleziona lo Schema sintattico specificato.\r\n\
-/d\tSeleziona lo Schema predefinito per il testo.\r\n\
-/h\tSeleziona lo Schema Codice sorgente Web.\r\n\
-/x\tSeleziona lo Schema Documento XML.\r\n\
-/c\tApri una nuova finestra e incolla il contenuto degli Appunti.\r\n\
-/b\tApri una nuova Paste Board per collezionare il testo copiato\r\n\tnegli Appunti.\r\n\
-/n\tApri sempre una nuova finestra (/ns istanza singola).\r\n\
-/r\tRiutilizza finestra (/rs istanza singola).\r\n\
+/?\tVisualizza questo messaggio di aiuto\r\n\
+...\tCodifica (/ansi, /unicode, /unicodebe, /utf8, /utf8sig)\r\n\
+...\tTerminazioni di linea (/crlf, /cr, /lf)\r\n\
+/e\tCodifica del file sorgente\r\n\
+/g\tSalta alla posizione specificata (/g -1 EOF)\r\n\
+/m\tTrova il testo specificato (/m- ultimo, /mr regex, /mb backslash)\r\n\
+/l\tRicarica automaticamente i file modificati\r\n\
+/q\tForza la creazione di nuovi file, senza richiedere conferma\r\n\
+/s\tSeleziona lo Schema sintattico specificato\r\n\
+/d\tSeleziona lo Schema predefinito per il testo\r\n\
+/h\tSeleziona lo Schema Codice sorgente Web\r\n\
+/x\tSeleziona lo Schema Documento XML\r\n\
+/c\tApri una nuova finestra e incolla il contenuto degli Appunti\r\n\
+/b\tApri una nuova Paste Board per collezionare il testo copiato\r\n\tnegli Appunti\r\n\
+/n\tApri sempre una nuova finestra (/ns istanza singola)\r\n\
+/r\tRiutilizza finestra (/rs istanza singola)\r\n\
 /p\tImposta posizione e dimensione della finestra (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
-\to /p <sinistra>,<sopra>,<larghezza>,<altezza>[,<dpi>[,<max>]]  \r\n\t(numeri interi).\r\n\
-/t\tImposta titolo della finestra.\r\n\
-/i\tAvvia come icona nell'area di notifica'.\r\n\
-/o\tMantieni finestra in primo piano.\r\n\
-/f\tSpecifica il file INI (/f0 nessun file INI).\r\n\
-/u\tAvvia con privilegi elevati.\r\n\
-/v\tStampa il file immediatamente ed esci.\r\n\
-/vd\tStampa il file (apre il dialogo di stampa).\r\n\
-/y\tCerca la variabile d'ambiente PATH nel caso di filename relativo.\r\n\
-/z\tSalta il successivo (utilizzabile per il sostituto del Blocco Note\r\n\tbasato su Registro).\r\n\r\n\
+\to /p <sinistra>,<sopra>,<larghezza>,<altezza>[,<dpi>[,<max>]]  \r\n\t(numeri interi)\r\n\
+/t\tImposta titolo della finestra\r\n\
+/i\tAvvia come icona nell'area di notifica'\r\n\
+/o\tMantieni finestra in primo piano\r\n\
+/f\tSpecifica il file INI (/f0 nessun file INI)\r\n\
+/u\tAvvia con privilegi elevati\r\n\
+/v\tStampa il file immediatamente ed esci\r\n\
+/vd\tStampa il file (apre il dialogo di stampa)\r\n\
+/y\tCerca la variabile d'ambiente PATH nel caso di filename relativo\r\n\
+/z\tSalta il successivo (utilizzabile per il sostituto del Blocco Note\r\n\tbasato su Registro)\r\n\r\n\
 Esempi:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Apri un nuovo file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF.\r\n\
+ \t... Apri un nuovo file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Stampa il file: ""Test.txt"" immediatamente.\
+ \t... Stampa il file: ""Test.txt"" immediatamente\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
 Le estensioni devono essere separate con ';'\r\n\
 Usa il backslash (\\) per definire un pattern di riconoscimento filename:\r\n\
-   \\xyz$;   => filenames(basename+ext) con 'xyz' come ultimi caratteri.\r\n\r\n\
+   \\xyz$;   => filenames(basename+ext) con 'xyz' come ultimi caratteri\r\n\r\n\
 Formato Stile:\r\n\
 font: Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore: #ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Le proprietà di Stile possono essere copiate con Copia e Incolla o Trascinamento.\
+Le proprietà di Stile possono essere copiate con Copia e Incolla o Trascinamento\
 "
 
 END

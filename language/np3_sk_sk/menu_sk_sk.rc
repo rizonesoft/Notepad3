@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "O&tvoriť"
         BEGIN
-            MENUITEM "&Vyhľadávať v súboroch\tCtrl+Shift+F",  IDM_GREP_WIN_SEARCH
+            MENUITEM "&Vyhľadávať v súboroch...\tCtrl+Shift+F",  IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Nové prázdne okno\tAlt+N",           IDM_FILE_NEWWINDOW
             MENUITEM "&Duplicitná inštancia\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
@@ -195,18 +195,18 @@ BEGIN
             MENUITEM "Zmazať riadok vľavo od kurzora\tCtrl+Shift+Back",   IDM_EDIT_DELETELINELEFT
             MENUITEM "Zmazať riadok vpravo od kurzora\tCtrl+Shift+Del",   IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
-            MENUITEM "Zalomenie &stĺpca...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
+            MENUITEM "Za&lamovať podľa stĺpca...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
-            MENUITEM "&Unite Duplicate Lines\tCtrl+Alt+D",       IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Remo&ve Duplicate Lines",                  IDM_EDIT_REMOVEDUPLICATELINES
-            MENUITEM "Zlúčiť práz&dne riadky\tAlt+Y",            IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "Zlúčiť nepopísané riadky\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "&Odstrániť prázdne riadky\tAlt+R",         IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "Odstrániť &nepopísané riadky\tCtrl+Alt+B", IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "Zjednotiť &duplicitné riadky\tCtrl+Alt+D",       IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "&Odstrániť duplicitné riadky",                  IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "Zlúčiť &prázdne riadky\tAlt+Y",            IDM_EDIT_MERGEEMPTYLINES
+            MENUITEM "Zlúčiť &nepopísané riadky\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
+            MENUITEM "Odstrániť p&rázdne riadky\tAlt+R",         IDM_EDIT_REMOVEEMPTYLINES
+            MENUITEM "Odstrániť n&epopísané riadky\tCtrl+Alt+B", IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "Adva&nced"
+        POPUP "Po&kročilé"
         BEGIN
-            MENUITEM "&Odsadenie",                          IDM_EDIT_INDENT
+            MENUITEM "&Odsadiť",                          IDM_EDIT_INDENT
             MENUITEM "Z&rušiť odsadenie",                   IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
             POPUP "Riadok &komentára"
@@ -339,7 +339,7 @@ BEGIN
             MENUITEM "Z&ameniť ďalej\tF4",                      IDM_EDIT_REPLACENEXT
             MENUITEM "Pr&ejsť na...\tCtrl+G",                   IDM_EDIT_GOTOLINE
             MENUITEM SEPARATOR
-            MENUITEM "&Vyhľadávať v súboroch\tCtrl+Shift+F",    IDM_GREP_WIN_SEARCH2
+            MENUITEM "&Vyhľadávať v súboroch...\tCtrl+Shift+F",    IDM_GREP_WIN_SEARCH2
         END
     END
     POPUP "&Zobraziť"
@@ -539,7 +539,7 @@ BEGIN
         POPUP "Ď&alšie nastavenia"
         BEGIN
             MENUITEM "Uložiť pri u&končení",                IDM_SET_SAVESETTINGS
-            MENUITEM "Uložiť &teraz...\tF7",                IDM_SET_SAVESETTINGSNOW
+            MENUITEM "Uložiť &teraz\tF7",                   IDM_SET_SAVESETTINGSNOW
             MENUITEM "&Otvoriť súbor nastavení\tCtrl+F7",   CMD_OPENINIFILE
         END
     END
@@ -550,7 +550,7 @@ BEGIN
         MENUITEM "&Spustiť nástroj na správu...",           IDM_HELP_ADMINEXE
         MENUITEM "&Kontrola novej verzie",                  IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
-        MENUITEM "&Nápoveda príkazového riadka",            IDM_HELP_CMD
+        MENUITEM "&Nápoveda príkazového riadka...",         IDM_HELP_CMD
         MENUITEM "O pro&grame...\tShift+F1",                IDM_HELP_ABOUT
     END
 END

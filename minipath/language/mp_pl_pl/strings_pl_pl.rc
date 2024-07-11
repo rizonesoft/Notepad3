@@ -81,31 +81,31 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Błąd dostępu do katalogu\nBrak dostępu do katalogu.\nSprawdź dysk lub połączenie sieciowe."
-    IDS_ERR_FILE            "Błąd dostępu do pliku\nBrak dostępu do ""%s"".\nPlik może być używany przez inną aplikację.\nSprawdź dysk lub połączenie sieciowe."
-    IDS_ERR_NEW             "Błąd dostępu do pliku\nNie można utworzyć pliku.\nSprawdź dysk lub połączenie sieciowe."
-    IDS_ERR_NEWDIR          "Błąd dostępu do katalogu\nNie można utworzyć katalogu.\nSprawdź dysk lub połączenie sieciowe."
-    IDS_ERR_SAVEAS1         "Błąd zapisu pliku\nBłąd przy zapisie ""%s"".\nPlik prawdopodobnie zabezpieczony przed zapisem."
-    IDS_ERR_SAVEAS2         "Błąd zapisu pliku\nBłąd przy usuwaniu atrybutu Tylko do zapisu w zapisanym pliku."
-    IDS_ERR_CMDLINE         "MiniPath\nBłąd dostępu do pliku lub katalogu określonego w linii komend."
-    IDS_ERR_STARTUPDIR      "MiniPath\nBrak dostępu aby uruchomić katalog."
-    IDS_ERR_DROP1           "MiniPath\nBrak dostępu aby upuścić plik lub katalog."
-    IDS_ERR_DROP2           "MiniPath\nTylko jeden plik lub katalog można upuścić w tym samym czasie."
-    IDS_ERR_FAVORITES       "Ulubione\nBtak dostępu do ""Ulubionych"".\nOkreśl właściwy katalog w ""Opcjach""."
-    IDS_ERR_LNK_GETPATH     "Błąd linku\nBrak dostępnej ścieżki systemu plików dla tego obiektu.\nPrawdopodobnie ten link nie odsyła do pliku lub katalogu."
-    IDS_ERR_LNK_NOACCESS    "Błąd linku\nBrak dostępnej ścieżki systemu plików dla tego obiektu.\nSprawdź dysk lub połączenie sieciowe."
-    IDS_ERR_CREATELINK      "Błąd linku\nBłąd podczas tworzenia określonego linku.\nPrawdopodobnie katalog docelowy jest zabezpieczony przed zapisem."
-    IDS_ERR_FILTER          "Błąd filtra pliku\nNie określono dodatkowych filtrów.\nSprawdź w pliku readme aby uzyskac więcej informacji."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nIstniejące okno MiniPath jest zajęte lub ma aktywne okno dialogowe.\nCzy chcesz otworzyć kolejne okno MiniPath?"
+    IDS_ERR_CD              "Błąd dostępu do katalogu\nBrak dostępu do katalogu\nSprawdź dysk lub połączenie sieciowe"
+    IDS_ERR_FILE            "Błąd dostępu do pliku\nBrak dostępu do ""%s""\nPlik może być używany przez inną aplikację\nSprawdź dysk lub połączenie sieciowe"
+    IDS_ERR_NEW             "Błąd dostępu do pliku\nNie można utworzyć pliku\nSprawdź dysk lub połączenie sieciowe"
+    IDS_ERR_NEWDIR          "Błąd dostępu do katalogu\nNie można utworzyć katalogu\nSprawdź dysk lub połączenie sieciowe"
+    IDS_ERR_SAVEAS1         "Błąd zapisu pliku\nBłąd przy zapisie ""%s""\nPlik prawdopodobnie zabezpieczony przed zapisem"
+    IDS_ERR_SAVEAS2         "Błąd zapisu pliku\nBłąd przy usuwaniu atrybutu Tylko do zapisu w zapisanym pliku"
+    IDS_ERR_CMDLINE         "MiniPath\nBłąd dostępu do pliku lub katalogu określonego w linii komend"
+    IDS_ERR_STARTUPDIR      "MiniPath\nBrak dostępu aby uruchomić katalog"
+    IDS_ERR_DROP1           "MiniPath\nBrak dostępu aby upuścić plik lub katalog"
+    IDS_ERR_DROP2           "MiniPath\nTylko jeden plik lub katalog można upuścić w tym samym czasie"
+    IDS_ERR_FAVORITES       "Ulubione\nBtak dostępu do ""Ulubionych""\nOkreśl właściwy katalog w ""Opcjach"""
+    IDS_ERR_LNK_GETPATH     "Błąd linku\nBrak dostępnej ścieżki systemu plików dla tego obiektu\nPrawdopodobnie ten link nie odsyła do pliku lub katalogu"
+    IDS_ERR_LNK_NOACCESS    "Błąd linku\nBrak dostępnej ścieżki systemu plików dla tego obiektu\nSprawdź dysk lub połączenie sieciowe"
+    IDS_ERR_CREATELINK      "Błąd linku\nBłąd podczas tworzenia określonego linku\nPrawdopodobnie katalog docelowy jest zabezpieczony przed zapisem"
+    IDS_ERR_FILTER          "Błąd filtra pliku\nNie określono dodatkowych filtrów\nSprawdź w pliku readme aby uzyskac więcej informacji"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nIstniejące okno MiniPath jest zajęte lub ma aktywne okno dialogowe\nCzy chcesz otworzyć kolejne okno MiniPath?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nIstniejące okno docelowe jest zajęte lub ma aktywne okno dialogowe.\nCzy chcesz otworzyć nowe okno?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nUpewnij się, że wszystkie wymagane pola są kompletne.\nMusisz też znaleźć okno docelowe jeśli odpowiednia opcja jest włączona."
-    IDS_ERR_INIOPEN         "MiniPath\nBrak dostępu do pliku konfiguracujnego MiniPath."
-    IDS_ERR_INICREATE       "Zapis ustawień\nBłąd podczas tworzenia pliku konfiguracyjnego."
-    IDS_ERR_INIWRITE        "Zapis ustawień\nNie zapisano ustawień!\nBrak dostępu zapisu w pliku konfiguracyjnym."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nIstniejące okno docelowe jest zajęte lub ma aktywne okno dialogowe\nCzy chcesz otworzyć nowe okno?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nUpewnij się, że wszystkie wymagane pola są kompletne\nMusisz też znaleźć okno docelowe jeśli odpowiednia opcja jest włączona"
+    IDS_ERR_INIOPEN         "MiniPath\nBrak dostępu do pliku konfiguracujnego MiniPath"
+    IDS_ERR_INICREATE       "Zapis ustawień\nBłąd podczas tworzenia pliku konfiguracyjnego"
+    IDS_ERR_INIWRITE        "Zapis ustawień\nNie zapisano ustawień!\nBrak dostępu zapisu w pliku konfiguracyjnym"
 END
 
 STRINGTABLE
@@ -116,8 +116,8 @@ BEGIN
     IDS_NEWFILE             "Nowy plik"
     IDS_FILTER_ALL          "Wszystkie pliki (*.*)\n*.*\n"
     IDS_FILTER_EXE          "Pliki wykonywalne (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nWszystkie pliki (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Wybierz nowy katalog."
-    IDS_FAVORITES           "Określ katalog ""Ulubione"" ."
+    IDS_GETDIRECTORY        "Wybierz nowy katalog"
+    IDS_FAVORITES           "Określ katalog ""Ulubione"" "
 END
 
 STRINGTABLE
@@ -128,10 +128,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "Select the directory with links to your favourite applications."
-    IDS_COPYMOVE            "Select a destination directory."
-    IDS_CREATELINK          "Select a destination directory for the new link."
-    IDS_SAVESETTINGS        "Save Settings\nThe current program settings have been saved."
+    IDS_OPENWITH            "Select the directory with links to your favourite applications"
+    IDS_COPYMOVE            "Select a destination directory"
+    IDS_CREATELINK          "Select a destination directory for the new link"
+    IDS_SAVESETTINGS        "Save Settings\nThe current program settings have been saved"
     IDS_MUI_TRANSL_AUTHOR   "(pl-PL) Polskie tłumaczenie: Crane70"
 END
 

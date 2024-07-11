@@ -81,31 +81,31 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Fout in maptoegang\nGeen toegang tot de opgegeven map.\nControleer de schijf of de netwerkverbinding."
-    IDS_ERR_FILE            "Fout in bestandstoegang\nGeen toegang tot ""%s"".\nHet bestand is mogelijk in gebruik door een andere applicatie.\nControleer de schijf of de netwerkverbinding."
-    IDS_ERR_NEW             "Fout in bestandstoegang\nHet bestand kan niet worden aangemaakt.\nControleer de schijf of de netwerkverbinding."
-    IDS_ERR_NEWDIR          "Fout in maptoegang\nDe map kan niet worden aangemaakt.\nControleer de schijf of de netwerkverbinding."
-    IDS_ERR_SAVEAS1         "Fout bij opslaan van bestand\nFout bij opslaan ""%s"".\nWaarschijnlijk is een bestaand bestand tegen schrijven beveiligd."
-    IDS_ERR_SAVEAS2         "Fout bij opslaan van bestand\nFout bij verwijderen van kenmerk alleen-lezen van opgeslagen bestand."
-    IDS_ERR_CMDLINE         "MiniPath\nFout bij het openen van bestand of map opgegeven op de opdrachtregel."
-    IDS_ERR_STARTUPDIR      "MiniPath\nGeen toegang tot opstartmap."
-    IDS_ERR_DROP1           "MiniPath\nGeen toegang tot verwijderde bestand of map."
-    IDS_ERR_DROP2           "MiniPath\nEr kan slechts één bestand of map tegelijk worden verwijderd."
-    IDS_ERR_FAVORITES       "Favorieten\nGeen toegang tot de map ""Favorieten"".\nGeef een geldige map op in het dialoogvenster ""Opties""."
-    IDS_ERR_LNK_GETPATH     "Koppelingsfout\nGeen geldig bestandssysteempad beschikbaar voor gekoppeld object.\nWaarschijnlijk verwijst de koppeling niet naar een bestand of directory."
-    IDS_ERR_LNK_NOACCESS    "Koppelingsfout\nGeen toegang tot bestandssysteempad van gekoppeld object.\nControleer de schijf of de netwerkverbinding."
-    IDS_ERR_CREATELINK      "Koppelingsfout\nFout bij het maken van de opgegeven koppeling.\nWaarschijnlijk is de doelmap tegen schrijven beveiligd."
-    IDS_ERR_FILTER          "Bestandsfilterfout\nGeen extra filters opgegeven.\nRaadpleeg het leesmij-bestand van MiniPath voor meer informatie."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nHet bestaande MiniPath-venster is bezet of heeft een actief dialoogvenster.\nWil je een ander MiniPath-venster openen?"
+    IDS_ERR_CD              "Fout in maptoegang\nGeen toegang tot de opgegeven map\nControleer de schijf of de netwerkverbinding"
+    IDS_ERR_FILE            "Fout in bestandstoegang\nGeen toegang tot ""%s""\nHet bestand is mogelijk in gebruik door een andere applicatie\nControleer de schijf of de netwerkverbinding"
+    IDS_ERR_NEW             "Fout in bestandstoegang\nHet bestand kan niet worden aangemaakt\nControleer de schijf of de netwerkverbinding"
+    IDS_ERR_NEWDIR          "Fout in maptoegang\nDe map kan niet worden aangemaakt\nControleer de schijf of de netwerkverbinding"
+    IDS_ERR_SAVEAS1         "Fout bij opslaan van bestand\nFout bij opslaan ""%s""\nWaarschijnlijk is een bestaand bestand tegen schrijven beveiligd"
+    IDS_ERR_SAVEAS2         "Fout bij opslaan van bestand\nFout bij verwijderen van kenmerk alleen-lezen van opgeslagen bestand"
+    IDS_ERR_CMDLINE         "MiniPath\nFout bij het openen van bestand of map opgegeven op de opdrachtregel"
+    IDS_ERR_STARTUPDIR      "MiniPath\nGeen toegang tot opstartmap"
+    IDS_ERR_DROP1           "MiniPath\nGeen toegang tot verwijderde bestand of map"
+    IDS_ERR_DROP2           "MiniPath\nEr kan slechts één bestand of map tegelijk worden verwijderd"
+    IDS_ERR_FAVORITES       "Favorieten\nGeen toegang tot de map ""Favorieten""\nGeef een geldige map op in het dialoogvenster ""Opties"""
+    IDS_ERR_LNK_GETPATH     "Koppelingsfout\nGeen geldig bestandssysteempad beschikbaar voor gekoppeld object\nWaarschijnlijk verwijst de koppeling niet naar een bestand of directory"
+    IDS_ERR_LNK_NOACCESS    "Koppelingsfout\nGeen toegang tot bestandssysteempad van gekoppeld object\nControleer de schijf of de netwerkverbinding"
+    IDS_ERR_CREATELINK      "Koppelingsfout\nFout bij het maken van de opgegeven koppeling\nWaarschijnlijk is de doelmap tegen schrijven beveiligd"
+    IDS_ERR_FILTER          "Bestandsfilterfout\nGeen extra filters opgegeven\nRaadpleeg het leesmij-bestand van MiniPath voor meer informatie"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nHet bestaande MiniPath-venster is bezet of heeft een actief dialoogvenster\nWil je een ander MiniPath-venster openen?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nBestaand doelvenster is bezet of heeft een actief dialoogvenster.\nWil je een nieuw venster openen?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nZorg ervoor dat alle vereiste velden zijn ingevuld.\nJe moet ook een doelvenster vinden als de juiste optie is ingeschakeld."
-    IDS_ERR_INIOPEN         "MiniPath\nGeen toegang tot het configuratiebestand van MiniPath."
-    IDS_ERR_INICREATE       "Instellingen opslaan\nFout bij het aanmaken van het configuratiebestand."
-    IDS_ERR_INIWRITE        "Instellingen opslaan\nInstellingen niet opgeslagen!\nGeen schrijftoegang tot het configuratiebestand."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nBestaand doelvenster is bezet of heeft een actief dialoogvenster\nWil je een nieuw venster openen?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nZorg ervoor dat alle vereiste velden zijn ingevuld\nJe moet ook een doelvenster vinden als de juiste optie is ingeschakeld"
+    IDS_ERR_INIOPEN         "MiniPath\nGeen toegang tot het configuratiebestand van MiniPath"
+    IDS_ERR_INICREATE       "Instellingen opslaan\nFout bij het aanmaken van het configuratiebestand"
+    IDS_ERR_INIWRITE        "Instellingen opslaan\nInstellingen niet opgeslagen!\nGeen schrijftoegang tot het configuratiebestand"
 END
 
 STRINGTABLE
@@ -116,8 +116,8 @@ BEGIN
     IDS_NEWFILE             "Nieuw bestand"
     IDS_FILTER_ALL          "Alle bestanden (*.*)\n*.*\n"
     IDS_FILTER_EXE          "Uitvoerbare bestanden (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nAlle bestanden (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Selecteer een nieuwe map."
-    IDS_FAVORITES           "Specificeer de map ""Favorieten""."
+    IDS_GETDIRECTORY        "Selecteer een nieuwe map"
+    IDS_FAVORITES           "Specificeer de map ""Favorieten"""
 END
 
 STRINGTABLE
@@ -128,10 +128,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "Selecteer de map met koppelingen naar uw favoriete toepassingen."
-    IDS_COPYMOVE            "Selecteer een doelmap."
-    IDS_CREATELINK          "Selecteer een doelmap voor de nieuwe koppeling."
-    IDS_SAVESETTINGS        "Instellingen opslaan\nDe huidige programmainstellingen zijn opgeslagen."
+    IDS_OPENWITH            "Selecteer de map met koppelingen naar uw favoriete toepassingen"
+    IDS_COPYMOVE            "Selecteer een doelmap"
+    IDS_CREATELINK          "Selecteer een doelmap voor de nieuwe koppeling"
+    IDS_SAVESETTINGS        "Instellingen opslaan\nDe huidige programmainstellingen zijn opgeslagen"
     IDS_MUI_TRANSL_AUTHOR   "(nl-NL) Nederlandse vertaling door Stephan-P"
 END
 

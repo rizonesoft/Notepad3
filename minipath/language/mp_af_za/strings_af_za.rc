@@ -81,31 +81,31 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Gids Toegang Fout\nGeen toegang tot gespesifiseerde gids nie.\nGaan die skyf of die netwerkverbinding na."
-    IDS_ERR_FILE            "Lêer Toegang Fout\nGeen toegang tot ""%s"".\nDie lêer kan gebruik word deur 'n ander program.\nGaan die skyf of die netwerkverbinding na."
-    IDS_ERR_NEW             "Lêer Toegang Fout\nLêer kon nie geskep word nie.\nGaan die skyf of die netwerkverbinding na."
-    IDS_ERR_NEWDIR          "Gids Toegang Fout\nGids kon nie geskep word nie.\nGaan die skyf of die netwerkverbinding na."
-    IDS_ERR_SAVEAS1         "Lêer Stoor Fout\nKon nie ""%s"" stoor nie.\nWaarskynlik is 'n reeds bestaande lêer of dit is skryfbeskermd."
-    IDS_ERR_SAVEAS2         "Lêer Stoor Fout\nKon nie leesbeskoude kenmerk van gestoorde lêer verwyder nie."
-    IDS_ERR_CMDLINE         "MiniPath\nFout by toegang tot lêer of gids gespesifiseer in die opdraglyn."
-    IDS_ERR_STARTUPDIR      "MiniPath\nGeen toegang tot die opstartgids nie."
-    IDS_ERR_DROP1           "MiniPath\nGeen toegang tot die lêer of gids wat laat val is nie."
-    IDS_ERR_DROP2           "MiniPath\nSlegs 'n enkele lêer of gids kan op 'n slag laat val word."
-    IDS_ERR_FAVORITES       "Gunstelinge\nGeen toegang tot die ""Gunstelinge"" gids nie.\nGee 'n geldige gids op in die dialoogkassie ""Options""."
-    IDS_ERR_LNK_GETPATH     "Skakelfout\nGeen geldige lêerstelsel-pad beskikbaar vir gekoppelde objek nie.\nWaarskynlik verwys die skakel nie na 'n lêer of gids nie."
-    IDS_ERR_LNK_NOACCESS    "Skakelfout\nGeen geldige lêerstelsel-pad beskikbaar vir gekoppelde objek nie.\nGaan die skyf of die netwerkverbinding na."
-    IDS_ERR_CREATELINK      "Skakelfout\nKon nie die gespesifiseerde skakel skep nie.\nDie bestemmingsgids is waarskynlik skryfbeskermd."
-    IDS_ERR_FILTER          "Lêer Filter Fout\nGeen addisionele filters gespesifiseer nie.\nRaadpleeg asseblief die MiniPath readme lêer vir meer inligting."
-    IDS_ERR_PREVWINDISABLED "MiniPath\nBestaande MiniPath-venster is besig of het 'n aktiewe dialoog.\nWil jy nog 'n MiniPath-venster oopmaak?"
+    IDS_ERR_CD              "Gids Toegang Fout\nGeen toegang tot gespesifiseerde gids nie\nGaan die skyf of die netwerkverbinding na"
+    IDS_ERR_FILE            "Lêer Toegang Fout\nGeen toegang tot ""%s""\nDie lêer kan gebruik word deur 'n ander program\nGaan die skyf of die netwerkverbinding na"
+    IDS_ERR_NEW             "Lêer Toegang Fout\nLêer kon nie geskep word nie\nGaan die skyf of die netwerkverbinding na"
+    IDS_ERR_NEWDIR          "Gids Toegang Fout\nGids kon nie geskep word nie\nGaan die skyf of die netwerkverbinding na"
+    IDS_ERR_SAVEAS1         "Lêer Stoor Fout\nKon nie ""%s"" stoor nie\nWaarskynlik is 'n reeds bestaande lêer of dit is skryfbeskermd"
+    IDS_ERR_SAVEAS2         "Lêer Stoor Fout\nKon nie leesbeskoude kenmerk van gestoorde lêer verwyder nie"
+    IDS_ERR_CMDLINE         "MiniPath\nFout by toegang tot lêer of gids gespesifiseer in die opdraglyn"
+    IDS_ERR_STARTUPDIR      "MiniPath\nGeen toegang tot die opstartgids nie"
+    IDS_ERR_DROP1           "MiniPath\nGeen toegang tot die lêer of gids wat laat val is nie"
+    IDS_ERR_DROP2           "MiniPath\nSlegs 'n enkele lêer of gids kan op 'n slag laat val word"
+    IDS_ERR_FAVORITES       "Gunstelinge\nGeen toegang tot die ""Gunstelinge"" gids nie\nGee 'n geldige gids op in die dialoogkassie ""Options"""
+    IDS_ERR_LNK_GETPATH     "Skakelfout\nGeen geldige lêerstelsel-pad beskikbaar vir gekoppelde objek nie\nWaarskynlik verwys die skakel nie na 'n lêer of gids nie"
+    IDS_ERR_LNK_NOACCESS    "Skakelfout\nGeen geldige lêerstelsel-pad beskikbaar vir gekoppelde objek nie\nGaan die skyf of die netwerkverbinding na"
+    IDS_ERR_CREATELINK      "Skakelfout\nKon nie die gespesifiseerde skakel skep nie\nDie bestemmingsgids is waarskynlik skryfbeskermd"
+    IDS_ERR_FILTER          "Lêer Filter Fout\nGeen addisionele filters gespesifiseer nie\nRaadpleeg asseblief die MiniPath readme lêer vir meer inligting"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nBestaande MiniPath-venster is besig of het 'n aktiewe dialoog\nWil jy nog 'n MiniPath-venster oopmaak?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_TARGETDISABLED  "MiniPath\nBestaande teiken venster is besig of het 'n aktiewe dialoog.\nWil jy 'n nuwe venster oopmaak?"
-    IDS_ERR_INVALIDTARGET   "MiniPath\nMaak asseblief seker dat al die vereiste velde voltooi is.\nJy sal ook 'n teikenvenster moet kry as die toepaslike opsie geaktiveer is."
-    IDS_ERR_INIOPEN         "MiniPath\nGeen toegang tot MiniPath konfigurasie lêer."
-    IDS_ERR_INICREATE       "Stoor Instellings\nKon nie konfigurasielêer skep nie."
-    IDS_ERR_INIWRITE        "Stoor Instellings\nStellings nie gestoor nie!\nGeen skryf toegang tot konfigurasie lêer."
+    IDS_ERR_TARGETDISABLED  "MiniPath\nBestaande teiken venster is besig of het 'n aktiewe dialoog\nWil jy 'n nuwe venster oopmaak?"
+    IDS_ERR_INVALIDTARGET   "MiniPath\nMaak asseblief seker dat al die vereiste velde voltooi is\nJy sal ook 'n teikenvenster moet kry as die toepaslike opsie geaktiveer is"
+    IDS_ERR_INIOPEN         "MiniPath\nGeen toegang tot MiniPath konfigurasie lêer"
+    IDS_ERR_INICREATE       "Stoor Instellings\nKon nie konfigurasielêer skep nie"
+    IDS_ERR_INIWRITE        "Stoor Instellings\nStellings nie gestoor nie!\nGeen skryf toegang tot konfigurasie lêer"
 END
 
 STRINGTABLE
@@ -116,8 +116,8 @@ BEGIN
     IDS_NEWFILE             "Nuwe Lêer"
     IDS_FILTER_ALL          "Alle Lêers (*.*)\n*.*\n"
     IDS_FILTER_EXE          "Uitvoerbare lêers (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nAll files (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Kies 'n nuwe gids."
-    IDS_FAVORITES           "Spesifiseer die ""gunstelinge"" gids."
+    IDS_GETDIRECTORY        "Kies 'n nuwe gids"
+    IDS_FAVORITES           "Spesifiseer die ""gunstelinge"" gids"
 END
 
 STRINGTABLE
@@ -128,10 +128,10 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_OPENWITH            "Kies die gids met skakels na jou gunsteling programme."
-    IDS_COPYMOVE            "Kies 'n bestemmingsgids."
-    IDS_CREATELINK          "Kies 'n bestemmingsgids vir die nuwe skakel."
-    IDS_SAVESETTINGS        "Stoor Instellings\nDie huidige program instellings is gestoor."
+    IDS_OPENWITH            "Kies die gids met skakels na jou gunsteling programme"
+    IDS_COPYMOVE            "Kies 'n bestemmingsgids"
+    IDS_CREATELINK          "Kies 'n bestemmingsgids vir die nuwe skakel"
+    IDS_SAVESETTINGS        "Stoor Instellings\nDie huidige program instellings is gestoor"
     IDS_MUI_TRANSL_AUTHOR   "(af-ZA) Afrikaanse vertaling deur rizonesoft"
 END
 

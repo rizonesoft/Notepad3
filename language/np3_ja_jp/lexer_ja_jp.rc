@@ -350,7 +350,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63264       "URLアドレスにリンク"
     IDS_LEX_STR_63265       "第2 URLアドレスにリンク"
-    IDS_LEX_STR_63266       "標準配色2 "
+    IDS_LEX_STR_63266       "標準配色2"
     IDS_LEX_STR_63267       "文字列内の変数"
     IDS_LEX_STR_63268       "配列 (番号付きリスト)"
     IDS_LEX_STR_Infix       "${} (Infix, 訳求)"

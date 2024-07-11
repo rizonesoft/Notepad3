@@ -118,8 +118,8 @@ BEGIN
     IDS_MUI_FILTER_EXE      "可执行文件(*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|所有文件(*.*)|*.*|"
     IDS_MUI_FILTER_INI      "配置文件(*.ini)|*.ini|所有文件(*.*)|*.*|"
     IDS_MUI_FILTER_BITMAP   "位图文件(*.bmp)|*.bmp|所有文件(*.*)|*.*|"
-    IDS_MUI_OPENWITH        "请选择用于收藏应用程序的文件夹。"
-    IDS_MUI_FAVORITES       "请选择用于收藏文件的文件夹。"
+    IDS_MUI_OPENWITH        "请选择用于收藏应用程序的文件夹"
+    IDS_MUI_FAVORITES       "请选择用于收藏文件的文件夹"
     IDS_MUI_BACKSLASHHELP   "反斜杠转义序列：\n\n\\a\t响铃符 (BEL, ASCII 7)\n\\b\t退格符 (BS, ASCII 8)\n\\f\t跳页符 (FF, ASCII 12)\n\\n\t换行符 (LF, ASCII 10)\n\\r\t回车符 (CR, ASCII 13)\n\\t\t水平制表符 (HT, ASCII 9)\n\\v\t垂直制表符 (VT, ASCII 11)\n\\ooo\t八进制数值 ooo 对应的字符\n\\uHHHH\t十六进制数值 HHHH 对应的字符\n\\xHH\t十六进制数值 HH 对应的字符\n\\\\\t反斜杠"
     IDS_MUI_REGEXPHELP      "正则表达式语法（支持多行匹配）：\n\n.\t任意字符\n^\t行首\n$\t行尾\n\\<\t词首\n\\>\t词尾\n\\b\t词首或词尾\n[...]\t集合（[abc]）或范围（[a-z]）中的任一字符\n[^...]\t除集合或范围以外的任一字符\n\\d\t单个十进制数字\n\\D\t单个除十进制数字以外的任意字符\n\\s\t单个空格字符\n\\S\t单个除空格字符以外的任意字符\n\\w\t任一可出现于标识符中的字符\n\\W\t任一不可出现于标识符中的字符\n\\\\\t反斜杠\n\\xHH\t十六进制数值 HH 对应的字符\n?\t匹配它前面的单元至多 1 次\n*\t匹配它前面的单元 0 次或任意次\n+\t匹配它前面的单元至少 1 次\n*? 和 +?\t非贪婪匹配的? 和 +\n(\t分组开始\n)\t分组结束\n\\1 - \\9\t引用指定序号的已匹配分组\n"
     IDS_MUI_WILDCARDHELP    "通配符：\n\n*\t匹配 0 或任意个字符\n?\t匹配恰好一个字符"
@@ -127,36 +127,36 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "加载“%s”时遇到错误。"
-    IDS_MUI_ERR_SAVEFILE    "保存“%s”时遇到错误。"
+    IDS_MUI_ERR_LOADFILE    "加载“%s”时遇到错误"
+    IDS_MUI_ERR_SAVEFILE    "保存“%s”时遇到错误"
     IDS_MUI_ERR_DLG_FORMAT  "错误“%s”，原因：\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "无可用文件浏览器插件。\n\nMiniPath 插件可以从 https://rizonesoft.com/ 下载。"
-    IDS_MUI_ERR_GREPWIN     "无可用文件查找插件。\n\ngrepWinNP3 插件可以从 https://rizonesoft.com 下载。"
-    IDS_MUI_ERR_MRUDLG      "指定的文件无法访问。它可能已被改名、删除或移动。\n\n从列表中删除它吗？"
-    IDS_MUI_ERR_CREATELINK  "创建桌面快捷方式时遇到错误。"
+    IDS_MUI_ERR_BROWSE      "无可用文件浏览器插件\n\nMiniPath 插件可以从 https://rizonesoft.com/ 下载"
+    IDS_MUI_ERR_GREPWIN     "无可用文件查找插件\n\ngrepWinNP3 插件可以从 https://rizonesoft.com 下载"
+    IDS_MUI_ERR_MRUDLG      "指定的文件无法访问。它可能已被改名、删除或移动\n\n从列表中删除它吗？"
+    IDS_MUI_ERR_CREATELINK  "创建桌面快捷方式时遇到错误"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "当前已存在的 Notepad3 窗口正忙，或有一个已打开的对话框正在阻止它响应。\n\n打开一个新的 Notepad3 窗口吗？"
-    IDS_MUI_ERR_ENCODINGNA  "用于选定的编码转换的代码页表在当前系统上不可用。"
-    IDS_MUI_ERR_UNICODE     "转换该 Unicode 文件时遇到错误。\n\n警告：保存该文件会导致数据丢失。"
-    IDS_MUI_ERR_BITMAP      "位图“%s”的宽高比不合适。\n合适的宽高比：%i × %i （宽度 ≥ %i × 高度）"
+                            "当前已存在的 Notepad3 窗口正忙，或有一个已打开的对话框正在阻止它响应\n\n打开一个新的 Notepad3 窗口吗？"
+    IDS_MUI_ERR_ENCODINGNA  "用于选定的编码转换的代码页表在当前系统上不可用"
+    IDS_MUI_ERR_UNICODE     "转换该 Unicode 文件时遇到错误\n\n警告：保存该文件会导致数据丢失"
+    IDS_MUI_ERR_BITMAP      "位图“%s”的宽高比不合适\n合适的宽高比：%i × %i （宽度 ≥ %i × 高度）"
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "提升用户权限时出错。"
+                            "提升用户权限时出错"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "在当前文档中的某些字符不能使用选定的编码表示。在保存文件时，它们可能被替换为其它字符。因此，建议选择其它编码。\n\n是否继续？"
-    IDS_MUI_ERR_DROP        "一次只能拖放一个文件。"
+    IDS_MUI_ERR_UNICODE2    "在当前文档中的某些字符不能使用选定的编码表示。在保存文件时，它们可能被替换为其它字符。因此，建议选择其它编码\n\n是否继续？"
+    IDS_MUI_ERR_DROP        "一次只能拖放一个文件"
     IDS_MUI_ERR_ACCESSDENIED
-                            "文件“%s”不能被保存，它可能是受保护的。\n\n是否希望提升 %s 的权限？"
-    IDS_MUI_ERR_ADMINEXE    "无管理工具可用。\n\n访问 https://rizonesoft.com/ 看看？"
+                            "文件“%s”不能被保存，它可能是受保护的\n\n是否希望提升 %s 的权限？"
+    IDS_MUI_ERR_ADMINEXE    "无管理工具可用\n\n访问 https://rizonesoft.com/ 看看？"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "是否确实要打开一个如此庞大的文件？\n\t（大小 %s ≥ %s）\n样式和语法高亮将被禁用。"
+                            "是否确实要打开一个如此庞大的文件？\n\t（大小 %s ≥ %s）\n样式和语法高亮将被禁用"
     IDS_MUI_ERR_FILE_TOO_LARGE
                             "无法处理如此庞大的文件（大小 %s）！"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "扩展名“%s”不是已知的文本文件。仍然要尝试打开吗？"
-    IDS_MUI_INDENT_CONSISTENT  "该文件的缩进全部一致。"
+    IDS_MUI_INDENT_CONSISTENT  "该文件的缩进全部一致"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
@@ -166,48 +166,48 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "该操作不能在矩形选区上执行。"
-    IDS_MUI_SELMULTI        "该操作不能在多个选区上执行。"
-    IDS_MUI_SELRECTORMULTI  "该操作不能在矩形或多个选区上执行。"
-    IDS_MUI_BUFFERTOOSMALL  "该操作不能执行，因为有些行太长了。"
-    IDS_MUI_FIND_WRAPFW     "已到达文件结尾，将从开头开始重新查找。"
-    IDS_MUI_FIND_WRAPRE     "已到达文件开头，将从结尾开始重新查找。"
-    IDS_MUI_NOTFOUND        "未找到匹配项。"
-    IDS_MUI_REPLCOUNT       "替换了 %s 个匹配项。"
+    IDS_MUI_SELRECT         "该操作不能在矩形选区上执行"
+    IDS_MUI_SELMULTI        "该操作不能在多个选区上执行"
+    IDS_MUI_SELRECTORMULTI  "该操作不能在矩形或多个选区上执行"
+    IDS_MUI_BUFFERTOOSMALL  "该操作不能执行，因为有些行太长了"
+    IDS_MUI_FIND_WRAPFW     "已到达文件结尾，将从开头开始重新查找"
+    IDS_MUI_FIND_WRAPRE     "已到达文件开头，将从结尾开始重新查找"
+    IDS_MUI_NOTFOUND        "未找到匹配项"
+    IDS_MUI_REPLCOUNT       "替换了 %s 个匹配项"
     IDS_MUI_ASK_ENCODING    "切换文件编码可能导致部分无法表示的字符被替换为其它字符，并且该操作会清空撤销历史。是否继续？"
     IDS_MUI_ASK_ENCODING2   "切换文件编码会清空撤销历史。是否继续？"
     IDS_MUI_ASK_CLEAR_UNDO  "该操作将会清空撤销历史。是否继续？"
     IDS_MUI_READONLY_SAVE   "“%s”是只读的。是否尝试使用其它名字保存？"
     IDS_MUI_FILECHANGENOTIFY
-                            "当前文件已被其它程序所修改。\n请选择：\n\n取消 -\t\t忽略之后的更改\n重新加载 -\t\t重新加载文件\n继续 -\t\t切换为监控模式"
+                            "当前文件已被其它程序所修改\n请选择：\n\n取消 -\t\t忽略之后的更改\n重新加载 -\t\t重新加载文件\n继续 -\t\t切换为监控模式"
     IDS_MUI_FILECHANGENOTIFY2 "当前文件已被删除。是否保存？"
-    IDS_MUI_FILELOCK_ERROR  "无法以独占模式锁定文件“%s”。"
-    IDS_MUI_STICKYWINPOS    "粘性窗口位置已启用。新的 Notepad3 窗口将使用和当前窗口一致的位置设置。"
-    IDS_MUI_SAVEDSETTINGS   "当前设置已保存。"
-    IDS_MUI_CREATEINI_FAIL  "创建配置文件失败。"
-    IDS_MUI_WRITEINI_FAIL   "将设置写入配置文件失败。"
+    IDS_MUI_FILELOCK_ERROR  "无法以独占模式锁定文件“%s”"
+    IDS_MUI_STICKYWINPOS    "粘性窗口位置已启用。新的 Notepad3 窗口将使用和当前窗口一致的位置设置"
+    IDS_MUI_SAVEDSETTINGS   "当前设置已保存"
+    IDS_MUI_CREATEINI_FAIL  "创建配置文件失败"
+    IDS_MUI_WRITEINI_FAIL   "将设置写入配置文件失败"
     IDS_MUI_INIFILE_READONLY
                             "配置文件是只读的。是否忽略并替换设置？"
     IDS_MUI_SETTINGSNOTSAVED
-                            "当前无配置文件可用。\n\n若要保存已修改的样式，请按 F7 保存设置，或按 Ctrl+F12 导出样式。"
+                            "当前无配置文件可用\n\n若要保存已修改的样式，请按 F7 保存设置，或按 Ctrl+F12 导出样式"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_RELOADSETTINGS   "重新启动应用程序以加载已保存的设置吗？\n\n%s"
-    IDS_MUI_RELOADCFGSEX     "如果继续而不重启应用程序，已保存的设置将不会生效，并且当退出时会被内部设置覆盖。"
-    IDS_MUI_EXPORT_FAIL      "导出样式设置到文件“%s”时遇到错误。"
-    IDS_MUI_REGEX_INVALID    "正则表达式无效。"
-    IDS_MUI_DROP_NO_FILE     "未能获取文件名。\n\n如果从 32 位应用程序拖放文件，请拖放到 Notepad3 的工具栏上。"
-    IDS_MUI_URL_DIR_EXISTS   "URL 指定的目录已存在。"
-    IDS_MUI_URL_FILE_EXISTS  "URL 指定的文件已存在。"
+    IDS_MUI_RELOADCFGSEX     "如果继续而不重启应用程序，已保存的设置将不会生效，并且当退出时会被内部设置覆盖"
+    IDS_MUI_EXPORT_FAIL      "导出样式设置到文件“%s”时遇到错误"
+    IDS_MUI_REGEX_INVALID    "正则表达式无效"
+    IDS_MUI_DROP_NO_FILE     "未能获取文件名\n\n如果从 32 位应用程序拖放文件，请拖放到 Notepad3 的工具栏上"
+    IDS_MUI_URL_DIR_EXISTS   "URL 指定的目录已存在"
+    IDS_MUI_URL_FILE_EXISTS  "URL 指定的文件已存在"
     IDS_MUI_URL_PATH_NOT_FOUND
-                             "URL 指定的路径不存在。"
-    IDS_MUI_URL_OPEN_FILE    "\n按住 Alt 同时点击以打开文件。"
-    IDS_MUI_URL_OPEN_BROWSER "\n按住 Ctrl 同时点击以在浏览器中打开链接。"
+                             "URL 指定的路径不存在"
+    IDS_MUI_URL_OPEN_FILE    "\n按住 Alt 同时点击以打开文件"
+    IDS_MUI_URL_OPEN_BROWSER "\n按住 Ctrl 同时点击以在浏览器中打开链接"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "已启用维持文件最后修改时间功能。\n\n本选项将在当前会话期间生效。"
-    IDS_MUI_OUT_OFF_OCCMRK   "书签/高亮标记已用完。"
+                             "已启用维持文件最后修改时间功能\n\n本选项将在当前会话期间生效"
+    IDS_MUI_OUT_OFF_OCCMRK   "书签/高亮标记已用完"
     IDS_MUI_DOCUMENT_READONLY
                              "该文档已被锁定仅供阅览。保持锁定以防止修改吗？"
 END
@@ -216,25 +216,25 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ASK_SAVE        "将修改保存到“%s”？"
     IDS_MUI_ASK_REVERT      "还原文件到上次保存的状态吗？"
-    IDS_MUI_ASK_RECODE      "更改编码并重新加载吗？\n\n警告：所有未保存的修改将丢失。"
+    IDS_MUI_ASK_RECODE      "更改编码并重新加载吗？\n\n警告：所有未保存的修改将丢失"
     IDS_MUI_ASK_CREATE      "文件“%s”未找到。是否创建一个新的文件？"
     IDS_MUI_PRINT_HEADER    "文件名，当前日期和时间|文件名，当前日期|文件名|留空"
     IDS_MUI_PRINT_FOOTER    "页码|留空"
     IDS_MUI_PRINT_COLOR     "标准|反色（暗色背景）|白底黑字|白底彩字|白底彩字（除行号以外）|和屏幕颜色相同"
     IDS_MUI_PRINT_PAGENUM   "第 %i 页"
     IDS_MUI_WARN_STYLE_RESET
-                            "该操作将会把颜色样式重置为出厂设置，并将活动的主题文件切换为标准的 .INI 配置文件。"
+                            "该操作将会把颜色样式重置为出厂设置，并将活动的主题文件切换为标准的 .INI 配置文件"
     IDS_MUI_ASK_INSTANCE_EXISTS
                             "单实例模式：\n\n切换到已经加载的文件实例吗？"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "该文件不包含任何可打印文本。"
-    IDS_MUI_PRINT_ERROR     "打印文件“%s”时遇到错误。"
-    IDS_MUI_FAV_SUCCESS     "已成功在收藏夹中创建了当前文件的快捷方式。"
-    IDS_MUI_FAV_FAILURE     "无法在收藏夹中创建当前文件的快捷方式。请先从收藏夹中删除同名文件。"
-    IDS_MUI_READONLY_MODIFY "文件“%s”的属性无法被修改。"
+    IDS_MUI_PRINT_EMPTY     "该文件不包含任何可打印文本"
+    IDS_MUI_PRINT_ERROR     "打印文件“%s”时遇到错误"
+    IDS_MUI_FAV_SUCCESS     "已成功在收藏夹中创建了当前文件的快捷方式"
+    IDS_MUI_FAV_FAILURE     "无法在收藏夹中创建当前文件的快捷方式。请先从收藏夹中删除同名文件"
+    IDS_MUI_READONLY_MODIFY "文件“%s”的属性无法被修改"
     IDS_MUI_SAVEPOS         "保存位置(&S)\tCtrl+S"
     IDS_MUI_RESETPOS        "重置位置(&R)\tCtrl+R"
     IDS_MUI_PREVIEW         "预览设置(&P)\tCtrl+P"
@@ -301,52 +301,52 @@ IDS_MUI_CMDLINEHELP "\
 Notepad3 [/?] [...[编码]] [...[换行符模式]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[盘符:][路径]文件名[...]]\r\n\r\n\
-文件\t必须是最后一个参数，不需要双引号。\r\n\
-+\t接收多个文件参数（对于有空格的参数，需要用双引号括起来）。\r\n\
--\t接收单个文件参数（对于有空格的参数，不需要双引号）。\r\n\r\n\
+文件\t必须是最后一个参数，不需要双引号\r\n\
++\t接收多个文件参数（对于有空格的参数，需要用双引号括起来）\r\n\
+-\t接收单个文件参数（对于有空格的参数，不需要双引号）\r\n\r\n\
 选项：\r\n\
-/?\t显示这个帮助消息。\r\n\
-...\t编码（/ansi, /unicode, /unicodebe, /utf8, /utf8sig）。\r\n\
-...\t换行符模式（/crlf, /cr, /lf）。\r\n\
-/e\t选择文件编码。\r\n\
+/?\t显示这个帮助消息\r\n\
+...\t编码（/ansi, /unicode, /unicodebe, /utf8, /utf8sig）\r\n\
+...\t换行符模式（/crlf, /cr, /lf）\r\n\
+/e\t选择文件编码\r\n\
 /g\t跳转到指定位置（/g -1 跳转到文件末尾）\r\n\
-/m\t匹配指定字符串（/m- 上次匹配的, /mr 正则表达式, /mb 转义反斜杠）。\r\n\
-/l\t自动重新加载被修改的文件。\r\n\
-/q\t如果文件不存在就创建之而不提示。\r\n\
-/s\t选择语法高亮方案。\r\n\
-/d\t选择“默认文本”方案。\r\n\
-/h\t选择“Web 源代码”方案。\r\n\
-/x\t选择“XML 文件”方案。\r\n\
-/c\t打开新窗口并粘贴剪贴板内容。\r\n\
-/b\t打开剪贴板收集窗口（自动粘贴加入到剪贴板中的内容）。\r\n\
-/n\t总是打开新窗口（/ns 对于每个文件只允许打开一个实例）。\r\n\
-/r\t重用已存在的窗口（/rs 对于每个文件只允许打开一个实例）。\r\n\
+/m\t匹配指定字符串（/m- 上次匹配的, /mr 正则表达式, /mb 转义反斜杠）\r\n\
+/l\t自动重新加载被修改的文件\r\n\
+/q\t如果文件不存在就创建之而不提示\r\n\
+/s\t选择语法高亮方案\r\n\
+/d\t选择“默认文本”方案\r\n\
+/h\t选择“Web 源代码”方案\r\n\
+/x\t选择“XML 文件”方案\r\n\
+/c\t打开新窗口并粘贴剪贴板内容\r\n\
+/b\t打开剪贴板收集窗口（自动粘贴加入到剪贴板中的内容）\r\n\
+/n\t总是打开新窗口（/ns 对于每个文件只允许打开一个实例）\r\n\
+/r\t重用已存在的窗口（/rs 对于每个文件只允许打开一个实例）\r\n\
 /p\t设置窗口位置和大小（/p0,/ps,/pd,f,l,t,r,b,m）\r\n\
-\t或 /p <左>,<上>,<宽>,<高>[,<DPI>[,<最大化>]]  （均为整数）。\r\n\
-/t\t设置窗口标题。\r\n\
-/i\t以托盘图标状态启动。\r\n\
-/o\t窗口置顶。\r\n\
-/f\t指定配置文件（/f0 不使用配置文件）。\r\n\
-/u\t以管理员权限启动。\r\n\
-/v\t打印文件并退出。\r\n\
-/vd\t打印文件（打开打印机对话框）。\r\n\
-/y\t在环境变量 PATH 中查找相对路径。\r\n\
-/z\t忽略下一个参数（当通过注册表替换系统记事本时这可能有用）。\r\n\r\n\
+\t或 /p <左>,<上>,<宽>,<高>[,<DPI>[,<最大化>]]  （均为整数）\r\n\
+/t\t设置窗口标题\r\n\
+/i\t以托盘图标状态启动\r\n\
+/o\t窗口置顶\r\n\
+/f\t指定配置文件（/f0 不使用配置文件）\r\n\
+/u\t以管理员权限启动\r\n\
+/v\t打印文件并退出\r\n\
+/vd\t打印文件（打开打印机对话框）\r\n\
+/y\t在环境变量 PATH 中查找相对路径\r\n\
+/z\t忽略下一个参数（当通过注册表替换系统记事本时这可能有用）\r\n\r\n\
 示例：\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... 使用 UTF-8-BOM 编码、CRLF 换行符模式打开文件“Test.txt”。\r\n\
+ \t... 使用 UTF-8-BOM 编码、CRLF 换行符模式打开文件“Test.txt”\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... 打印文件“Test.txt”。\
+ \t... 打印文件“Test.txt”\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-文件扩展名必须以 ; 隔开。\r\n\
+文件扩展名必须以 ; 隔开\r\n\
 使用 \\<regex>; 可定义用于匹配文件名的正则表达式：\r\n\
-   例如 \\xyz$; 可匹配以 xyz 结尾的文件名（含扩展名）。\r\n\r\n\
+   例如 \\xyz$; 可匹配以 xyz 结尾的文件名（含扩展名）\r\n\r\n\
 样式格式：\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-样式属性可以复制粘贴或拖放。\r\n\r\n“预览”按钮不会应用修改。\
+样式属性可以复制粘贴或拖放\r\n\r\n“预览”按钮不会应用修改\
 "
 
 END
