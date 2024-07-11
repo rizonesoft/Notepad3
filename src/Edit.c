@@ -3111,6 +3111,18 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
         return;
     }
 
+    DocPos const iResetPos = SciCall_GetCurrentPos();
+    DocPos const iAnchorPos = SciCall_GetAnchor();
+    DocLn const  iResetLine = SciCall_LineFromPosition(iResetPos);
+    DocPos const iResetOffset = iResetPos - SciCall_PositionFromLine(iResetLine);
+
+    UndoTransActionBegin();
+
+    bool const bSelEmpty = SciCall_IsSelectionEmpty();
+    if (bSelEmpty) {
+        SciCall_SelectAll();
+    }
+
     bool const bHasPrefixPattern = StrIsNotEmpty(pEnclData->pwsz1);
     bool const bHasAppendPattern = StrIsNotEmpty(pEnclData->pwsz2);
 
@@ -3129,15 +3141,14 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
 
     DocPos const iSelStart = SciCall_GetSelectionStart();
     DocPos const iSelEnd = SciCall_GetSelectionEnd();
-    DocLn iLineStart = SciCall_LineFromPosition(iSelStart);
-    DocLn iLineEnd = SciCall_LineFromPosition(iSelEnd);
-    //if (iSelStart > SciCall_PositionFromLine(iLineStart))
-    //  iLineStart++;
-    if (iSelEnd <= SciCall_PositionFromLine(iLineEnd)) {
-        if ((iLineEnd - iLineStart) >= 1) {
-            --iLineEnd;
+    DocLn const  iStartLine = SciCall_LineFromPosition(iSelStart);
+    DocLn _iEndLine = SciCall_LineFromPosition(iSelEnd);
+    if (iSelEnd <= SciCall_PositionFromLine(_iEndLine)) {
+        if ((_iEndLine - iStartLine) >= 1) {
+            --_iEndLine;
         }
     }
+    DocLn const iEndLine = _iEndLine;
 
     char  pszPrefixNumPad[2] = { '\0', '\0' };
     char  pszAppendNumPad[2] = { '\0', '\0' };
@@ -3215,12 +3226,12 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
         pTinyExprPre = te_compile(mszTinyExprPre, vars, 3, &err);
 
         if (pTinyExprPre) {
-            L = (double)(iLineStart + 1ll);
+            L = (double)(iStartLine + 1ll);
             I = 0.0;
             N = I + 1.0;
             DocLn vmin = d2ln(te_eval(pTinyExprPre));
             DocLn vmax = vmin;
-            for (DocLn ln = iLineStart + 2; ln <= iLineEnd; ++ln) {
+            for (DocLn ln = iStartLine + 2; ln <= iEndLine; ++ln) {
                 L = (double)ln;
                 I += 1.0;
                 N += 1.0;
@@ -3256,12 +3267,12 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
         pTinyExprPost = te_compile(mszTinyExprPost, vars, 3, &err);
 
         if (pTinyExprPost) {
-            L = (double)(iLineStart + 1ll);
+            L = (double)(iStartLine + 1ll);
             I = 0.0;
             N = I + 1.0;
             DocLn vmin = d2ln(te_eval(pTinyExprPost));
             DocLn vmax = vmin;
-            for (DocLn ln = iLineStart + 2; ln <= iLineEnd; ++ln) {
+            for (DocLn ln = iStartLine + 2; ln <= iEndLine; ++ln) {
                 L = (double)ln;
                 I += 1.0;
                 N += 1.0;
@@ -3292,8 +3303,6 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
 
     // --- generate numbering ---
 
-    UndoTransActionBegin();
-
     char tchFormatPre[32] = { '\0' };
     if (pTinyExprPre) {
 #ifdef _WIN64
@@ -3312,7 +3321,9 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
     }
     char mszInsert[(ENCLDATA_SIZE << 1) * 3] = { '\0' };
 
-    for (DocLn iLine = iLineStart, count = 0; iLine <= iLineEnd; ++iLine, ++count) {
+    DocPos prefixInsertLen = 0;
+
+    for (DocLn iLine = iStartLine, count = 0; iLine <= iEndLine; ++iLine, ++count) {
 
         if (bHasPrefixPattern) {
 
@@ -3333,6 +3344,9 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
             DocPos const iPos = SciCall_PositionFromLine(iLine);
             SciCall_SetTargetRange(iPos, iPos);
             SciCall_ReplaceTarget(-1, mszInsert);
+            if (iLine == iResetLine) {
+                prefixInsertLen = StringCchLenA(mszInsert, COUNTOF(mszInsert));
+            }
         }
 
         if (bHasAppendPattern) {
@@ -3362,18 +3376,16 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
 
     // extend selection to start of first line
     // the above code is not required when last line has been excluded
-    if (iSelStart != iSelEnd) {
-
-        DocPos iCurPos = SciCall_GetCurrentPos();
-        DocPos iAnchorPos = SciCall_GetAnchor();
-        if (iCurPos < iAnchorPos) {
-            iCurPos = SciCall_PositionFromLine(iLineStart);
-            iAnchorPos = SciCall_PositionFromLine(iLineEnd + 1);
+    if (bSelEmpty) {
+        DocPos const newPos = SciCall_PositionFromLine(iResetLine) + iResetOffset + prefixInsertLen;
+        EditSetSelectionEx(newPos, newPos, -1, -1);
+    }
+    else if (iSelStart != iSelEnd) {
+        if (iResetPos < iAnchorPos) {
+            EditSetSelectionEx(SciCall_PositionFromLine(iEndLine + 1), SciCall_PositionFromLine(iStartLine), -1, -1);
         } else {
-            iAnchorPos = SciCall_PositionFromLine(iLineStart);
-            iCurPos = SciCall_PositionFromLine(iLineEnd + 1);
+            EditSetSelectionEx(SciCall_PositionFromLine(iStartLine), SciCall_PositionFromLine(iEndLine + 1), -1, -1);
         }
-        EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
     }
 
     EndUndoTransAction();
@@ -5222,6 +5234,8 @@ int CmpStdLogicalRev(const void* s1, const void* s2)
 
 void EditSortLines(HWND hwnd, int iSortFlags)
 {
+    UndoTransActionBegin();
+
     DocPos const iResetPos = SciCall_GetCurrentPos();
     bool const   bSelEmpty = SciCall_IsSelectionEmpty();
     if (bSelEmpty) {
@@ -5257,6 +5271,8 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
     DocLn const iLineCount = iLineEnd - iLineStart + 1;
 
+    BeginWaitCursorUID((iLineCount > 10000), IDS_MUI_SB_SORTING_LINES);
+
     char mszEOL[3] = { '\0' };
     Sci_GetCurrentEOL_A(mszEOL);
 
@@ -5278,9 +5294,6 @@ void EditSortLines(HWND hwnd, int iSortFlags)
         }
         return;
     }
-
-    BeginWaitCursorUID((iLineCount > 10000), IDS_MUI_SB_SORTING_LINES);
-    UndoTransActionBegin();
 
     DocPos      iMaxLineLen = Sci_GetRangeMaxLineLength(iLineStart, iLineEnd);
     char* const pmsz = AllocMem(iMaxLineLen + 1, HEAP_ZERO_MEMORY);
@@ -5440,7 +5453,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
         }
     }
 
-    //SciCall_SetTargetRange(SciCall_PositionFromLine(iLineStart), SciCall_PositionFromLine(iLineEnd + 1));
+    //SciCall_SetTargetRange(SciCall_PositionFromLine(iStartLine), SciCall_PositionFromLine(iEndLine + 1));
     SciCall_SetTargetRange(SciCall_PositionFromLine(iLineStart), SciCall_GetLineEndPosition(iLineEnd));
     Sci_ReplaceTargetTestChgHist(-1, pmszResult);
     FreeMem(pmszResult);
@@ -5453,8 +5466,9 @@ void EditSortLines(HWND hwnd, int iSortFlags)
         EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
     }
 
-    EndUndoTransAction();
     EndWaitCursor();
+
+    EndUndoTransAction();
 }
 
 
