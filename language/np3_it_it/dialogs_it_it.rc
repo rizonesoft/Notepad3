@@ -690,10 +690,10 @@ BEGIN
     CONTROL         "Ordinamento &crescente",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
     CONTROL         "Ordinamento &decrescente",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
     CONTROL         "Mescola linee",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
-    CONTROL         "&Unite duplicate lines",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
-    CONTROL         "&Remove duplicate lines",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
-    CONTROL         "Rimuovi le linee &uniche",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
-    CONTROL         "Rimuovi le linee &vuote",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
+    CONTROL         "&Unisci linee doppie",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "&Rimuovi linee doppie",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "Rimuovi linee &uniche",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
+    CONTROL         "Rimuovi linee &vuote",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
     CONTROL         "Rimu&ovi linee blank",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,110,10
     CONTROL         "Con&sidera Maiuscole\\Minuscole",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,120,10
     CONTROL         "Ignora Maiuscole\\Minus&cole",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,110,10
