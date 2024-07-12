@@ -197,8 +197,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Colonna a capo...\tCtrl+Shift+W",      IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
-            MENUITEM "&Unisci linee duplicate\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Rimuo&vi linee duplicate",              IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "&Unisci linee doppie\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "Rimuo&vi linee doppie",              IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "Unisci linee &vuote\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Unisci linee &blank\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
             MENUITEM "&Rimuovi linee vuote\tAlt+R",          IDM_EDIT_REMOVEEMPTYLINES
