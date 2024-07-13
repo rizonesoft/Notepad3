@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.24.703.(build_#) (2024-07-03)
+Current BETA/RC Version 6.24.713.(build_#) (2024-07-13)
 ========================================================
 
 --------------------------------------------------------
@@ -72,6 +72,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.713.1]- CR: if selection empty on "Modify Lines..." complete document is selected.
 [.703.1]- Refactor Remove/Unite Duplicate Lines.
 [.527.1]- Updating Lexer Style "NewSombra" from MadDogVachon.
 [.522.1]- Ctrl+S does not forced saving doc any longer - only saves file, if save needed (doc changed).
@@ -139,6 +140,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.713.1]- Delete line (Ctrl+Shift+D) - fix last line handling.
 [.703.1]- Update Toolbar in case of Undo/Redo.
 [.601.1]- Regression for "Reuse Window" flag.
 [.529.1]- Center dialog if window is maximized.
