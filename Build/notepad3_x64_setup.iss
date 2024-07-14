@@ -2,7 +2,7 @@
 ;*
 ;* (c) Rizonesoft 2008-2024
 
-;Requirements: Inno Setup 6.3.x or higher
+;Requirements: Inno Setup 6.2.x
 ;Inno Setup: https://jrsoftware.org/isinfo.php
 
 ;Thanks to "Wilenty" for his great help in improving the INNO Setup installer
@@ -97,14 +97,13 @@ DisableWelcomePage=no
 AllowCancelDuringInstall=yes
 UsedUserAreasWarning=no
 MinVersion=0,6.1sp1
-OnlyBelowVersion=0,0
 #if Arch == "x86"
-ArchitecturesAllowed=x86compatible x64compatible arm64
+ArchitecturesAllowed=x86 x64 arm64
 ArchitecturesInstallIn64BitMode=
 #endif
 #if Arch == "x64"
-ArchitecturesAllowed=x64compatible arm64
-ArchitecturesInstallIn64BitMode=x64compatible arm64
+ArchitecturesAllowed=x64 arm64
+ArchitecturesInstallIn64BitMode=x64 arm64
 #endif
 CloseApplications=true
 SetupMutex={#app_name}_setup_mutex,Global\{#app_name}_setup_mutex
@@ -113,7 +112,7 @@ WizardImageFile=.\Resources\WizardImageFileSmall.bmp
 
 
 [Languages]
-Name: "enu"; MessagesFile: "compiler:Languages-mod\Default.isl"
+Name: "enu"; MessagesFile: "compiler:Default.isl"
 Name: "afk"; MessagesFile: "compiler:Languages-mod\Afrikaans.isl"
 Name: "bel"; MessagesFile: "compiler:Languages-mod\Belarusian.isl"
 Name: "deu"; MessagesFile: "compiler:Languages-mod\German.isl"
