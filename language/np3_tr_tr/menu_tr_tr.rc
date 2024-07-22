@@ -197,14 +197,14 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Sütun &kaydır...\tCtrl+Shift+W",                IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
-            MENUITEM "&Unite Duplicate Lines\tCtrl+Alt+D",            IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Remo&ve Duplicate Lines",                       IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "Çift satırları &birleştir\tCtrl+Alt+D",         IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "Çift satırları &kaldır",                        IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "&Boş satırları birleştir\tAlt+Y",               IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "&Yazı olmayan satırları birleştir\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
             MENUITEM "B&oş satırları sil\tAlt+R",                     IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Y&azı olmayan satırları sil\tCtrl+Alt+B",       IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "Adva&nced"
+        POPUP "Ge&lişmiş"
         BEGIN
             MENUITEM "&Girintiyi artır",                              IDM_EDIT_INDENT
             MENUITEM "G&irintiyi azalt",                              IDM_EDIT_UNINDENT
