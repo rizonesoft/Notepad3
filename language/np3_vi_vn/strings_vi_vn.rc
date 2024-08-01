@@ -249,7 +249,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(vi-VN) Bản dịch tiếng Việt của Ghost"
+    IDS_MUI_TRANSL_AUTHOR   "(vi-VN) Bản dịch tiếng Việt của kun7752"
     IDS_MUI_TITLE_FIXBASE   "BASE (%s)"
     IDS_MUI_TITLE_RELCUR    "+++ %s: %s Style +++"
     IDS_MUI_TITLE_FIXCUR    "%s: %s Style"
