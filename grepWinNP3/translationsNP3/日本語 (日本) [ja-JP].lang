@@ -35,7 +35,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr "%ld ファイル, 飛ばした %ld ファイル. 結果の%ld項目を選択"
+msgstr "%ld ファイル, 検索省略 %ld ファイル. 結果の%ld項目を選択"
 
 #. Resource IDs: (149)
 #, c-format
@@ -242,7 +242,7 @@ msgstr "ファイル"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr "発見 %ld ファイル, 飛ばした %ld ファイル"
+msgstr "発見 %ld ファイル, 検索省略 %ld ファイル"
 
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
@@ -323,7 +323,7 @@ msgstr "より新しい"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr "「.」を改行にも合致させます。"
+msgstr "「.」を改行にも一致させます。"
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -448,12 +448,12 @@ msgstr "検索文字列"
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "検索済み %ldファイル, 飛ばした %ldファイル. 一致%ldか所 %ld個のファイル中."
+msgstr "検索済み %ldファイル, 検索省略 %ldファイル. %ldか所一致 %ld個のファイル中."
 
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr "検索済み %ldファイル, 飛ばした %ldファイル. 一致%ldか所 %ld個のファイル中. 結果の%ld項目を選択"
+msgstr "検索済み %ldファイル, 検索省略 %ldファイル. %ldか所一致 %ld個のファイル中. 結果の%ld項目を選択"
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."

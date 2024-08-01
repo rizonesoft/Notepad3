@@ -197,14 +197,14 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "空白で折り返し(&W)...\tCtrl+Shift+W",     IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
-            MENUITEM "&Unite Duplicate Lines(&U)\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Remo&ve Duplicate Lines(&V)",              IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "重複行を合併(&U)\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "重複行を削除(&V)",              IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "空の行をまとめる(&G)\tAlt+Y",             IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "スペースの行もまとめる(&K)\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
             MENUITEM "空の行を削除(&R)\tAlt+R",               IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "スペースの行も削除(&B)\tCtrl+Alt+B",       IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "Adva&nced(&N)"
+        POPUP "高度(&N)"
         BEGIN
             MENUITEM "インデント(&I)\tTab",                      IDM_EDIT_INDENT
             MENUITEM "逆インデント(&U)\tShift+Tab",              IDM_EDIT_UNINDENT
@@ -492,7 +492,7 @@ BEGIN
         END
         MENUITEM "ツール実行前に保存(&V)",                       IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "数式を計算(TinyExpr)(&X)",               IDM_SET_EVALTINYEXPRONSEL
-        MENUITEM "Enable Multiple Selection",               IDM_SET_MULTIPLE_SELECTION
+        MENUITEM "同時に複数選択",               IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "履歴の保存(&R)"
         BEGIN
