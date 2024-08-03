@@ -111,6 +111,7 @@ jupester                https://github.com/jupester
 kayazeren               https://github.com/kayazeren
 kidzgy                  https://github.com/kidzgy
 kofifus                 https://github.com/kofifus
+kun7752                 https://github.com/kun7752
 Lacn0755                https://github.com/Lacn0755
 leeoniya                https://github.com/leeoniya
 lhmouse                 https://github.com/lhmouse

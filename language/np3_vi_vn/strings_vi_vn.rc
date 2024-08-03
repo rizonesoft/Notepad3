@@ -55,195 +55,195 @@ END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_NEW            "New"
-    IDT_FILE_OPEN           "Open"
-    IDT_FILE_BROWSE         "Browse"
-    IDT_FILE_SAVE           "Save"
-    IDT_FILE_RECENT         "History"
-    IDT_EDIT_UNDO           "Undo"
-    IDT_EDIT_REDO           "Redo"
-    IDT_EDIT_CUT            "Cut"
-    IDT_EDIT_COPY           "Copy"
+    IDT_FILE_NEW            "Tạo mới"
+    IDT_FILE_OPEN           "Mở"
+    IDT_FILE_BROWSE         "Duyệt"
+    IDT_FILE_SAVE           "Lưu"
+    IDT_FILE_RECENT         "Gần đây"
+    IDT_EDIT_UNDO           "Hoàn tác"
+    IDT_EDIT_REDO           "Làm lại"
+    IDT_EDIT_CUT            "Cắt"
+    IDT_EDIT_COPY           "Sao chép"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_EDIT_PASTE          "Paste"
-    IDT_EDIT_FIND           "Find"
-    IDT_EDIT_REPLACE        "Replace"
-    IDT_VIEW_WORDWRAP       "Word Wrap"
-    IDT_VIEW_ZOOMIN         "Zoom In"
-    IDT_VIEW_RESETZOOM      "Reset Zoom"
-    IDT_VIEW_ZOOMOUT        "Zoom Out"
-    IDT_VIEW_SCHEME         "Select Scheme"
-    IDT_VIEW_SCHEMECONFIG   "Customise Schemes"
-    IDT_FILE_EXIT           "Exit"
-    IDT_FILE_SAVEAS         "Save As"
-    IDT_FILE_SAVECOPY       "Save Copy"
-    IDT_EDIT_CLEAR          "Delete"
-    IDT_FILE_PRINT          "Print"
-    IDT_FILE_OPENFAV        "Favourites"
-    IDT_FILE_ADDTOFAV       "Add to Favourites"
-    IDT_VIEW_TOGGLEFOLDS    "Toggle Folds"
+    IDT_EDIT_PASTE          "Dán"
+    IDT_EDIT_FIND           "Tìm"
+    IDT_EDIT_REPLACE        "Thay thế"
+    IDT_VIEW_WORDWRAP       "Ngắt dòng"
+    IDT_VIEW_ZOOMIN         "Phóng to"
+    IDT_VIEW_RESETZOOM      "Đặt lại phóng to/thu nhỏ"
+    IDT_VIEW_ZOOMOUT        "Thu nhỏ"
+    IDT_VIEW_SCHEME         "Chọn chủ đề"
+    IDT_VIEW_SCHEMECONFIG   "Tùy chỉnh chủ đề"
+    IDT_FILE_EXIT           "Thoát"
+    IDT_FILE_SAVEAS         "Lưu với tên khác"
+    IDT_FILE_SAVECOPY       "Lưu bản sao"
+    IDT_EDIT_CLEAR          "Xóa"
+    IDT_FILE_PRINT          "In"
+    IDT_FILE_OPENFAV        "Mở yêu thích"
+    IDT_FILE_ADDTOFAV       "Thêm vào yêu thích"
+    IDT_VIEW_TOGGLEFOLDS    "Chuyển đổi gấp"
 END
 
 STRINGTABLE
 BEGIN
-    IDT_FILE_LAUNCH          "Execute Document"
-    IDT_VIEW_NEW_WINDOW      "New Empty Window"
-    IDT_VIEW_TOGGLE_VIEW     "Focused View"
-    IDT_VIEW_CHASING_DOCTAIL "Monitoring Log"
-    IDT_VIEW_PIN_ON_TOP      "Always On Top"
-    IDT_GREP_WIN_TOOL        "Search in Files"
+    IDT_FILE_LAUNCH          "Mở tài liệu"
+    IDT_VIEW_NEW_WINDOW      "Cửa sổ mới"
+    IDT_VIEW_TOGGLE_VIEW     "Chế độ tập trung"
+    IDT_VIEW_CHASING_DOCTAIL "Nhật ký theo dõi (&M)"
+    IDT_VIEW_PIN_ON_TOP      "Luôn ở trên cùng"
+    IDT_GREP_WIN_TOOL        "Tìm kiếm trong tệp"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE_ELEVATED "%s : Elevated"
+    IDS_MUI_APPTITLE_ELEVATED "%s : Quyền nâng cao"
     IDS_MUI_APPTITLE_PASTEBOARD "%s : Clipboard"
-    IDS_MUI_UNTITLED        "Untitled"
+    IDS_MUI_UNTITLED        "Không có tiêu đề"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Read Only)"
-    IDS_MUI_FILELOCKED      "<Exclusive>"
-    IDS_MUI_LOADFILE        "Loading ""%s""..."
-    IDS_MUI_SAVEFILE        "Saving ""%s""..."
-    IDS_MUI_PRINTFILE       "Printing page %i..."
-    IDS_MUI_SAVINGSETTINGS  "Saving settings..."
-    IDS_MUI_LINKDESCRIPTION "Edit with Notepad3"
+    IDS_MUI_READONLY        "(Chỉ đọc)"
+    IDS_MUI_FILELOCKED      "<Độc quyền>"
+    IDS_MUI_LOADFILE        "Đang mở ""%s""..."
+    IDS_MUI_SAVEFILE        "Đang lưu ""%s""..."
+    IDS_MUI_PRINTFILE       "Đang in trang %i..."
+    IDS_MUI_SAVINGSETTINGS  "Đang lưu cài đặt..."
+    IDS_MUI_LINKDESCRIPTION "Chỉnh sửa bằng Notepad3"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_FILTER_ALL      "All files (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE      "Executable files (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_INI      "Configuration files (*.ini)|*.ini|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Select the directory with links to your favourite applications"
-    IDS_MUI_FAVORITES       "Select the directory with links to your favourite files"
-    IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Wildcard Search\n\n*\tMatches zero or more characters\n?\tMatches exactly one character"
+    IDS_MUI_FILTER_ALL      "Tất cả các tệp (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE      "Tệp thực thi (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Tất cả các tệp (*.*)|*.*|"
+    IDS_MUI_FILTER_INI      "Tệp cấu hình (*.ini)|*.ini|Tất cả các tệp (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "Tệp Bitmap (*.bmp)|*.bmp|Tất cả các tệp (*.*)|*.*|"
+    IDS_MUI_OPENWITH        "Chọn thư mục có liên kết đến ứng dụng yêu thích"
+    IDS_MUI_FAVORITES       "Chọn thư mục có liên kết đến tệp yêu thích"
+    IDS_MUI_BACKSLASHHELP   "Chuyển đổi dấu gạch chéo ngược\n\n\\a\tCảnh báo (BEL, Ascii 7)\n\\b\tLùi (BS, Ascii 8)\n\\f\tChuyển trang (FF, Ascii 12)\n\\n\tDòng mới (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tTab ngang (HT, Ascii 9)\n\\v\tTab dọc (VT, Ascii 11)\n\\0oo\tGiá trị số octal\n\\u####\tGiá trị hex\n\\xhh\tGiá trị hex\n\\\\\tDấu gạch chéo ngược"
+    IDS_MUI_REGEXPHELP      "Cú pháp biểu thức chính quy (nhiều dòng)\n\n.\tKhớp với tất cả ký tự\n^\tChuỗi rỗng ngay sau dòng mới\n$\tChuỗi rỗng ngay trước cuối dòng\n\\<\tBắt đầu của từ\n\\>\tKết thúc của từ\n\\b\tRanh giới từ\n[...]\tTập hợp ký tự ([abc]) hoặc phạm vi ([a-z])\n[^...]\tKý tự không nằm trong tập hợp hoặc phạm vi\n\\d\tTất cả các chữ số\n\\D\tKý tự không phải chữ số\n\\s\tTất cả ký tự khoảng trắng\n\\S\tKý tự không phải khoảng trắng\n\\w\tTất cả ký tự ""từ""\n\\W\tTất cả ký tự ""không phải từ""\n\\x\tKý tự thoát có ý nghĩa đặc biệt\n\\xHH\tKý tự có giá trị hex là HH\n?\tKhớp một lần hoặc không khớp\n*\tKhớp 0 lần hoặc nhiều lần\n+\tKhớp một lần hoặc nhiều lần\n*? or +?\tKhớp không tham lam với dấu hoa thị ""*""\n\tvà cộng ""+""\n(\tBắt đầu của phạm vi\n)\tKết thúc của phạm vi\n\\n\tTham chiếu phạm vi khi thay thế (n là 1-9)\n"
+    IDS_MUI_WILDCARDHELP    "Tìm kiếm với ký tự đại diện\n\n*\tKhớp với 0 hoặc nhiều ký tự\n?\tKhớp với một ký tự cụ thể"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "Error loading ""%s"""
-    IDS_MUI_ERR_SAVEFILE    "Error saving ""%s"""
-    IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "No file browser plugin was found\nThe MiniPath file browser plugin can be downloaded from https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "No file search plugin was found\nThe grepWinNP3 file search plugin can be downloaded from https://rizonesoft.com"
-    IDS_MUI_ERR_MRUDLG      "No access to the selected file!\nWould you like to remove it from the list?"
-    IDS_MUI_ERR_CREATELINK  "Error creating the Desktop link"
+    IDS_MUI_ERR_LOADFILE    "Đã xảy ra lỗi khi mở tệp ""%s"""
+    IDS_MUI_ERR_SAVEFILE    "Đã xảy ra lỗi khi lưu tệp ""%s"""
+    IDS_MUI_ERR_DLG_FORMAT  "Lỗi '%s', Nguyên nhân:\n%s(ID:%d)\n"
+    IDS_MUI_ERR_BROWSE      "Không thể tìm thấy plugin trình duyệt tệp\nPlugin MiniPath có thể tải xuống từ https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Không thể tìm thấy plugin tìm kiếm tệp\nPlugin grepWinNP3 có thể tải xuống từ https://rizonesoft.com"
+    IDS_MUI_ERR_MRUDLG      "Không thể truy cập tệp đã chọn!\nCó muốn xóa khỏi danh sách không?"
+    IDS_MUI_ERR_CREATELINK  "Đã xảy ra lỗi khi tạo liên kết trên màn hình chính"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "Existing Notepad3 window is busy or has an active dialog box\nWould you like to open another Notepad3 window?"
-    IDS_MUI_ERR_ENCODINGNA  "Code page conversion tables for the selected encoding are not available on your system"
-    IDS_MUI_ERR_UNICODE     "Error converting this Unicode file\nData will be lost if the file is saved!"
-    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s""\nSuitable dimension: %i x %i (width >= %i x height)"
+                            "Cửa sổ Notepad3 hiện tại đang sử dụng hoặc hộp thoại đang mở\nCó muốn mở cửa sổ Notepad3 khác không?"
+    IDS_MUI_ERR_ENCODINGNA  "Không thể tìm thấy bảng chuyển đổi mã hóa cho mã hóa đã chọn trên hệ thống"
+    IDS_MUI_ERR_UNICODE     "Đã xảy ra lỗi khi chuyển đổi tệp Unicode này\nDữ liệu sẽ bị mất nếu lưu tệp!"
+    IDS_MUI_ERR_BITMAP      "Kích thước của bitmap ""%s"" không phù hợp\nKích thước hợp lệ: %i x %i (Chiều rộng >= %i x Chiều cao)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Error elevating user rights!"
+                            "Đã xảy ra lỗi khi nâng quyền người dùng!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "Certain characters in the current text are not supported by the selected encoding, and may be replaced by default placeholders when saving. It's recommended to choose another file encoding. Continue?"
-    IDS_MUI_ERR_DROP        "Only one file can be dropped at the same time!"
+    IDS_MUI_ERR_UNICODE2    "Một số ký tự trong văn bản hiện tại không được hỗ trợ bởi mã hóa đã chọn và có thể bị thay thế bằng ký tự mặc định khi lưu. Nên chọn mã hóa tệp khác. Có tiếp tục không?"
+    IDS_MUI_ERR_DROP        "Chỉ có thể kéo và thả một tệp tại một thời điểm!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "The file ""%s"" cannot be saved and may be protected\n\nDo you want to launch %s as 'Elevated' application?"
-    IDS_MUI_ERR_ADMINEXE    "No administration executable found\nCheck website https://rizonesoft.com?"
+                            "Không thể lưu tệp ""%s"" và không thể bảo vệ tệp đó\n\nCó muốn khởi động %s với ứng dụng 'Quyền nâng cao' không?"
+    IDS_MUI_ERR_ADMINEXE    "Không có tệp thực thi quản trị\nCó kiểm tra tại https://rizonesoft.com không?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Are you sure you want to open this large file?\n\t(size: %s >= %s)!\n(Styling and Syntax Highlighting will not be applied!)"
+                            "Có muốn mở tệp lớn này không?\n\t(Kích thước: %s >= %s)!\n(Các tùy chọn kiểu và tô sáng cú pháp sẽ không được áp dụng!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
-                            "Can't handle that huge file (size: %s)!"
+                            "Không thể xử lý tệp lớn (Kích thước: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Unknown file name extension (%s)!\nLoading data anyway?"
-    IDS_MUI_INDENT_CONSISTENT  "The file has a consistent indentation!"
+                            "Mở rộng không xác định (%s)!\nCó tiếp tục tải dữ liệu không?"
+    IDS_MUI_INDENT_CONSISTENT   "Tệp có độ thụt lề nhất quán!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
-    IDS_MUI_EOLMODENAME_CR     "Old Mac (CR)"
+    IDS_MUI_EOLMODENAME_CR      "Mac cũ (CR)"
     IDS_MUI_WARN_NORMALIZE_EOLS
-                            "Do you want to normalise all line endings to be '%s'?"
+                            "Có muốn chuẩn hóa tất cả các ký tự kết thúc dòng thành '%s' không?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SELRECT         "This operation can't be performed within a rectangular selection"
-    IDS_MUI_SELMULTI        "This operation can't be performed within a multi-selection"
-    IDS_MUI_SELRECTORMULTI  "This operation can't be performed within a rectangular or multi-selection"
-    IDS_MUI_BUFFERTOOSMALL  "This operation can't be performed (lines too long)"
-    IDS_MUI_FIND_WRAPFW     "Reached the end of the document, restarting search at the beginning"
-    IDS_MUI_FIND_WRAPRE     "Reached the beginning of the document, restarting search at the end"
-    IDS_MUI_NOTFOUND        "No match found for specified search pattern"
-    IDS_MUI_REPLCOUNT       "%s occurrence(s) of specified search pattern replaced"
-    IDS_MUI_ASK_ENCODING    "Switching the file encoding from one encoding to another may replace unsupported text with default characters, and the undo history will be cleared. Continue?"
-    IDS_MUI_ASK_ENCODING2   "You are about to change the encoding of an empty file. Note that this will clear the undo history, as it can't be synchronised with the new encoding. Continue?"
-    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
-    IDS_MUI_READONLY_SAVE   """%s"" is read only. Save to a different file?"
+    IDS_MUI_SELRECT         "Tác vụ này không thể thực hiện trong lựa chọn hình chữ nhật"
+    IDS_MUI_SELMULTI        "Tác vụ này không thể thực hiện trong lựa chọn đa mục"
+    IDS_MUI_SELRECTORMULTI  "Tác vụ này không thể thực hiện trong lựa chọn hình chữ nhật hoặc đa mục"
+    IDS_MUI_BUFFERTOOSMALL  "Không thể thực hiện tác vụ này (dòng quá dài)"
+    IDS_MUI_FIND_WRAPFW     "Đã đến cuối tài liệu và bắt đầu tìm kiếm lại từ đầu"
+    IDS_MUI_FIND_WRAPRE     "Đã đến đầu tài liệu và bắt đầu tìm kiếm lại từ cuối"
+    IDS_MUI_NOTFOUND        "Không tìm thấy mục khớp với mẫu tìm kiếm đã chỉ định"
+    IDS_MUI_REPLCOUNT       "Đã thay thế %s sự xuất hiện của mẫu tìm kiếm đã chỉ định"
+    IDS_MUI_ASK_ENCODING    "Chuyển đổi mã hóa tệp từ mã hóa này sang mã hóa khác có thể dẫn đến việc thay thế văn bản không được hỗ trợ bằng ký tự mặc định và xóa lịch sử hoàn tác. Có tiếp tục không?"
+    IDS_MUI_ASK_ENCODING2   "Đang cố gắng thay đổi mã hóa của tệp trống. Lịch sử hoàn tác sẽ bị xóa vì không thể đồng bộ hóa với mã hóa mới. Có tiếp tục không?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Thực hiện tác vụ này sẽ xóa lịch sử hoàn tác. Có tiếp tục không?"
+    IDS_MUI_READONLY_SAVE   """%s"" là chỉ đọc. Có muốn lưu thành tệp khác không?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
-    IDS_MUI_FILECHANGENOTIFY2 "The current file has been deleted. Save now?"
-    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
-    IDS_MUI_STICKYWINPOS    "Sticky Window Position is enabled. Any new Notepad3 windows will use the current window placement settings"
-    IDS_MUI_SAVEDSETTINGS   "The current program settings have been saved"
-    IDS_MUI_CREATEINI_FAIL  "Error creating configuration file"
-    IDS_MUI_WRITEINI_FAIL   "Error writing settings to configuration file"
+                            "Tệp hiện tại đã bị sửa đổi bởi chương trình bên ngoài\nChọn:\n\Hủy -\t\tBỏ qua thay đổi thêm\nTải lại -\t\tTải lại tệp\nTiếp tục -\tChuyển sang giám sát tệp"
+    IDS_MUI_FILECHANGENOTIFY2 "Tệp hiện tại đã bị xóa. Có muốn lưu ngay bây giờ không?"
+    IDS_MUI_FILELOCK_ERROR  "Không thể lấy khóa tệp độc quyền cho ""%s"""
+    IDS_MUI_STICKYWINPOS    "Vị trí cửa sổ cố định đã được kích hoạt. Cửa sổ Notepad3 mới sẽ sử dụng cài đặt sắp xếp cửa sổ hiện tại"
+    IDS_MUI_SAVEDSETTINGS   "Cài đặt chương trình hiện tại đã được lưu"
+    IDS_MUI_CREATEINI_FAIL  "Đã xảy ra lỗi khi tạo tệp cấu hình"
+    IDS_MUI_WRITEINI_FAIL   "Đã xảy ra lỗi khi ghi cài đặt vào tệp cấu hình"
     IDS_MUI_INIFILE_READONLY
-                            "Configuration file is readonly - ignore and override settings?"
+                            "Tệp cấu hình chỉ đọc. Có muốn bỏ qua cài đặt và ghi đè không?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "No existing configuration file was found\nTo keep your style modifications, save settings now (F7) or go back to scheme configuration (Ctrl+F12) and export your styles"
+                            "Không tìm thấy tệp cấu hình hiện tại\nĐể giữ các thay đổi kiểu, hãy lưu cài đặt ngay bây giờ (F7) hoặc quay lại cấu hình chủ đề (Ctrl+F12) để xuất kiểu"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "Activate saved settings by program relaunch?\n\n%s"
-    IDS_MUI_RELOADCFGSEX     "On continuing w/o relaunch, saved settings are not applied and will be overridden by internal settings on program exit!"
-    IDS_MUI_EXPORT_FAIL      "Error exporting style settings to ""%s"""
-    IDS_MUI_REGEX_INVALID    "Error evaluating regular expression. Expression is invalid!"
-    IDS_MUI_DROP_NO_FILE     "No valid filename retrieved\nIf dropping from 32-bit application,\nplease drag and drop to Notepad3's tool bar"
-    IDS_MUI_URL_DIR_EXISTS   "URL specified directory exists!"
-    IDS_MUI_URL_FILE_EXISTS  "URL specified file exists!"
+    IDS_MUI_RELOADSETTINGS   "Có muốn khởi động lại chương trình để kích hoạt cài đặt đã lưu không?\n\n%s"
+    IDS_MUI_RELOADCFGSEX     "Nếu tiếp tục mà không khởi động lại, cài đặt đã lưu sẽ không được áp dụng và cài đặt nội bộ sẽ bị bỏ qua khi chương trình thoát!"
+    IDS_MUI_EXPORT_FAIL      "Đã xảy ra lỗi khi xuất cài đặt kiểu sang ""%s"""
+    IDS_MUI_REGEX_INVALID    "Đã xảy ra lỗi khi đánh giá biểu thức chính quy. Biểu thức không hợp lệ!"
+    IDS_MUI_DROP_NO_FILE     "Không tìm thấy tên tệp hợp lệ\nNếu kéo từ ứng dụng 32-bit\nHãy kéo và thả vào thanh công cụ Notepad3"
+    IDS_MUI_URL_DIR_EXISTS   "Thư mục đã chỉ định URL đã tồn tại!"
+    IDS_MUI_URL_FILE_EXISTS  "Tệp đã chỉ định URL đã tồn tại!"
     IDS_MUI_URL_PATH_NOT_FOUND
-                             "URL specified path not found!"
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click to open the file"
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click to open link in browser"
+                             "Không thể tìm thấy đường dẫn URL đã chỉ định!"
+    IDS_MUI_URL_OPEN_FILE    "\nAlt+Click để mở tệp"
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl+Click để mở liên kết trong trình duyệt"
     IDS_MUI_INF_PRSVFILEMODTM
-                             "Preserving original File Modification Timestamp enabled\nThis option will stay for this session!"
-    IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highlight)!"
+                             "Có thể bảo tồn dấu thời gian sửa đổi tệp gốc\nTùy chọn này sẽ giữ nguyên trong phiên này!"
+    IDS_MUI_OUT_OFF_OCCMRK   "Không đủ dấu đánh dấu (dấu trang/nổi bật)!"
     IDS_MUI_DOCUMENT_READONLY
-                             "The document is locked for view only. Keep the lock to prevent editing?"
+                             "Tài liệu hiện đang khóa chỉ đọc. Có muốn giữ khóa để ngăn chặn việc chỉnh sửa không?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ASK_SAVE        "Save changes to:\n""%s""?"
-    IDS_MUI_ASK_REVERT      "Revert file to last saved state?"
-    IDS_MUI_ASK_RECODE      "Recoding requires reloading file from disk, unsaved changes will be lost!"
-    IDS_MUI_ASK_CREATE      """%s"" not found\nWould you like to create this file?"
-    IDS_MUI_PRINT_HEADER    "Filename, Current Date and Time|Filename, Current Date|Filename|Leave blank"
-    IDS_MUI_PRINT_FOOTER    "Page Number|Leave blank"
-    IDS_MUI_PRINT_COLOR     "Normal|Invert light (dark background)|Black on white|Colour on white|Colour on white (except line numbers)|Screen Colours"
-    IDS_MUI_PRINT_PAGENUM   "Page %i"
+    IDS_MUI_ASK_SAVE        "Bạn có muốn lưu các thay đổi không:\n""%s""?"
+    IDS_MUI_ASK_REVERT      "Bạn có muốn khôi phục tệp về trạng thái lưu lần cuối không?"
+    IDS_MUI_ASK_RECODE      "Để ghi, bạn phải tải lại tệp từ đĩa. Các thay đổi chưa lưu sẽ bị mất!"
+    IDS_MUI_ASK_CREATE      "Không thể tìm thấy tệp ""%s""\nBạn có muốn tạo tệp này không?"
+    IDS_MUI_PRINT_HEADER    "Tên tệp, ngày và giờ hiện tại|Tên tệp, ngày hiện tại|Tên tệp|Bỏ trống"
+    IDS_MUI_PRINT_FOOTER    "Số trang|Bỏ trống"
+    IDS_MUI_PRINT_COLOR     "Thông thường|Đảo ngược màu (nền tối)|Trắng trên đen|Trắng|Trắng (không có số dòng)|Màu của màn hình"
+    IDS_MUI_PRINT_PAGENUM   "Trang %i"
     IDS_MUI_WARN_STYLE_RESET
-                            "This action will reset style to factory defaults of desired colour mode and switch active theme file to standard config .ini!"
+                            "Tác vụ này sẽ đặt lại kiểu về giá trị mặc định của chế độ màu mong muốn và chuyển tệp chủ đề hiện tại về cấu hình mặc định!"
     IDS_MUI_ASK_INSTANCE_EXISTS
-                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
+                            "Chế độ một thể hiện tệp:\n\nBạn có muốn đặt lại tiêu điểm vào thể hiện tệp đã mở không?"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_PRINT_EMPTY     "This document doesn't contain any text to be printed"
-    IDS_MUI_PRINT_ERROR     "Error printing ""%s""!"
-    IDS_MUI_FAV_SUCCESS     "A shortcut to the current file has been created in the favourites directory"
-    IDS_MUI_FAV_FAILURE     "The shortcut to the current file could not be created\nMake sure there's no other file with the same name"
-    IDS_MUI_READONLY_MODIFY "The attributes of ""%s"" could not be modified"
-    IDS_MUI_SAVEPOS         "&Save Position\tCtrl+S"
-    IDS_MUI_RESETPOS        "&Reset Position\tCtrl+R"
-    IDS_MUI_PREVIEW         "&Preview Settings\tCtrl+P"
-    IDS_MUI_PASS_FAILURE    "The Passphrase is incorrect\nRetry another Passphrase?"
-    IDS_MUI_NOPASS          "Decryption Cancelled!\nRead encrypted raw data?"
-    IDS_MUI_STY_BASESTD     "BASE (Default Style):"
-    IDS_MUI_STY_BASE2ND     "BASE (2nd Default Style):"
-    IDS_MUI_STY_LEXDEF      "%s - Default Style:"
-    IDS_MUI_STY_LEXSTYLE    "%s's  Style:"
+    IDS_MUI_PRINT_EMPTY     "Tài liệu này không có văn bản để in"
+    IDS_MUI_PRINT_ERROR     "Lỗi in tệp ""%s""!"
+    IDS_MUI_FAV_SUCCESS     "Đã tạo lối tắt cho tệp hiện tại trong thư mục yêu thích"
+    IDS_MUI_FAV_FAILURE     "Không thể tạo lối tắt cho tệp hiện tại\nVui lòng kiểm tra xem có tệp nào khác cùng tên không"
+    IDS_MUI_READONLY_MODIFY "Không thể sửa đổi thuộc tính của ""%s"""
+    IDS_MUI_SAVEPOS         "Lưu vị trí (&S)\tCtrl+S"
+    IDS_MUI_RESETPOS        "Đặt lại vị trí (&R)\tCtrl+R"
+    IDS_MUI_PREVIEW         "Xem trước thiết lập (&P)\tCtrl+P"
+    IDS_MUI_PASS_FAILURE    "Mật khẩu không đúng\nBạn có muốn thử mật khẩu khác không?"
+    IDS_MUI_NOPASS          "Giải mã đã bị hủy\nBạn có muốn đọc dữ liệu thô đã mã hóa không?"
+    IDS_MUI_STY_BASESTD     "BASE (kiểu cơ bản):"
+    IDS_MUI_STY_BASE2ND     "BASE (kiểu cơ bản thứ hai):"
+    IDS_MUI_STY_LEXDEF      "%s - kiểu cơ bản:"
+    IDS_MUI_STY_LEXSTYLE    "%s - kiểu:"
     IDS_MUI_TITLE_RELBASE   "+++ BASE (%s) +++"
 END
 
@@ -251,102 +251,102 @@ STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(vi-VN) Bản dịch tiếng Việt của kun7752"
     IDS_MUI_TITLE_FIXBASE   "BASE (%s)"
-    IDS_MUI_TITLE_RELCUR    "+++ %s: %s Style +++"
-    IDS_MUI_TITLE_FIXCUR    "%s: %s Style"
-    IDS_MUI_TITLE_RELARB    "+++ Style '%s' (%s) +++"
-    IDS_MUI_TITLE_FIXARB    "Style '%s' (%s)"
-    IDS_MUI_ASSOCIATED_EXT  "Associated filename extensions:"
-    IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
-    IDS_MUI_GOTO_LINE       "Line (1 - %s):"
-    IDS_MUI_GOTO_COLUMN     "Column (1 - %s):"
+    IDS_MUI_TITLE_RELCUR    "+++ %s: %s - kiểu +++"
+    IDS_MUI_TITLE_FIXCUR    "%s: %s - kiểu"
+    IDS_MUI_TITLE_RELARB    "+++ Kiểu '%s' - (%s) +++"
+    IDS_MUI_TITLE_FIXARB    "Kiểu '%s' - (%s)"
+    IDS_MUI_ASSOCIATED_EXT  "Các phần mở rộng tên tệp liên kết:"
+    IDS_MUI_ZERO_LEN_MATCH  "^ Khớp độ dài 0"
+    IDS_MUI_GOTO_LINE       "Dòng (1 - %s):"
+    IDS_MUI_GOTO_COLUMN     "Cột (1 - %s):"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_MENU_LANGUAGE   "&Language"
-    IDS_USE_LOCALE_DATEFMT  "Language defines &Date Format"
-    IDS_MUI_MENU_THEMES     "&Scheme Collection"
-    IDM_THEMES_FACTORY_RESET "&Factory Reset"
-    IDM_THEMES_STD_CFG       "&Standard Config"
-    IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
+    IDS_MUI_MENU_LANGUAGE   "Ngôn ngữ (&L)"
+    IDS_USE_LOCALE_DATEFMT  "Ngôn ngữ định nghĩa định dạng ngày (&D)"
+    IDS_MUI_MENU_THEMES     "Bộ cấu hình (&S)"
+    IDM_THEMES_FACTORY_RESET "Đặt lại về cài đặt gốc (&F)"
+    IDM_THEMES_STD_CFG       "Cấu hình tiêu chuẩn (&S)"
+    IDS_MUI_STATUSBAR_PREFIXES "Dòng  ,Cột  ,Chọn  ,Chọn khối  ,Chọn dòng  ,Khớp  ,,,,,,,Ký tự  ,Thay thế  ,Đánh giá  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
-    IDS_CLEAR_ALL           "Clear All"
+    IDS_CLEAR_ALL           "Xóa tất cả"
     IDS_MUI_CLEAR_FIND_HISTORY
-                            "Clear Find History"
+                            "Xóa lịch sử tìm kiếm"
     IDS_MUI_CLEAR_REPL_HISTORY
-                            "Clear Replace History"
+                            "Xóa lịch sử thay thế"
     IDS_MUI_SEARCHCLIPIFEMPTY
-                            "Search by Clipboard if empty selection"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around match from top"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around match from bottom"
+                            "Tìm kiếm từ clipboard nếu mục chọn bị trống"
+    IDS_MUI_REPLCLIPTAG     "Thay thế clipboard của phím tắt [^c]"
+    IDS_MUI_WRAPSEARCH_FWD  "Quấn từ trên xuống dưới"
+    IDS_MUI_WRAPSEARCH_BCK  "Quấn từ dưới lên trên"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_SB_MARK_ALL_OCC   "Mark All Occurrences..."
-    IDS_MUI_SB_TOGGLE_VIEW    "Toggle View..."
-    IDS_MUI_SB_REPLACE_ALL    "Replace all..."
-    IDS_MUI_SB_WRAP_LINES     "Wrap Lines..."
-    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "Convert Line Breaks..."
-    IDS_MUI_SB_RECODING_DOC   "Recoding Document..."
-    IDS_MUI_SB_LEXER_STYLING  "Apply Lexer Styling..."
+    IDS_MUI_SB_MARK_ALL_OCC   "Đánh dấu tất cả các mục..."
+    IDS_MUI_SB_TOGGLE_VIEW    "Chuyển đổi chế độ xem..."
+    IDS_MUI_SB_REPLACE_ALL    "Thay thế tất cả..."
+    IDS_MUI_SB_WRAP_LINES     "Quấn dòng..."
+    IDS_MUI_SB_SORTING_LINES  "Sắp xếp dòng..."
+    IDS_MUI_SB_CONV_LNBRK     "Chuyển đổi xuống dòng..."
+    IDS_MUI_SB_RECODING_DOC   "Ghi tài liệu..."
+    IDS_MUI_SB_LEXER_STYLING  "Áp dụng kiểu lexer..."
 END
 
 STRINGTABLE
 BEGIN
 IDS_MUI_CMDLINEHELP "\
-Usage:\r\n\
-Notepad3 [/?] [...[Encoding]] [...[Line ending mode]] [/e] [/g] [/m] [/l]\r\n\
+Cách sử dụng:\r\n\
+Notepad3 [/?] [...[mã hóa]] [...[chế độ kết thúc dòng]] [/e] [/g] [/m] [/l]\r\n\
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
- \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]filename[...]]\r\n\r\n\
-file\tMust be the last argument, no quoted spaces by default\r\n\
-+\tAccept multiple file arguments (with quoted spaces)\r\n\
--\tAccept single file argument (without quoted spaces)\r\n\r\n\
-Options:\r\n\
-/?\tDisplay this help message\r\n\
-...\tEncoding (/ansi, /unicode, /unicodebe, /utf8, /utf8sig)\r\n\
-...\tLine ending mode (/crlf, /cr, /lf)\r\n\
-/e\tFile source encoding\r\n\
-/g\tJump to specified position (/g -1 end of file)\r\n\
-/m\tMatch specified text (/m- last, /mr regex, /mb backslash)\r\n\
-/l\tAuto-reload modified files\r\n\
-/q\tForce creation of new files without prompt\r\n\
-/s\tSelect specified syntax scheme\r\n\
-/d\tSelect default text scheme\r\n\
-/h\tSelect Web Source Code scheme\r\n\
-/x\tSelect XML Document scheme\r\n\
-/c\tOpen new window and paste clipboard contents\r\n\
-/b\tOpen new paste board to collect clipboard entries\r\n\
-/n\tAlways open a new window (/ns single file instance)\r\n\
-/r\tReuse window (/rs single file instance)\r\n\
-/p\tSet window position and size (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
-\tor /p <left>,<top>,<width>,<height>[,<dpi>[,<max>]]  (all integers)\r\n\
-/t\tSet window title\r\n\
-/i\tStart as tray icon\r\n\
-/o\tKeep window on top\r\n\
-/f\tSpecify ini-file (/f0 no ini-file)\r\n\
-/u\tLaunch with elevated privileges\r\n\
-/v\tPrint file immediately and quit\r\n\
-/vd\tPrint file (open printer dialog)\r\n\
-/y\tSearch environment PATH in case of relative filename\r\n\
-/z\tSkip next (usable for registry-based Notepad replacement)\r\n\r\n\
-Examples:\r\n\
+ \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]tên tệp[...]]\r\n\r\n\
+Tệp\tPhải là đối số cuối cùng không có khoảng trắng nằm trong dấu ngoặc\r\n\tkép mặc định\r\n\
++\tCho phép nhiều đối số tệp (bao gồm khoảng trắng trong dấu ngoặc kép)\r\n\
+-\tCho phép một đối số tệp (không có khoảng trắng trong dấu ngoặc kép)\r\n\r\n\
+Tùy chọn:\r\n\
+/?\tHiển thị thông điệp trợ giúp này\r\n\
+...\tMã hóa (/ansi, /unicode, /unicodebe, /utf8, /utf8sig)\r\n\
+...\tChế độ kết thúc dòng (/crlf, /cr, /lf)\r\n\
+/e\tMã hóa tệp nguồn\r\n\
+/g\tChuyển đến vị trí chỉ định (/g -1 để đến cuối tệp)\r\n\
+/m\tTìm kiếm văn bản chỉ định (/m- cuối cùng, /mr biểu thức chính quy, \r\n\t/mb dấu gạch chéo)\r\n\
+/l\tTự động tải lại tệp đã chỉnh sửa\r\n\
+/q\tBuộc tạo tệp mới mà không có thông báo nhắc nhở\r\n\
+/s\tChọn hệ thống cú pháp chỉ định\r\n\
+/d\tChọn sơ đồ văn bản cơ bản\r\n\
+/h\tChọn hệ thống mã nguồn web\r\n\
+/x\tChọn hệ thống tài liệu XML\r\n\
+/c\tMở cửa sổ mới và dán nội dung từ clipboard\r\n\
+/b\tMở bảng dán mới để thu thập các mục từ clipboard\r\n\
+/n\tLuôn mở cửa sổ mới (/ns để chỉ một thể hiện tệp)\r\n\
+/r\tTái sử dụng cửa sổ (/rs để chỉ một thể hiện tệp)\r\n\
+/p\tXác định vị trí và kích thước cửa sổ (/p0,/ps,/pd,f,l,t,r,b,m)Hoặc /p <trái>,\r\n\
+\t<trên>,<rộng>,<cao>[,<dpi>[,<tối đa>]]  (tất cả đều là số nguyên)\r\n\
+/t\tĐặt tiêu đề cửa sổ\r\n\
+/i\tKhởi động với biểu tượng trên khay hệ thống\r\n\
+/o\tĐặt cửa sổ lên trên cùng\r\n\
+/f\tXác định tệp ini (/f0 không có tệp ini)\r\n\
+/u\tKhởi động với quyền nâng cao\r\n\
+/v\tIn tệp ngay lập tức và thoát\r\n\
+/vd\tIn tệp (mở hộp thoại máy in)\r\n\
+/y\tTìm kiếm PATH môi trường cho tên tệp tương đối\r\n\
+/z\tBỏ qua điều này (có thể dùng để thay thế Notepad dựa trên registry)\r\n\r\n\
+Ví dụ:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
- \t... Open a new file: ""Test.txt"" Encoding=UTF-8-BOM, EoL=CRLF\r\n\
+ \t... Mở tệp mới: ""Test.txt"" Mã hóa=UTF-8-BOM, EoL=CRLF\r\n\
 Notepad3 /v d:\\temp\\Test.txt\r\n\
- \t... Print the file: ""Test.txt"" immediately\
+ \t... In tệp ngay lập tức: ""Test.txt""\
 "
 
 IDS_MUI_STYLEEDIT_HELP "\
-Filename extensions must be separated by ';'\r\n\
-use \\<regex>; to define a filename matching pattern:\r\n\
-   \\xyz$;   => filenames(basename+ext) with 'xyz' as last chars\r\n\r\n\
-Style format:\r\n\
-font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
-fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Style properties can be copied using copy and paste or drag and drop\
+Các phần mở rộng tên tệp phải được phân tách bằng dấu ';'\r\n\
+Sử dụng \\<regex>; để định nghĩa mẫu khớp tên tệp:\r\n\
+   \\xyz$;   => Tên tệp (tên cơ bản + phần mở rộng) kết thúc bằng 'xyz'\r\n\r\n\
+Định dạng kiểu:\r\n\
+Phông chữ:Tên; Kích thước:[+/-]nn.mm; Đậm; Nghiêng; Gạch chân;\r\n\
+Màu chữ:#ffffff; Màu nền:#bbbbbb; Lấp đầy kết thúc dòng; indic_gradient\r\n\r\n\
+Thuộc tính kiểu có thể được sao chép và dán hoặc kéo và thả\
 "
 
 END
