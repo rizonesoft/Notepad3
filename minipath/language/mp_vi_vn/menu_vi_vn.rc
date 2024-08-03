@@ -57,73 +57,73 @@ IDR_MAINWND MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "&Open",                       IDM_FILE_OPEN
-        MENUITEM "Open &w/ Alternate App...",   IDM_FILE_OPENWITH
-        MENUITEM "&Quickview",                  IDM_FILE_QUICKVIEW
+        MENUITEM "Mở(&O)",                       IDM_FILE_OPEN
+        MENUITEM "Mở bằng chương trình khác(&W)...",   IDM_FILE_OPENWITH
+        MENUITEM "Xem nhanh(&Q)",                  IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
-        MENUITEM "&Copy Name",                  IDM_POP_COPYNAME
-        MENUITEM "Create Lin&k...",             IDM_FILE_CREATELINK
-        MENUITEM "&Save As...",                 IDM_FILE_SAVEAS
-        MENUITEM "Copy/&Move...",               IDM_FILE_COPYMOVE
-        MENUITEM "D&elete...",                  IDM_FILE_DELETE
-        MENUITEM "Re&name...",                  IDM_FILE_RENAME
+        MENUITEM "Sao chép tên(&C)",                  IDM_POP_COPYNAME
+        MENUITEM "Tạo liên kết(&K)...",             IDM_FILE_CREATELINK
+        MENUITEM "Lưu dưới tên khác(&S)...",       IDM_FILE_SAVEAS
+        MENUITEM "Sao chép/Di chuyển(&M)...",               IDM_FILE_COPYMOVE
+        MENUITEM "Xóa(&D)...",                    IDM_FILE_DELETE
+        MENUITEM "Đổi tên(&N)...",               IDM_FILE_RENAME
         MENUITEM SEPARATOR
-        MENUITEM "&Launch",                     IDM_FILE_LAUNCH
-        MENUITEM "&Run w/ Arguments...",        IDM_FILE_RUN
+        MENUITEM "Chạy(&L)",                      IDM_FILE_LAUNCH
+        MENUITEM "Chạy với đối số(&R)...",          IDM_FILE_RUN
         MENUITEM SEPARATOR
-        MENUITEM "&Properties",                 IDM_FILE_PROPERTIES
+        MENUITEM "Thuộc tính(&P)",                      IDM_FILE_PROPERTIES
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&New File...",                IDM_FILE_NEW
-        MENUITEM "Ne&w Directory...",           IDM_FILE_NEWDIR
+        MENUITEM "Tạo tệp mới(&N)...",                IDM_FILE_NEW
+        MENUITEM "Tạo thư mục mới(&W)...",            IDM_FILE_NEWDIR
         MENUITEM SEPARATOR
-        MENUITEM "&File Filter...",             IDM_VIEW_FILTER
-        MENUITEM "&Reset Filter",               IDM_VIEW_FILTERALL
-        POPUP "&Show"
+        MENUITEM "Bộ lọc tệp(&F)...",              IDM_VIEW_FILTER
+        MENUITEM "Đặt lại bộ lọc(&R)",               IDM_VIEW_FILTERALL
+        POPUP "Xem(&S)"
         BEGIN
-            MENUITEM "&Directories",            IDM_VIEW_FOLDERS
-            MENUITEM "&Files",                  IDM_VIEW_FILES
-            MENUITEM "&System Objects",         IDM_VIEW_HIDDEN
+            MENUITEM "Thư mục(&D)",              IDM_VIEW_FOLDERS
+            MENUITEM "Tệp(&F)",                  IDM_VIEW_FILES
+            MENUITEM "Đối tượng hệ thống(&S)",           IDM_VIEW_HIDDEN
         END
-        POPUP "S&ort"
+        POPUP "Sắp xếp(&O)"
         BEGIN
-            MENUITEM "by &Name",                IDM_SORT_NAME
-            MENUITEM "by &Size",                IDM_SORT_SIZE
-            MENUITEM "by &Type",                IDM_SORT_TYPE
-            MENUITEM "by &Date",                IDM_SORT_DATE
+            MENUITEM "Theo tên(&N)",                IDM_SORT_NAME
+            MENUITEM "Theo kích thước(&S)",                IDM_SORT_SIZE
+            MENUITEM "Theo loại(&T)",                IDM_SORT_TYPE
+            MENUITEM "Theo ngày(&D)",                IDM_SORT_DATE
             MENUITEM SEPARATOR
-            MENUITEM "&Reverse",                IDM_SORT_REVERSE
+            MENUITEM "Đảo ngược(&R)",                  IDM_SORT_REVERSE
         END
         MENUITEM SEPARATOR
-        MENUITEM "Go&to...",                    IDM_FILE_GOTO
-        MENUITEM "&Goto Favourites",            IDM_VIEW_FAVORITES
-        MENUITEM "&Edit Favourites",            IDM_VIEW_EDITFAVORITES
-        MENUITEM "&Directory...",               IDM_FILE_CHANGEDIR
+        MENUITEM "Di chuyển(&T)...",                  IDM_FILE_GOTO
+        MENUITEM "Di chuyển đến mục yêu thích(&G)",           IDM_VIEW_FAVORITES
+        MENUITEM "Chỉnh sửa mục yêu thích(&E)",             IDM_VIEW_EDITFAVORITES
+        MENUITEM "Thư mục(&D)...",               IDM_FILE_CHANGEDIR
         MENUITEM SEPARATOR
-        MENUITEM "Show Dri&ves",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Hiển thị ổ đĩa(&V)",           IDM_VIEW_DRIVEBOX
         MENUITEM SEPARATOR
-        MENUITEM "S&ave Settings",              IDM_VIEW_SAVESETTINGS
-        MENUITEM "Setup &Target...",            IDM_VIEW_FINDTARGET
-        MENUITEM "O&ptions...",                 IDM_VIEW_OPTIONS
+        MENUITEM "Lưu cài đặt(&S)",                IDM_VIEW_SAVESETTINGS
+        MENUITEM "Cài đặt mục tiêu(&T)...",          IDM_VIEW_FINDTARGET
+        MENUITEM "Tùy chọn(&P)...",                  IDM_VIEW_OPTIONS
     END
     POPUP "+"
     BEGIN
-        MENUITEM "&Directory...",               IDM_FILE_CHANGEDIR
-        MENUITEM "Drive &Properties",           IDM_FILE_DRIVEPROP
+        MENUITEM "Thư mục(&D)...",              IDM_FILE_CHANGEDIR
+        MENUITEM "Thuộc tính ổ đĩa(&P)",            IDM_FILE_DRIVEPROP
         MENUITEM SEPARATOR
-        MENUITEM "Show Dri&ves",                IDM_VIEW_DRIVEBOX
+        MENUITEM "Hiển thị ổ đĩa(&V)",          IDM_VIEW_DRIVEBOX
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show &Toolbar",               IDM_VIEW_TOOLBAR
-        MENUITEM "&Edit Toolbar...",            IDM_VIEW_CUSTOMIZETB
-        MENUITEM "Show &Statusbar",             IDM_VIEW_STATUSBAR
+        MENUITEM "Hiển thị thanh công cụ(&T)",         IDM_VIEW_TOOLBAR
+        MENUITEM "Chỉnh sửa thanh công cụ(&E)...",        IDM_VIEW_CUSTOMIZETB
+        MENUITEM "Hiển thị thanh trạng thái(&S)",      IDM_VIEW_STATUSBAR
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Open MiniPath",               IDM_TRAY_RESTORE
-        MENUITEM "Exit MiniPath",               IDM_TRAY_EXIT
+        MENUITEM "Mở MiniPath",               IDM_TRAY_RESTORE
+        MENUITEM "Thoát MiniPath",               IDM_TRAY_EXIT
     END
 END
 
