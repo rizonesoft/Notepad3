@@ -608,23 +608,23 @@ trk.tsk_RemoveOpenWith=Sağ tık menüsünden "{#app_name} ile aç" seçeneği k
 trk.tsk_SetOpenWith=Sağ tık menüsüne "{#app_name} ile aç" seçeneği eklensin
 trk.reg_Open_with_NP3={#app_name} ile aç
 
-vit.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+vit.msg_DeleteSettings=Bạn có muốn xóa tất cả cài đặt và giao diện của {#app_name} không?%n%nNếu bạn định cài đặt lại {#app_name}, không cần xóa.
 #ifdef sse_required
-vit.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
+vit.msg_simd_sse=Phiên bản {#app_name} này yêu cầu CPU hỗ trợ mở rộng SSE.%n%nCPU không có các tính năng này.
 #endif
 #ifdef sse2_required
-vit.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
+vit.msg_simd_sse2=Phiên bản {#app_name} này yêu cầu CPU hỗ trợ mở rộng SSE2.%n%nCPU không có các tính năng này.
 #endif
-vit.tsk_AllUsers=For all users
-vit.tsk_CurrentUser=For the current user only
-vit.tsk_Other=Other tasks:
-vit.tsk_ResetSettings=Reset {#app_name}'s settings and themes
-vit.tsk_RemoveDefault=Restore Windows Notepad
-vit.tsk_SetDefault=Replace Windows Notepad with {#app_name}
-vit.tsk_StartMenuIcon=Create a Start Menu shortcut
-vit.tsk_LaunchWelcomePage=Important Release Information!
-vit.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
-vit.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
+vit.tsk_AllUsers=Dành cho tất cả người dùng
+vit.tsk_CurrentUser=Chỉ dành cho người dùng hiện tại
+vit.tsk_Other=Các tác vụ khác:
+vit.tsk_ResetSettings=Đặt lại cài đặt và giao diện của {#app_name}
+vit.tsk_RemoveDefault=Khôi phục Notepad của Windows
+vit.tsk_SetDefault=Thay thế Notepad của Windows bằng {#app_name}
+vit.tsk_StartMenuIcon=Tạo lối tắt trong Menu Bắt đầu
+vit.tsk_LaunchWelcomePage=Thông tin phát hành quan trọng!
+vit.tsk_RemoveOpenWith=Gỡ "Mở bằng {#app_name}" khỏi menu ngữ cảnh
+vit.tsk_SetOpenWith=Thêm "Mở bằng {#app_name}" vào menu ngữ cảnh
 vit.reg_Open_with_NP3=Mở bằng {#app_name}
 
 chs.msg_DeleteSettings=是否希望删除 {#app_name} 的设置和主题？%n%n如果您稍后将要重新安装 {#app_name}，您不需要删除以前的配置。
