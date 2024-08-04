@@ -1,0 +1,15 @@
+# see https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings
+# or  https://www.git-scm.com/docs/gitattributes
+
+*.cmd           text eol=crlf
+*.ini           text eol=crlf
+*.lang          text eol=crlf
+*.iss           text eol=crlf
+*.loc           text eol=crlf
+*.md            text eol=crlf
+*.ps1           text eol=crlf
+*.rc            text eol=crlf
+*.sln           text eol=crlf
+*.txt           text eol=crlf
+*.vcxproj*      text eol=crlf
+*.yml           text eol=crlf
