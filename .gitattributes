@@ -4,13 +4,20 @@
 
 *.ahk           text eol=crlf
 *.c             text eol=crlf
+*.cfg           text eol=crlf
 *.cmd           text eol=crlf
+*.cpp           text eol=crlf
 *.h             text eol=crlf
+*.in            text eol=crlf
+*.inf           text eol=crlf
 *.ini           text eol=crlf
 *.iss           text eol=crlf
 *.lang          text eol=crlf
 *.loc           text eol=crlf
+*.manifest      text eol=crlf
 *.md            text eol=crlf
+*.nsh           text eol=crlf
+*.nsi           text eol=crlf
 *.ps1           text eol=crlf
 *.rc            text eol=crlf
 *.sln           text eol=crlf
@@ -21,6 +28,10 @@
 .editorconfig   text eol=crlf
 .gitattributes  text eol=crlf
 .gitignore      text eol=crlf
+
+
+# Text files where line endings should be preserved
+*Line_Endings_Source.txt   -text
 
 
 *.bmp           binary
