@@ -1,15 +1,35 @@
 # see https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings
 # or  https://www.git-scm.com/docs/gitattributes
 
+
+*.ahk           text eol=crlf
+*.c             text eol=crlf
 *.cmd           text eol=crlf
+*.h             text eol=crlf
 *.ini           text eol=crlf
-*.lang          text eol=crlf
 *.iss           text eol=crlf
+*.lang          text eol=crlf
 *.loc           text eol=crlf
 *.md            text eol=crlf
 *.ps1           text eol=crlf
 *.rc            text eol=crlf
 *.sln           text eol=crlf
+*.tpl           text eol=crlf
 *.txt           text eol=crlf
 *.vcxproj*      text eol=crlf
 *.yml           text eol=crlf
+.editorconfig   text eol=crlf
+.gitattributes  text eol=crlf
+.gitignore      text eol=crlf
+
+
+*.bmp           binary
+*.cur           binary
+*.ico           binary
+*.jpg           binary
+*.png           binary
+*.jpeg          binary
+*.gif           binary
+*.tif           binary
+*.tiff          binary
+
