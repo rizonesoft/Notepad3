@@ -355,25 +355,25 @@ STRINGTABLE
 BEGIN
 
 IDS_MUI_ABOUT_RTF_0  "{\
-\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Segoe UI;}}\
+\\rtf1\\ansi\\ansicpg1252\\deff0\\deflang1033{\\fonttbl{\\f0\\fswiss\\fcharset0 Segoe UI;}{\\f1\\fswiss\\fcharset163 Segoe UI;}{\\f2\\fswiss\\fcharset238 Segoe UI;}}\
 {\\colortbl ;\\red80\\green160\\blue80;}\
 \\tx3500\\tx7000\\fs18\
-\\cf0 \\fs20\\b1\\ul1 Development:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Ph\\'e1t tri\\f1\\u7875?n:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_1  "\
-\\cf0 \\fs20\\b1\\ul1 Contributors:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Ng\\f2\\u432?\\f1\\u7901?i \\f2\\'f0\\f0\\'f3ng g\\'f3p:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_2  "\
-\\cf0 \\fs20\\b1\\ul1 Open Source / Libraries:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Open Source / Th\\f2\\u432? vi\\f1\\u7879?n:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
-\\cf0 \\fs20\\b1\\ul1 Acknowledgments:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 L\\u7901?i c\\u7843?m \\f2\\u417?n:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_4  "\
-\\cf0 \\fs20\\b1\\ul1 Resources:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 T\\f0\\'e0i nguy\\'ean:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_5  "\
-\\cf0 \\fs20\\b1\\ul1 Licences:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Gi\\f1\\u7845?y ph\\f0\\'e9p:\\ul0\\b0\\fs18\\par\
 "
 
 END
