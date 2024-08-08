@@ -1,11 +1,14 @@
 # see https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings
 # or  https://www.git-scm.com/docs/gitattributes
 
+*               text=auto
 
 *.ahk           text eol=crlf
 *.c             text eol=crlf
 *.cfg           text eol=crlf
 *.cmd           text eol=crlf
+*.config        text eol=crlf
+*.build         text eol=crlf
 *.cpp           text eol=crlf
 *.h             text eol=crlf
 *.in            text eol=crlf
@@ -20,7 +23,9 @@
 *.nsi           text eol=crlf
 *.ps1           text eol=crlf
 *.rc            text eol=crlf
+*.rcconfig      text eol=crlf
 *.sln           text eol=crlf
+*.tmpl          text eol=crlf
 *.tpl           text eol=crlf
 *.txt           text eol=crlf
 *.vcxproj*      text eol=crlf
