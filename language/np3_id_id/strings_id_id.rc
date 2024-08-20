@@ -249,7 +249,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(id-ID) Terjemahan bahasa Indonesia oleh dzikrl"
+    IDS_MUI_TRANSL_AUTHOR   "(id-ID) Terjemahan bahasa Indonesia oleh quadratz"
     IDS_MUI_TITLE_FIXBASE   "Konfigurasi Dasar (%s)"
     IDS_MUI_TITLE_RELCUR    "+++ %s: Gaya tampilan %s +++"
     IDS_MUI_TITLE_FIXCUR    "%s: Gaya tampilan %s"
