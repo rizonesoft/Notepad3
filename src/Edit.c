@@ -5266,7 +5266,8 @@ void EditSortLines(HWND hwnd, int iSortFlags)
         if (bSelEmpty) {
             SciCall_SetSel(iResetPos, iResetPos);
         }
-        return;
+        //~return;
+        __leave;
     }
 
     DocLn const iLineCount = iLineEnd - iLineStart + 1;
@@ -5292,7 +5293,8 @@ void EditSortLines(HWND hwnd, int iSortFlags)
         if (bSelEmpty) {
             SciCall_SetSel(iResetPos, iResetPos);
         }
-        return;
+        //~return;
+        __leave;
     }
 
     DocPos      iMaxLineLen = Sci_GetRangeMaxLineLength(iLineStart, iLineEnd);

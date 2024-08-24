@@ -612,7 +612,7 @@ ScintillaWin::ScintillaWin(HWND hwnd) {
 	cfColumnSelect = RegisterClipboardType(L"MSDEVColumnSelect");
 	cfBorlandIDEBlockType = RegisterClipboardType(L"Borland IDE Block Type");
 
-	// Likewise for line-copy (copies a full line when no text is selected)
+	// Likewise for line-copy or line-cut (copies or cuts a full line when no text is selected)
 	cfLineSelect = RegisterClipboardType(L"MSDEVLineSelect");
 	cfVSLineTag = RegisterClipboardType(L"VisualStudioEditorOperationsLineCutCopyClipboardTag");
 	hrOle = E_FAIL;
@@ -1130,8 +1130,7 @@ void ScintillaWin::MoveImeCarets(Sci::Position offset) noexcept {
 	// Move carets relatively by bytes.
 	for (size_t r=0; r<sel.Count(); r++) {
 		const Sci::Position positionInsert = sel.Range(r).Start().Position();
-		sel.Range(r).caret.SetPosition(positionInsert + offset);
-		sel.Range(r).anchor.SetPosition(positionInsert + offset);
+		sel.Range(r) = SelectionRange(positionInsert + offset);
 	}
 }
 
@@ -2820,6 +2819,27 @@ bool OpenClipboardRetry(HWND hwnd) noexcept {
 	return false;
 }
 
+// Ensure every successful OpenClipboard is followed by a CloseClipboard.
+class Clipboard {
+	bool opened = false;
+public:
+	Clipboard(HWND hwnd) noexcept : opened(::OpenClipboardRetry(hwnd)) {
+	}
+	// Deleted so Clipboard objects can not be copied.
+	Clipboard(const Clipboard &) = delete;
+	Clipboard(Clipboard &&) = delete;
+	Clipboard &operator=(const Clipboard &) = delete;
+	Clipboard &operator=(Clipboard &&) = delete;
+	~Clipboard() noexcept {
+		if (opened) {
+			::CloseClipboard();
+		}
+	}
+	constexpr operator bool() const noexcept {
+		return opened;
+	}
+};
+
 bool IsValidFormatEtc(const FORMATETC *pFE) noexcept {
 	return pFE->ptd == nullptr &&
 		(pFE->dwAspect & DVASPECT_CONTENT) != 0 &&
@@ -2835,7 +2855,8 @@ bool SupportedFormat(const FORMATETC *pFE) noexcept {
 }
 
 void ScintillaWin::Paste() {
-	if (!::OpenClipboardRetry(MainHWND())) {
+	Clipboard clipboard(MainHWND());
+	if (!clipboard) {
 		return;
 	}
 	UndoGroup ug(pdoc);
@@ -2861,7 +2882,6 @@ void ScintillaWin::Paste() {
 		InsertPasteShape(putf.c_str(), putf.length(), pasteShape);
 		memUSelection.Unlock();
 	}
-	::CloseClipboard();
 	Redraw();
 }
 
@@ -3226,8 +3246,7 @@ LRESULT ScintillaWin::ImeOnReconvert(LPARAM lParam) {
 		const Sci::Position docCompStart = rBase + adjust;
 
 		if (inOverstrike) { // the docCompLen of bytes will be overstriked.
-			sel.Range(r).caret.SetPosition(docCompStart);
-			sel.Range(r).anchor.SetPosition(docCompStart);
+			sel.Range(r) = SelectionRange(docCompStart);
 		} else {
 			// Ensure docCompStart+docCompLen be not beyond lineEnd.
 			// since docCompLen by byte might break eol.
@@ -3336,7 +3355,8 @@ void ScintillaWin::CopyToGlobal(GlobalMemory &gmUnicode, const SelectionText &se
 }
 
 void ScintillaWin::CopyToClipboard(const SelectionText &selectedText) {
-	if (!::OpenClipboardRetry(MainHWND())) {
+	Clipboard clipboard(MainHWND());
+	if (!clipboard) {
 		return;
 	}
 	::EmptyClipboard();
@@ -3362,8 +3382,6 @@ void ScintillaWin::CopyToClipboard(const SelectionText &selectedText) {
 		::SetClipboardData(cfLineSelect, nullptr);
 		::SetClipboardData(cfVSLineTag, nullptr);
 	}
-
-	::CloseClipboard();
 }
 
 void ScintillaWin::ScrollMessage(WPARAM wParam) {
