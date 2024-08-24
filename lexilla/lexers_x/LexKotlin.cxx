@@ -714,7 +714,7 @@ void SCI_METHOD LexerKotlin::Fold(Sci_PositionU startPos, Sci_Position lengthDoc
 }
 // ----------------------------------------------------------------------------
 
-LexerModule lmKotlin(SCLEX_KOTLIN, LexerKotlin::LexerFactoryKotlin, "Kotlin", kotlinWordLists);
+extern const LexerModule lmKotlin(SCLEX_KOTLIN, LexerKotlin::LexerFactoryKotlin, "Kotlin", kotlinWordLists);
 
 // ----------------------------------------------------------------------------
 

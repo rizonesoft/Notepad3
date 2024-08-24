@@ -425,7 +425,7 @@ void SCI_METHOD LexerCSV::Fold(Sci_PositionU /*startPos*/, Sci_Position /*length
 }
 // ----------------------------------------------------------------------------
 
-LexerModule lmCSV(SCLEX_CSV, LexerCSV::LexerFactoryCSV, "CSV", csvWordLists);
+extern const LexerModule lmCSV(SCLEX_CSV, LexerCSV::LexerFactoryCSV, "CSV", csvWordLists);
 
 // ----------------------------------------------------------------------------
 

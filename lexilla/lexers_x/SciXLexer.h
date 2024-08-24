@@ -7,8 +7,7 @@
 #define SCLEX_CSV         201
 #define SCLEX_DART        202
 #define SCLEX_KOTLIN      203
-#define SCLEX_TOML        204
-#define SCLEX_SYSVERILOG  205
+#define SCLEX_SYSVERILOG  204
 
 // -----------------------------------------------------------------------------
 // !!!!! ADD  Lexer Linkage in:  scintilla\src\Catalogue.cxx  !!!!!
@@ -109,20 +108,6 @@
 #define SCE_KOTLIN_ENUM 24
 #define SCE_KOTLIN_FUNCTION 25
 #define SCE_KOTLIN_FUNCTION_DEFINITION 26
-
-
-#define SCE_TOML_DEFAULT 0
-#define SCE_TOML_KEYWORD 1
-#define SCE_TOML_COMMENT 2
-#define SCE_TOML_SECTION 3
-#define SCE_TOML_KEY 4
-#define SCE_TOML_ASSIGNMENT 5
-#define SCE_TOML_VALUE 6
-#define SCE_TOML_NUMBER 7
-#define SCE_TOML_DATETIME 8
-#define SCE_TOML_STR_BASIC 9
-#define SCE_TOML_STR_LITERAL 10
-#define SCE_TOML_PARSINGERROR 11
 
 
 //#define SCE_YAML_DEFAULT 0

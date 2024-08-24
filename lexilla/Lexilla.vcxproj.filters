@@ -206,9 +206,6 @@
     <ClCompile Include="lexers_x\LexCSV.cxx">
       <Filter>lexers_x</Filter>
     </ClCompile>
-    <ClCompile Include="lexers_x\LexTOML.cxx">
-      <Filter>lexers_x</Filter>
-    </ClCompile>
     <ClCompile Include="lexers_x\LexDart.cxx">
       <Filter>lexers_x</Filter>
     </ClCompile>
@@ -278,6 +275,9 @@
     <ClCompile Include="lexlib\InList.cxx">
       <Filter>lexlib</Filter>
     </ClCompile>
+    <ClCompile Include="lexers\LexTOML.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\LexillaVersion.rc">
@@ -290,6 +290,30 @@
     </None>
     <None Include="lexers_x\SciX.iface">
       <Filter>lexers_x</Filter>
+    </None>
+    <None Include="scripts\LexFacer.py">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="scripts\LexillaData.py">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="scripts\LexillaGen.cmd">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="scripts\LexillaGen.py">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="scripts\LexillaLogo.py">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="scripts\PromoteNew.bat">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="scripts\RunTest.bat">
+      <Filter>scripts</Filter>
+    </None>
+    <None Include="scripts\RunTest.sh">
+      <Filter>scripts</Filter>
     </None>
   </ItemGroup>
 </Project>

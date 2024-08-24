@@ -290,4 +290,4 @@ static const char * const avsWordLists[] = {
 	0,
 };
 
-LexerModule lmAVS(SCLEX_AVS, ColouriseAvsDoc, "avs", FoldAvsDoc, avsWordLists);
+extern const LexerModule lmAVS(SCLEX_AVS, ColouriseAvsDoc, "avs", FoldAvsDoc, avsWordLists);

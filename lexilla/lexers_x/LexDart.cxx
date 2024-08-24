@@ -771,7 +771,7 @@ void SCI_METHOD LexerDart::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, 
 }
 // ----------------------------------------------------------------------------
 
-LexerModule lmDart(SCLEX_DART, LexerDart::LexerFactoryDart, "Dart", dartWordLists);
+extern const LexerModule lmDart(SCLEX_DART, LexerDart::LexerFactoryDart, "Dart", dartWordLists);
 
 // ----------------------------------------------------------------------------
 
