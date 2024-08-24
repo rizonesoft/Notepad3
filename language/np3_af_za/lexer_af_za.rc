@@ -514,6 +514,7 @@ BEGIN
     IDS_LEX_STR_PortConn    "Poortverbinding"
     IDS_LEX_STR_SysTasks    "Stelseltake"
     IDS_LEX_STR_AfterLabel  "Na Etiket"
+    IDS_LEX_STR_Table       "Table"
 END
 
 STRINGTABLE

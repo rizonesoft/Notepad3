@@ -514,6 +514,7 @@ BEGIN
     IDS_LEX_STR_PortConn    "Kết nối cổng"
     IDS_LEX_STR_SysTasks    "Công việc hệ thống"
     IDS_LEX_STR_AfterLabel  "Sau nhãn"
+    IDS_LEX_STR_Table       "Table"
 END
 
 STRINGTABLE
