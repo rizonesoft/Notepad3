@@ -5,8 +5,7 @@ val SCLEX_AHK=200
 val SCLEX_CSV=201
 val SCLEX_DART=202
 val SCLEX_KOTLIN=203
-val SCLEX_TOML=204
-val SCLEX_SYSVERILOG=205
+val SCLEX_SYSVERILOG=204
 
 ## -----------------------------------------------------------------------------
 
