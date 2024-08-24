@@ -63,7 +63,7 @@ constexpr bool IsLetter(const int ch) noexcept {
 }
 
 bool IsAWordChar(const int ch) noexcept {
-    return IsASCII(ch) && (isalnum(ch) || ch == '_' || ch == '.');
+    return ch < 0x80 && (isalnum(ch) || ch == '_' || ch == '.');
 }
 
 int IsNumHex(const StyleContext &sc) noexcept {
@@ -305,7 +305,11 @@ Sci_Position SCI_METHOD LexerNim::WordListSet(int n, const char *wl) {
     Sci_Position firstModification = -1;
 
     if (wordListN) {
-        if (wordListN->Set(wl)) {
+        WordList wlNew;
+        wlNew.Set(wl);
+
+        if (*wordListN != wlNew) {
+            wordListN->Set(wl);
             firstModification = 0;
         }
     }
@@ -807,4 +811,4 @@ void SCI_METHOD LexerNim::Fold(Sci_PositionU startPos, Sci_Position length, int,
     }
 }
 
-LexerModule lmNim(SCLEX_NIM, LexerNim::LexerFactoryNim, "nim", nimWordListDesc);
+extern const LexerModule lmNim(SCLEX_NIM, LexerNim::LexerFactoryNim, "nim", nimWordListDesc);

@@ -1316,7 +1316,7 @@
 #define IDS_LEX_STR_PortConn            63403
 #define IDS_LEX_STR_SysTasks            63404
 #define IDS_LEX_STR_AfterLabel          63405
-
+#define IDS_LEX_STR_Table               63406
 
 #define IDS_LEX_CSV_COL_0               63490
 #define IDS_LEX_CSV_COL_1               63491

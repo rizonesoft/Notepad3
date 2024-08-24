@@ -80,6 +80,7 @@
     <ClCompile Include="lexers\LexRust.cxx" />
     <ClCompile Include="lexers\LexSQL.cxx" />
     <ClCompile Include="lexers\LexTCL.cxx" />
+    <ClCompile Include="lexers\LexTOML.cxx" />
     <ClCompile Include="lexers\LexVB.cxx" />
     <ClCompile Include="lexers\LexVHDL.cxx" />
     <ClCompile Include="lexers\LexYAML.cxx" />
@@ -89,7 +90,6 @@
     <ClCompile Include="lexers_x\LexerUtils.cxx" />
     <ClCompile Include="lexers_x\LexJSON.cxx" />
     <ClCompile Include="lexers_x\LexKotlin.cxx" />
-    <ClCompile Include="lexers_x\LexTOML.cxx" />
     <ClCompile Include="lexers_x\LexVerilog.cxx" />
     <ClCompile Include="lexlib\Accessor.cxx" />
     <ClCompile Include="lexlib\CharacterCategory.cxx" />
@@ -111,6 +111,14 @@
   <ItemGroup>
     <None Include="include\LexicalStyles.iface" />
     <None Include="lexers_x\SciX.iface" />
+    <None Include="scripts\LexFacer.py" />
+    <None Include="scripts\LexillaData.py" />
+    <None Include="scripts\LexillaGen.cmd" />
+    <None Include="scripts\LexillaGen.py" />
+    <None Include="scripts\LexillaLogo.py" />
+    <None Include="scripts\PromoteNew.bat" />
+    <None Include="scripts\RunTest.bat" />
+    <None Include="scripts\RunTest.sh" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

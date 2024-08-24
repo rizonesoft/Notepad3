@@ -94,7 +94,8 @@ $(DIR_O)/StyleContext.obj: \
 	../lexlib/CharacterSet.h
 $(DIR_O)/WordList.obj: \
 	../lexlib/WordList.cxx \
-	../lexlib/WordList.h
+	../lexlib/WordList.h \
+	../lexlib/CharacterSet.h
 $(DIR_O)/LexAsm.obj: \
 	../lexers/LexAsm.cxx \
 	../../scintilla/include/ILexer.h \
@@ -568,6 +569,18 @@ $(DIR_O)/LexTCL.obj: \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
 	../lexlib/LexerModule.h
+$(DIR_O)/LexTOML.obj: \
+	../lexers/LexTOML.cxx \
+	../../scintilla/include/ILexer.h \
+	../../scintilla/include/Sci_Position.h \
+	../../scintilla/include/Scintilla.h \
+	../include/SciLexer.h \
+	../lexlib/WordList.h \
+	../lexlib/LexAccessor.h \
+	../lexlib/Accessor.h \
+	../lexlib/StyleContext.h \
+	../lexlib/CharacterSet.h \
+	../lexlib/LexerModule.h
 $(DIR_O)/LexVB.obj: \
 	../lexers/LexVB.cxx \
 	../../scintilla/include/ILexer.h \
@@ -579,7 +592,9 @@ $(DIR_O)/LexVB.obj: \
 	../lexlib/Accessor.h \
 	../lexlib/StyleContext.h \
 	../lexlib/CharacterSet.h \
-	../lexlib/LexerModule.h
+	../lexlib/LexerModule.h \
+	../lexlib/OptionSet.h \
+	../lexlib/DefaultLexer.h
 $(DIR_O)/LexVHDL.obj: \
 	../lexers/LexVHDL.cxx \
 	../../scintilla/include/ILexer.h \
@@ -706,24 +721,6 @@ $(DIR_O)/LexKotlin.obj: \
 	../include/SciLexer.h \
 	../lexers_x/StringUtils.h \
 	../lexers_x/LexerUtils.h
-$(DIR_O)/LexTOML.obj: \
-	../lexers_x/LexTOML.cxx \
-	../../scintilla/include/ILexer.h \
-	../../scintilla/include/Sci_Position.h \
-	../../scintilla/include/Scintilla.h \
-	../lexlib/StringCopy.h \
-	../lexlib/PropSetSimple.h \
-	../lexlib/LexAccessor.h \
-	../lexlib/Accessor.h \
-	../lexlib/StyleContext.h \
-	../lexlib/LexerModule.h \
-	../lexlib/DefaultLexer.h \
-	../lexlib/OptionSet.h \
-	../lexlib/WordList.h \
-	../lexers_x/CharSetX.h \
-	../lexlib/CharacterSet.h \
-	../lexers_x/SciXLexer.h \
-	../include/SciLexer.h
 $(DIR_O)/LexVerilog.obj: \
 	../lexers_x/LexVerilog.cxx \
 	../../scintilla/include/ILexer.h \

@@ -654,5 +654,5 @@ void SCI_METHOD LexerAHK::Fold(Sci_PositionU startPos, Sci_Position lengthDoc, i
 
 }
 
-LexerModule lmAHK(SCLEX_AHK, LexerAHK::LexerFactoryAHK, "ahk", ahkWordLists);
+extern const LexerModule lmAHK(SCLEX_AHK, LexerAHK::LexerFactoryAHK, "ahk", ahkWordLists);
 

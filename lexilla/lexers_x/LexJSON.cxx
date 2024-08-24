@@ -590,7 +590,4 @@ void SCI_METHOD LexerJSON::Fold(Sci_PositionU startPos,
 	}
 }
 
-LexerModule lmJSON(SCLEX_JSON,
-				   LexerJSON::LexerFactoryJSON,
-				   "json",
-				   JSONWordListDesc);
+extern const LexerModule lmJSON(SCLEX_JSON, LexerJSON::LexerFactoryJSON, "json", JSONWordListDesc);
