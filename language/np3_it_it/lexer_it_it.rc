@@ -514,6 +514,7 @@ BEGIN
     IDS_LEX_STR_PortConn    "Connessione alla porta"
     IDS_LEX_STR_SysTasks    "Attività di sistema"
     IDS_LEX_STR_AfterLabel  "Dopo l'etichetta"
+    IDS_LEX_STR_Table       "Table"
 END
 
 STRINGTABLE

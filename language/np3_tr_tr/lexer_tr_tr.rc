@@ -514,6 +514,7 @@ BEGIN
     IDS_LEX_STR_PortConn    "Bağlantı noktası"
     IDS_LEX_STR_SysTasks    "Sistem görevleri"
     IDS_LEX_STR_AfterLabel  "Sonraki etiketi"
+    IDS_LEX_STR_Table       "Table"
 END
 
 STRINGTABLE

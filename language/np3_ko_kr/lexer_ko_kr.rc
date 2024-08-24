@@ -514,6 +514,7 @@ BEGIN
     IDS_LEX_STR_PortConn    "포트 연결"
     IDS_LEX_STR_SysTasks    "시스템 작업"
     IDS_LEX_STR_AfterLabel  "레이블 후"
+    IDS_LEX_STR_Table       "Table"
 END
 
 STRINGTABLE

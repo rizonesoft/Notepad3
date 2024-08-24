@@ -514,6 +514,7 @@ BEGIN
     IDS_LEX_STR_PortConn    "Porttiyhteys"
     IDS_LEX_STR_SysTasks    "Järjestelmätehtävät"
     IDS_LEX_STR_AfterLabel  "Nimen jälkeen"
+    IDS_LEX_STR_Table       "Table"
 END
 
 STRINGTABLE
