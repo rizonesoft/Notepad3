@@ -788,6 +788,9 @@ static void _InitGlobals()
     Globals.CmdLnFlag_ShellUseSystemMRU = 0;
     Globals.CmdLnFlag_PrintFileAndLeave = 0;
 
+    Globals.iWhiteSpaceSize = 2;
+    Globals.iCaretOutLineFrameSize = 0;
+
     Globals.DOSEncoding = CPI_NONE;
     Globals.bZeroBasedColumnIndex = false;
     Globals.bZeroBasedCharacterCount = false;
@@ -9142,6 +9145,8 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
 
     case SCN_ZOOM:
+        SciCall_SetWhiteSpaceSize(MulDiv(Globals.iWhiteSpaceSize, SciCall_GetZoom(), 100));
+        SciCall_SetCaretLineFrame(MulDiv(Globals.iCaretOutLineFrameSize, SciCall_GetZoom(), 100));
         UpdateToolbar();
         UpdateMargins(true);
         break;

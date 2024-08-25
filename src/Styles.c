@@ -1559,8 +1559,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         iValue = clampi(iValue, 1, 12);
         StringCchPrintf(wchStylesBuffer, COUNTOF(wchStylesBuffer), L"size:%i", iValue);
     }
-    //@@@SciCall_SetWhiteSpaceSize(MulDiv(iValue, SciCall_GetZoom(), 100)); // needs update on zoom
-    SciCall_SetWhiteSpaceSize(iValue);
+    Globals.iWhiteSpaceSize = iValue;
+    //SciCall_SetWhiteSpaceSize(iValue);
+    SciCall_SetWhiteSpaceSize(MulDiv(Globals.iWhiteSpaceSize, SciCall_GetZoom(), 100)); // needs update on zoom
 
     // whitespace colors
     rgb = RGB(0, 0, 0);
@@ -2034,6 +2035,7 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
 {
     SciCall_SetCaretLineFrame(0);
     SciCall_SetCaretLineVisibleAlways(false);
+    //SciCall_SetCaretLineHighlightSubline(false);
 
     bool const backgrColor = (iHiLitCurLn == 1);
     LPCWSTR szValue = GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue;
@@ -2045,18 +2047,20 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
 
     int alpha = SC_ALPHA_TRANSPARENT; // full translucent
     if (iHiLitCurLn > 0) {
-        Style_StrGetAlpha(GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue, &alpha, 80, true);
+        Style_StrGetAlpha(GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue, &alpha, 80, backgrColor);
         if (!backgrColor) {
             int iFrameSize = 0;
             if (!Style_StrGetSizeInt(szValue, &iFrameSize)) {
                 iFrameSize = 2;
             }
             iFrameSize = max_i(1, ScaleIntToDPI(hwnd, iFrameSize));
-            SciCall_SetCaretLineFrame(iFrameSize);
+            Globals.iCaretOutLineFrameSize = iFrameSize;
+            //SciCall_SetCaretLineFrame(iFrameSize);
+            SciCall_SetCaretLineFrame(MulDiv(Globals.iCaretOutLineFrameSize, SciCall_GetZoom(), 100)); // needs update on zoom
         }
     }
 
-    SciCall_SetCaretLineLayer(SC_LAYER_UNDER_TEXT);
+    SciCall_SetCaretLineLayer(SC_LAYER_UNDER_TEXT);  // SC_LAYER_BASE, SC_LAYER_UNDER_TEXT, SC_LAYER_OVER_TEXT
     SciCall_SetElementColour(SC_ELEMENT_CARET_LINE_BACK, AxRGB(alpha, rgb));
     SciCall_SetCaretLineVisibleAlways(iHiLitCurLn > 0);
 }
