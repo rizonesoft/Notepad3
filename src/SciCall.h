@@ -195,6 +195,7 @@ DeclareSciCallV1(SetAdditionalSelectionTyping, SETADDITIONALSELECTIONTYPING, boo
 DeclareSciCallV1(SetMouseSelectionRectangularSwitch, SETMOUSESELECTIONRECTANGULARSWITCH, bool, flag);
 
 DeclareSciCallV1(SetCaretLineLayer, SETCARETLINELAYER, int, layer);
+DeclareSciCallR0(GetCaretLineFrame, GETCARETLINEFRAME, int);
 DeclareSciCallV1(SetCaretLineFrame, SETCARETLINEFRAME, int, frm);
 DeclareSciCallV1(SetCaretLineVisibleAlways, SETCARETLINEVISIBLEALWAYS, bool, flag);
 

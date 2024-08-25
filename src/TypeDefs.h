@@ -521,6 +521,9 @@ typedef struct GLOBALS_T {
     int       CmdLnFlag_ShellUseSystemMRU;
     int       CmdLnFlag_PrintFileAndLeave;
 
+    int       iWhiteSpaceSize;
+    int       iCaretOutLineFrameSize;
+
     bool      bMinimizedToTray;
     bool      bZeroBasedColumnIndex;
     bool      bZeroBasedCharacterCount;
