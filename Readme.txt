@@ -101,7 +101,6 @@ bravo-hero              https://github.com/bravo-hero
 chuanliwen              https://github.com/chuanliwen
 craigo-                 https://github.com/craigo-
 Crane70                 https://github.com/Crane70
-dzikrl                  https://github.com/dzikrl
 engelhro                https://github.com/engelhro
 geogeo-gr               https://github.com/geogeo-gr
 Hexaae                  https://github.com/Hexaae
