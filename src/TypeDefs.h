@@ -191,7 +191,7 @@ typedef enum CFG_VERSION {
     CFG_VER_0004 = 4,  /// Text Files lexer vs. Default Text => (2nd) Common Style
     CFG_VER_0005 = 5,  /// FileWatchingMode numbering changed
 
-    CFG_VER_CURRENT = CFG_VER_0005
+    CFG_VER_CURRENT = CFG_VER_0005 /// Globals.iCfgVersionRead
 
 } CFG_VERSION;
 
