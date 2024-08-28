@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.24.825.(build_#) (2024-08-25)
+Current BETA/RC Version 6.24.828.(build_#) (2024-08-28)
 ========================================================
 
 --------------------------------------------------------
@@ -72,6 +72,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.828.1]- Highlight current line: change meaning of foreground color.
 [.825.1]- Move caret line outline frame translucency to alpha2.
 [.825.1]- Zoom dependent caret outline frame thickness, zoom dependent visible whitespace size.
 [.713.1]- CR: if selection empty on "Modify Lines..." complete document is selected.
