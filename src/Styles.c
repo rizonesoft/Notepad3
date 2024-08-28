@@ -327,6 +327,15 @@ static inline bool HasIndicStyleStrokeWidth(const int indicStyle) {
     return false;
 }
 
+static const int FoldMarkerID[] = {
+    SC_MARKNUM_FOLDEROPEN,
+    SC_MARKNUM_FOLDER,
+    SC_MARKNUM_FOLDERSUB,
+    SC_MARKNUM_FOLDERTAIL,
+    SC_MARKNUM_FOLDEREND,
+    SC_MARKNUM_FOLDEROPENMID,
+    SC_MARKNUM_FOLDERMIDTAIL
+};
 
 //=============================================================================
 
@@ -2033,36 +2042,57 @@ void Style_SetMultiEdgeLine(const int colVec[], const size_t count)
 //
 void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
 {
-    SciCall_SetCaretLineFrame(0);
-    SciCall_SetCaretLineVisibleAlways(false);
-    //SciCall_SetCaretLineHighlightSubline(false);
+    bool const bHiLitAsBckgr = (iHiLitCurLn == 1);
+    bool const bHiLitAsFrame = (iHiLitCurLn == 2);
 
-    bool const backgrColor = (iHiLitCurLn == 1);
+    if (!(bHiLitAsBckgr || bHiLitAsFrame)) {
+        // clear all
+        SciCall_SetCaretLineFrame(0);
+        SciCall_SetCaretLineLayer(SC_LAYER_UNDER_TEXT);
+        SciCall_SetElementColour(SC_ELEMENT_CARET_LINE_BACK, AxRGB(SC_ALPHA_TRANSPARENT, RGB(0x00, 0x00, 0x00)));
+        //~SciCall_SetCaretLineHighlightSubline(false);
+        return;
+    }
+
     LPCWSTR szValue = GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue;
 
-    COLORREF rgb;
-    if (!Style_StrGetColor(szValue, (backgrColor ? BACKGROUND_LAYER : FOREGROUND_LAYER), &rgb, NULL, false)) {
-        rgb = (backgrColor ? RGB(0xFF, 0xFF, 0x00) : RGB(0xC2, 0xC0, 0xC3));
+    int alpha = SC_ALPHA_NOALPHA;
+    Style_StrGetAlpha(szValue, &alpha, 50, true);
+
+    int alpha2 = SC_ALPHA_NOALPHA;
+    Style_StrGetAlpha(szValue, &alpha2, 50, false);
+
+    COLORREF const rgbDefault = (bHiLitAsBckgr ? RGB(0xFF, 0xFF, 0x00) : RGB(0xA0, 0xA0, 0xA0));
+
+    COLORREF   foreRGB = rgbDefault;
+    bool const hasFGDef = Style_StrGetColor(szValue, FOREGROUND_LAYER, &foreRGB, NULL, false);
+
+    COLORREF backgrRGB = rgbDefault;
+    Style_StrGetColor(szValue, BACKGROUND_LAYER, &backgrRGB, NULL, false);
+
+    if (hasFGDef && (alpha != SC_ALPHA_TRANSPARENT)) { // visible foreground layer
+        SciCall_SetCaretLineLayer(SC_LAYER_OVER_TEXT);
+        SciCall_SetElementColour(SC_ELEMENT_CARET_LINE_BACK, AxRGB(alpha, foreRGB));
+    }
+    else {
+        SciCall_SetCaretLineLayer(SC_LAYER_UNDER_TEXT);
+        SciCall_SetElementColour(SC_ELEMENT_CARET_LINE_BACK, AxRGB(alpha2, backgrRGB));
     }
 
-    int alpha = SC_ALPHA_TRANSPARENT; // full translucent
-    if (iHiLitCurLn > 0) {
-        Style_StrGetAlpha(GetCurrentStdLexer()->Styles[STY_CUR_LN].szValue, &alpha, 80, backgrColor);
-        if (!backgrColor) {
-            int iFrameSize = 0;
-            if (!Style_StrGetSizeInt(szValue, &iFrameSize)) {
-                iFrameSize = 2;
-            }
-            iFrameSize = max_i(1, ScaleIntToDPI(hwnd, iFrameSize));
-            Globals.iCaretOutLineFrameSize = iFrameSize;
-            //SciCall_SetCaretLineFrame(iFrameSize);
-            SciCall_SetCaretLineFrame(MulDiv(Globals.iCaretOutLineFrameSize, SciCall_GetZoom(), 100)); // needs update on zoom
+    if (bHiLitAsFrame) {
+        int iFrameSize = 0;
+        if (!Style_StrGetSizeInt(szValue, &iFrameSize)) {
+            iFrameSize = 2;
         }
+        iFrameSize = max_i(1, ScaleIntToDPI(hwnd, iFrameSize));
+        Globals.iCaretOutLineFrameSize = iFrameSize;
+        // SciCall_SetCaretLineFrame(iFrameSize);
+        SciCall_SetCaretLineFrame(MulDiv(Globals.iCaretOutLineFrameSize, SciCall_GetZoom(), 100)); // needs update on zoom
+    }
+    else {
+        SciCall_SetCaretLineFrame(0);
     }
 
-    SciCall_SetCaretLineLayer(SC_LAYER_UNDER_TEXT);  // SC_LAYER_BASE, SC_LAYER_UNDER_TEXT, SC_LAYER_OVER_TEXT
-    SciCall_SetElementColour(SC_ELEMENT_CARET_LINE_BACK, AxRGB(alpha, rgb));
-    SciCall_SetCaretLineVisibleAlways(iHiLitCurLn > 0);
 }
 
 
@@ -2222,27 +2252,28 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
     Style_StrGetColor(wchBookMarkStyleStrg, BACKGROUND_LAYER, &colorRead, NULL, false);
     COLORREF const clrFoldMarginBack = colorRead;
 
-    int strokeWidth = FW_DONTCARE;
+    int strokeWidth = FW_THIN;
     if (!Style_StrGetWeightValue(lpszStyle, &strokeWidth)) {
         strokeWidth = FontWeights[FW_IDX_REGULAR].weight;
     }
-    strokeWidth >>= 2;
+    strokeWidth = max_i(FW_THIN, strokeWidth >> 2); // 1/4
 
+    // standard bookmark
     SciCall_MarkerDefine(MARKER_NP3_BOOKMARK, SC_MARK_VERTICALBOOKMARK); // SC_MARK_BOOKMARK/SC_MARK_SHORTARROW
-    SciCall_MarkerSetStrokeWidth(MARKER_NP3_BOOKMARK, strokeWidth);
-    SciCall_MarkerSetAlpha(MARKER_NP3_BOOKMARK, bookmarkAlpha);                                  // if drawn in content area
+    SciCall_MarkerSetAlpha(MARKER_NP3_BOOKMARK, bookmarkAlpha);  
     SciCall_MarkerSetForeTranslucent(MARKER_NP3_BOOKMARK, AxRGB(bookmarkAlpha, clrLineNumFore)); //~clrBookMarkFore
     //~SciCall_MarkerSetBack(MARKER_NP3_BOOKMARK, Style_RgbAlpha(clrBookMarkFore, clrMarginBack, bookmarkAlpha));
     SciCall_MarkerSetBackTranslucent(MARKER_NP3_BOOKMARK, AxRGB(bookmarkAlpha, clrBookMarkFore));
+    SciCall_MarkerSetStrokeWidth(MARKER_NP3_BOOKMARK, strokeWidth);
 
     // occurrence bookmarker
     bool const visible = Settings.MarkOccurrencesBookmark;
     //SciCall_MarkerDefine(MARKER_NP3_OCCURRENCE, visible ? SC_MARK_ARROWS : SC_MARK_BACKGROUND);
     SciCall_MarkerDefine(MARKER_NP3_OCCURRENCE, visible ? SC_MARK_ARROWS : SC_MARK_EMPTY);
-    SciCall_MarkerSetStrokeWidth(MARKER_NP3_OCCURRENCE, strokeWidth);
     SciCall_MarkerSetForeTranslucent(MARKER_NP3_OCCURRENCE, RGB2RGBAREF(CalcContrastColor(clrMarginBack, 100)));
     SciCall_MarkerSetBackTranslucent(MARKER_NP3_OCCURRENCE, AxRGB(SC_ALPHA_TRANSPARENT, clrMarginBack));
     //~SciCall_MarkerSetForeSelected(MARKER_NP3_OCCURRENCE, RGB(0,0,220));
+    SciCall_MarkerSetStrokeWidth(MARKER_NP3_OCCURRENCE, strokeWidth);
 
     // ---  WordBookMarks  ---
     COLORREF color;
@@ -2334,15 +2365,6 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
         SciCall_MarkerDefine(SC_MARKNUM_FOLDEROPENMID, SC_MARK_BOXMINUSCONNECTED);
         SciCall_MarkerDefine(SC_MARKNUM_FOLDERMIDTAIL, SC_MARK_TCORNER);
     }
-    static const int FoldMarkerID[] = {
-        SC_MARKNUM_FOLDEROPEN,
-        SC_MARKNUM_FOLDER,
-        SC_MARKNUM_FOLDERSUB,
-        SC_MARKNUM_FOLDERTAIL,
-        SC_MARKNUM_FOLDEREND,
-        SC_MARKNUM_FOLDEROPENMID,
-        SC_MARKNUM_FOLDERMIDTAIL
-    };
 
     colorRead = clrLineNumFore;
     const WCHAR* wchHighlightStyleStrg = GetCurrentStdLexer()->Styles[STY_SEL_TXT].szValue;
@@ -2353,7 +2375,7 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
         SciCall_MarkerSetForeTranslucent(FoldMarkerID[i], RGB2RGBAREF(clrFoldMarginBack)); // (!)
         SciCall_MarkerSetBackTranslucent(FoldMarkerID[i], RGB2RGBAREF(clrLineNumFore)); // (!) //~clrBookMarkForeAlpha
         SciCall_MarkerSetBackSelected(FoldMarkerID[i], fldHiLight);
-        SciCall_MarkerSetStrokeWidth(FoldMarkerID[i], strokeWidth);
+        SciCall_MarkerSetStrokeWidth(FoldMarkerID[i],  strokeWidth<<1);
     }
     SciCall_SetElementColour(SC_ELEMENT_FOLD_LINE, AxRGB(255, clrLineNumFore));
 
@@ -2390,6 +2412,8 @@ void Style_SetMargin(HWND hwnd, LPCWSTR lpszStyle) /// iStyle == STYLE_LINENUMBE
     // set width
     Style_UpdateAllMargins(hwnd, true);
 }
+
+
 
 
 //=============================================================================
@@ -3439,7 +3463,9 @@ bool Style_StrGetAlpha(LPCWSTR lpszStyle, int* iOutValue, const int defAlpha, co
             return true;
         }
     }
-    *iOutValue = Sci_ClampAlpha(defAlpha);
+    if (defAlpha >= 0) {
+        *iOutValue = Sci_ClampAlpha(defAlpha);
+    }
     return false;
 }
 
@@ -4535,6 +4561,10 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         MakeBitmapButton(hwnd, IDC_PREVSTYLE, IDB_PREV, -1, -1);
         MakeBitmapButton(hwnd, IDC_NEXTSTYLE, IDB_NEXT, -1, -1);
 
+        COLORREF cr = COLORREF_MAX; // SciCall_StyleGetFore(STYLE_DEFAULT);
+        MakeColorPickButton(hwnd, IDC_STYLEFORE, Globals.hInstance, cr);
+        MakeColorPickButton(hwnd, IDC_STYLEBACK, Globals.hInstance, cr);
+
         if (Settings.CustomSchemesDlgPosX == CW_USEDEFAULT || Settings.CustomSchemesDlgPosY == CW_USEDEFAULT) {
             CenterDlgInParent(hwnd, false);
         } else {
@@ -4994,11 +5024,11 @@ CASE_WM_CTLCOLOR_SET:
                 GetDlgItemText(hwnd, IDC_STYLEEDIT, tch, COUNTOF(tch));
 
                 COLORREF cr = COLORREF_MAX; // SciCall_StyleGetFore(STYLE_DEFAULT);
-                Style_StrGetColor(tch, FOREGROUND_LAYER, &cr, NULL, true);
+                Style_StrGetColor(tch, FOREGROUND_LAYER, &cr, NULL, false);
                 MakeColorPickButton(hwnd, IDC_STYLEFORE, Globals.hInstance, cr);
 
                 cr = COLORREF_MAX; // SciCall_StyleGetBack(STYLE_DEFAULT);
-                Style_StrGetColor(tch, BACKGROUND_LAYER, &cr, NULL, true);
+                Style_StrGetColor(tch, BACKGROUND_LAYER, &cr, NULL, false);
                 MakeColorPickButton(hwnd, IDC_STYLEBACK, Globals.hInstance, cr);
             }
         }
