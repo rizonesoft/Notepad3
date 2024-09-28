@@ -70,7 +70,7 @@ BEGIN
     //~CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP|SS_NOTIFY|SS_REALSIZECONTROL,300,10,80,24,WS_EX_TRANSPARENT
     //~PUSHBUTTON      "", IDC_RIZONEBMP, 300, 10, 80, 24, BS_PUSHBUTTON | BS_BITMAP
     CONTROL         IDR_RIZBITMAP,IDC_RIZONEBMP,"Static",SS_BITMAP|SS_NOTIFY,304,10,80,24,WS_EX_TRANSPARENT
-    PUSHBUTTON      "Sao chép văn bản phiên bản",IDC_COPYVERSTRG,304,45,76,14
+    PUSHBUTTON      "Sao chép phiên bản",IDC_COPYVERSTRG,304,45,76,14
     CONTROL         "",IDC_RICHEDITABOUT,RICHEDIT_CONTROL_VER,WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | RICHEDTCTRL_ADDSTYLE,20,90,360,170, ES_EX_ZOOMABLE
 END
 
@@ -297,7 +297,7 @@ BEGIN
     CONTROL         "Đặt cấu hình đã chọn làm mặc định(&D)",IDC_DEFAULTSCHEME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,145,150,10
     CONTROL         "Tự động chọn theo phần mở rộng tên tệp(&A)",IDC_AUTOSELECT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,140,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,155,157,10
     DEFPUSHBUTTON   "Đồng ý",IDOK,53,173,50,14,WS_DISABLED
     PUSHBUTTON      "Hủy bỏ",IDCANCEL,108,173,50,14
 END
@@ -312,16 +312,16 @@ BEGIN
     EDITTEXT        IDC_STYLEEDIT_ROOT,181,152,279,12,ES_AUTOHSCROLL
     LTEXT           "",IDC_STYLELABEL,181,171,279,8
     EDITTEXT        IDC_STYLEEDIT,181,183,279,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "Màu văn bản(&E)...",IDC_STYLEFORE,181,201,46,14
-    PUSHBUTTON      "Màu nền(&B)...",IDC_STYLEBACK,230,201,46,14
-    PUSHBUTTON      "Phông chữ(&F)...",IDC_STYLEFONT,279,201,46,14
-    PUSHBUTTON      "Xem trước(&P)",IDC_PREVIEW,328,201,46,14
-    PUSHBUTTON      "Đặt lại(&R)",IDC_STYLEDEFAULT,377,201,46,14
+    PUSHBUTTON      "Tiến lên(&E)...",IDC_STYLEFORE,181,201,48,14
+    PUSHBUTTON      "Lùi lại(&B)...",IDC_STYLEBACK,232,201,46,14
+    PUSHBUTTON      "Phông chữ(&F)...",IDC_STYLEFONT,281,201,50,14
+    PUSHBUTTON      "Xem trước(&P)",IDC_PREVIEW,334,201,46,14
+    PUSHBUTTON      "Đặt lại(&R)",IDC_STYLEDEFAULT,383,201,40,14
     PUSHBUTTON      "",IDC_PREVSTYLE,426,201,15,14,BS_BITMAP
     PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14,BS_BITMAP
-    LTEXT           "Độ tương phản chế độ tối (%):", IDC_STATIC2,181,222,80,8
-    EDITTEXT        IDC_DARK_MODE_CONTRAST,265,221,24,12,ES_AUTOHSCROLL
-    LTEXT           "[0-6000] Giá trị mặc định: 75%",IDC_STATIC3,300,222,80,8
+    LTEXT           "Độ tương phản chế độ tối (%):", IDC_STATIC2,181,222,102,8
+    EDITTEXT        IDC_DARK_MODE_CONTRAST,288,221,24,12,ES_AUTOHSCROLL
+    LTEXT           "[0-6000] Mặc định: 75%",IDC_STATIC3,320,222,80,8
     PUSHBUTTON      "Nhập(&I)...",IDC_IMPORT,181,240,50,14
     PUSHBUTTON      "Xuất(&X)...",IDC_EXPORT,237,240,50,14
     DEFPUSHBUTTON   "Đồng ý",IDOK,355,240,50,14
@@ -336,18 +336,18 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Cài đặt Tab"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Chiều rộng tab(&T):",IDC_STATIC,7,10,59,8
+    LTEXT           "Chiều rộng tab(&T):",IDC_STATIC,7,10,65,8
     EDITTEXT        IDC_TAB_WIDTH,75,7,30,14,ES_AUTOHSCROLL
-    LTEXT           "Kích thước thụt lề(&I):",IDC_STATIC2,7,30,59,8
+    LTEXT           "Kích thước thụt lề(&I):",IDC_STATIC2,7,30,67,8
     EDITTEXT        IDC_INDENT_DEPTH,75,27,30,14,ES_AUTOHSCROLL
     CONTROL         "Chèn tab dưới dạng khoảng trắng(&S)",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
     CONTROL         "Định dạng lại thụt lề bằng phím tab(&K)",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,147,10
     CONTROL         "Định dạng lại thụt lề bằng phím Backspace(&B)",IDC_BACKTAB_INDENTS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,160,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,162,10
     CONTROL         "Cảnh báo về thụt lề không đồng nhất(&W)",IDC_WARN_INCONSISTENT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,158,10
-    CONTROL         "Tự động phát hiện thụt lề bằng tab hoặc khoảng trắng(&A)",IDC_AUTO_DETECT_INDENTS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
+    CONTROL         "Tự động phát hiện thụt lề tab hoặc dấu cách(&A)",IDC_AUTO_DETECT_INDENTS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,166,10
     DEFPUSHBUTTON   "Đồng ý",IDOK,117,7,50,14
     PUSHBUTTON      "Hủy bỏ",IDCANCEL,117,27,50,14
 END
@@ -380,7 +380,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Cài đặt dòng dài"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Vị trí dòng viền đa điểm:", IDC_STATIC, 7, 10, 80, 8
+    LTEXT           "Vị trí dòng viền đa điểm:", IDC_STATIC, 7, 10, 83, 8
     EDITTEXT        IDC_MULTIEDGELINE, 92, 7, 180, 14, ES_AUTOHSCROLL
     CONTROL         "Hiển thị đường viền(&E)", IDC_SHOWEDGELINE, "Button", BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP, 7, 27, 140, 10
     CONTROL         "Thay đổi màu nền(&B)", IDC_BACKGRDCOLOR, "Button", BS_AUTORADIOBUTTON | WS_TABSTOP, 7, 38, 140, 10
@@ -509,7 +509,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Ngắt cột"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Ranh giới(&B):",IDC_STATIC,7,7,34,8
+    LTEXT           "Ranh giới(&B):",IDC_STATIC,7,7,44,8
     EDITTEXT        IDC_COLUMNWRAP,7,24,46,14,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "Đồng ý",IDOK,73,7,50,14
     PUSHBUTTON      "Hủy bỏ",IDCANCEL,73,24,50,14
@@ -763,7 +763,7 @@ BEGIN
     WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
     CBS_OWNERDRAWFIXED
 
-    LTEXT           "Kích thước(&S):", stc3, 198, 7, 36, 9
+    LTEXT           "Kích thước(&S):", stc3, 196, 7, 46, 9
     COMBOBOX        cmb3, 198, 16, 36, 76,
     CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_DISABLENOSCROLL |
     CBS_SORT | WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
