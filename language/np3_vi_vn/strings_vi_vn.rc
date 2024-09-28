@@ -302,8 +302,8 @@ Notepad3 [/?] [...[mã hóa]] [...[chế độ kết thúc dòng]] [/e] [/g] [/m
  \t[/q] [/s] [/d] [/h] [/x] [/c] [/b] [/n] [/r| [/p] [/t] [/i] [/o]\r\n\
  \t[/f] [/u] [/v] [/vd] [/y] [/z] [[drive:][path]tên tệp[...]]\r\n\r\n\
 Tệp\tPhải là đối số cuối cùng không có khoảng trắng nằm trong dấu ngoặc\r\n\tkép mặc định\r\n\
-+\tCho phép nhiều đối số tệp (bao gồm khoảng trắng trong dấu ngoặc kép)\r\n\
--\tCho phép một đối số tệp (không có khoảng trắng trong dấu ngoặc kép)\r\n\r\n\
++\tCho phép nhiều đối số tệp (bao gồm khoảng trắng trong dấu\r\n\tngoặc kép)\r\n\
+-\tCho phép một đối số tệp (không có khoảng trắng trong dấu\r\n\tngoặc kép)\r\n\r\n\
 Tùy chọn:\r\n\
 /?\tHiển thị thông điệp trợ giúp này\r\n\
 ...\tMã hóa (/ansi, /unicode, /unicodebe, /utf8, /utf8sig)\r\n\
@@ -321,8 +321,8 @@ Tùy chọn:\r\n\
 /b\tMở bảng dán mới để thu thập các mục từ clipboard\r\n\
 /n\tLuôn mở cửa sổ mới (/ns để chỉ một thể hiện tệp)\r\n\
 /r\tTái sử dụng cửa sổ (/rs để chỉ một thể hiện tệp)\r\n\
-/p\tXác định vị trí và kích thước cửa sổ (/p0,/ps,/pd,f,l,t,r,b,m)Hoặc /p <trái>,\r\n\
-\t<trên>,<rộng>,<cao>[,<dpi>[,<tối đa>]]  (tất cả đều là số nguyên)\r\n\
+/p\tXác định vị trí và kích thước cửa sổ (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
+\tHoặc /p <trái>,<trên>,<rộng>,<cao>[,<dpi>[,<tối đa>]]\r\n\t(tất cả đều là số nguyên)\r\n\
 /t\tĐặt tiêu đề cửa sổ\r\n\
 /i\tKhởi động với biểu tượng trên khay hệ thống\r\n\
 /o\tĐặt cửa sổ lên trên cùng\r\n\
