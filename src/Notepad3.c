@@ -12778,6 +12778,7 @@ void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
 //
 LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
+    UNREFERENCED_PARAMETER(hwnd);
     UNREFERENCED_PARAMETER(wParam);
     UNREFERENCED_PARAMETER(lParam);
 
@@ -12797,7 +12798,6 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             break;
 
         case FWM_MSGBOX: {
-            SetForegroundWindow(hwnd);
             /// LONG const answer = MessageBoxExW(Globals.hwndMain, L"File change, Cancel, Retry, Continue", L"NP3", MB_ABORTRETRYIGNORE, GetLangIdByLocaleName(Globals.CurrentLngLocaleName));
             LONG const answer = InfoBoxLng(MB_FILECHANGEDNOTIFY | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY);
             switch (LOWORD(answer)) {
@@ -12846,7 +12846,6 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
 
         if (bRevertFile) {
-            SetForegroundWindow(hwnd);
             FileRevert(Paths.CurrentFile, false);
             if (FileWatching.MonitoringLog || (s_flagChangeNotify == FWM_AUTORELOAD)) {
                 SciCall_SetReadOnly(FileWatching.MonitoringLog);
