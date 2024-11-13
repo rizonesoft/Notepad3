@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Tämä toiminto tyhjentää peruutushistorian. Jatketaanko?"
     IDS_MUI_READONLY_SAVE   """%s"" on vain luettavissa. Tallennetaanko toiseen tiedostoon?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Ulkoinen ohjelma on muokannut nykyistä tiedostoa\nValitse:\n\nPeruuta -\t\tOhita lisämuutokset\nLataa uudelleen -\t\tLataa tiedosto uudelleen\nJatka -\tVaihda tiedostoseurantaan"
+                            "Ulkoinen ohjelma on muokannut nykyistä tiedostoa\nValitse:\n\nIgnore -\t\tOhita lisämuutokset\nLataa uudelleen -\tLataa tiedosto uudelleen\nMonitor -\t\tVaihda tiedostoseurantaan"
     IDS_MUI_FILECHANGENOTIFY2 "Nykyinen tiedosto on poistettu. Tallennetaanko nyt?"
     IDS_MUI_FILELOCK_ERROR  "Tiedoston ""%s"" yksinoikeuslukkoa ei voi hakea!"
     IDS_MUI_STICKYWINPOS    "Ikkunan pysyvä sijainti on käytössä. Kaikki uudet Notepad3-ikkunat käyttävät nykyisiä ikkunan sijoitusasetuksia"

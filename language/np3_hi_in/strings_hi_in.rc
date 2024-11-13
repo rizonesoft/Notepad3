@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
     IDS_MUI_READONLY_SAVE   """%s"" सिर्फ़ पढ़ने-लायक है। अन्य फ़ाईल के रूप में सहेजें?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
+                            "The current file has been modified by an external program\nPlease choose:\n\nIgnore -\t\tIgnore further changes\nReload -\t\tReload File\nMonitor -\t\tSwitch to file monitoring"
     IDS_MUI_FILECHANGENOTIFY2 "चालू फ़ाईल मिटा दी गई है। अभी सहेजें?"
     IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
     IDS_MUI_STICKYWINPOS    "Sticky विंडो की स्तिथि सक्षम है. कोई भी नई Notepad3 विंडो इस विंडो की स्तिथि सेटिंग को प्रयोग मे लेगी"

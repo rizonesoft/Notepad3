@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Esta operação vai limpar o histórico de anulações. Continuar?"
     IDS_MUI_READONLY_SAVE   """%s"" é só de leitura. Guardar noutro ficheiro?"
     IDS_MUI_FILECHANGENOTIFY
-                            "O ficheiro actual foi modificado por um programa externo\nPor favor escolha:\n\nCancelar -\t\tIgnorar alterações futuras\nRecarregar -\t\tRecarregar ficheiro\nContinuar -\tMudar para monitorzação do ficheiro"
+                            "O ficheiro actual foi modificado por um programa externo\nPor favor escolha:\n\nIgnore -\t\tIgnorar alterações futuras\nRecarregar -\tRecarregar ficheiro\nMonitor -\t\tMudar para monitorzação do ficheiro"
     IDS_MUI_FILECHANGENOTIFY2 "O ficheiro actual foi eliminado. Guardar agora?"
     IDS_MUI_FILELOCK_ERROR  "Não foi possível obter bloqueio de ficheiro exclusivo para ""%s""!"
     IDS_MUI_STICKYWINPOS    "A posição fixa da janela está activada. Todas as novas janelas do Notepad3 irão utilizar as actuais definições de posicionamento"

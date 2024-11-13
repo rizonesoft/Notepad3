@@ -678,8 +678,8 @@ BEGIN
     CONTROL         "&Älä näytä tätä viestiä uudelleen",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
     DEFPUSHBUTTON   "&Lataa uudelleen",IDRETRY,183,82,53,14
-    PUSHBUTTON      "&Peruuta", IDCANCEL, 130, 82, 50, 14
-    PUSHBUTTON      "&Jatka",IDCONTINUE,242,82,50,14
+    PUSHBUTTON      "&Ignore", IDCANCEL, 130, 82, 50, 14
+    PUSHBUTTON      "&Monitor",IDCONTINUE,242,82,50,14
 END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 188

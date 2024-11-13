@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
     IDS_MUI_READONLY_SAVE   "«%s» только для чтения. Сохранить в другой файл?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program\nPlease choose:\n\nCancel -\t\tIgnore further changes\nReload -\t\tReload File\nContinue -\tSwitch to file monitoring"
+                            "The current file has been modified by an external program\nPlease choose:\n\nIgnore -\t\tIgnore further changes\nReload -\t\tReload File\nMonitor -\t\tSwitch to File Monitoring"
     IDS_MUI_FILECHANGENOTIFY2 "Этот файл был удален. Пересохранить?"
     IDS_MUI_FILELOCK_ERROR  "Невозможно получить исключительную блокировку для ""%s""!"
     IDS_MUI_STICKYWINPOS    "Фиксированное положение окна включено. Любое новое окно Notepad3 будет запущено с текущими настройками положения"

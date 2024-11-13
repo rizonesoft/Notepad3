@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Táto operácia vymaže históriu spätných krokov. Pokračovať?"
     IDS_MUI_READONLY_SAVE   """%s"" je iba na čítanie. Uložiť súbor pod iným názvom?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Aktuálny súbor bol upravený externým programom\nVyberte ďalší postup:\n\nZrušiť -\t\tIgnorovať ďalšie zmeny\nZnovu načítať -\t\tZnovu načítať súbor\nPokračovať -\tPrepnúť monitorovanie súboru"
+                            "Aktuálny súbor bol upravený externým programom\nVyberte ďalší postup:\n\nIgnore -\t\tIgnorovať ďalšie zmeny\nZnovu načítať -\tZnovu načítať súbor\nMonitor -\t\tPrepnúť monitorovanie súboru"
     IDS_MUI_FILECHANGENOTIFY2 "Aktuálny súbor bol odstránený. Uložiť ho znovu?"
     IDS_MUI_FILELOCK_ERROR  "Nedá sa exkluzívne zamknúť súbor ""%s""!"
     IDS_MUI_STICKYWINPOS    "Fixovanie polohy okna je povolené. Všetky nové okná Notepad2 budú používať aktuálne nastavenie umiestnenia okna"

@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Ta operacja wyczyści historię cofania. Kontynuować?"
     IDS_MUI_READONLY_SAVE   """%s"" tylko do odczytu. Zapisać do innego pliku?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Bieżący plik został zmodyfikowany przez zewnętrzny program\nWybierz:\n\nAnuluj -\t\tIgnoruj dalsze zmiany\nZaładuj ponownie -\t\tZaładuj ponownie plik\nKontynuuj -\tPrzełącz na monitorowanie pliku"
+                            "Bieżący plik został zmodyfikowany przez zewnętrzny program\nWybierz:\n\nIgnore -\t\tIgnoruj dalsze zmiany\nZaładuj ponownie -\tZaładuj ponownie plik\nMonitor -\t\tPrzełącz na monitorowanie pliku"
     IDS_MUI_FILECHANGENOTIFY2 "Bieżący plik został usunięty. Zapisać teraz?"
     IDS_MUI_FILELOCK_ERROR  "Nie można uzyskać wyłącznej blokady plików dla ""%s""!"
     IDS_MUI_STICKYWINPOS    "Zamrożona pozycja okna jest włączona. Jakiekolwiek nowe okno Notepad3 zastosuje ustawienia bieżącego umiejscowienia okna"
