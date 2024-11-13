@@ -15,7 +15,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Russian (Russia) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
 LANGUAGE LANG_RUSSIAN, SUBLANG_RUSSIAN_RUSSIA
@@ -678,8 +678,8 @@ BEGIN
     CONTROL         "&Don't display this message again",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
     DEFPUSHBUTTON   "&Reload",IDRETRY,186,82,50,14
-    PUSHBUTTON      "&Cancel", IDCANCEL, 130, 82, 50, 14
-    PUSHBUTTON      "&Continue",IDCONTINUE,242,82,50,14
+    PUSHBUTTON      "&Ignore", IDCANCEL, 130, 82, 50, 14
+    PUSHBUTTON      "&Monitor",IDCONTINUE,242,82,50,14
 END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 188

@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Thực hiện tác vụ này sẽ xóa lịch sử hoàn tác. Có tiếp tục không?"
     IDS_MUI_READONLY_SAVE   """%s"" là chỉ đọc. Có muốn lưu thành tệp khác không?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Tệp hiện tại đã bị sửa đổi bởi chương trình bên ngoài\nChọn:\n\Hủy -\t\tBỏ qua thay đổi thêm\nTải lại -\t\tTải lại tệp\nTiếp tục -\tChuyển sang giám sát tệp"
+                            "Tệp hiện tại đã bị sửa đổi bởi chương trình bên ngoài\nChọn:\n\nPhớt lờ -\t\tBỏ qua thay đổi thêm\nTải lại -\t\tTải lại tệp\nMàn hình -\tChuyển sang giám sát tệp"
     IDS_MUI_FILECHANGENOTIFY2 "Tệp hiện tại đã bị xóa. Có muốn lưu ngay bây giờ không?"
     IDS_MUI_FILELOCK_ERROR  "Không thể lấy khóa tệp độc quyền cho ""%s"""
     IDS_MUI_STICKYWINPOS    "Vị trí cửa sổ cố định đã được kích hoạt. Cửa sổ Notepad3 mới sẽ sử dụng cài đặt sắp xếp cửa sổ hiện tại"

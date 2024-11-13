@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Operasi ini dapat menghapus riwayat kembali. Lanjutkan?"
     IDS_MUI_READONLY_SAVE   """%s"" hanya baca saja. Simpan dalam berkas berbeda?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Berkas ini telah dimodifikasi oleh program lain\nSilahkan pilih:\n\nBatal -\t\tAbaikan setiap perubahan\nMuat Ulang -\tMuat ulang berkas\nLanjutkan -\tBeralih ke pemantauan berkas"
+                            "Berkas ini telah dimodifikasi oleh program lain\nSilahkan pilih:\n\nIgnore -\t\tAbaikan setiap perubahan\nMuat Ulang -\tMuat ulang berkas\nMonitor -\t\tBeralih ke pemantauan berkas"
     IDS_MUI_FILECHANGENOTIFY2 "Berkas ini telah dihapus. Simpan sekarang?"
     IDS_MUI_FILELOCK_ERROR  "Tidak bisa mendapatkan kunci berkas eksklusif untuk ""%s""!"
     IDS_MUI_STICKYWINPOS    "Posisi Jendela Tetap diaktifkan. Setiap jendela Notepad3 baru akan menggunakan pengaturan jendela saat ini"

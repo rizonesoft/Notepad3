@@ -678,8 +678,8 @@ BEGIN
     CONTROL         "このメッセージを再び表示しない(&D)",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
     DEFPUSHBUTTON   "再読み込み(&R)",IDRETRY,186,82,50,14
-    PUSHBUTTON      "キャンセル(&C)", IDCANCEL, 130, 82, 50, 14
-    PUSHBUTTON      "続行(&C)",IDCONTINUE,242,82,50,14
+    PUSHBUTTON      "Ignore(&I)", IDCANCEL, 130, 82, 50, 14
+    PUSHBUTTON      "Monitor(&M)",IDCONTINUE,242,82,50,14
 END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 188

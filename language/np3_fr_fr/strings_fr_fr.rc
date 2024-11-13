@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Cette opération videra l'historique ""Défaire"". Continuer ?"
     IDS_MUI_READONLY_SAVE   """%s"" est en lecture seule. Sauvegarder dans un fichier différent ?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Le fichier actuel a été modifié par un programme externe\nChoisissez :\n\nAnnuler -\t\tIgnorer aussi les futures modifications ""externes""\nRecharger -\t\tRecharger le fichier modifié\nContinuer -\tBasculer en mode ""surveillance fichier"""
+                            "Le fichier actuel a été modifié par un programme externe\nChoisissez :\n\nIgnorer -\t\tIgnorer aussi les futures modifications\nRecharger -\tRecharger le fichier modifié\nSurveiller -\tBasculer en mode ""surveillance de fichier"""
     IDS_MUI_FILECHANGENOTIFY2 "Le fichier actuel a été supprimé. Sauvegarder maintenant ?"
     IDS_MUI_FILELOCK_ERROR  "Ne peut acquérir un verrouillage de fichier exclusif pour ""%s"" !"
     IDS_MUI_STICKYWINPOS    "Le gel de la position de la fenêtre est activée. Toute nouvelle fenêtre Notepad3 utilisera les paramètres de placement de fenêtre en cours"

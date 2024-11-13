@@ -678,8 +678,8 @@ BEGIN
     CONTROL         "Không hiển thị thông báo này nữa(&D)",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
     DEFPUSHBUTTON   "Tải lại(&R)",IDRETRY,186,82,50,14
-    PUSHBUTTON      "Hủy bỏ(&C)", IDCANCEL, 130, 82, 50, 14
-    PUSHBUTTON      "Tiếp tục(&C)",IDCONTINUE,242,82,50,14
+    PUSHBUTTON      "Phớt lờ(&I)", IDCANCEL, 130, 82, 50, 14
+    PUSHBUTTON      "Màn hình(&M)",IDCONTINUE,242,82,50,14
 END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 188

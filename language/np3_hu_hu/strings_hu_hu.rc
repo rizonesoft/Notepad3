@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Ez a művelet törli a visszavonási előzményeket. Folytatja?"
     IDS_MUI_READONLY_SAVE   """%s"" csak olvastható. Legyen mentés egy másik fájlba?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Az aktuális fájlt egy külső program megváltoztatta\nKérem válaszon:\n\nMégsem -\t\tVáltoztatások figyelmen kívül hagyása\nÚjratöltés -\t\tA fájl újratöltése\nFolytatás -\tFájl figyelése"
+                            "Az aktuális fájlt egy külső program megváltoztatta\nKérem válaszon:\n\nIgnore -\t\tVáltoztatások figyelmen kívül hagyása\nÚjratöltés -\tA fájl újratöltése\nMonitor -\t\tFájl figyelése"
     IDS_MUI_FILECHANGENOTIFY2 "Az aktuális fájl törölve lett. Elmentsük?"
     IDS_MUI_FILELOCK_ERROR  "Nem tudok exklúzív zárolást szerezni erre a fájlra: ""%s""!"
     IDS_MUI_STICKYWINPOS    "A ragadós ablakpozíciók be van kapcsolva. Az új Notepad3 ablakok a jelenlegi ablakhelyzetét használják majd"

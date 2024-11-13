@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Questa operazione cancella la cronologia delle modifiche. Continuare?"
     IDS_MUI_READONLY_SAVE   """%s"" è in sola lettura. Salvare in un file differente?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Il file corrente è stato modificato da un programma esterno\nScegliere:\n\Annulla -\t\tIgnora ulteriori modifiche\nRicarica -\t\tRicarica File\nContinua -\tPassa al monitoraggio del file"
+                            "Il file corrente è stato modificato da un programma esterno\nScegliere:\n\nIgnore -\t\tIgnora ulteriori modifiche\nRicarica -\t\tRicarica File\nMonitor -\t\tPassa al monitoraggio del file"
     IDS_MUI_FILECHANGENOTIFY2 "Il file corrente è stato cancellato. Salvarlo adesso?"
     IDS_MUI_FILELOCK_ERROR  "Impossibile ottenere il lock esclusivo per ""%s""!"
     IDS_MUI_STICKYWINPOS    "La posizione della finestra ""sticky"" è abilitata. Qualunque finestra Notepad3 userà le attuali impostazioni di posizione finestra"

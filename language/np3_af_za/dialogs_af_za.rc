@@ -678,8 +678,8 @@ BEGIN
     CONTROL         "&Moenie hierdie boodskap weer wys nie",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
     DEFPUSHBUTTON   "&Herlaai",IDRETRY,186,82,50,14
-    PUSHBUTTON      "&Kanselleer", IDCANCEL, 130, 82, 50, 14
-    PUSHBUTTON      "&Gaan voort",IDCONTINUE,242,82,50,14
+    PUSHBUTTON      "&Ignoreer", IDCANCEL, 130, 82, 50, 14
+    PUSHBUTTON      "&Monitoreer",IDCONTINUE,242,82,50,14
 END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 188

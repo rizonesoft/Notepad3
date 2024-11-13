@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Bu işlem geri alma geçmişini temizleyecek. İlerlemek istiyor musunuz?"
     IDS_MUI_READONLY_SAVE   """%s"" salt okunur. Başka bir dosyaya kaydetmek ister misiniz?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Bu dosya başka bir uygulama tarafından değiştirilmiş\nLütfen yapılacak işlemi seçin:\n\nİptal -\t\tSonraki değişiklikleri yok say\nYeniden yükle -\t\tDosyayı yeniden yükle\nİlerle -\tDosya izlemeye geç"
+                            "Bu dosya başka bir uygulama tarafından değiştirilmiş\nLütfen yapılacak işlemi seçin:\n\nIgnore -\t\tSonraki değişiklikleri yok say\nYeniden yükle -\tDosyayı yeniden yükle\nMonitor -\t\tDosya izlemeye geç"
     IDS_MUI_FILECHANGENOTIFY2 "Geçerli dosya silinmiş. Yeniden kaydetmek ister misiniz?"
     IDS_MUI_FILELOCK_ERROR  """%s"" dosyası ayrıcalıklı olarak kilitlenemedi!"
     IDS_MUI_STICKYWINPOS    "Sabit pencere konumu etkinleştirildi. Yeni Notepad3 pencereleri geçerli pencere konumu ayarlarını kullanacak"

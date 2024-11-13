@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Denna åtgärd rensar ångra-historiken. Fortsätta?"
     IDS_MUI_READONLY_SAVE   """%s"" är inte skrivbar. Vill du spara till en annan fil?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Öppnad fil har modifierats av ett externt program\nVälj:\n\nAvbryt -\t\tIgnorera ytterligare förändringar\nLadda om -\tLadda om fil\nFortsätt -\t\tByt till filövervakning"
+                            "Öppnad fil har modifierats av ett externt program\nVälj:\n\nIgnore -\t\tIgnorera ytterligare förändringar\nLadda om -\tLadda om fil\nMonitor -\t\tByt till filövervakning"
     IDS_MUI_FILECHANGENOTIFY2 "Aktuell fil har tagits bort. Vill du spara nu?"
     IDS_MUI_FILELOCK_ERROR  "Kan inte få exklusivt fillås för ""%s""!"
     IDS_MUI_STICKYWINPOS    "Fast fönsterposition är aktiverad. Alla nya Notepad3-fönster kommer att använda aktuella fösterplaceringsinställningar"
