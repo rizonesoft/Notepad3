@@ -420,7 +420,7 @@ BEGIN
                 MENUITEM "高亮和摺疊",               IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
-            MENUITEM "記錄監控(&M)",                         IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "記錄監視(&M)",                         IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "允許捲動超過檔案尾(&S)",                IDM_VIEW_SCROLLPASTEOF
             MENUITEM "顯示超連結提示(&H)",                    IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
