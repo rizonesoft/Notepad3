@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "Esta operação irá limpar o histórico de desfazer. Continuar?"
     IDS_MUI_READONLY_SAVE   """%s"" é somente leitura. Salvar em um arquivo diferente?"
     IDS_MUI_FILECHANGENOTIFY
-                            "O arquivo atual foi modificado por um programa externo\nPor favor, escolha:\n\nIgnore -\t\tIgnorar modificações\nRecarregar -\tRecarregar arquivo\nMonitor -\t\tMudar para monitoramento de arquivo"
+                            "O arquivo atual foi modificado por um programa externo\nPor favor, escolha:\n\nIgnorar -\t\tIgnorar modificações\nRecarregar -\tRecarregar arquivo\nMonitorar -\t\tMudar para monitoramento de arquivo"
     IDS_MUI_FILECHANGENOTIFY2 "O presente arquivo foi apagado. Salvar agora?"
     IDS_MUI_FILELOCK_ERROR  "Não foi possível adquirir bloqueio de arquivo exclusivo para ""%s""!"
     IDS_MUI_STICKYWINPOS    "Posição de Janela Fixada foi ativada. Qualquer nova janela do Notepad3 usará as configurações de posicionamento de janela correntes"
