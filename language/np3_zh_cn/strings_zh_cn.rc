@@ -92,7 +92,7 @@ BEGIN
     IDT_FILE_LAUNCH          "运行当前文档"
     IDT_VIEW_NEW_WINDOW      "新建空窗口"
     IDT_VIEW_TOGGLE_VIEW     "仅显示匹配行"
-    IDT_VIEW_CHASING_DOCTAIL "日志监控"
+    IDT_VIEW_CHASING_DOCTAIL "日志监视"
     IDT_VIEW_PIN_ON_TOP      "总是置顶"
     IDT_GREP_WIN_TOOL        "在文件中查找"
 END
@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "该操作将会清空撤销历史。是否继续？"
     IDS_MUI_READONLY_SAVE   "“%s”是只读的。是否尝试使用其它名字保存？"
     IDS_MUI_FILECHANGENOTIFY
-                            "当前文件已被其它程序所修改\n请选择：\n\nIgnore -\t\t忽略之后的更改\n重新加载 -\t重新加载文件\nMonitor -\t切换为监控模式"
+                            "当前文件已被其它程序所修改\n请选择：\n\n忽略 -　　\t忽略之后的更改\n重新加载 -\t重新加载文件\n监视 -　　\t切换为监视模式"
     IDS_MUI_FILECHANGENOTIFY2 "当前文件已被删除。是否保存？"
     IDS_MUI_FILELOCK_ERROR  "无法以独占模式锁定文件“%s”"
     IDS_MUI_STICKYWINPOS    "粘性窗口位置已启用。新的 Notepad3 窗口将使用和当前窗口一致的位置设置"

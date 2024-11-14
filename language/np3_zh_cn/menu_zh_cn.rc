@@ -420,7 +420,7 @@ BEGIN
                 MENUITEM "高亮和折叠",               IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
-            MENUITEM "日志监控(&M)",                         IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "日志监视(&M)",                         IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "允许滚动超过文件尾(&S)",                IDM_VIEW_SCROLLPASTEOF
             MENUITEM "显示超链接提示(&H)",                    IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
