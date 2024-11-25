@@ -83,73 +83,73 @@ BEGIN
     EDITTEXT        IDC_CMDLINEHELP,15,7,278,176,ES_MULTILINE | ES_READONLY | NOT WS_BORDER | WS_VSCROLL
 END
 
-IDD_MUI_FIND DIALOGEX 0, 0, 278, 142
+IDD_MUI_FIND DIALOGEX 0, 0, 293, 142
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "  ☰   Tìm kiếm chuỗi"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Chuỗi cần tìm(&G):",IDC_STATIC,7,7,56,8
-    CONTROL         "<a>Ký tự Esc Ctrl</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
-    COMBOBOX        IDC_FINDTEXT,7,17,197,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Phân biệt chữ hoa chữ thường(&C)",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,63,10
-    CONTROL         "Khớp toàn bộ từ(&W)",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
-    CONTROL         "Khớp chỉ phần bắt đầu của từ(&B)",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
-    CONTROL         "Chuyển đổi dấu gạch chéo(&T)",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,85,10
-    CONTROL         "Tìm kiếm biểu thức chính quy(&E)",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
-    CONTROL         "Khớp ký tự đại diện xuống dòng(&M)",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,90,10
-    CONTROL         "Không bao bọc(&D)",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
-    CONTROL         "Đóng sau khi tìm(&L)",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,65,10
-    CONTROL         "Đánh dấu tất cả(&K)",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
-    CONTROL         "Tìm kiếm gia tăng", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
-    CONTROL         "Tìm kiếm ký tự đại diện(&I)",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,68,10
-    CONTROL         "Chế độ trong suốt khi mất tiêu điểm",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,124,10
-    DEFPUSHBUTTON   "Tìm tiếp theo(&F)",IDOK,216,7,55,14
-    PUSHBUTTON      "Tìm trước đó(&P)",IDC_FINDPREV,216,24,55,14
-    PUSHBUTTON      "Đóng",IDCANCEL,216,99,55,14
-    CONTROL         "<a>Chuyển đến thay thế (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,105,74,10
-    CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,106,85,14,10
-    CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,106,73,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,196,85,14,10
-    CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,130,264,9,WS_EX_STATICEDGE
-    PUSHBUTTON      "Chế độ tập trung(&V)",IDC_TOGGLE_VISIBILITY,216,65,55,14
+    LTEXT           "Chuỗi cần tìm(&G):",IDC_STATIC,7,7,60,8
+    CONTROL         "<a>Ký tự Esc Ctrl</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 90, 7, 60, 10
+    COMBOBOX        IDC_FINDTEXT,7,17,212,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Khớp chữ hoa chữ thường(&C)",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,110,10
+    CONTROL         "Chỉ khớp toàn bộ từ(&W)",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,49,89,10
+    CONTROL         "Chỉ khớp phần đầu của từ(&B)",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
+    CONTROL         "Chuyển đổi dấu gạch chéo(&T)",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,106,10
+    CONTROL         "Tìm kiếm exp thường xuyên(&E)",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,110,10
+    CONTROL         "Khớp ký tự đại diện xuống dòng(&M)",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,128,10
+    CONTROL         "Không bao bọc(&D)",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,37,75,10
+    CONTROL         "Đóng sau khi tìm(&L)",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,49,75,10
+    CONTROL         "Đánh dấu tất cả(&K)",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,61,75,10
+    CONTROL         "Tìm kiếm gia tăng", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,73,73,10
+    CONTROL         "Với các ký tự đại diện(&I)",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,85,90,10
+    CONTROL         "Chế độ trong suốt khi mất tiêu điểm",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,130,10
+    DEFPUSHBUTTON   "Tìm tiếp theo(&F)",IDOK,226,7,60,14
+    PUSHBUTTON      "Tìm trước đó(&P)",IDC_FINDPREV,226,24,60,14
+    PUSHBUTTON      "Đóng",IDCANCEL,226,99,60,14
+    CONTROL         "<a>Chuyển đến thay thế (Ctrl+H)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,115,105,98,10
+    CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,120,85,14,10
+    CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,120,73,14,10
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,226,85,14,10
+    CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,130,279,9,WS_EX_STATICEDGE
+    PUSHBUTTON      "Chế độ lấy nét(&V)",IDC_TOGGLE_VISIBILITY,226,65,60,14
 END
 
-IDD_MUI_REPLACE DIALOGEX 0, 0, 278, 168
+IDD_MUI_REPLACE DIALOGEX 0, 0, 293, 168
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_NOFAILCREATE | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "  ☰   Thay thế văn bản"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Chuỗi tìm kiếm(&G):",IDC_STATIC,7,7,56,8
-    CONTROL         "<a>Ký tự Esc Ctrl</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 70, 7, 60, 10
-    COMBOBOX        IDC_FINDTEXT,7,17,197,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Nội dung thay thế(&H):",IDC_STATIC2,7,36,54,8
-    CONTROL         "<a>Ký tự Esc Ctrl</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 70, 36, 60, 10
-    COMBOBOX        IDC_REPLACETEXT,7,47,197,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Khớp chữ hoa chữ thường(&C)",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,63,10
+    LTEXT           "Chuỗi cần tìm(&G):",IDC_STATIC,7,7,60,8
+    CONTROL         "<a>Ký tự Esc Ctrl</a>", IDC_FINDESCCTRLCHR, "SysLink", 0x0, 90, 7, 60, 10
+    COMBOBOX        IDC_FINDTEXT,7,17,212,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Nội dung thay thế(&H):",IDC_STATIC2,7,36,72,8
+    CONTROL         "<a>Ký tự Esc Ctrl</a>", IDC_REPLESCCTRLCHR, "SysLink", 0x0, 90, 36, 60, 10
+    COMBOBOX        IDC_REPLACETEXT,7,47,212,116,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Khớp chữ hoa chữ thường(&C)",IDC_FINDCASE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,110,10
     CONTROL         "Chỉ khớp toàn bộ từ(&W)",IDC_FINDWORD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,78,89,10
-    CONTROL         "Khớp chỉ phần bắt đầu của từ(&B)",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
-    CONTROL         "Chuyển đổi dấu gạch chéo(&T)",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,89,10
-    CONTROL         "Tìm kiếm biểu thức chính quy(&E)",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
-    CONTROL         "Khớp ký tự đại diện xuống dòng(&M)",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,124,90,10
-    CONTROL         "Không bao bọc(&D)",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,75,10
-    CONTROL         "Đóng sau khi thay thế(&L)",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,77,10
-    CONTROL         "Đánh dấu tất cả(&K)",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
-    CONTROL         "Tìm kiếm gia tăng", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,102,73,10
-    CONTROL         "Tìm kiếm ký tự đại diện(&I)",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,114,68,10
-    CONTROL         "Chế độ trong suốt khi mất tiêu điểm",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,124,10
-    DEFPUSHBUTTON   "Tìm tiếp theo(&F)",IDOK,216,7,55,14
-    PUSHBUTTON      "Tìm trước đó(&P)",IDC_FINDPREV,216,23,55,14
-    PUSHBUTTON      "Thay thế(&R)",IDC_REPLACE,216,43,55,14
-    PUSHBUTTON      "Thay thế trong chọn(&S)",IDC_REPLACEINSEL,216,59,55,14
-    PUSHBUTTON      "Thay thế tất cả(&A)",IDC_REPLACEALL,216,75,55,14
-    PUSHBUTTON      "Hoán đổi chuỗi",IDC_SWAPSTRG,155,32,49,12
-    PUSHBUTTON      "Đóng",IDCANCEL,216,126,55,14
-    CONTROL         "<a>Chuyển đến tìm kiếm (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,125,132,74,10
-    CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,107,102,14,10
-    CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,107,114,14,10
-    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,196,114,14,10
-    CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,156,264,9,WS_EX_STATICEDGE
-    PUSHBUTTON      "Chế độ tập trung(&V)",IDC_TOGGLE_VISIBILITY,216,94,55,14
+    CONTROL         "Chỉ khớp phần đầu của từ(&B)",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
+    CONTROL         "Chuyển đổi dấu gạch chéo(&T)",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,106,10
+    CONTROL         "Tìm kiếm exp thường xuyên(&E)",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,110,10
+    CONTROL         "Khớp ký tự đại diện xuống dòng(&M)",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,124,128,10
+    CONTROL         "Không bao bọc(&D)",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,66,75,10
+    CONTROL         "Đóng sau khi thay thế(&L)",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,78,90,10
+    CONTROL         "Đánh dấu tất cả(&K)",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,90,75,10
+    CONTROL         "Tìm kiếm gia tăng", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,102,73,10
+    CONTROL         "Với các ký tự đại diện(&I)",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,135,114,90,10
+    CONTROL         "Chế độ trong suốt khi mất tiêu điểm",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,144,130,10
+    DEFPUSHBUTTON   "Tìm tiếp theo(&F)",IDOK,226,7,60,14
+    PUSHBUTTON      "Tìm trước đó(&P)",IDC_FINDPREV,226,23,60,14
+    PUSHBUTTON      "Thay thế(&R)",IDC_REPLACE,226,43,60,14
+    PUSHBUTTON      "Trong lựa chọn(&S)",IDC_REPLACEINSEL,226,59,60,14
+    PUSHBUTTON      "Thay thế tất cả(&A)",IDC_REPLACEALL,226,75,60,14
+    PUSHBUTTON      "Hoán đổi chuỗi",IDC_SWAPSTRG,159,32,60,12
+    PUSHBUTTON      "Đóng",IDCANCEL,226,126,60,14
+    CONTROL         "<a>Chuyển đến tìm kiếm (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,115,132,98,10
+    CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,120,102,14,10
+    CONTROL         "<a>(?)</a>",IDC_REGEXPHELP,"SysLink",0x0,120,114,14,10
+    CONTROL         "<a>(?)</a>",IDC_WILDCARDHELP,"SysLink",0x0,226,114,14,10
+    CONTROL         "",IDS_FR_STATUS_TEXT,"Static",SS_LEFTNOWORDWRAP,7,156,279,9,WS_EX_STATICEDGE
+    PUSHBUTTON      "Chế độ lấy nét(&V)",IDC_TOGGLE_VISIBILITY,226,94,60,14
 END
 
 IDD_MUI_RUN DIALOGEX 0, 0, 229, 96
@@ -185,14 +185,14 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Mã hóa mặc định (tập tin mới):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
     CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
-    CONTROL         "Sử dụng phương pháp thay thế khi phát hiện thất bại(&F)",IDC_USEASREADINGFALLBACK,
+    CONTROL         "Sử dụng làm dự phòng cho lỗi phát hiện(&F)",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,155,10
     GROUPBOX        "Phát hiện mã hóa:",IDC_STATIC2,7,58,183,88,0,WS_EX_TRANSPARENT
     CONTROL         "Mở tập tin ASCII 7-bit trong chế độ UTF-8(&A)",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,164,10
     CONTROL         "Sử dụng kết quả phát hiện đáng tin cậy(&R)",IDC_RELIABLE_DETECTION_RES,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,82,164,10
-    CONTROL         "Mở tập tin *.nfo/diz 8-bit trong chế độ DOS-437(&N)",IDC_NFOASOEM,
+    CONTROL         "Mở tệp 8-bit *.&nfo/diz ở chế độ DOS-437(&N)",IDC_NFOASOEM,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,174,10
     CONTROL         "Phân tích cú pháp thẻ mã hóa từ tập tin(&T)",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,164,10
@@ -260,7 +260,7 @@ CAPTION "Mở Tệp Gần Đây"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_FILEMRU,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,255,97
-    CONTROL         "Lưu danh sách tệp gần đây khi đóng(&S)",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,123,10
+    CONTROL         "Lưu danh sách tệp gần đây khi đóng(&S)",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,143,10
     CONTROL         "Giữ vị trí con trỏ khi tắt(&P)",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,123,10
     CONTROL         "Nhớ mẫu tìm kiếm(&R)",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,123,10
     CONTROL         "Tự động tải tệp mới nhất khi khởi động(&A)",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,160,10
@@ -359,16 +359,16 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Thống kê:",IDC_STATIC,7,7,182,48,WS_GROUP
     LTEXT           "Tab[%s]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
-    LTEXT           "Khoảng trắng[%s]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
-    LTEXT           "Hỗn hợp[x]:",IDC_STATIC3,54,42,30,8
+    LTEXT           "Khoảng[%s]:",IDC_INDENT_WIDTH_SPC,42,30,40,8
+    LTEXT           "Hỗn hợp[x]:",IDC_STATIC3,40,42,40,8
     RTEXT           "%s dòng",IDC_INDENT_SUM_TAB,84,18,52,8
     RTEXT           "%s dòng",IDC_INDENT_SUM_SPC,84,30,52,8
     RTEXT           "%s dòng",IDC_INDENT_SUM_MIX,84,42,52,8
     GROUPBOX        "Thụt lề lại tất cả ?",IDC_STATIC2,7,60,182,56,WS_GROUP
     CONTROL         "Tab(&T)",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,35,10
-    CONTROL         "Khoảng trắng(&B)",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,35,10
-    RTEXT           "%s dòng chiều rộng/ Độ sâu thụt lề không đồng nhất",IDC_INDENT_TAB_MODX,50,72,124,8
-    RTEXT           "%s dòng chiều rộng/ Độ sâu thụt lề không đồng nhất",IDC_INDENT_SPC_MODX,50,84,124,8
+    CONTROL         "Khoảng(&B)",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,45,10
+    RTEXT           "%s dòng có thụt lề không đều",IDC_INDENT_TAB_MODX,60,72,120,8
+    RTEXT           "%s dòng có thụt lề không đều",IDC_INDENT_SPC_MODX,60,84,120,8
     PUSHBUTTON      "Có(&Y)",IDOK,80,98,50,14
     PUSHBUTTON      "Không(&N)",IDCANCEL,134,98,50,14
     CONTROL         "Luôn hiển thị hộp thoại này(&A)",IDC_WARN_INCONSISTENT_INDENTS,
@@ -411,7 +411,7 @@ CAPTION "Cài đặt trang"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Giấy",1073,8,8,224,56,WS_GROUP
-    LTEXT           "Kích thước(&Z):",1089,16,24,36,8
+    LTEXT           "Kích thước(&Z):",1089,16,24,46,8
     COMBOBOX        1137,64,23,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     LTEXT           "Nguồn(&S):",1090,16,45,36,8
     COMBOBOX        1138,64,42,160,160,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_GROUP | WS_TABSTOP
@@ -428,9 +428,9 @@ BEGIN
     LTEXT           "Dưới(&B):",1105,164,104,32,8
     EDITTEXT        1158,196,103,28,12,WS_GROUP
     GROUPBOX        "Đầu và cuối trang",1074,8,130,224,56,WS_GROUP
-    LTEXT           "Đầu trang(&H):",IDC_STATIC,16,146,36,8
+    LTEXT           "Đầu trang(&H):",IDC_STATIC,16,146,46,8
     COMBOBOX        32,64,145,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
-    LTEXT           "Cuối trang(&F):",IDC_STATIC3,16,167,36,8
+    LTEXT           "Cuối trang(&F):",IDC_STATIC3,16,167,46,8
     COMBOBOX        33,64,164,160,160,CBS_DROPDOWNLIST | WS_VSCROLL | WS_GROUP | WS_TABSTOP
     GROUPBOX        "Màu in",1076,8,191,224,37,WS_GROUP
     LTEXT           "Chế độ(&D):",IDC_STATIC4,16,207,36,8
@@ -481,13 +481,13 @@ BEGIN
     GROUPBOX        "Câu mã hóa", IDC_STATIC, 7, 7, 297, 108
     DEFPUSHBUTTON   "Đồng ý",IDOK,245,98,50,14
     PUSHBUTTON      "Hủy bỏ",IDCANCEL,184,98,50,14
-    CONTROL         "Thiết lập khóa chính mới",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,84,10
+    CONTROL         "Thiết lập khóa chính mới",IDC_PWD_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,107,60,95,10
     EDITTEXT        IDC_PWD_EDIT1,17,35,276,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     EDITTEXT        IDC_PWD_EDIT2,17,74,277,12,ES_PASSWORD | ES_AUTOHSCROLL
     LTEXT           "Tùy chọn khóa chính:",IDC_STATIC2,17,61,72,10,NOT WS_GROUP
     CONTROL         "Mã hóa bằng câu mã hóa",IDC_PWD_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,21,98,10
-    CONTROL         "Tái sử dụng khóa chính",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,218,60,76,10
-    CONTROL         "Hiển thị câu mã hóa",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,75,10
+    CONTROL         "Tái sử dụng khóa chính",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,215,60,85,10
+    CONTROL         "Hiển thị câu mã hóa",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,97,78,10
 END
 
 IDD_MUI_READPW DIALOGEX 0, 0, 299, 81
@@ -501,7 +501,7 @@ BEGIN
     EDITTEXT        IDC_PWD_EDIT3,16,23,267,12,ES_PASSWORD | ES_AUTOHSCROLL | WS_GROUP
     CONTROL         "Giải mã bằng khóa chính",IDC_PWD_CHECK3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,155,40,127,10
     LTEXT           "Tệp này có khóa chính",IDC_PWD_STATMPW,16,41,122,11,NOT WS_GROUP
-    CONTROL         "Hiển thị câu mã hóa",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,75,10
+    CONTROL         "Hiển thị câu mã hóa",IDC_PWD_CHECK4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,60,78,10
 END
 
 IDD_MUI_COLUMNWRAP DIALOGEX 0, 0, 130, 47
@@ -515,17 +515,17 @@ BEGIN
     PUSHBUTTON      "Hủy bỏ",IDCANCEL,73,24,50,14
 END
 
-IDD_MUI_MODIFYLINES DIALOGEX 0, 0, 182, 120
+IDD_MUI_MODIFYLINES DIALOGEX 0, 0, 195, 120
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Sửa dòng"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Tiền tố văn bản cho dòng(&P):",IDC_STATIC,7,7,72,8
+    LTEXT           "Tiền tố văn bản cho dòng(&P):",IDC_STATIC,7,7,110,8
     EDITTEXT        IDC_MODLNS_ED_PREPEND,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "Thêm văn bản vào dòng(&A):",IDC_STATIC2,7,37,72,8
+    LTEXT           "Thêm văn bản vào dòng(&A):",IDC_STATIC2,7,37,92,8
     EDITTEXT        IDC_MODLNS_ED_APPEND,7,48,98,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "Đồng ý",IDOK,125,7,50,14
-    PUSHBUTTON      "Hủy bỏ",IDCANCEL,125,24,50,14
+    DEFPUSHBUTTON   "Đồng ý",IDOK,138,7,50,14
+    PUSHBUTTON      "Hủy bỏ",IDCANCEL,138,24,50,14
     LTEXT           "${L}",IDC_MODLNS_DOCLN_CANONIC,7,72,15,8
     LTEXT           "${0L}",IDC_MODLNS_DOCLN_ZEROFLD,30,72,20,8
     LTEXT           "Số dòng tài liệu",IDC_STATIC3,57,72,109,8
@@ -536,7 +536,7 @@ BEGIN
     LTEXT           "${0I}",IDC_MODLNS_CNTLN0_ZEROFLD,30,92,20,8
     LTEXT           "Số liên tục (bắt đầu từ 0)",IDC_STATIC5,57,92,109,8
     LTEXT           "${0L+I+N}", IDC_MODLNS_TINYEXPR_ALL,12,102,35,8
-    LTEXT           "${<expr>} định nghĩa một công thức toán học",IDC_STATIC6,57,102,132,8
+    LTEXT           "${<expr>} định nghĩa công thức toán học",IDC_STATIC6,57,102,138,8
 END
 
 IDD_MUI_INSERTTAG DIALOGEX 0, 0, 182, 70
@@ -546,7 +546,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Thẻ mở (bao gồm thuộc tính)(&O):",IDC_STATIC,7,7,110,8
     EDITTEXT        100,7,18,98,14,ES_AUTOHSCROLL
-    LTEXT           "Thẻ đóng (có thể chỉnh sửa)(&C):",IDC_STATIC2,7,37,100,8
+    LTEXT           "Thẻ đóng (có thể chỉnh sửa)(&C):",IDC_STATIC2,7,37,110,8
     EDITTEXT        101,7,48,98,14,ES_AUTOHSCROLL
     EDITTEXT        102,125,48,20,14,ES_AUTOHSCROLL
     LTEXT           "X giây",IDC_STATIC3,148,50,28,8
@@ -694,9 +694,9 @@ BEGIN
     CONTROL         "Xóa dòng trùng lặp(&R)",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
     CONTROL         "Xóa dòng duy nhất(&U)",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
     CONTROL         "Xóa dòng trống(&E)",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
-    CONTROL         "Xóa dòng chỉ chứa khoảng trắng(&W)",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,104,10
-    CONTROL         "Phân biệt chữ hoa chữ thường",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,104,10
-    CONTROL         "Không phân biệt chữ hoa chữ thường(&C)",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,104,10
+    CONTROL         "Xóa dòng chỉ chứa khoảng trắng(&W)",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,120,10
+    CONTROL         "Phân biệt chữ hoa chữ thường(&S)",108,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,115,110,10
+    CONTROL         "Không phân biệt chữ hoa chữ thường(&C)",109,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,127,135,10
     CONTROL         "So sánh số logic(&N)",110,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,139,104,10
     CONTROL         "So sánh từ điển(&L)",111,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,151,104,10
     CONTROL         "Sắp xếp cột (chọn hình chữ nhật)(&S)",112,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,168,131,10
@@ -721,7 +721,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Cài đặt mã hóa"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Chọn mã hóa tài liệu hiện tại(&E):",IDC_STATIC,7,7,90,8
+    LTEXT           "Chọn mã hóa tài liệu hiện tại(&E):",IDC_STATIC,7,7,130,8
     CONTROL         "",IDC_ENCODINGLIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,19,151,87
     DEFPUSHBUTTON   "Đồng ý",IDOK,53,114,50,14,WS_DISABLED
     PUSHBUTTON      "Hủy bỏ",IDCANCEL,108,114,50,14

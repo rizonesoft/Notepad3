@@ -114,7 +114,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Bộ lọc tệp"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Chỉ định bộ lọc tệp mới. Ngăn cách các bộ lọc bằng dấu ; (&F)",IDC_STATIC,7,7,175,8
+    LTEXT           "Chỉ định bộ lọc tệp mới. Tách nhiều bộ lọc bằng ; (&F)",IDC_STATIC,7,7,175,8
     EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
     CONTROL         "Loại trừ các tệp khớp với bộ lọc (&E)",IDC_NEGFILTER,
@@ -130,7 +130,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Hiện tại:",IDC_STATIC,7,9,28,8
     EDITTEXT        IDC_OLDNAME,39,7,126,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_TABSTOP
-    LTEXT           "Thay đổi:",IDC_STATIC,7,26,28,8
+    LTEXT           "Thay đổi:",IDC_STATIC,7,26,30,8
     EDITTEXT        IDC_NEWNAME,39,25,126,13,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "Đồng ý",IDOK,59,53,50,14,WS_DISABLED
     PUSHBUTTON      "Hủy bỏ",IDCANCEL,115,53,50,14
@@ -157,9 +157,9 @@ BEGIN
     LTEXT           "Đích(&D):",IDC_STATIC,7,37,43,8
     COMBOBOX        IDC_DESTINATION,7,48,199,105,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "",IDC_BROWSEDESTINATION,210,48,13,13
-    LTEXT           "Thao tác:",IDC_STATIC,7,66,24,8
-    CONTROL         "Sao chép(&C)",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,35,66,47,10
-    CONTROL         "Di chuyển(&M)",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,35,78,47,10
+    LTEXT           "Thao tác:",IDC_STATIC,7,66,30,8
+    CONTROL         "Sao chép(&C)",IDC_FUNCCOPY,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,40,66,55,10
+    CONTROL         "Di chuyển(&M)",IDC_FUNCMOVE,"Button",BS_AUTORADIOBUTTON,40,78,55,10
     DEFPUSHBUTTON   "Đồng ý",IDOK,117,74,50,14,WS_DISABLED
     PUSHBUTTON      "Hủy bỏ",IDCANCEL,173,74,50,14
     SCROLLBAR       IDC_RESIZEGRIP2,7,78,10,10
@@ -173,7 +173,7 @@ BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
     LTEXT           "Chỉ định các thiết lập chung cho MiniPath",IDC_STATIC,40,15,180,8
     CONTROL         "Cho phép mở đối tượng chỉ bằng một lần nhấp chuột(&A)",IDC_SINGLECLICK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,195,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,200,10
     CONTROL         "Sử dụng chọn theo dõi(&E)",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58,195,10
     CONTROL         "Sử dụng chọn hàng đầy đủ(&F)",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,195,10
     CONTROL         "Luôn kích hoạt cửa sổ đích khi mở tập tin(&C)",IDC_FOCUSEDIT,
@@ -196,9 +196,9 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
     LTEXT           "Chỉ định các thiết lập nâng cao cho MiniPath",IDC_STATIC,40,15,160,8
-    CONTROL         "Sử dụng thư mục khởi động(&U):",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,92,10
-    CONTROL         "Sử dụng gần đây nhất(&R)",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,108,46,86,10
-    CONTROL         "Thư mục yêu thích(&F)",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,108,58,86,10
+    CONTROL         "Dùng thư mục khởi động(&U):",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,105,10
+    CONTROL         "Sử dụng gần đây nhất(&R)",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,118,46,94,10
+    CONTROL         "Thư mục yêu thích(&F)",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,118,58,86,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,205,1
     CONTROL         "Xóa thuộc tính chỉ đọc của tệp đã lưu(&C)",IDC_CLEARREADONLY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,159,10
@@ -207,7 +207,7 @@ BEGIN
     CONTROL         "Di chuyển tệp đã xóa vào Thùng rác(&M)",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,159,10
     CONTROL         "Không xác nhận khi xóa tệp (Không khuyến nghị)(&D)",IDC_NOCONFIRMDELETE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,170,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,185,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
     CONTROL         "Sử dụng phím ""Esc""(&E):",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
     CONTROL         "Thu nhỏ cửa sổ(&W)",IDC_ESCMIN,"Button",BS_AUTORADIOBUTTON,100,148,78,10
@@ -220,15 +220,15 @@ CAPTION "Mục"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Giao diện của các mục trong danh sách thư mục",IDC_STATIC,40,15,140,8
+    LTEXT           "Giao diện của các mục trong danh sách thư mục",IDC_STATIC,40,15,160,8
     GROUPBOX        "Màu sắc",IDC_STATIC,10,41,205,134
-    LTEXT           "Sử dụng màu văn bản này nếu không có bộ lọc:",IDC_STATIC,20,54,136,8
-    CONTROL         "Màu mặc định của Windows(&W)",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,89,10
+    LTEXT           "Sử dụng màu văn bản này nếu không có bộ lọc:",IDC_STATIC,20,54,166,8
+    CONTROL         "Màu mặc định của Windows(&W)",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,120,10
     CONTROL         "Màu tùy chỉnh(&C):",IDC_COLOR_CUST1,"Button",BS_AUTORADIOBUTTON,20,82,80,10
     EDITTEXT        IDC_COLOR_SAMP1,105,80,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Chọn màu...",IDC_COLOR_PICK1,140,80,50,14
-    LTEXT           "Sử dụng màu văn bản này nếu bộ lọc đang hoạt động:",IDC_STATIC,20,105,146,8
-    CONTROL         "Màu mặc định của Windows(&E)",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,89,10
+    LTEXT           "Sử dụng màu văn bản này nếu bộ lọc đang hoạt động:",IDC_STATIC,20,105,186,8
+    CONTROL         "Màu mặc định của Windows(&E)",IDC_COLOR_DEF2,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,119,120,10
     CONTROL         "Màu tùy chỉnh(&U):",IDC_COLOR_CUST2,"Button",BS_AUTORADIOBUTTON,20,133,80,10
     EDITTEXT        IDC_COLOR_SAMP2,105,130,30,14,ES_AUTOHSCROLL | WS_DISABLED
     PUSHBUTTON      "Chọn màu...",IDC_COLOR_PICK2,140,130,50,14
@@ -240,8 +240,8 @@ CAPTION "Vị trí"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
-    LTEXT           "Chỉ định chương trình và đường dẫn bên ngoài",IDC_STATIC,40,15,140,8
-    LTEXT           "Chương trình ""Xem nhanh"" mặc định(&D) (Ctrl+Q):",IDC_STATIC,10,41,136,8
+    LTEXT           "Chỉ định chương trình và đường dẫn bên ngoài",IDC_STATIC,40,15,160,8
+    LTEXT           "Chương trình ""Xem nhanh"" mặc định(&D) (Ctrl+Q):",IDC_STATIC,10,41,166,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
     LTEXT           "Thư mục yêu thích(&F) (F11):",IDC_STATIC,10,76,136,8
@@ -261,7 +261,7 @@ BEGIN
     LTEXT           "Chỉ định hành động nếu ứng dụng đích đã chạy:",IDC_STATIC,7,64,220,8
     EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
-    LTEXT           "Thông báo:",IDC_STATIC,20,120,32,8
+    LTEXT           "Thông báo:",IDC_STATIC,20,120,40,8
     CONTROL         "Không có. Mở tệp mỗi lần ứng dụng đích được chạy",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,220,10
     CONTROL         "Gửi thông báo mở tệp đến cửa sổ ứng dụng đích:",IDC_SENDDROPMSG,
