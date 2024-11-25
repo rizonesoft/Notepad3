@@ -136,7 +136,7 @@ BEGIN
         MENUITEM "Chọn thụt lề(&I)...",                     CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "Cài đặt trang(&U)...",                        IDM_FILE_PAGESETUP
-        MENUITEM "In(&P)...\tCtrl+P",                      IDM_FILE_PRINT
+        MENUITEM "Máy in(&P)...\tCtrl+P",                      IDM_FILE_PRINT
         MENUITEM SEPARATOR
         MENUITEM "Thuộc tính(&T)...",                              IDM_FILE_PROPERTIES
         MENUITEM "Tạo liên kết trên màn hình nền(&K)",                 IDM_FILE_CREATELINK
