@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.24.828.(build_#) (2024-08-28)
+Current BETA/RC Version 6.24.11.25(build_#) (2024-11-25)
 ========================================================
 
 --------------------------------------------------------
@@ -143,6 +143,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1125.1]- Confusing File modified dialog.
+[1125.1]- Do not bring main window to foreground upon file change.
 [.825.1]- Correct TOML Lexer identifier.
 [.713.1]- Delete line (Ctrl+Shift+D) - fix last line handling.
 [.703.1]- Update Toolbar in case of Undo/Redo.
@@ -261,6 +263,7 @@ CHANGES Versions in Tools or Libraries:
 TRANSLATIONS (MUI):
 --------------------------------------------------------
 [.###.#]- .
+[1125.1]- Vietnamese (vi-VN)
 [.414.1]- Finnish (fi-FI).
 [.419.1]- Indonesian (id-ID).
 
@@ -271,7 +274,6 @@ to resume "(incomplete...)" translation projects:
 
 - Greek (el-GR) (incomplete...)
 - Hindi (hi-IN) (incomplete...)
-- Vietnamese (vi-VN) (incomplete...)
 - etc...
 
 Please, send me a PM (mailto:hpwamr51 @ gmail.com) if you are willing to help. 🤔
