@@ -206,9 +206,6 @@
     <ClCompile Include="lexers_x\LexCSV.cxx">
       <Filter>lexers_x</Filter>
     </ClCompile>
-    <ClCompile Include="lexers_x\LexDart.cxx">
-      <Filter>lexers_x</Filter>
-    </ClCompile>
     <ClCompile Include="lexers_x\LexKotlin.cxx">
       <Filter>lexers_x</Filter>
     </ClCompile>
@@ -276,6 +273,9 @@
       <Filter>lexlib</Filter>
     </ClCompile>
     <ClCompile Include="lexers\LexTOML.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
+    <ClCompile Include="lexers\LexDart.cxx">
       <Filter>lexers</Filter>
     </ClCompile>
   </ItemGroup>
