@@ -775,10 +775,13 @@ bool Editor::RangeContainsProtected(Sci::Position start, Sci::Position end) cons
 	return false;
 }
 
+bool Editor::RangeContainsProtected(const SelectionRange &range) const noexcept {
+	return RangeContainsProtected(range.Start().Position(), range.End().Position());
+}
+
 bool Editor::SelectionContainsProtected() const noexcept {
 	for (size_t r=0; r<sel.Count(); r++) {
-		if (RangeContainsProtected(sel.Range(r).Start().Position(),
-			sel.Range(r).End().Position())) {
+		if (RangeContainsProtected(sel.Range(r))) {
 			return true;
 		}
 	}
@@ -2045,18 +2048,13 @@ void Editor::InsertCharacter(std::string_view sv, CharacterSource charSource) {
 			[](const SelectionRange *a, const SelectionRange *b) noexcept {return *a < *b;});
 
 		// Loop in reverse to avoid disturbing positions of selections yet to be processed.
-		for (Scintilla::Internal::SelectionRange * currentSel : std::ranges::reverse_view(selPtrs)) {
-				if (!RangeContainsProtected(currentSel->Start().Position(),
-				currentSel->End().Position())) {
+		for (std::vector<SelectionRange *>::reverse_iterator rit = selPtrs.rbegin();
+			rit != selPtrs.rend(); ++rit) {
+			SelectionRange *currentSel = *rit;
+			if (!RangeContainsProtected(*currentSel)) {
 				Sci::Position positionInsert = currentSel->Start().Position();
 				if (!currentSel->Empty()) {
-					if (currentSel->Length()) {
-						pdoc->DeleteChars(positionInsert, currentSel->Length());
-						currentSel->ClearVirtualSpace();
-					} else {
-						// Range is all virtual so collapse to start of virtual space
-						currentSel->MinimizeVirtualSpace();
-					}
+					ClearSelectionRange(*currentSel);
 				} else if (inOverstrike) {
 					if (positionInsert < pdoc->Length()) {
 						if (!pdoc->IsPositionInLineEnd(positionInsert)) {
@@ -2124,24 +2122,26 @@ void Editor::InsertCharacter(std::string_view sv, CharacterSource charSource) {
 	}
 }
 
+void Editor::ClearSelectionRange(SelectionRange &range) {
+	if (!range.Empty()) {
+		if (range.Length()) {
+			pdoc->DeleteChars(range.Start().Position(), range.Length());
+			range.ClearVirtualSpace();
+		} else {
+			// Range is all virtual so collapse to start of virtual space
+			range.MinimizeVirtualSpace();
+		}
+	}
+}
+
 void Editor::ClearBeforeTentativeStart() {
 	// Make positions for the first composition string.
 	FilterSelections();
 	UndoGroup ug(pdoc, (sel.Count() > 1) || !sel.Empty() || inOverstrike);
 	for (size_t r = 0; r<sel.Count(); r++) {
-		if (!RangeContainsProtected(sel.Range(r).Start().Position(),
-			sel.Range(r).End().Position())) {
-			const Sci::Position positionInsert = sel.Range(r).Start().Position();
-			if (!sel.Range(r).Empty()) {
-				if (sel.Range(r).Length()) {
-					pdoc->DeleteChars(positionInsert, sel.Range(r).Length());
-					sel.Range(r).ClearVirtualSpace();
-				} else {
-					// Range is all virtual so collapse to start of virtual space
-					sel.Range(r).MinimizeVirtualSpace();
-				}
-			}
-			RealizeVirtualSpace(positionInsert, sel.Range(r).caret.VirtualSpace());
+		if (!RangeContainsProtected(sel.Range(r))) {
+			ClearSelectionRange(sel.Range(r));
+			RealizeVirtualSpace(sel.Range(r).caret.Position(), sel.Range(r).caret.VirtualSpace());
 			sel.Range(r).ClearVirtualSpace();
 		}
 	}
@@ -2158,18 +2158,9 @@ void Editor::InsertPaste(const char *text, Sci::Position len) {
 	} else {
 		// MultiPaste::Each
 		for (size_t r=0; r<sel.Count(); r++) {
-			if (!RangeContainsProtected(sel.Range(r).Start().Position(),
-				sel.Range(r).End().Position())) {
+			if (!RangeContainsProtected(sel.Range(r))) {
 				Sci::Position positionInsert = sel.Range(r).Start().Position();
-				if (!sel.Range(r).Empty()) {
-					if (sel.Range(r).Length()) {
-						pdoc->DeleteChars(positionInsert, sel.Range(r).Length());
-						sel.Range(r).ClearVirtualSpace();
-					} else {
-						// Range is all virtual so collapse to start of virtual space
-						sel.Range(r).MinimizeVirtualSpace();
-					}
-				}
+				ClearSelectionRange(sel.Range(r));
 				positionInsert = RealizeVirtualSpace(positionInsert, sel.Range(r).caret.VirtualSpace());
 				const Sci::Position lengthInserted = pdoc->InsertString(positionInsert, text, len);
 				if (lengthInserted > 0) {
@@ -2215,8 +2206,7 @@ void Editor::ClearSelection(bool retainMultipleSelections) {
 	UndoGroup ug(pdoc);
 	for (size_t r=0; r<sel.Count(); r++) {
 		if (!sel.Range(r).Empty()) {
-			if (!RangeContainsProtected(sel.Range(r).Start().Position(),
-				sel.Range(r).End().Position())) {
+			if (!RangeContainsProtected(sel.Range(r))) {
 				pdoc->DeleteChars(sel.Range(r).Start().Position(),
 					sel.Range(r).Length());
 				sel.Range(r) = SelectionRange(sel.Range(r).Start());
@@ -2647,6 +2637,12 @@ void Editor::CheckModificationForWrap(DocModification mh) {
 		const Sci::Line lineDoc = pdoc->SciLineFromPosition(mh.position);
 		const Sci::Line lines = std::max(static_cast<Sci::Line>(0), mh.linesAdded);
 		if (Wrapping()) {
+			// Check if this modification crosses any of the wrap points
+			if (wrapPending.NeedsWrap()) {
+				if (lineDoc < wrapPending.end) { // Inserted/deleted before or inside wrap range
+					wrapPending.end += mh.linesAdded;
+				}
+			}
 			NeedWrapping(lineDoc, lineDoc + lines + 1);
 		}
 		RefreshStyleData();

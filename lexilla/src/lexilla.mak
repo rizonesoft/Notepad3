@@ -95,6 +95,7 @@ LEX_OBJS=\
 	$(DIR_O)\LexCPP.obj \
 	$(DIR_O)\LexCSS.obj \
 	$(DIR_O)\LexD.obj \
+	$(DIR_O)\LexDart.obj \
 	$(DIR_O)\LexDiff.obj \
 	$(DIR_O)\LexFortran.obj \
 	$(DIR_O)\LexHTML.obj \
@@ -126,7 +127,6 @@ LEX_OBJS=\
 	$(DIR_O)\LexYAML.obj \
 	$(DIR_O)\LexAHK.obj \
 	$(DIR_O)\LexCSV.obj \
-	$(DIR_O)\LexDart.obj \
 	$(DIR_O)\LexerUtils.obj \
 	$(DIR_O)\LexJSON.obj \
 	$(DIR_O)\LexKotlin.obj \

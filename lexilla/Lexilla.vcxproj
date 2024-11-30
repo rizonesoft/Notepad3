@@ -55,6 +55,7 @@
     <ClCompile Include="lexers\LexCPP.cxx" />
     <ClCompile Include="lexers\LexCSS.cxx" />
     <ClCompile Include="lexers\LexD.cxx" />
+    <ClCompile Include="lexers\LexDart.cxx" />
     <ClCompile Include="lexers\LexDiff.cxx" />
     <ClCompile Include="lexers\LexFortran.cxx" />
     <ClCompile Include="lexers\LexHTML.cxx" />
@@ -86,7 +87,6 @@
     <ClCompile Include="lexers\LexYAML.cxx" />
     <ClCompile Include="lexers_x\LexAHK.cxx" />
     <ClCompile Include="lexers_x\LexCSV.cxx" />
-    <ClCompile Include="lexers_x\LexDart.cxx" />
     <ClCompile Include="lexers_x\LexerUtils.cxx" />
     <ClCompile Include="lexers_x\LexJSON.cxx" />
     <ClCompile Include="lexers_x\LexKotlin.cxx" />

@@ -239,6 +239,20 @@ $(DIR_O)/LexD.o: \
 	../lexlib/LexerModule.h \
 	../lexlib/OptionSet.h \
 	../lexlib/DefaultLexer.h
+$(DIR_O)/LexDart.o: \
+	../lexers/LexDart.cxx \
+	../../scintilla/include/ILexer.h \
+	../../scintilla/include/Sci_Position.h \
+	../../scintilla/include/Scintilla.h \
+	../include/SciLexer.h \
+	../lexlib/WordList.h \
+	../lexlib/LexAccessor.h \
+	../lexlib/Accessor.h \
+	../lexlib/StyleContext.h \
+	../lexlib/CharacterSet.h \
+	../lexlib/LexerModule.h \
+	../lexlib/OptionSet.h \
+	../lexlib/DefaultLexer.h
 $(DIR_O)/LexDiff.o: \
 	../lexers/LexDiff.cxx \
 	../../scintilla/include/ILexer.h \
@@ -655,26 +669,6 @@ $(DIR_O)/LexCSV.o: \
 	../lexlib/CharacterSet.h \
 	../lexers_x/SciXLexer.h \
 	../include/SciLexer.h
-$(DIR_O)/LexDart.o: \
-	../lexers_x/LexDart.cxx \
-	../../scintilla/include/ILexer.h \
-	../../scintilla/include/Sci_Position.h \
-	../../scintilla/include/Scintilla.h \
-	../lexlib/StringCopy.h \
-	../lexlib/PropSetSimple.h \
-	../lexlib/LexAccessor.h \
-	../lexlib/Accessor.h \
-	../lexlib/StyleContext.h \
-	../lexlib/LexerModule.h \
-	../lexlib/DefaultLexer.h \
-	../lexlib/OptionSet.h \
-	../lexlib/WordList.h \
-	../lexers_x/CharSetX.h \
-	../lexlib/CharacterSet.h \
-	../lexers_x/SciXLexer.h \
-	../include/SciLexer.h \
-	../lexers_x/StringUtils.h \
-	../lexers_x/LexerUtils.h
 $(DIR_O)/LexerUtils.o: \
 	../lexers_x/LexerUtils.cxx \
 	../../scintilla/include/Scintilla.h \

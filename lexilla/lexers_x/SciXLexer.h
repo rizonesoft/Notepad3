@@ -5,9 +5,8 @@
 
 #define SCLEX_AHK         200
 #define SCLEX_CSV         201
-#define SCLEX_DART        202
-#define SCLEX_KOTLIN      203
-#define SCLEX_SYSVERILOG  204
+#define SCLEX_KOTLIN      202
+#define SCLEX_SYSVERILOG  203
 
 // -----------------------------------------------------------------------------
 // !!!!! ADD  Lexer Linkage in:  scintilla\src\Catalogue.cxx  !!!!!
@@ -47,40 +46,6 @@
 #define SCE_CSV_COLUMN_7 8
 #define SCE_CSV_COLUMN_8 9
 #define SCE_CSV_COLUMN_9 10
-
-
-#define SCE_DART_DEFAULT 0
-#define SCE_DART_COMMENTLINE 1
-#define SCE_DART_COMMENTLINEDOC 2
-#define SCE_DART_COMMENTBLOCK 3
-#define SCE_DART_COMMENTBLOCKDOC 4
-#define SCE_DART_TASKMARKER 5
-#define SCE_DART_VARIABLE2 6
-#define SCE_DART_VARIABLE 7
-#define SCE_DART_IDENTIFIER 8
-#define SCE_DART_SYMBOL_IDENTIFIER 9
-#define SCE_DART_METADATA 10
-#define SCE_DART_STRING_SQ 11
-#define SCE_DART_STRING_DQ 12
-#define SCE_DART_TRIPLE_STRING_SQ 13
-#define SCE_DART_TRIPLE_STRING_DQ 14
-#define SCE_DART_RAWSTRING_SQ 15
-#define SCE_DART_RAWSTRING_DQ 16
-#define SCE_DART_TRIPLE_RAWSTRING_SQ 17
-#define SCE_DART_TRIPLE_RAWSTRING_DQ 18
-#define SCE_DART_ESCAPECHAR 19
-#define SCE_DART_OPERATOR 20
-#define SCE_DART_OPERATOR2 21
-#define SCE_DART_NUMBER 22
-#define SCE_DART_SYMBOL_OPERATOR 23
-#define SCE_DART_LABEL 24
-#define SCE_DART_FUNCTION 25
-#define SCE_DART_FUNCTION_DEFINITION 26
-#define SCE_DART_WORD 27
-#define SCE_DART_WORD2 28
-#define SCE_DART_CLASS 29
-#define SCE_DART_ENUM 30
-#define SCE_DART_KEY 31
 
 
 #define SCE_KOTLIN_DEFAULT 0
