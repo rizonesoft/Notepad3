@@ -678,8 +678,8 @@ BEGIN
     CONTROL         "이 메시지를 다시 표시하지 않음(&D)",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
     DEFPUSHBUTTON   "다시 불러오기(&R)",IDRETRY,186,82,50,14
-    PUSHBUTTON      "Ignore(&I)", IDCANCEL, 130, 82, 50, 14
-    PUSHBUTTON      "Monitor(&M)",IDCONTINUE,242,82,50,14
+    PUSHBUTTON      "무시(&I)", IDCANCEL, 130, 82, 50, 14
+    PUSHBUTTON      "모니터(&M)",IDCONTINUE,242,82,50,14
 END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 188
