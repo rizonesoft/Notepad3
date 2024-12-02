@@ -138,7 +138,7 @@ BEGIN
                             "Fönstret för Notepad3 är uppdaget eller har en öppe aktiv dialogruta\nVill du öppna ett nytt Notepad3-fönster?"
     IDS_MUI_ERR_ENCODINGNA  "Tabeller för teckenkodning för vald teckenkodning saknas på ditt system"
     IDS_MUI_ERR_UNICODE     "Fel vid konvertering av denna Unicode-fil\nData kommer att förloras om filen sparas!"
-    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s""\nSuitable dimension: %i x %i (width >= %i x height)"
+    IDS_MUI_ERR_BITMAP      "Inte lämplig dimension för bitmapp ""%s""\nLämplig dimension: %i x %i (bredd >= %i x höjd)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Användarrättigheter kunde inte höjas!"
 END
@@ -155,7 +155,7 @@ BEGIN
     IDS_MUI_ERR_FILE_TOO_LARGE
                             "Kan inte hantera så stor fil (storlek: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Okändt filnamnstillägg (%s)!\nVill du fortsätta ändå?"
+                            "Okänt filnamnstillägg (%s)!\nVill du fortsätta ändå?"
     IDS_MUI_INDENT_CONSISTENT  "Filen har konsistent indrag!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
@@ -288,7 +288,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Växla vy..."
     IDS_MUI_SB_REPLACE_ALL    "Ersätt alla..."
     IDS_MUI_SB_WRAP_LINES     "Omslut rader..."
-    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
+    IDS_MUI_SB_SORTING_LINES  "Sorterar rader..."
     IDS_MUI_SB_CONV_LNBRK     "Konvertera alla radbrytningar..."
     IDS_MUI_SB_RECODING_DOC   "Koda om dokument..."
     IDS_MUI_SB_LEXER_STYLING  "Applicera Lexer-stil..."

@@ -197,8 +197,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Radbryt kolumn...\tCtrl+Shift+W",             IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
-            MENUITEM "&Unite Duplicate Lines\tCtrl+Alt+D",          IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Remo&ve Duplicate Lines",                     IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "Sammanfoga dubblettrader\tCtrl+Alt+D",          IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "Ta bort dubblettrader",                     IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "Sammanfoga tomma rader\tAlt+Y",               IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Sammanfoga blanka rader\tCtrl+Alt+Y",         IDM_EDIT_MERGEBLANKLINES
             MENUITEM "Ta bort tomma rader\tAlt+R",                  IDM_EDIT_REMOVEEMPTYLINES
