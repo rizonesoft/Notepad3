@@ -179,7 +179,7 @@ BEGIN
     IDS_MUI_ASK_CLEAR_UNDO  "이 작업을 수행하면 실행 취소 기록이 지워집니다. 계속하시겠습니까?"
     IDS_MUI_READONLY_SAVE   """%s""은 읽기 전용입니다. 다른 파일로 저장하시겠습니까?"
     IDS_MUI_FILECHANGENOTIFY
-                            "현재 파일이 외부 프로그램에 의해 수정되었습니다\n선택하십시오:\n\nIgnore -\t\t추가 변경사항 무시\nReload -\t\t파일 다시 불러오기\nMonitor -\t\t파일 모니터링으로 전환"
+                            "현재 파일이 외부 프로그램에 의해 수정되었습니다\n선택하십시오:\n\nIgnore -\t\t추가 변경사항 무시\nReload -\t\t파일 다시 불러오기\n모니터 -\t\t파일 모니터링으로 전환"
     IDS_MUI_FILECHANGENOTIFY2 "현재 파일이 삭제되었습니다. 지금 저장하시겠습니까?"
     IDS_MUI_FILELOCK_ERROR  """%s""에 대한 독점적인 파일 잠금을 얻을 수 없습니다"
     IDS_MUI_STICKYWINPOS    "고정 창 위치가 활성화되었습니다. 새 Notepad3 창은 현재 창 배치 설정을 사용합니다"
