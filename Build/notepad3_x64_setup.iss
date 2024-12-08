@@ -105,7 +105,6 @@ ArchitecturesInstallIn64BitMode=x64compatible
 #endif
 CloseApplications=true
 SetupMutex={#app_name}_setup_mutex,Global\{#app_name}_setup_mutex
-SetupIconFile=.\Resources\Notepad3SetupIconFile.ico
 
 
 [Languages]
@@ -1385,15 +1384,15 @@ procedure InitializeWizard();
         begin
             // High-DPI screen
             PromoImagePath := ExpandConstant('{tmp}\en_PromoScreen_HiDPI.bmp');
-            OriginalWidth := 602;  // Width of the high-DPI image
-            OriginalHeight := 300; // Height of the high-DPI image
+            OriginalWidth := 802;  // Width of the high-DPI image
+            OriginalHeight := 400; // Height of the high-DPI image
         end
     else
         begin
             // Normal DPI screen
             PromoImagePath := ExpandConstant('{tmp}\en_PromoScreen.bmp');
-            OriginalWidth := 402;  // Width of the normal image
-            OriginalHeight := 200; // Height of the normal image
+            OriginalWidth := 450;  // Width of the normal image
+            OriginalHeight := 236; // Height of the normal image
     end;
 
     // Extract and load the appropriate promo image
