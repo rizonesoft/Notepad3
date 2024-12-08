@@ -1,21 +1,19 @@
-﻿;* Notepad3 - Installer script x86
-;*
-;* (c) Rizonesoft 2008-2024
+﻿; Notepad3 - Installer script x86
 
-;Requirements: Inno Setup 6.2.x
-;Inno Setup: https://jrsoftware.org/isinfo.php
+; (c) Rizonesoft 2008-2024
 
-;Thanks to "Wilenty" for his help in improving the INNO Setup installer
+; Requirements: Inno Setup 6.3.x
+; Inno Setup: https://jrsoftware.org/isdl.php
 
- 
-;Preprocessor related stuff
-// if you compile a "beta, rc or rc2" version, then comment/un-comment the appropriate setting:
-;#define VRSN=" alpha"
-;#define VRSN=" beta"
-;#define VRSN=" rc"
-;#define VRSN=" rc2"
-;#define VRSN=" rc3"
-// but, if not a "beta, rc or rc2" version, then comment above settings and un-comment below setting :)
+#pragma include __INCLUDE__ + ";" + ReadReg(HKLM, "Software\Mitrich Software\Inno Download Plugin", "InstallDir")
+#include <idp.iss>
+
+; Preprocessor related stuff
+// if you compile an "alpha, beta or rc" version, then comment/un-comment the appropriate setting:
+; #define VRSN=" alpha"
+; #define VRSN=" beta"
+; #define VRSN=" rc"
+// but, if a "release" version, then comment above settings and un-comment below setting:
 #define VRSN
 #ifndef VRSN
   #error Please set any of the above: #define VRSN(...)
@@ -23,7 +21,7 @@
 
 // choose which architecture should be compiled (one of below)
 #define Arch="x86"
-;#define Arch="x64"
+#define Arch="x64"
 #ifndef Arch
   #error Please set any of the above: #define Arch=(...)
 #endif
@@ -74,9 +72,9 @@ AppVersion={#app_version}{#VRSN}
 AppVerName={#app_name} {#app_version}
 AppPublisher={#app_publisher}
 AppPublisherURL=https://rizonesoft.com/
-AppSupportURL=https://www.rizonesoft.com/documents/
-AppUpdatesURL=https://www.rizonesoft.com/downloads/notepad3/
-AppContact=https://www.rizonesoft.com/#contact
+AppSupportURL=https://rizonesoft.com/documents/
+AppUpdatesURL=https://rizonesoft.com/downloads/notepad3/
+AppContact=https://rizonesoft.com/contact-us
 AppCopyright={#app_copyright}
 VersionInfoVersion={#app_version}
 UninstallDisplayIcon={app}\Notepad3.exe
@@ -85,8 +83,6 @@ DefaultDirName={commonpf}\Notepad3
 LicenseFile="..\License.txt"
 OutputDir=.\Packages
 OutputBaseFilename={#app_name}_{#app_version}{#StringChange(VRSN, " ", "_")}_{#Arch}_Setup
-WizardStyle=modern
-WizardSmallImageFile=.\Resources\WizardSmallImageFile.bmp
 Compression=lzma2/max
 InternalCompressLevel=max
 SolidCompression=yes
@@ -94,23 +90,22 @@ EnableDirDoesntExistWarning=no
 AllowNoIcons=yes
 ShowTasksTreeLines=yes
 DisableProgramGroupPage=yes
-DisableReadyPage=yes
+DisableReadyPage=no
 DisableWelcomePage=no
 AllowCancelDuringInstall=yes
 UsedUserAreasWarning=no
 MinVersion=0,6.1sp1
 #if Arch == "x86"
-ArchitecturesAllowed=x86 x64 arm64
+ArchitecturesAllowed=x86compatible x64compatible
 ArchitecturesInstallIn64BitMode=
 #endif
 #if Arch == "x64"
-ArchitecturesAllowed=x64 arm64
-ArchitecturesInstallIn64BitMode=x64 arm64
+ArchitecturesAllowed=x64compatible
+ArchitecturesInstallIn64BitMode=x64compatible
 #endif
 CloseApplications=true
 SetupMutex={#app_name}_setup_mutex,Global\{#app_name}_setup_mutex
 SetupIconFile=.\Resources\Notepad3SetupIconFile.ico
-WizardImageFile=.\Resources\WizardImageFileSmall.bmp
 
 
 [Languages]
@@ -173,12 +168,14 @@ cht.BeveledLabel=Chinese (TW)
 
 [CustomMessages]
 enu.msg_DeleteSettings=Do you also want to delete {#app_name}'s settings and themes?%n%nIf you plan on installing {#app_name} again then you do not have to delete them.
+
 #ifdef sse_required
 enu.msg_simd_sse=This build of {#app_name} requires a CPU with SSE extension support.%n%nYour CPU does not have those capabilities.
 #endif
 #ifdef sse2_required
 enu.msg_simd_sse2=This build of {#app_name} requires a CPU with SSE2 extension support.%n%nYour CPU does not have those capabilities.
 #endif
+
 enu.tsk_AllUsers=For all users
 enu.tsk_CurrentUser=For the current user only
 enu.tsk_Other=Other tasks:
@@ -190,6 +187,17 @@ enu.tsk_LaunchWelcomePage=Important Release Information!
 enu.tsk_RemoveOpenWith=Remove "Open with {#app_name}" from the context menu
 enu.tsk_SetOpenWith=Add "Open with {#app_name}" to the context menu
 enu.reg_Open_with_NP3=Open with {#app_name}
+
+; Opera Promotion
+enu.msg_Opera                 = Try Opera
+enu.msg_BrowserForTech        = A browser for tech enthusiasts!
+enu.msg_Accept                = Accept
+enu.msg_Decline               = Decline
+; Normal and Portable Install
+enu.msg_InstallationType      = Installation Type
+enu.msg_SelectInstallType     = Please select the type of installation:
+enu.msg_NormalInstall         = Normal Installation
+enu.msg_PortableInstall       = Portable Installation
 
 afk.msg_DeleteSettings=Wil jy ook {#app_name} se instellings en temas uitvee?%n%nAs jy beplan om {#app_name} weer te installeer, hoef jy dit nie uit te vee nie.
 #ifdef sse_required
@@ -752,6 +760,10 @@ Source: "{#bindir}{#RLSdir}\lng\zh-CN\np3lng.dll.mui"; DestDir: "{app}\lng\zh-CN
 Source: "{#bindir}{#RLSdir}\lng\zh-TW\mplng.dll.mui"; DestDir: "{app}\lng\zh-TW"; Flags: ignoreversion
 Source: "{#bindir}{#RLSdir}\lng\zh-TW\np3lng.dll.mui"; DestDir: "{app}\lng\zh-TW"; Flags: ignoreversion
 
+; Opera Promotion
+Source: .\Packages\Promos\en_PromoScreen.bmp; DestDir: {tmp}; Flags: dontcopy
+Source: .\Packages\Promos\en_PromoScreen_HiDPI.bmp; DestDir: {tmp}; Flags: dontcopy
+
 
 [Dirs]
 Name: "{userappdata}\Rizonesoft\Notepad3\Favorites"
@@ -773,7 +785,7 @@ Filename: "{userappdata}\Rizonesoft\Notepad3\Notepad3.ini"; Section: "Settings";
 
 [Registry]
 Root: "HKLM"; Subkey: "SYSTEM\CurrentControlSet\Control\FileSystem"; ValueType: dword; ValueName: "LongPathsEnabled"; ValueData: "1"
-;The following "Keys/Values" are required to allow a "MS Notepad Replacement" in Windows 11.
+; The following "Keys/Values" are required to allow a "MS Notepad Replacement" in Windows 11.
 Root: "HKLM"; Subkey: "SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe"; ValueType: dword; ValueName: "UseFilter"; ValueData: "1"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\notepad.exe"; ValueType: string; ValueData: "C:\Windows\System32\Notepad.exe"
 Root: "HKCU"; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\notepad.exe"; ValueType: string; ValueName: "Path"; ValueData: "C:\Windows\System32"
@@ -909,6 +921,99 @@ Type: dirifempty; Name: "{app}"
 
 
 [Code]
+type
+    // Declare HDC as an Integer
+    HDC = Integer;
+var
+    PromoPage: TWizardPage;
+    PromoImage: TBitmapImage;
+    AcceptRadioButton: TRadioButton;
+    DeclineRadioButton: TRadioButton;
+    OperaExecuted: Boolean;
+    PromoImagePath: String;
+    ScreenDC: HDC;
+    DPI: Integer;
+    ScaleFactor: Double;
+    OriginalWidth, OriginalHeight: Integer;
+    HighDPIThreshold: Integer;
+    ErrCode: integer;
+
+const
+    HWND_TOPMOST = -1;
+	SWP_NOSIZE = $1;
+	SWP_NOMOVE = $2;
+	SWP_NOZORDER = $4;
+    DownloadURL = 'https://net.geo.opera.com/opera/stable/windows?utm_source=RIZONE&utm_medium=pb&utm_campaign=NOTEPAD';
+    // Constants for GetDeviceCaps function
+    LOGPIXELSX = 88; // Horizontal DPI
+    LOGPIXELSY = 90; // Vertical DPI (if needed)
+
+function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND; X, Y, cx, cy: Integer; uFlags: UINT): BOOL;
+    external 'SetWindowPos@user32.dll stdcall';
+
+function GetDC(hWnd: Integer): HDC;
+    external 'GetDC@user32.dll stdcall';
+
+function ReleaseDC(hWnd: Integer; hDC: HDC): Integer;
+    external 'ReleaseDC@user32.dll stdcall';
+
+function GetDeviceCaps(hdc: HDC; nIndex: Integer): Integer;
+    external 'GetDeviceCaps@gdi32.dll stdcall';
+
+function OperaKeyExistsCIS(): Boolean;
+var
+  SubkeyNames: TArrayOfString;
+  I: Integer;
+  RegistryPaths: array[0..3] of String;
+begin
+  Result := False;
+
+  // Define the registry paths to check
+  RegistryPaths[0] := 'Software\Microsoft\Windows\CurrentVersion\Uninstall';
+  RegistryPaths[1] := 'Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall';
+  RegistryPaths[2] := 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall';
+  RegistryPaths[3] := 'SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall';
+
+  // Loop through each registry path
+  for I := 0 to High(RegistryPaths) do
+  begin
+    if RegGetSubkeyNames(HKLM, RegistryPaths[I], SubkeyNames) or
+       RegGetSubkeyNames(HKCU, RegistryPaths[I], SubkeyNames) then
+    begin
+      // Check each subkey if it starts with "Opera"
+      for I := 0 to GetArrayLength(SubkeyNames) - 1 do
+      begin
+        if Pos('Opera', SubkeyNames[I]) = 1 then
+        begin
+          Result := True;
+          Exit; // Exit immediately if a match is found
+        end;
+      end;
+    end;
+  end;
+end;
+
+function OperaKeyExists(): Boolean;
+begin
+  Result := False;
+
+  // Check if Opera keys exist in the registry
+  if RegKeyExists(HKCU, 'Software\Opera Software') or
+     RegKeyExists(HKLM, 'SOFTWARE\Opera Software') or
+     RegKeyExists(HKLM, 'SOFTWARE\Wow6432Node\Opera Software') then
+  begin
+    Result := True;
+  end;
+end;
+
+function OperaDetected(): Boolean;
+begin
+    if OperaKeyExistsCIS() or OperaKeyExists() then
+    begin
+      Result := True;
+    end;
+end;
+
 const
   IFEO = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe';
   APPH = 'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\Notepad3.exe';
@@ -1013,6 +1118,13 @@ function ShouldSkipPage(PageID: Integer): Boolean;
         Result := True;
         WizardForm.LicenseAcceptedRadio.Checked := Result;
       end;
+
+    // Skip the promo page if Opera is detected
+    if (PromoPage <> nil) and (PageID = PromoPage.ID) and OperaKeyExists() then
+    begin
+        Result := True;
+    end;
+
 end;
 
 procedure AddReg();
@@ -1032,12 +1144,19 @@ procedure CleanUpSettings();
     userappdata: String;
   begin
     userappdata := ExpandConstant('{userappdata}');
+
     DeleteFile(userappdata + '\Rizonesoft\Notepad3\Notepad3.ini');
     DeleteFile(userappdata + '\Rizonesoft\Notepad3\minipath.ini');
     DeleteFile(userappdata + '\Rizonesoft\Notepad3\grepWinNP3.ini');
     DeleteFile(userappdata + '\Rizonesoft\Notepad3\Themes\Dark.ini');
     DeleteFile(userappdata + '\Rizonesoft\Notepad3\Themes\Obsidian.ini');
     DeleteFile(userappdata + '\Rizonesoft\Notepad3\Themes\Sombra.ini');
+
+    ExtractTemporaryFile('Notepad3.ini');
+    FileCopy(ExpandConstant('{tmp}\Notepad3.ini'), userappdata + '\Rizonesoft\Notepad3\Notepad3.ini', false);
+    ExtractTemporaryFile('minipath.ini');
+    FileCopy(ExpandConstant('{tmp}\minipath.ini'), userappdata + '\Rizonesoft\Notepad3\minipath.ini', false);
+
 end;
 
 Var
@@ -1062,12 +1181,24 @@ procedure RemoveReg();
 end;
 
 procedure CurPageChanged(CurPageID: Integer);
-  begin
+begin
     if CurPageID = wpSelectTasks then
-      WizardForm.NextButton.Caption := SetupMessage(msgButtonInstall)
-    else
-    if CurPageID = wpFinished then
-      WizardForm.NextButton.Caption := SetupMessage(msgButtonFinish);
+    begin
+        // WizardForm.NextButton.Caption := SetupMessage(msgButtonInstall);
+    end
+    else if CurPageID = wpReady then
+    begin
+        if AcceptRadioButton.Checked and not OperaDetected() then
+        begin
+            // MsgBox('Opera is not detected. Adding Opera download.', mbInformation, MB_OK);
+            idpAddFile(DownloadURL, ExpandConstant('{tmp}\OperaSetup.exe'));
+            idpDownloadAfter(wpReady);
+        end;
+    end
+    else if CurPageID = wpFinished then
+    begin
+        WizardForm.NextButton.Caption := SetupMessage(msgButtonFinish);
+    end
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
@@ -1112,13 +1243,19 @@ procedure CurStepChanged(CurStep: TSetupStep);
             RegWriteDWordValue(HKLM, IFEO, 'UseFilter', 0);
           end;
         end;
+
+        //Check if OperaSetup has already been executed
+        if not OperaExecuted then
+        begin
+            ShellExec('', ExpandConstant('{tmp}\OperaSetup.exe'), '--silent --allusers=0', '', SW_SHOW, ewNoWait, ErrCode);
+            OperaExecuted := True; // Set the flag to True after execution
+        end;
       end;
 
       if CurStep = ssPostInstall then
       begin
         if WizardIsTaskSelected('reset_settings') then
         begin
-          CleanUpSettings();
           ExtractTemporaryFiles( '{userappdata}\*' );
           userappdata := ExpandConstant('{userappdata}')+'\';
           TMP := ExpandConstant('{tmp}')+'\';
@@ -1147,6 +1284,7 @@ procedure CurStepChanged(CurStep: TSetupStep);
                 until not FindNext(FindRec);
             FindClose( FindRec );
           end;
+          CleanUpSettings();
         end;
 
         if WizardIsTaskSelected('set_default') then begin
@@ -1231,6 +1369,62 @@ end;
 
 procedure InitializeWizard();
   begin
+
+    // Set the threshold DPI value (e.g., 144 for 150% scaling)
+    HighDPIThreshold := 144;
+    // Get the screen's device context
+    ScreenDC := GetDC(0);
+    // Retrieve the DPI (use LOGPIXELSX for horizontal DPI)
+    DPI := GetDeviceCaps(ScreenDC, LOGPIXELSX);
+    // Release the device context
+    ReleaseDC(0, ScreenDC);
+    // Calculate the scaling factor (assuming 96 DPI is standard)
+    ScaleFactor := DPI / 96.0;
+
+    if DPI >= HighDPIThreshold then
+        begin
+            // High-DPI screen
+            PromoImagePath := ExpandConstant('{tmp}\en_PromoScreen_HiDPI.bmp');
+            OriginalWidth := 602;  // Width of the high-DPI image
+            OriginalHeight := 300; // Height of the high-DPI image
+        end
+    else
+        begin
+            // Normal DPI screen
+            PromoImagePath := ExpandConstant('{tmp}\en_PromoScreen.bmp');
+            OriginalWidth := 402;  // Width of the normal image
+            OriginalHeight := 200; // Height of the normal image
+    end;
+
+    // Extract and load the appropriate promo image
+    ExtractTemporaryFile(ExtractFileName(PromoImagePath));
+    PromoPage := CreateCustomPage(wpWelcome, CustomMessage('msg_Opera'), CustomMessage('msg_BrowserForTech'));
+
+    PromoImage := TBitmapImage.Create(PromoPage);
+    PromoImage.Parent := PromoPage.Surface;
+    PromoImage.Bitmap.LoadFromFile(PromoImagePath);
+    PromoImage.Left := 0;
+    PromoImage.Top := 0;
+    PromoImage.Width := OriginalWidth;
+    PromoImage.Height := OriginalHeight;
+
+    // Create the "Accept" radio button
+    AcceptRadioButton := TRadioButton.Create(PromoPage);
+    AcceptRadioButton.Parent := PromoPage.Surface;
+    AcceptRadioButton.Caption := CustomMessage('msg_Accept');
+    AcceptRadioButton.Left := 0;
+    AcceptRadioButton.Top := PromoImage.Height + 5;
+    AcceptRadioButton.Height := 30;
+    AcceptRadioButton.Checked := True;
+
+    // Create the "Decline" radio button
+    DeclineRadioButton := TRadioButton.Create(PromoPage);
+    DeclineRadioButton.Parent := PromoPage.Surface;
+    DeclineRadioButton.Caption := CustomMessage('msg_Decline');
+    DeclineRadioButton.Left := AcceptRadioButton.Width + 10;
+    DeclineRadioButton.Top := PromoImage.Height + 5;
+    DeclineRadioButton.Height := 30;
+
     reg_Open_with_NP3 := CustomMessage('reg_Open_with_NP3');
 
     With WizardForm do

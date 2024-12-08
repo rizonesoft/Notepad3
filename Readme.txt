@@ -131,7 +131,6 @@ ThreeLightsBeyond       https://github.com/ThreeLightsBeyond
 tormento                https://github.com/tormento
 Veikko-M                https://github.com/Veikko-M
 VenusGirl               https://github.com/VenusGirl
-Wilenty                 https://github.com/Wilenty
 xsak                    https://github.com/xsak
 zufuliu                 https://github.com/zufuliu
 
