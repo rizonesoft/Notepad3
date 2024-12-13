@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Rensa alla\tAlt+F2",                          BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "Sök"
+    BEGIN
+        MENUITEM "Hitta...\tCtrl+F",                            IDM_EDIT_FIND
+        MENUITEM "Spara hittad text\tAlt+F3",                   IDM_EDIT_SAVEFIND
+        MENUITEM "Hitta nästa\tF3",                             IDM_EDIT_FINDNEXT
+        MENUITEM "Hitta föregående\tShift+F3",                  IDM_EDIT_FINDPREV
+        MENUITEM "Hitta nästa markering\tCtrl+F3",              CMD_FINDNEXTSEL
+        MENUITEM "Hitta föregående markering\tCtrl+Shift+F3",   CMD_FINDPREVSEL
+        MENUITEM "Ersätt...\tCtrl+H",                           IDM_EDIT_REPLACE
+        MENUITEM "Ersätt nästa\tF4",                            IDM_EDIT_REPLACENEXT
+        MENUITEM "Gå till...\tCtrl+G",                          IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "Sök"
-        BEGIN
-            MENUITEM "Hitta...\tCtrl+F",                            IDM_EDIT_FIND
-            MENUITEM "Spara hittad text\tAlt+F3",                   IDM_EDIT_SAVEFIND
-            MENUITEM "Hitta nästa\tF3",                             IDM_EDIT_FINDNEXT
-            MENUITEM "Hitta föregående\tShift+F3",                  IDM_EDIT_FINDPREV
-            MENUITEM "Hitta nästa markering\tCtrl+F3",              CMD_FINDNEXTSEL
-            MENUITEM "Hitta föregående markering\tCtrl+Shift+F3",   CMD_FINDPREVSEL
-            MENUITEM "Ersätt...\tCtrl+H",                           IDM_EDIT_REPLACE
-            MENUITEM "Ersätt nästa\tF4",                            IDM_EDIT_REPLACENEXT
-            MENUITEM "Gå till...\tCtrl+G",                          IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "Sök i filer...\tCtrl+Shift+F",                   IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "Sök i filer...\tCtrl+Shift+F",                   IDM_GREP_WIN_SEARCH2
     END
     POPUP "Visa"
     BEGIN

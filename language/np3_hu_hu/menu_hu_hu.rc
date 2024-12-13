@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Összes tö&rlése\tAlt+F2",     BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "Keresé&s"
+    BEGIN
+        MENUITEM "&Keresés...\tCtrl+F",                    IDM_EDIT_FIND
+        MENUITEM "Keresési &szöveg mentése\tAlt+F3",       IDM_EDIT_SAVEFIND
+        MENUITEM "K&övetkező keresése\tF3",                IDM_EDIT_FINDNEXT
+        MENUITEM "Elő&ző keresése\tShift+F3",              IDM_EDIT_FINDPREV
+        MENUITEM "Kijelölés következő találat\tCtrl+F3",   CMD_FINDNEXTSEL
+        MENUITEM "Kijelölés előző találat\tCtrl+Shift+F3", CMD_FINDPREVSEL
+        MENUITEM "&Csere...\tCtrl+H",                      IDM_EDIT_REPLACE
+        MENUITEM "Következő cse&réje\tF4",                 IDM_EDIT_REPLACENEXT
+        MENUITEM "&Ugrás...\tCtrl+G",                      IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "Keresé&s"
-        BEGIN
-            MENUITEM "&Keresés...\tCtrl+F",                    IDM_EDIT_FIND
-            MENUITEM "Keresési &szöveg mentése\tAlt+F3",       IDM_EDIT_SAVEFIND
-            MENUITEM "K&övetkező keresése\tF3",                IDM_EDIT_FINDNEXT
-            MENUITEM "Elő&ző keresése\tShift+F3",              IDM_EDIT_FINDPREV
-            MENUITEM "Kijelölés következő találat\tCtrl+F3",   CMD_FINDNEXTSEL
-            MENUITEM "Kijelölés előző találat\tCtrl+Shift+F3", CMD_FINDPREVSEL
-            MENUITEM "&Csere...\tCtrl+H",                      IDM_EDIT_REPLACE
-            MENUITEM "Következő cse&réje\tF4",                 IDM_EDIT_REPLACENEXT
-            MENUITEM "&Ugrás...\tCtrl+G",                      IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "Keresés &fájlokban...\tCtrl+Shift+F",       IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "Keresés &fájlokban...\tCtrl+Shift+F",       IDM_GREP_WIN_SEARCH2
     END
     POPUP "&Nézet"
     BEGIN

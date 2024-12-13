@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "すべて消去(&C)\tAlt+F2",                     BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "検索(&R)"
+    BEGIN
+        MENUITEM "検索(&F)...\tCtrl+F",                       IDM_EDIT_FIND
+        MENUITEM "検索文字列候補に追加(&A)\tAlt+F3",               IDM_EDIT_SAVEFIND
+        MENUITEM "次を検索(&N)(&X)\tF3",                          IDM_EDIT_FINDNEXT
+        MENUITEM "前へ検索(&P)\tShift+F3",                    IDM_EDIT_FINDPREV
+        MENUITEM "選択部分で次を検索(&X)\tCtrl+F3",                CMD_FINDNEXTSEL
+        MENUITEM "選択部分で前へ検索(&V)\tCtrl+Shift+F3",          CMD_FINDPREVSEL
+        MENUITEM "置換(&R)...\tCtrl+H",                       IDM_EDIT_REPLACE
+        MENUITEM "置換し次へ(&E)\tF4",                         IDM_EDIT_REPLACENEXT
+        MENUITEM "指定行へジャンプ(&G)...\tCtrl+G",            IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "検索(&R)"
-        BEGIN
-            MENUITEM "検索(&F)...\tCtrl+F",                       IDM_EDIT_FIND
-            MENUITEM "検索文字列候補に追加(&A)\tAlt+F3",               IDM_EDIT_SAVEFIND
-            MENUITEM "次を検索(&N)(&X)\tF3",                          IDM_EDIT_FINDNEXT
-            MENUITEM "前へ検索(&P)\tShift+F3",                    IDM_EDIT_FINDPREV
-            MENUITEM "選択部分で次を検索(&X)\tCtrl+F3",                CMD_FINDNEXTSEL
-            MENUITEM "選択部分で前へ検索(&V)\tCtrl+Shift+F3",          CMD_FINDPREVSEL
-            MENUITEM "置換(&R)...\tCtrl+H",                       IDM_EDIT_REPLACE
-            MENUITEM "置換し次へ(&E)\tF4",                         IDM_EDIT_REPLACENEXT
-            MENUITEM "指定行へジャンプ(&G)...\tCtrl+G",            IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "ファイル群から検索(&S)...\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "ファイル群から検索(&S)...\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH2
     END
     POPUP "表示(&V)"
     BEGIN

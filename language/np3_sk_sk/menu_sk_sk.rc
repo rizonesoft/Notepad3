@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Zmazať &všetky\tAlt+F2",              BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "&V&yhľadávanie"
+    BEGIN
+        MENUITEM "&Hľadať...\tCtrl+F",                      IDM_EDIT_FIND
+        MENUITEM "&Uložiť hľadaný text\tAlt+F3",            IDM_EDIT_SAVEFIND
+        MENUITEM "Hľa&dať ďalej\tF3",                       IDM_EDIT_FINDNEXT
+        MENUITEM "Hľadať na&späť\tShift+F3",                IDM_EDIT_FINDPREV
+        MENUITEM "Hľadať ďalšie vybraté\tCtrl+F3",          CMD_FINDNEXTSEL
+        MENUITEM "Hľadať naspäť vybraté\tCtrl+Shift+F3",    CMD_FINDPREVSEL
+        MENUITEM "&Zameniť...\tCtrl+H",                     IDM_EDIT_REPLACE
+        MENUITEM "Z&ameniť ďalej\tF4",                      IDM_EDIT_REPLACENEXT
+        MENUITEM "Pr&ejsť na...\tCtrl+G",                   IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "&V&yhľadávanie"
-        BEGIN
-            MENUITEM "&Hľadať...\tCtrl+F",                      IDM_EDIT_FIND
-            MENUITEM "&Uložiť hľadaný text\tAlt+F3",            IDM_EDIT_SAVEFIND
-            MENUITEM "Hľa&dať ďalej\tF3",                       IDM_EDIT_FINDNEXT
-            MENUITEM "Hľadať na&späť\tShift+F3",                IDM_EDIT_FINDPREV
-            MENUITEM "Hľadať ďalšie vybraté\tCtrl+F3",          CMD_FINDNEXTSEL
-            MENUITEM "Hľadať naspäť vybraté\tCtrl+Shift+F3",    CMD_FINDPREVSEL
-            MENUITEM "&Zameniť...\tCtrl+H",                     IDM_EDIT_REPLACE
-            MENUITEM "Z&ameniť ďalej\tF4",                      IDM_EDIT_REPLACENEXT
-            MENUITEM "Pr&ejsť na...\tCtrl+G",                   IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "&Vyhľadávať v súboroch...\tCtrl+Shift+F",    IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "&Vyhľadávať v súboroch...\tCtrl+Shift+F",    IDM_GREP_WIN_SEARCH2
     END
     POPUP "&Zobraziť"
     BEGIN

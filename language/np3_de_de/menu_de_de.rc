@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Lösche Alle\tAlt+F2",                    BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "&Suchen"
+    BEGIN
+        MENUITEM "&Suche...\tCtrl+F",                       IDM_EDIT_FIND
+        MENUITEM "Speichere Suchtext\tAlt+F3",              IDM_EDIT_SAVEFIND
+        MENUITEM "Suche Nächstes\tF3",                      IDM_EDIT_FINDNEXT
+        MENUITEM "Suche Vorheriges\tShift+F3",              IDM_EDIT_FINDPREV
+        MENUITEM "Suche Auswahl vorwärts\tCtrl+F3",         CMD_FINDNEXTSEL
+        MENUITEM "Suche Auswahl rückwärts\tCtrl+Shift+F3",  CMD_FINDPREVSEL
+        MENUITEM "&Ersetze...\tCtrl+H",                     IDM_EDIT_REPLACE
+        MENUITEM "Ersetze Nächstes\tF4",                    IDM_EDIT_REPLACENEXT
+        MENUITEM "&Gehe zu...\tCtrl+G",                     IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "&Suchen"
-        BEGIN
-            MENUITEM "&Suche...\tCtrl+F",                       IDM_EDIT_FIND
-            MENUITEM "Speichere Suchtext\tAlt+F3",              IDM_EDIT_SAVEFIND
-            MENUITEM "Suche Nächstes\tF3",                      IDM_EDIT_FINDNEXT
-            MENUITEM "Suche Vorheriges\tShift+F3",              IDM_EDIT_FINDPREV
-            MENUITEM "Suche Auswahl vorwärts\tCtrl+F3",         CMD_FINDNEXTSEL
-            MENUITEM "Suche Auswahl rückwärts\tCtrl+Shift+F3",  CMD_FINDPREVSEL
-            MENUITEM "&Ersetze...\tCtrl+H",                     IDM_EDIT_REPLACE
-            MENUITEM "Ersetze Nächstes\tF4",                    IDM_EDIT_REPLACENEXT
-            MENUITEM "&Gehe zu...\tCtrl+G",                     IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "Suche in &Dateien...\tCtrl+Shift+F",         IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "Suche in &Dateien...\tCtrl+Shift+F",         IDM_GREP_WIN_SEARCH2
     END
     POPUP "&Ansicht"
     BEGIN

@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Limpar Tudo\tAlt+F2",          BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "&Localizar"
+    BEGIN
+        MENUITEM "&Localizar...\tCtrl+F",                           IDM_EDIT_FIND
+        MENUITEM "Salvar Texto Localizado\tAlt+F3",                 IDM_EDIT_SAVEFIND
+        MENUITEM "Localizar Pró&ximo\tF3",                          IDM_EDIT_FINDNEXT
+        MENUITEM "Localizar An&terior\tShift+F3",                   IDM_EDIT_FINDPREV
+        MENUITEM "Localizar Próximo Selecionado\tCtrl+F3",          CMD_FINDNEXTSEL
+        MENUITEM "Localizar Anterior Selecionado\tCtrl+Shift+F3",   CMD_FINDPREVSEL
+        MENUITEM "&Substituir...\tCtrl+H",                          IDM_EDIT_REPLACE
+        MENUITEM "Substituir Pró&ximo\tF4",                         IDM_EDIT_REPLACENEXT
+        MENUITEM "&Ir para...\tCtrl+G",                             IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "&Localizar"
-        BEGIN
-            MENUITEM "&Localizar...\tCtrl+F",                           IDM_EDIT_FIND
-            MENUITEM "Salvar Texto Localizado\tAlt+F3",                 IDM_EDIT_SAVEFIND
-            MENUITEM "Localizar Pró&ximo\tF3",                          IDM_EDIT_FINDNEXT
-            MENUITEM "Localizar An&terior\tShift+F3",                   IDM_EDIT_FINDPREV
-            MENUITEM "Localizar Próximo Selecionado\tCtrl+F3",          CMD_FINDNEXTSEL
-            MENUITEM "Localizar Anterior Selecionado\tCtrl+Shift+F3",   CMD_FINDPREVSEL
-            MENUITEM "&Substituir...\tCtrl+H",                          IDM_EDIT_REPLACE
-            MENUITEM "Substituir Pró&ximo\tF4",                         IDM_EDIT_REPLACENEXT
-            MENUITEM "&Ir para...\tCtrl+G",                             IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "&Localizar em Arquivos...\tCtrl+Shift+F",            IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "&Localizar em Arquivos...\tCtrl+Shift+F",            IDM_GREP_WIN_SEARCH2
     END
     POPUP "&Visualizar"
     BEGIN

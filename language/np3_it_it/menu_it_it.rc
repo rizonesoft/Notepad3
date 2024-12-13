@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Rimuovi tutti\tAlt+F2",                    BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "&Cerca"
+    BEGIN
+        MENUITEM "&Trova...\tCtrl+F",                         IDM_EDIT_FIND
+        MENUITEM "Salva testo di ricerca\tAlt+F3",            IDM_EDIT_SAVEFIND
+        MENUITEM "Trova successivo\tF3",                      IDM_EDIT_FINDNEXT
+        MENUITEM "Trova precedente\tShift+F3",                IDM_EDIT_FINDPREV
+        MENUITEM "Trova prossima selezione\tCtrl+F3",         CMD_FINDNEXTSEL
+        MENUITEM "Trova selezione precedente\tCtrl+Shift+F3", CMD_FINDPREVSEL
+        MENUITEM "&Sostituisci...\tCtrl+H",                   IDM_EDIT_REPLACE
+        MENUITEM "Sostituisci successivo\tF4",                IDM_EDIT_REPLACENEXT
+        MENUITEM "&Vai a...\tCtrl+G",                         IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "&Cerca"
-        BEGIN
-            MENUITEM "&Trova...\tCtrl+F",                         IDM_EDIT_FIND
-            MENUITEM "Salva testo di ricerca\tAlt+F3",            IDM_EDIT_SAVEFIND
-            MENUITEM "Trova successivo\tF3",                      IDM_EDIT_FINDNEXT
-            MENUITEM "Trova precedente\tShift+F3",                IDM_EDIT_FINDPREV
-            MENUITEM "Trova prossima selezione\tCtrl+F3",         CMD_FINDNEXTSEL
-            MENUITEM "Trova selezione precedente\tCtrl+Shift+F3", CMD_FINDPREVSEL
-            MENUITEM "&Sostituisci...\tCtrl+H",                   IDM_EDIT_REPLACE
-            MENUITEM "Sostituisci successivo\tF4",                IDM_EDIT_REPLACENEXT
-            MENUITEM "&Vai a...\tCtrl+G",                         IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "&Cerca nei file...\tCtrl+Shift+F",             IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "&Cerca nei file...\tCtrl+Shift+F",             IDM_GREP_WIN_SEARCH2
     END
     POPUP "&Visualizza"
     BEGIN
