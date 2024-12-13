@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Tümünü temizle\tAlt+F2",                       BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "&Arama"
+    BEGIN
+        MENUITEM "&Bul...\tCtrl+F",                               IDM_EDIT_FIND
+        MENUITEM "&Aranacak ifadeyi kaydet\tAlt+F3",              IDM_EDIT_SAVEFIND
+        MENUITEM "S&onrakini bul\tF3",                            IDM_EDIT_FINDNEXT
+        MENUITEM "Ö&ncekini bul\tShift+F3",                       IDM_EDIT_FINDPREV
+        MENUITEM "Son&raki seçilmişi bul\tCtrl+F3",               CMD_FINDNEXTSEL
+        MENUITEM "Ön&ceki seçilmişi bul\tCtrl+Shift+F3",          CMD_FINDPREVSEL
+        MENUITEM "&Değiştir...\tCtrl+H",                          IDM_EDIT_REPLACE
+        MENUITEM "Sonra&kini değiştir\tF4",                       IDM_EDIT_REPLACENEXT
+        MENUITEM "&Git...\tCtrl+G",                               IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "&Arama"
-        BEGIN
-            MENUITEM "&Bul...\tCtrl+F",                               IDM_EDIT_FIND
-            MENUITEM "&Aranacak ifadeyi kaydet\tAlt+F3",              IDM_EDIT_SAVEFIND
-            MENUITEM "S&onrakini bul\tF3",                            IDM_EDIT_FINDNEXT
-            MENUITEM "Ö&ncekini bul\tShift+F3",                       IDM_EDIT_FINDPREV
-            MENUITEM "Son&raki seçilmişi bul\tCtrl+F3",               CMD_FINDNEXTSEL
-            MENUITEM "Ön&ceki seçilmişi bul\tCtrl+Shift+F3",          CMD_FINDPREVSEL
-            MENUITEM "&Değiştir...\tCtrl+H",                          IDM_EDIT_REPLACE
-            MENUITEM "Sonra&kini değiştir\tF4",                       IDM_EDIT_REPLACENEXT
-            MENUITEM "&Git...\tCtrl+G",                               IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "&Dosyalarda ara...\tCtrl+Shift+F",                 IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "&Dosyalarda ara...\tCtrl+Shift+F",                 IDM_GREP_WIN_SEARCH2
     END
     POPUP "&Görünüm"
     BEGIN

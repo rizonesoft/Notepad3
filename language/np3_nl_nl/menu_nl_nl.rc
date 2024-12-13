@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Alles &wissen\tAlt+F2",                       BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "&Zoeken"
+    BEGIN
+        MENUITEM "&Zoeken...\tCtrl+F",                          IDM_EDIT_FIND
+        MENUITEM "Zoektekst bewaren\tAlt+F3",                   IDM_EDIT_SAVEFIND
+        MENUITEM "Volgende zoe&ken\tF3",                        IDM_EDIT_FINDNEXT
+        MENUITEM "V&orige zoeken\tShift+F3",                    IDM_EDIT_FINDPREV
+        MENUITEM "Volgende selectie zoeken\tCtrl+F3",           CMD_FINDNEXTSEL
+        MENUITEM "Vorige selectie zoeken\tCtrl+Shift+F3",       CMD_FINDPREVSEL
+        MENUITEM "&Vervangen...\tCtrl+H",                       IDM_EDIT_REPLACE
+        MENUITEM "Volgen&de vervangen\tF4",                     IDM_EDIT_REPLACENEXT
+        MENUITEM "&Ga naar...\tCtrl+G",                         IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "&Zoeken"
-        BEGIN
-            MENUITEM "&Zoeken...\tCtrl+F",                          IDM_EDIT_FIND
-            MENUITEM "Zoektekst bewaren\tAlt+F3",                   IDM_EDIT_SAVEFIND
-            MENUITEM "Volgende zoe&ken\tF3",                        IDM_EDIT_FINDNEXT
-            MENUITEM "V&orige zoeken\tShift+F3",                    IDM_EDIT_FINDPREV
-            MENUITEM "Volgende selectie zoeken\tCtrl+F3",           CMD_FINDNEXTSEL
-            MENUITEM "Vorige selectie zoeken\tCtrl+Shift+F3",       CMD_FINDPREVSEL
-            MENUITEM "&Vervangen...\tCtrl+H",                       IDM_EDIT_REPLACE
-            MENUITEM "Volgen&de vervangen\tF4",                     IDM_EDIT_REPLACENEXT
-            MENUITEM "&Ga naar...\tCtrl+G",                         IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "grepWin &bestanden doorzoeken...\tCtrl+Shift+F", IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "grepWin &bestanden doorzoeken...\tCtrl+Shift+F", IDM_GREP_WIN_SEARCH2
     END
     POPUP "Beel&d"
     BEGIN

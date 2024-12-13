@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Borrar todo\tAlt+F2",                            BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "&Buscar"
+    BEGIN
+        MENUITEM "&Buscar...\tCtrl+F",                              IDM_EDIT_FIND
+        MENUITEM "&Guardar búsqueda de texto\tAlt+F3",              IDM_EDIT_SAVEFIND
+        MENUITEM "Buscar &siguiente\tF3",                           IDM_EDIT_FINDNEXT
+        MENUITEM "Buscar &anterior\tShift+F3",                      IDM_EDIT_FINDPREV
+        MENUITEM "Buscar siguient&e selección\tCtrl+F3",            CMD_FINDNEXTSEL
+        MENUITEM "Buscar anteri&or selección\tCtrl+Shift+F3",       CMD_FINDPREVSEL
+        MENUITEM "&Reemplazar...\tCtrl+H",                          IDM_EDIT_REPLACE
+        MENUITEM "Ree&mplazar siguiente\tF4",                       IDM_EDIT_REPLACENEXT
+        MENUITEM "&Ir a...\tCtrl+G",                                IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "&Buscar"
-        BEGIN
-            MENUITEM "&Buscar...\tCtrl+F",                              IDM_EDIT_FIND
-            MENUITEM "&Guardar búsqueda de texto\tAlt+F3",              IDM_EDIT_SAVEFIND
-            MENUITEM "Buscar &siguiente\tF3",                           IDM_EDIT_FINDNEXT
-            MENUITEM "Buscar &anterior\tShift+F3",                      IDM_EDIT_FINDPREV
-            MENUITEM "Buscar siguient&e selección\tCtrl+F3",            CMD_FINDNEXTSEL
-            MENUITEM "Buscar anteri&or selección\tCtrl+Shift+F3",       CMD_FINDPREVSEL
-            MENUITEM "&Reemplazar...\tCtrl+H",                          IDM_EDIT_REPLACE
-            MENUITEM "Ree&mplazar siguiente\tF4",                       IDM_EDIT_REPLACENEXT
-            MENUITEM "&Ir a...\tCtrl+G",                                IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "B&uscar en archivos...\tCtrl+Shift+F",               IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "B&uscar en archivos...\tCtrl+Shift+F",               IDM_GREP_WIN_SEARCH2
     END
     POPUP "&Vista"
     BEGIN

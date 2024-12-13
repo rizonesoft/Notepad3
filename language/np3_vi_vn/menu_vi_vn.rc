@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Xóa tất cả(&C)\tAlt+F2",                    BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "Tìm kiếm(&R)"
+    BEGIN
+        MENUITEM "Tìm(&F)...\tCtrl+F",                     IDM_EDIT_FIND
+        MENUITEM "Lưu văn bản tìm kiếm(&A)\tAlt+F3",              IDM_EDIT_SAVEFIND
+        MENUITEM "Tìm tiếp theo(&N)\tF3",                        IDM_EDIT_FINDNEXT
+        MENUITEM "Tìm trước đó(&P)\tShift+F3",                  IDM_EDIT_FINDPREV
+        MENUITEM "Tìm tiếp theo trong vùng chọn(&X)\tCtrl+F3",               CMD_FINDNEXTSEL
+        MENUITEM "Tìm trước đó trong vùng chọn(&V)\tCtrl+Shift+F3",         CMD_FINDPREVSEL
+        MENUITEM "Thay thế(&R)...\tCtrl+H",                    IDM_EDIT_REPLACE
+        MENUITEM "Thay thế tiếp theo(&E)\tF4",                      IDM_EDIT_REPLACENEXT
+        MENUITEM "Đi đến(&G)...\tCtrl+G",                     IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "Tìm kiếm(&R)"
-        BEGIN
-            MENUITEM "Tìm(&F)...\tCtrl+F",                     IDM_EDIT_FIND
-            MENUITEM "Lưu văn bản tìm kiếm(&A)\tAlt+F3",              IDM_EDIT_SAVEFIND
-            MENUITEM "Tìm tiếp theo(&N)\tF3",                        IDM_EDIT_FINDNEXT
-            MENUITEM "Tìm trước đó(&P)\tShift+F3",                  IDM_EDIT_FINDPREV
-            MENUITEM "Tìm tiếp theo trong vùng chọn(&X)\tCtrl+F3",               CMD_FINDNEXTSEL
-            MENUITEM "Tìm trước đó trong vùng chọn(&V)\tCtrl+Shift+F3",         CMD_FINDPREVSEL
-            MENUITEM "Thay thế(&R)...\tCtrl+H",                    IDM_EDIT_REPLACE
-            MENUITEM "Thay thế tiếp theo(&E)\tF4",                      IDM_EDIT_REPLACENEXT
-            MENUITEM "Đi đến(&G)...\tCtrl+G",                     IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "Tìm kiếm trong tệp(&S)...\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "Tìm kiếm trong tệp(&S)...\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH2
     END
     POPUP "Xem(&V)"
     BEGIN

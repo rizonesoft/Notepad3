@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Удалить все\tAlt+F2",            BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "По&иск"
+    BEGIN
+        MENUITEM "&Найти...\tCtrl+F",                           IDM_EDIT_FIND
+        MENUITEM "Сохранить поисковую фразу\tAlt+F3",           IDM_EDIT_SAVEFIND
+        MENUITEM "Найти &далее\tF3",                            IDM_EDIT_FINDNEXT
+        MENUITEM "Найти &предыдущее\tShift+F3",                 IDM_EDIT_FINDPREV
+        MENUITEM "Найти следующее выделенное\tCtrl+F3",         CMD_FINDNEXTSEL
+        MENUITEM "Найти предыдущее выделенное\tCtrl+Shift+F3",  CMD_FINDPREVSEL
+        MENUITEM "&Заменить...\tCtrl+H",                        IDM_EDIT_REPLACE
+        MENUITEM "За&менить далее\tF4",                         IDM_EDIT_REPLACENEXT
+        MENUITEM "Пе&рейти...\tCtrl+G",                         IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "По&иск"
-        BEGIN
-            MENUITEM "&Найти...\tCtrl+F",                           IDM_EDIT_FIND
-            MENUITEM "Сохранить поисковую фразу\tAlt+F3",           IDM_EDIT_SAVEFIND
-            MENUITEM "Найти &далее\tF3",                            IDM_EDIT_FINDNEXT
-            MENUITEM "Найти &предыдущее\tShift+F3",                 IDM_EDIT_FINDPREV
-            MENUITEM "Найти следующее выделенное\tCtrl+F3",         CMD_FINDNEXTSEL
-            MENUITEM "Найти предыдущее выделенное\tCtrl+Shift+F3",  CMD_FINDPREVSEL
-            MENUITEM "&Заменить...\tCtrl+H",                        IDM_EDIT_REPLACE
-            MENUITEM "За&менить далее\tF4",                         IDM_EDIT_REPLACENEXT
-            MENUITEM "Пе&рейти...\tCtrl+G",                         IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "&Искать в файлах...\tCtrl+Shift+F",              IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "&Искать в файлах...\tCtrl+Shift+F",              IDM_GREP_WIN_SEARCH2
     END
     POPUP "&Вид"
     BEGIN

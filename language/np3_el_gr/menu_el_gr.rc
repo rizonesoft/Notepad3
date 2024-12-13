@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Απαλοιφή όλων\tAlt+F2",               BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "Ανα&ζήτηση"
+    BEGIN
+        MENUITEM "&Εύρεση...\tCtrl+F",                               IDM_EDIT_FIND
+        MENUITEM "Απο&θήκευση κειμένου αναζήτησης\tAlt+F3",          IDM_EDIT_SAVEFIND
+        MENUITEM "Εύρε&ση επόμενου\tF3",                             IDM_EDIT_FINDNEXT
+        MENUITEM "Εύρεση &προηγούμενου\tShift+F3",                   IDM_EDIT_FINDPREV
+        MENUITEM "Εύρεση επό&μενου επιλεγμένου\tCtrl+F3",            CMD_FINDNEXTSEL
+        MENUITEM "Εύρεση π&ροηγούμενου επιλεγμένου\tCtrl+Shift+F3",  CMD_FINDPREVSEL
+        MENUITEM "&Αντικατάσταση...\tCtrl+H",                        IDM_EDIT_REPLACE
+        MENUITEM "Αντι&κατάσταση επόμενου\tF4",                      IDM_EDIT_REPLACENEXT
+        MENUITEM "Μετά&βαση...\tCtrl+G",                             IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "Ανα&ζήτηση"
-        BEGIN
-            MENUITEM "&Εύρεση...\tCtrl+F",                               IDM_EDIT_FIND
-            MENUITEM "Απο&θήκευση κειμένου αναζήτησης\tAlt+F3",          IDM_EDIT_SAVEFIND
-            MENUITEM "Εύρε&ση επόμενου\tF3",                             IDM_EDIT_FINDNEXT
-            MENUITEM "Εύρεση &προηγούμενου\tShift+F3",                   IDM_EDIT_FINDPREV
-            MENUITEM "Εύρεση επό&μενου επιλεγμένου\tCtrl+F3",            CMD_FINDNEXTSEL
-            MENUITEM "Εύρεση π&ροηγούμενου επιλεγμένου\tCtrl+Shift+F3",  CMD_FINDPREVSEL
-            MENUITEM "&Αντικατάσταση...\tCtrl+H",                        IDM_EDIT_REPLACE
-            MENUITEM "Αντι&κατάσταση επόμενου\tF4",                      IDM_EDIT_REPLACENEXT
-            MENUITEM "Μετά&βαση...\tCtrl+G",                             IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "Ανα&ζήτηση σε αρχεία...\tCtrl+Shift+F",               IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "Ανα&ζήτηση σε αρχεία...\tCtrl+Shift+F",               IDM_GREP_WIN_SEARCH2
     END
     POPUP "Πρ&οβολή"
     BEGIN

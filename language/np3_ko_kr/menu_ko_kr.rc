@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "모두 지우기(&C)\tAlt+F2",                    BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "검색(&R)"
+    BEGIN
+        MENUITEM "찾기(&F)...\tCtrl+F",                     IDM_EDIT_FIND
+        MENUITEM "찾기 텍스트 저장(&A)\tAlt+F3",              IDM_EDIT_SAVEFIND
+        MENUITEM "다음 찾기(&N)\tF3",                        IDM_EDIT_FINDNEXT
+        MENUITEM "이전 찾기(&P)\tShift+F3",                  IDM_EDIT_FINDPREV
+        MENUITEM "다음 선택 찾기(&X)\tCtrl+F3",               CMD_FINDNEXTSEL
+        MENUITEM "이전 선택 찾기(&V)\tCtrl+Shift+F3",         CMD_FINDPREVSEL
+        MENUITEM "바꾸기(&R)...\tCtrl+H",                    IDM_EDIT_REPLACE
+        MENUITEM "다음 바꾸기(&E)\tF4",                      IDM_EDIT_REPLACENEXT
+        MENUITEM "이동(&G)...\tCtrl+G",                     IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "검색(&R)"
-        BEGIN
-            MENUITEM "찾기(&F)...\tCtrl+F",                     IDM_EDIT_FIND
-            MENUITEM "찾기 텍스트 저장(&A)\tAlt+F3",              IDM_EDIT_SAVEFIND
-            MENUITEM "다음 찾기(&N)\tF3",                        IDM_EDIT_FINDNEXT
-            MENUITEM "이전 찾기(&P)\tShift+F3",                  IDM_EDIT_FINDPREV
-            MENUITEM "다음 선택 찾기(&X)\tCtrl+F3",               CMD_FINDNEXTSEL
-            MENUITEM "이전 선택 찾기(&V)\tCtrl+Shift+F3",         CMD_FINDPREVSEL
-            MENUITEM "바꾸기(&R)...\tCtrl+H",                    IDM_EDIT_REPLACE
-            MENUITEM "다음 바꾸기(&E)\tF4",                      IDM_EDIT_REPLACENEXT
-            MENUITEM "이동(&G)...\tCtrl+G",                     IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "파일에서 검색(&S)...\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "파일에서 검색(&S)...\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH2
     END
     POPUP "보기(&V)"
     BEGIN

@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Limpar todos\tAlt+F2",          BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "&Procurar"
+    BEGIN
+        MENUITEM "&Localizar...\tCtrl+F",                         IDM_EDIT_FIND
+        MENUITEM "Guardar texto localizado\tAlt+F3",              IDM_EDIT_SAVEFIND
+        MENUITEM "Localizar seg&uinte\tF3",                       IDM_EDIT_FINDNEXT
+        MENUITEM "Localizar &anterior\tShift+F3",                 IDM_EDIT_FINDPREV
+        MENUITEM "Localizar selecção seguinte\tCtrl+F3",          CMD_FINDNEXTSEL
+        MENUITEM "Localizar selecção anterior\tCtrl+Shift+F3",    CMD_FINDPREVSEL
+        MENUITEM "Substitui&r...\tCtrl+H",                        IDM_EDIT_REPLACE
+        MENUITEM "Substituir se&guinte\tF4",                      IDM_EDIT_REPLACENEXT
+        MENUITEM "&Ir para...\tCtrl+G",                           IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "&Procurar"
-        BEGIN
-            MENUITEM "&Localizar...\tCtrl+F",                         IDM_EDIT_FIND
-            MENUITEM "Guardar texto localizado\tAlt+F3",              IDM_EDIT_SAVEFIND
-            MENUITEM "Localizar seg&uinte\tF3",                       IDM_EDIT_FINDNEXT
-            MENUITEM "Localizar &anterior\tShift+F3",                 IDM_EDIT_FINDPREV
-            MENUITEM "Localizar selecção seguinte\tCtrl+F3",          CMD_FINDNEXTSEL
-            MENUITEM "Localizar selecção anterior\tCtrl+Shift+F3",    CMD_FINDPREVSEL
-            MENUITEM "Substitui&r...\tCtrl+H",                        IDM_EDIT_REPLACE
-            MENUITEM "Substituir se&guinte\tF4",                      IDM_EDIT_REPLACENEXT
-            MENUITEM "&Ir para...\tCtrl+G",                           IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "&Procurar em ficheiros...\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "&Procurar em ficheiros...\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH2
     END
     POPUP "&Ver"
     BEGIN

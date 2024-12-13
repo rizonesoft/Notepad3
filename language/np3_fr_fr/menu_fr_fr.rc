@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Effacer tout\tAlt+F2",                          BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "&Rechercher"
+    BEGIN
+        MENUITEM "Chercher...\tCtrl+F",                                 IDM_EDIT_FIND
+        MENUITEM "Sauve&garder le texte de recherche\tAlt+F3",          IDM_EDIT_SAVEFIND
+        MENUITEM "Chercher le suivan&t\tF3",                            IDM_EDIT_FINDNEXT
+        MENUITEM "Chercher le pré&cédent\tMaj+F3",                      IDM_EDIT_FINDPREV
+        MENUITEM "Chercher le séle&ctionné suivant\tCtrl+F3",           CMD_FINDNEXTSEL
+        MENUITEM "Chercher le sélec&tionné précédent\tCtrl+Maj+F3",     CMD_FINDPREVSEL
+        MENUITEM "Re&mplacer...\tCtrl+H",                               IDM_EDIT_REPLACE
+        MENUITEM "Remplacer le sui&vant\tF4",                           IDM_EDIT_REPLACENEXT
+        MENUITEM "&Aller à...\tCtrl+G",                                 IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "&Rechercher"
-        BEGIN
-            MENUITEM "Chercher...\tCtrl+F",                                 IDM_EDIT_FIND
-            MENUITEM "Sauve&garder le texte de recherche\tAlt+F3",          IDM_EDIT_SAVEFIND
-            MENUITEM "Chercher le suivan&t\tF3",                            IDM_EDIT_FINDNEXT
-            MENUITEM "Chercher le pré&cédent\tMaj+F3",                      IDM_EDIT_FINDPREV
-            MENUITEM "Chercher le séle&ctionné suivant\tCtrl+F3",           CMD_FINDNEXTSEL
-            MENUITEM "Chercher le sélec&tionné précédent\tCtrl+Maj+F3",     CMD_FINDPREVSEL
-            MENUITEM "Re&mplacer...\tCtrl+H",                               IDM_EDIT_REPLACE
-            MENUITEM "Remplacer le sui&vant\tF4",                           IDM_EDIT_REPLACENEXT
-            MENUITEM "&Aller à...\tCtrl+G",                                 IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "C&hercher dans les fichiers...\tCtrl+Maj+F",          IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "C&hercher dans les fichiers...\tCtrl+Maj+F",          IDM_GREP_WIN_SEARCH2
     END
     POPUP "&Affichage"
     BEGIN

@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Poista kaikki\tAlt+F2",          BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "Ha&ku"
+    BEGIN
+        MENUITEM "&Etsi...\tCtrl+F",                        IDM_EDIT_FIND
+        MENUITEM "Tallenna hakutek&sti\tAlt+F3",                 IDM_EDIT_SAVEFIND
+        MENUITEM "Etsi &seuraava\tF3",                          IDM_EDIT_FINDNEXT
+        MENUITEM "Etsi &edellinen\tShift+F3",                IDM_EDIT_FINDPREV
+        MENUITEM "Etsi seuraava v&alittu\tCtrl+F3",            CMD_FINDNEXTSEL
+        MENUITEM "Etsi edellinen &valittu\tCtrl+Shift+F3",  CMD_FINDPREVSEL
+        MENUITEM "Ko&rvaa...\tCtrl+H",                     IDM_EDIT_REPLACE
+        MENUITEM "Korvaa s&euraava\tF4",                       IDM_EDIT_REPLACENEXT
+        MENUITEM "&Siirry...\tCtrl+G",                        IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "Ha&ku"
-        BEGIN
-            MENUITEM "&Etsi...\tCtrl+F",                        IDM_EDIT_FIND
-            MENUITEM "Tallenna hakutek&sti\tAlt+F3",                 IDM_EDIT_SAVEFIND
-            MENUITEM "Etsi &seuraava\tF3",                          IDM_EDIT_FINDNEXT
-            MENUITEM "Etsi &edellinen\tShift+F3",                IDM_EDIT_FINDPREV
-            MENUITEM "Etsi seuraava v&alittu\tCtrl+F3",            CMD_FINDNEXTSEL
-            MENUITEM "Etsi edellinen &valittu\tCtrl+Shift+F3",  CMD_FINDPREVSEL
-            MENUITEM "Ko&rvaa...\tCtrl+H",                     IDM_EDIT_REPLACE
-            MENUITEM "Korvaa s&euraava\tF4",                       IDM_EDIT_REPLACENEXT
-            MENUITEM "&Siirry...\tCtrl+G",                        IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "Et&si tiedostoista...\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "Et&si tiedostoista...\tCtrl+Shift+F",          IDM_GREP_WIN_SEARCH2
     END
     POPUP "&Näkymä"
     BEGIN

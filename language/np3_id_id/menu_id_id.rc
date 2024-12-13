@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Bersihkan Semua\tAlt+F2",            BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "&Cari"
+    BEGIN
+        MENUITEM "Me&ncari...\tCtrl+F",                                 IDM_EDIT_FIND
+        MENUITEM "&Simpan Teks untuk Pencarian\tAlt+F3",                IDM_EDIT_SAVEFIND
+        MENUITEM "Cari Ber&ikutnya\tF3",                                IDM_EDIT_FINDNEXT
+        MENUITEM "Cari Sebe&lumnya\tShift+F3",                          IDM_EDIT_FINDPREV
+        MENUITEM "Cari Teks yang dipilih Be&rikutnya\tCtrl+F3",         CMD_FINDNEXTSEL
+        MENUITEM "Cari Teks yang dipilih Se&belumnya\tCtrl+Shift+F3",   CMD_FINDPREVSEL
+        MENUITEM "&Ganti...\tCtrl+H",                                   IDM_EDIT_REPLACE
+        MENUITEM "Ganti Se&lanjutnya\tF4",                              IDM_EDIT_REPLACENEXT
+        MENUITEM "&Pergi ke...\tCtrl+G",                                IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "&Cari"
-        BEGIN
-            MENUITEM "Me&ncari...\tCtrl+F",                                 IDM_EDIT_FIND
-            MENUITEM "&Simpan Teks untuk Pencarian\tAlt+F3",                IDM_EDIT_SAVEFIND
-            MENUITEM "Cari Ber&ikutnya\tF3",                                IDM_EDIT_FINDNEXT
-            MENUITEM "Cari Sebe&lumnya\tShift+F3",                          IDM_EDIT_FINDPREV
-            MENUITEM "Cari Teks yang dipilih Be&rikutnya\tCtrl+F3",         CMD_FINDNEXTSEL
-            MENUITEM "Cari Teks yang dipilih Se&belumnya\tCtrl+Shift+F3",   CMD_FINDPREVSEL
-            MENUITEM "&Ganti...\tCtrl+H",                                   IDM_EDIT_REPLACE
-            MENUITEM "Ganti Se&lanjutnya\tF4",                              IDM_EDIT_REPLACENEXT
-            MENUITEM "&Pergi ke...\tCtrl+G",                                IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "&Cari dalam Berkas...\tCtrl+Shift+F",                    IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "&Cari dalam Berkas...\tCtrl+Shift+F",                    IDM_GREP_WIN_SEARCH2
     END
     POPUP "&Tampilan"
     BEGIN

@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Maak Alles Skoon\tAlt+F2",                   BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "S&oek"
+    BEGIN
+        MENUITEM "&Vind...\tCtrl+F",                             IDM_EDIT_FIND
+        MENUITEM "S&toor Vind Text\tAlt+F3",                     IDM_EDIT_SAVEFIND
+        MENUITEM "Vind V&olgende\tF3",                           IDM_EDIT_FINDNEXT
+        MENUITEM "Vind Vo&rige\tShift+F3",                       IDM_EDIT_FINDPREV
+        MENUITEM "Vind Volgende S&eleksie\tCtrl+F3",             CMD_FINDNEXTSEL
+        MENUITEM "Vind Vorige Se&leksie\tCtrl+Shift+F3",         CMD_FINDPREVSEL
+        MENUITEM "Verv&ang...\tCtrl+H",                          IDM_EDIT_REPLACE
+        MENUITEM "Vervang Volge&nde\tF4",                        IDM_EDIT_REPLACENEXT
+        MENUITEM "&Gaan na...\tCtrl+G",                          IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "S&oek"
-        BEGIN
-            MENUITEM "&Vind...\tCtrl+F",                             IDM_EDIT_FIND
-            MENUITEM "S&toor Vind Text\tAlt+F3",                     IDM_EDIT_SAVEFIND
-            MENUITEM "Vind V&olgende\tF3",                           IDM_EDIT_FINDNEXT
-            MENUITEM "Vind Vo&rige\tShift+F3",                       IDM_EDIT_FINDPREV
-            MENUITEM "Vind Volgende S&eleksie\tCtrl+F3",             CMD_FINDNEXTSEL
-            MENUITEM "Vind Vorige Se&leksie\tCtrl+Shift+F3",         CMD_FINDPREVSEL
-            MENUITEM "Verv&ang...\tCtrl+H",                          IDM_EDIT_REPLACE
-            MENUITEM "Vervang Volge&nde\tF4",                        IDM_EDIT_REPLACENEXT
-            MENUITEM "&Gaan na...\tCtrl+G",                          IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "&Soek in lêers...\tCtrl+Shift+F",                 IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "&Soek in lêers...\tCtrl+Shift+F",                 IDM_GREP_WIN_SEARCH2
     END
     POPUP "&Aansig"
     BEGIN

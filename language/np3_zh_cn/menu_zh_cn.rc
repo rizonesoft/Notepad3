@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "清除全部书签(&C)\tAlt+F2",                BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "查找(&R)"
+        BEGIN
+        MENUITEM "查找(&F)...\tCtrl+F",                  IDM_EDIT_FIND
+        MENUITEM "保存查找内容(&A)\tAlt+F3",             IDM_EDIT_SAVEFIND
+        MENUITEM "查找下一个(&N)\tF3",                   IDM_EDIT_FINDNEXT
+        MENUITEM "查找上一个(&P)\tShift+F3",             IDM_EDIT_FINDPREV
+        MENUITEM "向下查找选区(&X)\tCtrl+F3",            CMD_FINDNEXTSEL
+        MENUITEM "向上查找选区(&V)\tCtrl+Shift+F3",      CMD_FINDPREVSEL
+        MENUITEM "替换(&R)...\tCtrl+H",                  IDM_EDIT_REPLACE
+        MENUITEM "替换下一个(&E)\tF4",                   IDM_EDIT_REPLACENEXT
+        MENUITEM "跳转到(&G)...\tCtrl+G",                IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "查找(&R)"
-            BEGIN
-            MENUITEM "查找(&F)...\tCtrl+F",                  IDM_EDIT_FIND
-            MENUITEM "保存查找内容(&A)\tAlt+F3",             IDM_EDIT_SAVEFIND
-            MENUITEM "查找下一个(&N)\tF3",                   IDM_EDIT_FINDNEXT
-            MENUITEM "查找上一个(&P)\tShift+F3",             IDM_EDIT_FINDPREV
-            MENUITEM "向下查找选区(&X)\tCtrl+F3",            CMD_FINDNEXTSEL
-            MENUITEM "向上查找选区(&V)\tCtrl+Shift+F3",      CMD_FINDPREVSEL
-            MENUITEM "替换(&R)...\tCtrl+H",                  IDM_EDIT_REPLACE
-            MENUITEM "替换下一个(&E)\tF4",                   IDM_EDIT_REPLACENEXT
-            MENUITEM "跳转到(&G)...\tCtrl+G",                IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "在文件中查找(&S)...\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "在文件中查找(&S)...\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH2
     END
     POPUP "查看(&V)"
     BEGIN

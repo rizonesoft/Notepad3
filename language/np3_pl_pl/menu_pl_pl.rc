@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Wyczyść wszystko\tAlt+F2",                   BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "&Szukanie"
+    BEGIN
+        MENUITEM "&Znajdź...\tCtrl+F",                          IDM_EDIT_FIND
+        MENUITEM "Zapamiętaj znaleziony tekst\tAlt+F3",         IDM_EDIT_SAVEFIND
+        MENUITEM "Znajdź następny\tF3",                         IDM_EDIT_FINDNEXT
+        MENUITEM "Znajdź poprzedni\tShift+F3",                  IDM_EDIT_FINDPREV
+        MENUITEM "Znajdź następny zaznaczony\tCtrl+F3",         CMD_FINDNEXTSEL
+        MENUITEM "Znajdź poprzedni zaznaczony\tCtrl+Shift+F3",  CMD_FINDPREVSEL
+        MENUITEM "&Zamień...\tCtrl+H",                          IDM_EDIT_REPLACE
+        MENUITEM "Zamień następny\tF4",                         IDM_EDIT_REPLACENEXT
+        MENUITEM "&Przejdź do wiersza...\tCtrl+G",              IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "&Szukanie"
-        BEGIN
-            MENUITEM "&Znajdź...\tCtrl+F",                          IDM_EDIT_FIND
-            MENUITEM "Zapamiętaj znaleziony tekst\tAlt+F3",         IDM_EDIT_SAVEFIND
-            MENUITEM "Znajdź następny\tF3",                         IDM_EDIT_FINDNEXT
-            MENUITEM "Znajdź poprzedni\tShift+F3",                  IDM_EDIT_FINDPREV
-            MENUITEM "Znajdź następny zaznaczony\tCtrl+F3",         CMD_FINDNEXTSEL
-            MENUITEM "Znajdź poprzedni zaznaczony\tCtrl+Shift+F3",  CMD_FINDPREVSEL
-            MENUITEM "&Zamień...\tCtrl+H",                          IDM_EDIT_REPLACE
-            MENUITEM "Zamień następny\tF4",                         IDM_EDIT_REPLACENEXT
-            MENUITEM "&Przejdź do wiersza...\tCtrl+G",              IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "&Szukaj w plikach...\tCtrl+Shift+F",             IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "&Szukaj w plikach...\tCtrl+Shift+F",             IDM_GREP_WIN_SEARCH2
     END
     POPUP "&Widok"
     BEGIN

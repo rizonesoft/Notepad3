@@ -326,21 +326,20 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&Выдаліць усе\tAlt+F2",             BME_EDIT_BOOKMARKCLEAR
         END
+    END
+    POPUP "По&шук"
+    BEGIN
+        MENUITEM "З&найсці...\tCtrl+F",                         IDM_EDIT_FIND
+        MENUITEM "Захаваць пошукавы запыт\tAlt+F3",             IDM_EDIT_SAVEFIND
+        MENUITEM "Знайсці &далей\tF3",                          IDM_EDIT_FINDNEXT
+        MENUITEM "Знайсці &папярэдняе\tShift+F3",               IDM_EDIT_FINDPREV
+        MENUITEM "Знайсці наступнае вылучанае\tCtrl+F3",        CMD_FINDNEXTSEL
+        MENUITEM "Знайсці папярэдняе вылучанае\tCtrl+Shift+F3", CMD_FINDPREVSEL
+        MENUITEM "&Замяніць...\tCtrl+H",                        IDM_EDIT_REPLACE
+        MENUITEM "За&мяніць далей\tF4",                         IDM_EDIT_REPLACENEXT
+        MENUITEM "Пе&райсці...\tCtrl+G",                        IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        POPUP "По&шук"
-        BEGIN
-            MENUITEM "З&найсці...\tCtrl+F",                         IDM_EDIT_FIND
-            MENUITEM "Захаваць пошукавы запыт\tAlt+F3",             IDM_EDIT_SAVEFIND
-            MENUITEM "Знайсці &далей\tF3",                          IDM_EDIT_FINDNEXT
-            MENUITEM "Знайсці &папярэдняе\tShift+F3",               IDM_EDIT_FINDPREV
-            MENUITEM "Знайсці наступнае вылучанае\tCtrl+F3",        CMD_FINDNEXTSEL
-            MENUITEM "Знайсці папярэдняе вылучанае\tCtrl+Shift+F3", CMD_FINDPREVSEL
-            MENUITEM "&Замяніць...\tCtrl+H",                        IDM_EDIT_REPLACE
-            MENUITEM "За&мяніць далей\tF4",                         IDM_EDIT_REPLACENEXT
-            MENUITEM "Пе&райсці...\tCtrl+G",                        IDM_EDIT_GOTOLINE
-            MENUITEM SEPARATOR
-            MENUITEM "&Шукаць у файлах...\tCtrl+Shift+F",              IDM_GREP_WIN_SEARCH2
-        END
+        MENUITEM "&Шукаць у файлах...\tCtrl+Shift+F",              IDM_GREP_WIN_SEARCH2
     END
     POPUP "&Выгляд"
     BEGIN
