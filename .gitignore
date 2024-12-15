@@ -27,10 +27,11 @@ Thumbs.db
 
 /.vs
 /Bin
-/Build/Packages
 /Build/Ignore*
-/Build/make_portable*
+/Build/*_portable_*
 /Build/notepad3*setup*
+/Build/Resources
+/Build/Packages
 
 /packages
 /other_sln/packages
