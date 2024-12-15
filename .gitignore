@@ -49,6 +49,7 @@ Thumbs.db
 /Notepad3.VC.VC.opendb
 
 /np3portableapp/*.7z
+/np3portableapp/*.cmd
 /np3portableapp/*.paf.exe
 /np3portableapp/_buildname.txt
 /np3portableapp/Signing_for*.cmd
