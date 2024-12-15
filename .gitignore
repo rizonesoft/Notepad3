@@ -28,8 +28,9 @@ Thumbs.db
 /.vs
 /Bin
 /Build/Packages
-/Build/make_portable_*
-/Build/notepad3*setup_*
+/Build/Ignore*
+/Build/make_portable*
+/Build/notepad3*setup*
 
 /packages
 /other_sln/packages
@@ -48,10 +49,9 @@ Thumbs.db
 /Notepad3.VC.VC.opendb
 
 /np3portableapp/*.7z
-/np3portableapp/*.paf.exe
-/np3portableapp/_buildname.txt
-/np3portableapp/Signing_for*.cmd
-/np3portableapp/Signing_log*.txt
+/np3portableapp/*.cmd
+/np3portableapp/*.exe
+/np3portableapp/*.txt
 /np3portableapp/Notepad3Portable/Data
 /np3portableapp/Notepad3Portable/Notepad3Portable.*
 /np3portableapp/Notepad3Portable/App/AppInfo/appinfo.ini
