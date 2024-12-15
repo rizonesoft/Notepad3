@@ -28,8 +28,9 @@ Thumbs.db
 /.vs
 /Bin
 /Build/Packages
-/Build/make_portable_*
-/Build/notepad3*setup_*
+/Build/Ignore*
+/Build/make_portable*
+/Build/notepad3*setup*
 
 /packages
 /other_sln/packages
