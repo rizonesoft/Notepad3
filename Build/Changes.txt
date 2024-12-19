@@ -147,6 +147,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1219.2]- Language files missing in Notepad3 portable version.
 [1219.1]- Some Folders/Files are blocked with Inno SETUP v.6.3.x (SUP).
 [1125.1]- Confusing File modified dialog.
 [1125.1]- Do not bring main window to foreground upon file change.
