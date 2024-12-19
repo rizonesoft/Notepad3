@@ -34,13 +34,15 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA/RC Version 6.24.12.02(build_#) (2024-12-02)
+Current BETA/RC Version 6.24.12.19.(build#) (2024-12-19)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[1219.1]- Digitally Signing the Notepad3 "INNO Setup Uninstaller" file (SUP).
+[1219.1]- Add an "Opera Promotion" page in Notepad3 "INNO Setup Installer" (SUP).
 [.531.1]- New settings option to enable/disable feature Multiple Selection.
 [.307.1]- Option to choose between sub-line and whole-line selection on line-number margin click.
 [.111.1]- Allow selected lines movement for rectangular selection also.
@@ -72,6 +74,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[1219.1]- Added Support for INNO Setup 6.3.3 (SUP).
+[1219.1]- Moving the "Search" menu to the Toolbar.
 [.828.1]- Highlight current line: change meaning of foreground color.
 [.825.1]- Move caret line outline frame translucency to alpha2.
 [.825.1]- Zoom dependent caret outline frame thickness, zoom dependent visible whitespace size.
@@ -143,6 +147,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[1219.1]- Some Folders/Files are blocked with Inno SETUP v.6.3.x (SUP).
 [1125.1]- Confusing File modified dialog.
 [1125.1]- Do not bring main window to foreground upon file change.
 [.825.1]- Correct TOML Lexer identifier.
@@ -2598,7 +2603,7 @@ Version 1 Build 350 (05 September 2016)
 Version 1 Build 330 (24 June 2016)
 ========================================================
 - Added Visual Studio 2015 Update 2 version number
-- Added Support for Inno Setup 5.5.9
+- Added Support for INNO Setup 5.5.9 (SUP)
 - Implemented a new versioning scheme
 - Updated Apache Keywords for version 2.4
 - Updated to Scintilla 3.6.6
