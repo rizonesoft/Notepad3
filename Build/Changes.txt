@@ -32,15 +32,13 @@ SCI - (SCI)ntilla Library
 SUP - (S)et(UP) / Installer Package
 UCD - (UCD)ARDET is an Encoding Detector Library
 
-
 ========================================================
-Current BETA/RC Version 6.24.1219.(build_#) (2024-12-19)
+Version 6.24.1221.1 (21 December 2024)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
-[.###.#]- .
 [1219.1]- Digitally Signing the Notepad3 "INNO Setup Uninstaller" file (SUP).
 [1219.1]- Add an "Opera Promotion" page in Notepad3 "INNO Setup Installer" (SUP).
 [.531.1]- New settings option to enable/disable feature Multiple Selection.
@@ -73,7 +71,6 @@ NEW:
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
-[.###.#]- .
 [1219.1]- Added Support for INNO Setup 6.3.3 (SUP).
 [1219.1]- Moving the "Search" menu to the Toolbar.
 [.828.1]- Highlight current line: change meaning of foreground color.
@@ -146,7 +143,6 @@ CHANGES:
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
-[.###.#]- .
 [1219.2]- Language files missing in Notepad3 portable version.
 [1219.1]- Some Folders/Files are blocked with Inno SETUP v.6.3.x (SUP).
 [1125.1]- Confusing File modified dialog.
@@ -252,7 +248,6 @@ FIXES:
 --------------------------------------------------------
 REMOVED:
 --------------------------------------------------------
-[.###.#]- .
 [.529.1]- Due to problems, remove "DrawAnimatedWindow" settings feature and rely on system window animation configuration.
 [.827.1]- Removal of the "es-MX" language to keep only the "es-ES" language (MUI).
 
@@ -268,22 +263,9 @@ CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------------
-[.###.#]- .
 [1125.1]- Vietnamese (vi-VN)
 [.414.1]- Finnish (fi-FI).
 [.419.1]- Indonesian (id-ID).
-
---------------------------------------------------------
-Hello everybody ! 😀
-For our "Notepad3 Translation Projects", we are looking for motivated volunteers, with a priority
-to resume "(incomplete...)" translation projects:
-
-- Greek (el-GR) (incomplete...)
-- Hindi (hi-IN) (incomplete...)
-- etc...
-
-Please, send me a PM (mailto:hpwamr51 @ gmail.com) if you are willing to help. 🤔
---------------------------------------------------------
 
 
 ========================================================
