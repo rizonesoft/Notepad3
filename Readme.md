@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/donate/?hosted_button_id=7UGGCSDUZJPFE)
 
-Notepad3 is a fast and light-weight Scintilla-based text editor with syntax highlighting. It has a small memory footprint, but is powerful enough to handle most programming jobs. [Download Notepad3 here](https://www.rizonesoft.com/downloads/notepad3).
+Notepad3 is a fast and light-weight Scintilla-based text editor with syntax highlighting. It has a small memory footprint, but is powerful enough to handle most programming jobs. [Download Notepad3 here](https://rizonesoft.com/downloads/notepad3).
 
 > *Notepad3 is based on code from Florian Balmer's Notepad2 and XhmikosR's Notepad2-mod. MiniPath is based on code from Florian Balmer's metapath.*
 
@@ -16,7 +16,7 @@ Notepad3 is a fast and light-weight Scintilla-based text editor with syntax high
 
 ## Rizonesoft Support
 
-* **[GET IN TOUCH](https://www.rizonesoft.com/#contact)**
+* **[GET IN TOUCH](https://rizonesoft.com/#contact)**
 * **Premium Support** - On Rizonesoft, support is free and we will assist you the best we can. Please be patient when contacting us; there are mainly volunteers working on Rizonesoft projects, and time is a precious commodity.
 
 ## Changes compared to Flo's official [Notepad2](https://www.flos-freeware.ch/notepad2.html) (made in [Notepad2-mod](https://xhmikosr.github.io/notepad2-mod/)):
@@ -35,7 +35,7 @@ Notepad3 is a fast and light-weight Scintilla-based text editor with syntax high
 
 * Additional syntax highlighting support for Awk, D, golang, MATLAB
 * Regular Expression search engine ([Oniguruma](https://github.com/kkos/oniguruma))
-* New toolbar icons based on Yusuke Kamiyaman's Fugue Icons (purchased by [Rizonesoft](https://www.rizonesoft.com))
+* New toolbar icons based on Yusuke Kamiyaman's Fugue Icons (purchased by [Rizonesoft](https://rizonesoft.com))
 * Hyperlink hotspot highlighting (single-click Open in Browser (Ctrl) / Load in Editor (Alt)
 * Syntax highlighting support for D Source Script, Go Source Script, JSON, Makefiles, MATLAB, Nim Source Code, Power Shell Script, Resource Script, Shell Script
 * New program icon and other small cosmetic changes
