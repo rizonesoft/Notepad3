@@ -9,10 +9,10 @@ Notepad3 is a fast and light-weight Scintilla-based text editor with syntax high
 > *Notepad3 is based on code from Florian Balmer's Notepad2 and XhmikosR's Notepad2-mod. MiniPath is based on code from Florian Balmer's metapath.*
 
 ## Important links!
-* Download page - https://www.rizonesoft.com/downloads/notepad3
-* Latest changelog (release notes) - https://www.rizonesoft.com/downloads/notepad3/update
+* Download page - https://rizonesoft.com/downloads/notepad3
+* Latest changelog (release notes) - https://rizonesoft.com/downloads/notepad3/update
 * Full changelog (all versions/builds) - [Notepad3 - Full Changelog](https://raw.githubusercontent.com/rizonesoft/Notepad3/master/Build/Changes.txt)
-* Documentation - https://www.rizonesoft.com/documents/notepad3
+* Documentation - https://rizonesoft.com/documents/notepad3
 
 ## Rizonesoft Support
 
