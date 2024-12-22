@@ -30,8 +30,8 @@
  * - http://www.andromeda.com/people/ddyer/notepad/NotepadCrypt-technotes.html
  *
  * Notepad3 resources:
- * - https://www.rizonesoft.com/downloads/notepad3/
- * - https://www.rizonesoft.com/documents/notepad3/
+ * - https://rizonesoft.com/downloads/notepad3
+ * - https://rizonesoft.com/documents/notepad3
  * - https://github.com/rizonesoft/Notepad3
  */
 

@@ -8,7 +8,7 @@
 *   Based on code from Notepad2-mod, (c) XhmikosR 2010-2015                   *
 *                                                                             *
 *                                                  (c) Rizonesoft 2008-2024   *
-*                                                 https://www.rizonesoft.com  *
+*                                                     https://rizonesoft.com  *
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
@@ -44,7 +44,7 @@
 #define VERSION_LEGALCOPYRIGHT         "Copyright © 2008-2024 Rizonesoft"
 //#define VERSION_LEGALCOPYRIGHT_LONG  "© Rizonesoft 2008-2024"
 #define VERSION_AUTHORNAME             "© Rizonesoft"
-#define VERSION_WEBPAGEDISPLAY         "https://www.rizonesoft.com"
+#define VERSION_WEBPAGEDISPLAY         "https://rizonesoft.com"
 #define VERSION_COMPANYNAME            "© Rizonesoft"
 //#define VERSION_MODPAGEDISPLAY       "https://xhmikosr.github.io/notepad2-mod/"
 //#define VERSION_WEBPAGE2DISPLAY      "https://www.flos-freeware.ch"
@@ -66,7 +66,7 @@
 
 // ============================================================================
 
-#define VERSION_UPDATE_CHECK           L"https://www.rizonesoft.com/downloads/notepad3/update/?version=" _W(_STRG(VERSION_FILEVERSION))
+#define VERSION_UPDATE_CHECK           L"https://rizonesoft.com/downloads/notepad3/update/?version=" _W(_STRG(VERSION_FILEVERSION))
 
 // ============================================================================
 

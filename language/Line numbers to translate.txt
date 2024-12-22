@@ -6,19 +6,6 @@
 ==                                                                       Last update:  2024-11-13   ==
 ======================================================================================================
 
-January 2023: Line numbers to translate_2023-01 - No "Added or Modified" items in January 2023
-Februar 2023: Line numbers to translate_2023-02 - https://workupload.com/file/Wudw3h2dqyv (2023-02-26)
-March   2023: Line numbers to translate_2023-03 - https://workupload.com/file/hPZnCQnTWF9 (2023-03-27)
-April   2023: Line numbers to translate_2023-04 - https://workupload.com/file/J6zhvZU2cGs (2023-04-30)
-May     2023: Line numbers to translate_2023-05 - https://workupload.com/file/m6FWgG8FNaW (2023-05-13)
-June    2023: Line numbers to translate_2023-06 - https://workupload.com/file/XxuNPw4GSMm (2023-06-30)
-July    2023: Line numbers to translate_2023-07 - https://workupload.com/file/Uqb2Sp3a9AH (2023-07-07)
-August  2023: Line numbers to translate_2023-08 - https://workupload.com/file/tffXdy5dupA (2023-08-28)
-Septemb 2023: Line numbers to translate_2023-09 - https://workupload.com/file/JqfeAM46MxL (2023-09-13)
-October 2023: Line numbers to translate_2023-10 - No "Added or Modified" items in October 2023
-Novemb. 2023: Line numbers to translate_2023-11 - No "Added or Modified" items in November 2023
-Decemb. 2023: Line numbers to translate_2023-12 - No "Added or Modified" items in December 2023
-
 January 2024: Line numbers to translate_2024-01 - No "Added or Modified" items in January 2024
 Februar 2024: Line numbers to translate_2024-02 - No "Added or Modified" items in February 2024
 March   2024: Line numbers to translate_2024-03 - No "Added or Modified" items in March 2024
@@ -30,11 +17,22 @@ August  2024: Line numbers to translate_2024-08 - https://workupload.com/file/QM
 Septemb 2024: Line numbers to translate_2024-09 - No "Added or Modified" items in September 2024
 October 2024: Line numbers to translate_2024-10 - No "Added or Modified" items in October 2024
 Novemb. 2024: Line numbers to translate_2024-11 - https://workupload.com/file/3ZUjcxrZv9p (2024-11-13)
-Decemb. 2024: Line numbers to translate_2024-12 -  (2024-12-xx)
+Decemb. 2024: Line numbers to translate_2024-12 - No "Added or Modified" items in December 2024
 
-Comments and suggestions are welcome... 😃
+January 2025: Line numbers to translate_2025-01 -  (2025-01-xx)
+Februar 2025: Line numbers to translate_2025-02 -  (2025-02-xx)
+March   2025: Line numbers to translate_2025-03 -  (2025-03-xx)
+April   2025: Line numbers to translate_2025-04 -  (2025-04-xx)
+May     2025: Line numbers to translate_2025-05 -  (2025-05-xx)
+June    2025: Line numbers to translate_2025-06 -  (2025-06-xx)
+July    2025: Line numbers to translate_2025-07 -  (2025-07-xx)
+August  2025: Line numbers to translate_2025-08 -  (2025-08-xx)
+Septemb 2025: Line numbers to translate_2025-09 -  (2025-09-xx)
+October 2025: Line numbers to translate_2025-10 -  (2025-10-xx)
+Novemb. 2025: Line numbers to translate_2025-11 -  (2025-11-xx)
+Decemb. 2025: Line numbers to translate_2025-12 -  (2025-12-xx)
 
-If you have any difficulties or questions, do not hesitate to contact me.
+If you have any difficulties or questions, do not hesitate to contact me. 😃
 
 hpwamr - MUI Coordinator
 ------------------------------------------------------------------------------------------------------

@@ -3,7 +3,7 @@
 =            Notepad3 - light-weight Scintilla-based text editor for Windows   =
 =                                                                              =
 =                                                   (c) Rizonesoft 2008-2024   =
-=                                                 https://www.rizonesoft.com   =
+=                                                     https://rizonesoft.com   =
 =                                                                              =
 ================================================================================
 Rizonesoft Notepad3 --- README ---
@@ -69,7 +69,7 @@ Development:
 --------------------------------------------------------------------------------
 Contributors:
 -------------
-Derick Payne (© Rizonesoft)             https://www.rizonesoft.com
+Derick Payne (© Rizonesoft)             https://rizonesoft.com
 XhmikosR (Notepad2-mod)                 https://xhmikosr.github.io/notepad2-mod
 Kai Liu (CodeFolding)                   https://code.kliu.org/misc/notepad2
 RL Vision (Bookmarks)                   https://www.rlvision.com/notepad2/about.php
@@ -156,7 +156,7 @@ Notepad3 icon by Vexels.com     https://www.vexels.com
 Notepad3 Licence:
 -----------------
 Notepad3 and MiniPath Copyright © 2008-2024 Rizonesoft, All rights reserved.
-https://www.rizonesoft.com
+https://rizonesoft.com
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
