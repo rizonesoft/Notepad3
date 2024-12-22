@@ -16,7 +16,7 @@ Notepad3 is a fast and light-weight Scintilla-based text editor with syntax high
 
 ## Rizonesoft Support
 
-* **[GET IN TOUCH](https://rizonesoft.com/#contact)**
+* **[GET IN TOUCH](https://rizonesoft.com/contact-us)**
 * **Premium Support** - On Rizonesoft, support is free and we will assist you the best we can. Please be patient when contacting us; there are mainly volunteers working on Rizonesoft projects, and time is a precious commodity.
 
 ## Changes compared to Flo's official [Notepad2](https://www.flos-freeware.ch/notepad2.html) (made in [Notepad2-mod](https://xhmikosr.github.io/notepad2-mod/)):

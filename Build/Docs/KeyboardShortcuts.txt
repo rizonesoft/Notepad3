@@ -3,7 +3,7 @@
 =            Notepad3 - light-weight Scintilla-based text editor for Windows   =
 =                                                                              =
 =                                                   (c) Rizonesoft 2008-2024   =
-=                                                 https://www.rizonesoft.com   =
+=                                                     https://rizonesoft.com   =
 =                                                                              =
 ================================================================================
 

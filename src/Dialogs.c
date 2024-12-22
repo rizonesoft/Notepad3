@@ -1235,7 +1235,7 @@ CASE_WM_CTLCOLOR_SET:
         case NM_RETURN: {
             switch (pnmhdr->idFrom) {
             case IDC_WEBPAGE:
-                ShellExecute(hwnd, L"open", L"https://www.rizonesoft.com", NULL, NULL, SW_SHOWNORMAL);
+                ShellExecute(hwnd, L"open", L"https://rizonesoft.com", NULL, NULL, SW_SHOWNORMAL);
                 break;
 
             default:

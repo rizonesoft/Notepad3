@@ -85,7 +85,7 @@ IDS_MUI_ABOUT_DEV  "\
 "
 
 IDS_MUI_ABOUT_CONTRIBS  "\
-\\cf0 Derick Payne (\\u0169   Rizonesoft)\\tab https://www.rizonesoft.com\\par\
+\\cf0 Derick Payne (\\u0169   Rizonesoft)\\tab https://rizonesoft.com\\par\
 \\cf0 XhmikosR (Notepad2-mod)\\tab https://xhmikosr.github.io/notepad2-mod\\par\
 \\cf0 Kai Liu (CodeFolding)\\tab https://code.kliu.org/misc/notepad2\\par\
 \\cf0 RL Vision (Bookmarks)\\tab https://www.rlvision.com/notepad2/about.php\\par\
@@ -184,7 +184,7 @@ IDS_MUI_ABOUT_RTF_6  "\
 \\cf0 \\fs20\\b1\\ul1 Notepad3 License:\\ul0\\b0\\fs18\\par\
 \\cf0 \\par\
 \\cf0 Notepad3 and MiniPath Copyright \\u0169   2008-2024 Rizonesoft, All rights reserved.\\par\
-\\cf0 https://www.rizonesoft.com\\par\
+\\cf0 https://rizonesoft.com\\par\
 \\cf0 \\par\
 \\cf0 Redistribution and use in source and binary forms, with or without modification,\\par\
 \\cf0 are permitted provided that the following conditions are met:\\par\

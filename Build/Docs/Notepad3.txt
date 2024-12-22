@@ -77,7 +77,7 @@ Contributors:
 
 
 More information:
-* Binaries:                   https://www.rizonesoft.com/downloads/notepad3
+* Binaries:                   https://rizonesoft.com/downloads/notepad3
 * Source code:                https://github.com/rizonesoft/Notepad3
 *                             https://github.com/XhmikosR/notepad2-mod
 * Official Notepad2 website:  https://www.flos-freeware.ch/notepad2.html

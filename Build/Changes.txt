@@ -3,7 +3,7 @@
 =            Notepad3 - light-weight Scintilla-based text editor for Windows   =
 =                                                                              =
 =                                                   (c) Rizonesoft 2008-2024   =
-=                                                 https://www.rizonesoft.com   =
+=                                                     https://rizonesoft.com   =
 =                                                                              =
 ================================================================================
 Rizonesoft Notepad3 --- CHANGELOG ---
@@ -31,6 +31,63 @@ ONI - (ONI)guruma Regex engine
 SCI - (SCI)ntilla Library
 SUP - (S)et(UP) / Installer Package
 UCD - (UCD)ARDET is an Encoding Detector Library
+
+
+========================================================
+Current BETA Version 6.24.1222.(build_#) (2024-12-22)
+========================================================
+
+--------------------------------------------------------
+NEW:
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+CHANGES:
+--------------------------------------------------------
+[.###.#]- .
+[1222.1]- Correction of Rizonesoft's URL.
+
+--------------------------------------------------------
+FIXES:
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+REMOVED:
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+CHANGES Versions in Tools or Libraries:
+--------------------------------------------------------
+[1202.1]- Update Lexilla Library (LEX) version 5.4.1 (2024-10-19).
+[1202.1]- Update Scintilla Library (SCI) version 5.5.3 (2024-10-19).
+[.101.1]- Update grepWinNP3 (GRE) version 2.1.15.48 (2024-01-10).
+[.101.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2023-10-14).
+[1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
+
+--------------------------------------------------------
+TRANSLATIONS (MUI):
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+Hello everybody ! 😀
+For our "Notepad3 Translation Projects", we are looking for motivated volunteers, with a priority
+to resume "(incomplete...)" translation projects:
+
+- Greek (el-GR) (incomplete...)
+- Hindi (hi-IN) (incomplete...)
+- etc...
+
+Please, send me a PM (mailto:hpwamr51 @ gmail.com) if you are willing to help. 🤔
+--------------------------------------------------------
+
 
 ========================================================
 Version 6.24.1221.1 (21 December 2024)
