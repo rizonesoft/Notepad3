@@ -9,7 +9,7 @@
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *   Mostly taken from SciTE, (c) Neil Hodgson                                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2024   *
+*                                                  (c) Rizonesoft 2008-2025   *
 *                                                 http://www.rizonesoft.com   *
 *                                                                             *
 *                                                                             *
