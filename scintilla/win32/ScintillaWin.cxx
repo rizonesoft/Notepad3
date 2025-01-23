@@ -356,9 +356,7 @@ class ScintillaWin :
 	bool capturedMouse;
 	bool trackedMouseLeave;
 	BOOL typingWithoutCursor;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	//bool cursorIsHidden;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	bool cursorIsHidden;
 	SetCoalescableTimerSig SetCoalescableTimerFn;
 
 	unsigned int linesPerScroll;	///< Intellimouse support
@@ -505,9 +503,6 @@ class ScintillaWin :
 	void ClaimSelection() override;
 
 	void GetMouseParameters() noexcept;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	bool IsMouseCursorHidden() noexcept;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	void CopyToGlobal(GlobalMemory &gmUnicode, const SelectionText &selectedText);
 	void CopyToClipboard(const SelectionText &selectedText) override;
 	void ScrollMessage(WPARAM wParam);
@@ -593,9 +588,7 @@ ScintillaWin::ScintillaWin(HWND hwnd) {
 	capturedMouse = false;
 	trackedMouseLeave = false;
 	typingWithoutCursor = false;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	//cursorIsHidden = false;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	cursorIsHidden = false;
 	SetCoalescableTimerFn = nullptr;
 
 	linesPerScroll = 0;
@@ -1632,9 +1625,9 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 			// Windows might send WM_MOUSEMOVE even though the mouse has not been moved:
 			// http://blogs.msdn.com/b/oldnewthing/archive/2003/10/01/55108.aspx
 			if (ptMouseLast != pt) {
-				if (IsMouseCursorHidden()) {
+				if (cursorIsHidden) {
 					::ShowCursor(TRUE);
-					//cursorIsHidden = false; // to be shown by ButtonMoveWithModifiers
+					cursorIsHidden = false; // to be shown by ButtonMoveWithModifiers
 				}
 				SetTrackMouseLeaveEvent(true);
 				ButtonMoveWithModifiers(pt, ::GetMessageTime(), MouseModifiers(wParam));
@@ -1645,7 +1638,10 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 
 	case WM_MOUSELEAVE:
 		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		if (IsMouseCursorHidden()) { ::ShowCursor(TRUE); }
+		if (cursorIsHidden) {
+			::ShowCursor(TRUE);
+			cursorIsHidden = false;
+		}
 		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		SetTrackMouseLeaveEvent(false);
 		MouseLeave();
@@ -1813,6 +1809,12 @@ sptr_t ScintillaWin::KeyMessage(unsigned int iMessage, uptr_t wParam, sptr_t lPa
 sptr_t ScintillaWin::FocusMessage(unsigned int iMessage, uptr_t wParam, sptr_t) {
 	switch (iMessage) {
 	case WM_KILLFOCUS: {
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		if (cursorIsHidden) {
+			::ShowCursor(TRUE);
+			cursorIsHidden = false;
+		}
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		HWND wOther = reinterpret_cast<HWND>(wParam);
 		HWND wThis = MainHWND();
 		const HWND wCT = HwndFromWindow(ct.wCallTip);
@@ -2147,10 +2149,7 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 
 		case WM_SETCURSOR:
 			if (LOWORD(lParam) == HTCLIENT) {
-				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-				//if (!cursorIsHidden) {
-				if (!IsMouseCursorHidden()) {
-				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+				if (!cursorIsHidden) {
 					POINT pt;
 					if (::GetCursorPos(&pt)) {
 						::ScreenToClient(MainHWND(), &pt);
@@ -2426,13 +2425,13 @@ void ScintillaWin::SetTrackMouseLeaveEvent(bool on) noexcept {
 
 void ScintillaWin::HideCursorIfPreferred() noexcept {
 	// SPI_GETMOUSEVANISH from OS.
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	if (typingWithoutCursor && !IsMouseCursorHidden()) {
+	if (typingWithoutCursor && !cursorIsHidden) {
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		//::SetCursor(NULL);
 		::ShowCursor(FALSE);
-		//cursorIsHidden = true;
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+		cursorIsHidden = true;
 	}
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 }
 
 void ScintillaWin::UpdateBaseElements() {
@@ -3324,13 +3323,6 @@ void ScintillaWin::GetMouseParameters() noexcept {
 	}
 	::SystemParametersInfo(SPI_GETMOUSEVANISH, 0, &typingWithoutCursor, 0);
 }
-
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-bool ScintillaWin::IsMouseCursorHidden() noexcept {
-	CURSORINFO curInfo = { sizeof(CURSORINFO) };
-	return GetCursorInfo(&curInfo) ? (curInfo.flags == 0UL) : false;
-}
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 void ScintillaWin::CopyToGlobal(GlobalMemory &gmUnicode, const SelectionText &selectedText) {
 	const std::string_view svSelected(selectedText.Data(), selectedText.LengthWithTerminator());
