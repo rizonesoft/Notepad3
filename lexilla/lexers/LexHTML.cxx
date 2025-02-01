@@ -2337,6 +2337,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				}
 				styler.ColourTo(i, StateToPrint);
 				state = SCE_HJ_DEFAULT;
+				continue;
 			} else if (ch == '\\') {
 				// Gobble up the quoted character
 				if (chNext == '\\' || chNext == '/') {
