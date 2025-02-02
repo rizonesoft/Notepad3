@@ -42,7 +42,7 @@ KEYWORDLIST KeyWords_CPP =
 
 EDITLEXER lexCPP =
 {
-    SCLEX_CPP, "cpp", IDS_LEX_CPP_SRC, L"C/C++ Source Code", L"c; cpp; cxx; cc; h; hpp; hxx; hh; mm; idl; midl; inl; odl; xpm; pch", L"",
+    SCLEX_CPP, "cpp", IDS_LEX_CPP_SRC, L"C/C++ Source Code", L"c; cpp; cxx; cc; h; hpp; hxx; hh; mm; idl; midl; inl; odl; xpm; pch; cl", L"",
     &KeyWords_CPP, {
         { {STYLE_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
         //{ {SCE_C_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
