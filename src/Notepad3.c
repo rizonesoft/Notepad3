@@ -3598,10 +3598,8 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     s_WinCurrentWidth = cx;
 
-    UpdateToolbar();
-    UpdateStatusbar(true);
+    UpdateToolbar_Now(hwnd);
     UpdateMargins(true);
-    UpdateTitlebar(hwnd);
     //~UpdateUI(); //~ recursion
     
     return FALSE;
@@ -3769,7 +3767,7 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         DragFinish(hDrop);
         Path_Release(hdrop_pth);
-        UpdateToolbar(hwnd);
+        UpdateToolbar_Now(hwnd);
     }
     return 0;
 }
@@ -3952,8 +3950,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
             FreeMem(params);
         }
 
-        UpdateToolbar();
-        UpdateStatusbar(true);
+        UpdateToolbar_Now(hwnd);
         UpdateMargins(true);
     }
 
@@ -4686,8 +4683,8 @@ static void _ApplyChangeHistoryMode()
     else {
         SciCall_SetChangeHistory(Settings.ChangeHistoryMode);
     }
-    UpdateMargins(true);
     UpdateToolbar();
+    UpdateMargins(true);
 }
 
 
@@ -4706,7 +4703,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         Style_InsertThemesMenu(Globals.hMainMenu);
         DrawMenuBar(Globals.hwndMain);
         UpdateToolbar();
-        UpdateStatusbar(true);
         return FALSE;
     }
     #endif
@@ -10042,6 +10038,13 @@ void UpdateToolbar()
     _DelayUpdateTitlebar(_MQ_STD, Globals.hwndMain);
 }
 
+void UpdateToolbar_Now(const HWND hwnd)
+{
+    _UpdateToolbarDelayed();
+    _UpdateStatusbarDelayed(true);
+    _UpdateTitlebarDelayed(hwnd);
+}
+
 
 //=============================================================================
 
@@ -11552,7 +11555,6 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
 
         UpdateToolbar();
         UpdateMargins(true);
-        UpdateStatusbar(true);
         if (SciCall_GetZoom() != 100) {
             ShowZoomCallTip();
         }
@@ -11789,12 +11791,6 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
         Flags.bHugeFileLoadState = false; // reset
     }
 
-    UpdateToolbar();
-    UpdateMargins(true);
-    UpdateStatusbar(true);
-    if (SciCall_GetZoom() != 100) {
-        ShowZoomCallTip();
-    }
 
     Path_Release(hopen_file);
 
@@ -11807,6 +11803,13 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
     if (visLn > 0) {
         SciCall_SetFirstVisibleLine(visLn);
     }
+
+    UpdateMargins(true);
+    if (SciCall_GetZoom() != 100) {
+        ShowZoomCallTip();
+    }
+    UpdateToolbar_Now(Globals.hwndMain);
+
     return fSuccess;
 }
 
@@ -11861,7 +11864,6 @@ bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc)
     SetSaveDone();
     UpdateToolbar();
     UpdateMargins(true);
-    UpdateStatusbar(true);
 
     return result;
 }

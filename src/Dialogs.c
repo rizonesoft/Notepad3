@@ -5263,12 +5263,19 @@ static HPATHL s_pthCachedFilePath = NULL;
 void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, const TITLEPROPS_T properties, LPCWSTR lpszExcerpt, bool forceRedraw)
 {
     static TITLEPROPS_T s_properties = { 0 };
+    static WCHAR        s_compTitleExcerpt[MIDSZ_BUFFER] = { L'\0' };
     static size_t       s_hashFileName = 0;
-    static size_t       s_hashExcerpt = 0;
+
+    bool bExcerptChanged = false;
+    bool bFilePathChanged = false;
 
     if (s_bFreezeAppTitle) {
         return;
     }
+    if (!s_pthCachedFilePath) {
+        s_pthCachedFilePath = Path_Allocate(L"");
+    }
+
 
     if (!forceRedraw) {
         if (s_properties.iFormat != properties.iFormat) {
@@ -5296,15 +5303,16 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, const TITLEPROPS_T prop
             forceRedraw = true;
         }
         else {
-            size_t const hashExcerpt = SimpleHash(lpszExcerpt);
-            if (s_hashExcerpt != hashExcerpt) {
-                forceRedraw = true;
-            }
-            else {
-                size_t const hashFileName = SimpleHash(Path_Get(pthFilePath));
-                if (s_hashFileName != hashFileName) {
+            for (int i = 0; i < COUNTOF(s_compTitleExcerpt); ++i) {
+                if (s_compTitleExcerpt[i] != lpszExcerpt[i]) {
                     forceRedraw = true;
+                    bExcerptChanged = true;
+                    break;
                 }
+            }
+            if (Path_StrgComparePath(s_pthCachedFilePath, pthFilePath, Paths.WorkingDirectory) != 0) {
+                forceRedraw = true;
+                bFilePathChanged = true;
             }
         }
     }
@@ -5315,12 +5323,19 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, const TITLEPROPS_T prop
 
     // save current state
     s_properties = properties;
-    s_hashExcerpt = SimpleHash(lpszExcerpt);
-    s_hashFileName = SimpleHash(Path_Get(pthFilePath));
 
-    if (!s_pthCachedFilePath) {
-        s_pthCachedFilePath = Path_Allocate(L"");
+    if (bExcerptChanged) {
+        StringCchCopy(s_compTitleExcerpt, COUNTOF(s_compTitleExcerpt), lpszExcerpt);
     }
+    if (bFilePathChanged) {
+        if (Path_IsNotEmpty(pthFilePath)) {
+            Path_Reset(s_pthCachedFilePath, Path_Get(pthFilePath));
+        }
+        else {
+            Path_Empty(s_pthCachedFilePath, false);
+        }
+    }
+
 
     WCHAR szAppName[SMALL_BUFFER] = { L'\0' };
     if (properties.bPasteBoard) {
@@ -5363,11 +5378,11 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, const TITLEPROPS_T prop
     else if (Path_IsNotEmpty(pthFilePath)) {
 
         if (properties.iFormat < 2) {
-            if (Path_StrgComparePath(s_pthCachedFilePath, pthFilePath, Paths.WorkingDirectory) != 0) {
-                Path_Reset(s_pthCachedFilePath, Path_Get(pthFilePath));
+            if (bFilePathChanged) {
+                //StringCchCopy(s_wchCachedDisplayName, COUNTOF(s_wchCachedDisplayName), Path_FindFileName(s_pthCachedFilePath));
                 Path_GetDisplayName(s_wchCachedDisplayName, COUNTOF(s_wchCachedDisplayName), s_pthCachedFilePath, s_szUntitled, true);
             }
-            StringCchCat(szTitle, COUNTOF(szTitle), Path_FindFileName(s_pthCachedFilePath));
+            StringCchCat(szTitle, COUNTOF(szTitle), s_wchCachedDisplayName);
             if (properties.iFormat == 1) {
                 HPATHL hdir = Path_Copy(s_pthCachedFilePath);
                 if (Path_IsNotEmpty(hdir)) {
@@ -5384,7 +5399,6 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, const TITLEPROPS_T prop
         }
     }
     else {
-        Path_Empty(s_pthCachedFilePath, false);
         s_wchCachedDisplayName[0] = L'\0';
         StringCchCat(szTitle, COUNTOF(szTitle), s_szUntitled);
     }
