@@ -52,13 +52,6 @@ void SelectionPosition::MoveForInsertDelete(bool insertion, Sci::Position startC
 	}
 }
 
-bool SelectionPosition::operator <(const SelectionPosition &other) const noexcept {
-	if (position == other.position)
-		return virtualSpace < other.virtualSpace;
-	else
-		return position < other.position;
-}
-
 bool SelectionPosition::operator >(const SelectionPosition &other) const noexcept {
 	if (position == other.position)
 		return virtualSpace > other.virtualSpace;
@@ -214,6 +207,10 @@ Sci::Position Selection::MainAnchor() const noexcept {
 }
 
 SelectionRange &Selection::Rectangular() noexcept {
+	return rangeRectangular;
+}
+
+SelectionRange Selection::RectangularCopy() const noexcept {
 	return rangeRectangular;
 }
 
@@ -428,11 +425,13 @@ void Selection::Clear() noexcept {
 	if (ranges.size() > 1) {
 		ranges.erase(ranges.begin() + 1, ranges.end());
 	}
-	mainRange = 0;
-	selType = SelTypes::stream;
-	moveExtends = false;
-	ranges[mainRange].Reset();
+	ranges[0].Reset();
+	rangesSaved.clear();
 	rangeRectangular.Reset();
+	mainRange = 0;
+	moveExtends = false;
+	tentativeMain = false;
+	selType = SelTypes::stream;
 }
 
 void Selection::RemoveDuplicates() noexcept {
@@ -456,3 +455,6 @@ void Selection::RotateMain() noexcept {
 	mainRange = (mainRange + 1) % ranges.size();
 }
 
+void Selection::SetRanges(const Ranges &rangesToSet) {
+	ranges = rangesToSet;
+}

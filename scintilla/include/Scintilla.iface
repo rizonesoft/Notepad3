@@ -1355,6 +1355,16 @@ set void SetChangeHistory=2780(ChangeHistoryOption changeHistory,)
 # Report change history status.
 get ChangeHistoryOption GetChangeHistory=2781(,)
 
+enu UndoSelectionHistoryOption=SC_UNDO_SELECTION_HISTORY_
+val SC_UNDO_SELECTION_HISTORY_DISABLED=0
+val SC_UNDO_SELECTION_HISTORY_ENABLED=1
+
+# Enable or disable undo selection history.
+set void SetUndoSelectionHistory=2782(UndoSelectionHistoryOption undoSelectionHistory,)
+
+# Report undo selection history status.
+get UndoSelectionHistoryOption GetUndoSelectionHistory=2783(,)
+
 # Retrieve the display line at the top of the display.
 get line GetFirstVisibleLine=2152(,)
 

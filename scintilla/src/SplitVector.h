@@ -195,7 +195,7 @@ public:
 			}
 			RoomFor(insertLength);
 			GapTo(position);
-			std::fill(body.data() + part1Length, body.data() + part1Length + insertLength, v);
+			std::fill_n(body.data() + part1Length, insertLength, v);
 			lengthBody += insertLength;
 			part1Length += insertLength;
 			gapLength -= insertLength;
@@ -214,10 +214,8 @@ public:
 			}
 			RoomFor(insertLength);
 			GapTo(position);
-			for (ptrdiff_t elem = part1Length; elem < part1Length + insertLength; elem++) {
-				T emptyOne = {};
-				body[elem] = std::move(emptyOne);
-			}
+			T *ptr = body.data() + part1Length;
+			std::uninitialized_value_construct_n(ptr, insertLength);
 			lengthBody += insertLength;
 			part1Length += insertLength;
 			gapLength -= insertLength;
@@ -242,7 +240,7 @@ public:
 			}
 			RoomFor(insertLength);
 			GapTo(positionToInsert);
-			std::copy(s + positionFrom, s + positionFrom + insertLength, body.data() + part1Length);
+			std::copy_n(s + positionFrom, insertLength, body.data() + part1Length);
 			lengthBody += insertLength;
 			part1Length += insertLength;
 			gapLength -= insertLength;
@@ -288,11 +286,11 @@ public:
 			if (range1Length > part1AfterPosition)
 				range1Length = part1AfterPosition;
 		}
-		std::copy(body.data() + position, body.data() + position + range1Length, buffer);
+		std::copy_n(body.data() + position, range1Length, buffer);
 		buffer += range1Length;
 		position = position + range1Length + gapLength;
 		const ptrdiff_t range2Length = retrieveLength - range1Length;
-		std::copy(body.data() + position, body.data() + position + range2Length, buffer);
+		std::copy_n(body.data() + position, range2Length, buffer);
 	}
 
 	/// Compact the buffer and return a pointer to the first element.

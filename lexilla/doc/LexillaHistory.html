@@ -588,15 +588,48 @@
       </tr><tr>
 	<td>Henrik S. Johansen</td>
 	<td>Ekopalypse</td>
+	<td>HoTschir</td>
     </tr>
     </table>
     <h2>Releases</h2>
+    <h3>
+       <a href="https://www.scintilla.org/lexilla543.zip">Release 5.4.3</a>
+    </h3>
+    <ul>
+	<li>
+	Released 18 December 2024.
+	</li>
+	<li>
+	C++: Fix evaluation of != in preprocessor condition.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/299">Issue #299</a>.
+	</li>
+	<li>
+	Modula-3: Allow digits in uppercase identifiers.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/297">Issue #297</a>.
+	</li>
+	<li>
+	Pascal: Fix asm style extending past end.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/295">Issue #295</a>.
+	</li>
+	<li>
+	Python: Fix detection of attributes and decorators.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/294">Issue #294</a>,
+	<a href="https://github.com/ScintillaOrg/lexilla/pull/302">Pull request #302</a>.
+	</li>
+	<li>
+	Ruby: Implement substyles for identifiers SCE_RB_IDENTIFIER.
+	</li>
+	<li>
+	Ruby: Recognize name as SCE_RB_DEFNAME in def when `::` used as well as `.`.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/300">Issue #300</a>.
+	</li>
+    </ul>
     <h3>
        <a href="https://www.scintilla.org/lexilla542.zip">Release 5.4.2</a>
     </h3>
     <ul>
 	<li>
-	Released 19 October 2024.
+	Released 18 December 2024.
 	</li>
 	<li>
 	Update to Unicode 15.1.
@@ -610,6 +643,11 @@
 	JavaScript: Use correct SCE_HJA_TEMPLATELITERAL style for server-side template literals in
 	HTML instead of client-side style.
 	<a href="https://github.com/ScintillaOrg/lexilla/issues/286">Issue #286</a>.
+	</li>
+	<li>
+	JavaScript: Use correct SCE_HJ_SYMBOLS style for '.' after regex instead of SCE_HJ_WORD.
+	Prevent empty word assertion when non-word character after regex flag.
+	<a href="https://github.com/ScintillaOrg/lexilla/issues/289">Issue #289</a>.
 	</li>
 	<li>
 	PHP: Fix unstable lexing with substyled keyword and unterminated string.
