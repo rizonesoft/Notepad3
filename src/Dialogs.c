@@ -4864,9 +4864,9 @@ void DialogNewWindow(HWND hwnd, bool bSaveBeforeOpen, const HPATHL hFilePath, WI
     HPATHL hmod_pth = Path_Allocate(NULL);
     Path_GetModuleFilePath(hmod_pth);
 
-    StringCchPrintf(wch, COUNTOF(wch), L"\"-appid=%s\"", Settings2.AppUserModelID);
+    StringCchPrintf(wch, COUNTOF(wch), L"-appid=\"%s\"", Settings2.AppUserModelID);
     HSTRINGW hparam_str = StrgCreate(wch);
-    StringCchPrintf(wch, COUNTOF(wch), L"\" -sysmru=%i\"", (Flags.ShellUseSystemMRU ? 1 : 0));
+    StringCchPrintf(wch, COUNTOF(wch), L" -sysmru=\"%i\"", (Flags.ShellUseSystemMRU ? 1 : 0));
     StrgCat(hparam_str, wch);
     if (Path_IsNotEmpty(Paths.IniFile)) {
         HPATHL hini_path = Path_Copy(Paths.IniFile);

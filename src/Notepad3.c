@@ -670,6 +670,7 @@ static inline void ResetFileObservationData(const bool bResetEvt) {
             ZeroMemory(&(s_FileChgObsvrData.fdCurFile), sizeof(WIN32_FIND_DATA));
         }
     }
+
 }
 // ----------------------------------------------------------------------------
 
@@ -4787,9 +4788,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
 
-    case IDM_FILE_SAVE:
-        FileSave(FSF_None);
-        break;
+    case IDM_FILE_SAVE: {
+        FileSave((FileWatching.FileWatchingMode <= FWM_DONT_CARE) ? FileSave(FSF_SaveAlways) : FSF_None);
+    } break;
 
 
     case IDM_FILE_SAVEAS:
@@ -9435,6 +9436,8 @@ void ParseCommandLine()
     LPWSTR const lp2 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
     LPWSTR const lp3 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
 
+    //assert(!"ParseCommandLine() - ATTACH DEBUGGER NOW");
+
     if (lp1 && lp2 && lp3) {
 
         // Start with 2nd argument
@@ -9470,6 +9473,7 @@ void ParseCommandLine()
                 bIsFileArg = true;
             }
             // pathname
+
             if (bIsFileArg) {
 
                 LPWSTR const lpFileBuf = AllocMem(sizeof(WCHAR) * len, HEAP_ZERO_MEMORY);
@@ -13031,7 +13035,7 @@ void InstallFileWatching(const bool bInstall) {
 
             bool const bPrevReadOnlyAttrib = IsFileReadOnly();
             if (bPrevReadOnlyAttrib) {
-                SendWMCommand(Globals.hwndMain, IDM_FILE_READONLY); // try to gain access
+                PostWMCommand(Globals.hwndMain, IDM_FILE_READONLY); // try to gain access
             }
 
             if (!IsFileReadOnly()) {
@@ -13062,7 +13066,7 @@ void InstallFileWatching(const bool bInstall) {
             }
 
             if (bPrevReadOnlyAttrib && !IsFileReadOnly()) {
-                SendWMCommand(Globals.hwndMain, IDM_FILE_READONLY); // try to reset
+                PostWMCommand(Globals.hwndMain, IDM_FILE_READONLY); // try to reset
             }
         }
     }
