@@ -749,6 +749,7 @@ DeclareSciCallV2(AddUndoAction, ADDUNDOACTION, int, token, int, flags);
 DeclareSciCallV0(EndUndoAction, ENDUNDOACTION);
 DeclareSciCallR0(GetUndoCollection, GETUNDOCOLLECTION, bool);
 DeclareSciCallV1(SetUndoCollection, SETUNDOCOLLECTION, bool, bCollectUndo);
+DeclareSciCallR0(GetUndoSequence, GETUNDOSEQUENCE, int);
 
 
 //=============================================================================

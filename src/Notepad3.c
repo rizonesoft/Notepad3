@@ -183,6 +183,8 @@ static int const INISECTIONBUFCNT = 32; // .ini file load buffer in KB
 
 // ----------------------------------------------------------------------------
 
+const char* const _assert_msg = "Broken UndoRedo-Transaction!";
+
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // (!) ENSURE  IDT_FILE_NEW -> IDT_VIEW_NEW_WINDOW corresponds to order of Toolbar.bmp
 #define NUMTOOLBITMAPS (31)
@@ -433,17 +435,11 @@ static LONG  _UndoRedoActionMap(const LONG token, const UndoRedoSelection_t** se
 // => UndoTransActionBegin();
 // => EndUndoTransAction();
 
-
-static volatile int UndoRedoActionStackCount = 0;
-
-__forceinline bool _InUndoRedoTransaction()
-{
-    return (UndoRedoActionStackCount > 0);
-}
+// ----------------------------------------------------------------------------
 
 static inline void _SplitUndoTransaction()
 {
-    if (_InUndoRedoTransaction()) {
+    if (SciCall_GetUndoSequence() > 0) {
         SciCall_EndUndoAction();
         SciCall_BeginUndoAction();
     }
@@ -1364,6 +1360,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         _CleanUpResources(hwnd, true);
         return 1;
     }
+
+    // !!!  now, SciCall_ functions are available (initialized library)
 
     DrawMenuBar(hwnd);
 
@@ -8776,7 +8774,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification* const scn, bool* bMod
         if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
             *bModified = false; // not yet
             if (!bInUndoRedoStep) {
-                if (!_InUndoRedoTransaction() && (_urtoken < URTok_TokenStart)) {
+                if ((SciCall_GetUndoSequence() <= 1) && (_urtoken < URTok_TokenStart)) {
                     _SaveSelectionToBuffer();
                     bool const bSelEmpty = SciCall_IsSelectionEmpty();
                     bool const bIsMultiRectSel = Sci_IsMultiOrRectangleSelection();
@@ -8796,7 +8794,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification* const scn, bool* bMod
         }
         else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
             if (!bInUndoRedoStep) {
-                if (!_InUndoRedoTransaction() && (_urtoken >= URTok_TokenStart)) {
+                if ((SciCall_GetUndoSequence() <= 1) && (_urtoken >= URTok_TokenStart)) {
                     _SaveRedoSelection(_urtoken, SciCall_GetModify());
                     _urtoken = URTok_NoTransaction;
                 }
@@ -10876,6 +10874,8 @@ static void _UndoRedoRecordingStart()
 static void _UndoRedoRecordingStop()
 {
     _UndoRedoActionMap(URTok_NoTransaction, NULL); // clear
+    while (SciCall_GetUndoSequence() > 0)
+        SciCall_EndUndoAction();
     SciCall_EmptyUndoBuffer();
     SciCall_SetSavePoint();
     SciCall_SetChangeHistory(SC_CHANGE_HISTORY_DISABLED);
@@ -11073,8 +11073,7 @@ LONG BeginUndoActionSelection()
 {
     if (SciCall_GetUndoCollection()) {
         SciCall_BeginUndoAction();
-        ++UndoRedoActionStackCount;
-        if (1 == UndoRedoActionStackCount) {
+        if (SciCall_GetUndoSequence() == 1) {
             DisableDocChangeNotification();
         }
         return SciCall_IsSelectionEmpty() ? URTok_NoTransaction : _SaveUndoSelection();
@@ -11087,20 +11086,16 @@ LONG BeginUndoActionSelection()
 //
 //  EndUndoActionSelection()
 //
-const char* const _assert_msg = "Broken UndoRedo-Transaction!";
-//
 void EndUndoActionSelection(const LONG token)
 {
     if (SciCall_GetUndoCollection()) {
         if (token >= URTok_TokenStart) {
             _SaveRedoSelection(token, SciCall_GetModify());
         }
-        --UndoRedoActionStackCount;
         SciCall_EndUndoAction();
-        if (0 == UndoRedoActionStackCount) {
+        if (SciCall_GetUndoSequence() == 0) {
             EnableDocChangeNotification(EVM_Default);
         }
-        assert(_assert_msg && (UndoRedoActionStackCount >= 0));
     }
 }
 
@@ -11110,7 +11105,7 @@ void EndUndoActionSelection(const LONG token)
 //
 static void _RestoreActionSelection(const LONG token, DoAction doAct)
 {
-    if (_InUndoRedoTransaction()) {
+    if (SciCall_GetUndoSequence() > 0) {
         assert("Wrong Transaction!" && 0);
         return;
     }
@@ -11217,7 +11212,7 @@ static void _RestoreActionSelection(const LONG token, DoAction doAct)
 //
 static void _RestoreActionSelection(const LONG token, DoAction doAct)
 {
-    if (_InUndoRedoTransaction()) {
+    if (SciCall_GetUndoSequence() > 0) {
         assert("Wrong Transaction!" && 0);
         return;
     }
@@ -11332,12 +11327,10 @@ static LONG _UndoRedoActionMap(const LONG token, const UndoRedoSelection_t** sel
 
         if (token <= URTok_NoTransaction) { // reset / clear
             if (SciCall_GetUndoCollection()) {
-                while (UndoRedoActionStackCount > 0) {
+                while (SciCall_GetUndoSequence() > 0) {
                     SciCall_EndUndoAction();
-                    --UndoRedoActionStackCount;
                 }
             }
-            UndoRedoActionStackCount = 0;
 
             utarray_clear(UndoRedoSelectionUTArray);
             //~utarray_free(UndoRedoSelectionUTArray);
