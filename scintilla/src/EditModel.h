@@ -21,6 +21,41 @@ public:
 	Caret() noexcept;
 };
 
+// Simplified version of selection which won't contain rectangular selection realized
+// into ranges as too much data.
+// Just a type and single range for now.
+
+struct SelectionSimple {
+	std::vector<SelectionRange> ranges;
+	SelectionRange rangeRectangular;
+	size_t mainRange = 0;
+	Selection::SelTypes selType = Selection::SelTypes::stream;
+
+	SelectionSimple() = default;
+	explicit SelectionSimple(const Selection &sel);
+};
+
+enum class UndoRedo { undo, redo };
+
+struct SelectionHistory {
+	int indexCurrent = 0;
+	SelectionSimple ssCurrent;
+	std::map<int, SelectionSimple> stack;
+};
+
+struct ModelState : ViewState {
+	SelectionHistory historyForUndo;
+	SelectionHistory historyForRedo;
+	void RememberSelectionForUndo(int index, const Selection &sel);
+	void ForgetSelectionForUndo() noexcept;
+	void RememberSelectionOntoStack(int index);
+	void RememberSelectionForRedoOntoStack(int index, const Selection &sel);
+	const SelectionSimple *SelectionFromStack(int index, UndoRedo history) const;
+	virtual void TruncateUndo(int index) final;
+};
+
+using ModelStateShared = std::shared_ptr<ModelState>;
+
 class EditModel {
 public:
 	bool inOverstrike;
@@ -61,6 +96,10 @@ public:
 
 	Document *pdoc;
 
+	Scintilla::UndoSelectionHistoryOption undoSelectionHistoryOption = UndoSelectionHistoryOption::Disabled;
+	bool needRedoRemembered = false;
+	ModelStateShared modelState;
+
 	EditModel();
 	// Deleted so EditModel objects can not be copied.
 	EditModel(const EditModel &) = delete;
@@ -79,6 +118,8 @@ public:
 	const char *GetFoldDisplayText(Sci::Line lineDoc) const noexcept;
 	InSelection LineEndInSelection(Sci::Line lineDoc) const;
 	[[nodiscard]] int GetMark(Sci::Line line) const;
+
+	void EnsureModelState();
 };
 
 }

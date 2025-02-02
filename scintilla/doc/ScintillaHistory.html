@@ -588,11 +588,28 @@
     </table>
     <h2>Releases</h2>
     <h3>
+       <a href="https://www.scintilla.org/scintilla555.zip">Release 5.5.5</a>
+    </h3>
+    <ul>
+	<li>
+	Released 18 December 2024.
+	</li>
+	<li>
+	Remember selection with undo and redo. Controlled with SCI_SETUNDOSELECTIONHISTORY.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1273/">Feature #1273</a>,
+	<a href="https://sourceforge.net/p/scintilla/bugs/1479/">Bug #1479</a>,
+	<a href="https://sourceforge.net/p/scintilla/bugs/1224/">Bug #1224</a>.
+	</li>
+	<li>
+	Fix bug on Qt where double-click stopped working when Scintilla instance had been running for weeks.
+	</li>
+    </ul>
+    <h3>
        <a href="https://www.scintilla.org/scintilla554.zip">Release 5.5.4</a>
     </h3>
     <ul>
 	<li>
-	Released 19 October 2024.
+	Released 18 December 2024.
 	</li>
 	<li>
 	Update to Unicode 15.1.
@@ -603,8 +620,16 @@
 	<a href="https://sourceforge.net/p/scintilla/feature-requests/1533/">Feature #1533</a>.
 	</li>
 	<li>
+	Improve performance of DBCS text.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1535/">Feature #1535</a>.
+	</li>
+	<li>
 	Fix wrapping removed lines.
 	<a href="https://sourceforge.net/p/scintilla/bugs/2456/">Bug #2456</a>.
+	</li>
+	<li>
+	Fix moving line down to empty final line and moving empty final line up.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2457/">Bug #2457</a>.
 	</li>
 	<li>
 	On GTK, allow middle click to insert multiple times within a document.

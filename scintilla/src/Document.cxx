@@ -18,6 +18,7 @@
 #include <string_view>
 #include <vector>
 #include <array>
+#include <map>
 #include <forward_list>
 #include <optional>
 #include <algorithm>
@@ -833,15 +834,9 @@ Sci::Position Document::MovePositionOutsideChar(Sci::Position pos, Sci::Position
 				// Else invalid UTF-8 so return position of isolated trail byte
 			}
 		} else {
-			// Anchor DBCS calculations at start of line because start of line can
-			// not be a DBCS trail byte.
-			const Sci::Position posStartLine = LineStartPosition(pos);
-			if (pos == posStartLine)
-				return pos;
-
 			// Step back until a non-lead-byte is found.
 			Sci::Position posCheck = pos;
-			while ((posCheck > posStartLine) && IsDBCSLeadByteNoExcept(cb.CharAt(posCheck-1)))
+			while ((posCheck > 0) && IsDBCSLeadByteNoExcept(cb.CharAt(posCheck-1)))
 				posCheck--;
 
 			// Check from known start of character.
@@ -916,14 +911,11 @@ Sci::Position Document::NextPosition(Sci::Position pos, int moveDir) const noexc
 				if (pos > cb.Length())
 					pos = cb.Length();
 			} else {
-				// Anchor DBCS calculations at start of line because start of line can
-				// not be a DBCS trail byte.
-				const Sci::Position posStartLine = LineStartPosition(pos);
-				// See http://msdn.microsoft.com/en-us/library/cc194792%28v=MSDN.10%29.aspx
-				// http://msdn.microsoft.com/en-us/library/cc194790.aspx
-				if ((pos - 1) <= posStartLine) {
-					return pos - 1;
-				} else if (IsDBCSLeadByteNoExcept(cb.CharAt(pos - 1))) {
+				// How to Go Backward in a DBCS String
+				// https://msdn.microsoft.com/en-us/library/cc194792.aspx
+				// DBCS-Enabled Programs vs. Non-DBCS-Enabled Programs
+				// https://msdn.microsoft.com/en-us/library/cc194790.aspx
+				if (IsDBCSLeadByteNoExcept(cb.CharAt(pos - 1))) {
 					// Should actually be trail byte
 					if (IsDBCSDualByteAt(pos - 2)) {
 						return pos - 2;
@@ -934,7 +926,7 @@ Sci::Position Document::NextPosition(Sci::Position pos, int moveDir) const noexc
 				} else {
 					// Otherwise, step back until a non-lead-byte is found.
 					Sci::Position posTemp = pos - 1;
-					while (posStartLine <= --posTemp && IsDBCSLeadByteNoExcept(cb.CharAt(posTemp)))
+					while (--posTemp >= 0 && IsDBCSLeadByteNoExcept(cb.CharAt(posTemp)))
 						;
 					// Now posTemp+1 must point to the beginning of a character,
 					// so figure out whether we went back an even or an odd
@@ -1329,6 +1321,10 @@ bool Document::DeleteChars(Sci::Position pos, Sci::Position len) {
 	} else {
 		enteredModification++;
 		if (!cb.IsReadOnly()) {
+			if (cb.IsCollectingUndo() && cb.CanRedo()) {
+				// Abandoning some undo actions so truncate any later selections
+				TruncateUndoComments(cb.UndoCurrent());
+			}
 			NotifyModified(
 			    DocModification(
 			        ModificationFlags::BeforeDelete | ModificationFlags::User,
@@ -1381,6 +1377,10 @@ Sci::Position Document::InsertString(Sci::Position position, const char *s, Sci:
 	if (insertionSet) {
 		s = insertion.c_str();
 		insertLength = insertion.length();
+	}
+	if (cb.IsCollectingUndo() && cb.CanRedo()) {
+		// Abandoning some undo actions so truncate any later selections
+		TruncateUndoComments(cb.UndoCurrent());
 	}
 	NotifyModified(
 		DocModification(
@@ -1563,6 +1563,20 @@ Sci::Position Document::Redo() {
 		enteredModification--;
 	}
 	return newPos;
+}
+
+void Document::EndUndoAction() noexcept {
+	cb.EndUndoAction();
+	if (UndoSequenceDepth() == 0) {
+		// Broadcast notification to views to allow end of group processing.
+		// NotifyGroupCompleted may throw (for memory exhaustion) but this method
+		// may not as it is called in UndoGroup destructor so ignore exception.
+		try {
+			NotifyGroupCompleted();
+		} catch (...) {
+			// Ignore any exception
+		}
+	}
 }
 
 int Document::UndoSequenceDepth() const noexcept {
@@ -2513,6 +2527,25 @@ void Document::SetLexInterface(std::unique_ptr<LexInterface> pLexInterface) noex
 	pli = std::move(pLexInterface);
 }
 
+void Document::SetViewState(void *view, ViewStateShared pVSS) {
+	viewData[view] = pVSS;
+}
+
+ViewStateShared Document::GetViewState(void *view) const noexcept {
+	const std::map<void *, ViewStateShared>::const_iterator it = viewData.find(view);
+
+	if (it != viewData.end()) {
+		return it->second;
+	}
+	return {};
+}
+
+void Document::TruncateUndoComments(int action) {
+	for (auto &[key, value] : viewData) {
+		value->TruncateUndo(action);
+	}
+}
+
 int SCI_METHOD Document::SetLineState(Sci_Position line, int state) {
 	const int statePrevious = States()->SetLineState(line, state, LinesTotal());
 	if (state != statePrevious) {
@@ -2709,6 +2742,12 @@ void Document::NotifySavePoint(bool atSavePoint) {
 	}
 }
 
+void Document::NotifyGroupCompleted() noexcept {
+	for (const WatcherWithUserData &watcher : watchers) {
+		watcher.watcher->NotifyGroupCompleted(this, watcher.userData);
+	}
+}
+
 void Document::NotifyModified(DocModification mh) {
 	if (FlagSet(mh.modificationType, ModificationFlags::InsertText)) {
 		decorations->InsertSpace(mh.position, mh.length);
@@ -2855,39 +2894,33 @@ Sci::Position Document::BraceMatch(Sci::Position position, Sci::Position /*maxRe
 	const unsigned char chBrace = CharAt(position);
 	const unsigned char chSeek = BraceOpposite(chBrace);
 	if (chSeek == '\0')
-		return - 1;
+		return -1;
 	const int styBrace = StyleIndexAt(position);
 	int direction = -1;
 	if (chBrace == '(' || chBrace == '[' || chBrace == '{' || chBrace == '<')
 		direction = 1;
 	int depth = 1;
-	position = useStartPos ? startPos : NextPosition(position, direction);
+	position = useStartPos ? startPos : position + direction;
 
-	// Avoid complex NextPosition call for bytes that may not cause incorrect match
+	// Avoid using MovePositionOutsideChar to check DBCS trail byte
 	unsigned char maxSafeChar = 0xff;
 	if (dbcsCodePage != 0 && dbcsCodePage != CpUtf8) {
-		maxSafeChar = (direction >= 0) ? 0x80 : DBCSMinTrailByte() - 1;
+		maxSafeChar = DBCSMinTrailByte() - 1;
 	}
 
 	while ((position >= 0) && (position < LengthNoExcept())) {
 		const unsigned char chAtPos = CharAt(position);
 		if (chAtPos == chBrace || chAtPos == chSeek) {
-			if ((position > GetEndStyled()) || (StyleIndexAt(position) == styBrace)) {
+			if (((position > GetEndStyled()) || (StyleIndexAt(position) == styBrace)) &&
+				(chAtPos <= maxSafeChar || position == MovePositionOutsideChar(position, direction, false))) {
 				depth += (chAtPos == chBrace) ? 1 : -1;
 				if (depth == 0)
 					return position;
 			}
 		}
-		if (chAtPos <= maxSafeChar) {
-			position += direction;
-		} else {
-			const Sci::Position positionBeforeMove = position;
-			position = NextPosition(position, direction);
-			if (position == positionBeforeMove)
-				break;
-		}
+		position += direction;
 	}
-	return - 1;
+	return -1;
 }
 
 /**
@@ -2915,14 +2948,13 @@ namespace {
 */
 class RESearchRange {
 public:
-	const Document *doc;
 	int increment;
 	Sci::Position startPos;
 	Sci::Position endPos;
 	Sci::Line lineRangeStart;
 	Sci::Line lineRangeEnd;
 	Sci::Line lineRangeBreak;
-	RESearchRange(const Document *doc_, Sci::Position minPos, Sci::Position maxPos) noexcept : doc(doc_) {
+	RESearchRange(const Document *doc, Sci::Position minPos, Sci::Position maxPos) noexcept {
 		increment = (minPos <= maxPos) ? 1 : -1;
 
 		// Range endpoints should not be inside DBCS characters or between a CR and LF,

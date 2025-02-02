@@ -182,6 +182,8 @@ constexpr XYScrollOptions operator|(XYScrollOptions a, XYScrollOptions b) noexce
 	return static_cast<XYScrollOptions>(static_cast<int>(a) | static_cast<int>(b));
 }
 
+struct SelectionStack;
+
 /**
  */
 class Editor : public EditModel, public DocWatcher {
@@ -371,6 +373,9 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	SelectionPosition MovePositionSoVisible(Sci::Position pos, int moveDir);
 	Point PointMainCaret();
 	void SetLastXChosen();
+	void RememberSelectionForUndo(int index);
+	void RememberSelectionOntoStack(int index);
+	void RememberCurrentSelectionForRedoOntoStack();
 
 	void ScrollTo(Sci::Line line, bool moveThumb=true);
 	virtual void ScrollText(Sci::Line linesToMove);
@@ -447,6 +452,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	virtual void Paste() = 0;
 	void Clear();
 	virtual void SelectAll();
+	void RestoreSelection(Sci::Position newPos, UndoRedo history);
 	virtual void Undo();
 	virtual void Redo();
 	void DelCharBack(bool allowLineStartDeletion);
@@ -483,6 +489,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void NotifyDeleted(Document *document, void *userData) noexcept override;
 	void NotifyStyleNeeded(Document *doc, void *userData, Sci::Position endStyleNeeded) override;
 	void NotifyErrorOccurred(Document *doc, void *userData, Scintilla::Status status) override;
+	void NotifyGroupCompleted(Document *, void *) noexcept override;
 	void NotifyMacroRecord(Scintilla::Message iMessage, Scintilla::uptr_t wParam, Scintilla::sptr_t lParam);
 
 	void ContainerNeedsUpdate(Scintilla::Update flags) noexcept;

@@ -1121,7 +1121,7 @@ struct Sci_TextRangeFull {
     If the text argument is NULL(0) then the length that should be allocated
     to store the entire current line is returned.</p>
 
-    <p>See also: <code
+    <p>See also: <code>
     <a class="seealso" href="#SCI_GETSELTEXT">SCI_GETSELTEXT</a>,
     <a class="seealso" href="#SCI_GETLINE">SCI_GETLINE</a>,
     <a class="seealso" href="#SCI_GETTEXT">SCI_GETTEXT</a>,
@@ -1938,6 +1938,8 @@ struct Sci_TextToFindFull {
      <a class="message" href="#SCI_ENDUNDOACTION">SCI_ENDUNDOACTION</a><br />
      <a class="message" href="#SCI_GETUNDOSEQUENCE">SCI_GETUNDOSEQUENCE &rarr; int</a><br />
      <a class="message" href="#SCI_ADDUNDOACTION">SCI_ADDUNDOACTION(int token, int flags)</a><br />
+     <a class="message" href="#SCI_SETUNDOSELECTIONHISTORY">SCI_SETUNDOSELECTIONHISTORY(int undoSelectionHistory)</a><br />
+     <a class="message" href="#SCI_GETUNDOSELECTIONHISTORY">SCI_GETUNDOSELECTIONHISTORY &rarr; int</a><br />
     </code>
 
     <p><b id="SCI_UNDO">SCI_UNDO</b><br />
@@ -2015,6 +2017,35 @@ struct Sci_TextToFindFull {
      Coalescing treats coalescible container actions as transparent so will still only group together insertions that
      look like typing or deletions that look like multiple uses of the Backspace or Delete keys.
      </p>
+
+    <p><b id="SCI_SETUNDOSELECTIONHISTORY">SCI_SETUNDOSELECTIONHISTORY(int undoSelectionHistory)</b><br />
+     <b id="SCI_GETUNDOSELECTIONHISTORY">SCI_GETUNDOSELECTIONHISTORY &rarr; int</b><br />
+     The selection for each action can be saved and then restored when undo or redo is performed.
+      <code>SCI_SETUNDOSELECTIONHISTORY</code> controls this.
+      There is a memory cost for this feature with a minimum of 150 bytes for each of undo and redo for each recorded action.
+      Recording may be turned on at any time.</p>
+
+    <p>The <code class="parameter">undoSelectionHistory</code> argument can be:</p>
+    <table class="standard" summary="Undo selection history state">
+      <tbody valign="top">
+        <tr>
+          <th align="left"><code>SC_UNDO_SELECTION_HISTORY_DISABLED</code></th>
+
+          <td>0</td>
+
+          <td>The default: undo selection history turned off.</td>
+        </tr>
+
+        <tr>
+          <th align="left"><code>SC_UNDO_SELECTION_HISTORY_ENABLED</code></th>
+
+          <td>1</td>
+
+          <td>Restore selection for each undo and redo.</td>
+        </tr>
+
+      </tbody>
+    </table>
 
     <h2 id="UndoSaveRestore">Undo Save and Restore</h2>
 
@@ -5216,7 +5247,7 @@ struct Sci_TextToFindFull {
           <td><code>SC_SUPPORTS_LINE_DRAWS_FINAL</code></td>
           <td>0</td>
           <td>Whether drawing a line draws its final position.<br />
-          Only false on Win32 GDI.</div></td>
+          Only false on Win32 GDI.</td>
         </tr>
 
         <tr>
@@ -7523,7 +7554,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     <p>For many applications lexing documents larger than 4GB will be too sluggish so
     <code>SC_DOCUMENTOPTION_STYLES_NONE</code>
     and the null lexer <code>"null"</code> can be used. Another approach is to turn on idle styling with
-    <code><a class="seealso" href="#SCI_SETIDLESTYLING">SCI_SETIDLESTYLING</code></a>.
+    <a class="seealso" href="#SCI_SETIDLESTYLING"><code>SCI_SETIDLESTYLING</code></a>.
     </p>
 
     <table class="standard" summary="Document options">

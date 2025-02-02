@@ -678,8 +678,8 @@ BEGIN
     CONTROL         "&Diese Nachricht nicht nochmals anzeigen", IDC_INFOBOXCHECK,
                 "Button", BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
     DEFPUSHBUTTON   "&Neu Laden", IDRETRY, 186, 82, 50, 14
-    PUSHBUTTON      "&Ignore", IDCANCEL, 130, 82, 50, 14
-    PUSHBUTTON      "&Monitor", IDCONTINUE, 242, 82, 50, 14
+    PUSHBUTTON      "&Ignorieren", IDCANCEL, 130, 82, 50, 14
+    PUSHBUTTON      "&Monitoring", IDCONTINUE, 242, 82, 50, 14
 END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 188
