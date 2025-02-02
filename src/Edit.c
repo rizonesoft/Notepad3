@@ -3079,20 +3079,18 @@ void EditCutLines(HWND hwnd, const bool bMSBehavSelEmpty)
 //
 //  EditCopyMultiSelection()
 //
-void EditCopyMultiSelection(HWND hwnd) {
-
+void EditCopyMultiSelection(HWND hwnd)
+{
+    UNREFERENCED_PARAMETER(hwnd);
     if (SciCall_IsSelectionEmpty()) {
         return;
     }
     if (Sci_IsMultiSelection()) {
-        EditClearClipboard(hwnd);
-        DocPosU const selCount = SciCall_GetSelections();
-        for (DocPosU s = 0; s < selCount; ++s) {
-            EditCopyRangeAppend(hwnd, SciCall_GetSelectionNStart(s), SciCall_GetSelectionNEnd(s), true);
-        }
-    } else {
-        SciCall_Copy();
+        char pchSep[3] = { '\0' };
+        Sci_GetCurrentEOL_A(pchSep);
+        SciCall_SetCopySeparator(pchSep);
     }
+    SciCall_Copy();
 }
 
 

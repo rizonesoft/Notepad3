@@ -5369,18 +5369,22 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_INDENT:
         EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, false);
+        //EditIndentBlock(Globals.hwndEdit, SCI_LINEINDENT, true, false);
         break;
 
     case IDM_EDIT_UNINDENT:
         EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, false);
+        //EditIndentBlock(Globals.hwndEdit, SCI_LINEDEDENT, true, false);
         break;
 
     case CMD_TAB:
         EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
+        //EditIndentBlock(Globals.hwndEdit, SCI_LINEINDENT, false, false);
         break;
 
     case CMD_BACKTAB:
         EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, false, false);
+        //EditIndentBlock(Globals.hwndEdit, SCI_LINEDEDENT, false, false);
         break;
 
     case CMD_CTRLTAB:
