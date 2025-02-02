@@ -183,6 +183,8 @@ static int const INISECTIONBUFCNT = 32; // .ini file load buffer in KB
 
 // ----------------------------------------------------------------------------
 
+const char* const _assert_msg = "Broken UndoRedo-Transaction!";
+
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // (!) ENSURE  IDT_FILE_NEW -> IDT_VIEW_NEW_WINDOW corresponds to order of Toolbar.bmp
 #define NUMTOOLBITMAPS (31)
@@ -433,17 +435,11 @@ static LONG  _UndoRedoActionMap(const LONG token, const UndoRedoSelection_t** se
 // => UndoTransActionBegin();
 // => EndUndoTransAction();
 
-
-static volatile int UndoRedoActionStackCount = 0;
-
-__forceinline bool _InUndoRedoTransaction()
-{
-    return (UndoRedoActionStackCount > 0);
-}
+// ----------------------------------------------------------------------------
 
 static inline void _SplitUndoTransaction()
 {
-    if (_InUndoRedoTransaction()) {
+    if (SciCall_GetUndoSequence() > 0) {
         SciCall_EndUndoAction();
         SciCall_BeginUndoAction();
     }
@@ -674,6 +670,7 @@ static inline void ResetFileObservationData(const bool bResetEvt) {
             ZeroMemory(&(s_FileChgObsvrData.fdCurFile), sizeof(WIN32_FIND_DATA));
         }
     }
+
 }
 // ----------------------------------------------------------------------------
 
@@ -1364,6 +1361,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         _CleanUpResources(hwnd, true);
         return 1;
     }
+
+    // !!!  now, SciCall_ functions are available (initialized library)
 
     DrawMenuBar(hwnd);
 
@@ -3599,10 +3598,8 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     s_WinCurrentWidth = cx;
 
-    UpdateToolbar();
-    UpdateStatusbar(true);
+    UpdateToolbar_Now(hwnd);
     UpdateMargins(true);
-    UpdateTitlebar(hwnd);
     //~UpdateUI(); //~ recursion
     
     return FALSE;
@@ -3770,7 +3767,7 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         DragFinish(hDrop);
         Path_Release(hdrop_pth);
-        UpdateToolbar(hwnd);
+        UpdateToolbar_Now(hwnd);
     }
     return 0;
 }
@@ -3953,8 +3950,7 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
             FreeMem(params);
         }
 
-        UpdateToolbar();
-        UpdateStatusbar(true);
+        UpdateToolbar_Now(hwnd);
         UpdateMargins(true);
     }
 
@@ -4687,8 +4683,8 @@ static void _ApplyChangeHistoryMode()
     else {
         SciCall_SetChangeHistory(Settings.ChangeHistoryMode);
     }
-    UpdateMargins(true);
     UpdateToolbar();
+    UpdateMargins(true);
 }
 
 
@@ -4707,7 +4703,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         Style_InsertThemesMenu(Globals.hMainMenu);
         DrawMenuBar(Globals.hwndMain);
         UpdateToolbar();
-        UpdateStatusbar(true);
         return FALSE;
     }
     #endif
@@ -4789,9 +4784,9 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
 
-    case IDM_FILE_SAVE:
-        FileSave(FSF_None);
-        break;
+    case IDM_FILE_SAVE: {
+        FileSave((FileWatching.FileWatchingMode <= FWM_DONT_CARE) ? FileSave(FSF_SaveAlways) : FSF_None);
+    } break;
 
 
     case IDM_FILE_SAVEAS:
@@ -5371,18 +5366,22 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_INDENT:
         EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, false);
+        //EditIndentBlock(Globals.hwndEdit, SCI_LINEINDENT, true, false);
         break;
 
     case IDM_EDIT_UNINDENT:
         EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, false);
+        //EditIndentBlock(Globals.hwndEdit, SCI_LINEDEDENT, true, false);
         break;
 
     case CMD_TAB:
         EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
+        //EditIndentBlock(Globals.hwndEdit, SCI_LINEINDENT, false, false);
         break;
 
     case CMD_BACKTAB:
         EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, false, false);
+        //EditIndentBlock(Globals.hwndEdit, SCI_LINEDEDENT, false, false);
         break;
 
     case CMD_CTRLTAB:
@@ -8776,7 +8775,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification* const scn, bool* bMod
         if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
             *bModified = false; // not yet
             if (!bInUndoRedoStep) {
-                if (!_InUndoRedoTransaction() && (_urtoken < URTok_TokenStart)) {
+                if ((SciCall_GetUndoSequence() <= 1) && (_urtoken < URTok_TokenStart)) {
                     _SaveSelectionToBuffer();
                     bool const bSelEmpty = SciCall_IsSelectionEmpty();
                     bool const bIsMultiRectSel = Sci_IsMultiOrRectangleSelection();
@@ -8796,7 +8795,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification* const scn, bool* bMod
         }
         else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
             if (!bInUndoRedoStep) {
-                if (!_InUndoRedoTransaction() && (_urtoken >= URTok_TokenStart)) {
+                if ((SciCall_GetUndoSequence() <= 1) && (_urtoken >= URTok_TokenStart)) {
                     _SaveRedoSelection(_urtoken, SciCall_GetModify());
                     _urtoken = URTok_NoTransaction;
                 }
@@ -9433,6 +9432,8 @@ void ParseCommandLine()
     LPWSTR const lp2 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
     LPWSTR const lp3 = AllocMem(sizeof(WCHAR)*len,HEAP_ZERO_MEMORY);
 
+    //assert(!"ParseCommandLine() - ATTACH DEBUGGER NOW");
+
     if (lp1 && lp2 && lp3) {
 
         // Start with 2nd argument
@@ -9468,6 +9469,7 @@ void ParseCommandLine()
                 bIsFileArg = true;
             }
             // pathname
+
             if (bIsFileArg) {
 
                 LPWSTR const lpFileBuf = AllocMem(sizeof(WCHAR) * len, HEAP_ZERO_MEMORY);
@@ -10034,6 +10036,13 @@ void UpdateToolbar()
     _DelayUpdateToolbar(_MQ_STD);
     _DelayUpdateStatusbar(_MQ_STD, false);
     _DelayUpdateTitlebar(_MQ_STD, Globals.hwndMain);
+}
+
+void UpdateToolbar_Now(const HWND hwnd)
+{
+    _UpdateToolbarDelayed();
+    _UpdateStatusbarDelayed(true);
+    _UpdateTitlebarDelayed(hwnd);
 }
 
 
@@ -10876,6 +10885,8 @@ static void _UndoRedoRecordingStart()
 static void _UndoRedoRecordingStop()
 {
     _UndoRedoActionMap(URTok_NoTransaction, NULL); // clear
+    while (SciCall_GetUndoSequence() > 0)
+        SciCall_EndUndoAction();
     SciCall_EmptyUndoBuffer();
     SciCall_SetSavePoint();
     SciCall_SetChangeHistory(SC_CHANGE_HISTORY_DISABLED);
@@ -11073,8 +11084,7 @@ LONG BeginUndoActionSelection()
 {
     if (SciCall_GetUndoCollection()) {
         SciCall_BeginUndoAction();
-        ++UndoRedoActionStackCount;
-        if (1 == UndoRedoActionStackCount) {
+        if (SciCall_GetUndoSequence() == 1) {
             DisableDocChangeNotification();
         }
         return SciCall_IsSelectionEmpty() ? URTok_NoTransaction : _SaveUndoSelection();
@@ -11087,20 +11097,16 @@ LONG BeginUndoActionSelection()
 //
 //  EndUndoActionSelection()
 //
-const char* const _assert_msg = "Broken UndoRedo-Transaction!";
-//
 void EndUndoActionSelection(const LONG token)
 {
     if (SciCall_GetUndoCollection()) {
         if (token >= URTok_TokenStart) {
             _SaveRedoSelection(token, SciCall_GetModify());
         }
-        --UndoRedoActionStackCount;
         SciCall_EndUndoAction();
-        if (0 == UndoRedoActionStackCount) {
+        if (SciCall_GetUndoSequence() == 0) {
             EnableDocChangeNotification(EVM_Default);
         }
-        assert(_assert_msg && (UndoRedoActionStackCount >= 0));
     }
 }
 
@@ -11110,7 +11116,7 @@ void EndUndoActionSelection(const LONG token)
 //
 static void _RestoreActionSelection(const LONG token, DoAction doAct)
 {
-    if (_InUndoRedoTransaction()) {
+    if (SciCall_GetUndoSequence() > 0) {
         assert("Wrong Transaction!" && 0);
         return;
     }
@@ -11217,7 +11223,7 @@ static void _RestoreActionSelection(const LONG token, DoAction doAct)
 //
 static void _RestoreActionSelection(const LONG token, DoAction doAct)
 {
-    if (_InUndoRedoTransaction()) {
+    if (SciCall_GetUndoSequence() > 0) {
         assert("Wrong Transaction!" && 0);
         return;
     }
@@ -11332,12 +11338,10 @@ static LONG _UndoRedoActionMap(const LONG token, const UndoRedoSelection_t** sel
 
         if (token <= URTok_NoTransaction) { // reset / clear
             if (SciCall_GetUndoCollection()) {
-                while (UndoRedoActionStackCount > 0) {
+                while (SciCall_GetUndoSequence() > 0) {
                     SciCall_EndUndoAction();
-                    --UndoRedoActionStackCount;
                 }
             }
-            UndoRedoActionStackCount = 0;
 
             utarray_clear(UndoRedoSelectionUTArray);
             //~utarray_free(UndoRedoSelectionUTArray);
@@ -11551,7 +11555,6 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
 
         UpdateToolbar();
         UpdateMargins(true);
-        UpdateStatusbar(true);
         if (SciCall_GetZoom() != 100) {
             ShowZoomCallTip();
         }
@@ -11788,12 +11791,6 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
         Flags.bHugeFileLoadState = false; // reset
     }
 
-    UpdateToolbar();
-    UpdateMargins(true);
-    UpdateStatusbar(true);
-    if (SciCall_GetZoom() != 100) {
-        ShowZoomCallTip();
-    }
 
     Path_Release(hopen_file);
 
@@ -11806,6 +11803,13 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
     if (visLn > 0) {
         SciCall_SetFirstVisibleLine(visLn);
     }
+
+    UpdateMargins(true);
+    if (SciCall_GetZoom() != 100) {
+        ShowZoomCallTip();
+    }
+    UpdateToolbar_Now(Globals.hwndMain);
+
     return fSuccess;
 }
 
@@ -11860,7 +11864,6 @@ bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc)
     SetSaveDone();
     UpdateToolbar();
     UpdateMargins(true);
-    UpdateStatusbar(true);
 
     return result;
 }
@@ -13034,7 +13037,7 @@ void InstallFileWatching(const bool bInstall) {
 
             bool const bPrevReadOnlyAttrib = IsFileReadOnly();
             if (bPrevReadOnlyAttrib) {
-                SendWMCommand(Globals.hwndMain, IDM_FILE_READONLY); // try to gain access
+                PostWMCommand(Globals.hwndMain, IDM_FILE_READONLY); // try to gain access
             }
 
             if (!IsFileReadOnly()) {
@@ -13065,7 +13068,7 @@ void InstallFileWatching(const bool bInstall) {
             }
 
             if (bPrevReadOnlyAttrib && !IsFileReadOnly()) {
-                SendWMCommand(Globals.hwndMain, IDM_FILE_READONLY); // try to reset
+                PostWMCommand(Globals.hwndMain, IDM_FILE_READONLY); // try to reset
             }
         }
     }

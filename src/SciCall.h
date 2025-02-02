@@ -376,6 +376,7 @@ DeclareSciCallR01(GetTextRangeFull, GETTEXTRANGEFULL, DocPos, struct Sci_TextRan
 DeclareSciCallV0(UpperCase, UPPERCASE);
 DeclareSciCallV0(LowerCase, LOWERCASE);
 DeclareSciCallV2(ReplaceRectangular, REPLACERECTANGULAR, DocPos, length, const char *, text);
+DeclareSciCallV01(SetCopySeparator, SETCOPYSEPARATOR, const char*, sep);
 
 
 //DeclareSciCallR01(TargetAsUTF8, TARGETASUTF8, DocPos, const char*, text);  // WideCharToMultiByteEx(Encoding_SciCP);
@@ -749,6 +750,7 @@ DeclareSciCallV2(AddUndoAction, ADDUNDOACTION, int, token, int, flags);
 DeclareSciCallV0(EndUndoAction, ENDUNDOACTION);
 DeclareSciCallR0(GetUndoCollection, GETUNDOCOLLECTION, bool);
 DeclareSciCallV1(SetUndoCollection, SETUNDOCOLLECTION, bool, bCollectUndo);
+DeclareSciCallR0(GetUndoSequence, GETUNDOSEQUENCE, int);
 
 
 //=============================================================================

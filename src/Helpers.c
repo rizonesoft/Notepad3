@@ -1834,17 +1834,6 @@ int Hex2Char(char* ch, int cnt)
 
 //=============================================================================
 
-size_t SimpleHash(LPCWSTR string)
-{
-    size_t hash = 0;
-    for (size_t i = 0, l = wcslen(string); i < l; ++i) {
-        hash += hash * 65599 + string[i];
-    }
-    return hash ^ (hash >> 16);
-}
-
-//=============================================================================
-
 #ifdef WC2MB_EX
 
 TODO:  how to avoid Code-Point truncation/splitting

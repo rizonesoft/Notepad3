@@ -129,6 +129,7 @@ void ShowWrapAroundCallTip(bool forwardSearch);
 void MarkAllOccurrences(const LONG64 delay, const bool bForceClear);
 
 void UpdateToolbar();
+void UpdateToolbar_Now(const HWND hwnd);
 void UpdateStatusbar(const bool bForceRedraw);
 void UpdateMargins(const bool bForce);
 void UpdateSaveSettingsCmds();
