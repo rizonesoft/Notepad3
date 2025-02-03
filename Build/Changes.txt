@@ -34,26 +34,32 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.24.1222.(build_#) (2024-12-22)
+Current BETA Version 6.25.203.(build_#) (2025-02-03)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
-[.###.#]- .
+[.203.1]- For "OpenCL", add "CL" extension in "C/C++ Source Code" Lexer.
 
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.203.1]- Rizonesoft Copyright © 2008-2024 to year "2008-2025".
 [1222.1]- Correction of Rizonesoft's URL.
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
-[.###.#]- .
+[.203.1]- Titlebar changes (file name instead of simple hash).
+[.203.1]- Reload arguments after changing own settings files.
+[.203.1]- Utilize new Scintilla (v5.5.2) API SCI_SETCOPYSEPARATOR (SCI).
+[.203.1]- Utilize Sci v5.5.2 new API SCI_GETUNDOSEQUENCE (SCI).
+[.203.1]- Add missing symbol 'disabledelayedexpansion' in styleLexBAT (LEX).
+[.203.1]- Recover cursor state when editor window loses focus.
 
 --------------------------------------------------------
 REMOVED:
@@ -64,8 +70,8 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[1202.1]- Update Lexilla Library (LEX) version 5.4.1 (2024-10-19).
-[1202.1]- Update Scintilla Library (SCI) version 5.5.3 (2024-10-19).
+[.203.1]- Update Lexilla Library (LEX) version 5.4.2 (2024-12-18).
+[.203.1]- Update Scintilla Library (SCI) version 5.5.4 (2024-12-18).
 [.101.1]- Update grepWinNP3 (GRE) version 2.1.15.48 (2024-01-10).
 [.101.1]- Update Oniguruma Regex (ONI) engine version 6.9.9 (2023-10-14).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
