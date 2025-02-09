@@ -927,7 +927,7 @@ static void _ReadFromIniCache() {
 bool Style_ImportFromFile(const HPATHL hpath)
 {
     bool const bHaveFileResource = Path_IsNotEmpty(hpath);
-    bool const bIsStdIniFile = bHaveFileResource ? (Path_StrgComparePath(hpath, Paths.IniFile, Paths.ModuleDirectory) == 0) : false;
+    bool const bIsStdIniFile = bHaveFileResource ? (Path_StrgComparePath(hpath, Paths.IniFile, Paths.ModuleDirectory, true) == 0) : false;
 
     bool result = bIsStdIniFile ? OpenSettingsFile(__func__) : (bHaveFileResource ? LoadIniFileCache(hpath) : true);
     if (result) {
@@ -1155,7 +1155,7 @@ bool Style_ExportToFile(const HPATHL hpath, bool bForceAll)
         return false;
     }
 
-    bool const bIsStdIniFile = (Path_StrgComparePath(hpath, Paths.IniFile, Paths.ModuleDirectory) == 0);
+    bool const bIsStdIniFile = (Path_StrgComparePath(hpath, Paths.IniFile, Paths.ModuleDirectory, true) == 0);
 
     // special handling of standard .ini-file
     bool ok = false;

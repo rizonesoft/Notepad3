@@ -1632,7 +1632,7 @@ static BOOL CALLBACK _EnumWndProc2(HWND hwnd, LPARAM lParam)
             GetDlgItemText(hwnd, IDC_FILENAME, wchFileName, COUNTOF(wchFileName));
 
             HPATHL hpthFileName = Path_Allocate(wchFileName);
-            if (Path_StrgComparePath(hpthFileName, s_pthCheckFilePath, Paths.WorkingDirectory) == 0) {
+            if (Path_StrgComparePath(hpthFileName, s_pthCheckFilePath, Paths.WorkingDirectory, true) == 0) {
                 *(HWND*)lParam = hwnd;
                 bContinue = FALSE;
             }
@@ -3699,7 +3699,7 @@ static LRESULT _OnDropOneFile(HWND hwnd, HPATHL hFilePath, WININFO* wi)
     }
     else if (Path_IsExistingFile(hFilePath)) {
         //~ ignore Flags.bReuseWindow
-        bool const sameFile = (Path_StrgComparePath(hFilePath, Paths.CurrentFile, Paths.ModuleDirectory) == 0);
+        bool const sameFile = (Path_StrgComparePath(hFilePath, Paths.CurrentFile, Paths.ModuleDirectory, true) == 0);
         if (IsKeyDown(VK_CONTROL) || wi) {
             DialogNewWindow(hwnd, sameFile, hFilePath, wi);
         } else {
@@ -11576,7 +11576,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
 
     Path_NormalizeEx(hopen_file, Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
 
-    if (!bReloadFile && Path_StrgComparePath(hopen_file, Paths.CurrentFile, Paths.WorkingDirectory) == 0) {
+    if (!bReloadFile && Path_StrgComparePath(hopen_file, Paths.CurrentFile, Paths.WorkingDirectory, false) == 0) {
         Path_Release(hopen_file);
         return false;
     }
@@ -11714,7 +11714,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
         }
 
         // consistent settings file handling (if loaded in editor)
-        Flags.bSettingsFileSoftLocked = (Path_StrgComparePath(Paths.CurrentFile, Paths.IniFile, Paths.WorkingDirectory) == 0);
+        Flags.bSettingsFileSoftLocked = (Path_StrgComparePath(Paths.CurrentFile, Paths.IniFile, Paths.WorkingDirectory, true) == 0);
 
         // the .LOG feature ...
         if (IsFileVarLogFile()) {

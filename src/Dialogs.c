@@ -5276,7 +5276,6 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, const TITLEPROPS_T prop
         s_pthCachedFilePath = Path_Allocate(L"");
     }
 
-
     if (!forceRedraw) {
         if (s_properties.iFormat != properties.iFormat) {
             forceRedraw = true;
@@ -5302,19 +5301,18 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, const TITLEPROPS_T prop
         else if (s_properties.bReadOnly != properties.bReadOnly) {
             forceRedraw = true;
         }
-        else {
-            for (int i = 0; i < COUNTOF(s_compTitleExcerpt); ++i) {
-                if (s_compTitleExcerpt[i] != lpszExcerpt[i]) {
-                    forceRedraw = true;
-                    bExcerptChanged = true;
-                    break;
-                }
-            }
-            if (Path_StrgComparePath(s_pthCachedFilePath, pthFilePath, Paths.WorkingDirectory) != 0) {
-                forceRedraw = true;
-                bFilePathChanged = true;
-            }
+    }
+    for (int i = 0; i < COUNTOF(s_compTitleExcerpt); ++i) {
+        if (s_compTitleExcerpt[i] != lpszExcerpt[i]) {
+            forceRedraw = true;
+            bExcerptChanged = true;
+            break;
         }
+    }
+    // assuming path is normalized (for speed)
+    if (Path_StrgComparePath(s_pthCachedFilePath, pthFilePath, Paths.WorkingDirectory, false) != 0) {
+        forceRedraw = true;
+        bFilePathChanged = true;
     }
 
     if (!forceRedraw) {
