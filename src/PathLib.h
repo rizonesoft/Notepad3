@@ -99,7 +99,7 @@ bool PTHAPI            Path_IsRoot(const HPATHL hpth);
 bool PTHAPI            Path_IsValidUNC(const HPATHL hpth);
 bool PTHAPI            Path_IsExistingDirectory(const HPATHL hpth);
 
-int PTHAPI             Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2, const HPATHL hpth_wrkdir);
+int PTHAPI             Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2, const HPATHL hpth_wrkdir, const bool bNormalize);
 bool PTHAPI            Path_RemoveFileSpec(HPATHL hpth_in_out);
 bool PTHAPI            Path_RenameExtension(HPATHL hpth, LPCWSTR ext);
 void PTHAPI            Path_ExpandEnvStrings(HPATHL hpth_in_out);

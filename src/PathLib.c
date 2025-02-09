@@ -976,10 +976,18 @@ static int _StrgComparePathNormalized(const HPATHL hpth1, const HPATHL hpth2)
 // ----------------------------------------------------------------------------
 
 
-int PTHAPI Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2, const HPATHL hpth_wrkdir)
+int PTHAPI Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2, const HPATHL hpth_wrkdir, const bool bNormalize)
 {
-    if (Path_IsEmpty(hpth1)) { return -1; }
-    if (Path_IsEmpty(hpth2)) { return +1; }
+    if (!bNormalize) {
+        return _StrgComparePathNormalized(hpth1, hpth2);
+    }
+
+    if (Path_IsEmpty(hpth1)) {
+        return -1;
+    }
+    if (Path_IsEmpty(hpth2)) {
+        return +1;
+    }
 
     HPATHL hpth1_tmp = Path_Copy(hpth1);
     HPATHL hpth2_tmp = Path_Copy(hpth2);
