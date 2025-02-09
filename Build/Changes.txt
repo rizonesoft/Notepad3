@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.25.203.(build_#) (2025-02-03)
+Current BETA Version 6.25.209.(build_#) (2025-02-09)
 ========================================================
 
 --------------------------------------------------------
@@ -54,6 +54,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.209.1]- Update Toolbar - check for changed Filename always.
 [.203.1]- Titlebar changes (file name instead of simple hash).
 [.203.1]- Reload arguments after changing own settings files.
 [.203.1]- Utilize new Scintilla (v5.5.2) API SCI_SETCOPYSEPARATOR (SCI).
