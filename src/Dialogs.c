@@ -5359,10 +5359,10 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, const TITLEPROPS_T prop
     }
     if (properties.bFileChanged) {
         if (properties.bFileDeleted) {
-            StringCchCatN(szTitle, COUNTOF(szTitle), Settings2.FileDeletedIndicator, 3);
+            StringCchCatN(szTitle, COUNTOF(szTitle), Settings2.FileDeletedIndicator, COUNTOF(Settings2.FileDeletedIndicator));
         }
         else {
-            StringCchCatN(szTitle, COUNTOF(szTitle), Settings2.FileChangedIndicator, 3);
+            StringCchCatN(szTitle, COUNTOF(szTitle), Settings2.FileChangedIndicator, COUNTOF(Settings2.FileChangedIndicator));
         }
         StringCchCat(szTitle, COUNTOF(szTitle), L" ");
     }
