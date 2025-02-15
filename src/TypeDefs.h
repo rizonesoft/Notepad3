@@ -796,8 +796,8 @@ typedef struct SETTINGS2_T {
     HSTRINGW HyperlinkShellExURLCmdLnArgs;
     HSTRINGW FileDlgFilters;
 
-    WCHAR FileChangedIndicator[4];
-    WCHAR FileDeletedIndicator[4];
+    WCHAR FileChangedIndicator[31];
+    WCHAR FileDeletedIndicator[31];
 
     WCHAR DefaultExtension[MINI_BUFFER];
 

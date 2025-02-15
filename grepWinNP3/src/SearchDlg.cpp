@@ -66,6 +66,8 @@
 #include <numeric>
 #include <ranges>
 #include <string>
+#include <ctime>
+#include <chrono>
 #include <strsafe.h>
 
 #pragma warning(push)

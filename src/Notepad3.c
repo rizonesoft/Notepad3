@@ -12664,9 +12664,9 @@ void SetNotifyIconTitle(HWND hwnd)
     } 
     if (IsFileChangedFlagSet()) {
         if (IsFileDeletedFlagSet()) {
-            StringCchCatN(nid.szTip, COUNTOF(nid.szTip), Settings2.FileDeletedIndicator, 3);
+            StringCchCatN(nid.szTip, COUNTOF(nid.szTip), Settings2.FileDeletedIndicator, COUNTOF(Settings2.FileDeletedIndicator));
         } else {
-            StringCchCatN(nid.szTip, COUNTOF(nid.szTip), Settings2.FileChangedIndicator, 3);
+            StringCchCatN(nid.szTip, COUNTOF(nid.szTip), Settings2.FileChangedIndicator, COUNTOF(Settings2.FileChangedIndicator));
         }
         StringCchCat(nid.szTip, COUNTOF(nid.szTip), L" ");
     }
