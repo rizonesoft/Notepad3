@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.25.209.(build_#) (2025-02-09)
+Current BETA Version 6.25.216.(build_#) (2025-02-16)
 ========================================================
 
 --------------------------------------------------------
@@ -47,6 +47,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.216.1]- FileChandedIndicator and FileDeletedIndicator may be 30 chars long.
 [.203.1]- Rizonesoft Copyright © 2008-2024 to year "2008-2025".
 [1222.1]- Correction of Rizonesoft's URL.
 
