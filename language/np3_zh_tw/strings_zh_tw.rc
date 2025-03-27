@@ -130,7 +130,7 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "載入 ""%s"" 時遇到錯誤"
     IDS_MUI_ERR_SAVEFILE    "儲存 ""%"" 時遇到錯誤"
     IDS_MUI_ERR_DLG_FORMAT  "錯誤 ""%s"" ，原因：\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "無可用檔案瀏覽器外掛\nMiniPath 外掛可由  下載"
+    IDS_MUI_ERR_BROWSE      "無可用檔案瀏覽器外掛\nMiniPath 外掛可由 https://rizonesoft.com 下載"
     IDS_MUI_ERR_GREPWIN     "無可用檔案尋找外掛\ngrepWinNP3 外掛可由 https://rizonesoft.com 下載"
     IDS_MUI_ERR_MRUDLG      "指定的檔案無法存取。它可能已被改名、刪除或移動\n\n從清單中刪除它嗎？"
     IDS_MUI_ERR_CREATELINK  "建立桌面捷徑時遇到錯誤"
