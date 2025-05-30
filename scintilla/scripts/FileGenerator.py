@@ -181,5 +181,5 @@ def UpdateFileFromLines(path, lines, lineEndToUse):
 def ReplaceREInFile(path, match, replace, count=1):
     with codecs.open(path, "r", "utf-8") as f:
         contents = f.read()
-    contents = re.sub(match, replace, contents, count)
+    contents = re.sub(match, replace, contents, count=count)
     UpdateFile(path, contents)
