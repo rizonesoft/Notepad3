@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # gperf_fold_key_conv.py
-# Copyright (c) 2016-2023  K.Kosako
+# Copyright (c) 2016-2025  K.Kosako
 
 import sys
 import re
@@ -17,7 +17,8 @@ REG_GET_HASH = re.compile('(?:register\s+)?(?:unsigned\s+)?int\s+key\s*=\s*hash\
 REG_GET_CODE = re.compile('(?:register\s+)?const\s+char\s*\*\s*s\s*=\s*wordlist\[key\]\.name;')
 REG_CODE_CHECK = re.compile('if\s*\(\*str\s*==\s*\*s\s*&&\s*!strncmp.+\)')
 REG_RETURN_WL = re.compile('return\s+&wordlist\[key\];')
-REG_RETURN_0 = re.compile('return 0;')
+REG_RETURN_0 = re.compile('^\s*return\s*\([^)]+\)\s*0;')
+REG_VOID_LEN = re.compile('^\s*\(void\s*\)\s*len\s*;')
 
 def parse_line(s, key_len):
     s = s.rstrip()
@@ -46,7 +47,9 @@ def parse_line(s, key_len):
 
     r = re.sub(REG_RETURN_WL, 'return index;', s)
     if r != s: return r
-    r = re.sub(REG_RETURN_0, 'return -1;', s)
+    r = re.sub(REG_RETURN_0, '  return -1;', s)
+    if r != s: return r
+    r = re.sub(REG_VOID_LEN, '', s)
     if r != s: return r
 
     return s

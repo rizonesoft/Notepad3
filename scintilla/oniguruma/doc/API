@@ -1,4 +1,4 @@
-Oniguruma API  Version 6.9.9  2022/10/28
+Oniguruma API  Version 6.9.10  2024/06/26
 
 #include <oniguruma.h>
 
@@ -277,6 +277,7 @@ Oniguruma API  Version 6.9.9  2022/10/28
 # int onig_set_retry_limit_in_match_of_match_param(OnigMatchParam* mp, unsigned long limit)
 
   Set a retry limit count of a match process.
+  0 means unlimited.
 
   arguments
   1 mp: match-param pointer
@@ -985,6 +986,7 @@ Oniguruma API  Version 6.9.9  2022/10/28
 # int onig_set_retry_limit_in_match(unsigned long limit)
 
   Set the limit of retry counts in matching process.
+  0 means unlimited.
 
   normal return: ONIG_NORMAL
 

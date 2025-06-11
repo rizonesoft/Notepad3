@@ -1,6 +1,19 @@
 History
 
-2023/10/1X: Version 6.9.9
+2024/XX/XX: Version 6.9.10
+
+2024/11/18: fix #312: Build failure with GCC 15 (C23)
+2024/09/11: Update to Unicode 16.0
+2024/06/20: fix #290: retry limit in match == 0 means unlimited
+2024/06/15: add new callout (*SKIP) #299
+2024/06/05: add new behavior ONIG_SYN_ALLOW_CHAR_TYPE_FOLLOWED_BY_MINUS_IN_CC (#298)
+2024/05/28: fix #296: ONIG_SYNTAX_EMACS doesn't support 'shy groups'
+2024/05/24: fix #295: Invalid result for empty match with anchors
+2024/04/03: fix #293: Literal escaped braces
+2024/04/02: fix total call with whole options
+2024/04/01: fix #292: ONIG_SYN_CONTEXT_INDEP_REPEAT_OPS not working for ^* pattern
+
+2023/10/14: Version 6.9.9
 
 2023/09/17: Update to Unicode 15.1.0
 2023/07/11: Make sure oniguruma.pc is removed on distclean
@@ -735,7 +748,7 @@ History
                    Any, Assigned, C, Cc, L, Lm, Arabic, Greek etc...
 2006/09/21: [impl] add USE_UNICODE_PROPERTIES into regenc.h.
 2006/09/21: [impl] remove USE_UNICODE_FULL_RANGE_CTYPE.
-2006/09/20: [impl] change ONIGENC_CTYPE_XXXX to sequencial values.
+2006/09/20: [impl] change ONIGENC_CTYPE_XXXX to sequential values.
                    add BIT_CTYPE_XXXX bit flags to regenc.h.
                    update XXXX_CtypeTable[] for BIT_CTYPE_ALNUM.
 2006/09/19: [memo] move from CVS to Subversion (1.3.2).
@@ -1197,7 +1210,7 @@ History
 2004/12/16: [test] success in ruby 1.9.0 (2004-12-16) [i686-linux].
 2004/12/16: [dist] update hash.c.patch.
 2004/12/15: [bug]  (thanks matz)
-                   char > 127 should be casted to unsigned char. (utf8.c)
+                   char > 127 should be cast to unsigned char. (utf8.c)
 2004/12/13: [impl] add HAVE_PROTOTYPES and HAVE_STDARG_PROTOTYPES definition
                    to oniguruma.h in the case __cplusplus.
 2004/12/06: [dist] update doc/RE and doc/RE.ja.
@@ -2104,7 +2117,7 @@ History
 2003/03/08: [impl] remove check_backref_number().
 2003/03/08: [bug]  called group in 0-repeat should not be eliminated from
                    compile code.  ex. /(?*n)(?<n>){0}/   (thanks akr)
-                   add is_refered member to QualifierNode.
+                   add is_referred member to QualifierNode.
 2003/03/07: [impl] use hash table(st.[ch]) for implementation of name table.
                    (enable on Ruby in default)
 2003/03/07: [new]  add regex_foreach_names().
@@ -2157,7 +2170,7 @@ History
                    if it is set, then error /(\1)/, /\1(..)/ etc...
 2003/02/26: [spec] if backref number is greater than max group number,
                    then return compile error. (REGERR_INVALID_BACKREF_NUMBER)
-2003/02/26: [tune] bad implemented N_ALT case in get_min_match_length().
+2003/02/26: [tune] badly implemented N_ALT case in get_min_match_length().
 2003/02/26: [dist] auto update testc.c and win32/testc.c in dist target.
 2003/02/26: [impl] add -win option to testconv.rb.
 2003/02/25: [spec] allow to assign same name to different group.
@@ -2277,7 +2290,7 @@ History
 2003/01/18: [impl] change REGION_NOTPOS to REG_REGION_NOTPOS in regex.h.
 2003/01/17: [dist] add sample/simple.c.
 2003/01/17: [inst] add configure option --with-rubydir.
-2003/01/17: [bug]  bad implemeted POSIX API options.
+2003/01/17: [bug]  badly implemented POSIX API options.
                    default:     /./ not match "\n", anchor not match "\n"
                    REG_NEWLINE: /./ not match "\n", anchor match "\n"
 2003/01/16: [impl] rewrite POSIX API regexec() for speed up.

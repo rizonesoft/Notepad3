@@ -4,7 +4,7 @@
   oniguruma.h - Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2022  K.Kosako
+ * Copyright (c) 2002-2025  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,9 +36,9 @@ extern "C" {
 #define ONIGURUMA
 #define ONIGURUMA_VERSION_MAJOR   6
 #define ONIGURUMA_VERSION_MINOR   9
-#define ONIGURUMA_VERSION_TEENY   9
+#define ONIGURUMA_VERSION_TEENY   10
 
-#define ONIGURUMA_VERSION_INT     60909
+#define ONIGURUMA_VERSION_INT     60910
 
 #ifndef P_
 #if defined(__STDC__) || defined(_WIN32)
@@ -545,6 +545,7 @@ ONIG_EXTERN OnigSyntaxType*   OnigDefaultSyntax;
 #define ONIG_SYN_PYTHON                          (1U<<12)  /* \UHHHHHHHH */
 #define ONIG_SYN_WHOLE_OPTIONS                   (1U<<13)  /* (?Ie) */
 #define ONIG_SYN_BRE_ANCHOR_AT_EDGE_OF_SUBEXP    (1U<<14)  /* \(^abc$\) */
+#define ONIG_SYN_ESC_P_WITH_ONE_CHAR_PROP        (1U<<15)  /* \pL */
 
 /* syntax (behavior) in char class [...] */
 #define ONIG_SYN_NOT_NEWLINE_IN_NEGATIVE_CC      (1U<<20) /* [^...] */
@@ -552,6 +553,7 @@ ONIG_EXTERN OnigSyntaxType*   OnigDefaultSyntax;
 #define ONIG_SYN_ALLOW_EMPTY_RANGE_IN_CC         (1U<<22)
 #define ONIG_SYN_ALLOW_DOUBLE_RANGE_OP_IN_CC     (1U<<23) /* [0-9-a]=[0-9\-a] */
 #define ONIG_SYN_ALLOW_INVALID_CODE_END_OF_RANGE_IN_CC (1U<<26)
+#define ONIG_SYN_ALLOW_CHAR_TYPE_FOLLOWED_BY_MINUS_IN_CC (1U<<27) /* [\w-%]=[\w\-%] */
 /* syntax (behavior) warning */
 #define ONIG_SYN_WARN_CC_OP_NOT_ESCAPED          (1U<<24) /* [,-,] */
 #define ONIG_SYN_WARN_REDUNDANT_NESTED_REPEAT    (1U<<25) /* (?:a*)+ */
@@ -588,6 +590,7 @@ ONIG_EXTERN OnigSyntaxType*   OnigDefaultSyntax;
 #define ONIGERR_RETRY_LIMIT_IN_MATCH_OVER                     -17
 #define ONIGERR_RETRY_LIMIT_IN_SEARCH_OVER                    -18
 #define ONIGERR_SUBEXP_CALL_LIMIT_IN_SEARCH_OVER              -19
+#define ONIGERR_TIME_LIMIT_OVER                               -20
 #define ONIGERR_DEFAULT_ENCODING_IS_NOT_SETTED                -21 /*dont use*/
 #define ONIGERR_DEFAULT_ENCODING_IS_NOT_SET                   -21
 #define ONIGERR_SPECIFIED_ENCODING_CANT_CONVERT_TO_WIDE_CHAR  -22
@@ -946,6 +949,10 @@ unsigned long onig_get_retry_limit_in_search P_((void));
 ONIG_EXTERN
 int onig_set_retry_limit_in_search P_((unsigned long n));
 ONIG_EXTERN
+unsigned long onig_get_time_limit P_((void));
+ONIG_EXTERN
+int onig_set_time_limit P_((unsigned long n /* msec. */));
+ONIG_EXTERN
 unsigned int onig_get_parse_depth_limit P_((void));
 ONIG_EXTERN
 int onig_set_capture_num_limit P_((int num));
@@ -989,6 +996,8 @@ ONIG_EXTERN
 int onig_set_retry_limit_in_match_of_match_param P_((OnigMatchParam* param, unsigned long limit));
 ONIG_EXTERN
 int onig_set_retry_limit_in_search_of_match_param P_((OnigMatchParam* param, unsigned long limit));
+ONIG_EXTERN
+int onig_set_time_limit_of_match_param P_((OnigMatchParam* param, unsigned long limit /* msec. */));
 ONIG_EXTERN
 int onig_set_progress_callout_of_match_param P_((OnigMatchParam* param, OnigCalloutFunc f));
 ONIG_EXTERN
@@ -1083,6 +1092,8 @@ ONIG_EXTERN
 int onig_builtin_mismatch P_((OnigCalloutArgs* args, void* user_data));
 ONIG_EXTERN
 int onig_builtin_error P_((OnigCalloutArgs* args, void* user_data));
+ONIG_EXTERN
+int onig_builtin_skip P_((OnigCalloutArgs* args, void* user_data));
 ONIG_EXTERN
 int onig_builtin_count P_((OnigCalloutArgs* args, void* user_data));
 ONIG_EXTERN

@@ -4,7 +4,7 @@
   regint.h -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2023  K.Kosako
+ * Copyright (c) 2002-2025  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@
 /* #define ONIG_DEBUG_MATCH_COUNTER */
 /* #define ONIG_DEBUG_CALL */
 /* #define ONIG_DONT_OPTIMIZE */
+/* #define ONIG_DEBUG */
 
 /* for byte-code statistical data. */
 /* #define ONIG_DEBUG_STATISTICS */
@@ -47,8 +48,11 @@
     defined(ONIG_DEBUG_STATISTICS)
 #ifndef ONIG_DEBUG
 #define ONIG_DEBUG
-#define DBGFP   stderr
 #endif
+#endif
+
+#ifdef ONIG_DEBUG
+#define DBGFP   stderr
 #endif
 
 #ifndef ONIG_DISABLE_DIRECT_THREADING
@@ -57,17 +61,27 @@
 #endif
 #endif
 
+#ifndef ONIG_PRINTFLIKE
+#if defined(__clang__) || defined(__GNUC__)
+#define ONIG_PRINTFLIKE(x, y) __attribute__((format(printf, x, y)))
+#else
+#define ONIG_PRINTFLIKE(x, y)
+#endif
+#endif
+
 /* config */
 /* spec. config */
 #define USE_REGSET
 #define USE_CALL
 #define USE_CALLOUT
+#define USE_SKIP_SEARCH
 #define USE_BACKREF_WITH_LEVEL        /* \k<name+n>, \k<name-n> */
 #define USE_WHOLE_OPTIONS
 #define USE_RIGID_CHECK_CAPTURES_IN_EMPTY_REPEAT        /* /(?:()|())*\2/ */
 #define USE_NEWLINE_AT_END_OF_STRING_HAS_EMPTY_LINE     /* /\n$/ =~ "\n" */
 #define USE_WARNING_REDUNDANT_NESTED_REPEAT_OPERATOR
 #define USE_RETRY_LIMIT
+/* #define USE_TIME_LIMIT */
 #ifdef USE_GOTO_LABELS_AS_VALUES
 #define USE_THREADED_CODE
 #define USE_DIRECT_THREADED_CODE
@@ -96,11 +110,18 @@
 #define DEFAULT_MATCH_STACK_LIMIT_SIZE         0 /* unlimited */
 #define DEFAULT_RETRY_LIMIT_IN_MATCH    10000000
 #define DEFAULT_RETRY_LIMIT_IN_SEARCH          0 /* unlimited */
+#define DEFAULT_TIME_LIMIT_MSEC                0 /* unlimited (msec.) */
 #define DEFAULT_SUBEXP_CALL_LIMIT_IN_SEARCH    0 /* unlimited */
 #define DEFAULT_SUBEXP_CALL_MAX_NEST_LEVEL    20
 
 
 #include "regenc.h"
+
+#if !defined(_WIN32) || defined(__GNUC__)
+#if !defined(HAVE_TIME_H) || !defined(HAVE_CLOCK_GETTIME)
+#undef USE_TIME_LIMIT
+#endif
+#endif
 
 #ifndef ONIG_NO_STANDARD_C_HEADERS
 
@@ -115,7 +136,7 @@
 #include <stdint.h>
 #endif
 
-#if defined(HAVE_ALLOCA_H) && !defined(__GNUC__)
+#if defined(HAVE_ALLOCA_H)
 #include <alloca.h>
 #endif
 
@@ -288,14 +309,17 @@ typedef unsigned __int64 uint64_t;
 #endif
 #endif /* _WIN32 */
 
-typedef size_t   OnigSize;
+typedef size_t OnigSize;
+#define INFINITE_SIZE ~((OnigSize)0)
 
-#define INFINITE_SIZE  ~((OnigSize )0)
-
-#if SIZEOF_VOIDP == SIZEOF_LONG
+#if SIZEOF_VOIDP == SIZEOF_INTPTR_T
+typedef intptr_t hash_data_type;
+#elif SIZEOF_VOIDP == SIZEOF_LONG
 typedef unsigned long hash_data_type;
 #elif SIZEOF_VOIDP == SIZEOF_LONG_LONG
 typedef unsigned long long hash_data_type;
+#else
+#error SIZEOF_VOIDP has unexpected value
 #endif
 
 /* strend hash */
@@ -943,8 +967,8 @@ struct re_pattern_buffer {
 
 extern void onig_add_end_call(void (*func)(void));
 extern void onig_warning(const char* s);
-extern UChar* onig_error_code_to_format P_((OnigPos code));
-extern void ONIG_VARIADIC_FUNC_ATTR onig_snprintf_with_pattern PV_((UChar buf[], int bufsize, OnigEncoding enc, UChar* pat, UChar* pat_end, const UChar *fmt, ...));
+extern UChar* onig_error_code_to_format P_((int code));
+extern void ONIG_VARIADIC_FUNC_ATTR ONIG_PRINTFLIKE(6, 7) onig_snprintf_with_pattern PV_((UChar buf[], int bufsize, OnigEncoding enc, UChar* pat, UChar* pat_end, const char *fmt, ...));
 extern int onig_compile P_((regex_t* reg, const UChar* pattern, const UChar* pattern_end, OnigErrorInfo* einfo));
 extern int onig_is_code_in_cc_len P_((int enclen, OnigCodePoint code, void* /* CClassNode* */ cc));
 extern RegexExt* onig_get_regex_ext(regex_t* reg);

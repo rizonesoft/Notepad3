@@ -1,4 +1,4 @@
-Unicode Properties (Unicode Version: 15.1.0,  Emoji: 15.1)
+Unicode Properties (Unicode Version: 16.0.0,  Emoji: 16.0)
 
 ASCII_Hex_Digit
 Adlam
@@ -68,6 +68,7 @@ Emoji_Presentation
 Ethiopic
 Extended_Pictographic
 Extender
+Garay
 Georgian
 Glagolitic
 Gothic
@@ -79,6 +80,7 @@ Greek
 Gujarati
 Gunjala_Gondi
 Gurmukhi
+Gurung_Khema
 Han
 Hangul
 Hanifi_Rohingya
@@ -113,6 +115,7 @@ Khitan_Small_Script
 Khmer
 Khojki
 Khudawadi
+Kirat_Rai
 L
 LC
 Lao
@@ -150,6 +153,7 @@ Meroitic_Hieroglyphs
 Miao
 Mn
 Modi
+Modifier_Combining_Mark
 Mongolian
 Mro
 Multani
@@ -169,6 +173,7 @@ Nushu
 Nyiakeng_Puachue_Hmong
 Ogham
 Ol_Chiki
+Ol_Onal
 Old_Hungarian
 Old_Italic
 Old_North_Arabian
@@ -229,6 +234,7 @@ Sogdian
 Sora_Sompeng
 Soyombo
 Sundanese
+Sunuwar
 Syloti_Nagri
 Syriac
 Tagalog
@@ -247,7 +253,9 @@ Thai
 Tibetan
 Tifinagh
 Tirhuta
+Todhri
 Toto
+Tulu_Tigalari
 Ugaritic
 Unified_Ideograph
 Unknown
@@ -330,6 +338,7 @@ Ext
 ExtPict
 Final_Punctuation
 Format
+Gara
 Geor
 Glag
 Gong
@@ -341,6 +350,7 @@ Grek
 Gr_Ext
 Gr_Link
 Gujr
+Gukh
 Guru
 Hang
 Hani
@@ -370,6 +380,7 @@ Khmr
 Khoj
 Kits
 Knda
+Krai
 Kthi
 Lana
 Laoo
@@ -392,6 +403,7 @@ Mani
 Marc
 Mark
 Math_Symbol
+MCM
 Medf
 Mend
 Merc
@@ -422,6 +434,7 @@ OIDS
 Olck
 OLower
 OMath
+Onao
 Open_Punctuation
 Orkh
 Orya
@@ -476,6 +489,7 @@ Space_Separator
 Spacing_Mark
 STerm
 Sund
+Sunu
 Surrogate
 Sylo
 Symbol
@@ -496,6 +510,8 @@ Tibt
 Tirh
 Titlecase_Letter
 Tnsa
+Todr
+Tutg
 Ugar
 UIdeo
 Unassigned
@@ -701,6 +717,7 @@ In_Osage
 In_Elbasan
 In_Caucasian_Albanian
 In_Vithkuqi
+In_Todhri
 In_Linear_A
 In_Latin_Extended_F
 In_Cypriot_Syllabary
@@ -723,6 +740,7 @@ In_Psalter_Pahlavi
 In_Old_Turkic
 In_Old_Hungarian
 In_Hanifi_Rohingya
+In_Garay
 In_Rumi_Numeral_Symbols
 In_Yezidi
 In_Arabic_Extended_C
@@ -742,12 +760,14 @@ In_Khojki
 In_Multani
 In_Khudawadi
 In_Grantha
+In_Tulu_Tigalari
 In_Newa
 In_Tirhuta
 In_Siddham
 In_Modi
 In_Mongolian_Supplement
 In_Takri
+In_Myanmar_Extended_C
 In_Ahom
 In_Dogra
 In_Warang_Citi
@@ -758,6 +778,7 @@ In_Soyombo
 In_Unified_Canadian_Aboriginal_Syllabics_Extended_A
 In_Pau_Cin_Hau
 In_Devanagari_Extended_A
+In_Sunuwar
 In_Bhaiksuki
 In_Marchen
 In_Masaram_Gondi
@@ -772,12 +793,15 @@ In_Early_Dynastic_Cuneiform
 In_Cypro_Minoan
 In_Egyptian_Hieroglyphs
 In_Egyptian_Hieroglyph_Format_Controls
+In_Egyptian_Hieroglyphs_Extended_A
 In_Anatolian_Hieroglyphs
+In_Gurung_Khema
 In_Bamum_Supplement
 In_Mro
 In_Tangsa
 In_Bassa_Vah
 In_Pahawh_Hmong
+In_Kirat_Rai
 In_Medefaidrin
 In_Miao
 In_Ideographic_Symbols_and_Punctuation
@@ -792,6 +816,7 @@ In_Small_Kana_Extension
 In_Nushu
 In_Duployan
 In_Shorthand_Format_Controls
+In_Symbols_for_Legacy_Computing_Supplement
 In_Znamenny_Musical_Notation
 In_Byzantine_Musical_Symbols
 In_Musical_Symbols
@@ -809,6 +834,7 @@ In_Nyiakeng_Puachue_Hmong
 In_Toto
 In_Wancho
 In_Nag_Mundari
+In_Ol_Onal
 In_Ethiopic_Extended_B
 In_Mende_Kikakui
 In_Adlam

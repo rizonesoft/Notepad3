@@ -2,7 +2,7 @@
   ascii.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2019  K.Kosako
+ * Copyright (c) 2002-2025  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,6 +44,9 @@ init(void)
 
     name = "FAIL";        BC0_P(name, fail);
     name = "MISMATCH";    BC0_P(name, mismatch);
+#ifdef USE_SKIP_SEARCH
+    name = "SKIP";        BC0_P(name, skip);
+#endif
 
     name = "MAX";
     args[0] = ONIG_TYPE_TAG | ONIG_TYPE_LONG;
@@ -87,8 +90,12 @@ is_initialized(void)
 static int
 ascii_is_code_ctype(OnigCodePoint code, unsigned int ctype)
 {
-  if (code < 128)
-    return ONIGENC_IS_ASCII_CODE_CTYPE(code, ctype);
+  if (code < 128) {
+    if (ctype > ONIGENC_MAX_STD_CTYPE)
+      return FALSE;
+    else
+      return ONIGENC_IS_ASCII_CODE_CTYPE(code, ctype);
+  }
   else
     return FALSE;
 }

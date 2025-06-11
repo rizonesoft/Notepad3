@@ -1,4 +1,4 @@
-CALLOUTS.BUILTIN               2018/03/26
+CALLOUTS.BUILTIN               2024/07/04
 
 
 * FAIL    (progress)
@@ -91,5 +91,14 @@ CALLOUTS.BUILTIN               2018/03/26
 
   [callout data]
   slot 0: op value (enum OP_CMP in src/regexec.c)
+
+
+* SKIP    (progress)
+
+  (*SKIP)
+
+  Advance the position where the current matching fails and the next search
+  begins to the current position.
+  It has no effect on the current matching.
 
 //END

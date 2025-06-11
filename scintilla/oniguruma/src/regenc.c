@@ -2,7 +2,7 @@
   regenc.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2021  K.Kosako
+ * Copyright (c) 2002-2025  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -931,8 +931,10 @@ extern int
 onigenc_mb2_is_code_ctype(OnigEncoding enc, OnigCodePoint code,
                           unsigned int ctype)
 {
-  if (code < 128)
-    return ONIGENC_IS_ASCII_CODE_CTYPE(code, ctype);
+  if (code < 128) {
+    if (ctype <= ONIGENC_MAX_STD_CTYPE)
+      return ONIGENC_IS_ASCII_CODE_CTYPE(code, ctype);
+  }
   else {
     if (CTYPE_IS_WORD_GRAPH_PRINT(ctype)) {
       return (ONIGENC_CODE_TO_MBCLEN(enc, code) > 1 ? TRUE : FALSE);
@@ -946,8 +948,10 @@ extern int
 onigenc_mb4_is_code_ctype(OnigEncoding enc, OnigCodePoint code,
                           unsigned int ctype)
 {
-  if (code < 128)
-    return ONIGENC_IS_ASCII_CODE_CTYPE(code, ctype);
+  if (code < 128) {
+    if (ctype <= ONIGENC_MAX_STD_CTYPE)
+      return ONIGENC_IS_ASCII_CODE_CTYPE(code, ctype);
+  }
   else {
     if (CTYPE_IS_WORD_GRAPH_PRINT(ctype)) {
       return (ONIGENC_CODE_TO_MBCLEN(enc, code) > 1 ? TRUE : FALSE);
