@@ -2,7 +2,7 @@
   regerror.c -  Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2022  K.Kosako
+ * Copyright (c) 2002-2025  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,6 +58,8 @@ onig_error_code_to_format(OnigPos code)
     p = "retry-limit-in-search over"; break;
   case ONIGERR_SUBEXP_CALL_LIMIT_IN_SEARCH_OVER:
     p = "subexp-call-limit-in-search over"; break;
+  case ONIGERR_TIME_LIMIT_OVER:
+    p = "time limit over"; break;
   case ONIGERR_TYPE_BUG:
     p = "undefined type (bug)"; break;
   case ONIGERR_PARSER_BUG:
@@ -352,7 +354,7 @@ onig_error_code_to_str(UChar* s, OnigPos code, ...)
 
 void ONIG_VARIADIC_FUNC_ATTR
 onig_snprintf_with_pattern(UChar buf[], int bufsize, OnigEncoding enc,
-                           UChar* pat, UChar* pat_end, const UChar *fmt, ...)
+                           UChar* pat, UChar* pat_end, const char *fmt, ...)
 {
   int n, need, len;
   UChar *p, *s, *bp;
@@ -360,7 +362,7 @@ onig_snprintf_with_pattern(UChar buf[], int bufsize, OnigEncoding enc,
   va_list args;
 
   va_start(args, fmt);
-  n = xvsnprintf((char* )buf, bufsize, (const char* )fmt, args);
+  n = xvsnprintf((char* )buf, bufsize, fmt, args);
   va_end(args);
 
   need = (int )(pat_end - pat) * 4 + 4;

@@ -2,7 +2,7 @@
   regposix.c - Oniguruma (regular expression library)
 **********************************************************************/
 /*-
- * Copyright (c) 2002-2022  K.Kosako
+ * Copyright (c) 2002-2025  K.Kosako
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -77,6 +77,7 @@ onig2posix_error_code(OnigPos code)
     { ONIGERR_RETRY_LIMIT_IN_MATCH_OVER,                  REG_EONIG_INTERNAL },
     { ONIGERR_RETRY_LIMIT_IN_SEARCH_OVER,                 REG_EONIG_INTERNAL },
     { ONIGERR_SUBEXP_CALL_LIMIT_IN_SEARCH_OVER,           REG_EONIG_INTERNAL },
+    { ONIGERR_TIME_LIMIT_OVER,                            REG_EONIG_INTERNAL },
     { ONIGERR_TYPE_BUG,                                   REG_EONIG_INTERNAL },
     { ONIGERR_PARSER_BUG,                                 REG_EONIG_INTERNAL },
     { ONIGERR_STACK_BUG,                                  REG_EONIG_INTERNAL },
