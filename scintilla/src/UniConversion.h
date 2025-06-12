@@ -43,9 +43,14 @@ inline int UnicodeFromUTF8(const unsigned char *us) noexcept {
 		return ((us[0] & 0x7) << 18) + ((us[1] & 0x3F) << 12) + ((us[2] & 0x3F) << 6) + (us[3] & 0x3F);
 	}
 }
+int UnicodeFromUTF8(std::string_view sv) noexcept;
 
 constexpr bool UTF8IsTrailByte(unsigned char ch) noexcept {
 	return (ch >= 0x80) && (ch < 0xc0);
+}
+
+constexpr bool UTF8IsFirstByte(unsigned char ch) noexcept {
+	return (ch >= 0xc2) && (ch <= 0xf4);
 }
 
 constexpr bool UTF8IsAscii(unsigned char ch) noexcept {
@@ -94,8 +99,12 @@ enum { SURROGATE_TRAIL_FIRST = 0xDC00 };
 enum { SURROGATE_TRAIL_LAST = 0xDFFF };
 enum { SUPPLEMENTAL_PLANE_FIRST = 0x10000 };
 
+constexpr bool IsSurrogate(wchar_t uch) noexcept {
+	return (uch >= SURROGATE_LEAD_FIRST) && (uch <= SURROGATE_TRAIL_LAST);
+}
+
 constexpr unsigned int UTF16CharLength(wchar_t uch) noexcept {
-	return ((uch >= SURROGATE_LEAD_FIRST) && (uch <= SURROGATE_LEAD_LAST)) ? 2 : 1;
+	return IsSurrogate(uch) ? 2 : 1;
 }
 
 constexpr unsigned int UTF16LengthFromUTF8ByteCount(unsigned int byteCount) noexcept {

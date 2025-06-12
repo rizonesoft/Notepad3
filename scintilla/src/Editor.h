@@ -182,8 +182,6 @@ constexpr XYScrollOptions operator|(XYScrollOptions a, XYScrollOptions b) noexce
 	return static_cast<XYScrollOptions>(static_cast<int>(a) | static_cast<int>(b));
 }
 
-struct SelectionStack;
-
 /**
  */
 class Editor : public EditModel, public DocWatcher {
@@ -289,6 +287,12 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	// Wrapping support
 	WrapPending wrapPending;
 	ActionDuration durationWrapOneByte;
+	bool insideWrapScroll;
+	struct LineDocSub {
+		Scintilla::Line lineDoc = 0;
+		Scintilla::Line subLine = 0;
+	};
+	std::optional<LineDocSub> scrollToAfterWrap;
 
 	bool convertPastes;
 
@@ -352,12 +356,13 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void ThinRectangularRange();
 	void InvalidateSelection(SelectionRange newMain, bool invalidateWholeSelection=false);
 	void InvalidateWholeSelection();
-	SelectionRange LineSelectionRange(SelectionPosition currentPos_, SelectionPosition anchor_) const;
+	SelectionRange LineSelectionRange(SelectionPosition currentPos_, SelectionPosition anchor_) const noexcept;
 	void SetSelection(SelectionPosition currentPos_, SelectionPosition anchor_);
 	void SetSelection(Sci::Position currentPos_, Sci::Position anchor_);
 	void SetSelection(SelectionPosition currentPos_);
 	void SetEmptySelection(SelectionPosition currentPos_);
 	void SetEmptySelection(Sci::Position currentPos_);
+	void SetSelectionFromSerialized(const char *serialized);
 	enum class AddNumber { one, each };
 	void MultipleSelectAdd(AddNumber addNumber);
 	bool RangeContainsProtected(Sci::Position start, Sci::Position end) const noexcept;
@@ -422,7 +427,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	Sci::Position FormatRange(Scintilla::Message iMessage, Scintilla::uptr_t wParam, Scintilla::sptr_t lParam);
 	long TextWidth(Scintilla::uptr_t style, const char *text);
 
-	virtual void SetVerticalScrollPos() = 0;
+	virtual void SetVerticalScrollPos();
 	virtual void SetHorizontalScrollPos() = 0;
 	virtual bool ModifyScrollBars(Sci::Line nMax, Sci::Line nPage) = 0;
 	virtual void ReconfigureScrollBars();
@@ -604,7 +609,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void SetFoldExpanded(Sci::Line lineDoc, bool expanded);
 	void FoldLine(Sci::Line line, Scintilla::FoldAction action);
 	void FoldExpand(Sci::Line line, Scintilla::FoldAction action, Scintilla::FoldLevel level);
-	Sci::Line ContractedFoldNext(Sci::Line lineStart) const;
+	Sci::Line ContractedFoldNext(Sci::Line lineStart) const noexcept;
 	void EnsureLineVisible(Sci::Line lineDoc, bool enforcePolicy);
 	void FoldChanged(Sci::Line line, Scintilla::FoldLevel levelNow, Scintilla::FoldLevel levelPrev);
 	void NeedShown(Sci::Position pos, Sci::Position len);
@@ -626,7 +631,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	virtual std::string EncodedFromUTF8(std::string_view utf8) const = 0;
 	virtual std::unique_ptr<Surface> CreateMeasurementSurface() const;
 	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	virtual std::unique_ptr<Surface> CreateDrawingSurface(SurfaceID sid, std::optional<Scintilla::Technology> technologyOpt = {}, bool printing = false) const;
+	virtual std::unique_ptr<Surface> CreateDrawingSurface(SurfaceID sid, std::optional<Scintilla::Technology> technologyOpt = {}) const;
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	Sci::Line WrapCount(Sci::Line line);
@@ -731,11 +736,9 @@ public:
 	AutoSurface(const Editor *ed) :
 		surf(ed->CreateMeasurementSurface())  {
 	}
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	AutoSurface(SurfaceID sid, const Editor *ed, std::optional<Scintilla::Technology> technology = {}, bool printing = false) :
-		surf(ed->CreateDrawingSurface(sid, technology, printing)) {
+	AutoSurface(SurfaceID sid, const Editor *ed, std::optional<Scintilla::Technology> technology = {}) :
+		surf(ed->CreateDrawingSurface(sid, technology)) {
 	}
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	// Deleted so AutoSurface objects can not be copied.
 	AutoSurface(const AutoSurface &) = delete;
 	AutoSurface(AutoSurface &&) = delete;

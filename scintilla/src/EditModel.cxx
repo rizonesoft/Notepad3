@@ -58,51 +58,39 @@ using namespace Scintilla::Internal;
 Caret::Caret() noexcept :
 	active(false), on(false), period(500) {}
 
-SelectionSimple::SelectionSimple(const Selection &sel) {
-	selType = sel.selType;
-	if (sel.IsRectangular()) {
-		// rectangular or thin
-		// Could be large so don't remember each range, just the rectangular bounds then reconstitute when undone
-		rangeRectangular = sel.RectangularCopy();
-	} else {
-		ranges = sel.RangesCopy();
-	}
-	mainRange = sel.Main();
-}
-
 void ModelState::RememberSelectionForUndo(int index, const Selection &sel) {
 	historyForUndo.indexCurrent = index;
-	historyForUndo.ssCurrent = SelectionSimple(sel);
+	historyForUndo.ssCurrent = sel.ToString();
 }
 
 void ModelState::ForgetSelectionForUndo() noexcept {
 	historyForUndo.indexCurrent = -1;
 }
 
-void ModelState::RememberSelectionOntoStack(int index) {
+void ModelState::RememberSelectionOntoStack(int index, Sci::Line topLine) {
 	if ((historyForUndo.indexCurrent >= 0) && (index == historyForUndo.indexCurrent + 1)) {
 		// Don't overwrite initial selection save if most recent action was coalesced
-		historyForUndo.stack[index] = historyForUndo.ssCurrent;
+		historyForUndo.stack[index] = { historyForUndo.ssCurrent, topLine };
 	}
 }
 
-void ModelState::RememberSelectionForRedoOntoStack(int index, const Selection &sel) {
-	historyForRedo.stack[index] = SelectionSimple(sel);
+void ModelState::RememberSelectionForRedoOntoStack(int index, const Selection &sel, Sci::Line topLine) {
+	historyForRedo.stack[index] = { sel.ToString(), topLine };
 }
 
-const SelectionSimple *ModelState::SelectionFromStack(int index, UndoRedo history) const {
+SelectionWithScroll ModelState::SelectionFromStack(int index, UndoRedo history) const {
 	const SelectionHistory &sh = history == UndoRedo::undo ? historyForUndo : historyForRedo;
-	std::map<int, SelectionSimple>::const_iterator it = sh.stack.find(index);
+	const SelectionStack::const_iterator it = sh.stack.find(index);
 	if (it != sh.stack.end()) {
-		return &it->second;
+		return it->second;
 	}
 	return {};
 }
 
 void ModelState::TruncateUndo(int index) {
-	std::map<int, SelectionSimple>::iterator itUndo = historyForUndo.stack.find(index);
+	const SelectionStack::const_iterator itUndo = historyForUndo.stack.find(index);
 	historyForUndo.stack.erase(itUndo, historyForUndo.stack.end());
-	std::map<int, SelectionSimple>::iterator itRedo = historyForRedo.stack.find(index);
+	const SelectionStack::const_iterator itRedo = historyForRedo.stack.find(index);
 	historyForRedo.stack.erase(itRedo, historyForRedo.stack.end());
 }
 
@@ -137,6 +125,9 @@ EditModel::EditModel() : braces{} {
 
 EditModel::~EditModel() {
 	try {
+		// Erasing the view state won't throw even though SetViewState
+		// and the resulting map::erase aren't marked noexcept.
+		pdoc->SetViewState(this, {});
 		// This never throws but isn't marked noexcept for compatibility
 		pdoc->Release();
 	} catch (...) {
@@ -185,12 +176,20 @@ int EditModel::GetMark(Sci::Line line) const {
 }
 
 void EditModel::EnsureModelState() {
-	if (!modelState && (undoSelectionHistoryOption == UndoSelectionHistoryOption::Enabled)) {
+	if (!modelState && (undoSelectionHistoryOption != UndoSelectionHistoryOption::Disabled)) {
 		if (ViewStateShared vss = pdoc->GetViewState(this)) {
 			modelState = std::dynamic_pointer_cast<ModelState>(vss);
 		} else {
 			modelState = std::make_shared<ModelState>();
 			pdoc->SetViewState(this, std::static_pointer_cast<ViewState>(modelState));
 		}
+	}
+}
+
+void EditModel::ChangeUndoSelectionHistory(Scintilla::UndoSelectionHistoryOption undoSelectionHistoryOptionNew) {
+	undoSelectionHistoryOption = undoSelectionHistoryOptionNew;
+	if (undoSelectionHistoryOption == UndoSelectionHistoryOption::Disabled) {
+		modelState.reset();
+		pdoc->SetViewState(this, {});
 	}
 }
