@@ -20,6 +20,7 @@ public:
 		if (virtualSpace < 0)
 			virtualSpace = 0;
 	}
+	explicit SelectionPosition(std::string_view sv);
 	void Reset() noexcept {
 		position = 0;
 		virtualSpace = 0;
@@ -49,6 +50,7 @@ public:
 	Sci::Position VirtualSpace() const noexcept {
 		return virtualSpace;
 	}
+	[[nodiscard]] double VirtualSpaceWidth(double spaceWidth) const noexcept;
 	void SetVirtualSpace(Sci::Position virtualSpace_) noexcept {
 		PLATFORM_ASSERT(virtualSpace_ < 800000000);
 		if (virtualSpace_ >= 0)
@@ -63,6 +65,7 @@ public:
 	bool IsValid() const noexcept {
 		return position >= 0;
 	}
+	std::string ToString() const;
 };
 
 // Ordered range to make drawing simpler
@@ -78,6 +81,12 @@ struct SelectionSegment {
 			start = b;
 			end = a;
 		}
+	}
+	constexpr SelectionSegment(Sci::Position a, Sci::Position b) :
+		SelectionSegment(SelectionPosition(a), SelectionPosition(b)) {
+	}
+	[[nodiscard]] constexpr bool operator ==(const SelectionSegment &other) const noexcept {
+		return (start == other.start) && (end == other.end);
 	}
 	bool Empty() const noexcept {
 		return start == end;
@@ -112,6 +121,10 @@ struct SelectionRange {
 	}
 	constexpr SelectionRange(Sci::Position caret_, Sci::Position anchor_) noexcept : caret(caret_), anchor(anchor_) {
 	}
+	explicit SelectionRange(std::string_view sv);
+	SelectionSegment AsSegment() const noexcept {
+		return {caret, anchor};
+	}
 	bool Empty() const noexcept {
 		return anchor == caret;
 	}
@@ -145,8 +158,10 @@ struct SelectionRange {
 	}
 	void Swap() noexcept;
 	bool Trim(SelectionRange range) noexcept;
+	void Truncate(Sci::Position length) noexcept;
 	// If range is all virtual collapse to start of virtual space
 	void MinimizeVirtualSpace() noexcept;
+	std::string ToString() const;
 };
 
 // Deliberately an enum rather than an enum class to allow treating as bool
@@ -165,6 +180,8 @@ public:
 	SelTypes selType;
 
 	Selection();	// Allocates so may throw.
+	explicit Selection(std::string_view sv);
+
 	bool IsRectangular() const noexcept;
 	Sci::Position MainCaret() const noexcept;
 	Sci::Position MainAnchor() const noexcept;
@@ -210,6 +227,8 @@ public:
 		return ranges;
 	}
 	void SetRanges(const Ranges &rangesToSet);
+	void Truncate(Sci::Position length) noexcept;
+	std::string ToString() const;
 };
 
 }

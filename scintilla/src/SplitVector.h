@@ -215,7 +215,10 @@ public:
 			RoomFor(insertLength);
 			GapTo(position);
 			T *ptr = body.data() + part1Length;
-			std::uninitialized_value_construct_n(ptr, insertLength);
+			for (ptrdiff_t elem = 0; elem < insertLength; elem++, ptr++) {
+				T emptyOne = {};
+				*ptr = std::move(emptyOne);
+			}
 			lengthBody += insertLength;
 			part1Length += insertLength;
 			gapLength -= insertLength;

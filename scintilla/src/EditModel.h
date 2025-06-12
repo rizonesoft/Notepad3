@@ -21,26 +21,21 @@ public:
 	Caret() noexcept;
 };
 
-// Simplified version of selection which won't contain rectangular selection realized
-// into ranges as too much data.
-// Just a type and single range for now.
+enum class UndoRedo { undo, redo };
 
-struct SelectionSimple {
-	std::vector<SelectionRange> ranges;
-	SelectionRange rangeRectangular;
-	size_t mainRange = 0;
-	Selection::SelTypes selType = Selection::SelTypes::stream;
+// Selection stack is sparse so use a map
 
-	SelectionSimple() = default;
-	explicit SelectionSimple(const Selection &sel);
+struct SelectionWithScroll {
+	std::string selection;
+	Sci::Line topLine = 0;
 };
 
-enum class UndoRedo { undo, redo };
+using SelectionStack = std::map<int, SelectionWithScroll>;
 
 struct SelectionHistory {
 	int indexCurrent = 0;
-	SelectionSimple ssCurrent;
-	std::map<int, SelectionSimple> stack;
+	std::string ssCurrent;
+	SelectionStack stack;
 };
 
 struct ModelState : ViewState {
@@ -48,9 +43,9 @@ struct ModelState : ViewState {
 	SelectionHistory historyForRedo;
 	void RememberSelectionForUndo(int index, const Selection &sel);
 	void ForgetSelectionForUndo() noexcept;
-	void RememberSelectionOntoStack(int index);
-	void RememberSelectionForRedoOntoStack(int index, const Selection &sel);
-	const SelectionSimple *SelectionFromStack(int index, UndoRedo history) const;
+	void RememberSelectionOntoStack(int index, Sci::Line topLine);
+	void RememberSelectionForRedoOntoStack(int index, const Selection &sel, Sci::Line topLine);
+	SelectionWithScroll SelectionFromStack(int index, UndoRedo history) const;
 	virtual void TruncateUndo(int index) final;
 };
 
@@ -120,6 +115,7 @@ public:
 	[[nodiscard]] int GetMark(Sci::Line line) const;
 
 	void EnsureModelState();
+	void ChangeUndoSelectionHistory(Scintilla::UndoSelectionHistoryOption undoSelectionHistoryOptionNew);
 };
 
 }

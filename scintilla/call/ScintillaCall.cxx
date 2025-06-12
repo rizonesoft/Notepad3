@@ -1131,6 +1131,14 @@ int ScintillaCall::AutoCGetStyle() {
 	return static_cast<int>(Call(Message::AutoCGetStyle));
 }
 
+void ScintillaCall::AutoCSetImageScale(int scalePercent) {
+	Call(Message::AutoCSetImageScale, scalePercent);
+}
+
+int ScintillaCall::AutoCGetImageScale() {
+	return static_cast<int>(Call(Message::AutoCGetImageScale));
+}
+
 void ScintillaCall::SetIndent(int indentSize) {
 	Call(Message::SetIndent, indentSize);
 }
@@ -1283,6 +1291,18 @@ UndoSelectionHistoryOption ScintillaCall::UndoSelectionHistory() {
 	return static_cast<Scintilla::UndoSelectionHistoryOption>(Call(Message::GetUndoSelectionHistory));
 }
 
+void ScintillaCall::SetSelectionSerialized(const char *selectionString) {
+	CallString(Message::SetSelectionSerialized, 0, selectionString);
+}
+
+Position ScintillaCall::SelectionSerialized(char *selectionString) {
+	return CallPointer(Message::GetSelectionSerialized, 0, selectionString);
+}
+
+std::string ScintillaCall::SelectionSerialized() {
+	return CallReturnString(Message::GetSelectionSerialized, 0);
+}
+
 Line ScintillaCall::FirstVisibleLine() {
 	return Call(Message::GetFirstVisibleLine);
 }
@@ -1369,6 +1389,10 @@ Position ScintillaCall::PositionFromLine(Line line) {
 
 void ScintillaCall::LineScroll(Position columns, Line lines) {
 	Call(Message::LineScroll, columns, lines);
+}
+
+void ScintillaCall::ScrollVertical(Line docLine, Line subLine) {
+	Call(Message::ScrollVertical, docLine, subLine);
 }
 
 void ScintillaCall::ScrollCaret() {
@@ -2823,8 +2847,8 @@ int ScintillaCall::ExtraDescent() {
 	return static_cast<int>(Call(Message::GetExtraDescent));
 }
 
-int ScintillaCall::MarkerSymbolDefined(int markerNumber) {
-	return static_cast<int>(Call(Message::MarkerSymbolDefined, markerNumber));
+MarkerSymbol ScintillaCall::MarkerSymbolDefined(int markerNumber) {
+	return static_cast<Scintilla::MarkerSymbol>(Call(Message::MarkerSymbolDefined, markerNumber));
 }
 
 void ScintillaCall::MarginSetText(Line line, const char *text) {
