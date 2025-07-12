@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.25.711.(build_#) (2025-07-11)
+Current BETA Version 6.25.712.(build_#) (2025-07-12)
 ========================================================
 
 --------------------------------------------------------
@@ -55,6 +55,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
+[.712.1]- Update Scintilla, fix issue IME zoom.
 [.711.1]- Resolve regex library warnings.
 [.711.1]- Fix link in zh_TW (MUI).
 [.711.1]- Potential Vulnerability in Cloned Function.
