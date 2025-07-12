@@ -142,8 +142,6 @@ public:
 	std::string FontLocale();
 	Scintilla::IMEInteraction IMEInteraction();
 	void SetIMEInteraction(Scintilla::IMEInteraction imeInteraction);
-	bool IsIMEOpen();
-	bool IsIMEModeCJK();
 	void MarkerDefine(int markerNumber, Scintilla::MarkerSymbol markerSymbol);
 	void MarkerSetFore(int markerNumber, Colour fore);
 	void MarkerSetBack(int markerNumber, Colour back);

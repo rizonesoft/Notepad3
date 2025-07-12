@@ -400,7 +400,6 @@ void LayoutSegments(IPositionCache *pCache,
 void EditView::LayoutLine(const EditModel &model, Surface *surface, const ViewStyle &vstyle, LineLayout *ll, int width, bool callerMultiThreaded) {
 	if (!ll)
 		return;
-
 	const Sci::Line line = ll->LineNumber();
 	PLATFORM_ASSERT(line < model.pdoc->LinesTotal());
 	PLATFORM_ASSERT(ll->chars);
@@ -547,6 +546,7 @@ void EditView::LayoutLine(const EditModel &model, Surface *surface, const ViewSt
 			const TextSegment &ts = segments.back();
 			lastSegItalics = (!ts.representation) && ((ll->chars[ts.end() - 1] != ' ') && vstyle.styles[ll->styles[ts.start]].italic);
 		}
+
 		// Small hack to make lines that end with italics not cut off the edge of the last character
 		if (lastSegItalics) {
 			ll->positions[numCharsInLine] += vstyle.lastSegItalicsOffset;
@@ -2335,7 +2335,6 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 		}
 	}
 }
-				
 
 void EditView::DrawIndentGuidesOverEmpty(Surface *surface, const EditModel &model, const ViewStyle &vsDraw, const LineLayout *ll,
 	Sci::Line line, int xStart, PRectangle rcLine, int subLine, Sci::Line lineVisible) {

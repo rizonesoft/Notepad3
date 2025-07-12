@@ -13,7 +13,9 @@
 #include <cstdio>
 #include <cmath>
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #include <ranges>
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -634,7 +636,7 @@ SelectionRange Editor::LineSelectionRange(SelectionPosition currentPos_, Selecti
 		currentPos_ = SelectionPosition(pdoc->LineStartPosition(currentPos_.Position()));
 		anchor_ = SelectionPosition(pdoc->LineEndPosition(anchor_.Position()));
 	}
-	return {currentPos_, anchor_};
+	return SelectionRange(currentPos_, anchor_);
 }
 
 void Editor::SetSelection(SelectionPosition currentPos_, SelectionPosition anchor_) {
@@ -5981,7 +5983,6 @@ std::unique_ptr<Surface> Editor::CreateMeasurementSurface() const {
 	return surf;
 }
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 std::unique_ptr<Surface> Editor::CreateDrawingSurface(SurfaceID sid, std::optional<Scintilla::Technology> technologyOpt) const {
 	if (!wMain.GetID()) {
 		return {};
@@ -5991,7 +5992,6 @@ std::unique_ptr<Surface> Editor::CreateDrawingSurface(SurfaceID sid, std::option
 	surf->SetMode(CurrentSurfaceMode());
 	return surf;
 }
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 Sci::Line Editor::WrapCount(Sci::Line line) {
 	AutoSurface surface(this);
@@ -7448,14 +7448,6 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case Message::GetIMEInteraction:
 		return static_cast<sptr_t>(imeInteraction);
-
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	case Message::IsIMEOpen:
-		return static_cast<sptr_t>(imeIsOpen);
-		
-	case Message::IsIMEModeCJK:
-		return static_cast<sptr_t>(imeIsInModeCJK);
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	case Message::SetBidirectional:
 		// Message::SetBidirectional is implemented on platform subclasses if they support bidirectional text.
@@ -9187,7 +9179,7 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 		return DefWndProc(iMessage, wParam, lParam);
 	}
 
-	// If there was a change that needs its selection saved and it wasn't explicity saved
+	// If there was a change that needs its selection saved and it wasn't explicitly saved
 	// then do that here.
 	RememberCurrentSelectionForRedoOntoStack();
 

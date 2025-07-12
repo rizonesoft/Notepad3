@@ -61,10 +61,12 @@ bool MarginStyle::ShowsFolding() const noexcept {
 
 void FontRealised::Realise(Surface &surface, int zoomLevel, Technology technology, const FontSpecification &fs, const char *localeName) {
 	PLATFORM_ASSERT(fs.fontName);
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	//~measurements.sizeZoomed = fs.size + zoomLevel * FontSizeMultiplier;
 	//~if (measurements.sizeZoomed <= FontSizeMultiplier)	// May fail if sizeZoomed < 1
 	//~	measurements.sizeZoomed = FontSizeMultiplier;
 	measurements.sizeZoomed = GetFontSizeZoomed(fs.size, zoomLevel);
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	const float deviceHeight = static_cast<float>(surface.DeviceHeightFont(measurements.sizeZoomed));
 	const FontParameters fp(fs.fontName, deviceHeight / FontSizeMultiplier, fs.weight,

@@ -68,10 +68,6 @@ public:
 	bool primarySelection;
 	std::string copySeparator;
 
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	bool imeIsOpen;
-	bool imeIsInModeCJK;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	Scintilla::IMEInteraction imeInteraction;
 	Scintilla::Bidirectional bidirectional;
 

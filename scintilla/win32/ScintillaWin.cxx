@@ -335,9 +335,12 @@ public:
 
 	void SetCompositionFont(const ViewStyle &vs, int style, UINT dpi) const {
 		LOGFONTW lf{};
-		int sizeZoomed = vs.styles[style].size + (vs.zoomLevel * FontSizeMultiplier);
-		if (sizeZoomed <= 2 * FontSizeMultiplier)	// Hangs if sizeZoomed <= 1
-			sizeZoomed = 2 * FontSizeMultiplier;
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		//int sizeZoomed = vs.styles[style].size + (vs.zoomLevel * FontSizeMultiplier);
+		//if (sizeZoomed <= 2 * FontSizeMultiplier)	// Hangs if sizeZoomed <= 1
+		//	sizeZoomed = 2 * FontSizeMultiplier;
+		int const sizeZoomed = GetFontSizeZoomed(vs.styles[style].size, vs.zoomLevel);
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		// The negative is to allow for leading
 		lf.lfHeight = -::MulDiv(sizeZoomed, dpi, pointsPerInch * FontSizeMultiplier);
 		lf.lfWeight = static_cast<LONG>(vs.styles[style].weight);
@@ -1638,8 +1641,8 @@ UINT CodePageFromCharSet(CharacterSet characterSet, UINT documentCodePage) noexc
 		return CpUtf8;
 	}
 	switch (characterSet) {
-	case CharacterSet::Ansi: return 1252;
-	case CharacterSet::Default: return documentCodePage ? documentCodePage : 1252;
+	case CharacterSet::Ansi: return codePageWindowsLatin;
+	case CharacterSet::Default: return documentCodePage ? documentCodePage : codePageWindowsLatin;
 	case CharacterSet::Baltic: return 1257;
 	case CharacterSet::ChineseBig5: return 950;
 	case CharacterSet::EastEurope: return 1250;
@@ -3419,22 +3422,6 @@ void ScintillaWin::ImeStartComposition() {
 		if (stylesValid) {
 			// Since the style creation code has been made platform independent,
 			// The logfont for the IME is recreated here.
-			// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-			//const int styleHere = pdoc->StyleIndexAt(sel.MainCaret());
-			//LOGFONTW lf = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, L""};
-			//int sizeZoomed = GetFontSizeZoomed(vs.styles[styleHere].size, vs.zoomLevel);
-			//// The negative is to allow for leading
-			//lf.lfHeight = -::MulDiv(sizeZoomed, dpi, 72*FontSizeMultiplier);
-			//lf.lfWeight = static_cast<LONG>(vs.styles[styleHere].weight);
-			//lf.lfItalic = vs.styles[styleHere].italic ? 1 : 0;
-			//lf.lfCharSet = DEFAULT_CHARSET;
-			//lf.lfFaceName[0] = L'\0';
-			//if (vs.styles[styleHere].fontName) {
-			//	const char* fontName = vs.styles[styleHere].fontName;
-			//	UTF16FromUTF8(std::string_view(fontName), lf.lfFaceName, LF_FACESIZE);
-			//}
-			// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-
 			imc.SetCompositionFont(vs, pdoc->StyleIndexAt(sel.MainCaret()), dpi);
 		}
 		// Caret is displayed in IME window. So, caret in Scintilla is useless.

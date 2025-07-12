@@ -169,7 +169,6 @@ public:
 		Sci::Line linesOnScreen, Sci::Line linesInDoc);
 };
 
-
 class Representation {
 public:
 	static constexpr size_t maxLength = 200;
@@ -268,6 +267,7 @@ public:
 };
 
 std::unique_ptr<IPositionCache> CreatePositionCache();
+
 }
 
 #endif

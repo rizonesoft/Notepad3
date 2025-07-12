@@ -105,10 +105,6 @@ EditModel::EditModel() : braces{} {
 	highlightGuideColumn = 0;
 	hasFocus = false;
 	primarySelection = true;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	imeIsOpen = false;
-	imeIsInModeCJK = false;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	imeInteraction = IMEInteraction::Windowed;
 	bidirectional = Bidirectional::Disabled;
 	foldFlags = FoldFlag::None;

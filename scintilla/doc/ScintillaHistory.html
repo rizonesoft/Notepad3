@@ -590,9 +590,27 @@
 	<td>8day</td>
       </tr><tr>
 	<td>Ahmet Sait</td>
+	<td>Sven Ritter</td>
     </tr>
     </table>
     <h2 id="Releases">Releases</h2>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla558.zip">Release 5.5.8</a>
+    </h3>
+    <ul>
+	<li>
+	Released 8 June 2025.
+	</li>
+	<li>
+	Change format for SCI_GETSELECTIONSERIALIZED.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1563/">Feature #1563</a>.
+	</li>
+	<li>
+	On Win32, force autocompletion list colours to be opaque.
+	Enlarge bitmap to avoid visible blank background between items.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2482/">Bug #2482</a>.
+	</li>
+    </ul>
     <h3>
        <a href="https://www.scintilla.org/scintilla557.zip">Release 5.5.7</a>
     </h3>
@@ -1779,7 +1797,7 @@
 	</li>
 	<li>
 	Remove SetLexer, SetLexerLanguage, and LoadLexerLibrary methods.
-	These have been superceded by Lexilla and the SetILexer API.
+	These have been superseded by Lexilla and the SetILexer API.
 	</li>
 	<li>
 	Improve the platform layer interface.
