@@ -387,14 +387,6 @@ void ScintillaCall::SetIMEInteraction(Scintilla::IMEInteraction imeInteraction) 
 	Call(Message::SetIMEInteraction, static_cast<uintptr_t>(imeInteraction));
 }
 
-bool ScintillaCall::IsIMEOpen() {
-	return Call(Message::IsIMEOpen);
-}
-
-bool ScintillaCall::IsIMEModeCJK() {
-	return Call(Message::IsIMEModeCJK);
-}
-
 void ScintillaCall::MarkerDefine(int markerNumber, Scintilla::MarkerSymbol markerSymbol) {
 	Call(Message::MarkerDefine, markerNumber, static_cast<intptr_t>(markerSymbol));
 }

@@ -311,11 +311,6 @@ get IMEInteraction GetIMEInteraction=2678(,)
 # Choose to display the IME in a window or inline.
 set void SetIMEInteraction=2679(IMEInteraction imeInteraction,)
 
-# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-get bool IsIMEOpen=6003(,)
-get bool IsIMEModeCJK=6004(,)
-# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-
 enu Alpha=SC_ALPHA_
 val SC_ALPHA_TRANSPARENT=0
 val SC_ALPHA_OPAQUE=255

@@ -26,7 +26,9 @@
 
 #include "Debugging.h"
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #include "Scintilla.h"
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #include "Position.h"
 #include "SplitVector.h"
 #include "Partitioning.h"

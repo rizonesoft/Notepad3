@@ -71,8 +71,6 @@ enum class Message {
 	GetFontLocale = 2761,
 	GetIMEInteraction = 2678,
 	SetIMEInteraction = 2679,
-	IsIMEOpen = 6003,
-	IsIMEModeCJK = 6004,
 	MarkerDefine = 2040,
 	MarkerSetFore = 2041,
 	MarkerSetBack = 2042,

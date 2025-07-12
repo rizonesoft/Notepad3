@@ -32,7 +32,8 @@
 
 using namespace Scintilla::Internal;
 
-MarkerHandleSet::MarkerHandleSet() = default;
+MarkerHandleSet::MarkerHandleSet() {
+}
 
 bool MarkerHandleSet::Empty() const noexcept {
 	return mhList.empty();
