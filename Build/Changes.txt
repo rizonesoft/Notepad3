@@ -34,19 +34,17 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.25.712.(build_#) (2025-07-12)
+Version 6.25.714.1 (14 July 2025)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
-[.###.#]- .
 [.203.1]- For "OpenCL", add "CL" extension in "C/C++ Source Code" Lexer.
 
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
-[.###.#]- .
 [.216.1]- FileChandedIndicator and FileDeletedIndicator may be 30 chars long.
 [.203.1]- Rizonesoft Copyright © 2008-2024 to year "2008-2025".
 [1222.1]- Correction of Rizonesoft's URL.
@@ -54,7 +52,6 @@ CHANGES:
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
-[.###.#]- .
 [.712.1]- Update Scintilla, fix issue IME zoom.
 [.711.1]- Resolve regex library warnings.
 [.711.1]- Fix link in zh_TW (MUI).
@@ -71,8 +68,6 @@ FIXES:
 --------------------------------------------------------
 REMOVED:
 --------------------------------------------------------
-[.###.#]- .
-[.###.#]- .
 
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
@@ -85,20 +80,6 @@ CHANGES Versions in Tools or Libraries:
 
 --------------------------------------------------------
 TRANSLATIONS (MUI):
---------------------------------------------------------
-[.###.#]- .
-[.###.#]- .
-
---------------------------------------------------------
-Hello everybody ! 😀
-For our "Notepad3 Translation Projects", we are looking for motivated volunteers, with a priority
-to resume "(incomplete...)" translation projects:
-
-- Greek (el-GR) (incomplete...)
-- Hindi (hi-IN) (incomplete...)
-- etc...
-
-Please, send me a PM (mailto:hpwamr51 @ gmail.com) if you are willing to help. 🤔
 --------------------------------------------------------
 
 
