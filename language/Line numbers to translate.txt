@@ -25,8 +25,8 @@ March   2025: Line numbers to translate_2025-03 - No "Added or Modified" items i
 April   2025: Line numbers to translate_2025-04 - No "Added or Modified" items in April 2025
 May     2025: Line numbers to translate_2025-05 - No "Added or Modified" items in May 2025
 June    2025: Line numbers to translate_2025-06 - No "Added or Modified" items in June 2025
-July    2025: Line numbers to translate_2025-07 -  (2025-07-xx)
-August  2025: Line numbers to translate_2025-08 -  (2025-08-xx)
+July    2025: Line numbers to translate_2025-07 - No "Added or Modified" items in July 2025
+August  2025: Line numbers to translate_2025-08 - No "Added or Modified" items in August 2025
 Septemb 2025: Line numbers to translate_2025-09 -  (2025-09-xx)
 October 2025: Line numbers to translate_2025-10 -  (2025-10-xx)
 Novemb. 2025: Line numbers to translate_2025-11 -  (2025-11-xx)
