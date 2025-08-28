@@ -34,6 +34,64 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
+Current BETA Version 6.25.828.(build_#) (2025-08-28)
+========================================================
+
+--------------------------------------------------------
+NEW:
+--------------------------------------------------------
+[.###.#]- .
+[.828.1]- Added Notepad3 Version in the Title bar of the Inno Setup dialog box (SUP).
+
+--------------------------------------------------------
+CHANGES:
+--------------------------------------------------------
+[.###.#]- .
+[.828.1]- Changed some phrases in the Italian Inno Setup script (SUP).
+[.828.1]- Completed/Modified the Windows Properties fields in Notepad3 Setup.exe (SUP).
+
+--------------------------------------------------------
+FIXES:
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+REMOVED:
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+CHANGES Versions in Tools or Libraries:
+--------------------------------------------------------
+[.711.1]- Update Lexilla Library (LEX) version 5.4.5 (2025-06-08).
+[.711.1]- Update Scintilla Library (SCI) version 5.5.7 (2025-06-08).
+[.711.1]- Update Oniguruma Regex (ONI) engine version 6.9.10 (2025/04/24).
+[.101.1]- Update grepWinNP3 (GRE) version 2.1.15.48 (2024-01-10).
+[1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
+
+--------------------------------------------------------
+TRANSLATIONS (MUI):
+--------------------------------------------------------
+[.###.#]- .
+[.###.#]- .
+
+--------------------------------------------------------
+Hello everybody ! 😀
+For our "Notepad3 Translation Projects", we are looking for motivated volunteers, with a priority
+to resume "(incomplete...)" translation projects:
+
+- Greek (el-GR) (incomplete...)
+- Hindi (hi-IN) (incomplete...)
+- Portuguese (pt-PT) (incomplete...).
+- etc...
+
+Please, send me a PM (mailto:hpwamr51 @ gmail.com) if you are willing to help. 🤔
+--------------------------------------------------------
+
+
+========================================================
 Version 6.25.822.1 (22 August 2025)
 ========================================================
 
@@ -57,6 +115,11 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
+[.711.1]- Update Lexilla Library (LEX) version 5.4.5 (2025-06-08).
+[.711.1]- Update Scintilla Library (SCI) version 5.5.7 (2025-06-08).
+[.711.1]- Update Oniguruma Regex (ONI) engine version 6.9.10 (2025/04/24).
+[.101.1]- Update grepWinNP3 (GRE) version 2.1.15.48 (2024-01-10).
+[1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
 
 --------------------------------------------------------
 TRANSLATIONS (MUI):
