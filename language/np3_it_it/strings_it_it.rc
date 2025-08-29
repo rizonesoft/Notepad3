@@ -72,19 +72,19 @@ BEGIN
     IDT_EDIT_FIND           "Trova"
     IDT_EDIT_REPLACE        "Sostituisci"
     IDT_VIEW_WORDWRAP       "A capo automatico"
-    IDT_VIEW_ZOOMIN         "Aumenta Zoom"
+    IDT_VIEW_ZOOMIN         "Zoom+"
     IDT_VIEW_RESETZOOM      "Ripristina Zoom"
-    IDT_VIEW_ZOOMOUT        "Riduci Zoom"
-    IDT_VIEW_SCHEME         "Seleziona Schema"
-    IDT_VIEW_SCHEMECONFIG   "Personalizza Schemi"
+    IDT_VIEW_ZOOMOUT        "Zoom-"
+    IDT_VIEW_SCHEME         "Seleziona schema"
+    IDT_VIEW_SCHEMECONFIG   "Personalizza schemi"
     IDT_FILE_EXIT           "Esci"
     IDT_FILE_SAVEAS         "Salva con nome"
     IDT_FILE_SAVECOPY       "Salva copia"
     IDT_EDIT_CLEAR          "Elimina"
     IDT_FILE_PRINT          "Stampa"
     IDT_FILE_OPENFAV        "Preferiti"
-    IDT_FILE_ADDTOFAV       "Aggiungi ai Preferiti"
-    IDT_VIEW_TOGGLEFOLDS    "Espandi/Collassa tutti i Folds"
+    IDT_FILE_ADDTOFAV       "Aggiungi ai preferiti"
+    IDT_VIEW_TOGGLEFOLDS    "Espandi/riduci tutti i raggruppamenti"
 END
 
 STRINGTABLE
@@ -92,22 +92,22 @@ BEGIN
     IDT_FILE_LAUNCH          "Esegui documento"
     IDT_VIEW_NEW_WINDOW      "Nuova finestra vuota"
     IDT_VIEW_TOGGLE_VIEW     "Vista focalizzata"
-    IDT_VIEW_CHASING_DOCTAIL "Monitoraggio log"
+    IDT_VIEW_CHASING_DOCTAIL "Monitoraggio registro"
     IDT_VIEW_PIN_ON_TOP      "Sempre in primo piano"
     IDT_GREP_WIN_TOOL        "Cerca nei file"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE_ELEVATED "%s : Amministratore"
-    IDS_MUI_APPTITLE_PASTEBOARD "%s: Appunti"
+    IDS_MUI_APPTITLE_ELEVATED "%s : amministratore"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s: appunti"
     IDS_MUI_UNTITLED        "Senza titolo"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Sola lettura)"
     IDS_MUI_FILELOCKED      "<Esclusivo>"
     IDS_MUI_LOADFILE        "Apertura ""%s""..."
     IDS_MUI_SAVEFILE        "Salvataggio ""%s""..."
-    IDS_MUI_PRINTFILE       "Stampa in corso pagina %i..."
+    IDS_MUI_PRINTFILE       "Stampa pagina %i..."
     IDS_MUI_SAVINGSETTINGS  "Salvataggio impostazioni..."
     IDS_MUI_LINKDESCRIPTION "Modifica con Notepad3"
 END
@@ -116,46 +116,46 @@ STRINGTABLE
 BEGIN
     IDS_MUI_FILTER_ALL      "Tutti i file (*.*)|*.*|"
     IDS_MUI_FILTER_EXE      "File eseguibili (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Tutti i file (*.*)|*.*|"
-    IDS_MUI_FILTER_INI      "File di configurazione (*.ini)|*.ini|Tutti i file (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "File Bitmap (*.bmp)|*.bmp|Tutti i file (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "Scegli la cartella con i collegamenti alle tue applicazioni preferite"
-    IDS_MUI_FAVORITES       "Scegli la cartella con i collegamenti ai tuoi file preferiti"
-    IDS_MUI_BACKSLASHHELP   "Trasformazioni backslash\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage Return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
+    IDS_MUI_FILTER_INI      "File configurazione (*.ini)|*.ini|Tutti i file (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "File bitmap (*.bmp)|*.bmp|Tutti i file (*.*)|*.*|"
+    IDS_MUI_OPENWITH        "Seleziona la cartella con i collegamenti alle applicazioni preferite"
+    IDS_MUI_FAVORITES       "Seleziona la cartella con i collegamenti ai file preferiti"
+    IDS_MUI_BACKSLASHHELP   "Trasformazioni backslash\n\n\\a\tAvviso (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tNuova pagina (FF, Ascii 12)\n\\n\tNuova linea (LF, Ascii 10)\n\\r\tA capo (CR, Ascii 13)\n\\t\tTabulazione orizzontale (HT, Ascii 9)\n\\v\tTabulazione verticale (VT, Ascii 11)\n\\0oo\tValore ottale\n\\u####\tValore esadecimale\n\\xhh\tValore esadecimale\n\\\\\tBackslash"
     IDS_MUI_REGEXPHELP      "Sintassi occorrenze RegExp (Multi lines)\n\n.\tTrova qualunque carattere\n^\tStringa vuota immediatamente dopo un Newline\n$\tStringa vuota immediatamente prima dell'EOL\n\\<\tInizio di parola\n\\>\tFine di parola\n\\b\tConfini di parola\n[...]\tSet di caratteri ([abc]) o range ([a-z])\n[^...]\tCaratteri NON nel set o range\n\\d\tQualunque cifra numerica\n\\D\tQualunque carattere alfabetico\n\\s\tQualunque carattere whitespace\n\\S\tCarattere NON whitespace\n\\w\tQualunque carattere ""parola""\n\\W\tQualunque carattere ""non-parola""\n\\x\tCarattere di Escape con significato\n\taltrimenti speciale\n\\xHH\tChar con codice hex HH\n?\tTrova corrispondenza precedente 0 o 1 volta\n*\tTrova corrispondenza precedente 0 o più volte\n+\tTrova corrispondenza precedente 1 o più volte\n*? or +?\tNon-greedy-matching dei quantificatori ""?"" e ""+""\n(\tInizio region\n)\tFine region\n\\n\tRiferimento a una region quando\n\tsostituisce (n è 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Cerca con caratteri Jolly\n\n*\tTrova 0 o più caratteri\n?\tTrova esattamente 1 carattere"
+    IDS_MUI_WILDCARDHELP    "Cerca con caratteri jolly\n\n*\tTrova uno o più caratteri\n?\tTrova esattamente 1 carattere"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "Errore aprendo ""%s"""
-    IDS_MUI_ERR_SAVEFILE    "Errore salvando ""%s"""
+    IDS_MUI_ERR_LOADFILE    "Errore nell'apertura di ""%s"""
+    IDS_MUI_ERR_SAVEFILE    "Errore nel salvataggio di ""%s"""
     IDS_MUI_ERR_DLG_FORMAT  "Errore '%s', causa:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Nessun plugin file browser trovato\nMiniPath può essere scaricato da https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Nessun plugin ricerca file trovato\nIl plugin ricerca file grepWinNP3 può esssere scaricato da https://rizonesoft.com"
-    IDS_MUI_ERR_MRUDLG      "Nessun accesso al file selezionato!\nVuoi rimuoverlo dalla lista?"
-    IDS_MUI_ERR_CREATELINK  "Errore nella creazione del collegamento su Desktop"
+    IDS_MUI_ERR_MRUDLG      "Nessun accesso al file selezionato!\nVuoi rimuoverlo dall'elenco?"
+    IDS_MUI_ERR_CREATELINK  "Errore nella creazione del collegamento sul desktop"
     IDS_MUI_ERR_PREVWINDISABLED
-                            "La finestra Notepad3 è impegnata oppure ha una dialog box in attesa di input\nVuoi aprire una nuova finestra Notepad3?"
-    IDS_MUI_ERR_ENCODINGNA  "Le tabelle di conversione di Code page per la codifica selezionata non sono disponibili nel tuo sistema"
-    IDS_MUI_ERR_UNICODE     "Errore nella conversione di questo file Unicode\nCi sarà una perdita di dati se salvi il file!"
-    IDS_MUI_ERR_BITMAP      "Dimensione bitmap inadeguata ""%s""\nDimensione corretta: %i x %i (larghezza >= %i x altezza)"
+                            "La finestra Notepad3 è impegnata oppure ha una finestra di dialogo in attesa di input\nVuoi aprire una nuova finestra Notepad3?"
+    IDS_MUI_ERR_ENCODINGNA  "In questo sistema non sono disponibili le tabelle di conversione della pagina codice per la codifica selezionata"
+    IDS_MUI_ERR_UNICODE     "Errore nella conversione di questo file Unicode\nSe salvi il file si verificherù una perdita di dati!"
+    IDS_MUI_ERR_BITMAP      "Dimensione bitmap non adeguata ""%s""\nDimensione corretta: %i x %i (larghezza >= %i x altezza)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
-                            "Errore di elevazione dei diritti utente!"
+                            "Errore elevazione dei diritti utente!"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_UNICODE2    "Alcuni caratteri nel testo corrente non sono supportati dalla codifica selezionata, e potrebbero essere rimpiazzati da segnaposto di default al salvataggio. E' opportuno selezionare una codifica differente. Continuare?"
-    IDS_MUI_ERR_DROP        "Solo un file può essere rilasciato con una unica operazione!"
+    IDS_MUI_ERR_UNICODE2    "Alcuni set di caratteri nel testo attuale non sono supportati dalla codifica selezionata, e potrebbero essere al salvataggio rimpiazzati da segnaposto predefiniti. È opportuno selezionare una codifica differente. Vuoi continuare?"
+    IDS_MUI_ERR_DROP        "Con una unica operazione può essere rilasciato solo un file!"
     IDS_MUI_ERR_ACCESSDENIED
-                            "Il file ""%s"" non può essere salvato e potrebbe essere protetto\n\nVuoi aprire %s con diritti amministrativi?"
-    IDS_MUI_ERR_ADMINEXE    "Nessun eseguibile di administration trovato\nControllare https://rizonesoft.com?"
+                            "Il file '%s' non può essere salvato e potrebbe essere protetto\n\nVuoi aprire '%s' con diritti amministrativi?"
+    IDS_MUI_ERR_ADMINEXE    "Nessun eseguibile amminsitrativo trovato\nVuoi controllare https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Sei sicuro di voler aprire questo file grande?\n\t(dimensione: %s >= %s)!\n(Le evidenziature di stile e sintassi non saranno applicate!)"
+                            "Vuoi aprire questo file grande?\n\t(dimensione: %s >= %s)!\n(non saranno applicate le evidenziazioni di stile e sintassi !)"
     IDS_MUI_ERR_FILE_TOO_LARGE
                             "Impossibile gestire un file così grande (dimensione: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
-                            "Estensione sconosciuta (%s)!\nProseguire con il caricamento?"
+                            "Estensione sconosciuta (%s)!\nVuoi proseguire con il caricamento?"
     IDS_MUI_INDENT_CONSISTENT  "Il file ha una indentazione consistente!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
