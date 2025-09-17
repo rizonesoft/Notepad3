@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.25.828.(build_#) (2025-08-28)
+Current BETA Version 6.25.917.(build_#) (2025-09-17)
 ========================================================
 
 --------------------------------------------------------
@@ -47,6 +47,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.917.1]- Italian language update.
 [.828.1]- Changed some phrases in the Italian Inno Setup script (SUP).
 [.828.1]- Completed/Modified the Windows Properties fields in Notepad3 Setup.exe (SUP).
 
@@ -54,7 +55,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
-[.###.#]- .
+[.917.1]- Really Silent/VerySilent Uninstall (SUP).
 
 --------------------------------------------------------
 REMOVED:
