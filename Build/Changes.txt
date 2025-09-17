@@ -55,7 +55,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.###.#]- .
-[.917.1]- Really Silent/VerySilent Uninstall.
+[.917.1]- Really Silent/VerySilent Uninstall (SUP).
 
 --------------------------------------------------------
 REMOVED:
