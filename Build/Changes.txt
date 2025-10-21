@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.25.917.(build_#) (2025-09-17)
+Current BETA Version 6.25.1021.(build_#) (2025-10-21)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.###.#]- .
+[1021.1]- Add extension "JSX" in JavaScript lexer (LEX).
 [.828.1]- Added Notepad3 Version in the Title bar of the Inno Setup dialog box (SUP).
 
 --------------------------------------------------------
