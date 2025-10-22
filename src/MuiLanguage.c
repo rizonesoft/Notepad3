@@ -81,7 +81,7 @@ grepWinLng_t grepWinLangResName[] = {
     { L"tr-TR",  L".\\lng\\gwLng\\Türkçe (Türkiye) [tr-TR].lang" },
     { L"vi-VN",  L".\\lng\\gwLng\\Tiếng Việt (Việt Nam) [vi-VN].lang" },
     { L"zh-CN",  L".\\lng\\gwLng\\简体中文 (中国大陆) [zh-CN].lang" },
-    { L"zh-TW",  L".\\lng\\gwLng\\正體中文 (中國台灣) [zh-TW].lang" }
+    { L"zh-TW",  L".\\lng\\gwLng\\正體中文 (台灣) [zh-TW].lang" }
 };
 
 unsigned grepWinLang_CountOf() {
