@@ -440,7 +440,7 @@ BEGIN
         BEGIN
             MENUITEM "Powiększ\tCtrl+ +",                           IDM_VIEW_ZOOMIN
             MENUITEM "Pomniejsz\tCtrl+ –",                          IDM_VIEW_ZOOMOUT
-            MENUITEM "Resetuj\tCtrl+0",                          IDM_VIEW_RESETZOOM
+            MENUITEM "Resetuj\tCtrl+0",                             IDM_VIEW_RESETZOOM
         END
         POPUP "&Położenie"
         BEGIN
@@ -458,7 +458,7 @@ BEGIN
         MENUITEM "&Dostosuj schematy...\tCtrl+F12",                        IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "&Wybierz schemat składni...\tF12",                       IDM_VIEW_SCHEME
-        MENUITEM "&2. Wspólna baza\tShift+F12",                            IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&2gi Schemat standardowy\tShift+F12",                            IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "&Domyślna czcionka...\tAlt+F12",                         IDM_VIEW_FONT
         MENUITEM "Domyślna &czcionka bieżącego schematu...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
