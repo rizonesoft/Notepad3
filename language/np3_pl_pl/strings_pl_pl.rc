@@ -266,7 +266,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Język"
     IDS_USE_LOCALE_DATEFMT  "Język definiuje Format &Daty"
     IDS_MUI_MENU_THEMES     "Wybór &schematów"
-    IDM_THEMES_FACTORY_RESET "&Factory Reset"
+    IDM_THEMES_FACTORY_RESET "&Przywróć domyślne"
     IDM_THEMES_STD_CFG       "&Standardowa konfiguracja"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,kol  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Podn  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
