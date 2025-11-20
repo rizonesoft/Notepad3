@@ -19,6 +19,7 @@
 			<dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">PerMonitorV2,PerMonitor</dpiAwareness>
 			<ws2:longPathAware xmlns:ws2="http://schemas.microsoft.com/SMI/2016/WindowsSettings">true</ws2:longPathAware>
 			<gdiScaling xmlns="http://schemas.microsoft.com/SMI/2017/WindowsSettings">false</gdiScaling> <!-- if set true, no WM_DPICHANGED message is send -->
+			<heapType xmlns="http://schemas.microsoft.com/SMI/2020/WindowsSettings">SegmentHeap</heapType>
 		</asmv3:windowsSettings>
 	</asmv3:application>
 	<ms_compatibility:compatibility xmlns:ms_compatibility="urn:schemas-microsoft-com:compatibility.v1" xmlns="urn:schemas-microsoft-com:compatibility.v1">
