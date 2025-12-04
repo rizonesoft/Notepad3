@@ -115,7 +115,7 @@ BEGIN
             BEGIN
                 MENUITEM "&ANSI (przestarzałe kodowanie)",                          IDM_ENCODING_ANSI
                 MENUITEM "&Unicode (uniwersalne mapowanie)",                       IDM_ENCODING_UNICODE
-                MENUITEM "Unicode (j.w. z &Big Endian)",            IDM_ENCODING_UNICODEREV
+                MENUITEM "Unicode (j.w. typu &Big Endian)",            IDM_ENCODING_UNICODEREV
                 MENUITEM "UTF-&8 (zalecany standard W3C)\tShift+F8",               IDM_ENCODING_UTF8
                 MENUITEM "UTF-8 (j.w. z &sygnaturą BOM)",             IDM_ENCODING_UTF8SIGN
                 MENUITEM SEPARATOR
