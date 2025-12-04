@@ -94,13 +94,13 @@ BEGIN
             MENUITEM "Otwórz Eksplorator pliku",           IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
-        MENUITEM "Powróć z pliku\tF5",                     IDM_FILE_REVERT
+        MENUITEM "Przywróć z pliku\tF5",                     IDM_FILE_REVERT
         MENUITEM "&Ignoruj zmienność plików",                      CMD_IGNORE_FILE_VARS
         POPUP "&Kodowanie"
         BEGIN
-            POPUP "&Powróć z pliku jako"
+            POPUP "&Przywróć z pliku jako"
             BEGIN
-                MENUITEM "&Domyślnie (Setting)",           CMD_RECODEDEFAULT
+                MENUITEM "&Domyślnie (jak w Ustawieniach)",           CMD_RECODEDEFAULT
                 MENUITEM "&ANSI\tCtrl+Shift+A",            CMD_RECODEANSI
                 MENUITEM "&OEM\tCtrl+Shift+O",             CMD_RECODEOEM
                 MENUITEM "&GB18030\tCtrl+Shift+F10",       CMD_RECODEGB18030
@@ -113,11 +113,11 @@ BEGIN
             END
             POPUP "&Ustaw dokument jako"
             BEGIN
-                MENUITEM "&ANSI",                          IDM_ENCODING_ANSI
-                MENUITEM "&Unicode",                       IDM_ENCODING_UNICODE
-                MENUITEM "Unicode &Big Endian",            IDM_ENCODING_UNICODEREV
-                MENUITEM "UTF-&8\tShift+F8",               IDM_ENCODING_UTF8
-                MENUITEM "UTF-8 z &sygnaturą",             IDM_ENCODING_UTF8SIGN
+                MENUITEM "&ANSI (przestarzałe kodowanie)",                          IDM_ENCODING_ANSI
+                MENUITEM "&Unicode (uniwersalne mapowanie)",                       IDM_ENCODING_UNICODE
+                MENUITEM "Unicode (j.w. typu &Big Endian)",            IDM_ENCODING_UNICODEREV
+                MENUITEM "UTF-&8 (zalecany standard W3C)\tShift+F8",               IDM_ENCODING_UTF8
+                MENUITEM "UTF-8 (j.w. z &sygnaturą BOM)",             IDM_ENCODING_UTF8SIGN
                 MENUITEM SEPARATOR
                 MENUITEM "&Więcej kodowań...\tF9",         IDM_ENCODING_SELECT
             END
