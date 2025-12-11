@@ -102,7 +102,6 @@ chuanliwen              https://github.com/chuanliwen
 craigo-                 https://github.com/craigo-
 Crane70                 https://github.com/Crane70
 engelhro                https://github.com/engelhro
-geogeo-gr               https://github.com/geogeo-gr
 Hexaae                  https://github.com/Hexaae
 hpwamr                  https://github.com/hpwamr
 igorruckert             https://github.com/igorruckert
@@ -121,6 +120,7 @@ MadDogVachon            https://github.com/MadDogVachon
 Matteo-Nigro            https://github.com/Matteo-Nigro
 MelchiorGaspar          https://github.com/MelchiorGaspar
 Mitezuss                https://github.com/Mitezuss
+nickreserved            https://github.com/nickreserved
 np3fan                  https://github.com/np3fan
 quadratz                https://github.com/quadratz
 RaiKoHoff               https://github.com/RaiKoHoff
