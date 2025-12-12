@@ -132,7 +132,7 @@ BEGIN
     IDS_COPYMOVE            "Επιλέξτε τον κατάλογο προορισμού"
     IDS_CREATELINK          "Επιλέξτε τον κατάλογο προορισμού για το νέο σύνδεσμο"
     IDS_SAVESETTINGS        "Αποθήκευση ρυθμίσεων\nΟι τρέχουσες ρυθμίσεις του προγράμματος έχουν αποθηκευτεί"
-    IDS_MUI_TRANSL_AUTHOR   "(el-GR) Ελληνική μετάφραση από geogeo-gr"
+    IDS_MUI_TRANSL_AUTHOR   "(el-GR) Ελληνική μετάφραση από nickreserved"
 END
 
 

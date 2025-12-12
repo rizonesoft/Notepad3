@@ -38,7 +38,6 @@ struct UnknownReleaser {
 	}
 };
 
-
 /// Find a function in a DLL and convert to a function pointer.
 /// This avoids undefined and conditionally defined behaviour.
 template<typename T>
@@ -51,6 +50,13 @@ inline T DLLFunction(HMODULE hModule, LPCSTR lpProcName) noexcept {
 	T fp {};
 	memcpy(&fp, &function, sizeof(T));
 	return fp;
+}
+
+inline void ReleaseLibrary(HMODULE &hLib) noexcept {
+	if (hLib) {
+		FreeLibrary(hLib);
+		hLib = {};
+	}
 }
 
 }

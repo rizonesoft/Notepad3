@@ -1,4 +1,4 @@
-Oniguruma Regular Expressions Version 6.9.9    2023/03/27
+Oniguruma Regular Expressions Version 6.9.11    2025/03/21
 
 syntax: ONIG_SYNTAX_ONIGURUMA (default syntax)
 
@@ -114,6 +114,8 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default syntax)
     * \p{property-name}
     * \p{^property-name}    (negative)
     * \P{property-name}     (negative)
+    * \pX   (X = C, L, M, N, P, S, Z)
+    * \PX   (X = C, L, M, N, P, S, Z)  (negative)
 
     property-name:
 
@@ -237,22 +239,21 @@ syntax: ONIG_SYNTAX_ONIGURUMA (default syntax)
 
     Unicode Case:
 
-      alnum    Letter | Mark | Decimal_Number
-      alpha    Letter | Mark
-      ascii    0000 - 007F
-      blank    Space_Separator | 0009
-      cntrl    Control | Format | Unassigned | Private_Use | Surrogate
+      alnum    Alphabetic | Decimal_Number
+      alpha    Alphabetic
+      ascii    U+0000 - U+007F
+      blank    Space_Separator | U+0009
+      cntrl    U+0000 - U+001F, U+007F - U+009F
       digit    Decimal_Number
-      graph    [[:^space:]] && ^Control && ^Unassigned && ^Surrogate
-      lower    Lowercase_Letter
-      print    [[:graph:]] | [[:space:]]
+      graph    ^White_Space && ^[[:cntrl:]] && ^Unassigned && ^Surrogate
+      lower    Lowercase
+      print    [[:graph:]] | Space_Separator
       punct    Punctuation | Symbol
-      space    Space_Separator | Line_Separator | Paragraph_Separator |
-               U+0009 | U+000A | U+000B | U+000C | U+000D | U+0085
-      upper    Uppercase_Letter
+      space    White_Space
+      upper    Uppercase
       xdigit   U+0030 - U+0039 | U+0041 - U+0046 | U+0061 - U+0066
                (0-9, a-f, A-F)
-      word     Letter | Mark | Decimal_Number | Connector_Punctuation
+      word     Alphabetic | Mark | Decimal_Number | Connector_Punctuation
 
 
 

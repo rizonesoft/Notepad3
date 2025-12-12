@@ -86,7 +86,11 @@ inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
 
     if (build >= 22000) { // Win11
 
-        if (build >= 26100)
+        if (build >= 26200)
+        {
+            lpcReleaseID = L"25H2";
+        }
+        else if (build >= 26100)
         {
             lpcReleaseID = L"24H2";
         }
@@ -158,8 +162,34 @@ inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
 
 #if defined(_MSC_VER)
     #if (_MSC_VER == 1944)
-        #if (_MSC_FULL_VER >= 194435207)
-            #define VER_CPL     MS Visual C++ 2022 v17.14.0
+        #if (_MSC_FULL_VER >= 194435222)
+            #define VER_CPL     MS Visual C++ 2022 v17.14.22
+        #elif (_MSC_FULL_VER >= 194435221)
+            #define VER_CPL     MS Visual C++ 2022 v17.14.21
+        #elif (_MSC_FULL_VER >= 194435220)
+            #define VER_CPL     MS Visual C++ 2022 v17.14.20
+        #elif (_MSC_FULL_VER >= 194435219)
+            #define VER_CPL     MS Visual C++ 2022 v17.14.(18-19)
+        #elif (_MSC_FULL_VER >= 194435217)
+            #define VER_CPL     MS Visual C++ 2022 v17.14.(15-17)
+        #elif (_MSC_FULL_VER >= 194435216)
+            #define VER_CPL     MS Visual C++ 2022 v17.14.14
+        #elif (_MSC_FULL_VER >= 194435215)
+            #define VER_CPL     MS Visual C++ 2022 v17.14.13
+        #elif (_MSC_FULL_VER >= 194435214)
+            #define VER_CPL     MS Visual C++ 2022 v17.14.(11-12)
+        #elif (_MSC_FULL_VER >= 194435213)
+            #define VER_CPL     MS Visual C++ 2022 v17.14.(9-10)
+        #elif (_MSC_FULL_VER >= 194435211)
+            #define VER_CPL     MS Visual C++ 2022 v17.14.(7-8)
+        #elif (_MSC_FULL_VER >= 194435210)
+            #define VER_CPL     MS Visual C++ 2022 v17.14.(5-6)
+        #elif (_MSC_FULL_VER >= 194435209)
+            #define VER_CPL     MS Visual C++ 2022 v17.14.4
+        #elif (_MSC_FULL_VER >= 194435208)
+            #define VER_CPL     MS Visual C++ 2022 v17.14.3
+        #elif (_MSC_FULL_VER >= 194435207)
+            #define VER_CPL     MS Visual C++ 2022 v17.14.(0-2)
         #endif
     #elif (_MSC_VER == 1943)
         #if (_MSC_FULL_VER >= 194334810)

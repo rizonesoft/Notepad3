@@ -8,7 +8,9 @@
 #ifndef VIEWSTYLE_H
 #define VIEWSTYLE_H
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #include "Scintilla.h"
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 namespace Scintilla::Internal {
 

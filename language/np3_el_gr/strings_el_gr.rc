@@ -249,7 +249,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(el-GR) Ελληνική μετάφραση από geogeo-gr"
+    IDS_MUI_TRANSL_AUTHOR   "(el-GR) Ελληνική μετάφραση από nickreserved"
     IDS_MUI_TITLE_FIXBASE   "ΒΑΣΙΚΟ (%s)"
     IDS_MUI_TITLE_RELCUR    "+++ %s: Στυλ %s +++"
     IDS_MUI_TITLE_FIXCUR    "%s: Στυλ %s"

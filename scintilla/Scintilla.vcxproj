@@ -285,8 +285,11 @@
     <ClCompile Include="src\ViewStyle.cxx" />
     <ClCompile Include="src\XPM.cxx" />
     <ClCompile Include="win32\HanjaDic.cxx" />
+    <ClCompile Include="win32\ListBox.cxx" />
     <ClCompile Include="win32\PlatWin.cxx" />
     <ClCompile Include="win32\ScintillaWin.cxx" />
+    <ClCompile Include="win32\SurfaceD2D.cxx" />
+    <ClCompile Include="win32\SurfaceGDI.cxx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ScintillaCall.h" />
@@ -347,8 +350,11 @@
     <ClInclude Include="src\UniqueString.h" />
     <ClInclude Include="src\ViewStyle.h" />
     <ClInclude Include="src\XPM.h" />
+    <ClInclude Include="win32\ListBox.h" />
     <ClInclude Include="win32\PlatWin.h" />
     <ClInclude Include="win32\ScintillaWin.h" />
+    <ClInclude Include="win32\SurfaceD2D.h" />
+    <ClInclude Include="win32\SurfaceGDI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Scintilla.iface" />

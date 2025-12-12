@@ -33,7 +33,7 @@ KEYWORDLIST KeyWords_TCL =
 
 EDITLEXER lexTCL =
 {
-    SCLEX_TCL, "tcl", IDS_LEX_TCL, L"Tcl Script", L"tcl; itcl; tm", L"",
+    SCLEX_TCL, "tcl", IDS_LEX_TCL, L"Tcl Script", L"tcl; itcl; tm; ts; tsx", L"",
     &KeyWords_TCL, {
         { {STYLE_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },
         //{ {SCE_TCL_DEFAULT}, IDS_LEX_STR_Default, L"Default", L"", L"" },

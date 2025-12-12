@@ -94,13 +94,13 @@ BEGIN
             MENUITEM "Otwórz Eksplorator pliku",           IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
-        MENUITEM "Powróć z pliku\tF5",                     IDM_FILE_REVERT
+        MENUITEM "Przywróć z pliku\tF5",                     IDM_FILE_REVERT
         MENUITEM "&Ignoruj zmienność plików",                      CMD_IGNORE_FILE_VARS
         POPUP "&Kodowanie"
         BEGIN
-            POPUP "&Powróć z pliku jako"
+            POPUP "&Przywróć z pliku jako"
             BEGIN
-                MENUITEM "&Domyślnie (Setting)",           CMD_RECODEDEFAULT
+                MENUITEM "&Domyślnie (jak w Ustawieniach)",           CMD_RECODEDEFAULT
                 MENUITEM "&ANSI\tCtrl+Shift+A",            CMD_RECODEANSI
                 MENUITEM "&OEM\tCtrl+Shift+O",             CMD_RECODEOEM
                 MENUITEM "&GB18030\tCtrl+Shift+F10",       CMD_RECODEGB18030
@@ -113,11 +113,11 @@ BEGIN
             END
             POPUP "&Ustaw dokument jako"
             BEGIN
-                MENUITEM "&ANSI",                          IDM_ENCODING_ANSI
-                MENUITEM "&Unicode",                       IDM_ENCODING_UNICODE
-                MENUITEM "Unicode &Big Endian",            IDM_ENCODING_UNICODEREV
-                MENUITEM "UTF-&8\tShift+F8",               IDM_ENCODING_UTF8
-                MENUITEM "UTF-8 z &sygnaturą",             IDM_ENCODING_UTF8SIGN
+                MENUITEM "&ANSI (przestarzałe kodowanie)",                          IDM_ENCODING_ANSI
+                MENUITEM "&Unicode (uniwersalne mapowanie)",                       IDM_ENCODING_UNICODE
+                MENUITEM "Unicode (j.w. typu &Big Endian)",            IDM_ENCODING_UNICODEREV
+                MENUITEM "UTF-&8 (zalecany standard W3C)\tShift+F8",               IDM_ENCODING_UTF8
+                MENUITEM "UTF-8 (j.w. z &sygnaturą BOM)",             IDM_ENCODING_UTF8SIGN
                 MENUITEM SEPARATOR
                 MENUITEM "&Więcej kodowań...\tF9",         IDM_ENCODING_SELECT
             END
@@ -440,7 +440,7 @@ BEGIN
         BEGIN
             MENUITEM "Powiększ\tCtrl+ +",                           IDM_VIEW_ZOOMIN
             MENUITEM "Pomniejsz\tCtrl+ –",                          IDM_VIEW_ZOOMOUT
-            MENUITEM "Resetuj\tCtrl+0",                          IDM_VIEW_RESETZOOM
+            MENUITEM "Resetuj\tCtrl+0",                             IDM_VIEW_RESETZOOM
         END
         POPUP "&Położenie"
         BEGIN
@@ -458,7 +458,7 @@ BEGIN
         MENUITEM "&Dostosuj schematy...\tCtrl+F12",                        IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
         MENUITEM "&Wybierz schemat składni...\tF12",                       IDM_VIEW_SCHEME
-        MENUITEM "&2. Wspólna baza\tShift+F12",                            IDM_VIEW_USE2NDDEFAULT
+        MENUITEM "&2gi Schemat standardowy\tShift+F12",                            IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "&Domyślna czcionka...\tAlt+F12",                         IDM_VIEW_FONT
         MENUITEM "Domyślna &czcionka bieżącego schematu...\tCtrl+Alt+F12", IDM_VIEW_CURRENTSCHEME
@@ -491,7 +491,7 @@ BEGIN
         END
         MENUITEM "Zapisz przed uruchomieniem narzędzi",             IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Przelicz niewielkie wyrażenia",                   IDM_SET_EVALTINYEXPRONSEL
-        MENUITEM "Enable Multiple Selection",                       IDM_SET_MULTIPLE_SELECTION
+        MENUITEM "Zaznaczanie wielu elementów",                     IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "&Zapamiętaj"
         BEGIN
@@ -514,7 +514,7 @@ BEGIN
             MENUITEM "Minimalizuj do zasobnika systemowego",        IDM_SET_MINTOTRAY
             MENUITEM "Tryb przeźroczystości\tAlt+G",                IDM_SET_TRANSPARENT
         END
-        POPUP "Tech&nologia"
+        POPUP "Procesowa&nie"
         BEGIN
             POPUP "&Renderowanie"
             BEGIN

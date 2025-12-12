@@ -62,7 +62,7 @@ BEGIN
     IDS_ENC_UTF16LE                "A4;Unicode (UTF-16 LE);Unicode (UTF-16) LE"
     IDS_ENC_UTF16BE                "A5;Unicode (UTF-16 BE);Unicode (UTF-16) BE"
     IDS_ENC_UTF8                   "A6;UTF-8;Unicode (UTF-8)"
-    IDS_ENC_UTF8SIG                "A7;UTF-8 Signature;Unicode (UTF-8) Signature"
+    IDS_ENC_UTF8SIG                "A7;Firma UTF-8;Firma Unicode (UTF-8)"
 END
 
 STRINGTABLE
@@ -75,16 +75,16 @@ BEGIN
     IDS_ENC_DOS_775                "C;Baltico (DOS-775);DOS-775"
     IDS_ENC_ISO_8859_4             "C;Baltico (ISO-8859-4);ISO-8859-4"
     IDS_ENC_WIN_1257               "C;Baltico (Windows-1257);Windows-1257"
-    IDS_ENC_DOS_852                "C;Centrale Europea (DOS-852);DOS-852"
-    IDS_ENC_ISO_8859_2             "C;Centrale Europea (ISO-8859-2);ISO-8859-2"
-    IDS_ENC_MAC_CENTRAL_EUROP      "C;Centrale Europea (Mac);Mac (Central)"
-    IDS_ENC_WIN_1250               "C;Centrale Europea (Windows-1250);Windows-1250"
+    IDS_ENC_DOS_852                "C;Europa centrale (DOS-852);DOS-852"
+    IDS_ENC_ISO_8859_2             "C;Europa centrale (ISO-8859-2);ISO-8859-2"
+    IDS_ENC_MAC_CENTRAL_EUROP      "C;Europa centrale (Mac);Mac (Central)"
+    IDS_ENC_WIN_1250               "C;Europa centrale (Windows-1250);Windows-1250"
     IDS_ENC_GB18030                "C;Cinese (GB18030);GB18030"
     IDS_ENC_GBK_936                "C;Cinese (GBK);GBK"
-    IDS_ENC_GB2312_80              "C;Cinese Simplificato (GB_2312-80);GB_2312-80"
-    IDS_ENC_MAC_ZH_CN              "C;Cinese Simplificato (Mac);Mac (zh-cn)"
-    IDS_ENC_BIG5                   "C;Cinese Tradizionale (Big5);Big5"
-    IDS_ENC_MAC_ZH_TW              "C;Cinese Tradizionale (Mac);Mac (zh-tw)"
+    IDS_ENC_GB2312_80              "C;Cinese semplificato (GB_2312-80);GB_2312-80"
+    IDS_ENC_MAC_ZH_CN              "C;Cinese semplificato (Mac);Mac (zh-cn)"
+    IDS_ENC_BIG5                   "C;Cinese tradizionale (Big5);Big5"
+    IDS_ENC_MAC_ZH_TW              "C;Cinese tradizionale (Mac);Mac (zh-tw)"
 END
 
 STRINGTABLE
@@ -122,15 +122,15 @@ BEGIN
     IDS_ENC_ISO_8859_15            "C;Latino 9 (ISO-8859-15);ISO-8859-15"
     IDS_ENC_DOS_865                "C;Nordico (DOS-865);DOS-865"
     IDS_ENC_DOS_437                "C;OEM Stati Uniti (DOS-437);DOS-437"
-    IDS_ENC_DOS_858                "C;OEM Latino multilingue 1 (DOS-858);DOS-858"
+    IDS_ENC_DOS_858                "C;OEM latino multilingue 1 (DOS-858);DOS-858"
     IDS_ENC_DOS_860                "C;Portoghese (DOS-860);DOS-860"
     IDS_ENC_MAC_ROMANIAN           "C;Rumeno (Mac);Mac (Rumeno)"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ENC_MAC_THAI               "C;Thailandese (Mac);Mac (Thailandese)"
-    IDS_ENC_WIN_874                "C;Thailandese (Windows-874);Windows-874"
+    IDS_ENC_MAC_THAI               "C;Tailandese (Mac);Mac (Tailandese)"
+    IDS_ENC_WIN_874                "C;Tailandese (Windows-874);Windows-874"
     IDS_ENC_DOS_857                "C;Turco (DOS-857);DOS-857"
     IDS_ENC_ISO_8859_9             "C;Turco (ISO-8859-9);ISO-8859-9"
     IDS_ENC_MAC_TURKISH            "C;Turco (Mac);Mac (Turco)"
@@ -152,13 +152,13 @@ BEGIN
     IDS_ENC_EUC_JAPANESE           "C;Giapponese (EUC-JP);EUC-JP"
     IDS_ENC_EUC_KOREAN             "C;Coreano (EUC-KR);EUC-KR"
     IDS_ENC_ISO_2022_CN            "C;Cinese (ISO-2022-CN);ISO-2022-CN"
-    IDS_ENC_HZ_GB2312              "C;Cinese Simplificato (HZ-GB-2312);HZ-GB-2312"
-    IDS_ENC_ISO_2022_JP            "C;Japanese (ISO-2022-JP);ISO-2022-JP"
+    IDS_ENC_HZ_GB2312              "C;Cinese semplificato (HZ-GB-2312);HZ-GB-2312"
+    IDS_ENC_ISO_2022_JP            "C;Giapponese (ISO-2022-JP);ISO-2022-JP"
     IDS_ENC_ISO_2022_KR            "C;Coreano (ISO-2022-KR);ISO-2022-KR"
-    IDS_ENC_X_CHINESE_CNS          "C;Cinese Tradizionale (CNS);x-Cinese-CNS"
+    IDS_ENC_X_CHINESE_CNS          "C;Cinese tradizionale (CNS);x-Cinese-CNS"
     IDS_ENC_JOHAB                  "C;Coreano (Johab);Coreano (Johab)"
     IDS_ENC_ISO_8859_10            "B;Nordico (ISO-8859-10);ISO-8859-10"
-    IDS_ENC_BIG5_HKSCS             "C;Cinese Tradizionale (Big5-HKSCS);Big5-HKSCS"
+    IDS_ENC_BIG5_HKSCS             "C;Cinese tradizionale (Big5-HKSCS);Big5-HKSCS"
 END
 
 

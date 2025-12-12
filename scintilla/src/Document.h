@@ -109,7 +109,7 @@ public:
 	virtual ~RegexSearchBase() = default;
 
 	virtual Sci::Position FindText(Document *doc, Sci::Position minPos, Sci::Position maxPos, const char *s,
-						bool caseSensitive, bool word, bool wordStart, Scintilla::FindOption flags, Sci::Position *length) = 0;
+                        bool caseSensitive, bool word, bool wordStart, Scintilla::FindOption flags, Sci::Position *length) = 0;
 
 	///@return String with the substitutions, must remain valid until the next call or destruction
 	virtual const char *SubstituteByPosition(Document *doc, const char *text, Sci::Position *length) = 0;
@@ -181,7 +181,7 @@ public:
 };
 
 // Base class for view state that can be held and transferred without understanding the contents.
-// Declared here but real implementation subclass declared in EditModel 
+// Declared here but real implementation subclass declared in EditModel
 struct ViewState {
 	ViewState() noexcept = default;
 	// Deleted so ViewState objects can not be copied
@@ -280,6 +280,8 @@ struct CharacterExtracted {
 		return CharacterExtracted((lead << 8) | trail, 2);
 	}
 };
+
+bool DiscardLastCombinedCharacter(std::string_view &text) noexcept;
 
 /**
  */

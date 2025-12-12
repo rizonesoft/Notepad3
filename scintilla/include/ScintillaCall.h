@@ -142,8 +142,6 @@ public:
 	std::string FontLocale();
 	Scintilla::IMEInteraction IMEInteraction();
 	void SetIMEInteraction(Scintilla::IMEInteraction imeInteraction);
-	bool IsIMEOpen();
-	bool IsIMEModeCJK();
 	void MarkerDefine(int markerNumber, Scintilla::MarkerSymbol markerSymbol);
 	void MarkerSetFore(int markerNumber, Colour fore);
 	void MarkerSetBack(int markerNumber, Colour back);
@@ -328,6 +326,8 @@ public:
 	int AutoCGetMaxHeight();
 	void AutoCSetStyle(int style);
 	int AutoCGetStyle();
+	void AutoCSetImageScale(int scalePercent);
+	int AutoCGetImageScale();
 	void SetIndent(int indentSize);
 	int Indent();
 	void SetUseTabs(bool useTabs);
@@ -366,6 +366,9 @@ public:
 	Scintilla::ChangeHistoryOption ChangeHistory();
 	void SetUndoSelectionHistory(Scintilla::UndoSelectionHistoryOption undoSelectionHistory);
 	Scintilla::UndoSelectionHistoryOption UndoSelectionHistory();
+	void SetSelectionSerialized(const char *selectionString);
+	Position SelectionSerialized(char *selectionString);
+	std::string SelectionSerialized();
 	Line FirstVisibleLine();
 	Position GetLine(Line line, char *text);
 	std::string GetLine(Line line);
@@ -388,6 +391,7 @@ public:
 	Line LineFromPosition(Position pos);
 	Position PositionFromLine(Line line);
 	void LineScroll(Position columns, Line lines);
+	void ScrollVertical(Line docLine, Line subLine);
 	void ScrollCaret();
 	void ScrollRange(Position secondary, Position primary);
 	void ReplaceSel(const char *text);
@@ -751,7 +755,7 @@ public:
 	int ExtraAscent();
 	void SetExtraDescent(int extraDescent);
 	int ExtraDescent();
-	int MarkerSymbolDefined(int markerNumber);
+	Scintilla::MarkerSymbol MarkerSymbolDefined(int markerNumber);
 	void MarginSetText(Line line, const char *text);
 	int MarginGetText(Line line, char *text);
 	std::string MarginGetText(Line line);
