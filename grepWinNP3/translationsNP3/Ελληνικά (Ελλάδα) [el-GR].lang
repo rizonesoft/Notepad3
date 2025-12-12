@@ -35,12 +35,12 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld αρχεία, αγνοήθηκαν %ld αρχεία. Επιλέχθηκαν %ld αποτελέσματα."
 
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
-msgstr "%ld ακόμη συμφωνίες"
+msgstr "%ld ακόμη αντιστοιχίες"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %pattern% with the search string."
@@ -88,7 +88,7 @@ msgstr "Περί grepWinNP3"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets..."
-msgstr "Προσθ. στις προρυθμίσεις..."
+msgstr "Προσθήκη στις έτοιμες ρυθμίσεις..."
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -157,11 +157,11 @@ msgstr "Αντιγραφή κειμένων αποτελεσμάτων στο π
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr ""
+msgstr "Αντιγραφή στήλης για όλα τα αντικείμενα"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr ""
+msgstr "Αντιγραφή στήλης για τα επιλεγμένα αντικείμενα"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
@@ -173,11 +173,11 @@ msgstr "Δημιουργία αρχείων αντιγράφων ασφαλεί�
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr "Σκούρα λειτουργία"
+msgstr "Σκουρόχρωμη εμφάνιση"
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr "Ημερ/νία τροποποίησης"
+msgstr "Ημερομηνία τροποποίησης"
 
 #. Resource IDs: (137)
 msgid "Dialog"
@@ -185,7 +185,7 @@ msgstr "Παράθυρο διαλόγου"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr "Χωρίς ειδοποίηση η αντικατάσταση χωρίς δημιουργία αντιγράφων ασφαλείας"
+msgstr "Χωρίς ειδοποίηση, η αντικατάσταση δίχως δημιουργία αντιγράφων ασφαλείας"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -193,7 +193,7 @@ msgstr "Η τελεία δηλώνει νέα γραμμή"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr "Διπλό κλικ για επιλογή μιας προκαθορισμένης ρύθμισης"
+msgstr "Διπλό κλικ για επιλογή μιας έτοιμης ρύθμισης"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
@@ -242,7 +242,7 @@ msgstr "Αρχεία"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr ""
+msgstr "Βρέθηκαν %ld αρχεία, αγνοήθηκαν %ld αρχεία."
 
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
@@ -270,7 +270,7 @@ msgstr "Συμπερίληψη υποφακέλων"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "Συμβολικοί δεσμοί"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
@@ -290,7 +290,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "Δεν αλλάζει η ημερομηνία αρχείου κατά την αντικατάσταση"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -311,7 +311,7 @@ msgstr "Γραμμή %5ld : %30s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
-msgstr "Συμφωνίες"
+msgstr "Αντιστοιχίες"
 
 #. Resource IDs: (104)
 msgid "Name"
@@ -355,15 +355,15 @@ msgstr "Διαδρομή"
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr "Όνομα προκαθορισμένης ρύθμισης"
+msgstr "Όνομα έτοιμης ρύθμισης"
 
 #. Resource IDs: (1022)
 msgid "Presets..."
-msgstr "Προρυθμίσεις..."
+msgstr "Έτοιμες ρυθμίσεις..."
 
 #. Resource IDs: (132)
 msgid "Presets"
-msgstr "Προκαθορισμένες ρυθμίσεις"
+msgstr "Έτοιμες ρυθμίσεις"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help..."
@@ -383,7 +383,7 @@ msgstr "Δοκιμή της Regex"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Συμφωνία Regex"
+msgstr "Αντιστοιχία Regex"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
@@ -485,7 +485,7 @@ msgstr "Κείμενο"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Συμφ. κειμένου"
+msgstr "Αντιστοιχία κειμένου"
 
 #. Resource IDs: (1002)
 msgid "Text search"
@@ -494,7 +494,7 @@ msgstr "Αναζήτηση κειμένου"
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr ""
+msgstr "Η διαδρομή \"%s\" δεν υπάρχει ή δεν είναι προσβάσιμη!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
@@ -608,7 +608,7 @@ msgstr "Αναζητούνται μόνο αρχεία που συμφωνούν
 
 #. Resource IDs: (176)
 msgid "Open list with recent entries"
-msgstr ""
+msgstr "Άνοιγμα λίστας με τις πρόσφατες καταχωρήσεις"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -661,7 +661,7 @@ msgstr "Το εξαιρετικό εργαλείο grepWin(NP3)-mod του Stefa
 
 #. Resource IDs: (3004)
 msgid "Max # of concurrent worker"
-msgstr "Γέγιστος αριθμός νημάτων"
+msgstr "Μέγιστος αριθμός νημάτων"
 
 #. Resource IDs: (3005)
 msgid "This adds a new entry to the context menu named 'Open with Editor'"
@@ -670,4 +670,3 @@ msgstr "Αυτό προσθέτει ένα νέο στοιχείο στο μεν
 #. Resource IDs: (3006)
 msgid "Stay On Top"
 msgstr "Πάντα στην κορυφή"
-
