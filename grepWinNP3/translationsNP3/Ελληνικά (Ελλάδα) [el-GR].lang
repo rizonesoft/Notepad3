@@ -125,7 +125,7 @@ msgstr "Έλεγχος για ενημερώσεις"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
-msgstr "Γραμμή εντολής για εκκίνηση του επεξεργαστή σε ορισμένη γραμμή:"
+msgstr "Εντολή εκκίνησης του επεξεργαστή σε συγκεκριμένη γραμμή:"
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -383,7 +383,7 @@ msgstr "Δοκιμή της Regex"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Αντιστοιχία Regex"
+msgstr "Αντιστ. Regex"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
@@ -411,7 +411,7 @@ msgstr "Συμβολοσειρά αντικατάστασης"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "Αντικατάσταση με/\nΚαταγραφή μορφής:"
+msgstr "Αντικατάσταση με:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -485,7 +485,7 @@ msgstr "Κείμενο"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Αντιστοιχία κειμένου"
+msgstr "Αντιστ. κειμένου"
 
 #. Resource IDs: (1002)
 msgid "Text search"
