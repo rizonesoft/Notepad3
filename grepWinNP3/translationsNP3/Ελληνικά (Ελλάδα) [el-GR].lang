@@ -88,7 +88,7 @@ msgstr "Περί grepWinNP3"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets..."
-msgstr "Προσθήκη στις έτοιμες ρυθμίσεις..."
+msgstr "Προσθ. σε προρυθμίσεις..."
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -193,7 +193,7 @@ msgstr "Η τελεία δηλώνει νέα γραμμή"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr "Διπλό κλικ για επιλογή μιας έτοιμης ρύθμισης"
+msgstr "Διπλό κλικ για επιλογή μιας προρύθμισης"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
@@ -355,15 +355,15 @@ msgstr "Διαδρομή"
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr "Όνομα έτοιμης ρύθμισης"
+msgstr "Όνομα προρύθμισης"
 
 #. Resource IDs: (1022)
 msgid "Presets..."
-msgstr "Έτοιμες ρυθμίσεις..."
+msgstr "Προρυθμίσεις..."
 
 #. Resource IDs: (132)
 msgid "Presets"
-msgstr "Έτοιμες ρυθμίσεις"
+msgstr "Προρυθμίσεις"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help..."
