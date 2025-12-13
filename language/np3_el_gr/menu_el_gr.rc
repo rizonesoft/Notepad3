@@ -351,14 +351,14 @@ BEGIN
         MENUITEM "Εμφάνιση &κενών διαστημάτων\tCtrl+Shift+8",     IDM_VIEW_SHOWBLANKS
         MENUITEM "Εμφάνιση καταλή&ξεων γραμμών\tCtrl+Shift+9",    IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        POPUP "Change History Marker"
+        POPUP "Ενδείξεις αλλαγών"
         BEGIN
-            MENUITEM "No Change Markers",                   IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+            MENUITEM "Χωρίς ένδειξη",                   IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Στο περιθώριο",                 IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "Στο έγγραφο",               IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "Παντού",             IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Διαγραφή ιστορικού αλλαγών και αναιρέσεων"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Ενεργά σημεία &υπερσυνδέσεων\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Χρώμα ορισμού υπερσυνδέσεων"
@@ -394,7 +394,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Α&ρίθμηση γραμμών\tCtrl+Shift+N",                IDM_VIEW_LINENUMBERS
         MENUITEM "Π&εριθώριο σελιδοδείκτη\tCtrl+Shift+M",          IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Περιθώριο ιστορικού αλλαγών",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "Α&ναδίπλωση"
         BEGIN
@@ -472,16 +472,16 @@ BEGIN
         MENUITEM "Ρυθμίσεις αναδίπλωσης &λέξεων...",                IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Ρυθμίσεις &μεγάλης γραμμής...",                   IDM_SET_LONGLINESETTINGS
         MENUITEM "Αυτόματη εσ&οχή κειμένου",                        IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close &Quotes",                              IDM_SET_AUTOCLOSEQUOTES
-        MENUITEM "Auto Close Brackets",                             IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Αυτόματο κλείσιμο &εισαγωγικών",                  IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Αυτόματο κλείσιμο αγκυλών",                       IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Αυτόματο κλείσιμο Η&ΤΜL/XML\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
         MENUITEM "Αυτόματη συμπλήρωση λέ&ξεων",                     IDM_SET_AUTOCOMPLETEWORDS
-        MENUITEM "Α&υτόμ. συμπλήρωση λέ&ξεων-κλειδιών του Lexer",   IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "Α&υτόμ. συμπλήρωση λέξεων-κλειδιών του Lexer",    IDM_SET_AUTOCLEXKEYWORDS
         MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",          IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Μόνο μία παρουσία ανά &αρχείο",                   IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Ειδοποίηση μετα&βολής αρχείου...\tAlt+F5",        IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
+        ///MENUITEM "Αυτόματη αποθήκευση / Ρυθμίσεις εφεδρικού αντιγράφου...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Σίγαση ήχ&ων μηνύματος",                          IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Λειτουργία πλήκτρου &Εsc"
         BEGIN
@@ -491,14 +491,14 @@ BEGIN
         END
         MENUITEM "Αποθήκευση π&ριν την εκτέλεση εργαλείων",   IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Υπολογισμός μικροσκοπικών εκ&φράσεων",      IDM_SET_EVALTINYEXPRONSEL
-        MENUITEM "Enable Multiple Selection",                   IDM_SET_MULTIPLE_SELECTION
+        MENUITEM "Ενεργοποίηση Πολλαπλής επιλογής",           IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "Απομ&νημόνευση"
         BEGIN
             MENUITEM "Απομνημόνευση &πρόσφατων αρχείων",     IDM_SET_NOSAVERECENT
             MENUITEM "Απομνημόνευση θέσης &δρομέα",          IDM_SET_NOPRESERVECARET
             MENUITEM "Απομνημόνευση &μοτίβου αναζήτησης",    IDM_SET_NOSAVEFINDREPL
-            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "&Φόρτωση πρόσφατου αρχείου",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "Παρά&θυρο"
         BEGIN
@@ -579,7 +579,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show Titlebar",                     IDM_VIEW_TITLEBAR
+        MENUITEM "Εμφάνιση γραμμής τίτλου",           IDM_VIEW_TITLEBAR
         MENUITEM "Εμφάνιση γραμμής μενού",            IDM_VIEW_MENUBAR
         MENUITEM "Εμφάνιση γραμμής εργαλείων",        IDM_VIEW_TOOLBAR
         MENUITEM "Εμφάνιση γραμμής κατάστασης",       IDM_VIEW_STATUSBAR
@@ -599,7 +599,7 @@ BEGIN
         MENUITEM "Αναδίπλωση",                        IDM_VIEW_FOLDING
         MENUITEM "Αρίθμηση γραμμών",                  IDM_VIEW_LINENUMBERS
         MENUITEM "Περιθώριο σελιδοδείκτη",            IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Περιθώριο ιστορικού αλλαγών",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN

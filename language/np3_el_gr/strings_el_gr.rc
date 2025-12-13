@@ -138,7 +138,7 @@ BEGIN
                             "Το τρέχον παράθυρο του Notepad3 είναι απασχολημένο ή έχει ενεργό παράθυρο διαλόγου\nΘέλετε να ανοίξετε ένα άλλο παράθυρο του Notepad3;"
     IDS_MUI_ERR_ENCODINGNA  "Οι πίνακες μετατροπής κωδικοσελίδας για την επιλεγμένη κωδικοποίηση δεν είναι διαθέσιμοι στο σύστημά σας"
     IDS_MUI_ERR_UNICODE     "Σφάλμα κατά τη μετατροπή αυτού του Unicode αρχείου\nΤα δεδομένα θα χαθούν εάν αποθηκευτεί το αρχείο!"
-    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s""\nSuitable dimension: %i x %i (width >= %i x height)"
+    IDS_MUI_ERR_BITMAP      "Ακατάλληλη διάσταση εικόνας ""%s""\nΚατάλληλη διάσταση: %i x %i (πλάτος >= %i x ύψος)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Σφάλμα αναβάθμισης των δικαιωμάτων χρήστη!"
 END
@@ -176,10 +176,10 @@ BEGIN
     IDS_MUI_REPLCOUNT       "Έγινε αντικατάσταση σε %s εμφάνιση(εις) του καθορισμένου μοτίβου αναζήτησης"
     IDS_MUI_ASK_ENCODING    "Η εναλλαγή κωδικοποίησης αρχείου από μία κωδικοποίηση σε άλλη μπορεί να αντικαταστήσει το μη υποστηριζόμενο κείμενο με προεπιλεγμένους χαρακτήρες και το ιστορικό αναίρεσης θα απαλειφθεί. Συνέχεια;"
     IDS_MUI_ASK_ENCODING2   "Πρόκειται να αλλάξετε την κωδικοποίηση ενός κενού αρχείου. Σημειώστε ότι αυτό θα διαγράψει το ιστορικό αναίρεσης, καθώς δεν μπορεί να συγχρονιστεί με τη νέα κωδικοποίηση. Συνέχεια;"
-    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Η λειτουργία θα διαγραψεί το ιστορικό αναιρέσεων. Συνέχεια;"
     IDS_MUI_READONLY_SAVE   "Το ""%s"" είναι μόνο για ανάγνωση. Να αποθηκευτεί σε διαφορετικό αρχείο;"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program\nPlease choose:\n\nIgnore -\t\tIgnore further changes\nReload -\t\tReload File\nMonitor -\t\tSwitch to File Monitoring"
+                            "Το τρέχον αρχείο τροποποιήθηκε από ένα εξωτερικό πρόγραμμα\nΕπιλέξτε:\n\nΑγνόηση -\t\tΑγνόηση επιπλέον τροποποιήσεων\nΕπαναφόρτωση -\t\tΕπαναφόρτωση αρχείου\nΠαρακολούθηση -\t\tΆλλαγή σε Παρακολούθηση Αρχείου"
     IDS_MUI_FILECHANGENOTIFY2 "Το τρέχον αρχείο έχει διαγραφεί. Να γίνει αποθήκευση τώρα;"
     IDS_MUI_FILELOCK_ERROR  "Δεν είναι δυνατή η απόκτηση αποκλειστικού κλειδώματος αρχείου για το ""%s""!"
     IDS_MUI_STICKYWINPOS    "Το καρφίτσωμα θέσης παραθύρου είναι ενεργοποιημένο. Τυχόν νέα παράθυρα του Notepad3 θα χρησιμοποιούν τις τρέχουσες ρυθμίσεις θέσης παραθύρου"
@@ -209,7 +209,7 @@ BEGIN
                              "Η διατήρηση της αρχικής χρονοσήμανσης μεταβολής του αρχείου είναι ενεργοποιημένη\nΑυτή η επιλογή θα παραμείνει για αυτή την σύνοδο!"
     IDS_MUI_OUT_OFF_OCCMRK   "Δεν υπάρχουν άλλοι δείκτες εμφάνισης (Σελιδοδείκτης/Επισήμανση)!"
     IDS_MUI_DOCUMENT_READONLY
-                             "The document is locked for view only. Keep the lock to prevent editing?"
+                             "Το έγγραφο είναι κλειδωμένο μόνο για ανάγνωση. Διατήρηση του κλειδώματος για αποφυγή επεξεργασίας του;"
 END
 
 STRINGTABLE
@@ -225,7 +225,7 @@ BEGIN
     IDS_MUI_WARN_STYLE_RESET
                             "Αυτή η ενέργεια θα επαναφέρει το στυλ στις εργοστασιακές ρυθμίσεις της επιθυμητής λειτουργίας χρώματος και θα αλλάξει το ενεργό αρχείο θέματος στο τυπικό .ini ρύθμισης παραμέτρων!"
     IDS_MUI_ASK_INSTANCE_EXISTS
-                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
+                            "Κατάσταση Μοναδικής Φόρτωσης Αρχείου:\n\nΕστίαση στην φορτωμένη εκδοχή του αρχείου;"
 END
 
 STRINGTABLE
@@ -266,8 +266,8 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Γλώσσα"
     IDS_USE_LOCALE_DATEFMT  "Μορφή &ημερομηνίας βάσει γλώσσας"
     IDS_MUI_MENU_THEMES     "&Συλλογή συνδυασμών"
-    IDM_THEMES_FACTORY_RESET "&Factory Reset"
-    IDM_THEMES_STD_CFG       "&Τυπική Config"
+    IDM_THEMES_FACTORY_RESET "&Εργοστασιακές Ρυθμίσεις"
+    IDM_THEMES_STD_CFG       "&Τυπική Ρύθμιση"
     IDS_MUI_STATUSBAR_PREFIXES "Γρ.  ,Στήλη  ,Επιλ.  ,Επιλb  ,ΕπιλΓρ.  ,Εμφ.  ,,,,,,,Χαρ.  ,Αντικ.  ,Βαθμ.  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Απαλοιφή όλων"
@@ -276,8 +276,8 @@ BEGIN
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Απαλοιφή ιστορικού αντικατάστασης"
     IDS_MUI_SEARCHCLIPIFEMPTY
-                            "Search by Clipboard if empty selection"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
+                            "Αναζήτηση από Πρόχειρο αν η επιλογή είναι κενή"
+    IDS_MUI_REPLCLIPTAG     "Αντικατέστησε με Πρόχειρο κατά τη Συντόμευση [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Επανάληψη αναζήτησης από την αρχή"
     IDS_MUI_WRAPSEARCH_BCK  "Επανάληψη αναζήτησης από το τέλος"
 END
@@ -288,7 +288,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Εναλλαγή προβολής..."
     IDS_MUI_SB_REPLACE_ALL    "Αντικατάσταση όλων..."
     IDS_MUI_SB_WRAP_LINES     "Αναδίπλωση γραμμών..."
-    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
+    IDS_MUI_SB_SORTING_LINES  "Ταξινόμηση γραμμών..."
     IDS_MUI_SB_CONV_LNBRK     "Μετατροπή αλλαγών γραμμών..."
     IDS_MUI_SB_RECODING_DOC   "Αλλαγή κωδικοποίησης εγγράφου..."
     IDS_MUI_SB_LEXER_STYLING  "Εφαρμογή στυλ του Lexer..."

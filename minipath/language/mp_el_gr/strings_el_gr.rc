@@ -56,7 +56,7 @@ STRINGTABLE
 BEGIN
     IDT_HISTORY_BACK        "Πίσω"
     IDT_HISTORY_FORWARD     "Εμπρός"
-    IDT_UPDIR               "Άνω κατάλογος"
+    IDT_UPDIR               "Γονικός κατάλογος"
     IDT_ROOT                "Ριζικός κατάλογος"
     IDT_VIEW_FAVORITES      "Αγαπημένα"
     IDT_FILE_PREV           "Προηγούμενο αρχείο"
@@ -66,7 +66,7 @@ BEGIN
     IDT_FILE_SAVEAS         "Αποθήκευση ως"
     IDT_FILE_COPYMOVE       "Αντιγραφή / Μετακίνηση"
     IDT_FILE_DELETE         "Διαγραφή"
-    IDT_FILE_DELETE2        "Διαγραφή (χωρίς ανακύκλωση)"
+    IDT_FILE_DELETE2        "Οριστική διαγραφή"
     IDT_VIEW_FILTER         "Φίλτρο"
 END
 
