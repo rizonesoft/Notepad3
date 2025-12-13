@@ -356,7 +356,7 @@ BEGIN
             MENUITEM "Χωρίς ένδειξη",                   IDM_VIEW_CHGHIST_NONE
             MENUITEM "Στο περιθώριο",                 IDM_VIEW_CHGHIST_MARGIN
             MENUITEM "Στο έγγραφο",               IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Σε έγγραφο και περιθώριο",             IDM_VIEW_CHGHIST_ALL
+            MENUITEM "Παντού",             IDM_VIEW_CHGHIST_ALL
         END
         MENUITEM "Διαγραφή ιστορικού αλλαγών και αναιρέσεων"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
