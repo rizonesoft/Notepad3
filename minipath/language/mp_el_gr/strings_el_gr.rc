@@ -56,7 +56,7 @@ STRINGTABLE
 BEGIN
     IDT_HISTORY_BACK        "Πίσω"
     IDT_HISTORY_FORWARD     "Εμπρός"
-    IDT_UPDIR               "Άνω κατάλογος"
+    IDT_UPDIR               "Γονικός κατάλογος"
     IDT_ROOT                "Ριζικός κατάλογος"
     IDT_VIEW_FAVORITES      "Αγαπημένα"
     IDT_FILE_PREV           "Προηγούμενο αρχείο"
