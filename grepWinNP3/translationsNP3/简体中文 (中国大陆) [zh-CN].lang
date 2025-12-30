@@ -427,7 +427,7 @@ msgstr "查找(&F)："
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "大小写敏感查找"
+msgstr "查找（区分大小写）"
 
 #. Resource IDs: (1015)
 msgid "Search in"
