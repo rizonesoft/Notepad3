@@ -2,7 +2,7 @@
 =                                                                              =
 =            Notepad3 - light-weight Scintilla-based text editor for Windows   =
 =                                                                              =
-=                                                   (c) Rizonesoft 2008-2025   =
+=                                                   (c) Rizonesoft 2008-2026   =
 =                                                     https://rizonesoft.com   =
 =                                                                              =
 ================================================================================
@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.25.1114.(build_#) (2025-11-14)
+Current BETA Version 6.26.0101.(build_#) (2026-01-01)
 ========================================================
 
 --------------------------------------------------------
@@ -49,6 +49,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.###.#]- .
+[.101.1]- Rizonesoft Copyright ©  2008-2025 to year "2008-2026".
 [1114.1]- Remove the "Opera Promotion" page in Notepad3 "INNO Setup Installer" (SUP).
 [.917.1]- Italian language update.
 [.828.1]- Changed some phrases in the Italian Inno Setup script (SUP).
@@ -79,14 +80,13 @@ CHANGES Versions in Tools or Libraries:
 TRANSLATIONS (MUI):
 --------------------------------------------------------
 [.###.#]- .
-[.###.#]- .
+[.101.1]- Greek (el-GR).
 
 --------------------------------------------------------
 Hello everybody ! 😀
 For our "Notepad3 Translation Projects", we are looking for motivated volunteers, with a priority
 to resume "(incomplete...)" translation projects:
 
-- Greek (el-GR) (incomplete...)
 - Hindi (hi-IN) (incomplete...)
 - Portuguese (pt-PT) (incomplete...).
 - etc...
