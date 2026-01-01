@@ -8,7 +8,7 @@
 *   MiniPath version information                                              *
 *   Based on code from metapath, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2025   *
+*                                                  (c) Rizonesoft 2008-2026   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -29,8 +29,8 @@
 #define VERSION_FILEVERSION_NUM      VERSION_MAJOR,VERSION_MINOR,VERSION_REV,VERSION_BUILD
 #define VERSION_FILEVERSION_SHORT    STRINGIFY(VERSION_MAJOR) "." STRINGIFY(VERSION_MINOR) "." \
                                      STRINGIFY(VERSION_REV) "." STRINGIFY(VERSION_BUILD)
-#define VERSION_LEGALCOPYRIGHT_SHORT L"Copyright © 2008-2025"
-#define VERSION_LEGALCOPYRIGHT_LONG  L"Copyright © Rizonesoft 2008-2025"
+#define VERSION_LEGALCOPYRIGHT_SHORT L"Copyright © 2008-2026"
+#define VERSION_LEGALCOPYRIGHT_LONG  L"Copyright © Rizonesoft 2008-2026"
 
 #define VERSION_INTERNALNAME         L"MiniPath"
 #define VERSION_ORIGINALFILENAME     L"minipath.exe"
