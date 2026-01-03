@@ -424,9 +424,9 @@ BEGIN
             MENUITEM "Εμφάνιση συμβουλής &υπερσύνδεσης",   IDM_VIEW_SHOW_HYPLNK_CALLTIP
         END
         MENUITEM SEPARATOR
-        POPUP "&Πίνακες"
+        POPUP "&Ζώνες παραθύρου"
         BEGIN
-            MENUITEM "Show Titlebar",                      IDM_VIEW_TITLEBAR
+            MENUITEM "Εμφάνιση γραμμής τίτλου",            IDM_VIEW_TITLEBAR
             MENUITEM "Εμφάνιση γραμμής &μενού",            IDM_VIEW_MENUBAR
             MENUITEM "Εμφάνιση γραμμής &εργαλείων",        IDM_VIEW_TOOLBAR
             MENUITEM "Εμφάνιση γραμμής &κατάστασης",       IDM_VIEW_STATUSBAR
@@ -436,11 +436,11 @@ BEGIN
             MENUITEM "Ενα&λλαγή γραμμών εργαλείων",        IDM_VIEW_TOGGLETB
             MENUITEM "Κλίμακα DP&Ι γραμμής εργαλείων",     IDM_VIEW_DPISCALETB
         END
-        POPUP "&Ζουμ"
+        POPUP "&Αλλαγή μεγέθους"
         BEGIN
             MENUITEM "&Μεγέθυνση\tCtrl+ +",                IDM_VIEW_ZOOMIN
             MENUITEM "&Σμίκρυνση\tCtrl+ –",                IDM_VIEW_ZOOMOUT
-            MENUITEM "&Επαναφορά ζουμ\tCtrl+0",            IDM_VIEW_RESETZOOM
+            MENUITEM "&Αρχικό μέγεθος\tCtrl+0",            IDM_VIEW_RESETZOOM
         END
         POPUP "&Θέση"
         BEGIN
