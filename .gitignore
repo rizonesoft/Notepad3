@@ -8,6 +8,7 @@
 ehthumbs.db
 Thumbs.db
 .vscode
+.agent
 
 # C++ Junk           #
 ######################

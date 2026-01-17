@@ -34,13 +34,13 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.26.0101.(build_#) (2026-01-01)
+Current BETA Version 6.26.0117.(build_#) (2026-01-17)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
-[.###.#]- .
+[.117.1]- Use Segment Heaps for memory allocation if available (Win10 2004+/Win11).
 [1021.2]- Add extensions "ts"and "tsx" in Tcl Script lexer (LEX).
 [1021.1]- Add extension "JSX" in JavaScript lexer (LEX).
 [.828.1]- Added Notepad3 Version in the Title bar of the Inno Setup dialog box (SUP).
@@ -48,8 +48,8 @@ NEW:
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
-[.###.#]- .
-[.101.1]- Rizonesoft Copyright ©  2008-2025 to year "2008-2026".
+[.117.2]- Moved installer scripts to Build\Installer folder with local language files (SUP).
+[.101.1]- Rizonesoft Copyright ©  2008-2025 to year "2008-2026".
 [1114.1]- Remove the "Opera Promotion" page in Notepad3 "INNO Setup Installer" (SUP).
 [.917.1]- Italian language update.
 [.828.1]- Changed some phrases in the Italian Inno Setup script (SUP).
@@ -58,14 +58,12 @@ CHANGES:
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
-[.###.#]- .
+[.117.2]- Fixed user config setup to run as original user context during install/uninstall (SUP).
 [.917.1]- Really Silent/VerySilent Uninstall (SUP).
 
 --------------------------------------------------------
 REMOVED:
 --------------------------------------------------------
-[.###.#]- .
-[.###.#]- .
 
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
@@ -79,7 +77,6 @@ CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------------
-[.###.#]- .
 [.101.1]- Greek (el-GR).
 
 --------------------------------------------------------
