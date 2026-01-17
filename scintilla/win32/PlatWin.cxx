@@ -29,11 +29,9 @@
 #define NOMINMAX
 #endif
 #undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0601  /*_WIN32_WINNT_WIN7*/
-//~#define _WIN32_WINNT 0x0A00  /*_WIN32_WINNT_WINTHRESHOLD, _WIN32_WINNT_WIN10*/
+#define _WIN32_WINNT 0x0A00
 #undef WINVER
-#define WINVER 0x0601  /*_WIN32_WINNT_WIN7*/
-//~#define WINVER 0x0A00  /*_WIN32_WINNT_WINTHRESHOLD, _WIN32_WINNT_WIN10*/
+#define WINVER 0x0A00
 #define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <commctrl.h>
@@ -201,14 +199,13 @@ int SystemMetricsForDpi(int nIndex, UINT dpi) noexcept {
 	return value;
 }
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-BOOL AdjustWindowRectForDpi(LPRECT lpRect, DWORD dwStyle, DWORD dwExStyle, UINT dpi)  noexcept {
+void AdjustWindowRectForDpi(LPRECT lpRect, DWORD dwStyle, UINT dpi) noexcept {
 	if (fnAdjustWindowRectExForDpi) {
-		return fnAdjustWindowRectExForDpi(lpRect, dwStyle, FALSE, dwExStyle, dpi);
+		fnAdjustWindowRectExForDpi(lpRect, dwStyle, false, WS_EX_WINDOWEDGE, dpi);
+	} else {
+		::AdjustWindowRectEx(lpRect, dwStyle, false, WS_EX_WINDOWEDGE);
 	}
-	return ::AdjustWindowRectEx(lpRect, dwStyle, FALSE, dwExStyle);
 }
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 namespace {
 

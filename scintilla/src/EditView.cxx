@@ -70,9 +70,7 @@ using namespace Scintilla;
 using namespace Scintilla::Internal;
 
 PrintParameters::PrintParameters() noexcept {
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	magnification = 100;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	magnification = 0;
 	colourMode = PrintOption::Normal;
 	wrapState = Wrap::Word;
 }
@@ -604,7 +602,7 @@ void EditView::LayoutLine(const EditModel &model, Surface *surface, const ViewSt
 // Fill the LineLayout bidirectional data fields according to each char style
 
 void EditView::UpdateBidiData(const EditModel &model, const ViewStyle &vstyle, LineLayout *ll) {
-	if (model.BidirectionalEnabled()) {
+	if (model.BidirectionalEnabled() && (ll->numCharsInLine >= 0)) {
 		ll->EnsureBidiData();
 		for (int stylesInLine = 0; stylesInLine < ll->numCharsInLine; stylesInLine++) {
 			ll->bidiData->stylesFonts[stylesInLine] = vstyle.styles[ll->styles[stylesInLine]].font;
@@ -2322,14 +2320,6 @@ void EditView::DrawForeground(Surface *surface, const EditModel &model, const Vi
 				}
 				surface->FillRectangleAligned(rcUL, colourUnderline);
 			}
-			// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-			else if (vsDraw.styles[styleMain].strike) {
-				PRectangle rcUL = rcSegment;
-				rcUL.top = rcUL.top + std::ceil((rcUL.bottom - rcUL.top) / 2);
-				rcUL.bottom = rcUL.top + 1;
-				surface->FillRectangleAligned(rcUL, Fill(textFore));
-			}
-			// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		} else if (horizontal.left > rcLine.right) {
 			break;
 		}

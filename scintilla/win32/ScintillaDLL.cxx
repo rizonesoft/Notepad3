@@ -20,7 +20,7 @@ using namespace Scintilla;
 
 extern "C"
 __declspec(dllexport)
-sptr_t APIENTRY Scintilla_DirectFunction(
+sptr_t __stdcall Scintilla_DirectFunction(
     Internal::ScintillaWin *sci, UINT iMessage, uptr_t wParam, sptr_t lParam) {
 	return Internal::DirectFunction(sci, iMessage, wParam, lParam);
 }

@@ -537,9 +537,7 @@ void ListBoxX::SetOptions(ListOptions options_) {
 
 void ListBoxX::AdjustWindowRect(PRectangle *rc, UINT dpiAdjust) const noexcept {
 	RECT rcw = RectFromPRectangle(*rc);
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	AdjustWindowRectForDpi(&rcw, frameStyle, WS_EX_WINDOWEDGE, dpiAdjust);
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	AdjustWindowRectForDpi(&rcw, frameStyle, dpiAdjust);
 	*rc = PRectangleFromRECT(rcw);
 }
 

@@ -70,12 +70,7 @@ float GetDeviceScaleFactorWhenGdiScalingActive(HWND hWnd) noexcept;
 
 int SystemMetricsForDpi(int nIndex, UINT dpi) noexcept;
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-#ifndef AlphaBlend
-#define AlphaBlend  GdiAlphaBlend
-#endif
-BOOL AdjustWindowRectForDpi(LPRECT lpRect, DWORD dwStyle, DWORD dwExStyle, UINT dpi)  noexcept;
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+void AdjustWindowRectForDpi(LPRECT lpRect, DWORD dwStyle, UINT dpi) noexcept;
 
 HCURSOR LoadReverseArrowCursor(UINT dpi) noexcept;
 

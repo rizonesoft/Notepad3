@@ -81,12 +81,6 @@
 
 #endif
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-#include <optional>
-#include "ScintillaTypes.h"
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-
-
 namespace Scintilla::Internal {
 
 // Underlying the implementation of the platform classes are platform specific types.
@@ -156,24 +150,23 @@ public:
 
 class IScreenLine {
 public:
-	virtual ~IScreenLine() noexcept = default;
-	virtual std::string_view Text() const noexcept = 0;
-	virtual size_t Length() const noexcept = 0;
+	virtual std::string_view Text() const = 0;
+	virtual size_t Length() const = 0;
 	virtual size_t RepresentationCount() const = 0;
-	virtual XYPOSITION Width() const noexcept = 0;
-	virtual XYPOSITION Height() const noexcept = 0;
-	virtual XYPOSITION TabWidth() const noexcept = 0;
-	virtual XYPOSITION TabWidthMinimumPixels() const noexcept = 0;
-	virtual const Font *FontOfPosition(size_t position) const noexcept = 0;
-	virtual XYPOSITION RepresentationWidth(size_t position) const noexcept = 0;
-	virtual XYPOSITION TabPositionAfter(XYPOSITION xPosition) const noexcept = 0;
+	virtual XYPOSITION Width() const = 0;
+	virtual XYPOSITION Height() const = 0;
+	virtual XYPOSITION TabWidth() const = 0;
+	virtual XYPOSITION TabWidthMinimumPixels() const = 0;
+	virtual const Font *FontOfPosition(size_t position) const = 0;
+	virtual XYPOSITION RepresentationWidth(size_t position) const = 0;
+	virtual XYPOSITION TabPositionAfter(XYPOSITION xPosition) const = 0;
 };
 
 class IScreenLineLayout {
 public:
 	virtual ~IScreenLineLayout() noexcept = default;
 	virtual size_t PositionFromX(XYPOSITION xDistance, bool charPosition) = 0;
-	virtual XYPOSITION XFromPosition(size_t caretPosition) noexcept = 0;
+	virtual XYPOSITION XFromPosition(size_t caretPosition) = 0;
 	virtual std::vector<Interval> FindRangeIntervals(size_t start, size_t end) = 0;
 };
 

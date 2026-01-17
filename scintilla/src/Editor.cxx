@@ -13,9 +13,6 @@
 #include <cstdio>
 #include <cmath>
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-#include <ranges>
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -718,7 +715,7 @@ void Editor::SetSelectionFromSerialized(const char *serialized) {
 		sel = Selection(serialized);
 		sel.Truncate(pdoc->Length());
 		SetRectangularRange();
-		InvalidateStyleRedraw();
+		Redraw();
 	}
 }
 
@@ -2437,6 +2434,7 @@ void Editor::RestoreSelection(Sci::Position newPos, UndoRedo history) {
 				}
 			}
 			newPos = -1; // Used selection from stack so don't use position returned from undo/redo.
+			Redraw();
 		}
 	}
 	if (newPos >= 0)
@@ -4066,22 +4064,20 @@ int Editor::KeyCommand(Message iMessage) {
 	case Message::FormFeed:
 		AddChar('\f');
 		break;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	case Message::ZoomIn:
-		if (vs.ZoomIn()) {
-			//vs.zoomLevel++;
+		if (vs.zoomLevel < 60) {
+			vs.zoomLevel++;
 			InvalidateStyleRedraw();
 			NotifyZoom();
 		}
 		break;
 	case Message::ZoomOut:
-		if (vs.ZoomOut()) {
-			//vs.zoomLevel--;
+		if (vs.zoomLevel > -10) {
+			vs.zoomLevel--;
 			InvalidateStyleRedraw();
 			NotifyZoom();
 		}
 		break;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	case Message::DelWordLeft:
 	case Message::DelWordRight:
@@ -4159,6 +4155,12 @@ int Editor::KeyDownWithModifiers(Keys key, KeyMod modifiers, bool *consumed) {
 
 void Editor::Indent(bool forwards, bool lineIndent) {
 	UndoGroup ug(pdoc);
+	// Avoid problems with recalculating rectangular range multiple times by temporarily
+	// treating rectangular selection as multiple stream selection.
+	const Selection::SelTypes selType = sel.selType;
+	if (sel.IsRectangular()) {
+		sel.selType = Selection::SelTypes::stream;
+	}
 	for (size_t r=0; r<sel.Count(); r++) {
 		const Sci::Line lineOfAnchor =
 			pdoc->SciLineFromPosition(sel.Range(r).anchor.Position());
@@ -4235,6 +4237,8 @@ void Editor::Indent(bool forwards, bool lineIndent) {
 			}
 		}
 	}
+	sel.selType = selType;	// Restore rectangular mode
+	ThinRectangularRange();
 	ContainerNeedsUpdate(Update::Selection);
 }
 
@@ -4496,14 +4500,10 @@ void Editor::SetDragPosition(SelectionPosition newPos) {
 		posDrop = newPos;
 	}
 	if (!(posDrag == newPos)) {
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		int const slop_x = (caretPolicies.x.slop < 50) ? 50 : caretPolicies.x.slop;
-		int const slop_y = (caretPolicies.y.slop < 2) ? 2 : caretPolicies.y.slop;
 		const CaretPolicies dragCaretPolicies = {
-			CaretPolicySlop(CaretPolicy::Slop | CaretPolicy::Strict | CaretPolicy::Even, slop_x),
-			CaretPolicySlop(CaretPolicy::Slop | CaretPolicy::Strict | CaretPolicy::Even, slop_y)
+			CaretPolicySlop(CaretPolicy::Slop | CaretPolicy::Strict | CaretPolicy::Even, 50),
+			CaretPolicySlop(CaretPolicy::Slop | CaretPolicy::Strict | CaretPolicy::Even, 2)
 		};
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		MovedCaret(newPos, posDrag, true, dragCaretPolicies);
 
 		caret.on = true;
@@ -4523,7 +4523,7 @@ void Editor::DisplayCursor(Window::Cursor c) {
 		wMain.SetCursor(static_cast<Window::Cursor>(cursorMode));
 }
 
-bool Editor::DragThreshold(Point ptStart, Point ptNow) noexcept {
+bool Editor::DragThreshold(Point ptStart, Point ptNow) {
 	const Point ptDiff = ptStart - ptNow;
 	const XYPOSITION distanceSquared = ptDiff.x * ptDiff.x + ptDiff.y * ptDiff.y;
 	return distanceSquared > 16.0f;
@@ -4590,9 +4590,6 @@ void Editor::DropAt(SelectionPosition position, const char *value, size_t length
 				SetSelection(posAfterInsertion, position);
 			}
 		}
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		EnsureCaretVisible();
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	} else if (inDragDrop == DragDrop::dragging) {
 		SetEmptySelection(position);
 	}
@@ -4996,9 +4993,6 @@ void Editor::SetHoverIndicatorPosition(Sci::Position position) {
 		}
 	}
 	if (hoverIndicatorPosPrev != hoverIndicatorPos) {
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		TickFor(TickReason::dwell); // trigger SCN_DWELLSTART
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		Redraw();
 	}
 }
@@ -5155,13 +5149,7 @@ void Editor::ButtonMoveWithModifiers(Point pt, unsigned int, KeyMod modifiers) {
 				SetHotSpotRange(&pt);
 			} else {
 				if (hoverIndicatorPos != Sci::invalidPosition)
-				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-				{
-					const bool ctrl = FlagSet(modifiers, KeyMod::Ctrl);
-					const bool alt = FlagSet(modifiers, KeyMod::Alt);
-					DisplayCursor(ctrl ? Window::Cursor::hand : (alt ? Window::Cursor::arrow : Window::Cursor::text));
-				}
-				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+					DisplayCursor(Window::Cursor::hand);
 				else
 					DisplayCursor(Window::Cursor::text);
 				SetHotSpotRange(nullptr);
@@ -5465,19 +5453,19 @@ void Editor::QueueIdleWork(WorkItems items, Sci::Position upTo) {
 	workNeeded.Need(items, upTo);
 }
 
-int Editor::SupportsFeature(Scintilla::Supports feature) const noexcept {
+int Editor::SupportsFeature(Supports feature) {
 	AutoSurface surface(this);
 	return surface->SupportsFeature(feature);
 }
 
-bool Editor::PaintContains(PRectangle rc) const noexcept {
+bool Editor::PaintContains(PRectangle rc) {
 	if (rc.Empty()) {
 		return true;
 	}
 	return rcPaint.Contains(rc);
 }
 
-bool Editor::PaintContainsMargin() const noexcept {
+bool Editor::PaintContainsMargin() {
 	if (HasMarginWindow()) {
 		// With separate margin view, paint of text view
 		// never contains margin.
@@ -6083,12 +6071,6 @@ void Editor::StyleSetMessage(Message iMessage, uptr_t wParam, sptr_t lParam) {
 	case Message::StyleSetUnderline:
 		vs.styles[wParam].underline = lParam != 0;
 		break;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	// Added strike style, 2020-05-31
-	case Message::StyleSetStrike:
-		vs.styles[wParam].strike = lParam != 0;
-		break;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	case Message::StyleSetCase:
 		vs.styles[wParam].caseForce = static_cast<Style::CaseForce>(lParam);
 		break;
@@ -6152,11 +6134,6 @@ sptr_t Editor::StyleGetMessage(Message iMessage, uptr_t wParam, sptr_t lParam) {
 		return StringResult(lParam, vs.styles[wParam].fontName);
 	case Message::StyleGetUnderline:
 		return vs.styles[wParam].underline ? 1 : 0;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	// Added strike style, 2020-05-31
-	case Message::StyleGetStrike:
-		return vs.styles[wParam].strike ? 1 : 0;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	case Message::StyleGetCase:
 		return static_cast<int>(vs.styles[wParam].caseForce);
 	case Message::StyleGetCharacterSet:
@@ -6927,9 +6904,7 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case Message::SetPrintMagnification:
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		view.printParameters.magnification = std::clamp(static_cast<int>(wParam), SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+		view.printParameters.magnification = static_cast<int>(wParam);
 		break;
 
 	case Message::GetPrintMagnification:
@@ -7187,7 +7162,6 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case Message::SetUseTabs:
 		pdoc->useTabs = wParam != 0;
-		InvalidateStyleRedraw();
 		break;
 
 	case Message::GetUseTabs:
@@ -7721,9 +7695,6 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 	case Message::StyleSetSizeFractional:
 	case Message::StyleSetFont:
 	case Message::StyleSetUnderline:
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	case Message::StyleSetStrike:
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	case Message::StyleSetCase:
 	case Message::StyleSetCharacterSet:
 	case Message::StyleSetVisible:
@@ -7745,9 +7716,6 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 	case Message::StyleGetSizeFractional:
 	case Message::StyleGetFont:
 	case Message::StyleGetUnderline:
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	case Message::StyleGetStrike:
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	case Message::StyleGetCase:
 	case Message::StyleGetCharacterSet:
 	case Message::StyleGetVisible:
@@ -8406,15 +8374,11 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 		InvalidateStyleRedraw();
 		break;
 
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	case Message::SetZoom: {
-		const int zoomLevel = std::clamp(static_cast<int>(wParam), SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
-		if (SetAppearance(vs.zoomLevel, zoomLevel)) {
+	case Message::SetZoom:
+		if (SetAppearance(vs.zoomLevel, static_cast<int>(wParam))) {
 			NotifyZoom();
 		}
-	}
-	break;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+		break;
 
 	case Message::GetZoom:
 		return vs.zoomLevel;

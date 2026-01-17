@@ -48,6 +48,7 @@ NEW:
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
+[.117.2]- Update to Scintilla 5.5.8 and Lexilla 5.4.6 (SCI/LEX).
 [.117.2]- Moved installer scripts to Build\Installer folder with local language files (SUP).
 [.101.1]- Rizonesoft Copyright ©  2008-2025 to year "2008-2026".
 [1114.1]- Remove the "Opera Promotion" page in Notepad3 "INNO Setup Installer" (SUP).
