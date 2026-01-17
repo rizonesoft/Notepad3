@@ -1,6 +1,6 @@
-diff --git a/_upgrade_staging/scintilla557/scintilla/win32/ScintillaWin.cxx b/scintilla/win32/ScintillaWin.cxx
-index b4c268562..064bb9746 100644
---- a/_upgrade_staging/scintilla557/scintilla/win32/ScintillaWin.cxx
+diff --git a/_upgrade_staging/scintilla/win32/ScintillaWin.cxx b/scintilla/win32/ScintillaWin.cxx
+index fbec35f76..064bb9746 100644
+--- a/_upgrade_staging/scintilla/win32/ScintillaWin.cxx
 +++ b/scintilla/win32/ScintillaWin.cxx
 @@ -33,9 +33,11 @@
  #define NOMINMAX
@@ -103,17 +103,6 @@ index b4c268562..064bb9746 100644
  	const Point ptDifference = ptStart - ptNow;
  	const XYPOSITION xMove = std::trunc(std::abs(ptDifference.x));
  	const XYPOSITION yMove = std::trunc(std::abs(ptDifference.y));
-@@ -1628,8 +1641,8 @@ UINT CodePageFromCharSet(CharacterSet characterSet, UINT documentCodePage) noexc
- 		return CpUtf8;
- 	}
- 	switch (characterSet) {
--	case CharacterSet::Ansi: return 1252;
--	case CharacterSet::Default: return documentCodePage ? documentCodePage : 1252;
-+	case CharacterSet::Ansi: return codePageWindowsLatin;
-+	case CharacterSet::Default: return documentCodePage ? documentCodePage : codePageWindowsLatin;
- 	case CharacterSet::Baltic: return 1257;
- 	case CharacterSet::ChineseBig5: return 950;
- 	case CharacterSet::EastEurope: return 1250;
 @@ -1758,11 +1771,21 @@ Window::Cursor ScintillaWin::ContextCursor(Point pt) {
  		const Sci::Position pos = PositionFromLocation(pt, true, true);
  		if (pos != Sci::invalidPosition) {

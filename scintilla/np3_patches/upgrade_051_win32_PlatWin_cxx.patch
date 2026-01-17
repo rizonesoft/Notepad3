@@ -1,6 +1,6 @@
-diff --git a/_upgrade_staging/scintilla557/scintilla/win32/PlatWin.cxx b/scintilla/win32/PlatWin.cxx
+diff --git a/_upgrade_staging/scintilla/win32/PlatWin.cxx b/scintilla/win32/PlatWin.cxx
 index ff47c28ab..735c68b4a 100644
---- a/_upgrade_staging/scintilla557/scintilla/win32/PlatWin.cxx
+--- a/_upgrade_staging/scintilla/win32/PlatWin.cxx
 +++ b/scintilla/win32/PlatWin.cxx
 @@ -29,9 +29,11 @@
  #define NOMINMAX

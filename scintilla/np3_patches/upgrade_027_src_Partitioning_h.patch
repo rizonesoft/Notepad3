@@ -1,0 +1,14 @@
+diff --git a/_upgrade_staging/scintilla/src/Partitioning.h b/scintilla/src/Partitioning.h
+index db2e63c11..7cd3d4df9 100644
+--- a/_upgrade_staging/scintilla/src/Partitioning.h
++++ b/scintilla/src/Partitioning.h
+@@ -8,6 +8,9 @@
+ #ifndef PARTITIONING_H
+ #define PARTITIONING_H
+ 
++// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
++#include <memory>
++// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+ namespace Scintilla::Internal {
+ 
+ /// Divide an interval into multiple partitions.

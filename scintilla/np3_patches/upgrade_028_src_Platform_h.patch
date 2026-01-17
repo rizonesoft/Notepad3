@@ -1,6 +1,6 @@
-diff --git a/_upgrade_staging/scintilla557/scintilla/src/Platform.h b/scintilla/src/Platform.h
+diff --git a/_upgrade_staging/scintilla/src/Platform.h b/scintilla/src/Platform.h
 index 119b4ef3f..035fb3f86 100644
---- a/_upgrade_staging/scintilla557/scintilla/src/Platform.h
+--- a/_upgrade_staging/scintilla/src/Platform.h
 +++ b/scintilla/src/Platform.h
 @@ -81,6 +81,12 @@
  

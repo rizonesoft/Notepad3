@@ -1,0 +1,15 @@
+diff --git a/_upgrade_staging/scintilla/src/SplitVector.h b/scintilla/src/SplitVector.h
+index d46156e27..c4befe78b 100644
+--- a/_upgrade_staging/scintilla/src/SplitVector.h
++++ b/scintilla/src/SplitVector.h
+@@ -9,6 +9,10 @@
+ #ifndef SPLITVECTOR_H
+ #define SPLITVECTOR_H
+ 
++// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
++#include "Debugging.h"
++// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
++
+ namespace Scintilla::Internal {
+ 
+ template <typename T>

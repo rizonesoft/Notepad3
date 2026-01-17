@@ -1,0 +1,14 @@
+diff --git a/_upgrade_staging/scintilla/src/Style.h b/scintilla/src/Style.h
+index 19679cd04..6bbfd4275 100644
+--- a/_upgrade_staging/scintilla/src/Style.h
++++ b/scintilla/src/Style.h
+@@ -47,6 +47,9 @@ public:
+ 	ColourRGBA back;
+ 	bool eolFilled;
+ 	bool underline;
++// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
++	bool strike;
++// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+ 	enum class CaseForce {mixed, upper, lower, camel};
+ 	CaseForce caseForce;
+ 	bool visible;

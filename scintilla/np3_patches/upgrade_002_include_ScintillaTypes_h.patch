@@ -1,6 +1,6 @@
-diff --git a/_upgrade_staging/scintilla557/scintilla/include/ScintillaTypes.h b/scintilla/include/ScintillaTypes.h
+diff --git a/_upgrade_staging/scintilla/include/ScintillaTypes.h b/scintilla/include/ScintillaTypes.h
 index 0991a1480..4e55de257 100644
---- a/_upgrade_staging/scintilla557/scintilla/include/ScintillaTypes.h
+--- a/_upgrade_staging/scintilla/include/ScintillaTypes.h
 +++ b/scintilla/include/ScintillaTypes.h
 @@ -286,6 +286,7 @@ enum class FindOption {
  	None = 0x0,
