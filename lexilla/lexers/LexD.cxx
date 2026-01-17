@@ -234,7 +234,10 @@ Sci_Position SCI_METHOD LexerD::WordListSet(int n, const char *wl) {
 	}
 	Sci_Position firstModification = -1;
 	if (wordListN) {
-		if (wordListN->Set(wl)) {
+		WordList wlNew;
+		wlNew.Set(wl);
+		if (*wordListN != wlNew) {
+			wordListN->Set(wl);
 			firstModification = 0;
 		}
 	}
