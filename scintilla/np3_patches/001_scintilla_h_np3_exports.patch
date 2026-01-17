@@ -1,0 +1,99 @@
+diff --git "a/r:\\GitHub\\Notepad3\\scintilla\\np3_patches\\orig\\Scintilla.h.558.orig" "b/r:\\GitHub\\Notepad3\\scintilla\\include\\Scintilla.h"
+index f7afa4f50..0d9169572 100644
+--- "a/r:\\GitHub\\Notepad3\\scintilla\\np3_patches\\orig\\Scintilla.h.558.orig"
++++ "b/r:\\GitHub\\Notepad3\\scintilla\\include\\Scintilla.h"
+@@ -15,18 +15,30 @@
+ extern "C" {
+ #endif
+ 
+-#if defined(_WIN32)
+-/* Return false on failure: */
+-int Scintilla_RegisterClasses(void *hInstance);
+-int Scintilla_ReleaseResources(void);
+-#endif
++// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
++// ==============================================================
++// --- needed to bind Scintilla as dynamic link library (DLL) ---
++// ==============================================================
++typedef struct _wrct_t { long left; long top; long right; long bottom; } WRECT, *LPWRECT; // Windows RECT
++__declspec(dllexport) int       Scintilla_RegisterClasses(void *hInstance);
++__declspec(dllexport) int       Scintilla_ReleaseResources(void);
++__declspec(dllexport) int       Scintilla_InputCodePage(void);
++__declspec(dllexport) unsigned  Scintilla_GetWindowDPI(void* hwnd);
++__declspec(dllexport) int       Scintilla_GetSystemMetricsForDpi(int nIndex, unsigned dpi);
++__declspec(dllexport) int       Scintilla_GetSystemMetricsForDpi(int nIndex, unsigned dpi);
++__declspec(dllexport) int       Scintilla_AdjustWindowRectForDpi(LPWRECT lpRect, unsigned long dwStyle, unsigned long  dwExStyle, unsigned dpi);
++// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+ 
+ #ifdef __cplusplus
+ }
+ #endif
+ 
+ // Include header that defines basic numeric types.
++#if defined(__cplusplus)
++#include <cstdint>
++#else
+ #include <stdint.h>
++#endif
+ 
+ // Define uptr_t, an unsigned integer type large enough to hold a pointer.
+ typedef uintptr_t uptr_t;
+@@ -45,6 +57,7 @@ typedef sptr_t (*SciFnDirectStatus)(sptr_t ptr, unsigned int iMessage, uptr_t wP
+ #define SCI_START 2000
+ #define SCI_OPTIONAL_START 3000
+ #define SCI_LEXER_START 4000
++#define SCI_DEV_USER_DEFINED 6000
+ #define SCI_ADDTEXT 2001
+ #define SCI_ADDSTYLEDTEXT 2002
+ #define SCI_INSERTTEXT 2003
+@@ -112,6 +125,8 @@ typedef sptr_t (*SciFnDirectStatus)(sptr_t ptr, unsigned int iMessage, uptr_t wP
+ #define SC_IME_INLINE 1
+ #define SCI_GETIMEINTERACTION 2678
+ #define SCI_SETIMEINTERACTION 2679
++#define SCI_ISIMEOPEN 6003
++#define SCI_ISIMEMODECJK 6004
+ #define SC_ALPHA_TRANSPARENT 0
+ #define SC_ALPHA_OPAQUE 255
+ #define SC_ALPHA_NOALPHA 256
+@@ -252,6 +267,7 @@ typedef sptr_t (*SciFnDirectStatus)(sptr_t ptr, unsigned int iMessage, uptr_t wP
+ #define SCI_STYLESETEOLFILLED 2057
+ #define SCI_STYLERESETDEFAULT 2058
+ #define SCI_STYLESETUNDERLINE 2059
++#define SCI_STYLESETSTRIKE 6001
+ #define SC_CASE_MIXED 0
+ #define SC_CASE_UPPER 1
+ #define SC_CASE_LOWER 2
+@@ -264,6 +280,7 @@ typedef sptr_t (*SciFnDirectStatus)(sptr_t ptr, unsigned int iMessage, uptr_t wP
+ #define SCI_STYLEGETFONT 2486
+ #define SCI_STYLEGETEOLFILLED 2487
+ #define SCI_STYLEGETUNDERLINE 2488
++#define SCI_STYLEGETSTRIKE 6002
+ #define SCI_STYLEGETCASE 2489
+ #define SCI_STYLEGETCHARACTERSET 2490
+ #define SCI_STYLEGETVISIBLE 2491
+@@ -520,6 +537,7 @@ typedef sptr_t (*SciFnDirectStatus)(sptr_t ptr, unsigned int iMessage, uptr_t wP
+ #define SCFIND_NONE 0x0
+ #define SCFIND_WHOLEWORD 0x2
+ #define SCFIND_MATCHCASE 0x4
++#define SCFIND_DOT_MATCH_ALL 0x1000
+ #define SCFIND_WORDSTART 0x00100000
+ #define SCFIND_REGEXP 0x00200000
+ #define SCFIND_POSIX 0x00400000
+@@ -845,6 +863,8 @@ typedef sptr_t (*SciFnDirectStatus)(sptr_t ptr, unsigned int iMessage, uptr_t wP
+ #define SC_POPUP_TEXT 2
+ #define SCI_USEPOPUP 2371
+ #define SCI_SELECTIONISRECTANGLE 2372
++#define SC_MIN_ZOOM_LEVEL 10
++#define SC_MAX_ZOOM_LEVEL 1000
+ #define SCI_SETZOOM 2373
+ #define SCI_GETZOOM 2374
+ #define SC_DOCUMENTOPTION_DEFAULT 0
+@@ -1199,7 +1219,7 @@ typedef sptr_t (*SciFnDirectStatus)(sptr_t ptr, unsigned int iMessage, uptr_t wP
+ #define SCI_GETLEXER 4002
+ #define SCI_COLOURISE 4003
+ #define SCI_SETPROPERTY 4004
+-#define KEYWORDSET_MAX 8
++#define KEYWORDSET_MAX 15
+ #define SCI_SETKEYWORDS 4005
+ #define SCI_GETPROPERTY 4008
+ #define SCI_GETPROPERTYEXPANDED 4009

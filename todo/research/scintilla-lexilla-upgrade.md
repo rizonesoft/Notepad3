@@ -225,3 +225,104 @@ The main complexity is preserving the **Oniguruma regex integration**:
 - Location: `scintilla/oniguruma/scintilla/OnigurumaRegExEngine.cxx`
 - Purpose: Unicode-aware regex with extended syntax
 - Activated via `SCI_OWNREGEX` preprocessor define
+
+---
+
+## Custom Patches Management
+
+### Patch Folder Structure
+
+All NP3-specific patches should be stored in `scintilla/np3_patches/` for tracking:
+
+```
+scintilla/
+├── np3_patches/                    # NEW: Track all NP3 customizations
+│   ├── README.md                   # Index of all patches
+│   ├── 001_scintilla_h_exports.patch
+│   ├── 002_directwrite_font_fix.patch
+│   └── orig/                       # Original upstream files for diffing
+│       └── ScintillaWin.cxx.orig
+├── include/
+│   └── Scintilla.h                 # Contains NP3 exports patch
+├── win32/
+│   └── ScintillaWin.cxx            # May contain DirectWrite fix
+└── oniguruma/                      # Existing - regex engine
+```
+
+### Patch Registry
+
+| ID | Patch Name | Files Modified | Scintilla Bug | Status |
+|----|------------|----------------|---------------|--------|
+| 001 | DLL Export Functions | `include/Scintilla.h` | N/A (NP3-specific) | ✅ Applied |
+| 002 | C++ Header Include | `include/Scintilla.h` | N/A | ✅ Applied |
+| 003 | User-Defined Messages | `include/Scintilla.h` | N/A | ✅ Applied |
+| 004 | IME Detection | `include/Scintilla.h` | N/A | ✅ Applied |
+| 005 | Strikethrough Style | `include/Scintilla.h` | N/A | ✅ Applied |
+| 006 | SCFIND_DOT_MATCH_ALL | `include/Scintilla.h` | N/A | ✅ Applied |
+| 007 | KEYWORDSET_MAX=15 | `include/Scintilla.h` | N/A | ✅ Applied |
+| 008 | DirectWrite Font Fix | `win32/ScintillaWin.cxx`, `win32/PlatWin.cxx` | #2080, #2262 | ⏳ Pending |
+
+### Upstream Scintilla Bugs (Pending Fixes)
+
+| Bug # | Title | MR | Impact |
+|-------|-------|-------|--------|
+| **#2080** | D2D font family/face name confusion | [MR #36](https://sourceforge.net/p/scintilla/code/merge-requests/36/) | Variable fonts fail |
+| **#2262** | Inability to display some fonts | Related to #2080 | Non-regular styles fail |
+| **#2356** | Font weight issues | Related to #2080 | Light/SemiBold fail |
+
+**NP3 Issues Waiting on Fix:** #4150, #5455
+
+---
+
+## Future Upgrade Checklist
+
+When upgrading Scintilla/Lexilla:
+
+### Pre-Upgrade
+```
+[ ] 1. Create backup of entire scintilla/ and lexilla/ folders
+[ ] 2. Note current version numbers in version.txt
+[ ] 3. Check Scintilla release notes for breaking changes
+[ ] 4. Check if upstream bugs #2080/#2262 are fixed in new version
+```
+
+### During Upgrade
+```
+[ ] 1. Download new Scintilla/Lexilla
+[ ] 2. Replace src/, win32/, doc/, scripts/ (NOT include/)
+[ ] 3. PRESERVE these folders:
+       - scintilla/oniguruma/ (entire folder)
+       - scintilla/np3_patches/ (if exists)
+       - scintilla/*.vcxproj
+       - lexilla/lexers_x/
+       - lexilla/*.vcxproj
+[ ] 4. Merge Scintilla.h patches manually:
+       - Compare new include/Scintilla.h with backup
+       - Re-apply patches 001-007 from Patch Registry
+[ ] 5. Re-apply Patch 008 (DirectWrite) if not yet in upstream
+[ ] 6. Update version.txt
+```
+
+### Post-Upgrade Verification
+```
+[ ] 1. Build Debug x64
+[ ] 2. Build Release x64
+[ ] 3. Test: Basic text editing
+[ ] 4. Test: Regex search/replace (Oniguruma)
+[ ] 5. Test: Font selection (try Cascadia Mono Light)
+[ ] 6. Test: Variable fonts (try Iosevka)
+[ ] 7. Test: DPI scaling (100%, 150%, 200%)
+[ ] 8. Test: Syntax highlighting
+[ ] 9. Commit with message: "deps: Upgrade Scintilla X.Y.Z, Lexilla A.B.C"
+```
+
+### If Upstream Fixes Our Bugs
+
+When Scintilla merges #2080/#2262 fix:
+```
+[ ] 1. Remove Patch 008 from np3_patches/
+[ ] 2. Update Patch Registry (mark as "Upstreamed")
+[ ] 3. Close NP3 issues #4150, #5455
+[ ] 4. Test font selection thoroughly
+```
+
