@@ -1,6 +1,6 @@
-diff --git a/_upgrade_staging/scintilla/include/Scintilla.h b/scintilla/include/Scintilla.h
+diff --git a/_upgrade_staging/scintilla557/scintilla/include/Scintilla.h b/scintilla/include/Scintilla.h
 index f7afa4f50..0d9169572 100644
---- a/_upgrade_staging/scintilla/include/Scintilla.h
+--- a/_upgrade_staging/scintilla557/scintilla/include/Scintilla.h
 +++ b/scintilla/include/Scintilla.h
 @@ -15,18 +15,30 @@
  extern "C" {
