@@ -249,7 +249,7 @@ static void ColouriseCoffeeScriptDoc(Sci_PositionU startPos, Sci_Position length
 					sc.SetState(SCE_COFFEESCRIPT_DEFAULT);
 				} else if (sc.ch == '/') {
 					sc.Forward();
-					while (IsASCII(sc.ch) && islower(sc.ch))
+					while ((sc.ch < 0x80) && islower(sc.ch))
 						sc.Forward();    // gobble regex flags
 					sc.SetState(SCE_COFFEESCRIPT_DEFAULT);
 				} else if (sc.ch == '\\') {
