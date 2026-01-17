@@ -1,7 +1,7 @@
-diff --git "a/r:\\GitHub\\Notepad3\\scintilla\\np3_patches\\orig\\Scintilla.h.558.orig" "b/r:\\GitHub\\Notepad3\\scintilla\\include\\Scintilla.h"
+diff --git a/_upgrade_staging/scintilla/include/Scintilla.h b/scintilla/include/Scintilla.h
 index f7afa4f50..0d9169572 100644
---- "a/r:\\GitHub\\Notepad3\\scintilla\\np3_patches\\orig\\Scintilla.h.558.orig"
-+++ "b/r:\\GitHub\\Notepad3\\scintilla\\include\\Scintilla.h"
+--- a/_upgrade_staging/scintilla/include/Scintilla.h
++++ b/scintilla/include/Scintilla.h
 @@ -15,18 +15,30 @@
  extern "C" {
  #endif
