@@ -1028,7 +1028,7 @@ public:
 	ScreenLineLayout &operator=(ScreenLineLayout &&) = delete;
 	~ScreenLineLayout() noexcept override = default;
 	size_t PositionFromX(XYPOSITION xDistance, bool charPosition) override;
-	XYPOSITION XFromPosition(size_t caretPosition) override;
+	XYPOSITION XFromPosition(size_t caretPosition) noexcept override;
 	std::vector<Interval> FindRangeIntervals(size_t start, size_t end) override;
 };
 
@@ -1208,7 +1208,7 @@ size_t ScreenLineLayout::PositionFromX(XYPOSITION xDistance, bool charPosition) 
 
 // Finds the point of the caret position
 
-XYPOSITION ScreenLineLayout::XFromPosition(size_t caretPosition) {
+XYPOSITION ScreenLineLayout::XFromPosition(size_t caretPosition) noexcept {
 	if (!textLayout) {
 		return 0.0;
 	}

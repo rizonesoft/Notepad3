@@ -9,7 +9,11 @@
 #ifndef SCI_POSITION_H
 #define SCI_POSITION_H
 
+#if defined(__cplusplus)
+#include <cstddef>
+#else
 #include <stddef.h>
+#endif
 
 // Basic signed type used throughout interface
 typedef ptrdiff_t Sci_Position;

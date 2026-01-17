@@ -74,6 +74,9 @@ Style::Style(const char *fontName_) noexcept :
 	back(white),
 	eolFilled(false),
 	underline(false),
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	strike(false),
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	caseForce(CaseForce::mixed),
 	visible(true),
 	changeable(true),

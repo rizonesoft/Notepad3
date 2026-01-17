@@ -156,10 +156,12 @@ int ScintillaBase::KeyCommand(Message iMessage) {
 			AutoCompleteMove(-ac.lb->GetVisibleRows());
 			return 0;
 		case Message::VCHome:
-			AutoCompleteMove(-5000);
+		case Message::HomeWrap:
+			AutoCompleteMove(-10000);
 			return 0;
 		case Message::LineEnd:
-			AutoCompleteMove(5000);
+		case Message::LineEndWrap:
+			AutoCompleteMove(10000);
 			return 0;
 		case Message::DeleteBack:
 			DelCharBack(true);
@@ -561,6 +563,10 @@ void ScintillaBase::CallTipClick() {
 	NotifyParent(scn);
 }
 
+
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+#if SCI_EnablePopupMenu
+
 bool ScintillaBase::ShouldDisplayPopup(Point ptInWindowCoordinates) const {
 	return (displayPopupMenu == PopUp::All ||
 		(displayPopupMenu == PopUp::Text && !PointInSelMargin(ptInWindowCoordinates)));
@@ -582,6 +588,10 @@ void ScintillaBase::ContextMenu(Point pt) {
 		popup.Show(pt, wMain);
 	}
 }
+
+#endif
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 
 void ScintillaBase::CancelModes() {
 	AutoCompleteCancel();

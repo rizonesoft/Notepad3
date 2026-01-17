@@ -47,6 +47,9 @@ public:
 	ColourRGBA back;
 	bool eolFilled;
 	bool underline;
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	bool strike;
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	enum class CaseForce {mixed, upper, lower, camel};
 	CaseForce caseForce;
 	bool visible;

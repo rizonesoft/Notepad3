@@ -96,6 +96,9 @@ val INVALID_POSITION=-1
 val SCI_START=2000
 val SCI_OPTIONAL_START=3000
 val SCI_LEXER_START=4000
+# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+val SCI_DEV_USER_DEFINED=6000
+# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 # Add text to the document at current position.
 fun void AddText=2001(position length, string text)
@@ -616,6 +619,11 @@ fun void StyleResetDefault=2058(,)
 # Set a style to be underlined or not.
 set void StyleSetUnderline=2059(int style, bool underline)
 
+# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+# Set a style to be underlined or not.
+set void StyleSetStrike=6001(int style, bool strike)
+# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 enu CaseVisible=SC_CASE_
 val SC_CASE_MIXED=0
 val SC_CASE_UPPER=1
@@ -647,6 +655,11 @@ get bool StyleGetEOLFilled=2487(int style,)
 
 # Get is a style underlined or not.
 get bool StyleGetUnderline=2488(int style,)
+
+# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+# Get is a style underlined or not.
+get bool StyleGetStrike=6002(int style,)
+# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 # Get is a style mixed case, or to force upper or lower case.
 get CaseVisible StyleGetCase=2489(int style,)
@@ -1305,6 +1318,9 @@ enu FindOption=SCFIND_
 val SCFIND_NONE=0x0
 val SCFIND_WHOLEWORD=0x2
 val SCFIND_MATCHCASE=0x4
+# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+val SCFIND_DOT_MATCH_ALL=0x1000
+# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 val SCFIND_WORDSTART=0x00100000
 val SCFIND_REGEXP=0x00200000
 val SCFIND_POSIX=0x00400000
@@ -2248,6 +2264,12 @@ fun void UsePopUp=2371(PopUp popUpMode,)
 
 # Is the selection rectangular? The alternative is the more common stream selection.
 get bool SelectionIsRectangle=2372(,)
+
+# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+# 2018-09-06 change zoom level and print magnification to percent value
+val SC_MIN_ZOOM_LEVEL=10
+val SC_MAX_ZOOM_LEVEL=1000
+# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 # Set the zoom level. This number of points is added to the size of all fonts.
 # It may be positive to magnify or negative to reduce.
@@ -3274,7 +3296,7 @@ fun void Colourise=4003(position start, position end)
 set void SetProperty=4004(string key, string value)
 
 # Maximum value of keywordSet parameter of SetKeyWords.
-val KEYWORDSET_MAX=8
+val KEYWORDSET_MAX=15
 
 # Set up the key words used by the lexer.
 set void SetKeyWords=4005(int keyWordSet, string keyWords)

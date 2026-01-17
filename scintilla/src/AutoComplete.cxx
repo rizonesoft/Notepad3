@@ -239,10 +239,12 @@ void AutoComplete::Move(int delta) {
 	const int count = lb->Length();
 	int current = lb->GetSelection();
 	current += delta;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	if (current >= count)
-		current = count - 1;
+		current = (current == count ? 0 : count - 1);
 	if (current < 0)
-		current = 0;
+		current = (current == -1 ? count - 1 : 0);
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	lb->Select(current);
 }
 
