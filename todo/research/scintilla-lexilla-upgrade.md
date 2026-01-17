@@ -9,15 +9,32 @@
 
 ## Customization Analysis
 
-### Lexilla: ✅ No Modifications
-- Clean upstream code
-- Safe to replace directly
+### Lexilla: 🔴 HAS CUSTOMIZATIONS (lexers_x/)
 
-### Scintilla: 🟡 Has Customizations
+The `lexilla/lexers_x/` folder contains **24 custom files** that MUST be preserved:
+
+| File | Type | Notes |
+|------|------|-------|
+| `LexAHK.cxx` | Custom Lexer | AutoHotkey |
+| `LexCSV.cxx` | Custom Lexer | CSV/TSV |
+| `LexJSON.cxx` | **Modified** | Enhanced version (orig in `orig/`) |
+| `LexKotlin.cxx` | **Modified** | Enhanced version (orig from zufuliu) |
+| `LexVerilog.cxx` | **Modified** | Enhanced version (orig in `orig/`) |
+| `LexerUtils.cxx/h` | Helper | Shared lexer utilities |
+| `CharSetX.h` | Helper | Extended character sets |
+| `StringUtils.h` | Helper | String utilities |
+| `SciX.iface` | Extension | Extended Scintilla interface |
+| `SciXLexer.h` | Extension | Extended lexer header |
+| `homebrew/LexAHK*.cxx` | Homebrew | Alternative AHK implementations |
+| `orig/*.cxx` | Backups | Original upstream versions |
+
+**CRITICAL**: The `lexers/` folder (41 files) may also have modifications - these are Lexilla's standard lexers.
+
+### Scintilla: 🔴 HAS CUSTOMIZATIONS (oniguruma/)
 
 | Customization | Files | Impact |
 |---------------|-------|--------|
-| **Oniguruma Regex Engine** | `oniguruma/scintilla/OnigurumaRegExEngine.cxx` (~900 lines) | Must preserve |
+| **Oniguruma Regex Engine** | `oniguruma/scintilla/OnigurumaRegExEngine.cxx` (~904 lines) | Must preserve |
 | **Oniguruma Library** | `oniguruma/src/` (40+ files) | Must preserve |
 | **Custom VS Projects** | `Scintilla.vcxproj`, `ScintillaDLL.vcxproj` | May need merge |
 | **NP3 Compiler Defines** | `SCI_OWNREGEX`, `NP3`, `ONIG_STATIC`, `NO_CXX11_REGEX` | Must keep |
@@ -26,15 +43,23 @@
 
 ## Upgrade Steps
 
-### Phase 1: Lexilla (Easy)
+### Phase 1: Lexilla (CAREFUL - Has Customizations)
 
 ```
 [ ] 1. Download Lexilla 5.4.6 from scintilla.org
-[ ] 2. Backup current lexilla/ folder
-[ ] 3. Replace lexilla/src/ contents
-[ ] 4. Replace lexilla/include/ contents
-[ ] 5. Keep existing .vcxproj files (just update if needed)
-[ ] 6. Rebuild and test
+[ ] 2. Backup ENTIRE lexilla/ folder
+[ ] 3. DO NOT REPLACE these (must preserve):
+      - lexilla/lexers_x/ (entire folder - 24 custom files!)
+      - lexilla/*.vcxproj (project files reference lexers_x)
+      - lexilla/*.vcxproj.filters
+[ ] 4. CAREFULLY update these folders:
+      - lexilla/src/ (core library)
+      - lexilla/include/ (headers)
+      - lexilla/lexlib/ (lexer utilities)
+[ ] 5. DIFF CHECK lexilla/lexers/ against upstream:
+      - Some lexers may have NP3-specific patches
+      - Compare with orig/ backups in lexers_x/
+[ ] 6. Rebuild and test all syntax highlighting
 ```
 
 ### Phase 2: Scintilla (Moderate)
