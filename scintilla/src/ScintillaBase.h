@@ -87,13 +87,9 @@ protected:
 	void CallTipShow(Point pt, const char *defn);
 	virtual void CreateCallTipWindow(PRectangle rc) = 0;
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-#if SCI_EnablePopupMenu
 	virtual void AddToPopUp(const char *label, int cmd=0, bool enabled=true) = 0;
 	bool ShouldDisplayPopup(Point ptInWindowCoordinates) const;
 	void ContextMenu(Point pt);
-#endif
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	void ButtonDownWithModifiers(Point pt, unsigned int curTime, Scintilla::KeyMod modifiers) override;
 	void RightButtonDownWithModifiers(Point pt, unsigned int curTime, Scintilla::KeyMod modifiers) override;
@@ -101,7 +97,7 @@ protected:
 	void NotifyStyleToNeeded(Sci::Position endStyleNeeded) override;
 
 public:
-	virtual ~ScintillaBase() override;
+	~ScintillaBase() override;
 
 	// Public so scintilla_send_message can use it
 	Scintilla::sptr_t WndProc(Scintilla::Message iMessage, Scintilla::uptr_t wParam, Scintilla::sptr_t lParam) override;

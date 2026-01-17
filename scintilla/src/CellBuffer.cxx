@@ -21,14 +21,12 @@
 #include <optional>
 #include <algorithm>
 #include <memory>
+#include <type_traits>
 
 #include "ScintillaTypes.h"
 
 #include "Debugging.h"
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-#include "Scintilla.h"
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #include "Position.h"
 #include "SplitVector.h"
 #include "Partitioning.h"
@@ -218,7 +216,7 @@ public:
 	}
 	void InsertLines(Sci::Line line, const Sci::Position *positions, size_t lines, bool lineStart) override {
 		const POS lineAsPos = pos_cast(line);
-		if constexpr (sizeof(Sci::Position) == sizeof(POS)) {
+		if constexpr (std::is_convertible_v<Sci::Position *, POS *>) {
 			starts.InsertPartitions(lineAsPos, positions, lines);
 		} else {
 			starts.InsertPartitionsWithCast(lineAsPos, positions, lines);

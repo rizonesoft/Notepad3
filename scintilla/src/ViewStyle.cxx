@@ -61,12 +61,9 @@ bool MarginStyle::ShowsFolding() const noexcept {
 
 void FontRealised::Realise(Surface &surface, int zoomLevel, Technology technology, const FontSpecification &fs, const char *localeName) {
 	PLATFORM_ASSERT(fs.fontName);
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	//~measurements.sizeZoomed = fs.size + zoomLevel * FontSizeMultiplier;
-	//~if (measurements.sizeZoomed <= FontSizeMultiplier)	// May fail if sizeZoomed < 1
-	//~	measurements.sizeZoomed = FontSizeMultiplier;
-	measurements.sizeZoomed = GetFontSizeZoomed(fs.size, zoomLevel);
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	measurements.sizeZoomed = fs.size + zoomLevel * FontSizeMultiplier;
+	if (measurements.sizeZoomed <= FontSizeMultiplier)	// May fail if sizeZoomed < 1
+		measurements.sizeZoomed = FontSizeMultiplier;
 
 	const float deviceHeight = static_cast<float>(surface.DeviceHeightFont(measurements.sizeZoomed));
 	const FontParameters fp(fs.fontName, deviceHeight / FontSizeMultiplier, fs.weight,
@@ -228,9 +225,7 @@ ViewStyle::ViewStyle(size_t stylesSize_) :
 	marginInside = true;
 	CalculateMarginWidthAndMask();
 	textStart = marginInside ? fixedColumnWidth : leftMarginWidth;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	zoomLevel = 100;  /// @ 20018-09-06 Changed to percent
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	zoomLevel = 0;
 	viewWhitespace = WhiteSpace::Invisible;
 	tabDrawMode = TabDrawMode::LongArrow;
 	whitespaceSize = 1;
@@ -418,9 +413,11 @@ void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 	maxAscent = std::max(1.0, maxAscent + extraAscent);
 	maxDescent = std::max(0.0, maxDescent + extraDescent);
 	lineHeight = static_cast<int>(std::lround(maxAscent + maxDescent));
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	lineOverlap = std::clamp(lineHeight / 10, 1, std::max(1, lineHeight));
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	lineOverlap = lineHeight / 10;
+	if (lineOverlap < 2)
+		lineOverlap = 2;
+	if (lineOverlap > lineHeight)
+		lineOverlap = lineHeight;
 
 	someStylesProtected = std::any_of(styles.cbegin(), styles.cend(),
 		[](const Style &style) noexcept { return style.IsProtected(); });
@@ -430,10 +427,7 @@ void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 
 	aveCharWidth = styles[StyleDefault].aveCharWidth;
 	spaceWidth = styles[StyleDefault].spaceWidth;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	//~tabWidth = spaceWidth * tabInChars;
-	tabWidth = aveCharWidth * tabInChars;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	tabWidth = spaceWidth * tabInChars;
 
 	controlCharWidth = 0.0;
 	if (controlCharSymbol >= 32) {
@@ -767,44 +761,6 @@ ViewStyle::CaretShape ViewStyle::CaretShapeForMode(bool inOverstrike, bool isMai
 	return (caretStyle <= CaretStyle::Block) ? static_cast<CaretShape>(caretStyle) : CaretShape::line;
 }
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-bool ViewStyle::ZoomIn() noexcept {
-	if (zoomLevel < SC_MAX_ZOOM_LEVEL) {
-		int level = zoomLevel;
-		if (level < 200) {
-			level += 10;
-		} else {
-			level += 25;
-		}
-
-		level = std::min(level, SC_MAX_ZOOM_LEVEL);
-		if (level != zoomLevel) {
-			zoomLevel = level;
-			return true;
-		}
-	}
-	return false;
-}
-
-bool ViewStyle::ZoomOut() noexcept {
-	if (zoomLevel > SC_MIN_ZOOM_LEVEL) {
-		int level = zoomLevel;
-		if (level <= 200) {
-			level -= 10;
-		} else {
-			level -= 25;
-		}
-
-		level = std::max(level, SC_MIN_ZOOM_LEVEL);
-		if (level != zoomLevel) {
-			zoomLevel = level;
-			return true;
-		}
-	}
-	return false;
-}
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-
 void ViewStyle::AllocStyles(size_t sizeNew) {
 	size_t i=styles.size();
 	styles.resize(sizeNew);
@@ -826,10 +782,10 @@ void ViewStyle::CreateAndAddFont(const FontSpecification &fs) {
 	}
 }
 
-FontRealised *ViewStyle::Find(const FontSpecification &fs) const {
+FontRealised *ViewStyle::Find(const FontSpecification &fs) {
 	if (!fs.fontName)	// Invalid specification so return arbitrary object
 		return fonts.begin()->second.get();
-	const auto it = fonts.find(fs);
+	const FontMap::iterator it = fonts.find(fs);
 	if (it != fonts.end()) {
 		// Should always reach here since map was just set for all styles
 		return it->second.get();

@@ -8,10 +8,6 @@
 #ifndef CELLBUFFER_H
 #define CELLBUFFER_H
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-#include "Position.h"
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-
 namespace Scintilla::Internal {
 
 // Interface to per-line data that wants to see each line insertion and deletion
