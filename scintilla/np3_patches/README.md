@@ -11,6 +11,7 @@ This directory documents all modifications made to the upstream Scintilla librar
 | 003 | `003_ScintillaWin_exports.patch` | `win32/ScintillaWin.cxx` | DPI/CodePage/DirectFunction exports | ✅ Yes |
 | 004 | `004_PlatWin_h_4param.patch` | `win32/PlatWin.h` | 4-param `AdjustWindowRectForDpi` signature | ✅ Yes |
 | 005 | `005_PlatWin_cxx_4param.patch` | `win32/PlatWin.cxx` | 4-param `AdjustWindowRectForDpi` implementation | ✅ Yes |
+| 006 | `006_ListBox_4param.patch` | `win32/ListBox.cxx` | Caller updated for 4-param API | ✅ Yes |
 
 ## Critical: DPI Scaling
 

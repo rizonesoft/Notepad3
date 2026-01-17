@@ -1,0 +1,15 @@
+diff --git a/_upgrade_staging/scintilla/win32/ListBox.cxx b/scintilla/win32/ListBox.cxx
+index 0548ea5bc..fb2632a44 100644
+--- a/_upgrade_staging/scintilla/win32/ListBox.cxx
++++ b/scintilla/win32/ListBox.cxx
+@@ -537,7 +537,9 @@ void ListBoxX::SetOptions(ListOptions options_) {
+ 
+ void ListBoxX::AdjustWindowRect(PRectangle *rc, UINT dpiAdjust) const noexcept {
+ 	RECT rcw = RectFromPRectangle(*rc);
+-	AdjustWindowRectForDpi(&rcw, frameStyle, dpiAdjust);
++	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
++	AdjustWindowRectForDpi(&rcw, frameStyle, WS_EX_WINDOWEDGE, dpiAdjust);
++	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+ 	*rc = PRectangleFromRECT(rcw);
+ }
+ 
