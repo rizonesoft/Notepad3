@@ -401,11 +401,11 @@ ScreenLine::ScreenLine(
 
 ScreenLine::~ScreenLine() = default;
 
-std::string_view ScreenLine::Text() const {
+std::string_view ScreenLine::Text() const noexcept {
 	return std::string_view(&ll->chars[start], len);
 }
 
-size_t ScreenLine::Length() const {
+size_t ScreenLine::Length() const noexcept {
 	return len;
 }
 
@@ -415,31 +415,31 @@ size_t ScreenLine::RepresentationCount() const {
 		[](XYPOSITION w) noexcept { return w > 0.0f; });
 }
 
-XYPOSITION ScreenLine::Width() const {
+XYPOSITION ScreenLine::Width() const noexcept {
 	return width;
 }
 
-XYPOSITION ScreenLine::Height() const {
+XYPOSITION ScreenLine::Height() const noexcept {
 	return height;
 }
 
-XYPOSITION ScreenLine::TabWidth() const {
+XYPOSITION ScreenLine::TabWidth() const noexcept {
 	return tabWidth;
 }
 
-XYPOSITION ScreenLine::TabWidthMinimumPixels() const {
+XYPOSITION ScreenLine::TabWidthMinimumPixels() const noexcept {
 	return static_cast<XYPOSITION>(tabWidthMinimumPixels);
 }
 
-const Font *ScreenLine::FontOfPosition(size_t position) const {
+const Font *ScreenLine::FontOfPosition(size_t position) const noexcept {
 	return ll->bidiData->stylesFonts[start + position].get();
 }
 
-XYPOSITION ScreenLine::RepresentationWidth(size_t position) const {
+XYPOSITION ScreenLine::RepresentationWidth(size_t position) const noexcept {
 	return ll->bidiData->widthReprs[start + position];
 }
 
-XYPOSITION ScreenLine::TabPositionAfter(XYPOSITION xPosition) const {
+XYPOSITION ScreenLine::TabPositionAfter(XYPOSITION xPosition) const noexcept {
 	return (std::floor((xPosition + TabWidthMinimumPixels()) / TabWidth()) + 1) * TabWidth();
 }
 

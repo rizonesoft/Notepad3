@@ -79,12 +79,12 @@ static inline bool IsTypeCharacter(const int ch)
 }
 static inline bool IsAWordChar(const int ch)
 {
-    return (ch < 0x80) && (isalnum(ch) || ch == '_');
+    return ((IsASCII(ch) && isalnum(ch)) || ch == '_');
 }
 
 static inline bool IsAWordStart(const int ch)
 {
-    return (ch < 0x80) && (isalnum(ch) || ch == '_' || ch == '@' || ch == '#' || ch == '$' || ch == '.');
+    return ((IsASCII(ch) && isalnum(ch)) || ch == '_' || ch == '@' || ch == '#' || ch == '$' || ch == '.');
 }
 
 static inline bool IsAOperator(char ch) {
@@ -143,7 +143,7 @@ static int GetSendKey(const char *szLine, char *szKey)
 				// Save second portion into var...
 				szSpecial[nSpecPos++] = cTemp;
 				// check if Second portion is all numbers for repeat fuction
-				if (isdigit(cTemp) == false) {nSpecNum = 0;}
+				if (isdigit(cTemp & 0xFF) == false) {nSpecNum = 0;}
 			}
 		}
 		nPos++;									// skip to next char

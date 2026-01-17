@@ -31,11 +31,11 @@ using namespace Lexilla;
 // Extended to accept accented characters
 static inline bool IsAWordChar(int ch) {
 	return ch >= 0x80 ||
-	       (isalnum(ch) || ch == '_' || ch ==':' || ch=='.'); // : name space separator
+	       (isalnum(ch & 0xFF) || ch == '_' || ch ==':' || ch=='.'); // : name space separator
 }
 
 static inline bool IsAWordStart(int ch) {
-	return ch >= 0x80 || (ch ==':' || isalpha(ch) || ch == '_');
+	return ch >= 0x80 || (ch ==':' || isalpha(ch & 0xFF) || ch == '_');
 }
 
 static inline bool IsANumberChar(int ch) {
@@ -48,6 +48,7 @@ static inline bool IsANumberChar(int ch) {
 
 static void ColouriseTCLDoc(Sci_PositionU startPos, Sci_Position length, int , WordList *keywordlists[], Accessor &styler) {
 #define  isComment(s) (s==SCE_TCL_COMMENT || s==SCE_TCL_COMMENTLINE || s==SCE_TCL_COMMENT_BOX || s==SCE_TCL_BLOCK_COMMENT)
+	const bool fold = (styler.GetPropertyInt("fold") != 0);
 	const bool foldComment = styler.GetPropertyInt("fold.comment") != 0;
 	const bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
 	bool commentLevel = false;
@@ -85,7 +86,8 @@ static void ColouriseTCLDoc(Sci_PositionU startPos, Sci_Position length, int , W
 		currentLevel = styler.LevelAt(currentLine - 1) >> 17;
 		commentLevel = (styler.LevelAt(currentLine - 1) >> 16) & 1;
 	} else
-		styler.SetLevel(0, SC_FOLDLEVELBASE | SC_FOLDLEVELHEADERFLAG);
+		if (fold) { styler.SetLevel(0, SC_FOLDLEVELBASE | SC_FOLDLEVELHEADERFLAG); }
+
 	bool visibleChars = false;
 
 	int previousLevel = currentLevel;
@@ -207,8 +209,10 @@ next:
 				flag = SC_FOLDLEVELWHITEFLAG;
 			if (currentLevel > previousLevel)
 				flag = SC_FOLDLEVELHEADERFLAG;
-			styler.SetLevel(currentLine, flag + previousLevel + SC_FOLDLEVELBASE + (currentLevel << 17) + (commentLevel << 16));
-
+				
+			if (fold) {
+				styler.SetLevel(currentLine, flag + previousLevel + SC_FOLDLEVELBASE + (currentLevel << 17) + (commentLevel << 16));
+			}
 			// Update the line state, so it can be seen by next line
 			if (sc.state == SCE_TCL_IN_QUOTE) {
 				lineState = LS_OPEN_DOUBLE_QUOTE;

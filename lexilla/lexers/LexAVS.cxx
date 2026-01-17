@@ -30,18 +30,17 @@
 using namespace Lexilla;
 
 static inline bool IsAWordChar(const int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '_');
+	return IsASCII(ch) && (isalnum(ch) || ch == '_');
 }
 
 static inline bool IsAWordStart(int ch) {
-	return isalpha(ch) || (ch != ' ' && ch != '\n' && ch != '(' && ch != '.' && ch != ',');
+	return isalpha(ch & 0xFF) || (ch != ' ' && ch != '\n' && ch != '(' && ch != '.' && ch != ',');
 }
 
 static inline bool IsANumberChar(int ch) {
 	// Not exactly following number definition (several dots are seen as OK, etc.)
 	// but probably enough in most cases.
-	return (ch < 0x80) &&
-			(isdigit(ch) || ch == '.' || ch == '-' || ch == '+');
+	return IsASCII(ch) && (isdigit(ch) || ch == '.' || ch == '-' || ch == '+');
 }
 
 static void ColouriseAvsDoc(

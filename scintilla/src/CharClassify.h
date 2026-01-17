@@ -14,10 +14,10 @@ enum class CharacterClass : unsigned char { space, newLine, word, punctuation };
 
 class CharClassify {
 public:
-	CharClassify();
+	CharClassify() noexcept;
 
-	void SetDefaultCharClasses(bool includeWordClass);
-	void SetCharClasses(const unsigned char *chars, CharacterClass newCharClass);
+	void SetDefaultCharClasses(bool includeWordClass) noexcept;
+	void SetCharClasses(const unsigned char *chars, CharacterClass newCharClass) noexcept;
 	int GetCharsOfClass(CharacterClass characterClass, unsigned char *buffer) const noexcept;
 	CharacterClass GetClass(unsigned char ch) const noexcept { return charClass[ch];}
 	bool IsWord(unsigned char ch) const noexcept { return charClass[ch] == CharacterClass::word;}

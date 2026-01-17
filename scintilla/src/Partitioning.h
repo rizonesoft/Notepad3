@@ -8,6 +8,9 @@
 #ifndef PARTITIONING_H
 #define PARTITIONING_H
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+#include <memory>
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 namespace Scintilla::Internal {
 
 /// Divide an interval into multiple partitions.

@@ -33,9 +33,11 @@
 #define NOMINMAX
 #endif
 #undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0A00
+#define _WIN32_WINNT 0x0601  /*_WIN32_WINNT_WIN7*/
+//~#define _WIN32_WINNT 0x0A00  /*_WIN32_WINNT_WINTHRESHOLD, _WIN32_WINNT_WIN10*/
 #undef WINVER
-#define WINVER 0x0A00
+#define WINVER 0x0601  /*_WIN32_WINNT_WIN7*/
+//~#define WINVER 0x0A00  /*_WIN32_WINNT_WINTHRESHOLD, _WIN32_WINNT_WIN10*/
 #define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <commctrl.h>
@@ -151,8 +153,8 @@ constexpr Point PointFromLParam(sptr_t lpoint) noexcept {
 	return Point::FromInts(GET_X_LPARAM(lpoint), GET_Y_LPARAM(lpoint));
 }
 
-bool KeyboardIsKeyDown(int key) noexcept {
-	return (::GetKeyState(key) & 0x80000000) != 0;
+inline bool KeyboardIsKeyDown(int key) noexcept {
+	return (::GetKeyState(key) & 0x8000) != 0;
 }
 
 // Bit 24 is the extended keyboard flag and the numeric keypad is non-extended
@@ -333,9 +335,12 @@ public:
 
 	void SetCompositionFont(const ViewStyle &vs, int style, UINT dpi) const {
 		LOGFONTW lf{};
-		int sizeZoomed = vs.styles[style].size + (vs.zoomLevel * FontSizeMultiplier);
-		if (sizeZoomed <= 2 * FontSizeMultiplier)	// Hangs if sizeZoomed <= 1
-			sizeZoomed = 2 * FontSizeMultiplier;
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		//int sizeZoomed = vs.styles[style].size + (vs.zoomLevel * FontSizeMultiplier);
+		//if (sizeZoomed <= 2 * FontSizeMultiplier)	// Hangs if sizeZoomed <= 1
+		//	sizeZoomed = 2 * FontSizeMultiplier;
+		int const sizeZoomed = GetFontSizeZoomed(vs.styles[style].size, vs.zoomLevel);
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		// The negative is to allow for leading
 		lf.lfHeight = -::MulDiv(sizeZoomed, dpi, pointsPerInch * FontSizeMultiplier);
 		lf.lfWeight = static_cast<LONG>(vs.styles[style].weight);
@@ -583,7 +588,7 @@ class ScintillaWin :
 	enum : UINT_PTR { invalidTimerID, standardTimerID, idleTimerID, fineTimerStart };
 
 	void DisplayCursor(Window::Cursor c) override;
-	bool DragThreshold(Point ptStart, Point ptNow) override;
+	bool DragThreshold(Point ptStart, Point ptNow) noexcept override;
 	void StartDrag() override;
 	static KeyMod MouseModifiers(uptr_t wParam) noexcept;
 
@@ -628,7 +633,7 @@ class ScintillaWin :
 	void SetTrackMouseLeaveEvent(bool on) noexcept;
 	void HideCursorIfPreferred() noexcept;
 	void UpdateBaseElements() override;
-	bool PaintContains(PRectangle rc) override;
+	bool PaintContains(PRectangle rc) const noexcept override;
 	void ScrollText(Sci::Line linesToMove) override;
 	void NotifyCaretMove() override;
 	void UpdateSystemCaret() override;
@@ -640,7 +645,7 @@ class ScintillaWin :
 	void NotifyChange() override;
 	void NotifyFocus(bool focus) override;
 	void SetCtrlID(int identifier) override;
-	int GetCtrlID() override;
+	int GetCtrlID() const noexcept override;
 	void NotifyParent(NotificationData scn) override;
 	void NotifyDoubleClick(Point pt, KeyMod modifiers) override;
 	std::unique_ptr<CaseFolder> CaseFolderForEncoding() override;
@@ -649,7 +654,11 @@ class ScintillaWin :
 	bool CanPaste() override;
 	void Paste() override;
 	void CreateCallTipWindow(PRectangle rc) override;
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	#if SCI_EnablePopupMenu
 	void AddToPopUp(const char *label, int cmd = 0, bool enabled = true) override;
+	#endif
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	void ClaimSelection() override;
 
 	void GetMouseParameters() noexcept;
@@ -670,7 +679,11 @@ class ScintillaWin :
 	sptr_t GetTextLength();
 	sptr_t GetText(uptr_t wParam, sptr_t lParam);
 	Window::Cursor ContextCursor(Point pt);
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	#if SCI_EnablePopupMenu
 	sptr_t ShowContextMenu(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
+	#endif
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	[[nodiscard]] PRectangle GetClientRectangle() const override;
 	void SizeWindow();
 	sptr_t MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
@@ -1068,7 +1081,7 @@ void ScintillaWin::DisplayCursor(Window::Cursor c) {
 	}
 }
 
-bool ScintillaWin::DragThreshold(Point ptStart, Point ptNow) {
+bool ScintillaWin::DragThreshold(Point ptStart, Point ptNow) noexcept {
 	const Point ptDifference = ptStart - ptNow;
 	const XYPOSITION xMove = std::trunc(std::abs(ptDifference.x));
 	const XYPOSITION yMove = std::trunc(std::abs(ptDifference.y));
@@ -1758,11 +1771,21 @@ Window::Cursor ScintillaWin::ContextCursor(Point pt) {
 		const Sci::Position pos = PositionFromLocation(pt, true, true);
 		if (pos != Sci::invalidPosition) {
 			return Window::Cursor::hand;
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		} else if (hoverIndicatorPos != Sci::invalidPosition) {
+			if (pos != Sci::invalidPosition) {
+				const bool altDown = KeyboardIsKeyDown(VK_MENU);
+				const bool ctrlDown = KeyboardIsKeyDown(VK_CONTROL);
+				return ctrlDown ? Window::Cursor::hand : (altDown ? Window::Cursor::arrow : Window::Cursor::text);
+			}
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		}
 	}
 	return Window::Cursor::text;
 }
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+#if SCI_EnablePopupMenu
 sptr_t ScintillaWin::ShowContextMenu(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 	Point ptScreen = PointFromLParam(lParam);
 	Point ptClient;
@@ -1783,6 +1806,8 @@ sptr_t ScintillaWin::ShowContextMenu(unsigned int iMessage, uptr_t wParam, sptr_
 	}
 	return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 }
+#endif
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 PRectangle ScintillaWin::GetClientRectangle() const {
 	return rectangleClient;
@@ -1853,19 +1878,30 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 		break;
 
 	case WM_MOUSEMOVE: {
-			cursorIsHidden = false; // to be shown by ButtonMoveWithModifiers
+			// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 			const Point pt = PointFromLParam(lParam);
 
 			// Windows might send WM_MOUSEMOVE even though the mouse has not been moved:
 			// http://blogs.msdn.com/b/oldnewthing/archive/2003/10/01/55108.aspx
 			if (ptMouseLast != pt) {
+				if (cursorIsHidden) {
+					::ShowCursor(TRUE);
+					cursorIsHidden = false; // to be shown by ButtonMoveWithModifiers
+				}
 				SetTrackMouseLeaveEvent(true);
 				ButtonMoveWithModifiers(pt, ::GetMessageTime(), MouseModifiers(wParam));
 			}
+			// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		}
 		break;
 
 	case WM_MOUSELEAVE:
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		if (cursorIsHidden) {
+			::ShowCursor(TRUE);
+			cursorIsHidden = false;
+		}
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		SetTrackMouseLeaveEvent(false);
 		MouseLeave();
 		return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
@@ -1919,18 +1955,23 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 			}
 			linesToScroll *= verticalWheelDelta.Actions();
 
-			if (wParam & MK_CONTROL) {
+			// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+			if (wParam & (MK_CONTROL | MK_RBUTTON)) {
+				if (wParam & (MK_CONTROL)) {
 				// Zoom! We play with the font sizes in the styles.
 				// Number of steps/line is ignored, we just care if sizing up or down
-				if (linesToScroll < 0) {
-					KeyCommand(Message::ZoomIn);
-				} else {
-					KeyCommand(Message::ZoomOut);
+					if (linesToScroll < 0)
+						KeyCommand(Message::ZoomIn);
+					else
+						KeyCommand(Message::ZoomOut);
 				}
+				// send to main window (trigger zoom callTip or undo/redo history) !
+				::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 			} else {
 				// Scroll
 				ScrollTo(topLine + linesToScroll);
 			}
+			// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		}
 		return 0;
 	}
@@ -1962,6 +2003,15 @@ sptr_t ScintillaWin::KeyMessage(unsigned int iMessage, uptr_t wParam, sptr_t lPa
 									     altDown),
 							     &lastKeyDownConsumed);
 			if (!ret && !lastKeyDownConsumed) {
+				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+				if (hoverIndicatorPos != Sci::invalidPosition) {
+					POINT pt;
+					if (::GetCursorPos(&pt)) {
+						::ScreenToClient(MainHWND(), &pt);
+						DisplayCursor(ContextCursor(PointFromPOINT(pt)));
+					}
+				}
+				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 				return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 			}
 			break;
@@ -1969,6 +2019,15 @@ sptr_t ScintillaWin::KeyMessage(unsigned int iMessage, uptr_t wParam, sptr_t lPa
 
 	case WM_KEYUP:
 		//Platform::DebugPrintf("S keyup %d %x %x\n",iMessage, wParam, lParam);
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		if (hoverIndicatorPos != Sci::invalidPosition) {
+			POINT pt;
+			if (::GetCursorPos(&pt)) {
+				::ScreenToClient(MainHWND(), &pt);
+				DisplayCursor(ContextCursor(PointFromPOINT(pt)));
+			}
+		}
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		return ::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 
 	case WM_CHAR:
@@ -2008,6 +2067,12 @@ sptr_t ScintillaWin::KeyMessage(unsigned int iMessage, uptr_t wParam, sptr_t lPa
 sptr_t ScintillaWin::FocusMessage(unsigned int iMessage, uptr_t wParam, sptr_t) {
 	switch (iMessage) {
 	case WM_KILLFOCUS: {
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		if (cursorIsHidden) {
+			::ShowCursor(TRUE);
+			cursorIsHidden = false;
+		}
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		HWND wOther = reinterpret_cast<HWND>(wParam);
 		HWND wThis = MainHWND();
 		const HWND wCT = HwndFromWindow(ct.wCallTip);
@@ -2394,6 +2459,7 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 			InvalidateStyleRedraw();
 			break;
 
+#if(WINVER >= 0x0605)
 		case WM_DPICHANGED_AFTERPARENT: {
 				const UINT dpiNow = DpiForWindow(wMain.GetID());
 				if (dpi != dpiNow) {
@@ -2403,9 +2469,14 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 				}
 			}
 			break;
+#endif
 
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		#if SCI_EnablePopupMenu
 		case WM_CONTEXTMENU:
 			return ShowContextMenu(msg, wParam, lParam);
+		#endif
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 		case WM_ERASEBKGND:
 			return 1;   // Avoid any background erasure as whole window painted.
@@ -2611,7 +2682,10 @@ void ScintillaWin::SetTrackMouseLeaveEvent(bool on) noexcept {
 void ScintillaWin::HideCursorIfPreferred() noexcept {
 	// SPI_GETMOUSEVANISH from OS.
 	if (typingWithoutCursor && !cursorIsHidden) {
-		::SetCursor({});
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		//::SetCursor({});
+		::ShowCursor(FALSE);
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		cursorIsHidden = true;
 	}
 }
@@ -2633,7 +2707,7 @@ void ScintillaWin::UpdateBaseElements() {
 	}
 }
 
-bool ScintillaWin::PaintContains(PRectangle rc) {
+bool ScintillaWin::PaintContains(PRectangle rc) const noexcept {
 	if (paintState == PaintState::painting) {
 		return BoundsContains(rcPaint, hRgnUpdate, rc);
 	}
@@ -2777,7 +2851,7 @@ void ScintillaWin::SetCtrlID(int identifier) {
 	::SetWindowID(HwndFromWindow(wMain), identifier);
 }
 
-int ScintillaWin::GetCtrlID() {
+int ScintillaWin::GetCtrlID() const noexcept {
 	return ::GetDlgCtrlID(HwndFromWindow(wMain));
 }
 
@@ -3100,6 +3174,8 @@ void ScintillaWin::CreateCallTipWindow(PRectangle) {
 	}
 }
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+#if SCI_EnablePopupMenu
 void ScintillaWin::AddToPopUp(const char *label, int cmd, bool enabled) {
 	HMENU hmenuPopup = static_cast<HMENU>(popup.GetID());
 	if (!label[0])
@@ -3109,6 +3185,8 @@ void ScintillaWin::AddToPopUp(const char *label, int cmd, bool enabled) {
 	else
 		::AppendMenuA(hmenuPopup, MF_STRING | MF_DISABLED | MF_GRAYED, cmd, label);
 }
+#endif
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 void ScintillaWin::ClaimSelection() {
 	// Windows does not have a primary selection
@@ -3738,6 +3816,9 @@ STDMETHODIMP ScintillaWin::DragOver(DWORD grfKeyState, POINTL pt, PDWORD pdwEffe
 		// Update the cursor.
 		POINT rpt = {pt.x, pt.y};
 		::ScreenToClient(MainHWND(), &rpt);
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		if (!KeyboardIsKeyDown(VK_MENU)) // ALT-Key
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		SetDragPosition(SPositionFromLocation(PointFromPOINT(rpt), false, false, UserVirtualSpace()));
 
 		return S_OK;
@@ -4041,6 +4122,28 @@ sptr_t DirectFunction(
 	return sci->WndProc(static_cast<Message>(iMessage), wParam, lParam);
 }
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+#ifdef SCINTILLA_DLL
+namespace Scintilla {
+	sptr_t DirectFunction(ScintillaWin* sci, UINT iMessage, uptr_t wParam, sptr_t lParam) {
+		return sci->WndProc(iMessage, wParam, lParam);
+	}
+}
+#else
+extern "C"
+sptr_t SCI_METHOD Scintilla_DirectFunction(
+	ScintillaWin * sci, UINT iMessage, uptr_t wParam, sptr_t lParam) {
+	return sci->WndProc(static_cast<Message>(iMessage), wParam, lParam);
+}
+extern "C"
+sptr_t SCI_METHOD Scintilla_DirectStatusFunction(
+	ScintillaWin * sci, UINT iMessage, uptr_t wParam, sptr_t lParam, int* pStatus) {
+	const sptr_t returnValue = sci->WndProc(static_cast<Message>(iMessage), wParam, lParam);
+	*pStatus = static_cast<int>(sci->errorStatus);
+	return returnValue;
+}
+#endif
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 }
 
 LRESULT PASCAL ScintillaWin::SWndProc(
@@ -4102,3 +4205,27 @@ int RegisterClasses(void *hInstance) noexcept {
 extern "C" int Scintilla_ReleaseResources() {
 	return Scintilla::Internal::ResourcesRelease(false);
 }
+
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+
+extern "C" __declspec(dllexport)
+int Scintilla_InputCodePage(void) {
+	return InputCodePage();
+}
+
+extern "C" __declspec(dllexport)
+unsigned Scintilla_GetWindowDPI(void* hwnd) {
+	return Scintilla::Internal::DpiForWindow(static_cast<Scintilla::Internal::WindowID>(hwnd));
+}
+
+extern "C" __declspec(dllexport)
+int Scintilla_GetSystemMetricsForDpi(int nIndex, unsigned dpi) {
+	return Scintilla::Internal::SystemMetricsForDpi(nIndex, dpi);
+}
+
+extern "C" __declspec(dllexport)
+int Scintilla_AdjustWindowRectForDpi(LPWRECT lpRect, unsigned long dwStyle, unsigned long dwExStyle, unsigned dpi) {
+	return Scintilla::Internal::AdjustWindowRectForDpi(reinterpret_cast<LPRECT>(lpRect), dwStyle, dwExStyle, dpi);
+}
+
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<

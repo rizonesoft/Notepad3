@@ -18,11 +18,13 @@ def Generate():
 	sources = [
 		os.path.join(lexilla, "src", "Lexilla.cxx"),
 		os.path.join(lexilla, "lexlib", "*.cxx"),
-		os.path.join(lexilla, "lexers", "*.cxx")]
+		os.path.join(lexilla, "lexers", "*.cxx"),
+		os.path.join(lexilla, "lexers_x", "*.cxx")]
 	includes = [
 		os.path.join(lexilla, "include"),
 		os.path.join(scintilla, "include"),
-		os.path.join(lexilla, "lexlib")]
+		os.path.join(lexilla, "lexlib"),
+		os.path.join(lexilla, "lexers_x")]
 
 	# Create the dependencies file for g++
 	deps = Dependencies.FindDependencies(sources,  includes, ".o", "../lexilla/")

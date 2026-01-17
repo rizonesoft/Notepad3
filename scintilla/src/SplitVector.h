@@ -9,6 +9,10 @@
 #ifndef SPLITVECTOR_H
 #define SPLITVECTOR_H
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+#include "Debugging.h"
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 namespace Scintilla::Internal {
 
 template <typename T>
