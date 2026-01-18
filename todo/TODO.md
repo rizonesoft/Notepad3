@@ -71,6 +71,7 @@
 - [ ] **Number Base Conversion** - Binary/Decimal/Octal/Hex
 - [ ] **Character Map Conversions** - Fullwidth↔Halfwidth, CJK transforms (`LCMapStringEx`)
 - [ ] **Code Compress/Pretty** - Minify/beautify code
+  - Issue: [#5515](https://github.com/rizonesoft/Notepad3/issues/5515) - JSON format, compress, escape/unescape
 - [ ] **Insert GUID** - Generate and insert UUID
 - [ ] **Insert Shebang** - Insert interpreter line
 - [ ] **Insert Timestamps** - Various formats (UTC, Unix, milliseconds)
@@ -98,3 +99,9 @@
 - [ ] **Large File Mode** - Optimized mode for files >2GB
 - [ ] **Online Search** - Search selection via Google/Bing/Wiki
 - [ ] **Open Path or Link** - Open file path or URL under cursor
+
+### Windows Integration
+- [ ] **Explorer Preview Handler** - Preview text files in Explorer pane
+  - Issue: [#5510](https://github.com/rizonesoft/Notepad3/issues/5510)
+  - COM DLL implementing `IPreviewHandler` interface
+  - Optional installer component
