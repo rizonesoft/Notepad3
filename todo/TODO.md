@@ -57,6 +57,8 @@
   - See [research/autosave-backup.md](research/autosave-backup.md)
 - [ ] Installer testing on various Windows versions
 - [ ] Language file updates
+- [ ] **Move Beta Page to rizonesoft.com** - Host beta downloads on main site
+  - Issue: [#1129](https://github.com/rizonesoft/Notepad3/issues/1129)
 - [ ] **Force Save Option** - Allow saving unmodified files for strip trailing blanks
   - Issue: [#5444](https://github.com/rizonesoft/Notepad3/issues/5444)
   - Code: `Notepad3.c:12042` - `bSaveNeeded` check skips save on unmodified files
