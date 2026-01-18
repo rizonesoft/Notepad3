@@ -4785,7 +4785,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_SAVE: {
-        FileSave((FileWatching.FileWatchingMode <= FWM_DONT_CARE) ? FileSave(FSF_SaveAlways) : FSF_None);
+        FileSave((FileWatching.FileWatchingMode <= FWM_DONT_CARE) ? FSF_SaveAlways : FSF_None);
     } break;
 
 
