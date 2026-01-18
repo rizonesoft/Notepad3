@@ -122,6 +122,7 @@
 - [ ] **CSV Options Dialog** - Configure CSV delimiter/qualifier
 - [ ] **Large File Mode** - Optimized mode for files >2GB
 - [ ] **Online Search** - Search selection via Google/Bing/Wiki
+  - Issue: [#5096](https://github.com/rizonesoft/Notepad3/issues/5096) - More WebTemplates in INI
 - [ ] **Open Path or Link** - Open file path or URL under cursor
 
 ### Windows Integration
