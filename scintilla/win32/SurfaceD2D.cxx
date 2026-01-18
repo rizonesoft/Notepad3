@@ -161,6 +161,83 @@ constexpr D2D1_TEXT_ANTIALIAS_MODE DWriteMapFontQuality(FontQuality extraFontFla
 	}
 }
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+// ResolveFontFace: Fixes DirectWrite font variant resolution (Issues #4150, #5410, #5455)
+// Resolves font face names (e.g., "Cascadia Mono Light") into family name + weight/style/stretch
+// Uses IDWriteGdiInterop::CreateFontFromLOGFONT to properly resolve the font parameters
+bool ResolveFontFace(const FontParameters &fp, std::wstring &wsFamily,
+	DWRITE_FONT_WEIGHT &weight, DWRITE_FONT_STYLE &style, DWRITE_FONT_STRETCH &stretch) {
+
+	if (!pIDWriteFactory) {
+		return false;
+	}
+
+	// Create GDI interop interface
+	ComPtr<IDWriteGdiInterop> pGdiInterop;
+	HRESULT hr = pIDWriteFactory->GetGdiInterop(pGdiInterop.GetAddressOf());
+	if (FAILED(hr) || !pGdiInterop) {
+		return false;
+	}
+
+	// Build LOGFONT from FontParameters
+	LOGFONTW lf = {};
+	const std::wstring wsFace = WStringFromUTF8(fp.faceName);
+	wcsncpy_s(lf.lfFaceName, wsFace.c_str(), LF_FACESIZE - 1);
+	lf.lfHeight = -static_cast<LONG>(fp.size);
+	lf.lfWeight = (static_cast<int>(fp.weight) > 0) ? static_cast<LONG>(fp.weight) : FW_DONTCARE;
+	lf.lfItalic = fp.italic ? TRUE : FALSE;
+	lf.lfCharSet = static_cast<BYTE>(fp.characterSet);
+
+	// Use GDI interop to resolve the font
+	ComPtr<IDWriteFont> pFont;
+	hr = pGdiInterop->CreateFontFromLOGFONT(&lf, pFont.GetAddressOf());
+	if (FAILED(hr) || !pFont) {
+		return false;
+	}
+
+	// Get the font family
+	ComPtr<IDWriteFontFamily> pFontFamily;
+	hr = pFont->GetFontFamily(pFontFamily.GetAddressOf());
+	if (FAILED(hr) || !pFontFamily) {
+		return false;
+	}
+
+	// Get the family name
+	ComPtr<IDWriteLocalizedStrings> pFamilyNames;
+	hr = pFontFamily->GetFamilyNames(pFamilyNames.GetAddressOf());
+	if (FAILED(hr) || !pFamilyNames) {
+		return false;
+	}
+
+	UINT32 index = 0;
+	BOOL exists = FALSE;
+	hr = pFamilyNames->FindLocaleName(L"en-us", &index, &exists);
+	if (!exists) {
+		index = 0;  // Use first available name
+	}
+
+	UINT32 length = 0;
+	hr = pFamilyNames->GetStringLength(index, &length);
+	if (FAILED(hr)) {
+		return false;
+	}
+
+	wsFamily.resize(length + 1);
+	hr = pFamilyNames->GetString(index, wsFamily.data(), length + 1);
+	if (FAILED(hr)) {
+		return false;
+	}
+	wsFamily.resize(length);  // Remove null terminator from size
+
+	// Get resolved font properties
+	weight = pFont->GetWeight();
+	style = pFont->GetStyle();
+	stretch = pFont->GetStretch();
+
+	return true;
+}
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 struct FontDirectWrite : public FontWin {
 	ComPtr<IDWriteTextFormat> pTextFormat;
 	FontQuality extraFontFlag = FontQuality::QualityDefault;
@@ -173,21 +250,37 @@ struct FontDirectWrite : public FontWin {
 	explicit FontDirectWrite(const FontParameters &fp) :
 		extraFontFlag(fp.extraFontFlag),
 		characterSet(fp.characterSet) {
-		const std::wstring wsFace = WStringFromUTF8(fp.faceName);
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		// Try to resolve font face name (e.g., "Cascadia Mono Light") into family + properties
+		std::wstring wsFace;
+		DWRITE_FONT_WEIGHT weight = static_cast<DWRITE_FONT_WEIGHT>(fp.weight);
+		DWRITE_FONT_STYLE style = fp.italic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL;
+		DWRITE_FONT_STRETCH stretch = static_cast<DWRITE_FONT_STRETCH>(fp.stretch);
+
+		if (!ResolveFontFace(fp, wsFace, weight, style, stretch)) {
+			// Fallback to direct face name if resolution fails
+			wsFace = WStringFromUTF8(fp.faceName);
+		}
+
+		// Override style if italic explicitly requested
+		if (fp.italic) {
+			style = DWRITE_FONT_STYLE_ITALIC;
+		}
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 		const std::wstring wsLocale = WStringFromUTF8(fp.localeName);
 		const FLOAT fHeight = static_cast<FLOAT>(fp.size);
-		const DWRITE_FONT_STYLE style = fp.italic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL;
 		HRESULT hr = pIDWriteFactory->CreateTextFormat(wsFace.c_str(), nullptr,
-			static_cast<DWRITE_FONT_WEIGHT>(fp.weight),
+			weight,
 			style,
-			static_cast<DWRITE_FONT_STRETCH>(fp.stretch),
-				fHeight, wsLocale.c_str(), pTextFormat.GetAddressOf());
+			stretch,
+			fHeight, wsLocale.c_str(), pTextFormat.GetAddressOf());
 		if (hr == E_INVALIDARG) {
 			// Possibly a bad locale name like "/" so try "en-us".
 			hr = pIDWriteFactory->CreateTextFormat(wsFace.c_str(), nullptr,
-				static_cast<DWRITE_FONT_WEIGHT>(fp.weight),
+				weight,
 				style,
-				static_cast<DWRITE_FONT_STRETCH>(fp.stretch),
+				stretch,
 				fHeight, L"en-us", pTextFormat.ReleaseAndGetAddressOf());
 		}
 		if (SUCCEEDED(hr)) {
