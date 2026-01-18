@@ -25,6 +25,9 @@
 - [ ] **BUG: Crash on Windows Server 2022** - File Open/SaveAs crashes
   - Issue: [#5066](https://github.com/rizonesoft/Notepad3/issues/5066)
   - Crash in ntdll.dll - needs investigation
+- [ ] **BUG: Cannot save settings without folder** - Settings folder must exist
+  - Issue: [#5075](https://github.com/rizonesoft/Notepad3/issues/5075)
+  - Fix: Create settings folder if it doesn't exist
 
 ## Medium Priority
 
