@@ -90,3 +90,11 @@
 - [ ] **Copy as RTF** - Rich text copy with syntax highlighting
 - [ ] **Copy/Cut/Paste Binary** - Binary data handling
 - [ ] **Copy Filename (no ext)** - Copy filename without extension
+
+### Additional Micro Features
+- [ ] **Increment/Decrement Number** - Modify number at cursor (Ctrl+Alt++/-)
+- [ ] **Show Hex View** - Display hex representation of selection
+- [ ] **CSV Options Dialog** - Configure CSV delimiter/qualifier
+- [ ] **Large File Mode** - Optimized mode for files >2GB
+- [ ] **Online Search** - Search selection via Google/Bing/Wiki
+- [ ] **Open Path or Link** - Open file path or URL under cursor
