@@ -75,6 +75,7 @@
   - SourcePawn: [#5430](https://github.com/rizonesoft/Notepad3/issues/5430) - SourceMod scripting
   - Groovy: [#5093](https://github.com/rizonesoft/Notepad3/issues/5093)
   - Swift, Zig, Scala, F#, WASM, Vim, OCaml, Smali, GraphViz, Rebol
+  - (Maybe) CSS in `<style>` tags: [#2061](https://github.com/rizonesoft/Notepad3/issues/2061) - Embedded language complexity
 - [ ] **BATCH Code Folding** - Fold `if`/`for` blocks with parentheses
   - Issue: [#4484](https://github.com/rizonesoft/Notepad3/issues/4484)
 - [ ] **Markdown: Highlight Trailing Double Spaces** - Show line break indicators
