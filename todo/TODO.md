@@ -53,3 +53,7 @@
 - [ ] **Smarter URL Recognition** - Improve URL boundary detection
   - Issue: [#5464](https://github.com/rizonesoft/Notepad3/issues/5464)
   - Don't include trailing `'` when URL is quoted: `$URL = 'https://example.com'`
+- [ ] **Display Hidden Characters** - Show invisible/control characters
+  - Issue: [#5496](https://github.com/rizonesoft/Notepad3/issues/5496)
+  - Scintilla has `SCI_SETREPRESENTATION` for custom char display
+  - Show: NBSP, zero-width space, control chars as `[NUL]`, `[BEL]`, etc.
