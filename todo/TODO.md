@@ -139,6 +139,8 @@
   - Issue: [#5302](https://github.com/rizonesoft/Notepad3/issues/5302)
 - [ ] **Alphabetical Common Base Settings** - Sort scheme settings alphabetically
   - Issue: [#4627](https://github.com/rizonesoft/Notepad3/issues/4627)
+- [ ] **Find Dialog Position Persistence** - Remember dialog position
+  - Issue: [#3905](https://github.com/rizonesoft/Notepad3/issues/3905)
 
 ### Copy/Clipboard
 - [ ] **Copy as RTF** - Rich text copy with syntax highlighting
@@ -154,6 +156,7 @@
 - [ ] **Online Search** - Search selection via Google/Bing/Wiki
   - Issue: [#5096](https://github.com/rizonesoft/Notepad3/issues/5096) - More WebTemplates in INI
 - [ ] **Open Path or Link** - Open file path or URL under cursor
+  - Issue: [#3926](https://github.com/rizonesoft/Notepad3/issues/3926) - Support relative file:// paths
 
 ### Windows Integration
 - [ ] **Explorer Preview Handler** - Preview text files in Explorer pane
