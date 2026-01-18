@@ -158,6 +158,7 @@
   - Issue: [#4699](https://github.com/rizonesoft/Notepad3/issues/4699) - Disable mark occurrences for large files
 - [ ] **Online Search** - Search selection via Google/Bing/Wiki
   - Issue: [#5096](https://github.com/rizonesoft/Notepad3/issues/5096) - More WebTemplates in INI
+  - BUG: [#4056](https://github.com/rizonesoft/Notepad3/issues/4056) - Caption not in File menu
 - [ ] **Open Path or Link** - Open file path or URL under cursor
   - Issue: [#3926](https://github.com/rizonesoft/Notepad3/issues/3926) - Support relative file:// paths
 
