@@ -32,3 +32,7 @@
 ## Low Priority
 
 - [ ] Documentation updates
+- [ ] **Additional Syntax Highlighting** - New language lexers
+  - Haskell: [#3035](https://github.com/rizonesoft/Notepad3/issues/3035) - Lexilla has `LexHaskell.cxx`
+  - Racket: [#3035](https://github.com/rizonesoft/Notepad3/issues/3035) - Could use Lisp/Scheme lexer
+  - Verilog HDL: [#4108](https://github.com/rizonesoft/Notepad3/issues/4108) - Lexilla has `LexVerilog.cxx`
