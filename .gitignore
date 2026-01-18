@@ -70,3 +70,6 @@ Thumbs.db
 
 # Upgrade staging directory
 _upgrade_staging/
+
+# Research comparison (not tracked)
+/todo/research/np3-4.md
