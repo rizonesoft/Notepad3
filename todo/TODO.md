@@ -51,7 +51,7 @@
   - Timer-based recovery to `%APPDATA%\Notepad3\recovery\`
   - Optional versioned backups: `.bak`, `.bak_1`, `.bak_2`, ...
   - **AutoSave Settings Dialog** - Built-in autosave configuration UI
-  - Issues: [#1665](https://github.com/rizonesoft/Notepad3/issues/1665), [#370](https://github.com/rizonesoft/Notepad3/issues/370), [#512](https://github.com/rizonesoft/Notepad3/issues/512)
+  - Issues: [#1665](https://github.com/rizonesoft/Notepad3/issues/1665), [#370](https://github.com/rizonesoft/Notepad3/issues/370), [#512](https://github.com/rizonesoft/Notepad3/issues/512), [#4331](https://github.com/rizonesoft/Notepad3/issues/4331)
   - See [research/autosave-backup.md](research/autosave-backup.md)
 - [ ] Installer testing on various Windows versions
 - [ ] Language file updates
