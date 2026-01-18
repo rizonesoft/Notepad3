@@ -28,6 +28,9 @@
 - [ ] **BUG: Cannot save settings without folder** - Settings folder must exist
   - Issue: [#5075](https://github.com/rizonesoft/Notepad3/issues/5075)
   - Fix: Create settings folder if it doesn't exist
+- [ ] **BUG: Replace dialog full-width caching** - Second replace uses wrong character
+  - Issue: [#4268](https://github.com/rizonesoft/Notepad3/issues/4268)
+  - CJK full-width replacement cached incorrectly
 
 ## Medium Priority
 
