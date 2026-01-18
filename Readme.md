@@ -1,13 +1,11 @@
 # Notepad3
 
 [![Build status](https://img.shields.io/appveyor/ci/rizonesoft/notepad3/master.svg?style=flat-square)](https://ci.appveyor.com/project/rizonesoft/notepad3/branch/master)
+[![Latest Release](https://img.shields.io/github/v/release/rizonesoft/Notepad3?style=flat-square&label=Release)](https://rizonesoft.com/downloads/notepad3/)
+[![Repo Size](https://img.shields.io/github/repo-size/rizonesoft/Notepad3?style=flat-square)](https://github.com/rizonesoft/Notepad3)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg?style=flat-square)](https://opensource.org/licenses/BSD-3-Clause)
 [![Sponsor](https://img.shields.io/github/sponsors/rizonesoft?style=flat-square&logo=github)](https://github.com/sponsors/rizonesoft)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg?style=flat-square)](https://www.paypal.com/donate/?hosted_button_id=7UGGCSDUZJPFE)
-
-[![Latest Release](https://img.shields.io/github/v/release/rizonesoft/Notepad3?style=flat-square&label=Release)](https://rizonesoft.com/downloads/notepad3/)
-[![Downloads](https://img.shields.io/github/downloads/rizonesoft/Notepad3/total?style=flat-square)](https://github.com/rizonesoft/Notepad3/releases)
-[![Repo Size](https://img.shields.io/github/repo-size/rizonesoft/Notepad3?style=flat-square)](https://github.com/rizonesoft/Notepad3)
 
 [![Contributors](https://img.shields.io/github/contributors/rizonesoft/Notepad3?style=flat-square)](https://github.com/rizonesoft/Notepad3/graphs/contributors)
 [![Last Commit](https://img.shields.io/github/last-commit/rizonesoft/Notepad3?style=flat-square)](https://github.com/rizonesoft/Notepad3/commits)
