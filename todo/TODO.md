@@ -23,7 +23,7 @@
 - [ ] **BUG: /m command line uses last search mode** - Should default to text mode
   - Issue: [#5060](https://github.com/rizonesoft/Notepad3/issues/5060)
 - [ ] **BUG: Crash on Windows Server 2022** - File Open/SaveAs crashes
-  - Issue: [#5066](https://github.com/rizonesoft/Notepad3/issues/5066)
+  - Issue: [#5066](https://github.com/rizonesoft/Notepad3/issues/5066), [#5080](https://github.com/rizonesoft/Notepad3/issues/5080)
   - Crash in ntdll.dll - needs investigation
 - [ ] **BUG: Cannot save settings without folder** - Settings folder must exist
   - Issue: [#5075](https://github.com/rizonesoft/Notepad3/issues/5075)
