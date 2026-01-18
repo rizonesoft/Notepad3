@@ -31,6 +31,8 @@
 - [ ] **BUG: Replace dialog full-width caching** - Second replace uses wrong character
   - Issue: [#4268](https://github.com/rizonesoft/Notepad3/issues/4268)
   - CJK full-width replacement cached incorrectly
+- [ ] **BUG: Initial window position not working** - Position settings ignored
+  - Issue: [#4725](https://github.com/rizonesoft/Notepad3/issues/4725)
 
 ## Medium Priority
 
