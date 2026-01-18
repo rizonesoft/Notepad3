@@ -105,6 +105,7 @@
 - [ ] **Character Map Conversions** - Fullwidth↔Halfwidth, CJK transforms (`LCMapStringEx`)
 - [ ] **Code Compress/Pretty** - Minify/beautify code
   - Issue: [#5515](https://github.com/rizonesoft/Notepad3/issues/5515) - JSON format, compress, escape/unescape
+  - Issue: [#1790](https://github.com/rizonesoft/Notepad3/issues/1790) - Call external formatter per scheme
 - [ ] **Insert GUID** - Generate and insert UUID
 - [ ] **Insert Shebang** - Insert interpreter line
 - [ ] **Insert Timestamps** - Various formats (UTC, Unix, milliseconds)
