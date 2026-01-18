@@ -28,6 +28,9 @@
   - See [research/autosave-backup.md](research/autosave-backup.md)
 - [ ] Installer testing on various Windows versions
 - [ ] Language file updates
+- [ ] **Force Save Option** - Allow saving unmodified files for strip trailing blanks
+  - Issue: [#5444](https://github.com/rizonesoft/Notepad3/issues/5444)
+  - "Strip trailing blanks" only works on modified files currently
 
 ## Low Priority
 
