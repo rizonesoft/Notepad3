@@ -89,6 +89,7 @@
   - BUG: CSS keywords: [#4214](https://github.com/rizonesoft/Notepad3/issues/4214) - Update CSS property list
 - [ ] **BATCH Code Folding** - Fold `if`/`for` blocks with parentheses
   - Issue: [#4484](https://github.com/rizonesoft/Notepad3/issues/4484)
+  - BUG: [#4959](https://github.com/rizonesoft/Notepad3/issues/4959) - Complex for loops highlighting
 - [ ] **Markdown: Highlight Trailing Double Spaces** - Show line break indicators
   - Issue: [#5312](https://github.com/rizonesoft/Notepad3/issues/5312)
 - [ ] **Custom Hyperlink Schemes** - User-defined URL protocol recognition
