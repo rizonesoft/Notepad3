@@ -19,7 +19,7 @@ Built with modern C++ on the powerful Scintilla editing component.
 [![Windows](https://img.shields.io/badge/Platform-Windows-0078D6?style=flat-square&logo=windows)](https://rizonesoft.com/downloads/notepad3/)
 [![C++](https://img.shields.io/badge/Language-C%2B%2B-00599C?style=flat-square&logo=cplusplus)](https://github.com/rizonesoft/Notepad3)
 [![Scintilla](https://img.shields.io/badge/Editor-Scintilla-4B8BBE?style=flat-square)](https://www.scintilla.org/)
-[![Architecture](https://img.shields.io/badge/Arch-x64%20%7C%20ARM64-informational?style=flat-square)](https://rizonesoft.com/downloads/notepad3/)
+[![Architecture](https://img.shields.io/badge/Arch-x86%20%7C%20x64%20%7C%20x64--AVX2%20%7C%20ARM64-informational?style=flat-square)](https://rizonesoft.com/downloads/notepad3/)
 
 ### Community
 Join our growing community of contributors and users.
