@@ -101,7 +101,7 @@
 
 - [x] **CI Workflow** - ✅ Added MSVC builds (Win32/x64 Release)
   - Runs on push/PR to master alongside AppVeyor
-- [ ] **ARM64 Build** - Build for Windows ARM64 devices
+- [x] **ARM64 Build** - ✅ Added to CI matrix (Win32/x64/ARM64)
 - [ ] **Clang-cl Build** - Alternative compiler for better warnings
 - [ ] **Debug Build** - Catch debug-only assertions
 - [ ] **PR Labeler** - Auto-label PRs based on files changed
