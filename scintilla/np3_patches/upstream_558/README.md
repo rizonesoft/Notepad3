@@ -22,6 +22,7 @@ All beneficial changes from Scintilla 5.5.8 have been applied to NP3's 5.5.7 bas
 | `CaseConvert.cxx` | Unicode 16 case folding table updates |
 | `CellBuffer.cxx` | `is_convertible_v` type check + `type_traits` include |
 | `EditView.cxx` | Bidi data bounds check fix |
+| `Editor.cxx` | `SetSelectionFromSerialized` uses `Redraw()` instead of `InvalidateStyleRedraw()` |
 
 > [!NOTE]
 > `PositionCache.cxx/h` was NOT updated - has `noexcept` specification changes

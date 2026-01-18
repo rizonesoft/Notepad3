@@ -718,7 +718,7 @@ void Editor::SetSelectionFromSerialized(const char *serialized) {
 		sel = Selection(serialized);
 		sel.Truncate(pdoc->Length());
 		SetRectangularRange();
-		InvalidateStyleRedraw();
+		Redraw();  // Scintilla 5.5.8: Changed from InvalidateStyleRedraw()
 	}
 }
 
