@@ -47,6 +47,8 @@
   - Verilog HDL: [#4108](https://github.com/rizonesoft/Notepad3/issues/4108) - Lexilla has `LexVerilog.cxx`
   - JSON5: [#5411](https://github.com/rizonesoft/Notepad3/issues/5411) - Extend JSON lexer or add `.json5` extension
   - SourcePawn: [#5430](https://github.com/rizonesoft/Notepad3/issues/5430) - SourceMod scripting (`.sp` files)
+  - Swift: Adopt from [notepad4 LexSwift.cxx](https://github.com/zufuliu/notepad4/blob/main/scintilla/lexers/LexSwift.cxx)
+  - Zig: Lexilla has [LexZig.cxx](https://github.com/ScintillaOrg/lexilla/blob/master/lexers/LexZig.cxx)
 - [ ] **Custom Hyperlink Schemes** - User-defined URL protocol recognition
   - ed2k:// links: [#5405](https://github.com/rizonesoft/Notepad3/issues/5405)
   - Customizable via INI settings
