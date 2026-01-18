@@ -49,3 +49,6 @@
 - [ ] **Custom Hyperlink Schemes** - User-defined URL protocol recognition
   - ed2k:// links: [#5405](https://github.com/rizonesoft/Notepad3/issues/5405)
   - Customizable via INI settings
+- [ ] **Smarter URL Recognition** - Improve URL boundary detection
+  - Issue: [#5464](https://github.com/rizonesoft/Notepad3/issues/5464)
+  - Don't include trailing `'` when URL is quoted: `$URL = 'https://example.com'`
