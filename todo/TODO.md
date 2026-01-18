@@ -4,6 +4,10 @@
 
 - [ ] **Scintilla/Lexilla Update** - Upgrade to latest versions (5.5.8/5.4.6)
   - See [research/scintilla-lexilla-upgrade.md](research/scintilla-lexilla-upgrade.md)
+- [ ] **BUG: FileSave() nested call** - Wrong argument type passed
+  - Issue: [#5445](https://github.com/rizonesoft/Notepad3/issues/5445)
+  - Code: `Notepad3.c:4788` - nested `FileSave()` returns bool, passed as FileSaveFlags
+  - Fix: `FileSave((FileWatching.FileWatchingMode <= FWM_DONT_CARE) ? FSF_SaveAlways : FSF_None);`
 
 ## Medium Priority
 
