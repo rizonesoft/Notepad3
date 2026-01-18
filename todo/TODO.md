@@ -36,6 +36,8 @@
 - [ ] **BUG: Regex replace issue** - Verify if still present
   - Issue: [#3531](https://github.com/rizonesoft/Notepad3/issues/3531)
   - Old bug from v5.21 - needs verification
+- [ ] **BUG: Minipath options don't save** - FullRowSelect/TrackSelect broken
+  - Issue: [#4116](https://github.com/rizonesoft/Notepad3/issues/4116)
 
 ## Medium Priority
 
