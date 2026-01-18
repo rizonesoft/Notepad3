@@ -83,6 +83,7 @@
   - Groovy: [#5093](https://github.com/rizonesoft/Notepad3/issues/5093)
   - Swift, Zig, Scala, F#, WASM, Vim, OCaml, Smali, GraphViz, Rebol
   - (Maybe) CSS in `<style>` tags: [#2061](https://github.com/rizonesoft/Notepad3/issues/2061) - Embedded language complexity
+  - BUG: CSS keywords: [#4214](https://github.com/rizonesoft/Notepad3/issues/4214) - Update CSS property list
 - [ ] **BATCH Code Folding** - Fold `if`/`for` blocks with parentheses
   - Issue: [#4484](https://github.com/rizonesoft/Notepad3/issues/4484)
 - [ ] **Markdown: Highlight Trailing Double Spaces** - Show line break indicators
