@@ -68,3 +68,7 @@
   - Issue: [#5496](https://github.com/rizonesoft/Notepad3/issues/5496)
   - Scintilla has `SCI_SETREPRESENTATION` for custom char display
   - Show: NBSP, zero-width space, control chars as `[NUL]`, `[BEL]`, etc.
+- [ ] **Scrollbar Marks** - Highlights in scrollbar (search matches, bookmarks)
+  - Scintilla supports scrollbar annotations
+- [ ] **Enhanced Auto-Complete** - More language-aware auto-complete triggers
+  - Context-sensitive suggestions
