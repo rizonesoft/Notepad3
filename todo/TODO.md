@@ -88,6 +88,8 @@
   - Scintilla `SCI_SETREPRESENTATION` for custom char display
 - [ ] **Scrollbar Marks** - Highlights in scrollbar (search matches, bookmarks)
 - [ ] **Enhanced Auto-Complete** - Language-aware auto-complete triggers
+- [ ] **Custom Keyboard Shortcuts** - User-configurable shortcut keys
+  - Issue: [#595](https://github.com/rizonesoft/Notepad3/issues/595)
 
 ## Feature Ideas
 
