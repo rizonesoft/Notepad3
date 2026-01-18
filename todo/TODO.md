@@ -128,6 +128,7 @@
 - [ ] **Show Hex View** - Display hex representation of selection
 - [ ] **CSV Options Dialog** - Configure CSV delimiter/qualifier
 - [ ] **Large File Mode** - Optimized mode for files >2GB
+  - Issue: [#4699](https://github.com/rizonesoft/Notepad3/issues/4699) - Disable mark occurrences for large files
 - [ ] **Online Search** - Search selection via Google/Bing/Wiki
   - Issue: [#5096](https://github.com/rizonesoft/Notepad3/issues/5096) - More WebTemplates in INI
 - [ ] **Open Path or Link** - Open file path or URL under cursor
