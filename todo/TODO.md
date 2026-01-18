@@ -81,6 +81,7 @@
 - [ ] **Base64 Encode/Decode** - Base64 conversion utilities
 - [ ] **Insert Unicode Control Characters** - LRM, RLM, ZWJ, ZWNJ, etc.
 - [ ] **Number Base Conversion** - Binary/Decimal/Octal/Hex
+  - Issue: [#5059](https://github.com/rizonesoft/Notepad3/issues/5059) - TinyExpr output in hex/binary
 - [ ] **Character Map Conversions** - Fullwidth↔Halfwidth, CJK transforms (`LCMapStringEx`)
 - [ ] **Code Compress/Pretty** - Minify/beautify code
   - Issue: [#5515](https://github.com/rizonesoft/Notepad3/issues/5515) - JSON format, compress, escape/unescape
