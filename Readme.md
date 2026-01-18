@@ -1,7 +1,7 @@
 # Notepad3
 
 [![AppVeyor](https://img.shields.io/appveyor/ci/rizonesoft/notepad3/master.svg?style=flat-square&label=AppVeyor)](https://ci.appveyor.com/project/rizonesoft/notepad3/branch/master)
-[![GitHub Actions](https://img.shields.io/github/actions/workflow/status/rizonesoft/Notepad3/build.yml?style=flat-square&label=GitHub%20Actions)](https://github.com/rizonesoft/Notepad3/actions/workflows/build.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/rizonesoft/Notepad3/build.yml?style=flat-square&label=CI)](https://github.com/rizonesoft/Notepad3/actions/workflows/build.yml)
 [![Latest Release](https://img.shields.io/github/v/release/rizonesoft/Notepad3?style=flat-square&label=Release)](https://rizonesoft.com/downloads/notepad3/)
 [![Repo Size](https://img.shields.io/github/repo-size/rizonesoft/Notepad3?style=flat-square)](https://github.com/rizonesoft/Notepad3)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg?style=flat-square)](https://opensource.org/licenses/BSD-3-Clause)
