@@ -56,6 +56,8 @@
   - JSON5: [#5411](https://github.com/rizonesoft/Notepad3/issues/5411) - Extend JSON lexer
   - SourcePawn: [#5430](https://github.com/rizonesoft/Notepad3/issues/5430) - SourceMod scripting
   - Swift, Zig, Scala, F#, Groovy, WASM, Vim, OCaml, Smali, GraphViz, Rebol
+- [ ] **Markdown: Highlight Trailing Double Spaces** - Show line break indicators
+  - Issue: [#5312](https://github.com/rizonesoft/Notepad3/issues/5312)
 - [ ] **Custom Hyperlink Schemes** - User-defined URL protocol recognition
   - ed2k:// links: [#5405](https://github.com/rizonesoft/Notepad3/issues/5405)
   - Customizable via INI settings
