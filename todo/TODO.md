@@ -63,6 +63,10 @@
 - [ ] Installer testing on various Windows versions
 - [ ] **AVX2 Build** - Optimized build for modern CPUs
   - Issue: [#4240](https://github.com/rizonesoft/Notepad3/issues/4240)
+- [ ] **ARM64 Build** - Windows ARM64 native build
+- [ ] **(Maybe) Cross-Platform** - Mac/Linux ports
+  - Would require GTK or Qt, significant effort
+  - Scintilla supports GTK natively
 - [ ] Language file updates
 - [ ] **Move Beta Page to rizonesoft.com** - Host beta downloads on main site
   - Issue: [#1129](https://github.com/rizonesoft/Notepad3/issues/1129)
