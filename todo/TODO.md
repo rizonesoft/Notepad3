@@ -88,6 +88,8 @@
 - [ ] **Display Hidden Characters** - Show invisible/control characters
   - Issue: [#5496](https://github.com/rizonesoft/Notepad3/issues/5496)
   - Scintilla `SCI_SETREPRESENTATION` for custom char display
+- [ ] **Trailing Whitespace Highlighting** - Distinct style for trailing blanks
+  - Issue: [#1913](https://github.com/rizonesoft/Notepad3/issues/1913)
 - [ ] **Scrollbar Marks** - Highlights in scrollbar (search matches, bookmarks)
 - [ ] **Enhanced Auto-Complete** - Language-aware auto-complete triggers
 - [ ] **Custom Keyboard Shortcuts** - User-configurable shortcut keys
