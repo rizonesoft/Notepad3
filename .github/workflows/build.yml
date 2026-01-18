@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [Win32, x64, ARM64]
+        platform: [Win32, x64, x64_AVX2, ARM64]
         configuration: [Release]
 
     steps:
@@ -85,7 +85,18 @@ jobs:
           Write-Host "Version: $Major.$Minor.$Revis.$Build ($CommitID)"
 
       - name: Build
-        run: msbuild Notepad3.sln /m /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /v:minimal
+        shell: pwsh
+        run: |
+          $platform = "${{ matrix.platform }}"
+          $avxFlag = ""
+          
+          # Handle x64_AVX2 special case
+          if ($platform -eq "x64_AVX2") {
+            $platform = "x64"
+            $avxFlag = "/p:EnableEnhancedInstructionSet=AdvancedVectorExtensions2"
+          }
+          
+          msbuild Notepad3.sln /m /p:Configuration=${{ matrix.configuration }} /p:Platform=$platform $avxFlag /v:minimal
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

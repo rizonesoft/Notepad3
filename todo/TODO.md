@@ -85,7 +85,7 @@
   - Issues: [#1665](https://github.com/rizonesoft/Notepad3/issues/1665), [#370](https://github.com/rizonesoft/Notepad3/issues/370), [#512](https://github.com/rizonesoft/Notepad3/issues/512), [#4331](https://github.com/rizonesoft/Notepad3/issues/4331), [#3652](https://github.com/rizonesoft/Notepad3/issues/3652), [#5399](https://github.com/rizonesoft/Notepad3/issues/5399)
   - See [research/autosave-backup.md](research/autosave-backup.md)
 - [ ] Installer testing on various Windows versions
-- [ ] **AVX2 Build** - Optimized build for modern CPUs
+- [x] **AVX2 Build** - ✅ Added x64_AVX2 to CI matrix
   - Issue: [#4240](https://github.com/rizonesoft/Notepad3/issues/4240)
 - [ ] Language file updates
 - [ ] **Move Beta Page to rizonesoft.com** - Host beta downloads on main site
