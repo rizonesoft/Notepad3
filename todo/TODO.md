@@ -100,6 +100,8 @@
   - Issue: [#1913](https://github.com/rizonesoft/Notepad3/issues/1913)
 - [ ] **Scrollbar Marks** - Highlights in scrollbar (search matches, bookmarks)
 - [ ] **Enhanced Auto-Complete** - Language-aware auto-complete triggers
+- [ ] **Auto-Pair Brackets** - Auto-close `()`, `[]`, `{}`, `""`, `''`
+  - Issue: [#4149](https://github.com/rizonesoft/Notepad3/issues/4149)
 - [ ] **Custom Keyboard Shortcuts** - User-configurable shortcut keys
   - Issue: [#595](https://github.com/rizonesoft/Notepad3/issues/595)
 
