@@ -13,6 +13,10 @@
   - Issue: [#5306](https://github.com/rizonesoft/Notepad3/issues/5306)
   - NP3 changes CWD to exe directory during init
   - Fix: Resolve relative paths against original CWD before directory change
+- [ ] **BUG: Encoding detection issue** - UTF-8 files detected as DOS-852
+  - Issue: [#5310](https://github.com/rizonesoft/Notepad3/issues/5310)
+  - Affects German Windows 11, possibly other locales
+  - Improve UTF-8 detection for files without BOM
 
 ## Medium Priority
 
@@ -28,7 +32,6 @@
 - [ ] **EditorConfig Integration** - Apply `.editorconfig` settings on file open
   - Use [editorconfig-core-c](https://github.com/editorconfig/editorconfig-core-c) library
   - Support: indent_style, indent_size, tab_width, end_of_line, charset
-  - Effort: ~2-4 weeks
   - See [research/editorconfig-integration.md](research/editorconfig-integration.md)
 - [ ] **Autosave / Backup** - Periodic autosave and backup on save
   - Timer-based recovery to `%APPDATA%\Notepad3\recovery\`
