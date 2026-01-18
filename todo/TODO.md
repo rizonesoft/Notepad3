@@ -33,6 +33,9 @@
   - CJK full-width replacement cached incorrectly
 - [ ] **BUG: Initial window position not working** - Position settings ignored
   - Issue: [#4725](https://github.com/rizonesoft/Notepad3/issues/4725)
+- [ ] **BUG: Regex replace issue** - Verify if still present
+  - Issue: [#3531](https://github.com/rizonesoft/Notepad3/issues/3531)
+  - Old bug from v5.21 - needs verification
 
 ## Medium Priority
 
@@ -67,6 +70,8 @@
 ## Low Priority
 
 - [ ] Documentation updates
+- [ ] **Long Path Support** - Support paths >260 characters (Win10+)
+  - Issue: [#3580](https://github.com/rizonesoft/Notepad3/issues/3580)
 - [ ] **Additional Syntax Highlighting** - New language lexers
   - Haskell: [#3035](https://github.com/rizonesoft/Notepad3/issues/3035) - Lexilla `LexHaskell.cxx`
   - Racket: [#3035](https://github.com/rizonesoft/Notepad3/issues/3035) - Could use Lisp/Scheme lexer
