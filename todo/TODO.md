@@ -134,6 +134,8 @@
   - Issue: [#2577](https://github.com/rizonesoft/Notepad3/issues/2577)
 - [ ] **Show Unicode Control Characters** - Toggle visibility
 - [ ] **Line Selection Modes** - VS style, Normal, Old VS
+- [ ] **Disable Multiple Cursors Option** - Toggle multi-select off
+  - Issue: [#4033](https://github.com/rizonesoft/Notepad3/issues/4033)
 - [ ] **Scroll Past Last Line Options** - half, third, quarter screen
 - [ ] **Optimize Syntax Scheme Dialog** - Show detected scheme at top of list
   - Issue: [#5302](https://github.com/rizonesoft/Notepad3/issues/5302)
