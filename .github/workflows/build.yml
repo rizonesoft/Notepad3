@@ -1,0 +1,48 @@
+name: Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    name: ${{ matrix.platform }} ${{ matrix.configuration }}
+    runs-on: windows-2022
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [Win32, x64]
+        configuration: [Release]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup NuGet
+        uses: nuget/setup-nuget@v2
+
+      - name: Restore NuGet packages
+        run: nuget restore Notepad3.sln -Verbosity detailed
+
+      - name: Generate version
+        shell: pwsh
+        run: |
+          & "${{ github.workspace }}\Version.ps1"
+
+      - name: Build
+        run: msbuild Notepad3.sln /m /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /v:minimal
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Notepad3-${{ matrix.platform }}-${{ matrix.configuration }}
+          path: bin/**/*.exe
+          retention-days: 30
