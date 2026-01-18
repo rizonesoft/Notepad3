@@ -35,7 +35,54 @@ jobs:
       - name: Generate version
         shell: pwsh
         run: |
-          & "${{ github.workspace }}\Version.ps1"
+          $env:GITHUB_ACTIONS_BUILD = "true"
+          $CommitID = (git rev-parse --short=8 HEAD)
+          
+          # Create VersionEx.h with proper values
+          $Major = 6
+          $Minor = [int]$(Get-Date -format yy)
+          $Revis = [int]$(Get-Date -format Mdd)
+          $Build = ${{ github.run_number }}
+          
+          $SciVer = Get-Content "scintilla\version.txt" -ErrorAction SilentlyContinue
+          if (!$SciVer) { $SciVer = "0" }
+          $LxiVer = Get-Content "lexilla\version.txt" -ErrorAction SilentlyContinue
+          if (!$LxiVer) { $LxiVer = "0" }
+          $OnigVer = Get-Content "scintilla\oniguruma\version.txt" -ErrorAction SilentlyContinue
+          if (!$OnigVer) { $OnigVer = "0.0.0" }
+          $UChardetVer = Get-Content "src\uchardet\version.txt" -ErrorAction SilentlyContinue
+          if (!$UChardetVer) { $UChardetVer = "0.0.0" }
+          $TinyExprVer = Get-Content "src\tinyexpr\version.txt" -ErrorAction SilentlyContinue
+          if (!$TinyExprVer) { $TinyExprVer = "0.0.0" }
+          $UtHashVer = Get-Content "src\uthash\version.txt" -ErrorAction SilentlyContinue
+          if (!$UtHashVer) { $UtHashVer = "0.0.0" }
+          
+          Copy-Item -LiteralPath "Versions\VersionEx.h.tpl" -Destination "src\VersionEx.h" -Force
+          $content = Get-Content "src\VersionEx.h" -Raw
+          $content = $content -replace '\$APPNAME\$', "Notepad3"
+          $content = $content -replace '\$MAJOR\$', "$Major"
+          $content = $content -replace '\$MINOR\$', "$Minor"
+          $content = $content -replace '\$MAINT\$', "$Revis"
+          $content = $content -replace '\$BUILD\$', "$Build"
+          $content = $content -replace '\$SCIVER\$', "$SciVer"
+          $content = $content -replace '\$LXIVER\$', "$LxiVer"
+          $content = $content -replace '\$ONIGURUMAVER\$', "$OnigVer"
+          $content = $content -replace '\$UCHARDETVER\$', "$UChardetVer"
+          $content = $content -replace '\$TINYEXPRVER\$', "$TinyExprVer"
+          $content = $content -replace '\$UTHASHVER\$', "$UtHashVer"
+          $content = $content -replace '\$VERPATCH\$', ""
+          $content = $content -replace '\$COMMITID\$', "$CommitID"
+          Set-Content -Path "src\VersionEx.h" -Value $content -NoNewline
+          
+          $ConfManifest = "res\Notepad3.exe.conf.manifest"
+          Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination $ConfManifest -Force
+          $content = Get-Content $ConfManifest -Raw
+          $content = $content -replace '\$APPNAME\$', "Notepad3"
+          $content = $content -replace '\$VERPATCH\$', ""
+          $content = $content -replace '\$VERSION\$', "$Major.$Minor.$Revis.$Build"
+          Set-Content -Path $ConfManifest -Value $content -NoNewline
+          
+          Write-Host "Version: $Major.$Minor.$Revis.$Build ($CommitID)"
 
       - name: Build
         run: msbuild Notepad3.sln /m /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /v:minimal
