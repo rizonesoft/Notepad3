@@ -20,6 +20,12 @@
   - Support: indent_style, indent_size, tab_width, end_of_line, charset
   - Effort: ~2-4 weeks
   - See [research/editorconfig-integration.md](research/editorconfig-integration.md)
+- [ ] **Autosave / Backup** - Periodic autosave and backup on save
+  - Timer-based recovery to `%APPDATA%\Notepad3\recovery\`
+  - Optional versioned backups: `.bak`, `.bak_1`, `.bak_2`, ...
+  - Issues: [#1665](https://github.com/rizonesoft/Notepad3/issues/1665), [#370](https://github.com/rizonesoft/Notepad3/issues/370), [#512](https://github.com/rizonesoft/Notepad3/issues/512)
+  - Effort: ~1-4 weeks
+  - See [research/autosave-backup.md](research/autosave-backup.md)
 - [ ] Installer testing on various Windows versions
 - [ ] Language file updates
 
