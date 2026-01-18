@@ -188,6 +188,16 @@ enum class FontStretch {
 	UltraExpanded = 9,
 };
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+// FontStyle enum to support Oblique fonts (e.g., "Iosevka Oblique")
+// Values match DWRITE_FONT_STYLE
+enum class FontStyle {
+	Normal = 0,
+	Oblique = 1,
+	Italic = 2,
+};
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+
 enum class Element {
 	List = 0,
 	ListBack = 1,
