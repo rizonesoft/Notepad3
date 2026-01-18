@@ -17,6 +17,9 @@
   - Issue: [#5310](https://github.com/rizonesoft/Notepad3/issues/5310)
   - Affects German Windows 11, possibly other locales
   - Improve UTF-8 detection for files without BOM
+- [ ] **BUG: Print status message persistent** - "Printing page x..." stays after print
+  - Issue: [#5313](https://github.com/rizonesoft/Notepad3/issues/5313)
+  - Fix: Clear status bar after print completes
 
 ## Medium Priority
 
