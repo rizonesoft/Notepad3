@@ -42,33 +42,52 @@
 
 - [ ] Documentation updates
 - [ ] **Additional Syntax Highlighting** - New language lexers
-  - Haskell: [#3035](https://github.com/rizonesoft/Notepad3/issues/3035) - Lexilla has `LexHaskell.cxx`
+  - Haskell: [#3035](https://github.com/rizonesoft/Notepad3/issues/3035) - Lexilla `LexHaskell.cxx`
   - Racket: [#3035](https://github.com/rizonesoft/Notepad3/issues/3035) - Could use Lisp/Scheme lexer
-  - Verilog HDL: [#4108](https://github.com/rizonesoft/Notepad3/issues/4108) - Lexilla has `LexVerilog.cxx`
-  - JSON5: [#5411](https://github.com/rizonesoft/Notepad3/issues/5411) - Extend JSON lexer or add `.json5` extension
-  - SourcePawn: [#5430](https://github.com/rizonesoft/Notepad3/issues/5430) - SourceMod scripting (`.sp` files)
-  - Swift: Adopt from [notepad4 LexSwift.cxx](https://github.com/zufuliu/notepad4/blob/main/scintilla/lexers/LexSwift.cxx)
-  - Zig: Lexilla has [LexZig.cxx](https://github.com/ScintillaOrg/lexilla/blob/master/lexers/LexZig.cxx)
-  - Scala: notepad4 has [LexScala.cxx](https://github.com/zufuliu/notepad4/blob/main/scintilla/lexers/LexScala.cxx)
-  - F#: notepad4 has [LexFSharp.cxx](https://github.com/zufuliu/notepad4/blob/main/scintilla/lexers/LexFSharp.cxx)
-  - Groovy: notepad4 has [LexGroovy.cxx](https://github.com/zufuliu/notepad4/blob/main/scintilla/lexers/LexGroovy.cxx)
-  - WASM: notepad4 has [LexWASM.cxx](https://github.com/zufuliu/notepad4/blob/main/scintilla/lexers/LexWASM.cxx)
-  - Vim: notepad4 has [LexVim.cxx](https://github.com/zufuliu/notepad4/blob/main/scintilla/lexers/LexVim.cxx)
-  - OCaml: notepad4 has [LexOCaml.cxx](https://github.com/zufuliu/notepad4/blob/main/scintilla/lexers/LexOCaml.cxx)
-  - Smali: notepad4 has [LexSmali.cxx](https://github.com/zufuliu/notepad4/blob/main/scintilla/lexers/LexSmali.cxx) (Android)
-  - GraphViz: notepad4 has [LexGraphViz.cxx](https://github.com/zufuliu/notepad4/blob/main/scintilla/lexers/LexGraphViz.cxx)
-  - Rebol: notepad4 has [LexRebol.cxx](https://github.com/zufuliu/notepad4/blob/main/scintilla/lexers/LexRebol.cxx)
+  - Verilog HDL: [#4108](https://github.com/rizonesoft/Notepad3/issues/4108) - Lexilla `LexVerilog.cxx`
+  - JSON5: [#5411](https://github.com/rizonesoft/Notepad3/issues/5411) - Extend JSON lexer
+  - SourcePawn: [#5430](https://github.com/rizonesoft/Notepad3/issues/5430) - SourceMod scripting
+  - Swift, Zig, Scala, F#, Groovy, WASM, Vim, OCaml, Smali, GraphViz, Rebol
 - [ ] **Custom Hyperlink Schemes** - User-defined URL protocol recognition
   - ed2k:// links: [#5405](https://github.com/rizonesoft/Notepad3/issues/5405)
   - Customizable via INI settings
 - [ ] **Smarter URL Recognition** - Improve URL boundary detection
   - Issue: [#5464](https://github.com/rizonesoft/Notepad3/issues/5464)
-  - Don't include trailing `'` when URL is quoted: `$URL = 'https://example.com'`
+  - Don't include trailing `'` when URL is quoted
 - [ ] **Display Hidden Characters** - Show invisible/control characters
   - Issue: [#5496](https://github.com/rizonesoft/Notepad3/issues/5496)
-  - Scintilla has `SCI_SETREPRESENTATION` for custom char display
-  - Show: NBSP, zero-width space, control chars as `[NUL]`, `[BEL]`, etc.
+  - Scintilla `SCI_SETREPRESENTATION` for custom char display
 - [ ] **Scrollbar Marks** - Highlights in scrollbar (search matches, bookmarks)
-  - Scintilla supports scrollbar annotations
-- [ ] **Enhanced Auto-Complete** - More language-aware auto-complete triggers
-  - Context-sensitive suggestions
+- [ ] **Enhanced Auto-Complete** - Language-aware auto-complete triggers
+
+## Feature Ideas
+
+### Text Processing
+- [ ] **LaTeX Input Method** - LaTeX character insertion (`\alpha` → α)
+- [ ] **Base64 Encode/Decode** - Base64 conversion utilities
+- [ ] **Insert Unicode Control Characters** - LRM, RLM, ZWJ, ZWNJ, etc.
+- [ ] **Number Base Conversion** - Binary/Decimal/Octal/Hex
+- [ ] **Character Map Conversions** - Fullwidth↔Halfwidth, CJK transforms (`LCMapStringEx`)
+- [ ] **Code Compress/Pretty** - Minify/beautify code
+- [ ] **Insert GUID** - Generate and insert UUID
+- [ ] **Insert Shebang** - Insert interpreter line
+- [ ] **Insert Timestamps** - Various formats (UTC, Unix, milliseconds)
+
+### Navigation
+- [ ] **Navigate Backward/Forward** - VS Code-like history navigation
+- [ ] **Go to Block Start/End** - Jump to enclosing block
+- [ ] **Go to Sibling Block** - Navigate between sibling code blocks
+
+### View Options
+- [ ] **Toggle Fullscreen** - F11 fullscreen mode
+- [ ] **Show Unicode Control Characters** - Toggle visibility
+- [ ] **Line Selection Modes** - VS style, Normal, Old VS
+- [ ] **Scroll Past Last Line Options** - half, third, quarter screen
+
+### Copy/Clipboard
+- [ ] **Copy as RTF** - Rich text copy with syntax highlighting
+- [ ] **Copy/Cut/Paste Binary** - Binary data handling
+- [ ] **Copy Filename (no ext)** - Copy filename without extension
+
+### Settings
+- [ ] **AutoSave Settings Dialog** - Built-in autosave configuration UI
