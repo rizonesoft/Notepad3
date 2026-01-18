@@ -1,0 +1,11 @@
+--- a/scintilla/win32/ListBox.cxx
++++ b/scintilla/win32/ListBox.cxx
+@@ -748,7 +748,7 @@ void ListBoxX::DrawItem(DRAWITEMSTRUCT *pDrawItem) {
+ }
+ 
+ void ListBoxX::AllocateBitMap() {
+-	const SIZE extent { GetClientExtent().x, lineHeight };
++	const SIZE extent { GetClientExtent().x, ItemHeight() };
+ 
+ 	if (extent.cx != bmpCache.extent.cx || extent.cy != bmpCache.extent.cy) {
+ 		bmpCache.Release();

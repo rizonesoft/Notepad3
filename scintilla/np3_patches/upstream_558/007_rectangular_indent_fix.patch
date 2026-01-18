@@ -1,0 +1,22 @@
+# Rectangular Selection Indent Fix (5.5.8)
+# TYPE: Code patch (applied)
+# 
+# ORIGINAL ANALYSIS: The NP3 upgrade_024 patch appeared to intentionally remove
+# this fix. However, investigation revealed this was because the patch was
+# created to bring NP3 customizations FROM 5.5.7 baseline, and the removal
+# was inadvertent - the author wasn't aware this fix should be preserved.
+#
+# THE FIX: Temporarily treats rectangular selection as stream selection during
+# indent operations to avoid problems with recalculating rectangular range
+# multiple times.
+#
+# CHANGE:
+# - At start of Indent(): Save selType, convert rectangular to stream
+# - At end of Indent(): Restore selType, call ThinRectangularRange()
+#
+# FILE: scintilla/src/Editor.cxx (Indent function)
+#
+# STATUS: ✅ APPLIED
+#
+# NOTE: The NP3 upgrade_024 patch should be updated to NOT remove this fix
+# in future upgrades.

@@ -1,0 +1,10 @@
+--- a/scintilla/src/Editor.cxx
++++ b/scintilla/src/Editor.cxx
+@@ -2443,6 +2443,7 @@ void Editor::RestoreSelection(Sci::Position newPos, UndoRedo history) {
+ 				}
+ 			}
+ 			newPos = -1; // Used selection from stack so don't use position returned from undo/redo.
++			Redraw();
+ 		}
+ 	}
+ 	if (newPos >= 0)
