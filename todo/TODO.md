@@ -122,6 +122,8 @@
 
 ### View Options
 - [ ] **Toggle Fullscreen** - F11 fullscreen mode
+- [ ] **Split View** - View two parts of same document
+  - Issue: [#2577](https://github.com/rizonesoft/Notepad3/issues/2577)
 - [ ] **Show Unicode Control Characters** - Toggle visibility
 - [ ] **Line Selection Modes** - VS style, Normal, Old VS
 - [ ] **Scroll Past Last Line Options** - half, third, quarter screen
