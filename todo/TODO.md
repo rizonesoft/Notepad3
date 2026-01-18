@@ -108,6 +108,8 @@
 ### Navigation
 - [ ] **Navigate Backward/Forward** - VS Code-like history navigation
 - [ ] **Go to Block Start/End** - Jump to enclosing block
+- [ ] **Brace Find Enhancement** - Search backward for nearest brace when not at one
+  - Issue: [#4863](https://github.com/rizonesoft/Notepad3/issues/4863)
 - [ ] **Go to Sibling Block** - Navigate between sibling code blocks
 
 ### View Options
