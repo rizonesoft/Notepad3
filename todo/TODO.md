@@ -41,7 +41,7 @@
   - Auto-adapts to any DPI (100%-300%)
   - Dark/light mode color switching
   - Keep classic bitmap as fallback (ToolBarTheme 0/1)
-  - Issues: [#5471](https://github.com/rizonesoft/Notepad3/issues/5471), [#5090](https://github.com/rizonesoft/Notepad3/issues/5090) (DPI icons)
+  - Issues: [#5471](https://github.com/rizonesoft/Notepad3/issues/5471), [#5090](https://github.com/rizonesoft/Notepad3/issues/5090), [#4631](https://github.com/rizonesoft/Notepad3/issues/4631) (DPI scaling)
   - See [research/svg-toolbar.md](research/svg-toolbar.md)
 - [ ] **EditorConfig Integration** - Apply `.editorconfig` settings on file open
   - Use [editorconfig-core-c](https://github.com/editorconfig/editorconfig-core-c) library
@@ -115,6 +115,8 @@
 - [ ] **Scroll Past Last Line Options** - half, third, quarter screen
 - [ ] **Optimize Syntax Scheme Dialog** - Show detected scheme at top of list
   - Issue: [#5302](https://github.com/rizonesoft/Notepad3/issues/5302)
+- [ ] **Alphabetical Common Base Settings** - Sort scheme settings alphabetically
+  - Issue: [#4627](https://github.com/rizonesoft/Notepad3/issues/4627)
 
 ### Copy/Clipboard
 - [ ] **Copy as RTF** - Rich text copy with syntax highlighting
