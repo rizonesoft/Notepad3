@@ -38,7 +38,7 @@
   - Auto-adapts to any DPI (100%-300%)
   - Dark/light mode color switching
   - Keep classic bitmap as fallback (ToolBarTheme 0/1)
-  - Issues: [#5471](https://github.com/rizonesoft/Notepad3/issues/5471) (blurred icons at DPI scale)
+  - Issues: [#5471](https://github.com/rizonesoft/Notepad3/issues/5471), [#5090](https://github.com/rizonesoft/Notepad3/issues/5090) (DPI icons)
   - See [research/svg-toolbar.md](research/svg-toolbar.md)
 - [ ] **EditorConfig Integration** - Apply `.editorconfig` settings on file open
   - Use [editorconfig-core-c](https://github.com/editorconfig/editorconfig-core-c) library
