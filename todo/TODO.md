@@ -118,6 +118,7 @@
   - Issue: [#1790](https://github.com/rizonesoft/Notepad3/issues/1790) - Call external formatter per scheme
   - Issue: [#2839](https://github.com/rizonesoft/Notepad3/issues/2839) - Tidy HTML/XML
   - (Maybe) Run Scripts: [#4045](https://github.com/rizonesoft/Notepad3/issues/4045) - Execute Python/Perl
+  - Issue: [#4126](https://github.com/rizonesoft/Notepad3/issues/4126) - Custom Execute Document command
 - [ ] **Insert GUID** - Generate and insert UUID
 - [ ] **Insert Shebang** - Insert interpreter line
 - [ ] **Insert Timestamps** - Various formats (UTC, Unix, milliseconds)
