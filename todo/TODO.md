@@ -66,7 +66,8 @@
   - Verilog HDL: [#4108](https://github.com/rizonesoft/Notepad3/issues/4108) - Lexilla `LexVerilog.cxx`
   - JSON5: [#5411](https://github.com/rizonesoft/Notepad3/issues/5411) - Extend JSON lexer
   - SourcePawn: [#5430](https://github.com/rizonesoft/Notepad3/issues/5430) - SourceMod scripting
-  - Swift, Zig, Scala, F#, Groovy, WASM, Vim, OCaml, Smali, GraphViz, Rebol
+  - Groovy: [#5093](https://github.com/rizonesoft/Notepad3/issues/5093)
+  - Swift, Zig, Scala, F#, WASM, Vim, OCaml, Smali, GraphViz, Rebol
 - [ ] **Markdown: Highlight Trailing Double Spaces** - Show line break indicators
   - Issue: [#5312](https://github.com/rizonesoft/Notepad3/issues/5312)
 - [ ] **Custom Hyperlink Schemes** - User-defined URL protocol recognition
