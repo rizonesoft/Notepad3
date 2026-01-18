@@ -120,6 +120,8 @@
 - [ ] **Brace Find Enhancement** - Search backward for nearest brace when not at one
   - Issue: [#4863](https://github.com/rizonesoft/Notepad3/issues/4863)
 - [ ] **Go to Sibling Block** - Navigate between sibling code blocks
+- [ ] **Touchpad Horizontal Scroll** - Direct touchpad left/right scrolling
+  - Issue: [#3468](https://github.com/rizonesoft/Notepad3/issues/3468)
 
 ### View Options
 - [ ] **Toggle Fullscreen** - F11 fullscreen mode
