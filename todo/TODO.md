@@ -86,6 +86,8 @@
 - [ ] **Show Unicode Control Characters** - Toggle visibility
 - [ ] **Line Selection Modes** - VS style, Normal, Old VS
 - [ ] **Scroll Past Last Line Options** - half, third, quarter screen
+- [ ] **Optimize Syntax Scheme Dialog** - Show detected scheme at top of list
+  - Issue: [#5302](https://github.com/rizonesoft/Notepad3/issues/5302)
 
 ### Copy/Clipboard
 - [ ] **Copy as RTF** - Rich text copy with syntax highlighting
