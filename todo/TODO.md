@@ -63,6 +63,7 @@
 ## Feature Ideas
 
 ### Text Processing
+- [ ] **Strip Leading Blanks** - Trim leading whitespace (NP3 only has trailing)
 - [ ] **LaTeX Input Method** - LaTeX character insertion (`\alpha` → α)
 - [ ] **Base64 Encode/Decode** - Base64 conversion utilities
 - [ ] **Insert Unicode Control Characters** - LRM, RLM, ZWJ, ZWNJ, etc.
