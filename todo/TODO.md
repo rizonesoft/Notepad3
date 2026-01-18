@@ -38,6 +38,30 @@
   - Old bug from v5.21 - needs verification
 - [ ] **BUG: Minipath options don't save** - FullRowSelect/TrackSelect broken
   - Issue: [#4116](https://github.com/rizonesoft/Notepad3/issues/4116)
+- [ ] **BUG: Monitoring log not saved** - Setting not persisted
+  - Issue: [#5037](https://github.com/rizonesoft/Notepad3/issues/5037)
+- [ ] **BUG: LAN file freeze** - Freezes when network host offline
+  - Issue: [#5050](https://github.com/rizonesoft/Notepad3/issues/5050)
+- [ ] **BUG: Find/Replace patterns not updating** - Dropdown not refreshed immediately
+  - Issue: [#5134](https://github.com/rizonesoft/Notepad3/issues/5134)
+- [ ] **BUG: Multiple file positions not saved** - Only last file's bookmarks/caret preserved
+  - Issue: [#5151](https://github.com/rizonesoft/Notepad3/issues/5151)
+- [ ] **BUG: grepWinNP3 crash** - Right-click search results crashes
+  - Issue: [#5158](https://github.com/rizonesoft/Notepad3/issues/5158)
+- [ ] **BUG: PHP comment toggle** - Ctrl+Q not working in Web Source Code
+  - Issue: [#5163](https://github.com/rizonesoft/Notepad3/issues/5163)
+- [ ] **BUG: AltGr shortcut conflict** - Can't type `}` `@` on non-US keyboards
+  - Issue: [#5220](https://github.com/rizonesoft/Notepad3/issues/5220)
+- [ ] **BUG: Mouse scroll settings not updated** - Needs restart to apply
+  - Issue: [#5223](https://github.com/rizonesoft/Notepad3/issues/5223)
+- [ ] **BUG: Highlight current line broken** - Settings not respected (regression)
+  - Issue: [#5270](https://github.com/rizonesoft/Notepad3/issues/5270)
+- [ ] **BUG: File lock held too long on save** - Blocks FileSystemWatcher
+  - Issue: [#5301](https://github.com/rizonesoft/Notepad3/issues/5301)
+- [ ] **BUG: Folder handle leak** - Can't rename/delete folders with opened files
+  - Issue: [#5342](https://github.com/rizonesoft/Notepad3/issues/5342)
+- [ ] **BUG: Black line in Language menu** - Visual glitch in submenu
+  - Issue: [#5361](https://github.com/rizonesoft/Notepad3/issues/5361)
 
 ## Medium Priority
 
@@ -48,7 +72,7 @@
   - Auto-adapts to any DPI (100%-300%)
   - Dark/light mode color switching
   - Keep classic bitmap as fallback (ToolBarTheme 0/1)
-  - Issues: [#5471](https://github.com/rizonesoft/Notepad3/issues/5471), [#5090](https://github.com/rizonesoft/Notepad3/issues/5090), [#4631](https://github.com/rizonesoft/Notepad3/issues/4631) (DPI scaling)
+  - Issues: [#5471](https://github.com/rizonesoft/Notepad3/issues/5471), [#5090](https://github.com/rizonesoft/Notepad3/issues/5090), [#4631](https://github.com/rizonesoft/Notepad3/issues/4631) (DPI scaling), [#5316](https://github.com/rizonesoft/Notepad3/issues/5316) (dark mode readability), [#5390](https://github.com/rizonesoft/Notepad3/issues/5390) (encrypted dialog)
   - See [research/svg-toolbar.md](research/svg-toolbar.md)
 - [ ] **EditorConfig Integration** - Apply `.editorconfig` settings on file open
   - Use [editorconfig-core-c](https://github.com/editorconfig/editorconfig-core-c) library
@@ -58,7 +82,7 @@
   - Timer-based recovery to `%APPDATA%\Notepad3\recovery\`
   - Optional versioned backups: `.bak`, `.bak_1`, `.bak_2`, ...
   - **AutoSave Settings Dialog** - Built-in autosave configuration UI
-  - Issues: [#1665](https://github.com/rizonesoft/Notepad3/issues/1665), [#370](https://github.com/rizonesoft/Notepad3/issues/370), [#512](https://github.com/rizonesoft/Notepad3/issues/512), [#4331](https://github.com/rizonesoft/Notepad3/issues/4331), [#3652](https://github.com/rizonesoft/Notepad3/issues/3652)
+  - Issues: [#1665](https://github.com/rizonesoft/Notepad3/issues/1665), [#370](https://github.com/rizonesoft/Notepad3/issues/370), [#512](https://github.com/rizonesoft/Notepad3/issues/512), [#4331](https://github.com/rizonesoft/Notepad3/issues/4331), [#3652](https://github.com/rizonesoft/Notepad3/issues/3652), [#5399](https://github.com/rizonesoft/Notepad3/issues/5399)
   - See [research/autosave-backup.md](research/autosave-backup.md)
 - [ ] Installer testing on various Windows versions
 - [ ] **AVX2 Build** - Optimized build for modern CPUs
@@ -67,6 +91,8 @@
 - [ ] Language file updates
 - [ ] **Move Beta Page to rizonesoft.com** - Host beta downloads on main site
   - Issue: [#1129](https://github.com/rizonesoft/Notepad3/issues/1129)
+- [ ] **Improve Temp File Handling** - Better UX for files from archives
+  - Issue: [#5343](https://github.com/rizonesoft/Notepad3/issues/5343)
 - [ ] **Force Save Option** - Allow saving unmodified files for strip trailing blanks
   - Issue: [#5444](https://github.com/rizonesoft/Notepad3/issues/5444)
   - Code: `Notepad3.c:12042` - `bSaveNeeded` check skips save on unmodified files
@@ -80,6 +106,7 @@
 - [ ] **Additional Syntax Highlighting** - New language lexers
   - Haskell: [#3035](https://github.com/rizonesoft/Notepad3/issues/3035) - Lexilla `LexHaskell.cxx`
   - Racket: [#3035](https://github.com/rizonesoft/Notepad3/issues/3035) - Could use Lisp/Scheme lexer
+  - OpenCL: [#5374](https://github.com/rizonesoft/Notepad3/issues/5374) - C-like with extra keywords
   - Verilog HDL: [#4108](https://github.com/rizonesoft/Notepad3/issues/4108) - Lexilla `LexVerilog.cxx`
   - JSON5: [#5411](https://github.com/rizonesoft/Notepad3/issues/5411) - Extend JSON lexer
   - SourcePawn: [#5430](https://github.com/rizonesoft/Notepad3/issues/5430) - SourceMod scripting
@@ -101,12 +128,16 @@
 - [ ] **Display Hidden Characters** - Show invisible/control characters
   - Issue: [#5496](https://github.com/rizonesoft/Notepad3/issues/5496)
   - Scintilla `SCI_SETREPRESENTATION` for custom char display
+  - Issue: [#5035](https://github.com/rizonesoft/Notepad3/issues/5035) - Non-printing chars like Notepad++
 - [ ] **Trailing Whitespace Highlighting** - Distinct style for trailing blanks
   - Issue: [#1913](https://github.com/rizonesoft/Notepad3/issues/1913)
 - [ ] **Scrollbar Marks** - Highlights in scrollbar (search matches, bookmarks)
+- [ ] **Windows Spell Checker** - Spellcheck via Windows API
+  - Issue: [#5157](https://github.com/rizonesoft/Notepad3/issues/5157)
 - [ ] **Enhanced Auto-Complete** - Language-aware auto-complete triggers
 - [ ] **Auto-Pair Brackets** - Auto-close `()`, `[]`, `{}`, `""`, `''`
   - Issue: [#4149](https://github.com/rizonesoft/Notepad3/issues/4149)
+  - Issue: [#5285](https://github.com/rizonesoft/Notepad3/issues/5285) - Smart auto-dedent on closing bracket
 - [ ] **Custom Keyboard Shortcuts** - User-configurable shortcut keys
   - Issue: [#595](https://github.com/rizonesoft/Notepad3/issues/595)
 
@@ -114,6 +145,8 @@
 
 ### Text Processing
 - [ ] **Strip Leading Blanks** - Trim leading whitespace (NP3 only has trailing)
+- [ ] **Right-Click Convert Case** - Add case conversion to context menu
+  - Issue: [#5403](https://github.com/rizonesoft/Notepad3/issues/5403)
 - [ ] **LaTeX Input Method** - LaTeX character insertion (`\alpha` → α)
 - [ ] **Base64 Encode/Decode** - Base64 conversion utilities
 - [ ] **Insert Unicode Control Characters** - LRM, RLM, ZWJ, ZWNJ, etc.
@@ -138,6 +171,8 @@
 - [ ] **Go to Sibling Block** - Navigate between sibling code blocks
 - [ ] **Touchpad Horizontal Scroll** - Direct touchpad left/right scrolling
   - Issue: [#3468](https://github.com/rizonesoft/Notepad3/issues/3468)
+- [ ] **Toggle Focus Find/Main** - Shortcut to switch focus
+  - Issue: [#5395](https://github.com/rizonesoft/Notepad3/issues/5395)
 
 ### View Options
 - [ ] **Toggle Fullscreen** - F11 fullscreen mode
@@ -157,6 +192,7 @@
 
 ### Copy/Clipboard
 - [ ] **Copy as RTF** - Rich text copy with syntax highlighting
+  - Issue: [#5052](https://github.com/rizonesoft/Notepad3/issues/5052)
 - [ ] **Copy/Cut/Paste Binary** - Binary data handling
 - [ ] **Copy Filename (no ext)** - Copy filename without extension
 
