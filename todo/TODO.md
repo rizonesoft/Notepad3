@@ -2,8 +2,9 @@
 
 ## High Priority
 
-- [ ] **Scintilla/Lexilla Update** - Upgrade to latest versions (5.5.8/5.4.6)
-  - See [research/scintilla-lexilla-upgrade.md](research/scintilla-lexilla-upgrade.md)
+- [x] **Scintilla/Lexilla Update** - ✅ Upgraded to 5.5.8/5.4.6 parity
+  - Applied incrementally to preserve NP3 patches (DPI, Oniguruma, DirectWrite)
+  - See [scintilla/np3_patches/upstream_558/](../scintilla/np3_patches/upstream_558/)
 - [x] **BUG: FileSave() nested call** - ✅ Fixed in commit 658fb2f19
   - Issue: [#5445](https://github.com/rizonesoft/Notepad3/issues/5445)
   - Code: `Notepad3.c:4788` - nested `FileSave()` returns bool, passed as FileSaveFlags
