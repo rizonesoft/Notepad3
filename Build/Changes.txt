@@ -34,13 +34,13 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.26.0117.(build_#) (2026-01-17)
+Current BETA Version 6.26.xxx.(build_#) (2026-xx-xx)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
-[.117.1]- Use Segment Heaps for memory allocation if available (Win10 2004+/Win11).
+[.xxx.x]- Use Segment Heaps for memory allocation if available (Win10 2004+/Win11).
 [1021.2]- Add extensions "ts"and "tsx" in Tcl Script lexer (LEX).
 [1021.1]- Add extension "JSX" in JavaScript lexer (LEX).
 [.828.1]- Added Notepad3 Version in the Title bar of the Inno Setup dialog box (SUP).
@@ -48,8 +48,8 @@ NEW:
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
-[.117.2]- Update to Scintilla 5.5.8 and Lexilla 5.4.6 (SCI/LEX).
-[.117.2]- Moved installer scripts to Build\Installer folder with local language files (SUP).
+[.xxx.x]- Update to Scintilla 5.5.8 and Lexilla 5.4.6 (SCI/LEX).
+[.xxx.x]- Moved installer scripts to Build\Installer folder with local language files (SUP).
 [.101.1]- Rizonesoft Copyright ©  2008-2025 to year "2008-2026".
 [1114.1]- Remove the "Opera Promotion" page in Notepad3 "INNO Setup Installer" (SUP).
 [.917.1]- Italian language update.
@@ -59,7 +59,7 @@ CHANGES:
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
-[.117.2]- Fixed user config setup to run as original user context during install/uninstall (SUP).
+[.xxx.x]- Fixed user config setup to run as original user context during install/uninstall (SUP).
 [.917.1]- Really Silent/VerySilent Uninstall (SUP).
 
 --------------------------------------------------------
@@ -69,8 +69,8 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.711.1]- Update Lexilla Library (LEX) version 5.4.5 (2025-06-08).
-[.711.1]- Update Scintilla Library (SCI) version 5.5.7 (2025-06-08).
+[.xxx.x]- Update Lexilla Library (LEX) version 5.4.6 (2025-11-10).
+[.xxx.x]- Update Scintilla Library (SCI) version 5.5.8 (2025-11-10).
 [.711.1]- Update Oniguruma Regex (ONI) engine version 6.9.10 (2025/04/24).
 [.101.1]- Update grepWinNP3 (GRE) version 2.1.15.48 (2024-01-10).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
