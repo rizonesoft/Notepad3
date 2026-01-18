@@ -30,7 +30,8 @@
 - [ ] Language file updates
 - [ ] **Force Save Option** - Allow saving unmodified files for strip trailing blanks
   - Issue: [#5444](https://github.com/rizonesoft/Notepad3/issues/5444)
-  - "Strip trailing blanks" only works on modified files currently
+  - Code: `Notepad3.c:12042` - `bSaveNeeded` check skips save on unmodified files
+  - Fix: Check strip-blanks setting before early return at line 12044
 
 ## Low Priority
 
