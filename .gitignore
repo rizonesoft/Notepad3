@@ -76,3 +76,6 @@ _upgrade_staging/
 
 # ARM64 build intermediate directories
 **/ARM64/
+
+# Build Installer (local only)
+Build/Installer/
