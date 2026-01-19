@@ -38,7 +38,6 @@ jobs:
         with:
           vcpkgGitCommitId: '66c0373dc7fca549e5803087b9487edfe3aca0a1'
           vcpkgDirectory: '${{ github.workspace }}/vcpkg_installed'
-          doNotCacheOnWorkflowFailure: true
 
       - name: Install Boost ARM64 via vcpkg
         if: matrix.platform == 'ARM64'
