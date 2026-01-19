@@ -44,6 +44,8 @@ NEW:
 [1021.2]- Add extensions "ts"and "tsx" in Tcl Script lexer (LEX).
 [1021.1]- Add extension "JSX" in JavaScript lexer (LEX).
 [.828.1]- Added Notepad3 Version in the Title bar of the Inno Setup dialog box (SUP).
+[.119.1]- Added AVX2 optimized x64 build configuration (x64_AVX2) (issue #4240).
+[.119.1]- Added GitHub Actions CI workflow for MSVC builds (Win32/x64/ARM64).
 
 --------------------------------------------------------
 CHANGES:
@@ -60,6 +62,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- Fixed user config setup to run as original user context during install/uninstall (SUP).
+[.119.1]- Fixed FileSave() nested call issue causing unexpected save behavior (Notepad3.c:4788) (issue #5445).
+[.119.1]- Fixed DirectWrite font variant resolution using IDWriteGdiInterop (SCI).
 [.917.1]- Really Silent/VerySilent Uninstall (SUP).
 
 --------------------------------------------------------
