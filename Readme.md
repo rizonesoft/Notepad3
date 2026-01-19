@@ -24,11 +24,11 @@ Built with modern C++ on the powerful Scintilla editing component.
 ### Community
 Join our growing community of contributors and users.
 
-[![Contributors](https://img.shields.io/github/contributors/rizonesoft/Notepad3?style=flat-square)](https://github.com/rizonesoft/Notepad3/graphs/contributors)
-[![Last Commit](https://img.shields.io/github/last-commit/rizonesoft/Notepad3?style=flat-square)](https://github.com/rizonesoft/Notepad3/commits)
-[![Open Issues](https://img.shields.io/github/issues/rizonesoft/Notepad3?style=flat-square)](https://github.com/rizonesoft/Notepad3/issues)
-[![Closed Issues](https://img.shields.io/github/issues-closed/rizonesoft/Notepad3?style=flat-square)](https://github.com/rizonesoft/Notepad3/issues?q=is%3Aissue+is%3Aclosed)
-[![Pull Requests](https://img.shields.io/github/issues-pr/rizonesoft/Notepad3?style=flat-square)](https://github.com/rizonesoft/Notepad3/pulls)
+[![Contributors](https://img.shields.io/github/contributors/rizonesoft/Notepad3?style=flat-square&color=1a7f37)](https://github.com/rizonesoft/Notepad3/graphs/contributors)
+[![Last Commit](https://img.shields.io/github/last-commit/rizonesoft/Notepad3?style=flat-square&color=1a5fb4)](https://github.com/rizonesoft/Notepad3/commits)
+[![Open Issues](https://img.shields.io/github/issues/rizonesoft/Notepad3?style=flat-square&color=9a6700)](https://github.com/rizonesoft/Notepad3/issues)
+[![Closed Issues](https://img.shields.io/github/issues-closed/rizonesoft/Notepad3?style=flat-square&color=6e40c9)](https://github.com/rizonesoft/Notepad3/issues?q=is%3Aissue+is%3Aclosed)
+[![Pull Requests](https://img.shields.io/github/issues-pr/rizonesoft/Notepad3?style=flat-square&color=0e7490)](https://github.com/rizonesoft/Notepad3/pulls)
 [![Repo Size](https://img.shields.io/github/repo-size/rizonesoft/Notepad3?style=flat-square)](https://github.com/rizonesoft/Notepad3)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg?style=flat-square)](https://opensource.org/licenses/BSD-3-Clause)
 
