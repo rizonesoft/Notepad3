@@ -37,13 +37,16 @@ jobs:
         uses: lukka/run-vcpkg@v11
         with:
           vcpkgGitCommitId: '66c0373dc7fca549e5803087b9487edfe3aca0a1'
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg_installed'
+          doNotCacheOnWorkflowFailure: true
 
       - name: Install Boost ARM64 via vcpkg
         if: matrix.platform == 'ARM64'
         shell: pwsh
         run: |
-          vcpkg install boost-regex:arm64-windows boost-iostreams:arm64-windows --triplet arm64-windows
-          vcpkg integrate install
+          $env:VCPKG_ROOT = "${{ github.workspace }}/vcpkg_installed"
+          & "$env:VCPKG_ROOT/vcpkg.exe" install boost-regex:arm64-windows boost-iostreams:arm64-windows --x-install-root="${{ github.workspace }}/vcpkg_installed/installed"
+          & "$env:VCPKG_ROOT/vcpkg.exe" integrate install
 
       - name: Generate version
         shell: pwsh
@@ -111,7 +114,8 @@ jobs:
           
           # For ARM64, pass VCPKG_ROOT to MSBuild
           if ("${{ matrix.platform }}" -eq "ARM64") {
-            msbuild Notepad3.sln /m /p:Configuration=$config /p:Platform=$platform /p:VCPKG_ROOT="$env:VCPKG_ROOT" /v:minimal
+            $vcpkgRoot = "${{ github.workspace }}/vcpkg_installed"
+            msbuild Notepad3.sln /m /p:Configuration=$config /p:Platform=$platform /p:VCPKG_ROOT="$vcpkgRoot" /v:minimal
           } else {
             msbuild Notepad3.sln /m /p:Configuration=$config /p:Platform=$platform /v:minimal
           }
