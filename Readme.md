@@ -4,6 +4,8 @@ Notepad3 is free and open source. Your support helps keep development active.
 
 [![Sponsor](https://img.shields.io/github/sponsors/rizonesoft?style=flat-square&logo=github)](https://github.com/sponsors/rizonesoft)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg?style=flat-square)](https://www.paypal.com/donate/?hosted_button_id=7UGGCSDUZJPFE)
+[![Stars](https://img.shields.io/github/stars/rizonesoft/Notepad3?style=flat-square&label=Stars)](https://github.com/rizonesoft/Notepad3/stargazers)
+[![Forks](https://img.shields.io/github/forks/rizonesoft/Notepad3?style=flat-square&label=Forks)](https://github.com/rizonesoft/Notepad3/network/members)
 
 ### Build Status
 Continuous integration ensures code quality across compilers and platforms.
