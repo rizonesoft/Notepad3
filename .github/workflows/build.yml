@@ -32,6 +32,19 @@ jobs:
       - name: Restore NuGet packages
         run: nuget restore Notepad3.sln -Verbosity detailed
 
+      - name: Setup vcpkg (ARM64 only)
+        if: matrix.platform == 'ARM64'
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: '86a181505ac6460bf8a0525c5a7cbb4dca2c331e'
+
+      - name: Install Boost ARM64 via vcpkg
+        if: matrix.platform == 'ARM64'
+        shell: pwsh
+        run: |
+          vcpkg install boost-regex:arm64-windows boost-iostreams:arm64-windows --triplet arm64-windows
+          vcpkg integrate install
+
       - name: Generate version
         shell: pwsh
         run: |
@@ -88,19 +101,26 @@ jobs:
         shell: pwsh
         run: |
           $platform = "${{ matrix.platform }}"
-          $avxFlag = ""
+          $config = "${{ matrix.configuration }}"
           
-          # Handle x64_AVX2 special case
+          # Handle x64_AVX2 - use native Release_AVX2 configuration
           if ($platform -eq "x64_AVX2") {
             $platform = "x64"
-            $avxFlag = "/p:EnableEnhancedInstructionSet=AdvancedVectorExtensions2"
+            $config = "${{ matrix.configuration }}_AVX2"
           }
           
-          msbuild Notepad3.sln /m /p:Configuration=${{ matrix.configuration }} /p:Platform=$platform $avxFlag /v:minimal
+          # For ARM64, pass VCPKG_ROOT to MSBuild
+          if ("${{ matrix.platform }}" -eq "ARM64") {
+            msbuild Notepad3.sln /m /p:Configuration=$config /p:Platform=$platform /p:VCPKG_ROOT="$env:VCPKG_ROOT" /v:minimal
+          } else {
+            msbuild Notepad3.sln /m /p:Configuration=$config /p:Platform=$platform /v:minimal
+          }
+
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Notepad3-${{ matrix.platform }}-${{ matrix.configuration }}
-          path: bin/**/*.exe
+          path: Bin/**/*
           retention-days: 30
+
