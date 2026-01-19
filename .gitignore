@@ -73,3 +73,6 @@ _upgrade_staging/
 
 # Research documents (local only)
 /todo/research/
+
+# ARM64 build intermediate directories
+**/ARM64/
