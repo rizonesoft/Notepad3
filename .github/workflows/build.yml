@@ -36,7 +36,7 @@ jobs:
         if: matrix.platform == 'ARM64'
         uses: lukka/run-vcpkg@v11
         with:
-          vcpkgGitCommitId: '86a181505ac6460bf8a0525c5a7cbb4dca2c331e'
+          vcpkgGitCommitId: '66c0373dc7fca549e5803087b9487edfe3aca0a1'
 
       - name: Install Boost ARM64 via vcpkg
         if: matrix.platform == 'ARM64'
