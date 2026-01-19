@@ -8,8 +8,8 @@ Notepad3 is free and open source. Your support helps keep development active.
 ### Build Status
 Continuous integration ensures code quality across compilers and platforms.
 
-[![AppVeyor](https://img.shields.io/appveyor/ci/rizonesoft/notepad3/master.svg?style=flat-square&label=AppVeyor&color=1a7f37)](https://ci.appveyor.com/project/rizonesoft/notepad3/branch/master)
-[![CI](https://img.shields.io/github/actions/workflow/status/rizonesoft/Notepad3/build.yml?style=flat-square&label=CI&color=1a7f37)](https://github.com/rizonesoft/Notepad3/actions/workflows/build.yml)
+[![AppVeyor](https://img.shields.io/appveyor/ci/rizonesoft/notepad3/master.svg?style=flat-square&label=AppVeyor)](https://ci.appveyor.com/project/rizonesoft/notepad3/branch/master)
+[![CI](https://img.shields.io/github/actions/workflow/status/rizonesoft/Notepad3/build.yml?style=flat-square&label=CI)](https://github.com/rizonesoft/Notepad3/actions/workflows/build.yml)
 [![Latest Release](https://img.shields.io/github/v/release/rizonesoft/Notepad3?style=flat-square&label=Release)](https://rizonesoft.com/downloads/notepad3/)
 [![Nightly](https://img.shields.io/github/v/release/rizonesoft/Notepad3?include_prereleases&style=flat-square&label=Nightly&color=orange)](https://github.com/rizonesoft/Notepad3/releases)
 
