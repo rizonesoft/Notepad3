@@ -12046,7 +12046,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
 
     bool const bSaveNeeded = (IsSaveNeeded() || IsFileChangedFlagSet()) && !bIsEmptyNewFile;
 
-    if (!(fSaveFlags & FSF_SaveAs) && !(fSaveFlags & FSF_SaveAlways) && !bSaveNeeded) {
+    if (!(fSaveFlags & FSF_SaveAs) && !(fSaveFlags & FSF_SaveAlways) && !bSaveNeeded && !Settings.FixTrailingBlanks) {
         _MRU_UpdateSession();
         AutoSaveStop();
         ResetFileObservationData(true);

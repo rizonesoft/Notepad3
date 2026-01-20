@@ -102,10 +102,9 @@
   - Issue: [#1129](https://github.com/rizonesoft/Notepad3/issues/1129)
 - [ ] **(Q2) Improve Temp File Handling** - Better UX for files from archives
   - Issue: [#5343](https://github.com/rizonesoft/Notepad3/issues/5343)
-- [ ] **(Q1) Force Save Option** - Allow saving unmodified files for strip trailing blanks
+- [x] **(Q1) Force Save Option** - ✅ FIXED
   - Issue: [#5444](https://github.com/rizonesoft/Notepad3/issues/5444)
-  - Code: `Notepad3.c:12042` - `bSaveNeeded` check skips save on unmodified files
-  - Fix: Check strip-blanks setting before early return at line 12044
+  - Fix: Added `Settings.FixTrailingBlanks` check to early return in `FileSave()`
 
 ## GitHub Actions
 
