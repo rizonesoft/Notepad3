@@ -1757,6 +1757,9 @@ static void SetFindReplaceData()
     if (g_flagMatchText) { // cmd line
         if (g_flagMatchText & 4) {
             s_FindReplaceData.fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
+        } else {
+            // /m without R flag: force text mode (clear regex flags) - fixes #5060
+            s_FindReplaceData.fuFlags &= ~(SCFIND_REGEXP | SCFIND_POSIX);
         }
         if (g_flagMatchText & 8) {
             s_FindReplaceData.fuFlags |= SCFIND_MATCHCASE;
