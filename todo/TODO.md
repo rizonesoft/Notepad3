@@ -26,9 +26,9 @@
 - [ ] **(Q3) BUG: Crash on Windows Server 2022** - File Open/SaveAs crashes
   - Issue: [#5066](https://github.com/rizonesoft/Notepad3/issues/5066), [#5080](https://github.com/rizonesoft/Notepad3/issues/5080)
   - Crash in ntdll.dll - needs investigation
-- [ ] **(Q1) BUG: Cannot save settings without folder** - Settings folder must exist
+- [x] **(Q1) BUG: Cannot save settings without folder** - ✅ FIXED
   - Issue: [#5075](https://github.com/rizonesoft/Notepad3/issues/5075)
-  - Fix: Create settings folder if it doesn't exist
+  - Fix: Changed `CreateDirectoryW` to `SHCreateDirectoryExW` to create all intermediate directories
 - [ ] **(Q2) BUG: Replace dialog full-width caching** - Second replace uses wrong character
   - Issue: [#4268](https://github.com/rizonesoft/Notepad3/issues/4268)
   - CJK full-width replacement cached incorrectly

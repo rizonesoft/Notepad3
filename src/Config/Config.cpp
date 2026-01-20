@@ -1092,7 +1092,8 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
         HPATHL hdir_path = Path_Copy(hini_pth);
         Path_RemoveFileSpec(hdir_path);
         if (Path_IsNotEmpty(hdir_path)) {
-            CreateDirectoryW(Path_Get(hdir_path), NULL);
+            // Use SHCreateDirectoryExW to create all intermediate directories - fixes #5075
+            SHCreateDirectoryExW(NULL, Path_Get(hdir_path), NULL);
         }
         Path_Release(hdir_path);
 
