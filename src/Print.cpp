@@ -51,7 +51,9 @@ extern "C" {
 #include "DarkMode/DarkMode.h"
 
 
+
 extern "C" float Style_GetBaseFontSize();
+extern "C" void UpdateStatusbar(const bool bForceRedraw);
 
 // Stored objects...
 static HGLOBAL hDevMode = nullptr;
@@ -510,6 +512,9 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
         GetCursorPos(&pt);
         SetCursorPos(pt.x, pt.y);
     }
+
+    // Restore status bar to normal display - fixes #5313
+    UpdateStatusbar(true);
 
     return true;
 }

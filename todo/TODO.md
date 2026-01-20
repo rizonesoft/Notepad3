@@ -17,9 +17,9 @@
   - Issue: [#5310](https://github.com/rizonesoft/Notepad3/issues/5310)
   - Affects German Windows 11, possibly other locales
   - Improve UTF-8 detection for files without BOM
-- [ ] **(Q1) BUG: Print status message persistent** - "Printing page x..." stays after print
+- [x] **(Q1) BUG: Print status message persistent** - ✅ FIXED
   - Issue: [#5313](https://github.com/rizonesoft/Notepad3/issues/5313)
-  - Fix: Clear status bar after print completes
+  - Fix: Added `StatusSetText()` call to clear status bar after `EditPrint()` completes
 - [x] **(Q1) BUG: /m command line uses last search mode** - ✅ FIXED
   - Issue: [#5060](https://github.com/rizonesoft/Notepad3/issues/5060)
   - Fix: When `/m` is used without 'R' flag, explicitly clear SCFIND_REGEXP to force text mode
