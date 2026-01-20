@@ -54,8 +54,9 @@
   - Issue: [#5163](https://github.com/rizonesoft/Notepad3/issues/5163)
 - [ ] **(Q2) BUG: AltGr shortcut conflict** - Can't type `}` `@` on non-US keyboards
   - Issue: [#5220](https://github.com/rizonesoft/Notepad3/issues/5220)
-- [ ] **(Q1) BUG: Mouse scroll settings not updated** - Needs restart to apply
+- [x] **(Q1) BUG: Mouse scroll settings not updated** - ✅ FIXED
   - Issue: [#5223](https://github.com/rizonesoft/Notepad3/issues/5223)
+  - Fix: Forward `WM_SETTINGCHANGE` to Scintilla to refresh cached scroll parameters
 - [ ] **(Q2) BUG: Highlight current line broken** - Settings not respected (regression)
   - Issue: [#5270](https://github.com/rizonesoft/Notepad3/issues/5270)
 - [ ] **(Q2) BUG: File lock held too long on save** - Blocks FileSystemWatcher
