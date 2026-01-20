@@ -2255,6 +2255,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             RefreshTitleBarThemeColor(hwnd);
             SendMessage(Globals.hwndEdit, WM_THEMECHANGED, 0, 0);
         }
+        // Forward to Scintilla to refresh mouse scroll settings (issue #5223)
+        SendMessage(Globals.hwndEdit, WM_SETTINGCHANGE, wParam, lParam);
     }
     break;
 #endif
