@@ -1947,6 +1947,9 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
         break;
     }
 
+    // Restore saved Monitoring Log setting - fixes #5037
+    FileWatching.MonitoringLog = Settings.MonitoringLog;
+
     // initial set text in front of ShowWindow()
     EditSetNewText(Globals.hwndEdit, "", 0, false, false);
 

@@ -643,6 +643,7 @@ typedef struct SETTINGS_T {
     bool EvalTinyExprOnSelection;
     FILE_WATCHING_MODE FileWatchingMode;
     bool ResetFileWatching;
+    bool MonitoringLog;  // View -> Monitoring Log setting - fixes #5037
     int  EscFunction;
     bool AlwaysOnTop;
     bool MinimizeToTray;

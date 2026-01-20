@@ -39,8 +39,9 @@
   - Old bug from v5.21 - needs verification
 - [ ] **(Q2) BUG: Minipath options don't save** - FullRowSelect/TrackSelect broken
   - Issue: [#4116](https://github.com/rizonesoft/Notepad3/issues/4116)
-- [ ] **(Q1) BUG: Monitoring log not saved** - Setting not persisted
+- [x] **(Q1) BUG: Monitoring log not saved** - ✅ FIXED
   - Issue: [#5037](https://github.com/rizonesoft/Notepad3/issues/5037)
+  - Fix: Added `MonitoringLog` to Settings struct with INI load/save in Config.cpp
 - [ ] **(Q3) BUG: LAN file freeze** - Freezes when network host offline
   - Issue: [#5050](https://github.com/rizonesoft/Notepad3/issues/5050)
 - [ ] **(Q1) BUG: Find/Replace patterns not updating** - Dropdown not refreshed immediately
