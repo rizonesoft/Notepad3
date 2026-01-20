@@ -2382,7 +2382,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_UAHDRAWMENUITEM:
     case WM_UAHDESTROYWINDOW:
     case WM_UAHMEASUREMENUITEM:
-    case WM_UAHNCPAINTMENUPOPUP: 
         return MsgUahMenuBar(hwnd, umsg, wParam, lParam);
 
     case WM_NCACTIVATE:
@@ -7873,8 +7872,6 @@ LRESULT MsgUahMenuBar(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     } break;
 
-    // don't care
-    case WM_UAHNCPAINTMENUPOPUP:
     default:
         break;
     }

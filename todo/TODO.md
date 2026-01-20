@@ -63,8 +63,9 @@
   - Issue: [#5301](https://github.com/rizonesoft/Notepad3/issues/5301)
 - [ ] **(Q2) BUG: Folder handle leak** - Can't rename/delete folders with opened files
   - Issue: [#5342](https://github.com/rizonesoft/Notepad3/issues/5342)
-- [ ] **(Q1) BUG: Black line in Language menu** - Visual glitch in submenu
+- [x] **(Q1) BUG: Black line in Language menu** - ✅ FIXED
   - Issue: [#5361](https://github.com/rizonesoft/Notepad3/issues/5361)
+  - Fix: Removed `WM_UAHNCPAINTMENUPOPUP` from message interception - was using wrong window handle
 
 ## Medium Priority
 
