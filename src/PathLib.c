@@ -1874,9 +1874,10 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
             }
             StrgDestroy(hsrch_str);
         }
-        //else {
-        //    //~~~Path_CanonicalizeEx(hpth_in_out, hpth_wrkdir);
-        //}
+        else {
+            // Use canonicalized path for non-existent files too (fixes #5306)
+            Path_Swap(hpth_in_out, hsrch_pth);
+        }
         Path_Release(hsrch_pth);
     }
 

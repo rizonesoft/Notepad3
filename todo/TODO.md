@@ -9,10 +9,9 @@
   - Issue: [#5445](https://github.com/rizonesoft/Notepad3/issues/5445)
   - Code: `Notepad3.c:4788` - nested `FileSave()` returns bool, passed as FileSaveFlags
   - Fix: `FileSave((FileWatching.FileWatchingMode <= FWM_DONT_CARE) ? FSF_SaveAlways : FSF_None);`
-- [ ] **(Q2) BUG: Wrong working directory for new files** - Files created in Program Files instead of CWD
+- [x] **(Q2) BUG: Wrong working directory for new files** - ✅ FIXED
   - Issue: [#5306](https://github.com/rizonesoft/Notepad3/issues/5306)
-  - NP3 changes CWD to exe directory during init
-  - Fix: Resolve relative paths against original CWD before directory change
+  - Fix: Added else block in `Path_NormalizeEx()` to use canonicalized path for non-existent files
 - [ ] **(Q2) BUG: Encoding detection issue** - UTF-8 files detected as DOS-852
   - Issue: [#5310](https://github.com/rizonesoft/Notepad3/issues/5310)
   - Affects German Windows 11, possibly other locales
