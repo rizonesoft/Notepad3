@@ -15,6 +15,7 @@
     <!-- <msix xmlns="urn:schemas-microsoft-com:msix.v1" publisher="CN=Rizonesoft" packageName="RizonesoftNotepad3" applicationId="RizonesoftNotepad3"/> (issue #4949) -->
 	<asmv3:application xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns="urn:schemas-microsoft-com:asm.v3">
 		<asmv3:windowsSettings>
+			<printerDriverIsolation xmlns="http://schemas.microsoft.com/SMI/2011/WindowsSettings">true</printerDriverIsolation>
 			<dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">true/PM</dpiAware>
 			<dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">PerMonitorV2,PerMonitor</dpiAwareness>
 			<ws2:longPathAware xmlns:ws2="http://schemas.microsoft.com/SMI/2016/WindowsSettings">true</ws2:longPathAware>
