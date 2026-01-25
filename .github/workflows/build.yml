@@ -103,6 +103,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Notepad3-${{ matrix.platform }}-${{ matrix.configuration }}
-          path: Bin/**/*
+          path: |
+            Bin/**/*
+            !Bin/**/obj/**
+            !Bin/**/*.pdb
+            !Bin/**/*.iobj
+            !Bin/**/*.ipdb
+            !Bin/**/*.lib
+            !Bin/**/*.exp
           retention-days: 30
 
