@@ -32,7 +32,7 @@ October 2025: Line numbers to translate_2025-10 - No "Added or Modified" items i
 Novemb. 2025: Line numbers to translate_2025-11 - No "Added or Modified" items in November 2025
 Decemb. 2025: Line numbers to translate_2025-12 - No "Added or Modified" items in December 2025
 
-January 2026: Line numbers to translate_2026-01 -  (2026-01-xx)
+January 2026: Line numbers to translate_2026-01 - No "Added or Modified" items in January 2026
 Februar 2026: Line numbers to translate_2026-02 -  (2026-02-xx)
 March   2026: Line numbers to translate_2026-03 -  (2026-03-xx)
 April   2026: Line numbers to translate_2026-04 -  (2026-04-xx)
