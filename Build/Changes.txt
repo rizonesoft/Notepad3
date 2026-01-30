@@ -34,24 +34,27 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.26.xxx.(build_#) (2026-xx-xx)
+Current BETA Version 6.26.130.(build_#) (2026-01-30
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
-[.xxx.x]- Use Segment Heaps for memory allocation if available (Win10 2004+/Win11).
+[.xxx.x]-
+[.130.1]- Add Scintilla np3_patches with 5 patch files for future upgrades (SCI).
+[.130.1]- Use Segment Heaps for memory allocation if available (Win10 2004+/Win11).
+[.130.1]- Added AVX2 optimized x64 build configuration (x64_AVX2) (issue #4240).
+[.130.1]- Added GitHub Actions CI workflow for MSVC builds (Win32/x64/ARM64).
 [1021.2]- Add extensions "ts"and "tsx" in Tcl Script lexer (LEX).
 [1021.1]- Add extension "JSX" in JavaScript lexer (LEX).
 [.828.1]- Added Notepad3 Version in the Title bar of the Inno Setup dialog box (SUP).
-[.119.1]- Added AVX2 optimized x64 build configuration (x64_AVX2) (issue #4240).
-[.119.1]- Added GitHub Actions CI workflow for MSVC builds (Win32/x64/ARM64).
 
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
-[.xxx.x]- Update to Scintilla 5.5.8 and Lexilla 5.4.6 (SCI/LEX).
-[.xxx.x]- Moved installer scripts to Build\Installer folder with local language files (SUP).
+[.xxx.x]-
+[.130.1]- Update to Scintilla 5.5.8 and Lexilla 5.4.6 (SCI/LEX).
+[.130.1]- Moved installer scripts to Build\Installer folder with local language files (SUP).
 [.101.1]- Rizonesoft Copyright ©  2008-2025 to year "2008-2026".
 [1114.1]- Remove the "Opera Promotion" page in Notepad3 "INNO Setup Installer" (SUP).
 [.917.1]- Italian language update.
@@ -61,20 +64,31 @@ CHANGES:
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
-[.xxx.x]- Fixed user config setup to run as original user context during install/uninstall (SUP).
-[.119.1]- Fixed FileSave() nested call issue causing unexpected save behavior (Notepad3.c:4788) (issue #5445).
-[.119.1]- Fixed DirectWrite font variant resolution using IDWriteGdiInterop (SCI).
+[.xxx.x]-
+[.130.1]- New files created in correct working directory.
+[.130.1]- Allow saving unmodified files when strip blanks is enabled.
+[.130.1]- Black line in Language menu submenu.
+[.130.1]- Mouse scroll settings now update without restart.
+[.130.1]- Persist Monitoring Log (View -> Monitoring Log) setting.
+[.130.1]- Create settings folder recursively if it doesn't exist.
+[.130.1]- Restore status bar after printing completes.
+[.130.1]- Fixed /m command line defaults to text mode instead of last search mode.
+[.130.1]- Resolve DirectWrite font face names correctly.
+[.130.1]- Fixed user config setup to run as original user context during install/uninstall (SUP).
+[.130.1]- Fixed FileSave() nested call issue causing unexpected save behavior (issue #5445).
+[.130.1]- Fixed DirectWrite font variant resolution using IDWriteGdiInterop (SCI).
 [.917.1]- Really Silent/VerySilent Uninstall (SUP).
 
 --------------------------------------------------------
 REMOVED:
+[.xxx.x]-
 --------------------------------------------------------
 
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.xxx.x]- Update Lexilla Library (LEX) version 5.4.6 (2025-11-10).
-[.xxx.x]- Update Scintilla Library (SCI) version 5.5.8 (2025-11-10).
+[.130.1]- Update Lexilla Library (LEX) version 5.4.6 (2025-11-10).
+[.130.1]- Update Scintilla Library (SCI) version 5.5.8 (2025-11-10).
 [.711.1]- Update Oniguruma Regex (ONI) engine version 6.9.10 (2025/04/24).
 [.101.1]- Update grepWinNP3 (GRE) version 2.1.15.48 (2024-01-10).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
