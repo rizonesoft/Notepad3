@@ -12044,9 +12044,9 @@ bool FileSave(FileSaveFlags fSaveFlags)
         }
     }
 
-    bool const bSaveNeeded = (IsSaveNeeded() || IsFileChangedFlagSet()) && !bIsEmptyNewFile;
+    bool const bSaveNeeded = (IsSaveNeeded() || IsFileChangedFlagSet() || Settings.FixTrailingBlanks) && !bIsEmptyNewFile;
 
-    if (!(fSaveFlags & FSF_SaveAs) && !(fSaveFlags & FSF_SaveAlways) && !bSaveNeeded && !Settings.FixTrailingBlanks) {
+    if (!(fSaveFlags & FSF_SaveAs) && !(fSaveFlags & FSF_SaveAlways) && !bSaveNeeded) {
         _MRU_UpdateSession();
         AutoSaveStop();
         ResetFileObservationData(true);
