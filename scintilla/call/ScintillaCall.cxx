@@ -3399,6 +3399,14 @@ Position ScintillaCall::IndexPositionFromLine(Line line, Scintilla::LineCharacte
 	return Call(Message::IndexPositionFromLine, line, static_cast<intptr_t>(lineCharacterIndex));
 }
 
+bool ScintillaCall::DragDropEnabled() {
+	return Call(Message::GetDragDropEnabled);
+}
+
+void ScintillaCall::SetDragDropEnabled(bool dragDropEnabled) {
+	Call(Message::SetDragDropEnabled, dragDropEnabled);
+}
+
 void ScintillaCall::StartRecord() {
 	Call(Message::StartRecord);
 }

@@ -13,9 +13,6 @@
 #include <cstdio>
 #include <cmath>
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-#include <ranges>
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -146,6 +143,7 @@ Editor::Editor() : durationWrapOneByte(0.000001, 0.00000001, 0.00001) {
 	dwelling = false;
 	ptMouseLast.x = 0;
 	ptMouseLast.y = 0;
+	dragDropEnabled = true;
 	inDragDrop = DragDrop::none;
 	dropWentOutside = false;
 	posDrop = SelectionPosition(Sci::invalidPosition);
@@ -718,7 +716,7 @@ void Editor::SetSelectionFromSerialized(const char *serialized) {
 		sel = Selection(serialized);
 		sel.Truncate(pdoc->Length());
 		SetRectangularRange();
-		Redraw();  // Scintilla 5.5.8: Changed from InvalidateStyleRedraw()
+		Redraw();
 	}
 }
 
@@ -2437,7 +2435,7 @@ void Editor::RestoreSelection(Sci::Position newPos, UndoRedo history) {
 				}
 			}
 			newPos = -1; // Used selection from stack so don't use position returned from undo/redo.
-			Redraw();  // Scintilla 5.5.8: Ensure selection drawn correctly when restored by undo
+			Redraw();
 		}
 	}
 	if (newPos >= 0)
@@ -4067,22 +4065,20 @@ int Editor::KeyCommand(Message iMessage) {
 	case Message::FormFeed:
 		AddChar('\f');
 		break;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	case Message::ZoomIn:
-		if (vs.ZoomIn()) {
-			//vs.zoomLevel++;
+		if (vs.zoomLevel < 60) {
+			vs.zoomLevel++;
 			InvalidateStyleRedraw();
 			NotifyZoom();
 		}
 		break;
 	case Message::ZoomOut:
-		if (vs.ZoomOut()) {
-			//vs.zoomLevel--;
+		if (vs.zoomLevel > -10) {
+			vs.zoomLevel--;
 			InvalidateStyleRedraw();
 			NotifyZoom();
 		}
 		break;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	case Message::DelWordLeft:
 	case Message::DelWordRight:
@@ -4160,7 +4156,7 @@ int Editor::KeyDownWithModifiers(Keys key, KeyMod modifiers, bool *consumed) {
 
 void Editor::Indent(bool forwards, bool lineIndent) {
 	UndoGroup ug(pdoc);
-	// Scintilla 5.5.8: Avoid problems with recalculating rectangular range multiple times by temporarily
+	// Avoid problems with recalculating rectangular range multiple times by temporarily
 	// treating rectangular selection as multiple stream selection.
 	const Selection::SelTypes selType = sel.selType;
 	if (sel.IsRectangular()) {
@@ -4172,42 +4168,37 @@ void Editor::Indent(bool forwards, bool lineIndent) {
 		Sci::Position caretPosition = sel.Range(r).caret.Position();
 		const Sci::Line lineCurrentPos = pdoc->SciLineFromPosition(caretPosition);
 		if (lineOfAnchor == lineCurrentPos && !lineIndent) {
+			const int indentationStep = pdoc->IndentSize();
 			if (forwards) {
 				pdoc->DeleteChars(sel.Range(r).Start().Position(), sel.Range(r).Length());
 				caretPosition = sel.Range(r).caret.Position();
-				if (pdoc->GetColumn(caretPosition) <= pdoc->GetColumn(pdoc->GetLineIndentPosition(lineCurrentPos)) &&
-						pdoc->tabIndents) {
-					const int indentation = pdoc->GetLineIndentation(lineCurrentPos);
-					const int indentationStep = pdoc->IndentSize();
+				const int indentation = pdoc->GetLineIndentation(lineCurrentPos);
+				const Sci::Position column = pdoc->GetColumn(caretPosition);
+				if (column <= indentation && pdoc->tabIndents) {
+					// Inside initial whitespace
 					const Sci::Position posSelect = pdoc->SetLineIndentation(
-						lineCurrentPos, indentation + indentationStep - indentation % indentationStep);
+						lineCurrentPos, indentation + indentationStep - (indentation % indentationStep));
 					sel.Range(r) = SelectionRange(posSelect);
 				} else {
 					if (pdoc->useTabs) {
-						const Sci::Position lengthInserted = pdoc->InsertString(caretPosition, "\t", 1);
+						const Sci::Position lengthInserted = pdoc->InsertString(caretPosition, "\t");
 						sel.Range(r) = SelectionRange(caretPosition + lengthInserted);
 					} else {
-						int numSpaces = (pdoc->tabInChars) -
-								static_cast<int>((pdoc->GetColumn(caretPosition) % (pdoc->tabInChars)));
-						if (numSpaces < 1)
-							numSpaces = pdoc->tabInChars;
+						const Sci::Position numSpaces = pdoc->tabInChars - (column % pdoc->tabInChars);
 						const std::string spaceText(numSpaces, ' ');
 						const Sci::Position lengthInserted = pdoc->InsertString(caretPosition, spaceText);
 						sel.Range(r) = SelectionRange(caretPosition + lengthInserted);
 					}
 				}
 			} else {
-				if (pdoc->GetColumn(caretPosition) <= pdoc->GetLineIndentation(lineCurrentPos) &&
-						pdoc->tabIndents) {
-					const int indentation = pdoc->GetLineIndentation(lineCurrentPos);
-					const int indentationStep = pdoc->IndentSize();
+				const int indentation = pdoc->GetLineIndentation(lineCurrentPos);
+				const Sci::Position column = pdoc->GetColumn(caretPosition);
+				if (column <= indentation && pdoc->tabIndents) {
 					const Sci::Position posSelect = pdoc->SetLineIndentation(lineCurrentPos, indentation - indentationStep);
 					sel.Range(r) = SelectionRange(posSelect);
 				} else {
-					Sci::Position newColumn = ((pdoc->GetColumn(caretPosition) - 1) / pdoc->tabInChars) *
-							pdoc->tabInChars;
-					if (newColumn < 0)
-						newColumn = 0;
+					const Sci::Position newColumn = std::max<Sci::Position>(0,
+						((column - 1) / pdoc->tabInChars) * pdoc->tabInChars);
 					Sci::Position newPos = caretPosition;
 					while (pdoc->GetColumn(newPos) > newColumn)
 						newPos--;
@@ -4242,7 +4233,7 @@ void Editor::Indent(bool forwards, bool lineIndent) {
 			}
 		}
 	}
-	sel.selType = selType;	// Scintilla 5.5.8: Restore rectangular mode
+	sel.selType = selType;	// Restore rectangular mode
 	ThinRectangularRange();
 	ContainerNeedsUpdate(Update::Selection);
 }
@@ -4505,14 +4496,10 @@ void Editor::SetDragPosition(SelectionPosition newPos) {
 		posDrop = newPos;
 	}
 	if (!(posDrag == newPos)) {
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		int const slop_x = (caretPolicies.x.slop < 50) ? 50 : caretPolicies.x.slop;
-		int const slop_y = (caretPolicies.y.slop < 2) ? 2 : caretPolicies.y.slop;
 		const CaretPolicies dragCaretPolicies = {
-			CaretPolicySlop(CaretPolicy::Slop | CaretPolicy::Strict | CaretPolicy::Even, slop_x),
-			CaretPolicySlop(CaretPolicy::Slop | CaretPolicy::Strict | CaretPolicy::Even, slop_y)
+			CaretPolicySlop(CaretPolicy::Slop | CaretPolicy::Strict | CaretPolicy::Even, 50),
+			CaretPolicySlop(CaretPolicy::Slop | CaretPolicy::Strict | CaretPolicy::Even, 2)
 		};
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		MovedCaret(newPos, posDrag, true, dragCaretPolicies);
 
 		caret.on = true;
@@ -4599,9 +4586,6 @@ void Editor::DropAt(SelectionPosition position, const char *value, size_t length
 				SetSelection(posAfterInsertion, position);
 			}
 		}
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		EnsureCaretVisible();
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	} else if (inDragDrop == DragDrop::dragging) {
 		SetEmptySelection(position);
 	}
@@ -5005,9 +4989,6 @@ void Editor::SetHoverIndicatorPosition(Sci::Position position) {
 		}
 	}
 	if (hoverIndicatorPosPrev != hoverIndicatorPos) {
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		TickFor(TickReason::dwell); // trigger SCN_DWELLSTART
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		Redraw();
 	}
 }
@@ -5056,7 +5037,7 @@ void Editor::ButtonMoveWithModifiers(Point pt, unsigned int, KeyMod modifiers) {
 		AllowVirtualSpace(virtualSpaceOptions, sel.IsRectangular()));
 	movePos = MovePositionOutsideChar(movePos, sel.MainCaret() - movePos.Position());
 
-	if (inDragDrop == DragDrop::initial) {
+	if (dragDropEnabled && inDragDrop == DragDrop::initial) {
 		if (DragThreshold(ptMouseLast, pt)) {
 			ChangeMouseCapture(false);
 			SetDragPosition(movePos);
@@ -5154,7 +5135,7 @@ void Editor::ButtonMoveWithModifiers(Point pt, unsigned int, KeyMod modifiers) {
 			}
 		}
 		// Display regular (drag) cursor over selection
-		if (PointInSelection(pt) && !SelectionEmpty()) {
+		if (dragDropEnabled && PointInSelection(pt) && !SelectionEmpty()) {
 			DisplayCursor(Window::Cursor::arrow);
 			SetHoverIndicatorPosition(Sci::invalidPosition);
 		} else {
@@ -5164,13 +5145,7 @@ void Editor::ButtonMoveWithModifiers(Point pt, unsigned int, KeyMod modifiers) {
 				SetHotSpotRange(&pt);
 			} else {
 				if (hoverIndicatorPos != Sci::invalidPosition)
-				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-				{
-					const bool ctrl = FlagSet(modifiers, KeyMod::Ctrl);
-					const bool alt = FlagSet(modifiers, KeyMod::Alt);
-					DisplayCursor(ctrl ? Window::Cursor::hand : (alt ? Window::Cursor::arrow : Window::Cursor::text));
-				}
-				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+					DisplayCursor(Window::Cursor::hand);
 				else
 					DisplayCursor(Window::Cursor::text);
 				SetHotSpotRange(nullptr);
@@ -5474,7 +5449,7 @@ void Editor::QueueIdleWork(WorkItems items, Sci::Position upTo) {
 	workNeeded.Need(items, upTo);
 }
 
-int Editor::SupportsFeature(Scintilla::Supports feature) const noexcept {
+int Editor::SupportsFeature(Supports feature) const noexcept {
 	AutoSurface surface(this);
 	return surface->SupportsFeature(feature);
 }
@@ -6092,12 +6067,6 @@ void Editor::StyleSetMessage(Message iMessage, uptr_t wParam, sptr_t lParam) {
 	case Message::StyleSetUnderline:
 		vs.styles[wParam].underline = lParam != 0;
 		break;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	// Added strike style, 2020-05-31
-	case Message::StyleSetStrike:
-		vs.styles[wParam].strike = lParam != 0;
-		break;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	case Message::StyleSetCase:
 		vs.styles[wParam].caseForce = static_cast<Style::CaseForce>(lParam);
 		break;
@@ -6161,11 +6130,6 @@ sptr_t Editor::StyleGetMessage(Message iMessage, uptr_t wParam, sptr_t lParam) {
 		return StringResult(lParam, vs.styles[wParam].fontName);
 	case Message::StyleGetUnderline:
 		return vs.styles[wParam].underline ? 1 : 0;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	// Added strike style, 2020-05-31
-	case Message::StyleGetStrike:
-		return vs.styles[wParam].strike ? 1 : 0;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	case Message::StyleGetCase:
 		return static_cast<int>(vs.styles[wParam].caseForce);
 	case Message::StyleGetCharacterSet:
@@ -6210,11 +6174,11 @@ void Editor::SetSelectionNMessage(Message iMessage, uptr_t wParam, sptr_t lParam
 		break;
 
 	case Message::SetSelectionNStart:
-		sel.Range(wParam).anchor.SetPosition(lParam);
+		sel.Range(wParam).StartSet(SelectionPosition(lParam));
 		break;
 
 	case Message::SetSelectionNEnd:
-		sel.Range(wParam).caret.SetPosition(lParam);
+		sel.Range(wParam).EndSet(SelectionPosition(lParam));
 		break;
 
 	default:
@@ -6936,9 +6900,7 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 		break;
 
 	case Message::SetPrintMagnification:
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		view.printParameters.magnification = std::clamp(static_cast<int>(wParam), SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+		view.printParameters.magnification = static_cast<int>(wParam);
 		break;
 
 	case Message::GetPrintMagnification:
@@ -7118,6 +7080,13 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 	case Message::GetBufferedDraw:
 		return view.bufferedDraw;
 
+	case Message::GetDragDropEnabled:
+		return dragDropEnabled;
+
+	case Message::SetDragDropEnabled:
+		dragDropEnabled = wParam != 0;
+		break;
+
 #ifdef INCLUDE_DEPRECATED_FEATURES
 	case SCI_GETTWOPHASEDRAW:
 		return view.phasesDraw == EditView::phasesTwo;
@@ -7196,7 +7165,6 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 
 	case Message::SetUseTabs:
 		pdoc->useTabs = wParam != 0;
-		InvalidateStyleRedraw();
 		break;
 
 	case Message::GetUseTabs:
@@ -7730,9 +7698,6 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 	case Message::StyleSetSizeFractional:
 	case Message::StyleSetFont:
 	case Message::StyleSetUnderline:
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	case Message::StyleSetStrike:
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	case Message::StyleSetCase:
 	case Message::StyleSetCharacterSet:
 	case Message::StyleSetVisible:
@@ -7754,9 +7719,6 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 	case Message::StyleGetSizeFractional:
 	case Message::StyleGetFont:
 	case Message::StyleGetUnderline:
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	case Message::StyleGetStrike:
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	case Message::StyleGetCase:
 	case Message::StyleGetCharacterSet:
 	case Message::StyleGetVisible:
@@ -8415,15 +8377,11 @@ sptr_t Editor::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 		InvalidateStyleRedraw();
 		break;
 
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	case Message::SetZoom: {
-		const int zoomLevel = std::clamp(static_cast<int>(wParam), SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
-		if (SetAppearance(vs.zoomLevel, zoomLevel)) {
+	case Message::SetZoom:
+		if (SetAppearance(vs.zoomLevel, static_cast<int>(wParam))) {
 			NotifyZoom();
 		}
-	}
-	break;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+		break;
 
 	case Message::GetZoom:
 		return vs.zoomLevel;
