@@ -6,8 +6,8 @@ setlocal EnableExtensions EnableDelayedExpansion
 set _SCRIPTDIR_=%~dp0
 pushd %_SCRIPTDIR_%
 
-call :RESOLVE_PATH  _EXE_PATH_  "..\..\Bin\Debug_x64_v143\Notepad3.exe"
-::call :RESOLVE_PATH  _EXE_PATH_  "..\..\Bin\Release_x64_v143\Notepad3.exe"
+call :RESOLVE_PATH  _EXE_PATH_  "..\..\Bin\Debug_x64_v145\Notepad3.exe"
+::call :RESOLVE_PATH  _EXE_PATH_  "..\..\Bin\Release_x64_v145\Notepad3.exe"
 
 call :RESOLVE_PATH  _LOG_FILE_  ".\log.txt"
 
