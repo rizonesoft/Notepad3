@@ -161,10 +161,12 @@
 		0DFB4F5F94B018794ADB389D /* LexDart.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 1F274010A7943C43BA265511 /* LexDart.cxx */; };
 		CEC8496B8D9712E6EEDBC301 /* LexZig.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 71684CF6BCC80369BCE2F893 /* LexZig.cxx */; };
 		4A444CF5A75E52E2C5537328 /* LexNix.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 81E2488CB0A0DC6B67AA08DD /* LexNix.cxx */; };
-		BB044596AE5BF36880B8B4AE /* LexAHK.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 62E346ACA93C6685F7D1173B /* LexAHK.cxx */; };
-		939949838A31265F78C59DB4 /* LexCSV.cxx in Sources */ = {isa = PBXBuildFile; fileRef = B85A474396AEFA29F274960F /* LexCSV.cxx */; };
-		775B43F7A841DE6F76D670E2 /* LexerUtils.cxx in Sources */ = {isa = PBXBuildFile; fileRef = D50442879C41BD2B219ECCFA /* LexerUtils.cxx */; };
-		A9604C459C5401B68E91D6C1 /* LexKotlin.cxx in Sources */ = {isa = PBXBuildFile; fileRef = BA174A3A9F378A665382BA40 /* LexKotlin.cxx */; };
+		FE5F4B168F37B523E4D1EFCD /* LexSINEX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 0D814275A1A8A9FA6D10447C /* LexSINEX.cxx */; };
+		B049435FAED389EA7C61E3C1 /* LexEscSeq.cxx in Sources */ = {isa = PBXBuildFile; fileRef = F523432FAB6C14A16F12ECE8 /* LexEscSeq.cxx */; };
+		C6F34F4ABC6985D17E76CB9C /* LexAHK.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 5D1A4C4087C78A42081CD63B /* LexAHK.cxx */; };
+		EA6C4DEF8B52998337898716 /* LexCSV.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 03F248D1A10E8161D6B49EDD /* LexCSV.cxx */; };
+		13D940D09B2B59C02565E262 /* LexerUtils.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 708648B89F5D9BC3A1652388 /* LexerUtils.cxx */; };
+		1D704D89AB0DF408C9BFEBEA /* LexKotlin.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 46D84C318EB8837EC38996E6 /* LexKotlin.cxx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -324,10 +326,12 @@
 		1F274010A7943C43BA265511 /* LexDart.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexDart.cxx; path = ../../lexers/LexDart.cxx; sourceTree = SOURCE_ROOT; };
 		71684CF6BCC80369BCE2F893 /* LexZig.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexZig.cxx; path = ../../lexers/LexZig.cxx; sourceTree = SOURCE_ROOT; };
 		81E2488CB0A0DC6B67AA08DD /* LexNix.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexNix.cxx; path = ../../lexers/LexNix.cxx; sourceTree = SOURCE_ROOT; };
-		62E346ACA93C6685F7D1173B /* LexAHK.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexAHK.cxx; path = ../../lexers/LexAHK.cxx; sourceTree = SOURCE_ROOT; };
-		B85A474396AEFA29F274960F /* LexCSV.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexCSV.cxx; path = ../../lexers/LexCSV.cxx; sourceTree = SOURCE_ROOT; };
-		D50442879C41BD2B219ECCFA /* LexerUtils.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexerUtils.cxx; path = ../../lexers/LexerUtils.cxx; sourceTree = SOURCE_ROOT; };
-		BA174A3A9F378A665382BA40 /* LexKotlin.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexKotlin.cxx; path = ../../lexers/LexKotlin.cxx; sourceTree = SOURCE_ROOT; };
+		0D814275A1A8A9FA6D10447C /* LexSINEX.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexSINEX.cxx; path = ../../lexers/LexSINEX.cxx; sourceTree = SOURCE_ROOT; };
+		F523432FAB6C14A16F12ECE8 /* LexEscSeq.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexEscSeq.cxx; path = ../../lexers/LexEscSeq.cxx; sourceTree = SOURCE_ROOT; };
+		5D1A4C4087C78A42081CD63B /* LexAHK.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexAHK.cxx; path = ../../lexers/LexAHK.cxx; sourceTree = SOURCE_ROOT; };
+		03F248D1A10E8161D6B49EDD /* LexCSV.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexCSV.cxx; path = ../../lexers/LexCSV.cxx; sourceTree = SOURCE_ROOT; };
+		708648B89F5D9BC3A1652388 /* LexerUtils.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexerUtils.cxx; path = ../../lexers/LexerUtils.cxx; sourceTree = SOURCE_ROOT; };
+		46D84C318EB8837EC38996E6 /* LexKotlin.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LexKotlin.cxx; path = ../../lexers/LexKotlin.cxx; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -375,7 +379,7 @@
 				28BA730624E34D9400272C2D /* LexA68k.cxx */,
 				28BA72EE24E34D9300272C2D /* LexAbaqus.cxx */,
 				28BA730024E34D9400272C2D /* LexAda.cxx */,
-				62E346ACA93C6685F7D1173B /* LexAHK.cxx */,
+				5D1A4C4087C78A42081CD63B /* LexAHK.cxx */,
 				28BA72DF24E34D9200272C2D /* LexAPDL.cxx */,
 				3AF14420BFC43876F16C5995 /* LexAsciidoc.cxx */,
 				28BA72FF24E34D9400272C2D /* LexAsm.cxx */,
@@ -401,7 +405,7 @@
 				28BA730124E34D9400272C2D /* LexCrontab.cxx */,
 				28BA731524E34D9500272C2D /* LexCsound.cxx */,
 				28BA732924E34D9600272C2D /* LexCSS.cxx */,
-				B85A474396AEFA29F274960F /* LexCSV.cxx */,
+				03F248D1A10E8161D6B49EDD /* LexCSV.cxx */,
 				28BA72E024E34D9200272C2D /* LexD.cxx */,
 				1F274010A7943C43BA265511 /* LexDart.cxx */,
 				28BA732C24E34D9600272C2D /* LexDataflex.cxx */,
@@ -413,8 +417,9 @@
 				28BA72D924E34D9200272C2D /* LexEiffel.cxx */,
 				28BA72E824E34D9200272C2D /* LexErlang.cxx */,
 				28BA72EB24E34D9300272C2D /* LexErrorList.cxx */,
-				D50442879C41BD2B219ECCFA /* LexerUtils.cxx */,
+				708648B89F5D9BC3A1652388 /* LexerUtils.cxx */,
 				28BA72F624E34D9300272C2D /* LexEScript.cxx */,
+				F523432FAB6C14A16F12ECE8 /* LexEscSeq.cxx */,
 				28BA72EC24E34D9300272C2D /* LexFlagship.cxx */,
 				28BA72CB24E34D9100272C2D /* LexForth.cxx */,
 				28BA72FB24E34D9400272C2D /* LexFortran.cxx */,
@@ -431,7 +436,7 @@
 				28BA733024E34D9600272C2D /* LexJSON.cxx */,
 				315E4E969868C52C125686B2 /* LexJulia.cxx */,
 				28BA731124E34D9500272C2D /* LexKix.cxx */,
-				BA174A3A9F378A665382BA40 /* LexKotlin.cxx */,
+				46D84C318EB8837EC38996E6 /* LexKotlin.cxx */,
 				28BA72F824E34D9300272C2D /* LexKVIrc.cxx */,
 				28BA72ED24E34D9300272C2D /* LexLaTeX.cxx */,
 				28BA72E424E34D9200272C2D /* LexLisp.cxx */,
@@ -475,6 +480,7 @@
 				28BA733824E34D9700272C2D /* LexRust.cxx */,
 				28BA72D224E34D9200272C2D /* LexSAS.cxx */,
 				28BA731D24E34D9500272C2D /* LexScriptol.cxx */,
+				0D814275A1A8A9FA6D10447C /* LexSINEX.cxx */,
 				28BA72D424E34D9200272C2D /* LexSmalltalk.cxx */,
 				28BA72CC24E34D9100272C2D /* LexSML.cxx */,
 				28BA72DE24E34D9200272C2D /* LexSorcus.cxx */,
@@ -761,10 +767,12 @@
 				0DFB4F5F94B018794ADB389D /* LexDart.cxx in Sources */,
 				CEC8496B8D9712E6EEDBC301 /* LexZig.cxx in Sources */,
 				4A444CF5A75E52E2C5537328 /* LexNix.cxx in Sources */,
-				BB044596AE5BF36880B8B4AE /* LexAHK.cxx in Sources */,
-				939949838A31265F78C59DB4 /* LexCSV.cxx in Sources */,
-				775B43F7A841DE6F76D670E2 /* LexerUtils.cxx in Sources */,
-				A9604C459C5401B68E91D6C1 /* LexKotlin.cxx in Sources */,
+				FE5F4B168F37B523E4D1EFCD /* LexSINEX.cxx in Sources */,
+				B049435FAED389EA7C61E3C1 /* LexEscSeq.cxx in Sources */,
+				C6F34F4ABC6985D17E76CB9C /* LexAHK.cxx in Sources */,
+				EA6C4DEF8B52998337898716 /* LexCSV.cxx in Sources */,
+				13D940D09B2B59C02565E262 /* LexerUtils.cxx in Sources */,
+				1D704D89AB0DF408C9BFEBEA /* LexKotlin.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -892,7 +900,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5.4.5;
+				CURRENT_PROJECT_VERSION = 5.4.6;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4F446KW87E;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -920,7 +928,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5.4.5;
+				CURRENT_PROJECT_VERSION = 5.4.6;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 4F446KW87E;
 				DYLIB_COMPATIBILITY_VERSION = 1;

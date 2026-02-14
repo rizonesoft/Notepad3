@@ -482,6 +482,8 @@
     *text)</a><br />
      <a class="message" href="#SCI_SETREADONLY">SCI_SETREADONLY(bool readOnly)</a><br />
      <a class="message" href="#SCI_GETREADONLY">SCI_GETREADONLY &rarr; bool</a><br />
+     <a class="message" href="#SCI_GETDRAGDROPENABLED">SCI_GETDRAGDROPENABLED &rarr; bool</a><br />
+     <a class="message" href="#SCI_SETDRAGDROPENABLED">SCI_SETDRAGDROPENABLED(bool dragDropEnabled)</a><br />
      <a class="message" href="#SCI_GETTEXTRANGE">SCI_GETTEXTRANGE(&lt;unused&gt;, Sci_TextRange *tr) &rarr; position</a><br />
      <a class="message" href="#SCI_GETTEXTRANGEFULL">SCI_GETTEXTRANGEFULL(&lt;unused&gt;, Sci_TextRangeFull *tr) &rarr; position</a><br />
      <a class="message" href="#SCI_ALLOCATE">SCI_ALLOCATE(position bytes)</a><br />
@@ -567,6 +569,10 @@
      These messages set and get the read-only flag for the document. If you mark a document as read
     only, attempts to modify the text cause the <a class="message"
     href="#SCN_MODIFYATTEMPTRO"><code>SCN_MODIFYATTEMPTRO</code></a> notification.</p>
+
+    <p><b id="SCI_GETDRAGDROPENABLED">SCI_GETDRAGDROPENABLED &rarr; bool</b><br />
+     <b id="SCI_SETDRAGDROPENABLED">SCI_SETDRAGDROPENABLED(bool dragDropEnabled)</b><br />
+     These messages get and set the flag controlling whether drag-and-drop is enabled or not.</p>
 
     <p>
     <b id="SCI_GETTEXTRANGE">SCI_GETTEXTRANGE(&lt;unused&gt;, <a class="jump" href="#Sci_TextRange">Sci_TextRange</a> *tr) &rarr; position</b><br />
@@ -6538,7 +6544,7 @@ struct Sci_TextToFindFull {
      <a class="message" href="#SCI_AUTOCGETMAXWIDTH">SCI_AUTOCGETMAXWIDTH &rarr; int</a><br />
      <a class="message" href="#SCI_AUTOCSETSTYLE">SCI_AUTOCSETSTYLE(int style)</a><br />
      <a class="message" href="#SCI_AUTOCGETSTYLE">SCI_AUTOCGETSTYLE &rarr; int</a><br />
-     <a class="message" href="#SCI_AUTOCSETIMAGESCALE">SCI_AUTOCSETIMAGESCALE(int scale)</a><br />
+     <a class="message" href="#SCI_AUTOCSETIMAGESCALE">SCI_AUTOCSETIMAGESCALE(int scalePercent)</a><br />
      <a class="message" href="#SCI_AUTOCGETIMAGESCALE">SCI_AUTOCGETIMAGESCALE &rarr; int</a><br />
      <a class="element" href="#SC_ELEMENT_LIST">SC_ELEMENT_LIST : colouralpha</a><br />
      <a class="element" href="#SC_ELEMENT_LIST_BACK">SC_ELEMENT_LIST_BACK : colouralpha</a><br />
@@ -10528,6 +10534,13 @@ EM_SETTARGETDEVICE
         <tr>
           <td align="left"><code>DISABLE_D2D</code></td>
           <td>(Win32) Build Scintilla without Direct2D/DirectWrite.</td>
+        </tr>
+
+        <tr>
+          <td align="left"><code>PTRDIFF_DOESNT_ALIAS_INT</code></td>
+          <td>Define if <code>ptrdiff_t*</code> does not alias <code>int*</code>.
+          This is detected automatically, but the check may be unreliable.
+          Try to define this symbol in case of errors about undefined symbols.</td>
         </tr>
       </tbody>
     </table>
