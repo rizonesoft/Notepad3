@@ -2,7 +2,7 @@
 
 ## Build
 
-Notepad3 is a Windows-only C/C++ application built with Visual Studio 2022 (toolset v145) and MSBuild. The solution file is `Notepad3.sln`.
+Notepad3 is a Windows-only C/C++ application built with Visual Studio 2026 (toolset v145) and MSBuild. The solution file is `Notepad3.sln`.
 
 ### Build commands
 

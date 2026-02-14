@@ -40,6 +40,6 @@ These files have NP3 patches and retain their customizations:
 
 Build completed successfully with exit code 0:
 ```
-Notepad3.vcxproj -> R:\GitHub\Notepad3\Bin\Release_x64_v143\Notepad3.exe
+Notepad3.vcxproj -> R:\GitHub\Notepad3\Bin\Release_x64_v145\Notepad3.exe
 ```
 
