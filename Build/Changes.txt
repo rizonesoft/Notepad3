@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.26.130.(build_#) (2026-01-30
+Current BETA Version 6.26.215.(build_#) (2026-02-15)
 ========================================================
 
 --------------------------------------------------------
@@ -53,7 +53,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]-
-[.µµµ.µ]- Update to Scintilla 5.5.8 and Lexilla 5.4.6 (SCI/LEX).
+[.215.1]- Migration of the MS VS2022 compiler to MS VS2026 vc145 platform toolset.
+[.215.1]- Update to Scintilla 5.5.8 and Lexilla 5.4.6 (SCI/LEX).
 [.130.1]- Moved installer scripts to Build\Installer folder with local language files (SUP).
 [.101.1]- Rizonesoft Copyright ©  2008-2025 to year "2008-2026".
 [1114.1]- Remove the "Opera Promotion" page in Notepad3 "INNO Setup Installer" (SUP).
@@ -65,7 +66,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]-
-[.µµµ.µ]- Strip trailing blanks when saving option (issue 5444).
+[.215.1]- Strip trailing blanks when saving option (issue 5444).
 [.130.1]- New files created in correct working directory.
 [.130.1]- Allow saving unmodified files when strip blanks is enabled.
 [.130.1]- Black line in Language menu submenu.
@@ -88,8 +89,8 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.µµµ.µ]- Update Lexilla Library (LEX) version 5.4.6 (2025-11-10).
-[.µµµ.µ]- Update Scintilla Library (SCI) version 5.5.8 (2025-11-10).
+[.215.1]- Update Lexilla Library (LEX) version 5.4.6 (2025-11-10).
+[.215.1]- Update Scintilla Library (SCI) version 5.5.8 (2025-11-10).
 [.711.1]- Update Oniguruma Regex (ONI) engine version 6.9.10 (2025/04/24).
 [.101.1]- Update grepWinNP3 (GRE) version 2.1.15.48 (2024-01-10).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
