@@ -396,9 +396,8 @@
       <CETCompat>true</CETCompat>
       <AdditionalLibraryDirectories>$(OutputPath)obj;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ManifestFile />
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
     </Link>
-    <ClCompile>
-    </ClCompile>
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -416,6 +415,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <UseStandardPreprocessor>false</UseStandardPreprocessor>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -441,8 +441,8 @@
       <AdditionalLibraryDirectories>$(OutputPath)obj;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ManifestFile>
       </ManifestFile>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
     </Link>
-    <ClCompile />
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -461,6 +461,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <UseStandardPreprocessor>false</UseStandardPreprocessor>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>

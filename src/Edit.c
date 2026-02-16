@@ -1422,11 +1422,12 @@ bool EditLoadFile(
                 EditDetectEOLMode(lpData, cbData, status);
             }
         }
-        else if (!IS_ENC_ENFORCED() && (encDetection.bPureASCII7Bit && !encDetection.bHasUnicodeNullBytes)) {
+        else if (!IS_ENC_ENFORCED() && encDetection.bPureASCII7Bit) {
             // load ASCII(7-bit) as ANSI/UTF-8
             EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory, bReloadFile);
             status->iEncoding = (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT);
             EditDetectEOLMode(lpData, cbData, status);
+
         } else { // ===  ALL OTHER NON UTF-8 ===
 
             status->iEncoding = encDetection.Encoding;
@@ -4659,45 +4660,53 @@ void EditUniteDuplicateLines(HWND hwnd, bool bRemoveEmptyLines, bool bRemoveLast
     DocLn iCurLine = iStartLine;
     while (iCurLine < iEndLine) {
 
-        DocPos const      iCurLnLen = Sci_GetNetLineLength(iCurLine);
-        DocPos const      iBegCurLine = SciCall_PositionFromLine(iCurLine);
-        // range-pointer may move during line deletion, so copy current line for const comparison
-        StringCchCopyNA(pCurrentLine, SizeOfMem(pCurrentLine), SciCall_GetRangePointer(iBegCurLine, iCurLnLen + 1), iCurLnLen);
-        pCurrentLine[iCurLnLen] = '\0';
+        DocPos const iBegCurLine = SciCall_PositionFromLine(iCurLine);
 
-        DocLn iPrevLine = iCurLine;
-        DocLn iCompareLine = iCurLine;
-        bool bFoundDup = false;
-        while (++iCompareLine <= iEndLine) {
+        if (iBegCurLine >= 0) {
 
-            DocPos const iCmpLnLen = Sci_GetNetLineLength(iCompareLine);
-            if (bRemoveEmptyLines || (iCmpLnLen > 0)) {
+            DocPos const iCurLnLen = Sci_GetNetLineLength(iCurLine);
 
-                DocPos const      iBegCmpLine = SciCall_PositionFromLine(iCompareLine);
-                const char* const pCompareLine = SciCall_GetRangePointer(iBegCmpLine, iCmpLnLen);
+            // range-pointer may move during line deletion, so copy current line for const comparison
+            StringCchCopyNA(pCurrentLine, SizeOfMem(pCurrentLine), SciCall_GetRangePointer(iBegCurLine, iCurLnLen + 1), iCurLnLen);
+            pCurrentLine[iCurLnLen] = '\0';
 
-                if ((iCurLnLen == iCmpLnLen) && IsSameCharSequence(pCurrentLine, pCompareLine, iCmpLnLen)) {
-                    bFoundDup = true;
-                    DocPos const posPrev = SciCall_GetLineEndPosition(iPrevLine);
-                    DocPos const posComp = SciCall_GetLineEndPosition(iCompareLine);
-                    assert(posPrev != posComp);
-                    SciCall_SetTargetRange(posPrev, posComp);
-                    SciCall_ReplaceTarget(0, "");
-                    --iEndLine; // line inbetween removed
-                    --iCompareLine; // don't proceed compare-line
+            DocLn iPrevLine = iCurLine;
+            DocLn iCompareLine = iCurLine;
+            bool  bFoundDup = false;
+            while (++iCompareLine <= iEndLine) {
+
+                DocPos const iCmpLnLen = Sci_GetNetLineLength(iCompareLine);
+                if (bRemoveEmptyLines || (iCmpLnLen > 0)) {
+
+                    DocPos const      iBegCmpLine = SciCall_PositionFromLine(iCompareLine);
+                    const char* const pCompareLine = SciCall_GetRangePointer(iBegCmpLine, iCmpLnLen);
+
+                    if ((iCurLnLen == iCmpLnLen) && IsSameCharSequence(pCurrentLine, pCompareLine, iCmpLnLen)) {
+                        bFoundDup = true;
+                        DocPos const posPrev = SciCall_GetLineEndPosition(iPrevLine);
+                        DocPos const posComp = SciCall_GetLineEndPosition(iCompareLine);
+                        assert(posPrev != posComp);
+                        SciCall_SetTargetRange(posPrev, posComp);
+                        SciCall_ReplaceTarget(0, "");
+                        --iEndLine;     // line inbetween removed
+                        --iCompareLine; // compare-line removed, so stay at same line for next compare
+                    }
+                    else iPrevLine = iCompareLine;
                 }
+                else iPrevLine = iCompareLine;
+
+            } // while
+
+            if (bRemoveLastDup && bFoundDup) {
+                DocPos const posBeg = SciCall_PositionFromLine(iCurLine);
+                DocPos const posEnd = SciCall_PositionFromLine(iCurLine + 1);
+                SciCall_SetTargetRange(posBeg, posEnd);
+                SciCall_ReplaceTarget(0, "");
+                --iEndLine;     // line removed
             }
-            iPrevLine = iCompareLine;
+            else ++iCurLine;
         }
-        if (bRemoveLastDup && bFoundDup) {
-            DocPos const posBeg = SciCall_PositionFromLine(iCurLine);
-            DocPos const posEnd = SciCall_PositionFromLine(iCurLine + 1);
-            SciCall_SetTargetRange(posBeg, posEnd);
-            SciCall_ReplaceTarget(0, "");
-        }
-        else {
-            ++iCurLine;
-        }
+        else ++iCurLine;
     }
 
     EndUndoTransAction();
