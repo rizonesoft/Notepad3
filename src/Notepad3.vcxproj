@@ -1288,6 +1288,7 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
+    <Natvis Include="MyTypes.natvis" />
     <Natvis Include="STRINGW.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -124,7 +124,6 @@ int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cwch);
 bool Has_UTF16_LE_BOM(const char* pBuf, size_t cnt);
 bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt);
 bool Has_UTF16_BOM(const char *pBuf, size_t cnt);
-bool HasUnicodeNullBytes(const char* pBuf, size_t cnt);
 
 inline bool IsUTF8Signature(const char* p)
 {
@@ -132,8 +131,8 @@ inline bool IsUTF8Signature(const char* p)
 }
 #define UTF8StringStart(p) (IsUTF8Signature(p)) ? ((p)+3) : (p)
 
-bool IsValidUTF8(const char* pTest, size_t nLength);
 bool IsPureAscii7Bit(const char* pTest, size_t nLength);
+bool IsValidUTF8(const char* pTest, size_t nLength);
 
 
 //////////////////////////////////////////////////////
@@ -193,14 +192,13 @@ typedef struct _enc_det_t {
     bool bIsReverse;
     bool bIsUTF8Sig;
     bool bValidUTF8;
-    bool bHasUnicodeNullBytes;
     bool bPureASCII7Bit;
 
     char encodingStrg[64];
 
 } ENC_DET_T;
 
-#define INIT_ENC_DET_T  { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, false, false, "" }
+#define INIT_ENC_DET_T  { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, false, "" }
 
 
 ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpData, const size_t cbData,

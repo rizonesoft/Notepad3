@@ -714,18 +714,11 @@ bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt)
 }
 // ----------------------------------------------------------------------------
 
-bool HasUnicodeNullBytes(const char* pBuf, size_t cnt)
-{
-    int        iTest = IS_TEXT_UNICODE_NULL_BYTES;
-    bool const ok = IsTextUnicode(pBuf, (int)cnt, &iTest);
-    return (ok && ((iTest & IS_TEXT_UNICODE_NULL_BYTES) != 0));
-}
-// ----------------------------------------------------------------------------
-
 bool Has_UTF16_BOM(const char* pBuf, size_t cnt)
 {
     return (Has_UTF16_LE_BOM(pBuf, cnt) || Has_UTF16_BE_BOM(pBuf, cnt));
 }
+// ----------------------------------------------------------------------------
 
 // ============================================================================
 

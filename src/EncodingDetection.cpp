@@ -362,7 +362,7 @@ extern "C" NP2ENCODING g_Encodings[] = {
     /* 004 */{ NCP_UNICODE | NCP_RECODE,                            CP_UTF8,  ENC_PARSE_NAM_UTF16LE,           IDS_ENC_UTF16LE,           L"" }, // CPI_UNICODE            4
     /* 005 */{ NCP_UNICODE | NCP_UNICODE_REVERSE | NCP_RECODE,      CP_UTF8,  ENC_PARSE_NAM_UTF16BE,           IDS_ENC_UTF16BE,           L"" }, // CPI_UNICODEBE          5
     /* 006 */{ NCP_ASCII_7BIT | NCP_UTF8 | NCP_RECODE,              CP_UTF8,  ENC_PARSE_NAM_UTF8,              IDS_ENC_UTF8,              L"" }, // CPI_UTF8               6
-    /* 007 */{ NCP_UTF8 | NCP_UTF8_SIGN,                            CP_UTF8,  ENC_PARSE_NAM_UTF8SIG,           IDS_ENC_UTF8SIG,           L"" }, // CPI_UTF8SIGN           7
+    /* 007 */{ NCP_UTF8       | NCP_UTF8_SIGN,                      CP_UTF8,  ENC_PARSE_NAM_UTF8SIG,           IDS_ENC_UTF8SIG,           L"" }, // CPI_UTF8SIGN           7
     /* 008 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     CP_UTF7,  ENC_PARSE_NAM_UTF7,              IDS_ENC_UTF7,              L"" }, // CPI_UTF7               8
     /* 009 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     720,      ENC_PARSE_NAM_DOS_720,           IDS_ENC_DOS_720,           L"" },
     /* 010 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28596,    ENC_PARSE_NAM_ISO_8859_6,        IDS_ENC_ISO_8859_6,        L"" },
@@ -561,6 +561,7 @@ cpi_enc_t GetUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM
         return CPI_NONE; // iTest doesn't seem to have been modified ...
     }
 
+
     bool const bHasBOM = (iTest & IS_TEXT_UNICODE_SIGNATURE);
     bool const bHasRBOM = (iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE);
 
@@ -570,7 +571,7 @@ cpi_enc_t GetUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM
 
     //bool const bHasNullBytes = (iTest & IS_TEXT_UNICODE_NULL_BYTES);
 
-    if (bHasBOM || bHasRBOM || ((bIsUnicode || bIsReverse) && !bIsIllegal && !(bIsUnicode && bIsReverse))) {
+    if ((bHasBOM || bHasRBOM || (bIsUnicode || bIsReverse)) && !bIsIllegal && !(bIsUnicode && bIsReverse)) {
         if (lpbBOM) {
             *lpbBOM = (bHasBOM || bHasRBOM);
         }
@@ -1261,13 +1262,12 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
     cpi_enc_t iAnalyzeHint, bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection)
 {
     ENC_DET_T encDetRes = INIT_ENC_DET_T;
+    #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetRes.forcedEncoding))
 
     FileVars_GetFromData(lpData, cbData, &Globals.fvCurFile);
 
     bool const bBOM_LE = Has_UTF16_LE_BOM(lpData, cbData);
     bool const bBOM_BE = Has_UTF16_BE_BOM(lpData, cbData);
-
-#define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetRes.forcedEncoding))
 
     // --- 1st check for force encodings ---
 
@@ -1306,27 +1306,23 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
             Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes, iAnalyzeHint);
             // ---------------------------------------------------------------------------
         }
-        encDetRes.bHasUnicodeNullBytes = HasUnicodeNullBytes(lpData, cbData);
         encDetRes.bPureASCII7Bit = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) || IsPureAscii7Bit(lpData, cbData);
 
         if (encDetRes.analyzedEncoding == CPI_NONE) {
             encDetRes.analyzedEncoding = iAnalyzeHint;
             encDetRes.confidence = (1.0f - Settings2.AnalyzeReliableConfidenceLevel);
         }
-        else if (encDetRes.bPureASCII7Bit && !encDetRes.bHasUnicodeNullBytes) {
-            encDetRes.analyzedEncoding = (Settings.LoadASCIIasUTF8) ? CPI_UTF8 : CPI_ANSI_DEFAULT;
+        else if (encDetRes.bPureASCII7Bit && encDetRes.bValidUTF8) {
+            encDetRes.analyzedEncoding = CPI_UTF8;
         }
 
         if (!bSkipUTFDetection) {
 
             encDetRes.unicodeAnalysis = GetUnicodeEncoding(lpData, cbData, &(encDetRes.bHasBOM), &(encDetRes.bIsReverse));
-            if (Encoding_IsNONE(encDetRes.unicodeAnalysis) && Encoding_IsUNICODE(encDetRes.analyzedEncoding)) {
-                encDetRes.unicodeAnalysis = encDetRes.analyzedEncoding;
-            }
 
             if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis)) {
                 // check consistent BOM
-                if (encDetRes.bHasBOM && !bBOM_LE && !bBOM_BE) {
+                if (encDetRes.bHasBOM && !(bBOM_LE || bBOM_BE)) {
                     encDetRes.unicodeAnalysis = CPI_NONE;
                 }
                 else if (encDetRes.bHasBOM && encDetRes.bIsReverse && !bBOM_BE) {
@@ -1354,13 +1350,13 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
         _SetEncodingTitleInfo(&encDetRes);
     }
 
-    int const iConfidence = f2int(encDetRes.confidence * 100.0f);
-    int const iReliableThreshold = f2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
-    encDetRes.bIsAnalysisReliable = (iConfidence >= iReliableThreshold);
-
     // --------------------------------------------------------------------------
     // ---  choose best encoding guess  ----
     // --------------------------------------------------------------------------
+
+    int const iConfidence = f2int(encDetRes.confidence * 100.0f);
+    int const iReliableThreshold = f2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
+    encDetRes.bIsAnalysisReliable = (iConfidence >= iReliableThreshold);
 
     // init Preferred Encoding
     encDetRes.Encoding = CPI_PREFERRED_ENCODING;
@@ -1375,17 +1371,13 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
         encDetRes.Encoding = bBOM_LE ? CPI_UNICODEBOM : CPI_UNICODEBEBOM;
         encDetRes.bIsReverse = bBOM_BE;
     }
-    else if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis) && encDetRes.bHasUnicodeNullBytes)
-    {
-        encDetRes.Encoding = encDetRes.unicodeAnalysis;
-    }
     else if (Encoding_IsValid(encDetRes.analyzedEncoding) && (encDetRes.bIsAnalysisReliable || !Settings.UseReliableCEDonly))
     {
         encDetRes.Encoding = encDetRes.analyzedEncoding;
     }
-    else if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis))
+    else if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis) && (iConfidence > 66))
     {
-        encDetRes.Encoding = encDetRes.unicodeAnalysis;
+        encDetRes.Encoding = encDetRes.analyzedEncoding; // (1) rely on analyzed encoding
     }
     else if (Encoding_IsValid(Encoding_SrcWeak(CPI_GET)))
     {

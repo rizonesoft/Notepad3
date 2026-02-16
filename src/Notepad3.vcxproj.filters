@@ -721,5 +721,6 @@
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="STRINGW.natvis" />
+    <Natvis Include="MyTypes.natvis" />
   </ItemGroup>
 </Project>
