@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.26.215.(build_#) (2026-02-15)
+Current BETA Version 6.26.216.(build_#) (2026-02-16)
 ========================================================
 
 --------------------------------------------------------
@@ -66,6 +66,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]-
+[.216.1]- Win's Unicode detection is not reliable, change encoding detection.
 [.215.1]- Strip trailing blanks when saving option (issue 5444).
 [.130.1]- New files created in correct working directory.
 [.130.1]- Allow saving unmodified files when strip blanks is enabled.
