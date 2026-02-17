@@ -65,7 +65,9 @@ Notepad3 is a Win32 desktop text editor built on the **Scintilla** editing compo
 ### Vendored dependencies
 
 - **`scintilla\`** — Scintilla editor component with Notepad3-specific patches in `np3_patches\`
+- **`scintilla\doc\`** - Scintilla documentation offline
 - **`lexilla\`** — Lexilla syntax highlighting engine with custom patches
+- **`lexilla\doc\`** — Lexilla documentation offline
 - **`src\uchardet\`** — Character encoding detector
 - **`src\tinyexpr\` / `src\tinyexprcpp\`** — Expression evaluator for statusbar
 - **`src\uthash\`** — Hash table library (C macros)
@@ -110,6 +112,7 @@ Resource-based MUI system with 27+ locales. Each locale has a directory `np3_LAN
 ### Scintilla interaction
 
 Always use `SciCall.h` wrappers (e.g., `SciCall_GetTextLength()`) instead of raw `SendMessage(hwnd, SCI_XXX, ...)`. The wrappers use Scintilla's direct function pointer for performance.
+Add missing wrapper calls to `SciCall.h` if needed.
 
 ### Adding a new syntax lexer
 

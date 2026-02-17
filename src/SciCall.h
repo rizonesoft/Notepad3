@@ -324,6 +324,8 @@ DeclareSciCallV0(VCHome, VCHOME);
 DeclareSciCallV0(NewLine, NEWLINE);
 DeclareSciCallV0(Tab, TAB);
 DeclareSciCallV0(BackTab, BACKTAB);
+DeclareSciCallV0(LineIndent, LINEINDENT);
+DeclareSciCallV0(LineDedent, LINEDEDENT);
 DeclareSciCallV0(LineUp, LINEUP);
 DeclareSciCallV0(LineDown, LINEDOWN);
 DeclareSciCallV0(LineUpExtend, LINEUPEXTEND);
@@ -521,6 +523,7 @@ DeclareSciCallR0(LinesOnScreen, LINESONSCREEN, DocLn);
 DeclareSciCallR1(GetLineVisible, GETLINEVISIBLE, bool, DocLn, line);
 DeclareSciCallR0(GetFirstVisibleLine, GETFIRSTVISIBLELINE, DocLn);
 DeclareSciCallV1(SetFirstVisibleLine, SETFIRSTVISIBLELINE, DocLn, line);
+DeclareSciCallV2(ScrollVertical, SCROLLVERTICAL, DocLn, docLine, DocLn, subLine);
 DeclareSciCallR1(VisibleFromDocLine, VISIBLEFROMDOCLINE, DocLn, DocLn, line);
 DeclareSciCallR1(DocLineFromVisible, DOCLINEFROMVISIBLE, DocLn, DocLn, line);
 
@@ -751,6 +754,8 @@ DeclareSciCallV0(EndUndoAction, ENDUNDOACTION);
 DeclareSciCallR0(GetUndoCollection, GETUNDOCOLLECTION, bool);
 DeclareSciCallV1(SetUndoCollection, SETUNDOCOLLECTION, bool, bCollectUndo);
 DeclareSciCallR0(GetUndoSequence, GETUNDOSEQUENCE, int);
+DeclareSciCallV1(SetUndoSelectionHistory, SETUNDOSELECTIONHISTORY, int, option);
+DeclareSciCallR0(GetUndoSelectionHistory, GETUNDOSELECTIONHISTORY, int);
 
 
 //=============================================================================

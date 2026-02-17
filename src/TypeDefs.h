@@ -834,16 +834,6 @@ extern WCHAR Default_PreferredLanguageLocaleName[];
 
 //=============================================================================
 
-typedef enum SpecialUndoRedoToken {
-    // undoredo token >= 0
-    URTok_TokenStart    =  0L,
-    URTok_NoTransaction = -1L,
-    URTok_NoRecording   = -2L
-
-} SpecialUndoRedoToken;
-
-//=============================================================================
-
 typedef struct FOCUSEDVIEW_T {
 
     bool HideNonMatchedLines;
