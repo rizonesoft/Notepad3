@@ -1000,10 +1000,23 @@ static bool _HandleIniFileRedirect(LPCWSTR lpszSecName, LPCWSTR lpszKeyName, HPA
             Path_Sanitize(hredirect);
             Path_FreeExtra(hredirect, 0);
             if (_CheckAndSetIniFile(hredirect)) {
+                // Redirect target exists — use it
                 Path_Swap(hpth_in_out, hredirect);
             }
             else {
-                Path_CanonicalizeEx(hpth_in_out, Paths.ModuleDirectory);
+                // Redirect target doesn't exist — try to create it
+                // (admin explicitly configured this redirect)
+                Path_ExpandEnvStrings(hredirect);
+                if (Path_IsRelative(hredirect)) {
+                    Path_RelativeToApp(hredirect, false, false, true);
+                }
+                if (CreateIniFile(hredirect, NULL)) {
+                    Path_Swap(hpth_in_out, hredirect);
+                } else {
+                    // Creation failed — remember target for "Save Settings Now"
+                    Path_Reset(Paths.IniFileDefault, Path_Get(hredirect));
+                    Path_CanonicalizeEx(hpth_in_out, Paths.ModuleDirectory);
+                }
             }
             result = true;
         }
@@ -1093,7 +1106,12 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
         Path_RemoveFileSpec(hdir_path);
         if (Path_IsNotEmpty(hdir_path)) {
             // Use SHCreateDirectoryExW to create all intermediate directories - fixes #5075
-            SHCreateDirectoryExW(NULL, Path_Get(hdir_path), NULL);
+            HRESULT const hr = SHCreateDirectoryExW(NULL, Path_Get(hdir_path), NULL);
+            if (FAILED(hr) && (hr != HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS))) {
+                Path_Release(hdir_path);
+                if (pdwFileSize_out) { *pdwFileSize_out = 0UL; }
+                return false;
+            }
         }
         Path_Release(hdir_path);
 
@@ -1113,6 +1131,8 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
                 StrgFormat(msg, L"CreateIniFile(%s): FAILED TO CREATE INITIAL INI FILE!", fileName);
                 MsgBoxLastError(StrgGet(msg), 0);
                 StrgDestroy(msg);
+                if (pdwFileSize_out) { *pdwFileSize_out = 0UL; }
+                return false;
             }
         } else {
             HANDLE hFile = CreateFileW(Path_Get(hini_pth),
@@ -1137,7 +1157,7 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
             *pdwFileSize_out = dwFileSize;
         }
 
-        return CanAccessPath(Paths.IniFile, GENERIC_WRITE);
+        return CanAccessPath(hini_pth, GENERIC_WRITE);
     }
     return false;
 }
