@@ -18,6 +18,7 @@
 
 #include <shlobj.h>
 #include <shellapi.h>
+#include <propkey.h>
 #include <ctype.h>
 #include <wchar.h>
 
@@ -292,6 +293,36 @@ HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID)
     }
 
     return SetCurrentProcessExplicitAppUserModelID(AppID);
+}
+
+
+//=============================================================================
+//
+//  SetWindowAppUserModelID()
+//
+HRESULT SetWindowAppUserModelID(HWND hwnd, PCWSTR AppID)
+{
+    if (!hwnd || StrIsEmpty(AppID)) {
+        return S_OK;
+    }
+    if (StringCchCompareXI(AppID, L"(default)") == 0) {
+        return S_OK;
+    }
+
+    IPropertyStore* pps = NULL;
+    HRESULT hr = SHGetPropertyStoreForWindow(hwnd, &IID_IPropertyStore, (void**)&pps);
+    if (SUCCEEDED(hr)) {
+        PROPVARIANT pv;
+        PropVariantInit(&pv);
+        pv.vt = VT_LPWSTR;
+        hr = SHStrDupW(AppID, &pv.pwszVal);
+        if (SUCCEEDED(hr)) {
+            hr = pps->lpVtbl->SetValue(pps, &PKEY_AppUserModel_ID, &pv);
+            PropVariantClear(&pv);
+        }
+        pps->lpVtbl->Release(pps);
+    }
+    return hr;
 }
 
 

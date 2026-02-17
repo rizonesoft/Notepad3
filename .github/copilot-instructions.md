@@ -114,6 +114,29 @@ Resource-based MUI system with 27+ locales. Each locale has a directory `np3_LAN
 Always use `SciCall.h` wrappers (e.g., `SciCall_GetTextLength()`) instead of raw `SendMessage(hwnd, SCI_XXX, ...)`. The wrappers use Scintilla's direct function pointer for performance.
 Add missing wrapper calls to `SciCall.h` if needed.
 
+#### SciCall.h wrapper macros
+
+Wrappers are declared using macros. The naming convention is `DeclareSciCall{V|R}{0|01|1|2}`:
+
+- **V** = void return, **R** = has return value
+- **0** = no parameters, **1** = one parameter (wParam), **2** = two parameters (wParam + lParam)
+- **01** = optional second parameter only (wParam=0, lParam=var) — used when the SCI message takes lParam but not wParam
+
+```c
+// Examples:
+DeclareSciCallV0(Undo, UNDO);                                          // SciCall_Undo()
+DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);       // SciCall_SetTechnology(int)
+DeclareSciCallV2(ScrollVertical, SCROLLVERTICAL, DocLn, docLn, int, subLn); // SciCall_ScrollVertical(DocLn, int)
+DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, DocPos);                // DocPos SciCall_GetTextLength()
+DeclareSciCallR1(SupportsFeature, SUPPORTSFEATURE, bool, int, feature); // bool SciCall_SupportsFeature(int)
+```
+
+The `msg` argument is the suffix after `SCI_` (e.g., `UNDO` for `SCI_UNDO`).
+
+### Scintilla / Lexilla versions
+
+The vendored Scintilla (5.5.8) and Lexilla (5.4.6) have Notepad3-specific patches in `scintilla\np3_patches\` and `lexilla\np3_patches\`. Version numbers are in `scintilla\version.txt` and `lexilla\version.txt`. When evaluating new Scintilla APIs, check the offline docs in `scintilla\doc\` and `lexilla\doc\`.
+
 ### Adding a new syntax lexer
 
 1. Create `src\StyleLexers\styleLexNEW.c` following existing lexer patterns
@@ -124,3 +147,12 @@ Add missing wrapper calls to `SciCall.h` if needed.
 ### Global state
 
 Application state is centralized in global structs in `Notepad3.c` — `Globals`, `Settings`, `Settings2`, `Flags`, `Paths`. Prefer accessing these through their defined interfaces rather than adding new globals.
+
+### INI file / portable-app design
+
+Notepad3 follows a **portable-app** design for its configuration file (`Notepad3.ini`):
+
+- **No auto-creation on first run**: If no INI file is found, the application runs with defaults. The path is stored in `Paths.IniFileDefault` (not `Paths.IniFile`) so the user can explicitly create it via "Save Settings Now".
+- **Admin redirect**: An administrator can place `Notepad3.ini=<path>` in `[Notepad3]` section of the app-directory INI to redirect to a per-user path. Up to 2 levels of redirect are supported. Redirect targets **are** auto-created (the admin intended them to exist).
+- **Key paths**: `Paths.IniFile` = active writable INI (empty if none exists), `Paths.IniFileDefault` = fallback path for "Save Settings Now" recovery.
+- **Configuration code**: All INI init logic lives in `src\Config\Config.cpp` — `FindIniFile()` → `TestIniFile()` → `CreateIniFile()` → `LoadSettings()`.

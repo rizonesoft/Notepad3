@@ -8300,13 +8300,21 @@ static void _UpdateIndicators(const int indicator, const int indicator2nd,
             break; // wrong match
         }
 
+        // URL-specific: if match ends with single-quote and is preceded by one, strip trailing quote
+        DocPos mlen_adj = mlen;
+        if ((indicator == INDIC_NP3_HYPERLINK) && (mlen_adj > 4)) {
+            if ((SciCall_GetCharAt(end - 1) == '\'') && (start > 0) && (SciCall_GetCharAt(start - 1) == '\'')) {
+                --mlen_adj;
+            }
+        }
+
         _ClearIndicatorInRange(indicator, indicator2nd, start_m, end);
 
         SciCall_SetIndicatorCurrent(indicator);
-        SciCall_IndicatorFillRange(start, mlen);
+        SciCall_IndicatorFillRange(start, mlen_adj);
         if (indicator2nd >= 0) {
             SciCall_SetIndicatorCurrent(indicator2nd);
-            SciCall_IndicatorFillRange(start, mlen);
+            SciCall_IndicatorFillRange(start, mlen_adj);
         }
 
         // next occurrence

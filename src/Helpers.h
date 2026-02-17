@@ -417,6 +417,7 @@ static inline int IsFullHD(HWND hwnd, int resX, int resY)
 // ----------------------------------------------------------------------------
 
 HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID);
+HRESULT SetWindowAppUserModelID(HWND hwnd, PCWSTR AppID);
 
 bool IsProcessElevated();
 //bool IsUserAdmin();

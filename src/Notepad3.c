@@ -1773,6 +1773,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     DrawMenuBar(hwndMain);
 
     Globals.hwndMain = hwndMain; // make main window globaly available
+    SetWindowAppUserModelID(hwndMain, Settings2.AppUserModelID);
 
     HPATHL        hfile_pth = Path_Copy(s_pthArgFilePath);
     FileLoadFlags fLoadFlags = FLF_None;
