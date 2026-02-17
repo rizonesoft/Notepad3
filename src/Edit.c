@@ -2161,7 +2161,7 @@ void EditBase64Code(HWND hwnd, const bool bEncode, cpi_enc_t cpi) {
     UndoTransActionBegin();
 
     SciCall_TargetFromSelection();
-    DocPos const len = (base64Size ? Sci_ReplaceTargetTestChgHist(base64Size, pBase64CodedTxt) : SciCall_ReplaceTarget(0, ""));
+    DocPos const len = (base64Size ? Sci_ReplaceTargetTestChgHist(base64Size, pBase64CodedTxt) : Sci_ReplaceTargetTestChgHist(0, ""));
     FreeMem(pBase64CodedTxt);
 
     Sci_SetStreamSelection(iSelStart, iSelStart + len, bStraightSel);
@@ -3397,7 +3397,9 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
 //
 void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll)
 {
-    if ((cmd != SCI_TAB) && (cmd != SCI_BACKTAB)) {
+    bool const bLineIndent = (cmd == SCI_LINEINDENT) || (cmd == SCI_LINEDEDENT);
+
+    if ((cmd != SCI_TAB) && (cmd != SCI_BACKTAB) && !bLineIndent) {
         SendMessage(hwnd, cmd, 0, 0);
         return;
     }
@@ -3419,9 +3421,6 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
     DocLn const iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
     bool const  bSingleLine = Sci_IsSelectionSingleLine();
     bool const  bCompleteLineSel = !SciCall_IsSelectionEmpty() && Sci_IsCompleteLineSelected();
-
-    bool const bTabIndents = SciCall_GetTabIndents();
-    bool const bBSpUnindents = SciCall_GetBackSpaceUnIndents();
 
     bFormatIndentation = bFormatIndentation || bCompleteLineSel;
 
@@ -3447,13 +3446,18 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
         }
     }
 
-    if (cmd == SCI_TAB) {
+    if (bLineIndent) {
+        // SCI_LINEINDENT/SCI_LINEDEDENT always operate on whole lines
+        SendMessage(hwnd, cmd, 0, 0);
+    } else if (cmd == SCI_TAB) {
+        bool const bTabIndents = SciCall_GetTabIndents();
         SciCall_SetTabIndents(bFormatIndentation ? true : bTabIndents);
         SciCall_Tab();
         if (bFormatIndentation) {
             SciCall_SetTabIndents(bTabIndents);
         }
     } else { // SCI_BACKTAB
+        bool const bBSpUnindents = SciCall_GetBackSpaceUnIndents();
         SciCall_SetBackSpaceUnIndents(bFormatIndentation ? true : bBSpUnindents);
         SciCall_BackTab();
         if (bFormatIndentation) {
@@ -3562,7 +3566,7 @@ void EditAlignText(int nMode)
 
             if ((iIndentPos == iEndPos) && (iEndPos > 0)) {
                 SciCall_SetTargetRange(iStartPos, iEndPos);
-                SciCall_ReplaceTarget(0, "");
+                Sci_ReplaceTargetTestChgHist(0, "");
             } else {
                 int iWords = 0;
                 int iWordsLength = 0;
@@ -3868,7 +3872,7 @@ void EditToggleLineCommentsSimple(LPCWSTR pwszComment, bool bInsertAtStart, LnCm
                 DocPos const cch = bHasLnCmnt ? cchComment : cchPrefix;
                 DocPos const iSelPos = iIndentPos + cch;
                 SciCall_SetTargetRange(iIndentPos, iSelPos);
-                SciCall_ReplaceTarget(0, "");
+                Sci_ReplaceTargetTestChgHist(0, "");
                 if (iLine == iLineStart) {
                     iSelStartOffset -= (iSelStart <= iIndentPos) ? 0 : (iSelStart < iSelPos) ? (iSelStart - iIndentPos)
                                                                                              : cch;
@@ -3975,7 +3979,7 @@ void EditToggleLineCommentsExtended(LPCWSTR pwszComment, bool bInsertAtStart)
                 iAction = 2;
             case 2:
                 SciCall_SetTargetRange(iIndentPos, iSelPos);
-                SciCall_ReplaceTarget(0, "");
+                Sci_ReplaceTargetTestChgHist(0, "");
                 utarray_push_back(sel_positions, &iIndentPos);
                 break;
             case 1:
@@ -4243,7 +4247,7 @@ void EditStripFirstCharacter(HWND hwnd)
             const DocPos iPos = SciCall_PositionFromLine(iLine);
             if (iPos < SciCall_GetLineEndPosition(iLine)) {
                 SciCall_SetTargetRange(iPos, SciCall_PositionAfter(iPos));
-                SciCall_ReplaceTarget(0, "");
+                Sci_ReplaceTargetTestChgHist(0, "");
             }
         }
     }
@@ -4350,12 +4354,12 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
                 } while ((i >= iStartPos) && IsBlankCharA(ch));
                 if ((++i) < iEndPos) {
                     SciCall_SetTargetRange(i, iEndPos);
-                    SciCall_ReplaceTarget(0, "");
+                    Sci_ReplaceTargetTestChgHist(0, "");
                 }
             } else { // any char at line end
                 if (iStartPos < iEndPos) {
                     SciCall_SetTargetRange(SciCall_PositionBefore(iEndPos), iEndPos);
-                    SciCall_ReplaceTarget(0, "");
+                    Sci_ReplaceTargetTestChgHist(0, "");
                 }
 
             }
@@ -4580,7 +4584,7 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
                 ++nBlanks;
                 bSpcOnly = true;
             } else if (bRemoveWhiteSpace) {
-                const char* pLine = SciCall_GetRangePointer(posLnBeg, iLnLength);
+                const char* pLine = SciCall_GetRangePointer(posLnBeg, iLnLength); // safe: no doc modification during counting
                 DocPos i = 0;
                 for (; i < iLnLength; ++i) {
                     if (!IsBlankCharA(pLine[i])) {
@@ -4601,7 +4605,7 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
             }
 
             SciCall_SetTargetRange(SciCall_PositionFromLine(iLine), SciCall_PositionFromLine(iLine + nBlanks));
-            SciCall_ReplaceTarget(0, "");
+            Sci_ReplaceTargetTestChgHist(0, "");
 
             if (bMerge) {
                 ++iLine;
@@ -4679,7 +4683,7 @@ void EditUniteDuplicateLines(HWND hwnd, bool bRemoveEmptyLines, bool bRemoveLast
                 if (bRemoveEmptyLines || (iCmpLnLen > 0)) {
 
                     DocPos const      iBegCmpLine = SciCall_PositionFromLine(iCompareLine);
-                    const char* const pCompareLine = SciCall_GetRangePointer(iBegCmpLine, iCmpLnLen);
+                    const char* const pCompareLine = SciCall_GetRangePointer(iBegCmpLine, iCmpLnLen); // ptr valid until next doc modification
 
                     if ((iCurLnLen == iCmpLnLen) && IsSameCharSequence(pCurrentLine, pCompareLine, iCmpLnLen)) {
                         bFoundDup = true;
@@ -4687,7 +4691,7 @@ void EditUniteDuplicateLines(HWND hwnd, bool bRemoveEmptyLines, bool bRemoveLast
                         DocPos const posComp = SciCall_GetLineEndPosition(iCompareLine);
                         assert(posPrev != posComp);
                         SciCall_SetTargetRange(posPrev, posComp);
-                        SciCall_ReplaceTarget(0, "");
+                        Sci_ReplaceTargetTestChgHist(0, "");
                         --iEndLine;     // line inbetween removed
                         --iCompareLine; // compare-line removed, so stay at same line for next compare
                     }
@@ -4698,10 +4702,12 @@ void EditUniteDuplicateLines(HWND hwnd, bool bRemoveEmptyLines, bool bRemoveLast
             } // while
 
             if (bRemoveLastDup && bFoundDup) {
+                // remove the original line too — iCurLine is not incremented
+                // because deletion shifts subsequent lines up
                 DocPos const posBeg = SciCall_PositionFromLine(iCurLine);
                 DocPos const posEnd = SciCall_PositionFromLine(iCurLine + 1);
                 SciCall_SetTargetRange(posBeg, posEnd);
-                SciCall_ReplaceTarget(0, "");
+                Sci_ReplaceTargetTestChgHist(0, "");
                 --iEndLine;     // line removed
             }
             else ++iCurLine;

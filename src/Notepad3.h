@@ -19,7 +19,6 @@
 
 #include "TypeDefs.h"
 #include "SciCall.h"
-#include "uthash/utarray.h"
 
 //==== Main Window ============================================================
 
@@ -45,35 +44,6 @@ typedef struct np3params {
 np3params, *LPnp3params;
 
 
-#pragma pack(push, 1)
-typedef struct _undoSel {
-    int selMode_undo;
-    UT_array* anchorPos_undo;
-    UT_array* curPos_undo;
-    UT_array* anchorVS_undo;
-    UT_array* curVS_undo;
-
-    int selMode_redo;
-    UT_array* anchorPos_redo;
-    UT_array* curPos_redo;
-    UT_array* anchorVS_redo;
-    UT_array* curVS_redo;
-}
-UndoRedoSelection_t;
-#pragma pack(pop)
-
-//#define INIT_UNDOREDOSEL  { SC_SEL_STREAM, (DocPos)-1, (DocPos)-1, 0, 0, SC_SEL_STREAM, (DocPos)-1, (DocPos)-1, 0, 0 }
-#define INIT_UNDOREDOSEL  { SC_SEL_STREAM, NULL, NULL, NULL, NULL, SC_SEL_STREAM, NULL, NULL, NULL, NULL }
-
-#define NP3_SEL_MULTI  (SC_SEL_RECTANGLE + SC_SEL_LINES + SC_SEL_THIN)
-
-typedef enum {
-    UNDO = true,
-    REDO = false
-
-} DoAction;
-
-
 //==== Ids ====================================================================
 #define IDC_STATUSBAR    (0xFB00)
 #define IDC_TOOLBAR      (0xFB01)
@@ -90,7 +60,6 @@ typedef enum {
 //==== Notifications ==========================================================
 #define WM_TRAYMESSAGE             (WM_USER + 1)       // Callback Message from System Tray
 #define WM_FILECHANGEDNOTIFY       (WM_USER + 2)       // Change Notifications
-#define WM_RESTORE_UNDOREDOACTION  (WM_USER + 3)
 #define IDC_FILEMRU_UPDATE_VIEW    (WM_USER + 4)
 //#define WM_CHANGENOTIFYCLEAR     (WM_USER + 5)
 
@@ -205,7 +174,7 @@ void EnableDocChangeNotification(const int evm);
 
 // ----------------------------------------------------------------------------
 
-// none msg change notify, preserve redo-undo selection stack
+// undo/redo transaction wrapper (selection history handled by Scintilla)
 #define UndoTransActionBegin()  { LONG _token_ = 0L; __try { _token_ = BeginUndoActionSelection();
 #define EndUndoTransAction()    ;} __finally { EndUndoActionSelection(_token_); } }
 

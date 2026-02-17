@@ -39,7 +39,6 @@
 #include "Styles.h"
 #include "Dialogs.h"
 #include "crypto/crypto.h"
-#include "uthash/utarray.h"
 #include "uthash/utlist.h"
 #include "tinyexpr/tinyexpr.h"
 //#include "tinyexprcpp/tinyexpr_cif.h"
@@ -289,152 +288,6 @@ void SetSaveDone()
 static HSTRINGW s_hstrCurrentFindPattern = NULL;
 
 
-// undo / redo  selections
-
-static UT_icd UndoRedoSelElement_icd = { sizeof(DocPos), NULL, NULL, NULL };
-
-static void InitUndoRedoSelection(void* elt)
-{
-    UndoRedoSelection_t* selection = (UndoRedoSelection_t*)elt;
-
-    if (selection != NULL) {
-        selection->selMode_undo = SC_SEL_STREAM;
-        selection->anchorPos_undo = NULL;
-        selection->curPos_undo = NULL;
-        selection->anchorVS_undo = NULL;
-        selection->curVS_undo = NULL;
-
-        selection->selMode_redo = SC_SEL_STREAM;
-        selection->anchorPos_redo = NULL;
-        selection->curPos_redo = NULL;
-        selection->anchorVS_redo = NULL;
-        selection->curVS_redo = NULL;
-    }
-}
-
-static void DelUndoRedoSelection(void* elt)
-{
-    UndoRedoSelection_t* selection = (UndoRedoSelection_t*)elt;
-
-    if (selection != NULL)
-    {
-        selection->selMode_undo = SC_SEL_STREAM;
-        selection->selMode_redo = SC_SEL_STREAM;
-
-        if (selection->anchorPos_undo != NULL) {
-            utarray_free(selection->anchorPos_undo);
-            selection->anchorPos_undo = NULL;
-        }
-        if (selection->curPos_undo != NULL) {
-            utarray_free(selection->curPos_undo);
-            selection->curPos_undo = NULL;
-        }
-        if (selection->anchorVS_undo != NULL) {
-            utarray_free(selection->anchorVS_undo);
-            selection->anchorVS_undo = NULL;
-        }
-        if (selection->curVS_undo != NULL) {
-            utarray_free(selection->curVS_undo);
-            selection->curVS_undo = NULL;
-        }
-
-        if (selection->anchorPos_redo != NULL) {
-            utarray_free(selection->anchorPos_redo);
-            selection->anchorPos_redo = NULL;
-        }
-        if (selection->curPos_redo != NULL) {
-            utarray_free(selection->curPos_redo);
-            selection->curPos_redo = NULL;
-        }
-        if (selection->anchorVS_redo != NULL) {
-            utarray_free(selection->anchorVS_redo);
-            selection->anchorVS_redo = NULL;
-        }
-        if (selection->curVS_redo != NULL) {
-            utarray_free(selection->curVS_redo);
-            selection->curVS_redo = NULL;
-        }
-    }
-}
-
-static void CopyUndoRedoSelection(void* dst, const void* src)
-{
-    UndoRedoSelection_t* dst_sel = (UndoRedoSelection_t*)dst;
-    const UndoRedoSelection_t* src_sel = (UndoRedoSelection_t*)src;
-
-    DocPos* pPos = NULL;
-    InitUndoRedoSelection(dst);
-
-    dst_sel->selMode_undo = (src_sel) ? src_sel->selMode_undo : SC_SEL_STREAM;
-
-    utarray_new(dst_sel->anchorPos_undo, &UndoRedoSelElement_icd);
-    if (src_sel) {
-        while ((pPos = (DocPos*)utarray_next(src_sel->anchorPos_undo, pPos)) != NULL) {
-            utarray_push_back(dst_sel->anchorPos_undo, pPos);
-        }
-    }
-
-    utarray_new(dst_sel->curPos_undo, &UndoRedoSelElement_icd);
-    if (src_sel) {
-        while ((pPos = (DocPos*)utarray_next(src_sel->curPos_undo, pPos)) != NULL) {
-            utarray_push_back(dst_sel->curPos_undo, pPos);
-        }
-    }
-
-    utarray_new(dst_sel->anchorVS_undo, &UndoRedoSelElement_icd);
-    if (src_sel) {
-        while ((pPos = (DocPos*)utarray_next(src_sel->anchorVS_undo, pPos)) != NULL) {
-            utarray_push_back(dst_sel->anchorVS_undo, pPos);
-        }
-    }
-
-    utarray_new(dst_sel->curVS_undo, &UndoRedoSelElement_icd);
-    if (src_sel) {
-        while ((pPos = (DocPos*)utarray_next(src_sel->curVS_undo, pPos)) != NULL) {
-            utarray_push_back(dst_sel->curVS_undo, pPos);
-        }
-    }
-
-
-    dst_sel->selMode_redo = (src_sel) ? src_sel->selMode_redo : SC_SEL_STREAM;
-
-    utarray_new(dst_sel->anchorPos_redo, &UndoRedoSelElement_icd);
-    if (src_sel) {
-        while ((pPos = (DocPos*)utarray_next(src_sel->anchorPos_redo, pPos)) != NULL) {
-            utarray_push_back(dst_sel->anchorPos_redo, pPos);
-        }
-    }
-
-    utarray_new(dst_sel->curPos_redo, &UndoRedoSelElement_icd);
-    if (src_sel) {
-        while ((pPos = (DocPos*)utarray_next(src_sel->curPos_redo, pPos)) != NULL) {
-            utarray_push_back(dst_sel->curPos_redo, pPos);
-        }
-    }
-
-    utarray_new(dst_sel->anchorVS_redo, &UndoRedoSelElement_icd);
-    if (src_sel) {
-        while ((pPos = (DocPos*)utarray_next(src_sel->anchorVS_redo, pPos)) != NULL) {
-            utarray_push_back(dst_sel->anchorVS_redo, pPos);
-        }
-    }
-
-    utarray_new(dst_sel->curVS_redo, &UndoRedoSelElement_icd);
-    if (src_sel) {
-        while ((pPos = (DocPos*)utarray_next(src_sel->curVS_redo, pPos)) != NULL) {
-            utarray_push_back(dst_sel->curVS_redo, pPos);
-        }
-    }
-}
-
-static UT_icd UndoRedoSelection_icd = { sizeof(UndoRedoSelection_t), InitUndoRedoSelection, CopyUndoRedoSelection, DelUndoRedoSelection };
-static UT_array* UndoRedoSelectionUTArray = NULL;
-static void  _SaveRedoSelection(const LONG token, const bool bAddAction);
-static LONG  _SaveUndoSelection();
-static LONG  _UndoRedoActionMap(const LONG token, const UndoRedoSelection_t** selection);
-// => UndoTransActionBegin();
-// => EndUndoTransAction();
-
 // ----------------------------------------------------------------------------
 
 static inline void _SplitUndoTransaction()
@@ -453,7 +306,6 @@ static inline void _SplitUndoTransaction()
 
 static void _DelayClearCallTip(const LONG64 delay);
 static void _DelaySplitUndoTransaction(const LONG64 delay);
-static void _RestoreActionSelection(const LONG token, DoAction doAct);
 
 // ----------------------------------------------------------------------------
 
@@ -920,11 +772,6 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     DL_FOREACH_SAFE(MessageQueue, pmqc, dummy) {
         DL_DELETE(MessageQueue, pmqc);
         FreeMem(pmqc);
-    }
-
-    if (UndoRedoSelectionUTArray != NULL) {
-        utarray_free(UndoRedoSelectionUTArray);
-        UndoRedoSelectionUTArray = NULL;
     }
 
     if (IS_VALID_HANDLE(s_FileChgObsvrData.hEventFileChanged)) {
@@ -2050,14 +1897,6 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     s_flagQuietCreate = false;
     s_flagKeepTitleExcerpt = false;
 
-    // undo / redo selections
-    if (UndoRedoSelectionUTArray != NULL) {
-        utarray_free(UndoRedoSelectionUTArray);
-        UndoRedoSelectionUTArray = NULL;
-    }
-    utarray_new(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
-    utarray_reserve(UndoRedoSelectionUTArray,256);
-
     // Check for /c [if no file is specified] -- even if a file is specified
     if (s_flagNewFromClipboard) {
         if (SciCall_CanPaste()) {
@@ -2293,10 +2132,6 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case WM_FILECHANGEDNOTIFY:
         return MsgFileChangeNotify(hwnd, wParam, lParam);
-
-    case WM_RESTORE_UNDOREDOACTION:
-        _RestoreActionSelection((LONG)lParam, (DoAction)wParam);
-        break;
 
     //case WM_PARENTNOTIFY:
     //  if (iLoWParam & WM_DESTROY) {
@@ -5372,23 +5207,19 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_EDIT_INDENT:
-        EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, false);
-        //EditIndentBlock(Globals.hwndEdit, SCI_LINEINDENT, true, false);
+        EditIndentBlock(Globals.hwndEdit, SCI_LINEINDENT, true, false);
         break;
 
     case IDM_EDIT_UNINDENT:
-        EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, false);
-        //EditIndentBlock(Globals.hwndEdit, SCI_LINEDEDENT, true, false);
+        EditIndentBlock(Globals.hwndEdit, SCI_LINEDEDENT, true, false);
         break;
 
     case CMD_TAB:
         EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
-        //EditIndentBlock(Globals.hwndEdit, SCI_LINEINDENT, false, false);
         break;
 
     case CMD_BACKTAB:
         EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, false, false);
-        //EditIndentBlock(Globals.hwndEdit, SCI_LINEDEDENT, false, false);
         break;
 
     case CMD_CTRLTAB:
@@ -6017,8 +5848,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_VIEW_WORDWRAP:
         Globals.fvCurFile.bWordWrap = Settings.WordWrap = !Settings.WordWrap;
         _SetWrapIndentMode(Globals.hwndEdit);
-        //~Sci_ScrollSelectionToView(); // does not work here bug ?
-        SciCall_SetFirstVisibleLine(max_ln(0, Sci_GetCurrentLineNumber() - Settings2.CurrentLineVerticalSlop));
+        SciCall_ScrollVertical(Sci_GetCurrentLineNumber(), 0);
         UpdateToolbar();
         break;
 
@@ -8756,8 +8586,6 @@ inline static LRESULT _MsgNotifyLean(const SCNotification* const scn, bool* bMod
 
     const LPNMHDR pnmh = (LPNMHDR)scn;
 
-    static LONG _urtoken = URTok_NoTransaction;
-
     // --- check only mandatory events (must be fast !!!) ---
     if (pnmh->idFrom != IDC_EDIT) {
         return FALSE;
@@ -8780,14 +8608,10 @@ inline static LRESULT _MsgNotifyLean(const SCNotification* const scn, bool* bMod
         if (iModType & (SC_MOD_BEFOREINSERT | SC_MOD_BEFOREDELETE)) {
             *bModified = false; // not yet
             if (!bInUndoRedoStep) {
-                if ((SciCall_GetUndoSequence() <= 1) && (_urtoken < URTok_TokenStart)) {
+                if (SciCall_GetUndoSequence() <= 1) {
                     _SaveSelectionToBuffer();
                     bool const bSelEmpty = SciCall_IsSelectionEmpty();
                     bool const bIsMultiRectSel = Sci_IsMultiOrRectangleSelection();
-                    if (!bSelEmpty || bIsMultiRectSel) {
-                        LONG const tok = _SaveUndoSelection();
-                        _urtoken = (tok >= URTok_TokenStart ? tok : _urtoken);
-                    }
                     // TODO: @@@ Find reason for why this NOP workaround is needed:
                     if (!bSelEmpty && bIsMultiRectSel) {
                         // need to trigger SCI:InvalidateCaret()
@@ -8800,25 +8624,11 @@ inline static LRESULT _MsgNotifyLean(const SCNotification* const scn, bool* bMod
         }
         else if (iModType & (SC_MOD_INSERTTEXT | SC_MOD_DELETETEXT)) {
             if (!bInUndoRedoStep) {
-                if ((SciCall_GetUndoSequence() <= 1) && (_urtoken >= URTok_TokenStart)) {
-                    _SaveRedoSelection(_urtoken, SciCall_GetModify());
-                    _urtoken = URTok_NoTransaction;
-                }
                 if (iModType & SC_MOD_DELETETEXT) {
                     _HandleDeleteCheck(scn);
                 }
             }
             *bModified = true;
-        }
-        // check for ADDUNDOACTION step
-        if (iModType & SC_MOD_CONTAINER) {
-            // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
-            if (iModType & SC_PERFORMED_UNDO) {
-                PostMessage(Globals.hwndMain, WM_RESTORE_UNDOREDOACTION, (WPARAM)UNDO, (LPARAM)scn->token);
-            }
-            else if (iModType & SC_PERFORMED_REDO) {
-                PostMessage(Globals.hwndMain, WM_RESTORE_UNDOREDOACTION, (WPARAM)REDO, (LPARAM)scn->token);
-            }
         }
         if (*bModified) {
             LONG64 const timeout = Settings2.UndoTransactionTimeout;
@@ -10875,11 +10685,11 @@ void UpdateSaveSettingsCmds()
 //
 static void _UndoRedoRecordingStart()
 {
-    _UndoRedoActionMap(URTok_NoTransaction, NULL); // clear
     SciCall_SetUndoCollection(true);
     SciCall_EmptyUndoBuffer();
     SciCall_SetSavePoint();
     SciCall_SetChangeHistory(Settings.ChangeHistoryMode);
+    SciCall_SetUndoSelectionHistory(SC_UNDO_SELECTION_HISTORY_ENABLED | SC_UNDO_SELECTION_HISTORY_SCROLL);
     UpdateMargins(true);
 }
 
@@ -10889,12 +10699,12 @@ static void _UndoRedoRecordingStart()
 //
 static void _UndoRedoRecordingStop()
 {
-    _UndoRedoActionMap(URTok_NoTransaction, NULL); // clear
     while (SciCall_GetUndoSequence() > 0)
         SciCall_EndUndoAction();
     SciCall_EmptyUndoBuffer();
     SciCall_SetSavePoint();
     SciCall_SetChangeHistory(SC_CHANGE_HISTORY_DISABLED);
+    SciCall_SetUndoSelectionHistory(SC_UNDO_SELECTION_HISTORY_DISABLED);
     SciCall_SetUndoCollection(false);
 }
 
@@ -10911,178 +10721,6 @@ void UndoRedoReset()
 
 //=============================================================================
 //
-//  _SaveUndoSelection()
-//
-static LONG _SaveUndoSelection()
-{
-    static DocPosU _s_iSelection = 0LL;           // index
-
-    UndoRedoSelection_t sel = INIT_UNDOREDOSEL; // = InitUndoRedoSelection(&sel);
-    CopyUndoRedoSelection(&sel, NULL);          // utarray_new()
-
-    DocPosU const numOfSel = SciCall_GetSelections();
-
-    // each single selection of a multi-selection will call thid method
-    // we are only interested in the first call
-    if (0LL == _s_iSelection) {
-        _s_iSelection = numOfSel;
-    }
-    if ((numOfSel-1) != --_s_iSelection) {
-        return URTok_NoTransaction;
-    }
-
-    int const selMode = ((numOfSel > 1) && !SciCall_IsSelectionRectangle()) ? NP3_SEL_MULTI : SciCall_GetSelectionMode();
-
-    sel.selMode_undo = selMode;
-
-    switch (selMode) {
-    case NP3_SEL_MULTI: {
-        for (DocPosU i = 0; i < numOfSel; ++i) {
-            if (sel.anchorPos_undo && sel.curPos_undo) {
-                DocPos const anchorPos = SciCall_GetSelectionNAnchor(i);
-                utarray_push_back(sel.anchorPos_undo, &anchorPos);
-                DocPos const curPos = SciCall_GetSelectionNCaret(i);
-                utarray_push_back(sel.curPos_undo, &curPos);
-            }
-            if (!Settings2.DenyVirtualSpaceAccess && sel.anchorVS_undo && sel.curVS_undo) {
-                DocPos const anchorVS = SciCall_GetSelectionNAnchorVirtualSpace(i);
-                utarray_push_back(sel.anchorVS_undo, &anchorVS);
-                DocPos const curVS = SciCall_GetSelectionNCaretVirtualSpace(i);
-                utarray_push_back(sel.curVS_undo, &curVS);
-            }
-        }
-    }
-    break;
-
-    case SC_SEL_RECTANGLE:
-    case SC_SEL_THIN: {
-        DocPos const anchorPos = SciCall_GetRectangularSelectionAnchor();
-        utarray_push_back(sel.anchorPos_undo, &anchorPos);
-        DocPos const curPos = SciCall_GetRectangularSelectionCaret();
-        utarray_push_back(sel.curPos_undo, &curPos);
-        if (!Settings2.DenyVirtualSpaceAccess) {
-            DocPos const anchorVS = SciCall_GetRectangularSelectionAnchorVirtualSpace();
-            utarray_push_back(sel.anchorVS_undo, &anchorVS);
-            DocPos const curVS = SciCall_GetRectangularSelectionCaretVirtualSpace();
-            utarray_push_back(sel.curVS_undo, &curVS);
-        }
-    }
-    break;
-
-    case SC_SEL_LINES:
-    case SC_SEL_STREAM:
-    default: {
-        DocPos const anchorPos = SciCall_GetAnchor();
-        utarray_push_back(sel.anchorPos_undo, &anchorPos);
-        DocPos const curPos = SciCall_GetCurrentPos();
-        utarray_push_back(sel.curPos_undo, &curPos);
-        DocPos const dummy = (DocPos)-1;
-        utarray_push_back(sel.anchorVS_undo, &dummy);
-        utarray_push_back(sel.curVS_undo, &dummy);
-    }
-    break;
-    }
-
-    const UndoRedoSelection_t* pSel = &sel;
-    LONG const token = _UndoRedoActionMap(URTok_NoTransaction, &pSel);
-
-    DelUndoRedoSelection(&sel); // utarray_free()
-
-    _s_iSelection = 0; // reset
-
-    return token;
-}
-
-
-//=============================================================================
-//
-//  _SaveRedoSelection()
-//
-//
-static void _SaveRedoSelection(const LONG token, const bool bAddAction)
-{
-    static DocPosU _s_iSelection = 0; // index
-
-    if (token <= URTok_NoTransaction) {
-        return;
-    }
-
-    UndoRedoSelection_t* pSel = NULL;
-
-    DocPosU const numOfSel = SciCall_GetSelections();
-
-    // each single selection of a multi-selection will call this method
-    // we are only interested in the last call
-    if (0 == _s_iSelection) {
-        _s_iSelection = numOfSel;
-    }
-    if (0 != --_s_iSelection) {
-        return;
-    }
-    if (bAddAction) {
-
-        if ((_UndoRedoActionMap(token, &pSel) >= URTok_TokenStart) && (pSel != NULL)) {
-
-            int const selMode = ((numOfSel > 1) && !SciCall_IsSelectionRectangle()) ? NP3_SEL_MULTI : SciCall_GetSelectionMode();
-
-            pSel->selMode_redo = selMode;
-
-            switch (selMode) {
-            case NP3_SEL_MULTI: {
-                for (DocPosU i = 0; i < numOfSel; ++i) {
-                    DocPos const anchorPos = SciCall_GetSelectionNAnchor(i);
-                    utarray_push_back(pSel->anchorPos_redo, &anchorPos);
-                    DocPos const curPos = SciCall_GetSelectionNCaret(i);
-                    utarray_push_back(pSel->curPos_redo, &curPos);
-                    if (!Settings2.DenyVirtualSpaceAccess) {
-                        DocPos const anchorVS = SciCall_GetSelectionNAnchorVirtualSpace(i);
-                        utarray_push_back(pSel->anchorVS_redo, &anchorVS);
-                        DocPos const curVS = SciCall_GetSelectionNCaretVirtualSpace(i);
-                        utarray_push_back(pSel->curVS_redo, &curVS);
-                    }
-                }
-            } break;
-
-            case SC_SEL_RECTANGLE:
-            case SC_SEL_THIN: {
-                DocPos const anchorPos = SciCall_GetRectangularSelectionAnchor();
-                utarray_push_back(pSel->anchorPos_redo, &anchorPos);
-                DocPos const curPos = SciCall_GetRectangularSelectionCaret();
-                utarray_push_back(pSel->curPos_redo, &curPos);
-                if (!Settings2.DenyVirtualSpaceAccess) {
-                    DocPos const anchorVS = SciCall_GetRectangularSelectionAnchorVirtualSpace();
-                    utarray_push_back(pSel->anchorVS_redo, &anchorVS);
-                    DocPos const curVS = SciCall_GetRectangularSelectionCaretVirtualSpace();
-                    utarray_push_back(pSel->curVS_redo, &curVS);
-                }
-            } break;
-
-            case SC_SEL_LINES:
-            case SC_SEL_STREAM:
-            default: {
-                DocPos const anchorPos = SciCall_GetAnchor();
-                utarray_push_back(pSel->anchorPos_redo, &anchorPos);
-                DocPos const curPos = SciCall_GetCurrentPos();
-                utarray_push_back(pSel->curPos_redo, &curPos);
-                //~DocPos const dummy = (DocPos)-1;
-                //~utarray_push_back(pSel->anchorVS_redo, &dummy);
-                //~utarray_push_back(pSel->curVS_redo, &dummy);
-            } break;
-            }
-
-            //~SciCall_AddUndoAction((int)token, UNDO_MAY_COALESCE);
-            SciCall_AddUndoAction((int)token, UNDO_NONE);
-
-        }
-        else {
-            _UndoRedoActionMap(token, NULL);  // remove
-        }
-    }
-}
-
-
-//=============================================================================
-//
 //  BeginUndoActionSelection()
 //
 LONG BeginUndoActionSelection()
@@ -11092,9 +10730,8 @@ LONG BeginUndoActionSelection()
         if (SciCall_GetUndoSequence() == 1) {
             DisableDocChangeNotification();
         }
-        return SciCall_IsSelectionEmpty() ? URTok_NoTransaction : _SaveUndoSelection();
     }
-    return URTok_NoRecording;
+    return 0L;
 }
 
 
@@ -11104,299 +10741,13 @@ LONG BeginUndoActionSelection()
 //
 void EndUndoActionSelection(const LONG token)
 {
+    UNREFERENCED_PARAMETER(token);
     if (SciCall_GetUndoCollection()) {
-        if (token >= URTok_TokenStart) {
-            _SaveRedoSelection(token, SciCall_GetModify());
-        }
         SciCall_EndUndoAction();
         if (SciCall_GetUndoSequence() == 0) {
             EnableDocChangeNotification(EVM_Default);
         }
     }
-}
-
-//=============================================================================
-//
-//  _RestoreActionSelection()
-//
-static void _RestoreActionSelection(const LONG token, DoAction doAct)
-{
-    if (SciCall_GetUndoSequence() > 0) {
-        assert("Wrong Transaction!" && 0);
-        return;
-    }
-
-    UndoRedoSelection_t* pSel = NULL;
-
-    if ((_UndoRedoActionMap(token, &pSel) >= URTok_TokenStart) && (pSel != NULL)) {
-
-        LimitNotifyEvents();
-
-        DocPos* pPosAnchor = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->anchorPos_undo) : utarray_front(pSel->anchorPos_redo));
-        DocPos* pPosCur = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->curPos_undo) : utarray_front(pSel->curPos_redo));
-        DocPos* pPosAnchorVS = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->anchorVS_undo) : utarray_front(pSel->anchorVS_redo));
-        DocPos* pPosCurVS = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->curVS_undo) : utarray_front(pSel->curVS_redo));
-
-        if (pPosAnchor && pPosCur) {
-            // Ensure that the first and last lines of a selection are always unfolded
-            // This needs to be done _before_ the SCI_SETSEL message
-            DocLn const anchorPosLine = SciCall_LineFromPosition((*pPosAnchor));
-            DocLn const currPosLine = SciCall_LineFromPosition((*pPosCur));
-            SciCall_EnsureVisible(anchorPosLine);
-            if (anchorPosLine != currPosLine) {
-                SciCall_EnsureVisible(currPosLine);
-            }
-
-            int const selectionMode = (UNDO == doAct) ? pSel->selMode_undo : pSel->selMode_redo;
-
-            SciCall_SetSelectionMode((selectionMode == NP3_SEL_MULTI) ? SC_SEL_STREAM : selectionMode);
-
-            switch (selectionMode) {
-            case NP3_SEL_MULTI: {
-                unsigned int i = 0;
-
-                DocPosU const selCount = (UNDO == doAct) ? utarray_len(pSel->anchorPos_undo) : utarray_len(pSel->anchorPos_redo);
-                DocPosU const selCountVS = (UNDO == doAct) ? utarray_len(pSel->anchorVS_undo) : utarray_len(pSel->anchorVS_redo);
-
-                SciCall_SetSelection(*pPosCur, *pPosAnchor);
-                if (pPosAnchorVS && pPosCurVS) {
-                    SciCall_SetSelectionNAnchorVirtualSpace(0, *pPosAnchorVS);
-                    SciCall_SetSelectionNCaretVirtualSpace(0, *pPosCurVS);
-                }
-                SciCall_Cancel(); // (!) else shift-key selection behavior is kept
-
-                ++i;
-                while (i < selCount) {
-                    pPosAnchor = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->anchorPos_undo, i) : utarray_eltptr(pSel->anchorPos_redo, i));
-                    pPosCur = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->curPos_undo, i) : utarray_eltptr(pSel->curPos_redo, i));
-                    if (pPosAnchor && pPosCur) {
-                        SciCall_AddSelection(*pPosCur, *pPosAnchor);
-                        if (i < selCountVS) {
-                            pPosAnchorVS = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->anchorVS_undo, i) : utarray_eltptr(pSel->anchorVS_redo, i));
-                            pPosCurVS = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->curVS_undo, i) : utarray_eltptr(pSel->curVS_redo, i));
-                            if (pPosAnchorVS && pPosCurVS) {
-                                SciCall_SetSelectionNAnchorVirtualSpace(i, *pPosAnchorVS);
-                                SciCall_SetSelectionNCaretVirtualSpace(i, *pPosCurVS);
-                            }
-                        }
-                    }
-                    ++i;
-                }
-                //~SciCall_SetMainSelection(0);
-            }
-            break;
-
-            case SC_SEL_RECTANGLE:
-            case SC_SEL_THIN:
-                SciCall_SetRectangularSelectionAnchor(*pPosAnchor);
-                SciCall_SetRectangularSelectionCaret(*pPosCur);
-                if (pPosAnchorVS && pPosCurVS) {
-                    SciCall_SetRectangularSelectionAnchorVirtualSpace(*pPosAnchorVS);
-                    SciCall_SetRectangularSelectionCaretVirtualSpace(*pPosCurVS);
-                }
-                SciCall_Cancel(); // (!) else shift-key selection behavior is kept
-                break;
-
-            case SC_SEL_LINES:
-            case SC_SEL_STREAM:
-            default:
-                if (pPosAnchor && pPosCur) {
-                    SciCall_SetSelection(*pPosCur, *pPosAnchor);
-                }
-                SciCall_Cancel(); // (!) else shift-key selection behavior is kept
-                break;
-            }
-        }
-        if (pPosAnchor && pPosCur) {
-            SciCall_ScrollRange(*pPosAnchor, *pPosCur);
-        }
-        SciCall_ChooseCaretX();
-
-        RestoreNotifyEvents();
-    }
-    else {
-        assert("Invalid Token to Restore!" && 0);
-    }
-}
-
-
-#if 0
-//=============================================================================
-//
-//  _RestoreActionSelection()
-//
-//
-static void _RestoreActionSelection(const LONG token, DoAction doAct)
-{
-    if (SciCall_GetUndoSequence() > 0) {
-        assert("Wrong Transaction!" && 0);
-        return;
-    }
-
-    UndoRedoSelection_t* pSel = NULL;
-
-    if ((_UndoRedoActionMap(token, &pSel) >= URTok_TokenStart) && (pSel != NULL)) {
-
-        // we are inside undo/redo transaction, so do delayed PostMessage() instead of SendMessage()
-
-        DocPos* pPosAnchor = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->anchorPos_undo) : utarray_front(pSel->anchorPos_redo));
-        DocPos* pPosCur = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->curPos_undo) : utarray_front(pSel->curPos_redo));
-        DocPos* pPosAnchorVS = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->anchorVS_undo) : utarray_front(pSel->anchorVS_redo));
-        DocPos* pPosCurVS = (DocPos*)((UNDO == doAct) ? utarray_front(pSel->curVS_undo) : utarray_front(pSel->curVS_redo));
-
-        if (pPosAnchor && pPosCur) {
-            // Ensure that the first and last lines of a selection are always unfolded
-            // This needs to be done _before_ the SCI_SETSEL message
-            DocLn const anchorPosLine = SciCall_LineFromPosition((*pPosAnchor));
-            DocLn const currPosLine = SciCall_LineFromPosition((*pPosCur));
-            SciCall_PostMsg(SCI_ENSUREVISIBLE, anchorPosLine, 0);
-            if (anchorPosLine != currPosLine) {
-                SciCall_PostMsg(SCI_ENSUREVISIBLE, currPosLine, 0);
-            }
-
-            int const selectionMode = (UNDO == doAct) ? pSel->selMode_undo : pSel->selMode_redo;
-
-            SciCall_PostMsg(SCI_SETSELECTIONMODE, (WPARAM)((selectionMode == NP3_SEL_MULTI) ? SC_SEL_STREAM : selectionMode), 0);
-
-            switch (selectionMode) {
-            case NP3_SEL_MULTI: {
-                unsigned int i = 0;
-
-                DocPosU const selCount = (UNDO == doAct) ? utarray_len(pSel->anchorPos_undo) : utarray_len(pSel->anchorPos_redo);
-                DocPosU const selCountVS = (UNDO == doAct) ? utarray_len(pSel->anchorVS_undo) : utarray_len(pSel->anchorVS_redo);
-
-                SciCall_PostMsg(SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
-                if (pPosAnchorVS && pPosCurVS) {
-                    SciCall_PostMsg(SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)0, (LPARAM)(*pPosAnchorVS));
-                    SciCall_PostMsg(SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)0, (LPARAM)(*pPosCurVS));
-                }
-                SciCall_PostMsg(SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
-
-                ++i;
-                while (i < selCount) {
-                    pPosAnchor = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->anchorPos_undo, i) : utarray_eltptr(pSel->anchorPos_redo, i));
-                    pPosCur = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->curPos_undo, i) : utarray_eltptr(pSel->curPos_redo, i));
-                    if (pPosAnchor && pPosCur) {
-                        SciCall_PostMsg(SCI_ADDSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
-                        if (i < selCountVS) {
-                            pPosAnchorVS = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->anchorVS_undo, i) : utarray_eltptr(pSel->anchorVS_redo, i));
-                            pPosCurVS = (DocPos*)((UNDO == doAct) ? utarray_eltptr(pSel->curVS_undo, i) : utarray_eltptr(pSel->curVS_redo, i));
-                            if (pPosAnchorVS && pPosCurVS) {
-                                SciCall_PostMsg(SCI_SETSELECTIONNANCHORVIRTUALSPACE, (WPARAM)i, (LPARAM)(*pPosAnchorVS));
-                                SciCall_PostMsg(SCI_SETSELECTIONNCARETVIRTUALSPACE, (WPARAM)i, (LPARAM)(*pPosCurVS));
-                            }
-                        }
-                    }
-                    ++i;
-                }
-                //~SciCall_PostMsg(SCI_SETMAINSELECTION, (WPARAM)0, (LPARAM)0);
-            }
-            break;
-
-            case SC_SEL_RECTANGLE:
-            case SC_SEL_THIN:
-                SciCall_PostMsg(SCI_SETRECTANGULARSELECTIONANCHOR, (WPARAM)(*pPosAnchor), 0);
-                SciCall_PostMsg(SCI_SETRECTANGULARSELECTIONCARET, (WPARAM)(*pPosCur), 0);
-                if (pPosAnchorVS && pPosCurVS) {
-                    SciCall_PostMsg(SCI_SETRECTANGULARSELECTIONANCHORVIRTUALSPACE, (WPARAM)(*pPosAnchorVS), 0);
-                    SciCall_PostMsg(SCI_SETRECTANGULARSELECTIONCARETVIRTUALSPACE, (WPARAM)(*pPosCurVS), 0);
-                }
-                SciCall_PostMsg(SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
-                break;
-
-            case SC_SEL_LINES:
-            case SC_SEL_STREAM:
-            default:
-                if (pPosAnchor && pPosCur) {
-                    SciCall_PostMsg(SCI_SETSELECTION, (WPARAM)(*pPosCur), (LPARAM)(*pPosAnchor));
-                }
-                SciCall_PostMsg(SCI_CANCEL, 0, 0); // (!) else shift-key selection behavior is kept
-                break;
-            }
-        }
-        if (pPosAnchor && pPosCur) {
-            SciCall_PostMsg(SCI_SCROLLRANGE, (WPARAM)(*pPosAnchor), (LPARAM)(*pPosCur));
-        }
-        SciCall_PostMsg(SCI_CHOOSECARETX, 0, 0);
-    }
-    else {
-        assert("Invalid Token to Restore!" && 0);
-    }
-}
-#endif
-
-
-//=============================================================================
-//
-//  _UndoRedoActionMap()
-//
-//
-static LONG _UndoRedoActionMap(const LONG token, const UndoRedoSelection_t** selection)
-{
-    static ULONG uiTokenCnt = URTok_TokenStart; 
-
-    if (UndoRedoSelectionUTArray == NULL) {
-        return URTok_NoRecording;
-    };
-
-    if (selection == NULL) {
-
-        if (token <= URTok_NoTransaction) { // reset / clear
-            if (SciCall_GetUndoCollection()) {
-                while (SciCall_GetUndoSequence() > 0) {
-                    SciCall_EndUndoAction();
-                }
-            }
-
-            utarray_clear(UndoRedoSelectionUTArray);
-            //~utarray_free(UndoRedoSelectionUTArray);
-            //~utarray_init(UndoRedoSelectionUTArray, &UndoRedoSelection_icd);
-            uiTokenCnt = URTok_TokenStart;
-        }
-        else { // remove token indexed action
-            
-            utarray_erase(UndoRedoSelectionUTArray, (ULONG)token, 1);
-            if (((ULONG)token + 1UL) == uiTokenCnt) {
-                --uiTokenCnt;
-            }
-            else {
-                assert("Invalid index of item to remove!" && 0);
-            }
-        }
-        return URTok_NoTransaction;
-    }
-
-    // indexing is unsigned
-    ULONG utoken = (token >= URTok_TokenStart) ? (ULONG)token : 0UL;
-
-    if (!SciCall_GetUndoCollection()) {
-        assert("Inactive Undo Collection!" && 0);
-        return URTok_NoRecording;
-    }
-
-    // get or set map item request ?
-    if ((token >= URTok_TokenStart) && (utoken < uiTokenCnt)) {
-        if ((*selection) == NULL) {
-            // this is a get request
-            (*selection) = (UndoRedoSelection_t*)utarray_eltptr(UndoRedoSelectionUTArray, utoken);
-        } else {
-            // this is a set request (fill redo pos)
-            assert("Invalid set request (fill redo pos)!" && 0); // not used yet
-            //~utarray_insert(UndoRedoSelectionUTArray, (void*)(*selection), utoken);
-        }
-        // don't clear map item here (token used in redo/undo again)
-    }
-    else if (token <= URTok_NoTransaction) {
-        // set map new item request
-        LONG const newToken = (LONG)uiTokenCnt;
-        utarray_insert(UndoRedoSelectionUTArray, (void*)(*selection), uiTokenCnt);
-        uiTokenCnt = (uiTokenCnt < (ULONG)LONG_MAX) ? (uiTokenCnt + 1UL) : 0UL; // round robin next
-        return newToken;
-    }
-    else {
-        assert("Invalid Token to Set/Get!" && 0);
-    }
-    return token;
 }
 
 
@@ -11452,17 +10803,11 @@ bool ConsistentIndentationCheck(EditFileIOStatus* status)
 
             bool const useTabs = SciCall_GetUseTabs();
             SciCall_SetUseTabs(status->iGlobalIndent == I_TAB_LN);
-            bool const tabIndents = SciCall_GetTabIndents();
-            SciCall_SetTabIndents(true);
-            bool const backSpcUnindents = SciCall_GetBackSpaceUnIndents();
-            SciCall_SetBackSpaceUnIndents(true);
 
-            EditIndentBlock(Globals.hwndEdit, SCI_TAB, true, true);
-            EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, true, true);
+            EditIndentBlock(Globals.hwndEdit, SCI_LINEINDENT, true, true);
+            EditIndentBlock(Globals.hwndEdit, SCI_LINEDEDENT, true, true);
 
             SciCall_SetUseTabs(useTabs);
-            SciCall_SetTabIndents(tabIndents);
-            SciCall_SetBackSpaceUnIndents(backSpcUnindents);
 
             Sci_GotoPosChooseCaret(0);
 
