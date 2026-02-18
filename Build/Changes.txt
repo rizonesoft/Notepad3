@@ -67,6 +67,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]-
+[.218.1]- Cover both scopes: per-process and per-window (Shell)AppUserModelID.
 [.218.1]- URL extraction - handle final single-quote smart.
 [.218.1]- INI file handling in case of redirection.
 [.216.1]- Win's Unicode detection is not reliable, change encoding detection.
