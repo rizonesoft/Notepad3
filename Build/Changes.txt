@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.26.216.(build_#) (2026-02-16)
+Current BETA Version 6.26.218.(build_#) (2026-02-18)
 ========================================================
 
 --------------------------------------------------------
@@ -53,6 +53,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]-
+[.218.1]- Some refactorings due to new features in scintilla.
 [.215.1]- Migration of the MS VS2022 compiler to MS VS2026 vc145 platform toolset.
 [.215.1]- Update to Scintilla 5.5.8 and Lexilla 5.4.6 (SCI/LEX).
 [.130.1]- Moved installer scripts to Build\Installer folder with local language files (SUP).
@@ -66,6 +67,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]-
+[.218.1]- URL extraction - handle final single-quote smart.
+[.218.1]- INI file handling in case of redirection.
 [.216.1]- Win's Unicode detection is not reliable, change encoding detection.
 [.215.1]- Strip trailing blanks when saving option (issue 5444).
 [.130.1]- New files created in correct working directory.
