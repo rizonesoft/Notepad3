@@ -80,6 +80,7 @@ void EditToggleLineCommentsExtended(LPCWSTR pwszComment, bool bInsertAtStart);
 void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty);
 void EditStripFirstCharacter(HWND hwnd);
 void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlanksOnly);
+bool EditHasTrailingBlanks();
 void EditCompressBlanks();
 void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace);
 void EditUniteDuplicateLines(HWND hwnd, bool bRemoveEmptyLines, bool bRemoveLastDup);

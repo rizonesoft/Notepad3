@@ -95,6 +95,11 @@ bool CheckAutoLoadMostRecent();
 void ShowZoomCallTip();
 void ShowWrapAroundCallTip(bool forwardSearch);
 
+void   NP3_ZoomIn();
+void   NP3_ZoomOut();
+void   NP3_ApplyZoom(int percent);
+int    NP3_GetZoomPercent();
+
 void MarkAllOccurrences(const LONG64 delay, const bool bForceClear);
 
 void UpdateToolbar();

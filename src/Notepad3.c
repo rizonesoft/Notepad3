@@ -127,6 +127,9 @@ HPATHL    g_tchToolbarBitmapDisabled = NULL;
 
 WCHAR Default_PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1] = { L'\0' };
 
+// zoom conversion helper (forward declaration)
+static int ZoomPercentToSciLevel(int percent);
+
 // ------------------------------------
 
 HPATHL s_hpthRelaunchElevatedFile = NULL;
@@ -639,6 +642,7 @@ static void _InitGlobals()
 
     Globals.iWhiteSpaceSize = 2;
     Globals.iCaretOutLineFrameSize = 0;
+    Globals.iZoomPercent = NP3_DEFAULT_ZOOM;
 
     Globals.DOSEncoding = CPI_NONE;
     Globals.bZeroBasedColumnIndex = false;
@@ -2192,6 +2196,11 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case WM_MOUSEWHEEL:
         if (wParam & MK_CONTROL) {
+            if (GET_WHEEL_DELTA_WPARAM(wParam) > 0) {
+                NP3_ZoomIn();
+            } else if (GET_WHEEL_DELTA_WPARAM(wParam) < 0) {
+                NP3_ZoomOut();
+            }
             ShowZoomCallTip();
         } else if (wParam & MK_RBUTTON) {
             // Hold RIGHT MOUSE BUTTON and SCROLL to cycle through UNDO history
@@ -2728,7 +2737,7 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
     Encoding_Current(Settings.DefaultEncoding);
 
-    SciCall_SetZoom(g_IniWinInfo.zoom ? g_IniWinInfo.zoom : 100);
+    NP3_ApplyZoom(g_IniWinInfo.zoom ? g_IniWinInfo.zoom : NP3_DEFAULT_ZOOM);
 
     return 0LL;
 }
@@ -6217,19 +6226,19 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case IDM_VIEW_ZOOMIN: {
-        SciCall_ZoomIn();
+        NP3_ZoomIn();
         ShowZoomCallTip();
     }
     break;
 
     case IDM_VIEW_ZOOMOUT: {
-        SciCall_ZoomOut();
+        NP3_ZoomOut();
         ShowZoomCallTip();
     }
     break;
 
     case IDM_VIEW_RESETZOOM: {
-        SciCall_SetZoom(100);
+        NP3_ApplyZoom(NP3_DEFAULT_ZOOM);
         ShowZoomCallTip();
     }
     break;
@@ -8960,8 +8969,8 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
 
     case SCN_ZOOM:
-        SciCall_SetWhiteSpaceSize(MulDiv(Globals.iWhiteSpaceSize, SciCall_GetZoom(), 100));
-        SciCall_SetCaretLineFrame(MulDiv(Globals.iCaretOutLineFrameSize, SciCall_GetZoom(), 100));
+        SciCall_SetWhiteSpaceSize(MulDiv(Globals.iWhiteSpaceSize, Globals.iZoomPercent, 100));
+        SciCall_SetCaretLineFrame(MulDiv(Globals.iCaretOutLineFrameSize, Globals.iZoomPercent, 100));
         UpdateToolbar();
         UpdateMargins(true);
         break;
@@ -9903,10 +9912,10 @@ static void  _UpdateToolbarDelayed()
     EnableTool(Globals.hwndToolbar, IDT_VIEW_TOGGLE_VIEW, b2 && IsFocusedViewAllowed());
     CheckTool(Globals.hwndToolbar, IDT_VIEW_TOGGLE_VIEW, tv);
 
-    int const zoom = SciCall_GetZoom();
-    CheckTool(Globals.hwndToolbar, IDT_VIEW_ZOOMIN,    (zoom > 100));
-    CheckTool(Globals.hwndToolbar, IDT_VIEW_RESETZOOM, (zoom == 100));
-    CheckTool(Globals.hwndToolbar, IDT_VIEW_ZOOMOUT,   (zoom < 100));
+    int const zoom = NP3_GetZoomPercent();
+    CheckTool(Globals.hwndToolbar, IDT_VIEW_ZOOMIN,    (zoom > NP3_DEFAULT_ZOOM));
+    CheckTool(Globals.hwndToolbar, IDT_VIEW_RESETZOOM, (zoom == NP3_DEFAULT_ZOOM));
+    CheckTool(Globals.hwndToolbar, IDT_VIEW_ZOOMOUT,   (zoom < NP3_DEFAULT_ZOOM));
 }
 
 
@@ -10906,7 +10915,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
 
         UpdateToolbar();
         UpdateMargins(true);
-        if (SciCall_GetZoom() != 100) {
+        if (NP3_GetZoomPercent() != NP3_DEFAULT_ZOOM) {
             ShowZoomCallTip();
         }
 
@@ -11156,7 +11165,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
     }
 
     UpdateMargins(true);
-    if (SciCall_GetZoom() != 100) {
+    if (NP3_GetZoomPercent() != NP3_DEFAULT_ZOOM) {
         ShowZoomCallTip();
     }
     UpdateToolbar_Now(Globals.hwndMain);
@@ -11390,7 +11399,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
         }
     }
 
-    bool const bSaveNeeded = (IsSaveNeeded() || IsFileChangedFlagSet() || Settings.FixTrailingBlanks) && !bIsEmptyNewFile;
+    bool const bSaveNeeded = (IsSaveNeeded() || IsFileChangedFlagSet() || (Settings.FixTrailingBlanks && EditHasTrailingBlanks())) && !bIsEmptyNewFile;
 
     if (!(fSaveFlags & FSF_SaveAs) && !(fSaveFlags & FSF_SaveAlways) && !bSaveNeeded) {
         _MRU_UpdateSession();
@@ -12043,6 +12052,68 @@ void ResetMouseDWellTime()
 
 //=============================================================================
 //
+//  NP3 Zoom Helpers — percentage-based zoom with Scintilla's additive zoom API
+//
+//  Scintilla zoom is additive: sizeZoomed = fontSize + zoomLevel * FontSizeMultiplier
+//  NP3 displays percentage (100% = normal). Conversion uses GLOBAL_INITIAL_FONTSIZE.
+//
+
+static int ZoomPercentToSciLevel(int percent)
+{
+    // zoomLevel = baseFontSizeSM * (percent - 100) / 10000
+    // where baseFontSizeSM = GLOBAL_INITIAL_FONTSIZE * 100 (FontSizeMultiplier units)
+    __int64 const raw = (__int64)NP3_ZOOM_BASE_FONT_SIZE * (percent - 100);
+    return (int)((raw >= 0) ? (raw + 5000) / 10000 : (raw - 5000) / 10000);
+}
+
+void NP3_ApplyZoom(int percent)
+{
+    percent = clampi(percent, NP3_MIN_ZOOM_PERCENT, NP3_MAX_ZOOM_PERCENT);
+    Globals.iZoomPercent = percent;
+    SciCall_SetZoom(ZoomPercentToSciLevel(percent));
+}
+
+void NP3_ZoomIn()
+{
+    int const curLevel = SciCall_GetZoom();
+    int percent = Globals.iZoomPercent;
+    if (percent < 200) {
+        percent += 10;
+    } else if (percent < 500) {
+        percent += 25;
+    } else {
+        percent += 50;
+    }
+    percent = min_i(percent, NP3_MAX_ZOOM_PERCENT);
+    int newLevel = ZoomPercentToSciLevel(percent);
+    if (newLevel <= curLevel) {
+        newLevel = curLevel + 1;
+    }
+    Globals.iZoomPercent = percent;
+    SciCall_SetZoom(newLevel);
+}
+
+void NP3_ZoomOut()
+{
+    int const curLevel = SciCall_GetZoom();
+    int percent = Globals.iZoomPercent;
+    percent -= 10;
+    percent = max_i(percent, NP3_MIN_ZOOM_PERCENT);
+    int newLevel = ZoomPercentToSciLevel(percent);
+    if (newLevel >= curLevel) {
+        newLevel = curLevel - 1;
+    }
+    Globals.iZoomPercent = percent;
+    SciCall_SetZoom(newLevel);
+}
+
+int NP3_GetZoomPercent()
+{
+    return Globals.iZoomPercent;
+}
+
+//=============================================================================
+//
 //  ShowZoomCallTip()
 //
 void ShowZoomCallTip()
@@ -12051,7 +12122,7 @@ void ShowZoomCallTip()
     int const   delayClr = Settings2.ZoomTooltipTimeout;
     if (delayClr >= (_MQ_TIMER_CYCLE << 3)) {
 
-        StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", SciCall_GetZoom());
+        StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", NP3_GetZoomPercent());
 
         DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
 

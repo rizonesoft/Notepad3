@@ -333,12 +333,9 @@ public:
 
 	void SetCompositionFont(const ViewStyle &vs, int style, UINT dpi) const {
 		LOGFONTW lf{};
-		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		//int sizeZoomed = vs.styles[style].size + (vs.zoomLevel * FontSizeMultiplier);
-		//if (sizeZoomed <= 2 * FontSizeMultiplier)	// Hangs if sizeZoomed <= 1
-		//	sizeZoomed = 2 * FontSizeMultiplier;
-		int const sizeZoomed = GetFontSizeZoomed(vs.styles[style].size, vs.zoomLevel);
-		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+		int sizeZoomed = vs.styles[style].size + (vs.zoomLevel * FontSizeMultiplier);
+		if (sizeZoomed <= 2 * FontSizeMultiplier)	// Hangs if sizeZoomed <= 1
+			sizeZoomed = 2 * FontSizeMultiplier;
 		// The negative is to allow for leading
 		lf.lfHeight = -::MulDiv(sizeZoomed, dpi, pointsPerInch * FontSizeMultiplier);
 		lf.lfWeight = static_cast<LONG>(vs.styles[style].weight);
@@ -1959,15 +1956,7 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 
 			// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 			if (wParam & (MK_CONTROL | MK_RBUTTON)) {
-				if (wParam & (MK_CONTROL)) {
-				// Zoom! We play with the font sizes in the styles.
-				// Number of steps/line is ignored, we just care if sizing up or down
-					if (linesToScroll < 0)
-						KeyCommand(Message::ZoomIn);
-					else
-						KeyCommand(Message::ZoomOut);
-				}
-				// send to main window (trigger zoom callTip or undo/redo history) !
+				// Forward to parent (NP3 handles zoom steps and undo/redo history)
 				::DefWindowProc(MainHWND(), iMessage, wParam, lParam);
 			} else {
 				// Scroll

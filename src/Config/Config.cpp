@@ -1713,11 +1713,11 @@ void LoadSettings()
     int const prtFontSize = 10;
     int const zoomScale = MulDiv(baseZoom, prtFontSize, f2int(GLOBAL_INITIAL_FONTSIZE));
     Defaults.PrintZoom = (Globals.iCfgVersionRead < CFG_VER_0001) ? (zoomScale / 10) : zoomScale;
-    int iPrintZoom = clampi(IniSectionGetInt(IniSecSettings, L"PrintZoom", Defaults.PrintZoom), 0, SC_MAX_ZOOM_LEVEL);
+    int iPrintZoom = clampi(IniSectionGetInt(IniSecSettings, L"PrintZoom", Defaults.PrintZoom), 0, NP3_MAX_ZOOM_PERCENT);
     if (Globals.iCfgVersionRead < CFG_VER_0001) {
         iPrintZoom = 100 + (iPrintZoom - 10) * 10;
     }
-    Settings.PrintZoom = clampi(iPrintZoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
+    Settings.PrintZoom = clampi(iPrintZoom, NP3_MIN_ZOOM_PERCENT, NP3_MAX_ZOOM_PERCENT);
 
     GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, tchKeyName, COUNTOF(tchKeyName));
     LONG const _margin = (tchKeyName[0] == L'0') ? 2000L : 1000L; // Metric system. L'1' is US System
@@ -1886,7 +1886,7 @@ void LoadSettings()
         if (Globals.iCfgVersionRead < CFG_VER_0001) {
             winInfo.zoom = (winInfo.zoom + 10) * 10;
         }
-        winInfo.zoom = clampi(winInfo.zoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
+        winInfo.zoom = clampi(winInfo.zoom, NP3_MIN_ZOOM_PERCENT, NP3_MAX_ZOOM_PERCENT);
         winInfo.dpi = IniSectionGetInt(IniSecWindow, tchDPI, USER_DEFAULT_SCREEN_DPI);
 
         int const offset = Settings2.LaunchInstanceWndPosOffset;

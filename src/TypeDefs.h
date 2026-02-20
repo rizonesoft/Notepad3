@@ -249,6 +249,13 @@ typedef enum STATUS_SECTOR_T {
 
 #define GLOBAL_INITIAL_FONTSIZE 11.0f
 
+// NP3 zoom constants (percentage-based, 100 = normal)
+#define NP3_MIN_ZOOM_PERCENT   10
+#define NP3_MAX_ZOOM_PERCENT  1000
+#define NP3_DEFAULT_ZOOM       100
+// Base font size in Scintilla FontSizeMultiplier units (points * 100) for zoom conversion
+#define NP3_ZOOM_BASE_FONT_SIZE ((int)(GLOBAL_INITIAL_FONTSIZE * 100))
+
 // --------------------------------------------------------------------------
 
 //        |- len -|
@@ -523,6 +530,7 @@ typedef struct GLOBALS_T {
 
     int       iWhiteSpaceSize;
     int       iCaretOutLineFrameSize;
+    int       iZoomPercent;
 
     bool      bMinimizedToTray;
     bool      bZeroBasedColumnIndex;
