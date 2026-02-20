@@ -1338,7 +1338,7 @@ CASE_WM_CTLCOLOR_SET:
             StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Rendering-Technology -> '%s'", Settings.RenderingTechnology ? L"DIRECT-WRITE" : L"GDI");
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-            StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Zoom -> %i%%.", SciCall_GetZoom());
+            StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Zoom -> %i%%.", NP3_GetZoomPercent());
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
             Style_GetLexerDisplayName(Style_GetCurrentLexerPtr(), wchBuf, COUNTOF(wchBuf));
@@ -4698,7 +4698,7 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO *hMonitorInfo, const int off
     wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
     wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
     wi.max = (hwnd ? IsZoomed(hwnd) : false) || (wndpl.flags & WPF_RESTORETOMAXIMIZED);
-    wi.zoom = hwnd ? SciCall_GetZoom() : 100;
+    wi.zoom = hwnd ? NP3_GetZoomPercent() : NP3_DEFAULT_ZOOM;
     wi.dpi = Scintilla_GetWindowDPI(hwnd);
 
     if (bFullVisible) {

@@ -358,8 +358,9 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     SendMessage(hwnd,SCI_SETPRINTCOLOURMODE,printColorModes[Settings.PrintColorMode],0);
     //SendMessage(hwnd, SCI_SETPRINTWRAPMODE, SC_WRAP_WORD, 0); // default: SC_WRAP_WORD
 
-    // Set print magnification...
-    SendMessage(hwnd, SCI_SETPRINTMAGNIFICATION, (WPARAM)Settings.PrintZoom, 0);
+    // Set print magnification (convert NP3 percent to Scintilla additive points)
+    int const printZoomLevel = (int)(((__int64)NP3_ZOOM_BASE_FONT_SIZE * (Settings.PrintZoom - 100) + 5000) / 10000);
+    SendMessage(hwnd, SCI_SETPRINTMAGNIFICATION, (WPARAM)printZoomLevel, 0);
 
     DocPos const lengthDocMax = SciCall_GetTextLength();
     DocPos lengthDoc = lengthDocMax;
@@ -559,7 +560,7 @@ static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
         UDACCEL const acc[1] = { { 0, 10 } };
         SendDlgItemMessage(hwnd, 30, EM_LIMITTEXT, 32, 0);
         SendDlgItemMessage(hwnd, 31, UDM_SETACCEL, 1, (WPARAM)acc);
-        SendDlgItemMessage(hwnd, 31, UDM_SETRANGE32, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
+        SendDlgItemMessage(hwnd, 31, UDM_SETRANGE32, NP3_MIN_ZOOM_PERCENT, NP3_MAX_ZOOM_PERCENT);
         SendDlgItemMessage(hwnd, 31, UDM_SETPOS32, 0, Settings.PrintZoom);
 
         // Set header options

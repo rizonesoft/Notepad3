@@ -71,9 +71,7 @@ using namespace Scintilla;
 using namespace Scintilla::Internal;
 
 PrintParameters::PrintParameters() noexcept {
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	magnification = 100;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	magnification = 0;
 	colourMode = PrintOption::Normal;
 	wrapState = Wrap::Word;
 }

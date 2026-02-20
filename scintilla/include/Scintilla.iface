@@ -2265,12 +2265,6 @@ fun void UsePopUp=2371(PopUp popUpMode,)
 # Is the selection rectangular? The alternative is the more common stream selection.
 get bool SelectionIsRectangle=2372(,)
 
-# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-# 2018-09-06 change zoom level and print magnification to percent value
-val SC_MIN_ZOOM_LEVEL=10
-val SC_MAX_ZOOM_LEVEL=1000
-# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-
 # Set the zoom level. This number of points is added to the size of all fonts.
 # It may be positive to magnify or negative to reduce.
 set void SetZoom=2373(int zoomInPoints,)

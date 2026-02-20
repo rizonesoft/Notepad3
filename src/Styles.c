@@ -1570,7 +1570,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
     Globals.iWhiteSpaceSize = iValue;
     //SciCall_SetWhiteSpaceSize(iValue);
-    SciCall_SetWhiteSpaceSize(MulDiv(Globals.iWhiteSpaceSize, SciCall_GetZoom(), 100)); // needs update on zoom
+    SciCall_SetWhiteSpaceSize(MulDiv(Globals.iWhiteSpaceSize, NP3_GetZoomPercent(), 100)); // needs update on zoom
 
     // whitespace colors
     rgb = RGB(0, 0, 0);
@@ -2087,7 +2087,7 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
         iFrameSize = max_i(1, ScaleIntToDPI(hwnd, iFrameSize));
         Globals.iCaretOutLineFrameSize = iFrameSize;
         // SciCall_SetCaretLineFrame(iFrameSize);
-        SciCall_SetCaretLineFrame(MulDiv(Globals.iCaretOutLineFrameSize, SciCall_GetZoom(), 100)); // needs update on zoom
+        SciCall_SetCaretLineFrame(MulDiv(Globals.iCaretOutLineFrameSize, NP3_GetZoomPercent(), 100)); // needs update on zoom
     }
     else {
         SciCall_SetCaretLineFrame(0);

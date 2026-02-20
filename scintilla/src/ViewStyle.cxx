@@ -63,12 +63,8 @@ bool MarginStyle::ShowsFolding() const noexcept {
 
 void FontRealised::Realise(Surface &surface, int zoomLevel, Technology technology, const FontSpecification &fs, const char *localeName) {
 	PLATFORM_ASSERT(fs.fontName);
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	//~measurements.sizeZoomed = fs.size + zoomLevel * FontSizeMultiplier;
-	//~if (measurements.sizeZoomed <= FontSizeMultiplier)	// May fail if sizeZoomed < 1
-	//~	measurements.sizeZoomed = FontSizeMultiplier;
-	measurements.sizeZoomed = GetFontSizeZoomed(fs.size, zoomLevel);
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	// If negative zoomLevel, ensure sizeZoomed at least minimum positive size
+	measurements.sizeZoomed = std::max(fs.size + (zoomLevel * FontSizeMultiplier), FontSizeMultiplier);
 
 	const float deviceHeight = static_cast<float>(surface.DeviceHeightFont(measurements.sizeZoomed));
 	const FontParameters fp(fs.fontName, deviceHeight / FontSizeMultiplier, fs.weight,
@@ -234,9 +230,7 @@ ViewStyle::ViewStyle(size_t stylesSize_) :
 	marginInside = true;
 	CalculateMarginWidthAndMask();
 	textStart = marginInside ? fixedColumnWidth : leftMarginWidth;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	zoomLevel = 100;  /// @ 20018-09-06 Changed to percent
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	zoomLevel = 0;
 	viewWhitespace = WhiteSpace::Invisible;
 	tabDrawMode = TabDrawMode::LongArrow;
 	whitespaceSize = 1;
@@ -770,44 +764,6 @@ ViewStyle::CaretShape ViewStyle::CaretShapeForMode(bool inOverstrike, bool isMai
 	const CaretStyle caretStyle = caret.style & CaretStyle::InsMask;
 	return (caretStyle <= CaretStyle::Block) ? static_cast<CaretShape>(caretStyle) : CaretShape::line;
 }
-
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-bool ViewStyle::ZoomIn() noexcept {
-	if (zoomLevel < SC_MAX_ZOOM_LEVEL) {
-		int level = zoomLevel;
-		if (level < 200) {
-			level += 10;
-		} else {
-			level += 25;
-		}
-
-		level = std::min(level, SC_MAX_ZOOM_LEVEL);
-		if (level != zoomLevel) {
-			zoomLevel = level;
-			return true;
-		}
-	}
-	return false;
-}
-
-bool ViewStyle::ZoomOut() noexcept {
-	if (zoomLevel > SC_MIN_ZOOM_LEVEL) {
-		int level = zoomLevel;
-		if (level <= 200) {
-			level -= 10;
-		} else {
-			level -= 25;
-		}
-
-		level = std::max(level, SC_MIN_ZOOM_LEVEL);
-		if (level != zoomLevel) {
-			zoomLevel = level;
-			return true;
-		}
-	}
-	return false;
-}
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 void ViewStyle::AllocStyles(size_t sizeNew) {
 	size_t i=styles.size();

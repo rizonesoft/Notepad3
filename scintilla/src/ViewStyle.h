@@ -71,14 +71,6 @@ struct CaretLineAppearance {
 	int frame = 0;
 };
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-constexpr int GetFontSizeZoomed(int size, int zoomLevel) noexcept {
-	size = (size * zoomLevel + 50) / 100;
-	// Hangs if sizeZoomed (in point) <= 1
-	return std::max(size, 2 * FontSizeMultiplier);
-}
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-
 struct CaretAppearance {
 	// Line, block, over-strike bar ...
 	Scintilla::CaretStyle style = CaretStyle::Line;
@@ -160,9 +152,7 @@ public:
 	int fixedColumnWidth = 0;	///< Total width of margins
 	bool marginInside;	///< true: margin included in text view, false: separate views
 	int textStart;	///< Starting x position of text within the view
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	int zoomLevel;  /// @ 2018-09-06 Changed to a percent value
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	int zoomLevel;
 	Scintilla::WhiteSpace viewWhitespace;
 	Scintilla::TabDrawMode tabDrawMode;
 	int whitespaceSize;
@@ -259,10 +249,6 @@ public:
 	bool IsCaretVisible(bool isMainSelection) const noexcept;
 	bool DrawCaretInsideSelection(bool inOverstrike, bool imeCaretBlockOverride) const noexcept;
 	CaretShape CaretShapeForMode(bool inOverstrike, bool isMainSelection) const noexcept;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	bool ZoomIn() noexcept;
-	bool ZoomOut() noexcept;
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 private:
 	void AllocStyles(size_t sizeNew);
