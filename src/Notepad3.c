@@ -968,7 +968,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 #endif
 
     _InitGlobals();
-    InitDarkMode();
+    // Dark mode init deferred to after LoadSettings() — see below
 
     // Windows Class name
     StringCchCopy(s_wchWndClass, COUNTOF(s_wchWndClass), _W(SAPPNAME));
@@ -1046,7 +1046,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     Scintilla_RegisterClasses(hInstance);
 
 #ifdef D_NP3_WIN10_DARK_MODE
-    SetDarkMode(IsDarkModeSupported() && IsSettingDarkMode()); // settings
+    // Init dark mode after settings are loaded — skip UxTheme loading for explicit light mode
+    if (Settings.WinThemeDarkMode != WINDSPMOD_LIGHT) {
+        SetDarkMode(true); // probe: load UxTheme.dll, detect OS dark mode support
+        if (!IsSettingDarkMode()) {
+            SetDarkMode(false); // OS or user says light mode
+        }
+    }
 #endif
 
     HRSRC const hRes = FindResourceEx(hInstance, RT_RCDATA, MAKEINTRESOURCE(IDR_STD_DARKMODE_THEME), 
@@ -1451,7 +1457,14 @@ static BOOL CALLBACK _EnumWndProc(HWND hwnd, LPARAM lParam)
 
         if (StrCmpW(szClassName, s_wchWndClass) == 0) {
 
-            UINT const iReuseLock = GetDlgItemInt(hwnd, IDC_REUSELOCK, NULL, FALSE);
+            WCHAR wchReuseLock[32] = { L'\0' };
+            DWORD_PTR dwResult = 0;
+            HWND const hCtl = GetDlgItem(hwnd, IDC_REUSELOCK);
+            if (!hCtl || SendMessageTimeout(hCtl, WM_GETTEXT, COUNTOF(wchReuseLock),
+                    (LPARAM)wchReuseLock, SMTO_ABORTIFHUNG | SMTO_BLOCK, 500, &dwResult) == 0) {
+                return TRUE; // skip unresponsive instance
+            }
+            UINT const iReuseLock = (UINT)wcstoul(wchReuseLock, NULL, 10);
             if ((GetTicks_ms() - iReuseLock) >= REUSEWINDOWLOCKTIMEOUT) {
 
                 *(HWND*)lParam = hwnd;
@@ -1480,7 +1493,12 @@ static BOOL CALLBACK _EnumWndProc2(HWND hwnd, LPARAM lParam)
         if (StrCmpW(szClassName, s_wchWndClass) == 0) {
 
             WCHAR wchFileName[INTERNET_MAX_URL_LENGTH] = { L'\0' };
-            GetDlgItemText(hwnd, IDC_FILENAME, wchFileName, COUNTOF(wchFileName));
+            DWORD_PTR dwResult = 0;
+            HWND const hCtl = GetDlgItem(hwnd, IDC_FILENAME);
+            if (!hCtl || SendMessageTimeout(hCtl, WM_GETTEXT, COUNTOF(wchFileName),
+                    (LPARAM)wchFileName, SMTO_ABORTIFHUNG | SMTO_BLOCK, 500, &dwResult) == 0) {
+                return TRUE; // skip unresponsive instance
+            }
 
             HPATHL hpthFileName = Path_Allocate(wchFileName);
             if (Path_StrgComparePath(hpthFileName, s_pthCheckFilePath, Paths.WorkingDirectory, true) == 0) {
@@ -1771,17 +1789,39 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
         SetWindowTransparentMode(hwndMain, true, Settings2.OpacityLevel);
     }
 
+    // Determine if starting minimized/tray (don't show window early in that case)
+    bool const bStartMinimized = s_flagStartAsTrayIcon || (nCmdShow == SW_MINIMIZE) || (nCmdShow == SW_SHOWMINIMIZED);
+
+    // Show window frame early for faster perceived startup — the user sees
+    // the window (with initial toolbar from WM_CREATE) while we re-create bars
+    if (!bStartMinimized) {
+        if (!Settings.ShowTitlebar) {
+            SetWindowLong(hwndMain, GWL_STYLE, GetWindowLong(hwndMain, GWL_STYLE) & ~WS_CAPTION);
+        }
+        SetWindowPos(hwndMain, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        ShowWindow(hwndMain, nCmdShow);
+        UpdateWindow(hwndMain);
+    }
+
     CreateBars(hwndMain, hInstance);
 
     SetMenu(hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
     DrawMenuBar(hwndMain);
+
+    // Force layout recalculation after toolbar/statusbar re-creation
+    // (early ShowWindow already triggered WM_SIZE with old child windows)
+    if (!bStartMinimized) {
+        RECT rc;
+        GetClientRect(hwndMain, &rc);
+        SendMessage(hwndMain, WM_SIZE, SIZE_RESTORED, MAKELPARAM(rc.right, rc.bottom));
+    }
 
     Globals.hwndMain = hwndMain; // make main window globaly available
     SetWindowAppUserModelID(hwndMain, Settings2.AppUserModelID);
 
     HPATHL        hfile_pth = Path_Copy(s_pthArgFilePath);
     FileLoadFlags fLoadFlags = FLF_None;
-    
+
     // Source Encoding
     Encoding_Forced(s_flagSetEncoding);
 
@@ -1807,15 +1847,13 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
 
     ShowWindowAsync(s_hwndEditFrame, SW_SHOWDEFAULT);
     ShowWindowAsync(Globals.hwndEdit, SW_SHOWDEFAULT);
-    //~SnapToWinInfoPos(hwndMain, g_IniWinInfo, SCR_NORMAL, SW_HIDE); ~ instead set all needed properties  here:
-    SetWindowPos(hwndMain, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
-    UpdateWindow(hwndMain);
-    if (!Settings.ShowTitlebar) {
-        SetWindowLong(hwndMain, GWL_STYLE, GetWindowLong(hwndMain, GWL_STYLE) & ~WS_CAPTION);
-    }
-
-    if (s_flagStartAsTrayIcon || (nCmdShow == SW_MINIMIZE) || (nCmdShow == SW_SHOWMINIMIZED)) {
+    if (bStartMinimized) {
+        //~SnapToWinInfoPos(hwndMain, g_IniWinInfo, SCR_NORMAL, SW_HIDE);
+        SetWindowPos(hwndMain, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        if (!Settings.ShowTitlebar) {
+            SetWindowLong(hwndMain, GWL_STYLE, GetWindowLong(hwndMain, GWL_STYLE) & ~WS_CAPTION);
+        }
         if (Settings.MinimizeToTray) {
             MinimizeWndToTray(hwndMain);
         }
@@ -1824,7 +1862,8 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
         }
     }
     else {
-        ShowWindow(hwndMain, nCmdShow);
+        // Window was already shown above; ensure children are painted
+        UpdateWindow(hwndMain);
     }
 
     bool bOpened = false;
