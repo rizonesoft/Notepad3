@@ -1123,7 +1123,7 @@ void PTHAPI Path_ExpandEnvStrings(HPATHL hpth_in_out)
         StrgReplace(hstr_io, PATH_CSIDL_FAVORITES, PathGet(hfld_pth));
         Path_Release(hfld_pth);
     }
-
+    
     ExpandEnvironmentStrgs(hstr_io, true);
 }
 // ----------------------------------------------------------------------------
