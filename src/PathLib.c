@@ -1269,7 +1269,7 @@ LPCWSTR PTHAPI Path_FindExtension(const HPATHL hpth)
     if (!hstr)
         return NULL;
 
-    LPWSTR wbuf = StrgWriteAccessBuf(hstr, 0);
+    StrgWriteAccessBuf(hstr, 0);
     //size_t const cch = StrgGetAllocLength(hstr);
 
     ///PathXCchFindExtension(StrgGet(hstr), StrgGetAllocLength(hstr), &pext);
@@ -1277,7 +1277,7 @@ LPCWSTR PTHAPI Path_FindExtension(const HPATHL hpth)
     LPWSTR const pdot = pfile ? wcsrchr(pfile, L'.') : NULL;
 
     StrgSanitize(hstr);
-    return pdot ? pdot : &wbuf[StrgGetLength(hstr)];
+    return pdot ? pdot : &StrgGet(hstr)[StrgGetLength(hstr)];
 }
 // ----------------------------------------------------------------------------
 
@@ -1371,10 +1371,16 @@ bool PTHAPI Path_IsUNC(const HPATHL hpth)
     if (!hstr || StrgIsEmpty(hstr))
         return false;
 
-    WCHAR maxPath[MAX_PATH];
-    StringCchCopy(maxPath, COUNTOF(maxPath), StrgGet(hstr));
+    LPCWSTR const p = StrgGet(hstr);
+    if (!p || p[0] != L'\\' || p[1] != L'\\')
+        return false;
 
-    return PathIsUNC(maxPath);
+    // extended-length UNC prefix (\\?\UNC\ or \\.\UNC\)
+    if (wcsstr(p, PATHUNC_PREFIX1) == p || wcsstr(p, PATHUNC_PREFIX2) == p)
+        return true;
+
+    // regular UNC (\\server\share), but not \\?\ or \\.\ long path prefix
+    return (p[2] != L'?' && p[2] != L'.');
 }
 // ----------------------------------------------------------------------------
 
@@ -1405,14 +1411,17 @@ bool PTHAPI Path_SetFileAttributes(HPATHL hpth, DWORD dwAttributes)
 bool PTHAPI Path_StripToRoot(HPATHL hpth_in_out)
 {
     HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
-    if (!hstr_io)
+    if (!hstr_io || StrgIsEmpty(hstr_io))
         return false;
 
-    WCHAR maxPath[MAX_PATH];
-    StringCchCopy(maxPath, COUNTOF(maxPath), StrgGet(hstr_io));
+    LPCWSTR const root_end = _Path_SkipRoot(hpth_in_out);
+    LPCWSTR const path_start = StrgGet(hstr_io);
+    if (!root_end || !path_start || root_end == path_start)
+        return false;
 
-    if (PathStripToRoot(maxPath)) {
-        Path_Reset(hpth_in_out, maxPath);
+    size_t const root_len = (size_t)(root_end - path_start);
+    if (root_len > 0 && root_len <= StrgGetLength(hstr_io)) {
+        StrgDelete(hstr_io, root_len, StrgGetLength(hstr_io) - root_len);
         return true;
     }
     return false;
@@ -1538,14 +1547,20 @@ void PTHAPI Path_GetDisplayName(LPWSTR lpszDisplayName, const DWORD cchDisplayNa
     size_t const fnam_len = Path_GetLength(hfnam_pth);
 
     if (fnam_len >= cchDisplayName) {
-        // Explorer like display name ???
-        HPATHL       hpart_pth = Path_Allocate(PathGet(hfnam_pth));
-        HSTRINGW     hpart_str = ToHStrgW(hpart_pth);
-        size_t const split_idx = (cchDisplayName >> 1) - wcslen(PATHDSPL_INFIX);
-        StrgDelete(hpart_str, split_idx, (fnam_len - cchDisplayName + (wcslen(PATHDSPL_INFIX) << 1)));
-        StrgInsert(hpart_str, split_idx, PATHDSPL_INFIX);
-        StringCchCopyW(lpszDisplayName, cchDisplayName, StrgGet(hpart_str));
-        Path_Release(hpart_pth);
+        // Explorer like display name
+        size_t const infix_len = wcslen(PATHDSPL_INFIX);
+        if (cchDisplayName > infix_len * 2 + 2) {
+            HPATHL       hpart_pth = Path_Allocate(PathGet(hfnam_pth));
+            HSTRINGW     hpart_str = ToHStrgW(hpart_pth);
+            size_t const split_idx = (cchDisplayName >> 1) - infix_len;
+            StrgDelete(hpart_str, split_idx, (fnam_len - cchDisplayName + (infix_len << 1)));
+            StrgInsert(hpart_str, split_idx, PATHDSPL_INFIX);
+            StringCchCopyW(lpszDisplayName, cchDisplayName, StrgGet(hpart_str));
+            Path_Release(hpart_pth);
+        }
+        else {
+            StringCchCopyW(lpszDisplayName, cchDisplayName, PathGet(hfnam_pth));
+        }
     }
     else {
         StringCchCopyW(lpszDisplayName, cchDisplayName, PathGet(hfnam_pth));

@@ -17,7 +17,7 @@
 		<asmv3:windowsSettings>
 			<dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">true/PM</dpiAware>
 			<dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">PerMonitorV2,PerMonitor</dpiAwareness>
-			<ws2:longPathAware xmlns:ws2="http://schemas.microsoft.com/SMI/2016/WindowsSettings">true</ws2:longPathAware>
+			<!-- longPathAware removed: MiniPath still uses fixed MAX_PATH buffers -->
 			<gdiScaling xmlns="http://schemas.microsoft.com/SMI/2017/WindowsSettings">false</gdiScaling> <!-- if set true, no WM_DPICHANGED message is send -->
 			<heapType xmlns="http://schemas.microsoft.com/SMI/2020/WindowsSettings">SegmentHeap</heapType>
 		</asmv3:windowsSettings>
