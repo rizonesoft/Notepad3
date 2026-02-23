@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.26.218.(build_#) (2026-02-18)
+Current BETA Version 6.26.223.(build_#) (2026-02-23)
 ========================================================
 
 --------------------------------------------------------
@@ -67,6 +67,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]-
+[.223.1]- INI file handling Notepad3 and Minipath.
+[.223.1]- Regression regarding Zooming (caused by new Scintilla Lib merge conflicts).
+[.223.1]- If flag 'strip trailing blanks on save' is active, check if there are trailing blanks.
 [.218.1]- Cover both scopes: per-process and per-window (Shell)AppUserModelID.
 [.218.1]- URL extraction - handle final single-quote smart.
 [.218.1]- INI file handling in case of redirection.
