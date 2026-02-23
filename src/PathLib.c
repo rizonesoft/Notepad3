@@ -182,6 +182,8 @@ LPCWSTR const PATHPARENT_PREFIX = L"..\\";
 LPCWSTR const PATHDSPL_INFIX = L" ... ";
 
 LPCWSTR const PATH_CSIDL_MYDOCUMENTS = L"%CSIDL:MYDOCUMENTS%";
+LPCWSTR const PATH_CSIDL_DESKTOP     = L"%CSIDL:DESKTOP%";
+LPCWSTR const PATH_CSIDL_FAVORITES   = L"%CSIDL:FAVORITES%";
 
 
 // TODO: ...
@@ -1089,7 +1091,39 @@ void PTHAPI Path_ExpandEnvStrings(HPATHL hpth_in_out)
     HSTRINGW hstr_io = ToHStrgW(hpth_in_out);
     if (!hstr_io)
         return;
-    
+
+    // resolve %CSIDL:MYDOCUMENTS% before standard env-var expansion
+    if (StrgFind(hstr_io, PATH_CSIDL_MYDOCUMENTS, 0) >= 0) {
+        HPATHL hfld_pth = Path_Allocate(NULL);
+        if (!Path_GetKnownFolder(&FOLDERID_Documents, hfld_pth)) {
+            if (!Path_GetCurrentDirectory(hfld_pth)) {
+                Path_GetAppDirectory(hfld_pth);
+            }
+        }
+        StrgReplace(hstr_io, PATH_CSIDL_MYDOCUMENTS, PathGet(hfld_pth));
+        Path_Release(hfld_pth);
+    }
+
+    // resolve %CSIDL:DESKTOP%
+    if (StrgFind(hstr_io, PATH_CSIDL_DESKTOP, 0) >= 0) {
+        HPATHL hfld_pth = Path_Allocate(NULL);
+        if (!Path_GetKnownFolder(&FOLDERID_Desktop, hfld_pth)) {
+            Path_GetAppDirectory(hfld_pth);
+        }
+        StrgReplace(hstr_io, PATH_CSIDL_DESKTOP, PathGet(hfld_pth));
+        Path_Release(hfld_pth);
+    }
+
+    // resolve %CSIDL:FAVORITES%
+    if (StrgFind(hstr_io, PATH_CSIDL_FAVORITES, 0) >= 0) {
+        HPATHL hfld_pth = Path_Allocate(NULL);
+        if (!Path_GetKnownFolder(&FOLDERID_Favorites, hfld_pth)) {
+            Path_GetAppDirectory(hfld_pth);
+        }
+        StrgReplace(hstr_io, PATH_CSIDL_FAVORITES, PathGet(hfld_pth));
+        Path_Release(hfld_pth);
+    }
+
     ExpandEnvironmentStrgs(hstr_io, true);
 }
 // ----------------------------------------------------------------------------
@@ -1821,6 +1855,25 @@ bool PTHAPI Path_CanonicalizeEx(HPATHL hpth_in_out, const HPATHL hdir_rel_base)
         StrgReplace(hstr_io, PATH_CSIDL_MYDOCUMENTS, PathGet(hfld_pth));
         Path_Release(hfld_pth);
     }
+
+    if (StrgFind(hstr_io, PATH_CSIDL_DESKTOP, 0) == 0) {
+        HPATHL hfld_pth = Path_Allocate(NULL);
+        if (!Path_GetKnownFolder(&FOLDERID_Desktop, hfld_pth)) {
+            Path_GetAppDirectory(hfld_pth);
+        }
+        StrgReplace(hstr_io, PATH_CSIDL_DESKTOP, PathGet(hfld_pth));
+        Path_Release(hfld_pth);
+    }
+
+    if (StrgFind(hstr_io, PATH_CSIDL_FAVORITES, 0) == 0) {
+        HPATHL hfld_pth = Path_Allocate(NULL);
+        if (!Path_GetKnownFolder(&FOLDERID_Favorites, hfld_pth)) {
+            Path_GetAppDirectory(hfld_pth);
+        }
+        StrgReplace(hstr_io, PATH_CSIDL_FAVORITES, PathGet(hfld_pth));
+        Path_Release(hfld_pth);
+    }
+
     ExpandEnvironmentStrgs(hstr_io, true);
 
     bool res = false;
@@ -2059,6 +2112,16 @@ void PTHAPI Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpa
         }
     }
 
+    HPATHL const hdesktop_pth = Path_Allocate(NULL);
+    if (!Path_GetKnownFolder(&FOLDERID_Desktop, hdesktop_pth)) {
+        Path_GetAppDirectory(hdesktop_pth);
+    }
+
+    HPATHL const hfavorites_pth = Path_Allocate(NULL);
+    if (!Path_GetKnownFolder(&FOLDERID_Favorites, hfavorites_pth)) {
+        Path_GetAppDirectory(hfavorites_pth);
+    }
+
     HPATHL const hprgs_pth = Path_Allocate(NULL);
 #ifdef _WIN64
     if (!Path_GetKnownFolder(&FOLDERID_ProgramFiles, hprgs_pth)) {
@@ -2075,12 +2138,26 @@ void PTHAPI Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpa
     bool const bPathIsRelative = _Path_IsRelative(hpth_in_out);
     bool const bAppPathIsUsrDoc = Path_IsPrefix(husrdoc_pth, happdir_pth);
     bool const bPathIsPrefixUsrDoc = Path_IsPrefix(husrdoc_pth, hpth_in_out);
+    bool const bAppPathIsDesktop = Path_IsPrefix(hdesktop_pth, happdir_pth);
+    bool const bPathIsPrefixDesktop = Path_IsPrefix(hdesktop_pth, hpth_in_out);
+    bool const bAppPathIsFavorites = Path_IsPrefix(hfavorites_pth, happdir_pth);
+    bool const bPathIsPrefixFavorites = Path_IsPrefix(hfavorites_pth, hpth_in_out);
     DWORD      dwAttrTo = (bSrcIsFile) ? FILE_ATTRIBUTE_NORMAL : FILE_ATTRIBUTE_DIRECTORY;
-    
+
     HPATHL htmp_pth = Path_Allocate(NULL);
     if (bUnexpandMyDocs && !bPathIsRelative && !bAppPathIsUsrDoc && bPathIsPrefixUsrDoc
         && _Path_RelativePathTo(htmp_pth, husrdoc_pth, FILE_ATTRIBUTE_DIRECTORY, hpth_in_out, dwAttrTo)) {
         Path_Reset(hpth_in_out, PATH_CSIDL_MYDOCUMENTS);
+        Path_Append(hpth_in_out, Path_Get(htmp_pth));
+    }
+    else if (bUnexpandMyDocs && !bPathIsRelative && !bAppPathIsDesktop && bPathIsPrefixDesktop
+        && _Path_RelativePathTo(htmp_pth, hdesktop_pth, FILE_ATTRIBUTE_DIRECTORY, hpth_in_out, dwAttrTo)) {
+        Path_Reset(hpth_in_out, PATH_CSIDL_DESKTOP);
+        Path_Append(hpth_in_out, Path_Get(htmp_pth));
+    }
+    else if (bUnexpandMyDocs && !bPathIsRelative && !bAppPathIsFavorites && bPathIsPrefixFavorites
+        && _Path_RelativePathTo(htmp_pth, hfavorites_pth, FILE_ATTRIBUTE_DIRECTORY, hpth_in_out, dwAttrTo)) {
+        Path_Reset(hpth_in_out, PATH_CSIDL_FAVORITES);
         Path_Append(hpth_in_out, Path_Get(htmp_pth));
     }
     else if (!bPathIsRelative && !Path_CommonPrefix(happdir_pth, hprgs_pth, NULL)) {
@@ -2091,6 +2168,8 @@ void PTHAPI Path_RelativeToApp(HPATHL hpth_in_out, bool bSrcIsFile, bool bUnexpa
 
     Path_Release(htmp_pth);
     Path_Release(hprgs_pth);
+    Path_Release(hfavorites_pth);
+    Path_Release(hdesktop_pth);
     Path_Release(husrdoc_pth);
     Path_Release(happdir_pth);
 
@@ -2222,6 +2301,24 @@ void PTHAPI Path_AbsoluteFromApp(HPATHL hpth_in_out, bool bExpandEnv)
             }
         }
         StrgReplace(htmp_str, PATH_CSIDL_MYDOCUMENTS, PathGet(hfld_pth));
+        Path_Release(hfld_pth);
+    }
+
+    if (StrgFind(hstr_in_out, PATH_CSIDL_DESKTOP, 0) == 0) {
+        HPATHL hfld_pth = Path_Allocate(NULL);
+        if (!Path_GetKnownFolder(&FOLDERID_Desktop, hfld_pth)) {
+            Path_GetAppDirectory(hfld_pth);
+        }
+        StrgReplace(htmp_str, PATH_CSIDL_DESKTOP, PathGet(hfld_pth));
+        Path_Release(hfld_pth);
+    }
+
+    if (StrgFind(hstr_in_out, PATH_CSIDL_FAVORITES, 0) == 0) {
+        HPATHL hfld_pth = Path_Allocate(NULL);
+        if (!Path_GetKnownFolder(&FOLDERID_Favorites, hfld_pth)) {
+            Path_GetAppDirectory(hfld_pth);
+        }
+        StrgReplace(htmp_str, PATH_CSIDL_FAVORITES, PathGet(hfld_pth));
         Path_Release(hfld_pth);
     }
 

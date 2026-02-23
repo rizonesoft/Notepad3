@@ -648,32 +648,34 @@ void InitDefaultSettings()
 
 //=============================================================================
 //
-//  CreateIniFile()
+//  CreateIniFileEx()
 //
 //
-int CreateIniFile()
+static int CreateIniFileEx(LPCWSTR lpszPath)
 {
     int result = 0;
-    if (g_wchIniFile[0] != L'\0') {
-        WCHAR* pwchTail = StrRChrW(g_wchIniFile, NULL, L'\\');
+    if (lpszPath[0] != L'\0') {
+
+        WCHAR tchDir[MAX_PATH];
+        lstrcpy(tchDir, lpszPath);
+        WCHAR* pwchTail = StrRChrW(tchDir, NULL, L'\\');
 
         if (pwchTail) {
             *pwchTail = 0;
-            SHCreateDirectoryEx(NULL, g_wchIniFile, NULL);
-            *pwchTail = L'\\';
+            SHCreateDirectoryEx(NULL, tchDir, NULL);
         }
 
         DWORD dwFileSize = 0UL;
 
-        if (!PathIsExistingFile(g_wchIniFile)) {
-            HANDLE hFile = CreateFile(g_wchIniFile,
+        if (!PathIsExistingFile(lpszPath)) {
+            HANDLE hFile = CreateFile(lpszPath,
                                       GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
                                       CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
             if (hFile != INVALID_HANDLE_VALUE) {
                 CloseHandle(hFile);
             }
         } else {
-            HANDLE hFile = CreateFile(g_wchIniFile,
+            HANDLE hFile = CreateFile(lpszPath,
                                       GENERIC_READ, FILE_SHARE_READ,
                                       nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
             if (hFile == INVALID_HANDLE_VALUE) {
@@ -685,7 +687,7 @@ int CreateIniFile()
         }
 
         if ((dwFileSize == 0) && (dwFileSize != INVALID_FILE_SIZE)) {
-            result = IniFileSetString(g_wchIniFile, L"minipath", NULL, NULL);
+            result = IniFileSetString(lpszPath, L"minipath", NULL, NULL);
         } else {
             result = true;
         }
@@ -693,6 +695,17 @@ int CreateIniFile()
         return result;
     }
     return result;
+}
+
+
+//=============================================================================
+//
+//  CreateIniFile()
+//
+//
+int CreateIniFile()
+{
+    return CreateIniFileEx(g_wchIniFile);
 }
 //=============================================================================
 
@@ -764,11 +777,12 @@ int CheckIniFileRedirect(LPCWSTR lpszAppName, LPCWSTR lpszKeyName, LPWSTR lpszFi
             if (PathIsRelative(tchFileExpanded)) {
                 lstrcpy(lpszFile, lpszModule);
                 lstrcpy(PathFindFileName(lpszFile), tchFileExpanded);
-                return(1);
             } else {
                 lstrcpy(lpszFile, tchFileExpanded);
-                return(1);
             }
+            // Redirect target doesn't exist — try to create it
+            CreateIniFileEx(lpszFile);
+            return(1);
         }
     }
     return(0);
