@@ -990,10 +990,21 @@ static bool _CheckAndSetIniFile(HPATHL hpth_in_out)
 // ============================================================================
 
 
-static bool _HandleIniFileRedirect(LPCWSTR lpszSecName, LPCWSTR lpszKeyName, HPATHL hpth_in_out)
+static bool _HandleIniFileRedirect(LPCWSTR lpszSecName, LPCWSTR lpszKeyName, HPATHL hpth_in_out, int maxDepth)
 {
     bool result = false;
-    if (Path_IsExistingFile(hpth_in_out)) {
+    for (int depth = 0; depth < maxDepth; ++depth) {
+        if (!Path_IsExistingFile(hpth_in_out)) {
+            break;
+        }
+
+        // pick up DefaultDirectory from each redirecting INI (later files override earlier ones)
+        WCHAR defDir[PATHLONG_MAX_CCH] = { L'\0' };
+        if (IniFileGetString(hpth_in_out, Constants.Settings2_Section, L"DefaultDirectory", L"", defDir, COUNTOF(defDir))) {
+            Path_Reset(Settings2.DefaultDirectory, defDir);
+            Path_ExpandEnvStrings(Settings2.DefaultDirectory);
+        }
+
         HPATHL hredirect = Path_Allocate(NULL);
         LPWSTR const buf = Path_WriteAccessBuf(hredirect, PATHLONG_MAX_CCH);
         if (IniFileGetString(hpth_in_out, lpszSecName, lpszKeyName, L"", buf, PATHLONG_MAX_CCH)) {
@@ -1019,6 +1030,10 @@ static bool _HandleIniFileRedirect(LPCWSTR lpszSecName, LPCWSTR lpszKeyName, HPA
                 }
             }
             result = true;
+        }
+        else {
+            Path_Release(hredirect);
+            break;  // no redirect entry found, stop chaining
         }
         Path_Release(hredirect);
     }
@@ -1055,11 +1070,8 @@ extern "C" bool FindIniFile()
         }
 
         if (bFound) {
-            // allow two redirections: administrator -> user -> custom
-            // 1st:
-            if (_HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", Paths.IniFile)) {
-                // 2nd:
-                _HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", Paths.IniFile);  
+            // allow up to two redirections: administrator -> user -> custom
+            if (_HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", Paths.IniFile, 2)) {
                 bFound = _CheckAndSetIniFile(Paths.IniFile);
             }
 
@@ -1258,11 +1270,15 @@ void LoadSettings()
     StrTrim(Settings2.DefaultExtension, L" \t.");
 
     IniSectionGetStringNoQuotes(IniSecSettings2, L"DefaultDirectory", L"", pPathBuffer, PATHLONG_MAX_CCH);
-    Path_Reset(Settings2.DefaultDirectory, pPathBuffer);
-    Path_ExpandEnvStrings(Settings2.DefaultDirectory);
+    if (StrIsNotEmpty(pPathBuffer)) {
+        Path_Reset(Settings2.DefaultDirectory, pPathBuffer);
+        Path_ExpandEnvStrings(Settings2.DefaultDirectory);
+    }
 
     IniSectionGetStringNoQuotes(IniSecSettings2, L"FileDlgFilters", L"", pPathBuffer, XHUGE_BUFFER);
-    StrgReset(Settings2.FileDlgFilters, pPathBuffer);
+    if (StrIsNotEmpty(pPathBuffer)) {
+        StrgReset(Settings2.FileDlgFilters, pPathBuffer);
+    }
 
     // handle deprecated (typo) key 'FileCheckInverval'
     constexpr const LONG64 NOTSETFCI = -111LL;
