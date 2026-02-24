@@ -1501,50 +1501,11 @@ bool EditSaveFile(
 
     BeginWaitCursor(true, wchMsg);
 
-    ///~ (!) FILE_FLAG_NO_BUFFERING needs sector-size aligned buffer layout
-    DWORD const dwWriteAttributes = FILE_ATTRIBUTE_NORMAL | /*FILE_FLAG_NO_BUFFERING |*/ FILE_FLAG_WRITE_THROUGH;
-
-    HANDLE hFile = CreateFileW(Path_Get(hfile_pth),
-                               GENERIC_READ | GENERIC_WRITE,
-                               FILE_SHARE_READ | FILE_SHARE_WRITE,
-                               NULL,
-                               OPEN_ALWAYS,
-                               dwWriteAttributes,
-                               NULL);
-
-    Globals.dwLastError = GetLastError();
-
-    // failure could be due to missing attributes (2k/XP)
-    if (!IS_VALID_HANDLE(hFile)) {
-        DWORD dwSpecialAttributes = Path_GetFileAttributes(hfile_pth);
-        if (dwSpecialAttributes != INVALID_FILE_ATTRIBUTES) {
-            dwSpecialAttributes &= (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
-            hFile = CreateFileW(Path_Get(hfile_pth),
-                                GENERIC_READ | GENERIC_WRITE,
-                                FILE_SHARE_READ|FILE_SHARE_WRITE,
-                                NULL,
-                                OPEN_ALWAYS,
-                                dwWriteAttributes | dwSpecialAttributes,
-                                NULL);
-
-            Globals.dwLastError = GetLastError();
-        }
-    }
-
-    if (!IS_VALID_HANDLE(hFile)) {
-        goto observe;
-    }
-
-    //FILETIME createTime;
-    //FILETIME laccessTime;
-    FILETIME modTime;
-    //if (!GetFileTime(status->hndlFile, &createTime, &laccessTime, &modTime)) {
-    if (!GetFileTime(hFile, NULL, NULL, &modTime)) {
-        goto observe;
-    }
-
+    // --- pre-process Scintilla buffer before opening the file ---
+    // (these are CPU-bound operations that don't need the file handle;
+    //  doing them here minimizes the time the file is held open)
     // maybe not enough time to do that (WM_POWERBROADCAST)
-    if ((fSaveFlags & FSF_EndSession) || !(fSaveFlags & FSF_AutoSave)) { 
+    if ((fSaveFlags & FSF_EndSession) || !(fSaveFlags & FSF_AutoSave)) {
 
         // ensure consistent line endings
         if (Settings.FixLineEndings) {
@@ -1555,6 +1516,103 @@ bool EditSaveFile(
         if (Settings.FixTrailingBlanks && EditHasTrailingBlanks()) {
             EditStripLastCharacter(hwnd, true, true);
         }
+    }
+
+    // --- Atomic save setup ---
+    // When enabled, write to a temp file first, then atomically replace the target.
+    // This minimizes the time the target file is locked and prevents data loss on crash.
+    // Skip atomic save for emergency session-end saves (speed is critical there).
+    bool const bAtomicSave = Settings2.AtomicFileSave && !(fSaveFlags & FSF_EndSession);
+
+    FILETIME modTime = {0};
+    bool bHaveModTime = false;
+    WCHAR wchTempFile[MAX_PATH_EXPLICIT + 1] = { L'\0' };
+    bool bUseTempFile = false;
+
+    if (bAtomicSave) {
+        // Briefly open original file read-only to capture modification time
+        HANDLE hOrig = CreateFileW(Path_Get(hfile_pth),
+                                    GENERIC_READ,
+                                    FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                    NULL, OPEN_EXISTING,
+                                    FILE_ATTRIBUTE_NORMAL, NULL);
+        if (IS_VALID_HANDLE(hOrig)) {
+            bHaveModTime = GetFileTime(hOrig, NULL, NULL, &modTime);
+            CloseHandle(hOrig);
+        }
+        // If file doesn't exist yet (new file), that's OK — no modTime to capture
+
+        // Create temp file in same directory as target (ensures same-volume rename)
+        HPATHL hTempDir = Path_Copy(hfile_pth);
+        Path_RemoveFileSpec(hTempDir);
+        if (Path_IsNotEmpty(hTempDir) &&
+            GetTempFileNameW(Path_Get(hTempDir), L"NP3", 0, wchTempFile)) {
+            bUseTempFile = true;
+        }
+        Path_Release(hTempDir);
+    }
+
+    ///~ FlushFileBuffers() in WriteFileXL() provides the durability guarantee
+    ///~ as a single sync point after all writes complete.
+    ///~ (!) FILE_FLAG_NO_BUFFERING needs sector-size aligned buffer layout
+    DWORD const dwWriteAttributes = FILE_ATTRIBUTE_NORMAL;
+    HANDLE hFile = INVALID_HANDLE_VALUE;
+
+    if (bUseTempFile) {
+        // Open the temp file created by GetTempFileNameW
+        hFile = CreateFileW(wchTempFile,
+                            GENERIC_READ | GENERIC_WRITE,
+                            0, // exclusive access to temp file
+                            NULL, TRUNCATE_EXISTING,
+                            dwWriteAttributes, NULL);
+        Globals.dwLastError = GetLastError();
+        if (!IS_VALID_HANDLE(hFile)) {
+            // Temp file open failed — fall back to direct write
+            DeleteFileW(wchTempFile);
+            bUseTempFile = false;
+        }
+    }
+
+    if (!bUseTempFile) {
+        // Direct write to target file (original behavior / fallback)
+        hFile = CreateFileW(Path_Get(hfile_pth),
+                            GENERIC_READ | GENERIC_WRITE,
+                            FILE_SHARE_READ | FILE_SHARE_WRITE,
+                            NULL, OPEN_ALWAYS,
+                            dwWriteAttributes, NULL);
+        Globals.dwLastError = GetLastError();
+
+        // failure could be due to missing attributes (2k/XP)
+        if (!IS_VALID_HANDLE(hFile)) {
+            DWORD dwSpecialAttributes = Path_GetFileAttributes(hfile_pth);
+            if (dwSpecialAttributes != INVALID_FILE_ATTRIBUTES) {
+                dwSpecialAttributes &= (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
+                hFile = CreateFileW(Path_Get(hfile_pth),
+                                    GENERIC_READ | GENERIC_WRITE,
+                                    FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                    NULL, OPEN_ALWAYS,
+                                    dwWriteAttributes | dwSpecialAttributes, NULL);
+                Globals.dwLastError = GetLastError();
+            }
+        }
+    }
+
+    if (!IS_VALID_HANDLE(hFile)) {
+        goto observe;
+    }
+
+    if (!bHaveModTime) {
+        // Capture modTime from the file handle (direct-write path or new file)
+        if (!GetFileTime(hFile, NULL, NULL, &modTime)) {
+            CloseHandle(hFile);
+            hFile = INVALID_HANDLE_VALUE;
+            if (bUseTempFile) {
+                DeleteFileW(wchTempFile);
+                bUseTempFile = false;
+            }
+            goto observe;
+        }
+        bHaveModTime = true;
     }
 
     // get text length in bytes
@@ -1704,11 +1762,41 @@ bool EditSaveFile(
         }
     }
 
-    if (bPreserveTimeStamp) {
+    if (bPreserveTimeStamp && bHaveModTime) {
         SetFileTime(hFile, NULL, NULL, &modTime);
     }
 
     CloseHandle(hFile);
+    hFile = INVALID_HANDLE_VALUE;
+
+    // --- Atomic replace: swap temp file into target path ---
+    if (bUseTempFile) {
+        if (bWriteSuccess) {
+            bool bReplaced = false;
+
+            // Try ReplaceFileW first — preserves ACLs, alternate data streams, creation time
+            DWORD const dwOrigAttribs = GetFileAttributesW(Path_Get(hfile_pth));
+            if (dwOrigAttribs != INVALID_FILE_ATTRIBUTES) {
+                bReplaced = ReplaceFileW(Path_Get(hfile_pth), wchTempFile, NULL,
+                                          REPLACEFILE_IGNORE_MERGE_ERRORS, NULL, NULL);
+            }
+
+            if (!bReplaced) {
+                // Fallback: MoveFileExW (works for new files or when ReplaceFileW is unsupported)
+                bReplaced = MoveFileExW(wchTempFile, Path_Get(hfile_pth),
+                                         MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH);
+            }
+
+            if (!bReplaced) {
+                Globals.dwLastError = GetLastError();
+                DeleteFileW(wchTempFile);
+                bWriteSuccess = false;
+            }
+        } else {
+            // Write to temp failed — clean up temp file
+            DeleteFileW(wchTempFile);
+        }
+    }
 
     if (bWriteSuccess && (!(fSaveFlags & (FSF_SaveCopy | FSF_AutoSave)) || (fSaveFlags & FSF_EndSession))) {
         SetSaveDone();
