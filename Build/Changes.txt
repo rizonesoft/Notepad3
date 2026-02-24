@@ -34,7 +34,7 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.26.223.(build_#) (2026-02-23)
+Current BETA Version 6.26.224.(build_#) (2026-02-24)
 ========================================================
 
 --------------------------------------------------------
@@ -53,6 +53,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]-
+[.224.1]- Feat: refactor to atomic save pattern.
+[.224.1]- Chore: smoothening the startup window experiences.
 [.218.1]- Some refactorings due to new features in scintilla.
 [.215.1]- Migration of the MS VS2022 compiler to MS VS2026 vc145 platform toolset.
 [.215.1]- Update to Scintilla 5.5.8 and Lexilla 5.4.6 (SCI/LEX).
@@ -67,6 +69,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]-
+[.224.1]- Enhance ShowWindow start-up time.
+[.224.1]- AI corrections for PathLib.
 [.223.1]- INI file handling Notepad3 and Minipath.
 [.223.1]- Regression regarding Zooming (caused by new Scintilla Lib merge conflicts).
 [.223.1]- If flag 'strip trailing blanks on save' is active, check if there are trailing blanks.
