@@ -779,6 +779,7 @@ typedef struct SETTINGS2_T {
     bool    NoCutLineOnEmptySelection;
     bool    SubWrappedLineSelectOnMarginClick;
     bool    LexerSQLNumberSignAsComment;
+    bool    AtomicFileSave;
     int     ExitOnESCSkipLevel;
     int     ZoomTooltipTimeout;
     int     WrapAroundTooltipTimeout;
