@@ -1845,6 +1845,22 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     // initial set text in front of ShowWindow()
     EditSetNewText(Globals.hwndEdit, "", 0, false, false);
 
+    // Pre-set Scintilla background/foreground to match current mode before making
+    // the editor visible — prevents white flash in dark mode (Style_SetLexer
+    // called later via FileLoad will reset and reapply the full styling)
+    SciCall_StyleSetFore(STYLE_DEFAULT, GetModeTextColor(UseDarkMode()));
+    SciCall_StyleSetBack(STYLE_DEFAULT, GetModeBkColor(UseDarkMode()));
+    SciCall_StyleClearAll();
+
+    // Pre-set margin backgrounds to match current mode (margins use btnface, not editor bkg)
+    COLORREF const clrMarginPre = GetModeBtnfaceColor(UseDarkMode());
+    SciCall_StyleSetBack(STYLE_LINENUMBER, clrMarginPre);
+    SciCall_SetMarginBackN(MARGIN_SCI_LINENUM, clrMarginPre);
+    SciCall_SetMarginBackN(MARGIN_SCI_BOOKMRK, clrMarginPre);
+    SciCall_SetMarginBackN(MARGIN_SCI_CHGHIST, clrMarginPre);
+    SciCall_SetFoldMarginColour(true, clrMarginPre);
+    SciCall_SetFoldMarginHiColour(true, clrMarginPre);
+
     ShowWindowAsync(s_hwndEditFrame, SW_SHOWDEFAULT);
     ShowWindowAsync(Globals.hwndEdit, SW_SHOWDEFAULT);
 
