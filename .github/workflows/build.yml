@@ -83,6 +83,9 @@ jobs:
           $content = $content -replace '\$VERSION\$', "$Major.$Minor.$Revis.$Build"
           Set-Content -Path $ConfManifest -Value $content -NoNewline
           
+          # Persist build number for TestFileVersion.cmd
+          $Build | Set-Content -Path "Versions\build.txt" -NoNewline
+
           Write-Host "Version: $Major.$Minor.$Revis.$Build ($CommitID)"
 
       - name: Build
@@ -98,6 +101,18 @@ jobs:
           }
           
           msbuild Notepad3.sln /m /p:Configuration=$config /p:Platform=$platform /v:minimal
+
+      - name: Install AutoHotkey
+        if: matrix.platform == 'Win32' || matrix.platform == 'x64'
+        run: choco install autohotkey.install --no-progress -y
+
+      - name: Run tests
+        if: matrix.platform == 'Win32' || matrix.platform == 'x64'
+        shell: cmd
+        working-directory: test
+        run: |
+          call TestFileVersion.cmd
+          call TestAhkNotepad3.cmd
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

@@ -34,7 +34,7 @@ Run `Version.ps1` before building to generate `src\VersionEx.h` from templates i
 
 ### Tests
 
-Tests live in `test\` and run via AppVeyor CI:
+Tests live in `test\` and run via GitHub Actions CI (Win32 and x64 jobs):
 
 ```cmd
 cd test

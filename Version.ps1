@@ -4,7 +4,6 @@
 # - adapt $Build number in case of local machine builds
 # ------------------------------------------------------------
 param(
-	[switch]$AppVeyorEnv = $false,
 	[string]$VerPatch = ""
 )
 # ------------------------------------------------------------
@@ -52,35 +51,24 @@ try
 	$LastBuildDay = [string](Get-Content $DayPath)
 	if (!$LastBuildDay) { $LastBuildDay = 0 }
 
-	$AppVeyorBuild = [int]($env:appveyor_build_number) # AppVeyor internal
-
-	if ($AppVeyorEnv) {
-		if ($LastBuildDay -ne "$Revis") {
-			$Revis | Set-Content -Path $DayPath
-			$Build = 1  # reset (AppVeyor)
-		}
-		$CommitID = ([string]($env:appveyor_repo_commit)).substring(0,8)
+	if ($LastBuildDay -ne "$Revis") {
+		$Revis | Set-Content -Path $DayPath
+		$Build = 0  # reset (local build)
 	}
-	else {
-		if ($LastBuildDay -ne "$Revis") {
-			$Revis | Set-Content -Path $DayPath
-			$Build = 0  # reset (local build)
-		}
-		# locally: increase build number and persit it
-		$Build = $Build + 1
-		# locally: read commit ID from .git\refs\heads\<first file>
-		$HeadDir = ".git\refs\heads"
-		$HeadMaster = Get-ChildItem -Path $HeadDir -Force -Recurse -File | Select-Object -First 1
-		$CommitID = [string](Get-Content "$HeadDir\$HeadMaster" -TotalCount 8)
-		if (!$CommitID) {
-            $length = ([string]($env:computername)).length
-			$CommitID = ([string]($env:computername)).substring(0,[math]::min($length,8)).ToLower()
-		}
-		$CommitID = $CommitID -replace '"', ''
-		$CommitID = $CommitID -replace "'", ''
-		$length = $CommitID.length
-		$CommitID = $CommitID.substring(0,[math]::min($length,8))
+	# locally: increase build number and persist it
+	$Build = $Build + 1
+	# locally: read commit ID from .git\refs\heads\<first file>
+	$HeadDir = ".git\refs\heads"
+	$HeadMaster = Get-ChildItem -Path $HeadDir -Force -Recurse -File | Select-Object -First 1
+	$CommitID = [string](Get-Content "$HeadDir\$HeadMaster" -TotalCount 8)
+	if (!$CommitID) {
+		$length = ([string]($env:computername)).length
+		$CommitID = ([string]($env:computername)).substring(0,[math]::min($length,8)).ToLower()
 	}
+	$CommitID = $CommitID -replace '"', ''
+	$CommitID = $CommitID -replace "'", ''
+	$length = $CommitID.length
+	$CommitID = $CommitID.substring(0,[math]::min($length,8))
 	if (!$CommitID) { $CommitID = "---" }
 	$Build | Set-Content -Path $BuildPath
 
@@ -88,13 +76,6 @@ try
 	DebugOutput("Notepad3 version number: 'v$CompleteVer $VerPatch'")
 	DebugOutput("Notepad3 commit ID: '$CommitID'")
 	
-	if ($AppVeyorEnv) {
-		# AppVeyor needs unique artefact build number
-		$AppVeyorVer = "0.0.0.$AppVeyorBuild"
-		DebugOutput("AppVeyor version number: 'v$AppVeyorVer $VerPatch'")
-		Update-AppveyorBuild -Version $AppVeyorVer
-	}
-
 	$SciVer = [string](Get-Content "scintilla\version.txt")
 	if (!$SciVer) { $SciVer = 0 }
 	$LxiVer = [string](Get-Content "lexilla\version.txt")

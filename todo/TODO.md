@@ -108,7 +108,7 @@
 ## GitHub Actions
 
 - [x] **CI Workflow** - ✅ Added MSVC builds (Win32/x64 Release)
-  - Runs on push/PR to master alongside AppVeyor
+  - Runs on push/PR to master
 - [x] **ARM64 Build** - ✅ Added to CI matrix (Win32/x64/ARM64)
 - [ ] **(Q1) Clang-cl Build** - Alternative compiler for better warnings
 - [ ] **(Q1) Debug Build** - Catch debug-only assertions
