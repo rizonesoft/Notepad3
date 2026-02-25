@@ -1048,12 +1048,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     Scintilla_RegisterClasses(hInstance);
 
 #ifdef D_NP3_WIN10_DARK_MODE
-    // Init dark mode after settings are loaded — skip UxTheme loading for explicit light mode
-    if (Settings.WinThemeDarkMode != WINDSPMOD_LIGHT) {
-        SetDarkMode(true); // probe: load UxTheme.dll, detect OS dark mode support
-        if (!IsSettingDarkMode()) {
-            SetDarkMode(false); // OS or user says light mode
-        }
+    // Always probe for dark mode OS support (loads UxTheme undocumented APIs)
+    // — needed so menu item stays enabled regardless of user's current preference
+    SetDarkMode(true);
+    if (!IsSettingDarkMode()) {
+        SetDarkMode(false); // OS or user says light mode
     }
 #endif
 

@@ -1762,7 +1762,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     Style_SetInvisible(hwnd, false); // set fixed invisible style
 
-    SciCall_SetLayoutCache(SC_CACHE_PAGE); //~SC_CACHE_DOCUMENT ~ memory consumption !
+    // EditLoadFile() sets SC_CACHE_DOCUMENT for small files (<=2MB) — don't override that
+    if (Flags.bHugeFileLoadState) {
+        SciCall_SetLayoutCache(SC_CACHE_PAGE);
+    }
     SciCall_SetPositionCache(SciCall_GetPositionCache()); // clear - default=1024
 
     Sci_SetWrapModeEx(GET_WRAP_MODE());
@@ -1779,7 +1782,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     Style_UpdateAllMargins(hwnd, true);
 
-    SciCall_SetIdleStyling(Flags.bHugeFileLoadState ? SC_IDLESTYLING_TOVISIBLE : idleStylingMode);
+    if (Flags.bHugeFileLoadState) {
+        SciCall_SetIdleStyling(SC_IDLESTYLING_TOVISIBLE);
+    } else if (SciCall_GetTextLength() > (2 * 1024 * 1024)) {
+        SciCall_SetIdleStyling(SC_IDLESTYLING_AFTERVISIBLE);
+    } else {
+        SciCall_SetIdleStyling(idleStylingMode);
+    }
 
     if (bFocusedView) {
         EditToggleView(hwnd);
