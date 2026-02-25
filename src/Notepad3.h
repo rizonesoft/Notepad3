@@ -66,7 +66,8 @@ np3params, *LPnp3params;
 //==== Timer ==================================================================
 #define ID_WATCHTIMER       (0xA000)        // File Watching
 #define ID_PASTEBOARDTIMER  (0xA001)        // Paste Board
-#define ID_AUTOSAVETIMER    (0xA002)        // Paste Board
+#define ID_AUTOSAVETIMER    (0xA002)        // Auto Save Timer
+#define ID_LOGROTATETIMER   (0xA003)        // Log Rotation Retry
 
 
 //==== Reuse Window Lock Timeout ==============================================

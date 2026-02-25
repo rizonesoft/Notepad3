@@ -476,11 +476,13 @@ static FCOBSRVDATA_T s_FileChgObsvrData = INIT_FCOBSRV_T;
 // ----------------------------------------------------------------------------
 
 static inline bool IsFileChangedFlagSet() {
-    return (WaitForSingleObject(s_FileChgObsvrData.hEventFileChanged, 0) != WAIT_TIMEOUT);
+    return IS_VALID_HANDLE(s_FileChgObsvrData.hEventFileChanged)
+        && (WaitForSingleObject(s_FileChgObsvrData.hEventFileChanged, 0) == WAIT_OBJECT_0);
 }
 
 static inline bool IsFileDeletedFlagSet() {
-    return (WaitForSingleObject(s_FileChgObsvrData.hEventFileDeleted, 0) != WAIT_TIMEOUT);
+    return IS_VALID_HANDLE(s_FileChgObsvrData.hEventFileDeleted)
+        && (WaitForSingleObject(s_FileChgObsvrData.hEventFileDeleted, 0) == WAIT_OBJECT_0);
 }
 
 static inline bool RaiseFlagIfCurrentFileChanged() {
@@ -1046,12 +1048,11 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     Scintilla_RegisterClasses(hInstance);
 
 #ifdef D_NP3_WIN10_DARK_MODE
-    // Init dark mode after settings are loaded — skip UxTheme loading for explicit light mode
-    if (Settings.WinThemeDarkMode != WINDSPMOD_LIGHT) {
-        SetDarkMode(true); // probe: load UxTheme.dll, detect OS dark mode support
-        if (!IsSettingDarkMode()) {
-            SetDarkMode(false); // OS or user says light mode
-        }
+    // Always probe for dark mode OS support (loads UxTheme undocumented APIs)
+    // — needed so menu item stays enabled regardless of user's current preference
+    SetDarkMode(true);
+    if (!IsSettingDarkMode()) {
+        SetDarkMode(false); // OS or user says light mode
     }
 #endif
 
@@ -6306,24 +6307,21 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (_lastCaretPos == -1) {
             _lastCaretPos = SciCall_GetCurrentPos();
         }
-        static FILE_WATCHING_MODE _saveChgNotify = FWM_NO_INIT;
-        if (_saveChgNotify == FWM_NO_INIT) {
-            _saveChgNotify = FileWatching.FileWatchingMode;    
-        }
 
         FileWatching.MonitoringLog = !FileWatching.MonitoringLog; // toggle
 
         if (FileWatching.MonitoringLog) {
             SetForegroundWindow(hwnd);
             _lastCaretPos = SciCall_GetCurrentPos();
-            _saveChgNotify = FileWatching.FileWatchingMode;
             FileWatching.FileWatchingMode = FWM_AUTORELOAD;
             SciCall_SetEndAtLastLine(false); // false(!)
             FileRevert(Paths.CurrentFile, true);
             SciCall_SetReadOnly(FileWatching.MonitoringLog);
         }
         else {
-            FileWatching.FileWatchingMode = _saveChgNotify;
+            KillTimer(hwnd, ID_LOGROTATETIMER); // cancel any pending log rotation retry
+            FileWatching.LogRotateRetryCount = 0;
+            FileWatching.FileWatchingMode = Settings.FileWatchingMode;
             SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
             SciCall_SetReadOnly(Settings.DocReadOnlyMode);
             SciCall_GotoPos(_lastCaretPos);
@@ -10902,11 +10900,16 @@ static inline bool IsFileVarLogFile()
 }
 
 static inline void _ResetFileWatchingMode() {
-    FileWatching.FileWatchingMode = (s_flagChangeNotify != FWM_NO_INIT) ? s_flagChangeNotify : Settings.FileWatchingMode;
     if (FileWatching.MonitoringLog) {
-        FileWatching.FileWatchingMode = FWM_AUTORELOAD;
-        PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+        KillTimer(Globals.hwndMain, ID_LOGROTATETIMER);
+        FileWatching.LogRotateRetryCount = 0;
+        FileWatching.MonitoringLog = false;
+        SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
+        SciCall_SetReadOnly(Settings.DocReadOnlyMode);
+        CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CHASING_DOCTAIL, false);
     }
+
+    FileWatching.FileWatchingMode = Settings.FileWatchingMode;
     ResetFileObservationData(true);
 }
 
@@ -11264,7 +11267,7 @@ bool FileRevert(const HPATHL hfile_pth, bool bIgnoreCmdLnEnc)
     if (result) {
         bool bPreserveView = !IsFileVarLogFile();
         if (FileWatching.FileWatchingMode == FWM_AUTORELOAD) {
-            if (bIsAtDocEnd || FileWatching.MonitoringLog || (s_flagChangeNotify == FWM_AUTORELOAD)) {
+            if (bIsAtDocEnd || (s_flagChangeNotify == FWM_AUTORELOAD)) {
                 bPreserveView = false;
             }
         }
@@ -12252,6 +12255,9 @@ void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
 }
 
 
+// forward declaration for LogRotateTimerProc (defined after InstallFileWatching)
+static void CALLBACK LogRotateTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
+
 //=============================================================================
 //
 //  MsgFileChangeNotify() - Handles WM_FILECHANGEDNOTIFY
@@ -12337,19 +12343,34 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     }
     else { // file has been deleted
 
-        InstallFileWatching(false); // terminate
-
-        if (FileWatching.FileWatchingMode == FWM_MSGBOX) {
-            if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2))) {
-                FileSave(FSF_SaveAlways);
-            }
-            else {
-                SetSaveNeeded(true);
-            }
+        // Brief delay to handle atomic save (delete + rename) pattern
+        Sleep(100);
+        if (Path_IsExistingFile(Paths.CurrentFile)) {
+            // File was restored (atomic save) — re-process as modification
+            ResetFileObservationData(true);
+            PostMessage(Globals.hwndMain, WM_FILECHANGEDNOTIFY, 0, 0);
         }
         else {
-            // FWM_INDICATORSILENT: nothing todo here
-            SetSaveNeeded(true);
+            InstallFileWatching(false); // truly deleted — terminate
+
+            if (FileWatching.MonitoringLog) {
+                // File deleted while monitoring — start retry timer for log rotation recovery
+                FileWatching.LogRotateRetryCount = 0;
+                SetTimer(Globals.hwndMain, ID_LOGROTATETIMER, 500, LogRotateTimerProc);
+                SetSaveNeeded(true);
+            }
+            else if (FileWatching.FileWatchingMode == FWM_MSGBOX) {
+                if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2))) {
+                    FileSave(FSF_SaveAlways);
+                }
+                else {
+                    SetSaveNeeded(true);
+                }
+            }
+            else {
+                // FWM_INDICATORSILENT: nothing todo here
+                SetSaveNeeded(true);
+            }
         }
     }
 
@@ -12383,10 +12404,36 @@ static void CALLBACK WatchTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
     UNREFERENCED_PARAMETER(uMsg);
     UNREFERENCED_PARAMETER(hwnd);
 
-    LONG64 const diff = (GetTicks_ms() - InterlockedOr64(&(s_FileChgObsvrData.iFileChangeNotifyTime), 0LL));
+    LONG64 const diff = (GetTicks_ms() - InterlockedCompareExchange64(&(s_FileChgObsvrData.iFileChangeNotifyTime), 0LL, 0LL));
     // Directory-Observer is not notified for continuously updated (log-)files
     if (diff > FileWatching.FileCheckInterval) {
         NotifyIfFileHasChanged();
+    }
+}
+// ----------------------------------------------------------------------------
+
+#define LOG_ROTATE_MAX_RETRIES 20  // 20 * 500ms = 10 seconds
+
+static void CALLBACK LogRotateTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
+
+    UNREFERENCED_PARAMETER(dwTime);
+    UNREFERENCED_PARAMETER(idEvent);
+    UNREFERENCED_PARAMETER(uMsg);
+    UNREFERENCED_PARAMETER(hwnd);
+
+    if (Path_IsExistingFile(Paths.CurrentFile)) {
+        // File reappeared (log rotation complete) — resume monitoring
+        KillTimer(Globals.hwndMain, ID_LOGROTATETIMER);
+        FileWatching.LogRotateRetryCount = 0;
+        ResetFileObservationData(true);
+        PostMessage(Globals.hwndMain, WM_FILECHANGEDNOTIFY, 0, 0);
+        InstallFileWatching(true);
+    }
+    else if (++FileWatching.LogRotateRetryCount >= LOG_ROTATE_MAX_RETRIES) {
+        // Timeout — file did not reappear, cleanly exit monitoring mode
+        KillTimer(Globals.hwndMain, ID_LOGROTATETIMER);
+        FileWatching.LogRotateRetryCount = 0;
+        PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
     }
 }
 // ----------------------------------------------------------------------------
@@ -12409,6 +12456,11 @@ unsigned int WINAPI FileChangeObserver(LPVOID lpParam)
             FILE_NOTIFY_CHANGE_ATTRIBUTES | FILE_NOTIFY_CHANGE_SIZE |
             FILE_NOTIFY_CHANGE_LAST_WRITE);
 
+        if (!IS_VALID_HANDLE(pFCOBSVData->hFileChanged)) {
+            BackgroundWorker_End(worker, 1);
+            return 1;
+        }
+
         while (BackgroundWorker_Continue(worker)) {
 
             switch (WaitForSingleObject(pFCOBSVData->hFileChanged, 100)) {
@@ -12420,7 +12472,7 @@ unsigned int WINAPI FileChangeObserver(LPVOID lpParam)
             case WAIT_OBJECT_0:
                 // check if current file is trigger for directory notification
                 if (RaiseFlagIfCurrentFileChanged()) {
-                    if (FileWatching.FileCheckInterval <= MIN_FC_POLL_INTERVAL) {
+                    if ((Settings2.FileWatchingMethod == FWMTH_PUSH) || (FileWatching.FileCheckInterval <= MIN_FC_POLL_INTERVAL)) {
                         NotifyIfFileHasChanged(); // immediate notification
                     }
                 }
@@ -12488,19 +12540,23 @@ void InstallFileWatching(const bool bInstall) {
 
         if (bWatchFile) {
 
+            bool const bUsePush = (Settings2.FileWatchingMethod != FWMTH_POLL);  // both or push
+            bool const bUsePoll = (Settings2.FileWatchingMethod != FWMTH_PUSH);  // both or poll
+
             if (!IS_VALID_HANDLE(s_FileChgObsvrData.worker.workerThread)) {
 
                 // Save data of current file
                 ResetFileObservationData(false); // (!) false
 
-                Path_Reset(s_FileChgObsvrData.worker.hFilePath, Path_Get(hdir_pth)); // directory monitoring
-
-                BackgroundWorker_Start(&(s_FileChgObsvrData.worker), FileChangeObserver, &s_FileChgObsvrData);
+                if (bUsePush) {
+                    Path_Reset(s_FileChgObsvrData.worker.hFilePath, Path_Get(hdir_pth)); // directory monitoring
+                    BackgroundWorker_Start(&(s_FileChgObsvrData.worker), FileChangeObserver, &s_FileChgObsvrData);
+                }
             }
 
             InterlockedExchange64(&(s_FileChgObsvrData.iFileChangeNotifyTime), GetTicks_ms());
 
-            if (Settings2.FileCheckInterval > 0) {
+            if (bUsePoll && (Settings2.FileCheckInterval > 0)) {
                 SetTimer(Globals.hwndMain, ID_WATCHTIMER, (UINT)FileWatching.FileCheckInterval, WatchTimerProc);
             }
             else {

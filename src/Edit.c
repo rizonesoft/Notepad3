@@ -1187,14 +1187,14 @@ bool EditLoadFile(
     bool       bReadSuccess = false;
     bool const bReloadFile = (fLoadFlags & FLF_Reload);
 
-    BeginWaitCursor(Flags.bHugeFileLoadState, StatDisplLoadFile(hfile_pth));
+    BeginWaitCursor(false, L"");  // structural only: opens LimitNotifyEvents() block
 
     HANDLE const hFile = CreateFileW(Path_Get(hfile_pth),
                                     GENERIC_READ,
                                     FILE_SHARE_READ | FILE_SHARE_WRITE,
                                     NULL,
                                     OPEN_EXISTING,
-                                    FILE_ATTRIBUTE_NORMAL,
+                                    FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN,
                                     NULL);
 
     Globals.dwLastError = GetLastError();
@@ -1262,6 +1262,14 @@ bool EditLoadFile(
             Encoding_Forced(CPI_NONE);
             goto observe;
         }
+    }
+
+    // activate wait cursor now that file size is known
+    if (Flags.bHugeFileLoadState) {
+        SciCall_SetCursor(SC_CURSORWAIT);
+        SciCall_SetVScrollbar(false);
+        SciCall_SetHScrollbar(false);
+        StatusSetText(Globals.hwndStatus, STATUS_HELP, StatDisplLoadFile(hfile_pth));
     }
 
     // check for unknown file/extension
@@ -1388,18 +1396,20 @@ bool EditLoadFile(
 
         char* const lpDataUTF8 = AllocMem((cbData * 3) + 2, HEAP_ZERO_MEMORY);
 
-        ptrdiff_t convCnt = WideCharToMultiByteEx(Encoding_SciCP, 0, (encDetection.bHasBOM ? (LPWSTR)lpData + 1 : (LPWSTR)lpData),
-                            (encDetection.bHasBOM ? (cbData / sizeof(WCHAR)) : (cbData / sizeof(WCHAR) + 1)), lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
+        ptrdiff_t const   wcharCount = cbData / sizeof(WCHAR);
+        ptrdiff_t const   cchWideChar = encDetection.bHasBOM ? (wcharCount - 1) : wcharCount;
+        LPCWSTR const     lpwStr = encDetection.bHasBOM ? (LPWSTR)lpData + 1 : (LPWSTR)lpData;
+
+        ptrdiff_t convCnt = WideCharToMultiByteEx(Encoding_SciCP, 0, lpwStr, cchWideChar, lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
 
         if (convCnt == 0) {
-            convCnt = WideCharToMultiByteEx(CP_ACP, 0, (encDetection.bHasBOM ? (LPWSTR)lpData + 1 : (LPWSTR)lpData),
-                                            -1, lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
+            convCnt = WideCharToMultiByteEx(CP_ACP, 0, lpwStr, cchWideChar, lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
             status->bUnicodeErr = true;
         }
 
-        FileVars_GetFromData(lpDataUTF8, convCnt - 1, &Globals.fvCurFile);
-        EditSetNewText(hwnd, lpDataUTF8, convCnt - 1, bClearUndoHistory, bReloadFile);
-        EditDetectEOLMode(lpDataUTF8, convCnt - 1, status);
+        FileVars_GetFromData(lpDataUTF8, convCnt, &Globals.fvCurFile);
+        EditSetNewText(hwnd, lpDataUTF8, convCnt, bClearUndoHistory, bReloadFile);
+        EditDetectEOLMode(lpDataUTF8, convCnt, status);
         FreeMem(lpDataUTF8);
 
     } else { // ===  ALL OTHERS  ===

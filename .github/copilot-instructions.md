@@ -157,3 +157,4 @@ Notepad3 follows a **portable-app** design for its configuration file (`Notepad3
 - **Key paths**: `Paths.IniFile` = active writable INI (empty if none exists), `Paths.IniFileDefault` = fallback path for "Save Settings Now" recovery.
 - **Configuration code**: All INI init logic lives in `src\Config\Config.cpp` — `FindIniFile()` → `TestIniFile()` → `CreateIniFile()` → `LoadSettings()`.
 - **MiniPath** follows the same portable INI and admin-redirect pattern (`minipath\src\Config.cpp`). Redirect targets are auto-created via `CreateIniFileEx()`.
+- **New parameters**: When adding new `Settings2` (or other INI) parameters, always document them as commented entries in `Build\Notepad3.ini`

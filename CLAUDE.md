@@ -117,6 +117,7 @@ Resource-based MUI system with 27+ locales. Each locale has a `np3_LANG_COUNTRY\
 - Key paths: `Paths.IniFile` (active writable INI), `Paths.IniFileDefault` (fallback for recovery)
 - INI init flow: `FindIniFile()` -> `TestIniFile()` -> `CreateIniFile()` -> `LoadSettings()`
 - **MiniPath** follows the same portable INI and admin-redirect pattern (`minipath\src\Config.cpp`). Redirect targets are auto-created via `CreateIniFileEx()`.
+- **New parameters**: When adding new `Settings2` (or other INI) parameters, always document them as commented entries in `Build\Notepad3.ini`
 
 ### DarkMode (`src\DarkMode\`)
 
