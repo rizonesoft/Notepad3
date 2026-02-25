@@ -611,7 +611,12 @@ void BackgroundWorker_Cancel(BackgroundWorker* worker) {
         if (IS_VALID_HANDLE(workerThread)) {
             // Optimize: MsgDispatch only in case of hwnd ?
             // DWORD const wait = SignalObjectAndWait(worker->eventCancel, workerThread, 100 /*INFINITE*/, FALSE);
+            DWORD const dwTimeout = 5000; // 5 seconds max
+            DWORD const dwStart = GetTickCount();
             while (WaitForSingleObject(workerThread, 0) != WAIT_OBJECT_0) {
+                if ((GetTickCount() - dwStart) > dwTimeout) {
+                    break; // give up waiting — thread will self-terminate
+                }
                 MSG msg;
                 if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
                     TranslateMessage(&msg);

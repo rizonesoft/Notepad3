@@ -174,6 +174,7 @@ typedef COLORREF COLORALPHAREF;
 typedef enum COLOR_LAYER { BACKGROUND_LAYER = 0, FOREGROUND_LAYER = 1 } COLOR_LAYER;  // Style_GetColor()
 typedef enum HYPERLINK_OPS { OPEN_WITH_BROWSER = 1, OPEN_IN_NOTEPAD3 = (1<<1), OPEN_NEW_NOTEPAD3 = (1<<2), COPY_HYPERLINK = (1<<3), SELECT_HYPERLINK = (1<<4) } HYPERLINK_OPS;  // Hyperlink Operations
 typedef enum FILE_WATCHING_MODE { FWM_NO_INIT = -1, FWM_DONT_CARE = 0, FWM_INDICATORSILENT = 1, FWM_MSGBOX = 2, FWM_AUTORELOAD = 3, FWM_EXCLUSIVELOCK = 4 } FILE_WATCHING_MODE;
+typedef enum FILE_WATCHING_METHOD { FWMTH_BOTH = 0, FWMTH_POLL = 1, FWMTH_PUSH = 2 } FILE_WATCHING_METHOD;
 typedef enum FOCUSVIEW_MARKER_MODE { FVMM_MARGIN = 1, FVMM_LN_BACKGR = 2, FVMM_FOLD = 4 } FOCUSVIEW_MARKER_MODE;
 typedef enum DEFAULT_FONT_STYLES { DFS_GLOBAL = 0,
     DFS_CURR_LEXER = 1,
@@ -765,6 +766,7 @@ typedef struct SETTINGS2_T {
     int     OpacityLevel;
     int     FindReplaceOpacityLevel;
     LONG64  FileCheckInterval;
+    int     FileWatchingMethod;
     LONG64  UndoTransactionTimeout;
     int     IMEInteraction;
     int     SciFontQuality;
@@ -889,6 +891,7 @@ typedef struct FILEWATCHING_T {
     FILE_WATCHING_MODE FileWatchingMode;  // <-> Settings.FileWatchingMode;
     LONG64             FileCheckInterval; // <-> clampll(Settings2.FileCheckInterval, MIN_FC_POLL_INTERVAL, MAX_FC_POLL_INTERVAL);
     bool               MonitoringLog;
+    int                LogRotateRetryCount;
 
 } FILEWATCHING_T, *PFILEWATCHING_T;
 

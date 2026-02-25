@@ -2710,6 +2710,7 @@ bool FileMRUDlg(HWND hwnd, HPATHL hFilePath_out)
 static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
     static FILE_WATCHING_MODE s_FWM = FWM_NO_INIT;
+    static bool s_wasMonitoring = false;
 
     switch (umsg) {
     case WM_INITDIALOG: {
@@ -2732,6 +2733,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
         if (s_FWM == FWM_NO_INIT) {
             s_FWM = Settings.FileWatchingMode;
         }
+        s_wasMonitoring = FileWatching.MonitoringLog;
         CheckDlgButton(hwnd, IDC_CHECK_BOX_A, SetBtn(Settings.ResetFileWatching));
         CheckDlgButton(hwnd, IDC_CHECK_BOX_B, SetBtn(FileWatching.MonitoringLog));
 
@@ -2799,8 +2801,7 @@ CASE_WM_CTLCOLOR_SET:
 
 
         case IDC_CHECK_BOX_B:
-            FileWatching.MonitoringLog = IsButtonChecked(hwnd, IDC_CHECK_BOX_B);
-            if (FileWatching.MonitoringLog) {
+            if (IsButtonChecked(hwnd, IDC_CHECK_BOX_B)) {
                 CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_E, IDC_RADIO_BTN_C);
                 EnableItem(hwnd, IDC_RADIO_BTN_A, FALSE);
                 EnableItem(hwnd, IDC_RADIO_BTN_B, FALSE);
@@ -2852,9 +2853,11 @@ CASE_WM_CTLCOLOR_SET:
                     s_FWM = FWM_EXCLUSIVELOCK;
                 }
 
+                bool const wantMonitoring = IsButtonChecked(hwnd, IDC_CHECK_BOX_B);
+
                 Settings.ResetFileWatching = IsButtonChecked(hwnd, IDC_CHECK_BOX_A);
 
-                if (!FileWatching.MonitoringLog) {
+                if (!wantMonitoring) {
                     FileWatching.FileWatchingMode = s_FWM;
                 }
                 if (!Settings.ResetFileWatching) {
@@ -2873,8 +2876,13 @@ CASE_WM_CTLCOLOR_SET:
                     }
                 }
 
-                if (FileWatching.MonitoringLog) {
-                    FileWatching.MonitoringLog = false; // will be toggled in IDM_VIEW_CHASING_DOCTAIL
+                if (s_wasMonitoring && !wantMonitoring) {
+                    // Turning monitoring OFF — toggle handler restores Settings.FileWatchingMode
+                    PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+                }
+                else if (wantMonitoring) {
+                    // Turning ON, or re-entering (settings changed while monitoring)
+                    FileWatching.MonitoringLog = false;
                     PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
                 }
 

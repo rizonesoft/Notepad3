@@ -1313,6 +1313,7 @@ void LoadSettings()
     
     FileWatching.FileCheckInterval = Settings2.FileCheckInterval;
 
+    Settings2.FileWatchingMethod = clampi(IniSectionGetInt(IniSecSettings2, L"FileWatchingMethod", 0), 0, 2);
 
     IniSectionGetString(IniSecSettings2, L"FileChangedIndicator", L"[@]", Settings2.FileChangedIndicator, COUNTOF(Settings2.FileChangedIndicator));
 
