@@ -68,7 +68,6 @@ np3params, *LPnp3params;
 #define ID_PASTEBOARDTIMER  (0xA001)        // Paste Board
 #define ID_AUTOSAVETIMER    (0xA002)        // Auto Save Timer
 #define ID_LOGROTATETIMER   (0xA003)        // Log Rotation Retry
-#define ID_AUTOSCROLLTIMER  (0xA004)        // Middle-Click Auto-Scroll
 
 
 //==== Reuse Window Lock Timeout ==============================================

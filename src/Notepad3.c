@@ -10,8 +10,8 @@
 *                                                                             *
 *                                                  (c) Rizonesoft 2008-2026   *
 *                                                    https://rizonesoft.com   *
- *                                                                             *
- *                                                                             *
+*                                                                             *
+*                                                                             *
 *******************************************************************************/
 
 #include "Helpers.h"
@@ -172,16 +172,6 @@ static int       s_cyReBarFrame = 0;
 static int       s_cxEditFrame = 0;
 static int       s_cyEditFrame = 0;
 static bool      s_bUndoRedoScroll = false;
-
-// Middle-click auto-scroll state
-static bool      s_bAutoScrollMode = false;
-static POINT     s_ptAutoScrollOrigin = { 0, 0 };
-static POINT     s_ptAutoScrollMouse = { 0, 0 };
-static double    s_dAutoScrollAccumY = 0.0;
-
-#define AUTOSCROLL_TIMER_MS    30    // ~33 fps
-#define AUTOSCROLL_DEADZONE    15    // pixels from origin before scrolling starts
-#define AUTOSCROLL_DIVISOR     60.0  // higher = slower (lines per pixel per tick scaling)
 
 // for tiny expression calculation
 static double   s_dExpression = 0.0;
@@ -2247,6 +2237,15 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case WM_SYSCOMMAND:
         return MsgSysCommand(hwnd, umsg, wParam, lParam);
 
+    case WM_MBUTTONDOWN: {
+        POINT const  cpt = POINTFromLParam(lParam);
+        DocPos const pos = SciCall_CharPositionFromPointClose(cpt.x, cpt.y);
+        if (pos >= 0) {
+            HandleHotSpotURLClicked(pos, OPEN_WITH_BROWSER);
+        }
+    }
+    break;
+
     //case WM_LBUTTONDBLCLK:
     //  //return DefWindowProc(hwnd, umsg, wParam, lParam);
     //  break;
@@ -2398,133 +2397,6 @@ static void  _SetWrapVisualFlags(HWND hwndEditCtrl)
     } else {
         SciCall_SetWrapVisualFlags(0);
     }
-}
-
-
-//=============================================================================
-//
-//  Auto-Scroll (middle-click continuous scroll, Firefox-style)
-//
-
-static void _AutoScrollStop(HWND hwndEdit)
-{
-    if (s_bAutoScrollMode) {
-        KillTimer(hwndEdit, ID_AUTOSCROLLTIMER);
-        ReleaseCapture();
-        SciCall_SetCursor(SC_CURSORNORMAL);
-        s_bAutoScrollMode = false;
-        s_dAutoScrollAccumY = 0.0;
-    }
-}
-
-static void CALLBACK _AutoScrollTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
-{
-    UNREFERENCED_PARAMETER(uMsg);
-    UNREFERENCED_PARAMETER(idEvent);
-    UNREFERENCED_PARAMETER(dwTime);
-
-    if (!s_bAutoScrollMode) {
-        KillTimer(hwnd, ID_AUTOSCROLLTIMER);
-        return;
-    }
-
-    int const deltaY = s_ptAutoScrollMouse.y - s_ptAutoScrollOrigin.y;
-
-    if (abs(deltaY) <= AUTOSCROLL_DEADZONE) {
-        s_dAutoScrollAccumY = 0.0;
-        return;
-    }
-
-    // Speed: proportional to distance beyond dead zone
-    double const speed = (double)(deltaY - (deltaY > 0 ? AUTOSCROLL_DEADZONE : -AUTOSCROLL_DEADZONE)) / AUTOSCROLL_DIVISOR;
-    s_dAutoScrollAccumY += speed;
-
-    DocLn const linesToScroll = (DocLn)s_dAutoScrollAccumY;
-    if (linesToScroll != 0) {
-        SciCall_LineScroll(0, linesToScroll);
-        s_dAutoScrollAccumY -= (double)linesToScroll;
-    }
-}
-
-static void _AutoScrollStart(HWND hwndEdit, POINT pt)
-{
-    s_bAutoScrollMode = true;
-    s_ptAutoScrollOrigin = pt;
-    s_ptAutoScrollMouse = pt;
-    s_dAutoScrollAccumY = 0.0;
-    SetCapture(hwndEdit);
-    SetCursor(LoadCursor(NULL, IDC_SIZEALL));  // immediately show four-way arrow
-    SetTimer(hwndEdit, ID_AUTOSCROLLTIMER, AUTOSCROLL_TIMER_MS, _AutoScrollTimerProc);
-}
-
-static LRESULT CALLBACK _EditSubclassProc(
-    HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam,
-    UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
-{
-    UNREFERENCED_PARAMETER(dwRefData);
-
-    switch (uMsg) {
-
-    case WM_MBUTTONDOWN: {
-        if (s_bAutoScrollMode) {
-            _AutoScrollStop(hwnd);
-        } else {
-            POINT const pt = POINTFromLParam(lParam);
-            DocPos const pos = SciCall_CharPositionFromPointClose(pt.x, pt.y);
-            if ((pos >= 0) && SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, pos)) {
-                HandleHotSpotURLClicked(pos, OPEN_WITH_BROWSER);
-            } else {
-                _AutoScrollStart(hwnd, pt);
-            }
-        }
-        return 0;
-    }
-
-    case WM_MOUSEMOVE:
-        if (s_bAutoScrollMode) {
-            s_ptAutoScrollMouse = POINTFromLParam(lParam);
-            SetCursor(LoadCursor(NULL, IDC_SIZEALL));  // maintain four-way arrow
-            return 0;
-        }
-        break;
-
-    case WM_LBUTTONDOWN:
-    case WM_RBUTTONDOWN:
-        if (s_bAutoScrollMode) {
-            _AutoScrollStop(hwnd);
-            return 0;
-        }
-        break;
-
-    case WM_MOUSEWHEEL:
-        if (s_bAutoScrollMode) {
-            _AutoScrollStop(hwnd);
-            return 0;
-        }
-        break;
-
-    case WM_SETCURSOR:
-        if (s_bAutoScrollMode) {
-            SetCursor(LoadCursor(NULL, IDC_SIZEALL));
-            return TRUE;
-        }
-        break;
-
-    case WM_CAPTURECHANGED:
-        if (s_bAutoScrollMode && ((HWND)lParam != hwnd)) {
-            s_bAutoScrollMode = false;
-            KillTimer(hwnd, ID_AUTOSCROLLTIMER);
-            SciCall_SetCursor(SC_CURSORNORMAL);
-            s_dAutoScrollAccumY = 0.0;
-        }
-        break;
-
-    case WM_NCDESTROY:
-        RemoveWindowSubclass(hwnd, _EditSubclassProc, uIdSubclass);
-        break;
-    }
-
-    return DefSubclassProc(hwnd, uMsg, wParam, lParam);
 }
 
 
@@ -2710,9 +2582,6 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     SciCall_AutoCSetIgnoreCase(true);
     //~SciCall_AutoCSetCaseInsensitiveBehaviour(SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE);
     SciCall_AutoCSetOrder(SC_ORDER_PRESORTED); // already sorted ~ SC_ORDER_PERFORMSORT
-
-    // Middle-click auto-scroll subclass
-    SetWindowSubclass(hwndEditCtrl, _EditSubclassProc, 0, 0);
 }
 
 
