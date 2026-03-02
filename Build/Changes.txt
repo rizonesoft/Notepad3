@@ -34,13 +34,14 @@ UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.26.224.(build_#) (2026-02-24)
+Current BETA Version 6.26.227.(build_#) (2026-02-27)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]-
+[.227.1]- Feat: Add auto-scroll on MMB click.
 [.130.1]- Add Scintilla np3_patches with 5 patch files for future upgrades (SCI).
 [.130.1]- Use Segment Heaps for memory allocation if available (Win10 2004+/Win11).
 [.130.1]- Added AVX2 optimized x64 build configuration (x64_AVX2) (issue #4240).
@@ -53,8 +54,9 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]-
-[.224.1]- Feat: refactor to atomic save pattern.
-[.224.1]- Chore: smoothening the startup window experiences.
+[.227.1]- Refactor: File Change Notification handling.
+[.224.1]- Feat: Refactor to atomic save pattern.
+[.224.1]- Chore: Smoothening the startup window experiences.
 [.218.1]- Some refactorings due to new features in scintilla.
 [.215.1]- Migration of the MS VS2022 compiler to MS VS2026 vc145 platform toolset.
 [.215.1]- Update to Scintilla 5.5.8 and Lexilla 5.4.6 (SCI/LEX).
@@ -69,6 +71,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]-
+[.227.1]- Revert: Regression, revert to special Text (.txt) font.
+[.227.1]- Update to Scintilla v5.6.0 and Lexilla v5.4.7.
+[.227.1]- Minor enhancements on file loading.
 [.224.1]- Enhance ShowWindow start-up time.
 [.224.1]- AI corrections for PathLib.
 [.223.1]- INI file handling Notepad3 and Minipath.
@@ -96,14 +101,15 @@ FIXES:
 --------------------------------------------------------
 REMOVED:
 [.xxx.x]-
+[.227.1]- Remove obsolete AppVeyor CI build.
 --------------------------------------------------------
 
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.215.1]- Update Lexilla Library (LEX) version 5.4.6 (2025-11-10).
-[.215.1]- Update Scintilla Library (SCI) version 5.5.8 (2025-11-10).
-[.711.1]- Update Oniguruma Regex (ONI) engine version 6.9.10 (2025/04/24).
+[.227.1]- Update Scintilla Library (SCI) version 5.6.0 (2026-02-25).
+[.227.1]- Update Lexilla Library (LEX) version 5.4.7 (2026-02-25).
+[.711.1]- Update Oniguruma Regex (ONI) engine version 6.9.10 (2025-04-24).
 [.101.1]- Update grepWinNP3 (GRE) version 2.1.15.48 (2024-01-10).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
 
