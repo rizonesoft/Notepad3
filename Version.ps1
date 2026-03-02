@@ -80,8 +80,8 @@ try
 	if (!$SciVer) { $SciVer = 0 }
 	$LxiVer = [string](Get-Content "lexilla\version.txt")
 	if (!$LxiVer) { $LxiVer = 0 }
-	$OnigVer = [string](Get-Content "scintilla\oniguruma\version.txt")
-	if (!$OnigVer) { $OnigVer = "0.0.0" }
+	$PCRE2Ver = [string](Get-Content "scintilla\pcre2\version.txt")
+	if (!$PCRE2Ver) { $PCRE2Ver = "0.0" }
 	$UChardetVer = [string](Get-Content "src\uchardet\version.txt")
 	if (!$UChardetVer) { $UChardetVer = "0.0.0" }
 	$TinyExprVer = [string](Get-Content "src\tinyexpr\version.txt")
@@ -99,7 +99,7 @@ try
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$BUILD\$', "$Build" } | Set-Content -Path "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$SCIVER\$', "$SciVer" } | Set-Content -Path "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$LXIVER\$', "$LxiVer" } | Set-Content -Path "src\VersionEx.h"
-	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$ONIGURUMAVER\$', "$OnigVer" } | Set-Content -Path "src\VersionEx.h"
+	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$PCRE2VER\$', "$PCRE2Ver" } | Set-Content -Path "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$UCHARDETVER\$', "$UChardetVer" } | Set-Content -Path "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$TINYEXPRVER\$', "$TinyExprVer" } | Set-Content -Path "src\VersionEx.h"
 	(Get-Content "src\VersionEx.h") | ForEach-Object { $_ -replace '\$UTHASHVER\$', "$UtHashVer" } | Set-Content -Path "src\VersionEx.h"

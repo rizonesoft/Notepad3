@@ -1302,7 +1302,7 @@ CASE_WM_CTLCOLOR_SET:
 
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_SCIVERSION);
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_LXIVERSION);
-            StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_ONIGURUMA);
+            StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_PCRE2);
 
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsProcessElevated() ? L"\n- Process is elevated." : L"\n- Process is not elevated"));
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsUserInAdminGroup() ? L"\n- User is in Admin-Group." : L"\n- User is not in Admin-Group"));

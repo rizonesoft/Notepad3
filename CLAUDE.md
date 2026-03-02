@@ -53,7 +53,7 @@ GitHub Actions (`.github/workflows/build.yml`) builds all four platforms (Win32,
 | File | Purpose |
 |------|---------|
 | **Notepad3.c/h** | Entry point (`wWinMain`), window procedure (`MainWndProc`), global state structs (`Globals`, `Settings`, `Settings2`, `Flags`, `Paths`) |
-| **Edit.c/h** | Text manipulation: find/replace (Oniguruma regex), encoding conversion, clipboard, indentation, sorting, bookmarks, folding, auto-complete |
+| **Edit.c/h** | Text manipulation: find/replace (PCRE2 regex), encoding conversion, clipboard, indentation, sorting, bookmarks, folding, auto-complete |
 | **Styles.c/h** | Scintilla styling, lexer selection, theme management, margin configuration |
 | **Dialogs.c/h** | All dialog boxes, DPI-aware UI interactions, window placement |
 | **Config/Config.cpp/h** | INI file management, settings loading/saving, MRU list |
@@ -79,7 +79,7 @@ MainWndProc (Notepad3.c)
 |-----------|---------|---------|
 | `scintilla\` | Scintilla 5.5.8 | Editor component (NP3 patches in `np3_patches\`, docs in `doc\`) |
 | `lexilla\` | Lexilla 5.4.6 | Syntax highlighting (NP3 patches in `np3_patches\`, docs in `doc\`) |
-| `scintilla\oniguruma\` | Oniguruma | Regex engine for find/replace |
+| `scintilla\pcre2\` | PCRE2 10.47 | Regex engine for find/replace (replaced archived Oniguruma) |
 | `src\uchardet\` | uchardet | Mozilla encoding detection |
 | `src\tinyexpr\` / `src\tinyexprcpp\` | TinyExpr | Expression evaluator (statusbar) |
 | `src\uthash\` | uthash | Hash table / dynamic array macros |
@@ -118,6 +118,24 @@ Resource-based MUI system with 27+ locales. Each locale has a `np3_LANG_COUNTRY\
 - INI init flow: `FindIniFile()` -> `TestIniFile()` -> `CreateIniFile()` -> `LoadSettings()`
 - **MiniPath** follows the same portable INI and admin-redirect pattern (`minipath\src\Config.cpp`). Redirect targets are auto-created via `CreateIniFileEx()`.
 - **New parameters**: When adding new `Settings2` (or other INI) parameters, always document them as commented entries in `Build\Notepad3.ini`
+
+### PCRE2 Regex Engine (`scintilla\pcre2\`)
+
+PCRE2 10.47 replaced the archived Oniguruma library. The Scintilla integration lives in `scintilla\pcre2\scintilla\PCRE2RegExEngine.cxx`, compiled with `SCI_OWNREGEX` to override Scintilla's built-in regex.
+
+Key components:
+- **`PCRE2RegExEngine::FindText`** — Scintilla regex search (pattern matching via `pcre2_match`)
+- **`PCRE2RegExEngine::SubstituteByPosition`** — Regex replacement with group references
+- **`PCRE2RegExEngine::convertReplExpr`** — Normalizes replacement strings: converts `\1`-`\9` to `$1`-`$9`, processes escape sequences (`\n`, `\t`, `\xHH`, `\uHHHH`)
+- **`PCRE2RegExEngine::translateRegExpr`** — Translates Scintilla regex extensions: `\<`/`\>` word boundaries → lookarounds, `\uHHHH` → `\x{HHHH}`
+- **`RegExFind`** (exported C function) — Standalone regex find used by `EditURLDecode` in `Edit.c`; wraps `SimplePCRE2Engine`
+
+Replacement string backreference syntax (both flavors supported for backward compatibility):
+- `$0`-`$99` and `\0`-`\9` — numbered group references
+- `${name}` / `${+name}` — named group references
+- Escape sequences: `\n`, `\t`, `\r`, `\\`, `\xHH`, `\uHHHH`
+
+URL hotspot regex is defined at `src\Edit.c:108` (`HYPLNK_REGEX_FULL` macro). It matches `https?://`, `ftp://`, `file:///`, `file://`, `mailto:`, `www.`, `ftp.` schemes. The trailing group excludes punctuation (`.,:?!`) so URLs don't absorb sentence-ending characters.
 
 ### DarkMode (`src\DarkMode\`)
 

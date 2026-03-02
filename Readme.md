@@ -27,7 +27,7 @@ Notepad3 is a free, open-source text editor with syntax highlighting for Windows
 - **Bookmarks** for quick navigation within files
 - **Word auto-completion** with configurable fill-up characters
 - **Mark all occurrences** of a selected word with occurrence count display
-- **Find and Replace** with [Oniguruma](https://github.com/kkos/oniguruma) regular expression engine
+- **Find and Replace** with [PCRE2](https://github.com/PCRE2Project/pcre2) regular expression engine
 - **Undo/Redo** that preserves selection state
 - **Visual Studio–style** copy/paste of the current line (when nothing is selected)
 - **Virtual space** rectangular selection (Alt+Drag)
@@ -135,7 +135,7 @@ Notepad3 builds upon the work of:
 | [Notepad2-mod](https://xhmikosr.github.io/notepad2-mod/) | XhmikosR | Extended fork |
 | [Scintilla](https://www.scintilla.org/) 5.5.8 | Neil Hodgson | Editing component |
 | [Lexilla](https://www.scintilla.org/Lexilla.html) 5.4.6 | Neil Hodgson | Syntax highlighting |
-| [Oniguruma](https://github.com/kkos/oniguruma) | K. Kosako | Regex engine |
+| [PCRE2](https://github.com/PCRE2Project/pcre2) 10.47 | PCRE2 Project | Regex engine |
 | [uchardet](https://www.freedesktop.org/wiki/Software/uchardet/) | Mozilla / freedesktop | Encoding detection |
 | Fugue Icons | Yusuke Kamiyamane | Toolbar icons |
 

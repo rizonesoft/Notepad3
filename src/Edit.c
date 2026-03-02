@@ -105,9 +105,9 @@ static LPCWSTR const s_pUnicodeRegEx = L"(\\\\[uU|xX]([0-9a-fA-F]){4}|\\\\[xX]([
 // URL valid codepoints w/o square-brackets
 #define HYPLNK_REGEX_VALID_CDPT "\\p{L}\\p{N}\\p{Sc}\\p{So}\\*;^°+§&@#/%=~_|'"
 
-#define HYPLNK_REGEX_FULL   "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"\
-                            "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*\\)|[-" HYPLNK_REGEX_VALID_CDPT "?!:,.])*"\
-                            "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*\\)|[-" HYPLNK_REGEX_VALID_CDPT "])"
+#define HYPLNK_REGEX_FULL   "\\b(?:(?:https?|ftp)://|file:///|file://|mailto:|www\\.|ftp\\.)"\
+                            "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*+\\)|[-" HYPLNK_REGEX_VALID_CDPT "?!:,.])*"\
+                            "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*+\\)|[-" HYPLNK_REGEX_VALID_CDPT "])"
 
 static LPCSTR const s_pUrlRegExA = HYPLNK_REGEX_FULL;
 static LPCWSTR const s_pUrlRegEx = _W(HYPLNK_REGEX_FULL);
@@ -2123,7 +2123,7 @@ void EditURLDecode(const bool isPathConvert)
 
     // can URL be found by Hyperlink pattern matching ?
     int matchLen = 0;
-    ptrdiff_t const pos = OnigRegExFind(s_pUrlRegExA, pszUnescaped, false, SciCall_GetEOLMode(), &matchLen);
+    ptrdiff_t const pos = RegExFind(s_pUrlRegExA, pszUnescaped, false, SciCall_GetEOLMode(), &matchLen);
     bool const bIsValidConversion = isPathConvert ? ((pos >= 0) && (cchUnescapedDec == matchLen)) : true;
 
     if (bIsValidConversion) {
