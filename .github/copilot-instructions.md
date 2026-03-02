@@ -53,7 +53,7 @@ Notepad3 is a Win32 desktop text editor built on the **Scintilla** editing compo
 ### Core modules (in `src\`)
 
 - **Notepad3.c/h** — Application entry point (`wWinMain`), window procedure, global state structs (`GLOBALS_T`, `SETTINGS_T`, `FLAGS_T`, `PATHS_T`)
-- **Edit.c/h** — Text manipulation (find/replace, encoding conversion, clipboard, indentation, sorting)
+- **Edit.c/h** — Text manipulation: find/replace (PCRE2 regex), encoding conversion, clipboard, indentation, sorting, bookmarks, folding, auto-complete
 - **Styles.c/h** — Scintilla styling, lexer selection, theme management
 - **Dialogs.c/h** — All dialog boxes and UI interactions
 - **Encoding.c/h** — Character encoding detection and conversion
@@ -61,6 +61,7 @@ Notepad3 is a Win32 desktop text editor built on the **Scintilla** editing compo
 - **DynStrg.c/h** — Custom dynamic wide-string type (`HSTRINGW`) with automatic buffer management
 - **PathLib.c/h** — Path manipulation via opaque `HPATHL` handle
 - **TypeDefs.h** — Core type definitions (`DocPos`, `DocLn`, `cpi_enc_t`), Windows version targeting, compiler macros
+- **MuiLanguage.c/h** — Multi-language UI support, language DLL loading
 
 ### Vendored dependencies
 
@@ -68,9 +69,11 @@ Notepad3 is a Win32 desktop text editor built on the **Scintilla** editing compo
 - **`scintilla\doc\`** - Scintilla documentation offline
 - **`lexilla\`** — Lexilla syntax highlighting engine with custom patches
 - **`lexilla\doc\`** — Lexilla documentation offline
+- **`scintilla\pcre2\`** — PCRE2 10.47 regex engine for find/replace (replaced archived Oniguruma)
 - **`src\uchardet\`** — Character encoding detector
 - **`src\tinyexpr\` / `src\tinyexprcpp\`** — Expression evaluator for statusbar
 - **`src\uthash\`** — Hash table library (C macros)
+- **`src\crypto\`** — Rijndael/SHA-256 for AES-256 encryption
 - **Boost Regex & IOStreams** — Managed via `vcpkg.json`
 
 ### Syntax highlighting lexers (`src\StyleLexers\`)
@@ -93,6 +96,28 @@ EDITLEXER lexXXX = {
 ### Localization (`language\`)
 
 Resource-based MUI system with 27+ locales. Each locale has a directory `np3_LANG_COUNTRY\` containing resource `.rc` files. Language DLLs are built as separate projects in the solution.
+
+### PCRE2 Regex Engine (`scintilla\pcre2\`)
+
+PCRE2 10.47 replaced the archived Oniguruma library. The Scintilla integration lives in `scintilla\pcre2\scintilla\PCRE2RegExEngine.cxx`, compiled with `SCI_OWNREGEX` to override Scintilla's built-in regex.
+
+Key components:
+- **`PCRE2RegExEngine::FindText`** — Scintilla regex search (pattern matching via `pcre2_match`)
+- **`PCRE2RegExEngine::SubstituteByPosition`** — Regex replacement with group references
+- **`PCRE2RegExEngine::convertReplExpr`** — Normalizes replacement strings: converts `\1`-`\9` to `$1`-`$9`, processes escape sequences (`\n`, `\t`, `\xHH`, `\uHHHH`)
+- **`PCRE2RegExEngine::translateRegExpr`** — Translates Scintilla regex extensions: `\<`/`\>` word boundaries → lookarounds, `\uHHHH` → `\x{HHHH}`
+- **`RegExFind`** (exported C function) — Standalone regex find used by `EditURLDecode` in `Edit.c`; wraps `SimplePCRE2Engine`
+
+Replacement string backreference syntax (both flavors supported for backward compatibility):
+- `$0`-`$99` and `\0`-`\9` — numbered group references
+- `${name}` / `${+name}` — named group references
+- Escape sequences: `\n`, `\t`, `\r`, `\\`, `\xHH`, `\uHHHH`
+
+URL hotspot regex is defined at `src\Edit.c:108` (`HYPLNK_REGEX_FULL` macro). It matches `https?://`, `ftp://`, `file:///`, `file://`, `mailto:`, `www.`, `ftp.` schemes. The trailing group excludes punctuation (`.,:?!`) so URLs don't absorb sentence-ending characters.
+
+### DarkMode (`src\DarkMode\`)
+
+Windows 10/11 dark mode via IAT (Import Address Table) hooks. Includes stub DLLs for uxtheme and user32.
 
 ## Conventions
 
@@ -158,3 +183,7 @@ Notepad3 follows a **portable-app** design for its configuration file (`Notepad3
 - **Configuration code**: All INI init logic lives in `src\Config\Config.cpp` — `FindIniFile()` → `TestIniFile()` → `CreateIniFile()` → `LoadSettings()`.
 - **MiniPath** follows the same portable INI and admin-redirect pattern (`minipath\src\Config.cpp`). Redirect targets are auto-created via `CreateIniFileEx()`.
 - **New parameters**: When adding new `Settings2` (or other INI) parameters, always document them as commented entries in `Build\Notepad3.ini`
+
+### Undo/Redo transactions
+
+Use `_BEGIN_UNDO_ACTION_` / `_END_UNDO_ACTION_` macros (defined in `Notepad3.h`) to group Scintilla operations into single undo steps. These also handle notification limiting during bulk edits.

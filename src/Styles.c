@@ -2530,7 +2530,7 @@ PEDITLEXER Style_RegExMatchLexer(LPCWSTR lpszFileName)
                     char regexpat[HUGE_BUFFER] = { '\0' };
                     WideCharToMultiByte(CP_UTF8, 0, f, (int)(e-f), regexpat, (int)COUNTOF(regexpat), NULL, NULL);
 
-                    if (OnigRegExFind(regexpat, chFilePath, false, SciCall_GetEOLMode(), NULL) >= 0) {
+                    if (RegExFind(regexpat, chFilePath, false, SciCall_GetEOLMode(), NULL) >= 0) {
                         return g_pLexArray[iLex];
                     }
                 }

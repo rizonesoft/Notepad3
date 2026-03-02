@@ -49,8 +49,8 @@ jobs:
           if (!$SciVer) { $SciVer = "0" }
           $LxiVer = Get-Content "lexilla\version.txt" -ErrorAction SilentlyContinue
           if (!$LxiVer) { $LxiVer = "0" }
-          $OnigVer = Get-Content "scintilla\oniguruma\version.txt" -ErrorAction SilentlyContinue
-          if (!$OnigVer) { $OnigVer = "0.0.0" }
+          $PCRE2Ver = Get-Content "scintilla\pcre2\version.txt" -ErrorAction SilentlyContinue
+          if (!$PCRE2Ver) { $PCRE2Ver = "0.0" }
           $UChardetVer = Get-Content "src\uchardet\version.txt" -ErrorAction SilentlyContinue
           if (!$UChardetVer) { $UChardetVer = "0.0.0" }
           $TinyExprVer = Get-Content "src\tinyexpr\version.txt" -ErrorAction SilentlyContinue
@@ -67,7 +67,7 @@ jobs:
           $content = $content -replace '\$BUILD\$', "$Build"
           $content = $content -replace '\$SCIVER\$', "$SciVer"
           $content = $content -replace '\$LXIVER\$', "$LxiVer"
-          $content = $content -replace '\$ONIGURUMAVER\$', "$OnigVer"
+          $content = $content -replace '\$PCRE2VER\$', "$PCRE2Ver"
           $content = $content -replace '\$UCHARDETVER\$', "$UChardetVer"
           $content = $content -replace '\$TINYEXPRVER\$', "$TinyExprVer"
           $content = $content -replace '\$UTHASHVER\$', "$UtHashVer"

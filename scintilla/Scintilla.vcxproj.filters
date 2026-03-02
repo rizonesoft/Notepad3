@@ -10,14 +10,8 @@
     <Filter Include="win32">
       <UniqueIdentifier>{afe7e35e-cd81-406c-a770-df29d2b3fc95}</UniqueIdentifier>
     </Filter>
-    <Filter Include="oniguruma">
-      <UniqueIdentifier>{97da2683-9a5a-42f9-8ac6-0e8c54ce61e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="oniguruma\scintilla">
-      <UniqueIdentifier>{32ffd4ad-2b04-4d07-acff-dad68cf258de}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="oniguruma\src">
-      <UniqueIdentifier>{02da00bc-9c25-4955-b7b3-bf9283a4256f}</UniqueIdentifier>
+    <Filter Include="pcre2">
+      <UniqueIdentifier>{cea0db0a-6767-478b-ab80-4b8e0d1ae396}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -114,63 +108,6 @@
     <ClCompile Include="src\UniqueString.cxx">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="oniguruma\scintilla\OnigurumaRegExEngine.cxx">
-      <Filter>oniguruma\scintilla</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\ascii.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\mktable.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\regcomp.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\regenc.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\regerror.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\regexec.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\reggnu.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\regparse.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\regsyntax.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\regtrav.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\regversion.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\st.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\unicode.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\unicode_fold1_key.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\unicode_fold2_key.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\unicode_fold3_key.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\unicode_unfold_key.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
-    <ClCompile Include="oniguruma\src\utf8.c">
-      <Filter>oniguruma\src</Filter>
-    </ClCompile>
     <ClCompile Include="src\Geometry.cxx">
       <Filter>src</Filter>
     </ClCompile>
@@ -194,6 +131,99 @@
     </ClCompile>
     <ClCompile Include="win32\SurfaceGDI.cxx">
       <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_auto_possess.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_chartables.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_chkdint.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_compile.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_compile_class.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_config.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_context.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_convert.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_dfa_match.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_error.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_extuni.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_find_bracket.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_jit_compile.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_maketables.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_match.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_match_data.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_newline.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_ord2utf.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_pattern_info.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_script_run.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_serialize.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_string_utils.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_study.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_substitute.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_substring.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_tables.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_ucd.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_ucptables.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_valid_utf.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_xclass.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\scintilla\PCRE2RegExEngine.cxx">
+      <Filter>pcre2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -323,27 +353,6 @@
     <ClInclude Include="src\ElapsedPeriod.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="oniguruma\src\config.h">
-      <Filter>oniguruma\src</Filter>
-    </ClInclude>
-    <ClInclude Include="oniguruma\src\oniggnu.h">
-      <Filter>oniguruma\src</Filter>
-    </ClInclude>
-    <ClInclude Include="oniguruma\src\oniguruma.h">
-      <Filter>oniguruma\src</Filter>
-    </ClInclude>
-    <ClInclude Include="oniguruma\src\regenc.h">
-      <Filter>oniguruma\src</Filter>
-    </ClInclude>
-    <ClInclude Include="oniguruma\src\regint.h">
-      <Filter>oniguruma\src</Filter>
-    </ClInclude>
-    <ClInclude Include="oniguruma\src\regparse.h">
-      <Filter>oniguruma\src</Filter>
-    </ClInclude>
-    <ClInclude Include="oniguruma\src\st.h">
-      <Filter>oniguruma\src</Filter>
-    </ClInclude>
     <ClInclude Include="src\Debugging.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -385,6 +394,21 @@
     </ClInclude>
     <ClInclude Include="win32\SurfaceGDI.h">
       <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="pcre2\src\config.h">
+      <Filter>pcre2</Filter>
+    </ClInclude>
+    <ClInclude Include="pcre2\src\pcre2.h">
+      <Filter>pcre2</Filter>
+    </ClInclude>
+    <ClInclude Include="pcre2\src\pcre2_internal.h">
+      <Filter>pcre2</Filter>
+    </ClInclude>
+    <ClInclude Include="pcre2\src\pcre2_intmodedep.h">
+      <Filter>pcre2</Filter>
+    </ClInclude>
+    <ClInclude Include="pcre2\src\pcre2_ucp.h">
+      <Filter>pcre2</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -59,7 +59,7 @@
 
 #define VERSION_SCIVERSION             _SCI_BUILD _W(_STRG(_V(SCINTILLA_VER)))
 #define VERSION_LXIVERSION             _LXI_BUILD _W(_STRG(_V(LEXILLA_VER)))
-#define VERSION_ONIGURUMA              L"Oniguruma " _W(_STRG(_V(ONIGURUMA_REGEX_VER)))
+#define VERSION_PCRE2                  L"PCRE2 " _W(_STRG(_V(PCRE2_VER)))
 #define VERSION_UCHARDET               L"UChardet " _W(_STRG(_V(UCHARDET_VER)))
 #define VERSION_TINYEXPR               L"TinyExpr " _W(_STRG(_V(TINYEXPR_VER)))
 #define VERSION_UTHASH                 L"UTHash " _W(_STRG(_V(UTHASH_VER)))

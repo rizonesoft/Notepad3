@@ -103,9 +103,9 @@ LRESULT WINAPI Scintilla_DirectStatusFunction(HANDLE, UINT, WPARAM, LPARAM, LPIN
 
 //=============================================================================
 
-// SciOniguruma RegEx search
-ptrdiff_t WINAPI OnigRegExFind(const char *pchPattern, const char *pchText, 
-                               const bool caseSensitive, const int eolMode, int *matchLen_out);
+// PCRE2 RegEx search (exported from PCRE2RegExEngine.cxx)
+ptrdiff_t WINAPI RegExFind(const char* pchPattern, const char* pchText, 
+                           const bool caseSensitive, const int eolMode, int *matchLen_out);
 
 //=============================================================================
 
