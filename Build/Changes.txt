@@ -28,13 +28,14 @@ MIN - (MIN)iPath Fast Browser Tool
 MUI - (M)ultilingual (U)ser (I)nterface
 NLS - (N)ew (L)anguage (S)trings (need for translation)
 ONI - (ONI)guruma Regex engine
+PCR - (PCR)2 Regex engine
 SCI - (SCI)ntilla Library
 SUP - (S)et(UP) / Installer Package
 UCD - (UCD)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.26.227.(build_#) (2026-02-27)
+Current BETA Version 6.26.303.(build_#) (2026-03-03)
 ========================================================
 
 --------------------------------------------------------
@@ -54,7 +55,9 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]-
+[.303.1]- Refactor: replace regex engines: Oniguruma (retired) by PCRE2 v10.47 (ONI->PCR).
 [.227.1]- Refactor: File Change Notification handling.
+[.227.1]- Update to Scintilla v5.6.0 and Lexilla v5.4.7.
 [.224.1]- Feat: Refactor to atomic save pattern.
 [.224.1]- Chore: Smoothening the startup window experiences.
 [.218.1]- Some refactorings due to new features in scintilla.
@@ -71,8 +74,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]-
-[.227.1]- Revert: Regression, revert to special Text (.txt) font.
-[.227.1]- Update to Scintilla v5.6.0 and Lexilla v5.4.7.
+[.303.1]- Revert: Regression, revert to special Text (.txt) font.
 [.227.1]- Minor enhancements on file loading.
 [.224.1]- Enhance ShowWindow start-up time.
 [.224.1]- AI corrections for PathLib.
@@ -101,15 +103,16 @@ FIXES:
 --------------------------------------------------------
 REMOVED:
 [.xxx.x]-
+[.303.1]- Remove retired Oniguruma regex Engine (ONI).
 [.227.1]- Remove obsolete AppVeyor CI build.
 --------------------------------------------------------
 
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
+[.303.1]- Update PCR2 Regex (PCR) engine version 10.47 (2025-10-21).
 [.227.1]- Update Scintilla Library (SCI) version 5.6.0 (2026-02-25).
 [.227.1]- Update Lexilla Library (LEX) version 5.4.7 (2026-02-25).
-[.711.1]- Update Oniguruma Regex (ONI) engine version 6.9.10 (2025-04-24).
 [.101.1]- Update grepWinNP3 (GRE) version 2.1.15.48 (2024-01-10).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
 
