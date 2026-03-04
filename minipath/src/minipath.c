@@ -22,6 +22,7 @@
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <commdlg.h>
+#include <shobjidl.h>
 #include <strsafe.h>
 #include <muiload.h>
 
@@ -665,6 +666,100 @@ static void __fastcall _SetTargetAppMenuEntry(HMENU hMenu)
     SetMenuDefaultItem(GetSubMenu(hMenu, 0), IDM_FILE_OPEN, FALSE);
 }
 
+
+
+
+
+//=============================================================================
+//
+//  _MiniPathSaveFileDlg()
+//
+static BOOL _MiniPathSaveFileDlg(HWND hwnd, LPWSTR szFile, int cchFile,
+                                  LPCWSTR lpFilter, LPCWSTR lpInitialDir,
+                                  LPCWSTR lpTitle)
+{
+    IFileSaveDialog *pfd = NULL;
+    HRESULT hr = CoCreateInstance(
+        &CLSID_FileSaveDialog, NULL, CLSCTX_INPROC_SERVER,
+        &IID_IFileSaveDialog, (void **)&pfd);
+    if (FAILED(hr)) {
+        return FALSE;
+    }
+
+    DWORD dwOpts = 0;
+    pfd->lpVtbl->GetOptions(pfd, &dwOpts);
+    pfd->lpVtbl->SetOptions(pfd, dwOpts | FOS_OVERWRITEPROMPT | FOS_PATHMUSTEXIST |
+                            FOS_NOCHANGEDIR | FOS_DONTADDTORECENT | FOS_NODEREFERENCELINKS);
+
+    if (lpTitle && *lpTitle) {
+        pfd->lpVtbl->SetTitle(pfd, lpTitle);
+    }
+
+    // Convert double-null-terminated filter string to COMDLG_FILTERSPEC
+    if (lpFilter && *lpFilter) {
+        int count = 0;
+        LPCWSTR p = lpFilter;
+        while (*p) {
+            p += lstrlenW(p) + 1;
+            if (*p == L'\0') { break; }
+            p += lstrlenW(p) + 1;
+            ++count;
+        }
+        if (count > 0) {
+            COMDLG_FILTERSPEC *spec = (COMDLG_FILTERSPEC *)LocalAlloc(LPTR,
+                count * sizeof(COMDLG_FILTERSPEC));
+            if (spec) {
+                p = lpFilter;
+                int i = 0;
+                while (*p && i < count) {
+                    spec[i].pszName = p;
+                    p += lstrlenW(p) + 1;
+                    spec[i].pszSpec = p;
+                    p += lstrlenW(p) + 1;
+                    ++i;
+                }
+                pfd->lpVtbl->SetFileTypes(pfd, (UINT)count, spec);
+                LocalFree(spec);
+            }
+        }
+    }
+
+    if (lpInitialDir && *lpInitialDir) {
+        IShellItem *psi = NULL;
+        if (SUCCEEDED(SHCreateItemFromParsingName(lpInitialDir, NULL,
+                &IID_IShellItem, (void **)&psi))) {
+            pfd->lpVtbl->SetFolder(pfd, psi);
+            psi->lpVtbl->Release(psi);
+        }
+    }
+
+    if (szFile[0]) {
+        LPCWSTR fn = PathFindFileName(szFile);
+        if (fn && *fn) {
+            pfd->lpVtbl->SetFileName(pfd, fn);
+        }
+    }
+
+    BOOL result = FALSE;
+
+    hr = pfd->lpVtbl->Show(pfd, hwnd);
+
+    if (SUCCEEDED(hr)) {
+        IShellItem *psi = NULL;
+        if (SUCCEEDED(pfd->lpVtbl->GetResult(pfd, &psi))) {
+            LPWSTR path = NULL;
+            if (SUCCEEDED(psi->lpVtbl->GetDisplayName(psi, SIGDN_FILESYSPATH, &path))) {
+                lstrcpyn(szFile, path, cchFile);
+                CoTaskMemFree(path);
+                result = TRUE;
+            }
+            psi->lpVtbl->Release(psi);
+        }
+    }
+
+    pfd->lpVtbl->Release(pfd);
+    return result;
+}
 
 
 //=============================================================================
@@ -2002,7 +2097,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_NEW: {
-        OPENFILENAME ofn;
         HANDLE       hFile;
         WCHAR szNewFile[MAX_PATH];
         WCHAR szFilter[128];
@@ -2014,20 +2108,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         PrepareFilterStr(szFilter);
         GetLngString(IDS_NEWFILE,szTitle,COUNTOF(szTitle));
 
-        ZeroMemory(&ofn,sizeof(OPENFILENAME));
-
-        ofn.lStructSize = sizeof(OPENFILENAME);
-        ofn.hwndOwner = hwnd;
-        ofn.lpstrFilter = szFilter;
-        ofn.lpstrFile = szNewFile;
-        ofn.nMaxFile = MAX_PATH;
-        ofn.lpstrTitle = szTitle;
-        ofn.lpstrInitialDir = Settings.szCurDir;
-        ofn.Flags = OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT |
-                    OFN_NODEREFERENCELINKS | OFN_OVERWRITEPROMPT |
-                    OFN_PATHMUSTEXIST;
-
-        if (!GetSaveFileName(&ofn)) {
+        if (!_MiniPathSaveFileDlg(hwnd, szNewFile, COUNTOF(szNewFile),
+                szFilter, Settings.szCurDir, szTitle)) {
             break;
         }
 
@@ -2098,7 +2180,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_SAVEAS: {
         DLITEM dli;
-        OPENFILENAME ofn;
         WCHAR szNewFile[MAX_PATH];
         WCHAR tch[MAX_PATH];
         WCHAR szFilter[128];
@@ -2118,18 +2199,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         GetLngString(IDS_FILTER_ALL,szFilter,COUNTOF(szFilter));
         PrepareFilterStr(szFilter);
 
-        ZeroMemory(&ofn,sizeof(OPENFILENAME));
-
-        ofn.lStructSize = sizeof(OPENFILENAME);
-        ofn.hwndOwner = hwnd;
-        ofn.lpstrFilter = szFilter;
-        ofn.lpstrFile = szNewFile;
-        ofn.nMaxFile = MAX_PATH;
-        ofn.Flags = OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT |
-                    OFN_NODEREFERENCELINKS | OFN_OVERWRITEPROMPT |
-                    OFN_PATHMUSTEXIST;
-
-        if (!GetSaveFileName(&ofn)) {
+        if (!_MiniPathSaveFileDlg(hwnd, szNewFile, COUNTOF(szNewFile),
+                szFilter, NULL, NULL)) {
             break;
         }
 

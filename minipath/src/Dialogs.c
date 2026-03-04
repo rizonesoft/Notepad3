@@ -17,7 +17,7 @@
 #if !defined(_WIN32_WINNT)
 #define _WIN32_WINNT 0x601
 #endif
-#define _WIN32_IE 0x601
+#define _WIN32_IE 0x0700
 #define OEMRESOURCE  // use OBM_ resource constants
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
@@ -26,6 +26,7 @@
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <commdlg.h>
+#include <shobjidl.h>
 #include <strsafe.h>
 #include "minipath.h"
 #include "dlapi.h"
@@ -45,34 +46,15 @@ extern WCHAR   g_UsedLngLocaleName[LOCALE_NAME_MAX_LENGTH];
 
 //=============================================================================
 //
-// BFFCallBack()
-//
-int CALLBACK BFFCallBack(HWND hwnd,UINT umsg,LPARAM lParam,LPARAM lpData)
-{
-    if (umsg == BFFM_INITIALIZED) {
-        SendMessage(hwnd,BFFM_SETSELECTION,TRUE,lpData);
-    }
-
-    UNUSED(lParam);
-
-    return(0);
-}
-
-
-//=============================================================================
-//
 // GetDirectory()
 //
 BOOL GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,BOOL bNewDialogStyle)
 {
+    UNUSED(bNewDialogStyle);
 
-    BROWSEINFO bi;
-    LPITEMIDLIST pidl;
     WCHAR szTitle[256] = { L'\0' };
     WCHAR szBase[MAX_PATH] = { L'\0' };
-    BOOL fOk = FALSE;
 
-    lstrcpy(szTitle, L"");
     GetLngString(iTitle,szTitle,COUNTOF(szTitle));
 
     if (!pszBase || !*pszBase) {
@@ -81,24 +63,45 @@ BOOL GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,BO
         lstrcpy(szBase,pszBase);
     }
 
-    bi.hwndOwner = hwndParent;
-    bi.pidlRoot = NULL;
-    bi.pszDisplayName = pszFolder;
-    bi.lpszTitle = szTitle;
-    bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;
-    bi.lpfn = &BFFCallBack;
-    bi.lParam = (LPARAM)szBase;
-    bi.iImage = 0;
-
-    pidl = SHBrowseForFolder(&bi);
-    if (pidl) {
-        SHGetPathFromIDList(pidl,pszFolder);
-        CoTaskMemFree(pidl);
-        fOk = TRUE;
+    IFileOpenDialog *pfd = NULL;
+    HRESULT hr = CoCreateInstance(
+        &CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER,
+        &IID_IFileOpenDialog, (void **)&pfd);
+    if (FAILED(hr)) {
+        return FALSE;
     }
 
-    UNUSED(bNewDialogStyle);
+    DWORD dwOptions = 0;
+    pfd->lpVtbl->GetOptions(pfd, &dwOptions);
+    pfd->lpVtbl->SetOptions(pfd, dwOptions | FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM);
 
+    pfd->lpVtbl->SetTitle(pfd, szTitle);
+
+    IShellItem *psiDir = NULL;
+    if (SUCCEEDED(SHCreateItemFromParsingName(szBase, NULL,
+            &IID_IShellItem, (void **)&psiDir))) {
+        pfd->lpVtbl->SetFolder(pfd, psiDir);
+        psiDir->lpVtbl->Release(psiDir);
+    }
+
+    BOOL fOk = FALSE;
+    hr = pfd->lpVtbl->Show(pfd, hwndParent);
+    if (SUCCEEDED(hr)) {
+        IShellItem *psiResult = NULL;
+        hr = pfd->lpVtbl->GetResult(pfd, &psiResult);
+        if (SUCCEEDED(hr)) {
+            LPWSTR pszPath = NULL;
+            hr = psiResult->lpVtbl->GetDisplayName(psiResult, SIGDN_FILESYSPATH, &pszPath);
+            if (SUCCEEDED(hr) && pszPath) {
+                lstrcpy(pszFolder, pszPath);
+                CoTaskMemFree(pszPath);
+                fOk = TRUE;
+            }
+            psiResult->lpVtbl->Release(psiResult);
+        }
+    }
+
+    pfd->lpVtbl->Release(pfd);
     return fOk;
 }
 
@@ -109,37 +112,54 @@ BOOL GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,BO
 //
 BOOL GetDirectory2(HWND hwndParent,int iTitle,LPWSTR pszFolder,int iBase)
 {
-
-    BROWSEINFO bi;
-    LPITEMIDLIST pidl,pidlRoot;
     WCHAR szTitle[256] = { L'\0' };
-    BOOL fOk = FALSE;
-
-    lstrcpy(szTitle,L"");
     GetLngString(iTitle,szTitle,COUNTOF(szTitle));
 
-    if (NOERROR != SHGetSpecialFolderLocation(hwndParent,iBase,&pidlRoot)) {
-        CoTaskMemFree(pidlRoot);
+    // Get the path for the special folder (CSIDL)
+    WCHAR szBasePath[MAX_PATH] = { L'\0' };
+    if (FAILED(SHGetFolderPath(hwndParent, iBase, NULL, SHGFP_TYPE_CURRENT, szBasePath))) {
         return FALSE;
     }
 
-    bi.hwndOwner = hwndParent;
-    bi.pidlRoot = pidlRoot;
-    bi.pszDisplayName = pszFolder;
-    bi.lpszTitle = szTitle;
-    bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;
-    bi.lpfn = NULL;
-    bi.lParam = (LPARAM)0;
-    bi.iImage = 0;
-
-    pidl = SHBrowseForFolder(&bi);
-    if (pidl) {
-        SHGetPathFromIDList(pidl,pszFolder);
-        CoTaskMemFree(pidl);
-        fOk = TRUE;
+    IFileOpenDialog *pfd = NULL;
+    HRESULT hr = CoCreateInstance(
+        &CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER,
+        &IID_IFileOpenDialog, (void **)&pfd);
+    if (FAILED(hr)) {
+        return FALSE;
     }
-    CoTaskMemFree(pidlRoot);
 
+    DWORD dwOptions = 0;
+    pfd->lpVtbl->GetOptions(pfd, &dwOptions);
+    pfd->lpVtbl->SetOptions(pfd, dwOptions | FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM);
+
+    pfd->lpVtbl->SetTitle(pfd, szTitle);
+
+    IShellItem *psiDir = NULL;
+    if (SUCCEEDED(SHCreateItemFromParsingName(szBasePath, NULL,
+            &IID_IShellItem, (void **)&psiDir))) {
+        pfd->lpVtbl->SetFolder(pfd, psiDir);
+        psiDir->lpVtbl->Release(psiDir);
+    }
+
+    BOOL fOk = FALSE;
+    hr = pfd->lpVtbl->Show(pfd, hwndParent);
+    if (SUCCEEDED(hr)) {
+        IShellItem *psiResult = NULL;
+        hr = pfd->lpVtbl->GetResult(pfd, &psiResult);
+        if (SUCCEEDED(hr)) {
+            LPWSTR pszPath = NULL;
+            hr = psiResult->lpVtbl->GetDisplayName(psiResult, SIGDN_FILESYSPATH, &pszPath);
+            if (SUCCEEDED(hr) && pszPath) {
+                lstrcpy(pszFolder, pszPath);
+                CoTaskMemFree(pszPath);
+                fOk = TRUE;
+            }
+            psiResult->lpVtbl->Release(psiResult);
+        }
+    }
+
+    pfd->lpVtbl->Release(pfd);
     return fOk;
 }
 
@@ -195,8 +215,6 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             WCHAR szFile[MAX_PATH * 2];
             WCHAR szTitle[32];
             WCHAR szFilter[256];
-            OPENFILENAME ofn;
-            ZeroMemory(&ofn,sizeof(OPENFILENAME));
 
             GetDlgItemText(hwnd,IDC_COMMANDLINE,szArgs,COUNTOF(szArgs));
             ExpandEnvironmentStringsEx(szArgs,COUNTOF(szArgs));
@@ -206,23 +224,61 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             GetLngString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
             PrepareFilterStr(szFilter);
 
-            ofn.lStructSize = sizeof(OPENFILENAME);
-            ofn.hwndOwner = hwnd;
-            ofn.lpstrFilter = szFilter;
-            ofn.lpstrFile = szFile;
-            ofn.nMaxFile = COUNTOF(szFile);
-            ofn.lpstrTitle = szTitle;
-            ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
-                        | OFN_PATHMUSTEXIST | OFN_SHAREAWARE | OFN_NODEREFERENCELINKS;
+            IFileOpenDialog *pfd = NULL;
+            HRESULT hr = CoCreateInstance(
+                &CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER,
+                &IID_IFileOpenDialog, (void **)&pfd);
+            if (SUCCEEDED(hr)) {
+                DWORD dwOptions = 0;
+                pfd->lpVtbl->GetOptions(pfd, &dwOptions);
+                pfd->lpVtbl->SetOptions(pfd, dwOptions
+                    | FOS_FILEMUSTEXIST | FOS_NOCHANGEDIR | FOS_DONTADDTORECENT
+                    | FOS_PATHMUSTEXIST | FOS_SHAREAWARE | FOS_NODEREFERENCELINKS
+                    | FOS_FORCEFILESYSTEM);
 
-            if (GetOpenFileName(&ofn)) {
-                QuotateFilenameStr(szFile);
+                pfd->lpVtbl->SetTitle(pfd, szTitle);
 
-                if (StrIsNotEmpty(szArg2)) {
-                    lstrcat(szFile,L" ");
-                    lstrcat(szFile,szArg2);
+                // Convert double-null filter to COMDLG_FILTERSPEC
+                COMDLG_FILTERSPEC filterSpec[8];
+                int filterCount = 0;
+                LPCWSTR p = szFilter;
+                while (*p && filterCount < COUNTOF(filterSpec)) {
+                    filterSpec[filterCount].pszName = p;
+                    p += lstrlenW(p) + 1;
+                    if (*p == L'\0') break;
+                    filterSpec[filterCount].pszSpec = p;
+                    p += lstrlenW(p) + 1;
+                    ++filterCount;
                 }
-                SetDlgItemText(hwnd,IDC_COMMANDLINE,szFile);
+                if (filterCount > 0) {
+                    pfd->lpVtbl->SetFileTypes(pfd, (UINT)filterCount, filterSpec);
+                }
+
+                if (szFile[0]) {
+                    pfd->lpVtbl->SetFileName(pfd, szFile);
+                }
+
+                hr = pfd->lpVtbl->Show(pfd, hwnd);
+                if (SUCCEEDED(hr)) {
+                    IShellItem *psiResult = NULL;
+                    hr = pfd->lpVtbl->GetResult(pfd, &psiResult);
+                    if (SUCCEEDED(hr)) {
+                        LPWSTR pszPath = NULL;
+                        hr = psiResult->lpVtbl->GetDisplayName(psiResult, SIGDN_FILESYSPATH, &pszPath);
+                        if (SUCCEEDED(hr) && pszPath) {
+                            lstrcpyn(szFile, pszPath, COUNTOF(szFile));
+                            CoTaskMemFree(pszPath);
+                            QuotateFilenameStr(szFile);
+                            if (StrIsNotEmpty(szArg2)) {
+                                lstrcat(szFile,L" ");
+                                lstrcat(szFile,szArg2);
+                            }
+                            SetDlgItemText(hwnd,IDC_COMMANDLINE,szFile);
+                        }
+                        psiResult->lpVtbl->Release(psiResult);
+                    }
+                }
+                pfd->lpVtbl->Release(pfd);
             }
 
             PostMessage(hwnd,WM_NEXTDLGCTL,1,0);
@@ -1099,9 +1155,6 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             WCHAR szParams[MAX_PATH];
             WCHAR szTitle[32];
             WCHAR szFilter[256];
-            OPENFILENAME ofn;
-
-            ZeroMemory(&ofn,sizeof(OPENFILENAME));
 
             GetDlgItemText(hwnd,IDC_QUICKVIEW,tchBuf,COUNTOF(tchBuf));
             ExtractFirstArgument(tchBuf,szFile,szParams);
@@ -1110,23 +1163,61 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             GetLngString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
             PrepareFilterStr(szFilter);
 
-            ofn.lStructSize = sizeof(OPENFILENAME);
-            ofn.hwndOwner = hwnd;
-            ofn.lpstrFilter = szFilter;
-            ofn.lpstrFile = szFile;
-            ofn.nMaxFile = COUNTOF(szFile);
-            ofn.lpstrTitle = szTitle;
-            ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
-                        | OFN_PATHMUSTEXIST | OFN_SHAREAWARE | OFN_NODEREFERENCELINKS;
+            IFileOpenDialog *pfd = NULL;
+            HRESULT hr = CoCreateInstance(
+                &CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER,
+                &IID_IFileOpenDialog, (void **)&pfd);
+            if (SUCCEEDED(hr)) {
+                DWORD dwOptions = 0;
+                pfd->lpVtbl->GetOptions(pfd, &dwOptions);
+                pfd->lpVtbl->SetOptions(pfd, dwOptions
+                    | FOS_FILEMUSTEXIST | FOS_NOCHANGEDIR | FOS_DONTADDTORECENT
+                    | FOS_PATHMUSTEXIST | FOS_SHAREAWARE | FOS_NODEREFERENCELINKS
+                    | FOS_FORCEFILESYSTEM);
 
-            if (GetOpenFileName(&ofn)) {
-                StrCpyN(tchBuf,szFile,COUNTOF(tchBuf));
-                PathQuoteSpaces(tchBuf);
-                if (StrIsNotEmpty(szParams)) {
-                    StrCatBuff(tchBuf,L" ",COUNTOF(tchBuf));
-                    StrCatBuff(tchBuf,szParams,COUNTOF(tchBuf));
+                pfd->lpVtbl->SetTitle(pfd, szTitle);
+
+                // Convert double-null filter to COMDLG_FILTERSPEC
+                COMDLG_FILTERSPEC filterSpec[8];
+                int filterCount = 0;
+                LPCWSTR p = szFilter;
+                while (*p && filterCount < COUNTOF(filterSpec)) {
+                    filterSpec[filterCount].pszName = p;
+                    p += lstrlenW(p) + 1;
+                    if (*p == L'\0') break;
+                    filterSpec[filterCount].pszSpec = p;
+                    p += lstrlenW(p) + 1;
+                    ++filterCount;
                 }
-                SetDlgItemText(hwnd,IDC_QUICKVIEW,tchBuf);
+                if (filterCount > 0) {
+                    pfd->lpVtbl->SetFileTypes(pfd, (UINT)filterCount, filterSpec);
+                }
+
+                if (szFile[0]) {
+                    pfd->lpVtbl->SetFileName(pfd, szFile);
+                }
+
+                hr = pfd->lpVtbl->Show(pfd, hwnd);
+                if (SUCCEEDED(hr)) {
+                    IShellItem *psiResult = NULL;
+                    hr = pfd->lpVtbl->GetResult(pfd, &psiResult);
+                    if (SUCCEEDED(hr)) {
+                        LPWSTR pszPath = NULL;
+                        hr = psiResult->lpVtbl->GetDisplayName(psiResult, SIGDN_FILESYSPATH, &pszPath);
+                        if (SUCCEEDED(hr) && pszPath) {
+                            StrCpyN(tchBuf, pszPath, COUNTOF(tchBuf));
+                            CoTaskMemFree(pszPath);
+                            PathQuoteSpaces(tchBuf);
+                            if (StrIsNotEmpty(szParams)) {
+                                StrCatBuff(tchBuf,L" ",COUNTOF(tchBuf));
+                                StrCatBuff(tchBuf,szParams,COUNTOF(tchBuf));
+                            }
+                            SetDlgItemText(hwnd,IDC_QUICKVIEW,tchBuf);
+                        }
+                        psiResult->lpVtbl->Release(psiResult);
+                    }
+                }
+                pfd->lpVtbl->Release(pfd);
             }
 
             PostMessage(hwnd,WM_NEXTDLGCTL,1,0);
@@ -2541,38 +2632,71 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
             WCHAR szTitle[32];
             WCHAR szFilter[256];
 
-            OPENFILENAME ofn;
-            ZeroMemory(&ofn,sizeof(OPENFILENAME));
-
             GetDlgItemText(hwnd,IDC_TARGETPATH,tchBuf,COUNTOF(tchBuf));
             ExtractFirstArgument(tchBuf,szFile,szParams);
             PathAbsoluteFromApp(szFile,szFile,COUNTOF(szFile),TRUE);
 
-            // Strings laden
             GetLngString(IDS_SEARCHEXE,szTitle,COUNTOF(szTitle));
             GetLngString(IDS_FILTER_EXE,szFilter,COUNTOF(szFilter));
             PrepareFilterStr(szFilter);
 
-            // ofn ausfüllen
-            ofn.lStructSize = sizeof(OPENFILENAME);
-            ofn.hwndOwner   = hwnd;
-            ofn.lpstrFilter = szFilter;
-            ofn.lpstrFile   = szFile;
-            ofn.nMaxFile    = COUNTOF(szFile);
-            ofn.lpstrTitle  = szTitle;
-            ofn.Flags       = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_NOCHANGEDIR |
-                              OFN_PATHMUSTEXIST | OFN_SHAREAWARE | OFN_NODEREFERENCELINKS;
+            IFileOpenDialog *pfd = NULL;
+            HRESULT hr = CoCreateInstance(
+                &CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER,
+                &IID_IFileOpenDialog, (void **)&pfd);
+            if (SUCCEEDED(hr)) {
+                DWORD dwOptions = 0;
+                pfd->lpVtbl->GetOptions(pfd, &dwOptions);
+                pfd->lpVtbl->SetOptions(pfd, dwOptions
+                    | FOS_FILEMUSTEXIST | FOS_NOCHANGEDIR | FOS_DONTADDTORECENT
+                    | FOS_PATHMUSTEXIST | FOS_SHAREAWARE | FOS_NODEREFERENCELINKS
+                    | FOS_FORCEFILESYSTEM);
 
-            // execute file open dlg
-            if (GetOpenFileName(&ofn)) {
-                StrCpyN(tchBuf,szFile,COUNTOF(tchBuf));
-                PathRelativeToApp(tchBuf,tchBuf,COUNTOF(tchBuf),TRUE,TRUE,flagPortableMyDocs);
-                PathQuoteSpaces(tchBuf);
-                if (StrIsNotEmpty(szParams)) {
-                    StrCatBuff(tchBuf,L" ",COUNTOF(tchBuf));
-                    StrCatBuff(tchBuf,szParams,COUNTOF(tchBuf));
+                pfd->lpVtbl->SetTitle(pfd, szTitle);
+
+                // Convert double-null filter to COMDLG_FILTERSPEC
+                COMDLG_FILTERSPEC filterSpec[8];
+                int filterCount = 0;
+                LPCWSTR p = szFilter;
+                while (*p && filterCount < COUNTOF(filterSpec)) {
+                    filterSpec[filterCount].pszName = p;
+                    p += lstrlenW(p) + 1;
+                    if (*p == L'\0') break;
+                    filterSpec[filterCount].pszSpec = p;
+                    p += lstrlenW(p) + 1;
+                    ++filterCount;
                 }
-                SetDlgItemText(hwnd,IDC_TARGETPATH,tchBuf);
+                if (filterCount > 0) {
+                    pfd->lpVtbl->SetFileTypes(pfd, (UINT)filterCount, filterSpec);
+                }
+
+                if (szFile[0]) {
+                    pfd->lpVtbl->SetFileName(pfd, szFile);
+                }
+
+                hr = pfd->lpVtbl->Show(pfd, hwnd);
+                if (SUCCEEDED(hr)) {
+                    IShellItem *psiResult = NULL;
+                    hr = pfd->lpVtbl->GetResult(pfd, &psiResult);
+                    if (SUCCEEDED(hr)) {
+                        LPWSTR pszPath = NULL;
+                        hr = psiResult->lpVtbl->GetDisplayName(psiResult, SIGDN_FILESYSPATH, &pszPath);
+                        if (SUCCEEDED(hr) && pszPath) {
+                            StrCpyN(tchBuf, pszPath, COUNTOF(tchBuf));
+                            CoTaskMemFree(pszPath);
+                            PathRelativeToApp(tchBuf,tchBuf,COUNTOF(tchBuf),TRUE,TRUE,flagPortableMyDocs);
+                            PathQuoteSpaces(tchBuf);
+                            if (StrIsNotEmpty(szParams)) {
+                                StrCatBuff(tchBuf,L" ",COUNTOF(tchBuf));
+                                StrCatBuff(tchBuf,szParams,COUNTOF(tchBuf));
+                            }
+                            SetDlgItemText(hwnd,IDC_TARGETPATH,tchBuf);
+                        }
+                        psiResult->lpVtbl->Release(psiResult);
+                    }
+                }
+
+                pfd->lpVtbl->Release(pfd);
             }
 
             // set focus to edit control

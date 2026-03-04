@@ -25,6 +25,7 @@
 #include "Theme.h"
 #include "DarkModeHelper.h"
 #include <Commdlg.h>
+#include <shobjidl.h>
 #include <thread>
 
 inline bool PathIsExistingFile(LPCWSTR pszPath) { return (PathFileExists(pszPath) && !PathIsDirectory(pszPath)); }
@@ -425,28 +426,42 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
         break;
     case IDC_SEARCHPATHBROWSE:
         {
-            OPENFILENAME ofn              = {0}; // common dialog box structure
-            wchar_t      szFile[MAX_PATH] = {0}; // buffer for file name
-            // Initialize OPENFILENAME
-            ofn.lStructSize = sizeof(OPENFILENAME);
-            ofn.hwndOwner = *this;
-            ofn.lpstrFile = szFile;
-            ofn.nMaxFile = _countof(szFile);
-            std::wstring sTitle = TranslatedString(hResource, IDS_SELECTEDITOR);
-            ofn.lpstrTitle = sTitle.c_str();
-            ofn.Flags = OFN_FILEMUSTEXIST|OFN_HIDEREADONLY|OFN_PATHMUSTEXIST|OFN_DONTADDTORECENT;
-            auto sProgs = TranslatedString(hResource, IDS_PROGRAMS);
-            auto sAllFiles = TranslatedString(hResource, IDS_ALLFILES);
-            auto sFilter = sProgs;
-            sFilter.append(L"\0*.exe;*.com\0", _countof(L"\0*.exe;*.com\0")-1);
-            sFilter.append(sAllFiles);
-            sFilter.append(L"\0*.*\0\0", _countof(L"\0*.*\0\0")-1);
-            ofn.lpstrFilter = sFilter.c_str();
-            ofn.nFilterIndex = 1;
-            // Display the Open dialog box.
-            if (GetOpenFileName(&ofn)==TRUE)
+            IFileOpenDialog *pfd = nullptr;
+            HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER,
+                                          IID_PPV_ARGS(&pfd));
+            if (SUCCEEDED(hr))
             {
-                SetDlgItemText(*this, IDC_EDITORCMD, szFile);
+                DWORD dwOpts = 0;
+                pfd->GetOptions(&dwOpts);
+                pfd->SetOptions(dwOpts | FOS_FILEMUSTEXIST | FOS_PATHMUSTEXIST | FOS_DONTADDTORECENT);
+
+                auto sTitle = TranslatedString(hResource, IDS_SELECTEDITOR);
+                pfd->SetTitle(sTitle.c_str());
+
+                auto sProgs    = TranslatedString(hResource, IDS_PROGRAMS);
+                auto sAllFiles = TranslatedString(hResource, IDS_ALLFILES);
+                COMDLG_FILTERSPEC rgSpec[] = {
+                    { sProgs.c_str(),    L"*.exe;*.com" },
+                    { sAllFiles.c_str(), L"*.*" }
+                };
+                pfd->SetFileTypes(_countof(rgSpec), rgSpec);
+
+                hr = pfd->Show(*this);
+                if (SUCCEEDED(hr))
+                {
+                    IShellItem *psi = nullptr;
+                    if (SUCCEEDED(pfd->GetResult(&psi)))
+                    {
+                        LPWSTR pszPath = nullptr;
+                        if (SUCCEEDED(psi->GetDisplayName(SIGDN_FILESYSPATH, &pszPath)))
+                        {
+                            SetDlgItemText(*this, IDC_EDITORCMD, pszPath);
+                            CoTaskMemFree(pszPath);
+                        }
+                        psi->Release();
+                    }
+                }
+                pfd->Release();
             }
         }
         break;

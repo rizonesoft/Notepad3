@@ -2936,8 +2936,6 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 //
 bool SelectExternalToolBar(HWND hwnd)
 {
-    UNREFERENCED_PARAMETER(hwnd);
-
     HPATHL hfile_pth = Path_Allocate(NULL);
     Path_WriteAccessBuf(hfile_pth, CMDLN_LENGTH_LIMIT);
 
@@ -2945,16 +2943,9 @@ bool SelectExternalToolBar(HWND hwnd)
     GetLngString(IDS_MUI_FILTER_BITMAP, wchFilter, COUNTOF(wchFilter));
     PrepareFilterStr(wchFilter);
 
-    OPENFILENAME ofn = { sizeof(OPENFILENAME) };
-    ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = wchFilter;
-    ofn.lpstrFile = Path_WriteAccessBuf(hfile_pth, 0);
-    ofn.lpstrDefExt = L"bmp";
-    ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth);
-    ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
-                | OFN_PATHMUSTEXIST | OFN_SHAREAWARE | OFN_NODEREFERENCELINKS;
-
-    if (GetOpenFileNameW(&ofn)) {
+    if (FileOpenDlg(hwnd, hfile_pth, NULL, wchFilter, L"bmp",
+            FOS_FILEMUSTEXIST | FOS_PATHMUSTEXIST | FOS_NOCHANGEDIR |
+            FOS_DONTADDTORECENT | FOS_SHAREAWARE | FOS_NODEREFERENCELINKS)) {
         Path_Sanitize(hfile_pth);
         Path_CanonicalizeEx(hfile_pth, Paths.ModuleDirectory);
         Path_Reset(g_tchToolbarBitmap, Path_Get(hfile_pth));
@@ -11603,6 +11594,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
 
         GetLngString(IDS_MUI_UNTITLED, wchFileName, COUNTOF(wchFileName));
         Path_GetDisplayName(wchFileName, COUNTOF(wchFileName), Paths.CurrentFile, NULL, false);
+
 
         INT_PTR const answer = (Settings.MuteMessageBeep) ?
                                InfoBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, NULL, IDS_MUI_ASK_SAVE, wchFileName) :

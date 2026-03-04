@@ -682,8 +682,7 @@ int Style_RgbAlpha(int rgbFore, int rgbBack, int alpha)
 //
 bool Style_Import(HWND hwnd)
 {
-    HPATHL         hfile_pth = Path_Allocate(NULL);
-    wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, CMDLN_LENGTH_LIMIT);
+    HPATHL hfile_pth = Path_Allocate(NULL);
 
     HSTRINGW       hflt_str = StrgCreate(NULL);
     wchar_t* const flt_buf = StrgWriteAccessBuf(hflt_str, EXTENTIONS_FILTER_BUFFER);
@@ -693,18 +692,11 @@ bool Style_Import(HWND hwnd)
 
     PrepareFilterStr(flt_buf);
 
-    OPENFILENAME ofn = { sizeof(OPENFILENAME) };
-    ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = StrgGet(hflt_str);
-    ofn.lpstrFile = file_buf;
-    ofn.lpstrDefExt = L"ini";
-    ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth);
-    ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
-                | OFN_PATHMUSTEXIST | OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/;
-
     bool result = false;
 
-    if (GetOpenFileNameW(&ofn)) {
+    if (FileOpenDlg(hwnd, hfile_pth, NULL, StrgGet(hflt_str), L"ini",
+            FOS_FILEMUSTEXIST | FOS_PATHMUSTEXIST | FOS_NOCHANGEDIR |
+            FOS_DONTADDTORECENT | FOS_SHAREAWARE)) {
         Path_Sanitize(hfile_pth);
         result = Style_ImportFromFile(hfile_pth);
     }
@@ -975,8 +967,7 @@ void Style_SaveSettings(bool bForceSaveSettings)
 //
 bool Style_Export(HWND hwnd)
 {
-    HPATHL         hfile_pth = Path_Allocate(NULL);
-    wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, CMDLN_LENGTH_LIMIT);
+    HPATHL hfile_pth = Path_Allocate(NULL);
 
     HSTRINGW       hflt_str = StrgCreate(NULL);
     wchar_t* const flt_buf = StrgWriteAccessBuf(hflt_str, EXTENTIONS_FILTER_BUFFER);
@@ -986,18 +977,11 @@ bool Style_Export(HWND hwnd)
 
     PrepareFilterStr(flt_buf);
 
-    OPENFILENAME ofn = { sizeof(OPENFILENAME) };
-    ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = StrgGet(hflt_str);
-    ofn.lpstrFile = file_buf;
-    ofn.lpstrDefExt = L"ini";
-    ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth);
-    ofn.Flags = /*OFN_FILEMUSTEXIST |*/ OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
-                | OFN_PATHMUSTEXIST | OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/ | OFN_OVERWRITEPROMPT;
-
     bool result = false;
 
-    if (GetSaveFileNameW(&ofn)) {
+    if (FileSaveDlg(hwnd, hfile_pth, NULL, StrgGet(hflt_str), L"ini",
+            FOS_OVERWRITEPROMPT | FOS_PATHMUSTEXIST | FOS_NOCHANGEDIR |
+            FOS_DONTADDTORECENT | FOS_SHAREAWARE)) {
         Path_Sanitize(hfile_pth);
         result = Style_ExportToFile(hfile_pth, true);
         if (!result) {

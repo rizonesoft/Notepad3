@@ -143,6 +143,7 @@
 
 // get rid of this:
 #include <shlobj.h>
+#include <shobjidl.h>
 #include <shellapi.h>
 #include <shlwapi.h>
 
@@ -1784,25 +1785,10 @@ bool PTHAPI Path_CreateDeskLnk(const HPATHL hDocumentPath, LPCWSTR pszDescriptio
 //  Path_BrowseDirectory()
 //
 
-static int CALLBACK BFFCallBack(HWND hwnd, UINT umsg, LPARAM lParam, LPARAM lpData)
-{
-    UNREFERENCED_PARAMETER(lParam);
-    switch (umsg) {
-    case BFFM_INITIALIZED:
-        SetDialogIconNP3(hwnd);
-        //~InitWindowCommon(hwnd, true);
-        SendMessage(hwnd, BFFM_SETSELECTION, true, lpData);
-        break;
-    case BFFM_VALIDATEFAILED:
-        break;
-    default:
-        break;
-    }
-    return 0;
-}
-
 bool PTHAPI Path_BrowseDirectory(HWND hwndParent, LPCWSTR lpszTitle, HPATHL hpth_in_out, const HPATHL hbase, bool bNewDialogStyle)
 {
+    UNREFERENCED_PARAMETER(bNewDialogStyle);
+
     if (!hpth_in_out)
         return false;
 
@@ -1814,33 +1800,52 @@ bool PTHAPI Path_BrowseDirectory(HWND hwndParent, LPCWSTR lpszTitle, HPATHL hpth
         Path_Reset(hbase_dir, Path_Get(hbase));
     }
 
-    HPATHL       hres_pth = Path_Allocate(NULL);
-    LPWSTR const res_buf = Path_WriteAccessBuf(hpth_in_out, PATHLONG_MAX_CCH);
-
-    BROWSEINFOW bi = { 0 };
-    bi.hwndOwner = hwndParent;
-    bi.pidlRoot = NULL;
-    bi.pszDisplayName = res_buf;
-    bi.lpszTitle = lpszTitle;
-    bi.ulFlags = BIF_RETURNONLYFSDIRS | (bNewDialogStyle ? (BIF_NEWDIALOGSTYLE | BIF_USENEWUI) : 0);
-    bi.lpfn = &BFFCallBack;
-    bi.lParam = (LPARAM)Path_Get(hbase_dir);
-    bi.iImage = 0;
-
-    LPITEMIDLIST const pidl = SHBrowseForFolderW(&bi);
-    Path_Sanitize(hres_pth);
-
-    bool res = false;
-    if (pidl) {
-        LPWSTR const pth_buf = Path_WriteAccessBuf(hpth_in_out, PATHLONG_MAX_CCH);
-        SHGetPathFromIDListW(pidl, pth_buf);
-        Path_Sanitize(hpth_in_out);
-        Path_FreeExtra(hpth_in_out, MAX_PATH_EXPLICIT);
-        CoTaskMemFree(pidl);
-        res = true;
+    IFileOpenDialog *pfd = NULL;
+    HRESULT hr = CoCreateInstance(
+        &CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER,
+        &IID_IFileOpenDialog, (void **)&pfd);
+    if (FAILED(hr)) {
+        Path_Release(hbase_dir);
+        return false;
     }
 
-    Path_Release(hres_pth);
+    DWORD dwOptions = 0;
+    pfd->lpVtbl->GetOptions(pfd, &dwOptions);
+    pfd->lpVtbl->SetOptions(pfd, dwOptions | FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM);
+
+    if (lpszTitle && *lpszTitle) {
+        pfd->lpVtbl->SetTitle(pfd, lpszTitle);
+    }
+
+    IShellItem *psiDir = NULL;
+    if (Path_IsNotEmpty(hbase_dir)) {
+        if (SUCCEEDED(SHCreateItemFromParsingName(Path_Get(hbase_dir), NULL,
+                &IID_IShellItem, (void **)&psiDir))) {
+            pfd->lpVtbl->SetFolder(pfd, psiDir);
+            psiDir->lpVtbl->Release(psiDir);
+        }
+    }
+
+    hr = pfd->lpVtbl->Show(pfd, hwndParent);
+
+    bool res = false;
+    if (SUCCEEDED(hr)) {
+        IShellItem *psiResult = NULL;
+        hr = pfd->lpVtbl->GetResult(pfd, &psiResult);
+        if (SUCCEEDED(hr)) {
+            LPWSTR pszPath = NULL;
+            hr = psiResult->lpVtbl->GetDisplayName(psiResult, SIGDN_FILESYSPATH, &pszPath);
+            if (SUCCEEDED(hr) && pszPath) {
+                Path_Reset(hpth_in_out, pszPath);
+                Path_FreeExtra(hpth_in_out, MAX_PATH_EXPLICIT);
+                CoTaskMemFree(pszPath);
+                res = true;
+            }
+            psiResult->lpVtbl->Release(psiResult);
+        }
+    }
+
+    pfd->lpVtbl->Release(pfd);
     Path_Release(hbase_dir);
     return res;
 }
