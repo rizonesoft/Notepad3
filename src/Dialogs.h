@@ -313,6 +313,12 @@ void    CleanupDlgResources();
 bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth);
 bool SaveFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth);
 
+// General-purpose IFileDialog wrappers (FOS_ option flags)
+bool FileOpenDlg(HWND hwnd, HPATHL hfile_pth_io, LPCWSTR lpInitialDir,
+                 LPCWSTR lpFilter, LPCWSTR lpDefExt, DWORD dwFosOptions);
+bool FileSaveDlg(HWND hwnd, HPATHL hfile_pth_io, LPCWSTR lpInitialDir,
+                 LPCWSTR lpFilter, LPCWSTR lpDefExt, DWORD dwFosOptions);
+
 
 // --- Hook Procedures for Std-System Dialogs ---------------------------------
 

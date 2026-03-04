@@ -22,6 +22,7 @@
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <commdlg.h>
+#include <shobjidl.h>
 #include <shellscalingapi.h>
 
 #include <string.h>
@@ -166,7 +167,7 @@ int MessageBoxLng(UINT uType, UINT uidMsg, ...)
     HWND const hwnd  = focus ? focus : Globals.hwndMain;
     s_hCBThook       = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
 
-    int const res = MessageBoxEx(hwnd, bHasArgs ? StrgGet(htxt_str) : StrgGet(hfmt_str), 
+    int const res = MessageBoxEx(hwnd, bHasArgs ? StrgGet(htxt_str) : StrgGet(hfmt_str),
                                  _W(SAPPNAME), uType, GetLangIdByLocaleName(Globals.CurrentLngLocaleName));
 
     StrgDestroy(htxt_str);
@@ -1470,16 +1471,9 @@ CASE_WM_CTLCOLOR_SET:
 
             PrepareFilterStr(flt_buf);
 
-            OPENFILENAME ofn = { 0 };
-            ofn.lStructSize = sizeof(OPENFILENAME);
-            ofn.hwndOwner = hwnd;
-            ofn.lpstrFilter = StrgGet(hflt_str);
-            ofn.lpstrFile = file_buf;
-            ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth);
-            ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
-                        | OFN_PATHMUSTEXIST | OFN_SHAREAWARE | OFN_NODEREFERENCELINKS;
-
-            if (GetOpenFileName(&ofn)) {
+            if (FileOpenDlg(hwnd, hfile_pth, NULL, StrgGet(hflt_str), NULL,
+                    FOS_FILEMUSTEXIST | FOS_PATHMUSTEXIST | FOS_NOCHANGEDIR |
+                    FOS_DONTADDTORECENT | FOS_SHAREAWARE | FOS_NODEREFERENCELINKS)) {
                 Path_Sanitize(hfile_pth);
                 Path_QuoteSpaces(hfile_pth, true);
                 StrgReset(hargs_str, Path_Get(hfile_pth));
@@ -6937,6 +6931,228 @@ static void _CanonicalizeInitialDir(HPATHL hpth_in_out)
 }
 
 
+// ============================================================================
+//
+//  _ConvertFilterStrToSpec()
+//  Converts a double-null-terminated filter string ("Desc\0*.ext\0...\0\0")
+//  into a COMDLG_FILTERSPEC array. Pointers reference directly into lpFilter.
+//  Caller must free the returned array with FreeMem().
+//
+static int _ConvertFilterStrToSpec(LPCWSTR lpFilter, COMDLG_FILTERSPEC **ppSpec)
+{
+    *ppSpec = NULL;
+    if (!lpFilter || *lpFilter == L'\0') {
+        return 0;
+    }
+    // first pass: count pairs
+    int count = 0;
+    LPCWSTR p = lpFilter;
+    while (*p) {
+        p += lstrlenW(p) + 1; // skip name
+        if (*p == L'\0') {
+            break; // malformed: odd entry
+        }
+        p += lstrlenW(p) + 1; // skip spec
+        ++count;
+    }
+    if (count == 0) {
+        return 0;
+    }
+    COMDLG_FILTERSPEC *spec = (COMDLG_FILTERSPEC *)AllocMem(
+        count * sizeof(COMDLG_FILTERSPEC), HEAP_ZERO_MEMORY);
+    if (!spec) {
+        return 0;
+    }
+    // second pass: fill pairs
+    p = lpFilter;
+    int i = 0;
+    while (*p && i < count) {
+        spec[i].pszName = p;
+        p += lstrlenW(p) + 1;
+        spec[i].pszSpec = p;
+        p += lstrlenW(p) + 1;
+        ++i;
+    }
+    *ppSpec = spec;
+    return count;
+}
+
+
+
+// ============================================================================
+//
+//  _ShowFileOpenDialog()
+//
+static bool _ShowFileOpenDialog(
+    HWND hwndOwner,
+    HPATHL hfile_pth_io,
+    LPCWSTR lpInitialDir,
+    LPCWSTR lpFilter,
+    LPCWSTR lpDefExt,
+    DWORD dwFosOptions)
+{
+    bool result = false;
+
+    IFileOpenDialog *pfd = NULL;
+    HRESULT hr = CoCreateInstance(
+        &CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER,
+        &IID_IFileOpenDialog, (void **)&pfd);
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    DWORD dwOptions = 0;
+    pfd->lpVtbl->GetOptions(pfd, &dwOptions);
+    pfd->lpVtbl->SetOptions(pfd, dwOptions | dwFosOptions);
+
+    COMDLG_FILTERSPEC *filterSpec = NULL;
+    int const filterCount = _ConvertFilterStrToSpec(lpFilter, &filterSpec);
+    if (filterCount > 0) {
+        pfd->lpVtbl->SetFileTypes(pfd, (UINT)filterCount, filterSpec);
+    }
+
+    if (lpDefExt && *lpDefExt) {
+        pfd->lpVtbl->SetDefaultExtension(pfd, lpDefExt);
+    }
+
+    if (lpInitialDir && *lpInitialDir) {
+        IShellItem *psiDir = NULL;
+        if (SUCCEEDED(SHCreateItemFromParsingName(lpInitialDir, NULL,
+                &IID_IShellItem, (void **)&psiDir))) {
+            pfd->lpVtbl->SetFolder(pfd, psiDir);
+            psiDir->lpVtbl->Release(psiDir);
+        }
+    }
+
+    if (Path_IsNotEmpty(hfile_pth_io)) {
+        LPCWSTR fileName = Path_FindFileName(hfile_pth_io);
+        if (fileName && *fileName) {
+            pfd->lpVtbl->SetFileName(pfd, fileName);
+        }
+    }
+
+    hr = pfd->lpVtbl->Show(pfd, hwndOwner);
+
+    if (SUCCEEDED(hr)) {
+        IShellItem *psiResult = NULL;
+        hr = pfd->lpVtbl->GetResult(pfd, &psiResult);
+        if (SUCCEEDED(hr)) {
+            LPWSTR pszPath = NULL;
+            hr = psiResult->lpVtbl->GetDisplayName(psiResult, SIGDN_FILESYSPATH, &pszPath);
+            if (SUCCEEDED(hr) && pszPath) {
+                Path_Reset(hfile_pth_io, pszPath);
+                CoTaskMemFree(pszPath);
+                result = true;
+            }
+            psiResult->lpVtbl->Release(psiResult);
+        }
+    }
+
+    if (filterSpec) {
+        FreeMem(filterSpec);
+    }
+    pfd->lpVtbl->Release(pfd);
+    return result;
+}
+
+
+// ============================================================================
+//
+//  _ShowFileSaveDialog()
+//
+static bool _ShowFileSaveDialog(
+    HWND hwndOwner,
+    HPATHL hfile_pth_io,
+    LPCWSTR lpInitialDir,
+    LPCWSTR lpFilter,
+    LPCWSTR lpDefExt,
+    DWORD dwFosOptions)
+{
+    bool result = false;
+
+    IFileSaveDialog *pfd = NULL;
+    HRESULT hr = CoCreateInstance(
+        &CLSID_FileSaveDialog, NULL, CLSCTX_INPROC_SERVER,
+        &IID_IFileSaveDialog, (void **)&pfd);
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    DWORD dwOptions = 0;
+    pfd->lpVtbl->GetOptions(pfd, &dwOptions);
+    pfd->lpVtbl->SetOptions(pfd, dwOptions | dwFosOptions);
+
+    COMDLG_FILTERSPEC *filterSpec = NULL;
+    int const filterCount = _ConvertFilterStrToSpec(lpFilter, &filterSpec);
+    if (filterCount > 0) {
+        pfd->lpVtbl->SetFileTypes(pfd, (UINT)filterCount, filterSpec);
+    }
+
+    if (lpDefExt && *lpDefExt) {
+        pfd->lpVtbl->SetDefaultExtension(pfd, lpDefExt);
+    }
+
+    if (lpInitialDir && *lpInitialDir) {
+        IShellItem *psiDir = NULL;
+        if (SUCCEEDED(SHCreateItemFromParsingName(lpInitialDir, NULL,
+                &IID_IShellItem, (void **)&psiDir))) {
+            pfd->lpVtbl->SetFolder(pfd, psiDir);
+            psiDir->lpVtbl->Release(psiDir);
+        }
+    }
+
+    if (Path_IsNotEmpty(hfile_pth_io)) {
+        LPCWSTR fileName = Path_FindFileName(hfile_pth_io);
+        if (fileName && *fileName) {
+            pfd->lpVtbl->SetFileName(pfd, fileName);
+        }
+    }
+
+    hr = pfd->lpVtbl->Show(pfd, hwndOwner);
+
+    if (SUCCEEDED(hr)) {
+        IShellItem *psiResult = NULL;
+        hr = pfd->lpVtbl->GetResult(pfd, &psiResult);
+        if (SUCCEEDED(hr)) {
+            LPWSTR pszPath = NULL;
+            hr = psiResult->lpVtbl->GetDisplayName(psiResult, SIGDN_FILESYSPATH, &pszPath);
+            if (SUCCEEDED(hr) && pszPath) {
+                Path_Reset(hfile_pth_io, pszPath);
+                CoTaskMemFree(pszPath);
+                result = true;
+            }
+            psiResult->lpVtbl->Release(psiResult);
+        }
+    }
+
+    if (filterSpec) {
+        FreeMem(filterSpec);
+    }
+    pfd->lpVtbl->Release(pfd);
+    return result;
+}
+
+
+// ============================================================================
+//
+//  FileOpenDlg()  /  FileSaveDlg()
+//  General-purpose IFileDialog wrappers for use across modules.
+//
+bool FileOpenDlg(HWND hwnd, HPATHL hfile_pth_io, LPCWSTR lpInitialDir,
+                 LPCWSTR lpFilter, LPCWSTR lpDefExt, DWORD dwFosOptions)
+{
+    return _ShowFileOpenDialog(hwnd, hfile_pth_io, lpInitialDir,
+                               lpFilter, lpDefExt, dwFosOptions);
+}
+
+bool FileSaveDlg(HWND hwnd, HPATHL hfile_pth_io, LPCWSTR lpInitialDir,
+                 LPCWSTR lpFilter, LPCWSTR lpDefExt, DWORD dwFosOptions)
+{
+    return _ShowFileSaveDialog(hwnd, hfile_pth_io, lpInitialDir,
+                               lpFilter, lpDefExt, dwFosOptions);
+}
+
+
 #if 0
 // ============================================================================
 //
@@ -7039,16 +7255,12 @@ bool GetFolderDlg(HWND hwnd, HPATHL hdir_pth_io, const HPATHL hinidir_pth)
 //  lpstrInitialDir == NULL      : leave initial dir to Open File Explorer
 //  lpstrInitialDir == ""[empty] : use a reasonable initial directory path
 //
-// TODO: Replace GetOpenFileNameW() by Common Item Dialog: IFileOpenDialog()
-//       https://docs.microsoft.com/en-us/windows/win32/shell/common-file-dialog
-//
 bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
 {
     if (!hfile_pth_io) {
         return false;
     }
     if (!Path_IsEmpty(hinidir_pth)) {
-        // clear output path, so that GetOpenFileName does not use the contents of szFile to initialize itself.
         Path_Empty(hfile_pth_io, false);
     }
     WCHAR szDefExt[64] = { L'\0' };
@@ -7058,20 +7270,12 @@ bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     HPATHL hpth_dir = Path_Copy(hinidir_pth);
     _CanonicalizeInitialDir(hpth_dir);
 
-    OPENFILENAME ofn = { sizeof(OPENFILENAME) };
-    ofn.hwndOwner = hwnd;
-    ofn.hInstance = Globals.hInstance;
-    ofn.lpstrFilter = szFilter;
-    ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
-    ofn.lpstrInitialDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;
-    ofn.lpstrFile = Path_WriteAccessBuf(hfile_pth_io, PATHLONG_MAX_CCH);
-    ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth_io);
-    ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | /* OFN_NOCHANGEDIR |*/
-                OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST |
-                OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/;
-    ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
+    LPCWSTR defExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
+    LPCWSTR initDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;
 
-    bool const res = GetOpenFileNameW(&ofn);
+    bool const res = _ShowFileOpenDialog(hwnd, hfile_pth_io, initDir, szFilter, defExt,
+                                         FOS_FILEMUSTEXIST | FOS_PATHMUSTEXIST |
+                                         FOS_DONTADDTORECENT | FOS_SHAREAWARE);
 
     Path_Sanitize(hfile_pth_io);
 
@@ -7100,20 +7304,12 @@ bool SaveFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     HPATHL hpth_dir = Path_Copy(hinidir_pth);
     _CanonicalizeInitialDir(hpth_dir);
 
-    OPENFILENAME ofn = { sizeof(OPENFILENAME) };
-    ofn.hwndOwner = hwnd;
-    ofn.hInstance = Globals.hInstance;
-    ofn.lpstrFilter = szFilter;
-    ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
-    ofn.lpstrInitialDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;
-    ofn.lpstrFile = Path_WriteAccessBuf(hfile_pth_io, PATHLONG_MAX_CCH);
-    ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth_io);
-    ofn.Flags = OFN_EXPLORER | OFN_HIDEREADONLY | /*| OFN_NOCHANGEDIR*/
-                /*OFN_NODEREFERENCELINKS |*/ OFN_OVERWRITEPROMPT |
-                OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST;
-    ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
+    LPCWSTR defExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
+    LPCWSTR initDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;
 
-    bool const res = GetSaveFileNameW(&ofn);
+    bool const res = _ShowFileSaveDialog(hwnd, hfile_pth_io, initDir, szFilter, defExt,
+                                          FOS_OVERWRITEPROMPT | FOS_PATHMUSTEXIST |
+                                          FOS_DONTADDTORECENT);
 
     Path_Sanitize(hfile_pth_io);
 
