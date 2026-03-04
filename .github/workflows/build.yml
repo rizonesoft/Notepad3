@@ -5,12 +5,13 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+  workflow_dispatch:
 
 jobs:
   build:
     name: ${{ matrix.platform }} ${{ matrix.configuration }}
     runs-on: windows-2022
-    
+
     strategy:
       fail-fast: false
       matrix:
@@ -32,19 +33,18 @@ jobs:
       - name: Restore NuGet packages
         run: nuget restore Notepad3.sln -Verbosity detailed
 
-
       - name: Generate version
         shell: pwsh
         run: |
           $env:GITHUB_ACTIONS_BUILD = "true"
           $CommitID = (git rev-parse --short=8 HEAD)
-          
+
           # Create VersionEx.h with proper values
           $Major = 6
           $Minor = [int]$(Get-Date -format yy)
           $Revis = [int]$(Get-Date -format Mdd)
           $Build = ${{ github.run_number }}
-          
+
           $SciVer = Get-Content "scintilla\version.txt" -ErrorAction SilentlyContinue
           if (!$SciVer) { $SciVer = "0" }
           $LxiVer = Get-Content "lexilla\version.txt" -ErrorAction SilentlyContinue
@@ -57,7 +57,7 @@ jobs:
           if (!$TinyExprVer) { $TinyExprVer = "0.0.0" }
           $UtHashVer = Get-Content "src\uthash\version.txt" -ErrorAction SilentlyContinue
           if (!$UtHashVer) { $UtHashVer = "0.0.0" }
-          
+
           Copy-Item -LiteralPath "Versions\VersionEx.h.tpl" -Destination "src\VersionEx.h" -Force
           $content = Get-Content "src\VersionEx.h" -Raw
           $content = $content -replace '\$APPNAME\$', "Notepad3"
@@ -74,7 +74,7 @@ jobs:
           $content = $content -replace '\$VERPATCH\$', ""
           $content = $content -replace '\$COMMITID\$', "$CommitID"
           Set-Content -Path "src\VersionEx.h" -Value $content -NoNewline
-          
+
           $ConfManifest = "res\Notepad3.exe.conf.manifest"
           Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination $ConfManifest -Force
           $content = Get-Content $ConfManifest -Raw
@@ -82,7 +82,7 @@ jobs:
           $content = $content -replace '\$VERPATCH\$', ""
           $content = $content -replace '\$VERSION\$', "$Major.$Minor.$Revis.$Build"
           Set-Content -Path $ConfManifest -Value $content -NoNewline
-          
+
           # Persist build number for TestFileVersion.cmd
           $Build | Set-Content -Path "Versions\build.txt" -NoNewline
 
@@ -93,13 +93,13 @@ jobs:
         run: |
           $platform = "${{ matrix.platform }}"
           $config = "${{ matrix.configuration }}"
-          
+
           # Handle x64_AVX2 - use native Release_AVX2 configuration
           if ($platform -eq "x64_AVX2") {
             $platform = "x64"
             $config = "${{ matrix.configuration }}_AVX2"
           }
-          
+
           msbuild Notepad3.sln /m /p:Configuration=$config /p:Platform=$platform /v:minimal
 
       - name: Install AutoHotkey
@@ -127,4 +127,3 @@ jobs:
             !Bin/**/*.lib
             !Bin/**/*.exp
           retention-days: 30
-
