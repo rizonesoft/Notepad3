@@ -1254,6 +1254,8 @@ extern "C" cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 //=============================================================================
 //=============================================================================
 
+ENC_DET_T encDetRes = INIT_ENC_DET_T;
+
 //=============================================================================
 //
 //  GetFileEncoding()
@@ -1261,7 +1263,7 @@ extern "C" cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpData, const size_t cbData,
     cpi_enc_t iAnalyzeHint, bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection)
 {
-    ENC_DET_T encDetRes = INIT_ENC_DET_T;
+    encDetRes = INIT_ENC_DET_T;
     #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetRes.forcedEncoding))
 
     FileVars_GetFromData(lpData, cbData, &Globals.fvCurFile);

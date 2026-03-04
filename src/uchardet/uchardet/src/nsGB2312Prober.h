@@ -42,18 +42,17 @@
 #include "nsCodingStateMachine.h"
 #include "CharDistribution.h"
 
-// NOT VALID: We use GB18030 to replace GB2312, because 18030 is a superset.
-// it superseded GB2312, but it is NOT a superset
+// We use GB18030 to replace GB2312, because 18030 is a superset.
 
-class nsGB2312Prober : public nsCharSetProber {
+class nsGB18030Prober: public nsCharSetProber {
 public:
-  nsGB2312Prober(PRBool aIsPreferredLanguage)
+  nsGB18030Prober(PRBool aIsPreferredLanguage)
     :mIsPreferredLanguage(aIsPreferredLanguage)
-  {mCodingSM = new nsCodingStateMachine(&GB2312SMModel);
+  {mCodingSM = new nsCodingStateMachine(&GB18030SMModel);
     Reset();}
-  virtual ~nsGB2312Prober(void){delete mCodingSM;}
+  virtual ~nsGB18030Prober(void){delete mCodingSM;}
   nsProbingState HandleData(const char* aBuf, PRUint32 aLen);
-  const char* GetCharSetName() {return "GB2312";}
+  const char* GetCharSetName() {return "GB18030";}
   nsProbingState GetState(void) {return mState;}
   void      Reset(void);
   float     GetConfidence(void);
@@ -61,7 +60,7 @@ public:
 
 protected:
   void      GetDistribution(PRUint32 aCharLen, const char* aStr);
-
+  
   nsCodingStateMachine* mCodingSM;
   nsProbingState mState;
 
@@ -69,7 +68,9 @@ protected:
   GB2312DistributionAnalysis mDistributionAnalyser;
   char mLastChar[2];
   PRBool mIsPreferredLanguage;
+
 };
 
 
 #endif /* nsGB2312Prober_h__ */
+

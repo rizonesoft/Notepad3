@@ -58,7 +58,7 @@ public:
 
 protected:
   void      GetDistribution(PRUint32 aCharLen, const char* aStr);
-
+  
   nsCodingStateMachine* mCodingSM;
   nsProbingState mState;
 
@@ -66,6 +66,7 @@ protected:
   EUCTWDistributionAnalysis mDistributionAnalyser;
   char mLastChar[2];
   PRBool mIsPreferredLanguage;
+
 };
 
 

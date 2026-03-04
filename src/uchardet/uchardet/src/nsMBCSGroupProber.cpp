@@ -47,52 +47,42 @@ const char *ProberName[] =
   "UTF-8",
   "SJIS",
   "EUC-JP",
-  //"GB2312",
   "GB18030",
   "EUC-KR",
-  "BIG5",
+  "Big5",
   "EUC-TW",
 };
 
 #endif
 
 nsMBCSGroupProber::nsMBCSGroupProber(PRUint32 aLanguageFilter)
-  : mNumOfProbers(MAX_NUM_OF_MBCS_PROBERS), mBestGuess(-1), mActiveNum(0)
 {
-  PRUint32 i = 0;
-  mProbers[i++] = new nsUTF8Prober();
+  for (PRUint32 i = 0; i < NUM_OF_PROBERS; i++)
+    mProbers[i] = nsnull;
+
+  mProbers[0] = new nsUTF8Prober();
   if (aLanguageFilter & NS_FILTER_JAPANESE) 
   {
-    mProbers[i++] = new nsSJISProber(aLanguageFilter == NS_FILTER_JAPANESE);
-    mProbers[i++] = new nsEUCJPProber(aLanguageFilter == NS_FILTER_JAPANESE);
+    mProbers[1] = new nsSJISProber(aLanguageFilter == NS_FILTER_JAPANESE);
+    mProbers[2] = new nsEUCJPProber(aLanguageFilter == NS_FILTER_JAPANESE);
   }
-  if (aLanguageFilter & NS_FILTER_CHINESE_SIMPLIFIED) 
-  {
-    //mProbers[i++] = new nsGB2312Prober(aLanguageFilter == NS_FILTER_CHINESE_SIMPLIFIED);
-    mProbers[i++] = new nsGB18030Prober(aLanguageFilter == NS_FILTER_CHINESE_SIMPLIFIED);
-  }
+  if (aLanguageFilter & NS_FILTER_CHINESE_SIMPLIFIED)
+    mProbers[3] = new nsGB18030Prober(aLanguageFilter == NS_FILTER_CHINESE_SIMPLIFIED);
   if (aLanguageFilter & NS_FILTER_KOREAN)
-  {
-    mProbers[i++] = new nsEUCKRProber(aLanguageFilter == NS_FILTER_KOREAN);
-  }
+    mProbers[4] = new nsEUCKRProber(aLanguageFilter == NS_FILTER_KOREAN);
   if (aLanguageFilter & NS_FILTER_CHINESE_TRADITIONAL) 
   {
-    mProbers[i++] = new nsBig5Prober(aLanguageFilter == NS_FILTER_CHINESE_TRADITIONAL);
-    mProbers[i++] = new nsEUCTWProber(aLanguageFilter == NS_FILTER_CHINESE_TRADITIONAL);
+    mProbers[5] = new nsBig5Prober(aLanguageFilter == NS_FILTER_CHINESE_TRADITIONAL);
+    mProbers[6] = new nsEUCTWProber(aLanguageFilter == NS_FILTER_CHINESE_TRADITIONAL);
   }
-
-  mNumOfProbers = i;
-
-  for (; i < MAX_NUM_OF_MBCS_PROBERS; ++i) { mProbers[i] = nsnull; }
-
   Reset();
 }
 
 nsMBCSGroupProber::~nsMBCSGroupProber()
 {
-  for (PRUint32 i = 0; i < MAX_NUM_OF_MBCS_PROBERS; ++i)
+  for (PRUint32 i = 0; i < NUM_OF_PROBERS; i++)
   {
-    if (mProbers[i]) { delete mProbers[i]; }
+    delete mProbers[i];
   }
 }
 
@@ -101,8 +91,8 @@ const char* nsMBCSGroupProber::GetCharSetName()
   if (mBestGuess == -1)
   {
     GetConfidence();
-
-    if (mBestGuess == -1) { mBestGuess = 0; }
+    if (mBestGuess == -1)
+      mBestGuess = 0;
   }
   return mProbers[mBestGuess]->GetCharSetName();
 }
@@ -110,7 +100,7 @@ const char* nsMBCSGroupProber::GetCharSetName()
 void  nsMBCSGroupProber::Reset(void)
 {
   mActiveNum = 0;
-  for (PRUint32 i = 0; i < MAX_NUM_OF_MBCS_PROBERS; i++)
+  for (PRUint32 i = 0; i < NUM_OF_PROBERS; i++)
   {
     if (mProbers[i])
     {
@@ -145,7 +135,7 @@ nsProbingState nsMBCSGroupProber::HandleData(const char* aBuf, PRUint32 aLen)
     {
       if (--keepNext == 0)
       {
-        for (PRUint32 i = 0; i < mNumOfProbers; i++)
+        for (PRUint32 i = 0; i < NUM_OF_PROBERS; i++)
         {
           if (!mIsActive[i])
             continue;
@@ -162,11 +152,10 @@ nsProbingState nsMBCSGroupProber::HandleData(const char* aBuf, PRUint32 aLen)
   }
 
   if (keepNext) {
-    for (PRUint32 i = 0; i < mNumOfProbers; i++)
+    for (PRUint32 i = 0; i < NUM_OF_PROBERS; i++)
     {
       if (!mIsActive[i])
         continue;
-      //@@@st = mProbers[i]->HandleData(aBuf + start, aLen + 1 - start);
       st = mProbers[i]->HandleData(aBuf + start, aLen - start);
       if (st == eFoundIt)
       {
@@ -181,22 +170,23 @@ nsProbingState nsMBCSGroupProber::HandleData(const char* aBuf, PRUint32 aLen)
   return mState;
 }
 
-float nsMBCSGroupProber::GetConfidence()
+float nsMBCSGroupProber::GetConfidence(void)
 {
-  float bestConf = 0.0f;
+  PRUint32 i;
+  float bestConf = 0.0, cf;
 
   switch (mState)
   {
   case eFoundIt:
-    return SURE_YES;
+    return (float)0.99;
   case eNotMe:
-    return SURE_NO;
+    return (float)0.01;
   default:
-    for (PRUint32 i = 0; i < mNumOfProbers; i++)
+    for (i = 0; i < NUM_OF_PROBERS; i++)
     {
       if (!mIsActive[i])
         continue;
-      float const cf = mProbers[i]->GetConfidence();
+      cf = mProbers[i]->GetConfidence();
       if (bestConf < cf)
       {
         bestConf = cf;
@@ -210,14 +200,17 @@ float nsMBCSGroupProber::GetConfidence()
 #ifdef DEBUG_chardet
 void nsMBCSGroupProber::DumpStatus()
 {
+  PRUint32 i;
+  float cf;
+  
   GetConfidence();
-  for (PRUint32 i = 0; i < mNumOfProbers; i++)
+  for (i = 0; i < NUM_OF_PROBERS; i++)
   {
     if (!mIsActive[i])
       printf("  MBCS inactive: [%s] (confidence is too low).\r\n", ProberName[i]);
     else
     {
-      float const cf = mProbers[i]->GetConfidence();
+      cf = mProbers[i]->GetConfidence();
       printf("  MBCS %1.3f: [%s]\r\n", cf, ProberName[i]);
     }
   }
@@ -227,7 +220,7 @@ void nsMBCSGroupProber::DumpStatus()
 #ifdef DEBUG_jgmyers
 void nsMBCSGroupProber::GetDetectorState(nsUniversalDetector::DetectorState (&states)[nsUniversalDetector::NumDetectors], PRUint32 &offset)
 {
-  for (PRUint32 i = 0; i < mNumOfProbers; ++i) {
+  for (PRUint32 i = 0; i < NUM_OF_PROBERS; ++i) {
     states[offset].name = ProberName[i];
     states[offset].isActive = mIsActive[i];
     states[offset].confidence = mIsActive[i] ? mProbers[i]->GetConfidence() : 0.0;

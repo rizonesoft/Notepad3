@@ -1,6 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- * vim: et sw=2 ts=2 fdm=marker
- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -44,16 +42,14 @@
 /* Apart from these 3 generic states, machine states are specific to
  * each charset prober.
  */
-typedef enum {
-   eStart = 0,
-   eError = 1,
-   eItsMe = 2
-} nsSMState;
+#define eStart 0
+#define eError 1
+#define eItsMe 2
 
 #define GETCLASS(c) GETFROMPCK(((unsigned char)(c)), mModel->classTable)
 
 //state machine model
-typedef struct
+typedef struct 
 {
   nsPkgInt classTable;
   PRUint32 classFactor;
@@ -64,23 +60,18 @@ typedef struct
 
 class nsCodingStateMachine {
 public:
-  nsCodingStateMachine(const SMModel* sm) 
-  : mModel(sm)
-  , mCurrentState(eStart)
-  , mCurrentBytePos(0)
-  , mCurrentCharLen(0)
-  { }
-  nsSMState NextState(char c){
+  nsCodingStateMachine(const SMModel* sm) : mModel(sm) { mCurrentState = eStart; }
+  PRUint32 NextState(char c){
     //for each byte we get its class , if it is first byte, we also get byte length
     PRUint32 byteCls = GETCLASS(c);
     if (mCurrentState == eStart)
-    {
-      mCurrentBytePos = 0;
+    { 
+      mCurrentBytePos = 0; 
       mCurrentCharLen = mModel->charLenTable[byteCls];
     }
     //from byte's class and stateTable, we get its next state
-    mCurrentState=(nsSMState)GETFROMPCK(mCurrentState*(mModel->classFactor)+byteCls,
-                                       mModel->stateTable);
+    mCurrentState = GETFROMPCK(mCurrentState * mModel->classFactor + byteCls,
+                               mModel->stateTable);
     mCurrentBytePos++;
     return mCurrentState;
   }
@@ -89,7 +80,7 @@ public:
   const char * GetCodingStateMachine() {return mModel->name;}
 
 protected:
-  nsSMState mCurrentState;
+  PRUint32 mCurrentState;
   PRUint32 mCurrentCharLen;
   PRUint32 mCurrentBytePos;
 
@@ -101,10 +92,8 @@ extern const SMModel Big5SMModel;
 extern const SMModel EUCJPSMModel;
 extern const SMModel EUCKRSMModel;
 extern const SMModel EUCTWSMModel;
-extern const SMModel GB2312SMModel;
 extern const SMModel GB18030SMModel;
 extern const SMModel SJISSMModel;
-extern const SMModel UCS2BESMModel;
 
 
 extern const SMModel HZSMModel;

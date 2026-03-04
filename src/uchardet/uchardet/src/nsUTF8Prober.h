@@ -43,7 +43,7 @@
 
 class nsUTF8Prober: public nsCharSetProber {
 public:
-  nsUTF8Prober(){mNumOfMBChar = 0;
+  nsUTF8Prober(){mNumOfMBChar = 0; 
                 mCodingSM = new nsCodingStateMachine(&UTF8SMModel);
                 Reset(); }
   virtual ~nsUTF8Prober(){delete mCodingSM;}
