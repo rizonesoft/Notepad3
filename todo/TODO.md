@@ -22,9 +22,10 @@
 - [x] **(Q1) BUG: /m command line uses last search mode** - ✅ FIXED
   - Issue: [#5060](https://github.com/rizonesoft/Notepad3/issues/5060)
   - Fix: When `/m` is used without 'R' flag, explicitly clear SCFIND_REGEXP to force text mode
-- [ ] **(Q3) BUG: Crash on Windows Server 2022** - File Open/SaveAs crashes
-  - Issue: [#5066](https://github.com/rizonesoft/Notepad3/issues/5066), [#5080](https://github.com/rizonesoft/Notepad3/issues/5080)
-  - Crash in ntdll.dll - needs investigation
+- [ ] **(Q3) Replace GetOpenFileNameW with IFileOpenDialog** - Modern file dialog API
+  - Issues: [#5066](https://github.com/rizonesoft/Notepad3/issues/5066), [#5080](https://github.com/rizonesoft/Notepad3/issues/5080)
+  - Fixes crash on Windows Server 2022 (STATUS_STACK_BUFFER_OVERRUN in ntdll.dll)
+  - See [research/server2022-file-dialog-crash.md](research/server2022-file-dialog-crash.md)
 - [x] **(Q1) BUG: Cannot save settings without folder** - ✅ FIXED
   - Issue: [#5075](https://github.com/rizonesoft/Notepad3/issues/5075)
   - Fix: Changed `CreateDirectoryW` to `SHCreateDirectoryExW` to create all intermediate directories
