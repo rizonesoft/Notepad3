@@ -33,7 +33,7 @@
 
   <download-page rdf:resource="https://www.freedesktop.org/software/uchardet/releases/" />
 
-  <bug-database rdf:resource="https://bugs.freedesktop.org/enter_bug.cgi?product=uchardet" />
+  <bug-database rdf:resource="https://gitlab.freedesktop.org/uchardet/uchardet/-/issues" />
 
   <programming-language>C</programming-language>
   <programming-language>C++</programming-language>

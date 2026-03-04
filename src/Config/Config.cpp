@@ -1373,7 +1373,7 @@ void LoadSettings()
 
     Settings2.SubWrappedLineSelectOnMarginClick = IniSectionGetBool(IniSecSettings2, L"SubWrappedLineSelectOnMarginClick", false);
 
-    Settings2.AnalyzeReliableConfidenceLevel = (float)clampi(IniSectionGetInt(IniSecSettings2, L"AnalyzeReliableConfidenceLevel", 90), 0, 100) / 100.0f;
+    Settings2.AnalyzeReliableConfidenceLevel = (float)clampi(IniSectionGetInt(IniSecSettings2, L"AnalyzeReliableConfidenceLevel", 66), 0, 100) / 100.0f;
 
     int const iAnsiCPBonusSet = clampi(IniSectionGetInt(IniSecSettings2, L"LocaleAnsiCodePageAnalysisBonus", 33), 0, 100);
     Settings2.LocaleAnsiCodePageAnalysisBonus = (float)iAnsiCPBonusSet / 100.0f;

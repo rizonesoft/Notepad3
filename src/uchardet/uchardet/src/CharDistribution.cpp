@@ -37,24 +37,26 @@
 
 #include "CharDistribution.h"
 
-#include "tables/JISFreq.tab"
-#include "tables/Big5Freq.tab"
-#include "tables/EUCKRFreq.tab"
-#include "tables/EUCTWFreq.tab"
-//#include "tables/GB2312Freq.tab"
-#include "tables/GB18030Freq.tab"
+#include "JISFreq.tab"
+#include "Big5Freq.tab"
+#include "EUCKRFreq.tab"
+#include "EUCTWFreq.tab"
+#include "GB2312Freq.tab"
+
+#define SURE_YES 0.99f
+#define SURE_NO  0.01f
 
 //return confidence base on received data
-float CharDistributionAnalysis::GetConfidence() const
-{
+float CharDistributionAnalysis::GetConfidence(void)
+{ 
   //if we didn't receive any character in our consideration range, or the
   // number of frequent characters is below the minimum threshold, return
   // negative answer
-  if ((mTotalChars <= 0) || (mFreqChars < mDataThreshold))
+  if (mTotalChars <= 0 || mFreqChars <= mDataThreshold)
     return SURE_NO;
 
   if (mTotalChars != mFreqChars) {
-    float r = (float)mFreqChars / ((mTotalChars - mFreqChars) * mTypicalDistributionRatio);
+    float r = mFreqChars / ((mTotalChars - mFreqChars) * mTypicalDistributionRatio);
 
     if (r < SURE_YES)
       return r;
@@ -77,18 +79,11 @@ EUCKRDistributionAnalysis::EUCKRDistributionAnalysis()
   mTypicalDistributionRatio = EUCKR_TYPICAL_DISTRIBUTION_RATIO;
 }
 
-//GB2312DistributionAnalysis::GB2312DistributionAnalysis()
-//{
-//  mCharToFreqOrder = GB2312CharToFreqOrder;
-//  mTableSize = GB2312_TABLE_SIZE;
-//  mTypicalDistributionRatio = GB2312_TYPICAL_DISTRIBUTION_RATIO;
-//}
-
-GB18030DistributionAnalysis::GB18030DistributionAnalysis()
+GB2312DistributionAnalysis::GB2312DistributionAnalysis()
 {
-  mCharToFreqOrder = GB18030CharToFreqOrder;
-  mTableSize = GB18030_TABLE_SIZE;
-  mTypicalDistributionRatio = GB18030_TYPICAL_DISTRIBUTION_RATIO;
+  mCharToFreqOrder = GB2312CharToFreqOrder;
+  mTableSize = GB2312_TABLE_SIZE;
+  mTypicalDistributionRatio = GB2312_TYPICAL_DISTRIBUTION_RATIO;
 }
 
 Big5DistributionAnalysis::Big5DistributionAnalysis()

@@ -21,10 +21,6 @@
  *
  * Contributor(s):
  *          Shy Shalom <shooshX@gmail.com>
- *          JoungKyun.Kim <http://oops.org>
- *            - Add mDetectedConfidence
- *            - Add mDetectedIsBOM
- *
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -53,13 +49,12 @@ nsUniversalDetector::nsUniversalDetector(PRUint32 aLanguageFilter)
 {
   mNbspFound = PR_FALSE;
   mDone = PR_FALSE;
+  mBestGuess = -1;   //illegal value as signal
   mInTag = PR_FALSE;
   mEscCharSetProber = nsnull;
 
   mStart = PR_TRUE;
   mDetectedCharset = nsnull;
-  mDetectedConfidence = 0.0;
-  mDetectedIsBOM = 0;
   mGotData = PR_FALSE;
   mInputState = ePureAscii;
   mLastChar = '\0';
@@ -83,12 +78,11 @@ nsUniversalDetector::Reset()
 {
   mNbspFound = PR_FALSE;
   mDone = PR_FALSE;
+  mBestGuess = -1;   //illegal value as signal
   mInTag = PR_FALSE;
 
   mStart = PR_TRUE;
   mDetectedCharset = nsnull;
-  mDetectedConfidence = 0.0;
-  mDetectedIsBOM = 0;
   mGotData = PR_FALSE;
   mInputState = ePureAscii;
   mLastChar = '\0';
@@ -103,6 +97,8 @@ nsUniversalDetector::Reset()
 }
 
 //---------------------------------------------------------------------
+#define SHORTCUT_THRESHOLD      (float)0.95
+#define MINIMUM_THRESHOLD      (float)0.20
 
 nsresult nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
 {
@@ -112,135 +108,71 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
   if (aLen > 0)
     mGotData = PR_TRUE;
 
-  //If the data starts with BOM, we know it is UTF
+  /* If the data starts with BOM, we know it is UTF. */
   if (mStart)
   {
     mStart = PR_FALSE;
-    if (aLen > 3)
+    if (aLen > 2)
+    {
       switch (aBuf[0])
         {
         case '\xEF':
-          if (('\xBB' == aBuf[1]) && ('\xBF' == aBuf[2])) {
-            // EF BB BF  UTF-8 encoded BOM
+          if (('\xBB' == aBuf[1]) && ('\xBF' == aBuf[2]))
+            /* EF BB BF: UTF-8 encoded BOM. */
             mDetectedCharset = "UTF-8";
-            mDetectedConfidence = 1.0;
-            mDetectedIsBOM = 1;
-          }
         break;
         case '\xFE':
-          if (('\xFF' == aBuf[1]) && ('\x00' == aBuf[2]) && ('\x00' == aBuf[3])) {
-            // FE FF 00 00  UCS-4, unusual octet order BOM (3412)
-            mDetectedCharset = "X-ISO-10646-UCS-4-3412";
-            mDetectedConfidence = 1.0;
-            mDetectedIsBOM = 1;
-          } else if ('\xFF' == aBuf[1]) {
-            // FE FF  UTF-16, big endian BOM
-            mDetectedCharset = "UTF-16BE";
-            mDetectedConfidence = 1.0;
-            mDetectedIsBOM = 1;
-          }
-        break;
-        case '\x00':
-          if (('\x00' == aBuf[1]) && ('\xFE' == aBuf[2]) && ('\xFF' == aBuf[3])) {
-            // 00 00 FE FF  UTF-32, big-endian BOM
-            mDetectedCharset = "UTF-32BE";
-            mDetectedConfidence = 1.0;
-            mDetectedIsBOM = 1;
-          } else if (('\x00' == aBuf[1]) && ('\xFF' == aBuf[2]) && ('\xFE' == aBuf[3])) {
-            // 00 00 FF FE  UCS-4, unusual octet order BOM (2143)
-            mDetectedCharset = "X-ISO-10646-UCS-4-2143";
-            mDetectedConfidence = 1.0;
-            mDetectedIsBOM = 1;
-          }
+          if ('\xFF' == aBuf[1])
+            /* FE FF: UTF-16, big endian BOM. */
+            mDetectedCharset = "UTF-16";
         break;
         case '\xFF':
-          if (('\xFE' == aBuf[1]) && ('\x00' == aBuf[2]) && ('\x00' == aBuf[3])) {
-            // FF FE 00 00  UTF-32, little-endian BOM
-            mDetectedCharset = "UTF-32LE";
-            mDetectedConfidence = 1.0;
-            mDetectedIsBOM = 1;
-          } else if ('\xFE' == aBuf[1]) {
-            // FF FE  UTF-16, little endian BOM
-            mDetectedCharset = "UTF-16LE";
-            mDetectedConfidence = 1.0;
-            mDetectedIsBOM = 1;
-          }
-        break;
-        case '\x2B':
-          if (('\x2F' == aBuf[1]) && ('\x76' == aBuf[2])) {
-            switch (aBuf[3]) {
-              case '\x38':
-              case '\x39':
-              case '\x2B':
-              case '\x2F':
-                // https://en.wikipedia.org/wiki/Byte_order_mark#Byte_order_marks_by_encoding
-                // 2B 2F 76 38  UTF-7
-                // 2B 2F 76 39  UTF-7
-                // 2B 2F 76 2B  UTF-7
-                // 2B 2F 76 2F  UTF-7
-                mDetectedCharset = "UTF-7";
-                mDetectedConfidence = 1.0;
-                mDetectedIsBOM = 1;
-              break;
+          if ('\xFE' == aBuf[1])
+          {
+            if (aLen > 3          &&
+                aBuf[2] == '\x00' &&
+                aBuf[3] == '\x00')
+            {
+                /* FF FE 00 00: UTF-32 (LE). */
+                mDetectedCharset = "UTF-32";
+            }
+            else
+            {
+                /* FF FE: UTF-16, little endian BOM. */
+                mDetectedCharset = "UTF-16";
             }
           }
-        break;
-        case '\xE7':
-          if (('\x64' == aBuf[1]) && ('\x4C' == aBuf[2])) {
-            // E7 64 4c  UTF-1 encoded BOM
-            mDetectedCharset = "UTF-1";
-            mDetectedConfidence = 1.0;
-            mDetectedIsBOM = 1;
+          break;
+        case '\x00':
+          if (aLen > 3           &&
+              aBuf[1] == '\x00' &&
+              aBuf[2] == '\xFE' &&
+              aBuf[3] == '\xFF')
+          {
+              /* 00 00 FE FF: UTF-32 (BE). */
+              mDetectedCharset = "UTF-32";
           }
-        break;
-        case '\xDD':
-          if (('\x73' == aBuf[1]) && ('\x66' == aBuf[2]) && ('\x73' == aBuf[3])) {
-            // DD 73 66 73  UTF-EBCDIC encoded BOM
-            mDetectedCharset = "UTF-EBCDIC";
-            mDetectedConfidence = 1.0;
-            mDetectedIsBOM = 1;
-          } 
-        break;
-        case '\x0E':
-          if (('\xFE' == aBuf[1]) && ('\xFF' == aBuf[2])) {
-            // 0E FE FF  SCSU encoded BOM
-            mDetectedCharset = "SCSU";
-            mDetectedConfidence = 1.0;
-            mDetectedIsBOM = 1;
-          }
-        break;
-        case '\xFB':
-          if (('\xEE' == aBuf[1]) && ('\x28' == aBuf[2])) {
-            // FB EE 28  BOCU-1 encoded BOM
-            mDetectedCharset = "BOCU-1";
-            mDetectedConfidence = 1.0;
-            mDetectedIsBOM = 1;
-          }
-        break;
-        case '\x84':
-          if (('\x31' == aBuf[1]) && ('\x95' == aBuf[2]) && ('\x33' == aBuf[3])) {
-            // 84 31 95 33  GB18030 encoded BOM
-            mDetectedCharset = "GB18030";
-            mDetectedConfidence = 1.0;
-            mDetectedIsBOM = 1;
-          } 
-        break;
-      }  // switch
+          break;
+        }
+    }
 
-      if (mDetectedCharset)
-      {
+    if (mDetectedCharset)
+    {
         mDone = PR_TRUE;
         return NS_OK;
-      }
+    }
   }
 
   PRUint32 i;
   for (i = 0; i < aLen; i++)
   {
-    //other than 0xa0, if every othe character is ascii, the page is ascii
-    if (aBuf[i] & '\x80' && aBuf[i] != '\xA0')  //Since many Ascii only page contains NBSP
+    /* If every other character is ASCII or 0xA0, we don't run charset
+     * probers.
+     * 0xA0 (NBSP in a few charset) is apparently a rare exception
+     * of non-ASCII character often contained in nearly-ASCII text. */
+    if (aBuf[i] & '\x80' && aBuf[i] != '\xA0')
     {
-      //we got a non-ascii byte (high-byte)
+      /* We got a non-ASCII byte (high-byte) */
       if (mInputState != eHighbyte)
       {
         //adjust state
@@ -276,15 +208,19 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
     }
     else
     {
+      /* Just pure ASCII or NBSP so far. */
       if (aBuf[i] == '\xA0')
       {
-        mNbspFound = PR_TRUE;
+        /* ASCII with the only exception of NBSP seems quite common.
+         * I doubt it is really necessary to train a model here, so let's
+         * just make an exception.
+         */
+          mNbspFound = PR_TRUE;
       }
-      //ok, just pure ascii so far
-      else if ( ePureAscii == mInputState &&
-        (aBuf[i] == '\033' || (aBuf[i] == '{' && mLastChar == '~')) )
+      else if (mInputState == ePureAscii &&
+               (aBuf[i] == '\033' || (aBuf[i] == '{' && mLastChar == '~')))
       {
-        //found escape character or HZ "~{"
+        /* We found an escape character or HZ "~{". */
         mInputState = eEscAscii;
       }
       mLastChar = aBuf[i];
@@ -301,16 +237,10 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
         return NS_ERROR_OUT_OF_MEMORY;
     }
     st = mEscCharSetProber->HandleData(aBuf, aLen);
-    mDone = PR_TRUE;
     if (st == eFoundIt)
     {
+      mDone = PR_TRUE;
       mDetectedCharset = mEscCharSetProber->GetCharSetName();
-      mDetectedConfidence = mEscCharSetProber->GetConfidence();
-    }
-    else
-    {
-      mDetectedCharset = mNbspFound ? "ISO-8859-1" : "ASCII";
-      mDetectedConfidence = 1.0;
     }
     break;
   case eHighbyte:
@@ -319,22 +249,18 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
       if (mCharSetProbers[i])
       {
         st = mCharSetProbers[i]->HandleData(aBuf, aLen);
-        if (st == eFoundIt) 
+        if (st == eFoundIt)
         {
           mDone = PR_TRUE;
           mDetectedCharset = mCharSetProbers[i]->GetCharSetName();
-          mDetectedConfidence = mCharSetProbers[i]->GetConfidence();
           return NS_OK;
         }
       }
     }
     break;
 
-  default:  //pure ascii
-    mDone = PR_TRUE;
-    mDetectedCharset = mNbspFound ? "ISO-8859-1" : "ASCII";
-    mDetectedConfidence = 1.0;
-    mDetectedIsBOM = 0;
+  default:
+    break;
   }
   return NS_OK;
 }
@@ -350,10 +276,33 @@ void nsUniversalDetector::DataEnd()
     return;
   }
 
+  if (! mDetectedCharset)
+  {
+    switch (mInputState)
+    {
+    case eEscAscii:
+    case ePureAscii:
+      if (mNbspFound)
+      {
+          /* ISO-8859-1 is a good result candidate for ASCII + NBSP.
+           * (though it could have been any ISO-8859 encoding). */
+          mDetectedCharset = "ISO-8859-1";
+      }
+      else
+      {
+          /* ASCII with the ESC character (or the sequence "~{") is still
+           * ASCII until proven otherwise. */
+          mDetectedCharset = "ASCII";
+      }
+    default:
+      break;
+    }
+  }
+
   if (mDetectedCharset)
   {
     mDone = PR_TRUE;
-    Report(mDetectedCharset, mDetectedConfidence);
+    Report(mDetectedCharset, (float)1.0);
     return;
   }
 
@@ -361,14 +310,15 @@ void nsUniversalDetector::DataEnd()
   {
   case eHighbyte:
     {
+      float proberConfidence;
       float maxProberConfidence = (float)0.0;
       PRInt32 maxProber = 0;
 
-      for (PRInt32 i = 0; i < NUM_OF_CHARSET_PROBERS; ++i)
+      for (PRInt32 i = 0; i < NUM_OF_CHARSET_PROBERS; i++)
       {
         if (mCharSetProbers[i])
         {
-          float const proberConfidence = mCharSetProbers[i]->GetConfidence();
+          proberConfidence = mCharSetProbers[i]->GetConfidence();
           if (proberConfidence > maxProberConfidence)
           {
             maxProberConfidence = proberConfidence;
@@ -376,19 +326,15 @@ void nsUniversalDetector::DataEnd()
           }
         }
       }
-      mDetectedConfidence = maxProberConfidence;
-
       //do not report anything because we are not confident of it, that's in fact a negative answer
-      if (maxProberConfidence > MINIMUM_THRESHOLD) {
+      if (maxProberConfidence > MINIMUM_THRESHOLD)
         Report(mCharSetProbers[maxProber]->GetCharSetName(), maxProberConfidence);
-        mDetectedConfidence = mCharSetProbers[maxProber]->GetConfidence();
-      }
     }
     break;
   case eEscAscii:
     break;
   default:
-    break;
+    ;
   }
   return;
 }

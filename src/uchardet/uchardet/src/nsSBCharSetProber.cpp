@@ -40,9 +40,11 @@
 
 nsProbingState nsSingleByteCharSetProber::HandleData(const char* aBuf, PRUint32 aLen)
 {
+  unsigned char order;
+
   for (PRUint32 i = 0; i < aLen; i++)
   {
-    unsigned char const order = mModel->charToOrderMap[(unsigned char)aBuf[i]];
+    order = mModel->charToOrderMap[(unsigned char)aBuf[i]];
 
     if (order < SYMBOL_CAT_ORDER)
     {
@@ -61,15 +63,15 @@ nsProbingState nsSingleByteCharSetProber::HandleData(const char* aBuf, PRUint32 
     }
     if (order < mModel->freqCharCount)
     {
-      ++mFreqChar;
+      mFreqChar++;
 
       if (mLastOrder < mModel->freqCharCount)
       {
-        ++mTotalSeqs;
+        mTotalSeqs++;
         if (!mReversed)
-          ++(mSeqCounters[(int)mModel->precedenceMatrix[mLastOrder*mModel->freqCharCount+order]]);
+          ++(mSeqCounters[mModel->precedenceMatrix[mLastOrder*mModel->freqCharCount+order]]);
         else // reverse the order of the letters in the lookup
-          ++(mSeqCounters[(int)mModel->precedenceMatrix[order*mModel->freqCharCount+mLastOrder]]);
+          ++(mSeqCounters[mModel->precedenceMatrix[order*mModel->freqCharCount+mLastOrder]]);
       }
     }
     mLastOrder = order;
@@ -78,10 +80,10 @@ nsProbingState nsSingleByteCharSetProber::HandleData(const char* aBuf, PRUint32 
   if (mState == eDetecting)
     if (mTotalSeqs > SB_ENOUGH_REL_THRESHOLD)
     {
-      float const cf = GetConfidence();
-      if (cf >= POSITIVE_SHORTCUT_THRESHOLD)
+      float cf = GetConfidence();
+      if (cf > POSITIVE_SHORTCUT_THRESHOLD)
         mState = eFoundIt;
-      else if (cf <= NEGATIVE_SHORTCUT_THRESHOLD)
+      else if (cf < NEGATIVE_SHORTCUT_THRESHOLD)
         mState = eNotMe;
     }
 
@@ -100,26 +102,20 @@ void  nsSingleByteCharSetProber::Reset(void)
   mFreqChar = 0;
 }
 
-constexpr float rfactor(PRUint32 m, PRUint32 d) { 
-  return ((d >= 1) ? (static_cast<float>(m) / static_cast<float>(d)) : static_cast<float>(m));
-}
+//#define NEGATIVE_APPROACH 1
 
-float nsSingleByteCharSetProber::GetConfidence()
+float nsSingleByteCharSetProber::GetConfidence(void)
 {
-  PRUint32 const neutralChar = mSeqCounters[NEUTRAL_CAT] + mCtrlChar;
-  PRUint32 const netChars = (mTotalChar > neutralChar) ? (mTotalChar - neutralChar) : mTotalSeqs;
+#ifdef NEGATIVE_APPROACH
+  if (mTotalSeqs > 0)
+    if (mTotalSeqs > mSeqCounters[NEGATIVE_CAT]*10 )
+      return ((float)(mTotalSeqs - mSeqCounters[NEGATIVE_CAT]*10))/mTotalSeqs * mFreqChar / mTotalChar;
+  return (float)0.01;
+#else  //POSITIVE_APPROACH
+  float r;
 
-  if ((mTotalChar > 0) && (mTotalSeqs > 0))
-  {
-    // weighted good sequence count
-    //PRUint32 const probableSeqs = mSeqCounters[POSITIVE_CAT] + (mSeqCounters[PROBABLE_CAT] >> 2);
-    PRUint32 const validSeqs = mTotalSeqs - mSeqCounters[NEGATIVE_CAT];
-
-    float r = rfactor(mSeqCounters[POSITIVE_CAT], mTotalSeqs) / mModel->mTypicalPositiveRatio;
-
-    // negative sequence correction factor
-    r *= rfactor(validSeqs, (mTotalSeqs + (netChars * mSeqCounters[NEGATIVE_CAT])));
-
+  if (mTotalSeqs > 0) {
+    r = ((float)1.0) * mSeqCounters[POSITIVE_CAT] / mTotalSeqs / mModel->mTypicalPositiveRatio;
     /* Multiply by a ratio of positive sequences per characters.
      * This would help in particular to distinguish close winners.
      * Indeed if you add a letter, you'd expect the positive sequence count
@@ -128,21 +124,18 @@ float nsSingleByteCharSetProber::GetConfidence()
      * character). This could make the difference between very closely related
      * charsets used for the same language.
      */
-     r *= rfactor(validSeqs, netChars);
-
-     /* The more control characters (proportionally to the size of the text), the
+    r = r * (mSeqCounters[POSITIVE_CAT] + (float) mSeqCounters[PROBABLE_CAT] / 4) / mTotalChar;
+    /* The more control characters (proportionnaly to the size of the text), the
      * less confident we become in the current charset.
      */
-    r *= rfactor(netChars, mTotalChar);
-    
-    // normalizing
-    r *= rfactor(mFreqChar, mTotalChar);
-
-    if (r > NO_DOUBT) { r = NO_DOUBT; }
-
+    r = r * (mTotalChar - mCtrlChar) / mTotalChar;
+    r = r*mFreqChar/mTotalChar;
+    if (r >= (float)1.00)
+      r = (float)0.99;
     return r;
   }
-  return SURE_NO;
+  return (float)0.01;
+#endif
 }
 
 const char* nsSingleByteCharSetProber::GetCharSetName()

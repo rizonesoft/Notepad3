@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>A3B241B4-458F-47BE-A7FB-AABC82F7C332</string>
+	<key>IDESourceControlProjectName</key>
+	<string>uchardet</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>7DF9952B76987F54D66D74171482E11FAF33FDCB</key>
+		<string>https://www.freedesktop.org/wiki/Software/uchardet/</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>build-mac/uchardet.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>7DF9952B76987F54D66D74171482E11FAF33FDCB</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://www.freedesktop.org/wiki/Software/uchardet/</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>7DF9952B76987F54D66D74171482E11FAF33FDCB</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>7DF9952B76987F54D66D74171482E11FAF33FDCB</string>
+			<key>IDESourceControlWCCName</key>
+			<string>uchardet</string>
+		</dict>
+	</array>
+</dict>
+</plist>

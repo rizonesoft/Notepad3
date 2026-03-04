@@ -53,10 +53,11 @@
 /* Numbers 0-9. */
 #define NUM 251
 
-#define SB_ENOUGH_REL_THRESHOLD  (ENOUGH_DATA_THRESHOLD >> 1)
-#define POSITIVE_SHORTCUT_THRESHOLD  SHORTCUT_THRESHOLD
-#define NEGATIVE_SHORTCUT_THRESHOLD  (0.05f)
+#define SB_ENOUGH_REL_THRESHOLD  1024
+#define POSITIVE_SHORTCUT_THRESHOLD  (float)0.95
+#define NEGATIVE_SHORTCUT_THRESHOLD  (float)0.05
 #define SYMBOL_CAT_ORDER  250
+
 #define NUMBER_OF_SEQ_CAT 4
 #define POSITIVE_CAT   (NUMBER_OF_SEQ_CAT-1)
 #define PROBABLE_CAT   (NUMBER_OF_SEQ_CAT-2)
@@ -81,7 +82,6 @@ class nsSingleByteCharSetProber : public nsCharSetProber{
 public:
   nsSingleByteCharSetProber(const SequenceModel *model) 
     :mModel(model), mReversed(PR_FALSE), mNameProber(0) { Reset(); }
-
   nsSingleByteCharSetProber(const SequenceModel *model, PRBool reversed, nsCharSetProber* nameProber)
     :mModel(model), mReversed(reversed), mNameProber(nameProber) { Reset(); }
 
@@ -91,7 +91,7 @@ public:
   virtual void      Reset(void);
   virtual float     GetConfidence(void);
   virtual void      SetOpion() {}
-
+  
   // This feature is not implemented yet. any current language model
   // contain this parameter as PR_FALSE. No one is looking at this
   // parameter or calling this method.
@@ -119,9 +119,9 @@ protected:
   PRUint32 mCtrlChar;
   //characters that fall in our sampling range
   PRUint32 mFreqChar;
-
+  
   // Optional auxiliary prober for name decision. created and destroyed by the GroupProber
-  nsCharSetProber* mNameProber;
+  nsCharSetProber* mNameProber; 
 
 };
 
@@ -171,6 +171,7 @@ extern const SequenceModel Windows_1258VietnameseModel;
 extern const SequenceModel Iso_8859_15DanishModel;
 extern const SequenceModel Iso_8859_1DanishModel;
 extern const SequenceModel Windows_1252DanishModel;
+extern const SequenceModel Ibm865DanishModel;
 
 extern const SequenceModel Iso_8859_13LithuanianModel;
 extern const SequenceModel Iso_8859_10LithuanianModel;
@@ -246,11 +247,16 @@ extern const SequenceModel Iso_8859_16SloveneModel;
 extern const SequenceModel Ibm852SloveneModel;
 extern const SequenceModel Mac_CentraleuropeSloveneModel;
 
-extern const SequenceModel Windows_1252SwedishModel;
 extern const SequenceModel Iso_8859_1SwedishModel;
 extern const SequenceModel Iso_8859_4SwedishModel;
 extern const SequenceModel Iso_8859_9SwedishModel;
 extern const SequenceModel Iso_8859_15SwedishModel;
+extern const SequenceModel Windows_1252SwedishModel;
+
+extern const SequenceModel Iso_8859_15NorwegianModel;
+extern const SequenceModel Iso_8859_1NorwegianModel;
+extern const SequenceModel Windows_1252NorwegianModel;
+extern const SequenceModel Ibm865NorwegianModel;
 
 extern const SequenceModel Windows_1252AfricaansModel;
 extern const SequenceModel Iso_8859_15AfricaansModel;
@@ -263,7 +269,6 @@ extern const SequenceModel Windows_1252NederlandsModel;
 extern const SequenceModel Iso_8859_1NederlandsModel;
 extern const SequenceModel Iso_8859_9NederlandsModel;
 extern const SequenceModel Iso_8859_15NederlandsModel;
-
 
 #endif /* nsSingleByteCharSetProber_h__ */
 

@@ -1,4 +1,4 @@
-﻿/* ***** BEGIN LICENSE BLOCK *****
+/* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
  * The contents of this file are subject to the Mozilla Public License Version
@@ -45,11 +45,12 @@ class HandleUniversalDetector : public nsUniversalDetector
 protected:
     char* m_charset;
     float m_confidence;
+
 public:
     HandleUniversalDetector()
-      : nsUniversalDetector(NS_FILTER_ALL)
-      , m_charset(nullptr)
-      , m_confidence(0.0f)
+    : nsUniversalDetector(NS_FILTER_ALL)
+    , m_charset(nullptr)
+    , m_confidence(0.0f)
     {
     }
 
@@ -66,7 +67,7 @@ public:
         if (m_charset) {
             free(m_charset);
         }
-        m_charset = strdup(charset);
+        m_charset = _strdup(charset);
         m_confidence = confidence;
     }
 
@@ -76,7 +77,7 @@ public:
         if (m_charset) {
             free(m_charset);
         }
-        m_charset = strdup("");
+        m_charset = _strdup("");
         m_confidence = 0.0;
     }
 
@@ -96,7 +97,7 @@ public:
 
 uchardet_t uchardet_new(void)
 {
-    return reinterpret_cast<uchardet_t>(new HandleUniversalDetector());
+    return reinterpret_cast<uchardet_t> (new HandleUniversalDetector());
 }
 
 void uchardet_delete(uchardet_t ud)

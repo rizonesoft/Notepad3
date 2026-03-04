@@ -50,6 +50,7 @@ import requests
 import sys
 import re
 import os
+import random
 
 # Custom modules.
 import charsets.db
@@ -240,12 +241,22 @@ def visit_pages(titles, depth, lang, logfd):
         return
 
     next_titles = []
+    if options.max_page is not None:
+      max_titles = int(options.max_page/(options.max_depth * options.max_depth))
+    else:
+      max_titles = sys.maxsize
     for title in titles:
         if options.max_page is not None and \
            len(visited_pages) > options.max_page:
             return
         if title in visited_pages:
             continue
+
+        # Ugly hack skipping internal pages
+        if 'wiki' in title or 'Wiki' in title:
+            print('Skipping', title)
+            continue
+
         visited_pages += [title]
         try:
             page = wikipedia.page(title)
@@ -255,16 +266,22 @@ def visit_pages(titles, depth, lang, logfd):
             print("Discarding page {}.\n".format(title))
             continue
         logfd.write("\n{} (revision {})".format(title, page.revision_id))
+        logfd.flush()
 
         process_text(page.content, lang)
         try:
-            next_titles += page.links
+          links = page.links
+          random.shuffle(links)
+          if len(links) > max_titles:
+              links = links[:max_titles]
+              next_titles += links
         except KeyError:
             pass
 
     if depth >= options.max_depth:
         return
 
+    random.shuffle(next_titles)
     visit_pages (next_titles, depth + 1, lang, logfd)
 
 language_c = lang.name.replace('-', '_').title()
@@ -277,6 +294,7 @@ logfd.write('\n- Maximum depth: {}'.format(options.max_depth))
 if options.max_page is not None:
     logfd.write('\n- Max number of pages: {}'.format(options.max_page))
 logfd.write('\n\n== Parsed pages ==\n')
+logfd.flush()
 try:
     visit_pages(lang.start_pages, 0, lang, logfd)
 except requests.exceptions.ConnectionError:
@@ -284,6 +302,7 @@ except requests.exceptions.ConnectionError:
     exit(1)
 logfd.write('\n\n== End of Parsed pages ==')
 logfd.write('\n\n- Wikipedia parsing ended at: {}\n'.format(str(datetime.datetime.now())))
+logfd.flush()
 
 ########### CHARACTERS ###########
 

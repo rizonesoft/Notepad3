@@ -42,17 +42,15 @@
 #include "nsSJISProber.h"
 #include "nsUTF8Prober.h"
 #include "nsEUCJPProber.h"
-//#include "nsGB2312Prober.h"
-#include "nsGB18030Prober.h"
+#include "nsGB2312Prober.h"
 #include "nsEUCKRProber.h"
 #include "nsBig5Prober.h"
 #include "nsEUCTWProber.h"
 
-#define MAX_NUM_OF_MBCS_PROBERS    10
+#define NUM_OF_PROBERS    7
 
 class nsMBCSGroupProber: public nsCharSetProber {
 public:
-  nsMBCSGroupProber();
   nsMBCSGroupProber(PRUint32 aLanguageFilter);
   virtual ~nsMBCSGroupProber();
   nsProbingState HandleData(const char* aBuf, PRUint32 aLen);
@@ -71,10 +69,9 @@ public:
 
 protected:
   nsProbingState mState;
-  nsCharSetProber* mProbers[MAX_NUM_OF_MBCS_PROBERS];
-  PRBool          mIsActive[MAX_NUM_OF_MBCS_PROBERS];
-  PRUint32 mNumOfProbers;
-  PRInt32  mBestGuess;
+  nsCharSetProber* mProbers[NUM_OF_PROBERS];
+  PRBool          mIsActive[NUM_OF_PROBERS];
+  PRInt32 mBestGuess;
   PRUint32 mActiveNum;
   PRUint32 mKeepNext;
 };

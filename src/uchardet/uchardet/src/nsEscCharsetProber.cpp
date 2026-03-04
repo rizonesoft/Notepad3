@@ -67,7 +67,7 @@ void nsEscCharSetProber::Reset(void)
 {
   mState = eDetecting;
   for (PRUint32 i = 0; i < NUM_OF_ESC_CHARSETS; i++)
-    if (mCodingSM[i]) 
+    if (mCodingSM[i])
       mCodingSM[i]->Reset();
   mActiveSM = NUM_OF_ESC_CHARSETS;
   mDetectedCharset = nsnull;
@@ -75,13 +75,17 @@ void nsEscCharSetProber::Reset(void)
 
 nsProbingState nsEscCharSetProber::HandleData(const char* aBuf, PRUint32 aLen)
 {
-  for (PRUint32 i = 0; i < aLen && mState == eDetecting; i++)
+  PRUint32 codingState;
+  PRInt32 j;
+  PRUint32 i;
+
+  for ( i = 0; i < aLen && mState == eDetecting; i++)
   {
-      for (PRInt32 j = mActiveSM - 1; j >= 0; j--)
+    for (j = mActiveSM-1; j>= 0; j--)
     {
       if (mCodingSM[j])
       {
-        nsSMState const codingState = mCodingSM[j]->NextState(aBuf[i]);
+        codingState = mCodingSM[j]->NextState(aBuf[i]);
         if (codingState == eItsMe)
         {
           mState = eFoundIt;
@@ -91,6 +95,7 @@ nsProbingState nsEscCharSetProber::HandleData(const char* aBuf, PRUint32 aLen)
       }
     }
   }
+
   return mState;
 }
 
