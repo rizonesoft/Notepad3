@@ -175,13 +175,16 @@ static bool      s_bUndoRedoScroll = false;
 
 // Middle-click auto-scroll state
 static bool      s_bAutoScrollMode = false;
+static bool      s_bAutoScrollHeld = false;        // true while MMB is physically held down
+static DWORD     s_dwAutoScrollStartTick = 0;      // GetTickCount() at MMB down
 static POINT     s_ptAutoScrollOrigin = { 0, 0 };
 static POINT     s_ptAutoScrollMouse = { 0, 0 };
 static double    s_dAutoScrollAccumY = 0.0;
 
-#define AUTOSCROLL_TIMER_MS    30    // ~33 fps
-#define AUTOSCROLL_DEADZONE    15    // pixels from origin before scrolling starts
-#define AUTOSCROLL_DIVISOR     60.0  // higher = slower (lines per pixel per tick scaling)
+#define AUTOSCROLL_TIMER_MS             30    // ~33 fps
+#define AUTOSCROLL_DEADZONE             15    // pixels from origin before scrolling starts
+#define AUTOSCROLL_DIVISOR              60.0  // higher = slower (lines per pixel per tick scaling)
+#define AUTOSCROLL_CLICK_THRESHOLD_MS  200    // ms: below = click (toggle), above = hold (release-to-stop)
 
 // for tiny expression calculation
 static double   s_dExpression = 0.0;
@@ -2413,6 +2416,7 @@ static void _AutoScrollStop(HWND hwndEdit)
         ReleaseCapture();
         SciCall_SetCursor(SC_CURSORNORMAL);
         s_bAutoScrollMode = false;
+        s_bAutoScrollHeld = false;
         s_dAutoScrollAccumY = 0.0;
     }
 }
@@ -2474,10 +2478,27 @@ static LRESULT CALLBACK _EditSubclassProc(
             if ((pos >= 0) && SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, pos)) {
                 HandleHotSpotURLClicked(pos, OPEN_WITH_BROWSER);
             } else {
+                s_bAutoScrollHeld = true;
+                s_dwAutoScrollStartTick = GetTickCount();
                 _AutoScrollStart(hwnd, pt);
             }
         }
         return 0;
+    }
+
+    case WM_MBUTTONUP: {
+        if (s_bAutoScrollMode && s_bAutoScrollHeld) {
+            DWORD const elapsed = GetTickCount() - s_dwAutoScrollStartTick;
+            if (elapsed > AUTOSCROLL_CLICK_THRESHOLD_MS) {
+                // Hold-to-scroll: stop on release
+                _AutoScrollStop(hwnd);
+            } else {
+                // Quick click: keep scrolling (toggle mode)
+                s_bAutoScrollHeld = false;
+            }
+            return 0;
+        }
+        break;
     }
 
     case WM_MOUSEMOVE:
