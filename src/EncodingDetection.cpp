@@ -647,11 +647,7 @@ constexpr cpi_enc_t _MapStdEncodingString2CPI(const char* encStrg, float* pConfi
             bool bBOM = false;
             bool bReverse = false;
             cpi_enc_t const cpi = GetUnicodeEncoding(text, len, &bBOM, &bReverse);
-            if (!Encoding_IsNONE(cpiEncoding)) {
-                cpiEncoding = cpi;
-            } else {
-                cpiEncoding = bBOM ? (bReverse ? CPI_UNICODEBE : CPI_UNICODE) : (bReverse ? CPI_UNICODEBE : CPI_UNICODE);
-            }
+            cpiEncoding = cpi;
         }
 
         // check for default ANSI
@@ -814,6 +810,7 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
     // ---  re-mapping UCD ----
 
     switch (Encoding_GetCodePage(cpiEncoding_UCD)) {
+
     case 28591:  // ISO 8859 - 1  mapped to  Windows - 1252  (HTML5 Standard advice)
         cpiEncoding_UCD = Encoding_GetByCodePage(1252); // auto detect default ANSI (!)
         break;
@@ -1303,6 +1300,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
     }
 
     if (!IS_ENC_ENFORCED() || bForceEncDetection) {
+
         if (!bSkipANSICPDetection) {
             // ---------------------------------------------------------------------------
             Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes, iAnalyzeHint);
@@ -1375,11 +1373,22 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
     }
     else if (Encoding_IsValid(encDetRes.analyzedEncoding) && (encDetRes.bIsAnalysisReliable || !Settings.UseReliableCEDonly))
     {
-        encDetRes.Encoding = encDetRes.analyzedEncoding;
+        if (!encDetRes.bIsAnalysisReliable && !Encoding_IsUTF8(encDetRes.analyzedEncoding) && encDetRes.bValidUTF8) {
+            encDetRes.Encoding = CPI_UTF8; // unreliable non-UTF-8 guess, but data is valid UTF-8
+        } else {
+            encDetRes.Encoding = encDetRes.analyzedEncoding;
+        }
+    }
+    else if (!encDetRes.bIsAnalysisReliable && Encoding_IsValid(encDetRes.analyzedEncoding))
+    {
+        // UCHARDET below confidence threshold (UseReliableCEDonly is true)
+        encDetRes.Encoding = encDetRes.bValidUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
     }
     else if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis) && (iConfidence > 66))
     {
-        encDetRes.Encoding = encDetRes.analyzedEncoding; // (1) rely on analyzed encoding
+        // unicodeAnalysis (IsTextUnicode) confirms Unicode structure,
+        // iConfidence is from UCHARDET analysis — use analyzedEncoding (intentional)
+        encDetRes.Encoding = encDetRes.analyzedEncoding;
     }
     else if (Encoding_IsValid(Encoding_SrcWeak(CPI_GET)))
     {
