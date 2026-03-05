@@ -181,45 +181,8 @@ WCHAR* StrNextTokW(WCHAR* strg, const WCHAR* tokens)
 //  GetWinVersionString()
 //
 
-#if 0
-static OSVERSIONINFOEX s_OSversion = { 0 };
-
-static void _GetTrueWindowsVersion()
-{
-    if (s_OSversion.dwOSVersionInfoSize != 0) {
-        return;
-    }
-
-    // clear
-    ZeroMemory(&s_OSversion, sizeof(OSVERSIONINFOEX));
-    s_OSversion.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-
-    // Function pointer to driver function
-    void (WINAPI *pRtlGetVersion)(PRTL_OSVERSIONINFOW lpVersionInformation) = NULL;
-
-    // load the System-DLL
-    HINSTANCE const hNTdllDll = LoadLibrary(L"ntdll.dll");
-    if (hNTdllDll) {
-        // get the function pointer to RtlGetVersion
-        pRtlGetVersion = (void (WINAPI*)(PRTL_OSVERSIONINFOW)) GetProcAddress(hNTdllDll, "RtlGetVersion");
-
-        if (pRtlGetVersion != NULL) {
-            pRtlGetVersion((PRTL_OSVERSIONINFOW)& s_OSversion);
-        }
-        FreeLibrary(hNTdllDll);
-    } // if (hNTdllDll != NULL)
-
-#pragma warning ( push )
-#pragma warning ( disable: 4996 )
-    // if function failed, use fallback to old version
-    if (pRtlGetVersion == NULL) {
-        GetVersionEx((OSVERSIONINFO*)& s_OSversion);
-    }
-#pragma warning ( pop )
-
-}
+// _GetTrueWindowsVersion() removed — use GetWindowsBuildNumber() from DarkMode.cpp
 // ----------------------------------------------------------------------------
-#endif
 
 
 void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)

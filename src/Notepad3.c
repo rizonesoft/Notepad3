@@ -1045,8 +1045,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         return 1; // exit
     }
 
-    //~SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
-    //~SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+
+    // DPI awareness is set via manifest (PerMonitorV2)
 
     // Check if running with elevated privileges
     s_bIsProcessElevated = IsProcessElevated();
@@ -1120,7 +1120,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     Style_ImportTheme(Globals.uCurrentThemeIndex);
 
     //SetProcessDPIAware(); // ->.manifest
-    //SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+
     //~Scintilla_LoadDpiForWindow(); done in Sci::Platform_Initialize();
 
     // ----------------------------------------------------
@@ -1279,10 +1279,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     ResetTmpCache();
     ResetIniFileCache();
 
-    // drag-n-drop into elevated process even does not work using:
-    ///ChangeWindowMessageFilter(WM_DROPFILES, MSGFLT_ADD);
-    ///ChangeWindowMessageFilter(WM_COPYDATA, MSGFLT_ADD);
-    ///ChangeWindowMessageFilter(0x0049, MSGFLT_ADD);
 
     MSG msg;
     while (GetMessage(&msg, NULL, 0, 0)) {
