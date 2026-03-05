@@ -7,7 +7,7 @@
 
 ---
 
-## 1. Version Defines – vcxproj Files
+## 1. Version Defines – vcxproj Files ✅ (PR #5565)
 
 All preprocessor definitions in every `<PreprocessorDefinitions>` block must change:
 
@@ -19,57 +19,55 @@ All preprocessor definitions in every `<PreprocessorDefinitions>` block must cha
 
 ### Notepad3 Core
 
-- [ ] `src/Notepad3.vcxproj` – 9 config blocks (lines 249, 324, 398, 469, 555, 641, 726, 811, 896)
+- [x] `src/Notepad3.vcxproj` – 9 config blocks _(PR #5565)_
 
 ### Scintilla
 
-- [ ] `scintilla/Scintilla.vcxproj` – 12 config blocks
-- [ ] `scintilla/ScintillaDLL.vcxproj` – 4 config blocks
+- [x] `scintilla/Scintilla.vcxproj` – 12 config blocks _(PR #5565)_
+- [x] `scintilla/ScintillaDLL.vcxproj` – 4 config blocks _(PR #5565)_
 
 ### Lexilla
 
-- [ ] `lexilla/Lexilla.vcxproj` – 9 config blocks (lines 325, 361, 404, 445, 479, 516, 558, 600, 643)
+- [x] `lexilla/Lexilla.vcxproj` – 9 config blocks _(PR #5565)_
 
 ### Other
 
-- [ ] `other_sln/Notepad3DLL.vcxproj` – 4 config blocks (lines 112, 176, 236, 304)
+- [x] `other_sln/Notepad3DLL.vcxproj` – 4 config blocks _(PR #5565)_
 
-> 🔨 **GATE**: Build with VS2026 → `git commit -m "W10: vcxproj version defines"` → `git push`
+> 🔨 **GATE**: ~~Build with VS2026 → commit → push~~ ✅ Done via PR #5565
 
 ---
 
-## 2. Version Defines – Source File Headers
+## 2. Version Defines – Source File Headers ✅ (PR #5565)
 
-Each file has `#ifndef`/`#define` guards for `_WIN32_WINNT`, `WINVER`, `NTDDI_VERSION`. Update `0x0601` → `0x0A00` and `0x06010000` → `0x0A000000`. Fix comments from `/*_WIN32_WINNT_WIN7*/` → `/*_WIN32_WINNT_WIN10*/` (and `/*NTDDI_WIN7*/` → `/*NTDDI_WIN10*/`).
+PR #5565 updated all headers using `_WIN32_WINNT_WIN10` / `NTDDI_WIN10_RS5` symbolic constants + `#include <sdkddkver.h>`.
 
-### Primary headers (affect everything downstream)
+### Primary headers
 
-- [ ] `src/TypeDefs.h` lines 16–24 – update defines and comments
-- [ ] `src/TypeDefs.h` lines 26–33 – **remove** the `#if 0` block (was the future Win10 override, now redundant)
-- [ ] `src/resource.h` lines 5–9 – update defines and comments
+- [x] `src/TypeDefs.h` – updated defines _(PR #5565)_
+- [x] `src/TypeDefs.h` – `#if 0` block handled _(PR #5565)_
+- [x] `src/resource.h` – updated defines _(PR #5565)_
 
 ### Individual source files
 
-- [ ] `src/EncodingDetection.cpp` lines 16–23
-- [ ] `src/Print.cpp` lines 27–34
-- [ ] `src/PathLib.c` lines 122–129
-- [ ] `src/Config/Config.cpp` lines 15–22
-- [ ] `src/crypto/crypto.c` lines 15–22
-- [ ] `src/crypto/rijndael-api-fst.c` lines 44–51
-- [ ] `src/ChooseFont/ChooseFont.h` lines 19–20 (also update comment "Minimum platform is Windows 7" → "Windows 10")
+- [x] `src/EncodingDetection.cpp` _(PR #5565)_
+- [x] `src/Print.cpp` _(PR #5565)_
+- [x] `src/PathLib.c` _(PR #5565)_
+- [x] `src/Config/Config.cpp` _(PR #5565)_
+- [x] `src/crypto/crypto.c` _(PR #5565)_
+- [x] `src/crypto/rijndael-api-fst.c` _(PR #5565)_
+- [x] `src/ChooseFont/ChooseFont.h` _(PR #5565)_
 
-### Backlog / Test files (lower priority)
+### Backlog / Test files
 
-- [ ] `src/_backlog/AccelKeys.c` lines 21–28
+- [x] `src/_backlog/AccelKeys.c` _(PR #5565)_
 - [ ] `test/test_files/StyleLexers/styleLexCPP/Config.cpp` lines 41–48
 
-> 🔨 **GATE**: Build with VS2026 → `git commit -m "W10: source file header defines"` → `git push`
+> 🔨 **GATE**: ~~Build with VS2026 → commit → push~~ ✅ Done via PR #5565
 
 ---
 
-## 3. Application Manifests – Clean Up Legacy OS GUIDs
-
-The manifest `supportedOS` entries for OSes older than Win10 are no longer needed.
+## 3. Application Manifests – Clean Up Legacy OS GUIDs (Partial ✅)
 
 ### GUIDs to remove (Vista, Win7, Win8, Win8.1):
 
@@ -80,58 +78,48 @@ The manifest `supportedOS` entries for OSes older than Win10 are no longer neede
 | `{4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38}` | Win8   |
 | `{1f676c76-80e1-4239-95bb-83d0f6d0da78}` | Win8.1 |
 
-### Keep only:
-
-| GUID                                     | OS            |
-| ---------------------------------------- | ------------- |
-| `{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}` | Win10 / Win11 |
-
 ### Files to update:
 
-- [ ] `res/Notepad3.exe.manifest` – remove lines 28–31, keep line 32
-- [ ] `minipath/res/MiniPath.exe.manifest` – remove Vista/Win7/Win8/Win8.1 entries
+- [x] `res/Notepad3.exe.manifest` – cleaned _(PR #5565)_
+- [x] `minipath/res/MiniPath.exe.manifest` – cleaned _(PR #5565)_
 - [ ] `grepWinNP3/src/compatibility.manifest` – remove Vista/Win7/Win8/Win8.1 entries
 
 > 🔨 **GATE**: Build with VS2026 → `git commit -m "W10: manifest cleanup"` → `git push`
 
 ---
 
-## 4. Runtime Version Checks – Dead Code Removal
-
-With Win10 as minimum, checks for Vista/Win7/Win8 are always true and can be simplified.
+## 4. Runtime Version Checks – Dead Code Removal (Partial ✅)
 
 ### `src/Notepad3.c`
 
 - [ ] Line 688 – `IsWindowsXPSP3OrGreater() ? 1 : 2` → always `1` (remove ternary)
-- [ ] Lines 1010–1014 – Change `IsWindows7SP1OrGreater()` guard to `IsWindows10OrGreater()`
-- [ ] Lines 2829–2839 – Remove `if (!IsWindowsVistaOrGreater())` block entirely (dead code)
+- [x] Lines 1010–1014 – `IsWindows7SP1OrGreater()` guard → updated _(PR #5565)_
+- [x] Lines 2829–2839 – `if (!IsWindowsVistaOrGreater())` block removed _(PR #5565)_
 - [ ] Line 3311 – Remove `!IsWindowsXPSP3OrGreater() &&` from condition (always false)
 - [ ] Line 3314 – Remove `if (bProcessed && !IsWindowsXPSP3OrGreater())` block (dead code)
-- [ ] Line 12112 – Remove `!IsWindowsVistaOrGreater() ||` from condition (always false)
+- [x] Line 12112 – `!IsWindowsVistaOrGreater() ||` removed _(PR #5565)_
 
 ### `src/Helpers.c`
 
-- [ ] Lines 355–361 – `IsProcessElevated()`: Remove `if (!IsWindowsVistaOrGreater()) return false;` (dead code, Vista+ is guaranteed)
-- [ ] Lines 225–251 – `GetWinVersionString()`: Remove Win7/Win8/Win8.1 branches (lines 234–244), keep only Win10+ path
+- [x] Lines 355–361 – `IsProcessElevated()`: `IsWindowsVistaOrGreater()` check removed _(PR #5565)_
+- [x] Lines 225–251 – `GetWinVersionString()`: Win7/Win8/Win8.1 branches removed _(PR #5565)_
 
 > 🔨 **GATE**: Build with VS2026 → `git commit -m "W10: remove dead version checks"` → `git push`
 
 ---
 
-## 5. Compile-Time Conditionals – Simplified by NTDDI_WIN10
-
-With `NTDDI_VERSION=0x0A000000`, conditions gated on `NTDDI_WIN8` are always true.
+## 5. Compile-Time Conditionals – Simplified by NTDDI_WIN10 (Partial ✅)
 
 ### `src/Helpers.c` – URL Escape Functions
 
 - [ ] Lines 1986–1999 – Remove `#if (NTDDI_VERSION < NTDDI_WIN8)` legacy URL char tables (dead code)
-- [ ] Lines 2003–2049 – `UrlEscapeEx()`: Remove `#else` branch, keep only the `NTDDI_WIN8+` path (`UrlEscape` with `URL_ESCAPE_URI_COMPONENT`)
-- [ ] Lines 2057–2100 – `UrlUnescapeEx()`: Remove `#else` branch, keep only the `NTDDI_WIN8+` path (`UrlUnescape` with `URL_UNESCAPE_AS_UTF8`)
+- [ ] Lines 2003–2049 – `UrlEscapeEx()`: Remove `#else` branch, keep only the `NTDDI_WIN8+` path
+- [ ] Lines 2057–2100 – `UrlUnescapeEx()`: Remove `#else` branch, keep only the `NTDDI_WIN8+` path
 
 ### `src/DarkMode/DarkMode.cpp`
 
-- [ ] Lines 58–69 – Remove `#if _WIN32_WINNT < _WIN32_WINNT_WIN8` block, keep only `#define kSystemLibraryLoadFlags LOAD_LIBRARY_SEARCH_SYSTEM32`
-- [ ] Line 64 – Remove `GetProcAddress(GetModuleHandle("kernel32.dll"), "SetDefaultDllDirectories")` runtime check (`SetDefaultDllDirectories` is guaranteed on Win8+ / Win10)
+- [x] Lines 58–69 – `#if _WIN32_WINNT < _WIN32_WINNT_WIN8` block removed _(PR #5565)_
+- [x] Line 64 – `GetProcAddress` for `SetDefaultDllDirectories` removed _(PR #5565)_
 
 > 🔨 **GATE**: Build with VS2026 → `git commit -m "W10: simplify compile-time conditionals"` → `git push`
 
@@ -149,22 +137,20 @@ With `NTDDI_VERSION=0x0A000000`, conditions gated on `NTDDI_WIN8` are always tru
 
 ### `RtlAreLongPathsEnabled` – Remove Dynamic Loading
 
-- [ ] `src/PathLib.c` lines 284–313 – `HasOptInToRemoveMaxPathLimit()`: Replace `LoadLibrary("ntdll.dll")` + `GetProcAddress` with direct ntdll linkage. `RtlAreLongPathsEnabled` is always present on Win10 1607+ (consider: just declare `extern` and link ntdll.lib, or keep dynamic but note it's guaranteed)
+- [ ] `src/PathLib.c` lines 284–313 – `HasOptInToRemoveMaxPathLimit()`: Replace `LoadLibrary("ntdll.dll")` + `GetProcAddress` with direct ntdll linkage
 
 ### `PathCch*` APIs – Can Now Be Used (Win8.1+)
 
-- [ ] `src/PathLib.c` lines 154–157 – Evaluate uncommenting `#include <pathcch.h>` and `#pragma comment(linker, "/defaultlib:Pathcch")` to use modern PathCch APIs directly instead of custom implementations
-- [ ] `src/PathLib.c` – Evaluate replacing `_PathCanonicalize()` custom impl with `PathCchCanonicalize()` / `PathCchCanonicalizeEx()`
-- [ ] `src/PathLib.c` – Evaluate replacing `_Path_IsRelative()` MAX_PATH hack with `PathIsRelativeW()` or `PathCchIsRelative()` if long path mode is active
+- [ ] `src/PathLib.c` lines 154–157 – Evaluate uncommenting `#include <pathcch.h>` and `#pragma comment(linker, "/defaultlib:Pathcch")`
+- [ ] `src/PathLib.c` – Evaluate replacing `_PathCanonicalize()` with `PathCchCanonicalize()` / `PathCchCanonicalizeEx()`
+- [ ] `src/PathLib.c` – Evaluate replacing `_Path_IsRelative()` MAX_PATH hack
 
 ### `GetSystemMetrics()` → `GetSystemMetricsForDpi()` (Win10 1607+)
 
-These calls don't use DPI-aware variants and may return incorrect sizes on multi-DPI setups:
-
-- [ ] `src/Notepad3.c` lines 1106–1110 – Icon size queries during init (use `Scintilla_GetSystemMetricsForDpi` or `GetSystemMetricsForDpi` directly)
+- [ ] `src/Notepad3.c` lines 1106–1110 – Icon size queries during init
 - [ ] `src/Notepad3.c` line 3706 – `SM_CYFRAME` query
 - [ ] `src/Notepad3.c` line 12181 – `SM_CXSMICON`/`SM_CYSMICON` in `RelaunchElevated()`
-- [ ] `src/Config/Config.cpp` lines 1862–1863, 2263–2264, 2315–2316 – Virtual screen size queries (evaluate whether DPI-aware version is needed for these specific metrics)
+- [ ] `src/Config/Config.cpp` lines 1862–1863, 2263–2264, 2315–2316 – Virtual screen size queries
 
 > 🔨 **GATE**: Build with VS2026 → `git commit -m "W10: API modernizations"` → `git push`
 
@@ -173,9 +159,9 @@ These calls don't use DPI-aware variants and may return incorrect sizes on multi
 ## 7. Commented-Out / Disabled Legacy Code Cleanup
 
 - [ ] `src/Helpers.c` lines 184–222 – `_GetTrueWindowsVersion()` inside `#if 0`: Remove entire block (uses deprecated `GetVersionEx`)
-- [ ] `src/Notepad3.c` lines 1251–1253 – Remove commented-out `ChangeWindowMessageFilter` calls (superseded by `ChangeWindowMessageFilterEx` since Win7)
-- [ ] `src/Notepad3.c` lines 1016–1017 – Evaluate enabling `SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)` (currently commented out; manifest already declares `PerMonitorV2` so this may be redundant — confirm and remove or enable)
-- [ ] `src/Notepad3.c` line 1091 – Evaluate `SetThreadDpiAwarenessContext` call (same consideration as above)
+- [ ] `src/Notepad3.c` lines 1251–1253 – Remove commented-out `ChangeWindowMessageFilter` calls
+- [ ] `src/Notepad3.c` lines 1016–1017 – Evaluate enabling `SetProcessDpiAwarenessContext` (manifest already declares PerMonitorV2 — remove commented code)
+- [ ] `src/Notepad3.c` line 1091 – Evaluate `SetThreadDpiAwarenessContext` call
 - [ ] `src/PathLib.c` line 67 – Update TODO comment for `IsWindows10OrGreater()` check (now always true)
 
 > 🔨 **GATE**: Build with VS2026 → `git commit -m "W10: legacy code cleanup"` → `git push`
