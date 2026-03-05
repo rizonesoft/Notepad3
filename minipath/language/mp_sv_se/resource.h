@@ -3,10 +3,10 @@
 // Used by mp_sv_se.rc
 //
 #ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
+#define _WIN32_WINNT 0x0A00  /*_WIN32_WINNT_WIN10*/
 #endif
 #ifndef WINVER
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#define WINVER 0x0A00  /*_WIN32_WINNT_WIN10*/
 #endif
 
 // Next default values for new objects

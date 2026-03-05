@@ -228,26 +228,12 @@ void GetWinVersionString(LPWSTR szVersionStr, size_t cchVersionStr)
 
     DWORD const build = GetWindowsBuildNumber(NULL, NULL);
 
-    if (IsWindows10OrGreater()) {
-        StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? ((build >= 17134) ? L"Server 2019 " : L"Server 2016 ") :
-                                                                      ((build >= 22000) ? L"11 " : L"10 "));          
-    } else if (IsWindows8Point1OrGreater()) {
-        StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2012 R2 " : L"8.1");
-    } else if (IsWindows8OrGreater()) {
-        StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2012 " : L"8");
-    } else if (IsWindows7SP1OrGreater()) {
-        StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2008 R2 " : L"7 (SP1)");
-    } else if (IsWindows7OrGreater()) {
-        StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Server 2008 " : L"7");
-    } else {
-        StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? L"Unkown Server " : L"?");
-    }
+    StringCchCat(szVersionStr, cchVersionStr, IsWindowsServer() ? ((build >= 17134) ? L"Server 2019 " : L"Server 2016 ") :
+                                                                  ((build >= 22000) ? L"11 " : L"10 "));
 
-    if (IsWindows10OrGreater()) {
-        WCHAR win10ver[80] = { L'\0' };
-        StringCchPrintf(win10ver, COUNTOF(win10ver), L" Version %s (Build %lu)", _Win10BuildToReleaseId(build), GetWindowsBuildNumber(NULL, NULL));
-        StringCchCat(szVersionStr, cchVersionStr, win10ver);
-    }
+    WCHAR win10ver[80] = { L'\0' };
+    StringCchPrintf(win10ver, COUNTOF(win10ver), L" Version %s (Build %lu)", _Win10BuildToReleaseId(build), build);
+    StringCchCat(szVersionStr, cchVersionStr, win10ver);
 }
 
 
@@ -351,15 +337,6 @@ HRESULT SetWindowAppUserModelID(HWND hwnd, PCWSTR AppID)
 //
 bool IsProcessElevated()
 {
-
-    // When the process is run on operating systems prior to Windows
-    // Vista, GetTokenInformation returns FALSE with the
-    // ERROR_INVALID_PARAMETER error code because TokenElevation is
-    // not supported on those operating systems.
-    if (!IsWindowsVistaOrGreater()) {
-        return false;
-    }
-
     bool bIsElevated = false;
     HANDLE hToken = NULL;
     Globals.dwLastError = ERROR_SUCCESS;
@@ -586,9 +563,15 @@ bool IsRunAsAdmin()
 void BackgroundWorker_Init(BackgroundWorker* worker, HWND hwnd, const HPATHL hFilePath)
 {
     if (worker) {
+        if (IS_VALID_HANDLE(worker->eventCancel)) {
+            return; // already initialized — call Destroy first
+        }
         worker->hwnd = hwnd;
         // manual (not automatic) reset & initial state: not signaled (TRUE, FALSE)
         worker->eventCancel = CreateEvent(NULL, TRUE, FALSE, NULL);
+        if (!IS_VALID_HANDLE(worker->eventCancel)) {
+            worker->eventCancel = INVALID_HANDLE_VALUE;
+        }
         worker->workerThread = INVALID_HANDLE_VALUE;
         worker->hFilePath = Path_Allocate(Path_Get(hFilePath));
     }
@@ -597,31 +580,49 @@ void BackgroundWorker_Init(BackgroundWorker* worker, HWND hwnd, const HPATHL hFi
 void BackgroundWorker_Start(BackgroundWorker* worker, _beginthreadex_proc_type routine, LPVOID property)
 {
     if (worker) {
-        ResetEvent(worker->eventCancel); // init should be 'not signaled'
+        if (IS_VALID_HANDLE(worker->eventCancel)) {
+            ResetEvent(worker->eventCancel); // init should be 'not signaled'
+        }
         //~worker->workerThread = CreateThread(NULL, 0, routine, property, 0, NULL);  // MD(d) dll
         uintptr_t const thread = _beginthreadex(NULL, 0, routine, property, 0, NULL); // MT(d) static
-        InterlockedExchangePointer(&(worker->workerThread), (thread != 0LL) ? (HANDLE)thread : INVALID_HANDLE_VALUE);
+        HANDLE const hOld = InterlockedExchangePointer(&(worker->workerThread), (thread != 0LL) ? (HANDLE)thread : INVALID_HANDLE_VALUE);
+        if (IS_VALID_HANDLE(hOld)) {
+            CloseHandle(hOld); // prevent handle leak from re-entrant Start
+        }
     }
 }
 
 void BackgroundWorker_Cancel(BackgroundWorker* worker) {
     if (worker) {
-        SetEvent(worker->eventCancel); // signal
+        if (IS_VALID_HANDLE(worker->eventCancel)) {
+            SetEvent(worker->eventCancel); // signal
+        }
         HANDLE const workerThread = InterlockedExchangePointer(&(worker->workerThread), INVALID_HANDLE_VALUE);
         if (IS_VALID_HANDLE(workerThread)) {
-            // Optimize: MsgDispatch only in case of hwnd ?
-            // DWORD const wait = SignalObjectAndWait(worker->eventCancel, workerThread, 100 /*INFINITE*/, FALSE);
-            DWORD const dwTimeout = 5000; // 5 seconds max
+            DWORD const dwTimeout = 5000; // 5 seconds for graceful exit
             DWORD const dwStart = GetTickCount();
-            while (WaitForSingleObject(workerThread, 0) != WAIT_OBJECT_0) {
-                if ((GetTickCount() - dwStart) > dwTimeout) {
-                    break; // give up waiting — thread will self-terminate
+
+            // Wait for thread exit, only pumping cross-thread SendMessage to prevent deadlocks.
+            // Posted messages (WM_TIMER, WM_COMMAND, etc.) are left in the queue — dispatching
+            // them here could cause reentrancy in the caller (e.g., mid-FileSave).
+            while (true) {
+                DWORD const dwElapsed = GetTickCount() - dwStart;
+                DWORD const dwRemaining = (dwElapsed < dwTimeout) ? (dwTimeout - dwElapsed) : 0;
+                DWORD const dwWait = MsgWaitForMultipleObjects(1, &workerThread, FALSE, dwRemaining, QS_SENDMESSAGE);
+                if (dwWait == WAIT_OBJECT_0) {
+                    break; // thread exited
                 }
-                MSG msg;
-                if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-                    TranslateMessage(&msg);
-                    DispatchMessage(&msg);
+                if (dwWait == WAIT_OBJECT_0 + 1) {
+                    // Process only sent messages (cross-thread SendMessage), not posted messages
+                    MSG msg;
+                    PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE);
+                    continue;
                 }
+                // WAIT_TIMEOUT or WAIT_FAILED — ensure thread is dead before cleanup
+                if (dwWait == WAIT_TIMEOUT) {
+                    WaitForSingleObject(workerThread, INFINITE);
+                }
+                break;
             }
             CloseHandle(workerThread);
         }
@@ -634,7 +635,10 @@ void BackgroundWorker_Destroy(BackgroundWorker* worker)
 {
     if (worker) {
         BackgroundWorker_Cancel(worker);
-        CloseHandle(InterlockedExchangePointer(&(worker->eventCancel), INVALID_HANDLE_VALUE));
+        HANDLE const hEvent = InterlockedExchangePointer(&(worker->eventCancel), INVALID_HANDLE_VALUE);
+        if (IS_VALID_HANDLE(hEvent)) {
+            CloseHandle(hEvent);
+        }
         Path_Release(worker->hFilePath);
         worker->hFilePath = NULL;
     }

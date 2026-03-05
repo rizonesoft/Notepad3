@@ -13,23 +13,16 @@
 *                                                                             *
 *******************************************************************************/
 
+#include <sdkddkver.h>
+
 #ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0601  /*_WIN32_WINNT_WIN7*/
+#define _WIN32_WINNT _WIN32_WINNT_WIN10
 #endif
 #ifndef WINVER
-#define WINVER 0x0601  /*_WIN32_WINNT_WIN7*/
+#define WINVER _WIN32_WINNT_WIN10
 #endif
 #ifndef NTDDI_VERSION
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
-#endif
-
-#if 0
-#undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0A00 /*_WIN32_WINNT_WIN7*/
-#undef WINVER
-#define WINVER 0x0A00 /*_WIN32_WINNT_WIN7*/
-#undef NTDDI_VERSION
-#define NTDDI_VERSION 0x0A000000 /*NTDDI_WIN7*/
+#define NTDDI_VERSION NTDDI_WIN10_RS5
 #endif
 
 
@@ -41,6 +34,9 @@
 #define NOMINMAX
 #endif
 
+#ifndef VC_EXTRALEAN
+#define VC_EXTRALEAN 1
+#endif
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
 #endif
@@ -869,6 +865,7 @@ typedef struct BackgroundWorker {
 typedef struct FCOBSRVDATA_T {
 
     volatile LONG64   iFileChangeNotifyTime; // multi-threaded
+    volatile LONG     iObservationGeneration; // seqlock: incremented before+after fdCurFile writes
 
     WIN32_FIND_DATA   fdCurFile;
     HANDLE            hEventFileChanged;
@@ -879,7 +876,7 @@ typedef struct FCOBSRVDATA_T {
 
 } FCOBSRVDATA_T, *PFCOBSRVDATA_T;
 
-#define INIT_FCOBSRV_T { 0LL, { 0 }, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, { NULL, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, NULL } }
+#define INIT_FCOBSRV_T { 0LL, 0L, { 0 }, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, { NULL, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, NULL } }
 
 #define MIN_FC_POLL_INTERVAL (200LL)
 #define MAX_FC_POLL_INTERVAL ((24LL * 60 * 60 * 1000) << 1) // max: 48h

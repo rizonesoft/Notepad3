@@ -13,8 +13,13 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-#define _WIN32_WINNT 0x601
+#include <sdkddkver.h>
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT _WIN32_WINNT_WIN10
+#endif
+#define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
+#include <ole2.h>
 //#include <strsafe.h>
 #include "DropSource.h"
 

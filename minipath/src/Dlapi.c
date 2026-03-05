@@ -13,7 +13,10 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-#define _WIN32_WINNT 0x601
+#include <sdkddkver.h>
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT _WIN32_WINNT_WIN10
+#endif
 #include <windows.h>
 #include <commctrl.h>
 #include <process.h>
@@ -99,7 +102,18 @@ BOOL DirList_Init(HWND hwnd,LPCWSTR pszHeader)
 
     // Icon thread control
     lpdl->hExitThread = CreateEvent(NULL,TRUE,FALSE,NULL);
+    if (!lpdl->hExitThread) {
+        RemoveProp(hwnd,pDirListProp);
+        GlobalFree(lpdl);
+        return FALSE;
+    }
     lpdl->hTerminatedThread = CreateEvent(NULL,TRUE,TRUE,NULL);
+    if (!lpdl->hTerminatedThread) {
+        CloseHandle(lpdl->hExitThread);
+        RemoveProp(hwnd,pDirListProp);
+        GlobalFree(lpdl);
+        return FALSE;
+    }
 
     UNUSED(pszHeader);
 
@@ -120,8 +134,12 @@ BOOL DirList_Destroy(HWND hwnd)
 
     // Release multithreading objects
     DirList_TerminateIconThread(hwnd);
-    CloseHandle(lpdl->hExitThread);
-    CloseHandle(lpdl->hTerminatedThread);
+    if (lpdl->hExitThread) {
+        CloseHandle(lpdl->hExitThread);
+    }
+    if (lpdl->hTerminatedThread) {
+        CloseHandle(lpdl->hTerminatedThread);
+    }
 
     if (lpdl->pidl) {
         CoTaskMemFree(lpdl->pidl);
