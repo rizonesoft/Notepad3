@@ -14,10 +14,10 @@
 *                                                                             *
 *******************************************************************************/
 
+#include <sdkddkver.h>
 #if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601
+#define _WIN32_WINNT _WIN32_WINNT_WIN10
 #endif
-#define _WIN32_IE 0x0700
 #define OEMRESOURCE  // use OBM_ resource constants
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
