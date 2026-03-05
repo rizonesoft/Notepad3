@@ -713,7 +713,7 @@ static void _InitGlobals()
     Flags.RelativeFileMRU = DefaultFlags.RelativeFileMRU = true;
     Flags.PortableMyDocs = DefaultFlags.PortableMyDocs = Flags.RelativeFileMRU;
     Flags.NoFadeHidden = DefaultFlags.NoFadeHidden = false;
-    Flags.ToolbarLook = DefaultFlags.ToolbarLook = IsWindowsXPSP3OrGreater() ? 1 : 2;
+    Flags.ToolbarLook = DefaultFlags.ToolbarLook = 1;
     Flags.SimpleIndentGuides = DefaultFlags.SimpleIndentGuides = false;
     Flags.NoHTMLGuess =DefaultFlags.NoHTMLGuess = false;
     Flags.NoCGIGuess = DefaultFlags.NoCGIGuess = false;
@@ -3341,11 +3341,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
             bool bProcessed = false;
             if (Flags.ToolbarLook == 1) {
                 bProcessed = BitmapAlphaBlend(hbmpCopy, GetSysColor(COLOR_3DFACE), 0x60);
-            } else if (Flags.ToolbarLook == 2 || (!IsWindowsXPSP3OrGreater() && Flags.ToolbarLook == 0)) {
+            } else if (Flags.ToolbarLook == 2) {
                 bProcessed = BitmapGrayScale(hbmpCopy);
-            }
-            if (bProcessed && !IsWindowsXPSP3OrGreater()) {
-                BitmapMergeAlpha(hbmpCopy, GetSysColor(COLOR_3DFACE));
             }
             if (bProcessed) {
                 himl = CreateScaledImageListFromBitmap(hwnd, hbmpCopy);

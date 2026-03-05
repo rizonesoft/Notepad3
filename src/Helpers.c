@@ -1987,70 +1987,10 @@ ptrdiff_t MultiByteToWideCharEx(
 //  UrlEscapeEx()
 //
 
-#if (NTDDI_VERSION < NTDDI_WIN8)
-
-// Convert a byte into Hexadecimal Unicode character
-__inline int toHEX(BYTE val, WCHAR* pOutChr)
-{
-    StringCchPrintfW(pOutChr, 4, L"%%%0.2X", val);
-    return 3; // num of wchars ('%FF')
-}
-
-LPCTSTR const lpszUnreservedChars = L"-_.~"; // or IsAlphaNumeric()
-LPCTSTR const lpszReservedChars = L"!#$%&'()*+,/:;=?@[]";
-LPCTSTR const lpszUnsafeChars = L" \"\\<>{|}^`";
-
-#endif
-
-// ----------------------------------------------------------------------------
-
 void UrlEscapeEx(LPCWSTR lpURL, LPWSTR lpEscaped, DWORD* pcchEscaped, bool bEscReserved)
 {
-#if (NTDDI_VERSION >= NTDDI_WIN8)
     UNREFERENCED_PARAMETER(bEscReserved);
     UrlEscape(lpURL, lpEscaped, pcchEscaped, (URL_ESCAPE_SEGMENT_ONLY | URL_ESCAPE_URI_COMPONENT));
-#else
-    //UrlEscape(lpURL, lpEscaped, pcchEscaped, (URL_ESCAPE_SEGMENT_ONLY | URL_ESCAPE_PERCENT | URL_ESCAPE_AS_UTF8));
-
-    DWORD posIn = 0;
-    DWORD posOut = 0;
-
-    while (lpURL[posIn] && (posOut < *pcchEscaped)) {
-        if (IsAlphaNumericW(lpURL[posIn]) || StrChrW(lpszUnreservedChars, lpURL[posIn])) {
-            lpEscaped[posOut++] = lpURL[posIn++];
-        } else if (StrChrW(lpszReservedChars, lpURL[posIn])) {
-            if (posOut < (*pcchEscaped - 3)) {
-                if (bEscReserved) {
-                    posOut += toHEX(toascii(lpURL[posIn++]), &lpEscaped[posOut]);
-                } else {
-                    lpEscaped[posOut++] = lpURL[posIn++];
-                }
-            }
-        } else if (StrChrW(lpszUnsafeChars, lpURL[posIn])) {
-            if (posOut < (*pcchEscaped - 3)) {
-                posOut += toHEX(toascii(lpURL[posIn++]), &lpEscaped[posOut]);
-            }
-        }
-        // Encode unprintable characters 0x00-0x1F, and 0x7F
-        else if ((lpURL[posIn] <= 0x1F) || (lpURL[posIn] == 0x7F)) {
-            if (posOut < (*pcchEscaped - 3)) {
-                posOut += toHEX((BYTE)lpURL[posIn++], &lpEscaped[posOut]);
-            }
-        }
-        // Now encode all other unsafe characters
-        else {
-            CHAR mb[4] = { '\0', '\0', '\0', '\0' };
-            int const n = WideCharToMultiByte(Encoding_SciCP, 0, &lpURL[posIn++], 1, mb, 4, 0, 0);
-            if (posOut < (*pcchEscaped - (n*3))) {
-                for (int i = 0; i < n; ++i) {
-                    posOut += toHEX((BYTE)mb[i], &lpEscaped[posOut]);
-                }
-            }
-        }
-    }
-    lpEscaped[posOut] = L'\0';
-    *pcchEscaped = posOut;
-#endif
 }
 
 
@@ -2060,72 +2000,7 @@ void UrlEscapeEx(LPCWSTR lpURL, LPWSTR lpEscaped, DWORD* pcchEscaped, bool bEscR
 //
 void UrlUnescapeEx(LPWSTR lpURL, LPWSTR lpUnescaped, DWORD* pcchUnescaped)
 {
-#if (NTDDI_VERSION >= NTDDI_WIN8)
     UrlUnescape(lpURL, lpUnescaped, pcchUnescaped, URL_UNESCAPE_AS_UTF8);
-#else
-    char * const outBuffer = AllocMem((size_t)*pcchUnescaped + 1, HEAP_ZERO_MEMORY);
-    if (!outBuffer) {
-        return;
-    }
-    DWORD const outLen = *pcchUnescaped;
-
-    DWORD posIn = 0;
-    WCHAR buf[5] = { L'\0' };
-    DWORD lastEsc = (DWORD)StringCchLen(lpURL,0) - 2;
-    unsigned int code;
-
-    DWORD posOut = 0;
-    while ((posIn < lastEsc) && (posOut < outLen)) {
-        bool bOk = false;
-        // URL encoded
-        if (lpURL[posIn] == L'%') {
-            buf[0] = lpURL[posIn + 1];
-            buf[1] = lpURL[posIn + 2];
-            buf[2] = L'\0';
-            if (swscanf_s(buf, L"%x", &code) == 1) {
-                outBuffer[posOut++] = (char)code;
-                posIn += 3;
-                bOk = true;
-            }
-        }
-        // HTML encoded
-        else if ((lpURL[posIn] == L'&') && (lpURL[posIn + 1] == L'#')) {
-            int n = 0;
-            while (IsDigitW(lpURL[posIn + 2 + n]) && (n < 4)) {
-                buf[n] = lpURL[posIn + 2 + n];
-                ++n;
-            }
-            buf[n] = L'\0';
-            if (swscanf_s(buf, L"%ui", &code) == 1) {
-                if (code <= 0xFF) {
-                    outBuffer[posOut++] = (char)code;
-                    posIn += (2 + n);
-                    if (lpURL[posIn] == L';') {
-                        ++posIn;
-                    }
-                    bOk = true;
-                }
-            }
-        }
-
-        if (!bOk) {
-            posOut += WideCharToMultiByte(Encoding_SciCP, 0, &lpURL[posIn++], 1,
-                                          &outBuffer[posOut], (int)(outLen - posOut), NULL, NULL);
-        }
-    }
-
-    // copy rest
-    while ((lpURL[posIn] != L'\0') && (posOut < outLen)) {
-        posOut += WideCharToMultiByte(Encoding_SciCP, 0, &lpURL[posIn++], 1,
-                                      &outBuffer[posOut], (int)(outLen - posOut), NULL, NULL);
-    }
-    outBuffer[posOut] = '\0';
-
-    DWORD const iOut = MultiByteToWideChar(Encoding_SciCP, 0, outBuffer, -1, lpUnescaped, (int)*pcchUnescaped);
-    FreeMem(outBuffer);
-
-    *pcchUnescaped = ((iOut > 0) ? (iOut - 1) : 0);
-#endif
 }
 
 
