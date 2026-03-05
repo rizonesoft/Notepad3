@@ -31,11 +31,11 @@ ONI - (ONI)guruma Regex engine
 PCR - (PCR)2 Regex engine
 SCI - (SCI)ntilla Library
 SUP - (S)et(UP) / Installer Package
-UCD - (UCD)ARDET is an Encoding Detector Library
+UCH - (UCH)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.26.303.(build_#) (2026-03-03)
+Current BETA Version 6.26.305.(build_#) (2026-03-05)
 ========================================================
 
 --------------------------------------------------------
@@ -55,6 +55,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]-
+[.305.1]- Feat: enhancement of MMB auto-scroll.
+[.305.1]- Update UCHARDET encoding detector (UCH).
 [.303.1]- Refactor: replace regex engines: Oniguruma (retired) by PCRE2 v10.47 (ONI->PCR).
 [.227.1]- Refactor: File Change Notification handling.
 [.227.1]- Update to Scintilla v5.6.0 and Lexilla v5.4.7.
@@ -74,6 +76,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]-
+[.305.1]- UFT-8 affinity for uchardet uncertainty (lower than 66%) (UCH).
+[.305.1]- Refactoring from GetOpenFileName() to IFileOpenDialog().
 [.303.1]- Revert: Regression, revert to special Text (.txt) font.
 [.227.1]- Minor enhancements on file loading.
 [.224.1]- Enhance ShowWindow start-up time.
@@ -110,9 +114,10 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.303.1]- Update PCR2 Regex (PCR) engine version 10.47 (2025-10-21).
-[.227.1]- Update Scintilla Library (SCI) version 5.6.0 (2026-02-25).
-[.227.1]- Update Lexilla Library (LEX) version 5.4.7 (2026-02-25).
+[.305.1]- Update UCHARDET (UCH) encoding detector version 0.0.8 (2022-12-08).
+[.303.1]- Update PCR2 (PCR) Regex engine version 10.47 (2025-10-21).
+[.227.1]- Update Scintilla (SCI) Library version 5.6.0 (2026-02-25).
+[.227.1]- Update Lexilla (LEX) Library version 5.4.7 (2026-02-25).
 [.101.1]- Update grepWinNP3 (GRE) version 2.1.15.48 (2024-01-10).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
 
@@ -1644,9 +1649,9 @@ CHANGES:
     (disabled, due to lack of performance profiling).
 - Support (internal) DevDebugMode.
 - Menu item "HighDPI Toolbar" -> "Toggle Toolbar".
-- Train Dutch (CP-1252) for UCD language detection models.
-- Train Belarusian (CP-1251) for UCD language detection models.
-- Train Africaans (CP-1252) for UCD language detection models.
+- Train Dutch (CP-1252) for UCHARDET (UCH) language detection models.
+- Train Belarusian (CP-1251) for UCHARDET (UCH) language detection models.
+- Train Africaans (CP-1252) for UCHARDET (UCH) language detection models.
 - Word-wrap-symbol show/hide accelerator-key -> "Ctrl+Shift+7.
 - Menu Languange Selector to Dynamic Language Selector.
 - Up-to-Date SCI (GitHub Mirror 2019-May-10).
