@@ -600,14 +600,14 @@ void BackgroundWorker_Cancel(BackgroundWorker* worker) {
         HANDLE const workerThread = InterlockedExchangePointer(&(worker->workerThread), INVALID_HANDLE_VALUE);
         if (IS_VALID_HANDLE(workerThread)) {
             DWORD const dwTimeout = 5000; // 5 seconds for graceful exit
-            DWORD const dwStart = GetTickCount();
+            ULONGLONG const dwStart = GetTickCount64();
 
             // Wait for thread exit, only pumping cross-thread SendMessage to prevent deadlocks.
             // Posted messages (WM_TIMER, WM_COMMAND, etc.) are left in the queue — dispatching
             // them here could cause reentrancy in the caller (e.g., mid-FileSave).
             while (true) {
-                DWORD const dwElapsed = GetTickCount() - dwStart;
-                DWORD const dwRemaining = (dwElapsed < dwTimeout) ? (dwTimeout - dwElapsed) : 0;
+                ULONGLONG const dwElapsed = GetTickCount64() - dwStart;
+                DWORD const dwRemaining = (DWORD)((dwElapsed < dwTimeout) ? (dwTimeout - dwElapsed) : 0);
                 DWORD const dwWait = MsgWaitForMultipleObjects(1, &workerThread, FALSE, dwRemaining, QS_SENDMESSAGE);
                 if (dwWait == WAIT_OBJECT_0) {
                     break; // thread exited

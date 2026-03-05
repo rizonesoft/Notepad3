@@ -176,7 +176,7 @@ static bool      s_bUndoRedoScroll = false;
 // Middle-click auto-scroll state
 static bool      s_bAutoScrollMode = false;
 static bool      s_bAutoScrollHeld = false;        // true while MMB is physically held down
-static DWORD     s_dwAutoScrollStartTick = 0;      // GetTickCount() at MMB down
+static ULONGLONG s_dwAutoScrollStartTick = 0;      // GetTickCount64() at MMB down
 static POINT     s_ptAutoScrollOrigin = { 0, 0 };
 static POINT     s_ptAutoScrollMouse = { 0, 0 };
 static double    s_dAutoScrollAccumY = 0.0;
@@ -2524,7 +2524,7 @@ static LRESULT CALLBACK _EditSubclassProc(
                 HandleHotSpotURLClicked(pos, OPEN_WITH_BROWSER);
             } else {
                 s_bAutoScrollHeld = true;
-                s_dwAutoScrollStartTick = GetTickCount();
+                s_dwAutoScrollStartTick = GetTickCount64();
                 _AutoScrollStart(hwnd, pt);
             }
         }
@@ -2533,7 +2533,7 @@ static LRESULT CALLBACK _EditSubclassProc(
 
     case WM_MBUTTONUP: {
         if (s_bAutoScrollMode && s_bAutoScrollHeld) {
-            DWORD const elapsed = GetTickCount() - s_dwAutoScrollStartTick;
+            ULONGLONG const elapsed = GetTickCount64() - s_dwAutoScrollStartTick;
             if (elapsed > AUTOSCROLL_CLICK_THRESHOLD_MS) {
                 // Hold-to-scroll: stop on release
                 _AutoScrollStop(hwnd);
