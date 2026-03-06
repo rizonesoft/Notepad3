@@ -227,6 +227,36 @@ typedef enum {
     FW_IDX_ULTRADARK
 } FW_IDX;
 
+// Font Stretch
+typedef struct _fntstrtch {
+    LPCWSTR const wname;
+    int const stretch;
+} FONTSTRETCH_T;
+
+static const FONTSTRETCH_T FontStretches[9] = {
+    { L"ultracondensed",  SC_STRETCH_ULTRA_CONDENSED },  // 0
+    { L"extracondensed",  SC_STRETCH_EXTRA_CONDENSED },  // 1
+    { L"condensed",       SC_STRETCH_CONDENSED },        // 2
+    { L"semicondensed",   SC_STRETCH_SEMI_CONDENSED },   // 3
+    { L"normal",          SC_STRETCH_NORMAL },           // 4 (default)
+    { L"semiexpanded",    SC_STRETCH_SEMI_EXPANDED },    // 5
+    { L"expanded",        SC_STRETCH_EXPANDED },         // 6
+    { L"extraexpanded",   SC_STRETCH_EXTRA_EXPANDED },   // 7
+    { L"ultraexpanded",   SC_STRETCH_ULTRA_EXPANDED },   // 8
+};
+
+typedef enum {
+    FS_IDX_ULTRACONDENSED = 0,
+    FS_IDX_EXTRACONDENSED,
+    FS_IDX_CONDENSED,
+    FS_IDX_SEMICONDENSED,
+    FS_IDX_NORMAL,
+    FS_IDX_SEMIEXPANDED,
+    FS_IDX_EXPANDED,
+    FS_IDX_EXTRAEXPANDED,
+    FS_IDX_ULTRAEXPANDED,
+} FONTSTRETCH_IDX;
+
 //// font quality
 //#define Style_StrHasAttrNone(lpszStyle)         Style_StrHasAttribute((lpszStyle), L"none")
 //#define Style_StrHasAttrStdType(lpszStyle)      Style_StrHasAttribute((lpszStyle), L"standard")
@@ -2514,7 +2544,7 @@ PEDITLEXER Style_RegExMatchLexer(LPCWSTR lpszFileName)
                     char regexpat[HUGE_BUFFER] = { '\0' };
                     WideCharToMultiByte(CP_UTF8, 0, f, (int)(e-f), regexpat, (int)COUNTOF(regexpat), NULL, NULL);
 
-                    if (RegExFind(regexpat, chFilePath, false, SciCall_GetEOLMode(), NULL) >= 0) {
+                    if (RegExFind(regexpat, chFilePath, false, NULL) >= 0) {
                         return g_pLexArray[iLex];
                     }
                 }
@@ -3380,6 +3410,50 @@ void Style_AppendWeightAttribute(LPWSTR lpszWeight, int cchSize, int fontWeight)
 
 //=============================================================================
 //
+//  Style_StrGetStretchValue()
+//
+bool Style_StrGetStretchValue(LPCWSTR lpszStyle, int* stretch)
+{
+    int fontStretch = SC_STRETCH_NORMAL;
+    bool bFound = false;
+    for (int i = FS_IDX_ULTRACONDENSED; i <= FS_IDX_ULTRAEXPANDED; ++i) {
+        if (Style_StrHasAttribute(lpszStyle, FontStretches[i].wname)) {
+            fontStretch = FontStretches[i].stretch;
+            bFound = true;
+            break;
+        }
+    }
+    if (bFound) {
+        *stretch = fontStretch;
+    }
+    return bFound;
+}
+
+
+//=============================================================================
+//
+//  Style_AppendStretchAttribute()
+//
+void Style_AppendStretchAttribute(LPWSTR lpszStyle, int cchSize, int fontStretch)
+{
+    if (fontStretch == SC_STRETCH_NORMAL) {
+        return; // normal is default, no need to append
+    }
+    const WCHAR *pFontStretch = NULL;
+    for (int i = FS_IDX_ULTRACONDENSED; i <= FS_IDX_ULTRAEXPANDED; ++i) {
+        if (fontStretch == FontStretches[i].stretch) {
+            pFontStretch = FontStretches[i].wname;
+            break;
+        }
+    }
+    if (pFontStretch) {
+        AppendStyle(lpszStyle, cchSize, pFontStretch);
+    }
+}
+
+
+//=============================================================================
+//
 //  Style_StrGetColor()
 //
 bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORALPHAREF* rgba, COLORALPHAREF* rgbaOrig, bool useDefault)
@@ -3597,6 +3671,26 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
     }
     if (pFontWeight) {
         AppendStyle(szTmpStyle, COUNTOF(szTmpStyle), pFontWeight);
+    }
+
+    // Font Stretch
+    const WCHAR *pFontStretch = NULL;
+    for (int idx = FS_IDX_ULTRACONDENSED; idx <= FS_IDX_ULTRAEXPANDED; ++idx) {
+        if (Style_StrHasAttribute(lpszStyleDest, FontStretches[idx].wname)) {
+            pFontStretch = FontStretches[idx].wname;
+            break;
+        }
+    }
+    if (!bIsFontDefInDestination && !pFontStretch) {
+        for (int idx = FS_IDX_ULTRACONDENSED; idx <= FS_IDX_ULTRAEXPANDED; ++idx) {
+            if (Style_StrHasAttribute(lpszStyleSrc, FontStretches[idx].wname)) {
+                pFontStretch = FontStretches[idx].wname;
+                break;
+            }
+        }
+    }
+    if (pFontStretch) {
+        AppendStyle(szTmpStyle, COUNTOF(szTmpStyle), pFontStretch);
     }
 
     if (Style_StrHasAttribute(lpszStyleDest, FontEffects[FE_ITALIC])) {
@@ -3818,7 +3912,8 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
     int const iFontHeight = PointSizeToFontHeight(fFontSize, hdc);
     ReleaseDC(hwnd, hdc);
 
-    int const iFontStretch = 0; // with calculated automatically
+    int iFontStretch = SC_STRETCH_NORMAL;
+    Style_StrGetStretchValue(lpszStyle, &iFontStretch);
     bool const bIsUnderline = Style_StrHasAttribute(lpszStyle, FontEffects[FE_UNDERLINE]);
     bool const bIsStrikeout = Style_StrHasAttribute(lpszStyle, FontEffects[FE_STRIKEOUT]);
 
@@ -3835,7 +3930,7 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
     LOGFONT lf = { 0 };
     lf.lfCharSet = (BYTE)iCharSet;
     lf.lfHeight = iFontHeight;
-    lf.lfWidth = iFontStretch;
+    lf.lfWidth = 0; // let system calculate character width
     lf.lfWeight = iFontWeight;
     lf.lfItalic = (BYTE)(BOOL)bIsItalic;
     lf.lfUnderline = (BYTE)(BOOL)bIsUnderline;
@@ -3940,6 +4035,11 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
 
     if (lf.lfWeight != FontWeights[FW_IDX_REGULAR].weight) {
         Style_AppendWeightAttribute(szNewStyle, COUNTOF(szNewStyle), lf.lfWeight);
+    }
+
+    // persist stretch (ChooseFont dialog doesn't modify it, so round-trip the original)
+    if (iFontStretch != SC_STRETCH_NORMAL) {
+        Style_AppendStretchAttribute(szNewStyle, COUNTOF(szNewStyle), iFontStretch);
     }
 
     if (lf.lfItalic) {
@@ -4107,6 +4207,13 @@ void Style_SetStyles(HWND hwnd, const int iStyle, LPCWSTR lpszStyle, const float
         SciCall_StyleSetWeight(iStyle, iValue);
     } else if (bIsDefaultStyle) {
         SciCall_StyleSetWeight(iStyle, SC_WEIGHT_NORMAL);
+    }
+
+    // Font Stretch
+    if (Style_StrGetStretchValue(lpszStyle, &iValue)) {
+        SciCall_StyleSetStretch(iStyle, iValue);
+    } else if (bIsDefaultStyle) {
+        SciCall_StyleSetStretch(iStyle, SC_STRETCH_NORMAL);
     }
 
     // Italic

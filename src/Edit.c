@@ -2157,7 +2157,7 @@ void EditURLDecode(const bool isPathConvert)
 
     // can URL be found by Hyperlink pattern matching ?
     int matchLen = 0;
-    ptrdiff_t const pos = RegExFind(s_pUrlRegExA, pszUnescaped, false, SciCall_GetEOLMode(), &matchLen);
+    ptrdiff_t const pos = RegExFind(s_pUrlRegExA, pszUnescaped, false, &matchLen);
     bool const bIsValidConversion = isPathConvert ? ((pos >= 0) && (cchUnescapedDec == matchLen)) : true;
 
     if (bIsValidConversion) {
@@ -3117,6 +3117,7 @@ void EditCutLines(HWND hwnd, const bool bMSBehavSelEmpty)
         bool const bIsLineEmpty = Sci_GetNetLineLength(Sci_GetCurrentLineNumber()) == 0;
         UndoTransActionBegin();
         if (SciCall_IsSelectionEmpty() && bMSBehavSelEmpty) {
+            //? SciCall_CutAllowLine(); - does it the same as CopyAllowLine() + LineDelete()?
             SciCall_CopyAllowLine(); // (!) VisualStudio behavior
             // On Windows, an extra "MSDEVLineSelect" marker is added to the clipboard
             // which is then used in SCI_PASTE to paste the whole line before the current line.

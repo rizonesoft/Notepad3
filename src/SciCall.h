@@ -104,8 +104,8 @@ LRESULT WINAPI Scintilla_DirectStatusFunction(HANDLE, UINT, WPARAM, LPARAM, LPIN
 //=============================================================================
 
 // PCRE2 RegEx search (exported from PCRE2RegExEngine.cxx)
-ptrdiff_t WINAPI RegExFind(const char* pchPattern, const char* pchText, 
-                           const bool caseSensitive, const int eolMode, int *matchLen_out);
+ptrdiff_t WINAPI RegExFind(const char* pchPattern, const char* pchText,
+                           const bool caseSensitive, int *matchLen_out);
 
 //=============================================================================
 
