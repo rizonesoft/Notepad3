@@ -129,7 +129,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Erro carregando ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Erro salvando ""%s"""
-    IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
+    IDS_MUI_ERR_PATHNOTFOUND "O caminho para ""%s"" não existe mais.\nRecriar caminho e salvar o arquivo?"
     IDS_MUI_ERR_DLG_FORMAT  "Erro '%s', causa:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Nenhum plugin de gerenciador de arquivos foi encontrado\nO plugin de gerenciador de arquivos MiniPath pode ser baixado de https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Nenhum plugin de localizador em arquivos foi encontrado\nO plugin de localizador em arquivos grepWinNP3 pode ser baixado de https://rizonesoft.com"
