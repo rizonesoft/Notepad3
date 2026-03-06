@@ -11765,6 +11765,50 @@ bool FileSave(FileSaveFlags fSaveFlags)
                     }
                 }
             }
+        } else if (Globals.dwLastError == ERROR_PATH_NOT_FOUND) {
+            INT_PTR const answer = (Settings.MuteMessageBeep) ?
+                                   InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PATHNOTFOUND, currentFileName) :
+                                   MessageBoxLng(MB_YESNO | MB_ICONWARNING, IDS_MUI_ERR_PATHNOTFOUND, Path_Get(Paths.CurrentFile));
+            if (IsYesOkay(answer)) {
+                // Recreate the directory tree (pattern from Config.cpp CreateIniFile)
+                HPATHL hdir_path = Path_Copy(Paths.CurrentFile);
+                Path_RemoveFileSpec(hdir_path);
+                bool bDirCreated = false;
+                if (Path_IsNotEmpty(hdir_path)) {
+                    HRESULT const hr = SHCreateDirectoryExW(NULL, Path_Get(hdir_path), NULL);
+                    bDirCreated = SUCCEEDED(hr) || (hr == HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS));
+                }
+                Path_Release(hdir_path);
+
+                if (bDirCreated) {
+                    InstallFileWatching(false);
+                    fSuccess = FileIO(false, Paths.CurrentFile, &fioStatus, FLF_None, FSF_EndSession, true);
+                    if (fSuccess) {
+                        if (!(fSaveFlags & FSF_SaveCopy) && !Flags.bDoRelaunchElevated) {
+                            _MRU_AddSession();
+                            AddFilePathToRecentDocs(Paths.CurrentFile);
+                            InstallFileWatching(true);
+                        } else {
+                            _MRU_UpdateSession();
+                        }
+                    } else {
+                        if (Settings.MuteMessageBeep) {
+                            InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
+                        } else {
+                            MessageBoxLng(MB_ICONERROR, IDS_MUI_ERR_SAVEFILE, Path_Get(Paths.CurrentFile));
+                        }
+                    }
+                } else {
+                    if (Settings.MuteMessageBeep) {
+                        InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
+                    } else {
+                        MessageBoxLng(MB_ICONERROR, IDS_MUI_ERR_SAVEFILE, Path_Get(Paths.CurrentFile));
+                    }
+                }
+            } else {
+                // User declined — offer Save As
+                FileSave(FSF_SaveAs);
+            }
         } else {
             if (Settings.MuteMessageBeep) {
                 InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);

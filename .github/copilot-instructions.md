@@ -97,6 +97,26 @@ EDITLEXER lexXXX = {
 
 Resource-based MUI system with 27+ locales. Each locale has a directory `np3_LANG_COUNTRY\` containing resource `.rc` files. Language DLLs are built as separate projects in the solution.
 
+### Adding String Resources
+
+1. Add `#define IDS_MUI_XXX <id>` to `language\common_res.h` (use next available ID in the appropriate range: 13xxx for errors/warnings, 14xxx for info/prompts)
+2. Add the English string to `language\np3_en_us\strings_en_us.rc` in the matching `STRINGTABLE` block
+3. Add the same English text as placeholder to all other 25 locale `strings_*.rc` files (translators update later)
+4. Use `InfoBoxLng()` / `MessageBoxLng()` with `MB_YESNO`, `MB_ICONWARNING`, etc. to display; check result with `IsYesOkay()`
+5. `Settings.MuteMessageBeep` controls whether to use `InfoBoxLng` (silent) or `MessageBoxLng` (with sound) — always provide both paths
+
+### File I/O Flow
+
+- **`FileSave()`** (`src\Notepad3.c`) — Main save dispatcher. Handles Save, Save As, Save Copy.
+  Calls `FileIO()` → `EditSaveFile()` (`src\Edit.c`)
+- **`FileLoad()`** (`src\Notepad3.c`) — Main load dispatcher.
+  Calls `FileIO()` → `EditLoadFile()` (`src\Edit.c`)
+- **`EditSaveFile()`** supports atomic save (temp file + `ReplaceFileW`) controlled by `Settings2.AtomicFileSave`
+- **Error handling**: `Globals.dwLastError` holds the Win32 error code after failed I/O.
+  `FileSave()` checks specific codes (`ERROR_ACCESS_DENIED`, `ERROR_PATH_NOT_FOUND`) before falling back to generic error.
+- **File watching**: `InstallFileWatching()` uses `FindFirstChangeNotificationW` on the parent directory.
+  Must be stopped before save (`InstallFileWatching(false)`) and restarted after (`InstallFileWatching(true)`).
+
 ### PCRE2 Regex Engine (`scintilla\pcre2\`)
 
 PCRE2 10.47 replaced the archived Oniguruma library. The Scintilla integration lives in `scintilla\pcre2\scintilla\PCRE2RegExEngine.cxx`, compiled with `SCI_OWNREGEX` to override Scintilla's built-in regex.
@@ -183,6 +203,10 @@ Notepad3 follows a **portable-app** design for its configuration file (`Notepad3
 - **Configuration code**: All INI init logic lives in `src\Config\Config.cpp` — `FindIniFile()` → `TestIniFile()` → `CreateIniFile()` → `LoadSettings()`.
 - **MiniPath** follows the same portable INI and admin-redirect pattern (`minipath\src\Config.cpp`). Redirect targets are auto-created via `CreateIniFileEx()`.
 - **New parameters**: When adding new `Settings2` (or other INI) parameters, always document them as commented entries in `Build\Notepad3.ini`
+
+### Creating Directories
+
+Use `SHCreateDirectoryExW(NULL, path, NULL)` to recursively create directory trees (requires `<shlobj.h>`, already included in core modules). Check result: `SUCCEEDED(hr) || (hr == HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS))`. See `CreateIniFile()` in `src\Config\Config.cpp` for the reference pattern.
 
 ### Undo/Redo transactions
 

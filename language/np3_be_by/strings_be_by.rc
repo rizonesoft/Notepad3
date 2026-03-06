@@ -129,6 +129,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Памылка чытання «%s»"
     IDS_MUI_ERR_SAVEFILE    "Памылка захоўвання «%s»"
+    IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
     IDS_MUI_ERR_DLG_FORMAT  "Памылка '%s', прычына:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Не знойдзены плагін аглядніка файлаў\nПлагін MiniPath можна спампаваць з сайта https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Не знойдзены плагін для пошука ў файлах\nПлагін grepWinNP3 можна спампаваць з сайта https://rizonesoft.com"

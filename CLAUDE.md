@@ -109,6 +109,14 @@ To add a new lexer: create `styleLexNEW.c`, define the `EDITLEXER` struct, regis
 
 Resource-based MUI system with 27+ locales. Each locale has a `np3_LANG_COUNTRY\` directory with `.rc` files. Language packs are built as separate DLLs (separate projects in the solution).
 
+### Adding String Resources
+
+1. Add `#define IDS_MUI_XXX <id>` to `language\common_res.h` (use next available ID in the appropriate range: 13xxx for errors/warnings, 14xxx for info/prompts)
+2. Add the English string to `language\np3_en_us\strings_en_us.rc` in the matching `STRINGTABLE` block
+3. Add the same English text as placeholder to all other 25 locale `strings_*.rc` files (translators update later)
+4. Use `InfoBoxLng()` / `MessageBoxLng()` with `MB_YESNO`, `MB_ICONWARNING`, etc. to display; check result with `IsYesOkay()`
+5. `Settings.MuteMessageBeep` controls whether to use `InfoBoxLng` (silent) or `MessageBoxLng` (with sound) — always provide both paths
+
 ### Configuration / Portable Design
 
 - INI file alongside executable (`Notepad3.ini`), no registry usage
@@ -118,6 +126,22 @@ Resource-based MUI system with 27+ locales. Each locale has a `np3_LANG_COUNTRY\
 - INI init flow: `FindIniFile()` -> `TestIniFile()` -> `CreateIniFile()` -> `LoadSettings()`
 - **MiniPath** follows the same portable INI and admin-redirect pattern (`minipath\src\Config.cpp`). Redirect targets are auto-created via `CreateIniFileEx()`.
 - **New parameters**: When adding new `Settings2` (or other INI) parameters, always document them as commented entries in `Build\Notepad3.ini`
+
+### Creating Directories
+
+Use `SHCreateDirectoryExW(NULL, path, NULL)` to recursively create directory trees (requires `<shlobj.h>`, already included in core modules). Check result: `SUCCEEDED(hr) || (hr == HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS))`. See `CreateIniFile()` in `src\Config\Config.cpp` for the reference pattern.
+
+### File I/O Flow
+
+- **`FileSave()`** (`src\Notepad3.c`) — Main save dispatcher. Handles Save, Save As, Save Copy.
+  Calls `FileIO()` → `EditSaveFile()` (`src\Edit.c`)
+- **`FileLoad()`** (`src\Notepad3.c`) — Main load dispatcher.
+  Calls `FileIO()` → `EditLoadFile()` (`src\Edit.c`)
+- **`EditSaveFile()`** supports atomic save (temp file + `ReplaceFileW`) controlled by `Settings2.AtomicFileSave`
+- **Error handling**: `Globals.dwLastError` holds the Win32 error code after failed I/O.
+  `FileSave()` checks specific codes (`ERROR_ACCESS_DENIED`, `ERROR_PATH_NOT_FOUND`) before falling back to generic error.
+- **File watching**: `InstallFileWatching()` uses `FindFirstChangeNotificationW` on the parent directory.
+  Must be stopped before save (`InstallFileWatching(false)`) and restarted after (`InstallFileWatching(true)`).
 
 ### PCRE2 Regex Engine (`scintilla\pcre2\`)
 
@@ -179,3 +203,29 @@ Application state is centralized in global structs (`Globals`, `Settings`, `Sett
 ### Undo/Redo Transactions
 
 Use `_BEGIN_UNDO_ACTION_` / `_END_UNDO_ACTION_` macros (defined in `Notepad3.h`) to group Scintilla operations into single undo steps. These also handle notification limiting during bulk edits.
+
+## Python Environment
+
+A Python 3.14 virtual environment is available at `.venv\` for scripting tasks (batch file manipulation, locale file updates, code generation, etc.).
+
+```bash
+# Run a script (from project root, in bash/Cygwin)
+.venv/Scripts/python.exe <script.py>
+
+# Install packages
+.venv/Scripts/pip.exe install <package>
+```
+
+Use this venv instead of system Python (which may not be installed). Useful for bulk operations across the 26 locale `strings_*.rc` files.
+
+## Key File Paths (Quick Reference)
+
+| Pattern | Purpose |
+|---------|---------|
+| `language/common_res.h` | String resource ID definitions |
+| `language/np3_*/strings_*.rc` | Locale string tables (26 files) |
+| `Build/Notepad3.ini` | Reference INI with documented settings |
+| `src/Notepad3.c:FileSave()` | Save flow entry point |
+| `src/Edit.c:EditSaveFile()` | Actual file write logic |
+| `src/Config/Config.cpp` | INI management, settings load/save |
+| `src/Dialogs.c:SaveFileDlg()` | Save As dialog |

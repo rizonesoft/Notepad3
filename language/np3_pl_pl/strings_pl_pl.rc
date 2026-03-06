@@ -129,6 +129,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Błąd podczas ładowania ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Błąd podczas zapisu ""%s"""
+    IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
     IDS_MUI_ERR_DLG_FORMAT  "Błąd '%s', powód:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Nie znaleziono wtyczki przeglądarki pliku\nWtyczkę przeglądarki pliku do MiniPath można pobrać z https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Nie znaleziono wtyczki wyszukiwania pliku.\Wtyczkę wyszukiwania pliku programu grepWinNP3 można pobrać ze strony https://rizonesoft.com"
