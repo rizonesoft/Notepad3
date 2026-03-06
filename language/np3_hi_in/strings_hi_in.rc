@@ -129,6 +129,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    """%s"" शुरू करने में त्रुटि"
     IDS_MUI_ERR_SAVEFILE    """%s"" सहेजने में त्रुटि"
+    IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
     IDS_MUI_ERR_DLG_FORMAT  "त्रुटि '%s', कारण:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "कोई फ़ाईल ब्राउज़र plugin नहीं मिला।\nकृपया MiniPath फ़ाईल ब्राउज़र plugin यहाँ से डाउनलोड करें: https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "कोई फ़ाईल सर्च plugin नहीं मिला।\ngrepWinNP3 सर्च plugin कृपया यहाँ से डाउनलोड करें: https://rizonesoft.com"

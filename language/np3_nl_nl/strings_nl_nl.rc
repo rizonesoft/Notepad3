@@ -129,6 +129,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Fout bij laden ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Fout bij opslaan ""%s"""
+    IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
     IDS_MUI_ERR_DLG_FORMAT  "Fout '%s', oorzaak:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Geen bestandsbrowser-plugin gevonden\nDe plugin voor de MiniPath bestandsbrowser kan worden gedownload van https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Geen plugin voor het doorzoeken van bestanden gevonden\nDe plug-in grepWinNP3 voor het doorzoeken van bestanden kan worden gedownload van https://rizonesoft.com"
