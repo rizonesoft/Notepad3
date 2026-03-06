@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2018-2021, Troy D. Hanson   http://troydhanson.github.com/uthash/
+Copyright (c) 2018-2025, Troy D. Hanson  https://troydhanson.github.io/uthash/
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

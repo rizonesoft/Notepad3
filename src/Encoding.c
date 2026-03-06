@@ -372,7 +372,7 @@ void Encoding_AddToListView(HWND hwnd, cpi_enc_t idSel, bool bRecodeOnly)
             pEE[i].id = i;
             GetLngString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
         }
-        qsort(pEE, Encoding_CountOf(), sizeof(ENCODINGENTRY), CmpEncoding);
+        NP3_SORT(pEE, Encoding_CountOf(), sizeof(ENCODINGENTRY), CmpEncoding);
 
         LVITEM lvi = { 0 };
         lvi.mask = LVIF_PARAM | LVIF_TEXT | LVIF_IMAGE;
@@ -458,7 +458,7 @@ void Encoding_AddToComboboxEx(HWND hwnd, cpi_enc_t idSel, bool bRecodeOnly)
             pEE[i].id = i;
             GetLngString(g_Encodings[i].idsName, pEE[i].wch, COUNTOF(pEE[i].wch));
         }
-        qsort(pEE, Encoding_CountOf(), sizeof(ENCODINGENTRY), CmpEncoding);
+        NP3_SORT(pEE, Encoding_CountOf(), sizeof(ENCODINGENTRY), CmpEncoding);
 
         COMBOBOXEXITEM cbei = { 0 };
         cbei.mask = CBEIF_TEXT | CBEIF_IMAGE | CBEIF_SELECTEDIMAGE | CBEIF_LPARAM;
