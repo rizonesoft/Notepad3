@@ -86,7 +86,11 @@ inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
 
     if (build >= 22000) { // Win11
 
-        if (build >= 26200)
+        if (build >= 28000)
+        {
+            lpcReleaseID = L"26H1";
+        }
+        else if (build >= 26200)
         {
             lpcReleaseID = L"25H2";
         }
