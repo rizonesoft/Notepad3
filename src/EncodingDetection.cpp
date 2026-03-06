@@ -13,14 +13,15 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
+#include <sdkddkver.h>
 #if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#define WINVER _WIN32_WINNT_WIN10
 #endif
 #if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
+#define _WIN32_WINNT _WIN32_WINNT_WIN10
 #endif
 #if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
+#define NTDDI_VERSION NTDDI_WIN10_RS5
 #endif
 
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
@@ -797,6 +798,7 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
     //~cpiEncoding_CED = AnalyzeText_CED(text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN);
     //~if (ced_cnf < 1.0f)
     //~{
+
     cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, &confidence_UCD, pEncDetInfo->encodingStrg, COUNTOF(pEncDetInfo->encodingStrg));
 
     //~}
@@ -807,6 +809,7 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
 
 #endif
 
+#if FALSE
     // ---  re-mapping UCD ----
 
     switch (Encoding_GetCodePage(cpiEncoding_UCD)) {
@@ -815,18 +818,18 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
         cpiEncoding_UCD = Encoding_GetByCodePage(1252); // auto detect default ANSI (!)
         break;
 
-    /*
-    case 54936:
-      if ((codePage_CED == 936) || (codePage_CED == 20936))
-      {
-        cpiEncoding_UCD = cpiEncoding_CED; // trust CED's choice
-      }
-      break;
-    */
+    //case 54936:
+    //  if ((codePage_CED == 936) || (codePage_CED == 20936))
+    //  {
+    //    cpiEncoding_UCD = cpiEncoding_CED; // trust CED's choice
+    //  }
+    //  break;
 
     default:
         break;
     }
+    
+#endif
 
     // UCARDET does not rely on encodingHint, so make a bias here
     confidence_UCD += (cpiEncoding_UCD == encodingHint) ? (1.0f - confidence_UCD) / 2.0f : 0.0f;
@@ -1264,6 +1267,19 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
     #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetRes.forcedEncoding))
 
     FileVars_GetFromData(lpData, cbData, &Globals.fvCurFile);
+
+    // --- Check for UTF-32 BOM first (unsupported encoding) ---
+    if (Has_UTF32_BOM(lpData, cbData)) {
+        encDetRes.bIsUTF32 = true;
+        encDetRes.bHasBOM = true;
+        encDetRes.Encoding = CPI_PREFERRED_ENCODING;
+        StringCchCopyA(encDetRes.encodingStrg, COUNTOF(encDetRes.encodingStrg),
+                       Has_UTF32_BE_BOM(lpData, cbData) ? "UTF-32BE" : "UTF-32LE");
+        if (Flags.bDevDebugMode) {
+            _SetEncodingTitleInfo(&encDetRes);
+        }
+        return encDetRes;
+    }
 
     bool const bBOM_LE = Has_UTF16_LE_BOM(lpData, cbData);
     bool const bBOM_BE = Has_UTF16_BE_BOM(lpData, cbData);

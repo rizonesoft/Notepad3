@@ -121,6 +121,10 @@ const char* Encoding_GetParseNames(const cpi_enc_t iEncoding);
 int Encoding_GetNameA(const cpi_enc_t iEncoding, char* buffer, size_t cch);
 int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cwch);
 
+bool Has_UTF32_LE_BOM(const char* pBuf, size_t cnt);
+bool Has_UTF32_BE_BOM(const char* pBuf, size_t cnt);
+bool Has_UTF32_BOM(const char* pBuf, size_t cnt);
+
 bool Has_UTF16_LE_BOM(const char* pBuf, size_t cnt);
 bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt);
 bool Has_UTF16_BOM(const char *pBuf, size_t cnt);
@@ -193,12 +197,13 @@ typedef struct _enc_det_t {
     bool bIsUTF8Sig;
     bool bValidUTF8;
     bool bPureASCII7Bit;
+    bool bIsUTF32;
 
     char encodingStrg[64];
 
 } ENC_DET_T;
 
-#define INIT_ENC_DET_T  { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, false, "" }
+#define INIT_ENC_DET_T  { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, false, false, "" }
 
 
 ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpData, const size_t cbData,

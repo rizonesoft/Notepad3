@@ -40,7 +40,7 @@ jobs:
           $CommitID = (git rev-parse --short=8 HEAD)
 
           # Create VersionEx.h with proper values
-          $Major = 6
+          $Major = 7
           $Minor = [int]$(Get-Date -format yy)
           $Revis = [int]$(Get-Date -format Mdd)
           $Build = ${{ github.run_number }}

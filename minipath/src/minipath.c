@@ -13,7 +13,10 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-#define _WIN32_WINNT 0x601
+#include <sdkddkver.h>
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT _WIN32_WINNT_WIN10
+#endif
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
@@ -82,7 +85,7 @@ HWND      hwndDirList;
 
 HWND      hwndMain;
 
-HANDLE    hChangeHandle = NULL;
+HANDLE    hChangeHandle = INVALID_HANDLE_VALUE;
 
 HISTORY   g_mHistory;
 
@@ -803,7 +806,10 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
             // Terminate directory watching
             KillTimer(hwnd,ID_TIMER);
-            FindCloseChangeNotification(hChangeHandle);
+            if (hChangeHandle != INVALID_HANDLE_VALUE) {
+                FindCloseChangeNotification(hChangeHandle);
+                hChangeHandle = INVALID_HANDLE_VALUE;
+            }
 
             // GetWindowPlacement
             wndpl.length = sizeof(WINDOWPLACEMENT);
@@ -907,7 +913,7 @@ CASE_WM_CTLCOLOR_SET:
 
     case WM_TIMER:
         // Check Change Notification Handle
-        if (WAIT_OBJECT_0 == WaitForSingleObject(hChangeHandle,0)) {
+        if (hChangeHandle != INVALID_HANDLE_VALUE && WAIT_OBJECT_0 == WaitForSingleObject(hChangeHandle,0)) {
             // Store information about currently selected item
             DLITEM dli;
             dli.mask  = DLI_ALL;
@@ -1550,7 +1556,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
 
     // Theme = false (!) ~ you cannot change a toolbar's color when a visual style is active
-    InitWindowCommon(hwndReBar, !(IsWindows10OrGreater() && IsDarkModeSupported()));
+    InitWindowCommon(hwndReBar, !IsDarkModeSupported());
 
 #ifdef D_NP3_WIN10_DARK_MODE
     if (IsDarkModeSupported()) {
@@ -1575,7 +1581,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     rbBand.hbmBack = NULL;
     rbBand.lpText     = L"Toolbar";
     rbBand.clrFore    = GetModeTextColor(UseDarkMode());
-    rbBand.clrBack    = IsWindows10OrGreater() ? GetModeBkColor(UseDarkMode()) : GetModeBtnfaceColor(UseDarkMode());
+    rbBand.clrBack    = GetModeBkColor(UseDarkMode());
     rbBand.hwndChild  = hwndToolbar;
     rbBand.cxMinChild = (rc.right - rc.left) * COUNTOF(tbbMainWnd);
     rbBand.cyMinChild = (rc.bottom - rc.top) + 2 * rc.top;
@@ -1587,7 +1593,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     cyReBar = rc.bottom - rc.top;
 
     cyReBarFrame = bIsAppThemed ? 0 : 2;
-    cyDriveBoxFrame = (bIsAppThemed && IsWindowsVistaOrGreater()) ? 0 : 2;
+    cyDriveBoxFrame = bIsAppThemed ? 0 : 2;
 }
 
 
@@ -2274,7 +2280,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         SHFileOperation(&shfos);
 
         // Check if there are any changes in the directory, then update!
-        if (WAIT_OBJECT_0 == WaitForSingleObject(hChangeHandle,0)) {
+        if (hChangeHandle != INVALID_HANDLE_VALUE && WAIT_OBJECT_0 == WaitForSingleObject(hChangeHandle,0)) {
             SendWMCommand(hwnd, IDM_VIEW_UPDATE);
             if (iItem > 0) {
                 iItem--;
@@ -3231,7 +3237,9 @@ BOOL ChangeDirectory(HWND hwnd,LPCWSTR lpszNewDir,BOOL bUpdateHistory)
         }
 
         // setup new change notification handle
-        FindCloseChangeNotification(hChangeHandle);
+        if (hChangeHandle != INVALID_HANDLE_VALUE) {
+            FindCloseChangeNotification(hChangeHandle);
+        }
         hChangeHandle = FindFirstChangeNotification(Settings.szCurDir,FALSE,
                         FILE_NOTIFY_CHANGE_FILE_NAME  | \
                         FILE_NOTIFY_CHANGE_DIR_NAME   | \

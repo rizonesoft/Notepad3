@@ -429,8 +429,8 @@ void        BackgroundWorker_Start(BackgroundWorker* worker, _beginthreadex_proc
 void        BackgroundWorker_Cancel(BackgroundWorker* worker);
 void        BackgroundWorker_Destroy(BackgroundWorker* worker);
 
-static inline bool BackgroundWorker_Continue(BackgroundWorker* worker) { 
-    return (worker) ? (WaitForSingleObject(worker->eventCancel, 0) != WAIT_OBJECT_0) : false;
+static inline bool BackgroundWorker_Continue(BackgroundWorker* worker) {
+    return (worker && IS_VALID_HANDLE(worker->eventCancel)) ? (WaitForSingleObject(worker->eventCancel, 0) != WAIT_OBJECT_0) : false;
 }
 static inline void BackgroundWorker_End(BackgroundWorker* worker, unsigned int retcode) { if (worker) { _endthreadex(retcode); }}
 

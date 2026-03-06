@@ -1357,6 +1357,40 @@ bool EditLoadFile(
 
     // --------------------------------------------------------------------------
 
+    if (encDetection.bIsUTF32) {
+        // UTF-32 is not supported — convert through ANSI codepage for binary display
+        // (same conversion path that other binary files use via EXTERNAL_8BIT)
+        status->iEncoding = CPI_ANSI_DEFAULT;
+        UINT const uCodePage = Encoding_GetCodePage(CPI_ANSI_DEFAULT);
+
+        LPWSTR const lpDataWide = AllocMem(cbData * 2 + 16, HEAP_ZERO_MEMORY);
+        ptrdiff_t const cbDataWide = MultiByteToWideCharEx(uCodePage, 0, lpData, cbData,
+                                         lpDataWide, (SizeOfMem(lpDataWide) / sizeof(WCHAR)));
+        if (cbDataWide != 0) {
+            FreeMem(lpData);
+            lpData = AllocMem(cbDataWide * 3 + 16, HEAP_ZERO_MEMORY);
+            cbData = WideCharToMultiByteEx(Encoding_SciCP, 0, lpDataWide, cbDataWide,
+                                           lpData, SizeOfMem(lpData), NULL, NULL);
+            if (cbData != 0) {
+                EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory, bReloadFile);
+                EditDetectEOLMode(lpData, cbData, status);
+                FreeMem(lpDataWide);
+            } else {
+                FreeMem(lpDataWide);
+                EditSetNewText(hwnd, "", 0, bClearUndoHistory, bReloadFile);
+            }
+        } else {
+            FreeMem(lpDataWide);
+            EditSetNewText(hwnd, "", 0, bClearUndoHistory, bReloadFile);
+        }
+        status->iEOLMode = Settings.DefaultEOLMode;
+        FreeMem(lpData);
+        InfoBoxLng(MB_ICONWARNING, L"MsgUTF32Unsupported", IDS_MUI_ERR_ENCODINGNA);
+        goto observe;
+    }
+
+    // --------------------------------------------------------------------------
+
     if (Flags.bDevDebugMode) {
 #if TRUE
         SetAdditionalTitleInfo(Encoding_GetTitleInfo());

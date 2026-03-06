@@ -698,8 +698,35 @@ int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cwch)
 // ============================================================================
 
 
+bool Has_UTF32_LE_BOM(const char* pBuf, size_t cnt)
+{
+    // UTF-32 LE BOM: FF FE 00 00
+    return (pBuf && cnt >= 4 &&
+            (unsigned char)pBuf[0] == 0xFF && (unsigned char)pBuf[1] == 0xFE &&
+            (unsigned char)pBuf[2] == 0x00 && (unsigned char)pBuf[3] == 0x00);
+}
+// ----------------------------------------------------------------------------
+
+bool Has_UTF32_BE_BOM(const char* pBuf, size_t cnt)
+{
+    // UTF-32 BE BOM: 00 00 FE FF
+    return (pBuf && cnt >= 4 &&
+            (unsigned char)pBuf[0] == 0x00 && (unsigned char)pBuf[1] == 0x00 &&
+            (unsigned char)pBuf[2] == 0xFE && (unsigned char)pBuf[3] == 0xFF);
+}
+// ----------------------------------------------------------------------------
+
+bool Has_UTF32_BOM(const char* pBuf, size_t cnt)
+{
+    return (Has_UTF32_LE_BOM(pBuf, cnt) || Has_UTF32_BE_BOM(pBuf, cnt));
+}
+// ----------------------------------------------------------------------------
+
 bool Has_UTF16_LE_BOM(const char* pBuf, size_t cnt)
 {
+    if (Has_UTF32_LE_BOM(pBuf, cnt)) {
+        return false; // UTF-32 LE BOM starts with FF FE — must not match as UTF-16 LE
+    }
     int iTest = IS_TEXT_UNICODE_SIGNATURE;
     bool const ok = IsTextUnicode(pBuf, clampi((int)cnt, 0, 4), &iTest);
     return (ok && ((iTest & IS_TEXT_UNICODE_SIGNATURE) != 0));

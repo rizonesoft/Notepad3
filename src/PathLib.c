@@ -64,7 +64,7 @@
 // ============================================================================
 
 // ============================================================================
-// TODO: if (IsWindows10OrGreater() && OptInRemovedMaxPathLimit()) {}
+// TODO: if (OptInRemovedMaxPathLimit()) {}
 // https://docs.microsoft.com/de-de/windows/win32/api/fileapi/nf-fileapi-getfileattributesa
 // 
 // These are the directory management functions that no longer have MAX_PATH restrictions
@@ -119,14 +119,15 @@
 // 
 // ============================================================================
 
+#include <sdkddkver.h>
 #ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0601 /*_WIN32_WINNT_WIN7*/
+#define _WIN32_WINNT _WIN32_WINNT_WIN10
 #endif
 #ifndef WINVER
-#define WINVER 0x0601 /*_WIN32_WINNT_WIN7*/
+#define WINVER _WIN32_WINNT_WIN10
 #endif
 #ifndef NTDDI_VERSION
-#define NTDDI_VERSION 0x06010000 /*NTDDI_WIN7*/
+#define NTDDI_VERSION NTDDI_WIN10_RS5
 #endif
 
 

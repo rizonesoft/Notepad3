@@ -22,6 +22,7 @@
 #define DBG_NEW new
 #endif
 
+#define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
@@ -55,18 +56,7 @@
 
 #ifdef D_NP3_WIN10_DARK_MODE
 
-#ifndef LOAD_LIBRARY_SEARCH_SYSTEM32
-#define LOAD_LIBRARY_SEARCH_SYSTEM32 0x00000800
-#endif
-
-#if _WIN32_WINNT < _WIN32_WINNT_WIN8
-DWORD const kSystemLibraryLoadFlags = (IsWindows8Point1OrGreater() ||
-                                       GetProcAddress(GetModuleHandle(L"kernel32.dll"), "SetDefaultDllDirectories"))
-                                      ? LOAD_LIBRARY_SEARCH_SYSTEM32
-                                      : 0;
-#else
 #define kSystemLibraryLoadFlags LOAD_LIBRARY_SEARCH_SYSTEM32
-#endif
 
 // ============================================================================
 

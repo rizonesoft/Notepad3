@@ -11,6 +11,8 @@
 *   also http://nayuki.eigenstate.org/page/notepadcrypt-format-decryptor-java
 */
 #include "targetver.h"
+#define VC_EXTRALEAN 1
+#define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
 #include <stdlib.h>
 #include <stdio.h>

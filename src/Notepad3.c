@@ -176,7 +176,7 @@ static bool      s_bUndoRedoScroll = false;
 // Middle-click auto-scroll state
 static bool      s_bAutoScrollMode = false;
 static bool      s_bAutoScrollHeld = false;        // true while MMB is physically held down
-static DWORD     s_dwAutoScrollStartTick = 0;      // GetTickCount() at MMB down
+static ULONGLONG s_dwAutoScrollStartTick = 0;      // GetTickCount64() at MMB down
 static POINT     s_ptAutoScrollOrigin = { 0, 0 };
 static POINT     s_ptAutoScrollMouse = { 0, 0 };
 static double    s_dAutoScrollAccumY = 0.0;
@@ -509,21 +509,41 @@ static inline bool RaiseFlagIfCurrentFileChanged() {
         if (IsFileDeletedFlagSet()) {
             return false;
         }
-        SetEvent(s_FileChgObsvrData.hEventFileChanged);
-        SetEvent(s_FileChgObsvrData.hEventFileDeleted);
+        if (IS_VALID_HANDLE(s_FileChgObsvrData.hEventFileChanged)) {
+            SetEvent(s_FileChgObsvrData.hEventFileChanged);
+        }
+        if (IS_VALID_HANDLE(s_FileChgObsvrData.hEventFileDeleted)) {
+            SetEvent(s_FileChgObsvrData.hEventFileDeleted);
+        }
         return true;
     }
     if (IsFileDeletedFlagSet()) {
         // The current file has been restored
-        ResetEvent(s_FileChgObsvrData.hEventFileDeleted);
+        if (IS_VALID_HANDLE(s_FileChgObsvrData.hEventFileDeleted)) {
+            ResetEvent(s_FileChgObsvrData.hEventFileDeleted);
+        }
     }
     
+    // Seqlock read: detect torn reads of fdCurFile during concurrent ResetFileObservationData
+    LONG const genBefore = InterlockedCompareExchange(&(s_FileChgObsvrData.iObservationGeneration), 0, 0);
+    if (genBefore & 1) {
+        return false; // write in progress — skip this cycle, next poll will retry
+    }
+
     bool const changed = (s_FileChgObsvrData.fdCurFile.nFileSizeLow != fdUpdated.nFileSizeLow) || (s_FileChgObsvrData.fdCurFile.nFileSizeHigh != fdUpdated.nFileSizeHigh)
                          //~|| (CompareFileTime(&(s_FileChgObsvrData.fdCurFile.ftLastWriteTime), &fdUpdated.ftLastWriteTime) != 0)
                          || (s_FileChgObsvrData.fdCurFile.ftLastWriteTime.dwLowDateTime != fdUpdated.ftLastWriteTime.dwLowDateTime)
                          || (s_FileChgObsvrData.fdCurFile.ftLastWriteTime.dwHighDateTime != fdUpdated.ftLastWriteTime.dwHighDateTime);
+
+    LONG const genAfter = InterlockedCompareExchange(&(s_FileChgObsvrData.iObservationGeneration), 0, 0);
+    if (genBefore != genAfter) {
+        return false; // torn read — skip this cycle, next poll will retry
+    }
+
     if (changed) {
-        SetEvent(s_FileChgObsvrData.hEventFileChanged);
+        if (IS_VALID_HANDLE(s_FileChgObsvrData.hEventFileChanged)) {
+            SetEvent(s_FileChgObsvrData.hEventFileChanged);
+        }
     }
     return changed;
 }
@@ -531,14 +551,22 @@ static inline bool RaiseFlagIfCurrentFileChanged() {
 
 static inline void ResetFileObservationData(const bool bResetEvt) {
     if (bResetEvt) {
-        ResetEvent(s_FileChgObsvrData.hEventFileChanged);
-        ResetEvent(s_FileChgObsvrData.hEventFileDeleted);
+        if (IS_VALID_HANDLE(s_FileChgObsvrData.hEventFileChanged)) {
+            ResetEvent(s_FileChgObsvrData.hEventFileChanged);
+        }
+        if (IS_VALID_HANDLE(s_FileChgObsvrData.hEventFileDeleted)) {
+            ResetEvent(s_FileChgObsvrData.hEventFileDeleted);
+        }
     }
     if (Path_IsNotEmpty(Paths.CurrentFile)) {
+        // Seqlock write: increment generation before and after updating fdCurFile
+        // so the observer thread can detect torn reads
+        InterlockedIncrement(&(s_FileChgObsvrData.iObservationGeneration));
         if (!GetFileAttributesEx(Path_Get(Paths.CurrentFile), GetFileExInfoStandard, &(s_FileChgObsvrData.fdCurFile)))
         {
             ZeroMemory(&(s_FileChgObsvrData.fdCurFile), sizeof(WIN32_FIND_DATA));
         }
+        InterlockedIncrement(&(s_FileChgObsvrData.iObservationGeneration));
     }
 
 }
@@ -685,7 +713,7 @@ static void _InitGlobals()
     Flags.RelativeFileMRU = DefaultFlags.RelativeFileMRU = true;
     Flags.PortableMyDocs = DefaultFlags.PortableMyDocs = Flags.RelativeFileMRU;
     Flags.NoFadeHidden = DefaultFlags.NoFadeHidden = false;
-    Flags.ToolbarLook = DefaultFlags.ToolbarLook = IsWindowsXPSP3OrGreater() ? 1 : 2;
+    Flags.ToolbarLook = DefaultFlags.ToolbarLook = 1;
     Flags.SimpleIndentGuides = DefaultFlags.SimpleIndentGuides = false;
     Flags.NoHTMLGuess =DefaultFlags.NoHTMLGuess = false;
     Flags.NoCGIGuess = DefaultFlags.NoCGIGuess = false;
@@ -779,6 +807,10 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
 {
     if (hwnd) {
         KillTimer(hwnd, IDT_TIMER_MRKALL);
+        KillTimer(hwnd, ID_WATCHTIMER);
+        KillTimer(hwnd, ID_LOGROTATETIMER);
+        KillTimer(hwnd, ID_AUTOSAVETIMER);
+        KillTimer(hwnd, ID_PASTEBOARDTIMER);
     }
 
     if (Globals.pStdDarkModeIniStyles) {
@@ -793,6 +825,8 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
         FreeMem(pmqc);
     }
 
+    BackgroundWorker_Destroy(&(s_FileChgObsvrData.worker));
+
     if (IS_VALID_HANDLE(s_FileChgObsvrData.hEventFileChanged)) {
         CloseHandle(s_FileChgObsvrData.hEventFileChanged);
         s_FileChgObsvrData.hEventFileChanged = INVALID_HANDLE_VALUE;
@@ -801,8 +835,6 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
         CloseHandle(s_FileChgObsvrData.hEventFileDeleted);
         s_FileChgObsvrData.hEventFileDeleted = INVALID_HANDLE_VALUE;
     }
-
-    BackgroundWorker_Destroy(&(s_FileChgObsvrData.worker));
 
     // ---------------------------------------------
 
@@ -1007,14 +1039,14 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 
-    // check if running at least on Windows 7 (SP1)
-    if (!IsWindows7SP1OrGreater()) {
+    // check if running at least on Windows 10
+    if (!IsWindows10OrGreater()) {
         MsgBoxLastError(L"Application Initialization", ERROR_OLD_WIN_VERSION);
         return 1; // exit
     }
 
-    //~SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
-    //~SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+
+    // DPI awareness is set via manifest (PerMonitorV2)
 
     // Check if running with elevated privileges
     s_bIsProcessElevated = IsProcessElevated();
@@ -1088,7 +1120,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     Style_ImportTheme(Globals.uCurrentThemeIndex);
 
     //SetProcessDPIAware(); // ->.manifest
-    //SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+
     //~Scintilla_LoadDpiForWindow(); done in Sci::Platform_Initialize();
 
     // ----------------------------------------------------
@@ -1247,10 +1279,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     ResetTmpCache();
     ResetIniFileCache();
 
-    // drag-n-drop into elevated process even does not work using:
-    ///ChangeWindowMessageFilter(WM_DROPFILES, MSGFLT_ADD);
-    ///ChangeWindowMessageFilter(WM_COPYDATA, MSGFLT_ADD);
-    ///ChangeWindowMessageFilter(0x0049, MSGFLT_ADD);
 
     MSG msg;
     while (GetMessage(&msg, NULL, 0, 0)) {
@@ -1749,6 +1777,10 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
 {
     // manual (not automatic) reset & initial state: not signaled (TRUE, FALSE)
     s_hEventAppIsClosing = CreateEvent(NULL, TRUE, FALSE, NULL);
+    if (!IS_VALID_HANDLE(s_hEventAppIsClosing)) {
+        MsgBoxLastError(L"CreateEvent(s_hEventAppIsClosing)", GetLastError());
+        return NULL;
+    }
 
     // init w/o hwnd
     g_IniWinInfo = GetWinInfoByFlag(NULL, Globals.CmdLnFlag_WindowPos);
@@ -1797,7 +1829,16 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
 
     // manual (not automatic) reset & initial state: not signaled (TRUE, FALSE)
     s_FileChgObsvrData.hEventFileChanged = CreateEvent(NULL, TRUE, FALSE, NULL);
+    if (!IS_VALID_HANDLE(s_FileChgObsvrData.hEventFileChanged)) {
+        MsgBoxLastError(L"CreateEvent(hEventFileChanged)", GetLastError());
+        return NULL;
+    }
     s_FileChgObsvrData.hEventFileDeleted = CreateEvent(NULL, TRUE, FALSE, NULL);
+    if (!IS_VALID_HANDLE(s_FileChgObsvrData.hEventFileDeleted)) {
+        CloseHandle(s_FileChgObsvrData.hEventFileChanged);
+        MsgBoxLastError(L"CreateEvent(hEventFileDeleted)", GetLastError());
+        return NULL;
+    }
 
     if (Settings.TransparentMode) {
         SetWindowTransparentMode(hwndMain, true, Settings2.OpacityLevel);
@@ -2479,7 +2520,7 @@ static LRESULT CALLBACK _EditSubclassProc(
                 HandleHotSpotURLClicked(pos, OPEN_WITH_BROWSER);
             } else {
                 s_bAutoScrollHeld = true;
-                s_dwAutoScrollStartTick = GetTickCount();
+                s_dwAutoScrollStartTick = GetTickCount64();
                 _AutoScrollStart(hwnd, pt);
             }
         }
@@ -2488,7 +2529,7 @@ static LRESULT CALLBACK _EditSubclassProc(
 
     case WM_MBUTTONUP: {
         if (s_bAutoScrollMode && s_bAutoScrollHeld) {
-            DWORD const elapsed = GetTickCount() - s_dwAutoScrollStartTick;
+            ULONGLONG const elapsed = GetTickCount64() - s_dwAutoScrollStartTick;
             if (elapsed > AUTOSCROLL_CLICK_THRESHOLD_MS) {
                 // Hold-to-scroll: stop on release
                 _AutoScrollStop(hwnd);
@@ -2825,18 +2866,6 @@ static void _InitEditWndFrame()
 
         SetWindowLongPtr(Globals.hwndEdit, GWL_EXSTYLE, GetWindowLongPtr(Globals.hwndEdit, GWL_EXSTYLE) & ~WS_EX_CLIENTEDGE);
         SetWindowPos(Globals.hwndEdit, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
-
-        if (!IsWindowsVistaOrGreater()) {
-
-            SetWindowPos(s_hwndEditFrame, Globals.hwndEdit, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
-            ShowWindow(s_hwndEditFrame, SW_HIDE);
-
-            RECT rc, rc2;
-            GetClientRect(s_hwndEditFrame, &rc);
-            GetWindowRect(s_hwndEditFrame, &rc2);
-            s_cxEditFrame = ((rc2.right - rc2.left) - (rc.right - rc.left)) / 2;
-            s_cyEditFrame = ((rc2.bottom - rc2.top) - (rc.bottom - rc.top)) / 2;
-        }
 
     } else {
 
@@ -3308,11 +3337,8 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
             bool bProcessed = false;
             if (Flags.ToolbarLook == 1) {
                 bProcessed = BitmapAlphaBlend(hbmpCopy, GetSysColor(COLOR_3DFACE), 0x60);
-            } else if (Flags.ToolbarLook == 2 || (!IsWindowsXPSP3OrGreater() && Flags.ToolbarLook == 0)) {
+            } else if (Flags.ToolbarLook == 2) {
                 bProcessed = BitmapGrayScale(hbmpCopy);
-            }
-            if (bProcessed && !IsWindowsXPSP3OrGreater()) {
-                BitmapMergeAlpha(hbmpCopy, GetSysColor(COLOR_3DFACE));
             }
             if (bProcessed) {
                 himl = CreateScaledImageListFromBitmap(hwnd, hbmpCopy);
@@ -3369,7 +3395,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
                                        0,0,0,0,hwnd,(HMENU)IDC_REBAR,hInstance,NULL);
 
     // Theme = false (!) ~ you cannot change a toolbar's color when a visual style is active
-    InitWindowCommon(Globals.hwndRebar, !(IsWindows10OrGreater() && IsDarkModeSupported()));
+    InitWindowCommon(Globals.hwndRebar, !IsDarkModeSupported());
 
 #ifdef D_NP3_WIN10_DARK_MODE
     if (IsDarkModeSupported()) {
@@ -3394,7 +3420,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     rbBand.hbmBack = NULL;
     rbBand.lpText  = L"Toolbar";
     rbBand.clrFore = GetModeTextColor(UseDarkMode());
-    rbBand.clrBack = IsWindows10OrGreater() ? GetModeBkColor(UseDarkMode()) : GetModeBtnfaceColor(UseDarkMode());
+    rbBand.clrBack = GetModeBkColor(UseDarkMode());
     rbBand.hwndChild  = Globals.hwndToolbar;
     rbBand.cxMinChild = (rc.right - rc.left) * COUNTOF(s_tbbMainWnd);
     rbBand.cyMinChild = (rc.bottom - rc.top) + (2 * rc.top);
@@ -3772,32 +3798,7 @@ LRESULT MsgDropFiles(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(lParam);
 
-    HDROP hDrop = NULL;
-    if (IsWindows10OrGreater()) {
-        hDrop = (HDROP)wParam;
-    }
-    else // Windows7 Bug drag&drop of files from 32bit app to 64bit app
-    {
-    #ifdef _WIN64
-        HANDLE hProcessHeap = GetProcessHeap();
-        if (NULL != hProcessHeap && HeapLock(hProcessHeap)) {
-            PROCESS_HEAP_ENTRY heapEntry = { 0 };
-            while (HeapWalk(hProcessHeap, &heapEntry) != FALSE) {
-                if ((heapEntry.wFlags & PROCESS_HEAP_ENTRY_BUSY) != 0) {
-                    HGLOBAL hGlobal = GlobalHandle(heapEntry.lpData);
-                    // Assuming wParam is the WM_DROPFILES WPARAM
-                    if ((((DWORD_PTR)hGlobal) & 0xFFFFFFFF) == (wParam & 0xFFFFFFFF)) {
-                        hDrop = (HDROP)hGlobal; // We got it !!
-                        break;
-                    }
-                }
-            }
-            HeapUnlock(hProcessHeap);
-        }
-    #else
-        hDrop = (HDROP)wParam;
-    #endif
-    }
+    HDROP hDrop = (HDROP)wParam;
 
     if (hDrop) {
 
@@ -10016,6 +10017,9 @@ void MarkAllOccurrences(const LONG64 delay, const bool bForceClear)
 //
 void UpdateTitlebar(const HWND hwnd)
 {
+    if (!IsWindow(hwnd)) {
+        return;
+    }
     _DelayUpdateTitlebar(_MQ_STD, hwnd);
 }
 
@@ -10027,6 +10031,9 @@ void UpdateTitlebar(const HWND hwnd)
 
 static void _UpdateTitlebarDelayed(const HWND hwnd)
 {
+    if (!IsWindow(hwnd)) {
+        return;
+    }
     if (hwnd == Globals.hwndMain && Settings.ShowTitlebar) {
 
         TITLEPROPS_T props = { 0 };
@@ -11177,11 +11184,15 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
         }
         if (bCreateFile) {
             HANDLE hFile = CreateFileW(Path_Get(hopen_file),
-                GENERIC_READ | GENERIC_WRITE,
-                FILE_SHARE_READ | FILE_SHARE_WRITE,
-                NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+                    GENERIC_READ | GENERIC_WRITE,
+                    FILE_SHARE_READ | FILE_SHARE_WRITE,
+                    NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
             Globals.dwLastError = GetLastError();
             fSuccess = IS_VALID_HANDLE(hFile);
+            if (!fSuccess) {
+                // Handle already set to INVALID_HANDLE_VALUE by CreateFileW on failure
+                hFile = INVALID_HANDLE_VALUE;
+            }
             if (fSuccess) {
                 FileVars_GetFromData(NULL, 0, &Globals.fvCurFile); // init/reset
                 EditSetNewText(Globals.hwndEdit, "", 0, false, false);
@@ -11983,6 +11994,9 @@ bool ActivatePrevInst(const bool bSetForground)
 //
 bool LaunchNewInstance(HWND hwnd, LPCWSTR lpszParameter, LPCWSTR lpszFilePath)
 {
+    if (hwnd && !IsWindow(hwnd)) {
+        return false;
+    }
     HPATHL hexe_pth = Path_Allocate(NULL);
     Path_GetModuleFilePath(hexe_pth);
 
@@ -12109,7 +12123,7 @@ bool RelaunchMultiInst()
 //
 bool RelaunchElevated(LPCWSTR lpNewCmdLnArgs)
 {
-    if (!IsWindowsVistaOrGreater() || !Flags.bDoRelaunchElevated ||
+    if (!Flags.bDoRelaunchElevated ||
             s_bIsProcessElevated || s_IsThisAnElevatedRelaunch || s_bIsRunAsAdmin ||
             s_flagDisplayHelp) {
         return false; // reject initial RelaunchElevated() try
@@ -12176,6 +12190,9 @@ bool RelaunchElevated(LPCWSTR lpNewCmdLnArgs)
 //
 void ShowNotifyIcon(HWND hwnd,bool bAdd)
 {
+    if (!IsWindow(hwnd)) {
+        return;
+    }
     HICON hIcon = NULL;
     LoadIconWithScaleDown(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND),
                           GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), &hIcon);
@@ -12202,6 +12219,9 @@ void ShowNotifyIcon(HWND hwnd,bool bAdd)
 //
 void SetNotifyIconTitle(HWND hwnd)
 {
+    if (!IsWindow(hwnd)) {
+        return;
+    }
     NOTIFYICONDATA nid = { sizeof(NOTIFYICONDATA) };
     nid.hWnd = hwnd;
     nid.uID = 0;
@@ -12399,8 +12419,9 @@ void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
 }
 
 
-// forward declaration for LogRotateTimerProc (defined after InstallFileWatching)
+// forward declarations for timer procs (defined after InstallFileWatching)
 static void CALLBACK LogRotateTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
+static void CALLBACK AtomicSaveTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
 //=============================================================================
 //
@@ -12408,11 +12429,10 @@ static void CALLBACK LogRotateTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, 
 //
 LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    UNREFERENCED_PARAMETER(hwnd);
     UNREFERENCED_PARAMETER(wParam);
     UNREFERENCED_PARAMETER(lParam);
 
-    if (IsAppClosing()) { return TRUE; }
+    if (!IsWindow(hwnd) || IsAppClosing()) { return TRUE; }
 
     SET_FCT_GUARD(TRUE);
 
@@ -12487,35 +12507,8 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
     }
     else { // file has been deleted
 
-        // Brief delay to handle atomic save (delete + rename) pattern
-        Sleep(100);
-        if (Path_IsExistingFile(Paths.CurrentFile)) {
-            // File was restored (atomic save) — re-process as modification
-            ResetFileObservationData(true);
-            PostMessage(Globals.hwndMain, WM_FILECHANGEDNOTIFY, 0, 0);
-        }
-        else {
-            InstallFileWatching(false); // truly deleted — terminate
-
-            if (FileWatching.MonitoringLog) {
-                // File deleted while monitoring — start retry timer for log rotation recovery
-                FileWatching.LogRotateRetryCount = 0;
-                SetTimer(Globals.hwndMain, ID_LOGROTATETIMER, 500, LogRotateTimerProc);
-                SetSaveNeeded(true);
-            }
-            else if (FileWatching.FileWatchingMode == FWM_MSGBOX) {
-                if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2))) {
-                    FileSave(FSF_SaveAlways);
-                }
-                else {
-                    SetSaveNeeded(true);
-                }
-            }
-            else {
-                // FWM_INDICATORSILENT: nothing todo here
-                SetSaveNeeded(true);
-            }
-        }
+        // Use timer to handle atomic save (delete + rename) pattern without blocking UI
+        SetTimer(Globals.hwndMain, ID_ATOMICSAVETIMER, 100, AtomicSaveTimerProc);
     }
 
     RESET_FCT_GUARD();
@@ -12531,7 +12524,16 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 static inline void NotifyIfFileHasChanged()
 {
-    if (IsFileChangedFlagSet() || IsFileDeletedFlagSet() || RaiseFlagIfCurrentFileChanged()) {
+    bool notify = false;
+    if (IsFileChangedFlagSet()) {
+        // Consume the flag to prevent duplicate notifications from concurrent push+poll paths
+        ResetEvent(s_FileChgObsvrData.hEventFileChanged);
+        notify = true;
+    }
+    if (IsFileDeletedFlagSet()) {
+        notify = true; // don't reset deleted flag here — handler needs it
+    }
+    if (notify || RaiseFlagIfCurrentFileChanged()) {
         PostMessage(Globals.hwndMain, WM_FILECHANGEDNOTIFY, 0, 0);
     }
     // reset Timeout interval
@@ -12582,6 +12584,45 @@ static void CALLBACK LogRotateTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, 
 }
 // ----------------------------------------------------------------------------
 
+static void CALLBACK AtomicSaveTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
+
+    UNREFERENCED_PARAMETER(dwTime);
+    UNREFERENCED_PARAMETER(idEvent);
+    UNREFERENCED_PARAMETER(uMsg);
+    UNREFERENCED_PARAMETER(hwnd);
+
+    KillTimer(Globals.hwndMain, ID_ATOMICSAVETIMER); // one-shot
+
+    if (Path_IsExistingFile(Paths.CurrentFile)) {
+        // File was restored (atomic save) — re-process as modification
+        ResetFileObservationData(true);
+        PostMessage(Globals.hwndMain, WM_FILECHANGEDNOTIFY, 0, 0);
+    }
+    else {
+        InstallFileWatching(false); // truly deleted — terminate
+
+        if (FileWatching.MonitoringLog) {
+            // File deleted while monitoring — start retry timer for log rotation recovery
+            FileWatching.LogRotateRetryCount = 0;
+            SetTimer(Globals.hwndMain, ID_LOGROTATETIMER, 500, LogRotateTimerProc);
+            SetSaveNeeded(true);
+        }
+        else if (FileWatching.FileWatchingMode == FWM_MSGBOX) {
+            if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY2))) {
+                FileSave(FSF_SaveAlways);
+            }
+            else {
+                SetSaveNeeded(true);
+            }
+        }
+        else {
+            // FWM_INDICATORSILENT: nothing todo here
+            SetSaveNeeded(true);
+        }
+    }
+}
+// ----------------------------------------------------------------------------
+
 
 unsigned int WINAPI FileChangeObserver(LPVOID lpParam)
 {
@@ -12601,6 +12642,7 @@ unsigned int WINAPI FileChangeObserver(LPVOID lpParam)
             FILE_NOTIFY_CHANGE_LAST_WRITE);
 
         if (!IS_VALID_HANDLE(pFCOBSVData->hFileChanged)) {
+            pFCOBSVData->hFileChanged = INVALID_HANDLE_VALUE;
             BackgroundWorker_End(worker, 1);
             return 1;
         }
@@ -12626,13 +12668,17 @@ unsigned int WINAPI FileChangeObserver(LPVOID lpParam)
             case WAIT_ABANDONED:
             case WAIT_FAILED:
             default:
-                BackgroundWorker_Cancel(worker);
+                if (IS_VALID_HANDLE(worker->eventCancel)) {
+                    SetEvent(worker->eventCancel); // signal self-stop (don't call Cancel from within thread)
+                }
                 retcode = 1;
                 break;
             }
         }
 
-        FindCloseChangeNotification(pFCOBSVData->hFileChanged); // stop monitoring
+        if (IS_VALID_HANDLE(pFCOBSVData->hFileChanged)) {
+            FindCloseChangeNotification(pFCOBSVData->hFileChanged); // stop monitoring
+        }
         pFCOBSVData->hFileChanged = INVALID_HANDLE_VALUE;
 
         BackgroundWorker_End(worker, retcode);
@@ -12676,6 +12722,7 @@ void InstallFileWatching(const bool bInstall) {
     // Terminate previous watching
     if (bTerminate) {
         KillTimer(Globals.hwndMain, ID_WATCHTIMER);
+        KillTimer(Globals.hwndMain, ID_ATOMICSAVETIMER);
         BackgroundWorker_Cancel(&(s_FileChgObsvrData.worker));
         ResetFileObservationData(false); // (!) false
     }
@@ -12687,15 +12734,16 @@ void InstallFileWatching(const bool bInstall) {
             bool const bUsePush = (Settings2.FileWatchingMethod != FWMTH_POLL);  // both or push
             bool const bUsePoll = (Settings2.FileWatchingMethod != FWMTH_PUSH);  // both or poll
 
-            if (!IS_VALID_HANDLE(s_FileChgObsvrData.worker.workerThread)) {
+            // Always cancel stale/running thread before starting fresh
+            // (handles self-stop scenario where thread exited but handle was not closed)
+            BackgroundWorker_Cancel(&(s_FileChgObsvrData.worker));
 
-                // Save data of current file
-                ResetFileObservationData(false); // (!) false
+            // Save data of current file
+            ResetFileObservationData(false); // (!) false
 
-                if (bUsePush) {
-                    Path_Reset(s_FileChgObsvrData.worker.hFilePath, Path_Get(hdir_pth)); // directory monitoring
-                    BackgroundWorker_Start(&(s_FileChgObsvrData.worker), FileChangeObserver, &s_FileChgObsvrData);
-                }
+            if (bUsePush) {
+                Path_Reset(s_FileChgObsvrData.worker.hFilePath, Path_Get(hdir_pth)); // directory monitoring
+                BackgroundWorker_Start(&(s_FileChgObsvrData.worker), FileChangeObserver, &s_FileChgObsvrData);
             }
 
             InterlockedExchange64(&(s_FileChgObsvrData.iFileChangeNotifyTime), GetTicks_ms());
@@ -12736,6 +12784,9 @@ void InstallFileWatching(const bool bInstall) {
                     Path_GetDisplayName(wchDisplayName, COUNTOF(wchDisplayName), Paths.CurrentFile, NULL, false);
 
                     InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_FILELOCK_ERROR, wchDisplayName);
+
+                    // Ensure handle is explicitly invalid
+                    _hCurrFileHandle = INVALID_HANDLE_VALUE;
 
                     // need to chose another mode
                     FILE_WATCHING_MODE const fwm = Settings.FileWatchingMode;
