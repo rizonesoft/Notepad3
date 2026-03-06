@@ -63,7 +63,7 @@ using namespace Scintilla::Internal;
 // ***   PCRE2 configuration   ***
 // ============================================================================
 
-enum class EOLmode : int { UDEF = -1, CRLF = SC_EOL_CRLF, CR = SC_EOL_CR, LF = SC_EOL_LF };
+
 
 // ============================================================================
 // ============================================================================
@@ -76,14 +76,17 @@ public:
     : m_CompileOptions(PCRE2_UTF | PCRE2_UCP | PCRE2_MULTILINE)
     , m_CompiledPattern(nullptr)
     , m_MatchData(nullptr)
+    , m_CompileContext(nullptr)
     , m_MatchContext(nullptr)
-    , m_EOLmode(EOLmode::UDEF)
     , m_RangeBeg(-1)
     , m_RangeEnd(-1)
     , m_ErrorInfo()
     , m_MatchPos(-1)
     , m_MatchLen(0)
   {
+    m_CompileContext = pcre2_compile_context_create(nullptr);
+    pcre2_set_newline(m_CompileContext, PCRE2_NEWLINE_ANYCRLF);
+
     m_MatchContext = pcre2_match_context_create(nullptr);
     // Set match limits to prevent catastrophic backtracking
     pcre2_set_match_limit(m_MatchContext, 10000000);
@@ -97,6 +100,10 @@ public:
       pcre2_match_context_free(m_MatchContext);
       m_MatchContext = nullptr;
     }
+    if (m_CompileContext) {
+      pcre2_compile_context_free(m_CompileContext);
+      m_CompileContext = nullptr;
+    }
   }
 
   Sci::Position FindText(Document* doc, Sci::Position minPos, Sci::Position maxPos, const char* pattern,
@@ -108,7 +115,7 @@ private:
 
   void clear();
 
-  std::string translateRegExpr(const std::string & regExprStr, bool wholeWord, bool wordStart, EndOfLine eolMode);
+  std::string translateRegExpr(const std::string & regExprStr, bool wholeWord, bool wordStart);
 
   std::string convertReplExpr(const std::string & replStr);
 
@@ -116,19 +123,19 @@ private:
 
   std::string m_RegExprStrg;
 
-  uint32_t            m_CompileOptions;
-  pcre2_code*         m_CompiledPattern;
-  pcre2_match_data*   m_MatchData;
-  pcre2_match_context* m_MatchContext;
-  EOLmode             m_EOLmode;
+  uint32_t               m_CompileOptions;
+  pcre2_code*            m_CompiledPattern;
+  pcre2_match_data*      m_MatchData;
+  pcre2_compile_context* m_CompileContext;
+  pcre2_match_context*   m_MatchContext;
 
-  Sci::Position       m_RangeBeg;
-  Sci::Position       m_RangeEnd;
+  Sci::Position          m_RangeBeg;
+  Sci::Position          m_RangeEnd;
 
-  char                m_ErrorInfo[256];
+  char                   m_ErrorInfo[256];
 
-  Sci::Position       m_MatchPos;
-  Sci::Position       m_MatchLen;
+  Sci::Position          m_MatchPos;
+  Sci::Position          m_MatchLen;
 
 public:
   std::string m_SubstBuffer;
@@ -252,10 +259,9 @@ Sci::Position PCRE2RegExEngine::FindText(Document* doc, Sci::Position minPos, Sc
   Sci::Position const rangeEnd = (findForward) ? maxPos : minPos;
   //Sci::Position const rangeLen = (rangeEnd - rangeBeg);
 
-  EOLmode const eolMode = static_cast<EOLmode>(doc->eolMode);
-
   // --- Build compile options ---
-  // PCRE2_MULTILINE: ^/$ match at line boundaries (Oniguruma's default behavior)
+  // PCRE2_MULTILINE: ^/$ match at line boundaries
+  // Newline convention (ANYCRLF) is set on m_CompileContext, not here
   uint32_t compileOptions = PCRE2_UTF | PCRE2_UCP | PCRE2_MULTILINE;
 
   if (!caseSensitive) {
@@ -265,10 +271,10 @@ Sci::Position PCRE2RegExEngine::FindText(Document* doc, Sci::Position minPos, Sc
     compileOptions |= PCRE2_DOTALL;  // Note: Oniguruma called this MULTILINE
   }
 
-  std::string const sRegExprStrg = translateRegExpr(pattern, word, wordStart, doc->eolMode);
+  std::string const sRegExprStrg = translateRegExpr(pattern, word, wordStart);
 
   bool const bReCompile = (m_CompiledPattern == nullptr) || (m_CompileOptions != compileOptions)
-                          || (m_RegExprStrg.compare(sRegExprStrg) != 0) || (m_EOLmode != eolMode);
+                          || (m_RegExprStrg.compare(sRegExprStrg) != 0);
 
   if (bReCompile) {
     clear();
@@ -276,7 +282,6 @@ Sci::Position PCRE2RegExEngine::FindText(Document* doc, Sci::Position minPos, Sc
     m_CompileOptions = compileOptions;
     m_RangeBeg = rangeBeg;
     m_RangeEnd = rangeEnd;
-    m_EOLmode = eolMode;
     m_ErrorInfo[0] = '\0';
 
     try {
@@ -288,7 +293,7 @@ Sci::Position PCRE2RegExEngine::FindText(Document* doc, Sci::Position minPos, Sc
         m_CompileOptions,
         &errorcode,
         &erroroffset,
-        nullptr  // default compile context
+        m_CompileContext  // newline convention set to ANYCRLF
       );
 
       if (!m_CompiledPattern) {
@@ -555,11 +560,8 @@ const char* PCRE2RegExEngine::SubstituteByPosition(Document* doc, const char* te
 //
 // private methods
 
-std::string PCRE2RegExEngine::translateRegExpr(const std::string & regExprStr, bool wholeWord, bool wordStart,
-                                               EndOfLine eolMode)
+std::string PCRE2RegExEngine::translateRegExpr(const std::string & regExprStr, bool wholeWord, bool wordStart)
 {
-  UNREFERENCED_PARAMETER(eolMode);
-
   std::string	transRegExpr;
 
   if (wholeWord || wordStart) {      // push '\b' at the begin of regexpr
@@ -755,8 +757,11 @@ public:
     : m_CompileOptions(0)
     , m_CompiledPattern(nullptr)
     , m_MatchData(nullptr)
+    , m_CompileContext(nullptr)
     , m_ErrorInfo()
   {
+    m_CompileContext = pcre2_compile_context_create(nullptr);
+    pcre2_set_newline(m_CompileContext, PCRE2_NEWLINE_ANYCRLF);
   }
 
   ~SimplePCRE2Engine() noexcept
@@ -766,6 +771,9 @@ public:
     }
     if (m_CompiledPattern) {
       pcre2_code_free(m_CompiledPattern);
+    }
+    if (m_CompileContext) {
+      pcre2_compile_context_free(m_CompileContext);
     }
   }
 
@@ -781,6 +789,7 @@ private:
   uint32_t            m_CompileOptions;
   pcre2_code*         m_CompiledPattern;
   pcre2_match_data*   m_MatchData;
+  pcre2_compile_context* m_CompileContext;
 
   char                m_ErrorInfo[256];
 
@@ -832,7 +841,7 @@ ptrdiff_t SimplePCRE2Engine::Find(const char* pattern, const char* document, con
   auto const patternLen = strlen(pattern);
   auto const stringLen = strlen(document);
 
-  // Build compile options
+  // Build compile options (newline convention set on m_CompileContext)
   uint32_t compileOptions = PCRE2_UTF | PCRE2_UCP | PCRE2_MULTILINE;
   if (!caseSensitive) {
     compileOptions |= PCRE2_CASELESS;
@@ -868,7 +877,7 @@ ptrdiff_t SimplePCRE2Engine::Find(const char* pattern, const char* document, con
         m_CompileOptions,
         &errorcode,
         &erroroffset,
-        nullptr
+        m_CompileContext
       );
 
       if (!m_CompiledPattern) {
@@ -930,9 +939,7 @@ extern "C"
 #ifdef SCINTILLA_DLL
 __declspec(dllexport)
 #endif
-ptrdiff_t WINAPI RegExFind(const char *pchPattern, const char *pchText, const bool caseSensitive, const int eolMode, int *matchLen_out) {
-
-  UNREFERENCED_PARAMETER(eolMode);
+ptrdiff_t WINAPI RegExFind(const char *pchPattern, const char *pchText, const bool caseSensitive, int *matchLen_out) {
 
   // Static cached engine: pattern is compiled once, reused across calls.
   // Only recompiles when pattern or options change.
