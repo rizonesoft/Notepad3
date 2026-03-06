@@ -5533,23 +5533,23 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
     if (iSortFlags & SORT_ASCENDING) {
         if (iSortFlags & SORT_NOCASE) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdI);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStdI);
         } else if (iSortFlags & SORT_LOGICAL) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdLogical);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStdLogical);
         } else if (iSortFlags & SORT_LEXICOGRAPH) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpLexicographical);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpLexicographical);
         } else {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStd);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStd);
         }
     } else if (iSortFlags & SORT_DESCENDING) {
         if (iSortFlags & SORT_NOCASE) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdIRev);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStdIRev);
         } else if (iSortFlags & SORT_LOGICAL) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdLogicalRev);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStdLogicalRev);
         } else if (iSortFlags & SORT_LEXICOGRAPH) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpLexicographicalRev);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpLexicographicalRev);
         } else {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdRev);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStdRev);
         }
     } else { /*if (iSortFlags & SORT_SHUFFLE)*/
         srand((UINT)GetTicks_ms());
@@ -8372,7 +8372,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
         SciCall_AutoCSetChooseSingle(autoInsert);
 
         const char* const sep = " ";
-        SciCall_AutoCSetSeperator(sep[0]);
+        SciCall_AutoCSetSeparator(sep[0]);
 
         ++iWListSize; // zero termination
         char* const pList = AllocMem(iWListSize + 1, HEAP_ZERO_MEMORY);

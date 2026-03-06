@@ -1951,7 +1951,7 @@ void Style_SetUrlHotSpot(HWND hwnd)
     // style for hotspot
     //~SciCall_StyleSetHotspot(_STYLE_GETSTYLEID(STY_URL_HOTSPOT), true);
     //~SciCall_SetHotspotActiveUnderline(false);
-    //~SciCall_SetHotspotSigleLine(true);
+    //~SciCall_SetHotspotSingleLine(true);
 }
 
 

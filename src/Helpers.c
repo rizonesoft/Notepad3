@@ -2074,7 +2074,7 @@ size_t ReadVectorFromString(LPCWSTR wchStrg, int iVector[], size_t iCount, int i
     }
 
     if (ordered) {
-        qsort(iVector, n, sizeof(int), _cmpifunc);
+        NP3_SORT(iVector, n, sizeof(int), _cmpifunc);
     }
 
     return n;

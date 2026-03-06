@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2021, Troy D. Hanson     http://troydhanson.github.com/uthash/
+Copyright (c) 2003-2025, Troy D. Hanson  https://troydhanson.github.io/uthash/
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,12 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stddef.h>   /* ptrdiff_t */
 #include <stdlib.h>   /* exit */
 
-#if defined(HASH_DEFINE_OWN_STDINT) && HASH_DEFINE_OWN_STDINT
-/* This codepath is provided for backward compatibility, but I plan to remove it. */
-#warning "HASH_DEFINE_OWN_STDINT is deprecated; please use HASH_NO_STDINT instead"
-typedef unsigned int uint32_t;
-typedef unsigned char uint8_t;
-#elif defined(HASH_NO_STDINT) && HASH_NO_STDINT
+#if defined(HASH_NO_STDINT) && HASH_NO_STDINT
+/* The user doesn't have <stdint.h>, and must figure out their own way
+   to provide definitions for uint8_t and uint32_t. */
 #else
 #include <stdint.h>   /* uint8_t, uint32_t */
 #endif
@@ -51,6 +48,8 @@ typedef unsigned char uint8_t;
 #else                   /* VS2008 or older (or VS2010 in C mode) */
 #define NO_DECLTYPE
 #endif
+#elif defined(__MCST__)  /* Elbrus C Compiler */
+#define DECLTYPE(x) (__typeof(x))
 #elif defined(__BORLANDC__) || defined(__ICCARM__) || defined(__LCC__) || defined(__WATCOMC__)
 #define NO_DECLTYPE
 #else                   /* GNU, Sun and other compilers */
@@ -157,7 +156,7 @@ do {                                                                            
   if (head) {                                                                    \
     unsigned _hf_bkt;                                                            \
     HASH_TO_BKT(hashval, (head)->hh.tbl->num_buckets, _hf_bkt);                  \
-    if (HASH_BLOOM_TEST((head)->hh.tbl, hashval) != 0) {                         \
+    if (HASH_BLOOM_TEST((head)->hh.tbl, hashval)) {                              \
       HASH_FIND_IN_BKT((head)->hh.tbl, hh, (head)->hh.tbl->buckets[ _hf_bkt ], keyptr, keylen, hashval, out); \
     }                                                                            \
   }                                                                              \
@@ -194,7 +193,7 @@ do {                                                                            
 } while (0)
 
 #define HASH_BLOOM_BITSET(bv,idx) (bv[(idx)/8U] |= (1U << ((idx)%8U)))
-#define HASH_BLOOM_BITTEST(bv,idx) (bv[(idx)/8U] & (1U << ((idx)%8U)))
+#define HASH_BLOOM_BITTEST(bv,idx) ((bv[(idx)/8U] & (1U << ((idx)%8U))) != 0)
 
 #define HASH_BLOOM_ADD(tbl,hashv)                                                \
   HASH_BLOOM_BITSET((tbl)->bloom_bv, ((hashv) & (uint32_t)((1UL << (tbl)->bloom_nbits) - 1U)))
@@ -206,7 +205,7 @@ do {                                                                            
 #define HASH_BLOOM_MAKE(tbl,oomed)
 #define HASH_BLOOM_FREE(tbl)
 #define HASH_BLOOM_ADD(tbl,hashv)
-#define HASH_BLOOM_TEST(tbl,hashv) (1)
+#define HASH_BLOOM_TEST(tbl,hashv) 1
 #define HASH_BLOOM_BYTELEN 0U
 #endif
 
@@ -450,7 +449,7 @@ do {                                                                            
 
 #define HASH_DELETE_HH(hh,head,delptrhh)                                         \
 do {                                                                             \
-  struct UT_hash_handle *_hd_hh_del = (delptrhh);                                \
+  const struct UT_hash_handle *_hd_hh_del = (delptrhh);                          \
   if ((_hd_hh_del->prev == NULL) && (_hd_hh_del->next == NULL)) {                \
     HASH_BLOOM_FREE((head)->hh.tbl);                                             \
     uthash_free((head)->hh.tbl->buckets,                                         \
@@ -593,7 +592,9 @@ do {                                                                            
 
 
 /* SAX/FNV/OAT/JEN hash functions are macro variants of those listed at
- * http://eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx */
+ * http://eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx
+ * (archive link: https://archive.is/Ivcan )
+ */
 #define HASH_SAX(key,keylen,hashv)                                               \
 do {                                                                             \
   unsigned _sx_i;                                                                \
