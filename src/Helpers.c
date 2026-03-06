@@ -328,7 +328,7 @@ bool IsProcessElevated()
     }
 
     if (Globals.dwLastError != ERROR_SUCCESS) {
-        MsgBoxLastError(pLastErrMsg, Globals.dwLastError);
+        InfoBoxLastError(pLastErrMsg, Globals.dwLastError);
     }
 
     return bIsElevated;
@@ -457,7 +457,7 @@ bool IsUserInAdminGroup()
     }
 
     if (Globals.dwLastError != ERROR_SUCCESS) {
-        MsgBoxLastError(pLastErrMsg, Globals.dwLastError);
+        InfoBoxLastError(pLastErrMsg, Globals.dwLastError);
     }
 
     return fInAdminGroup;

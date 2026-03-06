@@ -1471,7 +1471,7 @@ size_t PTHAPI Path_ToShortPathName(HPATHL hpth_in_out)
     DWORD const _len = GetShortPathNameW(StrgGet(hstr_io), NULL, 0);
     if (!_len) {
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
-        MsgBoxLastError(L"Path_ToShortPathName()", 0);
+        InfoBoxLastError(L"Path_ToShortPathName()", 0);
 #endif // DEBUG
         return 0;
     }
@@ -1495,7 +1495,7 @@ size_t PTHAPI Path_GetLongPathNameEx(HPATHL hpth_in_out)
 
     DWORD const _len = GetLongPathNameW(StrgGet(hstr_io), NULL, 0);
     if (!_len) {
-        //MsgBoxLastError(L"Path_GetLongPathNameEx()", 0);
+        //InfoBoxLastError(L"Path_GetLongPathNameEx()", 0);
         return 0;
     }
     LPWSTR const buf = StrgWriteAccessBuf(hstr_io, _len);

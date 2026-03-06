@@ -993,7 +993,7 @@ void InvalidParameterHandler(const wchar_t* expression,
     StringCchPrintf(msg, COUNTOF(msg),
                     L"Invalid Parameter in function '%s()' - File:'%s' Line:%i !",
                     function, file, line);
-    MsgBoxLastError(msg, ERROR_INVALID_PARAMETER);
+    InfoBoxLastError(msg, ERROR_INVALID_PARAMETER);
 #endif
 }
 
@@ -1041,7 +1041,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     // check if running at least on Windows 10
     if (!IsWindows10OrGreater()) {
-        MsgBoxLastError(L"Application Initialization", ERROR_OLD_WIN_VERSION);
+        InfoBoxLastError(L"Application Initialization", ERROR_OLD_WIN_VERSION);
         return 1; // exit
     }
 
@@ -1244,7 +1244,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
     if (!Globals.hMainMenu) {
-        MsgBoxLastError(L"LoadMenu()", 0);
+        InfoBoxLastError(L"LoadMenu()", 0);
         _CleanUpResources(NULL, false);
         return 1;
     }
@@ -1778,7 +1778,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     // manual (not automatic) reset & initial state: not signaled (TRUE, FALSE)
     s_hEventAppIsClosing = CreateEvent(NULL, TRUE, FALSE, NULL);
     if (!IS_VALID_HANDLE(s_hEventAppIsClosing)) {
-        MsgBoxLastError(L"CreateEvent(s_hEventAppIsClosing)", GetLastError());
+        InfoBoxLastError(L"CreateEvent(s_hEventAppIsClosing)", GetLastError());
         return NULL;
     }
 
@@ -1830,13 +1830,13 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     // manual (not automatic) reset & initial state: not signaled (TRUE, FALSE)
     s_FileChgObsvrData.hEventFileChanged = CreateEvent(NULL, TRUE, FALSE, NULL);
     if (!IS_VALID_HANDLE(s_FileChgObsvrData.hEventFileChanged)) {
-        MsgBoxLastError(L"CreateEvent(hEventFileChanged)", GetLastError());
+        InfoBoxLastError(L"CreateEvent(hEventFileChanged)", GetLastError());
         return NULL;
     }
     s_FileChgObsvrData.hEventFileDeleted = CreateEvent(NULL, TRUE, FALSE, NULL);
     if (!IS_VALID_HANDLE(s_FileChgObsvrData.hEventFileDeleted)) {
         CloseHandle(s_FileChgObsvrData.hEventFileChanged);
-        MsgBoxLastError(L"CreateEvent(hEventFileDeleted)", GetLastError());
+        InfoBoxLastError(L"CreateEvent(hEventFileDeleted)", GetLastError());
         return NULL;
     }
 
@@ -2111,7 +2111,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     // print file immediately and quit
     if (Globals.CmdLnFlag_PrintFileAndLeave) {
         WCHAR tchPageFmt[32] = { L'\0' };
-        WCHAR szDisplayName[MAX_PATH_EXPLICIT>>1];
+        WCHAR szDisplayName[MAX_PATH_EXPLICIT];
 
         GetLngString(IDS_MUI_UNTITLED, szDisplayName, COUNTOF(szDisplayName));
         Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, NULL, true);
@@ -4869,7 +4869,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             } else {
                 dwFileAttributes |= FILE_ATTRIBUTE_READONLY;
             }
-            WCHAR szDisplayName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
+            WCHAR szDisplayName[MAX_PATH_EXPLICIT] = { L'\0' };
             if (!Path_SetFileAttributes(Paths.CurrentFile, dwFileAttributes)) {
                 Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, NULL, false);
                 InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_READONLY_MODIFY, szDisplayName);
@@ -4997,7 +4997,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_PRINT: {
         WCHAR tchPageFmt[32] = { L'\0' };
-        WCHAR szDisplayName[MAX_PATH_EXPLICIT>>1];
+        WCHAR szDisplayName[MAX_PATH_EXPLICIT];
 
         GetLngString(IDS_MUI_UNTITLED, szDisplayName, COUNTOF(szDisplayName));
         Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, NULL, false);
@@ -11173,7 +11173,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
         bool bCreateFile = s_flagQuietCreate;
         if (!bCreateFile) {
 
-            WCHAR szDisplayName[MAX_PATH_EXPLICIT >> 1] = { L'\0' };
+            WCHAR szDisplayName[MAX_PATH_EXPLICIT] = { L'\0' };
             GetLngString(IDS_MUI_UNTITLED, szDisplayName, COUNTOF(szDisplayName));
             Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), hopen_file, NULL, false); //~Path_FindFileName(hopen_file)
 
@@ -11622,15 +11622,13 @@ bool FileSave(FileSaveFlags fSaveFlags)
 
     if (fSaveFlags & FSF_Ask) {
         // File or "Untitled" ...
-        WCHAR wchFileName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
+        WCHAR wchFileName[MAX_PATH_EXPLICIT] = { L'\0' };
 
         GetLngString(IDS_MUI_UNTITLED, wchFileName, COUNTOF(wchFileName));
         Path_GetDisplayName(wchFileName, COUNTOF(wchFileName), Paths.CurrentFile, NULL, false);
 
 
-        INT_PTR const answer = (Settings.MuteMessageBeep) ?
-                               InfoBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, NULL, IDS_MUI_ASK_SAVE, wchFileName) :
-                               MessageBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, IDS_MUI_ASK_SAVE, wchFileName);
+        INT_PTR const answer = InfoBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, NULL, IDS_MUI_ASK_SAVE, wchFileName);
         switch (answer)
         {
         case IDCANCEL:
@@ -11649,9 +11647,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
     if (!(fSaveFlags & FSF_SaveAs) && !(fSaveFlags & FSF_SaveCopy) && Path_IsNotEmpty(Paths.CurrentFile)) {
         if (IsFileReadOnly()) {
             UpdateToolbar();
-            INT_PTR const answer = (Settings.MuteMessageBeep) ?
-                                   InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_READONLY_SAVE, Path_FindFileName(Paths.CurrentFile)) :
-                                   MessageBoxLng(MB_YESNO | MB_ICONWARNING, IDS_MUI_READONLY_SAVE, Path_Get(Paths.CurrentFile));
+            INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_READONLY_SAVE, Path_Get(Paths.CurrentFile));
             if (IsYesOkay(answer)) {
                 fSaveFlags |= FSF_SaveAs;
             } else {
@@ -11747,28 +11743,18 @@ bool FileSave(FileSaveFlags fSaveFlags)
 
     } else if (!fioStatus.bCancelDataLoss) {
 
-        LPCWSTR const currentFileName = Path_FindFileName(Paths.CurrentFile);
-
         if (!s_bIsProcessElevated && (Globals.dwLastError == ERROR_ACCESS_DENIED)) {
-            INT_PTR const answer = (Settings.MuteMessageBeep) ?
-                                   InfoBoxLng(MB_YESNO | MB_ICONSHIELD, NULL, IDS_MUI_ERR_ACCESSDENIED, currentFileName, _W(SAPPNAME)) :
-                                   MessageBoxLng(MB_YESNO | MB_ICONSHIELD, IDS_MUI_ERR_ACCESSDENIED, Path_Get(Paths.CurrentFile), _W(SAPPNAME));
+            INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONSHIELD, NULL, IDS_MUI_ERR_ACCESSDENIED, Path_Get(Paths.CurrentFile), _W(SAPPNAME));
             if (IsYesOkay(answer)) {
                 if (DoElevatedRelaunch(&fioStatus, true)) {
                     CloseApplication();
                 } else {
                     ResetEvent(s_hEventAppIsClosing);
-                    if (Settings.MuteMessageBeep) {
-                        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
-                    } else {
-                        MessageBoxLng(MB_ICONWARNING, IDS_MUI_ERR_SAVEFILE, Path_Get(Paths.CurrentFile));
-                    }
+                    InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_SAVEFILE, Path_Get(Paths.CurrentFile));
                 }
             }
         } else if (Globals.dwLastError == ERROR_PATH_NOT_FOUND) {
-            INT_PTR const answer = (Settings.MuteMessageBeep) ?
-                                   InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PATHNOTFOUND, currentFileName) :
-                                   MessageBoxLng(MB_YESNO | MB_ICONWARNING, IDS_MUI_ERR_PATHNOTFOUND, Path_Get(Paths.CurrentFile));
+            INT_PTR const answer = InfoBoxLng(MB_YESNO | MB_ICONWARNING, NULL, IDS_MUI_ERR_PATHNOTFOUND, Path_Get(Paths.CurrentFile));
             if (IsYesOkay(answer)) {
                 // Recreate the directory tree (pattern from Config.cpp CreateIniFile)
                 HPATHL hdir_path = Path_Copy(Paths.CurrentFile);
@@ -11792,29 +11778,17 @@ bool FileSave(FileSaveFlags fSaveFlags)
                             _MRU_UpdateSession();
                         }
                     } else {
-                        if (Settings.MuteMessageBeep) {
-                            InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
-                        } else {
-                            MessageBoxLng(MB_ICONERROR, IDS_MUI_ERR_SAVEFILE, Path_Get(Paths.CurrentFile));
-                        }
+                        InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, Path_Get(Paths.CurrentFile));
                     }
                 } else {
-                    if (Settings.MuteMessageBeep) {
-                        InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
-                    } else {
-                        MessageBoxLng(MB_ICONERROR, IDS_MUI_ERR_SAVEFILE, Path_Get(Paths.CurrentFile));
-                    }
+                    InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, Path_Get(Paths.CurrentFile));
                 }
             } else {
                 // User declined — offer Save As
-                FileSave(FSF_SaveAs);
+                fSuccess = FileSave(FSF_SaveAs);
             }
         } else {
-            if (Settings.MuteMessageBeep) {
-                InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, currentFileName);
-            } else {
-                MessageBoxLng(MB_ICONERROR, IDS_MUI_ERR_SAVEFILE, Path_Get(Paths.CurrentFile));
-            }
+            InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_ERR_SAVEFILE, Path_Get(Paths.CurrentFile));
         }
     }
 
@@ -12492,7 +12466,6 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             break;
 
         case FWM_MSGBOX: {
-            /// LONG const answer = MessageBoxExW(Globals.hwndMain, L"File change, Cancel, Retry, Continue", L"NP3", MB_ABORTRETRYIGNORE, GetLangIdByLocaleName(Globals.CurrentLngLocaleName));
             LONG const answer = InfoBoxLng(MB_FILECHANGEDNOTIFY | MB_ICONWARNING, NULL, IDS_MUI_FILECHANGENOTIFY);
             switch (LOWORD(answer)) {
             case IDCANCEL:
@@ -12822,7 +12795,7 @@ void InstallFileWatching(const bool bInstall) {
 
                 if (!IS_VALID_HANDLE(_hCurrFileHandle)) {
 
-                    WCHAR wchDisplayName[MAX_PATH_EXPLICIT>>1];
+                    WCHAR wchDisplayName[MAX_PATH_EXPLICIT];
 
                     GetLngString(IDS_MUI_UNTITLED, wchDisplayName, COUNTOF(wchDisplayName));
                     Path_GetDisplayName(wchDisplayName, COUNTOF(wchDisplayName), Paths.CurrentFile, NULL, false);

@@ -1280,7 +1280,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     if ((pLexNew->lexerID > SCLEX_NULL) && (iNewLexer != pLexNew->lexerID)) {
         WCHAR msg[256] = { L'\0' };
         StringCchPrintf(msg, COUNTOF(msg), L"Failed to set desired Lexer (#%i), got Lexer #%i!", pLexNew->lexerID, iNewLexer);
-        MsgBoxLastError(msg, ERROR_DLL_INIT_FAILED);
+        InfoBoxLastError(msg, ERROR_DLL_INIT_FAILED);
     }
 #endif
 

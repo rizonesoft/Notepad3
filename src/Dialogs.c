@@ -89,144 +89,6 @@ HWND GetParentOrDesktop(HWND hDlg)
 
 //=============================================================================
 //
-//  MessageBoxLng()
-//
-static HHOOK s_hCBThook = NULL;
-
-static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPARAM lParam)
-{
-    // notification that a window is about to be activated
-    if (nCode == HCBT_CREATEWND) {
-        HWND const hThisWnd = (HWND)wParam;
-        if (hThisWnd) {
-
-            SetDialogIconNP3(hThisWnd);
-            InitWindowCommon(hThisWnd, true);
-
-            // get window handles
-            LPCREATESTRUCT const pCreateStruct = ((LPCBT_CREATEWND)lParam)->lpcs;
-
-            HWND const hParentWnd = pCreateStruct->hwndParent ? pCreateStruct->hwndParent : GetParentOrDesktop(hThisWnd);
-
-            if (hParentWnd) {
-
-                // set new coordinates
-                RECT rcDlg = { 0, 0, 0, 0 };
-                rcDlg.left = pCreateStruct->x;
-                rcDlg.top = pCreateStruct->y;
-                rcDlg.right = pCreateStruct->x + pCreateStruct->cx;
-                rcDlg.bottom = pCreateStruct->y + pCreateStruct->cy;
-
-                POINT const ptTopLeft = GetCenterOfDlgInParent(&rcDlg, hParentWnd);
-
-                pCreateStruct->x = ptTopLeft.x;
-                pCreateStruct->y = ptTopLeft.y;
-            }
-
-            // we are done
-            if (s_hCBThook) {
-                UnhookWindowsHookEx(s_hCBThook);
-                s_hCBThook = NULL;
-            }
-        } else if (s_hCBThook) {
-            // continue with any possible chained hooks
-            return CallNextHookEx(s_hCBThook, nCode, wParam, lParam);
-        }
-    }
-    return (LRESULT)0;
-}
-// -----------------------------------------------------------------------------
-
-
-int MessageBoxLng(UINT uType, UINT uidMsg, ...)
-{
-    HSTRINGW    hfmt_str = StrgCreate(NULL);
-    LPWSTR const fmt_buf = StrgWriteAccessBuf(hfmt_str, XXXL_BUFFER);
-    if (!GetLngString(uidMsg, fmt_buf, (int)StrgGetAllocLength(hfmt_str))) {
-        StrgDestroy(hfmt_str);
-        return -1;
-    }
-    StrgSanitize(hfmt_str);
-
-    HSTRINGW    htxt_str = StrgCreate(NULL);
-    const PUINT_PTR argp = (PUINT_PTR)&uidMsg + 1;
-    bool const bHasArgs = (argp && *argp);
-    if (bHasArgs) {
-        LPWSTR const txt_buf = StrgWriteAccessBuf(htxt_str, XXXL_BUFFER);
-        StringCchVPrintfW(txt_buf, StrgGetAllocLength(htxt_str), StrgGet(hfmt_str), (LPVOID)argp);
-        StrgSanitize(htxt_str);
-    }
-
-    uType |= MB_SETFOREGROUND;  //~ MB_TOPMOST
-    if (Settings.DialogsLayoutRTL) {
-        uType |= MB_RTLREADING;
-    }
-
-    // center message box to focus or main
-    HWND const focus = GetFocus();
-    HWND const hwnd  = focus ? focus : Globals.hwndMain;
-    s_hCBThook       = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
-
-    int const res = MessageBoxEx(hwnd, bHasArgs ? StrgGet(htxt_str) : StrgGet(hfmt_str),
-                                 _W(SAPPNAME), uType, GetLangIdByLocaleName(Globals.CurrentLngLocaleName));
-
-    StrgDestroy(htxt_str);
-    StrgDestroy(hfmt_str);
-
-    return res;
-}
-
-
-//=============================================================================
-//
-//  MsgBoxLastError()
-//
-DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
-{
-    // Retrieve the system error message for the last-error code
-    if (!dwErrID) {
-        dwErrID = GetLastError();
-    }
-
-    LPVOID lpMsgBuf = NULL;
-    FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER |
-        FORMAT_MESSAGE_FROM_SYSTEM |
-        FORMAT_MESSAGE_IGNORE_INSERTS,
-        NULL,
-        dwErrID,
-        GetLangIdByLocaleName(Globals.CurrentLngLocaleName),
-        (LPWSTR)&lpMsgBuf,
-        0, NULL);
-
-    if (lpMsgBuf) {
-        // Display the error message and exit the process
-        size_t const len = StringCchLen((LPCWSTR)lpMsgBuf, 0) + StringCchLen(lpszMessage, 0) + 160;
-        LPWSTR const lpDisplayBuf = (LPWSTR)AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-
-        if (lpDisplayBuf) {
-
-            WCHAR msgFormat[128] = { L'\0' };
-            GetLngString(IDS_MUI_ERR_DLG_FORMAT, msgFormat, COUNTOF(msgFormat));
-            StringCchPrintf(lpDisplayBuf, len, msgFormat, lpszMessage, (LPCWSTR)lpMsgBuf, dwErrID);
-            // center message box to main
-            HWND const focus = GetFocus();
-            HWND const hwnd = focus ? focus : Globals.hwndMain;
-            s_hCBThook = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
-
-            UINT uType = MB_ICONERROR | MB_TOPMOST | (Settings.DialogsLayoutRTL ? MB_RTLREADING : 0);
-            MessageBoxEx(hwnd, lpDisplayBuf, _W(SAPPNAME) L" - ERROR", uType, GetLangIdByLocaleName(Globals.CurrentLngLocaleName));
-
-            FreeMem(lpDisplayBuf);
-        }
-        LocalFree(lpMsgBuf); // LocalAlloc()
-        lpMsgBuf = NULL;
-    }
-    return dwErrID;
-}
-
-//=============================================================================
-//
 //  _InfoBoxLngDlgProc()
 //
 //
@@ -298,30 +160,77 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
         //UINT const tabStopDist[3] = { 4, 4, 8 };
         //SendMessage(GetDlgItem(hwnd, IDC_INFOBOXTEXT), EM_SETTABSTOPS, 3, (LPARAM)tabStopDist);
 
-#if 0
-        // Resize dialog to fit text - TODO: move buttons dynamically too
-        HWND const hWndText = GetDlgItem(hwnd, IDC_INFOBOXTEXT);
-        RECT       rectText = { 0 };
-        GetWindowRectEx(hWndText, &rectText);
+        // --- Dynamic text sizing: grow dialog vertically to fit message ---
+        {
+            HWND const hWndText = GetDlgItem(hwnd, IDC_INFOBOXTEXT);
 
-        RECT rectNew = { 0 };
-        rectNew.left = 0;
-        rectNew.top = 0;
-        rectNew.right = rectText.right - rectText.left; // max as specified
-        rectNew.bottom = rectNew.right; // max quadratic size
+            // 1. Get current text control rect in parent client coords
+            RECT rcText;
+            GetWindowRect(hWndText, &rcText);
+            MapWindowPoints(HWND_DESKTOP, hwnd, (LPPOINT)&rcText, 2);
+            int const origTextHeight = rcText.bottom - rcText.top;
+            int const textWidth = rcText.right - rcText.left;
 
-        HDC  hdc = GetDC(hWndText);
-        DrawText(hdc, lpMsgBox->lpstrMessage, -1, &rectNew, DT_CALCRECT | DT_WORDBREAK); // calc size
-        ReleaseDC(hWndText, hdc);
+            // 2. Measure required text height with correct font
+            HDC hdc = GetDC(hWndText);
+            HFONT hFont = (HFONT)SendMessage(hWndText, WM_GETFONT, 0, 0);
+            HFONT hOldFont = (HFONT)SelectObject(hdc, hFont);
 
-        // Change size of text field
-        SetWindowPos(hWndText, NULL, 0, 0, rectNew.right - rectNew.left, rectNew.bottom - rectNew.top, SWP_NOMOVE | SWP_NOZORDER);
-        //GetWindowRect(hWndText, &rectText);
+            RECT rcCalc = { 0, 0, textWidth, 0 };
+            DrawText(hdc, lpMsgBox->lpstrMessage, -1, &rcCalc,
+                     DT_CALCRECT | DT_WORDBREAK | DT_EXPANDTABS | DT_NOPREFIX | DT_EDITCONTROL);
 
-        int const width = (rectNew.right - rectNew.left) + 100;
-        int const height = (rectNew.bottom - rectNew.top) + 200;
-        SetWindowPos(hwnd, NULL, 0, 0, width, height, SWP_NOMOVE | SWP_NOZORDER);
-#endif
+            SelectObject(hdc, hOldFont);
+            ReleaseDC(hWndText, hdc);
+
+            int const measuredHeight = rcCalc.bottom;
+
+            // 3. Calculate delta (only grow, never shrink below template size)
+            int deltaY = measuredHeight - origTextHeight;
+            if (deltaY < 0) {
+                deltaY = 0;
+            }
+
+            // 4. Clamp: don't let dialog exceed ~70% of work area
+            if (deltaY > 0) {
+                RECT rcWorkArea;
+                SystemParametersInfo(SPI_GETWORKAREA, 0, &rcWorkArea, 0);
+                RECT rcDialog;
+                GetWindowRect(hwnd, &rcDialog);
+                int const curDlgHeight = rcDialog.bottom - rcDialog.top;
+                int const maxDlgHeight = MulDiv(rcWorkArea.bottom - rcWorkArea.top, 70, 100);
+                if (curDlgHeight + deltaY > maxDlgHeight) {
+                    deltaY = max(0, maxDlgHeight - curDlgHeight);
+                }
+            }
+
+            // 5. Apply resize: grow text control, shift buttons/checkbox down, grow dialog
+            if (deltaY > 0) {
+                SetWindowPos(hWndText, NULL, 0, 0, textWidth, origTextHeight + deltaY,
+                             SWP_NOMOVE | SWP_NOZORDER);
+
+                int const ctlIDs[] = { IDOK, IDYES, IDNO, IDCANCEL, IDABORT, IDRETRY,
+                                        IDIGNORE, IDTRYAGAIN, IDCONTINUE, IDCLOSE,
+                                        IDC_INFOBOXCHECK };
+                for (int i = 0; i < COUNTOF(ctlIDs); ++i) {
+                    HWND hCtl = GetDlgItem(hwnd, ctlIDs[i]);
+                    if (hCtl) {
+                        RECT rc;
+                        GetWindowRect(hCtl, &rc);
+                        MapWindowPoints(HWND_DESKTOP, hwnd, (LPPOINT)&rc, 2);
+                        SetWindowPos(hCtl, NULL, rc.left, rc.top + deltaY, 0, 0,
+                                     SWP_NOSIZE | SWP_NOZORDER);
+                    }
+                }
+
+                RECT rcDlg;
+                GetWindowRect(hwnd, &rcDlg);
+                SetWindowPos(hwnd, NULL, 0, 0,
+                             rcDlg.right - rcDlg.left,
+                             (rcDlg.bottom - rcDlg.top) + deltaY,
+                             SWP_NOMOVE | SWP_NOZORDER);
+            }
+        }
 
         SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpMsgBox->lpstrMessage);
 
@@ -582,6 +491,54 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
     return MAKELONG(answer, iMode);
 }
 
+
+//=============================================================================
+//
+//  InfoBoxLastError()
+//
+DWORD InfoBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
+{
+    if (!dwErrID) {
+        dwErrID = GetLastError();
+    }
+
+    LPVOID lpMsgBuf = NULL;
+    FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER |
+        FORMAT_MESSAGE_FROM_SYSTEM |
+        FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        dwErrID,
+        GetLangIdByLocaleName(Globals.CurrentLngLocaleName),
+        (LPWSTR)&lpMsgBuf,
+        0, NULL);
+
+    if (lpMsgBuf) {
+        size_t const len = StringCchLen((LPCWSTR)lpMsgBuf, 0) + StringCchLen(lpszMessage, 0) + 160;
+        LPWSTR const lpDisplayBuf = (LPWSTR)AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+
+        if (lpDisplayBuf) {
+            WCHAR msgFormat[128] = { L'\0' };
+            GetLngString(IDS_MUI_ERR_DLG_FORMAT, msgFormat, COUNTOF(msgFormat));
+            StringCchPrintf(lpDisplayBuf, len, msgFormat, lpszMessage, (LPCWSTR)lpMsgBuf, dwErrID);
+
+            INFOBOXLNG msgBox = { 0 };
+            msgBox.uType = MB_OK | MB_ICONERROR | (Settings.DialogsLayoutRTL ? MB_RTLREADING : 0);
+            msgBox.lpstrMessage = lpDisplayBuf; // ownership transfers to _InfoBoxLngDlgProc
+            msgBox.lpstrSetting = NULL;
+            msgBox.bDisableCheckBox = true;
+
+            HWND const focus = GetFocus();
+            HWND const hwnd = focus ? focus : Globals.hwndMain;
+            ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_INFOBOX),
+                                 hwnd, _InfoBoxLngDlgProc, (LPARAM)&msgBox);
+        }
+        LocalFree(lpMsgBuf);
+    }
+    return dwErrID;
+}
+
+
 /*
 
   MinimizeToTray - Copyright 2000 Matthew Ellis <m.t.ellis@bigfoot.com>
@@ -793,31 +750,6 @@ void RestoreWndFromTray(HWND hWnd)
 //
 //  DisplayCmdLineHelp()
 //
-#if 0
-void DisplayCmdLineHelp(HWND hwnd)
-{
-    WCHAR szText[2048] = { L'\0' };
-    GetLngString(IDS_MUI_CMDLINEHELP,szText,COUNTOF(szText));
-
-    MSGBOXPARAMS mbp = { 0 };
-    mbp.cbSize = sizeof(MSGBOXPARAMS);
-    mbp.hwndOwner = hwnd;
-    mbp.hInstance = Globals.hInstance;
-    mbp.lpszText = szText;
-    mbp.lpszCaption = _W(SAPPNAME);
-    mbp.dwStyle = MB_OK | MB_USERICON | MB_SETFOREGROUND;
-    mbp.lpszIcon = MAKEINTRESOURCE(IDR_MAINWND);
-    mbp.dwContextHelpId = 0;
-    mbp.lpfnMsgBoxCallback = NULL;
-    mbp.dwLanguageId = GetLangIdByLocaleName(Globals.CurrentLngLocaleName);
-
-    hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
-
-    MessageBoxIndirect(&mbp);
-    //MsgBoxLng(MBINFO, IDS_MUI_CMDLINEHELP);
-}
-#else
-
 static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(lParam);
@@ -898,8 +830,6 @@ INT_PTR DisplayCmdLineHelp(HWND hwnd)
 {
     return ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CMDLINEHELP), hwnd, CmdLineHelpProc, (LPARAM)L"");
 }
-
-#endif
 
 
 /*
@@ -1810,7 +1740,7 @@ bool OpenWithDlg(HWND hwnd, LPCWSTR lpstrFile)
     HPATHL hpthFileName = Path_Allocate(lpstrFile);
     dliOpenWith.pthFileName = Path_WriteAccessBuf(hpthFileName, PATHLONG_MAX_CCH);
 
-    WCHAR chDispayName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
+    WCHAR chDispayName[MAX_PATH_EXPLICIT] = { L'\0' };
     Path_GetDisplayName(chDispayName, COUNTOF(chDispayName), hpthFileName, NULL, true);
     dliOpenWith.strDisplayName = chDispayName;
 
