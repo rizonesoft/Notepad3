@@ -35,7 +35,7 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.26.3µµ.(build_#) (2026-03-µµ)
+Current BETA Version 6.26.306.(build_#) (2026-03-06)
 ========================================================
 
 --------------------------------------------------------
@@ -55,8 +55,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]-
-[.3µµ.1]- Chore: add timsort (repl. qsort) scintilla care (iface check) scintill-call-wrapper update.
-[.3µµ.1]- Major version 6 → 7 for Win10 minimum.
+[.306.1]- Chore: add timsort (repl. qsort) scintilla care (iface check) scintill-call-wrapper update.
+[.306.1]- Major version 6 → 7 for Win10 minimum.
 [.305.1]- Feat: enhancement of MMB auto-scroll.
 [.305.1]- Update UCHARDET encoding detector (UCH).
 [.303.1]- Refactor: replace regex engines: Oniguruma (retired) by PCRE2 v10.47 (ONI->PCR).
@@ -78,9 +78,9 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]-
-[.3µµ.1]- Handling if file's parent dir is deleted..
-[.3µµ.1]- PCRE2 interface - bug matching line-end ($) (PRC).
-[.3µµ.1]- About dialog and version patching script.
+[.306.1]- Handling if file's parent dir is deleted..
+[.306.1]- PCRE2 interface - bug matching line-end ($) (PRC).
+[.306.1]- About dialog and version patching script.
 [.305.1]- UFT-8 affinity for uchardet uncertainty (lower than 66%) (UCH).
 [.305.1]- Refactoring from GetOpenFileName() to IFileOpenDialog().
 [.303.1]- Revert: Regression, revert to special Text (.txt) font.
@@ -112,7 +112,7 @@ FIXES:
 --------------------------------------------------------
 REMOVED:
 [.xxx.x]-
-[.3µµ.1]- Refactor: remove deprecated Win7 compatibility and UTF-32 detection.
+[.306.1]- Refactor: remove deprecated Win7 compatibility and UTF-32 detection.
 [.303.1]- Remove retired Oniguruma regex Engine (ONI).
 [.227.1]- Remove obsolete AppVeyor CI build.
 --------------------------------------------------------
