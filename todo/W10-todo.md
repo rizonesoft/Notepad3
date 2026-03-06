@@ -168,10 +168,10 @@ PR #5565 updated all headers using `_WIN32_WINNT_WIN10` / `NTDDI_WIN10_RS5` symb
 - [x] Grep for remaining `0x0601` or `0x06010000` – **clean** (no matches in source)
 - [x] Grep for remaining `_WIN32_WINNT_WIN7` or `NTDDI_WIN7` – **clean** (only in SDK header `dlgs.h`)
 - [x] Grep for `IsWindowsVistaOrGreater|IsWindows7|IsWindowsXPSP3` – **clean** (no matches)
-- [ ] Build x64 Release with VS2022 (manual verification)
-- [ ] Build Win32 Release (manual verification)
+- [x] Build x64 Release with VS2022 (manual verification)
+- [x] Build Win32 Release (manual verification)
 - [ ] Smoke-test launch on Windows 10
-- [ ] Smoke-test launch on Windows 11
+- [x] Smoke-test launch on Windows 11
 - [ ] Verify Dark Mode still works (Win10 1809+)
 - [ ] Verify URL copy/escape in hyperlink features
 - [ ] Verify toolbar appearance (XP ternary removed)
