@@ -308,7 +308,7 @@ static int NAME(mergeForceCollapse) (struct timsort * ts, size_t width) {
 
 /**
  * Merges the two runs at stack indices i and i+1.  Run i must be
- * the penultimate or antepenultimate run on the stack.  In other words,
+ * the penultimate or ante-penultimate run on the stack.  In other words,
  * i must be equal to stackSize-2 or stackSize-3.
  *
  * @param i stack index of the first of the two runs to merge
@@ -580,7 +580,7 @@ static int NAME(mergeLo) (struct timsort * ts, void *base1, size_t len1,
 #endif
 	minGallop = ts->minGallop;	//  "    "       "     "      "
 
-	while (1) {
+	for(;;) {
 		size_t count1 = 0;	// Number of times in a row that first run won
 		size_t count2 = 0;	// Number of times in a row that second run won
 
@@ -588,7 +588,7 @@ static int NAME(mergeLo) (struct timsort * ts, void *base1, size_t len1,
 		 * Do the straightforward thing until (if ever) one run starts
 		 * winning consistently.
 		 */
-		do {
+        for (;;) {
 			assert(len1 > 1 && len2 > 0);
 			if (CMP(compare, carg, cursor2, cursor1) < 0) {
 				ASSIGN(dest, cursor2);
@@ -611,7 +611,7 @@ static int NAME(mergeLo) (struct timsort * ts, void *base1, size_t len1,
 				if (count1 >= minGallop)
 					break;
 			}
-		} while (1);	// (count1 | count2) < minGallop);
+		}; //~ do {...} while ((count1 | count2) < minGallop);
 
 		/*
 		 * One run is winning so consistently that galloping may be a
@@ -736,7 +736,7 @@ static int NAME(mergeHi) (struct timsort * ts, void *base1, size_t len1,
 #endif
 	minGallop = ts->minGallop;	//  "    "       "     "      "
 
-	while (1) {
+	for(;;) {
 		size_t count1 = 0;	// Number of times in a row that first run won
 		size_t count2 = 0;	// Number of times in a row that second run won
 
