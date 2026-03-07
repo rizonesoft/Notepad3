@@ -256,7 +256,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
         if (hIconBmp) {
             SetBitmapControl(hwnd, IDC_INFOBOXICON, hIconBmp);
         }
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
     }
     return TRUE;
 
@@ -775,7 +775,7 @@ static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
     return TRUE;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -1086,7 +1086,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
             SendDlgItemMessageW(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
         }
 
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
     }
     break;
 
@@ -1328,7 +1328,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -1579,7 +1579,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -1601,8 +1601,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         ResizeDlg_Size(hwnd,lParam,&dx,&dy);
 
         HDWP hdwp;
-        hdwp = BeginDeferWindowPos(6);
-        hdwp = DeferCtlPos(hdwp,hwnd,IDC_RESIZEGRIP,dx,dy,SWP_NOSIZE);
+        hdwp = BeginDeferWindowPos(5);
         hdwp = DeferCtlPos(hdwp,hwnd,IDOK,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDCANCEL,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_OPENWITHDIR,dx,dy,SWP_NOMOVE);
@@ -1839,7 +1838,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -1862,8 +1861,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         ResizeDlg_Size(hwnd,lParam,&dx,&dy);
 
         HDWP hdwp;
-        hdwp = BeginDeferWindowPos(6);
-        hdwp = DeferCtlPos(hdwp,hwnd,IDC_RESIZEGRIP,dx,dy,SWP_NOSIZE);
+        hdwp = BeginDeferWindowPos(5);
         hdwp = DeferCtlPos(hdwp,hwnd,IDOK,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDCANCEL,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_FAVORITESDIR,dx,dy,SWP_NOMOVE);
@@ -2067,15 +2065,14 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         break;
 
 
     case WM_SIZE: {
         int dx;
         ResizeDlg_Size(hwnd, lParam, &dx, NULL);
-        HDWP hdwp = BeginDeferWindowPos(5);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_RESIZEGRIP, dx, 0, SWP_NOSIZE);
+        HDWP hdwp = BeginDeferWindowPos(4);
         hdwp = DeferCtlPos(hdwp, hwnd, IDOK, dx, 0, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDCANCEL, dx, 0, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_FAVORITESDESCR, dx, 0, SWP_NOMOVE);
@@ -2360,7 +2357,6 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
         int dx, dy;
         ResizeDlg_Size(hwnd, lParam, &dx, &dy);
         HDWP hdwp = BeginDeferWindowPos(8);
-        hdwp      = DeferCtlPos(hdwp, hwnd, IDC_RESIZEGRIP, dx, dy, SWP_NOSIZE);
         hdwp      = DeferCtlPos(hdwp, hwnd, IDOK, dx, dy, SWP_NOSIZE);
         hdwp      = DeferCtlPos(hdwp, hwnd, IDCANCEL, dx, dy, SWP_NOSIZE);
         hdwp      = DeferCtlPos(hdwp, hwnd, IDC_REMOVE, dx, dy, SWP_NOSIZE);
@@ -2375,7 +2371,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
     return TRUE;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
     case WM_GETMINMAXINFO:
@@ -2681,7 +2677,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
     return TRUE;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -2876,7 +2872,7 @@ static INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -3020,7 +3016,7 @@ static INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -3160,7 +3156,7 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -3318,7 +3314,7 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -3489,7 +3485,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -3685,7 +3681,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -3707,8 +3703,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
         int dx, dy;
         ResizeDlg_Size(hwnd,lParam,&dx,&dy);
 
-        HDWP hdwp = BeginDeferWindowPos(4);
-        hdwp = DeferCtlPos(hdwp,hwnd,IDC_RESIZEGRIP,dx,dy,SWP_NOSIZE);
+        HDWP hdwp = BeginDeferWindowPos(3);
         hdwp = DeferCtlPos(hdwp,hwnd,IDOK,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDCANCEL,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_ENCODINGLIST,dx,dy,SWP_NOMOVE);
@@ -3892,7 +3887,7 @@ static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wP
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -5607,11 +5602,34 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg)
 //
 // Resize Dialog Helpers()
 //
+// KNOWN ISSUE: DPI round-trip drift on resizable dialogs
+//
+// When a resizable dialog is moved between monitors with different DPI,
+// stored dimensions (cxClient, cyClient, mmiPtMin/Max, attrs) are kept
+// in the init-DPI coordinate space.  ResizeDlg_Size and
+// ResizeDlg_GetMinMaxInfo convert them on-the-fly via MulDiv(value,
+// currentDpi, pm->dpi).  Because MulDiv rounds to nearest integer,
+// repeated DPI transitions accumulate rounding errors:
+//
+//   96 DPI → 120 DPI → 96 DPI:
+//     300 → MulDiv(300,120,96)=375 → MulDiv(375,96,120)=300  (exact)
+//   96 DPI → 144 DPI → 96 DPI:
+//     301 → MulDiv(301,144,96)=451 → MulDiv(451,96,144)=300  (off by 1)
+//
+// After many round-trips the dialog may grow or shrink by a few pixels
+// and control layout can shift.  ResizeDlg_DPIChanged does NOT update
+// pm->dpi, so every conversion is relative to the original init DPI —
+// this avoids compounding drift within a single DPI stay but cannot
+// eliminate the MulDiv rounding error across transitions.
+//
+// A full fix would require scaling all bookkeeping values in
+// ResizeDlg_DPIChanged (pm->dpi, mmiPtMin/Max, attrs) to the new DPI
+// while leaving cxClient/cyClient unscaled, so that ResizeDlg_Size
+// computes correct deltas.  However, this was tested and worsened
+// layout transitions in practice — needs further investigation.
+ 
 #define RESIZEDLG_PROP_KEY	L"ResizeDlg"
 #define MAX_RESIZEDLG_ATTR_COUNT	2
-// temporary fix for moving dialog to monitor with different DPI
-// TODO: all dimensions no longer valid after window DPI changed.
-#define NP3_ENABLE_RESIZEDLG_TEMP_FIX	1
 
 typedef struct _resizeDlg {
     int direction;
@@ -5622,6 +5640,8 @@ typedef struct _resizeDlg {
     int mmiPtMinY;
     int mmiPtMaxX;	// only Y direction
     int mmiPtMaxY;	// only X direction
+    HWND hwndGrip;
+    int cGrip;
     int attrs[MAX_RESIZEDLG_ATTR_COUNT];
 } RESIZEDLG, * PRESIZEDLG;
 
@@ -5639,9 +5659,12 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_
         pm->cxClient = rc.right - rc.left;
         pm->cyClient = rc.bottom - rc.top;
 
+        // Apply the target style BEFORE computing sizes so borders match
         const DWORD style = (pm->direction < 0) ? (GetWindowStyle(hwnd) & ~WS_THICKFRAME) : (GetWindowStyle(hwnd) | WS_THICKFRAME);
+        SetWindowStyle(hwnd, style);
+        SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
 
-        Scintilla_AdjustWindowRectForDpi((LPWRECT)&rc, style, 0, pm->dpi);
+        Scintilla_AdjustWindowRectForDpi((LPWRECT)&rc, style, GetWindowExStyle(hwnd), pm->dpi);
 
         pm->mmiPtMinX = rc.right - rc.left;
         pm->mmiPtMinY = rc.bottom - rc.top;
@@ -5661,10 +5684,7 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_
 
         SetProp(hwnd, RESIZEDLG_PROP_KEY, (HANDLE)pm);
 
-        SetWindowPos(hwnd, NULL, rc.left, rc.top, cxFrame, cyFrame, SWP_NOZORDER);
-
-        SetWindowStyle(hwnd, style);
-        SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+        SetWindowPos(hwnd, NULL, 0, 0, cxFrame, cyFrame, SWP_NOZORDER | SWP_NOMOVE);
 
         WCHAR wch[MIDSZ_BUFFER];
         GetMenuString(GetSystemMenu(GetParent(hwnd), FALSE), SC_SIZE, wch, COUNTOF(wch), MF_BYCOMMAND);
@@ -5672,11 +5692,14 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_
         InsertMenu(GetSystemMenu(hwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_SEPARATOR, 0, NULL);
 
         if (pm->direction >= 0) {
-            HWND const hwndCtl = GetDlgItem(hwnd, nIdGrip);
-            if (hwndCtl) {
-                SetWindowStyle(hwndCtl, GetWindowStyle(hwndCtl) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
-                int const cGrip = Scintilla_GetSystemMetricsForDpi(SM_CXHTHUMB, pm->dpi);
-                SetWindowPos(hwndCtl, NULL, pm->cxClient - cGrip, pm->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
+            pm->hwndGrip = GetDlgItem(hwnd, nIdGrip);
+            if (pm->hwndGrip) {
+                SetWindowStyle(pm->hwndGrip, GetWindowStyle(pm->hwndGrip) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
+                pm->cGrip = Scintilla_GetSystemMetricsForDpi(SM_CXHTHUMB, pm->dpi);
+                GetClientRect(hwnd, &rc);
+                pm->cxClient = rc.right - rc.left;
+                pm->cyClient = rc.bottom - rc.top;
+                SetWindowPos(pm->hwndGrip, NULL, pm->cxClient - pm->cGrip, pm->cyClient - pm->cGrip, pm->cGrip, pm->cGrip, SWP_NOZORDER);
             }
         }
     }
@@ -5705,7 +5728,6 @@ void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy)
     if (pm) {
         const int cxClient = LOWORD(lParam);
         const int cyClient = HIWORD(lParam);
-#if NP3_ENABLE_RESIZEDLG_TEMP_FIX
         const UINT dpi = Scintilla_GetWindowDPI(hwnd);
         const UINT old = pm->dpi;
         if (cx) {
@@ -5717,16 +5739,10 @@ void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy)
         // store in original DPI.
         pm->cxClient = MulDiv(cxClient, old, dpi);
         pm->cyClient = MulDiv(cyClient, old, dpi);
-#else
-        if (cx) {
-            *cx = cxClient - pm->cxClient;
+        // position size grip absolutely at bottom-right corner
+        if (pm->hwndGrip) {
+            SetWindowPos(pm->hwndGrip, NULL, cxClient - pm->cGrip, cyClient - pm->cGrip, pm->cGrip, pm->cGrip, SWP_NOZORDER | SWP_NOACTIVATE);
         }
-        if (cy) {
-            *cy = cyClient - pm->cyClient;
-        }
-        pm->cxClient = cxClient;
-        pm->cyClient = cyClient;
-#endif
     }
 }
 
@@ -5734,7 +5750,6 @@ void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam)
 {
     LPCRESIZEDLG pm = (LPCRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
     LPMINMAXINFO lpmmi = (LPMINMAXINFO)lParam;
-#if NP3_ENABLE_RESIZEDLG_TEMP_FIX
     UINT const dpi = Scintilla_GetWindowDPI(hwnd);
     UINT const old = pm->dpi;
 
@@ -5751,22 +5766,36 @@ void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam)
         lpmmi->ptMaxTrackSize.x = MulDiv(pm->mmiPtMaxX, dpi, old);
         break;
     }
-#else
-    lpmmi->ptMinTrackSize.x = pm->mmiPtMinX;
-    lpmmi->ptMinTrackSize.y = pm->mmiPtMinY;
-
-    // only one direction
-    switch (pm->direction) {
-    case RSZ_ONLY_X:
-        lpmmi->ptMaxTrackSize.y = pm->mmiPtMaxY;
-        break;
-
-    case RSZ_ONLY_Y:
-        lpmmi->ptMaxTrackSize.x = pm->mmiPtMaxX;
-        break;
-    }
-#endif
 }
+
+void ResizeDlg_DPIChanged(HWND hwnd, const RECT* pNewRect, UINT newDpi)
+{
+    PRESIZEDLG pm = (PRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
+    if (pm) {
+        UINT const oldDpi = pm->dpi;
+
+        // Clamp suggested rect to scaled minimum (SetWindowPos doesn't enforce WM_GETMINMAXINFO)
+        RECT rc = *pNewRect;
+        int const newMinX = MulDiv(pm->mmiPtMinX, newDpi, oldDpi);
+        int const newMinY = MulDiv(pm->mmiPtMinY, newDpi, oldDpi);
+        if ((rc.right - rc.left) < newMinX) {
+            rc.right = rc.left + newMinX;
+        }
+        if ((rc.bottom - rc.top) < newMinY) {
+            rc.bottom = rc.top + newMinY;
+        }
+
+        // Update grip size for new DPI
+        if (pm->hwndGrip) {
+            pm->cGrip = Scintilla_GetSystemMetricsForDpi(SM_CXHTHUMB, newDpi);
+        }
+
+        UpdateWindowLayoutForDPI(hwnd, &rc, newDpi);
+    } else {
+        UpdateWindowLayoutForDPI(hwnd, pNewRect, newDpi);
+    }
+}
+
 
 void ResizeDlg_SetAttr(HWND hwnd, int index, int value)
 {
@@ -5804,14 +5833,9 @@ int ResizeDlg_CalcDeltaY2(HWND hwnd, int dy, int cy, int nCtlId1, int nCtlId2)
         return MulDiv(dy, cy, 100);
     }
     const LPCRESIZEDLG pm = (LPCRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
-#if NP3_ENABLE_RESIZEDLG_TEMP_FIX
     UINT const dpi = Scintilla_GetWindowDPI(hwnd);
     int const hMinX = MulDiv(pm->attrs[0], dpi, pm->dpi);
     int const hMinY = MulDiv(pm->attrs[1], dpi, pm->dpi);
-#else
-    int const hMinX = pm->attrs[0];
-    int const hMinY = pm->attrs[1];
-#endif
     int const h1 = GetDlgCtrlHeight(hwnd, nCtlId1);
     int const h2 = GetDlgCtrlHeight(hwnd, nCtlId2);
     // cy + h1 >= hMin1			cy >= hMin1 - h1
@@ -6516,7 +6540,7 @@ void UpdateWindowLayoutForDPI(HWND hwnd, const RECT *pNewRect, const UINT dpi)
         GetWindowRect(hwnd, &rc);
         //~MapWindowPoints(NULL, hWnd, (LPPOINT)&rc, 2);
         UINT const _dpi = (dpi < (USER_DEFAULT_SCREEN_DPI >> 2)) ? Scintilla_GetWindowDPI(hwnd) : dpi;
-        Scintilla_AdjustWindowRectForDpi((LPWRECT)&rc, uWndFlags, 0, _dpi);
+        Scintilla_AdjustWindowRectForDpi((LPWRECT)&rc, GetWindowStyle(hwnd), GetWindowExStyle(hwnd), _dpi);
         SetWindowPos(hwnd, NULL, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), uWndFlags);
     }
     RedrawWindow(hwnd, NULL, NULL, RDW_FRAME | RDW_INVALIDATE | RDW_ERASE | RDW_INTERNALPAINT | RDW_ALLCHILDREN | RDW_UPDATENOW);
@@ -6687,7 +6711,7 @@ INT_PTR CALLBACK FontDialogHookProc(
     case WM_DPICHANGED:
         dpi = LOWORD(wParam);
         //dpi.y = HIWORD(wParam);
-        UpdateWindowLayoutForDPI(hdlg, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hdlg, (RECT*)lParam, LOWORD(wParam));
         int const ctl[] = { cmb1, cmb2, cmb3, cmb4, cmb5 };
         for (int i = 0; i < COUNTOF(ctl); ++i) {
             HFONT const hFont = (HFONT)SendMessage(GetDlgItem(hdlg, ctl[i]), WM_GETFONT, 0, 0);
@@ -6791,7 +6815,7 @@ INT_PTR CALLBACK ColorDialogHookProc(
     case WM_DPICHANGED:
         dpi = LOWORD(wParam);
         //dpi.y = HIWORD(wParam);
-        UpdateWindowLayoutForDPI(hdlg, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hdlg, (RECT*)lParam, LOWORD(wParam));
         int const ctl[] = { COLOR_ADD, COLOR_MIX, IDOK, IDCANCEL };
         for (int i = 0; i < COUNTOF(ctl); ++i) {
             HFONT const hFont = (HFONT)SendMessage(GetDlgItem(hdlg, ctl[i]), WM_GETFONT, 0, 0);
