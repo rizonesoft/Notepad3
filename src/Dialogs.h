@@ -166,6 +166,7 @@ inline void ResizeDlg_InitY(HWND hwnd, int cyFrame, int nIdGrip)
 void ResizeDlg_Destroy(HWND hwnd, int* cxFrame, int* cyFrame);
 void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy);
 void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam);
+void ResizeDlg_DPIChanged(HWND hwnd, const RECT* pNewRect, UINT newDpi);
 
 #define MAX_RESIZEDLG_ATTR_COUNT	2
 void ResizeDlg_SetAttr(HWND hwnd, int index, int value);
