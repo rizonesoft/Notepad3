@@ -63,7 +63,7 @@ bool MarginStyle::ShowsFolding() const noexcept {
 
 void FontRealised::Realise(Surface &surface, int zoomLevel, Technology technology, const FontSpecification &fs, const char *localeName) {
 	PLATFORM_ASSERT(fs.fontName);
-	// If negative zoomLevel, ensure sizeZoomed at least minimum positive size
+	// If negative zoomLevel, ensure sizeZoomed at least minimum positive size 
 	measurements.sizeZoomed = std::max(fs.size + (zoomLevel * FontSizeMultiplier), FontSizeMultiplier);
 
 	const float deviceHeight = static_cast<float>(surface.DeviceHeightFont(measurements.sizeZoomed));

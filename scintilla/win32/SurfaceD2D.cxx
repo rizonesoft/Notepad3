@@ -266,7 +266,6 @@ struct FontDirectWrite : public FontWin {
 		if (fp.italic) {
 			style = DWRITE_FONT_STYLE_ITALIC;
 		}
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 		const std::wstring wsLocale = WStringFromUTF8(fp.localeName);
 		const FLOAT fHeight = static_cast<FLOAT>(fp.size);
@@ -283,6 +282,7 @@ struct FontDirectWrite : public FontWin {
 				stretch,
 				fHeight, L"en-us", pTextFormat.ReleaseAndGetAddressOf());
 		}
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		if (SUCCEEDED(hr)) {
 			pTextFormat->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
 
