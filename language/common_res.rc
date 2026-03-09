@@ -100,11 +100,13 @@ IDS_MUI_ABOUT_CONTRIBS  "\
 "
 
 IDS_MUI_ABOUT_LIBS  "\
-\\cf0 N.Hodgson (Scintilla)\\tab https://www.scintilla.org\\par\
+\\cf0 Neil Hodgson (Scintilla)\\tab https://www.scintilla.org\\par\
+\\cf0 Neil Hodgson (Lexilla)\\tab https://www.scintilla.org/Lexilla.html\\par\
 \\cf0 K.Kosako (Oniguruma Regex, deprecated)\\tab https://github.com/kkos/oniguruma\\par\
 \\cf0 Philip Hazel et al. (PCRE2 Regex)\\tab https://pcre2project.github.io/pcre2\\par\
 \\cf0 Stefan K\\u252nng (grepWin)\\tab https://github.com/stefankueng/grepWin\\par\
-\\cf0 D.Dyer (NotepadCrypt)\\tab https://www.real-me.net/ddyer/notepad/NotepadCrypt.html\\par\
+\\cf0 Dave Dyer (NotepadCrypt)\\tab https://www.real-me.net/ddyer/notepad/NotepadCrypt.html\\par\
+\\cf0 Brodie Thiesfield (SimpleIni)\\tab https://github.com/brofield/simpleini\\par\
 \\cf0 T.D.Hanson (uthash)\\tab https://troydhanson.github.io/uthash\\par\
 \\cf0 Carbo Kuo (Mozilla's uchardet)\\tab https://www.freedesktop.org/wiki/Software/uchardet\\par\
 \\cf0 Lewis Van Winkle (TinyExpr)\\tab https://github.com/codeplea/tinyexpr\\par\
