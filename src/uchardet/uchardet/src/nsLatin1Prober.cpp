@@ -50,7 +50,7 @@
 #define ASO    7        // accent small other
 #define CLASS_NUM   8    // total classes
 
-constexpr unsigned char Latin1_CharToClass[] = 
+static const unsigned char Latin1_CharToClass[] = 
 {
   OTH, OTH, OTH, OTH, OTH, OTH, OTH, OTH,   // 00 - 07
   OTH, OTH, OTH, OTH, OTH, OTH, OTH, OTH,   // 08 - 0F
@@ -87,21 +87,21 @@ constexpr unsigned char Latin1_CharToClass[] =
 };
 
 
-/* 0 : illegal
-   1 : very unlikely
-   2 : normal
+/* 0 : illegal 
+   1 : very unlikely 
+   2 : normal 
    3 : very likely
 */
-constexpr unsigned char Latin1ClassModel[] = 
+static const unsigned char Latin1ClassModel[] = 
 {
 /*      UDF OTH ASC ASS ACV ACO ASV ASO  */
 /*UDF*/  0,  0,  0,  0,  0,  0,  0,  0,
 /*OTH*/  0,  3,  3,  3,  3,  3,  3,  3,
-/*ASC*/  0,  3,  3,  3,  3,  3,  3,  3,
+/*ASC*/  0,  3,  3,  3,  3,  3,  3,  3, 
 /*ASS*/  0,  3,  3,  3,  1,  1,  3,  3,
 /*ACV*/  0,  3,  3,  3,  1,  2,  1,  2,
-/*ACO*/  0,  3,  3,  3,  3,  3,  3,  3,
-/*ASV*/  0,  3,  1,  3,  1,  1,  1,  3,
+/*ACO*/  0,  3,  3,  3,  3,  3,  3,  3, 
+/*ASV*/  0,  3,  1,  3,  1,  1,  1,  3, 
 /*ASO*/  0,  3,  1,  3,  1,  1,  3,  3,
 };
 
@@ -123,7 +123,7 @@ nsProbingState nsLatin1Prober::HandleData(const char* aBuf, PRUint32 aLen)
     newBuf1 = (char*)aBuf;
     newLen1 = aLen;
   }
-
+  
   unsigned char charClass;
   unsigned char freq;
   for (PRUint32 i = 0; i < newLen1; i++)
@@ -147,24 +147,25 @@ nsProbingState nsLatin1Prober::HandleData(const char* aBuf, PRUint32 aLen)
 float nsLatin1Prober::GetConfidence(void)
 {
   if (mState == eNotMe)
-    return SURE_NO;
-
+    return 0.01f;
+  
+  float confidence;
   PRUint32 total = 0;
-  for (PRInt32 i = 0; i < FREQ_CAT_NUM; i++) {
+  for (PRInt32 i = 0; i < FREQ_CAT_NUM; i++)
     total += mFreqCounter[i];
-  }
 
-  float confidence = 0.0f;
-
-  if (total)
+  if(!total)
+    confidence = 0.0f;
+  else
   {
-    confidence = (float)mFreqCounter[3] / (float)total;
-    confidence -= (float)mFreqCounter[1] * 20.0f / (float)total;
+    confidence = mFreqCounter[3]*1.0f / total;
+    confidence -= mFreqCounter[1]*20.0f/total;
   }
 
-  if (confidence < 0.0f) { confidence = 0.0f; }
-
-  // lower the confidence of latin1 so that other more accurate detector
+  if (confidence < 0.0f)
+    confidence = 0.0f;
+  
+  // lower the confidence of latin1 so that other more accurate detector 
   // can take priority.
   confidence *= 0.50f;
 

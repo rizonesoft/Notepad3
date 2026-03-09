@@ -44,7 +44,7 @@
 
 void  nsSJISProber::Reset(void)
 {
-  mCodingSM->Reset();
+  mCodingSM->Reset(); 
   mState = eDetecting;
   mContextAnalyser.Reset(mIsPreferredLanguage);
   mDistributionAnalyser.Reset(mIsPreferredLanguage);
@@ -52,7 +52,7 @@ void  nsSJISProber::Reset(void)
 
 nsProbingState nsSJISProber::HandleData(const char* aBuf, PRUint32 aLen)
 {
-  nsSMState codingState;
+  PRUint32 codingState;
 
   for (PRUint32 i = 0; i < aLen; i++)
   {
@@ -82,7 +82,7 @@ nsProbingState nsSJISProber::HandleData(const char* aBuf, PRUint32 aLen)
   mLastChar[0] = aBuf[aLen-1];
 
   if (mState == eDetecting)
-    if (mContextAnalyser.GotEnoughData() && GetConfidence() >= SHORTCUT_THRESHOLD)
+    if (mContextAnalyser.GotEnoughData() && GetConfidence() > SHORTCUT_THRESHOLD)
       mState = eFoundIt;
 
   return mState;

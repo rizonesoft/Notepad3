@@ -36,7 +36,7 @@ using namespace Scintilla;
 using namespace Lexilla;
 
 static const char *const RegistryWordListDesc[] = {
-	nullptr
+	0
 };
 
 struct OptionsRegistry {
@@ -250,7 +250,7 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 					}
 					if (context.state == SCE_REG_STRING &&
 						context.ch == '%' &&
-						(isdigit(context.chNext & 0xFF) || context.chNext == '*')) {
+						(isdigit(context.chNext) || context.chNext == '*')) {
 						context.SetState(SCE_REG_PARAMETER);
 					}
 				}
@@ -337,7 +337,7 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 				afterEqualSign = true;
 				highlight = true;
 			} else if (afterEqualSign) {
-				bool wordStart = isalpha(context.ch & 0xFF) && !isalpha(context.chPrev & 0xFF);
+				bool wordStart = isalpha(context.ch) && !isalpha(context.chPrev);
 				if (wordStart && AtValueType(styler, currPos)) {
 					context.SetState(SCE_REG_VALUETYPE);
 				}

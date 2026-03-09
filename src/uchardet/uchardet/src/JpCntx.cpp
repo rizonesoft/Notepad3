@@ -133,14 +133,14 @@ void JapaneseContextAnalysis::HandleData(const char* aBuf, PRUint32 aLen)
   PRUint32 charLen;
   PRInt32 order;
   PRUint32 i;
-
+  
   if (mDone)
     return;
 
   //The buffer we got is byte oriented, and a character may span in more than one
-  //buffers. In case the last one or two byte in last buffer is not complete, we
+  //buffers. In case the last one or two byte in last buffer is not complete, we 
   //record how many byte needed to complete that character and skip these bytes here.
-  //We can choose to record those bytes as well and analyse the character once it
+  //We can choose to record those bytes as well and analyse the character once it 
   //is complete, but since a character will not make much difference, by simply skipping
   //this character will simply our logic and improve performance.
   for (i = mNeedToSkipCharNum; i < aLen; )
@@ -151,7 +151,7 @@ void JapaneseContextAnalysis::HandleData(const char* aBuf, PRUint32 aLen)
       mNeedToSkipCharNum = i - aLen;
       mLastCharOrder = -1;
     }
-    else
+    else 
     {
       if (order != -1 && mLastCharOrder != -1)
       {
@@ -161,12 +161,12 @@ void JapaneseContextAnalysis::HandleData(const char* aBuf, PRUint32 aLen)
           mDone = PR_TRUE;
           break;
         }
-        mRelSample[(int)jp2CharContext[mLastCharOrder][order]]++;
+        mRelSample[jp2CharContext[mLastCharOrder][order]]++;
       }
       mLastCharOrder = order;
     }
   }
-
+  
   return;
 }
 
@@ -182,12 +182,12 @@ void JapaneseContextAnalysis::Reset(PRBool aIsPreferredLanguage)
 }
 #define DONT_KNOW (float)-1
 
-float  JapaneseContextAnalysis::GetConfidence() const
+float  JapaneseContextAnalysis::GetConfidence(void)
 {
   //This is just one way to calculate confidence. It works well for me.
   if (mTotalRel > mDataThreshold)
     return ((float)(mTotalRel - mRelSample[0]))/mTotalRel;
-  else
+  else 
     return (float)DONT_KNOW;
 }
 
@@ -196,15 +196,15 @@ PRInt32 SJISContextAnalysis::GetOrder(const char* str, PRUint32 *charLen)
 {
   //find out current char's byte length
   if (((unsigned char)*str >= (unsigned char)0x81 && (unsigned char)*str <= (unsigned char)0x9f) ||
-      ((unsigned char)*str >= (unsigned char)0xe0 && (unsigned char)*str <= (unsigned char)0xfc) )
+      ((unsigned char)*str >= (unsigned char)0xe0 && (unsigned char)*str <= (unsigned char)0xfc))
       *charLen = 2;
   else
       *charLen = 1;
 
   //return its order if it is hiragana
   if (*str == '\202' &&
-        (unsigned char)*(str+1) >= (unsigned char)0x9f &&
-        (unsigned char)*(str+1) <= (unsigned char)0xf1)
+      (unsigned char)*(str+1) >= (unsigned char)0x9f &&
+      (unsigned char)*(str+1) <= (unsigned char)0xf1)
     return (unsigned char)*(str+1) - (unsigned char)0x9f;
   return -1;
 }
@@ -217,9 +217,9 @@ PRInt32 EUCJPContextAnalysis::GetOrder(const char* str, PRUint32 *charLen)
        (unsigned char)*str <= (unsigned char)0xfe))
       *charLen = 2;
   else if ((unsigned char)*str == (unsigned char)0x8f)
-    *charLen = 3;
+      *charLen = 3;
   else
-    *charLen = 1;
+      *charLen = 1;
 
   //return its order if it is hiragana
   if ((unsigned char)*str == (unsigned char)0xa4 &&
@@ -228,5 +228,3 @@ PRInt32 EUCJPContextAnalysis::GetOrder(const char* str, PRUint32 *charLen)
      return (unsigned char)*(str+1) - (unsigned char)0xa1;
   return -1;
 }
-
-

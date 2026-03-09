@@ -1,6 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- * vim: et sw=2 ts=2 fdm=marker
- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -50,7 +48,7 @@ public:
   nsLatin1Prober(void){Reset();}
   virtual ~nsLatin1Prober(void){}
   nsProbingState HandleData(const char* aBuf, PRUint32 aLen);
-  const char* GetCharSetName() {return "Windows-1252";}
+  const char* GetCharSetName() {return "WINDOWS-1252";}
   nsProbingState GetState(void) {return mState;}
   void      Reset(void);
   float     GetConfidence(void);
@@ -61,7 +59,7 @@ public:
 #endif
 
 protected:
-
+  
   nsProbingState mState;
   char mLastCharClass;
   PRUint32 mFreqCounter[FREQ_CAT_NUM];

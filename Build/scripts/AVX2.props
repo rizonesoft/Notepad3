@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  AVX2 Optimization Property Sheet
+  
+  Usage: 
+  1. In Visual Studio, right-click your project → Add → Existing Item → select this file
+  2. Or: View → Property Manager → right-click configuration → Add Existing Property Sheet
+  
+  This enables AVX2 instructions for optimized builds on modern CPUs (Intel Haswell 2013+, AMD Excavator 2015+)
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <!-- Enable AVX2 instruction set -->
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      
+      <!-- Add preprocessor define so code can detect AVX2 build -->
+      <PreprocessorDefinitions>NP3_AVX2_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  
+  <ItemGroup />
+</Project>

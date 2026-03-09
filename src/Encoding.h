@@ -10,7 +10,7 @@
 *	Parts taken from SciTE, (c) Neil Hodgson                                  *
 *	MinimizeToTray, (c) 2000 Matthew Ellis                                    *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2025   *
+*                                                  (c) Rizonesoft 2008-2026   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -121,10 +121,13 @@ const char* Encoding_GetParseNames(const cpi_enc_t iEncoding);
 int Encoding_GetNameA(const cpi_enc_t iEncoding, char* buffer, size_t cch);
 int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cwch);
 
+bool Has_UTF32_LE_BOM(const char* pBuf, size_t cnt);
+bool Has_UTF32_BE_BOM(const char* pBuf, size_t cnt);
+bool Has_UTF32_BOM(const char* pBuf, size_t cnt);
+
 bool Has_UTF16_LE_BOM(const char* pBuf, size_t cnt);
 bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt);
 bool Has_UTF16_BOM(const char *pBuf, size_t cnt);
-bool HasUnicodeNullBytes(const char* pBuf, size_t cnt);
 
 inline bool IsUTF8Signature(const char* p)
 {
@@ -132,8 +135,8 @@ inline bool IsUTF8Signature(const char* p)
 }
 #define UTF8StringStart(p) (IsUTF8Signature(p)) ? ((p)+3) : (p)
 
-bool IsValidUTF8(const char* pTest, size_t nLength);
 bool IsPureAscii7Bit(const char* pTest, size_t nLength);
+bool IsValidUTF8(const char* pTest, size_t nLength);
 
 
 //////////////////////////////////////////////////////
@@ -193,8 +196,8 @@ typedef struct _enc_det_t {
     bool bIsReverse;
     bool bIsUTF8Sig;
     bool bValidUTF8;
-    bool bHasUnicodeNullBytes;
     bool bPureASCII7Bit;
+    bool bIsUTF32;
 
     char encodingStrg[64];
 

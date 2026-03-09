@@ -159,11 +159,22 @@ enum class CaseVisible {
 	Camel = 3,
 };
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+// Extended FontWeight enum to support all DirectWrite font weight values
 enum class FontWeight {
+	Thin = 100,
+	ExtraLight = 200,
+	Light = 300,
+	SemiLight = 350,
 	Normal = 400,
+	Medium = 500,
 	SemiBold = 600,
 	Bold = 700,
+	ExtraBold = 800,
+	Black = 900,
+	ExtraBlack = 950,
 };
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 enum class FontStretch {
 	UltraCondensed = 1,
@@ -176,6 +187,16 @@ enum class FontStretch {
 	ExtraExpanded = 8,
 	UltraExpanded = 9,
 };
+
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+// FontStyle enum to support Oblique fonts (e.g., "Iosevka Oblique")
+// Values match DWRITE_FONT_STYLE
+enum class FontStyle {
+	Normal = 0,
+	Oblique = 1,
+	Italic = 2,
+};
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 enum class Element {
 	List = 0,

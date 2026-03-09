@@ -20,9 +20,6 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *          JoungKyun.Kim <http://oops.org>
- *            - Add mDetectedConfidence
- *            - Add mDetectedIsBOM
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -82,8 +79,7 @@ protected:
    PRBool  mGotData;
    char    mLastChar;
    const char *  mDetectedCharset;
-   float mDetectedConfidence;
-   short   mDetectedIsBOM;
+   PRInt32 mBestGuess;
    PRUint32 mLanguageFilter;
 
    nsCharSetProber  *mCharSetProbers[NUM_OF_CHARSET_PROBERS];
@@ -91,4 +87,3 @@ protected:
 };
 
 #endif
-

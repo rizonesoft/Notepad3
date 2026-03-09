@@ -7,19 +7,20 @@
 * Config.cpp                                                                  *
 *   Methods to read and write configuration                                   *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2025   *
+*                                                  (c) Rizonesoft 2008-2026   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
+#include <sdkddkver.h>
 #if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#define WINVER _WIN32_WINNT_WIN10
 #endif
 #if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
+#define _WIN32_WINNT _WIN32_WINNT_WIN10
 #endif
 #if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
+#define NTDDI_VERSION NTDDI_WIN10_RS5
 #endif
 
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
@@ -192,13 +193,13 @@ HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
         if (!bLocked) {
             HSTRINGW msg = StrgCreate(NULL);
             StrgFormat(msg, L"AcquireWriteFileLock(%s): NO EXCLUSIVE LOCK ACQUIRED!", lpIniFilePath);
-            MsgBoxLastError(StrgGet(msg), 0);
+            InfoBoxLastError(StrgGet(msg), 0);
             StrgDestroy(msg);
         }
     } else {
         HSTRINGW msg = StrgCreate(NULL);
         StrgFormat(msg, L"AcquireWriteFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
-        MsgBoxLastError(StrgGet(msg), 0);
+        InfoBoxLastError(StrgGet(msg), 0);
         StrgDestroy(msg);
     }
     return (bLocked ? hFile : INVALID_HANDLE_VALUE);
@@ -225,13 +226,13 @@ HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
         if (!bLocked) {
             HSTRINGW msg = StrgCreate(NULL);
             StrgFormat(msg, L"AcquireReadFileLock(%s): NO READER LOCK ACQUIRED!", lpIniFilePath);
-            MsgBoxLastError(StrgGet(msg), 0);
+            InfoBoxLastError(StrgGet(msg), 0);
             StrgDestroy(msg);
         }
     } else {
         HSTRINGW msg = StrgCreate(NULL);
         StrgFormat(msg, L"AcquireReadFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
-        MsgBoxLastError(StrgGet(msg), 0);
+        InfoBoxLastError(StrgGet(msg), 0);
         StrgDestroy(msg);
     }
     return (bLocked ? hFile : INVALID_HANDLE_VALUE);
@@ -990,22 +991,50 @@ static bool _CheckAndSetIniFile(HPATHL hpth_in_out)
 // ============================================================================
 
 
-static bool _HandleIniFileRedirect(LPCWSTR lpszSecName, LPCWSTR lpszKeyName, HPATHL hpth_in_out)
+static bool _HandleIniFileRedirect(LPCWSTR lpszSecName, LPCWSTR lpszKeyName, HPATHL hpth_in_out, int maxDepth)
 {
     bool result = false;
-    if (Path_IsExistingFile(hpth_in_out)) {
+    for (int depth = 0; depth < maxDepth; ++depth) {
+        if (!Path_IsExistingFile(hpth_in_out)) {
+            break;
+        }
+
+        // pick up DefaultDirectory from each redirecting INI (later files override earlier ones)
+        WCHAR defDir[PATHLONG_MAX_CCH] = { L'\0' };
+        if (IniFileGetString(hpth_in_out, Constants.Settings2_Section, L"DefaultDirectory", L"", defDir, COUNTOF(defDir))) {
+            Path_Reset(Settings2.DefaultDirectory, defDir);
+            Path_ExpandEnvStrings(Settings2.DefaultDirectory);
+        }
+
         HPATHL hredirect = Path_Allocate(NULL);
         LPWSTR const buf = Path_WriteAccessBuf(hredirect, PATHLONG_MAX_CCH);
         if (IniFileGetString(hpth_in_out, lpszSecName, lpszKeyName, L"", buf, PATHLONG_MAX_CCH)) {
             Path_Sanitize(hredirect);
             Path_FreeExtra(hredirect, 0);
             if (_CheckAndSetIniFile(hredirect)) {
+                // Redirect target exists — use it
                 Path_Swap(hpth_in_out, hredirect);
             }
             else {
-                Path_CanonicalizeEx(hpth_in_out, Paths.ModuleDirectory);
+                // Redirect target doesn't exist — try to create it
+                // (admin explicitly configured this redirect)
+                Path_ExpandEnvStrings(hredirect);
+                if (Path_IsRelative(hredirect)) {
+                    Path_RelativeToApp(hredirect, false, false, true);
+                }
+                if (CreateIniFile(hredirect, NULL)) {
+                    Path_Swap(hpth_in_out, hredirect);
+                } else {
+                    // Creation failed — remember target for "Save Settings Now"
+                    Path_Reset(Paths.IniFileDefault, Path_Get(hredirect));
+                    Path_CanonicalizeEx(hpth_in_out, Paths.ModuleDirectory);
+                }
             }
             result = true;
+        }
+        else {
+            Path_Release(hredirect);
+            break;  // no redirect entry found, stop chaining
         }
         Path_Release(hredirect);
     }
@@ -1042,11 +1071,8 @@ extern "C" bool FindIniFile()
         }
 
         if (bFound) {
-            // allow two redirections: administrator -> user -> custom
-            // 1st:
-            if (_HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", Paths.IniFile)) {
-                // 2nd:
-                _HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", Paths.IniFile);  
+            // allow up to two redirections: administrator -> user -> custom
+            if (_HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", Paths.IniFile, 2)) {
                 bFound = _CheckAndSetIniFile(Paths.IniFile);
             }
 
@@ -1092,7 +1118,13 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
         HPATHL hdir_path = Path_Copy(hini_pth);
         Path_RemoveFileSpec(hdir_path);
         if (Path_IsNotEmpty(hdir_path)) {
-            CreateDirectoryW(Path_Get(hdir_path), NULL);
+            // Use SHCreateDirectoryExW to create all intermediate directories - fixes #5075
+            HRESULT const hr = SHCreateDirectoryExW(NULL, Path_Get(hdir_path), NULL);
+            if (FAILED(hr) && (hr != HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS))) {
+                Path_Release(hdir_path);
+                if (pdwFileSize_out) { *pdwFileSize_out = 0UL; }
+                return false;
+            }
         }
         Path_Release(hdir_path);
 
@@ -1106,12 +1138,14 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
             if (IS_VALID_HANDLE(hFile)) {
                 CloseHandle(hFile); // done
             } else {
-                WCHAR fileName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
+                WCHAR fileName[MAX_PATH_EXPLICIT] = { L'\0' };
                 Path_GetDisplayName(fileName, COUNTOF(fileName), hini_pth, NULL, true);
                 HSTRINGW msg = StrgCreate(NULL);
                 StrgFormat(msg, L"CreateIniFile(%s): FAILED TO CREATE INITIAL INI FILE!", fileName);
-                MsgBoxLastError(StrgGet(msg), 0);
+                InfoBoxLastError(StrgGet(msg), 0);
                 StrgDestroy(msg);
+                if (pdwFileSize_out) { *pdwFileSize_out = 0UL; }
+                return false;
             }
         } else {
             HANDLE hFile = CreateFileW(Path_Get(hini_pth),
@@ -1123,11 +1157,11 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
                 dwFileSize = GetFileSize(hFile, &dwFSHigh);
                 CloseHandle(hFile);
             } else {
-                WCHAR fileName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
+                WCHAR fileName[MAX_PATH_EXPLICIT] = { L'\0' };
                 Path_GetDisplayName(fileName, COUNTOF(fileName), hini_pth, NULL, true);
                 HSTRINGW msg = StrgCreate(NULL);
                 StrgFormat(msg, L"CreateIniFile(%s): FAILED TO READ FILESIZE!", fileName);
-                MsgBoxLastError(StrgGet(msg), 0);
+                InfoBoxLastError(StrgGet(msg), 0);
                 StrgDestroy(msg);
                 dwFileSize = INVALID_FILE_SIZE;
             }
@@ -1136,7 +1170,7 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
             *pdwFileSize_out = dwFileSize;
         }
 
-        return CanAccessPath(Paths.IniFile, GENERIC_WRITE);
+        return CanAccessPath(hini_pth, GENERIC_WRITE);
     }
     return false;
 }
@@ -1237,11 +1271,15 @@ void LoadSettings()
     StrTrim(Settings2.DefaultExtension, L" \t.");
 
     IniSectionGetStringNoQuotes(IniSecSettings2, L"DefaultDirectory", L"", pPathBuffer, PATHLONG_MAX_CCH);
-    Path_Reset(Settings2.DefaultDirectory, pPathBuffer);
-    Path_ExpandEnvStrings(Settings2.DefaultDirectory);
+    if (StrIsNotEmpty(pPathBuffer)) {
+        Path_Reset(Settings2.DefaultDirectory, pPathBuffer);
+        Path_ExpandEnvStrings(Settings2.DefaultDirectory);
+    }
 
     IniSectionGetStringNoQuotes(IniSecSettings2, L"FileDlgFilters", L"", pPathBuffer, XHUGE_BUFFER);
-    StrgReset(Settings2.FileDlgFilters, pPathBuffer);
+    if (StrIsNotEmpty(pPathBuffer)) {
+        StrgReset(Settings2.FileDlgFilters, pPathBuffer);
+    }
 
     // handle deprecated (typo) key 'FileCheckInverval'
     constexpr const LONG64 NOTSETFCI = -111LL;
@@ -1276,6 +1314,7 @@ void LoadSettings()
     
     FileWatching.FileCheckInterval = Settings2.FileCheckInterval;
 
+    Settings2.FileWatchingMethod = clampi(IniSectionGetInt(IniSecSettings2, L"FileWatchingMethod", 0), 0, 2);
 
     IniSectionGetString(IniSecSettings2, L"FileChangedIndicator", L"[@]", Settings2.FileChangedIndicator, COUNTOF(Settings2.FileChangedIndicator));
 
@@ -1335,7 +1374,7 @@ void LoadSettings()
 
     Settings2.SubWrappedLineSelectOnMarginClick = IniSectionGetBool(IniSecSettings2, L"SubWrappedLineSelectOnMarginClick", false);
 
-    Settings2.AnalyzeReliableConfidenceLevel = (float)clampi(IniSectionGetInt(IniSecSettings2, L"AnalyzeReliableConfidenceLevel", 90), 0, 100) / 100.0f;
+    Settings2.AnalyzeReliableConfidenceLevel = (float)clampi(IniSectionGetInt(IniSecSettings2, L"AnalyzeReliableConfidenceLevel", 66), 0, 100) / 100.0f;
 
     int const iAnsiCPBonusSet = clampi(IniSectionGetInt(IniSecSettings2, L"LocaleAnsiCodePageAnalysisBonus", 33), 0, 100);
     Settings2.LocaleAnsiCodePageAnalysisBonus = (float)iAnsiCPBonusSet / 100.0f;
@@ -1390,6 +1429,8 @@ void LoadSettings()
     IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTmpl2MenuName", L"", Settings2.WebTmpl2MenuName, COUNTOF(Settings2.WebTmpl2MenuName));
 
     Settings2.LexerSQLNumberSignAsComment = IniSectionGetBool(IniSecSettings2, L"LexerSQLNumberSignAsComment", true);
+
+    Settings2.AtomicFileSave = IniSectionGetBool(IniSecSettings2, L"AtomicFileSave", true);
 
     Settings2.ExitOnESCSkipLevel = clampi(IniSectionGetInt(IniSecSettings2, L"ExitOnESCSkipLevel", Default_ExitOnESCSkipLevel), 0, 2);
 
@@ -1692,11 +1733,11 @@ void LoadSettings()
     int const prtFontSize = 10;
     int const zoomScale = MulDiv(baseZoom, prtFontSize, f2int(GLOBAL_INITIAL_FONTSIZE));
     Defaults.PrintZoom = (Globals.iCfgVersionRead < CFG_VER_0001) ? (zoomScale / 10) : zoomScale;
-    int iPrintZoom = clampi(IniSectionGetInt(IniSecSettings, L"PrintZoom", Defaults.PrintZoom), 0, SC_MAX_ZOOM_LEVEL);
+    int iPrintZoom = clampi(IniSectionGetInt(IniSecSettings, L"PrintZoom", Defaults.PrintZoom), 0, NP3_MAX_ZOOM_PERCENT);
     if (Globals.iCfgVersionRead < CFG_VER_0001) {
         iPrintZoom = 100 + (iPrintZoom - 10) * 10;
     }
-    Settings.PrintZoom = clampi(iPrintZoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
+    Settings.PrintZoom = clampi(iPrintZoom, NP3_MIN_ZOOM_PERCENT, NP3_MAX_ZOOM_PERCENT);
 
     GetLocaleInfoEx(LOCALE_NAME_USER_DEFAULT, LOCALE_IMEASURE, tchKeyName, COUNTOF(tchKeyName));
     LONG const _margin = (tchKeyName[0] == L'0') ? 2000L : 1000L; // Metric system. L'1' is US System
@@ -1725,6 +1766,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(SaveBeforeRunningTools, false);
     GET_BOOL_VALUE_FROM_INISECTION(EvalTinyExprOnSelection, true);
     GET_BOOL_VALUE_FROM_INISECTION(ResetFileWatching, true);
+    GET_BOOL_VALUE_FROM_INISECTION(MonitoringLog, false);  // View -> Monitoring Log - fixes #5037
     GET_INT_VALUE_FROM_INISECTION(EscFunction, 0, 0, 2);
     GET_BOOL_VALUE_FROM_INISECTION(AlwaysOnTop, false);
     if (Globals.CmdLnFlag_AlwaysOnTop) { Settings.AlwaysOnTop = (Globals.CmdLnFlag_AlwaysOnTop == 2); }
@@ -1864,7 +1906,7 @@ void LoadSettings()
         if (Globals.iCfgVersionRead < CFG_VER_0001) {
             winInfo.zoom = (winInfo.zoom + 10) * 10;
         }
-        winInfo.zoom = clampi(winInfo.zoom, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
+        winInfo.zoom = clampi(winInfo.zoom, NP3_MIN_ZOOM_PERCENT, NP3_MAX_ZOOM_PERCENT);
         winInfo.dpi = IniSectionGetInt(IniSecWindow, tchDPI, USER_DEFAULT_SCREEN_DPI);
 
         int const offset = Settings2.LaunchInstanceWndPosOffset;
@@ -2147,6 +2189,8 @@ static bool _SaveSettings(bool bForceSaveSettings)
     if (bForceSaveSettings) { Settings.FileWatchingMode = FileWatching.FileWatchingMode; }
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, FileWatchingMode);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ResetFileWatching);
+    if (bForceSaveSettings) { Settings.MonitoringLog = FileWatching.MonitoringLog; }  // fixes #5037
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MonitoringLog);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, AutoSaveInterval);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, AutoSaveOptions);
 

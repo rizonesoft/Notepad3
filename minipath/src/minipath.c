@@ -8,12 +8,15 @@
 *   Main application window functionality                                     *
 *   Based on code from metapath, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2025   *
+*                                                  (c) Rizonesoft 2008-2026   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
-#define _WIN32_WINNT 0x601
+#include <sdkddkver.h>
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT _WIN32_WINNT_WIN10
+#endif
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
 #include <windows.h>
@@ -22,6 +25,7 @@
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <commdlg.h>
+#include <shobjidl.h>
 #include <strsafe.h>
 #include <muiload.h>
 
@@ -81,7 +85,7 @@ HWND      hwndDirList;
 
 HWND      hwndMain;
 
-HANDLE    hChangeHandle = NULL;
+HANDLE    hChangeHandle = INVALID_HANDLE_VALUE;
 
 HISTORY   g_mHistory;
 
@@ -667,6 +671,100 @@ static void __fastcall _SetTargetAppMenuEntry(HMENU hMenu)
 
 
 
+
+
+//=============================================================================
+//
+//  _MiniPathSaveFileDlg()
+//
+static BOOL _MiniPathSaveFileDlg(HWND hwnd, LPWSTR szFile, int cchFile,
+                                  LPCWSTR lpFilter, LPCWSTR lpInitialDir,
+                                  LPCWSTR lpTitle)
+{
+    IFileSaveDialog *pfd = NULL;
+    HRESULT hr = CoCreateInstance(
+        &CLSID_FileSaveDialog, NULL, CLSCTX_INPROC_SERVER,
+        &IID_IFileSaveDialog, (void **)&pfd);
+    if (FAILED(hr)) {
+        return FALSE;
+    }
+
+    DWORD dwOpts = 0;
+    pfd->lpVtbl->GetOptions(pfd, &dwOpts);
+    pfd->lpVtbl->SetOptions(pfd, dwOpts | FOS_OVERWRITEPROMPT | FOS_PATHMUSTEXIST |
+                            FOS_NOCHANGEDIR | FOS_DONTADDTORECENT | FOS_NODEREFERENCELINKS);
+
+    if (lpTitle && *lpTitle) {
+        pfd->lpVtbl->SetTitle(pfd, lpTitle);
+    }
+
+    // Convert double-null-terminated filter string to COMDLG_FILTERSPEC
+    if (lpFilter && *lpFilter) {
+        int count = 0;
+        LPCWSTR p = lpFilter;
+        while (*p) {
+            p += lstrlenW(p) + 1;
+            if (*p == L'\0') { break; }
+            p += lstrlenW(p) + 1;
+            ++count;
+        }
+        if (count > 0) {
+            COMDLG_FILTERSPEC *spec = (COMDLG_FILTERSPEC *)LocalAlloc(LPTR,
+                count * sizeof(COMDLG_FILTERSPEC));
+            if (spec) {
+                p = lpFilter;
+                int i = 0;
+                while (*p && i < count) {
+                    spec[i].pszName = p;
+                    p += lstrlenW(p) + 1;
+                    spec[i].pszSpec = p;
+                    p += lstrlenW(p) + 1;
+                    ++i;
+                }
+                pfd->lpVtbl->SetFileTypes(pfd, (UINT)count, spec);
+                LocalFree(spec);
+            }
+        }
+    }
+
+    if (lpInitialDir && *lpInitialDir) {
+        IShellItem *psi = NULL;
+        if (SUCCEEDED(SHCreateItemFromParsingName(lpInitialDir, NULL,
+                &IID_IShellItem, (void **)&psi))) {
+            pfd->lpVtbl->SetFolder(pfd, psi);
+            psi->lpVtbl->Release(psi);
+        }
+    }
+
+    if (szFile[0]) {
+        LPCWSTR fn = PathFindFileName(szFile);
+        if (fn && *fn) {
+            pfd->lpVtbl->SetFileName(pfd, fn);
+        }
+    }
+
+    BOOL result = FALSE;
+
+    hr = pfd->lpVtbl->Show(pfd, hwnd);
+
+    if (SUCCEEDED(hr)) {
+        IShellItem *psi = NULL;
+        if (SUCCEEDED(pfd->lpVtbl->GetResult(pfd, &psi))) {
+            LPWSTR path = NULL;
+            if (SUCCEEDED(psi->lpVtbl->GetDisplayName(psi, SIGDN_FILESYSPATH, &path))) {
+                lstrcpyn(szFile, path, cchFile);
+                CoTaskMemFree(path);
+                result = TRUE;
+            }
+            psi->lpVtbl->Release(psi);
+        }
+    }
+
+    pfd->lpVtbl->Release(pfd);
+    return result;
+}
+
+
 //=============================================================================
 //
 //  MainWndProc()
@@ -708,7 +806,10 @@ LRESULT CALLBACK MainWndProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
 
             // Terminate directory watching
             KillTimer(hwnd,ID_TIMER);
-            FindCloseChangeNotification(hChangeHandle);
+            if (hChangeHandle != INVALID_HANDLE_VALUE) {
+                FindCloseChangeNotification(hChangeHandle);
+                hChangeHandle = INVALID_HANDLE_VALUE;
+            }
 
             // GetWindowPlacement
             wndpl.length = sizeof(WINDOWPLACEMENT);
@@ -812,7 +913,7 @@ CASE_WM_CTLCOLOR_SET:
 
     case WM_TIMER:
         // Check Change Notification Handle
-        if (WAIT_OBJECT_0 == WaitForSingleObject(hChangeHandle,0)) {
+        if (hChangeHandle != INVALID_HANDLE_VALUE && WAIT_OBJECT_0 == WaitForSingleObject(hChangeHandle,0)) {
             // Store information about currently selected item
             DLITEM dli;
             dli.mask  = DLI_ALL;
@@ -1455,7 +1556,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
 
 
     // Theme = false (!) ~ you cannot change a toolbar's color when a visual style is active
-    InitWindowCommon(hwndReBar, !(IsWindows10OrGreater() && IsDarkModeSupported()));
+    InitWindowCommon(hwndReBar, !IsDarkModeSupported());
 
 #ifdef D_NP3_WIN10_DARK_MODE
     if (IsDarkModeSupported()) {
@@ -1480,7 +1581,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     rbBand.hbmBack = NULL;
     rbBand.lpText     = L"Toolbar";
     rbBand.clrFore    = GetModeTextColor(UseDarkMode());
-    rbBand.clrBack    = IsWindows10OrGreater() ? GetModeBkColor(UseDarkMode()) : GetModeBtnfaceColor(UseDarkMode());
+    rbBand.clrBack    = GetModeBkColor(UseDarkMode());
     rbBand.hwndChild  = hwndToolbar;
     rbBand.cxMinChild = (rc.right - rc.left) * COUNTOF(tbbMainWnd);
     rbBand.cyMinChild = (rc.bottom - rc.top) + 2 * rc.top;
@@ -1492,7 +1593,7 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
     cyReBar = rc.bottom - rc.top;
 
     cyReBarFrame = bIsAppThemed ? 0 : 2;
-    cyDriveBoxFrame = (bIsAppThemed && IsWindowsVistaOrGreater()) ? 0 : 2;
+    cyDriveBoxFrame = bIsAppThemed ? 0 : 2;
 }
 
 
@@ -2002,7 +2103,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 
     case IDM_FILE_NEW: {
-        OPENFILENAME ofn;
         HANDLE       hFile;
         WCHAR szNewFile[MAX_PATH];
         WCHAR szFilter[128];
@@ -2014,20 +2114,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         PrepareFilterStr(szFilter);
         GetLngString(IDS_NEWFILE,szTitle,COUNTOF(szTitle));
 
-        ZeroMemory(&ofn,sizeof(OPENFILENAME));
-
-        ofn.lStructSize = sizeof(OPENFILENAME);
-        ofn.hwndOwner = hwnd;
-        ofn.lpstrFilter = szFilter;
-        ofn.lpstrFile = szNewFile;
-        ofn.nMaxFile = MAX_PATH;
-        ofn.lpstrTitle = szTitle;
-        ofn.lpstrInitialDir = Settings.szCurDir;
-        ofn.Flags = OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT |
-                    OFN_NODEREFERENCELINKS | OFN_OVERWRITEPROMPT |
-                    OFN_PATHMUSTEXIST;
-
-        if (!GetSaveFileName(&ofn)) {
+        if (!_MiniPathSaveFileDlg(hwnd, szNewFile, COUNTOF(szNewFile),
+                szFilter, Settings.szCurDir, szTitle)) {
             break;
         }
 
@@ -2098,7 +2186,6 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     case IDM_FILE_SAVEAS: {
         DLITEM dli;
-        OPENFILENAME ofn;
         WCHAR szNewFile[MAX_PATH];
         WCHAR tch[MAX_PATH];
         WCHAR szFilter[128];
@@ -2118,18 +2205,8 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         GetLngString(IDS_FILTER_ALL,szFilter,COUNTOF(szFilter));
         PrepareFilterStr(szFilter);
 
-        ZeroMemory(&ofn,sizeof(OPENFILENAME));
-
-        ofn.lStructSize = sizeof(OPENFILENAME);
-        ofn.hwndOwner = hwnd;
-        ofn.lpstrFilter = szFilter;
-        ofn.lpstrFile = szNewFile;
-        ofn.nMaxFile = MAX_PATH;
-        ofn.Flags = OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT |
-                    OFN_NODEREFERENCELINKS | OFN_OVERWRITEPROMPT |
-                    OFN_PATHMUSTEXIST;
-
-        if (!GetSaveFileName(&ofn)) {
+        if (!_MiniPathSaveFileDlg(hwnd, szNewFile, COUNTOF(szNewFile),
+                szFilter, NULL, NULL)) {
             break;
         }
 
@@ -2203,7 +2280,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         SHFileOperation(&shfos);
 
         // Check if there are any changes in the directory, then update!
-        if (WAIT_OBJECT_0 == WaitForSingleObject(hChangeHandle,0)) {
+        if (hChangeHandle != INVALID_HANDLE_VALUE && WAIT_OBJECT_0 == WaitForSingleObject(hChangeHandle,0)) {
             SendWMCommand(hwnd, IDM_VIEW_UPDATE);
             if (iItem > 0) {
                 iItem--;
@@ -3160,7 +3237,9 @@ BOOL ChangeDirectory(HWND hwnd,LPCWSTR lpszNewDir,BOOL bUpdateHistory)
         }
 
         // setup new change notification handle
-        FindCloseChangeNotification(hChangeHandle);
+        if (hChangeHandle != INVALID_HANDLE_VALUE) {
+            FindCloseChangeNotification(hChangeHandle);
+        }
         hChangeHandle = FindFirstChangeNotification(Settings.szCurDir,FALSE,
                         FILE_NOTIFY_CHANGE_FILE_NAME  | \
                         FILE_NOTIFY_CHANGE_DIR_NAME   | \

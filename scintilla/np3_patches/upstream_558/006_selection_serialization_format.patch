@@ -1,0 +1,21 @@
+# Selection Serialization Format Change (5.5.8)
+# TYPE: Full file replacement (applied)
+# 
+# REASON FOR CHANGE: 
+# Although NP3 does not currently use SCI_GETSELECTIONSERIALIZED or 
+# SCI_SETSELECTIONSERIALIZED, applying this patch future-proofs the codebase.
+#
+# CHANGES IN 5.5.8:
+# - Selection.cxx: Refactored string parsing for serialized selections
+# - Selection.h: Signature changes for constructors (string_view -> string_view&)
+# - Format change: Main index now appears at START with '#' prefix
+#   Old format: "1-0,2-3#1" (main index at end)
+#   New format: "#1,1-0,2-3" (main index at start)
+#
+# FILES REPLACED:
+# - scintilla/src/Selection.cxx
+# - scintilla/src/Selection.h
+#
+# NP3 CONFLICT: NONE - These files have no NP3 modifications
+#
+# STATUS: ✅ APPLIED

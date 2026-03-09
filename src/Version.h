@@ -7,7 +7,7 @@
 * Version.h                                                                   *
 *   Based on code from Notepad2-mod, (c) XhmikosR 2010-2015                   *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2025   *
+*                                                  (c) Rizonesoft 2008-2026   *
 *                                                     https://rizonesoft.com  *
 *                                                                             *
 *                                                                             *
@@ -41,8 +41,8 @@
 #pragma message("Release Build: " _STRG(VERSION_FILEVERSION_LONG))
 #endif
 
-#define VERSION_LEGALCOPYRIGHT         "Copyright © 2008-2025 Rizonesoft"
-//#define VERSION_LEGALCOPYRIGHT_LONG  "© Rizonesoft 2008-2025"
+#define VERSION_LEGALCOPYRIGHT         "Copyright © 2008-2026 Rizonesoft"
+//#define VERSION_LEGALCOPYRIGHT_LONG  "© Rizonesoft 2008-2026"
 #define VERSION_AUTHORNAME             "© Rizonesoft"
 #define VERSION_WEBPAGEDISPLAY         "https://rizonesoft.com"
 #define VERSION_COMPANYNAME            "© Rizonesoft"
@@ -59,7 +59,7 @@
 
 #define VERSION_SCIVERSION             _SCI_BUILD _W(_STRG(_V(SCINTILLA_VER)))
 #define VERSION_LXIVERSION             _LXI_BUILD _W(_STRG(_V(LEXILLA_VER)))
-#define VERSION_ONIGURUMA              L"Oniguruma " _W(_STRG(_V(ONIGURUMA_REGEX_VER)))
+#define VERSION_PCRE2                  L"PCRE2 " _W(_STRG(_V(PCRE2_VER)))
 #define VERSION_UCHARDET               L"UChardet " _W(_STRG(_V(UCHARDET_VER)))
 #define VERSION_TINYEXPR               L"TinyExpr " _W(_STRG(_V(TINYEXPR_VER)))
 #define VERSION_UTHASH                 L"UTHash " _W(_STRG(_V(UTHASH_VER)))
@@ -86,7 +86,11 @@ inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
 
     if (build >= 22000) { // Win11
 
-        if (build >= 26200)
+        if (build >= 28000)
+        {
+            lpcReleaseID = L"26H1";
+        }
+        else if (build >= 26200)
         {
             lpcReleaseID = L"25H2";
         }
@@ -161,9 +165,19 @@ inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
 #undef VER_CPL
 
 #if defined(_MSC_VER)
-    #if (_MSC_VER == 1944)
+    #if (_MSC_VER == 1950)
+        #if (_MSC_FULL_VER >= 195035725)
+            #define VER_CPL     MS Visual C++ 2026 v18.3.2
+        #elif (_MSC_FULL_VER >= 195035724)
+            #define VER_CPL     MS Visual C++ 2026 v18.3.(0-1)
+        #elif (_MSC_FULL_VER >= 195035719)
+            #define VER_CPL     MS Visual C++ 2026 v18.(1-2)
+        #elif (_MSC_FULL_VER >= 195035717)
+            #define VER_CPL     MS Visual C++ 2026 v18.0.0
+        #endif
+    #elif (_MSC_VER == 1944)
         #if (_MSC_FULL_VER >= 194435222)
-            #define VER_CPL     MS Visual C++ 2022 v17.14.22
+            #define VER_CPL     MS Visual C++ 2022 v17.14.(22-26)
         #elif (_MSC_FULL_VER >= 194435221)
             #define VER_CPL     MS Visual C++ 2022 v17.14.21
         #elif (_MSC_FULL_VER >= 194435220)

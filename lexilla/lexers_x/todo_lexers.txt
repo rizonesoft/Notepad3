@@ -1,30 +1,5 @@
 Compare Homebrew with New Origin Lexers
 ----------------------------------------
-- LexerMarkdown.cxx
-Compare Homebrew with New Origin Lexers
-----------------------------------------
-- LexerMarkdown.cxx
-Compare Homebrew with New Origin Lexers
-----------------------------------------
-- LexerMarkdown.cxx
-Compare Homebrew with New Origin LexersCompare Homebrew with New Origin LexersCompare Homebrew with New Origin LexersCompare Homebrew with New Origin LexersCompare Homebrew with New Origin LexersCompare Homebrew with New Origin LexersCompare Homebrew with New Origin LexersCompare Homebrew with New Origin LexersCompare Homebrew with New Origin Lexers
-----------------------------------------
-- LexerMarkdown.cxx
-Compare Homebrew with New Origin Lexers
-----------------------------------------
-- LexerMarkdown.cxx
-Compare Homebrew with New Origin Lexers
-----------------------------------------
-- LexerMarkdown.cxx
-Compare Homebrew with New Origin Lexers
-----------------------------------------
-- LexerMarkdown.cxx
-Compare Homebrew with New Origin Lexers
-----------------------------------------
-- LexerMarkdown.cxx
-Compare Homebrew with New Origin Lexers
-----------------------------------------
-- LexerMarkdown.cxx
-Compare Homebrew with New Origin Lexers
-----------------------------------------
-- LexerMarkdown.cxx
+[x] LexMarkdown.cxx - DONE: Only 1 line difference (extern const modifier)
+    - lexers\LexMarkdown.cxx vs lexers_x\orig\LexMarkdown.cxx
+    - Functionally identical

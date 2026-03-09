@@ -1,0 +1,129 @@
+name: Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: ${{ matrix.platform }} ${{ matrix.configuration }}
+    runs-on: windows-2022
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [Win32, x64, x64_AVX2, ARM64]
+        configuration: [Release]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup NuGet
+        uses: nuget/setup-nuget@v2
+
+      - name: Restore NuGet packages
+        run: nuget restore Notepad3.sln -Verbosity detailed
+
+      - name: Generate version
+        shell: pwsh
+        run: |
+          $env:GITHUB_ACTIONS_BUILD = "true"
+          $CommitID = (git rev-parse --short=8 HEAD)
+
+          # Create VersionEx.h with proper values
+          $Major = 7
+          $Minor = [int]$(Get-Date -format yy)
+          $Revis = [int]$(Get-Date -format Mdd)
+          $Build = ${{ github.run_number }}
+
+          $SciVer = Get-Content "scintilla\version.txt" -ErrorAction SilentlyContinue
+          if (!$SciVer) { $SciVer = "0" }
+          $LxiVer = Get-Content "lexilla\version.txt" -ErrorAction SilentlyContinue
+          if (!$LxiVer) { $LxiVer = "0" }
+          $PCRE2Ver = Get-Content "scintilla\pcre2\version.txt" -ErrorAction SilentlyContinue
+          if (!$PCRE2Ver) { $PCRE2Ver = "0.0" }
+          $UChardetVer = Get-Content "src\uchardet\version.txt" -ErrorAction SilentlyContinue
+          if (!$UChardetVer) { $UChardetVer = "0.0.0" }
+          $TinyExprVer = Get-Content "src\tinyexpr\version.txt" -ErrorAction SilentlyContinue
+          if (!$TinyExprVer) { $TinyExprVer = "0.0.0" }
+          $UtHashVer = Get-Content "src\uthash\version.txt" -ErrorAction SilentlyContinue
+          if (!$UtHashVer) { $UtHashVer = "0.0.0" }
+
+          Copy-Item -LiteralPath "Versions\VersionEx.h.tpl" -Destination "src\VersionEx.h" -Force
+          $content = Get-Content "src\VersionEx.h" -Raw
+          $content = $content -replace '\$APPNAME\$', "Notepad3"
+          $content = $content -replace '\$MAJOR\$', "$Major"
+          $content = $content -replace '\$MINOR\$', "$Minor"
+          $content = $content -replace '\$MAINT\$', "$Revis"
+          $content = $content -replace '\$BUILD\$', "$Build"
+          $content = $content -replace '\$SCIVER\$', "$SciVer"
+          $content = $content -replace '\$LXIVER\$', "$LxiVer"
+          $content = $content -replace '\$PCRE2VER\$', "$PCRE2Ver"
+          $content = $content -replace '\$UCHARDETVER\$', "$UChardetVer"
+          $content = $content -replace '\$TINYEXPRVER\$', "$TinyExprVer"
+          $content = $content -replace '\$UTHASHVER\$', "$UtHashVer"
+          $content = $content -replace '\$VERPATCH\$', ""
+          $content = $content -replace '\$COMMITID\$', "$CommitID"
+          Set-Content -Path "src\VersionEx.h" -Value $content -NoNewline
+
+          $ConfManifest = "res\Notepad3.exe.conf.manifest"
+          Copy-Item -LiteralPath "Versions\Notepad3.exe.manifest.tpl" -Destination $ConfManifest -Force
+          $content = Get-Content $ConfManifest -Raw
+          $content = $content -replace '\$APPNAME\$', "Notepad3"
+          $content = $content -replace '\$VERPATCH\$', ""
+          $content = $content -replace '\$VERSION\$', "$Major.$Minor.$Revis.$Build"
+          Set-Content -Path $ConfManifest -Value $content -NoNewline
+
+          # Persist build number for TestFileVersion.cmd
+          $Build | Set-Content -Path "Versions\build.txt" -NoNewline
+
+          Write-Host "Version: $Major.$Minor.$Revis.$Build ($CommitID)"
+
+      - name: Build
+        shell: pwsh
+        run: |
+          $platform = "${{ matrix.platform }}"
+          $config = "${{ matrix.configuration }}"
+
+          # Handle x64_AVX2 - use native Release_AVX2 configuration
+          if ($platform -eq "x64_AVX2") {
+            $platform = "x64"
+            $config = "${{ matrix.configuration }}_AVX2"
+          }
+
+          msbuild Notepad3.sln /m /p:Configuration=$config /p:Platform=$platform /v:minimal
+
+      - name: Install AutoHotkey
+        if: matrix.platform == 'Win32' || matrix.platform == 'x64'
+        run: choco install autohotkey.install --no-progress -y
+
+      - name: Run tests
+        if: matrix.platform == 'Win32' || matrix.platform == 'x64'
+        shell: cmd
+        working-directory: test
+        run: |
+          call TestFileVersion.cmd
+          call TestAhkNotepad3.cmd
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Notepad3-${{ matrix.platform }}-${{ matrix.configuration }}
+          path: |
+            Bin/**/*
+            !Bin/**/obj/**
+            !Bin/**/*.pdb
+            !Bin/**/*.iobj
+            !Bin/**/*.ipdb
+            !Bin/**/*.lib
+            !Bin/**/*.exp
+          retention-days: 30

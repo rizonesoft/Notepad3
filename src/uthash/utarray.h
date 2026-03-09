@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2008-2021, Troy D. Hanson   http://troydhanson.github.com/uthash/
+Copyright (c) 2008-2025, Troy D. Hanson  https://troydhanson.github.io/uthash/
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -36,11 +36,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define UTARRAY_UNUSED __attribute__((__unused__))
 #else
 #define UTARRAY_UNUSED
-#endif
-
-#ifdef oom
-#error "The name of macro 'oom' has been changed to 'utarray_oom'. Please update your code."
-#define utarray_oom() oom()
 #endif
 
 #ifndef utarray_oom
@@ -141,6 +136,12 @@ typedef struct {
   (a)->i++;                                                                   \
 } while(0)
 
+#define utarray_replace(a,p,j) do {                                           \
+  if ((a)->icd.dtor) { (a)->icd.dtor(_utarray_eltptr(a,j)); }                 \
+  if ((a)->icd.copy) { (a)->icd.copy(_utarray_eltptr(a,j), p); }              \
+  else { memcpy(_utarray_eltptr(a,j), p, (a)->icd.sz); }                      \
+} while(0)
+
 #define utarray_inserta(a,w,j) do {                                           \
   if (utarray_len(w) == 0) break;                                             \
   if ((j) > (a)->i) utarray_resize(a,j);                                      \
@@ -234,7 +235,17 @@ typedef struct {
 static void utarray_str_cpy(void *dst, const void *src) {
   char *const *srcc = (char *const *)src;
   char **dstc = (char**)dst;
-  *dstc = (*srcc == NULL) ? NULL : _strdup(*srcc);
+  if (*srcc == NULL) {
+    *dstc = NULL;
+  } else {
+    size_t const len = strlen(*srcc) + 1;
+    *dstc = (char*)malloc(len);
+    if (*dstc == NULL) {
+      utarray_oom();
+    } else {
+      strcpy_s(*dstc, len, *srcc);
+    }
+  }
 }
 static void utarray_str_dtor(void *elt) {
   char **eltc = (char**)elt;

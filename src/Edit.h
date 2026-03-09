@@ -8,7 +8,7 @@
 *   Text File Editing Helper Stuff                                            *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2025   *
+*                                                  (c) Rizonesoft 2008-2026   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -80,6 +80,7 @@ void EditToggleLineCommentsExtended(LPCWSTR pwszComment, bool bInsertAtStart);
 void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty);
 void EditStripFirstCharacter(HWND hwnd);
 void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlanksOnly);
+bool EditHasTrailingBlanks();
 void EditCompressBlanks();
 void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace);
 void EditUniteDuplicateLines(HWND hwnd, bool bRemoveEmptyLines, bool bRemoveLastDup);

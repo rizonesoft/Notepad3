@@ -39,14 +39,14 @@
 
 void  nsUTF8Prober::Reset(void)
 {
-  mCodingSM->Reset();
+  mCodingSM->Reset(); 
   mNumOfMBChar = 0;
   mState = eDetecting;
 }
 
 nsProbingState nsUTF8Prober::HandleData(const char* aBuf, PRUint32 aLen)
 {
-  nsSMState codingState;
+  PRUint32 codingState;
 
   for (PRUint32 i = 0; i < aLen; i++)
   {
@@ -64,24 +64,24 @@ nsProbingState nsUTF8Prober::HandleData(const char* aBuf, PRUint32 aLen)
   }
 
   if (mState == eDetecting)
-    if (GetConfidence() >= SHORTCUT_THRESHOLD)
+    if (GetConfidence() > SHORTCUT_THRESHOLD)
       mState = eFoundIt;
-
   return mState;
 }
 
-#define ONE_CHAR_PROB  (0.50f)
+#define ONE_CHAR_PROB   (float)0.50
 
 float nsUTF8Prober::GetConfidence(void)
 {
+  float unlike = (float)0.99;
+
   if (mNumOfMBChar < 6)
   {
-    float unlike = SURE_YES;
-    for (PRUint32 i = 0; i < mNumOfMBChar; ++i)
+    for (PRUint32 i = 0; i < mNumOfMBChar; i++)
       unlike *= ONE_CHAR_PROB;
-    return (NO_DOUBT - unlike);
+    return (float)1.0 - unlike;
   }
   else
-      return SURE_YES + (NO_DOUBT - SURE_YES)/2.0f;
+    return (float)0.99;
 }
 

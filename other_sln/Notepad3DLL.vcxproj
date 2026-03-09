@@ -109,7 +109,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;WIN32;STATIC_BUILD;SCI_LEXER;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x0A00;WINVER=0x0A00;NTDDI_VERSION=0x0A000006;WIN32;STATIC_BUILD;SCI_LEXER;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <WholeProgramOptimization>false</WholeProgramOptimization>
@@ -173,7 +173,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_WIN64;STATIC_BUILD;SCI_LEXER;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x0A00;WINVER=0x0A00;NTDDI_VERSION=0x0A000006;_WIN64;STATIC_BUILD;SCI_LEXER;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <WholeProgramOptimization>false</WholeProgramOptimization>
@@ -233,7 +233,7 @@
       <AdditionalIncludeDirectories>.\;..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\sciXlexers;..\ced\ced;..\uchardet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;WIN32;STATIC_BUILD;SCI_LEXER;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x0A00;WINVER=0x0A00;NTDDI_VERSION=0x0A000006;WIN32;STATIC_BUILD;SCI_LEXER;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>None</DebugInformationFormat>
@@ -301,7 +301,7 @@
       <AdditionalIncludeDirectories>.\;..\scintilla\include;..\scintilla\lexlib;..\scintilla\src;..\sciXlexers;..\ced\ced;..\uchardet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_WIN64;STATIC_BUILD;SCI_LEXER;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x0A00;WINVER=0x0A00;NTDDI_VERSION=0x0A000006;_WIN64;STATIC_BUILD;SCI_LEXER;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>None</DebugInformationFormat>
@@ -392,6 +392,7 @@
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangLithuanianModel.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangMalteseModel.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangNederlandsModel.cpp" />
+    <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangNorwegianModel.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangPolishModel.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangPortugueseModel.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\LangModels\LangRomanianModel.cpp" />
@@ -410,13 +411,7 @@
     <ClCompile Include="..\uchardet\uchardet\src\nsEUCJPProber.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\nsEUCKRProber.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\nsEUCTWProber.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsGB18030Prober.cpp" />
-    <ClCompile Include="..\uchardet\uchardet\src\nsGB2312Prober.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="..\uchardet\uchardet\src\nsGB2312Prober.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\nsHebrewProber.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\nsLatin1Prober.cpp" />
     <ClCompile Include="..\uchardet\uchardet\src\nsMBCSGroupProber.cpp" />
@@ -505,13 +500,7 @@
     <ClInclude Include="..\uchardet\uchardet\src\nsEUCJPProber.h" />
     <ClInclude Include="..\uchardet\uchardet\src\nsEUCKRProber.h" />
     <ClInclude Include="..\uchardet\uchardet\src\nsEUCTWProber.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsGB18030Prober.h" />
-    <ClInclude Include="..\uchardet\uchardet\src\nsGB2312Prober.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="..\uchardet\uchardet\src\nsGB2312Prober.h" />
     <ClInclude Include="..\uchardet\uchardet\src\nsHebrewProber.h" />
     <ClInclude Include="..\uchardet\uchardet\src\nsLatin1Prober.h" />
     <ClInclude Include="..\uchardet\uchardet\src\nsMBCSGroupProber.h" />
@@ -562,7 +551,6 @@
     <None Include="..\uchardet\uchardet\src\Big5Freq.tab" />
     <None Include="..\uchardet\uchardet\src\EUCKRFreq.tab" />
     <None Include="..\uchardet\uchardet\src\EUCTWFreq.tab" />
-    <None Include="..\uchardet\uchardet\src\GB18030Freq.tab" />
     <None Include="..\uchardet\uchardet\src\GB2312Freq.tab" />
     <None Include="..\uchardet\uchardet\src\JISFreq.tab" />
     <None Include="..\Versions\Notepad3.exe.manifest.tpl" />

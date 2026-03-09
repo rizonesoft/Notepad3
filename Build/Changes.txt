@@ -2,7 +2,7 @@
 =                                                                              =
 =            Notepad3 - light-weight Scintilla-based text editor for Windows   =
 =                                                                              =
-=                                                   (c) Rizonesoft 2008-2025   =
+=                                                   (c) Rizonesoft 2008-2026   =
 =                                                     https://rizonesoft.com   =
 =                                                                              =
 ================================================================================
@@ -28,19 +28,25 @@ MIN - (MIN)iPath Fast Browser Tool
 MUI - (M)ultilingual (U)ser (I)nterface
 NLS - (N)ew (L)anguage (S)trings (need for translation)
 ONI - (ONI)guruma Regex engine
+PCR - (PCR)2 Regex engine
 SCI - (SCI)ntilla Library
 SUP - (S)et(UP) / Installer Package
-UCD - (UCD)ARDET is an Encoding Detector Library
+UCH - (UCH)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.25.1114.(build_#) (2025-11-14)
+Current BETA Version 6.26.306.(build_#) (2026-03-06)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
-[.###.#]- .
+[.xxx.x]-
+[.227.1]- Feat: Add auto-scroll on MMB click.
+[.130.1]- Add Scintilla np3_patches with 5 patch files for future upgrades (SCI).
+[.130.1]- Use Segment Heaps for memory allocation if available (Win10 2004+/Win11).
+[.130.1]- Added AVX2 optimized x64 build configuration (x64_AVX2) (issue #4240).
+[.130.1]- Added GitHub Actions CI workflow for MSVC builds (Win32/x64/ARM64).
 [1021.2]- Add extensions "ts"and "tsx" in Tcl Script lexer (LEX).
 [1021.1]- Add extension "JSX" in JavaScript lexer (LEX).
 [.828.1]- Added Notepad3 Version in the Title bar of the Inno Setup dialog box (SUP).
@@ -48,7 +54,21 @@ NEW:
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
-[.###.#]- .
+[.xxx.x]-
+[.306.1]- Chore: add timsort (repl. qsort) scintilla care (iface check) scintill-call-wrapper update.
+[.306.1]- Major version 6 → 7 for Win10 minimum.
+[.305.1]- Feat: enhancement of MMB auto-scroll.
+[.305.1]- Update UCHARDET encoding detector (UCH).
+[.303.1]- Refactor: replace regex engines: Oniguruma (retired) by PCRE2 v10.47 (ONI->PCR).
+[.227.1]- Refactor: File Change Notification handling.
+[.227.1]- Update to Scintilla v5.6.0 and Lexilla v5.4.7.
+[.224.1]- Feat: Refactor to atomic save pattern.
+[.224.1]- Chore: Smoothening the startup window experiences.
+[.218.1]- Some refactorings due to new features in scintilla.
+[.215.1]- Migration of the MS VS2022 compiler to MS VS2026 vc145 platform toolset.
+[.215.1]- Update to Scintilla 5.5.8 and Lexilla 5.4.6 (SCI/LEX).
+[.130.1]- Moved installer scripts to Build\Installer folder with local language files (SUP).
+[.101.1]- Rizonesoft Copyright ©  2008-2025 to year "2008-2026".
 [1114.1]- Remove the "Opera Promotion" page in Notepad3 "INNO Setup Installer" (SUP).
 [.917.1]- Italian language update.
 [.828.1]- Changed some phrases in the Italian Inno Setup script (SUP).
@@ -57,36 +77,66 @@ CHANGES:
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
-[.###.#]- .
+[.xxx.x]-
+[.306.1]- Handling if file's parent dir is deleted..
+[.306.1]- PCRE2 interface - bug matching line-end ($) (PRC).
+[.306.1]- About dialog and version patching script.
+[.305.1]- UFT-8 affinity for uchardet uncertainty (lower than 66%) (UCH).
+[.305.1]- Refactoring from GetOpenFileName() to IFileOpenDialog().
+[.303.1]- Revert: Regression, revert to special Text (.txt) font.
+[.227.1]- Minor enhancements on file loading.
+[.224.1]- Enhance ShowWindow start-up time.
+[.224.1]- AI corrections for PathLib.
+[.223.1]- INI file handling Notepad3 and Minipath.
+[.223.1]- Regression regarding Zooming (caused by new Scintilla Lib merge conflicts).
+[.223.1]- If flag 'strip trailing blanks on save' is active, check if there are trailing blanks.
+[.218.1]- Cover both scopes: per-process and per-window (Shell)AppUserModelID.
+[.218.1]- URL extraction - handle final single-quote smart.
+[.218.1]- INI file handling in case of redirection.
+[.216.1]- Win's Unicode detection is not reliable, change encoding detection.
+[.215.1]- Strip trailing blanks when saving option (issue 5444).
+[.130.1]- New files created in correct working directory.
+[.130.1]- Allow saving unmodified files when strip blanks is enabled.
+[.130.1]- Black line in Language menu submenu.
+[.130.1]- Mouse scroll settings now update without restart.
+[.130.1]- Persist Monitoring Log (View -> Monitoring Log) setting.
+[.130.1]- Create settings folder recursively if it doesn't exist.
+[.130.1]- Restore status bar after printing completes.
+[.130.1]- Fixed /m command line defaults to text mode instead of last search mode.
+[.130.1]- Resolve DirectWrite font face names correctly.
+[.130.1]- Fixed user config setup to run as original user context during install/uninstall (SUP).
+[.130.1]- Fixed FileSave() nested call issue causing unexpected save behavior (issue #5445).
+[.130.1]- Fixed DirectWrite font variant resolution using IDWriteGdiInterop (SCI).
 [.917.1]- Really Silent/VerySilent Uninstall (SUP).
 
 --------------------------------------------------------
 REMOVED:
+[.xxx.x]-
+[.306.1]- Refactor: remove deprecated Win7 compatibility and UTF-32 detection.
+[.303.1]- Remove retired Oniguruma regex Engine (ONI).
+[.227.1]- Remove obsolete AppVeyor CI build.
 --------------------------------------------------------
-[.###.#]- .
-[.###.#]- .
 
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.711.1]- Update Lexilla Library (LEX) version 5.4.5 (2025-06-08).
-[.711.1]- Update Scintilla Library (SCI) version 5.5.7 (2025-06-08).
-[.711.1]- Update Oniguruma Regex (ONI) engine version 6.9.10 (2025/04/24).
+[.305.1]- Update UCHARDET (UCH) encoding detector version 0.0.8 (2022-12-08).
+[.303.1]- Update PCR2 (PCR) Regex engine version 10.47 (2025-10-21).
+[.227.1]- Update Scintilla (SCI) Library version 5.6.0 (2026-02-25).
+[.227.1]- Update Lexilla (LEX) Library version 5.4.7 (2026-02-25).
 [.101.1]- Update grepWinNP3 (GRE) version 2.1.15.48 (2024-01-10).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13).
 
 --------------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------------
-[.###.#]- .
-[.###.#]- .
+[.101.1]- Greek (el-GR).
 
 --------------------------------------------------------
 Hello everybody ! 😀
 For our "Notepad3 Translation Projects", we are looking for motivated volunteers, with a priority
 to resume "(incomplete...)" translation projects:
 
-- Greek (el-GR) (incomplete...)
 - Hindi (hi-IN) (incomplete...)
 - Portuguese (pt-PT) (incomplete...).
 - etc...
@@ -1605,9 +1655,9 @@ CHANGES:
     (disabled, due to lack of performance profiling).
 - Support (internal) DevDebugMode.
 - Menu item "HighDPI Toolbar" -> "Toggle Toolbar".
-- Train Dutch (CP-1252) for UCD language detection models.
-- Train Belarusian (CP-1251) for UCD language detection models.
-- Train Africaans (CP-1252) for UCD language detection models.
+- Train Dutch (CP-1252) for UCHARDET (UCH) language detection models.
+- Train Belarusian (CP-1251) for UCHARDET (UCH) language detection models.
+- Train Africaans (CP-1252) for UCHARDET (UCH) language detection models.
 - Word-wrap-symbol show/hide accelerator-key -> "Ctrl+Shift+7.
 - Menu Languange Selector to Dynamic Language Selector.
 - Up-to-Date SCI (GitHub Mirror 2019-May-10).

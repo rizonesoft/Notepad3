@@ -1,0 +1,10 @@
+--- a/scintilla/win32/ListBox.cxx
++++ b/scintilla/win32/ListBox.cxx
+@@ -121,7 +121,7 @@ const TCHAR ListBoxX_ClassName[] = TEXT("ListBoxX");
+ ColourRGBA ColourFromDesired(ColourRGBA colour, ColourRGBA desired) {
+ 	if (colour.has_value()) {
+-		return colour.value();
++		return colour.value().Opaque();
+ 	}
+ 	return desired;
+ }

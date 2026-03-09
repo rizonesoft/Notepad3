@@ -8,6 +8,8 @@
 ehthumbs.db
 Thumbs.db
 .vscode
+.venv
+.agent
 
 # C++ Junk           #
 ######################
@@ -32,6 +34,8 @@ Thumbs.db
 /Build/notepad3*setup*
 /Build/Resources
 /Build/Packages
+
+/_upgrade_backup
 
 /packages
 /other_sln/packages
@@ -64,3 +68,12 @@ Thumbs.db
 /np3portableapp/Notepad3Portable/App/Notepad3/x86/*.exe
 /np3portableapp/Notepad3Portable/App/Notepad3/x86/lng
 
+
+# Upgrade staging directory
+_upgrade_staging/
+
+# Research documents (local only)
+/todo/research/
+
+# ARM64 build intermediate directories
+**/ARM64/

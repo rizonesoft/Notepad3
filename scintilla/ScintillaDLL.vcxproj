@@ -115,13 +115,13 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>include;lexlib;src;../oniguruma/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;lexlib;src;../pcre2/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_SCL_SECURE_NO_WARNINGS;NO_CXX11_REGEX;SCI_OWNREGEX;ONIG_EXTERN=extern;SCINTILLA_DLL;NP3;WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x0A00;WINVER=0x0A00;NTDDI_VERSION=0x0A000006;_SCL_SECURE_NO_WARNINGS;NO_CXX11_REGEX;SCI_OWNREGEX;PCRE2_CODE_UNIT_WIDTH=8;PCRE2_STATIC;HAVE_CONFIG_H;SCINTILLA_DLL;NP3;WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <SmallerTypeCheck>false</SmallerTypeCheck>
@@ -143,13 +143,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>include;lexlib;src;../oniguruma/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;lexlib;src;../pcre2/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_SCL_SECURE_NO_WARNINGS;NO_CXX11_REGEX;SCI_OWNREGEX;ONIG_EXTERN=extern;SCINTILLA_DLL;NP3;_WIN64;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x0A00;WINVER=0x0A00;NTDDI_VERSION=0x0A000006;_SCL_SECURE_NO_WARNINGS;NO_CXX11_REGEX;SCI_OWNREGEX;PCRE2_CODE_UNIT_WIDTH=8;PCRE2_STATIC;HAVE_CONFIG_H;SCINTILLA_DLL;NP3;_WIN64;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <SmallerTypeCheck>false</SmallerTypeCheck>
@@ -170,13 +170,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>include;lexlib;src;../oniguruma/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;lexlib;src;../pcre2/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <EnableEnhancedInstructionSet Condition="'$(VisualStudioVersion)'&gt;'10.0'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_SCL_SECURE_NO_WARNINGS;NO_CXX11_REGEX;SCI_OWNREGEX;ONIG_EXTERN=extern;SCINTILLA_DLL;NP3;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x0A00;WINVER=0x0A00;NTDDI_VERSION=0x0A000006;_SCL_SECURE_NO_WARNINGS;NO_CXX11_REGEX;SCI_OWNREGEX;PCRE2_CODE_UNIT_WIDTH=8;PCRE2_STATIC;HAVE_CONFIG_H;SCINTILLA_DLL;NP3;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -197,12 +197,12 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>include;lexlib;src;../oniguruma/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;lexlib;src;../pcre2/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_SCL_SECURE_NO_WARNINGS;NO_CXX11_REGEX;SCI_OWNREGEX;ONIG_EXTERN=extern;SCINTILLA_DLL;NP3;_WIN64;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x0A00;WINVER=0x0A00;NTDDI_VERSION=0x0A000006;_SCL_SECURE_NO_WARNINGS;NO_CXX11_REGEX;SCI_OWNREGEX;PCRE2_CODE_UNIT_WIDTH=8;PCRE2_STATIC;HAVE_CONFIG_H;SCINTILLA_DLL;NP3;_WIN64;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES;STATIC_BUILD;SCI_LEXER;USE_D2D;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -224,27 +224,44 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\oniguruma\src\ascii.c" />
-    <ClCompile Include="..\oniguruma\src\mktable.c" />
-    <ClCompile Include="..\oniguruma\src\onig_init.c" />
-    <ClCompile Include="..\oniguruma\src\regcomp.c" />
-    <ClCompile Include="..\oniguruma\src\regenc.c" />
-    <ClCompile Include="..\oniguruma\src\regerror.c" />
-    <ClCompile Include="..\oniguruma\src\regexec.c" />
-    <ClCompile Include="..\oniguruma\src\regext.c" />
-    <ClCompile Include="..\oniguruma\src\reggnu.c" />
-    <ClCompile Include="..\oniguruma\src\regparse.c" />
-    <ClCompile Include="..\oniguruma\src\regsyntax.c" />
-    <ClCompile Include="..\oniguruma\src\regtrav.c" />
-    <ClCompile Include="..\oniguruma\src\regversion.c" />
-    <ClCompile Include="..\oniguruma\src\st.c" />
-    <ClCompile Include="..\oniguruma\src\unicode.c" />
-    <ClCompile Include="..\oniguruma\src\unicode_fold1_key.c" />
-    <ClCompile Include="..\oniguruma\src\unicode_fold2_key.c" />
-    <ClCompile Include="..\oniguruma\src\unicode_fold3_key.c" />
-    <ClCompile Include="..\oniguruma\src\unicode_unfold_key.c" />
-    <ClCompile Include="..\oniguruma\src\utf8.c" />
-    <ClCompile Include="..\scioniguruma\OnigurumaRegExEngine.cxx" />
+    <ClCompile Include="..\pcre2\src\pcre2_auto_possess.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_chartables.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_chkdint.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_compile.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_compile_class.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_compile_cgroup.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_config.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_context.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_convert.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_dfa_match.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_error.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_extuni.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_find_bracket.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_jit_compile.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_maketables.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_match.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_match_data.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_match_next.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_newline.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_ord2utf.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_pattern_info.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_script_run.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_serialize.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_string_utils.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_study.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_substitute.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_substring.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_tables.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_ucd.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_valid_utf.c" />
+    <ClCompile Include="..\pcre2\src\pcre2_xclass.c" />
+    <ClCompile Include="..\pcre2\scintilla\PCRE2RegExEngine.cxx" />
+    <!-- PCRE2 vendored C sources: lower warning level (third-party code) -->
+    <ClCompile Update="..\pcre2\src\*.c">
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4244;4389;4206;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
     <ClCompile Include="..\sciXlexers\LexAHKL.cxx" />
     <ClCompile Include="..\sciXlexers\LexCSV.cxx" />
     <ClCompile Include="..\sciXlexers\LexTOML.cxx" />
@@ -338,13 +355,14 @@
     <ClCompile Include="win32\ScintillaWin.cxx" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\oniguruma\src\config.h" />
-    <ClInclude Include="..\oniguruma\src\oniggnu.h" />
-    <ClInclude Include="..\oniguruma\src\oniguruma.h" />
-    <ClInclude Include="..\oniguruma\src\regenc.h" />
-    <ClInclude Include="..\oniguruma\src\regint.h" />
-    <ClInclude Include="..\oniguruma\src\regparse.h" />
-    <ClInclude Include="..\oniguruma\src\st.h" />
+    <ClInclude Include="..\pcre2\src\config.h" />
+    <ClInclude Include="..\pcre2\src\pcre2.h" />
+    <ClInclude Include="..\pcre2\src\pcre2_internal.h" />
+    <ClInclude Include="..\pcre2\src\pcre2_intmodedep.h" />
+    <ClInclude Include="..\pcre2\src\pcre2_ucp.h" />
+    <ClInclude Include="..\pcre2\src\pcre2_ucptables_inc.h" />
+    <ClInclude Include="..\pcre2\src\pcre2_jit_match_inc.h" />
+    <ClInclude Include="..\pcre2\src\pcre2_jit_misc_inc.h" />
     <ClInclude Include="..\sciXlexers\CharSetX.h" />
     <ClInclude Include="..\sciXlexers\SciXLexer.h" />
     <ClInclude Include="include\ILexer.h" />

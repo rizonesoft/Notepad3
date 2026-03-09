@@ -7,7 +7,7 @@
 * MuiLanguage.c                                                               *
 *   General MUI Language support functions                                    *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2025   *
+*                                                  (c) Rizonesoft 2008-2026   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -144,7 +144,7 @@ static void SetMuiLocaleAll(LPCWSTR pszLocaleStr) {
             WCHAR msg[128];
             StringCchPrintf(msg, COUNTOF(msg), L"Can't set desired locale '%s', using '%s' instead!",
                 pszLocaleStr, pszLocaleCur ? pszLocaleCur : L"<default>");
-            MsgBoxLastError(msg, ERROR_MUI_INVALID_LOCALE_NAME);
+            InfoBoxLastError(msg, ERROR_MUI_INVALID_LOCALE_NAME);
 #endif
         }
     }
@@ -266,34 +266,41 @@ unsigned GetMUILanguageIndexByLocaleName(LPCWSTR pLocaleName) {
 //
 //  CheckAvailableLanguages
 //
+static bool s_bFullLngScanDone = false;
+
+static bool _CheckLanguageDLL(unsigned lng)
+{
+    if (lng == 0 || lng >= MuiLanguages_CountOf()) {
+        return (lng == 0); // internal (index 0) is always available
+    }
+    if (!IsValidLocaleName(MUI_LanguageDLLs[lng].LocaleName)) {
+        return false;
+    }
+#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
+    WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH + 1];
+    if (ResolveLocaleName(MUI_LanguageDLLs[lng].LocaleName, wchLngLocalName, COUNTOF(wchLngLocalName))) {
+        assert(IsSameLocale(MUI_LanguageDLLs[lng].LocaleName, wchLngLocalName) && "Problem with Locale Name of Language!");
+    }
+#endif
+    WCHAR wchRelPath[SMALL_BUFFER] = { L'\0' };
+    StringCchPrintf(wchRelPath, COUNTOF(wchRelPath), L"lng/%s/np3lng.dll.mui", MUI_LanguageDLLs[lng].LocaleName);
+    HPATHL hpth = Path_Allocate(wchRelPath);
+    Path_AbsoluteFromApp(hpth, false);
+    bool const bAvail = Path_IsExistingFile(hpth);
+    Path_Release(hpth);
+    MUI_LanguageDLLs[lng].bHasDLL = bAvail;
+    return bAvail;
+}
+
 static unsigned _CheckAvailableLanguageDLLs()
 {
     unsigned count = 1; // internal instance always available
-
-    HPATHL hpth = Path_Allocate(NULL);
-
     for (unsigned lng = 1; lng < MuiLanguages_CountOf(); ++lng) {
-
-        if (IsValidLocaleName(MUI_LanguageDLLs[lng].LocaleName)) {
-
-#if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
-            WCHAR wchLngLocalName[LOCALE_NAME_MAX_LENGTH + 1];
-            if (ResolveLocaleName(MUI_LanguageDLLs[lng].LocaleName, wchLngLocalName, COUNTOF(wchLngLocalName))) {
-                //~StringCchCopy(MUI_LanguageDLLs[lng].LocaleName, COUNTOF(MUI_LanguageDLLs[lng].LocaleName), wchLngLocalName); // put back resolved name
-                assert(IsSameLocale(MUI_LanguageDLLs[lng].LocaleName, wchLngLocalName) && "Problem with Locale Name of Language!");
-            }
-#endif
-            // check for DLL
-            WCHAR wchRelPath[SMALL_BUFFER] = { L'\0' };
-            StringCchPrintf(wchRelPath, COUNTOF(wchRelPath), L"lng/%s/np3lng.dll.mui", MUI_LanguageDLLs[lng].LocaleName);
-            Path_Reset(hpth, wchRelPath);
-            Path_AbsoluteFromApp(hpth, false);
-            bool const bAvail = Path_IsExistingFile(hpth);
-            MUI_LanguageDLLs[lng].bHasDLL = bAvail;
-            count += bAvail ? 1 : 0;
+        if (_CheckLanguageDLL(lng)) {
+            ++count;
         }
     }
-    Path_Release(hpth);
+    s_bFullLngScanDone = true;
     return count;
 }
 
@@ -344,21 +351,27 @@ unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
 
     unsigned const iInternalLngIndex = max_u(0, GetMUILanguageIndexByLocaleName(MUI_BASE_LNG_ID));
 
-    // 1st check language resources
-    Globals.uAvailLngCount = _CheckAvailableLanguageDLLs();
-
-    // set the appropriate fallback list
+    // Check only the preferred locale's DLL on startup (defer full scan to menu population)
     unsigned iLngIndex = MuiLanguages_CountOf();
-    WCHAR tchAvailLngs[2 * (LOCALE_NAME_MAX_LENGTH + 1)] = { L'\0' };
     for (unsigned lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
         if (StrCmpIW(MUI_LanguageDLLs[lng].LocaleName, pLocaleName) == 0) {
-            if (MUI_LanguageDLLs[lng].bHasDLL && (lng > 0)) {
-                StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[lng].LocaleName);
-                StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), L";");
-            }
             iLngIndex = lng;
+            if (lng > 0 && !s_bFullLngScanDone) {
+                _CheckLanguageDLL(lng); // check only the preferred locale
+            }
             break;
         }
+    }
+    if (!s_bFullLngScanDone) {
+        // Set count > 1 so language menu creation is not skipped prematurely
+        Globals.uAvailLngCount = MuiLanguages_CountOf();
+    }
+
+    // set the appropriate fallback list
+    WCHAR tchAvailLngs[2 * (LOCALE_NAME_MAX_LENGTH + 1)] = { L'\0' };
+    if (iLngIndex < MuiLanguages_CountOf() && MUI_LanguageDLLs[iLngIndex].bHasDLL && (iLngIndex > 0)) {
+        StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[iLngIndex].LocaleName);
+        StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), L";");
     }
     StringCchCatW(tchAvailLngs, COUNTOF(tchAvailLngs), MUI_LanguageDLLs[iInternalLngIndex].LocaleName); // en-US fallback
 
@@ -372,14 +385,14 @@ unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
 
     WCHAR tchUserLangMultiStrg[LARGE_BUFFER] = { L'\0' };
     if (!_LngStrToMultiLngStr(tchAvailLngs, tchUserLangMultiStrg, COUNTOF(tchUserLangMultiStrg))) {
-        MsgBoxLastError(L"Trying to load available Language resources!", ERROR_MUI_INVALID_LOCALE_NAME);
+        InfoBoxLastError(L"Trying to load available Language resources!", ERROR_MUI_INVALID_LOCALE_NAME);
     }
     ULONG langCount = 0;
     // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
     SetProcessPreferredUILanguages(0, L"\0\0", &langCount); // clear
     if (!SetProcessPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0)) {
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
-        MsgBoxLastError(L"Trying to set preferred Language!", ERROR_RESOURCE_LANG_NOT_FOUND);
+        InfoBoxLastError(L"Trying to set preferred Language!", ERROR_RESOURCE_LANG_NOT_FOUND);
 #endif
     }
 
@@ -400,7 +413,7 @@ unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
             MUI_LanguageDLLs[iLngIndex].bIsActive = true;
             MUI_LanguageDLLs[iInternalLngIndex].bIsActive = false;
         } else {
-            //MsgBoxLastError(L"LoadMUILibrary", 0);
+            //InfoBoxLastError(L"LoadMUILibrary", 0);
             iLngIndex = MuiLanguages_CountOf(); // not found
         }
     }
@@ -473,6 +486,11 @@ static HMENU s_hmenuLanguage = NULL;
 
 bool InsertLanguageMenu(HMENU hMenuBar) {
 
+    // Perform full language DLL scan if deferred from startup
+    if (!s_bFullLngScanDone) {
+        Globals.uAvailLngCount = _CheckAvailableLanguageDLLs();
+    }
+
     // check, if we need a language switching menu
     if (Globals.uAvailLngCount < 2) {
         Settings.PreferredLocale4DateFmt = false;
@@ -530,7 +548,7 @@ void DynamicLanguageMenuCmd(int cmd) {
 
         Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
         if (!Globals.hMainMenu) {
-            MsgBoxLastError(L"LoadMenu()", 0);
+            InfoBoxLastError(L"LoadMenu()", 0);
             CloseApplication();
             return;
         }

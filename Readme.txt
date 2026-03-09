@@ -2,7 +2,7 @@
 =                                                                              =
 =            Notepad3 - light-weight Scintilla-based text editor for Windows   =
 =                                                                              =
-=                                                   (c) Rizonesoft 2008-2025   =
+=                                                   (c) Rizonesoft 2008-2026   =
 =                                                     https://rizonesoft.com   =
 =                                                                              =
 ================================================================================
@@ -58,7 +58,7 @@ Changes compared to the Notepad2-mod fork:
 --------------------------------------------------------------------------------
 Supported Operating Systems:
 ----------------------------
-Windows 7, 8, 8.1 and 10 both 32-bit and 64-bit
+Windows 10 and 11 (32-bit, 64-bit and ARM64)
 
 --------------------------------------------------------------------------------
 Development:
@@ -155,7 +155,7 @@ Notepad3 icon by Vexels.com     https://www.vexels.com
 --------------------------------------------------------------------------------
 Notepad3 Licence:
 -----------------
-Notepad3 and MiniPath Copyright © 2008-2025 Rizonesoft, All rights reserved.
+Notepad3 and MiniPath Copyright © 2008-2026 Rizonesoft, All rights reserved.
 https://rizonesoft.com
 
 Redistribution and use in source and binary forms, with or without modification,

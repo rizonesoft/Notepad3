@@ -61,7 +61,7 @@
  * ligature of 'o' and 'e' exists in ISO-8859-15 but not in ISO-8859-1
  * even though they are both used for French. Same for the euro sign.
  */
-constexpr unsigned char Iso_8859_2_CharToOrderMap[] =
+static const unsigned char Iso_8859_2_CharToOrderMap[] =
 {
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR, /* 0X */
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR, /* 1X */
@@ -82,7 +82,7 @@ constexpr unsigned char Iso_8859_2_CharToOrderMap[] =
 };
 /*X0  X1  X2  X3  X4  X5  X6  X7  X8  X9  XA  XB  XC  XD  XE  XF */
 
-constexpr unsigned char Iso_8859_16_CharToOrderMap[] =
+static const unsigned char Iso_8859_16_CharToOrderMap[] =
 {
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR, /* 0X */
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR, /* 1X */
@@ -103,7 +103,7 @@ constexpr unsigned char Iso_8859_16_CharToOrderMap[] =
 };
 /*X0  X1  X2  X3  X4  X5  X6  X7  X8  X9  XA  XB  XC  XD  XE  XF */
 
-constexpr unsigned char Windows_1250_CharToOrderMap[] =
+static const unsigned char Windows_1250_CharToOrderMap[] =
 {
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR, /* 0X */
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR, /* 1X */
@@ -124,7 +124,7 @@ constexpr unsigned char Windows_1250_CharToOrderMap[] =
 };
 /*X0  X1  X2  X3  X4  X5  X6  X7  X8  X9  XA  XB  XC  XD  XE  XF */
 
-constexpr unsigned char Mac_Centraleurope_CharToOrderMap[] =
+static const unsigned char Mac_Centraleurope_CharToOrderMap[] =
 {
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR, /* 0X */
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR, /* 1X */
@@ -145,7 +145,7 @@ constexpr unsigned char Mac_Centraleurope_CharToOrderMap[] =
 };
 /*X0  X1  X2  X3  X4  X5  X6  X7  X8  X9  XA  XB  XC  XD  XE  XF */
 
-constexpr unsigned char Ibm852_CharToOrderMap[] =
+static const unsigned char Ibm852_CharToOrderMap[] =
 {
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR, /* 0X */
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR, /* 1X */
@@ -174,7 +174,7 @@ constexpr unsigned char Ibm852_CharToOrderMap[] =
  * Rest: -3.859759734048396e-17
  * Negative sequences: TODO
  */
-constexpr PRUint8 SloveneLangModel[] =
+static const PRUint8 SloveneLangModel[] =
 {
   2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,
   3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,

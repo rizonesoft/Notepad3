@@ -7,29 +7,22 @@
 *                                                                             *
 * TypeDefs.h                                                                  *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2025   *
+*                                                  (c) Rizonesoft 2008-2026   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
 
+#include <sdkddkver.h>
+
 #ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0601  /*_WIN32_WINNT_WIN7*/
+#define _WIN32_WINNT _WIN32_WINNT_WIN10
 #endif
 #ifndef WINVER
-#define WINVER 0x0601  /*_WIN32_WINNT_WIN7*/
+#define WINVER _WIN32_WINNT_WIN10
 #endif
 #ifndef NTDDI_VERSION
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
-#endif
-
-#if 0
-#undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0A00 /*_WIN32_WINNT_WIN7*/
-#undef WINVER
-#define WINVER 0x0A00 /*_WIN32_WINNT_WIN7*/
-#undef NTDDI_VERSION
-#define NTDDI_VERSION 0x0A000000 /*NTDDI_WIN7*/
+#define NTDDI_VERSION NTDDI_WIN10_RS5
 #endif
 
 
@@ -41,6 +34,9 @@
 #define NOMINMAX
 #endif
 
+#ifndef VC_EXTRALEAN
+#define VC_EXTRALEAN 1
+#endif
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN 1
 #endif
@@ -174,6 +170,7 @@ typedef COLORREF COLORALPHAREF;
 typedef enum COLOR_LAYER { BACKGROUND_LAYER = 0, FOREGROUND_LAYER = 1 } COLOR_LAYER;  // Style_GetColor()
 typedef enum HYPERLINK_OPS { OPEN_WITH_BROWSER = 1, OPEN_IN_NOTEPAD3 = (1<<1), OPEN_NEW_NOTEPAD3 = (1<<2), COPY_HYPERLINK = (1<<3), SELECT_HYPERLINK = (1<<4) } HYPERLINK_OPS;  // Hyperlink Operations
 typedef enum FILE_WATCHING_MODE { FWM_NO_INIT = -1, FWM_DONT_CARE = 0, FWM_INDICATORSILENT = 1, FWM_MSGBOX = 2, FWM_AUTORELOAD = 3, FWM_EXCLUSIVELOCK = 4 } FILE_WATCHING_MODE;
+typedef enum FILE_WATCHING_METHOD { FWMTH_BOTH = 0, FWMTH_POLL = 1, FWMTH_PUSH = 2 } FILE_WATCHING_METHOD;
 typedef enum FOCUSVIEW_MARKER_MODE { FVMM_MARGIN = 1, FVMM_LN_BACKGR = 2, FVMM_FOLD = 4 } FOCUSVIEW_MARKER_MODE;
 typedef enum DEFAULT_FONT_STYLES { DFS_GLOBAL = 0,
     DFS_CURR_LEXER = 1,
@@ -206,7 +203,6 @@ typedef enum BUFFER_SIZES {
     LARGE_BUFFER = 512,
     HUGE_BUFFER = 1024,
     XHUGE_BUFFER = 2048,
-    XXXL_BUFFER = 4096,
 
     EDGELINE_NUM_LIMIT = 256,
     ANSI_CHAR_BUFFER = 258,
@@ -248,6 +244,13 @@ typedef enum STATUS_SECTOR_T {
 #define COLORREF_MAX (DWORD_MAX)
 
 #define GLOBAL_INITIAL_FONTSIZE 11.0f
+
+// NP3 zoom constants (percentage-based, 100 = normal)
+#define NP3_MIN_ZOOM_PERCENT   10
+#define NP3_MAX_ZOOM_PERCENT  1000
+#define NP3_DEFAULT_ZOOM       100
+// Base font size in Scintilla FontSizeMultiplier units (points * 100) for zoom conversion
+#define NP3_ZOOM_BASE_FONT_SIZE ((int)(GLOBAL_INITIAL_FONTSIZE * 100))
 
 // --------------------------------------------------------------------------
 
@@ -523,6 +526,7 @@ typedef struct GLOBALS_T {
 
     int       iWhiteSpaceSize;
     int       iCaretOutLineFrameSize;
+    int       iZoomPercent;
 
     bool      bMinimizedToTray;
     bool      bZeroBasedColumnIndex;
@@ -643,6 +647,7 @@ typedef struct SETTINGS_T {
     bool EvalTinyExprOnSelection;
     FILE_WATCHING_MODE FileWatchingMode;
     bool ResetFileWatching;
+    bool MonitoringLog;  // View -> Monitoring Log setting - fixes #5037
     int  EscFunction;
     bool AlwaysOnTop;
     bool MinimizeToTray;
@@ -756,6 +761,7 @@ typedef struct SETTINGS2_T {
     int     OpacityLevel;
     int     FindReplaceOpacityLevel;
     LONG64  FileCheckInterval;
+    int     FileWatchingMethod;
     LONG64  UndoTransactionTimeout;
     int     IMEInteraction;
     int     SciFontQuality;
@@ -770,6 +776,7 @@ typedef struct SETTINGS2_T {
     bool    NoCutLineOnEmptySelection;
     bool    SubWrappedLineSelectOnMarginClick;
     bool    LexerSQLNumberSignAsComment;
+    bool    AtomicFileSave;
     int     ExitOnESCSkipLevel;
     int     ZoomTooltipTimeout;
     int     WrapAroundTooltipTimeout;
@@ -833,16 +840,6 @@ extern WCHAR Default_PreferredLanguageLocaleName[];
 
 //=============================================================================
 
-typedef enum SpecialUndoRedoToken {
-    // undoredo token >= 0
-    URTok_TokenStart    =  0L,
-    URTok_NoTransaction = -1L,
-    URTok_NoRecording   = -2L
-
-} SpecialUndoRedoToken;
-
-//=============================================================================
-
 typedef struct FOCUSEDVIEW_T {
 
     bool HideNonMatchedLines;
@@ -867,6 +864,7 @@ typedef struct BackgroundWorker {
 typedef struct FCOBSRVDATA_T {
 
     volatile LONG64   iFileChangeNotifyTime; // multi-threaded
+    volatile LONG     iObservationGeneration; // seqlock: incremented before+after fdCurFile writes
 
     WIN32_FIND_DATA   fdCurFile;
     HANDLE            hEventFileChanged;
@@ -877,7 +875,7 @@ typedef struct FCOBSRVDATA_T {
 
 } FCOBSRVDATA_T, *PFCOBSRVDATA_T;
 
-#define INIT_FCOBSRV_T { 0LL, { 0 }, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, { NULL, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, NULL } }
+#define INIT_FCOBSRV_T { 0LL, 0L, { 0 }, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, { NULL, INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, NULL } }
 
 #define MIN_FC_POLL_INTERVAL (200LL)
 #define MAX_FC_POLL_INTERVAL ((24LL * 60 * 60 * 1000) << 1) // max: 48h
@@ -889,6 +887,7 @@ typedef struct FILEWATCHING_T {
     FILE_WATCHING_MODE FileWatchingMode;  // <-> Settings.FileWatchingMode;
     LONG64             FileCheckInterval; // <-> clampll(Settings2.FileCheckInterval, MIN_FC_POLL_INTERVAL, MAX_FC_POLL_INTERVAL);
     bool               MonitoringLog;
+    int                LogRotateRetryCount;
 
 } FILEWATCHING_T, *PFILEWATCHING_T;
 

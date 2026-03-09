@@ -50,7 +50,7 @@ code = 'da'
 # ASCII characters are also used in French.
 use_ascii = True
 # The charsets we want to support and create data for.
-charsets = ['ISO-8859-15', 'ISO-8859-1', 'WINDOWS-1252']
+charsets = ['ISO-8859-15', 'ISO-8859-1', 'WINDOWS-1252', 'IBM865' ]
 
 ## Optional Properties ##
 

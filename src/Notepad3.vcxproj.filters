@@ -46,6 +46,9 @@
     <Filter Include="Source Files\tinyexpr">
       <UniqueIdentifier>{60486982-91be-42d2-b154-86c2706ca60f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="timsort">
+      <UniqueIdentifier>{9a2064fb-b044-4ce5-91de-99fa06cc5222}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dialogs.c">
@@ -303,6 +306,9 @@
     <ClCompile Include="uchardet\uchardet\src\LangModels\LangNederlandsModel.cpp">
       <Filter>Source Files\uchardet\LangModels</Filter>
     </ClCompile>
+    <ClCompile Include="uchardet\uchardet\src\LangModels\LangNorwegianModel.cpp">
+      <Filter>Source Files\uchardet\LangModels</Filter>
+    </ClCompile>
     <ClCompile Include="uchardet\uchardet\src\LangModels\LangPolishModel.cpp">
       <Filter>Source Files\uchardet\LangModels</Filter>
     </ClCompile>
@@ -361,9 +367,6 @@
       <Filter>Source Files\uchardet</Filter>
     </ClCompile>
     <ClCompile Include="uchardet\uchardet\src\nsGB2312Prober.cpp">
-      <Filter>Source Files\uchardet</Filter>
-    </ClCompile>
-    <ClCompile Include="uchardet\uchardet\src\nsGB18030Prober.cpp">
       <Filter>Source Files\uchardet</Filter>
     </ClCompile>
     <ClCompile Include="uchardet\uchardet\src\nsHebrewProber.cpp">
@@ -431,6 +434,12 @@
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexVerilog.c">
       <Filter>Source Files\StyleLexers</Filter>
+    </ClCompile>
+    <ClCompile Include="timsort\timsort.c">
+      <Filter>timsort</Filter>
+    </ClCompile>
+    <ClCompile Include="timsort\timsort_r.c">
+      <Filter>timsort</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -542,9 +551,6 @@
     <ClInclude Include="uchardet\uchardet\src\nsGB2312Prober.h">
       <Filter>Source Files\uchardet</Filter>
     </ClInclude>
-    <ClInclude Include="uchardet\uchardet\src\nsGB18030Prober.h">
-      <Filter>Source Files\uchardet</Filter>
-    </ClInclude>
     <ClInclude Include="uchardet\uchardet\src\nsHebrewProber.h">
       <Filter>Source Files\uchardet</Filter>
     </ClInclude>
@@ -614,6 +620,12 @@
     <ClInclude Include="tinyexpr\tinyexpr.h">
       <Filter>Source Files\tinyexpr</Filter>
     </ClInclude>
+    <ClInclude Include="timsort\timsort.h">
+      <Filter>timsort</Filter>
+    </ClInclude>
+    <ClInclude Include="timsort\timsort-impl.h">
+      <Filter>timsort</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\res\Copy.cur">
@@ -659,19 +671,19 @@
     <None Include="..\res\StdDarkModeScheme.ini">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="uchardet\uchardet\src\tables\EUCKRFreq.tab">
+    <None Include="uchardet\uchardet\src\Big5Freq.tab">
       <Filter>Source Files\uchardet\tables</Filter>
     </None>
-    <None Include="uchardet\uchardet\src\tables\EUCTWFreq.tab">
+    <None Include="uchardet\uchardet\src\EUCKRFreq.tab">
       <Filter>Source Files\uchardet\tables</Filter>
     </None>
-    <None Include="uchardet\uchardet\src\tables\GB2312Freq.tab">
+    <None Include="uchardet\uchardet\src\EUCTWFreq.tab">
       <Filter>Source Files\uchardet\tables</Filter>
     </None>
-    <None Include="uchardet\uchardet\src\tables\GB18030Freq.tab">
+    <None Include="uchardet\uchardet\src\GB2312Freq.tab">
       <Filter>Source Files\uchardet\tables</Filter>
     </None>
-    <None Include="uchardet\uchardet\src\tables\JISFreq.tab">
+    <None Include="uchardet\uchardet\src\JISFreq.tab">
       <Filter>Source Files\uchardet\tables</Filter>
     </None>
   </ItemGroup>

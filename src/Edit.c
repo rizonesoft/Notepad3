@@ -8,7 +8,7 @@
 *   Text File Editing Helper Stuff                                            *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2025   *
+*                                                  (c) Rizonesoft 2008-2026   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -105,9 +105,9 @@ static LPCWSTR const s_pUnicodeRegEx = L"(\\\\[uU|xX]([0-9a-fA-F]){4}|\\\\[xX]([
 // URL valid codepoints w/o square-brackets
 #define HYPLNK_REGEX_VALID_CDPT "\\p{L}\\p{N}\\p{Sc}\\p{So}\\*;^°+§&@#/%=~_|'"
 
-#define HYPLNK_REGEX_FULL   "\\b(?:(?:https?|ftp|file)://|www\\.|ftp\\.)"\
-                            "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*\\)|[-" HYPLNK_REGEX_VALID_CDPT "?!:,.])*"\
-                            "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*\\)|[-" HYPLNK_REGEX_VALID_CDPT "])"
+#define HYPLNK_REGEX_FULL   "\\b(?:(?:https?|ftp)://|file:///|file://|mailto:|www\\.|ftp\\.)"\
+                            "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*+\\)|[-" HYPLNK_REGEX_VALID_CDPT "?!:,.])*"\
+                            "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*+\\)|[-" HYPLNK_REGEX_VALID_CDPT "])"
 
 static LPCSTR const s_pUrlRegExA = HYPLNK_REGEX_FULL;
 static LPCWSTR const s_pUrlRegEx = _W(HYPLNK_REGEX_FULL);
@@ -1187,14 +1187,14 @@ bool EditLoadFile(
     bool       bReadSuccess = false;
     bool const bReloadFile = (fLoadFlags & FLF_Reload);
 
-    BeginWaitCursor(Flags.bHugeFileLoadState, StatDisplLoadFile(hfile_pth));
+    BeginWaitCursor(false, L"");  // structural only: opens LimitNotifyEvents() block
 
     HANDLE const hFile = CreateFileW(Path_Get(hfile_pth),
                                     GENERIC_READ,
                                     FILE_SHARE_READ | FILE_SHARE_WRITE,
                                     NULL,
                                     OPEN_EXISTING,
-                                    FILE_ATTRIBUTE_NORMAL,
+                                    FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN,
                                     NULL);
 
     Globals.dwLastError = GetLastError();
@@ -1262,6 +1262,14 @@ bool EditLoadFile(
             Encoding_Forced(CPI_NONE);
             goto observe;
         }
+    }
+
+    // activate wait cursor now that file size is known
+    if (Flags.bHugeFileLoadState) {
+        SciCall_SetCursor(SC_CURSORWAIT);
+        SciCall_SetVScrollbar(false);
+        SciCall_SetHScrollbar(false);
+        StatusSetText(Globals.hwndStatus, STATUS_HELP, StatDisplLoadFile(hfile_pth));
     }
 
     // check for unknown file/extension
@@ -1349,6 +1357,40 @@ bool EditLoadFile(
 
     // --------------------------------------------------------------------------
 
+    if (encDetection.bIsUTF32) {
+        // UTF-32 is not supported — convert through ANSI codepage for binary display
+        // (same conversion path that other binary files use via EXTERNAL_8BIT)
+        status->iEncoding = CPI_ANSI_DEFAULT;
+        UINT const uCodePage = Encoding_GetCodePage(CPI_ANSI_DEFAULT);
+
+        LPWSTR const lpDataWide = AllocMem(cbData * 2 + 16, HEAP_ZERO_MEMORY);
+        ptrdiff_t const cbDataWide = MultiByteToWideCharEx(uCodePage, 0, lpData, cbData,
+                                         lpDataWide, (SizeOfMem(lpDataWide) / sizeof(WCHAR)));
+        if (cbDataWide != 0) {
+            FreeMem(lpData);
+            lpData = AllocMem(cbDataWide * 3 + 16, HEAP_ZERO_MEMORY);
+            cbData = WideCharToMultiByteEx(Encoding_SciCP, 0, lpDataWide, cbDataWide,
+                                           lpData, SizeOfMem(lpData), NULL, NULL);
+            if (cbData != 0) {
+                EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory, bReloadFile);
+                EditDetectEOLMode(lpData, cbData, status);
+                FreeMem(lpDataWide);
+            } else {
+                FreeMem(lpDataWide);
+                EditSetNewText(hwnd, "", 0, bClearUndoHistory, bReloadFile);
+            }
+        } else {
+            FreeMem(lpDataWide);
+            EditSetNewText(hwnd, "", 0, bClearUndoHistory, bReloadFile);
+        }
+        status->iEOLMode = Settings.DefaultEOLMode;
+        FreeMem(lpData);
+        InfoBoxLng(MB_ICONWARNING, L"MsgUTF32Unsupported", IDS_MUI_ERR_ENCODINGNA);
+        goto observe;
+    }
+
+    // --------------------------------------------------------------------------
+
     if (Flags.bDevDebugMode) {
 #if TRUE
         SetAdditionalTitleInfo(Encoding_GetTitleInfo());
@@ -1388,18 +1430,20 @@ bool EditLoadFile(
 
         char* const lpDataUTF8 = AllocMem((cbData * 3) + 2, HEAP_ZERO_MEMORY);
 
-        ptrdiff_t convCnt = WideCharToMultiByteEx(Encoding_SciCP, 0, (encDetection.bHasBOM ? (LPWSTR)lpData + 1 : (LPWSTR)lpData),
-                            (encDetection.bHasBOM ? (cbData / sizeof(WCHAR)) : (cbData / sizeof(WCHAR) + 1)), lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
+        ptrdiff_t const   wcharCount = cbData / sizeof(WCHAR);
+        ptrdiff_t const   cchWideChar = encDetection.bHasBOM ? (wcharCount - 1) : wcharCount;
+        LPCWSTR const     lpwStr = encDetection.bHasBOM ? (LPWSTR)lpData + 1 : (LPWSTR)lpData;
+
+        ptrdiff_t convCnt = WideCharToMultiByteEx(Encoding_SciCP, 0, lpwStr, cchWideChar, lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
 
         if (convCnt == 0) {
-            convCnt = WideCharToMultiByteEx(CP_ACP, 0, (encDetection.bHasBOM ? (LPWSTR)lpData + 1 : (LPWSTR)lpData),
-                                            -1, lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
+            convCnt = WideCharToMultiByteEx(CP_ACP, 0, lpwStr, cchWideChar, lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
             status->bUnicodeErr = true;
         }
 
-        FileVars_GetFromData(lpDataUTF8, convCnt - 1, &Globals.fvCurFile);
-        EditSetNewText(hwnd, lpDataUTF8, convCnt - 1, bClearUndoHistory, bReloadFile);
-        EditDetectEOLMode(lpDataUTF8, convCnt - 1, status);
+        FileVars_GetFromData(lpDataUTF8, convCnt, &Globals.fvCurFile);
+        EditSetNewText(hwnd, lpDataUTF8, convCnt, bClearUndoHistory, bReloadFile);
+        EditDetectEOLMode(lpDataUTF8, convCnt, status);
         FreeMem(lpDataUTF8);
 
     } else { // ===  ALL OTHERS  ===
@@ -1422,11 +1466,12 @@ bool EditLoadFile(
                 EditDetectEOLMode(lpData, cbData, status);
             }
         }
-        else if (!IS_ENC_ENFORCED() && (encDetection.bPureASCII7Bit && !encDetection.bHasUnicodeNullBytes)) {
+        else if (!IS_ENC_ENFORCED() && encDetection.bPureASCII7Bit) {
             // load ASCII(7-bit) as ANSI/UTF-8
             EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory, bReloadFile);
             status->iEncoding = (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT);
             EditDetectEOLMode(lpData, cbData, status);
+
         } else { // ===  ALL OTHER NON UTF-8 ===
 
             status->iEncoding = encDetection.Encoding;
@@ -1500,50 +1545,11 @@ bool EditSaveFile(
 
     BeginWaitCursor(true, wchMsg);
 
-    ///~ (!) FILE_FLAG_NO_BUFFERING needs sector-size aligned buffer layout
-    DWORD const dwWriteAttributes = FILE_ATTRIBUTE_NORMAL | /*FILE_FLAG_NO_BUFFERING |*/ FILE_FLAG_WRITE_THROUGH;
-
-    HANDLE hFile = CreateFileW(Path_Get(hfile_pth),
-                               GENERIC_READ | GENERIC_WRITE,
-                               FILE_SHARE_READ | FILE_SHARE_WRITE,
-                               NULL,
-                               OPEN_ALWAYS,
-                               dwWriteAttributes,
-                               NULL);
-
-    Globals.dwLastError = GetLastError();
-
-    // failure could be due to missing attributes (2k/XP)
-    if (!IS_VALID_HANDLE(hFile)) {
-        DWORD dwSpecialAttributes = Path_GetFileAttributes(hfile_pth);
-        if (dwSpecialAttributes != INVALID_FILE_ATTRIBUTES) {
-            dwSpecialAttributes &= (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
-            hFile = CreateFileW(Path_Get(hfile_pth),
-                                GENERIC_READ | GENERIC_WRITE,
-                                FILE_SHARE_READ|FILE_SHARE_WRITE,
-                                NULL,
-                                OPEN_ALWAYS,
-                                dwWriteAttributes | dwSpecialAttributes,
-                                NULL);
-
-            Globals.dwLastError = GetLastError();
-        }
-    }
-
-    if (!IS_VALID_HANDLE(hFile)) {
-        goto observe;
-    }
-
-    //FILETIME createTime;
-    //FILETIME laccessTime;
-    FILETIME modTime;
-    //if (!GetFileTime(status->hndlFile, &createTime, &laccessTime, &modTime)) {
-    if (!GetFileTime(hFile, NULL, NULL, &modTime)) {
-        goto observe;
-    }
-
+    // --- pre-process Scintilla buffer before opening the file ---
+    // (these are CPU-bound operations that don't need the file handle;
+    //  doing them here minimizes the time the file is held open)
     // maybe not enough time to do that (WM_POWERBROADCAST)
-    if ((fSaveFlags & FSF_EndSession) || !(fSaveFlags & FSF_AutoSave)) { 
+    if ((fSaveFlags & FSF_EndSession) || !(fSaveFlags & FSF_AutoSave)) {
 
         // ensure consistent line endings
         if (Settings.FixLineEndings) {
@@ -1551,9 +1557,106 @@ bool EditSaveFile(
         }
 
         // strip trailing blanks
-        if (Settings.FixTrailingBlanks) {
+        if (Settings.FixTrailingBlanks && EditHasTrailingBlanks()) {
             EditStripLastCharacter(hwnd, true, true);
         }
+    }
+
+    // --- Atomic save setup ---
+    // When enabled, write to a temp file first, then atomically replace the target.
+    // This minimizes the time the target file is locked and prevents data loss on crash.
+    // Skip atomic save for emergency session-end saves (speed is critical there).
+    bool const bAtomicSave = Settings2.AtomicFileSave && !(fSaveFlags & FSF_EndSession);
+
+    FILETIME modTime = {0};
+    bool bHaveModTime = false;
+    WCHAR wchTempFile[MAX_PATH_EXPLICIT + 1] = { L'\0' };
+    bool bUseTempFile = false;
+
+    if (bAtomicSave) {
+        // Briefly open original file read-only to capture modification time
+        HANDLE hOrig = CreateFileW(Path_Get(hfile_pth),
+                                    GENERIC_READ,
+                                    FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                    NULL, OPEN_EXISTING,
+                                    FILE_ATTRIBUTE_NORMAL, NULL);
+        if (IS_VALID_HANDLE(hOrig)) {
+            bHaveModTime = GetFileTime(hOrig, NULL, NULL, &modTime);
+            CloseHandle(hOrig);
+        }
+        // If file doesn't exist yet (new file), that's OK — no modTime to capture
+
+        // Create temp file in same directory as target (ensures same-volume rename)
+        HPATHL hTempDir = Path_Copy(hfile_pth);
+        Path_RemoveFileSpec(hTempDir);
+        if (Path_IsNotEmpty(hTempDir) &&
+            GetTempFileNameW(Path_Get(hTempDir), L"NP3", 0, wchTempFile)) {
+            bUseTempFile = true;
+        }
+        Path_Release(hTempDir);
+    }
+
+    ///~ FlushFileBuffers() in WriteFileXL() provides the durability guarantee
+    ///~ as a single sync point after all writes complete.
+    ///~ (!) FILE_FLAG_NO_BUFFERING needs sector-size aligned buffer layout
+    DWORD const dwWriteAttributes = FILE_ATTRIBUTE_NORMAL;
+    HANDLE hFile = INVALID_HANDLE_VALUE;
+
+    if (bUseTempFile) {
+        // Open the temp file created by GetTempFileNameW
+        hFile = CreateFileW(wchTempFile,
+                            GENERIC_READ | GENERIC_WRITE,
+                            0, // exclusive access to temp file
+                            NULL, TRUNCATE_EXISTING,
+                            dwWriteAttributes, NULL);
+        Globals.dwLastError = GetLastError();
+        if (!IS_VALID_HANDLE(hFile)) {
+            // Temp file open failed — fall back to direct write
+            DeleteFileW(wchTempFile);
+            bUseTempFile = false;
+        }
+    }
+
+    if (!bUseTempFile) {
+        // Direct write to target file (original behavior / fallback)
+        hFile = CreateFileW(Path_Get(hfile_pth),
+                            GENERIC_READ | GENERIC_WRITE,
+                            FILE_SHARE_READ | FILE_SHARE_WRITE,
+                            NULL, OPEN_ALWAYS,
+                            dwWriteAttributes, NULL);
+        Globals.dwLastError = GetLastError();
+
+        // failure could be due to missing attributes (2k/XP)
+        if (!IS_VALID_HANDLE(hFile)) {
+            DWORD dwSpecialAttributes = Path_GetFileAttributes(hfile_pth);
+            if (dwSpecialAttributes != INVALID_FILE_ATTRIBUTES) {
+                dwSpecialAttributes &= (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
+                hFile = CreateFileW(Path_Get(hfile_pth),
+                                    GENERIC_READ | GENERIC_WRITE,
+                                    FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                    NULL, OPEN_ALWAYS,
+                                    dwWriteAttributes | dwSpecialAttributes, NULL);
+                Globals.dwLastError = GetLastError();
+            }
+        }
+    }
+
+    if (!IS_VALID_HANDLE(hFile)) {
+        goto observe;
+    }
+
+    if (!bHaveModTime) {
+        // Capture modTime from the file handle (direct-write path or new file)
+        if (!GetFileTime(hFile, NULL, NULL, &modTime)) {
+            CloseHandle(hFile);
+            hFile = INVALID_HANDLE_VALUE;
+            if (bUseTempFile) {
+                DeleteFileW(wchTempFile);
+                bUseTempFile = false;
+            }
+            goto observe;
+        }
+        bHaveModTime = true;
     }
 
     // get text length in bytes
@@ -1703,11 +1806,41 @@ bool EditSaveFile(
         }
     }
 
-    if (bPreserveTimeStamp) {
+    if (bPreserveTimeStamp && bHaveModTime) {
         SetFileTime(hFile, NULL, NULL, &modTime);
     }
 
     CloseHandle(hFile);
+    hFile = INVALID_HANDLE_VALUE;
+
+    // --- Atomic replace: swap temp file into target path ---
+    if (bUseTempFile) {
+        if (bWriteSuccess) {
+            bool bReplaced = false;
+
+            // Try ReplaceFileW first — preserves ACLs, alternate data streams, creation time
+            DWORD const dwOrigAttribs = GetFileAttributesW(Path_Get(hfile_pth));
+            if (dwOrigAttribs != INVALID_FILE_ATTRIBUTES) {
+                bReplaced = ReplaceFileW(Path_Get(hfile_pth), wchTempFile, NULL,
+                                          REPLACEFILE_IGNORE_MERGE_ERRORS, NULL, NULL);
+            }
+
+            if (!bReplaced) {
+                // Fallback: MoveFileExW (works for new files or when ReplaceFileW is unsupported)
+                bReplaced = MoveFileExW(wchTempFile, Path_Get(hfile_pth),
+                                         MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH);
+            }
+
+            if (!bReplaced) {
+                Globals.dwLastError = GetLastError();
+                DeleteFileW(wchTempFile);
+                bWriteSuccess = false;
+            }
+        } else {
+            // Write to temp failed — clean up temp file
+            DeleteFileW(wchTempFile);
+        }
+    }
 
     if (bWriteSuccess && (!(fSaveFlags & (FSF_SaveCopy | FSF_AutoSave)) || (fSaveFlags & FSF_EndSession))) {
         SetSaveDone();
@@ -2024,7 +2157,7 @@ void EditURLDecode(const bool isPathConvert)
 
     // can URL be found by Hyperlink pattern matching ?
     int matchLen = 0;
-    ptrdiff_t const pos = OnigRegExFind(s_pUrlRegExA, pszUnescaped, false, SciCall_GetEOLMode(), &matchLen);
+    ptrdiff_t const pos = RegExFind(s_pUrlRegExA, pszUnescaped, false, &matchLen);
     bool const bIsValidConversion = isPathConvert ? ((pos >= 0) && (cchUnescapedDec == matchLen)) : true;
 
     if (bIsValidConversion) {
@@ -2160,7 +2293,7 @@ void EditBase64Code(HWND hwnd, const bool bEncode, cpi_enc_t cpi) {
     UndoTransActionBegin();
 
     SciCall_TargetFromSelection();
-    DocPos const len = (base64Size ? Sci_ReplaceTargetTestChgHist(base64Size, pBase64CodedTxt) : SciCall_ReplaceTarget(0, ""));
+    DocPos const len = (base64Size ? Sci_ReplaceTargetTestChgHist(base64Size, pBase64CodedTxt) : Sci_ReplaceTargetTestChgHist(0, ""));
     FreeMem(pBase64CodedTxt);
 
     Sci_SetStreamSelection(iSelStart, iSelStart + len, bStraightSel);
@@ -2693,6 +2826,7 @@ void EditTabsToSpaces(int nTabWidth,bool bOnlyIndentingWS)
 
     if (bModified) {
         char * const pszText2 = AllocMem((size_t)cchConvW * 3, HEAP_ZERO_MEMORY);
+        if (pszText2) {
 
         ptrdiff_t cchConvM = WideCharToMultiByteEx(Encoding_SciCP,0,pszConvW,cchConvW,
                              pszText2,SizeOfMem(pszText2),NULL,NULL);
@@ -2710,6 +2844,8 @@ void EditTabsToSpaces(int nTabWidth,bool bOnlyIndentingWS)
         Sci_ReplaceTargetTestChgHist(cchConvM, pszText2);
         EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
         EndUndoTransAction();
+
+        } // if pszText2
         FreeMem(pszText2);
     }
     FreeMem(pszConvW);
@@ -2805,6 +2941,7 @@ void EditSpacesToTabs(int nTabWidth,bool bOnlyIndentingWS)
 
     if (bModified || cchConvW != cchTextW) {
         char *pszText2 = AllocMem((size_t)cchConvW * 3, HEAP_ZERO_MEMORY);
+        if (pszText2) {
 
         ptrdiff_t cchConvM = WideCharToMultiByteEx(Encoding_SciCP,0,pszConvW,cchConvW,
                              pszText2,SizeOfMem(pszText2),NULL,NULL);
@@ -2822,6 +2959,8 @@ void EditSpacesToTabs(int nTabWidth,bool bOnlyIndentingWS)
         Sci_ReplaceTargetTestChgHist(cchConvM, pszText2);
         EditSetSelectionEx(iAnchorPos, iCurPos, -1, -1);
         EndUndoTransAction();
+
+        } // if pszText2
         FreeMem(pszText2);
     }
 
@@ -2978,6 +3117,7 @@ void EditCutLines(HWND hwnd, const bool bMSBehavSelEmpty)
         bool const bIsLineEmpty = Sci_GetNetLineLength(Sci_GetCurrentLineNumber()) == 0;
         UndoTransActionBegin();
         if (SciCall_IsSelectionEmpty() && bMSBehavSelEmpty) {
+            //? SciCall_CutAllowLine(); - does it the same as CopyAllowLine() + LineDelete()?
             SciCall_CopyAllowLine(); // (!) VisualStudio behavior
             // On Windows, an extra "MSDEVLineSelect" marker is added to the clipboard
             // which is then used in SCI_PASTE to paste the whole line before the current line.
@@ -3201,7 +3341,7 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
                 *q = '\0'; // terminate tinyexpr
                 StringCchCopyA(mszTinyExprPost, COUNTOF(mszTinyExprPost), t);
                 StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), q + CONSTSTRGLEN(EXPR_END));
-                *p = '\0'; // mszPrefix1 terminate
+                *p = '\0'; // mszAppend1 terminate
                 p = StrStrA(q, EXPR_BEG); // next
             }
             else {
@@ -3229,7 +3369,7 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
             N = I + 1.0;
             DocLn vmin = d2ln(te_eval(pTinyExprPre));
             DocLn vmax = vmin;
-            for (DocLn ln = iStartLine + 2; ln <= iEndLine; ++ln) {
+            for (DocLn ln = iStartLine + 2; ln <= iEndLine + 1; ++ln) {
                 L = (double)ln;
                 I += 1.0;
                 N += 1.0;
@@ -3270,7 +3410,7 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
             N = I + 1.0;
             DocLn vmin = d2ln(te_eval(pTinyExprPost));
             DocLn vmax = vmin;
-            for (DocLn ln = iStartLine + 2; ln <= iEndLine; ++ln) {
+            for (DocLn ln = iStartLine + 2; ln <= iEndLine + 1; ++ln) {
                 L = (double)ln;
                 I += 1.0;
                 N += 1.0;
@@ -3378,7 +3518,7 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
         DocPos const newPos = SciCall_PositionFromLine(iResetLine) + iResetOffset + prefixInsertLen;
         EditSetSelectionEx(newPos, newPos, -1, -1);
     }
-    else if (iSelStart != iSelEnd) {
+    else {
         if (iResetPos < iAnchorPos) {
             EditSetSelectionEx(SciCall_PositionFromLine(iEndLine + 1), SciCall_PositionFromLine(iStartLine), -1, -1);
         } else {
@@ -3396,7 +3536,9 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
 //
 void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll)
 {
-    if ((cmd != SCI_TAB) && (cmd != SCI_BACKTAB)) {
+    bool const bLineIndent = (cmd == SCI_LINEINDENT) || (cmd == SCI_LINEDEDENT);
+
+    if ((cmd != SCI_TAB) && (cmd != SCI_BACKTAB) && !bLineIndent) {
         SendMessage(hwnd, cmd, 0, 0);
         return;
     }
@@ -3418,9 +3560,6 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
     DocLn const iAnchorLine = SciCall_LineFromPosition(iAnchorPos);
     bool const  bSingleLine = Sci_IsSelectionSingleLine();
     bool const  bCompleteLineSel = !SciCall_IsSelectionEmpty() && Sci_IsCompleteLineSelected();
-
-    bool const bTabIndents = SciCall_GetTabIndents();
-    bool const bBSpUnindents = SciCall_GetBackSpaceUnIndents();
 
     bFormatIndentation = bFormatIndentation || bCompleteLineSel;
 
@@ -3446,13 +3585,18 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
         }
     }
 
-    if (cmd == SCI_TAB) {
+    if (bLineIndent) {
+        // SCI_LINEINDENT/SCI_LINEDEDENT always operate on whole lines
+        SendMessage(hwnd, cmd, 0, 0);
+    } else if (cmd == SCI_TAB) {
+        bool const bTabIndents = SciCall_GetTabIndents();
         SciCall_SetTabIndents(bFormatIndentation ? true : bTabIndents);
         SciCall_Tab();
         if (bFormatIndentation) {
             SciCall_SetTabIndents(bTabIndents);
         }
     } else { // SCI_BACKTAB
+        bool const bBSpUnindents = SciCall_GetBackSpaceUnIndents();
         SciCall_SetBackSpaceUnIndents(bFormatIndentation ? true : bBSpUnindents);
         SciCall_BackTab();
         if (bFormatIndentation) {
@@ -3477,9 +3621,9 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
         } else { // on multiline indentation, anchor and current positions are moved to line begin resp. end
             if (bFixStart) {
                 if (iCurPos < iAnchorPos) {
-                    iDiffCurrent = SciCall_LineLength(iCurLine) - Sci_GetEOLLen();
+                    iDiffCurrent = SciCall_GetLineEndPosition(iCurLine) - SciCall_PositionFromLine(iCurLine);
                 } else {
-                    iDiffAnchor = SciCall_LineLength(iAnchorLine) - Sci_GetEOLLen();
+                    iDiffAnchor = SciCall_GetLineEndPosition(iAnchorLine) - SciCall_PositionFromLine(iAnchorLine);
                 }
             }
             EditSetSelectionEx(SciCall_GetLineEndPosition(iAnchorLine) - iDiffAnchor, SciCall_GetLineEndPosition(iCurLine) - iDiffCurrent, -1, -1);
@@ -3530,9 +3674,10 @@ void EditAlignText(int nMode)
 
         if (iLineIndentPos != iLineEndPos) {
             int const iIndentCol = SciCall_GetLineIndentation(iLine);
+            DocPos const iLineStartPos = SciCall_PositionFromLine(iLine);
             DocPos iTail = iLineEndPos - 1;
             char ch = SciCall_GetCharAt(iTail);
-            while (iTail >= iLineStart && (ch == ' ' || ch == '\t')) {
+            while (iTail >= iLineStartPos && (ch == ' ' || ch == '\t')) {
                 --iTail;
                 ch = SciCall_GetCharAt(iTail);
                 --iLineEndPos;
@@ -3552,7 +3697,7 @@ void EditAlignText(int nMode)
 
     UndoTransActionBegin();
 
-    if (chNewLineBuf && wchLineBuf && wchNewLineBuf) {
+    if (chNewLineBuf && wchLineBuf && wchNewLineBuf && pWords) {
 
         for (DocLn iLine = iLineStart; iLine <= iLineEnd; iLine++) {
             DocPos const iStartPos = SciCall_PositionFromLine(iLine);
@@ -3561,7 +3706,7 @@ void EditAlignText(int nMode)
 
             if ((iIndentPos == iEndPos) && (iEndPos > 0)) {
                 SciCall_SetTargetRange(iStartPos, iEndPos);
-                SciCall_ReplaceTarget(0, "");
+                Sci_ReplaceTargetTestChgHist(0, "");
             } else {
                 int iWords = 0;
                 int iWordsLength = 0;
@@ -3603,8 +3748,7 @@ void EditAlignText(int nMode)
                             }
                         }
 
-                        if ((nMode == ALIGN_JUSTIFY || nMode == ALIGN_JUSTIFY_EX) &&
-                                iWords > 1 && iWordsLength >= 2 &&
+                        if (iWords > 1 && iWordsLength >= 2 &&
                                 ((nMode != ALIGN_JUSTIFY_EX || !bNextLineIsBlank || iLineStart == iLineEnd) ||
                                  (bNextLineIsBlank && iWordsLength > (iMaxLength - iMinIndent) * 0.75))) {
                             int iGaps = iWords - 1;
@@ -3699,14 +3843,14 @@ void EditAlignText(int nMode)
             }
         }
 
-        FreeMem(pWords);
-        FreeMem(wchNewLineBuf);
-        FreeMem(wchLineBuf);
-        FreeMem(chNewLineBuf);
-
     } else {
         InfoBoxLng(MB_ICONERROR, NULL, IDS_MUI_BUFFERTOOSMALL);
     }
+
+    FreeMem(pWords);
+    FreeMem(wchNewLineBuf);
+    FreeMem(wchLineBuf);
+    FreeMem(chNewLineBuf);
 
     if (iAnchorPos > iCurPos) {
         iCurPos = SciCall_FindColumn(iLineStart, iCurCol);
@@ -3867,7 +4011,7 @@ void EditToggleLineCommentsSimple(LPCWSTR pwszComment, bool bInsertAtStart, LnCm
                 DocPos const cch = bHasLnCmnt ? cchComment : cchPrefix;
                 DocPos const iSelPos = iIndentPos + cch;
                 SciCall_SetTargetRange(iIndentPos, iSelPos);
-                SciCall_ReplaceTarget(0, "");
+                Sci_ReplaceTargetTestChgHist(0, "");
                 if (iLine == iLineStart) {
                     iSelStartOffset -= (iSelStart <= iIndentPos) ? 0 : (iSelStart < iSelPos) ? (iSelStart - iIndentPos)
                                                                                              : cch;
@@ -3972,9 +4116,10 @@ void EditToggleLineCommentsExtended(LPCWSTR pwszComment, bool bInsertAtStart)
             switch (iAction) {
             case 0:
                 iAction = 2;
+                // fall through
             case 2:
                 SciCall_SetTargetRange(iIndentPos, iSelPos);
-                SciCall_ReplaceTarget(0, "");
+                Sci_ReplaceTargetTestChgHist(0, "");
                 utarray_push_back(sel_positions, &iIndentPos);
                 break;
             case 1:
@@ -3986,6 +4131,7 @@ void EditToggleLineCommentsExtended(LPCWSTR pwszComment, bool bInsertAtStart)
             switch (iAction) {
             case 0:
                 iAction = 1;
+                // fall through
             case 1: {
                 DocPos const iPos = SciCall_FindColumn(iLine, iCommentCol);
                 SciCall_InsertText(iPos, mszComment);
@@ -4021,7 +4167,7 @@ void EditToggleLineCommentsExtended(LPCWSTR pwszComment, bool bInsertAtStart)
 //
 //  _AppendSpaces()
 //
-static DocPos  _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineEnd, DocPos iMaxColumn, bool bSkipEmpty)
+static DocPos _AppendSpaces(HWND hwnd, DocLn iLineStart, DocLn iLineEnd, DocPos iMaxColumn, bool bSkipEmpty)
 {
     UNREFERENCED_PARAMETER(hwnd);
 
@@ -4075,7 +4221,7 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty) {
 
     //~UndoTransActionBegin();  // outside defined
 
-    if (Sci_IsMultiOrRectangleSelection() && !SciCall_IsSelectionEmpty()) {
+    if (Sci_IsMultiOrRectangleSelection()) {
 
         DocPos const selAnchorMainPos = SciCall_GetRectangularSelectionAnchor();
         DocPos const selCaretMainPos = SciCall_GetRectangularSelectionCaret();
@@ -4089,52 +4235,55 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty) {
         DocLn const iLineCount = abs_p(iRcCaretLine - iRcAnchorLine) + 1;
 
         // lots of spaces
-        DocPos const spBufSize = max_p(iAnchorColumn, selCaretMainPos);
+        DocPos const spBufSize = max_p(iAnchorColumn, iCaretColumn);
         char * const pSpaceBuffer = (char *)AllocMem((spBufSize + 1) * sizeof(char), HEAP_ZERO_MEMORY);
-        FillMemory(pSpaceBuffer, spBufSize * sizeof(char), ' ');
 
         DocPos * const pVspAVec = (DocPos *)AllocMem(iLineCount * sizeof(DocPos), HEAP_ZERO_MEMORY);
         DocPos * const pVspCVec = (DocPos *)AllocMem(iLineCount * sizeof(DocPos), HEAP_ZERO_MEMORY);
 
-        for (DocLn i = 0; i < iLineCount; ++i) {
-            pVspAVec[i] = SciCall_GetSelectionNAnchorVirtualSpace(i);
-            pVspCVec[i] = SciCall_GetSelectionNCaretVirtualSpace(i);
-        }
+        if (pSpaceBuffer && pVspAVec && pVspCVec) {
 
-        DocPos i = 0;
-        DocPos iSpcCount = 0;
-        DocLn const iLnIncr = (iRcAnchorLine <= iRcCaretLine) ? ((DocLn)+1) : ((DocLn)-1);
-        DocLn iLine = iRcAnchorLine - iLnIncr;
-        do {
-            iLine += iLnIncr;
-            DocPos const iInsPos = SciCall_GetLineEndPosition(iLine);
-            DocPos const cntVSp = bSelLeft2Right ? pVspCVec[i++] : pVspAVec[i++];
-            bool const bSkip = (bSkipEmpty && (iInsPos <= SciCall_PositionFromLine(iLine)));
+            FillMemory(pSpaceBuffer, spBufSize * sizeof(char), ' ');
 
-            if ((cntVSp > 0) && !bSkip) {
-                pSpaceBuffer[cntVSp] = '\0';
-                SciCall_InsertText(iInsPos, pSpaceBuffer);
-                pSpaceBuffer[cntVSp] = ' ';
-                iSpcCount += cntVSp;
+            for (DocLn i = 0; i < iLineCount; ++i) {
+                pVspAVec[i] = SciCall_GetSelectionNAnchorVirtualSpace(i);
+                pVspCVec[i] = SciCall_GetSelectionNCaretVirtualSpace(i);
             }
-        } while ((iLine != iRcCaretLine) && (i < iLineCount));
+
+            DocPos i = 0;
+            DocPos iSpcCount = 0;
+            DocLn const iLnIncr = (iRcAnchorLine <= iRcCaretLine) ? ((DocLn)+1) : ((DocLn)-1);
+            DocLn iLine = iRcAnchorLine - iLnIncr;
+            do {
+                iLine += iLnIncr;
+                DocPos const iInsPos = SciCall_GetLineEndPosition(iLine);
+                DocPos const cntVSp = bSelLeft2Right ? pVspCVec[i++] : pVspAVec[i++];
+                bool const bSkip = (bSkipEmpty && (iInsPos <= SciCall_PositionFromLine(iLine)));
+
+                if ((cntVSp > 0) && !bSkip) {
+                    pSpaceBuffer[cntVSp] = '\0';
+                    SciCall_InsertText(iInsPos, pSpaceBuffer);
+                    pSpaceBuffer[cntVSp] = ' ';
+                    iSpcCount += cntVSp;
+                }
+            } while ((iLine != iRcCaretLine) && (i < iLineCount));
+
+            if (iRcAnchorLine <= iRcCaretLine) {
+                if (bSelLeft2Right) {
+                    EditSetSelectionEx(selAnchorMainPos + pVspAVec[0], selCaretMainPos + iSpcCount, 0, 0);
+                } else {
+                    EditSetSelectionEx(selAnchorMainPos + pVspAVec[0], selCaretMainPos + pVspCVec[iLineCount - 1] + iSpcCount - pVspAVec[iLineCount - 1], 0, 0);
+                }
+            } else {
+                if (bSelLeft2Right) {
+                    EditSetSelectionEx(selAnchorMainPos + pVspAVec[0] + iSpcCount - pVspCVec[0], selCaretMainPos + pVspCVec[iLineCount - 1], 0, 0);
+                } else {
+                    EditSetSelectionEx(selAnchorMainPos + iSpcCount, selCaretMainPos + pVspCVec[iLineCount - 1], 0, 0);
+                }
+            }
+        }
 
         FreeMem(pSpaceBuffer);
-
-        if (iRcAnchorLine <= iRcCaretLine) {
-            if (bSelLeft2Right) {
-                EditSetSelectionEx(selAnchorMainPos + pVspAVec[0], selCaretMainPos + iSpcCount, 0, 0);
-            } else {
-                EditSetSelectionEx(selAnchorMainPos + pVspAVec[0], selCaretMainPos + pVspCVec[iLineCount - 1] + iSpcCount - pVspAVec[iLineCount - 1], 0, 0);
-            }
-        } else {
-            if (bSelLeft2Right) {
-                EditSetSelectionEx(selAnchorMainPos + pVspAVec[0] + iSpcCount - pVspCVec[0], selCaretMainPos + pVspCVec[iLineCount - 1], 0, 0);
-            } else {
-                EditSetSelectionEx(selAnchorMainPos + iSpcCount, selCaretMainPos + pVspCVec[iLineCount - 1], 0, 0);
-            }
-        }
-
         FreeMem(pVspCVec);
         FreeMem(pVspAVec);
 
@@ -4146,15 +4295,10 @@ void EditPadWithSpaces(HWND hwnd, bool bSkipEmpty) {
         const DocPos iSelStart = SciCall_GetSelectionStart();
         const DocPos iSelEnd = SciCall_GetSelectionEnd();
 
-        DocLn iStartLine = 0;
-        DocLn iEndLine = Sci_GetLastDocLineNumber();
-
-        if (iSelStart != iSelEnd) {
-            iStartLine = SciCall_LineFromPosition(iSelStart);
-            iEndLine = SciCall_LineFromPosition(iSelEnd);
-            if (iSelEnd < SciCall_GetLineEndPosition(iEndLine)) {
-                --iEndLine;
-            }
+        DocLn iStartLine = SciCall_LineFromPosition(iSelStart);
+        DocLn iEndLine = SciCall_LineFromPosition(iSelEnd);
+        if (iSelEnd < SciCall_GetLineEndPosition(iEndLine)) {
+            --iEndLine;
         }
         if (iStartLine < iEndLine) {
             DocPos iMaxColumn = 0;
@@ -4188,8 +4332,8 @@ void EditStripFirstCharacter(HWND hwnd)
         return;
     }
 
-    DocPos const iSelStart = SciCall_IsSelectionEmpty() ? 0 : SciCall_GetSelectionStart();
-    DocPos const iSelEnd = SciCall_IsSelectionEmpty() ? Sci_GetDocEndPosition() : SciCall_GetSelectionEnd();
+    DocPos const iSelStart = SciCall_GetSelectionStart();
+    DocPos const iSelEnd = SciCall_GetSelectionEnd();
     DocLn const  iLineStart = SciCall_LineFromPosition(iSelStart);
     DocLn const  iLineEnd = SciCall_LineFromPosition(iSelEnd);
 
@@ -4215,8 +4359,8 @@ void EditStripFirstCharacter(HWND hwnd)
                     StringCchCopyNA(lineBuffer, SizeOfMem(lineBuffer), SciCall_GetRangePointer(nextPos, len + 1), len);
                     SciCall_SetTargetRange(selTargetStart, selTargetEnd);
                     Sci_ReplaceTargetTestChgHist(len, lineBuffer);
+                    remCount += (nextPos - selTargetStart);
                 }
-                remCount += (nextPos - selTargetStart);
             } // for()
             FreeMem(lineBuffer);
         }
@@ -4242,7 +4386,7 @@ void EditStripFirstCharacter(HWND hwnd)
             const DocPos iPos = SciCall_PositionFromLine(iLine);
             if (iPos < SciCall_GetLineEndPosition(iLine)) {
                 SciCall_SetTargetRange(iPos, SciCall_PositionAfter(iPos));
-                SciCall_ReplaceTarget(0, "");
+                Sci_ReplaceTargetTestChgHist(0, "");
             }
         }
     }
@@ -4308,8 +4452,10 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
                                 lineBuffer[++i] = lineBuffer[end++];  // add "\r\n" if any
                             }
                             diff = len - (++i);
-                            SciCall_SetTargetRange(selTargetStart, selTargetEnd);
-                            Sci_ReplaceTargetTestChgHist(-1, lineBuffer);
+                            if (diff > 0) {
+                                SciCall_SetTargetRange(selTargetStart, selTargetEnd);
+                                Sci_ReplaceTargetTestChgHist(-1, lineBuffer);
+                            }
                         }
                     } else {
                         DocPos const prevPos = SciCall_PositionBefore(selTargetEnd);
@@ -4342,19 +4488,21 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
             DocPos const iEndPos = SciCall_GetLineEndPosition(iLine);
 
             if (bTrailingBlanksOnly) {
-                DocPos i = iEndPos;
-                char ch = '\0';
-                do {
-                    ch = SciCall_GetCharAt(--i);
-                } while ((i >= iStartPos) && IsBlankCharA(ch));
-                if ((++i) < iEndPos) {
-                    SciCall_SetTargetRange(i, iEndPos);
-                    SciCall_ReplaceTarget(0, "");
+                if (iStartPos < iEndPos) {
+                    DocPos i = iEndPos;
+                    char ch = '\0';
+                    do {
+                        ch = SciCall_GetCharAt(--i);
+                    } while ((i >= iStartPos) && IsBlankCharA(ch));
+                    if ((++i) < iEndPos) {
+                        SciCall_SetTargetRange(i, iEndPos);
+                        Sci_ReplaceTargetTestChgHist(0, "");
+                    }
                 }
             } else { // any char at line end
                 if (iStartPos < iEndPos) {
                     SciCall_SetTargetRange(SciCall_PositionBefore(iEndPos), iEndPos);
-                    SciCall_ReplaceTarget(0, "");
+                    Sci_ReplaceTargetTestChgHist(0, "");
                 }
 
             }
@@ -4363,6 +4511,27 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
 
     EndUndoTransAction();
     
+}
+
+
+//=============================================================================
+//
+//  EditHasTrailingBlanks()
+//
+bool EditHasTrailingBlanks()
+{
+    DocLn const iLineCount = SciCall_GetLineCount();
+    for (DocLn iLine = 0; iLine < iLineCount; ++iLine) {
+        DocPos const iStartPos = SciCall_PositionFromLine(iLine);
+        DocPos const iEndPos = SciCall_GetLineEndPosition(iLine);
+        if (iEndPos > iStartPos) {
+            char const ch = SciCall_GetCharAt(iEndPos - 1);
+            if (IsBlankCharA(ch)) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 
@@ -4579,7 +4748,7 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
                 ++nBlanks;
                 bSpcOnly = true;
             } else if (bRemoveWhiteSpace) {
-                const char* pLine = SciCall_GetRangePointer(posLnBeg, iLnLength);
+                const char* pLine = SciCall_GetRangePointer(posLnBeg, iLnLength); // safe: no doc modification during counting
                 DocPos i = 0;
                 for (; i < iLnLength; ++i) {
                     if (!IsBlankCharA(pLine[i])) {
@@ -4600,7 +4769,7 @@ void EditRemoveBlankLines(HWND hwnd, bool bMerge, bool bRemoveWhiteSpace)
             }
 
             SciCall_SetTargetRange(SciCall_PositionFromLine(iLine), SciCall_PositionFromLine(iLine + nBlanks));
-            SciCall_ReplaceTarget(0, "");
+            Sci_ReplaceTargetTestChgHist(0, "");
 
             if (bMerge) {
                 ++iLine;
@@ -4659,45 +4828,55 @@ void EditUniteDuplicateLines(HWND hwnd, bool bRemoveEmptyLines, bool bRemoveLast
     DocLn iCurLine = iStartLine;
     while (iCurLine < iEndLine) {
 
-        DocPos const      iCurLnLen = Sci_GetNetLineLength(iCurLine);
-        DocPos const      iBegCurLine = SciCall_PositionFromLine(iCurLine);
-        // range-pointer may move during line deletion, so copy current line for const comparison
-        StringCchCopyNA(pCurrentLine, SizeOfMem(pCurrentLine), SciCall_GetRangePointer(iBegCurLine, iCurLnLen + 1), iCurLnLen);
-        pCurrentLine[iCurLnLen] = '\0';
+        DocPos const iBegCurLine = SciCall_PositionFromLine(iCurLine);
 
-        DocLn iPrevLine = iCurLine;
-        DocLn iCompareLine = iCurLine;
-        bool bFoundDup = false;
-        while (++iCompareLine <= iEndLine) {
+        if (iBegCurLine >= 0) {
 
-            DocPos const iCmpLnLen = Sci_GetNetLineLength(iCompareLine);
-            if (bRemoveEmptyLines || (iCmpLnLen > 0)) {
+            DocPos const iCurLnLen = Sci_GetNetLineLength(iCurLine);
 
-                DocPos const      iBegCmpLine = SciCall_PositionFromLine(iCompareLine);
-                const char* const pCompareLine = SciCall_GetRangePointer(iBegCmpLine, iCmpLnLen);
+            // range-pointer may move during line deletion, so copy current line for const comparison
+            StringCchCopyNA(pCurrentLine, SizeOfMem(pCurrentLine), SciCall_GetRangePointer(iBegCurLine, iCurLnLen + 1), iCurLnLen);
+            pCurrentLine[iCurLnLen] = '\0';
 
-                if ((iCurLnLen == iCmpLnLen) && IsSameCharSequence(pCurrentLine, pCompareLine, iCmpLnLen)) {
-                    bFoundDup = true;
-                    DocPos const posPrev = SciCall_GetLineEndPosition(iPrevLine);
-                    DocPos const posComp = SciCall_GetLineEndPosition(iCompareLine);
-                    assert(posPrev != posComp);
-                    SciCall_SetTargetRange(posPrev, posComp);
-                    SciCall_ReplaceTarget(0, "");
-                    --iEndLine; // line inbetween removed
-                    --iCompareLine; // don't proceed compare-line
+            DocLn iPrevLine = iCurLine;
+            DocLn iCompareLine = iCurLine;
+            bool  bFoundDup = false;
+            while (++iCompareLine <= iEndLine) {
+
+                DocPos const iCmpLnLen = Sci_GetNetLineLength(iCompareLine);
+                if (bRemoveEmptyLines || (iCmpLnLen > 0)) {
+
+                    DocPos const      iBegCmpLine = SciCall_PositionFromLine(iCompareLine);
+                    const char* const pCompareLine = SciCall_GetRangePointer(iBegCmpLine, iCmpLnLen); // ptr valid until next doc modification
+
+                    if ((iCurLnLen == iCmpLnLen) && IsSameCharSequence(pCurrentLine, pCompareLine, iCmpLnLen)) {
+                        bFoundDup = true;
+                        DocPos const posPrev = SciCall_GetLineEndPosition(iPrevLine);
+                        DocPos const posComp = SciCall_GetLineEndPosition(iCompareLine);
+                        assert(posPrev != posComp);
+                        SciCall_SetTargetRange(posPrev, posComp);
+                        Sci_ReplaceTargetTestChgHist(0, "");
+                        --iEndLine;     // line inbetween removed
+                        --iCompareLine; // compare-line removed, so stay at same line for next compare
+                    }
+                    else iPrevLine = iCompareLine;
                 }
+                else iPrevLine = iCompareLine;
+
+            } // while
+
+            if (bRemoveLastDup && bFoundDup) {
+                // remove the original line too — iCurLine is not incremented
+                // because deletion shifts subsequent lines up
+                DocPos const posBeg = SciCall_PositionFromLine(iCurLine);
+                DocPos const posEnd = SciCall_PositionFromLine(iCurLine + 1);
+                SciCall_SetTargetRange(posBeg, posEnd);
+                Sci_ReplaceTargetTestChgHist(0, "");
+                --iEndLine;     // line removed
             }
-            iPrevLine = iCompareLine;
+            else ++iCurLine;
         }
-        if (bRemoveLastDup && bFoundDup) {
-            DocPos const posBeg = SciCall_PositionFromLine(iCurLine);
-            DocPos const posEnd = SciCall_PositionFromLine(iCurLine + 1);
-            SciCall_SetTargetRange(posBeg, posEnd);
-            SciCall_ReplaceTarget(0, "");
-        }
-        else {
-            ++iCurLine;
-        }
+        else ++iCurLine;
     }
 
     EndUndoTransAction();
@@ -5355,23 +5534,23 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
     if (iSortFlags & SORT_ASCENDING) {
         if (iSortFlags & SORT_NOCASE) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdI);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStdI);
         } else if (iSortFlags & SORT_LOGICAL) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdLogical);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStdLogical);
         } else if (iSortFlags & SORT_LEXICOGRAPH) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpLexicographical);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpLexicographical);
         } else {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStd);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStd);
         }
     } else if (iSortFlags & SORT_DESCENDING) {
         if (iSortFlags & SORT_NOCASE) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdIRev);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStdIRev);
         } else if (iSortFlags & SORT_LOGICAL) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdLogicalRev);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStdLogicalRev);
         } else if (iSortFlags & SORT_LEXICOGRAPH) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpLexicographicalRev);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpLexicographicalRev);
         } else {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdRev);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStdRev);
         }
     } else { /*if (iSortFlags & SORT_SHUFFLE)*/
         srand((UINT)GetTicks_ms());
@@ -7175,13 +7354,13 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 break;
             case IDC_BACKSLASHHELP:
                 // Display help messages in the find/replace windows
-                MessageBoxLng(MB_ICONINFORMATION, IDS_MUI_BACKSLASHHELP);
+                InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_BACKSLASHHELP);
                 break;
             case IDC_REGEXPHELP:
-                MessageBoxLng(MB_ICONINFORMATION, IDS_MUI_REGEXPHELP);
+                InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_REGEXPHELP);
                 break;
             case IDC_WILDCARDHELP:
-                MessageBoxLng(MB_ICONINFORMATION, IDS_MUI_WILDCARDHELP);
+                InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_WILDCARDHELP);
                 break;
             default:
                 break;
@@ -8194,7 +8373,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
         SciCall_AutoCSetChooseSingle(autoInsert);
 
         const char* const sep = " ";
-        SciCall_AutoCSetSeperator(sep[0]);
+        SciCall_AutoCSetSeparator(sep[0]);
 
         ++iWListSize; // zero termination
         char* const pList = AllocMem(iWListSize + 1, HEAP_ZERO_MEMORY);
@@ -8285,13 +8464,21 @@ static void _UpdateIndicators(const int indicator, const int indicator2nd,
             break; // wrong match
         }
 
+        // URL-specific: if match ends with single-quote and is preceded by one, strip trailing quote
+        DocPos mlen_adj = mlen;
+        if ((indicator == INDIC_NP3_HYPERLINK) && (mlen_adj > 4)) {
+            if ((SciCall_GetCharAt(end - 1) == '\'') && (start > 0) && (SciCall_GetCharAt(start - 1) == '\'')) {
+                --mlen_adj;
+            }
+        }
+
         _ClearIndicatorInRange(indicator, indicator2nd, start_m, end);
 
         SciCall_SetIndicatorCurrent(indicator);
-        SciCall_IndicatorFillRange(start, mlen);
+        SciCall_IndicatorFillRange(start, mlen_adj);
         if (indicator2nd >= 0) {
             SciCall_SetIndicatorCurrent(indicator2nd);
-            SciCall_IndicatorFillRange(start, mlen);
+            SciCall_IndicatorFillRange(start, mlen_adj);
         }
 
         // next occurrence

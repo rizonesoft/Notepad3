@@ -8,7 +8,7 @@
 *   Notepad3 dialog boxes implementation                                      *
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2025   *
+*                                                  (c) Rizonesoft 2008-2026   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -22,6 +22,7 @@
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <commdlg.h>
+#include <shobjidl.h>
 #include <shellscalingapi.h>
 
 #include <string.h>
@@ -85,144 +86,6 @@ HWND GetParentOrDesktop(HWND hDlg)
     return hParent ? hParent : GetDesktopWindow();
 }
 
-
-//=============================================================================
-//
-//  MessageBoxLng()
-//
-static HHOOK s_hCBThook = NULL;
-
-static LRESULT CALLBACK SetPosRelatedToParent_Hook(INT nCode, WPARAM wParam, LPARAM lParam)
-{
-    // notification that a window is about to be activated
-    if (nCode == HCBT_CREATEWND) {
-        HWND const hThisWnd = (HWND)wParam;
-        if (hThisWnd) {
-
-            SetDialogIconNP3(hThisWnd);
-            InitWindowCommon(hThisWnd, true);
-
-            // get window handles
-            LPCREATESTRUCT const pCreateStruct = ((LPCBT_CREATEWND)lParam)->lpcs;
-
-            HWND const hParentWnd = pCreateStruct->hwndParent ? pCreateStruct->hwndParent : GetParentOrDesktop(hThisWnd);
-
-            if (hParentWnd) {
-
-                // set new coordinates
-                RECT rcDlg = { 0, 0, 0, 0 };
-                rcDlg.left = pCreateStruct->x;
-                rcDlg.top = pCreateStruct->y;
-                rcDlg.right = pCreateStruct->x + pCreateStruct->cx;
-                rcDlg.bottom = pCreateStruct->y + pCreateStruct->cy;
-
-                POINT const ptTopLeft = GetCenterOfDlgInParent(&rcDlg, hParentWnd);
-
-                pCreateStruct->x = ptTopLeft.x;
-                pCreateStruct->y = ptTopLeft.y;
-            }
-
-            // we are done
-            if (s_hCBThook) {
-                UnhookWindowsHookEx(s_hCBThook);
-                s_hCBThook = NULL;
-            }
-        } else if (s_hCBThook) {
-            // continue with any possible chained hooks
-            return CallNextHookEx(s_hCBThook, nCode, wParam, lParam);
-        }
-    }
-    return (LRESULT)0;
-}
-// -----------------------------------------------------------------------------
-
-
-int MessageBoxLng(UINT uType, UINT uidMsg, ...)
-{
-    HSTRINGW    hfmt_str = StrgCreate(NULL);
-    LPWSTR const fmt_buf = StrgWriteAccessBuf(hfmt_str, XXXL_BUFFER);
-    if (!GetLngString(uidMsg, fmt_buf, (int)StrgGetAllocLength(hfmt_str))) {
-        StrgDestroy(hfmt_str);
-        return -1;
-    }
-    StrgSanitize(hfmt_str);
-
-    HSTRINGW    htxt_str = StrgCreate(NULL);
-    const PUINT_PTR argp = (PUINT_PTR)&uidMsg + 1;
-    bool const bHasArgs = (argp && *argp);
-    if (bHasArgs) {
-        LPWSTR const txt_buf = StrgWriteAccessBuf(htxt_str, XXXL_BUFFER);
-        StringCchVPrintfW(txt_buf, StrgGetAllocLength(htxt_str), StrgGet(hfmt_str), (LPVOID)argp);
-        StrgSanitize(htxt_str);
-    }
-
-    uType |= MB_SETFOREGROUND;  //~ MB_TOPMOST
-    if (Settings.DialogsLayoutRTL) {
-        uType |= MB_RTLREADING;
-    }
-
-    // center message box to focus or main
-    HWND const focus = GetFocus();
-    HWND const hwnd  = focus ? focus : Globals.hwndMain;
-    s_hCBThook       = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
-
-    int const res = MessageBoxEx(hwnd, bHasArgs ? StrgGet(htxt_str) : StrgGet(hfmt_str), 
-                                 _W(SAPPNAME), uType, GetLangIdByLocaleName(Globals.CurrentLngLocaleName));
-
-    StrgDestroy(htxt_str);
-    StrgDestroy(hfmt_str);
-
-    return res;
-}
-
-
-//=============================================================================
-//
-//  MsgBoxLastError()
-//
-DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
-{
-    // Retrieve the system error message for the last-error code
-    if (!dwErrID) {
-        dwErrID = GetLastError();
-    }
-
-    LPVOID lpMsgBuf = NULL;
-    FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER |
-        FORMAT_MESSAGE_FROM_SYSTEM |
-        FORMAT_MESSAGE_IGNORE_INSERTS,
-        NULL,
-        dwErrID,
-        GetLangIdByLocaleName(Globals.CurrentLngLocaleName),
-        (LPWSTR)&lpMsgBuf,
-        0, NULL);
-
-    if (lpMsgBuf) {
-        // Display the error message and exit the process
-        size_t const len = StringCchLen((LPCWSTR)lpMsgBuf, 0) + StringCchLen(lpszMessage, 0) + 160;
-        LPWSTR const lpDisplayBuf = (LPWSTR)AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-
-        if (lpDisplayBuf) {
-
-            WCHAR msgFormat[128] = { L'\0' };
-            GetLngString(IDS_MUI_ERR_DLG_FORMAT, msgFormat, COUNTOF(msgFormat));
-            StringCchPrintf(lpDisplayBuf, len, msgFormat, lpszMessage, (LPCWSTR)lpMsgBuf, dwErrID);
-            // center message box to main
-            HWND const focus = GetFocus();
-            HWND const hwnd = focus ? focus : Globals.hwndMain;
-            s_hCBThook = SetWindowsHookEx(WH_CBT, &SetPosRelatedToParent_Hook, 0, GetCurrentThreadId());
-
-            UINT uType = MB_ICONERROR | MB_TOPMOST | (Settings.DialogsLayoutRTL ? MB_RTLREADING : 0);
-            MessageBoxEx(hwnd, lpDisplayBuf, _W(SAPPNAME) L" - ERROR", uType, GetLangIdByLocaleName(Globals.CurrentLngLocaleName));
-
-            FreeMem(lpDisplayBuf);
-        }
-        LocalFree(lpMsgBuf); // LocalAlloc()
-        lpMsgBuf = NULL;
-    }
-    return dwErrID;
-}
 
 //=============================================================================
 //
@@ -297,30 +160,77 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
         //UINT const tabStopDist[3] = { 4, 4, 8 };
         //SendMessage(GetDlgItem(hwnd, IDC_INFOBOXTEXT), EM_SETTABSTOPS, 3, (LPARAM)tabStopDist);
 
-#if 0
-        // Resize dialog to fit text - TODO: move buttons dynamically too
-        HWND const hWndText = GetDlgItem(hwnd, IDC_INFOBOXTEXT);
-        RECT       rectText = { 0 };
-        GetWindowRectEx(hWndText, &rectText);
+        // --- Dynamic text sizing: grow dialog vertically to fit message ---
+        {
+            HWND const hWndText = GetDlgItem(hwnd, IDC_INFOBOXTEXT);
 
-        RECT rectNew = { 0 };
-        rectNew.left = 0;
-        rectNew.top = 0;
-        rectNew.right = rectText.right - rectText.left; // max as specified
-        rectNew.bottom = rectNew.right; // max quadratic size
+            // 1. Get current text control rect in parent client coords
+            RECT rcText;
+            GetWindowRect(hWndText, &rcText);
+            MapWindowPoints(HWND_DESKTOP, hwnd, (LPPOINT)&rcText, 2);
+            int const origTextHeight = rcText.bottom - rcText.top;
+            int const textWidth = rcText.right - rcText.left;
 
-        HDC  hdc = GetDC(hWndText);
-        DrawText(hdc, lpMsgBox->lpstrMessage, -1, &rectNew, DT_CALCRECT | DT_WORDBREAK); // calc size
-        ReleaseDC(hWndText, hdc);
+            // 2. Measure required text height with correct font
+            HDC hdc = GetDC(hWndText);
+            HFONT hFont = (HFONT)SendMessage(hWndText, WM_GETFONT, 0, 0);
+            HFONT hOldFont = (HFONT)SelectObject(hdc, hFont);
 
-        // Change size of text field
-        SetWindowPos(hWndText, NULL, 0, 0, rectNew.right - rectNew.left, rectNew.bottom - rectNew.top, SWP_NOMOVE | SWP_NOZORDER);
-        //GetWindowRect(hWndText, &rectText);
+            RECT rcCalc = { 0, 0, textWidth, 0 };
+            DrawText(hdc, lpMsgBox->lpstrMessage, -1, &rcCalc,
+                     DT_CALCRECT | DT_WORDBREAK | DT_EXPANDTABS | DT_NOPREFIX | DT_EDITCONTROL);
 
-        int const width = (rectNew.right - rectNew.left) + 100;
-        int const height = (rectNew.bottom - rectNew.top) + 200;
-        SetWindowPos(hwnd, NULL, 0, 0, width, height, SWP_NOMOVE | SWP_NOZORDER);
-#endif
+            SelectObject(hdc, hOldFont);
+            ReleaseDC(hWndText, hdc);
+
+            int const measuredHeight = rcCalc.bottom;
+
+            // 3. Calculate delta (only grow, never shrink below template size)
+            int deltaY = measuredHeight - origTextHeight;
+            if (deltaY < 0) {
+                deltaY = 0;
+            }
+
+            // 4. Clamp: don't let dialog exceed ~70% of work area
+            if (deltaY > 0) {
+                RECT rcWorkArea;
+                SystemParametersInfo(SPI_GETWORKAREA, 0, &rcWorkArea, 0);
+                RECT rcDialog;
+                GetWindowRect(hwnd, &rcDialog);
+                int const curDlgHeight = rcDialog.bottom - rcDialog.top;
+                int const maxDlgHeight = MulDiv(rcWorkArea.bottom - rcWorkArea.top, 70, 100);
+                if (curDlgHeight + deltaY > maxDlgHeight) {
+                    deltaY = max(0, maxDlgHeight - curDlgHeight);
+                }
+            }
+
+            // 5. Apply resize: grow text control, shift buttons/checkbox down, grow dialog
+            if (deltaY > 0) {
+                SetWindowPos(hWndText, NULL, 0, 0, textWidth, origTextHeight + deltaY,
+                             SWP_NOMOVE | SWP_NOZORDER);
+
+                int const ctlIDs[] = { IDOK, IDYES, IDNO, IDCANCEL, IDABORT, IDRETRY,
+                                        IDIGNORE, IDTRYAGAIN, IDCONTINUE, IDCLOSE,
+                                        IDC_INFOBOXCHECK };
+                for (int i = 0; i < COUNTOF(ctlIDs); ++i) {
+                    HWND hCtl = GetDlgItem(hwnd, ctlIDs[i]);
+                    if (hCtl) {
+                        RECT rc;
+                        GetWindowRect(hCtl, &rc);
+                        MapWindowPoints(HWND_DESKTOP, hwnd, (LPPOINT)&rc, 2);
+                        SetWindowPos(hCtl, NULL, rc.left, rc.top + deltaY, 0, 0,
+                                     SWP_NOSIZE | SWP_NOZORDER);
+                    }
+                }
+
+                RECT rcDlg;
+                GetWindowRect(hwnd, &rcDlg);
+                SetWindowPos(hwnd, NULL, 0, 0,
+                             rcDlg.right - rcDlg.left,
+                             (rcDlg.bottom - rcDlg.top) + deltaY,
+                             SWP_NOMOVE | SWP_NOZORDER);
+            }
+        }
 
         SetDlgItemText(hwnd, IDC_INFOBOXTEXT, lpMsgBox->lpstrMessage);
 
@@ -346,7 +256,7 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
         if (hIconBmp) {
             SetBitmapControl(hwnd, IDC_INFOBOXICON, hIconBmp);
         }
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
     }
     return TRUE;
 
@@ -581,6 +491,54 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
     return MAKELONG(answer, iMode);
 }
 
+
+//=============================================================================
+//
+//  InfoBoxLastError()
+//
+DWORD InfoBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
+{
+    if (!dwErrID) {
+        dwErrID = GetLastError();
+    }
+
+    LPVOID lpMsgBuf = NULL;
+    FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER |
+        FORMAT_MESSAGE_FROM_SYSTEM |
+        FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        dwErrID,
+        GetLangIdByLocaleName(Globals.CurrentLngLocaleName),
+        (LPWSTR)&lpMsgBuf,
+        0, NULL);
+
+    if (lpMsgBuf) {
+        size_t const len = StringCchLen((LPCWSTR)lpMsgBuf, 0) + StringCchLen(lpszMessage, 0) + 160;
+        LPWSTR const lpDisplayBuf = (LPWSTR)AllocMem(len * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+
+        if (lpDisplayBuf) {
+            WCHAR msgFormat[128] = { L'\0' };
+            GetLngString(IDS_MUI_ERR_DLG_FORMAT, msgFormat, COUNTOF(msgFormat));
+            StringCchPrintf(lpDisplayBuf, len, msgFormat, lpszMessage, (LPCWSTR)lpMsgBuf, dwErrID);
+
+            INFOBOXLNG msgBox = { 0 };
+            msgBox.uType = MB_OK | MB_ICONERROR | (Settings.DialogsLayoutRTL ? MB_RTLREADING : 0);
+            msgBox.lpstrMessage = lpDisplayBuf; // ownership transfers to _InfoBoxLngDlgProc
+            msgBox.lpstrSetting = NULL;
+            msgBox.bDisableCheckBox = true;
+
+            HWND const focus = GetFocus();
+            HWND const hwnd = focus ? focus : Globals.hwndMain;
+            ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_INFOBOX),
+                                 hwnd, _InfoBoxLngDlgProc, (LPARAM)&msgBox);
+        }
+        LocalFree(lpMsgBuf);
+    }
+    return dwErrID;
+}
+
+
 /*
 
   MinimizeToTray - Copyright 2000 Matthew Ellis <m.t.ellis@bigfoot.com>
@@ -792,31 +750,6 @@ void RestoreWndFromTray(HWND hWnd)
 //
 //  DisplayCmdLineHelp()
 //
-#if 0
-void DisplayCmdLineHelp(HWND hwnd)
-{
-    WCHAR szText[2048] = { L'\0' };
-    GetLngString(IDS_MUI_CMDLINEHELP,szText,COUNTOF(szText));
-
-    MSGBOXPARAMS mbp = { 0 };
-    mbp.cbSize = sizeof(MSGBOXPARAMS);
-    mbp.hwndOwner = hwnd;
-    mbp.hInstance = Globals.hInstance;
-    mbp.lpszText = szText;
-    mbp.lpszCaption = _W(SAPPNAME);
-    mbp.dwStyle = MB_OK | MB_USERICON | MB_SETFOREGROUND;
-    mbp.lpszIcon = MAKEINTRESOURCE(IDR_MAINWND);
-    mbp.dwContextHelpId = 0;
-    mbp.lpfnMsgBoxCallback = NULL;
-    mbp.dwLanguageId = GetLangIdByLocaleName(Globals.CurrentLngLocaleName);
-
-    hhkMsgBox = SetWindowsHookEx(WH_CBT, &_MsgBoxProc, 0, GetCurrentThreadId());
-
-    MessageBoxIndirect(&mbp);
-    //MsgBoxLng(MBINFO, IDS_MUI_CMDLINEHELP);
-}
-#else
-
 static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(lParam);
@@ -842,7 +775,7 @@ static INT_PTR CALLBACK CmdLineHelpProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
     return TRUE;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -897,8 +830,6 @@ INT_PTR DisplayCmdLineHelp(HWND hwnd)
 {
     return ThemedDialogBoxParam(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_CMDLINEHELP), hwnd, CmdLineHelpProc, (LPARAM)L"");
 }
-
-#endif
 
 
 /*
@@ -1155,7 +1086,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam
             SendDlgItemMessageW(hwnd, IDC_VERSION, WM_SETFONT, (WPARAM)hVersionFont, true);
         }
 
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
     }
     break;
 
@@ -1302,7 +1233,7 @@ CASE_WM_CTLCOLOR_SET:
 
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_SCIVERSION);
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_LXIVERSION);
-            StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_ONIGURUMA);
+            StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), L"\n" VERSION_PCRE2);
 
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsProcessElevated() ? L"\n- Process is elevated." : L"\n- Process is not elevated"));
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), (IsUserInAdminGroup() ? L"\n- User is in Admin-Group." : L"\n- User is not in Admin-Group"));
@@ -1338,7 +1269,7 @@ CASE_WM_CTLCOLOR_SET:
             StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Rendering-Technology -> '%s'", Settings.RenderingTechnology ? L"DIRECT-WRITE" : L"GDI");
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
-            StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Zoom -> %i%%.", SciCall_GetZoom());
+            StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Zoom -> %i%%.", NP3_GetZoomPercent());
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
             Style_GetLexerDisplayName(Style_GetCurrentLexerPtr(), wchBuf, COUNTOF(wchBuf));
@@ -1397,7 +1328,7 @@ static INT_PTR CALLBACK RunDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -1470,16 +1401,9 @@ CASE_WM_CTLCOLOR_SET:
 
             PrepareFilterStr(flt_buf);
 
-            OPENFILENAME ofn = { 0 };
-            ofn.lStructSize = sizeof(OPENFILENAME);
-            ofn.hwndOwner = hwnd;
-            ofn.lpstrFilter = StrgGet(hflt_str);
-            ofn.lpstrFile = file_buf;
-            ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth);
-            ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
-                        | OFN_PATHMUSTEXIST | OFN_SHAREAWARE | OFN_NODEREFERENCELINKS;
-
-            if (GetOpenFileName(&ofn)) {
+            if (FileOpenDlg(hwnd, hfile_pth, NULL, StrgGet(hflt_str), NULL,
+                    FOS_FILEMUSTEXIST | FOS_PATHMUSTEXIST | FOS_NOCHANGEDIR |
+                    FOS_DONTADDTORECENT | FOS_SHAREAWARE | FOS_NODEREFERENCELINKS)) {
                 Path_Sanitize(hfile_pth);
                 Path_QuoteSpaces(hfile_pth, true);
                 StrgReset(hargs_str, Path_Get(hfile_pth));
@@ -1655,7 +1579,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -1677,8 +1601,7 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
         ResizeDlg_Size(hwnd,lParam,&dx,&dy);
 
         HDWP hdwp;
-        hdwp = BeginDeferWindowPos(6);
-        hdwp = DeferCtlPos(hdwp,hwnd,IDC_RESIZEGRIP,dx,dy,SWP_NOSIZE);
+        hdwp = BeginDeferWindowPos(5);
         hdwp = DeferCtlPos(hdwp,hwnd,IDOK,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDCANCEL,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_OPENWITHDIR,dx,dy,SWP_NOMOVE);
@@ -1816,7 +1739,7 @@ bool OpenWithDlg(HWND hwnd, LPCWSTR lpstrFile)
     HPATHL hpthFileName = Path_Allocate(lpstrFile);
     dliOpenWith.pthFileName = Path_WriteAccessBuf(hpthFileName, PATHLONG_MAX_CCH);
 
-    WCHAR chDispayName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
+    WCHAR chDispayName[MAX_PATH_EXPLICIT] = { L'\0' };
     Path_GetDisplayName(chDispayName, COUNTOF(chDispayName), hpthFileName, NULL, true);
     dliOpenWith.strDisplayName = chDispayName;
 
@@ -1915,7 +1838,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -1938,8 +1861,7 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         ResizeDlg_Size(hwnd,lParam,&dx,&dy);
 
         HDWP hdwp;
-        hdwp = BeginDeferWindowPos(6);
-        hdwp = DeferCtlPos(hdwp,hwnd,IDC_RESIZEGRIP,dx,dy,SWP_NOSIZE);
+        hdwp = BeginDeferWindowPos(5);
         hdwp = DeferCtlPos(hdwp,hwnd,IDOK,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDCANCEL,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_FAVORITESDIR,dx,dy,SWP_NOMOVE);
@@ -2143,15 +2065,14 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         break;
 
 
     case WM_SIZE: {
         int dx;
         ResizeDlg_Size(hwnd, lParam, &dx, NULL);
-        HDWP hdwp = BeginDeferWindowPos(5);
-        hdwp = DeferCtlPos(hdwp, hwnd, IDC_RESIZEGRIP, dx, 0, SWP_NOSIZE);
+        HDWP hdwp = BeginDeferWindowPos(4);
         hdwp = DeferCtlPos(hdwp, hwnd, IDOK, dx, 0, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDCANCEL, dx, 0, SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp, hwnd, IDC_FAVORITESDESCR, dx, 0, SWP_NOMOVE);
@@ -2436,7 +2357,6 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
         int dx, dy;
         ResizeDlg_Size(hwnd, lParam, &dx, &dy);
         HDWP hdwp = BeginDeferWindowPos(8);
-        hdwp      = DeferCtlPos(hdwp, hwnd, IDC_RESIZEGRIP, dx, dy, SWP_NOSIZE);
         hdwp      = DeferCtlPos(hdwp, hwnd, IDOK, dx, dy, SWP_NOSIZE);
         hdwp      = DeferCtlPos(hdwp, hwnd, IDCANCEL, dx, dy, SWP_NOSIZE);
         hdwp      = DeferCtlPos(hdwp, hwnd, IDC_REMOVE, dx, dy, SWP_NOSIZE);
@@ -2451,7 +2371,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
     return TRUE;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
     case WM_GETMINMAXINFO:
@@ -2710,6 +2630,7 @@ bool FileMRUDlg(HWND hwnd, HPATHL hFilePath_out)
 static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
     static FILE_WATCHING_MODE s_FWM = FWM_NO_INIT;
+    static bool s_wasMonitoring = false;
 
     switch (umsg) {
     case WM_INITDIALOG: {
@@ -2732,6 +2653,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
         if (s_FWM == FWM_NO_INIT) {
             s_FWM = Settings.FileWatchingMode;
         }
+        s_wasMonitoring = FileWatching.MonitoringLog;
         CheckDlgButton(hwnd, IDC_CHECK_BOX_A, SetBtn(Settings.ResetFileWatching));
         CheckDlgButton(hwnd, IDC_CHECK_BOX_B, SetBtn(FileWatching.MonitoringLog));
 
@@ -2755,7 +2677,7 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
     return TRUE;
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 #ifdef D_NP3_WIN10_DARK_MODE
@@ -2799,8 +2721,7 @@ CASE_WM_CTLCOLOR_SET:
 
 
         case IDC_CHECK_BOX_B:
-            FileWatching.MonitoringLog = IsButtonChecked(hwnd, IDC_CHECK_BOX_B);
-            if (FileWatching.MonitoringLog) {
+            if (IsButtonChecked(hwnd, IDC_CHECK_BOX_B)) {
                 CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_E, IDC_RADIO_BTN_C);
                 EnableItem(hwnd, IDC_RADIO_BTN_A, FALSE);
                 EnableItem(hwnd, IDC_RADIO_BTN_B, FALSE);
@@ -2852,9 +2773,11 @@ CASE_WM_CTLCOLOR_SET:
                     s_FWM = FWM_EXCLUSIVELOCK;
                 }
 
+                bool const wantMonitoring = IsButtonChecked(hwnd, IDC_CHECK_BOX_B);
+
                 Settings.ResetFileWatching = IsButtonChecked(hwnd, IDC_CHECK_BOX_A);
 
-                if (!FileWatching.MonitoringLog) {
+                if (!wantMonitoring) {
                     FileWatching.FileWatchingMode = s_FWM;
                 }
                 if (!Settings.ResetFileWatching) {
@@ -2873,8 +2796,13 @@ CASE_WM_CTLCOLOR_SET:
                     }
                 }
 
-                if (FileWatching.MonitoringLog) {
-                    FileWatching.MonitoringLog = false; // will be toggled in IDM_VIEW_CHASING_DOCTAIL
+                if (s_wasMonitoring && !wantMonitoring) {
+                    // Turning monitoring OFF — toggle handler restores Settings.FileWatchingMode
+                    PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
+                }
+                else if (wantMonitoring) {
+                    // Turning ON, or re-entering (settings changed while monitoring)
+                    FileWatching.MonitoringLog = false;
                     PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
                 }
 
@@ -2944,7 +2872,7 @@ static INT_PTR CALLBACK ColumnWrapDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, L
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -3088,7 +3016,7 @@ static INT_PTR CALLBACK WordWrapSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -3228,7 +3156,7 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -3386,7 +3314,7 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -3557,7 +3485,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -3753,7 +3681,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -3775,8 +3703,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
         int dx, dy;
         ResizeDlg_Size(hwnd,lParam,&dx,&dy);
 
-        HDWP hdwp = BeginDeferWindowPos(4);
-        hdwp = DeferCtlPos(hdwp,hwnd,IDC_RESIZEGRIP,dx,dy,SWP_NOSIZE);
+        HDWP hdwp = BeginDeferWindowPos(3);
         hdwp = DeferCtlPos(hdwp,hwnd,IDOK,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDCANCEL,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_ENCODINGLIST,dx,dy,SWP_NOMOVE);
@@ -3960,7 +3887,7 @@ static INT_PTR CALLBACK SelectDefLineEndingDlgProc(HWND hwnd,UINT umsg,WPARAM wP
 
 
     case WM_DPICHANGED:
-        UpdateWindowLayoutForDPI(hwnd, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hwnd, (RECT*)lParam, LOWORD(wParam));
         return TRUE;
 
 
@@ -4698,7 +4625,7 @@ WININFO GetMyWindowPlacement(HWND hwnd, MONITORINFO *hMonitorInfo, const int off
     wi.cx = wndpl.rcNormalPosition.right - wndpl.rcNormalPosition.left;
     wi.cy = wndpl.rcNormalPosition.bottom - wndpl.rcNormalPosition.top;
     wi.max = (hwnd ? IsZoomed(hwnd) : false) || (wndpl.flags & WPF_RESTORETOMAXIMIZED);
-    wi.zoom = hwnd ? SciCall_GetZoom() : 100;
+    wi.zoom = hwnd ? NP3_GetZoomPercent() : NP3_DEFAULT_ZOOM;
     wi.dpi = Scintilla_GetWindowDPI(hwnd);
 
     if (bFullVisible) {
@@ -5675,11 +5602,34 @@ void SetDlgPos(HWND hDlg, int xDlg, int yDlg)
 //
 // Resize Dialog Helpers()
 //
+// KNOWN ISSUE: DPI round-trip drift on resizable dialogs
+//
+// When a resizable dialog is moved between monitors with different DPI,
+// stored dimensions (cxClient, cyClient, mmiPtMin/Max, attrs) are kept
+// in the init-DPI coordinate space.  ResizeDlg_Size and
+// ResizeDlg_GetMinMaxInfo convert them on-the-fly via MulDiv(value,
+// currentDpi, pm->dpi).  Because MulDiv rounds to nearest integer,
+// repeated DPI transitions accumulate rounding errors:
+//
+//   96 DPI → 120 DPI → 96 DPI:
+//     300 → MulDiv(300,120,96)=375 → MulDiv(375,96,120)=300  (exact)
+//   96 DPI → 144 DPI → 96 DPI:
+//     301 → MulDiv(301,144,96)=451 → MulDiv(451,96,144)=300  (off by 1)
+//
+// After many round-trips the dialog may grow or shrink by a few pixels
+// and control layout can shift.  ResizeDlg_DPIChanged does NOT update
+// pm->dpi, so every conversion is relative to the original init DPI —
+// this avoids compounding drift within a single DPI stay but cannot
+// eliminate the MulDiv rounding error across transitions.
+//
+// A full fix would require scaling all bookkeeping values in
+// ResizeDlg_DPIChanged (pm->dpi, mmiPtMin/Max, attrs) to the new DPI
+// while leaving cxClient/cyClient unscaled, so that ResizeDlg_Size
+// computes correct deltas.  However, this was tested and worsened
+// layout transitions in practice — needs further investigation.
+ 
 #define RESIZEDLG_PROP_KEY	L"ResizeDlg"
 #define MAX_RESIZEDLG_ATTR_COUNT	2
-// temporary fix for moving dialog to monitor with different DPI
-// TODO: all dimensions no longer valid after window DPI changed.
-#define NP3_ENABLE_RESIZEDLG_TEMP_FIX	1
 
 typedef struct _resizeDlg {
     int direction;
@@ -5690,6 +5640,8 @@ typedef struct _resizeDlg {
     int mmiPtMinY;
     int mmiPtMaxX;	// only Y direction
     int mmiPtMaxY;	// only X direction
+    HWND hwndGrip;
+    int cGrip;
     int attrs[MAX_RESIZEDLG_ATTR_COUNT];
 } RESIZEDLG, * PRESIZEDLG;
 
@@ -5707,9 +5659,12 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_
         pm->cxClient = rc.right - rc.left;
         pm->cyClient = rc.bottom - rc.top;
 
+        // Apply the target style BEFORE computing sizes so borders match
         const DWORD style = (pm->direction < 0) ? (GetWindowStyle(hwnd) & ~WS_THICKFRAME) : (GetWindowStyle(hwnd) | WS_THICKFRAME);
+        SetWindowStyle(hwnd, style);
+        SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
 
-        Scintilla_AdjustWindowRectForDpi((LPWRECT)&rc, style, 0, pm->dpi);
+        Scintilla_AdjustWindowRectForDpi((LPWRECT)&rc, style, GetWindowExStyle(hwnd), pm->dpi);
 
         pm->mmiPtMinX = rc.right - rc.left;
         pm->mmiPtMinY = rc.bottom - rc.top;
@@ -5729,10 +5684,7 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_
 
         SetProp(hwnd, RESIZEDLG_PROP_KEY, (HANDLE)pm);
 
-        SetWindowPos(hwnd, NULL, rc.left, rc.top, cxFrame, cyFrame, SWP_NOZORDER);
-
-        SetWindowStyle(hwnd, style);
-        SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+        SetWindowPos(hwnd, NULL, 0, 0, cxFrame, cyFrame, SWP_NOZORDER | SWP_NOMOVE);
 
         WCHAR wch[MIDSZ_BUFFER];
         GetMenuString(GetSystemMenu(GetParent(hwnd), FALSE), SC_SIZE, wch, COUNTOF(wch), MF_BYCOMMAND);
@@ -5740,11 +5692,14 @@ void ResizeDlg_InitEx(HWND hwnd, int cxFrame, int cyFrame, int nIdGrip, RSZ_DLG_
         InsertMenu(GetSystemMenu(hwnd, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_SEPARATOR, 0, NULL);
 
         if (pm->direction >= 0) {
-            HWND const hwndCtl = GetDlgItem(hwnd, nIdGrip);
-            if (hwndCtl) {
-                SetWindowStyle(hwndCtl, GetWindowStyle(hwndCtl) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
-                int const cGrip = Scintilla_GetSystemMetricsForDpi(SM_CXHTHUMB, pm->dpi);
-                SetWindowPos(hwndCtl, NULL, pm->cxClient - cGrip, pm->cyClient - cGrip, cGrip, cGrip, SWP_NOZORDER);
+            pm->hwndGrip = GetDlgItem(hwnd, nIdGrip);
+            if (pm->hwndGrip) {
+                SetWindowStyle(pm->hwndGrip, GetWindowStyle(pm->hwndGrip) | SBS_SIZEGRIP | WS_CLIPSIBLINGS);
+                pm->cGrip = Scintilla_GetSystemMetricsForDpi(SM_CXHTHUMB, pm->dpi);
+                GetClientRect(hwnd, &rc);
+                pm->cxClient = rc.right - rc.left;
+                pm->cyClient = rc.bottom - rc.top;
+                SetWindowPos(pm->hwndGrip, NULL, pm->cxClient - pm->cGrip, pm->cyClient - pm->cGrip, pm->cGrip, pm->cGrip, SWP_NOZORDER);
             }
         }
     }
@@ -5773,7 +5728,6 @@ void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy)
     if (pm) {
         const int cxClient = LOWORD(lParam);
         const int cyClient = HIWORD(lParam);
-#if NP3_ENABLE_RESIZEDLG_TEMP_FIX
         const UINT dpi = Scintilla_GetWindowDPI(hwnd);
         const UINT old = pm->dpi;
         if (cx) {
@@ -5785,16 +5739,10 @@ void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy)
         // store in original DPI.
         pm->cxClient = MulDiv(cxClient, old, dpi);
         pm->cyClient = MulDiv(cyClient, old, dpi);
-#else
-        if (cx) {
-            *cx = cxClient - pm->cxClient;
+        // position size grip absolutely at bottom-right corner
+        if (pm->hwndGrip) {
+            SetWindowPos(pm->hwndGrip, NULL, cxClient - pm->cGrip, cyClient - pm->cGrip, pm->cGrip, pm->cGrip, SWP_NOZORDER | SWP_NOACTIVATE);
         }
-        if (cy) {
-            *cy = cyClient - pm->cyClient;
-        }
-        pm->cxClient = cxClient;
-        pm->cyClient = cyClient;
-#endif
     }
 }
 
@@ -5802,7 +5750,6 @@ void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam)
 {
     LPCRESIZEDLG pm = (LPCRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
     LPMINMAXINFO lpmmi = (LPMINMAXINFO)lParam;
-#if NP3_ENABLE_RESIZEDLG_TEMP_FIX
     UINT const dpi = Scintilla_GetWindowDPI(hwnd);
     UINT const old = pm->dpi;
 
@@ -5819,22 +5766,36 @@ void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam)
         lpmmi->ptMaxTrackSize.x = MulDiv(pm->mmiPtMaxX, dpi, old);
         break;
     }
-#else
-    lpmmi->ptMinTrackSize.x = pm->mmiPtMinX;
-    lpmmi->ptMinTrackSize.y = pm->mmiPtMinY;
-
-    // only one direction
-    switch (pm->direction) {
-    case RSZ_ONLY_X:
-        lpmmi->ptMaxTrackSize.y = pm->mmiPtMaxY;
-        break;
-
-    case RSZ_ONLY_Y:
-        lpmmi->ptMaxTrackSize.x = pm->mmiPtMaxX;
-        break;
-    }
-#endif
 }
+
+void ResizeDlg_DPIChanged(HWND hwnd, const RECT* pNewRect, UINT newDpi)
+{
+    PRESIZEDLG pm = (PRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
+    if (pm) {
+        UINT const oldDpi = pm->dpi;
+
+        // Clamp suggested rect to scaled minimum (SetWindowPos doesn't enforce WM_GETMINMAXINFO)
+        RECT rc = *pNewRect;
+        int const newMinX = MulDiv(pm->mmiPtMinX, newDpi, oldDpi);
+        int const newMinY = MulDiv(pm->mmiPtMinY, newDpi, oldDpi);
+        if ((rc.right - rc.left) < newMinX) {
+            rc.right = rc.left + newMinX;
+        }
+        if ((rc.bottom - rc.top) < newMinY) {
+            rc.bottom = rc.top + newMinY;
+        }
+
+        // Update grip size for new DPI
+        if (pm->hwndGrip) {
+            pm->cGrip = Scintilla_GetSystemMetricsForDpi(SM_CXHTHUMB, newDpi);
+        }
+
+        UpdateWindowLayoutForDPI(hwnd, &rc, newDpi);
+    } else {
+        UpdateWindowLayoutForDPI(hwnd, pNewRect, newDpi);
+    }
+}
+
 
 void ResizeDlg_SetAttr(HWND hwnd, int index, int value)
 {
@@ -5872,14 +5833,9 @@ int ResizeDlg_CalcDeltaY2(HWND hwnd, int dy, int cy, int nCtlId1, int nCtlId2)
         return MulDiv(dy, cy, 100);
     }
     const LPCRESIZEDLG pm = (LPCRESIZEDLG)GetProp(hwnd, RESIZEDLG_PROP_KEY);
-#if NP3_ENABLE_RESIZEDLG_TEMP_FIX
     UINT const dpi = Scintilla_GetWindowDPI(hwnd);
     int const hMinX = MulDiv(pm->attrs[0], dpi, pm->dpi);
     int const hMinY = MulDiv(pm->attrs[1], dpi, pm->dpi);
-#else
-    int const hMinX = pm->attrs[0];
-    int const hMinY = pm->attrs[1];
-#endif
     int const h1 = GetDlgCtrlHeight(hwnd, nCtlId1);
     int const h2 = GetDlgCtrlHeight(hwnd, nCtlId2);
     // cy + h1 >= hMin1			cy >= hMin1 - h1
@@ -6584,7 +6540,7 @@ void UpdateWindowLayoutForDPI(HWND hwnd, const RECT *pNewRect, const UINT dpi)
         GetWindowRect(hwnd, &rc);
         //~MapWindowPoints(NULL, hWnd, (LPPOINT)&rc, 2);
         UINT const _dpi = (dpi < (USER_DEFAULT_SCREEN_DPI >> 2)) ? Scintilla_GetWindowDPI(hwnd) : dpi;
-        Scintilla_AdjustWindowRectForDpi((LPWRECT)&rc, uWndFlags, 0, _dpi);
+        Scintilla_AdjustWindowRectForDpi((LPWRECT)&rc, GetWindowStyle(hwnd), GetWindowExStyle(hwnd), _dpi);
         SetWindowPos(hwnd, NULL, rc.left, rc.top, (rc.right - rc.left), (rc.bottom - rc.top), uWndFlags);
     }
     RedrawWindow(hwnd, NULL, NULL, RDW_FRAME | RDW_INVALIDATE | RDW_ERASE | RDW_INTERNALPAINT | RDW_ALLCHILDREN | RDW_UPDATENOW);
@@ -6755,7 +6711,7 @@ INT_PTR CALLBACK FontDialogHookProc(
     case WM_DPICHANGED:
         dpi = LOWORD(wParam);
         //dpi.y = HIWORD(wParam);
-        UpdateWindowLayoutForDPI(hdlg, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hdlg, (RECT*)lParam, LOWORD(wParam));
         int const ctl[] = { cmb1, cmb2, cmb3, cmb4, cmb5 };
         for (int i = 0; i < COUNTOF(ctl); ++i) {
             HFONT const hFont = (HFONT)SendMessage(GetDlgItem(hdlg, ctl[i]), WM_GETFONT, 0, 0);
@@ -6859,7 +6815,7 @@ INT_PTR CALLBACK ColorDialogHookProc(
     case WM_DPICHANGED:
         dpi = LOWORD(wParam);
         //dpi.y = HIWORD(wParam);
-        UpdateWindowLayoutForDPI(hdlg, (RECT*)lParam, LOWORD(wParam));
+        ResizeDlg_DPIChanged(hdlg, (RECT*)lParam, LOWORD(wParam));
         int const ctl[] = { COLOR_ADD, COLOR_MIX, IDOK, IDCANCEL };
         for (int i = 0; i < COUNTOF(ctl); ++i) {
             HFONT const hFont = (HFONT)SendMessage(GetDlgItem(hdlg, ctl[i]), WM_GETFONT, 0, 0);
@@ -6926,6 +6882,228 @@ static void _CanonicalizeInitialDir(HPATHL hpth_in_out)
     if (!Path_IsExistingDirectory(hpth_in_out)) {
         Path_Empty(hpth_in_out, false);
     }
+}
+
+
+// ============================================================================
+//
+//  _ConvertFilterStrToSpec()
+//  Converts a double-null-terminated filter string ("Desc\0*.ext\0...\0\0")
+//  into a COMDLG_FILTERSPEC array. Pointers reference directly into lpFilter.
+//  Caller must free the returned array with FreeMem().
+//
+static int _ConvertFilterStrToSpec(LPCWSTR lpFilter, COMDLG_FILTERSPEC **ppSpec)
+{
+    *ppSpec = NULL;
+    if (!lpFilter || *lpFilter == L'\0') {
+        return 0;
+    }
+    // first pass: count pairs
+    int count = 0;
+    LPCWSTR p = lpFilter;
+    while (*p) {
+        p += lstrlenW(p) + 1; // skip name
+        if (*p == L'\0') {
+            break; // malformed: odd entry
+        }
+        p += lstrlenW(p) + 1; // skip spec
+        ++count;
+    }
+    if (count == 0) {
+        return 0;
+    }
+    COMDLG_FILTERSPEC *spec = (COMDLG_FILTERSPEC *)AllocMem(
+        count * sizeof(COMDLG_FILTERSPEC), HEAP_ZERO_MEMORY);
+    if (!spec) {
+        return 0;
+    }
+    // second pass: fill pairs
+    p = lpFilter;
+    int i = 0;
+    while (*p && i < count) {
+        spec[i].pszName = p;
+        p += lstrlenW(p) + 1;
+        spec[i].pszSpec = p;
+        p += lstrlenW(p) + 1;
+        ++i;
+    }
+    *ppSpec = spec;
+    return count;
+}
+
+
+
+// ============================================================================
+//
+//  _ShowFileOpenDialog()
+//
+static bool _ShowFileOpenDialog(
+    HWND hwndOwner,
+    HPATHL hfile_pth_io,
+    LPCWSTR lpInitialDir,
+    LPCWSTR lpFilter,
+    LPCWSTR lpDefExt,
+    DWORD dwFosOptions)
+{
+    bool result = false;
+
+    IFileOpenDialog *pfd = NULL;
+    HRESULT hr = CoCreateInstance(
+        &CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER,
+        &IID_IFileOpenDialog, (void **)&pfd);
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    DWORD dwOptions = 0;
+    pfd->lpVtbl->GetOptions(pfd, &dwOptions);
+    pfd->lpVtbl->SetOptions(pfd, dwOptions | dwFosOptions);
+
+    COMDLG_FILTERSPEC *filterSpec = NULL;
+    int const filterCount = _ConvertFilterStrToSpec(lpFilter, &filterSpec);
+    if (filterCount > 0) {
+        pfd->lpVtbl->SetFileTypes(pfd, (UINT)filterCount, filterSpec);
+    }
+
+    if (lpDefExt && *lpDefExt) {
+        pfd->lpVtbl->SetDefaultExtension(pfd, lpDefExt);
+    }
+
+    if (lpInitialDir && *lpInitialDir) {
+        IShellItem *psiDir = NULL;
+        if (SUCCEEDED(SHCreateItemFromParsingName(lpInitialDir, NULL,
+                &IID_IShellItem, (void **)&psiDir))) {
+            pfd->lpVtbl->SetFolder(pfd, psiDir);
+            psiDir->lpVtbl->Release(psiDir);
+        }
+    }
+
+    if (Path_IsNotEmpty(hfile_pth_io)) {
+        LPCWSTR fileName = Path_FindFileName(hfile_pth_io);
+        if (fileName && *fileName) {
+            pfd->lpVtbl->SetFileName(pfd, fileName);
+        }
+    }
+
+    hr = pfd->lpVtbl->Show(pfd, hwndOwner);
+
+    if (SUCCEEDED(hr)) {
+        IShellItem *psiResult = NULL;
+        hr = pfd->lpVtbl->GetResult(pfd, &psiResult);
+        if (SUCCEEDED(hr)) {
+            LPWSTR pszPath = NULL;
+            hr = psiResult->lpVtbl->GetDisplayName(psiResult, SIGDN_FILESYSPATH, &pszPath);
+            if (SUCCEEDED(hr) && pszPath) {
+                Path_Reset(hfile_pth_io, pszPath);
+                CoTaskMemFree(pszPath);
+                result = true;
+            }
+            psiResult->lpVtbl->Release(psiResult);
+        }
+    }
+
+    if (filterSpec) {
+        FreeMem(filterSpec);
+    }
+    pfd->lpVtbl->Release(pfd);
+    return result;
+}
+
+
+// ============================================================================
+//
+//  _ShowFileSaveDialog()
+//
+static bool _ShowFileSaveDialog(
+    HWND hwndOwner,
+    HPATHL hfile_pth_io,
+    LPCWSTR lpInitialDir,
+    LPCWSTR lpFilter,
+    LPCWSTR lpDefExt,
+    DWORD dwFosOptions)
+{
+    bool result = false;
+
+    IFileSaveDialog *pfd = NULL;
+    HRESULT hr = CoCreateInstance(
+        &CLSID_FileSaveDialog, NULL, CLSCTX_INPROC_SERVER,
+        &IID_IFileSaveDialog, (void **)&pfd);
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    DWORD dwOptions = 0;
+    pfd->lpVtbl->GetOptions(pfd, &dwOptions);
+    pfd->lpVtbl->SetOptions(pfd, dwOptions | dwFosOptions);
+
+    COMDLG_FILTERSPEC *filterSpec = NULL;
+    int const filterCount = _ConvertFilterStrToSpec(lpFilter, &filterSpec);
+    if (filterCount > 0) {
+        pfd->lpVtbl->SetFileTypes(pfd, (UINT)filterCount, filterSpec);
+    }
+
+    if (lpDefExt && *lpDefExt) {
+        pfd->lpVtbl->SetDefaultExtension(pfd, lpDefExt);
+    }
+
+    if (lpInitialDir && *lpInitialDir) {
+        IShellItem *psiDir = NULL;
+        if (SUCCEEDED(SHCreateItemFromParsingName(lpInitialDir, NULL,
+                &IID_IShellItem, (void **)&psiDir))) {
+            pfd->lpVtbl->SetFolder(pfd, psiDir);
+            psiDir->lpVtbl->Release(psiDir);
+        }
+    }
+
+    if (Path_IsNotEmpty(hfile_pth_io)) {
+        LPCWSTR fileName = Path_FindFileName(hfile_pth_io);
+        if (fileName && *fileName) {
+            pfd->lpVtbl->SetFileName(pfd, fileName);
+        }
+    }
+
+    hr = pfd->lpVtbl->Show(pfd, hwndOwner);
+
+    if (SUCCEEDED(hr)) {
+        IShellItem *psiResult = NULL;
+        hr = pfd->lpVtbl->GetResult(pfd, &psiResult);
+        if (SUCCEEDED(hr)) {
+            LPWSTR pszPath = NULL;
+            hr = psiResult->lpVtbl->GetDisplayName(psiResult, SIGDN_FILESYSPATH, &pszPath);
+            if (SUCCEEDED(hr) && pszPath) {
+                Path_Reset(hfile_pth_io, pszPath);
+                CoTaskMemFree(pszPath);
+                result = true;
+            }
+            psiResult->lpVtbl->Release(psiResult);
+        }
+    }
+
+    if (filterSpec) {
+        FreeMem(filterSpec);
+    }
+    pfd->lpVtbl->Release(pfd);
+    return result;
+}
+
+
+// ============================================================================
+//
+//  FileOpenDlg()  /  FileSaveDlg()
+//  General-purpose IFileDialog wrappers for use across modules.
+//
+bool FileOpenDlg(HWND hwnd, HPATHL hfile_pth_io, LPCWSTR lpInitialDir,
+                 LPCWSTR lpFilter, LPCWSTR lpDefExt, DWORD dwFosOptions)
+{
+    return _ShowFileOpenDialog(hwnd, hfile_pth_io, lpInitialDir,
+                               lpFilter, lpDefExt, dwFosOptions);
+}
+
+bool FileSaveDlg(HWND hwnd, HPATHL hfile_pth_io, LPCWSTR lpInitialDir,
+                 LPCWSTR lpFilter, LPCWSTR lpDefExt, DWORD dwFosOptions)
+{
+    return _ShowFileSaveDialog(hwnd, hfile_pth_io, lpInitialDir,
+                               lpFilter, lpDefExt, dwFosOptions);
 }
 
 
@@ -7031,16 +7209,12 @@ bool GetFolderDlg(HWND hwnd, HPATHL hdir_pth_io, const HPATHL hinidir_pth)
 //  lpstrInitialDir == NULL      : leave initial dir to Open File Explorer
 //  lpstrInitialDir == ""[empty] : use a reasonable initial directory path
 //
-// TODO: Replace GetOpenFileNameW() by Common Item Dialog: IFileOpenDialog()
-//       https://docs.microsoft.com/en-us/windows/win32/shell/common-file-dialog
-//
 bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
 {
     if (!hfile_pth_io) {
         return false;
     }
     if (!Path_IsEmpty(hinidir_pth)) {
-        // clear output path, so that GetOpenFileName does not use the contents of szFile to initialize itself.
         Path_Empty(hfile_pth_io, false);
     }
     WCHAR szDefExt[64] = { L'\0' };
@@ -7050,20 +7224,12 @@ bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     HPATHL hpth_dir = Path_Copy(hinidir_pth);
     _CanonicalizeInitialDir(hpth_dir);
 
-    OPENFILENAME ofn = { sizeof(OPENFILENAME) };
-    ofn.hwndOwner = hwnd;
-    ofn.hInstance = Globals.hInstance;
-    ofn.lpstrFilter = szFilter;
-    ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
-    ofn.lpstrInitialDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;
-    ofn.lpstrFile = Path_WriteAccessBuf(hfile_pth_io, PATHLONG_MAX_CCH);
-    ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth_io);
-    ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | /* OFN_NOCHANGEDIR |*/
-                OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST |
-                OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/;
-    ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
+    LPCWSTR defExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
+    LPCWSTR initDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;
 
-    bool const res = GetOpenFileNameW(&ofn);
+    bool const res = _ShowFileOpenDialog(hwnd, hfile_pth_io, initDir, szFilter, defExt,
+                                         FOS_FILEMUSTEXIST | FOS_PATHMUSTEXIST |
+                                         FOS_DONTADDTORECENT | FOS_SHAREAWARE);
 
     Path_Sanitize(hfile_pth_io);
 
@@ -7092,20 +7258,12 @@ bool SaveFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     HPATHL hpth_dir = Path_Copy(hinidir_pth);
     _CanonicalizeInitialDir(hpth_dir);
 
-    OPENFILENAME ofn = { sizeof(OPENFILENAME) };
-    ofn.hwndOwner = hwnd;
-    ofn.hInstance = Globals.hInstance;
-    ofn.lpstrFilter = szFilter;
-    ofn.lpstrCustomFilter = NULL; // no preserved (static member) user-defined patten
-    ofn.lpstrInitialDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;
-    ofn.lpstrFile = Path_WriteAccessBuf(hfile_pth_io, PATHLONG_MAX_CCH);
-    ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth_io);
-    ofn.Flags = OFN_EXPLORER | OFN_HIDEREADONLY | /*| OFN_NOCHANGEDIR*/
-                /*OFN_NODEREFERENCELINKS |*/ OFN_OVERWRITEPROMPT |
-                OFN_DONTADDTORECENT | OFN_PATHMUSTEXIST;
-    ofn.lpstrDefExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
+    LPCWSTR defExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
+    LPCWSTR initDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;
 
-    bool const res = GetSaveFileNameW(&ofn);
+    bool const res = _ShowFileSaveDialog(hwnd, hfile_pth_io, initDir, szFilter, defExt,
+                                          FOS_OVERWRITEPROMPT | FOS_PATHMUSTEXIST |
+                                          FOS_DONTADDTORECENT);
 
     Path_Sanitize(hfile_pth_io);
 

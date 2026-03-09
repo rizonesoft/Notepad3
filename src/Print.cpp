@@ -10,7 +10,7 @@
 *                                                                             *
 * Mostly taken from SciTE, (c) Neil Hodgson                                   *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2025   *
+*                                                  (c) Rizonesoft 2008-2026   *
 *                                                    https://rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -24,14 +24,15 @@
 #define DBG_NEW new
 #endif
 
+#include <sdkddkver.h>
 #if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#define WINVER _WIN32_WINNT_WIN10
 #endif
 #if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
+#define _WIN32_WINNT _WIN32_WINNT_WIN10
 #endif
 #if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
+#define NTDDI_VERSION NTDDI_WIN10_RS5
 #endif
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
@@ -51,7 +52,9 @@ extern "C" {
 #include "DarkMode/DarkMode.h"
 
 
+
 extern "C" float Style_GetBaseFontSize();
+extern "C" void UpdateStatusbar(const bool bForceRedraw);
 
 // Stored objects...
 static HGLOBAL hDevMode = nullptr;
@@ -356,8 +359,9 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
     SendMessage(hwnd,SCI_SETPRINTCOLOURMODE,printColorModes[Settings.PrintColorMode],0);
     //SendMessage(hwnd, SCI_SETPRINTWRAPMODE, SC_WRAP_WORD, 0); // default: SC_WRAP_WORD
 
-    // Set print magnification...
-    SendMessage(hwnd, SCI_SETPRINTMAGNIFICATION, (WPARAM)Settings.PrintZoom, 0);
+    // Set print magnification (convert NP3 percent to Scintilla additive points)
+    int const printZoomLevel = (int)(((__int64)NP3_ZOOM_BASE_FONT_SIZE * (Settings.PrintZoom - 100) + 5000) / 10000);
+    SendMessage(hwnd, SCI_SETPRINTMAGNIFICATION, (WPARAM)printZoomLevel, 0);
 
     DocPos const lengthDocMax = SciCall_GetTextLength();
     DocPos lengthDoc = lengthDocMax;
@@ -511,6 +515,9 @@ extern "C" bool EditPrint(HWND hwnd,LPCWSTR pszDocTitle,LPCWSTR pszPageFormat)
         SetCursorPos(pt.x, pt.y);
     }
 
+    // Restore status bar to normal display - fixes #5313
+    UpdateStatusbar(true);
+
     return true;
 }
 
@@ -554,7 +561,7 @@ static UINT_PTR CALLBACK _LPSetupHookProc(HWND hwnd, UINT uiMsg, WPARAM wParam, 
         UDACCEL const acc[1] = { { 0, 10 } };
         SendDlgItemMessage(hwnd, 30, EM_LIMITTEXT, 32, 0);
         SendDlgItemMessage(hwnd, 31, UDM_SETACCEL, 1, (WPARAM)acc);
-        SendDlgItemMessage(hwnd, 31, UDM_SETRANGE32, SC_MIN_ZOOM_LEVEL, SC_MAX_ZOOM_LEVEL);
+        SendDlgItemMessage(hwnd, 31, UDM_SETRANGE32, NP3_MIN_ZOOM_PERCENT, NP3_MAX_ZOOM_PERCENT);
         SendDlgItemMessage(hwnd, 31, UDM_SETPOS32, 0, Settings.PrintZoom);
 
         // Set header options

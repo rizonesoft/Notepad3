@@ -242,7 +242,7 @@ static void ColouriseMatlabOctaveDoc(
 				sc.SetState(SCE_MATLAB_DEFAULT);
 			}
 		} else if (sc.state == SCE_MATLAB_KEYWORD) {
-			if (!isalnum(sc.ch & 0xFF) && sc.ch != '_') {
+			if (!isalnum(sc.ch) && sc.ch != '_') {
 				char s[100];
 				sc.GetCurrent(s, sizeof(s));
 				bool notKeyword = false;
@@ -302,7 +302,7 @@ static void ColouriseMatlabOctaveDoc(
 			styler.SetLineState(curLine, ComposeLineState(
 				commentDepth, foldingLevel, expectingArgumentsBlock, inClassScope, inArgumentsScope));
 		} else if (sc.state == SCE_MATLAB_NUMBER) {
-			if (!isdigit(sc.ch & 0xFF) && sc.ch != '.'
+			if (!isdigit(sc.ch) && sc.ch != '.'
 			        && !(sc.ch == 'e' || sc.ch == 'E')
 			        && !((sc.ch == '+' || sc.ch == '-') && (sc.chPrev == 'e' || sc.chPrev == 'E'))
 			        && !(((sc.ch == 'x' || sc.ch == 'X') && sc.chPrev == '0') || (sc.ch >= 'a' && sc.ch <= 'f') || (sc.ch >= 'A' && sc.ch <= 'F'))
@@ -394,9 +394,9 @@ static void ColouriseMatlabOctaveDoc(
 				}
 			} else if (sc.ch == '"') {
 				sc.SetState(SCE_MATLAB_DOUBLEQUOTESTRING);
-			} else if (isdigit(sc.ch & 0xFF) || (sc.ch == '.' && isdigit(sc.chNext & 0xFF))) {
+			} else if (isdigit(sc.ch) || (sc.ch == '.' && isdigit(sc.chNext))) {
 				sc.SetState(SCE_MATLAB_NUMBER);
-			} else if (isalpha(sc.ch & 0xFF)) {
+			} else if (isalpha(sc.ch)) {
 				sc.SetState(SCE_MATLAB_KEYWORD);
 			} else if (isoperator(static_cast<char>(sc.ch)) || sc.ch == '@' || sc.ch == '\\') {
 				if (sc.ch == '(' || sc.ch == '[' || sc.ch == '{') {

@@ -1,6 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- * vim: et sw=2 ts=2 fdm=marker
- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -42,20 +40,19 @@
 #define nsSBCSGroupProber_h__
 
 
-#define MAX_NUM_OF_SBCS_PROBERS 160
+#define NUM_OF_SBCS_PROBERS 114
 
 class nsCharSetProber;
-
-class nsSBCSGroupProber : public nsCharSetProber {
+class nsSBCSGroupProber: public nsCharSetProber {
 public:
   nsSBCSGroupProber();
   virtual ~nsSBCSGroupProber();
-  nsProbingState HandleData(const char* aBuf, PRUint32 aLen) override;
-  const char* GetCharSetName() override;
-  nsProbingState GetState(void) override { return mState; }
-  void      Reset(void) override;
-  float     GetConfidence(void) override;
-  void      SetOpion() override {}
+  nsProbingState HandleData(const char* aBuf, PRUint32 aLen);
+  const char* GetCharSetName();
+  nsProbingState GetState(void) {return mState;}
+  void      Reset(void);
+  float     GetConfidence(void);
+  void      SetOpion() {}
 
 #ifdef DEBUG_chardet
   void  DumpStatus();
@@ -63,9 +60,8 @@ public:
 
 protected:
   nsProbingState mState;
-  nsCharSetProber* mProbers[MAX_NUM_OF_SBCS_PROBERS];
-  PRBool          mIsActive[MAX_NUM_OF_SBCS_PROBERS];
-  PRUint32 mNumOfProbers;
+  nsCharSetProber* mProbers[NUM_OF_SBCS_PROBERS];
+  PRBool          mIsActive[NUM_OF_SBCS_PROBERS];
   PRInt32 mBestGuess;
   PRUint32 mActiveNum;
 };

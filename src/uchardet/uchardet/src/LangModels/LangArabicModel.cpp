@@ -61,7 +61,7 @@
  * ligature of 'o' and 'e' exists in ISO-8859-15 but not in ISO-8859-1
  * even though they are both used for French. Same for the euro sign.
  */
-constexpr unsigned char Iso_8859_6_CharToOrderMap[] =
+static const unsigned char Iso_8859_6_CharToOrderMap[] =
 {
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR, /* 0X */
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR, /* 1X */
@@ -82,7 +82,7 @@ constexpr unsigned char Iso_8859_6_CharToOrderMap[] =
 };
 /*X0  X1  X2  X3  X4  X5  X6  X7  X8  X9  XA  XB  XC  XD  XE  XF */
 
-constexpr unsigned char Windows_1256_CharToOrderMap[] =
+static const unsigned char Windows_1256_CharToOrderMap[] =
 {
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,RET,CTR,CTR,RET,CTR,CTR, /* 0X */
   CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR,CTR, /* 1X */
@@ -111,7 +111,7 @@ constexpr unsigned char Windows_1256_CharToOrderMap[] =
  * Rest: 0.0012305764497782395
  * Negative sequences: TODO
  */
-constexpr PRUint8 ArabicLangModel[] =
+static const PRUint8 ArabicLangModel[] =
 {
   2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,3,3,3,3,3,3,1,3,1,3,3,3,3,2,2,3,
    3,2,1,2,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,

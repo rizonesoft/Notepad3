@@ -1,0 +1,10 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+    "name": "notepad3",
+    "version-string": "6.26",
+    "description": "Notepad3 - A fast and light-weight Scintilla-based text editor",
+    "dependencies": [
+        "boost-regex",
+        "boost-iostreams"
+    ]
+}

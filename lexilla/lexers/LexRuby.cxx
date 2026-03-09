@@ -75,7 +75,7 @@ bool isSafeWordcharOrHigh(char ch) noexcept {
     // Error: scintilla's KeyWords.h includes '.' as a word-char
     // we want to separate things that can take methods from the
     // methods.
-    return isHighBitChar(ch) || isalnum(ch & 0xFF) || ch == '_';
+    return isHighBitChar(ch) || isalnum(ch) || ch == '_';
 }
 
 constexpr bool isWhiteSpace(char ch) noexcept {

@@ -889,12 +889,14 @@ public:
 	Scintilla::EOLAnnotationVisible EOLAnnotationGetVisible();
 	void EOLAnnotationSetStyleOffset(int style);
 	int EOLAnnotationGetStyleOffset();
-	bool SupportsFeature(Scintilla::Supports feature);
+	bool SupportsFeature(Scintilla::Supports feature) noexcept;
 	Scintilla::LineCharacterIndexType LineCharacterIndex();
 	void AllocateLineCharacterIndex(Scintilla::LineCharacterIndexType lineCharacterIndex);
 	void ReleaseLineCharacterIndex(Scintilla::LineCharacterIndexType lineCharacterIndex);
 	Line LineFromIndexPosition(Position pos, Scintilla::LineCharacterIndexType lineCharacterIndex);
 	Position IndexPositionFromLine(Line line, Scintilla::LineCharacterIndexType lineCharacterIndex);
+	bool DragDropEnabled();
+	void SetDragDropEnabled(bool dragDropEnabled);
 	void StartRecord();
 	void StopRecord();
 	int Lexer();

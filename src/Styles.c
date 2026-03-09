@@ -9,7 +9,7 @@
 *   Based on code from Notepad2, (c) Florian Balmer 1996-2011                 *
 *   Mostly taken from SciTE, (c) Neil Hodgson                                 *
 *                                                                             *
-*                                                  (c) Rizonesoft 2008-2025   *
+*                                                  (c) Rizonesoft 2008-2026   *
 *                                                 http://www.rizonesoft.com   *
 *                                                                             *
 *                                                                             *
@@ -226,6 +226,36 @@ typedef enum {
     FW_IDX_EXTRABLACK,
     FW_IDX_ULTRADARK
 } FW_IDX;
+
+// Font Stretch
+typedef struct _fntstrtch {
+    LPCWSTR const wname;
+    int const stretch;
+} FONTSTRETCH_T;
+
+static const FONTSTRETCH_T FontStretches[9] = {
+    { L"ultracondensed",  SC_STRETCH_ULTRA_CONDENSED },  // 0
+    { L"extracondensed",  SC_STRETCH_EXTRA_CONDENSED },  // 1
+    { L"condensed",       SC_STRETCH_CONDENSED },        // 2
+    { L"semicondensed",   SC_STRETCH_SEMI_CONDENSED },   // 3
+    { L"normal",          SC_STRETCH_NORMAL },           // 4 (default)
+    { L"semiexpanded",    SC_STRETCH_SEMI_EXPANDED },    // 5
+    { L"expanded",        SC_STRETCH_EXPANDED },         // 6
+    { L"extraexpanded",   SC_STRETCH_EXTRA_EXPANDED },   // 7
+    { L"ultraexpanded",   SC_STRETCH_ULTRA_EXPANDED },   // 8
+};
+
+typedef enum {
+    FS_IDX_ULTRACONDENSED = 0,
+    FS_IDX_EXTRACONDENSED,
+    FS_IDX_CONDENSED,
+    FS_IDX_SEMICONDENSED,
+    FS_IDX_NORMAL,
+    FS_IDX_SEMIEXPANDED,
+    FS_IDX_EXPANDED,
+    FS_IDX_EXTRAEXPANDED,
+    FS_IDX_ULTRAEXPANDED,
+} FONTSTRETCH_IDX;
 
 //// font quality
 //#define Style_StrHasAttrNone(lpszStyle)         Style_StrHasAttribute((lpszStyle), L"none")
@@ -682,8 +712,7 @@ int Style_RgbAlpha(int rgbFore, int rgbBack, int alpha)
 //
 bool Style_Import(HWND hwnd)
 {
-    HPATHL         hfile_pth = Path_Allocate(NULL);
-    wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, CMDLN_LENGTH_LIMIT);
+    HPATHL hfile_pth = Path_Allocate(NULL);
 
     HSTRINGW       hflt_str = StrgCreate(NULL);
     wchar_t* const flt_buf = StrgWriteAccessBuf(hflt_str, EXTENTIONS_FILTER_BUFFER);
@@ -693,18 +722,11 @@ bool Style_Import(HWND hwnd)
 
     PrepareFilterStr(flt_buf);
 
-    OPENFILENAME ofn = { sizeof(OPENFILENAME) };
-    ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = StrgGet(hflt_str);
-    ofn.lpstrFile = file_buf;
-    ofn.lpstrDefExt = L"ini";
-    ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth);
-    ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
-                | OFN_PATHMUSTEXIST | OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/;
-
     bool result = false;
 
-    if (GetOpenFileNameW(&ofn)) {
+    if (FileOpenDlg(hwnd, hfile_pth, NULL, StrgGet(hflt_str), L"ini",
+            FOS_FILEMUSTEXIST | FOS_PATHMUSTEXIST | FOS_NOCHANGEDIR |
+            FOS_DONTADDTORECENT | FOS_SHAREAWARE)) {
         Path_Sanitize(hfile_pth);
         result = Style_ImportFromFile(hfile_pth);
     }
@@ -975,8 +997,7 @@ void Style_SaveSettings(bool bForceSaveSettings)
 //
 bool Style_Export(HWND hwnd)
 {
-    HPATHL         hfile_pth = Path_Allocate(NULL);
-    wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, CMDLN_LENGTH_LIMIT);
+    HPATHL hfile_pth = Path_Allocate(NULL);
 
     HSTRINGW       hflt_str = StrgCreate(NULL);
     wchar_t* const flt_buf = StrgWriteAccessBuf(hflt_str, EXTENTIONS_FILTER_BUFFER);
@@ -986,18 +1007,11 @@ bool Style_Export(HWND hwnd)
 
     PrepareFilterStr(flt_buf);
 
-    OPENFILENAME ofn = { sizeof(OPENFILENAME) };
-    ofn.hwndOwner = hwnd;
-    ofn.lpstrFilter = StrgGet(hflt_str);
-    ofn.lpstrFile = file_buf;
-    ofn.lpstrDefExt = L"ini";
-    ofn.nMaxFile = (DWORD)Path_GetBufCount(hfile_pth);
-    ofn.Flags = /*OFN_FILEMUSTEXIST |*/ OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_DONTADDTORECENT
-                | OFN_PATHMUSTEXIST | OFN_SHAREAWARE /*| OFN_NODEREFERENCELINKS*/ | OFN_OVERWRITEPROMPT;
-
     bool result = false;
 
-    if (GetSaveFileNameW(&ofn)) {
+    if (FileSaveDlg(hwnd, hfile_pth, NULL, StrgGet(hflt_str), L"ini",
+            FOS_OVERWRITEPROMPT | FOS_PATHMUSTEXIST | FOS_NOCHANGEDIR |
+            FOS_DONTADDTORECENT | FOS_SHAREAWARE)) {
         Path_Sanitize(hfile_pth);
         result = Style_ExportToFile(hfile_pth, true);
         if (!result) {
@@ -1266,7 +1280,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     if ((pLexNew->lexerID > SCLEX_NULL) && (iNewLexer != pLexNew->lexerID)) {
         WCHAR msg[256] = { L'\0' };
         StringCchPrintf(msg, COUNTOF(msg), L"Failed to set desired Lexer (#%i), got Lexer #%i!", pLexNew->lexerID, iNewLexer);
-        MsgBoxLastError(msg, ERROR_DLL_INIT_FAILED);
+        InfoBoxLastError(msg, ERROR_DLL_INIT_FAILED);
     }
 #endif
 
@@ -1570,7 +1584,7 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     }
     Globals.iWhiteSpaceSize = iValue;
     //SciCall_SetWhiteSpaceSize(iValue);
-    SciCall_SetWhiteSpaceSize(MulDiv(Globals.iWhiteSpaceSize, SciCall_GetZoom(), 100)); // needs update on zoom
+    SciCall_SetWhiteSpaceSize(MulDiv(Globals.iWhiteSpaceSize, NP3_GetZoomPercent(), 100)); // needs update on zoom
 
     // whitespace colors
     rgb = RGB(0, 0, 0);
@@ -1762,7 +1776,10 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     Style_SetInvisible(hwnd, false); // set fixed invisible style
 
-    SciCall_SetLayoutCache(SC_CACHE_PAGE); //~SC_CACHE_DOCUMENT ~ memory consumption !
+    // EditLoadFile() sets SC_CACHE_DOCUMENT for small files (<=2MB) — don't override that
+    if (Flags.bHugeFileLoadState) {
+        SciCall_SetLayoutCache(SC_CACHE_PAGE);
+    }
     SciCall_SetPositionCache(SciCall_GetPositionCache()); // clear - default=1024
 
     Sci_SetWrapModeEx(GET_WRAP_MODE());
@@ -1779,7 +1796,13 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
     Style_UpdateAllMargins(hwnd, true);
 
-    SciCall_SetIdleStyling(Flags.bHugeFileLoadState ? SC_IDLESTYLING_TOVISIBLE : idleStylingMode);
+    if (Flags.bHugeFileLoadState) {
+        SciCall_SetIdleStyling(SC_IDLESTYLING_TOVISIBLE);
+    } else if (SciCall_GetTextLength() > (2 * 1024 * 1024)) {
+        SciCall_SetIdleStyling(SC_IDLESTYLING_AFTERVISIBLE);
+    } else {
+        SciCall_SetIdleStyling(idleStylingMode);
+    }
 
     if (bFocusedView) {
         EditToggleView(hwnd);
@@ -1958,7 +1981,7 @@ void Style_SetUrlHotSpot(HWND hwnd)
     // style for hotspot
     //~SciCall_StyleSetHotspot(_STYLE_GETSTYLEID(STY_URL_HOTSPOT), true);
     //~SciCall_SetHotspotActiveUnderline(false);
-    //~SciCall_SetHotspotSigleLine(true);
+    //~SciCall_SetHotspotSingleLine(true);
 }
 
 
@@ -2087,7 +2110,7 @@ void Style_HighlightCurrentLine(HWND hwnd, int iHiLitCurLn)
         iFrameSize = max_i(1, ScaleIntToDPI(hwnd, iFrameSize));
         Globals.iCaretOutLineFrameSize = iFrameSize;
         // SciCall_SetCaretLineFrame(iFrameSize);
-        SciCall_SetCaretLineFrame(MulDiv(Globals.iCaretOutLineFrameSize, SciCall_GetZoom(), 100)); // needs update on zoom
+        SciCall_SetCaretLineFrame(MulDiv(Globals.iCaretOutLineFrameSize, NP3_GetZoomPercent(), 100)); // needs update on zoom
     }
     else {
         SciCall_SetCaretLineFrame(0);
@@ -2521,7 +2544,7 @@ PEDITLEXER Style_RegExMatchLexer(LPCWSTR lpszFileName)
                     char regexpat[HUGE_BUFFER] = { '\0' };
                     WideCharToMultiByte(CP_UTF8, 0, f, (int)(e-f), regexpat, (int)COUNTOF(regexpat), NULL, NULL);
 
-                    if (OnigRegExFind(regexpat, chFilePath, false, SciCall_GetEOLMode(), NULL) >= 0) {
+                    if (RegExFind(regexpat, chFilePath, false, NULL) >= 0) {
                         return g_pLexArray[iLex];
                     }
                 }
@@ -3387,6 +3410,50 @@ void Style_AppendWeightAttribute(LPWSTR lpszWeight, int cchSize, int fontWeight)
 
 //=============================================================================
 //
+//  Style_StrGetStretchValue()
+//
+bool Style_StrGetStretchValue(LPCWSTR lpszStyle, int* stretch)
+{
+    int fontStretch = SC_STRETCH_NORMAL;
+    bool bFound = false;
+    for (int i = FS_IDX_ULTRACONDENSED; i <= FS_IDX_ULTRAEXPANDED; ++i) {
+        if (Style_StrHasAttribute(lpszStyle, FontStretches[i].wname)) {
+            fontStretch = FontStretches[i].stretch;
+            bFound = true;
+            break;
+        }
+    }
+    if (bFound) {
+        *stretch = fontStretch;
+    }
+    return bFound;
+}
+
+
+//=============================================================================
+//
+//  Style_AppendStretchAttribute()
+//
+void Style_AppendStretchAttribute(LPWSTR lpszStyle, int cchSize, int fontStretch)
+{
+    if (fontStretch == SC_STRETCH_NORMAL) {
+        return; // normal is default, no need to append
+    }
+    const WCHAR *pFontStretch = NULL;
+    for (int i = FS_IDX_ULTRACONDENSED; i <= FS_IDX_ULTRAEXPANDED; ++i) {
+        if (fontStretch == FontStretches[i].stretch) {
+            pFontStretch = FontStretches[i].wname;
+            break;
+        }
+    }
+    if (pFontStretch) {
+        AppendStyle(lpszStyle, cchSize, pFontStretch);
+    }
+}
+
+
+//=============================================================================
+//
 //  Style_StrGetColor()
 //
 bool Style_StrGetColor(LPCWSTR lpszStyle, COLOR_LAYER layer, COLORALPHAREF* rgba, COLORALPHAREF* rgbaOrig, bool useDefault)
@@ -3604,6 +3671,26 @@ void Style_CopyStyles_IfNotDefined(LPCWSTR lpszStyleSrc, LPWSTR lpszStyleDest, i
     }
     if (pFontWeight) {
         AppendStyle(szTmpStyle, COUNTOF(szTmpStyle), pFontWeight);
+    }
+
+    // Font Stretch
+    const WCHAR *pFontStretch = NULL;
+    for (int idx = FS_IDX_ULTRACONDENSED; idx <= FS_IDX_ULTRAEXPANDED; ++idx) {
+        if (Style_StrHasAttribute(lpszStyleDest, FontStretches[idx].wname)) {
+            pFontStretch = FontStretches[idx].wname;
+            break;
+        }
+    }
+    if (!bIsFontDefInDestination && !pFontStretch) {
+        for (int idx = FS_IDX_ULTRACONDENSED; idx <= FS_IDX_ULTRAEXPANDED; ++idx) {
+            if (Style_StrHasAttribute(lpszStyleSrc, FontStretches[idx].wname)) {
+                pFontStretch = FontStretches[idx].wname;
+                break;
+            }
+        }
+    }
+    if (pFontStretch) {
+        AppendStyle(szTmpStyle, COUNTOF(szTmpStyle), pFontStretch);
     }
 
     if (Style_StrHasAttribute(lpszStyleDest, FontEffects[FE_ITALIC])) {
@@ -3825,7 +3912,8 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
     int const iFontHeight = PointSizeToFontHeight(fFontSize, hdc);
     ReleaseDC(hwnd, hdc);
 
-    int const iFontStretch = 0; // with calculated automatically
+    int iFontStretch = SC_STRETCH_NORMAL;
+    Style_StrGetStretchValue(lpszStyle, &iFontStretch);
     bool const bIsUnderline = Style_StrHasAttribute(lpszStyle, FontEffects[FE_UNDERLINE]);
     bool const bIsStrikeout = Style_StrHasAttribute(lpszStyle, FontEffects[FE_STRIKEOUT]);
 
@@ -3842,7 +3930,7 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
     LOGFONT lf = { 0 };
     lf.lfCharSet = (BYTE)iCharSet;
     lf.lfHeight = iFontHeight;
-    lf.lfWidth = iFontStretch;
+    lf.lfWidth = 0; // let system calculate character width
     lf.lfWeight = iFontWeight;
     lf.lfItalic = (BYTE)(BOOL)bIsItalic;
     lf.lfUnderline = (BYTE)(BOOL)bIsUnderline;
@@ -3947,6 +4035,11 @@ bool Style_SelectFont(HWND hwnd, LPWSTR lpszStyle, int cchStyle, LPCWSTR sLexerN
 
     if (lf.lfWeight != FontWeights[FW_IDX_REGULAR].weight) {
         Style_AppendWeightAttribute(szNewStyle, COUNTOF(szNewStyle), lf.lfWeight);
+    }
+
+    // persist stretch (ChooseFont dialog doesn't modify it, so round-trip the original)
+    if (iFontStretch != SC_STRETCH_NORMAL) {
+        Style_AppendStretchAttribute(szNewStyle, COUNTOF(szNewStyle), iFontStretch);
     }
 
     if (lf.lfItalic) {
@@ -4114,6 +4207,13 @@ void Style_SetStyles(HWND hwnd, const int iStyle, LPCWSTR lpszStyle, const float
         SciCall_StyleSetWeight(iStyle, iValue);
     } else if (bIsDefaultStyle) {
         SciCall_StyleSetWeight(iStyle, SC_WEIGHT_NORMAL);
+    }
+
+    // Font Stretch
+    if (Style_StrGetStretchValue(lpszStyle, &iValue)) {
+        SciCall_StyleSetStretch(iStyle, iValue);
+    } else if (bIsDefaultStyle) {
+        SciCall_StyleSetStretch(iStyle, SC_STRETCH_NORMAL);
     }
 
     // Italic

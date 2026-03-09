@@ -44,11 +44,11 @@ static inline bool IsAWordChar(const unsigned int ch) {
 	 * Unfortunately, we are only getting string bytes here, and not full unicode characters. We cannot guarantee
 	 * that our byte is between U+0080 - U+00A0 (to return false), so we have to allow all characters U+0080 and higher
 	 */
-	return ch >= 0x80 || isalnum(ch & 0xFF) || ch == '-' || ch == '_';
+	return ch >= 0x80 || isalnum(ch) || ch == '-' || ch == '_';
 }
 
 inline bool IsCssOperator(const int ch) {
-	if (!(IsASCII(ch) && isalnum(ch)) &&
+	if (!((ch < 0x80) && isalnum(ch)) &&
 		(ch == '{' || ch == '}' || ch == ':' || ch == ',' || ch == ';' ||
 		 ch == '.' || ch == '#' || ch == '!' || ch == '@' ||
 		 /* CSS2 */

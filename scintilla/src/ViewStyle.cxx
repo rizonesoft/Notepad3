@@ -49,6 +49,8 @@ constexpr unsigned int mid = 0x80U;
 constexpr unsigned int half = 0x7fU;
 constexpr unsigned int quarter = 0x3fU;
 
+constexpr int startExtendedStyles = 0x100;
+
 }
 
 MarginStyle::MarginStyle(MarginType style_, int width_, int mask_) noexcept :
@@ -61,12 +63,8 @@ bool MarginStyle::ShowsFolding() const noexcept {
 
 void FontRealised::Realise(Surface &surface, int zoomLevel, Technology technology, const FontSpecification &fs, const char *localeName) {
 	PLATFORM_ASSERT(fs.fontName);
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	//~measurements.sizeZoomed = fs.size + zoomLevel * FontSizeMultiplier;
-	//~if (measurements.sizeZoomed <= FontSizeMultiplier)	// May fail if sizeZoomed < 1
-	//~	measurements.sizeZoomed = FontSizeMultiplier;
-	measurements.sizeZoomed = GetFontSizeZoomed(fs.size, zoomLevel);
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	// If negative zoomLevel, ensure sizeZoomed at least minimum positive size
+	measurements.sizeZoomed = std::max(fs.size + (zoomLevel * FontSizeMultiplier), FontSizeMultiplier);
 
 	const float deviceHeight = static_cast<float>(surface.DeviceHeightFont(measurements.sizeZoomed));
 	const FontParameters fp(fs.fontName, deviceHeight / FontSizeMultiplier, fs.weight,
@@ -76,10 +74,11 @@ void FontRealised::Realise(Surface &surface, int zoomLevel, Technology technolog
 	// floor here is historical as platform layers have tweaked their values to match.
 	// ceil would likely be better to ensure (nearly) all of the ink of a character is seen
 	// but that would require platform layer changes.
-	measurements.ascent = std::floor(surface.Ascent(font.get()));
+	const XYPOSITION ascent = surface.Ascent(font.get());
+	measurements.ascent = std::floor(ascent);
 	measurements.descent = std::floor(surface.Descent(font.get()));
 
-	measurements.capitalHeight = surface.Ascent(font.get()) - surface.InternalLeading(font.get());
+	measurements.capitalHeight = ascent - surface.InternalLeading(font.get());
 	measurements.aveCharWidth = surface.AverageCharWidth(font.get());
 	measurements.monospaceCharacterWidth = measurements.aveCharWidth;
 	measurements.spaceWidth = surface.WidthText(font.get(), " ");
@@ -95,9 +94,9 @@ void FontRealised::Realise(Surface &surface, int zoomLevel, Technology technolog
 		const XYPOSITION maxWidth = *std::max_element(positions.begin(), positions.end());
 		const XYPOSITION minWidth = *std::min_element(positions.begin(), positions.end());
 		const XYPOSITION variance = maxWidth - minWidth;
-		const XYPOSITION scaledVariance = variance / measurements.aveCharWidth;
 		constexpr XYPOSITION monospaceWidthEpsilon = 0.000001;	// May need tweaking if monospace fonts vary more
-		measurements.monospaceASCII = scaledVariance < monospaceWidthEpsilon;
+		const XYPOSITION scaledVariance = monospaceWidthEpsilon * minWidth;
+		measurements.monospaceASCII = variance < scaledVariance;
 		measurements.monospaceCharacterWidth = minWidth;
 	} else {
 		measurements.monospaceASCII = false;
@@ -110,7 +109,7 @@ ViewStyle::ViewStyle(size_t stylesSize_) :
 	indicators(static_cast<size_t>(IndicatorNumbers::Max) + 1),
 	ms(MaxMargin + 1) {
 
-	nextExtendedStyle = 256;
+	nextExtendedStyle = startExtendedStyles;
 	ResetDefaultStyle();
 
 	// There are no image markers by default, so no need for calling CalcLargestMarkerHeight()
@@ -173,9 +172,11 @@ ViewStyle::ViewStyle(size_t stylesSize_) :
 	lineOverlap = 0;
 	maxAscent = 1;
 	maxDescent = 1;
-	aveCharWidth = 8;
-	spaceWidth = 8;
-	tabWidth = spaceWidth * 8;
+	constexpr XYPOSITION defaultWidthChar = 8.F;	// Reasonable initial approximation
+	aveCharWidth = defaultWidthChar;
+	spaceWidth = defaultWidthChar;
+	constexpr int defaultTabSpaces = 8;
+	tabWidth = spaceWidth * defaultTabSpaces;
 
 	// Default is for no selection foregrounds
 	// Shades of grey for selection backgrounds
@@ -223,14 +224,13 @@ ViewStyle::ViewStyle(size_t stylesSize_) :
 	leftMarginWidth = 1;
 	rightMarginWidth = 1;
 	ms[0] = MarginStyle(MarginType::Number);
-	ms[1] = MarginStyle(MarginType::Symbol, 16, ~MaskFolders);
+	constexpr int widthMarks = 16;
+	ms[1] = MarginStyle(MarginType::Symbol, widthMarks, ~MaskFolders);
 	ms[2] = MarginStyle(MarginType::Symbol);
 	marginInside = true;
 	CalculateMarginWidthAndMask();
 	textStart = marginInside ? fixedColumnWidth : leftMarginWidth;
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	zoomLevel = 100;  /// @ 20018-09-06 Changed to percent
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	zoomLevel = 0;
 	viewWhitespace = WhiteSpace::Invisible;
 	tabDrawMode = TabDrawMode::LongArrow;
 	whitespaceSize = 1;
@@ -340,7 +340,7 @@ ViewStyle::~ViewStyle() = default;
 
 void ViewStyle::CalculateMarginWidthAndMask() noexcept {
 	fixedColumnWidth = marginInside ? leftMarginWidth : 0;
-	maskInLine = 0xffffffff;
+	maskInLine = UINT32_MAX;
 	int maskDefinedMarkers = 0;
 	for (const MarginStyle &m : ms) {
 		fixedColumnWidth += m.width;
@@ -418,9 +418,9 @@ void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 	maxAscent = std::max(1.0, maxAscent + extraAscent);
 	maxDescent = std::max(0.0, maxDescent + extraDescent);
 	lineHeight = static_cast<int>(std::lround(maxAscent + maxDescent));
-	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-	lineOverlap = std::clamp(lineHeight / 10, 1, std::max(1, lineHeight));
-	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+	// lineHeight may rarely be less than 2, so can't use std::clamp
+	constexpr int overlapFraction = 10;	// Allow up to a tenth of a line overlap
+	lineOverlap = std::min(std::max(lineHeight / overlapFraction, 2), lineHeight);
 
 	someStylesProtected = std::any_of(styles.cbegin(), styles.cend(),
 		[](const Style &style) noexcept { return style.IsProtected(); });
@@ -436,7 +436,7 @@ void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 	controlCharWidth = 0.0;
-	if (controlCharSymbol >= 32) {
+	if (controlCharSymbol >= ' ') {
 		const char cc[2] = { static_cast<char>(controlCharSymbol), '\0' };
 		controlCharWidth = surface.WidthText(styles[StyleControlChar].font.get(), cc);
 	}
@@ -446,7 +446,7 @@ void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 }
 
 void ViewStyle::ReleaseAllExtendedStyles() noexcept {
-	nextExtendedStyle = 256;
+	nextExtendedStyle = startExtendedStyles;
 }
 
 int ViewStyle::AllocateExtendedStyles(int numberStyles) {
@@ -577,9 +577,8 @@ ColourOptional ViewStyle::Background(int marksOfLine, bool caretActive, bool lin
 	}
 	if (background) {
 		return background->Opaque();
-	} else {
-		return {};
 	}
+	return {};
 }
 
 bool ViewStyle::SelectionBackgroundDrawn() const noexcept {
@@ -677,9 +676,8 @@ bool ViewStyle::SetElementColour(Element element, ColourRGBA colour) {
 bool ViewStyle::SetElementColourOptional(Element element, uptr_t wParam, sptr_t lParam) {
 	if (wParam) {
 		return SetElementColour(element, ColourRGBA::FromIpRGB(lParam));
-	} else {
-		return ResetElement(element);
 	}
+	return ResetElement(element);
 }
 
 void ViewStyle::SetElementRGB(Element element, int rgb) {
@@ -767,44 +765,6 @@ ViewStyle::CaretShape ViewStyle::CaretShapeForMode(bool inOverstrike, bool isMai
 	return (caretStyle <= CaretStyle::Block) ? static_cast<CaretShape>(caretStyle) : CaretShape::line;
 }
 
-// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-bool ViewStyle::ZoomIn() noexcept {
-	if (zoomLevel < SC_MAX_ZOOM_LEVEL) {
-		int level = zoomLevel;
-		if (level < 200) {
-			level += 10;
-		} else {
-			level += 25;
-		}
-
-		level = std::min(level, SC_MAX_ZOOM_LEVEL);
-		if (level != zoomLevel) {
-			zoomLevel = level;
-			return true;
-		}
-	}
-	return false;
-}
-
-bool ViewStyle::ZoomOut() noexcept {
-	if (zoomLevel > SC_MIN_ZOOM_LEVEL) {
-		int level = zoomLevel;
-		if (level <= 200) {
-			level -= 10;
-		} else {
-			level -= 25;
-		}
-
-		level = std::max(level, SC_MIN_ZOOM_LEVEL);
-		if (level != zoomLevel) {
-			zoomLevel = level;
-			return true;
-		}
-	}
-	return false;
-}
-// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
-
 void ViewStyle::AllocStyles(size_t sizeNew) {
 	size_t i=styles.size();
 	styles.resize(sizeNew);
@@ -845,9 +805,7 @@ void ViewStyle::FindMaxAscentDescent() noexcept {
 
 		const auto &style = styles[i];
 
-		if (maxAscent < style.ascent)
-			maxAscent = style.ascent;
-		if (maxDescent < style.descent)
-			maxDescent = style.descent;
+		maxAscent = std::max(style.ascent, maxAscent);
+		maxDescent = std::max(style.descent, maxDescent);
 	}
 }
