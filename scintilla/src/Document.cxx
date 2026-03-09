@@ -1907,7 +1907,7 @@ std::string Document::TransformLineEnds(const char *s, size_t len, EndOfLine eol
 void Document::ConvertLineEnds(EndOfLine eolModeSet) {
 	UndoGroup ug(this);
 
-	const Sci::Position length = Length();
+	Sci::Position length = Length();
 	for (Sci::Position pos = 0; pos < length; pos++) {
 		const char ch = cb.CharAt(pos);
 		if (ch == '\r') {
@@ -1915,8 +1915,10 @@ void Document::ConvertLineEnds(EndOfLine eolModeSet) {
 				// CRLF
 				if (eolModeSet == EndOfLine::Cr) {
 					DeleteChars(pos + 1, 1); // Delete the LF
+					--length;
 				} else if (eolModeSet == EndOfLine::Lf) {
 					DeleteChars(pos, 1); // Delete the CR
+					--length;
 				} else {
 					pos++;
 				}
@@ -1924,6 +1926,7 @@ void Document::ConvertLineEnds(EndOfLine eolModeSet) {
 				// CR
 				if (eolModeSet == EndOfLine::CrLf) {
 					pos += InsertString(pos + 1, "\n", 1); // Insert LF
+					++length;
 				} else if (eolModeSet == EndOfLine::Lf) {
 					pos += InsertString(pos, "\n", 1); // Insert LF
 					DeleteChars(pos, 1); // Delete CR
@@ -1934,6 +1937,7 @@ void Document::ConvertLineEnds(EndOfLine eolModeSet) {
 			// LF
 			if (eolModeSet == EndOfLine::CrLf) {
 				pos += InsertString(pos, "\r", 1); // Insert CR
+				++length;
 			} else if (eolModeSet == EndOfLine::Cr) {
 				pos += InsertString(pos, "\r", 1); // Insert CR
 				DeleteChars(pos, 1); // Delete LF
