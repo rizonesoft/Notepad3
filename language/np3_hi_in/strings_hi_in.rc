@@ -73,7 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "बदलें"
     IDT_VIEW_WORDWRAP       "शब्द लपटें"
     IDT_VIEW_ZOOMIN         "ज़ूम इन करें"
-    IDT_VIEW_RESETZOOM      "Reset Zoom"
+    IDT_VIEW_RESETZOOM      "ज़ूम रीसेट करें"
     IDT_VIEW_ZOOMOUT        "ज़ूम आउट करें"
     IDT_VIEW_SCHEME         "स्कीम चुनें"
     IDT_VIEW_SCHEMECONFIG   "अपनी पसंद की स्कीम बनाएं"
@@ -104,7 +104,7 @@ BEGIN
     IDS_MUI_UNTITLED        "अनामांकित"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(सिर्फ़ पढ़ने के लिए)"
-    IDS_MUI_FILELOCKED      "<Exclusive>"
+    IDS_MUI_FILELOCKED      "<अनन्य>"
     IDS_MUI_LOADFILE        "शुरू हो रहा है ""%s""..."
     IDS_MUI_SAVEFILE        "सहेजा जा रहा है ""%s""..."
     IDS_MUI_PRINTFILE       "प्रष्ठ मुद्रित हो रहा है %i..."
@@ -120,8 +120,8 @@ BEGIN
     IDS_MUI_FILTER_BITMAP   "Bitmap फ़ाईलें (*.bmp)|*.bmp|All files (*.*)|*.*|"
     IDS_MUI_OPENWITH        "अपनी पसंदीदा ऐप्लिकेशन की निदेशिका चुनें"
     IDS_MUI_FAVORITES       "अपनी पसंदीदा फ़ाईल की निदेशिका चुनें"
-    IDS_MUI_BACKSLASHHELP   "Backslash Transformations\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
+    IDS_MUI_BACKSLASHHELP   "बैकस्लैश रूपांतरण\n\n\\a\tअलर्ट (BEL, Ascii 7)\n\\b\tबैकस्पेस (BS, Ascii 8)\n\\f\tफ़ॉर्मफ़ीड (FF, Ascii 12)\n\\n\tनई पंक्ति (LF, Ascii 10)\n\\r\tकैरेज रिटर्न (CR, Ascii 13)\n\\t\tक्षैतिज टैब (HT, Ascii 9)\n\\v\tऊर्ध्वाधर टैब (VT, Ascii 11)\n\\0oo\tऑक्टल मान\n\\u####\tहेक्साडेसिमल मान\n\\xhh\tहेक्साडेसिमल मान\n\\\\\tबैकस्लैश"
+    IDS_MUI_REGEXPHELP      "नियमित व्यंजक मिलान सिंटैक्स (बहु पंक्तियाँ)\n\n.\tकोई भी वर्ण\n^\tनई पंक्ति के तुरंत बाद खाली स्ट्रिंग\n$\tपंक्ति अंत के ठीक पहले खाली स्ट्रिंग\n\\<\tशब्द का आरंभ\n\\>\tशब्द का अंत\n\\b\tशब्द सीमा\n[...]\tवर्णों का समूह ([abc]) या श्रेणी ([a-z])\n[^...]\tसमूह या श्रेणी में नहीं\n\\d\tकोई भी दशमलव अंक\n\\D\tकोई भी गैर-अंक वर्ण\n\\s\tकोई भी रिक्त स्थान वर्ण\n\\S\tरिक्त स्थान नहीं\n\\w\tकोई भी ""शब्द"" वर्ण\n\\W\tकोई भी ""गैर-शब्द"" वर्ण\n\\x\tविशेष अर्थ वाले वर्ण से बचाव\n\\xHH\tहेक्स कोड HH वाला वर्ण\n?\t0 या 1 बार पूर्ववर्ती से मिलान\n*\t0 या अधिक बार पूर्ववर्ती से मिलान\n+\t1 या अधिक बार पूर्ववर्ती से मिलान\n*? or +?\tपरिमाणकों ""?"" और ""+"" का गैर-लालची मिलान\n(\tक्षेत्र का आरंभ\n)\tक्षेत्र का अंत\n\\n\tबदलते समय क्षेत्र का संदर्भ (n है 1-9)\n"
     IDS_MUI_WILDCARDHELP    "Wildcard खोज\n\n*\tशून्य या उससे ज्यादा वर्णों का मिलान\n?\tसिर्फ़ एक वर्ण का मिलान"
 END
 
@@ -129,7 +129,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    """%s"" शुरू करने में त्रुटि"
     IDS_MUI_ERR_SAVEFILE    """%s"" सहेजने में त्रुटि"
-    IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
+    IDS_MUI_ERR_PATHNOTFOUND """%s"" का पथ अब मौजूद नहीं है।\nपथ पुनः बनाएं और फ़ाईल सहेजें?"
     IDS_MUI_ERR_DLG_FORMAT  "त्रुटि '%s', कारण:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "कोई फ़ाईल ब्राउज़र plugin नहीं मिला।\nकृपया MiniPath फ़ाईल ब्राउज़र plugin यहाँ से डाउनलोड करें: https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "कोई फ़ाईल सर्च plugin नहीं मिला।\ngrepWinNP3 सर्च plugin कृपया यहाँ से डाउनलोड करें: https://rizonesoft.com"
@@ -139,7 +139,7 @@ BEGIN
                             "मौजूद Notepad3 विंडो कार्यरत है या पहले से कोई चालू डायलॉग डिब्बा खुला है\nक्या आप दूसरी Notepad3 विंडो खोलना चाहते हैं?"
     IDS_MUI_ERR_ENCODINGNA  "आपके सिस्टम पर चुनी हुई एन्कोडिंग के लिए कोड पृष्ठ रूपांतरण तालिका मौजूद नहीं है"
     IDS_MUI_ERR_UNICODE     "इस युनिकोड फ़ाईल के रूपांतरण में त्रुटि है\nफ़ाईल सहेजेने में डेटा खो जाएगा!"
-    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s""\nSuitable dimension: %i x %i (width >= %i x height)"
+    IDS_MUI_ERR_BITMAP      "bitmap ""%s"" के आयाम उपयुक्त नहीं हैं\nउपयुक्त आयाम: %i x %i (चौड़ाई >= %i x ऊंचाई)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "उपयोगकर्ता अधिकार वयस्थापक रूप मे करने मे त्रुटि!"
 END
@@ -177,12 +177,12 @@ BEGIN
     IDS_MUI_REPLCOUNT       "निर्देशित खोज पैटर्न के अनुसार %s उपस्थितियाँ बदल दी गई हैं"
     IDS_MUI_ASK_ENCODING    "फ़ाईल एन्कोडिंग बदलने के स्वरूप निराधार टेक्स्ट डिफ़ॉल्ट वर्णों से बदल सकते हैं, और पूर्ववत करने का इतिहास भी साफ़ हो जाएगा। शुरू करें?"
     IDS_MUI_ASK_ENCODING2   "आप एक खाली फ़ाईल की एन्कोडिंग बदलने जा रहे हैं। ध्यान दें कि यह कार्य पूर्ववत करने का इतिहास भी साफ़ कर देगा, क्यूंकि यह नई एन्कोडिंग के साथ sync नहीं हो सकता. शुरू करें?"
-    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
+    IDS_MUI_ASK_CLEAR_UNDO  "यह कार्य पूर्ववत करने का इतिहास साफ़ कर देगा। जारी रखें?"
     IDS_MUI_READONLY_SAVE   """%s"" सिर्फ़ पढ़ने-लायक है। अन्य फ़ाईल के रूप में सहेजें?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program\nPlease choose:\n\nIgnore -\t\tIgnore further changes\nReload -\t\tReload File\nMonitor -\t\tSwitch to file monitoring"
+                            "चालू फ़ाईल किसी बाहरी प्रोग्राम द्वारा बदली गई है\nकृपया चुनें:\n\nनजरंदाज करें -\t\tआगे के परिवर्तन नजरंदाज करें\nपुनः लोड करें -\t\tफ़ाईल पुनः लोड करें\nनिगरानी करें -\t\tफ़ाईल निगरानी पर जाएं"
     IDS_MUI_FILECHANGENOTIFY2 "चालू फ़ाईल मिटा दी गई है। अभी सहेजें?"
-    IDS_MUI_FILELOCK_ERROR  "Can not acquire exclusive file lock for ""%s""!"
+    IDS_MUI_FILELOCK_ERROR  """%s"" के लिए अनन्य फ़ाईल लॉक प्राप्त नहीं हो सका!"
     IDS_MUI_STICKYWINPOS    "Sticky विंडो की स्तिथि सक्षम है. कोई भी नई Notepad3 विंडो इस विंडो की स्तिथि सेटिंग को प्रयोग मे लेगी"
     IDS_MUI_SAVEDSETTINGS   "चालू प्रोग्राम सेटिंग सहेजी जा चुकी हैं"
     IDS_MUI_CREATEINI_FAIL  "कन्फ़िगरेशन फ़ाईल बनाने में त्रुटि"
@@ -210,7 +210,7 @@ BEGIN
                              "फ़ाईल परिवर्तन का मौलिक समय संरक्षण सक्षम है\nयह विकल्प इस सत्र के लिए बना रहेगा!"
     IDS_MUI_OUT_OFF_OCCMRK   "उपस्तिथि चिन्हक खत्म हो रहे है (बुकमार्क/हाइलाइट)!"
     IDS_MUI_DOCUMENT_READONLY
-                             "The document is locked for view only. Keep the lock to prevent editing?"
+                             "दस्तावेज़ केवल देखने के लिए लॉक है। संपादन रोकने के लिए लॉक बनाए रखें?"
 END
 
 STRINGTABLE
@@ -226,7 +226,7 @@ BEGIN
     IDS_MUI_WARN_STYLE_RESET
                             "यह क्रिया शैली को डिफ़ॉल्ट स्वरूप के वांछित रंग प्रकार में वापस ले आएगी और चालू थीम को मानक कॉन्फिग .ini में बदल देगी!"
     IDS_MUI_ASK_INSTANCE_EXISTS
-                            "Single File Instance Mode:\n\nSet focus on already loaded file instance?"
+                            "एकल फ़ाईल अवस्था मोड:\n\nपहले से लोड फ़ाईल पर ध्यान केंद्रित करें?"
 END
 
 STRINGTABLE
@@ -257,7 +257,7 @@ BEGIN
     IDS_MUI_TITLE_RELARB    "+++ शैली '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB    "शैली '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "संबंधित फ़ाईलनाम के प्रकार:"
-    IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length मिलान"
+    IDS_MUI_ZERO_LEN_MATCH  "^ शून्य-लंबाई मिलान"
     IDS_MUI_GOTO_LINE       "रेखा (1 - %s):"
     IDS_MUI_GOTO_COLUMN     "खंड (1 - %s):"
 END
@@ -267,7 +267,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "भाषा (&L)"
     IDS_USE_LOCALE_DATEFMT  "दिनांक प्रारूप को भाषा अनुसार स्थापित करें (&D)"
     IDS_MUI_MENU_THEMES     "स्कीम संग्रह (&S)"
-    IDM_THEMES_FACTORY_RESET "&Factory Reset"
+    IDM_THEMES_FACTORY_RESET "&फ़ैक्टरी रीसेट"
     IDM_THEMES_STD_CFG       "सामान्य Config (&S)"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
@@ -277,8 +277,8 @@ BEGIN
     IDS_MUI_CLEAR_REPL_HISTORY
                             "बदलाव की जानकारी हटाएं"
     IDS_MUI_SEARCHCLIPIFEMPTY
-                            "Search by Clipboard if empty selection"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
+                            "खाली चुनाव होने पर क्लिपबोर्ड से खोजें"
+    IDS_MUI_REPLCLIPTAG     "शॉर्टकट [^c] द्वारा क्लिपबोर्ड से बदलें"
     IDS_MUI_WRAPSEARCH_FWD  "मिलान के चारों ओर ऊपर से लपेटें"
     IDS_MUI_WRAPSEARCH_BCK  "मिलान के चारों ओर नीचे से लपेटें"
 END
@@ -289,10 +289,10 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "दृश्य टॉगल करें..."
     IDS_MUI_SB_REPLACE_ALL    "सारा बदलें..."
     IDS_MUI_SB_WRAP_LINES     "पंक्ति लपेटें..."
-    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
-    IDS_MUI_SB_CONV_LNBRK     "Line Breaks परिवर्तित करें..."
+    IDS_MUI_SB_SORTING_LINES  "पंक्तियाँ क्रमबद्ध हो रही हैं..."
+    IDS_MUI_SB_CONV_LNBRK     "पंक्ति विराम परिवर्तित करें..."
     IDS_MUI_SB_RECODING_DOC   "दस्तावेज़ रिकोड किया जा रहा है..."
-    IDS_MUI_SB_LEXER_STYLING  "Lexer Styling लागू करें..."
+    IDS_MUI_SB_LEXER_STYLING  "लेक्सर स्टाइलिंग लागू करें..."
 END
 
 STRINGTABLE

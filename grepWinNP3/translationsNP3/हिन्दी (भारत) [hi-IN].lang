@@ -35,7 +35,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld फ़ाइलें, %ld फ़ाइलें छोड़ीं। %ld नतीजे चुने"
 
 #. Resource IDs: (149)
 #, c-format
@@ -157,11 +157,11 @@ msgstr "कई टेक्स्ट नतीजे क्लिपबोर्
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr ""
+msgstr "सभी आइटम्स के लिए कॉलम कॉपी करें"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr ""
+msgstr "चुने हुए आइटम्स के लिए कॉलम कॉपी करें"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
@@ -242,7 +242,7 @@ msgstr "फ़ाइलें"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr ""
+msgstr "%ld फ़ाइलें मिलीं, %ld फ़ाइलें छोड़ीं।"
 
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
@@ -270,7 +270,7 @@ msgstr "अंदर के फ़ोल्डर शामिल करें"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "Symbolic links शामिल करें"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
@@ -290,7 +290,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "बदलते समय फ़ाइल की दिनाँक सुरक्षित रखें"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -494,7 +494,7 @@ msgstr "टेक्स्ट खोज"
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr ""
+msgstr "पथ \"%s\" मौजूद नहीं है या पहुँच योग्य नहीं है!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
@@ -608,7 +608,7 @@ msgstr "मात्र वही फ़ाइल खोजी जाएंगी �
 
 #. Resource IDs: (176)
 msgid "Open list with recent entries"
-msgstr ""
+msgstr "हाल की प्रविष्टियों की सूची खोलें"
 
 #. Resource IDs: (129)
 msgid "read error"
