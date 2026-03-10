@@ -90,7 +90,7 @@ END
 STRINGTABLE
 BEGIN
     IDT_FILE_LAUNCH          "Executar documento"
-    IDT_VIEW_NEW_WINDOW      "New Empty Window"
+    IDT_VIEW_NEW_WINDOW      "Nova Janela Vazia"
     IDT_VIEW_TOGGLE_VIEW     "Vista focada"
     IDT_VIEW_CHASING_DOCTAIL "Registo de monitorização"
     IDT_VIEW_PIN_ON_TOP      "Sempre visível"
@@ -129,7 +129,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Erro ao carregar ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Erro ao guardar ""%s"""
-    IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
+    IDS_MUI_ERR_PATHNOTFOUND "O caminho para ""%s"" já não existe.\nRecriar o caminho e guardar o ficheiro?"
     IDS_MUI_ERR_DLG_FORMAT  "Erro '%s', causa:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Não foi encontrado nenhum plugin de navegador de ficheiros\nO plugin do navegador de ficheiros MiniPath pode ser transferido de https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Não foi encontrado nenhum plugin de procura de ficheiros\nO plugin de procura de ficheiros grepWinNP3 pode ser transferido de https://rizonesoft.com"
@@ -139,7 +139,7 @@ BEGIN
                             "A janela existente do Notepad3 está ocupada ou tem uma caixa de diálogo activa\nDeseja abrir outra janela do Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "As tabelas de conversão da página de código para a codificação seleccionada, não estão disponíveis no seu sistema"
     IDS_MUI_ERR_UNICODE     "Erro ao converter este ficheiro Unicode\nSerão perdidos dados se o ficheiro for guardado!"
-    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s""\nSuitable dimension: %i x %i (width >= %i x height)"
+    IDS_MUI_ERR_BITMAP      "Dimensão de bitmap ""%s"" inadequada\nDimensão adequada: %i x %i (largura >= %i x altura)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Erro na elevação dos direitos do utilizador!"
 END

@@ -35,7 +35,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld файлаў, прапушчана %ld файлаў. %ld вынікаў вылучана."
 
 #. Resource IDs: (149)
 #, c-format
@@ -157,11 +157,11 @@ msgstr "Капіяваць тэкст вынікаў"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr ""
+msgstr "Капіяваць калонку для ўсіх элементаў"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr ""
+msgstr "Капіяваць калонку для выбраных элементаў"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
@@ -242,7 +242,7 @@ msgstr "Файлы"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr ""
+msgstr "Знойдзена %ld файлаў, прапушчана %ld файлаў."
 
 #. Resource IDs: (109)
 msgid "GREPWINNP3"
@@ -270,7 +270,7 @@ msgstr "Уключыць падпапкі"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "Уключыць сімвалічныя спасылкі"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
@@ -290,7 +290,7 @@ msgstr "КБ"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "Захоўваць дату файла пры замене"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -608,7 +608,7 @@ msgstr "Толькі файлы, якія адпавядаюць шаблону.
 
 #. Resource IDs: (176)
 msgid "Open list with recent entries"
-msgstr ""
+msgstr "Адкрыць спіс апошніх запісаў"
 
 #. Resource IDs: (129)
 msgid "read error"
