@@ -1907,18 +1907,15 @@ std::string Document::TransformLineEnds(const char *s, size_t len, EndOfLine eol
 void Document::ConvertLineEnds(EndOfLine eolModeSet) {
 	UndoGroup ug(this);
 
-	Sci::Position length = Length();
-	for (Sci::Position pos = 0; pos < length; pos++) {
+	for (Sci::Position pos = 0; pos < LengthNoExcept(); pos++) {
 		const char ch = cb.CharAt(pos);
 		if (ch == '\r') {
 			if (cb.CharAt(pos + 1) == '\n') {
 				// CRLF
 				if (eolModeSet == EndOfLine::Cr) {
 					DeleteChars(pos + 1, 1); // Delete the LF
-					--length;
 				} else if (eolModeSet == EndOfLine::Lf) {
 					DeleteChars(pos, 1); // Delete the CR
-					--length;
 				} else {
 					pos++;
 				}
@@ -1926,7 +1923,6 @@ void Document::ConvertLineEnds(EndOfLine eolModeSet) {
 				// CR
 				if (eolModeSet == EndOfLine::CrLf) {
 					pos += InsertString(pos + 1, "\n", 1); // Insert LF
-					++length;
 				} else if (eolModeSet == EndOfLine::Lf) {
 					pos += InsertString(pos, "\n", 1); // Insert LF
 					DeleteChars(pos, 1); // Delete CR
@@ -1937,7 +1933,6 @@ void Document::ConvertLineEnds(EndOfLine eolModeSet) {
 			// LF
 			if (eolModeSet == EndOfLine::CrLf) {
 				pos += InsertString(pos, "\r", 1); // Insert CR
-				++length;
 			} else if (eolModeSet == EndOfLine::Cr) {
 				pos += InsertString(pos, "\r", 1); // Insert CR
 				DeleteChars(pos, 1); // Delete LF
@@ -3145,7 +3140,9 @@ public:
 	const Document *doc;
 	Sci::Position position;
 
-	explicit ByteIterator(const Document *doc_=nullptr, Sci::Position position_=0) noexcept :
+	ByteIterator() noexcept :
+		ByteIterator(nullptr) {}
+	explicit ByteIterator(const Document *doc_, Sci::Position position_=0) noexcept :
 		doc(doc_), position(position_) {
 	}
 	char operator*() const noexcept {
@@ -3210,7 +3207,9 @@ public:
 	using pointer = wchar_t*;
 	using reference = wchar_t&;
 
-	explicit UTF8Iterator(const Document *doc_=nullptr, Sci::Position position_=0) noexcept :
+	UTF8Iterator() noexcept :
+		UTF8Iterator(nullptr) {}
+	explicit UTF8Iterator(const Document *doc_, Sci::Position position_=0) noexcept :
 		doc(doc_), position(position_) {
 		if (doc) {
 			ReadCharacter();
@@ -3299,7 +3298,9 @@ public:
 	using pointer = wchar_t*;
 	using reference = wchar_t&;
 
-	explicit UTF8Iterator(const Document *doc_=nullptr, Sci::Position position_=0) noexcept :
+	UTF8Iterator() noexcept :
+		UTF8Iterator(nullptr) {}
+	explicit UTF8Iterator(const Document *doc_, Sci::Position position_=0) noexcept :
 		doc(doc_), position(position_) {
 	}
 	wchar_t operator*() const noexcept {

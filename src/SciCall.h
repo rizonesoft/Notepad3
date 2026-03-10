@@ -157,7 +157,7 @@ __forceinline LRESULT SciCall_##fn(type1 var1, type2 var2) {       \
 //
 // Initialize
 //
-
+# 
 //  SetTechnology
 DeclareSciCallR0(GetTechnology, GETTECHNOLOGY, int);
 DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);
