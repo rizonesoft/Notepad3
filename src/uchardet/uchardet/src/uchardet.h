@@ -110,6 +110,18 @@ UCHARDET_INTERFACE const char * uchardet_get_charset(uchardet_t ud);
 
 UCHARDET_INTERFACE float uchardet_get_confidence(uchardet_t ud);
 
+/* NP3 patch: Language filter for CJK encoding disambiguation.
+ * Must be called after uchardet_new() but before uchardet_handle_data().
+ * Default is UCHARDET_FILTER_ALL. */
+#define UCHARDET_FILTER_CHINESE_SIMPLIFIED  0x01
+#define UCHARDET_FILTER_CHINESE_TRADITIONAL 0x02
+#define UCHARDET_FILTER_JAPANESE            0x04
+#define UCHARDET_FILTER_KOREAN              0x08
+#define UCHARDET_FILTER_NON_CJK             0x10
+#define UCHARDET_FILTER_ALL                 0x1F
+
+UCHARDET_INTERFACE void uchardet_set_language_filter(uchardet_t ud, unsigned int filter);
+
 #ifdef __cplusplus
 }
 #endif

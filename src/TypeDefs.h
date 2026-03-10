@@ -782,10 +782,11 @@ typedef struct SETTINGS2_T {
     int     WrapAroundTooltipTimeout;
     int     LargeIconScalePrecent;
     int     DarkModeHiglightContrast;
+    int     UchardetLanguageFilter;
 
     float   AnalyzeReliableConfidenceLevel;
     float   LocaleAnsiCodePageAnalysisBonus;
-           
+
 #ifdef D_NP3_WIN10_DARK_MODE
     COLORREF DarkModeBkgColor;
     COLORREF DarkModeBtnFaceColor;
