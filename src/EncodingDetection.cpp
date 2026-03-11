@@ -1239,9 +1239,6 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
             encDetRes.analyzedEncoding = iAnalyzeHint;
             encDetRes.confidence = (1.0f - Settings2.AnalyzeReliableConfidenceLevel);
         }
-        else if (encDetRes.bPureASCII7Bit && encDetRes.bValidUTF8) {
-            encDetRes.analyzedEncoding = CPI_UTF8;
-        }
 
         if (!bSkipUTFDetection) {
 
@@ -1306,12 +1303,12 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
             encDetRes.Encoding = encDetRes.analyzedEncoding;
         }
     }
-    else if (!encDetRes.bIsAnalysisReliable && Encoding_IsValid(encDetRes.analyzedEncoding))
+    else if (!encDetRes.bIsAnalysisReliable && (Encoding_IsValid(encDetRes.analyzedEncoding) || encDetRes.bPureASCII7Bit))
     {
         // UCHARDET below confidence threshold (UseReliableCEDonly is true)
         encDetRes.Encoding = encDetRes.bValidUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
     }
-    else if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis) && (iConfidence > 66))
+    else if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis) && (iConfidence > 50))
     {
         // unicodeAnalysis (IsTextUnicode) confirms Unicode structure,
         // iConfidence is from UCHARDET analysis — use analyzedEncoding (intentional)
