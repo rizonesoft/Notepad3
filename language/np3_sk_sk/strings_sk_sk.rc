@@ -129,7 +129,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Chyba načítania ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Chyba ukladania ""%s"""
-    IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
+    IDS_MUI_ERR_PATHNOTFOUND "Cesta pre ""%s"" už neexistuje.\nZnovu vytvoriť cestu a uložiť súbor?"
     IDS_MUI_ERR_DLG_FORMAT  "Chyba '%s', príčina:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Nenašiel sa doplnok na prehľadávanie súborov\nDoplnok MiniPath si môžete stiahnuť z https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Nenašiel sa vyhľadávací doplnok\nDoplnok na vyhľadávanie súborov grepWinNP3 si môžete stiahnuť z https://rizonesoft.com"
