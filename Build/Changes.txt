@@ -35,13 +35,14 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.26.306.(build_#) (2026-03-06)
+Current BETA Version 6.26.311.(build_#) (2026-03-11)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]-
+[.311.1]- Feat: add UCHARDET encoding prober filter (Settings2:UchardetLanguageFilter).
 [.227.1]- Feat: Add auto-scroll on MMB click.
 [.130.1]- Add Scintilla np3_patches with 5 patch files for future upgrades (SCI).
 [.130.1]- Use Segment Heaps for memory allocation if available (Win10 2004+/Win11).
@@ -55,6 +56,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]-
+[.306.1]- Chore: sync. with current scintilla mirror.
+[.306.1]- Chore: update SimpleIni header only lib (to v4.25).
 [.306.1]- Chore: add timsort (repl. qsort) scintilla care (iface check) scintill-call-wrapper update.
 [.306.1]- Major version 6 → 7 for Win10 minimum.
 [.305.1]- Feat: enhancement of MMB auto-scroll.
@@ -78,7 +81,10 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]-
-[.306.1]- Handling if file's parent dir is deleted..
+[.311.1]- Bug in Scintilla's Document::ConvertLineEnds() method (SCI).
+[.311.1]- Drag-handle bug on resizable windows.
+[.311.1]- Enhance InfoBoxLng() to replace non dark-mode aware MessageBoxEx.
+[.306.1]- Handling if file's parent dir is deleted.
 [.306.1]- PCRE2 interface - bug matching line-end ($) (PRC).
 [.306.1]- About dialog and version patching script.
 [.305.1]- UFT-8 affinity for uchardet uncertainty (lower than 66%) (UCH).
@@ -130,19 +136,9 @@ CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
 TRANSLATIONS (MUI):
 --------------------------------------------------------
+[.311.1]- Hindi (hi-IN).
+[.311.1]- Portuguese (pt-PT).
 [.101.1]- Greek (el-GR).
-
---------------------------------------------------------
-Hello everybody ! 😀
-For our "Notepad3 Translation Projects", we are looking for motivated volunteers, with a priority
-to resume "(incomplete...)" translation projects:
-
-- Hindi (hi-IN) (incomplete...)
-- Portuguese (pt-PT) (incomplete...).
-- etc...
-
-Please, send me a PM (mailto:hpwamr51 @ gmail.com) if you are willing to help. 🤔
---------------------------------------------------------
 
 
 ========================================================
