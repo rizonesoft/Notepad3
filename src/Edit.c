@@ -1465,12 +1465,6 @@ bool EditLoadFile(
                 status->iEncoding = CPI_UTF8;
                 EditDetectEOLMode(lpData, cbData, status);
             }
-        }
-        else if (!IS_ENC_ENFORCED() && encDetection.bPureASCII7Bit) {
-            // load ASCII(7-bit) as ANSI/UTF-8
-            EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory, bReloadFile);
-            status->iEncoding = (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT);
-            EditDetectEOLMode(lpData, cbData, status);
 
         } else { // ===  ALL OTHER NON UTF-8 ===
 
