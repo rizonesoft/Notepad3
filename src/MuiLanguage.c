@@ -144,7 +144,7 @@ static void SetMuiLocaleAll(LPCWSTR pszLocaleStr) {
             WCHAR msg[128];
             StringCchPrintf(msg, COUNTOF(msg), L"Can't set desired locale '%s', using '%s' instead!",
                 pszLocaleStr, pszLocaleCur ? pszLocaleCur : L"<default>");
-            MsgBoxLastError(msg, ERROR_MUI_INVALID_LOCALE_NAME);
+            InfoBoxLastError(msg, ERROR_MUI_INVALID_LOCALE_NAME);
 #endif
         }
     }
@@ -385,14 +385,14 @@ unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
 
     WCHAR tchUserLangMultiStrg[LARGE_BUFFER] = { L'\0' };
     if (!_LngStrToMultiLngStr(tchAvailLngs, tchUserLangMultiStrg, COUNTOF(tchUserLangMultiStrg))) {
-        MsgBoxLastError(L"Trying to load available Language resources!", ERROR_MUI_INVALID_LOCALE_NAME);
+        InfoBoxLastError(L"Trying to load available Language resources!", ERROR_MUI_INVALID_LOCALE_NAME);
     }
     ULONG langCount = 0;
     // using SetProcessPreferredUILanguages is recommended for new applications (esp. multi-threaded applications)
     SetProcessPreferredUILanguages(0, L"\0\0", &langCount); // clear
     if (!SetProcessPreferredUILanguages(MUI_LANGUAGE_NAME, tchUserLangMultiStrg, &langCount) || (langCount == 0)) {
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
-        MsgBoxLastError(L"Trying to set preferred Language!", ERROR_RESOURCE_LANG_NOT_FOUND);
+        InfoBoxLastError(L"Trying to set preferred Language!", ERROR_RESOURCE_LANG_NOT_FOUND);
 #endif
     }
 
@@ -413,7 +413,7 @@ unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
             MUI_LanguageDLLs[iLngIndex].bIsActive = true;
             MUI_LanguageDLLs[iInternalLngIndex].bIsActive = false;
         } else {
-            //MsgBoxLastError(L"LoadMUILibrary", 0);
+            //InfoBoxLastError(L"LoadMUILibrary", 0);
             iLngIndex = MuiLanguages_CountOf(); // not found
         }
     }
@@ -548,7 +548,7 @@ void DynamicLanguageMenuCmd(int cmd) {
 
         Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
         if (!Globals.hMainMenu) {
-            MsgBoxLastError(L"LoadMenu()", 0);
+            InfoBoxLastError(L"LoadMenu()", 0);
             CloseApplication();
             return;
         }

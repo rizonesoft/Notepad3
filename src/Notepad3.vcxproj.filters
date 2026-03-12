@@ -46,6 +46,9 @@
     <Filter Include="Source Files\tinyexpr">
       <UniqueIdentifier>{60486982-91be-42d2-b154-86c2706ca60f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="timsort">
+      <UniqueIdentifier>{9a2064fb-b044-4ce5-91de-99fa06cc5222}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dialogs.c">
@@ -432,6 +435,12 @@
     <ClCompile Include="StyleLexers\styleLexVerilog.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
+    <ClCompile Include="timsort\timsort.c">
+      <Filter>timsort</Filter>
+    </ClCompile>
+    <ClCompile Include="timsort\timsort_r.c">
+      <Filter>timsort</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dlapi.h">
@@ -610,6 +619,12 @@
     </ClInclude>
     <ClInclude Include="tinyexpr\tinyexpr.h">
       <Filter>Source Files\tinyexpr</Filter>
+    </ClInclude>
+    <ClInclude Include="timsort\timsort.h">
+      <Filter>timsort</Filter>
+    </ClInclude>
+    <ClInclude Include="timsort\timsort-impl.h">
+      <Filter>timsort</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

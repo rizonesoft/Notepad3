@@ -96,7 +96,7 @@ BEGIN
     CONTROL         "Corresp. ao &início da palavra",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,110,10
     CONTROL         "&Transf. barras invertidas",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,96,10
     CONTROL         "&Expressão regular",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,96,10
-    CONTROL         "Dot &matches line-breaks",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,103,10
+    CONTROL         "Ponto corresponde a &quebras de linha",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,103,10
     CONTROL         "Não &fazer procura contínua",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,105,10
     CONTROL         "Fechar após &localizar",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,81,10
     CONTROL         "Marcar &ocorrências",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,73,10
@@ -130,7 +130,7 @@ BEGIN
     CONTROL         "Corresp. ao &início da palavra",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,90,110,10
     CONTROL         "&Transf. barras invertidas",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,102,92,10
     CONTROL         "&Expressão regular",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,114,97,10
-    CONTROL         "Dot &matches line-breaks",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,124,103,10
+    CONTROL         "Ponto corresponde a &quebras de linha",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,124,103,10
     CONTROL         "Sem procura contínua",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,66,83,10
     CONTROL         "Fechar após substitui&r",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,78,85,10
     CONTROL         "Marcar &ocorrências",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,90,73,10
@@ -319,9 +319,9 @@ BEGIN
     PUSHBUTTON      "&Repor",IDC_STYLEDEFAULT,377,201,42,14
     PUSHBUTTON      "",IDC_PREVSTYLE,426,201,15,14,BS_BITMAP
     PUSHBUTTON      "",IDC_NEXTSTYLE,445,201,15,14,BS_BITMAP
-    LTEXT           "Dark-Mode Contrast(%):", IDC_STATIC2,181,222,80,8
+    LTEXT           "Contraste Modo Escuro (%):", IDC_STATIC2,181,222,80,8
     EDITTEXT        IDC_DARK_MODE_CONTRAST,265,221,24,12,ES_AUTOHSCROLL
-    LTEXT           "[0-6000] Default: 75%",IDC_STATIC3,300,222,80,8
+    LTEXT           "[0-6000] Padrão: 75%",IDC_STATIC3,300,222,80,8
     PUSHBUTTON      "&Importar...",IDC_IMPORT,181,240,50,14
     PUSHBUTTON      "E&xportar...",IDC_EXPORT,237,240,50,14
     DEFPUSHBUTTON   "OK",IDOK,355,240,50,14
@@ -678,8 +678,8 @@ BEGIN
     CONTROL         "Não mostrar &de novo esta mensagem",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,66,122,10
     DEFPUSHBUTTON   "&Recarregar",IDRETRY,186,82,50,14
-    PUSHBUTTON      "&Ignore", IDCANCEL, 130, 82, 50, 14
-    PUSHBUTTON      "&Monitor",IDCONTINUE,242,82,50,14
+    PUSHBUTTON      "&Ignorar", IDCANCEL, 130, 82, 50, 14
+    PUSHBUTTON      "&Monitorizar",IDCONTINUE,242,82,50,14
 END
 
 IDD_MUI_SORT DIALOGEX 0, 0, 185, 188
@@ -690,8 +690,8 @@ BEGIN
     CONTROL         "Ordenação &ascendente",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
     CONTROL         "Ordenação &descendente",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
     CONTROL         "Misturar linhas",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
-    CONTROL         "&Unite duplicate lines",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
-    CONTROL         "&Remove duplicate lines",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
+    CONTROL         "&Unir linhas duplicadas",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,104,10
+    CONTROL         "Remo&ver linhas duplicadas",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,104,10
     CONTROL         "Remover linhas &únicas",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,104,10
     CONTROL         "Remover linhas &em branco",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
     CONTROL         "Remover linhas com espaços em branco",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,145,10
@@ -880,7 +880,7 @@ AUTOCHECKBOX    "Segurança ao guardar auto", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 15
 AUTOCHECKBOX    "Segurança lado a lado", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP
 PUSHBUTTON      "Abrir pasta", IDC_AS_BACKUP_OPENFOLDER, 110, 122, 60, 14
 DEFPUSHBUTTON   "OK", IDOK, 71, 146, 50, 14
-PUSHBUTTON      "Cancel", IDCANCEL, 127, 146, 50, 14
+PUSHBUTTON      "Cancelar", IDCANCEL, 127, 146, 50, 14
 END
 
 

@@ -95,7 +95,7 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "फ़ाइल को वापस लाएं (&V)\tF5",                  IDM_FILE_REVERT
-        MENUITEM "File-Vars को नज़रअंदाज़ करें  (&I)",                      CMD_IGNORE_FILE_VARS
+        MENUITEM "फ़ाइल-चर को नज़रअंदाज़ करें  (&I)",                      CMD_IGNORE_FILE_VARS
         POPUP "एन्कोडिंग (&E)"
         BEGIN
             POPUP "इस प्रकार से फ़ाइल में वापस लाएं (&R)"
@@ -154,7 +154,7 @@ BEGIN
     END
     POPUP "संपादन (&E)"
     BEGIN
-        MENUITEM "Document &Read Only"                 IDM_VIEW_READONLY
+        MENUITEM "दस्तावेज़ केवल पढ़ने योग्य (&R)"         IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "पूर्ववत करें (&U)\tCtrl+Z",               IDM_EDIT_UNDO
         MENUITEM "फिर से करें (&R)\tCtrl+Y",              IDM_EDIT_REDO
@@ -197,14 +197,14 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "स्तम्भ लपेटें (&W)...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
-            MENUITEM "&Unite Duplicate Lines (&U)\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Remo&ve Duplicate Lines (&V)",              IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "डुप्लीकेट रेखाएं मिलाएं (&U)\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "डुप्लीकेट रेखाएं हटाएं (&V)",              IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "खाली रेखाएं मिलाएं (&G)\tAlt+Y",          IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "रिक्त रेखाएं मिलाएं (&K)\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
             MENUITEM "खाली रेखाएं हटाएं (&R)\tAlt+R",           IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "रिक्त रेखाएं हटाएं (&B)\tCtrl+Alt+B",      IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "Adva&nced (&N)"
+        POPUP "उन्नत (&N)"
         BEGIN
             MENUITEM "इंडेंट (&I)",                                  IDM_EDIT_INDENT
             MENUITEM "इंडेंट हटाएं (&U)",                             IDM_EDIT_UNINDENT
@@ -228,13 +228,13 @@ BEGIN
                 MENUITEM "[ ]\tCtrl+4",                   CMD_EMBRACE2
                 MENUITEM "{ }\tCtrl+5",                   CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "&Backticks\tCtrl+6",            CMD_EMBRACE4
+                MENUITEM "बैकटिक्स (&B)\tCtrl+6",            CMD_EMBRACE4
                 MENUITEM SEPARATOR
                 MENUITEM "इसके साथ (&W)...\tAlt+Q",               IDM_EDIT_ENCLOSESELECTION
             END
             MENUITEM "चुनाव/रेखा की प्रतिलिपि (&D)/Line\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "Blanks के साथ Pad करें (&P)\tAlt+B",           IDM_EDIT_PADWITHSPACES
+            MENUITEM "रिक्त स्थान से भरें (&P)\tAlt+B",           IDM_EDIT_PADWITHSPACES
             MENUITEM "पहला वर्ण मिटाएं (&F)\tAlt+Z",     IDM_EDIT_STRIP1STCHAR
             MENUITEM "आखरी वर्ण मिटाएं (&L)\tAlt+U",      IDM_EDIT_STRIPLASTCHAR
             MENUITEM "अनुगामी रिक्त स्थान मिटाएं (&T)\tAlt+W",     IDM_EDIT_TRIMLINES
@@ -261,11 +261,11 @@ BEGIN
             MENUITEM "टाइटल केस (&T)\tCtrl+Alt+I",           IDM_EDIT_TITLECASE
             MENUITEM "वाक्य केस (&S)\tCtrl+Alt+O",            IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
-            MENUITEM "चुनाव Tabify करें T&abify Selection (&A)\tCtrl+Shift+T",   IDM_EDIT_CONVERTSPACES
-            MENUITEM "चुनाव Untabify करें Selection (&N)\tCtrl+Shift+S",         IDM_EDIT_CONVERTTABS
+            MENUITEM "चुनाव टैबिफ़ाई करें (&A)\tCtrl+Shift+T",   IDM_EDIT_CONVERTSPACES
+            MENUITEM "चुनाव अनटैबिफ़ाई करें (&N)\tCtrl+Shift+S",         IDM_EDIT_CONVERTTABS
             MENUITEM SEPARATOR
-            MENUITEM "इंडेंट Tabify करें (&A)\tCtrl+Alt+T",        IDM_EDIT_CONVERTSPACES2
-            MENUITEM "इंडेंट Untabify करें (&F)\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
+            MENUITEM "इंडेंट टैबिफ़ाई करें (&A)\tCtrl+Alt+T",        IDM_EDIT_CONVERTSPACES2
+            MENUITEM "इंडेंट अनटैबिफ़ाई करें (&F)\tCtrl+Alt+S",      IDM_EDIT_CONVERTTABS2
             MENUITEM SEPARATOR
             MENUITEM "बेस-64 एनकोड (&64)",                    IDM_EDIT_BASE64ENCODE
             MENUITEM "बेस-64 डीकोड (6&4)",                    IDM_EDIT_BASE64DECODE
@@ -299,8 +299,8 @@ BEGIN
         BEGIN
             MENUITEM "GUID क्लिपबोर्ड में कॉपी करें (&G)\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
             MENUITEM SEPARATOR
-            MENUITEM "&Escape C Chars\tCtrl+Alt+E",                IDM_EDIT_ESCAPECCHARS
-            MENUITEM "&Unescape C Chars\tCtrl+Alt+R",              IDM_EDIT_UNESCAPECCHARS
+            MENUITEM "C वर्ण एस्केप करें (&E)\tCtrl+Alt+E",                IDM_EDIT_ESCAPECCHARS
+            MENUITEM "C वर्ण अनएस्केप करें (&U)\tCtrl+Alt+R",              IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
             MENUITEM "संख्या बढ़ाएं (&I)\tCtrl+Alt+NK+",             CMD_INCREASENUM
             MENUITEM "संख्या घटाएं (&D)\tCtrl+Alt+NK-",             CMD_DECREASENUM
@@ -314,7 +314,7 @@ BEGIN
             MENUITEM "शब्द या रेखा चयनित करें (&W)\tCtrl+Spc",            IDM_EDIT_SELECTWORD
             MENUITEM "सारे मिलान बहु-चयनित करें (&A)\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Split Undo &Transaction at Line-Breaks",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+            MENUITEM "पंक्ति-विराम पर पूर्ववत लेनदेन विभाजित करें",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "बुकमार्क्स (&K)"
@@ -351,14 +351,14 @@ BEGIN
         MENUITEM "खाली स्थान दिखाएं (&B)\tCtrl+Shift+8",           IDM_VIEW_SHOWBLANKS
         MENUITEM "वाक्य अंत दिखाएं (&E)\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
         MENUITEM SEPARATOR
-        POPUP "Change History Marker"
+        POPUP "परिवर्तन इतिहास मार्कर"
         BEGIN
-            MENUITEM "No Change Markers",                IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Show in Margin only",                 IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Show in Document only",               IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Show All Change Markers",             IDM_VIEW_CHGHIST_ALL
+            MENUITEM "कोई मार्कर नहीं",                IDM_VIEW_CHGHIST_NONE
+            MENUITEM "केवल मार्जिन में दिखाएं",                 IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "केवल दस्तावेज़ में दिखाएं",               IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "सभी परिवर्तन मार्कर दिखाएं",             IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "परिवर्तन/पूर्ववत इतिहास साफ़ करें"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "हाईपरलिंक हॉटस्पॉट (&H)\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "रंग परिभाषा हॉटस्पॉट (&C)"
@@ -394,7 +394,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "रेखा संख्या (&N)\tCtrl+Shift+N",         IDM_VIEW_LINENUMBERS
         MENUITEM "बुकमार्क मार्जिन (&M)\tCtrl+Shift+M",      IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "परिवर्तन इतिहास मार्जिन",               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "फोलडिंग (&F)"
         BEGIN
@@ -426,7 +426,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "पैनल (&A)"
         BEGIN
-            MENUITEM "Show Titlebar",                      IDM_VIEW_TITLEBAR
+            MENUITEM "शीर्षक पट्टी दिखाएं",                      IDM_VIEW_TITLEBAR
             MENUITEM "मेनूपट्टी दिखाएं (&M)",                    IDM_VIEW_MENUBAR
             MENUITEM "औज़ारपट्टी दिखाएं (&T)",                  IDM_VIEW_TOOLBAR
             MENUITEM "अवस्था पट्टी दिखाएं (&S)",                 IDM_VIEW_STATUSBAR
@@ -472,12 +472,12 @@ BEGIN
         MENUITEM "शब्द लपेटने की सेटिंग (&W)...",                  IDM_SET_WORDWRAPSETTINGS
         MENUITEM "लंबी रेखा की सेटिंग (&O)...",                    IDM_SET_LONGLINESETTINGS
         MENUITEM "स्वत: टेक्स्ट को इंडेंट करें (&I)",                  IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close &Quotes",                        IDM_SET_AUTOCLOSEQUOTES
-        MENUITEM "Auto Close Brackets (&B)",                  IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "उद्धरण स्वत: बंद करें (&Q)",                        IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "कोष्ठक स्वत: बंद करें (&B)",                  IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "HTML/XML स्वत: बंद करें (&H)\tCtrl+Shift+H",    IDM_SET_AUTOCLOSETAGS
         MENUITEM "शब्द स्वतः पूर्ण करें (&U)",                       IDM_SET_AUTOCOMPLETEWORDS
-        MENUITEM "Lexer-Key-Words स्वतः पूर्ण करें (&K)",           IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Alternate Word Se&parators (&P)\tCtrl+Alt+A",    IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "लेक्सर-की-वर्ड्स स्वतः पूर्ण करें (&K)",           IDM_SET_AUTOCLEXKEYWORDS
+        MENUITEM "वैकल्पिक शब्द विभाजक (&P)\tCtrl+Alt+A",    IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "प्रति फ़ाइल केवल एक अवस्था (&F)",                IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "फ़ाइल परिवर्तन अधिसूचना (&C)...\tAlt+F5",        IDM_SET_CHANGENOTIFY
@@ -491,14 +491,14 @@ BEGIN
         END
         MENUITEM "टूल चलाने से पूर्व सहेजें (&V)",      IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "लघु व्यंजक की गणना करें (&X)",     IDM_SET_EVALTINYEXPRONSEL
-        MENUITEM "Enable Multiple Selection",   IDM_SET_MULTIPLE_SELECTION
+        MENUITEM "बहु-चुनाव सक्षम करें",   IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "स्मरण (&R)"
         BEGIN
             MENUITEM "हाल की फ़ाइल स्मरण रखें (&R)",      IDM_SET_NOSAVERECENT
             MENUITEM "कैरट स्थान सुरक्षित करें (&C)",    IDM_SET_NOPRESERVECARET
             MENUITEM "खोज स्वरूप याद रखें (&S)",    IDM_SET_NOSAVEFINDREPL
-            MENUITEM "&Autoload Recent File",       IDM_SET_AUTOLOAD_MRU_FILE
+            MENUITEM "नवीनतम फ़ाइल स्वतः लोड करें",       IDM_SET_AUTOLOAD_MRU_FILE
         END
         POPUP "विंडो (&N)"
         BEGIN
@@ -579,7 +579,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show Titlebar",            IDM_VIEW_TITLEBAR
+        MENUITEM "शीर्षक पट्टी दिखाएं",            IDM_VIEW_TITLEBAR
         MENUITEM "मेनुपट्टी दिखाएं",               IDM_VIEW_MENUBAR
         MENUITEM "टूलपट्टी दिखाएं",               IDM_VIEW_TOOLBAR
         MENUITEM "अवस्था पट्टी दिखाएं",             IDM_VIEW_STATUSBAR
@@ -599,7 +599,7 @@ BEGIN
         MENUITEM "फोलडिंग",                     IDM_VIEW_FOLDING
         MENUITEM "रेखा संख्या",                IDM_VIEW_LINENUMBERS
         MENUITEM "मार्जिन बुकमार्क करें",             IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Change History Margin",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "परिवर्तन इतिहास मार्जिन",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN

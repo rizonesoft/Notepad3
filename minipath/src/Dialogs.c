@@ -14,10 +14,10 @@
 *                                                                             *
 *******************************************************************************/
 
+#include <sdkddkver.h>
 #if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601
+#define _WIN32_WINNT _WIN32_WINNT_WIN10
 #endif
-#define _WIN32_IE 0x0700
 #define OEMRESOURCE  // use OBM_ resource constants
 #define VC_EXTRALEAN 1
 #define WIN32_LEAN_AND_MEAN 1
@@ -395,17 +395,18 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         cxClient = rc.right - rc.left;
         cyClient = rc.bottom - rc.top;
 
-        AdjustWindowRectEx(&rc,GetWindowLong(hwnd,GWL_STYLE)|WS_THICKFRAME,FALSE,0);
+        // Apply WS_THICKFRAME BEFORE computing borders so styles match
+        SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
+        SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
+
+        AdjustWindowRectEx(&rc,GetWindowLong(hwnd,GWL_STYLE),FALSE,GetWindowLong(hwnd,GWL_EXSTYLE));
         mmiPtMinX = rc.right-rc.left;
         mmiPtMaxY = rc.bottom-rc.top;
 
-        if (Settings.cxGotoDlg < (rc.right-rc.left)) {
-            Settings.cxGotoDlg = rc.right-rc.left;
+        if (Settings.cxGotoDlg < mmiPtMinX) {
+            Settings.cxGotoDlg = mmiPtMinX;
         }
-        SetWindowPos(hwnd,NULL,rc.left,rc.top, Settings.cxGotoDlg,rc.bottom-rc.top,SWP_NOZORDER);
-
-        SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
-        SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
+        SetWindowPos(hwnd,NULL,0,0,Settings.cxGotoDlg,mmiPtMaxY,SWP_NOZORDER|SWP_NOMOVE);
 
         if (g_hDlgIconSmall) {
             SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIconSmall);
@@ -1717,17 +1718,18 @@ INT_PTR CALLBACK CopyMoveDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         cxClient = rc.right - rc.left;
         cyClient = rc.bottom - rc.top;
 
-        AdjustWindowRectEx(&rc,GetWindowLong(hwnd,GWL_STYLE)|WS_THICKFRAME,FALSE,0);
+        // Apply WS_THICKFRAME BEFORE computing borders so styles match
+        SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
+        SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
+
+        AdjustWindowRectEx(&rc,GetWindowLong(hwnd,GWL_STYLE),FALSE,GetWindowLong(hwnd,GWL_EXSTYLE));
         mmiPtMinX = rc.right-rc.left;
         mmiPtMaxY = rc.bottom-rc.top;
 
-        if (Settings.cxCopyMoveDlg < (rc.right-rc.left)) {
-            Settings.cxCopyMoveDlg = rc.right-rc.left;
+        if (Settings.cxCopyMoveDlg < mmiPtMinX) {
+            Settings.cxCopyMoveDlg = mmiPtMinX;
         }
-        SetWindowPos(hwnd,NULL,rc.left,rc.top, Settings.cxCopyMoveDlg,rc.bottom-rc.top,SWP_NOZORDER);
-
-        SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
-        SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
+        SetWindowPos(hwnd,NULL,0,0,Settings.cxCopyMoveDlg,mmiPtMaxY,SWP_NOZORDER|SWP_NOMOVE);
 
         if (g_hDlgIconSmall) {
             SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIconSmall);
@@ -2003,20 +2005,21 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         cxClient = rc.right - rc.left;
         cyClient = rc.bottom - rc.top;
 
-        AdjustWindowRectEx(&rc,GetWindowLong(hwnd,GWL_STYLE)|WS_THICKFRAME,FALSE,0);
+        // Apply WS_THICKFRAME BEFORE computing borders so styles match
+        SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
+        SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
+
+        AdjustWindowRectEx(&rc,GetWindowLong(hwnd,GWL_STYLE),FALSE,GetWindowLong(hwnd,GWL_EXSTYLE));
         mmiPtMinX = rc.right-rc.left;
         mmiPtMaxY = rc.bottom-rc.top;
 
-        if (Settings.cxOpenWithDlg < (rc.right-rc.left)) {
-            Settings.cxOpenWithDlg = rc.right-rc.left;
+        if (Settings.cxOpenWithDlg < mmiPtMinX) {
+            Settings.cxOpenWithDlg = mmiPtMinX;
         }
-        if (Settings.cyOpenWithDlg < (rc.bottom-rc.top)) {
-            Settings.cyOpenWithDlg = rc.bottom-rc.top;
+        if (Settings.cyOpenWithDlg < mmiPtMaxY) {
+            Settings.cyOpenWithDlg = mmiPtMaxY;
         }
-        SetWindowPos(hwnd,NULL,rc.left,rc.top, Settings.cxOpenWithDlg, Settings.cyOpenWithDlg,SWP_NOZORDER);
-
-        SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
-        SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
+        SetWindowPos(hwnd,NULL,0,0,Settings.cxOpenWithDlg,Settings.cyOpenWithDlg,SWP_NOZORDER|SWP_NOMOVE);
 
         if (g_hDlgIconSmall) {
             SendMessage(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)g_hDlgIconSmall);

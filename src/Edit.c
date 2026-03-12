@@ -1357,6 +1357,40 @@ bool EditLoadFile(
 
     // --------------------------------------------------------------------------
 
+    if (encDetection.bIsUTF32) {
+        // UTF-32 is not supported — convert through ANSI codepage for binary display
+        // (same conversion path that other binary files use via EXTERNAL_8BIT)
+        status->iEncoding = CPI_ANSI_DEFAULT;
+        UINT const uCodePage = Encoding_GetCodePage(CPI_ANSI_DEFAULT);
+
+        LPWSTR const lpDataWide = AllocMem(cbData * 2 + 16, HEAP_ZERO_MEMORY);
+        ptrdiff_t const cbDataWide = MultiByteToWideCharEx(uCodePage, 0, lpData, cbData,
+                                         lpDataWide, (SizeOfMem(lpDataWide) / sizeof(WCHAR)));
+        if (cbDataWide != 0) {
+            FreeMem(lpData);
+            lpData = AllocMem(cbDataWide * 3 + 16, HEAP_ZERO_MEMORY);
+            cbData = WideCharToMultiByteEx(Encoding_SciCP, 0, lpDataWide, cbDataWide,
+                                           lpData, SizeOfMem(lpData), NULL, NULL);
+            if (cbData != 0) {
+                EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory, bReloadFile);
+                EditDetectEOLMode(lpData, cbData, status);
+                FreeMem(lpDataWide);
+            } else {
+                FreeMem(lpDataWide);
+                EditSetNewText(hwnd, "", 0, bClearUndoHistory, bReloadFile);
+            }
+        } else {
+            FreeMem(lpDataWide);
+            EditSetNewText(hwnd, "", 0, bClearUndoHistory, bReloadFile);
+        }
+        status->iEOLMode = Settings.DefaultEOLMode;
+        FreeMem(lpData);
+        InfoBoxLng(MB_ICONWARNING, L"MsgUTF32Unsupported", IDS_MUI_ERR_ENCODINGNA);
+        goto observe;
+    }
+
+    // --------------------------------------------------------------------------
+
     if (Flags.bDevDebugMode) {
 #if TRUE
         SetAdditionalTitleInfo(Encoding_GetTitleInfo());
@@ -1431,12 +1465,6 @@ bool EditLoadFile(
                 status->iEncoding = CPI_UTF8;
                 EditDetectEOLMode(lpData, cbData, status);
             }
-        }
-        else if (!IS_ENC_ENFORCED() && encDetection.bPureASCII7Bit) {
-            // load ASCII(7-bit) as ANSI/UTF-8
-            EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory, bReloadFile);
-            status->iEncoding = (Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT);
-            EditDetectEOLMode(lpData, cbData, status);
 
         } else { // ===  ALL OTHER NON UTF-8 ===
 
@@ -2123,7 +2151,7 @@ void EditURLDecode(const bool isPathConvert)
 
     // can URL be found by Hyperlink pattern matching ?
     int matchLen = 0;
-    ptrdiff_t const pos = RegExFind(s_pUrlRegExA, pszUnescaped, false, SciCall_GetEOLMode(), &matchLen);
+    ptrdiff_t const pos = RegExFind(s_pUrlRegExA, pszUnescaped, false, &matchLen);
     bool const bIsValidConversion = isPathConvert ? ((pos >= 0) && (cchUnescapedDec == matchLen)) : true;
 
     if (bIsValidConversion) {
@@ -3083,6 +3111,7 @@ void EditCutLines(HWND hwnd, const bool bMSBehavSelEmpty)
         bool const bIsLineEmpty = Sci_GetNetLineLength(Sci_GetCurrentLineNumber()) == 0;
         UndoTransActionBegin();
         if (SciCall_IsSelectionEmpty() && bMSBehavSelEmpty) {
+            //? SciCall_CutAllowLine(); - does it the same as CopyAllowLine() + LineDelete()?
             SciCall_CopyAllowLine(); // (!) VisualStudio behavior
             // On Windows, an extra "MSDEVLineSelect" marker is added to the clipboard
             // which is then used in SCI_PASTE to paste the whole line before the current line.
@@ -5499,23 +5528,23 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
     if (iSortFlags & SORT_ASCENDING) {
         if (iSortFlags & SORT_NOCASE) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdI);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStdI);
         } else if (iSortFlags & SORT_LOGICAL) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdLogical);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStdLogical);
         } else if (iSortFlags & SORT_LEXICOGRAPH) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpLexicographical);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpLexicographical);
         } else {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStd);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStd);
         }
     } else if (iSortFlags & SORT_DESCENDING) {
         if (iSortFlags & SORT_NOCASE) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdIRev);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStdIRev);
         } else if (iSortFlags & SORT_LOGICAL) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdLogicalRev);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStdLogicalRev);
         } else if (iSortFlags & SORT_LEXICOGRAPH) {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpLexicographicalRev);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpLexicographicalRev);
         } else {
-            qsort(pLines, iLineCount, sizeof(SORTLINE), CmpStdRev);
+            NP3_SORT(pLines, iLineCount, sizeof(SORTLINE), CmpStdRev);
         }
     } else { /*if (iSortFlags & SORT_SHUFFLE)*/
         srand((UINT)GetTicks_ms());
@@ -7319,13 +7348,13 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 break;
             case IDC_BACKSLASHHELP:
                 // Display help messages in the find/replace windows
-                MessageBoxLng(MB_ICONINFORMATION, IDS_MUI_BACKSLASHHELP);
+                InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_BACKSLASHHELP);
                 break;
             case IDC_REGEXPHELP:
-                MessageBoxLng(MB_ICONINFORMATION, IDS_MUI_REGEXPHELP);
+                InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_REGEXPHELP);
                 break;
             case IDC_WILDCARDHELP:
-                MessageBoxLng(MB_ICONINFORMATION, IDS_MUI_WILDCARDHELP);
+                InfoBoxLng(MB_ICONINFORMATION, NULL, IDS_MUI_WILDCARDHELP);
                 break;
             default:
                 break;
@@ -8338,7 +8367,7 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
         SciCall_AutoCSetChooseSingle(autoInsert);
 
         const char* const sep = " ";
-        SciCall_AutoCSetSeperator(sep[0]);
+        SciCall_AutoCSetSeparator(sep[0]);
 
         ++iWListSize; // zero termination
         char* const pList = AllocMem(iWListSize + 1, HEAP_ZERO_MEMORY);

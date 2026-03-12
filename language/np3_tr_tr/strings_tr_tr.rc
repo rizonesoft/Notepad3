@@ -129,6 +129,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    """%s"" yüklenirken sorun çıktı"
     IDS_MUI_ERR_SAVEFILE    """%s"" kaydedilirken sorun çıktı"
+    IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
     IDS_MUI_ERR_DLG_FORMAT  "Hata '%s'. Nedeni:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Dosya gezgini uygulama eki bulunamadı\nMiniPath dosya tarayıcı uygulama ekini şuradan indirebilirsiniz: https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Dosya arama uygulama eki bulunamadı\ngrepWinNP3 dosya arama uygulama ekini şuradan indirebilirsiniz: https://rizonesoft.com"

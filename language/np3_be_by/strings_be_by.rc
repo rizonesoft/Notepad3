@@ -73,7 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Замяніць"
     IDT_VIEW_WORDWRAP       "Перанос радкоў"
     IDT_VIEW_ZOOMIN         "Павялічыць"
-    IDT_VIEW_RESETZOOM      "Reset Zoom"
+    IDT_VIEW_RESETZOOM      "Скінуць маштаб"
     IDT_VIEW_ZOOMOUT        "Паменьшыць"
     IDT_VIEW_SCHEME         "Выбраць схему"
     IDT_VIEW_SCHEMECONFIG   "Наладзіць схему"
@@ -129,6 +129,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Памылка чытання «%s»"
     IDS_MUI_ERR_SAVEFILE    "Памылка захоўвання «%s»"
+    IDS_MUI_ERR_PATHNOTFOUND "Шлях да «%s» больш не існуе.\nАднавіць шлях і захаваць файл?"
     IDS_MUI_ERR_DLG_FORMAT  "Памылка '%s', прычына:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Не знойдзены плагін аглядніка файлаў\nПлагін MiniPath можна спампаваць з сайта https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Не знойдзены плагін для пошука ў файлах\nПлагін grepWinNP3 можна спампаваць з сайта https://rizonesoft.com"
@@ -138,7 +139,7 @@ BEGIN
                             "Існы экзэмпляр Notepad3 альбо заняты, альбо мае адкрытае дыялогавае акно\nЖадаеце адкрыць новы экзэмпляр Notepad3?"
     IDS_MUI_ERR_ENCODINGNA  "Табліца пераўтварэння кодавай старонкі не знойдзена для выбранай кадоўкі ў гэтай сістэме"
     IDS_MUI_ERR_UNICODE     "Памылка пераўтварэння Unicode-файла\nДаныя будуць згублены падчас захавання файла!"
-    IDS_MUI_ERR_BITMAP      "Not suitable dimension of bitmap ""%s""\nSuitable dimension: %i x %i (width >= %i x height)"
+    IDS_MUI_ERR_BITMAP      "Bitmap «%s» мае непадыходныя памеры\nПатрэбныя памеры: %i x %i (шырыня >= %i x вышыня)"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "Памылка павышэння праў карыстальніка!"
 END
@@ -176,10 +177,10 @@ BEGIN
     IDS_MUI_REPLCOUNT       "Заменена ўваходжанняў вызначанага шаблона пошуку: %s"
     IDS_MUI_ASK_ENCODING    "Пераключэнне кадоўкі файла з адной на другую можа замяніць непадтрымоўваны тэкст сімваламі-заменнікамі, а гісторыя адмены будзе прыбрана. Усё роўна працягнуць?"
     IDS_MUI_ASK_ENCODING2   "Вы збіраецеся змяніць кадоўку пустога файла. Звярніце ўвагу, што гэта прыбярэ гісторыю адмены, паколькі яна не можа быць скаардынаванай з новай кадоўкай. Усё роўна працягнуць?"
-    IDS_MUI_ASK_CLEAR_UNDO  "This operation will clear the undo history. Continue?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Гэтая аперацыя прыбярэ гісторыю адмены. Усё роўна працягнуць?"
     IDS_MUI_READONLY_SAVE   "«%s» толькі для чытання. Захваць у іншы файл?"
     IDS_MUI_FILECHANGENOTIFY
-                            "The current file has been modified by an external program\nPlease choose:\n\nIgnore -\t\tIgnore further changes\nReload -\t\tReload File\nMonitor -\t\tSwitch to File Monitoring"
+                            "Гэты файл быў змянёны знешняй праграмай\nКалі ласка, выберыце:\n\nIgnore -\t\tІгнараваць далейшыя змяненні\nReload -\t\tПерачытаць файл\nMonitor -\t\tПерайсці да назірання за файлам"
     IDS_MUI_FILECHANGENOTIFY2 "Гэты файл быў выдалены. Захаваць нанава?"
     IDS_MUI_FILELOCK_ERROR  "Немагчыма атрымаць выключнае блакаванне для ""%s""!"
     IDS_MUI_STICKYWINPOS    "Фіксаваная пазіцыя акна задзейнічана. Усякае новае акно Notepad3 запусціцца з цяперашнімі наладамі пазіцыі"
@@ -266,7 +267,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Мова"
     IDS_USE_LOCALE_DATEFMT  "Мова вызначае &фармат даты"
     IDS_MUI_MENU_THEMES     "&Калекцыя схем"
-    IDM_THEMES_FACTORY_RESET "&Factory Reset"
+    IDM_THEMES_FACTORY_RESET "&Заводскі скід"
     IDM_THEMES_STD_CFG       "&Стандартны канфіг"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
@@ -276,8 +277,8 @@ BEGIN
     IDS_MUI_CLEAR_REPL_HISTORY
                             "Ачысціць гісторыю замен"
     IDS_MUI_SEARCHCLIPIFEMPTY
-                            "Search by Clipboard if empty selection"
-    IDS_MUI_REPLCLIPTAG     "Replace by Clipboard on Shortcut [^c]"
+                            "Шукаць па змесціву буфера абмену пры пустым вылучэнні"
+    IDS_MUI_REPLCLIPTAG     "Замяніць з буфера абмену па скарачэнні [^c]"
     IDS_MUI_WRAPSEARCH_FWD  "Супадзенне ў пачатку"
     IDS_MUI_WRAPSEARCH_BCK  "Супадзенне ў канцы"
 END
@@ -288,7 +289,7 @@ BEGIN
     IDS_MUI_SB_TOGGLE_VIEW    "Пераключэнне выгляду..."
     IDS_MUI_SB_REPLACE_ALL    "Замена ўсяго..."
     IDS_MUI_SB_WRAP_LINES     "Перанос радкоў..."
-    IDS_MUI_SB_SORTING_LINES  "Sorting Lines..."
+    IDS_MUI_SB_SORTING_LINES  "Сартаванне радкоў..."
     IDS_MUI_SB_CONV_LNBRK     "Пераўтварэнне канчаткаў радкоў..."
     IDS_MUI_SB_RECODING_DOC   "Перакадаванне дакумента..."
     IDS_MUI_SB_LEXER_STYLING  "Выкарыстанне стыля лексера..."

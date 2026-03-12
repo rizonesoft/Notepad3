@@ -129,6 +129,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Error cargando ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Error guardando ""%s"""
+    IDS_MUI_ERR_PATHNOTFOUND "La ruta para ""%s"" ya no existe.\n¿Recrear la ruta y guardar el archivo?"
     IDS_MUI_ERR_DLG_FORMAT  "Error '%s', causa:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "No se encontró plug-in para el navegador de archivos\nEl plug-in de navegador de archivos MiniPath se puede descargar desde https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "No se encontró plug-in de búsqueda de archivos\nEl plug-in grepWinNP3 de búsqueda de archivos se puede descargar desde https://rizonesoft.com"

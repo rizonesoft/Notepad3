@@ -69,6 +69,7 @@ np3params, *LPnp3params;
 #define ID_AUTOSAVETIMER    (0xA002)        // Auto Save Timer
 #define ID_LOGROTATETIMER   (0xA003)        // Log Rotation Retry
 #define ID_AUTOSCROLLTIMER  (0xA004)        // Middle-Click Auto-Scroll
+#define ID_ATOMICSAVETIMER  (0xA005)        // Atomic Save Detection
 
 
 //==== Reuse Window Lock Timeout ==============================================

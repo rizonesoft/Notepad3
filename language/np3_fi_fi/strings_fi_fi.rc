@@ -129,6 +129,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Virhe ladattaessa ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Virhe tallennettaessa ""%s"""
+    IDS_MUI_ERR_PATHNOTFOUND "Polkua ""%s"" ei ole enää olemassa.\nLuodaanko polku ja tallennetaan tiedosto?"
     IDS_MUI_ERR_DLG_FORMAT  "Virhe '%s', syy:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Tiedostoselaimen laajennusta ei löytynyt\nMiniPath-tiedostoselaimen laajennuksen voi ladata osoitteesta https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Tiedostonhakulaajennusta ei löytynyt\nGrepWinNP3-tiedostonhakulaajennuksen voi ladata osoitteesta https://rizonesoft.com"
@@ -331,8 +332,7 @@ Vaihtoehdot:\r\n\
 /v\tTulosta tiedosto välittömästi ja lopeta\r\n\
 /vd\tTulosta tiedosto (avaa tulostindialogi)\r\n\
 /y\tEtsi ympäristöPOLKU, jos kyseessä on suhteellinen tiedostonimi\r\n\
-/z\tOhita seuraava (käytettävissä rekisteripohjaiseen Notepad-\r\n\
-\tkorvaukseen)\r\n\r\n\
+/z\tOhita seuraava (käytettävissä rekisteripohjaiseen Notepad-\r\n\tkorvaukseen)\r\n\r\n\
 Esimerkkejä:\r\n\
 Notepad3 /utf8sig /crlf d:\\temp\\Test.txt\r\n\
  \t... Avaa uusi tiedosto: ""Test.txt"" Koodaus=UTF-8-BOM, EoL=CRLF\r\n\

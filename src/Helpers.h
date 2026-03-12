@@ -27,6 +27,8 @@
 
 #include "Scintilla.h"
 
+#include "timsort/timsort.h"
+
 // ============================================================================
 // ---  Disable/Enable some CodeAnalysis Warnings  ---
 
@@ -53,6 +55,9 @@
 #define CONSTSTRGLEN(s)  (COUNTOF(s)-1)
 
 #define NOOP ((void)0)
+
+//~#define NP3_SORT qsort   // not stable, O(n log n) worst-case performance, but O(n) best-case performance for already sorted data
+#define NP3_SORT timsort // stable, adaptive, iterative mergesort with O(n log n) worst-case and O(n) best-case performance
 
 // ============================================================================
 
@@ -429,8 +434,8 @@ void        BackgroundWorker_Start(BackgroundWorker* worker, _beginthreadex_proc
 void        BackgroundWorker_Cancel(BackgroundWorker* worker);
 void        BackgroundWorker_Destroy(BackgroundWorker* worker);
 
-static inline bool BackgroundWorker_Continue(BackgroundWorker* worker) { 
-    return (worker) ? (WaitForSingleObject(worker->eventCancel, 0) != WAIT_OBJECT_0) : false;
+static inline bool BackgroundWorker_Continue(BackgroundWorker* worker) {
+    return (worker && IS_VALID_HANDLE(worker->eventCancel)) ? (WaitForSingleObject(worker->eventCancel, 0) != WAIT_OBJECT_0) : false;
 }
 static inline void BackgroundWorker_End(BackgroundWorker* worker, unsigned int retcode) { if (worker) { _endthreadex(retcode); }}
 
@@ -851,7 +856,7 @@ int Hex2Char(char* ch, int cnt);
 
 size_t SimpleHash(LPCWSTR string);
 
-    void CloseNonModalDialogs();
+void CloseNonModalDialogs();
 void CloseApplication();
 
 // ----------------------------------------------------------------------------

@@ -23,7 +23,7 @@ function Find-MSBuild {
     $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
     if (Test-Path $vswhere) {
         # Try VS 2022 first (version 17.x)
-        $vsPath = & $vswhere -version "[17.0,18.0)" -property installationPath 2>$null
+        $vsPath = & $vswhere -version "[17.0,19.0)" -property installationPath 2>$null
         if (-not $vsPath) {
             # Fallback to latest
             $vsPath = & $vswhere -latest -property installationPath

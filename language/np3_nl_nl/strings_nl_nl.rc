@@ -92,7 +92,7 @@ BEGIN
     IDT_FILE_LAUNCH          "Bestand uitvoeren"
     IDT_VIEW_NEW_WINDOW      "Nieuw leeg venster"
     IDT_VIEW_TOGGLE_VIEW     "Gefocust beeld"
-    IDT_VIEW_CHASING_DOCTAIL "Log Monitoren"
+    IDT_VIEW_CHASING_DOCTAIL "Logboek"
     IDT_VIEW_PIN_ON_TOP      "Altijd bovenop"
     IDT_GREP_WIN_TOOL        "Zoek in bestanden"
 END
@@ -120,8 +120,8 @@ BEGIN
     IDS_MUI_FILTER_BITMAP   "Bitmapbestanden (*.bmp)|*.bmp|Alle bestanden (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Selecteer de map met koppelingen naar jouw favoriete applicaties"
     IDS_MUI_FAVORITES       "Selecteer de map met koppelingen naar jouw favoriete bestanden"
-    IDS_MUI_BACKSLASHHELP   "Backslash-transformaties\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
-    IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (Multi Lines)\n\n.\tMatches any character\n^\tEmpty string immediately after Newline\n$\tEmpty string immediately before End of Line\n\\<\tStart of a word\n\\>\tEnd of a word\n\\b\tWord boundary\n[...]\tA set of chars ([abc]) or a range ([a-z])\n[^...]\tChars NOT in the set or range\n\\d\tAny decimal digit\n\\D\tAny non-digit char\n\\s\tAny whitespace char\n\\S\tNot a whitespace char\n\\w\tAny ""word"" char\n\\W\tAny ""non-word"" char\n\\x\tEscape character with otherwise special meaning\n\\xHH\tChar with hex code HH\n?\tMatches preceding 0 or 1 times\n*\tMatches preceding 0 or more times\n+\tMatches preceding 1 or more times\n*? or +?\tNon greedy matching of quantifiers ""?"" and ""+""\n(\tStart of a region\n)\tEnd of a region\n\\n\tRefers to a region when replacing (n is 1-9)\n"
+    IDS_MUI_BACKSLASHHELP   "Backslash-transformaties\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNieuwe regel (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontale tab (HT, Ascii 9)\n\\v\tVerticale tab (VT, Ascii 11)\n\\0oo\tOctale waarde\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimale waarde\n\\\\\tBackslash"
+    IDS_MUI_REGEXPHELP      "RegExp Matching Syntax (meerdere regels)\n\n.\tKomt overeen met elk teken\n^\tLege tekenreeks direct na Newline\n$\tLege tekenreeks direct voor regeleinde\n\\<\tStart van een woord\n\\>\tEinde van een woord\n\\b\tWoord-grens\n[...]\tEen verzameling tekens ([abc]) of bereik ([a-z])\n[^...]\tTekens NIET in de verzameling of bereik\n\\d\tElk decimaal cijfer\n\\D\tElk teken dat geen cijfer is\n\\s\tElk blanco tekenr\n\\S\tGeen blanco teken\n\\w\tElk ""woord"" teken\n\\W\tElk ""non-woord"" teken\n\\x\tEscape-teken met een andere betekenis\n\\xHH\tTeken met hex code HH\n?\tOvereenkomst die 0 of 1 keer voorafgaan\n*\tOvereenkomst die 0 of meer keer voorafgaan\n+\tOvereenkomst die 1 of meer keer voorafgaan\n*? or +?\tNiet-hebzuchtige matching van kwantoren ""?"" and ""+""\n(\tStart van een regio\n)\tEinde van een regio\n\\n\tVerwijst naar een regio bij vervanging (n is 1-9)\n"
     IDS_MUI_WILDCARDHELP    "Zoeken met joker\n\n*\tOvereenkomsten met nul of meer tekens\n?\tmet precies één teken"
 END
 
@@ -129,6 +129,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Fout bij laden ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Fout bij opslaan ""%s"""
+    IDS_MUI_ERR_PATHNOTFOUND "Het pad voor ""%s"" bestaat niet meer.\nPad opnieuw aanmaken en bestand opslaan?"
     IDS_MUI_ERR_DLG_FORMAT  "Fout '%s', oorzaak:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Geen bestandsbrowser-plugin gevonden\nDe plugin voor de MiniPath bestandsbrowser kan worden gedownload van https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Geen plugin voor het doorzoeken van bestanden gevonden\nDe plug-in grepWinNP3 voor het doorzoeken van bestanden kan worden gedownload van https://rizonesoft.com"
@@ -159,7 +160,7 @@ BEGIN
     IDS_MUI_INDENT_CONSISTENT  "Het bestand heeft een consistente inspringing!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
-    IDS_MUI_EOLMODENAME_CR     "Oude Mac (CR)"
+    IDS_MUI_EOLMODENAME_CR     "Verouderd Mac (CR)"
     IDS_MUI_WARN_NORMALIZE_EOLS
                             "Wil je dat alle regeleinden genormaliseerd worden tot '%s'?"
 END
@@ -256,7 +257,7 @@ BEGIN
     IDS_MUI_TITLE_RELARB    "+++ Stijl '%s' (%s) +++"
     IDS_MUI_TITLE_FIXARB    "Stijl '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Bijbehorende bestandsextensies:"
-    IDS_MUI_ZERO_LEN_MATCH  "^ Nul-lengte Overeenkomst"
+    IDS_MUI_ZERO_LEN_MATCH  "^ Nul-lengte overeenkomst"
     IDS_MUI_GOTO_LINE       "Regel (1 - %s):"
     IDS_MUI_GOTO_COLUMN     "Kolom (1 - %s):"
 END
@@ -266,15 +267,15 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Taal"
     IDS_USE_LOCALE_DATEFMT  "&Datumformaat naar taal"
     IDS_MUI_MENU_THEMES     "&Schema's"
-    IDM_THEMES_FACTORY_RESET "&Factory Reset"
-    IDM_THEMES_STD_CFG       "&Standaard Config"
+    IDM_THEMES_FACTORY_RESET "&Fabrieksinstellingen"
+    IDM_THEMES_STD_CFG       "&Standaard config"
     IDS_MUI_STATUSBAR_PREFIXES "Rg  ,Kol  ,Sel  ,Sb  ,SRg  ,Occ  ,,,,,,,Ch  ,Verv  ,Eval  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Alles wissen"
     IDS_MUI_CLEAR_FIND_HISTORY
                             "Zoekgeschiedenis wissen"
     IDS_MUI_CLEAR_REPL_HISTORY
-                            "Vervanggeschiedenis wissen"
+                            "Vervangingsgeschiedenis wissen"
     IDS_MUI_SEARCHCLIPIFEMPTY
                             "Zoeken vanuit klembord bij lege selectie"
     IDS_MUI_REPLCLIPTAG     "Vervangen door klembord bij sneltoets [^c]"

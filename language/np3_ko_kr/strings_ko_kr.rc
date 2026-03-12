@@ -118,8 +118,8 @@ BEGIN
     IDS_MUI_FILTER_EXE      "실행 파일 (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|모든 파일 (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "구성 파일 (*.ini)|*.ini|모든 파일 (*.*)|*.*|"
     IDS_MUI_FILTER_BITMAP   "비트맵 파일 (*.bmp)|*.bmp|모든 파일 (*.*)|*.*|"
-    IDS_MUI_OPENWITH        "즐겨찾는 응용프로그램에 대한 링크가 있는 디렉터리를 선택하십시오"
-    IDS_MUI_FAVORITES       "즐겨찾는 파일에 대한 링크가 있는 디렉터리를 선택하십시오"
+    IDS_MUI_OPENWITH        "즐겨찾는 응용프로그램에 대한 링크가 있는 디렉터리를 선택하세요"
+    IDS_MUI_FAVORITES       "즐겨찾는 파일에 대한 링크가 있는 디렉터리를 선택하세요"
     IDS_MUI_BACKSLASHHELP   "백슬래시 변환\n\n\\a\t경보 (BEL, Ascii 7)\n\\b\t백스페이스 (BS, Ascii 8)\n\\f\t폼 피드 (FF, Ascii 12)\n\\n\t새 줄 (LF, Ascii 10)\n\\r\t캐리지 리턴 (CR, Ascii 13)\n\\t\t가로 탭 (HT, Ascii 9)\n\\v\t세로 탭 (VT, Ascii 11)\n\\0oo\t8진수 값\n\\u####\t16진수 값\n\\xhh\t16진수 값\n\\\\\t백슬래시"
     IDS_MUI_REGEXPHELP      "정규식 구문 (여러 줄)\n\n.\t모든 문자와 일치\n^\t새 줄 바로 뒤에 빈 문자열\n$\t줄 끝 바로 앞의 빈 문자열\n\\<\t단어의 시작\n\\>\t단어의 끝\n\\b\t단어 경계\n[...]\t문자 집합([abc]) 또는 범위 ([a-z])\n[^...]\t설정 또는 범위에 포함되지 않는 문자\n\\d\t모든 10진수\n\\D\t숫자가 아닌 문자\n\\s\t모든 공백 문자\n\\S\t공백이 아닌 문자\n\\w\t모든 ""단어"" 문자\n\\W\t모든 ""비-단어"" 문자\n\\x\t특별한 의미를 가진 Escape 문자\n\\xHH\tHex 값이 HH인 문자\n?\t0회 또는 1회 선행 일치\n*\t0회 이상 선행 일치\n+\t1회 이상 선행 일치\n*? or +?\t정량자 ""?"" 및 ""+""의 욕심 없는 일치\n(\t영역의 시작\n)\t영역의 끝\n\\n\t교체할 때 영역 참조 (n은 1-9)\n"
     IDS_MUI_WILDCARDHELP    "와일드카드 검색\n\n*\t0개 이상의 문자와 일치합니다\n?\t정확하게 하나의 문자와 일치합니다"
@@ -129,6 +129,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    """%s"" 파일을 불러오는 동안 오류가 발생하였습니다"
     IDS_MUI_ERR_SAVEFILE    """%s"" 파일을 저장하는 동안 오류가 발생하였습니다"
+    IDS_MUI_ERR_PATHNOTFOUND """%s""의 경로는 더 이상 존재하지 않습니다.\n경로를 다시 생성하고 파일을 저장하시겠습니까?"
     IDS_MUI_ERR_DLG_FORMAT  "오류 '%s', 원인:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "파일 탐색기 플러그인을 찾을 수 없습니다\nMiniPath 파일 탐색기 플러그인은 https://rizonesoft.com에서 다운로드할 수 있습니다"
     IDS_MUI_ERR_GREPWIN     "파일 검색 플러그인을 찾을 수 없습니다\ngrepWinNP3 파일 검색 플러그인은 https://rizonesoft.com에서 다운로드할 수 있습니다"
@@ -159,7 +160,7 @@ BEGIN
     IDS_MUI_INDENT_CONSISTENT   "파일에 일관된 들여쓰기가 있습니다!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
-    IDS_MUI_EOLMODENAME_CR      "구형 Mac (CR)"
+    IDS_MUI_EOLMODENAME_CR      "구식 Mac (CR)"
     IDS_MUI_WARN_NORMALIZE_EOLS
                             "모든 줄 끝을 '%s'로 정규화하시겠습니까?"
 END
@@ -173,13 +174,13 @@ BEGIN
     IDS_MUI_FIND_WRAPFW     "문서의 끝에 도달하여 검색을 처음부터 다시 시작합니다"
     IDS_MUI_FIND_WRAPRE     "문서의 시작 부분에 도달하여 끝에서 검색을 다시 시작합니다"
     IDS_MUI_NOTFOUND        "지정한 검색 패턴에 일치하는 항목을 찾을 수 없습니다"
-    IDS_MUI_REPLCOUNT       "지정한 검색 패턴의 %s개의 발생이 대체되었습니다"
+    IDS_MUI_REPLCOUNT       "지정한 검색 패턴이 %s개가 대체되었습니다"
     IDS_MUI_ASK_ENCODING    "파일 인코딩을 한 인코딩에서 다른 인코딩으로 전환하면 지원되지 않는 텍스트가 기본 문자로 대체될 수 있으며 실행 취소 기록이 지워집니다. 계속하시겠습니까?"
     IDS_MUI_ASK_ENCODING2   "빈 파일의 인코딩을 변경하려고 합니다. 새 인코딩과 동기화할 수 없기 때문에 실행 취소 기록이 지워집니다. 계속하시겠습니까?"
     IDS_MUI_ASK_CLEAR_UNDO  "이 작업을 수행하면 실행 취소 기록이 지워집니다. 계속하시겠습니까?"
     IDS_MUI_READONLY_SAVE   """%s""은 읽기 전용입니다. 다른 파일로 저장하시겠습니까?"
     IDS_MUI_FILECHANGENOTIFY
-                            "현재 파일이 외부 프로그램에 의해 수정되었습니다\n선택하십시오:\n\n무시 -\t\t추가 변경사항 무시\n다시 불러오기 -\t\t파일 다시 불러오기\n모니터 -\t\t파일 모니터링으로 전환"
+                            "현재 파일이 외부 프로그램에 의해 수정되었습니다\n선택하세요:\n\n무시 -\t\t추가 변경사항 무시\n다시 불러오기 -\t\t파일 다시 불러오기\n모니터 -\t\t파일 모니터링으로 전환"
     IDS_MUI_FILECHANGENOTIFY2 "현재 파일이 삭제되었습니다. 지금 저장하시겠습니까?"
     IDS_MUI_FILELOCK_ERROR  """%s""에 대한 독점적인 파일 잠금을 얻을 수 없습니다"
     IDS_MUI_STICKYWINPOS    "고정 창 위치가 활성화되었습니다. 새 Notepad3 창은 현재 창 배치 설정을 사용합니다"
@@ -189,7 +190,7 @@ BEGIN
     IDS_MUI_INIFILE_READONLY
                             "구성 파일이 읽기 전용입니다. 설정을 무시하고 재정의하시겠습니까?"
     IDS_MUI_SETTINGSNOTSAVED
-                            "기존 구성 파일을 찾을 수 없습니다\n스타일 수정 사항을 유지하려면 지금 설정을 저장 (F7)하거나 구성표 구성 (Ctrl+F12)으로 돌아가 스타일을 내보내십시오"
+                            "기존 구성 파일을 찾을 수 없습니다\n스타일 수정 사항을 유지하려면 지금 설정을 저장 (F7)하거나 구성표 구성 (Ctrl+F12)으로 돌아가 스타일을 내보내세요"
 END
 
 STRINGTABLE
@@ -198,7 +199,7 @@ BEGIN
     IDS_MUI_RELOADCFGSEX     "다시 시작하지 않고 계속하면 저장된 설정이 적용되지 않으며 프로그램 종료시 내부 설정이 무시됩니다!"
     IDS_MUI_EXPORT_FAIL      "스타일 설정을 ""%s""으로 내보내는 중 오류가 발생하였습니다"
     IDS_MUI_REGEX_INVALID    "정규 표현식을 평가하는 동안 오류가 발생했습니다. 표현식이 잘못되었습니다!"
-    IDS_MUI_DROP_NO_FILE     "검색된 유효한 파일 이름이 없습니다\n32비트 응용 프로그램에서 드롭하는 경우\nNotepad3의 도구 모음으로 끌어서 놓으십시오"
+    IDS_MUI_DROP_NO_FILE     "검색된 유효한 파일 이름이 없습니다\n32비트 응용 프로그램에서 드롭하는 경우\nNotepad3의 도구 모음으로 끌어서 놓으세요"
     IDS_MUI_URL_DIR_EXISTS   "URL 지정 디렉터리가 있습니다!"
     IDS_MUI_URL_FILE_EXISTS  "URL 지정 파일이 있습니다!"
     IDS_MUI_URL_PATH_NOT_FOUND
@@ -207,7 +208,7 @@ BEGIN
     IDS_MUI_URL_OPEN_BROWSER "\nCtrl+클릭하여 탐색기에서 링크를 엽니다"
     IDS_MUI_INF_PRSVFILEMODTM
                              "원래 파일 수정 타임스탬프를 보존할 수 있습니다\n이 옵션은 이 세션에 유지됩니다!"
-    IDS_MUI_OUT_OFF_OCCMRK   "발생 마커 (책갈피/강조)가 부족합니다!"
+    IDS_MUI_OUT_OFF_OCCMRK   "발생 마커 (북마크/강조)가 부족합니다!"
     IDS_MUI_DOCUMENT_READONLY
                              "문서는 보기 전용으로 잠겨 있습니다. 편집을 방지하기 위해 잠금을 유지하시겠습니까?"""
 END
@@ -233,7 +234,7 @@ BEGIN
     IDS_MUI_PRINT_EMPTY     "이 문서에는 인쇄할 텍스트가 없습니다"
     IDS_MUI_PRINT_ERROR     """%s"" 인쇄 오류!"
     IDS_MUI_FAV_SUCCESS     "현재 파일에 대한 바로가기가 즐겨찾기 디렉터리에 만들어졌습니다"
-    IDS_MUI_FAV_FAILURE     "현재 파일에 대한 바로가기를 만들 수 없습니다\n같은 이름의 다른 파일이 없는지 확인하십시오"
+    IDS_MUI_FAV_FAILURE     "현재 파일에 대한 바로가기를 만들 수 없습니다\n같은 이름의 다른 파일이 없는지 확인하세요"
     IDS_MUI_READONLY_MODIFY """%s""의 속성을 수정할 수 없습니다"
     IDS_MUI_SAVEPOS         "위치 저장(&S)\tCtrl+S"
     IDS_MUI_RESETPOS        "위치 재설정(&R)\tCtrl+R"
@@ -243,16 +244,16 @@ BEGIN
     IDS_MUI_STY_BASESTD     "BASE (기본 스타일):"
     IDS_MUI_STY_BASE2ND     "BASE (두 번째 기본 스타일):"
     IDS_MUI_STY_LEXDEF      "%s - 기본 스타일:"
-    IDS_MUI_STY_LEXSTYLE    "%s - 스타일:"
+    IDS_MUI_STY_LEXSTYLE    "%s's  스타일:"
     IDS_MUI_TITLE_RELBASE   "+++ BASE (%s) +++"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_TRANSL_AUTHOR   "(ko-KR) 한국어 번역: VenusGirl"
+    IDS_MUI_TRANSL_AUTHOR   "(ko-KR) 한국어 번역: 비너스걸"
     IDS_MUI_TITLE_FIXBASE   "BASE (%s)"
-    IDS_MUI_TITLE_RELCUR    "+++ %s: %s - 스타일 +++"
-    IDS_MUI_TITLE_FIXCUR    "%s: %s - 스타일"
+    IDS_MUI_TITLE_RELCUR    "+++ %s: %s 스타일 +++"
+    IDS_MUI_TITLE_FIXCUR    "%s: %s 스타일"
     IDS_MUI_TITLE_RELARB    "+++ 스타일 '%s' - (%s) +++"
     IDS_MUI_TITLE_FIXARB    "스타일 '%s' - (%s)"
     IDS_MUI_ASSOCIATED_EXT  "연결된 파일 이름 확장자:"

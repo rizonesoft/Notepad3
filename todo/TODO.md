@@ -22,7 +22,8 @@
 - [x] **(Q1) BUG: /m command line uses last search mode** - ✅ FIXED
   - Issue: [#5060](https://github.com/rizonesoft/Notepad3/issues/5060)
   - Fix: When `/m` is used without 'R' flag, explicitly clear SCFIND_REGEXP to force text mode
-- [ ] **(Q3) Replace GetOpenFileNameW with IFileOpenDialog** - Modern file dialog API
+- [x] **(Q3) Replace GetOpenFileNameW with IFileOpenDialog** - Modern file dialog API
+  - [ ] **Test on Windows Server 2022 and higer** - ⚠ Validation❗
   - Issues: [#5066](https://github.com/rizonesoft/Notepad3/issues/5066), [#5080](https://github.com/rizonesoft/Notepad3/issues/5080)
   - Fixes crash on Windows Server 2022 (STATUS_STACK_BUFFER_OVERRUN in ntdll.dll)
   - See [research/server2022-file-dialog-crash.md](research/server2022-file-dialog-crash.md)
@@ -33,10 +34,11 @@
   - Issue: [#4268](https://github.com/rizonesoft/Notepad3/issues/4268)
   - CJK full-width replacement cached incorrectly
 - [ ] **(Q2) BUG: Initial window position not working** - Position settings ignored
+  - [ ] **To be analyzed - works as designed ???** - ⚠ Validation ❗
   - Issue: [#4725](https://github.com/rizonesoft/Notepad3/issues/4725)
-- [ ] **(Q3) BUG: Regex replace issue** - Verify if still present
-  - Issue: [#3531](https://github.com/rizonesoft/Notepad3/issues/3531)
-  - Old bug from v5.21 - needs verification
+- [x] **(Q3) BUG: Regex replace issue** - Verify if still present - ✅ FIXED
+  - Issue: [#3531](https://github.com/rizonesoft/Notepad3/issues/3531) - ✅ FIXED
+  - [ ] Old bug from v5.21 - needs verification - ⚠ Validation ❗
 - [ ] **(Q2) BUG: Minipath options don't save** - FullRowSelect/TrackSelect broken
   - Issue: [#4116](https://github.com/rizonesoft/Notepad3/issues/4116)
 - [x] **(Q1) BUG: Monitoring log not saved** - ✅ FIXED
@@ -59,9 +61,12 @@
   - Fix: Forward `WM_SETTINGCHANGE` to Scintilla to refresh cached scroll parameters
 - [ ] **(Q2) BUG: Highlight current line broken** - Settings not respected (regression)
   - Issue: [#5270](https://github.com/rizonesoft/Notepad3/issues/5270)
-- [ ] **(Q2) BUG: File lock held too long on save** - Blocks FileSystemWatcher
+  - **This is a discussion, about limited line highlite rule language in schema definition **
+- [x] **(Q2) BUG: File lock held too long on save** - Blocks FileSystemWatcher - ✅ FIXED
+  - [ ] **Needs validation**
   - Issue: [#5301](https://github.com/rizonesoft/Notepad3/issues/5301)
-- [ ] **(Q2) BUG: Folder handle leak** - Can't rename/delete folders with opened files
+- [x] **(Q2) BUG: Folder handle leak** - Can't rename/delete folders with opened files
+  - [ ] **Needs testing** - ⚠ Validation❗
   - Issue: [#5342](https://github.com/rizonesoft/Notepad3/issues/5342)
 - [x] **(Q1) BUG: Black line in Language menu** - ✅ FIXED
   - Issue: [#5361](https://github.com/rizonesoft/Notepad3/issues/5361)

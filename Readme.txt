@@ -58,7 +58,7 @@ Changes compared to the Notepad2-mod fork:
 --------------------------------------------------------------------------------
 Supported Operating Systems:
 ----------------------------
-Windows 7, 8, 8.1 and 10 both 32-bit and 64-bit
+Windows 10 and 11 (32-bit, 64-bit and ARM64)
 
 --------------------------------------------------------------------------------
 Development:

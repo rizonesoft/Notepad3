@@ -129,6 +129,7 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "読込失敗 ""%s"""
     IDS_MUI_ERR_SAVEFILE    "保存失敗 ""%s"""
+    IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
     IDS_MUI_ERR_DLG_FORMAT  "エラー '%s', 原因:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "ファイラーのプラグインがありません\nこのプラグイン MiniPath は以下からダウンロードできます https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "ファイル検索プラグインが見つかりません\nファイル検索プラグインの grepWinNP3 は以下からダウンロードできます https://rizonesoft.com"

@@ -59,8 +59,8 @@ msgid "&Search"
 msgstr "Sök"
 
 #. Resource IDs: (1003)
-msgid "&Hela ord"
-msgstr ""
+msgid "&Whole word"
+msgstr "&Hela ord"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -608,7 +608,7 @@ msgstr "söker bara efter filer som matchar detta mönster.\nAnvänd '|' som avg
 
 #. Resource IDs: (176)
 msgid "Open list with recent entries"
-msgstr ""
+msgstr "Öppna lista med senaste poster"
 
 #. Resource IDs: (129)
 msgid "read error"

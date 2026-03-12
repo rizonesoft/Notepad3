@@ -1,5 +1,5 @@
-﻿/*
-Copyright (c) 2007-2021, Troy D. Hanson   http://troydhanson.github.com/uthash/
+/*
+Copyright (c) 2007-2025, Troy D. Hanson  https://troydhanson.github.io/uthash/
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 3. CDL_ macros: circular doubly-linked lists.
  *
  * To use singly-linked lists, your structure must have a "next" pointer.
- * To use doubly-linked lists, your structure must "prev" and "next" pointers.
+ * To use doubly-linked lists, your structure must have "prev" and "next" pointers.
  * Either way, the pointer to the head of the list must be initialized to NULL.
  *
  * ----------------.EXAMPLE -------------------------
@@ -70,6 +70,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #else                   /* VS2008 or older (or VS2010 in C mode) */
 #define NO_DECLTYPE
 #endif
+#elif defined(__MCST__)  /* Elbrus C Compiler */
+#define LDECLTYPE(x) __typeof(x)
 #elif defined(__BORLANDC__) || defined(__ICCARM__) || defined(__LCC__) || defined(__WATCOMC__)
 #define NO_DECLTYPE
 #else                   /* GNU, Sun and other compilers */
@@ -444,18 +446,24 @@ do {                                                                            
 
 // >>>>>>>>  begin patch: search in ordered list  >>>>>>>>
 
-#define LL_SEARCH_ORDERED(head,prv,out,elt,cmp)                                                \
-    LL_SEARCH_ORDERED2(head,prv,out,elt,cmp,next)
+#define LL_SEARCH_ORDERED(head, prv, out, elt, cmp) \
+    LL_SEARCH_ORDERED2(head, prv, out, elt, cmp, next)
 
-#define LL_SEARCH_ORDERED2(head,prv,out,elt,cmp,next)                                          \
-do {                                                                                           \
-    LL_FOREACH2(head,out,next) {                                                               \
-      int const res = (cmp(out,elt));                                                          \
-      if (res == 0) { break; }                                                                 \
-      if (res > 0) { (out) = NULL; break; }                                                    \
-      (prv) = (out);                                                                           \
-    }                                                                                          \
-} while (0)
+#define LL_SEARCH_ORDERED2(head, prv, out, elt, cmp, next) \
+    do {                                                   \
+        LL_FOREACH2(head, out, next)                       \
+        {                                                  \
+            int const res = (cmp(out, elt));               \
+            if (res == 0) {                                \
+                break;                                     \
+            }                                              \
+            if (res > 0) {                                 \
+                (out) = NULL;                              \
+                break;                                     \
+            }                                              \
+            (prv) = (out);                                 \
+        }                                                  \
+    } while (0)
 
 // <<<<<<<<  end patch: search in ordered list  <<<<<<<<<<
 
@@ -726,7 +734,8 @@ do {                                                                            
   assert((del)->prev != NULL);                                                                 \
   if ((del)->prev == (del)) {                                                                  \
       (head)=NULL;                                                                             \
-  } else if ((del)==(head)) {                                                                  \
+  } else if ((del) == (head)) {                                                                \
+      assert((del)->next != NULL);                                                             \
       (del)->next->prev = (del)->prev;                                                         \
       (head) = (del)->next;                                                                    \
   } else {                                                                                     \
@@ -766,8 +775,6 @@ do {                                                                            
 #define DL_SEARCH LL_SEARCH
 #define DL_SEARCH_SCALAR2 LL_SEARCH_SCALAR2
 #define DL_SEARCH2 LL_SEARCH2
-#define DL_SEARCH_ORDERED LL_SEARCH_ORDERED
-#define DL_SEARCH_ORDERED2 LL_SEARCH_ORDERED2
 
 #define DL_REPLACE_ELEM2(head, el, add, prev, next)                                            \
 do {                                                                                           \

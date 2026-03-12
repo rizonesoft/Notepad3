@@ -138,3 +138,9 @@ float uchardet_get_confidence(uchardet_t ud)
 {
     return reinterpret_cast<HandleUniversalDetector*>(ud)->GetConfidence();
 }
+
+/* NP3 patch */
+void uchardet_set_language_filter(uchardet_t ud, unsigned int filter)
+{
+    reinterpret_cast<HandleUniversalDetector*>(ud)->SetLanguageFilter(static_cast<PRUint32>(filter));
+}

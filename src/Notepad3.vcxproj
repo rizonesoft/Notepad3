@@ -246,7 +246,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;WIN32;STATIC_BUILD;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x0A00;WINVER=0x0A00;NTDDI_VERSION=0x0A000006;WIN32;STATIC_BUILD;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <WholeProgramOptimization>false</WholeProgramOptimization>
@@ -321,7 +321,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_WIN64;STATIC_BUILD;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x0A00;WINVER=0x0A00;NTDDI_VERSION=0x0A000006;_WIN64;STATIC_BUILD;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <WholeProgramOptimization>false</WholeProgramOptimization>
@@ -395,7 +395,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_WIN64;STATIC_BUILD;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x0A00;WINVER=0x0A00;NTDDI_VERSION=0x0A000006;_WIN64;STATIC_BUILD;_DEBUG;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <WholeProgramOptimization>false</WholeProgramOptimization>
@@ -466,7 +466,7 @@
       <AdditionalIncludeDirectories>.;../scintilla/include;../lexilla;../lexilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;WIN32;STATIC_BUILD;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x0A00;WINVER=0x0A00;NTDDI_VERSION=0x0A000006;WIN32;STATIC_BUILD;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>None</DebugInformationFormat>
@@ -552,7 +552,7 @@
       <AdditionalIncludeDirectories>.;../scintilla/include;../lexilla;../lexilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;WIN32;STATIC_BUILD;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x0A00;WINVER=0x0A00;NTDDI_VERSION=0x0A000006;WIN32;STATIC_BUILD;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>None</DebugInformationFormat>
@@ -638,7 +638,7 @@
       <AdditionalIncludeDirectories>.;../scintilla/include;../lexilla;../lexilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_WIN64;STATIC_BUILD;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x0A00;WINVER=0x0A00;NTDDI_VERSION=0x0A000006;_WIN64;STATIC_BUILD;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>None</DebugInformationFormat>
@@ -723,7 +723,7 @@
       <AdditionalIncludeDirectories>.;../scintilla/include;../lexilla;../lexilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_WIN64;STATIC_BUILD;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x0A00;WINVER=0x0A00;NTDDI_VERSION=0x0A000006;_WIN64;STATIC_BUILD;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>None</DebugInformationFormat>
@@ -808,7 +808,7 @@
       <AdditionalIncludeDirectories>.;../scintilla/include;../lexilla;../lexilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_WIN64;STATIC_BUILD;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x0A00;WINVER=0x0A00;NTDDI_VERSION=0x0A000006;_WIN64;STATIC_BUILD;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>None</DebugInformationFormat>
@@ -893,7 +893,7 @@
       <AdditionalIncludeDirectories>.;../scintilla/include;../lexilla;../lexilla/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x601;WINVER=0x601;NTDDI_VERSION=0x06010000;_WIN64;STATIC_BUILD;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>MUI_BASE_LNG_EN_US;D_NP3_WIN10_DARK_MODE;_WIN32_WINNT=0x0A00;WINVER=0x0A00;NTDDI_VERSION=0x0A000006;_WIN64;STATIC_BUILD;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>None</DebugInformationFormat>
@@ -988,6 +988,8 @@
     <ClCompile Include="StyleLexers\styleLexKiX.c" />
     <ClCompile Include="StyleLexers\styleLexKotlin.c" />
     <ClCompile Include="StyleLexers\styleLexVerilog.c" />
+    <ClCompile Include="timsort\timsort.c" />
+    <ClCompile Include="timsort\timsort_r.c" />
     <ClCompile Include="tinyexpr\tinyexpr.c" />
     <ClCompile Include="uchardet\uchardet\src\CharDistribution.cpp" />
     <ClCompile Include="uchardet\uchardet\src\JpCntx.cpp" />
@@ -1131,6 +1133,8 @@
     <ClInclude Include="..\language\common_res.h" />
     <ClInclude Include="DynStrg.h" />
     <ClInclude Include="PathLib.h" />
+    <ClInclude Include="timsort\timsort-impl.h" />
+    <ClInclude Include="timsort\timsort.h" />
     <ClInclude Include="tinyexpr\tinyexpr.h" />
     <ClInclude Include="uchardet\uchardet\src\CharDistribution.h" />
     <ClInclude Include="uchardet\uchardet\src\JpCntx.h" />

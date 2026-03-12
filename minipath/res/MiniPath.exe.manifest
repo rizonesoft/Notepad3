@@ -24,10 +24,7 @@
 	</asmv3:application>
 	<ms_compatibility:compatibility xmlns:ms_compatibility="urn:schemas-microsoft-com:compatibility.v1" xmlns="urn:schemas-microsoft-com:compatibility.v1">
 		<ms_compatibility:application xmlns:ms_compatibility="urn:schemas-microsoft-com:compatibility.v1">
-			<ms_compatibility:supportedOS xmlns:ms_compatibility="urn:schemas-microsoft-com:compatibility.v1" Id="{e2011457-1546-43c5-a5fe-008deee3d3f0}"/>
-			<ms_compatibility:supportedOS xmlns:ms_compatibility="urn:schemas-microsoft-com:compatibility.v1" Id="{35138b9a-5d96-4fbd-8e2d-a2440225f93a}"/>
-			<ms_compatibility:supportedOS xmlns:ms_compatibility="urn:schemas-microsoft-com:compatibility.v1" Id="{4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38}"/>
-			<ms_compatibility:supportedOS xmlns:ms_compatibility="urn:schemas-microsoft-com:compatibility.v1" Id="{1f676c76-80e1-4239-95bb-83d0f6d0da78}"/>
+			<!-- Windows 10 / Windows 11 -->
 			<ms_compatibility:supportedOS xmlns:ms_compatibility="urn:schemas-microsoft-com:compatibility.v1" Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}"/>
 		</ms_compatibility:application>
 	</ms_compatibility:compatibility>

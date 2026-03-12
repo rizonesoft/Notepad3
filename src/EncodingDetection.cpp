@@ -13,14 +13,15 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
+#include <sdkddkver.h>
 #if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#define WINVER _WIN32_WINNT_WIN10
 #endif
 #if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
+#define _WIN32_WINNT _WIN32_WINNT_WIN10
 #endif
 #if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
+#define NTDDI_VERSION NTDDI_WIN10_RS5
 #endif
 
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
@@ -728,6 +729,8 @@ cpi_enc_t AnalyzeText_UCHARDET(
 
     uchardet_t hUcharDet = uchardet_new();
 
+    uchardet_set_language_filter(hUcharDet, static_cast<unsigned int>(Settings2.UchardetLanguageFilter));
+
     int const result = uchardet_handle_data(hUcharDet, text, len);
 
     uchardet_data_end(hUcharDet); // transfer report
@@ -793,40 +796,9 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
 
 #else
 
-    // no need to run analyzers asynchrony, cause they analyze only the first KB of large files ...
-    //~cpiEncoding_CED = AnalyzeText_CED(text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN);
-    //~if (ced_cnf < 1.0f)
-    //~{
     cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, &confidence_UCD, pEncDetInfo->encodingStrg, COUNTOF(pEncDetInfo->encodingStrg));
 
-    //~}
-    //~else {
-    //~  cpiEncoding_UCD = CPI_NONE;
-    //~  ucd_cnf = 1.0f;
-    //~}
-
 #endif
-
-    // ---  re-mapping UCD ----
-
-    switch (Encoding_GetCodePage(cpiEncoding_UCD)) {
-
-    case 28591:  // ISO 8859 - 1  mapped to  Windows - 1252  (HTML5 Standard advice)
-        cpiEncoding_UCD = Encoding_GetByCodePage(1252); // auto detect default ANSI (!)
-        break;
-
-    /*
-    case 54936:
-      if ((codePage_CED == 936) || (codePage_CED == 20936))
-      {
-        cpiEncoding_UCD = cpiEncoding_CED; // trust CED's choice
-      }
-      break;
-    */
-
-    default:
-        break;
-    }
 
     // UCARDET does not rely on encodingHint, so make a bias here
     confidence_UCD += (cpiEncoding_UCD == encodingHint) ? (1.0f - confidence_UCD) / 2.0f : 0.0f;
@@ -836,64 +808,6 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
 
     pEncDetInfo->confidence = confidence_UCD;
     pEncDetInfo->analyzedEncoding = cpiEncoding_UCD;
-
-
-    /* ~~~ //////////////////////////////////////////////////////////////////////
-
-    // ---  re-mapping CED ----
-
-    switch (codePage_CED)
-    {
-    case 20936:  // Map old GB2312 -> GBK
-      cpiEncoding_CED = Encoding_GetByCodePage(936);
-      break;
-
-    case 28591:  // ISO 8859-1  mapped to  Windows-1252  (HTML5 Standard advice)
-      cpiEncoding_CED = Encoding_GetByCodePage(1252);
-      break;
-
-    default:
-      break;
-    }
-
-    // --------------------------------------------------------------------------
-    // vote for encoding prognosis based on confidence levels or reliability
-    // --------------------------------------------------------------------------
-
-    float confidence = ucd_confidence;
-
-    if ((cpiEncoding_UCD == cpiEncoding_CED) && !Encoding_IsNONE(cpiEncoding_UCD))
-    {
-      iAnalyzedEncoding = cpiEncoding_UCD;
-      confidence = max_f(ucd_confidence, ced_confidence);
-    }
-    else { // ---  ambiguous results  ---
-
-      if (Encoding_IsNONE(cpiEncoding_UCD))
-      {
-        // _NO_ UCHARDET rely on CED
-        iAnalyzedEncoding = cpiEncoding_CED;
-        confidence = ced_confidence;
-      }
-      else { // _OK_ UCHARDET result
-
-        if ((ced_confidence < ucd_confidence) || Encoding_IsNONE(cpiEncoding_CED))
-        {
-          // unreliable CED use UCHARDET
-          iAnalyzedEncoding = cpiEncoding_UCD;
-          confidence = ucd_confidence;
-        }
-        else  // --- more reliable CED result  ---
-        {
-          iAnalyzedEncoding = cpiEncoding_CED;  // prefer CED
-          confidence = (ucd_confidence + ced_confidence) / 2.0f;  // adjust confidence
-        }
-      }
-    }
-    *confidence_io = confidence;
-    return iAnalyzedEncoding;
-
-    ~~~ */ //////////////////////////////////////////////////////////////////////
 
 }
 // ============================================================================
@@ -1265,6 +1179,19 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
 
     FileVars_GetFromData(lpData, cbData, &Globals.fvCurFile);
 
+    // --- Check for UTF-32 BOM first (unsupported encoding) ---
+    if (Has_UTF32_BOM(lpData, cbData)) {
+        encDetRes.bIsUTF32 = true;
+        encDetRes.bHasBOM = true;
+        encDetRes.Encoding = CPI_PREFERRED_ENCODING;
+        StringCchCopyA(encDetRes.encodingStrg, COUNTOF(encDetRes.encodingStrg),
+                       Has_UTF32_BE_BOM(lpData, cbData) ? "UTF-32BE" : "UTF-32LE");
+        if (Flags.bDevDebugMode) {
+            _SetEncodingTitleInfo(&encDetRes);
+        }
+        return encDetRes;
+    }
+
     bool const bBOM_LE = Has_UTF16_LE_BOM(lpData, cbData);
     bool const bBOM_BE = Has_UTF16_BE_BOM(lpData, cbData);
 
@@ -1306,14 +1233,11 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
             Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes, iAnalyzeHint);
             // ---------------------------------------------------------------------------
         }
-        encDetRes.bPureASCII7Bit = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) || IsPureAscii7Bit(lpData, cbData);
+        encDetRes.bPureASCII7Bit = IsPureAscii7Bit(lpData, cbData);
 
         if (encDetRes.analyzedEncoding == CPI_NONE) {
             encDetRes.analyzedEncoding = iAnalyzeHint;
             encDetRes.confidence = (1.0f - Settings2.AnalyzeReliableConfidenceLevel);
-        }
-        else if (encDetRes.bPureASCII7Bit && encDetRes.bValidUTF8) {
-            encDetRes.analyzedEncoding = CPI_UTF8;
         }
 
         if (!bSkipUTFDetection) {
@@ -1373,22 +1297,25 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
     }
     else if (Encoding_IsValid(encDetRes.analyzedEncoding) && (encDetRes.bIsAnalysisReliable || !Settings.UseReliableCEDonly))
     {
-        if (!encDetRes.bIsAnalysisReliable && !Encoding_IsUTF8(encDetRes.analyzedEncoding) && encDetRes.bValidUTF8) {
-            encDetRes.Encoding = CPI_UTF8; // unreliable non-UTF-8 guess, but data is valid UTF-8
-        } else {
-            encDetRes.Encoding = encDetRes.analyzedEncoding;
-        }
+        encDetRes.Encoding = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) ? CPI_UTF8 : encDetRes.analyzedEncoding;
     }
-    else if (!encDetRes.bIsAnalysisReliable && Encoding_IsValid(encDetRes.analyzedEncoding))
-    {
-        // UCHARDET below confidence threshold (UseReliableCEDonly is true)
-        encDetRes.Encoding = encDetRes.bValidUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
-    }
-    else if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis) && (iConfidence > 66))
+    else if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis))
     {
         // unicodeAnalysis (IsTextUnicode) confirms Unicode structure,
         // iConfidence is from UCHARDET analysis — use analyzedEncoding (intentional)
-        encDetRes.Encoding = encDetRes.analyzedEncoding;
+        if (Encoding_IsValid(encDetRes.analyzedEncoding)) {
+            encDetRes.Encoding = encDetRes.analyzedEncoding;
+        } 
+        //~else if ((encDetRes.analyzedEncoding == CPI_ASCII_7BIT) && encDetRes.bValidUTF8) {
+        //~    encDetRes.Encoding = CPI_UTF8;
+        //~}
+        else {
+            encDetRes.Encoding = encDetRes.unicodeAnalysis;
+        }
+    }
+    else if (encDetRes.bPureASCII7Bit || (encDetRes.analyzedEncoding == CPI_ASCII_7BIT)) {
+        // UCHARDET below confidence threshold (UseReliableCEDonly is true)
+        encDetRes.Encoding = encDetRes.bValidUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
     }
     else if (Encoding_IsValid(Encoding_SrcWeak(CPI_GET)))
     {
@@ -1399,6 +1326,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
         encDetRes.Encoding = iAnalyzeHint;
     }
 
+    // final check
     if (!Encoding_IsValid(encDetRes.Encoding)) {
         encDetRes.Encoding = CPI_PREFERRED_ENCODING;
     }

@@ -68,6 +68,8 @@ public:
    virtual nsresult HandleData(const char* aBuf, PRUint32 aLen);
    virtual void DataEnd(void);
 
+   void SetLanguageFilter(PRUint32 aFilter) { mLanguageFilter = aFilter; } /* NP3 patch */
+
 protected:
    virtual void Report(const char* aCharset, float aConfidence) = 0;
    virtual void Reset();

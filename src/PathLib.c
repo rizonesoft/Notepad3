@@ -64,7 +64,7 @@
 // ============================================================================
 
 // ============================================================================
-// TODO: if (IsWindows10OrGreater() && OptInRemovedMaxPathLimit()) {}
+// TODO: if (OptInRemovedMaxPathLimit()) {}
 // https://docs.microsoft.com/de-de/windows/win32/api/fileapi/nf-fileapi-getfileattributesa
 // 
 // These are the directory management functions that no longer have MAX_PATH restrictions
@@ -119,14 +119,15 @@
 // 
 // ============================================================================
 
+#include <sdkddkver.h>
 #ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0601 /*_WIN32_WINNT_WIN7*/
+#define _WIN32_WINNT _WIN32_WINNT_WIN10
 #endif
 #ifndef WINVER
-#define WINVER 0x0601 /*_WIN32_WINNT_WIN7*/
+#define WINVER _WIN32_WINNT_WIN10
 #endif
 #ifndef NTDDI_VERSION
-#define NTDDI_VERSION 0x06010000 /*NTDDI_WIN7*/
+#define NTDDI_VERSION NTDDI_WIN10_RS5
 #endif
 
 
@@ -1470,7 +1471,7 @@ size_t PTHAPI Path_ToShortPathName(HPATHL hpth_in_out)
     DWORD const _len = GetShortPathNameW(StrgGet(hstr_io), NULL, 0);
     if (!_len) {
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
-        MsgBoxLastError(L"Path_ToShortPathName()", 0);
+        InfoBoxLastError(L"Path_ToShortPathName()", 0);
 #endif // DEBUG
         return 0;
     }
@@ -1494,7 +1495,7 @@ size_t PTHAPI Path_GetLongPathNameEx(HPATHL hpth_in_out)
 
     DWORD const _len = GetLongPathNameW(StrgGet(hstr_io), NULL, 0);
     if (!_len) {
-        //MsgBoxLastError(L"Path_GetLongPathNameEx()", 0);
+        //InfoBoxLastError(L"Path_GetLongPathNameEx()", 0);
         return 0;
     }
     LPWSTR const buf = StrgWriteAccessBuf(hstr_io, _len);

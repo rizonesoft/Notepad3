@@ -82,10 +82,8 @@ void DialogFileBrowse(HWND hwnd);
 void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern);
 void DialogAdminExe(HWND hwnd,bool);
 
-int  MessageBoxLng(UINT uType, UINT uidMsg, ...);
-DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
-
-LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...);
+LONG  InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...);
+DWORD InfoBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID);
 #define INFOBOX_ANSW(_R_) LOWORD(_R_)
 #define INFOBOX_MODE(_R_) HIWORD(_R_)
 
@@ -168,6 +166,7 @@ inline void ResizeDlg_InitY(HWND hwnd, int cyFrame, int nIdGrip)
 void ResizeDlg_Destroy(HWND hwnd, int* cxFrame, int* cyFrame);
 void ResizeDlg_Size(HWND hwnd, LPARAM lParam, int* cx, int* cy);
 void ResizeDlg_GetMinMaxInfo(HWND hwnd, LPARAM lParam);
+void ResizeDlg_DPIChanged(HWND hwnd, const RECT* pNewRect, UINT newDpi);
 
 #define MAX_RESIZEDLG_ATTR_COUNT	2
 void ResizeDlg_SetAttr(HWND hwnd, int index, int value);

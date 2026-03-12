@@ -197,14 +197,14 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Moldar coluna...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
-            MENUITEM "&Unite Duplicate Lines\tCtrl+Alt+D",     IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Remo&ve Duplicate Lines",                IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "&Unir linhas duplicadas\tCtrl+Alt+D",     IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "Remo&ver linhas duplicadas",                IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "Fundir linhas vazias\tAlt+Y",            IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Fundir linhas em branco\tCtrl+Alt+Y",    IDM_EDIT_MERGEBLANKLINES
             MENUITEM "&Remover linhas vazias\tAlt+R",          IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Remover linhas em branco\tCtrl+Alt+B",   IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "Adva&nced"
+        POPUP "&Avançado"
         BEGIN
             MENUITEM "&Indentar",                               IDM_EDIT_INDENT
             MENUITEM "&Desindentar",                            IDM_EDIT_UNINDENT
@@ -491,7 +491,7 @@ BEGIN
         END
         MENUITEM "Guardar &antes de executar ferramentas",      IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Calcular E&xpressões-muito pequenas",         IDM_SET_EVALTINYEXPRONSEL
-        MENUITEM "Enable Multiple Selection",                   IDM_SET_MULTIPLE_SELECTION
+        MENUITEM "Activar selecção múltipla",                   IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "Lemb&rar"
         BEGIN

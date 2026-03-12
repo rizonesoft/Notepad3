@@ -12,14 +12,15 @@
 *                                                                             *
 *                                                                             *
 *******************************************************************************/
+#include <sdkddkver.h>
 #if !defined(WINVER)
-#define WINVER 0x601  /*_WIN32_WINNT_WIN7*/
+#define WINVER _WIN32_WINNT_WIN10
 #endif
 #if !defined(_WIN32_WINNT)
-#define _WIN32_WINNT 0x601  /*_WIN32_WINNT_WIN7*/
+#define _WIN32_WINNT _WIN32_WINNT_WIN10
 #endif
 #if !defined(NTDDI_VERSION)
-#define NTDDI_VERSION 0x06010000  /*NTDDI_WIN7*/
+#define NTDDI_VERSION NTDDI_WIN10_RS5
 #endif
 
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
@@ -192,13 +193,13 @@ HANDLE AcquireWriteFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
         if (!bLocked) {
             HSTRINGW msg = StrgCreate(NULL);
             StrgFormat(msg, L"AcquireWriteFileLock(%s): NO EXCLUSIVE LOCK ACQUIRED!", lpIniFilePath);
-            MsgBoxLastError(StrgGet(msg), 0);
+            InfoBoxLastError(StrgGet(msg), 0);
             StrgDestroy(msg);
         }
     } else {
         HSTRINGW msg = StrgCreate(NULL);
         StrgFormat(msg, L"AcquireWriteFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
-        MsgBoxLastError(StrgGet(msg), 0);
+        InfoBoxLastError(StrgGet(msg), 0);
         StrgDestroy(msg);
     }
     return (bLocked ? hFile : INVALID_HANDLE_VALUE);
@@ -225,13 +226,13 @@ HANDLE AcquireReadFileLock(LPCWSTR lpIniFilePath, OVERLAPPED& rOvrLpd)
         if (!bLocked) {
             HSTRINGW msg = StrgCreate(NULL);
             StrgFormat(msg, L"AcquireReadFileLock(%s): NO READER LOCK ACQUIRED!", lpIniFilePath);
-            MsgBoxLastError(StrgGet(msg), 0);
+            InfoBoxLastError(StrgGet(msg), 0);
             StrgDestroy(msg);
         }
     } else {
         HSTRINGW msg = StrgCreate(NULL);
         StrgFormat(msg, L"AcquireReadFileLock(%s): INVALID FILE HANDLE!", lpIniFilePath);
-        MsgBoxLastError(StrgGet(msg), 0);
+        InfoBoxLastError(StrgGet(msg), 0);
         StrgDestroy(msg);
     }
     return (bLocked ? hFile : INVALID_HANDLE_VALUE);
@@ -1137,11 +1138,11 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
             if (IS_VALID_HANDLE(hFile)) {
                 CloseHandle(hFile); // done
             } else {
-                WCHAR fileName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
+                WCHAR fileName[MAX_PATH_EXPLICIT] = { L'\0' };
                 Path_GetDisplayName(fileName, COUNTOF(fileName), hini_pth, NULL, true);
                 HSTRINGW msg = StrgCreate(NULL);
                 StrgFormat(msg, L"CreateIniFile(%s): FAILED TO CREATE INITIAL INI FILE!", fileName);
-                MsgBoxLastError(StrgGet(msg), 0);
+                InfoBoxLastError(StrgGet(msg), 0);
                 StrgDestroy(msg);
                 if (pdwFileSize_out) { *pdwFileSize_out = 0UL; }
                 return false;
@@ -1156,11 +1157,11 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
                 dwFileSize = GetFileSize(hFile, &dwFSHigh);
                 CloseHandle(hFile);
             } else {
-                WCHAR fileName[MAX_PATH_EXPLICIT>>1] = { L'\0' };
+                WCHAR fileName[MAX_PATH_EXPLICIT] = { L'\0' };
                 Path_GetDisplayName(fileName, COUNTOF(fileName), hini_pth, NULL, true);
                 HSTRINGW msg = StrgCreate(NULL);
                 StrgFormat(msg, L"CreateIniFile(%s): FAILED TO READ FILESIZE!", fileName);
-                MsgBoxLastError(StrgGet(msg), 0);
+                InfoBoxLastError(StrgGet(msg), 0);
                 StrgDestroy(msg);
                 dwFileSize = INVALID_FILE_SIZE;
             }
@@ -1377,6 +1378,8 @@ void LoadSettings()
 
     int const iAnsiCPBonusSet = clampi(IniSectionGetInt(IniSecSettings2, L"LocaleAnsiCodePageAnalysisBonus", 33), 0, 100);
     Settings2.LocaleAnsiCodePageAnalysisBonus = (float)iAnsiCPBonusSet / 100.0f;
+
+    Settings2.UchardetLanguageFilter = clampi(IniSectionGetInt(IniSecSettings2, L"UchardetLanguageFilter", 0x1F), 0, 0x1F);
 
     Settings2.FileLoadWarningMB = clampi(IniSectionGetInt(IniSecSettings2, L"FileLoadWarningMB", 4), 0, 2048);
 

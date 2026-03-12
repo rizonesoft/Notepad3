@@ -197,14 +197,14 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Разбить по &ширине...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
-            MENUITEM "&Unite Duplicate Lines\tCtrl+Alt+D",          IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Remo&ve Duplicate Lines",                     IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "&Объединить дублирующиеся строки\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "Удали&ть дублирующиеся строки",                  IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "Объединить пустые строки\tAlt+Y",             IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Объединить строки с пробелами\tCtrl+Alt+Y",   IDM_EDIT_MERGEBLANKLINES
             MENUITEM "Удалить пустые строки\tAlt+R",                IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Удалить строки с пробелами\tCtrl+Alt+B",      IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "Adva&nced"
+        POPUP "&Дополнительно"
         BEGIN
             MENUITEM "&Добавить отступ",                  IDM_EDIT_INDENT
             MENUITEM "&Удалить отступ",                   IDM_EDIT_UNINDENT
@@ -358,7 +358,7 @@ BEGIN
             MENUITEM "Показывать только в документе",       IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Показывать везде",                    IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Очистить историю изменений/отмены"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Отмечать &гиперссылки\tCtrl+Alt+W",               IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Отмечать области выбора &цвета"
@@ -426,7 +426,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Панел&и"
         BEGIN
-            MENUITEM "Show Titlebar",                       IDM_VIEW_TITLEBAR
+            MENUITEM "Показать заголовок окна",                       IDM_VIEW_TITLEBAR
             MENUITEM "Показать панель &меню",               IDM_VIEW_MENUBAR
             MENUITEM "Показать &панель инструментов",       IDM_VIEW_TOOLBAR
             MENUITEM "Показать &строку состояния",          IDM_VIEW_STATUSBAR
@@ -472,7 +472,7 @@ BEGIN
         MENUITEM "Настройка переноса &строк...",                IDM_SET_WORDWRAPSETTINGS
         MENUITEM "Настро&йка длинных строк...",                 IDM_SET_LONGLINESETTINGS
         MENUITEM "Авто&матический отступ текста",               IDM_SET_AUTOINDENTTEXT
-        MENUITEM "Auto Close &Quotes",                          IDM_SET_AUTOCLOSEQUOTES
+        MENUITEM "Автозакрытие &кавычек",                           IDM_SET_AUTOCLOSEQUOTES
         MENUITEM "Автозакрытие скобок",                         IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Автозакрытие тегов &HTML/XML\tCtrl+Shift+H",  IDM_SET_AUTOCLOSETAGS
         MENUITEM "Авто&завершение слов",                        IDM_SET_AUTOCOMPLETEWORDS
@@ -491,7 +491,7 @@ BEGIN
         END
         MENUITEM "Сохранять перед запуском инструментов",   IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Вычислять простые в&ыражения",            IDM_SET_EVALTINYEXPRONSEL
-        MENUITEM "Enable Multiple Selection",               IDM_SET_MULTIPLE_SELECTION
+        MENUITEM "Включить мно&жественный выбор",               IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "&История"
         BEGIN
@@ -579,7 +579,7 @@ BEGIN
     END
     POPUP "+"
     BEGIN
-        MENUITEM "Show Titlebar",                      IDM_VIEW_TITLEBAR
+        MENUITEM "Показать заголовок окна",                    IDM_VIEW_TITLEBAR
         MENUITEM "Показать панель меню",               IDM_VIEW_MENUBAR
         MENUITEM "Показать панель инструментов",       IDM_VIEW_TOOLBAR
         MENUITEM "Показать строку состояния",          IDM_VIEW_STATUSBAR
