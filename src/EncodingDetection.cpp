@@ -1233,7 +1233,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
             Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes, iAnalyzeHint);
             // ---------------------------------------------------------------------------
         }
-        encDetRes.bPureASCII7Bit = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) || IsPureAscii7Bit(lpData, cbData);
+        encDetRes.bPureASCII7Bit = IsPureAscii7Bit(lpData, cbData);
 
         if (encDetRes.analyzedEncoding == CPI_NONE) {
             encDetRes.analyzedEncoding = iAnalyzeHint;
@@ -1297,22 +1297,25 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
     }
     else if (Encoding_IsValid(encDetRes.analyzedEncoding) && (encDetRes.bIsAnalysisReliable || !Settings.UseReliableCEDonly))
     {
-        if (!encDetRes.bIsAnalysisReliable && !Encoding_IsUTF8(encDetRes.analyzedEncoding) && encDetRes.bValidUTF8) {
-            encDetRes.Encoding = CPI_UTF8; // unreliable non-UTF-8 guess, but data is valid UTF-8
-        } else {
-            encDetRes.Encoding = encDetRes.analyzedEncoding;
-        }
+        encDetRes.Encoding = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) ? CPI_UTF8 : encDetRes.analyzedEncoding;
     }
-    else if (!encDetRes.bIsAnalysisReliable && (Encoding_IsValid(encDetRes.analyzedEncoding) || encDetRes.bPureASCII7Bit))
-    {
-        // UCHARDET below confidence threshold (UseReliableCEDonly is true)
-        encDetRes.Encoding = encDetRes.bValidUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
-    }
-    else if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis) && (iConfidence > 50))
+    else if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis))
     {
         // unicodeAnalysis (IsTextUnicode) confirms Unicode structure,
         // iConfidence is from UCHARDET analysis — use analyzedEncoding (intentional)
-        encDetRes.Encoding = encDetRes.analyzedEncoding;
+        if (Encoding_IsValid(encDetRes.analyzedEncoding)) {
+            encDetRes.Encoding = encDetRes.analyzedEncoding;
+        } 
+        //~else if ((encDetRes.analyzedEncoding == CPI_ASCII_7BIT) && encDetRes.bValidUTF8) {
+        //~    encDetRes.Encoding = CPI_UTF8;
+        //~}
+        else {
+            encDetRes.Encoding = encDetRes.unicodeAnalysis;
+        }
+    }
+    else if (encDetRes.bPureASCII7Bit || (encDetRes.analyzedEncoding == CPI_ASCII_7BIT)) {
+        // UCHARDET below confidence threshold (UseReliableCEDonly is true)
+        encDetRes.Encoding = encDetRes.bValidUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
     }
     else if (Encoding_IsValid(Encoding_SrcWeak(CPI_GET)))
     {
@@ -1323,6 +1326,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
         encDetRes.Encoding = iAnalyzeHint;
     }
 
+    // final check
     if (!Encoding_IsValid(encDetRes.Encoding)) {
         encDetRes.Encoding = CPI_PREFERRED_ENCODING;
     }
