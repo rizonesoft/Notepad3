@@ -1303,9 +1303,17 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
     {
         // unicodeAnalysis (IsTextUnicode) confirms Unicode structure,
         // iConfidence is from UCHARDET analysis — use analyzedEncoding (intentional)
-        encDetRes.Encoding = Encoding_IsValid(encDetRes.analyzedEncoding) ? encDetRes.analyzedEncoding : encDetRes.unicodeAnalysis;
+        if (Encoding_IsValid(encDetRes.analyzedEncoding)) {
+            encDetRes.Encoding = encDetRes.analyzedEncoding;
+        } 
+        //~else if ((encDetRes.analyzedEncoding == CPI_ASCII_7BIT) && encDetRes.bValidUTF8) {
+        //~    encDetRes.Encoding = CPI_UTF8;
+        //~}
+        else {
+            encDetRes.Encoding = encDetRes.unicodeAnalysis;
+        }
     }
-    else if (encDetRes.bPureASCII7Bit) {
+    else if (encDetRes.bPureASCII7Bit || (encDetRes.analyzedEncoding == CPI_ASCII_7BIT)) {
         // UCHARDET below confidence threshold (UseReliableCEDonly is true)
         encDetRes.Encoding = encDetRes.bValidUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
     }
