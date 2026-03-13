@@ -254,7 +254,7 @@ extern "C" const char* Encoding_GetTitleInfoA()
 //
 //  };
 //
-
+#define MIN_CONFIDENCE_ANSI_NOT_UTF8 0.98f // if confidence is above this threshold, we consider it ANSI, even if it could be UTF-8
 
 #define ENC_PARSE_NAM_ASCII                ",ASCII,ascii,"
 #define ENC_PARSE_NAM_ANSI                 ",ANSI,ansi,SYSTEM,system" ENC_PARSE_NAM_ASCII
@@ -273,9 +273,9 @@ extern "C" const char* Encoding_GetTitleInfoA()
 #define ENC_PARSE_NAM_DOS_775              ",CP-500,cp500,ibm775,"
 #define ENC_PARSE_NAM_ISO_8859_4           ",ISO-8859-4,iso88594,csisolatin4,isoir110,l4,latin4,"
 #define ENC_PARSE_NAM_WIN_1257             ",Windows-1257,windows1257,CP-1257,cp1257,ansibaltic,"
-#define ENC_PARSE_NAM_DOS_852              ",CP-852,cp852,ibm852,"
+#define ENC_PARSE_NAM_DOS_852              ",CP-852,cp852,ibm852,ISO-8859-16,iso885916"
 #define ENC_PARSE_NAM_ISO_8859_2           ",ISO-8859-2,iso88592,csisolatin2,isoir101,latin2,l2,"
-#define ENC_PARSE_NAM_MAC_CENTRAL_EUROP    ",x-mac-ce,xmacce,mac-ce,xmaccentraleurope,maccentraleurope,"
+#define ENC_PARSE_NAM_MAC_CENTRAL_EUROP    ",x-mac-ce,xmacce,mac-ce,mac-centraleurope,xmaccentraleurope,maccentraleurope,"
 #define ENC_PARSE_NAM_WIN_1250             ",Windows-1250,windows1250,CP-1250,cp1250,xcp1250,"
 #define ENC_PARSE_NAM_GBK_936              ",CP-936,cp936,gb,gbk,gbk-936,chinese,cngb,cngbk,chinese_gb,chinese_gbk,"
 #define ENC_PARSE_NAM_GB2312_80            ",gb2312,csgb2312,EUC-CN,euccn,gb2312-80,gb231280,gb231280,csgb231280,"
@@ -315,13 +315,13 @@ extern "C" const char* Encoding_GetTitleInfoA()
 #define ENC_PARSE_NAM_DOS_860              ",CP-860,cp860,ibm860,"
 #define ENC_PARSE_NAM_MAC_ROMANIAN         ",x-mac-romanian,xmacromanian,mac-romanian,macromanian,"
 #define ENC_PARSE_NAM_MAC_THAI             ",x-mac-thai,xmacthai,mac-thai,macthai,"
-#define ENC_PARSE_NAM_WIN_874              ",Windows-874,windows874,dos874,CP-874,cp874,iso885911,TIS-620,tis620,isoir166,"
+#define ENC_PARSE_NAM_WIN_874              ",Windows-874,windows874,dos874,CP-874,cp874,ISO-8859-11,iso885911,TIS-620,tis620,isoir166,"
 #define ENC_PARSE_NAM_DOS_857              ",CP-857,cp857,ibm857,"
 #define ENC_PARSE_NAM_ISO_8859_9           ",ISO-8859-9,iso88599,latin5,isoir148,l5,"
 #define ENC_PARSE_NAM_MAC_TURKISH          ",x-mac-turkish,xmacturkish,mac-turkish,macturkish,"
 #define ENC_PARSE_NAM_WIN_1254             ",Windows-1254,windows1254,CP-1254,cp1254,"
 #define ENC_PARSE_NAM_MAC_UKRAINIAN        ",x-mac-ukrainian,xmacukrainian,mac-ukrainian,macukrainian,"
-#define ENC_PARSE_NAM_WIN_1258             ",Windows-1258,windows1258,CP-1258,cp1258,ansivietnamese"
+#define ENC_PARSE_NAM_WIN_1258             ",Windows-1258,windows1258,CP-1258,cp1258,VISCII,viscii,csviscii,ansivietnamese,"
 #define ENC_PARSE_NAM_DOS_850              ",CP-850,cp850,ibm850,"
 #define ENC_PARSE_NAM_ISO_8859_1           ",ISO-8859-1,iso88591,CP-819,cp819,latin1,ibm819,isoir100,latin1,l1,"
 #define ENC_PARSE_NAM_MAC_WESTERN_EUROP    ",macintosh,macintosh,"
@@ -337,23 +337,20 @@ extern "C" const char* Encoding_GetTitleInfoA()
 #define ENC_PARSE_NAM_HZ_GB2312            ",HZ-GB-2312,hzgb2312,hz,"
 #define ENC_PARSE_NAM_ISO_2022_JP          ",ISO-2022-JP,iso2022jp,"
 #define ENC_PARSE_NAM_ISO_2022_KR          ",ISO-2022-KR,iso2022kr,csiso2022kr,"
-#define ENC_PARSE_NAM_X_CHINESE_CNS        ",X-CHINESE-CNS,xchinesecns,"
+#define ENC_PARSE_NAM_X_CHINESE_CNS        ",X-CHINESE-CNS,xchinesecns,EUC-TW,euctw,"
 #define ENC_PARSE_NAM_JOHAB                ",johab,"
 #define ENC_PARSE_NAM_BIG5_HKSCS           ",big5hkscs,cnbig5hkscs,xxbig5hkscs,"
-//#define ENC_PARSE_NAM_ISO_8859_10          "ISO-8859-10,iso885910,Windows-28600,windows28600,CP-28600,cp28600,"
+#define ENC_PARSE_NAM_ISO_8859_10          ",ISO-8859-10,iso885910,Windows-28600,windows28600,CP-28600,cp28600,"
+#define ENC_PARSE_NAM_DOS_855              ",CP-855,cp855,ibm855,"
+
 //=============================================================================
 
 // Missing ICONV Strings:
 // -----------------------
 // "UTF-32BE / UTF-32LE / X-ISO-10646-UCS-4-34121 / X-ISO-10646-UCS-4-21431"
 // "Bulgarian"
-// "EUC-TW"
-// "ISO-8859-16"
-// "MacCentralEurope"
 // "ISO-8859-10"
-// "IBM855"
 // "ISO-8859-11"
-// "VISCII"
 
 extern "C" NP2ENCODING g_Encodings[] = {
     /* 000 */{ NCP_ASCII_7BIT | NCP_ANSI | NCP_RECODE,              CP_ACP,   ENC_PARSE_NAM_ANSI,              IDS_ENC_ANSI,              L"" }, // CPI_ANSI_DEFAULT       0
@@ -362,8 +359,8 @@ extern "C" NP2ENCODING g_Encodings[] = {
     /* 003 */{ NCP_UNICODE | NCP_UNICODE_REVERSE | NCP_UNICODE_BOM, CP_UTF8,  ENC_PARSE_NAM_UTF16BEBOM,        IDS_ENC_UTF16BEBOM,        L"" }, // CPI_UNICODEBEBOM       3
     /* 004 */{ NCP_UNICODE | NCP_RECODE,                            CP_UTF8,  ENC_PARSE_NAM_UTF16LE,           IDS_ENC_UTF16LE,           L"" }, // CPI_UNICODE            4
     /* 005 */{ NCP_UNICODE | NCP_UNICODE_REVERSE | NCP_RECODE,      CP_UTF8,  ENC_PARSE_NAM_UTF16BE,           IDS_ENC_UTF16BE,           L"" }, // CPI_UNICODEBE          5
-    /* 006 */{ NCP_ASCII_7BIT | NCP_UTF8 | NCP_RECODE,              CP_UTF8,  ENC_PARSE_NAM_UTF8,              IDS_ENC_UTF8,              L"" }, // CPI_UTF8               6
-    /* 007 */{ NCP_UTF8       | NCP_UTF8_SIGN,                      CP_UTF8,  ENC_PARSE_NAM_UTF8SIG,           IDS_ENC_UTF8SIG,           L"" }, // CPI_UTF8SIGN           7
+    /* 006 */{ NCP_ASCII_7BIT | NCP_UNICODE | NCP_UTF8 | NCP_RECODE,CP_UTF8,  ENC_PARSE_NAM_UTF8,              IDS_ENC_UTF8,              L"" }, // CPI_UTF8               6
+    /* 007 */{ NCP_UNICODE | NCP_UTF8 | NCP_UTF8_SIGN,              CP_UTF8,  ENC_PARSE_NAM_UTF8SIG,           IDS_ENC_UTF8SIG,           L"" }, // CPI_UTF8SIGN           7
     /* 008 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     CP_UTF7,  ENC_PARSE_NAM_UTF7,              IDS_ENC_UTF7,              L"" }, // CPI_UTF7               8
     /* 009 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     720,      ENC_PARSE_NAM_DOS_720,           IDS_ENC_DOS_720,           L"" },
     /* 010 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28596,    ENC_PARSE_NAM_ISO_8859_6,        IDS_ENC_ISO_8859_6,        L"" },
@@ -439,9 +436,9 @@ extern "C" NP2ENCODING g_Encodings[] = {
     /* 080 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     20000,    ENC_PARSE_NAM_X_CHINESE_CNS,     IDS_ENC_X_CHINESE_CNS,     L"" }, // Chinese Traditional (CNS)
     /* 081 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     1361,     ENC_PARSE_NAM_JOHAB,             IDS_ENC_JOHAB,             L"" }, // Korean (Johab)
     // may need special codepage installation on some
-    /* 082 */{ NCP_EXTERNAL_8BIT | NCP_RECODE,                      951,      ENC_PARSE_NAM_BIG5_HKSCS,        IDS_ENC_BIG5_HKSCS,        L"" }  // Chinese (Hong Kong Supplementary Character Set)
-
-    ///* 079 */{ NCP_EXTERNAL_8BIT | NCP_RECODE, 28600, ENC_PARSE_NAM_ISO_8859_10,       IDS_ENC_ISO_8859_10,       ISO_8859_10,        L"" }, // Nordic (ISO 8859-10)
+    /* 082 */{ NCP_EXTERNAL_8BIT | NCP_RECODE,                      951,      ENC_PARSE_NAM_BIG5_HKSCS,        IDS_ENC_BIG5_HKSCS,        L"" }, // Chinese (Hong Kong Supplementary Character Set)
+    /* 083 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     28600,    ENC_PARSE_NAM_ISO_8859_10,       IDS_ENC_ISO_8859_10,       L"" }, // Nordic (ISO 8859-10)
+    /* 084 */{ NCP_ASCII_7BIT | NCP_EXTERNAL_8BIT | NCP_RECODE,     855,      ENC_PARSE_NAM_DOS_855,           IDS_ENC_DOS_855,           L"" }  // Cyrillic (CP-855)
 
 
 #if 0
@@ -537,7 +534,7 @@ constexpr float clampf(float x, float lower, float upper)
 
 //=============================================================================
 
-cpi_enc_t GetUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM, bool* lpbReverse)
+cpi_enc_t AnalyzeUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM, bool* lpbReverse)
 {
     cpi_enc_t iEncoding = CPI_NONE;
 
@@ -562,17 +559,21 @@ cpi_enc_t GetUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM
         return CPI_NONE; // iTest doesn't seem to have been modified ...
     }
 
-
     bool const bHasBOM = (iTest & IS_TEXT_UNICODE_SIGNATURE);
     bool const bHasRBOM = (iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE);
 
     bool const bIsUnicode = (iTest & IS_TEXT_UNICODE_UNICODE_MASK);
     bool const bIsReverse = (iTest & IS_TEXT_UNICODE_REVERSE_MASK);
-    bool const bIsIllegal = (iTest & IS_TEXT_UNICODE_NOT_UNICODE_MASK);
 
-    //bool const bHasNullBytes = (iTest & IS_TEXT_UNICODE_NULL_BYTES);
+    //bool const bHasOddLen = (iTest & IS_TEXT_UNICODE_ODD_LENGTH);
+    //bool const bHasDBCS = (iTest & IS_TEXT_UNICODE_DBCS_LEADBYTE);
+    bool const bIsUTF8 = (iTest & IS_TEXT_UNICODE_UTF8);
 
-    if ((bHasBOM || bHasRBOM || (bIsUnicode || bIsReverse)) && !bIsIllegal && !(bIsUnicode && bIsReverse)) {
+    //~ unreliable ~ bool const bIsIllegal = (iTest & IS_TEXT_UNICODE_ILLEGAL_CHARS);
+    bool const bHasNullBytes = (iTest & IS_TEXT_UNICODE_NULL_BYTES);
+
+    if ((bHasBOM || bHasRBOM || bIsUnicode || bIsReverse) && bHasNullBytes) // && !bHasOddLen)
+    {
         if (lpbBOM) {
             *lpbBOM = (bHasBOM || bHasRBOM);
         }
@@ -580,12 +581,57 @@ cpi_enc_t GetUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM
             *lpbReverse = (bHasRBOM || bIsReverse);
         }
         if (bHasBOM || bHasRBOM) {
-            iEncoding = bHasBOM ? CPI_UNICODEBOM : CPI_UNICODEBEBOM;
-        } else if (bIsUnicode || bIsReverse) {
-            iEncoding = bIsUnicode ? CPI_UNICODE : CPI_UNICODEBE;
+            iEncoding = bHasRBOM ? CPI_UNICODEBEBOM : CPI_UNICODEBOM;
+        }
+        else if (bIsUnicode || bIsReverse) {
+            iEncoding = bIsReverse ? CPI_UNICODEBE : CPI_UNICODE;
         }
     }
+    if (bIsUTF8 && (iEncoding == CPI_NONE)) {
+        iEncoding = CPI_UTF8;
+    }
+
     return iEncoding;
+}
+// ============================================================================
+
+// Supplementary BOM-less UTF-16 detection via null-byte distribution analysis.
+// IsTextUnicode() fails for CJK-heavy content (few ASCII chars = few null bytes).
+// This heuristic counts null bytes at even vs odd byte positions.
+// In UTF-16 LE, ASCII chars produce nulls at odd positions (e.g. 'A' = 41 00).
+// In UTF-16 BE, ASCII chars produce nulls at even positions (e.g. 'A' = 00 41).
+//
+static cpi_enc_t DetectUTF16ByNullDistribution(const char* pBuffer, size_t len)
+{
+    if (!pBuffer || len < 2 || (len & 1))
+    {
+        return CPI_NONE;  // odd length can't be valid UTF-16
+    }
+
+    size_t const cb = min_s(len, 4096LL);
+    const unsigned char* p = (const unsigned char*)pBuffer;
+
+    size_t nullsEven = 0;  // null bytes at even positions (0, 2, 4, ...)
+    size_t nullsOdd = 0;   // null bytes at odd positions (1, 3, 5, ...)
+
+    for (size_t i = 0; i < cb; i += 2) {
+        if (p[i] == 0)     { ++nullsEven; }
+        if (p[i + 1] == 0) { ++nullsOdd; }
+    }
+
+    // In valid UTF-16, nulls appear at exactly one byte position (even XOR odd).
+    // The requirement that the opposite position has ZERO nulls is already a
+    // strong signal. We just need a minimum count to avoid false positives
+    // from stray null bytes in binary data.
+    size_t const minNulls = max_s(2, cb/256LL);
+
+    if (nullsOdd >= minNulls && nullsEven == 0) {
+        return CPI_UNICODE;     // UTF-16 LE: nulls at odd positions only
+    }
+    if (nullsEven >= minNulls && nullsOdd == 0) {
+        return CPI_UNICODEBE;   // UTF-16 BE: nulls at even positions only
+    }
+    return CPI_NONE;
 }
 // ============================================================================
 
@@ -629,8 +675,7 @@ constexpr Encoding _MapCPI2CEDEncoding(const cpi_enc_t cpiEncoding)
 #endif // 0
 
 
-constexpr cpi_enc_t _MapStdEncodingString2CPI(const char* encStrg, float* pConfidence,
-        const char* const text, const size_t len)
+constexpr cpi_enc_t _MapStdEncodingString2CPI(const char* encStrg, float* pConfidence)
 {
     float const confidence = *pConfidence;
 
@@ -640,17 +685,11 @@ constexpr cpi_enc_t _MapStdEncodingString2CPI(const char* encStrg, float* pConfi
         // preprocessing: special cases
         if (StrCmpICA(encStrg, "ascii") == 0) {
             cpiEncoding = CPI_ASCII_7BIT;
+        } else if (StrCmpICA(encStrg, "utf-8") == 0) {
+            cpiEncoding = CPI_UTF8;
         } else {
             cpiEncoding = Encoding_MatchA(encStrg);
         }
-
-        if (Encoding_IsUNICODE(cpiEncoding)) {
-            bool bBOM = false;
-            bool bReverse = false;
-            cpi_enc_t const cpi = GetUnicodeEncoding(text, len, &bBOM, &bReverse);
-            cpiEncoding = cpi;
-        }
-
         // check for default ANSI
         if (cpiEncoding > CPI_ANSI_DEFAULT) {
             if (g_Encodings[cpiEncoding].uCodePage == g_Encodings[CPI_ANSI_DEFAULT].uCodePage) {
@@ -658,7 +697,6 @@ constexpr cpi_enc_t _MapStdEncodingString2CPI(const char* encStrg, float* pConfi
             }
         }
     }
-
     *pConfidence = Encoding_IsNONE(cpiEncoding) ? 0.0f : confidence;
     return cpiEncoding;
 }
@@ -674,7 +712,8 @@ cpi_enc_t AnalyzeText_CED
 (
     const char* const text, const size_t len,
     const cpi_enc_t encodingHint,
-    float* pConfidence, char* encodingStrg, int cch)
+    float* pConfidence, char* encodingStrg, int cch,
+    const cpi_enc_t unicodeAnalysis)
 {
     float const ReliableCEDConfThresh = Settings2.ReliableCEDConfidenceMapping;
     float const UnReliableCEDConfThresh = Settings2.UnReliableCEDConfidenceMapping;
@@ -700,7 +739,7 @@ cpi_enc_t AnalyzeText_CED
 
     confidence = isReliable ? ReliableCEDConfThresh : UnReliableCEDConfThresh;
 
-    cpiEncoding = _MapStdEncodingString2CPI(charset, &confidence, text, len);
+    cpiEncoding = _MapStdEncodingString2CPI(charset, &confidence);
 
 #if 1
     Encoding const check_enc = _MapCPI2CEDEncoding(cpiEncoding);
@@ -742,7 +781,7 @@ cpi_enc_t AnalyzeText_UCHARDET(
         StringCchCopyA(encodingStrg, cch, charset);  // UCHARDET
 
         confidence = uchardet_get_confidence(hUcharDet);
-        cpiEncoding = _MapStdEncodingString2CPI(charset, &confidence, text, len);
+        cpiEncoding = _MapStdEncodingString2CPI(charset, &confidence);
     }
     break;
 
@@ -780,15 +819,15 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
 
     if (len < largeFile) {
         // small file: do SERIAL encoding detection
-        cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, &ucd_cnf, encodingStrg_UCD, MAX_ENC_STRG_LEN);
-        cpiEncoding_CED = AnalyzeText_CED(text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN);
+        cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, &ucd_cnf, encodingStrg_UCD, MAX_ENC_STRG_LEN, pEncDetInfo->unicodeAnalysis);
+        cpiEncoding_CED = AnalyzeText_CED(text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN, pEncDetInfo->unicodeAnalysis);
     } else { // large file:  start ASYNC PARALLEL encoding detection
 
         std::future<int> cpiUCD = std::async(std::launch::async, AnalyzeText_UCHARDET,
-                                             text, len, encodingHint, &ucd_cnf, encodingStrg_UCD, MAX_ENC_STRG_LEN);
+                                             text, len, encodingHint, &ucd_cnf, encodingStrg_UCD, MAX_ENC_STRG_LEN, pEncDetInfo->unicodeAnalysis);
 
         std::future<int> cpiCED = std::async(std::launch::async, AnalyzeText_CED,
-                                             text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN);
+                                             text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN, pEncDetInfo->unicodeAnalysis);
 
         cpiEncoding_UCD = cpiUCD.get();
         cpiEncoding_CED = cpiCED.get();
@@ -804,7 +843,6 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
     confidence_UCD += (cpiEncoding_UCD == encodingHint) ? (1.0f - confidence_UCD) / 2.0f : 0.0f;
     // Default ANSI CodePage detection ? -> bonus
     confidence_UCD += (cpiEncoding_UCD == CPI_ANSI_DEFAULT) ? ((1.0f - confidence_UCD) * Settings2.LocaleAnsiCodePageAnalysisBonus) : 0.0f;
-
 
     pEncDetInfo->confidence = confidence_UCD;
     pEncDetInfo->analyzedEncoding = cpiEncoding_UCD;
@@ -1165,16 +1203,77 @@ extern "C" cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 //=============================================================================
 //=============================================================================
 
-ENC_DET_T encDetRes = INIT_ENC_DET_T;
+static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_BE, size_t data_len)
+{
+    if (encDetRes->bIsUTF8Sig) {
+        encDetRes->Encoding = CPI_UTF8SIGN;
+    }
+    else if (bBOM_LE || bBOM_BE) {
+        encDetRes->Encoding = bBOM_LE ? CPI_UNICODEBOM : CPI_UNICODEBEBOM;
+        encDetRes->bIsReverse = bBOM_BE;
+    }
+    else if (Encoding_IsValid(encDetRes->analyzedEncoding) && (encDetRes->bIsAnalysisReliable || !Settings.UseReliableCEDonly)) {
+        // Valid UTF-8 byte sequence (no null bytes) prefer UTF-8 over
+        // analyzed encoding. ASCII-only files are also valid UTF-8.
+        if ((encDetRes->bValidUTF8) && (encDetRes->confidence < MIN_CONFIDENCE_ANSI_NOT_UTF8))
+            encDetRes->Encoding = CPI_UTF8;
+        else
+            encDetRes->Encoding = encDetRes->analyzedEncoding;
+    }
+    else if (Encoding_IsUNICODE(encDetRes->unicodeAnalysis)) {
+        // unicodeAnalysis confirms Unicode structure.
+        // Only prefer analyzedEncoding if it's also Unicode (e.g., UCHARDET
+        // identified specific UTF-16 variant). Otherwise use unicodeAnalysis.
+        if (Encoding_IsValid(encDetRes->analyzedEncoding) && Encoding_IsUNICODE(encDetRes->analyzedEncoding))
+            encDetRes->Encoding = encDetRes->analyzedEncoding;
+        else
+            encDetRes->Encoding = encDetRes->unicodeAnalysis;
+    }
+    else if (encDetRes->bPureASCII7Bit) {
+        // pure ASCII (no null bytes, all 0x01-0x7F) always valid UTF-8
+        encDetRes->Encoding = CPI_UTF8;
+    }
+    else if (encDetRes->bHasNullBytes) {
+        // Data contains null bytes - not a valid single-byte encoding.
+        // Assume BOM-less UTF-16 LE for even-length data (routes through
+        // Unicode conversion path, avoiding raw-bytes crash in Scintilla).
+        // For odd-length data, this is likely binary - load as ANSI for
+        // binary display (same as UTF-32 handling).
+        if (!(data_len & 1))
+            encDetRes->Encoding = CPI_UNICODE;
+        else
+            encDetRes->Encoding = CPI_ANSI_DEFAULT;
+    }
+    else {
+        cpi_enc_t const weak = Encoding_SrcWeak(CPI_GET);
+        if (Encoding_IsValid(weak)) {
+            if ((weak == CPI_UTF8) && encDetRes->bValidUTF8) {
+                // weak UTF-8 hint and data is valid UTF-8 - use weak hint
+                encDetRes->Encoding = weak;
+            }
+            else if (Encoding_IsANSI(weak)) {
+                encDetRes->Encoding = weak;
+            }
+        }
+    }
+}
 
 //=============================================================================
 //
 //  GetFileEncoding()
 //
-extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpData, const size_t cbData,
-    cpi_enc_t iAnalyzeHint, bool bSkipUTFDetection, bool bSkipANSICPDetection, bool bForceEncDetection)
+
+ENC_DET_T encDetRes = INIT_ENC_DET_T;
+
+extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
+                                             const char* lpData, const size_t cbData,
+                                             cpi_enc_t iAnalyzeHint,
+                                             bool bSkipUTFDetection,
+                                             bool bSkipANSICPDetection,
+                                             bool bForceEncDetection)
 {
     encDetRes = INIT_ENC_DET_T;
+
     #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetRes.forcedEncoding))
 
     FileVars_GetFromData(lpData, cbData, &Globals.fvCurFile);
@@ -1183,7 +1282,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
     if (Has_UTF32_BOM(lpData, cbData)) {
         encDetRes.bIsUTF32 = true;
         encDetRes.bHasBOM = true;
-        encDetRes.Encoding = CPI_PREFERRED_ENCODING;
+        encDetRes.Encoding = CPI_ANSI_DEFAULT; // as for binary
         StringCchCopyA(encDetRes.encodingStrg, COUNTOF(encDetRes.encodingStrg),
                        Has_UTF32_BE_BOM(lpData, cbData) ? "UTF-32BE" : "UTF-32LE");
         if (Flags.bDevDebugMode) {
@@ -1194,6 +1293,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
 
     bool const bBOM_LE = Has_UTF16_LE_BOM(lpData, cbData);
     bool const bBOM_BE = Has_UTF16_BE_BOM(lpData, cbData);
+    bool const bUTF8Sig = (cbData >= 3) ? IsUTF8Signature(lpData) : false;
 
     // --- 1st check for force encodings ---
 
@@ -1212,8 +1312,10 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
 
     encDetRes.bHasBOM = (bBOM_LE || bBOM_BE) || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UNICODE_BOM));
     encDetRes.bIsReverse = bBOM_BE || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UNICODE_REVERSE));
-    encDetRes.bIsUTF8Sig = ((cbData >= 3) ? IsUTF8Signature(lpData) : false) || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UTF8_SIGN));
-    encDetRes.bValidUTF8 = IsValidUTF8(lpData, cbData);
+    encDetRes.bIsUTF8Sig = bUTF8Sig || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UTF8_SIGN));
+    // IsValidUTF8() rejects null bytes as non-text (returns false for buffers with 0x00).
+    // Also reports pure-ASCII status and null-byte presence, eliminating separate scans.
+    encDetRes.bValidUTF8 = IsValidUTF8(lpData, cbData, &(encDetRes.bPureASCII7Bit), &(encDetRes.bHasNullBytes));
 
     // --- 2nd Use Encoding Analysis if applicable
 
@@ -1221,32 +1323,16 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
 
     encDetRes.confidence = 0.0f;
 
-    // analysis hint correction
-    if (Encoding_IsUTF8(iAnalyzeHint) && !encDetRes.bValidUTF8) {
-        iAnalyzeHint = CPI_ANSI_DEFAULT;
-    }
-
     if (!IS_ENC_ENFORCED() || bForceEncDetection) {
 
-        if (!bSkipANSICPDetection) {
-            // ---------------------------------------------------------------------------
-            Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes, iAnalyzeHint);
-            // ---------------------------------------------------------------------------
-        }
-        encDetRes.bPureASCII7Bit = IsPureAscii7Bit(lpData, cbData);
-
-        if (encDetRes.analyzedEncoding == CPI_NONE) {
-            encDetRes.analyzedEncoding = iAnalyzeHint;
-            encDetRes.confidence = (1.0f - Settings2.AnalyzeReliableConfidenceLevel);
-        }
-
+        // --- Unicode (IsTextUnicode) analysis - run once, reused by UCHARDET mapping below
         if (!bSkipUTFDetection) {
 
-            encDetRes.unicodeAnalysis = GetUnicodeEncoding(lpData, cbData, &(encDetRes.bHasBOM), &(encDetRes.bIsReverse));
+            encDetRes.unicodeAnalysis = AnalyzeUnicodeEncoding(lpData, cbData, &(encDetRes.bHasBOM), &(encDetRes.bIsReverse));
 
             if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis)) {
                 // check consistent BOM
-                if (encDetRes.bHasBOM && !(bBOM_LE || bBOM_BE)) {
+                if (encDetRes.bHasBOM && !(bBOM_LE || bBOM_BE || bUTF8Sig)) {
                     encDetRes.unicodeAnalysis = CPI_NONE;
                 }
                 else if (encDetRes.bHasBOM && encDetRes.bIsReverse && !bBOM_BE) {
@@ -1257,6 +1343,23 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
                     encDetRes.unicodeAnalysis = CPI_NONE;
                 }
             }
+
+            // Supplementary UTF-16 detection when IsTextUnicode() fails.
+            // Needed for CJK-heavy BOM-less UTF-16 files where Windows'
+            // heuristic doesn't recognize the Unicode structure.
+            if (encDetRes.bHasNullBytes) {
+                cpi_enc_t const nullDist = DetectUTF16ByNullDistribution(lpData, cbData);
+                if (Encoding_IsUNICODE(nullDist)) {
+                    encDetRes.unicodeAnalysis = nullDist;
+                    encDetRes.bIsReverse = Encoding_IsUNICODE_REVERSE(nullDist);
+                }
+            }
+        }
+
+        if (!bSkipANSICPDetection) {
+            // ---------------------------------------------------------------------------
+            Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes, iAnalyzeHint);
+            // ---------------------------------------------------------------------------
         }
 
         if (bForceEncDetection) {
@@ -1282,53 +1385,14 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpD
     int const iReliableThreshold = f2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
     encDetRes.bIsAnalysisReliable = (iConfidence >= iReliableThreshold);
 
-    // init Preferred Encoding
-    encDetRes.Encoding = CPI_PREFERRED_ENCODING;
+    // init resulting encoding
+    encDetRes.Encoding = CPI_NONE;
 
     if (IS_ENC_ENFORCED()) {
         encDetRes.Encoding = encDetRes.forcedEncoding;
     }
-    else if (encDetRes.bIsUTF8Sig) {
-        encDetRes.Encoding = CPI_UTF8SIGN;
-    }
-    else if (bBOM_LE || bBOM_BE) {
-        encDetRes.Encoding = bBOM_LE ? CPI_UNICODEBOM : CPI_UNICODEBEBOM;
-        encDetRes.bIsReverse = bBOM_BE;
-    }
-    else if (Encoding_IsValid(encDetRes.analyzedEncoding) && (encDetRes.bIsAnalysisReliable || !Settings.UseReliableCEDonly))
-    {
-        encDetRes.Encoding = (encDetRes.analyzedEncoding == CPI_ASCII_7BIT) ? CPI_UTF8 : encDetRes.analyzedEncoding;
-    }
-    else if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis))
-    {
-        // unicodeAnalysis (IsTextUnicode) confirms Unicode structure,
-        // iConfidence is from UCHARDET analysis — use analyzedEncoding (intentional)
-        if (Encoding_IsValid(encDetRes.analyzedEncoding)) {
-            encDetRes.Encoding = encDetRes.analyzedEncoding;
-        } 
-        //~else if ((encDetRes.analyzedEncoding == CPI_ASCII_7BIT) && encDetRes.bValidUTF8) {
-        //~    encDetRes.Encoding = CPI_UTF8;
-        //~}
-        else {
-            encDetRes.Encoding = encDetRes.unicodeAnalysis;
-        }
-    }
-    else if (encDetRes.bPureASCII7Bit || (encDetRes.analyzedEncoding == CPI_ASCII_7BIT)) {
-        // UCHARDET below confidence threshold (UseReliableCEDonly is true)
-        encDetRes.Encoding = encDetRes.bValidUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
-    }
-    else if (Encoding_IsValid(Encoding_SrcWeak(CPI_GET)))
-    {
-        encDetRes.Encoding = Encoding_SrcWeak(CPI_GET);
-    }
-    else if (Encoding_IsValid(iAnalyzeHint))
-    {
-        encDetRes.Encoding = iAnalyzeHint;
-    }
-
-    // final check
-    if (!Encoding_IsValid(encDetRes.Encoding)) {
-        encDetRes.Encoding = CPI_PREFERRED_ENCODING;
+    else {
+        _SetResultingEncoding(&encDetRes, bBOM_LE, bBOM_BE, cbData);
     }
     return encDetRes;
 }

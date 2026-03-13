@@ -74,7 +74,7 @@ cpi_enc_t Encoding_Current(cpi_enc_t iEncoding)
         if (Encoding_IsValid(iEncoding)) {
             CurrentEncoding = iEncoding;
         } else {
-            CurrentEncoding = CPI_PREFERRED_ENCODING;
+            CurrentEncoding = CPI_ANSI_DEFAULT;
         }
     }
     return CurrentEncoding;
@@ -556,7 +556,7 @@ bool Encoding_IsOEM(const cpi_enc_t iEncoding)
 }
 // ============================================================================
 
-bool Encoding_IsUTF8(const cpi_enc_t iEncoding)
+bool Encoding_MaybeUTF8(const cpi_enc_t iEncoding)
 {
     return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_UTF8) != 0) : (iEncoding == CPI_ASCII_7BIT);
 }
@@ -568,9 +568,9 @@ bool Encoding_IsUTF8_SIGN(const cpi_enc_t iEncoding)
 }
 // ============================================================================
 
-bool Encoding_IsUTF8_NO_SIGN(const cpi_enc_t iEncoding)
+bool Encoding_MaybeUTF8_NO_SIGN(const cpi_enc_t iEncoding)
 {
-    return  (Encoding_IsUTF8(iEncoding) && !Encoding_IsUTF8_SIGN(iEncoding));
+    return  (Encoding_MaybeUTF8(iEncoding) && !Encoding_IsUTF8_SIGN(iEncoding));
 }
 // ============================================================================
 
@@ -749,20 +749,6 @@ bool Has_UTF16_BOM(const char* pBuf, size_t cnt)
 
 // ============================================================================
 
-bool IsPureAscii7Bit(const char* pTest, size_t nLength)
-{
-    if (!pTest) {
-        return false;
-    }
-    char const *pt = pTest;
-    for (size_t i = 0; i < nLength; ++i) {
-        if (*pt & 0x80) {
-            return false;
-        }
-        ++pt;
-    }
-    return true;
-}
 // ============================================================================
 
 
@@ -884,7 +870,7 @@ bool  UTF8_ContainsInvalidChars(LPCSTR utf8_string, size_t byte_length)
 // ----------------------------------------------------------------------------
 
 
-bool IsValidUTF8(const char* pTest, size_t nLength)
+bool IsValidUTF8(const char* pTest, size_t nLength, bool* pbIsASCII, bool* pbHasNullBytes)
 {
     static int byte_class_table[256] = {
         /*       00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  */
@@ -932,19 +918,34 @@ bool IsValidUTF8(const char* pTest, size_t nLength)
 #define NEXT_STATE(b,cur) (state_table[(BYTE_CLASS(b) * kNumOfStates) + (cur)])
 
     utf8_state current = kSTART;
+    bool bIsASCII = true;
+    bool bFoundNull = false;
 
     const char* pt = pTest;
     size_t len = nLength;
 
     for (size_t i = 0; i < len; i++, pt++) {
-
+        if (*pt == '\0') {
+            bFoundNull = true;
+            break;  // null bytes indicate non-text (binary/UTF-16)
+        }
+        if (*pt & 0x80) { bIsASCII = false; }
         current = NEXT_STATE(*pt, current);
         if (kERROR == current) {
             break;
         }
     }
 
-    return (current == kSTART) && !UTF8_ContainsInvalidChars(pTest, nLength);
+    if (bFoundNull) {
+        if (pbIsASCII) { *pbIsASCII = false; }
+        if (pbHasNullBytes) { *pbHasNullBytes = true; }
+        return false;
+    }
+
+    bool const bValid = (current == kSTART) && !UTF8_ContainsInvalidChars(pTest, nLength);
+    if (pbIsASCII) { *pbIsASCII = bValid ? bIsASCII : false; }
+    if (pbHasNullBytes) { *pbHasNullBytes = false; }
+    return bValid;
 }
 
 
@@ -956,7 +957,7 @@ bool IsValidUTF8(const char* pTest, size_t nLength)
 // Copyright (c) 2008-2010 Bjoern Hoehrmann <bjoern@hoehrmann.de>
 // See http://bjoern.hoehrmann.de/utf-8/decoder/dfa/ for details.
 
-bool IsValidUTF8(const char* pTest, size_t nLength)
+bool IsValidUTF8(const char* pTest, size_t nLength, bool* pbIsASCII, bool* pbHasNullBytes)
 {
     enum {
         UTF8_ACCEPT = 0,
@@ -988,12 +989,24 @@ bool IsValidUTF8(const char* pTest, size_t nLength)
     const unsigned char *end = pt + nLength;
 
     UINT state = UTF8_ACCEPT;
-    while (pt < end && *pt) {
+    bool bIsASCII = true;
+    // Null bytes (0x00) are rejected as non-text — real UTF-8 text files never contain them.
+    while (pt < end) {
+        if (*pt == '\0') {
+            if (pbIsASCII) { *pbIsASCII = false; }
+            if (pbHasNullBytes) { *pbHasNullBytes = true; }
+            return false;  // null bytes indicate non-text (binary/UTF-16)
+        }
+        if (*pt & 0x80) { bIsASCII = false; }  // multi-byte UTF-8 sequence
         state = utf8_dfa[256 + state + utf8_dfa[*pt++]];
         if (state == UTF8_REJECT) {
+            if (pbIsASCII) { *pbIsASCII = false; }
+            if (pbHasNullBytes) { *pbHasNullBytes = false; }
             return false;
         }
     }
+    if (pbIsASCII) { *pbIsASCII = bIsASCII; }
+    if (pbHasNullBytes) { *pbHasNullBytes = false; }
     return (state == UTF8_ACCEPT);
 }
 

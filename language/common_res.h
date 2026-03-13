@@ -944,6 +944,7 @@
 #define IDS_ENC_JOHAB                   61081
 #define IDS_ENC_ISO_8859_10             61082
 #define IDS_ENC_BIG5_HKSCS              61083
+#define IDS_ENC_DOS_855                 61084
 
 #define IDS_EOL_WIN                     62000
 #define IDS_EOL_MAC                     62001

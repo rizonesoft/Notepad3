@@ -57,9 +57,6 @@
 
 #define Encoding_IsNONE(enc) ((enc) == CPI_NONE)
 
-//#define CPI_PREFERRED_ENCODING  CPI_ANSI_DEFAULT
-#define CPI_PREFERRED_ENCODING  CPI_UTF8
-
 typedef struct _np2encoding {
     UINT        uFlags;
     UINT        uCodePage;
@@ -99,9 +96,9 @@ bool       Encoding_IsDefault(const cpi_enc_t iEncoding);
 bool       Encoding_IsASCII(const cpi_enc_t iEncoding);
 bool       Encoding_IsANSI(const cpi_enc_t iEncoding);
 bool       Encoding_IsOEM(const cpi_enc_t iEncoding);
-bool       Encoding_IsUTF8(const cpi_enc_t iEncoding);
+bool       Encoding_MaybeUTF8(const cpi_enc_t iEncoding);
 bool       Encoding_IsUTF8_SIGN(const cpi_enc_t iEncoding);
-bool       Encoding_IsUTF8_NO_SIGN(const cpi_enc_t iEncoding);
+bool       Encoding_MaybeUTF8_NO_SIGN(const cpi_enc_t iEncoding);
 bool       Encoding_IsMBCS(const cpi_enc_t iEncoding);
 bool       Encoding_IsCJK(const cpi_enc_t iEncoding);
 bool       Encoding_IsUNICODE(const cpi_enc_t iEncoding);
@@ -135,8 +132,7 @@ inline bool IsUTF8Signature(const char* p)
 }
 #define UTF8StringStart(p) (IsUTF8Signature(p)) ? ((p)+3) : (p)
 
-bool IsPureAscii7Bit(const char* pTest, size_t nLength);
-bool IsValidUTF8(const char* pTest, size_t nLength);
+bool IsValidUTF8(const char* pTest, size_t nLength, bool* pbIsASCII, bool* pbHasNullBytes);
 
 
 //////////////////////////////////////////////////////
@@ -196,14 +192,15 @@ typedef struct _enc_det_t {
     bool bIsReverse;
     bool bIsUTF8Sig;
     bool bValidUTF8;
-    bool bPureASCII7Bit;
+    bool bPureASCII7Bit;  // all bytes 0x01-0x7F (no nulls, no high-bit)
+    bool bHasNullBytes;   // buffer contains 0x00 bytes (binary/UTF-16/UTF-32)
     bool bIsUTF32;
 
     char encodingStrg[64];
 
 } ENC_DET_T;
 
-#define INIT_ENC_DET_T  { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, false, false, "" }
+#define INIT_ENC_DET_T  { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, false, false, false, "" }
 
 
 ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpData, const size_t cbData,

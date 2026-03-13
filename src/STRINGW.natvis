@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?> 
+<?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
     <Type Name="STRINGW">
         <DisplayString Condition="data == 0">Null</DisplayString>
-        <DisplayString>:  STRINGW</DisplayString>
+        <DisplayString Condition="data_length == 0">Empty [alloc={alloc_length}]</DisplayString>
+        <DisplayString>{data,su} [len={data_length}, alloc={alloc_length}]</DisplayString>
         <StringView>data,su</StringView>
         <Expand>
             <Item Name="[data]">data</Item>
@@ -11,9 +12,20 @@
         </Expand>
     </Type>
     <Type Name="HSTRINGW__">
-        <AlternativeType Name="HPATHL__"/>
         <DisplayString Condition="((STRINGW*)(&amp;unused))-&gt;data == 0">Null</DisplayString>
-        <DisplayString>:  STRINGW</DisplayString>
+        <DisplayString Condition="((STRINGW*)(&amp;unused))-&gt;data_length == 0">Empty [alloc={((STRINGW*)(&amp;unused))-&gt;alloc_length}]</DisplayString>
+        <DisplayString>{((STRINGW*)(&amp;unused))-&gt;data,su} [len={((STRINGW*)(&amp;unused))-&gt;data_length}, alloc={((STRINGW*)(&amp;unused))-&gt;alloc_length}]</DisplayString>
+        <StringView>((STRINGW*)(&amp;unused))-&gt;data,su</StringView>
+        <Expand>
+            <Item Name="[data]">((STRINGW*)(&amp;unused))-&gt;data</Item>
+            <Item Name="[length]">((STRINGW*)(&amp;unused))-&gt;data_length</Item>
+            <Item Name="[allocated]">((STRINGW*)(&amp;unused))-&gt;alloc_length</Item>
+        </Expand>
+    </Type>
+    <Type Name="HPATHL__">
+        <DisplayString Condition="((STRINGW*)(&amp;unused))-&gt;data == 0">Path: Null</DisplayString>
+        <DisplayString Condition="((STRINGW*)(&amp;unused))-&gt;data_length == 0">Path: Empty [alloc={((STRINGW*)(&amp;unused))-&gt;alloc_length}]</DisplayString>
+        <DisplayString>Path: {((STRINGW*)(&amp;unused))-&gt;data,su} [len={((STRINGW*)(&amp;unused))-&gt;data_length}, alloc={((STRINGW*)(&amp;unused))-&gt;alloc_length}]</DisplayString>
         <StringView>((STRINGW*)(&amp;unused))-&gt;data,su</StringView>
         <Expand>
             <Item Name="[data]">((STRINGW*)(&amp;unused))-&gt;data</Item>

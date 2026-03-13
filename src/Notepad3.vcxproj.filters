@@ -13,9 +13,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="templates">
-      <UniqueIdentifier>{e817f780-f742-48b4-bc9c-2ab762ced6bc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\StyleLexers">
       <UniqueIdentifier>{82f9cc2d-9173-4af4-8967-5fd2e5f8aef7}</UniqueIdentifier>
     </Filter>
@@ -46,8 +43,11 @@
     <Filter Include="Source Files\tinyexpr">
       <UniqueIdentifier>{60486982-91be-42d2-b154-86c2706ca60f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="timsort">
+    <Filter Include="Source Files\timsort">
       <UniqueIdentifier>{9a2064fb-b044-4ce5-91de-99fa06cc5222}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\templates">
+      <UniqueIdentifier>{e817f780-f742-48b4-bc9c-2ab762ced6bc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -436,10 +436,10 @@
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
     <ClCompile Include="timsort\timsort.c">
-      <Filter>timsort</Filter>
+      <Filter>Source Files\timsort</Filter>
     </ClCompile>
     <ClCompile Include="timsort\timsort_r.c">
-      <Filter>timsort</Filter>
+      <Filter>Source Files\timsort</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -621,10 +621,10 @@
       <Filter>Source Files\tinyexpr</Filter>
     </ClInclude>
     <ClInclude Include="timsort\timsort.h">
-      <Filter>timsort</Filter>
+      <Filter>Source Files\timsort</Filter>
     </ClInclude>
     <ClInclude Include="timsort\timsort-impl.h">
-      <Filter>timsort</Filter>
+      <Filter>Source Files\timsort</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -659,10 +659,10 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\Versions\Notepad3.exe.manifest.tpl">
-      <Filter>templates</Filter>
+      <Filter>Source Files\templates</Filter>
     </None>
     <None Include="..\Versions\VersionEx.h.tpl">
-      <Filter>templates</Filter>
+      <Filter>Source Files\templates</Filter>
     </None>
     <None Include="..\Build\Notepad3.ini">
       <Filter>Config</Filter>
@@ -728,7 +728,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Versions\build.txt">
-      <Filter>templates</Filter>
+      <Filter>Source Files\templates</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
