@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 // encoding: UTF-8
 #pragma code_page(65001)  // UTF-8
 #include "resource.h"
@@ -159,6 +159,7 @@ BEGIN
     IDS_ENC_JOHAB                  "CK;韓国語 (Johab);韓国語 (Johab)"
     IDS_ENC_ISO_8859_10            "CN;北欧 (ISO-8859-10);ISO-8859-10"
     IDS_ENC_BIG5_HKSCS             "CZ;繁体字中国語  (Big5-HKSCS);Big5-HKSCS"
+    IDS_ENC_DOS_855                "B;キリル文字 (CP-855);CP-855"
 END
 
 

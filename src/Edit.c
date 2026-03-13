@@ -582,7 +582,7 @@ bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bSupressWarning)
 
             if (!bSupressWarning) {
                 bool const bIsCurANSI   = Encoding_IsANSI(iCurrentEncoding);
-                bool const bIsTargetUTF = Encoding_IsUTF8(iNewEncoding) || Encoding_IsUNICODE(iNewEncoding);
+                bool const bIsTargetUTF = Encoding_MaybeUTF8(iNewEncoding) || Encoding_IsUNICODE(iNewEncoding);
                 bSupressWarning         = bIsCurANSI && bIsTargetUTF;
             }
 
@@ -1166,6 +1166,51 @@ static inline WCHAR* StatDisplLoadFile(const HPATHL hfile_pth)
 
 //----------------------------------------------------------------------------
 //
+//  ConvertToSciCPAndSetText() - Convert from source codepage to Scintilla's
+//  UTF-8 via intermediate UTF-16, then set as editor text.
+//  On success: updates *ppData/*pcbData with new buffer, returns true.
+//  On failure: frees allocated buffers, sets *ppData = NULL, returns false.
+//
+static bool ConvertToSciCPAndSetText(
+    HWND hwnd,
+    UINT uCodePage,
+    char** ppData,
+    size_t* pcbData,
+    bool bClearUndoHistory,
+    bool bReloadFile,
+    EditFileIOStatus* const status)
+{
+    size_t const cbData = *pcbData;
+    LPWSTR const lpDataWide = AllocMem(cbData * 2 + 16, HEAP_ZERO_MEMORY);
+
+    ptrdiff_t const cbDataWide = MultiByteToWideCharEx(uCodePage, 0, *ppData, cbData,
+                                     lpDataWide, (SizeOfMem(lpDataWide) / sizeof(WCHAR)));
+    if (cbDataWide == 0) {
+        FreeMem(lpDataWide);
+        *ppData = NULL;
+        return false;
+    }
+
+    FreeMem(*ppData);
+    *ppData = AllocMem(cbDataWide * 3 + 16, HEAP_ZERO_MEMORY);
+
+    *pcbData = WideCharToMultiByteEx(Encoding_SciCP, 0, lpDataWide, cbDataWide,
+                                      *ppData, SizeOfMem(*ppData), NULL, NULL);
+    FreeMem(lpDataWide);
+
+    if (*pcbData == 0) {
+        FreeMem(*ppData);
+        *ppData = NULL;
+        return false;
+    }
+
+    EditSetNewText(hwnd, *ppData, *pcbData, bClearUndoHistory, bReloadFile);
+    EditDetectEOLMode(*ppData, *pcbData, status);
+    return true;
+}
+
+//----------------------------------------------------------------------------
+//
 //  EditLoadFile()
 //
 bool EditLoadFile(
@@ -1350,7 +1395,7 @@ bool EditLoadFile(
     // --------------------------------------------------------------------------
 
     ENC_DET_T const encDetection = Encoding_DetectEncoding(hfile_pth, lpData, cbData,
-        Settings.UseDefaultForFileEncoding ? Settings.DefaultEncoding : CPI_PREFERRED_ENCODING,
+        Settings.UseDefaultForFileEncoding ? Settings.DefaultEncoding : CPI_ANSI_DEFAULT,
         (fLoadFlags & FLF_SkipUnicodeDetect), (fLoadFlags & FLF_SkipANSICPDetection), (fLoadFlags & FLF_ForceEncDetection));
 
     #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetection.forcedEncoding))
@@ -1363,24 +1408,8 @@ bool EditLoadFile(
         status->iEncoding = CPI_ANSI_DEFAULT;
         UINT const uCodePage = Encoding_GetCodePage(CPI_ANSI_DEFAULT);
 
-        LPWSTR const lpDataWide = AllocMem(cbData * 2 + 16, HEAP_ZERO_MEMORY);
-        ptrdiff_t const cbDataWide = MultiByteToWideCharEx(uCodePage, 0, lpData, cbData,
-                                         lpDataWide, (SizeOfMem(lpDataWide) / sizeof(WCHAR)));
-        if (cbDataWide != 0) {
-            FreeMem(lpData);
-            lpData = AllocMem(cbDataWide * 3 + 16, HEAP_ZERO_MEMORY);
-            cbData = WideCharToMultiByteEx(Encoding_SciCP, 0, lpDataWide, cbDataWide,
-                                           lpData, SizeOfMem(lpData), NULL, NULL);
-            if (cbData != 0) {
-                EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory, bReloadFile);
-                EditDetectEOLMode(lpData, cbData, status);
-                FreeMem(lpDataWide);
-            } else {
-                FreeMem(lpDataWide);
-                EditSetNewText(hwnd, "", 0, bClearUndoHistory, bReloadFile);
-            }
-        } else {
-            FreeMem(lpDataWide);
+        if (!ConvertToSciCPAndSetText(hwnd, uCodePage, &lpData, &cbData,
+                                       bClearUndoHistory, bReloadFile, status)) {
             EditSetNewText(hwnd, "", 0, bClearUndoHistory, bReloadFile);
         }
         status->iEOLMode = Settings.DefaultEOLMode;
@@ -1416,90 +1445,74 @@ bool EditLoadFile(
     }
 
     // --------------------------------------------------------------------------
-    // ===  UNICODE  ( UTF-16LE / UTF-16BE ) ===
+    // ===  UNICODE  ( UTF-16LE / UTF-16BE or UTF-8 ) ===
     // --------------------------------------------------------------------------
 
     if (Encoding_IsUNICODE(encDetection.Encoding))
     {
-        status->iEncoding = encDetection.bHasBOM ? (encDetection.bIsReverse ? CPI_UNICODEBEBOM : CPI_UNICODEBOM) :
-                                                   (encDetection.bIsReverse ? CPI_UNICODEBE    : CPI_UNICODE);
-
-        if (encDetection.bIsReverse) {
-            SwabEx(lpData, lpData, cbData);
-        }
-
-        char* const lpDataUTF8 = AllocMem((cbData * 3) + 2, HEAP_ZERO_MEMORY);
-
-        ptrdiff_t const   wcharCount = cbData / sizeof(WCHAR);
-        ptrdiff_t const   cchWideChar = encDetection.bHasBOM ? (wcharCount - 1) : wcharCount;
-        LPCWSTR const     lpwStr = encDetection.bHasBOM ? (LPWSTR)lpData + 1 : (LPWSTR)lpData;
-
-        ptrdiff_t convCnt = WideCharToMultiByteEx(Encoding_SciCP, 0, lpwStr, cchWideChar, lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
-
-        if (convCnt == 0) {
-            convCnt = WideCharToMultiByteEx(CP_ACP, 0, lpwStr, cchWideChar, lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
-            status->bUnicodeErr = true;
-        }
-
-        FileVars_GetFromData(lpDataUTF8, convCnt, &Globals.fvCurFile);
-        EditSetNewText(hwnd, lpDataUTF8, convCnt, bClearUndoHistory, bReloadFile);
-        EditDetectEOLMode(lpDataUTF8, convCnt, status);
-        FreeMem(lpDataUTF8);
-
-    } else { // ===  ALL OTHERS  ===
-
         // ===  UTF-8 ? ===
         bool const bValidUTF8 = encDetection.bValidUTF8;
-        bool const bForcedUTF8 = Encoding_IsUTF8(encDetection.forcedEncoding);// ~ don't || encDetection.bIsUTF8Sig here !
-        bool const bAnalysisUTF8 = Encoding_IsUTF8(encDetection.Encoding);
+        bool const bForcedUTF8 = Encoding_MaybeUTF8(encDetection.forcedEncoding); // ~ don't || encDetection.bIsUTF8Sig here !
+        bool const bAnalysisUTF8 = Encoding_MaybeUTF8(encDetection.Encoding);
 
         bool const bRejectUTF8 = (IS_ENC_ENFORCED() && !bForcedUTF8) || !bValidUTF8 || (!encDetection.bIsUTF8Sig && (fLoadFlags & FLF_SkipUnicodeDetect));
 
         if (bForcedUTF8 || (!bRejectUTF8 && (encDetection.bIsUTF8Sig || bAnalysisUTF8))) {
+
             if (encDetection.bIsUTF8Sig) {
                 EditSetNewText(hwnd, UTF8StringStart(lpData), cbData - 3, bClearUndoHistory, bReloadFile);
                 status->iEncoding = CPI_UTF8SIGN;
                 EditDetectEOLMode(UTF8StringStart(lpData), cbData - 3, status);
-            } else {
+            }
+            else {
                 EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory, bReloadFile);
                 status->iEncoding = CPI_UTF8;
                 EditDetectEOLMode(lpData, cbData, status);
             }
+        }
+        else { // ===  UNICODE NON UTF-8 ===
 
-        } else { // ===  ALL OTHER NON UTF-8 ===
+            status->iEncoding = encDetection.bHasBOM ? (encDetection.bIsReverse ? CPI_UNICODEBEBOM : CPI_UNICODEBOM) : (encDetection.bIsReverse ? CPI_UNICODEBE : CPI_UNICODE);
 
-            status->iEncoding = encDetection.Encoding;
-            UINT const uCodePage = Encoding_GetCodePage(encDetection.Encoding);
-
-            if (Encoding_IsEXTERNAL_8BIT(status->iEncoding)) {
-                LPWSTR const lpDataWide = AllocMem(cbData * 2 + 16, HEAP_ZERO_MEMORY);
-
-                ptrdiff_t const cbDataWide = MultiByteToWideCharEx(uCodePage, 0, lpData, cbData, lpDataWide, (SizeOfMem(lpDataWide) / sizeof(WCHAR)));
-                if (cbDataWide != 0) {
-                    FreeMem(lpData);
-                    lpData = AllocMem(cbDataWide * 3 + 16, HEAP_ZERO_MEMORY);
-
-                    cbData = WideCharToMultiByteEx(Encoding_SciCP, 0, lpDataWide, cbDataWide, lpData, SizeOfMem(lpData), NULL, NULL);
-                    if (cbData != 0) {
-                        EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory, bReloadFile);
-                        EditDetectEOLMode(lpData, cbData, status);
-                        FreeMem(lpDataWide);
-                    } else {
-                        FreeMem(lpDataWide);
-                        FreeMem(lpData);
-                        bReadSuccess = false;
-                        goto observe;
-                    }
-                } else {
-                    FreeMem(lpDataWide);
-                    FreeMem(lpData);
-                    bReadSuccess = false;
-                    goto observe;
-                }
-            } else {
-                EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory, bReloadFile);
-                EditDetectEOLMode(lpData, cbData, status);
+            if (encDetection.bIsReverse) {
+                SwabEx(lpData, lpData, cbData);
             }
+
+            char* const lpDataUTF8 = AllocMem((cbData * 3) + 2, HEAP_ZERO_MEMORY);
+
+            ptrdiff_t const wcharCount = cbData / sizeof(WCHAR);
+            ptrdiff_t const cchWideChar = encDetection.bHasBOM ? (wcharCount - 1) : wcharCount;
+            LPCWSTR const   lpwStr = encDetection.bHasBOM ? (LPWSTR)lpData + 1 : (LPWSTR)lpData;
+
+            ptrdiff_t convCnt = WideCharToMultiByteEx(Encoding_SciCP, 0, lpwStr, cchWideChar, lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
+
+            if (convCnt == 0) {
+                convCnt = WideCharToMultiByteEx(CP_ACP, 0, lpwStr, cchWideChar, lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
+                status->bUnicodeErr = true;
+            }
+
+            FileVars_GetFromData(lpDataUTF8, convCnt, &Globals.fvCurFile);
+            EditSetNewText(hwnd, lpDataUTF8, convCnt, bClearUndoHistory, bReloadFile);
+            EditDetectEOLMode(lpDataUTF8, convCnt, status);
+            FreeMem(lpDataUTF8);
+        }
+
+    } else { // ===  ALL OTHERS  ===
+
+        status->iEncoding = encDetection.Encoding;
+
+        UINT const uCodePage = Encoding_GetCodePage(encDetection.Encoding);
+
+        if (Encoding_IsEXTERNAL_8BIT(status->iEncoding)) {
+            if (!ConvertToSciCPAndSetText(hwnd, uCodePage, &lpData, &cbData,
+                                          bClearUndoHistory, bReloadFile, status)) {
+                FreeMem(lpData);
+                bReadSuccess = false;
+                goto observe;
+            }
+        } else {
+            EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory, bReloadFile);
+            EditDetectEOLMode(lpData, cbData, status);
         }
     }
 
@@ -1669,7 +1682,7 @@ bool EditSaveFile(
         Globals.dwLastError = GetLastError();
     } else {
 
-        if (Encoding_IsUTF8(status->iEncoding)) {
+        if (Encoding_MaybeUTF8(status->iEncoding)) {
             const char* bom = NULL;
             DocPos bomoffset = 0;
             if (Encoding_IsUTF8_SIGN(status->iEncoding)) {

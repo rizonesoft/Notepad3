@@ -4315,7 +4315,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
         i = IDM_ENCODING_UNICODE;
     } else if (Encoding_IsUTF8_SIGN(Encoding_GetCurrent())) {
         i = IDM_ENCODING_UTF8SIGN;
-    } else if (Encoding_IsUTF8(Encoding_GetCurrent())) {
+    } else if (Encoding_MaybeUTF8(Encoding_GetCurrent())) {
         i = IDM_ENCODING_UTF8;
     } else if (Encoding_IsANSI(Encoding_GetCurrent())) {
         i = IDM_ENCODING_ANSI;
