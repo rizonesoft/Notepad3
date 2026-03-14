@@ -35,15 +35,16 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.26.311.(build_#) (2026-03-11)
+Current BETA Version 6.26.314.(build_#) (2026-03-14)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]-
-[.311.1]- Feat: add UCHARDET encoding prober filter (Settings2:UchardetLanguageFilter).
-[.227.1]- Feat: Add auto-scroll on MMB click.
+[.311.1]- Add UCHARDET encoding prober filter (Settings2:UchardetLanguageFilter).
+[.306.1]- Add timsort (repl. qsort) scintilla care (iface check) scintill-call-wrapper update.
+[.227.1]- Add auto-scroll on MMB click.
 [.130.1]- Add Scintilla np3_patches with 5 patch files for future upgrades (SCI).
 [.130.1]- Use Segment Heaps for memory allocation if available (Win10 2004+/Win11).
 [.130.1]- Added AVX2 optimized x64 build configuration (x64_AVX2) (issue #4240).
@@ -56,23 +57,21 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]-
-[.306.1]- Chore: sync. with current scintilla mirror.
-[.306.1]- Chore: update SimpleIni header only lib (to v4.25).
-[.306.1]- Chore: add timsort (repl. qsort) scintilla care (iface check) scintill-call-wrapper update.
+[.306.1]- Synchronise with current scintilla mirror.
+[.306.1]- Update SimpleIni header only lib (to v4.25).
 [.306.1]- Major version 6 → 7 for Win10 minimum.
-[.305.1]- Feat: enhancement of MMB auto-scroll.
+[.305.1]- Enhancement of MMB auto-scroll.
 [.305.1]- Update UCHARDET encoding detector (UCH).
 [.303.1]- Refactor: replace regex engines: Oniguruma (retired) by PCRE2 v10.47 (ONI->PCR).
 [.227.1]- Refactor: File Change Notification handling.
 [.227.1]- Update to Scintilla v5.6.0 and Lexilla v5.4.7.
-[.224.1]- Feat: Refactor to atomic save pattern.
-[.224.1]- Chore: Smoothening the startup window experiences.
+[.224.1]- Refactor to atomic save pattern.
+[.224.1]- Smoothening the startup window experiences.
 [.218.1]- Some refactorings due to new features in scintilla.
 [.215.1]- Migration of the MS VS2022 compiler to MS VS2026 vc145 platform toolset.
 [.215.1]- Update to Scintilla 5.5.8 and Lexilla 5.4.6 (SCI/LEX).
 [.130.1]- Moved installer scripts to Build\Installer folder with local language files (SUP).
 [.101.1]- Rizonesoft Copyright ©  2008-2025 to year "2008-2026".
-[1114.1]- Remove the "Opera Promotion" page in Notepad3 "INNO Setup Installer" (SUP).
 [.917.1]- Italian language update.
 [.828.1]- Changed some phrases in the Italian Inno Setup script (SUP).
 [.828.1]- Completed/Modified the Windows Properties fields in Notepad3 Setup.exe (SUP).
@@ -81,6 +80,10 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]-
+[.314.1]- PCRE2 line end detection (PCR).
+[.314.1]- Claude Code based refactoring of encoding detection.
+[.314.1]- Remove too strong UTF-8 affinity.
+[.314.1]- Revert ASCII as UTF-8 for unicode detection - false positives.
 [.311.1]- Bug in Scintilla's Document::ConvertLineEnds() method (SCI).
 [.311.1]- Drag-handle bug on resizable windows.
 [.311.1]- Enhance InfoBoxLng() to replace non dark-mode aware MessageBoxEx.
@@ -118,9 +121,10 @@ FIXES:
 --------------------------------------------------------
 REMOVED:
 [.xxx.x]-
-[.306.1]- Refactor: remove deprecated Win7 compatibility and UTF-32 detection.
+[.306.1]- Remove deprecated Win7 compatibility and UTF-32 detection.
 [.303.1]- Remove retired Oniguruma regex Engine (ONI).
 [.227.1]- Remove obsolete AppVeyor CI build.
+[1114.1]- Remove the "Opera Promotion" page in Notepad3 "INNO Setup Installer" (SUP).
 --------------------------------------------------------
 
 --------------------------------------------------------
