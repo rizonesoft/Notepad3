@@ -135,6 +135,8 @@ Integrated search-and-replace tool with regex support. Launch via:
 
 Interval in milliseconds to check for external file modification. Min: 200 ms (notify immediately if ≤ 200).
 
+#### `FileWatchingMethod=0    ;(0=both[default], 1=poll-only, 2=push-only)`
+
 #### `FileChangedIndicator=[@]`
 
 #### `FileDeletedIndicator=[X]`
@@ -359,7 +361,7 @@ Reserved for future use.
 
 Show encoding detector (UCHARDET) info in the title bar for debugging.
 
-#### `AnalyzeReliableConfidenceLevel=90`
+#### `AnalyzeReliableConfidenceLevel=66`
 
 Confidence threshold for the encoding reliability indicator.
 
@@ -367,9 +369,26 @@ Confidence threshold for the encoding reliability indicator.
 
 Bias added to confidence when the system's ANSI code page matches the detected encoding.
 
+#### UchardetLanguageFilter=31
+```
+;  Bitmask controlling which CJK charset probers are active in uchardet:
+;    Bit 0 (0x01/1)  = Chinese Simplified (GB18030)
+;    Bit 1 (0x02/2)  = Chinese Traditional (Big5, EUC-TW)
+;    Bit 2 (0x04/4)  = Japanese (Shift_JIS, EUC-JP)
+;    Bit 3 (0x08/8)  = Korean (EUC-KR)
+;    Bit 4 (0x10/16) = Non-CJK (single-byte encodings)
+;  Common values:
+;    31 = All probers (default)
+;    27 = Exclude Japanese (fix GB18030 misdetected as EUC-JP)
+;    17 = Chinese Simplified + Non-CJK only
+;     3 = Chinese only (simplified + traditional)
+```
+
 #### `LexerSQLNumberSignAsComment=1`
 
 Enable `#` as a line-comment character in MySQL-dialect SQL. Set to `0` to disable.
+
+#### `AtomicFileSave=true;`
 
 #### `ExitOnESCSkipLevel=2`
 
