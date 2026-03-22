@@ -11324,7 +11324,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
         bool const bCheckFile = !Globals.CmdLnFlag_PrintFileAndLeave && !fioStatus.bEncryptedRaw && !(fioStatus.bUnknownExt && bUnknownLexer) && !bReloadFile;
         //&& (fioStatus.iEncoding == Settings.DefaultEncoding) ???
 
-        bool const bCheckEOL = bCheckFile && Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs;
+        bool const bCheckEOL = bCheckFile && !fioStatus.bMaybeBinary && Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs;
 
         if (bCheckEOL && !Style_MaybeBinaryFile(Globals.hwndEdit, Paths.CurrentFile)) {
             if (WarnLineEndingDlg(Globals.hwndMain, &fioStatus)) {
@@ -11339,7 +11339,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
         // Show inconsistent indentation
         fioStatus.iGlobalIndent = I_MIX_LN; // init
 
-        bool const bCheckIndent = bCheckFile && !Flags.bHugeFileLoadState && Settings.WarnInconsistentIndents;
+        bool const bCheckIndent = bCheckFile && !fioStatus.bMaybeBinary && !Flags.bHugeFileLoadState && Settings.WarnInconsistentIndents;
 
         if (bCheckIndent && !Style_MaybeBinaryFile(Globals.hwndEdit, Paths.CurrentFile)) {
             EditIndentationStatistic(Globals.hwndEdit, &fioStatus);

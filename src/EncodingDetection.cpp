@@ -254,7 +254,8 @@ extern "C" const char* Encoding_GetTitleInfoA()
 //
 //  };
 //
-#define MIN_CONFIDENCE_ANSI_NOT_UTF8 0.98f // if confidence is above this threshold, we consider it ANSI, even if it could be UTF-8
+//#define MIN_CONFIDENCE_ANSI_NOT_UTF8 0.98f // if confidence is above this threshold, we consider it ANSI, even if it could be UTF-8
+#define MIN_CONFIDENCE_ANSI_NOT_UTF8 0.995f // if confidence is above this threshold, we consider it ANSI, even if it could be UTF-8
 
 #define ENC_PARSE_NAM_ASCII                ",ASCII,ascii,"
 #define ENC_PARSE_NAM_ANSI                 ",ANSI,ansi,SYSTEM,system" ENC_PARSE_NAM_ASCII
@@ -574,16 +575,15 @@ cpi_enc_t AnalyzeUnicodeEncoding(const char* pBuffer, const size_t len, bool* lp
 
     if ((bHasBOM || bHasRBOM || bIsUnicode || bIsReverse) && bHasNullBytes) // && !bHasOddLen)
     {
-        if (lpbBOM) {
-            *lpbBOM = (bHasBOM || bHasRBOM);
-        }
-        if (lpbReverse) {
-            *lpbReverse = (bHasRBOM || bIsReverse);
-        }
         if (bHasBOM || bHasRBOM) {
+            if (lpbBOM) { *lpbBOM = true; }
+            if (lpbReverse) { *lpbReverse = bHasRBOM; }
             iEncoding = bHasRBOM ? CPI_UNICODEBEBOM : CPI_UNICODEBOM;
         }
-        else if (bIsUnicode || bIsReverse) {
+        else if ((bIsUnicode || bIsReverse) && !(len & 1)) {
+            // BOM-less: require even byte count (UTF-16 is 2-byte aligned)
+            if (lpbBOM) { *lpbBOM = false; }
+            if (lpbReverse) { *lpbReverse = bIsReverse; }
             iEncoding = bIsReverse ? CPI_UNICODEBE : CPI_UNICODE;
         }
     }
@@ -805,6 +805,8 @@ cpi_enc_t AnalyzeText_UCHARDET(
 void Encoding_AnalyzeText(const char* const text, const size_t len,
                           ENC_DET_T* pEncDetInfo, const cpi_enc_t encodingHint)
 {
+    pEncDetInfo->bIsAnalyzed = true;
+
     if (len == 0) {
         pEncDetInfo->analyzedEncoding = CPI_NONE;
         pEncDetInfo->confidence = 0.0f;
@@ -871,33 +873,13 @@ static void _SetEncodingTitleInfo(const ENC_DET_T* pEncDetInfo)
         StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), (encUCD == CPI_ASCII_7BIT) ? L"ASCII" : ukn);
     }
     WCHAR tmpBuf[80] = { '\0' };
-    int const ucd_conf_perc = f2int(ucd_confidence * 100.0f);
-    StringCchPrintf(tmpBuf, COUNTOF(tmpBuf), L"' Conf=%i%%", ucd_conf_perc);
+    double const confPercent = (double)(ucd_confidence * 100.0f);
+    StringCchPrintf(tmpBuf, COUNTOF(tmpBuf), L"' Conf=%.1f%%", confPercent);
     StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), tmpBuf);
 
-    //~StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), " || CED='");
-    //~if (encCED >= 0)
-    //~{
-    //~  //::WideCharToMultiByte(CP_UTF7, 0, Encoding_GetLabel(encCED), -1, chEncodingLabel, ARRAYSIZE(chEncodingLabel), 0, 0);
-    //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), encodingCED);
-    //~}
-    //~else {
-    //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), (encCED == CPI_ASCII_7BIT) ? "ASCII" : "<unknown>");
-    //~}
-    //~if ((encCED >= 0) || (encCED == CPI_ASCII_7BIT)) {
-    //~  bool const ced_reliable = (ced_confidence >= Settings2.ReliableCEDConfidenceMapping);
-    //~  bool const ced_not_reliable = (ced_confidence <= Settings2.UnReliableCEDConfidenceMapping);
-    //~  StringCchPrintfA(tmpBuf, ARRAYSIZE(tmpBuf), "' Conf=%.0f%% [%s])", ced_confidence * 100.0f,
-    //~    ced_reliable ? "reliable" : (ced_not_reliable ? "NOT reliable" : "???"));
-    //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), tmpBuf);
-    //~}
-    //~else {
-    //~  StringCchCatA(chEncodingInfo, ARRAYSIZE(chEncodingInfo), "'");
-    //~}
-
-    int const relThreshold = f2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
-    const WCHAR* rel_fmt = (ucd_conf_perc >= relThreshold) ? L" (reliable (%i%%))" : L" (NOT reliable (%i%%))";
-    StringCchPrintf(tmpBuf, COUNTOF(tmpBuf), rel_fmt, relThreshold);
+    double const threshPercent = (double)(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
+    const WCHAR* rel_fmt = (confPercent >= threshPercent) ? L" (reliable (%.1f%%))" : L" (NOT reliable (%.1f%%))";
+    StringCchPrintf(tmpBuf, COUNTOF(tmpBuf), rel_fmt, threshPercent);
     StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), tmpBuf);
 
     const WCHAR* const validUTF8 = (pEncDetInfo->bValidUTF8) ? L" [Valid UTF-8]" : L" [Invalid UTF-8]";
@@ -1220,7 +1202,7 @@ static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_
         else
             encDetRes->Encoding = encDetRes->analyzedEncoding;
     }
-    else if (Encoding_IsUNICODE(encDetRes->unicodeAnalysis)) {
+    else if (Encoding_IsUNICODE(encDetRes->unicodeAnalysis) && (!(data_len & 1) || encDetRes->bHasBOM)) {
         // unicodeAnalysis confirms Unicode structure.
         // Only prefer analyzedEncoding if it's also Unicode (e.g., UCHARDET
         // identified specific UTF-16 variant). Otherwise use unicodeAnalysis.
@@ -1234,15 +1216,11 @@ static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_
         encDetRes->Encoding = CPI_UTF8;
     }
     else if (encDetRes->bHasNullBytes) {
-        // Data contains null bytes - not a valid single-byte encoding.
-        // Assume BOM-less UTF-16 LE for even-length data (routes through
-        // Unicode conversion path, avoiding raw-bytes crash in Scintilla).
-        // For odd-length data, this is likely binary - load as ANSI for
-        // binary display (same as UTF-32 handling).
-        if (!(data_len & 1))
-            encDetRes->Encoding = CPI_UNICODE;
-        else
-            encDetRes->Encoding = CPI_ANSI_DEFAULT;
+        // Data contains null bytes — not a valid single-byte encoding.
+        // Both Unicode detectors (IsTextUnicode and null-distribution) already
+        // rejected this data at earlier branches, so treat as binary via ANSI
+        // codepage (same as UTF-32 handling).
+        encDetRes->Encoding = CPI_ANSI_DEFAULT;
     }
     else {
         cpi_enc_t const weak = Encoding_SrcWeak(CPI_GET);
@@ -1255,6 +1233,11 @@ static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_
                 encDetRes->Encoding = weak;
             }
         }
+    }
+
+    // Final fallback: if no encoding could be determined, treat as binary via ANSI codepage
+    if (Encoding_IsNONE(encDetRes->Encoding)) {
+        encDetRes->Encoding = CPI_ANSI_DEFAULT;
     }
 }
 
@@ -1381,9 +1364,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
     // ---  choose best encoding guess  ----
     // --------------------------------------------------------------------------
 
-    int const iConfidence = f2int(encDetRes.confidence * 100.0f);
-    int const iReliableThreshold = f2int(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
-    encDetRes.bIsAnalysisReliable = (iConfidence >= iReliableThreshold);
+    encDetRes.bIsAnalysisReliable = (encDetRes.confidence >= Settings2.AnalyzeReliableConfidenceLevel);
 
     // init resulting encoding
     encDetRes.Encoding = CPI_NONE;
