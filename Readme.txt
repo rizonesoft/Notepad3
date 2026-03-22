@@ -1,83 +1,83 @@
-================================================================================
+===============================================================================
 =                                                                              =
-=            Notepad3 - light-weight Scintilla-based text editor for Windows   =
+=            Notepad3 - Windows 下基于 Scintilla 的轻量级文本编辑器   =
 =                                                                              =
 =                                                   (c) Rizonesoft 2008-2026   =
 =                                                     https://rizonesoft.com   =
 =                                                                              =
-================================================================================
-Rizonesoft Notepad3 --- README ---
-================================================================================
+===============================================================================
+Rizonesoft 记事本3 --- 说明文件 ---
+===============================================================================
 
---------------------------------------------------------------------------------
-Description:
-------------
-Notepad like text editor is based on the Scintilla source code. 
-Notepad3 is based on code from Notepad2 and MiniPath on code from metapath.
+输入：--------------------------------------------------------------------------------
+描述:
+输入： ------------
+记事本类似的文本编辑器基于Scintilla源代码。
+Notepad3基于Notepad2的代码，并且MiniPath基于metapath的代码。
 
---------------------------------------------------------------------------------
-Changes compared to Flo's official Notepad2 (made in Notepad2-mod):
+输入：--------------------------------------------------------------------------------
+与Flo的官方Notepad2（由Notepad2-mod制作）相比的更改：
 -------------------------------------------------------------------
-- Code folding
-- Support for bookmarks
-- Option to mark all occurrences of a word
-- Updated Scintilla component
-- Word auto-completion
-- Syntax highlighting support for AutoHotkey (AHK), AutoIt3, AviSynth, Bash, 
-  CMake, CoffeeScript, Inno Setup, LaTeX, Lua, Markdown, NSIS, Ruby, Tcl, 
-  YAML and VHDL scripts.
-- Improved support for NFO ANSI art
-- Other various minor changes and tweaks
+- 代码折叠
+- 支持书签
+- 选项标记一个词的所有出现位置
+- 更新了 Scintilla 组件
+- Word自动完成
+- 对 AutoHotkey (AHK)、AutoIt3、AviSynth、Bash 的语法高亮支持
+  CMake, CoffeeScript, Inno Setup, LaTeX, Lua, Markdown, NSIS, Ruby, Tcl,
+  YAML 和 VHDL 脚本。
+- 改进了对NFO ANSI艺术的支持
+- 其他各种小的更改和调整
 
---------------------------------------------------------------------------------
-Changes compared to the Notepad2-mod fork:
+输入：--------------------------------------------------------------------------------
+与Notepad2-mod分支相比的更改：
 ------------------------------------------
-- Additional syntax highlighting support for Awk, D, golang, MATLAB
-- State of the art Regular Expression search engine (Oniguruma)
-- New toolbar icons based on Yusuke Kamiyaman's Fugue Icons 
-  (Purchased by Rizonesoft)
-- Hyperlink Hotspot highlighting 
-  (single click Open in Browser (Ctrl) / Load in Editor (Alt))
-- New program icon and other small cosmetic changes
-- In-App support for AES-256 Rijndael encryption/decryption of files. 
-  (incl. external commandline tool for batch processing)
-- Virtual Space rectangular selection box (Alt-Key down)
-- High-DPI awareness, including high definition toolbar icons
-- Undo/Redo preserves selection
-- File History preserves Caret position (optional) 
-  and remembers encoding of file
-- Accelerated word navigation
-- Preserve caret position of items in file history
-- Count occurrences of a marked selection or word
-- Count and Mark occurrences of matching search/find expression
-- Visual Studio style copy/paste current line (no selection)
-- Insert GUIDs
-- Dropped support for Windows XP version
-- Other various minor changes, tweaks and bugfixes
+- 为 Awk、D、golang、MATLAB 提供额外的语法高亮支持
+- 最先进的正则表达式搜索引擎（Oniguruma）
+- 新的工具栏图标基于Yusuke Kamiyama的Fugue Icons
+  （由Rizonesoft购买）
+- 超链接热点突出显示
+  （单击在浏览器中打开 (Ctrl) / 在编辑器中加载 (Alt)）
+- 新的程序图标和其他小的外观更改
+- 应用内支持使用AES-256 Rijndael加密/解密文件。
+  （包括用于批量处理的外部命令行工具）
+- 虚拟空间矩形选择框（按住Alt键）
+- 高DPI感知，包括高定义工具栏图标
+- 撤销/重做保留选择
+- 文件历史记录保存插入点位置（可选）
+  并记住文件的编码
+- 加速词导航
+- 保持文件历史记录中项目的光标位置
+- 统计选定的文本或单词出现的次数
+- 统计并标记匹配的搜索/查找表达式出现的次数
+- Visual Studio 风格的复制/粘贴当前行（不选择任何内容）
+- 插入GUIDs
+- 停止支持 Windows XP 版本
+- 其他各种小的更改、调整和错误修复
 
---------------------------------------------------------------------------------
-Supported Operating Systems:
-----------------------------
-Windows 10 and 11 (32-bit, 64-bit and ARM64)
+输入：--------------------------------------------------------------------------------
+支持的操作系统：
+输入： ----------------------------
+Windows 10 和 11（32位，64位和ARM64）
 
---------------------------------------------------------------------------------
-Development:
-------------
+输入：--------------------------------------------------------------------------------
+开发：
+输入： ------------
 - Florian 'Flo' Balmer (Notepad2)       https://www.flos-freeware.ch
 - RaiKoHoff                             https://github.com/RaiKoHoff
 
---------------------------------------------------------------------------------
-Contributors:
--------------
-Derick Payne (© Rizonesoft)             https://rizonesoft.com
-XhmikosR (Notepad2-mod)                 https://xhmikosr.github.io/notepad2-mod
-Kai Liu (CodeFolding)                   https://code.kliu.org/misc/notepad2
-RL Vision (Bookmarks)                   https://www.rlvision.com/notepad2/about.php
-Aleksandar Lekov (MarkOcc./AutoCompl.)
-Bruno Barbieri
-Matthew Ellis (MinimizeToTray)
-Igal Tabachnik (RelaunchElevated)       https://github.com/hmemcpy
-Et alii @ GitHub                        https://github.com/XhmikosR/notepad2-mod/graphs/contributors
+输入：--------------------------------------------------------------------------------
+贡献者：
+输入：-------------
+德里克·佩恩 (© Rizonesoft)             https://rizonesoft.com
+XhmikosR (Notepad2 修改版)                 https://xhmikosr.github.io/notepad2-mod
+刘凯 (CodeFolding)                   https://code.kliu.org/misc/notepad2
+RL Vision (书签)                   https://www.rlvision.com/notepad2/about.php
+亚历山大·莱科夫 (MarkOcc./AutoCompl.)
+布鲁诺·巴贝里
+马修·埃利斯（最小化到托盘）
+伊格尔·塔巴尼科 (RelaunchElevated)       https://github.com/hmemcpy
+等等 @ GitHub                        https://github.com/XhmikosR/notepad2-mod/graphs/contributors
 Some Icons by Pixel perfect (Flaticon)  https://www.flaticon.com
 
 --------------------------------------------------------------------------------
