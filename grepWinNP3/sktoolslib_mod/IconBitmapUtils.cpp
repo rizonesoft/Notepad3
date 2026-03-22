@@ -47,8 +47,8 @@ HBITMAP IconBitmapUtils::IconToBitmap(HINSTANCE hInst, UINT uIcon)
 
     RECT rect;
 
-    rect.right  = ::GetSystemMetrics(SM_CXMENUCHECK);
-    rect.bottom = ::GetSystemMetrics(SM_CYMENUCHECK);
+    rect.right  = ::GetSystemMetricsForDpi(SM_CXMENUCHECK, GetDpiForSystem());
+    rect.bottom = ::GetSystemMetricsForDpi(SM_CYMENUCHECK, GetDpiForSystem());
 
     rect.left = rect.top = 0;
 
@@ -137,8 +137,8 @@ HBITMAP IconBitmapUtils::IconToBitmapPARGB32(HICON hIcon)
         return NULL;
 
     SIZE sizIcon;
-    sizIcon.cx = GetSystemMetrics(SM_CXSMICON);
-    sizIcon.cy = GetSystemMetrics(SM_CYSMICON);
+    sizIcon.cx = GetSystemMetricsForDpi(SM_CXSMICON, GetDpiForSystem());
+    sizIcon.cy = GetSystemMetricsForDpi(SM_CYSMICON, GetDpiForSystem());
 
     RECT rcIcon;
     SetRect(&rcIcon, 0, 0, sizIcon.cx, sizIcon.cy);

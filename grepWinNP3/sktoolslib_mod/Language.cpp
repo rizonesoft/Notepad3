@@ -268,7 +268,7 @@ BOOL CALLBACK CLanguage::TranslateWindowProc(HWND hwnd, LPARAM lParam)
                     {
                         // we're dealing with radio buttons and check boxes,
                         // which means we have to add a little space for the checkbox
-                        const int checkWidth = GetSystemMetrics(SM_CXMENUCHECK) + 2 * GetSystemMetrics(SM_CXEDGE) + CDPIAware::Instance().Scale(hwnd, 3);
+                        const int checkWidth = GetSystemMetricsForDpi(SM_CXMENUCHECK, GetDpiForWindow(hwnd)) + 2 * GetSystemMetricsForDpi(SM_CXEDGE, GetDpiForWindow(hwnd)) + CDPIAware::Instance().Scale(hwnd, 3);
                         controlRect.right += checkWidth;
                         // now we have the rectangle the control really needs
                         if ((controlRectOrig.right - controlRectOrig.left) > (controlRect.right - controlRect.left))

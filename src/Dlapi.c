@@ -19,6 +19,8 @@
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>
+#include <pathcch.h>
+#pragma comment(lib, "pathcch")
 #include <string.h>
 
 #include "PathLib.h"
@@ -981,7 +983,10 @@ int DriveBox_Fill(HWND hwnd)
 
 
     LPITEMIDLIST pidl = { 0 };
-    // Get pidl to [My Computer]
+    // Get pidl to [My Computer / This PC]
+    // Note: CSIDL_DRIVES is intentionally kept here — it's used with SHGetSpecialFolderLocation
+    // to obtain the PIDL for the virtual "This PC" shell namespace folder, which has no
+    // KNOWNFOLDERID equivalent usable with SHGetKnownFolderPath.
     if (NOERROR == SHGetSpecialFolderLocation(hwnd,
             CSIDL_DRIVES,
             &pidl)) {
@@ -1120,7 +1125,7 @@ bool DriveBox_GetSelDrive(HWND hwnd,LPWSTR lpszDrive,int nDrive,bool fNoSlash)
 
     // Remove Backslash if required (makes Drive relative!!!)
     if (fNoSlash) {
-        PathRemoveBackslash(lpszDrive);
+        PathCchRemoveBackslash(lpszDrive, nDrive);
     }
 
     return true;

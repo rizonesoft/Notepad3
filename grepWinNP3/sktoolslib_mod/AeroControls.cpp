@@ -530,9 +530,9 @@ LRESULT AeroControlBase::ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                             m_theme.GetThemeBackgroundContentRect(hTheme, hdcPaint, iPartId, iState, &rcPaint, &rc);
 
                             if (dwButtonStyle & BS_LEFTTEXT)
-                                rc.right -= bmWidth + 2 * GetSystemMetrics(SM_CXEDGE);
+                                rc.right -= bmWidth + 2 * GetSystemMetricsForDpi(SM_CXEDGE, GetDpiForWindow(hWnd));
                             else
-                                rc.left += bmWidth + 2 * GetSystemMetrics(SM_CXEDGE);
+                                rc.left += bmWidth + 2 * GetSystemMetricsForDpi(SM_CXEDGE, GetDpiForWindow(hWnd));
 
                             DTTOPTS dttOpts   = {sizeof(DTTOPTS)};
                             dttOpts.dwFlags   = DTT_COMPOSITED | DTT_GLOWSIZE;

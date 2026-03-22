@@ -22,6 +22,7 @@
 #include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>
+#include <pathcch.h>
 #include <stdio.h>
 
 #include "Lexilla.h"
@@ -478,7 +479,7 @@ static void _FillThemesMenuTable()
                 Theme_Files[iTheme].rid = (iTheme + IDM_THEMES_STD_CFG);
 
                 StringCchCopy(wchFileName, COUNTOF(wchFileName), PathFindFileNameW(FindFileData.cFileName));
-                PathRemoveExtensionW(wchFileName);
+                PathCchRemoveExtension(wchFileName, COUNTOF(wchFileName));
                 StringCchCopy(Theme_Files[iTheme].szName, COUNTOF(Theme_Files[iTheme].szName), wchFileName);
 
                 if (StringCchCompareXI(Theme_Files[iTheme].szName, Settings.CurrentThemeName) == 0) {

@@ -83,15 +83,15 @@ BOOL CShellContextMenu::GetContextMenu(HWND hWnd, void** ppContextMenu, int& iMe
     HKEY ahkeys[16];
     SecureZeroMemory(ahkeys, _countof(ahkeys) * sizeof(HKEY));
     int numkeys = 0;
-    if (RegOpenKey(HKEY_CLASSES_ROOT, L"*", &ahkeys[numkeys++]) != ERROR_SUCCESS)
+    if (RegOpenKeyEx(HKEY_CLASSES_ROOT, L"*", 0, KEY_READ, &ahkeys[numkeys++]) != ERROR_SUCCESS)
         numkeys--;
-    if (RegOpenKey(HKEY_CLASSES_ROOT, L"AllFileSystemObjects", &ahkeys[numkeys++]) != ERROR_SUCCESS)
+    if (RegOpenKeyEx(HKEY_CLASSES_ROOT, L"AllFileSystemObjects", 0, KEY_READ, &ahkeys[numkeys++]) != ERROR_SUCCESS)
         numkeys--;
     if (PathIsDirectory(m_strVector[0].filePath.c_str()))
     {
-        if (RegOpenKey(HKEY_CLASSES_ROOT, L"Folder", &ahkeys[numkeys++]) != ERROR_SUCCESS)
+        if (RegOpenKeyEx(HKEY_CLASSES_ROOT, L"Folder", 0, KEY_READ, &ahkeys[numkeys++]) != ERROR_SUCCESS)
             numkeys--;
-        if (RegOpenKey(HKEY_CLASSES_ROOT, L"Directory", &ahkeys[numkeys++]) != ERROR_SUCCESS)
+        if (RegOpenKeyEx(HKEY_CLASSES_ROOT, L"Directory", 0, KEY_READ, &ahkeys[numkeys++]) != ERROR_SUCCESS)
             numkeys--;
     }
     // find extension
@@ -100,13 +100,13 @@ BOOL CShellContextMenu::GetContextMenu(HWND hWnd, void** ppContextMenu, int& iMe
     if (dotPos != std::string::npos)
     {
         ext = m_strVector[0].filePath.substr(dotPos);
-        if (RegOpenKey(HKEY_CLASSES_ROOT, ext.c_str(), &ahkeys[numkeys++]) == ERROR_SUCCESS)
+        if (RegOpenKeyEx(HKEY_CLASSES_ROOT, ext.c_str(), 0, KEY_READ, &ahkeys[numkeys++]) == ERROR_SUCCESS)
         {
             WCHAR buf[MAX_PATH] = {0};
             DWORD dwSize        = MAX_PATH;
             if (RegQueryValueEx(ahkeys[numkeys - 1], L"", nullptr, nullptr, reinterpret_cast<LPBYTE>(buf), &dwSize) == ERROR_SUCCESS)
             {
-                if (RegOpenKey(HKEY_CLASSES_ROOT, buf, &ahkeys[numkeys++]) != ERROR_SUCCESS)
+                if (RegOpenKeyEx(HKEY_CLASSES_ROOT, buf, 0, KEY_READ, &ahkeys[numkeys++]) != ERROR_SUCCESS)
                     numkeys--;
             }
         }

@@ -20,6 +20,7 @@
 #include "Bookmarks.h"
 #include "maxpath.h"
 #include <shlobj.h>
+#include <KnownFolders.h>
 #include <memory>
 
 CBookmarks::CBookmarks()
@@ -44,8 +45,12 @@ void CBookmarks::InitPath()
     }
     else
     {
-        SHGetFolderPath(nullptr, CSIDL_APPDATA, nullptr, SHGFP_TYPE_CURRENT, path.get());
-        m_iniPath = path.get();
+        PWSTR pszPath = nullptr;
+        if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, nullptr, &pszPath)))
+        {
+            m_iniPath = pszPath;
+            CoTaskMemFree(pszPath);
+        }
         m_iniPath += L"\\grepWinNP3";
     }
     CreateDirectory(m_iniPath.c_str(), nullptr);

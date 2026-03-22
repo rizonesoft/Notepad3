@@ -236,25 +236,19 @@ Abstract:
 #define FORMATDLGORD30          1544
 #define RUNDLGORD               1545
 
-#if (WINVER >= 0x400)
 #define PAGESETUPDLGORD         1546
 #define NEWFILEOPENORD          1547
 #define PRINTDLGEXORD           1549
 #define PAGESETUPDLGORDMOTIF    1550
 #define COLORMGMTDLGORD         1551
 #define NEWFILEOPENV2ORD        1552
-#endif /* WINVER >= 0x400) */
 
 // 1581 - 1590
-#if (NTDDI_VERSION >= NTDDI_VISTA)
 #define NEWFILEOPENV3ORD        1553
-#endif // NTDDI_VISTA
 
 // 1591 - 1600
-#if (NTDDI_VERSION >= NTDDI_WIN7)
 #define NEWFORMATDLGWITHLINK    1591
 #define IDC_MANAGE_LINK         1592
-#endif
 
 // undocumented window proc messages regarding menu bar
 // https://github.com/adzm/win32-custom-menubar-aero-theme

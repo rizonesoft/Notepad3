@@ -292,14 +292,13 @@ static bool HasOptInToRemoveMaxPathLimit()
         // Function pointer to driver function
         BOOLEAN(WINAPI * pRtlAreLongPathsEnabled)(void) = NULL;
         s_MaxPathLimitRemoved = 0; // at least called once
-        HINSTANCE const hNTdllDll = LoadLibrary(L"ntdll.dll");
+        HMODULE const hNTdllDll = GetModuleHandle(L"ntdll.dll");
         if (hNTdllDll) {
             // get the function pointer to RtlAreLongPathsEnabled
             pRtlAreLongPathsEnabled = (BOOLEAN(WINAPI*)(void))GetProcAddress(hNTdllDll, "RtlAreLongPathsEnabled");
             if (pRtlAreLongPathsEnabled != NULL) {
                 s_MaxPathLimitRemoved = pRtlAreLongPathsEnabled() ? 1 : 0;
             }
-            FreeLibrary(hNTdllDll);
         }
         return (s_MaxPathLimitRemoved == 1);
     }
