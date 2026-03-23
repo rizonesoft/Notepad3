@@ -832,6 +832,8 @@ typedef struct SETTINGS2_T {
 
     WCHAR HyperlinkFileProtocolVerb[MICRO_BUFFER];
 
+    WCHAR CopyMultiSelectionSeparator[MICRO_BUFFER];
+
     const WCHAR* CodeFontPrefPrioList[MICRO_BUFFER];
     const WCHAR* TextFontPrefPrioList[MICRO_BUFFER];
 
