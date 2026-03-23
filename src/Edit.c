@@ -1406,6 +1406,7 @@ bool EditLoadFile(
         // UTF-32 is not supported — convert through ANSI codepage for binary display
         // (same conversion path that other binary files use via EXTERNAL_8BIT)
         status->iEncoding = CPI_ANSI_DEFAULT;
+        status->bMaybeBinary = true;
         UINT const uCodePage = Encoding_GetCodePage(CPI_ANSI_DEFAULT);
 
         if (!ConvertToSciCPAndSetText(hwnd, uCodePage, &lpData, &cbData,
@@ -1499,11 +1500,34 @@ bool EditLoadFile(
 
     } else { // ===  ALL OTHERS  ===
 
+        // Encoding detection failed — treat as binary via ANSI codepage
+        // (same conversion path as UTF-32 binary handling above)
+        if (Encoding_IsNONE(encDetection.Encoding)) {
+            status->iEncoding = CPI_ANSI_DEFAULT;
+            status->bMaybeBinary = true;
+            UINT const uCodePage = Encoding_GetCodePage(CPI_ANSI_DEFAULT);
+            if (!ConvertToSciCPAndSetText(hwnd, uCodePage, &lpData, &cbData,
+                                           bClearUndoHistory, bReloadFile, status)) {
+                EditSetNewText(hwnd, "", 0, bClearUndoHistory, bReloadFile);
+            }
+            status->iEOLMode = Settings.DefaultEOLMode;
+            FreeMem(lpData);
+            goto observe;
+        }
+
         status->iEncoding = encDetection.Encoding;
+
+        // UCHARDET was called but returned no result — file is likely binary
+        if (Encoding_IsANSI(status->iEncoding) && encDetection.bIsAnalyzed && Encoding_IsNONE(encDetection.analyzedEncoding)) {
+            status->bMaybeBinary = true;
+        }
 
         UINT const uCodePage = Encoding_GetCodePage(encDetection.Encoding);
 
-        if (Encoding_IsEXTERNAL_8BIT(status->iEncoding)) {
+        if (Encoding_IsEXTERNAL_8BIT(status->iEncoding) || encDetection.bHasNullBytes) {
+            // EXTERNAL_8BIT needs codepage conversion; null-byte data must also be
+            // converted to avoid raw nulls in Scintilla (e.g. UTF-8 ANSI codepage
+            // systems where CPI_ANSI_DEFAULT lacks NCP_EXTERNAL_8BIT).
             if (!ConvertToSciCPAndSetText(hwnd, uCodePage, &lpData, &cbData,
                                           bClearUndoHistory, bReloadFile, status)) {
                 FreeMem(lpData);

@@ -933,6 +933,7 @@ typedef struct EditFileIOStatus {
     bool bCancelDataLoss;
     bool bUnknownExt;
     bool bEncryptedRaw;
+    bool bMaybeBinary;
 
     // inconsistent line endings
     bool bInconsistentEOLs;
@@ -944,7 +945,7 @@ typedef struct EditFileIOStatus {
 
 } EditFileIOStatus;
 
-#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, false, false, I_MIX_LN, {0,0,0}, {0,0,0,0,0} }
+#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, false, false, false, I_MIX_LN, {0,0,0}, {0,0,0,0,0} }
 
 //=============================================================================
 

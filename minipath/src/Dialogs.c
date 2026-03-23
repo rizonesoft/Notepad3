@@ -28,6 +28,7 @@
 #include <commdlg.h>
 #include <shobjidl.h>
 #include <strsafe.h>
+#include <pathcch.h>
 #include "minipath.h"
 #include "dlapi.h"
 #include "config.h"
@@ -60,7 +61,7 @@ BOOL GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,BO
     if (!pszBase || !*pszBase) {
         GetCurrentDirectory(MAX_PATH,szBase);
     } else {
-        lstrcpy(szBase,pszBase);
+        StringCchCopy(szBase, COUNTOF(szBase), pszBase);
     }
 
     IFileOpenDialog *pfd = NULL;
@@ -93,7 +94,7 @@ BOOL GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,BO
             LPWSTR pszPath = NULL;
             hr = psiResult->lpVtbl->GetDisplayName(psiResult, SIGDN_FILESYSPATH, &pszPath);
             if (SUCCEEDED(hr) && pszPath) {
-                lstrcpy(pszFolder, pszPath);
+                StringCchCopy(pszFolder, MAX_PATH, pszPath);
                 CoTaskMemFree(pszPath);
                 fOk = TRUE;
             }
@@ -110,16 +111,19 @@ BOOL GetDirectory(HWND hwndParent,int iTitle,LPWSTR pszFolder,LPCWSTR pszBase,BO
 //
 // GetDirectory2()
 //
-BOOL GetDirectory2(HWND hwndParent,int iTitle,LPWSTR pszFolder,int iBase)
+BOOL GetDirectory2(HWND hwndParent,int iTitle,LPWSTR pszFolder,const KNOWNFOLDERID *pFolderId)
 {
     WCHAR szTitle[256] = { L'\0' };
     GetLngString(iTitle,szTitle,COUNTOF(szTitle));
 
-    // Get the path for the special folder (CSIDL)
+    // Get the path for the known folder
     WCHAR szBasePath[MAX_PATH] = { L'\0' };
-    if (FAILED(SHGetFolderPath(hwndParent, iBase, NULL, SHGFP_TYPE_CURRENT, szBasePath))) {
+    PWSTR pszKnownPath = NULL;
+    if (FAILED(SHGetKnownFolderPath(pFolderId, 0, NULL, &pszKnownPath))) {
         return FALSE;
     }
+    StringCchCopy(szBasePath, COUNTOF(szBasePath), pszKnownPath);
+    CoTaskMemFree(pszKnownPath);
 
     IFileOpenDialog *pfd = NULL;
     HRESULT hr = CoCreateInstance(
@@ -151,7 +155,7 @@ BOOL GetDirectory2(HWND hwndParent,int iTitle,LPWSTR pszFolder,int iBase)
             LPWSTR pszPath = NULL;
             hr = psiResult->lpVtbl->GetDisplayName(psiResult, SIGDN_FILESYSPATH, &pszPath);
             if (SUCCEEDED(hr) && pszPath) {
-                lstrcpy(pszFolder, pszPath);
+                StringCchCopy(pszFolder, MAX_PATH, pszPath);
                 CoTaskMemFree(pszPath);
                 fOk = TRUE;
             }
@@ -244,10 +248,10 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                 LPCWSTR p = szFilter;
                 while (*p && filterCount < COUNTOF(filterSpec)) {
                     filterSpec[filterCount].pszName = p;
-                    p += lstrlenW(p) + 1;
+                    p += wcslen(p) + 1;
                     if (*p == L'\0') break;
                     filterSpec[filterCount].pszSpec = p;
-                    p += lstrlenW(p) + 1;
+                    p += wcslen(p) + 1;
                     ++filterCount;
                 }
                 if (filterCount > 0) {
@@ -266,12 +270,12 @@ INT_PTR CALLBACK RunDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                         LPWSTR pszPath = NULL;
                         hr = psiResult->lpVtbl->GetDisplayName(psiResult, SIGDN_FILESYSPATH, &pszPath);
                         if (SUCCEEDED(hr) && pszPath) {
-                            lstrcpyn(szFile, pszPath, COUNTOF(szFile));
+                            StringCchCopy(szFile, COUNTOF(szFile), pszPath);
                             CoTaskMemFree(pszPath);
                             QuotateFilenameStr(szFile);
                             if (StrIsNotEmpty(szArg2)) {
-                                lstrcat(szFile,L" ");
-                                lstrcat(szFile,szArg2);
+                                StringCchCat(szFile, COUNTOF(szFile), L" ");
+                                StringCchCat(szFile, COUNTOF(szFile), szArg2);
                             }
                             SetDlgItemText(hwnd,IDC_COMMANDLINE,szFile);
                         }
@@ -399,7 +403,8 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
         SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
 
-        AdjustWindowRectEx(&rc,GetWindowLong(hwnd,GWL_STYLE),FALSE,GetWindowLong(hwnd,GWL_EXSTYLE));
+        UINT const dpi = GetDpiForWindow(hwnd);
+        AdjustWindowRectExForDpi(&rc,GetWindowLong(hwnd,GWL_STYLE),FALSE,GetWindowLong(hwnd,GWL_EXSTYLE),dpi);
         mmiPtMinX = rc.right-rc.left;
         mmiPtMaxY = rc.bottom-rc.top;
 
@@ -419,7 +424,7 @@ INT_PTR CALLBACK GotoDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         SetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP),GWL_STYLE,
                          GetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP),GWL_STYLE)|SBS_SIZEGRIP|WS_CLIPSIBLINGS);
 
-        int cGrip = GetSystemMetrics(SM_CXHTHUMB);
+        int cGrip = GetSystemMetricsForDpi(SM_CXHTHUMB,dpi);
         SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP),NULL,cxClient-cGrip,
                      cyClient-cGrip,cGrip,cGrip,SWP_NOZORDER);
 
@@ -1123,7 +1128,7 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
         MakeBitmapButton(hwnd,IDC_BROWSE_Q,g_hInstance,IDB_OPEN);
         MakeBitmapButton(hwnd,IDC_BROWSE_F,g_hInstance,IDB_OPEN);
 
-        lstrcpy(tch, Settings.szQuickview);
+        StringCchCopy(tch, COUNTOF(tch), Settings.szQuickview);
         PathQuoteSpaces(tch);
         if (StrIsNotEmpty(Settings.szQuickviewParams)) {
             StrCatBuff(tch,L" ",COUNTOF(tch));
@@ -1184,10 +1189,10 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
                 LPCWSTR p = szFilter;
                 while (*p && filterCount < COUNTOF(filterSpec)) {
                     filterSpec[filterCount].pszName = p;
-                    p += lstrlenW(p) + 1;
+                    p += wcslen(p) + 1;
                     if (*p == L'\0') break;
                     filterSpec[filterCount].pszSpec = p;
-                    p += lstrlenW(p) + 1;
+                    p += wcslen(p) + 1;
                     ++filterCount;
                 }
                 if (filterCount > 0) {
@@ -1254,15 +1259,15 @@ INT_PTR CALLBACK ProgPageProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam)
             if (!GetDlgItemText(hwnd,IDC_QUICKVIEW,tch,MAX_PATH)) {
 
                 GetSystemDirectory(Settings.szQuickview,MAX_PATH);
-                PathAddBackslash(Settings.szQuickview);
-                lstrcat(Settings.szQuickview,L"Viewers\\Quikview.exe");
+                PathCchAddBackslash(Settings.szQuickview, COUNTOF(Settings.szQuickview));
+                StringCchCat(Settings.szQuickview, COUNTOF(Settings.szQuickview), L"Viewers\\Quikview.exe");
                 PathQuoteSpaces(Settings.szQuickview);
-                lstrcpy(Settings.szQuickviewParams,L"");
+                StringCchCopy(Settings.szQuickviewParams, COUNTOF(Settings.szQuickviewParams), L"");
             } else {
                 ExtractFirstArgument(tch, Settings.szQuickview, Settings.szQuickviewParams);
             }
 
-            lstrcpy(tch, Settings.tchFavoritesDir);
+            StringCchCopy(tch, COUNTOF(tch), Settings.tchFavoritesDir);
             if (!GetDlgItemText(hwnd, IDC_FAVORITES, Settings.tchFavoritesDir, MAX_PATH)) {
                 GetDefaultFavoritesDir(Settings.tchFavoritesDir, COUNTOF(Settings.tchFavoritesDir));
             } else {
@@ -1503,7 +1508,7 @@ INT_PTR CALLBACK GetFilterDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPara
             if (GetDlgItemText(hwnd,IDC_FILTER, Settings.tchFilter,COUNTOF(Settings.tchFilter)-1)) {
                 Settings.bNegFilter = IsDlgButtonChecked(hwnd,IDC_NEGFILTER)?TRUE:FALSE;
             } else {
-                lstrcpy(Settings.tchFilter,L"*.*");
+                StringCchCopy(Settings.tchFilter, COUNTOF(Settings.tchFilter), L"*.*");
                 Settings.bNegFilter = FALSE;
             }
             EndDialog(hwnd,IDOK);
@@ -1537,7 +1542,7 @@ BOOL GetFilterDlg(HWND hwnd)
     WCHAR tchOldFilter[DL_FILTER_BUFSIZE];
     BOOL bOldNegFilter;
 
-    lstrcpy(tchOldFilter, Settings.tchFilter);
+    StringCchCopy(tchOldFilter, COUNTOF(tchOldFilter), Settings.tchFilter);
     bOldNegFilter = Settings.bNegFilter;
 
     if (IDOK == ThemedDialogBox(g_hLngResContainer,MAKEINTRESOURCE(IDD_FILTER),hwnd,GetFilterDlgProc)) {
@@ -1644,7 +1649,7 @@ BOOL RenameFileDlg(HWND hwnd)
 
     dli.mask = DLI_FILENAME;
     if (DirList_GetItem(hwndDirList,-1,&dli) != -1) {
-        lstrcpy(fod.szSource,GetFilenameStr(dli.szFileName));
+        StringCchCopy(fod.szSource, COUNTOF(fod.szSource), GetFilenameStr(dli.szFileName));
     }
 
     else {
@@ -1660,15 +1665,15 @@ BOOL RenameFileDlg(HWND hwnd)
         shfos.fFlags = FOF_ALLOWUNDO;
 
         // Generate fully qualified destination
-        lstrcpy(szFullDestination,dli.szFileName);
+        StringCchCopy(szFullDestination, COUNTOF(szFullDestination), dli.szFileName);
         *GetFilenameStr(szFullDestination) = 0;
-        lstrcat(szFullDestination,fod.szDestination);
+        StringCchCat(szFullDestination, COUNTOF(szFullDestination), fod.szDestination);
 
         // Double null terminated strings are essential!!!
         ZeroMemory(tchSource,sizeof(WCHAR)*COUNTOF(tchSource));
         ZeroMemory(tchDestination,sizeof(WCHAR)*COUNTOF(tchDestination));
-        lstrcpy(tchSource,dli.szFileName);
-        lstrcpy(tchDestination,szFullDestination);
+        StringCchCopy(tchSource, COUNTOF(tchSource), dli.szFileName);
+        StringCchCopy(tchDestination, COUNTOF(tchDestination), szFullDestination);
 
         if (SHFileOperation(&shfos) == 0) { // success, select renamed item
             SHFILEINFO shfi = { 0 };
@@ -1722,7 +1727,8 @@ INT_PTR CALLBACK CopyMoveDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
         SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
 
-        AdjustWindowRectEx(&rc,GetWindowLong(hwnd,GWL_STYLE),FALSE,GetWindowLong(hwnd,GWL_EXSTYLE));
+        UINT const dpi = GetDpiForWindow(hwnd);
+        AdjustWindowRectExForDpi(&rc,GetWindowLong(hwnd,GWL_STYLE),FALSE,GetWindowLong(hwnd,GWL_EXSTYLE),dpi);
         mmiPtMinX = rc.right-rc.left;
         mmiPtMaxY = rc.bottom-rc.top;
 
@@ -1742,7 +1748,7 @@ INT_PTR CALLBACK CopyMoveDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         SetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP2),GWL_STYLE,
                          GetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP2),GWL_STYLE)|SBS_SIZEGRIP|WS_CLIPSIBLINGS);
 
-        cGrip = GetSystemMetrics(SM_CXHTHUMB);
+        cGrip = GetSystemMetricsForDpi(SM_CXHTHUMB,dpi);
         SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP2),NULL,cxClient-cGrip,
                      cyClient-cGrip,cGrip,cGrip,SWP_NOZORDER);
 
@@ -1922,7 +1928,7 @@ BOOL CopyMoveDlg(HWND hwnd,UINT *wFunc)
 
     dli.mask = DLI_FILENAME;
     if (DirList_GetItem(hwndDirList, -1, &dli) != -1) {
-        lstrcpy(fod.szSource, GetFilenameStr(dli.szFileName));
+        StringCchCopy(fod.szSource, COUNTOF(fod.szSource), GetFilenameStr(dli.szFileName));
     } else {
         return FALSE;
     }
@@ -1945,20 +1951,20 @@ BOOL CopyMoveDlg(HWND hwnd,UINT *wFunc)
         // Double null terminated strings are essential!!!
         ZeroMemory(tchSource,sizeof(WCHAR)*COUNTOF(tchSource));
         ZeroMemory(tchDestination,sizeof(WCHAR)*COUNTOF(tchDestination));
-        lstrcpy(tchSource,dli.szFileName);
-        lstrcpy(tchDestination,fod.szDestination);
+        StringCchCopy(tchSource, COUNTOF(tchSource), dli.szFileName);
+        StringCchCopy(tchDestination, COUNTOF(tchDestination), fod.szDestination);
 
         // tchDestination is always assumed to be a directory
         // if it doesn't exist, the file name of tchSource is added
         if (PathIsRelative(tchDestination)) {
             WCHAR wszDir[MAX_PATH];
             GetCurrentDirectory(COUNTOF(wszDir),wszDir);
-            PathAppend(wszDir,tchDestination);
-            lstrcpy(tchDestination,wszDir);
+            PathCchAppend(wszDir,COUNTOF(wszDir),tchDestination);
+            StringCchCopy(tchDestination, COUNTOF(tchDestination), wszDir);
         }
 
         if (!PathIsDirectory(tchDestination)) {
-            PathAppend(tchDestination,PathFindFileName(dli.szFileName));
+            PathCchAppend(tchDestination,COUNTOF(tchDestination),PathFindFileName(dli.szFileName));
         }
 
         if (SHFileOperation(&shfos) == 0) { // success
@@ -2009,7 +2015,8 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         SetWindowLongPtr(hwnd,GWL_STYLE,GetWindowLongPtr(hwnd,GWL_STYLE)|WS_THICKFRAME);
         SetWindowPos(hwnd,NULL,0,0,0,0,SWP_NOZORDER|SWP_NOMOVE|SWP_NOSIZE|SWP_FRAMECHANGED);
 
-        AdjustWindowRectEx(&rc,GetWindowLong(hwnd,GWL_STYLE),FALSE,GetWindowLong(hwnd,GWL_EXSTYLE));
+        UINT const dpi = GetDpiForWindow(hwnd);
+        AdjustWindowRectExForDpi(&rc,GetWindowLong(hwnd,GWL_STYLE),FALSE,GetWindowLong(hwnd,GWL_EXSTYLE),dpi);
         mmiPtMinX = rc.right-rc.left;
         mmiPtMaxY = rc.bottom-rc.top;
 
@@ -2032,7 +2039,7 @@ INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lParam
         SetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP3),GWL_STYLE,
                          GetWindowLongPtr(GetDlgItem(hwnd,IDC_RESIZEGRIP3),GWL_STYLE)|SBS_SIZEGRIP|WS_CLIPSIBLINGS);
 
-        cGrip = GetSystemMetrics(SM_CXHTHUMB);
+        cGrip = GetSystemMetricsForDpi(SM_CXHTHUMB,dpi);
         SetWindowPos(GetDlgItem(hwnd,IDC_RESIZEGRIP3),NULL,cxClient-cGrip,
                      cyClient-cGrip,cGrip,cGrip,SWP_NOZORDER);
 
@@ -2221,9 +2228,9 @@ BOOL OpenWithDlg(HWND hwnd,LPDLITEM lpdliParam)
 
             WCHAR szSource[MAX_PATH+4];
             ZeroMemory(szSource,sizeof(WCHAR)*COUNTOF(szSource));
-            lstrcpy(szSource,lpdliParam->szFileName);
+            StringCchCopy(szSource, COUNTOF(szSource), lpdliParam->szFileName);
 
-            PathAppend(szDestination,PathFindFileName(szSource));
+            PathCchAppend(szDestination,COUNTOF(szDestination),PathFindFileName(szSource));
 
             ZeroMemory(&shfos,sizeof(SHFILEOPSTRUCT));
             shfos.hwnd = hwnd;
@@ -2262,7 +2269,7 @@ BOOL OpenWithDlg(HWND hwnd,LPDLITEM lpdliParam)
             // resolve links and get short path name
             if (!(PathIsLnkFile(lpdliParam->szFileName) &&
                     PathGetLnkPath(lpdliParam->szFileName, szParam, COUNTOF(szParam)))) {
-                lstrcpy(szParam,lpdliParam->szFileName);
+                StringCchCopy(szParam, COUNTOF(szParam), lpdliParam->szFileName);
             }
 
             GetShortPathNameW(szParam , szParam, COUNTOF(szParam));
@@ -2348,7 +2355,7 @@ BOOL NewDirDlg(HWND hwnd,LPWSTR pszNewDir)
     FILEOPDLGDATA fod;
 
     if (IDOK == ThemedDialogBoxParam(g_hLngResContainer,MAKEINTRESOURCE(IDD_NEWDIR),hwnd,NewDirDlgProc,(LPARAM)&fod)) {
-        lstrcpy(pszNewDir,fod.szDestination);
+        StringCchCopy(pszNewDir, MAX_PATH, fod.szDestination);
 
         return TRUE;
     }
@@ -2663,10 +2670,10 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
                 LPCWSTR p = szFilter;
                 while (*p && filterCount < COUNTOF(filterSpec)) {
                     filterSpec[filterCount].pszName = p;
-                    p += lstrlenW(p) + 1;
+                    p += wcslen(p) + 1;
                     if (*p == L'\0') break;
                     filterSpec[filterCount].pszSpec = p;
-                    p += lstrlenW(p) + 1;
+                    p += wcslen(p) + 1;
                     ++filterCount;
                 }
                 if (filterCount > 0) {
@@ -2807,8 +2814,8 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
                         GetDlgItemText(hwnd, IDC_TARGETPATH, tch, COUNTOF(tch));
                         ExtractFirstArgument(tch, szTargetApplication, szTargetApplicationParams);
                     } else {
-                        lstrcpy(szTargetApplication, L"");
-                        lstrcpy(szTargetApplicationParams, L"");
+                        StringCchCopy(szTargetApplication, COUNTOF(szTargetApplication), L"");
+                        StringCchCopy(szTargetApplicationParams, COUNTOF(szTargetApplicationParams), L"");
                     }
                     IniSectionSetString(TargetApp_Section, L"TargetApplicationPath", szTargetApplication);
                     IniSectionSetString(TargetApp_Section, L"TargetApplicationParams", szTargetApplicationParams);
@@ -2833,7 +2840,7 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
                         StringCchCopy(szTargetApplicationWndClass, COUNTOF(szTargetApplicationWndClass), szTargetWndClass);
                         IniSectionSetString(TargetApp_Section, L"TargetApplicationWndClass", szTargetApplicationWndClass);
                     } else {
-                        lstrcpy(szTargetApplicationWndClass, L"");
+                        StringCchCopy(szTargetApplicationWndClass, COUNTOF(szTargetApplicationWndClass), L"");
                         IniSectionSetString(TargetApp_Section, L"TargetApplicationWndClass", szTargetApplicationWndClass);
                     }
 
@@ -2841,21 +2848,21 @@ INT_PTR CALLBACK FindTargetDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM lPar
                     if (i) {
                         GetDlgItemText(hwnd, IDC_DDEMSG, szDDEMsg, COUNTOF(szDDEMsg));
                     } else {
-                        lstrcpy(szDDEMsg, L"");
+                        StringCchCopy(szDDEMsg, COUNTOF(szDDEMsg), L"");
                     }
                     IniSectionSetString(TargetApp_Section, L"DDEMessage", szDDEMsg);
 
                     if (i) {
                         GetDlgItemText(hwnd, IDC_DDEAPP, szDDEApp, COUNTOF(szDDEApp));
                     } else {
-                        lstrcpy(szDDEApp, L"");
+                        StringCchCopy(szDDEApp, COUNTOF(szDDEApp), L"");
                     }
                     IniSectionSetString(TargetApp_Section, L"DDEApplication", szDDEApp);
 
                     if (i) {
                         GetDlgItemText(hwnd, IDC_DDETOPIC, szDDETopic, COUNTOF(szDDETopic));
                     } else {
-                        lstrcpy(szDDETopic, L"");
+                        StringCchCopy(szDDETopic, COUNTOF(szDDETopic), L"");
                     }
                     IniSectionSetString(TargetApp_Section, L"DDETopic", szDDETopic);
 
@@ -2904,11 +2911,11 @@ int ErrorMessage(int iLevel, UINT uIdMsg, ...) {
 
     WCHAR* c = StrChr(szTitle, L'\n');
     if (c) {
-        lstrcpy(szText, (c + 1));
+        StringCchCopy(szText, COUNTOF(szText), (c + 1));
         *c = '\0';
     } else {
-        lstrcpy(szText, szTitle);
-        lstrcpy(szTitle, L"");
+        StringCchCopy(szText, COUNTOF(szText), szTitle);
+        StringCchCopy(szTitle, COUNTOF(szTitle), L"");
     }
 
     iIcon = (iLevel > 1) ? MB_ICONEXCLAMATION : MB_ICONINFORMATION;
@@ -2949,7 +2956,7 @@ DWORD MsgBoxLastError(LPCWSTR lpszMessage, DWORD dwErrID)
 
     if (lpMsgBuf) {
         // Display the error message and exit the process
-        size_t const len = lstrlen((LPCWSTR)lpMsgBuf) + lstrlen(lpszMessage) + 80;
+        size_t const len = wcslen((LPCWSTR)lpMsgBuf) + wcslen(lpszMessage) + 80;
 
         LPWSTR lpDisplayBuf = LocalAlloc(LPTR, len * sizeof(WCHAR));
 

@@ -23,6 +23,7 @@
 #include <shlobj.h>
 #include <shlwapi.h>
 #include <strsafe.h>
+#include <pathcch.h>
 #include "..\..\src\DarkMode\DarkMode.h"
 #include "helpers.h"
 #include "dlapi.h"
@@ -438,7 +439,7 @@ void WINAPIV DirList_IconThread(LPVOID lpParam)
     hwnd = lpdl->hwnd;
     iMaxItem = ListView_GetItemCount(hwnd);
 
-    (void)CoInitialize(NULL);
+    (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
 
     // Get IShellIcon
     lpdl->lpsf->lpVtbl->QueryInterface(lpdl->lpsf,&IID_IShellIcon,&lpshi);
@@ -1325,7 +1326,7 @@ BOOL DriveBox_GetSelDrive(HWND hwnd,LPWSTR lpszDrive,int nDrive,BOOL fNoSlash)
 
     // Remove Backslash if required (makes Drive relative!!!)
     if (fNoSlash) {
-        PathRemoveBackslash(lpszDrive);
+        PathCchRemoveBackslash(lpszDrive, nDrive);
     }
 
     return TRUE;

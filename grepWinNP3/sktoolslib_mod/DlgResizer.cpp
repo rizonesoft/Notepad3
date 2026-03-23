@@ -49,8 +49,8 @@ void CDlgResizer::Init(HWND hWndDlg)
     GetWindowRect(hWndDlg, &m_dlgRectScreen);
     OffsetRect(&m_dlgRectScreen, -m_dlgRectScreen.left, -m_dlgRectScreen.top);
 
-    m_sizeGrip.cx = GetSystemMetrics(SM_CXVSCROLL);
-    m_sizeGrip.cy = GetSystemMetrics(SM_CYHSCROLL);
+    m_sizeGrip.cx = GetSystemMetricsForDpi(SM_CXVSCROLL, GetDpiForWindow(hWndDlg));
+    m_sizeGrip.cy = GetSystemMetricsForDpi(SM_CYHSCROLL, GetDpiForWindow(hWndDlg));
 
     RECT rect = {0, 0, m_sizeGrip.cx, m_sizeGrip.cy};
 

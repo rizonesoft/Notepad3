@@ -16,7 +16,7 @@
 #include <uxtheme.h>
 
 BOOL GetDirectory(HWND,int,LPWSTR,LPCWSTR,BOOL);
-BOOL GetDirectory2(HWND,int,LPWSTR,int);
+BOOL GetDirectory2(HWND,int,LPWSTR,const KNOWNFOLDERID*);
 
 INT_PTR CALLBACK RunDlgProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR RunDlg(HWND);

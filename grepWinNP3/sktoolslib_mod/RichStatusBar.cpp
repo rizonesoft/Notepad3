@@ -59,7 +59,7 @@ bool CRichStatusBar::Init(HWND hParent, bool drawGrip)
         {
             NONCLIENTMETRICS ncm;
             ncm.cbSize = sizeof(NONCLIENTMETRICS);
-            SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0U);
+            SystemParametersInfoForDpi(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0U, GetDpiForWindow(*this));
             m_fonts[0]                = CreateFontIndirect(&ncm.lfStatusFont);
             ncm.lfStatusFont.lfItalic = TRUE;
             m_fonts[1]                = CreateFontIndirect(&ncm.lfStatusFont);

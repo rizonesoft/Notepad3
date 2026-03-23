@@ -22,11 +22,7 @@ class CDPIAware
 {
 private:
     CDPIAware()
-        : pfnGetDpiForWindow(nullptr)
-        , pfnGetDpiForSystem(nullptr)
-        , pfnGetSystemMetricsForDpi(nullptr)
-        , pfnSystemParametersInfoForDpi(nullptr)
-        , m_fInitialized(false)
+        : m_fInitialized(false)
         , m_dpi(96)
     {
     }
@@ -43,9 +39,9 @@ public:
     int GetDPI(HWND hWnd)
     {
         _Init();
-        if (pfnGetDpiForWindow && hWnd)
+        if (hWnd)
         {
-            return pfnGetDpiForWindow(hWnd);
+            return ::GetDpiForWindow(hWnd);
         }
         return m_dpi;
     }
@@ -98,15 +94,19 @@ public:
     }
 
     // returns the system parameters info. If possible adjusted for dpi.
+    // SystemParametersInfoForDpi only supports SPI_GETNONCLIENTMETRICS,
+    // SPI_GETICONMETRICS, and SPI_GETICONTITLELOGFONT. For all others,
+    // fall back to regular SystemParametersInfo.
     UINT SystemParametersInfo(UINT uiAction, UINT uiParam, PVOID pvParam, UINT fWinIni)
     {
         _Init();
-        UINT ret = 0;
-        if (pfnSystemParametersInfoForDpi)
-            ret = pfnSystemParametersInfoForDpi(uiAction, uiParam, pvParam, fWinIni, m_dpi);
-        if (ret == 0)
-            ret = ::SystemParametersInfo(uiAction, uiParam, pvParam, fWinIni);
-        return ret;
+        if (uiAction == SPI_GETNONCLIENTMETRICS ||
+            uiAction == SPI_GETICONMETRICS ||
+            uiAction == SPI_GETICONTITLELOGFONT)
+        {
+            return ::SystemParametersInfoForDpi(uiAction, uiParam, pvParam, fWinIni, m_dpi);
+        }
+        return ::SystemParametersInfoW(uiAction, uiParam, pvParam, fWinIni);
     }
 
     // Invalidate any cached metrics.
@@ -118,31 +118,7 @@ private:
     {
         if (!m_fInitialized)
         {
-            auto hUser = ::GetModuleHandle(L"user32.dll");
-            if (hUser)
-            {
-                pfnGetDpiForWindow            = reinterpret_cast<GetDpiForWindowFn *>(GetProcAddress(hUser, "GetDpiForWindow"));
-                pfnGetDpiForSystem            = reinterpret_cast<GetDpiForSystemFn *>(GetProcAddress(hUser, "GetDpiForSystem"));
-                pfnGetSystemMetricsForDpi     = reinterpret_cast<GetSystemMetricsForDpiFn *>(GetProcAddress(hUser, "GetSystemMetricsForDpi"));
-                pfnSystemParametersInfoForDpi = reinterpret_cast<SystemParametersInfoForDpiFn *>(GetProcAddress(hUser, "SystemParametersInfoForDpi"));
-            }
-
-            if (pfnGetDpiForSystem)
-            {
-                m_dpi = pfnGetDpiForSystem();
-            }
-            else
-            {
-                HDC hdc = GetDC(nullptr);
-                if (hdc)
-                {
-                    // Initialize the DPI member variable
-                    // This will correspond to the DPI setting
-                    // With all Windows OS's to date the X and Y DPI will be identical
-                    m_dpi = GetDeviceCaps(hdc, LOGPIXELSX);
-                    ReleaseDC(nullptr, hdc);
-                }
-            }
+            m_dpi          = ::GetDpiForSystem();
             m_fInitialized = true;
         }
     }
@@ -154,22 +130,10 @@ private:
     int _ScaledSystemMetric(int nIndex)
     {
         _Init();
-        if (pfnGetSystemMetricsForDpi)
-            return pfnGetSystemMetricsForDpi(nIndex, m_dpi);
-        return MulDiv(::GetSystemMetrics(nIndex), 96, m_dpi);
+        return ::GetSystemMetricsForDpi(nIndex, m_dpi);
     }
 
 private:
-    using GetDpiForWindowFn = UINT STDAPICALLTYPE(HWND hWnd);
-    using GetDpiForSystemFn = UINT STDAPICALLTYPE();
-    using GetSystemMetricsForDpiFn = UINT STDAPICALLTYPE(int nIndex, UINT dpi);
-    using SystemParametersInfoForDpiFn = UINT STDAPICALLTYPE(UINT uiAction, UINT uiParam, PVOID pvParam, UINT fWinIni, UINT dpi);
-
-    GetDpiForWindowFn *           pfnGetDpiForWindow;
-    GetDpiForSystemFn *           pfnGetDpiForSystem;
-    GetSystemMetricsForDpiFn *    pfnGetSystemMetricsForDpi;
-    SystemParametersInfoForDpiFn *pfnSystemParametersInfoForDpi;
-
     // Member variable indicating whether the class has been initialized
     bool m_fInitialized;
 

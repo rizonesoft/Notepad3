@@ -174,9 +174,10 @@ BOOL CHyperLink::ConvertStaticToHyperlink(HWND hwndParent, UINT uiCtlId,
  */
 BOOL CHyperLink::setURL(LPCWSTR strURL)
 {
-    m_strURL = std::make_unique<wchar_t[]>(lstrlen(strURL) + 1);
+    size_t len = wcslen(strURL);
+    m_strURL = std::make_unique<wchar_t[]>(len + 1);
 
-    lstrcpy(m_strURL.get(), strURL);
+    wcscpy_s(m_strURL.get(), len + 1, strURL);
 
     return TRUE;
 }

@@ -137,7 +137,7 @@ bool CTheme::RemoveRegisteredCallback(int id)
 
 void CTheme::SetDlgFontFaceName(LPCWSTR FontFaceName, int size)
 {
-    (void)lstrcpyn(m_DlgFontFace, FontFaceName, _countof(m_DlgFontFace));
+    (void)wcscpy_s(m_DlgFontFace, _countof(m_DlgFontFace), FontFaceName);
     m_DlgFontSize = size;
 }
 
@@ -150,7 +150,7 @@ void CTheme::SetFontForDialog(HWND hwnd, LPCWSTR FontFaceName, int FontSize)
     GetObject(GetWindowFont(hwnd), sizeof(lf), &lf);
     lf.lfWeight = FW_REGULAR;
     lf.lfHeight = (LONG)FontSize;
-    (void)lstrcpyn(lf.lfFaceName, FontFaceName, _countof(lf.lfFaceName));
+    (void)wcscpy_s(lf.lfFaceName, _countof(lf.lfFaceName), FontFaceName);
     HFONT const hf  = CreateFontIndirect(&lf);
     HDC const   hdc = GetDC(hwnd);
     SetBkMode(hdc, OPAQUE);
@@ -789,9 +789,9 @@ LRESULT CTheme::ButtonSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
                             GetThemeBackgroundContentRect(hTheme, hdcPaint, iPartId, iState, &rcPaint, &rc);
 
                             if (dwButtonStyle & BS_LEFTTEXT)
-                                rc.right -= bmWidth + 2 * GetSystemMetrics(SM_CXEDGE);
+                                rc.right -= bmWidth + 2 * GetSystemMetricsForDpi(SM_CXEDGE, GetDpiForWindow(hWnd));
                             else
-                                rc.left += bmWidth + 2 * GetSystemMetrics(SM_CXEDGE);
+                                rc.left += bmWidth + 2 * GetSystemMetricsForDpi(SM_CXEDGE, GetDpiForWindow(hWnd));
 
                             DTTOPTS dttOpts   = {sizeof(DTTOPTS)};
                             dttOpts.dwFlags   = DTT_COMPOSITED | DTT_GLOWSIZE;

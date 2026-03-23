@@ -58,15 +58,11 @@
 #define OIC_QUES            32514
 #define OIC_BANG            32515
 #define OIC_NOTE            32516
-#if(WINVER >= 0x0400)
 #define OIC_WINLOGO         32517
 #define OIC_WARNING         OIC_BANG
 #define OIC_ERROR           OIC_HAND
 #define OIC_INFORMATION     OIC_NOTE
-#endif /* WINVER >= 0x0400 */
-#if(WINVER >= 0x0600)
 #define OIC_SHIELD          32518
-#endif /* WINVER >= 0x0600 */
 
 
 #ifndef TMT_MSGBOXFONT
@@ -6198,7 +6194,7 @@ bool GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 
             NONCLIENTMETRICS ncm = { 0 };
             ncm.cbSize = sizeof(NONCLIENTMETRICS) - sizeof(ncm.iPaddedBorderWidth);
-            if (SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0)) {
+            if (SystemParametersInfoForDpi(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0, Scintilla_GetWindowDPI(NULL))) {
                 if (ncm.lfMessageFont.lfHeight < 0) {
                     ncm.lfMessageFont.lfHeight = -ncm.lfMessageFont.lfHeight;
                 }
@@ -6603,10 +6599,6 @@ void UpdateUI(HWND hwnd)
 {
     SendWMSize(hwnd, NULL);
     SetWindowPos(hwnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
-    //if (!IsWindows10OrGreater()) {
-    //    PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
-    //    PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
-    //}
 }
 
 
@@ -7190,11 +7182,12 @@ bool GetFolderDlg(HWND hwnd, HPATHL hdir_pth_io, const HPATHL hinidir_pth)
     }
 
     // open a new explorer window every time
-    LPWSTR szParameters = (LPWSTR)NP2HeapAlloc((lstrlen(path) + 64) * sizeof(WCHAR));
-    lstrcpy(szParameters, bSelect ? L"/select," : L"");
-    lstrcat(szParameters, L"\"");
-    lstrcat(szParameters, path);
-    lstrcat(szParameters, L"\"");
+    size_t const cchBuf = wcslen(path) + 64;
+    LPWSTR szParameters = (LPWSTR)NP2HeapAlloc(cchBuf * sizeof(WCHAR));
+    StringCchCopy(szParameters, cchBuf, bSelect ? L"/select," : L"");
+    StringCchCat(szParameters, cchBuf, L"\"");
+    StringCchCat(szParameters, cchBuf, path);
+    StringCchCat(szParameters, cchBuf, L"\"");
     ShellExecute(hwnd, L"open", L"explorer", szParameters, NULL, SW_SHOW);
     NP2HeapFree(szParameters);
 #endif
@@ -7286,7 +7279,7 @@ HFONT CreateAndSetFontDlgItemDPI(HWND hdlg, const int idDlgItem, int fontSize, b
 {
     NONCLIENTMETRICSW ncm = {0};
     ncm.cbSize            = sizeof(NONCLIENTMETRICSW);
-    if (SystemParametersInfoW(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICSW), &ncm, 0)) {
+    if (SystemParametersInfoForDpi(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICSW), &ncm, 0, Scintilla_GetWindowDPI(hdlg))) {
         HDC const hdcSys = GetDC(NULL);
         UINT const dpiSys = Scintilla_GetWindowDPI(NULL);
         UINT const dpiDlg = Scintilla_GetWindowDPI(hdlg);

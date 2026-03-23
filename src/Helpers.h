@@ -900,7 +900,7 @@ __forceinline bool IsCursorVisible()
 __forceinline bool IsMouseVanish()
 {
     BOOL bMouseVanish = FALSE;
-    return SystemParametersInfoW(SPI_GETMOUSEVANISH, 0, &bMouseVanish, 0) ? bMouseVanish : false;
+    return SystemParametersInfo(SPI_GETMOUSEVANISH, 0, &bMouseVanish, 0) ? bMouseVanish : false;
 }
 
 // ----------------------------------------------------------------------------

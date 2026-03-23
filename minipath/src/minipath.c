@@ -27,6 +27,7 @@
 #include <commdlg.h>
 #include <shobjidl.h>
 #include <strsafe.h>
+#include <pathcch.h>
 #include <muiload.h>
 
 #include "dlapi.h"
@@ -447,12 +448,13 @@ int WINAPI wWinMain(HINSTANCE hInstance,HINSTANCE hPrevInst,LPWSTR lpCmdLine,int
 //
 BOOL InitApplication(HINSTANCE hInstance)
 {
+    UINT const dpi = GetDpiForSystem();
     // ICON_BIG
-    int const cxb = GetSystemMetrics(SM_CXICON);
-    int const cyb = GetSystemMetrics(SM_CYICON);
+    int const cxb = GetSystemMetricsForDpi(SM_CXICON, dpi);
+    int const cyb = GetSystemMetricsForDpi(SM_CYICON, dpi);
     // ICON_SMALL
-    int const cxs = GetSystemMetrics(SM_CXSMICON);
-    int const cys = GetSystemMetrics(SM_CYSMICON);
+    int const cxs = GetSystemMetricsForDpi(SM_CXSMICON, dpi);
+    int const cys = GetSystemMetricsForDpi(SM_CYSMICON, dpi);
 
     //UINT const fuLoad = LR_DEFAULTCOLOR | LR_SHARED;
 
@@ -644,7 +646,7 @@ static void __fastcall _SetTargetAppMenuEntry(HMENU hMenu)
         if (eUseTargetApplication != 0xFB) {
             lstrcpy(wchTargetAppName, szTargetApplication);
             PathStripPath(wchTargetAppName);
-            PathRemoveExtension(wchTargetAppName);
+            PathCchRemoveExtension(wchTargetAppName, COUNTOF(wchTargetAppName));
         } else if ((eUseTargetApplication != UTA_UNDEFINED) && StrIsEmpty(wchTargetAppName)) {
             eUseTargetApplication = UTA_LAUNCH_TARGET;
             lstrcpy(wchTargetAppName, L"Notepad3");
@@ -1274,7 +1276,7 @@ LRESULT MsgCreate(HWND hwnd,WPARAM wParam,LPARAM lParam)
                        WC_COMBOBOXEX, // COMBOBOX as child
                        NULL,
                        dwDriveBoxStyle,
-                       0,0,0,GetSystemMetrics(SM_CYFULLSCREEN),
+                       0,0,0,GetSystemMetricsForDpi(SM_CYFULLSCREEN,GetDpiForWindow(hwnd)),
                        hwnd,
                        (HMENU)IDC_DRIVEBOX,
                        hInstance,
@@ -1353,9 +1355,10 @@ static HBITMAP _LoadBitmapFile(LPCWSTR path)
     WCHAR szTmp[MAX_PATH];
     if (PathIsRelative(path)) {
         GetModuleFileName(NULL, szTmp, COUNTOF(szTmp));
-        PathRemoveFileSpec(szTmp);
-        PathAppend(szTmp, path);
-        path = szTmp;
+        if (SUCCEEDED(PathCchRemoveFileSpec(szTmp, COUNTOF(szTmp))) &&
+            SUCCEEDED(PathCchAppend(szTmp, COUNTOF(szTmp), path))) {
+            path = szTmp;
+        }
     }
 
     if (!PathIsExistingFile(path)) {
@@ -1421,9 +1424,6 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
         hbmpCopy = CopyImage(hbmp,IMAGE_BITMAP,0,0,LR_CREATEDIBSECTION);
     }
     GetObject(hbmp,sizeof(BITMAP),&bmp);
-    if (!IsWindowsXPOrGreater()) {
-        BitmapMergeAlpha(hbmp, GetSysColor(COLOR_3DFACE));
-    }
     himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
     ImageList_AddMasked(himl,hbmp,CLR_DEFAULT);
     DeleteObject(hbmp);
@@ -1460,11 +1460,8 @@ void CreateBars(HWND hwnd,HINSTANCE hInstance)
         BOOL fProcessed = FALSE;
         if (flagToolbarLook == 1) {
             fProcessed = BitmapAlphaBlend(hbmpCopy,GetSysColor(COLOR_3DFACE),0x60);
-        } else if (flagToolbarLook == 2 || (!IsWindowsXPOrGreater() && flagToolbarLook == 0)) {
+        } else if (flagToolbarLook == 2) {
             fProcessed = BitmapGrayScale(hbmpCopy);
-        }
-        if (fProcessed && !IsWindowsXPOrGreater()) {
-            BitmapMergeAlpha(hbmpCopy,GetSysColor(COLOR_3DFACE));
         }
         if (fProcessed) {
             himl = ImageList_Create(bmp.bmWidth/NUMTOOLBITMAPS,bmp.bmHeight,ILC_COLOR32|ILC_MASK,0,0);
@@ -1632,7 +1629,7 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (UseDarkMode()) {
             // overpaint part frames
             HWND const hWndItem = pDIS->hwndItem;
-            int const bdh = GetSystemMetrics(SM_CYFRAME);
+            int const bdh = GetSystemMetricsForDpi(SM_CYFRAME,GetDpiForWindow(hwnd));
             HDC const hdcFrm = GetWindowDC(hWndItem);
             RECT rcf = rc;
             for (int i = 1; i < bdh; ++i) {
@@ -2134,7 +2131,7 @@ LRESULT MsgCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
             // Extract dir from filename
             lstrcpy(szPath,szNewFile);
-            PathRemoveFileSpec(szPath);
+            PathCchRemoveFileSpec(szPath, COUNTOF(szPath));
             SetCurrentDirectory(szPath);
 
             // Select new file
@@ -3472,7 +3469,7 @@ BOOL DisplayLnkFile(LPCWSTR pszLnkFile)
             SHFILEINFO shfi = { 0 };
 
             lstrcpy(szTmp,pszLnkFile);
-            PathRemoveFileSpec(szTmp);
+            PathCchRemoveFileSpec(szTmp, COUNTOF(szTmp));
             SetCurrentDirectory(szTmp);
 
             // Select new file
@@ -3551,7 +3548,7 @@ BOOL DisplayLnkFile(LPCWSTR pszLnkFile)
             SHFILEINFO shfi = { 0 };
 
             lstrcpy(szTmp,pszLnkFile);
-            PathRemoveFileSpec(szTmp);
+            PathCchRemoveFileSpec(szTmp, COUNTOF(szTmp));
             SetCurrentDirectory(szTmp);
 
             // Select new file
@@ -3632,7 +3629,7 @@ BOOL ActivatePrevInst()
                 if (PathIsRelative(lpPathArg)) {
                     WCHAR tchTmp[MAX_PATH];
                     GetCurrentDirectory(COUNTOF(tchTmp), tchTmp);
-                    PathAppend(tchTmp, lpPathArg);
+                    PathCchAppend(tchTmp, COUNTOF(tchTmp), lpPathArg);
                     lstrcpy(lpPathArg, tchTmp);
                 }
                 cds.dwData = DATA_MINIPATH_PATHARG;
@@ -3995,7 +3992,7 @@ void SnapToTarget(HWND hwnd)
 
         SetForegroundWindow(hwnd);
 
-        cxScreen = GetSystemMetrics(SM_CXSCREEN);
+        cxScreen = GetSystemMetricsForDpi(SM_CXSCREEN,GetDpiForWindow(hwnd));
         GetWindowRect(hwnd,&rcOld);
         GetWindowRect(hwnd2,&rc2);
 

@@ -1134,12 +1134,13 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     // ----------------------------------------------------
 
+    UINT const sysDpi = Scintilla_GetWindowDPI(NULL);
     // ICON_BIG (32x32)
-    int const cxb = GetSystemMetrics(SM_CXICON);
-    int const cyb = GetSystemMetrics(SM_CYICON);
+    int const cxb = Scintilla_GetSystemMetricsForDpi(SM_CXICON, sysDpi);
+    int const cyb = Scintilla_GetSystemMetricsForDpi(SM_CYICON, sysDpi);
     // ICON_SMALL (16x16)
-    int const cxs = GetSystemMetrics(SM_CXSMICON);
-    int const cys = GetSystemMetrics(SM_CYSMICON);
+    int const cxs = Scintilla_GetSystemMetricsForDpi(SM_CXSMICON, sysDpi);
+    int const cys = Scintilla_GetSystemMetricsForDpi(SM_CYSMICON, sysDpi);
 
     UINT const fuLoad = LR_DEFAULTCOLOR | LR_SHARED;
 
@@ -2936,7 +2937,8 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
     // Window Initialization
 
-    (void)CreateWindow(
+    (void)CreateWindowEx(
+        0,
         WC_STATIC,
         NULL,
         WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
@@ -2946,7 +2948,8 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
         hInstance,
         NULL);
 
-    (void)CreateWindow(
+    (void)CreateWindowEx(
+        0,
         WC_STATIC,
         NULL,
         WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
@@ -3729,7 +3732,7 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
         if (UseDarkMode()) {
             // overpaint part frames
             HWND const hWndItem = pDIS->hwndItem;
-            int const bdh = GetSystemMetrics(SM_CYFRAME);
+            int const bdh = Scintilla_GetSystemMetricsForDpi(SM_CYFRAME, Scintilla_GetWindowDPI(hWndItem));
             HDC const hdcFrm = GetWindowDC(hWndItem);
             RECT rcf = rc;
             for (int i = 1; i < bdh; ++i) {
@@ -3746,7 +3749,7 @@ LRESULT MsgDrawItem(HWND hwnd, WPARAM wParam, LPARAM lParam)
 #endif
 
         LPCWSTR const text = (LPCWSTR)(pDIS->itemData);
-        ExtTextOut(hdc, rc.left + 1, rc.top + 1, ETO_OPAQUE | ETO_NUMERICSLOCAL, &rc, text, lstrlen(text), NULL);
+        ExtTextOut(hdc, rc.left + 1, rc.top + 1, ETO_OPAQUE | ETO_NUMERICSLOCAL, &rc, text, (int)wcslen(text), NULL);
 
         //~EndPaint(hWndItem, &ps);
         return TRUE;
@@ -10048,10 +10051,6 @@ static void _UpdateTitlebarDelayed(const HWND hwnd)
 
         SetWindowTitle(Globals.hwndMain, Paths.CurrentFile, props, s_wchTitleExcerpt, false);
     }
-    //if (!IsWindows10OrGreater()) {
-    //    PostMessage(hwnd, WM_NCACTIVATE, FALSE, -1); // (!)
-    //    PostMessage(hwnd, WM_NCACTIVATE, TRUE, 0);
-    //}
 }
 
 
@@ -11325,7 +11324,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
         bool const bCheckFile = !Globals.CmdLnFlag_PrintFileAndLeave && !fioStatus.bEncryptedRaw && !(fioStatus.bUnknownExt && bUnknownLexer) && !bReloadFile;
         //&& (fioStatus.iEncoding == Settings.DefaultEncoding) ???
 
-        bool const bCheckEOL = bCheckFile && Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs;
+        bool const bCheckEOL = bCheckFile && !fioStatus.bMaybeBinary && Globals.bDocHasInconsistentEOLs && Settings.WarnInconsistEOLs;
 
         if (bCheckEOL && !Style_MaybeBinaryFile(Globals.hwndEdit, Paths.CurrentFile)) {
             if (WarnLineEndingDlg(Globals.hwndMain, &fioStatus)) {
@@ -11340,7 +11339,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
         // Show inconsistent indentation
         fioStatus.iGlobalIndent = I_MIX_LN; // init
 
-        bool const bCheckIndent = bCheckFile && !Flags.bHugeFileLoadState && Settings.WarnInconsistentIndents;
+        bool const bCheckIndent = bCheckFile && !fioStatus.bMaybeBinary && !Flags.bHugeFileLoadState && Settings.WarnInconsistentIndents;
 
         if (bCheckIndent && !Style_MaybeBinaryFile(Globals.hwndEdit, Paths.CurrentFile)) {
             EditIndentationStatistic(Globals.hwndEdit, &fioStatus);
@@ -12212,8 +12211,9 @@ void ShowNotifyIcon(HWND hwnd,bool bAdd)
         return;
     }
     HICON hIcon = NULL;
+    UINT const dpi = Scintilla_GetWindowDPI(hwnd);
     LoadIconWithScaleDown(Globals.hInstance, MAKEINTRESOURCE(IDR_MAINWND),
-                          GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), &hIcon);
+                          Scintilla_GetSystemMetricsForDpi(SM_CXSMICON, dpi), Scintilla_GetSystemMetricsForDpi(SM_CYSMICON, dpi), &hIcon);
 
     NOTIFYICONDATA nid = { sizeof(NOTIFYICONDATA) };
     nid.hWnd = hwnd;

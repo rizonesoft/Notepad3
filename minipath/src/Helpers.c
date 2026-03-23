@@ -32,6 +32,8 @@
 #include <commctrl.h>
 #include <uxtheme.h>
 #include <strsafe.h>
+#include <pathcch.h>
+#pragma comment(lib, "pathcch.lib")
 #include "minipath.h"
 #include "dlapi.h"
 #include "config.h"
@@ -102,7 +104,7 @@ int FormatLngStringW(LPWSTR lpOutput, int nOutput, UINT uIdFormat, ...)
             lpOutput[t] = L'\0';
         }
         LocalFree(pBuffer);
-        return (int)lstrlen(lpOutput);
+        return (int)wcslen(lpOutput);
     } else {
         return 0;
     }
@@ -188,7 +190,7 @@ BOOL ExeNameFromWnd(HWND hwnd,LPWSTR szExeName,int cchExeName)
         {
           bMoreEntries = FALSE;
           bFoundMatching = TRUE;
-          lstrcpyn(szExeName,pe.szExeFile,cchExeName);
+          StringCchCopy(szExeName, cchExeName, pe.szExeFile);
         }
         else
           bMoreEntries = fpProcess32Next(hProcessList,&pe);
@@ -228,16 +230,7 @@ BOOL ExeNameFromWnd(HWND hwnd,LPWSTR szExeName,int cchExeName)
 //
 BOOL PrivateIsAppThemed()
 {
-    BOOL bIsAppThemed = FALSE;
-    HMODULE hDll = LoadLibrary(L"uxtheme.dll");
-    if (hDll) {
-        FARPROC fp = GetProcAddress(hDll,"IsAppThemed");
-        if (fp) {
-            bIsAppThemed = (BOOL)fp();
-        }
-        FreeLibrary(hDll);
-    }
-    return bIsAppThemed;
+    return IsAppThemed();
 }
 
 
@@ -355,23 +348,23 @@ BOOL SetWindowPathTitle(HWND hwnd,LPCWSTR lpszFile)
             SHFILEINFO shfi;
             ZeroMemory(&shfi, sizeof(SHFILEINFO));
             if (SHGetFileInfo(lpszFile, 0, &shfi, sizeof(SHFILEINFO), SHGFI_DISPLAYNAME)) {
-                lstrcpy(szTitle, shfi.szDisplayName);
+                StringCchCopy(szTitle, COUNTOF(szTitle), shfi.szDisplayName);
             } else {
-                lstrcpy(szTitle, PathFindFileName(lpszFile));
+                StringCchCopy(szTitle, COUNTOF(szTitle), PathFindFileName(lpszFile));
             }
 
             WCHAR tchPath[MAX_PATH] = { L'\0' };
-            lstrcpy(tchPath, lpszFile);
+            StringCchCopy(tchPath, COUNTOF(tchPath), lpszFile);
             PathRemoveFileSpec(tchPath);
-            lstrcat(szTitle, L" - [");
-            lstrcat(szTitle, tchPath);
-            if (tchPath[0] && (tchPath[lstrlen(tchPath)-1] == L'\\')) {
-                lstrcat(szTitle, L"]");
+            StringCchCat(szTitle, COUNTOF(szTitle), L" - [");
+            StringCchCat(szTitle, COUNTOF(szTitle), tchPath);
+            if (tchPath[0] && (tchPath[wcslen(tchPath)-1] == L'\\')) {
+                StringCchCat(szTitle, COUNTOF(szTitle), L"]");
             } else {
-                lstrcat(szTitle, L"\\]");
+                StringCchCat(szTitle, COUNTOF(szTitle), L"\\]");
             }
         } else {
-            lstrcpy(szTitle, lpszFile);
+            StringCchCopy(szTitle, COUNTOF(szTitle), lpszFile);
         }
     }
 
@@ -497,17 +490,17 @@ int Toolbar_GetButtons(HWND hwnd,int cmdBase,LPWSTR lpszButtons,int cchButtons)
     WCHAR tchItem[32];
     TBBUTTON tbb;
 
-    lstrcpy(tchButtons,L"");
+    StringCchCopy(tchButtons, COUNTOF(tchButtons), L"");
     int const c = min(50,(int)SendMessage(hwnd,TB_BUTTONCOUNT,0,0));
 
     for (int i = 0; i < c; i++) {
         SendMessage(hwnd,TB_GETBUTTON,(WPARAM)i,(LPARAM)&tbb);
         wsprintf(tchItem,L"%i ",
                  (tbb.idCommand==0)?0:tbb.idCommand-cmdBase+1);
-        lstrcat(tchButtons,tchItem);
+        StringCchCat(tchButtons, COUNTOF(tchButtons), tchItem);
     }
     TrimStringW(tchButtons);
-    (void)lstrcpyn(lpszButtons,tchButtons,cchButtons);
+    (void)StringCchCopy(lpszButtons, cchButtons, tchButtons);
     return(c);
 }
 
@@ -518,11 +511,11 @@ int Toolbar_SetButtons(HWND hwnd,int cmdBase,LPCWSTR lpszButtons,LPCTBBUTTON ptb
     int iCmd;
 
     ZeroMemory(tchButtons,COUNTOF(tchButtons)*sizeof(tchButtons[0]));
-    (void)lstrcpyn(tchButtons,lpszButtons,COUNTOF(tchButtons)-2);
+    (void)StringCchCopy(tchButtons, COUNTOF(tchButtons)-2, lpszButtons);
     TrimStringW(tchButtons);
     WCHAR *p = wcsstr(tchButtons, L"  ");
     while (p) {
-        MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (lstrlen(p) + 1) * sizeof(WCHAR));
+        MoveMemory((WCHAR*)p, (WCHAR*)p + 1, (wcslen(p) + 1) * sizeof(WCHAR));
         p = wcsstr(tchButtons, L"  ");
     }
     c = (int)SendMessage(hwnd,TB_BUTTONCOUNT,0,0);
@@ -600,36 +593,42 @@ void PathRelativeToApp(
     GetModuleFileName(NULL,wchAppPath,COUNTOF(wchAppPath));
     PathRemoveFileSpec(wchAppPath);
     (void)GetWindowsDirectory(wchWinDir,COUNTOF(wchWinDir));
-    SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchUserFiles);
+    {
+        PWSTR pszPath = NULL;
+        if (SUCCEEDED(SHGetKnownFolderPath(&FOLDERID_Documents, 0, NULL, &pszPath))) {
+            StringCchCopy(wchUserFiles, COUNTOF(wchUserFiles), pszPath);
+            CoTaskMemFree(pszPath);
+        }
+    }
 
     if (bUnexpandMyDocs &&
             !PathIsRelative(lpszSrc) &&
             !PathIsPrefix(wchUserFiles,wchAppPath) &&
             PathIsPrefix(wchUserFiles,lpszSrc) &&
             PathRelativePathTo(wchPath,wchUserFiles,FILE_ATTRIBUTE_DIRECTORY,lpszSrc,dwAttrTo)) {
-        lstrcpy(wchUserFiles,L"%CSIDL:MYDOCUMENTS%");
-        PathAppend(wchUserFiles,wchPath);
-        lstrcpy(wchPath,wchUserFiles);
+        StringCchCopy(wchUserFiles, COUNTOF(wchUserFiles), L"%CSIDL:MYDOCUMENTS%");
+        PathCchAppend(wchUserFiles, COUNTOF(wchUserFiles), wchPath);
+        StringCchCopy(wchPath, COUNTOF(wchPath), wchUserFiles);
     } else if (PathIsRelative(lpszSrc) || PathCommonPrefix(wchAppPath,wchWinDir,NULL)) {
-        (void)lstrcpyn(wchPath,lpszSrc,COUNTOF(wchPath));
+        (void)StringCchCopy(wchPath, COUNTOF(wchPath), lpszSrc);
     } else {
         if (!PathRelativePathTo(wchPath,wchAppPath,FILE_ATTRIBUTE_DIRECTORY,lpszSrc,dwAttrTo)) {
-            (void)lstrcpyn(wchPath,lpszSrc,COUNTOF(wchPath));
+            (void)StringCchCopy(wchPath, COUNTOF(wchPath), lpszSrc);
         }
     }
 
     if (bUnexpandEnv) {
         if (!PathUnExpandEnvStrings(wchPath,wchResult,COUNTOF(wchResult))) {
-            (void)lstrcpyn(wchResult,wchPath,COUNTOF(wchResult));
+            (void)StringCchCopy(wchResult, COUNTOF(wchResult), wchPath);
         }
     } else {
-        (void)lstrcpyn(wchResult,wchPath,COUNTOF(wchResult));
+        (void)StringCchCopy(wchResult, COUNTOF(wchResult), wchPath);
     }
 
     if (lpszDest == NULL || lpszSrc == lpszDest) {
-        (void)lstrcpyn(lpszSrc,wchResult,(cchDest == 0) ? MAX_PATH : cchDest);
+        (void)StringCchCopy(lpszSrc, (cchDest == 0) ? MAX_PATH : cchDest, wchResult);
     } else {
-        (void)lstrcpyn(lpszDest,wchResult,(cchDest == 0) ? MAX_PATH : cchDest);
+        (void)StringCchCopy(lpszDest, (cchDest == 0) ? MAX_PATH : cchDest, wchResult);
     }
 }
 
@@ -645,10 +644,16 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpand
     WCHAR wchResult[MAX_PATH];
 
     if (StrCmpNI(lpszSrc,L"%CSIDL:MYDOCUMENTS%",CSTRLEN("%CSIDL:MYDOCUMENTS%")) == 0) {
-        SHGetFolderPath(NULL,CSIDL_PERSONAL,NULL,SHGFP_TYPE_CURRENT,wchPath);
-        PathAppend(wchPath,lpszSrc+ CSTRLEN("%CSIDL:MYDOCUMENTS%"));
+        {
+            PWSTR pszPath = NULL;
+            if (SUCCEEDED(SHGetKnownFolderPath(&FOLDERID_Documents, 0, NULL, &pszPath))) {
+                StringCchCopy(wchPath, COUNTOF(wchPath), pszPath);
+                CoTaskMemFree(pszPath);
+            }
+        }
+        PathCchAppend(wchPath, COUNTOF(wchPath), lpszSrc+ CSTRLEN("%CSIDL:MYDOCUMENTS%"));
     } else {
-        (void)lstrcpyn(wchPath,lpszSrc,COUNTOF(wchPath));
+        (void)StringCchCopy(wchPath, COUNTOF(wchPath), lpszSrc);
     }
 
     if (bExpandEnv) {
@@ -657,10 +662,10 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpand
 
     if (PathIsRelative(wchPath)) {
         GetModuleFileName(NULL,wchResult,COUNTOF(wchResult));
-        PathRemoveFileSpec(wchResult);
-        PathAppend(wchResult,wchPath);
+        PathCchRemoveFileSpec(wchResult, COUNTOF(wchResult));
+        PathCchAppend(wchResult, COUNTOF(wchResult), wchPath);
     } else {
-        (void)lstrcpyn(wchResult,wchPath,COUNTOF(wchResult));
+        (void)StringCchCopy(wchResult, COUNTOF(wchResult), wchPath);
     }
 
     PathCanonicalizeEx(wchResult);
@@ -669,9 +674,9 @@ void PathAbsoluteFromApp(LPWSTR lpszSrc,LPWSTR lpszDest,int cchDest,BOOL bExpand
     }
 
     if (lpszDest == NULL || lpszSrc == lpszDest) {
-        (void)lstrcpyn(lpszSrc,wchResult,(cchDest == 0) ? MAX_PATH : cchDest);
+        (void)StringCchCopy(lpszSrc, (cchDest == 0) ? MAX_PATH : cchDest, wchResult);
     } else {
-        (void)lstrcpyn(lpszDest,wchResult,(cchDest == 0) ? MAX_PATH : cchDest);
+        (void)StringCchCopy(lpszDest, (cchDest == 0) ? MAX_PATH : cchDest, wchResult);
     }
 }
 
@@ -751,7 +756,7 @@ BOOL PathGetLnkPath(LPCWSTR pszLnkFile,LPWSTR pszResPath,int cchResPath)
             WORD wsz[MAX_PATH];
 
             /*MultiByteToWideChar(CP_ACP,MB_PRECOMPOSED,pszLnkFile,-1,wsz,MAX_PATH);*/
-            lstrcpy(wsz,pszLnkFile);
+            StringCchCopy((WCHAR*)wsz, COUNTOF(wsz), pszLnkFile);
 
             if (SUCCEEDED(ppf->lpVtbl->Load(ppf,wsz,STGM_READ))) {
                 if (NOERROR == psl->lpVtbl->GetPath(psl,pszResPath,cchResPath,&fd,0)) {
@@ -798,7 +803,7 @@ BOOL PathIsLnkToDirectory(LPCWSTR pszPath,LPWSTR pszResPath,int cchResPath)
 
             if (PathIsDirectory(tchResPath)) {
 
-                (void)lstrcpyn(pszResPath,tchResPath,cchResPath);
+                (void)StringCchCopy(pszResPath, cchResPath, tchResPath);
                 return (TRUE);
             }
 
@@ -852,7 +857,7 @@ BOOL PathCreateLnk(LPCWSTR pszLnkDir,LPCWSTR pszPath)
             WORD wsz[MAX_PATH];
 
             /*MultiByteToWideChar(CP_ACP,MB_PRECOMPOSED,tchLnkFileName,-1,wsz,MAX_PATH);*/
-            lstrcpy(wsz,tchLnkFileName);
+            StringCchCopy((WCHAR*)wsz, COUNTOF(wsz), tchLnkFileName);
 
             if (NOERROR == psl->lpVtbl->SetPath(psl,pszPath) &&
                     SUCCEEDED(ppf->lpVtbl->Save(ppf,wsz,TRUE))) {
@@ -889,7 +894,7 @@ BOOL TrimStringW(LPWSTR lpString)
         psz = CharNext(psz);
     }
 
-    MoveMemory(lpString,psz,sizeof(WCHAR)*(lstrlen(psz) + 1));
+    MoveMemory(lpString,psz,sizeof(WCHAR)*(wcslen(psz) + 1));
 
     // Trim right
     psz = StrEnd(lpString);
@@ -913,7 +918,7 @@ BOOL ExtractFirstArgument(LPCWSTR lpArgs,LPWSTR lpArg1,LPWSTR lpArg2)
     LPWSTR psz;
     BOOL bQuoted = FALSE;
 
-    lstrcpy(lpArg1,lpArgs);
+    StringCchCopy(lpArg1, MAX_PATH, lpArgs);
     if (lpArg2) {
         *lpArg2 = L'\0';
     }
@@ -937,7 +942,7 @@ BOOL ExtractFirstArgument(LPCWSTR lpArgs,LPWSTR lpArg1,LPWSTR lpArg2)
     if (psz) {
         *psz = L'\0';
         if (lpArg2) {
-            lstrcpy(lpArg2,psz + 1);
+            StringCchCopy(lpArg2, MAX_PATH, psz + 1);
         }
     }
 
@@ -959,9 +964,9 @@ BOOL ExtractFirstArgument(LPCWSTR lpArgs,LPWSTR lpArg1,LPWSTR lpArg2)
 LPWSTR QuotateFilenameStr(LPWSTR lpFile)
 {
     if (StrChr(lpFile,L' ')) {
-        MoveMemory(lpFile + 1,lpFile,sizeof(WCHAR)*(lstrlen(lpFile) + 1));
+        MoveMemory(lpFile + 1,lpFile,sizeof(WCHAR)*(wcslen(lpFile) + 1));
         *lpFile = '\"';
-        lstrcat(lpFile,L"\"");
+        StringCchCat(lpFile, MAX_PATH, L"\"");
     }
     return lpFile;
 }
@@ -1023,7 +1028,7 @@ void ExpandEnvironmentStringsEx(LPWSTR lpSrc,DWORD dwSrc)
     WCHAR szBuf[312];
 
     if (ExpandEnvironmentStrings(lpSrc,szBuf,COUNTOF(szBuf))) {
-        (void)lstrcpyn(lpSrc,szBuf,dwSrc);
+        (void)StringCchCopy(lpSrc, dwSrc, szBuf);
     }
 }
 
@@ -1037,8 +1042,8 @@ void PathCanonicalizeEx(LPWSTR lpSrc)
 {
     WCHAR szDst[MAX_PATH];
 
-    if (PathCanonicalize(szDst,lpSrc)) {
-        lstrcpy(lpSrc,szDst);
+    if (SUCCEEDED(PathCchCanonicalize(szDst, COUNTOF(szDst), lpSrc))) {
+        StringCchCopy(lpSrc, MAX_PATH, szDst);
     }
 }
 
@@ -1056,7 +1061,7 @@ BOOL SearchPathEx(LPCWSTR lpFileName, DWORD nBufferLength, LPWSTR lpBuffer)
 
     if (StrEqual(lpFileName, L"..") || StrEqual(lpFileName, L".")) {
         if (StrEqual(lpFileName, L"..") && PathIsRoot(Settings.szCurDir)) {
-            (void)lstrcpyn(lpBuffer, L"*.*", nBufferLength);
+            (void)StringCchCopy(lpBuffer, nBufferLength, L"*.*");
             dwRetVal = 1;
         }
     }
@@ -1096,12 +1101,12 @@ int FormatNumberStr(LPWSTR lpNumberStr)
     while ((c = CharPrev(lpNumberStr,c)) != lpNumberStr) {
         if (++i == 3) {
             i = 0;
-            MoveMemory(c+1,c,sizeof(WCHAR)*(lstrlen(c)+1));
+            MoveMemory(c+1,c,sizeof(WCHAR)*(wcslen(c)+1));
             *c = szSep[0];
         }
     }
 
-    return(lstrlen(lpNumberStr));
+    return((int)wcslen(lpNumberStr));
 }
 
 
@@ -1154,7 +1159,7 @@ void GetDefaultOpenWithDir(LPWSTR lpOpenWithDir,int cchOpenWithDir)
 HDROP CreateDropHandle(LPCWSTR lpFileName)
 {
     HGLOBAL hDrop = GlobalAlloc(GMEM_ZEROINIT | GMEM_MOVEABLE | GMEM_DDESHARE,
-                                sizeof(DROPFILES) + sizeof(WCHAR) * (lstrlen(lpFileName) + 2));
+                                sizeof(DROPFILES) + sizeof(WCHAR) * (wcslen(lpFileName) + 2));
 
     if (hDrop) {
         LPDROPFILES lpdf = GlobalLock(hDrop);
@@ -1164,7 +1169,7 @@ HDROP CreateDropHandle(LPCWSTR lpFileName)
             lpdf->pt.y = 0;
             lpdf->fNC = TRUE;
             lpdf->fWide = TRUE;
-            lstrcpy((WCHAR*)&lpdf[1], lpFileName);
+            StringCchCopy((WCHAR*)&lpdf[1], wcslen(lpFileName) + 2, lpFileName);
         }
         GlobalUnlock(hDrop);
     }
@@ -1237,7 +1242,7 @@ BOOL ExecDDECommand(LPCWSTR lpszCmdLine,
         return FALSE;
     }
 
-    (void)lstrcpyn(lpszDDEMsgBuf,lpszDDEMsg,COUNTOF(lpszDDEMsgBuf));
+    (void)StringCchCopy(lpszDDEMsgBuf, COUNTOF(lpszDDEMsgBuf), lpszDDEMsg);
     pSubst = wcsstr(lpszDDEMsgBuf, L"%1");
     if (pSubst) {
         *(pSubst+1) = L's';
@@ -1252,7 +1257,7 @@ BOOL ExecDDECommand(LPCWSTR lpszCmdLine,
         if (hszService && hszTopic) {
             hConv = DdeConnect(idInst, hszService, hszTopic, NULL);
             if (hConv) {
-                DdeClientTransaction((LPBYTE)lpszURLExec,sizeof(WCHAR)*(lstrlen(lpszURLExec) + 1),
+                DdeClientTransaction((LPBYTE)lpszURLExec,(DWORD)(sizeof(WCHAR)*(wcslen(lpszURLExec) + 1)),
                                      hConv, 0, 0, XTYP_EXECUTE, TIMEOUT_ASYNC, NULL);
                 DdeDisconnect(hConv);
             } else {
@@ -1357,7 +1362,7 @@ BOOL History_Forward(PHISTORY ph,LPWSTR pszItem,int cItem)
     if (ph->iCurItem < (HISTORY_ITEMS-1))
         if (ph->psz[ph->iCurItem+1]) {
             ph->iCurItem++;
-            (void)lstrcpyn(pszItem,ph->psz[ph->iCurItem],cItem);
+            (void)StringCchCopy(pszItem, cItem, ph->psz[ph->iCurItem]);
             return TRUE;
         }
 
@@ -1373,7 +1378,7 @@ BOOL History_Back(PHISTORY ph,LPWSTR pszItem,int cItem)
     if (ph->iCurItem > 0)
         if (ph->psz[ph->iCurItem-1]) {
             ph->iCurItem--;
-            (void)lstrcpyn(pszItem,ph->psz[ph->iCurItem],cItem);
+            (void)StringCchCopy(pszItem, cItem, ph->psz[ph->iCurItem]);
             return TRUE;
         }
 
@@ -1434,7 +1439,7 @@ LPMRULIST MRU_Create(LPCWSTR pszRegKey,int iFlags,int iSize)
     LPMRULIST pmru = LocalAlloc(LPTR,sizeof(MRULIST));
     if (pmru) {
         ZeroMemory(pmru, sizeof(MRULIST));
-        (void)lstrcpyn(pmru->szRegKey, pszRegKey, COUNTOF(pmru->szRegKey));
+        (void)StringCchCopy(pmru->szRegKey, COUNTOF(pmru->szRegKey), pszRegKey);
         pmru->iFlags = iFlags;
         pmru->iSize = min(iSize, MRU_MAXITEMS);
     }
@@ -1526,8 +1531,8 @@ int MRU_Enum(LPMRULIST pmru,int iIndex,LPWSTR pszItem,int cchItem)
         if (iIndex < 0 || iIndex > pmru->iSize-1 || !pmru->pszItems[iIndex]) {
             return(-1);
         } else {
-            (void)lstrcpyn(pszItem,pmru->pszItems[iIndex],cchItem);
-            return(lstrlen(pszItem));
+            (void)StringCchCopy(pszItem, cchItem, pmru->pszItems[iIndex]);
+            return((int)wcslen(pszItem));
         }
     }
 }
@@ -1548,7 +1553,7 @@ BOOL MRU_Load(LPMRULIST pmru)
         for (i = 0; i < pmru->iSize; i++) {
             StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);
             if (IniSectionGetString(RegKey_Section, tchName, L"", tchItem, COUNTOF(tchItem))) {
-                size_t const len = (size_t)lstrlen(tchItem);
+                size_t const len = (size_t)wcslen(tchItem);
                 if ((len > 0) && (tchItem[0] == L'"') && (tchItem[len - 1] == L'"')) {
                     MoveMemory(tchItem, (tchItem + 1), len * sizeof(WCHAR));
                     tchItem[len - 2] = L'\0'; // clear dangling '"'
@@ -1713,8 +1718,8 @@ BOOL GetThemedDialogFont(LPWSTR lpFaceName, WORD* wSize)
 
     if (!bSucceed) {
         NONCLIENTMETRICS ncm = {0};
-        ncm.cbSize = sizeof(NONCLIENTMETRICS) - sizeof(ncm.iPaddedBorderWidth);
-        SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0);
+        ncm.cbSize = sizeof(NONCLIENTMETRICS);
+        SystemParametersInfoForDpi(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0, GetDpiForSystem());
         if (ncm.lfMessageFont.lfHeight < 0) {
             ncm.lfMessageFont.lfHeight = -ncm.lfMessageFont.lfHeight;
         }
@@ -1819,11 +1824,11 @@ DLGTEMPLATE* LoadThemedDialogTemplate(LPCTSTR lpDialogTemplateID, HINSTANCE hIns
         pTemplate->style |= DS_SHELLFONT;
     }
 
-    size_t const cbNew = cbFontAttr + ((lstrlen(wchFaceName) + 1) * sizeof(WCHAR));
+    size_t const cbNew = cbFontAttr + ((wcslen(wchFaceName) + 1) * sizeof(WCHAR));
     BYTE* const pbNew = (BYTE*)wchFaceName;
 
     BYTE* pb = DialogTemplate_GetFontSizeField(pTemplate);
-    size_t const cbOld = (bHasFont ? cbFontAttr + 2 * (lstrlen((WCHAR*)(pb + cbFontAttr)) + 1) : 0);
+    size_t const cbOld = (bHasFont ? cbFontAttr + 2 * (wcslen((WCHAR*)(pb + cbFontAttr)) + 1) : 0);
 
     BYTE* const pOldControls = (BYTE*)(((DWORD_PTR)pb + cbOld + 3) & ~(DWORD_PTR)3);
     BYTE* const pNewControls = (BYTE*)(((DWORD_PTR)pb + cbNew + 3) & ~(DWORD_PTR)3);

@@ -126,7 +126,7 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
         wchar_t* pszBuff = reinterpret_cast<wchar_t*>(reinterpret_cast<LPBYTE>(pDrop) + sizeof(DROPFILES));
         for (auto it = m_allPaths.begin(); it != m_allPaths.end(); ++it)
         {
-            lstrcpy(pszBuff, it->c_str());
+            wcscpy_s(pszBuff, it->size() + 1, it->c_str());
             pszBuff += it->size();
             *pszBuff = 0;
             pszBuff++;
