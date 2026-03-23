@@ -1457,6 +1457,9 @@ void LoadSettings()
         }
     }
 
+    IniSectionGetString(IniSecSettings2, L"CopyMultiSelectionSeparator", L"\x01",
+        Settings2.CopyMultiSelectionSeparator, COUNTOF(Settings2.CopyMultiSelectionSeparator));
+
     for (int i = 0; i < COUNTOF(Settings2.CodeFontPrefPrioList); ++i) {
         if (i < COUNTOF(g_CodeFontPrioList))
             Settings2.CodeFontPrefPrioList[i] = g_CodeFontPrioList[i];

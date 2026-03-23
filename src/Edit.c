@@ -3322,9 +3322,19 @@ void EditCopyMultiSelection(HWND hwnd)
         return;
     }
     if (Sci_IsMultiSelection()) {
-        char pchSep[3] = { '\0' };
-        Sci_GetCurrentEOL_A(pchSep);
-        SciCall_SetCopySeparator(pchSep);
+        if (Settings2.CopyMultiSelectionSeparator[0] == L'\x01') {
+            // not set → use current EOL
+            char pchSep[3] = { '\0' };
+            Sci_GetCurrentEOL_A(pchSep);
+            SciCall_SetCopySeparator(pchSep);
+        } else {
+            // use configured separator (may be empty)
+            char chSep[MICRO_BUFFER * 2] = { '\0' };
+            WideCharToMultiByte(Encoding_SciCP, 0,
+                Settings2.CopyMultiSelectionSeparator, -1,
+                chSep, COUNTOF(chSep), NULL, NULL);
+            SciCall_SetCopySeparator(chSep);
+        }
     }
     SciCall_Copy();
 }
