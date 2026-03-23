@@ -4016,6 +4016,8 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 //  MsgContextMenu() - Handles WM_CONTEXTMENU and SCN_MARGINRIGHTCLICK
 //
+static DocPos s_iCtxMenuClickPos = -1;
+
 LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
     bool const bMargin  = (SCN_MARGINRIGHTCLICK == umsg);
@@ -4083,6 +4085,22 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             if (StrIsNotEmpty(Settings2.WebTmpl2MenuName)) {
                 ModifyMenu(hStdCtxMenu, CMD_WEBACTION2, MF_BYCOMMAND | MF_STRING, CMD_WEBACTION2, Settings2.WebTmpl2MenuName);
             }
+
+            // case conversion submenu: enable based on selection or word at click position
+            s_iCtxMenuClickPos = SciCall_CharPositionFromPointClose(pt.x, pt.y);
+            bool const ro = SciCall_GetReadOnly();
+            bool const se = SciCall_IsSelectionEmpty();
+            bool bHasTarget = !se;
+            if (se && (s_iCtxMenuClickPos >= 0)) {
+                DocPos const ws = SciCall_WordStartPosition(s_iCtxMenuClickPos, true);
+                DocPos const we = SciCall_WordEndPosition(s_iCtxMenuClickPos, true);
+                bHasTarget = (ws != we);
+            }
+            EnableCmd(hStdCtxMenu, CMD_CTX_UPPERCASE, bHasTarget && !ro);
+            EnableCmd(hStdCtxMenu, CMD_CTX_LOWERCASE, bHasTarget && !ro);
+            EnableCmd(hStdCtxMenu, CMD_CTX_INVERTCASE, bHasTarget && !ro);
+            EnableCmd(hStdCtxMenu, CMD_CTX_TITLECASE, bHasTarget && !ro);
+            EnableCmd(hStdCtxMenu, CMD_CTX_SENTENCECASE, bHasTarget && !ro);
         }
 
         // back to screen coordinates for menu display
@@ -5619,6 +5637,47 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDM_EDIT_SENTENCECASE:
         EditSentenceCase(Globals.hwndEdit);
+        break;
+
+
+    case CMD_CTX_UPPERCASE:
+        if (SciCall_IsSelectionEmpty() && (s_iCtxMenuClickPos >= 0)) {
+            EditSelectWordAtPos(s_iCtxMenuClickPos, false);
+        }
+        SciCall_UpperCase();
+        s_iCtxMenuClickPos = -1;
+        break;
+
+    case CMD_CTX_LOWERCASE:
+        if (SciCall_IsSelectionEmpty() && (s_iCtxMenuClickPos >= 0)) {
+            EditSelectWordAtPos(s_iCtxMenuClickPos, false);
+        }
+        SciCall_LowerCase();
+        s_iCtxMenuClickPos = -1;
+        break;
+
+    case CMD_CTX_INVERTCASE:
+        if (SciCall_IsSelectionEmpty() && (s_iCtxMenuClickPos >= 0)) {
+            EditSelectWordAtPos(s_iCtxMenuClickPos, false);
+        }
+        EditInvertCase(Globals.hwndEdit);
+        s_iCtxMenuClickPos = -1;
+        break;
+
+    case CMD_CTX_TITLECASE:
+        if (SciCall_IsSelectionEmpty() && (s_iCtxMenuClickPos >= 0)) {
+            EditSelectWordAtPos(s_iCtxMenuClickPos, false);
+        }
+        EditTitleCase(Globals.hwndEdit);
+        s_iCtxMenuClickPos = -1;
+        break;
+
+    case CMD_CTX_SENTENCECASE:
+        if (SciCall_IsSelectionEmpty() && (s_iCtxMenuClickPos >= 0)) {
+            EditSelectWordAtPos(s_iCtxMenuClickPos, false);
+        }
+        EditSentenceCase(Globals.hwndEdit);
+        s_iCtxMenuClickPos = -1;
         break;
 
 
