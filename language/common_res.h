@@ -471,6 +471,7 @@
 #define IDC_AS_BACKUP_OPENFOLDER        18134
 #define IDC_FILE_CHECK_INTERVAL         18135
 #define IDC_DARK_MODE_CONTRAST          18136
+#define IDC_TAB_BACKTAB_INDENTS_ALWAYS  18137
 
 #define IDC_RADIO_BTN_A                 18200
 #define IDC_RADIO_BTN_B                 18201
@@ -763,7 +764,7 @@
 #define IDM_VIEW_ZOOMOUT                41019
 #define IDM_VIEW_RESETZOOM              41020
 #define IDM_VIEW_STICKYWINPOS           41021
-#define IDM_VIEW_TITLEBAR               41022 
+#define IDM_VIEW_TITLEBAR               41022
 #define IDM_VIEW_MENUBAR                41023
 #define IDM_VIEW_TOOLBAR                41024
 #define IDM_VIEW_CUSTOMIZETB            41025
@@ -814,7 +815,7 @@
 #define IDM_SET_RENDER_TECH_D2DDC       42003   // SC_TECHNOLOGY_DIRECTWRITEDC(3)
 #define IDM_SET_RTL_LAYOUT_EDIT         42004
 #define IDM_SET_RTL_LAYOUT_DLG          42005
-// keep Scintilla(SC) order 
+// keep Scintilla(SC) order
 #define IDM_SET_BIDIRECTIONAL_NONE      42006   // SC_BIDIRECTIONAL_DISABLED(0)
 #define IDM_SET_BIDIRECTIONAL_L2R       42007   // SC_BIDIRECTIONAL_L2R(1)
 #define IDM_SET_BIDIRECTIONAL_R2L       42008   // SC_BIDIRECTIONAL_R2L(2)
@@ -1352,6 +1353,6 @@
 #define RICHEDTCTRL_ADDSTYLE            0x29c4
 #endif
 
-//#ifndef 
+//#ifndef
 
 #endif //_COMMON_RES_H_

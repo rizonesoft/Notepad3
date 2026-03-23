@@ -3283,7 +3283,7 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
             SetExplorerTheme(GetDlgItem(hwnd, IDOK));
             SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
             //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
-            int const ctl[] = { IDC_TAB_AS_SPC, IDC_TAB_INDENTS, IDC_BACKTAB_INDENTS,
+            int const ctl[] = { IDC_TAB_AS_SPC, IDC_TAB_BACKTAB_INDENTS_ALWAYS, IDC_TAB_INDENTS, IDC_BACKTAB_INDENTS,
                                 IDC_WARN_INCONSISTENT_INDENTS, IDC_AUTO_DETECT_INDENTS, IDC_STATIC, IDC_STATIC2, IDC_STATIC3
                               };
             for (int i = 0; i < COUNTOF(ctl); ++i) {
@@ -3299,6 +3299,7 @@ static INT_PTR CALLBACK TabSettingsDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPA
         SendDlgItemMessage(hwnd,IDC_INDENT_DEPTH,EM_LIMITTEXT,15,0);
 
         CheckDlgButton(hwnd,IDC_TAB_AS_SPC, SetBtn(Globals.fvCurFile.bTabsAsSpaces));
+        CheckDlgButton(hwnd,IDC_TAB_BACKTAB_INDENTS_ALWAYS, SetBtn(Settings.TabBackspaceAlwaysIndents));
         CheckDlgButton(hwnd,IDC_TAB_INDENTS, SetBtn(Globals.fvCurFile.bTabIndents));
         CheckDlgButton(hwnd,IDC_BACKTAB_INDENTS, SetBtn(Settings.BackspaceUnindents));
         CheckDlgButton(hwnd,IDC_WARN_INCONSISTENT_INDENTS, SetBtn(Settings.WarnInconsistentIndents));
@@ -3364,11 +3365,14 @@ CASE_WM_CTLCOLOR_SET:
                 Settings.TabsAsSpaces = _bTabsAsSpaces;
                 Globals.fvCurFile.bTabsAsSpaces = _bTabsAsSpaces;
 
+                Settings.TabBackspaceAlwaysIndents = IsButtonChecked(hwnd, IDC_TAB_BACKTAB_INDENTS_ALWAYS);
+
                 bool const _bTabIndents = IsButtonChecked(hwnd, IDC_TAB_INDENTS);
                 Settings.TabIndents = _bTabIndents;
                 Globals.fvCurFile.bTabIndents = _bTabIndents;
 
                 Settings.BackspaceUnindents = IsButtonChecked(hwnd, IDC_BACKTAB_INDENTS);
+
                 Settings.WarnInconsistentIndents = IsButtonChecked(hwnd, IDC_WARN_INCONSISTENT_INDENTS);
                 Settings.AutoDetectIndentSettings = IsButtonChecked(hwnd, IDC_AUTO_DETECT_INDENTS);
                 EndDialog(hwnd, IDOK);

@@ -612,6 +612,7 @@ typedef struct SETTINGS_T {
     bool TabsAsSpaces;
     bool TabIndents;
     bool BackspaceUnindents;
+    bool TabBackspaceAlwaysIndents;
     int  TabWidth;
     int  IndentWidth;
     bool WarnInconsistentIndents;

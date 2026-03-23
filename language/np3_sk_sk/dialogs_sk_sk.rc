@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 // encoding: UTF-8
 #pragma code_page(65001)  // UTF-8
 #include "resource.h"
@@ -331,7 +331,7 @@ BEGIN
     EDITTEXT        IDC_STYLEEDIT_HELP,197,54,252,74,ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
-IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 114
+IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 126
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Nastavenia tabulátora"
 FONT 9, "Segoe UI", 400, 0, 0x1
@@ -341,13 +341,14 @@ BEGIN
     LTEXT           "Veľkosť &odsadenia:",IDC_STATIC2,7,30,63,8
     EDITTEXT        IDC_INDENT_DEPTH,74,27,30,14,ES_AUTOHSCROLL
     CONTROL         "&Vkladať tabulátor ako medzeru",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
-    CONTROL         "Klávesou &Tab preformátovať odsadenie",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "Tab/Backspace always indents",IDC_TAB_BACKTAB_INDENTS_ALWAYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "Klávesou &Tab preformátovať odsadenie",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
     CONTROL         "Klávesou &Backspace preformátovať odsadenie",IDC_BACKTAB_INDENTS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,166,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,166,10
     CONTROL         "&Upozorniť na nekonzistentné odsadenie",IDC_WARN_INCONSISTENT_INDENTS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
-    CONTROL         "&Autodetekcia odsadenia",IDC_AUTO_DETECT_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
+    CONTROL         "&Autodetekcia odsadenia",IDC_AUTO_DETECT_INDENTS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,150,10
     DEFPUSHBUTTON   "OK",IDOK,117,7,50,14
     PUSHBUTTON      "Zrušiť",IDCANCEL,117,27,50,14
 END
@@ -1003,7 +1004,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 167
         TOPMARGIN, 7
-        BOTTOMMARGIN, 107
+        BOTTOMMARGIN, 119
     END
 
     IDD_MUI_WARNINDENTATION, DIALOG
