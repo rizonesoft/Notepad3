@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 // encoding: UTF-8
 #pragma code_page(65001)  // UTF-8
 #include "resource.h"
@@ -331,7 +331,7 @@ BEGIN
     EDITTEXT        IDC_STYLEEDIT_HELP,182,54,275,74,ES_MULTILINE | ES_READONLY | NOT WS_BORDER
 END
 
-IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 114
+IDD_MUI_TABSETTINGS DIALOGEX 0, 0, 174, 126
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Configuración de tabulación"
 FONT 9, "Segoe UI", 400, 0, 0x1
@@ -341,13 +341,14 @@ BEGIN
     LTEXT           "&Tamaño sangría:",IDC_STATIC2,7,30,60,8
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
     CONTROL         "Insertar tabulación como e&spacios",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
-    CONTROL         "Tecla &Tab vuelve a formatear la sangría",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "Tab/Backspace always indents",IDC_TAB_BACKTAB_INDENTS_ALWAYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "Tecla &Tab vuelve a formatear la sangría",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
     CONTROL         "Tecla &Retroceso vuelve a formatear la sangría",IDC_BACKTAB_INDENTS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,165,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,165,10
     CONTROL         "&Advertencia sobre sangría inconsistente",IDC_WARN_INCONSISTENT_INDENTS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,150,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,150,10
     CONTROL         "&Autodetectar tabulación o espacio de sangría",IDC_AUTO_DETECT_INDENTS,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,165,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,165,10
     DEFPUSHBUTTON   "Aceptar",IDOK,117,7,50,14
     PUSHBUTTON      "Cancelar",IDCANCEL,117,27,50,14
 END
@@ -1003,7 +1004,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 167
         TOPMARGIN, 7
-        BOTTOMMARGIN, 107
+        BOTTOMMARGIN, 119
     END
 
     IDD_MUI_WARNINDENTATION, DIALOG

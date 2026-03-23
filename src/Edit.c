@@ -3330,9 +3330,7 @@ void EditCopyMultiSelection(HWND hwnd)
         } else {
             // use configured separator (may be empty)
             char chSep[MICRO_BUFFER * 2] = { '\0' };
-            WideCharToMultiByte(Encoding_SciCP, 0,
-                Settings2.CopyMultiSelectionSeparator, -1,
-                chSep, COUNTOF(chSep), NULL, NULL);
+            WideCharToMultiByte(Encoding_SciCP, 0, Settings2.CopyMultiSelectionSeparator, -1, chSep, COUNTOF(chSep), NULL, NULL);
             SciCall_SetCopySeparator(chSep);
         }
     }

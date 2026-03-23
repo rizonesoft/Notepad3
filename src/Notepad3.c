@@ -5446,11 +5446,11 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case CMD_TAB:
-        EditIndentBlock(Globals.hwndEdit, SCI_TAB, false, false);
+        EditIndentBlock(Globals.hwndEdit, SCI_TAB, Settings.TabBackspaceAlwaysIndents, false);
         break;
 
     case CMD_BACKTAB:
-        EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, false, false);
+        EditIndentBlock(Globals.hwndEdit, SCI_BACKTAB, Settings.TabBackspaceAlwaysIndents, false);
         break;
 
     case CMD_CTRLTAB:

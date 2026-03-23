@@ -1686,6 +1686,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(AccelWordNavigation, false);
     GET_BOOL_VALUE_FROM_INISECTION(ShowIndentGuides, false);
     GET_BOOL_VALUE_FROM_INISECTION(BackspaceUnindents, false);
+    GET_BOOL_VALUE_FROM_INISECTION(TabBackspaceAlwaysIndents, false);
     GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistentIndents, false);
     GET_BOOL_VALUE_FROM_INISECTION(AutoDetectIndentSettings, false);
     GET_BOOL_VALUE_FROM_INISECTION(MultipleSelection, true);
@@ -2100,6 +2101,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, TabWidth);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, IndentWidth);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, BackspaceUnindents);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, TabBackspaceAlwaysIndents);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, WordWrapMode);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, WordWrapIndent);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, WordWrapSymbols);
