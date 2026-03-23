@@ -267,7 +267,7 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ntdll.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;lexilla.lib;user32-stub.lib;uxtheme-stub.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>scintilla.lib;lexilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -341,7 +341,7 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ntdll.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;lexilla.lib;user32-stub.lib;uxtheme-stub.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>scintilla.lib;lexilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
@@ -416,7 +416,7 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ntdll.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;lexilla.lib;user32-stub.lib;uxtheme-stub.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>scintilla.lib;lexilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(OutputPath)obj;$(ClangAnalysisToolsPath)\..\lib\clang\16\lib\windows\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -493,7 +493,7 @@
       <SDLCheck>false</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ntdll.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;lexilla.lib;user32-stub.lib;uxtheme-stub.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>scintilla.lib;lexilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <MergeSections>.rdata=.text</MergeSections>
       <OptimizeReferences>true</OptimizeReferences>
@@ -579,7 +579,7 @@
       <SDLCheck>false</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ntdll.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;lexilla.lib;user32-stub.lib;uxtheme-stub.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>scintilla.lib;lexilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <MergeSections>.rdata=.text</MergeSections>
       <OptimizeReferences>true</OptimizeReferences>
@@ -664,7 +664,7 @@
       <SDLCheck>false</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ntdll.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;lexilla.lib;user32-stub.lib;uxtheme-stub.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>scintilla.lib;lexilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <MergeSections>.rdata=.text</MergeSections>
       <OptimizeReferences>true</OptimizeReferences>
@@ -749,7 +749,7 @@
       <SDLCheck>false</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ntdll.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;lexilla.lib;user32-stub.lib;uxtheme-stub.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>scintilla.lib;lexilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <MergeSections>.rdata=.text</MergeSections>
       <OptimizeReferences>true</OptimizeReferences>
@@ -835,7 +835,7 @@
       <SDLCheck>false</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ntdll.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;lexilla.lib;user32-stub.lib;uxtheme-stub.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>scintilla.lib;lexilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <MergeSections>.rdata=.text</MergeSections>
       <OptimizeReferences>true</OptimizeReferences>
@@ -920,7 +920,7 @@
       <SDLCheck>false</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ntdll.lib;comctl32.lib;imm32.lib;shlwapi.lib;muiload.lib;scintilla.lib;lexilla.lib;user32-stub.lib;uxtheme-stub.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>scintilla.lib;lexilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <MergeSections>.rdata=.text</MergeSections>
       <OptimizeReferences>true</OptimizeReferences>

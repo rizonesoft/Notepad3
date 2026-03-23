@@ -6805,8 +6805,8 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
     case IDM_HELP_ABOUT: {
-        //~HMODULE hRichEdit = LoadLibrary(L"RICHED20.DLL");  // Use RICHEDIT_CONTROL_VER for control in common_res.h
-        HMODULE const hRichEdit = LoadLibrary(L"MSFTEDIT.DLL");  // Use "RichEdit50W" for control in common_res.h;
+        //~HMODULE hRichEdit = LoadLibraryExW(L"RICHED20.DLL", NULL, LOAD_LIBRARY_SEARCH_SYSTEM32);  // Use RICHEDIT_CONTROL_VER for control in common_res.h
+        HMODULE const hRichEdit = LoadLibraryExW(L"MSFTEDIT.DLL", NULL, LOAD_LIBRARY_SEARCH_SYSTEM32);  // Use "RichEdit50W" for control in common_res.h;
         if (hRichEdit) {
             ThemedDialogBox(Globals.hLngResContainer, MAKEINTRESOURCE(IDD_MUI_ABOUT), hwnd, AboutDlgProc);
             FreeLibrary(hRichEdit);

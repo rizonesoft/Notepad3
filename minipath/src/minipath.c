@@ -37,6 +37,10 @@
 #include "minipath.h"
 #include "resource.h"
 
+#pragma comment(lib, "shlwapi.lib")
+#pragma comment(lib, "muiload.lib")
+#pragma comment(lib, "psapi.lib")
+
 
 SETTINGS_T Settings;
 SETTINGS_T Defaults;

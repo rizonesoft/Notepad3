@@ -30,7 +30,7 @@ CInfoRtfDialog::CInfoRtfDialog()
     , m_rtfId(0)
     , m_iconId(0)
 {
-    m_richEditLib = LoadLibrary(TEXT("Msftedit.dll"));
+    m_richEditLib = LoadLibraryExW(L"Msftedit.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
 }
 
 CInfoRtfDialog::~CInfoRtfDialog()

@@ -5,6 +5,8 @@
 #pragma comment(lib, "NtDll.lib")
 #pragma comment(lib, "Comctl32.lib")
 #pragma comment(lib, "Uxtheme.lib")
+#pragma comment(lib, "user32-stub.lib")
+#pragma comment(lib, "uxtheme-stub.lib")
 
 #ifdef __cplusplus
 extern "C" {
