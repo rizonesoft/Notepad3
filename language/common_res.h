@@ -556,6 +556,7 @@
 #define CMD_ENTER_RETURN                20062
 #define CMD_PARAGRAPH_UP                20063
 #define CMD_PARAGRAPH_DOWN              20064
+#define CMD_COPY_HYPERLINK              20065
 
 #define IDS_MUI_MENU_LANGUAGE           34500
 #define IDS_MUI_LANG_EN_US              34501

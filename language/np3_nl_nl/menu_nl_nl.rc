@@ -560,6 +560,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Hyperlink openen",                                CMD_OPEN_HYPERLINK
+        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Ongedaan maken",                                  IDM_EDIT_UNDO
         MENUITEM "Opnieuw uitvoeren",                               IDM_EDIT_REDO

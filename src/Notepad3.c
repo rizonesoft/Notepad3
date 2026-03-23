@@ -4678,6 +4678,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     bool const bIsHLink = (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, iCurPos) > 0);
     EnableCmd(hmenu, CMD_OPEN_HYPERLINK, !mrs && bIsHLink);
+    EnableCmd(hmenu, CMD_COPY_HYPERLINK, !mrs && bIsHLink);
     EnableCmd(hmenu, CMD_WEBACTION1, !se && !mrs && bPosInSel && !bIsHLink);
     EnableCmd(hmenu, CMD_WEBACTION2, !se && !mrs && bPosInSel && !bIsHLink);
 
@@ -5248,8 +5249,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             s_bLastCopyFromMe = true;
         }
         if (SciCall_IsSelectionEmpty()) {
-            if (!HandleHotSpotURLClicked(SciCall_GetCurrentPos(), COPY_HYPERLINK) &&
-                    !Settings2.NoCopyLineOnEmptySelection) {
+            if (!Settings2.NoCopyLineOnEmptySelection) {
                 if (Sci_GetNetLineLength(Sci_GetCurrentLineNumber()) > 0) {
                     SciCall_CopyAllowLine(); // (!) VisualStudio behavior
                     // On Windows, an extra "MSDEVLineSelect" marker is added to the clipboard
@@ -7396,6 +7396,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case CMD_OPEN_HYPERLINK:
         HandleHotSpotURLClicked(SciCall_GetCurrentPos(), (OPEN_WITH_BROWSER | OPEN_IN_NOTEPAD3));
+        break;
+
+    case CMD_COPY_HYPERLINK:
+        HandleHotSpotURLClicked(SciCall_GetCurrentPos(), COPY_HYPERLINK);
         break;
 
     case CMD_FOLDJUMPDOWN:

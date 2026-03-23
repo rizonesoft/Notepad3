@@ -560,6 +560,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Открыть гиперссылку",        CMD_OPEN_HYPERLINK
+        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Отмена",                     IDM_EDIT_UNDO
         MENUITEM "Повтор",                     IDM_EDIT_REDO

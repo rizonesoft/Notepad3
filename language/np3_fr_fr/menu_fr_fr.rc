@@ -560,6 +560,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Ouvrir l'hyperlien",                     CMD_OPEN_HYPERLINK
+        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Défaire",                                IDM_EDIT_UNDO
         MENUITEM "Refaire",                                IDM_EDIT_REDO
