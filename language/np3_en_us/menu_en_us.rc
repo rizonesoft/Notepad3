@@ -572,6 +572,16 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Select All",                 IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
+        POPUP "Convert Case"
+        BEGIN
+            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
+            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM SEPARATOR
+            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
+            MENUITEM "Title Case",             CMD_CTX_TITLECASE
+            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+        END
+        MENUITEM SEPARATOR
         MENUITEM "Toggle Current Fold",        IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
         MENUITEM "Open Web Action 1",          CMD_WEBACTION1

@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 // encoding: UTF-8
 #pragma code_page(65001)  // UTF-8
 #include "resource.h"
@@ -572,6 +572,16 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Seleccionar tudo",                           IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
+        MENUITEM SEPARATOR
+        POPUP "Convert Case"
+        BEGIN
+            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
+            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM SEPARATOR
+            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
+            MENUITEM "Title Case",             CMD_CTX_TITLECASE
+            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+        END
         MENUITEM "Alternar dobragem actual",                   IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
         MENUITEM "Abrir acção Web 1",                          CMD_WEBACTION1

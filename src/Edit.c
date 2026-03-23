@@ -1892,26 +1892,40 @@ observe:
 void EditInvertCase(HWND hwnd)
 {
     UNREFERENCED_PARAMETER(hwnd);
-    const DocPos iCurPos = SciCall_GetCurrentPos();
-    const DocPos iAnchorPos = SciCall_GetAnchor();
 
-    if (iCurPos != iAnchorPos) {
-        if (Sci_IsMultiOrRectangleSelection()) {
-            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
-            return;
+    if (SciCall_IsSelectionEmpty()) {
+        return;
+    }
+
+    UndoTransActionBegin();
+
+    bool const bIsRectSel = SciCall_IsSelectionRectangle();
+    DocPos selAnchorMainPos = 0, selCaretMainPos = 0;
+    DocPos vSpcAnchorMainPos = 0, vSpcCaretMainPos = 0;
+    if (bIsRectSel) {
+        selAnchorMainPos  = SciCall_GetRectangularSelectionAnchor();
+        selCaretMainPos   = SciCall_GetRectangularSelectionCaret();
+        vSpcAnchorMainPos = SciCall_GetRectangularSelectionAnchorVirtualSpace();
+        vSpcCaretMainPos  = SciCall_GetRectangularSelectionCaretVirtualSpace();
+    }
+
+    DocPosU const selCount = SciCall_GetSelections();
+    for (DocPosU s = 0; s < selCount; ++s) {
+        DocPos const selStart = SciCall_GetSelectionNStart(s);
+        DocPos const selEnd = SciCall_GetSelectionNEnd(s);
+        DocPos const selByteLen = selEnd - selStart;
+        if (selByteLen <= 0) {
+            continue;
         }
 
-        const DocPos iSelStart = SciCall_GetSelectionStart();
-        const DocPos iSelEnd = SciCall_GetSelectionEnd();
-        const DocPos iSelLen = SciCall_GetSelText(NULL);
-
-        LPWSTR const pszTextW = AllocMem((iSelLen + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
-        if (pszTextW) {
-
-            size_t const cchTextW = EditGetSelectedText(pszTextW, (iSelLen + 1));
+        char* pszText = AllocMem(selByteLen + 1, HEAP_ZERO_MEMORY);
+        LPWSTR pszTextW = AllocMem((selByteLen + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+        if (pszText && pszTextW) {
+            StringCchCopyNA(pszText, selByteLen + 1, SciCall_GetRangePointer(selStart, selByteLen), selByteLen);
+            int const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)selByteLen, pszTextW, (int)(selByteLen + 1));
 
             bool bChanged = false;
-            for (size_t i = 0; i < cchTextW; i++) {
+            for (int i = 0; i < cchTextW; i++) {
                 if (IsCharUpperW(pszTextW[i])) {
                     pszTextW[i] = LOWORD(CharLowerW((LPWSTR)(LONG_PTR)MAKELONG(pszTextW[i], 0)));
                     bChanged = true;
@@ -1922,18 +1936,27 @@ void EditInvertCase(HWND hwnd)
             }
 
             if (bChanged) {
-                char* const pszText = AllocMem((iSelLen + 1), HEAP_ZERO_MEMORY);
-                WideCharToMultiByte(Encoding_SciCP, 0, pszTextW, (int)cchTextW, pszText, (int)(iSelLen + 1), NULL, NULL);
-                UndoTransActionBegin();
-                SciCall_Clear();
-                SciCall_AddText((iSelEnd - iSelStart), pszText);
-                SciCall_SetSel(iAnchorPos, iCurPos);
-                EndUndoTransAction();
-                FreeMem(pszText);
+                int const cbNew = WideCharToMultiByte(Encoding_SciCP, 0, pszTextW, cchTextW, pszText, (int)(selByteLen + 1), NULL, NULL);
+                SciCall_SetTargetRange(selStart, selEnd);
+                Sci_ReplaceTargetTestChgHist(cbNew, pszText);
             }
-            FreeMem(pszTextW);
+        }
+        FreeMem(pszText);
+        FreeMem(pszTextW);
+    }
+
+    if (bIsRectSel) {
+        SciCall_SetRectangularSelectionAnchor(selAnchorMainPos);
+        if (vSpcAnchorMainPos > 0) {
+            SciCall_SetRectangularSelectionAnchorVirtualSpace(vSpcAnchorMainPos);
+        }
+        SciCall_SetRectangularSelectionCaret(selCaretMainPos);
+        if (vSpcCaretMainPos > 0) {
+            SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCaretMainPos);
         }
     }
+
+    EndUndoTransAction();
 }
 
 
@@ -1944,51 +1967,72 @@ void EditInvertCase(HWND hwnd)
 void EditTitleCase(HWND hwnd)
 {
     UNREFERENCED_PARAMETER(hwnd);
-    const DocPos iCurPos = SciCall_GetCurrentPos();
-    const DocPos iAnchorPos = SciCall_GetAnchor();
 
-    if (iCurPos != iAnchorPos) {
-        if (Sci_IsMultiOrRectangleSelection()) {
-            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
-            return;
+    if (SciCall_IsSelectionEmpty()) {
+        return;
+    }
+
+    UndoTransActionBegin();
+
+    bool const bIsRectSel = SciCall_IsSelectionRectangle();
+    DocPos selAnchorMainPos = 0, selCaretMainPos = 0;
+    DocPos vSpcAnchorMainPos = 0, vSpcCaretMainPos = 0;
+    if (bIsRectSel) {
+        selAnchorMainPos  = SciCall_GetRectangularSelectionAnchor();
+        selCaretMainPos   = SciCall_GetRectangularSelectionCaret();
+        vSpcAnchorMainPos = SciCall_GetRectangularSelectionAnchorVirtualSpace();
+        vSpcCaretMainPos  = SciCall_GetRectangularSelectionCaretVirtualSpace();
+    }
+
+    DocPosU const selCount = SciCall_GetSelections();
+    for (DocPosU s = 0; s < selCount; ++s) {
+        DocPos const selStart = SciCall_GetSelectionNStart(s);
+        DocPos const selEnd = SciCall_GetSelectionNEnd(s);
+        DocPos const selByteLen = selEnd - selStart;
+        if (selByteLen <= 0) {
+            continue;
         }
-        const DocPos iSelStart = SciCall_GetSelectionStart();
-        const DocPos iSelEnd = SciCall_GetSelectionEnd();
-        const DocPos iSelLen = SciCall_GetSelText(NULL);
 
-        LPWSTR const pszTextW = AllocMem(((iSelLen + 1) * sizeof(WCHAR)), HEAP_ZERO_MEMORY);
+        char* pszText = AllocMem(selByteLen + 1, HEAP_ZERO_MEMORY);
+        LPWSTR pszTextW = AllocMem((selByteLen + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+        if (pszText && pszTextW) {
+            StringCchCopyNA(pszText, selByteLen + 1, SciCall_GetRangePointer(selStart, selByteLen), selByteLen);
+            int const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)selByteLen, pszTextW, (int)(selByteLen + 1));
 
-        if (pszTextW == NULL) {
-            FreeMem(pszTextW);
-            return;
-        }
-
-        size_t const cchTextW = EditGetSelectedText(pszTextW, (iSelLen + 1));
-
-        bool bChanged = false;
-        LPWSTR const pszMappedW = AllocMem(SizeOfMem(pszTextW), HEAP_ZERO_MEMORY);
-        if (pszMappedW) {
-            // first make lower case, before applying TitleCase
-            if (LCMapString(LOCALE_SYSTEM_DEFAULT, (LCMAP_LINGUISTIC_CASING | LCMAP_LOWERCASE), pszTextW, (int)cchTextW, pszMappedW, (int)(iSelLen + 1))) {
-                if (LCMapString(LOCALE_SYSTEM_DEFAULT, LCMAP_TITLECASE, pszMappedW, (int)cchTextW, pszTextW, (int)(iSelLen + 1))) {
-                    bChanged = true;
+            bool bChanged = false;
+            LPWSTR pszMappedW = AllocMem((selByteLen + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+            if (pszMappedW) {
+                // first make lower case, before applying TitleCase
+                if (LCMapString(LOCALE_SYSTEM_DEFAULT, (LCMAP_LINGUISTIC_CASING | LCMAP_LOWERCASE), pszTextW, cchTextW, pszMappedW, (int)(selByteLen + 1))) {
+                    if (LCMapString(LOCALE_SYSTEM_DEFAULT, LCMAP_TITLECASE, pszMappedW, cchTextW, pszTextW, (int)(selByteLen + 1))) {
+                        bChanged = true;
+                    }
                 }
+                FreeMem(pszMappedW);
             }
-            FreeMem(pszMappedW);
-        }
 
-        if (bChanged) {
-            char* pszText = AllocMem((iSelLen + 1), HEAP_ZERO_MEMORY);
-            WideCharToMultiByteEx(Encoding_SciCP, 0, pszTextW, cchTextW, pszText, (iSelLen + 1), NULL, NULL);
-            UndoTransActionBegin();
-            SciCall_Clear();
-            SciCall_AddText((iSelEnd - iSelStart), pszText);
-            SciCall_SetSel(iAnchorPos, iCurPos);
-            EndUndoTransAction();
-            FreeMem(pszText);
+            if (bChanged) {
+                int const cbNew = WideCharToMultiByte(Encoding_SciCP, 0, pszTextW, cchTextW, pszText, (int)(selByteLen + 1), NULL, NULL);
+                SciCall_SetTargetRange(selStart, selEnd);
+                Sci_ReplaceTargetTestChgHist(cbNew, pszText);
+            }
         }
+        FreeMem(pszText);
         FreeMem(pszTextW);
     }
+
+    if (bIsRectSel) {
+        SciCall_SetRectangularSelectionAnchor(selAnchorMainPos);
+        if (vSpcAnchorMainPos > 0) {
+            SciCall_SetRectangularSelectionAnchorVirtualSpace(vSpcAnchorMainPos);
+        }
+        SciCall_SetRectangularSelectionCaret(selCaretMainPos);
+        if (vSpcCaretMainPos > 0) {
+            SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCaretMainPos);
+        }
+    }
+
+    EndUndoTransAction();
 }
 
 //=============================================================================
@@ -1998,62 +2042,83 @@ void EditTitleCase(HWND hwnd)
 void EditSentenceCase(HWND hwnd)
 {
     UNREFERENCED_PARAMETER(hwnd);
-    const DocPos iCurPos = SciCall_GetCurrentPos();
-    const DocPos iAnchorPos = SciCall_GetAnchor();
 
-    if (iCurPos != iAnchorPos) {
-        if (Sci_IsMultiOrRectangleSelection()) {
-            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_SELRECTORMULTI);
-            return;
+    if (SciCall_IsSelectionEmpty()) {
+        return;
+    }
+
+    UndoTransActionBegin();
+
+    bool const bIsRectSel = SciCall_IsSelectionRectangle();
+    DocPos selAnchorMainPos = 0, selCaretMainPos = 0;
+    DocPos vSpcAnchorMainPos = 0, vSpcCaretMainPos = 0;
+    if (bIsRectSel) {
+        selAnchorMainPos  = SciCall_GetRectangularSelectionAnchor();
+        selCaretMainPos   = SciCall_GetRectangularSelectionCaret();
+        vSpcAnchorMainPos = SciCall_GetRectangularSelectionAnchorVirtualSpace();
+        vSpcCaretMainPos  = SciCall_GetRectangularSelectionCaretVirtualSpace();
+    }
+
+    DocPosU const selCount = SciCall_GetSelections();
+    for (DocPosU s = 0; s < selCount; ++s) {
+        DocPos const selStart = SciCall_GetSelectionNStart(s);
+        DocPos const selEnd = SciCall_GetSelectionNEnd(s);
+        DocPos const selByteLen = selEnd - selStart;
+        if (selByteLen <= 0) {
+            continue;
         }
-        const DocPos iSelStart = SciCall_GetSelectionStart();
-        const DocPos iSelEnd = SciCall_GetSelectionEnd();
-        const DocPos iSelLen = SciCall_GetSelText(NULL);
 
-        LPWSTR const pszTextW = AllocMem(((iSelLen + 1) * sizeof(WCHAR)), HEAP_ZERO_MEMORY);
+        char* pszText = AllocMem(selByteLen + 1, HEAP_ZERO_MEMORY);
+        LPWSTR pszTextW = AllocMem((selByteLen + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+        if (pszText && pszTextW) {
+            StringCchCopyNA(pszText, selByteLen + 1, SciCall_GetRangePointer(selStart, selByteLen), selByteLen);
+            int const cchTextW = MultiByteToWideChar(Encoding_SciCP, 0, pszText, (int)selByteLen, pszTextW, (int)(selByteLen + 1));
 
-        if (pszTextW == NULL) {
-            FreeMem(pszTextW);
-            return;
-        }
-
-        size_t const cchTextW = EditGetSelectedText(pszTextW, (iSelLen + 1));
-
-        bool bChanged = false;
-        bool bNewSentence = true;
-        for (size_t i = 0; i < cchTextW; i++) {
-            if (StrChr(L".;!?\r\n", pszTextW[i])) {
-                bNewSentence = true;
-            } else {
-                if (IsCharAlphaNumericW(pszTextW[i])) {
-                    if (bNewSentence) {
-                        if (IsCharLowerW(pszTextW[i])) {
-                            pszTextW[i] = LOWORD(CharUpperW((LPWSTR)(LONG_PTR)MAKELONG(pszTextW[i], 0)));
-                            bChanged = true;
-                        }
-                        bNewSentence = false;
-                    } else {
-                        if (IsCharUpperW(pszTextW[i])) {
-                            pszTextW[i] = LOWORD(CharLowerW((LPWSTR)(LONG_PTR)MAKELONG(pszTextW[i], 0)));
-                            bChanged = true;
+            bool bChanged = false;
+            bool bNewSentence = true;
+            for (int i = 0; i < cchTextW; i++) {
+                if (StrChr(L".;!?\r\n", pszTextW[i])) {
+                    bNewSentence = true;
+                } else {
+                    if (IsCharAlphaNumericW(pszTextW[i])) {
+                        if (bNewSentence) {
+                            if (IsCharLowerW(pszTextW[i])) {
+                                pszTextW[i] = LOWORD(CharUpperW((LPWSTR)(LONG_PTR)MAKELONG(pszTextW[i], 0)));
+                                bChanged = true;
+                            }
+                            bNewSentence = false;
+                        } else {
+                            if (IsCharUpperW(pszTextW[i])) {
+                                pszTextW[i] = LOWORD(CharLowerW((LPWSTR)(LONG_PTR)MAKELONG(pszTextW[i], 0)));
+                                bChanged = true;
+                            }
                         }
                     }
                 }
             }
-        }
 
-        if (bChanged) {
-            char* const pszText = AllocMem((iSelLen + 1), HEAP_ZERO_MEMORY);
-            WideCharToMultiByteEx(Encoding_SciCP, 0, pszTextW, cchTextW, pszText, (iSelLen + 1), NULL, NULL);
-            UndoTransActionBegin();
-            SciCall_Clear();
-            SciCall_AddText((iSelEnd - iSelStart), pszText);
-            SciCall_SetSel(iAnchorPos, iCurPos);
-            EndUndoTransAction();
-            FreeMem(pszText);
+            if (bChanged) {
+                int const cbNew = WideCharToMultiByte(Encoding_SciCP, 0, pszTextW, cchTextW, pszText, (int)(selByteLen + 1), NULL, NULL);
+                SciCall_SetTargetRange(selStart, selEnd);
+                Sci_ReplaceTargetTestChgHist(cbNew, pszText);
+            }
         }
+        FreeMem(pszText);
         FreeMem(pszTextW);
     }
+
+    if (bIsRectSel) {
+        SciCall_SetRectangularSelectionAnchor(selAnchorMainPos);
+        if (vSpcAnchorMainPos > 0) {
+            SciCall_SetRectangularSelectionAnchorVirtualSpace(vSpcAnchorMainPos);
+        }
+        SciCall_SetRectangularSelectionCaret(selCaretMainPos);
+        if (vSpcCaretMainPos > 0) {
+            SciCall_SetRectangularSelectionCaretVirtualSpace(vSpcCaretMainPos);
+        }
+    }
+
+    EndUndoTransAction();
 }
 
 
