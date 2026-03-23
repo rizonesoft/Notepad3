@@ -1,0 +1,66 @@
+** ----------------------------------------------------------------
+** KOMMENTARZEILE: Beginnt mit zwei Sternchen (**)
+** ABAQUS INPUT DATEI BEISPIEL (SYNTAX-ÜBERSICHT)
+** ----------------------------------------------------------------
+
+*HEADING
+Beispiel-Simulation: Statische Analyse eines Stabes
+
+** ----------------------------------------------------------------
+** MODELLDATEN: Alles vor dem ersten *STEP
+** ----------------------------------------------------------------
+
+** Knoten-Definition: *NODE [Schlüsselwort], Parameter folgen nach Komma
+** Format: Knoten-ID, X, Y, (Z)
+*NODE, NSET=ALL_NODES
+1,  0.0, 0.0, 0.0
+2, 10.0, 0.0, 0.0
+
+** Element-Definition: TYPE ist ein erforderlicher Parameter
+** Format: Element-ID, Knoten1, Knoten2, ...
+*ELEMENT, TYPE=T2D2, ELSET=BEAM_ELEMENTS
+1, 1, 2
+
+** Material-Definition: Schlüsselwörter müssen in Blöcken gruppiert sein
+*MATERIAL, NAME=STEEL
+*ELASTIC, TYPE=ISOTROPIC
+210000.0, 0.3
+
+** Querschnitts-Zuweisung: Verknüpft Elset mit Material
+*SOLID SECTION, ELSET=BEAM_ELEMENTS, MATERIAL=STEEL
+1.0, 
+
+** ----------------------------------------------------------------
+** PARAMETRISIERUNG (Optional): Nutzt Python-Syntax
+** ----------------------------------------------------------------
+*PARAMETER
+force_val = -100.0
+thick = 2.5
+
+** ----------------------------------------------------------------
+** HISTORY-DATEN: Definiert die Analyse-Schritte
+** ----------------------------------------------------------------
+
+*STEP, NAME=STATIC_LOAD, PERTURBATION
+*STATIC
+** Datenzeile für *STATIC: Start-Inkrement, Gesamtzeit, Min, Max
+0.1, 1.0, 1E-5, 1.0
+
+** Randbedingungen: DOF 1=X, 2=Y, 3=Z
+*BOUNDARY
+1, 1, 2, 0.0
+
+** Lasten: Nutzt einen Parameter <force_val>
+*CLOAD
+2, 2, <force_val>
+
+** ----------------------------------------------------------------
+** OUTPUT-REQUESTS
+** ----------------------------------------------------------------
+*OUTPUT, FIELD
+*NODE OUTPUT
+U, RF
+*ELEMENT OUTPUT
+S, E
+
+*END STEP

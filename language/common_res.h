@@ -1010,6 +1010,7 @@
 //#define IDS_LEX_F77                     63056
 #define IDS_LEX_VERILOG                 63057
 #define IDS_LEX_SYSVERILOG              63058
+#define IDS_LEX_ABAQUS                  63059
 
 
 #define IDS_LEX_STD_STYLE               63100
@@ -1320,6 +1321,10 @@
 #define IDS_LEX_STR_SysTasks            63404
 #define IDS_LEX_STR_AfterLabel          63405
 #define IDS_LEX_STR_Table               63406
+#define IDS_LEX_STR_StarCmd             63407
+#define IDS_LEX_STR_SlashCmd            63408
+#define IDS_LEX_STR_Processor           63409
+#define IDS_LEX_STR_Argument            63410
 
 #define IDS_LEX_CSV_COL_0               63490
 #define IDS_LEX_CSV_COL_1               63491
