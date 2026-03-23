@@ -560,6 +560,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "打开超链接",                            CMD_OPEN_HYPERLINK
+        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "撤销",                                  IDM_EDIT_UNDO
         MENUITEM "重做",                                  IDM_EDIT_REDO

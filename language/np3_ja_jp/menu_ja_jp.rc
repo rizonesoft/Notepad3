@@ -560,6 +560,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "リンクを開く",                              CMD_OPEN_HYPERLINK
+        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "元に戻す",                               IDM_EDIT_UNDO
         MENUITEM "やり直し",                                IDM_EDIT_REDO

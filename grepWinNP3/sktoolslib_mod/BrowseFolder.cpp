@@ -211,7 +211,7 @@ CBrowseFolder::RetVal CBrowseFolder::Show(HWND parent, std::wstring& path, const
         {
             using SHCIFPN = HRESULT(WINAPI*)(PCWSTR pszPath, IBindCtx * pbc, REFIID riid, void** ppv);
 
-            HMODULE hLib = LoadLibrary(L"shell32.dll");
+            HMODULE hLib = LoadLibraryExW(L"shell32.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
             if (hLib)
             {
                 SHCIFPN pShcifpn = reinterpret_cast<SHCIFPN>(GetProcAddress(hLib, "SHCreateItemFromParsingName"));

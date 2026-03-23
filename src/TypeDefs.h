@@ -43,6 +43,10 @@
 #include <windows.h>
 #include <CommCtrl.h>
 
+#pragma comment(lib, "imm32.lib")
+#pragma comment(lib, "shlwapi.lib")
+#pragma comment(lib, "muiload.lib")
+
 #define STRSAFE_NO_CB_FUNCTIONS
 #define STRSAFE_NO_DEPRECATE      // don't allow deprecated functions
 #include <strsafe.h>

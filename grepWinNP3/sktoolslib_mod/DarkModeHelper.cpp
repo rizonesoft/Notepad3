@@ -148,7 +148,7 @@ DarkModeHelper::DarkModeHelper()
         }
     }
     if (dllPath.empty())
-        m_hUxthemeLib = LoadLibrary(L"uxtheme.dll");
+        m_hUxthemeLib = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
     else
         m_hUxthemeLib = LoadLibrary(dllPath.c_str());
     if (m_hUxthemeLib && m_bCanHaveDarkMode)

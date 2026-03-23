@@ -560,6 +560,7 @@ BEGIN
     POPUP "+"
     BEGIN
     MENUITEM "Mở liên kết",                  CMD_OPEN_HYPERLINK
+    MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
     MENUITEM SEPARATOR
     MENUITEM "Hoàn tác",                     IDM_EDIT_UNDO
     MENUITEM "Làm lại",                     IDM_EDIT_REDO

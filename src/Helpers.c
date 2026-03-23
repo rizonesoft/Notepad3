@@ -1949,11 +1949,15 @@ ptrdiff_t MultiByteToWideCharEx(
 //
 //  UrlEscapeEx()
 //
-
 void UrlEscapeEx(LPCWSTR lpURL, LPWSTR lpEscaped, DWORD* pcchEscaped, bool bEscReserved)
 {
-    UNREFERENCED_PARAMETER(bEscReserved);
-    UrlEscape(lpURL, lpEscaped, pcchEscaped, (URL_ESCAPE_SEGMENT_ONLY | URL_ESCAPE_URI_COMPONENT));
+    if (bEscReserved) {
+        // full component encoding (like encodeURIComponent) — for EditURLEncode
+        UrlEscape(lpURL, lpEscaped, pcchEscaped, (URL_ESCAPE_SEGMENT_ONLY | URL_ESCAPE_URI_COMPONENT));
+    } else {
+        // preserve URL structure, encode unsafe chars + non-ASCII as UTF-8, leave query/fragment as-is
+        UrlEscape(lpURL, lpEscaped, pcchEscaped, (URL_BROWSER_MODE | URL_ESCAPE_AS_UTF8));
+    }
 }
 
 

@@ -560,6 +560,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Bağlantıyı aç",                                     CMD_OPEN_HYPERLINK
+        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Geri al",                                           IDM_EDIT_UNDO
         MENUITEM "Yinele",                                            IDM_EDIT_REDO

@@ -240,7 +240,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
     g_hDlgIcon128 = nullptr;
     LoadIconWithScaleDown(hInstance, MAKEINTRESOURCE(IDI_GREPWIN), 128, 128, &g_hDlgIcon128);
 
-    HMODULE hRichEdt = LoadLibrary(L"Riched20.dll");
+    HMODULE hRichEdt = LoadLibraryExW(L"Riched20.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
 
     CCmdLineParser parser(lpCmdLine);
 
