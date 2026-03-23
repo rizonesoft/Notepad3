@@ -981,6 +981,7 @@
     <ClCompile Include="DynStrg.c" />
     <ClCompile Include="PathLib.c" />
     <ClCompile Include="StyleLexers\EditLexer.c" />
+    <ClCompile Include="StyleLexers\styleLexAbaqus.c" />
     <ClCompile Include="StyleLexers\styleLexAHK.c" />
     <ClCompile Include="StyleLexers\styleLexDart.c" />
     <ClCompile Include="StyleLexers\styleLexFortran.c" />

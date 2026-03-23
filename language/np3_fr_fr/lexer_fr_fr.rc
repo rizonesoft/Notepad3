@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 // encoding: UTF-8
 #pragma code_page(65001)  // UTF-8
 #include "resource.h"
@@ -136,6 +136,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_VERILOG         "Verilog HDL"
     IDS_LEX_SYSVERILOG      "SystemVerilog HDVL"
+    IDS_LEX_ABAQUS          "ABAQUS"
 END
 
 STRINGTABLE
@@ -515,6 +516,10 @@ BEGIN
     IDS_LEX_STR_SysTasks    "Tâches Système"
     IDS_LEX_STR_AfterLabel  "Etiquette Suite"
     IDS_LEX_STR_Table       "Table"
+    IDS_LEX_STR_StarCmd     "Star Command"
+    IDS_LEX_STR_SlashCmd    "Slash Command"
+    IDS_LEX_STR_Processor   "Processor"
+    IDS_LEX_STR_Argument    "Argument"
 END
 
 STRINGTABLE

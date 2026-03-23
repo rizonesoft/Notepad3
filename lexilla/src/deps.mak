@@ -97,6 +97,18 @@ $(DIR_O)/WordList.o: \
 	../lexlib/WordList.cxx \
 	../lexlib/WordList.h \
 	../lexlib/CharacterSet.h
+$(DIR_O)/LexAbaqus.o: \
+	../lexers/LexAbaqus.cxx \
+	../../scintilla/include/ILexer.h \
+	../../scintilla/include/Sci_Position.h \
+	../../scintilla/include/Scintilla.h \
+	../include/SciLexer.h \
+	../lexlib/WordList.h \
+	../lexlib/LexAccessor.h \
+	../lexlib/Accessor.h \
+	../lexlib/StyleContext.h \
+	../lexlib/CharacterSet.h \
+	../lexlib/LexerModule.h
 $(DIR_O)/LexAsm.o: \
 	../lexers/LexAsm.cxx \
 	../../scintilla/include/ILexer.h \

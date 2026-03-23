@@ -58,6 +58,7 @@ static PEDITLEXER g_pLexArray[] = {
     &lexStandard,      // Default Text
     &lexStandard2nd,   // 2nd Default Text
     &lexTEXT,          // Pure Text Files (Constants.StdDefaultLexerID = 2)
+    &lexAbaqus,        // Abaqus
     &lexANSI,          // ANSI Files (ASCII Art)
     &lexCONF,          // Apache Config Files
     &lexASM,           // Assembly Script
