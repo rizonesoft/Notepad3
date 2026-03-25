@@ -116,8 +116,8 @@ BEGIN
                 MENUITEM "&ANSI",                          IDM_ENCODING_ANSI
                 MENUITEM "&Unicode",                       IDM_ENCODING_UNICODE
                 MENUITEM "Unicode &Big Endian",            IDM_ENCODING_UNICODEREV
-                MENUITEM "UTF-&8\tMaiusc+F8",               IDM_ENCODING_UTF8
-                MENUITEM "UTF-8 with &Signature",          IDM_ENCODING_UTF8SIGN
+                MENUITEM "UTF-&8\tMaiusc+F8",              IDM_ENCODING_UTF8
+                MENUITEM "UTF-8 con &firma",               IDM_ENCODING_UTF8SIGN
                 MENUITEM SEPARATOR
                 MENUITEM "&Altre codifiche...\tF9",        IDM_ENCODING_SELECT
             END
@@ -200,9 +200,9 @@ BEGIN
             MENUITEM "&Unisci linee doppie\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
             MENUITEM "Rimuo&vi linee doppie",              IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "Unisci linee &vuote\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "Unisci linee &blank\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
+            MENUITEM "Unisci linee blan&k\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
             MENUITEM "&Rimuovi linee vuote\tAlt+R",          IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "Rimu&ovi linee blank\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "Rimu&ovi linee vuote\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
         END
         POPUP "Ava&nzate"
         BEGIN
@@ -237,8 +237,8 @@ BEGIN
             MENUITEM "Riem&pi con spazi\tAlt+B",              IDM_EDIT_PADWITHSPACES
             MENUITEM "Rimuovi &primo carattere\tAlt+Z",       IDM_EDIT_STRIP1STCHAR
             MENUITEM "Rimuovi &ultimo carattere\tAlt+U",      IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Rimuovi gli sapzi a fine linea\tAlt+W",  IDM_EDIT_TRIMLINES
-            MENUITEM "Comprimi gli sapzi\tCtrl+Alt+P",         IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Rimuovi gli spazi a fine linea\tAlt+W",  IDM_EDIT_TRIMLINES
+            MENUITEM "Comprimi gli spazi\tCtrl+Alt+P",         IDM_EDIT_COMPRESS_BLANKS
             MENUITEM SEPARATOR
             MENUITEM "&Modifica linee...\tAlt+M",     IDM_EDIT_MODIFYLINES
             MENUITEM "&Ordina linee...\tAlt+O",       IDM_EDIT_SORTLINES
@@ -276,7 +276,7 @@ BEGIN
             MENUITEM "Da percorso file system a URL\tCtrl+F10",  IDM_EDIT_PATH2URL
             MENUITEM "Da URL a percorso file system\tAlt+F10",   IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
-            MENUITEM "Inverti Backslashes",                       IDM_EDIT_INVERTBACKSLASH
+            MENUITEM "Inverti Backslashe",                        IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Inverti barre",                             IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
             MENUITEM "&Carattere in esadecimale\tCtrl+Alt+X",                  IDM_EDIT_CHAR2HEX
@@ -311,7 +311,7 @@ BEGIN
             MENUITEM "Seleziona fino al prossimo\tCtrl+Alt+F2",                    IDM_EDIT_SELTONEXT
             MENUITEM "Seleziona fino al precedente\tCtrl+Alt+Maiusc+F2",            IDM_EDIT_SELTOPREV
             MENUITEM SEPARATOR
-            MENUITEM "Seleziona &parola o l\inea\tCtrl+Spc",                        IDM_EDIT_SELECTWORD
+            MENUITEM "Seleziona &parola o linea\tCtrl+Spc",                        IDM_EDIT_SELECTWORD
             MENUITEM "Multi selezione di &tutte le occorrenze\tCtrl+Maiusc+Spazio",    IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
             MENUITEM "Separa &transazione annulla azione per ogni linea",                     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
@@ -360,7 +360,7 @@ BEGIN
         END
         MENUITEM "Cancella cronologia modifiche/annullamenti"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
-        MENUITEM "Evidenzia h&yperlink\tCtrl+Alt+W",                   IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "Evidenzia collegamento &ipertestuale\tCtrl+Alt+W",                   IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Hotspot definizione colore"
         BEGIN
             MENUITEM "&OFF",                             IDM_VIEW_COLORDEFHOTSPOTS
@@ -482,7 +482,7 @@ BEGIN
         MENUITEM "Solo una istanza per &file",                       IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Notifica le modifi&che al file...\tAlt+F5",        IDM_SET_CHANGENOTIFY
         ///MENUITEM "Impostazioni Salvataggio automatico e Backup...",  IDM_SET_AUTOSAVE_BACKUP
-        MENUITEM "Muta Messaggio &Bips",                             IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "Disabilita &beep messaggio",                       IDM_SET_MUTE_MESSAGEBEEP
         POPUP "Azione tasto '&Esc'"
         BEGIN
             MENUITEM "&Nessuna",                          IDM_SET_NOESCFUNC
@@ -546,11 +546,11 @@ BEGIN
     BEGIN
         MENUITEM "Guida in &linea\tF1",                        IDM_HELP_ONLINEDOCUMENTATION
         MENUITEM SEPARATOR
-        MENUITEM "Avvia St&rumenti amministrativi...",         IDM_HELP_ADMINEXE
+        MENUITEM "Avvia st&rumenti amministrativi...",         IDM_HELP_ADMINEXE
         MENUITEM "Controlla aggiornamenti nel sito &web",      IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
         MENUITEM "Guida in linea linea di &comando...",        IDM_HELP_CMD
-        MENUITEM "A p&roposito...\tMaiusc+F1",                  IDM_HELP_ABOUT
+        MENUITEM "Ino p&rogramma...\tMaiusc+F1",                  IDM_HELP_ABOUT
     END
 END
 
@@ -559,8 +559,8 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "Apri hyperlink",                CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "Apri collegamento ipertestuale",                CMD_OPEN_HYPERLINK
+        MENUITEM "Copia URL collegamento ipertestuale URL",       CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Annulla",                       IDM_EDIT_UNDO
         MENUITEM "Ripristina",                    IDM_EDIT_REDO
@@ -573,14 +573,14 @@ BEGIN
         MENUITEM "Seleziona tutto",               IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
         MENUITEM SEPARATOR
-        POPUP "Convert Case"
+        POPUP "Converti maiuscolo/minuscolo"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "Maiuscolo",              CMD_CTX_UPPERCASE
+            MENUITEM "Minuscolo",              CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "Inverti maiuscolo/minuscolo",         CMD_CTX_INVERTCASE
+            MENUITEM "Maiuscolo/minuscolo titolo",          CMD_CTX_TITLECASE
+            MENUITEM "Maiuscolo/minuscolo frase",           CMD_CTX_SENTENCECASE
         END
         MENUITEM "Espandi/riduci raggruppamento", IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
