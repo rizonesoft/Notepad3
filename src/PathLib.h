@@ -97,10 +97,10 @@ bool PTHAPI            Path_IsEmpty(const HPATHL hpth);
 inline bool PTHAPI     Path_IsNotEmpty(const HPATHL hpth) { return !Path_IsEmpty(hpth); };
 bool PTHAPI            Path_IsRoot(const HPATHL hpth);
 bool PTHAPI            Path_IsValidUNC(const HPATHL hpth);
-bool PTHAPI            Path_IsExistingDirectory(const HPATHL hpth);
 
 int PTHAPI             Path_StrgComparePath(const HPATHL hpth1, const HPATHL hpth2, const HPATHL hpth_wrkdir, const bool bNormalize);
 bool PTHAPI            Path_RemoveFileSpec(HPATHL hpth_in_out);
+bool PTHAPI            Path_StripPath(HPATHL hpth);
 bool PTHAPI            Path_RenameExtension(HPATHL hpth, LPCWSTR ext);
 void PTHAPI            Path_ExpandEnvStrings(HPATHL hpth_in_out);
 void PTHAPI            Path_UnExpandEnvStrings(HPATHL hpth);
@@ -117,7 +117,16 @@ int PTHAPI             Path_GetDriveNumber(const HPATHL hpth);
 bool PTHAPI            Path_IsUNC(const HPATHL hpth);
 wchar_t PTHAPI         Path_GetDriveLetterByNumber(const int number);
 DWORD PTHAPI           Path_GetFileAttributes(const HPATHL hpth);
+bool PTHAPI            Path_GetFileAttributesEx(const HPATHL hpth, GET_FILEEX_INFO_LEVELS level, LPVOID lpInfo);
 bool PTHAPI            Path_SetFileAttributes(HPATHL hpth, DWORD dwAttributes);
+HANDLE PTHAPI          Path_CreateFile(const HPATHL hpth, DWORD dwAccess, DWORD dwShare,
+                                       LPSECURITY_ATTRIBUTES lpSA, DWORD dwCreation,
+                                       DWORD dwFlagsAndAttrs, HANDLE hTemplate);
+bool PTHAPI            Path_DeleteFile(const HPATHL hpth);
+bool PTHAPI            Path_ReplaceFile(const HPATHL hpth_replaced, LPCWSTR lpszReplacementFile);
+bool PTHAPI            Path_MoveFileEx(LPCWSTR lpszSource, const HPATHL hpth_dest, DWORD dwFlags);
+HANDLE PTHAPI          Path_FindFirstFile(const HPATHL hpth, LPWIN32_FIND_DATAW lpFindData);
+HRESULT PTHAPI         Path_CreateDirectoryEx(const HPATHL hpth);
 bool PTHAPI            Path_StripToRoot(HPATHL hpth_in_out);
 bool PTHAPI            Path_GetCurrentDirectory(HPATHL hpth_out);
 size_t PTHAPI          Path_ToShortPathName(HPATHL hpth_in_out);  // use only, if neccessary
@@ -127,6 +136,7 @@ void PTHAPI            Path_GetDisplayName(LPWSTR lpszDisplayName, const DWORD c
 bool PTHAPI            Path_GetLnkPath(const HPATHL hLnkFilePth, HPATHL hResPath_out);
 bool PTHAPI            Path_IsLnkFile(const HPATHL hpth);
 bool PTHAPI            Path_IsLnkToDirectory(const HPATHL hlnk_pth, HPATHL hpth_out);
+bool PTHAPI            Path_IsDirectoryWritable(const HPATHL hpth);
 bool PTHAPI            Path_CreateFavLnk(LPCWSTR lpszLinkName, const HPATHL hTargetPth, const HPATHL hDirPth);
 bool PTHAPI            Path_CreateDeskLnk(const HPATHL hDocumentPath, LPCWSTR pszDescription);
 bool PTHAPI            Path_BrowseDirectory(HWND hwndParent, LPCWSTR lpszTitle, HPATHL hpth_in_out, const HPATHL hbase, bool bNewDialogStyle);
@@ -143,6 +153,7 @@ void PTHAPI            ExpandEnvironmentStrgs(HSTRINGW hstr, bool bStripQ);
 // Duplicates for INTERMEDIATE DEV
 // ============================================================================
 
+bool PTHAPI Path_IsExistingDirectory(const HPATHL hpth);
 bool PTHAPI Path_IsExistingFile(const HPATHL hpth);
 bool PTHAPI PathIsExistingFile(LPCWSTR pszPath);
 

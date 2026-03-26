@@ -1234,7 +1234,7 @@ bool EditLoadFile(
 
     BeginWaitCursor(false, L"");  // structural only: opens LimitNotifyEvents() block
 
-    HANDLE const hFile = CreateFileW(Path_Get(hfile_pth),
+    HANDLE const hFile = Path_CreateFile(hfile_pth,
                                     GENERIC_READ,
                                     FILE_SHARE_READ | FILE_SHARE_WRITE,
                                     NULL,
@@ -1606,7 +1606,7 @@ bool EditSaveFile(
 
     if (bAtomicSave) {
         // Briefly open original file read-only to capture modification time
-        HANDLE hOrig = CreateFileW(Path_Get(hfile_pth),
+        HANDLE hOrig = Path_CreateFile(hfile_pth,
                                     GENERIC_READ,
                                     FILE_SHARE_READ | FILE_SHARE_WRITE,
                                     NULL, OPEN_EXISTING,
@@ -1650,7 +1650,7 @@ bool EditSaveFile(
 
     if (!bUseTempFile) {
         // Direct write to target file (original behavior / fallback)
-        hFile = CreateFileW(Path_Get(hfile_pth),
+        hFile = Path_CreateFile(hfile_pth,
                             GENERIC_READ | GENERIC_WRITE,
                             FILE_SHARE_READ | FILE_SHARE_WRITE,
                             NULL, OPEN_ALWAYS,
@@ -1662,7 +1662,7 @@ bool EditSaveFile(
             DWORD dwSpecialAttributes = Path_GetFileAttributes(hfile_pth);
             if (dwSpecialAttributes != INVALID_FILE_ATTRIBUTES) {
                 dwSpecialAttributes &= (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
-                hFile = CreateFileW(Path_Get(hfile_pth),
+                hFile = Path_CreateFile(hfile_pth,
                                     GENERIC_READ | GENERIC_WRITE,
                                     FILE_SHARE_READ | FILE_SHARE_WRITE,
                                     NULL, OPEN_ALWAYS,
@@ -1850,16 +1850,15 @@ bool EditSaveFile(
             bool bReplaced = false;
 
             // Try ReplaceFileW first — preserves ACLs, alternate data streams, creation time
-            DWORD const dwOrigAttribs = GetFileAttributesW(Path_Get(hfile_pth));
+            DWORD const dwOrigAttribs = Path_GetFileAttributes(hfile_pth);
             if (dwOrigAttribs != INVALID_FILE_ATTRIBUTES) {
-                bReplaced = ReplaceFileW(Path_Get(hfile_pth), wchTempFile, NULL,
-                                          REPLACEFILE_IGNORE_MERGE_ERRORS, NULL, NULL);
+                bReplaced = Path_ReplaceFile(hfile_pth, wchTempFile);
             }
 
             if (!bReplaced) {
                 // Fallback: MoveFileExW (works for new files or when ReplaceFileW is unsupported)
-                bReplaced = MoveFileExW(wchTempFile, Path_Get(hfile_pth),
-                                         MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH);
+                bReplaced = Path_MoveFileEx(wchTempFile, hfile_pth,
+                                             MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH);
             }
 
             if (!bReplaced) {

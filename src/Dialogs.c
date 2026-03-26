@@ -2226,7 +2226,7 @@ unsigned int WINAPI FileMRUIconThread(LPVOID lpParam)
             if (Path_IsValidUNC(worker->hFilePath)) {
                 dwAttr = FILE_ATTRIBUTE_NORMAL;
             } else {
-                dwAttr = GetFileAttributesW(Path_Get(worker->hFilePath));
+                dwAttr = Path_GetFileAttributes(worker->hFilePath);
             }
 
             if (!Flags.NoFadeHidden &&
@@ -6845,7 +6845,7 @@ void CleanupDlgResources()
 //
 //  _CanonicalizeInitialDir()  TODO: use Path_NormalizeEx() here ?
 //
-static void _CanonicalizeInitialDir(HPATHL hpth_in_out)
+static void _CanonicalizeInitialDir(HPATHL hpth_in_out, bool bMustBeWritable)
 {
     if (Path_IsEmpty(hpth_in_out)) {
 
@@ -6865,18 +6865,20 @@ static void _CanonicalizeInitialDir(HPATHL hpth_in_out)
 
         if (Path_IsRelative(hpth_in_out)) {
             Path_AbsoluteFromApp(hpth_in_out, true);
-            //~ already Path_CanonicalizeEx(hpth_in_out, Paths.ModuleDirectory);
         }
         else {
             Path_CanonicalizeEx(hpth_in_out, Paths.ModuleDirectory);
         }
-        if (!Path_IsExistingDirectory(hpth_in_out)) {
+        if (Path_IsExistingFile(hpth_in_out)) {
             Path_RemoveFileSpec(hpth_in_out);
         }
     }
-    // finally: directory exists ?
+    // finally: directory exists and is writable if requested ?
     if (!Path_IsExistingDirectory(hpth_in_out)) {
-        Path_Empty(hpth_in_out, false);
+        Path_GetKnownFolder(&FOLDERID_Documents, hpth_in_out);
+    }
+    if (bMustBeWritable && !Path_IsDirectoryWritable(hpth_in_out)) {
+        Path_GetKnownFolder(&FOLDERID_Documents, hpth_in_out);
     }
 }
 
@@ -7103,103 +7105,6 @@ bool FileSaveDlg(HWND hwnd, HPATHL hfile_pth_io, LPCWSTR lpInitialDir,
 }
 
 
-#if 0
-// ============================================================================
-//
-//  GetFolderDlg()
-//  lpstrInitialDir == NULL      : leave initial dir to Open File Explorer
-//  lpstrInitialDir == ""[empty] : use a reasonable initial directory path
-//
-bool GetFolderDlg(HWND hwnd, HPATHL hdir_pth_io, const HPATHL hinidir_pth)
-{
-    if (!hdir_pth_io) {
-        return false;
-    }
-
-    HPATHL hpth_dir = Path_Allocate(Path_Get(hinidir_pth));
-    _CanonicalizeInitialDir(hpth_dir);
-
-    DWORD dwAttributes = Path_GetFileAttributes(hpth_dir);
-    if ((dwAttributes == INVALID_FILE_ATTRIBUTES) || !(dwAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-        Path_RemoveFileSpec(hpth_dir);
-    }
-    //if (dwAttributes != INVALID_FILE_ATTRIBUTES) {
-    //    // if File is root, open the volume instead of open My Computer and select the volume
-    //    if ((dwAttributes & FILE_ATTRIBUTE_DIRECTORY) && Path_IsRoot(hpth_dir)) {
-    //        bSelect = false;
-    //    }
-    //    else {
-    //        inidirBuf = Path_Get(hinidir_pth);
-    //    }
-    //}
-    dwAttributes = Path_GetFileAttributes(hpth_dir);
-    if ((dwAttributes == INVALID_FILE_ATTRIBUTES) || !(dwAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-        return false;
-    }
-
-    Path_Swap(hdir_pth_io, hpth_dir);
-    Path_Release(hpth_dir);
-
-    LPCWSTR directory = Path_WriteAccessBuf(hdir_pth_io, PATHLONG_MAX_CCH);
-
-    HRESULT hr = S_FALSE;
-    PIDLIST_ABSOLUTE pidl = ILCreateFromPath(directory);
-    if (pidl) {
-        PIDLIST_ABSOLUTE pidlEntry = !Path_IsEmpty(hinidir_pth) ? ILCreateFromPath(Path_Get(hinidir_pth)) : NULL;
-        if (pidlEntry) {
-            hr = SHOpenFolderAndSelectItems(pidl, 1, (PCUITEMID_CHILD_ARRAY)(&pidlEntry), 0);
-            CoTaskMemFree((LPVOID)pidlEntry);
-        }
-        SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-        sei.fMask = SEE_MASK_IDLIST | SEE_MASK_NOCLOSEPROCESS;
-        sei.hwnd = hwnd;
-        sei.lpVerb = L"explore";
-        //~sei.lpVerb = L"open";
-        sei.lpIDList = (void*)pidl;
-        sei.lpDirectory = NULL; //Path_Get(hinidir_pth);
-        sei.nShow = SW_SHOW;
-        sei.hInstApp = Globals.hInstance;
-
-        const BOOL result = ShellExecuteEx(&sei);
-        if (sei.hProcess) {
-            WaitForSingleObject(sei.hProcess, INFINITE);
-            CloseHandle(sei.hProcess);
-            hr = result ? S_OK : S_FALSE;
-        }
-        else {
-            hr = S_FALSE;
-        }
-
-        CoTaskMemFree((LPVOID)pidl);
-    }
-
-    Path_Sanitize(hdir_pth_io);
-    Path_FreeExtra(hdir_pth_io, MAX_PATH_EXPLICIT);
-
-    if (hr == S_OK) {
-        return true;
-    }
-
-#if 0
-    if (path == NULL) {
-        path = wchDirectory;
-    }
-
-    // open a new explorer window every time
-    size_t const cchBuf = wcslen(path) + 64;
-    LPWSTR szParameters = (LPWSTR)NP2HeapAlloc(cchBuf * sizeof(WCHAR));
-    StringCchCopy(szParameters, cchBuf, bSelect ? L"/select," : L"");
-    StringCchCat(szParameters, cchBuf, L"\"");
-    StringCchCat(szParameters, cchBuf, path);
-    StringCchCat(szParameters, cchBuf, L"\"");
-    ShellExecute(hwnd, L"open", L"explorer", szParameters, NULL, SW_SHOW);
-    NP2HeapFree(szParameters);
-#endif
-    return false;
-}
-#endif
-
-
 // ============================================================================
 //
 //  OpenFileDlg()
@@ -7219,7 +7124,7 @@ bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), false);
 
     HPATHL hpth_dir = Path_Copy(hinidir_pth);
-    _CanonicalizeInitialDir(hpth_dir);
+    _CanonicalizeInitialDir(hpth_dir, false);
 
     LPCWSTR defExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
     LPCWSTR initDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;
@@ -7253,7 +7158,7 @@ bool SaveFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), true);
 
     HPATHL hpth_dir = Path_Copy(hinidir_pth);
-    _CanonicalizeInitialDir(hpth_dir);
+    _CanonicalizeInitialDir(hpth_dir, true);
 
     LPCWSTR defExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
     LPCWSTR initDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;

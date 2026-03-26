@@ -467,7 +467,7 @@ static void _FillThemesMenuTable()
 
         WIN32_FIND_DATA FindFileData;
         ZeroMemory(&FindFileData, sizeof(WIN32_FIND_DATA));
-        HANDLE hFindFile = FindFirstFileW(Path_Get(hThemePath), &FindFileData);
+        HANDLE hFindFile = Path_FindFirstFile(hThemePath, &FindFileData);
 
         // ---  fill table by directory entries  ---
 
