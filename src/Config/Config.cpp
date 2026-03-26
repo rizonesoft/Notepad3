@@ -1119,7 +1119,7 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
         Path_RemoveFileSpec(hdir_path);
         if (Path_IsNotEmpty(hdir_path)) {
             // Use SHCreateDirectoryExW to create all intermediate directories - fixes #5075
-            HRESULT const hr = SHCreateDirectoryExW(NULL, Path_Get(hdir_path), NULL);
+            HRESULT const hr = Path_CreateDirectoryEx(hdir_path);
             if (FAILED(hr) && (hr != HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS))) {
                 Path_Release(hdir_path);
                 if (pdwFileSize_out) { *pdwFileSize_out = 0UL; }
@@ -1131,7 +1131,7 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
         DWORD dwFileSize = 0UL;
 
         if (!Path_IsExistingFile(hini_pth)) {
-            HANDLE hFile = CreateFileW(Path_Get(hini_pth),
+            HANDLE hFile = Path_CreateFile(hini_pth,
                                        GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
                                        CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
@@ -1148,7 +1148,7 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
                 return false;
             }
         } else {
-            HANDLE hFile = CreateFileW(Path_Get(hini_pth),
+            HANDLE hFile = Path_CreateFile(hini_pth,
                                        GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr,
                                        OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
@@ -2584,7 +2584,7 @@ bool MRU_FindPath(LPMRULIST pmru, const HPATHL hpth, int* iIndex)
             }
             Path_Reset(hcmp, pmru->pszItems[i]);
             Path_AbsoluteFromApp(hcmp, true);
-            if (StringCchCompareXI(Path_Get(hcmp), Path_Get(hpth)) == 0) {
+            if (StringCchCompareXI(Path_Get(hcmp), Path_Get(hcpy)) == 0) {
                 res = true;
                 break;
             }

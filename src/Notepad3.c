@@ -504,7 +504,7 @@ static inline bool RaiseFlagIfCurrentFileChanged() {
         return false;
     }
     WIN32_FIND_DATA fdUpdated = { 0 };
-    if (!GetFileAttributesExW(Path_Get(Paths.CurrentFile), GetFileExInfoStandard, &fdUpdated)) {
+    if (!Path_GetFileAttributesEx(Paths.CurrentFile, GetFileExInfoStandard, &fdUpdated)) {
         // The current file has been removed
         if (IsFileDeletedFlagSet()) {
             return false;
@@ -1959,6 +1959,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
             if (bOpened) {
                 if (s_IsThisAnElevatedRelaunch) {
                     if (Path_IsNotEmpty(hfile_pth)) {
+                        Path_NormalizeEx(hfile_pth, Paths.WorkingDirectory, true, false);
                         Path_Reset(Paths.CurrentFile, Path_Get(hfile_pth));
                     } else {
                         Path_Empty(Paths.CurrentFile, false);
@@ -1970,12 +1971,12 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
                     // check for temp file and delete
                     if (s_IsThisAnElevatedRelaunch && Path_IsExistingFile(s_hpthRelaunchElevatedFile)) {
                         
-                        DeleteFileW(Path_Get(s_hpthRelaunchElevatedFile));
+                        Path_DeleteFile(s_hpthRelaunchElevatedFile);
                         
                         // delete possible .tmp guard
                         Path_RenameExtension(s_hpthRelaunchElevatedFile, L".tmp");
                         if (Path_IsExistingFile(s_hpthRelaunchElevatedFile)) {
-                            DeleteFileW(Path_Get(s_hpthRelaunchElevatedFile));
+                            Path_DeleteFile(s_hpthRelaunchElevatedFile);
                         }
                         SetSaveNeeded(true);
                     }
@@ -11206,7 +11207,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
 
     Path_NormalizeEx(hopen_file, Paths.WorkingDirectory, true, Flags.bSearchPathIfRelative);
 
-    if (!bReloadFile && Path_StrgComparePath(hopen_file, Paths.CurrentFile, Paths.WorkingDirectory, false) == 0) {
+    if (!bReloadFile && Path_StrgComparePath(hopen_file, Paths.CurrentFile, Paths.WorkingDirectory, true) == 0) {
         Path_Release(hopen_file);
         return false;
     }
@@ -11245,7 +11246,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
             }
         }
         if (bCreateFile) {
-            HANDLE hFile = CreateFileW(Path_Get(hopen_file),
+            HANDLE hFile = Path_CreateFile(hopen_file,
                     GENERIC_READ | GENERIC_WRITE,
                     FILE_SHARE_READ | FILE_SHARE_WRITE,
                     NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -11735,7 +11736,6 @@ bool FileSave(FileSaveFlags fSaveFlags)
             Path_Reset(hdir_pth, Path_Get(Paths.CurrentFile));
             Path_RemoveFileSpec(hdir_pth);
         }
-
         Path_Reset(hfile_pth, Path_FindFileName(Paths.CurrentFile));
 
         bool const ok = SaveFileDlg(Globals.hwndMain, hfile_pth, Path_IsNotEmpty(hdir_pth) ? hdir_pth : NULL);
@@ -11751,6 +11751,8 @@ bool FileSave(FileSaveFlags fSaveFlags)
             
             if (fSuccess) {
                 if (!(fSaveFlags & FSF_SaveCopy)) {
+                    // normalize for consistency with FileLoad (resolve long names, real path)
+                    Path_NormalizeEx(hfile_pth, Paths.WorkingDirectory, true, false);
                     Path_Swap(Paths.CurrentFile, hfile_pth);
                     _SetEnumWindowsItems(Globals.hwndMain);
                     if (!s_flagKeepTitleExcerpt) {
@@ -11823,7 +11825,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
                 Path_RemoveFileSpec(hdir_path);
                 bool bDirCreated = false;
                 if (Path_IsNotEmpty(hdir_path)) {
-                    HRESULT const hr = SHCreateDirectoryExW(NULL, Path_Get(hdir_path), NULL);
+                    HRESULT const hr = Path_CreateDirectoryEx(hdir_path);
                     bDirCreated = SUCCEEDED(hr) || (hr == HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS));
                 }
                 Path_Release(hdir_path);
@@ -12846,7 +12848,7 @@ void InstallFileWatching(const bool bInstall) {
             }
 
             if (!IsFileReadOnly()) {
-                _hCurrFileHandle = CreateFile(Path_Get(Paths.CurrentFile),
+                _hCurrFileHandle = Path_CreateFile(Paths.CurrentFile,
                     GENERIC_READ | GENERIC_WRITE,
                     FILE_SHARE_READ, // 0 => NO FILE_SHARE_RW
                     NULL,

@@ -206,7 +206,33 @@ Notepad3 follows a **portable-app** design for its configuration file (`Notepad3
 
 ### Creating Directories
 
-Use `SHCreateDirectoryExW(NULL, path, NULL)` to recursively create directory trees (requires `<shlobj.h>`, already included in core modules). Check result: `SUCCEEDED(hr) || (hr == HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS))`. See `CreateIniFile()` in `src\Config\Config.cpp` for the reference pattern.
+Use `Path_CreateDirectoryEx(hpth)` (PathLib wrapper around `SHCreateDirectoryExW`) to recursively create directory trees. Check result: `SUCCEEDED(hr) || (hr == HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS))`. See `CreateIniFile()` in `src\Config\Config.cpp` for the reference pattern.
+
+### Long-Path Support / Win32 File API Wrappers
+
+Notepad3 supports paths exceeding `MAX_PATH` (260 chars) on systems without the Windows 10 long-path registry opt-in by conditionally prepending the `\\?\` prefix. The static function `PrependLongPathPrefix()` in PathLib.c handles this.
+
+**Rule: Never call Win32 file APIs directly with `Path_Get(hpth)`.** Use the PathLib wrapper functions instead — they internally apply the copy-prefix-call-release pattern:
+
+| Wrapper | Win32 API |
+|---------|-----------|
+| `Path_CreateFile(hpth, ...)` | `CreateFileW` |
+| `Path_DeleteFile(hpth)` | `DeleteFileW` |
+| `Path_GetFileAttributes(hpth)` | `GetFileAttributesW` |
+| `Path_GetFileAttributesEx(hpth, ...)` | `GetFileAttributesExW` |
+| `Path_SetFileAttributes(hpth, ...)` | `SetFileAttributesW` |
+| `Path_ReplaceFile(hpth_dest, src)` | `ReplaceFileW` |
+| `Path_MoveFileEx(src, hpth_dest, ...)` | `MoveFileExW` |
+| `Path_FindFirstFile(hpth, ...)` | `FindFirstFileW` |
+| `Path_CreateDirectoryEx(hpth)` | `SHCreateDirectoryExW` |
+| `Path_IsExistingFile(hpth)` | `GetFileAttributesW` + check |
+| `Path_IsExistingDirectory(hpth)` | `GetFileAttributesW` + check |
+
+The prefix is only added when `RtlAreLongPathsEnabled()` returns false AND the path is ≥ 260 chars. On modern Windows 10+ with the opt-in, these wrappers are effectively pass-through.
+
+### Path Comparison
+
+Use `Path_StrgComparePath()` for comparing file paths — it supports optional normalization and uses `CompareStringOrdinal` (locale-independent, case-insensitive). For raw wide-string path comparison, use `CompareStringOrdinal(s1, -1, s2, -1, TRUE)` instead of `_wcsicmp` or `_wcsnicmp` which are locale-dependent.
 
 ### Undo/Redo transactions
 
