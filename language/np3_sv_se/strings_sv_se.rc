@@ -73,7 +73,7 @@ BEGIN
     IDT_EDIT_REPLACE        "Byt ut"
     IDT_VIEW_WORDWRAP       "Radbryt"
     IDT_VIEW_ZOOMIN         "Förstora"
-    IDT_VIEW_RESETZOOM      "Reset Zoom"
+    IDT_VIEW_RESETZOOM      "Återställ zoomning"
     IDT_VIEW_ZOOMOUT        "Förminska"
     IDT_VIEW_SCHEME         "Välj schema"
     IDT_VIEW_SCHEMECONFIG   "Anpassa schema"
@@ -83,7 +83,7 @@ BEGIN
     IDT_EDIT_CLEAR          "Radera"
     IDT_FILE_PRINT          "Skriv ut"
     IDT_FILE_OPENFAV        "Favoriter"
-    IDT_FILE_ADDTOFAV       "Lägg till favoriter"
+    IDT_FILE_ADDTOFAV       "Lägg till i favoriter"
     IDT_VIEW_TOGGLEFOLDS    "Växla utvikning"
 END
 
