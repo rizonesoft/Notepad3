@@ -1211,9 +1211,17 @@ static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_
         else
             encDetRes->Encoding = encDetRes->unicodeAnalysis;
     }
-    else if (encDetRes->bPureASCII7Bit) {
-        // pure ASCII (no null bytes, all 0x01-0x7F) always valid UTF-8
+    else if (encDetRes->bValidUTF8 && !encDetRes->bPureASCII7Bit) {
+        // Non-ASCII data where all bytes form valid UTF-8 multi-byte sequences.
+        // When UCHARDET was skipped or returned unreliable results, valid
+        // multi-byte UTF-8 is a strong structural signal — prefer UTF-8 over
+        // blind ANSI fallback.
         encDetRes->Encoding = CPI_UTF8;
+    }
+    else if (encDetRes->bPureASCII7Bit) {
+        // pure ASCII (no null bytes, all 0x01-0x7F) — treat as UTF-8 or ANSI
+        // depending on user preference
+        encDetRes->Encoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
     }
     else if (encDetRes->bHasNullBytes) {
         // Data contains null bytes — not a valid single-byte encoding.
@@ -1235,9 +1243,13 @@ static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_
         }
     }
 
-    // Final fallback: if no encoding could be determined, treat as binary via ANSI codepage
+    // Final fallback: use preferred encoding if configured, otherwise system ANSI codepage
     if (Encoding_IsNONE(encDetRes->Encoding)) {
-        encDetRes->Encoding = CPI_ANSI_DEFAULT;
+        if (Settings.UseDefaultForFileEncoding && Encoding_IsValid(Settings.DefaultEncoding)) {
+            encDetRes->Encoding = Settings.DefaultEncoding;
+        } else {
+            encDetRes->Encoding = CPI_ANSI_DEFAULT;
+        }
     }
 }
 
