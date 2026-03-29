@@ -581,7 +581,7 @@ bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding, bool bSupressWarning)
         } else {
 
             if (!bSupressWarning) {
-                bool const bIsCurANSI   = Encoding_IsANSI(iCurrentEncoding);
+                bool const bIsCurANSI   = Encoding_IsSystemANSI_CP(iCurrentEncoding);
                 bool const bIsTargetUTF = Encoding_MaybeUTF8(iNewEncoding) || Encoding_IsUNICODE(iNewEncoding);
                 bSupressWarning         = bIsCurANSI && bIsTargetUTF;
             }
@@ -1518,7 +1518,7 @@ bool EditLoadFile(
         status->iEncoding = encDetection.Encoding;
 
         // UCHARDET was called but returned no result — file is likely binary
-        if (Encoding_IsANSI(status->iEncoding) && encDetection.bIsAnalyzed && Encoding_IsNONE(encDetection.analyzedEncoding)) {
+        if (Encoding_IsEXTERNAL_8BIT(status->iEncoding) && encDetection.bIsAnalyzed && Encoding_IsNONE(encDetection.analyzedEncoding)) {
             status->bMaybeBinary = true;
         }
 

@@ -640,6 +640,7 @@ typedef struct SETTINGS_T {
     bool NoEncodingTags;
     bool SkipUnicodeDetection;
     bool SkipANSICodePageDetection;
+    int  AnalyzeReliableConfidenceLevel;
     int  DefaultEOLMode;
     bool WarnInconsistEOLs;
     bool FixLineEndings;
@@ -789,7 +790,6 @@ typedef struct SETTINGS2_T {
     int     DarkModeHiglightContrast;
     int     UchardetLanguageFilter;
 
-    float   AnalyzeReliableConfidenceLevel;
     float   LocaleAnsiCodePageAnalysisBonus;
 
 #ifdef D_NP3_WIN10_DARK_MODE

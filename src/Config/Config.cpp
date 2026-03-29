@@ -349,7 +349,7 @@ extern "C" bool SaveIniFileCache(const HPATHL hpthIniFile)
 }
 
 
-//=============================================================================
+// =============================================================================
 //
 //  OpenSettingsFile()
 //
@@ -393,7 +393,7 @@ extern "C" bool OpenSettingsFile(LPCSTR fctname)
 }
 
 
-//=============================================================================
+// =============================================================================
 //
 //  CloseSettingsFile()
 //
@@ -438,11 +438,11 @@ extern "C" bool CloseSettingsFile(LPCSTR fctname, bool bSaveSettings)
 
 
 
-//=============================================================================
+// =============================================================================
 //
 //  Manipulation of (cached) ini file
 //
-//=============================================================================
+// =============================================================================
 
 
 extern "C" size_t IniSectionGetString(LPCWSTR lpSectionName, LPCWSTR lpKeyName, LPCWSTR lpDefault,
@@ -840,7 +840,7 @@ extern "C" bool IniFileIterateSection(const HPATHL hpthIniFile, LPCWSTR lpSectio
 
 
 
-//=============================================================================
+// =============================================================================
 //
 //  AddFilePathToRecentDocs()
 //
@@ -876,7 +876,7 @@ extern "C" void AddFilePathToRecentDocs(const HPATHL hpthFile)
 
 
 #if 0
-//=============================================================================
+// =============================================================================
 //
 //  ClearDestinationsOnRecentDocs()
 //
@@ -899,7 +899,7 @@ extern "C" void ClearDestinationsOnRecentDocs()
 #endif
 
 
-//=============================================================================
+// =============================================================================
 //
 //  _CheckAndSetIniFile()
 //
@@ -1000,11 +1000,15 @@ static bool _HandleIniFileRedirect(LPCWSTR lpszSecName, LPCWSTR lpszKeyName, HPA
         }
 
         // pick up DefaultDirectory from each redirecting INI (later files override earlier ones)
-        WCHAR defDir[PATHLONG_MAX_CCH] = { L'\0' };
-        if (IniFileGetString(hpth_in_out, Constants.Settings2_Section, L"DefaultDirectory", L"", defDir, COUNTOF(defDir))) {
-            Path_Reset(Settings2.DefaultDirectory, defDir);
+        HPATHL hdefDir = Path_Allocate(NULL);
+        LPWSTR const defDirBuf = Path_WriteAccessBuf(hdefDir, PATHLONG_MAX_CCH);
+        if (IniFileGetString(hpth_in_out, Constants.Settings2_Section, L"DefaultDirectory", L"", defDirBuf, PATHLONG_MAX_CCH)) {
+            Path_Sanitize(hdefDir);
+            Path_FreeExtra(hdefDir, 0);
+            Path_Reset(Settings2.DefaultDirectory, Path_Get(hdefDir));
             Path_ExpandEnvStrings(Settings2.DefaultDirectory);
         }
+        Path_Release(hdefDir);
 
         HPATHL hredirect = Path_Allocate(NULL);
         LPWSTR const buf = Path_WriteAccessBuf(hredirect, PATHLONG_MAX_CCH);
@@ -1040,7 +1044,7 @@ static bool _HandleIniFileRedirect(LPCWSTR lpszSecName, LPCWSTR lpszKeyName, HPA
     }
     return result;
 }
-// ============================================================================
+// =============================================================================
 
 
 extern "C" bool FindIniFile()
@@ -1087,7 +1091,7 @@ extern "C" bool FindIniFile()
 
     return bFound;
 }
-//=============================================================================
+// =============================================================================
 
 
 extern "C" bool TestIniFile()
@@ -1108,7 +1112,7 @@ extern "C" bool TestIniFile()
 
     return true;
 }
-//=============================================================================
+// =============================================================================
 
 
 extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
@@ -1174,10 +1178,10 @@ extern "C" bool CreateIniFile(const HPATHL hini_pth, DWORD* pdwFileSize_out)
     }
     return false;
 }
-//=============================================================================
+// =============================================================================
 
 
-//=============================================================================
+// =============================================================================
 //
 //  LoadSettings()
 //
@@ -1373,8 +1377,6 @@ void LoadSettings()
     Settings2.NoCutLineOnEmptySelection = IniSectionGetBool(IniSecSettings2, L"NoCutLineOnEmptySelection", false);
 
     Settings2.SubWrappedLineSelectOnMarginClick = IniSectionGetBool(IniSecSettings2, L"SubWrappedLineSelectOnMarginClick", false);
-
-    Settings2.AnalyzeReliableConfidenceLevel = (float)clampi(IniSectionGetInt(IniSecSettings2, L"AnalyzeReliableConfidenceLevel", 66), 0, 100) / 100.0f;
 
     int const iAnsiCPBonusSet = clampi(IniSectionGetInt(IniSecSettings2, L"LocaleAnsiCodePageAnalysisBonus", 33), 0, 100);
     Settings2.LocaleAnsiCodePageAnalysisBonus = (float)iAnsiCPBonusSet / 100.0f;
@@ -1725,6 +1727,14 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(NoEncodingTags, true);
     GET_BOOL_VALUE_FROM_INISECTION(SkipUnicodeDetection, false);
     GET_BOOL_VALUE_FROM_INISECTION(SkipANSICodePageDetection, false);
+    GET_INT_VALUE_FROM_INISECTION(AnalyzeReliableConfidenceLevel, 50, 0, 100);
+    constexpr const WCHAR* const arcl_s2 = L"AnalyzeReliableConfidenceLevel";
+    int const deprecatedARCL = IniSectionGetInt(IniSecSettings2, arcl_s2, -1);
+    if (deprecatedARCL >= 0) {
+        Settings.AnalyzeReliableConfidenceLevel = clampi(deprecatedARCL, 0, 100);
+        IniSectionDelete(IniSecSettings2, arcl_s2, true);
+        bDirtyFlag = true;
+    }
     GET_INT_VALUE_FROM_INISECTION(DefaultEOLMode, SC_EOL_CRLF, SC_EOL_CRLF, SC_EOL_LF);
     GET_BOOL_VALUE_FROM_INISECTION(WarnInconsistEOLs, true);
     GET_BOOL_VALUE_FROM_INISECTION(FixLineEndings, false);
@@ -1973,11 +1983,11 @@ void LoadSettings()
 
     FreeMem(pPathBuffer);
 }
-//=============================================================================
+// =============================================================================
 
 
 
-//=============================================================================
+// =============================================================================
 //
 //  _SaveSettings()
 //
@@ -2163,6 +2173,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, NoEncodingTags);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SkipUnicodeDetection);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SkipANSICodePageDetection);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, AnalyzeReliableConfidenceLevel);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, DefaultEOLMode);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, WarnInconsistEOLs);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, FixLineEndings);
@@ -2271,7 +2282,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
     int const ResX = GetSystemMetrics(SM_CXVIRTUALSCREEN);
     int const ResY = GetSystemMetrics(SM_CYVIRTUALSCREEN);
 
-    WCHAR tchHighDpiToolBar[64];
+    WCHAR tchHighDpiToolBar[64] = { L'\0' };
     StringCchPrintf(tchHighDpiToolBar, COUNTOF(tchHighDpiToolBar), L"%ix%i HighDpiToolBar", ResX, ResY);
     if (Settings.ToolBarTheme != Defaults.ToolBarTheme) {
         IniSectionSetInt(IniSecWindow, tchHighDpiToolBar, Settings.ToolBarTheme);
@@ -2307,7 +2318,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
 }
 
 
-//=============================================================================
+// =============================================================================
 //
 //  SaveWindowPositionSettings()
 //
@@ -2357,7 +2368,7 @@ bool SaveWindowPositionSettings(bool bClearSettings)
 }
 
 
-//=============================================================================
+// =============================================================================
 //
 //  SaveAllSettings()
 //
@@ -2427,7 +2438,7 @@ bool SaveAllSettings(bool bForceSaveSettings)
 
 
 
-//=============================================================================
+// =============================================================================
 //
 //  CmdSaveSettingsNow()
 //
@@ -2485,11 +2496,11 @@ void CmdSaveSettingsNow()
 }
 
 
-//=============================================================================
-//=============================================================================
+// =============================================================================
+// =============================================================================
 
 
-//=============================================================================
+// =============================================================================
 //
 //  MRU functions
 //
@@ -2897,7 +2908,7 @@ bool MRU_MergeSave(LPMRULIST pmru, bool bAddFiles, bool bRelativePath, bool bUne
 // Some C++ Extentions for Notepad3
 // ////////////////////////////////////////////////////////////////////////////
 
-//=============================================================================
+// =============================================================================
 //
 //  EditSetDocumentBuffer() - Set Document Buffer for Scintilla Edit Component
 //

@@ -3444,7 +3444,8 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
             //~SetExplorerTheme(GetDlgItem(hwnd, IDC_ENCODINGLIST)); ~ OWNERDRAWN -> WM_DRAWITEM
             //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
             int const ctl[] = { IDC_ENCODINGLIST, IDC_USEASREADINGFALLBACK, IDC_ASCIIASUTF8, IDC_RELIABLE_DETECTION_RES,
-                                IDC_NFOASOEM, IDC_ENCODINGFROMFILEVARS, IDC_NOUNICODEDETECTION, IDC_NOANSICPDETECTION, IDC_STATIC, IDC_STATIC2
+                                IDC_NFOASOEM, IDC_ENCODINGFROMFILEVARS, IDC_NOUNICODEDETECTION, IDC_NOANSICPDETECTION,
+                                IDC_ANSI_CONFIDENCE_LEVEL, IDC_STATIC, IDC_STATIC2
                               };
             for (int i = 0; i < COUNTOF(ctl); ++i) {
                 SetWindowTheme(GetDlgItem(hwnd, ctl[i]), L"", L""); // remove theme for BS_AUTORADIOBUTTON
@@ -3467,9 +3468,9 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
 
         Encoding_GetFromComboboxEx(GetDlgItem(hwnd, IDC_ENCODINGLIST), &s_iEnc);
         s_bLoadASCIIasUTF8 = Settings.LoadASCIIasUTF8;
-        s_bUseAsFallback = Encoding_IsASCII(s_iEnc) ? Settings.UseDefaultForFileEncoding : false;
+        s_bUseAsFallback = Encoding_HasASCII7Bit(s_iEnc) ? Settings.UseDefaultForFileEncoding : false;
 
-        DialogEnableControl(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
+        DialogEnableControl(hwnd, IDC_USEASREADINGFALLBACK, Encoding_HasASCII7Bit(s_iEnc));
         CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, SetBtn(s_bUseAsFallback));
 
         CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(s_bLoadASCIIasUTF8));
@@ -3478,6 +3479,12 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
         CheckDlgButton(hwnd, IDC_ENCODINGFROMFILEVARS, SetBtn(!Settings.NoEncodingTags));
         CheckDlgButton(hwnd, IDC_NOUNICODEDETECTION, SetBtn(!Settings.SkipUnicodeDetection));
         CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, SetBtn(!Settings.SkipANSICodePageDetection));
+
+        SendDlgItemMessage(hwnd, IDC_ANSI_CONFIDENCE_LEVEL, EM_LIMITTEXT, 3, 0);
+        SendDlgItemMessage(hwnd, IDC_ANSI_CONFIDENCE_SPIN, UDM_SETRANGE32, 0, 100);
+        SendDlgItemMessage(hwnd, IDC_ANSI_CONFIDENCE_SPIN, UDM_SETPOS32, 0, Settings.AnalyzeReliableConfidenceLevel);
+        DialogEnableControl(hwnd, IDC_ANSI_CONFIDENCE_LEVEL, !Settings.SkipANSICodePageDetection);
+        DialogEnableControl(hwnd, IDC_ANSI_CONFIDENCE_SPIN, !Settings.SkipANSICodePageDetection);
 
         CenterDlgInParent(hwnd, false);
     }
@@ -3545,10 +3552,10 @@ CASE_WM_CTLCOLOR_SET:
         case IDC_ASCIIASUTF8: {
             Encoding_GetFromComboboxEx(GetDlgItem(hwnd, IDC_ENCODINGLIST), &s_iEnc);
 
-            s_bUseAsFallback = Encoding_IsASCII(s_iEnc) ? IsButtonChecked(hwnd, IDC_USEASREADINGFALLBACK) : false;
+            s_bUseAsFallback = Encoding_HasASCII7Bit(s_iEnc) ? IsButtonChecked(hwnd, IDC_USEASREADINGFALLBACK) : false;
             s_bLoadASCIIasUTF8 = IsButtonChecked(hwnd, IDC_ASCIIASUTF8);
 
-            DialogEnableControl(hwnd, IDC_USEASREADINGFALLBACK, Encoding_IsASCII(s_iEnc));
+            DialogEnableControl(hwnd, IDC_USEASREADINGFALLBACK, Encoding_HasASCII7Bit(s_iEnc));
             CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, SetBtn(s_bUseAsFallback));
 
             DialogEnableControl(hwnd, IDC_ASCIIASUTF8, true);
@@ -3570,6 +3577,13 @@ CASE_WM_CTLCOLOR_SET:
         }
         break;
 
+        case IDC_NOANSICPDETECTION: {
+            bool const bAnsiCpEnabled = IsButtonChecked(hwnd, IDC_NOANSICPDETECTION);
+            DialogEnableControl(hwnd, IDC_ANSI_CONFIDENCE_LEVEL, bAnsiCpEnabled);
+            DialogEnableControl(hwnd, IDC_ANSI_CONFIDENCE_SPIN, bAnsiCpEnabled);
+        }
+        break;
+
         case IDOK: {
             PENCODEDLG pdd = (PENCODEDLG)GetWindowLongPtr(hwnd, DWLP_USER);
             if (Encoding_GetFromComboboxEx(GetDlgItem(hwnd, IDC_ENCODINGLIST), &pdd->idEncoding)) {
@@ -3584,6 +3598,7 @@ CASE_WM_CTLCOLOR_SET:
                     Settings.NoEncodingTags = !IsButtonChecked(hwnd, IDC_ENCODINGFROMFILEVARS);
                     Settings.SkipUnicodeDetection = !IsButtonChecked(hwnd, IDC_NOUNICODEDETECTION);
                     Settings.SkipANSICodePageDetection = !IsButtonChecked(hwnd, IDC_NOANSICPDETECTION);
+                    Settings.AnalyzeReliableConfidenceLevel = clampi((int)SendDlgItemMessage(hwnd, IDC_ANSI_CONFIDENCE_SPIN, UDM_GETPOS32, 0, 0), 0, 100);
                     EndDialog(hwnd, IDOK);
                 }
             } else {
