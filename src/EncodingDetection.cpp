@@ -877,14 +877,13 @@ static void _SetEncodingTitleInfo(const ENC_DET_T* pEncDetInfo)
     StringCchPrintf(tmpBuf, COUNTOF(tmpBuf), L"' Conf=%.1f%%", confPercent);
     StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), tmpBuf);
 
-    double const threshPercent = (double)(Settings2.AnalyzeReliableConfidenceLevel * 100.0f);
+    double const threshPercent = (double)Settings.AnalyzeReliableConfidenceLevel;
     const WCHAR* rel_fmt = (confPercent >= threshPercent) ? L" (reliable (%.1f%%))" : L" (NOT reliable (%.1f%%))";
     StringCchPrintf(tmpBuf, COUNTOF(tmpBuf), rel_fmt, threshPercent);
     StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), tmpBuf);
 
-    const WCHAR* const validUTF8 = (pEncDetInfo->bValidUTF8) ? L" [Valid UTF-8]" : L" [Invalid UTF-8]";
+    const WCHAR* const validUTF8 = (pEncDetInfo->bValidUTF8) ? (pEncDetInfo->bPureASCII7Bit ? L" [ASCII 7-bit]" : L" [Valid UTF-8]") : L" [Invalid UTF-8]";
     StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), validUTF8);
-
 }
 
 
@@ -1185,6 +1184,26 @@ extern "C" cpi_enc_t FileVars_GetEncoding(LPFILEVARS lpfv)
 //=============================================================================
 //=============================================================================
 
+__forceinline static cpi_enc_t _SetAnsiDefaultEncoding(const ENC_DET_T* const encDetRes)
+{
+    // Pure ASCII (7-bit) - use UTF-8 if configured, otherwise ANSI default
+    if (Settings.LoadASCIIasUTF8 && encDetRes->bPureASCII7Bit) {
+        return CPI_UTF8;
+    }
+    if (Encoding_IsValid(Settings.DefaultEncoding)) {
+        if (Settings.DefaultEncoding == CPI_UTF8) {
+            if (encDetRes->bValidUTF8) {
+                return Settings.DefaultEncoding;
+            }
+        }
+        else if (Encoding_IsEXTERNAL_8BIT(Settings.DefaultEncoding)) {
+            return Settings.DefaultEncoding;
+        }
+    }
+    return CPI_ANSI_DEFAULT;
+}
+
+
 static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_BE, size_t data_len)
 {
     if (encDetRes->bIsUTF8Sig) {
@@ -1197,59 +1216,54 @@ static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_
     else if (Encoding_IsValid(encDetRes->analyzedEncoding) && (encDetRes->bIsAnalysisReliable || !Settings.UseReliableCEDonly)) {
         // Valid UTF-8 byte sequence (no null bytes) prefer UTF-8 over
         // analyzed encoding. ASCII-only files are also valid UTF-8.
-        if ((encDetRes->bValidUTF8) && (encDetRes->confidence < MIN_CONFIDENCE_ANSI_NOT_UTF8))
+        if ((encDetRes->bValidUTF8) && (encDetRes->confidence < MIN_CONFIDENCE_ANSI_NOT_UTF8)) {
             encDetRes->Encoding = CPI_UTF8;
-        else
+        }
+        else {
             encDetRes->Encoding = encDetRes->analyzedEncoding;
+        }
     }
     else if (Encoding_IsUNICODE(encDetRes->unicodeAnalysis) && (!(data_len & 1) || encDetRes->bHasBOM)) {
         // unicodeAnalysis confirms Unicode structure.
         // Only prefer analyzedEncoding if it's also Unicode (e.g., UCHARDET
         // identified specific UTF-16 variant). Otherwise use unicodeAnalysis.
-        if (Encoding_IsValid(encDetRes->analyzedEncoding) && Encoding_IsUNICODE(encDetRes->analyzedEncoding))
+        if (Encoding_IsValid(encDetRes->analyzedEncoding) && Encoding_IsUNICODE(encDetRes->analyzedEncoding)) {
             encDetRes->Encoding = encDetRes->analyzedEncoding;
-        else
+        }
+        else {
             encDetRes->Encoding = encDetRes->unicodeAnalysis;
+        }
     }
-    else if (encDetRes->bValidUTF8 && !encDetRes->bPureASCII7Bit) {
-        // Non-ASCII data where all bytes form valid UTF-8 multi-byte sequences.
-        // When UCHARDET was skipped or returned unreliable results, valid
-        // multi-byte UTF-8 is a strong structural signal — prefer UTF-8 over
-        // blind ANSI fallback.
-        encDetRes->Encoding = CPI_UTF8;
-    }
-    else if (encDetRes->bPureASCII7Bit) {
-        // pure ASCII (no null bytes, all 0x01-0x7F) — treat as UTF-8 or ANSI
-        // depending on user preference
-        encDetRes->Encoding = Settings.LoadASCIIasUTF8 ? CPI_UTF8 : CPI_ANSI_DEFAULT;
-    }
-    else if (encDetRes->bHasNullBytes) {
-        // Data contains null bytes — not a valid single-byte encoding.
-        // Both Unicode detectors (IsTextUnicode and null-distribution) already
-        // rejected this data at earlier branches, so treat as binary via ANSI
-        // codepage (same as UTF-32 handling).
-        encDetRes->Encoding = CPI_ANSI_DEFAULT;
-    }
-    else {
-        cpi_enc_t const weak = Encoding_SrcWeak(CPI_GET);
-        if (Encoding_IsValid(weak)) {
-            if ((weak == CPI_UTF8) && encDetRes->bValidUTF8) {
-                // weak UTF-8 hint and data is valid UTF-8 - use weak hint
-                encDetRes->Encoding = weak;
-            }
-            else if (Encoding_IsANSI(weak)) {
-                encDetRes->Encoding = weak;
+    
+    // Non-ASCII data where all bytes form valid UTF-8 multi-byte sequences.
+    // When UCHARDET was skipped or returned unreliable results, valid
+    // multi-byte UTF-8 is a strong structural signal — prefer UTF-8 over
+    // blind ANSI fallback.
+    if (Encoding_IsNONE(encDetRes->Encoding))
+    {
+        if (Settings.UseDefaultForFileEncoding) {
+            encDetRes->Encoding = _SetAnsiDefaultEncoding(encDetRes);
+        }
+        else if (encDetRes->bValidUTF8 || (encDetRes->bPureASCII7Bit && Settings.LoadASCIIasUTF8))
+            // pure ASCII (no null bytes, all 0x01-0x7F) — treat as UTF-8 or ANSI
+            encDetRes->Encoding = CPI_UTF8;
+        else {
+            cpi_enc_t const weak = Encoding_SrcWeak(CPI_GET);
+            if (Encoding_IsValid(weak)) {
+                if ((weak == CPI_UTF8) && encDetRes->bValidUTF8) {
+                    // weak UTF-8 hint and data is valid UTF-8 - use weak hint
+                    encDetRes->Encoding = weak;
+                }
+                else if (Encoding_IsEXTERNAL_8BIT(weak)) {
+                    encDetRes->Encoding = weak;
+                }
             }
         }
     }
 
-    // Final fallback: use preferred encoding if configured, otherwise system ANSI codepage
+    // Final fallback / last resort: if still no encoding, but valid UTF-8, use UTF-8.
     if (Encoding_IsNONE(encDetRes->Encoding)) {
-        if (Settings.UseDefaultForFileEncoding && Encoding_IsValid(Settings.DefaultEncoding)) {
-            encDetRes->Encoding = Settings.DefaultEncoding;
-        } else {
-            encDetRes->Encoding = CPI_ANSI_DEFAULT;
-        }
+        encDetRes->Encoding = (encDetRes->bValidUTF8) ? CPI_UTF8 : CPI_ANSI_DEFAULT;
     }
 }
 
@@ -1376,7 +1390,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
     // ---  choose best encoding guess  ----
     // --------------------------------------------------------------------------
 
-    encDetRes.bIsAnalysisReliable = (encDetRes.confidence >= Settings2.AnalyzeReliableConfidenceLevel);
+    encDetRes.bIsAnalysisReliable = (encDetRes.confidence >= ((float)Settings.AnalyzeReliableConfidenceLevel / 100.0f));
 
     // init resulting encoding
     encDetRes.Encoding = CPI_NONE;

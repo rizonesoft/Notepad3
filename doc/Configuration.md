@@ -28,6 +28,10 @@ These settings are managed through Notepad3's user interface (Menu → Settings)
 
 #### `Favorites=%APPDATA%\Rizonesoft\Notepad3\Favorites\`
 
+#### `AnalyzeReliableConfidenceLevel=50`
+
+Confidence threshold (0–100) for the encoding analysis reliability indicator. Configurable in Menu → Settings → Encoding Defaults, next to "Perform ANSI Code Page analysis".
+
 ---
 
 ## `[Settings2]`
@@ -360,10 +364,6 @@ Reserved for future use.
 #### `DevDebugMode=0`
 
 Show encoding detector (UCHARDET) info in the title bar for debugging.
-
-#### `AnalyzeReliableConfidenceLevel=66`
-
-Confidence threshold for the encoding reliability indicator.
 
 #### `LocaleAnsiCodePageAnalysisBonus=33`
 

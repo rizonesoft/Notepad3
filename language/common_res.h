@@ -472,6 +472,8 @@
 #define IDC_FILE_CHECK_INTERVAL         18135
 #define IDC_DARK_MODE_CONTRAST          18136
 #define IDC_TAB_BACKTAB_INDENTS_ALWAYS  18137
+#define IDC_ANSI_CONFIDENCE_LEVEL       18138
+#define IDC_ANSI_CONFIDENCE_SPIN        18139
 
 #define IDC_RADIO_BTN_A                 18200
 #define IDC_RADIO_BTN_B                 18201

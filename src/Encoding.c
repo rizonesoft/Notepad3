@@ -276,9 +276,9 @@ void Encoding_SetLabel(cpi_enc_t iEncoding)
     WCHAR wch2[128] = { L'\0' };
     StringCchCopyN(wch2, COUNTOF(wch2), pwsz, COUNTOF(wch1));
 
-    if (Encoding_IsANSI(iEncoding)) {
+    if (Encoding_IsSystemANSI_CP(iEncoding)) {
         StringCchCatN(wch2, COUNTOF(wch2), wchANSI, COUNTOF(wchANSI));
-    } else if (Encoding_IsOEM(iEncoding)) {
+    } else if (Encoding_IsSystemOEM(iEncoding)) {
         StringCchCatN(wch2, COUNTOF(wch2), wchOEM, COUNTOF(wchOEM));
     }
 
@@ -394,9 +394,9 @@ void Encoding_AddToListView(HWND hwnd, cpi_enc_t idSel, bool bRecodeOnly)
                     StringCchCopyN(wchBuf, COUNTOF(wchBuf), pEE[i].wch, COUNTOF(wchBuf));
                 }
 
-                if (Encoding_IsANSI(id)) {
+                if (Encoding_IsSystemANSI_CP(id)) {
                     StringCchCatN(wchBuf, COUNTOF(wchBuf), wchANSI, COUNTOF(wchANSI));
-                } else if (Encoding_IsOEM(id)) {
+                } else if (Encoding_IsSystemOEM(id)) {
                     StringCchCatN(wchBuf, COUNTOF(wchBuf), wchOEM, COUNTOF(wchOEM));
                 }
 
@@ -483,7 +483,7 @@ void Encoding_AddToComboboxEx(HWND hwnd, cpi_enc_t idSel, bool bRecodeOnly)
                     StringCchCopyN(wchBuf, COUNTOF(wchBuf), pEE[i].wch, COUNTOF(wchBuf));
                 }
 
-                if (Encoding_IsANSI(id)) {
+                if (Encoding_IsSystemANSI_CP(id)) {
                     StringCchCatN(wchBuf, COUNTOF(wchBuf), wchANSI, COUNTOF(wchANSI));
                 } else if (id == CPI_OEM) {
                     StringCchCatN(wchBuf, COUNTOF(wchBuf), wchOEM, COUNTOF(wchOEM));
@@ -530,55 +530,91 @@ UINT Encoding_GetCodePage(const cpi_enc_t iEncoding)
 {
     return (iEncoding >= 0) ? g_Encodings[iEncoding].uCodePage : CP_ACP;
 }
-// ============================================================================
+// ----------------------------------------------------------------------------
 
 bool Encoding_IsDefault(const cpi_enc_t iEncoding)
 {
     return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_DEFAULT) != 0) : (iEncoding == CPI_ASCII_7BIT);
 }
-// ============================================================================
+// ----------------------------------------------------------------------------
 
-bool Encoding_IsASCII(const cpi_enc_t iEncoding)
+bool Encoding_HasASCII7Bit(const cpi_enc_t iEncoding)
 {
     return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_ASCII_7BIT) != 0) : (iEncoding == CPI_ASCII_7BIT);
 }
-// ============================================================================
+// ----------------------------------------------------------------------------
 
-bool Encoding_IsANSI(const cpi_enc_t iEncoding)
+bool Encoding_IsSystemANSI_CP(const cpi_enc_t iEncoding)
 {
     return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_ANSI) != 0) : (iEncoding == CPI_ASCII_7BIT);
 }
-// ============================================================================
+// ----------------------------------------------------------------------------
 
-bool Encoding_IsOEM(const cpi_enc_t iEncoding)
+bool Encoding_IsSystemOEM(const cpi_enc_t iEncoding)
 {
     return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_OEM) != 0) : (iEncoding == CPI_ASCII_7BIT);
 }
-// ============================================================================
+// ----------------------------------------------------------------------------
 
 bool Encoding_MaybeUTF8(const cpi_enc_t iEncoding)
 {
     return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_UTF8) != 0) : (iEncoding == CPI_ASCII_7BIT);
 }
-// ============================================================================
+// ----------------------------------------------------------------------------
 
 bool Encoding_IsUTF8_SIGN(const cpi_enc_t iEncoding)
 {
     return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_UTF8_SIGN) != 0) : false;
 }
-// ============================================================================
+// ----------------------------------------------------------------------------
 
 bool Encoding_MaybeUTF8_NO_SIGN(const cpi_enc_t iEncoding)
 {
     return  (Encoding_MaybeUTF8(iEncoding) && !Encoding_IsUTF8_SIGN(iEncoding));
 }
-// ============================================================================
+// ----------------------------------------------------------------------------
 
 bool Encoding_IsMBCS(const cpi_enc_t iEncoding)
 {
     return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_MBCS) != 0) : false;
 }
-// ============================================================================
+// ----------------------------------------------------------------------------
+
+bool Encoding_IsUNICODE(const cpi_enc_t iEncoding)
+{
+    return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_UNICODE) != 0) : false;
+}
+// ----------------------------------------------------------------------------
+
+bool Encoding_IsUNICODE_BOM(const cpi_enc_t iEncoding)
+{
+    return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_UNICODE_BOM) != 0) : false;
+}
+// ----------------------------------------------------------------------------
+
+bool Encoding_IsUNICODE_REVERSE(const cpi_enc_t iEncoding)
+{
+    return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_UNICODE_REVERSE) != 0) : false;
+}
+// ----------------------------------------------------------------------------
+
+bool Encoding_IsINTERNAL(const cpi_enc_t iEncoding)
+{
+    return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_INTERNAL) != 0) : false;
+}
+// ----------------------------------------------------------------------------
+
+bool Encoding_IsEXTERNAL_8BIT(const cpi_enc_t iEncoding)
+{
+    return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_EXTERNAL_8BIT) != 0) : false;
+}
+// ----------------------------------------------------------------------------
+
+bool Encoding_IsRECODE(const cpi_enc_t iEncoding)
+{
+    return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_RECODE) != 0) : false;
+}
+// ----------------------------------------------------------------------------
 
 bool Encoding_IsCJK(const cpi_enc_t iEncoding)
 {
@@ -609,42 +645,6 @@ bool Encoding_IsCJK(const cpi_enc_t iEncoding)
     return false;
 }
 // ============================================================================
-
-bool Encoding_IsUNICODE(const cpi_enc_t iEncoding)
-{
-    return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_UNICODE) != 0) : false;
-}
-// ============================================================================
-
-bool Encoding_IsUNICODE_BOM(const cpi_enc_t iEncoding)
-{
-    return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_UNICODE_BOM) != 0) : false;
-}
-// ============================================================================
-
-bool Encoding_IsUNICODE_REVERSE(const cpi_enc_t iEncoding)
-{
-    return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_UNICODE_REVERSE) != 0) : false;
-}
-// ============================================================================
-
-
-bool Encoding_IsINTERNAL(const cpi_enc_t iEncoding)
-{
-    return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_INTERNAL) != 0) : false;
-}
-// ============================================================================
-
-bool Encoding_IsEXTERNAL_8BIT(const cpi_enc_t iEncoding)
-{
-    return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_EXTERNAL_8BIT) != 0) : false;
-}
-// ============================================================================
-
-bool Encoding_IsRECODE(const cpi_enc_t iEncoding)
-{
-    return  (iEncoding >= 0) ? ((g_Encodings[iEncoding].uFlags & NCP_RECODE) != 0) : false;
-}
 // ============================================================================
 
 
@@ -654,21 +654,21 @@ void Encoding_SetDefaultFlag(const cpi_enc_t iEncoding)
         g_Encodings[iEncoding].uFlags |= NCP_DEFAULT;
     }
 }
-// ============================================================================
+// ----------------------------------------------------------------------------
 
 
 const WCHAR* Encoding_GetLabel(const cpi_enc_t iEncoding)
 {
     return (iEncoding >= 0) ? g_Encodings[iEncoding].wchLabel : NULL;
 }
-// ============================================================================
+// ----------------------------------------------------------------------------
 
 
 const char* Encoding_GetParseNames(const cpi_enc_t iEncoding)
 {
     return (iEncoding >= 0) ? g_Encodings[iEncoding].pszParseNames : NULL;
 }
-// ============================================================================
+// ----------------------------------------------------------------------------
 
 
 int Encoding_GetNameA(const cpi_enc_t iEncoding, char* buffer, size_t cch)
@@ -686,7 +686,7 @@ int Encoding_GetNameA(const cpi_enc_t iEncoding, char* buffer, size_t cch)
     }
     return 0;
 }
-// ============================================================================
+// ----------------------------------------------------------------------------
 
 
 int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cwch)
@@ -695,7 +695,7 @@ int Encoding_GetNameW(const cpi_enc_t iEncoding, LPWSTR buffer, size_t cwch)
     Encoding_GetNameA(iEncoding, tmpbuffer, 256);
     return (int)MultiByteToWideCharEx(Encoding_SciCP, 0, tmpbuffer, -1, buffer, cwch);
 }
-// ============================================================================
+// ----------------------------------------------------------------------------
 
 
 bool Has_UTF32_LE_BOM(const char* pBuf, size_t cnt)
