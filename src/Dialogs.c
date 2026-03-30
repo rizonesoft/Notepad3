@@ -4586,34 +4586,42 @@ void FitIntoMonitorGeometry(LPRECT pRect, WININFO *pWinInfo, SCREEN_MODE mode, b
     } else {
         WININFO wi = *pWinInfo;
         WinInfoToScreenCoord(&wi);
+
+        // expand allowed bounds by DWM extended frame (invisible border)
+        // so Aero-snapped positions are not clipped
+        int const cxBorder = GetSystemMetrics(SM_CXSIZEFRAME) + GetSystemMetrics(SM_CXPADDEDBORDER);
+        int const cyBorder = GetSystemMetrics(SM_CYSIZEFRAME) + GetSystemMetrics(SM_CXPADDEDBORDER);
+        RECT rcAllow = mi.rcWork;
+        InflateRect(&rcAllow, cxBorder, cyBorder);
+
         // fit into area
-        if (wi.x < mi.rcWork.left) {
-            wi.x = mi.rcWork.left;
+        if (wi.x < rcAllow.left) {
+            wi.x = rcAllow.left;
         }
-        if (wi.y < mi.rcWork.top) {
-            wi.y = mi.rcWork.top;
+        if (wi.y < rcAllow.top) {
+            wi.y = rcAllow.top;
         }
-        if (bTopLeft && (((wi.x + wi.cx) > mi.rcWork.right) || 
-                         ((wi.y + wi.cy) > mi.rcWork.bottom))) {
-            wi.y = mi.rcWork.top;
-            wi.x = mi.rcWork.left;
+        if (bTopLeft && (((wi.x + wi.cx) > rcAllow.right) || 
+                         ((wi.y + wi.cy) > rcAllow.bottom))) {
+            wi.y = rcAllow.top;
+            wi.x = rcAllow.left;
         } else {
-            if ((wi.x + wi.cx) > mi.rcWork.right) {
-                wi.x -= (wi.x + wi.cx - mi.rcWork.right);
-                if (wi.x < mi.rcWork.left) {
-                    wi.x = mi.rcWork.left;
+            if ((wi.x + wi.cx) > rcAllow.right) {
+                wi.x -= (wi.x + wi.cx - rcAllow.right);
+                if (wi.x < rcAllow.left) {
+                    wi.x = rcAllow.left;
                 }
-                if ((wi.x + wi.cx) > mi.rcWork.right) {
-                    wi.cx = mi.rcWork.right - wi.x;
+                if ((wi.x + wi.cx) > rcAllow.right) {
+                    wi.cx = rcAllow.right - wi.x;
                 }
             }
-            if ((wi.y + wi.cy) > mi.rcWork.bottom) {
-                wi.y -= (wi.y + wi.cy - mi.rcWork.bottom);
-                if (wi.y < mi.rcWork.top) {
-                    wi.y = mi.rcWork.top;
+            if ((wi.y + wi.cy) > rcAllow.bottom) {
+                wi.y -= (wi.y + wi.cy - rcAllow.bottom);
+                if (wi.y < rcAllow.top) {
+                    wi.y = rcAllow.top;
                 }
-                if ((wi.y + wi.cy) > mi.rcWork.bottom) {
-                    wi.cy = mi.rcWork.bottom - wi.y;
+                if ((wi.y + wi.cy) > rcAllow.bottom) {
+                    wi.cy = rcAllow.bottom - wi.y;
                 }
             }
         }
