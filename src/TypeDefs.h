@@ -635,7 +635,6 @@ typedef struct SETTINGS_T {
     cpi_enc_t DefaultEncoding; // default new file encoding
     bool UseDefaultForFileEncoding;
     bool LoadASCIIasUTF8;
-    bool UseReliableCEDonly;
     bool LoadNFOasOEM;
     bool NoEncodingTags;
     bool SkipUnicodeDetection;

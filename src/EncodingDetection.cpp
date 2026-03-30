@@ -84,176 +84,6 @@ extern "C" const char* Encoding_GetTitleInfoA()
 
 //=============================================================================
 
-///////////////////////////////////////////////////////////////////////////////////////////////
-/////////////                                                                     /////////////
-/////////////    CED  encoding names                                              /////////////
-/////////////    [ EncodingName() , MimeEncodingName(), Encoding(_CED_intern) ]   /////////////
-/////////////    TODO:  find mapping below and set string above, if missing       /////////////
-/////////////                                                                     /////////////
-///////////////////////////////////////////////////////////////////////////////////////////////
-
-//constexpr EncodingInfo kEncodingInfoTable[] = {
-//  { "ASCII", "ISO-8859-1", ISO_8859_1},
-//  { "Latin2", "ISO-8859-2", ISO_8859_2},
-//  { "Latin3", "ISO-8859-3", UTF8},
-//// MSIE 6 does not support ISO-8859-3 (XSS issue)
-//  { "Latin4", "ISO-8859-4", ISO_8859_4},
-//  { "ISO-8859-5", "ISO-8859-5", ISO_8859_5},
-//  { "Arabic", "ISO-8859-6", ISO_8859_6},
-//  { "Greek", "ISO-8859-7", ISO_8859_7},
-//  { "Hebrew", "ISO-8859-8", MSFT_CP1255},
-//// we do not endorse the visual order
-//  { "Latin5", "ISO-8859-9", ISO_8859_9},
-//  { "Latin6", "ISO-8859-10", UTF8},
-//// MSIE does not support ISO-8859-10 (XSS issue)
-//  { "EUC-JP",  "EUC-JP", JAPANESE_EUC_JP},
-//  { "SJS", "Shift_JIS", JAPANESE_SHIFT_JIS},
-//  { "JIS", "ISO-2022-JP", JAPANESE_SHIFT_JIS},
-//  // due to potential confusion with HTML syntax chars
-//  { "BIG5", "Big5", CHINESE_BIG5},
-//  { "GB",  "GB2312", CHINESE_GB},
-//  { "EUC-CN",
-//      "EUC-CN",
-//      // Misnamed. Should be EUC-TW.
-//      CHINESE_BIG5},
-//      // MSIE treats "EUC-CN" like GB2312, which is not EUC-TW,
-//      // and EUC-TW is rare, so we prefer Big5 for output.
-//  { "KSC", "EUC-KR", KOREAN_EUC_KR},
-//  { "Unicode",
-//    "UTF-16LE",
-//    // Internet Explorer doesn't recognize "ISO-10646-UCS-2"
-//    UTF8
-//    // due to potential confusion with HTML syntax chars
-//    },
-//  { "EUC",
-//        "EUC",  // Misnamed. Should be EUC-TW.
-//        CHINESE_BIG5
-//    // MSIE does not recognize "EUC" (XSS issue),
-//    // and EUC-TW is rare, so we prefer Big5 for output.
-//    },
-//  { "CNS",
-//        "CNS",  // Misnamed. Should be EUC-TW.
-//        CHINESE_BIG5},
-//    // MSIE does not recognize "CNS" (XSS issue),
-//    // and EUC-TW is rare, so we prefer Big5 for output.
-//  { "BIG5-CP950",
-//        "BIG5-CP950",  // Not an IANA name
-//        CHINESE_BIG5
-//    // MSIE does not recognize "BIG5-CP950" (XSS issue)
-//    },
-//  { "CP932", "CP932",  // Not an IANA name
-//        JAPANESE_SHIFT_JIS},  // MSIE does not recognize "CP932" (XSS issue)
-//  { "UTF8", "UTF-8", UTF8},
-//  { "Unknown", "x-unknown",  // Not an IANA name
-//        UTF8},  // UTF-8 is our default output encoding
-//  { "ASCII-7-bit", "US-ASCII", ASCII_7BIT},
-//  { "KOI8R", "KOI8-R", RUSSIAN_KOI8_R},
-//  { "CP1251", "Windows-1251", RUSSIAN_CP1251},
-//  { "CP1252", "Windows-1252", MSFT_CP1252},
-//  { "KOI8U", "KOI8-U", ISO_8859_5},  // because koi8-u is not as common
-//  { "CP1250", "Windows-1250", MSFT_CP1250},
-//  { "ISO-8859-15", "ISO-8859-15", ISO_8859_15},
-//  { "CP1254", "Windows-1254", MSFT_CP1254},
-//  { "CP1257", "Windows-1257", MSFT_CP1257},
-//  { "ISO-8859-11", "ISO-8859-11", ISO_8859_11},
-//  { "CP874", "Windows-874", MSFT_CP874},
-//  { "CP1256", "Windows-1256", MSFT_CP1256},
-//  { "CP1255", "Windows-1255", MSFT_CP1255},
-//  { "ISO-8859-8-I", "ISO-8859-8-I", MSFT_CP1255},
-//  // Java does not support iso-8859-8-i
-//  { "VISUAL", "ISO-8859-8", MSFT_CP1255},
-//  // we do not endorse the visual order
-//  { "CP852", "cp852", MSFT_CP1250},
-//  // because cp852 is not as common
-//  { "CSN_369103", "csn_369103", MSFT_CP1250},
-//  // MSIE does not recognize "csn_369103" (XSS issue)
-//  { "CP1253", "Windows-1253", MSFT_CP1253},
-//  { "CP866", "IBM866", RUSSIAN_CP1251},
-//  // because cp866 is not as common
-//  { "ISO-8859-13", "ISO-8859-13", UTF8},
-//  // because iso-8859-13 is not widely supported
-//  { "ISO-2022-KR", "ISO-2022-KR", KOREAN_EUC_KR},
-//  // due to potential confusion with HTML syntax chars
-//  { "GBK", "GBK", GBK},
-//  { "GB18030", "GB18030", GBK},
-//  // because gb18030 is not widely supported
-//  { "BIG5_HKSCS", "BIG5-HKSCS", CHINESE_BIG5},
-//  // because Big5-HKSCS is not widely supported
-//  { "ISO_2022_CN", "ISO-2022-CN", CHINESE_GB},
-//  // due to potential confusion with HTML syntax chars
-//  { "TSCII", "tscii", UTF8},
-//  // we do not have an output converter for this font encoding
-//  { "TAM", "tam", UTF8},
-//  // we do not have an output converter for this font encoding
-//  { "TAB", "tab", UTF8},
-//  // we do not have an output converter for this font encoding
-//  { "JAGRAN", "jagran", UTF8},
-//  // we do not have an output converter for this font encoding
-//  { "MACINTOSH", "MACINTOSH", ISO_8859_1},
-//  // because macintosh is relatively uncommon
-//  { "UTF7", "UTF-7",
-//        UTF8},  // UTF-7 has been the subject of XSS attacks and is deprecated
-//  { "BHASKAR", "bhaskar",
-//        UTF8},  // we do not have an output converter for this font encoding
-//  { "HTCHANAKYA", "htchanakya",  // not an IANA charset name.
-//        UTF8},  // we do not have an output converter for this font encoding
-//  { "UTF-16BE", "UTF-16BE",
-//        UTF8},  // due to potential confusion with HTML syntax chars
-//  { "UTF-16LE", "UTF-16LE",
-//        UTF8},  // due to potential confusion with HTML syntax chars
-//  { "UTF-32BE", "UTF-32BE",
-//        UTF8},  // unlikely to cause XSS bugs, but very uncommon on Web
-//  { "UTF-32LE", "UTF-32LE",
-//        UTF8},  // unlikely to cause XSS bugs, but very uncommon on Web
-//  { "X-BINARYENC", "x-binaryenc",  // Not an IANA name
-//        UTF8},  // because this one is not intended for output (just input)
-//  { "HZ-GB-2312", "HZ-GB-2312",
-//        CHINESE_GB},  // due to potential confusion with HTML syntax chars
-//  { "X-UTF8UTF8", "x-utf8utf8",  // Not an IANA name
-//        UTF8},  // because this one is not intended for output (just input)
-//  { "X-TAM-ELANGO", "x-tam-elango",
-//        UTF8},  // we do not have an output converter for this font encoding
-//  { "X-TAM-LTTMBARANI", "x-tam-lttmbarani",
-//        UTF8},  // we do not have an output converter for this font encoding
-//  { "X-TAM-SHREE", "x-tam-shree",
-//        UTF8},  // we do not have an output converter for this font encoding
-//  { "X-TAM-TBOOMIS", "x-tam-tboomis",
-//        UTF8},  // we do not have an output converter for this font encoding
-//  { "X-TAM-TMNEWS", "x-tam-tmnews",
-//        UTF8},  // we do not have an output converter for this font encoding
-//  { "X-TAM-WEBTAMIL", "x-tam-webtamil",
-//        UTF8},  // we do not have an output converter for this font encoding
-//
-//  { "X-KDDI-Shift_JIS", "Shift_JIS", JAPANESE_SHIFT_JIS},
-//  // KDDI version of Shift_JIS with Google Emoji PUA mappings.
-//  // Note that MimeEncodingName() returns "Shift_JIS", since KDDI uses
-//  // "Shift_JIS" in HTTP headers and email messages.
-//
-//  { "X-DoCoMo-Shift_JIS", "Shift_JIS", JAPANESE_SHIFT_JIS},
-//  // DoCoMo version of Shift_JIS with Google Emoji PUA mappings.
-//  // See the comment at KDDI_SHIFT_JIS for other issues.
-//
-//  { "X-SoftBank-Shift_JIS", "Shift_JIS", JAPANESE_SHIFT_JIS},
-//  // SoftBank version of Shift_JIS with Google Emoji PUA mappings.
-//  // See the comment at KDDI_SHIFT_JIS for other issues.
-//
-//  { "X-KDDI-ISO-2022-JP", "ISO-2022-JP", JAPANESE_SHIFT_JIS},
-//  // KDDI version of ISO-2022-JP with Google Emoji PUA mappings.
-//  // See the comment at KDDI_SHIFT_JIS for other issues.
-//  // The preferred Web encoding is due to potential confusion with
-//  // HTML syntax chars.
-//
-//  { "X-SoftBank-ISO-2022-JP", "ISO-2022-JP", JAPANESE_SHIFT_JIS},
-//  // SoftBank version of ISO-2022-JP with Google Emoji PUA mappings.
-//  // See the comment at KDDI_SHIFT_JIS for other issues.
-//  // The preferred Web encoding is due to potential confusion with
-//  // HTML syntax chars.
-//
-//  // Please refer to NOTE: section in the comments in the definition
-//  // of "struct I18NInfoByEncoding", before adding new encodings.
-//
-//  };
-//
 //#define MIN_CONFIDENCE_ANSI_NOT_UTF8 0.98f // if confidence is above this threshold, we consider it ANSI, even if it could be UTF-8
 #define MIN_CONFIDENCE_ANSI_NOT_UTF8 0.995f // if confidence is above this threshold, we consider it ANSI, even if it could be UTF-8
 
@@ -450,63 +280,6 @@ extern "C" NP2ENCODING g_Encodings[] = {
     };
 #endif
 
-    /* 073 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 870,   "CP870,cp870,ebcdiccproece,ebcdiccpyu,csibm870,ibm870,",                          00000, L"" }, // IBM EBCDIC (Multilingual Latin-2)
-    /* 074 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1047,  "IBM01047,ibm01047,",                                                             00000, L"" }, // IBM EBCDIC (Open System Latin-1)
-    /* 075 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1140,  "x-ebcdic-cp-us-euro,xebcdiccpuseuro,",                                           00000, L"" }, // IBM EBCDIC (US-Canada-Euro)
-    /* 076 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1141,  "x-ebcdic-germany-euro,xebcdicgermanyeuro,",                                      00000, L"" }, // IBM EBCDIC (Germany-Euro)
-    /* 077 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1142,  "x-ebcdic-denmarknorway-euro,xebcdicdenmarknorwayeuro,",                          00000, L"" }, // IBM EBCDIC (Denmark-Norway-Euro)
-    /* 078 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1143,  "x-ebcdic-finlandsweden-euro,xebcdicfinlandswedeneuro,",                          00000, L"" }, // IBM EBCDIC (Finland-Sweden-Euro)
-    /* 079 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1144,  "x-ebcdic-italy-euro,xebcdicitalyeuro,",                                          00000, L"" }, // IBM EBCDIC (Italy-Euro)
-    /* 080 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1145,  "x-ebcdic-spain-euro,xebcdicspaineuro,",                                          00000, L"" }, // IBM EBCDIC (Spain-Latin America-Euro)
-    /* 081 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1146,  "x-ebcdic-uk-euro,xebcdicukeuro,",                                                00000, L"" }, // IBM EBCDIC (UK-Euro)
-    /* 082 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1147,  "x-ebcdic-france-euro,xebcdicfranceeuro,",                                        00000, L"" }, // IBM EBCDIC (France-Euro)
-    /* 083 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1148,  "x-ebcdic-international-euro,xebcdicinternationaleuro,",                          00000, L"" }, // IBM EBCDIC (International-Euro)
-    /* 084 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 1149,  "x-ebcdic-icelandic-euro,xebcdicicelandiceuro,",                                  00000, L"" }, // IBM EBCDIC (Icelandic-Euro)
-    /* 086 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20273, "x-EBCDIC-Germany,xebcdicgermany,",                                               00000, L"" }, // IBM EBCDIC (Germany)
-    /* 087 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20277, "x-EBCDIC-DenmarkNorway,xebcdicdenmarknorway,ebcdiccpdk,ebcdiccpno,",             00000, L"" }, // IBM EBCDIC (Denmark-Norway)
-    /* 088 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20278, "x-EBCDIC-FinlandSweden,xebcdicfinlandsweden,ebcdicpfi,ebcdiccpse,",              00000, L"" }, // IBM EBCDIC (Finland-Sweden)
-    /* 089 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20280, "x-EBCDIC-Italy,xebcdicitaly,",                                                   00000, L"" }, // IBM EBCDIC (Italy)
-    /* 090 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20284, "x-EBCDIC-Spain,xebcdicspain,ebcdiccpes,",                                        00000, L"" }, // IBM EBCDIC (Spain-Latin America)
-    /* 091 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20285, "x-EBCDIC-UK,xebcdicuk,ebcdiccpgb,",                                              00000, L"" }, // IBM EBCDIC (UK)
-    /* 092 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20290, "x-EBCDIC-JapaneseKatakana,xebcdicjapanesekatakana,",                             00000, L"" }, // IBM EBCDIC (Japanese Katakana)
-    /* 093 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20297, "x-EBCDIC-France,xebcdicfrance,ebcdiccpfr,",                                      00000, L"" }, // IBM EBCDIC (France)
-    /* 094 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20420, "x-EBCDIC-Arabic,xebcdicarabic,ebcdiccpar1,",                                     00000, L"" }, // IBM EBCDIC (Arabic)
-    /* 095 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20423, "x-EBCDIC-Greek,xebcdicgreek,ebcdiccpgr,",                                        00000, L"" }, // IBM EBCDIC (Greek)
-    /* 096 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20424, "x-EBCDIC-Hebrew,xebcdichebrew,ebcdiccphe,",                                      00000, L"" }, // IBM EBCDIC (Hebrew)
-    /* 097 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20833, "x-EBCDIC-KoreanExtended,xebcdickoreanextended,",                                 00000, L"" }, // IBM EBCDIC (Korean Extended)
-    /* 098 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20838, "x-EBCDIC-Thai,xebcdicthai,ibmthai,csibmthai,",                                   00000, L"" }, // IBM EBCDIC (Thai)
-    /* 099 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20871, "x-EBCDIC-Icelandic,xebcdicicelandic,ebcdiccpis,",                                00000, L"" }, // IBM EBCDIC (Icelandic)
-    /* 100 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20880, "x-EBCDIC-CyrillicRussian,xebcdiccyrillicrussian,ebcdiccyrillic,",                00000, L"" }, // IBM EBCDIC (Cyrillic Russian)
-    /* 101 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20905, "x-EBCDIC-Turkish,xebcdicturkish,ebcdiccptr,",                                    00000, L"" }, // IBM EBCDIC (Turkish)
-    /* 102 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20924, "IBM00924,ibm00924,ebcdiclatin9euro,",                                            00000, L"" }, // IBM EBCDIC (Open System-Euro Latin-1)
-    /* 103 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 21025, "x-EBCDIC-CyrillicSerbianBulgarian,xebcdiccyrillicserbianbulgarian,",             00000, L"" }, // IBM EBCDIC (Cyrillic Serbian-Bulgarian)
-    /* 104 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50930, "x-EBCDIC-JapaneseAndKana,xebcdicjapaneseandkana,",                               00000, L"" }, // IBM EBCDIC (Japanese and Japanese Katakana)
-    /* 105 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50931, "x-EBCDIC-JapaneseAndUSCanada,xebcdicjapaneseanduscanada,",                       00000, L"" }, // IBM EBCDIC (Japanese and US-Canada)
-    /* 106 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50933, "x-EBCDIC-KoreanAndKoreanExtended,xebcdickoreanandkoreanextended,",               00000, L"" }, // IBM EBCDIC (Korean and Korean Extended)
-    /* 107 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50935, "x-EBCDIC-SimplifiedChinese,xebcdicsimplifiedchinese,",                           00000, L"" }, // IBM EBCDIC (Chinese Simplified)
-    /* 108 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50937, "x-EBCDIC-TraditionalChinese,xebcdictraditionalchinese,",                         00000, L"" }, // IBM EBCDIC (Chinese Traditional)
-    /* 109 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50939, "x-EBCDIC-JapaneseAndJapaneseLatin,xebcdicjapaneseandjapaneselatin,",             00000, L"" }, // IBM EBCDIC (Japanese and Japanese-Latin)
-    /* 110 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20105, "x-IA5,xia5,",                                                                    00000, L"" }, // Western European (IA5)
-    /* 111 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20106, "x-IA5-German,xia5german,",                                                       00000, L"" }, // German (IA5)
-    /* 112 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20107, "x-IA5-Swedish,xia5swedish,",                                                     00000, L"" }, // Swedish (IA5)
-    /* 113 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20108, "x-IA5-Norwegian,xia5norwegian,",                                                 00000, L"" }, // Norwegian (IA5)
-    /* 114 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20936, "x-cp20936,xcp20936,",                                                            00000, L"" }, // Chinese Simplified (GB2312)
-    /* 115 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20932, "euc-jp,,",                                                                       00000, L"" }, // Japanese (JIS X 0208-1990 & 0212-1990)
-    /* 117 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50221, "csISO2022JP,csiso2022jp,",                                                       00000, L"" }, // Japanese (JIS-Allow 1 byte Kana)
-    /* 118 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50222, "_ISO-2022-jp$SIO,iso2022jpSIO,",                                                 00000, L"" }, // Japanese (JIS-Allow 1 byte Kana - SO/SI)
-    /* 120 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 50227, "x-cp50227,xcp50227,",                                                            00000, L"" }, // Chinese Simplified (ISO-2022)
-    /* 123 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 20002, "x-Chinese-Eten,xchineseeten,",                                                   00000, L"" }, // Chinese Traditional (Eten)
-    /* 125 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 51936, "euc-cn,euccn,xeuccn,",                                                           00000, L"" }, // Chinese Simplified (EUC)
-    /* 128 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57002, "x-iscii-de,xisciide,",                                                           00000, L"" }, // ISCII Devanagari
-    /* 129 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57003, "x-iscii-be,xisciibe,",                                                           00000, L"" }, // ISCII Bengali
-    /* 130 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57004, "x-iscii-ta,xisciita,",                                                           00000, L"" }, // ISCII Tamil
-    /* 131 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57005, "x-iscii-te,xisciite,",                                                           00000, L"" }, // ISCII Telugu
-    /* 132 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57006, "x-iscii-as,xisciias,",                                                           00000, L"" }, // ISCII Assamese
-    /* 133 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57007, "x-iscii-or,xisciior,",                                                           00000, L"" }, // ISCII Oriya
-    /* 134 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57008, "x-iscii-ka,xisciika,",                                                           00000, L"" }, // ISCII Kannada
-    /* 135 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57009, "x-iscii-ma,xisciima,",                                                           00000, L"" }, // ISCII Malayalam
-    /* 136 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57010, "x-iscii-gu,xisciigu,",                                                           00000, L"" }, // ISCII Gujarathi
-    /* 137 *///{ NCP_EXTERNAL_8BIT|NCP_RECODE, 57011, "x-iscii-pa,xisciipa,",                                                           00000, L"" }, // ISCII Panjabi
 };
 
 constexpr cpi_enc_t _CountOfEncodings()
@@ -635,46 +408,6 @@ static cpi_enc_t DetectUTF16ByNullDistribution(const char* pBuffer, size_t len)
 }
 // ============================================================================
 
-#if 0
-
-constexpr Encoding _MapCPI2CEDEncoding(const cpi_enc_t cpiEncoding)
-{
-    if ((cpiEncoding < 0) || (cpiEncoding >= _CountOfEncodings())) {
-        return UNKNOWN_ENCODING;
-    }
-
-    char parseNames[256] = { '\0' };
-    StringCchCopyA(parseNames, 256, g_Encodings[cpiEncoding].pszParseNames);
-    if (parseNames[0] == '\0') {
-        return UNKNOWN_ENCODING;
-    }
-
-    char* p = &(parseNames[1]); // skip 1st null
-    while (*p != '\0') {
-        if (*p == ',') {
-            *p = '\0';
-        }
-        ++p;
-    }
-    *(++p) = '\0'; // ensure double '\0' at the end
-
-    Encoding encoding = UNKNOWN_ENCODING;
-
-    p = &(parseNames[1]); // skip 1st null
-    while (*p != '\0') {
-        if (EncodingFromName(p, &encoding)) {
-            break;
-        }
-        for (; *p != '\0'; ++p) {} // next
-        ++p; // double null at end
-    }
-    return encoding;
-}
-// ============================================================================
-
-#endif // 0
-
-
 constexpr cpi_enc_t _MapStdEncodingString2CPI(const char* encStrg, float* pConfidence)
 {
     float const confidence = *pConfidence;
@@ -701,59 +434,6 @@ constexpr cpi_enc_t _MapStdEncodingString2CPI(const char* encStrg, float* pConfi
     return cpiEncoding;
 }
 // ============================================================================
-
-
-#if FALSE
-// ============================================================================
-//   CED (Compact Encoding Detector)
-// ============================================================================
-
-cpi_enc_t AnalyzeText_CED
-(
-    const char* const text, const size_t len,
-    const cpi_enc_t encodingHint,
-    float* pConfidence, char* encodingStrg, int cch,
-    const cpi_enc_t unicodeAnalysis)
-{
-    float const ReliableCEDConfThresh = Settings2.ReliableCEDConfidenceMapping;
-    float const UnReliableCEDConfThresh = Settings2.UnReliableCEDConfidenceMapping;
-
-    cpi_enc_t cpiEncoding = CPI_NONE;
-    float confidence = 0.0f;
-
-    int bytes_consumed = 0;
-    bool isReliable = false;
-
-    Encoding const encoding = CompactEncDet::DetectEncoding(
-                                  text, static_cast<int>(len),
-                                  nullptr, nullptr, nullptr,
-                                  _MapCPI2CEDEncoding(encodingHint),
-                                  UNKNOWN_LANGUAGE, CompactEncDet::QUERY_CORPUS, true,
-                                  &bytes_consumed,
-                                  &isReliable);
-
-    //~const char* charset = EncodingName(encoding);
-    const char* charset = MimeEncodingName(encoding);
-
-    StringCchCopyA(encodingStrg, cch, charset);  // CED
-
-    confidence = isReliable ? ReliableCEDConfThresh : UnReliableCEDConfThresh;
-
-    cpiEncoding = _MapStdEncodingString2CPI(charset, &confidence);
-
-#if 1
-    Encoding const check_enc = _MapCPI2CEDEncoding(cpiEncoding);
-    if (encoding != check_enc) {
-        *pConfidence = 0.0;
-    }
-#endif
-
-    *pConfidence = confidence;
-    return cpiEncoding;
-}
-// ============================================================================
-#endif
-
 
 // ============================================================================
 //   UCHARDET (Universal CharacterSet Detector)
@@ -1213,7 +893,7 @@ static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_
         encDetRes->Encoding = bBOM_LE ? CPI_UNICODEBOM : CPI_UNICODEBEBOM;
         encDetRes->bIsReverse = bBOM_BE;
     }
-    else if (Encoding_IsValid(encDetRes->analyzedEncoding) && (encDetRes->bIsAnalysisReliable || !Settings.UseReliableCEDonly)) {
+    else if (Encoding_IsValid(encDetRes->analyzedEncoding) && encDetRes->bIsAnalysisReliable) {
         // Valid UTF-8 byte sequence (no null bytes) prefer UTF-8 over
         // analyzed encoding. ASCII-only files are also valid UTF-8.
         if ((encDetRes->bValidUTF8) && (encDetRes->confidence < MIN_CONFIDENCE_ANSI_NOT_UTF8)) {

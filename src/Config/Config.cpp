@@ -1561,9 +1561,13 @@ void LoadSettings()
   Defaults.VARNAME = static_cast<CAST>(DEFAULT);                             \
   Settings.VARNAME = static_cast<CAST>(clampi(IniSectionGetInt(IniSecSettings, _W(_STRG(VARNAME)), Defaults.VARNAME), MIN, MAX))
 
-#define GET_ENC_VALUE_FROM_INISECTION(VARNAME, DEFAULT, MIN, MAX) \
-  Defaults.VARNAME = (cpi_enc_t)DEFAULT;                          \
-  Settings.VARNAME = (cpi_enc_t)clampi(IniSectionGetInt(IniSecSettings, _W(_STRG(VARNAME)), (int)Defaults.VARNAME), (int)MIN, (int)MAX)
+// encoding: internal<->external mapping
+#define GET_ENC_VALUE_FROM_INISECTION(VARNAME, DEFAULT, MIN, MAX)    \
+  Defaults.VARNAME = (cpi_enc_t)DEFAULT;                             \
+  int const defEncMap = Encoding_MapIniSetting(false, (int)DEFAULT); \
+  int const setEncNoMap = clampi(IniSectionGetInt(IniSecSettings, _W(_STRG(VARNAME)), defEncMap), (int)MIN, (int)MAX); \
+  Settings.VARNAME = (cpi_enc_t)Encoding_MapIniSetting(true, setEncNoMap)
+
 
     // ---  remove deprecated  --------------------------------------------------
 
@@ -1711,22 +1715,21 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(ViewWhiteSpace, false);
     GET_BOOL_VALUE_FROM_INISECTION(ViewEOLs, false);
 
-    auto const iDefaultEncoding = (cpi_enc_t)Encoding_MapIniSetting(false, (int)CPI_UTF8);
-    GET_ENC_VALUE_FROM_INISECTION(DefaultEncoding, iDefaultEncoding, CPI_NONE, INT_MAX);
-    Settings.DefaultEncoding = ((Settings.DefaultEncoding == CPI_NONE) ? CPI_UTF8 : (cpi_enc_t)Encoding_MapIniSetting(true, (int)Settings.DefaultEncoding));
-    Globals.fvCurFile.iEncoding = Settings.DefaultEncoding;
-
 #ifdef D_NP3_WIN10_DARK_MODE
     GET_CAST_INT_VALUE_FROM_INISECTION(WIN_DISPL_MODE, WinThemeDarkMode, 0, 0, 2);
 #endif
 
+    GET_ENC_VALUE_FROM_INISECTION(DefaultEncoding, CPI_UTF8, CPI_NONE, INT_MAX);
+    Globals.fvCurFile.iEncoding = Settings.DefaultEncoding;
+
+    bool const bDefaultEncUTF8 = (Settings.DefaultEncoding == CPI_UTF8 || Settings.DefaultEncoding == CPI_UTF8SIGN);
+
     GET_BOOL_VALUE_FROM_INISECTION(UseDefaultForFileEncoding, false);
-    GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, true);
-    GET_BOOL_VALUE_FROM_INISECTION(UseReliableCEDonly, true);
+    GET_BOOL_VALUE_FROM_INISECTION(LoadASCIIasUTF8, bDefaultEncUTF8);
     GET_BOOL_VALUE_FROM_INISECTION(LoadNFOasOEM, true);
     GET_BOOL_VALUE_FROM_INISECTION(NoEncodingTags, true);
     GET_BOOL_VALUE_FROM_INISECTION(SkipUnicodeDetection, false);
-    GET_BOOL_VALUE_FROM_INISECTION(SkipANSICodePageDetection, false);
+    GET_BOOL_VALUE_FROM_INISECTION(SkipANSICodePageDetection, !bDefaultEncUTF8);
     GET_INT_VALUE_FROM_INISECTION(AnalyzeReliableConfidenceLevel, 50, 0, 100);
     constexpr const WCHAR* const arcl_s2 = L"AnalyzeReliableConfidenceLevel";
     int const deprecatedARCL = IniSectionGetInt(IniSecSettings2, arcl_s2, -1);
@@ -2008,6 +2011,17 @@ void LoadSettings()
     IniSectionDelete(IniSecSettings2, _W(_STRG(VARNAME)), false);                 \
   }
 
+// encoding: internal<->external mapping
+#define SAVE_ENC_IF_NOT_EQ_DEFAULT(TYPE, VARNAME)                                 \
+  if (Settings.VARNAME != Defaults.VARNAME) {                                     \
+    int const encValMapped = Encoding_MapIniSetting(true, (int)Settings.VARNAME); \
+    IniSectionSetInt(IniSecSettings, _W(_STRG(VARNAME)), encValMapped);           \
+  }                                                                               \
+  else {                                                                          \
+    IniSectionDelete(IniSecSettings, _W(_STRG(VARNAME)), false);                  \
+  }
+
+
 static bool _SaveSettings(bool bForceSaveSettings)
 {
     if (!IsIniFileCached()) {
@@ -2161,14 +2175,10 @@ static bool _SaveSettings(bool bForceSaveSettings)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ViewWhiteSpace);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ViewEOLs);
 
-    // encoding: internal<->external mapping
-    Settings.DefaultEncoding = (cpi_enc_t)Encoding_MapIniSetting(false, (int)Settings.DefaultEncoding);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, DefaultEncoding);
-    Settings.DefaultEncoding = (cpi_enc_t)Encoding_MapIniSetting(true, (int)Settings.DefaultEncoding);
+    SAVE_ENC_IF_NOT_EQ_DEFAULT(Int, DefaultEncoding);
 
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, UseDefaultForFileEncoding);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, LoadASCIIasUTF8);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, UseReliableCEDonly);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, LoadNFOasOEM);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, NoEncodingTags);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SkipUnicodeDetection);

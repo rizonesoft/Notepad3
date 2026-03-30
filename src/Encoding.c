@@ -207,7 +207,7 @@ int Encoding_MapIniSetting(bool bLoad, int iSetting)
             return Settings.DefaultEncoding;
         }
         }
-    } else {
+    } else { // save
         switch (iSetting) {
         case CPI_NONE:
             return -1;
