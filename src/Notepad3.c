@@ -1322,20 +1322,31 @@ WININFO GetFactoryDefaultWndPos(HWND hwnd, const int flagsPos)
 
     RECT rc = { 0 };
     GetWindowRect(hwnd, &rc);
-    MONITORINFO mi;
-    GetMonitorInfoFromRect(&rc, &mi);
-    
+
+    // determine monitor by top-left corner of current window
+    POINT const ptTopLeft = { rc.left, rc.top };
+    HMONITOR const hMonitor = MonitorFromPoint(ptTopLeft, MONITOR_DEFAULTTONEAREST);
+    MONITORINFO mi = { sizeof(MONITORINFO) };
+    GetMonitorInfo(hMonitor, &mi);
+
     rc = mi.rcWork;
-    //~RelAdjustRectForDPI(&rc, USER_DEFAULT_SCREEN_DPI, dpi);
 
     WININFO winfo = INIT_WININFO;
     winfo.y = rc.top;
     winfo.cy = rc.bottom - rc.top;
     winfo.cx = (rc.right - rc.left) / 2;
-    winfo.x = (flagsPos == 3) ? rc.left : winfo.cx;
+    winfo.x = (flagsPos == 3) ? rc.left : (rc.left + winfo.cx);
     winfo.max = 0;
     winfo.zoom = 100;
     winfo.dpi = dpi;
+
+    // extend by DWM invisible border so visible content fills work area
+    int const border = GetSystemMetrics(SM_CXPADDEDBORDER);
+    int const sframe = GetSystemMetrics(SM_CXSIZEFRAME);
+    winfo.x += border;
+    winfo.y += border;
+    winfo.cx += (border + sframe);
+    winfo.cy += (border + sframe);
 
     return winfo;
 }

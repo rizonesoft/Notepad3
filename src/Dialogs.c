@@ -1248,6 +1248,8 @@ CASE_WM_CTLCOLOR_SET:
                             wchBuf, g_Encodings[CPI_ANSI_DEFAULT].wchLabel);
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf2);
 
+            StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Default Encoding -> '%s'", Encoding_GetLabel(Settings.DefaultEncoding));
+            StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
             StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Current Encoding -> '%s'", Encoding_GetLabel(Encoding_GetCurrent()));
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
@@ -1260,6 +1262,12 @@ CASE_WM_CTLCOLOR_SET:
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
             StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Display-DPI -> %i x %i  (Scale: %i%%).", dpi, dpi, ScaleIntToDPI(hwnd, 100));
+            StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
+
+            RECT rcMain = { 0 };
+            GetWindowRect(Globals.hwndMain, &rcMain);
+            StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Main-Window -> top-left (%i, %i), size %i x %i [pix]",
+                rcMain.top, rcMain.left, rcMain.right - rcMain.left, rcMain.bottom - rcMain.top);
             StringCchCat(wchVerInfo, COUNTOF(wchVerInfo), wchBuf);
 
             StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"\n- Rendering-Technology -> '%s'", Settings.RenderingTechnology ? L"DIRECT-WRITE" : L"GDI");
@@ -3443,7 +3451,7 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
             SetExplorerTheme(GetDlgItem(hwnd, IDCANCEL));
             //~SetExplorerTheme(GetDlgItem(hwnd, IDC_ENCODINGLIST)); ~ OWNERDRAWN -> WM_DRAWITEM
             //SetExplorerTheme(GetDlgItem(hwnd, IDC_RESIZEGRIP));
-            int const ctl[] = { IDC_ENCODINGLIST, IDC_USEASREADINGFALLBACK, IDC_ASCIIASUTF8, IDC_RELIABLE_DETECTION_RES,
+            int const ctl[] = { IDC_ENCODINGLIST, IDC_USEASREADINGFALLBACK, IDC_ASCIIASUTF8,
                                 IDC_NFOASOEM, IDC_ENCODINGFROMFILEVARS, IDC_NOUNICODEDETECTION, IDC_NOANSICPDETECTION,
                                 IDC_ANSI_CONFIDENCE_LEVEL, IDC_STATIC, IDC_STATIC2
                               };
@@ -3474,7 +3482,6 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
         CheckDlgButton(hwnd, IDC_USEASREADINGFALLBACK, SetBtn(s_bUseAsFallback));
 
         CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(s_bLoadASCIIasUTF8));
-        CheckDlgButton(hwnd, IDC_RELIABLE_DETECTION_RES, SetBtn(Settings.UseReliableCEDonly));
         CheckDlgButton(hwnd, IDC_NFOASOEM, SetBtn(Settings.LoadNFOasOEM));
         CheckDlgButton(hwnd, IDC_ENCODINGFROMFILEVARS, SetBtn(!Settings.NoEncodingTags));
         CheckDlgButton(hwnd, IDC_NOUNICODEDETECTION, SetBtn(!Settings.SkipUnicodeDetection));
@@ -3487,6 +3494,12 @@ static INT_PTR CALLBACK SelectDefEncodingDlgProc(HWND hwnd, UINT umsg, WPARAM wP
         DialogEnableControl(hwnd, IDC_ANSI_CONFIDENCE_SPIN, !Settings.SkipANSICodePageDetection);
 
         CenterDlgInParent(hwnd, false);
+
+        WCHAR wchTitle[256] = { L'\0' };
+        GetWindowText(hwnd, wchTitle, COUNTOF(wchTitle));
+        WCHAR wchTitleEx[256] = { L'\0' };
+        StringCchPrintf(wchTitleEx, COUNTOF(wchTitleEx), L"%s  OS-CP: %s", wchTitle, g_Encodings[CPI_ANSI_DEFAULT].wchLabel);
+        SetWindowText(hwnd, wchTitleEx);
     }
     return TRUE;
 
@@ -3574,6 +3587,23 @@ CASE_WM_CTLCOLOR_SET:
                     CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(s_bLoadASCIIasUTF8));
                 }
             }
+
+            // auto-toggle detection settings when encoding selection changes
+            if (LOWORD(wParam) == IDC_ENCODINGLIST) {
+                if (s_iEnc == CPI_ANSI_DEFAULT) {
+                    s_bLoadASCIIasUTF8 = false;
+                    CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(false));
+                    CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, SetBtn(false));
+                    DialogEnableControl(hwnd, IDC_ANSI_CONFIDENCE_LEVEL, false);
+                    DialogEnableControl(hwnd, IDC_ANSI_CONFIDENCE_SPIN, false);
+                } else if (s_iEnc == CPI_UTF8) {
+                    s_bLoadASCIIasUTF8 = true;
+                    CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(true));
+                    CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, SetBtn(true));
+                    DialogEnableControl(hwnd, IDC_ANSI_CONFIDENCE_LEVEL, true);
+                    DialogEnableControl(hwnd, IDC_ANSI_CONFIDENCE_SPIN, true);
+                }
+            }
         }
         break;
 
@@ -3593,7 +3623,6 @@ CASE_WM_CTLCOLOR_SET:
                 } else {
                     Settings.UseDefaultForFileEncoding = IsButtonChecked(hwnd, IDC_USEASREADINGFALLBACK);
                     Settings.LoadASCIIasUTF8 = IsButtonChecked(hwnd, IDC_ASCIIASUTF8);
-                    Settings.UseReliableCEDonly = IsButtonChecked(hwnd, IDC_RELIABLE_DETECTION_RES);
                     Settings.LoadNFOasOEM = IsButtonChecked(hwnd, IDC_NFOASOEM);
                     Settings.NoEncodingTags = !IsButtonChecked(hwnd, IDC_ENCODINGFROMFILEVARS);
                     Settings.SkipUnicodeDetection = !IsButtonChecked(hwnd, IDC_NOUNICODEDETECTION);
@@ -4557,34 +4586,42 @@ void FitIntoMonitorGeometry(LPRECT pRect, WININFO *pWinInfo, SCREEN_MODE mode, b
     } else {
         WININFO wi = *pWinInfo;
         WinInfoToScreenCoord(&wi);
+
+        // expand allowed bounds by DWM extended frame (invisible border)
+        // so Aero-snapped positions are not clipped
+        int const cxBorder = GetSystemMetrics(SM_CXSIZEFRAME) + GetSystemMetrics(SM_CXPADDEDBORDER);
+        int const cyBorder = GetSystemMetrics(SM_CYSIZEFRAME) + GetSystemMetrics(SM_CXPADDEDBORDER);
+        RECT rcAllow = mi.rcWork;
+        InflateRect(&rcAllow, cxBorder, cyBorder);
+
         // fit into area
-        if (wi.x < mi.rcWork.left) {
-            wi.x = mi.rcWork.left;
+        if (wi.x < rcAllow.left) {
+            wi.x = rcAllow.left;
         }
-        if (wi.y < mi.rcWork.top) {
-            wi.y = mi.rcWork.top;
+        if (wi.y < rcAllow.top) {
+            wi.y = rcAllow.top;
         }
-        if (bTopLeft && (((wi.x + wi.cx) > mi.rcWork.right) || 
-                         ((wi.y + wi.cy) > mi.rcWork.bottom))) {
-            wi.y = mi.rcWork.top;
-            wi.x = mi.rcWork.left;
+        if (bTopLeft && (((wi.x + wi.cx) > rcAllow.right) || 
+                         ((wi.y + wi.cy) > rcAllow.bottom))) {
+            wi.y = rcAllow.top;
+            wi.x = rcAllow.left;
         } else {
-            if ((wi.x + wi.cx) > mi.rcWork.right) {
-                wi.x -= (wi.x + wi.cx - mi.rcWork.right);
-                if (wi.x < mi.rcWork.left) {
-                    wi.x = mi.rcWork.left;
+            if ((wi.x + wi.cx) > rcAllow.right) {
+                wi.x -= (wi.x + wi.cx - rcAllow.right);
+                if (wi.x < rcAllow.left) {
+                    wi.x = rcAllow.left;
                 }
-                if ((wi.x + wi.cx) > mi.rcWork.right) {
-                    wi.cx = mi.rcWork.right - wi.x;
+                if ((wi.x + wi.cx) > rcAllow.right) {
+                    wi.cx = rcAllow.right - wi.x;
                 }
             }
-            if ((wi.y + wi.cy) > mi.rcWork.bottom) {
-                wi.y -= (wi.y + wi.cy - mi.rcWork.bottom);
-                if (wi.y < mi.rcWork.top) {
-                    wi.y = mi.rcWork.top;
+            if ((wi.y + wi.cy) > rcAllow.bottom) {
+                wi.y -= (wi.y + wi.cy - rcAllow.bottom);
+                if (wi.y < rcAllow.top) {
+                    wi.y = rcAllow.top;
                 }
-                if ((wi.y + wi.cy) > mi.rcWork.bottom) {
-                    wi.cy = mi.rcWork.bottom - wi.y;
+                if ((wi.y + wi.cy) > rcAllow.bottom) {
+                    wi.cy = rcAllow.bottom - wi.y;
                 }
             }
         }

@@ -441,7 +441,7 @@
 #define IDC_AUTO_DETECT_INDENTS         18104
 #define IDC_CMDLINEHELP                 18105
 #define IDC_STYLEEDIT_HELP              18106
-#define IDC_RELIABLE_DETECTION_RES      18107
+//#define IDC_RELIABLE_DETECTION_RES      18107  // removed: UseReliableCEDonly replaced by AnalyzeReliableConfidenceLevel=0
 #define IDC_LINE_TEXT                   18108
 #define IDC_COLUMN_TEXT                 18109
 #define IDC_INDENT_WIDTH_TAB            18110
