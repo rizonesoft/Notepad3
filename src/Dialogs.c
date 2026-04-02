@@ -1394,9 +1394,9 @@ CASE_WM_CTLCOLOR_SET:
 
             GetDlgItemText(hwnd, IDC_COMMANDLINE, args_buf, (int)StrgGetAllocLength(hargs_str));
             StrgSanitize(hargs_str);
-            ExpandEnvironmentStrgs(hargs_str, false);
+            ExpandEnvironmentStrgs(hargs_str, false); // may realloc — args_buf is stale
 
-            ExtractFirstArgument(args_buf, file_buf, args2_buf, CMDLN_LENGTH_LIMIT);
+            ExtractFirstArgument(StrgGet(hargs_str), file_buf, args2_buf, CMDLN_LENGTH_LIMIT);
             Path_Sanitize(hfile_pth);
             StrgSanitize(hargs2_str);
 
@@ -1449,7 +1449,7 @@ CASE_WM_CTLCOLOR_SET:
 
         case IDOK: {
             HPATHL         hfile_pth = Path_Allocate(NULL);
-            wchar_t* const file_buf = Path_WriteAccessBuf(hfile_pth, CMDLN_LENGTH_LIMIT);
+            wchar_t*       file_buf = Path_WriteAccessBuf(hfile_pth, CMDLN_LENGTH_LIMIT);
             HSTRINGW       hargs_str = StrgCreate(NULL);
             wchar_t* const args_buf = StrgWriteAccessBuf(hargs_str, CMDLN_LENGTH_LIMIT);
 
@@ -1459,7 +1459,8 @@ CASE_WM_CTLCOLOR_SET:
 
                 bool bQuickExit = false;
 
-                Path_ExpandEnvStrings(hfile_pth);
+                Path_ExpandEnvStrings(hfile_pth); // may realloc
+                file_buf = Path_WriteAccessBuf(hfile_pth, 0); // re-obtain after potential realloc
                 ExtractFirstArgument(file_buf, file_buf, args_buf, (int)Path_GetBufCount(hfile_pth));
                 Path_Sanitize(hfile_pth);
                 StrgSanitize(hargs_str);
@@ -5023,24 +5024,47 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     HPATHL hGrepWinDir = Path_Allocate(Path_Get(hExeFilePath));
     Path_RemoveFileSpec(hGrepWinDir);
 
-    HPATHL hGrepWinIniPath = Path_Copy(hExeFilePath); // side-by-side
+    // detect PortableApps installation (grepWinPortable.exe launcher)
+    LPCWSTR const wchExeFileName = Path_FindFileName(hExeFilePath);
+    bool const bIsPortableApps = (wchExeFileName && *wchExeFileName)
+        && (CompareStringOrdinal(wchExeFileName, -1, L"grepWinPortable.exe", -1, TRUE) == CSTR_EQUAL);
 
-    const WCHAR* const commandsSection = L"commands";
 
-    if (Path_IsExistingFile(hExeFilePath)) {
+    if (!Path_IsExistingFile(hExeFilePath)) {
+
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_GREPWIN);
+
+    }
+    else {
+
+        HPATHL hGrepWinIniPath = Path_Copy(hExeFilePath); // side-by-side
 
         // path to grepWin INI-File
         Path_RemoveFileSpec(hGrepWinIniPath);
 
         LPCWSTR const wchIniFileName = L"grepwin.ini";
+        if (bIsPortableApps) {
+            // PortableApps layout: <app-root>\Data\settings\grepwin.ini
+            Path_Append(hGrepWinIniPath, L"Data");
+            Path_Append(hGrepWinIniPath, L"settings");
+        }
         Path_Append(hGrepWinIniPath, wchIniFileName);
         if (Path_IsRelative(hGrepWinIniPath)) {
             Path_Reset(hGrepWinIniPath, Path_Get(hGrepWinDir));
+            if (bIsPortableApps) {
+                Path_Append(hGrepWinIniPath, L"Data");
+                Path_Append(hGrepWinIniPath, L"settings");
+            }
             Path_Append(hGrepWinIniPath, wchIniFileName);
         }
 
+        
+        // INI-File sections for cmdln settings
+        const WCHAR* const np3cmdSection = L"np3cmds";
+
         // create/modify grepWin INI-File
         ResetIniFileCache();
+
         if (CreateIniFile(hGrepWinIniPath, NULL) && LoadIniFileCache(hGrepWinIniPath)) {
 
             // =================================================================
@@ -5063,8 +5087,8 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
                 }
             }
 
-            HPATHL hLngFilePath = Path_Allocate(NULL);
-            LPWSTR wchLngPathBuf = Path_WriteAccessBuf(hLngFilePath, PATHLONG_MAX_CCH);
+            HPATHL             hLngFilePath = Path_Allocate(NULL);
+            LPWSTR             wchLngPathBuf = Path_WriteAccessBuf(hLngFilePath, PATHLONG_MAX_CCH);
             const WCHAR* const langFile = L"languagefile";
 
             if (lngIdx >= 0) {
@@ -5074,9 +5098,15 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
                     IniSectionDelete(globalSection, langFile, false);
                 }
                 else {
-                    Path_CanonicalizeEx(hLngFilePath, hGrepWinDir);
-                    wchLngPathBuf = Path_WriteAccessBuf(hLngFilePath, PATHLONG_MAX_CCH);
-                    IniSectionSetString(globalSection, langFile, wchLngPathBuf);
+                    // PortableApps: language files are in App\GrepWin\, not beside the launcher
+                    HPATHL hLngBaseDir = Path_Copy(hGrepWinDir);
+                    if (bIsPortableApps) {
+                        Path_Append(hLngBaseDir, L"App");
+                        Path_Append(hLngBaseDir, L"GrepWin");
+                    }
+                    Path_CanonicalizeEx(hLngFilePath, hLngBaseDir);
+                    Path_Release(hLngBaseDir);
+                    IniSectionSetString(globalSection, langFile, Path_Get(hLngFilePath));
                 }
             }
             else {
@@ -5098,6 +5128,8 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
             int const idotMLn = IniSectionGetInt(globalSection, L"DotMatchesNewline", ((Settings.EFR_Data.fuFlags & SCFIND_DOT_MATCH_ALL) != 0) ? (Settings.EFR_Data.bRegExprSearch) : 0);
             IniSectionSetInt(globalSection, L"DotMatchesNewline", idotMLn);
 
+            IniSectionSetInt(globalSection, L"showcontent", 1);  // const
+
             // Notepad3 path (for grepWin's EditorCmd)
             HPATHL hpath_np3 = Path_Allocate(NULL);
             Path_GetModuleFilePath(hpath_np3);
@@ -5107,6 +5139,37 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 
             Path_Release(hpath_np3);
             Path_Release(hLngFilePath);
+
+            // search directory
+            HPATHL pthSearchDir = NULL;
+            if (Path_IsNotEmpty(Paths.CurrentFile)) {
+                pthSearchDir = Path_Copy(Paths.CurrentFile);
+                Path_RemoveFileSpec(pthSearchDir);
+            }
+            else {
+                pthSearchDir = Path_Copy(Paths.WorkingDirectory);
+            }
+            IniSectionSetString(globalSection, L"searchpath", Path_Get(pthSearchDir));
+            Path_Release(pthSearchDir);
+
+
+            // =================================================================
+            // [np3cmds]
+            // =================================================================
+            
+            // search pattern
+            if (StrIsNotEmpty(searchPattern))
+                IniSectionSetString(np3cmdSection, L"searchfor", searchPattern);
+            else {
+                IniSectionSetString(np3cmdSection, L"searchfor", StrgGet(Settings.EFR_Data.chFindPattern));
+                IniSectionSetString(np3cmdSection, L"replacewith", StrgGet(Settings.EFR_Data.chReplaceTemplate));
+            }
+
+            StrgCat(hstrOptions, ((Settings.EFR_Data.fuFlags & SCFIND_MATCHCASE) != 0) ? L"/i:no " : L"/i:yes ");
+            StrgCat(hstrOptions, ((Settings.EFR_Data.fuFlags & SCFIND_DOT_MATCH_ALL) != 0) ? L"/n:yes " : L"/n:no ");
+            StrgCat(hstrOptions, ((Settings.EFR_Data.fuFlags & SCFIND_WHOLEWORD) != 0) ? L"/wholewords:yes " : L"/wholewords:no ");
+            StrgCat(hstrOptions, Settings.EFR_Data.bRegExprSearch ? L"/regex:yes " : L"/regex:no ");
+
 
             // =================================================================
             // [settings]
@@ -5118,64 +5181,39 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
             int const iBackupInFolder = IniSectionGetInt(settingsSection, L"backupinfolder", 1);
             IniSectionSetInt(settingsSection, L"backupinfolder", iBackupInFolder);
 
+
             // =================================================================
             // [export]
             // =================================================================
             const WCHAR* const exportSection = L"export";
-            int const iExpPaths = IniSectionGetInt(exportSection, L"paths", 1);
+            int const          iExpPaths = IniSectionGetInt(exportSection, L"paths", 1);
             IniSectionSetInt(exportSection, L"paths", iExpPaths);
             int const iExpLnNums = IniSectionGetInt(exportSection, L"linenumbers", 1);
             IniSectionSetInt(exportSection, L"linenumbers", iExpLnNums);
             int const iExpContent = IniSectionGetInt(exportSection, L"linecontent", 1);
             IniSectionSetInt(exportSection, L"linecontent", iExpContent);
 
-
-            // =================================================================
-            // [commands]
-            // =================================================================
-            // see above: const WCHAR* const commandsSection = L"commands";
-
-            // search directory
-            HPATHL pthSearchDir = NULL;
-            if (Path_IsNotEmpty(Paths.CurrentFile)) {
-                pthSearchDir = Path_Copy(Paths.CurrentFile);
-                Path_RemoveFileSpec(pthSearchDir);
-            }
-            else {
-                pthSearchDir = Path_Copy(Paths.WorkingDirectory);
-            }
-            IniSectionSetString(commandsSection, L"searchpath", Path_Get(pthSearchDir));
-            Path_Release(pthSearchDir);
-
-            // search pattern
-            if (StrIsNotEmpty(searchPattern))
-                IniSectionSetString(commandsSection, L"searchfor", searchPattern);
-            else {
-                IniSectionSetString(commandsSection, L"searchfor", StrgGet(Settings.EFR_Data.chFindPattern));
-                IniSectionSetString(commandsSection, L"replacewith", StrgGet(Settings.EFR_Data.chReplaceTemplate));
-            }
-
-            int const iRegex = IniSectionGetInt(commandsSection, L"regex", Settings.EFR_Data.bRegExprSearch ? 1 : 0);
-            IniSectionSetInt(commandsSection, L"regex", iRegex);
-
             SaveIniFileCache(hGrepWinIniPath);
             ResetIniFileCache();
         }
-    }
 
-    // grepWin arguments
-    HSTRINGW hstrParams = StrgCreate(L"");
-    if (Path_IsExistingFile(hGrepWinIniPath)) {
-        StrgFormat(hstrParams, L"/portable /content %s /searchini:\"%s\" /name:\"%s\"",
-                   StrgGet(hstrOptions), Path_Get(hGrepWinIniPath), commandsSection);
-    } else {
-        StrgFormat(hstrParams, L"/portable /content %s", StrgGet(hstrOptions));
-    }
+        // grepWin arguments (omit /portable for PortableApps — the launcher sets it)
+        HSTRINGW hstrParams = StrgCreate(L"");
+        if (Path_IsExistingFile(hGrepWinIniPath)) {
+            if (bIsPortableApps) {
+                StrgFormat(hstrParams, L"/content %s /searchfor:\"%s\"", StrgGet(hstrOptions), searchPattern);
+            }
+            else {
+                StrgFormat(hstrParams, L"/portable /content %s /searchini:\"%s\" /name:\"%s\"",
+                    StrgGet(hstrOptions), Path_Get(hGrepWinIniPath), np3cmdSection);
+            }
+        }
+        else {
+            StrgFormat(hstrParams, bIsPortableApps ? 
+                       L"/content %s /searchfor:\"%s\"" : L"/portable /content %s /searchfor:\"%s\"",
+                       StrgGet(hstrOptions), searchPattern);
+        }
 
-    if (!Path_IsExistingFile(hExeFilePath)) {
-        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_GREPWIN);
-    }
-    else {
         SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
         sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOZONECHECKS;
         sei.hwnd = hwnd;
@@ -5187,14 +5225,13 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
         if (!ShellExecuteExW(&sei) || (INT_PTR)sei.hInstApp < 32) {
             InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_GREPWIN);
         }
+        StrgDestroy(hstrParams);
+        Path_Release(hGrepWinIniPath);
     }
 
     StrgDestroy(hstrOptions);
-    StrgDestroy(hstrParams);
-
-    Path_Release(hGrepWinIniPath);
-    Path_Release(hGrepWinDir);
     Path_Release(hExeFilePath);
+    Path_Release(hGrepWinDir);
 }
 
 
