@@ -450,7 +450,6 @@ void STRAPI StrgDestroy(HSTRINGW hstr)
     if (!pstr)
         return;
     FreeBufferW(pstr);
-    FreeBuffer((LPWSTR)pstr);
 }
 // ----------------------------------------------------------------------------
 

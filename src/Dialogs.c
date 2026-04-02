@@ -4971,7 +4971,6 @@ static grepWin_t grepWinIniSettings[] = {
     { L"onlyone",           L"1" },
     { L"AllSize",           L"0" },
     { L"Size",           L"2000" },
-    { L"CaseSensitive",     L"0" },
     { L"CreateBackup",      L"1" },
     { L"DateLimit",         L"0" },
     { L"IncludeBinary",     L"0" },
@@ -4979,7 +4978,6 @@ static grepWin_t grepWinIniSettings[] = {
     { L"IncludeSubfolders", L"1" },
     { L"IncludeSystem",     L"1" },
     { L"UseFileMatchRegex", L"0" },
-    { L"UseRegex",          L"0" },
     { L"UTF8",              L"1" }
 };
 
@@ -4990,16 +4988,10 @@ static grepWin_t grepWinIniSettings[] = {
 //
 void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 {
-    HPATHL hGrepWinIniPath = Path_Copy(Paths.IniFile);  // side-by-side
-    Path_CanonicalizeEx(hGrepWinIniPath, Paths.ModuleDirectory);
-
     HPATHL hExeFilePath = Path_Allocate(Path_Get(Settings2.GrepWinPath));
-    Path_CanonicalizeEx(hExeFilePath, Paths.ModuleDirectory);
     wchar_t* const exe_pth_buf = Path_WriteAccessBuf(hExeFilePath, PATHLONG_MAX_CCH);
-
-    HSTRINGW hstrOptions = StrgCreate(NULL);
+    HSTRINGW hstrOptions = StrgCreate(L"");
     wchar_t* const options_buf = StrgWriteAccessBuf(hstrOptions, PATHLONG_MAX_CCH);
-
     // find grepWin executable
     if (Path_IsNotEmpty(hExeFilePath)) {
         ExtractFirstArgument(Path_Get(Settings2.GrepWinPath), exe_pth_buf, options_buf, PATHLONG_MAX_CCH);
@@ -5007,28 +4999,40 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
         Path_Sanitize(hExeFilePath);
     }
     if (Path_IsEmpty(hExeFilePath)) {
-        Path_Reset(hExeFilePath, Constants.FileSearchGrepWin);
-        Path_CanonicalizeEx(hExeFilePath, Paths.ModuleDirectory);
+        // 1st: side-by-side in module directory
+        Path_Reset(hExeFilePath, Path_Get(Paths.ModuleDirectory));
+        Path_Append(hExeFilePath, L"grepWin"); // subdir
+        Path_Append(hExeFilePath, Constants.FileSearchGrepWin);
     }
-    if (Path_IsRelative(hExeFilePath)) {
-        Path_AbsoluteFromApp(hExeFilePath, false);
+    if (!Path_IsExistingFile(hExeFilePath)) {
+        // 2nd: %APPDATA%\Rizonesoft\Notepad3\grepWin\<exe>
+        HPATHL happdata = Path_Allocate(NULL);
+        if (Path_GetKnownFolder(&FOLDERID_RoamingAppData, happdata)) {
+            Path_Append(happdata, L"Rizonesoft");
+            Path_Append(happdata, L"Notepad3");
+            Path_Append(happdata, L"grepWin");
+            Path_Append(happdata, Constants.FileSearchGrepWin);
+            if (Path_IsExistingFile(happdata)) {
+                Path_Swap(hExeFilePath, happdata);
+            }
+        }
+        Path_Release(happdata);
     }
 
-    // working (grepWinNP3.ini) directory
-    HPATHL hTemp = Path_Allocate(NULL);
+    // working (grepwin.ini) directory
     HPATHL hGrepWinDir = Path_Allocate(Path_Get(hExeFilePath));
     Path_RemoveFileSpec(hGrepWinDir);
+
+    HPATHL hGrepWinIniPath = Path_Copy(hExeFilePath); // side-by-side
+
+    const WCHAR* const commandsSection = L"commands";
 
     if (Path_IsExistingFile(hExeFilePath)) {
 
         // path to grepWin INI-File
-        if (Path_IsEmpty(hGrepWinIniPath)) {
-            Path_Reset(hGrepWinIniPath, Path_Get(Paths.IniFileDefault));
-            Path_CanonicalizeEx(hGrepWinIniPath, Paths.ModuleDirectory);
-        }
         Path_RemoveFileSpec(hGrepWinIniPath);
 
-        LPCWSTR const wchIniFileName = L"grepWinNP3.ini";
+        LPCWSTR const wchIniFileName = L"grepwin.ini";
         Path_Append(hGrepWinIniPath, wchIniFileName);
         if (Path_IsRelative(hGrepWinIniPath)) {
             Path_Reset(hGrepWinIniPath, Path_Get(hGrepWinDir));
@@ -5039,10 +5043,12 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
         ResetIniFileCache();
         if (CreateIniFile(hGrepWinIniPath, NULL) && LoadIniFileCache(hGrepWinIniPath)) {
 
+            // =================================================================
             // preserve [global] user settings from last call
+            // =================================================================
             const WCHAR* const globalSection = L"global";
 
-            WCHAR value[HUGE_BUFFER];
+            WCHAR value[LARGE_BUFFER];
             for (int i = 0; i < COUNTOF(grepWinIniSettings); ++i) {
                 IniSectionGetString(globalSection, grepWinIniSettings[i].key, grepWinIniSettings[i].val, value, COUNTOF(value));
                 IniSectionSetString(globalSection, grepWinIniSettings[i].key, value);
@@ -5059,53 +5065,75 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 
             HPATHL hLngFilePath = Path_Allocate(NULL);
             LPWSTR wchLngPathBuf = Path_WriteAccessBuf(hLngFilePath, PATHLONG_MAX_CCH);
+            const WCHAR* const langFile = L"languagefile";
 
             if (lngIdx >= 0) {
-                IniSectionGetString(globalSection, L"languagefile", grepWinLangResName[lngIdx].filename, wchLngPathBuf, Path_GetBufCount(hLngFilePath));
-                IniSectionSetString(globalSection, L"languagefile", wchLngPathBuf);
-                Path_Sanitize(hLngFilePath);
-            }
-            else {
-                IniSectionGetString(globalSection, L"languagefile", L"", wchLngPathBuf, Path_GetBufCount(hLngFilePath));
+                IniSectionGetString(globalSection, langFile, grepWinLangResName[lngIdx].filename, wchLngPathBuf, Path_GetBufCount(hLngFilePath));
                 Path_Sanitize(hLngFilePath);
                 if (Path_IsEmpty(hLngFilePath)) {
-                    IniSectionDelete(globalSection, L"languagefile", false);
+                    IniSectionDelete(globalSection, langFile, false);
+                }
+                else {
+                    Path_CanonicalizeEx(hLngFilePath, hGrepWinDir);
+                    wchLngPathBuf = Path_WriteAccessBuf(hLngFilePath, PATHLONG_MAX_CCH);
+                    IniSectionSetString(globalSection, langFile, wchLngPathBuf);
+                }
+            }
+            else {
+                IniSectionGetString(globalSection, langFile, L"", wchLngPathBuf, Path_GetBufCount(hLngFilePath));
+                Path_Sanitize(hLngFilePath);
+                if (Path_IsEmpty(hLngFilePath)) {
+                    IniSectionDelete(globalSection, langFile, false);
                 }
             }
 
-            bool const bDarkMode = UseDarkMode(); // <- override usr ~ IniSectionGetBool(globalSection, L"darkmode", UseDarkMode());
-            IniSectionSetBool(globalSection, L"darkmode", bDarkMode);
+            IniSectionSetInt(globalSection, L"darkmode", UseDarkMode() ? 1 : 0);
+
+            int const iCaseSens = IniSectionGetInt(globalSection, L"CaseSensitive", ((Settings.EFR_Data.fuFlags & SCFIND_MATCHCASE) != 0) ? 1 : 0);
+            IniSectionSetInt(globalSection, L"CaseSensitive", iCaseSens);
+            int const iWholeWord = IniSectionGetInt(globalSection, L"WholeWords", ((Settings.EFR_Data.fuFlags & SCFIND_WHOLEWORD) != 0) ? 1 : 0);
+            IniSectionSetInt(globalSection, L"WholeWords", iWholeWord);
+            int const iUseRegex = IniSectionGetInt(globalSection, L"UseRegex", Settings.EFR_Data.bRegExprSearch ? 1 : 0);
+            IniSectionSetInt(globalSection, L"UseRegex", iUseRegex);
+            int const idotMLn = IniSectionGetInt(globalSection, L"DotMatchesNewline", ((Settings.EFR_Data.fuFlags & SCFIND_DOT_MATCH_ALL) != 0) ? (Settings.EFR_Data.bRegExprSearch) : 0);
+            IniSectionSetInt(globalSection, L"DotMatchesNewline", idotMLn);
 
             // Notepad3 path (for grepWin's EditorCmd)
             HPATHL hpath_np3 = Path_Allocate(NULL);
             Path_GetModuleFilePath(hpath_np3);
 
-            StringCchPrintf(wchLngPathBuf, Path_GetBufCount(hLngFilePath), L"%s /%%mode%% \"%%pattern%%\" /g %%line%% - %%path%%", Path_Get(hpath_np3));
-            IniSectionSetString(globalSection, L"editorcmd", wchLngPathBuf);
+            StringCchPrintf(value, COUNTOF(value), L"%s /g %%line%% - %%path%%", Path_Get(hpath_np3));
+            IniSectionSetString(globalSection, L"editorcmd", value);
 
             Path_Release(hpath_np3);
             Path_Release(hLngFilePath);
 
-            long const iOpacity = IniSectionGetLong(globalSection, L"OpacityNoFocus", Settings2.FindReplaceOpacityLevel);
-            IniSectionSetLong(globalSection, L"OpacityNoFocus", iOpacity);
-
+            // =================================================================
             // [settings]
-            const WCHAR *const settingsSection = L"settings";
+            // =================================================================
+            const WCHAR* const settingsSection = L"settings";
 
-            bool const bEscClose = IniSectionGetBool(settingsSection, L"escclose", (Settings.EscFunction == 2));
-            IniSectionSetBool(settingsSection, L"escclose", bEscClose);
-            bool const bBackupInFolder = IniSectionGetBool(settingsSection, L"backupinfolder", true);
-            IniSectionSetBool(settingsSection, L"backupinfolder", bBackupInFolder);
+            int const iEscClose = IniSectionGetInt(settingsSection, L"escclose", (Settings.EscFunction == 2) ? 1 : 0);
+            IniSectionSetInt(settingsSection, L"escclose", iEscClose);
+            int const iBackupInFolder = IniSectionGetInt(settingsSection, L"backupinfolder", 1);
+            IniSectionSetInt(settingsSection, L"backupinfolder", iBackupInFolder);
 
+            // =================================================================
             // [export]
-            const WCHAR *const exportSection = L"export";
-            bool const bExpPaths = IniSectionGetBool(exportSection, L"paths", true);
-            IniSectionSetBool(exportSection, L"paths", bExpPaths);
-            bool const bExpLnNums = IniSectionGetBool(exportSection, L"linenumbers", true);
-            IniSectionSetBool(exportSection, L"linenumbers", bExpLnNums);
-            bool const bExpContent = IniSectionGetBool(exportSection, L"linecontent", true);
-            IniSectionSetBool(exportSection, L"linecontent", bExpContent);
+            // =================================================================
+            const WCHAR* const exportSection = L"export";
+            int const iExpPaths = IniSectionGetInt(exportSection, L"paths", 1);
+            IniSectionSetInt(exportSection, L"paths", iExpPaths);
+            int const iExpLnNums = IniSectionGetInt(exportSection, L"linenumbers", 1);
+            IniSectionSetInt(exportSection, L"linenumbers", iExpLnNums);
+            int const iExpContent = IniSectionGetInt(exportSection, L"linecontent", 1);
+            IniSectionSetInt(exportSection, L"linecontent", iExpContent);
 
+
+            // =================================================================
+            // [commands]
+            // =================================================================
+            // see above: const WCHAR* const commandsSection = L"commands";
 
             // search directory
             HPATHL pthSearchDir = NULL;
@@ -5116,11 +5144,19 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
             else {
                 pthSearchDir = Path_Copy(Paths.WorkingDirectory);
             }
-            IniSectionSetString(globalSection, L"searchpath", Path_Get(pthSearchDir));
+            IniSectionSetString(commandsSection, L"searchpath", Path_Get(pthSearchDir));
             Path_Release(pthSearchDir);
 
             // search pattern
-            IniSectionSetString(globalSection, L"searchfor", searchPattern);
+            if (StrIsNotEmpty(searchPattern))
+                IniSectionSetString(commandsSection, L"searchfor", searchPattern);
+            else {
+                IniSectionSetString(commandsSection, L"searchfor", StrgGet(Settings.EFR_Data.chFindPattern));
+                IniSectionSetString(commandsSection, L"replacewith", StrgGet(Settings.EFR_Data.chReplaceTemplate));
+            }
+
+            int const iRegex = IniSectionGetInt(commandsSection, L"regex", Settings.EFR_Data.bRegExprSearch ? 1 : 0);
+            IniSectionSetInt(commandsSection, L"regex", iRegex);
 
             SaveIniFileCache(hGrepWinIniPath);
             ResetIniFileCache();
@@ -5128,36 +5164,36 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
     }
 
     // grepWin arguments
-    HSTRINGW hstrParams = StrgCreate(NULL);
+    HSTRINGW hstrParams = StrgCreate(L"");
     if (Path_IsExistingFile(hGrepWinIniPath)) {
-        StrgFormat(hstrParams, L"/portable /content %s /inipath:\"%s\"", StrgGet(hstrOptions), Path_Get(hGrepWinIniPath));
+        StrgFormat(hstrParams, L"/portable /content %s /searchini:\"%s\" /name:\"%s\"",
+                   StrgGet(hstrOptions), Path_Get(hGrepWinIniPath), commandsSection);
     } else {
         StrgFormat(hstrParams, L"/portable /content %s", StrgGet(hstrOptions));
     }
-    //if (StrIsNotEmpty(searchPattern)) {
-    //  SetClipboardText(Globals.hwndMain, searchPattern, StringCchLen(searchPattern, 0));
-    //}
-    StrgDestroy(hstrOptions);
 
-    SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-    sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOZONECHECKS;
-    sei.hwnd = hwnd;
-    sei.lpVerb = NULL;
-    sei.lpFile = Path_Get(hExeFilePath);
-    sei.lpParameters = StrgGet(hstrParams);
-    sei.lpDirectory = Path_Get(hGrepWinDir);
-    sei.nShow = SW_SHOWNORMAL;
-    ShellExecuteExW(&sei);
-
-    if ((INT_PTR)sei.hInstApp < 32) {
+    if (!Path_IsExistingFile(hExeFilePath)) {
         InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_GREPWIN);
     }
+    else {
+        SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
+        sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOZONECHECKS;
+        sei.hwnd = hwnd;
+        sei.lpVerb = NULL;
+        sei.lpFile = Path_Get(hExeFilePath);
+        sei.lpParameters = StrgGet(hstrParams);
+        sei.lpDirectory = Path_Get(hGrepWinDir);
+        sei.nShow = SW_SHOWNORMAL;
+        if (!ShellExecuteExW(&sei) || (INT_PTR)sei.hInstApp < 32) {
+            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_GREPWIN);
+        }
+    }
 
+    StrgDestroy(hstrOptions);
     StrgDestroy(hstrParams);
 
     Path_Release(hGrepWinIniPath);
     Path_Release(hGrepWinDir);
-    Path_Release(hTemp);
     Path_Release(hExeFilePath);
 }
 
@@ -5484,7 +5520,7 @@ int ComboBox_GetTextHW(HWND hDlg, int nIDDlgItem, HSTRINGW hstr)
 
 int ComboBox_GetTextW2MB(HWND hDlg, int nIDDlgItem, LPSTR lpString, size_t cch)
 {
-    HSTRINGW hstr = StrgCreate(NULL);
+    HSTRINGW hstr = StrgCreate(L"");
     ComboBox_GetTextHW(hDlg, nIDDlgItem, hstr);
     int const len = StrgGetAsUTF8(hstr, lpString, (int)cch);
     StrgDestroy(hstr);

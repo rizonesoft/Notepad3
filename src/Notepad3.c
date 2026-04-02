@@ -81,7 +81,11 @@ LPCWSTR WordBookMarks[MARKER_NP3_BOOKMARK] = {
 CONSTANTS_T const Constants = {
       2                                    // StdDefaultLexerID
     , L"minipath.exe"                      // FileBrowserMiniPath
-    , L"grepWinNP3.exe"                    // FileSearchGrepWin
+#ifdef _WIN64
+    , L"grepWin-64.exe"                    // FileSearchGrepWin
+#else
+    , L"grepWin-32.exe"                    // FileSearchGrepWin
+#endif
     , L"Settings"                          // Inifile Section "Settings"
     , L"Settings2"                         // Inifile Section "Settings2"
     , L"Window"                            // Inifile Section "Window"
