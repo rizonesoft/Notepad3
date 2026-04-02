@@ -940,6 +940,8 @@ static bool _CheckAndSetIniFile(HPATHL hpth_in_out)
         // Application Data (%APPDATA%)
         HPATHL happdata = Path_Allocate(NULL);
         if (Path_GetKnownFolder(FOLDERID_RoamingAppData, happdata)) {
+            Path_Append(happdata, L"Rizonesoft");
+            Path_Append(happdata, L"Notepad3");
             Path_Append(happdata, wchMore);
             result = Path_IsExistingFile(happdata);
             if (result) {
@@ -1614,7 +1616,7 @@ void LoadSettings()
     Defaults.EFR_Data.bHideNonMatchedLines = false;
     Settings.EFR_Data.bHideNonMatchedLines = IniSectionGetBool(IniSecSettings, L"HideNonMatchedLines", Defaults.EFR_Data.bHideNonMatchedLines);
     Defaults.EFR_Data.fuFlags = 0;
-    Settings.EFR_Data.fuFlags = (UINT)IniSectionGetInt(IniSecSettings, L"efrData_fuFlags", (int)Defaults.EFR_Data.fuFlags);
+    Settings.EFR_Data.fuFlags = (UINT)IniSectionGetLong(IniSecSettings, L"efrData_fuFlags", (long)Defaults.EFR_Data.fuFlags);
 
     if (Path_GetKnownFolder(FOLDERID_Desktop, Defaults.OpenWithDir)) {
         LPWSTR const wchOpenWithDir = Path_WriteAccessBuf(Settings.OpenWithDir, PATHLONG_MAX_CCH);
@@ -2096,7 +2098,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
         IniSectionDelete(IniSecSettings, L"HideNonMatchedLines", false);
     }
     if (Settings.EFR_Data.fuFlags != Defaults.EFR_Data.fuFlags) {
-        IniSectionSetInt(IniSecSettings, L"efrData_fuFlags", Settings.EFR_Data.fuFlags);
+        IniSectionSetLong(IniSecSettings, L"efrData_fuFlags", Settings.EFR_Data.fuFlags);
     } else {
         IniSectionDelete(IniSecSettings, L"efrData_fuFlags", false);
     }

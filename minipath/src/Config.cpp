@@ -747,7 +747,9 @@ int CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
             if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, nullptr, &pszPath))) {
                 StringCchCopy(tchBuild, COUNTOF(tchBuild), pszPath);
                 CoTaskMemFree(pszPath);
-                if (SUCCEEDED(PathCchAppend(tchBuild, COUNTOF(tchBuild), tchFileExpanded))) {
+                if (SUCCEEDED(PathCchAppend(tchBuild, COUNTOF(tchBuild), L"Rizonesoft")) &&
+                    SUCCEEDED(PathCchAppend(tchBuild, COUNTOF(tchBuild), L"Notepad3")) &&
+                    SUCCEEDED(PathCchAppend(tchBuild, COUNTOF(tchBuild), tchFileExpanded))) {
                     if (PathIsExistingFile(tchBuild)) {
                         StringCchCopy(lpszFile, MAX_PATH, tchBuild);
                         return 1;
