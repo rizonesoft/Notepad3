@@ -48,7 +48,7 @@ GitHub Actions workflow at `.github/workflows/build.yml` builds all four platfor
 
 ## Architecture
 
-Notepad3 is a Win32 desktop text editor built on the **Scintilla** editing component with **Lexilla** for syntax highlighting. It ships with two companion tools: **MiniPath** (file browser) and **grepWinNP3** (file search/grep).
+Notepad3 is a Win32 desktop text editor built on the **Scintilla** editing component with **Lexilla** for syntax highlighting. It ships with the companion tool **MiniPath** (file browser) and integrates with the external **grepWin** tool (file search/grep).
 
 ### Core modules (in `src\`)
 
@@ -74,7 +74,6 @@ Notepad3 is a Win32 desktop text editor built on the **Scintilla** editing compo
 - **`src\tinyexpr\` / `src\tinyexprcpp\`** — Expression evaluator for statusbar
 - **`src\uthash\`** — Hash table library (C macros)
 - **`src\crypto\`** — Rijndael/SHA-256 for AES-256 encryption
-- **Boost Regex & IOStreams** — Managed via `vcpkg.json`
 
 ### Syntax highlighting lexers (`src\StyleLexers\`)
 
