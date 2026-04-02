@@ -30,7 +30,7 @@ Thumbs.db
 /.vs
 /Bin
 /Build/Ignore*
-/Build/*portable*
+#/Build/*portable*
 /Build/notepad3*setup*
 /Build/Resources
 /Build/Packages
@@ -53,21 +53,23 @@ Thumbs.db
 /test/test.log
 /Notepad3.VC.VC.opendb
 
-/np3portableapp/*.7z
-/np3portableapp/*.cmd
-/np3portableapp/*.exe
-/np3portableapp/*.txt
-/np3portableapp/Notepad3Portable/Data
-/np3portableapp/Notepad3Portable/Notepad3Portable.*
-/np3portableapp/Notepad3Portable/App/AppInfo/appinfo.ini
-/np3portableapp/Notepad3Portable/App/AppInfo/installer.ini
-/np3portableapp/Notepad3Portable/App/DefaultData/settings
-/np3portableapp/Notepad3Portable/App/Notepad3/Docs
+#/np3portableapp/*.7z
+#/np3portableapp/*.cmd
+#/np3portableapp/*.exe
+#/np3portableapp/*.txt
+#/np3portableapp/Notepad3Portable/Data
+#/np3portableapp/Notepad3Portable/Data
+#/np3portableapp/Notepad3Portable/App/AppInfo/appinfo.ini
+#/np3portableapp/Notepad3Portable/App/AppInfo/installer.ini
+#/np3portableapp/Notepad3Portable/App/DefaultData/settings
+#/np3portableapp/Notepad3Portable/App/Notepad3/Docs
+/np3portableapp/Notepad3Portable*.exe
+/np3portableapp/Notepad3Portable/Notepad3Portable*.exe
 /np3portableapp/Notepad3Portable/App/Notepad3/x64/*.exe
 /np3portableapp/Notepad3Portable/App/Notepad3/x64/lng
 /np3portableapp/Notepad3Portable/App/Notepad3/x86/*.exe
 /np3portableapp/Notepad3Portable/App/Notepad3/x86/lng
-
+#
 
 # Upgrade staging directory
 _upgrade_staging/
