@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Notepad3 is a Windows-only Win32 desktop text editor (C/C++) built on **Scintilla** (editing component) and **Lexilla** (syntax highlighting). It ships with companion tools **MiniPath** (file browser, Ctrl+M) and **grepWinNP3** (file search/grep, Ctrl+Shift+F). Licensed under BSD 3-Clause.
+Notepad3 is a Windows-only Win32 desktop text editor (C/C++) built on **Scintilla** (editing component) and **Lexilla** (syntax highlighting). It ships with the companion tool **MiniPath** (file browser, Ctrl+M) and integrates with the external **grepWin** tool (file search/grep, Ctrl+Shift+F). Licensed under BSD 3-Clause.
 
 ## Build Commands
 
@@ -84,7 +84,6 @@ MainWndProc (Notepad3.c)
 | `src\tinyexpr\` / `src\tinyexprcpp\` | TinyExpr | Expression evaluator (statusbar) |
 | `src\uthash\` | uthash | Hash table / dynamic array macros |
 | `src\crypto\` | Rijndael/SHA-256 | AES-256 encryption |
-| Boost (via `vcpkg.json`) | Boost Regex & IOStreams | Used by grepWinNP3 |
 
 ### Syntax Lexers (`src\StyleLexers\`)
 

@@ -1,6 +1,6 @@
 ﻿# Build PortableApps Package for Notepad3
 # Usage: .\BuildPortableApp.ps1 [-SkipBuild] [-SkipVersionPatch]
-#          [-SkipLauncherGenerator] [-InstallerPath <path>]
+#          [-SkipLauncherGenerator] [-PortableAppsDir <path>]
 #
 # Steps:
 #   1. Run Version.ps1 to generate VersionEx.h
@@ -15,12 +15,14 @@ param(
     [switch]$SkipBuild,
     [switch]$SkipVersionPatch,
     [switch]$SkipLauncherGenerator,
-    [string]$InstallerPath = "d:\PortableApps\PortableApps.comInstaller\PortableApps.comInstaller.exe"
+    [string]$PortableAppsDir = "D:\PortableApps"
 )
 
 $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Split-Path -Parent (Split-Path -Parent $ScriptDir)
+
+$InstallerPath = Join-Path $PortableAppsDir "PortableApps.comInstaller\PortableApps.comInstaller.exe"
 
 $PortableAppRoot = Join-Path $RepoRoot "np3portableapp"
 $PortableAppDir = Join-Path $PortableAppRoot "Notepad3Portable"
@@ -255,7 +257,7 @@ if ($SkipLauncherGenerator) {
     Write-Host "Skipped (using existing Notepad3Portable.exe)" -ForegroundColor Yellow
 }
 else {
-    $LauncherGeneratorPath = "d:\PortableApps\PortableApps.comLauncher\PortableApps.comLauncherGenerator.exe"
+    $LauncherGeneratorPath = Join-Path $PortableAppsDir "PortableApps.comLauncher\PortableApps.comLauncherGenerator.exe"
     if (-not (Test-Path $LauncherGeneratorPath)) {
         throw "PortableApps.comLauncherGenerator.exe not found: $LauncherGeneratorPath"
     }
