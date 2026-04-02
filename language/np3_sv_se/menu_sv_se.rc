@@ -62,7 +62,7 @@ BEGIN
         MENUITEM "Spara\tCtrl+S",                                   IDM_FILE_SAVE
         MENUITEM "Spara som...\tF6",                                IDM_FILE_SAVEAS
         MENUITEM "Spara kopia...\tCtrl+F6",                         IDM_FILE_SAVECOPY
-        MENUITEM "Spara med originaltid och datum\tCtrl+Alt+F6",    IDM_FILE_PRESERVE_FILEMODTIME
+        MENUITEM "Spara med filens datum och tid\tCtrl+Alt+F6",    IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "Skrivskyddat filattribut",                        IDM_FILE_READONLY
         MENUITEM "&Låsfil (delad läsning)",                         IDM_FILE_LOCK_SHARE_READ
@@ -136,10 +136,10 @@ BEGIN
         MENUITEM "Kontrollera indrag...",                           CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "Utskriftsformat...",                              IDM_FILE_PAGESETUP
-        MENUITEM "Utskrift...\tCtrl+P",                             IDM_FILE_PRINT
+        MENUITEM "Skriv ut...\tCtrl+P",                             IDM_FILE_PRINT
         MENUITEM SEPARATOR
         MENUITEM "Egenskaper...",                                   IDM_FILE_PROPERTIES
-        MENUITEM "Skapa skrivbordslänk",                            IDM_FILE_CREATELINK
+        MENUITEM "Skapa skrivbordsgenväg",                            IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
         MENUITEM "Bläddra...\tCtrl+M",                              IDM_FILE_BROWSE
         POPUP "Favoriter"
@@ -154,7 +154,7 @@ BEGIN
     END
     POPUP "Redigera"
     BEGIN
-        MENUITEM "Endast läsbart dokument"                              IDM_VIEW_READONLY
+        MENUITEM "Skrivskydda dokument"                              IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Ångra\tCtrl+Z",                                   IDM_EDIT_UNDO
         MENUITEM "Gör om\tCtrl+Y",                                  IDM_EDIT_REDO
@@ -165,9 +165,9 @@ BEGIN
         MENUITEM "Lägg till urklipp\tCtrl+E",                       IDM_EDIT_COPYADD
         MENUITEM "Klistra in\tCtrl+V",                              IDM_EDIT_PASTE
         MENUITEM "Byt\tCtrl+K",                                     IDM_EDIT_SWAP
-        MENUITEM "Radera\tDel",                                     IDM_EDIT_CLEAR
+        MENUITEM "Ta bort\tDel",                                     IDM_EDIT_CLEAR
         MENUITEM "Rensa urklipp",                                   IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Välj allt\tCtrl+A",                               IDM_EDIT_SELECTALL
+        MENUITEM "Markera allt\tCtrl+A",                               IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
         POPUP "Ord"
                 BEGIN
@@ -204,7 +204,7 @@ BEGIN
             MENUITEM "Ta bort tomma rader\tAlt+R",                  IDM_EDIT_REMOVEEMPTYLINES
             MENUITEM "Ta bort blanka rader\tCtrl+Alt+B",            IDM_EDIT_REMOVEBLANKLINES
         END
-        POPUP "Adva&nced"
+        POPUP "Ava&ncerat"
         BEGIN
             MENUITEM "Skapa indrag",                                IDM_EDIT_INDENT
             MENUITEM "Ta bort indrag",                              IDM_EDIT_UNINDENT
@@ -286,7 +286,7 @@ BEGIN
         BEGIN
             MENUITEM "Ny rad ovanför\tCtrl+Enter",                     CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
-            MENUITEM "HTML/XML Tag...\tAlt+X",                      IDM_EDIT_INSERT_TAG
+            MENUITEM "HTML/XML-tagg...\tAlt+X",                      IDM_EDIT_INSERT_TAG
             MENUITEM SEPARATOR
             MENUITEM "Kodningsidentifierare\tCtrl+F8",              IDM_EDIT_INSERT_ENCODING
             MENUITEM SEPARATOR
@@ -358,7 +358,7 @@ BEGIN
             MENUITEM "Visa endast i dokument",                  IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Visa alla markörer",                      IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Clear Change/Undo History"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Rensa ändringshistorik"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Hyperlänkpunkt\tCtrl+Alt+W",                      IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Färgpunkter"
@@ -426,7 +426,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Fält"
         BEGIN
-            MENUITEM "Show Titlebar",                               IDM_VIEW_TITLEBAR
+            MENUITEM "Visa namnlist",                               IDM_VIEW_TITLEBAR
             MENUITEM "Visa menyfält",                               IDM_VIEW_MENUBAR
             MENUITEM "Visa verktygsfält",                           IDM_VIEW_TOOLBAR
             MENUITEM "Visa statusfält",                             IDM_VIEW_STATUSBAR
@@ -491,7 +491,7 @@ BEGIN
         END
         MENUITEM "Spara innan verktyg används",                     IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Räkna ut Tiny-E&xpressions",                      IDM_SET_EVALTINYEXPRONSEL
-        MENUITEM "Enable Multiple Selection",                       IDM_SET_MULTIPLE_SELECTION
+        MENUITEM "Aktivera multimarkering",                       IDM_SET_MULTIPLE_SELECTION
         MENUITEM SEPARATOR
         POPUP "Kom ihåg"
         BEGIN
@@ -523,7 +523,7 @@ BEGIN
                 MENUITEM "Direct&Write GDI DC",                     IDM_SET_RENDER_TECH_D2DDC
                 MENUITEM "&GDI (inga ligaturer)",                   IDM_SET_RENDER_TECH_GDI
             END
-            POPUP "R&TL Layout (GDI)"
+            POPUP "R&TL-layout (GDI)"
             BEGIN
                 MENUITEM "&Redigera area",                  IDM_SET_RTL_LAYOUT_EDIT
                 MENUITEM "&Andra dialogrutor",              IDM_SET_RTL_LAYOUT_DLG
