@@ -82,9 +82,9 @@ CONSTANTS_T const Constants = {
       2                                    // StdDefaultLexerID
     , L"minipath.exe"                      // FileBrowserMiniPath
 #ifdef _WIN64
-    , L"grepWin-64.exe"                    // FileSearchGrepWin
+    , L"grepWin-x64_portable.exe"                    // FileSearchGrepWin
 #else
-    , L"grepWin-32.exe"                    // FileSearchGrepWin
+    , L"grepWin-x86_portable.exe"                    // FileSearchGrepWin
 #endif
     , L"Settings"                          // Inifile Section "Settings"
     , L"Settings2"                         // Inifile Section "Settings2"

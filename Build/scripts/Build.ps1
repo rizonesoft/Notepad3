@@ -22,8 +22,8 @@ $RepoRoot = Split-Path -Parent (Split-Path -Parent $ScriptDir)
 function Find-MSBuild {
     $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
     if (Test-Path $vswhere) {
-        # Try VS 2022 first (version 17.x)
-        $vsPath = & $vswhere -version "[17.0,19.0)" -property installationPath 2>$null
+        # Try latest VS in range 17.x-18.x
+        $vsPath = & $vswhere -version "[17.0,19.0)" -latest -property installationPath 2>$null
         if (-not $vsPath) {
             # Fallback to latest
             $vsPath = & $vswhere -latest -property installationPath
