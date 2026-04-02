@@ -1,0 +1,690 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 1900-01-01 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+# msgid/msgstr fields for Accelerator keys
+# Format is: "ID:xxxxxx:VACS+X" where:
+#    ID:xxxxx = the menu ID corresponding to the accelerator
+#    V = Virtual key (or blank if not used) - nearly always set!
+#    A = Alt key     (or blank if not used)
+#    C = Ctrl key    (or blank if not used)
+#    S = Shift key   (or blank if not used)
+#    X = upper case character
+# e.g. "V CS+Q" == Ctrl + Shift + 'Q'
+
+# ONLY Accelerator Keys with corresponding alphanumeric characters can be
+# updated i.e. function keys (F2), special keys (Delete, HoMe) etc. will not.
+
+# ONLY change the msgstr field. Do NOT change any other.
+# If you do not want to change an Accelerator Key, copy msgid to msgstr
+
+#. Resource IDs: (149)
+#, c-format
+msgid "%ld more matches"
+msgstr "%ld ज्यादा मिलान नतीजे"
+
+#. Resource IDs: (1069)
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
+msgstr ""
+
+#. Resource IDs: (175)
+#, c-format
+msgid "%s files, skipped %s files. %s results selected."
+msgstr "%s फ़ाइलें, %s फ़ाइलें छोड़ीं। %s results selected."
+
+#. Resource IDs: (119)
+msgid "&About grepWin..."
+msgstr "grepWin परिचय (&A)..."
+
+#. Resource IDs: (1061)
+msgid "&Convert newlines"
+msgstr ""
+
+#. Resource IDs: (1049)
+msgid "&Replace"
+msgstr "बदलें (&R)"
+
+#. Resource IDs: (1003)
+msgid "&Whole word"
+msgstr ""
+
+#. Resource IDs: (1013)
+msgid "..."
+msgstr "..."
+
+#. Resource IDs: (1061, 1063)
+msgid "/"
+msgstr "/"
+
+#. Resource IDs: (1045)
+msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
+msgstr "<a href=\"https://tools.stefankueng.com\">हमारी वेबसाइट पर पधारें</a>"
+
+#. Resource IDs: (1052)
+msgid "<a>about grepWin</a>"
+msgstr "<a>grepWin परिचय</a>"
+
+#. Resource IDs: (1086)
+msgid ">"
+msgstr ">"
+
+#. Resource IDs: (135)
+msgid "About grepWin"
+msgstr "grepWin परिचय"
+
+#. Resource IDs: (1021)
+msgid "Add to Presets"
+msgstr "प्रीसेट में जोड़ें"
+
+#. Resource IDs: (155)
+msgid "All Files"
+msgstr "सारी फ़ाइलें"
+
+#. Resource IDs: (1078)
+msgid "All dates"
+msgstr "सारी दिनाँकें"
+
+#. Resource IDs: (1005)
+msgid "All sizes"
+msgstr "सारे आकार"
+
+#. Resource IDs: (124)
+#, c-format
+msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
+msgstr "क्या आप वाकई बिना बैकअप बनाए\n%s\nको\n%s\nसे बदलना चाहते हैं?"
+
+#. Resource IDs: (1081)
+msgid "Between"
+msgstr "बीच में"
+
+#. Resource IDs: (1095)
+msgid "Both"
+msgstr ""
+
+#. Resource IDs: (1093)
+msgid "CRLF (Windows)"
+msgstr ""
+
+#. Resource IDs: (2)
+msgid "Cancel"
+msgstr "रद्द करें"
+
+#. Resource IDs: (169)
+msgid "Capture search (Shows replaced text)"
+msgstr ""
+
+#. Resource IDs: (1088)
+msgid "Check for updates"
+msgstr "अद्यतन जांच"
+
+#. Resource IDs: (180)
+msgid "Column"
+msgstr ""
+
+#. Resource IDs: (1068)
+msgid "Command line to start an editor at a specific line and in line offset:"
+msgstr ""
+
+#. Resource IDs: (1060)
+msgid "Content"
+msgstr "विषयसूची"
+
+#. Resource IDs: (65535)
+msgid "Convert newlines to regex newline tags:"
+msgstr ""
+
+#. Resource IDs: (177)
+msgid "Copy column for all items"
+msgstr ""
+
+#. Resource IDs: (178)
+msgid "Copy column for selected items"
+msgstr ""
+
+#. Resource IDs: (145)
+msgid "Copy filename to clipboard"
+msgstr "फ़ाइलनाम क्लिपबोर्ड में कॉपी करें"
+
+#. Resource IDs: (146)
+msgid "Copy filenames to clipboard"
+msgstr "एक से ज्यादा फ़ाइलों के नाम क्लिपबोर्ड में कॉपी करें"
+
+#. Resource IDs: (143)
+msgid "Copy path to clipboard"
+msgstr "पथ क्लिपबोर्ड में कॉपी करें"
+
+#. Resource IDs: (144)
+msgid "Copy paths to clipboard"
+msgstr "एक से ज्यादा पथ क्लिपबोर्ड में कॉपी करें"
+
+#. Resource IDs: (147)
+msgid "Copy text result to clipboard"
+msgstr "टेक्स्ट नतीजा क्लिपबोर्ड में कॉपी करें"
+
+#. Resource IDs: (148)
+msgid "Copy text results to clipboard"
+msgstr "कई टेक्स्ट नतीजे क्लिपबोर्ड में कॉपी करें"
+
+#. Resource IDs: (1029)
+msgid "Create backup files"
+msgstr "बैकअप फ़ाइल बनाएं"
+
+#. Resource IDs: (1077)
+msgid "Create backup files in a separate folder"
+msgstr "एक अलग फ़ोल्डर में बैकअप फ़ाइल बनाएं"
+
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr "गहरा मोड"
+
+#. Resource IDs: (139)
+msgid "Date modified"
+msgstr "दिनाँक परिवर्तित हो गई है"
+
+#. Resource IDs: (1078)
+msgid "Don't warn when replacing without creating backups"
+msgstr "बैकअप बनाए बिना बदलने पर चेतावनी ना दें"
+
+#. Resource IDs: (1051)
+msgid "Dot matches newline"
+msgstr "Dot नई रेखा से मिलान करती है"
+
+#. Resource IDs: (1056)
+msgid "Double-Click to select a preset"
+msgstr "प्रीसेट चुनाव के लिए दो बार क्लिक करें"
+
+#. Resource IDs: (65535 - PopupMenu)
+msgid "Dummy"
+msgstr "डमी"
+
+#. Resource IDs: (1067)
+msgid "Editor"
+msgstr "संपादक"
+
+#. Resource IDs: (138)
+msgid "Encoding"
+msgstr "एन्कोडिंग"
+
+#. Resource IDs: (1056)
+msgid "Enter a name for the regex:"
+msgstr "regex के लिए नाम लिखें:"
+
+#. Resource IDs: (1062)
+msgid "Escape key closes grepWin"
+msgstr "Escape कुंजी grepWin बंद करती है"
+
+#. Resource IDs: (1041)
+msgid "Exclude dirs (Regex):"
+msgstr "dirs (Regex) को बाहर रखें:"
+
+#. Resource IDs: (164)
+msgid "Export resultlist"
+msgstr "नतीजों की सूची निर्यात करें"
+
+#. Resource IDs: (163)
+msgid "Export results..."
+msgstr "नतीजे निर्यात करें..."
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr "Ext"
+
+#. Resource IDs: (1039)
+msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
+msgstr "फ़ाइल नाम मिलान:\nएक से ज्यादा टेक्स्ट मिलान के तरीके '|' से अलग करें, बाहर रखेने के लिए अंत में '-' जोड़ें (&D)"
+
+#. Resource IDs: (1059)
+msgid "Files"
+msgstr "फ़ाइलें"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
+
+#. Resource IDs: (174)
+#, c-format
+msgid "Found %s files, skipped %s files."
+msgstr ""
+
+#. Resource IDs: (109)
+msgid "GREPWIN"
+msgstr "GREPWIN"
+
+#. Resource IDs: (156)
+msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
+msgstr "अगर सक्षम है तो जिस फ़ोल्डर में खोज़/बदलाव किया जा रहा है उसमे एक बैकअप फ़ोल्डर बन जाएगा जिसमें फ़ाइलें बैकअप कर दी जाएंगी"
+
+#. Resource IDs: (1050)
+msgid "Include binary files"
+msgstr "Binary फ़ाइल शामिल करें"
+
+#. Resource IDs: (1010)
+msgid "Include hidden items"
+msgstr "छिपे हुए आइटम्स शामिल करें"
+
+#. Resource IDs: (1062)
+msgid "Include search path"
+msgstr "खोज पथ शामिल करें"
+
+#. Resource IDs: (1011)
+msgid "Include subfolders"
+msgstr "अंदर के फ़ोल्डर शामिल करें"
+
+#. Resource IDs: (1092)
+msgid "Include symbolic links"
+msgstr ""
+
+#. Resource IDs: (1009)
+msgid "Include system items"
+msgstr "सिस्टम आइटम्स शामिल करें"
+
+#. Resource IDs: (153)
+msgid "Invalid path!"
+msgstr "अवैध पथ!"
+
+#. Resource IDs: (161)
+msgid "Inverse search"
+msgstr ""
+
+#. Resource IDs: (1019)
+msgid "KB"
+msgstr "KB"
+
+#. Resource IDs: (1062)
+msgid "Keep file date when replacing"
+msgstr ""
+
+#. Resource IDs: (1094)
+msgid "LF (Linux)"
+msgstr ""
+
+#. Resource IDs: (1075)
+msgid "Language:"
+msgstr "भाषा:"
+
+#. Resource IDs: (1017)
+msgid "Limit search"
+msgstr "खोज सीमित करें"
+
+#. Resource IDs: (134)
+msgid "Line"
+msgstr "रेखा"
+
+#. Resource IDs: (150)
+#, c-format
+msgid "Line %5ld : %s\n"
+msgstr ""
+
+#. Resource IDs: (135)
+msgid "Matches"
+msgstr "मिलान नतीजे"
+
+#. Resource IDs: (137)
+msgid "Multiline editor"
+msgstr ""
+
+#. Resource IDs: (104)
+msgid "Name"
+msgstr "नाम"
+
+#. Resource IDs: (1079)
+msgid "Newer than"
+msgstr "इससे नया"
+
+#. Resource IDs: (115)
+msgid "Newline is matched by '.'"
+msgstr "Newline '.' से मेल करती है"
+
+#. Resource IDs: (140)
+msgid "Newlines"
+msgstr ""
+
+#. Resource IDs: (1056)
+msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
+msgstr ""
+
+#. Resource IDs: (1)
+msgid "OK"
+msgstr "सही है"
+
+#. Resource IDs: (1080)
+msgid "Older than"
+msgstr "इससे पुराना"
+
+#. Resource IDs: (1063)
+msgid "Only one instance"
+msgstr "सिर्फ़ एक अवस्था"
+
+#. Resource IDs: (142)
+msgid "Open containing folder"
+msgstr "इसके फ़ोल्डर को खोलें"
+
+#. Resource IDs: (141)
+msgid "Open with Editor"
+msgstr "संपादक में खोलें"
+
+#. Resource IDs: (1056)
+msgid "Paste text to test the regex with:"
+msgstr "regex को इस टेक्स्ट से जाँचने के लिए टेक्स्ट चिपकाएं:"
+
+#. Resource IDs: (137)
+msgid "Path"
+msgstr "पथ"
+
+#. Resource IDs: (131)
+msgid "Preset name"
+msgstr "प्रीसेट नाम"
+
+#. Resource IDs: (1022, 132)
+msgid "Presets"
+msgstr "प्रीसेट"
+
+#. Resource IDs: (1065)
+msgid "Press F1 for help"
+msgstr "मदद के लिए F1 कुंजी दबाएं..."
+
+#. Resource IDs: (154)
+msgid "Programs"
+msgstr "प्रोग्राम्स"
+
+#. Resource IDs: (32775 - Menu)
+msgid "Re&name Preset"
+msgstr "प्रीसेट का नाम बदलें (&N)"
+
+#. Resource IDs: (130)
+msgid "Regex Test"
+msgstr "Regex जाँच"
+
+#. Resource IDs: (1046)
+msgid "Regex match"
+msgstr "Regex मिलान"
+
+#. Resource IDs: (65535)
+msgid "Regex replace string:"
+msgstr "Regex बदलाव स्ट्रिंग:"
+
+#. Resource IDs: (1001)
+msgid "Regex search"
+msgstr "Regex खोज"
+
+#. Resource IDs: (65535)
+msgid "Regex search string:"
+msgstr "Regex खोज स्ट्रिंग:"
+
+#. Resource IDs: (179)
+msgid "Regex stack error"
+msgstr ""
+
+#. Resource IDs: (152)
+msgid "Relative paths are not allowed. Please enter an absolute path!"
+msgstr "सापेक्ष पथ की अनुमति नहीं है। कृपया पूर्ण पथ डालें!"
+
+#. Resource IDs: (32771 - Menu)
+msgid "Remo&ve Preset"
+msgstr "प्रीसेट हटाएं (&V)"
+
+#. Resource IDs: (106)
+msgid "Replace string"
+msgstr "स्ट्रिंग बदलें"
+
+#. Resource IDs: (1027)
+msgid "Replace with/\nCapture format:"
+msgstr "इससे बदलें/\nकैप्चर प्रारूप:"
+
+#. Resource IDs: (126)
+msgid "S&top"
+msgstr "रुकें (&T)"
+
+#. Resource IDs: (1, 1016)
+msgid "Search"
+msgstr "खोज"
+
+#. Resource IDs: (1026)
+msgid "Search &for:"
+msgstr "इसके लिए खोजें: (&F)"
+
+#. Resource IDs: (1042)
+msgid "Search case-sensitive"
+msgstr "केस-मिलाते हुए खोजें"
+
+#. Resource IDs: (1015)
+msgid "Search in"
+msgstr "इसमे खोजें"
+
+#. Resource IDs: (162)
+msgid "Search in found files"
+msgstr "पाई गई फ़ाइलों में खोजें"
+
+#. Resource IDs: (1018)
+msgid "Search results"
+msgstr "खोज नतीजे"
+
+#. Resource IDs: (105)
+msgid "Search string"
+msgstr "खोज स्ट्रिंग"
+
+#. Resource IDs: (128)
+#, c-format
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
+msgstr "%s फ़ाइलें खोजीं, %s फ़ाइलें छोड़ीं। %s फ़ाइलों में %s मिलान नतीजे मिले"
+
+#. Resource IDs: (173)
+#, c-format
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
+msgstr "%s फ़ाइलें खोजीं, %s फ़ाइलें छोड़ीं। %s फ़ाइलों में %s मिलान नतीजे मिले %s results selected."
+
+#. Resource IDs: (140)
+msgid "Select Editor Application..."
+msgstr "संपादित करने के लिए एप्लिकेशन चुनें..."
+
+#. Resource IDs: (127)
+msgid "Select path to search"
+msgstr "खोज के लिए पथ चुनें"
+
+#. Resource IDs: (133)
+msgid "Size"
+msgstr "आकार"
+
+#. Resource IDs: (1006)
+msgid "Size is"
+msgstr "आकार है"
+
+#. Resource IDs: (1028)
+msgid "Test regex"
+msgstr "regex जाँच"
+
+#. Resource IDs: (136)
+msgid "Text"
+msgstr "टेक्स्ट"
+
+#. Resource IDs: (1048)
+msgid "Text match"
+msgstr "टेक्स्ट मिलान"
+
+#. Resource IDs: (1002)
+msgid "Text search"
+msgstr "टेक्स्ट खोज"
+
+#. Resource IDs: (160)
+#, c-format
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr ""
+
+#. Resource IDs: (65535)
+msgid "The regex search string matches:"
+msgstr "regex खोज स्ट्रिंग इससे मिलती है:"
+
+#. Resource IDs: (65535)
+msgid "The resulting text after replacing:"
+msgstr "बदलने के उपरांत प्राप्त टेक्स्ट:"
+
+#. Resource IDs: (1053)
+msgid "Treat files as UTF8"
+msgstr "फ़ाइलों को UTF8 जैसा बरतें"
+
+#. Resource IDs: (1054)
+msgid "Treat files as binary"
+msgstr "फ़ाइलों को binary जैसा बरतें"
+
+#. Resource IDs: (172)
+#, c-format
+msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
+msgstr ""
+
+#. Resource IDs: (1025)
+msgid "\\"
+msgstr ""
+
+#. Resource IDs: (116)
+msgid "a regular expression used for searching. Press F1 for more info."
+msgstr "खोज के लिए एक सामान्य व्यंजक प्रयोग हुआ है. अधिक जानकारी के लिए F1 कुंजी दबाएं"
+
+#. Resource IDs: (125)
+msgid "an empty string"
+msgstr "एक खाली स्ट्रिंग"
+
+#. Resource IDs: (130)
+msgid "binary"
+msgstr "binary"
+
+#. Resource IDs: (118)
+msgid "click to edit the text as a multiline text"
+msgstr "टेक्ट को बहुरेखीय टेक्स्ट के समान संपादित करेने के लिए क्लिक करें"
+
+#. Resource IDs: (159)
+msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
+msgstr "गहरे मोड के लिए कम से कम Win10 का संस्करण 1803 होना चाहिए, और Windows सिस्टम सेटिंग्स में यह सक्षम होना चाहिए"
+
+#. Resource IDs: (121)
+msgid "equal to"
+msgstr "इसके बराबर"
+
+#. Resource IDs: (122)
+msgid "greater than"
+msgstr "इससे ज्यादा"
+
+#. Resource IDs: (103, 129)
+msgid "grepWin"
+msgstr "grepWin"
+
+#. Resource IDs: (168)
+#, c-format
+msgid "grepWin %s is available"
+msgstr "grepWin %s उपलब्ध है"
+
+#. Resource IDs: (138)
+msgid "grepWin Settings"
+msgstr "grepWin सेटिंग्स"
+
+#. Resource IDs: (157)
+msgid "hold down the shift key to find files that DO NOT contain the search string"
+msgstr "जिन फ़ाइलों में खोज स्ट्रिंग नहीं है उन फ़ाइलों को ढूँढने के लिए shift कुंजी को दबा कर रखे"
+
+#. Resource IDs: (165)
+msgid "include file paths"
+msgstr "फ़ाइल पथ शामिल करें"
+
+#. Resource IDs: (166)
+msgid "include match line numbers"
+msgstr "मिली हुई रेखा संख्या शामिल करें"
+
+#. Resource IDs: (167)
+msgid "include match line text"
+msgstr "मिला हुआ टेक्स्ट शामिल करें"
+
+#. Resource IDs: (132)
+msgid "invalid regex!"
+msgstr "regex अवैध है!"
+
+#. Resource IDs: (120)
+msgid "less than"
+msgstr "इससे कम"
+
+#. Resource IDs: (111)
+msgid "no match"
+msgstr "कोई मिलान नहीं"
+
+#. Resource IDs: (110)
+msgid "no text to replace with"
+msgstr "जिससे बदला जाए वह टेक्स्ट उपलब्ध नहीं है"
+
+#. Resource IDs: (107)
+msgid "no text to test with available"
+msgstr "जिससे जांचा जाए वह टेक्स्ट मौजूद नहीं है"
+
+#. Resource IDs: (1074)
+msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
+msgstr "फ़ाइल को binary के बजाए टेक्स्ट मानने के लिए NULL bytes per MB की यह संख्या मान्य है"
+
+#. Resource IDs: (112)
+msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgstr ""
+
+#. Resource IDs: (176)
+msgid "open list with recent entries"
+msgstr ""
+
+#. Resource IDs: (129)
+msgid "read error"
+msgstr "पढ़ने में त्रुटि"
+
+#. Resource IDs: (131)
+msgid "regex ok"
+msgstr "regex सही है"
+
+#. Resource IDs: (117)
+msgid "reuse grepWin instances."
+msgstr "grepWin अवस्था को पुनः प्रयोग मे लें"
+
+#. Resource IDs: (151)
+#, c-format
+msgid "scanning file '%s'"
+msgstr "'%s' फ़ाइल स्कैन की जा रही है"
+
+#. Resource IDs: (108)
+msgid "search string is empty"
+msgstr "खोज की स्ट्रिंग खाली है"
+
+#. Resource IDs: (170, 171)
+msgid "start new grepWin window"
+msgstr "नई grepWin विंडो शुरू करें"
+
+#. Resource IDs: (114)
+msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
+msgstr "जो पथ recursively खोजे जा रहे हैं.\n'|' चिन्ह से पथ अलग करें.\nउदाहरण: c:\\temp|d:\\logs"
+
+#. Resource IDs: (113)
+msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgstr "आप निदेशिका बाहर रख सकते हैं, उदाहरण CVS and चित्र .\nउदाहरण: ^(CVS|चित्र)$\nकृपया ध्यान दें, 'Windows में .svn' फ़ोल्डर 'छिपे' हुए हैं, अतः वो प्रायः स्कैन नहीं किए जाते"
+
+#. Resource IDs: (1064, 1066, 1067)
+msgid "|"
+msgstr ""
+
+#. Resource IDs: (1024)
+msgid "⑂"
+msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ सेटिंग्स"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 खोज (&S)"
+
