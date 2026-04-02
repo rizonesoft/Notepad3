@@ -1,0 +1,703 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 1900-01-01 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+# msgid/msgstr fields for Accelerator keys
+# Format is: "ID:xxxxxx:VACS+X" where:
+#    ID:xxxxx = the menu ID corresponding to the accelerator
+#    V = Virtual key (or blank if not used) - nearly always set!
+#    A = Alt key     (or blank if not used)
+#    C = Ctrl key    (or blank if not used)
+#    S = Shift key   (or blank if not used)
+#    X = upper case character
+# e.g. "V CS+Q" == Ctrl + Shift + 'Q'
+
+# ONLY Accelerator Keys with corresponding alphanumeric characters can be
+# updated i.e. function keys (F2), special keys (Delete, HoMe) etc. will not.
+
+# ONLY change the msgstr field. Do NOT change any other.
+# If you do not want to change an Accelerator Key, copy msgid to msgstr
+
+# msgid/msgstr fields for Accelerator keys
+# Format is: "ID:xxxxxx:VACS+X" where:
+#    ID:xxxxx = the menu ID corresponding to the accelerator
+#    V = Virtual key (or blank if not used) - nearly always set!
+#    A = Alt key     (or blank if not used)
+#    C = Ctrl key    (or blank if not used)
+#    S = Shift key   (or blank if not used)
+#    X = upper case character
+# e.g. "V CS+Q" == Ctrl + Shift + 'Q'
+# ONLY Accelerator Keys with corresponding alphanumeric characters can be
+# updated i.e. function keys (F2), special keys (Delete, HoMe) etc. will not.
+# ONLY change the msgstr field. Do NOT change any other.
+# If you do not want to change an Accelerator Key, copy msgid to msgstr
+#. Resource IDs: (149)
+#, c-format
+msgid "%ld more matches"
+msgstr "%ld மேலும் பொருத்தங்கள்"
+
+#. Resource IDs: (1069)
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
+msgstr "%path% கோப்பின் பாதையுடன் மாற்றப்படுகிறது, %line% வரிக்கு செல்ல வேண்டும், %column% வரி ஈடுசெய்யுடன்"
+
+#. Resource IDs: (175)
+#, c-format
+msgid "%s files, skipped %s files. %s results selected."
+msgstr "%s கோப்புகள், %s கோப்புகளைத் தவிர்த்தன. தேர்ந்தெடுக்கப்பட்ட %முடிவுகள்."
+
+#. Resource IDs: (119)
+msgid "&About grepWin..."
+msgstr "வழக்கவெளிசாளரம் பற்றி ..."
+
+#. Resource IDs: (1061)
+msgid "&Convert newlines"
+msgstr ""
+
+#. Resource IDs: (1049)
+msgid "&Replace"
+msgstr "மாற்று "
+
+#. Resource IDs: (1003)
+msgid "&Whole word"
+msgstr "முழு சொல்"
+
+#. Resource IDs: (1013)
+msgid "..."
+msgstr "..."
+
+#. Resource IDs: (1061, 1063)
+msgid "/"
+msgstr "/"
+
+#. Resource IDs: (1045)
+msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
+msgstr "<a href = \"https://tools.stefankueng.com\"> எங்கள் வலைத்தளத்தைப் பார்வையிடவும் </a>"
+
+#. Resource IDs: (1052)
+msgid "<a>about grepWin</a>"
+msgstr "<a> வழக்கவெளிசாளரம் பற்றி </a>"
+
+#. Resource IDs: (1086)
+msgid ">"
+msgstr ">"
+
+#. Resource IDs: (135)
+msgid "About grepWin"
+msgstr "வழக்கவெளிசாளரம் பற்றி"
+
+#. Resource IDs: (1021)
+msgid "Add to Presets"
+msgstr "முன்னமைவுகளில் சேர்"
+
+#. Resource IDs: (155)
+msgid "All Files"
+msgstr "அனைத்து கோப்புகள்"
+
+#. Resource IDs: (1078)
+msgid "All dates"
+msgstr "எல்லா தேதிகளும்"
+
+#. Resource IDs: (1005)
+msgid "All sizes"
+msgstr "அனைத்து அளவுகளும்"
+
+#. Resource IDs: (124)
+#, c-format
+msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
+msgstr "நீங்கள் நிச்சயமாக மாற்ற விரும்புகிறீர்களா?\n %s\n உடன்\n %s\n காப்புப்பிரதிகளை உருவாக்காமல்?"
+
+#. Resource IDs: (1081)
+msgid "Between"
+msgstr "இடையில்"
+
+#. Resource IDs: (1095)
+msgid "Both"
+msgstr ""
+
+#. Resource IDs: (1093)
+msgid "CRLF (Windows)"
+msgstr ""
+
+#. Resource IDs: (2)
+msgid "Cancel"
+msgstr "ரத்துசெய்"
+
+#. Resource IDs: (169)
+msgid "Capture search (Shows replaced text)"
+msgstr "பிடிப்பு தேடல் (மாற்றப்பட்ட உரையைக் காட்டுகிறது)"
+
+#. Resource IDs: (1088)
+msgid "Check for updates"
+msgstr "புதுப்பிப்புகளை சரிபார்"
+
+#. Resource IDs: (180)
+msgid "Column"
+msgstr "நெடுவரிசை"
+
+#. Resource IDs: (1068)
+msgid "Command line to start an editor at a specific line and in line offset:"
+msgstr "ஒரு குறிப்பிட்ட வரியில் ஒரு ஆசிரியரைத் தொடங்க கட்டளை வரி மற்றும் வரி ஈடுசெய்:"
+
+#. Resource IDs: (1060)
+msgid "Content"
+msgstr "உள்ளடக்கம்"
+
+#. Resource IDs: (65535)
+msgid "Convert newlines to regex newline tags:"
+msgstr ""
+
+#. Resource IDs: (177)
+msgid "Copy column for all items"
+msgstr "அனைத்து உருப்படிகளுக்கும் நெடுவரிசையை நகலெடு"
+
+#. Resource IDs: (178)
+msgid "Copy column for selected items"
+msgstr "தேர்ந்தெடுக்கப்பட்ட உருப்படிகளுக்கு நெடுவரிசையை நகலெடு"
+
+#. Resource IDs: (145)
+msgid "Copy filename to clipboard"
+msgstr "கோப்பை பெயரை இடைநிலைப்பலகைக்கு நகலெடு"
+
+#. Resource IDs: (146)
+msgid "Copy filenames to clipboard"
+msgstr "இடைநிலைப்பலகைக்கு கோப்பு பெயர்களை நகலெடு"
+
+#. Resource IDs: (143)
+msgid "Copy path to clipboard"
+msgstr "இடைநிலைப்பலகைக்கு பாதையை நகலெடு"
+
+#. Resource IDs: (144)
+msgid "Copy paths to clipboard"
+msgstr "இடைநிலைப்பலகைக்கு பாதைகளை நகலெடு"
+
+#. Resource IDs: (147)
+msgid "Copy text result to clipboard"
+msgstr "உரை முடிவை இடைநிலைப்பலகைக்கு நகலெடு"
+
+#. Resource IDs: (148)
+msgid "Copy text results to clipboard"
+msgstr "உரை முடிவுகளை இடைநிலைப்பலகைக்கு நகலெடு"
+
+#. Resource IDs: (1029)
+msgid "Create backup files"
+msgstr "காப்பு கோப்புகளை உருவாக்கவும்"
+
+#. Resource IDs: (1077)
+msgid "Create backup files in a separate folder"
+msgstr "ஒரு தனி கோப்புறையில் காப்பு கோப்புகளை உருவாக்கவும்"
+
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr "இருண்ட முறை"
+
+#. Resource IDs: (139)
+msgid "Date modified"
+msgstr "மாற்றிய தேதி"
+
+#. Resource IDs: (1078)
+msgid "Don't warn when replacing without creating backups"
+msgstr "காப்புப்பிரதிகளை உருவாக்காமல் மாற்றும்போது எச்சரிக்க வேண்டாம்"
+
+#. Resource IDs: (1051)
+msgid "Dot matches newline"
+msgstr "புள்ளி புதிய வரி உடன் பொருந்துகிறது"
+
+#. Resource IDs: (1056)
+msgid "Double-Click to select a preset"
+msgstr "முன்னமைவைத் தேர்ந்தெடுக்க இருமுறை சொடுக்கவும்"
+
+#. Resource IDs: (65535 - PopupMenu)
+msgid "Dummy"
+msgstr "போலி"
+
+#. Resource IDs: (1067)
+msgid "Editor"
+msgstr "திருத்தி"
+
+#. Resource IDs: (138)
+msgid "Encoding"
+msgstr "குறியாக்கம்"
+
+#. Resource IDs: (1056)
+msgid "Enter a name for the regex:"
+msgstr "வழக்கவெளிக்கு ஒரு பெயரை உள்ளிடவும்:"
+
+#. Resource IDs: (1062)
+msgid "Escape key closes grepWin"
+msgstr "தப்பி விசை வழக்கவெளிசாரத்தை மூடுகிறது"
+
+#. Resource IDs: (1041)
+msgid "Exclude dirs (Regex):"
+msgstr "கோப்புறைகளை விலக்கு (regex) :"
+
+#. Resource IDs: (164)
+msgid "Export resultlist"
+msgstr "ஏற்றுமதி முடிவு பட்டியல்"
+
+#. Resource IDs: (163)
+msgid "Export results..."
+msgstr "ஏற்றுமதி முடிவுகள் ..."
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr "நீட்டிப்பு"
+
+#. Resource IDs: (1039)
+msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
+msgstr "கோப்பு பெயர்கள் பொருந்தும்:\n பல உரை பொருந்தக்கூடிய வடிவங்களை பிரிக்க '|' பயன்படுத்து, விலக்குவதற்கு '-' ஐ முன்ஒட்டு"
+
+#. Resource IDs: (1059)
+msgid "Files"
+msgstr "கோப்புகள்"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
+
+#. Resource IDs: (174)
+#, c-format
+msgid "Found %s files, skipped %s files."
+msgstr "%S கோப்புகள் கிடைத்தன, %s கோப்புகளைத் தவிர்த்தன."
+
+#. Resource IDs: (109)
+msgid "GREPWIN"
+msgstr "வழக்கவெளிசாளரம்"
+
+#. Resource IDs: (156)
+msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
+msgstr "இயக்கப்பட்டிருந்தால், தேடப்பட்ட/மாற்றப்பட்ட கோப்புறையில் ஒரு காப்பு கோப்புறை உருவாக்கப்படுகிறது, மேலும் கோப்புகள் அந்த கோப்புறையில் காப்புப் பிரதி எடுக்கப்படுகின்றன"
+
+#. Resource IDs: (1050)
+msgid "Include binary files"
+msgstr "இருமக் கோப்புகளைச் சேர்"
+
+#. Resource IDs: (1010)
+msgid "Include hidden items"
+msgstr "மறைக்கப்பட்ட உருப்படிகளைச் சேர்"
+
+#. Resource IDs: (1062)
+msgid "Include search path"
+msgstr "தேடல் பாதையைச் சேர்"
+
+#. Resource IDs: (1011)
+msgid "Include subfolders"
+msgstr "துணை கோப்புறைகளைச் சேர்"
+
+#. Resource IDs: (1092)
+msgid "Include symbolic links"
+msgstr "குறியீட்டு இணைப்புகளைச் சேர்"
+
+#. Resource IDs: (1009)
+msgid "Include system items"
+msgstr "கணினி உருப்படிகளைச் சேர்"
+
+#. Resource IDs: (153)
+msgid "Invalid path!"
+msgstr "தவறான பாதை!"
+
+#. Resource IDs: (161)
+msgid "Inverse search"
+msgstr "தலைகீழ் தேடல்"
+
+#. Resource IDs: (1019)
+msgid "KB"
+msgstr "கே.பி."
+
+#. Resource IDs: (1062)
+msgid "Keep file date when replacing"
+msgstr "மாற்றும் போது கோப்பு தேதியை வைத்திருங்கள்"
+
+#. Resource IDs: (1094)
+msgid "LF (Linux)"
+msgstr ""
+
+#. Resource IDs: (1075)
+msgid "Language:"
+msgstr "மொழி:"
+
+#. Resource IDs: (1017)
+msgid "Limit search"
+msgstr "தேடல் தேடல்"
+
+#. Resource IDs: (134)
+msgid "Line"
+msgstr "வரி"
+
+#. Resource IDs: (150)
+#, c-format
+msgid "Line %5ld : %s\n"
+msgstr "வரி %5ld: %s\n"
+
+#. Resource IDs: (135)
+msgid "Matches"
+msgstr "பொருத்தங்கள்"
+
+#. Resource IDs: (137)
+msgid "Multiline editor"
+msgstr ""
+
+#. Resource IDs: (104)
+msgid "Name"
+msgstr "பெயர்"
+
+#. Resource IDs: (1079)
+msgid "Newer than"
+msgstr "விட புதியது"
+
+#. Resource IDs: (115)
+msgid "Newline is matched by '.'"
+msgstr "நியூவரி '' உடன் பொருந்துகிறது."
+
+#. Resource IDs: (140)
+msgid "Newlines"
+msgstr ""
+
+#. Resource IDs: (1056)
+msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
+msgstr ""
+
+#. Resource IDs: (1)
+msgid "OK"
+msgstr "சரி"
+
+#. Resource IDs: (1080)
+msgid "Older than"
+msgstr "விட பழையது"
+
+#. Resource IDs: (1063)
+msgid "Only one instance"
+msgstr "ஒரே ஒரு நிகழ்வு"
+
+#. Resource IDs: (142)
+msgid "Open containing folder"
+msgstr "கொண்ட கோப்புறை திற"
+
+#. Resource IDs: (141)
+msgid "Open with Editor"
+msgstr "ஆசிரியருடன் திற"
+
+#. Resource IDs: (1056)
+msgid "Paste text to test the regex with:"
+msgstr "வழக்கவெளியை சோதிக்க உரையை ஒட்டவும்:"
+
+#. Resource IDs: (137)
+msgid "Path"
+msgstr "பாதை"
+
+#. Resource IDs: (131)
+msgid "Preset name"
+msgstr "முன்னமைக்கப்பட்ட பெயர்"
+
+#. Resource IDs: (1022, 132)
+msgid "Presets"
+msgstr "முன்னமைவுகள்"
+
+#. Resource IDs: (1065)
+msgid "Press F1 for help"
+msgstr "உதவிக்கு F1 ஐ அழுத்தவும்"
+
+#. Resource IDs: (154)
+msgid "Programs"
+msgstr "திட்டங்கள்"
+
+#. Resource IDs: (32775 - Menu)
+msgid "Re&name Preset"
+msgstr "மறுபெயர் முன்னமைவு"
+
+#. Resource IDs: (130)
+msgid "Regex Test"
+msgstr "வழக்கவெளி சோதனை"
+
+#. Resource IDs: (1046)
+msgid "Regex match"
+msgstr "வழக்கவெளி பொருத்தம்"
+
+#. Resource IDs: (65535)
+msgid "Regex replace string:"
+msgstr "வழக்கவெளி மாற்றத்தை மாற்றுகிறது:"
+
+#. Resource IDs: (1001)
+msgid "Regex search"
+msgstr "வழக்கவெளி தேடல்"
+
+#. Resource IDs: (65535)
+msgid "Regex search string:"
+msgstr "வழக்கவெளி தேடல் சரம்:"
+
+#. Resource IDs: (179)
+msgid "Regex stack error"
+msgstr "வழக்கவெளி அடுக்கு பிழை"
+
+#. Resource IDs: (152)
+msgid "Relative paths are not allowed. Please enter an absolute path!"
+msgstr "உறவு பாதைகள் அனுமதிக்கப்படவில்லை. தயவுசெய்து ஒரு முழுமையான பாதையை உள்ளிடவும்!"
+
+#. Resource IDs: (32771 - Menu)
+msgid "Remo&ve Preset"
+msgstr "முன்னமைவு நீக்கு"
+
+#. Resource IDs: (106)
+msgid "Replace string"
+msgstr "சரத்தை மாற்றவும்"
+
+#. Resource IDs: (1027)
+msgid "Replace with/\nCapture format:"
+msgstr "/ உடன் மாற்றவும்\n பிடிப்பு வடிவத்தை:"
+
+#. Resource IDs: (126)
+msgid "S&top"
+msgstr "நிறுத்து"
+
+#. Resource IDs: (1, 1016)
+msgid "Search"
+msgstr "தேடல்"
+
+#. Resource IDs: (1026)
+msgid "Search &for:"
+msgstr "தேடுங்கள்:"
+
+#. Resource IDs: (1042)
+msgid "Search case-sensitive"
+msgstr "வழக்கு-உணர்திறன் தேடல்"
+
+#. Resource IDs: (1015)
+msgid "Search in"
+msgstr "இதில் தேடு"
+
+#. Resource IDs: (162)
+msgid "Search in found files"
+msgstr "கண்டுபிடிக்கப்பட்ட கோப்புகளில் தேடுங்கள்"
+
+#. Resource IDs: (1018)
+msgid "Search results"
+msgstr "தேடல் முடிவுகள்"
+
+#. Resource IDs: (105)
+msgid "Search string"
+msgstr "சரம் தேடல்"
+
+#. Resource IDs: (128)
+#, c-format
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
+msgstr "%S கோப்புகளைத் தேடியது, %s கோப்புகளைத் தவிர்த்தது. %S கோப்புகளில் %s பொருத்தங்கள் காணப்பட்டன."
+
+#. Resource IDs: (173)
+#, c-format
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
+msgstr "%S கோப்புகளைத் தேடியது, %s கோப்புகளைத் தவிர்த்தது. %S கோப்புகளில் %s பொருத்தங்கள் காணப்பட்டன. தேர்ந்தெடுக்கப்பட்ட %முடிவுகள்."
+
+#. Resource IDs: (140)
+msgid "Select Editor Application..."
+msgstr "திருத்தி பயன்பாட்டைத் தேர்ந்தெடு..."
+
+#. Resource IDs: (127)
+msgid "Select path to search"
+msgstr "தேட பாதையைத் தேர்ந்தெடு"
+
+#. Resource IDs: (133)
+msgid "Size"
+msgstr "அளவு"
+
+#. Resource IDs: (1006)
+msgid "Size is"
+msgstr "அளவு"
+
+#. Resource IDs: (1028)
+msgid "Test regex"
+msgstr "சோதனை வழக்கவெளி"
+
+#. Resource IDs: (136)
+msgid "Text"
+msgstr "உரை"
+
+#. Resource IDs: (1048)
+msgid "Text match"
+msgstr "உரை பொருத்தம்"
+
+#. Resource IDs: (1002)
+msgid "Text search"
+msgstr "உரை தேடல்"
+
+#. Resource IDs: (160)
+#, c-format
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr "\"%s\" பாதை இல்லை அல்லது அணுக முடியாது!"
+
+#. Resource IDs: (65535)
+msgid "The regex search string matches:"
+msgstr "வழக்கவெளி தேடல் சரம் பொருந்துகிறது:"
+
+#. Resource IDs: (65535)
+msgid "The resulting text after replacing:"
+msgstr "இதன் விளைவாக உரை மாற்றிய பின்:"
+
+#. Resource IDs: (1053)
+msgid "Treat files as UTF8"
+msgstr "கோப்புகளை UTF8 ஆக கருதுங்கள்"
+
+#. Resource IDs: (1054)
+msgid "Treat files as binary"
+msgstr "கோப்புகளை இருமம் என்று கருதுங்கள்"
+
+#. Resource IDs: (172)
+#, c-format
+msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
+msgstr "\"%s\" இயக்கப்பட்ட விருப்பம் உங்களிடம் உள்ளது.\r\n மாற்றும்போது, ​​இந்த விருப்பம் சிதைந்த கோப்புகளுக்கு வழிவகுக்கும்.\r\n நீங்கள் எப்படியும் தொடர விரும்புகிறீர்களா?"
+
+#. Resource IDs: (1025)
+msgid "\\"
+msgstr "\\"
+
+#. Resource IDs: (116)
+msgid "a regular expression used for searching. Press F1 for more info."
+msgstr "தேடுவதற்கு பயன்படுத்தப்படும் வழக்கமான வெளிப்பாடு. மேலும் தகவலுக்கு F1 ஐ அழுத்தவும்."
+
+#. Resource IDs: (125)
+msgid "an empty string"
+msgstr "ஒரு வெற்று சரம்"
+
+#. Resource IDs: (130)
+msgid "binary"
+msgstr "இருமம்"
+
+#. Resource IDs: (118)
+msgid "click to edit the text as a multiline text"
+msgstr "உரையை ஒரு பலவரி உரையாக திருத்த சொடுக்கு செய்க"
+
+#. Resource IDs: (159)
+msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
+msgstr "இருண்ட பயன்முறையில் குறைந்தபட்சம் WIN10 1803 தேவைப்படுகிறது, மேலும் இது சாளரங்கள் கணினி அமைப்புகளில் இயக்கப்பட வேண்டும்."
+
+#. Resource IDs: (121)
+msgid "equal to"
+msgstr "சமமான"
+
+#. Resource IDs: (122)
+msgid "greater than"
+msgstr "விட பெரியது"
+
+#. Resource IDs: (103, 129)
+msgid "grepWin"
+msgstr "வழக்கவெளிசாளரம்"
+
+#. Resource IDs: (168)
+#, c-format
+msgid "grepWin %s is available"
+msgstr "வழக்கவெளிசாளரம் %s கிடைக்கின்றன"
+
+#. Resource IDs: (138)
+msgid "grepWin Settings"
+msgstr "வழக்கவெளிசாளரம் அமைப்புகள்"
+
+#. Resource IDs: (157)
+msgid "hold down the shift key to find files that DO NOT contain the search string"
+msgstr "தேடல் சரம் இல்லாத கோப்புகளைக் கண்டுபிடிக்க உயர்த்து விசையை அழுத்தவும்"
+
+#. Resource IDs: (165)
+msgid "include file paths"
+msgstr "கோப்பு பாதைகள் அடங்கும்"
+
+#. Resource IDs: (166)
+msgid "include match line numbers"
+msgstr "பொருந்தும் வரி எண்களைச் சேர்"
+
+#. Resource IDs: (167)
+msgid "include match line text"
+msgstr "பொருந்தும் வரி உரை சேர்"
+
+#. Resource IDs: (132)
+msgid "invalid regex!"
+msgstr "தவறான வழக்கவெளி!"
+
+#. Resource IDs: (120)
+msgid "less than"
+msgstr "குறைவாக"
+
+#. Resource IDs: (111)
+msgid "no match"
+msgstr "பொருந்தவில்லை"
+
+#. Resource IDs: (110)
+msgid "no text to replace with"
+msgstr "மாற்ற உரை இல்லை"
+
+#. Resource IDs: (107)
+msgid "no text to test with available"
+msgstr "கிடைக்க உரை இல்லை"
+
+#. Resource IDs: (1074)
+msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
+msgstr "ஒரு எம்பிக்கு சுழிய பைட்டுகளின் எண்ணிக்கை பைனரிக்கு பதிலாக ஒரு கோப்பை இன்னும் உரையாக கருத அனுமதித்தது"
+
+#. Resource IDs: (112)
+msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgstr "இந்த வடிவத்துடன் பொருந்தக்கூடிய கோப்புகள் மட்டுமே தேடப்படுகின்றன.\r\n உரை பொருத்தம் நீட்டிக்கப்பட்டது. பயன்படுத்த \"|\" டிலிமிட்டராக.\r\n எடுத்துக்காட்டு: *.cpp | *.h"
+
+#. Resource IDs: (176)
+msgid "open list with recent entries"
+msgstr "அண்மைக் கால உள்ளீடுகளுடன் திறந்த பட்டியல்"
+
+#. Resource IDs: (129)
+msgid "read error"
+msgstr "பிழையைப் படியுங்கள்"
+
+#. Resource IDs: (131)
+msgid "regex ok"
+msgstr "வழக்கவெளி சரி"
+
+#. Resource IDs: (117)
+msgid "reuse grepWin instances."
+msgstr "வழக்கவெளிசாளரம் நிகழ்வுகளை மீண்டும் பயன்படுத்தவும்."
+
+#. Resource IDs: (151)
+#, c-format
+msgid "scanning file '%s'"
+msgstr "கோப்பு '%s'ஐ வருடுகிறது"
+
+#. Resource IDs: (108)
+msgid "search string is empty"
+msgstr "தேடல் சரம் காலியாக உள்ளது"
+
+#. Resource IDs: (170, 171)
+msgid "start new grepWin window"
+msgstr "புதிய வழக்கவெளிசாளரம் சாளரத்தைத் தொடங்கவும்"
+
+#. Resource IDs: (114)
+msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
+msgstr "மீண்டும் மீண்டும் தேடப்படும் பாதை (கள்).\r\n | உடன் தனி பாதைகள் சின்னம்.\r\n எடுத்துக்காட்டு: சி: \\ தற்காலிக | டி: \\ பதிவுகள்"
+
+#. Resource IDs: (113)
+msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgstr "நீங்கள் கோப்பகத்தை விலக்க முடியும், எ.கா. சிவிஎச் மற்றும் படங்கள்.\n எடுத்துக்காட்டுகள்: ^(சிவிஎச் | படம்) $\n குறிப்பு, '.svn' கோப்புறைகள் சாளரங்களில் 'மறைக்கப்பட்டுள்ளன', எனவே அவை வழக்கமாக தேடாது."
+
+#. Resource IDs: (1064, 1066, 1067)
+msgid "|"
+msgstr "|"
+
+#. Resource IDs: (1024)
+msgid "⑂"
+msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ அமைப்புகள்"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 தேடல்"
+
