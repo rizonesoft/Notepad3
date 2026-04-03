@@ -1107,8 +1107,6 @@ void STRAPI StrgFormat(HSTRINGW hstr, LPCWSTR fmt, ...)
 }
 // ----------------------------------------------------------------------------
 
-// ############################################################################
-
 LPWSTR STRAPI StrgWriteAccessBuf(HSTRINGW hstr, size_t min_len)
 {
     STRINGW* pstr = ToWStrg(hstr);
@@ -1139,4 +1137,70 @@ void STRAPI StrgSanitize(HSTRINGW hstr)
 }
 // --------------------------------------------------------------------------
 
+// ############################################################################
+ 
+//=============================================================================
+//
+//  EscapeStringForCmdLine()
+//  Escapes a string for safe inclusion inside a double-quoted Windows
+//  command-line argument (CommandLineToArgvW rules):
+//    - '"' becomes '\"'
+//    - runs of N backslashes before a '"' or at end-of-string become 2N
+//  Caller must destroy the returned HSTRINGW.
+//
+HSTRINGW EscapeStringForCmdLine(LPCWSTR pattern)
+{
+    HSTRINGW hesc = StrgCreate(L"");
+    if (!pattern || (*pattern == L'\0')) {
+        return hesc;
+    }
+
+    size_t const len = wcsnlen_s(pattern, STRSAFE_MAX_CCH);
+    // worst case: every char is '"' or '\' → roughly 2x+1 expansion
+    wchar_t* const buf = StrgWriteAccessBuf(hesc, (len * 2) + 2);
+    size_t         j = 0;
+
+    for (size_t i = 0; i < len; /* advanced in loop */) {
+        if (pattern[i] == L'\\') {
+            // count consecutive backslashes
+            size_t nbs = 0;
+            while (i < len && pattern[i] == L'\\') {
+                ++nbs;
+                ++i;
+            }
+            if (i == len || pattern[i] == L'"') {
+                // before end-of-string or before a '"': double the backslashes
+                for (size_t k = 0; k < nbs * 2; ++k) {
+                    buf[j++] = L'\\';
+                }
+                if (i < len) {
+                    // the '"' itself must be escaped
+                    buf[j++] = L'\\';
+                    buf[j++] = L'"';
+                    ++i;
+                }
+            }
+            else {
+                // backslashes not before a '"': keep as-is
+                for (size_t k = 0; k < nbs; ++k) {
+                    buf[j++] = L'\\';
+                }
+            }
+        }
+        else if (pattern[i] == L'"') {
+            buf[j++] = L'\\';
+            buf[j++] = L'"';
+            ++i;
+        }
+        else {
+            buf[j++] = pattern[i++];
+        }
+    }
+    buf[j] = L'\0';
+    StrgSanitize(hesc);
+    return hesc;
+}
+// --------------------------------------------------------------------------
+ 
+ 
 // ############################################################################

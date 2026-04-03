@@ -4969,24 +4969,21 @@ typedef struct _grepwin_ini {
 grepWin_t;
 
 static grepWin_t grepWinIniSettings[] = {
-    { L"onlyone",           L"1" },
     { L"AllSize",           L"0" },
-    { L"Size",           L"2000" },
+    { L"CheckForUpdates",   L"0" },
     { L"CreateBackup",      L"1" },
     { L"DateLimit",         L"0" },
     { L"IncludeBinary",     L"0" },
     { L"IncludeHidden",     L"1" },
     { L"IncludeSubfolders", L"1" },
     { L"IncludeSystem",     L"1" },
+    { L"onlyone",           L"1" },
+    { L"showcontent",       L"1" },
+    { L"Size",           L"2000" },
     { L"UseFileMatchRegex", L"0" },
     { L"UTF8",              L"1" }
 };
 
-//=============================================================================
-//
-//  DialogGrepWin()
-//
-//
 void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 {
     HPATHL hExeFilePath = Path_Allocate(Path_Get(Settings2.GrepWinPath));
@@ -5072,7 +5069,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
             // =================================================================
             const WCHAR* const globalSection = L"global";
 
-            WCHAR value[LARGE_BUFFER];
+            WCHAR value[SMALL_BUFFER];
             for (int i = 0; i < COUNTOF(grepWinIniSettings); ++i) {
                 IniSectionGetString(globalSection, grepWinIniSettings[i].key, grepWinIniSettings[i].val, value, COUNTOF(value));
                 IniSectionSetString(globalSection, grepWinIniSettings[i].key, value);
@@ -5128,8 +5125,6 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
             int const idotMLn = IniSectionGetInt(globalSection, L"DotMatchesNewline", ((Settings.EFR_Data.fuFlags & SCFIND_DOT_MATCH_ALL) != 0) ? (Settings.EFR_Data.bRegExprSearch) : 0);
             IniSectionSetInt(globalSection, L"DotMatchesNewline", idotMLn);
 
-            IniSectionSetInt(globalSection, L"showcontent", 1);  // const
-
             // Notepad3 path (for grepWin's EditorCmd)
             HPATHL hpath_np3 = Path_Allocate(NULL);
             Path_GetModuleFilePath(hpath_np3);
@@ -5165,10 +5160,10 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
                 IniSectionSetString(np3cmdSection, L"replacewith", StrgGet(Settings.EFR_Data.chReplaceTemplate));
             }
 
-            StrgCat(hstrOptions, ((Settings.EFR_Data.fuFlags & SCFIND_MATCHCASE) != 0) ? L"/i:no " : L"/i:yes ");
-            StrgCat(hstrOptions, ((Settings.EFR_Data.fuFlags & SCFIND_DOT_MATCH_ALL) != 0) ? L"/n:yes " : L"/n:no ");
-            StrgCat(hstrOptions, ((Settings.EFR_Data.fuFlags & SCFIND_WHOLEWORD) != 0) ? L"/wholewords:yes " : L"/wholewords:no ");
-            StrgCat(hstrOptions, Settings.EFR_Data.bRegExprSearch ? L"/regex:yes " : L"/regex:no ");
+            StrgCat(hstrOptions, ((Settings.EFR_Data.fuFlags & SCFIND_MATCHCASE) != 0) ? L" /i:no " : L" /i:yes");
+            StrgCat(hstrOptions, ((Settings.EFR_Data.fuFlags & SCFIND_DOT_MATCH_ALL) != 0) ? L" /n:yes" : L" /n:no");
+            StrgCat(hstrOptions, ((Settings.EFR_Data.fuFlags & SCFIND_WHOLEWORD) != 0) ? L" /wholewords:yes" : L" /wholewords:no");
+            StrgCat(hstrOptions, Settings.EFR_Data.bRegExprSearch ? L" /regex:yes" : L" /regex:no");
 
 
             // =================================================================
@@ -5199,9 +5194,10 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 
         // grepWin arguments (omit /portable for PortableApps — the launcher sets it)
         HSTRINGW hstrParams = StrgCreate(L"");
+        HSTRINGW hstrEscPattern = EscapeStringForCmdLine(searchPattern);
         if (Path_IsExistingFile(hGrepWinIniPath)) {
             if (bIsPortableApps) {
-                StrgFormat(hstrParams, L"/content %s /searchfor:\"%s\"", StrgGet(hstrOptions), searchPattern);
+                StrgFormat(hstrParams, L"/content %s /searchfor:\"%s\"", StrgGet(hstrOptions), StrgGet(hstrEscPattern));
             }
             else {
                 StrgFormat(hstrParams, L"/portable /content %s /searchini:\"%s\" /name:\"%s\"",
@@ -5211,8 +5207,9 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
         else {
             StrgFormat(hstrParams, bIsPortableApps ? 
                        L"/content %s /searchfor:\"%s\"" : L"/portable /content %s /searchfor:\"%s\"",
-                       StrgGet(hstrOptions), searchPattern);
+                       StrgGet(hstrOptions), StrgGet(hstrEscPattern));
         }
+        StrgDestroy(hstrEscPattern);
 
         SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
         sei.fMask = SEE_MASK_FLAG_NO_UI | SEE_MASK_NOZONECHECKS;
