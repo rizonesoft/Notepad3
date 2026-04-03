@@ -1,3 +1,4 @@
+si# OS generated files #
 # OS generated files #
 ######################
 .DS_Store
@@ -29,7 +30,7 @@ Thumbs.db
 
 /.vs
 /Bin
-/Build/Ignore*
+#/Build/Ignore*
 #/Build/*portable*
 /Build/notepad3*setup*
 /Build/Resources
@@ -37,7 +38,6 @@ Thumbs.db
 
 /_upgrade_backup
 
-/packages
 /other_sln/packages
 
 ### changes by Version.ps1 script ###
@@ -53,10 +53,10 @@ Thumbs.db
 /test/test.log
 /Notepad3.VC.VC.opendb
 
-#/np3portableapp/*.7z
-#/np3portableapp/*.cmd
-#/np3portableapp/*.exe
-#/np3portableapp/*.txt
+/np3portableapp/Signing*.cmd
+/np3portableapp/Signing*.txt
+/np3portableapp/Notepad3Portable*.7z
+/np3portableapp/Notepad3Portable*.exe
 #/np3portableapp/Notepad3Portable/Data
 #/np3portableapp/Notepad3Portable/Data
 #/np3portableapp/Notepad3Portable/App/AppInfo/appinfo.ini
