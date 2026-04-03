@@ -35,7 +35,7 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 6.26.314.(build_#) (2026-03-14)
+Current BETA Version 7.26.4µµ.(build_#) (2026-04-µµ)
 ========================================================
 
 --------------------------------------------------------
@@ -57,6 +57,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]-
+[.04µµ.1]- Migration to original grepWin tooling (remove home brew project).
 [.306.1]- Synchronise with current scintilla mirror.
 [.306.1]- Update SimpleIni header only lib (to v4.25).
 [.306.1]- Major version 6 → 7 for Win10 minimum.
@@ -121,6 +122,7 @@ FIXES:
 --------------------------------------------------------
 REMOVED:
 [.xxx.x]-
+[.4µµ.1]- Remove grepWinNP3 project from main.
 [.306.1]- Remove deprecated Win7 compatibility and UTF-32 detection.
 [.303.1]- Remove retired Oniguruma regex Engine (ONI).
 [.227.1]- Remove obsolete AppVeyor CI build.

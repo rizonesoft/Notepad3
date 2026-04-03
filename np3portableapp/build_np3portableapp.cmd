@@ -49,7 +49,7 @@ call :RESOLVEPATH NP3_BUILD_SCHEMES_DIR %SCRIPT_DIR%..\Build\Themes
 call :RESOLVEPATH NP3_WIN32_DIR %SCRIPT_DIR%..\Bin\Release_x86_v145
 call :RESOLVEPATH NP3_X64_DIR %SCRIPT_DIR%..\Bin\Release_x64_v145
 
-call :RESOLVEPATH NP3_GREPWIN_DIR %SCRIPT_DIR%..\grepWinNP3
+call :RESOLVEPATH GREPWIN_DIR %SCRIPT_DIR%..\grepWin
 
 call :RESOLVEPATH NP3_PORTAPP_DIR %SCRIPT_DIR%Notepad3Portable
 call :RESOLVEPATH NP3_PORTAPP_INFO %NP3_PORTAPP_DIR%\App\AppInfo\appinfo
@@ -91,6 +91,10 @@ if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng" rmdir "%NP3_PORTAPP_DIR%\App\N
 
 if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng" rmdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng" /S /Q
 
+if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin" rmdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin" /S /Q
+
+if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin" rmdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin" /S /Q
+
 if not exist "%NP3_PORTAPP_DIR%\App\DefaultData\settings\" (
      mkdir "%NP3_PORTAPP_DIR%\App\DefaultData\settings\"
 ) else (
@@ -124,7 +128,6 @@ copy "%SCRIPT_DIR%..\Readme.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\Readme.txt
 copy "%NP3_DOC_DIR%\*.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\*.txt" /Y /V
 copy "%NP3_DOC_DIR%\crypto\*.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\crypto\*.txt" /Y /V
 copy "%NP3_DOC_DIR%\uthash\*.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\uthash\*.txt" /Y /V
-copy "%NP3_GREPWIN_DIR%\grepWinLicense.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\Docs\grepWinLicense.txt" /Y /V
 
 :: Copy all current "Notepad3.exe" and "MiniPath.exe" files
 copy /B "%NP3_WIN32_DIR%\Notepad3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
@@ -155,15 +158,19 @@ for /d %%d in (%NP3_LANGUAGE_SET%) do (
 copy /B "%NP3_X64_DIR%\lng\np3lng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
 copy /B "%NP3_X64_DIR%\lng\mplng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
 
-:: Copy all current "grepWinNP3" and "np3encrypt" files
-if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng"
-copy /B "%NP3_WIN32_DIR%\lng\gwLng\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\gwLng\" /Y /V
-copy /B "%NP3_WIN32_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
+:: Copy all current "grepWin" and "np3encrypt" files
+if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\" mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin"
+copy "%GREPWIN_DIR%\portables\grepWin-x86_portable.exe" "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\grepWin-x86_portable.exe" /Y /V
+copy "%GREPWIN_DIR%\portables\LICENSE.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\LICENSE.txt" /Y /V
+copy "%GREPWIN_DIR%\portables\website.url" "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\website.url" /Y /V
+copy "%GREPWIN_DIR%\translations\*.lang" "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\*.lang" /Y /V
 copy /B "%NP3_WIN32_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
 
-if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng"
-copy /B "%NP3_X64_DIR%\lng\gwLng\*.lang" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\gwLng\" /Y /V
-copy /B "%NP3_X64_DIR%\grepWinNP3.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
+if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\" mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin"
+copy "%GREPWIN_DIR%\portables\grepWin-x64_portable.exe" "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\grepWin-64_portable.exe" /Y /V
+copy "%GREPWIN_DIR%\portables\LICENSE.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\LICENSE.txt" /Y /V
+copy "%GREPWIN_DIR%\portables\website.url" "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\website.url" /Y /V
+copy "%GREPWIN_DIR%\translations\*.lang" "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\*.lang" /Y /V
 copy /B "%NP3_X64_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
 :: ---------------------------------------------------------------------------------------------------
