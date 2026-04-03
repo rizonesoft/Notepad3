@@ -3,7 +3,7 @@
 =                                                                     =
 =   Notepad3 - light-weight Scintilla-based text editor for Windows   =
 =                                                                     =
-=                                          (c) Rizonesoft 2008-2023   =
+=                                          (c) Rizonesoft 2008-2026   =
 =                                            https://rizonesoft.com   =
 =                                                                     =
 =                          forked from Notepad2-mod                   =
@@ -63,7 +63,7 @@ Changes in MiniPath compared to metapath
   
 Supported Operating Systems
 
-   Windows 7, 8, 8.1, 10 both 32-bit and 64-bit
+   Windows 10 and 11 (32-bit, 64-bit and ARM64)
 
 Contributors:
 
@@ -77,7 +77,7 @@ Contributors:
 
 
 More information:
-* Binaries:                   https://www.rizonesoft.com/downloads/notepad3
+* Binaries:                   https://rizonesoft.com/downloads/notepad3
 * Source code:                https://github.com/rizonesoft/Notepad3
 *                             https://github.com/XhmikosR/notepad2-mod
 * Official Notepad2 website:  https://www.flos-freeware.ch/notepad2.html
@@ -212,7 +212,7 @@ FileDlgFilters
 Specify filters for the open and save dialogs 
 (Example: Text Files|*.txt;*.wtx;*.log;*.asc;*.doc;*.diz;*.nfo|All Files|*.*).
 
-FileCheckInverval
+FileCheckInterval
 The interval (in milliseconds) to check for external modification 
 of the currently opened file. Defaults to 2000 ms.
 

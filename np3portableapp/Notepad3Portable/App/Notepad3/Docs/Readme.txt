@@ -2,8 +2,8 @@
 =                                                                              =
 =            Notepad3 - light-weight Scintilla-based text editor for Windows   =
 =                                                                              =
-=                                                   (c) Rizonesoft 2008-2023   =
-=                                                 https://www.rizonesoft.com   =
+=                                                   (c) Rizonesoft 2008-2026   =
+=                                                     https://rizonesoft.com   =
 =                                                                              =
 ================================================================================
 Rizonesoft Notepad3 --- README ---
@@ -58,7 +58,7 @@ Changes compared to the Notepad2-mod fork:
 --------------------------------------------------------------------------------
 Supported Operating Systems:
 ----------------------------
-Windows 7, 8, 8.1 and 10 both 32-bit and 64-bit
+Windows 10 and 11 (32-bit, 64-bit and ARM64)
 
 --------------------------------------------------------------------------------
 Development:
@@ -69,7 +69,7 @@ Development:
 --------------------------------------------------------------------------------
 Contributors:
 -------------
-Derick Payne (© Rizonesoft)             https://www.rizonesoft.com
+Derick Payne (© Rizonesoft)             https://rizonesoft.com
 XhmikosR (Notepad2-mod)                 https://xhmikosr.github.io/notepad2-mod
 Kai Liu (CodeFolding)                   https://code.kliu.org/misc/notepad2
 RL Vision (Bookmarks)                   https://www.rlvision.com/notepad2/about.php
@@ -98,16 +98,18 @@ alex-ilin               https://github.com/alex-ilin
 alexantr                https://github.com/alexantr
 ashish12phnx            https://github.com/ashish12phnx
 bravo-hero              https://github.com/bravo-hero
+chuanliwen              https://github.com/chuanliwen
 craigo-                 https://github.com/craigo-
 Crane70                 https://github.com/Crane70
 engelhro                https://github.com/engelhro
-geogeo-gr               https://github.com/geogeo-gr
 Hexaae                  https://github.com/Hexaae
 hpwamr                  https://github.com/hpwamr
 igorruckert             https://github.com/igorruckert
 jupester                https://github.com/jupester
 kayazeren               https://github.com/kayazeren
+kidzgy                  https://github.com/kidzgy
 kofifus                 https://github.com/kofifus
+kun7752                 https://github.com/kun7752
 Lacn0755                https://github.com/Lacn0755
 leeoniya                https://github.com/leeoniya
 lhmouse                 https://github.com/lhmouse
@@ -118,11 +120,16 @@ MadDogVachon            https://github.com/MadDogVachon
 Matteo-Nigro            https://github.com/Matteo-Nigro
 MelchiorGaspar          https://github.com/MelchiorGaspar
 Mitezuss                https://github.com/Mitezuss
+nickreserved            https://github.com/nickreserved
+np3fan                  https://github.com/np3fan
+quadratz                https://github.com/quadratz
 RaiKoHoff               https://github.com/RaiKoHoff
 rizonesoft              https://github.com/rizonesoft
 Rudolfin                https://github.com/Rudolfin
 Stephan-P               https://github.com/Stephan-P
 ThreeLightsBeyond       https://github.com/ThreeLightsBeyond
+tormento                https://github.com/tormento
+Veikko-M                https://github.com/Veikko-M
 VenusGirl               https://github.com/VenusGirl
 xsak                    https://github.com/xsak
 zufuliu                 https://github.com/zufuliu
@@ -148,8 +155,8 @@ Notepad3 icon by Vexels.com     https://www.vexels.com
 --------------------------------------------------------------------------------
 Notepad3 Licence:
 -----------------
-Notepad3 and MiniPath Copyright © 2008-2023 Rizonesoft, All rights reserved.
-https://www.rizonesoft.com
+Notepad3 and MiniPath Copyright © 2008-2026 Rizonesoft, All rights reserved.
+https://rizonesoft.com
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
