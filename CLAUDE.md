@@ -229,6 +229,22 @@ Application state is centralized in global structs (`Globals`, `Settings`, `Sett
 
 Use `_BEGIN_UNDO_ACTION_` / `_END_UNDO_ACTION_` macros (defined in `Notepad3.h`) to group Scintilla operations into single undo steps. These also handle notification limiting during bulk edits.
 
+### WriteAccessBuf — Dangling Pointer Anti-Pattern
+
+**NEVER use a pointer obtained from `Path_WriteAccessBuf()` / `StrgWriteAccessBuf()` after ANY operation that may reallocate or swap the underlying buffer of the SAME handle.** The pointer becomes dangling (use-after-free).
+
+Buffer-invalidating operations:
+- `Path_CanonicalizeEx(h, ...)` — calls `Path_Swap` internally
+- `Path_Swap(h, ...)` / `StrgSwap(h, ...)`
+- `Path_ExpandEnvStrings(h)` / `ExpandEnvironmentStrgs(h, ...)` — may realloc
+- `Path_Append(h, ...)` / `Path_Reset(h, ...)` — may realloc
+- `StrgCat(h, ...)` / `StrgInsert(h, ...)` / `StrgFormat(h, ...)` / `StrgReset(h, ...)` — may realloc
+- `Path_NormalizeEx(h, ...)` / `Path_AbsoluteFromApp(h, ...)` / `Path_RelativeToApp(h, ...)` — may realloc/swap
+
+Safe patterns after invalidation:
+- **Read-only**: use `Path_Get(h)` or `StrgGet(h)` — always returns current buffer
+- **Read-write**: re-obtain via `ptr = Path_WriteAccessBuf(h, 0)` / `ptr = StrgWriteAccessBuf(h, 0)` (size 0 = no resize, just returns current pointer)
+
 ## Python Environment
 
 A Python 3.14 virtual environment is available at `.venv\` for scripting tasks (batch file manipulation, locale file updates, code generation, etc.).

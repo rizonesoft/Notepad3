@@ -85,5 +85,8 @@ HSTRINGW STRAPI          StrgRight(HSTRINGW hstr, const size_t count);
 void STRAPI              StrgFormat(HSTRINGW hstr, LPCWSTR fmt, ...);
 
 // use together (after external access) - may get consistency issues if not (!)
-LPWSTR STRAPI StrgWriteAccessBuf(HSTRINGW hstr, size_t min_len); // min_len = 0   for not resizing buffer
-void STRAPI   StrgSanitize(HSTRINGW hstr);  // correct string length after buffer access
+LPWSTR STRAPI            StrgWriteAccessBuf(HSTRINGW hstr, size_t min_len); // min_len = 0   for not resizing buffer
+void STRAPI              StrgSanitize(HSTRINGW hstr);  // correct string length after buffer access
+
+// Escapes a string for safe inclusion inside a double-quoted Windows command-line argument (CommandLineToArgvW rules):
+HSTRINGW STRAPI          EscapeStringForCmdLine(LPCWSTR pattern);

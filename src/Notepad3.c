@@ -12233,7 +12233,7 @@ bool RelaunchElevated(LPCWSTR lpNewCmdLnArgs)
     wchar_t* const fbuf = Path_WriteAccessBuf(hfile, PATHLONG_MAX_CCH);
 
     HSTRINGW hstrOrigArgs = StrgCreate(NULL);
-    wchar_t* const arg_buf = StrgWriteAccessBuf(hstrOrigArgs, CMDLN_LENGTH_LIMIT);
+    wchar_t* arg_buf = StrgWriteAccessBuf(hstrOrigArgs, CMDLN_LENGTH_LIMIT);
 
     ExtractFirstArgument(lpCmdLine, fbuf, arg_buf, min_i((int)wlen, CMDLN_LENGTH_LIMIT));
     // overrides:
@@ -12242,7 +12242,8 @@ bool RelaunchElevated(LPCWSTR lpNewCmdLnArgs)
         StringCchCopy(arg_buf, StrgGetAllocLength(hstrOrigArgs), lpNewCmdLnArgs);
     }
     StrgSanitize(hstrOrigArgs);
-    StrgCat(hstrOrigArgs, L" ");
+    StrgCat(hstrOrigArgs, L" "); // may realloc
+    arg_buf = StrgWriteAccessBuf(hstrOrigArgs, 0); // re-obtain after potential realloc
     // remove relaunch elevated, we are doing this here already
     StrCutIW(arg_buf, L"/u ");
     StrCutIW(arg_buf, L"-u ");
