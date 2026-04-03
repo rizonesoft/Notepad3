@@ -1148,7 +1148,7 @@ void STRAPI StrgSanitize(HSTRINGW hstr)
 //    - runs of N backslashes before a '"' or at end-of-string become 2N
 //  Caller must destroy the returned HSTRINGW.
 //
-HSTRINGW EscapeStringForCmdLine(LPCWSTR pattern)
+HSTRINGW STRAPI EscapeStringForCmdLine(LPCWSTR pattern)
 {
     HSTRINGW hesc = StrgCreate(L"");
     if (!pattern || (*pattern == L'\0')) {
