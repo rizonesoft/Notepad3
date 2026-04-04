@@ -731,16 +731,6 @@ int CheckIniFile(LPWSTR lpszFile, LPCWSTR lpszModule)
             StringCchCopy(lpszFile, MAX_PATH, tchBuild);
             return 1;
         }
-        // Sub directory (.\np3\)
-        StringCchCopy(tchBuild, COUNTOF(tchBuild), lpszModule);
-        if (SUCCEEDED(PathCchRemoveFileSpec(tchBuild, COUNTOF(tchBuild)))) {
-            StringCchCat(tchBuild, COUNTOF(tchBuild), L"\\np3\\");
-            StringCchCat(tchBuild, COUNTOF(tchBuild), tchFileExpanded);
-            if (PathIsExistingFile(tchBuild)) {
-                StringCchCopy(lpszFile, MAX_PATH, tchBuild);
-                return 1;
-            }
-        }
         // Application Data (%APPDATA%)
         {
             PWSTR pszPath = nullptr;

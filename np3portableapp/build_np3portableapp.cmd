@@ -12,7 +12,7 @@ chcp 65001 >nul 2>&1
 ::
 :: ---------------------------------------------------------------------------------------------------
 :: Based on PortableApps.com's Application_Template:
-::    (https://downloads.sourceforge.net/portableapps/PortableApps.com_Application_Template_3.4.1.zip)
+::    (https://sourceforge.net/projects/portableapps/files/PortableApps.com%20Template/PortableApps.com_Application_Template_3.9.0.zip)
 :: ---------------------------------------------------------------------------------------------------
 ::
 :: Prerequisites: (portable) intallation of:
@@ -35,6 +35,7 @@ if exist %~d0\PortableApps\PortableApps.comInstaller\ (
     if exist %~d0\Rizonesoft\PortableApps\PortableApps\PortableApps.comInstaller\ (
         set PORTAPP_ROOT_DIR=%~d0\Rizonesoft\PortableApps\PortableApps
     ) else (
+      echo. "Can't find PortableApps Platform!"
       goto :END
     )
 )
@@ -49,7 +50,8 @@ call :RESOLVEPATH NP3_BUILD_SCHEMES_DIR %SCRIPT_DIR%..\Build\Themes
 call :RESOLVEPATH NP3_WIN32_DIR %SCRIPT_DIR%..\Bin\Release_x86_v145
 call :RESOLVEPATH NP3_X64_DIR %SCRIPT_DIR%..\Bin\Release_x64_v145
 
-call :RESOLVEPATH GREPWIN_DIR %SCRIPT_DIR%..\grepWin
+rem - We will rely on PortableApps Platform installed grepWinPortable
+rem ~ call :RESOLVEPATH GREPWIN_DIR %SCRIPT_DIR%..\grepWin
 
 call :RESOLVEPATH NP3_PORTAPP_DIR %SCRIPT_DIR%Notepad3Portable
 call :RESOLVEPATH NP3_PORTAPP_INFO %NP3_PORTAPP_DIR%\App\AppInfo\appinfo
@@ -91,9 +93,9 @@ if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng" rmdir "%NP3_PORTAPP_DIR%\App\N
 
 if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng" rmdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng" /S /Q
 
-if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin" rmdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin" /S /Q
-
-if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin" rmdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin" /S /Q
+rem - We will rely on PortableApps Platform installed grepWinPortable
+rem ~ if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin" rmdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin" /S /Q
+rem ~if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin" rmdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin" /S /Q
 
 if not exist "%NP3_PORTAPP_DIR%\App\DefaultData\settings\" (
      mkdir "%NP3_PORTAPP_DIR%\App\DefaultData\settings\"
@@ -136,7 +138,7 @@ copy /B "%NP3_WIN32_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" 
 copy /B "%NP3_X64_DIR%\minipath.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
 :: Copy all current ".ini" files
-copy "%NP3_DISTRIB_DIR%\Notepad3.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Notepad3.ini" /Y /V
+copy "%NP3_DISTRIB_DIR%\Notepad3_pap.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Notepad3.ini" /Y /V
 copy "%NP3_DISTRIB_DIR%\minipath.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\minipath.ini" /Y /V
 
 :: Copy all current "Themes" files
@@ -158,20 +160,20 @@ for /d %%d in (%NP3_LANGUAGE_SET%) do (
 copy /B "%NP3_X64_DIR%\lng\np3lng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
 copy /B "%NP3_X64_DIR%\lng\mplng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
 
-:: Copy all current "grepWin" and "np3encrypt" files
-if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\" mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin"
-copy "%GREPWIN_DIR%\portables\grepWin-x86_portable.exe" "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\grepWin-x86_portable.exe" /Y /V
-copy "%GREPWIN_DIR%\portables\LICENSE.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\LICENSE.txt" /Y /V
-copy "%GREPWIN_DIR%\portables\website.url" "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\website.url" /Y /V
-copy "%GREPWIN_DIR%\translations\*.lang" "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\*.lang" /Y /V
-copy /B "%NP3_WIN32_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
-
-if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\" mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin"
-copy "%GREPWIN_DIR%\portables\grepWin-x64_portable.exe" "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\grepWin-64_portable.exe" /Y /V
-copy "%GREPWIN_DIR%\portables\LICENSE.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\LICENSE.txt" /Y /V
-copy "%GREPWIN_DIR%\portables\website.url" "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\website.url" /Y /V
-copy "%GREPWIN_DIR%\translations\*.lang" "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\*.lang" /Y /V
-copy /B "%NP3_X64_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
+:: Don't copy np3encrypt or grepWin 
+rem ~if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\" mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin"
+rem ~copy "%GREPWIN_DIR%\portables\grepWin-x86_portable.exe" "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\grepWin-x86_portable.exe" /Y /V
+rem ~copy "%GREPWIN_DIR%\portables\LICENSE.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\LICENSE.txt" /Y /V
+rem ~copy "%GREPWIN_DIR%\portables\website.url" "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\website.url" /Y /V
+rem ~copy "%GREPWIN_DIR%\translations\*.lang" "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\*.lang" /Y /V
+rem ~copy /B "%NP3_WIN32_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
+rem ~
+rem ~if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\" mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin"
+rem ~copy "%GREPWIN_DIR%\portables\grepWin-x64_portable.exe" "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\grepWin-64_portable.exe" /Y /V
+rem ~copy "%GREPWIN_DIR%\portables\LICENSE.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\LICENSE.txt" /Y /V
+rem ~copy "%GREPWIN_DIR%\portables\website.url" "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\website.url" /Y /V
+rem ~copy "%GREPWIN_DIR%\translations\*.lang" "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\*.lang" /Y /V
+rem ~copy /B "%NP3_X64_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
 
 :: ---------------------------------------------------------------------------------------------------
 
@@ -203,7 +205,7 @@ set Notepad3Portable.paf.exe=%SCRIPT_DIR%Notepad3Portable_%VERSION%%DEVNAME%.paf
 if exist %Notepad3Portable.paf.exe% (
     copy /B %Notepad3Portable.paf.exe% %Notepad3Portable.paf.exe%.7z /Y /V
 ) else (
-    echo. "Notepad3Portable_x.xx.xxx.x_yyyy.paf.exe" does not exist
+    echo. "Notepad3Portable_x.xx.xxx.x_yyyy.paf.exe" does not exist!
 )
 
 :: ===================================================================================================

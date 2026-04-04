@@ -923,20 +923,6 @@ static bool _CheckAndSetIniFile(HPATHL hpth_in_out)
     const wchar_t* const wchMore = Path_IsNotEmpty(hpth_in_out) ? Path_FindFileName(hpth_in_out) : SAPPNAME L".ini";
 
     if (!result) {
-        // sub directory (.\np3\)
-        HPATHL hmodpth = Path_Allocate(NULL);
-        Path_GetAppDirectory(hmodpth);
-        Path_Append(hmodpth, L"./np3/");
-        Path_Append(hmodpth, wchMore);
-        result = Path_IsExistingFile(hmodpth);
-        if (result) {
-            Path_Swap(hPathEx, hmodpth);
-            result = true;
-        }
-        Path_Release(hmodpth);
-    }
-
-    if (!result) {
         // Application Data (%APPDATA%)
         HPATHL happdata = Path_Allocate(NULL);
         if (Path_GetKnownFolder(FOLDERID_RoamingAppData, happdata)) {
