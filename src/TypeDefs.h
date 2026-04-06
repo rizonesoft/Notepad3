@@ -65,6 +65,14 @@
 // no Analyze warning "prefer: enum class"
 #pragma warning(disable : 26812)
 
+// --- Platform Architecture Detection ---
+// Use NP3_BUILD_ARM64 for ARM64-specific code paths
+#if defined(_M_ARM64)
+#define NP3_BUILD_ARM64 1
+#else
+#define NP3_BUILD_ARM64 0
+#endif
+
 /**************************************************/
 /*             Declared in WINNT.H                */
 /*                                                */
