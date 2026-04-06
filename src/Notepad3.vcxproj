@@ -426,7 +426,6 @@
       <CETCompat>false</CETCompat>
       <AllowIsolation>true</AllowIsolation>
       <IgnoreSpecificDefaultLibraries>clang_rt.asan-i386.lib</IgnoreSpecificDefaultLibraries>
-      <TargetMachine>MachineARM64</TargetMachine>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -854,7 +853,6 @@
       <AllowIsolation>true</AllowIsolation>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
-      <TargetMachine>MachineARM64</TargetMachine>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -940,7 +938,6 @@
       <AllowIsolation>true</AllowIsolation>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
-      <TargetMachine>MachineARM64</TargetMachine>
     </Link>
     <PreBuildEvent>
       <Command>

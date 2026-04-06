@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Notepad3 is a Windows-only Win32 desktop text editor (C/C++) built on **Scintilla** (editing component) and **Lexilla** (syntax highlighting). It ships with the companion tool **MiniPath** (file browser, Ctrl+M) and integrates with the external **grepWin** tool (file search/grep, Ctrl+Shift+F) via pre-built portable executables. Licensed under BSD 3-Clause.
+Notepad3 is a Windows-only Win32 desktop text editor (C/C++) built on **Scintilla** (editing component) and **Lexilla** (syntax highlighting). It ships with the companion tool **MiniPath** (file browser, Ctrl+M) and integrates with the external **grepWin** tool (file search/grep, Ctrl+Shift+F). Licensed under BSD 3-Clause.
 
 ## Build Commands
 
@@ -84,22 +84,6 @@ MainWndProc (Notepad3.c)
 | `src\tinyexpr\` / `src\tinyexprcpp\` | TinyExpr | Expression evaluator (statusbar) |
 | `src\uthash\` | uthash | Hash table / dynamic array macros |
 | `src\crypto\` | Rijndael/SHA-256 | AES-256 encryption |
-
-### grepWin Integration (`grepWin\`)
-
-grepWin is an **external** file search/grep tool — it is **not** built from source as part of Notepad3. Pre-built portable executables and translation files are stored in the repository:
-
-- **`grepWin\portables\`** — `grepWin-x86_portable.exe`, `grepWin-x64_portable.exe`, `LICENSE.txt`
-- **`grepWin\translations\`** — `*.lang` translation files (e.g. `German.lang`, `French.lang`)
-
-At runtime (`src\Dialogs.c`), Notepad3 searches for grepWin in this order:
-1. `Settings2.GrepWinPath` (user-configured INI setting)
-2. `<ModuleDirectory>\grepWin\grepWin-x64_portable.exe` (or x86) — portable layout
-3. `%APPDATA%\Rizonesoft\Notepad3\grepWin\` — installed layout
-
-Language mapping (`src\MuiLanguage.c`): `grepWinLangResName[]` maps Notepad3 locale names (e.g. `de-DE`) to grepWin `.lang` filenames (e.g. `German.lang`). The language file path is written to `grepwin.ini` before launching.
-
-Portable build scripts (`Build\make_portable_*.cmd`) package grepWin into a `grepWin\` subdirectory in the archive containing both portable executables, the license, and all `*.lang` translations.
 
 ### Syntax Lexers (`src\StyleLexers\`)
 
@@ -206,32 +190,7 @@ URL hotspot regex is defined at `src\Edit.c:108` (`HYPLNK_REGEX_FULL` macro). It
 
 Windows 10/11 dark mode via IAT (Import Address Table) hooks. Includes stub DLLs for uxtheme and user32.
 
-### ARM64 Platform Considerations
-
-**Supported platforms**: Win32 (x86), x64, x64_AVX2, ARM64. ARM 32-bit is **not** supported (the `Release|ARM` solution config maps to Win32).
-
-#### Architecture detection
-
-Use `#if defined(_M_ARM64)` or the helper macro `NP3_BUILD_ARM64` (defined in `src\TypeDefs.h`) for ARM64-specific code paths. **Important**: both ARM64 and x64 define `_WIN64`, so use `_M_ARM64` when you need to distinguish ARM64 from x64.
-
-#### ARM64 rendering defaults
-
-ARM64 defaults to `SC_TECHNOLOGY_DIRECTWRITERETAIN` (value 2) instead of `SC_TECHNOLOGY_DIRECTWRITE` (value 1) to preserve the Direct2D back buffer between frames. This avoids flickering on Qualcomm Adreno GPUs and the Win11 25H2 DWM compositor. The main window also uses `WS_EX_COMPOSITED` on ARM64 for system-level double-buffering. Users can override via `RenderingTechnology` in the INI file or the View menu.
-
-#### ARM64 build configuration
-
-- `CETCompat` must be `false` for ARM64 (CET is x86/x64 only)
-- `TargetMachine` must be `MachineARM64` in all ARM64 linker sections
-- `_WIN64` must be defined in preprocessor definitions for all ARM64 configurations
-- Build fix scripts in `Build\scripts\`: `FixARM64CETCompat.ps1`, `FixARM64CrossCompile.ps1`, `FixARM64OutDir.ps1`
-
-#### GrepWin on ARM64
-
-No native ARM64 grepWin build exists. The ARM64 build uses `grepWin-x64_portable.exe` which runs via x64 emulation on Windows ARM64. The binary selection in `src\Notepad3.c` uses `#if defined(_M_ARM64)` to handle this explicitly.
-
-#### Theme change flickering prevention
-
-`MsgThemeChanged()` in `src\Notepad3.c` wraps all heavy operations (bar recreation, lexer reset, restyling) in `WM_SETREDRAW FALSE/TRUE` to suppress intermediate repaints and performs a single `RedrawWindow()` at the end. DarkMode `RedrawWindow()` calls in `ListViewUtil.hpp` omit `RDW_ERASE` to avoid background erase flashes during theme transitions.
+## Code Conventions
 
 ### Formatting
 
