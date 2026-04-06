@@ -324,14 +324,15 @@ if errorlevel 1 (
 :: call %SCRIPT_DIR%Signing_for_NP3P_2nd_EXE.cmd
 
 :: ---------------------------------------------------------------------------------------------------
-:: Step 11: Create .7z copy and report result
+:: Step 11: report result
 :: ---------------------------------------------------------------------------------------------------
 echo.
 echo --- Step 11: Finalize ---
 
 set Notepad3Portable.paf.exe=%SCRIPT_DIR%Notepad3Portable_%VERSION%%DEVNAME%.paf.exe
 if exist %Notepad3Portable.paf.exe% (
-    copy /B %Notepad3Portable.paf.exe% %Notepad3Portable.paf.exe%.7z /Y /V
+    rem ~ PAF can be extracted using 7-ZIP, but it is not supposed for this issue
+    rem ~ DON't DO: copy /B %Notepad3Portable.paf.exe% %Notepad3Portable.paf.exe%.7z /Y /V
     echo.
     echo === PortableApps Package Built Successfully! ===
     echo     Output: %Notepad3Portable.paf.exe%
