@@ -53,6 +53,8 @@ Thumbs.db
 /test/test.log
 /Notepad3.VC.VC.opendb
 
+/grepWin/portables/*.zip
+
 /np3portableapp/Signing*.cmd
 /np3portableapp/Signing*.txt
 /np3portableapp/Notepad3Portable*.7z
@@ -63,6 +65,8 @@ Thumbs.db
 /np3portableapp/Notepad3Portable/App/Notepad3/x64/lng
 /np3portableapp/Notepad3Portable/App/Notepad3/x86/*.exe
 /np3portableapp/Notepad3Portable/App/Notepad3/x86/lng
+/np3portableapp/Notepad3Portable/App/AppInfo/appinfo.ini
+/np3portableapp/Notepad3Portable/App/AppInfo/installer.ini
 #
 
 # Upgrade staging directory

@@ -17,7 +17,9 @@ rem *                                                   https://rizonesoft.com  
 rem *                                                                            *
 rem ******************************************************************************
 
-CD /D %~dp0
+PUSHD %~dp0
+
+rem SET SEVENZIP=%~dp07za.exe
 
 rem Check for the help switches
 IF /I "%~1" == "help"   GOTO SHOWHELP
@@ -33,12 +35,12 @@ SET TEMP_NAME="make_portable_temp"
 
 IF NOT EXIST "..\%INPUTDIRx86%\Notepad3.exe"   CALL :SUBMSG "ERROR" "Compile Notepad3 x86 first!"
 IF NOT EXIST "..\%INPUTDIRx86%\minipath.exe"   CALL :SUBMSG "ERROR" "Compile MiniPath x86 first!"
-::IF NOT EXIST "..\%INPUTDIRx86%\grepWinNP3.exe" CALL :SUBMSG "ERROR" "Compile grepWinNP3 x86 first!"
 IF NOT EXIST "..\%INPUTDIRx86%\np3encrypt.exe" CALL :SUBMSG "ERROR" "Compile np3encrypt x86 first!"
 IF NOT EXIST "..\%INPUTDIRx64%\Notepad3.exe"   CALL :SUBMSG "ERROR" "Compile Notepad3 x64 first!"
 IF NOT EXIST "..\%INPUTDIRx64%\minipath.exe"   CALL :SUBMSG "ERROR" "Compile MiniPath x64 first!"
-::IF NOT EXIST "..\%INPUTDIRx64%\grepWinNP3.exe" CALL :SUBMSG "ERROR" "Compile grepWinNP3 x64 first!"
 IF NOT EXIST "..\%INPUTDIRx64%\np3encrypt.exe" CALL :SUBMSG "ERROR" "Compile np3encrypt x64 first!"
+IF NOT EXIST "..\grepWin\portables\grepWin-x86_portable.exe" CALL :SUBMSG "ERROR" "grepWin x86 portable not found in grepWin\portables\!"
+IF NOT EXIST "..\grepWin\portables\grepWin-x64_portable.exe" CALL :SUBMSG "ERROR" "grepWin x64 portable not found in grepWin\portables\!"
 
 CALL :SubGetVersion
 CALL :SubDetectSevenzipPath
@@ -79,7 +81,9 @@ ECHO.
 :: ===========================================================================================
 ping -n 9 127.0.0.1>nul
 
+POPD
 ENDLOCAL
+::PAUSE
 EXIT /B
 
 
@@ -95,14 +99,17 @@ FOR %%A IN ("..\License.txt" "..\Readme.txt" "Notepad3.ini" "minipath.ini"^
     "..\%1\Notepad3.exe" "..\%1\minipath.exe" "..\%1\np3encrypt.exe") DO COPY /Y /V "%%A" "%TEMP_NAME%\"
 
 SET "LNG=%TEMP_NAME%\lng"
-SET "GRP=%TEMP_NAME%\lng\gwLng\"
+SET "GREPWIN=%TEMP_NAME%\grepWin"
 SET "THEMES=%TEMP_NAME%\Themes"
 SET "DOCS=%TEMP_NAME%\Docs"
 IF NOT EXIST %LNG% MD %LNG%
+IF NOT EXIST %GREPWIN% MD %GREPWIN%
 IF NOT EXIST %THEMES% MD %THEMES%
 IF NOT EXIST %DOCS% MD %DOCS%
 XCOPY /E /Y /V "..\%1\lng" "%LNG%" /EXCLUDE:Ignore.txt
-XCOPY /E /Y /V "..\%1\lng\gwLng\" "%GRP%"
+COPY /Y /V "..\grepWin\portables\grepWin-%2_portable.exe" "%GREPWIN%\"
+COPY /Y /V "..\grepWin\portables\LICENSE.txt" "%GREPWIN%\"
+XCOPY /Y /V "..\grepWin\translations\*.lang" "%GREPWIN%\"
 XCOPY /E /Y /V "Themes" "%THEMES%"
 XCOPY /E /Y /V "Docs" "%DOCS%"
 COPY /Y /V "Changes.txt" "%DOCS%"
@@ -111,9 +118,9 @@ SET "FAVORITES=%TEMP_NAME%\Favorites"
 IF NOT EXIST "%FAVORITES%" MD "%FAVORITES%"
 
 PUSHD "%TEMP_NAME%"
-"%SEVENZIP%" a -tzip -mcu=on -mx=7^
- "%ZIP_NAME%.zip" "License.txt" "Notepad3.exe" "Notepad3.ini" "grepWinLicense.txt" "Readme.txt"^
- "Favorites" "minipath.exe" "minipath.ini" "grepWinNP3.exe"  "np3encrypt.exe" "lng" "Themes" "Docs">NUL
+"%SEVENZIP%" a -tzip -mcu=on -mx=9^
+ "%ZIP_NAME%.zip" "License.txt" "Notepad3.exe" "Notepad3.ini" "Readme.txt"^
+ "Favorites" "minipath.exe" "minipath.ini" "np3encrypt.exe" "grepWin"  "lng" "Themes" "Docs">NUL
 IF %ERRORLEVEL% NEQ 0 CALL :SUBMSG "ERROR" "Compilation failed!"
 
 CALL :SUBMSG "INFO" "%ZIP_NAME%.zip created successfully!"
