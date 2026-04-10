@@ -132,7 +132,7 @@ BEGIN
     IDS_MUI_ERR_PATHNOTFOUND "Het pad voor ""%s"" bestaat niet meer.\nPad opnieuw aanmaken en bestand opslaan?"
     IDS_MUI_ERR_DLG_FORMAT  "Fout '%s', oorzaak:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Geen bestandsbrowser-plugin gevonden\nDe plugin voor de MiniPath bestandsbrowser kan worden gedownload van https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "Geen plugin voor het doorzoeken van bestanden gevonden\nDe plug-in grepWinNP3 voor het doorzoeken van bestanden kan worden gedownload van https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Geen plugin voor het doorzoeken van bestanden gevonden\nDe plug-in grepWin voor het doorzoeken van bestanden kan worden gedownload van https://portableapps.com/apps/utilities/grepwin-portable"
     IDS_MUI_ERR_MRUDLG      "Geen toegang tot het geselecteerde bestand!\nWil je het uit de lijst verwijderen?"
     IDS_MUI_ERR_CREATELINK  "Fout bij het aanmaken van de bureaubladkoppeling"
     IDS_MUI_ERR_PREVWINDISABLED

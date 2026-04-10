@@ -132,7 +132,7 @@ BEGIN
     IDS_MUI_ERR_PATHNOTFOUND "Путь к «%s» больше не существует.\nВоссоздать путь и сохранить файл?"
     IDS_MUI_ERR_DLG_FORMAT  "Ошибка '%s', причина:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Не найден плагин браузера файлов\nПлагин MiniPath можно загрузить с сайта https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "Не найден плагин поиска в файлах\nПлагин grepWinNP3 можно загрузить с сайта https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Не найден плагин поиска в файлах\nПлагин grepWin можно загрузить с сайта https://portableapps.com/apps/utilities/grepwin-portable"
     IDS_MUI_ERR_MRUDLG      "Нет доступа к выбранному файлу!\nХотите удалить его из списка?"
     IDS_MUI_ERR_CREATELINK  "Ошибка создания ярлыка на Рабочем столе"
     IDS_MUI_ERR_PREVWINDISABLED

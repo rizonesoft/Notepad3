@@ -1325,7 +1325,13 @@ void LoadSettings()
         Defaults.RenderingTechnology = clampi(Defaults.RenderingTechnology, SC_TECHNOLOGY_DEFAULT, SC_TECHNOLOGY_DIRECTWRITEDC);
     }
     else {
+#if defined(_M_ARM64)
+        // ARM64: use DirectWriteRetain to preserve back buffer between frames,
+        // avoiding flicker with Qualcomm Adreno GPUs and Win11 25H2 DWM compositor
+        Defaults.RenderingTechnology = SC_TECHNOLOGY_DIRECTWRITERETAIN;
+#else
         Defaults.RenderingTechnology = SC_TECHNOLOGY_DIRECTWRITE; // new default DirectWrite (D2D)
+#endif
     }
 
     // Settings2 EnableBidirectionalSupport deprecated

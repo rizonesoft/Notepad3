@@ -132,7 +132,7 @@ BEGIN
     IDS_MUI_ERR_PATHNOTFOUND "Il percorso per ""%s"" non esiste più.\nVuoi ricreare il percorso e salvare il file?"
     IDS_MUI_ERR_DLG_FORMAT  "Errore '%s', causa:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Nessun plugin file browser trovato\nMiniPath può essere scaricato da https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "Nessun plugin ricerca file trovato\nIl plugin ricerca file grepWinNP3 può esssere scaricato da https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Nessun plugin ricerca file trovato\nIl plugin ricerca file grepWin può esssere scaricato da https://portableapps.com/apps/utilities/grepwin-portable"
     IDS_MUI_ERR_MRUDLG      "Nessun accesso al file selezionato!\nVuoi rimuoverlo dall'elenco?"
     IDS_MUI_ERR_CREATELINK  "Errore nella creazione del collegamento sul desktop"
     IDS_MUI_ERR_PREVWINDISABLED

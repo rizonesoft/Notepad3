@@ -48,7 +48,7 @@ Over 55 languages supported, including:
 - **Portable design** — runs from USB drives with relative path storage
 
 ### Search
-- **grepWinNP3** — integrated search-in-files tool with regex support (**Ctrl+Shift+F**)
+- **grepWin** — integrated search-in-files tool with regex support (**Ctrl+Shift+F**)
 - **Hyperlink hotspot highlighting** — Ctrl+Click to open in browser, Alt+Click to load in editor
 
 ### User Interface
@@ -66,7 +66,7 @@ Over 55 languages supported, including:
 
 ### Companion Tools
 - **[MiniPath](minipath/)** — fast file browser plugin (Ctrl+M)
-- **[grepWinNP3](grepWinNP3/)** — powerful search-and-replace across files
+- **[grepWin](grepWin/)** — powerful search-and-replace across files
 
 ## System Requirements
 

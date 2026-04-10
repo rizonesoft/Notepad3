@@ -132,7 +132,7 @@ BEGIN
     IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
     IDS_MUI_ERR_DLG_FORMAT  "Σφάλμα '%s'. Αιτία:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Δεν βρέθηκε το πρόσθετο περιήγησης αρχείων\nΜπορείτε να κάνετε λήψη του πρόσθετου περιήγησης αρχείων MiniPath από https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "Δεν βρέθηκε το πρόσθετο αναζήτησης αρχείων\nΜπορείτε να κάνετε λήψη του πρόσθετου αναζήτησης αρχείων grepWinNP3 από https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Δεν βρέθηκε το πρόσθετο αναζήτησης αρχείων\nΜπορείτε να κάνετε λήψη του πρόσθετου αναζήτησης αρχείων grepWin από https://portableapps.com/apps/utilities/grepwin-portable"
     IDS_MUI_ERR_MRUDLG      "Δεν υπάρχει πρόσβαση στο επιλεγμένο αρχείο!\nΘέλετε να το καταργήσετε από τη λίστα;"
     IDS_MUI_ERR_CREATELINK  "Σφάλμα κατά τη δημιουργία συνδέσμου στην επιφάνεια εργασίας"
     IDS_MUI_ERR_PREVWINDISABLED

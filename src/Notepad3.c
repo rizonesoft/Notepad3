@@ -81,7 +81,9 @@ LPCWSTR WordBookMarks[MARKER_NP3_BOOKMARK] = {
 CONSTANTS_T const Constants = {
       2                                    // StdDefaultLexerID
     , L"minipath.exe"                      // FileBrowserMiniPath
-#ifdef _WIN64
+#if defined(_M_ARM64)
+    , L"grepWin-x64_portable.exe"                    // FileSearchGrepWin (x64 via emulation on ARM64)
+#elif defined(_WIN64)
     , L"grepWin-x64_portable.exe"                    // FileSearchGrepWin
 #else
     , L"grepWin-x86_portable.exe"                    // FileSearchGrepWin
@@ -1818,7 +1820,11 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     DWORD const dwStyle = ((WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN) & ~WS_VISIBLE); // | (g_IniWinInfo.max ? WS_MAXIMIZE : 0);
 
     HWND const hwndMain = CreateWindowEx(
+#if defined(_M_ARM64)
+        WS_EX_ACCEPTFILES | WS_EX_COMPOSITED,  // double-buffering reduces flicker on ARM64
+#else
         WS_EX_ACCEPTFILES,
+#endif
         s_wchWndClass,
         _W(SAPPNAME),
         dwStyle,
@@ -3593,6 +3599,9 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam,LPARAM lParam)
 
     if (Globals.hwndMain) {
 
+        // suppress intermediate redraws during heavy theme update to prevent flickering
+        SendMessage(hwnd, WM_SETREDRAW, FALSE, 0);
+
 #ifdef D_NP3_WIN10_DARK_MODE
         RefreshTitleBarThemeColor(hwnd);
 #endif
@@ -3622,6 +3631,10 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam,LPARAM lParam)
         EditUpdateVisibleIndicators();
 
         UpdateUI(hwnd);
+
+        // re-enable drawing and force a single
+        SendMessage(hwnd, WM_SETREDRAW, TRUE, 0);
+        RedrawWindow(hwnd, NULL, NULL, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
     }
 
     UpdateWindowEx(hwnd);

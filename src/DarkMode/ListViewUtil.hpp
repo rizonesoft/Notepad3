@@ -61,7 +61,7 @@ extern "C" void InitListView(HWND hListView)
 
                     SendMessage(hHeader, WM_THEMECHANGED, wParam, lParam);
 
-                    RedrawWindow(hWnd, nullptr, nullptr, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_INTERNALPAINT);
+                    RedrawWindow(hWnd, nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE | RDW_INTERNALPAINT);
                 }
             }
             break;
@@ -123,7 +123,7 @@ extern "C" void InitTreeView(HWND hTreeView)
                         }
                         CloseThemeData(hTheme);
                     }
-                    RedrawWindow(hWnd, nullptr, nullptr, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_INTERNALPAINT);
+                    RedrawWindow(hWnd, nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE | RDW_INTERNALPAINT);
                 }
             }
             break;
