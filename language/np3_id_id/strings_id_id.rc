@@ -132,7 +132,7 @@ BEGIN
     IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
     IDS_MUI_ERR_DLG_FORMAT  "Kesalahan pada '%s', penyebab:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Tidak ditemukan plugin penelusuran berkas\nPlugin penelusuran berkas MiniPath dapat diunduh di https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "Tidak ditemukan plugin pencarian berkas\nPlugin pencarian berkas grepWinNP3 dapat diunduh di https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Tidak ditemukan plugin pencarian berkas\nPlugin pencarian berkas grepWin dapat diunduh di https://portableapps.com/apps/utilities/grepwin-portable"
     IDS_MUI_ERR_MRUDLG      "Tidak ada akses ke berkas yang dipilih!\nApakah Anda ingin menghapusnya dari daftar?"
     IDS_MUI_ERR_CREATELINK  "Kesalahan saat membuat pintasan Desktop"
     IDS_MUI_ERR_PREVWINDISABLED

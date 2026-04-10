@@ -132,7 +132,7 @@ BEGIN
     IDS_MUI_ERR_PATHNOTFOUND "Cesta pre ""%s"" už neexistuje.\nZnovu vytvoriť cestu a uložiť súbor?"
     IDS_MUI_ERR_DLG_FORMAT  "Chyba '%s', príčina:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Nenašiel sa doplnok na prehľadávanie súborov\nDoplnok MiniPath si môžete stiahnuť z https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "Nenašiel sa vyhľadávací doplnok\nDoplnok na vyhľadávanie súborov grepWinNP3 si môžete stiahnuť z https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Nenašiel sa vyhľadávací doplnok\nDoplnok na vyhľadávanie súborov grepWin si môžete stiahnuť z https://portableapps.com/apps/utilities/grepwin-portable"
     IDS_MUI_ERR_MRUDLG      "Žiadny prístup k vybranému súboru!\nChcete ho odstrániť zo zoznamu?"
     IDS_MUI_ERR_CREATELINK  "Chyba pri vytváraní odkazu na pracovnú plochu"
     IDS_MUI_ERR_PREVWINDISABLED

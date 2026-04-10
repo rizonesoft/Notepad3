@@ -70,6 +70,7 @@ Development:
 Contributors:
 -------------
 Derick Payne (© Rizonesoft)             https://rizonesoft.com
+Pairi Daiza (MUI language support)      https://github.com/hpwamr
 XhmikosR (Notepad2-mod)                 https://xhmikosr.github.io/notepad2-mod
 Kai Liu (CodeFolding)                   https://code.kliu.org/misc/notepad2
 RL Vision (Bookmarks)                   https://www.rlvision.com/notepad2/about.php
@@ -83,13 +84,16 @@ Some Icons by Pixel perfect (Flaticon)  https://www.flaticon.com
 --------------------------------------------------------------------------------
 Open Source / Libraries:
 ------------------------
-N.Hodgson (Scintilla)           https://www.scintilla.org
-K.Kosako (Oniguruma Regex)      https://github.com/kkos/oniguruma
-Stefan Küng (grepWin)           https://github.com/stefankueng/grepWin
-D.Dyer (NotepadCrypt)           https://www.real-me.net/ddyer/notepad/NotepadCrypt.html
-T.D.Hanson (uthash)             https://troydhanson.github.io/uthash
-Carbo Kuo (Mozilla's uchardet)  https://www.freedesktop.org/wiki/Software/uchardet
-Lewis Van Winkle (TinyExpr)     https://github.com/codeplea/tinyexpr
+Neil Hodgson (Scintilla)            https://www.scintilla.org
+Neil Hodgson (Lexilla)              https://www.scintilla.org/Lexilla.html
+Philip Hazel et al. (PCRE2 Regex)   https://pcre2project.github.io/pcre2
+Stefan Küng (grepWin)               https://github.com/stefankueng/grepWin
+D.Dyer (NotepadCrypt)               https://www.real-me.net/ddyer/notepad/NotepadCrypt.html
+Brodie Thiesfield (SimpleIni)       https://github.com/brofield/simpleini
+T.D.Hanson (uthash)                 https://troydhanson.github.io/uthash
+Carbo Kuo (Mozilla's uchardet)      https://www.freedesktop.org/wiki/Software/uchardet
+Lewis Van Winkle (TinyExpr)         https://github.com/codeplea/tinyexpr
+Carlo Pallini (Resample BMP)        https://www.codeproject.com/Articles/22271/Plain-C-Resampling-DLL
 
 --------------------------------------------------------------------------------
 Acknowledgments:
@@ -97,10 +101,12 @@ Acknowledgments:
 alex-ilin               https://github.com/alex-ilin
 alexantr                https://github.com/alexantr
 ashish12phnx            https://github.com/ashish12phnx
+bovirus                 https://github.com/bovirus
 bravo-hero              https://github.com/bravo-hero
 chuanliwen              https://github.com/chuanliwen
 craigo-                 https://github.com/craigo-
 Crane70                 https://github.com/Crane70
+en2sv                   https://github.com/en2sv
 engelhro                https://github.com/engelhro
 Hexaae                  https://github.com/Hexaae
 hpwamr                  https://github.com/hpwamr
@@ -122,6 +128,7 @@ MelchiorGaspar          https://github.com/MelchiorGaspar
 Mitezuss                https://github.com/Mitezuss
 nickreserved            https://github.com/nickreserved
 np3fan                  https://github.com/np3fan
+p0k33m0n                https://github.com/p0k33m0n
 quadratz                https://github.com/quadratz
 RaiKoHoff               https://github.com/RaiKoHoff
 rizonesoft              https://github.com/rizonesoft
@@ -144,7 +151,7 @@ Data Sharing Service            https://workupload.com
 Licences:
 ---------
 Scintilla                       https://www.scintilla.org/License.txt
-Oniguruma Regex                 https://github.com/kkos/oniguruma/blob/master/COPYING
+PCRE2 Regex                     https://github.com/PCRE2Project/pcre2/blob/main/LICENCE.md
 grepWin                         https://github.com/stefankueng/grepWin/blob/master/LICENSE
 uthash                          https://troydhanson.github.io/uthash/license.html
 uchardet                        https://www.freedesktop.org/wiki/Software/uchardet/#license

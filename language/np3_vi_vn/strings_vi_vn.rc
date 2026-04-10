@@ -132,7 +132,7 @@ BEGIN
     IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
     IDS_MUI_ERR_DLG_FORMAT  "Lỗi '%s', Nguyên nhân:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Không thể tìm thấy plugin trình duyệt tệp\nPlugin MiniPath có thể tải xuống từ https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "Không thể tìm thấy plugin tìm kiếm tệp\nPlugin grepWinNP3 có thể tải xuống từ https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Không thể tìm thấy plugin tìm kiếm tệp\nPlugin grepWin có thể tải xuống từ https://portableapps.com/apps/utilities/grepwin-portable"
     IDS_MUI_ERR_MRUDLG      "Không thể truy cập tệp đã chọn!\nCó muốn xóa khỏi danh sách không?"
     IDS_MUI_ERR_CREATELINK  "Đã xảy ra lỗi khi tạo liên kết trên màn hình chính"
     IDS_MUI_ERR_PREVWINDISABLED

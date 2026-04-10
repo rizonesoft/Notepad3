@@ -8,7 +8,6 @@ chcp 65001 >nul 2>&1
 ::
 :: This "build_np3portableapp.cmd" batch file creates:
 ::	  - "Notepad3Portable_x.xx.xxx.x_zzzz.paf.exe"
-::	  - "Notepad3Portable_x.xx.xxx.x_zzzz.paf.exe.7z"
 ::
 :: Usage:  build_np3portableapp.cmd [PortableAppsDir]
 ::         PortableAppsDir — optional path to the PortableApps platform root
@@ -16,7 +15,7 @@ chcp 65001 >nul 2>&1
 ::
 :: ---------------------------------------------------------------------------------------------------
 :: Based on PortableApps.com's Application_Template:
-::    (https://sourceforge.net/projects/portableapps/files/PortableApps.com%20Template/PortableApps.com_Application_Template_3.9.0.zip)
+:: (https://sourceforge.net/projects/portableapps/files/PortableApps.com%20Template/PortableApps.com_Application_Template_3.9.0.zip)
 :: ---------------------------------------------------------------------------------------------------
 ::
 :: Prerequisites: (portable) installation of:
@@ -111,9 +110,6 @@ if not defined NP3_LANGUAGE_SET (
     exit /b 1
 )
 
-rem - We will rely on PortableApps Platform installed grepWinPortable
-rem ~ call :RESOLVEPATH GREPWIN_DIR %SCRIPT_DIR%..\grepWin
-
 call :RESOLVEPATH NP3_PORTAPP_DIR %SCRIPT_DIR%Notepad3Portable
 call :RESOLVEPATH NP3_PORTAPP_INFO %NP3_PORTAPP_DIR%\App\AppInfo\appinfo
 call :RESOLVEPATH NP3_PORTAPP_INSTALL %NP3_PORTAPP_DIR%\App\AppInfo\installer
@@ -159,10 +155,6 @@ if exist "%NP3_PORTAPP_DIR%\Data" rmdir "%NP3_PORTAPP_DIR%\Data" /S /Q
 if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng" rmdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng" /S /Q
 
 if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng" rmdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng" /S /Q
-
-rem - We will rely on PortableApps Platform installed grepWinPortable
-rem ~ if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin" rmdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin" /S /Q
-rem ~if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin" rmdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin" /S /Q
 
 if not exist "%NP3_PORTAPP_DIR%\App\DefaultData\settings\" (
      mkdir "%NP3_PORTAPP_DIR%\App\DefaultData\settings\"
@@ -246,21 +238,6 @@ for /d %%d in (%NP3_LANGUAGE_SET%) do (
 copy /B "%NP3_X64_DIR%\lng\np3lng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
 copy /B "%NP3_X64_DIR%\lng\mplng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
 
-:: Don't copy np3encrypt or grepWin
-rem ~if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\" mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin"
-rem ~copy "%GREPWIN_DIR%\portables\grepWin-x86_portable.exe" "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\grepWin-x86_portable.exe" /Y /V
-rem ~copy "%GREPWIN_DIR%\portables\LICENSE.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\LICENSE.txt" /Y /V
-rem ~copy "%GREPWIN_DIR%\portables\website.url" "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\website.url" /Y /V
-rem ~copy "%GREPWIN_DIR%\translations\*.lang" "%NP3_PORTAPP_DIR%\App\Notepad3\x86\grepWin\*.lang" /Y /V
-rem ~copy /B "%NP3_WIN32_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x86\" /Y /V
-rem ~
-rem ~if not exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\" mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin"
-rem ~copy "%GREPWIN_DIR%\portables\grepWin-x64_portable.exe" "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\grepWin-64_portable.exe" /Y /V
-rem ~copy "%GREPWIN_DIR%\portables\LICENSE.txt" "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\LICENSE.txt" /Y /V
-rem ~copy "%GREPWIN_DIR%\portables\website.url" "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\website.url" /Y /V
-rem ~copy "%GREPWIN_DIR%\translations\*.lang" "%NP3_PORTAPP_DIR%\App\Notepad3\x64\grepWin\*.lang" /Y /V
-rem ~copy /B "%NP3_X64_DIR%\np3encrypt.exe" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\" /Y /V
-
 :: ---------------------------------------------------------------------------------------------------
 :: Step 7: Process INI templates (appinfo.ini, installer.ini)
 :: ---------------------------------------------------------------------------------------------------
@@ -324,14 +301,13 @@ if errorlevel 1 (
 :: call %SCRIPT_DIR%Signing_for_NP3P_2nd_EXE.cmd
 
 :: ---------------------------------------------------------------------------------------------------
-:: Step 11: Create .7z copy and report result
+:: Step 11: report result
 :: ---------------------------------------------------------------------------------------------------
 echo.
 echo --- Step 11: Finalize ---
 
 set Notepad3Portable.paf.exe=%SCRIPT_DIR%Notepad3Portable_%VERSION%%DEVNAME%.paf.exe
 if exist %Notepad3Portable.paf.exe% (
-    copy /B %Notepad3Portable.paf.exe% %Notepad3Portable.paf.exe%.7z /Y /V
     echo.
     echo === PortableApps Package Built Successfully! ===
     echo     Output: %Notepad3Portable.paf.exe%
