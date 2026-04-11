@@ -1,4 +1,4 @@
-﻿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 // encoding: UTF-8
 #pragma code_page(65001)  // UTF-8
 #include "resource.h"
@@ -195,8 +195,8 @@ BEGIN
     CONTROL         "Phân tích cú pháp thẻ mã hóa từ tập tin(&T)",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,164,10
     CONTROL         "Thực hiện phân tích mã hóa ANSI(&A)",IDC_NOANSICPDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,164,10
-    EDITTEXT        IDC_ANSI_CONFIDENCE_LEVEL,140,105,28,12,ES_AUTOHSCROLL | ES_NUMBER
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,130,10
+    EDITTEXT        IDC_ANSI_CONFIDENCE_LEVEL,147,105,28,12,ES_AUTOHSCROLL | ES_NUMBER
     CONTROL         "",IDC_ANSI_CONFIDENCE_SPIN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,156,104,11,14
     CONTROL         "Sử dụng phát hiện UNICODE(&U)",IDC_NOUNICODEDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,164,10

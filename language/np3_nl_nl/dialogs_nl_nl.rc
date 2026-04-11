@@ -1,4 +1,4 @@
-﻿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 // encoding: UTF-8
 #pragma code_page(65001)  // UTF-8
 #include "resource.h"
@@ -196,7 +196,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,140,10
     CONTROL         "Analyse van &ANSI-codepagina uitvoeren",IDC_NOANSICPDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,145,10
-    EDITTEXT        IDC_ANSI_CONFIDENCE_LEVEL,140,105,28,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_ANSI_CONFIDENCE_LEVEL,160,105,28,12,ES_AUTOHSCROLL | ES_NUMBER
     CONTROL         "",IDC_ANSI_CONFIDENCE_SPIN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,156,104,11,14
     CONTROL         "&UNICODE-detectie inschakelen",IDC_NOUNICODEDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,122,10
