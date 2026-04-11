@@ -65,7 +65,7 @@ BEGIN
         MENUITEM "Spara med filens datum och tid\tCtrl+Alt+F6",    IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
         MENUITEM "Skrivskyddat filattribut",                        IDM_FILE_READONLY
-        MENUITEM "&Låsfil (delad läsning)",                         IDM_FILE_LOCK_SHARE_READ
+        MENUITEM "&Lås fil (delad läsning)",                         IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Ange lösenfras...",                               IDM_SETPASS
         MENUITEM SEPARATOR
@@ -257,7 +257,7 @@ BEGIN
             MENUITEM "Versaler\tCtrl+Shift+U",                      IDM_EDIT_CONVERTUPPERCASE
             MENUITEM "Gemener\tCtrl+U",                             IDM_EDIT_CONVERTLOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invertera skriftläge\tCtrl+Alt+U",            IDM_EDIT_INVERTCASE
+            MENUITEM "Invertera skiftläge\tCtrl+Alt+U",            IDM_EDIT_INVERTCASE
             MENUITEM "Ordversal\tCtrl+Alt+I",                       IDM_EDIT_TITLECASE
             MENUITEM "Paragrafversal\tCtrl+Alt+O",                  IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
@@ -303,7 +303,7 @@ BEGIN
             MENUITEM "Ta bort kodning för C tecken\tCtrl+Alt+R",    IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
             MENUITEM "Öka nummer\tCtrl+Alt+NK+",                    CMD_INCREASENUM
-            MENUITEM "Minska nummber\tCtrl+Alt+NK-",                CMD_DECREASENUM
+            MENUITEM "Minska nummer\tCtrl+Alt+NK-",                CMD_DECREASENUM
             MENUITEM SEPARATOR
             MENUITEM "Hitta matchande klammerparentes\tCtrl+B",     IDM_EDIT_FINDMATCHINGBRACE
             MENUITEM "Markera till klammerparentes\tCtrl+Shift+B",  IDM_EDIT_SELTOMATCHINGBRACE
@@ -373,7 +373,7 @@ BEGIN
         POPUP "Markera rad\tCtrl+Shift+I"
         BEGIN
             MENUITEM "Ingen markering",                             IDM_VIEW_HILITCURLN_NONE
-            MENUITEM "Bakgrundssfärg",                              IDM_VIEW_HILITCURLN_BACK
+            MENUITEM "Bakgrundsfärg",                              IDM_VIEW_HILITCURLN_BACK
             MENUITEM "Ramkontur",                                   IDM_VIEW_HILITCURLN_FRAME
         END
         POPUP "Markera förekomster"
@@ -383,7 +383,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Matcha endast synliga",                       IDM_VIEW_MARKOCCUR_VISIBLE
             MENUITEM SEPARATOR
-            MENUITEM "Matcha skriftslägeskänsligt",                 IDM_VIEW_MARKOCCUR_CASE
+            MENUITEM "Matcha skiftlägeskänsligt",                 IDM_VIEW_MARKOCCUR_CASE
             POPUP "Matcha endast hela ord"
             BEGIN
                 MENUITEM "&Av",                                     IDM_VIEW_MARKOCCUR_WNONE
@@ -473,9 +473,9 @@ BEGIN
         MENUITEM "Långa rader...",                                  IDM_SET_LONGLINESETTINGS
         MENUITEM "Automatiskt indrag",                              IDM_SET_AUTOINDENTTEXT
         MENUITEM "Stäng citattecken automatiskt",                   IDM_SET_AUTOCLOSEQUOTES
-        MENUITEM "Stäng paranteser automatiskt",                    IDM_SET_AUTOCLOSEBRACKETS
+        MENUITEM "Stäng parenteser automatiskt",                    IDM_SET_AUTOCLOSEBRACKETS
         MENUITEM "Stäng HTML/XML automatiskt\tCtrl+Shift+H",        IDM_SET_AUTOCLOSETAGS
-        MENUITEM "Kompletera ord automatiskt",                      IDM_SET_AUTOCOMPLETEWORDS
+        MENUITEM "Komplettera ord automatiskt",                      IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Komplettera Lexer-&Key-Words automatiskt",        IDM_SET_AUTOCLEXKEYWORDS
         MENUITEM "Alternativa ordavgränsare\tCtrl+Alt+A",           IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
@@ -512,7 +512,7 @@ BEGIN
             MENUITEM "Återanvänd fönster\tCtrl+Shift+L",            IDM_SET_REUSEWINDOW
             MENUITEM "Alltid överst\tAlt+T",                        IDM_SET_ALWAYSONTOP
             MENUITEM "Minimera till dolda ikoner",                  IDM_SET_MINTOTRAY
-            MENUITEM "Genomskinlig\tAlt+G",                         IDM_SET_TRANSPARENT
+            MENUITEM "Genomskinligt\tAlt+G",                         IDM_SET_TRANSPARENT
         END
         POPUP "Tek&nik"
         BEGIN
