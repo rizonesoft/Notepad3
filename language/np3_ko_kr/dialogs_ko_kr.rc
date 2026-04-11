@@ -1,4 +1,4 @@
-﻿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 // encoding: UTF-8
 #pragma code_page(65001)  // UTF-8
 #include "resource.h"
@@ -195,7 +195,7 @@ BEGIN
     CONTROL         "인코딩 파일 태그 구문 분석(&T)",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,164,10
     CONTROL         "ANSI 코드 페이지 분석 수행(&A)",IDC_NOANSICPDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,164,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,120,10
     EDITTEXT        IDC_ANSI_CONFIDENCE_LEVEL,140,105,28,12,ES_AUTOHSCROLL | ES_NUMBER
     CONTROL         "",IDC_ANSI_CONFIDENCE_SPIN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,156,104,11,14
     CONTROL         "UNICODE 감지 사용(&U)",IDC_NOUNICODEDETECTION,

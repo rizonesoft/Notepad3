@@ -1,4 +1,4 @@
-﻿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 // encoding: UTF-8
 #pragma code_page(65001)  // UTF-8
 #include "resource.h"
@@ -178,16 +178,16 @@ BEGIN
     SCROLLBAR       IDC_RESIZEGRIP,7,112,10,10
 END
 
-IDD_MUI_DEFENCODING DIALOGEX 0, 0, 197, 160
+IDD_MUI_DEFENCODING DIALOGEX 0, 0, 227, 160
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Codificación"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Codificación por defecto (nuevo archivo):",IDC_STATIC,7,7,183,48,0,WS_EX_TRANSPARENT
-    CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,167,128
+    GROUPBOX        "Codificación por defecto (nuevo archivo):",IDC_STATIC,7,7,213,48,0,WS_EX_TRANSPARENT
+    CONTROL         "",IDC_ENCODINGLIST,"ComboBoxEx32",CBS_DROPDOWNLIST | WS_CLIPSIBLINGS | WS_VSCROLL | WS_TABSTOP,14,19,197,128
     CONTROL         "Como alternativa en caso de &fallo de detección",IDC_USEASREADINGFALLBACK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,38,180,10
-    GROUPBOX        "Detección de codificación:",IDC_STATIC2,7,58,183,76,0,WS_EX_TRANSPARENT
+    GROUPBOX        "Detección de codificación:",IDC_STATIC2,7,58,213,76,0,WS_EX_TRANSPARENT
     CONTROL         "Abrir archivos 7-bit &ASCII en modo UTF-8",IDC_ASCIIASUTF8,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,70,150,10
     CONTROL         "Abrir archivos 8-bit *.&nfo/diz en modo DOS-437",IDC_NFOASOEM,
@@ -195,13 +195,13 @@ BEGIN
     CONTROL         "Analizar las e&tiquetas de codificación de archivos",IDC_ENCODINGFROMFILEVARS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,94,180,10
     CONTROL         "Realizar el análisis de la página de códigos ANSI",IDC_NOANSICPDETECTION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,180,10
-    EDITTEXT        IDC_ANSI_CONFIDENCE_LEVEL,140,105,28,12,ES_AUTOHSCROLL | ES_NUMBER
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,175,10
+    EDITTEXT        IDC_ANSI_CONFIDENCE_LEVEL,188,105,28,12,ES_AUTOHSCROLL | ES_NUMBER
     CONTROL         "",IDC_ANSI_CONFIDENCE_SPIN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,156,104,11,14
     CONTROL         "Habilitar la detección &UNICODE",IDC_NOUNICODEDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,122,10
-    DEFPUSHBUTTON   "Aceptar",IDOK,87,139,50,14
-    PUSHBUTTON      "Cancelar",IDCANCEL,140,139,50,14
+    DEFPUSHBUTTON   "Aceptar",IDOK,117,139,50,14
+    PUSHBUTTON      "Cancelar",IDCANCEL,170,139,50,14
 END
 
 IDD_MUI_DEFEOLMODE DIALOGEX 0, 0, 196, 80
