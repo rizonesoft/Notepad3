@@ -198,7 +198,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,106,110,10
     EDITTEXT        IDC_ANSI_CONFIDENCE_LEVEL,140,105,28,12,ES_AUTOHSCROLL | ES_NUMBER
     CONTROL         "",IDC_ANSI_CONFIDENCE_SPIN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS | UDS_HOTTRACK,156,104,11,14
-    CONTROL         "Aktiviera UNICODE-identifiering",IDC_NOUNICODEDETECTION,
+    CONTROL         "Aktivera UNICODE-identifiering",IDC_NOUNICODEDETECTION,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,122,10
     DEFPUSHBUTTON   "OK",IDOK,87,139,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,140,139,50,14
@@ -211,9 +211,9 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Förvalt läge för radslut:",IDC_STATIC,7,7,116,8
     COMBOBOX        IDC_EOLMODELIST,7,20,118,81,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Visa varning för inkonsekvent radslut",IDC_WARN_INCONSISTENT_EOLS,
+    CONTROL         "Visa varning för inkonsekventa radslut",IDC_WARN_INCONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,40,186,10
-    CONTROL         "Tvinga konsekvent radslut när fil sparas",IDC_CONSISTENT_EOLS,
+    CONTROL         "Tvinga konsekventa radslut när fil sparas",IDC_CONSISTENT_EOLS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,52,182,10
     CONTROL         "Ta bort överflödiga mellanslag i slutet när filen sparas",IDC_AUTOSTRIPBLANKS,
                     "Button",BS_AUTOCHECKBOX | BS_VCENTER | WS_TABSTOP,7,64,189,10
@@ -223,10 +223,10 @@ END
 
 IDD_MUI_WARNLINEENDS DIALOGEX 0, 0, 196, 100
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Inkonsekvent radslut"
+CAPTION "Inkonsekventa radslut"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Inkonsekvent radslut hittades i filen:",IDC_STATIC,7,7,180,8
+    LTEXT           "Inkonsekventa radslut hittades i filen:",IDC_STATIC,7,7,180,8
     RTEXT           "CR+LF:",IDC_STATIC2,10,18,34,8
     RTEXT           "CR:",IDC_STATIC3,10,28,34,8
     RTEXT           "LF:",IDC_STATIC4,10,38,34,8
@@ -719,7 +719,7 @@ END
 
 IDD_MUI_ENCODING DIALOGEX 0, 0, 165, 135
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Ange teckoenkodning"
+CAPTION "Ange teckenkodning"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Ange teckenkodning för detta dokument:",IDC_STATIC,7,7,140,8
@@ -758,7 +758,7 @@ BEGIN
     CBS_SORT | WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
     CBS_OWNERDRAWFIXED
 
-    LTEXT           "Teckensnittstil:", stc2, 114, 7, 74, 9
+    LTEXT           "Teckensnittsstil:", stc2, 114, 7, 74, 9
     COMBOBOX        cmb2, 114, 16, 74, 76,
     CBS_SIMPLE | CBS_AUTOHSCROLL | CBS_DISABLENOSCROLL |
     WS_VSCROLL | WS_TABSTOP | CBS_HASSTRINGS |
@@ -771,7 +771,7 @@ BEGIN
     CBS_OWNERDRAWFIXED
 
     GROUPBOX        "Effekter", grp1, 7, 97, 98, 76, WS_GROUP
-    AUTOCHECKBOX    "Genomstuken", chx1, 13, 111, 90, 10, WS_TABSTOP
+    AUTOCHECKBOX    "Genomstruken", chx1, 13, 111, 90, 10, WS_TABSTOP
     AUTOCHECKBOX    "&Understruken", chx2, 13, 127, 90, 10
 
     LTEXT           "&Färg:", stc4, 13, 144, 89, 9
@@ -871,7 +871,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
 GROUPBOX        "Spara automatiskt:", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
 AUTOCHECKBOX    "Aktivera automatiskt sparande", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
-LTEXT           "Intervall för automatiskt sparande [sec]:", IDC_STATIC2, 14, 30, 108, 10, SS_RIGHT
+LTEXT           "Intervall för automatiskt sparande [sek]:", IDC_STATIC2, 14, 30, 108, 10, SS_RIGHT
 EDITTEXT        IDC_AUTOSAVE_INTERVAL, 130, 28, 40, 12, ES_AUTOHSCROLL
 AUTOCHECKBOX    "Spara automatiskt när dator sätts i viloläge", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
 AUTOCHECKBOX    "Spara automatiskt när datorn stängs av", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
