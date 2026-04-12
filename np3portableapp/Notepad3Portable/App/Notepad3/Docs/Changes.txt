@@ -35,13 +35,17 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 7.26.4µµ.(build_#) (2026-04-µµ)
+Current BETA Version 7.26.411.(build_#) (2026-04-11)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
-[.xxx.x]-
+[.xxx.x]- .
+[.411.1]- Add Tab Settings - Tab/Backspace always indent (not only at beginning of line).
+[.411.1]- Add [Settings2]CopyMultiSelectionSeparator config.
+[.411.1]- Add case conversions on rmb context menu.
+[.411.1]- Add lexer ABAQUS.
 [.311.1]- Add UCHARDET encoding prober filter (Settings2:UchardetLanguageFilter).
 [.306.1]- Add timsort (repl. qsort) scintilla care (iface check) scintill-call-wrapper update.
 [.227.1]- Add auto-scroll on MMB click.
@@ -56,8 +60,14 @@ NEW:
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
-[.xxx.x]-
-[.04µµ.1]- Migration to original grepWin tooling (remove home brew project).
+[.xxx.x]- .
+[.411.1]- MUI - Migrate tool "grepWin" into NotepadPortableApp (PAF).
+[.411.1]- MUI - Cleanup and add missing files in NP3PortableApp.
+[.411.1]- PortableApps Build (new build script, settings, grepWin orig handling).
+[.411.1]- Migration to original grepWin tooling (remove home brew project) (GRE).
+[.411.1]- AnalyzeReliableConfidenceLevel dialog configurable.
+[.411.1]- Crtl+c / RMB-copy for line (empty selection) and hyperlinks.
+[.411.1]- Win10 modernization.
 [.306.1]- Synchronise with current scintilla mirror.
 [.306.1]- Update SimpleIni header only lib (to v4.25).
 [.306.1]- Major version 6 → 7 for Win10 minimum.
@@ -80,7 +90,18 @@ CHANGES:
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
-[.xxx.x]-
+[.xxx.x]- .
+[.411.1]- No PAF .7z creation - not supposed to be used that way.
+[.411.1]- ARM64 flickering/rendering issues on Windows 11 25H2.
+[.411.1]- Win32 build and build-scripts.
+[.411.1]- PortableApps Platform build should use PA's grepWinPortable (GRE).
+[.411.1]- Esc search pattern on commandline for grepWinPortable(App) call (GRE).
+[.411.1]- grepWin call parameter issues (GRE).
+[.411.1]- Simplify encoding settings and invisible border (aero snap) problem.
+[.411.1]- Default encoding (forced fallback).
+[.411.1]- Claude Code review of pathlib methods.
+[.411.1]- Sec-issue load system library hijacking.
+[.411.1]- Unicode vs. binary encoding detection.
 [.314.1]- PCRE2 line end detection (PCR).
 [.314.1]- Claude Code based refactoring of encoding detection.
 [.314.1]- Remove too strong UTF-8 affinity.
@@ -121,8 +142,8 @@ FIXES:
 
 --------------------------------------------------------
 REMOVED:
-[.xxx.x]-
-[.4µµ.1]- Remove grepWinNP3 project from main.
+[.xxx.x]- .
+[.411.1]- Remove grepWinNP3 project from main (GRE).
 [.306.1]- Remove deprecated Win7 compatibility and UTF-32 detection.
 [.303.1]- Remove retired Oniguruma regex Engine (ONI).
 [.227.1]- Remove obsolete AppVeyor CI build.
@@ -132,7 +153,7 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.4µµ.1]- Update grepWin (GRE) version 2.1.12.1434 (2025-09-24).
+[.411.1]- Update grepWin (GRE) version 2.1.12.1434 (2025-09-24).
 [.305.1]- Update UCHARDET (UCH) encoding detector version 0.0.8 (2022-12-08).
 [.303.1]- Update PCR2 (PCR) Regex engine version 10.47 (2025-10-21).
 [.227.1]- Update Scintilla (SCI) Library version 5.6.0 (2026-02-25).
