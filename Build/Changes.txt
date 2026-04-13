@@ -35,7 +35,7 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 7.26.411.(build_#) (2026-04-11)
+Current BETA Version 7.26.414.(build_#) (2026-04-14)
 ========================================================
 
 --------------------------------------------------------
@@ -61,6 +61,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.414.1]- MUI - Rename "grepWin" languages files to sync with "grepWin Portable (PAF)" files.
 [.411.1]- MUI - Migrate tool "grepWin" into NotepadPortableApp (PAF).
 [.411.1]- MUI - Cleanup and add missing files in NP3PortableApp.
 [.411.1]- PortableApps Build (new build script, settings, grepWin orig handling).
