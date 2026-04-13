@@ -235,8 +235,12 @@ for /d %%d in (%NP3_LANGUAGE_SET%) do (
   mkdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\%%d" 2>nul
   copy /B "%NP3_X64_DIR%\lng\%%d\*" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\%%d\" /Y /V
 )
+
 copy /B "%NP3_X64_DIR%\lng\np3lng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
 copy /B "%NP3_X64_DIR%\lng\mplng.dll" /B "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\" /Y /V
+
+if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\en-US" rmdir "%NP3_PORTAPP_DIR%\App\Notepad3\x86\lng\en-US" /S /Q
+if exist "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\en-US" rmdir "%NP3_PORTAPP_DIR%\App\Notepad3\x64\lng\en-US" /S /Q
 
 :: ---------------------------------------------------------------------------------------------------
 :: Step 7: Process INI templates (appinfo.ini, installer.ini)

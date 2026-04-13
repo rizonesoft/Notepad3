@@ -55,34 +55,32 @@ LANGID GetLangIdByLocaleName(LPCWSTR pLocaleName) {
 //=============================================================================
 
 grepWinLng_t grepWinLangResName[] = {
-    { L"en-US", L"" },
-    { L"en-GB", L"" },
+    { L"en-US", L"English.lang" },
     { L"af-ZA", L"Afrikaans.lang" },
     { L"be-BY", L"Belarusian.lang" },
     { L"de-DE", L"German.lang" },
     { L"el-GR", L"Greek.lang" },
+    { L"en-GB", L"EnglishBritish.lang" },
     { L"es-ES", L"Spanish.lang" },
-    { L"es-MX", L"Spanish Mexican.lang" },
-    { L"fi-FI", L"" },
+    { L"fi-FI", L"Finnish.lang" },
     { L"fr-FR", L"French.lang" },
     { L"hi-IN", L"Hindi.lang" },
     { L"hu-HU", L"Hungarian.lang" },
-    { L"id-ID", L"" },
+    { L"id-ID", L"Indonesian.lang" },
     { L"it-IT", L"Italian.lang" },
     { L"ja-JP", L"Japanese.lang" },
     { L"ko-KR", L"Korean.lang" },
     { L"nl-NL", L"Dutch.lang" },
     { L"pl-PL", L"Polish.lang" },
-    { L"pt-BR", L"Portuguese Brazilian.lang" },
+    { L"pt-BR", L"PortugueseBrazilian.lang" },
     { L"pt-PT", L"Portuguese.lang" },
     { L"ru-RU", L"Russian.lang" },
     { L"sk-SK", L"Slovak.lang" },
     { L"sv-SE", L"Swedish.lang" },
-    { L"ta-IN", L"Tamil.lang" },
     { L"tr-TR", L"Turkish.lang" },
-    { L"vi-VN", L"" },
-    { L"zh-CN", L"Chinese Simplified.lang" },
-    { L"zh-TW", L"Chinese Traditional.lang" }
+    { L"vi-VN", L"Vietnamese.lang" },
+    { L"zh-CN", L"ChineseSimplified.lang" },
+    { L"zh-TW", L"ChineseTraditional.lang" }
 };
 
 unsigned grepWinLang_CountOf() {
