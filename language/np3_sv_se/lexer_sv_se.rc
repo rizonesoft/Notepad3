@@ -171,7 +171,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_2ND_LN_BACKGR   "2:a markera rad"
     IDS_LEX_2ND_CARET       "2:a textmarkör (färg, storlek 1-3)"
-    IDS_LEX_2ND_LONG_LN     "2:a narkör för långa rader (färger)"
+    IDS_LEX_2ND_LONG_LN     "2:a markör för långa rader (färger)"
     IDS_LEX_2ND_X_SPC       "2:a extra radmarginal (storlek)"
     IDS_LEX_STD_BKMRK       "Bokmärken (färger, storlek)"
     IDS_LEX_2ND_BKMRK       "2:a Bokmärken (färger, storlek)"
@@ -256,7 +256,7 @@ BEGIN
     IDS_LEX_STR_63188       "XML attribut"
     IDS_LEX_STR_63189       "XML värde"
     IDS_LEX_STR_63190       "XML sträng"
-    IDS_LEX_STR_63191       "XML annan inändig tag"
+    IDS_LEX_STR_63191       "XML annan invändig tag"
     IDS_LEX_STR_63192       "XML kommentar"
     IDS_LEX_STR_63193       "XML enhet"
     IDS_LEX_STR_63194       "Tag-klass"
@@ -369,7 +369,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63280       "Macrodefinition"
+    IDS_LEX_STR_63280       "Makrodefinition"
     IDS_LEX_STR_Param       "Parameter"
     IDS_LEX_STR_63282       "Infogad expansion"
     IDS_LEX_STR_63283       "Pascal kommentar"
@@ -453,7 +453,7 @@ BEGIN
     IDS_LEX_STR_63345       "Annat nyckelord"
     IDS_LEX_STR_63346       "Rust livstid"
     IDS_LEX_STR_Obj         "Objekt"
-    IDS_LEX_STR_Key         "Tanget"
+    IDS_LEX_STR_Key         "Tangent"
     IDS_LEX_STR_HotKey      "Snabbtangent"
     IDS_LEX_STR_HotStrg     "Snabbsträng"
     IDS_LEX_STR_HotStrgOp   "Snabbsträngsval"
@@ -468,7 +468,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_STR_63357       "For Each definition"
     IDS_LEX_STR_63358       "While definition"
-    IDS_LEX_STR_Math        "Matemataik"
+    IDS_LEX_STR_Math        "Matematik"
     IDS_LEX_STR_Scalar      "Skalär"
     IDS_LEX_STR_Subst       "Ersättning"
     IDS_LEX_STR_Modf        "Modifierare"
@@ -479,13 +479,13 @@ BEGIN
     IDS_LEX_STR_63367       "Unicode-Punkt Hovra"
     IDS_LEX_STR_63368       "2nd Unicode-Punkt Hovra"
     IDS_LEX_STR_Interface   "Gränssnitt"
-    IDS_LEX_STR_Annot       "Antecknning"
+    IDS_LEX_STR_Annot       "Anteckning"
     IDS_LEX_STR_63371       "Kommentera Doc ord"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_Decor       "Decoratör"
+    IDS_LEX_STR_Decor       "Dekoratör"
     IDS_LEX_STR_63373       "Uppgiftsmarkör"
     IDS_LEX_STR_63374       "Kommentar Doc fel"
     IDS_LEX_STR_TypeOp      "Typoperatör"
@@ -494,7 +494,7 @@ BEGIN
     IDS_LEX_STR_63378       "Syntaxoperatör"
     IDS_LEX_STR_63379       "Ej stängd sträng"
     IDS_LEX_STR_63380       "URL/IRI"
-    IDS_LEX_STR_63381       "Kompact IRI"
+    IDS_LEX_STR_63381       "Kompakt IRI"
     IDS_LEX_STR_SendKey     "Sänd-tangent"
     IDS_LEX_STR_63383       "Meta-Data"
     IDS_LEX_STR_Enum        "Uppräkning"
