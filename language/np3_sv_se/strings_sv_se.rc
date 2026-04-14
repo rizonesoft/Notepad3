@@ -133,6 +133,8 @@ BEGIN
     IDS_MUI_ERR_DLG_FORMAT  "Fel '%s', orsak:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Inget plugin för filbläddring hittades\nMinipath filbläddrare kan laddas ner från https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Inget sökplugin hittades\ngrepWin filsökningsplugin kan hämtas från https://portableapps.com/apps/utilities/grepwin-portable"
+    IDS_MUI_ERR_GREPWIN_PORTAPPS
+                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
     IDS_MUI_ERR_MRUDLG      "Tillgång saknas för vald fil!\nVill du ta bort den från listan?"
     IDS_MUI_ERR_CREATELINK  "Fel vi skapande av skrivbordslänk"
     IDS_MUI_ERR_PREVWINDISABLED

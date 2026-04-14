@@ -133,6 +133,8 @@ BEGIN
     IDS_MUI_ERR_DLG_FORMAT  "Hiba '%s', oka:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Fájlböngésző plugin nem található\nA MiniPath fájlböngésző plugin letölthető a https://rizonesoft.com címről"
     IDS_MUI_ERR_GREPWIN     "Fájlkereső plugin nem található\nA grepWin fájlkereső plugin letölthető a https://portableapps.com/apps/utilities/grepwin-portable címről"
+    IDS_MUI_ERR_GREPWIN_PORTAPPS
+                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
     IDS_MUI_ERR_MRUDLG      "A kijelölt fájlhoz nincs hozzáférésünk!\nEl szeretné távolítani a listából?"
     IDS_MUI_ERR_CREATELINK  "Hiba az asztali parancsikon létrehozásakor"
     IDS_MUI_ERR_PREVWINDISABLED

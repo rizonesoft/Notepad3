@@ -133,6 +133,8 @@ BEGIN
     IDS_MUI_ERR_DLG_FORMAT  "Lỗi '%s', Nguyên nhân:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Không thể tìm thấy plugin trình duyệt tệp\nPlugin MiniPath có thể tải xuống từ https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Không thể tìm thấy plugin tìm kiếm tệp\nPlugin grepWin có thể tải xuống từ https://portableapps.com/apps/utilities/grepwin-portable"
+    IDS_MUI_ERR_GREPWIN_PORTAPPS
+                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
     IDS_MUI_ERR_MRUDLG      "Không thể truy cập tệp đã chọn!\nCó muốn xóa khỏi danh sách không?"
     IDS_MUI_ERR_CREATELINK  "Đã xảy ra lỗi khi tạo liên kết trên màn hình chính"
     IDS_MUI_ERR_PREVWINDISABLED

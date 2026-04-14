@@ -162,6 +162,8 @@
 #define IDS_MUI_ERR_FILE_TOO_LARGE      13016
 #define IDS_MUI_WARN_UNKNOWN_EXT        13017
 #define IDS_MUI_ERR_DLG_FORMAT          13018
+#define IDS_MUI_ERR_GREPWIN_PORTAPPS    13019
+
 // keep order (CRLF(0),  CR(1),  LF(2))
 #define IDS_MUI_EOLMODENAME_CRLF        13020
 #define IDS_MUI_EOLMODENAME_CR          13021
@@ -171,6 +173,7 @@
 #define IDS_MUI_WARN_STYLE_RESET        13025
 #define IDS_MUI_ASK_INSTANCE_EXISTS     13026
 #define IDS_MUI_ERR_PATHNOTFOUND        13027
+
 
 #define IDS_MUI_SELRECT                 14000
 #define IDS_MUI_BUFFERTOOSMALL          14001

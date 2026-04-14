@@ -133,6 +133,8 @@ BEGIN
     IDS_MUI_ERR_DLG_FORMAT  "Erro '%s', causa:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Não foi encontrado nenhum plugin de navegador de ficheiros\nO plugin do navegador de ficheiros MiniPath pode ser transferido de https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Não foi encontrado nenhum plugin de procura de ficheiros\nO plugin de procura de ficheiros grepWin pode ser transferido de https://portableapps.com/apps/utilities/grepwin-portable"
+    IDS_MUI_ERR_GREPWIN_PORTAPPS
+                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
     IDS_MUI_ERR_MRUDLG      "Não foi possível aceder ao ficheiro seleccionado!\nDeseja removê-lo da lista?"
     IDS_MUI_ERR_CREATELINK  "Erro ao criar a ligação ao ambiente de trabalho"
     IDS_MUI_ERR_PREVWINDISABLED
