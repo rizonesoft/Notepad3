@@ -572,7 +572,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Seleziona tutto",               IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM SEPARATOR
         POPUP "Converti maiuscolo/minuscolo"
         BEGIN
             MENUITEM "Maiuscolo",              CMD_CTX_UPPERCASE
@@ -582,6 +581,7 @@ BEGIN
             MENUITEM "Maiuscolo/minuscolo titolo",          CMD_CTX_TITLECASE
             MENUITEM "Maiuscolo/minuscolo frase",           CMD_CTX_SENTENCECASE
         END
+        MENUITEM SEPARATOR
         MENUITEM "Espandi/riduci raggruppamento", IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
         MENUITEM "Apri azione web 1",             CMD_WEBACTION1

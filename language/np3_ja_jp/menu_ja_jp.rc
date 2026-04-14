@@ -572,7 +572,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "すべて選択",                              IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM SEPARATOR
         POPUP "Convert Case"
         BEGIN
             MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
@@ -582,6 +581,7 @@ BEGIN
             MENUITEM "Title Case",             CMD_CTX_TITLECASE
             MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
         END
+        MENUITEM SEPARATOR
         MENUITEM "ここの折りたたみを切替",                     IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
         MENUITEM "ウェブ1で開く",                             CMD_WEBACTION1

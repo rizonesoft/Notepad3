@@ -572,7 +572,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Markera allt",                                       IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM SEPARATOR
         POPUP "Ändra skiftläge"
         BEGIN
             MENUITEM "Versaler",              CMD_CTX_UPPERCASE
@@ -582,6 +581,7 @@ BEGIN
             MENUITEM "Inledande versal",             CMD_CTX_TITLECASE
             MENUITEM "Inledande versal i mening",          CMD_CTX_SENTENCECASE
         END
+        MENUITEM SEPARATOR
         MENUITEM "Expandera/komprimera",                               IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
         MENUITEM "Öppna webbåtgärd 1",                                    CMD_WEBACTION1

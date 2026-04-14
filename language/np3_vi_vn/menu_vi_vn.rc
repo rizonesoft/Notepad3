@@ -559,19 +559,18 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-    MENUITEM "Mở liên kết",                  CMD_OPEN_HYPERLINK
-    MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
-    MENUITEM SEPARATOR
-    MENUITEM "Hoàn tác",                     IDM_EDIT_UNDO
-    MENUITEM "Làm lại",                     IDM_EDIT_REDO
-    MENUITEM SEPARATOR
-    MENUITEM "Cắt",                         IDM_EDIT_CUT
-    MENUITEM "Sao chép",                    IDM_EDIT_COPY
-    MENUITEM "Dán",                        IDM_EDIT_PASTE
-    MENUITEM "Xóa",                        IDM_EDIT_CLEAR
-    MENUITEM SEPARATOR
-    MENUITEM "Chọn tất cả",                 IDM_EDIT_SELECTALL
-    MENUITEM SEPARATOR
+        MENUITEM "Mở liên kết",                  CMD_OPEN_HYPERLINK
+        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM SEPARATOR
+        MENUITEM "Hoàn tác",                     IDM_EDIT_UNDO
+        MENUITEM "Làm lại",                     IDM_EDIT_REDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cắt",                         IDM_EDIT_CUT
+        MENUITEM "Sao chép",                    IDM_EDIT_COPY
+        MENUITEM "Dán",                        IDM_EDIT_PASTE
+        MENUITEM "Xóa",                        IDM_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "Chọn tất cả",                 IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
         POPUP "Convert Case"
         BEGIN
@@ -582,11 +581,12 @@ BEGIN
             MENUITEM "Title Case",             CMD_CTX_TITLECASE
             MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
         END
-    MENUITEM "Chuyển đổi gấp hiện tại",      IDM_VIEW_TOGGLE_CURRENT_FOLD
-    MENUITEM SEPARATOR
-    MENUITEM "Mở tác vụ web 1",             CMD_WEBACTION1
-    MENUITEM "Mở tác vụ web 2",             CMD_WEBACTION2
-    MENUITEM "Mở Explorer",                IDM_FILE_EXPLORE_DIR
+        MENUITEM SEPARATOR
+        MENUITEM "Chuyển đổi gấp hiện tại",      IDM_VIEW_TOGGLE_CURRENT_FOLD
+        MENUITEM SEPARATOR
+        MENUITEM "Mở tác vụ web 1",             CMD_WEBACTION1
+        MENUITEM "Mở tác vụ web 2",             CMD_WEBACTION2
+        MENUITEM "Mở Explorer",                IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"
     BEGIN
