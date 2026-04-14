@@ -5013,7 +5013,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 
     if (!Path_IsExistingFile(hExeFilePath)) {
 
-        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_GREPWIN);
+        InfoBoxLng(MB_ICONWARNING, NULL, bIsPortableApps ? IDS_MUI_ERR_GREPWIN_PORTAPPS : IDS_MUI_ERR_GREPWIN);
 
     }
     else {
@@ -5215,7 +5215,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
         sei.lpDirectory = Path_Get(hGrepWinDir);
         sei.nShow = SW_SHOWNORMAL;
         if (!ShellExecuteExW(&sei) || (INT_PTR)sei.hInstApp < 32) {
-            InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_GREPWIN);
+            InfoBoxLng(MB_ICONWARNING, NULL, bIsPortableApps ? IDS_MUI_ERR_GREPWIN_PORTAPPS : IDS_MUI_ERR_GREPWIN);
         }
         StrgDestroy(hstrParams);
         Path_Release(hGrepWinIniPath);

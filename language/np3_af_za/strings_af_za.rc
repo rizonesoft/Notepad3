@@ -133,6 +133,8 @@ BEGIN
     IDS_MUI_ERR_DLG_FORMAT  "Fout '%s', oorsaak:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Geen lêerblaaier plugin is gevind nie\nDie MiniPath-lêerblaaier plugin kan afgelaai word vanaf https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Geen lêer soek-inprop is gevind nie\nDie grepWin lêersoek plugin kan afgelaai word vanaf https://portableapps.com/apps/utilities/grepwin-portable"
+    IDS_MUI_ERR_GREPWIN_PORTAPPS
+                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
     IDS_MUI_ERR_MRUDLG      "Geen toegang tot die gekose lêer nie!\nWil jy dit uit die lys verwyder?"
     IDS_MUI_ERR_CREATELINK  "Kon nie die Desktop skakel skep nie"
     IDS_MUI_ERR_PREVWINDISABLED
