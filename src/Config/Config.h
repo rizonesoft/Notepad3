@@ -97,6 +97,7 @@ inline bool IniSectionSetPos(LPCWSTR lpSectionName, LPCWSTR lpKeyName, DocPos po
 //
 bool IniSectionDelete(LPCWSTR lpSectionName, LPCWSTR lpKeyName, bool bRemoveEmpty);
 bool IniSectionClear(LPCWSTR lpSectionName, bool bRemoveEmpty);
+int  IniSectionGetKeyCount(LPCWSTR lpSectionName);
 bool IniClearAllSections(LPCWSTR lpPrefix, bool bRemoveEmpty);
 
 // ----------------------------------------------------------------------------

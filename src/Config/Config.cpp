@@ -588,6 +588,12 @@ extern "C" bool IniSectionClear(LPCWSTR lpSectionName, bool bRemoveEmpty)
 }
 // ============================================================================
 
+extern "C" int IniSectionGetKeyCount(LPCWSTR lpSectionName)
+{
+    return s_INI.GetSectionSize(lpSectionName);
+}
+// ============================================================================
+
 extern "C" bool IniClearAllSections(LPCWSTR lpPrefix, bool bRemoveEmpty)
 {
     CSimpleIni::TNamesDepend Sections;
@@ -1177,8 +1183,6 @@ void LoadSettings()
 {
     WCHAR tchKeyName[MIDSZ_BUFFER] = { L'\0' };
 
-    CFG_VERSION const _ver = Path_IsEmpty(Paths.IniFile) ? CFG_VER_CURRENT : CFG_VER_NONE;
-
     auto* const pPathBuffer = (wchar_t*)AllocMem(PATHLONG_MAX_CCH * sizeof(wchar_t), HEAP_ZERO_MEMORY);
 
     bool bDirtyFlag = false; // do we have to save the file on done
@@ -1190,8 +1194,8 @@ void LoadSettings()
     const WCHAR* const IniSecSettings2 = Constants.Settings2_Section;
     // --------------------------------------------------------------------------
 
-    // prerequisites
-    Globals.iCfgVersionRead = IniSectionGetInt(IniSecSettings, L"SettingsVersion", _ver);
+    // prerequisites - assume current version if SettingsVersion is not defined
+    Globals.iCfgVersionRead = IniSectionGetInt(IniSecSettings, L"SettingsVersion", CFG_VER_CURRENT);
 
     Defaults.SaveSettings = Path_IsNotEmpty(Paths.IniFile);
     Settings.SaveSettings = Defaults.SaveSettings && IniSectionGetBool(IniSecSettings, L"SaveSettings", Defaults.SaveSettings);
@@ -2401,6 +2405,10 @@ bool SaveAllSettings(bool bForceSaveSettings)
 
     if (ok) {
 
+        if (Globals.bIniFileFromScratch) {
+            IniSectionSetString(_W(SAPPNAME), NULL, NULL);
+        }
+
         _SaveSettings(bForceSaveSettings);
 
         if (Globals.bCanSaveIniFile) {
@@ -2435,6 +2443,8 @@ bool SaveAllSettings(bool bForceSaveSettings)
     Style_FileExtToIniSection(false);
 
     ok = (ok ? CloseSettingsFile(__func__, true) : true);
+
+    Globals.bIniFileFromScratch = false; // INI has content now
 
     // maybe separate INI files for Style-Themes
     if (Globals.uCurrentThemeIndex > 0) {
