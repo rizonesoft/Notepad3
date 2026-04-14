@@ -185,7 +185,7 @@ void SetMuiLanguage(const unsigned muiLngIndex) {
 
             StringCchCopyW(Settings2.PreferredLanguageLocaleName, COUNTOF(Settings2.PreferredLanguageLocaleName), pLocaleName);
 
-            if (Globals.bCanSaveIniFile) {
+            if (Globals.bCanSaveIniFile && !Globals.bIniFileFromScratch) {
                 if (StrCmpIW(Settings2.PreferredLanguageLocaleName, Default_PreferredLanguageLocaleName) != 0) {
                     IniFileSetString(Paths.IniFile, Constants.Settings2_Section, SettingName, Settings2.PreferredLanguageLocaleName);
                 } else {

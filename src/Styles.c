@@ -1154,6 +1154,13 @@ bool Style_ToIniSection(bool bForceAll)
     IniSectionDelete(L"Default Text", NULL, true);
     IniSectionDelete(L"2nd Default Text", NULL, true);
 
+    // remove empty lexer sections (preserve canonical order for non-empty ones)
+    for (int iLexer = 0; iLexer < COUNTOF(g_pLexArray); ++iLexer) {
+        if (IniSectionGetKeyCount(g_pLexArray[iLexer]->pszName) == 0) {
+            IniSectionClear(g_pLexArray[iLexer]->pszName, true);
+        }
+    }
+
     return true;
 }
 
