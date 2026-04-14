@@ -52,7 +52,8 @@ GitHub Actions (`.github/workflows/build.yml`) builds all four platforms (Win32,
 
 | File | Purpose |
 |------|---------|
-| **Notepad3.c/h** | Entry point (`wWinMain`), window procedure (`MainWndProc`), global state structs (`Globals`, `Settings`, `Settings2`, `Flags`, `Paths`) |
+| **Notepad3.c/h** | Entry point (`wWinMain`), window procedure (`MainWndProc`), global state structs (`Globals`, `Settings`, `Settings2`, `Flags`, `Paths`), `MsgCommand()` dispatcher |
+| **Notepad3Util.c/h** | Utility functions extracted from Notepad3.c: bitmap/toolbar image loading, word-wrap configuration, auto-scroll (middle-click continuous scroll) |
 | **Edit.c/h** | Text manipulation: find/replace (PCRE2 regex), encoding conversion, clipboard, indentation, sorting, bookmarks, folding, auto-complete |
 | **Styles.c/h** | Scintilla styling, lexer selection, theme management, margin configuration |
 | **Dialogs.c/h** | All dialog boxes, DPI-aware UI interactions, window placement |
@@ -72,6 +73,28 @@ MainWndProc (Notepad3.c)
   +-- Toolbar (via Rebar control)
   +-- Status Bar (16 configurable fields)
 ```
+
+### Menu / Command Architecture
+
+Menu items are defined in resource files (`language/np3_*/menu_*.rc`). Command handling in `Notepad3.c` is structured as:
+
+- **`MsgInitMenu()`** — `WM_INITMENU` handler; enables/disables/checks menu items based on current state
+- **`MsgCommand()`** — `WM_COMMAND` thin dispatcher; handles timer/notification cases inline, then delegates to static sub-handlers:
+
+| Handler | Scope |
+|---------|-------|
+| `_HandleFileCommands` | File open/save/print/favorites (`IDM_FILE_*`) |
+| `_HandleEncodingCommands` | Encoding & line endings (`IDM_ENCODING_*`, `IDM_LINEENDINGS_*`) |
+| `_HandleEditBasicCommands` | Undo/redo/cut/copy/paste/indent (`IDM_EDIT_UNDO`..`CMD_VK_INSERT`) |
+| `_HandleEditLineManipulation` | Line modify/sort/join/case (`IDM_EDIT_ENCLOSESELECTION`..`IDM_EDIT_INSERT_GUID`) |
+| `_HandleEditTextTransform` | Comments/URL encode/escape/hex (`IDM_EDIT_LINECOMMENT`..`IDM_EDIT_HEX2CHAR`) |
+| `_HandleEditFind` | Find/replace/bookmarks/goto (`IDM_EDIT_FINDMATCHINGBRACE`..`IDM_EDIT_GOTOLINE`) |
+| `_HandleViewAndSettingsCommands` | View/settings/rendering (`IDM_VIEW_*`, `IDM_SET_*`) |
+| `_HandleHelpCommands` | Help/about (`IDM_HELP_*`) |
+| `_HandleCmdCommands` | Keyboard shortcuts/navigation/window positioning (`CMD_*`) |
+| `_HandleToolbarCommands` | Toolbar button dispatch via `s_ToolbarDispatch[]` table (`IDT_*`) |
+
+Each handler returns `true` if it handled the command, `false` to try the next. All handlers are `static` in `Notepad3.c`.
 
 ### Vendored Dependencies
 
@@ -139,6 +162,9 @@ Resource-based MUI system with 27+ locales. Each locale has a `np3_LANG_COUNTRY\
 - **Admin redirect**: `Notepad3.ini=<path>` in `[Notepad3]` section redirects to per-user path (up to 2 levels)
 - Key paths: `Paths.IniFile` (active writable INI), `Paths.IniFileDefault` (fallback for recovery)
 - INI init flow: `FindIniFile()` -> `TestIniFile()` -> `CreateIniFile()` -> `LoadSettings()`
+- **SettingsVersion default**: `SettingsVersion` defaults to `CFG_VER_CURRENT` when missing from INI — an INI file without `SettingsVersion` is NOT treated as a legacy (pre-versioning) file. This ensures empty INI files and newly created INI files both get current defaults.
+- **`bIniFileFromScratch`**: Set when INI file size is 0 bytes. Cleared after `SaveAllSettings()` completes. While true, `MuiLanguage.c` suppresses writing `PreferredLanguageLocaleName` to avoid polluting fresh INI files.
+- **Style section saving**: `Style_ToIniSection()` removes empty lexer sections after processing via `IniSectionGetKeyCount()`. `Style_CanonicalSectionToIniCache()` establishes canonical section order but empty sections are cleaned up — only sections with non-default style values appear in the saved INI.
 - **MiniPath** follows the same portable INI and admin-redirect pattern (`minipath\src\Config.cpp`). Redirect targets are auto-created via `CreateIniFileEx()`.
 - **New parameters**: When adding new `Settings2` (or other INI) parameters, always document them as commented entries in `Build\Notepad3.ini`
 

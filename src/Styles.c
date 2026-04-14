@@ -555,7 +555,6 @@ bool Style_InsertThemesMenu(HMENU hMenuBar)
     WCHAR wchMenuItemStrg[128] = { L'\0' };
     GetLngString(IDS_MUI_MENU_THEMES, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
 
-    //bool const res = InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuThemes, wchMenuItemStrg);
     bool const res = InsertMenu(hMenuBar, IDM_VIEW_SCHEMECONFIG, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuThemes, wchMenuItemStrg);
 
     unsigned const iTheme = Globals.uCurrentThemeIndex;

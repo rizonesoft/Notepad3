@@ -72,6 +72,9 @@
     <ClCompile Include="Notepad3.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Notepad3Util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Encoding.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -468,6 +471,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Notepad3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Notepad3Util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VersionEx.h">

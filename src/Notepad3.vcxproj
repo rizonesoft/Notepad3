@@ -1077,6 +1077,7 @@
     <ClCompile Include="Helpers.c" />
     <ClCompile Include="MuiLanguage.c" />
     <ClCompile Include="Notepad3.c" />
+    <ClCompile Include="Notepad3Util.c" />
     <ClCompile Include="Print.cpp" />
     <ClCompile Include="Resample.c" />
     <ClCompile Include="StyleLexers\styleLexASM.c" />
@@ -1180,6 +1181,7 @@
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="MuiLanguage.h" />
     <ClInclude Include="Notepad3.h" />
+    <ClInclude Include="Notepad3Util.h" />
     <ClInclude Include="Resample.h" />
     <ClInclude Include="SciCall.h" />
     <ClInclude Include="StyleLexers\EditLexer.h" />
