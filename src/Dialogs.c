@@ -5061,10 +5061,20 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
 
             // get grepWin language
             int lngIdx = -1;
-            for (unsigned i = 0; i < grepWinLang_CountOf(); ++i) {
-                if (IsSameLocale(grepWinLangResName[i].localename, Globals.CurrentLngLocaleName)) {
-                    lngIdx = i;
-                    break;
+            if (bIsPortableApps) {
+                for (unsigned i = 0; i < grepWinLangPortApps_CountOf(); ++i) {
+                    if (IsSameLocale(grepWinLangFileNamePortableApps[i].localename, Globals.CurrentLngLocaleName)) {
+                        lngIdx = i;
+                        break;
+                    }
+                }
+            }
+            else {
+                for (unsigned i = 0; i < grepWinLang_CountOf(); ++i) {
+                    if (IsSameLocale(grepWinLangFileName[i].localename, Globals.CurrentLngLocaleName)) {
+                        lngIdx = i;
+                        break;
+                    }
                 }
             }
 
@@ -5073,7 +5083,8 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
             const WCHAR* const langFile = L"languagefile";
 
             if (lngIdx >= 0) {
-                IniSectionGetString(globalSection, langFile, grepWinLangResName[lngIdx].filename, wchLngPathBuf, Path_GetBufCount(hLngFilePath));
+                LPCWSTR const langFileName = (bIsPortableApps ? grepWinLangFileNamePortableApps[lngIdx].localename : grepWinLangFileName[lngIdx].localename);
+                IniSectionGetString(globalSection, langFile, langFileName, wchLngPathBuf, Path_GetBufCount(hLngFilePath));
                 Path_Sanitize(hLngFilePath);
                 if (Path_IsEmpty(hLngFilePath)) {
                     IniSectionDelete(globalSection, langFile, false);
