@@ -122,7 +122,7 @@ BEGIN
     IDS_ENC_ISO_8859_15            "C;라틴어 9 (ISO-8859-15);ISO-8859-15"
     IDS_ENC_DOS_865                "C;북유럽어 (DOS-865);DOS-865"
     IDS_ENC_DOS_437                "C;OEM 미국 (DOS-437);DOS-437"
-    IDS_ENC_DOS_858                "C;OEM 다국 라틴어 1 (DOS-858);DOS-858"
+    IDS_ENC_DOS_858                "C;OEM 다국어 라틴 1 (DOS-858);DOS-858"
     IDS_ENC_DOS_860                "C;포르투갈어 (DOS-860);DOS-860"
     IDS_ENC_MAC_ROMANIAN           "C;루마니아어 (Mac);Mac (Romanian)"
 END
@@ -141,10 +141,10 @@ BEGIN
     IDS_ENC_ISO_8859_1             "B;서유럽어 (ISO-8859-1);ISO-8859-1"
     IDS_ENC_MAC_WESTERN_EUROP      "B;서유럽어 (Mac);Mac (Western)"
     IDS_ENC_WIN_1252               "B;서유럽어 (Windows-1252);Windows-1252"
-    IDS_ENC_IBM_EBCDIC_US          "D0;IBM EBCDIC (US-Canada);EBCDIC (US)"
-    IDS_ENC_IBM_EBCDIC_INT         "D1;IBM EBCDIC (International);EBCDIC (Int.)"
-    IDS_ENC_IBM_EBCDIC_GR          "D2;IBM EBCDIC (Greek Modern);EBCDIC (GR)"
-    IDS_ENC_IBM_EBCDIC_LAT_5       "D3;IBM EBCDIC (Turkish Latin-5);EBCDIC (Latin-5)"
+    IDS_ENC_IBM_EBCDIC_US          "D0;IBM EBCDIC (미국-캐나다);EBCDIC (US)"
+    IDS_ENC_IBM_EBCDIC_INT         "D1;IBM EBCDIC (국제);EBCDIC (Int.)"
+    IDS_ENC_IBM_EBCDIC_GR          "D2;IBM EBCDIC (그리스어 현대);EBCDIC (GR)"
+    IDS_ENC_IBM_EBCDIC_LAT_5       "D3;IBM EBCDIC (튀르키예어 라틴-5);EBCDIC (Latin-5)"
 END
 
 STRINGTABLE
