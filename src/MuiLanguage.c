@@ -55,19 +55,18 @@ LANGID GetLangIdByLocaleName(LPCWSTR pLocaleName) {
 //=============================================================================
 
 grepWinLng_t grepWinLangFileName[] = {
-    { L"en-US", L"" },  // buildin language
+    { L"en-US", L"" },  // build-in language
     { L"af-ZA", L"Afrikaans.lang" },
     { L"be-BY", L"Belarusian.lang" },
     { L"de-DE", L"German.lang" },
     { L"el-GR", L"Greek.lang" },
-    { L"en-GB", L"English British.lang" },
+    { L"en-GB", L"English British.lang" }, // translation in progress
     { L"es-ES", L"Spanish.lang" },
-    { L"es-MX", L"Spanish Mexican.lang" },
-    { L"fi-FI", L"Finnish.lang" },
+    { L"fi-FI", L"Finnish.lang" }, // translation in progress
     { L"fr-FR", L"French.lang" },
     { L"hi-IN", L"Hindi.lang" },
     { L"hu-HU", L"Hungarian.lang" },
-    { L"id-ID", L"Indonesian.lang" },
+    { L"id-ID", L"Indonesian.lang" }, // translation in progress
     { L"it-IT", L"Italian.lang" },
     { L"ja-JP", L"Japanese.lang" },
     { L"ko-KR", L"Korean.lang" },
@@ -79,7 +78,7 @@ grepWinLng_t grepWinLangFileName[] = {
     { L"sk-SK", L"Slovak.lang" },
     { L"sv-SE", L"Swedish.lang" },
     { L"tr-TR", L"Turkish.lang" },
-    { L"vi-VN", L"Vietnamese.lang" },
+    { L"vi-VN", L"Vietnamese.lang" }, // translation in progress
     { L"zh-CN", L"Chinese Simplified.lang" },
     { L"zh-TW", L"Chinese Traditional.lang" }
 };
@@ -90,15 +89,14 @@ unsigned grepWinLang_CountOf() {
 
 
 grepWinLng_t grepWinLangFileNamePortableApps[] = {
-    { L"en-US", L"" },  // buildin language
+    { L"en-US", L"" },  // build-in language
     { L"af-ZA", L"Afrikaans.lang" },
     { L"be-BY", L"Belarusian.lang" },
     { L"de-DE", L"German.lang" },
     { L"el-GR", L"Greek.lang" },
     { L"en-GB", L"" }, // not in grepWinPortable (yet)
     { L"es-ES", L"Spanish.lang" },
-    { L"es-MX", L"Spanish_Mexican.lang" },
-    { L"fi-FI", L"Finnish.lang" },
+    { L"fi-FI", L"" }, // not in grepWinPortable (yet)
     { L"fr-FR", L"French.lang" },
     { L"hi-IN", L"Hindi.lang" },
     { L"hu-HU", L"Hungarian.lang" },
@@ -113,7 +111,6 @@ grepWinLng_t grepWinLangFileNamePortableApps[] = {
     { L"ru-RU", L"Russian.lang" },
     { L"sk-SK", L"Slovak.lang" },
     { L"sv-SE", L"Swedish.lang" },
-    { L"ta-IN", L"Tamil.lang" },
     { L"tr-TR", L"Turkish.lang" },
     { L"vi-VN", L"" },  // not in grepWinPortable (yet)
     { L"zh-CN", L"ChineseSimplified.lang" },
