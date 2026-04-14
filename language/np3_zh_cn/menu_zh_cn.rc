@@ -572,7 +572,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "全选",                                  IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM SEPARATOR
         POPUP "Convert Case"
         BEGIN
             MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
@@ -582,6 +581,7 @@ BEGIN
             MENUITEM "Title Case",             CMD_CTX_TITLECASE
             MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
         END
+        MENUITEM SEPARATOR
         MENUITEM "折叠/展开",                             IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
         MENUITEM "用超链接模板 1 打开",                    CMD_WEBACTION1

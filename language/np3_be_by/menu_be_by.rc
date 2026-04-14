@@ -572,7 +572,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Вылучыць усё",                 IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM SEPARATOR
         POPUP "Convert Case"
         BEGIN
             MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
@@ -582,6 +581,7 @@ BEGIN
             MENUITEM "Title Case",             CMD_CTX_TITLECASE
             MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
         END
+        MENUITEM SEPARATOR
         MENUITEM "Згарнуць/разгарнуць блок",     IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
         MENUITEM "Адкрыць вэб-дзеянне 1",        CMD_WEBACTION1
