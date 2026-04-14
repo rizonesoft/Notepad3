@@ -560,7 +560,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "하이퍼링크 열기",             CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "하이퍼링크 URL 복사",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "실행 취소",                       IDM_EDIT_UNDO
         MENUITEM "다시 실행",                       IDM_EDIT_REDO
@@ -572,14 +572,14 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "모두 선택",                 IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        POPUP "Convert Case"
+        POPUP "대소문자 변환"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "대문자",              CMD_CTX_UPPERCASE
+            MENUITEM "소문자",              CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "대소문자 반전",            CMD_CTX_INVERTCASE
+            MENUITEM "제목 대소문자",             CMD_CTX_TITLECASE
+            MENUITEM "문장 대소문자",          CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
         MENUITEM "현재 접기 전환",        IDM_VIEW_TOGGLE_CURRENT_FOLD
