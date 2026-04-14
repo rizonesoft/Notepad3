@@ -87,37 +87,6 @@ unsigned grepWinLang_CountOf() {
     return COUNTOF(grepWinLangResName);
 };
 
-#if 0
-grepWinLng_t grepWinLangResName[] = {
-    { L"en-US",  L"English (United States) [en-US].lang" },
-    { L"af-ZA",  L"Afrikaans (Suid-Afrika) [af-ZA].lang" },
-    { L"be-BY",  L"Беларуская (Беларусь) [be-BY].lang" },
-    { L"de-DE",  L"Deutsch (Deutschland) [de-DE].lang" },
-    { L"el-GR",  L"Ελληνικά (Ελλάδα) [el-GR].lang" },
-    { L"en-GB",  L"English (United Kingdom) [en-GB].lang" },
-    { L"es-ES",  L"Español (España) [es-ES].lang" },
-    { L"fi-FI",  L"suomi (Suomi) [fi-FI].lang" },
-    { L"fr-FR",  L"Français (France) [fr-FR].lang" },
-    { L"hi-IN",  L"हिन्दी (भारत) [hi-IN].lang" },
-    { L"hu-HU",  L"Magyar (Magyarország) [hu-HU].lang" },
-    { L"id-ID",  L"Bahasa Indonesia (Indonesia) [id-ID].lang" },
-    { L"it-IT",  L"Italiano (Italia) [it-IT].lang" },
-    { L"ja-JP",  L"日本語 (日本) [ja-JP].lang" },
-    { L"ko-KR",  L"한국어 (대한민국) [ko-KR].lang" },
-    { L"nl-NL",  L"Nederlands (Nederland) [nl-NL].lang" },
-    { L"pl-PL",  L"Polski (Polska) [pl-PL].lang" },
-    { L"pt-BR",  L"Português Brasileiro (Brasil) [pt-BR].lang" },
-    { L"pt-PT",  L"Português (Portugal) [pt-PT].lang" },
-    { L"ru-RU",  L"Русский (Pоссия) [ru-RU].lang" },
-    { L"sk-SK",  L"Slovenčina (Slovensko) [sk-SK].lang" },
-    { L"sv-SE",  L"Svenska (Sverige) [sv-SE].lang" },
-    { L"tr-TR",  L"Türkçe (Türkiye) [tr-TR].lang" },
-    { L"vi-VN",  L"Tiếng Việt (Việt Nam) [vi-VN].lang" },
-    { L"zh-CN",  L"简体中文 (中国大陆) [zh-CN].lang" },
-    { L"zh-TW",  L"正體中文 (中國台灣) [zh-TW].lang" }
-};
-#endif
-
 //=============================================================================
 //
 //  _LngStrToMultiLngStr

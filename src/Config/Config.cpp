@@ -2008,7 +2008,7 @@ void LoadSettings()
 // encoding: internal<->external mapping
 #define SAVE_ENC_IF_NOT_EQ_DEFAULT(TYPE, VARNAME)                                 \
   if (Settings.VARNAME != Defaults.VARNAME) {                                     \
-    int const encValMapped = Encoding_MapIniSetting(true, (int)Settings.VARNAME); \
+    int const encValMapped = Encoding_MapIniSetting(false, (int)Settings.VARNAME); \
     IniSectionSetInt(IniSecSettings, _W(_STRG(VARNAME)), encValMapped);           \
   }                                                                               \
   else {                                                                          \
@@ -2168,6 +2168,11 @@ static bool _SaveSettings(bool bForceSaveSettings)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkOccurrencesCurrentWord);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ViewWhiteSpace);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ViewEOLs);
+
+    // recalculate encoding-dependent defaults before save comparison
+    bool const bCurrentEncUTF8 = (Settings.DefaultEncoding == CPI_UTF8 || Settings.DefaultEncoding == CPI_UTF8SIGN);
+    Defaults.LoadASCIIasUTF8 = bCurrentEncUTF8;
+    Defaults.SkipANSICodePageDetection = !bCurrentEncUTF8;
 
     SAVE_ENC_IF_NOT_EQ_DEFAULT(Int, DefaultEncoding);
 
