@@ -132,9 +132,9 @@ BEGIN
     IDS_MUI_ERR_PATHNOTFOUND "Il percorso per ""%s"" non esiste più.\nVuoi ricreare il percorso e salvare il file?"
     IDS_MUI_ERR_DLG_FORMAT  "Errore '%s', causa:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Nessun plugin file browser trovato\nMiniPath può essere scaricato da https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "Nessun plugin ricerca file trovato\nIl plugin ricerca file grepWin può esssere scaricato da https://portableapps.com/apps/utilities/grepwin-portable"
+    IDS_MUI_ERR_GREPWIN     "Nessun plugin ricerca file trovato\nIl plugin ricerca file grepWinPortable può esssere scaricato da https://github.com/stefankueng/grepWin/releases"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
-                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
+                            "Nessun plug-in ricerca file trovato\nInstalla la versione più recente di grepWinPortable nella piattaforma PortableApps."
     IDS_MUI_ERR_MRUDLG      "Nessun accesso al file selezionato!\nVuoi rimuoverlo dall'elenco?"
     IDS_MUI_ERR_CREATELINK  "Errore nella creazione del collegamento sul desktop"
     IDS_MUI_ERR_PREVWINDISABLED
