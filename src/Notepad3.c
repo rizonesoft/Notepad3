@@ -3919,6 +3919,29 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     return (imenu != MNU_NONE) ? !0 : 0;
 }
 
+// ---------------------------------------------------------------------------
+// Find the 0-based position of a POPUP submenu within hParent that contains
+// childCmdId as a direct child MENUITEM.  Returns -1 if not found.
+// Replaces fragile hardcoded position numbers for POPUP items (which have
+// no command ID in MENU resource format).
+// ---------------------------------------------------------------------------
+static int GetSubMenuPosByChildCmd(HMENU hParent, UINT childCmdId)
+{
+    int const count = GetMenuItemCount(hParent);
+    for (int i = 0; i < count; ++i) {
+        HMENU const hSub = GetSubMenu(hParent, i);
+        if (hSub) {
+            int const subCount = GetMenuItemCount(hSub);
+            for (int j = 0; j < subCount; ++j) {
+                if (GetMenuItemID(hSub, j) == childCmdId) {
+                    return i;
+                }
+            }
+        }
+    }
+    return -1;
+}
+
 //=============================================================================
 //
 //  MsgTrayMessage() - Handles WM_TRAYMESSAGE
@@ -3931,7 +3954,7 @@ LRESULT MsgTrayMessage(HWND hwnd, WPARAM wParam, LPARAM lParam)
     switch (lParam) {
     case WM_RBUTTONUP: {
         HMENU hTrayMenu  = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_POPUPMENU));
-        HMENU hMenuPopup = GetSubMenu(hTrayMenu, 3);
+        HMENU hMenuPopup = GetSubMenu(hTrayMenu, GetSubMenuPosByChildCmd(hTrayMenu, IDM_TRAY_RESTORE));
 
         SetForegroundWindow(hwnd);
 
@@ -4292,7 +4315,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     CheckCmd(hmenu, IDM_VIEW_HYPERLINKHOTSPOTS, Settings.HyperlinkHotspot);
 
-    int const _SUB_MNU_2 = 8;  // menu:View -> base for parent of sub-menus (adj. offset accordingly)
+    // Resolve View menu by known child command (immune to top-level menu reordering)
+    HMENU const hViewMenu = GetSubMenu(hmenu, GetSubMenuPosByChildCmd(hmenu, IDM_VIEW_WORDWRAP));
 
     int const chState = SciCall_GetChangeHistory();
     assert(chState == Settings.ChangeHistoryMode);
@@ -4300,18 +4324,18 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     i += (chState & SC_CHANGE_HISTORY_MARKERS) ? 1 : 0;
     i += (chState & SC_CHANGE_HISTORY_INDICATORS) ? 2 : 0;
     CheckMenuRadioItem(hmenu, IDM_VIEW_CHGHIST_NONE, IDM_VIEW_CHGHIST_ALL, i, MF_BYCOMMAND);
-    CheckCmdPos(GetSubMenu(hmenu, 2), _SUB_MNU_2 + 0, (i != IDM_VIEW_CHGHIST_NONE));
+    CheckCmdPos(hViewMenu, GetSubMenuPosByChildCmd(hViewMenu, IDM_VIEW_CHGHIST_NONE), (i != IDM_VIEW_CHGHIST_NONE));
 
     i = IDM_VIEW_COLORDEFHOTSPOTS + Settings.ColorDefHotspot;
     CheckMenuRadioItem(hmenu, IDM_VIEW_COLORDEFHOTSPOTS, IDM_VIEW_COLOR_BGRA, i, MF_BYCOMMAND);
-    CheckCmdPos(GetSubMenu(hmenu, 2), _SUB_MNU_2 + 4, IsColorDefHotspotEnabled());
+    CheckCmdPos(hViewMenu, GetSubMenuPosByChildCmd(hViewMenu, IDM_VIEW_COLORDEFHOTSPOTS), IsColorDefHotspotEnabled());
 
     CheckCmd(hmenu, IDM_VIEW_UNICODE_POINTS, Settings.HighlightUnicodePoints);
     CheckCmd(hmenu, IDM_VIEW_MATCHBRACES, Settings.MatchBraces);
 
     i = IDM_VIEW_HILITCURLN_NONE + Settings.HighlightCurrentLine;
     CheckMenuRadioItem(hmenu, IDM_VIEW_HILITCURLN_NONE, IDM_VIEW_HILITCURLN_FRAME, i, MF_BYCOMMAND);
-    CheckCmdPos(GetSubMenu(hmenu, 2), _SUB_MNU_2 + 7, (i != IDM_VIEW_HILITCURLN_NONE));
+    CheckCmdPos(hViewMenu, GetSubMenuPosByChildCmd(hViewMenu, IDM_VIEW_HILITCURLN_NONE), (i != IDM_VIEW_HILITCURLN_NONE));
 
 #ifdef D_NP3_WIN10_DARK_MODE
     EnableCmd(hmenu, IDM_VIEW_WIN_DARK_MODE, IsDarkModeSupported());
@@ -4322,9 +4346,9 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     // --------------------------------------------------------------------------
 
-    int const mnuMain = 2;
-    int const mnuSubOcc = _SUB_MNU_2 + 8;
-    int const mnuSubSubWord = 6;
+    int const posOcc = GetSubMenuPosByChildCmd(hViewMenu, IDM_VIEW_MARKOCCUR_ONOFF);
+    HMENU const hOccMenu = (posOcc >= 0) ? GetSubMenu(hViewMenu, posOcc) : NULL;
+    int const posWholeWord = hOccMenu ? GetSubMenuPosByChildCmd(hOccMenu, IDM_VIEW_MARKOCCUR_WNONE) : -1;
 
     if (Settings.MarkOccurrencesMatchWholeWords) {
         i = IDM_VIEW_MARKOCCUR_WORD;
@@ -4334,7 +4358,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
         i = IDM_VIEW_MARKOCCUR_WNONE;
     }
     CheckMenuRadioItem(hmenu, IDM_VIEW_MARKOCCUR_WNONE, IDM_VIEW_MARKOCCUR_CURRENT, i, MF_BYCOMMAND);
-    CheckCmdPos(GetSubMenu(GetSubMenu(hmenu, mnuMain), mnuSubOcc), mnuSubSubWord, (i != IDM_VIEW_MARKOCCUR_WNONE));
+    if (posWholeWord >= 0) { CheckCmdPos(hOccMenu, posWholeWord, (i != IDM_VIEW_MARKOCCUR_WNONE)); }
 
     i = IsMarkOccurrencesEnabled();
     EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_VISIBLE, i);
@@ -4342,8 +4366,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WNONE, i);
     EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_WORD, i);
     EnableCmd(hmenu, IDM_VIEW_MARKOCCUR_CURRENT, i);
-    EnableCmdPos(GetSubMenu(GetSubMenu(hmenu, mnuMain), mnuSubOcc), mnuSubSubWord, i);
-    CheckCmdPos(GetSubMenu(hmenu, mnuMain), mnuSubOcc, i);
+    if (posWholeWord >= 0) { EnableCmdPos(hOccMenu, posWholeWord, i); }
+    if (posOcc >= 0) { CheckCmdPos(hViewMenu, posOcc, i); }
 
     // --------------------------------------------------------------------------
 
@@ -4358,7 +4382,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     bool const bF = (SC_FOLDLEVELBASE < (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELNUMBERMASK));
     bool const bH = (SciCall_GetFoldLevel(iCurLine) & SC_FOLDLEVELHEADERFLAG);
     EnableCmd(hmenu, IDM_VIEW_TOGGLE_CURRENT_FOLD, !te && fd && (bF || bH));
-    CheckCmdPos(GetSubMenu(hmenu, 2), _SUB_MNU_2 + 14, fd);
+    CheckCmdPos(hViewMenu, GetSubMenuPosByChildCmd(hViewMenu, IDM_VIEW_FOLDING), fd);
 
 
     // --------------------------------------------------------------------------
