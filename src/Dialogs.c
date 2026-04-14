@@ -3589,22 +3589,6 @@ CASE_WM_CTLCOLOR_SET:
                 }
             }
 
-            // auto-toggle detection settings when encoding selection changes
-            if (LOWORD(wParam) == IDC_ENCODINGLIST) {
-                if (s_iEnc == CPI_ANSI_DEFAULT) {
-                    s_bLoadASCIIasUTF8 = false;
-                    CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(false));
-                    CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, SetBtn(false));
-                    DialogEnableControl(hwnd, IDC_ANSI_CONFIDENCE_LEVEL, false);
-                    DialogEnableControl(hwnd, IDC_ANSI_CONFIDENCE_SPIN, false);
-                } else if (s_iEnc == CPI_UTF8) {
-                    s_bLoadASCIIasUTF8 = true;
-                    CheckDlgButton(hwnd, IDC_ASCIIASUTF8, SetBtn(true));
-                    CheckDlgButton(hwnd, IDC_NOANSICPDETECTION, SetBtn(true));
-                    DialogEnableControl(hwnd, IDC_ANSI_CONFIDENCE_LEVEL, true);
-                    DialogEnableControl(hwnd, IDC_ANSI_CONFIDENCE_SPIN, true);
-                }
-            }
         }
         break;
 

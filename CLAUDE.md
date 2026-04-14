@@ -142,6 +142,16 @@ Resource-based MUI system with 27+ locales. Each locale has a `np3_LANG_COUNTRY\
 - **MiniPath** follows the same portable INI and admin-redirect pattern (`minipath\src\Config.cpp`). Redirect targets are auto-created via `CreateIniFileEx()`.
 - **New parameters**: When adding new `Settings2` (or other INI) parameters, always document them as commented entries in `Build\Notepad3.ini`
 
+### Settings Save/Load Macros (`src\Config\Config.cpp`)
+
+**`Encoding_MapIniSetting` direction** — CPI constants (`CPI_UTF8=6`, `CPI_OEM=1`, etc.) do NOT equal their INI storage values (`3`, `5`, etc.). The mapping is asymmetric:
+- `Encoding_MapIniSetting(true, val)` = INI integer → CPI constant (**loading**)
+- `Encoding_MapIniSetting(false, val)` = CPI constant → INI integer (**saving**)
+
+Passing a CPI value with `bLoad=true` produces wrong results. Reference: `MRU_Save()` correctly uses `false` for saving.
+
+**Conditional defaults and `SAVE_VALUE_IF_NOT_EQ_DEFAULT`** — Some settings have defaults that depend on `DefaultEncoding` (e.g., `SkipANSICodePageDetection`, `LoadASCIIasUTF8`). If the encoding can change at runtime (via the Encoding dialog), the dependent `Defaults.*` fields must be recalculated in `_SaveSettings()` before the comparison macros fire — otherwise stale defaults cause incorrect save/delete decisions. See the `bCurrentEncUTF8` block in `_SaveSettings()`.
+
 ### Creating Directories
 
 Use `Path_CreateDirectoryEx(hpth)` (PathLib wrapper around `SHCreateDirectoryExW`) to recursively create directory trees. Check result: `SUCCEEDED(hr) || (hr == HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS))`. See `CreateIniFile()` in `src\Config\Config.cpp` for the reference pattern.
