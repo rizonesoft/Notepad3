@@ -60,7 +60,7 @@ grepWinLng_t grepWinLangResName[] = {
     { L"be-BY", L"Belarusian.lang" },
     { L"de-DE", L"German.lang" },
     { L"el-GR", L"Greek.lang" },
-    { L"en-GB", L"EnglishBritish.lang" },
+    { L"en-GB", L"English British.lang" },
     { L"es-ES", L"Spanish.lang" },
     { L"fi-FI", L"Finnish.lang" },
     { L"fr-FR", L"French.lang" },
@@ -72,15 +72,15 @@ grepWinLng_t grepWinLangResName[] = {
     { L"ko-KR", L"Korean.lang" },
     { L"nl-NL", L"Dutch.lang" },
     { L"pl-PL", L"Polish.lang" },
-    { L"pt-BR", L"PortugueseBrazilian.lang" },
+    { L"pt-BR", L"Portuguese Brazilian.lang" },
     { L"pt-PT", L"Portuguese.lang" },
     { L"ru-RU", L"Russian.lang" },
     { L"sk-SK", L"Slovak.lang" },
     { L"sv-SE", L"Swedish.lang" },
     { L"tr-TR", L"Turkish.lang" },
     { L"vi-VN", L"Vietnamese.lang" },
-    { L"zh-CN", L"ChineseSimplified.lang" },
-    { L"zh-TW", L"ChineseTraditional.lang" }
+    { L"zh-CN", L"Chinese Simplified.lang" },
+    { L"zh-TW", L"Chinese Traditional.lang" }
 };
 
 unsigned grepWinLang_CountOf() {
