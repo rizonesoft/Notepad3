@@ -52,7 +52,8 @@ Notepad3 is a Win32 desktop text editor built on the **Scintilla** editing compo
 
 ### Core modules (in `src\`)
 
-- **Notepad3.c/h** — Application entry point (`wWinMain`), window procedure, global state structs (`GLOBALS_T`, `SETTINGS_T`, `FLAGS_T`, `PATHS_T`)
+- **Notepad3.c/h** — Application entry point (`wWinMain`), window procedure, global state structs (`GLOBALS_T`, `SETTINGS_T`, `FLAGS_T`, `PATHS_T`), `MsgCommand()` dispatcher with sub-handlers
+- **Notepad3Util.c/h** — Utility functions extracted from Notepad3.c: bitmap/toolbar image loading (`NP3Util_LoadBitmapFile`, `NP3Util_CreateScaledImageListFromBitmap`), word-wrap configuration (`NP3Util_SetWrapIndentMode`, `NP3Util_SetWrapVisualFlags`), auto-scroll (`NP3Util_AutoScrollStart/Stop`)
 - **Edit.c/h** — Text manipulation: find/replace (PCRE2 regex), encoding conversion, clipboard, indentation, sorting, bookmarks, folding, auto-complete
 - **Styles.c/h** — Scintilla styling, lexer selection, theme management
 - **Dialogs.c/h** — All dialog boxes and UI interactions
@@ -243,6 +244,7 @@ Notepad3 follows a **portable-app** design for its configuration file (`Notepad3
 - **Admin redirect**: An administrator can place `Notepad3.ini=<path>` in `[Notepad3]` section of the app-directory INI to redirect to a per-user path. Up to 2 levels of redirect are supported. Redirect targets **are** auto-created (the admin intended them to exist).
 - **Key paths**: `Paths.IniFile` = active writable INI (empty if none exists), `Paths.IniFileDefault` = fallback path for "Save Settings Now" recovery.
 - **Configuration code**: All INI init logic lives in `src\Config\Config.cpp` — `FindIniFile()` → `TestIniFile()` → `CreateIniFile()` → `LoadSettings()`.
+- **Empty INI = no INI**: An empty (0-byte) INI file must produce identical saved output to having no INI file at all. `SettingsVersion` defaults to `CFG_VER_CURRENT` when missing — a missing key does NOT imply a legacy config. Empty lexer sections are removed after style saving (`IniSectionGetKeyCount()`).
 - **MiniPath** follows the same portable INI and admin-redirect pattern (`minipath\src\Config.cpp`). Redirect targets are auto-created via `CreateIniFileEx()`.
 - **New parameters**: When adding new `Settings2` (or other INI) parameters, always document them as commented entries in `Build\Notepad3.ini`
 

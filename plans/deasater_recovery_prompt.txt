@@ -1,0 +1,21 @@
+please make a plan for implementing a kind of "disaster file recovery":
+- on application crash/sigkill/sigint/sys-shutdown there should be a directory (user's %APPDATA%/Notepad3/recovery/) where recovery bundle files are kept
+- one file to keep the original document (respect encryption)
+- an accompaning ini file which keeps the original full filepath, original encoding, and other imortant attributes
+- this recovery file should be updated (if save needed / dirty mode) in background every 2000ms (time should be configurable in settings)
+- the recovery file bundle should be rmoved, if the application exits normally
+- there should be a recovery bundle also for dirty non empty drafts (Untitled / No file path given)
+- the mechanism should be multi instances aware (maybe process number in bundle name ?)
+- on every application start check the "%APPDATA%/Notepad3/recovery/" if there are unhandled disaster recovery files and
+  start a new app instance to load the recovery, unhandled means, there is no instance taking care of this recovery file, must be tracked somehow:
+  + instance has file loaded with correct path - normal recovery mode (process-id of recovery file matches)
+  + file has no instance which is taking care of, new instance has to be started for this recovery file
+  + recovery file's process id does not fit to a "care of instance", but new instance has already been startet to take care of
+  + if a new instance takes care of the recovery file, the process-id has to be changed accordingly
+  + maybe, the commandline interface has to be extended to give an file path for handling and saving in original place
+  + maybe the modified date of both files must be checked to do not override newer files
+-
+
+
+- if you have suggestions derived from best practices for disaster recovery, please suggest
+- if there are questions/uncertainty please ask
