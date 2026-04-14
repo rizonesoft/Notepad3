@@ -125,8 +125,11 @@ typedef struct _gwlang_ini {
     const WCHAR* const filename;
 } grepWinLng_t;
 
-extern grepWinLng_t grepWinLangResName[];
+extern grepWinLng_t grepWinLangFileName[];
 unsigned grepWinLang_CountOf();
+
+extern grepWinLng_t grepWinLangFileNamePortableApps[];
+unsigned grepWinLangPortApps_CountOf();
 
 int LoadLngStringW(UINT uID, LPWSTR lpBuffer, int nBufferMax);
 int LoadLngStringA(UINT uID, LPSTR lpBuffer, int nBufferMax);
