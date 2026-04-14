@@ -71,8 +71,8 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "클립보드 경로(&D)"
         BEGIN
-            MENUITEM "파일 이름만 복사\tCtrl+F9"       IDM_EDIT_INSERT_FILENAME
-            MENUITEM "디렉터리 경로만 복사(&D)"          IDM_EDIT_INSERT_DIRNAME
+            MENUITEM "파일 이름만 복사\tCtrl+F9",       IDM_EDIT_INSERT_FILENAME
+            MENUITEM "디렉터리 경로만 복사(&D)",          IDM_EDIT_INSERT_DIRNAME
             MENUITEM "전체 경로 복사\tCtrl+Shift+F9",     IDM_EDIT_INSERT_PATHNAME
         END
         POPUP "실행(&L)"
@@ -114,7 +114,7 @@ BEGIN
             POPUP "문서를 다음으로 설정(&S)"
             BEGIN
                 MENUITEM "ANSI(&A)",                          IDM_ENCODING_ANSI
-                MENUITEM "유니코드(&U)",                      IDM_ENCODING_UNICODE
+                MENUITEM "유니코드(&U)",                       IDM_ENCODING_UNICODE
                 MENUITEM "유니코드 Big Endian(&B)",            IDM_ENCODING_UNICODEREV
                 MENUITEM "UTF-8(&8)\tShift+F8",               IDM_ENCODING_UTF8
                 MENUITEM "서명 있는 UTF-8(&S)",          IDM_ENCODING_UTF8SIGN
@@ -141,7 +141,7 @@ BEGIN
         MENUITEM "속성(&T)...",                  IDM_FILE_PROPERTIES
         MENUITEM "바탕 화면 링크 만들기(&K)",            IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
-        MENUITEM "찾아보기(&B)...\tCtrl+M",           IDM_FILE_BROWSE
+        MENUITEM "찾아보기(&B)...\tCtrl+M",              IDM_FILE_BROWSE
         POPUP "즐겨찾기(&F)"
         BEGIN
             MENUITEM "즐겨찾기 열기(&O)...\tAlt+I",     IDM_FILE_OPENFAV
@@ -399,7 +399,7 @@ BEGIN
         POPUP "접기"
         BEGIN
             MENUITEM "코드 접기(&F)",                   IDM_VIEW_FOLDING
-            MENUITEM "접기 전환(&T)\tCtrl+Alt+F",      IDM_VIEW_TOGGLEFOLDS
+            MENUITEM "접기 전환(&T)\tCtrl+Alt+F",       IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "다음 접기로 이동(&N)\tAlt+ +",         CMD_FOLDJUMPDOWN
             MENUITEM "이전 접기로 이동(&P)\tAlt+ –",         CMD_FOLDJUMPUP
@@ -457,7 +457,7 @@ BEGIN
     BEGIN
         MENUITEM "구성표 사용자 지정(&C)...\tCtrl+F12",                 IDM_VIEW_SCHEMECONFIG
         MENUITEM SEPARATOR
-        MENUITEM "구문 구성표 선택(&X)...\tF12",                 IDM_VIEW_SCHEME
+        MENUITEM "구문 구성표 선택(&X)...\tF12",                   IDM_VIEW_SCHEME
         MENUITEM "두 번째 공통 기반\tShift+F12",                     IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
         MENUITEM "전역 기본 글꼴(&D)...\tAlt+F12",                IDM_VIEW_FONT
@@ -516,7 +516,7 @@ BEGIN
         END
         POPUP "기술(&G)"
         BEGIN
-            POPUP "렌더링(&R)"
+            POPUP "랜더링(&R)"
             BEGIN
                 MENUITEM "DirectWrite (Direct2D)(&D)",     IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite 유지(&R)",         IDM_SET_RENDER_TECH_D2DRETAIN
@@ -549,7 +549,7 @@ BEGIN
         MENUITEM "관리 도구 실행(&T)...",      IDM_HELP_ADMINEXE
         MENUITEM "웹 사이트에서 업데이트 확인(&W)",           IDM_HELP_UPDATEWEBSITE
         MENUITEM SEPARATOR
-        MENUITEM "명령행 도움말(&C)...",               IDM_HELP_CMD
+        MENUITEM "명령줄 도움말(&C)...",               IDM_HELP_CMD
         MENUITEM "정보(&A)...\tShift+F1",                 IDM_HELP_ABOUT
     END
 END
@@ -560,7 +560,6 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "하이퍼링크 열기",             CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "실행 취소",                       IDM_EDIT_UNDO
         MENUITEM "다시 실행",                       IDM_EDIT_REDO
@@ -572,16 +571,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "모두 선택",                 IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        MENUITEM SEPARATOR
-        POPUP "Convert Case"
-        BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
-            MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
-        END
         MENUITEM "현재 접기 전환",        IDM_VIEW_TOGGLE_CURRENT_FOLD
         MENUITEM SEPARATOR
         MENUITEM "웹 작업 1 열기",          CMD_WEBACTION1
@@ -598,7 +587,7 @@ BEGIN
         MENUITEM "도구 모음 테마 불러오기...",      IDM_VIEW_LOADTHEMETB
         MENUITEM "도구 모음 사용자 지정...",       IDM_VIEW_CUSTOMIZETB
         MENUITEM "도구 모음 전환",            IDM_VIEW_TOGGLETB
-        MENUITEM "DPI 비율 도구 모음",          IDM_VIEW_DPISCALETB
+        MENUITEM "DPI 배율 도구 모음",          IDM_VIEW_DPISCALETB
     END
     POPUP "+"
     BEGIN
