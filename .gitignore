@@ -57,6 +57,7 @@ Thumbs.db
 
 /np3portableapp/Signing*.cmd
 /np3portableapp/Signing*.txt
+/np3portableapp/_buildname.txt
 /np3portableapp/Notepad3Portable*.7z
 /np3portableapp/Notepad3Portable*.exe
 /np3portableapp/Notepad3Portable*.exe
