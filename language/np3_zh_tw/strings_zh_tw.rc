@@ -60,7 +60,7 @@ BEGIN
     IDT_FILE_BROWSE         "瀏覽"
     IDT_FILE_SAVE           "儲存"
     IDT_FILE_RECENT         "最近"
-    IDT_EDIT_UNDO           "取消"
+    IDT_EDIT_UNDO           "復原"
     IDT_EDIT_REDO           "重做"
     IDT_EDIT_CUT            "剪下"
     IDT_EDIT_COPY           "複製"
@@ -104,7 +104,7 @@ BEGIN
     IDS_MUI_UNTITLED        "未命名"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(唯讀)"
-    IDS_MUI_FILELOCKED      "<排除>"
+    IDS_MUI_FILELOCKED      "<獨佔>"
     IDS_MUI_LOADFILE        "正在載入 ""%s""..."
     IDS_MUI_SAVEFILE        "正在儲存 ""%s""..."
     IDS_MUI_PRINTFILE       "正在列印第 %i 頁..."
@@ -128,20 +128,20 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "載入 ""%s"" 時遇到錯誤"
-    IDS_MUI_ERR_SAVEFILE    "儲存 ""%"" 時遇到錯誤"
+    IDS_MUI_ERR_SAVEFILE    "儲存 ""%s"" 時遇到錯誤"
     IDS_MUI_ERR_PATHNOTFOUND "路徑 ""%s"" 已不復存在。\n重新建立路徑並儲存檔案嗎？"
     IDS_MUI_ERR_DLG_FORMAT  "錯誤 ""%s"" ，原因：\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "無可用檔案瀏覽器外掛\nMiniPath 外掛可由 https://rizonesoft.com 下載。"
     IDS_MUI_ERR_GREPWIN     "無可用檔案尋找外掛\ngrepWin Portable 外掛可由 https://github.com/stefankueng/grepWin/releases 下載。"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
-                            "無可用檔案尋找外掛\n請由 PortableApps Platform 安新最新的 grepWinPortable。"
+                            "無可用檔案尋找外掛\n請由 PortableApps Platform 安裝最新的 grepWinPortable。"
     IDS_MUI_ERR_MRUDLG      "指定的檔案無法存取。它可能已被改名、刪除或移動\n\n從清單中刪除它嗎？"
     IDS_MUI_ERR_CREATELINK  "建立桌面捷徑時遇到錯誤"
     IDS_MUI_ERR_PREVWINDISABLED
                             "目前已存在的 Notepad3 視窗忙碌中，或有一個已打開的對話方塊正在阻止它回應\n\n開啟一個新的 Notepad3 視窗嗎？"
-    IDS_MUI_ERR_ENCODINGNA  "用於選定的編碼轉換的內碼表表在目前系統上不可用"
+    IDS_MUI_ERR_ENCODINGNA  "用於選定的編碼轉換的內碼表在目前系統上不可用"
     IDS_MUI_ERR_UNICODE     "轉換該 Unicode 檔案時遇到錯誤\n\n警告：儲存該檔案會導致資料遺失"
-    IDS_MUI_ERR_BITMAP      "點陣圖 ""%s"" 的寬高比不合適\n合適的寬高比：%i × %i 寬度 ≥ %i × 高度）"
+    IDS_MUI_ERR_BITMAP      "點陣圖 ""%s"" 的寬高比不合適\n合適的寬高比：%i × %i （寬度 ≥ %i × 高度）"
     IDS_MUI_ERR_ELEVATED_RIGHTS
                             "提升使用者權限時出錯"
 END
@@ -175,14 +175,14 @@ BEGIN
     IDS_MUI_BUFFERTOOSMALL  "該操作不能執行，因為有些行太長了"
     IDS_MUI_FIND_WRAPFW     "已到達檔案結尾，將從開頭開始重新尋找"
     IDS_MUI_FIND_WRAPRE     "已到達檔案開頭，將從結尾開始重新尋找"
-    IDS_MUI_NOTFOUND        "未找到指定搜索模式的符合項"
-    IDS_MUI_REPLCOUNT       "%s 次出現的指定搜索模式已被替換"
-    IDS_MUI_ASK_ENCODING    "切換檔案編碼可能導致部分無法表示的字元被替換為其它字元，並且該操作會清空取消歷程記錄。是否繼續？"
-    IDS_MUI_ASK_ENCODING2   "切換檔案編碼會清空取消歷程記錄。是否繼續？"
-    IDS_MUI_ASK_CLEAR_UNDO  "該操作將會清空取消歷程記錄。是否繼續？"
+    IDS_MUI_NOTFOUND        "未找到指定搜尋模式的符合項"
+    IDS_MUI_REPLCOUNT       "%s 次出現的指定搜尋模式已被替換"
+    IDS_MUI_ASK_ENCODING    "切換檔案編碼可能導致部分無法表示的字元被替換為其它字元，並且該操作會清空復原歷程記錄。是否繼續？"
+    IDS_MUI_ASK_ENCODING2   "切換檔案編碼會清空復原歷程記錄。是否繼續？"
+    IDS_MUI_ASK_CLEAR_UNDO  "該操作將會清空復原歷程記錄。是否繼續？"
     IDS_MUI_READONLY_SAVE   """%s"" 是唯讀。是否嘗試使用其它名字儲存？"
     IDS_MUI_FILECHANGENOTIFY
-                            "當前檔案已被其它程式所修改\n請選擇：\n\n忽略 -　　\t忽略之後的變更\n重新載入 -\t重新載入檔案\n監視 -　　\t切換為監視模式"
+                            "目前檔案已被其它程式所修改\n請選擇：\n\n忽略 -　　\t忽略之後的變更\n重新載入 -\t重新載入檔案\n監視 -　　\t切換為監視模式"
     IDS_MUI_FILECHANGENOTIFY2 "目前檔案已被刪除。是否儲存？"
     IDS_MUI_FILELOCK_ERROR  "無法以獨佔模式鎖定檔案 ""%s""!"
     IDS_MUI_STICKYWINPOS    "黏性視窗位置已啟用。新的 Notepad3 視窗將使用和目前視窗一樣的位置設定"
@@ -228,7 +228,7 @@ BEGIN
     IDS_MUI_WARN_STYLE_RESET
                             "此操作會將樣式重置為所需顏色模式的出廠預設值，並將活動主題檔案切換為標準組態 .ini!"
     IDS_MUI_ASK_INSTANCE_EXISTS
-                            "單個體模式：\n\n切換到已經載入的檔案個體嗎？"
+                            "單一實例模式：\n\n切換到已經載入的檔案實例嗎？"
 END
 
 STRINGTABLE
@@ -243,21 +243,21 @@ BEGIN
     IDS_MUI_PREVIEW         "預覽設定(&P)\tCtrl+P"
     IDS_MUI_PASS_FAILURE    "加密密碼不正確。換一個試試？"
     IDS_MUI_NOPASS          "已放棄解密。是否載入加密的資料？"
-    IDS_MUI_STY_BASESTD     "BASE (預設樣式):"
-    IDS_MUI_STY_BASE2ND     "BASE (第二預設樣式):"
+    IDS_MUI_STY_BASESTD     "基礎 (預設樣式):"
+    IDS_MUI_STY_BASE2ND     "基礎 (第二預設樣式):"
     IDS_MUI_STY_LEXDEF      "%s - 預設樣式:"
-    IDS_MUI_STY_LEXSTYLE    "%s's  樣式:"
-    IDS_MUI_TITLE_RELBASE   "+++ BASE (%s) +++"
+    IDS_MUI_STY_LEXSTYLE    "%s 的樣式:"
+    IDS_MUI_TITLE_RELBASE   "+++ 基礎（%s） +++"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(zh-TW) 正體中文翻譯 by lhmouse"
-    IDS_MUI_TITLE_FIXBASE   "BASE (%s)"
-    IDS_MUI_TITLE_RELCUR    "+++ %s: %s Style +++"
-    IDS_MUI_TITLE_FIXCUR    "%s: %s Style"
-    IDS_MUI_TITLE_RELARB    "+++ Style '%s' (%s) +++"
-    IDS_MUI_TITLE_FIXARB    "Style '%s' (%s)"
+    IDS_MUI_TITLE_FIXBASE   "基礎（%s）"
+    IDS_MUI_TITLE_RELCUR    "+++ %s：%s 樣式 +++"
+    IDS_MUI_TITLE_FIXCUR    "%s：%s 樣式"
+    IDS_MUI_TITLE_RELARB    "+++ 樣式 「%s」（%s）+++"
+    IDS_MUI_TITLE_FIXARB    "樣式 「%s」（%s）"
     IDS_MUI_ASSOCIATED_EXT  "關聯的副檔名："
     IDS_MUI_ZERO_LEN_MATCH  "^ 零寬度符合"
     IDS_MUI_GOTO_LINE       "行（1 - %s）："
@@ -268,8 +268,8 @@ STRINGTABLE
 BEGIN
     IDS_MUI_MENU_LANGUAGE   "語言(&L)"
     IDS_USE_LOCALE_DATEFMT  "使用本地化的日期格式(&D)"
-    IDS_MUI_MENU_THEMES     "語法高亮方案(&S)"
-    IDM_THEMES_FACTORY_RESET "&Factory Reset"
+    IDS_MUI_MENU_THEMES     "語法高亮方案集(&S)"
+    IDM_THEMES_FACTORY_RESET "恢復出廠設定(&F)"
     IDM_THEMES_STD_CFG       "標準設定 (&S)"  // Keep blank space before (&S)
     IDS_MUI_STATUSBAR_PREFIXES "行  ,列  ,選定  ,位元組  ,選行  ,符合  ,,,,,,,字元  ,改寫  ,求值  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
@@ -293,7 +293,7 @@ BEGIN
     IDS_MUI_SB_WRAP_LINES     "正在換行..."
     IDS_MUI_SB_SORTING_LINES  "正在排序行..."
     IDS_MUI_SB_CONV_LNBRK     "正在轉換分行符號..."
-    IDS_MUI_SB_RECODING_DOC   "正在文件重新編碼..."
+    IDS_MUI_SB_RECODING_DOC   "正在重新編碼文件..."
     IDS_MUI_SB_LEXER_STYLING  "正在套用語彙分析器樣式..."
 END
 
