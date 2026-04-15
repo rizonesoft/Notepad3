@@ -565,7 +565,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Hyperlink openen",                                CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "Hyperlink URL kopiëren",                          CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Ongedaan maken",                                  IDM_EDIT_UNDO
         MENUITEM "Opnieuw uitvoeren",                               IDM_EDIT_REDO
@@ -577,14 +577,14 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Alles selecteren",                                IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        POPUP "Convert Case"
+        POPUP "Hoofdlettergebruik"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "HOOFDLETTERS",                                CMD_CTX_UPPERCASE
+            MENUITEM "kleine letters",                              CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "Hoofd/kleine letters omkeren",                CMD_CTX_INVERTCASE
+            MENUITEM "Alle Woorden Hoofdletters",                   CMD_CTX_TITLECASE
+            MENUITEM "Zin met hoofdletter",                         CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
         MENUITEM "Huidige in/uitklappen wisselen",                  IDM_VIEW_TOGGLE_CURRENT_FOLD

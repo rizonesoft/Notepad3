@@ -565,7 +565,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "打開超連結",                         CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "複製超連結",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "復原",                                  IDM_EDIT_UNDO
         MENUITEM "取消復原",                                  IDM_EDIT_REDO
@@ -577,14 +577,14 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "全選",                                  IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        POPUP "Convert Case"
+        POPUP "轉換大小寫"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "轉為大寫",              CMD_CTX_UPPERCASE
+            MENUITEM "轉為小寫",              CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "反轉大小寫",            CMD_CTX_INVERTCASE
+            MENUITEM "標題大寫",             CMD_CTX_TITLECASE
+            MENUITEM "句首大寫",          CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
         MENUITEM "摺疊/展開",                             IDM_VIEW_TOGGLE_CURRENT_FOLD

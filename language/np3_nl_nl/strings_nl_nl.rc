@@ -134,7 +134,7 @@ BEGIN
     IDS_MUI_ERR_BROWSE      "Geen bestandsbrowser-plugin gevonden\nDe plugin voor de MiniPath bestandsbrowser kan worden gedownload van https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Geen plugin voor het doorzoeken van bestanden gevonden\nDe plug-in grepWin Portable voor het doorzoeken van bestanden kan worden gedownload van https://github.com/stefankueng/grepWin/releases"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
-                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
+                            "Geen plugin voor het doorzoeken van bestanden gevonden\nInstalleer de nieuwste versie van grepWin Portable in PortableApps Platform."
     IDS_MUI_ERR_MRUDLG      "Geen toegang tot het geselecteerde bestand!\nWil je het uit de lijst verwijderen?"
     IDS_MUI_ERR_CREATELINK  "Fout bij het aanmaken van de bureaubladkoppeling"
     IDS_MUI_ERR_PREVWINDISABLED
