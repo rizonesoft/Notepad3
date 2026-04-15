@@ -483,6 +483,7 @@ BEGIN
         MENUITEM "&Oznámenie o zmene súboru...\tAlt+F5",           IDM_SET_CHANGENOTIFY
         ///MENUITEM "Auto-ukladanie / Nastavenie zálohovania...",  IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "&Stlmiť hlásenie pípnutím",                      IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "&Funkcia klávesy Esc"
         BEGIN
             MENUITEM "Ž&iadna",                             IDM_SET_NOESCFUNC

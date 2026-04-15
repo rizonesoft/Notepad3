@@ -2019,39 +2019,49 @@ size_t PTHAPI Path_NormalizeEx(HPATHL hpth_in_out, const HPATHL hpth_wrkdir, boo
     }
 
     if (bRealPath) {
-        // get real path name (based on version developed by zufuliu)
-        LPCWSTR const path_io = PathGet(hpth_in_out);
-        HANDLE const         hFile = CreateFileW(path_io, // file to open
-            GENERIC_READ,                         // open for reading
-            FILE_SHARE_READ | FILE_SHARE_WRITE,   // share anyway
-            NULL,                                 // default security
-            OPEN_EXISTING,                        // existing file only
-            FILE_ATTRIBUTE_NORMAL,                // normal file
-            NULL);                                // no attr. template
 
-        if (IS_VALID_HANDLE(hFile)) {
+        // Skip GetFinalPathNameByHandleW for drive-letter paths when UNC resolution is disabled
+        bool bSkipRealPath = false;
+        if (!Settings.ResolveToUNCPaths) {
+            LPCWSTR const skip = _Path_SkipLPPrefix(hstr_io);
+            bSkipRealPath = (skip && iswalpha(skip[0]) && skip[1] == L':');
+        }
 
-            HSTRINGW       hstr = StrgCreate(NULL);
-            LPWSTR const buf = StrgWriteAccessBuf(hstr, PATHLONG_MAX_CCH);
+        if (!bSkipRealPath) {
+            // get real path name (based on version developed by zufuliu)
+            LPCWSTR const path_io = PathGet(hpth_in_out);
+            HANDLE const         hFile = CreateFileW(path_io, // file to open
+                GENERIC_READ,                         // open for reading
+                FILE_SHARE_READ | FILE_SHARE_WRITE,   // share anyway
+                NULL,                                 // default security
+                OPEN_EXISTING,                        // existing file only
+                FILE_ATTRIBUTE_NORMAL,                // normal file
+                NULL);                                // no attr. template
 
-            if (GetFinalPathNameByHandleW(hFile, buf, PATHLONG_MAX_CCH, FILE_NAME_OPENED) > 0) {
-                StrgSanitize(hstr);
-                LPWSTR ptr = buf;
-                // remove prefix
-                if ((wcslen(buf) < MAX_PATH_EXPLICIT) || HasOptInToRemoveMaxPathLimit()) {
-                    if ((wcsstr(ptr, PATHUNC_PREFIX1) == ptr) ||
-                        (wcsstr(ptr, PATHUNC_PREFIX2) == ptr)) {
-                        ptr += (wcslen(PATHUNC_PREFIX1) - 2);
-                        *ptr = L'\\';
+            if (IS_VALID_HANDLE(hFile)) {
+
+                HSTRINGW       hstr = StrgCreate(NULL);
+                LPWSTR const buf = StrgWriteAccessBuf(hstr, PATHLONG_MAX_CCH);
+
+                if (GetFinalPathNameByHandleW(hFile, buf, PATHLONG_MAX_CCH, FILE_NAME_OPENED) > 0) {
+                    StrgSanitize(hstr);
+                    LPWSTR ptr = buf;
+                    // remove prefix
+                    if ((wcslen(buf) < MAX_PATH_EXPLICIT) || HasOptInToRemoveMaxPathLimit()) {
+                        if ((wcsstr(ptr, PATHUNC_PREFIX1) == ptr) ||
+                            (wcsstr(ptr, PATHUNC_PREFIX2) == ptr)) {
+                            ptr += (wcslen(PATHUNC_PREFIX1) - 2);
+                            *ptr = L'\\';
+                        }
+                        else if (wcsstr(ptr, PATHLONG_PREFIX) == ptr) {
+                            ptr += wcslen(PATHLONG_PREFIX);
+                        }
                     }
-                    else if (wcsstr(ptr, PATHLONG_PREFIX) == ptr) {
-                        ptr += wcslen(PATHLONG_PREFIX);
-                    }
+                    Path_Reset(hpth_in_out, ptr);
                 }
-                Path_Reset(hpth_in_out, ptr);
+                CloseHandle(hFile);
+                StrgDestroy(hstr);
             }
-            CloseHandle(hFile);
-            StrgDestroy(hstr);
         }
     }
     return Path_GetLength(hpth_in_out);

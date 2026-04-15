@@ -1812,6 +1812,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(PreferredLocale4DateFmt, false);
     GET_BOOL_VALUE_FROM_INISECTION(SearchByClipboardIfEmpty, true);
     GET_BOOL_VALUE_FROM_INISECTION(ReplaceByClipboardTag, true);
+    GET_BOOL_VALUE_FROM_INISECTION(ResolveToUNCPaths, false);
 
     ///~Settings2.IMEInteraction = clampi(IniSectionGetInt(IniSecSettings, L"IMEInteraction", Settings2.IMEInteraction), SC_IME_WINDOWED, SC_IME_INLINE);
 
@@ -2259,6 +2260,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, PreferredLocale4DateFmt);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SearchByClipboardIfEmpty);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ReplaceByClipboardTag);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, ResolveToUNCPaths);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int, DarkModeHiglightContrast);
 
 #ifdef D_NP3_WIN10_DARK_MODE

@@ -483,6 +483,7 @@ BEGIN
         MENUITEM "Thông báo thay đổi tệp(&C)...\tAlt+F5",       IDM_SET_CHANGENOTIFY
         ///MENUITEM "Cài đặt lưu tự động / Sao lưu...",          IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Tắt âm báo tin nhắn(&M)",                       IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Chức năng phím ESC(&E)"
         BEGIN
             MENUITEM "Không(&N)",                              IDM_SET_NOESCFUNC

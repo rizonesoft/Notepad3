@@ -483,6 +483,7 @@ BEGIN
         MENUITEM "N&otificación de cambios en archivo...\tAlt+F5",      IDM_SET_CHANGENOTIFY
         ///MENUITEM "Auto guardar / Configuración guardando...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Silenciar sonidos de aviso",                          IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "&Función de la tecla 'Esc'"
         BEGIN
             MENUITEM "&Ninguna",                            IDM_SET_NOESCFUNC

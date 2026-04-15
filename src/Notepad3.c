@@ -4458,6 +4458,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, IDS_USE_LOCALE_DATEFMT, Settings.PreferredLocale4DateFmt);
 
     CheckCmd(hmenu, IDM_SET_MUTE_MESSAGEBEEP, Settings.MuteMessageBeep);
+    CheckCmd(hmenu, IDM_SET_RESOLVE_UNC_PATHS, Settings.ResolveToUNCPaths);
     CheckCmd(hmenu, IDM_SET_SAVEBEFORERUNNINGTOOLS, Settings.SaveBeforeRunningTools);
     //~EnableCmd(hmenu, IDM_SET_SAVEBEFORERUNNINGTOOLS, !faro);
 
@@ -6643,6 +6644,10 @@ static bool _HandleViewAndSettingsCommands(HWND hwnd, UINT umsg, WPARAM wParam, 
 
     case IDM_SET_MUTE_MESSAGEBEEP:
         Settings.MuteMessageBeep = !Settings.MuteMessageBeep;
+        break;
+
+    case IDM_SET_RESOLVE_UNC_PATHS:
+        Settings.ResolveToUNCPaths = !Settings.ResolveToUNCPaths;
         break;
 
     case IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK:
