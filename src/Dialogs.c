@@ -6970,6 +6970,9 @@ static void _CanonicalizeInitialDir(HPATHL hpth_in_out, bool bMustBeWritable)
             Path_Reset(hpth_in_out, Path_Get(Paths.CurrentFile));
             Path_RemoveFileSpec(hpth_in_out);
         }
+        else if (Path_IsNotEmpty(Settings.DefaultDirectoryOverride)) {
+            Path_Reset(hpth_in_out, Path_Get(Settings.DefaultDirectoryOverride));
+        }
         else if (Path_IsNotEmpty(Settings2.DefaultDirectory)) {
             Path_Reset(hpth_in_out, Path_Get(Settings2.DefaultDirectory));
         }

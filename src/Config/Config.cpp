@@ -1638,6 +1638,17 @@ void LoadSettings()
         Path_Reset(Settings.FavoritesDir, Path_Get(Paths.WorkingDirectory));
     }
 
+    // DefaultDirectoryOverride (user-settable override for Settings2.DefaultDirectory)
+    {
+        LPWSTR const wchDefDirOvrd = Path_WriteAccessBuf(Settings.DefaultDirectoryOverride, PATHLONG_MAX_CCH);
+        if (IniSectionGetStringNoQuotes(IniSecSettings, L"DefaultDirectoryOverride", L"",
+                                         wchDefDirOvrd, PATHLONG_MAX_CCH)) {
+            Path_Sanitize(Settings.DefaultDirectoryOverride);
+            Path_FreeExtra(Settings.DefaultDirectoryOverride, 0);
+            Path_CanonicalizeEx(Settings.DefaultDirectoryOverride, Paths.ModuleDirectory);
+        }
+    }
+
     GET_INT_VALUE_FROM_INISECTION(PathNameFormat, 1, 0, 2);
     GET_INT_VALUE_FROM_INISECTION(WordWrapMode, 0, 0, 1);
     GET_INT_VALUE_FROM_INISECTION(WordWrapIndent, 0, 0, 6);
@@ -2113,6 +2124,13 @@ static bool _SaveSettings(bool bForceSaveSettings)
         IniSectionSetString(IniSecSettings, L"Favorites", Path_Get(hpth));
     } else {
         IniSectionDelete(IniSecSettings, L"Favorites", false);
+    }
+    if (Path_IsNotEmpty(Settings.DefaultDirectoryOverride)) {
+        Path_Reset(hpth, Path_Get(Settings.DefaultDirectoryOverride));
+        Path_CanonicalizeEx(hpth, Paths.ModuleDirectory);
+        IniSectionSetString(IniSecSettings, L"DefaultDirectoryOverride", Path_Get(hpth));
+    } else {
+        IniSectionDelete(IniSecSettings, L"DefaultDirectoryOverride", false);
     }
     Path_Release(hpth);
 

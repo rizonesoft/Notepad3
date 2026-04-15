@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 // encoding: UTF-8
 #pragma code_page(65001)  // UTF-8
 #include "resource.h"
@@ -492,6 +492,11 @@ BEGIN
         MENUITEM "執行工具前先儲存(&V)",                       IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "計算微小表達式(&x)",                         IDM_SET_EVALTINYEXPRONSEL
         MENUITEM "啟用多重游標選定",                IDM_SET_MULTIPLE_SELECTION
+        POPUP "Default &Directory"
+        BEGIN
+            MENUITEM "Set to Current File's &Directory",  IDM_SET_DEFAULTDIR
+            MENUITEM "&Reset to Default",                 IDM_SET_DEFAULTDIR_RESET
+        END
         MENUITEM SEPARATOR
         POPUP "記憶(&R)"
         BEGIN

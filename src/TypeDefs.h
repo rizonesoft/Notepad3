@@ -710,6 +710,7 @@ typedef struct SETTINGS_T {
     EDITFINDREPLACE EFR_Data;
     HPATHL OpenWithDir;
     HPATHL FavoritesDir;
+    HPATHL DefaultDirectoryOverride;
     WCHAR ToolbarButtons[MIDSZ_BUFFER];
     WCHAR MultiEdgeLines[MIDSZ_BUFFER];
     WCHAR CurrentThemeName[SMALL_BUFFER];
