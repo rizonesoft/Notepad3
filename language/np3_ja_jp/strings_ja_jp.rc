@@ -132,7 +132,7 @@ BEGIN
     IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
     IDS_MUI_ERR_DLG_FORMAT  "エラー '%s', 原因:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "ファイラーのプラグインがありません\nこのプラグイン MiniPath は以下からダウンロードできます https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "ファイル検索プラグインが見つかりません\nファイル検索プラグインの grepWin は以下からダウンロードできます https://portableapps.com/apps/utilities/grepwin-portable"
+    IDS_MUI_ERR_GREPWIN     "ファイル検索プラグインが見つかりません\nファイル検索プラグインの grepWin Portable は以下からダウンロードできます https://github.com/stefankueng/grepWin/releases"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
                             "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
     IDS_MUI_ERR_MRUDLG      "選択したファイルにアクセスできません\n一覧から除去しますか?"

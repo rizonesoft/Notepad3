@@ -132,7 +132,7 @@ BEGIN
     IDS_MUI_ERR_PATHNOTFOUND "Cesta pre ""%s"" už neexistuje.\nZnovu vytvoriť cestu a uložiť súbor?"
     IDS_MUI_ERR_DLG_FORMAT  "Chyba '%s', príčina:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Nenašiel sa doplnok na prehľadávanie súborov\nDoplnok MiniPath si môžete stiahnuť z https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "Nenašiel sa vyhľadávací doplnok\nDoplnok na vyhľadávanie súborov grepWin si môžete stiahnuť z https://portableapps.com/apps/utilities/grepwin-portable"
+    IDS_MUI_ERR_GREPWIN     "Nenašiel sa vyhľadávací doplnok\nDoplnok na vyhľadávanie súborov grepWin Portable si môžete stiahnuť z https://github.com/stefankueng/grepWin/releases"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
                             "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
     IDS_MUI_ERR_MRUDLG      "Žiadny prístup k vybranému súboru!\nChcete ho odstrániť zo zoznamu?"
