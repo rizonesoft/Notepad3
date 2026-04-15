@@ -1339,6 +1339,14 @@
 #define IDS_LEX_STR_SlashCmd            63408
 #define IDS_LEX_STR_Processor           63409
 #define IDS_LEX_STR_Argument            63410
+#define IDS_LEX_STR_CSSDefault          63411
+#define IDS_LEX_STR_CSSComment          63412
+#define IDS_LEX_STR_CSSSelector         63413
+#define IDS_LEX_STR_CSSClassID          63414
+#define IDS_LEX_STR_CSSProperty         63415
+#define IDS_LEX_STR_CSSValue            63416
+#define IDS_LEX_STR_CSSString           63417
+#define IDS_LEX_STR_CSSDirOp            63418
 
 #define IDS_LEX_CSV_COL_0               63490
 #define IDS_LEX_CSV_COL_1               63491
