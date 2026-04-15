@@ -483,6 +483,7 @@ BEGIN
         MENUITEM "파일 변경 알림(&C)...\tAlt+F5",     IDM_SET_CHANGENOTIFY
         ///MENUITEM "자동 저장 / 백업 설정...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "메시지 경고음 음소거(&M)",                      IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "ESC 키 기능(&E)"
         BEGIN
             MENUITEM "없음(&N)",                       IDM_SET_NOESCFUNC

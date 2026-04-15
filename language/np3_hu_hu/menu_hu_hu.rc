@@ -480,9 +480,10 @@ BEGIN
         MENUITEM "Szó el&választók váltása\tCtrl+Alt+A",        IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Egy &példány fájlonként",                     IDM_SET_SINGLEFILEINSTANCE
-        MENUITEM "Figyel&meztetés fájl változásról...\tAlt+F5", IDM_SET_CHANGENOTIFY
+        MENUITEM "Figyel&meztetés fájl változásáról...\tAlt+F5", IDM_SET_CHANGENOTIFY
         ///MENUITEM "Aut. mentés / Bizt. mentés beállításai...",IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "&Üzenethang némítása",                        IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Esc g&omb funkciója"
         BEGIN
             MENUITEM "&Semmi",                       IDM_SET_NOESCFUNC
@@ -492,10 +493,10 @@ BEGIN
         MENUITEM "Eszközök &futtatása előtt mentés",    IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Mi&ni kifejezések kiszámítása",       IDM_SET_EVALTINYEXPRONSEL
         MENUITEM "Tö&bbszörös kijelölés engedélyezése", IDM_SET_MULTIPLE_SELECTION
-        POPUP "Default &Directory"
+        POPUP "&Alapértelmezett könyvtár"
         BEGIN
-            MENUITEM "Set to Current File's &Directory",  IDM_SET_DEFAULTDIR
-            MENUITEM "&Reset to Default",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "A&ktuális fájl könyvtára",        IDM_SET_DEFAULTDIR
+            MENUITEM "Ala&pértelmezettre visszaállít",  IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "&Emlékezés"
@@ -564,8 +565,8 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "Hiperhivatkozás megnyitása", CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "Hiperhivatkozás megnyitása",   CMD_OPEN_HYPERLINK
+        MENUITEM "Hiperhivatkozás URL másolása", CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Visszavonás",                IDM_EDIT_UNDO
         MENUITEM "Újra",                       IDM_EDIT_REDO
@@ -577,14 +578,14 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Mind kjelölése",             IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        POPUP "Convert Case"
+        POPUP "Kis/nagybetű átalakítás"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "Nagybetűs",              CMD_CTX_UPPERCASE
+            MENUITEM "Kisbetűs",               CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "Kis/Nagybetű váltás",    CMD_CTX_INVERTCASE
+            MENUITEM "Címszerű",               CMD_CTX_TITLECASE
+            MENUITEM "Mondat",                 CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
         MENUITEM "Aktuális becsukás váltása",  IDM_VIEW_TOGGLE_CURRENT_FOLD

@@ -483,6 +483,7 @@ BEGIN
         MENUITEM "&Уведомление об изменении файла...\tAlt+F5",  IDM_SET_CHANGENOTIFY
         ///MENUITEM "Автосохранение / резервные копии...",      IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Заглу&шить звук уведомлений",                 IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "&Функция клавиши Esc"
         BEGIN
             MENUITEM "&Нет",                                IDM_SET_NOESCFUNC

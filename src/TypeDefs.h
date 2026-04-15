@@ -698,6 +698,7 @@ typedef struct SETTINGS_T {
     int  AutoSaveInterval;
     bool SearchByClipboardIfEmpty;
     bool ReplaceByClipboardTag;
+    bool ResolveToUNCPaths;
     int  DarkModeHiglightContrast;
 
     AutoSaveBackupOptions AutoSaveOptions;

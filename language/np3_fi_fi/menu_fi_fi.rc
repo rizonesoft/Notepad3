@@ -483,6 +483,7 @@ BEGIN
         MENUITEM "Tiedoston &muutosilmoitus...\tAlt+F5",     IDM_SET_CHANGENOTIFY
         ///MENUITEM "Automaattitallennus / varmuuskopiointiasetukset...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "&Mykistä viestin äänimerkit",                      IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "&Esc-toiminta"
         BEGIN
             MENUITEM "&Ei mitään",                       IDM_SET_NOESCFUNC

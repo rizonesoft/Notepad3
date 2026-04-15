@@ -483,6 +483,7 @@ BEGIN
         MENUITEM "Ειδοποίηση μετα&βολής αρχείου...\tAlt+F5",        IDM_SET_CHANGENOTIFY
         ///MENUITEM "Αυτόματη αποθήκευση / Ρυθμίσεις εφεδρικού αντιγράφου...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Σίγαση ήχ&ων μηνύματος",                          IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Λειτουργία πλήκτρου &Εsc"
         BEGIN
             MENUITEM "&Καμία",                                IDM_SET_NOESCFUNC
