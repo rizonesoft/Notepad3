@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<!--
+  MultiLang.html — Notepad3 HTML lexer (SCLEX_HTML / "hypertext") test file.
+  Exercises all embedded sub-languages known to the lexer:
+    HTML, CSS, JavaScript, PHP, ASP VBScript, ASP JavaScript, VBScript, SGML/CDATA, XML.
+-->
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION 1 — HEAD: embedded CSS and JavaScript
+     ═══════════════════════════════════════════════════════════════════ -->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Notepad3 &mdash; HTML Lexer MultiLang Test &amp; Demo</title>
+  <link rel="stylesheet" type="text/css" href="external.css" />
+
+  <!-- ─── Embedded CSS ─────────────────────────────────────────────── -->
+  <style type="text/css">
+    /* CSS comment: reset & custom properties */
+    :root {
+      --primary-color: #0a246a;
+      --accent:        #ff4000;
+      --font-size-base: 1rem;
+    }
+
+    /* @-rules */
+    @import url("fonts.css");
+    @charset "UTF-8";
+
+    @media (max-width: 768px) {
+      body { font-size: 0.9rem; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Type selector, class, ID, pseudo-class, pseudo-element */
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: var(--font-size-base);
+      background-color: #ffffff;
+      color: #1a1a1a;
+    }
+
+    h1, h2, h3 { color: var(--primary-color); }
+
+    .container { max-width: 960px; margin: 0 auto; padding: 1rem 2rem; }
+    #main-header { border-bottom: 2px solid var(--primary-color); }
+
+    a:link    { color: var(--primary-color); text-decoration: none; }
+    a:visited { color: #648000; }
+    a:hover   { text-decoration: underline; color: var(--accent); }
+    a::before { content: "→ "; }
+
+    /* Attribute selector, :not(), :nth-child() */
+    input[type="text"],
+    input[type="email"] {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 0.4rem 0.6rem;
+    }
+
+    li:nth-child(odd)  { background-color: #f5f5f5; }
+    li:not(.excluded)  { list-style-type: square; }
+
+    .card {
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      border-radius: 8px;
+      padding: 1.25rem;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    /* important flag */
+    .error { color: #c80000 !important; font-weight: bold; }
+
+    /* Multi-column layout */
+    .columns {
+      column-count: 3;
+      column-gap: 1.5rem;
+      column-rule: 1px solid #ddd;
+    }
+
+    /* Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+  </style>
+
+  <!-- ─── Embedded JavaScript ──────────────────────────────────────── -->
+  <script type="text/javascript">
+    // Single-line JS comment
+    /* Multi-line JS comment */
+
+    /**
+     * JSDoc block comment.
+     * @param {string} name - Greeting target
+     * @returns {string}
+     */
+    "use strict";
+
+    // Primitive types and literals
+    const PI       = 3.14159;
+    const GREETING = "Hello, World!";
+    const RAW      = `Template literal: ${GREETING} — π ≈ ${PI}`;
+    let   count    = 0;
+    var   legacy   = null;
+
+    // Arrow function, destructuring, spread
+    const add = (a, b) => a + b;
+    const [first, ...rest] = [1, 2, 3, 4];
+    const { x = 0, y = 0 } = { x: 10 };
+
+    // Classes and inheritance
+    class Animal {
+      #name; // private field
+      constructor(name) {
+        this.#name = name;
+      }
+      get name()         { return this.#name; }
+      speak()            { return `${this.#name} makes a sound.`; }
+      static create(n)   { return new Animal(n); }
+    }
+
+    class Dog extends Animal {
+      #breed;
+      constructor(name, breed) {
+        super(name);
+        this.#breed = breed;
+      }
+      speak() { return `${this.name} barks.`; }
+    }
+
+    // Async / await, Promise
+    async function fetchData(url) {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+        const data = await response.json();
+        return data;
+      }
+      catch (err) {
+        console.error("Fetch failed:", err);
+      }
+      finally {
+        console.log("fetchData complete");
+      }
+    }
+
+    // Regex literals
+    const emailRe   = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/i;
+    const hexColorRe = /^#(?:[0-9a-fA-F]{3}){1,2}$/;
+
+    // Generator function
+    function* range(start, end, step = 1) {
+      for (let i = start; i < end; i += step) yield i;
+    }
+
+    // Symbol, Map, Set, WeakRef
+    const sym   = Symbol("id");
+    const map   = new Map([["key", 42], [sym, "symbol value"]]);
+    const set   = new Set([1, 2, 3, 2, 1]);
+    const wr    = new WeakRef({});
+
+    // Proxy
+    const handler = {
+      get(target, prop) {
+        return prop in target ? target[prop] : `Property '${prop}' not found`;
+      }
+    };
+    const proxy = new Proxy({}, handler);
+
+    // Optional chaining and nullish coalescing
+    const user    = null;
+    const city    = user?.address?.city ?? "Unknown";
+
+    // Tagged template
+    function highlight(strings, ...values) {
+      return strings.reduce((acc, str, i) =>
+        acc + str + (values[i] !== undefined ? `<mark>${values[i]}</mark>` : ""), "");
+    }
+    const result = highlight`Score: ${42} out of ${100}`;
+
+    // DOMContentLoaded
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll("button[data-action]").forEach(btn => {
+        btn.addEventListener("click", function () {
+          const action = this.dataset.action;
+          console.log("Action:", action);
+        });
+      });
+    });
+  </script>
+
+  <!-- ─── VBScript in <script> block (SCE_HB_*) ───────────────────── -->
+  <script language="VBScript">
+    ' VBScript comment
+    Option Explicit
+
+    Dim strGreeting
+    strGreeting = "Hello from VBScript!"
+
+    Function AddNumbers(a, b)
+      ' Returns the sum of two numbers
+      AddNumbers = a + b
+    End Function
+
+    Sub ShowMessage(msg)
+      MsgBox msg, vbInformation, "VBScript Demo"
+    End Sub
+
+    Dim x, y, total
+    x = 10 : y = 20
+    total = AddNumbers(x, y)
+
+    If total > 25 Then
+      ShowMessage "Sum is " & total & " — greater than 25!"
+    ElseIf total = 30 Then
+      ShowMessage "Exactly 30."
+    Else
+      ShowMessage "Sum is " & total
+    End If
+
+    Dim arr(4)
+    For i = 0 To 4
+      arr(i) = i * i
+    Next
+
+    Do While x > 0
+      x = x - 1
+    Loop
+  </script>
+</head>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SECTION 2 — BODY: HTML structure, entities, attributes
+     ═══════════════════════════════════════════════════════════════════ -->
+<body id="top" class="container" data-theme="light" aria-label="Main content">
+
+  <header id="main-header" role="banner">
+    <h1>Notepad3 &mdash; MultiLang HTML Test</h1>
+    <nav aria-label="Primary navigation">
+      <ul>
+        <li><a href="#html-section">HTML</a></li>
+        <li><a href="#css-section">CSS</a></li>
+        <li><a href="#js-section">JavaScript</a></li>
+        <li><a href="#php-section">PHP</a></li>
+        <li><a href="#asp-section">ASP / VBScript</a></li>
+        <li><a href="#xml-section">XML / CDATA</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- ─── HTML entities ───────────────────────────────────────────── -->
+  <section id="html-section">
+    <h2>HTML5 Elements &amp; Entities</h2>
+    <p>
+      Named entities: &copy; &reg; &trade; &euro; &pound; &yen;
+      &laquo; &raquo; &hellip; &ndash; &mdash; &nbsp;
+    </p>
+    <p>
+      Numeric entities (decimal): &#169; &#174; &#8364;<br />
+      Numeric entities (hex):     &#x00A9; &#x00AE; &#x20AC;
+    </p>
+
+    <!-- Semantic elements -->
+    <article>
+      <header><h3>Article Title</h3><time datetime="2025-04-15">April 15, 2025</time></header>
+      <p>Article body with <strong>bold</strong>, <em>italic</em>, <mark>highlighted</mark>,
+         <del>deleted</del>, <ins>inserted</ins>, <code>inline code</code>,
+         <abbr title="HyperText Markup Language">HTML</abbr>,
+         <cite>The Great Book</cite>, and <kbd>Ctrl+S</kbd> keyboard shortcuts.</p>
+      <figure>
+        <img src="placeholder.png" alt="Placeholder image" width="400" height="300"
+             loading="lazy" decoding="async" />
+        <figcaption>Figure caption with <a href="https://example.com" target="_blank" rel="noopener noreferrer">external link</a>.</figcaption>
+      </figure>
+      <details>
+        <summary>Click to expand</summary>
+        <p>Hidden content revealed on expand.</p>
+      </details>
+      <footer><p><small>Posted by <address><a href="mailto:author@example.com">Author</a></address></small></p></footer>
+    </article>
+
+    <!-- Form elements -->
+    <form action="/submit" method="post" enctype="multipart/form-data" novalidate>
+      <fieldset>
+        <legend>User Information</legend>
+        <label for="fname">First name:</label>
+        <input type="text"  id="fname" name="fname" placeholder="Jane" required autocomplete="given-name" />
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="jane@example.com" />
+        <label for="dob">Date of birth:</label>
+        <input type="date"  id="dob"   name="dob" />
+        <label for="color-pick">Favourite colour:</label>
+        <input type="color" id="color-pick" name="favcolor" value="#0a246a" />
+        <label for="score">Score (0-100):</label>
+        <input type="range" id="score" name="score" min="0" max="100" step="5" value="50" />
+        <label for="country">Country:</label>
+        <select id="country" name="country" size="1">
+          <optgroup label="Europe">
+            <option value="de">Germany</option>
+            <option value="fr">France</option>
+          </optgroup>
+          <optgroup label="Americas">
+            <option value="us" selected>United States</option>
+            <option value="br">Brazil</option>
+          </optgroup>
+        </select>
+        <label for="bio">Bio:</label>
+        <textarea id="bio" name="bio" rows="4" cols="40" maxlength="500"></textarea>
+        <button type="submit" data-action="submit">Submit</button>
+        <button type="reset"  data-action="reset">Reset</button>
+      </fieldset>
+    </form>
+
+    <!-- Table -->
+    <table border="1" cellpadding="4" cellspacing="0" summary="Data table example">
+      <caption>Sample Data Table</caption>
+      <colgroup>
+        <col style="width:20%" />
+        <col style="width:40%" />
+        <col style="width:40%" />
+      </colgroup>
+      <thead>
+        <tr><th scope="col">ID</th><th scope="col">Name</th><th scope="col">Value</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Alpha</td><td>100</td></tr>
+        <tr><td>2</td><td>Beta &amp; Gamma</td><td>200</td></tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="2">Total</td><td>300</td></tr>
+      </tfoot>
+    </table>
+
+    <!-- Multimedia and embedded content -->
+    <video controls width="640" height="360" poster="thumb.jpg">
+      <source src="video.mp4"  type="video/mp4" />
+      <source src="video.webm" type="video/webm" />
+      <track kind="subtitles" src="subs_en.vtt" srclang="en" label="English" default />
+      Your browser does not support the video element.
+    </video>
+
+    <audio controls>
+      <source src="audio.ogg" type="audio/ogg" />
+      <source src="audio.mp3" type="audio/mpeg" />
+    </audio>
+
+    <!-- Inline SVG (exercises XML sub-lexer) -->
+    <svg width="120" height="80" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Red rectangle">
+      <!-- SVG comment -->
+      <rect x="10" y="10" width="100" height="60"
+            fill="#0a246a" stroke="#ff4000" stroke-width="3" rx="8" ry="8" />
+      <text x="60" y="50" text-anchor="middle" fill="white" font-size="14">SVG</text>
+      <circle cx="100" cy="70" r="5" fill="#ff4000" />
+    </svg>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 3 — PHP blocks (SCE_HPHP_*)
+       ═══════════════════════════════════════════════════════════════ -->
+  <section id="php-section">
+    <h2>Embedded PHP</h2>
+
+    <?php
+    // Single-line PHP comment
+    # Hash-style comment
+
+    /*
+     * Multi-line PHP comment block.
+     * Demonstrates: variables, types, operators, control flow.
+     */
+
+    declare(strict_types=1);
+
+    // Variables and scalar types
+    $name       = "Notepad3";
+    $version    = 6;
+    $pi         = 3.14159;
+    $isActive   = true;
+    $nothing    = null;
+
+    // String operations
+    echo "<p>Hello from <strong>" . htmlspecialchars($name) . "</strong>!</p>\n";
+    echo "<p>Version: {$version}, PI: {$pi}</p>\n";
+    printf("<p>Formatted: %.2f</p>\n", $pi);
+
+    // Heredoc / Nowdoc
+    $heredoc = <<<EOT
+    This is a heredoc string.
+    It spans multiple lines and can contain "quotes" and $name.
+    EOT;
+
+    $nowdoc = <<<'EOT'
+    This is a nowdoc string.
+    Variables like $name are NOT interpolated here.
+    EOT;
+
+    echo "<pre>" . htmlspecialchars($heredoc) . "</pre>\n";
+    echo "<pre>" . htmlspecialchars($nowdoc)  . "</pre>\n";
+
+    // Arrays
+    $fruits = ["apple", "banana", "cherry"];
+    $assoc  = ["name" => "Alice", "age" => 30, "city" => "Berlin"];
+    $matrix = [[1, 2], [3, 4], [5, 6]];
+
+    echo "<ul>\n";
+    foreach ($fruits as $i => $fruit) {
+        echo "  <li>{$i}: " . htmlspecialchars($fruit) . "</li>\n";
+    }
+    echo "</ul>\n";
+
+    // Control flow
+    for ($i = 0; $i < 5; $i++) {
+        if ($i % 2 === 0) {
+            echo "<span class='even'>{$i}</span> ";
+        } elseif ($i === 3) {
+            echo "<span class='three'>{$i}</span> ";
+        } else {
+            echo "<span class='odd'>{$i}</span> ";
+        }
+    }
+
+    $day = date("l");
+    switch ($day) {
+        case "Monday":
+        case "Tuesday":
+            echo "<p>Weekday early.</p>\n";
+            break;
+        case "Saturday":
+        case "Sunday":
+            echo "<p>Weekend!</p>\n";
+            break;
+        default:
+            echo "<p>Midweek.</p>\n";
+    }
+
+    // Match expression (PHP 8+)
+    $status = 2;
+    $label  = match($status) {
+        1       => "Active",
+        2       => "Pending",
+        3, 4    => "Inactive",
+        default => "Unknown",
+    };
+    echo "<p>Status: {$label}</p>\n";
+
+    // Functions
+    function factorial(int $n): int {
+        return $n <= 1 ? 1 : $n * factorial($n - 1);
+    }
+
+    $closure = static function (float $x, float $y): float {
+        return sqrt($x ** 2 + $y ** 2);
+    };
+
+    $arrow = fn($a, $b) => $a + $b;
+
+    echo "<p>10! = " . factorial(10) . "</p>\n";
+    echo "<p>Hypotenuse(3,4) = " . $closure(3.0, 4.0) . "</p>\n";
+
+    // OOP
+    interface Drawable {
+        public function draw(): string;
+    }
+
+    abstract class Shape implements Drawable {
+        public function __construct(protected string $color = "black") {}
+        abstract public function area(): float;
+    }
+
+    class Circle extends Shape {
+        public function __construct(private float $radius, string $color = "red") {
+            parent::__construct($color);
+        }
+        public function area(): float { return M_PI * $this->radius ** 2; }
+        public function draw(): string {
+            return "<circle r='{$this->radius}' fill='{$this->color}' />";
+        }
+    }
+
+    $circle = new Circle(5.0, "blue");
+    echo "<p>Circle area: " . round($circle->area(), 4) . "</p>\n";
+    echo $circle->draw() . "\n";
+
+    // Exception handling
+    try {
+        if ($pi > 3) {
+            throw new \InvalidArgumentException("PI is too large for this example!");
+        }
+    } catch (\InvalidArgumentException $e) {
+        echo "<p class='error'>Caught: " . htmlspecialchars($e->getMessage()) . "</p>\n";
+    } catch (\Exception $e) {
+        echo "<p class='error'>General error: " . htmlspecialchars($e->getMessage()) . "</p>\n";
+    } finally {
+        echo "<!-- PHP exception block finished -->\n";
+    }
+
+    // Null safe operator, named arguments
+    $users = [["name" => "Bob", "email" => "bob@example.com"]];
+    $first = $users[0] ?? null;
+    echo "<p>First user: " . ($first?['name'] ?? "none") . "</p>\n";
+    ?>
+
+    <!-- Short echo tag -->
+    <?= "<p>Short echo: Today is " . date("Y-m-d") . "</p>\n" ?>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 4 — Classic ASP: VBScript (<% %>) (SCE_HBA_*)
+       ═══════════════════════════════════════════════════════════════ -->
+  <section id="asp-section">
+    <h2>Classic ASP — VBScript</h2>
+    <%
+      ' ASP VBScript comment
+      Option Explicit
+
+      Dim strTitle, intCount, arrItems, i
+      strTitle = "ASP VBScript Demo"
+      intCount = 5
+
+      ' Build an array with a loop
+      ReDim arrItems(intCount - 1)
+      For i = 0 To intCount - 1
+          arrItems(i) = "Item #" & (i + 1)
+      Next
+
+      ' Output list
+      Response.Write "<ul>" & vbCrLf
+      For Each item In arrItems
+          Response.Write "  <li>" & Server.HTMLEncode(item) & "</li>" & vbCrLf
+      Next
+      Response.Write "</ul>" & vbCrLf
+
+      ' Conditional
+      Dim hour
+      hour = Hour(Now())
+      If hour < 12 Then
+          Response.Write "<p>Good morning!</p>" & vbCrLf
+      ElseIf hour < 18 Then
+          Response.Write "<p>Good afternoon!</p>" & vbCrLf
+      Else
+          Response.Write "<p>Good evening!</p>" & vbCrLf
+      End If
+
+      ' Function in ASP
+      Function FormatPrice(amount)
+          FormatPrice = "$" & FormatNumber(amount, 2)
+      End Function
+
+      Response.Write "<p>Price: " & FormatPrice(19.99) & "</p>" & vbCrLf
+    %>
+
+    <!-- ASP JavaScript (SCE_HJA_*): classic ASP with JScript -->
+    <h3>Classic ASP — JScript</h3>
+    <%@ language="JScript" %>
+    <%
+      // ASP JScript comment
+      var greeting = "Hello from ASP JScript!";
+      var numbers  = [1, 2, 3, 4, 5];
+      var sum      = 0;
+
+      for (var i = 0; i < numbers.length; i++) {
+          sum += numbers[i];
+      }
+
+      Response.Write("<p>" + greeting + "</p>\n");
+      Response.Write("<p>Sum of [1..5] = " + sum + "</p>\n");
+
+      // Regex in JScript
+      var emailPattern = /^[\w.-]+@[\w.-]+\.\w{2,}$/;
+      var testEmail    = "test@example.com";
+      Response.Write("<p>Email valid: " + emailPattern.test(testEmail) + "</p>\n");
+    %>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 5 — Inline JavaScript (event handlers, SCE_HJ_*)
+       ═══════════════════════════════════════════════════════════════ -->
+  <section id="js-section">
+    <h2>Inline &amp; Event-Handler JavaScript</h2>
+
+    <!-- Inline event handler JS -->
+    <button onclick="(function() {
+        var msg = 'Inline handler: ' + new Date().toISOString();
+        var el  = document.getElementById('js-output');
+        if (el) { el.textContent = msg; }
+      })();"
+      onmouseover="this.style.backgroundColor='#ff4000';"
+      onmouseout="this.style.backgroundColor='';"
+      data-action="inline-click">
+      Click Me (inline JS)
+    </button>
+
+    <a href="javascript:void(0);"
+       onclick="console.log('href JS executed'); return false;">
+      JavaScript href link
+    </a>
+
+    <p id="js-output" aria-live="polite"></p>
+
+    <!-- Deferred script block with module-style code -->
+    <script type="module">
+      import { EventEmitter } from "./emitter.js"; // hypothetical import
+
+      // WeakMap private data pattern
+      const _private = new WeakMap();
+
+      class Counter {
+        constructor(initial = 0) {
+          _private.set(this, { count: initial });
+        }
+        increment(by = 1) {
+          _private.get(this).count += by;
+          return this;
+        }
+        get value() { return _private.get(this).count; }
+        [Symbol.iterator]() {
+          let n = 0, max = this.value;
+          return { next: () => n < max ? { value: n++, done: false } : { done: true } };
+        }
+      }
+
+      const c = new Counter(3).increment(2).increment();
+      console.log("Counter:", c.value);
+      for (const n of c) { console.log(n); }
+
+      // Async generator
+      async function* paginate(url, pages) {
+        for (let p = 1; p <= pages; p++) {
+          const res  = await fetch(`${url}?page=${p}`);
+          const data = await res.json();
+          yield data;
+        }
+      }
+
+      // Object.entries / fromEntries
+      const src = { a: 1, b: 2, c: 3 };
+      const doubled = Object.fromEntries(
+        Object.entries(src).map(([k, v]) => [k, v * 2])
+      );
+      console.log(doubled);
+
+      // Logical assignment
+      let opts = {};
+      opts.timeout ??= 5000;
+      opts.retries ||= 3;
+      opts.debug   &&= false;
+
+      // Structured clone
+      const original = { x: 1, nested: { y: 2 } };
+      const clone     = structuredClone(original);
+      clone.nested.y  = 99;
+      console.log("Original nested:", original.nested.y); // 2 — not mutated
+    </script>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 6 — XML declaration, SGML, CDATA (SCE_H_CDATA / SGML)
+       ═══════════════════════════════════════════════════════════════ -->
+  <section id="xml-section">
+    <h2>XML / SGML / CDATA</h2>
+
+    <!-- SGML comment style (processed as HTML comment here) -->
+
+    <!-- DOCTYPE / SGML declaration elements -->
+    <!DOCTYPE note [
+      <!ELEMENT note (to,from,heading,body)>
+      <!ELEMENT to      (#PCDATA)>
+      <!ELEMENT from    (#PCDATA)>
+      <!ELEMENT heading (#PCDATA)>
+      <!ELEMENT body    (#PCDATA)>
+      <!ATTLIST note
+        id      ID     #REQUIRED
+        version CDATA  #IMPLIED>
+    ]>
+
+    <!-- CDATA section (raw text, not parsed as HTML) -->
+    <script type="text/plain">
+    //<![CDATA[
+      Raw CDATA content: <not> &parsed; as HTML.
+      if (a < b && c > d) { /* untouched */ }
+    //]]>
+    </script>
+
+    <!-- Inline MathML (exercises XML sub-lexer within HTML5) -->
+    <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+      <mrow>
+        <mi>E</mi>
+        <mo>=</mo>
+        <mi>m</mi>
+        <msup><mi>c</mi><mn>2</mn></msup>
+      </mrow>
+    </math>
+
+    <!-- Processing instruction (XML-style, exercises SCE_H_XMLSTART) -->
+    <?xml-stylesheet type="text/css" href="style.css" ?>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════════════ -->
+  <footer role="contentinfo">
+    <p>
+      &copy; 2025 Notepad3 Test Suite &mdash;
+      <a href="#top" accesskey="t">Back to top &uarr;</a>
+    </p>
+  </footer>
+
+  <!-- Body-end scripts -->
+  <script>
+    // Benchmark / performance timing
+    const t0 = performance.now();
+
+    window.addEventListener("load", () => {
+      const t1 = performance.now();
+      console.log(`Page loaded in ${(t1 - t0).toFixed(2)} ms`);
+
+      // IntersectionObserver (modern API)
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll("section").forEach(sec => observer.observe(sec));
+    });
+  </script>
+</body>
+</html>
