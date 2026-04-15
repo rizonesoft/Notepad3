@@ -732,6 +732,8 @@ static void _InitGlobals()
     Defaults.OpenWithDir = Path_Allocate(NULL);
     Settings.FavoritesDir = Path_Allocate(NULL);
     Defaults.FavoritesDir = Path_Allocate(NULL);
+    Settings.DefaultDirectoryOverride = Path_Allocate(NULL);
+    Defaults.DefaultDirectoryOverride = Path_Allocate(NULL);
 
     Settings2.DefaultDirectory = Path_Allocate(NULL);
     Settings2.FileBrowserPath = Path_Allocate(NULL);
@@ -884,6 +886,8 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     Path_Release(Settings2.FileBrowserPath);
     Path_Release(Settings2.DefaultDirectory);
 
+    Path_Release(Settings.DefaultDirectoryOverride);
+    Path_Release(Defaults.DefaultDirectoryOverride);
     Path_Release(Settings.FavoritesDir);
     Path_Release(Defaults.FavoritesDir);
     Path_Release(Settings.OpenWithDir);
@@ -4426,6 +4430,10 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     CheckCmd(hmenu, IDM_SET_MULTIPLE_SELECTION, Settings.MultipleSelection);
 
+    CheckCmd(hmenu, IDM_SET_DEFAULTDIR, Path_IsNotEmpty(Settings.DefaultDirectoryOverride));
+    EnableCmd(hmenu, IDM_SET_DEFAULTDIR, Path_IsNotEmpty(Paths.CurrentFile));
+    EnableCmd(hmenu, IDM_SET_DEFAULTDIR_RESET, Path_IsNotEmpty(Settings.DefaultDirectoryOverride));
+
     bool const dwr = (Settings.RenderingTechnology > SC_TECHNOLOGY_DEFAULT);
     //bool const gdi = ((Settings.RenderingTechnology % SC_TECHNOLOGY_DIRECTWRITEDC) == 0);
 
@@ -6093,6 +6101,24 @@ static bool _HandleViewAndSettingsCommands(HWND hwnd, UINT umsg, WPARAM wParam, 
     case IDM_SET_MULTIPLE_SELECTION:
         Settings.MultipleSelection = !Settings.MultipleSelection;
         SciCall_SetMultipleSelection(Settings.MultipleSelection);
+        break;
+
+
+    case IDM_SET_DEFAULTDIR:
+        if (IsCmdEnabled(hwnd, IDM_SET_DEFAULTDIR)) {
+            HPATHL hpthDir = Path_Allocate(NULL);
+            Path_Reset(hpthDir, Path_Get(Paths.CurrentFile));
+            Path_RemoveFileSpec(hpthDir);
+            Path_Reset(Settings.DefaultDirectoryOverride, Path_Get(hpthDir));
+            Path_Release(hpthDir);
+        }
+        break;
+
+
+    case IDM_SET_DEFAULTDIR_RESET:
+        if (IsCmdEnabled(hwnd, IDM_SET_DEFAULTDIR_RESET)) {
+            Path_Empty(Settings.DefaultDirectoryOverride, true);
+        }
         break;
 
 

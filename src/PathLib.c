@@ -727,7 +727,7 @@ void PTHAPI Path_Empty(HPATHL hpth_in_out, bool truncate)
 
 int PTHAPI Path_Reset(HPATHL hpth_in_out, LPCWSTR path)
 {
-    return (path ? StrgReset(ToHStrgW(hpth_in_out), path) : 0);
+    return (path ? StrgReset(ToHStrgW(hpth_in_out), path) : StrgReset(ToHStrgW(hpth_in_out), L""));
 }
 // ----------------------------------------------------------------------------
 
