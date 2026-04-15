@@ -861,6 +861,7 @@
 #define IDM_SET_MULTIPLE_SELECTION      42044
 #define IDM_SET_DEFAULTDIR              42045
 #define IDM_SET_DEFAULTDIR_RESET        42046
+#define IDM_SET_RESOLVE_UNC_PATHS       42047
 
 #define IDM_HELP_ABOUT                  43000
 #define IDM_HELP_CMD                    43001

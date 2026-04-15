@@ -483,6 +483,7 @@ BEGIN
         MENUITEM "Nachricht bei &Dateiänderung...\tAlt+F5",     IDM_SET_CHANGENOTIFY
         ///MENUITEM "Auto-Speichern / Backup Einstellungen...",    IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Keine Nachrichten &Beeps",                    IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Esc-&Key Funktion"
         BEGIN
             MENUITEM "&Keine",                                  IDM_SET_NOESCFUNC

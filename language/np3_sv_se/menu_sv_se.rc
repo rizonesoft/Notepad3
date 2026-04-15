@@ -483,6 +483,7 @@ BEGIN
         MENUITEM "Notifiering vid filändring...\tAlt+F5",           IDM_SET_CHANGENOTIFY
         ///MENUITEM "AutoSave / Backup Settings...",                IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Stäng av ljud vid meddelande",                    IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Esc-tangentens funktion"
         BEGIN
             MENUITEM "Ingen",                                       IDM_SET_NOESCFUNC

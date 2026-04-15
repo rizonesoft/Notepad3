@@ -483,6 +483,7 @@ BEGIN
         MENUITEM "ファイルの変更を通知(&C)...\tAlt+F5",          IDM_SET_CHANGENOTIFY
         ///MENUITEM "自動保存/バックアップの設定...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "メッセージの効果音をミュート(&M)",                  IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Escキーの動作(&E)"
         BEGIN
             MENUITEM "なし(&N)",                              IDM_SET_NOESCFUNC

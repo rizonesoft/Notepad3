@@ -483,6 +483,7 @@ BEGIN
         MENUITEM "檔案修改通知(&C)...\tAlt+F5",                 IDM_SET_CHANGENOTIFY
         ///MENUITEM "自動儲存和備份設定...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "關閉訊息提示音(&M)",                          IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Esc 鍵功能(&E)"
         BEGIN
             MENUITEM "無(&N)",                                IDM_SET_NOESCFUNC

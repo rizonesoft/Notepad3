@@ -483,6 +483,7 @@ BEGIN
         MENUITEM "Powiadomienie o zmianie pliku...\tAlt+F5",        IDM_SET_CHANGENOTIFY
         ///MENUITEM "Ustawienia Autozapisu/ kopii zapasowej...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Wycisz sygnał dźwiękowy",                         IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Funkcja klawisza Esc"
         BEGIN
             MENUITEM "Żadna",                                       IDM_SET_NOESCFUNC
