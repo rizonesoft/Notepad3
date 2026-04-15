@@ -42,7 +42,7 @@ namespace {
 #define SCE_HA_VBS (SCE_HBA_START - SCE_HB_START)
 #define SCE_HA_PYTHON (SCE_HPA_START - SCE_HP_START)
 
-enum script_type { eScriptNone = 0, eScriptJS, eScriptVBS, eScriptPython, eScriptPHP, eScriptXML, eScriptSGML, eScriptSGMLblock, eScriptComment };
+enum script_type { eScriptNone = 0, eScriptJS, eScriptVBS, eScriptPython, eScriptPHP, eScriptXML, eScriptSGML, eScriptSGMLblock, eScriptComment, eScriptCSS };
 enum script_mode { eHtml = 0, eNonHtmlScript, eNonHtmlPreProc, eNonHtmlScriptPreProc };
 
 constexpr bool IsAWordChar(int ch) noexcept {
@@ -103,6 +103,8 @@ script_type segIsScriptingIndicator(const Accessor &styler, Sci_PositionU start,
 		return eScriptJS;
 	if (Contains(s, "php"))
 		return eScriptPHP;
+	if (Contains(s, "css"))
+		return eScriptCSS;
 
 	const size_t xml = s.find("xml");
 	if (xml != std::string::npos) {
@@ -122,7 +124,11 @@ constexpr bool IsPHPScriptState(int state) noexcept {
 }
 
 script_type ScriptOfState(int state) noexcept {
-	if ((state >= SCE_HP_START) && (state <= SCE_HP_IDENTIFIER)) {
+	if ((state >= SCE_HCSS_DEFAULT) && (state <= SCE_HCSS_OPERATOR)) {
+		return eScriptCSS;
+	} else if ((state >= SCE_HCSS_STRING) && (state <= SCE_HCSS_NUMBER)) {
+		return eScriptCSS;
+	} else if ((state >= SCE_HP_START) && (state <= SCE_HP_IDENTIFIER)) {
 		return eScriptPython;
 	} else if ((state >= SCE_HB_START && state <= SCE_HB_STRINGEOL) || (state == SCE_H_ASPAT || state == SCE_H_XCCOMMENT)) {
 		return eScriptVBS;
@@ -199,6 +205,7 @@ constexpr bool isStringState(int state) noexcept {
 	case SCE_HPHP_SIMPLESTRING:
 	case SCE_HPHP_HSTRING_VARIABLE:
 	case SCE_HPHP_COMPLEX_VARIABLE:
+	case SCE_HCSS_STRING:
 		bResult = true;
 		break;
 	default :
@@ -214,6 +221,7 @@ constexpr bool stateAllowsTermination(int state) noexcept {
 		case SCE_HPHP_COMMENT:
 		case SCE_HP_COMMENTLINE:
 		case SCE_HPA_COMMENTLINE:
+		case SCE_HCSS_COMMENT:
 			allowTermination = false;
 			break;
 		default:
@@ -340,7 +348,7 @@ int classifyTagHTML(Sci_PositionU start, Sci_PositionU end,
 		styler.ColourTo(end, chAttr);
 	}
 	if (chAttr == SCE_H_TAG) {
-		if (allowScripts && (tag == "script")) {
+		if (allowScripts && (tag == "script" || tag == "style")) {
 			// check to see if this is a self-closing tag by sniffing ahead
 			bool isSelfClose = false;
 			for (Sci_PositionU cPos = end; cPos <= end + maxLengthCheck; cPos++) {
@@ -483,6 +491,9 @@ constexpr int StateForScript(script_type scriptLanguage) noexcept {
 		break;
 	case eScriptComment:
 		Result = SCE_H_COMMENT;
+		break;
+	case eScriptCSS:
+		Result = SCE_HCSS_DEFAULT;
 		break;
 	default :
 		break;
@@ -774,6 +785,7 @@ const char * const htmlWordListDesc[] = {
 	"Python keywords",
 	"PHP keywords",
 	"SGML and DTD keywords",
+	"CSS properties",
 	nullptr,
 };
 
@@ -887,14 +899,14 @@ const LexicalClass lexicalClassesHTML[] = {
 	29, "SCE_H_SGML_COMMENT", "comment", "SGML comment",
 	30, "SCE_H_SGML_1ST_PARAM_COMMENT", "error comment", "SGML first parameter - lexer internal. It is an error if any text is in this style.",
 	31, "SCE_H_SGML_BLOCK_DEFAULT", "default", "SGML block",
-	32, "", "predefined", "",
-	33, "", "predefined", "",
-	34, "", "predefined", "",
-	35, "", "predefined", "",
-	36, "", "predefined", "",
-	37, "", "predefined", "",
-	38, "", "predefined", "",
-	39, "", "predefined", "",
+	32, "SCE_HCSS_DEFAULT", "client css default", "CSS Default",
+	33, "SCE_HCSS_COMMENT", "client css comment", "CSS Comment",
+	34, "SCE_HCSS_SELECTOR", "client css tag", "CSS Element Selector",
+	35, "SCE_HCSS_CLASS", "client css class", "CSS Class Selector",
+	36, "SCE_HCSS_ID", "client css id", "CSS ID Selector",
+	37, "SCE_HCSS_PROPERTY", "client css keyword", "CSS Property",
+	38, "SCE_HCSS_VALUE", "client css literal", "CSS Value",
+	39, "SCE_HCSS_OPERATOR", "client css operator", "CSS Operator",
 	40, "SCE_HJ_START", "client javascript default", "JS Start - allows eol filled background to not start on same line as SCRIPT tag",
 	41, "SCE_HJ_DEFAULT", "client javascript default", "JS Default",
 	42, "SCE_HJ_COMMENT", "client javascript comment", "JS Comment",
@@ -1054,6 +1066,7 @@ class LexerHTML : public DefaultLexer {
 	WordList keywordsPy;
 	WordList keywordsPHP;
 	WordList keywordsSGML; // SGML (DTD) keywords
+	WordList keywordsCSS;  // CSS properties
 	OptionsHTML options;
 	OptionSetHTML osHTML;
 	std::set<std::string> nonFoldingTags;
@@ -1168,6 +1181,10 @@ Sci_Position SCI_METHOD LexerHTML::WordListSet(int n, const char *wl) {
 	case 5:
 		wordListN = &keywordsSGML;
 		break;
+	case 6:
+		wordListN = &keywordsCSS;
+		lowerCase = true;
+		break;
 	default:
 		break;
 	}
@@ -1250,7 +1267,8 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 	script_type clientScript = static_cast<script_type>((lineState >> 8) & 0x0F); // 4 bits of script name
 	int beforePreProc = (lineState >> 12) & 0xFF; // 8 bits of state
 	bool isLanguageType = (lineState >> 20) & 1; // type or language attribute for script tag
-	int sgmlBlockLevel = (lineState >> 21);
+	int cssContext = (lineState >> 21) & 0x03; // 0=selector, 1=property, 2=value
+	int sgmlBlockLevel = (lineState >> 23);
 
 	script_type scriptLanguage = ScriptOfState(state);
 	// If eNonHtmlScript coincides with SCE_H_COMMENT, assume eScriptComment
@@ -1412,7 +1430,8 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			                    ((clientScript & 0x0F) << 8) |
 			                    ((beforePreProc & 0xFF) << 12) |
 			                    ((isLanguageType ? 1 : 0) << 20) |
-			                    (sgmlBlockLevel << 21));
+			                    ((cssContext & 0x03) << 21) |
+			                    (sgmlBlockLevel << 23));
 			lineCurrent++;
 			lineStartVisibleChars = 0;
 		}
@@ -1467,12 +1486,15 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			case SCE_HPHP_SIMPLESTRING:
 			case SCE_HPHP_COMMENT:
 			case SCE_HPHP_COMMENTLINE:
+			case SCE_HCSS_COMMENT:
+			case SCE_HCSS_STRING:
 				break;
 			default :
-				// check if the closing tag is a script tag
+				// check if the closing tag matches the expected tag (script, style, or comment)
 				if (const char *tag =
 						(state == SCE_HJ_COMMENTLINE || state == SCE_HB_COMMENTLINE || isXml) ? "script" :
-						state == SCE_H_COMMENT ? "comment" : nullptr) {
+						state == SCE_H_COMMENT ? "comment" :
+						(ScriptOfState(state) == eScriptCSS) ? "style" : nullptr) {
 					Sci_Position j = i + 2;
 					int chr;
 					do {
@@ -1487,6 +1509,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				scriptLanguage = eScriptNone;
 				clientScript = eScriptJS;
 				isLanguageType = false;
+				cssContext = 0;
 				i += 2;
 				visibleChars += 2;
 				tagClosing = true;
@@ -2005,7 +2028,14 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				if (eClass == SCE_H_SCRIPT || eClass == SCE_H_COMMENT) {
 					if (!tagClosing) {
 						inScriptType = eNonHtmlScript;
-						scriptLanguage = eClass == SCE_H_SCRIPT ? clientScript : eScriptComment;
+						if (eClass == SCE_H_COMMENT) {
+							scriptLanguage = eScriptComment;
+						} else if (lastTag == "style") {
+							scriptLanguage = eScriptCSS;
+							cssContext = 0; // start in selector context
+						} else {
+							scriptLanguage = clientScript;
+						}
 					} else {
 						scriptLanguage = eScriptNone;
 					}
@@ -2383,6 +2413,200 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 				state = SCE_HB_DEFAULT;
 			}
 			break;
+		// ---------------------------------------------------------------
+		// Embedded CSS state machine
+		// ---------------------------------------------------------------
+		case SCE_HCSS_DEFAULT:
+			if (ch == '/' && chNext == '*') {
+				styler.ColourTo(i - 1, StateToPrint);
+				state = SCE_HCSS_COMMENT;
+				i++;
+				ch = chNext;
+				chNext = SafeGetUnsignedCharAt(styler, i + 1);
+			} else if (ch == '\"') {
+				styler.ColourTo(i - 1, StateToPrint);
+				state = SCE_HCSS_STRING;
+			} else if (ch == '\'') {
+				styler.ColourTo(i - 1, StateToPrint);
+				state = SCE_HCSS_STRING;
+			} else if (ch == '{') {
+				styler.ColourTo(i - 1, StateToPrint);
+				styler.ColourTo(i, SCE_HCSS_OPERATOR);
+				cssContext = 1; // property context
+				if (fold) levelCurrent++;
+			} else if (ch == '}') {
+				styler.ColourTo(i - 1, StateToPrint);
+				styler.ColourTo(i, SCE_HCSS_OPERATOR);
+				cssContext = 0; // selector context
+				if (fold) levelCurrent--;
+			} else if (ch == ':' && cssContext == 1) {
+				// property:value separator
+				styler.ColourTo(i - 1, StateToPrint);
+				styler.ColourTo(i, SCE_HCSS_OPERATOR);
+				cssContext = 2; // value context
+			} else if (ch == ':' && cssContext == 0) {
+				// pseudo-class in selector context
+				styler.ColourTo(i - 1, StateToPrint);
+				state = SCE_HCSS_PSEUDOCLASS;
+			} else if (ch == ';') {
+				styler.ColourTo(i - 1, StateToPrint);
+				styler.ColourTo(i, SCE_HCSS_OPERATOR);
+				if (cssContext == 2) cssContext = 1; // back to property context
+			} else if (ch == ',' || ch == '(' || ch == ')' || ch == '+' || ch == '~' || ch == '>') {
+				styler.ColourTo(i - 1, StateToPrint);
+				styler.ColourTo(i, SCE_HCSS_OPERATOR);
+			} else if (ch == '!' && cssContext == 2) {
+				styler.ColourTo(i - 1, StateToPrint);
+				state = SCE_HCSS_IMPORTANT;
+			} else if (ch == '@') {
+				styler.ColourTo(i - 1, StateToPrint);
+				state = SCE_HCSS_DIRECTIVE;
+			} else if (ch == '.' && cssContext == 0) {
+				styler.ColourTo(i - 1, StateToPrint);
+				state = SCE_HCSS_CLASS;
+			} else if (ch == '#' && cssContext == 0) {
+				styler.ColourTo(i - 1, StateToPrint);
+				state = SCE_HCSS_ID;
+			} else if (cssContext == 2 && (IsADigit(ch) || (ch == '-' && IsADigit(chNext)) || (ch == '.' && IsADigit(chNext)) || (ch == '#' && IsADigit(chNext, 16)))) {
+				styler.ColourTo(i - 1, StateToPrint);
+				state = SCE_HCSS_NUMBER;
+			} else if (cssContext == 2 && (IsAlphaNumeric(ch) || ch == '-' || ch == '_' || ch == '%')) {
+				styler.ColourTo(i - 1, StateToPrint);
+				state = SCE_HCSS_VALUE;
+			} else if (cssContext <= 1 && (IsAlphaNumeric(ch) || ch == '-' || ch == '_' || ch == '*')) {
+				styler.ColourTo(i - 1, StateToPrint);
+				if (cssContext == 1) {
+					state = SCE_HCSS_PROPERTY;
+				} else {
+					state = SCE_HCSS_SELECTOR;
+				}
+			} else if (ch == '[') {
+				// attribute selector
+				styler.ColourTo(i - 1, StateToPrint);
+				styler.ColourTo(i, SCE_HCSS_OPERATOR);
+			} else if (ch == ']') {
+				styler.ColourTo(i - 1, StateToPrint);
+				styler.ColourTo(i, SCE_HCSS_OPERATOR);
+			}
+			break;
+		case SCE_HCSS_COMMENT:
+			if (ch == '*' && chNext == '/') {
+				i++;
+				ch = chNext;
+				chNext = SafeGetUnsignedCharAt(styler, i + 1);
+				styler.ColourTo(i, SCE_HCSS_COMMENT);
+				state = SCE_HCSS_DEFAULT;
+			}
+			break;
+		case SCE_HCSS_STRING:
+			if (ch == '\"' || ch == '\'') {
+				// check if this quote matches the opening quote
+				const char chOpen = styler.SafeGetCharAt(styler.GetStartSegment());
+				if (ch == chOpen) {
+					styler.ColourTo(i, SCE_HCSS_STRING);
+					state = SCE_HCSS_DEFAULT;
+				}
+			} else if (ch == '\\') {
+				// skip escaped character
+				i++;
+				ch = chNext;
+				chNext = SafeGetUnsignedCharAt(styler, i + 1);
+			}
+			break;
+		case SCE_HCSS_SELECTOR:
+			if (!IsAlphaNumeric(ch) && ch != '-' && ch != '_' && ch != '*') {
+				styler.ColourTo(i - 1, SCE_HCSS_SELECTOR);
+				state = SCE_HCSS_DEFAULT;
+				if (!IsASpace(ch)) {
+					--i; // reprocess this character in default state
+					continue;
+				}
+			}
+			break;
+		case SCE_HCSS_CLASS:
+			if (!IsAlphaNumeric(ch) && ch != '-' && ch != '_') {
+				styler.ColourTo(i - 1, SCE_HCSS_CLASS);
+				state = SCE_HCSS_DEFAULT;
+				if (!IsASpace(ch)) {
+					--i;
+					continue;
+				}
+			}
+			break;
+		case SCE_HCSS_ID:
+			if (!IsAlphaNumeric(ch) && ch != '-' && ch != '_') {
+				styler.ColourTo(i - 1, SCE_HCSS_ID);
+				state = SCE_HCSS_DEFAULT;
+				if (!IsASpace(ch)) {
+					--i;
+					continue;
+				}
+			}
+			break;
+		case SCE_HCSS_PSEUDOCLASS:
+			if (!IsAlphaNumeric(ch) && ch != '-' && ch != '_' && ch != ':') {
+				styler.ColourTo(i - 1, SCE_HCSS_PSEUDOCLASS);
+				state = SCE_HCSS_DEFAULT;
+				if (!IsASpace(ch)) {
+					--i;
+					continue;
+				}
+			}
+			break;
+		case SCE_HCSS_PROPERTY:
+			if (!IsAlphaNumeric(ch) && ch != '-' && ch != '_') {
+				const std::string prop = styler.GetRangeLowered(styler.GetStartSegment(), i);
+				styler.ColourTo(i - 1, keywordsCSS.InList(prop) ? SCE_HCSS_PROPERTY : SCE_HCSS_DEFAULT);
+				state = SCE_HCSS_DEFAULT;
+				if (!IsASpace(ch)) {
+					--i;
+					continue;
+				}
+			}
+			break;
+		case SCE_HCSS_VALUE:
+			if (!IsAlphaNumeric(ch) && ch != '-' && ch != '_' && ch != '%' && ch != '/' && ch != '(') {
+				styler.ColourTo(i - 1, SCE_HCSS_VALUE);
+				state = SCE_HCSS_DEFAULT;
+				if (!IsASpace(ch)) {
+					--i;
+					continue;
+				}
+			}
+			break;
+		case SCE_HCSS_NUMBER:
+			if (!IsAlphaNumeric(ch) && ch != '-' && ch != '.' && ch != '%' && ch != '#') {
+				styler.ColourTo(i - 1, SCE_HCSS_NUMBER);
+				state = SCE_HCSS_DEFAULT;
+				if (!IsASpace(ch)) {
+					--i;
+					continue;
+				}
+			}
+			break;
+		case SCE_HCSS_DIRECTIVE:
+			if (!IsAlphaNumeric(ch) && ch != '-' && ch != '_') {
+				styler.ColourTo(i - 1, SCE_HCSS_DIRECTIVE);
+				state = SCE_HCSS_DEFAULT;
+				if (!IsASpace(ch)) {
+					--i;
+					continue;
+				}
+			}
+			break;
+		case SCE_HCSS_IMPORTANT:
+			if (!IsAlphaNumeric(ch) && ch != '!') {
+				styler.ColourTo(i - 1, SCE_HCSS_IMPORTANT);
+				state = SCE_HCSS_DEFAULT;
+				if (!IsASpace(ch)) {
+					--i;
+					continue;
+				}
+			}
+			break;
+		// ---------------------------------------------------------------
+		// End embedded CSS state machine
+		// ---------------------------------------------------------------
 		case SCE_HP_DEFAULT:
 		case SCE_HP_START:
 			if (IsAWordStart(ch)) {

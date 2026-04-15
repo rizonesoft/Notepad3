@@ -53,6 +53,45 @@ KEYWORDLIST KeyWords_HTML =
     "require_once return static stdclass switch this throw trait true try unset use var virtual while xor",
 // SGML and DTD keywords
     "",
+// CSS properties (for embedded <style> highlighting)
+    "above absolute activeborder activecaption always appworkspace aqua armenian ascent auto avoid azimuth "
+    "background background-attachment background-color background-image background-position background-repeat "
+    "background-size baseline bbox behind below bidi-override black blink block blue bold bolder border "
+    "border-bottom border-bottom-color border-bottom-left-radius border-bottom-right-radius border-bottom-style "
+    "border-bottom-width border-collapse border-color border-left border-left-color border-left-style "
+    "border-left-width border-radius border-right border-right-color border-right-style border-right-width "
+    "border-spacing border-style border-top border-top-color border-top-left-radius border-top-right-radius "
+    "border-top-style border-top-width border-width both bottom box-shadow buttonface buttonhighlight buttonshadow "
+    "buttontext cap-height capitalize caption caption-side captiontext center center-left center-right centerline "
+    "child circle cjk-ideographic clear clip close-quote code collapse color column-count column-gap column-rule "
+    "column-rule-color column-rule-style column-rule-width column-width columns compact condensed content "
+    "counter-increment counter-reset crop cross crosshair cue cue-after cue-before cursor dashed decimal "
+    "decimal-leading-zero default definition-src descent digits direction disc display dotted double e-resize "
+    "elevation embed empty-cells expanded extra-condensed extra-expanded far-left far-right fast faster female "
+    "fixed float font font-family font-size font-size-adjust font-stretch font-style font-variant font-weight "
+    "fuchsia georgian gray graytext green groove hebrew height help hidden hide high higher highlight "
+    "highlighttext hiragana hiragana-iroha icon inactiveborder inactivecaption inactivecaptiontext infobackground "
+    "infotext inherit inline inline-table inset inside italic justify katakana katakana-iroha landscape large "
+    "larger left left-side leftwards letter-spacing level lime line-height line-through list-item list-style "
+    "list-style-image list-style-position list-style-type loud low lower lower-alpha lower-greek lower-latin "
+    "lower-roman lowercase ltr male margin margin-bottom margin-left margin-right margin-top marker marker-offset "
+    "marks maroon mathline max-height max-width medium menu menutext message-box middle min-height min-width mix "
+    "move n-resize narrower navy ne-resize no-close-quote no-open-quote no-repeat no-wrap none normal nw-resize "
+    "oblique olive once opacity open-quote orphans outline outline-color outline-style outline-width outset "
+    "outside overflow overline padding padding-bottom padding-left padding-right padding-top page page-break-after "
+    "page-break-before page-break-inside panose-1 pause pause-after pause-before pitch pitch-range play-during "
+    "pointer portrait position pre purple quotes red relative repeat repeat-x repeat-y resize richness ridge right "
+    "right-side rightwards rtl run-in s-resize scroll scrollbar se-resize semi-condensed semi-expanded separate "
+    "show silent silver size slope slow slower small small-caps small-caption smaller soft solid speak "
+    "speak-header speak-numeral speak-punctuation speech-rate spell-out square src static status-bar stemh stemv "
+    "stress sub super sw-resize table table-caption table-cell table-column table-column-group table-footer-group "
+    "table-header-group table-layout table-row table-row-group teal text text-align text-bottom text-decoration "
+    "text-indent text-shadow text-top text-transform thick thin threeddarkshadow threedface threedhighlight "
+    "threedlightshadow threedshadow top topline transparent ultra-condensed ultra-expanded underline unicode-bidi "
+    "unicode-range units-per-em upper-alpha upper-latin upper-roman uppercase vertical-align visibility visible "
+    "voice-family volume w-resize wait white white-space wider widows width widths window windowframe windowtext "
+    "word-spacing word-wrap x-fast x-height x-high x-large x-loud x-low x-slow x-small x-soft xx-large xx-small "
+    "yellow z-index",
     NULL,
 };
 
@@ -92,7 +131,7 @@ EDITLEXER lexHTML =
         { {MULTI_STYLE(SCE_HJ_COMMENT,SCE_HJ_COMMENTLINE,SCE_HJ_COMMENTDOC,0)}, IDS_LEX_STR_63160, L"JS Comment", L"fore:#646464", L"" },
         { {SCE_HJ_KEYWORD}, IDS_LEX_STR_63163, L"JS Keyword", L"bold; fore:#A46000", L"" },
         { {SCE_HJ_WORD}, IDS_LEX_STR_63162, L"JS Identifier", L"", L"" },
-        { {MULTI_STYLE(SCE_HJ_DOUBLESTRING,SCE_HJ_SINGLESTRING,SCE_HJ_STRINGEOL,0)}, IDS_LEX_STR_63164, L"JS String", L"fore:#008000", L"" },
+        { {MULTI_STYLE(SCE_HJ_DOUBLESTRING,SCE_HJ_SINGLESTRING,SCE_HJ_STRINGEOL,SCE_HJ_TEMPLATELITERAL)}, IDS_LEX_STR_63164, L"JS String", L"fore:#008000", L"" },
         { {SCE_HJ_REGEX}, IDS_LEX_STR_63166, L"JS Regex", L"fore:#006633; back:#FFF1A8", L"" },
         { {SCE_HJ_NUMBER}, IDS_LEX_STR_63161, L"JS Number", L"fore:#FF0000", L"" },
         { {SCE_HJ_SYMBOLS}, IDS_LEX_STR_63165, L"JS Symbols", L"fore:#B000B0", L"" },
@@ -100,7 +139,7 @@ EDITLEXER lexHTML =
         { {MULTI_STYLE(SCE_HJA_COMMENT,SCE_HJA_COMMENTLINE,SCE_HJA_COMMENTDOC,0)}, IDS_LEX_STR_63168, L"ASP JS Comment", L"fore:#646464", L"" },
         { {SCE_HJA_KEYWORD}, IDS_LEX_STR_63171, L"ASP JS Keyword", L"bold; fore:#A46000", L"" },
         { {SCE_HJA_WORD}, IDS_LEX_STR_63170, L"ASP JS Identifier", L"", L"" },
-        { {MULTI_STYLE(SCE_HJA_DOUBLESTRING,SCE_HJA_SINGLESTRING,SCE_HJA_STRINGEOL,0)}, IDS_LEX_STR_63172, L"ASP JS String", L"fore:#008000", L"" },
+        { {MULTI_STYLE(SCE_HJA_DOUBLESTRING,SCE_HJA_SINGLESTRING,SCE_HJA_STRINGEOL,SCE_HJA_TEMPLATELITERAL)}, IDS_LEX_STR_63172, L"ASP JS String", L"fore:#008000", L"" },
         { {SCE_HJA_REGEX}, IDS_LEX_STR_63174, L"ASP JS Regex", L"fore:#006633; back:#FFF1A8", L"" },
         { {SCE_HJA_NUMBER}, IDS_LEX_STR_63169, L"ASP JS Number", L"fore:#FF0000", L"" },
         { {SCE_HJA_SYMBOLS}, IDS_LEX_STR_63173, L"ASP JS Symbols", L"fore:#B000B0", L"" },
@@ -116,6 +155,14 @@ EDITLEXER lexHTML =
         { {SCE_HBA_IDENTIFIER}, IDS_LEX_STR_63186, L"ASP VBS Identifier", L"", L"" },
         { {MULTI_STYLE(SCE_HBA_STRING,SCE_HBA_STRINGEOL,0,0)}, IDS_LEX_STR_63185, L"ASP VBS String", L"fore:#008000", L"" },
         { {SCE_HBA_NUMBER}, IDS_LEX_STR_63183, L"ASP VBS Number", L"fore:#FF0000", L"" },
+        { {SCE_HCSS_DEFAULT}, IDS_LEX_STR_CSSDefault, L"CSS Default", L"", L"" },
+        { {SCE_HCSS_COMMENT}, IDS_LEX_STR_CSSComment, L"CSS Comment", L"fore:#646464", L"" },
+        { {MULTI_STYLE(SCE_HCSS_SELECTOR,SCE_HCSS_PSEUDOCLASS,0,0)}, IDS_LEX_STR_CSSSelector, L"CSS Selector", L"bold; fore:#0A246A", L"" },
+        { {MULTI_STYLE(SCE_HCSS_CLASS,SCE_HCSS_ID,0,0)}, IDS_LEX_STR_CSSClassID, L"CSS Class/ID", L"fore:#648000", L"" },
+        { {SCE_HCSS_PROPERTY}, IDS_LEX_STR_CSSProperty, L"CSS Property", L"fore:#FF4000", L"" },
+        { {MULTI_STYLE(SCE_HCSS_VALUE,SCE_HCSS_NUMBER,0,0)}, IDS_LEX_STR_CSSValue, L"CSS Value", L"fore:#3A6EA5", L"" },
+        { {MULTI_STYLE(SCE_HCSS_STRING,SCE_HCSS_IMPORTANT,0,0)}, IDS_LEX_STR_CSSString, L"CSS String", L"fore:#008000", L"" },
+        { {MULTI_STYLE(SCE_HCSS_OPERATOR,SCE_HCSS_DIRECTIVE,0,0)}, IDS_LEX_STR_CSSDirOp, L"CSS Directive/Operator", L"fore:#B000B0", L"" },
         EDITLEXER_SENTINEL
     }
 };

@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 // encoding: UTF-8
 #pragma code_page(65001)  // UTF-8
 #include "resource.h"
@@ -520,6 +520,14 @@ BEGIN
     IDS_LEX_STR_SlashCmd    "Slash Command"
     IDS_LEX_STR_Processor   "Processor"
     IDS_LEX_STR_Argument    "Argument"
+    IDS_LEX_STR_CSSDefault  "CSS Default"
+    IDS_LEX_STR_CSSComment  "CSS Comment"
+    IDS_LEX_STR_CSSSelector "CSS Selector"
+    IDS_LEX_STR_CSSClassID  "CSS Class/ID"
+    IDS_LEX_STR_CSSProperty "CSS Property"
+    IDS_LEX_STR_CSSValue    "CSS Value"
+    IDS_LEX_STR_CSSString   "CSS String"
+    IDS_LEX_STR_CSSDirOp    "CSS Directive/Operator"
 END
 
 STRINGTABLE
