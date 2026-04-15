@@ -2467,7 +2467,7 @@ void SCI_METHOD LexerHTML::Lex(Sci_PositionU startPos, Sci_Position length, int 
 			} else if (ch == '#' && cssContext == 0) {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HCSS_ID;
-			} else if (cssContext == 2 && (IsADigit(ch) || (ch == '-' && IsADigit(chNext)) || (ch == '.' && IsADigit(chNext)) || (ch == '#' && IsADigit(chNext, 16)))) {
+			} else if (cssContext == 2 && (IsADigit(ch) || (ch == '-' && IsADigit(chNext)) || (ch == '.' && IsADigit(chNext)) || (ch == '#' && IsAHeXDigit(chNext)))) {
 				styler.ColourTo(i - 1, StateToPrint);
 				state = SCE_HCSS_NUMBER;
 			} else if (cssContext == 2 && (IsAlphaNumeric(ch) || ch == '-' || ch == '_' || ch == '%')) {
