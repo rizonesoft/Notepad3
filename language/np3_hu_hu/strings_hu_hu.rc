@@ -134,7 +134,7 @@ BEGIN
     IDS_MUI_ERR_BROWSE      "Fájlböngésző plugin nem található\nA MiniPath fájlböngésző plugin letölthető a https://rizonesoft.com címről"
     IDS_MUI_ERR_GREPWIN     "Fájlkereső plugin nem található\nA grepWin Portable fájlkereső plugin letölthető a https://github.com/stefankueng/grepWin/releases címről"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
-                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
+                            "Fájlkereső plugin nem található\nKérem telepítse a grepWinPortable legújabb verzióját a PortableApps platformról."
     IDS_MUI_ERR_MRUDLG      "A kijelölt fájlhoz nincs hozzáférésünk!\nEl szeretné távolítani a listából?"
     IDS_MUI_ERR_CREATELINK  "Hiba az asztali parancsikon létrehozásakor"
     IDS_MUI_ERR_PREVWINDISABLED
