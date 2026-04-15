@@ -1,4 +1,4 @@
-﻿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 // encoding: UTF-8
 #pragma code_page(65001)  // UTF-8
 #include "resource.h"
@@ -483,6 +483,7 @@ BEGIN
         MENUITEM "Notif&ication de modification de fichier...\tAlt+F5", IDM_SET_CHANGENOTIFY
         ///MENUITEM "Auto-enregister / Paramètres de sauvegarde...",    IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Couper les &bips de messages",                        IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Fonction de la touche ""&Echap"""
         BEGIN
             MENUITEM "&Aucune",                                         IDM_SET_NOESCFUNC

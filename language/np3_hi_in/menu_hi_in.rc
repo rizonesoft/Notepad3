@@ -1,4 +1,4 @@
-﻿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 // encoding: UTF-8
 #pragma code_page(65001)  // UTF-8
 #include "resource.h"
@@ -483,6 +483,7 @@ BEGIN
         MENUITEM "फ़ाइल परिवर्तन अधिसूचना (&C)...\tAlt+F5",        IDM_SET_CHANGENOTIFY
         ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "संदेश आवाज़ बंद करें (&M)",                      IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "ESC कुंजी उपयोग (&E)"
         BEGIN
             MENUITEM "कुछ न करें (&N)",                       IDM_SET_NOESCFUNC

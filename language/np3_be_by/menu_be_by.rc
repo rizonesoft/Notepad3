@@ -1,4 +1,4 @@
-﻿// Microsoft Visual C++ generated resource script.
+// Microsoft Visual C++ generated resource script.
 // encoding: UTF-8
 #pragma code_page(65001)  // UTF-8
 #include "resource.h"
@@ -483,6 +483,7 @@ BEGIN
         MENUITEM "Паведамленне а&б змяненні файла...\tAlt+F5",  IDM_SET_CHANGENOTIFY
         ///MENUITEM "Аўтазахаванне / рэзервовыя копіі...",      IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "&Заглушыць гук паведамленняў",                IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "&Функцыя клавішы Esc"
         BEGIN
             MENUITEM "&Няма",                         IDM_SET_NOESCFUNC
