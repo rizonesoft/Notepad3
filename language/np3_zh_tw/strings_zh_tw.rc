@@ -131,10 +131,10 @@ BEGIN
     IDS_MUI_ERR_SAVEFILE    "儲存 ""%"" 時遇到錯誤"
     IDS_MUI_ERR_PATHNOTFOUND "路徑 ""%s"" 已不復存在。\n重新建立路徑並儲存檔案嗎？"
     IDS_MUI_ERR_DLG_FORMAT  "錯誤 ""%s"" ，原因：\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "無可用檔案瀏覽器外掛\nMiniPath 外掛可由 https://rizonesoft.com 下載"
-    IDS_MUI_ERR_GREPWIN     "無可用檔案尋找外掛\ngrepWin Portable 外掛可由 https://github.com/stefankueng/grepWin/releases 下載"
+    IDS_MUI_ERR_BROWSE      "無可用檔案瀏覽器外掛\nMiniPath 外掛可由 https://rizonesoft.com 下載。"
+    IDS_MUI_ERR_GREPWIN     "無可用檔案尋找外掛\ngrepWin Portable 外掛可由 https://github.com/stefankueng/grepWin/releases 下載。"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
-                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
+                            "無可用檔案尋找外掛\n請由 PortableApps Platform 安新最新的 grepWinPortable。"
     IDS_MUI_ERR_MRUDLG      "指定的檔案無法存取。它可能已被改名、刪除或移動\n\n從清單中刪除它嗎？"
     IDS_MUI_ERR_CREATELINK  "建立桌面捷徑時遇到錯誤"
     IDS_MUI_ERR_PREVWINDISABLED
