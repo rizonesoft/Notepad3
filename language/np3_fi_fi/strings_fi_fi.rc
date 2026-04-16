@@ -134,7 +134,7 @@ BEGIN
     IDS_MUI_ERR_BROWSE      "Tiedostoselaimen laajennusta ei löytynyt\nMiniPath-tiedostoselaimen laajennuksen voi ladata osoitteesta https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Tiedostonhakulaajennusta ei löytynyt\ngrepWin Portable-tiedostonhakulaajennuksen voi ladata osoitteesta https://github.com/stefankueng/grepWin/releases"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
-                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
+                            "Tiedostonhakulaajennusta ei löytynyt\nAsenna grepWinPortablen uusin versio PortableApps-alustalle."
     IDS_MUI_ERR_MRUDLG      "Valittuun tiedostoon ei ole pääsyä!\nTahdotko poistaa sen luettelosta?"
     IDS_MUI_ERR_CREATELINK  "Virhe työpöytälinkin luomisessa"
     IDS_MUI_ERR_PREVWINDISABLED

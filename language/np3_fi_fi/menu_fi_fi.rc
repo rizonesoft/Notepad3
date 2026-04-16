@@ -566,7 +566,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Avaa Hyperlinkki",             CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "Kopioi hyperlinkin URL-osoite",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Kumoa",                       IDM_EDIT_UNDO
         MENUITEM "Tee uudelleen",                       IDM_EDIT_REDO
@@ -578,14 +578,14 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Valitse kaikki",                 IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        POPUP "Convert Case"
+        POPUP "Muuta kirjoitusasua"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "Isot kirjaimet",              CMD_CTX_UPPERCASE
+            MENUITEM "Pienet kirjaimet",              CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "Käänteinen",            CMD_CTX_INVERTCASE
+            MENUITEM "Otsikkokoko",             CMD_CTX_TITLECASE
+            MENUITEM "Virkekoko",          CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
         MENUITEM "Vaihda nykyinen laskos",        IDM_VIEW_TOGGLE_CURRENT_FOLD
