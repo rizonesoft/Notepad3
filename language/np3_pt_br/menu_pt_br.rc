@@ -566,7 +566,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Abrir Hyperlink",                            CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "Copiar URL do Hyperlink",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Desfazer",                                   IDM_EDIT_UNDO
         MENUITEM "Refazer",                                    IDM_EDIT_REDO
@@ -578,14 +578,14 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Selecionar Tudo",                            IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        POPUP "Convert Case"
+        POPUP "Converter Maiúsculas/Minúsculas"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "MAIÚSCULAS",              CMD_CTX_UPPERCASE
+            MENUITEM "minúsculas",              CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "Inverter Maiúsculas/Minúsculas",            CMD_CTX_INVERTCASE
+            MENUITEM "Primeira Letra da Palavra Maiúscula",             CMD_CTX_TITLECASE
+            MENUITEM "Primeira Letra Maiúscula",          CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
         MENUITEM "Tocar Dobra Atual",                          IDM_VIEW_TOGGLE_CURRENT_FOLD
