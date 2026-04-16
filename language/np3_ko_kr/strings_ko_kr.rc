@@ -131,10 +131,10 @@ BEGIN
     IDS_MUI_ERR_SAVEFILE    """%s"" 파일을 저장하는 동안 오류가 발생하였습니다"
     IDS_MUI_ERR_PATHNOTFOUND """%s""의 경로는 더 이상 존재하지 않습니다.\n경로를 다시 생성하고 파일을 저장하시겠습니까?"
     IDS_MUI_ERR_DLG_FORMAT  "오류 '%s', 원인:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "파일 탐색기 플러그인을 찾을 수 없습니다\nMiniPath 파일 탐색기 플러그인은 https://rizonesoft.com에서 다운로드할 수 있습니다"
+    IDS_MUI_ERR_BROWSE      "파일 탐색 플러그인을 찾을 수 없습니다\nMiniPath 파일 탐색 플러그인은 https://rizonesoft.com에서 다운로드할 수 있습니다"
     IDS_MUI_ERR_GREPWIN     "파일 검색 플러그인을 찾을 수 없습니다\ngrepWin Portable 파일 검색 플러그인은 https://github.com/stefankueng/grepWin/releases 다운로드할 수 있습니다"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
-                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
+                            "파일 검색 플러그인을 찾을 수 없습니다\n최신 버전의 grepWinPortable을 PortableApps 플랫폼에 설치해 주세요."
     IDS_MUI_ERR_MRUDLG      "선택한 파일에 접근할 수 없습니다!\n목록에서 제거하시겠습니까?"
     IDS_MUI_ERR_CREATELINK  "바탕 화면 링크를 만드는 중에 오류가 발생하였습니다"
     IDS_MUI_ERR_PREVWINDISABLED
