@@ -483,7 +483,7 @@ BEGIN
         MENUITEM "&Oznámenie o zmene súboru...\tAlt+F5",           IDM_SET_CHANGENOTIFY
         ///MENUITEM "Auto-ukladanie / Nastavenie zálohovania...",  IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "&Stlmiť hlásenie pípnutím",                      IDM_SET_MUTE_MESSAGEBEEP
-        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
+        MENUITEM "Vyriešiť na &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "&Funkcia klávesy Esc"
         BEGIN
             MENUITEM "Ž&iadna",                             IDM_SET_NOESCFUNC
@@ -566,7 +566,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Otvoriť Hyperlink",                      CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "Kopírovať adresu URL",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Späť",                                   IDM_EDIT_UNDO
         MENUITEM "Znova",                                  IDM_EDIT_REDO
@@ -578,14 +578,14 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Vybrať všetko",                          IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        POPUP "Convert Case"
+        POPUP "Zmeniť veľkosť písma"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "Veľké písmená",              CMD_CTX_UPPERCASE
+            MENUITEM "Malé písmená",              CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "Invertovať  veľkosť",            CMD_CTX_INVERTCASE
+            MENUITEM "Prvé veľké v slove",             CMD_CTX_TITLECASE
+            MENUITEM "Prvé veľké vo vete",          CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
         MENUITEM "Prepnúť aktuálny uzol",                  IDM_VIEW_TOGGLE_CURRENT_FOLD

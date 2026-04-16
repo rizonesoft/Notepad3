@@ -482,21 +482,21 @@ BEGIN
         MENUITEM "파일당 하나의 인스턴스만(&F)",              IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "파일 변경 알림(&C)...\tAlt+F5",     IDM_SET_CHANGENOTIFY
         ///MENUITEM "자동 저장 / 백업 설정...",            IDM_SET_AUTOSAVE_BACKUP
-        MENUITEM "메시지 경고음 음소거(&M)",                      IDM_SET_MUTE_MESSAGEBEEP
+        MENUITEM "메시지 경고음 음소거(&M)",                IDM_SET_MUTE_MESSAGEBEEP
         MENUITEM "UNC 경로로 변환(&U)",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "ESC 키 기능(&E)"
         BEGIN
             MENUITEM "없음(&N)",                       IDM_SET_NOESCFUNC
-            MENUITEM "Notepad3 최소화(&M)",          IDM_SET_ESCMINIMIZE
+            MENUITEM "Notepad3 최소화(&M)",            IDM_SET_ESCMINIMIZE
             MENUITEM "Notepad3 종료(&X)",              IDM_SET_ESCEXIT
         END
         MENUITEM "도구 실행 전에 저장(&V)",      IDM_SET_SAVEBEFORERUNNINGTOOLS
-        MENUITEM "작은 표현식 계산",     IDM_SET_EVALTINYEXPRONSEL
-        MENUITEM "다중 선택 사용",       IDM_SET_MULTIPLE_SELECTION
+        MENUITEM "작은 표현식 계산",             IDM_SET_EVALTINYEXPRONSEL
+        MENUITEM "다중 선택 사용",               IDM_SET_MULTIPLE_SELECTION
         POPUP "기본 디렉터리(&D)"
         BEGIN
-            MENUITEM "현재 디렉터리로 설정((&D)",  IDM_SET_DEFAULTDIR
-            MENUITEM "기본값으로 재설정(&R)",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "현재 디렉터리로 설정((&D)", IDM_SET_DEFAULTDIR
+            MENUITEM "기본값으로 재설정(&R)",     IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "기억(&R)"
