@@ -505,7 +505,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_StrgEOL     "String EOL"
+    IDS_LEX_STR_StrgEOL     "字串換行"
     IDS_LEX_STR_Backticks   "反引號"
     IDS_LEX_STR_GUIDStrg    "GUID 字串"
     IDS_LEX_STR_Global      "全域"
@@ -515,19 +515,19 @@ BEGIN
     IDS_LEX_STR_PortConn    "埠連結"
     IDS_LEX_STR_SysTasks    "系統任務"
     IDS_LEX_STR_AfterLabel  "在標籤後"
-    IDS_LEX_STR_Table       "Table"
-    IDS_LEX_STR_StarCmd     "Star Command"
-    IDS_LEX_STR_SlashCmd    "Slash Command"
-    IDS_LEX_STR_Processor   "Processor"
-    IDS_LEX_STR_Argument    "Argument"
-    IDS_LEX_STR_CSSDefault  "CSS Default"
-    IDS_LEX_STR_CSSComment  "CSS Comment"
-    IDS_LEX_STR_CSSSelector "CSS Selector"
-    IDS_LEX_STR_CSSClassID  "CSS Class/ID"
-    IDS_LEX_STR_CSSProperty "CSS Property"
-    IDS_LEX_STR_CSSValue    "CSS Value"
-    IDS_LEX_STR_CSSString   "CSS String"
-    IDS_LEX_STR_CSSDirOp    "CSS Directive/Operator"
+    IDS_LEX_STR_Table       "表"
+    IDS_LEX_STR_StarCmd     "星號命令"
+    IDS_LEX_STR_SlashCmd    "斜線命令"
+    IDS_LEX_STR_Processor   "處理器"
+    IDS_LEX_STR_Argument    "參數"
+    IDS_LEX_STR_CSSDefault  "CSS 預設"
+    IDS_LEX_STR_CSSComment  "CSS 註解"
+    IDS_LEX_STR_CSSSelector "CSS 選取器"
+    IDS_LEX_STR_CSSClassID  "CSS 類別/ID"
+    IDS_LEX_STR_CSSProperty "CSS 屬性"
+    IDS_LEX_STR_CSSValue    "CSS 數值"
+    IDS_LEX_STR_CSSString   "CSS 字串"
+    IDS_LEX_STR_CSSDirOp    "CSS 指示詞/運算子"
 END
 
 STRINGTABLE
