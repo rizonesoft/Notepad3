@@ -535,7 +535,7 @@ msgstr "Resultaattekst na vervanging:"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr "Als UTF-8 behandelen"
+msgstr "Als UTF8 behandelen"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
