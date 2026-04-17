@@ -218,6 +218,11 @@ copy "%NP3_DISTRIB_DIR%\minipath.ini" "%NP3_PORTAPP_DIR%\App\DefaultData\setting
 del /s /f /q "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Themes\*.*" 2>nul
 xcopy "%NP3_BUILD_SCHEMES_DIR%" "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Themes" /C /V /I /S /Y
 
+:: --- Create an empty directory "Favorites" ---
+if not exist "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Favorites\" (
+    mkdir "%NP3_PORTAPP_DIR%\App\DefaultData\settings\Favorites\"
+)
+
 :: ---------------------------------------------------------------------------------------------------
 :: Step 6: Copy language files
 :: ---------------------------------------------------------------------------------------------------
