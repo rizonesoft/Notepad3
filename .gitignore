@@ -62,13 +62,15 @@ Thumbs.db
 /np3portableapp/Notepad3Portable*.exe
 /np3portableapp/Notepad3Portable*.exe
 /np3portableapp/Notepad3Portable/Notepad3Portable*.exe
+/np3portableapp/Notepad3Portable/App/AppInfo/appinfo.ini
+/np3portableapp/Notepad3Portable/App/AppInfo/installer.ini
+/np3portableapp/Notepad3Portable/App/DefaultData/settings/*.ini
+/np3portableapp/Notepad3Portable/App/DefaultData/settings/Themes/*.ini
 /np3portableapp/Notepad3Portable/App/Notepad3/x64/*.exe
 /np3portableapp/Notepad3Portable/App/Notepad3/x64/lng
 /np3portableapp/Notepad3Portable/App/Notepad3/x86/*.exe
 /np3portableapp/Notepad3Portable/App/Notepad3/x86/lng
 /np3portableapp/Notepad3Portable/App/Notepad3/Docs/
-/np3portableapp/Notepad3Portable/App/AppInfo/appinfo.ini
-/np3portableapp/Notepad3Portable/App/AppInfo/installer.ini
 #
 
 # Upgrade staging directory
