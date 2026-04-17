@@ -1,6 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same licence as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
@@ -400,7 +400,7 @@ msgstr ""
 
 #. Resource IDs: (154)
 msgid "Programs"
-msgstr ""
+msgstr "Programmes"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"

@@ -1,0 +1,573 @@
+// Microsoft Visual C++ generated resource script.
+// encoding: UTF-8
+#pragma code_page(65001)  // UTF-8
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winresrc.h"
+#include "../common_res.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Korean (Korea) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+LANGUAGE LANG_KOREAN, SUBLANG_KOREAN
+#pragma code_page(65001)  // UTF-8
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+    "#include ""winresrc.h""\r\n"
+    "#include ""../common_res.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_EOL_WIN             "Windows (CR+LF)"
+    IDS_EOL_MAC             "Mac (CR)"
+    IDS_EOL_UNIX            "Unix (LF)"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_DEF_TXT         "기본 구성"
+    IDS_LEX_WEB_SRC         "웹 소스 코드"
+    IDS_LEX_XML_DOC         "XML 문서"
+    IDS_LEX_CSS_STYLE       "CSS 스타일 시트"
+    IDS_LEX_PRISM_CSV       "CSV Prism"
+    IDS_LEX_CPP_SRC         "C/C++ 소스 코드"
+    IDS_LEX_CSHARP_SRC      "C# 소스 코드"
+    IDS_LEX_RESOURCE_SCR    "리소스 스크립트"
+    IDS_LEX_MAKEFILES       "마크파일"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_VB_SCR          "VBScript"
+    IDS_LEX_VIS_BAS         "Visual Basic"
+    IDS_LEX_J_SCR           "JavaScript"
+    IDS_LEX_JAVA_SRC        "Java 소스 코드"
+    IDS_LEX_PASCAL_SRC      "Pascal 소스 코드"
+    IDS_LEX_ASM_SCR         "어셈블리 스크립트"
+    IDS_LEX_PERL_SCR        "Perl 스크립트"
+    IDS_LEX_CONF            "구성 파일"
+    IDS_LEX_BATCH           "일괄 파일"
+    IDS_LEX_DIFF            "Diff 파일"
+    IDS_LEX_SQL             "SQL 쿼리"
+    IDS_LEX_PYTHON          "Python 스크립트"
+    IDS_LEX_APC_CFG         "Apache 설정 파일"
+    IDS_LEX_PWRSHELL        "PowerShell 스크립트"
+    IDS_LEX_D_SRC           "D 소스 코드"
+    IDS_LEX_GO_SRC          "Go 소스 코드"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_AWK_SCR         "Awk 스크립트"
+    IDS_LEX_ANSI_ART        "ANSI 아트"
+    IDS_LEX_SHELL_SCR       "쉘 스크립트"
+    IDS_LEX_REG_FILES       "레지스트리 파일"
+    IDS_LEX_VHDL            "VHDL"
+    IDS_LEX_JSON            "JSON"
+    IDS_LEX_NSIS            "NSIS"
+    IDS_LEX_INNO            "Inno Setup 스크립트"
+    IDS_LEX_RUBY            "Ruby 스크립트"
+    IDS_LEX_LUA             "Lua 스크립트"
+    IDS_LEX_TCL             "Tcl 스크립트"
+    IDS_LEX_AUTOIT3         "AutoIt3 스크립트"
+    IDS_LEX_LATEX           "LaTeX 파일"
+    IDS_LEX_AHK             "AutoHotkey 스크립트"
+    IDS_LEX_CMAKE           "Cmake 스크립트"
+    IDS_LEX_AVI_SYNTH       "AviSynth 스크립트"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_MARKDOWN        "마크다운"
+    IDS_LEX_YAML            "YAML"
+    IDS_LEX_COFFEE_SCR      "Coffeescript"
+    IDS_LEX_MATLAB          "MATLAB"
+    IDS_LEX_NIM_SRC         "Nim 소스 코드"
+    IDS_LEX_R_STAT          "R-S-SPlus 통계 코드"
+    IDS_LEX_RUST_SRC        "Rust 소스 코드"
+    IDS_LEX_AHKL            "AutoHotkey_L 스크립트"
+    IDS_LEX_TEXT_FILES      "텍스트 파일"
+    IDS_LEX_TOML_CFG        "TOML"
+    IDS_LEX_DART_SRC        "Dart 소스 코드"
+    IDS_LEX_KOTLIN_SRC      "Kotlin 소스 코드"
+    IDS_LEX_JULIA_SCR       "Julia 스크립트"
+    IDS_LEX_KIX_SCR         "KiXtart 스크립트"
+    IDS_LEX_FORTRAN         "Fortran 소스 코드"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_VERILOG         "Verilog HDL"
+    IDS_LEX_SYSVERILOG      "SystemVerilog HDVL"
+    IDS_LEX_ABAQUS          "ABAQUS"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STD_STYLE       "기본 스타일"
+    IDS_LEX_STD_MARGIN      "여백 및 줄 번호"
+    IDS_LEX_STD_BRACE       "일치하는 중괄호 (표시기)"
+    IDS_LEX_STD_BRACE_FAIL  "일치하는 중괄호 오류 (표시기)"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STD_CTRL_CHAR   "제어 문자 (글꼴)"
+    IDS_LEX_STD_INDENT      "들여쓰기 안내선 (색상)"
+    IDS_LEX_STD_SEL         "선택한 텍스트 (색상)"
+    IDS_LEX_STD_WSPC        "공백 문자 (색상, 크기 1-12)"
+    IDS_LEX_STD_LN_BACKGR   "현재 줄 강조"
+    IDS_LEX_STD_CARET       "탈자 기호 (색상, 크기 1-3)"
+    IDS_LEX_STD_LONG_LN     "긴 줄 표시 (색상)"
+    IDS_LEX_STD_X_SPC       "줄 간격 (크기)"
+    IDS_LEX_2ND_STYLE       "두 번째 기본 스타일"
+    IDS_LEX_2ND_MARGIN      "두 번째 여백 및 줄 번호"
+    IDS_LEX_2ND_BRACE       "두 번째 일치하는 중괄호 (표시기)"
+    IDS_LEX_2ND_BRACE_FAIL  "두 번째 일치하는 중괄호 오류(표시기)"
+    IDS_LEX_2ND_CTRL_CHAR   "두 번째 제어 문자 (글꼴)"
+    IDS_LEX_2ND_INDENT      "두 번째 들여쓰기 안내선 (색상)"
+    IDS_LEX_2ND_SEL         "두 번째 선택한 텍스트 (색상)"
+    IDS_LEX_2ND_WSPC        "두 번째 공백 문자 (색상, 크기 1-12)"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_2ND_LN_BACKGR   "두 번째 현재 줄 강조"
+    IDS_LEX_2ND_CARET       "두 번째 탈자 기호 (색상, 크기 1-3)"
+    IDS_LEX_2ND_LONG_LN     "두 번째 긴 줄 표시 (색상)"
+    IDS_LEX_2ND_X_SPC       "두 번째 줄 간격 (크기)"
+    IDS_LEX_STD_BKMRK       "책갈피 및 접기 (색상, 크기)"
+    IDS_LEX_2ND_BKMRK       "두 번째 책갈피 및 접기 (색상, 크기)"
+    IDS_LEX_STR_Default     "기본값"
+    IDS_LEX_STR_Comment     "주석"
+    IDS_LEX_STR_Keyword     "키워드"
+    IDS_LEX_STR_Identifier  "식별 문자"
+    IDS_LEX_STR_Number      "숫자"
+    IDS_LEX_STR_String      "문자열"
+    IDS_LEX_STR_Operator    "연산자"
+    IDS_LEX_STR_PreProc     "전 처리기"
+    IDS_LEX_STR_VerbStrg    "약어 문자열"
+    IDS_LEX_STR_RegEx       "정규식"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_63136       "HTML 태그"
+    IDS_LEX_STR_63137       "HTML 알 수 없는 태그"
+    IDS_LEX_STR_63138       "HTML 속성"
+    IDS_LEX_STR_63139       "HTML 알 수 없는 특성"
+    IDS_LEX_STR_63140       "HTML 값"
+    IDS_LEX_STR_63141       "HTML 문자열"
+    IDS_LEX_STR_63142       "HTML 기타 내부 태그"
+    IDS_LEX_STR_63143       "HTML 주석"
+    IDS_LEX_STR_63144       "HTML 개체"
+    IDS_LEX_STR_63145       "XML 식별 문자"
+    IDS_LEX_STR_63146       "ASP 시작 태그"
+    IDS_LEX_STR_63147       "CDATA"
+    IDS_LEX_STR_63148       "PHP 시작 태그"
+    IDS_LEX_STR_63149       "PHP 기본"
+    IDS_LEX_STR_63150       "PHP 문자열"
+    IDS_LEX_STR_63151       "PHP 간단한 문자열"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_63152       "PHP 키워드"
+    IDS_LEX_STR_63153       "PHP 숫자"
+    IDS_LEX_STR_63154       "PHP 변수"
+    IDS_LEX_STR_63155       "PHP 문자열 변수"
+    IDS_LEX_STR_63156       "PHP 복합 변수"
+    IDS_LEX_STR_63157       "PHP 주석"
+    IDS_LEX_STR_63158       "PHP 연산자"
+    IDS_LEX_STR_63159       "JS 기본"
+    IDS_LEX_STR_63160       "JS 주석"
+    IDS_LEX_STR_63161       "JS 숫자"
+    IDS_LEX_STR_63162       "JS 식별 문자"
+    IDS_LEX_STR_63163       "JS 키워드"
+    IDS_LEX_STR_63164       "JS 문자열"
+    IDS_LEX_STR_63165       "JS 심볼"
+    IDS_LEX_STR_63166       "JS 정규식"
+    IDS_LEX_STR_63167       "ASP JS 기본"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_63168       "ASP JS 주석"
+    IDS_LEX_STR_63169       "ASP JS 숫자"
+    IDS_LEX_STR_63170       "ASP JS 식별자"
+    IDS_LEX_STR_63171       "ASP JS 키워드"
+    IDS_LEX_STR_63172       "ASP JS 문자열"
+    IDS_LEX_STR_63173       "ASP JS 심볼"
+    IDS_LEX_STR_63174       "ASP JS 정규식"
+    IDS_LEX_STR_63175       "VBS 기본값"
+    IDS_LEX_STR_63176       "VBS 주석"
+    IDS_LEX_STR_63177       "VBS 숫자"
+    IDS_LEX_STR_63178       "VBS 키워드"
+    IDS_LEX_STR_63179       "VBS 문자열"
+    IDS_LEX_STR_63180       "VBS 식별 문자"
+    IDS_LEX_STR_63181       "ASP VBS 기본"
+    IDS_LEX_STR_63182       "ASP VBS 주석"
+    IDS_LEX_STR_63183       "ASP VBS 숫자"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_63184       "ASP VBS 키워드"
+    IDS_LEX_STR_63185       "ASP VBS 문자열"
+    IDS_LEX_STR_63186       "ASP VBS 식별자"
+    IDS_LEX_STR_63187       "XML 태그"
+    IDS_LEX_STR_63188       "XML 속성"
+    IDS_LEX_STR_63189       "XML 값"
+    IDS_LEX_STR_63190       "XML 문자열"
+    IDS_LEX_STR_63191       "XML 기타 내부 태그"
+    IDS_LEX_STR_63192       "XML 주석"
+    IDS_LEX_STR_63193       "XML 개체"
+    IDS_LEX_STR_63194       "태그-클래스"
+    IDS_LEX_STR_63195       "태그-ID"
+    IDS_LEX_STR_63196       "태그-속성"
+    IDS_LEX_STR_63197       "유사-클래스"
+    IDS_LEX_STR_63198       "알 수 없는 유사-클래스"
+    IDS_LEX_STR_63199       "CSS 속성"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_63200       "알 수 없는 속성"
+    IDS_LEX_STR_Value       "값"
+    IDS_LEX_STR_63202       "중요"
+    IDS_LEX_STR_63203       "지시어"
+    IDS_LEX_STR_Target      "대상"
+    IDS_LEX_STR_63205       "인라인 어셈블리"
+    IDS_LEX_STR_63206       "CPU 명령어"
+    IDS_LEX_STR_63207       "FPU 명령어"
+    IDS_LEX_STR_Register    "레지스터"
+    IDS_LEX_STR_63209       "피연산자 지시어"
+    IDS_LEX_STR_63210       "확장 명령"
+    IDS_LEX_STR_63211       "큰 따옴표 문자열"
+    IDS_LEX_STR_63212       "작은 따옴표 문자열"
+    IDS_LEX_STR_63213       "POD (공통)"
+    IDS_LEX_STR_63214       "POD (축어)"
+    IDS_LEX_STR_63215       "스칼라 $var"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_63216       "배열 @var"
+    IDS_LEX_STR_63217       "해시 %var"
+    IDS_LEX_STR_63218       "기호 테이블 *var"
+    IDS_LEX_STR_63219       "정규식 /re/ 또는 m{re}"
+    IDS_LEX_STR_63220       "치환 s/re/ore/"
+    IDS_LEX_STR_63221       "역따옴표"
+    IDS_LEX_STR_63222       "데이터 섹션"
+    IDS_LEX_STR_63223       "여기-문서 (구분 기호)"
+    IDS_LEX_STR_63224       "여기-문서 (작은 따옴표, q)"
+    IDS_LEX_STR_63225       "여기-문서 (큰 따옴표, qq)"
+    IDS_LEX_STR_63226       "여기-문서 (역 따옴표, qx)"
+    IDS_LEX_STR_63227       "작은따옴표 문자열 (포괄적인, q)"
+    IDS_LEX_STR_63228       "큰따옴표 문자열 (qq)"
+    IDS_LEX_STR_63229       "역따옴표 (qx)"
+    IDS_LEX_STR_63230       "정규식 (qr)"
+    IDS_LEX_STR_63231       "배열 (qw)"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_Section     "섹션"
+    IDS_LEX_STR_Assign      "할당"
+    IDS_LEX_STR_63234       "기본값"
+    IDS_LEX_STR_Label       "레이블"
+    IDS_LEX_STR_Cmd         "명령"
+    IDS_LEX_STR_63237       "SGML"
+    IDS_LEX_STR_63238       "원본 및 대상"
+    IDS_LEX_STR_63239       "위치 설정"
+    IDS_LEX_STR_63240       "줄 추가"
+    IDS_LEX_STR_63241       "줄 제거"
+    IDS_LEX_STR_63242       "줄 변경"
+    IDS_LEX_STR_63243       "인용된 식별자"
+    IDS_LEX_STR_63244       "삼중 큰 따옴표 문자열"
+    IDS_LEX_STR_63245       "삼중 작은 따옴표 문자열"
+    IDS_LEX_STR_ClassName   "클래스 이름"
+    IDS_LEX_STR_FctName     "함수 이름"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_IpAdr       "IP 주소"
+    IDS_LEX_STR_Var         "변수"
+    IDS_LEX_STR_Cmdlet      "Cmdlet"
+    IDS_LEX_STR_Alias       "별명"
+    IDS_LEX_STR_63252       "구문 분석 오류"
+    IDS_LEX_STR_Prototyp    "프로토타입"
+    IDS_LEX_STR_63254       "형식 식별자"
+    IDS_LEX_STR_63255       "본문 서식"
+    IDS_LEX_STR_63256       "HTML 요소 텍스트"
+    IDS_LEX_STR_63257       "XML 요소 텍스트"
+    IDS_LEX_STR_63258       "Typedefs/클래스"
+    IDS_LEX_STR_63259       "설명 문서"
+    IDS_LEX_STR_Keyword2nd  "두 번째 키워드"
+    IDS_LEX_STR_Error       "오류"
+    IDS_LEX_STR_63262       "선택 항목 강조 (표시기)"
+    IDS_LEX_STR_63263       "두 번째 선택 항목 강조 (표시기)"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_63264       "하이퍼링크 핫스팟"
+    IDS_LEX_STR_63265       "두 번째 하이퍼링크 핫스팟"
+    IDS_LEX_STR_63266       "두 번째 공통 기반"
+    IDS_LEX_STR_63267       "문자열 내 변수"
+    IDS_LEX_STR_63268       "정렬된 목록"
+    IDS_LEX_STR_Infix       "중간 접미사"
+    IDS_LEX_STR_InfixEOL    "중간 접미사 EOL"
+    IDS_LEX_STR_63271       "기본 패키지 함수"
+    IDS_LEX_STR_63272       "기타 패키지 함수"
+    IDS_LEX_STR_Function    "함수"
+    IDS_LEX_STR_Const       "상수"
+    IDS_LEX_STR_63275       "하위 섹션"
+    IDS_LEX_STR_63276       "섹션 그룹"
+    IDS_LEX_STR_63277       "함수 정의"
+    IDS_LEX_STR_PageEx      "PageEx"
+    IDS_LEX_STR_63279       "If 정의"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_63280       "매크로 정의"
+    IDS_LEX_STR_Param       "매개 변수"
+    IDS_LEX_STR_63282       "인라인 확장"
+    IDS_LEX_STR_63283       "Pascal 주석"
+    IDS_LEX_STR_63284       "Pascal 키워드"
+    IDS_LEX_STR_63285       "값 이름"
+    IDS_LEX_STR_63286       "값 유형"
+    IDS_LEX_STR_Hex         "Hex"
+    IDS_LEX_STR_AddKey      "추가된 키"
+    IDS_LEX_STR_DelKey      "삭제된 키"
+    IDS_LEX_STR_Esc         "이스케이프"
+    IDS_LEX_STR_63291       "키 경로의 GUID"
+    IDS_LEX_STR_POD         "POD"
+    IDS_LEX_STR_Symbol      "심볼"
+    IDS_LEX_STR_63294       "모듈 이름"
+    IDS_LEX_STR_63295       "인스턴스 변수"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_63296       "클래스 변수"
+    IDS_LEX_STR_63297       "데이터 섹션"
+    IDS_LEX_STR_BaseFct     "기본 함수"
+    IDS_LEX_STR_63299       "문자열, 테이블 및 수학 함수"
+    IDS_LEX_STR_63300       "입력, 출력 및 시스템 기능"
+    IDS_LEX_STR_LitStrg     "직역 문자열"
+    IDS_LEX_STR_63302       "유사-요소"
+    IDS_LEX_STR_Media       "미디어"
+    IDS_LEX_STR_GlobClass   "글로벌 클래스"
+    IDS_LEX_STR_63305       "사용자 정의 함수"
+    IDS_LEX_STR_63306       "특수 문자"
+    IDS_LEX_STR_63307       "축어적 세그먼트"
+    IDS_LEX_STR_63308       "수식 연산자"
+    IDS_LEX_STR_63309       "변수 역참조"
+    IDS_LEX_STR_63310       "흐름 제어"
+    IDS_LEX_STR_63311       "키 및 버튼"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_63312       "내장 변수"
+    IDS_LEX_STR_63313       "변수 키워드"
+    IDS_LEX_STR_Filter      "필터"
+    IDS_LEX_STR_Plugin      "플러그인"
+    IDS_LEX_STR_63316       "클립 속성"
+    IDS_LEX_STR_63317       "줄 시작"
+    IDS_LEX_STR_Strong      "강세"
+    IDS_LEX_STR_Emph        "강조"
+    IDS_LEX_STR_63320       "머리글 1"
+    IDS_LEX_STR_63321       "머리글 2"
+    IDS_LEX_STR_63322       "머리글 3"
+    IDS_LEX_STR_63323       "머리글 4"
+    IDS_LEX_STR_63324       "머리글 5"
+    IDS_LEX_STR_63325       "머리글 6"
+    IDS_LEX_STR_63326       "사전 문자"
+    IDS_LEX_STR_63327       "정렬되지 않은 목록"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_63328       "블록 인용문"
+    IDS_LEX_STR_63329       "취소선"
+    IDS_LEX_STR_63330       "수평 규칙"
+    IDS_LEX_STR_Link        "링크"
+    IDS_LEX_STR_Code        "코드"
+    IDS_LEX_STR_Ref         "참고"
+    IDS_LEX_STR_Doc         "문서"
+    IDS_LEX_STR_Txt         "텍스트"
+    IDS_LEX_STR_StdOp       "표준 연산자"
+    IDS_LEX_STR_Attrib      "속성"
+    IDS_LEX_STR_StdFct      "표준 함수"
+    IDS_LEX_STR_StdPck      "표준 패키지"
+    IDS_LEX_STR_StdTyp      "표준형"
+    IDS_LEX_STR_Word        "단어"
+    IDS_LEX_STR_Verb        "축어"
+    IDS_LEX_STR_63343       "내장형"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_63344       "바이트 문자열"
+    IDS_LEX_STR_63345       "기타 키워드"
+    IDS_LEX_STR_63346       "Rust 수명"
+    IDS_LEX_STR_Obj         "개체"
+    IDS_LEX_STR_Key         "키"
+    IDS_LEX_STR_HotKey      "단축키"
+    IDS_LEX_STR_HotStrg     "핫스트링"
+    IDS_LEX_STR_HotStrgOp   "핫스트링 옵션"
+    IDS_LEX_STR_63352       "인라인 IME 색상"
+    IDS_LEX_STR_63353       "두 번째 인라인-IME 색상"
+    IDS_LEX_STR_63354       "다중 편집 표시기"
+    IDS_LEX_STR_63355       "두 번째 다중 편집 표시기"
+    IDS_LEX_STR_DateTime    "날짜-시간"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_63357       "각 정의에 대해"
+    IDS_LEX_STR_63358       "While 정의"
+    IDS_LEX_STR_Math        "수학"
+    IDS_LEX_STR_Scalar      "스칼라"
+    IDS_LEX_STR_Subst       "치환"
+    IDS_LEX_STR_Modf        "수정자"
+    IDS_LEX_STR_Tag         "태그"
+    IDS_LEX_STR_63364       "속성 이름"
+    IDS_LEX_STR_63365       "LD 키워드"
+    IDS_LEX_STR_63366       "ESC 시퀀스"
+    IDS_LEX_STR_63367       "유니코드 포인트 호버"
+    IDS_LEX_STR_63368       "두 번째 유니코드 포인트 호버"
+    IDS_LEX_STR_Interface   "인터페이스"
+    IDS_LEX_STR_Annot       "주석"
+    IDS_LEX_STR_63371       "주석 문서 단어"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_Decor       "데코레이터"
+    IDS_LEX_STR_63373       "작업 마커"
+    IDS_LEX_STR_63374       "주석 문서 오류"
+    IDS_LEX_STR_TypeOp      "유형 연산자"
+    IDS_LEX_STR_63376       "연속"
+    IDS_LEX_STR_Special     "특수"
+    IDS_LEX_STR_63378       "구문 연산자"
+    IDS_LEX_STR_63379       "닫히지 않은 문자열"
+    IDS_LEX_STR_63380       "URL/IRI"
+    IDS_LEX_STR_63381       "압축 IRI"
+    IDS_LEX_STR_SendKey     "전송 키"
+    IDS_LEX_STR_63383       "메타 데이터"
+    IDS_LEX_STR_Enum        "열거"
+    IDS_LEX_STR_63385       "TriQ-문자열"
+    IDS_LEX_STR_63386       "기호 식별자"
+    IDS_LEX_STR_63387       "기호 연산자"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STR_StrgEOL     "문자열 EOL"
+    IDS_LEX_STR_Backticks   "백틱"
+    IDS_LEX_STR_GUIDStrg    "GUID 문자열"
+    IDS_LEX_STR_Global      "전역"
+    IDS_LEX_STR_Input       "입력"
+    IDS_LEX_STR_Output      "출력"
+    IDS_LEX_STR_InOut       "입출력"
+    IDS_LEX_STR_PortConn    "포트 연결"
+    IDS_LEX_STR_SysTasks    "시스템 작업"
+    IDS_LEX_STR_AfterLabel  "레이블 뒤"
+    IDS_LEX_STR_Table       "테이블"
+    IDS_LEX_STR_StarCmd     "별표 명령"
+    IDS_LEX_STR_SlashCmd    "스래시 명령"
+    IDS_LEX_STR_Processor   "프로세스"
+    IDS_LEX_STR_Argument    "인수"
+    IDS_LEX_STR_CSSDefault "CSS 기본값"
+    IDS_LEX_STR_CSSComment "CSS 주석"
+    IDS_LEX_STR_CSSSelector "CSS 선택자"
+    IDS_LEX_STR_CSSClassID "CSS 클래스/ID"
+    IDS_LEX_STR_CSSProperty "CSS 속성"
+    IDS_LEX_STR_CSSValue "CSS 값"
+    IDS_LEX_STR_CSSString "CSS 문자열"
+IDS_LEX_STR_CSSDirOp "CSS 지시어/연산자"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_STD_CH_MODIFIED     "변경 내역 표시기 수정됨"
+    IDS_LEX_STD_CH_SAVED        "변경 내역 표시기 저장됨"
+    IDS_LEX_STD_CH_REV_TO_MOD   "변경 내역 표시기 수정됨으로 되돌림"
+    IDS_LEX_STD_CH_REV_TO_ORG   "변경 내역 표시기 원점으로 되돌림"
+    IDS_LEX_2ND_CH_MODIFIED     "두 번째 변경 내역 표시기 수정됨"
+    IDS_LEX_2ND_CH_SAVED        "두 번째 변경 내역 표시기 저장됨"
+    IDS_LEX_2ND_CH_REV_TO_MOD   "두 번째 변경 내역 표시기 수정됨으로 되돌림"
+    IDS_LEX_2ND_CH_REV_TO_ORG   "두 번째 변경 내역 표시기 원점으로 되돌림"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_LEX_CSV_COL_0       "열 0"
+    IDS_LEX_CSV_COL_1       "열 1"
+    IDS_LEX_CSV_COL_2       "열 2"
+    IDS_LEX_CSV_COL_3       "열 3"
+    IDS_LEX_CSV_COL_4       "열 4"
+    IDS_LEX_CSV_COL_5       "열 5"
+    IDS_LEX_CSV_COL_6       "열 6"
+    IDS_LEX_CSV_COL_7       "열 7"
+    IDS_LEX_CSV_COL_8       "열 8"
+    IDS_LEX_CSV_COL_9       "열 9"
+END
+
+#endif    // Korean (Korea) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

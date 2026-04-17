@@ -134,7 +134,7 @@ BEGIN
     IDS_MUI_ERR_BROWSE      "Nenašiel sa doplnok na prehľadávanie súborov\nDoplnok MiniPath si môžete stiahnuť z https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Nenašiel sa vyhľadávací doplnok\nDoplnok na vyhľadávanie súborov grepWin Portable si môžete stiahnuť z https://github.com/stefankueng/grepWin/releases"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
-                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
+                            "Nebol nájdený žiadny zásuvný modul na vyhľadávanie súborov\nNainštalujte si najnovšiu verziu programu grepWinPortable na platforme PortableApps."
     IDS_MUI_ERR_MRUDLG      "Žiadny prístup k vybranému súboru!\nChcete ho odstrániť zo zoznamu?"
     IDS_MUI_ERR_CREATELINK  "Chyba pri vytváraní odkazu na pracovnú plochu"
     IDS_MUI_ERR_PREVWINDISABLED
