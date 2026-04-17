@@ -36,645 +36,645 @@ msgstr ""
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
-msgstr ""
+msgstr "%ld kết quả khác"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr ""
+msgstr "%path% được thay bằng đường dẫn tệp, %line% bằng dòng cần đến, %column% bằng vị trí trong dòng"
 
 #. Resource IDs: (175)
 #, c-format
 msgid "%s files, skipped %s files. %s results selected."
-msgstr ""
+msgstr "%s tệp, bỏ qua %s tệp. Đã chọn %s kết quả."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
-msgstr ""
+msgstr "&Giới thiệu grepWin..."
 
 #. Resource IDs: (1061)
 msgid "&Convert newlines"
-msgstr ""
+msgstr "&Chuyển đổi xuống dòng"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
-msgstr ""
+msgstr "&Thay thế"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "&Toàn bộ từ"
 
 #. Resource IDs: (1013)
 msgid "..."
-msgstr ""
+msgstr "..."
 
 #. Resource IDs: (1061, 1063)
 msgid "/"
-msgstr ""
+msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
-msgstr ""
+msgstr "<a href=\"https://tools.stefankueng.com\">Truy cập trang web của chúng tôi</a>"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
-msgstr ""
+msgstr "<a>Giới thiệu grepWin</a>"
 
 #. Resource IDs: (1086)
 msgid ">"
-msgstr ""
+msgstr ">"
 
 #. Resource IDs: (135)
 msgid "About grepWin"
-msgstr ""
+msgstr "Giới thiệu grepWin"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr ""
+msgstr "Thêm vào cài đặt sẵn"
 
 #. Resource IDs: (155)
 msgid "All Files"
-msgstr ""
+msgstr "Tất cả tệp"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr ""
+msgstr "Tất cả ngày"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
-msgstr ""
+msgstr "Tất cả kích thước"
 
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr ""
+msgstr "Bạn có chắc muốn thay thế\n%s\nbằng\n%s\nmà không tạo bản sao lưu?"
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr ""
+msgstr "Giữa"
 
 #. Resource IDs: (1095)
 msgid "Both"
-msgstr ""
+msgstr "Cả hai"
 
 #. Resource IDs: (1093)
 msgid "CRLF (Windows)"
-msgstr ""
+msgstr "CRLF (Windows)"
 
 #. Resource IDs: (2)
 msgid "Cancel"
-msgstr ""
+msgstr "Hủy"
 
 #. Resource IDs: (169)
 msgid "Capture search (Shows replaced text)"
-msgstr ""
+msgstr "Tìm kiếm nhóm (hiển thị văn bản đã thay)"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr ""
+msgstr "Kiểm tra cập nhật"
 
 #. Resource IDs: (180)
 msgid "Column"
-msgstr ""
+msgstr "Cột"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr ""
+msgstr "Dòng lệnh mở trình soạn thảo tại dòng và vị trí cụ thể:"
 
 #. Resource IDs: (1060)
 msgid "Content"
-msgstr ""
+msgstr "Nội dung"
 
 #. Resource IDs: (65535)
 msgid "Convert newlines to regex newline tags:"
-msgstr ""
+msgstr "Chuyển xuống dòng thành thẻ regex:"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr ""
+msgstr "Sao chép cột cho tất cả mục"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr ""
+msgstr "Sao chép cột cho mục đã chọn"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
-msgstr ""
+msgstr "Sao chép tên tệp vào khay nhớ"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr ""
+msgstr "Sao chép các tên tệp vào khay nhớ"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr ""
+msgstr "Sao chép đường dẫn vào khay nhớ"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
-msgstr ""
+msgstr "Sao chép các đường dẫn vào khay nhớ"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
-msgstr ""
+msgstr "Sao chép kết quả văn bản vào khay nhớ"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
-msgstr ""
+msgstr "Sao chép các kết quả văn bản vào khay nhớ"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
-msgstr ""
+msgstr "Tạo tệp sao lưu"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
-msgstr ""
+msgstr "Tạo tệp sao lưu trong thư mục riêng"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr ""
+msgstr "Chế độ tối"
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr ""
+msgstr "Ngày sửa đổi"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr ""
+msgstr "Không cảnh báo khi thay thế mà không sao lưu"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr ""
+msgstr "Dấu chấm khớp xuống dòng"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr ""
+msgstr "Nhấp đúp để chọn cài đặt sẵn"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
-msgstr ""
+msgstr "Trống"
 
 #. Resource IDs: (1067)
 msgid "Editor"
-msgstr ""
+msgstr "Trình soạn thảo"
 
 #. Resource IDs: (138)
 msgid "Encoding"
-msgstr ""
+msgstr "Mã hóa"
 
 #. Resource IDs: (1056)
 msgid "Enter a name for the regex:"
-msgstr ""
+msgstr "Nhập tên cho regex:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr ""
+msgstr "Phím Escape đóng grepWin"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr ""
+msgstr "Loại trừ thư mục (Regex):"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr ""
+msgstr "Xuất danh sách kết quả"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr ""
+msgstr "Xuất kết quả..."
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr ""
+msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr ""
+msgstr "Tên tệp khớp:\\nDùng '|' để phân cách các mẫu, thêm '-' để loại trừ"
 
 #. Resource IDs: (1059)
 msgid "Files"
-msgstr ""
+msgstr "Tệp"
 
 #. Resource IDs: (181)
 msgid "Filter results"
-msgstr ""
+msgstr "Lọc kết quả"
 
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %s files, skipped %s files."
-msgstr ""
+msgstr "Tìm thấy %s tệp, bỏ qua %s tệp."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
-msgstr ""
+msgstr "GREPWIN"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr ""
+msgstr "Nếu bật, thư mục sao lưu được tạo bên trong thư mục đang tìm/thay, và các tệp được sao lưu vào đó"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
-msgstr ""
+msgstr "Bao gồm tệp nhị phân"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
-msgstr ""
+msgstr "Bao gồm mục ẩn"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr ""
+msgstr "Bao gồm đường dẫn tìm kiếm"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
-msgstr ""
+msgstr "Bao gồm thư mục con"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "Bao gồm liên kết tượng trưng"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr ""
+msgstr "Bao gồm mục hệ thống"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
-msgstr ""
+msgstr "Đường dẫn không hợp lệ!"
 
 #. Resource IDs: (161)
 msgid "Inverse search"
-msgstr ""
+msgstr "Tìm kiếm đảo ngược"
 
 #. Resource IDs: (1019)
 msgid "KB"
-msgstr ""
+msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "Giữ ngày tệp khi thay thế"
 
 #. Resource IDs: (1094)
 msgid "LF (Linux)"
-msgstr ""
+msgstr "LF (Linux)"
 
 #. Resource IDs: (1075)
 msgid "Language:"
-msgstr ""
+msgstr "Ngôn ngữ:"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
-msgstr ""
+msgstr "Giới hạn tìm kiếm"
 
 #. Resource IDs: (134)
 msgid "Line"
-msgstr ""
+msgstr "Dòng"
 
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %s\n"
-msgstr ""
+msgstr "Dòng %5ld : %s\\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
-msgstr ""
+msgstr "Kết quả khớp"
 
 #. Resource IDs: (137)
 msgid "Multiline editor"
-msgstr ""
+msgstr "Trình soạn thảo nhiều dòng"
 
 #. Resource IDs: (104)
 msgid "Name"
-msgstr ""
+msgstr "Tên"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr ""
+msgstr "Mới hơn"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr ""
+msgstr "Xuống dòng khớp với '.'"
 
 #. Resource IDs: (140)
 msgid "Newlines"
-msgstr ""
+msgstr "Xuống dòng"
 
 #. Resource IDs: (1056)
 msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
-msgstr ""
+msgstr "Lưu ý: xuống dòng chỉ dùng để định dạng. Dùng nút bên dưới để chuyển thành xuống dòng regex."
 
 #. Resource IDs: (1)
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr ""
+msgstr "Cũ hơn"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr ""
+msgstr "Chỉ một phiên bản"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
-msgstr ""
+msgstr "Mở thư mục chứa"
 
 #. Resource IDs: (141)
 msgid "Open with Editor"
-msgstr ""
+msgstr "Mở bằng trình soạn thảo"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
-msgstr ""
+msgstr "Dán văn bản để kiểm tra regex:"
 
 #. Resource IDs: (137)
 msgid "Path"
-msgstr ""
+msgstr "Đường dẫn"
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr ""
+msgstr "Tên cài đặt sẵn"
 
 #. Resource IDs: (1022, 132)
 msgid "Presets"
-msgstr ""
+msgstr "Cài đặt sẵn"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr ""
+msgstr "Nhấn F1 để được trợ giúp"
 
 #. Resource IDs: (154)
 msgid "Programs"
-msgstr ""
+msgstr "Chương trình"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
-msgstr ""
+msgstr "Đổi &tên cài đặt sẵn"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
-msgstr ""
+msgstr "Kiểm tra Regex"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr ""
+msgstr "Khớp Regex"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr ""
+msgstr "Chuỗi thay thế Regex:"
 
 #. Resource IDs: (1001)
 msgid "Regex search"
-msgstr ""
+msgstr "Tìm kiếm Regex"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr ""
+msgstr "Chuỗi tìm kiếm Regex:"
 
 #. Resource IDs: (179)
 msgid "Regex stack error"
-msgstr ""
+msgstr "Lỗi ngăn xếp Regex"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
-msgstr ""
+msgstr "Không cho phép đường dẫn tương đối. Vui lòng nhập đường dẫn tuyệt đối!"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr ""
+msgstr "&Xóa cài đặt sẵn"
 
 #. Resource IDs: (106)
 msgid "Replace string"
-msgstr ""
+msgstr "Chuỗi thay thế"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr ""
+msgstr "Thay thế bằng:/\\nĐịnh dạng nhóm:"
 
 #. Resource IDs: (126)
 msgid "S&top"
-msgstr ""
+msgstr "Dừ&ng"
 
 #. Resource IDs: (1, 1016)
 msgid "Search"
-msgstr ""
+msgstr "Tìm kiếm"
 
 #. Resource IDs: (1026)
 msgid "Search &for:"
-msgstr ""
+msgstr "Tìm &kiếm:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr ""
+msgstr "Tìm kiếm phân biệt chữ hoa/thường"
 
 #. Resource IDs: (1015)
 msgid "Search in"
-msgstr ""
+msgstr "Tìm trong"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr ""
+msgstr "Tìm trong các tệp đã tìm thấy"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr ""
+msgstr "Kết quả tìm kiếm"
 
 #. Resource IDs: (105)
 msgid "Search string"
-msgstr ""
+msgstr "Chuỗi tìm kiếm"
 
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
-msgstr ""
+msgstr "Đã tìm %s tệp, bỏ qua %s tệp. Tìm thấy %s khớp trong %s tệp."
 
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
-msgstr ""
+msgstr "Đã tìm %s tệp, bỏ qua %s tệp. Tìm thấy %s khớp trong %s tệp. Đã chọn %s kết quả."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr ""
+msgstr "Chọn ứng dụng trình soạn thảo..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
-msgstr ""
+msgstr "Chọn đường dẫn để tìm kiếm"
 
 #. Resource IDs: (133)
 msgid "Size"
-msgstr ""
+msgstr "Kích thước"
 
 #. Resource IDs: (1006)
 msgid "Size is"
-msgstr ""
+msgstr "Kích thước là"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
-msgstr ""
+msgstr "Kiểm tra regex"
 
 #. Resource IDs: (136)
 msgid "Text"
-msgstr ""
+msgstr "Văn bản"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr ""
+msgstr "Khớp văn bản"
 
 #. Resource IDs: (1002)
 msgid "Text search"
-msgstr ""
+msgstr "Tìm kiếm văn bản"
 
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr ""
+msgstr "Đường dẫn \\"%s\\" không tồn tại hoặc không thể truy cập!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
-msgstr ""
+msgstr "Chuỗi tìm kiếm regex khớp:"
 
 #. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
-msgstr ""
+msgstr "Văn bản sau khi thay thế:"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr ""
+msgstr "Xử lý tệp dưới dạng UTF-8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr ""
+msgstr "Xử lý tệp dưới dạng nhị phân"
 
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr ""
+msgstr "Tùy chọn \\"%s\\" đang bật.\\r\\nKhi thay thế, tùy chọn này có thể làm hỏng tệp.\\r\\nBạn có muốn tiếp tục không?"
 
 #. Resource IDs: (1025)
 msgid "\\"
-msgstr ""
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr ""
+msgstr "biểu thức chính quy dùng để tìm kiếm. Nhấn F1 để biết thêm."
 
 #. Resource IDs: (125)
 msgid "an empty string"
-msgstr ""
+msgstr "chuỗi rỗng"
 
 #. Resource IDs: (130)
 msgid "binary"
-msgstr ""
+msgstr "nhị phân"
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
-msgstr ""
+msgstr "nhấp để chỉnh sửa văn bản ở chế độ nhiều dòng"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
-msgstr ""
+msgstr "Chế độ tối yêu cầu ít nhất Win10 1803 và phải bật trong cài đặt hệ thống Windows."
 
 #. Resource IDs: (121)
 msgid "equal to"
-msgstr ""
+msgstr "bằng"
 
 #. Resource IDs: (122)
 msgid "greater than"
-msgstr ""
+msgstr "lớn hơn"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
-msgstr ""
+msgstr "grepWin"
 
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr ""
+msgstr "grepWin %s có sẵn"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
-msgstr ""
+msgstr "Cài đặt grepWin"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr ""
+msgstr "giữ Shift để tìm tệp KHÔNG chứa chuỗi tìm kiếm"
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr ""
+msgstr "bao gồm đường dẫn tệp"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr ""
+msgstr "bao gồm số dòng khớp"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr ""
+msgstr "bao gồm nội dung dòng khớp"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr ""
+msgstr "regex không hợp lệ!"
 
 #. Resource IDs: (120)
 msgid "less than"
-msgstr ""
+msgstr "nhỏ hơn"
 
 #. Resource IDs: (111)
 msgid "no match"
-msgstr ""
+msgstr "không khớp"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
-msgstr ""
+msgstr "không có văn bản để thay thế"
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
-msgstr ""
+msgstr "không có văn bản để kiểm tra"
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr ""
+msgstr "số byte NULL trên MB cho phép để tệp vẫn được coi là văn bản thay vì nhị phân"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr ""
+msgstr "chỉ tìm kiếm tệp khớp mẫu này.\\r\\nKhớp văn bản mở rộng. Dùng \\"|\\" làm dấu phân cách.\\r\\nVí dụ: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
-msgstr ""
+msgstr "mở danh sách mục gần đây"
 
 #. Resource IDs: (129)
 msgid "read error"
-msgstr ""
+msgstr "lỗi đọc"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr ""
+msgstr "regex hợp lệ"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr ""
+msgstr "dùng lại các phiên bản grepWin."
 
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr ""
+msgstr "đang quét tệp '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
-msgstr ""
+msgstr "chuỗi tìm kiếm trống"
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr ""
+msgstr "mở cửa sổ grepWin mới"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr ""
+msgstr "các đường dẫn tìm kiếm đệ quy.\\r\\nPhân cách bằng ký hiệu |.\\r\\nVí dụ: c:\\\\temp|d:\\\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr ""
+msgstr "bạn có thể loại trừ thư mục, ví dụ CVS và images.\\r\\nVí dụ: ^(CVS|images)$\\r\\nLưu ý: thư mục '.svn' bị ẩn trên Windows nên thường không được quét."
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
-msgstr ""
+msgstr "|"
 
 #. Resource IDs: (1024)
 msgid "⑂"
@@ -682,9 +682,9 @@ msgstr "⑂"
 
 #. Resource IDs: (1071)
 msgid "⚙ Settings"
-msgstr ""
+msgstr "⚙ Cài đặt"
 
 #. Resource IDs: (123)
 msgid "🔎 &Search"
-msgstr ""
+msgstr "🔎 &Tìm kiếm"
 

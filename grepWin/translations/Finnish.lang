@@ -36,645 +36,645 @@ msgstr ""
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
-msgstr ""
+msgstr "%ld lisää osumia"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr ""
+msgstr "%path% korvataan tiedostopolulla, %line% rivillä, johon siirrytään, ja %column% rivin sisäisellä sijainnilla"
 
 #. Resource IDs: (175)
 #, c-format
 msgid "%s files, skipped %s files. %s results selected."
-msgstr ""
+msgstr "%s tiedostoa, ohitettu %s tiedostoa. Valittu %s tulosta."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
-msgstr ""
+msgstr "Tietoj&a grepWinistä..."
 
 #. Resource IDs: (1061)
 msgid "&Convert newlines"
-msgstr ""
+msgstr "&Muunna rivinvaihdot"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
-msgstr ""
+msgstr "Ko&rvaa"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "K&oko sana"
 
 #. Resource IDs: (1013)
 msgid "..."
-msgstr ""
+msgstr "..."
 
 #. Resource IDs: (1061, 1063)
 msgid "/"
-msgstr ""
+msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
-msgstr ""
+msgstr "<a href=\"https://tools.stefankueng.com\">Käy verkkosivuillamme</a>"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
-msgstr ""
+msgstr "<a>Tietoja grepWinistä</a>"
 
 #. Resource IDs: (1086)
 msgid ">"
-msgstr ""
+msgstr ">"
 
 #. Resource IDs: (135)
 msgid "About grepWin"
-msgstr ""
+msgstr "Tietoja grepWinistä"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr ""
+msgstr "Lisää esiasetuksiin"
 
 #. Resource IDs: (155)
 msgid "All Files"
-msgstr ""
+msgstr "Kaikki tiedostot"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr ""
+msgstr "Kaikki päivämäärät"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
-msgstr ""
+msgstr "Kaikki koot"
 
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr ""
+msgstr "Haluatko varmasti korvata\n%s\nseuraavalla:\n%s\nluomatta varmuuskopioita?"
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr ""
+msgstr "Välillä"
 
 #. Resource IDs: (1095)
 msgid "Both"
-msgstr ""
+msgstr "Molemmat"
 
 #. Resource IDs: (1093)
 msgid "CRLF (Windows)"
-msgstr ""
+msgstr "CRLF (Windows)"
 
 #. Resource IDs: (2)
 msgid "Cancel"
-msgstr ""
+msgstr "Peruuta"
 
 #. Resource IDs: (169)
 msgid "Capture search (Shows replaced text)"
-msgstr ""
+msgstr "Hakutulos (näyttää korvatun tekstin)"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr ""
+msgstr "Tarkista päivitykset"
 
 #. Resource IDs: (180)
 msgid "Column"
-msgstr ""
+msgstr "Sarake"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr ""
+msgstr "Komentorivi editorin käynnistämiseksi tietyltä riviltä ja rivin siirtymän sisällä:"
 
 #. Resource IDs: (1060)
 msgid "Content"
-msgstr ""
+msgstr "Sisältö"
 
 #. Resource IDs: (65535)
 msgid "Convert newlines to regex newline tags:"
-msgstr ""
+msgstr "Muunna rivinvaihdot regex rivinvaihtotunnisteiksi:"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr ""
+msgstr "Kopioi sarake kaikkiin kohteisiin"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr ""
+msgstr "Kopioi sarake valituille kohteille"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
-msgstr ""
+msgstr "Kopioi tiedostonimi leikepöydälle"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr ""
+msgstr "Kopioi tiedostonimet leikepöydälle"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr ""
+msgstr "Kopioi polku leikepöydälle"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
-msgstr ""
+msgstr "Kopioi polut leikepöydälle"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
-msgstr ""
+msgstr "Kopioi tekstitulos leikepöydälle"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
-msgstr ""
+msgstr "Kopioi tekstitulokset leikepöydälle"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
-msgstr ""
+msgstr "Luo varmuuskopiotiedostoja"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
-msgstr ""
+msgstr "Luo varmuuskopiotiedostoja erilliseen kansioon"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr ""
+msgstr "Tumma tila"
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr ""
+msgstr "Muokkauspäivä"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr ""
+msgstr "Älä varoita korvaamisesta ilman varmuuskopiointia"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr ""
+msgstr "Piste vastaa rivinvaihtoa"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr ""
+msgstr "Valitse esiasetus tuplaklikkaamalla"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
-msgstr ""
+msgstr "Tyhjä"
 
 #. Resource IDs: (1067)
 msgid "Editor"
-msgstr ""
+msgstr "Editori"
 
 #. Resource IDs: (138)
 msgid "Encoding"
-msgstr ""
+msgstr "Koodaus"
 
 #. Resource IDs: (1056)
 msgid "Enter a name for the regex:"
-msgstr ""
+msgstr "Kirjoita regexin nimi:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr ""
+msgstr "Esc-näppäin sulkee grepWinin"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr ""
+msgstr "Jätä hakemistot pois (Regex):"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr ""
+msgstr "Vie tulosluettelo"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr ""
+msgstr "Vie tulosluettelo..."
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr ""
+msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr ""
+msgstr "Tiedostonimet:\nErottele mallit merkillä '|', lisää '-' sulkeaksesi pois"
 
 #. Resource IDs: (1059)
 msgid "Files"
-msgstr ""
+msgstr "Tiedostot"
 
 #. Resource IDs: (181)
 msgid "Filter results"
-msgstr ""
+msgstr "Suodatustulokset"
 
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %s files, skipped %s files."
-msgstr ""
+msgstr "Löydettiin %s tiedostoa, ohitettiin %s tiedostoa."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
-msgstr ""
+msgstr "GREPWIN"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr ""
+msgstr "Jos tämä asetus on käytössä, hakukohteena olevaan kansioon luodaan varmuuskopiokansio, ja tiedostot varmuuskopioidaan kyseiseen kansioon"
 
 #. Resource IDs: (1050)
-msgid "Include binary files"
-msgstr ""
+msgid "Include binary items"
+msgstr "Sisällytä binäärikohteet"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
-msgstr ""
+msgstr "Sisällytä piilotetut kohteet"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr ""
+msgstr "Sisällytä hakupolku"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
-msgstr ""
+msgstr "Sisällytä alikansiot"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "Sisällytä symboliset linkit"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr ""
+msgstr "Sisällytä järjestelmäkohteet"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
-msgstr ""
+msgstr "Virheellinen polku!"
 
 #. Resource IDs: (161)
 msgid "Inverse search"
-msgstr ""
+msgstr "Käänteinen haku"
 
 #. Resource IDs: (1019)
 msgid "KB"
-msgstr ""
+msgstr "Kt"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "Säilytä tiedoston päiväys korvattaessa"
 
 #. Resource IDs: (1094)
 msgid "LF (Linux)"
-msgstr ""
+msgstr "LF (Linux)"
 
 #. Resource IDs: (1075)
 msgid "Language:"
-msgstr ""
+msgstr "Kieli:"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
-msgstr ""
+msgstr "Rajoita hakua"
 
 #. Resource IDs: (134)
 msgid "Line"
-msgstr ""
+msgstr "Rivi"
 
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %s\n"
-msgstr ""
+msgstr "Rivi %5ld : %s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
-msgstr ""
+msgstr "Osumat"
 
 #. Resource IDs: (137)
 msgid "Multiline editor"
-msgstr ""
+msgstr "Monirivieditori"
 
 #. Resource IDs: (104)
 msgid "Name"
-msgstr ""
+msgstr "Nimi"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr ""
+msgstr "Uudempi kuin"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr ""
+msgstr "Uusi rivi vastaa '.'"
 
 #. Resource IDs: (140)
 msgid "Newlines"
-msgstr ""
+msgstr "Rivinvaihdot"
 
 #. Resource IDs: (1056)
 msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
-msgstr ""
+msgstr "Huomio: rivinvaihtoja käytetään vain muotoiluun. Muunna ne regex-rivinvaihdoiksi alla olevalla painikkeella."
 
 #. Resource IDs: (1)
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr ""
+msgstr "Vanhempi kuin"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr ""
+msgstr "Vain yksi instanssi"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
-msgstr ""
+msgstr "Avaa sisältökansio"
 
 #. Resource IDs: (141)
 msgid "Open with Editor"
-msgstr ""
+msgstr "Avaa editorissa"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
-msgstr ""
+msgstr "Liitä teksti regex-testiä varten:"
 
 #. Resource IDs: (137)
 msgid "Path"
-msgstr ""
+msgstr "Polku"
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr ""
+msgstr "Esiasetuksen nimi"
 
 #. Resource IDs: (1022, 132)
 msgid "Presets"
-msgstr ""
+msgstr "Esiasetukset"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr ""
+msgstr "Saat ohjeita painamalla F1"
 
 #. Resource IDs: (154)
 msgid "Programs"
-msgstr ""
+msgstr "Ohjelmat"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
-msgstr ""
+msgstr "&Nimeä esiasetus uudelleen"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
-msgstr ""
+msgstr "Regex-testi"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr ""
+msgstr "Regex täsmäys"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr ""
+msgstr "Regex-korvausmerkkijono:"
 
 #. Resource IDs: (1001)
 msgid "Regex search"
-msgstr ""
+msgstr "Regex-haku"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr ""
+msgstr "Regex-hakusana:"
 
 #. Resource IDs: (179)
 msgid "Regex stack error"
-msgstr ""
+msgstr "Regex-pinovirhe"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
-msgstr ""
+msgstr "Suhteellisia polkuja ei sallita. Syötä absoluuttinen polku!"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr ""
+msgstr "Poista &esiasetus"
 
 #. Resource IDs: (106)
 msgid "Replace string"
-msgstr ""
+msgstr "Korvaa merkkijono"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr ""
+msgstr "Korvaa seuraavalla: /\nTallennusmuoto:"
 
 #. Resource IDs: (126)
 msgid "S&top"
-msgstr ""
+msgstr "Pysäy&tä"
 
 #. Resource IDs: (1, 1016)
 msgid "Search"
-msgstr ""
+msgstr "Etsi"
 
 #. Resource IDs: (1026)
 msgid "Search &for:"
-msgstr ""
+msgstr "E&tsittävä:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr ""
+msgstr "Hae kirjainkoko huomioiden"
 
 #. Resource IDs: (1015)
 msgid "Search in"
-msgstr ""
+msgstr "Etsi mistä"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr ""
+msgstr "Hae löydetyistä tiedostoista"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr ""
+msgstr "Hakutulokset"
 
 #. Resource IDs: (105)
 msgid "Search string"
-msgstr ""
+msgstr "Hakusana"
 
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
-msgstr ""
+msgstr "Tutkittiin %s tiedostoa, ohitettiin %s tiedostoa. Löydettiin %s osumaa %s tiedostosta."
 
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
-msgstr ""
+msgstr "Tutkittiin %s tiedostoa, ohitettiin %s tiedostoa. Löydettiin %s osumaa %s tiedostosta. Valittiin %s tulosta."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr ""
+msgstr "Valitse Editor-sovellus..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
-msgstr ""
+msgstr "Valitse hakupolku"
 
 #. Resource IDs: (133)
 msgid "Size"
-msgstr ""
+msgstr "Koko"
 
 #. Resource IDs: (1006)
 msgid "Size is"
-msgstr ""
+msgstr "Koko on"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
-msgstr ""
+msgstr "Testaa regex"
 
 #. Resource IDs: (136)
 msgid "Text"
-msgstr ""
+msgstr "Teksti"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr ""
+msgstr "Tekstivastaavuus"
 
 #. Resource IDs: (1002)
 msgid "Text search"
-msgstr ""
+msgstr "Tekstihaku"
 
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr ""
+msgstr "Polkua \"%s\" ei ole olemassa tai siihen ei ole pääsyä!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
-msgstr ""
+msgstr "Regex-hakumerkkijono vastaa:"
 
 #. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
-msgstr ""
+msgstr "Korvaamisen jälkeen saatu teksti:"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr ""
+msgstr "Käsittele tiedostoja UTF-8-muodossa"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr ""
+msgstr "Käsittele tiedostoja binäärinä"
 
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr ""
+msgstr "Vaihtoehto \”%s\” on käytössä.\r\nTiedostoja korvattaessa tämä vaihtoehto voi aiheuttaa tiedostojen vioittumisen.\r\nHaluatko jatkaa silti?"
 
 #. Resource IDs: (1025)
 msgid "\\"
-msgstr ""
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr ""
+msgstr "hakua varten käytetty säännöllinen lauseke. Paina F1 saadaksesi lisätietoja."
 
 #. Resource IDs: (125)
 msgid "an empty string"
-msgstr ""
+msgstr "tyhjä merkkijono"
 
 #. Resource IDs: (130)
 msgid "binary"
-msgstr ""
+msgstr "binääri"
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
-msgstr ""
+msgstr "napsauta muokataksesi tekstiä monirivisenä tekstinä"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
-msgstr ""
+msgstr "Tumma tila vaatii Win10 1803+, ja se on otettava käyttöön järjestelmäasetuksissa."
 
 #. Resource IDs: (121)
 msgid "equal to"
-msgstr ""
+msgstr "yhtä suuri kuin"
 
 #. Resource IDs: (122)
 msgid "greater than"
-msgstr ""
+msgstr "suurempi kuin"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
-msgstr ""
+msgstr "grepWin"
 
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr ""
+msgstr "grepWin %s on saatavilla"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
-msgstr ""
+msgstr "grepWin-asetukset"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr ""
+msgstr "pidä Shift pohjassa etsiäksesi tiedostoja, jotka EIVÄT sisällä hakusanaa"
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr ""
+msgstr "sisällytä tiedostopolut"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr ""
+msgstr "sisällytä vastaavat rivinumerot"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr ""
+msgstr "sisällytä vastaavan rivin tekstit"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr ""
+msgstr "virheellinen regex"
 
 #. Resource IDs: (120)
 msgid "less than"
-msgstr ""
+msgstr "pienempi kuin"
 
 #. Resource IDs: (111)
 msgid "no match"
-msgstr ""
+msgstr "ei vastaavuutta"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
-msgstr ""
+msgstr "ei korvattavaa tekstiä"
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
-msgstr ""
+msgstr "tekstiä ei ole saatavilla testattavaksi"
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr ""
+msgstr "sallittu NULL-tavujen määrä megatavua kohti, jotta tiedostoa pidetään edelleen tekstinä eikä binäärinä"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr ""
+msgstr "haku kohdistuu vain tähän malliin sopiviin tiedostoihin.\r\nLaajennettu tekstihaku. Käytä erottimena \"|\".\r\nEsimerkki: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
-msgstr ""
+msgstr "avaa luettelo viimeisimmistä merkinnöistä"
 
 #. Resource IDs: (129)
 msgid "read error"
-msgstr ""
+msgstr "lukuvirhe"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr ""
+msgstr "regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr ""
+msgstr "käytä grepWin-instansseja uudelleen."
 
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr ""
+msgstr "skannataan tiedostoa '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
-msgstr ""
+msgstr "hakumerkkijono on tyhjä"
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr ""
+msgstr "käynnistä uusi grepWin-ikkuna"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr ""
+msgstr "polut, joita haetaan rekursiivisesti.\r\nErota polut toisistaan |-merkillä.\r\nEsimerkki: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr ""
+msgstr "voit sulkea hakemistoja pois, esim. CVS ja images.\r\nEsimerkki: ^(CVS|images)$\r\nHuomio: '.svn'-kansiot ovat piilotettuja Windowsissa, joten niitä ei yleensä skannata."
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
-msgstr ""
+msgstr "|"
 
 #. Resource IDs: (1024)
 msgid "⑂"
@@ -682,9 +682,9 @@ msgstr "⑂"
 
 #. Resource IDs: (1071)
 msgid "⚙ Settings"
-msgstr ""
+msgstr "⚙ Asetukset"
 
 #. Resource IDs: (123)
 msgid "🔎 &Search"
-msgstr ""
+msgstr "🔎 &Haku"
 
