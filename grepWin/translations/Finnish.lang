@@ -259,7 +259,7 @@ msgstr "Suodatustulokset"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %s files, skipped %s files."
-msgstr "Löydettiin %s tiedostoa, ohitettiin %s tiedostoa."
+msgstr "Löydetty %s, ohitettu %s tiedostoa."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -271,11 +271,11 @@ msgstr "Jos tämä asetus on käytössä, hakukohteena olevaan kansioon luodaan 
 
 #. Resource IDs: (1050)
 msgid "Include binary items"
-msgstr "Sisällytä binäärikohteet"
+msgstr "Myös binäärikohteet"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
-msgstr "Sisällytä piilotetut kohteet"
+msgstr "Myös piilotetut kohteet"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
@@ -460,7 +460,7 @@ msgstr "E&tsittävä:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "Hae kirjainkoko huomioiden"
+msgstr "Hae (sama kirjainkoko)"
 
 #. Resource IDs: (1015)
 msgid "Search in"
@@ -535,11 +535,11 @@ msgstr "Korvaamisen jälkeen saatu teksti:"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr "Käsittele tiedostoja UTF-8-muodossa"
+msgstr "Tiedostot UTF8-muodossa"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr "Käsittele tiedostoja binäärinä"
+msgstr "Tiedostot binäärinä"
 
 #. Resource IDs: (172)
 #, c-format
