@@ -483,7 +483,7 @@ BEGIN
         MENUITEM "文件修改通知(&C)...\tAlt+F5",                 IDM_SET_CHANGENOTIFY
         ///MENUITEM "自动保存和备份设置...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "关闭消息提示音(&M)",                          IDM_SET_MUTE_MESSAGEBEEP
-        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
+        MENUITEM "解析为 UNC 路径(&U)",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Esc 键功能(&E)"
         BEGIN
             MENUITEM "无(&N)",                                IDM_SET_NOESCFUNC
@@ -493,10 +493,10 @@ BEGIN
         MENUITEM "运行工具前先保存(&V)",                       IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "计算选定的表达式(&X)",                       IDM_SET_EVALTINYEXPRONSEL
         MENUITEM "启用多重光标选定",                IDM_SET_MULTIPLE_SELECTION
-        POPUP "Default &Directory"
+        POPUP "默认文件夹(&D)"
         BEGIN
-            MENUITEM "Set to Current File's &Directory",  IDM_SET_DEFAULTDIR
-            MENUITEM "&Reset to Default",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "设置为当前文件的文件夹(&C)",  IDM_SET_DEFAULTDIR
+            MENUITEM "重置为默认(&R)",                 IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "记忆(&R)"
