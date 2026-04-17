@@ -87,7 +87,7 @@
         Ctrl+Alt+Enter        Complete Word.
         Ctrl+ ←               Cursor Word Left.
         Ctrl+ →               Cursor Word Right.
-        Ctrl+Backspace        Delete Word Before/Left.
+        Tab/Shift-Tab         Delete Word Before/Left.
         Ctrl+Del              Delete Word After/Right.
 
       Lines
