@@ -483,7 +483,7 @@ BEGIN
         MENUITEM "Notificação de &Mudança de Arquivo...\tAlt+F5",       IDM_SET_CHANGENOTIFY
         ///MENUITEM "Configurações de Salvar Automático / Backup...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Deixar Mudo Avisos &Sonoros de Mensagens",            IDM_SET_MUTE_MESSAGEBEEP
-        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
+        MENUITEM "Resolver para os Caminhos da &UNC",                   IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Função da &Tecla Esc"
         BEGIN
             MENUITEM "&Nada",                IDM_SET_NOESCFUNC
@@ -493,10 +493,10 @@ BEGIN
         MENUITEM "Salvar &Antes de Executar Ferramentas Externas",   IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Calcular Tiny-E&xpressions",                       IDM_SET_EVALTINYEXPRONSEL
         MENUITEM "Habilitar Seleção Múltipla",                       IDM_SET_MULTIPLE_SELECTION
-        POPUP "Default &Directory"
+        POPUP "Pasta pa&drão"
         BEGIN
-            MENUITEM "Set to Current File's &Directory",  IDM_SET_DEFAULTDIR
-            MENUITEM "&Reset to Default",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "Definir para a &pasta do arquivo atual",  IDM_SET_DEFAULTDIR
+            MENUITEM "&Restaurar padrão",                       IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "&Lembrar"
