@@ -341,7 +341,7 @@ BEGIN
     LTEXT           "&Einrückung Tiefe:",IDC_STATIC2,7,30,60,8
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
     CONTROL         "Tabulatoren als &Leerzeichenfolge einfügen",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,160,10
-    CONTROL         "Tab/Backspace always indents",IDC_TAB_BACKTAB_INDENTS_ALWAYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "Tab/Shift-Tab formatiert immer die Einrückung",IDC_TAB_BACKTAB_INDENTS_ALWAYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
     CONTROL         "Tab-Taste formatiert die Einrückung",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,160,10
     CONTROL         "&Rück-Taste formatiert die Einrückung",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,160,10

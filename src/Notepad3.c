@@ -5772,7 +5772,8 @@ static bool _HandleEditFind(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_FIND: {
         SetFindReplaceData(); // s_FindReplaceData
         if (!IsWindow(Globals.hwndDlgFindReplace)) {
-            Globals.bFindReplCopySelOrClip = true;
+            // Don't overwrite cmd-line search pattern with editor selection
+            Globals.bFindReplCopySelOrClip = !g_flagMatchText;
             /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
         } else {
             Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
@@ -5792,7 +5793,8 @@ static bool _HandleEditFind(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     case IDM_EDIT_REPLACE: {
         SetFindReplaceData(); // s_FindReplaceData
         if (!IsWindow(Globals.hwndDlgFindReplace)) {
-            Globals.bFindReplCopySelOrClip = true;
+            // Don't overwrite cmd-line search pattern with editor selection
+            Globals.bFindReplCopySelOrClip = !g_flagMatchText;
             /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
         } else {
             Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);

@@ -5125,6 +5125,7 @@ void DialogGrepWin(HWND hwnd, LPCWSTR searchPattern)
             Path_GetModuleFilePath(hpath_np3);
 
             StringCchPrintf(value, COUNTOF(value), L"%s /g %%line%% - %%path%%", Path_Get(hpath_np3));
+            //@@@StringCchPrintf(value, COUNTOF(value), L"%s /g %%line%% /mr \"%%pattern%%\" - %%path%%", Path_Get(hpath_np3));
             IniSectionSetString(globalSection, L"editorcmd", value);
 
             Path_Release(hpath_np3);

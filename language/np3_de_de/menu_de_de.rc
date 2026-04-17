@@ -483,7 +483,7 @@ BEGIN
         MENUITEM "Nachricht bei &Dateiänderung...\tAlt+F5",     IDM_SET_CHANGENOTIFY
         ///MENUITEM "Auto-Speichern / Backup Einstellungen...",    IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Keine Nachrichten &Beeps",                    IDM_SET_MUTE_MESSAGEBEEP
-        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
+        MENUITEM "Zu &UNC-Pfad auflösen",                       IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Esc-&Key Funktion"
         BEGIN
             MENUITEM "&Keine",                                  IDM_SET_NOESCFUNC
@@ -493,10 +493,10 @@ BEGIN
         MENUITEM "Speichern vor Werkzeug Start",                IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Berechne Tiny-Expressions",                   IDM_SET_EVALTINYEXPRONSEL
         MENUITEM "Erlaube Mehrfach Selektion",                  IDM_SET_MULTIPLE_SELECTION
-        POPUP "Default &Directory"
+        POPUP "Standard &Verzeichnis"
         BEGIN
-            MENUITEM "Set to Current File's &Directory",  IDM_SET_DEFAULTDIR
-            MENUITEM "&Reset to Default",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "Aktuelles &Verzeichnis als Standard",      IDM_SET_DEFAULTDIR
+            MENUITEM "&Zurücksetzen auf Voreinstellung",         IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "&Erinnern an"
