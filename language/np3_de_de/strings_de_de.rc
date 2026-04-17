@@ -131,12 +131,12 @@ BEGIN
     IDS_MUI_ERR_SAVEFILE    "Error saving ""%s"""
     IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
     IDS_MUI_ERR_DLG_FORMAT  "Error '%s', cause:\n%s(ID:%d)\n"
-    IDS_MUI_ERR_BROWSE      "No file browser plugin was found\nThe MiniPath file browser plugin can be downloaded from https://rizonesoft.com"
-    IDS_MUI_ERR_GREPWIN     "No file search plugin was found\nThe grepWin Portable file search plugin can be downloaded from https://github.com/stefankueng/grepWin/releases"
+    IDS_MUI_ERR_BROWSE      "Es wurde kein Datei-Browser Plugin gefunden\nDas MiniPath Datei-Browser Plugin kann hier herunter geladen werden: https://rizonesoft.com"
+    IDS_MUI_ERR_GREPWIN     "Es wurde kein Datei-Inhaltsuche Tool gefunden\nDas grepWin Portable Datei-Inhaltsuche Tool kann hier herunter geladen werden: https://github.com/stefankueng/grepWin/releases"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
-                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
-    IDS_MUI_ERR_MRUDLG      "No access to the selected file!\nWould you like to remove it from the list?"
-    IDS_MUI_ERR_CREATELINK  "Error creating the Desktop link"
+                            "Es wurde kein Datei-Inhaltsuche Tool gefunden\nBitte die neueste Version von grepWinPortable in der PortableApps Platform installieren."
+    IDS_MUI_ERR_MRUDLG      "Keine Zugriff auf die selektierte Datei!\nSoll dieser Eintrag aus der Liste entfernt werden?"
+    IDS_MUI_ERR_CREATELINK  "Fehler beim Erzeugen der Desktop Verknüpfung"
     IDS_MUI_ERR_PREVWINDISABLED
                             "Die existierende Notepad3-Instanz ist entweder beschäftigt oder hat eine geöffnete Dialogbox\nMöchtest Du eine andere Notepad3-Instanz öffnen?"
     IDS_MUI_ERR_ENCODINGNA  "Die Code-Page Konvertierungstabellen sind für die ausgewählte Codierung auf diesem System nicht vorhanden"

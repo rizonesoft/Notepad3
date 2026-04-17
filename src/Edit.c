@@ -6604,18 +6604,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             SetWindowSubclass(cbInfoF.hwndItem, EditBoxForPasteFixes, 0, (DWORD_PTR) &(s_wchBufOut[0]));
             SHAutoComplete(cbInfoF.hwndItem, SHACF_FILESYS_ONLY | SHACF_AUTOAPPEND_FORCE_OFF | SHACF_AUTOSUGGEST_FORCE_OFF);
         }
-        if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_FINDTEXT))) {
-            if (StrgIsNotEmpty(s_pEfrData->chFindPattern)) {
-                ComboBox_SetTextHW(hwnd, IDC_FINDTEXT, s_pEfrData->chFindPattern);
-            }
-            else if (MRU_Count(Globals.pMRUfind)) {
-                MRU_Enum(Globals.pMRUfind, 0, s_wchBufOut, COUNTOF(s_wchBufOut));
-                ComboBox_SetTextW(hwnd, IDC_FINDTEXT, s_wchBufOut);
-            }
-            else {
-                ComboBox_SetTextW(hwnd, IDC_FINDTEXT, NULL);
-            }
-        }
 
         if (s_bIsReplaceDlg) {
 
@@ -6634,20 +6622,12 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 SetWindowSubclass(cbInfoR.hwndItem, EditBoxForPasteFixes, 0, (DWORD_PTR) &(s_wchBufOut[0]));
                 SHAutoComplete(cbInfoR.hwndItem, SHACF_FILESYS_ONLY | SHACF_AUTOAPPEND_FORCE_OFF | SHACF_AUTOSUGGEST_FORCE_OFF);
             }
-            if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_REPLACETEXT))) {
-                if (StrgIsNotEmpty(s_pEfrData->chReplaceTemplate)) {
-                    ComboBox_SetTextHW(hwnd, IDC_REPLACETEXT, s_pEfrData->chReplaceTemplate);
-                }
-                else if (MRU_Count(Globals.pMRUreplace)) {
-                    MRU_Enum(Globals.pMRUreplace, 0, s_wchBufOut, COUNTOF(s_wchBufOut));
-                    ComboBox_SetTextW(hwnd, IDC_REPLACETEXT, s_wchBufOut);
-                }
-                else {
-                    ComboBox_SetTextW(hwnd, IDC_REPLACETEXT, NULL);
-                }
-            }
         }
 
+        // Initialize all checkboxes BEFORE setting combobox text.
+        // Setting combobox text triggers CBN_EDITCHANGE synchronously,
+        // which calls _SetSearchFlags() that reads checkbox states.
+        // Checkboxes must reflect s_pEfrData values at that point.
         CheckDlgButton(hwnd, IDC_FINDREGEXP, SetBtn(s_pEfrData->bRegExprSearch));
 
         bool const bDotMatchAll = (s_pEfrData->fuFlags & SCFIND_DOT_MATCH_ALL) != 0;
@@ -6685,6 +6665,36 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         }
 
         CheckDlgButton(hwnd, IDC_TRANSPARENT, SetBtn(Settings.FindReplaceTransparentMode));
+
+        // Now set combobox text — CBN_EDITCHANGE will fire and call
+        // _SetSearchFlags(), which can now read the correct checkbox states.
+        if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_FINDTEXT))) {
+            if (StrgIsNotEmpty(s_pEfrData->chFindPattern)) {
+                ComboBox_SetTextHW(hwnd, IDC_FINDTEXT, s_pEfrData->chFindPattern);
+            }
+            else if (MRU_Count(Globals.pMRUfind)) {
+                MRU_Enum(Globals.pMRUfind, 0, s_wchBufOut, COUNTOF(s_wchBufOut));
+                ComboBox_SetTextW(hwnd, IDC_FINDTEXT, s_wchBufOut);
+            }
+            else {
+                ComboBox_SetTextW(hwnd, IDC_FINDTEXT, NULL);
+            }
+        }
+
+        if (s_bIsReplaceDlg) {
+            if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_REPLACETEXT))) {
+                if (StrgIsNotEmpty(s_pEfrData->chReplaceTemplate)) {
+                    ComboBox_SetTextHW(hwnd, IDC_REPLACETEXT, s_pEfrData->chReplaceTemplate);
+                }
+                else if (MRU_Count(Globals.pMRUreplace)) {
+                    MRU_Enum(Globals.pMRUreplace, 0, s_wchBufOut, COUNTOF(s_wchBufOut));
+                    ComboBox_SetTextW(hwnd, IDC_REPLACETEXT, s_wchBufOut);
+                }
+                else {
+                    ComboBox_SetTextW(hwnd, IDC_REPLACETEXT, NULL);
+                }
+            }
+        }
 
         if (s_bSwitchedFindReplace) {
             // restore from prev Dlg
