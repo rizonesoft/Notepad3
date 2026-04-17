@@ -341,7 +341,7 @@ BEGIN
     LTEXT           "Размер &отступа:",IDC_STATIC2,7,30,56,8
     EDITTEXT        IDC_INDENT_DEPTH,79,27,30,14,ES_AUTOHSCROLL
     CONTROL         "&Заменять пробелами",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
-    CONTROL         "Tab/Backspace always indents",IDC_TAB_BACKTAB_INDENTS_ALWAYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "Tab/Shift-Tab always indents",IDC_TAB_BACKTAB_INDENTS_ALWAYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
     CONTROL         "Клавиша &Tab переформатирует отступ",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
     CONTROL         "Клавиша &Backspace переформатирует отступ",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,170,10

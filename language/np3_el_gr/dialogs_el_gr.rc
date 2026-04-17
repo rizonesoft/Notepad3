@@ -341,7 +341,7 @@ BEGIN
     LTEXT           "&Μέγεθος εσοχής:",IDC_STATIC2,7,30,59,8
     EDITTEXT        IDC_INDENT_DEPTH,71,27,30,14,ES_AUTOHSCROLL
     CONTROL         "Ει&σαγωγή στηλοθετών ως κενά διαστήματα",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,170,10
-    CONTROL         "Tab/Backspace always indents",IDC_TAB_BACKTAB_INDENTS_ALWAYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "Tab/Shift-Tab always indents",IDC_TAB_BACKTAB_INDENTS_ALWAYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
     CONTROL         "Aναδιαμόρφωση εσοχής με το πλήκτρο &Τab",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,170,10
     CONTROL         "Aναδιαμ/ση εσοχής με το πλήκτρο &Βackspace",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,160,10
