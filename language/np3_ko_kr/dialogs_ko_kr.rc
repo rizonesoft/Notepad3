@@ -341,7 +341,7 @@ BEGIN
     LTEXT           "들여쓰기 크기(&I):",IDC_STATIC2,7,30,59,8
     EDITTEXT        IDC_INDENT_DEPTH,75,27,30,14,ES_AUTOHSCROLL
     CONTROL         "탭을 공백으로 삽입(&S)",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
-    CONTROL         "Tab/Backspace always indents",IDC_TAB_BACKTAB_INDENTS_ALWAYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "Tab/Shift-Tab always indents",IDC_TAB_BACKTAB_INDENTS_ALWAYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
     CONTROL         "탭 키로 들여쓰기 다시 포맷(&K)",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,147,10
     CONTROL         "백스페이스 키로 들여쓰기 다시 포맷(&B)",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,160,10

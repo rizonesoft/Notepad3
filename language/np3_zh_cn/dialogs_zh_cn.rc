@@ -341,7 +341,7 @@ BEGIN
     LTEXT           "缩进宽度(&I)：",IDC_STATIC2,7,30,59,8
     EDITTEXT        IDC_INDENT_DEPTH,74,27,30,14,ES_AUTOHSCROLL
     CONTROL         "将键入的制表符替换为空格(&S)",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,155,10
-    CONTROL         "始终使用 Tab/Backspace 键调整缩进(&D)",IDC_TAB_BACKTAB_INDENTS_ALWAYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "始终使用 Tab/Shift-Tab 键调整缩进(&D)",IDC_TAB_BACKTAB_INDENTS_ALWAYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
     CONTROL         "按 Tab 键时重新格式化缩进(&K)",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,155,10
     CONTROL         "按 Backspace 键时重新格式化缩进(&B)",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,155,10

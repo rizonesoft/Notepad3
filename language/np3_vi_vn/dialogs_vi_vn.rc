@@ -341,7 +341,7 @@ BEGIN
     LTEXT           "Kích thước thụt lề(&I):",IDC_STATIC2,7,30,67,8
     EDITTEXT        IDC_INDENT_DEPTH,75,27,30,14,ES_AUTOHSCROLL
     CONTROL         "Chèn tab dưới dạng khoảng trắng(&S)",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
-    CONTROL         "Tab/Backspace always indents",IDC_TAB_BACKTAB_INDENTS_ALWAYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "Tab/Shift-Tab always indents",IDC_TAB_BACKTAB_INDENTS_ALWAYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
     CONTROL         "Định dạng lại thụt lề bằng phím tab(&K)",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,147,10
     CONTROL         "Định dạng lại thụt lề bằng phím Backspace(&B)",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,162,10
