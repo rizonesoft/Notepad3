@@ -162,7 +162,7 @@ BEGIN
         MENUITEM "Klipp ut\tCtrl+X",                                IDM_EDIT_CUT
         MENUITEM "Kopiera\tCtrl+C",                                 IDM_EDIT_COPY
         MENUITEM "Kopiera allt\tAlt+C",                             IDM_EDIT_COPYALL
-        MENUITEM "Lägg till urklipp\tCtrl+E",                       IDM_EDIT_COPYADD
+        MENUITEM "Lägg till i urklipp\tCtrl+E",                       IDM_EDIT_COPYADD
         MENUITEM "Klistra in\tCtrl+V",                              IDM_EDIT_PASTE
         MENUITEM "Byt\tCtrl+K",                                     IDM_EDIT_SWAP
         MENUITEM "Ta bort\tDel",                                     IDM_EDIT_CLEAR
@@ -393,8 +393,8 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "Radnummer\tCtrl+Shift+N",                         IDM_VIEW_LINENUMBERS
-        MENUITEM "Bokmärke marginal\tCtrl+Shift+M",                 IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Ändra bokmärke marginal",                         IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Marginal för bokmärken\tCtrl+Shift+M",                 IDM_VIEW_BOOKMARK_MARGIN
+        MENUITEM "Marginal för ändringshistorik",                         IDM_VIEW_CHGHIST_TOGGLE_MARGIN
         MENUITEM SEPARATOR
         POPUP "Vikning"
         BEGIN
@@ -483,7 +483,7 @@ BEGIN
         MENUITEM "Notifiering vid filändring...\tAlt+F5",           IDM_SET_CHANGENOTIFY
         ///MENUITEM "AutoSave / Backup Settings...",                IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Stäng av ljud vid meddelande",                    IDM_SET_MUTE_MESSAGEBEEP
-        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
+        MENUITEM "Konvertera till &UNC-sökvägar",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Esc-tangentens funktion"
         BEGIN
             MENUITEM "Ingen",                                       IDM_SET_NOESCFUNC
@@ -493,10 +493,10 @@ BEGIN
         MENUITEM "Spara innan verktyg används",                     IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Räkna ut Tiny-E&xpressions",                      IDM_SET_EVALTINYEXPRONSEL
         MENUITEM "Aktivera multimarkering",                       IDM_SET_MULTIPLE_SELECTION
-        POPUP "Default &Directory"
+        POPUP "Standardkatalog"
         BEGIN
-            MENUITEM "Set to Current File's &Directory",  IDM_SET_DEFAULTDIR
-            MENUITEM "&Reset to Default",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "Ange den aktuella filens &katalog",  IDM_SET_DEFAULTDIR
+            MENUITEM "&Återställ till standard",                 IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "Kom ihåg"
@@ -616,7 +616,7 @@ BEGIN
         MENUITEM "Ihopvikning av kodsegment",                       IDM_VIEW_FOLDING
         MENUITEM "Radnummer",                                       IDM_VIEW_LINENUMBERS
         MENUITEM "Marginal för bokmärken",                          IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Marginal historia",                               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Marginal för ändringshistorik",                               IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN
