@@ -92,7 +92,7 @@ D.Dyer (NotepadCrypt)               https://www.real-me.net/ddyer/notepad/Notepa
 Brodie Thiesfield (SimpleIni)       https://github.com/brofield/simpleini
 T.D.Hanson (uthash)                 https://troydhanson.github.io/uthash
 Carbo Kuo (Mozilla's uchardet)      https://www.freedesktop.org/wiki/Software/uchardet
-Lewis Van Winkle (TinyExpr)         https://github.com/codeplea/tinyexpr
+Blake Madden (TinyExpr++)           https://github.com/Blake-Madden/tinyexpr-plusplus
 Carlo Pallini (Resample BMP)        https://www.codeproject.com/Articles/22271/Plain-C-Resampling-DLL
 
 --------------------------------------------------------------------------------
@@ -155,7 +155,7 @@ PCRE2 Regex                     https://github.com/PCRE2Project/pcre2/blob/main/
 grepWin                         https://github.com/stefankueng/grepWin/blob/master/LICENSE
 uthash                          https://troydhanson.github.io/uthash/license.html
 uchardet                        https://www.freedesktop.org/wiki/Software/uchardet/#license
-TinyExpr                        https://github.com/codeplea/tinyexpr/blob/master/LICENSE
+TinyExpr++                      https://github.com/Blake-Madden/tinyexpr-plusplus/blob/master/LICENSE
 Notepad3 icon by Vexels.com     https://www.vexels.com
   -  designed by                smanashova@gmail.com
 
