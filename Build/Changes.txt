@@ -31,17 +31,20 @@ ONI - (ONI)guruma Regex engine
 PCR - (PCR)2 Regex engine
 SCI - (SCI)ntilla Library
 SUP - (S)et(UP) / Installer Package
+TIN - (TIN)yExpr++ is an engine for math expressions
 UCH - (UCH)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 7.26.417.(build_#) (2026-04-17)
+Current BETA Version 7.26.418.(build_#) (2026-04-18)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]- .
+[.418.1]- Feat: switching from old tinyexpr lib to modern TinyExpr++ (TIN).
+[.418.1]- In Notepad3 Portable PAF, add a redirect to the Favorites folder.
 [.417.1]- Feat: Prep for grepWin search pattern editorcmd patching.
 [.417.1]- Feat: HTML CSS Styles.
 [.417.1]- Add default directory selection to settings menu.
@@ -55,11 +58,11 @@ NEW:
 [.227.1]- Add auto-scroll on MMB click.
 [.130.1]- Add Scintilla np3_patches with 5 patch files for future upgrades (SCI).
 [.130.1]- Use Segment Heaps for memory allocation if available (Win10 2004+/Win11).
-[.130.1]- Added AVX2 optimized x64 build configuration (x64_AVX2) (issue #4240).
-[.130.1]- Added GitHub Actions CI workflow for MSVC builds (Win32/x64/ARM64).
+[.130.1]- Add AVX2 optimized x64 build configuration (x64_AVX2) (issue #4240).
+[.130.1]- Add GitHub Actions CI workflow for MSVC builds (Win32/x64/ARM64).
 [1021.2]- Add extensions "ts"and "tsx" in Tcl Script lexer (LEX).
 [1021.1]- Add extension "JSX" in JavaScript lexer (LEX).
-[.828.1]- Added Notepad3 Version in the Title bar of the Inno Setup dialog box (SUP).
+[.828.1]- Add Notepad3 Version in the Title bar of the Inno Setup dialog box (SUP).
 
 --------------------------------------------------------
 CHANGES:
@@ -164,6 +167,7 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
+[.418.1]- Update TinyExpr++ (TIN)  version 1.1 (2026-01-16).
 [.417.1]- Update Scintilla (SCI) Library version 5.6.1 (2026-03-26).
 [.417.1]- Update Lexilla (LEX) Library version 5.4.8 (2026-03-26).
 [.411.1]- Update grepWin (GRE) version 2.1.12.1434 (2025-09-24).
