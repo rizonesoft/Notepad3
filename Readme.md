@@ -28,6 +28,7 @@ Notepad3 is a free, open-source text editor with syntax highlighting for Windows
 - **Word auto-completion** with configurable fill-up characters
 - **Mark all occurrences** of a selected word with occurrence count display
 - **Find and Replace** with [PCRE2](https://github.com/PCRE2Project/pcre2) regular expression engine
+- **[TinyExpr++](https://blake-madden.github.io/tinyexpr-plusplus/)** — inline math expression evaluation with 80+ functions (type `expression=?` to evaluate in-place, use `${expr}` in line numbering). See the [Expression Engine Guide](readme/tinyexprcpp/TinyExprPP.md) for details.
 - **Undo/Redo** that preserves selection state
 - **Visual Studio–style** copy/paste of the current line (when nothing is selected)
 - **Virtual space** rectangular selection (Alt+Drag)
@@ -54,7 +55,7 @@ Over 55 languages supported, including:
 ### User Interface
 - **High-DPI aware** with high-definition toolbar icons
 - **Dark mode** support with customizable colors
-- **Customizable status bar** with 16 configurable fields (line, column, encoding, TinyExpr evaluation, Unicode code point, and more)
+- **Customizable status bar** with 16 configurable fields (line, column, encoding, [TinyExpr++](readme/tinyexprcpp/TinyExprPP.md) evaluation, Unicode code point, and more)
 - **Customizable toolbar labels** — display function names next to icons
 - **Zoom** from 10% to 1000% (Ctrl+Scroll or toolbar buttons)
 - **Transparent window mode** with configurable opacity
@@ -136,6 +137,7 @@ Notepad3 builds upon the work of:
 | [Scintilla](https://www.scintilla.org/) 5.5.8 | Neil Hodgson | Editing component |
 | [Lexilla](https://www.scintilla.org/Lexilla.html) 5.4.6 | Neil Hodgson | Syntax highlighting |
 | [PCRE2](https://github.com/PCRE2Project/pcre2) 10.47 | PCRE2 Project | Regex engine |
+| [TinyExpr++](https://blake-madden.github.io/tinyexpr-plusplus/) | Blake Madden | Expression evaluator |
 | [uchardet](https://www.freedesktop.org/wiki/Software/uchardet/) | Mozilla / freedesktop | Encoding detection |
 | Fugue Icons | Yusuke Kamiyamane | Toolbar icons |
 

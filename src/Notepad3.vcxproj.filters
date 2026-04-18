@@ -40,7 +40,7 @@
     <Filter Include="Source Files\uchardet\tables">
       <UniqueIdentifier>{898b2e68-0b75-4ad3-acc4-20bc18163aec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\tinyexpr">
+    <Filter Include="Source Files\tinyexprcpp">
       <UniqueIdentifier>{60486982-91be-42d2-b154-86c2706ca60f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\timsort">
@@ -435,8 +435,11 @@
     <ClCompile Include="PathLib.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tinyexpr\tinyexpr.c">
-      <Filter>Source Files\tinyexpr</Filter>
+    <ClCompile Include="tinyexprcpp\tinyexpr.cpp">
+      <Filter>Source Files\tinyexprcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyexprcpp\tinyexpr_cif.cpp">
+      <Filter>Source Files\tinyexprcpp</Filter>
     </ClCompile>
     <ClCompile Include="StyleLexers\styleLexVerilog.c">
       <Filter>Source Files\StyleLexers</Filter>
@@ -626,8 +629,11 @@
     <ClInclude Include="PathLib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="tinyexpr\tinyexpr.h">
-      <Filter>Source Files\tinyexpr</Filter>
+    <ClInclude Include="tinyexprcpp\tinyexpr.h">
+      <Filter>Source Files\tinyexprcpp</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyexprcpp\tinyexpr_cif.h">
+      <Filter>Source Files\tinyexprcpp</Filter>
     </ClInclude>
     <ClInclude Include="timsort\timsort.h">
       <Filter>Source Files\timsort</Filter>

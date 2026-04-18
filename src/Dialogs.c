@@ -42,8 +42,7 @@
 #include "Notepad3.h"
 #include "Config/Config.h"
 #include "DarkMode/DarkMode.h"
-#include "tinyexpr/tinyexpr.h"
-//#include "tinyexprcpp/tinyexpr_cif.h"
+#include "tinyexprcpp/tinyexpr_cif.h"
 #include "Resample.h"
 #include "PathLib.h"
 

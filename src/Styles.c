@@ -38,7 +38,7 @@
 #include "Notepad3.h"
 #include "Config/Config.h"
 #include "DarkMode/DarkMode.h"
-#include "tinyexpr/tinyexpr.h"
+#include "tinyexprcpp/tinyexpr_cif.h"
 
 #include "SciCall.h"
 

@@ -994,7 +994,8 @@
     <ClCompile Include="StyleLexers\styleLexVerilog.c" />
     <ClCompile Include="timsort\timsort.c" />
     <ClCompile Include="timsort\timsort_r.c" />
-    <ClCompile Include="tinyexpr\tinyexpr.c" />
+    <ClCompile Include="tinyexprcpp\tinyexpr.cpp" />
+    <ClCompile Include="tinyexprcpp\tinyexpr_cif.cpp" />
     <ClCompile Include="uchardet\uchardet\src\CharDistribution.cpp" />
     <ClCompile Include="uchardet\uchardet\src\JpCntx.cpp" />
     <ClCompile Include="uchardet\uchardet\src\LangModels\LangAfricaansModel.cpp" />
@@ -1140,7 +1141,8 @@
     <ClInclude Include="PathLib.h" />
     <ClInclude Include="timsort\timsort-impl.h" />
     <ClInclude Include="timsort\timsort.h" />
-    <ClInclude Include="tinyexpr\tinyexpr.h" />
+    <ClInclude Include="tinyexprcpp\tinyexpr.h" />
+    <ClInclude Include="tinyexprcpp\tinyexpr_cif.h" />
     <ClInclude Include="uchardet\uchardet\src\CharDistribution.h" />
     <ClInclude Include="uchardet\uchardet\src\JpCntx.h" />
     <ClInclude Include="uchardet\uchardet\src\nsBig5Prober.h" />

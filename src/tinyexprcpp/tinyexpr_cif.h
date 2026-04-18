@@ -1,9 +1,16 @@
 /* encoding: UTF-8
- * TinyExpr CPP : C-Interface
+ *
+ * C Interface for TinyExpr++ (tinyexpr_cif)
+ *
+ * Provides a C-compatible API wrapping the C++ TinyExpr++ library,
+ * matching the function signatures of the original TinyExpr C library.
+ *
+ * This header is intended to be included by C source files.
+ * The implementation (tinyexpr_cif.cpp) uses TinyExpr++ internally.
  */
 
-#ifndef __TE_C_INTERFACE_H__
-#define __TE_C_INTERFACE_H__
+#ifndef TINYEXPR_CIF_H
+#define TINYEXPR_CIF_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -11,38 +18,55 @@ extern "C" {
 
 #ifdef _WIN64
   typedef __int64          te_int_t;
-  #define TE_XINT_FMT      "%lli" 
+  #define TE_INT_FMT      "%lli"
 #else
   typedef int              te_int_t;
-  #define TE_XINT_FMT      "%i"
+  #define TE_INT_FMT      "%i"
 #endif
 
+/* Opaque handle for a compiled expression (returned by te_compile). */
+typedef struct te_expr te_expr;
 
-/* Parses the input expression, evaluates it, and frees it. */
-/* Returns NaN on error. */
-double te_interp(const char * expression, te_int_t * error);
+/* Variable binding for te_compile.
+ * Only name and address fields are used. */
+typedef struct te_variable {
+    const char   *name;
+    const double *address;
+} te_variable;
 
-typedef struct te_variable_c {
-    const char* name;
-    const double* address;
-} te_variable_c;
 
-/* Parses the input expression and binds variables. */
-/* Returns NULL on error. */
-double te_evaluate(const char* expression, const te_variable_c variables[], int var_count, te_int_t* error);
+/* Parses the input expression, evaluates it, and frees it.
+ * Returns NaN on error.
+ * *error is set to 0 on success, or the 1-based position of the
+ * parse error on failure. */
+double te_interp(const char *expression, te_int_t *error);
 
+/* Parses the input expression and binds variables.
+ * Returns NULL on error.
+ * *error is set to 0 on success, or the 1-based error position on failure. */
+te_expr *te_compile(const char *expression, const te_variable *variables, int var_count, te_int_t *error);
+
+/* Evaluates a previously compiled expression.
+ * Variable bindings are re-read on each call. */
+double te_eval(te_expr *n);
+
+/* Frees the compiled expression.
+ * Safe to call on NULL pointers. */
+void te_free(te_expr *n);
+
+
+/* ---- NP3-specific utility functions (inline) ---- */
 
 /* ANSI codepage of te operators */
-inline unsigned te_cp() { return 1252U; }
+inline unsigned te_cp(void) { return 1252U; }
 
-/* invalid default char for conversion */
-inline unsigned te_invalid_chr() { return '#'; }
+/* Invalid default char for conversion */
+inline unsigned te_invalid_chr(void) { return (unsigned)'#'; }
 
-/* invalid default char for conversion */
+/* Check if character is a digit */
 inline unsigned te_is_num(const char * const pch) { return (pch && (*pch > 47) && (*pch < 58)); }
 
-
-/* check for operator or special character. */
+/* Check for operator or special character */
 inline int te_is_op(const char * const expr) {
     if (!expr)
         return !0;
@@ -63,6 +87,7 @@ inline int te_is_op(const char * const expr) {
     case '(':
     case ')':
     case ',':
+    case ';':
     case ' ':
     case '\t':
     case '\n':
@@ -81,7 +106,7 @@ inline int te_is_op(const char * const expr) {
             return !0;
         break;
     default:
-        break;        
+        break;
     }
     return 0;
 }
@@ -89,7 +114,6 @@ inline int te_is_op(const char * const expr) {
 
 #ifdef __cplusplus
 }
-#else
 #endif
 
-#endif /*__TE_C_INTERFACE_H__*/
+#endif /* TINYEXPR_CIF_H */
