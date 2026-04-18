@@ -28,6 +28,7 @@ Notepad3 is a free, open-source text editor with syntax highlighting for Windows
 - **Word auto-completion** with configurable fill-up characters
 - **Mark all occurrences** of a selected word with occurrence count display
 - **Find and Replace** with [PCRE2](https://github.com/PCRE2Project/pcre2) regular expression engine
+- **[Focused View](readme/focusedview/FocusedView.md)** — filter display to show only lines matching the current word/selection (Ctrl+Alt+V), with fold, bookmark, and highlight modes
 - **[TinyExpr++](https://blake-madden.github.io/tinyexpr-plusplus/)** — inline math expression evaluation with 80+ functions (type `expression=?` to evaluate in-place, use `${expr}` in line numbering). See the [Expression Engine Guide](readme/tinyexprcpp/TinyExprPP.md) for details.
 - **Undo/Redo** that preserves selection state
 - **Visual Studio–style** copy/paste of the current line (when nothing is selected)
@@ -41,8 +42,8 @@ Over 55 languages supported, including:
 > ANSI Art, Apache Config, Assembly, AutoHotkey, AutoIt3, AviSynth, Awk, Batch, C/C++, C#, CMake, CoffeeScript, CSS, CSV, D, Dart, Diff, F77/Fortran, Go, HTML/XML, Java, JavaScript, JSON, Julia, Kotlin, KiXtart, LaTeX, Lua, Makefiles, Markdown, MATLAB, Nim, NSIS, Pascal, Perl, PHP, PowerShell, Python, R/S-Plus, Registry, Resource Script, Ruby, Rust, Shell Script, SQL, SystemVerilog, Tcl, TOML, VBScript, VHDL, Verilog, Visual Basic, YAML, and more.
 
 ### File Handling
-- **AES-256 Rijndael** encryption/decryption (in-app and command-line batch tool)
-- **Encoding detection** powered by [uchardet](https://www.freedesktop.org/wiki/Software/uchardet/)
+- **[AES-256 Rijndael](readme/encryption/Encryption.md)** encryption/decryption (in-app and command-line batch tool)
+- **[Encoding detection](readme/uchardet/EncodingDetection.md)** powered by [uchardet](https://www.freedesktop.org/wiki/Software/uchardet/)
 - **File change monitoring** with configurable check intervals
 - **Emacs file variables** support (encoding, mode, tab-width, etc.)
 - **File history** that preserves caret position and encoding
