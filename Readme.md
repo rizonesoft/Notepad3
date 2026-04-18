@@ -114,7 +114,7 @@ Notepad3 uses a portable INI file for all settings. Press **Ctrl+F7** to open it
 - **Status bar** (`[Statusbar Settings]`) — customize field layout, order, and width
 - **Toolbar labels** (`[Toolbar Labels]`) — show function names next to icons
 
-📖 **Full configuration reference:** [doc/Configuration.md](doc/Configuration.md)
+📖 **Full configuration reference:** [readme/config/Configuration.md](readme/config/Configuration.md)
 
 ## Contributing
 
