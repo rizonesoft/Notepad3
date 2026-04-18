@@ -339,7 +339,7 @@ BEGIN
     IDS_LEX_STR_63255       "Format Body"
     IDS_LEX_STR_63256       "Texte d'élément HTML"
     IDS_LEX_STR_63257       "Texte d'élément XML"
-    IDS_LEX_STR_63258       "Typedefs/Classees"
+    IDS_LEX_STR_63258       "Typedefs/Classes"
     IDS_LEX_STR_63259       "Doc commentaire"
     IDS_LEX_STR_Keyword2nd  "Mot-clé 2ème"
     IDS_LEX_STR_Error       "Erreur"
@@ -369,7 +369,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63280       "Définition de Macro"
+    IDS_LEX_STR_63280       "Définition de macro"
     IDS_LEX_STR_Param       "Paramètres"
     IDS_LEX_STR_63282       "Expansion en ligne"
     IDS_LEX_STR_63283       "Commentaire Pascal"
@@ -516,18 +516,18 @@ BEGIN
     IDS_LEX_STR_SysTasks    "Tâches Système"
     IDS_LEX_STR_AfterLabel  "Etiquette Suite"
     IDS_LEX_STR_Table       "Table"
-    IDS_LEX_STR_StarCmd     "Star Command"
-    IDS_LEX_STR_SlashCmd    "Slash Command"
-    IDS_LEX_STR_Processor   "Processor"
+    IDS_LEX_STR_StarCmd     "Commande Star"
+    IDS_LEX_STR_SlashCmd    "Commande Slash"
+    IDS_LEX_STR_Processor   "Processeur"
     IDS_LEX_STR_Argument    "Argument"
-    IDS_LEX_STR_CSSDefault  "CSS Default"
-    IDS_LEX_STR_CSSComment  "CSS Comment"
-    IDS_LEX_STR_CSSSelector "CSS Selector"
-    IDS_LEX_STR_CSSClassID  "CSS Class/ID"
-    IDS_LEX_STR_CSSProperty "CSS Property"
-    IDS_LEX_STR_CSSValue    "CSS Value"
-    IDS_LEX_STR_CSSString   "CSS String"
-    IDS_LEX_STR_CSSDirOp    "CSS Directive/Operator"
+    IDS_LEX_STR_CSSDefault  "Défaut CSS"
+    IDS_LEX_STR_CSSComment  "Commentaire CSS"
+    IDS_LEX_STR_CSSSelector "Sélecteur CSS"
+    IDS_LEX_STR_CSSClassID  "Classe / ID CSS"
+    IDS_LEX_STR_CSSProperty "Propriété CSS"
+    IDS_LEX_STR_CSSValue    "Valeur CSS"
+    IDS_LEX_STR_CSSString   "Chaîne CSS"
+    IDS_LEX_STR_CSSDirOp    "Directive/Opérateur CSS"
 END
 
 STRINGTABLE
