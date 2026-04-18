@@ -36,8 +36,7 @@
 
 #pragma warning(push)
 #pragma warning(disable : 4201) // union/struct w/o name
-#include "tinyexpr/tinyexpr.h"
-//#include "tinyexprcpp/tinyexpr_cif.h"
+#include "tinyexprcpp/tinyexpr_cif.h"
 #pragma warning(pop)
 
 #include "Scintilla.h"
