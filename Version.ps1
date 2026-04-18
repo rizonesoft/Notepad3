@@ -84,7 +84,7 @@ try
 	if (!$PCRE2Ver) { $PCRE2Ver = "0.0" }
 	$UChardetVer = [string](Get-Content "src\uchardet\version.txt")
 	if (!$UChardetVer) { $UChardetVer = "0.0.0" }
-	$TinyExprVer = [string](Get-Content "src\tinyexpr\version.txt")
+	$TinyExprVer = [string](Get-Content "src\tinyexprcpp\version.txt")
 	if (!$TinyExprVer) { $TinyExprVer = "0.0.0" }
 	$UtHashVer = [string](Get-Content "src\uthash\version.txt")
 	if (!$UtHashVer) { $UtHashVer = "0.0.0" }
