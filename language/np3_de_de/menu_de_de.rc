@@ -254,12 +254,12 @@ BEGIN
         END
         POPUP "&Konvertiere"
         BEGIN
-            MENUITEM "&Großbuchstaben\tCtrl+Shift+U",                    IDM_EDIT_CONVERTUPPERCASE
-            MENUITEM "&Kleinbuchstaben\tCtrl+U",                         IDM_EDIT_CONVERTLOWERCASE
+            MENUITEM "In &Großbuchstaben\tCtrl+Shift+U",                 IDM_EDIT_CONVERTUPPERCASE
+            MENUITEM "In &Kleinbuchstaben\tCtrl+U",                      IDM_EDIT_CONVERTLOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "&Inveriere Groß- und Kleinbuchstaben\tCtrl+Alt+U", IDM_EDIT_INVERTCASE
-            MENUITEM "&Nur Großbuchstaben\tCtrl+Alt+I",                  IDM_EDIT_TITLECASE
-            MENUITEM "&Satz Großschreibung\tCtrl+Alt+O",                 IDM_EDIT_SENTENCECASE
+            MENUITEM "&Inveriere Groß-/Kleinbuchstaben\tCtrl+Alt+U",     IDM_EDIT_INVERTCASE
+            MENUITEM "&Wortanfang Groß\tCtrl+Alt+I",                     IDM_EDIT_TITLECASE
+            MENUITEM "&Satzanfang Groß\tCtrl+Alt+O",                     IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
             MENUITEM "Leerzeichen zu &Tabulatoren\tCtrl+Shift+T",        IDM_EDIT_CONVERTSPACES
             MENUITEM "Tabulatoren zu &Leerzeichen\tCtrl+Shift+S",        IDM_EDIT_CONVERTTABS
@@ -566,7 +566,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Öffne Hyperlink",            CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "Kopiere Hyperlink URL",         CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Rückgängig",                 IDM_EDIT_UNDO
         MENUITEM "Wiederholen",                IDM_EDIT_REDO
@@ -578,14 +578,14 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Alle Auswählen",             IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        POPUP "Convert Case"
+        POPUP "Konvertiere Groß-/Kleinbuchstaben"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "Nur Groß",               CMD_CTX_UPPERCASE
+            MENUITEM "Nur Klein",              CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "Invertieren",            CMD_CTX_INVERTCASE
+            MENUITEM "Wortanfang Groß",        CMD_CTX_TITLECASE
+            MENUITEM "Satzanfang Groß",        CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
         MENUITEM "Aktuelle Falte umschalten",  IDM_VIEW_TOGGLE_CURRENT_FOLD
