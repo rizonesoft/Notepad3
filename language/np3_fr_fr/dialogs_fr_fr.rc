@@ -340,9 +340,9 @@ BEGIN
     EDITTEXT        IDC_TAB_WIDTH,67,7,30,14,ES_AUTOHSCROLL
     LTEXT           "Taille de retrait :",IDC_STATIC2,7,30,55,8
     EDITTEXT        IDC_INDENT_DEPTH,67,27,30,14,ES_AUTOHSCROLL
-    CONTROL         "Insérer les tabulations comme e&spaces",IDC_TAB_AS_SPC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
-    CONTROL         "Tab/Shift-Tab always indents",IDC_TAB_BACKTAB_INDENTS_ALWAYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
-    CONTROL         "La touche ""Tab"" reformate le retrait",IDC_TAB_INDENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
+    CONTROL         "Insérer les tabulations comme e&spaces",IDC_TAB_AS_SPC,"Bouton",BS_AUTOCHECKBOX | WS_TABSTOP,7,47,150,10
+    CONTROL         ""Tab/Maj-Tab" créent toujours un retrait",IDC_TAB_BACKTAB_INDENTS_ALWAYS,"Bouton",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,150,10
+    CONTROL         "La touche ""Tab"" reformate le retrait",IDC_TAB_INDENTS,"Bouton",BS_AUTOCHECKBOX | WS_TABSTOP,7,71,150,10
     CONTROL         "La touche ""Retour arr."" reformate le retrait",IDC_BACKTAB_INDENTS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,155,10
     CONTROL         "Avertir si retrait incohérent",IDC_WARN_INCONSISTENT_INDENTS,
