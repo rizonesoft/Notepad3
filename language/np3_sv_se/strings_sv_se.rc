@@ -70,7 +70,7 @@ STRINGTABLE
 BEGIN
     IDT_EDIT_PASTE          "Klistra in"
     IDT_EDIT_FIND           "Hitta"
-    IDT_EDIT_REPLACE        "Byt ut"
+    IDT_EDIT_REPLACE        "Ersätt"
     IDT_VIEW_WORDWRAP       "Radbryt"
     IDT_VIEW_ZOOMIN         "Förstora"
     IDT_VIEW_RESETZOOM      "Återställ zoomning"
@@ -134,7 +134,7 @@ BEGIN
     IDS_MUI_ERR_BROWSE      "Inget plugin för filbläddring hittades\nMinipath filbläddrare kan laddas ner från https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Inget sökplugin hittades\ngrepWin Portable filsökningsplugin kan hämtas från https://github.com/stefankueng/grepWin/releases"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
-                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
+                            "Inget insticksprogram för filsökning hittades\nInstallera den senaste versionen av grepWinPortable i PortableApps Platform."
     IDS_MUI_ERR_MRUDLG      "Tillgång saknas för vald fil!\nVill du ta bort den från listan?"
     IDS_MUI_ERR_CREATELINK  "Fel vi skapande av skrivbordslänk"
     IDS_MUI_ERR_PREVWINDISABLED
