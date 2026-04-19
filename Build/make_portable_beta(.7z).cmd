@@ -95,8 +95,9 @@ IF EXIST "%TEMP_NAME%"     RD /S /Q "%TEMP_NAME%"
 IF NOT EXIST "%TEMP_NAME%" MD "%TEMP_NAME%"
 IF NOT EXIST "Packages"    MD "Packages"
 
-FOR %%A IN ("..\License.txt" "..\Readme.txt" "Notepad3.ini" "minipath.ini"^
+FOR %%A IN ("..\License.txt" "..\Readme.txt" "Notepad3_ptb.ini" "minipath.ini"^
     "..\%1\Notepad3.exe" "..\%1\minipath.exe" "..\%1\np3encrypt.exe") DO COPY /Y /V "%%A" "%TEMP_NAME%\"
+IF EXIST "%TEMP_NAME%\Notepad3_ptb.ini" RENAME "%TEMP_NAME%\Notepad3_ptb.ini" "Notepad3.ini"
 
 SET "LNG=%TEMP_NAME%\lng"
 SET "GREPWIN=%TEMP_NAME%\grepWin"
