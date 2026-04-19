@@ -182,7 +182,7 @@ msgstr "Copier les textes dans le presse-papiers"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
-msgstr "Créer des fichiers de sauvegardes"
+msgstr "Créer des sauvegardes"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
@@ -246,7 +246,7 @@ msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Correspondance de noms de fichiers, utilisez :\n'|' pour séparer de multiples correspondances de modèles.\net '-' pour en exclure."
+msgstr "Correspondance noms fichiers :\n'|' sépare les multi-correspondances de modèles et '-' en exclut."
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -291,7 +291,7 @@ msgstr "Inclure les liens symboliques"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr "Inclure les éléments système"
+msgstr "Inclure éléments système"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
@@ -307,7 +307,7 @@ msgstr "Ko"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr "Conserver la date de fichier lors du remplacement"
+msgstr "Garder date fichier en remplaçant"
 
 #. Resource IDs: (1094)
 msgid "LF (Linux)"
@@ -464,7 +464,7 @@ msgstr "Respecter la casse"
 
 #. Resource IDs: (1015)
 msgid "Search in"
-msgstr "Chercher dans"
+msgstr "Chercher dans :"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
@@ -535,11 +535,11 @@ msgstr "Texte après remplacement :"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr "Traiter les fichiers comme UTF8"
+msgstr "Traiter les fichiers en UTF8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr "Traiter les fichiers comme binaires"
+msgstr "Traiter les fichiers en binaires"
 
 #. Resource IDs: (172)
 #, c-format
@@ -633,7 +633,7 @@ msgstr "nombre d'octets NULL par Mo autorisé pour qu'un fichier soit toujours c
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "Seuls les fichiers correspondant à ce modèle sont recherchés.\r\nCorrespondance de texte étendue. Utilisez \"|\" comme délimiteur.\r\nExemple : *.cpp|*.h"
+msgstr "Seuls les fichiers correspondant à ce modèle sont recherchés.\r\nCorrespondance de texte étendue. Utilisez \"|\" comme délimiteur.\r\nEx. : *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
@@ -666,11 +666,11 @@ msgstr "ouvrir une nouvelle fenêtre grepWin"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "Chemin(s) de recherche récursive.\n'|' pour ajouter un chemin.\nExemple : c:\\temp|d:\\logs"
+msgstr "Chemin(s) de recherche récursive.\n'|' pour ajouter un chemin.\nEx. : c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "Il est possible d'exclure des dossiers. Exemple : ^(CVS|images)$ pour exclure CVS\\ et images\\.\nLes dossiers .svn sont 'cachés' sous Windows et ne sont normalment pas parcourus."
+msgstr "Il est possible d'exclure des dossiers. Ex. : ^(CVS|images)$ pour exclure CVS\\ et images\\.\nLes dossiers .svn sont 'cachés' sous Windows et ne sont normalment pas parcourus."
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
@@ -682,7 +682,7 @@ msgstr "⑂"
 
 #. Resource IDs: (1071)
 msgid "⚙ Settings"
-msgstr "⚙ Configuration"
+msgstr "⚙ Paramètres"
 
 #. Resource IDs: (123)
 msgid "🔎 &Search"
