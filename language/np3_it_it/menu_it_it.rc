@@ -155,7 +155,7 @@ BEGIN
     POPUP "&Modifica"
     BEGIN
         MENUITEM "Documento in sola &lettura"             IDM_VIEW_READONLY
-        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
+        MENUITEM "Stop &monitoraggio appunti",            IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "&Annulla\tCtrl+Z",                      IDM_EDIT_UNDO
         MENUITEM "&Ripristina\tCtrl+Y",                   IDM_EDIT_REDO
