@@ -1459,6 +1459,17 @@ void LoadSettings()
 
     IniSectionGetString(IniSecSettings2, L"CopyMultiSelectionSeparator", L"\x01",
         Settings2.CopyMultiSelectionSeparator, COUNTOF(Settings2.CopyMultiSelectionSeparator));
+    if (Settings2.CopyMultiSelectionSeparator[0] != L'\x01') {
+        UnSlashW(Settings2.CopyMultiSelectionSeparator, Encoding_SciCP);  // interpret \n, \t, \xHH, etc.
+    }
+
+    IniSectionGetString(IniSecSettings2, L"PasteBoardSeparator", L"\x01",
+        Settings2.PasteBoardSeparator, COUNTOF(Settings2.PasteBoardSeparator));
+    if (Settings2.PasteBoardSeparator[0] != L'\x01') {
+        UnSlashW(Settings2.PasteBoardSeparator, Encoding_SciCP);  // interpret \n, \t, \xHH, etc.
+    }
+    Settings2.PasteBoardDebounceMs = clampi(IniSectionGetInt(IniSecSettings2, L"PasteBoardDebounceMs", 200), 0, 5000);
+    Settings2.PasteBoardAddTimestamp = IniSectionGetBool(IniSecSettings2, L"PasteBoardAddTimestamp", false);
 
     for (int i = 0; i < COUNTOF(Settings2.CodeFontPrefPrioList); ++i) {
         if (i < COUNTOF(g_CodeFontPrioList))

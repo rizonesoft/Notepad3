@@ -155,7 +155,6 @@ BEGIN
     POPUP "&Edycja"
     BEGIN
         MENUITEM "Dokument &tylko do odczytu"            IDM_VIEW_READONLY
-        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "&Cofnij\tCtrl+Z",                      IDM_EDIT_UNDO
         MENUITEM "&Powtórz\tCtrl+Y",                     IDM_EDIT_REDO
@@ -166,9 +165,11 @@ BEGIN
         MENUITEM "Dodaj do schowka\tCtrl+E",             IDM_EDIT_COPYADD
         MENUITEM "&Wklej\tCtrl+V",                       IDM_EDIT_PASTE
         MENUITEM "Zamień\tCtrl+K",                       IDM_EDIT_SWAP
-        MENUITEM "&Usuń\tDel",                           IDM_EDIT_CLEAR
-        MENUITEM "Wyczyść schowek",                      IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "&Zaznacz wszystko\tCtrl+A",            IDM_EDIT_SELECTALL
+        MENUITEM "&Usuń\tDel",                           IDM_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "Wyczyść schowek",                      IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "W&yrazy"
         BEGIN

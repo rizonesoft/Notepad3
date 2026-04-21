@@ -155,7 +155,6 @@ BEGIN
     POPUP "編集(&E)"
     BEGIN
         MENUITEM "閲覧専用(&R)"                               IDM_VIEW_READONLY
-        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "元に戻す(&U)\tCtrl+Z",                       IDM_EDIT_UNDO
         MENUITEM "やり直し(&R)\tCtrl+Y",                        IDM_EDIT_REDO
@@ -166,9 +165,11 @@ BEGIN
         MENUITEM "クリップボード末尾に追加(&Y)\tCtrl+E",            IDM_EDIT_COPYADD
         MENUITEM "貼り付け(&P)\tCtrl+V",                        IDM_EDIT_PASTE
         MENUITEM "クリップボードと入替(&W)\tCtrl+K",                IDM_EDIT_SWAP
-        MENUITEM "削除(&D)\tDel",                              IDM_EDIT_CLEAR
-        MENUITEM "クリップボードをクリア(&E)",                        IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "すべて選択(&S)\tCtrl+A",                      IDM_EDIT_SELECTALL
+        MENUITEM "削除(&D)\tDel",                              IDM_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "クリップボードをクリア(&E)",                        IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "単語(&O)"
         BEGIN

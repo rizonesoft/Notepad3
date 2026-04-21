@@ -155,7 +155,6 @@ BEGIN
     POPUP "편집(&E)"
     BEGIN
         MENUITEM "읽기 전용 문서(&R)"          IDM_VIEW_READONLY
-        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "실행 취소(&U)\tCtrl+Z",               IDM_EDIT_UNDO
         MENUITEM "다시 실행(&R)\tCtrl+Y",               IDM_EDIT_REDO
@@ -166,9 +165,11 @@ BEGIN
         MENUITEM "복사 추가(&A)\tCtrl+E",           IDM_EDIT_COPYADD
         MENUITEM "붙여넣기(&P)\tCtrl+V",              IDM_EDIT_PASTE
         MENUITEM "교환(&W)\tCtrl+K",               IDM_EDIT_SWAP
-        MENUITEM "삭제(&D)\tDel",                IDM_EDIT_CLEAR
-        MENUITEM "클립보드 지우기(&E)",            IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "모두 선택(&S)\tCtrl+A",         IDM_EDIT_SELECTALL
+        MENUITEM "삭제(&D)\tDel",                IDM_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "클립보드 지우기(&E)",            IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "단어(&W)"
         BEGIN

@@ -155,7 +155,6 @@ BEGIN
     POPUP "&Szerkesztés"
     BEGIN
         MENUITEM "&Csak olvasható dokumentum"   IDM_VIEW_READONLY
-        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "&Visszavonás\tCtrl+Z",        IDM_EDIT_UNDO
         MENUITEM "&Újra\tCtrl+Y",               IDM_EDIT_REDO
@@ -166,9 +165,11 @@ BEGIN
         MENUITEM "Vág&ólaphoz ad\tCtrl+E",      IDM_EDIT_COPYADD
         MENUITEM "&Beillesztés\tCtrl+V",        IDM_EDIT_PASTE
         MENUITEM "&Csere\tCtrl+K",              IDM_EDIT_SWAP
-        MENUITEM "&Törlés\tDel",                IDM_EDIT_CLEAR
-        MENUITEM "Vágólap t&örlése",            IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "Min&d kijelölése\tCtrl+A",    IDM_EDIT_SELECTALL
+        MENUITEM "&Törlés\tDel",                IDM_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "Vágólap t&örlése",            IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "Sza&vak"
         BEGIN

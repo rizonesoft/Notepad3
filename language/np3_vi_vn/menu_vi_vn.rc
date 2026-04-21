@@ -155,7 +155,6 @@ BEGIN
     POPUP "Chỉnh sửa(&E)"
     BEGIN
         MENUITEM "Tài liệu chỉ đọc(&R)"                          IDM_VIEW_READONLY
-        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "Hoàn tác(&U)\tCtrl+Z",                      IDM_EDIT_UNDO
         MENUITEM "Làm lại(&R)\tCtrl+Y",                      IDM_EDIT_REDO
@@ -166,9 +165,11 @@ BEGIN
         MENUITEM "Sao chép thêm(&A)\tCtrl+E",                      IDM_EDIT_COPYADD
         MENUITEM "Dán(&P)\tCtrl+V",                      IDM_EDIT_PASTE
         MENUITEM "Hoán đổi(&W)\tCtrl+K",                 IDM_EDIT_SWAP
-        MENUITEM "Xóa(&D)\tDel",                              IDM_EDIT_CLEAR
-        MENUITEM "Xóa bộ nhớ tạm(&E)",                         IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "Chọn tất cả(&S)\tCtrl+A",                      IDM_EDIT_SELECTALL
+        MENUITEM "Xóa(&D)\tDel",                              IDM_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "Xóa bộ nhớ tạm(&E)",                         IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "Từ(&W)"
         BEGIN

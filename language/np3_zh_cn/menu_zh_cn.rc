@@ -155,7 +155,6 @@ BEGIN
     POPUP "编辑(&E)"
     BEGIN
         MENUITEM "只读(&R)"                                   IDM_VIEW_READONLY
-        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "撤销(&U)\tCtrl+Z",                          IDM_EDIT_UNDO
         MENUITEM "重做(&R)\tCtrl+Y",                          IDM_EDIT_REDO
@@ -166,9 +165,11 @@ BEGIN
         MENUITEM "增量复制(&Y)\tCtrl+E",                      IDM_EDIT_COPYADD
         MENUITEM "粘贴(&P)\tCtrl+V",                          IDM_EDIT_PASTE
         MENUITEM "与剪贴板交换(&W)\tCtrl+K",                  IDM_EDIT_SWAP
-        MENUITEM "删除(&D)\tDel",                             IDM_EDIT_CLEAR
-        MENUITEM "清空剪贴板(&E)",                            IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "全选(&A)\tCtrl+A",                          IDM_EDIT_SELECTALL
+        MENUITEM "删除(&D)\tDel",                             IDM_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "清空剪贴板(&E)",                            IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "单词(&O)"
         BEGIN

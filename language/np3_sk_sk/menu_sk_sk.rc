@@ -155,7 +155,6 @@ BEGIN
     POPUP "&Upraviť"
     BEGIN
         MENUITEM "Dokument &Len na čítanie"                 IDM_VIEW_READONLY
-        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "&Späť\tCtrl+Z",                           IDM_EDIT_UNDO
         MENUITEM "&Znova\tCtrl+Y",                          IDM_EDIT_REDO
@@ -166,9 +165,11 @@ BEGIN
         MENUITEM "Kopírov&ať pridané\tCtrl+E",              IDM_EDIT_COPYADD
         MENUITEM "&Vložiť\tCtrl+V",                         IDM_EDIT_PASTE
         MENUITEM "Z&ameniť\tCtrl+K",                        IDM_EDIT_SWAP
-        MENUITEM "Z&mazať\tDel",                            IDM_EDIT_CLEAR
-        MENUITEM "Vyprázdniť &schránku",                    IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "Vy&brať všetko\tCtrl+A",                  IDM_EDIT_SELECTALL
+        MENUITEM "Z&mazať\tDel",                            IDM_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "Vyprázdniť &schránku",                    IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "&Slová"
         BEGIN

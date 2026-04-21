@@ -155,7 +155,6 @@ BEGIN
     POPUP "&Правка"
     BEGIN
         MENUITEM "Документ только для чтени&я"          IDM_VIEW_READONLY
-        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "&Отмена\tCtrl+Z",                     IDM_EDIT_UNDO
         MENUITEM "&Повтор\tCtrl+Y",                     IDM_EDIT_REDO
@@ -166,9 +165,11 @@ BEGIN
         MENUITEM "Добавить в конец буфера\tCtrl+E",     IDM_EDIT_COPYADD
         MENUITEM "Вст&авить\tCtrl+V",                   IDM_EDIT_PASTE
         MENUITEM "Поменять\tCtrl+K",                    IDM_EDIT_SWAP
-        MENUITEM "&Удалить\tDel",                       IDM_EDIT_CLEAR
-        MENUITEM "О&чистить буфер обмена",              IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "Выделить в&сё\tCtrl+A",               IDM_EDIT_SELECTALL
+        MENUITEM "&Удалить\tDel",                       IDM_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "О&чистить буфер обмена",              IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "Слова"
         BEGIN

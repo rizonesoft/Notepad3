@@ -155,7 +155,6 @@ BEGIN
     POPUP "&Επεξεργασία"
     BEGIN
         MENUITEM "Document &Read Only"            IDM_VIEW_READONLY
-        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "Αναίρε&ση\tCtrl+Z",             IDM_EDIT_UNDO
         MENUITEM "Επανάλη&ψη ενέργειας\tCtrl+Y",  IDM_EDIT_REDO
@@ -166,9 +165,11 @@ BEGIN
         MENUITEM "Προσ&θήκη αντιγραφής\tCtrl+E",  IDM_EDIT_COPYADD
         MENUITEM "Επ&ικόλληση\tCtrl+V",           IDM_EDIT_PASTE
         MENUITEM "Αν&τιμετάθεση\tCtrl+K",         IDM_EDIT_SWAP
-        MENUITEM "&Διαγραφή\tDel",                IDM_EDIT_CLEAR
-        MENUITEM "&Απαλοιφή πρόχειρου",           IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "Επιλ&ογή όλων\tCtrl+A",         IDM_EDIT_SELECTALL
+        MENUITEM "&Διαγραφή\tDel",                IDM_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Απαλοιφή πρόχειρου",           IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "&Λέξεις"
         BEGIN
