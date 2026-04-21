@@ -39,8 +39,8 @@ msgid "%ld more matches"
 msgstr "%ld kecocokan lainnya"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr "%path% diganti dengan jalur file, %line% dengan baris tujuan, %column% dengan posisi dalam baris"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
+msgstr "%path% diganti dengan jalur file, %line% dengan baris tujuan, %column% dengan posisi dalam baris, %pattern% with the search pattern"
 
 #. Resource IDs: (175)
 #, c-format
@@ -246,7 +246,7 @@ msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Nama file cocok:\\nGunakan '|' untuk memisahkan pola, tambah '-' untuk mengecualikan"
+msgstr "Nama file cocok:\nGunakan '|' untuk memisahkan pola, tambah '-' untuk mengecualikan"
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -328,7 +328,7 @@ msgstr "Baris"
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %s\n"
-msgstr "Baris %5ld : %s\\n"
+msgstr "Baris %5ld : %s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
@@ -444,7 +444,7 @@ msgstr "String pengganti"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "Ganti dengan:/\\nFormat tangkapan:"
+msgstr "Ganti dengan:/\nFormat tangkapan:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -523,7 +523,7 @@ msgstr "Pencarian teks"
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr "Jalur \\"%s\\" tidak ada atau tidak dapat diakses!"
+msgstr "Jalur \"%s\" tidak ada atau tidak dapat diakses!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
@@ -544,7 +544,7 @@ msgstr "Perlakukan file sebagai biner"
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr "Opsi \\"%s\\" sedang aktif.\\r\\nSaat mengganti, opsi ini dapat merusak file.\\r\\nLanjutkan?"
+msgstr "Opsi \"%s\" sedang aktif.\r\nSaat mengganti, opsi ini dapat merusak file.\r\nLanjutkan?"
 
 #. Resource IDs: (1025)
 msgid "\\"
@@ -633,7 +633,7 @@ msgstr "jumlah byte NULL per MB yang diizinkan agar file tetap dianggap teks buk
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "hanya file yang cocok pola ini yang dicari.\\r\\nKhớp teks diperluas. Gunakan \\"|\\" sebagai pemisah.\\r\\nContoh: *.cpp|*.h"
+msgstr "hanya file yang cocok pola ini yang dicari.\r\nKhớp teks diperluas. Gunakan \"|\" sebagai pemisah.\r\nContoh: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
@@ -666,11 +666,11 @@ msgstr "buka jendela grepWin baru"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "jalur yang dicari secara rekursif.\\r\\nPisahkan jalur dengan simbol |.\\r\\nContoh: c:\\\\temp|d:\\\\logs"
+msgstr "jalur yang dicari secara rekursif.\r\nPisahkan jalur dengan simbol |.\r\nContoh: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "Anda dapat mengecualikan direktori, mis. CVS dan images.\\r\\nContoh: ^(CVS|images)$\\r\\nCatatan: folder '.svn' tersembunyi di Windows sehingga biasanya tidak dipindai."
+msgstr "Anda dapat mengecualikan direktori, mis. CVS dan images.\r\nContoh: ^(CVS|images)$\r\nCatatan: folder '.svn' tersembunyi di Windows sehingga biasanya tidak dipindai."
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"

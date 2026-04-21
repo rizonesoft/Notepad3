@@ -39,8 +39,8 @@ msgid "%ld more matches"
 msgstr "%ld kết quả khác"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr "%path% được thay bằng đường dẫn tệp, %line% bằng dòng cần đến, %column% bằng vị trí trong dòng"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
+msgstr "%path% được thay bằng đường dẫn tệp, %line% bằng dòng cần đến, %column% bằng vị trí trong dòng, %pattern% with the search pattern"
 
 #. Resource IDs: (175)
 #, c-format
@@ -246,7 +246,7 @@ msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Tên tệp khớp:\\nDùng '|' để phân cách các mẫu, thêm '-' để loại trừ"
+msgstr "Tên tệp khớp:\nDùng '|' để phân cách các mẫu, thêm '-' để loại trừ"
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -328,7 +328,7 @@ msgstr "Dòng"
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %s\n"
-msgstr "Dòng %5ld : %s\\n"
+msgstr "Dòng %5ld : %s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
@@ -444,7 +444,7 @@ msgstr "Chuỗi thay thế"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "Thay thế bằng:/\\nĐịnh dạng nhóm:"
+msgstr "Thay thế bằng:/\nĐịnh dạng nhóm:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -523,7 +523,7 @@ msgstr "Tìm kiếm văn bản"
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr "Đường dẫn \\"%s\\" không tồn tại hoặc không thể truy cập!"
+msgstr "Đường dẫn \"%s\" không tồn tại hoặc không thể truy cập!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
@@ -544,7 +544,7 @@ msgstr "Xử lý tệp dưới dạng nhị phân"
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr "Tùy chọn \\"%s\\" đang bật.\\r\\nKhi thay thế, tùy chọn này có thể làm hỏng tệp.\\r\\nBạn có muốn tiếp tục không?"
+msgstr "Tùy chọn \"%s\" đang bật.\r\nKhi thay thế, tùy chọn này có thể làm hỏng tệp.\r\nBạn có muốn tiếp tục không?"
 
 #. Resource IDs: (1025)
 msgid "\\"
@@ -633,7 +633,7 @@ msgstr "số byte NULL trên MB cho phép để tệp vẫn được coi là vă
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "chỉ tìm kiếm tệp khớp mẫu này.\\r\\nKhớp văn bản mở rộng. Dùng \\"|\\" làm dấu phân cách.\\r\\nVí dụ: *.cpp|*.h"
+msgstr "chỉ tìm kiếm tệp khớp mẫu này.\r\nKhớp văn bản mở rộng. Dùng \"|\" làm dấu phân cách.\r\nVí dụ: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
@@ -666,11 +666,11 @@ msgstr "mở cửa sổ grepWin mới"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "các đường dẫn tìm kiếm đệ quy.\\r\\nPhân cách bằng ký hiệu |.\\r\\nVí dụ: c:\\\\temp|d:\\\\logs"
+msgstr "các đường dẫn tìm kiếm đệ quy.\r\nPhân cách bằng ký hiệu |.\r\nVí dụ: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "bạn có thể loại trừ thư mục, ví dụ CVS và images.\\r\\nVí dụ: ^(CVS|images)$\\r\\nLưu ý: thư mục '.svn' bị ẩn trên Windows nên thường không được quét."
+msgstr "bạn có thể loại trừ thư mục, ví dụ CVS và images.\r\nVí dụ: ^(CVS|images)$\r\nLưu ý: thư mục '.svn' bị ẩn trên Windows nên thường không được quét."
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"

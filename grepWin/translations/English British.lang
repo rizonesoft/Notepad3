@@ -36,11 +36,11 @@ msgstr ""
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
-msgstr "ld more matches"
+msgstr "%ld more matches"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
+msgstr "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
 
 #. Resource IDs: (175)
 #, c-format
@@ -126,11 +126,11 @@ msgstr "Cancel"
 
 #. Resource IDs: (169)
 msgid "Capture search (Shows replaced text)"
-msgstr ""
+msgstr "Capture search (Shows replaced text)"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr "Capture search (Shows replaced text)"
+msgstr "Check for updates"
 
 #. Resource IDs: (180)
 msgid "Column"
@@ -230,7 +230,7 @@ msgstr "Escape key closes grepWin"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr "Exclude dirs (Regex)"
+msgstr "Exclude dirs (Regex):"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
@@ -388,7 +388,7 @@ msgstr "Path"
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr "reset name"
+msgstr "Preset name"
 
 #. Resource IDs: (1022, 132)
 msgid "Presets"
@@ -412,7 +412,7 @@ msgstr "Regex Test"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr ""
+msgstr "Regex match"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
@@ -472,8 +472,7 @@ msgstr "Search in found files"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr "
-Search results"
+msgstr "Search results"
 
 #. Resource IDs: (105)
 msgid "Search string"
@@ -487,7 +486,7 @@ msgstr "Searched %s files, skipped %s files. Found %s matches in %s files."
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
-msgstr ""Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
+msgstr "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."

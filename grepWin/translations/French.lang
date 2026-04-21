@@ -39,13 +39,13 @@ msgid "%ld more matches"
 msgstr "%ld autres correspondances"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr "%path% est remplacé par le chemin d'accès du fichier, %line% par la ligne vers laquelle effectuer le saut, et %column% par le décalage dans la ligne"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
+msgstr "%path% est remplacé par le chemin d'accès du fichier, %line% par la ligne vers laquelle effectuer le saut, et %column% par le décalage dans la ligne, %pattern% with the search pattern"
 
 #. Resource IDs: (175)
 #, c-format
 msgid "%s files, skipped %s files. %s results selected."
-msgstr "%s fichier(s). Ignoré %s fichier(s). %s results selected."
+msgstr "%s fichier(s). Ignoré %s fichier(s). %s résultats sélectionnés."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -89,7 +89,7 @@ msgstr "A propos de grepWin"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr "Ajouter aux pré-réglages"
+msgstr "Ajout aux préréglages"
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -138,7 +138,7 @@ msgstr "Colonne"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr "Ligne de commande pour lancer un éditeur à une ligne spécifique et avec un décalage de ligne :"
+msgstr "Ligne de commande lançant un éditeur à une ligne spécifique et un décalage de ligne :"
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -246,7 +246,7 @@ msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Correspondance noms fichiers :\n'|' sépare les multi-correspondances de modèles et '-' en exclut."
+msgstr "Correspondance noms fichiers\n'|' sépare les correspondances multiples de modèles et '-' en exclut."
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -299,7 +299,7 @@ msgstr "Chemin invalide !"
 
 #. Resource IDs: (161)
 msgid "Inverse search"
-msgstr "Rcherche inverse"
+msgstr "Recherche inverse"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -368,7 +368,7 @@ msgstr "Plus ancien que"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr "Seulement une instance de grepWin"
+msgstr "Une seule instance de grepWin"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
@@ -396,7 +396,7 @@ msgstr "Préréglages"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr " Appuyer sur F1 pour afficher l'aide"
+msgstr "Appuyer sur F1 pour l'aide"
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -436,7 +436,7 @@ msgstr "Les chemins relatifs ne sont pas autorisés. Entrer un chemin absolu."
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr "Enle&ver le préréglages"
+msgstr "Suppri&mer le préréglage"
 
 #. Resource IDs: (106)
 msgid "Replace string"
@@ -481,7 +481,7 @@ msgstr "Chaîne de recherche"
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
-msgstr "%s fichier(s) fouillés, %s fichier(s) ignorés. %s correspondance(s) trouvée(s)dans %s fichier(s)."
+msgstr "%s fichier(s) fouillés, %s fichier(s) ignorés. %s correspondance(s) trouvée(s) dans %s fichier(s)."
 
 #. Resource IDs: (173)
 #, c-format
@@ -535,11 +535,11 @@ msgstr "Texte après remplacement :"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr "Traiter les fichiers en UTF8"
+msgstr "Les fichiers → en UTF8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr "Traiter les fichiers en binaires"
+msgstr "Les fichiers → en binaires"
 
 #. Resource IDs: (172)
 #, c-format
@@ -564,7 +564,7 @@ msgstr "binaire"
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
-msgstr "cliquer pour éditer comme texte mutiligne."
+msgstr "Cliquer pour éditer comme texte mutiligne."
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
@@ -629,7 +629,7 @@ msgstr "Aucun texte à tester n'est disponible."
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr "nombre d'octets NULL par Mo autorisé pour qu'un fichier soit toujours considéré comme du texte et non comme des données binaires"
+msgstr "nombre d'octets NULL autorisé par Mo pour qu'un fichier soit toujours considéré comme texte et non comme binaire"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
@@ -662,7 +662,7 @@ msgstr "La chaîne de recherche est vide."
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr "ouvrir une nouvelle fenêtre grepWin"
+msgstr "Ouvrir une nouvelle fenêtre grepWin"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
@@ -670,7 +670,7 @@ msgstr "Chemin(s) de recherche récursive.\n'|' pour ajouter un chemin.\nEx. : c
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "Il est possible d'exclure des dossiers. Ex. : ^(CVS|images)$ pour exclure CVS\\ et images\\.\nLes dossiers .svn sont 'cachés' sous Windows et ne sont normalment pas parcourus."
+msgstr "Il est possible d'exclure des dossiers. Ex.: ^(CVS|images)$ pour exclure CVS et images\r\nLes dossiers '.svn' sont 'cachés' sous Windows et ne sont normalment pas scannés."
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"

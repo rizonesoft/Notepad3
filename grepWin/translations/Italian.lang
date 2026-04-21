@@ -39,8 +39,8 @@ msgid "%ld more matches"
 msgstr "%ld ulteriori risultati"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr "%path% viene sostituito con il percorso del file, %line% con la linea a cui saltare, %column% con la posizione sulla linea."
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
+msgstr "%path% viene sostituito con il percorso del file, %line% con la linea a cui saltare, %column% con la posizione sulla linea, %pattern% with the search pattern"
 
 #. Resource IDs: (175)
 #, c-format
@@ -53,7 +53,7 @@ msgstr "&Informazioni su grepWin..."
 
 #. Resource IDs: (1061)
 msgid "&Convert newlines"
-msgstr ""
+msgstr "&Converti a capo"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -114,7 +114,7 @@ msgstr "Fra"
 
 #. Resource IDs: (1095)
 msgid "Both"
-msgstr ""
+msgstr "Entrambi"
 
 #. Resource IDs: (1093)
 msgid "CRLF (Windows)"
@@ -146,7 +146,7 @@ msgstr "Contenuto"
 
 #. Resource IDs: (65535)
 msgid "Convert newlines to regex newline tags:"
-msgstr ""
+msgstr "Converti a capo in tag regex:"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
@@ -254,7 +254,7 @@ msgstr "File"
 
 #. Resource IDs: (181)
 msgid "Filter results"
-msgstr ""
+msgstr "Filtra risultati"
 
 #. Resource IDs: (174)
 #, c-format
@@ -311,7 +311,7 @@ msgstr "Mantieni la data dei file modificati"
 
 #. Resource IDs: (1094)
 msgid "LF (Linux)"
-msgstr ""
+msgstr "LF (Linux)"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -336,7 +336,7 @@ msgstr "Corrispondenze"
 
 #. Resource IDs: (137)
 msgid "Multiline editor"
-msgstr ""
+msgstr "Editor multiriga"
 
 #. Resource IDs: (104)
 msgid "Name"
@@ -352,11 +352,11 @@ msgstr "Nella stringa di ricerca '.' rappresenterà una nuova linea"
 
 #. Resource IDs: (140)
 msgid "Newlines"
-msgstr ""
+msgstr "A capo"
 
 #. Resource IDs: (1056)
 msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
-msgstr ""
+msgstr "Nota: i ritorni a capo nel testo sono ignorati, usati solo per la formattazione. Usare il pulsante per convertirli in ritorni a capo regex."
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -548,7 +548,7 @@ msgstr "L'opzione \"%s\" è abilitata.\r\nDurante la sostituzione, questa opzion
 
 #. Resource IDs: (1025)
 msgid "\\"
-msgstr "/"
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."

@@ -39,13 +39,13 @@ msgid "%ld more matches"
 msgstr "%ld か所のさらなる一致"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr "%path% は「ファイルのパス」、%line% は「移動先の行番号」、%column% は「行中の位置」に置換されます"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
+msgstr "%path% は「ファイルのパス」、%line% は「移動先の行番号」、%column% は「行中の位置」に置換されます, %pattern% with the search pattern"
 
 #. Resource IDs: (175)
 #, c-format
 msgid "%s files, skipped %s files. %s results selected."
-msgstr "%s ファイル, 検索省略 %s ファイル. 結果の%ld項目を選択"
+msgstr "%s ファイル, 検索省略 %s ファイル. 結果の%s項目を選択"
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -162,7 +162,7 @@ msgstr "ファイル名をクリップボードにコピー"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr "ファイル名をクリップボードにコピー"
+msgstr "ファイル名を一括コピー"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
@@ -170,7 +170,7 @@ msgstr "パスをクリップボードにコピー"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
-msgstr "パスをクリップボードにコピー"
+msgstr "パスを一括コピー"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
@@ -178,7 +178,7 @@ msgstr "結果のテキストをクリップボードにコピー"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
-msgstr "結果のテキストをクリップボードにコピー"
+msgstr "結果テキストを一括コピー"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
@@ -311,7 +311,7 @@ msgstr "置換時にファイルの更新日時を維持"
 
 #. Resource IDs: (1094)
 msgid "LF (Linux)"
-msgstr ""
+msgstr "LF (Linux)"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -548,7 +548,7 @@ msgstr "設定の「%s」が有効になっています。\r\nこの設定のま
 
 #. Resource IDs: (1025)
 msgid "\\"
-msgstr ""
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
