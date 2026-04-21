@@ -155,6 +155,7 @@ BEGIN
     POPUP "編集(&E)"
     BEGIN
         MENUITEM "閲覧専用(&R)"                               IDM_VIEW_READONLY
+        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "元に戻す(&U)\tCtrl+Z",                       IDM_EDIT_UNDO
         MENUITEM "やり直し(&R)\tCtrl+Y",                        IDM_EDIT_REDO

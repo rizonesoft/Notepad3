@@ -155,6 +155,7 @@ BEGIN
     POPUP "&Upraviť"
     BEGIN
         MENUITEM "Dokument &Len na čítanie"                 IDM_VIEW_READONLY
+        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "&Späť\tCtrl+Z",                           IDM_EDIT_UNDO
         MENUITEM "&Znova\tCtrl+Y",                          IDM_EDIT_REDO

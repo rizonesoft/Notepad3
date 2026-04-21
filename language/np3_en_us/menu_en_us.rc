@@ -155,6 +155,7 @@ BEGIN
     POPUP "&Edit"
     BEGIN
         MENUITEM "Document &Read Only"          IDM_VIEW_READONLY
+        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "&Undo\tCtrl+Z",               IDM_EDIT_UNDO
         MENUITEM "&Redo\tCtrl+Y",               IDM_EDIT_REDO

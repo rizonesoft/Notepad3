@@ -155,6 +155,7 @@ BEGIN
     POPUP "편집(&E)"
     BEGIN
         MENUITEM "읽기 전용 문서(&R)"          IDM_VIEW_READONLY
+        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "실행 취소(&U)\tCtrl+Z",               IDM_EDIT_UNDO
         MENUITEM "다시 실행(&R)\tCtrl+Y",               IDM_EDIT_REDO
