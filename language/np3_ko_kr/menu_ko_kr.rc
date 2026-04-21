@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "삭제(&D)\tDel",                IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "클립보드 지우기(&E)",            IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
+        MENUITEM "클립보드 모니터링 중지(&M)",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "단어(&W)"
         BEGIN
