@@ -873,6 +873,7 @@
 #define IDM_TRAY_EXIT                   43701
 #define IDM_SETPASS                     43702
 #define IDM_EDIT_INSERT_GUID            43705
+#define IDM_EDIT_STOP_PASTEBOARD        43706
 
 
 #define IDS_ENC_ANSI                    61000

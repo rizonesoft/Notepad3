@@ -2284,10 +2284,12 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     //  break;
 
     case WM_DRAWCLIPBOARD:
-        if (!s_bLastCopyFromMe) {
-            s_iLastCopyTime = GetTicks_ms();
-        } else {
-            s_bLastCopyFromMe = false;
+        if (s_flagPasteBoard) {
+            if (!s_bLastCopyFromMe) {
+                s_iLastCopyTime = GetTicks_ms();
+            } else {
+                s_bLastCopyFromMe = false;
+            }
         }
 
         if (s_hwndNextCBChain) {
@@ -2300,7 +2302,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             s_hwndNextCBChain = (HWND)lParam;
         }
         if (s_hwndNextCBChain) {
-            SendMessage(s_hwndNextCBChain,WM_CHANGECBCHAIN,lParam,wParam);
+            SendMessage(s_hwndNextCBChain,WM_CHANGECBCHAIN,wParam,lParam);
         }
         break;
 
@@ -4166,6 +4168,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     OpenClipboard(hwnd);
     EnableCmd(hmenu, IDM_EDIT_CLEARCLIPBOARD, CountClipboardFormats());
     CloseClipboard();
+    EnableCmd(hmenu, IDM_EDIT_STOP_PASTEBOARD, s_flagPasteBoard);
 
     EnableCmd(hmenu, IDM_EDIT_MOVELINEUP, !ro);
     EnableCmd(hmenu, IDM_EDIT_MOVELINEDOWN, !ro);
@@ -5135,6 +5138,17 @@ static bool _HandleEditBasicCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM
 
     case IDM_EDIT_CLEARCLIPBOARD:
         EditClearClipboard(Globals.hwndEdit);
+        break;
+
+
+    case IDM_EDIT_STOP_PASTEBOARD:
+        KillTimer(Globals.hwndMain, ID_PASTEBOARDTIMER);
+        ChangeClipboardChain(Globals.hwndMain, s_hwndNextCBChain);
+        s_hwndNextCBChain = NULL;
+        s_flagPasteBoard = false;
+        s_iLastCopyTime = 0;
+        s_bLastCopyFromMe = false;
+        UpdateToolbar_Now(Globals.hwndMain);
         break;
 
 
@@ -12293,6 +12307,8 @@ void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
     UNREFERENCED_PARAMETER(uMsg);
     UNREFERENCED_PARAMETER(idEvent);
     UNREFERENCED_PARAMETER(dwTime);
+
+    if (!s_flagPasteBoard) { return; }
 
     if ((s_iLastCopyTime > 0) && ((GetTicks_ms() - s_iLastCopyTime) > 200)) {
 

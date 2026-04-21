@@ -190,6 +190,7 @@ No native ARM64 grepWin build exists. The ARM64 build uses `grepWin-x64_portable
 - **Editor config**: `.editorconfig` enforces UTF-8/CRLF for source files, 4-space indentation for C/C++; Lexilla code uses tabs (preserved from upstream)
 - **File encoding rules** (must be respected when creating or editing these files):
   - `language\*\*.rc` — **UTF-8 without BOM**. Never write or save these files with a UTF-8 BOM. Use `Build\rc_to_utf8.cmd` to strip accidental BOMs.
+    - **PowerShell pitfall**: `[System.Text.Encoding]::UTF8` writes **with** BOM. Always use `[System.Text.UTF8Encoding]::new($false)` when writing `.rc` files from PowerShell scripts.
   - `Build\Notepad3.ini`, `Build\minipath.ini` — **UTF-8 with BOM** (BOM = `EF BB BF`). These INI reference files must retain the BOM.
 - **String safety**: Uses `strsafe.h` throughout; deprecated string functions are disabled
 
