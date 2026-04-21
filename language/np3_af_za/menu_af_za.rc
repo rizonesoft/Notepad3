@@ -155,7 +155,6 @@ BEGIN
     POPUP "&Wysig"
     BEGIN
         MENUITEM "Document &Read Only"                      IDM_VIEW_READONLY
-        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "O&ngedaan\tCtrl+Z",                       IDM_EDIT_UNDO
         MENUITEM "Oo&rdoen\tCtrl+Y",                        IDM_EDIT_REDO
@@ -166,9 +165,11 @@ BEGIN
         MENUITEM "Kopieer &Voeg\tCtrl+E",                   IDM_EDIT_COPYADD
         MENUITEM "&Plak\tCtrl+V",                           IDM_EDIT_PASTE
         MENUITEM "&Uitruil\tCtrl+K",                        IDM_EDIT_SWAP
-        MENUITEM "&Verwyder\tDel",                          IDM_EDIT_CLEAR
-        MENUITEM "Maak &Klipbord Skoon",                    IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "Kies &Alles\tCtrl+A",                     IDM_EDIT_SELECTALL
+        MENUITEM "&Verwyder\tDel",                          IDM_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "Maak &Klipbord Skoon",                    IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "W&oorde"
         BEGIN

@@ -155,7 +155,6 @@ BEGIN
     POPUP "&Sunting"
     BEGIN
         MENUITEM "Mode Hanya &Baca"                  IDM_VIEW_READONLY
-        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "&Urungkan\tCtrl+Z",                IDM_EDIT_UNDO
         MENUITEM "Kem&balikan\tCtrl+Y",              IDM_EDIT_REDO
@@ -166,9 +165,11 @@ BEGIN
         MENUITEM "Tambah ke Papan &Klip\tCtrl+E",    IDM_EDIT_COPYADD
         MENUITEM "Te&mpel\tCtrl+V",                  IDM_EDIT_PASTE
         MENUITEM "Tuka&r\tCtrl+K",                   IDM_EDIT_SWAP
-        MENUITEM "Hap&us\tDel",                      IDM_EDIT_CLEAR
-        MENUITEM "Bersi&hkan Papan Klip",            IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "Pil&ih Semua\tCtrl+A",             IDM_EDIT_SELECTALL
+        MENUITEM "Hap&us\tDel",                      IDM_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "Bersi&hkan Papan Klip",            IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "Ka&ta"
         BEGIN

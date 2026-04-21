@@ -150,7 +150,7 @@ static bool      s_IsThisAnElevatedRelaunch = false;
 static WCHAR     s_wchWndClass[64] = { L'\0' };
 
 static HWND      s_hwndEditFrame = NULL;
-static HWND      s_hwndNextCBChain = NULL;
+static bool      s_bPasteBoardListening = false;
 
 static int       s_WinCurrentWidth = 0;
 
@@ -166,6 +166,8 @@ static UINT      s_msgTaskbarCreated = 0;
 static WCHAR     s_wchTitleExcerpt[MIDSZ_BUFFER] = { L'\0' };
 static LONG64    s_iLastCopyTime = 0;
 static bool      s_bLastCopyFromMe = false;
+static DWORD     s_dwLastPasteSeqNo = 0;
+static bool      s_bLastPasteSeqNoValid = false;
 static bool      s_bInMultiEditMode = false;
 static bool      s_bCallTipEscDisabled = false;
 
@@ -2096,12 +2098,11 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
 
     // Check for Paste Board option -- after loading files
     if (s_flagPasteBoard) {
-        s_bLastCopyFromMe = true;
-        s_hwndNextCBChain = SetClipboardViewer(Globals.hwndMain);
-        s_bLastCopyFromMe = false;
-
-        s_iLastCopyTime = 0;
-        SetTimer(Globals.hwndMain, ID_PASTEBOARDTIMER, 100, PasteBoardTimerProc);
+        s_bPasteBoardListening = AddClipboardFormatListener(Globals.hwndMain);
+        if (s_bPasteBoardListening) {
+            s_iLastCopyTime = 0;
+            SetTimer(Globals.hwndMain, ID_PASTEBOARDTIMER, 100, PasteBoardTimerProc);
+        }
     }
 
     // check if a lexer was specified from the command line
@@ -2283,26 +2284,13 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     //  bPendingChangeNotify = false;
     //  break;
 
-    case WM_DRAWCLIPBOARD:
+    case WM_CLIPBOARDUPDATE:
         if (s_flagPasteBoard) {
             if (!s_bLastCopyFromMe) {
                 s_iLastCopyTime = GetTicks_ms();
             } else {
                 s_bLastCopyFromMe = false;
             }
-        }
-
-        if (s_hwndNextCBChain) {
-            SendMessage(s_hwndNextCBChain,WM_DRAWCLIPBOARD,wParam,lParam);
-        }
-        break;
-
-    case WM_CHANGECBCHAIN:
-        if ((HWND)wParam == s_hwndNextCBChain) {
-            s_hwndNextCBChain = (HWND)lParam;
-        }
-        if (s_hwndNextCBChain) {
-            SendMessage(s_hwndNextCBChain,WM_CHANGECBCHAIN,wParam,lParam);
         }
         break;
 
@@ -3266,8 +3254,13 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         // Terminate clipboard watching
         if (s_flagPasteBoard) {
+            s_flagPasteBoard = false;
+            s_iLastCopyTime = 0;
             KillTimer(hwnd, ID_PASTEBOARDTIMER);
-            ChangeClipboardChain(hwnd, s_hwndNextCBChain);
+            if (s_bPasteBoardListening) {
+                RemoveClipboardFormatListener(hwnd);
+                s_bPasteBoardListening = false;
+            }
         }
 
         // close Find/Replace and CustomizeSchemes
@@ -5143,12 +5136,16 @@ static bool _HandleEditBasicCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM
 
     case IDM_EDIT_STOP_PASTEBOARD:
         KillTimer(Globals.hwndMain, ID_PASTEBOARDTIMER);
-        ChangeClipboardChain(Globals.hwndMain, s_hwndNextCBChain);
-        s_hwndNextCBChain = NULL;
+        if (s_bPasteBoardListening) {
+            RemoveClipboardFormatListener(Globals.hwndMain);
+            s_bPasteBoardListening = false;
+        }
         s_flagPasteBoard = false;
         s_iLastCopyTime = 0;
         s_bLastCopyFromMe = false;
+        s_bLastPasteSeqNoValid = false;
         UpdateToolbar_Now(Globals.hwndMain);
+        UpdateStatusbar(true);
         break;
 
 
@@ -9252,7 +9249,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             break;
 
             case STATUS_OVRMODE:
-                PostWMCommand(hwnd, CMD_VK_INSERT);
+                if (s_flagPasteBoard) {
+                    PostWMCommand(hwnd, IDM_EDIT_STOP_PASTEBOARD);
+                } else {
+                    PostWMCommand(hwnd, CMD_VK_INSERT);
+                }
                 break;
 
             case STATUS_2ND_DEF:
@@ -10608,17 +10609,22 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     // ------------------------------------------------------
 
     if (g_iStatusbarVisible[STATUS_OVRMODE]) {
-        static bool s_bIsOVR = -1;
+        static int  s_bIsOVR = -1;   // int for -1 sentinel (first-paint trigger)
+        static bool s_bPasteBoard = false;
         bool const bIsOVR = SciCall_GetOverType();
-        if (bForceRedraw || (s_bIsOVR != bIsOVR)) {
-            if (bIsOVR) {
+        if (bForceRedraw || (s_bIsOVR != (int)bIsOVR) || (s_bPasteBoard != s_flagPasteBoard)) {
+            if (s_flagPasteBoard) {
+                StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sCBS%s",
+                                g_mxSBPrefix[STATUS_OVRMODE], g_mxSBPostfix[STATUS_OVRMODE]);
+            } else if (bIsOVR) {
                 StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sOVR%s",
                                 g_mxSBPrefix[STATUS_OVRMODE], g_mxSBPostfix[STATUS_OVRMODE]);
             } else {
                 StringCchPrintf(tchStatusBar[STATUS_OVRMODE], txtWidth, L"%sINS%s",
                                 g_mxSBPrefix[STATUS_OVRMODE], g_mxSBPostfix[STATUS_OVRMODE]);
             }
-            s_bIsOVR = bIsOVR;
+            s_bIsOVR = (int)bIsOVR;
+            s_bPasteBoard = s_flagPasteBoard;
             bIsUpdateNeeded = true;
         }
     }
@@ -12310,7 +12316,15 @@ void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
 
     if (!s_flagPasteBoard) { return; }
 
-    if ((s_iLastCopyTime > 0) && ((GetTicks_ms() - s_iLastCopyTime) > 200)) {
+    int const debounceMs = max(0, Settings2.PasteBoardDebounceMs);
+    if ((s_iLastCopyTime > 0) && ((GetTicks_ms() - s_iLastCopyTime) > (LONG64)debounceMs)) {
+
+        // Skip if clipboard hasn't changed since last paste (sequence number check)
+        DWORD const dwCurrentSeqNo = GetClipboardSequenceNumber();
+        if (s_bLastPasteSeqNoValid && (dwCurrentSeqNo == s_dwLastPasteSeqNo)) {
+            s_iLastCopyTime = 0;
+            return;
+        }
 
         if (SciCall_CanPaste()) {
             bool bAutoIndent2 = Settings.AutoIndent;
@@ -12318,13 +12332,34 @@ void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
             EditJumpTo(-1, 0);
             UndoTransActionBegin();
             if (!Sci_IsDocEmpty()) {
-                SciCall_NewLine();
+                if (Settings2.PasteBoardSeparator[0] == L'\x01') {
+                    // default: one EOL between entries
+                    SciCall_NewLine();
+                }
+                else if (Settings2.PasteBoardSeparator[0] != L'\0') {
+                    // custom separator inserted verbatim — user controls all newlines in the string
+                    char sepBuf[MICRO_BUFFER * 3] = { '\0' };
+                    int const sepLen = WideCharToMultiByte(Encoding_SciCP, 0, Settings2.PasteBoardSeparator, -1,
+                                                           sepBuf, (int)(sizeof(sepBuf) - 1), NULL, NULL);
+                    if (sepLen > 0) {
+                        SciCall_ReplaceSel(sepBuf);
+                    }
+                }
+                // if '\0' (empty): no separator, entries joined directly
+            }
+            if (Settings2.PasteBoardAddTimestamp) {
+                char tsBuf[32] = { '\0' };
+                SYSTEMTIME st;
+                GetLocalTime(&st);
+                StringCchPrintfA(tsBuf, COUNTOF(tsBuf), "[%02u:%02u:%02u] ", st.wHour, st.wMinute, st.wSecond);
+                SciCall_ReplaceSel(tsBuf);
             }
             SciCall_Paste();
-            SciCall_NewLine();
             EndUndoTransAction();
             Sci_ScrollSelectionToView();
             Settings.AutoIndent = bAutoIndent2;
+            s_dwLastPasteSeqNo = dwCurrentSeqNo;
+            s_bLastPasteSeqNoValid = true;
         }
         s_iLastCopyTime = 0;
     }

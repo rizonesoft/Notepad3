@@ -35,6 +35,7 @@ Notepad3 is a free, open-source text editor with syntax highlighting for Windows
 - **Virtual space** rectangular selection (Alt+Drag)
 - **Accelerated word navigation** with configurable delimiters
 - **Insert GUIDs** directly into your document
+- **Clipboard monitoring mode** (`/b` command-line switch) — automatically appends every clipboard change as a new entry at the end of the document; stop at any time via **Edit → Stop Clipboard Monitoring** without closing the editor
 
 ### Syntax Highlighting
 Over 55 languages supported, including:

@@ -155,7 +155,6 @@ BEGIN
     POPUP "Redigera"
     BEGIN
         MENUITEM "Skrivskydda dokument"                              IDM_VIEW_READONLY
-        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "Ångra\tCtrl+Z",                                   IDM_EDIT_UNDO
         MENUITEM "Gör om\tCtrl+Y",                                  IDM_EDIT_REDO
@@ -166,9 +165,11 @@ BEGIN
         MENUITEM "Lägg till i urklipp\tCtrl+E",                       IDM_EDIT_COPYADD
         MENUITEM "Klistra in\tCtrl+V",                              IDM_EDIT_PASTE
         MENUITEM "Byt\tCtrl+K",                                     IDM_EDIT_SWAP
-        MENUITEM "Ta bort\tDel",                                     IDM_EDIT_CLEAR
-        MENUITEM "Rensa urklipp",                                   IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "Markera allt\tCtrl+A",                               IDM_EDIT_SELECTALL
+        MENUITEM "Ta bort\tDel",                                     IDM_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "Rensa urklipp",                                   IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "Ord"
                 BEGIN

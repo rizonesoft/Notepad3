@@ -155,7 +155,6 @@ BEGIN
     POPUP "&Edición"
     BEGIN
         MENUITEM "Documento &Sólo lectura"                  IDM_VIEW_READONLY
-        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "&Deshacer\tCtrl+Z",                       IDM_EDIT_UNDO
         MENUITEM "Re&hacer\tCtrl+Y",                        IDM_EDIT_REDO
@@ -166,9 +165,11 @@ BEGIN
         MENUITEM "Copiar a&ñadiendo\tCtrl+E",               IDM_EDIT_COPYADD
         MENUITEM "&Pegar\tCtrl+V",                          IDM_EDIT_PASTE
         MENUITEM "Perm&utar\tCtrl+K",                       IDM_EDIT_SWAP
-        MENUITEM "E&liminar\tDel",                          IDM_EDIT_CLEAR
-        MENUITEM "&Vaciar el portapapeles",                 IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "&Seleccionar todo\tCtrl+A",               IDM_EDIT_SELECTALL
+        MENUITEM "E&liminar\tDel",                          IDM_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Vaciar el portapapeles",                 IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "P&alabras"
         BEGIN

@@ -155,7 +155,6 @@ BEGIN
     POPUP "&Bearbeiten"
     BEGIN
         MENUITEM "&Dokument Nur Lesen"                      IDM_VIEW_READONLY
-        MENUITEM "Zwischenablage &Überwachung abbrechen",   IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "&Rückgängig\tCtrl+Z",                     IDM_EDIT_UNDO
         MENUITEM "&Wiederholen\tCtrl+Y",                    IDM_EDIT_REDO
@@ -166,9 +165,11 @@ BEGIN
         MENUITEM "Kopiere ans &Ende\tCtrl+E",               IDM_EDIT_COPYADD
         MENUITEM "&Einfügen\tCtrl+V",                       IDM_EDIT_PASTE
         MENUITEM "&Auswahl <-> &Zwischenablage\tCtrl+K",    IDM_EDIT_SWAP
-        MENUITEM "&Löschen\tDel",                           IDM_EDIT_CLEAR
-        MENUITEM "&Lösche Zwischenablage",                  IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "&Alles auswählen\tCtrl+A",                IDM_EDIT_SELECTALL
+        MENUITEM "&Löschen\tDel",                           IDM_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "&Lösche Zwischenablage",                  IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Zwischenablage &Überwachung abbrechen",   IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "&Wörter"
         BEGIN

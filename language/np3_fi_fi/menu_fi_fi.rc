@@ -155,7 +155,6 @@ BEGIN
     POPUP "&Muokkaa"
     BEGIN
         MENUITEM "Dokumentti Vain &luettavissa"          IDM_VIEW_READONLY
-        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "K&umoa\tCtrl+Z",               IDM_EDIT_UNDO
         MENUITEM "&Tee uudelleen\tCtrl+Y",               IDM_EDIT_REDO
@@ -166,9 +165,11 @@ BEGIN
         MENUITEM "Kop&ioi lisäys\tCtrl+E",           IDM_EDIT_COPYADD
         MENUITEM "&Liitä\tCtrl+V",              IDM_EDIT_PASTE
         MENUITEM "&Vaihda\tCtrl+K",               IDM_EDIT_SWAP
-        MENUITEM "&Poista\tDel",                IDM_EDIT_CLEAR
-        MENUITEM "Tyhj&ennä leikepöytä",            IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "Valit&se kaikki\tCtrl+A",         IDM_EDIT_SELECTALL
+        MENUITEM "&Poista\tDel",                IDM_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "Tyhj&ennä leikepöytä",            IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "S&anat"
         BEGIN

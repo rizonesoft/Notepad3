@@ -155,7 +155,6 @@ BEGIN
     POPUP "संपादन (&E)"
     BEGIN
         MENUITEM "दस्तावेज़ केवल पढ़ने योग्य (&R)"         IDM_VIEW_READONLY
-        MENUITEM "Stop Clipboard &Monitoring",          IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         MENUITEM "पूर्ववत करें (&U)\tCtrl+Z",               IDM_EDIT_UNDO
         MENUITEM "फिर से करें (&R)\tCtrl+Y",              IDM_EDIT_REDO
@@ -166,9 +165,11 @@ BEGIN
         MENUITEM "कॉपी करें और जोड़ें (&Y)\tCtrl+E",       IDM_EDIT_COPYADD
         MENUITEM "चिपकाएं (&P)\tCtrl+V",                IDM_EDIT_PASTE
         MENUITEM "बदलें (&W)\tCtrl+K",                  IDM_EDIT_SWAP
-        MENUITEM "हटाएं (&D)\tDel",                     IDM_EDIT_CLEAR
-        MENUITEM "क्लिपबोर्ड साफ़ करें (&E)",               IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "सारा चुनें (&S)\tCtrl+A",               IDM_EDIT_SELECTALL
+        MENUITEM "हटाएं (&D)\tDel",                     IDM_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "क्लिपबोर्ड साफ़ करें (&E)",               IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "शब्द (&O)"
         BEGIN

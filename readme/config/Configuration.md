@@ -181,6 +181,42 @@ Set to `1` to prevent **Ctrl+C** from copying the current line when nothing is s
 
 Set to `1` to prevent **Ctrl+X** from cutting the current line when nothing is selected.
 
+#### `CopyMultiSelectionSeparator=`
+
+String placed between selections when copying a multi-selection (**Ctrl+C** with multiple cursors/selections active). Default (key absent) uses the document's current EOL character. Set to empty for no separator. Supports escape sequences: `\r` (CR), `\n` (LF), `\t` (tab), `\xHH` (hex character). Common choices:
+
+```ini
+CopyMultiSelectionSeparator=       ;empty — selections joined without any separator
+CopyMultiSelectionSeparator=\t     ;tab-separated
+CopyMultiSelectionSeparator=\r\n   ;CRLF between each selection
+```
+
+### Clipboard Monitoring
+
+Notepad3 can be launched in **clipboard monitoring mode** with the `/b` command-line switch. In this mode, every clipboard change is automatically appended as a new entry at the end of the document. Stop monitoring at any time via **Edit → Stop Clipboard Monitoring** without closing the editor. While active, the status bar shows **`CBS`** in the INS/OVR field.
+
+#### `PasteBoardDebounceMs=200`
+
+Debounce interval in milliseconds before a clipboard change is pasted into the document. Increase this value if rapid successive copies result in missed or doubled entries. Range: `0`–`5000`.
+
+#### `PasteBoardSeparator=`
+
+String inserted verbatim between pasted entries — all newlines must be included explicitly. Default (key absent) uses the document's current EOL character, placing entries on consecutive lines. Set to empty (`PasteBoardSeparator=`) for no separator (entries concatenated). Supports escape sequences: `\r` (CR), `\n` (LF), `\t` (tab), `\xHH` (hex character). Common choices:
+
+```ini
+PasteBoardSeparator=\r\n---\r\n   ; dashed line on its own line (CRLF doc)
+PasteBoardSeparator=\n---\n       ; dashed line on its own line (LF doc)
+PasteBoardSeparator=\r\n          ; one line break (consecutive lines, CRLF doc)
+PasteBoardSeparator=\r\n\r\n      ; blank line between entries (CRLF doc)
+PasteBoardSeparator=\r\n\r\n\r\n  ; two blank lines between entries
+```
+
+> **Note:** The separator string is inserted verbatim — exactly the number of newline characters you specify will appear between entries. To place a text separator (e.g. `---`) on its own line, include the surrounding newlines: `\n---\n`.
+
+#### `PasteBoardAddTimestamp=0`
+
+Set to `1` to prepend a `[HH:MM:SS]` timestamp to each pasted entry.
+
 #### `NoFadeHidden=0`
 
 Set to `1` to disable fading of hidden objects in file lists (Favorites, etc.).
@@ -426,7 +462,7 @@ Defines visible fields and their order:
 | 6 | File size (UTF-8 mode) |
 | 7 | Encoding (double-click to open Encoding dialog) |
 | 8 | EOL mode (toggle CR+LF / LF / CR) |
-| 9 | INS/OVR mode toggle |
+| 9 | INS/OVR mode toggle (double-click); shows **CBS** when clipboard monitoring is active — double-click **CBS** stops monitoring |
 | 10 | STD/2ND text mode toggle |
 | 11 | Current scheme (double-click to open scheme selector) |
 | 12 | Ch — Character count from line start |

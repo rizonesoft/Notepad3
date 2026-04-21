@@ -844,6 +844,10 @@ typedef struct SETTINGS2_T {
 
     WCHAR CopyMultiSelectionSeparator[MICRO_BUFFER];
 
+    WCHAR PasteBoardSeparator[MICRO_BUFFER];
+    int   PasteBoardDebounceMs;
+    bool  PasteBoardAddTimestamp;
+
     const WCHAR* CodeFontPrefPrioList[MICRO_BUFFER];
     const WCHAR* TextFontPrefPrioList[MICRO_BUFFER];
 
