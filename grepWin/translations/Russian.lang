@@ -39,8 +39,8 @@ msgid "%ld more matches"
 msgstr "больше %ld совпадений"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr ""
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
+msgstr "%path% = путь файла, %line% = строка, %column% = позиция в строке, %pattern% with the search pattern"
 
 #. Resource IDs: (175)
 #, c-format
@@ -53,7 +53,7 @@ msgstr "&О grepWin..."
 
 #. Resource IDs: (1061)
 msgid "&Convert newlines"
-msgstr ""
+msgstr "&Конвертировать строки"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -114,7 +114,7 @@ msgstr "Между"
 
 #. Resource IDs: (1095)
 msgid "Both"
-msgstr ""
+msgstr "Оба"
 
 #. Resource IDs: (1093)
 msgid "CRLF (Windows)"
@@ -126,7 +126,7 @@ msgstr "Отмена"
 
 #. Resource IDs: (169)
 msgid "Capture search (Shows replaced text)"
-msgstr ""
+msgstr "Поиск с захватом (показывает заменённый текст)"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
@@ -134,11 +134,11 @@ msgstr "Проверять обновления"
 
 #. Resource IDs: (180)
 msgid "Column"
-msgstr ""
+msgstr "Столбец"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr ""
+msgstr "Команда запуска редактора на конкретной строке и позиции:"
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -146,7 +146,7 @@ msgstr "Контент"
 
 #. Resource IDs: (65535)
 msgid "Convert newlines to regex newline tags:"
-msgstr ""
+msgstr "Конвертировать строки в regex-теги:"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
@@ -254,7 +254,7 @@ msgstr "Файлы"
 
 #. Resource IDs: (181)
 msgid "Filter results"
-msgstr ""
+msgstr "Фильтровать результаты"
 
 #. Resource IDs: (174)
 #, c-format
@@ -299,7 +299,7 @@ msgstr "Неверный путь!"
 
 #. Resource IDs: (161)
 msgid "Inverse search"
-msgstr ""
+msgstr "Обратный поиск"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -311,7 +311,7 @@ msgstr "Сохранять дату файла при замене"
 
 #. Resource IDs: (1094)
 msgid "LF (Linux)"
-msgstr ""
+msgstr "LF (Linux)"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -328,7 +328,7 @@ msgstr "Строка"
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %s\n"
-msgstr ""
+msgstr "Строка %5ld : %s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
@@ -336,7 +336,7 @@ msgstr "Совпадения"
 
 #. Resource IDs: (137)
 msgid "Multiline editor"
-msgstr ""
+msgstr "Многострочный редактор"
 
 #. Resource IDs: (104)
 msgid "Name"
@@ -352,11 +352,11 @@ msgstr "Новая строка соответствует '.'"
 
 #. Resource IDs: (140)
 msgid "Newlines"
-msgstr ""
+msgstr "Переводы строк"
 
 #. Resource IDs: (1056)
 msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
-msgstr ""
+msgstr "Переносы строк в тексте игнорируются. Для конвертации нажмите кнопку ниже."
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -416,7 +416,7 @@ msgstr "Regex"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr "Regex строки замены"
+msgstr "Regex строки замены:"
 
 #. Resource IDs: (1001)
 msgid "Regex search"
@@ -428,7 +428,7 @@ msgstr "Regex строки поиска:"
 
 #. Resource IDs: (179)
 msgid "Regex stack error"
-msgstr ""
+msgstr "Ошибка стека Regex"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
@@ -548,7 +548,7 @@ msgstr "Параметр \"%s\" включен.\r\nПри замене этот 
 
 #. Resource IDs: (1025)
 msgid "\\"
-msgstr "/"
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -633,7 +633,7 @@ msgstr "NULL-байт на МБ для файла, чтобы считать е�
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr ""
+msgstr "Ищутся только файлы, соответствующие шаблону.\r\nИспользуйте \"|\" как разделитель.\r\nПример: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
@@ -678,7 +678,7 @@ msgstr "|"
 
 #. Resource IDs: (1024)
 msgid "⑂"
-msgstr "О"
+msgstr "⑂"
 
 #. Resource IDs: (1071)
 msgid "⚙ Settings"

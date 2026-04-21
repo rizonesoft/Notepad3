@@ -39,13 +39,13 @@ msgid "%ld more matches"
 msgstr "... %ld więcej dopasowań"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr ""
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
+msgstr "%path% = ścieżka pliku, %line% = wiersz, %column% = pozycja w wierszu, %pattern% with the search pattern"
 
 #. Resource IDs: (175)
 #, c-format
 msgid "%s files, skipped %s files. %s results selected."
-msgstr "Plików: %s, pominięto plików: %s. %s results selected."
+msgstr "Plików: %s, pominięto plików: %s. Wybranych %s wyników."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -126,7 +126,7 @@ msgstr "Anuluj"
 
 #. Resource IDs: (169)
 msgid "Capture search (Shows replaced text)"
-msgstr ""
+msgstr "Wyszukiwanie z przechwytywaniem (pokazuje zastąpiony tekst)"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
@@ -146,7 +146,7 @@ msgstr "Zawartość"
 
 #. Resource IDs: (65535)
 msgid "Convert newlines to regex newline tags:"
-msgstr "Konwertuj znaki końća linii na znaczniki RegExp"
+msgstr "Konwertuj znaki końca linii na znaczniki RegEx"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
@@ -486,7 +486,7 @@ msgstr "Wyszukano plików: %s, pominięto plików: %s. Znaleziono %s dopasowań 
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
-msgstr "Wyszukano plików: %s, pominięto plików: %s. Znaleziono %s dopasowań w %s plikach. %s results selected."
+msgstr "Wyszukano plików: %s, pominięto plików: %s. Znaleziono %s dopasowań w %s plikach. %s wyników wybranych."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
@@ -548,7 +548,7 @@ msgstr "Masz włączoną opcję \"%s\".\r\nPodczas zamiany ta opcja może spowod
 
 #. Resource IDs: (1025)
 msgid "\\"
-msgstr ""
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -605,7 +605,7 @@ msgstr "uwzględnij pasujące numery linii"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr "uwzględniu pasujący tekst linii"
+msgstr "uwzględnij pasujący tekst linii"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"

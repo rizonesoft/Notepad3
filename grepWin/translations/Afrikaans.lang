@@ -39,13 +39,13 @@ msgid "%ld more matches"
 msgstr "%ld meer gevind"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr ""
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
+msgstr "%path% = pad van lêer, %line% = lyn om na te spring, %column% = offset in lyn, %pattern% with the search pattern"
 
 #. Resource IDs: (175)
 #, c-format
 msgid "%s files, skipped %s files. %s results selected."
-msgstr ""
+msgstr "%s lêers, oorgeslaan %s lêers. %s resultate gekies."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -53,7 +53,7 @@ msgstr "&Oor grepWin..."
 
 #. Resource IDs: (1061)
 msgid "&Convert newlines"
-msgstr ""
+msgstr "&Skakel nuwelyne om"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -61,7 +61,7 @@ msgstr "&Vervang"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "&Hele woord"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -73,11 +73,11 @@ msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
-msgstr ""
+msgstr "<a href=\"https://tools.stefankueng.com\">Besoek ons webwerf</a>"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
-msgstr ""
+msgstr "<a>Oor grepWin</a>"
 
 #. Resource IDs: (1086)
 msgid ">"
@@ -114,11 +114,11 @@ msgstr "Tussen"
 
 #. Resource IDs: (1095)
 msgid "Both"
-msgstr ""
+msgstr "Beide"
 
 #. Resource IDs: (1093)
 msgid "CRLF (Windows)"
-msgstr ""
+msgstr "CRLF (Windows)"
 
 #. Resource IDs: (2)
 msgid "Cancel"
@@ -126,7 +126,7 @@ msgstr "Kanselleer"
 
 #. Resource IDs: (169)
 msgid "Capture search (Shows replaced text)"
-msgstr ""
+msgstr "Soek vang (wys vervangde teks)"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
@@ -134,11 +134,11 @@ msgstr "Kyk vir opdaterings"
 
 #. Resource IDs: (180)
 msgid "Column"
-msgstr ""
+msgstr "Kolom"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr ""
+msgstr "Opdragreël om editor op spesifieke lyn en kolom te open:"
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -146,15 +146,15 @@ msgstr "Inhoud"
 
 #. Resource IDs: (65535)
 msgid "Convert newlines to regex newline tags:"
-msgstr ""
+msgstr "Skakel nuwelyne na regex-nuwelynetags om:"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr ""
+msgstr "Kopieer kolom (alle items)"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr ""
+msgstr "Kopieer kolom (geselekteerde items)"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
@@ -162,7 +162,7 @@ msgstr "Kopieer lêernaam na klembord"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr "Kopieer lêernaam na klembord"
+msgstr "Kopieer lêername na klembord"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
@@ -254,12 +254,12 @@ msgstr "Lêers"
 
 #. Resource IDs: (181)
 msgid "Filter results"
-msgstr ""
+msgstr "Filtreer resultate"
 
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %s files, skipped %s files."
-msgstr ""
+msgstr "Gevind %s lêers, oorgeslaan %s lêers."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -287,7 +287,7 @@ msgstr "Sluit ondervouers in"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "Sluit simboliese skakels in"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
@@ -299,7 +299,7 @@ msgstr "Ongeldig pad!"
 
 #. Resource IDs: (161)
 msgid "Inverse search"
-msgstr ""
+msgstr "Omgekeerde soek"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -307,11 +307,11 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "Behou lêerdatum tydens vervanging"
 
 #. Resource IDs: (1094)
 msgid "LF (Linux)"
-msgstr ""
+msgstr "LF (Linux)"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -328,7 +328,7 @@ msgstr "Lyn"
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %s\n"
-msgstr ""
+msgstr "Lyn %5ld : %s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
@@ -336,7 +336,7 @@ msgstr "gevind"
 
 #. Resource IDs: (137)
 msgid "Multiline editor"
-msgstr ""
+msgstr "Veellyn-editor"
 
 #. Resource IDs: (104)
 msgid "Name"
@@ -344,7 +344,7 @@ msgstr "Naam"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr "Nuwer asa"
+msgstr "Nuwer as"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
@@ -352,11 +352,11 @@ msgstr "Nuwe lyn word gekoppel deur '.'"
 
 #. Resource IDs: (140)
 msgid "Newlines"
-msgstr ""
+msgstr "Nuwelyne"
 
 #. Resource IDs: (1056)
 msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
-msgstr ""
+msgstr "Noot: nuwelyne in teks word geïgnoreer, net vir opmaak. Gebruik die knoppie om dit na regex-nuwelyne om te skakel."
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -372,7 +372,7 @@ msgstr "Slegs een geval"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
-msgstr "Maak containing gids oop"
+msgstr "Maak omvattende gids oop"
 
 #. Resource IDs: (141)
 msgid "Open with Editor"
@@ -416,7 +416,7 @@ msgstr "Regex gevind"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr "Regex vervang String"
+msgstr "Regex vervang-string:"
 
 #. Resource IDs: (1001)
 msgid "Regex search"
@@ -424,11 +424,11 @@ msgstr "Regex soek"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr "Regex soek string"
+msgstr "Regex soek-string:"
 
 #. Resource IDs: (179)
 msgid "Regex stack error"
-msgstr ""
+msgstr "Regex-stapelfout"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
@@ -472,7 +472,7 @@ msgstr "Soek in gevinde lêers"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr "Zoekresultaat"
+msgstr "Soekresultate"
 
 #. Resource IDs: (105)
 msgid "Search string"
@@ -481,12 +481,12 @@ msgstr "Soekstring"
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
-msgstr ""
+msgstr "Deursoek %s lêers, oorgeslaan %s lêers. Gevind %s treffers in %s lêers."
 
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
-msgstr ""
+msgstr "Deursoek %s lêers, oorgeslaan %s lêers. Gevind %s treffers in %s lêers. %s resultate gekies."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
@@ -523,7 +523,7 @@ msgstr "Soek Teks"
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr ""
+msgstr "Die pad \"%s\" bestaan nie of is nie toeganklik nie!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
@@ -544,11 +544,11 @@ msgstr "Behandel lêers as binêre"
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr ""
+msgstr "U het die opsie \"%s\" geaktiveer.\r\nDit kan lêers beskadig tydens vervanging.\r\nWil u steeds voortgaan?"
 
 #. Resource IDs: (1025)
 msgid "\\"
-msgstr ""
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -633,11 +633,11 @@ msgstr "Aantal NULL-bytes per MB wat toegelaat word dat 'n lêer steeds as teks 
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr ""
+msgstr "Slegs lêers wat ooreenstem met die patroon word deursoek.\r\nGebruik \"|\" as skeier.\r\nVoorbeeld: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
-msgstr ""
+msgstr "maak lys met onlangse inskrywings oop"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -662,7 +662,7 @@ msgstr "soekstring is leeg"
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr ""
+msgstr "begin nuwe grepWin-venster"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
@@ -674,7 +674,7 @@ msgstr "jy kan directories uitsluit, bv. CVS en beelde.\nVoorbeeld: ^(CVS|images
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
-msgstr ""
+msgstr "|"
 
 #. Resource IDs: (1024)
 msgid "⑂"

@@ -39,21 +39,21 @@ msgid "%ld more matches"
 msgstr "%ld viac výskytov"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr ""
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
+msgstr "%path% = cesta súboru, %line% = riadok, %column% = pozícia v riadku, %pattern% with the search pattern"
 
 #. Resource IDs: (175)
 #, c-format
 msgid "%s files, skipped %s files. %s results selected."
-msgstr "%s súborov, vynechané %s súborov. %s results selected."
+msgstr "%s súborov, vynechané %s súborov. Vybrané %s výsledky."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
-msgstr ""
+msgstr "&O grepWin..."
 
 #. Resource IDs: (1061)
 msgid "&Convert newlines"
-msgstr ""
+msgstr "&Konvertovať nové riadky"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -61,7 +61,7 @@ msgstr "&Zameniť"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "&Celé slovo"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -73,19 +73,19 @@ msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
-msgstr ""
+msgstr "<a href=\"https://tools.stefankueng.com\">Navštívte náš web</a>"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
-msgstr ""
+msgstr "<a>O grepWin</a>"
 
 #. Resource IDs: (1086)
 msgid ">"
-msgstr ""
+msgstr ">"
 
 #. Resource IDs: (135)
 msgid "About grepWin"
-msgstr ""
+msgstr "O grepWin"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
@@ -114,7 +114,7 @@ msgstr "Medzi"
 
 #. Resource IDs: (1095)
 msgid "Both"
-msgstr ""
+msgstr "Obe"
 
 #. Resource IDs: (1093)
 msgid "CRLF (Windows)"
@@ -126,19 +126,19 @@ msgstr "Zrušiť"
 
 #. Resource IDs: (169)
 msgid "Capture search (Shows replaced text)"
-msgstr ""
+msgstr "Zachytávajúce hľadanie (ukazuje nahradený text)"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr ""
+msgstr "Skontrolovať aktualizácie"
 
 #. Resource IDs: (180)
 msgid "Column"
-msgstr ""
+msgstr "Stĺpec"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr ""
+msgstr "Príkaz na spustenie editora na danom riadku a pozícii:"
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -146,15 +146,15 @@ msgstr "Obsah"
 
 #. Resource IDs: (65535)
 msgid "Convert newlines to regex newline tags:"
-msgstr ""
+msgstr "Konvertovať nové riadky na regex tagy:"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr ""
+msgstr "Kopírovať stĺpec pre všetky položky"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr ""
+msgstr "Kopírovať stĺpec pre vybrané položky"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
@@ -198,7 +198,7 @@ msgstr "Zmena dátumu"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr ""
+msgstr "Nevarovať pri nahrádzaní bez zálohy"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -226,19 +226,19 @@ msgstr "Zadajte názov pre regex:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr ""
+msgstr "Kláves Escape zatvára grepWin"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr "Vylúčené riadky (Regex):"
+msgstr "Vylúčené priečinky (Regex):"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr ""
+msgstr "Exportovať zoznam výsledkov"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr ""
+msgstr "Exportovať výsledky..."
 
 #. Resource IDs: (158)
 msgid "Ext"
@@ -254,7 +254,7 @@ msgstr "Súbory"
 
 #. Resource IDs: (181)
 msgid "Filter results"
-msgstr ""
+msgstr "Filtrovať výsledky"
 
 #. Resource IDs: (174)
 #, c-format
@@ -279,7 +279,7 @@ msgstr "Zahrnúť skryté položky"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr ""
+msgstr "Zahrnúť cestu vyhľadávania"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -287,7 +287,7 @@ msgstr "Zahrnúť podpriečinky"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "Zahrnúť symbolické odkazy"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
@@ -299,7 +299,7 @@ msgstr "Neplatná cesta!"
 
 #. Resource IDs: (161)
 msgid "Inverse search"
-msgstr ""
+msgstr "Inverzné vyhľadávanie"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -307,11 +307,11 @@ msgstr "kB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "Zachovať dátum súboru pri nahrádzaní"
 
 #. Resource IDs: (1094)
 msgid "LF (Linux)"
-msgstr ""
+msgstr "LF (Linux)"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -328,7 +328,7 @@ msgstr "Riadok"
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %s\n"
-msgstr ""
+msgstr "Riadok %5ld : %s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
@@ -336,7 +336,7 @@ msgstr "Výskyty"
 
 #. Resource IDs: (137)
 msgid "Multiline editor"
-msgstr ""
+msgstr "Viacriadkový editor"
 
 #. Resource IDs: (104)
 msgid "Name"
@@ -352,11 +352,11 @@ msgstr "Nový riadok je uzavretý '.'"
 
 #. Resource IDs: (140)
 msgid "Newlines"
-msgstr ""
+msgstr "Nové riadky"
 
 #. Resource IDs: (1056)
 msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
-msgstr ""
+msgstr "Poznámka: nové riadky sa ignorujú. Použite tlačidlo na konverziu."
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -428,7 +428,7 @@ msgstr "Regex vyhľadať reťazec:"
 
 #. Resource IDs: (179)
 msgid "Regex stack error"
-msgstr ""
+msgstr "Chyba zásobníka Regex"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
@@ -444,7 +444,7 @@ msgstr "Nahradiť reťazec"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr ""
+msgstr "Nahradiť s/\nFormát zachytenia:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -468,7 +468,7 @@ msgstr "Hľadať v"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr ""
+msgstr "Hľadať v nájdených súboroch"
 
 #. Resource IDs: (1018)
 msgid "Search results"
@@ -486,7 +486,7 @@ msgstr "Prehľadané %s súborov, vynechané %s súborov. Našlo sa %s výskytov
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
-msgstr "Prehľadané %s súborov, vynechané %s súborov. Našlo sa %s výskytov v %s súboroch. %s results selected."
+msgstr "Prehľadané %s súborov, vynechané %s súborov. Našlo sa %s výskytov v %s súboroch. Vybrané %s výsledky."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
@@ -523,7 +523,7 @@ msgstr "Textové hľadanie"
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr ""
+msgstr "Cesta \"%s\" neexistuje alebo nie je prístupná!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
@@ -535,20 +535,20 @@ msgstr "Výsledný text po nahradení:"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr ""
+msgstr "Spracovávať súbory ako UTF-8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr ""
+msgstr "Spracovávať súbory ako binárne"
 
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr ""
+msgstr "Máte zapnutú možnosť \"%s\".\r\nNahrádzanie môže poškodiť súbory.\r\nPokračovať?"
 
 #. Resource IDs: (1025)
 msgid "\\"
-msgstr ""
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -568,7 +568,7 @@ msgstr "kliknutím upravte text na viacriadkový text"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
-msgstr ""
+msgstr "Tmavý režim vyžaduje Win10 1803+ a musí byť zapnutý v systémových nastaveniach."
 
 #. Resource IDs: (121)
 msgid "equal to"
@@ -580,16 +580,16 @@ msgstr "väčšie ako"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
-msgstr ""
+msgstr "grepWin"
 
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr ""
+msgstr "Je dostupný grepWin %s"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
-msgstr ""
+msgstr "Nastavenia grepWin"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
@@ -597,15 +597,15 @@ msgstr "podržte stlačenú klávesu Shift a vyhľadajte súbory, ktoré neobsah
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr ""
+msgstr "zahrnúť cesty súborov"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr ""
+msgstr "zahrnúť čísla riadkov"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr ""
+msgstr "zahrnúť text riadkov"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
@@ -629,15 +629,15 @@ msgstr "žiadny text nie je dostupný na testovanie"
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr ""
+msgstr "NULL bajtov na MB povolených na považovanie súboru za textový"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr ""
+msgstr "Prehľadávajú sa len súbory zodpovedajúce vzoru.\r\nPoužite \"|\" ako oddeľovač.\r\nPríklad: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
-msgstr ""
+msgstr "otvoriť zoznam nedávnych položiek"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -649,7 +649,7 @@ msgstr "regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr ""
+msgstr "Znovu použiť okno grepWin."
 
 #. Resource IDs: (151)
 #, c-format
@@ -662,19 +662,19 @@ msgstr "hľadaný reťazec je prázdny"
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr ""
+msgstr "spustiť nové okno grepWin"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr ""
+msgstr "Rekurzívne prehľadávané cesty.\r\nOddeľujte cesty znakom |.\r\nPríklad: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr ""
+msgstr "Môžete vylúčiť adresáre.\r\nPríklad: ^(CVS|images)$\r\nPriečinky .svn sú zvyčajne skryté."
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
-msgstr ""
+msgstr "|"
 
 #. Resource IDs: (1024)
 msgid "⑂"
