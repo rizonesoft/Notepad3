@@ -105,7 +105,7 @@ jobs:
 
           msbuild Notepad3.sln /m /p:Configuration=$config /p:Platform=$platform /v:minimal
 
-      - name: Install AutoHotkey
+      - name: Install AutoHotkey V2
         if: matrix.platform == 'Win32' || matrix.platform == 'x64'
         run: choco install autohotkey.install --no-progress -y
 
