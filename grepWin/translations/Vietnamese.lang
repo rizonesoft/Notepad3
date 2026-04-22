@@ -39,8 +39,8 @@ msgid "%ld more matches"
 msgstr "%ld kết quả khác"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
-msgstr "%path% được thay bằng đường dẫn tệp, %line% bằng dòng cần đến, %column% bằng vị trí trong dòng, %pattern% with the search pattern"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
+msgstr "%path% được thay bằng đường dẫn tệp, %line% bằng dòng cần đến, %column% bằng vị trí trong dòng"
 
 #. Resource IDs: (175)
 #, c-format

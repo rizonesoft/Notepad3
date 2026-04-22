@@ -36,32 +36,32 @@ msgstr ""
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
-msgstr "%ld meer gevind"
+msgstr "還有 %ld 個匹配"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr "%path% = pad van lêer, %line% = lyn om na te spring, %column% = offset in lyn"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
+msgstr "%path% 會被替換為檔案路徑，%line% 替換為要跳轉到的行，%column% 替換為行內偏移，%pattern% 替換為搜尋字串"
 
 #. Resource IDs: (175)
 #, c-format
 msgid "%s files, skipped %s files. %s results selected."
-msgstr "%s lêers, oorgeslaan %s lêers. %s resultate gekies."
+msgstr "%s 個檔案，已跳過 %s 個檔案。已選擇 %s 個結果。"
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
-msgstr "&Oor grepWin..."
+msgstr "關於 grepWin(&A)..."
 
 #. Resource IDs: (1061)
 msgid "&Convert newlines"
-msgstr "&Skakel nuwelyne om"
+msgstr "轉換換行(&C)"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
-msgstr "&Vervang"
+msgstr "取代(&R)"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr "&Hele woord"
+msgstr "整個字匹配(&W)"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -73,11 +73,11 @@ msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
-msgstr "<a href=\"https://tools.stefankueng.com\">Besoek ons webwerf</a>"
+msgstr "<a href=\"https://tools.stefankueng.com\">造訪我們的網站</a>"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
-msgstr "<a>Oor grepWin</a>"
+msgstr "<a>關於 grepWin</a>"
 
 #. Resource IDs: (1086)
 msgid ">"
@@ -85,181 +85,181 @@ msgstr ">"
 
 #. Resource IDs: (135)
 msgid "About grepWin"
-msgstr "Oor grepWin"
+msgstr "關於 grepWin"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr "Voeg by voorafinstellings"
+msgstr "新增至預設"
 
 #. Resource IDs: (155)
 msgid "All Files"
-msgstr "Alle Lêers"
+msgstr "所有檔案"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr "Alle Datums"
+msgstr "所有日期"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
-msgstr "Alle Afmetings"
+msgstr "所有大小"
 
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr "Is u seker dat u \n%s\nmet\n%s\n wil vervang sonder om 'n backup te maak?"
+msgstr "您確定想要將\n%s\n取代為\n%s\n而不建立備份嗎？"
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr "Tussen"
+msgstr "介於"
 
 #. Resource IDs: (1095)
 msgid "Both"
-msgstr "Beide"
+msgstr "兩者"
 
 #. Resource IDs: (1093)
 msgid "CRLF (Windows)"
-msgstr "CRLF (Windows)"
+msgstr "CRLF（Windows）"
 
 #. Resource IDs: (2)
 msgid "Cancel"
-msgstr "Kanselleer"
+msgstr "取消"
 
 #. Resource IDs: (169)
 msgid "Capture search (Shows replaced text)"
-msgstr "Soek vang (wys vervangde teks)"
+msgstr "擷取搜尋（顯示取代後的文字）"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr "Kyk vir opdaterings"
+msgstr "檢查更新"
 
 #. Resource IDs: (180)
 msgid "Column"
-msgstr "Kolom"
+msgstr "欄"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr "Opdragreël om editor op spesifieke lyn en kolom te open:"
+msgstr "在指定行和偏移啟動編輯器的命令列："
 
 #. Resource IDs: (1060)
 msgid "Content"
-msgstr "Inhoud"
+msgstr "內容"
 
 #. Resource IDs: (65535)
 msgid "Convert newlines to regex newline tags:"
-msgstr "Skakel nuwelyne na regex-nuwelynetags om:"
+msgstr "將換行轉換為正則換行標記："
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr "Kopieer kolom (alle items)"
+msgstr "複製此欄位所有項目的內容"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr "Kopieer kolom (geselekteerde items)"
+msgstr "複製此欄位選取項目的內容"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
-msgstr "Kopieer lêernaam na klembord"
+msgstr "複製檔案名稱到剪貼簿"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr "Kopieer lêername na klembord"
+msgstr "複製檔案名稱到剪貼簿"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr "Kopieer padnaam na klembord"
+msgstr "複製路徑到剪貼簿"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
-msgstr "Kopieer padname na klembord"
+msgstr "複製路徑到剪貼簿"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
-msgstr "Kopieer teksresultaat na klembord"
+msgstr "複製文字結果到剪貼簿"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
-msgstr "Kopieer teksresultaat na klembord"
+msgstr "複製文字結果到剪貼簿"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
-msgstr "Skep backup lêers"
+msgstr "建立備份檔"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
-msgstr "Skep backup lêers in 'n aparte vouer"
+msgstr "在單獨的資料夾建立備份檔"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr "Donker modus"
+msgstr "暗黑模式"
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr "Datum gewysig"
+msgstr "修改日期"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr "Moenie waarsku wanneer iets vervang word sonder om backup te skep nie"
+msgstr "在不建立備份的情況下取代時不發出警告"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr "Dot stem ooreen met die nuwe lyn"
+msgstr "點號匹配換行"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr "Dubbelklik om 'n voorafinstelling te kies"
+msgstr "雙擊選擇一個預設"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
-msgstr "Dummy"
+msgstr "虛擬"
 
 #. Resource IDs: (1067)
 msgid "Editor"
-msgstr "Editor"
+msgstr "編輯器"
 
 #. Resource IDs: (138)
 msgid "Encoding"
-msgstr "Kodering"
+msgstr "編碼"
 
 #. Resource IDs: (1056)
 msgid "Enter a name for the regex:"
-msgstr "Voer 'n naam in vir die Regex:"
+msgstr "為正則輸入一個名稱："
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr "Ontsnap-sleutel beëindig grepWin"
+msgstr "按下 ESC 鍵關閉 grepWin"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr "Sluit dirs uit (Regex):"
+msgstr "排除資料夾（正則）："
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr "Voer resultaatlys uit"
+msgstr "匯出結果列表"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr "Voer resultate uit..."
+msgstr "匯出結果..."
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr "Ext"
+msgstr "副檔名"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Lêernaam ooreenstem:\nGebruik '|' om verskillende teks-paspatrone te skei, met '-' vooraan om uit te sluit"
+msgstr "檔案名稱匹配：\n使用「|」分隔多個文字匹配模式，前置「-」用於排除特定檔案(&D)"
 
 #. Resource IDs: (1059)
 msgid "Files"
-msgstr "Lêers"
+msgstr "檔案"
 
 #. Resource IDs: (181)
 msgid "Filter results"
-msgstr "Filtreer resultate"
+msgstr "篩選結果"
 
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %s files, skipped %s files."
-msgstr "Gevind %s lêers, oorgeslaan %s lêers."
+msgstr "已找到 %s 個檔案，已跳過 %s 個檔案。"
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -267,39 +267,39 @@ msgstr "GREPWIN"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "As dit geaktiveer is, word 'n backup geskep in die gids waarin u soek/vervang, en die lêers word in daardie lêergids gebere"
+msgstr "若啟用，則將在要搜尋/取代的資料夾內建立一個備份資料夾，並將檔案備份到該資料夾。"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
-msgstr "Sluit binêre lêers in"
+msgstr "包括二進位檔案"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
-msgstr "Sluit verborge items in"
+msgstr "包含隱藏項目"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr "Sluit soekpad in"
+msgstr "包括搜尋路徑"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
-msgstr "Sluit ondervouers in"
+msgstr "包含子資料夾"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr "Sluit simboliese skakels in"
+msgstr "包含符號連結"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr "Sluit System items in"
+msgstr "包含系統項目"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
-msgstr "Ongeldig pad!"
+msgstr "無效路徑！"
 
 #. Resource IDs: (161)
 msgid "Inverse search"
-msgstr "Omgekeerde soek"
+msgstr "反向搜尋"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -307,244 +307,244 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr "Behou lêerdatum tydens vervanging"
+msgstr "取代時保留檔案日期"
 
 #. Resource IDs: (1094)
 msgid "LF (Linux)"
-msgstr "LF (Linux)"
+msgstr "LF（Linux）"
 
 #. Resource IDs: (1075)
 msgid "Language:"
-msgstr "Taal:"
+msgstr "語言："
 
 #. Resource IDs: (1017)
 msgid "Limit search"
-msgstr "Beperk soek"
+msgstr "限制搜尋"
 
 #. Resource IDs: (134)
 msgid "Line"
-msgstr "Lyn"
+msgstr "行號"
 
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %s\n"
-msgstr "Lyn %5ld : %s\n"
+msgstr "行 %5ld : %s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
-msgstr "gevind"
+msgstr "匹配"
 
 #. Resource IDs: (137)
 msgid "Multiline editor"
-msgstr "Veellyn-editor"
+msgstr "多行編輯器"
 
 #. Resource IDs: (104)
 msgid "Name"
-msgstr "Naam"
+msgstr "名稱"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr "Nuwer as"
+msgstr "晚於"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr "Nuwe lyn word gekoppel deur '.'"
+msgstr "換行會被「.」匹配"
 
 #. Resource IDs: (140)
 msgid "Newlines"
-msgstr "Nuwelyne"
+msgstr "換行"
 
 #. Resource IDs: (1056)
 msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
-msgstr "Noot: nuwelyne in teks word geïgnoreer, net vir opmaak. Gebruik die knoppie om dit na regex-nuwelyne om te skakel."
+msgstr "注意：文字中的換行將被忽略，僅用於格式化。要將格式化的換行轉換為正確的正則換行，請使用下方按鈕。"
 
 #. Resource IDs: (1)
 msgid "OK"
-msgstr "OK"
+msgstr "確定"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr "Ouer as"
+msgstr "早於"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr "Slegs een geval"
+msgstr "僅開啟一個 grepWin 程序"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
-msgstr "Maak omvattende gids oop"
+msgstr "開啟包含的資料夾"
 
 #. Resource IDs: (141)
 msgid "Open with Editor"
-msgstr "Maak oop met Editor"
+msgstr "使用編輯器開啟"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
-msgstr "Plak teks om die regex mee te toets:"
+msgstr "貼上文字以測試正則："
 
 #. Resource IDs: (137)
 msgid "Path"
-msgstr "Pad"
+msgstr "路徑"
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr "Preset naam"
+msgstr "預設名稱"
 
 #. Resource IDs: (1022, 132)
 msgid "Presets"
-msgstr "Presets"
+msgstr "預設"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr "Druk F1 vir hulp"
+msgstr "按 F1 鍵查看幫助"
 
 #. Resource IDs: (154)
 msgid "Programs"
-msgstr "Programme"
+msgstr "程式"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
-msgstr "Hernoem Preset"
+msgstr "重新命名預設(&N)"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
-msgstr "Regex Toets"
+msgstr "正則測試"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Regex gevind"
+msgstr "正則匹配"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr "Regex vervang-string:"
+msgstr "正則取代字串："
 
 #. Resource IDs: (1001)
 msgid "Regex search"
-msgstr "Regex soek"
+msgstr "正則搜尋"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr "Regex soek-string:"
+msgstr "正則搜尋字串："
 
 #. Resource IDs: (179)
 msgid "Regex stack error"
-msgstr "Regex-stapelfout"
+msgstr "正則堆疊錯誤"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
-msgstr "Relatiewe paaie word nie toegelaat nie. Voer 'n absolute pad in!"
+msgstr "不允許使用相對路徑。請輸入一個絕對路徑！"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr "Verwyder Preset"
+msgstr "移除預設(&V)"
 
 #. Resource IDs: (106)
 msgid "Replace string"
-msgstr "Vervang String"
+msgstr "取代字串"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "Vervang met/\nVangformaat:"
+msgstr "取代為/\n擷取格式："
 
 #. Resource IDs: (126)
 msgid "S&top"
-msgstr "S&top"
+msgstr "停止(&T)"
 
 #. Resource IDs: (1, 1016)
 msgid "Search"
-msgstr "Soek"
+msgstr "搜尋"
 
 #. Resource IDs: (1026)
 msgid "Search &for:"
-msgstr "Soek &vir:"
+msgstr "搜尋(&F)："
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "HOOFD/klein gevoelig"
+msgstr "搜尋區分大小寫"
 
 #. Resource IDs: (1015)
 msgid "Search in"
-msgstr "Soek in"
+msgstr "搜尋於"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr "Soek in gevinde lêers"
+msgstr "在找到的檔案中搜尋"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr "Soekresultate"
+msgstr "搜尋結果"
 
 #. Resource IDs: (105)
 msgid "Search string"
-msgstr "Soekstring"
+msgstr "搜尋字串"
 
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
-msgstr "Deursoek %s lêers, oorgeslaan %s lêers. Gevind %s treffers in %s lêers."
+msgstr "已搜尋 %s 個檔案，已跳過 %s 個檔案。已找到 %s 個匹配項於 %s 個檔案中。"
 
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
-msgstr "Deursoek %s lêers, oorgeslaan %s lêers. Gevind %s treffers in %s lêers. %s resultate gekies."
+msgstr "已搜尋 %s 個檔案，已跳過 %s 個檔案。已找到 %s 個匹配項於 %s 個檔案中。已選擇 %s 個結果。"
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr "Kies Editor Programma..."
+msgstr "選擇編輯器應用程式..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
-msgstr "Kies Soekpad"
+msgstr "選擇要搜尋的路徑"
 
 #. Resource IDs: (133)
 msgid "Size"
-msgstr "Grote"
+msgstr "大小"
 
 #. Resource IDs: (1006)
 msgid "Size is"
-msgstr "Grote is"
+msgstr "大小為"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
-msgstr "Toets Regex"
+msgstr "測試正則"
 
 #. Resource IDs: (136)
 msgid "Text"
-msgstr "Teks"
+msgstr "文字"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Teks gevind"
+msgstr "文字匹配"
 
 #. Resource IDs: (1002)
 msgid "Text search"
-msgstr "Soek Teks"
+msgstr "文字搜尋"
 
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr "Die pad \"%s\" bestaan nie of is nie toeganklik nie!"
+msgstr "路徑 \"%s\" 不存在或無法存取！"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
-msgstr "Die regex-soekstring stem ooreen met:"
+msgstr "正則搜尋字串匹配："
 
 #. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
-msgstr "Die gevolglike teks na vervanging:"
+msgstr "取代後的結果文字："
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr "Behandel lêers as UTF-8"
+msgstr "將檔案視為 UTF8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr "Behandel lêers as binêre"
+msgstr "將檔案視為二進位檔案"
 
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr "U het die opsie \"%s\" geaktiveer.\r\nDit kan lêers beskadig tydens vervanging.\r\nWil u steeds voortgaan?"
+msgstr "您已啟用選項 \"%s\"。\r\n在進行取代時，此選項可能會導致檔案損壞。\r\n您是否仍要繼續？"
 
 #. Resource IDs: (1025)
 msgid "\\"
@@ -552,31 +552,31 @@ msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "'n regular expression wat gebruik word vir soek. Druk F1 vir meer inligting."
+msgstr "用於搜尋的正則表達式。按 F1 以獲取更多資訊。"
 
 #. Resource IDs: (125)
 msgid "an empty string"
-msgstr "'n leë string"
+msgstr "空字串"
 
 #. Resource IDs: (130)
 msgid "binary"
-msgstr "binêre"
+msgstr "二進位"
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
-msgstr "klik om die teks as 'n multiline-teks te wysig"
+msgstr "點擊以多行文字編輯"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
-msgstr "Dark Mode benodig ten minste Win10 v1803, en dit moet aangeskakel wees in die Windows-stelselinstellings."
+msgstr "暗黑模式需要至少 Win10 1803，並且必須在 Windows 系統設定中啟用。"
 
 #. Resource IDs: (121)
 msgid "equal to"
-msgstr "gelyk aan"
+msgstr "等於"
 
 #. Resource IDs: (122)
 msgid "greater than"
-msgstr "groter as"
+msgstr "大於"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
@@ -585,92 +585,92 @@ msgstr "grepWin"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr "grepWin %s is beskikbaar"
+msgstr "grepWin %s 可用"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
-msgstr "grepWin instellings"
+msgstr "grepWin 設定"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "hou die shift-toets ingedruk om lêers te vind wat NIE die soekstring bevat nie"
+msgstr "按住 Shift 鍵以尋找不包含搜尋字串的檔案"
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr "lêerpaaie insluit"
+msgstr "包含檔案路徑"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr "sluit lyn nommers gevind in"
+msgstr "包含匹配行號"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr "sluit lyn teks gevind in"
+msgstr "包含匹配行文字"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr "ongeldige regex!"
+msgstr "無效的正則表達式！"
 
 #. Resource IDs: (120)
 msgid "less than"
-msgstr "kleiner as"
+msgstr "小於"
 
 #. Resource IDs: (111)
 msgid "no match"
-msgstr "niks gevind"
+msgstr "無匹配"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
-msgstr "geen teks om te vervang nie"
+msgstr "沒有要取代的文字"
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
-msgstr "geen teks om te toets beskikbaar"
+msgstr "沒有可用於測試的文字"
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr "Aantal NULL-bytes per MB wat toegelaat word dat 'n lêer steeds as teks in plaas van binêre beskou kan word"
+msgstr "每 MB 允許的 NULL 位元數，以便將檔案仍視為文字而不是二進位檔案"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "Slegs lêers wat ooreenstem met die patroon word deursoek.\r\nGebruik \"|\" as skeier.\r\nVoorbeeld: *.cpp|*.h"
+msgstr "僅搜尋匹配此規則的檔案。\r\n文字匹配已擴展，使用「|」作為分隔符。\r\n例如：*.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
-msgstr "maak lys met onlangse inskrywings oop"
+msgstr "打開包含最近條目的清單"
 
 #. Resource IDs: (129)
 msgid "read error"
-msgstr "lees fout"
+msgstr "讀取錯誤"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr "Regex ok"
+msgstr "正則 OK"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr "gebruik grepWin instances."
+msgstr "重複使用 grepWin 實例。"
 
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr "skandeer lêer '%s'"
+msgstr "正在掃描檔案 '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
-msgstr "soekstring is leeg"
+msgstr "搜尋字串為空"
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr "begin nuwe grepWin-venster"
+msgstr "啟動新的 grepWin 視窗"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "die pad(e) wat rekursief gesoek word.\nAfsonder paaie met die '|' simbool.\nVoorbeeld: c:\\temp|d:\\logs"
+msgstr "遞迴搜尋的路徑。\r\n使用 \"|\" 符號分隔路徑。\r\n例如: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "jy kan directories uitsluit, bv. CVS en beelde.\nVoorbeeld: ^(CVS|images)$\nOpmerking: '.svn' gidse is 'versteek' op Windows, dus word dit meestal nie geskandeer nie"
+msgstr "您可以排除資料夾，譬如 CVS 和 images。\r\n例: ^(CVS|images)$\r\n注意，「.svn」資料夾在 Windows 上是隱藏的，因此通常不會被掃描。"
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
@@ -682,9 +682,9 @@ msgstr "⑂"
 
 #. Resource IDs: (1071)
 msgid "⚙ Settings"
-msgstr "⚙ Instellings"
+msgstr "⚙ 設定"
 
 #. Resource IDs: (123)
 msgid "🔎 &Search"
-msgstr "🔎 &Soek"
+msgstr "🔎 搜尋(&S)"
 

@@ -36,32 +36,32 @@ msgstr ""
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
-msgstr "%ld meer gevind"
+msgstr "%ld か所のさらなる一致"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr "%path% = pad van lêer, %line% = lyn om na te spring, %column% = offset in lyn"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
+msgstr "%path% は「ファイルのパス」、%line% は「移動先の行番号」、%column% は「行中の位置」に置換されます, %pattern% は「検索パターン」に置換されます"
 
 #. Resource IDs: (175)
 #, c-format
 msgid "%s files, skipped %s files. %s results selected."
-msgstr "%s lêers, oorgeslaan %s lêers. %s resultate gekies."
+msgstr "%s ファイル, 検索省略 %s ファイル. 結果の%s項目を選択"
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
-msgstr "&Oor grepWin..."
+msgstr "grepWin について(&A)..."
 
 #. Resource IDs: (1061)
 msgid "&Convert newlines"
-msgstr "&Skakel nuwelyne om"
+msgstr "改行を変換(&C)"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
-msgstr "&Vervang"
+msgstr "置換(&R)"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr "&Hele woord"
+msgstr "単語全体(&W)"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -73,11 +73,11 @@ msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
-msgstr "<a href=\"https://tools.stefankueng.com\">Besoek ons webwerf</a>"
+msgstr "<a href=\"https://tools.stefankueng.com\">公式サイトを開く</a>"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
-msgstr "<a>Oor grepWin</a>"
+msgstr "<a>grepWin について</a>"
 
 #. Resource IDs: (1086)
 msgid ">"
@@ -85,36 +85,36 @@ msgstr ">"
 
 #. Resource IDs: (135)
 msgid "About grepWin"
-msgstr "Oor grepWin"
+msgstr "grepWin について"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr "Voeg by voorafinstellings"
+msgstr "プリセットに追加"
 
 #. Resource IDs: (155)
 msgid "All Files"
-msgstr "Alle Lêers"
+msgstr "すべてのファイル"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr "Alle Datums"
+msgstr "すべての日付"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
-msgstr "Alle Afmetings"
+msgstr "すべてのサイズ"
 
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr "Is u seker dat u \n%s\nmet\n%s\n wil vervang sonder om 'n backup te maak?"
+msgstr "本当にバックアップをとらずに\n「%s」\nを\n「%s」\nに置き換えますか?"
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr "Tussen"
+msgstr "期間内"
 
 #. Resource IDs: (1095)
 msgid "Both"
-msgstr "Beide"
+msgstr "両方"
 
 #. Resource IDs: (1093)
 msgid "CRLF (Windows)"
@@ -122,91 +122,91 @@ msgstr "CRLF (Windows)"
 
 #. Resource IDs: (2)
 msgid "Cancel"
-msgstr "Kanselleer"
+msgstr "キャンセル"
 
 #. Resource IDs: (169)
 msgid "Capture search (Shows replaced text)"
-msgstr "Soek vang (wys vervangde teks)"
+msgstr "キャプチャと後方参照を使用 (置換文字列を表示)"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr "Kyk vir opdaterings"
+msgstr "最新版を確認"
 
 #. Resource IDs: (180)
 msgid "Column"
-msgstr "Kolom"
+msgstr "列"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr "Opdragreël om editor op spesifieke lyn en kolom te open:"
+msgstr "指定行と行中の位置をエディタで開くためのコマンドライン:"
 
 #. Resource IDs: (1060)
 msgid "Content"
-msgstr "Inhoud"
+msgstr "内容"
 
 #. Resource IDs: (65535)
 msgid "Convert newlines to regex newline tags:"
-msgstr "Skakel nuwelyne na regex-nuwelynetags om:"
+msgstr "改行を正規表現用のタグに変換"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr "Kopieer kolom (alle items)"
+msgstr "列のすべての項目をコピー"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr "Kopieer kolom (geselekteerde items)"
+msgstr "列の選択した項目をコピー"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
-msgstr "Kopieer lêernaam na klembord"
+msgstr "ファイル名をクリップボードにコピー"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr "Kopieer lêername na klembord"
+msgstr "ファイル名を一括コピー"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr "Kopieer padnaam na klembord"
+msgstr "パスをクリップボードにコピー"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
-msgstr "Kopieer padname na klembord"
+msgstr "パスを一括コピー"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
-msgstr "Kopieer teksresultaat na klembord"
+msgstr "結果のテキストをクリップボードにコピー"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
-msgstr "Kopieer teksresultaat na klembord"
+msgstr "結果テキストを一括コピー"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
-msgstr "Skep backup lêers"
+msgstr "バックアップを作成"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
-msgstr "Skep backup lêers in 'n aparte vouer"
+msgstr "フォルダを作成してバックアップ"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr "Donker modus"
+msgstr "ダークモード"
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr "Datum gewysig"
+msgstr "更新日時"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr "Moenie waarsku wanneer iets vervang word sonder om backup te skep nie"
+msgstr "バックアップせず置換しても警告しない"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr "Dot stem ooreen met die nuwe lyn"
+msgstr "ドットで改行にも一致"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr "Dubbelklik om 'n voorafinstelling te kies"
+msgstr "ダブルクリックでプリセットを選択"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
@@ -214,52 +214,52 @@ msgstr "Dummy"
 
 #. Resource IDs: (1067)
 msgid "Editor"
-msgstr "Editor"
+msgstr "エディタ"
 
 #. Resource IDs: (138)
 msgid "Encoding"
-msgstr "Kodering"
+msgstr "文字コード"
 
 #. Resource IDs: (1056)
 msgid "Enter a name for the regex:"
-msgstr "Voer 'n naam in vir die Regex:"
+msgstr "この正規表現用の名前を入力:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr "Ontsnap-sleutel beëindig grepWin"
+msgstr "ESC キーで grepWin を閉じる"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr "Sluit dirs uit (Regex):"
+msgstr "除外するフォルダ (正規表現):"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr "Voer resultaatlys uit"
+msgstr "検索結果の一覧のエクスポート"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr "Voer resultate uit..."
+msgstr "結果のエクスポート..."
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr "Ext"
+msgstr "拡張子"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Lêernaam ooreenstem:\nGebruik '|' om verskillende teks-paspatrone te skei, met '-' vooraan om uit te sluit"
+msgstr "ファイル名が一致(&D):\n「|」で複数の文字列一致パターンを区切り、「-」を先頭にをつけると除外"
 
 #. Resource IDs: (1059)
 msgid "Files"
-msgstr "Lêers"
+msgstr "ファイル"
 
 #. Resource IDs: (181)
 msgid "Filter results"
-msgstr "Filtreer resultate"
+msgstr "検索結果を絞り込む"
 
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %s files, skipped %s files."
-msgstr "Gevind %s lêers, oorgeslaan %s lêers."
+msgstr "発見 %s ファイル, 検索省略 %s ファイル"
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -267,39 +267,39 @@ msgstr "GREPWIN"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "As dit geaktiveer is, word 'n backup geskep in die gids waarin u soek/vervang, en die lêers word in daardie lêergids gebere"
+msgstr "有効にすると、検索/置換を行ったフォルダ内にバックアップ用フォルダが作成され、そのフォルダ内にファイルがバックアップされます。"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
-msgstr "Sluit binêre lêers in"
+msgstr "バイナリファイルを含める"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
-msgstr "Sluit verborge items in"
+msgstr "隠し属性ファイルを含める"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr "Sluit soekpad in"
+msgstr "検索場所も保存"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
-msgstr "Sluit ondervouers in"
+msgstr "サブフォルダを含める"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr "Sluit simboliese skakels in"
+msgstr "シンボリックリンクを含める"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr "Sluit System items in"
+msgstr "システムファイルを含める"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
-msgstr "Ongeldig pad!"
+msgstr "パスが無効です!"
 
 #. Resource IDs: (161)
 msgid "Inverse search"
-msgstr "Omgekeerde soek"
+msgstr "検索結果を反転"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -307,7 +307,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr "Behou lêerdatum tydens vervanging"
+msgstr "置換時にファイルの更新日時を維持"
 
 #. Resource IDs: (1094)
 msgid "LF (Linux)"
@@ -315,48 +315,48 @@ msgstr "LF (Linux)"
 
 #. Resource IDs: (1075)
 msgid "Language:"
-msgstr "Taal:"
+msgstr "表示言語:"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
-msgstr "Beperk soek"
+msgstr "検索対象の絞り込み"
 
 #. Resource IDs: (134)
 msgid "Line"
-msgstr "Lyn"
+msgstr "行番号"
 
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %s\n"
-msgstr "Lyn %5ld : %s\n"
+msgstr "行 %5ld : %s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
-msgstr "gevind"
+msgstr "一致数"
 
 #. Resource IDs: (137)
 msgid "Multiline editor"
-msgstr "Veellyn-editor"
+msgstr "複数行用エディター"
 
 #. Resource IDs: (104)
 msgid "Name"
-msgstr "Naam"
+msgstr "名前"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr "Nuwer as"
+msgstr "より新しい"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr "Nuwe lyn word gekoppel deur '.'"
+msgstr "「.」を改行にも一致させます。"
 
 #. Resource IDs: (140)
 msgid "Newlines"
-msgstr "Nuwelyne"
+msgstr "改行"
 
 #. Resource IDs: (1056)
 msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
-msgstr "Noot: nuwelyne in teks word geïgnoreer, net vir opmaak. Gebruik die knoppie om dit na regex-nuwelyne om te skakel."
+msgstr "注: 文字列中の改行は無視され、整形にのみ使用されます。改行を適切に正規表現の改行に変換するには、下のボタンを使ってください。"
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -364,187 +364,187 @@ msgstr "OK"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr "Ouer as"
+msgstr "より古い"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr "Slegs een geval"
+msgstr "多重に起動しない"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
-msgstr "Maak omvattende gids oop"
+msgstr "このフォルダを開く"
 
 #. Resource IDs: (141)
 msgid "Open with Editor"
-msgstr "Maak oop met Editor"
+msgstr "エディタで開く"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
-msgstr "Plak teks om die regex mee te toets:"
+msgstr "正規表現テスト用のテキスト:"
 
 #. Resource IDs: (137)
 msgid "Path"
-msgstr "Pad"
+msgstr "パス"
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr "Preset naam"
+msgstr "プリセット名"
 
 #. Resource IDs: (1022, 132)
 msgid "Presets"
-msgstr "Presets"
+msgstr "プリセット"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr "Druk F1 vir hulp"
+msgstr ".: F1 キーでヘルプ表示 :."
 
 #. Resource IDs: (154)
 msgid "Programs"
-msgstr "Programme"
+msgstr "プログラム"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
-msgstr "Hernoem Preset"
+msgstr "プリセット名を変更(&N)"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
-msgstr "Regex Toets"
+msgstr "正規表現のテスト"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Regex gevind"
+msgstr "正規表現に一致"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr "Regex vervang-string:"
+msgstr "正規表現の置換文字列:"
 
 #. Resource IDs: (1001)
 msgid "Regex search"
-msgstr "Regex soek"
+msgstr "正規表現で検索"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr "Regex soek-string:"
+msgstr "正規表現の検索文字列:"
 
 #. Resource IDs: (179)
 msgid "Regex stack error"
-msgstr "Regex-stapelfout"
+msgstr "正規表現のスタックエラー"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
-msgstr "Relatiewe paaie word nie toegelaat nie. Voer 'n absolute pad in!"
+msgstr "相対パスは使用できません。絶対パスを入力してください"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr "Verwyder Preset"
+msgstr "プリセットを削除(&V)"
 
 #. Resource IDs: (106)
 msgid "Replace string"
-msgstr "Vervang String"
+msgstr "置換文字列"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "Vervang met/\nVangformaat:"
+msgstr "置換文字列(&H)/\n後方参照:"
 
 #. Resource IDs: (126)
 msgid "S&top"
-msgstr "S&top"
+msgstr "中止(&T)"
 
 #. Resource IDs: (1, 1016)
 msgid "Search"
-msgstr "Soek"
+msgstr "検索"
 
 #. Resource IDs: (1026)
 msgid "Search &for:"
-msgstr "Soek &vir:"
+msgstr "検索文字列(&F):"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "HOOFD/klein gevoelig"
+msgstr "大文字小文字を区別"
 
 #. Resource IDs: (1015)
 msgid "Search in"
-msgstr "Soek in"
+msgstr "検索場所"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr "Soek in gevinde lêers"
+msgstr "見つかったファイルから検索"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr "Soekresultate"
+msgstr "検索結果"
 
 #. Resource IDs: (105)
 msgid "Search string"
-msgstr "Soekstring"
+msgstr "検索文字列"
 
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
-msgstr "Deursoek %s lêers, oorgeslaan %s lêers. Gevind %s treffers in %s lêers."
+msgstr "検索済み %sファイル, 検索省略 %sファイル. %sか所一致 %s個のファイル中."
 
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
-msgstr "Deursoek %s lêers, oorgeslaan %s lêers. Gevind %s treffers in %s lêers. %s resultate gekies."
+msgstr "検索済み %sファイル, 検索省略 %sファイル. %sか所一致 %s個のファイル中. 結果の%s項目を選択"
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr "Kies Editor Programma..."
+msgstr "エディタを選択..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
-msgstr "Kies Soekpad"
+msgstr "検索するパスを選択"
 
 #. Resource IDs: (133)
 msgid "Size"
-msgstr "Grote"
+msgstr "サイズ"
 
 #. Resource IDs: (1006)
 msgid "Size is"
-msgstr "Grote is"
+msgstr "サイズ指定"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
-msgstr "Toets Regex"
+msgstr "正規表現テスト"
 
 #. Resource IDs: (136)
 msgid "Text"
-msgstr "Teks"
+msgstr "テキスト"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Teks gevind"
+msgstr "文字列に一致"
 
 #. Resource IDs: (1002)
 msgid "Text search"
-msgstr "Soek Teks"
+msgstr "文字列で検索"
 
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr "Die pad \"%s\" bestaan nie of is nie toeganklik nie!"
+msgstr "%s というパスは存在しないかアクセスできません!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
-msgstr "Die regex-soekstring stem ooreen met:"
+msgstr "正規表現に一致した文字列:"
 
 #. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
-msgstr "Die gevolglike teks na vervanging:"
+msgstr "置換後のテキスト:"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr "Behandel lêers as UTF-8"
+msgstr "ファイルを UTF-8 として処理"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr "Behandel lêers as binêre"
+msgstr "ファイルをバイナリとして処理"
 
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr "U het die opsie \"%s\" geaktiveer.\r\nDit kan lêers beskadig tydens vervanging.\r\nWil u steeds voortgaan?"
+msgstr "設定の「%s」が有効になっています。\r\nこの設定のまま置換すると、ファイルが破損する場合があります。\r\n続行しますか?"
 
 #. Resource IDs: (1025)
 msgid "\\"
@@ -552,31 +552,31 @@ msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "'n regular expression wat gebruik word vir soek. Druk F1 vir meer inligting."
+msgstr "検索に使用する正規表現 - F1キーで詳細情報を表示します。"
 
 #. Resource IDs: (125)
 msgid "an empty string"
-msgstr "'n leë string"
+msgstr "空の文字列"
 
 #. Resource IDs: (130)
 msgid "binary"
-msgstr "binêre"
+msgstr "バイナリ"
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
-msgstr "klik om die teks as 'n multiline-teks te wysig"
+msgstr "クリックで複数行の文字列として編集できます。"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
-msgstr "Dark Mode benodig ten minste Win10 v1803, en dit moet aangeskakel wees in die Windows-stelselinstellings."
+msgstr "ダークモードには Windonws 10 バージョン1803 以降が必要です。また先に Windows の色の設定から「黒」を選択してください"
 
 #. Resource IDs: (121)
 msgid "equal to"
-msgstr "gelyk aan"
+msgstr "等しい"
 
 #. Resource IDs: (122)
 msgid "greater than"
-msgstr "groter as"
+msgstr "超過"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
@@ -585,92 +585,92 @@ msgstr "grepWin"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr "grepWin %s is beskikbaar"
+msgstr "最新の grepWin %s があります。"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
-msgstr "grepWin instellings"
+msgstr "grepWin 設定"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "hou die shift-toets ingedruk om lêers te vind wat NIE die soekstring bevat nie"
+msgstr "Shift キーを押しながら検索で、検索文字列が含まれないファイルを検索"
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr "lêerpaaie insluit"
+msgstr "ファイルパスを出力"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr "sluit lyn nommers gevind in"
+msgstr "一致行の行数を出力"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr "sluit lyn teks gevind in"
+msgstr "一致行のテキストを出力"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr "ongeldige regex!"
+msgstr "正規表現が無効です!"
 
 #. Resource IDs: (120)
 msgid "less than"
-msgstr "kleiner as"
+msgstr "未満"
 
 #. Resource IDs: (111)
 msgid "no match"
-msgstr "niks gevind"
+msgstr "一致なし"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
-msgstr "geen teks om te vervang nie"
+msgstr "置換文字列がありません"
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
-msgstr "geen teks om te toets beskikbaar"
+msgstr "テスト用のテキストがありません"
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr "Aantal NULL-bytes per MB wat toegelaat word dat 'n lêer steeds as teks in plaas van binêre beskou kan word"
+msgstr "ファイルをバイナリでなくテキストと認識するための MB あたりの NULL バイトの数"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "Slegs lêers wat ooreenstem met die patroon word deursoek.\r\nGebruik \"|\" as skeier.\r\nVoorbeeld: *.cpp|*.h"
+msgstr "このパターンに一致するファイルから検索されます。\r\n一致する文字列は拡張でき、区切りに「|」が使えます。\r\n指定例: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
-msgstr "maak lys met onlangse inskrywings oop"
+msgstr "最近検索した項目一覧を開く"
 
 #. Resource IDs: (129)
 msgid "read error"
-msgstr "lees fout"
+msgstr "読み取りエラー"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr "Regex ok"
+msgstr "正規表現 - OK"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr "gebruik grepWin instances."
+msgstr "grepWin のインスタンスを再利用します。"
 
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr "skandeer lêer '%s'"
+msgstr "ファイルをスキャン中 '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
-msgstr "soekstring is leeg"
+msgstr "検索文字列が空です"
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr "begin nuwe grepWin-venster"
+msgstr "grepWin の新規ウィンドウを開く"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "die pad(e) wat rekursief gesoek word.\nAfsonder paaie met die '|' simbool.\nVoorbeeld: c:\\temp|d:\\logs"
+msgstr "パスは再帰的に検索されます。\r\nパスを「|」で区切ることができます。\r\n指定例: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "jy kan directories uitsluit, bv. CVS en beelde.\nVoorbeeld: ^(CVS|images)$\nOpmerking: '.svn' gidse is 'versteek' op Windows, dus word dit meestal nie geskandeer nie"
+msgstr "フォルダを除外できます。CVS と images を除外する例です。\r\n指定例: ^(CVS|images)$\r\n注: Windows では「.svn」フォルダは隠されているため、通常はスキャンされません。"
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
@@ -682,9 +682,9 @@ msgstr "⑂"
 
 #. Resource IDs: (1071)
 msgid "⚙ Settings"
-msgstr "⚙ Instellings"
+msgstr "⚙ 設定"
 
 #. Resource IDs: (123)
 msgid "🔎 &Search"
-msgstr "🔎 &Soek"
+msgstr "🔎 検索(&S)"
 
