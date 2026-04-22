@@ -36,15 +36,18 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 7.26.418.(build_#) (2026-04-18)
+Current BETA Version 7.26.422.(build_#) (2026-04-22)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]- .
+[.422.1]- Add search pattern placeholder (%pattern%) for editor command.
+[.422.1]- Feat: option to stop Clipboard monitoring during runtime.
+[.422.1]- In Notepad3 Portable, add a redirect to the Favorites folder.
 [.418.1]- Feat: switching from old tinyexpr lib to modern TinyExpr++ (TIN).
-[.418.1]- In Notepad3 Portable PAF, add a redirect to the Favorites folder.
+[.418.1]- In Notepad3Portable PAF, add a redirect to the Favorites folder.
 [.417.1]- Feat: Prep for grepWin search pattern editorcmd patching.
 [.417.1]- Feat: HTML CSS Styles.
 [.417.1]- Add default directory selection to settings menu.
@@ -100,6 +103,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.422.1]- Modernizing (Win10+) Clipboard monitoring feature.
 [.417.1]- LexHTML.cxx.
 [.417.1]- Language file names for grepWinPortable.
 [.417.1]- Error prone manual numbering of menu child-items for checkboxes.
@@ -167,7 +171,7 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.418.1]- Update TinyExpr++ (TIN)  version 1.1 (2026-01-16).
+[.418.1]- Update TinyExpr++ (TIN)  version 1.1.0 (2026-01-16).
 [.417.1]- Update Scintilla (SCI) Library version 5.6.1 (2026-03-26).
 [.417.1]- Update Lexilla (LEX) Library version 5.4.8 (2026-03-26).
 [.411.1]- Update grepWin (GRE) version 2.1.12.1434 (2025-09-24).
