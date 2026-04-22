@@ -3,13 +3,13 @@
 ==  This file is intended for the "Translators" to communicate to them the "Line Numbers" of        ==
 ==  the "Added or Modified" lines in "Resource" files ("filename_xx_yy.rc" and "grepWin.lang").     ==
 ==                                                                                                  ==
-==                                                                       Last update:  2026-04-17   ==
+==                                                                       Last update:  2026-04-22   ==
 ======================================================================================================
 
 January 2026: Line numbers to translate_2026-01 - No "Added or Modified" items in January 2026
 Februar 2026: Line numbers to translate_2026-02 - No "Added or Modified" items in February 2026
 March   2026: Line numbers to translate_2026-03 - https://workupload.com/file/uDjfcJwACXx (2026-03-06)
-April   2026: Line numbers to translate_2026-04 - https://workupload.com/file/E2aT9S9uUjp (2026-04-17)
+April   2026: Line numbers to translate_2026-04 - https://workupload.com/file/6pmZwZRHHmc (2026-04-22)
 May     2026: Line numbers to translate_2026-05 -  (2026-05-xx)
 June    2026: Line numbers to translate_2026-06 -  (2026-06-xx)
 July    2026: Line numbers to translate_2026-07 -  (2026-07-xx)
