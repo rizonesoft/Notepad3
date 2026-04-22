@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "&Törlés\tDel",                IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "Vágólap t&örlése",            IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
+        MENUITEM "&Vágólapfigyelés leállítása", IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "Sza&vak"
         BEGIN
