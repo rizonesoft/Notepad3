@@ -117,6 +117,8 @@ Notepad3 uses a portable INI file for all settings. Press **Ctrl+F7** to open it
 
 📖 **Full configuration reference:** [readme/config/Configuration.md](readme/config/Configuration.md)
 
+🎨 **Schemas, styles & themes:** [readme/schema/CustomSchema.md](readme/schema/CustomSchema.md) — the layered override model, the style mini-language, `View → Customize Schemes` (**F12**), and how to export / import / collect custom themes.
+
 ## Contributing
 
 Contributions are welcome! Here's how to help:

@@ -78,6 +78,13 @@ Available languages:
 
 #### `IMEInteraction=0`
 
+Scintilla IME composition mode:
+- `-1` — Auto-detect (one-shot at startup): Korean code pages (`949`, `1361`) → inline (`1`); all other languages → windowed (`0`).
+- `0` — `SC_IME_WINDOWED`: IME composition shown in a separate floating window.
+- `1` — `SC_IME_INLINE`: composition happens inline at the caret. Recommended when working with Far East languages that emit long composition strings.
+
+Range: `-1`–`1`.
+
 ### Date & Time
 
 #### `DateTimeFormat=`
@@ -114,6 +121,8 @@ Default directory for open/save dialogs when no file is open. Paths can be relat
 Default extension for saved files (omit the leading dot).
 
 #### `DenyVirtualSpaceAccess=0`
+
+Set to `1` to disable virtual-space access (the area beyond each line's end). With access denied, rectangular (column) selections cannot extend past the shortest line end. Default (`0`) allows rectangular selection to span virtual space — useful for aligning columns across lines of varying length.
 
 #### `filebrowser.exe=minipath.exe`
 
@@ -269,6 +278,14 @@ Whether to prompt for save when closing an untitled document that contains only 
 
 #### `SciFontQuality=3`
 
+Scintilla font rendering quality:
+- `0` — Default (system-chosen)
+- `1` — Non-antialiased
+- `2` — Antialiased
+- `3` — LCD-optimized (ClearType; default)
+
+Range: `0`–`3`. A per-resolution override is supported in the `[Window]` section via a key named `<ResX>x<ResY> SciFontQuality=<n>` (e.g. `1920x1080 SciFontQuality=2`), so different monitor layouts can use different font quality settings.
+
 #### `SimpleIndentGuides=0`
 
 Set to `1` to prevent indentation guides from jumping across empty lines.
@@ -293,9 +310,28 @@ Set to `true` for old selection behavior: single click selects the visible sub-l
 
 #### `LaunchInstanceWndPosOffset=28`
 
+Pixel offset cascade applied to each new Notepad3 window launched as an additional instance. Each successive window is shifted by this many pixels (both X and Y) relative to the previous one, so overlapping windows remain distinguishable. Range: `-10000`–`10000`. Set to `0` to spawn new windows at the exact same position.
+
 #### `LaunchInstanceFullVisible=true`
 
+When `true` (default), newly launched windows are clamped so they remain fully visible on the target monitor, even if the `LaunchInstanceWndPosOffset` cascade would push them off-screen. Set to `false` to allow partially off-screen positions (e.g. if you rely on the OS to handle multi-monitor placement).
+
 ### Appearance
+
+#### `RenderingTechnology=1`
+
+Scintilla rendering back-end:
+
+| Value | Name | Description |
+|-------|------|-------------|
+| `0` | GDI | Classic Win32 rendering |
+| `1` | DirectWrite | Direct2D (default on x86/x64) |
+| `2` | DirectWriteRetain | Direct2D preserving the back buffer between frames (default on ARM64 to prevent flicker on Qualcomm Adreno GPUs and the Win11 25H2 DWM compositor) |
+| `3` | DirectWriteDC | DC-based Direct2D |
+
+Also configurable via **Menu → View → Rendering Technology**. A per-resolution override is supported in the `[Window]` section, e.g. `1920x1080 RenderingTechnology=0`, so a docked laptop and an external 4K monitor can use different back-ends.
+
+**Tip:** On ARM64 systems showing rendering glitches, try `0` (GDI) or `3` (DirectWriteDC) as a workaround.
 
 #### `UseOldStyleBraceMatching=0`
 
@@ -307,9 +343,15 @@ Display scale percent threshold to switch to larger file-type icons.
 
 #### `DarkModeBkgColor=0x1F1F1F`
 
+Dark-mode window background color. The three `DarkMode*Color` entries use Win32 `COLORREF` byte order — `0xBBGGRR` (blue, green, red), **not** the usual HTML `0xRRGGBB`. So `0x1F1F1F` is a near-black neutral, and e.g. `0x0000FF` is pure red, not pure blue.
+
 #### `DarkModeBtnFaceColor=0x333333`
 
+Dark-mode button face color. Same `0xBBGGRR` byte order as above.
+
 #### `DarkModeTxtColor=0xEFEFEF`
+
+Dark-mode text color. Same `0xBBGGRR` byte order as above.
 
 ### Web Actions
 
@@ -385,9 +427,15 @@ Font priority list for the "Text Files" scheme.
 
 #### `UpdateDelayMarkAllOccurrences=50`
 
+Debounce interval (milliseconds) before the "mark all occurrences" highlight is recomputed after a document change. Lower values feel more responsive but cost more CPU on large documents; higher values reduce flicker while typing. Range: ~`20`–`10000` ms (the lower bound is clamped to `USER_TIMER_MINIMUM * 2`, typically around 20 ms).
+
 #### `CurrentLineHorizontalSlop=40`
 
+Horizontal caret slop in columns, passed to Scintilla's `SCI_SETXCARETPOLICY`. Defines the minimum horizontal gap (in character cells) the caret keeps from the left/right edge of the view before the view starts to scroll horizontally. Larger values keep more surrounding context visible; `0` disables the slop. Range: `0`–`240`.
+
 #### `CurrentLineVerticalSlop=5`
+
+Vertical caret slop in lines, passed to Scintilla's `SCI_SETYCARETPOLICY`. Defines the minimum vertical gap (in whole lines) the caret keeps from the top/bottom of the view before the view scrolls. `0` forces the "even caret" policy (caret always centered-ish); positive values set a fixed top/bottom margin. Range: `0`–`100`.
 
 #### `UndoTransactionTimeout=0`
 
@@ -424,7 +472,9 @@ Bias added to confidence when the system's ANSI code page matches the detected e
 
 Enable `#` as a line-comment character in MySQL-dialect SQL. Set to `0` to disable.
 
-#### `AtomicFileSave=true;`
+#### `AtomicFileSave=true`
+
+When `true` (default), `Save` writes to a temporary file alongside the target and then atomically replaces the original via `ReplaceFileW`. This preserves the original file's ACLs, alternate data streams, and attributes on failure (nothing is lost if the write is interrupted). Set to `false` to write in-place, which is faster on very large files but offers no rollback if the write fails mid-way. During Windows session end (`WM_ENDSESSION`) the atomic path is bypassed regardless of this setting.
 
 #### `ExitOnESCSkipLevel=2`
 
