@@ -259,7 +259,7 @@ msgstr "Keresés eredménye"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %s files, skipped %s files."
-msgstr "Talált %s fájlban, kihagyva %s fájl."
+msgstr "Találat %s fájlban, kihagyva %s fájl."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
