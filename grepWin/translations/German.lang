@@ -39,8 +39,8 @@ msgid "%ld more matches"
 msgstr "%ld mehr Übereinstimmungen"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
-msgstr "%path% wird mit dem Pfad der Datei ersetzt, %line% mit der Zeile, %column% mit der Spalte in der Zeile, %pattern% mit dem Suchmuster"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
+msgstr "%path% wird mit dem Pfad der Datei ersetzt, %line% mit der Zeile, %column% mit der Spalte in der Zeile"
 
 #. Resource IDs: (175)
 #, c-format

@@ -39,8 +39,8 @@ msgid "%ld more matches"
 msgstr "%ld개 더 많은 일치"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
-msgstr "%path%는 파일 경로로, %line%는 점프할 줄로, %column%는 들여쓰기 오프셋으로, %pattern%는 검색 패턴으로 대체됩니다"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
+msgstr "%path%는 파일 경로로, %line%는 점프할 줄로, %column%는 들여쓰기 오프셋으로"
 
 #. Resource IDs: (175)
 #, c-format

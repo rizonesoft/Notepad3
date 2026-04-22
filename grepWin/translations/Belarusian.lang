@@ -39,8 +39,8 @@ msgid "%ld more matches"
 msgstr "больш %ld супадзенняў"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
-msgstr "%path% = шлях файла, %line% = радок, %column% = пазіцыя ў радку, %pattern% with the search pattern"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
+msgstr "%path% = шлях файла, %line% = радок, %column% = пазіцыя ў радку"
 
 #. Resource IDs: (175)
 #, c-format
