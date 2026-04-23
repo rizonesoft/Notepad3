@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "&Apagar\tDel",                    IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "L&impar Área de Transferência",   IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Parar de &Monitorar Área de Transferência",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Ativar/Desativar &Monitorar Área de Transferência",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "P&alavras"
         BEGIN
