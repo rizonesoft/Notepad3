@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "&Wissen\tDel",                                    IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "&Klembord wissen",                                IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "&Bewaking van klembord stoppen",                  IDM_EDIT_STOP_PASTEBOARD
+        MENUITEM "&Bewaking van klembord omschakelen",              IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "W&oorden"
         BEGIN

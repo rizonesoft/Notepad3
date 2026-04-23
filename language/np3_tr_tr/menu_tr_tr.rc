@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "&Sil\tDel",                                         IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "&Panoyu temizle",                                   IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
+        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "&Sözcükler"
         BEGIN
