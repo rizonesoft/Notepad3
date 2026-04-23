@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "&Löschen\tDel",                           IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "&Lösche Zwischenablage",                  IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Zwischenablage &Überwachung umschalten",  IDM_EDIT_STOP_PASTEBOARD
+        MENUITEM "Zwischenablage &Überwachung umschalten",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "&Wörter"
         BEGIN

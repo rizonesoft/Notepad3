@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "E&liminar\tDel",                          IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "&Vaciar el portapapeles",                 IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
+        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "P&alabras"
         BEGIN

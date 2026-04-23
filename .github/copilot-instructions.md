@@ -57,7 +57,7 @@ Each language is one `styleLexXXX.c` defining an `EDITLEXER` struct (see existin
 
 Runtime-toggleable; external clipboard changes are pasted at the caret.
 
-- Menu: `IDM_EDIT_STOP_PASTEBOARD` — "Toggle Clipboard Monitoring" (legacy identifier). Check mark reflects state.
+- Menu: `IDM_EDIT_TOGGLE_PASTEBOARD` — "Toggle Clipboard Monitoring". Check mark reflects state.
 - Helpers `PasteBoard_Start(HWND)` / `PasteBoard_Stop(HWND)` wrap `AddClipboardFormatListener` + `ID_PASTEBOARDTIMER`. Used for `/B` startup and from the toggle handler.
 - **Not persisted**; always OFF at startup unless `/B`.
 - **Mutex with Tail** (`IDM_VIEW_CHASING_DOCTAIL` / `FileWatching.MonitoringLog`): each mode greys the other in `MsgInitMenu`; tail toolbar button (`IDT_VIEW_CHASING_DOCTAIL`) greyed; "Monitoring Log" checkbox in `ChangeNotifyDlgProc` greyed. `IsPasteBoardActive()` in `Notepad3.h` for cross-TU use.

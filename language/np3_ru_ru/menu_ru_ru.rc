@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "&Удалить\tDel",                       IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "О&чистить буфер обмена",              IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
+        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "Слова"
         BEGIN

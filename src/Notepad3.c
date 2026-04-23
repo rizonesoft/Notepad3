@@ -4205,8 +4205,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CloseClipboard();
     // Clipboard Monitoring is a toggle; grey it out while Tail is active
     // (the two modes are mutually exclusive).
-    CheckCmd(hmenu, IDM_EDIT_STOP_PASTEBOARD, s_flagPasteBoard);
-    EnableCmd(hmenu, IDM_EDIT_STOP_PASTEBOARD, !FileWatching.MonitoringLog);
+    CheckCmd(hmenu, IDM_EDIT_TOGGLE_PASTEBOARD, s_flagPasteBoard);
+    EnableCmd(hmenu, IDM_EDIT_TOGGLE_PASTEBOARD, !FileWatching.MonitoringLog);
 
     EnableCmd(hmenu, IDM_EDIT_MOVELINEUP, !ro);
     EnableCmd(hmenu, IDM_EDIT_MOVELINEDOWN, !ro);
@@ -5180,7 +5180,7 @@ static bool _HandleEditBasicCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM
         break;
 
 
-    case IDM_EDIT_STOP_PASTEBOARD:
+    case IDM_EDIT_TOGGLE_PASTEBOARD:
         // Toggle Clipboard Monitoring. Mutually exclusive with Tail/Log-File
         // Monitoring: refuse if Tail is active (the menu item is also greyed).
         if (FileWatching.MonitoringLog) {
@@ -9305,7 +9305,7 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
             case STATUS_OVRMODE:
                 if (s_flagPasteBoard) {
-                    PostWMCommand(hwnd, IDM_EDIT_STOP_PASTEBOARD);
+                    PostWMCommand(hwnd, IDM_EDIT_TOGGLE_PASTEBOARD);
                 } else {
                     PostWMCommand(hwnd, CMD_VK_INSERT);
                 }

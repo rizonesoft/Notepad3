@@ -60,7 +60,7 @@ Default configuration is Release.
 
 Runtime-toggleable; external clipboard changes are pasted at the caret.
 
-- Menu: `IDM_EDIT_STOP_PASTEBOARD` — "Toggle Clipboard Monitoring" (legacy identifier kept). Check mark reflects state.
+- Menu: `IDM_EDIT_TOGGLE_PASTEBOARD` — "Toggle Clipboard Monitoring". Check mark reflects state.
 - Helpers `PasteBoard_Start(HWND)` / `PasteBoard_Stop(HWND)` wrap `AddClipboardFormatListener` + `ID_PASTEBOARDTIMER`. Used at startup for `/B` and from the toggle handler.
 - **Not persisted** — always OFF at startup unless `/B`.
 - **Mutex with Tail** (`IDM_VIEW_CHASING_DOCTAIL` / `FileWatching.MonitoringLog`): each mode greys the other in `MsgInitMenu`; tail toolbar button (`IDT_VIEW_CHASING_DOCTAIL`) also greyed; "Monitoring Log" checkbox in `ChangeNotifyDlgProc` greyed while pasteboard active. `IsPasteBoardActive()` exposed in `Notepad3.h` for cross-TU use.
