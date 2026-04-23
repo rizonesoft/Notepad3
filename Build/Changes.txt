@@ -71,6 +71,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.422.1]- Clipboard Monitoring and log "Chasing doc tail" are mutually exclusive (mutex).
 [.417.1]- Replacing "Tab/Backspace" with "Tab/Shift-Tab.
 [.417.1]- Revert auto resolving to UNC for mapped network-drives.
 [.411.1]- MUI - Migrate tool "grepWin" into NotepadPortableApp (PAF).
@@ -1180,7 +1181,7 @@ NEW:
 [.812.1]- Extended context menu (margin commands, file explorer).
 [.812.1]- Context-Menu to toggle margins.
 [.811.1]- Color-Definition Hotspots: support RGB+A (default), A+RGB and BGRA.
-[.808.1]- Configuration for "Search in Files" toolbar label. 
+[.808.1]- Configuration for "Search in Files" toolbar label.
 [.802.1]- Configuration ([Settings2]LargeIconScalePrecent) percent to switch to bigger file types icons.
 [.727.1]- DPI-Aware treeview/listview lexer type icons.
 [.727.1]- New string "Calculate Tiny-Expressions".
@@ -1261,8 +1262,8 @@ FIXES:
 [.812.1]- [Settings2] filebrowser.exe=explorer.exe.
 [.812.1]- Text contrast on hover color hotspot.
 [.811.1]- Set preferred language to internal, on "not available confirmation dialog" is enabled.
-[.808.1]- Center system's MessageBox in parent window. 
-[.808.1]- Relative calculation of title font size for AboutBox and CS dialog. 
+[.808.1]- Center system's MessageBox in parent window.
+[.808.1]- Relative calculation of title font size for AboutBox and CS dialog.
 [.805.1]- Unicode Point detection and enhanced Color Tag contrast on hoover.
 [.805.1]- DPI-Awareness of "Customize Schemes..." dialog icon eye sugar.
 [.805.1]- DateTime and Timestamp handling.
