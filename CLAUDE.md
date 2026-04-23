@@ -58,15 +58,11 @@ Default configuration is Release.
 
 ### Clipboard Monitoring (Pasteboard Mode)
 
-Runtime-toggleable; external clipboard changes are pasted at the caret.
+Runtime toggle `IDM_EDIT_TOGGLE_PASTEBOARD`; `/B` enables at startup. Not persisted (process-local). `IsPasteBoardActive()` in `Notepad3.h` is the cross-TU query.
 
-- Menu: `IDM_EDIT_TOGGLE_PASTEBOARD` — "Toggle Clipboard Monitoring". Check mark reflects state.
-- Helpers `PasteBoard_Start(HWND)` / `PasteBoard_Stop(HWND)` wrap `AddClipboardFormatListener` + `ID_PASTEBOARDTIMER`. Used at startup for `/B` and from the toggle handler.
-- **Not persisted** — always OFF at startup unless `/B`.
-- **Mutex with Tail** (`IDM_VIEW_CHASING_DOCTAIL` / `FileWatching.MonitoringLog`): each mode greys the other in `MsgInitMenu`; tail toolbar button (`IDT_VIEW_CHASING_DOCTAIL`) also greyed; "Monitoring Log" checkbox in `ChangeNotifyDlgProc` greyed while pasteboard active. `IsPasteBoardActive()` exposed in `Notepad3.h` for cross-TU use.
-- Startup conflict (`/B` + persisted `MonitoringLog=true`): `/B` wins this session; `FileWatching.MonitoringLog` cleared in memory, `Settings.MonitoringLog` (INI) preserved.
-- `PasteBoardTimerProc` pastes at current caret. `Settings2.PasteBoardSeparator` pre-pended before each new entry; suppressed on (1) first paste after enable and (2) caret at line start. `\x01` = one document EOL; `\0` = no separator.
-- Status bar `STATUS_OVRMODE` shows `CBS` while active (passive indicator).
+- **Mutex with Tail** (`FileWatching.MonitoringLog`): each mode greys the other in `MsgInitMenu`, the tail toolbar button, and the "Monitoring Log" checkbox in `ChangeNotifyDlgProc`. `/B` + persisted `MonitoringLog=true` → `/B` wins the session, INI preserved.
+- **`/B` initial auto-paste vs runtime toggle**: `/B` pastes the current clipboard once — but only on an empty untitled buffer (no file arg, no `/c`, no auto-loaded MRU). Runtime toggle never auto-pastes. Preserve this asymmetry.
+- `Settings2.PasteBoardSeparator`: `\x01` = one document EOL; `\0` = no separator; anything else = verbatim. Separator is also suppressed on the first paste after enable and when the caret is at a line start.
 
 ## Vendored Libraries
 

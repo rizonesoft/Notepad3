@@ -2151,6 +2151,14 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     if (s_flagPasteBoard) {
         s_flagPasteBoard = false;
         PasteBoard_Start(Globals.hwndMain);
+        // /B auto-paste: only on a truly empty, untitled buffer (no file
+        // argument, no content from /c). Seeding s_iLastCopyTime makes the
+        // next PasteBoardTimerProc tick paste the current clipboard as the
+        // first entry. The runtime toggle (IDM_EDIT_TOGGLE_PASTEBOARD)
+        // deliberately omits this.
+        if (Path_IsEmpty(Paths.CurrentFile) && Sci_IsDocEmpty()) {
+            s_iLastCopyTime = GetTicks_ms();
+        }
     }
 
     // check if a lexer was specified from the command line
