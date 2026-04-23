@@ -40,7 +40,7 @@ msgstr "%ld meer overeenkomsten"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
-msgstr "%path% wordt vervangen door het pad van het bestand, %line% met de lijn om naar te springen, %column% met regelverschuiving, %pattern% met het zoekpatroon"
+msgstr "%path% wordt vervangen door het pad van het bestand, %line% met de regel om naar te springen, %column% met positie in de regel, %pattern% met het zoekpatroon"
 
 #. Resource IDs: (175)
 #, c-format
