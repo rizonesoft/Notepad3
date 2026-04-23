@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "हटाएं (&D)\tDel",                     IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "क्लिपबोर्ड साफ़ करें (&E)",               IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
+        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "शब्द (&O)"
         BEGIN

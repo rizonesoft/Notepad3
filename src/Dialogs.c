@@ -2661,6 +2661,12 @@ static INT_PTR CALLBACK ChangeNotifyDlgProc(HWND hwnd, UINT umsg, WPARAM wParam,
         CheckDlgButton(hwnd, IDC_CHECK_BOX_A, SetBtn(Settings.ResetFileWatching));
         CheckDlgButton(hwnd, IDC_CHECK_BOX_B, SetBtn(FileWatching.MonitoringLog));
 
+        // Mutually exclusive with Clipboard Monitoring — disable the
+        // "Monitoring Log" checkbox while the pasteboard is active.
+        if (IsPasteBoardActive()) {
+            EnableItem(hwnd, IDC_CHECK_BOX_B, FALSE);
+        }
+
         if (FileWatching.MonitoringLog) {
             CheckRadioButton(hwnd, IDC_RADIO_BTN_A, IDC_RADIO_BTN_E, IDC_RADIO_BTN_C);
             EnableItem(hwnd, IDC_RADIO_BTN_A, FALSE);

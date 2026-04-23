@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "删除(&D)\tDel",                             IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "清空剪贴板(&E)",                            IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "停止监视剪贴板(&M)",  IDM_EDIT_STOP_PASTEBOARD
+        MENUITEM "停止监视剪贴板(&M)",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "单词(&O)"
         BEGIN
