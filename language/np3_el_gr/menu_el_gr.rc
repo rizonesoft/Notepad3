@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "&Διαγραφή\tDel",                IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "&Απαλοιφή πρόχειρου",           IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
+        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "&Λέξεις"
         BEGIN

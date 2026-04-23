@@ -626,6 +626,7 @@ static bool                  s_flagStartAsTrayIcon = false;
 static bool                  s_flagKeepTitleExcerpt = false;
 static bool                  s_flagNewFromClipboard = false;
 static bool                  s_flagPasteBoard = false;
+static bool                  s_bPasteBoardFirstPaste = true;
 static bool                  s_flagJumpTo = false;
 static FILE_WATCHING_MODE    s_flagChangeNotify = FWM_NO_INIT;
 static bool                  s_flagQuietCreate = false;
@@ -793,6 +794,47 @@ static void _InitGlobals()
     
     // don't allow empty extensions settings => use default ext
     Style_InitFileExtensions();
+}
+
+
+//=============================================================================
+//
+//  PasteBoard_Start() / PasteBoard_Stop()
+//
+//  Install / remove the clipboard-format listener and the polling timer used
+//  by Clipboard Monitoring (a.k.a. "pasteboard mode"). State is process-local
+//  only; it is never persisted to the INI. Mutually exclusive with Tail.
+//
+static void PasteBoard_Start(HWND hwnd)
+{
+    if (s_flagPasteBoard) { return; }
+    s_bPasteBoardListening = AddClipboardFormatListener(hwnd);
+    if (s_bPasteBoardListening) {
+        s_iLastCopyTime = 0;
+        s_bLastPasteSeqNoValid = false;
+        SetTimer(hwnd, ID_PASTEBOARDTIMER, 100, PasteBoardTimerProc);
+    }
+    s_flagPasteBoard = true;
+    s_bPasteBoardFirstPaste = true;
+}
+
+bool IsPasteBoardActive(void)
+{
+    return s_flagPasteBoard;
+}
+
+static void PasteBoard_Stop(HWND hwnd)
+{
+    KillTimer(hwnd, ID_PASTEBOARDTIMER);
+    if (s_bPasteBoardListening) {
+        RemoveClipboardFormatListener(hwnd);
+        s_bPasteBoardListening = false;
+    }
+    s_flagPasteBoard = false;
+    s_iLastCopyTime = 0;
+    s_bLastCopyFromMe = false;
+    s_bLastPasteSeqNoValid = false;
+    s_bPasteBoardFirstPaste = true;
 }
 
 
@@ -1914,6 +1956,13 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     // Restore saved Monitoring Log setting - fixes #5037
     FileWatching.MonitoringLog = Settings.MonitoringLog;
 
+    // /B (Clipboard Monitoring) and Tail are mutually exclusive. If both would
+    // be active at startup, the command-line flag wins for this session only;
+    // Settings.MonitoringLog stays untouched so the persisted value survives.
+    if (s_flagPasteBoard && FileWatching.MonitoringLog) {
+        FileWatching.MonitoringLog = false;
+    }
+
     // initial set text in front of ShowWindow()
     EditSetNewText(Globals.hwndEdit, "", 0, false, false);
 
@@ -2097,12 +2146,11 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     }
 
     // Check for Paste Board option -- after loading files
+    // /B command-line flag pre-set s_flagPasteBoard = true; the helper expects it false
+    // and flips it to true, so clear it first to get a clean activation.
     if (s_flagPasteBoard) {
-        s_bPasteBoardListening = AddClipboardFormatListener(Globals.hwndMain);
-        if (s_bPasteBoardListening) {
-            s_iLastCopyTime = 0;
-            SetTimer(Globals.hwndMain, ID_PASTEBOARDTIMER, 100, PasteBoardTimerProc);
-        }
+        s_flagPasteBoard = false;
+        PasteBoard_Start(Globals.hwndMain);
     }
 
     // check if a lexer was specified from the command line
@@ -3254,13 +3302,7 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
         // Terminate clipboard watching
         if (s_flagPasteBoard) {
-            s_flagPasteBoard = false;
-            s_iLastCopyTime = 0;
-            KillTimer(hwnd, ID_PASTEBOARDTIMER);
-            if (s_bPasteBoardListening) {
-                RemoveClipboardFormatListener(hwnd);
-                s_bPasteBoardListening = false;
-            }
+            PasteBoard_Stop(hwnd);
         }
 
         // close Find/Replace and CustomizeSchemes
@@ -4161,7 +4203,10 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     OpenClipboard(hwnd);
     EnableCmd(hmenu, IDM_EDIT_CLEARCLIPBOARD, CountClipboardFormats());
     CloseClipboard();
-    EnableCmd(hmenu, IDM_EDIT_STOP_PASTEBOARD, s_flagPasteBoard);
+    // Clipboard Monitoring is a toggle; grey it out while Tail is active
+    // (the two modes are mutually exclusive).
+    CheckCmd(hmenu, IDM_EDIT_STOP_PASTEBOARD, s_flagPasteBoard);
+    EnableCmd(hmenu, IDM_EDIT_STOP_PASTEBOARD, !FileWatching.MonitoringLog);
 
     EnableCmd(hmenu, IDM_EDIT_MOVELINEUP, !ro);
     EnableCmd(hmenu, IDM_EDIT_MOVELINEDOWN, !ro);
@@ -4287,6 +4332,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, IDM_VIEW_BOOKMARK_MARGIN, SciCall_GetMarginWidthN(MARGIN_SCI_BOOKMRK) > 0);
     CheckCmd(hmenu, IDM_VIEW_CHGHIST_TOGGLE_MARGIN, SciCall_GetMarginWidthN(MARGIN_SCI_CHGHIST) > 0);
     CheckCmd(hmenu, IDM_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
+    EnableCmd(hmenu, IDM_VIEW_CHASING_DOCTAIL, !s_flagPasteBoard);
 
     CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_ONOFF, moe);
     CheckCmd(hmenu, IDM_VIEW_MARKOCCUR_BOOKMARKS, Settings.MarkOccurrencesBookmark);
@@ -5135,15 +5181,16 @@ static bool _HandleEditBasicCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM
 
 
     case IDM_EDIT_STOP_PASTEBOARD:
-        KillTimer(Globals.hwndMain, ID_PASTEBOARDTIMER);
-        if (s_bPasteBoardListening) {
-            RemoveClipboardFormatListener(Globals.hwndMain);
-            s_bPasteBoardListening = false;
+        // Toggle Clipboard Monitoring. Mutually exclusive with Tail/Log-File
+        // Monitoring: refuse if Tail is active (the menu item is also greyed).
+        if (FileWatching.MonitoringLog) {
+            break;
         }
-        s_flagPasteBoard = false;
-        s_iLastCopyTime = 0;
-        s_bLastCopyFromMe = false;
-        s_bLastPasteSeqNoValid = false;
+        if (s_flagPasteBoard) {
+            PasteBoard_Stop(Globals.hwndMain);
+        } else {
+            PasteBoard_Start(Globals.hwndMain);
+        }
         UpdateToolbar_Now(Globals.hwndMain);
         UpdateStatusbar(true);
         break;
@@ -6406,6 +6453,14 @@ static bool _HandleViewAndSettingsCommands(HWND hwnd, UINT umsg, WPARAM wParam, 
     break;
 
     case IDM_VIEW_CHASING_DOCTAIL: {
+
+        // Mutually exclusive with Clipboard Monitoring: refuse to enable Tail
+        // while the pasteboard is active. Disabling Tail is still allowed
+        // (although with the mutex in place, Tail can never be ON in that
+        // state — belt-and-braces).
+        if (s_flagPasteBoard && !FileWatching.MonitoringLog) {
+            break;
+        }
 
         InstallFileWatching(false);
 
@@ -9978,6 +10033,7 @@ static void  _UpdateToolbarDelayed()
 
     CheckTool(Globals.hwndToolbar, IDT_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
     CheckTool(Globals.hwndToolbar, IDT_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
+    EnableTool(Globals.hwndToolbar, IDT_VIEW_CHASING_DOCTAIL, !s_flagPasteBoard);
     CheckTool(Globals.hwndToolbar, IDT_VIEW_PIN_ON_TOP, Settings.AlwaysOnTop);
 
     bool const b1 = SciCall_IsSelectionEmpty();
@@ -12329,11 +12385,18 @@ void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
         if (SciCall_CanPaste()) {
             bool bAutoIndent2 = Settings.AutoIndent;
             Settings.AutoIndent = 0;
-            EditJumpTo(-1, 0);
             UndoTransActionBegin();
-            if (!Sci_IsDocEmpty()) {
+
+            // Paste at the current caret position. Pre-pend the configured
+            // separator unless this is the first paste of the session OR the
+            // caret is already at a line start.
+            DocPos const curPos = SciCall_GetCurrentPos();
+            bool const bAtLineStart = (curPos == Sci_GetLineStartPosition(curPos));
+            bool const bSkipSep = s_bPasteBoardFirstPaste || bAtLineStart;
+
+            if (!bSkipSep) {
                 if (Settings2.PasteBoardSeparator[0] == L'\x01') {
-                    // default: one EOL between entries
+                    // configured default: one document EOL between entries
                     SciCall_NewLine();
                 }
                 else if (Settings2.PasteBoardSeparator[0] != L'\0') {
@@ -12360,6 +12423,7 @@ void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
             Settings.AutoIndent = bAutoIndent2;
             s_dwLastPasteSeqNo = dwCurrentSeqNo;
             s_bLastPasteSeqNoValid = true;
+            s_bPasteBoardFirstPaste = false;
         }
         s_iLastCopyTime = 0;
     }

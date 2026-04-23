@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "Z&mazať\tDel",                            IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "Vyprázdniť &schránku",                    IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
+        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "&Slová"
         BEGIN

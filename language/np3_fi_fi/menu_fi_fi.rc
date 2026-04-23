@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "&Poista\tDel",                IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "Tyhj&ennä leikepöytä",            IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
+        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "S&anat"
         BEGIN

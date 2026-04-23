@@ -1,354 +1,192 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code working in this repo. Read once per session; covers non-obvious mechanics and gotchas. Self-evident build/layout information is not duplicated here.
 
-## Project Overview
+## Project
 
-Notepad3 is a Windows-only Win32 desktop text editor (C/C++) built on **Scintilla** (editing component) and **Lexilla** (syntax highlighting). It ships with the companion tool **MiniPath** (file browser, Ctrl+M) and integrates with the external **grepWin** tool (file search/grep, Ctrl+Shift+F) via pre-built portable executables. Licensed under BSD 3-Clause.
+Notepad3 — Win32 C/C++ text editor on Scintilla/Lexilla. Ships with MiniPath (`Ctrl+M`) and integrates external grepWin (`Ctrl+Shift+F`) via pre-built portable exes. BSD-3. Windows-only.
 
-## Build Commands
+## Build
 
-```powershell
-# NuGet restore (required before first build)
-nuget restore Notepad3.sln
+Build scripts live in `Build\` (PowerShell under `Build\scripts\`):
 
-# Single platform builds
-Build\Build_x64.cmd [Release|Debug]
-Build\Build_Win32.cmd [Release|Debug]
-Build\Build_ARM64.cmd [Release|Debug]
-Build\Build_x64_AVX2.cmd [Release|Debug]
+- `Build\Build_x64.cmd [Release|Debug]` — single platform (also `_Win32`, `_ARM64`, `_x64_AVX2`)
+- `Build\BuildAll.cmd` — all platforms
+- `msbuild Notepad3.sln /m /p:Configuration=Release /p:Platform=x64` — CI equivalent
+- `Build\Clean.cmd` — clean outputs
+- Run `nuget restore Notepad3.sln` once before first build.
+- Run `Version.ps1` before building to regenerate `src\VersionEx.h` (format `Major.YY.Mdd.Build`; build number in `Versions\build.txt`).
+- Tests: `test\TestFileVersion.cmd`, `test\TestAhkNotepad3.cmd` (needs AutoHotkey). CI matrix in `.github/workflows/build.yml` (windows-2022).
 
-# All platforms at once
-Build\BuildAll.cmd [Release|Debug]
+Default configuration is Release.
 
-# MSBuild directly (used by CI)
-msbuild Notepad3.sln /m /p:Configuration=Release /p:Platform=x64
-
-# Clean all outputs
-Build\Clean.cmd
-```
-
-Default configuration is Release. Build scripts delegate to PowerShell in `Build\scripts\`.
-
-### Versioning
-
-Run `Version.ps1` before building to generate `src\VersionEx.h` from templates in `Versions\`. Format: `Major.YY.Mdd.Build` (build number persisted in `Versions\build.txt`).
-
-### Tests
-
-```cmd
-cd test
-TestFileVersion.cmd       # Verifies built binary version info
-TestAhkNotepad3.cmd       # AutoHotkey-based GUI tests (requires AutoHotkey)
-```
-
-### CI
-
-GitHub Actions (`.github/workflows/build.yml`) builds all four platforms (Win32, x64, x64_AVX2, ARM64) in Release on `windows-2022` runners, triggered on push/PR to master.
-
-## Architecture
-
-### Core Modules (`src\`)
+## Code Map (`src\`)
 
 | File | Purpose |
 |------|---------|
-| **Notepad3.c/h** | Entry point (`wWinMain`), window procedure (`MainWndProc`), global state structs (`Globals`, `Settings`, `Settings2`, `Flags`, `Paths`), `MsgCommand()` dispatcher |
-| **Notepad3Util.c/h** | Utility functions extracted from Notepad3.c: bitmap/toolbar image loading, word-wrap configuration, auto-scroll (middle-click continuous scroll) |
-| **Edit.c/h** | Text manipulation: find/replace (PCRE2 regex), encoding conversion, clipboard, indentation, sorting, bookmarks, folding, auto-complete |
-| **Styles.c/h** | Scintilla styling, lexer selection, theme management, margin configuration |
-| **Dialogs.c/h** | All dialog boxes, DPI-aware UI interactions, window placement |
-| **Config/Config.cpp/h** | INI file management, settings loading/saving, MRU list |
-| **Encoding.c/h** | Encoding detection and conversion (integrates uchardet) |
-| **SciCall.h** | Type-safe inline wrappers for Scintilla direct function calls (avoids `SendMessage` overhead) |
-| **DynStrg.c/h** | Custom dynamic wide-string type (`HSTRINGW`) with automatic buffer management |
-| **PathLib.c/h** | Path manipulation via opaque `HPATHL` handle |
-| **TypeDefs.h** | Core type definitions (`DocPos`, `DocLn`, `cpi_enc_t`), Windows version targeting, compiler macros |
-| **MuiLanguage.c/h** | Multi-language UI support, language DLL loading |
+| `Notepad3.c/h` | `wWinMain`, `MainWndProc`, global state structs (`Globals`, `Settings`, `Settings2`, `Flags`, `Paths`), `MsgCommand()` dispatcher |
+| `Notepad3Util.c/h` | Image/toolbar helpers, word-wrap config, middle-click auto-scroll |
+| `Edit.c/h` | Find/replace (PCRE2), encoding, clipboard, indent, sort, bookmarks, folding, autocomplete |
+| `Styles.c/h` | Scintilla styling, lexer selection, themes, margins |
+| `Dialogs.c/h` | Dialogs, DPI-aware UI, window placement |
+| `Config/Config.cpp/h` | INI load/save, MRU |
+| `Encoding.c/h` | Encoding detection/conversion (wraps uchardet) |
+| `SciCall.h` | Type-safe wrappers for Scintilla direct calls (avoid `SendMessage`) |
+| `DynStrg.c/h` | `HSTRINGW` dynamic wide-string handle |
+| `PathLib.c/h` | `HPATHL` path handle + long-path-aware Win32 wrappers |
+| `TypeDefs.h` | `DocPos`, `DocLn`, `cpi_enc_t`, OS targeting, compiler macros |
+| `MuiLanguage.c/h` | MUI language DLL loading |
+| `StyleLexers\styleLexXXX.c` | Per-language `EDITLEXER` definitions (~50 files) |
 
-### Window Hierarchy
+### Menu / Command Dispatch
 
-```
-MainWndProc (Notepad3.c)
-  +-- Scintilla Edit Control (hwndEdit / IDC_EDIT)
-  +-- Toolbar (via Rebar control)
-  +-- Status Bar (16 configurable fields)
-```
-
-### Menu / Command Architecture
-
-Menu items are defined in resource files (`language/np3_*/menu_*.rc`). Command handling in `Notepad3.c` is structured as:
-
-- **`MsgInitMenu()`** — `WM_INITMENU` handler; enables/disables/checks menu items based on current state
-- **`MsgCommand()`** — `WM_COMMAND` thin dispatcher; handles timer/notification cases inline, then delegates to static sub-handlers:
+- `MsgInitMenu()` (`WM_INITMENU`) — enable/check state.
+- `MsgCommand()` (`WM_COMMAND`) — thin dispatcher delegating to static sub-handlers, each returning `true` if it handled:
 
 | Handler | Scope |
 |---------|-------|
-| `_HandleFileCommands` | File open/save/print/favorites (`IDM_FILE_*`) |
-| `_HandleEncodingCommands` | Encoding & line endings (`IDM_ENCODING_*`, `IDM_LINEENDINGS_*`) |
-| `_HandleEditBasicCommands` | Undo/redo/cut/copy/paste/indent (`IDM_EDIT_UNDO`..`CMD_VK_INSERT`) |
-| `_HandleEditLineManipulation` | Line modify/sort/join/case (`IDM_EDIT_ENCLOSESELECTION`..`IDM_EDIT_INSERT_GUID`) |
-| `_HandleEditTextTransform` | Comments/URL encode/escape/hex (`IDM_EDIT_LINECOMMENT`..`IDM_EDIT_HEX2CHAR`) |
-| `_HandleEditFind` | Find/replace/bookmarks/goto (`IDM_EDIT_FINDMATCHINGBRACE`..`IDM_EDIT_GOTOLINE`) |
-| `_HandleViewAndSettingsCommands` | View/settings/rendering (`IDM_VIEW_*`, `IDM_SET_*`) |
-| `_HandleHelpCommands` | Help/about (`IDM_HELP_*`) |
-| `_HandleCmdCommands` | Keyboard shortcuts/navigation/window positioning (`CMD_*`) |
-| `_HandleToolbarCommands` | Toolbar button dispatch via `s_ToolbarDispatch[]` table (`IDT_*`) |
+| `_HandleFileCommands` | `IDM_FILE_*` |
+| `_HandleEncodingCommands` | `IDM_ENCODING_*`, `IDM_LINEENDINGS_*` |
+| `_HandleEditBasicCommands` | `IDM_EDIT_UNDO`..`CMD_VK_INSERT` |
+| `_HandleEditLineManipulation` | `IDM_EDIT_ENCLOSESELECTION`..`IDM_EDIT_INSERT_GUID` |
+| `_HandleEditTextTransform` | `IDM_EDIT_LINECOMMENT`..`IDM_EDIT_HEX2CHAR` |
+| `_HandleEditFind` | `IDM_EDIT_FINDMATCHINGBRACE`..`IDM_EDIT_GOTOLINE` |
+| `_HandleViewAndSettingsCommands` | `IDM_VIEW_*`, `IDM_SET_*` |
+| `_HandleHelpCommands` | `IDM_HELP_*` |
+| `_HandleCmdCommands` | `CMD_*` |
+| `_HandleToolbarCommands` | `IDT_*` via `s_ToolbarDispatch[]` |
 
-Each handler returns `true` if it handled the command, `false` to try the next. All handlers are `static` in `Notepad3.c`.
+### Clipboard Monitoring (Pasteboard Mode)
 
-### Vendored Dependencies
+Runtime-toggleable; external clipboard changes are pasted at the caret.
 
-| Directory | Library | Purpose |
-|-----------|---------|---------|
-| `scintilla\` | Scintilla 5.5.8 | Editor component (NP3 patches in `np3_patches\`, docs in `doc\`) |
-| `lexilla\` | Lexilla 5.4.6 | Syntax highlighting (NP3 patches in `np3_patches\`, docs in `doc\`) |
-| `scintilla\pcre2\` | PCRE2 10.47 | Regex engine for find/replace (replaced archived Oniguruma) |
-| `src\uchardet\` | uchardet | Mozilla encoding detection |
-| `src\tinyexpr\` / `src\tinyexprcpp\` | TinyExpr | Expression evaluator (statusbar) |
-| `src\uthash\` | uthash | Hash table / dynamic array macros |
-| `src\crypto\` | Rijndael/SHA-256 | AES-256 encryption |
+- Menu: `IDM_EDIT_STOP_PASTEBOARD` — "Toggle Clipboard Monitoring" (legacy identifier kept). Check mark reflects state.
+- Helpers `PasteBoard_Start(HWND)` / `PasteBoard_Stop(HWND)` wrap `AddClipboardFormatListener` + `ID_PASTEBOARDTIMER`. Used at startup for `/B` and from the toggle handler.
+- **Not persisted** — always OFF at startup unless `/B`.
+- **Mutex with Tail** (`IDM_VIEW_CHASING_DOCTAIL` / `FileWatching.MonitoringLog`): each mode greys the other in `MsgInitMenu`; tail toolbar button (`IDT_VIEW_CHASING_DOCTAIL`) also greyed; "Monitoring Log" checkbox in `ChangeNotifyDlgProc` greyed while pasteboard active. `IsPasteBoardActive()` exposed in `Notepad3.h` for cross-TU use.
+- Startup conflict (`/B` + persisted `MonitoringLog=true`): `/B` wins this session; `FileWatching.MonitoringLog` cleared in memory, `Settings.MonitoringLog` (INI) preserved.
+- `PasteBoardTimerProc` pastes at current caret. `Settings2.PasteBoardSeparator` pre-pended before each new entry; suppressed on (1) first paste after enable and (2) caret at line start. `\x01` = one document EOL; `\0` = no separator.
+- Status bar `STATUS_OVRMODE` shows `CBS` while active (passive indicator).
 
-### grepWin Integration (`grepWin\`)
+## Vendored Libraries
 
-grepWin is an **external** file search/grep tool — it is **not** built from source as part of Notepad3. Pre-built portable executables and translation files are stored in the repository:
+`scintilla\` (5.5.8), `lexilla\` (5.4.6), `scintilla\pcre2\` (PCRE2 10.47), `src\uchardet\`, `src\tinyexpr\` / `src\tinyexprcpp\`, `src\uthash\`, `src\crypto\` (Rijndael/SHA-256). NP3 patches under each `np3_patches\`; offline docs under `scintilla\doc\` and `lexilla\doc\`.
 
-- **`grepWin\portables\`** — `grepWin-x86_portable.exe`, `grepWin-x64_portable.exe`, `LICENSE.txt`
-- **`grepWin\translations\`** — `*.lang` translation files (e.g. `German.lang`, `French.lang`)
+## grepWin Integration (`grepWin\`)
 
-At runtime (`src\Dialogs.c`), Notepad3 searches for grepWin in this order:
-1. `Settings2.GrepWinPath` (user-configured INI setting)
-2. `<ModuleDirectory>\grepWin\grepWin-x64_portable.exe` (or x86) — portable layout
-3. `%APPDATA%\Rizonesoft\Notepad3\grepWin\` — installed layout
+External tool, **not built from source**. Pre-built exes under `grepWin\portables\`; `.lang` files under `grepWin\translations\`. Runtime lookup order (in `src\Dialogs.c`): `Settings2.GrepWinPath` → `<ModuleDir>\grepWin\grepWin-x{64,86}_portable.exe` → `%APPDATA%\Rizonesoft\Notepad3\grepWin\`. `grepWinLangResName[]` in `MuiLanguage.c` maps Notepad3 locales → `.lang` filenames. ARM64 uses the x64 exe via emulation.
 
-Language mapping (`src\MuiLanguage.c`): `grepWinLangResName[]` maps Notepad3 locale names (e.g. `de-DE`) to grepWin `.lang` filenames (e.g. `German.lang`). The language file path is written to `grepwin.ini` before launching.
+## Adding a Lexer
 
-Portable build scripts (`Build\make_portable_*.cmd`) package grepWin into a `grepWin\` subdirectory in the archive containing both portable executables, the license, and all `*.lang` translations.
+`styleLexXXX.c` defines an `EDITLEXER` (see any existing file for the struct), register in the `Styles.c` lexer array, add localization string IDs.
 
-### Syntax Lexers (`src\StyleLexers\`)
+## Localization
 
-50+ languages, each in a `styleLexXXX.c` file. All follow the `EDITLEXER` struct pattern from `EditLexer.h`:
+- 26 locales under `language\np3_LANG_COUNTRY\`. Language DLLs are separate projects in the solution.
+- **`.rc` files are UTF-8 WITHOUT BOM, CRLF line endings.** Never write with BOM. Use `Build\rc_to_utf8.cmd` to strip accidental BOMs. In PowerShell use `[System.Text.UTF8Encoding]::new($false)`; in Python write `\r\n` explicitly.
+- **`Build\Notepad3.ini`, `Build\minipath.ini` are UTF-8 WITH BOM** (`EF BB BF`). Preserve it.
 
-```c
-EDITLEXER lexXXX = {
-    SCLEX_XXX,          // Scintilla lexer ID
-    "lexerName",        // Lexilla lexer name (case-sensitive)
-    IDS_LEX_XXX_STR,    // Resource string ID
-    L"Config Name",     // INI section name
-    L"ext1; ext2",      // Default file extensions
-    L"",                // Extension buffer (runtime)
-    &KeyWords_XXX,      // Keyword lists
-    { /* EDITSTYLE array */ }
-};
-```
+### Adding a string resource
 
-To add a new lexer: create `styleLexNEW.c`, define the `EDITLEXER` struct, register in `Styles.c` lexer array, add localization string IDs to resource files.
+1. `#define IDS_MUI_XXX <id>` in `language\common_res.h` (13xxx errors/warnings, 14xxx info/prompts).
+2. Add the English string to `language\np3_en_us\strings_en_us.rc`.
+3. Add the same English text as placeholder to all other 25 locale files (translators update later).
+4. Display via `InfoBoxLng()` / `MessageBoxLng()`; check with `IsYesOkay()`. `Settings.MuteMessageBeep` controls silent vs. sound — provide both paths.
 
-### Localization (`language\`)
+## Portable INI Design
 
-Resource-based MUI system with 27+ locales. Each locale has a `np3_LANG_COUNTRY\` directory with `.rc` files. Language packs are built as separate DLLs (separate projects in the solution).
+- INI sits beside the exe. No registry. Runs on defaults if no INI exists (user creates via "Save Settings Now").
+- **Admin redirect**: `Notepad3.ini=<path>` in `[Notepad3]` redirects to a per-user path (up to 2 levels). Redirect targets ARE auto-created via `CreateIniFileEx()`.
+- `Paths.IniFile` = active writable INI; `Paths.IniFileDefault` = recovery fallback.
+- Init flow: `FindIniFile()` → `TestIniFile()` → `CreateIniFile()` → `LoadSettings()`.
+- **`SettingsVersion` defaults to `CFG_VER_CURRENT`** when missing — empty/new INI gets current defaults, not legacy treatment.
+- **`bIniFileFromScratch`** is set when INI is 0 bytes, cleared after `SaveAllSettings()`. While set, `MuiLanguage.c` suppresses writing `PreferredLanguageLocaleName` to keep fresh INIs clean.
+- **Empty lexer sections are pruned** in `Style_ToIniSection()` via `IniSectionGetKeyCount()` after `Style_CanonicalSectionToIniCache()` establishes order — only sections with non-default styles persist.
+- MiniPath follows the same pattern (`minipath\src\Config.cpp`).
+- **New `Settings2` (or other INI) params must be documented as commented entries in `Build\Notepad3.ini`.**
 
-### Adding String Resources
+### Save/Load macros (`src\Config\Config.cpp`)
 
-1. Add `#define IDS_MUI_XXX <id>` to `language\common_res.h` (use next available ID in the appropriate range: 13xxx for errors/warnings, 14xxx for info/prompts)
-2. Add the English string to `language\np3_en_us\strings_en_us.rc` in the matching `STRINGTABLE` block
-3. Add the same English text as placeholder to all other 25 locale `strings_*.rc` files (translators update later)
-4. Use `InfoBoxLng()` / `MessageBoxLng()` with `MB_YESNO`, `MB_ICONWARNING`, etc. to display; check result with `IsYesOkay()`
-5. `Settings.MuteMessageBeep` controls whether to use `InfoBoxLng` (silent) or `MessageBoxLng` (with sound) — always provide both paths
+- **`Encoding_MapIniSetting` is asymmetric.** CPI constants (`CPI_UTF8=6`, `CPI_OEM=1`, …) don't equal INI values (`3`, `5`, …). `Encoding_MapIniSetting(true, val)` = INI→CPI (load); `(false, val)` = CPI→INI (save). Passing CPI with `bLoad=true` produces wrong results. Reference: `MRU_Save()` uses `false`.
+- **Defaults that depend on `DefaultEncoding`** (e.g. `SkipANSICodePageDetection`, `LoadASCIIasUTF8`) must be recalculated in `_SaveSettings()` before `SAVE_VALUE_IF_NOT_EQ_DEFAULT` fires, since encoding can change at runtime. See the `bCurrentEncUTF8` block.
 
-### Configuration / Portable Design
+## File I/O
 
-- INI file alongside executable (`Notepad3.ini`), no registry usage
-- **No auto-creation**: runs with defaults if no INI exists; user explicitly creates via "Save Settings Now"
-- **Admin redirect**: `Notepad3.ini=<path>` in `[Notepad3]` section redirects to per-user path (up to 2 levels)
-- Key paths: `Paths.IniFile` (active writable INI), `Paths.IniFileDefault` (fallback for recovery)
-- INI init flow: `FindIniFile()` -> `TestIniFile()` -> `CreateIniFile()` -> `LoadSettings()`
-- **SettingsVersion default**: `SettingsVersion` defaults to `CFG_VER_CURRENT` when missing from INI — an INI file without `SettingsVersion` is NOT treated as a legacy (pre-versioning) file. This ensures empty INI files and newly created INI files both get current defaults.
-- **`bIniFileFromScratch`**: Set when INI file size is 0 bytes. Cleared after `SaveAllSettings()` completes. While true, `MuiLanguage.c` suppresses writing `PreferredLanguageLocaleName` to avoid polluting fresh INI files.
-- **Style section saving**: `Style_ToIniSection()` removes empty lexer sections after processing via `IniSectionGetKeyCount()`. `Style_CanonicalSectionToIniCache()` establishes canonical section order but empty sections are cleaned up — only sections with non-default style values appear in the saved INI.
-- **MiniPath** follows the same portable INI and admin-redirect pattern (`minipath\src\Config.cpp`). Redirect targets are auto-created via `CreateIniFileEx()`.
-- **New parameters**: When adding new `Settings2` (or other INI) parameters, always document them as commented entries in `Build\Notepad3.ini`
+- `FileSave()` / `FileLoad()` (in `Notepad3.c`) → `FileIO()` → `EditSaveFile()` / `EditLoadFile()` (in `Edit.c`).
+- Atomic save via temp file + `ReplaceFileW` controlled by `Settings2.AtomicFileSave`.
+- Error codes land in `Globals.dwLastError`; check `ERROR_ACCESS_DENIED`, `ERROR_PATH_NOT_FOUND` before falling back to generic error.
+- **File watching** (`InstallFileWatching()`) uses `FindFirstChangeNotificationW` on the parent directory. Must `InstallFileWatching(false)` before save and `InstallFileWatching(true)` after.
 
-### Settings Save/Load Macros (`src\Config\Config.cpp`)
+## Long-Path / PathLib wrappers
 
-**`Encoding_MapIniSetting` direction** — CPI constants (`CPI_UTF8=6`, `CPI_OEM=1`, etc.) do NOT equal their INI storage values (`3`, `5`, etc.). The mapping is asymmetric:
-- `Encoding_MapIniSetting(true, val)` = INI integer → CPI constant (**loading**)
-- `Encoding_MapIniSetting(false, val)` = CPI constant → INI integer (**saving**)
+Never call Win32 file APIs directly with `Path_Get(hpth)`. Use the PathLib wrappers — they apply the `\\?\` prefix conditionally (only when `RtlAreLongPathsEnabled()` is false AND path ≥ 260 chars):
 
-Passing a CPI value with `bLoad=true` produces wrong results. Reference: `MRU_Save()` correctly uses `false` for saving.
+| Wrapper | Win32 |
+|---------|-------|
+| `Path_CreateFile` | `CreateFileW` |
+| `Path_DeleteFile` | `DeleteFileW` |
+| `Path_GetFileAttributes` / `Path_GetFileAttributesEx` | `GetFileAttributes[Ex]W` |
+| `Path_SetFileAttributes` | `SetFileAttributesW` |
+| `Path_ReplaceFile` | `ReplaceFileW` |
+| `Path_MoveFileEx` | `MoveFileExW` |
+| `Path_FindFirstFile` | `FindFirstFileW` |
+| `Path_CreateDirectoryEx` | `SHCreateDirectoryExW` |
+| `Path_IsExistingFile` / `Path_IsExistingDirectory` | `GetFileAttributesW` + check |
 
-**Conditional defaults and `SAVE_VALUE_IF_NOT_EQ_DEFAULT`** — Some settings have defaults that depend on `DefaultEncoding` (e.g., `SkipANSICodePageDetection`, `LoadASCIIasUTF8`). If the encoding can change at runtime (via the Encoding dialog), the dependent `Defaults.*` fields must be recalculated in `_SaveSettings()` before the comparison macros fire — otherwise stale defaults cause incorrect save/delete decisions. See the `bCurrentEncUTF8` block in `_SaveSettings()`.
+### Path comparison
 
-### Creating Directories
+Use `Path_StrgComparePath()` (supports normalization; `CompareStringOrdinal` under the hood — locale-independent, case-insensitive). For raw wide strings use `CompareStringOrdinal(s1, -1, s2, -1, TRUE)`; **never** `_wcsicmp` / `_wcsnicmp` (locale-dependent).
 
-Use `Path_CreateDirectoryEx(hpth)` (PathLib wrapper around `SHCreateDirectoryExW`) to recursively create directory trees. Check result: `SUCCEEDED(hr) || (hr == HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS))`. See `CreateIniFile()` in `src\Config\Config.cpp` for the reference pattern.
+### Creating directories
 
-### Long-Path Support / Win32 File API Wrappers
+Use `Path_CreateDirectoryEx(hpth)`. Success: `SUCCEEDED(hr) || (hr == HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS))`. Reference pattern in `CreateIniFile()` (`Config.cpp`).
 
-Notepad3 supports paths exceeding `MAX_PATH` (260 chars) on systems without the Windows 10 long-path registry opt-in by conditionally prepending the `\\?\` prefix. The static function `PrependLongPathPrefix()` in PathLib.c handles this.
+## PCRE2
 
-**Rule: Never call Win32 file APIs directly with `Path_Get(hpth)`.** Use the PathLib wrapper functions instead — they internally apply the copy-prefix-call-release pattern:
+`scintilla\pcre2\scintilla\PCRE2RegExEngine.cxx` compiled with `SCI_OWNREGEX` overrides Scintilla's built-in regex. Entry points: `FindText`, `SubstituteByPosition`, `convertReplExpr` (normalizes `\1`-`\9`→`$1`-`$9`, processes `\n\t\xHH\uHHHH`), `translateRegExpr` (`\<`/`\>` → lookarounds, `\uHHHH` → `\x{HHHH}`). Standalone `RegExFind` (exported C) used by `EditURLDecode`.
 
-| Wrapper | Win32 API |
-|---------|-----------|
-| `Path_CreateFile(hpth, ...)` | `CreateFileW` |
-| `Path_DeleteFile(hpth)` | `DeleteFileW` |
-| `Path_GetFileAttributes(hpth)` | `GetFileAttributesW` |
-| `Path_GetFileAttributesEx(hpth, ...)` | `GetFileAttributesExW` |
-| `Path_SetFileAttributes(hpth, ...)` | `SetFileAttributesW` |
-| `Path_ReplaceFile(hpth_dest, src)` | `ReplaceFileW` |
-| `Path_MoveFileEx(src, hpth_dest, ...)` | `MoveFileExW` |
-| `Path_FindFirstFile(hpth, ...)` | `FindFirstFileW` |
-| `Path_CreateDirectoryEx(hpth)` | `SHCreateDirectoryExW` |
-| `Path_IsExistingFile(hpth)` | `GetFileAttributesW` + check |
-| `Path_IsExistingDirectory(hpth)` | `GetFileAttributesW` + check |
+Replacement backref syntax: `$0`-`$99`, `\0`-`\9`, `${name}`, `${+name}`.
 
-The prefix is only added when `RtlAreLongPathsEnabled()` returns false AND the path is ≥ 260 chars. On modern Windows 10+ with the opt-in, these wrappers are effectively pass-through.
+URL hotspot regex: `HYPLNK_REGEX_FULL` macro in `src\Edit.c` — matches `https?://`, `ftp://`, `file:///`, `file://`, `mailto:`, `www.`, `ftp.`. Trailing group excludes `.,:?!` so URLs don't absorb sentence punctuation.
 
-### Path Comparison
+## DarkMode
 
-Use `Path_StrgComparePath()` for comparing file paths — it supports optional normalization and uses `CompareStringOrdinal` (locale-independent, case-insensitive). For raw wide-string path comparison, use `CompareStringOrdinal(s1, -1, s2, -1, TRUE)` instead of `_wcsicmp` or `_wcsnicmp` which are locale-dependent.
+`src\DarkMode\` — Windows 10/11 dark mode via IAT hooks on uxtheme/user32 (stub DLLs included).
 
-### File I/O Flow
+## ARM64
 
-- **`FileSave()`** (`src\Notepad3.c`) — Main save dispatcher. Handles Save, Save As, Save Copy.
-  Calls `FileIO()` → `EditSaveFile()` (`src\Edit.c`)
-- **`FileLoad()`** (`src\Notepad3.c`) — Main load dispatcher.
-  Calls `FileIO()` → `EditLoadFile()` (`src\Edit.c`)
-- **`EditSaveFile()`** supports atomic save (temp file + `ReplaceFileW`) controlled by `Settings2.AtomicFileSave`
-- **Error handling**: `Globals.dwLastError` holds the Win32 error code after failed I/O.
-  `FileSave()` checks specific codes (`ERROR_ACCESS_DENIED`, `ERROR_PATH_NOT_FOUND`) before falling back to generic error.
-- **File watching**: `InstallFileWatching()` uses `FindFirstChangeNotificationW` on the parent directory.
-  Must be stopped before save (`InstallFileWatching(false)`) and restarted after (`InstallFileWatching(true)`).
+Supported: Win32 (x86), x64, x64_AVX2, ARM64. **ARM 32-bit is not supported** — the `Release|ARM` solution config maps to Win32.
 
-### PCRE2 Regex Engine (`scintilla\pcre2\`)
+- Both ARM64 and x64 define `_WIN64`. Use `_M_ARM64` (or helper `NP3_BUILD_ARM64` in `TypeDefs.h`) to distinguish.
+- Rendering default: `SC_TECHNOLOGY_DIRECTWRITERETAIN` (2) instead of `SC_TECHNOLOGY_DIRECTWRITE` (1) — preserves Direct2D back buffer, avoids flicker on Qualcomm Adreno + Win11 25H2 DWM. Main window also gets `WS_EX_COMPOSITED`. User can override via `RenderingTechnology` / View menu.
+- Build config: `CETCompat=false` (CET is x86/x64 only), `TargetMachine=MachineARM64`, `_WIN64` defined. Fix scripts: `Build\scripts\FixARM64{CETCompat,CrossCompile,OutDir}.ps1`.
+- grepWin: no native ARM64 — uses x64 exe via emulation (`#if defined(_M_ARM64)` in `Notepad3.c`).
+- `MsgThemeChanged()` wraps bar recreate / lexer reset / restyle in `WM_SETREDRAW FALSE/TRUE` and does a single `RedrawWindow()` at end. DarkMode `RedrawWindow()` in `ListViewUtil.hpp` omits `RDW_ERASE` to avoid background flash.
 
-PCRE2 10.47 replaced the archived Oniguruma library. The Scintilla integration lives in `scintilla\pcre2\scintilla\PCRE2RegExEngine.cxx`, compiled with `SCI_OWNREGEX` to override Scintilla's built-in regex.
+## Conventions
 
-Key components:
-- **`PCRE2RegExEngine::FindText`** — Scintilla regex search (pattern matching via `pcre2_match`)
-- **`PCRE2RegExEngine::SubstituteByPosition`** — Regex replacement with group references
-- **`PCRE2RegExEngine::convertReplExpr`** — Normalizes replacement strings: converts `\1`-`\9` to `$1`-`$9`, processes escape sequences (`\n`, `\t`, `\xHH`, `\uHHHH`)
-- **`PCRE2RegExEngine::translateRegExpr`** — Translates Scintilla regex extensions: `\<`/`\>` word boundaries → lookarounds, `\uHHHH` → `\x{HHHH}`
-- **`RegExFind`** (exported C function) — Standalone regex find used by `EditURLDecode` in `Edit.c`; wraps `SimplePCRE2Engine`
+- **Formatting**: LLVM-based `.clang-format` in `src\` — 4-space indent, Stroustrup braces, left-aligned pointers, no column limit, no include sorting. `.editorconfig` enforces UTF-8/CRLF; Lexilla code uses tabs (upstream preserved).
+- **Strings**: `strsafe.h` throughout; deprecated string functions disabled.
+- **Types**: `DocPos` / `DocPosU` / `DocLn` (not raw `int`). `cpi_enc_t` for encodings. `HSTRINGW` / `HPATHL` (opaque) instead of raw `WCHAR*`. `NOMINMAX` is global — use `min()`/`max()` or typed equivalents.
+- **Scintilla**: always use `SciCall.h` wrappers. Add missing wrappers there. Naming: `DeclareSciCall{V|R}{0|01|1|2}` — V=void, R=return; 0/1/2 = param count; `01` = lParam-only. The `msg` arg is the suffix after `SCI_`.
+- **Global state**: use existing structs (`Globals`, `Settings`, `Settings2`, `Flags`, `Paths`); don't add new globals.
+- **Undo/redo**: use `_BEGIN_UNDO_ACTION_` / `_END_UNDO_ACTION_` macros (`Notepad3.h`) for grouping; they also throttle notifications during bulk edits.
 
-Replacement string backreference syntax (both flavors supported for backward compatibility):
-- `$0`-`$99` and `\0`-`\9` — numbered group references
-- `${name}` / `${+name}` — named group references
-- Escape sequences: `\n`, `\t`, `\r`, `\\`, `\xHH`, `\uHHHH`
+### WriteAccessBuf — dangling pointer anti-pattern
 
-URL hotspot regex is defined at `src\Edit.c:108` (`HYPLNK_REGEX_FULL` macro). It matches `https?://`, `ftp://`, `file:///`, `file://`, `mailto:`, `www.`, `ftp.` schemes. The trailing group excludes punctuation (`.,:?!`) so URLs don't absorb sentence-ending characters.
+**NEVER** use a pointer from `Path_WriteAccessBuf()` / `StrgWriteAccessBuf()` after any operation that may reallocate/swap the underlying buffer of the SAME handle. Buffer-invalidating ops include: `Path_CanonicalizeEx`, `Path_Swap` / `StrgSwap`, `Path_ExpandEnvStrings` / `ExpandEnvironmentStrgs`, `Path_Append` / `Path_Reset`, `StrgCat` / `StrgInsert` / `StrgFormat` / `StrgReset`, `Path_NormalizeEx` / `Path_AbsoluteFromApp` / `Path_RelativeToApp`.
 
-### DarkMode (`src\DarkMode\`)
-
-Windows 10/11 dark mode via IAT (Import Address Table) hooks. Includes stub DLLs for uxtheme and user32.
-
-### ARM64 Platform Considerations
-
-**Supported platforms**: Win32 (x86), x64, x64_AVX2, ARM64. ARM 32-bit is **not** supported (the `Release|ARM` solution config maps to Win32).
-
-#### Architecture detection
-
-Use `#if defined(_M_ARM64)` or the helper macro `NP3_BUILD_ARM64` (defined in `src\TypeDefs.h`) for ARM64-specific code paths. **Important**: both ARM64 and x64 define `_WIN64`, so use `_M_ARM64` when you need to distinguish ARM64 from x64.
-
-#### ARM64 rendering defaults
-
-ARM64 defaults to `SC_TECHNOLOGY_DIRECTWRITERETAIN` (value 2) instead of `SC_TECHNOLOGY_DIRECTWRITE` (value 1) to preserve the Direct2D back buffer between frames. This avoids flickering on Qualcomm Adreno GPUs and the Win11 25H2 DWM compositor. The main window also uses `WS_EX_COMPOSITED` on ARM64 for system-level double-buffering. Users can override via `RenderingTechnology` in the INI file or the View menu.
-
-#### ARM64 build configuration
-
-- `CETCompat` must be `false` for ARM64 (CET is x86/x64 only)
-- `TargetMachine` must be `MachineARM64` in all ARM64 linker sections
-- `_WIN64` must be defined in preprocessor definitions for all ARM64 configurations
-- Build fix scripts in `Build\scripts\`: `FixARM64CETCompat.ps1`, `FixARM64CrossCompile.ps1`, `FixARM64OutDir.ps1`
-
-#### GrepWin on ARM64
-
-No native ARM64 grepWin build exists. The ARM64 build uses `grepWin-x64_portable.exe` which runs via x64 emulation on Windows ARM64. The binary selection in `src\Notepad3.c` uses `#if defined(_M_ARM64)` to handle this explicitly.
-
-#### Theme change flickering prevention
-
-`MsgThemeChanged()` in `src\Notepad3.c` wraps all heavy operations (bar recreation, lexer reset, restyling) in `WM_SETREDRAW FALSE/TRUE` to suppress intermediate repaints and performs a single `RedrawWindow()` at the end. DarkMode `RedrawWindow()` calls in `ListViewUtil.hpp` omit `RDW_ERASE` to avoid background erase flashes during theme transitions.
-
-### Formatting
-
-- LLVM-based `.clang-format` in `src\` — 4-space indentation, Stroustrup brace style, left-aligned pointers, no column limit, no include sorting
-- `.editorconfig` enforces UTF-8/CRLF for source, 4-space indent for C/C++; Lexilla code uses tabs (preserved from upstream)
-- **File encoding rules** (must be respected when creating or editing these files):
-  - `language\*\*.rc` — **UTF-8 without BOM**. Never write or save these files with a UTF-8 BOM. Use `Build\rc_to_utf8.cmd` to strip accidental BOMs.
-    - **PowerShell pitfall**: `[System.Text.Encoding]::UTF8` writes **with** BOM. Always use `[System.Text.UTF8Encoding]::new($false)` when writing `.rc` files from PowerShell scripts.
-    - **Python/script pitfall**: `.rc` files use **CRLF** line endings. When writing or inserting lines from Python or other scripts, use `\r\n` — not bare `\n`. After bulk edits, normalize with: `content = content.replace('\r\n', '\n').replace('\n', '\r\n')` before writing.
-  - `Build\Notepad3.ini`, `Build\minipath.ini` — **UTF-8 with BOM** (BOM = `EF BB BF`). These INI reference files must retain the BOM.
-- String safety via `strsafe.h` throughout; deprecated string functions are disabled
-
-### Type Conventions
-
-- `DocPos` / `DocPosU` / `DocLn` for Scintilla document positions and line numbers (not raw `int`)
-- `cpi_enc_t` for encoding identifiers
-- `HSTRINGW` and `HPATHL` (opaque handle types) instead of raw `WCHAR*` buffers
-- `NOMINMAX` is defined globally — use `min()`/`max()` macros or typed equivalents
-
-### Scintilla Interaction
-
-Always use `SciCall.h` wrappers (e.g. `SciCall_GetTextLength()`) instead of raw `SendMessage(hwnd, SCI_XXX, ...)`. Add missing wrappers to `SciCall.h` if needed.
-
-Wrapper macros follow the naming `DeclareSciCall{V|R}{0|01|1|2}`:
-- **V** = void return, **R** = has return value
-- **0** = no params, **1** = one param (wParam), **2** = two params, **01** = lParam only (wParam=0)
-- The `msg` argument is the suffix after `SCI_` (e.g. `UNDO` for `SCI_UNDO`)
-
-```c
-DeclareSciCallV0(Undo, UNDO);                                            // SciCall_Undo()
-DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, DocPos);                  // DocPos SciCall_GetTextLength()
-DeclareSciCallV1(SetTechnology, SETTECHNOLOGY, int, technology);         // SciCall_SetTechnology(int)
-DeclareSciCallR1(SupportsFeature, SUPPORTSFEATURE, bool, int, feature);  // bool SciCall_SupportsFeature(int)
-```
-
-### Global State
-
-Application state is centralized in global structs (`Globals`, `Settings`, `Settings2`, `Flags`, `Paths`) defined in `Notepad3.c`. Access these through their defined interfaces rather than adding new globals.
-
-### Undo/Redo Transactions
-
-Use `_BEGIN_UNDO_ACTION_` / `_END_UNDO_ACTION_` macros (defined in `Notepad3.h`) to group Scintilla operations into single undo steps. These also handle notification limiting during bulk edits.
-
-### WriteAccessBuf — Dangling Pointer Anti-Pattern
-
-**NEVER use a pointer obtained from `Path_WriteAccessBuf()` / `StrgWriteAccessBuf()` after ANY operation that may reallocate or swap the underlying buffer of the SAME handle.** The pointer becomes dangling (use-after-free).
-
-Buffer-invalidating operations:
-- `Path_CanonicalizeEx(h, ...)` — calls `Path_Swap` internally
-- `Path_Swap(h, ...)` / `StrgSwap(h, ...)`
-- `Path_ExpandEnvStrings(h)` / `ExpandEnvironmentStrgs(h, ...)` — may realloc
-- `Path_Append(h, ...)` / `Path_Reset(h, ...)` — may realloc
-- `StrgCat(h, ...)` / `StrgInsert(h, ...)` / `StrgFormat(h, ...)` / `StrgReset(h, ...)` — may realloc
-- `Path_NormalizeEx(h, ...)` / `Path_AbsoluteFromApp(h, ...)` / `Path_RelativeToApp(h, ...)` — may realloc/swap
-
-Safe patterns after invalidation:
-- **Read-only**: use `Path_Get(h)` or `StrgGet(h)` — always returns current buffer
-- **Read-write**: re-obtain via `ptr = Path_WriteAccessBuf(h, 0)` / `ptr = StrgWriteAccessBuf(h, 0)` (size 0 = no resize, just returns current pointer)
+After any of these:
+- Read-only: use `Path_Get(h)` / `StrgGet(h)` (always current).
+- Read-write: re-obtain via `Path_WriteAccessBuf(h, 0)` / `StrgWriteAccessBuf(h, 0)` (size 0 = no resize, returns current pointer).
 
 ## Python Environment
 
-A Python 3.14 virtual environment is available at `.venv\` for scripting tasks (batch file manipulation, locale file updates, code generation, etc.).
+`.venv\` (Python 3.14) for scripting tasks — bulk locale edits, code generation, etc.
 
 ```bash
-# Run a script (from project root, in bash/Cygwin)
 .venv/Scripts/python.exe <script.py>
-
-# Install packages
 .venv/Scripts/pip.exe install <package>
 ```
 
-Use this venv instead of system Python (which may not be installed). Useful for bulk operations across the 26 locale `strings_*.rc` files.
-
-## Key File Paths (Quick Reference)
-
-| Pattern | Purpose |
-|---------|---------|
-| `language/common_res.h` | String resource ID definitions |
-| `language/np3_*/strings_*.rc` | Locale string tables (26 files) |
-| `Build/Notepad3.ini` | Reference INI with documented settings |
-| `src/Notepad3.c:FileSave()` | Save flow entry point |
-| `src/Edit.c:EditSaveFile()` | Actual file write logic |
-| `src/Config/Config.cpp` | INI management, settings load/save |
-| `src/Dialogs.c:SaveFileDlg()` | Save As dialog |
+System Python is not installed; `python3` fails. Python beats sed/perl under Cygwin for literal string insertions (reliable `\r\n`).

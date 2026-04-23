@@ -140,6 +140,7 @@ bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
             FileLoadFlags fLoadFlags, FileSaveFlags fSaveFlags, bool bSetSavePoint);
 
 void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
+bool          IsPasteBoardActive(void);
 void          InstallFileWatching(const bool bInstall);
 
 void AutoSaveStart(bool bReset);
