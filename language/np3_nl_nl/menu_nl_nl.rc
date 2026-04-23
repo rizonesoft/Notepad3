@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "&Wissen\tDel",                                    IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "&Klembord wissen",                                IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Stop Clipboard &Monitoring",  IDM_EDIT_STOP_PASTEBOARD
+        MENUITEM "&Bewaking van klembord stoppen",                  IDM_EDIT_STOP_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "W&oorden"
         BEGIN
@@ -485,7 +485,7 @@ BEGIN
         MENUITEM "Melding bij bestandswijziging...\tAlt+F5",        IDM_SET_CHANGENOTIFY
         ///MENUITEM "Automatisch opslaan / Back-up...",             IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Meldingen dempen",                                IDM_SET_MUTE_MESSAGEBEEP
-        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
+        MENUITEM "Oplossen naar &UNC-paden",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Functie Esc-&toets"
         BEGIN
             MENUITEM "&Geen",                                       IDM_SET_NOESCFUNC
@@ -494,11 +494,11 @@ BEGIN
         END
         MENUITEM "O&pslaan voor uitvoeren",                         IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Tiny-E&xpressies berekenen",                      IDM_SET_EVALTINYEXPRONSEL
-        MENUITEM "Enable Multiple Selection",                       IDM_SET_MULTIPLE_SELECTION
-        POPUP "Default &Directory"
+        MENUITEM "&Meervoudige selectie inschakelen",                       IDM_SET_MULTIPLE_SELECTION
+        POPUP "&Standaardmap"
         BEGIN
-            MENUITEM "Set to Current File's &Directory",  IDM_SET_DEFAULTDIR
-            MENUITEM "&Reset to Default",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "Instellen naar huidige &bestandsmap",  IDM_SET_DEFAULTDIR
+            MENUITEM "Herstellen naar &standaard",                 IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "&Onthouden"
@@ -524,7 +524,7 @@ BEGIN
         END
         POPUP "Tech&nologie"
         BEGIN
-            POPUP "&Rendering"
+            POPUP "Wee&Meervoudigeoudige"
             BEGIN
                 MENUITEM "DirectWrite (&Direct2D)",                 IDM_SET_RENDER_TECH_D2D
                 MENUITEM "DirectWrite &behouden",                   IDM_SET_RENDER_TECH_D2DRETAIN
