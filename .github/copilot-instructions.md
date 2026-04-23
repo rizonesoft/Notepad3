@@ -55,15 +55,11 @@ Each language is one `styleLexXXX.c` defining an `EDITLEXER` struct (see existin
 
 ## Clipboard Monitoring (Pasteboard Mode)
 
-Runtime-toggleable; external clipboard changes are pasted at the caret.
+Runtime toggle `IDM_EDIT_TOGGLE_PASTEBOARD`; `/B` enables at startup. Not persisted. `IsPasteBoardActive()` in `Notepad3.h` is the cross-TU query.
 
-- Menu: `IDM_EDIT_TOGGLE_PASTEBOARD` — "Toggle Clipboard Monitoring". Check mark reflects state.
-- Helpers `PasteBoard_Start(HWND)` / `PasteBoard_Stop(HWND)` wrap `AddClipboardFormatListener` + `ID_PASTEBOARDTIMER`. Used for `/B` startup and from the toggle handler.
-- **Not persisted**; always OFF at startup unless `/B`.
-- **Mutex with Tail** (`IDM_VIEW_CHASING_DOCTAIL` / `FileWatching.MonitoringLog`): each mode greys the other in `MsgInitMenu`; tail toolbar button (`IDT_VIEW_CHASING_DOCTAIL`) greyed; "Monitoring Log" checkbox in `ChangeNotifyDlgProc` greyed. `IsPasteBoardActive()` in `Notepad3.h` for cross-TU use.
-- Startup conflict (`/B` + persisted `MonitoringLog=true`): `/B` wins this session; `FileWatching.MonitoringLog` cleared in memory, `Settings.MonitoringLog` (INI) preserved.
-- `PasteBoardTimerProc` pastes at caret. `Settings2.PasteBoardSeparator` pre-pended; suppressed on (1) first paste after enable and (2) caret at line start. `\x01` = one document EOL; `\0` = no separator.
-- Status bar `STATUS_OVRMODE` shows `CBS` while active (passive indicator).
+- **Mutex with Tail** (`FileWatching.MonitoringLog`): each greys the other in `MsgInitMenu`, the tail toolbar button, and the "Monitoring Log" checkbox in `ChangeNotifyDlgProc`. `/B` + persisted `MonitoringLog=true` → `/B` wins the session, INI preserved.
+- **`/B` initial auto-paste vs runtime toggle**: `/B` pastes the current clipboard once — only on an empty untitled buffer (no file arg, no `/c`, no auto-loaded MRU). Runtime toggle never auto-pastes. Preserve this asymmetry.
+- `Settings2.PasteBoardSeparator`: `\x01` = one document EOL; `\0` = none; else verbatim. Also suppressed on first paste after enable and when caret is at line start.
 
 ## File I/O
 
