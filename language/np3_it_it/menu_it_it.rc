@@ -168,8 +168,8 @@ BEGIN
         MENUITEM "&Seleziona tutto\tCtrl+A",              IDM_EDIT_SELECTALL
         MENUITEM "&Elimina\tCanc",                        IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "Svuota appunti",                        IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Attiva/Disattiva &monitoraggio appunti",            IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Svuota appunti",                            IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Attiva/disattiva &monitoraggio appunti",    IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "&Parole"
         BEGIN
