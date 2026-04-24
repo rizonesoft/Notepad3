@@ -5224,9 +5224,11 @@ static bool _HandleEditBasicCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM
             if (s_flagPasteBoard) {
                 s_bLastCopyFromMe = true;
             }
+            LimitNotifyEvents();
             UndoTransActionBegin();
             SciCall_Paste();
             EndUndoTransAction();
+            RestoreNotifyEvents();
         }
         break;
 
@@ -10830,7 +10832,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         }
 
         SendMessage(Globals.hwndStatus, WM_SETREDRAW, TRUE, 0);
-        InvalidateRect(Globals.hwndStatus, NULL, TRUE);
+        InvalidateRect(Globals.hwndStatus, NULL, FALSE);
 
     }
     // --------------------------------------------------------------------------
