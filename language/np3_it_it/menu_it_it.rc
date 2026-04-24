@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "&Elimina\tCanc",                        IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "Svuota appunti",                        IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Stop &monitoraggio appunti",            IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Attiva/Disattiva &monitoraggio appunti",            IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "&Parole"
         BEGIN
