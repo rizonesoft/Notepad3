@@ -1851,6 +1851,35 @@ bool InitWndClass(const HINSTANCE hInstance, LPCWSTR lpszWndClassName, LPCWSTR l
 
 //=============================================================================
 //
+//  _StartupMinimizeMainWnd() / _DeferMinimizeTimerProc()
+//  Hoisted from InitInstance() so the same minimize sequence runs either immediately
+//  or after the deferred-minimize timer fires (used for the /B + /I startup combo).
+//
+static void _StartupMinimizeMainWnd(HWND hwndMain)
+{
+    SetWindowPos(hwndMain, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+    if (!Settings.ShowTitlebar) {
+        SetWindowLong(hwndMain, GWL_STYLE, GetWindowLong(hwndMain, GWL_STYLE) & ~WS_CAPTION);
+    }
+    if (Settings.MinimizeToTray) {
+        MinimizeWndToTray(hwndMain);
+    }
+    else {
+        MinimizeWndToTaskbar(hwndMain);
+    }
+}
+
+static VOID CALLBACK _DeferMinimizeTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
+{
+    UNREFERENCED_PARAMETER(uMsg);
+    UNREFERENCED_PARAMETER(dwTime);
+    KillTimer(hwnd, idEvent); // one-shot
+    _StartupMinimizeMainWnd(hwnd);
+}
+
+
+//=============================================================================
+//
 //  InitInstance() - DarkMode already initialized !
 //
 HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
@@ -1930,15 +1959,21 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
 
     // Determine if starting minimized/tray (don't show window early in that case)
     bool const bStartMinimized = s_flagStartAsTrayIcon || (nCmdShow == SW_MINIMIZE) || (nCmdShow == SW_SHOWMINIMIZED);
+    // /B + /I together: show the window long enough for the one-shot auto-paste to land,
+    // then minimize via timer (fired below after PasteBoard_Start). Captures s_flagPasteBoard
+    // before the PasteBoard activation block clears it.
+    bool const bDeferMinimizeForPasteBoard = bStartMinimized && s_flagPasteBoard;
 
     // Show window frame early for faster perceived startup — the user sees
-    // the window (with initial toolbar from WM_CREATE) while we re-create bars
-    if (!bStartMinimized) {
+    // the window (with initial toolbar from WM_CREATE) while we re-create bars.
+    // For the /B + /I deferred-minimize case, force SW_SHOWNORMAL: nCmdShow could be
+    // SW_SHOWMINIMIZED (shortcut "Start minimized") which would defeat the purpose.
+    if (!bStartMinimized || bDeferMinimizeForPasteBoard) {
         if (!Settings.ShowTitlebar) {
             SetWindowLong(hwndMain, GWL_STYLE, GetWindowLong(hwndMain, GWL_STYLE) & ~WS_CAPTION);
         }
         SetWindowPos(hwndMain, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        ShowWindow(hwndMain, nCmdShow);
+        ShowWindow(hwndMain, bDeferMinimizeForPasteBoard ? SW_SHOWNORMAL : nCmdShow);
         UpdateWindow(hwndMain);
     }
 
@@ -1949,7 +1984,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
 
     // Force layout recalculation after toolbar/statusbar re-creation
     // (early ShowWindow already triggered WM_SIZE with old child windows)
-    if (!bStartMinimized) {
+    if (!bStartMinimized || bDeferMinimizeForPasteBoard) {
         RECT rc;
         GetClientRect(hwndMain, &rc);
         SendMessage(hwndMain, WM_SIZE, SIZE_RESTORED, MAKELPARAM(rc.right, rc.bottom));
@@ -2010,21 +2045,13 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     ShowWindowAsync(s_hwndEditFrame, SW_SHOWDEFAULT);
     ShowWindowAsync(Globals.hwndEdit, SW_SHOWDEFAULT);
 
-    if (bStartMinimized) {
+    if (bStartMinimized && !bDeferMinimizeForPasteBoard) {
         //~SnapToWinInfoPos(hwndMain, g_IniWinInfo, SCR_NORMAL, SW_HIDE);
-        SetWindowPos(hwndMain, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        if (!Settings.ShowTitlebar) {
-            SetWindowLong(hwndMain, GWL_STYLE, GetWindowLong(hwndMain, GWL_STYLE) & ~WS_CAPTION);
-        }
-        if (Settings.MinimizeToTray) {
-            MinimizeWndToTray(hwndMain);
-        }
-        else {
-            MinimizeWndToTaskbar(hwndMain);
-        }
+        _StartupMinimizeMainWnd(hwndMain);
     }
     else {
-        // Window was already shown above; ensure children are painted
+        // Either not minimizing, or deferring minimize until /B auto-paste lands —
+        // the window must paint normally so the user sees the pasted content briefly.
         UpdateWindow(hwndMain);
     }
 
@@ -2184,6 +2211,12 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
         if (Path_IsEmpty(Paths.CurrentFile) && Sci_IsDocEmpty()) {
             s_iLastCopyTime = GetTicks_ms();
         }
+    }
+
+    // /B + /I: arm the deferred-minimize timer now that PasteBoard is started.
+    // PasteBoardInitialShowMs is clamped to 500..5000 at load time.
+    if (bDeferMinimizeForPasteBoard) {
+        SetTimer(Globals.hwndMain, ID_DEFERMINIMIZETIMER, (UINT)Settings2.PasteBoardInitialShowMs, _DeferMinimizeTimerProc);
     }
 
     // check if a lexer was specified from the command line

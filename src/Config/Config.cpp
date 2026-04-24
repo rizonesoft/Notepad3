@@ -1480,6 +1480,7 @@ void LoadSettings()
     }
     Settings2.PasteBoardDebounceMs = clampi(IniSectionGetInt(IniSecSettings2, L"PasteBoardDebounceMs", 200), 0, 5000);
     Settings2.PasteBoardAddTimestamp = IniSectionGetBool(IniSecSettings2, L"PasteBoardAddTimestamp", false);
+    Settings2.PasteBoardInitialShowMs = clampi(IniSectionGetInt(IniSecSettings2, L"PasteBoardInitialShowMs", 1500), 500, 5000);
 
     for (int i = 0; i < COUNTOF(Settings2.CodeFontPrefPrioList); ++i) {
         if (i < COUNTOF(g_CodeFontPrioList))

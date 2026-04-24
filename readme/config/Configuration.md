@@ -226,6 +226,10 @@ PasteBoardSeparator=\r\n\r\n\r\n  ; two blank lines between entries
 
 Set to `1` to prepend a `[HH:MM:SS]` timestamp to each pasted entry.
 
+#### `PasteBoardInitialShowMs=1500`
+
+When Notepad3 is launched with **both `/B` (clipboard monitoring) and `/I` (start minimized)**, the immediate minimize is deferred so the user can see the window populate with the one-shot auto-pasted clipboard content. The window stays visible for this many milliseconds, then minimizes (to the tray or taskbar, per `Settings.MinimizeToTray`). Range: `500`–`5000` ms (clamped at load time). Has no effect unless both `/B` and `/I` are passed on the command line — `/I` alone still minimizes immediately as before.
+
 #### `NoFadeHidden=0`
 
 Set to `1` to disable fading of hidden objects in file lists (Favorites, etc.).

@@ -878,6 +878,7 @@ typedef struct SETTINGS2_T {
     WCHAR PasteBoardSeparator[MICRO_BUFFER];
     int   PasteBoardDebounceMs;
     bool  PasteBoardAddTimestamp;
+    int   PasteBoardInitialShowMs;
 
     const WCHAR* CodeFontPrefPrioList[MICRO_BUFFER];
     const WCHAR* TextFontPrefPrioList[MICRO_BUFFER];

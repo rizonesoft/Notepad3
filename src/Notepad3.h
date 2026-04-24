@@ -70,6 +70,7 @@ np3params, *LPnp3params;
 #define ID_LOGROTATETIMER   (0xA003)        // Log Rotation Retry
 #define ID_AUTOSCROLLTIMER  (0xA004)        // Middle-Click Auto-Scroll
 #define ID_ATOMICSAVETIMER  (0xA005)        // Atomic Save Detection
+#define ID_DEFERMINIMIZETIMER (0xA006)      // Deferred minimize on /B + /I startup
 
 
 //==== Reuse Window Lock Timeout ==============================================
