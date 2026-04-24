@@ -100,7 +100,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE_ELEVATED "%s : Повышенные права"
-    IDS_MUI_APPTITLE_PASTEBOARD "%s : Буфер обмена"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Безымянный"
     IDS_MUI_TITLEEXCERPT    "«%s»"
     IDS_MUI_READONLY        "(Только чтение)"

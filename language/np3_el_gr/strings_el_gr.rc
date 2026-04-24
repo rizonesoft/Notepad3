@@ -100,7 +100,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE_ELEVATED "%s : Αναβαθμισμένα δικαιώματα"
-    IDS_MUI_APPTITLE_PASTEBOARD "%s : Πρόχειρο"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Ανώνυμο"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Μόνο για ανάγνωση)"

@@ -100,7 +100,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE_ELEVATED "%s : Prioritas"
-    IDS_MUI_APPTITLE_PASTEBOARD "%s : Papan Klip"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Tidak Berjudul"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Hanya Baca)"
