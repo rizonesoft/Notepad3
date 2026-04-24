@@ -100,7 +100,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE_ELEVATED "%s : Erhöhte Rechte"
-    IDS_MUI_APPTITLE_PASTEBOARD "%s : Zwischenablage"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Kein Titel"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Nur Lesen)"

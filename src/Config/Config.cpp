@@ -1376,6 +1376,16 @@ void LoadSettings()
 
     Settings2.SubWrappedLineSelectOnMarginClick = IniSectionGetBool(IniSecSettings2, L"SubWrappedLineSelectOnMarginClick", false);
 
+    Settings2.DiscardOnClosingUntitledPasteBoard = IniSectionGetBool(IniSecSettings2, L"DiscardOnClosingUntitledPasteBoard", false);
+    if (!Settings2.DiscardOnClosingUntitledPasteBoard) {
+        // Drop any stale opt-out so re-enabling the feature later starts with a fresh prompt.
+        // Use the cache-aware IniSectionDelete (not IniFileDelete) — LoadSettings runs inside
+        // an OpenSettingsFile/CloseSettingsFile bracket that flushes the cache back at the end;
+        // a direct file write here would be overwritten. Mark dirty so the flush happens.
+        IniSectionDelete(Constants.SectionSuppressedMessages, Constants.SuppressKey.MsgDiscardUntitled, false);
+        bDirtyFlag = true;
+    }
+
     int const iAnsiCPBonusSet = clampi(IniSectionGetInt(IniSecSettings2, L"LocaleAnsiCodePageAnalysisBonus", 33), 0, 100);
     Settings2.LocaleAnsiCodePageAnalysisBonus = (float)iAnsiCPBonusSet / 100.0f;
 
@@ -1470,6 +1480,7 @@ void LoadSettings()
     }
     Settings2.PasteBoardDebounceMs = clampi(IniSectionGetInt(IniSecSettings2, L"PasteBoardDebounceMs", 200), 0, 5000);
     Settings2.PasteBoardAddTimestamp = IniSectionGetBool(IniSecSettings2, L"PasteBoardAddTimestamp", false);
+    Settings2.PasteBoardInitialShowMs = clampi(IniSectionGetInt(IniSecSettings2, L"PasteBoardInitialShowMs", 1500), 500, 5000);
 
     for (int i = 0; i < COUNTOF(Settings2.CodeFontPrefPrioList); ++i) {
         if (i < COUNTOF(g_CodeFontPrioList))
@@ -2533,7 +2544,7 @@ void CmdSaveSettingsNow()
         }
     }
     if (Globals.bCanSaveIniFile && SaveAllSettings(true)) {
-        InfoBoxLng(MB_ICONINFORMATION, L"MsgSaveSettingsInfo", IDS_MUI_SAVEDSETTINGS);
+        InfoBoxLng(MB_ICONINFORMATION, Constants.SuppressKey.MsgSaveSettingsInfo, IDS_MUI_SAVEDSETTINGS);
         if ((dwFileAttributes != 0) && (dwFileAttributes != INVALID_FILE_ATTRIBUTES)) {
             Path_SetFileAttributes(Paths.IniFile, dwFileAttributes); // reset
         }

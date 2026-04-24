@@ -46,6 +46,8 @@ Each language is one `styleLexXXX.c` defining an `EDITLEXER` struct (see existin
 
 27+ locales under `np3_LANG_COUNTRY\`. Language packs build as separate DLLs.
 
+**Invariant:** every `IDS_MUI_*` defined in `common_res.h` must exist in **all** `strings_*.rc` files. A missing entry breaks the corresponding language DLL build. For bulk insertions across locales, use a `.venv/Scripts/python.exe` script — `sed`/`perl` `\n` escaping is unreliable in Cygwin.
+
 ### Adding a string resource
 
 1. `#define IDS_MUI_XXX <id>` in `language\common_res.h` (13xxx errors/warnings, 14xxx info/prompts).
@@ -128,6 +130,10 @@ Vendored 5.5.8 / 5.4.6 with NP3 patches under `np3_patches\`. Versions in `scint
 
 Use existing structs (`Globals`, `Settings`, `Settings2`, `Flags`, `Paths`). Don't add new globals.
 
+### Dialog return values (`InfoBoxLng`)
+
+`InfoBoxLng()` returns `MAKELONG(button, mode)` — never compare/switch on the raw return when the suppression key is non-NULL: a saved-answer replay sets HIWORD too, so `result == IDNO` is false. Use `IsYesOkay()` / `IsRetryContinue()` / `IsNoCancelClose()` (in `src\Dialogs.h`), or extract via `INFOBOX_ANSW(r)` (LOWORD) and `INFOBOX_MODE(r)` (HIWORD). Switching on the raw value is a latent bug if a suppression key is ever added.
+
 ### Portable INI design
 
 - INI beside the exe. No registry. Runs on defaults if none exists (user creates via "Save Settings Now").
@@ -138,7 +144,7 @@ Use existing structs (`Globals`, `Settings`, `Settings2`, `Flags`, `Paths`). Don
 - **`bIniFileFromScratch`** is set when INI is 0 bytes, cleared after `SaveAllSettings()`. While set, `MuiLanguage.c` suppresses writing `PreferredLanguageLocaleName`.
 - **Empty lexer sections are pruned** in `Style_ToIniSection()` via `IniSectionGetKeyCount()` — only sections with non-default styles persist.
 - MiniPath uses the same pattern (`minipath\src\Config.cpp`).
-- **New `Settings2` (or other INI) params must be documented as commented entries in `Build\Notepad3.ini`.**
+- **New `Settings2` (or other INI) params must be documented in BOTH places**: a commented entry under `[Settings2]` in `Build\Notepad3.ini` AND a `#### \`Name=default\`` heading + prose paragraph in the matching topical section of `readme\config\Configuration.md` (the user-facing reference). Updating only the INI is incomplete.
 
 ### Save/Load macros (`src\Config\Config.cpp`)
 

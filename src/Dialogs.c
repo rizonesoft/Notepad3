@@ -17,13 +17,10 @@
 
 #include <windowsx.h>
 #include <commctrl.h>
-#include <process.h>
-#include <shlobj.h>
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <commdlg.h>
-#include <shobjidl.h>
-#include <shellscalingapi.h>
+#include <shlobj.h>
 
 #include <string.h>
 
@@ -34,7 +31,6 @@
 
 #include "VersionEx.h"
 #include "PathLib.h"
-#include "Edit.h"
 #include "Dlapi.h"
 #include "Encoding.h"
 #include "Styles.h"
@@ -44,9 +40,6 @@
 #include "DarkMode/DarkMode.h"
 #include "tinyexprcpp/tinyexpr_cif.h"
 #include "Resample.h"
-#include "PathLib.h"
-
-#include "SciCall.h"
 
 #include "Dialogs.h"
 
@@ -94,6 +87,44 @@ typedef struct _infbox {
     LPWSTR lpstrSetting;
     bool   bDisableCheckBox;
 } INFOBOXLNG, *LPINFOBOXLNG;
+
+// Map (MB_TYPEMASK | MB_DEFMASK) → control ID of the requested default button per InfoBox dialog template (IDD_MUI_INFOBOX..INFOBOX7). Returns 0 for unmapped styles (e.g. MB_FILECHANGEDNOTIFY) so the caller can fall back to the template's resource default.
+static int _InfoBoxLng_GetDefaultBtnId(UINT uType)
+{
+    UINT const btnType = uType & MB_TYPEMASK;
+    UINT const defBtn  = uType & MB_DEFMASK;
+
+    switch (btnType) {
+    case MB_OK:
+        return IDOK;
+    case MB_YESNO:
+        return (defBtn == MB_DEFBUTTON2) ? IDNO : IDYES;
+    case MB_OKCANCEL:
+        return (defBtn == MB_DEFBUTTON2) ? IDCANCEL : IDOK;
+    case MB_YESNOCANCEL:
+        switch (defBtn) {
+        case MB_DEFBUTTON2: return IDNO;
+        case MB_DEFBUTTON3: return IDCANCEL;
+        default:            return IDOK; // template uses IDOK for "Yes"
+        }
+    case MB_RETRYCANCEL:
+        return (defBtn == MB_DEFBUTTON2) ? IDCANCEL : IDRETRY;
+    case MB_ABORTRETRYIGNORE:
+        switch (defBtn) {
+        case MB_DEFBUTTON2: return IDRETRY;
+        case MB_DEFBUTTON3: return IDIGNORE;
+        default:            return IDABORT;
+        }
+    case MB_CANCELTRYCONTINUE:
+        switch (defBtn) {
+        case MB_DEFBUTTON2: return IDRETRY; // template uses IDRETRY for "Try Again"
+        case MB_DEFBUTTON3: return IDCONTINUE;
+        default:            return IDCANCEL;
+        }
+    default:
+        return 0;
+    }
+}
 
 static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
@@ -239,6 +270,19 @@ static INT_PTR CALLBACK _InfoBoxLngDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, 
 
         CenterDlgInParent(hwnd, true);
         AttentionBeep(lpMsgBox->uType);
+
+        // Custom dialog templates don't honor MB_DEFBUTTON* automatically: DM_SETDEFID relocates the BS_DEFPUSHBUTTON border + Enter target
+        // SetFocus moves keyboard focus. Helper maps (style, defbutton) → control ID
+        // returns 0 for unknown styles so we fall through to the template's resource default.
+        int const defFocusId = _InfoBoxLng_GetDefaultBtnId(lpMsgBox->uType);
+        if (defFocusId) {
+            HWND const hDefBtn = GetDlgItem(hwnd, defFocusId);
+            if (hDefBtn) {
+                SendMessage(hwnd, DM_SETDEFID, (WPARAM)defFocusId, 0);
+                SetFocus(hDefBtn);
+                return FALSE;
+            }
+        }
     }
     return TRUE;
 
@@ -302,17 +346,19 @@ CASE_WM_CTLCOLOR_SET:
     case WM_COMMAND: {
         LPINFOBOXLNG const lpMsgBox = (LPINFOBOXLNG)GetWindowLongPtr(hwnd, DWLP_USER);
         switch (LOWORD(wParam)) {
-        case IDOK:
+        // Persistable button set (WRITE side) — must agree with InfoBoxLng() READ switch and IDC_INFOBOXCHECK ENABLE list
+        // divergence yields "saved but never replayed" answers.
         case IDYES:
+        case IDNO:
+        case IDOK:
         case IDRETRY:
-        case IDIGNORE:
         case IDTRYAGAIN:
+        case IDIGNORE:
         case IDCONTINUE:
             if (IsButtonChecked(hwnd, IDC_INFOBOXCHECK) && StrIsNotEmpty(lpMsgBox->lpstrSetting) && Globals.bCanSaveIniFile) {
                 IniFileSetLong(Paths.IniFile, Constants.SectionSuppressedMessages, lpMsgBox->lpstrSetting, LOWORD(wParam));
             }
-            //[FallThrough]
-        case IDNO:
+            //[FallThrough] - buttons to be disabled
         case IDABORT:
         case IDCLOSE:
         case IDCANCEL:
@@ -320,14 +366,14 @@ CASE_WM_CTLCOLOR_SET:
             break;
 
         case IDC_INFOBOXCHECK: {
+            // Persistable button set (ENABLE side) — disable only non-persistable controls
+            // so the user picks an answer the WRITE/READ sides round-trip.
+            // No WM_NEXTDLGCTL: moving focus onto a pushbutton would override DM_SETDEFID's
+            // visual default border. Leaving focus on the checkbox preserves it.
             bool const isChecked = IsButtonChecked(hwnd, IDC_INFOBOXCHECK);
-            DialogEnableControl(hwnd, IDNO, !isChecked);
             DialogEnableControl(hwnd, IDABORT, !isChecked);
-            DialogEnableControl(hwnd, IDIGNORE, !isChecked);
-            DialogEnableControl(hwnd, IDCONTINUE, !isChecked);
             DialogEnableControl(hwnd, IDCLOSE, !isChecked);
             DialogEnableControl(hwnd, IDCANCEL, !isChecked);
-            SendMessage(hwnd, WM_NEXTDLGCTL, 0, FALSE);
         }
         break;
 
@@ -355,9 +401,15 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
         uType |= MB_RTLREADING;
     }
 
+    // Persistable button set (READ side) — must include every value the WM_COMMAND WRITE list can store
+    // saved values not listed here fall into `default:` and are silently deleted on next call.
     switch (iMode) {
     case IDOK:
     case IDYES:
+    case IDNO:
+    case IDRETRY:
+    case IDTRYAGAIN:
+    case IDIGNORE:
     case IDCONTINUE:
         return MAKELONG(iMode, iMode);
 
@@ -436,7 +488,8 @@ LONG InfoBoxLng(UINT uType, LPCWSTR lpstrSetting, UINT uidMsg, ...)
     msgBox.lpstrSetting = (LPWSTR)lpstrSetting;
     msgBox.bDisableCheckBox = (!Globals.bCanSaveIniFile || StrIsEmpty(lpstrSetting) || (iMode < 0)) ? true : false;
 
-    int idDlg;
+    int idDlg = IDD_MUI_INFOBOX;
+
     switch (uType & MB_TYPEMASK) {
 
     case MB_OK:    // one push button : OK. This is the default.
@@ -1208,7 +1261,7 @@ CASE_WM_CTLCOLOR_SET:
             WCHAR wchBuf2[128] = { L'\0' };
             WCHAR wchVerInfo[2048] = { L'\0' };
 
-            int ResX, ResY;
+            int ResX = 0, ResY = 0;
             GetCurrentMonitorResolution(Globals.hwndMain, &ResX, &ResY);
 
             // --------------------------------------------------------------------
@@ -1601,11 +1654,10 @@ static INT_PTR CALLBACK OpenWithDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARAM
 
 
     case WM_SIZE: {
-        int dx, dy;
+        int dx = 0, dy = 0;
         ResizeDlg_Size(hwnd,lParam,&dx,&dy);
 
-        HDWP hdwp;
-        hdwp = BeginDeferWindowPos(5);
+        HDWP hdwp = BeginDeferWindowPos(5);
         hdwp = DeferCtlPos(hdwp,hwnd,IDOK,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDCANCEL,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_OPENWITHDIR,dx,dy,SWP_NOMOVE);
@@ -1861,11 +1913,10 @@ static INT_PTR CALLBACK FavoritesDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
 
     case WM_SIZE: {
-        int dx, dy;
+        int dx = 0, dy = 0;
         ResizeDlg_Size(hwnd,lParam,&dx,&dy);
 
-        HDWP hdwp;
-        hdwp = BeginDeferWindowPos(5);
+        HDWP hdwp = BeginDeferWindowPos(5);
         hdwp = DeferCtlPos(hdwp,hwnd,IDOK,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDCANCEL,dx,dy,SWP_NOSIZE);
         hdwp = DeferCtlPos(hdwp,hwnd,IDC_FAVORITESDIR,dx,dy,SWP_NOMOVE);
@@ -2074,7 +2125,7 @@ static INT_PTR CALLBACK AddToFavDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPA
 
 
     case WM_SIZE: {
-        int dx;
+        int dx = 0;
         ResizeDlg_Size(hwnd, lParam, &dx, NULL);
         HDWP hdwp = BeginDeferWindowPos(4);
         hdwp = DeferCtlPos(hdwp, hwnd, IDOK, dx, 0, SWP_NOSIZE);
@@ -2358,7 +2409,7 @@ static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPAR
     return FALSE;
 
     case WM_SIZE: {
-        int dx, dy;
+        int dx = 0, dy = 0;
         ResizeDlg_Size(hwnd, lParam, &dx, &dy);
         HDWP hdwp = BeginDeferWindowPos(8);
         hdwp      = DeferCtlPos(hdwp, hwnd, IDOK, dx, dy, SWP_NOSIZE);
@@ -2922,7 +2973,7 @@ CASE_WM_CTLCOLOR_SET:
         switch (LOWORD(wParam)) {
 
         case IDOK: {
-            BOOL fTranslated;
+            BOOL fTranslated = FALSE;
             UINT const iNewNumber = GetDlgItemInt(hwnd, IDC_COLUMNWRAP, &fTranslated, FALSE);
             if (fTranslated) {
                 UINT* piNumber = (UINT*)GetWindowLongPtr(hwnd, DWLP_USER);
@@ -3144,7 +3195,7 @@ static INT_PTR CALLBACK LongLineSettingsDlgProc(HWND hwnd, UINT umsg, WPARAM wPa
         SetDlgItemText(hwnd, IDC_MULTIEDGELINE, pszColumnList);
         SendDlgItemMessage(hwnd, IDC_MULTIEDGELINE, EM_LIMITTEXT, MIDSZ_BUFFER, 0);
 
-        BOOL fTranslated;
+        BOOL fTranslated = FALSE;
         /*UINT const iCol = */ GetDlgItemInt(hwnd, IDC_MULTIEDGELINE, &fTranslated, FALSE);
         if (fTranslated) {
             switch (Settings.LongLineMode) {
@@ -3206,7 +3257,7 @@ CASE_WM_CTLCOLOR_SET:
         switch (LOWORD(wParam)) {
 
         case IDC_MULTIEDGELINE: {
-            BOOL fTranslated;
+            BOOL fTranslated = FALSE;
             /*UINT const iCol = */ GetDlgItemInt(hwnd, IDC_MULTIEDGELINE, &fTranslated, FALSE);
             if (fTranslated) {
                 DialogEnableControl(hwnd, IDC_SHOWEDGELINE, true);
@@ -3364,7 +3415,7 @@ CASE_WM_CTLCOLOR_SET:
 
         switch(LOWORD(wParam)) {
         case IDOK: {
-            BOOL fTranslated1, fTranslated2;
+            BOOL fTranslated1 = FALSE, fTranslated2 = FALSE;
             int const _iNewTabWidth = GetDlgItemInt(hwnd, IDC_TAB_WIDTH, &fTranslated1, FALSE);
             int const _iNewIndentWidth = GetDlgItemInt(hwnd, IDC_INDENT_DEPTH, &fTranslated2, FALSE);
 
@@ -3734,7 +3785,7 @@ static INT_PTR CALLBACK SelectEncodingDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,
 
 
     case WM_SIZE: {
-        int dx, dy;
+        int dx = 0, dy = 0;
         ResizeDlg_Size(hwnd,lParam,&dx,&dy);
 
         HDWP hdwp = BeginDeferWindowPos(3);
@@ -5263,7 +5314,7 @@ void DialogAdminExe(HWND hwnd, bool bExecInstaller)
     sei.nShow = SW_SHOWNORMAL;
     if (bExecInstaller) {
         ShellExecuteExW(&sei);
-        if (IsYesOkay(InfoBoxLng(MB_OKCANCEL, L"NoAdminTool", IDS_MUI_ERR_ADMINEXE))) {
+        if (IsYesOkay(InfoBoxLng(MB_OKCANCEL, Constants.SuppressKey.NoAdminTool, IDS_MUI_ERR_ADMINEXE))) {
             sei.lpFile = VERSION_UPDATE_CHECK;
             ShellExecuteExW(&sei);
         }
@@ -6214,7 +6265,7 @@ int Toolbar_SetButtons(HANDLE hwnd, int cmdBase, LPCWSTR lpszButtons, LPCTBBUTTO
     }
     p = tchButtons;
     while (*p) {
-        int iCmd;
+        int iCmd = 0;
         //if (swscanf_s(p, L"%i", &iCmd) == 1) {
         if (StrToIntEx(p, STIF_DEFAULT, &iCmd)) {
             iCmd = (iCmd == 0) ? 0 : iCmd + cmdBase - 1;
@@ -6259,7 +6310,7 @@ static inline bool IsChineseTraditionalSubLang(LANGID subLang)
 
 bool GetLocaleDefaultUIFont(LANGID lang, LPWSTR lpFaceName, WORD* wSize)
 {
-    LPCWSTR font;
+    LPCWSTR font = lpFaceName;
     LANGID const subLang = SUBLANGID(lang);
     switch (PRIMARYLANGID(lang)) {
     default:
@@ -6360,7 +6411,7 @@ static inline BYTE* DialogTemplate_GetFontSizeField(const DLGTEMPLATE* pTemplate
 {
 
     bool bDialogEx = DialogTemplate_IsDialogEx(pTemplate);
-    WORD* pw;
+    WORD* pw = NULL;
 
     if (bDialogEx) {
         pw = (WORD*)((DLGTEMPLATEEX*)pTemplate + 1);

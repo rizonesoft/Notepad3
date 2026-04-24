@@ -53,7 +53,7 @@ HBITMAP NP3Util_LoadBitmapFile(const HPATHL hpath)
             bDimOK = (bmp.bmWidth >= (height * NUMTOOLBITMAPS));
         }
         if (!bDimOK) {
-            InfoBoxLng(MB_ICONWARNING, L"NotSuitableToolbarDim", IDS_MUI_ERR_BITMAP, Path_Get(hpath),
+            InfoBoxLng(MB_ICONWARNING, Constants.SuppressKey.NotSuitableToolbarDim, IDS_MUI_ERR_BITMAP, Path_Get(hpath),
                 (height * NUMTOOLBITMAPS), height, NUMTOOLBITMAPS);
         }
     }

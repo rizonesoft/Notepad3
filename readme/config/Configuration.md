@@ -226,6 +226,10 @@ PasteBoardSeparator=\r\n\r\n\r\n  ; two blank lines between entries
 
 Set to `1` to prepend a `[HH:MM:SS]` timestamp to each pasted entry.
 
+#### `PasteBoardInitialShowMs=1500`
+
+When Notepad3 is launched with **both `/B` (clipboard monitoring) and `/I` (start minimized)**, the immediate minimize is deferred so the user can see the window populate with the one-shot auto-pasted clipboard content. The window stays visible for this many milliseconds, then minimizes (to the tray or taskbar, per `Settings.MinimizeToTray`). Range: `500`–`5000` ms (clamped at load time). Has no effect unless both `/B` and `/I` are passed on the command line — `/I` alone still minimizes immediately as before.
+
 #### `NoFadeHidden=0`
 
 Set to `1` to disable fading of hidden objects in file lists (Favorites, etc.).
@@ -275,6 +279,12 @@ Managed by Notepad3 (Menu → Settings → Window → Reuse Window, **Ctrl+Shift
 #### `SaveBlankNewFile=true`
 
 Whether to prompt for save when closing an untitled document that contains only whitespace.
+
+#### `DiscardOnClosingUntitledPasteBoard=0`
+
+Set to `1` to enable an opt-out variant of the close-modified prompt for **Untitled** documents (documents with no associated file path) **while clipboard-monitoring (PasteBoard) mode is active** — i.e. when Notepad3 was launched with `/B` or PasteBoard mode was toggled on via `Edit → Toggle Clipboard Monitoring`. With the default (`0`), or whenever PasteBoard mode is inactive, the standard Save / Discard / Cancel prompt is shown without a "Don't show this dialog again" checkbox.
+
+When the gate matches (flag set + Untitled + PasteBoard active), closing a modified untitled document shows the same Save / Discard / Cancel prompt with a **"Don't show this dialog again"** checkbox and Discard pre-selected as the default button. If the box is checked alongside a Save or Discard answer, that choice is persisted under `[Suppressed Messages] MsgDiscardUntitled` in the INI and replays silently on subsequent close-untitled events — useful when Notepad3 is regularly used as a clipboard scratchpad. Cancel is never persisted. To re-enable the prompt, delete the `MsgDiscardUntitled` line from the `[Suppressed Messages]` section, or simply set `DiscardOnClosingUntitledPasteBoard=0` (the loader auto-clears the suppression entry on next start). Has no effect on documents that have a file path or when PasteBoard mode is not active.
 
 #### `SciFontQuality=3`
 

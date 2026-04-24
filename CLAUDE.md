@@ -79,6 +79,7 @@ External tool, **not built from source**. Pre-built exes under `grepWin\portable
 ## Localization
 
 - 26 locales under `language\np3_LANG_COUNTRY\`. Language DLLs are separate projects in the solution.
+- **Invariant: every `IDS_MUI_*` defined in `common_res.h` must exist in all 26 `strings_*.rc` files.** A missing entry breaks the corresponding language DLL build. For bulk insertions across locales, use a `.venv/Scripts/python.exe` script — `sed`/`perl` `\n` escaping is unreliable in Cygwin.
 - **`.rc` files are UTF-8 WITHOUT BOM, CRLF line endings.** Never write with BOM. Use `Build\rc_to_utf8.cmd` to strip accidental BOMs. In PowerShell use `[System.Text.UTF8Encoding]::new($false)`; in Python write `\r\n` explicitly.
 - **`Build\Notepad3.ini`, `Build\minipath.ini` are UTF-8 WITH BOM** (`EF BB BF`). Preserve it.
 
@@ -99,7 +100,7 @@ External tool, **not built from source**. Pre-built exes under `grepWin\portable
 - **`bIniFileFromScratch`** is set when INI is 0 bytes, cleared after `SaveAllSettings()`. While set, `MuiLanguage.c` suppresses writing `PreferredLanguageLocaleName` to keep fresh INIs clean.
 - **Empty lexer sections are pruned** in `Style_ToIniSection()` via `IniSectionGetKeyCount()` after `Style_CanonicalSectionToIniCache()` establishes order — only sections with non-default styles persist.
 - MiniPath follows the same pattern (`minipath\src\Config.cpp`).
-- **New `Settings2` (or other INI) params must be documented as commented entries in `Build\Notepad3.ini`.**
+- **New `Settings2` (or other INI) params must be documented in BOTH places**: a commented entry under `[Settings2]` in `Build\Notepad3.ini` AND a `#### \`Name=default\`` heading + prose paragraph in the matching topical section of `readme\config\Configuration.md` (the user-facing reference). Updating only the INI is incomplete.
 
 ### Save/Load macros (`src\Config\Config.cpp`)
 
@@ -167,6 +168,7 @@ Supported: Win32 (x86), x64, x64_AVX2, ARM64. **ARM 32-bit is not supported** �
 - **Scintilla**: always use `SciCall.h` wrappers. Add missing wrappers there. Naming: `DeclareSciCall{V|R}{0|01|1|2}` — V=void, R=return; 0/1/2 = param count; `01` = lParam-only. The `msg` arg is the suffix after `SCI_`.
 - **Global state**: use existing structs (`Globals`, `Settings`, `Settings2`, `Flags`, `Paths`); don't add new globals.
 - **Undo/redo**: use `_BEGIN_UNDO_ACTION_` / `_END_UNDO_ACTION_` macros (`Notepad3.h`) for grouping; they also throttle notifications during bulk edits.
+- **`InfoBoxLng()` returns `MAKELONG(button, mode)`** — never compare/switch on the raw return when the suppression key is non-NULL: a saved-answer replay sets HIWORD too, so `result == IDNO` is false. Use `IsYesOkay()` / `IsRetryContinue()` / `IsNoCancelClose()` (in `src/Dialogs.h`), or extract via `INFOBOX_ANSW(r)` (LOWORD) and `INFOBOX_MODE(r)` (HIWORD). Switching on the raw value is a latent bug if a suppression key is ever added.
 
 ### WriteAccessBuf — dangling pointer anti-pattern
 
