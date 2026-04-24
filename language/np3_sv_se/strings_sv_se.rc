@@ -100,7 +100,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_APPTITLE_ELEVATED "%s : utökade privilegier"
-    IDS_MUI_APPTITLE_PASTEBOARD "%s : urklipp"
+    IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Namnlös"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(skrivskyddad)"
