@@ -478,6 +478,36 @@ typedef struct CONSTANTS_T {
     const WCHAR* const Styles_Section;
     const WCHAR* const SectionSuppressedMessages;
 
+    // Keys under [Suppressed Messages] — pass to InfoBoxLng() / IniFile{Get,Set,Delete}Long().
+    // Add a field here when introducing a new suppressible dialog; never inline a literal at the call site.
+    struct {
+        const WCHAR* const AllowClearUndoHistory;
+        const WCHAR* const InfoInstanceExist;
+        const WCHAR* const MsgConv1;
+        const WCHAR* const MsgConv2;
+        const WCHAR* const MsgConv3;
+        const WCHAR* const MsgDiscardUntitled;
+        const WCHAR* const MsgFileSizeWarning;
+        const WCHAR* const MsgFileUnknownExt;
+        const WCHAR* const MsgFindWrap1;
+        const WCHAR* const MsgFindWrap2;
+        const WCHAR* const MsgInvalidRegex;
+        const WCHAR* const MsgNoOrWrongPassphrase;
+        const WCHAR* const MsgNotFound;
+        const WCHAR* const MsgPrefLanguageNotAvailable;
+        const WCHAR* const MsgReplaceCount;
+        const WCHAR* const MsgResetScheme;
+        const WCHAR* const MsgSaveSettingsInfo;
+        const WCHAR* const MsgStickyWinPos;
+        const WCHAR* const MsgUTF32Unsupported;
+        const WCHAR* const NoAdminTool;
+        const WCHAR* const NotSuitableToolbarDim;
+        const WCHAR* const OutOfOccurrenceMarkers;
+        const WCHAR* const PreserveFileModTime;
+        const WCHAR* const QuietKeepReadonlyLock;
+        const WCHAR* const ReloadExSavedCfg;
+    } SuppressKey;
+
 } CONSTANTS_T, *PCONSTANTS_T;
 
 extern CONSTANTS_T const Constants;
@@ -792,6 +822,7 @@ typedef struct SETTINGS2_T {
     bool    SubWrappedLineSelectOnMarginClick;
     bool    LexerSQLNumberSignAsComment;
     bool    AtomicFileSave;
+    bool    DiscardOnClosingUntitledPasteBoard;
     int     ExitOnESCSkipLevel;
     int     ZoomTooltipTimeout;
     int     WrapAroundTooltipTimeout;

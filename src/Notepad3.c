@@ -30,9 +30,7 @@
 #include <commdlg.h>
 #include <stdio.h>
 #include <string.h>
-#include <process.h>
 #include <vsstyle.h>
-//#include <ShellScalingApi.h>
 
 #include "PathLib.h"
 #include "Edit.h"
@@ -93,6 +91,33 @@ CONSTANTS_T const Constants = {
     , L"Window"                            // Inifile Section "Window"
     , L"Styles"                            // Inifile Section "Styles"
     , L"Suppressed Messages"               // Inifile Section "SuppressedMessages"
+    , {                                    // SuppressKey — keys under [Suppressed Messages]
+          L"AllowClearUndoHistory"
+        , L"InfoInstanceExist"
+        , L"MsgConv1"
+        , L"MsgConv2"
+        , L"MsgConv3"
+        , L"MsgDiscardUntitled"
+        , L"MsgFileSizeWarning"
+        , L"MsgFileUnknownExt"
+        , L"MsgFindWrap1"
+        , L"MsgFindWrap2"
+        , L"MsgInvalidRegex"
+        , L"MsgNoOrWrongPassphrase"
+        , L"MsgNotFound"
+        , L"MsgPrefLanguageNotAvailable"
+        , L"MsgReplaceCount"
+        , L"MsgResetScheme"
+        , L"MsgSaveSettingsInfo"
+        , L"MsgStickyWinPos"
+        , L"MsgUTF32Unsupported"
+        , L"NoAdminTool"
+        , L"NotSuitableToolbarDim"
+        , L"OutOfOccurrenceMarkers"
+        , L"PreserveFileModTime"
+        , L"QuietKeepReadonlyLock"
+        , L"ReloadExSavedCfg"
+      }
 };
 
 
@@ -453,7 +478,7 @@ static void CALLBACK MQ_ExecuteNext(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWOR
     UNREFERENCED_PARAMETER(idEvent); // must be IDT_TIMER_MRKALL
     UNREFERENCED_PARAMETER(dwTime);  // This is the value returned by the GetTickCount() function
 
-    CmdMessageQueue_t* pmqc;
+    CmdMessageQueue_t* pmqc = NULL;
     DL_FOREACH(MessageQueue, pmqc) {
         if (pmqc->delay >= 0) {
             --(pmqc->delay);  // count down
@@ -860,7 +885,7 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     }
 
     CmdMessageQueue_t* pmqc = NULL;
-    CmdMessageQueue_t* dummy;
+    CmdMessageQueue_t* dummy = NULL;
     DL_FOREACH_SAFE(MessageQueue, pmqc, dummy) {
         DL_DELETE(MessageQueue, pmqc);
         FreeMem(pmqc);
@@ -4163,7 +4188,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_LINEENDINGS_LF, !ro);
     EnableCmd(hmenu, IDM_LINEENDINGS_CR, !ro);
 
-    int i;
+    int i = 0;
 
     if (Encoding_IsUNICODE_REVERSE(Encoding_GetCurrent())) {
         i = IDM_ENCODING_UNICODEREV;
@@ -4592,7 +4617,7 @@ static void _ApplyChangeHistoryMode()
     int const iChgHist = SciCall_GetChangeHistory();
     if (iChgHist == Settings.ChangeHistoryMode) { return; }
     if ((!iChgHist && Settings.ChangeHistoryMode) || !Settings.ChangeHistoryMode) {
-        if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"AllowClearUndoHistory", IDS_MUI_ASK_CLEAR_UNDO))) {
+        if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, Constants.SuppressKey.AllowClearUndoHistory, IDS_MUI_ASK_CLEAR_UNDO))) {
             UndoRedoReset();
         }
         else {
@@ -4673,7 +4698,7 @@ static bool _HandleFileCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPar
 
     case IDM_FILE_PRESERVE_FILEMODTIME: {
             if (!Flags.bPreserveFileModTime) {
-                InfoBoxLng(MB_OK, L"PreserveFileModTime", IDS_MUI_INF_PRSVFILEMODTM);
+                InfoBoxLng(MB_OK, Constants.SuppressKey.PreserveFileModTime, IDS_MUI_INF_PRSVFILEMODTM);
             }
             Flags.bPreserveFileModTime = true;
             FileSave(FSF_SaveAlways);
@@ -6408,7 +6433,7 @@ static bool _HandleViewAndSettingsCommands(HWND hwnd, UINT umsg, WPARAM wParam, 
         break;
 
     case IDM_VIEW_CHGHIST_CLEAR_UNDOREDO:
-        if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, L"AllowClearUndoHistory", IDS_MUI_ASK_CLEAR_UNDO))) {
+        if (IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONWARNING, Constants.SuppressKey.AllowClearUndoHistory, IDS_MUI_ASK_CLEAR_UNDO))) {
             UndoRedoReset();
             UpdateToolbar();
             UpdateMargins(true);
@@ -6566,7 +6591,7 @@ static bool _HandleViewAndSettingsCommands(HWND hwnd, UINT umsg, WPARAM wParam, 
             Flags.bStickyWindowPosition = !Flags.bStickyWindowPosition; // toggle
 
             if (Flags.bStickyWindowPosition) {
-                InfoBoxLng(MB_OK, L"MsgStickyWinPos", IDS_MUI_STICKYWINPOS);
+                InfoBoxLng(MB_OK, Constants.SuppressKey.MsgStickyWinPos, IDS_MUI_STICKYWINPOS);
             }
 
             if (OpenSettingsFile("IDM_VIEW_STICKYWINPOS")) {
@@ -6685,7 +6710,7 @@ static bool _HandleViewAndSettingsCommands(HWND hwnd, UINT umsg, WPARAM wParam, 
 
     case IDM_VIEW_WIN_DARK_MODE: {
 
-        if (!IsYesOkay(InfoBoxLng(MB_OKCANCEL | MB_ICONWARNING, L"MsgResetScheme", IDS_MUI_WARN_STYLE_RESET))) {
+        if (!IsYesOkay(InfoBoxLng(MB_OKCANCEL | MB_ICONWARNING, Constants.SuppressKey.MsgResetScheme, IDS_MUI_WARN_STYLE_RESET))) {
            break;
         }
 
@@ -7590,7 +7615,7 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     bool const bIsThemesMenuCmd = ((iLoWParam >= IDM_THEMES_FACTORY_RESET) && (iLoWParam < (int)(IDM_THEMES_FACTORY_RESET + ThemeItems_CountOf())));
     if (bIsThemesMenuCmd) {
         if (iLoWParam == IDM_THEMES_FACTORY_RESET) {
-            if (!IsYesOkay(InfoBoxLng(MB_OKCANCEL | MB_ICONWARNING, L"MsgResetScheme", IDS_MUI_WARN_STYLE_RESET))) {
+            if (!IsYesOkay(InfoBoxLng(MB_OKCANCEL | MB_ICONWARNING, Constants.SuppressKey.MsgResetScheme, IDS_MUI_WARN_STYLE_RESET))) {
                 return FALSE;
             }
         }
@@ -8813,7 +8838,7 @@ inline static LRESULT _MsgNotifyLean(const SCNotification* const scn, bool* bMod
             EditToggleView(Globals.hwndEdit);
         }
         else {
-            if (!FileWatching.MonitoringLog && !IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, L"QuietKeepReadonlyLock", IDS_MUI_DOCUMENT_READONLY))) {
+            if (!FileWatching.MonitoringLog && !IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, Constants.SuppressKey.QuietKeepReadonlyLock, IDS_MUI_DOCUMENT_READONLY))) {
                 SendWMCommand(Globals.hwndMain, IDM_VIEW_READONLY);
             }
             else {
@@ -10938,7 +10963,7 @@ bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
         SciCall_SetReadOnly(Settings.DocReadOnlyMode || FileWatching.MonitoringLog);
     }
     else {
-        int idx;
+        int idx = 0;
         if (MRU_FindPath(Globals.pFileMRU, hfile_pth, &idx)) {
             Globals.pFileMRU->iEncoding[idx] = status->iEncoding;
             Globals.pFileMRU->iCaretPos[idx] = (Settings.PreserveCaretPos ? SciCall_GetCurrentPos() : -1);
@@ -11111,7 +11136,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
 
         HWND hwnd = NULL;
         if (FindOtherInstance(&hwnd, hopen_file)) {
-            if (!s_bInitAppDone || IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, L"InfoInstanceExist", IDS_MUI_ASK_INSTANCE_EXISTS))) {
+            if (!s_bInitAppDone || IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONQUESTION, Constants.SuppressKey.InfoInstanceExist, IDS_MUI_ASK_INSTANCE_EXISTS))) {
                 if (IsIconic(hwnd)) {
                     ShowWindowAsync(hwnd, SW_RESTORE);
                 }
@@ -11176,7 +11201,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
         }
     }
     else {
-        int idx;
+        int idx = 0;
         if (!bReloadFile && MRU_FindPath(Globals.pFileMRU, hopen_file, &idx)) {
             fioStatus.iEncoding = Globals.pFileMRU->iEncoding[idx];
             if (Encoding_IsValid(fioStatus.iEncoding)) {
@@ -11586,9 +11611,11 @@ bool FileSave(FileSaveFlags fSaveFlags)
         GetLngString(IDS_MUI_UNTITLED, wchFileName, COUNTOF(wchFileName));
         Path_GetDisplayName(wchFileName, COUNTOF(wchFileName), Paths.CurrentFile, NULL, false);
 
-
-        INT_PTR const answer = InfoBoxLng(MB_YESNOCANCEL | MB_ICONWARNING, NULL, IDS_MUI_ASK_SAVE, wchFileName);
-        switch (answer)
+        bool const  bDiscardOptOut = Settings2.DiscardOnClosingUntitledPasteBoard && Path_IsEmpty(Paths.CurrentFile) && IsPasteBoardActive();
+        UINT const  uMsgType = MB_YESNOCANCEL | MB_ICONWARNING | (bDiscardOptOut ? MB_DEFBUTTON2 : 0L);
+        LPCWSTR const lpSuppressKey = bDiscardOptOut ? Constants.SuppressKey.MsgDiscardUntitled : NULL;
+        INT_PTR const answer = InfoBoxLng(uMsgType, lpSuppressKey, IDS_MUI_ASK_SAVE, wchFileName);
+        switch (LOWORD(answer)) // InfoBoxLng packs suppression-mode in HIWORD; LOWORD holds the actual button ID
         {
         case IDCANCEL:
             return false;
@@ -11693,7 +11720,7 @@ bool FileSave(FileSaveFlags fSaveFlags)
             WCHAR tch[256] = { L'\0' };
             if (Settings.SaveSettings) { LoadLngStringW(IDS_MUI_RELOADCFGSEX, tch, COUNTOF(tch)); }
             UINT const typ = Settings.SaveSettings ? (MB_YESNO | MB_ICONWARNING) : (MB_YESNO | MB_ICONINFORMATION);
-            LONG const answer = InfoBoxLng(typ, L"ReloadExSavedCfg", IDS_MUI_RELOADSETTINGS, tch);
+            LONG const answer = InfoBoxLng(typ, Constants.SuppressKey.ReloadExSavedCfg, IDS_MUI_RELOADSETTINGS, tch);
             if (IsYesOkay(answer)) {
                 ///~SaveAllSettings(true); ~ already saved (CurrentFile)
                 DialogNewWindow(Globals.hwndMain, true, Paths.CurrentFile, NULL);
