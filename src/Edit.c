@@ -933,6 +933,7 @@ bool EditSwapClipboard(HWND hwnd, bool bSkipUnicodeCheck)
     DocPos const iCurPos = SciCall_GetCurrentPos();
     DocPos const iAnchorPos = SciCall_GetAnchor();
 
+    LimitNotifyEvents();
     UndoTransActionBegin();
 
     char* pszText = NULL;
@@ -950,6 +951,7 @@ bool EditSwapClipboard(HWND hwnd, bool bSkipUnicodeCheck)
     pszText = NULL;
 
     EndUndoTransAction();
+    RestoreNotifyEvents();
 
     if (!Sci_IsMultiOrRectangleSelection()) {
         //~UndoTransActionBegin();

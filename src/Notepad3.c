@@ -2137,6 +2137,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
             bool bAutoIndent2 = Settings.AutoIndent;
             Settings.AutoIndent = 0;
             EditJumpTo(-1, 0);
+            LimitNotifyEvents();
             UndoTransActionBegin();
             if (!Sci_IsDocEmpty()) {
                 SciCall_NewLine();
@@ -2144,6 +2145,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
             SciCall_Paste();
             SciCall_NewLine();
             EndUndoTransAction();
+            RestoreNotifyEvents();
             Settings.AutoIndent = bAutoIndent2;
             if (s_flagJumpTo) {
                 SciCall_SetYCaretPolicy(s_iCaretPolicyV | CARET_JUMPS, Settings2.CurrentLineVerticalSlop);
@@ -3312,7 +3314,11 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
 
     //~Globals.hwndStatus = CreateStatusWindow(dwStatusbarStyle, NULL, hwnd, IDC_STATUSBAR);
     Globals.hwndStatus = CreateWindowEx(
+#if defined(_M_ARM64)
+        0,                    // parent already has WS_EX_COMPOSITED on ARM64; avoid nested compositor stage
+#else
         WS_EX_COMPOSITED,     // => double-buffering avoids flickering
+#endif
         STATUSCLASSNAME,      // name of status bar class
         (PCTSTR)NULL,         // no text when first created
         dwStatusbarStyle,     // creates a visible child window
@@ -5224,9 +5230,11 @@ static bool _HandleEditBasicCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM
             if (s_flagPasteBoard) {
                 s_bLastCopyFromMe = true;
             }
+            LimitNotifyEvents();
             UndoTransActionBegin();
             SciCall_Paste();
             EndUndoTransAction();
+            RestoreNotifyEvents();
         }
         break;
 
@@ -10830,7 +10838,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         }
 
         SendMessage(Globals.hwndStatus, WM_SETREDRAW, TRUE, 0);
-        InvalidateRect(Globals.hwndStatus, NULL, TRUE);
+        InvalidateRect(Globals.hwndStatus, NULL, FALSE);
 
     }
     // --------------------------------------------------------------------------
@@ -12453,6 +12461,7 @@ void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
         if (SciCall_CanPaste()) {
             bool bAutoIndent2 = Settings.AutoIndent;
             Settings.AutoIndent = 0;
+            LimitNotifyEvents();
             UndoTransActionBegin();
 
             // Paste at the current caret position. Pre-pend the configured
@@ -12487,6 +12496,7 @@ void CALLBACK PasteBoardTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD 
             }
             SciCall_Paste();
             EndUndoTransAction();
+            RestoreNotifyEvents();
             Sci_ScrollSelectionToView();
             Settings.AutoIndent = bAutoIndent2;
             s_dwLastPasteSeqNo = dwCurrentSeqNo;
