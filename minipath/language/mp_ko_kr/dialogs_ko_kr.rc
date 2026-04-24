@@ -76,7 +76,7 @@ CAPTION "실행"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "실행할 프로그램 파일,\n폴더 또는 열려는 문서의 이름을 입력합니다",IDC_STATIC,35,7,188,17
+    LTEXT           "실행할 프로그램 파일,\n폴더 또는 열려는 문서의 이름을 입력하세요",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "확인",IDOK,112,64,50,14
@@ -90,7 +90,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     CONTROL         "",IDC_OPENWITHDIR,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_NOCOLUMNHEADER | WS_BORDER | WS_TABSTOP,7,7,151,69
     PUSHBUTTON      "",IDC_GETOPENWITHDIR,7,83,13,13
-    LTEXT           "즐겨찾기 응용프로그램에 대한 링크가 있는 디렉터리를 지정하려면 여기를 클릭하세요",IDC_OPENWITHDESCR,26,83,132,18
+    LTEXT           "즐겨찾기 응용 프로그램에 대한 링크가 있는 디렉터리를 지정하려면 여기를 클릭하세요",IDC_OPENWITHDESCR,26,83,132,18
     DEFPUSHBUTTON   "확인",IDOK,52,108,50,14
     PUSHBUTTON      "취소",IDCANCEL,108,108,50,14
     SCROLLBAR       IDC_RESIZEGRIP3,7,112,10,10
@@ -102,7 +102,7 @@ CAPTION "이동"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_GOTO,IDC_STATIC,7,7,20,20
-    LTEXT           "열려는 파일 또는 디렉터리의 이름을 입력하거나,\n목록에서 최근에 방문한 디렉터리를 선택합니다",IDC_STATIC,35,7,182,17
+    LTEXT           "열려는 파일 또는 디렉터리의 이름을 입력하거나,\n목록에서 최근에 방문한 디렉터리를 선택하세요",IDC_STATIC,35,7,182,17
     COMBOBOX        IDC_GOTO,35,35,182,126,CBS_DROPDOWN | CBS_AUTOHSCROLL | WS_VSCROLL | WS_TABSTOP
     DEFPUSHBUTTON   "확인",IDOK,112,66,50,14,WS_DISABLED
     PUSHBUTTON      "취소",IDCANCEL,167,66,50,14
@@ -117,7 +117,7 @@ BEGIN
     LTEXT           "새 파일 필터를 지정합니다. 여러 필터를 ;으로 구분(&F)",IDC_STATIC,7,7,175,8
     EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
-    CONTROL         "필터와 일치하는 파일을 제외합니다(&E)",IDC_NEGFILTER,
+    CONTROL         "필터와 일치하는 파일 제외(&E)",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,131,10
     DEFPUSHBUTTON   "확인",IDOK,77,58,50,14
     PUSHBUTTON      "취소",IDCANCEL,132,58,50,14
@@ -254,7 +254,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "대상 응용 프로그램"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    CONTROL         "특정 대상 응용 프로그램을 사용하지 않고 선택한 파일을 실행합니다",IDC_LAUNCH,
+    CONTROL         "특정 대상 응용 프로그램을 사용하지 않고 선택한 파일 실행",IDC_LAUNCH,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,250,10
     CONTROL         "다음 대상 응용 프로그램을 사용:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
@@ -262,7 +262,7 @@ BEGIN
     EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "메시지:",IDC_STATIC,20,120,32,8
-    CONTROL         "안함. 파일을 열 때마다 대상 응용 프로그램을 실행합니다",IDC_ALWAYSRUN,
+    CONTROL         "없음. 파일을 열 때마다 대상 응용 프로그램을 실행",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,220,10
     CONTROL         "대상 응용 프로그램 창에 파일 열기 메시지 보내기:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,198,10
