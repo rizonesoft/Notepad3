@@ -12,7 +12,7 @@
 - [x] **(Q2) BUG: Wrong working directory for new files** - ✅ FIXED
   - Issue: [#5306](https://github.com/rizonesoft/Notepad3/issues/5306)
   - Fix: Added else block in `Path_NormalizeEx()` to use canonicalized path for non-existent files
-- [ ] **(Q2) BUG: Encoding detection issue** - UTF-8 files detected as DOS-852
+- [x] **(Q2) BUG: Encoding detection issue** - UTF-8 files detected as DOS-852
   - Issue: [#5310](https://github.com/rizonesoft/Notepad3/issues/5310)
   - Affects German Windows 11, possibly other locales
   - Improve UTF-8 detection for files without BOM
@@ -33,11 +33,11 @@
 - [ ] **(Q2) BUG: Replace dialog full-width caching** - Second replace uses wrong character
   - Issue: [#4268](https://github.com/rizonesoft/Notepad3/issues/4268)
   - CJK full-width replacement cached incorrectly
-- [ ] **(Q2) BUG: Initial window position not working** - Position settings ignored
+- [x] **(Q2) BUG: Initial window position not working** - Position settings ignored
   - [ ] **To be analyzed - works as designed ???** - ⚠ Validation ❗
   - Issue: [#4725](https://github.com/rizonesoft/Notepad3/issues/4725)
 - [x] **(Q3) BUG: Regex replace issue** - Verify if still present - ✅ FIXED
-  - Issue: [#3531](https://github.com/rizonesoft/Notepad3/issues/3531) - ✅ FIXED
+- [#] Issue: [#3531](https://github.com/rizonesoft/Notepad3/issues/3531) - ✅ FIXED
   - [ ] Old bug from v5.21 - needs verification - ⚠ Validation ❗
 - [ ] **(Q2) BUG: Minipath options don't save** - FullRowSelect/TrackSelect broken
   - Issue: [#4116](https://github.com/rizonesoft/Notepad3/issues/4116)
@@ -133,8 +133,10 @@
 ## Low Priority
 
 - [ ] (Q1) Documentation updates
-- [ ] **(Q2) Long Path Support** - Support paths >260 characters (Win10+)
+- [x] **(Q2) Long Path Support** - Support paths >260 characters (Win10+) - ✅ FIXED
   - Issue: [#3580](https://github.com/rizonesoft/Notepad3/issues/3580)
+  - [ ] **Should be fixed** - ⚠ Validation ❗
+
 - [ ] **(Q3) Additional Syntax Highlighting** - New language lexers
   - Haskell: [#3035](https://github.com/rizonesoft/Notepad3/issues/3035) - Lexilla `LexHaskell.cxx`
   - Racket: [#3035](https://github.com/rizonesoft/Notepad3/issues/3035) - Could use Lisp/Scheme lexer
@@ -177,7 +179,7 @@
 
 ### Text Processing
 - [ ] **(Q1) Strip Leading Blanks** - Trim leading whitespace (NP3 only has trailing)
-- [ ] **(Q1) Right-Click Convert Case** - Add case conversion to context menu
+- [x] **(Q1) Right-Click Convert Case** - Add case conversion to context menu - ✅ IMPLEMENTED
   - Issue: [#5403](https://github.com/rizonesoft/Notepad3/issues/5403)
 - [ ] **(Q2) LaTeX Input Method** - LaTeX character insertion (`\alpha` → α)
 - [x] **(Q2) Base64 Encode/Decode** - ✅ IMPLEMENTED via `IDM_EDIT_BASE64ENCODE/DECODE`
