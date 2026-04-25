@@ -36,13 +36,16 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 7.26.424.(build_#) (2026-04-24)
+Current BETA Version 7.26.425.(build_#) (2026-04-25)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]- .
+[.425.1]- Paste-board minimization (/B /I) escape hatch if Ctrl-key held down.
+[.425.1]- PasteBoard: defer minimize on /B + /I startup so auto-pasted clipboard is visible briefly.
+[.425.1]- PasteBoard: opt-out 'Don't ask again' on closing modified untitled documents.
 [.424.1]- Feat: /B auto-pastes current clipboard on empty untitled buffer.
 [.422.1]- Add search pattern placeholder (%pattern%) for editor command.
 [.422.1]- Feat: option to stop Clipboard monitoring during runtime.
@@ -72,6 +75,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.425.1]- ARM: LimitNotifyEvents around the four paste sites.
 [.424.1]- Clipboard Monitoring and log "Chasing doc tail" are mutually exclusive (mutex).
 [.417.1]- Replacing "Tab/Backspace" with "Tab/Shift-Tab.
 [.417.1]- Revert auto resolving to UNC for mapped network-drives.
@@ -105,6 +109,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.425.1]- Editable combo the edit field IS the explicit source.
+[.425.1]- Try to address ARM flickering on clipboard paste.
 [.422.1]- Modernizing (Win10+) Clipboard monitoring feature.
 [.417.1]- LexHTML.cxx.
 [.417.1]- Language file names for grepWinPortable.
