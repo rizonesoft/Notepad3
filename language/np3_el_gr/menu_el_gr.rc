@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "&Διαγραφή\tDel",                IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "&Απαλοιφή πρόχειρου",           IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Εναλλαγή &παρακολούθησης πρόχειρου",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "&Λέξεις"
         BEGIN
@@ -199,8 +199,8 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Αναδίπλ&ωση στήλης...\tCtrl+Shift+W",                        IDM_EDIT_COLUMNWRAP
             MENUITEM SEPARATOR
-            MENUITEM "&Unite Duplicate Lines\tCtrl+Alt+D",                         IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Remo&ve Duplicate Lines",                                    IDM_EDIT_REMOVEDUPLICATELINES
+            MENUITEM "&Ενοποίηση διπλών γραμμών	Ctrl+Alt+D",                         IDM_EDIT_UNITEDUPLICATELINES
+            MENUITEM "Αφαίρεση δ&ιπλών γραμμών",                                    IDM_EDIT_REMOVEDUPLICATELINES
             MENUITEM "Συγχών&ευση κενών γραμμών\tAlt+Y",                           IDM_EDIT_MERGEEMPTYLINES
             MENUITEM "Συγχώνευσ&η γραμμών με διαστήματα\tCtrl+Alt+Y",              IDM_EDIT_MERGEBLANKLINES
             MENUITEM "Κα&τάργηση κενών γραμμών\tAlt+R",                            IDM_EDIT_REMOVEEMPTYLINES
@@ -479,13 +479,13 @@ BEGIN
         MENUITEM "Αυτόματο κλείσιμο Η&ΤΜL/XML\tCtrl+Shift+H",       IDM_SET_AUTOCLOSETAGS
         MENUITEM "Αυτόματη συμπλήρωση λέ&ξεων",                     IDM_SET_AUTOCOMPLETEWORDS
         MENUITEM "Α&υτόμ. συμπλήρωση λέξεων-κλειδιών του Lexer",    IDM_SET_AUTOCLEXKEYWORDS
-        MENUITEM "Alternate Word Se&parators\tCtrl+Alt+A",          IDM_SET_ALTERNATE_WORD_SEPS
+        MENUITEM "Εναλλακτικοί &διαχωριστές λέξεων	Ctrl+Alt+A",          IDM_SET_ALTERNATE_WORD_SEPS
         MENUITEM SEPARATOR
         MENUITEM "Μόνο μία παρουσία ανά &αρχείο",                   IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Ειδοποίηση μετα&βολής αρχείου...\tAlt+F5",        IDM_SET_CHANGENOTIFY
         ///MENUITEM "Αυτόματη αποθήκευση / Ρυθμίσεις εφεδρικού αντιγράφου...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Σίγαση ήχ&ων μηνύματος",                          IDM_SET_MUTE_MESSAGEBEEP
-        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
+        MENUITEM "Μετατροπή σε &διαδρομές UNC",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Λειτουργία πλήκτρου &Εsc"
         BEGIN
             MENUITEM "&Καμία",                                IDM_SET_NOESCFUNC
@@ -497,8 +497,8 @@ BEGIN
         MENUITEM "Ενεργοποίηση Πολλαπλής επιλογής",           IDM_SET_MULTIPLE_SELECTION
         POPUP "Default &Directory"
         BEGIN
-            MENUITEM "Set to Current File's &Directory",  IDM_SET_DEFAULTDIR
-            MENUITEM "&Reset to Default",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "Ορισμός στον &φάκελο τρέχοντος αρχείου",  IDM_SET_DEFAULTDIR
+            MENUITEM "&Επαναφορά στο προεπιλεγμένο",                 IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "Απομ&νημόνευση"
@@ -568,7 +568,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Άνοιγμα υπερσύνδεσης",         CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "Αντιγραφή URL υπερσυνδέσμου",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Αναίρεση",                     IDM_EDIT_UNDO
         MENUITEM "Επανάληψη ενέργειας",          IDM_EDIT_REDO
@@ -582,12 +582,12 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Convert Case"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "Κεφαλαία",              CMD_CTX_UPPERCASE
+            MENUITEM "Πεζά",              CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "Αντιστροφή πεζών/κεφαλαίων",            CMD_CTX_INVERTCASE
+            MENUITEM "Κεφαλαία ανά λέξη",             CMD_CTX_TITLECASE
+            MENUITEM "Κεφαλαία ανά πρόταση",          CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
         MENUITEM "Εναλλαγή τρέχουσας δίπλωσης",  IDM_VIEW_TOGGLE_CURRENT_FOLD

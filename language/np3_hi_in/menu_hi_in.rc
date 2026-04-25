@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "हटाएं (&D)\tDel",                     IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "क्लिपबोर्ड साफ़ करें (&E)",               IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "क्लिपबोर्ड &निगरानी टॉगल करें",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "शब्द (&O)"
         BEGIN
@@ -483,9 +483,9 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "प्रति फ़ाइल केवल एक अवस्था (&F)",                IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "फ़ाइल परिवर्तन अधिसूचना (&C)...\tAlt+F5",        IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",            IDM_SET_AUTOSAVE_BACKUP
+        ///MENUITEM "स्वतः-सहेजें / बैकअप सेटिंग...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "संदेश आवाज़ बंद करें (&M)",                      IDM_SET_MUTE_MESSAGEBEEP
-        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
+        MENUITEM "&UNC-पथ में बदलें",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "ESC कुंजी उपयोग (&E)"
         BEGIN
             MENUITEM "कुछ न करें (&N)",                       IDM_SET_NOESCFUNC
@@ -497,8 +497,8 @@ BEGIN
         MENUITEM "बहु-चुनाव सक्षम करें",   IDM_SET_MULTIPLE_SELECTION
         POPUP "Default &Directory"
         BEGIN
-            MENUITEM "Set to Current File's &Directory",  IDM_SET_DEFAULTDIR
-            MENUITEM "&Reset to Default",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "वर्तमान फ़ाइल के &फ़ोल्डर पर सेट करें",  IDM_SET_DEFAULTDIR
+            MENUITEM "&डिफ़ॉल्ट पर रीसेट करें",                 IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "स्मरण (&R)"
@@ -568,7 +568,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "हाईपरलिंक खोलें",             CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "हाइपरलिंक URL कॉपी करें",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "पूर्ववत करें",                       IDM_EDIT_UNDO
         MENUITEM "फिर से करें",                       IDM_EDIT_REDO
@@ -582,12 +582,12 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Convert Case"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "बड़े अक्षर",              CMD_CTX_UPPERCASE
+            MENUITEM "छोटे अक्षर",              CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "केस पलटें",            CMD_CTX_INVERTCASE
+            MENUITEM "शीर्षक केस",             CMD_CTX_TITLECASE
+            MENUITEM "वाक्य केस",          CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
         MENUITEM "चालू फोल्ड टॉगल करें",        IDM_VIEW_TOGGLE_CURRENT_FOLD

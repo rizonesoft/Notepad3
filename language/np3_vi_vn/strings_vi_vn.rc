@@ -129,12 +129,12 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Đã xảy ra lỗi khi mở tệp ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Đã xảy ra lỗi khi lưu tệp ""%s"""
-    IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
+    IDS_MUI_ERR_PATHNOTFOUND "Đường dẫn cho ""%s"" không còn tồn tại.\nTạo lại đường dẫn và lưu tệp?"
     IDS_MUI_ERR_DLG_FORMAT  "Lỗi '%s', Nguyên nhân:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Không thể tìm thấy plugin trình duyệt tệp\nPlugin MiniPath có thể tải xuống từ https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Không thể tìm thấy plugin tìm kiếm tệp\nPlugin grepWin Portable có thể tải xuống từ https://github.com/stefankueng/grepWin/releases"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
-                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
+                            "Không tìm thấy plugin tìm kiếm tệp\nVui lòng cài đặt phiên bản mới nhất của grepWinPortable trên nền tảng PortableApps."
     IDS_MUI_ERR_MRUDLG      "Không thể truy cập tệp đã chọn!\nCó muốn xóa khỏi danh sách không?"
     IDS_MUI_ERR_CREATELINK  "Đã xảy ra lỗi khi tạo liên kết trên màn hình chính"
     IDS_MUI_ERR_PREVWINDISABLED

@@ -129,12 +129,12 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "Błąd podczas ładowania ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Błąd podczas zapisu ""%s"""
-    IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
+    IDS_MUI_ERR_PATHNOTFOUND "Ścieżka do ""%s"" już nie istnieje.\nOdtwórz ścieżkę i zapisz plik?"
     IDS_MUI_ERR_DLG_FORMAT  "Błąd '%s', powód:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Nie znaleziono wtyczki przeglądarki pliku\nWtyczkę przeglądarki pliku do MiniPath można pobrać z https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Nie znaleziono wtyczki wyszukiwania pliku.\Wtyczkę wyszukiwania pliku programu grepWin Portable można pobrać ze strony https://github.com/stefankueng/grepWin/releases"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
-                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
+                            "Nie znaleziono wtyczki wyszukiwania plików\nZainstaluj najnowszą wersję grepWinPortable na platformie PortableApps."
     IDS_MUI_ERR_MRUDLG      "Brak dostępu do wybranego pliku!\nCzy chcesz usunąć go z listy?"
     IDS_MUI_ERR_CREATELINK  "Błąd podczas tworzenia skrótu na Pulpicie"
     IDS_MUI_ERR_PREVWINDISABLED
@@ -246,7 +246,7 @@ BEGIN
     IDS_MUI_STY_BASESTD     "BASE (Styl domyślny):"
     IDS_MUI_STY_BASE2ND     "BASE (drugi styl domyślny):"
     IDS_MUI_STY_LEXDEF      "%s - Styl domyślny:"
-    IDS_MUI_STY_LEXSTYLE    "%s's  Style:"
+    IDS_MUI_STY_LEXSTYLE    "Styl %s:"
     IDS_MUI_TITLE_RELBASE   "+++ BASE (%s) +++"
 END
 
@@ -254,12 +254,12 @@ STRINGTABLE
 BEGIN
     IDS_MUI_TRANSL_AUTHOR   "(pl-PL) Polskie tłumaczenie: Crane70"
     IDS_MUI_TITLE_FIXBASE   "BASE (%s)"
-    IDS_MUI_TITLE_RELCUR    "+++ %s: %s Style +++"
-    IDS_MUI_TITLE_FIXCUR    "%s: %s Style"
-    IDS_MUI_TITLE_RELARB    "+++ Style '%s' (%s) +++"
-    IDS_MUI_TITLE_FIXARB    "Style '%s' (%s)"
+    IDS_MUI_TITLE_RELCUR    "+++ %s: %s Styl +++"
+    IDS_MUI_TITLE_FIXCUR    "%s: %s Styl"
+    IDS_MUI_TITLE_RELARB    "+++ Styl '%s' (%s) +++"
+    IDS_MUI_TITLE_FIXARB    "Styl '%s' (%s)"
     IDS_MUI_ASSOCIATED_EXT  "Skojarzone rozszerzenia nazwy plików:"
-    IDS_MUI_ZERO_LEN_MATCH  "^ Zero-Length Match"
+    IDS_MUI_ZERO_LEN_MATCH  "^ Dopasowanie zerowej długości"
     IDS_MUI_GOTO_LINE       "Linia (1 - %lli):"
     IDS_MUI_GOTO_COLUMN     "Kolumna (1 - %lli):"
 END

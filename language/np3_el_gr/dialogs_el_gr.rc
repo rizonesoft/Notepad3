@@ -96,11 +96,11 @@ BEGIN
     CONTROL         "Ταίριασμα μόνο α&ρχής λέξης",IDC_FINDSTART,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,61,108,10
     CONTROL         "&Μετασχ. ανάστρ. καθέτων",IDC_FINDTRANSFORMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,100,10
     CONTROL         "&Αναζ. κανονικής έκφρασης",IDC_FINDREGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,85,102,10
-    CONTROL         "Dot &matches line-breaks",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,94,10
+    CONTROL         "Η τελεία &ταιριάζει με αλλαγές γραμμής",IDC_DOT_MATCH_ALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,96,94,10
     CONTROL         "Χωρίς επανέναρ&ξη",IDC_NOWRAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,37,75,10
     CONTROL         "&Κλείσιμο μετά την εύρεση",IDC_FINDCLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,49,97,10
     CONTROL         "Σήμανση εμ&φανίσεων",IDC_ALL_OCCURRENCES,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,61,84,10
-    CONTROL         "Incremental Search", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
+    CONTROL         "Αυξητική αναζήτηση", IDC_INST_INCR_SEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,73,73,10
     CONTROL         "Αναζ. με μπα&λαντέρ",IDC_WILDCARDSEARCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,125,85,77,10
     CONTROL         "Λειτ. &διαφάνειας σε απώλεια εστίασης",IDC_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,118,138,10
     DEFPUSHBUTTON   "&Εύρεση επόμ",IDOK,216,7,60,14
@@ -263,7 +263,7 @@ BEGIN
     CONTROL         "&Αποθήκευση λίστας πρόσφατων αρχείων κατά τη έξοδο",IDC_SAVEMRU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,107,205,10
     CONTROL         "Απομνημόνευση &θέσης δρομέα",IDC_PRESERVECARET,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,119,120,10
     CONTROL         "Απομνημόνευση &μοτίβου αναζήτησης",IDC_REMEMBERSEARCHPATTERN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,131,140,10
-    CONTROL         "&Autoload most recent file on startup",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,180,10
+    CONTROL         "&Αυτόματη φόρτωση πιο πρόσφατου αρχείου κατά την εκκίνηση",IDC_AUTOLOAD_MRU_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,143,180,10
     CONTROL         "Από&ρριψη", IDC_REMOVE, "Button", BS_DEFSPLITBUTTON | WS_TABSTOP | WS_DISABLED, 212 107, 50, 14
     DEFPUSHBUTTON   "&Εντάξει",IDOK,154,158,50,14,WS_DISABLED
     PUSHBUTTON      "&Κλείσιμο",IDCANCEL,212,158,50,14
@@ -649,8 +649,8 @@ BEGIN
     CONTROL         "&Don't display this message again",IDC_INFOBOXCHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
     DEFPUSHBUTTON   "&Retry",IDRETRY,186,70,50,14
-    PUSHBUTTON      "&Abort",IDABORT, 130, 70, 50, 14
-    PUSHBUTTON      "&Ignore",IDIGNORE,242,70,50,14
+    PUSHBUTTON      "&Ματαίωση",IDABORT, 130, 70, 50, 14
+    PUSHBUTTON      "&Παράβλεψη",IDIGNORE,242,70,50,14
 END
 
 IDD_MUI_INFOBOX7 DIALOGEX 0, 0, 299, 91
@@ -665,7 +665,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,54,122,10
     DEFPUSHBUTTON   "&Try Again",IDRETRY,186,70,50,14
     PUSHBUTTON      "&Cancel", IDCANCEL, 130, 70, 50, 14
-    PUSHBUTTON      "&Continue",IDCONTINUE,242,70,50,14
+    PUSHBUTTON      "&Συνέχεια",IDCONTINUE,242,70,50,14
 END
 
 IDD_MUI_INFOBOX_FILECHANGED DIALOGEX 0, 0, 299, 103
@@ -691,8 +691,8 @@ BEGIN
     CONTROL         "&Αύξουσα ταξινόμηση",100,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,104,10
     CONTROL         "&Φθίνουσα ταξινόμηση",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,104,10
     CONTROL         "&Τυχαία σειρά γραμμών",102,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,31,104,10
-    CONTROL         "&Unite duplicate lines",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,130,10
-    CONTROL         "&Remove duplicate lines",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,125,10
+    CONTROL         "&Ενοποίηση διπλών γραμμών",103,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,130,10
+    CONTROL         "&Κατάργηση διπλών γραμμών",104,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,62,125,10
     CONTROL         "Αφαίρεση &μεμονωμένων γραμμών",105,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,74,130,10
     CONTROL         "Αφαίρεση κε&νών γραμμών",106,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,86,104,10
     CONTROL         "Αφαίρεση γραμμών με &λευκά διαστήματα",107,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,98,155,10
@@ -870,16 +870,16 @@ CAPTION "Auto-Save & Backup Settings"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
 GROUPBOX        "Auto-Save:", IDC_STATIC, 7, 7, 170, 62, 0, WS_EX_TRANSPARENT
-AUTOCHECKBOX    "Enable Auto-Save", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Ενεργοποίηση αυτόματης αποθήκευσης", IDC_AUTOSAVE_ENABLE, 14, 18, 155, 10, WS_GROUP | WS_TABSTOP
 LTEXT           "Auto-Save interval [sec]:", IDC_STATIC2, 14, 30, 108, 10, SS_RIGHT
 EDITTEXT        IDC_AUTOSAVE_INTERVAL, 130, 28, 40, 12, ES_AUTOHSCROLL
-AUTOCHECKBOX    "Auto-Save on system suspend", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Auto-Save on system shutdown", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
+AUTOCHECKBOX    "Αυτόματη αποθήκευση κατά την αναστολή", IDC_AUTOSAVE_SUSPEND, 14, 40, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Αυτόματη αποθήκευση κατά τον τερματισμό", IDC_AUTOSAVE_SHUTDOWN, 14, 52, 155, 10, WS_TABSTOP
 GROUPBOX        "Backup:", IDC_STATIC3, 7, 74, 170, 66, 0, WS_EX_TRANSPARENT
-AUTOCHECKBOX    "Enable Backup", IDC_AS_BACKUP_ENABLE, 14, 85, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Backup on Auto-Save", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 155, 10, WS_GROUP | WS_TABSTOP
-AUTOCHECKBOX    "Side-by-Side Backup", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP
-PUSHBUTTON      "Open Folder", IDC_AS_BACKUP_OPENFOLDER, 110, 122, 60, 14
+AUTOCHECKBOX    "Ενεργοποίηση αντιγράφων ασφαλείας", IDC_AS_BACKUP_ENABLE, 14, 85, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Αντίγραφο ασφαλείας κατά αυτόματη αποθήκευση", IDC_AS_BACKUP_AUTOSAVE, 14, 97, 155, 10, WS_GROUP | WS_TABSTOP
+AUTOCHECKBOX    "Παράλληλο αντίγραφο ασφαλείας", IDC_AS_BACKUP_SIDEBYSIDE, 14, 109, 155, 10, WS_GROUP | WS_TABSTOP
+PUSHBUTTON      "Άνοιγμα φακέλου", IDC_AS_BACKUP_OPENFOLDER, 110, 122, 60, 14
 DEFPUSHBUTTON   "OK", IDOK, 71, 146, 50, 14
 PUSHBUTTON      "Cancel", IDCANCEL, 127, 146, 50, 14
 END
