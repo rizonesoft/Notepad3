@@ -5590,16 +5590,13 @@ UINT ComboBox_GetCurSelEx(HWND hDlg, int nIDDlgItem) {
 
 int ComboBox_GetTextHW(HWND hDlg, int nIDDlgItem, HSTRINGW hstr)
 {
+    // Always read the visible edit-field text, never the dropdown LB by index:
+    // a stale CurSel (left over after an MRU pick that the user then edits)
+    // would otherwise mask the freshly typed value.
     HWND const   hwndCtl = GetDlgItem(hDlg, nIDDlgItem);
-    int const    idx = ComboBox_GetCurSel(hwndCtl);
-    int const    len = ((idx >= 0) ? ComboBox_GetLBTextLen(hwndCtl, idx) : ComboBox_GetTextLength(hwndCtl)) + 1;
+    int const    len = ComboBox_GetTextLength(hwndCtl) + 1;
     LPWSTR const buf = StrgWriteAccessBuf(hstr, len);
-    if (idx >= 0) {
-        ComboBox_GetLBText(hwndCtl, idx, buf);
-    }
-    else {
-        ComboBox_GetText(hwndCtl, buf, len);
-    }
+    ComboBox_GetText(hwndCtl, buf, len);
     StrgSanitize(hstr);
     return (int)StrgGetLength(hstr);
 }
