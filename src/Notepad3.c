@@ -1874,6 +1874,9 @@ static VOID CALLBACK _DeferMinimizeTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEv
     UNREFERENCED_PARAMETER(uMsg);
     UNREFERENCED_PARAMETER(dwTime);
     KillTimer(hwnd, idEvent); // one-shot
+    if (IsAsyncKeyDown(VK_CONTROL)) {
+        return; // user held Ctrl during the deferral window — keep window visible
+    }
     _StartupMinimizeMainWnd(hwnd);
 }
 

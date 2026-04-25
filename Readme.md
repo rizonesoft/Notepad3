@@ -35,7 +35,7 @@ Notepad3 is a free, open-source text editor with syntax highlighting for Windows
 - **Virtual space** rectangular selection (Alt+Drag)
 - **Accelerated word navigation** with configurable delimiters
 - **Insert GUIDs** directly into your document
-- **Clipboard monitoring mode** (`/b` command-line switch) — automatically appends every clipboard change as a new entry at the end of the document; stop at any time via **Edit → Stop Clipboard Monitoring** without closing the editor
+- **Clipboard monitoring mode** (`/b` command-line switch) — automatically appends every clipboard change as a new entry at the end of the document; stop at any time via **Edit → Stop Clipboard Monitoring** without closing the editor.
 
 ### Syntax Highlighting
 Over 55 languages supported, including:
@@ -118,6 +118,40 @@ Notepad3 uses a portable INI file for all settings. Press **Ctrl+F7** to open it
 📖 **Full configuration reference:** [readme/config/Configuration.md](readme/config/Configuration.md)
 
 🎨 **Schemas, styles & themes:** [readme/schema/CustomSchema.md](readme/schema/CustomSchema.md) — the layered override model, the style mini-language, `View → Customize Schemes` (**F12**), and how to export / import / collect custom themes.
+
+## Command-Line Options
+
+Notepad3 accepts a rich set of command-line switches inherited from Notepad2 / Notepad2-mod, plus several Notepad3-specific extensions. All switches are case-insensitive and may be prefixed with either `/` or `-`.
+
+```bat
+Notepad3.exe /utf8sig /crlf d:\temp\Test.txt        :: Open as UTF-8 BOM + CRLF
+Notepad3.exe /g 250,5 src\Notepad3.c                :: Jump to line 250, column 5
+Notepad3.exe /m TODO main.c                         :: Open and find first "TODO"
+Notepad3.exe /b /i                                  :: Pasteboard mode, start in tray
+                                                     :: (hold Ctrl during the brief
+                                                     :: pre-minimize window to keep
+                                                     :: the editor visible)
+Notepad3.exe /v report.log                          :: Print silently and exit
+Notepad3.exe /?                                     :: Built-in help dialog
+```
+
+Coverage at a glance:
+
+- **File arguments & multi-file** — positional paths, `+`, `-`, `/y`, `/z`
+- **Encoding** — `/ansi`, `/unicode`, `/unicodebe`, `/utf8`, `/utf8sig`, `/e <name>`
+- **Line endings** — `/crlf`, `/cr`, `/lf`
+- **Navigation & search** — `/g`, `/m` with regex / case / backslash modifiers
+- **File watching** — `/l`, `/l0`, `/l1`
+- **New documents** — `/q`, `/qs`, `/c`
+- **Pasteboard / clipboard collector** — `/b` (with deferred-minimize and Ctrl-skip when combined with `/i`)
+- **Lexers** — `/s`, `/d`, `/h`, `/x`
+- **Window placement & behaviour** — `/p` (with presets), `/t`, `/i`, `/o`
+- **Window reuse / single-instance** — `/n`, `/ns`, `/r`, `/rs`, `/rp`
+- **Printing** — `/v`, `/vd`
+- **INI & elevation** — `/f`, `/f0`, `/u`
+- **Shell integration** — `appid=`, `sysmru=`
+
+⌨️ **Full reference:** [readme/cmdln/CmdLnOptions.md](readme/cmdln/CmdLnOptions.md) — every switch with arguments, examples, persistence notes, and Notepad2/Notepad2-mod compatibility.
 
 ## Contributing
 
