@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "Hap&us\tDel",                      IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "Bersi&hkan Papan Klip",            IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Ak-/Nonak-tifkan &pemantauan papan klip",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "Ka&ta"
         BEGIN
@@ -485,7 +485,7 @@ BEGIN
         MENUITEM "&Notifikasi Berkas Berubah...\tAlt+F5",            IDM_SET_CHANGENOTIFY
         ///MENUITEM "Pengaturan Otomatis Simpan / Cadangkan ...",       IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Bisukan Bun&yi Pesan Bip",                         IDM_SET_MUTE_MESSAGEBEEP
-        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
+        MENUITEM "Selesaikan ke &jalur UNC",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Fungsi Tombol &Escape"
         BEGIN
             MENUITEM "&Tidak Ada",                                   IDM_SET_NOESCFUNC
@@ -497,8 +497,8 @@ BEGIN
         MENUITEM "Aktifkan Multiseleksi",                            IDM_SET_MULTIPLE_SELECTION
         POPUP "Default &Directory"
         BEGIN
-            MENUITEM "Set to Current File's &Directory",  IDM_SET_DEFAULTDIR
-            MENUITEM "&Reset to Default",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "Atur ke &folder file saat ini",  IDM_SET_DEFAULTDIR
+            MENUITEM "&Setel ulang ke bawaan",                 IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "Meng&ingat"
@@ -568,7 +568,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Buka Tautan",                CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "Salin URL hyperlink",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Urungkan",                   IDM_EDIT_UNDO
         MENUITEM "Kembalikan",                 IDM_EDIT_REDO
@@ -582,12 +582,12 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Convert Case"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "Huruf Besar",              CMD_CTX_UPPERCASE
+            MENUITEM "huruf kecil",              CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "Balik Huruf",            CMD_CTX_INVERTCASE
+            MENUITEM "Huruf Judul",             CMD_CTX_TITLECASE
+            MENUITEM "Huruf Kalimat",          CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
         MENUITEM "Alihkan Lipatan",            IDM_VIEW_TOGGLE_CURRENT_FOLD

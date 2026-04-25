@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "Xóa(&D)\tDel",                              IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "Xóa bộ nhớ tạm(&E)",                         IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Bật/tắt &giám sát bảng tạm",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "Từ(&W)"
         BEGIN
@@ -485,7 +485,7 @@ BEGIN
         MENUITEM "Thông báo thay đổi tệp(&C)...\tAlt+F5",       IDM_SET_CHANGENOTIFY
         ///MENUITEM "Cài đặt lưu tự động / Sao lưu...",          IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Tắt âm báo tin nhắn(&M)",                       IDM_SET_MUTE_MESSAGEBEEP
-        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
+        MENUITEM "Phân giải thành &đường dẫn UNC",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Chức năng phím ESC(&E)"
         BEGIN
             MENUITEM "Không(&N)",                              IDM_SET_NOESCFUNC
@@ -497,8 +497,8 @@ BEGIN
         MENUITEM "Sử dụng chọn nhiều",                           IDM_SET_MULTIPLE_SELECTION
         POPUP "Default &Directory"
         BEGIN
-            MENUITEM "Set to Current File's &Directory",  IDM_SET_DEFAULTDIR
-            MENUITEM "&Reset to Default",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "Đặt thành &thư mục của tệp hiện tại",  IDM_SET_DEFAULTDIR
+            MENUITEM "&Đặt lại về mặc định",                 IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "Nhớ(&R)"
@@ -568,7 +568,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Mở liên kết",                  CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "Sao chép URL siêu liên kết",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Hoàn tác",                     IDM_EDIT_UNDO
         MENUITEM "Làm lại",                     IDM_EDIT_REDO
@@ -582,12 +582,12 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Convert Case"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "Chữ hoa",              CMD_CTX_UPPERCASE
+            MENUITEM "Chữ thường",              CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "Đảo chữ hoa/thường",            CMD_CTX_INVERTCASE
+            MENUITEM "Chữ Hoa Đầu Từ",             CMD_CTX_TITLECASE
+            MENUITEM "Chữ hoa đầu câu",          CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
         MENUITEM "Chuyển đổi gấp hiện tại",      IDM_VIEW_TOGGLE_CURRENT_FOLD

@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "&Poista\tDel",                IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "Tyhj&ennä leikepöytä",            IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Vaihda leikepöydän &seurantaa",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "S&anat"
         BEGIN
@@ -485,7 +485,7 @@ BEGIN
         MENUITEM "Tiedoston &muutosilmoitus...\tAlt+F5",     IDM_SET_CHANGENOTIFY
         ///MENUITEM "Automaattitallennus / varmuuskopiointiasetukset...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "&Mykistä viestin äänimerkit",                      IDM_SET_MUTE_MESSAGEBEEP
-        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
+        MENUITEM "Muunna &UNC-poluiksi",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "&Esc-toiminta"
         BEGIN
             MENUITEM "&Ei mitään",                       IDM_SET_NOESCFUNC
@@ -497,8 +497,8 @@ BEGIN
         MENUITEM "Ota monivalinta käyttöön",       IDM_SET_MULTIPLE_SELECTION
         POPUP "Default &Directory"
         BEGIN
-            MENUITEM "Set to Current File's &Directory",  IDM_SET_DEFAULTDIR
-            MENUITEM "&Reset to Default",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "Aseta nykyisen tiedoston &kansioon",  IDM_SET_DEFAULTDIR
+            MENUITEM "&Palauta oletukseen",                 IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "&Muista"

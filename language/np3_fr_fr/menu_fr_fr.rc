@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "&Supprimer\tSuppr",                       IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "Vi&der le presse-papiers",                IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Dés-/Activer la surveillance du presse-papiers",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "M&ots"
         BEGIN

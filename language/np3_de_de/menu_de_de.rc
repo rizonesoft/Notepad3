@@ -213,7 +213,7 @@ BEGIN
             MENUITEM SEPARATOR
             POPUP "&Zeilenkommentar"
             BEGIN
-                MENUITEM "&Toggle\tCtrl+Q",                      IDM_EDIT_LINECOMMENT
+                MENUITEM "&Umschalten	Ctrl+Q",                      IDM_EDIT_LINECOMMENT
                 MENUITEM "&Einfügen\tCtrl+Alt+Q",                IDM_EDIT_LINECOMMENT_ADD
                 MENUITEM "Ent&fernen)\tCtrl+Alt+Shift+Q",        IDM_EDIT_LINECOMMENT_REMOVE
                 MENUITEM "&Bearbeitung\tAlt+Shift+Q",            IDM_EDIT_LINECOMMENT_BLOCKEDIT
@@ -230,7 +230,7 @@ BEGIN
                 MENUITEM "[ ]\tCtrl+4",                          CMD_EMBRACE2
                 MENUITEM "{ }\tCtrl+5",                          CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "&Backticks\tCtrl+6",                   CMD_EMBRACE4
+                MENUITEM "&Backticks	Ctrl+6",                   CMD_EMBRACE4
                 MENUITEM SEPARATOR
                 MENUITEM "Umschließe &mit...\tAlt+Q",            IDM_EDIT_ENCLOSESELECTION
             END

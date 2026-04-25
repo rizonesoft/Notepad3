@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "В&ыдаліць\tDel",                  IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "А&чысціць буфер абмену",          IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Уключыць/выключыць &маніторынг буфера абмену",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "Словы"
         BEGIN
@@ -485,7 +485,7 @@ BEGIN
         MENUITEM "Паведамленне а&б змяненні файла...\tAlt+F5",  IDM_SET_CHANGENOTIFY
         ///MENUITEM "Аўтазахаванне / рэзервовыя копіі...",      IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "&Заглушыць гук паведамленняў",                IDM_SET_MUTE_MESSAGEBEEP
-        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
+        MENUITEM "Прывесці да &UNC-шляхоў",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "&Функцыя клавішы Esc"
         BEGIN
             MENUITEM "&Няма",                         IDM_SET_NOESCFUNC
@@ -497,8 +497,8 @@ BEGIN
         MENUITEM "Задзейнічаць мульціпадбор",         IDM_SET_MULTIPLE_SELECTION
         POPUP "Default &Directory"
         BEGIN
-            MENUITEM "Set to Current File's &Directory",  IDM_SET_DEFAULTDIR
-            MENUITEM "&Reset to Default",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "Усталяваць у бягучы &каталог файла",  IDM_SET_DEFAULTDIR
+            MENUITEM "&Скінуць да прадвызначанага",                 IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "&Гісторыя"
@@ -568,7 +568,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Адкрыць гіперспасылку",        CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "Капіяваць URL гіперспасылкі",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Адмена",                       IDM_EDIT_UNDO
         MENUITEM "Паўтор",                       IDM_EDIT_REDO
@@ -582,12 +582,12 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Convert Case"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "Вялікія літары",              CMD_CTX_UPPERCASE
+            MENUITEM "Малыя літары",              CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "Інвертаваць рэгістр",            CMD_CTX_INVERTCASE
+            MENUITEM "Загаловачны рэгістр",             CMD_CTX_TITLECASE
+            MENUITEM "Рэгістр сказа",          CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
         MENUITEM "Згарнуць/разгарнуць блок",     IDM_VIEW_TOGGLE_CURRENT_FOLD

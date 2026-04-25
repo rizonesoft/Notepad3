@@ -367,7 +367,7 @@ BEGIN
     RTEXT           "%s linea/e",IDC_INDENT_SUM_MIX,84,42,52,8
     GROUPBOX        "Vuoi re-indentare tutto?",IDC_STATIC2,7,60,182,56,WS_GROUP
     CONTROL         "&Tabulazione",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,32,10
-    CONTROL         "&Blanks",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,32,10
+    CONTROL         "&Spazi",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,32,10
     RTEXT           "%s linea/e con indentazione irregolare",IDC_INDENT_TAB_MODX,50,72,124,8
     RTEXT           "%s linea/e con indentazione irregolare",IDC_INDENT_SPC_MODX,50,84,124,8
     PUSHBUTTON      "&Sì",IDOK,80,98,50,14

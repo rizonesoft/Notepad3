@@ -360,14 +360,14 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Statistik:",IDC_STATIC,7,7,182,48,WS_GROUP
     LTEXT           "Tabs[%s]:",IDC_INDENT_WIDTH_TAB,54,18,30,8
-    LTEXT           "Blanks[%s]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
+    LTEXT           "Leerzeichen[%s]:",IDC_INDENT_WIDTH_SPC,54,30,30,8
     LTEXT           "Mixed[x]:",IDC_STATIC3,54,42,30,8
     RTEXT           "%s Zeile(n)",IDC_INDENT_SUM_TAB,84,18,52,8
     RTEXT           "%s Zeile(n)",IDC_INDENT_SUM_SPC,84,30,52,8
     RTEXT           "%s Zeile(n)",IDC_INDENT_SUM_MIX,84,42,52,8
     GROUPBOX        "Alles Neu Einrücken ?",IDC_STATIC2,7,60,182,56,WS_GROUP
     CONTROL         "&Tabs",IDC_INDENT_BY_TABS,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,72,25,10
-    CONTROL         "&Blanks",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,32,10
+    CONTROL         "&Leerzeichen",IDC_INDENT_BY_SPCS,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,84,32,10
     RTEXT           "%s Zeile(n) m. irregulärer Tiefe",IDC_INDENT_TAB_MODX,40,72,124,8
     RTEXT           "%s Zeile(n) m. irregulärer Tiefe",IDC_INDENT_SPC_MODX,40,84,124,8
     PUSHBUTTON      "&Ja",IDOK,80,98,50,14
@@ -836,7 +836,7 @@ BEGIN
 
     PUSHBUTTON      "&o", COLOR_SOLID, 300, 200, 4, 14, WS_GROUP
     RTEXT           "Farbe", COLOR_SOLID_LEFT, 152, 151, 20, 9
-    LTEXT           "|S&olid", COLOR_SOLID_RIGHT, 172, 151, 20, 9
+    LTEXT           "|&Vollton", COLOR_SOLID_RIGHT, 172, 151, 20, 9
 
     RTEXT           "To&n:", COLOR_HUEACCEL, 194, 126, 20, 9
     EDITTEXT, COLOR_HUE, 216, 124, 19, 12, WS_GROUP | WS_TABSTOP

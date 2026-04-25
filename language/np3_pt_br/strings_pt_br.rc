@@ -104,7 +104,7 @@ BEGIN
     IDS_MUI_UNTITLED        "Sem Título"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(Somente Leitura)"
-    IDS_MUI_FILELOCKED      "<Exclusive>"
+    IDS_MUI_FILELOCKED      "<Exclusivo>"
     IDS_MUI_LOADFILE        "Carregando ""%s""..."
     IDS_MUI_SAVEFILE        "Salvando ""%s""..."
     IDS_MUI_PRINTFILE       "Imprimindo página %i..."

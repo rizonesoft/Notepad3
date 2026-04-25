@@ -117,7 +117,7 @@ BEGIN
     IDS_MUI_FILTER_ALL      "Minden fájl (*.*)|*.*|"
     IDS_MUI_FILTER_EXE      "Végrehajtható fájlok (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "Beállításfájlok (*.ini)|*.ini|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "Bitmap files (*.bmp)|*.bmp|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "Bittérképfájlok (*.bmp)|*.bmp|Minden fájl (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Válassza ki a mappát, ahol a kedvenc alkamazásaira mutató parancsikonok vannak"
     IDS_MUI_FAVORITES       "Válassza ki a mappát, ahol a kedvenc fájljaira mutató parancsikonok vannak"
     IDS_MUI_BACKSLASHHELP   "Backslash átalakítások\n\n\\a\tFigyelmeztetés (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tLapdobás (FF, Ascii 12)\n\\n\tÚj sor (LF, Ascii 10)\n\\r\tKocsi vissza (CR, Ascii 13)\n\\t\tVízszintes Tab (HT, Ascii 9)\n\\v\tFüggőleges Tab (VT, Ascii 11)\n\\0oo\tOktális érték\n\\u####\tHexadecimális érték\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"

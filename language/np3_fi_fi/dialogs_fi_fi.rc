@@ -789,13 +789,13 @@ BEGIN
     CBS_OWNERDRAWFIXED | CBS_AUTOHSCROLL | CBS_HASSTRINGS |
     WS_BORDER | WS_VSCROLL | WS_TABSTOP
 
-    CONTROL         "<A>Show more fonts</A>", IDC_MANAGE_LINK, "SysLink",
+    CONTROL         "<A>Näytä lisää fontteja</A>", IDC_MANAGE_LINK, "SysLink",
     WS_TABSTOP, 7, 199, 227, 9
 
     DEFPUSHBUTTON   "OK", IDOK, 141, 215, 45, 14, WS_GROUP
     PUSHBUTTON      "Peruuta", IDCANCEL, 190, 215, 45, 14, WS_GROUP
-    PUSHBUTTON      "&Apply", psh3, 92, 215, 45, 14, WS_GROUP
-    PUSHBUTTON      "&Help", pshHelp, 43, 215, 45, 14, WS_GROUP
+    PUSHBUTTON      "&Käytä", psh3, 92, 215, 45, 14, WS_GROUP
+    PUSHBUTTON      "O&hje", pshHelp, 43, 215, 45, 14, WS_GROUP
 END
 
 

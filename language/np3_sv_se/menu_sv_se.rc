@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "Ta bort\tDel",                                     IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "Rensa urklipp",                                   IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Växla &klippbordsövervakning",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "Ord"
                 BEGIN
@@ -483,7 +483,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Bara en instans per fil",                         IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Notifiering vid filändring...\tAlt+F5",           IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",                IDM_SET_AUTOSAVE_BACKUP
+        ///MENUITEM "Inställningar för autospar/säkerhetskopia...",                IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Stäng av ljud vid meddelande",                    IDM_SET_MUTE_MESSAGEBEEP
         MENUITEM "Konvertera till &UNC-sökvägar",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Esc-tangentens funktion"

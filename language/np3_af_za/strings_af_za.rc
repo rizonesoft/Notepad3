@@ -269,7 +269,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Taal"
     IDS_USE_LOCALE_DATEFMT  "Taal Definieer &Datumformaat"
     IDS_MUI_MENU_THEMES     "&Skema-versameling"
-    IDM_THEMES_FACTORY_RESET "&Factory Reset"
+    IDM_THEMES_FACTORY_RESET "&Fabrieksherstel"
     IDM_THEMES_STD_CFG       "&Standaard Config"
     IDS_MUI_STATUSBAR_PREFIXES "Ln  ,Col  ,Sel  ,Sb  ,SLn  ,Occ  ,,,,,,,Ch  ,Repl  ,Eval  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"

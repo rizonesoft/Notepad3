@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "削除(&D)\tDel",                              IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "クリップボードをクリア(&E)",                        IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "クリップボード&監視の切り替え",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "単語(&O)"
         BEGIN
@@ -485,7 +485,7 @@ BEGIN
         MENUITEM "ファイルの変更を通知(&C)...\tAlt+F5",          IDM_SET_CHANGENOTIFY
         ///MENUITEM "自動保存/バックアップの設定...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "メッセージの効果音をミュート(&M)",                  IDM_SET_MUTE_MESSAGEBEEP
-        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
+        MENUITEM "&UNC パスに変換",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Escキーの動作(&E)"
         BEGIN
             MENUITEM "なし(&N)",                              IDM_SET_NOESCFUNC
@@ -497,8 +497,8 @@ BEGIN
         MENUITEM "同時に複数選択",               IDM_SET_MULTIPLE_SELECTION
         POPUP "Default &Directory"
         BEGIN
-            MENUITEM "Set to Current File's &Directory",  IDM_SET_DEFAULTDIR
-            MENUITEM "&Reset to Default",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "現在のファイルの&フォルダーに設定",  IDM_SET_DEFAULTDIR
+            MENUITEM "既定値に&リセット",                 IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "履歴の保存(&R)"
@@ -568,7 +568,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "リンクを開く",                              CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "ハイパーリンク URL をコピー",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "元に戻す",                               IDM_EDIT_UNDO
         MENUITEM "やり直し",                                IDM_EDIT_REDO
@@ -582,12 +582,12 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Convert Case"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "大文字",              CMD_CTX_UPPERCASE
+            MENUITEM "小文字",              CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "大/小文字の反転",            CMD_CTX_INVERTCASE
+            MENUITEM "タイトルケース",             CMD_CTX_TITLECASE
+            MENUITEM "文頭大文字",          CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
         MENUITEM "ここの折りたたみを切替",                     IDM_VIEW_TOGGLE_CURRENT_FOLD

@@ -142,7 +142,7 @@ BEGIN
     PUSHBUTTON      "Ve&rvang",IDC_REPLACE,221,43,55,14
     PUSHBUTTON      "In &Keuring",IDC_REPLACEINSEL,221,59,55,14
     PUSHBUTTON      "Vervang &Alles",IDC_REPLACEALL,221,75,55,14
-    PUSHBUTTON      "Swap Strings",IDC_SWAPSTRG,160,32,49,12
+    PUSHBUTTON      "Stringe wissel",IDC_SWAPSTRG,160,32,49,12
     PUSHBUTTON      "Maak toe",IDCANCEL,221,126,55,14
     CONTROL         "<a>Gaan Soek (Ctrl+F)</a>",IDC_TOGGLEFINDREPLACE,"SysLink",0x0,130,132,74,10
     CONTROL         "<a>(?)</a>",IDC_BACKSLASHHELP,"SysLink",0x0,117,102,14,10

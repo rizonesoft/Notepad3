@@ -129,12 +129,12 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    """%s"" yüklenirken sorun çıktı"
     IDS_MUI_ERR_SAVEFILE    """%s"" kaydedilirken sorun çıktı"
-    IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
+    IDS_MUI_ERR_PATHNOTFOUND """%s"" için yol artık mevcut değil.\nYolu yeniden oluşturup dosyayı kaydetmek ister misiniz?"
     IDS_MUI_ERR_DLG_FORMAT  "Hata '%s'. Nedeni:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Dosya gezgini uygulama eki bulunamadı\nMiniPath dosya tarayıcı uygulama ekini şuradan indirebilirsiniz: https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Dosya arama uygulama eki bulunamadı\ngrepWin Portable dosya arama uygulama ekini şuradan indirebilirsiniz: https://github.com/stefankueng/grepWin/releases"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
-                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
+                            "Dosya arama eklentisi bulunamadı\nLütfen PortableApps platformuna grepWinPortable'ın en son sürümünü yükleyin."
     IDS_MUI_ERR_MRUDLG      "Seçilmiş dosyaya erişilemedi!\nWListeden kaldırmak ister misiniz?"
     IDS_MUI_ERR_CREATELINK  "Masaüstü bağlantısı oluşturulurken sorun çıktı"
     IDS_MUI_ERR_PREVWINDISABLED
@@ -269,7 +269,7 @@ BEGIN
     IDS_MUI_MENU_LANGUAGE   "&Dil"
     IDS_USE_LOCALE_DATEFMT  "&Tarih biçimi dile uygun ayarlansın"
     IDS_MUI_MENU_THEMES     "Şema &teması"
-    IDM_THEMES_FACTORY_RESET "&Factory Reset"
+    IDM_THEMES_FACTORY_RESET "&Fabrika Ayarlarına Sıfırla"
     IDM_THEMES_STD_CFG       "Standart yapılandırma"
     IDS_MUI_STATUSBAR_PREFIXES "Sat  ,Süt  ,Seç  ,Haz  ,SSat  ,Kop  ,,,,,,,Krk  ,Değ  ,Dene  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"

@@ -134,7 +134,7 @@ BEGIN
     IDS_MUI_ERR_BROWSE      "Не найден плагин браузера файлов\nПлагин MiniPath можно загрузить с сайта https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Не найден плагин поиска в файлах\nПлагин grepWin Portable можно загрузить с сайта https://github.com/stefankueng/grepWin/releases"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
-                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
+                            "Плагин поиска файлов не найден\nПожалуйста, установите последнюю версию grepWinPortable на платформе PortableApps."
     IDS_MUI_ERR_MRUDLG      "Нет доступа к выбранному файлу!\nХотите удалить его из списка?"
     IDS_MUI_ERR_CREATELINK  "Ошибка создания ярлыка на Рабочем столе"
     IDS_MUI_ERR_PREVWINDISABLED

@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "&Удалить\tDel",                       IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "О&чистить буфер обмена",              IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Включить/выключить &мониторинг буфера обмена",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "Слова"
         BEGIN
@@ -485,7 +485,7 @@ BEGIN
         MENUITEM "&Уведомление об изменении файла...\tAlt+F5",  IDM_SET_CHANGENOTIFY
         ///MENUITEM "Автосохранение / резервные копии...",      IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Заглу&шить звук уведомлений",                 IDM_SET_MUTE_MESSAGEBEEP
-        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
+        MENUITEM "Преобразовать к &UNC-путям",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "&Функция клавиши Esc"
         BEGIN
             MENUITEM "&Нет",                                IDM_SET_NOESCFUNC
@@ -497,8 +497,8 @@ BEGIN
         MENUITEM "Включить мно&жественный выбор",               IDM_SET_MULTIPLE_SELECTION
         POPUP "Default &Directory"
         BEGIN
-            MENUITEM "Set to Current File's &Directory",  IDM_SET_DEFAULTDIR
-            MENUITEM "&Reset to Default",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "Установить в &папку текущего файла",  IDM_SET_DEFAULTDIR
+            MENUITEM "&Сбросить до стандартного",                 IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "&История"
@@ -568,7 +568,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Открыть гиперссылку",        CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "Копировать URL гиперссылки",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Отмена",                     IDM_EDIT_UNDO
         MENUITEM "Повтор",                     IDM_EDIT_REDO
@@ -582,12 +582,12 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Convert Case"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "Верхний регистр",              CMD_CTX_UPPERCASE
+            MENUITEM "Нижний регистр",              CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "Инвертировать регистр",            CMD_CTX_INVERTCASE
+            MENUITEM "Заглавные слова",             CMD_CTX_TITLECASE
+            MENUITEM "Регистр предложения",          CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
         MENUITEM "Свернуть/развернуть блок",   IDM_VIEW_TOGGLE_CURRENT_FOLD

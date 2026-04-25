@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "&Eliminar\tDel",                         IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "Limpar ár&ea de transferência",          IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Alternar &monitorização da área de transferência",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "Pala&vras"
         BEGIN
@@ -483,9 +483,9 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Apenas uma instância por &Ficheiro",                 IDM_SET_SINGLEFILEINSTANCE
         MENUITEM "Notificação de alteração df fi&cheiro...\tAlt+F5",   IDM_SET_CHANGENOTIFY
-        ///MENUITEM "AutoSave / Backup Settings...",                   IDM_SET_AUTOSAVE_BACKUP
+        ///MENUITEM "Definições de Guarda Automática / Cópia de Segurança...",                   IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Silenciar &beeps das mensagens",                     IDM_SET_MUTE_MESSAGEBEEP
-        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
+        MENUITEM "Resolver para &caminhos UNC",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Função da tecla Esc"
         BEGIN
             MENUITEM "&Nenhuma",                       IDM_SET_NOESCFUNC
@@ -497,8 +497,8 @@ BEGIN
         MENUITEM "Activar selecção múltipla",                   IDM_SET_MULTIPLE_SELECTION
         POPUP "Default &Directory"
         BEGIN
-            MENUITEM "Set to Current File's &Directory",  IDM_SET_DEFAULTDIR
-            MENUITEM "&Reset to Default",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "Definir para a &pasta do ficheiro atual",  IDM_SET_DEFAULTDIR
+            MENUITEM "&Repor predefinição",                 IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "Lemb&rar"
@@ -568,7 +568,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Abrir hiperligação",                         CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "Copiar URL da hiperligação",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Anular",                                     IDM_EDIT_UNDO
         MENUITEM "Refazer",                                    IDM_EDIT_REDO
@@ -582,12 +582,12 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Convert Case"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "Maiúsculas",              CMD_CTX_UPPERCASE
+            MENUITEM "minúsculas",              CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "Inverter maiús./minús.",            CMD_CTX_INVERTCASE
+            MENUITEM "Formato Título",             CMD_CTX_TITLECASE
+            MENUITEM "Formato Frase",          CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
         MENUITEM "Alternar dobragem actual",                   IDM_VIEW_TOGGLE_CURRENT_FOLD

@@ -129,12 +129,12 @@ STRINGTABLE
 BEGIN
     IDS_MUI_ERR_LOADFILE    "読込失敗 ""%s"""
     IDS_MUI_ERR_SAVEFILE    "保存失敗 ""%s"""
-    IDS_MUI_ERR_PATHNOTFOUND "The path for ""%s"" no longer exists.\nRecreate the path and save the file?"
+    IDS_MUI_ERR_PATHNOTFOUND """%s"" のパスが存在しなくなりました。\nパスを再作成してファイルを保存しますか?"
     IDS_MUI_ERR_DLG_FORMAT  "エラー '%s', 原因:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "ファイラーのプラグインがありません\nこのプラグイン MiniPath は以下からダウンロードできます https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "ファイル検索プラグインが見つかりません\nファイル検索プラグインの grepWin Portable は以下からダウンロードできます https://github.com/stefankueng/grepWin/releases"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
-                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
+                            "ファイル検索プラグインが見つかりませんでした\nPortableApps プラットフォームに grepWinPortable の最新バージョンをインストールしてください。"
     IDS_MUI_ERR_MRUDLG      "選択したファイルにアクセスできません\n一覧から除去しますか?"
     IDS_MUI_ERR_CREATELINK  "デスクトップへのショートカット作成時にエラーが発生しました"
     IDS_MUI_ERR_PREVWINDISABLED

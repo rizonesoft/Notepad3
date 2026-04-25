@@ -169,7 +169,7 @@ BEGIN
         MENUITEM "&Usuń\tDel",                           IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "Wyczyść schowek",                      IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Toggle Clipboard &Monitoring",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Przełącz &monitorowanie schowka",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "W&yrazy"
         BEGIN
@@ -485,7 +485,7 @@ BEGIN
         MENUITEM "Powiadomienie o zmianie pliku...\tAlt+F5",        IDM_SET_CHANGENOTIFY
         ///MENUITEM "Ustawienia Autozapisu/ kopii zapasowej...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Wycisz sygnał dźwiękowy",                         IDM_SET_MUTE_MESSAGEBEEP
-        MENUITEM "Resolve to &UNC-Paths",                    IDM_SET_RESOLVE_UNC_PATHS
+        MENUITEM "Rozwiąż do &ścieżek UNC",                    IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Funkcja klawisza Esc"
         BEGIN
             MENUITEM "Żadna",                                       IDM_SET_NOESCFUNC
@@ -497,8 +497,8 @@ BEGIN
         MENUITEM "Zaznaczanie wielu elementów",                     IDM_SET_MULTIPLE_SELECTION
         POPUP "Default &Directory"
         BEGIN
-            MENUITEM "Set to Current File's &Directory",  IDM_SET_DEFAULTDIR
-            MENUITEM "&Reset to Default",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "Ustaw na &folder bieżącego pliku",  IDM_SET_DEFAULTDIR
+            MENUITEM "&Resetuj do domyślnego",                 IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "&Zapamiętaj"
@@ -568,7 +568,7 @@ BEGIN
     POPUP "+"
     BEGIN
         MENUITEM "Otwórz łącze",                              CMD_OPEN_HYPERLINK
-        MENUITEM "Copy Hyperlink URL",           CMD_COPY_HYPERLINK
+        MENUITEM "Kopiuj URL hiperłącza",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Cofnij",                                    IDM_EDIT_UNDO
         MENUITEM "Do przodu",                                 IDM_EDIT_REDO
@@ -582,12 +582,12 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Convert Case"
         BEGIN
-            MENUITEM "Uppercase",              CMD_CTX_UPPERCASE
-            MENUITEM "Lowercase",              CMD_CTX_LOWERCASE
+            MENUITEM "Wielkie litery",              CMD_CTX_UPPERCASE
+            MENUITEM "Małe litery",              CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invert Case",            CMD_CTX_INVERTCASE
-            MENUITEM "Title Case",             CMD_CTX_TITLECASE
-            MENUITEM "Sentence Case",          CMD_CTX_SENTENCECASE
+            MENUITEM "Odwróć wielkość liter",            CMD_CTX_INVERTCASE
+            MENUITEM "Wielkie pierwsze litery",             CMD_CTX_TITLECASE
+            MENUITEM "Wielka litera zdania",          CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
         MENUITEM "Przełącz Current Fold",                     IDM_VIEW_TOGGLE_CURRENT_FOLD
