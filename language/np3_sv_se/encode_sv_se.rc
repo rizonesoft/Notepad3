@@ -62,7 +62,7 @@ BEGIN
     IDS_ENC_UTF16LE                "A4;Unicode (UTF-16 LE);Unicode (UTF-16) LE"
     IDS_ENC_UTF16BE                "A5;Unicode (UTF-16 BE);Unicode (UTF-16) BE"
     IDS_ENC_UTF8                   "A6;UTF-8;Unicode (UTF-8)"
-    IDS_ENC_UTF8SIG                "A7;UTF-8 Signature;Unicode (UTF-8) Signature"
+    IDS_ENC_UTF8SIG                "A7;UTF-8 med signatur;Unicode (UTF-8) med signatur"
 END
 
 STRINGTABLE
@@ -122,8 +122,8 @@ BEGIN
     IDS_ENC_ISO_8859_15            "C;Latinsk 9 (ISO-8859-15);ISO-8859-15"
     IDS_ENC_DOS_865                "C;Nordisk (DOS-865);DOS-865"
     IDS_ENC_DOS_437                "C;OEM Förenta staterna (DOS-437);DOS-437"
-    IDS_ENC_DOS_858                "C;OEM Multilingual Latinsk 1 (DOS-858);DOS-858"
-    IDS_ENC_DOS_860                "C;Portugisiska (DOS-860);DOS-860"
+    IDS_ENC_DOS_858                "C;OEM flerspråkig latinsk 1 (DOS-858);DOS-858"
+    IDS_ENC_DOS_860                "C;Portugisisk (DOS-860);DOS-860"
     IDS_ENC_MAC_ROMANIAN           "C;Rumänsk (Mac);Mac (Rumänsk)"
 END
 
@@ -151,7 +151,7 @@ STRINGTABLE
 BEGIN
     IDS_ENC_EUC_JAPANESE           "C;Japansk (EUC-JP);EUC-JP"
     IDS_ENC_EUC_KOREAN             "C;Koreansk (EUC-KR);EUC-KR"
-    IDS_ENC_ISO_2022_CN            "C;kinesisk (ISO-2022-CN);ISO-2022-CN"
+    IDS_ENC_ISO_2022_CN            "C;Kinesisk (ISO-2022-CN);ISO-2022-CN"
     IDS_ENC_HZ_GB2312              "C;Förenklad kinesisk (HZ-GB-2312);HZ-GB-2312"
     IDS_ENC_ISO_2022_JP            "C;Japansk (ISO-2022-JP);ISO-2022-JP"
     IDS_ENC_ISO_2022_KR            "C;Koreansk (ISO-2022-KR);ISO-2022-KR"
