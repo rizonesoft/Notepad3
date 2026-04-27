@@ -486,7 +486,7 @@ BEGIN
         ///MENUITEM "Ustawienia Autozapisu/ kopii zapasowej...",            IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Wycisz sygnał dźwiękowy",                         IDM_SET_MUTE_MESSAGEBEEP
         MENUITEM "Rozwiąż do &ścieżek UNC",                    IDM_SET_RESOLVE_UNC_PATHS
-        POPUP "Funkcja klawisza Esc"
+        POPUP "Funkcja klawisza ESC"
         BEGIN
             MENUITEM "Żadna",                                       IDM_SET_NOESCFUNC
             MENUITEM "&Minimalizuj Notepad3",                       IDM_SET_ESCMINIMIZE
@@ -495,9 +495,9 @@ BEGIN
         MENUITEM "Zapisz przed uruchomieniem narzędzi",             IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Przelicz niewielkie wyrażenia",                   IDM_SET_EVALTINYEXPRONSEL
         MENUITEM "Zaznaczanie wielu elementów",                     IDM_SET_MULTIPLE_SELECTION
-        POPUP "Default &Directory"
+        POPUP "Folder &domyślny"
         BEGIN
-            MENUITEM "Ustaw na &folder bieżącego pliku",  IDM_SET_DEFAULTDIR
+            MENUITEM "Ustaw &folder bieżącego pliku",  IDM_SET_DEFAULTDIR
             MENUITEM "&Resetuj do domyślnego",                 IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
