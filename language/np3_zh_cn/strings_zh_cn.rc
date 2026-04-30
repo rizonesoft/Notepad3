@@ -95,6 +95,8 @@ BEGIN
     IDT_VIEW_CHASING_DOCTAIL "日志监视"
     IDT_VIEW_PIN_ON_TOP      "总是置顶"
     IDT_GREP_WIN_TOOL        "在文件中查找"
+    IDT_JSONL_FORMAT         "JSONL 格式化（单行 JSON -> 美化）"
+    IDT_JSONL_UNFORMAT       "JSONL 反格式化（美化 -> 单行 JSON）"
 END
 
 STRINGTABLE

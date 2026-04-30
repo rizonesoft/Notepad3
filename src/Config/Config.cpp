@@ -1841,6 +1841,28 @@ void LoadSettings()
     // see TBBUTTON  s_tbbMainWnd[] for initial/reset set of buttons
     StringCchCopy(Defaults.ToolbarButtons, COUNTOF(Defaults.ToolbarButtons), (Globals.iCfgVersionRead < CFG_VER_0002) ? TBBUTTON_DEFAULT_IDS_OLD : TBBUTTON_DEFAULT_IDS);
     IniSectionGetStringNoQuotes(IniSecSettings, L"ToolbarButtons", Defaults.ToolbarButtons, Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons));
+    // Migration fix: buggy JSONL-toolbar builds wrote two extra "New" buttons into the
+    // persisted toolbar layout string. If that exact legacy pattern is found, reset to
+    // the current clean default layout. Also heal the known malformed token fragment
+    // found in already user-modified layouts.
+    static const WCHAR* const TBBUTTON_BROKEN_JSONL_IDS =
+        L"1 32 0 2 4 3 28 0 5 6 0 7 8 9 0 10 11 0 1 1 0 30 0 12 0 24 26 0 22 23 0 13 31 14 0 15 0 25 0 29 0 17";
+    if (StringCchCompareX(Settings.ToolbarButtons, TBBUTTON_BROKEN_JSONL_IDS) == 0) {
+        StringCchCopy(Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons), TBBUTTON_DEFAULT_IDS);
+    }
+    else {
+        static const WCHAR* const TBBUTTON_BAD_FRAGMENT = L"10 11 0 1 1 0 30";
+        static const WCHAR* const TBBUTTON_GOOD_FRAGMENT = L"10 11 0 30";
+        WCHAR* pBad = StrStr(Settings.ToolbarButtons, TBBUTTON_BAD_FRAGMENT);
+        if (pBad) {
+            WCHAR fixedButtons[COUNTOF(Settings.ToolbarButtons)] = { L'\0' };
+            const size_t cchPrefix = (size_t)(pBad - Settings.ToolbarButtons);
+            StringCchCopyN(fixedButtons, COUNTOF(fixedButtons), Settings.ToolbarButtons, cchPrefix);
+            StringCchCat(fixedButtons, COUNTOF(fixedButtons), TBBUTTON_GOOD_FRAGMENT);
+            StringCchCat(fixedButtons, COUNTOF(fixedButtons), pBad + lstrlen(TBBUTTON_BAD_FRAGMENT));
+            StringCchCopy(Settings.ToolbarButtons, COUNTOF(Settings.ToolbarButtons), fixedButtons);
+        }
+    }
 
     GET_BOOL_VALUE_FROM_INISECTION(ShowTitlebar, true);
     GET_BOOL_VALUE_FROM_INISECTION(ShowMenubar, true);

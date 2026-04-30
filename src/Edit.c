@@ -112,6 +112,115 @@ static LPCSTR const s_pUrlRegExA = HYPLNK_REGEX_FULL;
 static LPCWSTR const s_pUrlRegEx = _W(HYPLNK_REGEX_FULL);
 
 // ----------------------------------------------------------------------------
+static bool _JsonFormatBuffer(const char* src, size_t srcLen, char** outBuf, size_t* outLen, bool bMinify)
+{
+    if ((src == NULL) || (outBuf == NULL) || (outLen == NULL)) {
+        return false;
+    }
+    size_t const cap = (srcLen * 3) + 128;
+    char* const dst = (char*)AllocMem(cap, HEAP_ZERO_MEMORY);
+    if (dst == NULL) {
+        return false;
+    }
+    bool inString = false;
+    bool escaped = false;
+    int indent = 0;
+    char* const nesting = (char*)AllocMem(srcLen + 1, HEAP_ZERO_MEMORY);
+    if (nesting == NULL) {
+        FreeMem(dst);
+        return false;
+    }
+#define _JSONFMT_FAIL() do { FreeMem(nesting); FreeMem(dst); return false; } while (0)
+    size_t depth = 0;
+    size_t j = 0;
+    for (size_t i = 0; i < srcLen; ++i) {
+        char const c = src[i];
+        if (inString) {
+            if (j + 2 >= cap) { _JSONFMT_FAIL(); }
+            dst[j++] = c;
+            if (escaped) {
+                escaped = false;
+            } else if (c == '\\') {
+                escaped = true;
+            } else if (c == '"') {
+                inString = false;
+            }
+            continue;
+        }
+        if ((c == ' ') || (c == '\t') || (c == '\r') || (c == '\n')) {
+            continue;
+        }
+        if (c == '"') {
+            if (j + 2 >= cap) { _JSONFMT_FAIL(); }
+            inString = true;
+            dst[j++] = c;
+            continue;
+        }
+        if (bMinify) {
+            if (j + 2 >= cap) { _JSONFMT_FAIL(); }
+            dst[j++] = c;
+            continue;
+        }
+        switch (c) {
+        case '{':
+        case '[':
+            if (j + (size_t)(indent + 8) >= cap) { _JSONFMT_FAIL(); }
+            dst[j++] = c;
+            dst[j++] = '\n';
+            nesting[depth++] = c;
+            ++indent;
+            for (int k = 0; k < indent; ++k) { dst[j++] = ' '; dst[j++] = ' '; }
+            break;
+        case '}':
+            if ((depth == 0) || (nesting[depth - 1] != '{')) { _JSONFMT_FAIL(); }
+            --depth;
+            if (indent <= 0) { _JSONFMT_FAIL(); }
+            --indent;
+            if (j + (size_t)(indent + 8) >= cap) { _JSONFMT_FAIL(); }
+            dst[j++] = '\n';
+            for (int k = 0; k < indent; ++k) { dst[j++] = ' '; dst[j++] = ' '; }
+            dst[j++] = c;
+            break;
+        case ']':
+            if ((depth == 0) || (nesting[depth - 1] != '[')) { _JSONFMT_FAIL(); }
+            --depth;
+            if (indent <= 0) { _JSONFMT_FAIL(); }
+            --indent;
+            if (j + (size_t)(indent + 8) >= cap) { _JSONFMT_FAIL(); }
+            dst[j++] = '\n';
+            for (int k = 0; k < indent; ++k) { dst[j++] = ' '; dst[j++] = ' '; }
+            dst[j++] = c;
+            break;
+        case ',':
+            if (j + (size_t)(indent + 8) >= cap) { _JSONFMT_FAIL(); }
+            dst[j++] = c;
+            dst[j++] = '\n';
+            for (int k = 0; k < indent; ++k) { dst[j++] = ' '; dst[j++] = ' '; }
+            break;
+        case ':':
+            if (j + 3 >= cap) { _JSONFMT_FAIL(); }
+            dst[j++] = ':';
+            dst[j++] = ' ';
+            break;
+        default:
+            if (j + 2 >= cap) { _JSONFMT_FAIL(); }
+            dst[j++] = c;
+            break;
+        }
+    }
+    if ((j > 0) && !bMinify && (dst[j - 1] != '\n')) {
+        dst[j++] = '\n';
+    }
+    if (inString || (depth != 0) || (indent != 0)) {
+        _JSONFMT_FAIL();
+    }
+    FreeMem(nesting);
+#undef _JSONFMT_FAIL
+    *outBuf = dst;
+    *outLen = j;
+    return true;
+}
+
 
 enum AlignMask {
     ALIGN_LEFT = 0,
@@ -2121,6 +2230,146 @@ void EditSentenceCase(HWND hwnd)
     EndUndoTransAction();
 }
 
+
+//=============================================================================
+//
+//  EditJSONLFormat()
+//
+void EditJSONLFormat(bool bUnformat)
+{
+    if (SciCall_IsSelectionEmpty() || Sci_IsMultiOrRectangleSelection()) {
+        return;
+    }
+
+    DocPos const iSelStart = SciCall_GetSelectionStart();
+    DocPos const iSelLen = SciCall_GetSelText(NULL);
+    bool const bStraightSel = (SciCall_GetAnchor() <= SciCall_GetCurrentPos());
+    char const* const pszText = SciCall_GetRangePointer(iSelStart, iSelLen);
+    if ((pszText == NULL) || (iSelLen <= 0)) {
+        return;
+    }
+
+    size_t const cap = ((size_t)iSelLen * 4) + 128;
+    char* const out = (char*)AllocMem(cap, HEAP_ZERO_MEMORY);
+    if (out == NULL) {
+        return;
+    }
+
+    size_t outLen = 0;
+    if (bUnformat) {
+        bool inString = false;
+        bool escaped = false;
+        int depth = 0;
+        DocPos valueStart = -1;
+
+        for (DocPos i = 0; i < iSelLen; ++i) {
+            char const c = pszText[i];
+
+            if (valueStart < 0) {
+                if ((c == ' ') || (c == '\t') || (c == '\r') || (c == '\n')) {
+                    continue;
+                }
+                valueStart = i;
+                inString = false;
+                escaped = false;
+                depth = 0;
+            }
+
+            if (inString) {
+                if (escaped) {
+                    escaped = false;
+                } else if (c == '\\') {
+                    escaped = true;
+                } else if (c == '"') {
+                    inString = false;
+                }
+                continue;
+            }
+
+            if (c == '"') {
+                inString = true;
+                continue;
+            }
+            if ((c == '{') || (c == '[')) {
+                ++depth;
+                continue;
+            }
+            if ((c == '}') || (c == ']')) {
+                --depth;
+                if (depth == 0) {
+                    DocPos const valueEnd = i + 1;
+                    char* fmt = NULL;
+                    size_t fmtLen = 0;
+                    if (!_JsonFormatBuffer(pszText + valueStart, (size_t)(valueEnd - valueStart), &fmt, &fmtLen, true)) {
+                        FreeMem(out);
+                        return;
+                    }
+                    if ((outLen + fmtLen + 2) >= cap) {
+                        FreeMem(fmt);
+                        FreeMem(out);
+                        return;
+                    }
+                    memcpy(out + outLen, fmt, fmtLen);
+                    outLen += fmtLen;
+                    out[outLen++] = '\n';
+                    FreeMem(fmt);
+                    valueStart = -1;
+                }
+            }
+        }
+
+        if (valueStart >= 0) { // incomplete trailing JSON value
+            FreeMem(out);
+            return;
+        }
+    }
+    else {
+        DocPos i = 0;
+        while (i < iSelLen) {
+            DocPos lineStart = i;
+            while ((i < iSelLen) && (pszText[i] != '\n') && (pszText[i] != '\r')) {
+                ++i;
+            }
+            DocPos lineEnd = i;
+            while ((lineStart < lineEnd) && ((pszText[lineStart] == ' ') || (pszText[lineStart] == '\t'))) {
+                ++lineStart;
+            }
+            while ((lineEnd > lineStart) && ((pszText[lineEnd - 1] == ' ') || (pszText[lineEnd - 1] == '\t'))) {
+                --lineEnd;
+            }
+            if (lineEnd > lineStart) {
+                char* fmt = NULL;
+                size_t fmtLen = 0;
+                if (!_JsonFormatBuffer(pszText + lineStart, (size_t)(lineEnd - lineStart), &fmt, &fmtLen, false)) {
+                    FreeMem(out);
+                    return;
+                }
+                if ((outLen + fmtLen + 4) >= cap) {
+                    FreeMem(fmt);
+                    FreeMem(out);
+                    return;
+                }
+                memcpy(out + outLen, fmt, fmtLen);
+                outLen += fmtLen;
+                if ((outLen == 0) || (out[outLen - 1] != '\n')) {
+                    out[outLen++] = '\n';
+                }
+                FreeMem(fmt);
+            }
+            if ((i < iSelLen) && (pszText[i] == '\r')) { ++i; }
+            if ((i < iSelLen) && (pszText[i] == '\n')) { ++i; }
+        }
+    }
+
+    if (outLen > 0) {
+        UndoTransActionBegin();
+        SciCall_TargetFromSelection();
+        Sci_ReplaceTargetTestChgHist((DocPos)outLen, out);
+        Sci_SetStreamSelection(iSelStart, iSelStart + (DocPos)outLen, bStraightSel);
+        EndUndoTransAction();
+    }
+    FreeMem(out);
+}
 
 //=============================================================================
 //

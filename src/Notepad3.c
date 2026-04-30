@@ -246,6 +246,9 @@ static TBBUTTON  s_tbbMainWnd[] = {
     { 9, IDT_EDIT_FIND, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
     { 10, IDT_EDIT_REPLACE, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
     { 0, 0, 0, BTNS_SEP, { 0 }, 0, 0 },
+    { 0, IDT_JSONL_FORMAT, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 0, IDT_JSONL_UNFORMAT, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
+    { 0, 0, 0, BTNS_SEP, { 0 }, 0, 0 },
     { 29, IDT_GREP_WIN_TOOL, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
     { 0, 0, 0, BTNS_SEP, { 0 }, 0, 0 },
     { 11, IDT_VIEW_WORDWRAP, TBSTATE_ENABLED, BTNS_BUTTON, { 0 }, 0, 0 },
@@ -3048,6 +3051,57 @@ bool SelectExternalToolBar(HWND hwnd)
 
 // LoadBitmapFile, XXX_CreateScaledImageListFromBitmap, CreateScaledImageListFromBitmap moved to Notepad3Util.c
 
+static int _ToolbarButtonIndexByCmd(UINT cmd) {
+    for (int i = 0; i < COUNTOF(s_tbbMainWnd); ++i) {
+        if ((UINT)s_tbbMainWnd[i].idCommand == cmd) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+static bool _ToolbarAppendBitmapIcon(HIMAGELIST himl, UINT uResId, COLORREF mask, int* outIdx) {
+    HBITMAP hbmp = (HBITMAP)LoadImage(Globals.hInstance, MAKEINTRESOURCE(uResId), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+    if (!hbmp) {
+        return false;
+    }
+    int idx = ImageList_AddMasked(himl, hbmp, mask);
+    DeleteObject(hbmp);
+    if (outIdx) {
+        *outIdx = idx;
+    }
+    return (idx >= 0);
+}
+
+static bool _ToolbarAppendJsonlIcons(HIMAGELIST himl, bool hot, bool disabled, int* outFmtIdx, int* outUnfmtIdx) {
+    int cx = 0, cy = 0;
+    ImageList_GetIconSize(himl, &cx, &cy);
+    bool const is24 = (cx >= 24 || cy >= 24);
+    UINT ridFmt = 0, ridUnfmt = 0;
+    if (is24) {
+        ridFmt = disabled ? IDB_JSONL_FORMAT_24_DIS : (hot ? IDB_JSONL_FORMAT_24_HOT : IDB_JSONL_FORMAT_24);
+        ridUnfmt = disabled ? IDB_JSONL_UNFORMAT_24_DIS : (hot ? IDB_JSONL_UNFORMAT_24_HOT : IDB_JSONL_UNFORMAT_24);
+    } else {
+        ridFmt = disabled ? IDB_JSONL_FORMAT_16_DIS : (hot ? IDB_JSONL_FORMAT_16_HOT : IDB_JSONL_FORMAT_16);
+        ridUnfmt = disabled ? IDB_JSONL_UNFORMAT_16_DIS : (hot ? IDB_JSONL_UNFORMAT_16_HOT : IDB_JSONL_UNFORMAT_16);
+    }
+
+    int iFmt = -1, iUnfmt = -1;
+    if (!_ToolbarAppendBitmapIcon(himl, ridFmt, RGB(255, 0, 255), &iFmt)) {
+        return false;
+    }
+    if (!_ToolbarAppendBitmapIcon(himl, ridUnfmt, RGB(255, 0, 255), &iUnfmt)) {
+        return false;
+    }
+    if (outFmtIdx) {
+        *outFmtIdx = iFmt;
+    }
+    if (outUnfmtIdx) {
+        *outUnfmtIdx = iUnfmt;
+    }
+    return true;
+}
+
 
 //==== Toolbar Style ==========================================================
 #define NP3_WS_TOOLBAR (WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS |                          \
@@ -3147,6 +3201,10 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     DeleteObject(hbmp);
     hbmp = NULL;
 
+    int iJsonlFmt = -1;
+    int iJsonlUnfmt = -1;
+    _ToolbarAppendJsonlIcons(himl, false, false, &iJsonlFmt, &iJsonlUnfmt);
+
     SendMessage(Globals.hwndToolbar,TB_SETIMAGELIST,0,(LPARAM)himl);
 
 
@@ -3171,6 +3229,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     }
     if (hbmp) {
         himl = NP3Util_CreateScaledImageListFromBitmap(hwnd, hbmp);
+        _ToolbarAppendJsonlIcons(himl, true, false, NULL, NULL);
         DeleteObject(hbmp);
         hbmp = NULL;
         SendMessage(Globals.hwndToolbar, TB_SETHOTIMAGELIST, 0, (LPARAM)himl);
@@ -3199,6 +3258,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     }
     if (hbmp) {
         himl = NP3Util_CreateScaledImageListFromBitmap(hwnd, hbmp);
+        _ToolbarAppendJsonlIcons(himl, false, true, NULL, NULL);
         DeleteObject(hbmp);
         hbmp = NULL;
         SendMessage(Globals.hwndToolbar, TB_SETDISABLEDIMAGELIST, 0, (LPARAM)himl);
@@ -3222,6 +3282,15 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     if (hbmpCopy) {
         DeleteObject(hbmpCopy);
         hbmpCopy = NULL;
+    }
+
+    int const idxJsonFmtBtn = _ToolbarButtonIndexByCmd(IDT_JSONL_FORMAT);
+    int const idxJsonUnfmtBtn = _ToolbarButtonIndexByCmd(IDT_JSONL_UNFORMAT);
+    if ((idxJsonFmtBtn >= 0) && (iJsonlFmt >= 0)) {
+        s_tbbMainWnd[idxJsonFmtBtn].iBitmap = iJsonlFmt;
+    }
+    if ((idxJsonUnfmtBtn >= 0) && (iJsonlUnfmt >= 0)) {
+        s_tbbMainWnd[idxJsonUnfmtBtn].iBitmap = iJsonlUnfmt;
     }
 
     // Load toolbar labels
@@ -4335,6 +4404,8 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_EDIT_BASE64ENCODE, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_BASE64DECODE, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_B64DECODESEL, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_JSONL_FORMAT, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_JSONL_UNFORMAT, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_PATH2URL, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_URL2PATH, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_INVERTBACKSLASH, !se && !ro);
@@ -5807,6 +5878,14 @@ static bool _HandleEditTextTransform(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM
         EditBase64Code(Globals.hwndEdit, false, iEncoding);
     }
     break;
+
+    case IDM_EDIT_JSONL_FORMAT:
+        EditJSONLFormat(false);
+        break;
+
+    case IDM_EDIT_JSONL_UNFORMAT:
+        EditJSONLFormat(true);
+        break;
 
 
     case IDM_EDIT_URL2PATH: {
@@ -7579,6 +7658,8 @@ static const struct { unsigned idt; unsigned idm; } s_ToolbarDispatch[] = {
     { IDT_EDIT_PASTE,              IDM_EDIT_PASTE },
     { IDT_EDIT_FIND,               IDM_EDIT_FIND },
     { IDT_EDIT_REPLACE,            IDM_EDIT_REPLACE },
+    { IDT_JSONL_FORMAT,            IDM_EDIT_JSONL_FORMAT },
+    { IDT_JSONL_UNFORMAT,          IDM_EDIT_JSONL_UNFORMAT },
     { IDT_GREP_WIN_TOOL,           IDM_GREP_WIN_SEARCH },
     { IDT_VIEW_WORDWRAP,           IDM_VIEW_WORDWRAP },
     { IDT_VIEW_ZOOMIN,             IDM_VIEW_ZOOMIN },
@@ -10128,6 +10209,8 @@ static void  _UpdateToolbarDelayed()
     //EnableTool(Globals.hwndToolbar, ,b2);
     //EnableTool(Globals.hwndToolbar, IDT_EDIT_FINDPREV,b2 && !StrIsEmptyA(s_FindReplaceData.szFind));
     EnableTool(Globals.hwndToolbar, IDT_EDIT_REPLACE, b2 && !ro);
+    EnableTool(Globals.hwndToolbar, IDT_JSONL_FORMAT, !b1 && !ro);
+    EnableTool(Globals.hwndToolbar, IDT_JSONL_UNFORMAT, !b1 && !ro);
 
     EnableTool(Globals.hwndToolbar, IDT_EDIT_CUT, !b1 && !ro);
     EnableTool(Globals.hwndToolbar, IDT_EDIT_COPY, !b1 && !ro);

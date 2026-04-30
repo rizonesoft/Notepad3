@@ -120,6 +120,18 @@ IDB_NEXT                BITMAP                  "Next.bmp"
 IDB_PREV                BITMAP                  "Prev.bmp"
 IDB_PICK                BITMAP                  "Pick.bmp"
 IDB_ENCODING            BITMAP                  "Encoding.bmp"
+IDB_JSONL_FORMAT_16     BITMAP                  "JsonlFormat16.bmp"
+IDB_JSONL_UNFORMAT_16   BITMAP                  "JsonlUnformat16.bmp"
+IDB_JSONL_FORMAT_16_HOT BITMAP                  "JsonlFormat16Hot.bmp"
+IDB_JSONL_UNFORMAT_16_HOT BITMAP                "JsonlUnformat16Hot.bmp"
+IDB_JSONL_FORMAT_16_DIS BITMAP                  "JsonlFormat16Dis.bmp"
+IDB_JSONL_UNFORMAT_16_DIS BITMAP                "JsonlUnformat16Dis.bmp"
+IDB_JSONL_FORMAT_24     BITMAP                  "JsonlFormat24.bmp"
+IDB_JSONL_UNFORMAT_24   BITMAP                  "JsonlUnformat24.bmp"
+IDB_JSONL_FORMAT_24_HOT BITMAP                  "JsonlFormat24Hot.bmp"
+IDB_JSONL_UNFORMAT_24_HOT BITMAP                "JsonlUnformat24Hot.bmp"
+IDB_JSONL_FORMAT_24_DIS BITMAP                  "JsonlFormat24Dis.bmp"
+IDB_JSONL_UNFORMAT_24_DIS BITMAP                "JsonlUnformat24Dis.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //

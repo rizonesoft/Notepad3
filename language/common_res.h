@@ -120,6 +120,8 @@
 #define IDT_GREP_WIN_TOOL               11029
 #define IDT_VIEW_RESETZOOM              11030
 #define IDT_VIEW_NEW_WINDOW             11031
+#define IDT_JSONL_FORMAT                11032
+#define IDT_JSONL_UNFORMAT              11033
 
 #define IDS_MUI_APPTITLE_ELEVATED       12006
 #define IDS_MUI_APPTITLE_PASTEBOARD     12007
@@ -286,6 +288,18 @@
 #define IDB_PREV                        16202
 #define IDB_PICK                        16203
 #define IDB_ENCODING                    16204
+#define IDB_JSONL_FORMAT_16             16205
+#define IDB_JSONL_UNFORMAT_16           16206
+#define IDB_JSONL_FORMAT_16_HOT         16207
+#define IDB_JSONL_UNFORMAT_16_HOT       16208
+#define IDB_JSONL_FORMAT_16_DIS         16209
+#define IDB_JSONL_UNFORMAT_16_DIS       16210
+#define IDB_JSONL_FORMAT_24             16211
+#define IDB_JSONL_UNFORMAT_24           16212
+#define IDB_JSONL_FORMAT_24_HOT         16213
+#define IDB_JSONL_UNFORMAT_24_HOT       16214
+#define IDB_JSONL_FORMAT_24_DIS         16215
+#define IDB_JSONL_UNFORMAT_24_DIS       16216
 
 #define IDC_COPY                        16300
 
@@ -747,6 +761,8 @@
 #define IDM_EDIT_CUT_MARKED             40391
 #define IDM_EDIT_COPY_MARKED            40392
 #define IDM_EDIT_DELETE_MARKED          40393
+#define IDM_EDIT_JSONL_FORMAT           40394
+#define IDM_EDIT_JSONL_UNFORMAT         40395
 
 #define IDM_VIEW_SCHEME                 41001
 #define IDM_VIEW_USE2NDDEFAULT          41002

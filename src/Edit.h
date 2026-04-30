@@ -55,6 +55,7 @@ void EditEscapeCChars(HWND hwnd);
 void EditUnescapeCChars(HWND hwnd);
 void EditChar2Hex(HWND hwnd);
 void EditHex2Char(HWND hwnd);
+void EditJSONLFormat(bool bUnformat);
 void EditFindMatchingBrace();
 void EditSelectToMatchingBrace();
 void EditModifyNumber(HWND hwnd, bool bIncrease);
