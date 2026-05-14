@@ -190,32 +190,32 @@ BEGIN
     IDS_MUI_CREATEINI_FAIL  "Errore nella creazione del file delle impostazioni"
     IDS_MUI_WRITEINI_FAIL   "Errore nella scrittura del file delle impostazioni"
     IDS_MUI_INIFILE_READONLY
-                            "Il file di configurazione è in Sola Lettura - Ignorare e sovrascrivere le impostazioni?"
+                            "Il file di configurazione è in sola lettura - Vuoi ignorare e sovrascrivere le impostazioni?"
     IDS_MUI_SETTINGSNOTSAVED
                             "Non è stato trovato un file delle impostazioni\nPer conservare le modifiche agli stili, salva le impostazioni adesso (F7) oppure ritorna alla configurazione degli Schemi (Ctrl+F12) ed esporta gli stili"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "Attivare le impostazioni salvate riavviando l'applicazione?\n\n%s"
-    IDS_MUI_RELOADCFGSEX     "Continuando senza riavviare, le impostazioni salvate non sono applicate e saranno sovrascritte dalle impostazioni interne all'uscita del programma!"
-    IDS_MUI_EXPORT_FAIL      "Errore nell'esportazione degli Stili su '%s'"
-    IDS_MUI_REGEX_INVALID    "Errore nella valutazione dell'espressione regolare. La RegExp non è valida!"
-    IDS_MUI_DROP_NO_FILE     "Nessun nome file valido\nSe stai facendo drag-n-drop da una applicazione 32-bit,\nrilascia il file nella barra strumenti di Notepad3"
-    IDS_MUI_DROP_CAP_EXCEEDED "Dropped more files than the configured limit (%i). Increase Settings2.MaxFileDropInstances if needed."
-    IDS_MUI_URL_DIR_EXISTS   "La cartella specificata nella URL esiste!"
-    IDS_MUI_URL_FILE_EXISTS  "Il file specificato nella URL esiste!"
-    IDS_MUI_URL_PATH_NOT_FOUND
-                             "Il percorso specificato nella URL non è stato trovato!"
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click per aprire il file"
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click per aprire il link nel browser"
-    IDS_MUI_UNMATCHED_BRACE  "Mancata corrispondenza parentesi graffe"
+    IDS_MUI_RELOADSETTINGS     "Attivare le impostazioni salvate riavviando l'applicazione?\n\n%s"
+    IDS_MUI_RELOADCFGSEX       "Continuando senza riavviare, le impostazioni salvate non sono applicate e saranno sovrascritte dalle impostazioni interne all'uscita del programma!"
+    IDS_MUI_EXPORT_FAIL        "Errore nell'esportazione degli Stili su '%s'"
+    IDS_MUI_REGEX_INVALID      "Errore nella valutazione dell'espressione regolare. La RegExp non è valida!"
+    IDS_MUI_DROP_NO_FILE       "Nessun nome file valido\nSe stai facendo drag-n-drop da una applicazione 32-bit,\nrilascia il file nella barra strumenti di Notepad3"
+    IDS_MUI_DROP_CAP_EXCEEDED  "Sono stati rilasciati più file rispetto al limite configurato (%i). Se necessario aumentare Settings2.MaxFileDropInstances."
+    IDS_MUI_URL_DIR_EXISTS     "La cartella specificata nella URL esiste!"
+    IDS_MUI_URL_FILE_EXISTS    "Il file specificato nella URL esiste!"
+    IDS_MUI_URL_PATH_NOT_FOUND 
+                               "Il percorso specificato nella URL non è stato trovato!"
+    IDS_MUI_URL_OPEN_FILE      "\nAlt + Click per aprire il file"
+    IDS_MUI_URL_OPEN_BROWSER   "\nCtrl + Click per aprire il link nel browser"
+    IDS_MUI_UNMATCHED_BRACE    "Mancata corrispondenza parentesi graffe"
     IDS_MUI_NO_ENCLOSING_BRACE "Manca parentesi graffa di chiusura"
-    IDS_MUI_INF_PRSVFILEMODTM
-                             "Conservazione della data di ultima modifica originale abilitata\nQuesta opzione rimarrà attiva per questa sessione!"
-    IDS_MUI_OUT_OFF_OCCMRK   "Marcatori occorrenza in esaurimento (Segnalibro/evidenziatura)!"
-    IDS_MUI_DOCUMENT_READONLY
-                             "Il documento è bloccato per la sola visualizzazione. Vuoi mantenere il blocco per prevenire le modifiche?"
+    IDS_MUI_INF_PRSVFILEMODTM  
+                               "Conservazione della data di ultima modifica originale abilitata\nQuesta opzione rimarrà attiva per questa sessione!"
+    IDS_MUI_OUT_OFF_OCCMRK     "Marcatori occorrenza in esaurimento (Segnalibro/evidenziatura)!"
+    IDS_MUI_DOCUMENT_READONLY  
+                               "Il documento è bloccato per la sola visualizzazione. Vuoi mantenere il blocco per prevenire le modifiche?"
 END
 
 STRINGTABLE
