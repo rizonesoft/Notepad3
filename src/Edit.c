@@ -112,8 +112,24 @@ static LPCWSTR const s_pUnicodeRegEx = L"(\\\\[uU|xX]([0-9a-fA-F]){4}|\\\\[xX]([
                             "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*+\\)|[-" HYPLNK_REGEX_VALID_CDPT "?!:,.])*"\
                             "(?:\\([-" HYPLNK_REGEX_VALID_CDPT "?!:,.]*+\\)|[-" HYPLNK_REGEX_VALID_CDPT "])"
 
+// Bare-path-with-line-spec detection. Conservative (Approach B): only paths
+// followed by a digit suffix `:N`, `:N:M`, or `(N)` are detected — that's a
+// strong signal the token is a file reference (compiler error, log entry,
+// build output) rather than a noun in prose. Avoids the false-positive
+// risk of hotspotting any drive-letter substring.
+//
+// Prefix arms: drive letter, UNC `\\host\share\`, or relative `.\`/`..\`.
+// Leading lookbehind prevents accidental matches inside identifiers (e.g. a
+// stray `xC:\foo:42` wouldn't start at the `C`). Body chars exclude the
+// token-boundary set [\s'`"<>|*,;].
+#define HYPLNK_REGEX_FILEREF "(?<![A-Za-z0-9_])"\
+                             "(?:[A-Za-z]:[\\\\/]|\\\\\\\\[^\\s\\\\/]+\\\\[^\\s\\\\/]+\\\\|\\.{1,2}[\\\\/])"\
+                             "[^\\s'`\"<>|*,;]+"\
+                             "(?::\\d+(?::\\d+)?|\\(\\d+\\))"
+
 static LPCSTR const s_pUrlRegExA = HYPLNK_REGEX_FULL;
 static LPCWSTR const s_pUrlRegEx = _W(HYPLNK_REGEX_FULL);
+static LPCWSTR const s_pFileRefRegEx = _W(HYPLNK_REGEX_FILEREF);
 
 // ----------------------------------------------------------------------------
 
@@ -8829,8 +8845,15 @@ static void _ClearIndicatorInRange(const int indicator, const int indicator2nd,
     }
 }
 
+// Scan [startPos, endPos) for regex matches and stamp the indicator(s) onto
+// each match. When bClearGaps is true, the regions BETWEEN matches (and the
+// trailing region after the last match) are cleared first — used for the
+// authoritative URL pass. When false, the function is purely additive —
+// used to LAYER a second regex onto the same indicator without undoing the
+// first pass's matches.
 static void _UpdateIndicators(const int indicator, const int indicator2nd,
-                              LPCWSTR regExpr, DocPos startPos, DocPos endPos)
+                              LPCWSTR regExpr, DocPos startPos, DocPos endPos,
+                              bool bClearGaps)
 {
     if (endPos < 0) {
         endPos = Sci_GetDocEndPosition();
@@ -8845,26 +8868,25 @@ static void _UpdateIndicators(const int indicator, const int indicator2nd,
         return;
     }
 
-    // --------------------------------------------------------------------------
-
     DocPos start = startPos;
     DocPos end = endPos;
     do {
-
         DocPos const start_m = start;
         DocPos const end_m   = end;
         DocPos const iPos = _FindInTarget(regExpr, SCFIND_REGEXP, &start, &end, true, FRMOD_IGNORE);
 
         if (iPos < 0) {
-            // not found
-            _ClearIndicatorInRange(indicator, indicator2nd, start_m, end_m);
+            if (bClearGaps) {
+                _ClearIndicatorInRange(indicator, indicator2nd, start_m, end_m);
+            }
             break;
         }
         DocPos const mlen = end - start;
         if ((mlen <= 0) || (end > endPos)) {
-            // wrong match
-            _ClearIndicatorInRange(indicator, indicator2nd, start_m, end_m);
-            break; // wrong match
+            if (bClearGaps) {
+                _ClearIndicatorInRange(indicator, indicator2nd, start_m, end_m);
+            }
+            break;
         }
 
         // URL-specific: if match ends with single-quote and is preceded by one, strip trailing quote
@@ -8875,7 +8897,9 @@ static void _UpdateIndicators(const int indicator, const int indicator2nd,
             }
         }
 
-        _ClearIndicatorInRange(indicator, indicator2nd, start_m, end);
+        if (bClearGaps) {
+            _ClearIndicatorInRange(indicator, indicator2nd, start_m, end);
+        }
 
         SciCall_SetIndicatorCurrent(indicator);
         SciCall_IndicatorFillRange(start, mlen_adj);
@@ -8884,12 +8908,9 @@ static void _UpdateIndicators(const int indicator, const int indicator2nd,
             SciCall_IndicatorFillRange(start, mlen_adj);
         }
 
-        // next occurrence
         start = end;
         end = endPos;
-
     } while (start < end);
-
 }
 
 //=============================================================================
@@ -8907,23 +8928,26 @@ void EditUpdateIndicators(DocPos startPos, DocPos endPos, bool bClearOnly)
         return;
     }
     if (Settings.HyperlinkHotspot) {
-        _UpdateIndicators(INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, s_pUrlRegEx, startPos, endPos);
+        _UpdateIndicators(INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, s_pUrlRegEx, startPos, endPos, true);
+        // Layer bare-path-with-line-spec matches onto the same indicator —
+        // additive (bClearGaps=false) so the URL matches above survive.
+        _UpdateIndicators(INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, s_pFileRefRegEx, startPos, endPos, false);
     } else {
         _ClearIndicatorInRange(INDIC_NP3_HYPERLINK, INDIC_NP3_HYPERLINK_U, startPos, endPos);
     }
 
     if (IsColorDefHotspotEnabled()) {
         if (Settings.ColorDefHotspot < 3) {
-            _UpdateIndicators(INDIC_NP3_COLOR_DEF, -1, s_pColorRegEx, startPos, endPos);
+            _UpdateIndicators(INDIC_NP3_COLOR_DEF, -1, s_pColorRegEx, startPos, endPos, true);
         } else {
-            _UpdateIndicators(INDIC_NP3_COLOR_DEF, -1, s_pColorRegEx_Tr, startPos, endPos);
+            _UpdateIndicators(INDIC_NP3_COLOR_DEF, -1, s_pColorRegEx_Tr, startPos, endPos, true);
         }
     } else {
         _ClearIndicatorInRange(INDIC_NP3_COLOR_DEF, INDIC_NP3_COLOR_DEF_T, startPos, endPos);
     }
 
     if (Settings.HighlightUnicodePoints) {
-        _UpdateIndicators(INDIC_NP3_UNICODE_POINT, -1, s_pUnicodeRegEx, startPos, endPos);
+        _UpdateIndicators(INDIC_NP3_UNICODE_POINT, -1, s_pUnicodeRegEx, startPos, endPos, true);
     } else {
         _ClearIndicatorInRange(INDIC_NP3_UNICODE_POINT, -1, startPos, endPos);
     }

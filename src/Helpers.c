@@ -34,11 +34,6 @@
 #include "DarkMode/DarkMode.h"
 #include "Version.h"
 
-#pragma warning(push)
-#pragma warning(disable : 4201) // union/struct w/o name
-#include "tinyexprcpp/tinyexpr_cif.h"
-#pragma warning(pop)
-
 #include "Scintilla.h"
 
 
@@ -1138,34 +1133,6 @@ void PathFixBackslashes(LPWSTR lpsz)
 
 //=============================================================================
 //
-//  SplitFilePathLineNum()
-//
-bool SplitFilePathLineNum(LPWSTR lpszPath, int* lineNum)
-{
-
-    LPWSTR const lpszSplit = StrRChr(lpszPath, NULL, L':');
-
-    bool res = false;
-    if (lpszSplit) {
-        char       chLnNumber[128];
-        char const defchar = (char)0x24;
-        WideCharToMultiByte(CP_ACP, (WC_COMPOSITECHECK | WC_DISCARDNS), &lpszSplit[1], -1, chLnNumber, COUNTOF(chLnNumber), &defchar, NULL);
-        te_int_t iExprError = true;
-        int const ln = (int)te_interp(chLnNumber, &iExprError);
-        if (!iExprError) {
-            res = true;
-            lpszSplit[0] = L'\0'; // split
-            if (lineNum) {
-                *lineNum = ln;
-            }
-        }
-    }
-    return res;
-}
-
-
-//=============================================================================
-//
 //  _IsAllDigitsW() - non-empty wide string consisting solely of ASCII digits
 //
 static inline bool _IsAllDigitsW(LPCWSTR s)
@@ -1201,6 +1168,29 @@ static inline void _StripCommonQuoting(HSTRINGW hstr)
 
 //=============================================================================
 //
+//  SplitFilePathLineNum()
+//
+//  Strips a trailing ":N" digit-only line-number suffix from lpszPath in
+//  place and writes N into *lineNum (if non-NULL). Returns true on a strip.
+//  No expression evaluation — `foo:42` works; `foo:42+1` does NOT.
+//
+bool SplitFilePathLineNum(LPWSTR lpszPath, int* lineNum)
+{
+    LPWSTR const lpszSplit = StrRChr(lpszPath, NULL, L':');
+    if (!lpszSplit || !_IsAllDigitsW(lpszSplit + 1)) {
+        return false;
+    }
+    int const ln = _wtoi(lpszSplit + 1);
+    lpszSplit[0] = L'\0'; // split in place
+    if (lineNum) {
+        *lineNum = ln;
+    }
+    return true;
+}
+
+
+//=============================================================================
+//
 //  SplitFilePathLineColNum()
 //
 //  Strips an optional trailing line/column suffix from lpszPath in place.
@@ -1208,7 +1198,7 @@ static inline void _StripCommonQuoting(HSTRINGW hstr)
 //      foo.c(42)        -> line 42
 //      foo.c,42         -> line 42
 //      foo.c:42:7       -> line 42, column 7
-//      foo.c:<expr>     -> falls through to SplitFilePathLineNum (te_interp)
+//      foo.c:42         -> falls through to SplitFilePathLineNum (single colon)
 //
 //  Drive-letter colons ("C:\...") are never treated as line separators.
 //  Returns true if a suffix was stripped.
@@ -1292,7 +1282,7 @@ bool SplitFilePathLineColNum(LPWSTR lpszPath, int* lineNum, int* colNum)
         *lastColon = saved;
     }
 
-    // Single-colon fallback (preserves te_interp expression support)
+    // Single-colon fallback: digit-only :N parse.
     return SplitFilePathLineNum(lpszPath, lineNum);
 }
 
@@ -1318,12 +1308,62 @@ static inline bool _IsTokenBoundary(char c)
 
 //=============================================================================
 //
+//  _TryMarkdownLinkSpan() - if caret sits inside `(...)` preceded by `]` on
+//                            the same line, return the inner (url) span.
+//                            Handles nested parens via depth counting.
+//
+static bool _TryMarkdownLinkSpan(DocPos pos, DocPos lineStart, DocPos lineEnd,
+                                  DocPos* outStart, DocPos* outEnd)
+{
+    DocPos openP = -1;
+    int depth = 0;
+    for (DocPos p = pos; p > lineStart; --p) {
+        char const c = SciCall_GetCharAt(p - 1);
+        if (c == ')') {
+            ++depth;
+        }
+        else if (c == '(') {
+            if (depth == 0) {
+                if (p - 1 > lineStart && SciCall_GetCharAt(p - 2) == ']') {
+                    openP = p - 1;
+                }
+                break;
+            }
+            --depth;
+        }
+    }
+    if (openP < 0) {
+        return false;
+    }
+    int d2 = 0;
+    for (DocPos p = pos; p < lineEnd; ++p) {
+        char const c = SciCall_GetCharAt(p);
+        if (c == '(') {
+            ++d2;
+        }
+        else if (c == ')') {
+            if (d2 == 0) {
+                *outStart = openP + 1;
+                *outEnd = p;
+                return true;
+            }
+            --d2;
+        }
+    }
+    return false;
+}
+
+
+//=============================================================================
+//
 //  ExtractSelectionOrTokenAtCaret()
 //
 //  Returns a freshly-allocated HSTRINGW (caller must StrgDestroy()) holding
 //  the current selection, or - if the selection is empty - the span around
 //  the caret bounded by [\s'`"<>|*,;]. Newline-truncates selections.
 //  Strips surrounding whitespace and quote-like characters.
+//  Special-cases Markdown link targets: caret inside `[label](url)` parens
+//  grabs `url` rather than expanding outward.
 //
 HSTRINGW ExtractSelectionOrTokenAtCaret(void)
 {
@@ -1349,13 +1389,16 @@ HSTRINGW ExtractSelectionOrTokenAtCaret(void)
         DocLn  const ln = SciCall_LineFromPosition(pos);
         DocPos const lineStart = SciCall_PositionFromLine(ln);
         DocPos const lineEnd = SciCall_GetLineEndPosition(ln);
-        byteStart = pos;
-        while (byteStart > lineStart && !_IsTokenBoundary(SciCall_GetCharAt(byteStart - 1))) {
-            --byteStart;
-        }
-        byteEnd = pos;
-        while (byteEnd < lineEnd && !_IsTokenBoundary(SciCall_GetCharAt(byteEnd))) {
-            ++byteEnd;
+
+        if (!_TryMarkdownLinkSpan(pos, lineStart, lineEnd, &byteStart, &byteEnd)) {
+            byteStart = pos;
+            while (byteStart > lineStart && !_IsTokenBoundary(SciCall_GetCharAt(byteStart - 1))) {
+                --byteStart;
+            }
+            byteEnd = pos;
+            while (byteEnd < lineEnd && !_IsTokenBoundary(SciCall_GetCharAt(byteEnd))) {
+                ++byteEnd;
+            }
         }
     }
 

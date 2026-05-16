@@ -2,6 +2,8 @@
 
 Notepad3 stores its settings in a portable INI file (`Notepad3.ini`). Press **Ctrl+F7** to open it directly in the editor. Most `[Settings2]` changes require restarting Notepad3.
 
+> Path-handling behaviour controlled by keys below (`AtomicFileSave`, `ResolveUNCPaths`, `DefaultDirectory`, `OpenWithDir`, `FavoritesDir`, `HyperlinkShellExURLWithApp`, `HyperlinkFileProtocolVerb`, `ShowHypLnkToolTip`, …) is summarised in [`../paths/FilePathHandling.md`](../paths/FilePathHandling.md).
+
 ---
 
 ## `[Notepad3]`

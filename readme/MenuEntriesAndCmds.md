@@ -8,6 +8,7 @@ A user-facing reference for every command exposed by Notepad3's menus and contex
 > - **`Notepad3.ini` reference** (every `[Settings2]` key referenced below): [`config/Configuration.md`](config/Configuration.md).
 > - **Focused View** in depth: [`focusedview/FocusedView.md`](focusedview/FocusedView.md).
 > - **Encryption** in depth: [`encryption/Encryption.md`](encryption/Encryption.md).
+> - **File-path handling** — hyperlinks, selection commands, line/column suffixes, anchor rules: [`paths/FilePathHandling.md`](paths/FilePathHandling.md).
 > - **MiniPath** (the bundled file browser launched with `Ctrl+M`): [`minipath/`](minipath/).
 > - **FAQ**, including the Notepad2 migration table: [`faq/FAQ.md`](faq/FAQ.md).
 
@@ -321,6 +322,8 @@ Less-frequently-used utilities and selection commands.
 | **Select To Previous** | `Ctrl+Alt+Shift+F2` | Extend the selection backward to the previous match. |
 | **Select Word or Lines** | `Ctrl+Spc` | Select the word at the caret; press again to extend to the whole line. |
 | **Multi-Select All Matches** | `Ctrl+Shift+Spc` | Place multi-carets at every occurrence of the word at the caret (true multi-selection, edits affect all). |
+| **Open Containing Folder of Selection** | — | Resolve the selection (or token at the caret) to a path and reveal it in Windows Explorer. For relative paths the anchor is the current document's directory, falling back to the working directory. Greyed out when there is no selection and no word at the caret. See [`paths/FilePathHandling.md`](paths/FilePathHandling.md). |
+| **Open File from Selection** | — | Same resolution as above; loads the file into Notepad3 (jumping to a parsed `:line` if present) or opens the file-open dialog rooted at the resolved directory. See [`paths/FilePathHandling.md`](paths/FilePathHandling.md). |
 | **Split Undo Transaction at Line-Breaks** | — | Toggle: when on, every newline boundary becomes an undo checkpoint, so `Ctrl+Z` rolls back line-by-line instead of by typing run. |
 
 ### Bookmarks

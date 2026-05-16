@@ -1,0 +1,422 @@
+; Notepad3 lexer test fixtures - 'Open File from Selection' targets.
+;
+; Each entry appears twice: (1) file:// URL with absolute path,
+; (2) the same target as a relative path resolved via the
+; document-anchor (this file's directory).
+;
+; Usage: place the caret on a line (or select the line text) and
+; invoke Edit > Open File from Selection.  Files whose names
+; contain spaces must be selected explicitly - whitespace is a
+; token boundary when no selection is active.
+
+; --- styleLexABAQUS ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexABAQUS/example.inp
+styleLexABAQUS/example.inp
+
+; --- styleLexAHK2 ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexAHK2/lexer_ahk_v2_smoke.ahk2
+styleLexAHK2/lexer_ahk_v2_smoke.ahk2
+
+; --- styleLexAHKL ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexAHKL/AHKL_Test.ahk
+styleLexAHKL/AHKL_Test.ahk
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexAHKL/lexer_ahk_v1_smoke.ahk
+styleLexAHKL/lexer_ahk_v1_smoke.ahk
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexAHKL/NP3_Test.ahk
+styleLexAHKL/NP3_Test.ahk
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexAHKL/NP3_Test_Gui.ahk
+styleLexAHKL/NP3_Test_Gui.ahk
+
+; --- styleLexANSI ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexANSI/acme.nfo
+styleLexANSI/acme.nfo
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexANSI/DEADLINE.nfo
+styleLexANSI/DEADLINE.nfo
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexANSI/file01_id.diz
+styleLexANSI/file01_id.diz
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexANSI/file02_id.diz
+styleLexANSI/file02_id.diz
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexANSI/file03_id.diz
+styleLexANSI/file03_id.diz
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexANSI/FILE_ID.DIZ
+styleLexANSI/FILE_ID.DIZ
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexANSI/jerry.nfo
+styleLexANSI/jerry.nfo
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexANSI/NFO_01%20-%20BOX.nfo
+styleLexANSI/NFO_01 - BOX.nfo
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexANSI/NFO_02%20-%20PENTIUM.nfo
+styleLexANSI/NFO_02 - PENTIUM.nfo
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexANSI/wwc94.nfo
+styleLexANSI/wwc94.nfo
+
+; --- styleLexASM ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexASM/lowhelpr.asm
+styleLexASM/lowhelpr.asm
+
+; --- styleLexAU3 ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexAU3/clipboard_logger.au3
+styleLexAU3/clipboard_logger.au3
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexAU3/Configure_NP3%20%28Craigo-%29.au3
+styleLexAU3/Configure_NP3 (Craigo-).au3
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexAU3/environment.au3
+styleLexAU3/environment.au3
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexAU3/evernote_details.au3
+styleLexAU3/evernote_details.au3
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexAU3/free_diskspace.au3
+styleLexAU3/free_diskspace.au3
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexAU3/get_putty_sessions.au3
+styleLexAU3/get_putty_sessions.au3
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexAU3/logoff.au3
+styleLexAU3/logoff.au3
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexAU3/security_eventlog.au3
+styleLexAU3/security_eventlog.au3
+
+; --- styleLexAVS ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexAVS/Sample_AVS.avs
+styleLexAVS/Sample_AVS.avs
+
+; --- styleLexAwk ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexAwk/mve.awk
+styleLexAwk/mve.awk
+
+; --- styleLexBASH ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexBASH/autogen.sh
+styleLexBASH/autogen.sh
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexBASH/backup.sh
+styleLexBASH/backup.sh
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexBASH/gawk.csh
+styleLexBASH/gawk.csh
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexBASH/gettext.sh
+styleLexBASH/gettext.sh
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexBASH/perlbin.csh
+styleLexBASH/perlbin.csh
+
+; --- styleLexBAT ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexBAT/BAT_01.bat
+styleLexBAT/BAT_01.bat
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexBAT/CMD_01.cmd
+styleLexBAT/CMD_01.cmd
+
+; --- styleLexCmake ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCmake/minizip-exports.cmake
+styleLexCmake/minizip-exports.cmake
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCmake/symbols.cmake
+styleLexCmake/symbols.cmake
+
+; --- styleLexCOFFEESCRIPT ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCOFFEESCRIPT/coffeelint.coffee
+styleLexCOFFEESCRIPT/coffeelint.coffee
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCOFFEESCRIPT/commandline.coffee
+styleLexCOFFEESCRIPT/commandline.coffee
+
+; --- styleLexCONF ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCONF/Example1%20of%20httpd.conf
+styleLexCONF/Example1 of httpd.conf
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCONF/Example2%20of%20httpd.conf
+styleLexCONF/Example2 of httpd.conf
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCONF/fonts.conf
+styleLexCONF/fonts.conf
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCONF/httpd%20%28issue%20%231662%29.conf
+styleLexCONF/httpd (issue #1662).conf
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCONF/jsl.node.conf
+styleLexCONF/jsl.node.conf
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCONF/mscormmc.cfg
+styleLexCONF/mscormmc.cfg
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCONF/WildCard.0809.cfg
+styleLexCONF/WildCard.0809.cfg
+
+; --- styleLexCPP ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCPP/Config.cpp
+styleLexCPP/Config.cpp
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCPP/DBCS.cxx
+styleLexCPP/DBCS.cxx
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCPP/DefaultLexer.cxx
+styleLexCPP/DefaultLexer.cxx
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCPP/Empty.cpp
+styleLexCPP/Empty.cpp
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCPP/Notepad3.c
+styleLexCPP/Notepad3.c
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCPP/Test_Replace%20%28issue%20%231901%29.cxx
+styleLexCPP/Test_Replace (issue #1901).cxx
+
+; --- styleLexCS ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCS/SecurityPage.cs
+styleLexCS/SecurityPage.cs
+
+; --- styleLexCSS ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCSS/markdown.css
+styleLexCSS/markdown.css
+
+; --- styleLexCSV ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCSV/Sample3.csv
+styleLexCSV/Sample3.csv
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCSV/SampleCSVFile_1kb.csv
+styleLexCSV/SampleCSVFile_1kb.csv
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCSV/SampleCSVFile_2kb.csv
+styleLexCSV/SampleCSVFile_2kb.csv
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCSV/SampleCSVFile_4kb.csv
+styleLexCSV/SampleCSVFile_4kb.csv
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexCSV/SampleCSVFile_inconsistent.csv
+styleLexCSV/SampleCSVFile_inconsistent.csv
+
+; --- styleLexD ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexD/Sample_D.d
+styleLexD/Sample_D.d
+
+; --- styleLexDart ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexDart/ExampleCode.dart
+styleLexDart/ExampleCode.dart
+
+; --- styleLexDIFF ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexDIFF/Fix%20broken%20Style%20Scheme%20Export%20%28%231409%29.diff
+styleLexDIFF/Fix broken Style Scheme Export (#1409).diff
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexDIFF/Fix%20broken%20Style%20Scheme%20Export%20%28%231409%29.patch
+styleLexDIFF/Fix broken Style Scheme Export (#1409).patch
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexDIFF/float.patch
+styleLexDIFF/float.patch
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexDIFF/No%20pre-defined%20font%20for%20Text%20Files%20%28%231445%29.diff
+styleLexDIFF/No pre-defined font for Text Files (#1445).diff
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexDIFF/No%20pre-defined%20font%20for%20Text%20Files%20%28%231445%29.patch
+styleLexDIFF/No pre-defined font for Text Files (#1445).patch
+
+; --- styleLexFortran ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexFortran/cylinder.f90
+styleLexFortran/cylinder.f90
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexFortran/Fortran_Control.f90
+styleLexFortran/Fortran_Control.f90
+
+; --- styleLexGo ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexGo/Go_goroutine_channel.go
+styleLexGo/Go_goroutine_channel.go
+
+; --- styleLexHTML ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexHTML/Design.html
+styleLexHTML/Design.html
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexHTML/MultiLang.html
+styleLexHTML/MultiLang.html
+
+; --- styleLexINNO ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexINNO/AllPagesExample.iss
+styleLexINNO/AllPagesExample.iss
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexINNO/Example3.iss
+styleLexINNO/Example3.iss
+
+; --- styleLexJAVA ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexJAVA/DecryptNotepad3.java
+styleLexJAVA/DecryptNotepad3.java
+
+; --- styleLexJS ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexJS/codepen.js
+styleLexJS/codepen.js
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexJS/environment.js
+styleLexJS/environment.js
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexJS/pythonMain.js
+styleLexJS/pythonMain.js
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexJS/test_script.js
+styleLexJS/test_script.js
+
+; --- styleLexJSON ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexJSON/Sample_JSON%20%28issue%20%233070%29.json
+styleLexJSON/Sample_JSON (issue #3070).json
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexJSON/Sample_JSON5_extended.json
+styleLexJSON/Sample_JSON5_extended.json
+
+; --- styleLexJulia ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexJulia/x.jl
+styleLexJulia/x.jl
+
+; --- styleLexKiX ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexKiX/demo.kix
+styleLexKiX/demo.kix
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexKiX/kick.kix
+styleLexKiX/kick.kix
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexKiX/kixtart.kix
+styleLexKiX/kixtart.kix
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexKiX/plt.kix
+styleLexKiX/plt.kix
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexKiX/test.kix
+styleLexKiX/test.kix
+
+; --- styleLexKotlin ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexKotlin/CommandLine%20%28issue%20%233343%29.kt
+styleLexKotlin/CommandLine (issue #3343).kt
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexKotlin/ExampleCode.kt
+styleLexKotlin/ExampleCode.kt
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexKotlin/NetworkConnectionMonitor.kts
+styleLexKotlin/NetworkConnectionMonitor.kts
+
+; --- styleLexLATEX ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexLATEX/Sample_LATEX.tex
+styleLexLATEX/Sample_LATEX.tex
+
+; --- styleLexLUA ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexLUA/Sample_LUA.lua
+styleLexLUA/Sample_LUA.lua
+
+; --- styleLexMAK ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexMAK/scintilla.mak
+styleLexMAK/scintilla.mak
+
+; --- styleLexMARKDOWN ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexMARKDOWN/README.md
+styleLexMARKDOWN/README.md
+
+; --- styleLexMATLAB ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexMATLAB/bresenham.m
+styleLexMATLAB/bresenham.m
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexMATLAB/evidence.m
+styleLexMATLAB/evidence.m
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexMATLAB/example.m
+styleLexMATLAB/example.m
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexMATLAB/ThinICAnew.m
+styleLexMATLAB/ThinICAnew.m
+
+; --- styleLexNim ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexNim/aliases.nim
+styleLexNim/aliases.nim
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexNim/sugar.nim
+styleLexNim/sugar.nim
+
+; --- styleLexNSIS ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexNSIS/GeneratorWizard.nsi
+styleLexNSIS/GeneratorWizard.nsi
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexNSIS/PortableApps.comLauncher.nsi
+styleLexNSIS/PortableApps.comLauncher.nsi
+
+; --- styleLexPAS ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexPAS/nsis.pas
+styleLexPAS/nsis.pas
+
+; --- styleLexPL ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexPL/CA.pl
+styleLexPL/CA.pl
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexPL/svn.pl
+styleLexPL/svn.pl
+
+; --- styleLexPROPS ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexPROPS/html.properties
+styleLexPROPS/html.properties
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexPROPS/INI_Notepad3_01.ini
+styleLexPROPS/INI_Notepad3_01.ini
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexPROPS/INI_Old_Reg_01.ini
+styleLexPROPS/INI_Old_Reg_01.ini
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexPROPS/usbxhci.inf
+styleLexPROPS/usbxhci.inf
+
+; --- styleLexPS ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexPS/PS1_Version_NP3.ps1
+styleLexPS/PS1_Version_NP3.ps1
+
+; --- styleLexPY ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexPY/hello_world.py
+styleLexPY/hello_world.py
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexPY/python.py
+styleLexPY/python.py
+
+; --- styleLexR ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexR/Sample_R.r
+styleLexR/Sample_R.r
+
+; --- styleLexRC ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexRC/np3_en_us.rc
+styleLexRC/np3_en_us.rc
+
+; --- styleLexRegistry ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexRegistry/REG_01.reg
+styleLexRegistry/REG_01.reg
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexRegistry/REG_02.reg
+styleLexRegistry/REG_02.reg
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexRegistry/Registry.reg
+styleLexRegistry/Registry.reg
+
+; --- styleLexRUBY ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexRUBY/test.rb
+styleLexRUBY/test.rb
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexRUBY/test_erb.rb
+styleLexRUBY/test_erb.rb
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexRUBY/test_logger.rb
+styleLexRUBY/test_logger.rb
+
+; --- styleLexRust ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexRust/Rust.rs
+styleLexRust/Rust.rs
+
+; --- styleLexSQL ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexSQL/SQL-File-10-Rows.sql
+styleLexSQL/SQL-File-10-Rows.sql
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexSQL/SQL-TestData.sql
+styleLexSQL/SQL-TestData.sql
+
+; --- styleLexTCL ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexTCL/branch_create.tcl
+styleLexTCL/branch_create.tcl
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexTCL/commit.tcl
+styleLexTCL/commit.tcl
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexTCL/option.tcl
+styleLexTCL/option.tcl
+
+; --- styleLexTEXT ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexTEXT/Find.since.certain_current.line.not.1st.line%20%28issue%20%233107%29.txt
+styleLexTEXT/Find.since.certain_current.line.not.1st.line (issue #3107).txt
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexTEXT/License.txt
+styleLexTEXT/License.txt
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexTEXT/Malayan_Problem.txt
+styleLexTEXT/Malayan_Problem.txt
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexTEXT/regex_find.txt
+styleLexTEXT/regex_find.txt
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexTEXT/strange_chacter_visual_artefacts.txt
+styleLexTEXT/strange_chacter_visual_artefacts.txt
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexTEXT/TXT_Readme_01.txt
+styleLexTEXT/TXT_Readme_01.txt
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexTEXT/TXT_Test_20_Long_Lines.txt
+styleLexTEXT/TXT_Test_20_Long_Lines.txt
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexTEXT/TXT_The_quick_brown_fox.txt
+styleLexTEXT/TXT_The_quick_brown_fox.txt
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexTEXT/TXT_vertical-selection-bug.txt
+styleLexTEXT/TXT_vertical-selection-bug.txt
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexTEXT/TXT_Word-Wrapped_1_Lines.txt
+styleLexTEXT/TXT_Word-Wrapped_1_Lines.txt
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexTEXT/TXT_Word-Wrapped_many_Lines.txt
+styleLexTEXT/TXT_Word-Wrapped_many_Lines.txt
+
+; --- styleLexTOML ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexTOML/TOML.toml
+styleLexTOML/TOML.toml
+
+; --- styleLexVB ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexVB/Sample_VB.vb
+styleLexVB/Sample_VB.vb
+
+; --- styleLexVBS ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexVBS/base.vbs
+styleLexVBS/base.vbs
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexVBS/VBS_01.vbs
+styleLexVBS/VBS_01.vbs
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexVBS/VBS_02.vbs
+styleLexVBS/VBS_02.vbs
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexVBS/wisubstg.vbs
+styleLexVBS/wisubstg.vbs
+
+; --- styleLexVerilog ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexVerilog/SystemVerilog_example.sv
+styleLexVerilog/SystemVerilog_example.sv
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexVerilog/Verilog_example.v
+styleLexVerilog/Verilog_example.v
+
+; --- styleLexVHDL ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexVHDL/Sample_VHDL.vhdl
+styleLexVHDL/Sample_VHDL.vhdl
+
+; --- styleLexXML ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexXML/MiniPath.exe.manifest
+styleLexXML/MiniPath.exe.manifest
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexXML/Sample%20of%20FFS_GUI.ffs_gui
+styleLexXML/Sample of FFS_GUI.ffs_gui
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexXML/Sample%20of%20NZB.nzb
+styleLexXML/Sample of NZB.nzb
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexXML/XML_01.xml
+styleLexXML/XML_01.xml
+
+; --- styleLexYAML ---
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexYAML/appveyor.yml
+styleLexYAML/appveyor.yml

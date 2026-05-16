@@ -4488,6 +4488,22 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
 //
 static DocPos s_iCtxMenuClickPos = -1;
 
+// Returns true if there is something to act on at this position — either a
+// non-empty selection (then pos is ignored), or a non-empty word span at
+// pos. Pass pos = -1 to test selection-only.
+static bool _HasSelectionOrWordAt(DocPos pos)
+{
+    if (!SciCall_IsSelectionEmpty()) {
+        return true;
+    }
+    if (pos < 0) {
+        return false;
+    }
+    DocPos const ws = SciCall_WordStartPosition(pos, true);
+    DocPos const we = SciCall_WordEndPosition(pos, true);
+    return (ws != we);
+}
+
 LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
     bool const bMargin  = (SCN_MARGINRIGHTCLICK == umsg);
@@ -4556,21 +4572,18 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 ModifyMenu(hStdCtxMenu, CMD_WEBACTION2, MF_BYCOMMAND | MF_STRING, CMD_WEBACTION2, Settings2.WebTmpl2MenuName);
             }
 
-            // case conversion submenu: enable based on selection or word at click position
+            // Enable selection-acting commands based on selection-or-word-at-click-position.
             s_iCtxMenuClickPos = SciCall_CharPositionFromPointClose(pt.x, pt.y);
             bool const ro = SciCall_GetReadOnly();
-            bool const se = SciCall_IsSelectionEmpty();
-            bool bHasTarget = !se;
-            if (se && (s_iCtxMenuClickPos >= 0)) {
-                DocPos const ws = SciCall_WordStartPosition(s_iCtxMenuClickPos, true);
-                DocPos const we = SciCall_WordEndPosition(s_iCtxMenuClickPos, true);
-                bHasTarget = (ws != we);
-            }
+            bool const bHasTarget = _HasSelectionOrWordAt(s_iCtxMenuClickPos);
             EnableCmd(hStdCtxMenu, CMD_CTX_UPPERCASE, bHasTarget && !ro);
             EnableCmd(hStdCtxMenu, CMD_CTX_LOWERCASE, bHasTarget && !ro);
             EnableCmd(hStdCtxMenu, CMD_CTX_INVERTCASE, bHasTarget && !ro);
             EnableCmd(hStdCtxMenu, CMD_CTX_TITLECASE, bHasTarget && !ro);
             EnableCmd(hStdCtxMenu, CMD_CTX_SENTENCECASE, bHasTarget && !ro);
+
+            EnableCmd(hStdCtxMenu, IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL, bHasTarget);
+            EnableCmd(hStdCtxMenu, IDM_EDIT_OPEN_FILE_FROM_SEL, bHasTarget);
         }
 
         // back to screen coordinates for menu display
@@ -4961,6 +4974,14 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_EDIT_INSERT_LONGDATE, !ro);
 
     EnableCmd(hmenu, IDM_EDIT_INSERT_GUID, !ro);
+
+    // The selection-based "Open …" commands need either a non-empty selection
+    // or a token at the caret. Read-only is irrelevant — neither modifies.
+    {
+        bool const bHasTarget = _HasSelectionOrWordAt(SciCall_GetCurrentPos());
+        EnableCmd(hmenu, IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL, bHasTarget);
+        EnableCmd(hmenu, IDM_EDIT_OPEN_FILE_FROM_SEL, bHasTarget);
+    }
 
     EnableCmd(hmenu, IDM_EDIT_FIND, !te);
     EnableCmd(hmenu, IDM_EDIT_SAVEFIND, !te);
@@ -6071,8 +6092,21 @@ void EditOpenContainingFolderFromSelection(void)
         return;
     }
 
+    // SHParseDisplayName doesn't reliably accept the \\?\ long-path prefix.
+    // Strip it for shell-API use: \\?\C:\… -> C:\…, \\?\UNC\server\share -> \\server\share.
+    LPCWSTR pszForShell = Path_Get(hpth);
+    WCHAR shellPath[PATHLONG_MAX_CCH];
+    if (pszForShell && StrCmpNW(pszForShell, L"\\\\?\\", 4) == 0) {
+        if (StrCmpNIW(pszForShell + 4, L"UNC\\", 4) == 0) {
+            StringCchPrintf(shellPath, COUNTOF(shellPath), L"\\\\%s", pszForShell + 8);
+        } else {
+            StringCchCopy(shellPath, COUNTOF(shellPath), pszForShell + 4);
+        }
+        pszForShell = shellPath;
+    }
+
     PIDLIST_ABSOLUTE pidl = NULL;
-    SHParseDisplayName(Path_Get(hpth), NULL, &pidl, SFGAO_BROWSABLE | SFGAO_FILESYSTEM, NULL);
+    SHParseDisplayName(pszForShell, NULL, &pidl, SFGAO_BROWSABLE | SFGAO_FILESYSTEM, NULL);
     if (pidl) {
         SHOpenFolderAndSelectItems(pidl, 0, NULL, 0);
         ILFree(pidl);
@@ -8953,6 +8987,40 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
 
 //=============================================================================
 //
+//  _IsLikelyBarePath()
+//
+//  Pure prefix-shape check mirroring HYPLNK_REGEX_FILEREF's three arms:
+//  drive letter, UNC `\\…`, or relative `.\` / `..\` (forward slashes too).
+//  Does NOT verify the path exists or follows the full token grammar — used
+//  only to decide hyperlink-click routing.
+//
+static bool _IsLikelyBarePath(LPCWSTR s)
+{
+    if (!s) {
+        return false;
+    }
+    // Drive-letter: <letter>:[\/]
+    if (((s[0] >= L'A' && s[0] <= L'Z') || (s[0] >= L'a' && s[0] <= L'z'))
+        && s[1] == L':' && (s[2] == L'\\' || s[2] == L'/')) {
+        return true;
+    }
+    // UNC: \\<host>
+    if (s[0] == L'\\' && s[1] == L'\\') {
+        return true;
+    }
+    // Relative: .\, ./, ..\, ../
+    if (s[0] == L'.' && (s[1] == L'\\' || s[1] == L'/')) {
+        return true;
+    }
+    if (s[0] == L'.' && s[1] == L'.' && (s[2] == L'\\' || s[2] == L'/')) {
+        return true;
+    }
+    return false;
+}
+
+
+//=============================================================================
+//
 //  HandleHotSpotURLClicked()
 //
 //
@@ -9011,16 +9079,38 @@ bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operatio
             DWORD dCch = COUNTOF(szUnEscW);
 
             int lineNum = -1;
-            SplitFilePathLineNum(szTextW, &lineNum);
+            // Use Col-aware splitter so (N), :N:M, ,N suffixes are all stripped
+            // — bare-path indicators include these forms.
+            SplitFilePathLineColNum(szTextW, &lineNum, NULL);
             lineNum = clampi(lineNum, 0, INT_MAX);
 
-            if (((operation & OPEN_IN_NOTEPAD3) || (operation & OPEN_NEW_NOTEPAD3)) && UrlIsFileUrl(szTextW)) {
+            // A bare Windows path that didn't go through PathCreateFromUrlW.
+            // Detected by the file-ref indicator regex (HYPLNK_REGEX_FILEREF).
+            bool const isFileScheme = UrlIsFileUrl(szTextW);
+            bool const isBarePath = !isFileScheme && _IsLikelyBarePath(szTextW);
+
+            if (((operation & OPEN_IN_NOTEPAD3) || (operation & OPEN_NEW_NOTEPAD3)) && (isFileScheme || isBarePath)) {
 
                 bool const bReuseWindow = Flags.bReuseWindow && !(operation & OPEN_NEW_NOTEPAD3);
 
-                PathCreateFromUrlW(szTextW, szUnEscW, &dCch, 0);
-                szUnEscW[INTERNET_MAX_URL_LENGTH] = L'\0'; // limit length
-                StrTrim(szUnEscW, L"/");
+                if (isFileScheme) {
+                    PathCreateFromUrlW(szTextW, szUnEscW, &dCch, 0);
+                    szUnEscW[INTERNET_MAX_URL_LENGTH] = L'\0'; // limit length
+                    StrTrim(szUnEscW, L"/");
+
+                    // Discard any trailing #fragment — anchor names are a
+                    // markup concept the editor doesn't resolve, but the file
+                    // half of the URL should still open cleanly.
+                    LPWSTR const hash = StrChrW(szUnEscW, L'#');
+                    if (hash) {
+                        *hash = L'\0';
+                    }
+                }
+                else {
+                    // Bare path: szTextW is already the filesystem path text
+                    // (line suffix already stripped above).
+                    StringCchCopy(szUnEscW, COUNTOF(szUnEscW), szTextW);
+                }
 
                 HPATHL hfile_pth = Path_Allocate(szUnEscW);
                 // Anchor relative file:// URLs to the directory of the current

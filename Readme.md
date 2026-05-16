@@ -162,6 +162,12 @@ User-facing description of every entry in Notepad3's menus and context menus, st
 
 📋 **Menu reference:** [readme/MenuEntriesAndCmds.md](readme/MenuEntriesAndCmds.md)
 
+## File-Path Handling
+
+How Notepad3 turns clickable links, selected text, and path-shaped tokens into real files — including bare paths with line specs (`file.c:42`, `file.c(42)`), `file:///` URLs, relative-path anchor rules (current document's directory → working directory), environment-variable expansion, and the two new selection commands **Open Containing Folder of Selection** / **Open File from Selection**.
+
+🗂️ **File-path reference:** [readme/paths/FilePathHandling.md](readme/paths/FilePathHandling.md)
+
 ## Keyboard Shortcuts
 
 Every key combination Notepad3 understands — file, editing, view, search, customization — grouped by menu, with Notepad2 → Notepad3 reassignments flagged.
