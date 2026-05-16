@@ -317,8 +317,8 @@ BEGIN
             MENUITEM "Markera ord eller rader\tCtrl+Spc",           IDM_EDIT_SELECTWORD
             MENUITEM "Markera alla matchningar\tCtrl+Shift+Spc",     IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "Öppna &innehållande mapp från markering",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Öppna &fil från markering",                           IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Dela ångra vid radslut",                      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
@@ -443,11 +443,11 @@ BEGIN
             MENUITEM "Växla verktygsfält",                          IDM_VIEW_TOGGLETB
             MENUITEM "Skala verktygsfält enligt DPI",               IDM_VIEW_DPISCALETB
         END
-        POPUP "Förstoring"
+        POPUP "Zooma"
         BEGIN
-            MENUITEM "Förstora\tCtrl+ +",                           IDM_VIEW_ZOOMIN
-            MENUITEM "Förminska\tCtrl+ –",                          IDM_VIEW_ZOOMOUT
-            MENUITEM "Nollställ förstoring\tCtrl+0",                IDM_VIEW_RESETZOOM
+            MENUITEM "Zooma in\tCtrl+ +",                           IDM_VIEW_ZOOMIN
+            MENUITEM "Zooma ut\tCtrl+ –",                          IDM_VIEW_ZOOMOUT
+            MENUITEM "Återställ zoomning\tCtrl+0",                IDM_VIEW_RESETZOOM
         END
         POPUP "Position"
         BEGIN
@@ -600,8 +600,8 @@ BEGIN
         MENUITEM "Öppna webbåtgärd 1",                                    CMD_WEBACTION1
         MENUITEM "Öppna webbåtgärd 2",                                    CMD_WEBACTION2
         MENUITEM SEPARATOR
-        MENUITEM "Open Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-        MENUITEM "Open File from Selection",            IDM_EDIT_OPEN_FILE_FROM_SEL
+        MENUITEM "Öppna innehållande mapp från markering", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+        MENUITEM "Öppna fil från markering",            IDM_EDIT_OPEN_FILE_FROM_SEL
         MENUITEM "Öppna Utforskaren",                            IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"
