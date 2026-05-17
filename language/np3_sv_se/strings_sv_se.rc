@@ -201,8 +201,8 @@ BEGIN
     IDS_MUI_RELOADCFGSEX     "Om du fortsätter utan att starta om kommer inställningarna inte sparas!"
     IDS_MUI_EXPORT_FAIL      "Fel vid exportering av stilinställningar ""%s"""
     IDS_MUI_REGEX_INVALID    "Fel vid utvärdering av reguljärt uttryck. Uttrycket är ogiltigt!"
-    IDS_MUI_DROP_NO_FILE     "Inget giltigt filnamn kunde hittas\nOm du drar-och-släpper från en 32-bits applikation,\nvar vänlig släpp på Notepad3s verktygsfält"
-    IDS_MUI_DROP_CAP_EXCEEDED "Dropped more files than the configured limit (%i). Increase Settings2.MaxFileDropInstances if needed."
+    IDS_MUI_DROP_NO_FILE     "Inget giltigt filnamn hämtades\nOm du drar och släpper filer från ett 32-bitarsprogram,\nsläpp dem på Notepad3s verktygsfält"
+    IDS_MUI_DROP_CAP_EXCEEDED "Fler filer än den konfigurerade gränsen (%i) har släppts. Öka Settings2.MaxFileDropInstances om det behövs."
     IDS_MUI_URL_DIR_EXISTS   "Angiven URL-mapp existerar redan!"
     IDS_MUI_URL_FILE_EXISTS  "Angiven URL-fil existerar redan!"
     IDS_MUI_URL_PATH_NOT_FOUND
