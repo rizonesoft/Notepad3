@@ -600,8 +600,8 @@ BEGIN
         MENUITEM "Otwórz Web Action 1",                       CMD_WEBACTION1
         MENUITEM "Otwórz Web Action 2",                       CMD_WEBACTION2
         MENUITEM SEPARATOR
-        MENUITEM "Open Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-        MENUITEM "Open File from Selection",            IDM_EDIT_OPEN_FILE_FROM_SEL
+        MENUITEM "Otwórz folder dotyczący zaznaczenia", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+        MENUITEM "Otwórz plik dotyczący zaznaczenia",            IDM_EDIT_OPEN_FILE_FROM_SEL
         MENUITEM "Otwórz Eksplorator plików",                  IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"
