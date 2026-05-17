@@ -36,13 +36,17 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 7.26.514.(build_#) (2026-05-14)
+Current BETA Version 7.26.517.(build_#) (2026-05-17)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.x]- .
+[.517.1]- Open file/folder from selection + bare-path hyperlink hotspots (#5885).
+[.517.1]- Open Containing Folder (sel) and Open File from Selection (#5884).
+[.517.1]- Copy as RTF (Rich-Text-Format) - keeps syntax highlighting (#5881).
+[.517.1]- Open hyperlink in background via Ctrl+Shift+LClick (#5880).
 [.514.1]- Documentation for customizing themes (#5867).
 [.514.1]- AHK v2 Lexer, fixing existing AHK_L lexer (LEX) (#5860).
 [.514.1]- Add HotStringOption to AHK lexer (LEX) (#5860).
@@ -55,6 +59,7 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.517.1]- Refactor multi-selection expression evaluation logic (#5872).
 [.514.1]- Code-cleanup and hardening (#5863).
 [.514.1]- grepWin, pass target directory on command line instead of via INI (GRE) (#5857).
 [.507.1]- Polish "Page Setup..." dialog (#5834).
@@ -70,6 +75,7 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[.517.1]- Incr/decr number handler, support bin, keep hex cases (#5883).
 [.514.1]- Drag&drop files - temp handling (immediate deleted on drop) (#5863).
 [.514.1]- AHK case insensitive (LEX) (#5860).
 [.514.1]- Lexer AHK_L minor issues (LEX) (#5860).
