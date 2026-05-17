@@ -567,28 +567,28 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_CH_MODIFIED     "Change History Marker Modified"
-    IDS_LEX_STD_CH_SAVED        "Change History Marker Saved"
-    IDS_LEX_STD_CH_REV_TO_MOD   "Change History Marker Reverted to Modified"
-    IDS_LEX_STD_CH_REV_TO_ORG   "Change History Marker Reverted to Origin"
-    IDS_LEX_2ND_CH_MODIFIED     "2nd Change History Marker Modified"
-    IDS_LEX_2ND_CH_SAVED        "2nd Change History Marker Saved"
-    IDS_LEX_2ND_CH_REV_TO_MOD   "2nd Change History Marker Reverted to Modified"
-    IDS_LEX_2ND_CH_REV_TO_ORG   "2nd Change History Marker Reverted to Origin"
+    IDS_LEX_STD_CH_MODIFIED     "Ο Δείκτης Ιστορικού Αλλαγών Τροποποιήθηκε"
+    IDS_LEX_STD_CH_SAVED        "Ο Δείκτης Ιστορικού Αλλαγών Αποθηκεύτηκε"
+    IDS_LEX_STD_CH_REV_TO_MOD   "Ο Δείκτης Ιστορικού Αλλαγών Τέθηκε στην Τροποποίηση"
+    IDS_LEX_STD_CH_REV_TO_ORG   "Ο Δείκτης Ιστορικού Αλλαγών Τέθηκε στο Αρχικό"
+    IDS_LEX_2ND_CH_MODIFIED     "Ο 2ος Δείκτης Ιστορικού Αλλαγών Τροποποιήθηκε"
+    IDS_LEX_2ND_CH_SAVED        "Ο 2ος Δείκτης Ιστορικού Αλλαγών Αποθηκεύτηκε"
+    IDS_LEX_2ND_CH_REV_TO_MOD   "Ο 2ος Δείκτης Ιστορικού Αλλαγών Τέθηκε στην Τροποποίηση"
+    IDS_LEX_2ND_CH_REV_TO_ORG   "Ο 2ος Δείκτης Ιστορικού Αλλαγών Τέθηκε στο Αρχικό"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_CSV_COL_0       "Column 0"
-    IDS_LEX_CSV_COL_1       "Column 1"
-    IDS_LEX_CSV_COL_2       "Column 2"
-    IDS_LEX_CSV_COL_3       "Column 3"
-    IDS_LEX_CSV_COL_4       "Column 4"
-    IDS_LEX_CSV_COL_5       "Column 5"
-    IDS_LEX_CSV_COL_6       "Column 6"
-    IDS_LEX_CSV_COL_7       "Column 7"
-    IDS_LEX_CSV_COL_8       "Column 8"
-    IDS_LEX_CSV_COL_9       "Column 9"
+    IDS_LEX_CSV_COL_0       "Στήλη 0"
+    IDS_LEX_CSV_COL_1       "Στήλη 1"
+    IDS_LEX_CSV_COL_2       "Στήλη 2"
+    IDS_LEX_CSV_COL_3       "Στήλη 3"
+    IDS_LEX_CSV_COL_4       "Στήλη 4"
+    IDS_LEX_CSV_COL_5       "Στήλη 5"
+    IDS_LEX_CSV_COL_6       "Στήλη 6"
+    IDS_LEX_CSV_COL_7       "Στήλη 7"
+    IDS_LEX_CSV_COL_8       "Στήλη 8"
+    IDS_LEX_CSV_COL_9       "Στήλη 9"
 END
 
 #endif    // Greek (Greece) resources
