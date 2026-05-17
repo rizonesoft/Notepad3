@@ -317,8 +317,8 @@ BEGIN
             MENUITEM "Επιλογή &λέξης ή γραμμών\tCtrl+Spc",                    IDM_EDIT_SELECTWORD
             MENUITEM "Π&ολλαπλή επιλογή όλων των συμφωνιών\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "Άνοιγμα Περικλείοντος Φακέλου από την Επιλογή",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Άνοιγμα Α&ρχείου από την Επιλογή",                           IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "&Νέα λειτουργία αναίρεσης σε κάθε αλλαγή γραμμής",      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
@@ -356,7 +356,7 @@ BEGIN
         MENUITEM "Εμφάνιση &συμβόλων αναδίπλωσης\tCtrl+Shift+7",  IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Εμφάνιση &κενών διαστημάτων\tCtrl+Shift+8",     IDM_VIEW_SHOWBLANKS
         MENUITEM "Εμφάνιση καταλή&ξεων γραμμών\tCtrl+Shift+9",    IDM_VIEW_SHOWEOLS
-        MENUITEM "Show &Non-Printable Characters",           IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Εμφάνιση μη &Εμφανών Χαρακτήρων",           IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Ενδείξεις αλλαγών"
         BEGIN
