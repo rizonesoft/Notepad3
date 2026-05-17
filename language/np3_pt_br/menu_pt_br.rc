@@ -163,7 +163,7 @@ BEGIN
         MENUITEM "&Copiar\tCtrl+C",                 IDM_EDIT_COPY
         MENUITEM "Copiar &Tudo\tAlt+C",             IDM_EDIT_COPYALL
         MENUITEM "Cop&iar Adicional\tCtrl+E",       IDM_EDIT_COPYADD
-        MENUITEM "Copy as &RTF",                    IDM_EDIT_COPYRTF
+        MENUITEM "Copiar como &RTF",                IDM_EDIT_COPYRTF
         MENUITEM "&Colar\tCtrl+V",                  IDM_EDIT_PASTE
         MENUITEM "T&rocar\tCtrl+K",                 IDM_EDIT_SWAP
         MENUITEM "&Selecionar Tudo\tCtrl+A",        IDM_EDIT_SELECTALL
@@ -317,8 +317,8 @@ BEGIN
             MENUITEM "Selecionar &Palavras ou Linhas\tCtrl+Spc",             IDM_EDIT_SELECTWORD
             MENUITEM "Multi-Seleção de &Todos os Casados\tCtrl+Shift+Spc",   IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "Abrir pasta de &trabalho da seleção",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Abrir ar&quivo da seleção",                           IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Dividir &Transações Desfeitas nas Quebras de Linha",   IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
@@ -600,9 +600,9 @@ BEGIN
         MENUITEM "Abrir Ação Web 1",                           CMD_WEBACTION1
         MENUITEM "Abrir Ação Web 2",                           CMD_WEBACTION2
         MENUITEM SEPARATOR
-        MENUITEM "Open Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-        MENUITEM "Open File from Selection",            IDM_EDIT_OPEN_FILE_FROM_SEL
-        MENUITEM "Abri Gerenciador de Arquivos",               IDM_FILE_EXPLORE_DIR
+        MENUITEM "Abrir pasta de trabalho da seleção", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+        MENUITEM "Abrir arquivo da seleção",           IDM_EDIT_OPEN_FILE_FROM_SEL
+        MENUITEM "Abrir Gerenciador de Arquivos",               IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"
     BEGIN
