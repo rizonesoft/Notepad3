@@ -79,7 +79,7 @@ BEGIN
         BEGIN
             MENUITEM "B&uscar en archivos...\tCtrl+Shift+F",   IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&Nueva ventana vacía\tAlt+N",         IDM_FILE_NEWWINDOW
+            MENUITEM "&Nueva ventana\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "&Duplicar Instancia\tAlt+Shift+N",    IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "&Relanzar con privilegios elevados",  IDM_FILE_LAUNCH_ELEVATED
@@ -90,6 +90,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Plantilla Web &1\tCtrl+Shift+1",      CMD_WEBACTION1
             MENUITEM "Plantilla Web &2\tCtrl+Shift+2",      CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Open &Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Open &File from Selection",           IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Abrir &Explorador de archivos",       IDM_FILE_EXPLORE_DIR
         END

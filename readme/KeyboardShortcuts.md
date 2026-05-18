@@ -25,8 +25,8 @@ A complete reference for the shortcuts wired into Notepad3 (`src/Notepad3.rc` ac
 
 | Shortcut | Action | Notes |
 |---|---|---|
-| `Ctrl+N` | New (clear) document | NP2 |
-| `Ctrl+F4` | New (clear) document | Alias for `Ctrl+N` (no MDI in Notepad3) |
+| `Ctrl+N` | **Smart New** — clears the current document by default, but if the selection / token at caret resolves to an **existing file**, loads it into the current window instead; if it resolves to a **directory**, opens the file-open dialog rooted there. Path detection matches *Open File from Selection* (see [`paths/FilePathHandling.md`](paths/FilePathHandling.md#2-selection-based-commands)). | NP2+ |
+| `Ctrl+F4` | Smart New (alias for `Ctrl+N`) | Inherits the same smart selection-aware behavior. (No MDI in Notepad3.) |
 | `Ctrl+O` | Open file… | NP2 |
 | `F5` | Reload current file from disk | NP2 |
 | `Ctrl+S` | Save | NP2 |
@@ -53,7 +53,7 @@ A complete reference for the shortcuts wired into Notepad3 (`src/Notepad3.rc` ac
 | Shortcut | Action | Notes |
 |---|---|---|
 | `Ctrl+Shift+F` | Search in files (grepWin) | (orig-NP2: "Recode as default encoding") |
-| `Alt+N` | Open a new empty Notepad3 window | NP2 |
+| `Alt+N` | **Smart New Window** — opens a new empty Notepad3 window by default, but if the selection / token at caret resolves to an **existing file**, spawns the new window with that file loaded (jumping to the line spec if any); if it resolves to a **directory**, the new window opens its file-open dialog there. Same path-detection rule as *Open File from Selection*. | NP2+ |
 | `Alt+Shift+N` | Duplicate current document into a new window (only when *Single File Instance* is off) | (N3) |
 | `Ctrl+L` | Launch document with its associated application | NP2 |
 | `Alt+L` | "Open with…" external program | NP2 |

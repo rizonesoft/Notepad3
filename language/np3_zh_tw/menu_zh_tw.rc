@@ -79,7 +79,7 @@ BEGIN
         BEGIN
             MENUITEM "在檔案中搜尋(&S)...\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "新增空視窗(&N)\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "新增視窗(&N)\tAlt+N",            IDM_FILE_NEWWINDOW
             MENUITEM "重複的執行個體(&D)\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "以管理員權限重新啟動(&R)",                    IDM_FILE_LAUNCH_ELEVATED
@@ -90,6 +90,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "用超連結範本 1 開啟(&1)\tCtrl+Shift+1",           CMD_WEBACTION1
             MENUITEM "用超連結範本 2 開啟(&2)\tCtrl+Shift+2",           CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Open &Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Open &File from Selection",       IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "開啟檔案總管(&F)",                      IDM_FILE_EXPLORE_DIR
         END

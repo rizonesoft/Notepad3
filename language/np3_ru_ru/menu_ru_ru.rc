@@ -79,7 +79,7 @@ BEGIN
         BEGIN
             MENUITEM "&Искать в файлах...\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&Новое пустое окно\tAlt+N",          IDM_FILE_NEWWINDOW
+            MENUITEM "&Новое окно\tAlt+N",                 IDM_FILE_NEWWINDOW
             MENUITEM "Копия &экземпляра\tAlt+Shift+N",     IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "Переоткрыть &с повышенными правами", IDM_FILE_LAUNCH_ELEVATED
@@ -90,6 +90,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Веб-шаблон &1\tCtrl+Shift+1",        CMD_WEBACTION1
             MENUITEM "Веб-шаблон &2\tCtrl+Shift+2",        CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Open &Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Open &File from Selection",          IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Открыть Прово&дник",                 IDM_FILE_EXPLORE_DIR
         END

@@ -394,7 +394,7 @@ extern "C" bool OpenSettingsFile(LPCSTR fctname)
         if (!IsIniFileCached()) {
             ResetIniFileCache();
             LoadIniFileCache(Paths.IniFile);
-            s_bIFCReadOnly = true; 
+            s_bIFCReadOnly = true;
         }
     } else {
         Globals.bCanSaveIniFile = false;
@@ -996,7 +996,7 @@ static bool _CheckAndSetIniFile(HPATHL hpth_in_out)
         Path_Release(hsearchpth);
     }
 #endif
-    
+
     if (result) {
         Path_Swap(hpth_in_out, hPathEx);
     }
@@ -1063,7 +1063,7 @@ extern "C" bool FindIniFile()
             // 1st:
             if (_HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", Paths.IniFile)) {
                 // 2nd:
-                _HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", Paths.IniFile);  
+                _HandleIniFileRedirect(_W(SAPPNAME), _W(SAPPNAME) L".ini", Paths.IniFile);
                 bFound = _CheckAndSetIniFile(Paths.IniFile);
             }
 
@@ -1173,7 +1173,7 @@ void LoadSettings()
     auto* const pPathBuffer = (wchar_t*)AllocMem(PATHLONG_MAX_CCH * sizeof(wchar_t), HEAP_ZERO_MEMORY);
 
     bool bDirtyFlag = false; // do we have to save the file on done
-    
+
     OpenSettingsFile(__func__);
 
     // --------------------------------------------------------------------------
@@ -1838,7 +1838,7 @@ void LoadSettings()
     const WCHAR *const IniSecStyles = Constants.Styles_Section;
     // --------------------------------------------------------------------------
     IniSectionGetString(IniSecStyles, L"ThemeFileName", L"", Settings.CurrentThemeName, COUNTOF(Settings.CurrentThemeName));
-    
+
     Style_Prerequisites();
 
     CloseSettingsFile(__func__, bDirtyFlag);
@@ -2546,7 +2546,7 @@ bool MRU_Delete(LPMRULIST pmru, int iIndex)
 {
     if (pmru && iIndex < MRU_MAXITEMS) {
         if (iIndex >= 0 && iIndex < pmru->iSize) {
-            
+
             _MRU_DeleteItemInIniFile(pmru->szRegKey, pmru, iIndex);
 
             if (pmru->pszItems[iIndex]) {
@@ -2640,7 +2640,7 @@ bool MRU_Load(LPMRULIST pmru, bool bFileProps)
             MRU_Empty(pmru, false, false);
 
             const WCHAR* const RegKey_Section = pmru->szRegKey;
-            int n = 0; 
+            int n = 0;
             for (int i = 0; i < pmru->iSize; ++i) {
                 WCHAR tchName[32] = { L'\0' };
                 StringCchPrintf(tchName, COUNTOF(tchName), L"%.2i", i + 1);

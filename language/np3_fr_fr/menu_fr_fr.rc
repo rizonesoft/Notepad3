@@ -79,7 +79,7 @@ BEGIN
         BEGIN
             MENUITEM "Rec&hercher dans les fichiers…\tCtrl+Maj+F",   IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "Ouvrir une &nouvelle fenêtre vide\tAlt+N",    IDM_FILE_NEWWINDOW
+            MENUITEM "&Nouvelle fenêtre\tAlt+N",                    IDM_FILE_NEWWINDOW
             MENUITEM "&Dupliquer l'instance\tAlt+Maj+N",            IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR      
             MENUITEM "&Relancer avec des droits élevés",            IDM_FILE_LAUNCH_ELEVATED
@@ -91,6 +91,9 @@ BEGIN
             MENUITEM "Modèle Web &1\tCtrl+Maj+1",                   CMD_WEBACTION1
             MENUITEM "Modèle Web &2\tCtrl+Maj+2",                   CMD_WEBACTION2
             MENUITEM SEPARATOR      
+            MENUITEM "Open &Containing Folder of Selection",        IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Open &File from Selection",                   IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM SEPARATOR
             MENUITEM "Ouvrir l'explorateur de fichiers",            IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR

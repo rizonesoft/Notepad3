@@ -79,7 +79,7 @@ BEGIN
         BEGIN
             MENUITEM "ファイル群から検索(&S)...\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "白紙の新規ウィンドウ(&N)\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "新規ウィンドウ(&N)\tAlt+N",              IDM_FILE_NEWWINDOW
             MENUITEM "インスタンスを複製(&D)\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "管理者権限で再起動(&R)",                  IDM_FILE_LAUNCH_ELEVATED
@@ -90,6 +90,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "ウェブ1で開く(&1)\tCtrl+Shift+1",           CMD_WEBACTION1
             MENUITEM "ウェブ2で開く(&2)\tCtrl+Shift+2",           CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Open &Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Open &File from Selection",          IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "エクスプローラーを開く(&F)",                    IDM_FILE_EXPLORE_DIR
         END
