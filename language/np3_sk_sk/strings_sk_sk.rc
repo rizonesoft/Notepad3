@@ -202,7 +202,7 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "Chyba pri exportovaní nastavenia štýlu do ""%s"""
     IDS_MUI_REGEX_INVALID    "Chyba pri vyhodnocovaní regulárneho výrazu. Výraz je neplatný!"
     IDS_MUI_DROP_NO_FILE     "Nebol získaný žiadny platný názov súboru\nAk sa spúšťa 32-bitová aplikácia,\npresuňte myšou na panel nástrojov programu Notepad3"
-    IDS_MUI_DROP_CAP_EXCEEDED "Dropped more files than the configured limit (%i). Increase Settings2.MaxFileDropInstances if needed."
+    IDS_MUI_DROP_CAP_EXCEEDED "Bolo zrušených viac súborov, než je nakonfigurovaný limit (%i). V prípade potreby zvýšte nastavenia 2.MaxFileDropInstances."
     IDS_MUI_URL_DIR_EXISTS   "URL zadaný adresár existuje!"
     IDS_MUI_URL_FILE_EXISTS  "URL zadaný súbor existuje!"
     IDS_MUI_URL_PATH_NOT_FOUND
