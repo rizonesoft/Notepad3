@@ -317,8 +317,8 @@ BEGIN
             MENUITEM "Vybrať &slovo alebo riadok\tCtrl+Spc",           IDM_EDIT_SELECTWORD
             MENUITEM "&Viacnásobný výber všetkých zhôd\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "Otvoriť vybratý &priečinok",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Otvoriť vybratý &súbor",                           IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Rozdeliť a&kciu Späť po zalomení riadku",        IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
@@ -356,7 +356,7 @@ BEGIN
         MENUITEM "Zobraziť &symboly zalomenia\tCtrl+Shift+7",   IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Zobraziť &prázdne miesta\tCtrl+Shift+8",     IDM_VIEW_SHOWBLANKS
         MENUITEM "Zobraziť &konce riadkov\tCtrl+Shift+9",    IDM_VIEW_SHOWEOLS
-        MENUITEM "Show &Non-Printable Characters",           IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Zobraziť &netlačiteľné znaky",           IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Značka histórie zmien"
         BEGIN
@@ -367,8 +367,8 @@ BEGIN
         END
         MENUITEM "Vymazať históriu príkazov Späť/Znova"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
-        MENUITEM "&Hyperlinkové prepojenia\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
-        POPUP "&Farba definície prepojenia"
+        MENUITEM "&Hypertextové odkazy\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
+        POPUP "&Farba definície odkazu"
         BEGIN
             MENUITEM "&VYP.",                            IDM_VIEW_COLORDEFHOTSPOTS
             MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
@@ -467,8 +467,8 @@ BEGIN
         MENUITEM "&Schémy syntaxov...\tF12",                            IDM_VIEW_SCHEME
         MENUITEM "&2. spoločná schéma\tShift+F12",                      IDM_VIEW_USE2NDDEFAULT
         MENUITEM SEPARATOR
-        MENUITEM "Globálne východzie &písmo...\tAlt+F12",               IDM_VIEW_FONT
-        MENUITEM "Východzie písmo akt&uálnej schémy...\tCtrl+Alt+F12",  IDM_VIEW_CURRENTSCHEME
+        MENUITEM "Predvolené globálne &písmo...\tAlt+F12",               IDM_VIEW_FONT
+        MENUITEM "Predvolené písmo akt&uálnej schémy...\tCtrl+Alt+F12",  IDM_VIEW_CURRENTSCHEME
         MENUITEM SEPARATOR
         MENUITEM "Tmavý režim Windows",                                 IDM_VIEW_WIN_DARK_MODE
     END
@@ -572,7 +572,7 @@ IDR_MUI_POPUPMENU MENU
 BEGIN
     POPUP "+"
     BEGIN
-        MENUITEM "Otvoriť Hyperlink",                      CMD_OPEN_HYPERLINK
+        MENUITEM "Otvoriť odkaz",                      CMD_OPEN_HYPERLINK
         MENUITEM "Kopírovať adresu URL",           CMD_COPY_HYPERLINK
         MENUITEM SEPARATOR
         MENUITEM "Späť",                                   IDM_EDIT_UNDO
@@ -600,8 +600,8 @@ BEGIN
         MENUITEM "Webová šablóna 1",                       CMD_WEBACTION1
         MENUITEM "Webová šablóna 2",                       CMD_WEBACTION2
         MENUITEM SEPARATOR
-        MENUITEM "Open Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-        MENUITEM "Open File from Selection",            IDM_EDIT_OPEN_FILE_FROM_SEL
+        MENUITEM "Otvoriť vybratý &priečinok", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+        MENUITEM "Otvoriť vybratý &súbor",            IDM_EDIT_OPEN_FILE_FROM_SEL
         MENUITEM "Otvoriť Prieskumníka",                   IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"

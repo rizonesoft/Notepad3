@@ -562,7 +562,7 @@ BEGIN
     IDS_LEX_STR_WhileDef    "While Def"
     IDS_LEX_STR_ForEachDef  "For Each Def"
     IDS_LEX_STR_DocCmtKw    "Doc Comment Keyword"
-    IDS_LEX_STR_UserDef     "User Defined"
+    IDS_LEX_STR_UserDef     "Definované užívateľom"
 END
 
 STRINGTABLE
