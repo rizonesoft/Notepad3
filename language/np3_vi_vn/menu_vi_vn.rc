@@ -79,7 +79,7 @@ BEGIN
         BEGIN
             MENUITEM "Tìm kiếm trong tệp(&S) ...\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "Cửa sổ mới trống(&N)\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "Cửa sổ mới(&N)\tAlt+N",                 IDM_FILE_NEWWINDOW
             MENUITEM "Nhân bản phiên bản(&D)\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "Chạy lại với quyền quản trị(&R)",         IDM_FILE_LAUNCH_ELEVATED
@@ -90,6 +90,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Mẫu web 1(&1)\tCtrl+Shift+1",        CMD_WEBACTION1
             MENUITEM "Mẫu web 2(&2)\tCtrl+Shift+2",        CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Open &Containing Folder of Selection",         IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Open &File from Selection",                    IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Mở trình duyệt tệp(&F)",                       IDM_FILE_EXPLORE_DIR
         END

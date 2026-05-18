@@ -79,7 +79,7 @@ BEGIN
         BEGIN
             MENUITEM "&Dosyalarda ara...\tCtrl+Shift+F",                 IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&Yeni boş pencere\tAlt+N",                      IDM_FILE_NEWWINDOW
+            MENUITEM "&Yeni pencere\tAlt+N",                          IDM_FILE_NEWWINDOW
             MENUITEM "&Pencereyi kopyala\tAlt+Shift+N",               IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "&Yönetici olarak yeniden başlat",               IDM_FILE_LAUNCH_ELEVATED
@@ -90,6 +90,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "&1. web kalıbı \tCtrl+Shift+1",                 CMD_WEBACTION1
             MENUITEM "&2. web kalıbı\tCtrl+Shift+2",                  CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Open &Containing Folder of Selection",          IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Open &File from Selection",                     IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Dosya &gezgininde aç",                          IDM_FILE_EXPLORE_DIR
         END

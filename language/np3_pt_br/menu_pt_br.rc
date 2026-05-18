@@ -79,7 +79,7 @@ BEGIN
         BEGIN
             MENUITEM "&Localizar em Arquivos...\tCtrl+Shift+F",    IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&Nova Janela Vazia\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "&Nova Janela\tAlt+N",                 IDM_FILE_NEWWINDOW
             MENUITEM "&Duplicar Instância\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "&Recarregar como Administrador",  IDM_FILE_LAUNCH_ELEVATED
@@ -90,6 +90,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Modelo Web &1\tCtrl+Shift+1",     CMD_WEBACTION1
             MENUITEM "Modelo Web &2\tCtrl+Shift+2",     CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Abrir pasta de &trabalho da seleção", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Abrir ar&quivo da seleção",       IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Abri &Gerenciador de Arquivos",   IDM_FILE_EXPLORE_DIR
         END

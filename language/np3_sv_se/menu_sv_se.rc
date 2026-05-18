@@ -79,7 +79,7 @@ BEGIN
         BEGIN
             MENUITEM "&Sök i filer...\tCtrl+Shift+F",                  IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "Nytt tomt fönster\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "Nytt fönster\tAlt+N",                IDM_FILE_NEWWINDOW
             MENUITEM "Duplicera denna instans\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "Kör med förhöjda behörigheter",               IDM_FILE_LAUNCH_ELEVATED
@@ -90,6 +90,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Webbmall &1\tCtrl+Shift+1",                   CMD_WEBACTION1
             MENUITEM "Webbmall &2\tCtrl+Shift+2",                   CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Öppna &innehållande mapp från markering",     IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Öppna &fil från markering",                   IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Öppna filutforskaren",                        IDM_FILE_EXPLORE_DIR
         END

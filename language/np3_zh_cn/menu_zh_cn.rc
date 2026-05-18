@@ -79,7 +79,7 @@ BEGIN
         BEGIN
             MENUITEM "在文件中查找(&S)...\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "新建空窗口(&N)\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "新建窗口(&N)\tAlt+N",            IDM_FILE_NEWWINDOW
             MENUITEM "复制实例(&D)\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "以管理员权限重启(&R)",                    IDM_FILE_LAUNCH_ELEVATED
@@ -90,6 +90,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "用超链接模板 1 打开(&1)(&1)\tCtrl+Shift+1",           CMD_WEBACTION1
             MENUITEM "用超链接模板 2 打开(&2)(&2)\tCtrl+Shift+2",           CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Open &Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Open &File from Selection",        IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "打开资源管理器(&F)",                      IDM_FILE_EXPLORE_DIR
         END

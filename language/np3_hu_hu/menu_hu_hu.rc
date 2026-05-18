@@ -79,7 +79,7 @@ BEGIN
         BEGIN
             MENUITEM "Keresés &fájlokban...\tCtrl+Shift+F",   IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&Új üres ablak\tAlt+N",              IDM_FILE_NEWWINDOW
+            MENUITEM "&Új ablak\tAlt+N",                   IDM_FILE_NEWWINDOW
             MENUITEM "&Példány duplikálás\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "&Emelt szinten indítás",             IDM_FILE_LAUNCH_ELEVATED
@@ -90,6 +90,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Web sablon &2\tCtrl+Shift+2",        CMD_WEBACTION2
             MENUITEM "Web sablon &1\tCtrl+Shift+1",        CMD_WEBACTION1
+            MENUITEM SEPARATOR
+            MENUITEM "Open &Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Open &File from Selection",          IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Fájl&böngésző megnyitása",           IDM_FILE_EXPLORE_DIR
         END

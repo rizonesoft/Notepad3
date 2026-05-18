@@ -363,6 +363,7 @@ static void _PruneOldDropSnapshots(DWORD maxAgeSecs);
 static bool _IsDropSnapshotPath(const HPATHL hpth);
 static void _RegisterDropSnapshot(const HPATHL hpth);
 static void _CleanupDropSnapshots(bool dropAll);
+static HPATHL _ResolveSelectionForOpen(int* lineNum, bool* isDir);
 
 // ----------------------------------------------------------------------------
 
@@ -5306,12 +5307,35 @@ static bool _HandleFileCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPar
     switch (iLoWParam) {
 
     case IDM_FILE_NEW: {
-        HPATHL hfile_pth = Path_Allocate(L"");
+        int  lineNum = -1;
+        bool isDir   = false;
+        HPATHL hsel  = _ResolveSelectionForOpen(&lineNum, &isDir);
+
         FileLoadFlags fLoadFlags = FLF_New;
         fLoadFlags |= Settings.SkipUnicodeDetection ? FLF_SkipUnicodeDetect : 0;
         fLoadFlags |= Settings.SkipANSICodePageDetection ? FLF_SkipANSICPDetection : 0;
-        FileLoad(hfile_pth, fLoadFlags, 0, 0);
-        Path_Release(hfile_pth);
+
+        if (hsel && !isDir) {
+            FileLoadFlags const fLoad = fLoadFlags & ~FLF_New;
+            if (FileLoad(hsel, fLoad, 0, 0) && lineNum > 0) {
+                SciCall_PostMsg(SCI_GOTOLINE, (WPARAM)clampi(lineNum - 1, 0, INT_MAX), 0);
+            }
+        }
+        else if (hsel && isDir) {
+            FileLoadFlags const fLoad = fLoadFlags & ~FLF_New;
+            if (OpenFileDlg(Globals.hwndMain, hsel, hsel)) {
+                FileLoad(hsel, fLoad, 0, 0);
+            }
+        }
+        else {
+            HPATHL hempty = Path_Allocate(L"");
+            FileLoad(hempty, fLoadFlags, 0, 0);
+            Path_Release(hempty);
+        }
+
+        if (hsel) {
+            Path_Release(hsel);
+        }
     } break;
 
 
@@ -5412,11 +5436,35 @@ static bool _HandleFileCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPar
     break;
 
 
-    case IDM_FILE_NEWWINDOW:
+    case IDM_FILE_NEWWINDOW: {
+        int  lineNum = -1;
+        bool isDir   = false;
+        HPATHL hsel  = _ResolveSelectionForOpen(&lineNum, &isDir);
+
+        SaveAllSettings(false);
+
+        if (hsel) {
+            WCHAR wchParams[64];
+            LPCWSTR const baseFlag = Flags.bSingleFileInstance ? L"/ns" : L"/n";
+            if (!isDir && lineNum > 0) {
+                StringCchPrintf(wchParams, COUNTOF(wchParams), L"%s /g %i", baseFlag, lineNum);
+            }
+            else {
+                StringCchCopy(wchParams, COUNTOF(wchParams), baseFlag);
+            }
+            LaunchNewInstance(Globals.hwndMain, wchParams, Path_Get(hsel));
+            Path_Release(hsel);
+        }
+        else {
+            DialogNewWindow(hwnd, false, NULL, NULL);
+        }
+    }
+    break;
+
+
     case IDM_FILE_NEWWINDOW2: {
         SaveAllSettings(false);
-        HPATHL hpth = (iLoWParam == IDM_FILE_NEWWINDOW2) ? Paths.CurrentFile : NULL;
-        DialogNewWindow(hwnd, (hpth != NULL), hpth, NULL);
+        DialogNewWindow(hwnd, (Paths.CurrentFile != NULL), Paths.CurrentFile, NULL);
     }
     break;
 

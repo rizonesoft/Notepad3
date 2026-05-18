@@ -18,8 +18,9 @@ one place.
 | Open a `http://…` or `https://…` URL from the document | Ctrl+Click the highlighted link → opens in your default browser. |
 | Open a `file:///…` URL in Notepad3 | Alt+Click the highlighted link → loads the target into the editor. |
 | Open a bare path like `C:\foo\bar.c:42` in Notepad3 | Alt+Click — bare paths are highlighted only when they end in `:42`, `:42:7`, or `(42)`. |
-| Reveal the file under the caret in Explorer | Place the caret on the path and choose **Edit → Miscellaneous → Open Containing Folder of Selection**, or right-click → same. |
-| Open a file referenced by selection / token at caret | **Edit → Miscellaneous → Open File from Selection** (right-click also). |
+| Reveal the file under the caret in Explorer | Place the caret on the path and choose **Edit → Miscellaneous → Open Containing Folder of Selection** (also under **File → Launch**, or right-click). |
+| Open a file referenced by selection / token at caret in **current window** | **Ctrl+N** (*Smart New*) — or **Edit → Miscellaneous → Open File from Selection** (also under **File → Launch**, or right-click). |
+| Open a file referenced by selection / token at caret in a **new window** | **Alt+N** (*Smart New Window*) — spawns a new Notepad3 instance with the file loaded. |
 | Reveal the *current* document in Explorer | **File → Open File Explorer**. |
 | Copy the current path | **File → Path to Clipboard → Copy Filename / Directory / Full-Path**. |
 
@@ -155,11 +156,28 @@ Any trailing line/column suffix (`:N`, `:N:M`, `(N)`, `,N`) is split off
 before path resolution. For *Open File from Selection*, the parsed line
 number controls the caret jump after the file loads.
 
-### Menu state
+### Menu state and *Smart* shortcuts
 
 Both commands are greyed out when there's no selection *and* no word at the
-caret / click position. They have no default keyboard shortcut; users can
-bind one via custom keybindings if desired.
+caret / click position.
+
+The commands themselves have no dedicated accelerator, but the same path
+detection is layered onto the standard "new" shortcuts — turning them into
+**Smart New** and **Smart New Window**:
+
+- **Ctrl+N** — *Smart New* (`IDM_FILE_NEW`). When a file is detected,
+  behaves as *Open File from Selection* in the current window (jumps to
+  the parsed line spec); when a directory is detected, opens the file-open
+  dialog rooted there; otherwise it falls back to its classic "clear
+  current buffer" behavior — so you only ever need one key to either
+  start fresh **or** jump to the file your eye is already on.
+- **Alt+N** — *Smart New Window* (`IDM_FILE_NEWWINDOW`). When a file is
+  detected, spawns a new Notepad3 instance with that file loaded; when a
+  directory is detected, the new instance opens its file-open dialog
+  there; otherwise it falls back to spawning an empty new window.
+
+Both shortcuts always ignore `Flags.bReuseWindow`: Ctrl+N is by definition
+a current-window operation, Alt+N a new-window one.
 
 ---
 
@@ -220,7 +238,9 @@ where necessary.
 | **Open with…** (Alt+L) | Hand the current file to an external editor — choose via `OpenWithDir` setting. |
 | **Recent Files** (sub-menu) | Most-recently-used list. Paths are stored relative to Notepad3.exe by default — flip via the `Notepad3.ini` redirect mechanism. |
 | **Save** / **Save As…** / **Save Copy…** | Standard write paths; respects `AtomicFileSave` (see §5). |
-| **Open File Explorer** | Reveal the **current document** in Windows Explorer (or, if untitled, the working directory). Distinct from **Open Containing Folder of Selection**, which operates on text *inside* the document. |
+| **Launch → Open Containing Folder of Selection** | Same command as in the Edit menu / right-click — exposed here for discoverability alongside the other "open something external" actions. |
+| **Launch → Open File from Selection** | Same command as in the Edit menu / right-click. |
+| **Launch → Open File Explorer** | Reveal the **current document** in Windows Explorer (or, if untitled, the working directory). Distinct from **Open Containing Folder of Selection**, which operates on text *inside* the document. |
 | **Path to Clipboard → Copy Filename only / Copy Directory-Path only / Copy Full-Path** | Self-explanatory; for filling into other tools. |
 | **Add to Favorites** / **Favorites…** | Pin a path to a quick-pick list, stored under `FavoritesDir`. |
 | **Launch Default Application** (Ctrl+L) | ShellExecute the current document with its registered "open" verb. |

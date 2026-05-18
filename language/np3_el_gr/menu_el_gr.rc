@@ -79,7 +79,7 @@ BEGIN
         BEGIN
             MENUITEM "Ανα&ζήτηση σε αρχεία...\tCtrl+Shift+F",        IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "Νέ&ο κενό παράθυρο\tAlt+N",                 IDM_FILE_NEWWINDOW
+            MENUITEM "Νέ&ο παράθυρο\tAlt+N",                      IDM_FILE_NEWWINDOW
             MENUITEM "&Αντίγραφο παραθύρου\tAlt+Shift+N",         IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "Επανεκκίνηση με αναβαθμισμένα &δικαιώματα", IDM_FILE_LAUNCH_ELEVATED
@@ -90,6 +90,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Πρότυπο web &1\tCtrl+Shift+1",      CMD_WEBACTION1
             MENUITEM "Πρότυπο web &2\tCtrl+Shift+2",      CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Άνοιγμα Περικλείοντος Φακέλου από την Επιλογή", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Άνοιγμα Α&ρχείου από την Επιλογή",  IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Άνοιγμα Ε&ξερεύνησης αρχείων",      IDM_FILE_EXPLORE_DIR
         END

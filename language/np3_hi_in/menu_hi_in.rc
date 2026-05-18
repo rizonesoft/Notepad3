@@ -79,7 +79,7 @@ BEGIN
         BEGIN
             MENUITEM "फ़ाइल में खोजें (&S)...\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "ख़ाली नई विंडो  (&N)\tAlt+N",           IDM_FILE_NEWWINDOW
+            MENUITEM "नई विंडो (&N)\tAlt+N",                 IDM_FILE_NEWWINDOW
             MENUITEM "अवस्था का प्रतिरूप  (&D)\tAlt+Shift+N",   IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "व्यवस्थापक के रूप में पुनः प्रक्षेपित करें (&R)",                 IDM_FILE_LAUNCH_ELEVATED
@@ -90,6 +90,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "वेब टेम्पलेट 1 (&1)\tCtrl+Shift+1",      CMD_WEBACTION1
             MENUITEM "वेब टेम्पलेट 2 (&2)\tCtrl+Shift+2",      CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Open &Containing Folder of Selection",       IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Open &File from Selection",                  IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "फ़ाइल एक्स्प्लोरर खोलें (&F)",                IDM_FILE_EXPLORE_DIR
         END

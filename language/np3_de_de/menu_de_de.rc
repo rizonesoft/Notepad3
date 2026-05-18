@@ -79,7 +79,7 @@ BEGIN
         BEGIN
             MENUITEM "Suche in &Dateien...\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
-            MENUITEM "&Neues Leeres Fenster\tAlt+N",        IDM_FILE_NEWWINDOW
+            MENUITEM "&Neues Fenster\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "&Dupliziere Instanz\tAlt+Shift+N",    IDM_FILE_NEWWINDOW2
             MENUITEM SEPARATOR
             MENUITEM "Mit erhöhten &Rechten starten",       IDM_FILE_LAUNCH_ELEVATED
@@ -90,6 +90,9 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Web Aufruf &1\tCtrl+Shift+1",         CMD_WEBACTION1
             MENUITEM "Web Aufruf &2\tCtrl+Shift+2",         CMD_WEBACTION2
+            MENUITEM SEPARATOR
+            MENUITEM "Open &Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Open &File from Selection",           IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Öffne Datei-&Explorer",               IDM_FILE_EXPLORE_DIR
         END
