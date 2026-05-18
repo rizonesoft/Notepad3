@@ -356,7 +356,7 @@ BEGIN
         MENUITEM "Pokaż symbole zawijania wiersza\tCtrl+Shift+7",   IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Pokaż niewidoczne znaki \tCtrl+Shift+8",          IDM_VIEW_SHOWBLANKS
         MENUITEM "Pokaż znaki końca wiersza\tCtrl+Shift+9",         IDM_VIEW_SHOWEOLS
-        MENUITEM "Show &Non-Printable Characters",           IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Pokaż znaki &niedrukowalne",           IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Zmień marker historii"
         BEGIN
