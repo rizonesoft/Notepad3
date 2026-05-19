@@ -359,7 +359,7 @@ BEGIN
         MENUITEM "Visualizza simboli di a capo\tCtrl+Maiusc+0",         IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Visualizza spazi\tCtrl+Maiusc+8",                     IDM_VIEW_SHOWBLANKS
         MENUITEM "Visualizza terminazioni di linea\tCtrl+Maiusc+9",     IDM_VIEW_SHOWEOLS
-        MENUITEM "Visualizza caratteri &non stampabili",                IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Visualizza caratteri non &stampabili",                IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Marcatore cronologia modifiche"
         BEGIN

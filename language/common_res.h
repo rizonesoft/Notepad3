@@ -1389,6 +1389,8 @@
 #define IDS_LEX_STR_ForEachDef          63449
 #define IDS_LEX_STR_DocCmtKw            63450
 #define IDS_LEX_STR_UserDef             63451
+#define IDS_LEX_STD_NPCH                63452
+#define IDS_LEX_2ND_NPCH                63453
 
 #define IDS_LEX_CSV_COL_0               63490
 #define IDS_LEX_CSV_COL_1               63491

@@ -7231,6 +7231,7 @@ static bool _HandleViewAndSettingsCommands(HWND hwnd, UINT umsg, WPARAM wParam, 
     case IDM_VIEW_NONPRINTINGCHARS:
         Settings.ViewNonPrintingChars = !Settings.ViewNonPrintingChars;
         Style_SetNonPrintCharRepresentations(Globals.hwndEdit);
+        Sci_InvalidateStyleRedraw();
         break;
 
     case IDM_VIEW_MATCHBRACES:

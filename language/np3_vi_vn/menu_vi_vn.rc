@@ -359,7 +359,7 @@ BEGIN
         MENUITEM "Hiển thị ký hiệu ngắt dòng(&P)\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Hiển thị khoảng trắng(&B)\tCtrl+Shift+8",            IDM_VIEW_SHOWBLANKS
         MENUITEM "Hiển thị ký hiệu kết thúc dòng(&E)\tCtrl+Shift+9",           IDM_VIEW_SHOWEOLS
-        MENUITEM "Show &Non-Printable Characters",           IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Show Non-&Printable Characters",           IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Thay đổi dấu hiệu thay đổi"
         BEGIN

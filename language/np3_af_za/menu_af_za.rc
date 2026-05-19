@@ -359,7 +359,7 @@ BEGIN
         MENUITEM "Wys &Oorvloei Simbole\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "W&ys Oop Spasies\tCtrl+Shift+8",          IDM_VIEW_SHOWBLANKS
         MENUITEM "Wys Lyn &Einde\tCtrl+Shift+9",            IDM_VIEW_SHOWEOLS
-        MENUITEM "Wys &nie-drukbare karakters",             IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Wys nie-&drukbare karakters",             IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Verander Geskiedenismerker"
         BEGIN

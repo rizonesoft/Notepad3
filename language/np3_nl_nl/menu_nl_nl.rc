@@ -359,7 +359,7 @@ BEGIN
         MENUITEM "Terugloo&pmarkeringen weergeven\tCtrl+Shift+7",   IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "&Blanco's weergeven\tCtrl+Shift+8",               IDM_VIEW_SHOWBLANKS
         MENUITEM "Regel&einden weergeven\tCtrl+Shift+9",            IDM_VIEW_SHOWEOLS
-        MENUITEM "&Niet-afdrukbare tekens weergeven",               IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Niet-&afdrukbare tekens weergeven",               IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Markering van wijzigingen"
         BEGIN

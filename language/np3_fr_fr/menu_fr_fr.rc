@@ -359,7 +359,7 @@ BEGIN
         MENUITEM "Afficher les symbôles de sauts de ligne\tCtrl+Maj+7",   IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Afficher les &blancs\tCtrl+Maj+8",                      IDM_VIEW_SHOWBLANKS
         MENUITEM "Afficher les fins de lign&e\tCtrl+Maj+9",               IDM_VIEW_SHOWEOLS
-        MENUITEM "Afficher les caractères &non imprimables",              IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Afficher les caractères non &imprimables",              IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Marqueurs d'historique des modifications"
         BEGIN

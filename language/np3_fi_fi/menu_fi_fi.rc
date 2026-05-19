@@ -359,7 +359,7 @@ BEGIN
         MENUITEM "Näytä &rivityssymbolit\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Näytä &tyhjät tilat\tCtrl+Shift+8",           IDM_VIEW_SHOWBLANKS
         MENUITEM "Näytä rivin lop&etukset\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
-        MENUITEM "&Näytä tulostumattomat merkit",           IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Näytä &tulostumattomat merkit",           IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Vaihda historiamerkintä"
         BEGIN

@@ -359,7 +359,7 @@ BEGIN
         MENUITEM "Mostrar &símbolos de ajuste\tCtrl+Shift+7",           IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Mostrar los &Blancos\tCtrl+Shift+8",                  IDM_VIEW_SHOWBLANKS
         MENUITEM "Mostrar &fin de línea\tCtrl+Shift+9",                 IDM_VIEW_SHOWEOLS
-        MENUITEM "Mostrar caracteres &no imprimibles",                  IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Mostrar caracteres no &imprimibles",                  IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Marcadores historial de cambios"
         BEGIN

@@ -359,7 +359,7 @@ BEGIN
         MENUITEM "Show W&rap Symbols\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Show &Blanks\tCtrl+Shift+8",           IDM_VIEW_SHOWBLANKS
         MENUITEM "Show Line &Endings\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
-        MENUITEM "Show &Non-Printable Characters",           IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Show Non-&Printable Characters",           IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Change History Marker"
         BEGIN

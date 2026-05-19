@@ -359,7 +359,7 @@ BEGIN
         MENUITEM "顯示軟換行(&P)\tCtrl+Shift+7",                IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "顯示空格(&W)\tCtrl+Shift+8",                  IDM_VIEW_SHOWBLANKS
         MENUITEM "顯示換行符號(&E)\tCtrl+Shift+9",              IDM_VIEW_SHOWEOLS
-        MENUITEM "顯示不可列印字元(&N)",                     IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "顯示不可列印字元(&P)",                     IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "變更記錄標記"
         BEGIN

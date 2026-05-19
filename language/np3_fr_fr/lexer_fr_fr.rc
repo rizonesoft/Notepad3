@@ -171,6 +171,12 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_LEX_STD_NPCH        "Non-Printable Characters (Colors)"
+    IDS_LEX_2ND_NPCH        "2nd Non-Printable Characters (Colors)"
+END
+
+STRINGTABLE
+BEGIN
     IDS_LEX_2ND_LN_BACKGR   "2ème Surligner la ligne actuelle"
     IDS_LEX_2ND_CARET       "2ème Caret (Couleur, Taille 1-20)"
     IDS_LEX_2ND_LONG_LN     "2ème Marqueur de ligne longue (Couleurs)"

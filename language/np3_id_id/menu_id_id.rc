@@ -359,7 +359,7 @@ BEGIN
         MENUITEM "Tampilkan Simbol Bungkus Kata\tCtrl+Shift+7",         IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Tampilkan Spasi\tCtrl+Shift+8",                       IDM_VIEW_SHOWBLANKS
         MENUITEM "Tampilkan Akhir Baris\tCtrl+Shift+9",                 IDM_VIEW_SHOWEOLS
-        MENUITEM "Show &Non-Printable Characters",           IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Show Non-&Printable Characters",           IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Penanda Riwayat"
         BEGIN
