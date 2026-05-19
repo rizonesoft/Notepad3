@@ -171,18 +171,18 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_NPCH        "Non-Printable Characters (Colors)"
-    IDS_LEX_2ND_NPCH        "2nd Non-Printable Characters (Colors)"
+    IDS_LEX_STD_NPCH        "Careatteri non stampabili (colori)"
+    IDS_LEX_2ND_NPCH        "2^ caratteri non stampabili (colori)"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_2ND_LN_BACKGR   "2° Evidenzia linea attuale"
-    IDS_LEX_2ND_CARET       "2° Cursore (colore, dimensione 1-20)"
-    IDS_LEX_2ND_LONG_LN     "2° Marcatore di linea lunga (colori)"
-    IDS_LEX_2ND_X_SPC       "2° Aumenta interlinea (dimensione)"
+    IDS_LEX_2ND_LN_BACKGR   "2° evidenzia linea attuale"
+    IDS_LEX_2ND_CARET       "2° cursore (colore, dimensione 1-20)"
+    IDS_LEX_2ND_LONG_LN     "2° marcatore di linea lunga (colori)"
+    IDS_LEX_2ND_X_SPC       "2° aumenta interlinea (dimensione)"
     IDS_LEX_STD_BKMRK       "Segnalibri e raggruppamento (colori, dimensione)"
-    IDS_LEX_2ND_BKMRK       "2° Segnalibri e raggruppamento (colori, dimensione)"
+    IDS_LEX_2ND_BKMRK       "2° segnalibri e raggruppamento (colori, dimensione)"
     IDS_LEX_STR_Default     "Predefinito"
     IDS_LEX_STR_Comment     "Commento"
     IDS_LEX_STR_Keyword     "Parola chiave"
