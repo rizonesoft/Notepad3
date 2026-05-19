@@ -171,6 +171,12 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_LEX_STD_NPCH        "Non-Printable Characters (Colors)"
+    IDS_LEX_2ND_NPCH        "2nd Non-Printable Characters (Colors)"
+END
+
+STRINGTABLE
+BEGIN
     IDS_LEX_2ND_LN_BACKGR   "Sorotan Baris Saat Ini Ke-2"
     IDS_LEX_2ND_CARET       "Caret (Warna, Ukuran 1-20) Ke-2"
     IDS_LEX_2ND_LONG_LN     "Penanda Garis Panjang (Warna) Ke-2"

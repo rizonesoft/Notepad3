@@ -1370,7 +1370,10 @@ __forceinline void Sci_RedrawScrollbars()
     SciCall_SetVScrollbar(true);
 }
 // ----------------------------------------------------------------------------
-
+ 
+#define Sci_InvalidateStyleRedraw() SciCall_SetTabWidth(SciCall_GetTabWidth())
+ 
+// ----------------------------------------------------------------------------
 
 //  if iRangeEnd == -1 : apply style from iRangeStart to document end
 #define Sci_ColouriseAll() SciCall_Colourise(0, -1)

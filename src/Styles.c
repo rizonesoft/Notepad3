@@ -1483,6 +1483,7 @@ static const struct {
 } s_NonPrintCharRepresentations[] = {
     { "\xC2\x85",     "NEL"   }, // U+0085 next line
     { "\xC2\xA0",     "NBSP"  }, // U+00A0 no-break space
+    { "\xC2\xAD",     "SHY"   }, // U+00AD soft hyphen
     { "\xD8\x9C",     "ALM"   }, // U+061C arabic letter mark
     { "\xE1\x9A\x80", "OSPM"  }, // U+1680 ogham space mark
     { "\xE1\xA0\x8E", "MVS"   }, // U+180E mongolian vowel separator
@@ -1526,6 +1527,12 @@ static const struct {
     { "\xEF\xBB\xBF", "ZWNBSP" }, // U+FEFF zero-width no-break space / BOM
 };
 
+// Color used to render the abbreviation blobs for the table above. Populated
+// from the STY_NONPRINT style row in Style_SetDefault (fallback: whitespace
+// color). Initial mid-gray + alpha 200 matches the standard lexer default so
+// a toggle before the first restyle still renders sane blobs.
+static COLORALPHAREF s_NonPrintCharColor = AxRGB(200, RGB(0x80, 0x80, 0x80));
+
 void Style_SetNonPrintCharRepresentations(HWND hwnd)
 {
     UNREFERENCED_PARAMETER(hwnd);
@@ -1534,8 +1541,10 @@ void Style_SetNonPrintCharRepresentations(HWND hwnd)
     bool const bEnable = Settings.ViewNonPrintingChars &&
                          (SciCall_GetTechnology() != SC_TECHNOLOGY_DEFAULT);
 
-    int const         appearance = SC_REPRESENTATION_BLOB | SC_REPRESENTATION_COLOUR;
-    COLORALPHAREF const argb = SciCall_GetElementColour(SC_ELEMENT_WHITE_SPACE);
+    int const     appearance = SC_REPRESENTATION_BLOB | SC_REPRESENTATION_COLOUR;
+    COLORALPHAREF const argb = s_NonPrintCharColor;
+
+    LimitNotifyEvents();
 
     for (size_t i = 0; i < COUNTOF(s_NonPrintCharRepresentations); ++i) {
         const char* const utf8 = s_NonPrintCharRepresentations[i].utf8;
@@ -1547,6 +1556,38 @@ void Style_SetNonPrintCharRepresentations(HWND hwnd)
             SciCall_ClearRepresentation(utf8);
         }
     }
+
+    const char* _CR = "\r";
+    const char* _LF = "\n";
+    const char* _LFCR = "\r\n";
+
+    if (Settings.ViewNonPrintingChars || (SciCall_GetTechnology() == SC_TECHNOLOGY_DEFAULT)) {
+        SciCall_SetRepresentation(_CR, "CR");
+        SciCall_SetRepresentationAppearance(_CR, appearance);
+        SciCall_SetRepresentation(_LF, "LF");
+        SciCall_SetRepresentationAppearance(_LF, appearance);
+        SciCall_ClearRepresentation(_LFCR);
+    }
+    else {
+        SciCall_SetRepresentation(_CR, "\xE2\x86\x90");
+        SciCall_SetRepresentationAppearance(_CR, SC_REPRESENTATION_COLOUR);
+        SciCall_SetRepresentation(_LF, "\xE2\x86\x93");
+        SciCall_SetRepresentationAppearance(_LF, SC_REPRESENTATION_COLOUR);
+        SciCall_SetRepresentation(_LFCR, "\xE2\x86\xB2"); // "\xE2\xAE\x92"
+        SciCall_SetRepresentationAppearance(_LFCR, SC_REPRESENTATION_COLOUR);
+    }
+
+    // The matching SciCall_SetRepresentationColour() calls in Style_SetDefault
+    // run BEFORE the representation strings exist (we install them above), so
+    // they silently no-op in Scintilla (PositionCache.cxx returns early when
+    // the key isn't yet in mapReprs). Set the color here, where the strings
+    // are guaranteed to be registered.
+    COLORALPHAREF const eolColor = SciCall_GetElementColour(SC_ELEMENT_WHITE_SPACE);
+    SciCall_SetRepresentationColour(_CR,   eolColor);
+    SciCall_SetRepresentationColour(_LF,   eolColor);
+    SciCall_SetRepresentationColour(_LFCR, eolColor);
+
+    RestoreNotifyEvents() ;
 }
 
 
@@ -1872,14 +1913,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     if (SciCall_GetTechnology() == SC_TECHNOLOGY_DEFAULT) {
         SciCall_ClearAllRepresentations();
     }
-    else {
-        SciCall_SetRepresentation("\r", "\xE2\x86\x90");
-        SciCall_SetRepresentationAppearance("\r", SC_REPRESENTATION_COLOUR);
-        SciCall_SetRepresentation("\n", "\xE2\x86\x93");
-        SciCall_SetRepresentationAppearance("\n", SC_REPRESENTATION_COLOUR);
-        SciCall_SetRepresentation("\r\n", "\xE2\x86\xB2"); // "\xE2\xAE\x92"
-        SciCall_SetRepresentationAppearance("\r\n", SC_REPRESENTATION_COLOUR);
-    }
 
     // whitespace dot size
     wchStylesBuffer[0] = L'\0'; // empty
@@ -1913,6 +1946,22 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
         SciCall_SetRepresentationColour("\r", SciCall_GetElementColour(SC_ELEMENT_WHITE_SPACE));
         SciCall_SetRepresentationColour("\n", SciCall_GetElementColour(SC_ELEMENT_WHITE_SPACE));
         SciCall_SetRepresentationColour("\r\n", SciCall_GetElementColour(SC_ELEMENT_WHITE_SPACE));
+    }
+
+    // non-printable Unicode representation color (STY_NONPRINT row).
+    // Read fore + alpha; if no fore is set, inherit from the whitespace
+    // color so unchanged themes keep their current look.
+    {
+        COLORREF npRgb = RGB(0x80, 0x80, 0x80);
+        COLORREF npRgbWrt = npRgb;
+        int      npAlpha = 200;
+        if (Style_StrGetColor(pCurrentStandard->Styles[STY_NONPRINT].szValue, FOREGROUND_LAYER, &npRgb, &npRgbWrt, false)) {
+            Style_StrGetAlpha(pCurrentStandard->Styles[STY_NONPRINT].szValue, &npAlpha, SC_ALPHA_OPAQUE, true);
+            s_NonPrintCharColor = AxRGB(npAlpha, npRgb);
+        } else {
+            // Fall back to whitespace color (preserves pre-feature behaviour).
+            s_NonPrintCharColor = SciCall_GetElementColour(SC_ELEMENT_WHITE_SPACE);
+        }
     }
 
     // non-printable / formatting Unicode characters (NBSP, ZWSP, LRM, ...)

@@ -359,7 +359,7 @@ BEGIN
         MENUITEM "Отображать &символы переноса\tCtrl+Shift+7",      IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Отображать про&бельные символы\tCtrl+Shift+8",    IDM_VIEW_SHOWBLANKS
         MENUITEM "Отображать &окончания строк\tCtrl+Shift+9",       IDM_VIEW_SHOWEOLS
-        MENUITEM "Show &Non-Printable Characters",           IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Show Non-&Printable Characters",           IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Маркер истории изменений"
         BEGIN

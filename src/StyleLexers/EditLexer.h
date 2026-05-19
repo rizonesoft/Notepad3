@@ -59,26 +59,33 @@ typedef enum LexDefaultStyles
     STY_INDENT_GUIDE = 5,
     STY_SEL_TXT = 6,
     STY_WHITESPACE = 7,
-    STY_CUR_LN = 8,
-    STY_CARET = 9,
-    STY_LONG_LN_MRK = 10,
-    STY_X_LN_SPACE = 11,
-    STY_BOOK_MARK = 12,
-    STY_MARK_OCC = 13,
-    STY_URL_HOTSPOT = 14,
-    STY_UNICODE_HOTSPOT = 15,
-    STY_MULTI_EDIT = 16,
-    STY_CHGHIST_MODIFIED = 17,
-    STY_CHGHIST_SAVED = 18,
-    STY_CHGHIST_REV_TO_MOD = 19,
-    STY_CHGHIST_REV_TO_ORG = 20,
-    STY_IME_COLOR = 21,
+    STY_NONPRINT = 8,
+    STY_CUR_LN = 9,
+    STY_CARET = 10,
+    STY_LONG_LN_MRK = 11,
+    STY_X_LN_SPACE = 12,
+    STY_BOOK_MARK = 13,
+    STY_MARK_OCC = 14,
+    STY_URL_HOTSPOT = 15,
+    STY_UNICODE_HOTSPOT = 16,
+    STY_MULTI_EDIT = 17,
+    STY_CHGHIST_MODIFIED = 18,
+    STY_CHGHIST_SAVED = 19,
+    STY_CHGHIST_REV_TO_MOD = 20,
+    STY_CHGHIST_REV_TO_ORG = 21,
+    STY_IME_COLOR = 22,
 
-    STY_INVISIBLE = 22,
-    STY_READONLY = 23
+    STY_INVISIBLE = 23,
+    STY_READONLY = 24
 
     // MAX = (127 - STYLE_LASTPREDEFINED)
     // -------^----- => char <-> int casting !!!
+    // Invariant: for STY_X >= STY_SEL_TXT (6), the enum VALUE must equal
+    // the row position in lexStandard.Styles[] / lexStandard2nd.Styles[].
+    // Numerous call sites do pCurrentStandard->Styles[STY_X] as a direct
+    // index. Inserting a row requires shifting subsequent enum values.
+    // STY_INVISIBLE and STY_READONLY are pseudo-styles not in those arrays,
+    // so their numeric value can be anything past the last real row.
 }
 LexDefaultStyles;
 

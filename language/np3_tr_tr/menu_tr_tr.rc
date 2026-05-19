@@ -359,7 +359,7 @@ BEGIN
         MENUITEM "Satır kaydırmaları görüntülensin\tCtrl+Shift+7",    IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Boşluklar görüntülensin\tCtrl+Shift+8",             IDM_VIEW_SHOWBLANKS
         MENUITEM "Satır sonları görüntülensin\tCtrl+Shift+9",         IDM_VIEW_SHOWEOLS
-        MENUITEM "Show &Non-Printable Characters",           IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Show Non-&Printable Characters",           IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Değişiklik geçmişi işareti"
         BEGIN

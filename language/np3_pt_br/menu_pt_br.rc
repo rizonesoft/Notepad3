@@ -359,7 +359,7 @@ BEGIN
         MENUITEM "Mostrar Símbolos de Q&uebra\tCtrl+Shift+7",   IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Mostrar &Espaços\tCtrl+Shift+8",              IDM_VIEW_SHOWBLANKS
         MENUITEM "Mostrar &Finais de Linha\tCtrl+Shift+9",      IDM_VIEW_SHOWEOLS
-        MENUITEM "Exibir caracteres &não imprimíveis",          IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Exibir caracteres não &imprimíveis",          IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Alterar Marcador de Histórico"
         BEGIN

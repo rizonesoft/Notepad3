@@ -359,7 +359,7 @@ BEGIN
         MENUITEM "折り返し記号(&P)\tCtrl+Shift+7",             IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "空白(&W)\tCtrl+Shift+8",                   IDM_VIEW_SHOWBLANKS
         MENUITEM "改行コード(&E)\tCtrl+Shift+9",               IDM_VIEW_SHOWEOLS
-        MENUITEM "Show &Non-Printable Characters",           IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Show Non-&Printable Characters",           IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "変更履歴の目印"
         BEGIN

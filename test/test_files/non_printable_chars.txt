@@ -19,6 +19,7 @@ Table
 Codepoint  Name                                 Abbreviation  Sample
 ---------  -----------------------------------  ------------  --------
 U+0085     next line                            NEL           ><
+U+00AD     soft hyphen                          SHY           >­<
 U+00A0     no-break space                       NBSP          > <
 U+061C     arabic letter mark                   ALM           >؜<
 U+1680     ogham space mark                     OSPM          > <
