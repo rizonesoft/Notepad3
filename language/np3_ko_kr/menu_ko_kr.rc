@@ -359,7 +359,7 @@ BEGIN
         MENUITEM "줄 바꿈 기호 표시(&P)\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "공백 표시(&B)\tCtrl+Shift+8",           IDM_VIEW_SHOWBLANKS
         MENUITEM "줄 끝 표시(&E)\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
-        MENUITEM "인쇄할 수 없는 문자 표시(&P)",           IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "인쇄 불가능한 문자 표시(&P)",           IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "사용 내역 마커 변경"
         BEGIN
