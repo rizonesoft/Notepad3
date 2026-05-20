@@ -36,13 +36,14 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 7.26.517.(build_#) (2026-05-17)
+Current BETA Version 7.26.520.(build_#) (2026-05-20)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
-[.xxx.x]- .
+[.xxx.x]- Custom coloring non printable characters (#5900).
+[.520.1]- Smart hotkey Ctrl+N and Alt+L in case of existing file under caret/selection (#5895).
 [.517.1]- Open file/folder from selection + bare-path hyperlink hotspots (#5885).
 [.517.1]- Open Containing Folder (sel) and Open File from Selection (#5884).
 [.517.1]- Copy as RTF (Rich-Text-Format) - keeps syntax highlighting (#5881).
