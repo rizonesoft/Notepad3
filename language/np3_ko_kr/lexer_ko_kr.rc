@@ -171,8 +171,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_NPCH        "Non-Printable Characters (Colors)"
-    IDS_LEX_2ND_NPCH        "2nd Non-Printable Characters (Colors)"
+    IDS_LEX_STD_NPCH        "인쇄 불가능한 문자 (색상)"
+    IDS_LEX_2ND_NPCH        "두 번째 인쇄 불가능한 문자 (색상)"
 END
 
 STRINGTABLE
