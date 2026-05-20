@@ -165,14 +165,14 @@ BEGIN
     IDS_LEX_2ND_BRACE_FAIL  "2:a Matcha klamrar Fel (indikator)"
     IDS_LEX_2ND_CTRL_CHAR   "2:a kontrolltecken (teckensnitt)"
     IDS_LEX_2ND_INDENT      "2:a stödlinje för indrag (färg)"
-    IDS_LEX_2ND_SEL         "2:a markerad stil (färger)"
+    IDS_LEX_2ND_SEL         "2:a markerad text (färger)"
     IDS_LEX_2ND_WSPC        "2:a blanktecken (färger, storlek 1-12)"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_NPCH        "Non-Printable Characters (Colors)"
-    IDS_LEX_2ND_NPCH        "2nd Non-Printable Characters (Colors)"
+    IDS_LEX_STD_NPCH        "Icke-utskrivbara tecken (färger)"
+    IDS_LEX_2ND_NPCH        "2:a icke-utskrivbara tecken (färger)"
 END
 
 STRINGTABLE
@@ -481,7 +481,7 @@ BEGIN
     IDS_LEX_STR_Subst       "Ersättning"
     IDS_LEX_STR_Modf        "Modifierare"
     IDS_LEX_STR_Tag         "Tag"
-    IDS_LEX_STR_63364       "Egenskap namn"
+    IDS_LEX_STR_63364       "Egenskapsnamn"
     IDS_LEX_STR_63365       "LD nyckelord"
     IDS_LEX_STR_63366       "ESC sekvens"
     IDS_LEX_STR_63367       "Unicode-Punkt Hovra"
