@@ -91,8 +91,8 @@ BEGIN
             MENUITEM "Web sablon &2\tCtrl+Shift+2",        CMD_WEBACTION2
             MENUITEM "Web sablon &1\tCtrl+Shift+1",        CMD_WEBACTION1
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",          IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "Kijelölésben lévő &mappa megnyitása", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Fájl me&gnyitása a kijelölésből",    IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Fájl&böngésző megnyitása",           IDM_FILE_EXPLORE_DIR
         END
@@ -166,7 +166,7 @@ BEGIN
         MENUITEM "&Másolás\tCtrl+C",            IDM_EDIT_COPY
         MENUITEM "Mind m&ásolása\tAlt+C",       IDM_EDIT_COPYALL
         MENUITEM "Vág&ólaphoz ad\tCtrl+E",      IDM_EDIT_COPYADD
-        MENUITEM "Copy as &RTF",                IDM_EDIT_COPYRTF
+        MENUITEM "Másolás &RTF-ként",           IDM_EDIT_COPYRTF
         MENUITEM "&Beillesztés\tCtrl+V",        IDM_EDIT_PASTE
         MENUITEM "&Csere\tCtrl+K",              IDM_EDIT_SWAP
         MENUITEM "Min&d kijelölése\tCtrl+A",    IDM_EDIT_SELECTALL
@@ -320,8 +320,8 @@ BEGIN
             MENUITEM "Szó vag&y sorok kijelölése\tCtrl+Spc",           IDM_EDIT_SELECTWORD
             MENUITEM "Összes egyezés ki&jelölése\tCtrl+Shift+Spc",     IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "Kijelölésben lé&vő mappa megnyitása",            IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Fájl &megnyitása a kijelölésből",                IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Visszavonás műveletek szétvágása sortöréseknél", IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
@@ -603,8 +603,8 @@ BEGIN
         MENUITEM "Webes művelet 1",            CMD_WEBACTION1
         MENUITEM "Webes művelet 2",            CMD_WEBACTION2
         MENUITEM SEPARATOR
-        MENUITEM "Open Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-        MENUITEM "Open File from Selection",            IDM_EDIT_OPEN_FILE_FROM_SEL
+        MENUITEM "Kijelölésben lévő mappa megnyitása", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+        MENUITEM "Fájl megnyitása a kijelölésből", IDM_EDIT_OPEN_FILE_FROM_SEL
         MENUITEM "Fájlböngésző megnyitása",    IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"
