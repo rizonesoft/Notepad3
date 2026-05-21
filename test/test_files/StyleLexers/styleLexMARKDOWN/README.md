@@ -88,3 +88,40 @@ During development time the strings in the code are presented to the user. If th
 
 ## LICENSE
 [MIT](LICENSE)
+
+## NP3 Patch 003 — inline spans adjacent to opening punctuation
+
+These lines exercise `AtTermStart` accepting `( [ { < " '`. Every
+backtick/asterisk/underscore/tilde region below MUST render in its
+inline-span style (code / strong / em / strikeout), not as plain text.
+
+Inline code immediately after openers:
+
+- parenthesis: (`Hello`) and (`x` + `y`)
+- square brackets: [`Hello`]
+- curly braces: {`Hello`}
+- angle brackets: <`Hello`>
+- double quote: "`Hello`"
+- single quote: '`Hello`'
+
+Multi-backtick code spans (uses `AtTermStart` directly):
+
+- (``a `b` c``) and [``a `b` c``]
+
+Strong, emphasis, strikeout after the same openers:
+
+- (**bold**) [**bold**] {**bold**} <**bold**> "**bold**" '**bold**'
+- (__bold__) [__bold__] {__bold__}
+- (*em*) [*em*] {*em*} <*em*> "*em*" '*em*'
+- (_em_) [_em_] {_em_}
+- (~~struck~~) [~~struck~~] {~~struck~~}
+
+Regression checks — these should still NOT be styled as inline spans
+(word-adjacent delimiters are intentionally rejected):
+
+- foo`bar`baz  (no code span — `chPrev='o'`)
+- foo*bar*baz  (no emphasis — `chPrev='o'`)
+
+Whitespace-adjacent baseline (must still work):
+
+- a `code` span, a **strong** span, an *em* span, a ~~struck~~ span.

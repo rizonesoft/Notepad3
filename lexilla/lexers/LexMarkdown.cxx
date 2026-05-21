@@ -1,4 +1,4 @@
-/******************************************************************
+ /******************************************************************
  *  LexMarkdown.cxx
  *
  *  A simple Markdown lexer for scintilla.
@@ -119,7 +119,21 @@ bool HasPrevLineContent(StyleContext &sc) {
 }
 
 bool AtTermStart(const StyleContext &sc) noexcept {
-    return sc.currentPos == 0 || sc.chPrev == 0 || isspacechar(sc.chPrev);
+    if (sc.currentPos == 0 || sc.chPrev == 0 || isspacechar(sc.chPrev))
+        return true;
+    // NP3 patch: also accept common opening punctuation so inline spans
+    // (code, strong, emphasis, strikeout) can open directly after them,
+    // e.g. (`x`), [`x`], {`x`}, <`x`>, "`x`", '`x`'. CommonMark and VS
+    // Code accept these — code spans have no left-flank restriction at
+    // all, and emphasis after opening punctuation is a valid
+    // left-flanking delimiter run.
+    switch (sc.chPrev) {
+    case '(': case '[': case '{': case '<':
+    case '"': case '\'':
+        return true;
+    default:
+        return false;
+    }
 }
 
 bool IsCompleteStyleRegion(StyleContext &sc, const char *token) {
