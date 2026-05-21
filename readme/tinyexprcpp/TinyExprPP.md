@@ -148,6 +148,22 @@ From highest to lowest precedence:
 10 % 3        → 1      (remainder of 10÷3)
 ```
 
+> **Important — a single `=` inside an expression means equality, not assignment.**
+> TinyExpr++ has no assignment operator, so within an expression a lone `=` is
+> treated exactly like `==`. That means:
+> ```
+> 1+1=2+2    → 0     (parses as (1+1) == (2+2), i.e. 2 == 4 → false)
+> 1+1=2      → 1     (parses as (1+1) == 2,     i.e. 2 == 2 → true)
+> ```
+> Use `==` explicitly when you want the equality intent to be obvious, and
+> parenthesize freely. Note the distinction from the inline-evaluation
+> *suffix* `=?` and the "type `=` then press **Enter**" trigger described
+> above — those are UI markers that ask Notepad3 to evaluate the expression,
+> not part of the expression itself. A *leading* `=` at the very start is
+> stripped by the parser to tolerate spreadsheet-style input like
+> `=SUM(1,2)`; equality semantics only apply to a `=` that appears between
+> two operands.
+
 ### Constants
 
 | Constant | Value |
