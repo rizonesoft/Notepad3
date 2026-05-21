@@ -211,8 +211,9 @@ static bool      s_bUndoRedoScroll = false;
 // Auto-scroll state moved to Notepad3Util.c
 
 // for tiny expression calculation
-static double   s_dExpression = 0.0;
-static te_int_t s_iExprError  = -1;
+static double   s_dExpression    = 0.0;
+static te_int_t s_iExprError     = -1;
+static bool     s_bExprIsLogical = false;
 
 // TinyExpr++ output mode (process-local, cycled by double-click on STATUS_TINYEXPR)
 typedef enum TE_OUT_MODE_T {
@@ -614,9 +615,9 @@ static inline void ResetFileObservationData(const bool bResetEvt) {
 }
 // ----------------------------------------------------------------------------
 
-#define TE_ZERO (1.0E-8)
-#define TE_FMTA  "%.8G"
-#define TE_FMTW  L"%.8G"
+#define TE_ZERO (1.0E-15)
+#define TE_FMTA  "%.15g"
+#define TE_FMTW  L"%.15g"
 
 // Bounds for safe double -> signed-integer cast. (double)INT_MAX/INT64_MAX may
 // round UP to the next power of two, so use literals strictly below 2^31 / 2^63.
@@ -694,8 +695,14 @@ static void _FormatBinW(LPWSTR pszDest, size_t cchDest, unsigned __int64 u, int 
     pszDest[pos] = L'\0';
 }
 
-void TinyExprToStringA(LPSTR pszDest, size_t cchDest, const double dExprEval)
+void TinyExprToStringA(LPSTR pszDest, size_t cchDest, const double dExprEval, const bool bIsLogical)
 {
+    // Logical expression with a finite 0/1 result -> render as true/false,
+    // overriding hex/binary output modes (booleans are not a numeric value).
+    if (bIsLogical && isfinite(dExprEval) && (dExprEval == 0.0 || dExprEval == 1.0)) {
+        StringCchCopyA(pszDest, cchDest, (dExprEval == 1.0) ? "true" : "false");
+        return;
+    }
     if ((s_iTinyExprOutMode != TE_OUT_DEC) && isfinite(dExprEval) && (fabs(dExprEval) < _TinyExprIntBound())) {
         int const              width = _TinyExprBitWidth();
         __int64 const          i64   = (__int64)llround(dExprEval);
@@ -717,7 +724,7 @@ void TinyExprToStringA(LPSTR pszDest, size_t cchDest, const double dExprEval)
     double       intpart = 0.0;
     double const fracpart = modf(dExprEval, &intpart);
     if ((fabs(fracpart) < TE_ZERO) && (fabs(intpart) < 1.0E+21)) {
-        StringCchPrintfA(pszDest, cchDest, "%.21G", intpart); // integer full number display
+        StringCchPrintfA(pszDest, cchDest, "%.21g", intpart); // integer full number display
     }
     else {
         StringCchPrintfA(pszDest, cchDest, TE_FMTA, dExprEval);
@@ -725,8 +732,12 @@ void TinyExprToStringA(LPSTR pszDest, size_t cchDest, const double dExprEval)
 }
 // ----------------------------------------------------------------------------
 
-void TinyExprToString(LPWSTR pszDest, size_t cchDest, const double dExprEval)
+void TinyExprToString(LPWSTR pszDest, size_t cchDest, const double dExprEval, const bool bIsLogical)
 {
+    if (bIsLogical && isfinite(dExprEval) && (dExprEval == 0.0 || dExprEval == 1.0)) {
+        StringCchCopy(pszDest, cchDest, (dExprEval == 1.0) ? L"true" : L"false");
+        return;
+    }
     if ((s_iTinyExprOutMode != TE_OUT_DEC) && isfinite(dExprEval) && (fabs(dExprEval) < _TinyExprIntBound())) {
         int const              width = _TinyExprBitWidth();
         __int64 const          i64   = (__int64)llround(dExprEval);
@@ -748,7 +759,7 @@ void TinyExprToString(LPWSTR pszDest, size_t cchDest, const double dExprEval)
     double       intpart = 0.0;
     double const fracpart = modf(dExprEval, &intpart);
     if ((fabs(fracpart) < TE_ZERO) && (fabs(intpart) < 1.0E+21)) {
-        StringCchPrintf(pszDest, cchDest, L"%.21G", intpart); // integer full number display
+        StringCchPrintf(pszDest, cchDest, L"%.21g", intpart); // integer full number display
     }
     else {
         StringCchPrintf(pszDest, cchDest, TE_FMTW, dExprEval);
@@ -767,7 +778,7 @@ static VOID CALLBACK TinyExprCopyTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEven
 
     char chExpr[80] = { '\0' };
     if (s_iExprError == 0) {
-        TinyExprToStringA(chExpr, COUNTOF(chExpr), s_dExpression);
+        TinyExprToStringA(chExpr, COUNTOF(chExpr), s_dExpression, s_bExprIsLogical);
     } else if (s_iExprError > 0) {
         StringCchPrintfA(chExpr, COUNTOF(chExpr), "%s^[" TE_INT_FMT "]",
                          s_pszTinyExprModePrefixA[s_iTinyExprOutMode], s_iExprError);
@@ -3001,8 +3012,14 @@ static bool _EvalTinyExpr(bool qmark)
 
             double dExprEval = 0.0;
             te_int_t exprErr = 1;
+            bool bExprIsLogical = false;
             while (*p && exprErr) {
                 dExprEval = te_interp(p, &exprErr);
+                if (!exprErr) {
+                    // `p` hasn't moved yet (the advance happens in the inner
+                    // while below); safe to classify the just-evaluated text.
+                    bExprIsLogical = (te_is_logical_expr(p) != 0);
+                }
                 // proceed to next possible expression
                 while (*++p && exprErr && !(te_is_num(p) || te_is_op(p))) {}
             }
@@ -3010,7 +3027,7 @@ static bool _EvalTinyExpr(bool qmark)
 
             if (!exprErr) {
                 char chExpr[80] = { '\0' };
-                TinyExprToStringA(chExpr, COUNTOF(chExpr), dExprEval);
+                TinyExprToStringA(chExpr, COUNTOF(chExpr), dExprEval, bExprIsLogical);
                 SciCall_ReplaceSel("");
                 SciCall_SetSel(posBegin, posSelStart);
                 SciCall_ReplaceSel(chExpr);
@@ -11526,7 +11543,8 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     if (g_iStatusbarVisible[STATUS_TINYEXPR]) {
         static WCHAR tchExpression[80] = { L'\0' }; // fits "0b" + 64 bits + NUL with headroom
         static te_int_t s_iExErr          = -3;
-        s_dExpression = 0.0;
+        s_dExpression    = 0.0;
+        s_bExprIsLogical = false;
         StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%s--",
                         s_pszTinyExprModePrefixW[s_iTinyExprOutMode]);
 
@@ -11546,11 +11564,15 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
                     WideCharToMultiByte(1252, (WC_COMPOSITECHECK | WC_DISCARDNS), wchSelBuf, -1, chSeBuf, LARGE_BUFFER, &defchar, NULL);
                     StrDelChrA(chSeBuf, chr_currency);
 
-                    s_dExpression = te_interp(chSeBuf, &s_iExprError);
+                    s_dExpression    = te_interp(chSeBuf, &s_iExprError);
+                    s_bExprIsLogical = (s_iExprError == 0) && (te_is_logical_expr(chSeBuf) != 0);
                 } else {
                     s_iExprError = -1;
                 }
             } else if (Sci_IsMultiOrRectangleSelection() && !bIsSelectionEmpty) {
+                // Multi-/rect-selection concatenates fragments into a synthesized
+                // expression; the user-typed source isn't preserved, so don't
+                // try to classify it as logical.
                 s_dExpression = _InterpMultiSelectionTinyExpr(&s_iExprError);
             } else {
                 s_iExprError = -2;
@@ -11560,7 +11582,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
         }
 
         if (!s_iExprError) {
-            TinyExprToString(tchExpression, COUNTOF(tchExpression), s_dExpression);
+            TinyExprToString(tchExpression, COUNTOF(tchExpression), s_dExpression, s_bExprIsLogical);
         } else if (s_iExprError > 0) {
             StringCchPrintf(tchExpression, COUNTOF(tchExpression), L"%s^[" _W(TE_INT_FMT) L"]",
                             s_pszTinyExprModePrefixW[s_iTinyExprOutMode], s_iExprError);

@@ -41,6 +41,38 @@ typedef struct te_variable {
  * parse error on failure. */
 double te_interp(const char *expression, te_int_t *error);
 
+/* Parses, evaluates, and returns a cooked string representation.
+ *   - "true"  / "false"  if the expression is "logical" AND the result
+ *     is finite and exactly 1.0 or 0.0.
+ *   - Numeric formatting otherwise, matching Notepad3's TinyExprToStringA:
+ *     near-integer values (fractional part below 1e-15 and magnitude
+ *     under 1e21) use `%.21g`, all other (and non-finite) values use
+ *     `%.15g`, which snprintf renders as "nan" / "inf" / "-inf" for
+ *     NaN / +Inf / -Inf respectively.
+ *
+ * "Logical" detection is lexical at parenthesis depth 0: the expression
+ * is logical if it contains one of `==`, `=`, `!=`, `<>`, `<=`, `>=`,
+ * `<`, `>`, `&&`, `||`, leading `!`, the bare keywords `true`/`false`,
+ * or an outermost call to AND, OR, NOT, ISERR, ISERROR, ISNA, ISNAN,
+ * ISEVEN, or ISODD (case-insensitive). IF / IFS are intentionally NOT
+ * treated as logical since they return arbitrary user-supplied values.
+ *
+ * The returned pointer is to a thread-local internal buffer; it remains
+ * valid until the next call from the same thread.
+ *
+ * *error follows the same convention as te_interp(): 0 on success,
+ * 1-based parse error position on failure. */
+const char *te_interp_str(const char *expression, te_int_t *error);
+
+/* Returns 1 if `expression` lexically looks like a logical/comparison
+ * expression at parenthesis depth 0 (one fully-enclosing outer pair is
+ * stripped first). Considered logical when it contains one of `==`, `=`,
+ * `!=`, `<>`, `<=`, `>=`, `<`, `>`, `&&`, `||`, leading `!`, the bare
+ * keywords `true` / `false`, or an outermost call to AND, OR, NOT,
+ * ISERR, ISERROR, ISNA, ISNAN, ISEVEN, ISODD (case-insensitive).
+ * Returns 0 otherwise. Does NOT evaluate the expression. */
+int te_is_logical_expr(const char *expression);
+
 /* Parses the input expression and binds variables.
  * Returns NULL on error.
  * *error is set to 0 on success, or the 1-based error position on failure. */
