@@ -8,6 +8,7 @@ This directory contains documentation of all modifications made to the upstream 
 |----|------------|-------------|-------------|----------|
 | 001 | `001_StyleContext_MatchNext.patch` | `lexlib/StyleContext.h` | Adds `MatchNext()` and `Match(char,char,char)` overloads | ✅ Yes |
 | 002 | `002_Lexilla_CustomCatalogue.patch` | `src/Lexilla.cxx` | Custom lexer catalogue (NP3 subset only) | ✅ Yes |
+| 003 | `003_LexMarkdown_AtTermStart.patch` | `lexers/LexMarkdown.cxx` | `AtTermStart` accepts opening punctuation `( [ { < " '` so `` (`x`) `` highlights as code | ✅ Yes |
 
 ---
 
@@ -33,6 +34,22 @@ bool MatchNext(char ch0, char ch1, char ch2) const noexcept;
 - `lexers_x/orig/zufuliu/LexDart.cxx`
 
 **Marker:** `// >>>>>>>>>>>>>>> BEG NON STD SCI PATCH >>>>>>>>>>>>>>>`
+
+---
+
+### 003: LexMarkdown `AtTermStart` accepts opening punctuation
+
+**File:** `lexers/LexMarkdown.cxx`
+**Status:** Local fix; candidate for upstream submission. See
+`003_LexMarkdown_AtTermStart.md` for the full write-up.
+
+Stock Lexilla only opens inline spans (code, strong, emphasis,
+strikeout) when the preceding character is whitespace, so
+`` (`Hello`) `` is rendered as plain text. The patch extends
+`AtTermStart` to additionally accept `(`, `[`, `{`, `<`, `"`, `'`.
+
+Visual smoke-test: open
+`test/test_files/StyleLexers/styleLexMARKDOWN/README.md` after build.
 
 ---
 
@@ -69,7 +86,9 @@ When upgrading Lexilla to a new version:
 lexilla/np3_patches/
 ├── README.md                           # This file
 ├── 001_StyleContext_MatchNext.patch    # StyleContext extensions
-└── 002_Lexilla_CustomCatalogue.patch   # Custom lexer catalogue diff
+├── 002_Lexilla_CustomCatalogue.patch   # Custom lexer catalogue diff
+├── 003_LexMarkdown_AtTermStart.patch   # Markdown: open inline spans after ( [ { < " '
+└── 003_LexMarkdown_AtTermStart.md      # Patch 003 write-up
 ```
 
 ---
