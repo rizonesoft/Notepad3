@@ -313,9 +313,9 @@ SQRT(3^2 + 4^2)=?        → 5
 ### Unit Conversions
 
 ```
-72 * 0.0254=?             → 1.8288   (72 inches to meters)
-100 / 2.54=?              → 39.3701  (100 cm to inches)
-(98.6 - 32) * 5/9=?      → 37       (Fahrenheit to Celsius)
+72 * 0.0254=?             → 1.8288             (72 inches to meters)
+100 / 2.54=?              → 39.3700787401575   (100 cm to inches)
+(98.6 - 32) * 5/9=?      → 37                  (Fahrenheit to Celsius)
 ```
 
 ### Programming Helpers
@@ -361,7 +361,7 @@ TinyExpr++ in Notepad3 automatically adapts to the **decimal separator** of the 
 | **Function argument separator** | `,` (comma) | `;` (semicolon) |
 | **Number example** | `3.14` | `3,14` |
 | **Function call** | `SUM(1.5, 2)` | `SUM(1,5; 2)` |
-| **Inline evaluation** | `1/3=?` → `0.33333333` | `1/3=?` → `0,33333333` |
+| **Inline evaluation** | `1/3=?` → `0.333333333333333` | `1/3=?` → `0,333333333333333` |
 
 ### Examples by Locale
 
@@ -380,6 +380,77 @@ IF(2,5 > 1; 10; 20)=?     → 10
 ```
 
 > **Tip:** The separator style follows the Notepad3 UI language, which is set in *Settings → Preferred Language*. It does not change when editing files in different encodings.
+
+---
+
+## C API: Boolean-Aware Evaluation (developer reference)
+
+The C wrapper around TinyExpr++ exposes an evaluator that renders results
+of boolean-looking expressions as the words `true` / `false`, so callers
+don't have to invent their own classification scheme:
+
+```c
+#include "tinyexpr_cif.h"
+
+const char *te_interp_str(const char *expression, te_int_t *error);
+```
+
+The function evaluates the expression once and returns a thread-local
+internal buffer. The returned pointer remains valid until the next call
+from the same thread; `*error` follows the same convention as `te_interp()`
+(`0` on success, 1-based parse-error position on failure).
+
+| Returned string | When |
+|-----------------|------|
+| `"true"` / `"false"` | Expression is lexically logical **and** evaluates to exactly `1.0` / `0.0`. |
+| `"nan"`, `"inf"`, `"-inf"` | Result is non-finite (e.g., `0/0`, `LN(0)`, comparison involving `NaN`). |
+| Integer-like (`%.21g`) | Finite value whose fractional part is below `1e-15` and whose magnitude is below `1e21`. |
+| Decimal (`%.15g`) | All other finite results. |
+
+The numeric formatting mirrors Notepad3's `TinyExprToStringA` exactly, so values returned by `te_interp_str()` match what the status bar / `=?` inline-replacement would render. Hex / binary output modes are UI-level concerns and remain in `TinyExprToStringA` proper.
+
+### When is an expression classified as logical?
+
+Classification requires **both** of the following to hold:
+
+1. **Lexical hit** at parenthesis depth 0 (one fully-enclosing outer
+   pair is stripped first, so `(1==1)` is treated like `1==1`):
+   - a relational / equality / logical operator: `==`, `=`, `!=`, `<>`,
+     `<=`, `>=`, `<`, `>`, `&&`, `||`, leading `!`
+   - the bare keywords `true` / `false`
+   - an outermost call to `AND`, `OR`, `NOT`, `ISERR`, `ISERROR`,
+     `ISNA`, `ISNAN`, `ISEVEN`, or `ISODD` (case-insensitive)
+2. **Value hit**: the finite evaluation result is exactly `0.0` or `1.0`.
+
+Bit-shift (`<<`, `>>`) and bit-rotate (`<<<`, `>>>`) are consumed by the
+scanner without triggering classification. Block comments (`/* … */`) and
+line comments (`// …`) are skipped, mirroring the parser.
+
+`IF` / `IFS` are intentionally **not** in the predicate list — they return
+arbitrary user-supplied values, so `IF(a>b, 5, 10)` is numeric, not
+boolean.
+
+### Examples
+
+| Expression | Returns | Reason |
+|------------|---------|--------|
+| `1+1=2+2` | `"false"` | Parses as `(1+1) == (2+2)`; lone `=` is equality. |
+| `1+1=2` | `"true"` | Same path; `2 == 2` is true. |
+| `(1==1)` | `"true"` | Outer parens stripped before the lexical scan. |
+| `ISEVEN(4)` | `"true"` | Top-level call to a predicate function. |
+| `1 && 0` | `"false"` | Logical AND at depth 0. |
+| `!0` | `"true"` | Unary logical-NOT. |
+| `IF(1>2, 100, 200)` | `"200"` | `IF` is not a predicate; `>` is inside parens. |
+| `1 + (1==1)` | `"2"` | `==` is inside parens, and the result isn't 0/1. |
+| `(1==1) * (2==2)` | `"1"` | No comparison at depth 0; result is arithmetic. |
+| `0/0 == 1` | `"nan"` | Non-finite result bypasses classification. |
+| `2*PI` | `"6.28318530717959"` | No logical operator; `%.15g` format. |
+
+> **Why both checks?** A purely value-based test would mis-label `1+0` as
+> a boolean. A purely lexical test would mis-label `IF(a>b, 5, 10)`
+> (which evaluates to `5` or `10`, not `0`/`1`). The intersection is much
+> closer to user intent. `te_interp()` and `te_compile()` remain
+> unchanged for callers that prefer to handle classification themselves.
 
 ---
 
