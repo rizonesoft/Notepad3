@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions & Documentation
+    url: https://rizonesoft.com/documents/notepad3/
+    about: General usage questions, installer/replacement setup, and project documentation live on the Rizonesoft website.
+  - name: Notepad3 Readme (config, FAQ, shortcuts, …)
+    url: https://github.com/Rizonesoft/Notepad3/tree/master/readme
+    about: User-facing reference for Configuration.md, FAQ, KeyboardShortcuts, CmdLnOptions, FilePathHandling, Encryption, and more. Many "is this a bug?" questions are answered here. Please check there before filing an issue.

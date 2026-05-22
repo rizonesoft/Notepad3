@@ -1,0 +1,70 @@
+name: Feature / Change Request
+description: Suggest a new feature, enhancement, or behavior change for Notepad3.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement. Please describe the **problem** the change solves before the **solution** — a clear problem statement makes it easier to evaluate alternatives.
+
+        Before submitting:
+        - Check whether an INI key in [Configuration.md](https://github.com/Rizonesoft/Notepad3/blob/master/readme/config/Configuration.md) or a command-line switch in [CmdLnOptions.md](https://github.com/Rizonesoft/Notepad3/blob/master/readme/cmdln/CmdLnOptions.md) already covers this.
+        - Search [existing issues](https://github.com/Rizonesoft/Notepad3/issues?q=is%3Aissue+label%3Aenhancement) for related requests.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary / problem statement
+      description: One short paragraph — what's the problem you're trying to solve, and in what situation does it come up? Don't describe the solution here.
+      placeholder: |
+        When I open very large log files (>200 MB) over a network share, Notepad3 …
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed solution / UX
+      description: How should Notepad3 behave? Describe the menu entry, INI key, dialog, shortcut, or default change you have in mind. Mockups or screenshots welcome.
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Workarounds you've tried, other editors that do this well, existing Notepad3 features that almost cover it but don't quite, etc.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope (best guess)
+      description: Which area of Notepad3 does this touch? Pick all that apply — this is just a triage hint, get it wrong and that's fine.
+      multiple: true
+      options:
+        - UI / dialogs / menus
+        - Editor behavior (find/replace, indent, selection, folding, …)
+        - Lexer / syntax highlighting / themes
+        - Configuration / INI keys
+        - Command-line / shell integration
+        - File I/O / encoding / paths
+        - MiniPath
+        - Build / CI / packaging
+        - Documentation (readme/*)
+        - Localization
+        - Other / unsure
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmation
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true
+        - label: This isn't already configurable via an INI key or command-line switch.
+          required: false

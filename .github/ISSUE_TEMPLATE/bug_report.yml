@@ -1,0 +1,152 @@
+name: Bug / Regression Report
+description: Report a reproducible bug or a regression against a previously working Notepad3 version.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report. Please fill in every required field — incomplete reports often cannot be triaged.
+
+        Before submitting:
+        - Check the [FAQ](https://github.com/Rizonesoft/Notepad3/blob/master/readme/faq/FAQ.md) and the [Configuration reference](https://github.com/Rizonesoft/Notepad3/blob/master/readme/config/Configuration.md).
+        - Search [existing issues](https://github.com/Rizonesoft/Notepad3/issues?q=is%3Aissue) for duplicates.
+        - If possible, try the latest [release](https://github.com/Rizonesoft/Notepad3/releases) or [beta build](https://rizonesoft.com/downloads/notepad3/) — the bug may already be fixed.
+
+  - type: input
+    id: np3-version
+    attributes:
+      label: Notepad3 version
+      description: Open **Help → About Notepad3** and copy the version line (e.g. `Notepad3 6.26.0522.1`).
+      placeholder: e.g. 6.26.0522.1
+    validations:
+      required: true
+
+  - type: dropdown
+    id: np3-build
+    attributes:
+      label: Build / architecture
+      description: Shown in the About dialog and in the executable filename.
+      options:
+        - x64
+        - x64_AVX2
+        - Win32 (x86)
+        - ARM64
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: os-version
+    attributes:
+      label: Windows version & build
+      description: From **Settings → System → About** or `winver`. Include the edition and build number.
+      placeholder: e.g. Windows 11 Pro 24H2 (build 26100.2314)
+    validations:
+      required: true
+
+  - type: input
+    id: regression-last-good
+    attributes:
+      label: Last known good Notepad3 version (regression only)
+      description: If this used to work, paste the most recent version where it still worked. Leave blank if this is not a regression.
+      placeholder: e.g. 6.25.1110.1 — last build before the issue appeared
+    validations:
+      required: false
+
+  - type: textarea
+    id: repro-steps
+    attributes:
+      label: Steps to reproduce
+      description: Minimal, ordered steps so a maintainer can reproduce on a clean install. If the bug depends on a specific file, attach a minimal sample.
+      placeholder: |
+        1. Open Notepad3 with a fresh INI (`Notepad3 /i`).
+        2. Open the attached `sample.cpp`.
+        3. Press Ctrl+Shift+F7 to toggle …
+        4. Observe …
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include exact error text, dialog screenshots, or a short screen recording where helpful.
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Anything else relevant — relevant `[Settings2]` keys, language DLL in use, DPI / multi-monitor setup, dark mode on/off, third-party shell hooks, AV software, custom theme files, etc.
+    validations:
+      required: false
+
+  - type: textarea
+    id: version-text
+    attributes:
+      label: Version & system info (paste from About dialog)
+      description: |
+        Notepad3 can generate a full diagnostic block for you — please paste it here. It complements the fields above with Scintilla / Lexilla / PCRE2 versions, dark-mode state, DPI / scale, locale, encoding, rendering technology, and the active lexer.
+
+        **How to copy it:**
+        1. In Notepad3, open **Help → About Notepad3**.
+        2. Click the **Copy Version Text** button (bottom-right of the dialog).
+        3. Paste the clipboard contents into the box below — the form will render it as a code block.
+
+        Leave this empty only if you cannot launch Notepad3 (e.g. a startup-crash bug). In that case, mention that in *Additional context* above.
+      render: text
+      placeholder: |
+        6.26.0522.1 (a1b2c3d)
+        Compiled with MSVC ...
+        Windows 11 Pro ...
+        Windows Colors 'Dark-Mode' Theme is SUPPORTED and SELECTED.
+        Scintilla v5.5.8 ...
+        Lexilla v5.4.6 ...
+        ...
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+
+        ### Optional: attach your `Notepad3.ini`
+
+        If the bug seems config-dependent (a specific setting, theme, lexer behavior, …), attaching your `Notepad3.ini` often makes the difference between "cannot reproduce" and a one-day fix.
+
+        **How to attach:**
+        1. **Submit this issue first.** GitHub issue forms cannot accept file uploads directly — files go in a follow-up comment.
+        2. Locate your INI — typically next to `Notepad3.exe`, or the path shown at the top of **Help → About Notepad3 → Copy Version Text** output. You can also press **`Ctrl+F7`** in Notepad3 to open it directly in the editor.
+        3. After the issue is created, open it on github.com, click into the comment box, and **drag-and-drop `Notepad3.ini`** into it. GitHub will upload it and insert a link automatically.
+
+        **Before attaching, please review these sections for anything you would rather not share publicly** — issue attachments are world-readable and indexed by search engines:
+
+        - **`[Recent Files]`** — the MRU list of recently opened files (full local paths, project names).
+        - **`[Recent Find]`** / **`[Recent Replace]`** — recent search and replace strings (may contain text from edited documents).
+        - **`Favorites=`** and **`DefaultDirectory=`** keys under **`[Settings]`** — user-specific folder paths.
+
+        It's fine to delete those sections/keys entirely before attaching — Notepad3 will recreate them on the next save. Other sections (`[Settings]`, `[Settings2]`, `[Styles]`, `[Window]`, lexer sections, …) are what actually help reproduce the bug; leave them in.
+
+        If the bug **does not** reproduce on a fresh INI (test with `Notepad3 /i`), the INI attachment is especially valuable — please mention that in *Additional context* above.
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmation
+      options:
+        - label: I searched existing issues and this is not a duplicate.
+          required: true
+        - label: I can reproduce this on a clean install (or a fresh INI via `Notepad3 /i`), not only with my customized config.
+          required: false
+        - label: "If attaching `Notepad3.ini`: I've reviewed it for sensitive entries (`[Recent Files]`, `[Recent Find]`, `[Recent Replace]`, `Favorites=`, `DefaultDirectory=`) and redacted what I don't want to share publicly."
+          required: false
