@@ -187,7 +187,7 @@ BEGIN
     IDS_LEX_STR_Comment     "Kommentar"
     IDS_LEX_STR_Keyword     "Nyckelord"
     IDS_LEX_STR_Identifier  "Identifierare"
-    IDS_LEX_STR_Number      "Nummer"
+    IDS_LEX_STR_Number      "Tal"
     IDS_LEX_STR_String      "Sträng"
     IDS_LEX_STR_Operator    "Operator"
     IDS_LEX_STR_PreProc     "Förprocessor"
@@ -218,7 +218,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_STR_63152       "PHP nyckelord"
-    IDS_LEX_STR_63153       "PHP nummer"
+    IDS_LEX_STR_63153       "PHP tal"
     IDS_LEX_STR_63154       "PHP variabel"
     IDS_LEX_STR_63155       "PHP sträng variabel"
     IDS_LEX_STR_63156       "PHP komplex variabel"
@@ -226,7 +226,7 @@ BEGIN
     IDS_LEX_STR_63158       "PHP operator"
     IDS_LEX_STR_63159       "JS förvald"
     IDS_LEX_STR_63160       "JS kommentar"
-    IDS_LEX_STR_63161       "JS nummer"
+    IDS_LEX_STR_63161       "JS tal"
     IDS_LEX_STR_63162       "JS identifierare"
     IDS_LEX_STR_63163       "JS nyckelord"
     IDS_LEX_STR_63164       "JS sträng"
@@ -238,7 +238,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_STR_63168       "ASP JS kommentar"
-    IDS_LEX_STR_63169       "ASP JS nummer"
+    IDS_LEX_STR_63169       "ASP JS tal"
     IDS_LEX_STR_63170       "ASP JS identifierare"
     IDS_LEX_STR_63171       "ASP JS nyckelord"
     IDS_LEX_STR_63172       "ASP JS sträng"
@@ -246,13 +246,13 @@ BEGIN
     IDS_LEX_STR_63174       "ASP JS Regex"
     IDS_LEX_STR_63175       "VBS förvald"
     IDS_LEX_STR_63176       "VBS kommentar"
-    IDS_LEX_STR_63177       "VBS nummer"
+    IDS_LEX_STR_63177       "VBS tal"
     IDS_LEX_STR_63178       "VBS nyckelord"
     IDS_LEX_STR_63179       "VBS sträng"
     IDS_LEX_STR_63180       "VBS identifierare"
     IDS_LEX_STR_63181       "ASP VBS förvald"
     IDS_LEX_STR_63182       "ASP VBS kommentar"
-    IDS_LEX_STR_63183       "ASP VBS nummer"
+    IDS_LEX_STR_63183       "ASP VBS tal"
 END
 
 STRINGTABLE
@@ -457,7 +457,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63344       "Byta sträng"
+    IDS_LEX_STR_63344       "Bytesträng"
     IDS_LEX_STR_63345       "Annat nyckelord"
     IDS_LEX_STR_63346       "Rust livstid"
     IDS_LEX_STR_Obj         "Objekt"
@@ -536,13 +536,13 @@ BEGIN
     IDS_LEX_STR_SGMLEnt     "SGML-entitet"
     IDS_LEX_STR_SGMLCmt     "SGML-kommentar"
     IDS_LEX_STR_SGMLBlk     "SGML-blockstandard"
-    IDS_LEX_STR_AU3Expand   "Expand Variable"
-    IDS_LEX_STR_COMObj      "COM Object"
-    IDS_LEX_STR_DocCmt      "Doc Comment"
-    IDS_LEX_STR_InstProp    "Instance Property"
-    IDS_LEX_STR_UserLit     "User Literal"
-    IDS_LEX_STR_HdrText     "Header Text"
-    IDS_LEX_STR_PerlXlat    "Transliteration tr///"
+    IDS_LEX_STR_AU3Expand   "Expand-variabel"
+    IDS_LEX_STR_COMObj      "COM-objekt"
+    IDS_LEX_STR_DocCmt      "Dokumentationskommentar"
+    IDS_LEX_STR_InstProp    "Instansegenskap"
+    IDS_LEX_STR_UserLit     "Användarlitteral"
+    IDS_LEX_STR_HdrText     "Rubriktext"
+    IDS_LEX_STR_PerlXlat    "Translitteration tr///"
     IDS_LEX_STR_PerlIVRx    "Interpolated Var (regex/backticks)"
     IDS_LEX_STR_PerlIVQQ    "Interpolated Var (qq/qx/here)"
     IDS_LEX_STR_HereStr     "Here String"
