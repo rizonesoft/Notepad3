@@ -89,7 +89,7 @@ msgstr "Om grepWin"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr "Lägg till favoriter"
+msgstr "Lägg till i favoriter"
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -242,7 +242,7 @@ msgstr "Exportera resultat..."
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr "Ext"
+msgstr "Tillägg"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -396,7 +396,7 @@ msgstr "Förval"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr "Tryck in F1 för hjälp"
+msgstr "Tryck på F1 för hjälp"
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -593,7 +593,7 @@ msgstr "grepWin inställningar"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "håll ner shift-tangenten för att hitta filer som inte innehåller söksträngen"
+msgstr "håll ner skifttangenten för att hitta filer som inte innehåller söksträngen"
 
 #. Resource IDs: (165)
 msgid "include file paths"
