@@ -91,8 +91,8 @@ BEGIN
             MENUITEM "Websjabloon &1\tCtrl+Shift+1",                CMD_WEBACTION1
             MENUITEM "Websjabloon &2\tCtrl+Shift+2",                CMD_WEBACTION2
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",        IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                   IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "&Ingesloten map van selectie openen",         IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "&Bestand van selectie openen",                IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "&MiniPath verkenner",                         IDM_FILE_EXPLORE_DIR
         END
@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "Bew&erken"
     BEGIN
-        MENUITEM "Document &Read Only"                              IDM_VIEW_READONLY
+        MENUITEM "Document &Alleen-lezen"                              IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "&Ongedaan maken\tCtrl+Z",                         IDM_EDIT_UNDO
         MENUITEM "Op&nieuw uitvoeren\tCtrl+Y",                      IDM_EDIT_REDO
@@ -166,7 +166,7 @@ BEGIN
         MENUITEM "&Kopiëren\tCtrl+C",                               IDM_EDIT_COPY
         MENUITEM "&Alles kopiëren\tAlt+C",                          IDM_EDIT_COPYALL
         MENUITEM "Kopie &toevoegen\tCtrl+E",                        IDM_EDIT_COPYADD
-        MENUITEM "Copy as &RTF",                                    IDM_EDIT_COPYRTF
+        MENUITEM "Kopiëren als &RTF",                               IDM_EDIT_COPYRTF
         MENUITEM "&Plakken\tCtrl+V",                                IDM_EDIT_PASTE
         MENUITEM "&Verwisselen\tCtrl+K",                            IDM_EDIT_SWAP
         MENUITEM "Alles &selecteren\tCtrl+A",                       IDM_EDIT_SELECTALL
@@ -320,8 +320,8 @@ BEGIN
             MENUITEM "&Woord of regel(s) selecteren\tCtrl+Spc",     IDM_EDIT_SELECTWORD
             MENUITEM "&Alle overeenkomsten selecteren\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "&Ingesloten map van selectie openen",         IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "&Bestand van selectie openen",                IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "&Ongedaan maken bij regeleinde afbreken",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
@@ -338,17 +338,17 @@ BEGIN
     END
     POPUP "&Zoeken"
     BEGIN
-        MENUITEM "&Zoeken...\tCtrl+F",                          IDM_EDIT_FIND
-        MENUITEM "Zoektekst bewaren\tAlt+F3",                   IDM_EDIT_SAVEFIND
-        MENUITEM "Volgende zoe&ken\tF3",                        IDM_EDIT_FINDNEXT
-        MENUITEM "V&orige zoeken\tShift+F3",                    IDM_EDIT_FINDPREV
-        MENUITEM "Volgende selectie zoeken\tCtrl+F3",           CMD_FINDNEXTSEL
-        MENUITEM "Vorige selectie zoeken\tCtrl+Shift+F3",       CMD_FINDPREVSEL
-        MENUITEM "&Vervangen...\tCtrl+H",                       IDM_EDIT_REPLACE
-        MENUITEM "Volgen&de vervangen\tF4",                     IDM_EDIT_REPLACENEXT
-        MENUITEM "&Ga naar...\tCtrl+G",                         IDM_EDIT_GOTOLINE
+        MENUITEM "&Zoeken...\tCtrl+F",                              IDM_EDIT_FIND
+        MENUITEM "Zoektekst bewaren\tAlt+F3",                       IDM_EDIT_SAVEFIND
+        MENUITEM "Volgende zoe&ken\tF3",                            IDM_EDIT_FINDNEXT
+        MENUITEM "V&orige zoeken\tShift+F3",                        IDM_EDIT_FINDPREV
+        MENUITEM "Volgende selectie zoeken\tCtrl+F3",               CMD_FINDNEXTSEL
+        MENUITEM "Vorige selectie zoeken\tCtrl+Shift+F3",           CMD_FINDPREVSEL
+        MENUITEM "&Vervangen...\tCtrl+H",                           IDM_EDIT_REPLACE
+        MENUITEM "Volgen&de vervangen\tF4",                         IDM_EDIT_REPLACENEXT
+        MENUITEM "&Ga naar...\tCtrl+G",                             IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        MENUITEM "grepWin &bestanden doorzoeken...\tCtrl+Shift+F", IDM_GREP_WIN_SEARCH2
+        MENUITEM "grepWin &bestanden doorzoeken...\tCtrl+Shift+F",  IDM_GREP_WIN_SEARCH2
     END
     POPUP "Beel&d"
     BEGIN
@@ -368,7 +368,7 @@ BEGIN
             MENUITEM "Alleen in het document weergeven",            IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Alle markeringen van wijzigingenweergeven",   IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Wijzigingsgeschiedenis wissen"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Wijzigingsgeschiedenis wissen"                    IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink-indicatoren\tCtrl+Alt+W",              IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Hotspots &kleuren"
@@ -493,7 +493,7 @@ BEGIN
         MENUITEM "Melding bij bestandswijziging...\tAlt+F5",        IDM_SET_CHANGENOTIFY
         ///MENUITEM "Automatisch opslaan / Back-up...",             IDM_SET_AUTOSAVE_BACKUP
         MENUITEM "Meldingen dempen",                                IDM_SET_MUTE_MESSAGEBEEP
-        MENUITEM "Oplossen naar &UNC-paden",                    IDM_SET_RESOLVE_UNC_PATHS
+        MENUITEM "Oplossen naar &UNC-paden",                        IDM_SET_RESOLVE_UNC_PATHS
         POPUP "Functie Esc-&toets"
         BEGIN
             MENUITEM "&Geen",                                       IDM_SET_NOESCFUNC
@@ -502,11 +502,11 @@ BEGIN
         END
         MENUITEM "O&pslaan voor uitvoeren",                         IDM_SET_SAVEBEFORERUNNINGTOOLS
         MENUITEM "Tiny-E&xpressies berekenen",                      IDM_SET_EVALTINYEXPRONSEL
-        MENUITEM "&Meervoudige selectie inschakelen",                       IDM_SET_MULTIPLE_SELECTION
+        MENUITEM "&Meervoudige selectie inschakelen",               IDM_SET_MULTIPLE_SELECTION
         POPUP "&Standaardmap"
         BEGIN
             MENUITEM "Instellen naar huidige &bestandsmap",  IDM_SET_DEFAULTDIR
-            MENUITEM "Herstellen naar &standaard",                 IDM_SET_DEFAULTDIR_RESET
+            MENUITEM "Herstellen naar &standaard",                  IDM_SET_DEFAULTDIR_RESET
         END
         MENUITEM SEPARATOR
         POPUP "&Onthouden"
@@ -603,8 +603,8 @@ BEGIN
         MENUITEM "Websjabloon 1 openen",                            CMD_WEBACTION1
         MENUITEM "Websjabloon 2 openen",                            CMD_WEBACTION2
         MENUITEM SEPARATOR
-        MENUITEM "Open Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-        MENUITEM "Open File from Selection",            IDM_EDIT_OPEN_FILE_FROM_SEL
+        MENUITEM "Ingesloten map van selectie openen",              IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+        MENUITEM "Bestand van selectie openen",                     IDM_EDIT_OPEN_FILE_FROM_SEL
         MENUITEM "MiniPath verkenner openen",                       IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"
@@ -629,7 +629,7 @@ BEGIN
         MENUITEM "In/uitklappen",                                   IDM_VIEW_FOLDING
         MENUITEM "Regelnummers",                                    IDM_VIEW_LINENUMBERS
         MENUITEM "Bladwijzermarge",                                 IDM_VIEW_BOOKMARK_MARGIN
-        MENUITEM "Marge voor Markering van wijzigingen",       IDM_VIEW_CHGHIST_TOGGLE_MARGIN
+        MENUITEM "Marge voor Markering van wijzigingen",            IDM_VIEW_CHGHIST_TOGGLE_MARGIN
     END
     POPUP "+"
     BEGIN
