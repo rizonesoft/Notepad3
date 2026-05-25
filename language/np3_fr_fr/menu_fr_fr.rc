@@ -91,8 +91,8 @@ BEGIN
             MENUITEM "Modèle Web &1\tCtrl+Maj+1",                   CMD_WEBACTION1
             MENUITEM "Modèle Web &2\tCtrl+Maj+2",                   CMD_WEBACTION2
             MENUITEM SEPARATOR      
-            MENUITEM "Open &Containing Folder of Selection",        IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                   IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "Ouvrir le dossier &contenant la sélection",   IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Ouvrir le &fichier à partir de la sélection", IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Ouvrir l'explorateur de fichiers",            IDM_FILE_EXPLORE_DIR
         END
@@ -165,8 +165,8 @@ BEGIN
         MENUITEM "Coupe&r\tCtrl+X",                         IDM_EDIT_CUT
         MENUITEM "&Copier\tCtrl+C",                         IDM_EDIT_COPY
         MENUITEM "Copier &tout\tAlt+C",                     IDM_EDIT_COPYALL
-        MENUITEM "Copier& / Ajouter\tCtrl+E",                 IDM_EDIT_COPYADD
-        MENUITEM "Copy as &RTF",                              IDM_EDIT_COPYRTF
+        MENUITEM "Copier / &Ajouter\tCtrl+E",               IDM_EDIT_COPYADD
+        MENUITEM "Copier au format &RTF",                   IDM_EDIT_COPYRTF
         MENUITEM "Co&ller\tCtrl+V",                         IDM_EDIT_PASTE
         MENUITEM "P&ermuter\tCtrl+K",                       IDM_EDIT_SWAP
         MENUITEM "&Sélectionner tout\tCtrl+A",              IDM_EDIT_SELECTALL
@@ -320,8 +320,8 @@ BEGIN
             MENUITEM "Sélectionner le mot ou la ligne\tCtrl+Espac.",                     IDM_EDIT_SELECTWORD
             MENUITEM "Multi-sélectionner toutes les correspond&ances\tCtrl+Maj+Espac.",  IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "Ouvrir le dossier &contenant la sélection",           IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Ouvrir le &fichier à partir de la sélection",         IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Fractionner l'opération ""Défaire"" aux sauts de ligne",          IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
@@ -603,9 +603,9 @@ BEGIN
         MENUITEM "Ouvrir Action Web &1",                   CMD_WEBACTION1
         MENUITEM "Ouvrir Action Web &2",                   CMD_WEBACTION2
         MENUITEM SEPARATOR
-        MENUITEM "Open Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-        MENUITEM "Open File from Selection",            IDM_EDIT_OPEN_FILE_FROM_SEL
-        MENUITEM "Ouvrir l'Explorateur de fichiers",      IDM_FILE_EXPLORE_DIR
+        MENUITEM "Ouvrir le dossier &contenant la sélection",   IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+        MENUITEM "Ouvrir le &fichier à partir de la sélection", IDM_EDIT_OPEN_FILE_FROM_SEL
+        MENUITEM "Ouvrir l'Explorateur de fichiers",            IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"
     BEGIN

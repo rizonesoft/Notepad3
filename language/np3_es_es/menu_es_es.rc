@@ -91,8 +91,8 @@ BEGIN
             MENUITEM "Plantilla Web &1\tCtrl+Shift+1",      CMD_WEBACTION1
             MENUITEM "Plantilla Web &2\tCtrl+Shift+2",      CMD_WEBACTION2
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",           IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "Abrir la &carpeta contenedora la selección", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Abrir a&rchivo desde la selección",          IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Abrir &Explorador de archivos",       IDM_FILE_EXPLORE_DIR
         END
@@ -166,7 +166,7 @@ BEGIN
         MENUITEM "&Copiar\tCtrl+C",                         IDM_EDIT_COPY
         MENUITEM "C&opiar todo\tAlt+C",                     IDM_EDIT_COPYALL
         MENUITEM "Copiar a&ñadiendo\tCtrl+E",               IDM_EDIT_COPYADD
-        MENUITEM "Copy as &RTF",                            IDM_EDIT_COPYRTF
+        MENUITEM "Copiar como &RTF",                        IDM_EDIT_COPYRTF
         MENUITEM "&Pegar\tCtrl+V",                          IDM_EDIT_PASTE
         MENUITEM "Perm&utar\tCtrl+K",                       IDM_EDIT_SWAP
         MENUITEM "&Seleccionar todo\tCtrl+A",               IDM_EDIT_SELECTALL
@@ -320,8 +320,8 @@ BEGIN
             MENUITEM "Seleccionar &palabra o líneas\tCtrl+Spc",              IDM_EDIT_SELECTWORD
             MENUITEM "Multi-selección &todas coincidencias\tCtrl+Shift+Spc", IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "Abrir la &carpeta contenedora la selección",           IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Abrir a&rchivo desde la selección",                    IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Dividir &transacción de deshacer en saltos de línea",  IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
