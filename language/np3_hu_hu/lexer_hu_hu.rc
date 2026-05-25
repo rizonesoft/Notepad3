@@ -110,7 +110,7 @@ BEGIN
     IDS_LEX_AUTOIT3         "AutoIt3 szkript"
     IDS_LEX_LATEX           "LaTeX fájlok"
     IDS_LEX_AHK             "AutoHotkey szkript"
-    IDS_LEX_AHK2            "AutoHotkey v2 Script"
+    IDS_LEX_AHK2            "AutoHotkey v2 szkript"
     IDS_LEX_CMAKE           "Cmake szkript"
     IDS_LEX_AVI_SYNTH       "AviSynth szkript"
 END
@@ -129,7 +129,7 @@ BEGIN
     IDS_LEX_TOML_CFG        "TOML"
     IDS_LEX_DART_SRC        "Dart forráskód"
     IDS_LEX_KOTLIN_SRC      "Kotlin forráskód"
-    IDS_LEX_JULIA_SCR       "Julia Script"
+    IDS_LEX_JULIA_SCR       "Julia szkript"
     IDS_LEX_KIX_SCR         "KiXtart szkript"
     IDS_LEX_FORTRAN         "Fortran forráskód"
 END
@@ -171,8 +171,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STD_NPCH        "Non-Printable Characters (Colors)"
-    IDS_LEX_2ND_NPCH        "2nd Non-Printable Characters (Colors)"
+    IDS_LEX_STD_NPCH        "Nem nyomtatható karakterek (színek)"
+    IDS_LEX_2ND_NPCH        "2. Nem nyomtatható karakterek (színek)"
 END
 
 STRINGTABLE
