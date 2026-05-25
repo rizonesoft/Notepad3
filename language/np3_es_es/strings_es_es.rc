@@ -134,7 +134,7 @@ BEGIN
     IDS_MUI_ERR_BROWSE      "No se encontró plug-in para el navegador de archivos\nEl plug-in de navegador de archivos MiniPath se puede descargar desde https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "No se encontró plug-in de búsqueda de archivos\nEl plug-in grepWin Portable de búsqueda de archivos se puede descargar desde https://github.com/stefankueng/grepWin/releases"
     IDS_MUI_ERR_GREPWIN_PORTAPPS
-                            "No file search plugin was found\nPlease install the latest version of grepWinPortable in PortableApps Platform."
+                            "No se encontró ningún complemento de búsqueda de archivos.\nInstale la última versión de grepWinPortable en PortableApps Platform."
     IDS_MUI_ERR_MRUDLG      "¡No hay acceso al archivo seleccionado!\n¿Desea eliminarlo de la lista?"
     IDS_MUI_ERR_CREATELINK  "Error al crear el enlace de escritorio"
     IDS_MUI_ERR_PREVWINDISABLED
@@ -202,7 +202,7 @@ BEGIN
     IDS_MUI_EXPORT_FAIL      "Error al exportar la configuración de estilo a ""%s"""
     IDS_MUI_REGEX_INVALID    "Error al evaluar la expresión regular. ¡La expresión es inválida!"
     IDS_MUI_DROP_NO_FILE     "No se recuperó un nombre de archivo válido\nSi se usa una aplicación de 32 bits,\nintente arrastrar el archivo a la barra de herramientas Notepad3"
-    IDS_MUI_DROP_CAP_EXCEEDED "Dropped more files than the configured limit (%i). Increase Settings2.MaxFileDropInstances if needed."
+    IDS_MUI_DROP_CAP_EXCEEDED "Se han eliminado más archivos de los que permite el límite configurado (%i). Aumente el valor de Settings2.MaxFileDropInstances si es necesario."
     IDS_MUI_URL_DIR_EXISTS   "¡Directorio especificado por URL existe!"
     IDS_MUI_URL_FILE_EXISTS  "¡Archivo especificado por URL existe!"
     IDS_MUI_URL_PATH_NOT_FOUND

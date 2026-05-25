@@ -91,8 +91,8 @@ BEGIN
             MENUITEM "Web Sjabloon &1\tCtrl+Shift+1",       CMD_WEBACTION1
             MENUITEM "Web Sjabloon &2\tCtrl+Shift+2",       CMD_WEBACTION2
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",           IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "Ouvrir le &fichier à partir de la sélection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Maak &Lêer Oop vanaf Seleksie"    ,           IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Maak &File Explorer Oop",             IDM_FILE_EXPLORE_DIR
         END
@@ -166,7 +166,7 @@ BEGIN
         MENUITEM "Ko&pieer\tCtrl+C",                        IDM_EDIT_COPY
         MENUITEM "Kop&ieer Alles\tAlt+C",                   IDM_EDIT_COPYALL
         MENUITEM "Kopieer &Voeg\tCtrl+E",                   IDM_EDIT_COPYADD
-        MENUITEM "Copy as &RTF",                            IDM_EDIT_COPYRTF
+        MENUITEM "Kopieer as &RTF",                         IDM_EDIT_COPYRTF
         MENUITEM "&Plak\tCtrl+V",                           IDM_EDIT_PASTE
         MENUITEM "&Uitruil\tCtrl+K",                        IDM_EDIT_SWAP
         MENUITEM "Kies &Alles\tCtrl+A",                     IDM_EDIT_SELECTALL
@@ -320,8 +320,8 @@ BEGIN
             MENUITEM "Kies &Woord of Lyne\tCtrl+Spc",                       IDM_EDIT_SELECTWORD
             MENUITEM "Multi-Select &Alles wat Pas\tCtrl+Shift+Spc",         IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "Maak die &Vouer met die Seleksie Oop",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Maak &Lêer Oop vanaf Seleksie",                       IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Verdeel en Onttrek &Transaksies by Lynbrekings",      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
@@ -603,8 +603,8 @@ BEGIN
         MENUITEM "Web Sjabloon 1",                          CMD_WEBACTION1
         MENUITEM "Web Sjabloon 2",                          CMD_WEBACTION2
         MENUITEM SEPARATOR
-        MENUITEM "Open Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-        MENUITEM "Open File from Selection",            IDM_EDIT_OPEN_FILE_FROM_SEL
+        MENUITEM "Maak die Vouer met die Seleksie Oop",     IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+        MENUITEM "Maak &Lêer Oop vanaf Seleksie",           IDM_EDIT_OPEN_FILE_FROM_SEL
         MENUITEM "Maak File Explorer Oop",                  IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"
