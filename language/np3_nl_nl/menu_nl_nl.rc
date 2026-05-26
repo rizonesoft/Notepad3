@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "Bew&erken"
     BEGIN
-        MENUITEM "Docu&ment Alleen-lezen"                              IDM_VIEW_READONLY
+        MENUITEM "Docu&ment Alleen-lezen",                          IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "&Ongedaan maken\tCtrl+Z",                         IDM_EDIT_UNDO
         MENUITEM "Op&nieuw uitvoeren\tCtrl+Y",                      IDM_EDIT_REDO
@@ -368,15 +368,15 @@ BEGIN
             MENUITEM "Alleen in het document weergeven",            IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Alle markeringen van wijzigingenweergeven",   IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Wijzigingsgeschiedenis wissen"                    IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Wijzigingsgeschiedenis wissen",                   IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink-indicatoren\tCtrl+Alt+W",              IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Hotspots &kleuren"
         BEGIN
             MENUITEM "&OFF",                                        IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "&RGB+A"                                       IDM_VIEW_COLOR_RGBA
-            MENUITEM "&A+RGB"                                       IDM_VIEW_COLOR_ARGB
-            MENUITEM "&BGRA"                                        IDM_VIEW_COLOR_BGRA
+            MENUITEM "&RGB+A",                                      IDM_VIEW_COLOR_RGBA
+            MENUITEM "&A+RGB",                                      IDM_VIEW_COLOR_ARGB
+            MENUITEM "&BGRA",                                       IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "&Unicode-punten weergeven",                       IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visuele haakjesovereenkomsten\tCtrl+Shift+V",    IDM_VIEW_MATCHBRACES

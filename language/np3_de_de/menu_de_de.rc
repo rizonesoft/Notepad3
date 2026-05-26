@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "&Bearbeiten"
     BEGIN
-        MENUITEM "&Dokument Nur Lesen"                      IDM_VIEW_READONLY
+        MENUITEM "&Dokument Nur Lesen",                     IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "&Rückgängig\tCtrl+Z",                     IDM_EDIT_UNDO
         MENUITEM "&Wiederholen\tCtrl+Y",                    IDM_EDIT_REDO
@@ -368,15 +368,15 @@ BEGIN
             MENUITEM "Zeige Änderungen im Dokument",        IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Zeige alle Änderungen",               IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Lösche Änderungshistorie"                 IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Lösche Änderungshistorie",                IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "H&yperlink Indikator\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Farb-Definition Indikator"
         BEGIN
-            MENUITEM "&AUS",                                IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "&RGB+A"                               IDM_VIEW_COLOR_RGBA
-            MENUITEM "&A+RGB"                               IDM_VIEW_COLOR_ARGB
-            MENUITEM "&BGRA"                                IDM_VIEW_COLOR_BGRA
+            MENUITEM "A&US",                                IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&RGB+A",                              IDM_VIEW_COLOR_RGBA
+            MENUITEM "&A+RGB",                              IDM_VIEW_COLOR_ARGB
+            MENUITEM "&BGRA",                               IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "&Unicode-Point Indikator",                IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Zeige passende Klammer\tCtrl+Shift+V",   IDM_VIEW_MATCHBRACES

@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "&Upraviť"
     BEGIN
-        MENUITEM "Dokument &Len na čítanie"                 IDM_VIEW_READONLY
+        MENUITEM "Dokument &Len na čítanie",                IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "&Späť\tCtrl+Z",                           IDM_EDIT_UNDO
         MENUITEM "&Znova\tCtrl+Y",                          IDM_EDIT_REDO
@@ -368,15 +368,15 @@ BEGIN
             MENUITEM "Zobraziť len v dokumente",                IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Zobraziť všetky značky zmien",            IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Vymazať históriu príkazov Späť/Znova"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Vymazať históriu príkazov Späť/Znova",            IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "&Hypertextové odkazy\tCtrl+Alt+W",        IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Farba definície odkazu"
         BEGIN
             MENUITEM "&VYP.",                            IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
-            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
-            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+            MENUITEM "&RGB+A",                           IDM_VIEW_COLOR_RGBA
+            MENUITEM "&A+RGB",                           IDM_VIEW_COLOR_ARGB
+            MENUITEM "&BGRA",                            IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "Zvýrazniť body &Unicode",                      IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Zviditeľniť zladené zátvorky\tCtrl+Shift+V",  IDM_VIEW_MATCHBRACES

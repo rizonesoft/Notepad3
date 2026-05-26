@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "&Wysig"
     BEGIN
-        MENUITEM "D&okument Slegs Lees"                     IDM_VIEW_READONLY
+        MENUITEM "D&okument Slegs Lees",                    IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "O&ngedaan\tCtrl+Z",                       IDM_EDIT_UNDO
         MENUITEM "Oo&rdoen\tCtrl+Y",                        IDM_EDIT_REDO
@@ -368,15 +368,15 @@ BEGIN
             MENUITEM "Wys slegs in Dokument",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Wys alle Veranderingsmerkers",        IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Vee Verandering/Ontdoen Geskiedenis"      IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Vee Verandering/Ontdoen Geskiedenis",     IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Skakel &Hotspots\tCtrl+Alt+W",            IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Kleur Definisie Hotspots",
         BEGIN
-            MENUITEM "&AF",                                 IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "&RGB+A"                               IDM_VIEW_COLOR_RGBA
-            MENUITEM "&A+RGB"                               IDM_VIEW_COLOR_ARGB
-            MENUITEM "&BGRA"                                IDM_VIEW_COLOR_BGRA
+            MENUITEM "A&F",                                 IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&RGB+A",                              IDM_VIEW_COLOR_RGBA
+            MENUITEM "&A+RGB",                              IDM_VIEW_COLOR_ARGB
+            MENUITEM "&BGRA",                               IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "Merk &Unicode-punte",                     IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visuele Hakie Passing\tCtrl+Shift+V",    IDM_VIEW_MATCHBRACES

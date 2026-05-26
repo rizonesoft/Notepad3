@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "संपादन (&E)"
     BEGIN
-        MENUITEM "दस्तावेज़ केवल पढ़ने योग्य (&O)"         IDM_VIEW_READONLY
+        MENUITEM "दस्तावेज़ केवल पढ़ने योग्य (&O)",         IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "पूर्ववत करें (&U)\tCtrl+Z",               IDM_EDIT_UNDO
         MENUITEM "फिर से करें (&R)\tCtrl+Y",              IDM_EDIT_REDO
@@ -352,31 +352,31 @@ BEGIN
     END
     POPUP "दृश्य (&V)"
     BEGIN
-        MENUITEM "शब्द लपेटें (&W)\tCtrl+W",                   IDM_VIEW_WORDWRAP
-        MENUITEM "दीर्घ रेखा चिन्हक (&L)\tCtrl+Alt+L",        IDM_VIEW_LONGLINEMARKER
+        MENUITEM "शब्द लपेटें (&W)\tCtrl+W",                IDM_VIEW_WORDWRAP
+        MENUITEM "दीर्घ रेखा चिन्हक (&L)\tCtrl+Alt+L",       IDM_VIEW_LONGLINEMARKER
         MENUITEM "इंडेंटेशन निर्देशिका (&G)\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "लपेटे हुए चिन्ह दिखाएं (&P)\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
-        MENUITEM "खाली स्थान दिखाएं (&B)\tCtrl+Shift+8",           IDM_VIEW_SHOWBLANKS
+        MENUITEM "खाली स्थान दिखाएं (&B)\tCtrl+Shift+8",        IDM_VIEW_SHOWBLANKS
         MENUITEM "वाक्य अंत दिखाएं (&E)\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
-        MENUITEM "Show Non-&Printable Characters",           IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Show Non-&Printable Characters",      IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "परिवर्तन इतिहास मार्कर"
         BEGIN
-            MENUITEM "कोई मार्कर नहीं",                IDM_VIEW_CHGHIST_NONE
+            MENUITEM "कोई मार्कर नहीं",                      IDM_VIEW_CHGHIST_NONE
             MENUITEM "केवल मार्जिन में दिखाएं",                 IDM_VIEW_CHGHIST_MARGIN
             MENUITEM "केवल दस्तावेज़ में दिखाएं",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "सभी परिवर्तन मार्कर दिखाएं",             IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "परिवर्तन/पूर्ववत इतिहास साफ़ करें"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "परिवर्तन/पूर्ववत इतिहास साफ़ करें",            IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "हाईपरलिंक हॉटस्पॉट (&H)\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "रंग परिभाषा हॉटस्पॉट (&C)"
         BEGIN
-            MENUITEM "बंद करें (&O)",                             IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
-            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
-            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+            MENUITEM "बंद करें (&O)",                       IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&RGB+A",                           IDM_VIEW_COLOR_RGBA
+            MENUITEM "&A+RGB",                           IDM_VIEW_COLOR_ARGB
+            MENUITEM "&BGRA",                            IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "युनिकोड-बिन्दु हाइलाइट करें (&U)",            IDM_VIEW_UNICODE_POINTS
         MENUITEM "Visual Brace मिलान (&V)\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES

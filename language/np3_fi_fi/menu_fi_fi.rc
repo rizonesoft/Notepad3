@@ -138,42 +138,42 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Tarkista s&isennys...",           CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
-        MENUITEM "Sivun aset&ukset...",                  IDM_FILE_PAGESETUP
-        MENUITEM "&Tulostus...\tCtrl+P",               IDM_FILE_PRINT
+        MENUITEM "Sivun aset&ukset...",             IDM_FILE_PAGESETUP
+        MENUITEM "&Tulostus...\tCtrl+P",            IDM_FILE_PRINT
         MENUITEM SEPARATOR
-        MENUITEM "Ominaisuude&t...",                  IDM_FILE_PROPERTIES
-        MENUITEM "Luo työpöytälin&kki",            IDM_FILE_CREATELINK
+        MENUITEM "Ominaisuude&t...",                IDM_FILE_PROPERTIES
+        MENUITEM "Luo työpöytälin&kki",             IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
-        MENUITEM "&Selaa...\tCtrl+M",              IDM_FILE_BROWSE
+        MENUITEM "&Selaa...\tCtrl+M",               IDM_FILE_BROWSE
         POPUP "&Suosikit"
         BEGIN
-            MENUITEM "&Avaa suosikit...\tAlt+I",    IDM_FILE_OPENFAV
+            MENUITEM "&Avaa suosikit...\tAlt+I",             IDM_FILE_OPENFAV
             MENUITEM "&Lisää nykyinen tiedosto...\tAlt+K",   IDM_FILE_ADDTOFAV
-            MENUITEM "&Hallinta...\tAlt+F9",            IDM_FILE_MANAGEFAV
+            MENUITEM "&Hallinta...\tAlt+F9",                 IDM_FILE_MANAGEFAV
         END
         MENUITEM "Viimeaikainen (&historia)...\tCtrl+Alt+H",  IDM_FILE_RECENT
         MENUITEM SEPARATOR
-        MENUITEM "&Poistu\tAlt+F4",                     IDM_FILE_EXIT
+        MENUITEM "&Poistu\tAlt+F4",                           IDM_FILE_EXIT
     END
     POPUP "&Muokkaa"
     BEGIN
-        MENUITEM "Doku&mentti Vain luettavissa"          IDM_VIEW_READONLY
+        MENUITEM "Doku&mentti Vain luettavissa",         IDM_VIEW_READONLY
         MENUITEM SEPARATOR
-        MENUITEM "K&umoa\tCtrl+Z",               IDM_EDIT_UNDO
+        MENUITEM "K&umoa\tCtrl+Z",                       IDM_EDIT_UNDO
         MENUITEM "&Tee uudelleen\tCtrl+Y",               IDM_EDIT_REDO
         MENUITEM SEPARATOR
-        MENUITEM "&Leikkaa\tCtrl+X",                IDM_EDIT_CUT
-        MENUITEM "&Kopioi\tCtrl+C",               IDM_EDIT_COPY
+        MENUITEM "&Leikkaa\tCtrl+X",                 IDM_EDIT_CUT
+        MENUITEM "&Kopioi\tCtrl+C",                  IDM_EDIT_COPY
         MENUITEM "Kopioi k&aikki\tAlt+C",            IDM_EDIT_COPYALL
         MENUITEM "Kop&ioi lisäys\tCtrl+E",           IDM_EDIT_COPYADD
         MENUITEM "Copy as RT&F",                     IDM_EDIT_COPYRTF
-        MENUITEM "&Liitä\tCtrl+V",              IDM_EDIT_PASTE
-        MENUITEM "&Vaihda\tCtrl+K",               IDM_EDIT_SWAP
-        MENUITEM "Valit&se kaikki\tCtrl+A",         IDM_EDIT_SELECTALL
-        MENUITEM "&Poista\tDel",                IDM_EDIT_CLEAR
+        MENUITEM "&Liitä\tCtrl+V",                   IDM_EDIT_PASTE
+        MENUITEM "&Vaihda\tCtrl+K",                  IDM_EDIT_SWAP
+        MENUITEM "Valit&se kaikki\tCtrl+A",          IDM_EDIT_SELECTALL
+        MENUITEM "&Poista\tDel",                     IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "Tyhj&ennä leikepöytä",            IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Vaihda leikepöydän &seurantaa",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Tyhj&ennä leikepöytä",             IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Vaihda leikepöydän &seurantaa",    IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "S&anat"
         BEGIN
@@ -353,30 +353,30 @@ BEGIN
     POPUP "&Näkymä"
     BEGIN
         MENUITEM "&Rivitys\tCtrl+W",                   IDM_VIEW_WORDWRAP
-        MENUITEM "&Pitkän rivin merkintä\tCtrl+Alt+L",        IDM_VIEW_LONGLINEMARKER
+        MENUITEM "&Pitkän rivin merkintä\tCtrl+Alt+L", IDM_VIEW_LONGLINEMARKER
         MENUITEM "Sisennys&ohjaimet\tCtrl+Shift+G",    IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
-        MENUITEM "Näytä &rivityssymbolit\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS
-        MENUITEM "Näytä &tyhjät tilat\tCtrl+Shift+8",           IDM_VIEW_SHOWBLANKS
-        MENUITEM "Näytä rivin lop&etukset\tCtrl+Shift+9",     IDM_VIEW_SHOWEOLS
+        MENUITEM "Näytä &rivityssymbolit\tCtrl+Shift+7",    IDM_VIEW_WORDWRAPSYMBOLS
+        MENUITEM "Näytä &tyhjät tilat\tCtrl+Shift+8",       IDM_VIEW_SHOWBLANKS
+        MENUITEM "Näytä rivin lop&etukset\tCtrl+Shift+9",   IDM_VIEW_SHOWEOLS
         MENUITEM "Näytä &tulostumattomat merkit",           IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Vaihda historiamerkintä"
         BEGIN
-            MENUITEM "Ei muutosmerkkejä",                IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Näytä vain marginaalissa",              IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Näytä vain dokumentissa",            IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Näytä kaikki muutosmerkit",          IDM_VIEW_CHGHIST_ALL
+            MENUITEM "Ei muutosmerkkejä",                      IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Näytä vain marginaalissa",               IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "Näytä vain dokumentissa",                IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "Näytä kaikki muutosmerkit",              IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Tyhjennä muutos-/kumoushistoria"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Tyhjennä muutos-/kumoushistoria",            IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
-        MENUITEM "&Hyperlinkkien valintapaikat\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "&Hyperlinkkien valintapaikat\tCtrl+Alt+W",   IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Värimääritelmän valintapaikat"
         BEGIN
-            MENUITEM "&POIS",                             IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
-            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
-            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+            MENUITEM "&POIS",                            IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&RGB+A",                           IDM_VIEW_COLOR_RGBA
+            MENUITEM "&A+RGB",                           IDM_VIEW_COLOR_ARGB
+            MENUITEM "&BGRA",                            IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "Korosta &Unicode",            IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Visuaalisten sulkeiden täsmäys\tCtrl+Shift+V", IDM_VIEW_MATCHBRACES

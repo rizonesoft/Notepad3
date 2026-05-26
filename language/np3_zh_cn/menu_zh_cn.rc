@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "编辑(&E)"
     BEGIN
-        MENUITEM "只读(&O)"                                   IDM_VIEW_READONLY
+        MENUITEM "只读(&O)",                                  IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "撤销(&U)\tCtrl+Z",                          IDM_EDIT_UNDO
         MENUITEM "重做(&R)\tCtrl+Y",                          IDM_EDIT_REDO
@@ -368,15 +368,15 @@ BEGIN
             MENUITEM "仅显示在文档中",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "全部显示",             IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "清除修改/撤销历史"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "清除修改/撤销历史",            IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "检测超链接(&Y)\tCtrl+Alt+W",                 IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "检测 #RRGGBB 颜色(&C)"
         BEGIN
             MENUITEM "关闭(&O)",                             IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "RGB+A(&R)"                             IDM_VIEW_COLOR_RGBA
-            MENUITEM "A+RGB(&A)"                             IDM_VIEW_COLOR_ARGB
-            MENUITEM "BGRA(&B)"                              IDM_VIEW_COLOR_BGRA
+            MENUITEM "RGB+A(&R)",                            IDM_VIEW_COLOR_RGBA
+            MENUITEM "A+RGB(&A)",                            IDM_VIEW_COLOR_ARGB
+            MENUITEM "BGRA(&B)",                             IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "高亮 Unicode 码点(&U)",                 IDM_VIEW_UNICODE_POINTS
         MENUITEM "提示配对括号(&V)\tCtrl+Shift+V",             IDM_VIEW_MATCHBRACES

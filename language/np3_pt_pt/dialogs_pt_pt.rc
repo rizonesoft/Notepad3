@@ -818,7 +818,7 @@ BEGIN
     SS_SIMPLE | WS_CHILD | WS_TABSTOP | WS_GROUP,
     4, 116, 140, 28
 
-    PUSHBUTTON      "&Definir cores personalizadas >>" COLOR_MIX, 4, 150, 138, 14,
+    PUSHBUTTON      "&Definir cores personalizadas >>", COLOR_MIX, 4, 150, 138, 14,
     WS_TABSTOP | WS_GROUP
 
     DEFPUSHBUTTON   "OK", IDOK, 4, 166, 44, 14, WS_GROUP | WS_TABSTOP

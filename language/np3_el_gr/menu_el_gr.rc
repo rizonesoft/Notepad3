@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "&Επεξεργασία"
     BEGIN
-        MENUITEM "&Έγγραφο μόνο για ανάγνωση"     IDM_VIEW_READONLY
+        MENUITEM "&Έγγραφο μόνο για ανάγνωση",    IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Αναίρε&ση\tCtrl+Z",             IDM_EDIT_UNDO
         MENUITEM "Επανάλη&ψη ενέργειας\tCtrl+Y",  IDM_EDIT_REDO
@@ -348,7 +348,7 @@ BEGIN
         MENUITEM "Αντι&κατάσταση επόμενου\tF4",                      IDM_EDIT_REPLACENEXT
         MENUITEM "Μετά&βαση...\tCtrl+G",                             IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        MENUITEM "Ανα&ζήτηση σε αρχεία...\tCtrl+Shift+F",               IDM_GREP_WIN_SEARCH2
+        MENUITEM "Ανα&ζήτηση σε αρχεία...\tCtrl+Shift+F",            IDM_GREP_WIN_SEARCH2
     END
     POPUP "Πρ&οβολή"
     BEGIN
@@ -359,24 +359,24 @@ BEGIN
         MENUITEM "Εμφάνιση &συμβόλων αναδίπλωσης\tCtrl+Shift+7",  IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Εμφάνιση &κενών διαστημάτων\tCtrl+Shift+8",     IDM_VIEW_SHOWBLANKS
         MENUITEM "Εμφάνιση καταλή&ξεων γραμμών\tCtrl+Shift+9",    IDM_VIEW_SHOWEOLS
-        MENUITEM "Εμφάνιση μη &Εμφανών Χαρακτήρων",           IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Εμφάνιση μη &Εμφανών Χαρακτήρων",               IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Ενδείξεις αλλαγών"
         BEGIN
-            MENUITEM "Χωρίς ένδειξη",                   IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Στο περιθώριο",                 IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Στο έγγραφο",               IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "Χωρίς ένδειξη",      IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Στο περιθώριο",      IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "Στο έγγραφο",        IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Παντού",             IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Διαγραφή ιστορικού αλλαγών και αναιρέσεων"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Διαγραφή ιστορικού αλλαγών και αναιρέσεων",     IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Ενεργά σημεία &υπερσυνδέσεων\tCtrl+Alt+W",      IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Χρώμα ορισμού υπερσυνδέσεων"
         BEGIN
             MENUITEM "&ΟFF",                                      IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "&RGB+A"                                     IDM_VIEW_COLOR_RGBA
-            MENUITEM "&Α+RGB"                                     IDM_VIEW_COLOR_ARGB
-            MENUITEM "&ΒGRA"                                      IDM_VIEW_COLOR_BGRA
+            MENUITEM "&RGB+A",                                    IDM_VIEW_COLOR_RGBA
+            MENUITEM "&Α+RGB",                                    IDM_VIEW_COLOR_ARGB
+            MENUITEM "&ΒGRA",                                     IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "Επισήμανση σημείων Unic&οde",                   IDM_VIEW_UNICODE_POINTS
         MENUITEM "Οπτ&ική αντιστοίχιση αγκίστρων\tCtrl+Shift+V",  IDM_VIEW_MATCHBRACES
