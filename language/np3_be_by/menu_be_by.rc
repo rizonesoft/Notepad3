@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "&Праўка"
     BEGIN
-        MENUITEM "Дакумент толькі для &чытання"     IDM_VIEW_READONLY
+        MENUITEM "Дакумент толькі для &чытання",    IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Ад&мена\tCtrl+Z",                 IDM_EDIT_UNDO
         MENUITEM "&Паўтор\tCtrl+Y",                 IDM_EDIT_REDO
@@ -348,7 +348,7 @@ BEGIN
         MENUITEM "За&мяніць далей\tF4",                         IDM_EDIT_REPLACENEXT
         MENUITEM "Пе&райсці...\tCtrl+G",                        IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        MENUITEM "&Шукаць у файлах...\tCtrl+Shift+F",              IDM_GREP_WIN_SEARCH2
+        MENUITEM "&Шукаць у файлах...\tCtrl+Shift+F",           IDM_GREP_WIN_SEARCH2
     END
     POPUP "&Выгляд"
     BEGIN
@@ -359,7 +359,7 @@ BEGIN
         MENUITEM "Паказваць &сімвалы пераносаў\tCtrl+Shift+7",  IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Паказваць прабельныя сімва&лы\tCtrl+Shift+8", IDM_VIEW_SHOWBLANKS
         MENUITEM "Паказваць &канчаткі радкоў\tCtrl+Shift+9",    IDM_VIEW_SHOWEOLS
-        MENUITEM "Show Non-&Printable Characters",           IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Show Non-&Printable Characters",              IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Маркер гісторыі змяненняў"
         BEGIN
@@ -368,12 +368,12 @@ BEGIN
             MENUITEM "Паказваць толькі ў дакуменце",        IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Паказваць усюды",                     IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Ачысціць гісторыю змяненняў/адмены"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Ачысціць гісторыю змяненняў/адмены",      IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Адзначаць &гіперспасылкі\tCtrl+Alt+W",    IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Адзначаць рэгі&ёны вылучэння колера"
         BEGIN
-            MENUITEM "&Адключыць",                       IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "А&дключыць",                       IDM_VIEW_COLORDEFHOTSPOTS
             MENUITEM "&RGB+A",                           IDM_VIEW_COLOR_RGBA
             MENUITEM "&A+RGB",                           IDM_VIEW_COLOR_ARGB
             MENUITEM "&BGRA",                            IDM_VIEW_COLOR_BGRA

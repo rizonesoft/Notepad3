@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "編集(&E)"
     BEGIN
-        MENUITEM "閲覧専用(&O)"                               IDM_VIEW_READONLY
+        MENUITEM "閲覧専用(&O)",                              IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "元に戻す(&U)\tCtrl+Z",                       IDM_EDIT_UNDO
         MENUITEM "やり直し(&R)\tCtrl+Y",                        IDM_EDIT_REDO
@@ -368,15 +368,15 @@ BEGIN
             MENUITEM "文書にのみ表示",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "すべて表示",             IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "変更/元に戻すの履歴を消去"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "変更/元に戻すの履歴を消去",            IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "アドレスをリンク(&H)\tCtrl+Alt+W",              IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "色をプレビュー(&C)"
         BEGIN
             MENUITEM "オフ(&O)",                             IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "RGB+A(&R)"                            IDM_VIEW_COLOR_RGBA
-            MENUITEM "A+RGB(&A)"                            IDM_VIEW_COLOR_ARGB
-            MENUITEM "BGRA(&B)"                             IDM_VIEW_COLOR_BGRA
+            MENUITEM "RGB+A(&R)",                           IDM_VIEW_COLOR_RGBA
+            MENUITEM "A+RGB(&A)",                           IDM_VIEW_COLOR_ARGB
+            MENUITEM "BGRA(&B)",                            IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "Unicode 符号位置を強調表示(&U)",               IDM_VIEW_UNICODE_POINTS
         MENUITEM "対応括弧を強調表示(&V)\tCtrl+Shift+V",      IDM_VIEW_MATCHBRACES

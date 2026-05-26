@@ -818,7 +818,7 @@ BEGIN
     SS_SIMPLE | WS_CHILD | WS_TABSTOP | WS_GROUP,
     4, 116, 140, 28
 
-    PUSHBUTTON      "规定自定义颜色(&D) >>" COLOR_MIX, 4, 150, 138, 14,
+    PUSHBUTTON      "规定自定义颜色(&D) >>", COLOR_MIX, 4, 150, 138, 14,
     WS_TABSTOP | WS_GROUP
 
     DEFPUSHBUTTON   "确定", IDOK, 4, 166, 44, 14, WS_GROUP | WS_TABSTOP

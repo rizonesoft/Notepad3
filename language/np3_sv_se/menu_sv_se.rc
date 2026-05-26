@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "Redigera"
     BEGIN
-        MENUITEM "Skrivskydda dokument"                              IDM_VIEW_READONLY
+        MENUITEM "Skrivskydda dokument",                            IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Ångra\tCtrl+Z",                                   IDM_EDIT_UNDO
         MENUITEM "Gör om\tCtrl+Y",                                  IDM_EDIT_REDO
@@ -348,35 +348,35 @@ BEGIN
         MENUITEM "Ersätt nästa\tF4",                            IDM_EDIT_REPLACENEXT
         MENUITEM "Gå till...\tCtrl+G",                          IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        MENUITEM "Sök i filer...\tCtrl+Shift+F",                   IDM_GREP_WIN_SEARCH2
+        MENUITEM "Sök i filer...\tCtrl+Shift+F",                IDM_GREP_WIN_SEARCH2
     END
     POPUP "Visa"
     BEGIN
         MENUITEM "Automatiskt radbyte\tCtrl+W",                     IDM_VIEW_WORDWRAP
         MENUITEM "Markering för långa rader\tCtrl+Alt+L",           IDM_VIEW_LONGLINEMARKER
-        MENUITEM "Stödlinjer för indrag\tCtrl+Shift+G",                      IDM_VIEW_SHOWINDENTGUIDES
+        MENUITEM "Stödlinjer för indrag\tCtrl+Shift+G",             IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
-        MENUITEM "Visa radbrytningssymboler\tCtrl+Shift+7",            IDM_VIEW_WORDWRAPSYMBOLS
+        MENUITEM "Visa radbrytningssymboler\tCtrl+Shift+7",         IDM_VIEW_WORDWRAPSYMBOLS
         MENUITEM "Visa blanksteg\tCtrl+Shift+8",                    IDM_VIEW_SHOWBLANKS
         MENUITEM "Visa radslut\tCtrl+Shift+9",                      IDM_VIEW_SHOWEOLS
-        MENUITEM "Visa &icke-utskrivbara tecken",           IDM_VIEW_NONPRINTINGCHARS
+        MENUITEM "Visa &icke-utskrivbara tecken",                   IDM_VIEW_NONPRINTINGCHARS
         MENUITEM SEPARATOR
         POPUP "Markör för ändringshistorik"
         BEGIN
-            MENUITEM "Icke-ändring markörer",                   IDM_VIEW_CHGHIST_NONE
-            MENUITEM "Visa endast i marginal",                  IDM_VIEW_CHGHIST_MARGIN
-            MENUITEM "Visa endast i dokument",                  IDM_VIEW_CHGHIST_DOCTXT
-            MENUITEM "Visa alla markörer",                      IDM_VIEW_CHGHIST_ALL
+            MENUITEM "Icke-ändring markörer",            IDM_VIEW_CHGHIST_NONE
+            MENUITEM "Visa endast i marginal",           IDM_VIEW_CHGHIST_MARGIN
+            MENUITEM "Visa endast i dokument",           IDM_VIEW_CHGHIST_DOCTXT
+            MENUITEM "Visa alla markörer",               IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Rensa ändringshistorik"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Rensa ändringshistorik",               IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
-        MENUITEM "Hotspots för hyperlänkar\tCtrl+Alt+W",                      IDM_VIEW_HYPERLINKHOTSPOTS
+        MENUITEM "Hotspots för hyperlänkar\tCtrl+Alt+W", IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Hotspots för färgdefinitioner"
         BEGIN
-            MENUITEM "&Av",                              IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
-            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
-            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+            MENUITEM "A&v",                              IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&RGB+A",                           IDM_VIEW_COLOR_RGBA
+            MENUITEM "&A+RGB",                           IDM_VIEW_COLOR_ARGB
+            MENUITEM "&BGRA",                            IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "Markera &Unicode-punkter",                        IDM_VIEW_UNICODE_POINTS
         MENUITEM "Visuell klammermatchning\tCtrl+Shift+V",          IDM_VIEW_MATCHBRACES

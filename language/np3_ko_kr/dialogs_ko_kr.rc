@@ -818,7 +818,7 @@ BEGIN
     SS_SIMPLE | WS_CHILD | WS_TABSTOP | WS_GROUP,
     4, 116, 140, 28
 
-    PUSHBUTTON      "사용자 지정 색상 정의(&D) >>" COLOR_MIX, 4, 150, 138, 14,
+    PUSHBUTTON      "사용자 지정 색상 정의(&D) >>", COLOR_MIX, 4, 150, 138, 14,
     WS_TABSTOP | WS_GROUP
 
     DEFPUSHBUTTON   "확인", IDOK, 4, 166, 44, 14, WS_GROUP | WS_TABSTOP

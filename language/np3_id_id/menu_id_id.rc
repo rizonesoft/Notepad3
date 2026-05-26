@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "&Sunting"
     BEGIN
-        MENUITEM "M&ode Hanya Baca"                  IDM_VIEW_READONLY
+        MENUITEM "M&ode Hanya Baca",                 IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "&Urungkan\tCtrl+Z",                IDM_EDIT_UNDO
         MENUITEM "Kem&balikan\tCtrl+Y",              IDM_EDIT_REDO
@@ -368,15 +368,15 @@ BEGIN
             MENUITEM "Tampilkan dalam Berkas",              IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Tampilkan semua Tanda Perubahan",     IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Hapus Perubahan Riwayat"                  IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Hapus Perubahan Riwayat",                 IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Tampilkan &Pranala Aktif\tCtrl+Alt+W",    IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Pratinjau Warna"
         BEGIN
             MENUITEM "&Matikan",                         IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
-            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
-            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+            MENUITEM "&RGB+A",                           IDM_VIEW_COLOR_RGBA
+            MENUITEM "&A+RGB",                           IDM_VIEW_COLOR_ARGB
+            MENUITEM "&BGRA",                            IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "Soroti &Unicode",                      IDM_VIEW_UNICODE_POINTS
         MENUITEM "Soroti &Pengurung\tCtrl+Shift+V",      IDM_VIEW_MATCHBRACES

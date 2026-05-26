@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "&Szerkesztés"
     BEGIN
-        MENUITEM "Csak &olvasható dokumentum"   IDM_VIEW_READONLY
+        MENUITEM "Csak &olvasható dokumentum",  IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "&Visszavonás\tCtrl+Z",        IDM_EDIT_UNDO
         MENUITEM "&Újra\tCtrl+Y",               IDM_EDIT_REDO
@@ -368,15 +368,15 @@ BEGIN
             MENUITEM "Megjelenítés a dokumentumban",         IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Összes előzmény-jelölő megjelenítése", IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Változás/Visszavonás előzmények törlése"   IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Változás/Visszavonás előzmények törlése",  IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Hivatkoz&ások kiemelése\tCtrl+Alt+W",   IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Szín&választó területek"
         BEGIN
-            MENUITEM "Kika&pcsolva",                     IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
-            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
-            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+            MENUITEM "&Kikapcsolva",                     IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&RGB+A",                           IDM_VIEW_COLOR_RGBA
+            MENUITEM "&A+RGB",                           IDM_VIEW_COLOR_ARGB
+            MENUITEM "&BGRA",                            IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "&Unicode-Pontok kiemelése",             IDM_VIEW_UNICODE_POINTS
         MENUITEM "&Zárójelpár kiemelés\tCtrl+Shift+V",    IDM_VIEW_MATCHBRACES

@@ -136,13 +136,13 @@ BEGIN
             MENUITEM "Par &défaut…",                      IDM_LINEENDINGS_SETDEFAULT
         END
         MENUITEM SEPARATOR
-        MENUITEM "Vérifier les retraits…",               CMD_CHECK_INDENTATION
+        MENUITEM "Vérifier les retraits…",                CMD_CHECK_INDENTATION
         MENUITEM SEPARATOR
         MENUITEM "&Mise en page…",                        IDM_FILE_PAGESETUP
         MENUITEM "Im&primer…\tCtrl+P",                    IDM_FILE_PRINT
         MENUITEM SEPARATOR
         MENUITEM "Propr&iétés…",                          IDM_FILE_PROPERTIES
-        MENUITEM "Créer un lien vers le bureau",            IDM_FILE_CREATELINK
+        MENUITEM "Créer un lien vers le bureau",          IDM_FILE_CREATELINK
         MENUITEM SEPARATOR
         MENUITEM "Mini navigateur interne…\tCtrl+M",      IDM_FILE_BROWSE
         POPUP "Fa&voris"
@@ -153,11 +153,11 @@ BEGIN
         END
         MENUITEM "Fichiers récents (&historique)…\tCtrl+Alt+H",     IDM_FILE_RECENT
         MENUITEM SEPARATOR
-        MENUITEM "&Quitter\tAlt+F4",                                  IDM_FILE_EXIT
+        MENUITEM "&Quitter\tAlt+F4",                                IDM_FILE_EXIT
     END
     POPUP "&Edition"
     BEGIN
-        MENUITEM "Docu&ment en lecture seule"               IDM_VIEW_READONLY
+        MENUITEM "Docu&ment en lecture seule",              IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Défaire\tCtrl+Z",                         IDM_EDIT_UNDO
         MENUITEM "&Rétablir\tCtrl+Y",                       IDM_EDIT_REDO
@@ -368,15 +368,15 @@ BEGIN
             MENUITEM "Afficher uniquement dans le document",                IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Afficher tous les marqueurs de modification",         IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Vider l'historique de 'Changer/Défaire'"                  IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Vider l'historique de 'Changer/Défaire'",                 IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Points d'accès hyperliens\tCtrl+Alt+W",                   IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Points d'accès définition de &couleurs"
         BEGIN
-            MENUITEM "INACTIF",                          IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
-            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
-            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+            MENUITEM "&INACTIF",                         IDM_VIEW_COLORDEFHOTSPOTS
+            MENUITEM "&RGB+A",                           IDM_VIEW_COLOR_RGBA
+            MENUITEM "&A+RGB",                           IDM_VIEW_COLOR_ARGB
+            MENUITEM "&BGRA",                            IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "Surligner les points d'encodage &Unicode",           IDM_VIEW_UNICODE_POINTS
         MENUITEM "Correspondance &visuelle des accolades\tCtrl+Maj+V", IDM_VIEW_MATCHBRACES
@@ -408,7 +408,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "&Repliage"
         BEGIN
-            MENUITEM "(re)Pliage de &Code",                     IDM_VIEW_FOLDING
+            MENUITEM "(re)Pliage de &Code",                        IDM_VIEW_FOLDING
             MENUITEM "Commuter les pliages\tCtrl+Alt+F",           IDM_VIEW_TOGGLEFOLDS
             MENUITEM SEPARATOR
             MENUITEM "S&auter au pliage suivant\tAlt+ +",          CMD_FOLDJUMPDOWN
@@ -419,12 +419,12 @@ BEGIN
         END
         POPUP "&Afficher"
         BEGIN
-            MENUITEM "Vue focalisée\tCtrl+Alt+V",           IDM_VIEW_TOGGLE_VIEW
+            MENUITEM "Vue focalisée\tCtrl+Alt+V",             IDM_VIEW_TOGGLE_VIEW
             POPUP "Mode d'affichage"
             BEGIN
                 MENUITEM "Repliage",                          IDM_VIEW_FV_FOLD
-                MENUITEM "Signet",                          IDM_VIEW_FV_BOOKMARK
-                MENUITEM "Surlignage",                      IDM_VIEW_FV_HIGHLIGHT
+                MENUITEM "Signet",                            IDM_VIEW_FV_BOOKMARK
+                MENUITEM "Surlignage",                        IDM_VIEW_FV_HIGHLIGHT
                 MENUITEM "Signet && Repliage",                IDM_VIEW_FV_BKMRKFOLD
                 MENUITEM "Surlignage && Repliage",            IDM_VIEW_FV_HIGHLGFOLD
             END
@@ -436,15 +436,15 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "P&anneaux"
         BEGIN
-            MENUITEM "Afficher la barre de titre"           IDM_VIEW_TITLEBAR
+            MENUITEM "Afficher la barre de titre",          IDM_VIEW_TITLEBAR
             MENUITEM "Afficher la barre de menus",          IDM_VIEW_MENUBAR
             MENUITEM "&Afficher la barre d'outils",         IDM_VIEW_TOOLBAR
             MENUITEM "Affic&her la barre d'état",           IDM_VIEW_STATUSBAR
             MENUITEM SEPARATOR
             MENUITEM "&Charger le thème de la barre d'outils…",  IDM_VIEW_LOADTHEMETB
             MENUITEM "Personnaliser la barre d'outils…",         IDM_VIEW_CUSTOMIZETB
-            MENUITEM "Commuter les barres d'outils",               IDM_VIEW_TOGGLETB
-            MENUITEM "Ajuster la barre d'outils en DPI",           IDM_VIEW_DPISCALETB
+            MENUITEM "Commuter les barres d'outils",             IDM_VIEW_TOGGLETB
+            MENUITEM "Ajuster la barre d'outils en DPI",         IDM_VIEW_DPISCALETB
         END
         POPUP "&Zoom"
         BEGIN

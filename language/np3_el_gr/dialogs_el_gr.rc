@@ -818,7 +818,7 @@ BEGIN
     SS_SIMPLE | WS_CHILD | WS_TABSTOP | WS_GROUP,
     4, 116, 140, 28
 
-    PUSHBUTTON      "Ορισμός προ&σαρμοσμένων χρωμάτων >>" COLOR_MIX, 4, 150, 138, 14,
+    PUSHBUTTON      "Ορισμός προ&σαρμοσμένων χρωμάτων >>", COLOR_MIX, 4, 150, 138, 14,
     WS_TABSTOP | WS_GROUP
 
     DEFPUSHBUTTON   "&Εντάξει", IDOK, 4, 166, 44, 14, WS_GROUP | WS_TABSTOP

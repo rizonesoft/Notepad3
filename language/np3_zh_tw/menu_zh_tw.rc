@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "編輯(&E)"
     BEGIN
-        MENUITEM "唯讀(&O)"                        IDM_VIEW_READONLY
+        MENUITEM "唯讀(&O)",                       IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "復原(&U)\tCtrl+Z",                          IDM_EDIT_UNDO
         MENUITEM "取消復原(&R)\tCtrl+Y",                       IDM_EDIT_REDO
@@ -368,15 +368,15 @@ BEGIN
             MENUITEM "僅顯示於文件中",               IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "全部顯示",             IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "清除變更/復原歷程"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "清除變更/復原歷程",            IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "檢測超連結(&Y)\tCtrl+Alt+W",                 IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "檢測 #RRGGBB 顏色(&C)"
         BEGIN
             MENUITEM "關閉(&O)",                            IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "RGB+A(&R)"                            IDM_VIEW_COLOR_RGBA
-            MENUITEM "A+RGB(&A)"                            IDM_VIEW_COLOR_ARGB
-            MENUITEM "BGRA(&B)"                             IDM_VIEW_COLOR_BGRA
+            MENUITEM "RGB+A(&R)",                           IDM_VIEW_COLOR_RGBA
+            MENUITEM "A+RGB(&A)",                           IDM_VIEW_COLOR_ARGB
+            MENUITEM "BGRA(&B)",                            IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "高亮 Unicode 碼點(&U)",                 IDM_VIEW_UNICODE_POINTS
         MENUITEM "提示符合括號(&V)\tCtrl+Shift+V",             IDM_VIEW_MATCHBRACES

@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "&Правка"
     BEGIN
-        MENUITEM "Документ только для чтени&я"          IDM_VIEW_READONLY
+        MENUITEM "Документ только для чтени&я",         IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "&Отмена\tCtrl+Z",                     IDM_EDIT_UNDO
         MENUITEM "&Повтор\tCtrl+Y",                     IDM_EDIT_REDO
@@ -368,7 +368,7 @@ BEGIN
             MENUITEM "Показывать только в документе",       IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Показывать везде",                    IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Очистить историю изменений/отмены"             IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Очистить историю изменений/отмены",            IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Отмечать &гиперссылки\tCtrl+Alt+W",               IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "Отмечать области выбора &цвета"

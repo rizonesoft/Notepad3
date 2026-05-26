@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "&Modifica"
     BEGIN
-        MENUITEM "Documento in sola &lettura"             IDM_VIEW_READONLY
+        MENUITEM "Documento in sola &lettura",            IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "&Annulla\tCtrl+Z",                      IDM_EDIT_UNDO
         MENUITEM "&Ripristina\tCtrl+Y",                   IDM_EDIT_REDO
@@ -368,15 +368,15 @@ BEGIN
             MENUITEM "Visualizza solo nel documento",                   IDM_VIEW_CHGHIST_DOCTXT
             MENUITEM "Visualizza tutti i marcatori modifiche",          IDM_VIEW_CHGHIST_ALL
         END
-        MENUITEM "Cancella cronologia modifiche/annullamenti"           IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
+        MENUITEM "Cancella cronologia modifiche/annullamenti",          IDM_VIEW_CHGHIST_CLEAR_UNDOREDO
         MENUITEM SEPARATOR
         MENUITEM "Evidenzia collegamento &ipertestuale\tCtrl+Alt+W",    IDM_VIEW_HYPERLINKHOTSPOTS
         POPUP "&Hotspot definizione colore"
         BEGIN
             MENUITEM "&OFF",                             IDM_VIEW_COLORDEFHOTSPOTS
-            MENUITEM "&RGB+A"                            IDM_VIEW_COLOR_RGBA
-            MENUITEM "&A+RGB"                            IDM_VIEW_COLOR_ARGB
-            MENUITEM "&BGRA"                             IDM_VIEW_COLOR_BGRA
+            MENUITEM "&RGB+A",                           IDM_VIEW_COLOR_RGBA
+            MENUITEM "&A+RGB",                           IDM_VIEW_COLOR_ARGB
+            MENUITEM "&BGRA",                            IDM_VIEW_COLOR_BGRA
         END
         MENUITEM "Evidenzia punti &Unicode",                            IDM_VIEW_UNICODE_POINTS
         MENUITEM "Evidenzia &parentesi corrispondente\tCtrl+Maiusc+V",  IDM_VIEW_MATCHBRACES
@@ -542,7 +542,7 @@ BEGIN
             POPUP "Layout R&TL (GDI)"
             BEGIN
                 MENUITEM "Area di &editing",              IDM_SET_RTL_LAYOUT_EDIT
-                MENUITEM "&Altre finestre di dialogo"     IDM_SET_RTL_LAYOUT_DLG
+                MENUITEM "&Altre finestre di dialogo",    IDM_SET_RTL_LAYOUT_DLG
             END
             POPUP "Bidirezionale"
             BEGIN
