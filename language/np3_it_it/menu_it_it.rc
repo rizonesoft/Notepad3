@@ -86,7 +86,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Esegui &documento\tCtrl+L",         IDM_FILE_LAUNCH
             MENUITEM "&Apri con...\tAlt+L",               IDM_FILE_OPENWITH
-            MENUITEM "&Comando...\tCtrl+R",               IDM_FILE_RUN
+            MENUITEM "Co&mando...\tCtrl+R",               IDM_FILE_RUN
             MENUITEM SEPARATOR
             MENUITEM "Modello web &1\tCtrl+Maiusc+1",     CMD_WEBACTION1
             MENUITEM "Modello web &2\tCtrl+Maiusc+2",     CMD_WEBACTION2
@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "&Modifica"
     BEGIN
-        MENUITEM "Documento in sola &lettura",            IDM_VIEW_READONLY
+        MENUITEM "D&ocumento in sola lettura",            IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "&Annulla\tCtrl+Z",                      IDM_EDIT_UNDO
         MENUITEM "&Ripristina\tCtrl+Y",                   IDM_EDIT_REDO
@@ -312,7 +312,7 @@ BEGIN
             MENUITEM "Diminuisci numero\tCtrl+Alt+NK-",              CMD_DECREASENUM
             MENUITEM SEPARATOR
             MENUITEM "&Trova parentesi corrispondente\tCtrl+B",                      IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Seleziona fino alla parentesi corrispondente\tCtrl+Maiusc+B",  IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "&Seleziona fino alla parentesi corrispondente\tCtrl+Maiusc+B",  IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
             MENUITEM "Seleziona fino al prossimo\tCtrl+Alt+F2",                      IDM_EDIT_SELTONEXT
             MENUITEM "Seleziona fino al precedente\tCtrl+Alt+Maiusc+F2",             IDM_EDIT_SELTOPREV
