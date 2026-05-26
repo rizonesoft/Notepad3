@@ -86,7 +86,7 @@ BEGIN
             MENUITEM SEPARATOR      
             MENUITEM "Exécuter le document\tCtrl+L",                IDM_FILE_LAUNCH
             MENUITEM "&Ouvrir avec…\tAlt+L",                      IDM_FILE_OPENWITH
-            MENUITEM "&Commande…\tCtrl+R",                        IDM_FILE_RUN
+            MENUITEM "Co&mmande…\tCtrl+R",                        IDM_FILE_RUN
             MENUITEM SEPARATOR      
             MENUITEM "Modèle Web &1\tCtrl+Maj+1",                   CMD_WEBACTION1
             MENUITEM "Modèle Web &2\tCtrl+Maj+2",                   CMD_WEBACTION2
@@ -94,7 +94,7 @@ BEGIN
             MENUITEM "Ouvrir le dossier &contenant la sélection",   IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
             MENUITEM "Ouvrir le &fichier à partir de la sélection", IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
-            MENUITEM "Ouvrir l'explorateur de fichiers",            IDM_FILE_EXPLORE_DIR
+            MENUITEM "Ouvrir l'&explorateur de fichiers",           IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         MENUITEM "Rec&harger le fichier\tF5",                       IDM_FILE_REVERT
@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "&Edition"
     BEGIN
-        MENUITEM "Document en &lecture seule"               IDM_VIEW_READONLY
+        MENUITEM "Docu&ment en lecture seule"               IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Défaire\tCtrl+Z",                         IDM_EDIT_UNDO
         MENUITEM "&Rétablir\tCtrl+Y",                       IDM_EDIT_REDO
@@ -166,7 +166,7 @@ BEGIN
         MENUITEM "&Copier\tCtrl+C",                         IDM_EDIT_COPY
         MENUITEM "Copier &tout\tAlt+C",                     IDM_EDIT_COPYALL
         MENUITEM "Copier / &Ajouter\tCtrl+E",               IDM_EDIT_COPYADD
-        MENUITEM "Copier au format &RTF",                   IDM_EDIT_COPYRTF
+        MENUITEM "Copier au format RT&F",                   IDM_EDIT_COPYRTF
         MENUITEM "Co&ller\tCtrl+V",                         IDM_EDIT_PASTE
         MENUITEM "P&ermuter\tCtrl+K",                       IDM_EDIT_SWAP
         MENUITEM "&Sélectionner tout\tCtrl+A",              IDM_EDIT_SELECTALL

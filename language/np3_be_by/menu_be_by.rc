@@ -166,7 +166,7 @@ BEGIN
         MENUITEM "&Капіяваць\tCtrl+C",              IDM_EDIT_COPY
         MENUITEM "Капі&яваць усё\tAlt+C",           IDM_EDIT_COPYALL
         MENUITEM "Дадаць у канец буфера\tCtrl+E",   IDM_EDIT_COPYADD
-        MENUITEM "Copy as &RTF",                    IDM_EDIT_COPYRTF
+        MENUITEM "Copy as RT&F",                    IDM_EDIT_COPYRTF
         MENUITEM "Уст&авіць\tCtrl+V",               IDM_EDIT_PASTE
         MENUITEM "Памяняць\tCtrl+K",                IDM_EDIT_SWAP
         MENUITEM "Вылучыць у&сё\tCtrl+A",           IDM_EDIT_SELECTALL

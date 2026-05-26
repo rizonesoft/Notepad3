@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "Dü&zenle"
     BEGIN
-        MENUITEM "Belge salt &okunur"                                 IDM_VIEW_READONLY
+        MENUITEM "Belge sal&t &okunur"                                 IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "&Geri al\tCtrl+Z",                                  IDM_EDIT_UNDO
         MENUITEM "&Yinele\tCtrl+Y",                                   IDM_EDIT_REDO
@@ -166,7 +166,7 @@ BEGIN
         MENUITEM "&Kopyala\tCtrl+C",                                  IDM_EDIT_COPY
         MENUITEM "Tümünü k&opyala\tAlt+C",                            IDM_EDIT_COPYALL
         MENUITEM "Tümünü y&apıştır\tCtrl+E",                          IDM_EDIT_COPYADD
-        MENUITEM "Copy as &RTF",                                      IDM_EDIT_COPYRTF
+        MENUITEM "Copy as RT&F",                                      IDM_EDIT_COPYRTF
         MENUITEM "&Yapıştır\tCtrl+V",                                 IDM_EDIT_PASTE
         MENUITEM "&Değiştir\tCtrl+K",                                 IDM_EDIT_SWAP
         MENUITEM "Tü&münü seç\tCtrl+A",                               IDM_EDIT_SELECTALL

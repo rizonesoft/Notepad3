@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "Bew&erken"
     BEGIN
-        MENUITEM "Document &Alleen-lezen"                              IDM_VIEW_READONLY
+        MENUITEM "Docu&ment Alleen-lezen"                              IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "&Ongedaan maken\tCtrl+Z",                         IDM_EDIT_UNDO
         MENUITEM "Op&nieuw uitvoeren\tCtrl+Y",                      IDM_EDIT_REDO
@@ -166,7 +166,7 @@ BEGIN
         MENUITEM "&Kopiëren\tCtrl+C",                               IDM_EDIT_COPY
         MENUITEM "&Alles kopiëren\tAlt+C",                          IDM_EDIT_COPYALL
         MENUITEM "Kopie &toevoegen\tCtrl+E",                        IDM_EDIT_COPYADD
-        MENUITEM "Kopiëren als &RTF",                               IDM_EDIT_COPYRTF
+        MENUITEM "Kopiëren als RT&F",                               IDM_EDIT_COPYRTF
         MENUITEM "&Plakken\tCtrl+V",                                IDM_EDIT_PASTE
         MENUITEM "&Verwisselen\tCtrl+K",                            IDM_EDIT_SWAP
         MENUITEM "Alles &selecteren\tCtrl+A",                       IDM_EDIT_SELECTALL

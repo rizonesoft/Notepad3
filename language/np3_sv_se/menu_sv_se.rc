@@ -166,7 +166,7 @@ BEGIN
         MENUITEM "Kopiera\tCtrl+C",                                 IDM_EDIT_COPY
         MENUITEM "Kopiera allt\tAlt+C",                             IDM_EDIT_COPYALL
         MENUITEM "Lägg till i urklipp\tCtrl+E",                       IDM_EDIT_COPYADD
-        MENUITEM "Kopiera som &RTF",                                      IDM_EDIT_COPYRTF
+        MENUITEM "Kopiera som RT&F",                                      IDM_EDIT_COPYRTF
         MENUITEM "Klistra in\tCtrl+V",                              IDM_EDIT_PASTE
         MENUITEM "Byt\tCtrl+K",                                     IDM_EDIT_SWAP
         MENUITEM "Markera allt\tCtrl+A",                               IDM_EDIT_SELECTALL
