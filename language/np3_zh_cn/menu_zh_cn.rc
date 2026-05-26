@@ -91,8 +91,8 @@ BEGIN
             MENUITEM "用超链接模板 1 打开(&1)(&1)\tCtrl+Shift+1",           CMD_WEBACTION1
             MENUITEM "用超链接模板 2 打开(&2)(&2)\tCtrl+Shift+2",           CMD_WEBACTION2
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",        IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "打开所选内容所在的文件夹(&C)", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "打开所选内容指向的文件(&F)",   IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "打开资源管理器(&F)",                      IDM_FILE_EXPLORE_DIR
         END
@@ -166,7 +166,7 @@ BEGIN
         MENUITEM "复制(&C)\tCtrl+C",                          IDM_EDIT_COPY
         MENUITEM "全部复制(&L)\tAlt+C",                       IDM_EDIT_COPYALL
         MENUITEM "增量复制(&Y)\tCtrl+E",                      IDM_EDIT_COPYADD
-        MENUITEM "Copy as &RTF",                          IDM_EDIT_COPYRTF
+        MENUITEM "复制为 RTF(&R)",                            IDM_EDIT_COPYRTF
         MENUITEM "粘贴(&P)\tCtrl+V",                          IDM_EDIT_PASTE
         MENUITEM "与剪贴板交换(&W)\tCtrl+K",                  IDM_EDIT_SWAP
         MENUITEM "全选(&A)\tCtrl+A",                          IDM_EDIT_SELECTALL
@@ -320,8 +320,8 @@ BEGIN
             MENUITEM "选定单词或行(&W)\tCtrl+Spc",             IDM_EDIT_SELECTWORD
             MENUITEM "选定全部匹配(&A)\tCtrl+Shift+Spc",       IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "打开所选内容所在的文件夹(&C)",          IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "打开所选内容指向的文件(&F)",            IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "换行时重定撤销操作边界(&T)",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
@@ -603,8 +603,8 @@ BEGIN
         MENUITEM "用超链接模板 1 打开",                    CMD_WEBACTION1
         MENUITEM "用超链接模板 2 打开",                    CMD_WEBACTION2
         MENUITEM SEPARATOR
-        MENUITEM "Open Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-        MENUITEM "Open File from Selection",            IDM_EDIT_OPEN_FILE_FROM_SEL
+        MENUITEM "打开所选内容所在的文件夹", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+        MENUITEM "打开所选内容指向的文件",   IDM_EDIT_OPEN_FILE_FROM_SEL
         MENUITEM "打开资源管理器",                         IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"
