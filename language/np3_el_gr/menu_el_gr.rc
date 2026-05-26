@@ -166,7 +166,7 @@ BEGIN
         MENUITEM "Αντι&γραφή\tCtrl+C",            IDM_EDIT_COPY
         MENUITEM "Α&ντιγραφή όλων\tAlt+C",        IDM_EDIT_COPYALL
         MENUITEM "Προσ&θήκη αντιγραφής\tCtrl+E",  IDM_EDIT_COPYADD
-        MENUITEM "Copy as &RTF",                  IDM_EDIT_COPYRTF
+        MENUITEM "Copy as RT&F",                  IDM_EDIT_COPYRTF
         MENUITEM "Επ&ικόλληση\tCtrl+V",           IDM_EDIT_PASTE
         MENUITEM "Αν&τιμετάθεση\tCtrl+K",         IDM_EDIT_SWAP
         MENUITEM "Επιλ&ογή όλων\tCtrl+A",         IDM_EDIT_SELECTALL

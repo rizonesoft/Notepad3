@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "&Editar"
     BEGIN
-        MENUITEM "Documento só de leitu&ra"                IDM_VIEW_READONLY
+        MENUITEM "Docume&nto só de leitura"                IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "An&ular\tCtrl+Z",                        IDM_EDIT_UNDO
         MENUITEM "&Refazer\tCtrl+Y",                       IDM_EDIT_REDO
@@ -166,7 +166,7 @@ BEGIN
         MENUITEM "&Copiar\tCtrl+C",                        IDM_EDIT_COPY
         MENUITEM "Copiar &tudo\tAlt+C",                    IDM_EDIT_COPYALL
         MENUITEM "Cop&iar Adicionar\tCtrl+E",              IDM_EDIT_COPYADD
-        MENUITEM "Copy as &RTF",                           IDM_EDIT_COPYRTF
+        MENUITEM "Copy as RT&F",                           IDM_EDIT_COPYRTF
         MENUITEM "Co&lar\tCtrl+V",                         IDM_EDIT_PASTE
         MENUITEM "Trocar\tCtrl+K",                         IDM_EDIT_SWAP
         MENUITEM "&Seleccionar tudo\tCtrl+A",              IDM_EDIT_SELECTALL

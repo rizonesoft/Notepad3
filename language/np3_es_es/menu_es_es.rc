@@ -86,7 +86,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Ejecutar &documento\tCtrl+L",         IDM_FILE_LAUNCH
             MENUITEM "&Abrir con...\tAlt+L",                IDM_FILE_OPENWITH
-            MENUITEM "&Comando...\tCtrl+R",                 IDM_FILE_RUN
+            MENUITEM "Co&mando...\tCtrl+R",                 IDM_FILE_RUN
             MENUITEM SEPARATOR
             MENUITEM "Plantilla Web &1\tCtrl+Shift+1",      CMD_WEBACTION1
             MENUITEM "Plantilla Web &2\tCtrl+Shift+2",      CMD_WEBACTION2
@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "&Edición"
     BEGIN
-        MENUITEM "Documento &Sólo lectura"                  IDM_VIEW_READONLY
+        MENUITEM "Docu&mento Sólo lectura"                  IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "&Deshacer\tCtrl+Z",                       IDM_EDIT_UNDO
         MENUITEM "Re&hacer\tCtrl+Y",                        IDM_EDIT_REDO
@@ -166,14 +166,14 @@ BEGIN
         MENUITEM "&Copiar\tCtrl+C",                         IDM_EDIT_COPY
         MENUITEM "C&opiar todo\tAlt+C",                     IDM_EDIT_COPYALL
         MENUITEM "Copiar a&ñadiendo\tCtrl+E",               IDM_EDIT_COPYADD
-        MENUITEM "Copiar como &RTF",                        IDM_EDIT_COPYRTF
+        MENUITEM "Copiar como RT&F",                        IDM_EDIT_COPYRTF
         MENUITEM "&Pegar\tCtrl+V",                          IDM_EDIT_PASTE
         MENUITEM "Perm&utar\tCtrl+K",                       IDM_EDIT_SWAP
         MENUITEM "&Seleccionar todo\tCtrl+A",               IDM_EDIT_SELECTALL
         MENUITEM "E&liminar\tDel",                          IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "&Vaciar el portapapeles",                 IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Act-/desact-ivar &supervisión del portapapeles",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Act-/desact-ivar sup&ervisión del portapapeles",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "P&alabras"
         BEGIN

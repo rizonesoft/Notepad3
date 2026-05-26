@@ -86,7 +86,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "문서 실행(&D)\tCtrl+L",          IDM_FILE_LAUNCH
             MENUITEM "다음으로 열기...(&O)\tAlt+L",               IDM_FILE_OPENWITH
-            MENUITEM "명령(&C)...\tCtrl+R",                IDM_FILE_RUN
+            MENUITEM "명령(&M)...\tCtrl+R",                IDM_FILE_RUN
             MENUITEM SEPARATOR
             MENUITEM "웹 템플릿 1(&1)\tCtrl+Shift+1",      CMD_WEBACTION1
             MENUITEM "웹 템플릿 2(&2)\tCtrl+Shift+2",      CMD_WEBACTION2
@@ -94,7 +94,7 @@ BEGIN
             MENUITEM "선택 항목이 있는 폴더 열기(&C)", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
             MENUITEM "선택에서 파일 열기(&F)",    IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
-            MENUITEM "파일 탐색기 열기(&F)",                IDM_FILE_EXPLORE_DIR
+            MENUITEM "파일 탐색기 열기(&E)",                IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         MENUITEM "파일에서 되돌리기(&V)\tF5",                  IDM_FILE_REVERT
@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "편집(&E)"
     BEGIN
-        MENUITEM "읽기 전용 문서(&R)"          IDM_VIEW_READONLY
+        MENUITEM "읽기 전용 문서(&O)"          IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "실행 취소(&U)\tCtrl+Z",               IDM_EDIT_UNDO
         MENUITEM "다시 실행(&R)\tCtrl+Y",               IDM_EDIT_REDO
@@ -166,14 +166,14 @@ BEGIN
         MENUITEM "복사(&C)\tCtrl+C",               IDM_EDIT_COPY
         MENUITEM "모두 복사(&L)\tAlt+C",            IDM_EDIT_COPYALL
         MENUITEM "복사 추가(&A)\tCtrl+E",           IDM_EDIT_COPYADD
-        MENUITEM "Copy as &RTF",                IDM_EDIT_COPYRTF
+        MENUITEM "Copy as RT&F",                IDM_EDIT_COPYRTF
         MENUITEM "붙여넣기(&P)\tCtrl+V",              IDM_EDIT_PASTE
         MENUITEM "교환(&W)\tCtrl+K",               IDM_EDIT_SWAP
         MENUITEM "모두 선택(&S)\tCtrl+A",         IDM_EDIT_SELECTALL
         MENUITEM "삭제(&D)\tDel",                IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "클립보드 지우기(&E)",            IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "클립보드 모니터링 전환(&M)",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "클립보드 모니터링 전환(&B)",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "단어(&W)"
         BEGIN
@@ -311,7 +311,7 @@ BEGIN
             MENUITEM "숫자 증가(&I)\tCtrl+Alt+NK+",             CMD_INCREASENUM
             MENUITEM "숫자 감소(&D)\tCtrl+Alt+NK-",             CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "일치하는 중괄호 찾기(&F)\tCtrl+B",               IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "일치하는 중괄호 찾기(&M)\tCtrl+B",               IDM_EDIT_FINDMATCHINGBRACE
             MENUITEM "일치하는 중괄호로 선택(&S)\tCtrl+Shift+B",    IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
             MENUITEM "다음 선택(&X)\tCtrl+Alt+F2",               IDM_EDIT_SELTONEXT

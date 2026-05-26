@@ -91,10 +91,10 @@ BEGIN
             MENUITEM "Web Sjabloon &1\tCtrl+Shift+1",       CMD_WEBACTION1
             MENUITEM "Web Sjabloon &2\tCtrl+Shift+2",       CMD_WEBACTION2
             MENUITEM SEPARATOR
-            MENUITEM "Ouvrir le &fichier à partir de la sélection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Maak &Lêer Oop vanaf Seleksie"    ,           IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "Maak die &Vouer met die Seleksie Oop", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Maak &Lêer Oop vanaf Seleksie",        IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
-            MENUITEM "Maak &File Explorer Oop",             IDM_FILE_EXPLORE_DIR
+            MENUITEM "Maak File &Explorer Oop",             IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         MENUITEM "Keer terug &van Lêer af\tF5",             IDM_FILE_REVERT
@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "&Wysig"
     BEGIN
-        MENUITEM "Document &Read Only"                      IDM_VIEW_READONLY
+        MENUITEM "D&okument Slegs Lees"                     IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "O&ngedaan\tCtrl+Z",                       IDM_EDIT_UNDO
         MENUITEM "Oo&rdoen\tCtrl+Y",                        IDM_EDIT_REDO
@@ -166,14 +166,14 @@ BEGIN
         MENUITEM "Ko&pieer\tCtrl+C",                        IDM_EDIT_COPY
         MENUITEM "Kop&ieer Alles\tAlt+C",                   IDM_EDIT_COPYALL
         MENUITEM "Kopieer &Voeg\tCtrl+E",                   IDM_EDIT_COPYADD
-        MENUITEM "Kopieer as &RTF",                         IDM_EDIT_COPYRTF
+        MENUITEM "Kopieer as RT&F",                         IDM_EDIT_COPYRTF
         MENUITEM "&Plak\tCtrl+V",                           IDM_EDIT_PASTE
         MENUITEM "&Uitruil\tCtrl+K",                        IDM_EDIT_SWAP
         MENUITEM "Kies &Alles\tCtrl+A",                     IDM_EDIT_SELECTALL
         MENUITEM "&Verwyder\tDel",                          IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "Maak &Klipbord Skoon",                    IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Klembord-&monitering wissel",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Klembord-&monitering wissel",             IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "W&oorde"
         BEGIN

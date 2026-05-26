@@ -86,7 +86,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "运行文档(&D)\tCtrl+L",                   IDM_FILE_LAUNCH
             MENUITEM "打开方式(&O)...\tAlt+L",                 IDM_FILE_OPENWITH
-            MENUITEM "命令(&C)...\tCtrl+R",                    IDM_FILE_RUN
+            MENUITEM "命令(&M)...\tCtrl+R",                    IDM_FILE_RUN
             MENUITEM SEPARATOR
             MENUITEM "用超链接模板 1 打开(&1)(&1)\tCtrl+Shift+1",           CMD_WEBACTION1
             MENUITEM "用超链接模板 2 打开(&2)(&2)\tCtrl+Shift+2",           CMD_WEBACTION2
@@ -94,7 +94,7 @@ BEGIN
             MENUITEM "打开所选内容所在的文件夹(&C)", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
             MENUITEM "打开所选内容指向的文件(&F)",   IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
-            MENUITEM "打开资源管理器(&F)",                      IDM_FILE_EXPLORE_DIR
+            MENUITEM "打开资源管理器(&E)",                      IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         MENUITEM "从文件还原(&V)\tF5",                  IDM_FILE_REVERT
@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "编辑(&E)"
     BEGIN
-        MENUITEM "只读(&R)"                                   IDM_VIEW_READONLY
+        MENUITEM "只读(&O)"                                   IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "撤销(&U)\tCtrl+Z",                          IDM_EDIT_UNDO
         MENUITEM "重做(&R)\tCtrl+Y",                          IDM_EDIT_REDO
@@ -166,14 +166,14 @@ BEGIN
         MENUITEM "复制(&C)\tCtrl+C",                          IDM_EDIT_COPY
         MENUITEM "全部复制(&L)\tAlt+C",                       IDM_EDIT_COPYALL
         MENUITEM "增量复制(&Y)\tCtrl+E",                      IDM_EDIT_COPYADD
-        MENUITEM "复制为 RTF(&R)",                            IDM_EDIT_COPYRTF
+        MENUITEM "复制为 RTF(&F)",                            IDM_EDIT_COPYRTF
         MENUITEM "粘贴(&P)\tCtrl+V",                          IDM_EDIT_PASTE
         MENUITEM "与剪贴板交换(&W)\tCtrl+K",                  IDM_EDIT_SWAP
         MENUITEM "全选(&A)\tCtrl+A",                          IDM_EDIT_SELECTALL
         MENUITEM "删除(&D)\tDel",                             IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "清空剪贴板(&E)",                            IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "切换监视剪贴板(&M)",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "切换监视剪贴板(&B)",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "单词(&O)"
         BEGIN
@@ -311,8 +311,8 @@ BEGIN
             MENUITEM "增大数值(&I)\tCtrl+Alt+NK+",             CMD_INCREASENUM
             MENUITEM "减小数值(&D)\tCtrl+Alt+NK-",             CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "查找配对的括号(&F)\tCtrl+B",                    IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "选定直到配对的括号(&M)\tCtrl+Shift+B",          IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "查找配对的括号(&M)\tCtrl+B",                    IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "选定直到配对的括号(&S)\tCtrl+Shift+B",          IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
             MENUITEM "选定直到下一个查找匹配(&N)\tCtrl+Alt+F2",        IDM_EDIT_SELTONEXT
             MENUITEM "选定直到上一个查找匹配(&P)\tCtrl+Alt+Shift+F2",  IDM_EDIT_SELTOPREV

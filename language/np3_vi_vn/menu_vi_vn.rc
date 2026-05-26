@@ -86,7 +86,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Chạy tài liệu(&D)\tCtrl+L",                IDM_FILE_LAUNCH
             MENUITEM "Mở với...(&O)\tAlt+L",  IDM_FILE_OPENWITH
-            MENUITEM "Lệnh(&C)...\tCtrl+R",                IDM_FILE_RUN
+            MENUITEM "Lệnh(&M)...\tCtrl+R",                IDM_FILE_RUN
             MENUITEM SEPARATOR
             MENUITEM "Mẫu web 1(&1)\tCtrl+Shift+1",        CMD_WEBACTION1
             MENUITEM "Mẫu web 2(&2)\tCtrl+Shift+2",        CMD_WEBACTION2
@@ -94,7 +94,7 @@ BEGIN
             MENUITEM "Open &Containing Folder of Selection",         IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
             MENUITEM "Open &File from Selection",                    IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
-            MENUITEM "Mở trình duyệt tệp(&F)",                       IDM_FILE_EXPLORE_DIR
+            MENUITEM "Mở trình duyệt tệp(&E)",                       IDM_FILE_EXPLORE_DIR
         END
         MENUITEM SEPARATOR
         MENUITEM "Khôi phục từ tệp(&V)\tF5",                  IDM_FILE_REVERT
@@ -157,7 +157,7 @@ BEGIN
     END
     POPUP "Chỉnh sửa(&E)"
     BEGIN
-        MENUITEM "Tài liệu chỉ đọc(&R)"                          IDM_VIEW_READONLY
+        MENUITEM "Tài liệu chỉ đọc(&O)"                          IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Hoàn tác(&U)\tCtrl+Z",                      IDM_EDIT_UNDO
         MENUITEM "Làm lại(&R)\tCtrl+Y",                      IDM_EDIT_REDO
@@ -166,14 +166,14 @@ BEGIN
         MENUITEM "Sao chép(&C)\tCtrl+C",                           IDM_EDIT_COPY
         MENUITEM "Sao chép tất cả(&L)\tAlt+C",                       IDM_EDIT_COPYALL
         MENUITEM "Sao chép thêm(&A)\tCtrl+E",                      IDM_EDIT_COPYADD
-        MENUITEM "Copy as &RTF",                                   IDM_EDIT_COPYRTF
+        MENUITEM "Copy as RT&F",                                   IDM_EDIT_COPYRTF
         MENUITEM "Dán(&P)\tCtrl+V",                      IDM_EDIT_PASTE
         MENUITEM "Hoán đổi(&W)\tCtrl+K",                 IDM_EDIT_SWAP
         MENUITEM "Chọn tất cả(&S)\tCtrl+A",                      IDM_EDIT_SELECTALL
         MENUITEM "Xóa(&D)\tDel",                              IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "Xóa bộ nhớ tạm(&E)",                         IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Bật/tắt &giám sát bảng tạm",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Bật/tắt &giám sát bảng tạm (&B)",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "Từ(&W)"
         BEGIN
@@ -311,7 +311,7 @@ BEGIN
             MENUITEM "Tăng số(&I)\tCtrl+Alt+NK+",               CMD_INCREASENUM
             MENUITEM "Giảm số(&D)\tCtrl+Alt+NK-",               CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "Tìm dấu ngoặc tương ứng(&F)\tCtrl+B",              IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "Tìm dấu ngoặc tương ứng(&M)\tCtrl+B",              IDM_EDIT_FINDMATCHINGBRACE
             MENUITEM "Chọn dấu ngoặc tương ứng(&S)\tCtrl+Shift+B",       IDM_EDIT_SELTOMATCHINGBRACE
             MENUITEM SEPARATOR
             MENUITEM "Chọn tiếp theo(&X)\tCtrl+Alt+F2",            IDM_EDIT_SELTONEXT

@@ -166,7 +166,7 @@ BEGIN
         MENUITEM "&Kopieren\tCtrl+C",                       IDM_EDIT_COPY
         MENUITEM "&Alles kopieren\tAlt+C",                  IDM_EDIT_COPYALL
         MENUITEM "Kopiere ans &Ende\tCtrl+E",               IDM_EDIT_COPYADD
-        MENUITEM "Copy as &RTF",                            IDM_EDIT_COPYRTF
+        MENUITEM "Copy as RT&F",                            IDM_EDIT_COPYRTF
         MENUITEM "&Einfügen\tCtrl+V",                       IDM_EDIT_PASTE
         MENUITEM "&Auswahl <-> &Zwischenablage\tCtrl+K",    IDM_EDIT_SWAP
         MENUITEM "&Alles auswählen\tCtrl+A",                IDM_EDIT_SELECTALL
