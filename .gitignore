@@ -39,7 +39,7 @@ Thumbs.db
 /_upgrade_backup
 
 /other_sln/packages
-/packages/boost.1.82.0/
+/packages/
 
 ### changes by Version.ps1 script ###
 /_Version_*.cmd
