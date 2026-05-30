@@ -1,16 +1,14 @@
 @echo off
 setlocal enableextensions
 set SCRIPTDRV=%~d0
-set SCRIPTDIR=%~dp0
+set SCRIPT_DIR=%~dp0
 set CWD=%CD%
  
-set TEST_DIR=%SCRIPTDIR%_TESTDIR\
+set TEST_DIR=%SCRIPT_DIR%_TESTDIR\
 set TEST_LOG=test.log
 set NP3_CONFIG_DIR=%SCRIPT_DIR%config\
-set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v143\
-set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v143\
-::set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v145\
-::set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v145\
+set NP3_WIN32_DIR=%SCRIPT_DIR%..\Bin\Release_x86_v145\
+set NP3_X64_DIR=%SCRIPT_DIR%..\Bin\Release_x64_v145\
 
 set AHK_EXE=%ProgramFiles%\AutoHotkey\v2\AutoHotkey64.exe
 if not exist "%AHK_EXE%" set AHK_EXE=%ProgramFiles%\AutoHotkey\AutoHotkey64.exe
