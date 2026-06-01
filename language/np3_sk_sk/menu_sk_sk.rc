@@ -91,8 +91,8 @@ BEGIN
             MENUITEM "Webová šablóna &1\tCtrl+Shift+1",     CMD_WEBACTION1
             MENUITEM "Webová šablóna &2\tCtrl+Shift+2",     CMD_WEBACTION2
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",           IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "Otvoriť &priečinok obsahujúci výber", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Otvoriť &súbor z výberu",           IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Otvoriť Pri&eskumníka",               IDM_FILE_EXPLORE_DIR
         END
