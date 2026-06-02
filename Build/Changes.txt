@@ -36,13 +36,12 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 
 
 ========================================================
-Current BETA Version 7.26.525.(build_#) (2026-05-25)
+Version 7.26.602.1 (2 June 2026)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
-[.xxx.x]- .
 [.525.1]- Bug-Report and Feature Request issue templates (#5915).
 [.525.1]- Custom coloring non printable characters (#5900).
 [.520.1]- Smart hotkey Ctrl+N and Alt+L in case of existing file under caret/selection (#5895).
@@ -61,7 +60,6 @@ NEW:
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
-[.xxx.x]- .
 [.525.1]- TinyExpr++ render logical results as "true"/"false (TIN) (#5914).
 [.525.1]- TinyExpr++ description of single = is parsed as == (TIN) (#5912).
 [.517.1]- Refactor multi-selection expression evaluation logic (#5872).
@@ -79,7 +77,6 @@ CHANGES:
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
-[.xxx.x]- .
 [.517.1]- Incr/decr number handler, support bin, keep hex cases (#5883).
 [.514.1]- Drag&drop files - temp handling (immediate deleted on drop) (#5863).
 [.514.1]- AHK case insensitive (LEX) (#5860).
@@ -108,7 +105,6 @@ FIXES:
 --------------------------------------------------------
 REMOVED:
 --------------------------------------------------------
-[.xxx.x]- .
 [.514.1]- HTML CSS styling trial artefacts (LEX) (#5860).
 [.504.1]- Readme* from ANSI-Art extension (-> README.md) (#5800).
 [.501.1]- Revert experimental CSS styling for HTML Lexer (#5787).
