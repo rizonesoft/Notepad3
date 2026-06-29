@@ -156,7 +156,7 @@ BEGIN
     IDS_LEX_STD_SEL         "चुना हुआ टेक्स्ट (रंग)"
     IDS_LEX_STD_WSPC        "Whitespace (रंग, नाप 1-12)"
     IDS_LEX_STD_LN_BACKGR   "चालू रेखा हाइलाइट करें"
-    IDS_LEX_STD_CARET       "Caret (रंग, नाप 1-3)"
+    IDS_LEX_STD_CARET       "Caret (रंग, नाप 1-20)"
     IDS_LEX_STD_LONG_LN     "बड़ी रेखा चिन्ह (रंग)"
     IDS_LEX_STD_X_SPC       "रेखाओं के बीच अतिरिक्त जगह (नाप)"
     IDS_LEX_2ND_STYLE       "2nd डिफ़ॉल्ट प्रकार"
@@ -178,7 +178,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_2ND_LN_BACKGR   "2nd हाइलाइट चालू रेखा के लिए"
-    IDS_LEX_2ND_CARET       "2nd Caret (रंग, नाप 1-3)"
+    IDS_LEX_2ND_CARET       "2nd Caret (रंग, नाप 1-20)"
     IDS_LEX_2ND_LONG_LN     "2nd बड़ी रेखा चिन्ह (रंग)"
     IDS_LEX_2ND_X_SPC       "2nd रेखाओं के बीच अतिरिक्त जगह (नाप)"
     IDS_LEX_STD_BKMRK       "बुकमार्क और फोलडिंग (रंग, नाप)"
