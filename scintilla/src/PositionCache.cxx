@@ -12,6 +12,7 @@
 #include <cmath>
 
 #include <stdexcept>
+#include <utility>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -64,20 +65,7 @@ void BidiData::Resize(size_t maxLineLength_) {
 }
 
 LineLayout::LineLayout(Sci::Line lineNumber_, int maxLineLength_) :
-	lenLineStarts(0),
-	lineNumber(lineNumber_),
-	maxLineLength(-1),
-	numCharsInLine(0),
-	numCharsBeforeEOL(0),
-	validity(ValidLevel::invalid),
-	xHighlightGuide(0),
-	highlightColumn(false),
-	containsCaret(false),
-	edgeColumn(0),
-	bracePreviousStyles{},
-	widthLine(wrapWidthInfinite),
-	lines(1),
-	wrapIndent(0) {
+	lineNumber(lineNumber_) {
 	Resize(maxLineLength_);
 }
 
@@ -270,11 +258,6 @@ int LineLayout::FindPositionFromX(XYPOSITION x, Range range, bool charPosition) 
 
 Point LineLayout::PointFromPosition(int posInLine, int lineHeight, PointEnd pe) const noexcept {
 	Point pt;
-	// In case of very long line put x at arbitrary large position
-	if (posInLine > maxLineLength) {
-		pt.x = positions[maxLineLength] - positions[LineStart(lines)];
-	}
-
 	for (int subLine = 0; subLine < lines; subLine++) {
 		const Range rangeSubLine = SubLineRange(subLine, Scope::visibleOnly);
 		if (posInLine >= rangeSubLine.start) {
@@ -617,7 +600,7 @@ std::shared_ptr<LineLayout> LineLayoutCache::Retrieve(Sci::Line lineNumber, Sci:
 
 	if (pos < cache.size()) {
 		if (cache[pos] && !cache[pos]->CanHold(lineNumber, maxChars)) {
-			cache[pos].reset();
+			cache[pos]->ReSet(lineNumber, maxChars);
 		}
 		if (!cache[pos]) {
 			cache[pos] = std::make_shared<LineLayout>(lineNumber, maxChars);
