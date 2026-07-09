@@ -595,9 +595,68 @@
 	<td>Nathaniel Braun</td>
       </tr><tr>
 	<td>Stephan T. Lavavej</td>
+	<td>RealMalWare</td>
+	<td>Schreiner</td>
     </tr>
     </table>
     <h2 id="Releases">Releases</h2>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla564.zip">Release 5.6.4</a>
+    </h3>
+    <ul>
+	<li>
+	Released 6 July 2026.
+	</li>
+	<li>
+	On Qt improve display for fractional scaling by providing SCI_SETSCALETECHNIQUE API.
+	The SCALE_TECHNIQUE_PIXEL_ALIGNED value will eliminate potential 'seams' between lines
+	and between runs on a line.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2450/">Bug #2450</a>.
+	</li>
+	<li>
+	Scintilla.iface is augmented with comments indicating which APIs take pixel values so may
+	be automatically scaled by wrappers.
+	For compatibility this is currently indicated in comments after each affected API but this will
+	change to using the 'pixels' type in a future version,
+	Downstream projects should examine this and make any needed changes, such as using floating
+	point types for wrapper methods.
+	To help migration, the scripts/FilterPixels.py script can convert this Scintilla.iface into the previous form
+	with no mention of 'pixels' or into the final form with 'pixels' as the only type for these features.
+	</li>
+	<li>
+	On Qt always place ScintillaEditBase library in scintilla/bin instead of depending on Qt version.
+	</li>
+	<li>
+	Optimize SCI_CHANGEINSERTION that sets empty insertion by not producing empty undo action
+	and potential save point change.
+	<a href="https://sourceforge.net/p/scintilla/feature-requests/1588/">Feature #1588</a>.
+	</li>
+    </ul>
+    <h3>
+       <a href="https://www.scintilla.org/scintilla563.zip">Release 5.6.3</a>
+    </h3>
+    <ul>
+	<li>
+	Released 6 June 2026.
+	</li>
+	<li>
+	Restore selection and scroll position for undo and redo on additional views instead of just the view
+	performing the undo or redo.
+	<a href="https://github.com/notepad-plus-plus/notepad-plus-plus/pull/18014">Notepad++ Pull Request #18014</a>.
+	</li>
+	<li>
+	Improve performance of rectangular paste when many spaces must be inserted.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2302/">Bug #2302</a>.
+	</li>
+	<li>
+	On Win32, close the clipboard before inserting pasted or dropped text so that the clipboard is not blocked while
+	the insertion is performed.
+	<a href="https://sourceforge.net/p/scintilla/bugs/2507/">Bug #2507</a>.
+	</li>
+	<li>
+	On Qt with Wayland, fix failures with displaying calltips and autocompletion lists.
+	</li>
+    </ul>
     <h3>
        <a href="https://www.scintilla.org/scintilla562.zip">Release 5.6.2</a>
     </h3>

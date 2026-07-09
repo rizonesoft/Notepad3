@@ -1453,7 +1453,7 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 								const std::string restOfLine = GetRestOfLine(styler, sc.currentPos + 5, false);
 								Tokens tokens = Tokenize(restOfLine);
 								if (!tokens.empty()) {
-									const std::string key = tokens[0];
+									const std::string &key = tokens[0];
 									preprocessorDefinitions.erase(key);
 									ppDefineHistory.emplace_back(lineCurrent, key, "", true, "");
 									definitionsChanged = true;
@@ -1544,9 +1544,9 @@ void SCI_METHOD LexerCPP::Fold(Sci_PositionU startPos, Sci_Position length, int 
 		}
 		if (options.foldComment && options.foldCommentExplicit && ((style == SCE_C_COMMENTLINE) || options.foldExplicitAnywhere)) {
 			if (userDefinedFoldMarkers) {
-				if (styler.Match(i, options.foldExplicitStart.c_str())) {
+				if (styler.Match(i, std::string_view(options.foldExplicitStart))) {
 					levelNext++;
-				} else if (styler.Match(i, options.foldExplicitEnd.c_str())) {
+				} else if (styler.Match(i, std::string_view(options.foldExplicitEnd))) {
 					levelNext--;
 				}
 			} else {
@@ -1749,7 +1749,7 @@ void LexerCPP::EvaluateTokens(Tokens &tokens, const SymbolTable &preprocessorDef
 	// Evaluate logical negations
 	for (size_t j=0; (j+1)<tokens.size();) {
 		if (setNegationOp.Contains(tokens[j][0]) && (tokens[j] != "!=")) {
-			int isTrue = atoi(tokens[j+1].c_str());
+			bool isTrue = atoi(tokens[j+1].c_str());
 			if (tokens[j] == "!")
 				isTrue = !isTrue;
 			const Tokens::iterator itInsert =
