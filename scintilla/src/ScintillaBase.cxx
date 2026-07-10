@@ -156,12 +156,16 @@ int ScintillaBase::KeyCommand(Message iMessage) {
 			AutoCompleteMove(-ac.lb->GetVisibleRows());
 			return 0;
 		case Message::VCHome:
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		case Message::HomeWrap:
 			AutoCompleteMove(-10000);
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 			return 0;
 		case Message::LineEnd:
+		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		case Message::LineEndWrap:
 			AutoCompleteMove(10000);
+		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 			return 0;
 		case Message::DeleteBack:
 			DelCharBack(true);

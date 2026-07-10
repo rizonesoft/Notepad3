@@ -9,11 +9,13 @@
 #ifndef SCI_POSITION_H
 #define SCI_POSITION_H
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #if defined(__cplusplus)
 #include <cstddef>
 #else
 #include <stddef.h>
 #endif
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 // Basic signed type used throughout interface
 typedef ptrdiff_t Sci_Position;

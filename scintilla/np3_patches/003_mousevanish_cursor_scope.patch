@@ -1,0 +1,86 @@
+diff --git a/scintilla/win32/ScintillaWin.cxx b/scintilla/win32/ScintillaWin.cxx
+index 8712c40af..aaf069b58 100644
+--- a/scintilla/win32/ScintillaWin.cxx
++++ b/scintilla/win32/ScintillaWin.cxx
+@@ -1887,10 +1887,14 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
+ 
+ 			// Windows might send WM_MOUSEMOVE even though the mouse has not been moved:
+ 			// http://blogs.msdn.com/b/oldnewthing/archive/2003/10/01/55108.aspx
++			// Only a *real* movement (position actually changed) reveals a pointer
++			// hidden while typing. Spurious moves (Windows synthesizes WM_MOUSEMOVE
++			// when a popup/statusbar repaints under a stationary pointer) must NOT
++			// reveal it, otherwise the pointer flickers while typing (issue #4942).
+ 			if (ptMouseLast != pt) {
+ 				if (cursorIsHidden) {
+-					::ShowCursor(TRUE);
+-					cursorIsHidden = false; // to be shown by ButtonMoveWithModifiers
++					cursorIsHidden = false;
++					DisplayCursor(ContextCursor(pt));
+ 				}
+ 				SetTrackMouseLeaveEvent(true);
+ 				ButtonMoveWithModifiers(pt, ::GetMessageTime(), MouseModifiers(wParam));
+@@ -1901,8 +1905,9 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
+ 
+ 	case WM_MOUSELEAVE:
+ 		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
++		// Pointer left the edit client: drop the "hidden while typing" state so
++		// the normal pointer is shown again (nothing to restore, SetCursor-scoped).
+ 		if (cursorIsHidden) {
+-			::ShowCursor(TRUE);
+ 			cursorIsHidden = false;
+ 		}
+ 		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+@@ -2064,8 +2069,11 @@ sptr_t ScintillaWin::FocusMessage(unsigned int iMessage, uptr_t wParam, sptr_t)
+ 	switch (iMessage) {
+ 	case WM_KILLFOCUS: {
+ 		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
++		// Losing focus while typing: drop the "hidden while typing" state. The
++		// system does not send WM_MOUSELEAVE when the pointer is not above this
++		// window, so this is the recovery point for that case (nothing to
++		// restore, hiding is SetCursor-scoped, not ShowCursor()-counter based).
+ 		if (cursorIsHidden) {
+-			::ShowCursor(TRUE);
+ 			cursorIsHidden = false;
+ 		}
+ 		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+@@ -2404,13 +2412,24 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
+ 
+ 		case WM_SETCURSOR:
+ 			if (LOWORD(lParam) == HTCLIENT) {
+-				if (!cursorIsHidden) {
++				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
++				// "Hide pointer while typing" (SPI_GETMOUSEVANISH) is scoped to the
++				// edit client only. While hidden, re-assert the empty cursor here so
++				// it stays hidden over the text area during typing WITHOUT using the
++				// process-wide ShowCursor() counter. ShowCursor() is per input-queue
++				// and thus shared by the toolbar / statusbar / scrollbars / margins,
++				// which would then also blank the pointer until it happens to re-enter
++				// the text area ("pointer invisible for a while" on re-entry).
++				if (cursorIsHidden) {
++					::SetCursor(nullptr);
++				} else {
+ 					POINT pt;
+ 					if (::GetCursorPos(&pt)) {
+ 						::ScreenToClient(MainHWND(), &pt);
+ 						DisplayCursor(ContextCursor(PointFromPOINT(pt)));
+ 					}
+ 				}
++				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+ 				return TRUE;
+ 			} else {
+ 				return ::DefWindowProc(MainHWND(), msg, wParam, lParam);
+@@ -2682,8 +2701,12 @@ void ScintillaWin::HideCursorIfPreferred() noexcept {
+ 	// SPI_GETMOUSEVANISH from OS.
+ 	if (typingWithoutCursor && !cursorIsHidden) {
+ 		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+-		//::SetCursor({});
+-		::ShowCursor(FALSE);
++		// Hide the pointer for the edit client only. SetCursor(nullptr) is
++		// per-window/per-message (not the process-wide ShowCursor() counter),
++		// so the toolbar / statusbar / scrollbars / margins keep their normal
++		// pointer. WM_SETCURSOR re-asserts this while cursorIsHidden stays set,
++		// and a real WM_MOUSEMOVE clears it again (see MouseMessage()).
++		::SetCursor(nullptr);
+ 		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
+ 		cursorIsHidden = true;
+ 	}

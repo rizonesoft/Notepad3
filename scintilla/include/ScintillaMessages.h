@@ -115,7 +115,9 @@ enum class Message {
 	StyleSetEOLFilled = 2057,
 	StyleResetDefault = 2058,
 	StyleSetUnderline = 2059,
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	StyleSetStrike = 6001,
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	StyleGetFore = 2481,
 	StyleGetBack = 2482,
 	StyleGetBold = 2483,
@@ -124,7 +126,9 @@ enum class Message {
 	StyleGetFont = 2486,
 	StyleGetEOLFilled = 2487,
 	StyleGetUnderline = 2488,
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	StyleGetStrike = 6002,
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	StyleGetCase = 2489,
 	StyleGetCharacterSet = 2490,
 	StyleGetVisible = 2491,

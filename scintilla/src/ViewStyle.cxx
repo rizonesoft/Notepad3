@@ -787,10 +787,10 @@ void ViewStyle::CreateAndAddFont(const FontSpecification &fs) {
 	}
 }
 
-FontRealised *ViewStyle::Find(const FontSpecification &fs) const {
+FontRealised *ViewStyle::Find(const FontSpecification &fs) {
 	if (!fs.fontName)	// Invalid specification so return arbitrary object
 		return fonts.begin()->second.get();
-	const auto it = fonts.find(fs);
+	const FontMap::iterator it = fonts.find(fs);
 	if (it != fonts.end()) {
 		// Should always reach here since map was just set for all styles
 		return it->second.get();

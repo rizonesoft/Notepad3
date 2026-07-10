@@ -585,7 +585,7 @@ class ScintillaWin :
 	enum : UINT_PTR { invalidTimerID, standardTimerID, idleTimerID, fineTimerStart };
 
 	void DisplayCursor(Window::Cursor c) override;
-	bool DragThreshold(Point ptStart, Point ptNow) noexcept override;
+	bool DragThreshold(Point ptStart, Point ptNow) override;
 	void StartDrag() override;
 	static KeyMod MouseModifiers(uptr_t wParam) noexcept;
 
@@ -630,7 +630,7 @@ class ScintillaWin :
 	void SetTrackMouseLeaveEvent(bool on) noexcept;
 	void HideCursorIfPreferred() noexcept;
 	void UpdateBaseElements() override;
-	bool PaintContains(PRectangle rc) const noexcept override;
+	bool PaintContains(PRectangle rc) override;
 	void ScrollText(Sci::Line linesToMove) override;
 	void NotifyCaretMove() override;
 	void UpdateSystemCaret() override;
@@ -642,7 +642,7 @@ class ScintillaWin :
 	void NotifyChange() override;
 	void NotifyFocus(bool focus) override;
 	void SetCtrlID(int identifier) override;
-	int GetCtrlID() const noexcept override;
+	int GetCtrlID() override;
 	void NotifyParent(NotificationData scn) override;
 	void NotifyDoubleClick(Point pt, KeyMod modifiers) override;
 	std::unique_ptr<CaseFolder> CaseFolderForEncoding() override;
@@ -1084,7 +1084,7 @@ void ScintillaWin::DisplayCursor(Window::Cursor c) {
 	}
 }
 
-bool ScintillaWin::DragThreshold(Point ptStart, Point ptNow) noexcept {
+bool ScintillaWin::DragThreshold(Point ptStart, Point ptNow) {
 	const Point ptDifference = ptStart - ptNow;
 	const XYPOSITION xMove = std::trunc(std::abs(ptDifference.x));
 	const XYPOSITION yMove = std::trunc(std::abs(ptDifference.y));
@@ -1887,10 +1887,14 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 
 			// Windows might send WM_MOUSEMOVE even though the mouse has not been moved:
 			// http://blogs.msdn.com/b/oldnewthing/archive/2003/10/01/55108.aspx
+			// Only a *real* movement (position actually changed) reveals a pointer
+			// hidden while typing. Spurious moves (Windows synthesizes WM_MOUSEMOVE
+			// when a popup/statusbar repaints under a stationary pointer) must NOT
+			// reveal it, otherwise the pointer flickers while typing (issue #4942).
 			if (ptMouseLast != pt) {
 				if (cursorIsHidden) {
-					::ShowCursor(TRUE);
-					cursorIsHidden = false; // to be shown by ButtonMoveWithModifiers
+					cursorIsHidden = false;
+					DisplayCursor(ContextCursor(pt));
 				}
 				SetTrackMouseLeaveEvent(true);
 				ButtonMoveWithModifiers(pt, ::GetMessageTime(), MouseModifiers(wParam));
@@ -1901,8 +1905,9 @@ sptr_t ScintillaWin::MouseMessage(unsigned int iMessage, uptr_t wParam, sptr_t l
 
 	case WM_MOUSELEAVE:
 		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		// Pointer left the edit client: drop the "hidden while typing" state so
+		// the normal pointer is shown again (nothing to restore, SetCursor-scoped).
 		if (cursorIsHidden) {
-			::ShowCursor(TRUE);
 			cursorIsHidden = false;
 		}
 		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
@@ -2064,8 +2069,11 @@ sptr_t ScintillaWin::FocusMessage(unsigned int iMessage, uptr_t wParam, sptr_t) 
 	switch (iMessage) {
 	case WM_KILLFOCUS: {
 		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+		// Losing focus while typing: drop the "hidden while typing" state. The
+		// system does not send WM_MOUSELEAVE when the pointer is not above this
+		// window, so this is the recovery point for that case (nothing to
+		// restore, hiding is SetCursor-scoped, not ShowCursor()-counter based).
 		if (cursorIsHidden) {
-			::ShowCursor(TRUE);
 			cursorIsHidden = false;
 		}
 		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
@@ -2404,13 +2412,24 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 
 		case WM_SETCURSOR:
 			if (LOWORD(lParam) == HTCLIENT) {
-				if (!cursorIsHidden) {
+				// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+				// "Hide pointer while typing" (SPI_GETMOUSEVANISH) is scoped to the
+				// edit client only. While hidden, re-assert the empty cursor here so
+				// it stays hidden over the text area during typing WITHOUT using the
+				// process-wide ShowCursor() counter. ShowCursor() is per input-queue
+				// and thus shared by the toolbar / statusbar / scrollbars / margins,
+				// which would then also blank the pointer until it happens to re-enter
+				// the text area ("pointer invisible for a while" on re-entry).
+				if (cursorIsHidden) {
+					::SetCursor(nullptr);
+				} else {
 					POINT pt;
 					if (::GetCursorPos(&pt)) {
 						::ScreenToClient(MainHWND(), &pt);
 						DisplayCursor(ContextCursor(PointFromPOINT(pt)));
 					}
 				}
+				// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 				return TRUE;
 			} else {
 				return ::DefWindowProc(MainHWND(), msg, wParam, lParam);
@@ -2455,7 +2474,9 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 			InvalidateStyleRedraw();
 			break;
 
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #if(WINVER >= 0x0605)
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		case WM_DPICHANGED_AFTERPARENT: {
 				const UINT dpiNow = DpiForWindow(wMain.GetID());
 				if (dpi != dpiNow) {
@@ -2465,7 +2486,9 @@ sptr_t ScintillaWin::WndProc(Message iMessage, uptr_t wParam, sptr_t lParam) {
 				}
 			}
 			break;
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #endif
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		#if SCI_EnablePopupMenu
@@ -2682,8 +2705,12 @@ void ScintillaWin::HideCursorIfPreferred() noexcept {
 	// SPI_GETMOUSEVANISH from OS.
 	if (typingWithoutCursor && !cursorIsHidden) {
 		// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
-		//::SetCursor({});
-		::ShowCursor(FALSE);
+		// Hide the pointer for the edit client only. SetCursor(nullptr) is
+		// per-window/per-message (not the process-wide ShowCursor() counter),
+		// so the toolbar / statusbar / scrollbars / margins keep their normal
+		// pointer. WM_SETCURSOR re-asserts this while cursorIsHidden stays set,
+		// and a real WM_MOUSEMOVE clears it again (see MouseMessage()).
+		::SetCursor(nullptr);
 		// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 		cursorIsHidden = true;
 	}
@@ -2706,7 +2733,7 @@ void ScintillaWin::UpdateBaseElements() {
 	}
 }
 
-bool ScintillaWin::PaintContains(PRectangle rc) const noexcept {
+bool ScintillaWin::PaintContains(PRectangle rc) {
 	if (paintState == PaintState::painting) {
 		return BoundsContains(rcPaint, hRgnUpdate, rc);
 	}
@@ -2850,7 +2877,7 @@ void ScintillaWin::SetCtrlID(int identifier) {
 	::SetWindowID(HwndFromWindow(wMain), identifier);
 }
 
-int ScintillaWin::GetCtrlID() const noexcept {
+int ScintillaWin::GetCtrlID() {
 	return ::GetDlgCtrlID(HwndFromWindow(wMain));
 }
 
