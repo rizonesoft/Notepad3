@@ -20,7 +20,9 @@ using namespace Scintilla;
 
 extern "C"
 __declspec(dllexport)
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 sptr_t APIENTRY Scintilla_DirectFunction(
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
     Internal::ScintillaWin *sci, UINT iMessage, uptr_t wParam, sptr_t lParam) {
 	return Internal::DirectFunction(sci, iMessage, wParam, lParam);
 }

@@ -3339,7 +3339,9 @@ fun void Colourise=4003(position start, position end)
 set void SetProperty=4004(string key, string value)
 
 # Maximum value of keywordSet parameter of SetKeyWords.
+# >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 val KEYWORDSET_MAX=15
+# <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 # Set up the key words used by the lexer.
 set void SetKeyWords=4005(int keyWordSet, string keyWords)

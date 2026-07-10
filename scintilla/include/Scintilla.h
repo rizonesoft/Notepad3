@@ -34,11 +34,13 @@ __declspec(dllexport) int       Scintilla_AdjustWindowRectForDpi(LPWRECT lpRect,
 #endif
 
 // Include header that defines basic numeric types.
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #if defined(__cplusplus)
 #include <cstdint>
 #else
 #include <stdint.h>
 #endif
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 
 // Define uptr_t, an unsigned integer type large enough to hold a pointer.
 typedef uintptr_t uptr_t;
@@ -57,7 +59,9 @@ typedef sptr_t (*SciFnDirectStatus)(sptr_t ptr, unsigned int iMessage, uptr_t wP
 #define SCI_START 2000
 #define SCI_OPTIONAL_START 3000
 #define SCI_LEXER_START 4000
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #define SCI_DEV_USER_DEFINED 6000
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define SCI_ADDTEXT 2001
 #define SCI_ADDSTYLEDTEXT 2002
 #define SCI_INSERTTEXT 2003
@@ -126,8 +130,10 @@ typedef sptr_t (*SciFnDirectStatus)(sptr_t ptr, unsigned int iMessage, uptr_t wP
 #define SC_IME_INLINE 1
 #define SCI_GETIMEINTERACTION 2678
 #define SCI_SETIMEINTERACTION 2679
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #define SCI_ISIMEOPEN 6003
 #define SCI_ISIMEMODECJK 6004
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define SC_ALPHA_TRANSPARENT 0
 #define SC_ALPHA_OPAQUE 255
 #define SC_ALPHA_NOALPHA 256
@@ -268,7 +274,9 @@ typedef sptr_t (*SciFnDirectStatus)(sptr_t ptr, unsigned int iMessage, uptr_t wP
 #define SCI_STYLESETEOLFILLED 2057
 #define SCI_STYLERESETDEFAULT 2058
 #define SCI_STYLESETUNDERLINE 2059
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #define SCI_STYLESETSTRIKE 6001
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define SC_CASE_MIXED 0
 #define SC_CASE_UPPER 1
 #define SC_CASE_LOWER 2
@@ -281,7 +289,9 @@ typedef sptr_t (*SciFnDirectStatus)(sptr_t ptr, unsigned int iMessage, uptr_t wP
 #define SCI_STYLEGETFONT 2486
 #define SCI_STYLEGETEOLFILLED 2487
 #define SCI_STYLEGETUNDERLINE 2488
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #define SCI_STYLEGETSTRIKE 6002
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define SCI_STYLEGETCASE 2489
 #define SCI_STYLEGETCHARACTERSET 2490
 #define SCI_STYLEGETVISIBLE 2491
@@ -538,7 +548,9 @@ typedef sptr_t (*SciFnDirectStatus)(sptr_t ptr, unsigned int iMessage, uptr_t wP
 #define SCFIND_NONE 0x0
 #define SCFIND_WHOLEWORD 0x2
 #define SCFIND_MATCHCASE 0x4
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #define SCFIND_DOT_MATCH_ALL 0x1000
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define SCFIND_WORDSTART 0x00100000
 #define SCFIND_REGEXP 0x00200000
 #define SCFIND_POSIX 0x00400000
@@ -1221,7 +1233,9 @@ typedef sptr_t (*SciFnDirectStatus)(sptr_t ptr, unsigned int iMessage, uptr_t wP
 #define SCI_GETLEXER 4002
 #define SCI_COLOURISE 4003
 #define SCI_SETPROPERTY 4004
+// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 #define KEYWORDSET_MAX 15
+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 #define SCI_SETKEYWORDS 4005
 #define SCI_GETPROPERTY 4008
 #define SCI_GETPROPERTYEXPANDED 4009

@@ -1,8 +1,8 @@
 diff --git a/scintilla/win32/SurfaceD2D.cxx b/scintilla/win32/SurfaceD2D.cxx
-index 0ca7a9475..57b53880f 100644
+index de8b7aea4..d554a0679 100644
 --- a/scintilla/win32/SurfaceD2D.cxx
 +++ b/scintilla/win32/SurfaceD2D.cxx
-@@ -161,6 +161,83 @@ constexpr D2D1_TEXT_ANTIALIAS_MODE DWriteMapFontQuality(FontQuality extraFontFla
+@@ -164,6 +164,83 @@ constexpr D2D1_TEXT_ANTIALIAS_MODE DWriteMapFontQuality(FontQuality extraFontFla
  	}
  }
  
@@ -86,7 +86,7 @@ index 0ca7a9475..57b53880f 100644
  struct FontDirectWrite : public FontWin {
  	ComPtr<IDWriteTextFormat> pTextFormat;
  	FontQuality extraFontFlag = FontQuality::QualityDefault;
-@@ -173,21 +250,37 @@ struct FontDirectWrite : public FontWin {
+@@ -176,23 +253,39 @@ struct FontDirectWrite : public FontWin {
  	explicit FontDirectWrite(const FontParameters &fp) :
  		extraFontFlag(fp.extraFontFlag),
  		characterSet(fp.characterSet) {
@@ -107,7 +107,6 @@ index 0ca7a9475..57b53880f 100644
 +		if (fp.italic) {
 +			style = DWRITE_FONT_STYLE_ITALIC;
 +		}
-+// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 +
  		const std::wstring wsLocale = WStringFromUTF8(fp.localeName);
  		const FLOAT fHeight = static_cast<FLOAT>(fp.size);
@@ -130,4 +129,7 @@ index 0ca7a9475..57b53880f 100644
 +				stretch,
  				fHeight, L"en-us", pTextFormat.ReleaseAndGetAddressOf());
  		}
++// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
  		if (SUCCEEDED(hr)) {
+ 			pTextFormat->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
+ 

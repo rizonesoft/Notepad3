@@ -186,7 +186,9 @@ public:
 	void StyleSetEOLFilled(int style, bool eolFilled);
 	void StyleResetDefault();
 	void StyleSetUnderline(int style, bool underline);
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	void StyleSetStrike(int style, bool strike);
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	Colour StyleGetFore(int style);
 	Colour StyleGetBack(int style);
 	bool StyleGetBold(int style);
@@ -196,7 +198,9 @@ public:
 	std::string StyleGetFont(int style);
 	bool StyleGetEOLFilled(int style);
 	bool StyleGetUnderline(int style);
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 	bool StyleGetStrike(int style);
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	Scintilla::CaseVisible StyleGetCase(int style);
 	Scintilla::CharacterSet StyleGetCharacterSet(int style);
 	bool StyleGetVisible(int style);
@@ -889,7 +893,7 @@ public:
 	Scintilla::EOLAnnotationVisible EOLAnnotationGetVisible();
 	void EOLAnnotationSetStyleOffset(int style);
 	int EOLAnnotationGetStyleOffset();
-	bool SupportsFeature(Scintilla::Supports feature) noexcept;
+	bool SupportsFeature(Scintilla::Supports feature);
 	Scintilla::LineCharacterIndexType LineCharacterIndex();
 	void AllocateLineCharacterIndex(Scintilla::LineCharacterIndexType lineCharacterIndex);
 	void ReleaseLineCharacterIndex(Scintilla::LineCharacterIndexType lineCharacterIndex);

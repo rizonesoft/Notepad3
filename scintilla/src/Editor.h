@@ -476,7 +476,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	virtual void NotifyChange() = 0;
 	virtual void NotifyFocus(bool focus);
 	virtual void SetCtrlID(int identifier);
-	virtual int GetCtrlID() const noexcept { return ctrlID; }
+	virtual int GetCtrlID() { return ctrlID; }
 	virtual void NotifyParent(Scintilla::NotificationData scn) = 0;
 	virtual void NotifyStyleToNeeded(Sci::Position endStyleNeeded);
 	void NotifyChar(int ch, Scintilla::CharacterSource charSource);
@@ -551,7 +551,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void CopyText(size_t length, const char *text);
 	void SetDragPosition(SelectionPosition newPos);
 	virtual void DisplayCursor(Window::Cursor c);
-	virtual bool DragThreshold(Point ptStart, Point ptNow) noexcept;
+	virtual bool DragThreshold(Point ptStart, Point ptNow);
 	virtual void StartDrag();
 	void DropAt(SelectionPosition position, std::string_view value, bool moving, bool rectangular);
 	[[deprecated]] void DropAt(SelectionPosition position, const char *value, size_t lengthValue, bool moving, bool rectangular);
@@ -598,9 +598,9 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	virtual void IdleWork();
 	virtual void QueueIdleWork(WorkItems items, Sci::Position upTo=0);
 
-	virtual int SupportsFeature(Scintilla::Supports feature) const noexcept;
-	virtual bool PaintContains(PRectangle rc) const noexcept;
-	bool PaintContainsMargin() const noexcept;
+	virtual int SupportsFeature(Scintilla::Supports feature);
+	virtual bool PaintContains(PRectangle rc);
+	bool PaintContainsMargin();
 	void CheckForChangeOutsidePaint(Range r);
 	void SetBraceHighlight(Sci::Position pos0, Sci::Position pos1, int matchStyle);
 

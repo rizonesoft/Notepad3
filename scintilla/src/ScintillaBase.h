@@ -101,7 +101,7 @@ protected:
 	void NotifyStyleToNeeded(Sci::Position endStyleNeeded) override;
 
 public:
-	virtual ~ScintillaBase() override;
+	~ScintillaBase() override;
 
 	// Public so scintilla_send_message can use it
 	Scintilla::sptr_t WndProc(Scintilla::Message iMessage, Scintilla::uptr_t wParam, Scintilla::sptr_t lParam) override;
