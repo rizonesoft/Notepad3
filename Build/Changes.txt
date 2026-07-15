@@ -35,7 +35,7 @@ TIN - (TIN)yExpr++ is an engine for math expressions
 UCH - (UCH)ARDET is an Encoding Detector Library
 
 
-Current BETA Version 7.26.602.(build_#) (2026-06-02)
+Current BETA Version 7.26.715.(build_#) (2026-07-15)
 ========================================================
 
 --------------------------------------------------------
@@ -48,13 +48,14 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
-[.xxx.x]- .
+[.715.1]- Update Scintilla (v5.6.4) (SCI) and Lexilla (v.5.5.1) (LEX) (#5948).
+.
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
-[.xxx.x]- .
+[.715.1]- Patch Scintilla to try to fix "vanishing mouse pointer" (SCI) (#5949).
 
 --------------------------------------------------------
 REMOVED:
@@ -65,8 +66,8 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.504.1]- Update Scintilla (SCI) Library version 5.6.2 (2026-04-29) (#5796).
-[.504.1]- Update Lexilla (LEX) Library version 5.4.9 (2026-04-29) (#5796).
+[.715.1]- Update Scintilla (SCI) Library version 5.6.4 (2026-07-06) (#5948).
+[.715.1]- Update Lexilla (LEX) Library version 5.5.1 (2026-07-06) (#5948).
 [.418.1]- Update TinyExpr++ (TIN) version 1.1.0 (2026-01-16) (#5707).
 [.411.1]- Update grepWin (GRE) version 2.1.12.1434 (2025-09-24) (#5635).
 [.305.1]- Update UCHARDET (UCH) encoding detector version 0.0.8 (2022-12-08) (#5562).
