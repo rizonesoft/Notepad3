@@ -291,7 +291,7 @@ BEGIN
     IDS_LEX_STR_63211       "Sträng dubbelt citerad"
     IDS_LEX_STR_63212       "Sträng enkelt citerad"
     IDS_LEX_STR_63213       "POD (gemensam)"
-    IDS_LEX_STR_63214       "POD (verbatim)"
+    IDS_LEX_STR_63214       "POD (ordagrann)"
     IDS_LEX_STR_63215       "Skalär $var"
 END
 
@@ -303,7 +303,7 @@ BEGIN
     IDS_LEX_STR_63219       "Regex /re/ eller m{re}"
     IDS_LEX_STR_63220       "Ersättning s/re/ore/"
     IDS_LEX_STR_63221       "Bakåtcitattecken"
-    IDS_LEX_STR_63222       "Datasektion"
+    IDS_LEX_STR_63222       "Dataavsnitt"
     IDS_LEX_STR_63223       "Here-Doc (avgränsare)"
     IDS_LEX_STR_63224       "Here-Doc (enkelciterad, q)"
     IDS_LEX_STR_63225       "Here-Doc (dubbelciterad, qq)"
@@ -317,7 +317,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_Section     "Sektion"
+    IDS_LEX_STR_Section     "Avsnitt"
     IDS_LEX_STR_Assign      "Tilldelning"
     IDS_LEX_STR_63234       "Förvalt värde"
     IDS_LEX_STR_Label       "Etikett"
@@ -368,8 +368,8 @@ BEGIN
     IDS_LEX_STR_63272       "Andra paketfunktioner"
     IDS_LEX_STR_Function    "Funktion"
     IDS_LEX_STR_Const       "Konstant"
-    IDS_LEX_STR_63275       "Subsektion"
-    IDS_LEX_STR_63276       "Sektionsgrupp"
+    IDS_LEX_STR_63275       "Underavsnitt"
+    IDS_LEX_STR_63276       "Avsnittsgrupp"
     IDS_LEX_STR_63277       "Funktionsdefinition"
     IDS_LEX_STR_PageEx      "PageEx"
     IDS_LEX_STR_63279       "If-definition"
@@ -392,13 +392,13 @@ BEGIN
     IDS_LEX_STR_POD         "POD"
     IDS_LEX_STR_Symbol      "Symbol"
     IDS_LEX_STR_63294       "Modulnamn"
-    IDS_LEX_STR_63295       "Instans Var"
+    IDS_LEX_STR_63295       "Instansvariabel"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_LEX_STR_63296       "Klass Var"
-    IDS_LEX_STR_63297       "Datasektion"
+    IDS_LEX_STR_63296       "Klassvariabel"
+    IDS_LEX_STR_63297       "Dataavsnitt"
     IDS_LEX_STR_BaseFct     "Grundläggande funktioner"
     IDS_LEX_STR_63299       "Sträng, tabell och matematikfunktioner"
     IDS_LEX_STR_63300       "Inmatning, utmatning och system"
@@ -418,7 +418,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_LEX_STR_63312       "Inbyggda variabler"
-    IDS_LEX_STR_63313       "Variabelt nyckelord"
+    IDS_LEX_STR_63313       "Variabelnyckelord"
     IDS_LEX_STR_Filter      "Filter"
     IDS_LEX_STR_Plugin      "Plugin"
     IDS_LEX_STR_63316       "Klippegenskaper"
@@ -484,8 +484,8 @@ BEGIN
     IDS_LEX_STR_63364       "Egenskapsnamn"
     IDS_LEX_STR_63365       "LD nyckelord"
     IDS_LEX_STR_63366       "ESC sekvens"
-    IDS_LEX_STR_63367       "Unicode-Punkt Hovra"
-    IDS_LEX_STR_63368       "2nd Unicode-Punkt Hovra"
+    IDS_LEX_STR_63367       "Unicode-punkt vid hovring"
+    IDS_LEX_STR_63368       "2:a Unicode-punkt vid hovring"
     IDS_LEX_STR_Interface   "Gränssnitt"
     IDS_LEX_STR_Annot       "Anteckning"
     IDS_LEX_STR_63371       "Kommentera Doc ord"
@@ -503,7 +503,7 @@ BEGIN
     IDS_LEX_STR_63379       "Ej stängd sträng"
     IDS_LEX_STR_63380       "URL/IRI"
     IDS_LEX_STR_63381       "Kompakt IRI"
-    IDS_LEX_STR_SendKey     "Sänd-tangent"
+    IDS_LEX_STR_SendKey     "Skicka-tangent"
     IDS_LEX_STR_63383       "Meta-Data"
     IDS_LEX_STR_Enum        "Uppräkning"
     IDS_LEX_STR_63385       "TriQ-sträng"
@@ -556,19 +556,19 @@ BEGIN
     IDS_LEX_STR_TclExpand   "Expansion {*}"
     IDS_LEX_STR_Keyword47   "Nyckelord 4-7"
     IDS_LEX_STR_Keyword8    "Nyckelord 8"
-    IDS_LEX_STR_MacroDef    "Macro Def"
-    IDS_LEX_STR_Macro       "Macro"
-    IDS_LEX_STR_Typedef     "Typedef"
-    IDS_LEX_STR_Class       "Class"
-    IDS_LEX_STR_Verbatim    "Verbatim"
+    IDS_LEX_STR_MacroDef    "Makrodefinition"
+    IDS_LEX_STR_Macro       "Makro"
+    IDS_LEX_STR_Typedef     "Typdefinition"
+    IDS_LEX_STR_Class       "Klass"
+    IDS_LEX_STR_Verbatim    "Ordagrann"
     IDS_LEX_STR_Escape      "Escape"
-    IDS_LEX_STR_ParamExp    "Parameter Expansion"
-    IDS_LEX_STR_SyntaxOp    "Syntax Operator"
-    IDS_LEX_STR_IfDef       "If Def"
-    IDS_LEX_STR_WhileDef    "While Def"
-    IDS_LEX_STR_ForEachDef  "For Each Def"
-    IDS_LEX_STR_DocCmtKw    "Doc Comment Keyword"
-    IDS_LEX_STR_UserDef     "User Defined"
+    IDS_LEX_STR_ParamExp    "Parameterexpansion"
+    IDS_LEX_STR_SyntaxOp    "Syntaxoperator"
+    IDS_LEX_STR_IfDef       "If-definition"
+    IDS_LEX_STR_WhileDef    "While-definition"
+    IDS_LEX_STR_ForEachDef  "For Each-definition"
+    IDS_LEX_STR_DocCmtKw    "Nyckelord i dokumentationskommentar"
+    IDS_LEX_STR_UserDef     "Användardefinierad"
 END
 
 STRINGTABLE
