@@ -115,8 +115,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_FILTER_ALL      "Alla filer (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE      "Exekverbara filer (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_INI      "Konfigurationsfiler (*.ini)|*.ini|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE      "Exekverbara filer (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Alla filer (*.*)|*.*|"
+    IDS_MUI_FILTER_INI      "Konfigurationsfiler (*.ini)|*.ini|Alla filer (*.*)|*.*|"
     IDS_MUI_FILTER_BITMAP   "Bitmap filer (*.bmp)|*.bmp|Alla filer (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Välj mappen med länkar till dina favoritprogram"
     IDS_MUI_FAVORITES       "Välj mappen med länkar till dina favoritfiler"
@@ -159,7 +159,7 @@ BEGIN
                             "Kan inte hantera så stor fil (storlek: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
                             "Okänt filnamnstillägg (%s)!\nVill du fortsätta ändå?"
-    IDS_MUI_INDENT_CONSISTENT  "Filen har konsistent indrag!"
+    IDS_MUI_INDENT_CONSISTENT  "Filen har ett konsekvent indrag!"
     IDS_MUI_EOLMODENAME_CRLF   "Windows (CR+LF)"
     IDS_MUI_EOLMODENAME_LF     "Unix/Mac (LF)"
     IDS_MUI_EOLMODENAME_CR     "Gammal Mac (CR)"
@@ -273,7 +273,7 @@ BEGIN
     IDS_USE_LOCALE_DATEFMT  "Använd valt språks datumformat"
     IDS_MUI_MENU_THEMES     "Schemasamling"
     IDM_THEMES_FACTORY_RESET "&Fabriksåterställning"
-    IDM_THEMES_STD_CFG       "&Standard Konfig"
+    IDM_THEMES_STD_CFG       "&Standardkonfiguration"
     IDS_MUI_STATUSBAR_PREFIXES "Rad  ,Kol  ,Mar  ,Mb  ,Mr  ,För  ,,,,,,,Te  ,Ers  ,Eval  ,U+,"
     IDS_MUI_STATUSBAR_POSTFIXES ",,,,,,,,,,,,,,,,"
     IDS_CLEAR_ALL           "Rensa alla"
@@ -297,7 +297,7 @@ BEGIN
     IDS_MUI_SB_SORTING_LINES  "Sorterar rader..."
     IDS_MUI_SB_CONV_LNBRK     "Konvertera alla radbrytningar..."
     IDS_MUI_SB_RECODING_DOC   "Kodar om dokument..."
-    IDS_MUI_SB_LEXER_STYLING  "Applicera Lexer-stil..."
+    IDS_MUI_SB_LEXER_STYLING  "Tillämpa lexerstil..."
 END
 
 STRINGTABLE
@@ -310,13 +310,13 @@ Notepad3 [/?] [...[Teckenkodning]] [...[Radslutsläge]] [/e] [/g] [/m] [/l]\r\n\
 fil\tMåste vara det sista argumentet, inga citerade mellanslag\r\n\
 +\tAcceptera många filargument (med citerade mellanslag)\r\n\
 -\tAcceptera enstaka filargument (utan citerade mellanslag)\r\n\r\n\
-Tillval:\r\n\
+Alternativ:\r\n\
 /?\tVisa detta hjälpmeddelande\r\n\
 ...\tTeckenkodning (/ansi, /unicode, /unicodebe, /utf8, /utf8sig)\r\n\
 ...\tRadslutsläge (/crlf, /cr, /lf)\r\n\
 /e\tRadslut för källkod\r\n\
-/g\tHoppa till position (/g -1 end of file)\r\n\
-/m\tMatcha angiven text (/m- last, /mr regex, /mb backslash)\r\n\
+/g\tHoppa till angiven position (/g -1 slutet av filen)\r\n\
+/m\tMatcha angiven text (/m- sista, /mr regex, /mb omvänt snedstreck)\r\n\
 /l\tLadda om modifierade filer automatiskt\r\n\
 /q\tTvinga skapande av nya filer utan bekräftelse\r\n\
 /s\tVälj syntaxschema\r\n\
@@ -367,10 +367,10 @@ IDS_MUI_ABOUT_RTF_0  "{\
 \\cf0 \\fs20\\b1\\ul1 Utveckling:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_1  "\
-\\cf0 \\fs20\\b1\\ul1 Medverkande:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Bidragsgivare:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_2  "\
-\\cf0 \\fs20\\b1\\ul1 Open Source / Bibliotek:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Öppen källkod / bibliotek:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
 \\cf0 \\fs20\\b1\\ul1 Tack:\\ul0\\b0\\fs18\\par\
