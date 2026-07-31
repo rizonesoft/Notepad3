@@ -76,7 +76,7 @@ CAPTION "Kör"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_RUN,IDC_STATIC,7,7,20,20
-    LTEXT           "Angen namnet på en programfil,\nmapp eller dokument att öppna",IDC_STATIC,35,7,188,17
+    LTEXT           "Ange namnet på en programfil,\nmapp eller dokument att öppna",IDC_STATIC,35,7,188,17
     EDITTEXT        IDC_COMMANDLINE,35,35,165,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_SEARCHEXE,204,35,13,13
     DEFPUSHBUTTON   "OK",IDOK,112,64,50,14
@@ -117,7 +117,7 @@ BEGIN
     LTEXT           "Ange ett nytt filfilter. Separera  ;",IDC_STATIC,7,7,175,8
     EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
-    CONTROL         "Excludera filer som matchar filtret",IDC_NEGFILTER,
+    CONTROL         "Exkludera filer som matchar filtret",IDC_NEGFILTER,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,40,125,10
     DEFPUSHBUTTON   "OK",IDOK,77,58,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,132,58,50,14
@@ -206,7 +206,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,150,10
     CONTROL         "Flytta raderade filer till papperskorgen",IDC_USERECYCLEBIN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109,140,10
-    CONTROL         "Radera filer utan att bekräfta (ej rekommenderad)",IDC_NOCONFIRMDELETE,
+    CONTROL         "Radera filer utan att bekräfta (ej rekommenderat)",IDC_NOCONFIRMDELETE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121,180,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,139,205,1
     CONTROL         "Aktivera ""Esc"" till:",IDC_ESCFUNCTION,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,148,85,10
@@ -220,7 +220,7 @@ CAPTION "Objekt"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_ITEMS,IDC_STATIC,10,10,21,20
-    LTEXT           "Utseende för object i mapplistan",IDC_STATIC,40,15,140,8
+    LTEXT           "Utseende för objekt i mapplistan",IDC_STATIC,40,15,140,8
     GROUPBOX        "Färger",IDC_STATIC,10,41,205,134
     LTEXT           "Använd denna textfärg när INGET FILTER är valt:",IDC_STATIC,20,54,165,8
     CONTROL         "Standardfärg för fönster",IDC_COLOR_DEF1,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,20,68,95,10
@@ -258,7 +258,7 @@ BEGIN
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,7,250,10
     CONTROL         "Använd målprogram:",IDC_TARGET,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,21,131,10
-    LTEXT           "Agen åtgärd om målprogrammet redan körs:",IDC_STATIC,7,64,220,8
+    LTEXT           "Ange åtgärd om målprogrammet redan körs:",IDC_STATIC,7,64,220,8
     EDITTEXT        IDC_TARGETPATH,20,35,230,14,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE,254,35,15,14,BS_BITMAP
     LTEXT           "Meddelande:",IDC_STATIC,20,120,45,8
