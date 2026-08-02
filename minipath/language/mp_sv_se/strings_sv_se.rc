@@ -75,16 +75,16 @@ BEGIN
     IDS_APPTITLE            "MiniPath"
     IDS_NUMFILES            "%s Objekt"
     IDS_NUMFILES2           "%s Objekt | Filter"
-    IDS_SAVEFILE            "Spara ""%s""..."
+    IDS_SAVEFILE            "Sparar ""%s""..."
     IDS_OPEN_FILE_WITH      "Öppna med %s"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_ERR_CD              "Fel vid mappårkomst\nIngen mapp specificerades\nKontrollera disk eller nätverkstillgång"
+    IDS_ERR_CD              "Fel vid mappåtkomst\nIngen mapp specificerades\nKontrollera disk eller nätverkstillgång"
     IDS_ERR_FILE            "Fel vid filåtkomst\nIngen tillgång till ""%s""\nFilen kanske används av ett annat program\nKontrollera disk eller nätverkstillgång"
     IDS_ERR_NEW             "Fel vid filåtkomst\nFilen kunde inte skapas\nKontrollera disk eller nätverkstillgång"
-    IDS_ERR_NEWDIR          "Fel vid mappårkomst\nMappen kunde inte skapas\nKontrollera disk eller nätverkstillgång"
+    IDS_ERR_NEWDIR          "Fel vid mappåtkomst\nMappen kunde inte skapas\nKontrollera disk eller nätverkstillgång"
     IDS_ERR_SAVEAS1         "Fel vid sparande\nFel vid sparande ""%s""\nDet finns troligtvis en existerande fil som inte kan skrivas över"
     IDS_ERR_SAVEAS2         "Fel vid sparande\nKunde inte ta bort skrivskyddsflaggan"
     IDS_ERR_CMDLINE         "MiniPath\nKunde inte komma åt fil eller mapp som angivits i kommandoraden"
