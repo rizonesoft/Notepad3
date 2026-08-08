@@ -125,7 +125,7 @@ END
 
 IDD_RENAME DIALOGEX 0, 0, 180, 74
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Döp om"
+CAPTION "Byt namn"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     LTEXT           "Nuvarande:",IDC_STATIC,7,9,37,8
@@ -241,7 +241,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_PROGS,IDC_STATIC,10,10,20,20
     LTEXT           "Ange externa program och mappar",IDC_STATIC,40,15,140,8
-    LTEXT           "Standard ""Quick View"" program (Ctrl+Q):",IDC_STATIC,10,41,140,8
+    LTEXT           "Standardprogram för ""Snabbvisning"" (Ctrl+Q):",IDC_STATIC,10,41,140,8
     EDITTEXT        IDC_QUICKVIEW,10,52,191,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSE_Q,203,52,13,13,BS_BITMAP
     LTEXT           "Favoritmappar (F11):",IDC_STATIC,10,76,76,8
