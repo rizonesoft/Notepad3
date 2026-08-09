@@ -59,14 +59,14 @@ BEGIN
     BEGIN
         MENUITEM "Öppna",                         IDM_FILE_OPEN
         MENUITEM "Öppna med annat program...",    IDM_FILE_OPENWITH
-        MENUITEM "Quickview",                     IDM_FILE_QUICKVIEW
+        MENUITEM "Snabbvisning",                     IDM_FILE_QUICKVIEW
         MENUITEM SEPARATOR
         MENUITEM "Kopiera namn",                  IDM_POP_COPYNAME
         MENUITEM "Skapa länk...",                 IDM_FILE_CREATELINK
         MENUITEM "Spara som...",                  IDM_FILE_SAVEAS
         MENUITEM "Kopiera / flytta...",           IDM_FILE_COPYMOVE
         MENUITEM "Radera...",                     IDM_FILE_DELETE
-        MENUITEM "Döp om...",                     IDM_FILE_RENAME
+        MENUITEM "Byt namn...",                     IDM_FILE_RENAME
         MENUITEM SEPARATOR
         MENUITEM "Kör",                           IDM_FILE_LAUNCH
         MENUITEM "Kör med argument...",           IDM_FILE_RUN
