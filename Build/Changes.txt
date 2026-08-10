@@ -35,7 +35,7 @@ TIN - (TIN)yExpr++ is an engine for math expressions
 UCH - (UCH)ARDET is an Encoding Detector Library
 
 
-Current BETA Version 7.26.7ùù.(build_#) (2026-07-ùù)
+Current BETA Version 7.26.715.(build_#) (2026-07-15)
 ========================================================
 
 --------------------------------------------------------
