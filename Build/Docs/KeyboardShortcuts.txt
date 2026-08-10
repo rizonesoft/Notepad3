@@ -227,7 +227,7 @@
     Ctrl+Shift+N              Show Line Numbers.
     Ctrl+Shift+M              Bookmark Margin.
 
-      Mark Occurences
+      Mark Occurrences
       ----------------
         Alt+A                 Active.
 
