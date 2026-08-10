@@ -35,7 +35,7 @@ TIN - (TIN)yExpr++ is an engine for math expressions
 UCH - (UCH)ARDET is an Encoding Detector Library
 
 
-Current BETA Version 7.26.715.(build_#) (2026-07-15)
+Current BETA Version 7.26.7ùù.(build_#) (2026-07-ùù)
 ========================================================
 
 --------------------------------------------------------
@@ -1959,7 +1959,7 @@ NEW:
 - Names under Acknowledgments on About box.
 - Version info for Microsoft Visual C++ 2017 v15.7.(0-1) (VC v191426428).
 - X-CaretPolicy ([Settings2] CurrentLineHorizontalSlop=0).
-- 1st draft of "Toggle Visible" (hide non occurences lines).
+- 1st draft of "Toggle Visible" (hide non occurrences lines).
 - Initial version of Doc tail Chasing.
 - StatusBar dynamic configuration.
 - DPI awarenes on manual font scaling.
@@ -2424,7 +2424,7 @@ NEW:
 --------------------------------------------------------
 - New: Hyperlink Hotspot Style updates on UpdateUI event (visible area only)
 - New: Switch to draw all occurrences in visible area only.
-- New: (Mark Occurences) instant word highligting.
+- New: (Mark Occurrences) instant word highligting.
 
 --------------------------------------------------------
 ENHANCEMENT:
@@ -2470,7 +2470,7 @@ Version 3.17.1223.778 (23 December 2017)
 ========================================================
 - New: More triggers for Hyperlink style updated.
 - New: Online Documentation menu item.
-- New: Added Scintilla's indicator styles to scheme config for "Mark Occurences".
+- New: Added Scintilla's indicator styles to scheme config for "Mark Occurrences".
 - New: Dual configuration of Default Text Font or Current Scheme's Default Text Font.
 - New: Replaced DeelX with Onigmo regular expression engine.
 - Changed: uthash to version 2.0.2.
