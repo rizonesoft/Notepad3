@@ -56,13 +56,13 @@ STRINGTABLE
 BEGIN
     IDT_HISTORY_BACK        "Tillbaka"
     IDT_HISTORY_FORWARD     "Framåt"
-    IDT_UPDIR               "Översta mappen"
+    IDT_UPDIR               "Övre mapp"
     IDT_ROOT                "Rotmapp"
     IDT_VIEW_FAVORITES      "Favoriter"
     IDT_FILE_PREV           "Föregående fil"
     IDT_FILE_NEXT           "Nästa fil"
     IDT_FILE_RUN            "Kör"
-    IDT_FILE_QUICKVIEW      "Quickview"
+    IDT_FILE_QUICKVIEW      "Snabbvisning"
     IDT_FILE_SAVEAS         "Spara som"
     IDT_FILE_COPYMOVE       "Kopiera / flytta"
     IDT_FILE_DELETE         "Radera"
@@ -111,12 +111,12 @@ END
 STRINGTABLE
 BEGIN
     IDS_SEARCHEXE           "Hitta exekverbar fil"
-    IDS_GETQUICKVIEWER      "Hitta Quickview"
+    IDS_GETQUICKVIEWER      "Hitta snabbvisningsprogram"
     IDS_GETTARGET           "Hitta editor"
     IDS_NEWFILE             "Ny fil"
     IDS_FILTER_ALL          "Alla filer (*.*)\n*.*\n"
     IDS_FILTER_EXE          "Exekverbar fil (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nAlla filer (*.*)\n*.*\n"
-    IDS_GETDIRECTORY        "Markera ny mapp"
+    IDS_GETDIRECTORY        "Välj en ny mapp"
     IDS_FAVORITES           "Ange ""Favoriter""-mapp"
 END
 
