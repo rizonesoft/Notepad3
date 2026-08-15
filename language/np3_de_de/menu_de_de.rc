@@ -91,8 +91,8 @@ BEGIN
             MENUITEM "Web Aufruf &1\tCtrl+Shift+1",         CMD_WEBACTION1
             MENUITEM "Web Aufruf &2\tCtrl+Shift+2",         CMD_WEBACTION2
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",           IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "O&rdner der Auswahl öffnen",          IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Datei aus der Auswahl ö&ffnen",       IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Öffne Datei-&Explorer",               IDM_FILE_EXPLORE_DIR
         END
@@ -320,8 +320,8 @@ BEGIN
             MENUITEM "Selektiere &Wort oder Zeile\tCtrl+Spc",              IDM_EDIT_SELECTWORD
             MENUITEM "Multiselektion &aller Fundstellen\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "O&rdner der Auswahl öffnen",                         IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Datei aus der Auswahl ö&ffnen",                      IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "Neue Undo &Transaktion bei Zeilenumbruch",           IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
@@ -603,9 +603,9 @@ BEGIN
         MENUITEM "Öffne Web-Aktion 1",         CMD_WEBACTION1
         MENUITEM "Öffne Web Aktion 2",         CMD_WEBACTION2
         MENUITEM SEPARATOR
-        MENUITEM "Open Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-        MENUITEM "Open File from Selection",            IDM_EDIT_OPEN_FILE_FROM_SEL
-        MENUITEM "Öffne Datei-Explorer",       IDM_FILE_EXPLORE_DIR
+        MENUITEM "Ordner der Auswahl öffnen",    IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+        MENUITEM "Datei aus der Auswahl öffnen", IDM_EDIT_OPEN_FILE_FROM_SEL
+        MENUITEM "Öffne Datei-Explorer",         IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"
     BEGIN
