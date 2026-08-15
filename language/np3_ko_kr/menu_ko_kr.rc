@@ -320,8 +320,8 @@ BEGIN
             MENUITEM "단어 또는 줄 선택(&W)\tCtrl+Spc",            IDM_EDIT_SELECTWORD
             MENUITEM "모든 일치 다중 선택(&A)\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
             MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
+            MENUITEM "선택 항목이 있는 폴더 열기(&C)",         IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "선택에서 파일 열기(&F)",                IDM_EDIT_OPEN_FILE_FROM_SEL
             MENUITEM SEPARATOR
             MENUITEM "줄 바꿈에서 분할 실행 취소 처리(&T)",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
@@ -603,8 +603,8 @@ BEGIN
         MENUITEM "웹 작업 1 열기",          CMD_WEBACTION1
         MENUITEM "웹 작업 2 열기",          CMD_WEBACTION2
         MENUITEM SEPARATOR
-        MENUITEM "Open Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-        MENUITEM "Open File from Selection",            IDM_EDIT_OPEN_FILE_FROM_SEL
+        MENUITEM "선택 항목이 있는 폴더 열기", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+        MENUITEM "선택에서 파일 열기",            IDM_EDIT_OPEN_FILE_FROM_SEL
         MENUITEM "파일 탐색기 열기",         IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"

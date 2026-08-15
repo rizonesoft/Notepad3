@@ -588,13 +588,13 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Seleccionar todo",                           IDM_EDIT_SELECTALL
         MENUITEM SEPARATOR
-        POPUP "Convert Case"
+        POPUP "Convertir mayúsc.s/minúsc."
         BEGIN
-            MENUITEM "MAYÚSCULAS",              CMD_CTX_UPPERCASE
-            MENUITEM "minúsculas",              CMD_CTX_LOWERCASE
+            MENUITEM "MAYÚSCULAS",               CMD_CTX_UPPERCASE
+            MENUITEM "minúsculas",               CMD_CTX_LOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "Invertir mayús./minús.",            CMD_CTX_INVERTCASE
-            MENUITEM "Formato Título",             CMD_CTX_TITLECASE
+            MENUITEM "Invertir mayús./minús.",   CMD_CTX_INVERTCASE
+            MENUITEM "Formato Título",           CMD_CTX_TITLECASE
             MENUITEM "Formato oración",          CMD_CTX_SENTENCECASE
         END
         MENUITEM SEPARATOR
@@ -603,8 +603,8 @@ BEGIN
         MENUITEM "Abrir Web Acción 1",                         CMD_WEBACTION1
         MENUITEM "Abrir Web Acción 2",                         CMD_WEBACTION2
         MENUITEM SEPARATOR
-        MENUITEM "Open Containing Folder of Selection", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-        MENUITEM "Open File from Selection",            IDM_EDIT_OPEN_FILE_FROM_SEL
+        MENUITEM "Abrir la carpeta contenedora la selección",  IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+        MENUITEM "Abrir archivo desde la selección",           IDM_EDIT_OPEN_FILE_FROM_SEL
         MENUITEM "Abrir Explorador de archivos",               IDM_FILE_EXPLORE_DIR
     END
     POPUP "+"

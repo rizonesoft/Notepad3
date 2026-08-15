@@ -11,8 +11,8 @@ Februar 2026: Line numbers to translate_2026-02 - No "Added or Modified" items i
 March   2026: Line numbers to translate_2026-03 - https://workupload.com/file/uDjfcJwACXx (2026-03-06)
 April   2026: Line numbers to translate_2026-04 - https://workupload.com/file/p4LABZtEsYM (2026-04-23)
 May     2026: Line numbers to translate_2026-05 - https://workupload.com/file/wdyUeEZnejG (2026-05-25)
-June    2026: Line numbers to translate_2026-06 -  (2026-06-xx)
-July    2026: Line numbers to translate_2026-07 -  (2026-07-xx)
+June    2026: Line numbers to translate_2026-06 - No "Added or Modified" items in June 2026
+July    2026: Line numbers to translate_2026-07 - No "Added or Modified" items in July 2026
 August  2026: Line numbers to translate_2026-08 -  (2026-08-xx)
 Septemb 2026: Line numbers to translate_2026-09 -  (2026-09-xx)
 October 2026: Line numbers to translate_2026-10 -  (2026-10-xx)
