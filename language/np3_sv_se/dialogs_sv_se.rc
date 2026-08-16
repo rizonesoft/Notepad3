@@ -738,7 +738,7 @@ BEGIN
     CONTROL         "Höger",101,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,19,35,10
     CONTROL         "Mitten",102,"Button",BS_AUTORADIOBUTTON,7,31,41,10
     CONTROL         "Marginaler",103,"Button",BS_AUTORADIOBUTTON,7,43,50,10
-    CONTROL         "Marginaler (Paragrafläge)",104,"Button",BS_AUTORADIOBUTTON,7,55,100,10
+    CONTROL         "Marginaler (paragrafläge)",104,"Button",BS_AUTORADIOBUTTON,7,55,100,10
     DEFPUSHBUTTON   "OK",IDOK,127,7,50,14
     PUSHBUTTON      "Avbryt",IDCANCEL,127,24,50,14
 END
@@ -856,7 +856,7 @@ BEGIN
     RTEXT           "Blå:", COLOR_BLUEACCEL, 243, 154, 24, 9
     EDITTEXT, COLOR_BLUE, 269, 152, 19, 12, WS_GROUP | WS_TABSTOP
 
-    PUSHBUTTON      "Lägg till Anpassade färger", COLOR_ADD, 152, 166, 142, 14,
+    PUSHBUTTON      "Lägg till anpassade färger", COLOR_ADD, 152, 166, 142, 14,
     WS_GROUP | WS_TABSTOP
 END
 
