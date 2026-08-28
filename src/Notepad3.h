@@ -115,7 +115,6 @@ void UpdateStatusbar(const bool bForceRedraw);
 void UpdateMargins(const bool bForce);
 void UpdateSaveSettingsCmds();
 void UpdateTitlebar(const HWND hwnd);
-void UpdateContentArea();
 
 void ResetMouseDWellTime();
 
