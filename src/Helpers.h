@@ -495,12 +495,15 @@ void  Path_CanonicalizeWithDocAnchor(HPATHL hpth);
 bool StrLTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars);
 bool StrRTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars);
 
+bool StrTrimUTF8(LPSTR psz, LPCSTR pszTrimChars);
+char* StrStrIA_UTF8(const char* pszSource, const char* pszSub);
+
 static inline bool TrimSpcA(LPSTR lpString)
 {
     if (!lpString || !*lpString) {
         return false;
     }
-    return (bool)StrTrimA(lpString, " \t\v");
+    return StrTrimUTF8(lpString, " \t\v");
 };
 
 static inline bool TrimSpcW(LPWSTR lpString)
@@ -642,22 +645,12 @@ static inline void SwabEx(char* src, char* dest, size_t n)
 //==== StrCut methods ===================
 
 WCHAR* StrCutIW(WCHAR* s, const WCHAR* pattern);
-CHAR*  StrCutIA(CHAR* s, const CHAR* pattern);
-#if defined(UNICODE) || defined(_UNICODE)
 #define StrCutI StrCutIW
-#else
-#define StrCutI _StrCutIA
-#endif
 
 
 //==== StrNextTok methods ===================
 WCHAR* StrNextTokW(WCHAR* strg, const WCHAR* tokens);
-CHAR*  StrNextTokA(CHAR* strg, const CHAR* tokens);
-#if defined(UNICODE) || defined(_UNICODE)
 #define StrNextTok StrNextTokW
-#else
-#define StrNextTok StrNextTokA
-#endif
 
 // ----------------------------------------------------------------------------
 

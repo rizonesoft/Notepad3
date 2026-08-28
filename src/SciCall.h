@@ -1510,17 +1510,6 @@ inline DocPos Sci_ReplaceTargetEx(const int mode, const DocPos length, const cha
 }
 // ----------------------------------------------------------------------------
 
-inline LRESULT Sci_ForceNotifyUpdateUI(HWND hwnd, uptr_t idc)
-{
-    struct SCNotification scn = { 0 };
-    scn.nmhdr.hwndFrom = g_hwndEditWindow;
-    scn.nmhdr.idFrom = idc;
-    scn.nmhdr.code = SCN_UPDATEUI;
-    scn.updated = SC_UPDATE_CONTENT;
-    return SendMessageW(hwnd, WM_NOTIFY, idc, (LPARAM)&scn);
-}
-// ----------------------------------------------------------------------------
-
 //=============================================================================
 
 #endif //_NP3_SCICALL_H_

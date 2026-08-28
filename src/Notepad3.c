@@ -360,6 +360,7 @@ static inline void _SplitUndoTransaction()
 
 static void _DelayClearCallTip(const LONG64 delay);
 static void _DelaySplitUndoTransaction(const LONG64 delay);
+static void _DelayUpdateVisibleIndicators(const LONG64 delay);
 static void _PruneOldDropSnapshots(DWORD maxAgeSecs);
 static bool _IsDropSnapshotPath(const HPATHL hpth);
 static void _RegisterDropSnapshot(const HPATHL hpth);
@@ -3771,16 +3772,6 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     //~UpdateUI(); //~ recursion
     
     return FALSE;
-}
-
-
-//=============================================================================
-//
-//  UpdateContentArea()
-//
-void UpdateContentArea()
-{
-    Sci_ForceNotifyUpdateUI(Globals.hwndMain, IDC_EDIT);
 }
 
 
@@ -8514,11 +8505,6 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     switch(iLoWParam) {
 
-    case SCEN_CHANGE:
-        EditUpdateVisibleIndicators();
-        MarkAllOccurrences(-1, false);
-        return FALSE;
-
     case IDT_TIMER_UPDATE_STATUSBAR:
         _UpdateStatusbarDelayed((bool)lParam);
         return FALSE;
@@ -8541,6 +8527,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case IDT_TIMER_UNDO_TRANSACTION:
         _SplitUndoTransaction();
+        return FALSE;
+
+    case IDT_TIMER_UPDATE_INDIC:
+        EditUpdateVisibleIndicators();
         return FALSE;
 
     default:
@@ -8890,7 +8880,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                 CHAR chCallTip[MIDSZ_BUFFER] = { L'\0' };
 
                 size_t cch = 0;
-                if (StrStrIA(chScheme, "file:") == chScheme) {
+                if (StrStrIA_UTF8(chScheme, "file:") == chScheme) {
 
                     WCHAR wchUrl[INTERNET_MAX_URL_LENGTH] = { L'\0' };
 
@@ -9848,12 +9838,14 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
 
     case SCN_MODIFIED: {
         /// bModified = set in _MsgNotifyLean() !
+        /// NOTE: Mark-Occurrences/visible-indicator refresh and margin-width
+        /// update are intentionally NOT done here on every single rapid
+        /// SCN_MODIFIED event anymore. Since Scintilla 5.6.6, SCN_UPDATEUI
+        /// carries coalesced SC_UPDATE_TEXT / SC_UPDATE_LINE_COUNT flags that
+        /// fire once per UI-update cycle instead of once per raw edit (see
+        /// SCN_UPDATEUI case below) - cheaper for multi-cursor / bulk edits.
         if (bModified) {
             int const iModType = scn->modificationType;
-            if (IsMarkOccurrencesEnabled()) {
-                MarkAllOccurrences(-1, true);
-            }
-            EditUpdateVisibleIndicators();
             if (scn->linesAdded != 0) {
                 EditBookmarkAdjustNavigation(SciCall_LineFromPosition(scn->position), scn->linesAdded);
                 if (Settings.SplitUndoTypingSeqOnLnBreak && (scn->linesAdded > 0)) {
@@ -9861,7 +9853,6 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
                         _SplitUndoTransaction();
                     }
                 }
-                UpdateMargins(false);
             }
             if (s_bInMultiEditMode && !(iModType & SC_MULTILINEUNDOREDO)) {
                 if (!Sci_IsMultiSelection()) {
@@ -9919,12 +9910,14 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
             if (Settings.MatchBraces) {
                 EditMatchBrace(Globals.hwndEdit);
             }
+            bool bMarkOccUpdated = false;
             if (iUpd & SC_UPDATE_SELECTION) {
                 // clear marks only, if selection changed
                 if (IsMarkOccurrencesEnabled()) {
                     bool const bValidSel = !SciCall_IsSelectionEmpty() && !Sci_IsMultiOrRectangleSelection();
                     if (bValidSel || Settings.MarkOccurrencesCurrentWord) {
                         MarkAllOccurrences(-1, true);
+                        bMarkOccUpdated = true;
                     } else {
                         if (Globals.iMarkOccurrencesCount) {
                             EditClearAllOccurrenceMarkers(Globals.hwndEdit);
@@ -9937,12 +9930,30 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
                     UpdateToolbar();
                 }
             }
-            if (iUpd & SC_UPDATE_CONTENT) {
+            // Scintilla 5.6.6+: coalesced per-UI-update text/line-count refresh,
+            // replacing the former per-edit work in the rapid SCN_MODIFIED handler.
+            if (iUpd & SC_UPDATE_TEXT) {
+                if (!bMarkOccUpdated && IsMarkOccurrencesEnabled()) {
+                    MarkAllOccurrences(-1, true);
+                }
+                // Scintilla 5.6.6 delivers scn->position = earliest changed
+                // position since the last SCN_UPDATEUI. Skip the (regex-heavy)
+                // visible-hotspot refresh when that change lies entirely below
+                // the visible viewport (it cannot affect on-screen indicators).
+                DocPos const chgPos = scn->position;
+                DocLn const iLastVisLn = min_ln(SciCall_DocLineFromVisible(SciCall_GetFirstVisibleLine()) + SciCall_LinesOnScreen(), Sci_GetLastDocLineNumber());
+                DocPos const iLastVisPos = SciCall_GetLineEndPosition(iLastVisLn);
+                if ((chgPos < 0) || (chgPos <= iLastVisPos)) {
+                    _DelayUpdateVisibleIndicators(_MQ_FAST);
+                }
+            }
+            if (iUpd & SC_UPDATE_LINE_COUNT) {
                 UpdateMargins(false);
+            }
+            if (iUpd & SC_UPDATE_CONTENT) {
                 UpdateTitlebar(Globals.hwndMain);
-                //~ Style and Marker are out of scope here => using WM_COMMAND -> SCEN_CHANGE  instead!
-                //~MarkAllOccurrences(-1, false);
-                //~EditUpdateVisibleIndicators(); // will lead to recursion
+                //~ Style and Marker are handled via the SC_UPDATE_TEXT branch above
+                //~ (command events are disabled: SciCall_SetCommandEvents(false)).
             }
             UpdateStatusbar(false);
 
@@ -9951,7 +9962,7 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
             if (IsMarkOccurrencesEnabled() && Settings.MarkOccurrencesMatchVisible) {
                 MarkAllOccurrences(-1, false);
             }
-            EditUpdateVisibleIndicators();
+            _DelayUpdateVisibleIndicators(_MQ_FAST);
         }
     }
     break;
@@ -10953,6 +10964,20 @@ static void _DelaySplitUndoTransaction(const LONG64 delay)
 
 //=============================================================================
 //
+//  _DelayUpdateVisibleIndicators()
+//  Coalesce the (synchronous, regex-heavy) visible-hotspot indicator refresh
+//  through the delay queue, so rapid SCN_UPDATEUI(SC_UPDATE_TEXT) and
+//  SC_UPDATE_V_SCROLL bursts collapse into a single scan per idle window.
+//
+static void _DelayUpdateVisibleIndicators(const LONG64 delay)
+{
+    CmdMessageQueue_t mqc = MQ_WM_CMD_INIT(Globals.hwndMain, IDT_TIMER_UPDATE_INDIC, 0LL);
+    _MQ_AppendCmd(&mqc, _MQ_ms2cycl(delay));
+}
+
+
+//=============================================================================
+//
 //  MarkAllOccurrences()
 //
 void MarkAllOccurrences(const LONG64 delay, const bool bForceClear)
@@ -11234,7 +11259,7 @@ static double _InterpMultiSelectionTinyExpr(te_int_t* piExprError)
         DocPos const posSelEnd = SciCall_GetSelectionNEnd(i);
         size_t const cchToCopy = (size_t)(posSelEnd - posSelStart);
         StringCchCopyNA(tmpRectSelN, _tmpBufCnt, SciCall_GetRangePointer(posSelStart, (DocPos)cchToCopy), cchToCopy);
-        StrTrimA(tmpRectSelN, " ");
+        StrTrimUTF8(tmpRectSelN, " ");
 
         if (!StrIsEmptyA(tmpRectSelN)) {
             char tmpNumber[_tmpBufCnt] = { '\0' };
@@ -11557,7 +11582,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
                     SciCall_GetSelText(chSeBuf);
                     //~StrDelChrA(chExpression, " \r\n\t\v");
                     StrDelChrA(chSeBuf, "\r\n");
-                    StrTrimA(chSeBuf, "= ?");
+                    StrTrimUTF8(chSeBuf, "= ?");
 
                     char const defchar = (char)0x24;
                     MultiByteToWideChar(Encoding_SciCP, 0, chSeBuf, -1, wchSelBuf, LARGE_BUFFER);
