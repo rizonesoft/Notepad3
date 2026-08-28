@@ -5894,13 +5894,13 @@ void EditSortLines(HWND hwnd, int iSortFlags)
         SciCall_GetLine_Safe(iLn, pmsz);
 
         if (iSortFlags & SORT_REMWSPACELN) {
-            StrTrimA(pmsz, "\t\v \r\n"); // try clean line
+            StrTrimUTF8(pmsz, "\t\v \r\n"); // try clean line
             if (StrIsEmptyA(pmsz)) {
                 // blank (white-space only) - remove
                 continue;
             }
         }
-        StrTrimA(pmsz, "\r\n"); // ignore line-breaks
+        StrTrimUTF8(pmsz, "\r\n"); // ignore line-breaks
 
         int const cchw = MultiByteToWideChar(Encoding_SciCP, 0, pmsz, -1, NULL, 0);
         if (cchw > 1) {
@@ -6009,7 +6009,7 @@ void EditSortLines(HWND hwnd, int iSortFlags)
 
     // Handle empty (no whitespace or other char) lines (always at the end)
     if (!(iSortFlags & SORT_REMDUP) || (iZeroLenLineCount == 0)) {
-        StrTrimA(pmszResOffset, "\r\n"); // trim end only
+        StrTrimUTF8(pmszResOffset, "\r\n"); // trim end only
     }
     if (((iSortFlags & SORT_REMDUP) && (iZeroLenLineCount > 1)) || (iSortFlags & SORT_UNITEDUP)) {
         iZeroLenLineCount = 1; // removes duplicate empty lines

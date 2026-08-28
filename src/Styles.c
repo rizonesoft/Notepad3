@@ -3088,7 +3088,7 @@ bool Style_SetLexerFromFile(HWND hwnd, const HPATHL hpath)
         if (!Flags.NoCGIGuess && (StrCmpIW(wchMode, L"cgi") == 0 || StrCmpIW(wchMode, L"fcgi") == 0)) {
             char tchText[256] = { '\0' };
             SciCall_GetText(COUNTOF(tchText) - 1, tchText);
-            StrTrimA(tchText," \t\n\r");
+            StrTrimUTF8(tchText," \t\n\r");
             pLexSniffed = Style_SniffShebang(tchText);
             if (pLexSniffed) {
                 if ((Encoding_GetCurrent() != Globals.DOSEncoding) || !IsLexerStandard(pLexSniffed) || (
@@ -3135,7 +3135,7 @@ bool Style_SetLexerFromFile(HWND hwnd, const HPATHL hpath)
         if (!Flags.NoCGIGuess && (StringCchCompareXI(lpszExt,L"cgi") == 0 || StringCchCompareXI(lpszExt,L"fcgi") == 0)) {
             char tchText[256] = { '\0' };
             SciCall_GetText(COUNTOF(tchText) - 1, tchText);
-            StrTrimA(tchText," \t\n\r");
+            StrTrimUTF8(tchText," \t\n\r");
             pLexSniffed = Style_SniffShebang(tchText);
             if (pLexSniffed) {
                 pLexNew = pLexSniffed;
@@ -3156,7 +3156,7 @@ bool Style_SetLexerFromFile(HWND hwnd, const HPATHL hpath)
     if (!bFound && s_bAutoSelect && (!Flags.NoHTMLGuess || !Flags.NoCGIGuess)) {
         char tchText[512] = { '\0' };
         SciCall_GetText(COUNTOF(tchText) - 1, tchText);
-        StrTrimA(tchText," \t\n\r");
+        StrTrimUTF8(tchText," \t\n\r");
         if (!Flags.NoCGIGuess) {
             if (tchText[0] == '<') {
                 if (StrStrIA(tchText, "<html")) {

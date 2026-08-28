@@ -495,12 +495,14 @@ void  Path_CanonicalizeWithDocAnchor(HPATHL hpth);
 bool StrLTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars);
 bool StrRTrimI(LPWSTR pszSource,LPCWSTR pszTrimChars);
 
+bool StrTrimUTF8(LPSTR psz, LPCSTR pszTrimChars);
+
 static inline bool TrimSpcA(LPSTR lpString)
 {
     if (!lpString || !*lpString) {
         return false;
     }
-    return (bool)StrTrimA(lpString, " \t\v");
+    return StrTrimUTF8(lpString, " \t\v");
 };
 
 static inline bool TrimSpcW(LPWSTR lpString)

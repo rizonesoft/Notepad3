@@ -876,6 +876,46 @@ bool StrRTrimI(LPWSTR pszSource, LPCWSTR pszTrimChars)
 }
 
 
+//=============================================================================
+//
+//  StrTrimUTF8()
+//
+//  Code-page independent in-place replacement for StrTrimA() on UTF-8 buffers.
+//  StrTrimA() is DBCS-aware and walks the string via the process ANSI code page
+//  (CharNextA). On a DBCS system ANSI code page (e.g. CP-936/932/949/950) a UTF-8
+//  trail byte can be mistaken for a lead byte and "swallow" a following \r/\n,
+//  so trailing EOLs are not stripped (issue #5963: "Sort Lines" inserts blank
+//  lines). All our trim characters are ASCII (< 0x80) and every UTF-8 non-ASCII
+//  byte is >= 0x80, so a plain byte-wise trim can never partially match a
+//  multibyte sequence and is correct regardless of the system locale.
+//
+bool StrTrimUTF8(LPSTR psz, LPCSTR pszTrimChars)
+{
+    if (!psz || !*psz || !pszTrimChars) {
+        return false;
+    }
+
+    size_t const orgLen = StringCchLenA(psz, 0);
+
+    LPSTR start = psz;
+    while (*start && ((unsigned char)*start < 0x80) && StrChrA(pszTrimChars, *start)) {
+        ++start;
+    }
+
+    LPSTR end = start + StringCchLenA(start, 0);
+    while ((end > start) && ((unsigned char)end[-1] < 0x80) && StrChrA(pszTrimChars, end[-1])) {
+        --end;
+    }
+    *end = '\0';
+
+    size_t const newLen = (size_t)(end - start);
+    if (start != psz) {
+        MoveMemory(psz, start, newLen + 1);
+    }
+    return (newLen != orgLen);
+}
+
+
 #if 0
 
 //=============================================================================

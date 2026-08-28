@@ -11259,7 +11259,7 @@ static double _InterpMultiSelectionTinyExpr(te_int_t* piExprError)
         DocPos const posSelEnd = SciCall_GetSelectionNEnd(i);
         size_t const cchToCopy = (size_t)(posSelEnd - posSelStart);
         StringCchCopyNA(tmpRectSelN, _tmpBufCnt, SciCall_GetRangePointer(posSelStart, (DocPos)cchToCopy), cchToCopy);
-        StrTrimA(tmpRectSelN, " ");
+        StrTrimUTF8(tmpRectSelN, " ");
 
         if (!StrIsEmptyA(tmpRectSelN)) {
             char tmpNumber[_tmpBufCnt] = { '\0' };
@@ -11582,7 +11582,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
                     SciCall_GetSelText(chSeBuf);
                     //~StrDelChrA(chExpression, " \r\n\t\v");
                     StrDelChrA(chSeBuf, "\r\n");
-                    StrTrimA(chSeBuf, "= ?");
+                    StrTrimUTF8(chSeBuf, "= ?");
 
                     char const defchar = (char)0x24;
                     MultiByteToWideChar(Encoding_SciCP, 0, chSeBuf, -1, wchSelBuf, LARGE_BUFFER);

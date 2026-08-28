@@ -879,7 +879,7 @@ extern "C" bool FileVars_ParseInt(const char* pszData, const char* pszName, int*
             pvEnd++;
         }
         *pvEnd = 0;
-        StrTrimA(tch, " \t:=\"'");
+        StrTrimUTF8(tch, " \t:=\"'");
 
         int itok = sscanf_s(tch, "%i", piValue);
         if (itok == 1) {
@@ -940,7 +940,7 @@ extern "C" bool FileVars_ParseStr(const char* pszData, const char* pszName, char
         }
         *pvEnd = 0;
 
-        StrTrimA(tch, " \t:=\"'");
+        StrTrimUTF8(tch, " \t:=\"'");
 
         StringCchCopyNA(pszValue, cchValue, tch, COUNTOF(tch));
 
