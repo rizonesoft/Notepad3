@@ -8880,7 +8880,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid)
                 CHAR chCallTip[MIDSZ_BUFFER] = { L'\0' };
 
                 size_t cch = 0;
-                if (StrStrIA(chScheme, "file:") == chScheme) {
+                if (StrStrIA_UTF8(chScheme, "file:") == chScheme) {
 
                     WCHAR wchUrl[INTERNET_MAX_URL_LENGTH] = { L'\0' };
 

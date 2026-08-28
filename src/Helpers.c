@@ -56,21 +56,6 @@ void DbgLog(const wchar_t *fmt, ...)
 //
 //  Cut of substrings defined by pattern
 //
-CHAR* StrCutIA(CHAR* s,const CHAR* pattern)
-{
-    CHAR* p = NULL;
-    do {
-        p = StrStrIA(s,pattern);
-        if (p) {
-            CHAR* q = p + StringCchLenA(pattern,0);
-            while (*p != '\0') {
-                *p++ = *q++;
-            }
-        }
-    } while (p);
-    return s;
-}
-
 WCHAR* StrCutIW(WCHAR* s,const WCHAR* pattern)
 {
     WCHAR* p = NULL;
@@ -142,20 +127,6 @@ bool StrDelChrW(LPWSTR pszSource, LPCWSTR pCharsToRemove)
 //
 //  Find next token in string
 //
-CHAR* StrNextTokA(CHAR* strg, const CHAR* tokens)
-{
-    CHAR* n = NULL;
-    const CHAR* t = tokens;
-    while (t && *t) {
-        CHAR* const f = StrChrA(strg, *t);
-        if (!n || (f && (f < n))) {
-            n = f;
-        }
-        ++t;
-    }
-    return n;
-}
-
 WCHAR* StrNextTokW(WCHAR* strg, const WCHAR* tokens)
 {
     WCHAR* n = NULL;
@@ -913,6 +884,46 @@ bool StrTrimUTF8(LPSTR psz, LPCSTR pszTrimChars)
         MoveMemory(psz, start, newLen + 1);
     }
     return (newLen != orgLen);
+}
+
+
+//=============================================================================
+//
+//  StrStrIA_UTF8()
+//
+//  Code-page independent, byte-wise, ASCII case-insensitive substring search
+//  for UTF-8 buffers. shlwapi's StrStrIA()/StrStrA()/StrChrA() walk the haystack
+//  with DBCS character boundaries via the process ANSI code page, so on a DBCS
+//  ACP (CP-936/932/949/950) a UTF-8 lead/continuation byte can be mistaken for a
+//  DBCS lead byte and hide a following ASCII byte, corrupting the match (same
+//  root cause as issue #5963). UTF-8 is self-synchronizing: an ASCII byte (<0x80)
+//  never appears inside a multibyte sequence, so a byte-wise search with an ASCII
+//  needle is correct on any locale. Case folding is applied to ASCII letters only.
+//
+char* StrStrIA_UTF8(const char* pszSource, const char* pszSub)
+{
+    if (!pszSource || !pszSub) {
+        return NULL;
+    }
+    if (!*pszSub) {
+        return (char*)pszSource;
+    }
+    for (const char* s = pszSource; *s; ++s) {
+        const char* a = s;
+        const char* b = pszSub;
+        while (*a && *b) {
+            unsigned char ca = (unsigned char)*a;
+            unsigned char cb = (unsigned char)*b;
+            if ((ca >= 'A') && (ca <= 'Z')) { ca += 32; }
+            if ((cb >= 'A') && (cb <= 'Z')) { cb += 32; }
+            if (ca != cb) { break; }
+            ++a; ++b;
+        }
+        if (!*b) {
+            return (char*)s;
+        }
+    }
+    return NULL;
 }
 
 

@@ -3706,14 +3706,14 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
     bool bPrefixNum = false;
 
     if (!StrIsEmptyA(mszPrefix1)) {
-        char* p = StrStrA(mszPrefix1, EXPR_BEG);
+        char* p = strstr(mszPrefix1, EXPR_BEG);
         while (!bPrefixNum && p) {
             char* q = p + CONSTSTRGLEN(EXPR_BEG);
             char* t = q;
-            q = StrStrA(q, EXPR_END);
+            q = strstr(q, EXPR_END);
             if (q) {
                 bPrefixNum = true;
-                pszPrefixNumPad[0] = StrStrA(p, EXPR_BEG0) ? '0' : '\0';
+                pszPrefixNumPad[0] = strstr(p, EXPR_BEG0) ? '0' : '\0';
                 if (pszPrefixNumPad[0] == '0') {
                     ++t;
                 }
@@ -3721,7 +3721,7 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
                 StringCchCopyA(mszTinyExprPre, COUNTOF(mszTinyExprPre), t);
                 StringCchCopyA(mszPrefix2, COUNTOF(mszPrefix2), q + CONSTSTRGLEN(EXPR_END));
                 *p = '\0'; // mszPrefix1 terminate
-                p = StrStrA(q, EXPR_BEG); // next
+                p = strstr(q, EXPR_BEG); // next
             }
             else {
                 p = NULL; // err
@@ -3732,14 +3732,14 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
     bool  bAppendNum = false;
 
     if (!StrIsEmptyA(mszAppend1)) {
-        char* p = StrStrA(mszAppend1, EXPR_BEG);
+        char* p = strstr(mszAppend1, EXPR_BEG);
         while (!bAppendNum && p) {
             char* q = p + CONSTSTRGLEN(EXPR_BEG);
             char* t = q;
-            q = StrStrA(q, EXPR_END);
+            q = strstr(q, EXPR_END);
             if (q) {
                 bAppendNum = true;
-                pszAppendNumPad[0] = StrStrA(p, EXPR_BEG0) ? '0' : '\0';
+                pszAppendNumPad[0] = strstr(p, EXPR_BEG0) ? '0' : '\0';
                 if (pszAppendNumPad[0] == '0') {
                     ++t;
                 }
@@ -3747,7 +3747,7 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
                 StringCchCopyA(mszTinyExprPost, COUNTOF(mszTinyExprPost), t);
                 StringCchCopyA(mszAppend2, COUNTOF(mszAppend2), q + CONSTSTRGLEN(EXPR_END));
                 *p = '\0'; // mszAppend1 terminate
-                p = StrStrA(q, EXPR_BEG); // next
+                p = strstr(q, EXPR_BEG); // next
             }
             else {
                 p = NULL; // err
@@ -4843,7 +4843,7 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
                         len = (selTargetEnd - selTargetStart);
                         if (len > 0) {
                             StringCchCopyNA(lineBuffer, SizeOfMem(lineBuffer), SciCall_GetRangePointer(selTargetStart, len + 1), len);
-                            DocPos end = (DocPos)StrCSpnA(lineBuffer, "\r\n");
+                            DocPos end = (DocPos)strcspn(lineBuffer, "\r\n");
                             DocPos i = end;
                             while (--i >= 0) {
                                 const char ch = lineBuffer[i];
@@ -8609,7 +8609,7 @@ static __forceinline const char*  _strNextLexKeyWord(const char* strg, const cha
     bool found = false;
     const char* start = strg;
     do {
-        start = StrStrIA(start, wdroot);
+        start = StrStrIA_UTF8(start, wdroot);
         if (start) {
             if ((start == strg) || (start[-1] == sep)) { // word begin
                 found = true;

@@ -3159,7 +3159,7 @@ bool Style_SetLexerFromFile(HWND hwnd, const HPATHL hpath)
         StrTrimUTF8(tchText," \t\n\r");
         if (!Flags.NoCGIGuess) {
             if (tchText[0] == '<') {
-                if (StrStrIA(tchText, "<html")) {
+                if (StrStrIA_UTF8(tchText, "<html")) {
                     pLexNew = &lexHTML;
                 } else {
                     pLexNew = &lexXML;

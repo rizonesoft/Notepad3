@@ -587,13 +587,13 @@ static void _ParseVimModeline(const char* buffer, LPFILEVARS lpfv)
     const char* mlStart = NULL;
     for (int m = 0; m < (int)COUNTOF(markers) && !mlStart; ++m) {
         size_t const mLen = StringCchLenA(markers[m], 0);
-        const char* p = StrStrIA(buffer, markers[m]);
+        const char* p = StrStrIA_UTF8(buffer, markers[m]);
         while (p) {
             if (p == buffer || p[-1] == ' ' || p[-1] == '\t') {
                 mlStart = p + mLen;
                 break;
             }
-            p = StrStrIA(p + 1, markers[m]);
+            p = StrStrIA_UTF8(p + 1, markers[m]);
         }
     }
     if (!mlStart) {
@@ -849,7 +849,7 @@ extern "C" bool FileVars_Apply(LPFILEVARS lpfv)
 extern "C" bool FileVars_ParseInt(const char* pszData, const char* pszName, int* piValue)
 {
 
-    char* pvStart = StrStrIA(pszData, pszName);
+    char* pvStart = StrStrIA_UTF8(pszData, pszName);
     while (pvStart) {
         char chPrev = (pvStart > pszData) ? *(pvStart - 1) : 0;
         if (!IsCharAlphaNumericA(chPrev) && chPrev != '-' && chPrev != '_') {
@@ -863,7 +863,7 @@ extern "C" bool FileVars_ParseInt(const char* pszData, const char* pszName, int*
         } else {
             pvStart += StringCchLenA(pszName, 0);
         }
-        pvStart = StrStrIA(pvStart, pszName); // next
+        pvStart = StrStrIA_UTF8(pvStart, pszName); // next
     }
 
     if (pvStart) {
@@ -905,7 +905,7 @@ extern "C" bool FileVars_ParseInt(const char* pszData, const char* pszName, int*
 extern "C" bool FileVars_ParseStr(const char* pszData, const char* pszName, char* pszValue, int cchValue)
 {
 
-    const char* pvStart = StrStrIA(pszData, pszName);
+    const char* pvStart = StrStrIA_UTF8(pszData, pszName);
     while (pvStart) {
         char chPrev = (pvStart > pszData) ? *(pvStart - 1) : 0;
         if (!IsCharAlphaNumericA(chPrev) && chPrev != '-' && chPrev != '_') {
@@ -919,7 +919,7 @@ extern "C" bool FileVars_ParseStr(const char* pszData, const char* pszName, char
         } else {
             pvStart += StringCchLenA(pszName, 0);
         }
-        pvStart = StrStrIA(pvStart, pszName);  // next
+        pvStart = StrStrIA_UTF8(pvStart, pszName);  // next
     }
 
     if (pvStart) {
