@@ -285,7 +285,7 @@ BEGIN
             MENUITEM "Invertera omvända snedstreck",                IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Invertera snedstreck",                        IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
-            MENUITEM "Tecken till Hex\tCtrl+Alt+X",                 IDM_EDIT_CHAR2HEX
+            MENUITEM "Tecken till hex\tCtrl+Alt+X",                 IDM_EDIT_CHAR2HEX
             MENUITEM "Hex till tecken\tCtrl+Alt+C",                 IDM_EDIT_HEX2CHAR
         END
         POPUP "Infoga"
