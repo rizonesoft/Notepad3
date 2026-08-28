@@ -6,11 +6,11 @@
 
 ## Epics (high effort)
 
-- [ ] **(Q3) SVG Toolbar Icons** - Resolution-independent toolbar with dark/light mode
+- [X] **(Q3) SVG Toolbar Icons** - Resolution-independent toolbar with dark/light mode
   - Auto-adapts to any DPI (100%-300%)
   - Dark/light mode color switching
   - Keep classic bitmap as fallback (ToolBarTheme 0/1)
-  - Issues: [#5471](https://github.com/rizonesoft/Notepad3/issues/5471), [#5090](https://github.com/rizonesoft/Notepad3/issues/5090), [#4631](https://github.com/rizonesoft/Notepad3/issues/4631) (DPI scaling), [#5316](https://github.com/rizonesoft/Notepad3/issues/5316) (dark mode readability), [#5390](https://github.com/rizonesoft/Notepad3/issues/5390) (encrypted dialog)
+  - Issues: [#5471](https://github.com/rizonesoft/Notepad3/issues/5471), [#5090](https://github.com/rizonesoft/Notepad3/issues/5090), [#4631](https://github.com/rizonesoft/Notepad3/issues/4631) (DPI scaling), [#5316](https://github.com/rizonesoft/Notepad3/issues/5316) (dark mode readability) - ✅ FIXED, [#5390](https://github.com/rizonesoft/Notepad3/issues/5390) (encrypted dialog) - ✅ FIXED
   - See [research/svg-toolbar.md](research/svg-toolbar.md)
 
 - [/] **(Q3) Autosave / Backup** - ✅ **PARTIALLY IMPLEMENTED**
@@ -31,7 +31,7 @@
   - Support: indent_style, indent_size, tab_width, end_of_line, charset
   - See [research/editorconfig-integration.md](research/editorconfig-integration.md)
 
-- [ ] **(Q3) Windows Spell Checker** - Spellcheck via Windows API
+- [ ] **(Q3) Windows Spell Checker** - Spellcheck via Windows API - ✅ WON'T CHANGE
   - Issue: [#5157](https://github.com/rizonesoft/Notepad3/issues/5157)
 
 - [ ] **(Q3) Scrollbar Marks** - Highlights in scrollbar (search matches, bookmarks)
@@ -41,7 +41,7 @@
   - Architectural: extension API surface, lifetime, sandboxing
 
 - [ ] **(Q3) Code Compress/Pretty** - Minify/beautify code
-  - Issue: [#5515](https://github.com/rizonesoft/Notepad3/issues/5515) - JSON format, compress, escape/unescape
+  - Issue: [#5515](https://github.com/rizonesoft/Notepad3/issues/5515) - JSON format, compress, escape/unescape - ✅ WON'T CHANGE
   - Issue: [#1790](https://github.com/rizonesoft/Notepad3/issues/1790) - Call external formatter per scheme
   - Issue: [#2839](https://github.com/rizonesoft/Notepad3/issues/2839) - Tidy HTML/XML
   - (Maybe) Run Scripts: [#4045](https://github.com/rizonesoft/Notepad3/issues/4045) - Execute Python/Perl
@@ -75,15 +75,15 @@
   - Fixes crash on Windows Server 2022 (STATUS_STACK_BUFFER_OVERRUN in ntdll.dll)
   - See [research/server2022-file-dialog-crash.md](research/server2022-file-dialog-crash.md)
   - [ ] **Test on Windows Server 2022 and higer** - ⚠ Validation❗
-- [x] **(Q1) BUG: Cannot save settings without folder** - ✅ FIXED
+- [x] **(Q1) BUG: Cannot save settings without folder**
   - Issue: [#5075](https://github.com/rizonesoft/Notepad3/issues/5075)
   - Fix: Changed `CreateDirectoryW` to `SHCreateDirectoryExW` to create all intermediate directories
-- [ ] **(Q2) BUG: Replace dialog full-width caching** - Second replace uses wrong character
+- [x] **(Q2) BUG: Replace dialog full-width caching** - Second replace uses wrong character - ✅ FIXED
   - Issue: [#4268](https://github.com/rizonesoft/Notepad3/issues/4268)
-  - CJK full-width replacement cached incorrectly
+  - CJK full-width replacement cached incorrectly - ✅ FIXED
 - [x] **(Q2) BUG: Initial window position not working** - Position settings ignored - ✅ IMPLEMENTED
   - Issue: [#4725](https://github.com/rizonesoft/Notepad3/issues/4725)
-  - [ ] **To be analyzed - works as designed ???** - ⚠ Validation ❗
+  - [ ] **To be analyzed - works as designed ???** - ✅ FIXED
 - [ ] **(Q2) BUG: Minipath options don't save** - FullRowSelect/TrackSelect broken
   - Issue: [#4116](https://github.com/rizonesoft/Notepad3/issues/4116)
 - [x] **(Q1) BUG: Monitoring log not saved** - ✅ FIXED
@@ -95,7 +95,7 @@
   - Issue: [#5134](https://github.com/rizonesoft/Notepad3/issues/5134)
 - [x] **(Q3) BUG: Multiple file positions not saved** - Only last file's bookmarks/caret preserved - ✅ FIXED
   - Issue: [#5151](https://github.com/rizonesoft/Notepad3/issues/5151) - ✅ DELEGATED (using grepWin orig)
-- [x] **(Q3) BUG: grepWinNP3 crash** - Right-click search results crashes - ⚠ Validation❗
+- [x] **(Q3) BUG: grepWinNP3 crash** - Right-click search results crashes - ✅ IMPLEMENTED
   - Issue: [#5158](https://github.com/rizonesoft/Notepad3/issues/5158)
 - [x] **(Q2) BUG: PHP comment toggle** - Ctrl+Q not working in Web Source Code - ✅ FIXED
   - Issue: [#5163](https://github.com/rizonesoft/Notepad3/issues/5163)
@@ -105,9 +105,9 @@
   - Issue: [#5223](https://github.com/rizonesoft/Notepad3/issues/5223)
   - Fix: Forward `WM_SETTINGCHANGE` to Scintilla to refresh cached scroll parameters
 - [x] **(Q2) BUG: File lock held too long on save** - Blocks FileSystemWatcher - ✅ IMPLEMENTED
-  - Issue: [#5301](https://github.com/rizonesoft/Notepad3/issues/5301) - ⚠ Validation❗
+  - Issue: [#5301](https://github.com/rizonesoft/Notepad3/issues/5301)
 - [x] **(Q2) BUG: Folder handle leak** - Can't rename/delete folders with opened files - ✅ IMPLEMENTED
-  - Issue: [#5342](https://github.com/rizonesoft/Notepad3/issues/5342) - ⚠ Validation❗
+  - Issue: [#5342](https://github.com/rizonesoft/Notepad3/issues/5342)
 - [x] **(Q1) BUG: Black line in Language menu** - ✅ FIXED
   - Issue: [#5361](https://github.com/rizonesoft/Notepad3/issues/5361)
   - Fix: Removed `WM_UAHNCPAINTMENUPOPUP` from message interception - was using wrong window handle
@@ -199,14 +199,14 @@
 
 - [ ] (Q1) Documentation updates
 - [x] **(Q2) Long Path Support** - Support paths >260 characters (Win10+) - ✅ FIXED
-  - Issue: [#3580](https://github.com/rizonesoft/Notepad3/issues/3580)  - ⚠ Validation ❗
+  - Issue: [#3580](https://github.com/rizonesoft/Notepad3/issues/3580)  - ✅ IMPLEMENTED
 
 - [ ] **(Q3) Additional Syntax Highlighting** - New language lexers
   - [ ] Haskell: [#3035](https://github.com/rizonesoft/Notepad3/issues/3035) - Lexilla `LexHaskell.cxx`
   - [ ] Racket: [#3035](https://github.com/rizonesoft/Notepad3/issues/3035) - Could use Lisp/Scheme lexer
   - [ ] OpenCL: [#5374](https://github.com/rizonesoft/Notepad3/issues/5374) - C-like with extra keywords
   - [ ] Verilog HDL: [#4108](https://github.com/rizonesoft/Notepad3/issues/4108) - Lexilla `LexVerilog.cxx`
-  - [x] JSON5: [#5411](https://github.com/rizonesoft/Notepad3/issues/5411) - ⚠ Validation ❗
+  - [x] JSON5: [#5411](https://github.com/rizonesoft/Notepad3/issues/5411) - ✅ IMPLEMENTED
   - [ ] SourcePawn: [#5430](https://github.com/rizonesoft/Notepad3/issues/5430) - SourceMod scripting
   - [ ] Groovy: [#5093](https://github.com/rizonesoft/Notepad3/issues/5093)
   - [ ] Swift, Zig, Scala, F#, WASM, Vim, OCaml, Smali, GraphViz, Rebol
@@ -226,14 +226,14 @@
   - Issue: [#5464](https://github.com/rizonesoft/Notepad3/issues/5464)
   - Don't include trailing `'` when URL is quoted
 - [x] **(Q3) Display Hidden Characters** - Show invisible/control characters - ✅ IMPLEMENTED
-  - Issue: [#5035](https://github.com/rizonesoft/Notepad3/issues/5035) - Non-printing chars like Notepad++ - ⚠ Validation ❗
+  - Issue: [#5035](https://github.com/rizonesoft/Notepad3/issues/5035) - Non-printing chars like Notepad++ - ✅ IMPLEMENTED
   - Issue: [#5496](https://github.com/rizonesoft/Notepad3/issues/5496) - ⚠ Validation ❗
   - Scintilla `SCI_SETREPRESENTATION` for custom char display
 - [ ] **(Q2) Trailing Whitespace Highlighting** - Distinct style for trailing blanks
   - Issue: [#1913](https://github.com/rizonesoft/Notepad3/issues/1913)
 - [ ] **(Q3) Enhanced Auto-Complete** - Language-aware auto-complete triggers
 - [x] **(Q3) Auto-Pair Brackets** - Auto-close `()`, `[]`, `{}`, `""`, `''`
-  - [x] Issue: [#4149](https://github.com/rizonesoft/Notepad3/issues/4149)
+  - [x] Issue: [#4149](https://github.com/rizonesoft/Notepad3/issues/4149) - ✅ FIXED
   - [ ] Issue: [#5285](https://github.com/rizonesoft/Notepad3/issues/5285) - Smart auto-dedent on closing bracket
     - this will be out of scope, if not supported by lexers itself
 - [ ] **(Q3) Custom Keyboard Shortcuts** - User-configurable shortcut keys
@@ -257,7 +257,7 @@
 - [x] **(Q2) Base64 Encode/Decode** - ✅ IMPLEMENTED via `IDM_EDIT_BASE64ENCODE/DECODE`
 - [x] **(Q1) Insert Unicode Control Characters** - LRM, RLM, ZWJ, ZWNJ, etc.
 - [x] **(Q2) Number Base Conversion** - Binary/Decimal/Octal/Hex - ✅ IMPLEMENTED
-  - Issue: [#5059](https://github.com/rizonesoft/Notepad3/issues/5059) - TinyExpr output in hex/binary - ⚠ Validation ❗
+  - Issue: [#5059](https://github.com/rizonesoft/Notepad3/issues/5059) - TinyExpr output in hex/binary - ✅ IMPLEMENTED
 - [ ] **(Q2) Character Map Conversions** - Fullwidth↔Halfwidth, CJK transforms (`LCMapStringEx`)
 - [x] **(Q1) Insert GUID** - ✅ IMPLEMENTED via `IDM_EDIT_INSERT_GUID` (Ctrl+Shift+.)
 - [ ] **(Q1) Insert Shebang** - Insert interpreter line
@@ -271,7 +271,7 @@
 - [ ] **(Q3) Navigate Backward/Forward** - VS Code-like history navigation
   - Remark: maybe description of change-history navigation is a start.
 - [x] **(Q2) Brace Find Enhancement** - Search backward for nearest brace when not at one  - ✅ IMPLEMENTED
-  - Issue: [#4863](https://github.com/rizonesoft/Notepad3/issues/4863) - ⚠ Validation ❗
+  - Issue: [#4863](https://github.com/rizonesoft/Notepad3/issues/4863) - ✅ FIXED
 - [ ] **(Q2) Go to Block Start/End** - Jump to enclosing block
   - [x] Fixed by Bracket navigation, incl. Selection
   - [ ] No solution for Python-like "Block by Indent" navigation
@@ -292,12 +292,12 @@
 - [x] **(Q1) Disable Multiple Cursors Option** - ✅ IMPLEMENTED via `IDM_SET_MULTIPLE_SELECTION` toggle
   - Issue: [#4033](https://github.com/rizonesoft/Notepad3/issues/4033) - ✅ Resolved
 - [x] **(Q1) Scroll Past Last Line Options** - ✅ IMPLEMENTED via `Settings.ScrollPastEOF` (simple on/off, not multiple options)
-- [ ] **(Q2) Optimize Syntax Scheme Dialog** - Show detected scheme at top of list
+- [x] **(Q2) Optimize Syntax Scheme Dialog** - Show detected scheme at top of list - ✅ WON'T CHANGE
   - Issue: [#5302](https://github.com/rizonesoft/Notepad3/issues/5302)
 - [ ] **(Q1) Alphabetical Common Base Settings** - Sort scheme settings alphabetically
   - Issue: [#4627](https://github.com/rizonesoft/Notepad3/issues/4627)
 - [x] **(Q2) Find Dialog Position Persistence** - ✅ IMPLEMENTED via `FindReplaceDlgPosX/Y` saved to INI
-  - Issue: [#3905](https://github.com/rizonesoft/Notepad3/issues/3905) - ✅ Resolved
+  - Issue: [#3905](https://github.com/rizonesoft/Notepad3/issues/3905) - ✅ RESOLVED
 - [ ] **(Q2) Configurable Font Priority/Fallback List** - User-editable preferred Code/Text font chain
   - Issue: [#4611](https://github.com/rizonesoft/Notepad3/issues/4611)
   - Related: https://github.com/zufuliu/notepad4/issues/690
