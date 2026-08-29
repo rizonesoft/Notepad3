@@ -6,12 +6,12 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: grepWin\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 1900-01-01 00:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: 비너스걸-VenusGirl💋 <venusgirl@outlook.com>\n"
-"Language-Team: VᴇɴᴜsGɪʀʟ <https://venusgirls.tistory.com/>\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -36,32 +36,32 @@ msgstr ""
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
-msgstr "%ld개 더 많은 일치"
+msgstr "还有 %ld 个匹配"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
-msgstr "%path%는 파일 경로로, %line%는 점프할 줄로, %column%는 들여쓰기 오프셋으로, %pattern%는 검색 패턴으로 대체됩니다"
+msgstr "%path% 被替换为文件路径，%line% 替换为要跳转到的行，%column% 替换为行内偏移，%pattern% 替换为搜索字符串"
 
 #. Resource IDs: (175)
 #, c-format
 msgid "%s files, skipped %s files. %s results selected."
-msgstr "%s 파일, %s 파일을 건너뛰었습니다. %s 결과가 선택되었습니다."
+msgstr "%s 个文件，已跳过 %s 个文件。已选择 %s 个结果。"
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
-msgstr "grepWin 정보(&A)..."
+msgstr "关于 grepWin(&A)..."
 
 #. Resource IDs: (1061)
 msgid "&Convert newlines"
-msgstr "새 줄 변환(&C)"
+msgstr "转换换行(&C)"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
-msgstr "바꾸기(&R)"
+msgstr "替换(&R)"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr "전체 단어(&W)"
+msgstr "全字匹配(&W)"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -73,11 +73,11 @@ msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
-msgstr "<a href=\"https://tools.stefankueng.com\">웹사이트 방문</a>"
+msgstr "<a href=\"https://tools.stefankueng.com\">访问我们的网站</a>"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
-msgstr "<a>grepWin 정보</a>"
+msgstr "<a>关于 grepWin</a>"
 
 #. Resource IDs: (1086)
 msgid ">"
@@ -85,181 +85,181 @@ msgstr ">"
 
 #. Resource IDs: (135)
 msgid "About grepWin"
-msgstr "grepWinNP 정보 - 한국어 번역: 비너스걸"
+msgstr "关于 grepWin"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr "프리셋에 추가"
+msgstr "添至预置"
 
 #. Resource IDs: (155)
 msgid "All Files"
-msgstr "모든 파일"
+msgstr "所有文件"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr "모든 날짜"
+msgstr "所有日期"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
-msgstr "모든 크기"
+msgstr "所有大小"
 
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr "백업을 생성하지 않고\n%s\n을(를)\n%s로 바꾸시겠습니까?"
+msgstr "您确定想要将\n%s\n替换为\n%s\n而不创建备份吗？"
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr "다음 사이"
+msgstr "起止于"
 
 #. Resource IDs: (1095)
 msgid "Both"
-msgstr "둘 다"
+msgstr "两者"
 
 #. Resource IDs: (1093)
 msgid "CRLF (Windows)"
-msgstr "CRLF (Windows)"
+msgstr "CRLF（Windows）"
 
 #. Resource IDs: (2)
 msgid "Cancel"
-msgstr "취소"
+msgstr "取消"
 
 #. Resource IDs: (169)
 msgid "Capture search (Shows replaced text)"
-msgstr "검색 캡처 (대체된 텍스트 표시)"
+msgstr "捕获搜索（显示替换后的文本）"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr "업데이트 확인"
+msgstr "检查更新"
 
 #. Resource IDs: (180)
 msgid "Column"
-msgstr "열"
+msgstr "列"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr "명령줄을 사용하여 특정 줄과 줄 오프셋에서 편집기를 시작할 수 있습니다:"
+msgstr "在指定行和偏移启动编辑器的命令行："
 
 #. Resource IDs: (1060)
 msgid "Content"
-msgstr "내용"
+msgstr "内容"
 
 #. Resource IDs: (65535)
 msgid "Convert newlines to regex newline tags:"
-msgstr "새 줄을 새 줄 태그를 다시 생성하도록 변환합니다:"
+msgstr "将换行转换为正则换行标记："
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr "모든 항목에 대한 복사 열"
+msgstr "复制所有项目此列的内容"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr "선택한 항목의 열 복사"
+msgstr "复制选中项目此列的内容"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
-msgstr "클립보드에 파일 이름 복사"
+msgstr "复制文件名称到剪贴板"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr "클립보드에 파일 이름 복사"
+msgstr "复制文件名称到剪贴板"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr "클립보드에 경로 복사"
+msgstr "复制路径到剪贴板"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
-msgstr "클립보드에 경로 복사"
+msgstr "复制路径到剪贴板"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
-msgstr "클립보드에 텍스트 결과 복사"
+msgstr "复制文本结果到剪贴板"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
-msgstr "클립보드에 텍스트 결과 복사"
+msgstr "复制文本结果到剪贴板"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
-msgstr "백업 파일 생성"
+msgstr "创建备份文件"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
-msgstr "별도의 폴더에 백업 파일 생성"
+msgstr "在单独的文件夹创建备份文件"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr "어두운 모드"
+msgstr "暗黑模式"
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr "수정 일자"
+msgstr "修改日期"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr "백업을 생성하지 않고 교체할 때 경고하지 않음"
+msgstr "在不创建备份的情况下替换时不发出警告"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr "점 일치 새 줄"
+msgstr "点号匹配换行"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr "두 번 클릭하여 프리셋 선택"
+msgstr "双击选择一个预置"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
-msgstr "더미"
+msgstr "虚拟"
 
 #. Resource IDs: (1067)
 msgid "Editor"
-msgstr "편집기"
+msgstr "编辑器"
 
 #. Resource IDs: (138)
 msgid "Encoding"
-msgstr "인코딩"
+msgstr "编码"
 
 #. Resource IDs: (1056)
 msgid "Enter a name for the regex:"
-msgstr "정규식 이름 입력:"
+msgstr "为正则输入一个名称:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr "Esc키로 grepWin 닫기"
+msgstr "ESC 键关闭 grepWin"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr "제외할 경로 (정규식):"
+msgstr "排除文件夹（正则）："
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr "결과 목록 내보내기"
+msgstr "导出结果列表"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr "결과 내보내기..."
+msgstr "导出结果..."
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr "확장자"
+msgstr "文件扩展名"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "파일 이름 일치:\n'|'로 여러 텍스트 패턴을 구분하고, '-'를 앞에 붙여 제외합니다(&D)"
+msgstr "文件名称匹配：\n使用“|”分隔多个文本匹配规则，前置“-”用于排除(&D)"
 
 #. Resource IDs: (1059)
 msgid "Files"
-msgstr "파일"
+msgstr "文件"
 
 #. Resource IDs: (181)
 msgid "Filter results"
-msgstr "필터 결과"
+msgstr "过滤结果"
 
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %s files, skipped %s files."
-msgstr "%s 파일을 찾았습니다 %s 파일을 건너뜁니다."
+msgstr "已找到 %s 个文件，已跳过 %s 个文件。"
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -267,39 +267,43 @@ msgstr "GREPWIN"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "사용하는 경우 검색/바꾸는 폴더 내에 백업 폴더가 생성되고 파일이 해당 폴더에 백업됩니다"
+msgstr "如果启用，则将在要搜索/替换的文件夹内创建一个备份文件夹，并将文件备份到该文件夹。"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
-msgstr "바이너리 파일 포함"
+msgstr "包含二进制文件"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
-msgstr "숨겨진 항목 포함"
+msgstr "包含隐藏项目"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr "검색 경로 포함"
+msgstr "包括搜索路径"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
-msgstr "하위 폴더 포함"
+msgstr "包含子文件夹"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr "심볼릭 링크 포함"
+msgstr "包括符号链接"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr "시스템 항목 포함"
+msgstr "包含系统项目"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
-msgstr "잘못된 경로!"
+msgstr "无效路径！"
+
+#. Resource IDs: (183)
+msgid "Invalid search text"
+msgstr ""
 
 #. Resource IDs: (161)
 msgid "Inverse search"
-msgstr "역방향 검색"
+msgstr "反向搜索"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -307,244 +311,248 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr "교체 시 파일 날짜 유지"
+msgstr "替换时保留文件日期"
 
 #. Resource IDs: (1094)
 msgid "LF (Linux)"
-msgstr "LF (Linux)"
+msgstr "LF（Linux）"
 
 #. Resource IDs: (1075)
 msgid "Language:"
-msgstr "언어:"
+msgstr "语言："
 
 #. Resource IDs: (1017)
 msgid "Limit search"
-msgstr "검색 제한"
+msgstr "限制检索"
 
 #. Resource IDs: (134)
 msgid "Line"
-msgstr "줄"
+msgstr "行号"
 
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %s\n"
-msgstr "쥴 %5ld : %s\n"
+msgstr "行 %5ld : %s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
-msgstr "일치"
+msgstr "匹配"
 
 #. Resource IDs: (137)
 msgid "Multiline editor"
-msgstr "다중 줄 편집기"
+msgstr "多行编辑器"
 
 #. Resource IDs: (104)
 msgid "Name"
-msgstr "이름"
+msgstr "名称"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr "다음보다 최신"
+msgstr "晚于"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr "새 줄은 '.'로 일치"
+msgstr "换行会被“.”匹配"
 
 #. Resource IDs: (140)
 msgid "Newlines"
-msgstr "새 줄"
+msgstr "换行"
 
 #. Resource IDs: (1056)
 msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
-msgstr "참고: 텍스트의 개행은 무시되며 서식 지정에만 사용됩니다. 서식 개행을 적절한 정규식 개행으로 변환하려면 아래 버튼을 사용하세요."
+msgstr "注意：文本中的换行将被忽略，仅用于格式化。要将格式化的换行转换为正确的正则换行，请使用下方按钮。"
 
 #. Resource IDs: (1)
 msgid "OK"
-msgstr "확인"
+msgstr "确定"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr "다음보다 이전"
+msgstr "早于"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr "하나의 인스턴스만 허용"
+msgstr "仅单实例"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
-msgstr "내용이 있는 폴더 열기"
+msgstr "打开包含的文件夹"
 
 #. Resource IDs: (141)
 msgid "Open with Editor"
-msgstr "편집기로 열기"
+msgstr "使用编辑器打开"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
-msgstr "정규식을 테스트할 텍스트 붙여넣기:"
+msgstr "粘贴文本以测试正则:"
 
 #. Resource IDs: (137)
 msgid "Path"
-msgstr "경로"
+msgstr "路径"
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr "프리셋 이름"
+msgstr "预置名称"
 
 #. Resource IDs: (1022, 132)
 msgid "Presets"
-msgstr "프리셋"
+msgstr "预置"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr "도움말을 보려면 F1을 누르세요"
+msgstr "按 F1 键查看帮助"
 
 #. Resource IDs: (154)
 msgid "Programs"
-msgstr "프로그램"
+msgstr "应用程序"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
-msgstr "프리셋 이름 바꾸기(&N)"
+msgstr "重命名预置(&N)"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
-msgstr "정규식 검사"
+msgstr "正则测试"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "정규식 일치"
+msgstr "正则匹配"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr "정규식 문자열 바꾸기:"
+msgstr "正则替换字符串:"
 
 #. Resource IDs: (1001)
 msgid "Regex search"
-msgstr "정규식 검색"
+msgstr "正则搜索"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr "정규식 검색 문자열:"
+msgstr "正则搜索字符串:"
 
 #. Resource IDs: (179)
 msgid "Regex stack error"
-msgstr "정규식 스택 오류"
+msgstr "正则堆栈错误"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
-msgstr "상대 경로는 허용되지 않습니다. 절대 경로를 입력하세요!"
+msgstr "不允许使用相对路径。请输入一个绝对路径！"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr "프리셋 제거(&V)"
+msgstr "移除预置(&V)"
 
 #. Resource IDs: (106)
 msgid "Replace string"
-msgstr "문자열 바꾸기"
+msgstr "替换字符串"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "바꿀 문자열/\n캡쳐 형식:"
+msgstr "替换为/\n捕获格式："
 
 #. Resource IDs: (126)
 msgid "S&top"
-msgstr "중지(&T)"
+msgstr "停止(&T)"
 
 #. Resource IDs: (1, 1016)
 msgid "Search"
-msgstr "검색"
+msgstr "搜索"
 
 #. Resource IDs: (1026)
 msgid "Search &for:"
-msgstr "검색 내용(&F):"
+msgstr "搜索(&F):"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "대소문자 구분 검색"
+msgstr "搜索区分大小写"
 
 #. Resource IDs: (1015)
 msgid "Search in"
-msgstr "다음에서 검색"
+msgstr "搜索于"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr "찾은 파일들에서 검색"
+msgstr "在找到的文件中搜索"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr "검색 결과"
+msgstr "搜索结果"
 
 #. Resource IDs: (105)
 msgid "Search string"
-msgstr "검색 문자열"
+msgstr "搜索字符串"
+
+#. Resource IDs: (182)
+msgid "Search string contains non-word characters, a \"whole word\" search is not possible!"
+msgstr ""
 
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
-msgstr "%s개 파일을 검색하고 %s개 파일을 건너뛰었습니다. %s파일에서 %s 일치를 찾았습니다."
+msgstr "已搜索 %s 个文件，已跳过 %s 个文件。已找到 %s 个匹配项于 %s 个文件中。"
 
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
-msgstr "%s 파일을 검색하여 %s 파일을 건너뜁니다. %s 파일에서 %s 일치 항목을 찾았습니다. %s 결과가 선택되었습니다."
+msgstr "已搜索 %s 个文件，已跳过 %s 个文件。已找到 %s 个匹配项于 %s 个文件中。已选择 %s 个结果。"
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr "편집기 프로그램을 선택하세요..."
+msgstr "选择编辑器应用程序..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
-msgstr "검색할 경로를 선택하세요"
+msgstr "选择要搜索的路径"
 
 #. Resource IDs: (133)
 msgid "Size"
-msgstr "크기"
+msgstr "大小"
 
 #. Resource IDs: (1006)
 msgid "Size is"
-msgstr "크기가"
+msgstr "大小为"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
-msgstr "정규식 검사"
+msgstr "测试正则"
 
 #. Resource IDs: (136)
 msgid "Text"
-msgstr "텍스트"
+msgstr "文本"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "텍스트 일치"
+msgstr "文本匹配"
 
 #. Resource IDs: (1002)
 msgid "Text search"
-msgstr "텍스트 검색"
+msgstr "文本搜索"
 
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr "%s 경로가 없거나 액세스할 수 없습니다!"
+msgstr "路径“%s”不存在或不可访问！"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
-msgstr "정규식 검색한 문자열 일치:"
+msgstr "正则搜索字符串匹配:"
 
 #. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
-msgstr "바꾸기 이후 텍스트:"
+msgstr "替换后的结果文本:"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr "파일을 UTF-8로 취급"
+msgstr "将文件视为 UTF8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr "파일을 바이너리로 취급"
+msgstr "将文件视为二进制文件"
 
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr "%s 옵션을 사용하도록 설정했습니다.\n바꿀 때 이 옵션을 사용하면 파일이 손상될 수 있습니다.\n그래도 계속 진행하시겠습니까?"
+msgstr "您已启用选项“%s”。\r\n替换时，此选项可能会导致文件损坏。\r\n是否仍要继续？"
 
 #. Resource IDs: (1025)
 msgid "\\"
@@ -552,31 +560,31 @@ msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "검색에 사용되는 정규식입니다. 추가 정보는 F1을 누르십시오."
+msgstr "用于搜索的正则表达式。按 F1 键获取更多信息。"
 
 #. Resource IDs: (125)
 msgid "an empty string"
-msgstr "빈 문자열"
+msgstr "空字符串"
 
 #. Resource IDs: (130)
 msgid "binary"
-msgstr "바이너리"
+msgstr "二进制"
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
-msgstr "텍스트를 여러 줄 텍스트로 편집하려면 클릭"
+msgstr "点击这里将该文本作为多行文本来编辑"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
-msgstr "어두운 모드를 사용하려면 Win10 1803 이상이 필요하며 Windows 시스템 설정에서 사용하도록 설정해야 합니다."
+msgstr "暗黑模式至少需要 Windows10 1803 版本，并且必须在 Windows 系统设置中启用它。"
 
 #. Resource IDs: (121)
 msgid "equal to"
-msgstr "다음과 같은"
+msgstr "等于"
 
 #. Resource IDs: (122)
 msgid "greater than"
-msgstr "다음보다 큰"
+msgstr "大于"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
@@ -585,92 +593,92 @@ msgstr "grepWin"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr "grepWin %s를 사용할 수 있습니다"
+msgstr "grepWin 的 %s 版本可用"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
-msgstr "grepWin 설정"
+msgstr "grepWin 设置"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "shift 키를 누른 채로 검색 문자열이 없는 파일을 찾습니다"
+msgstr "按住 SHIFT 键来查找不包含搜索字符串的文件"
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr "파일 경로 포함"
+msgstr "包含文件路径"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr "일치하는 줄 번호 포함"
+msgstr "包括匹配行号"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr "일치하는 줄 텍스트 포함"
+msgstr "包括匹配行文本"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr "잘못된 정규식!"
+msgstr "无效的正则表达式！"
 
 #. Resource IDs: (120)
 msgid "less than"
-msgstr "다음보다 적은"
+msgstr "小于"
 
 #. Resource IDs: (111)
 msgid "no match"
-msgstr "일치가 없습니다"
+msgstr "无匹配"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
-msgstr "바꿀 텍스트가 없습니다"
+msgstr "没有要替换为的文本"
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
-msgstr "검사할 텍스트가 없습니다"
+msgstr "没有要测试的文本"
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr "파일이 바이너리 대신 텍스트로 간주되도록 허용되는 MB 당 NULL 바이트 수"
+msgstr "允许将文件仍视为文本而不是二进制文件的每 MB 空字节数"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "이 패턴과 일치하는 파일만 검색됩니다.\r\n텍스트 일치 확장. 구분 기호로 “|”를 사용합니다.\r\n예시: *.cpp|*.h"
+msgstr "仅搜索匹配此规则的文件。\r\n文本匹配已扩展，使用“|”作为分隔符。\r\n例如：*.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
-msgstr "최근 항목이 있는 열린 목록"
+msgstr "打开包含最近条目的列表"
 
 #. Resource IDs: (129)
 msgid "read error"
-msgstr "읽기 오류"
+msgstr "读取错误"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr "정규식 확인"
+msgstr "正则 OK"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr "grepWin 인스턴스를 재사용합니다."
+msgstr "复用 grepWin 实例。"
 
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr "'%s' 파일 검색 중"
+msgstr "正在扫描文件 '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
-msgstr "검색 문자열이 비어 있습니다"
+msgstr "搜索字符串为空"
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr "새 grepWinNP 창을 시작합니다"
+msgstr "启动新的 grepWin 窗口"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "재귀적으로 검색되는 경로입니다.\n'|' 기호로 경로를 구분합니다.\n예제: c:\\temp|d:\\logs"
+msgstr "将被递归搜索的路径。\r\n使用“|”符号来分隔路径。\r\n例如：c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "디렉터리를 제외할 수 있고, 예를 들어 CVS 및 이미지입니다.\n예제: ^(CVS|images)$\n참고: '.svn'폴더는 Windows에서 '숨겨져' 있으므로 일반적으로 검색되지 않습니다."
+msgstr "你可以排除文件夹，比如 CVS 和 images。\r\n例：^(CVS|images)$\r\n注意，“.svn”文件夹在 Windows 中是隐藏的，所以通常不会被扫描。"
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
@@ -682,9 +690,9 @@ msgstr "⑂"
 
 #. Resource IDs: (1071)
 msgid "⚙ Settings"
-msgstr "⚙ 설정"
+msgstr "⚙ 设置"
 
 #. Resource IDs: (123)
 msgid "🔎 &Search"
-msgstr "🔎 검색(&S)"
+msgstr "🔎 搜索(&S)"
 
