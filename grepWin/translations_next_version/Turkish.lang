@@ -36,32 +36,32 @@ msgstr ""
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
-msgstr "%ld kecocokan lainnya"
+msgstr "%ld daha fazla eşleşme"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
-msgstr "%path% diganti dengan jalur file, %line% dengan baris tujuan, %column% dengan posisi dalam baris, %pattern% dengan pola pencarian"
+msgstr "%path% = dosya yolu, %line% = satır, %column% = satırdaki konum, %pattern% ile arama deseni"
 
 #. Resource IDs: (175)
 #, c-format
 msgid "%s files, skipped %s files. %s results selected."
-msgstr "%s file, dilewati %s file. %s hasil dipilih."
+msgstr "%s dosya, %s dosya atlandı. %s sonuç seçildi."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
-msgstr "&Tentang grepWin..."
+msgstr "&GrepWin hakkında..."
 
 #. Resource IDs: (1061)
 msgid "&Convert newlines"
-msgstr "&Konversi baris baru"
+msgstr "&Satır sonlarını dönüştür"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
-msgstr "&Ganti"
+msgstr "&Değiştir"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr "&Kata penuh"
+msgstr "&Tam kelime"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -73,11 +73,11 @@ msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
-msgstr "<a href=\"https://tools.stefankueng.com\">Kunjungi situs web kami</a>"
+msgstr "<a href=\"https://tools.stefankueng.com\">Web sitemizi ziyaret edin</a>"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
-msgstr "<a>Tentang grepWin</a>"
+msgstr "<a>grepWin hakkında</a>"
 
 #. Resource IDs: (1086)
 msgid ">"
@@ -85,36 +85,36 @@ msgstr ">"
 
 #. Resource IDs: (135)
 msgid "About grepWin"
-msgstr "Tentang grepWin"
+msgstr "GrepWin Hakkında"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr "Tambah ke Prasetel"
+msgstr "Hazır Ayarlara Ekle"
 
 #. Resource IDs: (155)
 msgid "All Files"
-msgstr "Semua File"
+msgstr "Tüm Dosyalar"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr "Semua tanggal"
+msgstr "Bütün Tarihler"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
-msgstr "Semua ukuran"
+msgstr "Bütün Boyutlar"
 
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr "Yakin ingin mengganti\n%s\ndengan\n%s\ntanpa membuat cadangan?"
+msgstr "%s yedeği olmadan değiştirmek istiyor musunuz?\n%s\nile:\n%s"
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr "Antara"
+msgstr "Arasında"
 
 #. Resource IDs: (1095)
 msgid "Both"
-msgstr "Keduanya"
+msgstr "Her ikisi"
 
 #. Resource IDs: (1093)
 msgid "CRLF (Windows)"
@@ -122,144 +122,144 @@ msgstr "CRLF (Windows)"
 
 #. Resource IDs: (2)
 msgid "Cancel"
-msgstr "Batal"
+msgstr "İptal"
 
 #. Resource IDs: (169)
 msgid "Capture search (Shows replaced text)"
-msgstr "Pencarian tangkapan (tampilkan teks yang diganti)"
+msgstr "Yakalama araması (değiştirilen metni gösterir)"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr "Periksa pembaruan"
+msgstr "Güncellemeleri kontrol et"
 
 #. Resource IDs: (180)
 msgid "Column"
-msgstr "Kolom"
+msgstr "Sütun"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr "Baris perintah untuk membuka editor pada baris dan posisi tertentu:"
+msgstr "Belirli satır ve konumda editör açmak için komut satırı:"
 
 #. Resource IDs: (1060)
 msgid "Content"
-msgstr "Konten"
+msgstr "İçerik"
 
 #. Resource IDs: (65535)
 msgid "Convert newlines to regex newline tags:"
-msgstr "Konversi baris baru ke tag regex:"
+msgstr "Satır sonlarını regex etiketlerine dönüştür:"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr "Salin kolom untuk semua item"
+msgstr "Tüm öğeler için sütunu kopyala"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr "Salin kolom untuk item terpilih"
+msgstr "Seçili öğeler için sütunu kopyala"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
-msgstr "Salin nama file ke clipboard"
+msgstr "Dosya Adını Panoya Kopyala"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr "Salin nama-nama file ke clipboard"
+msgstr "Dosya Adlarını Panoya Kopyala"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr "Salin jalur ke clipboard"
+msgstr "Yolu Panoya Kopyala"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
-msgstr "Salin jalur-jalur ke clipboard"
+msgstr "Yolları Panoya Kopyala"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
-msgstr "Salin hasil teks ke clipboard"
+msgstr "Metin Sonucunu Panoya Kopyala"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
-msgstr "Salin hasil-hasil teks ke clipboard"
+msgstr "Metin Sonuçlarını Panoya Kopyala"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
-msgstr "Buat file cadangan"
+msgstr "Yedek Dosyaları Oluştur"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
-msgstr "Buat file cadangan di folder terpisah"
+msgstr "Ayrı Bir Klasörde Yedekleme Dosyaları Oluşturun"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr "Mode gelap"
+msgstr "Karanlık mod"
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr "Tanggal diubah"
+msgstr "Değiştirilme Tarihi"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr "Jangan peringatkan saat mengganti tanpa membuat cadangan"
+msgstr "Yedeksiz değiştirirken uyarma"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr "Titik cocok dengan baris baru"
+msgstr "Nokta Yeni Çizgiyle Eşleşiyor"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr "Klik dua kali untuk memilih prasetel"
+msgstr "Bir Hazır Ayar Seçmek için Çift Tıklayın."
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
-msgstr "Kosong"
+msgstr "Kukla"
 
 #. Resource IDs: (1067)
 msgid "Editor"
-msgstr "Editor"
+msgstr "Editör"
 
 #. Resource IDs: (138)
 msgid "Encoding"
-msgstr "Pengodean"
+msgstr "Kodlama"
 
 #. Resource IDs: (1056)
 msgid "Enter a name for the regex:"
-msgstr "Masukkan nama untuk regex:"
+msgstr "Regex için Bir Ad Girin:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr "Tombol Escape menutup grepWin"
+msgstr "Escape Tuşu grepWin'i Kapatır"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr "Kecualikan direktori (Regex):"
+msgstr "Dir'leri Hariç Tut (Regex):"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr "Ekspor daftar hasil"
+msgstr "Sonuç listesini dışa aktar"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr "Ekspor hasil..."
+msgstr "Sonuçları dışa aktar..."
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr "Ext"
+msgstr "Uzantı"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Nama file cocok:\nGunakan '|' untuk memisahkan pola, tambah '-' untuk mengecualikan"
+msgstr "Dosya adları eşleşiyorsa:\n Çoklu desenleri ayırmak için '|', hariç tutmak için '-' önerilir."
 
 #. Resource IDs: (1059)
 msgid "Files"
-msgstr "File"
+msgstr "Dosyalar"
 
 #. Resource IDs: (181)
 msgid "Filter results"
-msgstr "Saring hasil"
+msgstr "Sonuçları filtrele"
 
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %s files, skipped %s files."
-msgstr "Ditemukan %s file, dilewati %s file."
+msgstr "%s dosya bulundu, %s dosya atlandı."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -267,39 +267,43 @@ msgstr "GREPWIN"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "Jika diaktifkan, folder cadangan dibuat di dalam folder yang dicari/diganti, dan file dicadangkan ke sana"
+msgstr "Etkinleştirildiğinde, aranan/değiştirilen klasörün içinde bir yedekleme klasörü oluşturulur ve dosyalar bu klasöre yedeklenir."
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
-msgstr "Sertakan file biner"
+msgstr "İkili Dosyaları Dahil Et"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
-msgstr "Sertakan item tersembunyi"
+msgstr "Gizli Öğeleri Dahil Et"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr "Sertakan jalur pencarian"
+msgstr "Arama yolunu dahil et"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
-msgstr "Sertakan subfolder"
+msgstr "Alt Klasörleri Dahil Et"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr "Sertakan tautan simbolis"
+msgstr "Sembolik bağlantıları dahil et"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr "Sertakan item sistem"
+msgstr "Sistem Öğelerini Dahil Et"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
-msgstr "Jalur tidak valid!"
+msgstr "Geçersiz yol!"
+
+#. Resource IDs: (183)
+msgid "Invalid search text"
+msgstr ""
 
 #. Resource IDs: (161)
 msgid "Inverse search"
-msgstr "Pencarian terbalik"
+msgstr "Ters arama"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -307,7 +311,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr "Pertahankan tanggal file saat mengganti"
+msgstr "Değiştirirken dosya tarihini koru"
 
 #. Resource IDs: (1094)
 msgid "LF (Linux)"
@@ -315,236 +319,240 @@ msgstr "LF (Linux)"
 
 #. Resource IDs: (1075)
 msgid "Language:"
-msgstr "Bahasa:"
+msgstr "Dil:"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
-msgstr "Batasi pencarian"
+msgstr "Aramayı Sınırlandır"
 
 #. Resource IDs: (134)
 msgid "Line"
-msgstr "Baris"
+msgstr "Çizgi"
 
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %s\n"
-msgstr "Baris %5ld : %s\n"
+msgstr "Satır %5ld : %s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
-msgstr "Kecocokan"
+msgstr "Eşleşmeler"
 
 #. Resource IDs: (137)
 msgid "Multiline editor"
-msgstr "Editor multibaris"
+msgstr "Çok satırlı düzenleyici"
 
 #. Resource IDs: (104)
 msgid "Name"
-msgstr "Nama"
+msgstr "Ad"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr "Lebih baru dari"
+msgstr "Daha Yeni"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr "Baris baru dicocokkan oleh '.'"
+msgstr "Yeni hat '.' ile eşleştirilir"
 
 #. Resource IDs: (140)
 msgid "Newlines"
-msgstr "Baris baru"
+msgstr "Satır sonları"
 
 #. Resource IDs: (1056)
 msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
-msgstr "Catatan: baris baru hanya untuk pemformatan. Gunakan tombol di bawah untuk mengonversi ke baris baru regex."
+msgstr "Not: metindeki satır sonları yalnızca biçimlendirme içindir. Dönüştürmek için aşağıdaki düğmeyi kullanın."
 
 #. Resource IDs: (1)
 msgid "OK"
-msgstr "OK"
+msgstr "TAMAM"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr "Lebih lama dari"
+msgstr "Daha Eski"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr "Hanya satu instans"
+msgstr "Sadece Bir Örnek"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
-msgstr "Buka folder yang berisi"
+msgstr "Dosyayı İçeren Klasörü Açınız"
 
 #. Resource IDs: (141)
 msgid "Open with Editor"
-msgstr "Buka dengan Editor"
+msgstr "Editör ile Aç"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
-msgstr "Tempel teks untuk menguji regex:"
+msgstr "Regex'i test etmek için metin yapıştırın:"
 
 #. Resource IDs: (137)
 msgid "Path"
-msgstr "Jalur"
+msgstr "Yol"
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr "Nama prasetel"
+msgstr "Ön Ayar Adı"
 
 #. Resource IDs: (1022, 132)
 msgid "Presets"
-msgstr "Prasetel"
+msgstr "Hazır Ayarlar"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr "Tekan F1 untuk bantuan"
+msgstr "Yardım için F1 Tuşuna Basınız"
 
 #. Resource IDs: (154)
 msgid "Programs"
-msgstr "Program"
+msgstr "Programlar"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
-msgstr "&Ganti nama prasetel"
+msgstr "Hazır Ayarı Yeniden Adlandır"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
-msgstr "Uji Regex"
+msgstr "Regex Testi"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Kecocokan Regex"
+msgstr "Regex Eşleşmesi"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr "String pengganti Regex:"
+msgstr "Regex Dizeyi Değiştir:"
 
 #. Resource IDs: (1001)
 msgid "Regex search"
-msgstr "Pencarian Regex"
+msgstr "Regex Ara"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr "String pencarian Regex:"
+msgstr "Regex Dizesinde Ara:"
 
 #. Resource IDs: (179)
 msgid "Regex stack error"
-msgstr "Kesalahan tumpukan Regex"
+msgstr "Regex yığın hatası"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
-msgstr "Jalur relatif tidak diizinkan. Masukkan jalur absolut!"
+msgstr "Göreceli yollara izin verilmez. Lütfen mutlak bir yol girin!"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr "&Hapus prasetel"
+msgstr "Hazır Ayarı Kaldır"
 
 #. Resource IDs: (106)
 msgid "Replace string"
-msgstr "String pengganti"
+msgstr "Dizeyi Değiştir"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "Ganti dengan:/\nFormat tangkapan:"
+msgstr "Şununla değiştir/\nYakalama biçimi:"
 
 #. Resource IDs: (126)
 msgid "S&top"
-msgstr "Be&rhenti"
+msgstr "Durdur"
 
 #. Resource IDs: (1, 1016)
 msgid "Search"
-msgstr "Cari"
+msgstr "Ara"
 
 #. Resource IDs: (1026)
 msgid "Search &for:"
-msgstr "Cari &kata:"
+msgstr "Aranan:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "Pencarian peka huruf besar/kecil"
+msgstr "Büyük/Küçük Harfe Duyarlı Arama"
 
 #. Resource IDs: (1015)
 msgid "Search in"
-msgstr "Cari di"
+msgstr "İçinde Ara"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr "Cari di file yang ditemukan"
+msgstr "Bulunan dosyalarda ara"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr "Hasil pencarian"
+msgstr "Arama Sonuçları"
 
 #. Resource IDs: (105)
 msgid "Search string"
-msgstr "String pencarian"
+msgstr "Arama Dizesi"
+
+#. Resource IDs: (182)
+msgid "Search string contains non-word characters, a \"whole word\" search is not possible!"
+msgstr ""
 
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
-msgstr "Diperiksa %s file, dilewati %s file. Ditemukan %s kecocokan di %s file."
+msgstr "%s dosya arandı, %s dosya atlandı. %s dosyalarında %s eşleşmesi bulundu."
 
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
-msgstr "Diperiksa %s file, dilewati %s file. Ditemukan %s kecocokan di %s file. %s hasil dipilih."
+msgstr "%s dosya arandı, %s dosya atlandı. %s dosyalarında %s eşleşmesi bulundu. %s sonuç seçildi."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr "Pilih Aplikasi Editor..."
+msgstr "Editör Uygulamasını Seçin ..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
-msgstr "Pilih jalur untuk dicari"
+msgstr "Aranacak Yolu Seçin"
 
 #. Resource IDs: (133)
 msgid "Size"
-msgstr "Ukuran"
+msgstr "Boyut"
 
 #. Resource IDs: (1006)
 msgid "Size is"
-msgstr "Ukuran adalah"
+msgstr "Boyut"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
-msgstr "Uji regex"
+msgstr "Regex'i Test Et"
 
 #. Resource IDs: (136)
 msgid "Text"
-msgstr "Teks"
+msgstr "Metin"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Kecocokan teks"
+msgstr "Metin Eşleşmesi"
 
 #. Resource IDs: (1002)
 msgid "Text search"
-msgstr "Pencarian teks"
+msgstr "Arama Metni"
 
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr "Jalur \"%s\" tidak ada atau tidak dapat diakses!"
+msgstr "Yol \"%s\" mevcut değil veya erişilemiyor!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
-msgstr "String pencarian regex cocok dengan:"
+msgstr "Regex arama dizesi şu şekilde eşleştir:"
 
 #. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
-msgstr "Teks hasil setelah penggantian:"
+msgstr "Değiştirdikten sonra ortaya çıkan metin:"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr "Perlakukan file sebagai UTF-8"
+msgstr "Dosyaları UTF8 Olarak Kabul Et"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr "Perlakukan file sebagai biner"
+msgstr "Dosyaları ikili olarak işle"
 
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr "Opsi \"%s\" sedang aktif.\r\nSaat mengganti, opsi ini dapat merusak file.\r\nLanjutkan?"
+msgstr "\"%s\" seçeneği etkin.\r\nDeğiştirme sırasında dosyalar bozulabilir.\r\nYine de devam edilsin mi?"
 
 #. Resource IDs: (1025)
 msgid "\\"
@@ -552,31 +560,31 @@ msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "ekspresi reguler untuk pencarian. Tekan F1 untuk info lebih lanjut."
+msgstr "arama yapmak için kullanılan normal bir ifadedir. Daha fazla bilgi için F1 tuşuna basın."
 
 #. Resource IDs: (125)
 msgid "an empty string"
-msgstr "string kosong"
+msgstr "boş bir dize"
 
 #. Resource IDs: (130)
 msgid "binary"
-msgstr "biner"
+msgstr "ikili"
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
-msgstr "klik untuk mengedit teks sebagai teks multibaris"
+msgstr "metni çok satırlı bir metin olarak düzenlemek için tıklayın"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
-msgstr "Mode gelap membutuhkan minimal Win10 1803 dan harus diaktifkan di pengaturan sistem Windows."
+msgstr "Karanlık mod Win10 1803+ gerektirir ve Windows sistem ayarlarından etkinleştirilmeli."
 
 #. Resource IDs: (121)
 msgid "equal to"
-msgstr "sama dengan"
+msgstr "Eşit"
 
 #. Resource IDs: (122)
 msgid "greater than"
-msgstr "lebih besar dari"
+msgstr "Büyük"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
@@ -585,92 +593,92 @@ msgstr "grepWin"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr "grepWin %s tersedia"
+msgstr "grepWin %s mevcut"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
-msgstr "Pengaturan grepWin"
+msgstr "grepWin Ayarları"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "tahan Shift untuk mencari file yang TIDAK mengandung string pencarian"
+msgstr "arama dizesini içermeyen dosyaları bulmak için SHIFT tuşunu basılı tutun."
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr "sertakan jalur file"
+msgstr "dosya yollarını dahil et"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr "sertakan nomor baris yang cocok"
+msgstr "eşleşen satır numaralarını dahil et"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr "sertakan teks baris yang cocok"
+msgstr "eşleşen satır metnini dahil et"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr "regex tidak valid!"
+msgstr "geçersiz regex!"
 
 #. Resource IDs: (120)
 msgid "less than"
-msgstr "kurang dari"
+msgstr "Küçük"
 
 #. Resource IDs: (111)
 msgid "no match"
-msgstr "tidak cocok"
+msgstr "eşleşme yok"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
-msgstr "tidak ada teks pengganti"
+msgstr "ile değiştirilecek metin yok"
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
-msgstr "tidak ada teks untuk diuji"
+msgstr "test edilecek metin yok"
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr "jumlah byte NULL per MB yang diizinkan agar file tetap dianggap teks bukan biner"
+msgstr "Dosyanın metin sayılması için MB başına izin verilen NULL bayt sayısı"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "hanya file yang cocok pola ini yang dicari.\r\nKhớp teks diperluas. Gunakan \"|\" sebagai pemisah.\r\nContoh: *.cpp|*.h"
+msgstr "Yalnızca bu kalıpla eşleşen dosyalar aranır.\r\n\"|\" sınırlayıcı olarak kullanın.\r\nÖrnek: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
-msgstr "buka daftar entri terbaru"
+msgstr "son girişleri içeren listeyi aç"
 
 #. Resource IDs: (129)
 msgid "read error"
-msgstr "kesalahan baca"
+msgstr "okuma hatası"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr "regex valid"
+msgstr "regex Seçildi."
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr "gunakan ulang instans grepWin."
+msgstr "grepWin örneklerini yeniden kullanın."
 
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr "memindai file '%s'"
+msgstr "'%s' dosyası taranıyor"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
-msgstr "string pencarian kosong"
+msgstr "arama dizesi boş!"
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr "buka jendela grepWin baru"
+msgstr "yeni grepWin penceresi başlat"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "jalur yang dicari secara rekursif.\r\nPisahkan jalur dengan simbol |.\r\nContoh: c:\\temp|d:\\logs"
+msgstr "özyinelemede aranan yollar.\r\n| sembolü ile ayrı yollar.\r\nÖrnek: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "Anda dapat mengecualikan direktori, mis. CVS dan images.\r\nContoh: ^(CVS|images)$\r\nCatatan: folder '.svn' tersembunyi di Windows sehingga biasanya tidak dipindai."
+msgstr "dizinleri hariç tutabilirsiniz, ör. CVS ve Resimler.\r\nÖrnek: ^(CVS|images)$\r\nNot: klasörlerinin Windows\'ta 'gizli' olduğuna dikkat edin, bu nedenle genellikle taranmazlar."
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
@@ -682,9 +690,9 @@ msgstr "⑂"
 
 #. Resource IDs: (1071)
 msgid "⚙ Settings"
-msgstr "⚙ Pengaturan"
+msgstr "⚙ Ayarlar"
 
 #. Resource IDs: (123)
 msgid "🔎 &Search"
-msgstr "🔎 &Cari"
+msgstr "🔎 &Ara"
 

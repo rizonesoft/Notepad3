@@ -297,6 +297,10 @@ msgstr "सिस्टम आइटम्स शामिल करें"
 msgid "Invalid path!"
 msgstr "अवैध पथ!"
 
+#. Resource IDs: (183)
+msgid "Invalid search text"
+msgstr ""
+
 #. Resource IDs: (161)
 msgid "Inverse search"
 msgstr "उलटी खोज"
@@ -477,6 +481,10 @@ msgstr "खोज नतीजे"
 #. Resource IDs: (105)
 msgid "Search string"
 msgstr "खोज स्ट्रिंग"
+
+#. Resource IDs: (182)
+msgid "Search string contains non-word characters, a \"whole word\" search is not possible!"
+msgstr ""
 
 #. Resource IDs: (128)
 #, c-format

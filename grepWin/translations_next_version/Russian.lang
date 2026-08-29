@@ -36,32 +36,32 @@ msgstr ""
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
-msgstr "%ld további találat"
+msgstr "больше %ld совпадений"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
-msgstr "%path% helyébe a fájl elérési útvonala, %line% helyébe az a sor lép, amelyre ugrani kell, %pattern% a keresési mintával"
+msgstr "%path% = путь файла, %line% = строка, %column% = позиция в строке, %pattern% с поисковым шаблоном"
 
 #. Resource IDs: (175)
 #, c-format
 msgid "%s files, skipped %s files. %s results selected."
-msgstr "%s fájlban, kihagyva %s fájl. %s eredmény kiválasztva."
+msgstr "%s файлов, пропущено %s файлов, выбрано %s результатов."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
-msgstr "&A grepWin névjegye"
+msgstr "&О grepWin..."
 
 #. Resource IDs: (1061)
 msgid "&Convert newlines"
-msgstr "Sortörések konvertálása"
+msgstr "&Конвертировать строки"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
-msgstr "&Csere"
+msgstr "&Замена"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr "&Teljes szó"
+msgstr "&Слово целиком"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -73,11 +73,11 @@ msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
-msgstr "<a href=\"https://tools.stefankueng.com\">Látogasson el weboldalunkra</a>"
+msgstr "<a href=\"https://tools.stefankueng.com\">Посетить сайт</a>"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
-msgstr "<a>A grepWin névjegye</a>"
+msgstr "<a>О grepWin</a>"
 
 #. Resource IDs: (1086)
 msgid ">"
@@ -85,36 +85,36 @@ msgstr ">"
 
 #. Resource IDs: (135)
 msgid "About grepWin"
-msgstr "A grepWin névjegye"
+msgstr "О grepWin"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr "Hozzáadás sablonokhoz"
+msgstr "Доб. в пресеты"
 
 #. Resource IDs: (155)
 msgid "All Files"
-msgstr "Minden fájl"
+msgstr "Все файлы"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr "Minden dátum"
+msgstr "Все даты"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
-msgstr "Minden méret"
+msgstr "Все размеры"
 
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr "Biztosan lecseréli ezt:\n%s\nerre:\n%s\nbiztonsági másolat nélkül"
+msgstr "Вы действительно хотите заменить\n%s\nна\n%s\nне создавая резервные копии?"
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr "Között"
+msgstr "Между"
 
 #. Resource IDs: (1095)
 msgid "Both"
-msgstr "Mind"
+msgstr "Оба"
 
 #. Resource IDs: (1093)
 msgid "CRLF (Windows)"
@@ -122,144 +122,144 @@ msgstr "CRLF (Windows)"
 
 #. Resource IDs: (2)
 msgid "Cancel"
-msgstr "Mégsem"
+msgstr "Отмена"
 
 #. Resource IDs: (169)
 msgid "Capture search (Shows replaced text)"
-msgstr "Keresés rögzítése (mutassa a lecserélt szöveget)"
+msgstr "Поиск с захватом (показывает заменённый текст)"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr "Frissítések ellenőrzése"
+msgstr "Проверять обновления"
 
 #. Resource IDs: (180)
 msgid "Column"
-msgstr "Oszlop"
+msgstr "Столбец"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr "Parancs, ami a szerkesztőt egy bizonyos sornál nyitja meg:"
+msgstr "Команда запуска редактора на конкретной строке и позиции:"
 
 #. Resource IDs: (1060)
 msgid "Content"
-msgstr "Tartalom"
+msgstr "Контент"
 
 #. Resource IDs: (65535)
 msgid "Convert newlines to regex newline tags:"
-msgstr "Új sorok átalakítása reguláris kifejezésű új sor címkékké:"
+msgstr "Конвертировать строки в regex-теги:"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr "Oszlop másolása az összes elemhez"
+msgstr "Копировать столбец со всеми элементами"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr "Oszlop másolása a kiválasztott elemekhez"
+msgstr "Копировать столбец с выбранными элементами"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
-msgstr "Fájlnév vágólapra másolása"
+msgstr "Копировать имя"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr "Fájlnevek vágólapra másolása"
+msgstr "Копировать имена"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr "Útvonal vágólapra másolása"
+msgstr "Копировать путь"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
-msgstr "Útvonalak vágólapra másolása"
+msgstr "Копировать пути"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
-msgstr "Eredmény szöveg vágólapra másolása"
+msgstr "Копировать текст"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
-msgstr "Eredmények vágólapra másolása"
+msgstr "Копировать текст"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
-msgstr "Biztonsági mentés készítés"
+msgstr "Создавать бэкапы"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
-msgstr "Biztonsági mentés készítése egy külön mappában"
+msgstr "Создавать бэкапы файлов в отдельной папке"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr "Sötét mód"
+msgstr "Темная тема"
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr "Módosítás dátuma"
+msgstr "Изменен"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr "Ne figyelmeztessen a biztonsági mentés létrehozása nélküli cserénél"
+msgstr "Не предупреждать при замене без бэкапов"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr "A pont új sorra illeszkedik"
+msgstr "Точка = новая строка"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr "Dupla kattintás egy sablon kiválasztásához"
+msgstr "Двойной щелчок для выбора пресета"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
-msgstr "Dummy"
+msgstr "Макет"
 
 #. Resource IDs: (1067)
 msgid "Editor"
-msgstr "Szerkesztő"
+msgstr "Редактор"
 
 #. Resource IDs: (138)
 msgid "Encoding"
-msgstr "Kódolás"
+msgstr "Кодировка"
 
 #. Resource IDs: (1056)
 msgid "Enter a name for the regex:"
-msgstr "Adjon nevet a regex-nek:"
+msgstr "Имя пресета:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr "Az Esc billentyű bezárja a grepWin-t"
+msgstr "Закрывать grepWin по клавише Esc"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr "Kihagyandó könyvtárak (Regex):"
+msgstr "Исключить папки (Regex):"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr "Eredménylista exportálása"
+msgstr "Экспорт результатов"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr "Eredmények exportálása..."
+msgstr "Экспорт результатов..."
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr "Kit"
+msgstr "Тип"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Illeszkedő fájlnevek:\nHasználja a '|' jelet a különböző illeszkedési minták elválasztására, tegye elé a '-' jelet a kihagyáshoz"
+msgstr "Совпадения имен:\n'|' для разделения,\n'-' в начале, для исключения"
 
 #. Resource IDs: (1059)
 msgid "Files"
-msgstr "Fájlok"
+msgstr "Файлы"
 
 #. Resource IDs: (181)
 msgid "Filter results"
-msgstr "Keresés eredménye"
+msgstr "Фильтровать результаты"
 
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %s files, skipped %s files."
-msgstr "Találat %s fájlban, kihagyva %s fájl."
+msgstr "Всего %s файлов, пропущено %s файлов."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -267,47 +267,51 @@ msgstr "GREPWIN"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "Ha ez be van kapcsolva, akkor egy mentési könyvtár kerül létrehozásra a keresési/csere mappa alá, és a mentés ide kerül"
+msgstr "Если включено, папка с бэкапом создается внутри папки поиска/замены"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
-msgstr "Bináris fájlok is"
+msgstr "Включать бинарные"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
-msgstr "Rejtett elemek is"
+msgstr "Включать скрытые"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr "Beleértve a keresési útvonalat"
+msgstr "Включать путь поиска"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
-msgstr "Alkönyvtárak is"
+msgstr "Включать подпапки"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr "Szimbolikus linkek is"
+msgstr "Включать символические ссылки"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr "Rendszerelemek is"
+msgstr "Включать системные"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
-msgstr "Érvénytelen útvonal!"
+msgstr "Неверный путь!"
+
+#. Resource IDs: (183)
+msgid "Invalid search text"
+msgstr ""
 
 #. Resource IDs: (161)
 msgid "Inverse search"
-msgstr "Fordított keresés"
+msgstr "Обратный поиск"
 
 #. Resource IDs: (1019)
 msgid "KB"
-msgstr "kB"
+msgstr "КБ"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr "Cserénél tartsa meg a fájl dátumát"
+msgstr "Сохранять дату файла при замене"
 
 #. Resource IDs: (1094)
 msgid "LF (Linux)"
@@ -315,48 +319,48 @@ msgstr "LF (Linux)"
 
 #. Resource IDs: (1075)
 msgid "Language:"
-msgstr "Nyelv:"
+msgstr "Язык:"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
-msgstr "Keresés korlátozása"
+msgstr "Ограничения поиска"
 
 #. Resource IDs: (134)
 msgid "Line"
-msgstr "Sor"
+msgstr "Строка"
 
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %s\n"
-msgstr "%5ld : %30s sor\n"
+msgstr "Строка %5ld : %s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
-msgstr "Egyezések"
+msgstr "Совпадения"
 
 #. Resource IDs: (137)
 msgid "Multiline editor"
-msgstr "Többsoros szerkesztő"
+msgstr "Многострочный редактор"
 
 #. Resource IDs: (104)
 msgid "Name"
-msgstr "Név"
+msgstr "Имя"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr "Újabb mint"
+msgstr "Новее чем"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr "Új sorra a '.' illeszkedik"
+msgstr "Новая строка соответствует '.'"
 
 #. Resource IDs: (140)
 msgid "Newlines"
-msgstr "Új sorok"
+msgstr "Переводы строк"
 
 #. Resource IDs: (1056)
 msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
-msgstr "Megjegyzés: a szövegben szereplő új sorok figyelmen kívül maradnak, csak formázási célokat szolgálnak. Az új sorok formázásának megfelelő reguláris kifejezéssel történő konvertálásához használja az alábbi gombot."
+msgstr "Переносы строк в тексте игнорируются. Для конвертации нажмите кнопку ниже."
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -364,187 +368,191 @@ msgstr "OK"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr "Régebbi mint"
+msgstr "Старее чем"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr "Csak egy példány"
+msgstr "Только один экземпляр программы"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
-msgstr "Tartalmazó mappa megnyitása"
+msgstr "Открыть содержащую папку"
 
 #. Resource IDs: (141)
 msgid "Open with Editor"
-msgstr "Megnyitás szerkesztővel"
+msgstr "Открыть в редакторе"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
-msgstr "Illesszen be valami szöveget, amivel a regex-et teszteli:"
+msgstr "Текст для проверки regex:"
 
 #. Resource IDs: (137)
 msgid "Path"
-msgstr "Útvonal"
+msgstr "Путь"
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr "Sablon neve"
+msgstr "Имя пресета"
 
 #. Resource IDs: (1022, 132)
 msgid "Presets"
-msgstr "Sablonok"
+msgstr "Пресеты"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr "Súgó: F1"
+msgstr "    F1 для справки"
 
 #. Resource IDs: (154)
 msgid "Programs"
-msgstr "Programok"
+msgstr "Программы"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
-msgstr "Sablon &átnevezése"
+msgstr "Переименовать пресет"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
-msgstr "Regex teszt"
+msgstr "Тест regex"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Regex illeszkedés"
+msgstr "Regex"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr "Regex csereszöveg:"
+msgstr "Regex строки замены:"
 
 #. Resource IDs: (1001)
 msgid "Regex search"
-msgstr "Regex keresés"
+msgstr "Regex поиска"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr "Regex keresési szöveg:"
+msgstr "Regex строки поиска:"
 
 #. Resource IDs: (179)
 msgid "Regex stack error"
-msgstr "Regex verem hiba"
+msgstr "Ошибка стека Regex"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
-msgstr "Relatív útvonal nem megengedett. Kérem, adjon meg abszolút útvonalat!"
+msgstr "Относительные пути не допускаются. Введите абсолютный путь!"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr "Sablon &törlése"
+msgstr "&Удалить пресет"
 
 #. Resource IDs: (106)
 msgid "Replace string"
-msgstr "Szöveg cseréje"
+msgstr "Строка замены"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "Cserélje ki a/\nRögzítési formátum:"
+msgstr "Заменить на/\nФормат захвата:"
 
 #. Resource IDs: (126)
 msgid "S&top"
-msgstr "Le&állítás"
+msgstr "&Стоп"
 
 #. Resource IDs: (1, 1016)
 msgid "Search"
-msgstr "Keresés"
+msgstr "Поиск"
 
 #. Resource IDs: (1026)
 msgid "Search &for:"
-msgstr "Keresés &erre:"
+msgstr "Искать:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "Kisbetű/nagybetű számít"
+msgstr "С учетом регистра"
 
 #. Resource IDs: (1015)
 msgid "Search in"
-msgstr "Keresés ebben"
+msgstr "Поиск в"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr "Keresés a talált fájlokban"
+msgstr "Поиск в найденных файлах"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr "Keresési eredmények"
+msgstr "Результаты поиска"
 
 #. Resource IDs: (105)
 msgid "Search string"
-msgstr "Keresett szöveg"
+msgstr "Строка поиска"
+
+#. Resource IDs: (182)
+msgid "Search string contains non-word characters, a \"whole word\" search is not possible!"
+msgstr ""
 
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
-msgstr "Keresés %s fájlban, kihagyva %s fájl. Lett %s találat %s fájlban."
+msgstr "Найдено %s файлов, пропущено %s файлов. Найдено %s совпадений в %s файлах."
 
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
-msgstr "Keresés %s fájlban, kihagyva %s fájl. %s egyezést talált %s fájlban. %s eredmény kiválasztva."
+msgstr "Найдено %s файлов, пропущено %s файлов. Найдено %s совпадений в %s файлах. Выбрано %s результатов."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr "Válasszon szerkesztő alkalmazást..."
+msgstr "Выбор редактора..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
-msgstr "Válassza ki a keresés útvonalát"
+msgstr "Выбор пути поиска"
 
 #. Resource IDs: (133)
 msgid "Size"
-msgstr "Méret"
+msgstr "Размер"
 
 #. Resource IDs: (1006)
 msgid "Size is"
-msgstr "Méret:"
+msgstr "Размер"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
-msgstr "Teszt regex"
+msgstr "Тест regex"
 
 #. Resource IDs: (136)
 msgid "Text"
-msgstr "Szöveg"
+msgstr "Текст"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Szöveg illeszkedés"
+msgstr "Текст"
 
 #. Resource IDs: (1002)
 msgid "Text search"
-msgstr "Szöveg keresés"
+msgstr "Простой текст"
 
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr "Az útvonal \"%s\", nem létezik vagy nem elérhető!"
+msgstr "Путь \"%s\" не существует или недоступен!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
-msgstr "A regex keresési szöveg illeszkedik:"
+msgstr "Regex строки поиска совпадает:"
 
 #. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
-msgstr "Az eredmény szöveg csere után:"
+msgstr "Полученный текст после замены:"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr "Fájlok kezelése UTF8-ként"
+msgstr "Считать UTF-8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr "Fájlok kezelése binárisként"
+msgstr "Считать бинарными"
 
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr "Engedélyezte \"%s\" opciót.\r\nA csere során ez az opció sérült fájlokat eredményezhet.\r\nMindenképpen folytatni szeretné?"
+msgstr "Параметр \"%s\" включен.\r\nПри замене этот параметр может привести к повреждению файлов.\r\nВсе равно продолжить?"
 
 #. Resource IDs: (1025)
 msgid "\\"
@@ -552,31 +560,31 @@ msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "egy reguláris kifejezés volt használva a keresésnél. További információért nyomja meg az F1-et."
+msgstr "Регулярные выражения для поиска. F1 для справки."
 
 #. Resource IDs: (125)
 msgid "an empty string"
-msgstr "egy üres szöveg"
+msgstr "Пустая строка"
 
 #. Resource IDs: (130)
 msgid "binary"
-msgstr "bináris"
+msgstr "Бинарный"
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
-msgstr "kattintson a szöveg többsorosként való szerkesztéséhez"
+msgstr "Многострочное редактирование"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
-msgstr "A sötét módhoz legalább Windows 10 build 1803 szükséges, és engedélyezni kell a Windows rendszerbeállításaiban."
+msgstr "требует как минимум Win10 v1803\nи должна быть включена в системе"
 
 #. Resource IDs: (121)
 msgid "equal to"
-msgstr "egyenlő"
+msgstr "Равняется"
 
 #. Resource IDs: (122)
 msgid "greater than"
-msgstr "nagyobb, mint"
+msgstr "Больше чем"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
@@ -585,92 +593,92 @@ msgstr "grepWin"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr "grepWin %s elérhető"
+msgstr "Доступен grepWin %s"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
-msgstr "grepWin beállítások"
+msgstr "Настройки grepWin"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "tartsa lenyomva a Shift-et azon fájlok kereséséhez, ami NEM tartalmazzák a keresési szöveget"
+msgstr "Удерживайте Shift, чтобы найти файлы, которые НЕ содержат строку поиска"
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr "tartalmazza a  fájl elérési útvonalakat"
+msgstr "Включить пути"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr "tartalmazza az egyező sorszámokat"
+msgstr "Включить № строк"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr "tartalmazza az egyező sor szövegeket"
+msgstr "Включить текст"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr "érvénytelen regex"
+msgstr "Некорректный regex!"
 
 #. Resource IDs: (120)
 msgid "less than"
-msgstr "kisebb, mint"
+msgstr "Меньше чем"
 
 #. Resource IDs: (111)
 msgid "no match"
-msgstr "nincs találat"
+msgstr "Совпадений нет"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
-msgstr "nincs miben cserélni"
+msgstr "Заменять нечего"
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
-msgstr "nincs mivel tesztelni"
+msgstr "Тестировать нечего"
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr "a NULL bájtok MB-onként megengedett száma, hogy egy fájl még mindig szövegnek és nem binárisnak minősüljön"
+msgstr "NULL-байт на МБ для файла, чтобы считать его текстовым, а не двоичным"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "csak a mintának megfelelő fájlokat keresi a rendszer.\r\n\"|\" jelet használja elválasztójelként.\r\nPélda: *.cpp|*.h"
+msgstr "Ищутся только файлы, соответствующие шаблону.\r\nИспользуйте \"|\" как разделитель.\r\nПример: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
-msgstr "lista megnyitása a legutóbbi bejegyzésekkel"
+msgstr "Открыть историю ввода"
 
 #. Resource IDs: (129)
 msgid "read error"
-msgstr "olvasási hiba"
+msgstr "Ошибка чтения"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr "regex ok"
+msgstr "Regex корректен"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr "grepWin példányok újra felhasználása"
+msgstr "Использовать текущее окно grepWin"
 
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr "Keresés itt: '%s'"
+msgstr "Поиск файлов '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
-msgstr "a keresett szöveg üres"
+msgstr "Строка поиска пуста"
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr "új grepWin ablak indítása"
+msgstr "Новое окно grepWin"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "a rekurzívan keresett elérési útvonal(ak).\r\nElkülöníti az elérési utakat a | szimbólummal.\r\nPélda: c:\\\temp|d:\\\logs"
+msgstr "Рекурсивный поиск путей.\r\nРазделяйте пути знаком '|'.\r\nПример: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "kizárhat könyvtárakat, például a CVS-t és a képeket.\r\Példa: ^(CVS|images)$\r\nMegjegyzés: Az '.svn' mappák Windowson 'rejtett' mappák, ezért általában nem kerülnek átvizsgálásra."
+msgstr "Вы можете исключать папки.\r\nПример: ^(CVS|images)$\r\nВнимание: папки '.svn', как правило, скрыты в Windows,\r\nпоэтому они обычно не сканируются."
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
@@ -682,9 +690,9 @@ msgstr "⑂"
 
 #. Resource IDs: (1071)
 msgid "⚙ Settings"
-msgstr "⚙ Beállítások"
+msgstr "⚙ Настройки"
 
 #. Resource IDs: (123)
 msgid "🔎 &Search"
-msgstr "🔎 &Keresés"
+msgstr "🔎 &Найти"
 

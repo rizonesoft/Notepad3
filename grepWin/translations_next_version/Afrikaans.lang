@@ -36,32 +36,32 @@ msgstr ""
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
-msgstr "%ld fler träffar"
+msgstr "%ld meer gevind"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
-msgstr "%path% = filsökväg, %line% = rad, %column% = position på raden, %pattern% med sökmönstret"
+msgstr "%path% = pad van lêer, %line% = lyn om na te spring, %column% = offset in lyn, %pattern% met die soekpatroon"
 
 #. Resource IDs: (175)
 #, c-format
 msgid "%s files, skipped %s files. %s results selected."
-msgstr "%s filer, hoppade över %s filer. %s resultat valda."
+msgstr "%s lêers, oorgeslaan %s lêers. %s resultate gekies."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
-msgstr "Om grepWin..."
+msgstr "&Oor grepWin..."
 
 #. Resource IDs: (1061)
 msgid "&Convert newlines"
-msgstr "&Konvertera radbrytningar"
+msgstr "&Skakel nuwelyne om"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
-msgstr "Ersätt"
+msgstr "&Vervang"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr "&Hela ord"
+msgstr "&Hele woord"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -73,11 +73,11 @@ msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
-msgstr "<a href=\"https://tools.stefankueng.com\">Besök vår webbplats</a>"
+msgstr "<a href=\"https://tools.stefankueng.com\">Besoek ons webwerf</a>"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
-msgstr "<a>Om grepWin</a>"
+msgstr "<a>Oor grepWin</a>"
 
 #. Resource IDs: (1086)
 msgid ">"
@@ -85,36 +85,36 @@ msgstr ">"
 
 #. Resource IDs: (135)
 msgid "About grepWin"
-msgstr "Om grepWin"
+msgstr "Oor grepWin"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr "Lägg till i favoriter"
+msgstr "Voeg by voorafinstellings"
 
 #. Resource IDs: (155)
 msgid "All Files"
-msgstr "Alla filer"
+msgstr "Alle Lêers"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr "Alla datum"
+msgstr "Alle Datums"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
-msgstr "Alla storlekar"
+msgstr "Alle Afmetings"
 
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr "Är du säker du vill ersätta \n%s\nmed\n%s\nutan att skapa säkerhetskopior?"
+msgstr "Is u seker dat u \n%s\nmet\n%s\n wil vervang sonder om 'n backup te maak?"
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr "Mellan"
+msgstr "Tussen"
 
 #. Resource IDs: (1095)
 msgid "Both"
-msgstr "Båda"
+msgstr "Beide"
 
 #. Resource IDs: (1093)
 msgid "CRLF (Windows)"
@@ -122,91 +122,91 @@ msgstr "CRLF (Windows)"
 
 #. Resource IDs: (2)
 msgid "Cancel"
-msgstr "Avbryt"
+msgstr "Kanselleer"
 
 #. Resource IDs: (169)
 msgid "Capture search (Shows replaced text)"
-msgstr "Fångstbaserad sökning (visar ersatt text)"
+msgstr "Soek vang (wys vervangde teks)"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr "Sök efter uppdateringar"
+msgstr "Kyk vir opdaterings"
 
 #. Resource IDs: (180)
 msgid "Column"
-msgstr "Kolumn"
+msgstr "Kolom"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr "Kommandorad för att starta en editor på specifik rad och position:"
+msgstr "Opdragreël om editor op spesifieke lyn en kolom te open:"
 
 #. Resource IDs: (1060)
 msgid "Content"
-msgstr "Innehåll"
+msgstr "Inhoud"
 
 #. Resource IDs: (65535)
 msgid "Convert newlines to regex newline tags:"
-msgstr "Konvertera radbrytningar till regex-taggar:"
+msgstr "Skakel nuwelyne na regex-nuwelynetags om:"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr "Kopiera kolumn för alla objekt"
+msgstr "Kopieer kolom (alle items)"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr "Kopiera kolumn för valda objekt"
+msgstr "Kopieer kolom (geselekteerde items)"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
-msgstr "Kopiera filnamn till urklipp"
+msgstr "Kopieer lêernaam na klembord"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr "Kopiera filnamnen till urklipp"
+msgstr "Kopieer lêername na klembord"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr "Kopiera sökväg till urklipp"
+msgstr "Kopieer padnaam na klembord"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
-msgstr "Kopiera sökvägar till urklipp"
+msgstr "Kopieer padname na klembord"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
-msgstr "Kopiera textresultat till urklipp"
+msgstr "Kopieer teksresultaat na klembord"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
-msgstr "Kopiera textresultaten till urklipp"
+msgstr "Kopieer teksresultaat na klembord"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
-msgstr "Skapa säkerhetskopior"
+msgstr "Skep backup lêers"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
-msgstr "Skapa säkerhetskopior i separat mapp"
+msgstr "Skep backup lêers in 'n aparte vouer"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr "Mörkt läge"
+msgstr "Donker modus"
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr "Datum modifierad"
+msgstr "Datum gewysig"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr "Varna inte vid ersättning utan säkerhetskopiering"
+msgstr "Moenie waarsku wanneer iets vervang word sonder om backup te skep nie"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr "Punkt matchar nyrad"
+msgstr "Dot stem ooreen met die nuwe lyn"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr "Dubbelklicka för att välja en förinställd inställning"
+msgstr "Dubbelklik om 'n voorafinstelling te kies"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
@@ -218,48 +218,48 @@ msgstr "Editor"
 
 #. Resource IDs: (138)
 msgid "Encoding"
-msgstr "Teckenkodning"
+msgstr "Kodering"
 
 #. Resource IDs: (1056)
 msgid "Enter a name for the regex:"
-msgstr "Ange ett namn för regex:"
+msgstr "Voer 'n naam in vir die Regex:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr "Esc-tangenten stänger grepWin"
+msgstr "Ontsnap-sleutel beëindig grepWin"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr "Exkludera mappar (Regex):"
+msgstr "Sluit dirs uit (Regex):"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr "Exportera resultatlista"
+msgstr "Voer resultaatlys uit"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr "Exportera resultat..."
+msgstr "Voer resultate uit..."
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr "Tillägg"
+msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Filnamn matchar:\nanvänd '|' för att separera multipla textmatchningsmönster, lägg till '-' i början för att exkludera"
+msgstr "Lêernaam ooreenstem:\nGebruik '|' om verskillende teks-paspatrone te skei, met '-' vooraan om uit te sluit"
 
 #. Resource IDs: (1059)
 msgid "Files"
-msgstr "Filer"
+msgstr "Lêers"
 
 #. Resource IDs: (181)
 msgid "Filter results"
-msgstr "Filtrera resultat"
+msgstr "Filtreer resultate"
 
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %s files, skipped %s files."
-msgstr "Hittade %s filer, hoppade över %s filer."
+msgstr "Gevind %s lêers, oorgeslaan %s lêers."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -267,39 +267,43 @@ msgstr "GREPWIN"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "En mapp med en säkerhetskopia skapas inuti mappen du söker i, och filer säkerhetskopieras skapas för filerna till denna mapp"
+msgstr "As dit geaktiveer is, word 'n backup geskep in die gids waarin u soek/vervang, en die lêers word in daardie lêergids gebere"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
-msgstr "Inkludera binära filer"
+msgstr "Sluit binêre lêers in"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
-msgstr "Inkludera gömda filer"
+msgstr "Sluit verborge items in"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr "Inkludera sökväg"
+msgstr "Sluit soekpad in"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
-msgstr "Inkludera undermappar"
+msgstr "Sluit ondervouers in"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr "Inkludera symboliska länkar"
+msgstr "Sluit simboliese skakels in"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr "Inkludera systemfiler"
+msgstr "Sluit System items in"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
-msgstr "Ogiltig mapp!"
+msgstr "Ongeldig pad!"
+
+#. Resource IDs: (183)
+msgid "Invalid search text"
+msgstr ""
 
 #. Resource IDs: (161)
 msgid "Inverse search"
-msgstr "Omvänd sökning"
+msgstr "Omgekeerde soek"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -307,7 +311,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr "Behåll fildatum vid ersättning"
+msgstr "Behou lêerdatum tydens vervanging"
 
 #. Resource IDs: (1094)
 msgid "LF (Linux)"
@@ -315,48 +319,48 @@ msgstr "LF (Linux)"
 
 #. Resource IDs: (1075)
 msgid "Language:"
-msgstr "Språk:"
+msgstr "Taal:"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
-msgstr "Begränsa sökning"
+msgstr "Beperk soek"
 
 #. Resource IDs: (134)
 msgid "Line"
-msgstr "Rad"
+msgstr "Lyn"
 
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %s\n"
-msgstr "Rad %5ld : %s\n"
+msgstr "Lyn %5ld : %s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
-msgstr "Träffar"
+msgstr "gevind"
 
 #. Resource IDs: (137)
 msgid "Multiline editor"
-msgstr "Flerradsredigerare"
+msgstr "Veellyn-editor"
 
 #. Resource IDs: (104)
 msgid "Name"
-msgstr "Namn"
+msgstr "Naam"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr "Nyare än"
+msgstr "Nuwer as"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr "Nyrad matchar med '.'"
+msgstr "Nuwe lyn word gekoppel deur '.'"
 
 #. Resource IDs: (140)
 msgid "Newlines"
-msgstr "Radbrytningar"
+msgstr "Nuwelyne"
 
 #. Resource IDs: (1056)
 msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
-msgstr "Obs: radbrytningar i texten ignoreras. Använd knappen nedan för att konvertera."
+msgstr "Noot: nuwelyne in teks word geïgnoreer, net vir opmaak. Gebruik die knoppie om dit na regex-nuwelyne om te skakel."
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -364,187 +368,191 @@ msgstr "OK"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr "Äldre än"
+msgstr "Ouer as"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr "Bara en instans"
+msgstr "Slegs een geval"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
-msgstr "Öppna innehållande mapp"
+msgstr "Maak omvattende gids oop"
 
 #. Resource IDs: (141)
 msgid "Open with Editor"
-msgstr "Öppna med editor"
+msgstr "Maak oop met Editor"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
-msgstr "Klistra in text att testa regex med:"
+msgstr "Plak teks om die regex mee te toets:"
 
 #. Resource IDs: (137)
 msgid "Path"
-msgstr "Sökväg"
+msgstr "Pad"
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr "Förvalt namn"
+msgstr "Preset naam"
 
 #. Resource IDs: (1022, 132)
 msgid "Presets"
-msgstr "Förval"
+msgstr "Presets"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr "Tryck på F1 för hjälp"
+msgstr "Druk F1 vir hulp"
 
 #. Resource IDs: (154)
 msgid "Programs"
-msgstr "Program"
+msgstr "Programme"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
-msgstr "Byt namn på förval"
+msgstr "Hernoem Preset"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
-msgstr "Regex Test"
+msgstr "Regex Toets"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Regex träff"
+msgstr "Regex gevind"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr "Regex ersätt sträng:"
+msgstr "Regex vervang-string:"
 
 #. Resource IDs: (1001)
 msgid "Regex search"
-msgstr "Regex sökning"
+msgstr "Regex soek"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr "Regex söksträng:"
+msgstr "Regex soek-string:"
 
 #. Resource IDs: (179)
 msgid "Regex stack error"
-msgstr "Regex stackfel"
+msgstr "Regex-stapelfout"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
-msgstr "Relativ sökväg är inte tillåten. Var vänlig ange en absolut sökväg!"
+msgstr "Relatiewe paaie word nie toegelaat nie. Voer 'n absolute pad in!"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr "Ta bort förval"
+msgstr "Verwyder Preset"
 
 #. Resource IDs: (106)
 msgid "Replace string"
-msgstr "Ersätt sträng"
+msgstr "Vervang String"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "Ersätt med/\nFångstformat:"
+msgstr "Vervang met/\nVangformaat:"
 
 #. Resource IDs: (126)
 msgid "S&top"
-msgstr "Avsluta"
+msgstr "S&top"
 
 #. Resource IDs: (1, 1016)
 msgid "Search"
-msgstr "Sök"
+msgstr "Soek"
 
 #. Resource IDs: (1026)
 msgid "Search &for:"
-msgstr "Sök efter:"
+msgstr "Soek &vir:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "Skiftlägeskänslig sökning"
+msgstr "HOOFD/klein gevoelig"
 
 #. Resource IDs: (1015)
 msgid "Search in"
-msgstr "Sök i"
+msgstr "Soek in"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr "Sök i hittade filer"
+msgstr "Soek in gevinde lêers"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr "Sökresultat"
+msgstr "Soekresultate"
 
 #. Resource IDs: (105)
 msgid "Search string"
-msgstr "Sök sträng"
+msgstr "Soekstring"
+
+#. Resource IDs: (182)
+msgid "Search string contains non-word characters, a \"whole word\" search is not possible!"
+msgstr ""
 
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
-msgstr "Sök %s filer, hoppade över %s filer. Hittade %s träffar i %s filer."
+msgstr "Deursoek %s lêers, oorgeslaan %s lêers. Gevind %s treffers in %s lêers."
 
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
-msgstr "Sök %s filer, hoppade över %s filer. Hittade %s träffar i %s filer. %s resultat valda."
+msgstr "Deursoek %s lêers, oorgeslaan %s lêers. Gevind %s treffers in %s lêers. %s resultate gekies."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr "Välj editor ..."
+msgstr "Kies Editor Programma..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
-msgstr "Välj mapp att söka i"
+msgstr "Kies Soekpad"
 
 #. Resource IDs: (133)
 msgid "Size"
-msgstr "Storlek"
+msgstr "Grote"
 
 #. Resource IDs: (1006)
 msgid "Size is"
-msgstr "Storlek är"
+msgstr "Grote is"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
-msgstr "Testa regex"
+msgstr "Toets Regex"
 
 #. Resource IDs: (136)
 msgid "Text"
-msgstr "Text"
+msgstr "Teks"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Textträffar"
+msgstr "Teks gevind"
 
 #. Resource IDs: (1002)
 msgid "Text search"
-msgstr "Textsökning"
+msgstr "Soek Teks"
 
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr "Sökvägen \"%s\" finns inte eller är inte tillgänglig!"
+msgstr "Die pad \"%s\" bestaan nie of is nie toeganklik nie!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
-msgstr "Regex sökning matchar:"
+msgstr "Die regex-soekstring stem ooreen met:"
 
 #. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
-msgstr "Text efter ersättning:"
+msgstr "Die gevolglike teks na vervanging:"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr "Behandla filer som UTF8"
+msgstr "Behandel lêers as UTF-8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr "Behandla filer som binära"
+msgstr "Behandel lêers as binêre"
 
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr "Alternativet \"%s\" är aktiverat.\r\nVid ersättning kan detta leda till skadade filer.\r\nFortsätta ändå?"
+msgstr "U het die opsie \"%s\" geaktiveer.\r\nDit kan lêers beskadig tydens vervanging.\r\nWil u steeds voortgaan?"
 
 #. Resource IDs: (1025)
 msgid "\\"
@@ -552,31 +560,31 @@ msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "ett reguljärt uttryck använt för sökning. Tryck F1 för mer information."
+msgstr "'n regular expression wat gebruik word vir soek. Druk F1 vir meer inligting."
 
 #. Resource IDs: (125)
 msgid "an empty string"
-msgstr "En tom sträng"
+msgstr "'n leë string"
 
 #. Resource IDs: (130)
 msgid "binary"
-msgstr "binär"
+msgstr "binêre"
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
-msgstr "klicka för att redigera text som multiradstext"
+msgstr "klik om die teks as 'n multiline-teks te wysig"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
-msgstr "Mörkt läge kräver åtminstone Win10 v1803, och måste ha aktiverats i Windows systeminställningar."
+msgstr "Dark Mode benodig ten minste Win10 v1803, en dit moet aangeskakel wees in die Windows-stelselinstellings."
 
 #. Resource IDs: (121)
 msgid "equal to"
-msgstr "lika med"
+msgstr "gelyk aan"
 
 #. Resource IDs: (122)
 msgid "greater than"
-msgstr "större än"
+msgstr "groter as"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
@@ -585,92 +593,92 @@ msgstr "grepWin"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr "grepWin %s finns tillgänglig"
+msgstr "grepWin %s is beskikbaar"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
-msgstr "grepWin inställningar"
+msgstr "grepWin instellings"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "håll ner skifttangenten för att hitta filer som inte innehåller söksträngen"
+msgstr "hou die shift-toets ingedruk om lêers te vind wat NIE die soekstring bevat nie"
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr "inkludera filsökvägar"
+msgstr "lêerpaaie insluit"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr "inkludera matchande radnummer"
+msgstr "sluit lyn nommers gevind in"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr "inkludera matchande radtext"
+msgstr "sluit lyn teks gevind in"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr "felaktig regex!"
+msgstr "ongeldige regex!"
 
 #. Resource IDs: (120)
 msgid "less than"
-msgstr "mindre än"
+msgstr "kleiner as"
 
 #. Resource IDs: (111)
 msgid "no match"
-msgstr "ingen träff"
+msgstr "niks gevind"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
-msgstr "ingen text att ersätta med"
+msgstr "geen teks om te vervang nie"
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
-msgstr "ingen text att testa med"
+msgstr "geen teks om te toets beskikbaar"
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr "Antal NULL-byte per MB som tillåts för att filen ska betraktas som text"
+msgstr "Aantal NULL-bytes per MB wat toegelaat word dat 'n lêer steeds as teks in plaas van binêre beskou kan word"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "Endast filer som matchar detta mönster söks.\r\nAnvänd \"|\" som avgränsare.\r\nExempel: *.cpp|*.h"
+msgstr "Slegs lêers wat ooreenstem met die patroon word deursoek.\r\nGebruik \"|\" as skeier.\r\nVoorbeeld: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
-msgstr "öppna lista med senaste poster"
+msgstr "maak lys met onlangse inskrywings oop"
 
 #. Resource IDs: (129)
 msgid "read error"
-msgstr "läsfel"
+msgstr "lees fout"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr "regex ok"
+msgstr "Regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr "återanvänd grepWin-instanser."
+msgstr "gebruik grepWin instances."
 
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr "söker i filen '%s'"
+msgstr "skandeer lêer '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
-msgstr "söksträngen är tom"
+msgstr "soekstring is leeg"
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr "starta nytt grepWin-fönster"
+msgstr "begin nuwe grepWin-venster"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "sökväg(arna) söks rekursivt.\r\nSeparera sökvägar med | symbolen.\r\nExempelvis: c:\\temp|d:\\logs"
+msgstr "die pad(e) wat rekursief gesoek word.\nAfsonder paaie met die '|' simbool.\nVoorbeeld: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "du kan exkludera mappar, exempelvis CVS och bilder.\r\nExempelvis: ^(CVS|bilder)$\r\nMärk, '.svn'-mappar are är dolda i Windows, så de är vanligtvis inte sökta i."
+msgstr "jy kan directories uitsluit, bv. CVS en beelde.\nVoorbeeld: ^(CVS|images)$\nOpmerking: '.svn' gidse is 'versteek' op Windows, dus word dit meestal nie geskandeer nie"
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
@@ -682,9 +690,9 @@ msgstr "⑂"
 
 #. Resource IDs: (1071)
 msgid "⚙ Settings"
-msgstr "⚙ Inställningar"
+msgstr "⚙ Instellings"
 
 #. Resource IDs: (123)
 msgid "🔎 &Search"
-msgstr "🔎 &Sök"
+msgstr "🔎 &Soek"
 

@@ -36,32 +36,32 @@ msgstr ""
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
-msgstr "%ld か所のさらなる一致"
+msgstr "%ld további találat"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
-msgstr "%path% は「ファイルのパス」、%line% は「移動先の行番号」、%column% は「行中の位置」に置換されます, %pattern% は「検索パターン」に置換されます"
+msgstr "%path% helyébe a fájl elérési útvonala, %line% helyébe az a sor lép, amelyre ugrani kell, %pattern% a keresési mintával"
 
 #. Resource IDs: (175)
 #, c-format
 msgid "%s files, skipped %s files. %s results selected."
-msgstr "%s ファイル, 検索省略 %s ファイル. 結果の%s項目を選択"
+msgstr "%s fájlban, kihagyva %s fájl. %s eredmény kiválasztva."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
-msgstr "grepWin について(&A)..."
+msgstr "&A grepWin névjegye"
 
 #. Resource IDs: (1061)
 msgid "&Convert newlines"
-msgstr "改行を変換(&C)"
+msgstr "Sortörések konvertálása"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
-msgstr "置換(&R)"
+msgstr "&Csere"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr "単語全体(&W)"
+msgstr "&Teljes szó"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -73,11 +73,11 @@ msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
-msgstr "<a href=\"https://tools.stefankueng.com\">公式サイトを開く</a>"
+msgstr "<a href=\"https://tools.stefankueng.com\">Látogasson el weboldalunkra</a>"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
-msgstr "<a>grepWin について</a>"
+msgstr "<a>A grepWin névjegye</a>"
 
 #. Resource IDs: (1086)
 msgid ">"
@@ -85,36 +85,36 @@ msgstr ">"
 
 #. Resource IDs: (135)
 msgid "About grepWin"
-msgstr "grepWin について"
+msgstr "A grepWin névjegye"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr "プリセットに追加"
+msgstr "Hozzáadás sablonokhoz"
 
 #. Resource IDs: (155)
 msgid "All Files"
-msgstr "すべてのファイル"
+msgstr "Minden fájl"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr "すべての日付"
+msgstr "Minden dátum"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
-msgstr "すべてのサイズ"
+msgstr "Minden méret"
 
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr "本当にバックアップをとらずに\n「%s」\nを\n「%s」\nに置き換えますか?"
+msgstr "Biztosan lecseréli ezt:\n%s\nerre:\n%s\nbiztonsági másolat nélkül"
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr "期間内"
+msgstr "Között"
 
 #. Resource IDs: (1095)
 msgid "Both"
-msgstr "両方"
+msgstr "Mind"
 
 #. Resource IDs: (1093)
 msgid "CRLF (Windows)"
@@ -122,91 +122,91 @@ msgstr "CRLF (Windows)"
 
 #. Resource IDs: (2)
 msgid "Cancel"
-msgstr "キャンセル"
+msgstr "Mégsem"
 
 #. Resource IDs: (169)
 msgid "Capture search (Shows replaced text)"
-msgstr "キャプチャと後方参照を使用 (置換文字列を表示)"
+msgstr "Keresés rögzítése (mutassa a lecserélt szöveget)"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr "最新版を確認"
+msgstr "Frissítések ellenőrzése"
 
 #. Resource IDs: (180)
 msgid "Column"
-msgstr "列"
+msgstr "Oszlop"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr "指定行と行中の位置をエディタで開くためのコマンドライン:"
+msgstr "Parancs, ami a szerkesztőt egy bizonyos sornál nyitja meg:"
 
 #. Resource IDs: (1060)
 msgid "Content"
-msgstr "内容"
+msgstr "Tartalom"
 
 #. Resource IDs: (65535)
 msgid "Convert newlines to regex newline tags:"
-msgstr "改行を正規表現用のタグに変換"
+msgstr "Új sorok átalakítása reguláris kifejezésű új sor címkékké:"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr "列のすべての項目をコピー"
+msgstr "Oszlop másolása az összes elemhez"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr "列の選択した項目をコピー"
+msgstr "Oszlop másolása a kiválasztott elemekhez"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
-msgstr "ファイル名をクリップボードにコピー"
+msgstr "Fájlnév vágólapra másolása"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr "ファイル名を一括コピー"
+msgstr "Fájlnevek vágólapra másolása"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr "パスをクリップボードにコピー"
+msgstr "Útvonal vágólapra másolása"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
-msgstr "パスを一括コピー"
+msgstr "Útvonalak vágólapra másolása"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
-msgstr "結果のテキストをクリップボードにコピー"
+msgstr "Eredmény szöveg vágólapra másolása"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
-msgstr "結果テキストを一括コピー"
+msgstr "Eredmények vágólapra másolása"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
-msgstr "バックアップを作成"
+msgstr "Biztonsági mentés készítés"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
-msgstr "フォルダを作成してバックアップ"
+msgstr "Biztonsági mentés készítése egy külön mappában"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr "ダークモード"
+msgstr "Sötét mód"
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr "更新日時"
+msgstr "Módosítás dátuma"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr "バックアップせず置換しても警告しない"
+msgstr "Ne figyelmeztessen a biztonsági mentés létrehozása nélküli cserénél"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr "ドットで改行にも一致"
+msgstr "A pont új sorra illeszkedik"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr "ダブルクリックでプリセットを選択"
+msgstr "Dupla kattintás egy sablon kiválasztásához"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
@@ -214,52 +214,52 @@ msgstr "Dummy"
 
 #. Resource IDs: (1067)
 msgid "Editor"
-msgstr "エディタ"
+msgstr "Szerkesztő"
 
 #. Resource IDs: (138)
 msgid "Encoding"
-msgstr "文字コード"
+msgstr "Kódolás"
 
 #. Resource IDs: (1056)
 msgid "Enter a name for the regex:"
-msgstr "この正規表現用の名前を入力:"
+msgstr "Adjon nevet a regex-nek:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr "ESC キーで grepWin を閉じる"
+msgstr "Az Esc billentyű bezárja a grepWin-t"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr "除外するフォルダ (正規表現):"
+msgstr "Kihagyandó könyvtárak (Regex):"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr "検索結果の一覧のエクスポート"
+msgstr "Eredménylista exportálása"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr "結果のエクスポート..."
+msgstr "Eredmények exportálása..."
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr "拡張子"
+msgstr "Kit"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "ファイル名が一致(&D):\n「|」で複数の文字列一致パターンを区切り、「-」を先頭にをつけると除外"
+msgstr "Illeszkedő fájlnevek:\nHasználja a '|' jelet a különböző illeszkedési minták elválasztására, tegye elé a '-' jelet a kihagyáshoz"
 
 #. Resource IDs: (1059)
 msgid "Files"
-msgstr "ファイル"
+msgstr "Fájlok"
 
 #. Resource IDs: (181)
 msgid "Filter results"
-msgstr "検索結果を絞り込む"
+msgstr "Keresés eredménye"
 
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %s files, skipped %s files."
-msgstr "発見 %s ファイル, 検索省略 %s ファイル"
+msgstr "Találat %s fájlban, kihagyva %s fájl."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -267,47 +267,51 @@ msgstr "GREPWIN"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "有効にすると、検索/置換を行ったフォルダ内にバックアップ用フォルダが作成され、そのフォルダ内にファイルがバックアップされます。"
+msgstr "Ha ez be van kapcsolva, akkor egy mentési könyvtár kerül létrehozásra a keresési/csere mappa alá, és a mentés ide kerül"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
-msgstr "バイナリファイルを含める"
+msgstr "Bináris fájlok is"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
-msgstr "隠し属性ファイルを含める"
+msgstr "Rejtett elemek is"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr "検索場所も保存"
+msgstr "Beleértve a keresési útvonalat"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
-msgstr "サブフォルダを含める"
+msgstr "Alkönyvtárak is"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr "シンボリックリンクを含める"
+msgstr "Szimbolikus linkek is"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr "システムファイルを含める"
+msgstr "Rendszerelemek is"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
-msgstr "パスが無効です!"
+msgstr "Érvénytelen útvonal!"
+
+#. Resource IDs: (183)
+msgid "Invalid search text"
+msgstr ""
 
 #. Resource IDs: (161)
 msgid "Inverse search"
-msgstr "検索結果を反転"
+msgstr "Fordított keresés"
 
 #. Resource IDs: (1019)
 msgid "KB"
-msgstr "KB"
+msgstr "kB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr "置換時にファイルの更新日時を維持"
+msgstr "Cserénél tartsa meg a fájl dátumát"
 
 #. Resource IDs: (1094)
 msgid "LF (Linux)"
@@ -315,48 +319,48 @@ msgstr "LF (Linux)"
 
 #. Resource IDs: (1075)
 msgid "Language:"
-msgstr "表示言語:"
+msgstr "Nyelv:"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
-msgstr "検索対象の絞り込み"
+msgstr "Keresés korlátozása"
 
 #. Resource IDs: (134)
 msgid "Line"
-msgstr "行番号"
+msgstr "Sor"
 
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %s\n"
-msgstr "行 %5ld : %s\n"
+msgstr "%5ld : %30s sor\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
-msgstr "一致数"
+msgstr "Egyezések"
 
 #. Resource IDs: (137)
 msgid "Multiline editor"
-msgstr "複数行用エディター"
+msgstr "Többsoros szerkesztő"
 
 #. Resource IDs: (104)
 msgid "Name"
-msgstr "名前"
+msgstr "Név"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr "より新しい"
+msgstr "Újabb mint"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr "「.」を改行にも一致させます。"
+msgstr "Új sorra a '.' illeszkedik"
 
 #. Resource IDs: (140)
 msgid "Newlines"
-msgstr "改行"
+msgstr "Új sorok"
 
 #. Resource IDs: (1056)
 msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
-msgstr "注: 文字列中の改行は無視され、整形にのみ使用されます。改行を適切に正規表現の改行に変換するには、下のボタンを使ってください。"
+msgstr "Megjegyzés: a szövegben szereplő új sorok figyelmen kívül maradnak, csak formázási célokat szolgálnak. Az új sorok formázásának megfelelő reguláris kifejezéssel történő konvertálásához használja az alábbi gombot."
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -364,187 +368,191 @@ msgstr "OK"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr "より古い"
+msgstr "Régebbi mint"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr "多重に起動しない"
+msgstr "Csak egy példány"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
-msgstr "このフォルダを開く"
+msgstr "Tartalmazó mappa megnyitása"
 
 #. Resource IDs: (141)
 msgid "Open with Editor"
-msgstr "エディタで開く"
+msgstr "Megnyitás szerkesztővel"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
-msgstr "正規表現テスト用のテキスト:"
+msgstr "Illesszen be valami szöveget, amivel a regex-et teszteli:"
 
 #. Resource IDs: (137)
 msgid "Path"
-msgstr "パス"
+msgstr "Útvonal"
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr "プリセット名"
+msgstr "Sablon neve"
 
 #. Resource IDs: (1022, 132)
 msgid "Presets"
-msgstr "プリセット"
+msgstr "Sablonok"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr ".: F1 キーでヘルプ表示 :."
+msgstr "Súgó: F1"
 
 #. Resource IDs: (154)
 msgid "Programs"
-msgstr "プログラム"
+msgstr "Programok"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
-msgstr "プリセット名を変更(&N)"
+msgstr "Sablon &átnevezése"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
-msgstr "正規表現のテスト"
+msgstr "Regex teszt"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "正規表現に一致"
+msgstr "Regex illeszkedés"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr "正規表現の置換文字列:"
+msgstr "Regex csereszöveg:"
 
 #. Resource IDs: (1001)
 msgid "Regex search"
-msgstr "正規表現で検索"
+msgstr "Regex keresés"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr "正規表現の検索文字列:"
+msgstr "Regex keresési szöveg:"
 
 #. Resource IDs: (179)
 msgid "Regex stack error"
-msgstr "正規表現のスタックエラー"
+msgstr "Regex verem hiba"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
-msgstr "相対パスは使用できません。絶対パスを入力してください"
+msgstr "Relatív útvonal nem megengedett. Kérem, adjon meg abszolút útvonalat!"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr "プリセットを削除(&V)"
+msgstr "Sablon &törlése"
 
 #. Resource IDs: (106)
 msgid "Replace string"
-msgstr "置換文字列"
+msgstr "Szöveg cseréje"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "置換文字列(&H)/\n後方参照:"
+msgstr "Cserélje ki a/\nRögzítési formátum:"
 
 #. Resource IDs: (126)
 msgid "S&top"
-msgstr "中止(&T)"
+msgstr "Le&állítás"
 
 #. Resource IDs: (1, 1016)
 msgid "Search"
-msgstr "検索"
+msgstr "Keresés"
 
 #. Resource IDs: (1026)
 msgid "Search &for:"
-msgstr "検索文字列(&F):"
+msgstr "Keresés &erre:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "大文字小文字を区別"
+msgstr "Kisbetű/nagybetű számít"
 
 #. Resource IDs: (1015)
 msgid "Search in"
-msgstr "検索場所"
+msgstr "Keresés ebben"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr "見つかったファイルから検索"
+msgstr "Keresés a talált fájlokban"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr "検索結果"
+msgstr "Keresési eredmények"
 
 #. Resource IDs: (105)
 msgid "Search string"
-msgstr "検索文字列"
+msgstr "Keresett szöveg"
+
+#. Resource IDs: (182)
+msgid "Search string contains non-word characters, a \"whole word\" search is not possible!"
+msgstr ""
 
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
-msgstr "検索済み %sファイル, 検索省略 %sファイル. %sか所一致 %s個のファイル中."
+msgstr "Keresés %s fájlban, kihagyva %s fájl. Lett %s találat %s fájlban."
 
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
-msgstr "検索済み %sファイル, 検索省略 %sファイル. %sか所一致 %s個のファイル中. 結果の%s項目を選択"
+msgstr "Keresés %s fájlban, kihagyva %s fájl. %s egyezést talált %s fájlban. %s eredmény kiválasztva."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr "エディタを選択..."
+msgstr "Válasszon szerkesztő alkalmazást..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
-msgstr "検索するパスを選択"
+msgstr "Válassza ki a keresés útvonalát"
 
 #. Resource IDs: (133)
 msgid "Size"
-msgstr "サイズ"
+msgstr "Méret"
 
 #. Resource IDs: (1006)
 msgid "Size is"
-msgstr "サイズ指定"
+msgstr "Méret:"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
-msgstr "正規表現テスト"
+msgstr "Teszt regex"
 
 #. Resource IDs: (136)
 msgid "Text"
-msgstr "テキスト"
+msgstr "Szöveg"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "文字列に一致"
+msgstr "Szöveg illeszkedés"
 
 #. Resource IDs: (1002)
 msgid "Text search"
-msgstr "文字列で検索"
+msgstr "Szöveg keresés"
 
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr "%s というパスは存在しないかアクセスできません!"
+msgstr "Az útvonal \"%s\", nem létezik vagy nem elérhető!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
-msgstr "正規表現に一致した文字列:"
+msgstr "A regex keresési szöveg illeszkedik:"
 
 #. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
-msgstr "置換後のテキスト:"
+msgstr "Az eredmény szöveg csere után:"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr "ファイルを UTF-8 として処理"
+msgstr "Fájlok kezelése UTF8-ként"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr "ファイルをバイナリとして処理"
+msgstr "Fájlok kezelése binárisként"
 
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr "設定の「%s」が有効になっています。\r\nこの設定のまま置換すると、ファイルが破損する場合があります。\r\n続行しますか?"
+msgstr "Engedélyezte \"%s\" opciót.\r\nA csere során ez az opció sérült fájlokat eredményezhet.\r\nMindenképpen folytatni szeretné?"
 
 #. Resource IDs: (1025)
 msgid "\\"
@@ -552,31 +560,31 @@ msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "検索に使用する正規表現 - F1キーで詳細情報を表示します。"
+msgstr "egy reguláris kifejezés volt használva a keresésnél. További információért nyomja meg az F1-et."
 
 #. Resource IDs: (125)
 msgid "an empty string"
-msgstr "空の文字列"
+msgstr "egy üres szöveg"
 
 #. Resource IDs: (130)
 msgid "binary"
-msgstr "バイナリ"
+msgstr "bináris"
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
-msgstr "クリックで複数行の文字列として編集できます。"
+msgstr "kattintson a szöveg többsorosként való szerkesztéséhez"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
-msgstr "ダークモードには Windonws 10 バージョン1803 以降が必要です。また先に Windows の色の設定から「黒」を選択してください"
+msgstr "A sötét módhoz legalább Windows 10 build 1803 szükséges, és engedélyezni kell a Windows rendszerbeállításaiban."
 
 #. Resource IDs: (121)
 msgid "equal to"
-msgstr "等しい"
+msgstr "egyenlő"
 
 #. Resource IDs: (122)
 msgid "greater than"
-msgstr "超過"
+msgstr "nagyobb, mint"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
@@ -585,92 +593,92 @@ msgstr "grepWin"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr "最新の grepWin %s があります。"
+msgstr "grepWin %s elérhető"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
-msgstr "grepWin 設定"
+msgstr "grepWin beállítások"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "Shift キーを押しながら検索で、検索文字列が含まれないファイルを検索"
+msgstr "tartsa lenyomva a Shift-et azon fájlok kereséséhez, ami NEM tartalmazzák a keresési szöveget"
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr "ファイルパスを出力"
+msgstr "tartalmazza a  fájl elérési útvonalakat"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr "一致行の行数を出力"
+msgstr "tartalmazza az egyező sorszámokat"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr "一致行のテキストを出力"
+msgstr "tartalmazza az egyező sor szövegeket"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr "正規表現が無効です!"
+msgstr "érvénytelen regex"
 
 #. Resource IDs: (120)
 msgid "less than"
-msgstr "未満"
+msgstr "kisebb, mint"
 
 #. Resource IDs: (111)
 msgid "no match"
-msgstr "一致なし"
+msgstr "nincs találat"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
-msgstr "置換文字列がありません"
+msgstr "nincs miben cserélni"
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
-msgstr "テスト用のテキストがありません"
+msgstr "nincs mivel tesztelni"
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr "ファイルをバイナリでなくテキストと認識するための MB あたりの NULL バイトの数"
+msgstr "a NULL bájtok MB-onként megengedett száma, hogy egy fájl még mindig szövegnek és nem binárisnak minősüljön"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "このパターンに一致するファイルから検索されます。\r\n一致する文字列は拡張でき、区切りに「|」が使えます。\r\n指定例: *.cpp|*.h"
+msgstr "csak a mintának megfelelő fájlokat keresi a rendszer.\r\n\"|\" jelet használja elválasztójelként.\r\nPélda: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
-msgstr "最近検索した項目一覧を開く"
+msgstr "lista megnyitása a legutóbbi bejegyzésekkel"
 
 #. Resource IDs: (129)
 msgid "read error"
-msgstr "読み取りエラー"
+msgstr "olvasási hiba"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr "正規表現 - OK"
+msgstr "regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr "grepWin のインスタンスを再利用します。"
+msgstr "grepWin példányok újra felhasználása"
 
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr "ファイルをスキャン中 '%s'"
+msgstr "Keresés itt: '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
-msgstr "検索文字列が空です"
+msgstr "a keresett szöveg üres"
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr "grepWin の新規ウィンドウを開く"
+msgstr "új grepWin ablak indítása"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "パスは再帰的に検索されます。\r\nパスを「|」で区切ることができます。\r\n指定例: c:\\temp|d:\\logs"
+msgstr "a rekurzívan keresett elérési útvonal(ak).\r\nElkülöníti az elérési utakat a | szimbólummal.\r\nPélda: c:\\\temp|d:\\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "フォルダを除外できます。CVS と images を除外する例です。\r\n指定例: ^(CVS|images)$\r\n注: Windows では「.svn」フォルダは隠されているため、通常はスキャンされません。"
+msgstr "kizárhat könyvtárakat, például a CVS-t és a képeket.\r\Példa: ^(CVS|images)$\r\nMegjegyzés: Az '.svn' mappák Windowson 'rejtett' mappák, ezért általában nem kerülnek átvizsgálásra."
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
@@ -682,9 +690,9 @@ msgstr "⑂"
 
 #. Resource IDs: (1071)
 msgid "⚙ Settings"
-msgstr "⚙ 設定"
+msgstr "⚙ Beállítások"
 
 #. Resource IDs: (123)
 msgid "🔎 &Search"
-msgstr "🔎 検索(&S)"
+msgstr "🔎 &Keresés"
 
