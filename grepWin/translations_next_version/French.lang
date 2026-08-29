@@ -299,7 +299,7 @@ msgstr "Chemin invalide !"
 
 #. Resource IDs: (183)
 msgid "Invalid search text"
-msgstr "Texte de recherche non valide"
+msgstr "Texte de recherche invalide"
 
 #. Resource IDs: (161)
 msgid "Inverse search"
@@ -484,7 +484,7 @@ msgstr "Chaîne de recherche"
 
 #. Resource IDs: (182)
 msgid "Search string contains non-word characters, a \"whole word\" search is not possible!"
-msgstr "La chaîne de recherche contient des caractères qui ne font pas partie d'un mot, une recherche par \"mot entier\" n'est pas possible !"
+msgstr "La chaîne de recherche contient des caractères non alphanumériques, une recherche de \"mot entier\" n'est pas possible !"
 
 #. Resource IDs: (128)
 #, c-format
