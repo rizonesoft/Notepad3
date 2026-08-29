@@ -40,7 +40,7 @@ msgstr "%ld más resultados"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
-msgstr "%path% = ruta del archivo, %line% = línea destino, %column% = columna en la línea, %pattern% con el patrón de búsqueda"
+msgstr "%path% se reemplaza por la ruta del archivo, %line% por la línea de destino, %column% por el desplazamiento dentro de la línea, %pattern% por el patrón de búsqueda."
 
 #. Resource IDs: (175)
 #, c-format
@@ -299,7 +299,7 @@ msgstr "Ruta invalida!"
 
 #. Resource IDs: (183)
 msgid "Invalid search text"
-msgstr ""
+msgstr "Texto de búsqueda no válido"
 
 #. Resource IDs: (161)
 msgid "Inverse search"
@@ -484,7 +484,7 @@ msgstr "String de busqueda"
 
 #. Resource IDs: (182)
 msgid "Search string contains non-word characters, a \"whole word\" search is not possible!"
-msgstr ""
+msgstr "La cadena de búsqueda contiene caracteres que no forman parte de una palabra, ¡no es posible realizar una búsqueda de \"palabra completa\"!"
 
 #. Resource IDs: (128)
 #, c-format
