@@ -299,7 +299,7 @@ msgstr "Ogiltig mapp!"
 
 #. Resource IDs: (183)
 msgid "Invalid search text"
-msgstr ""
+msgstr "Ogiltig söktext"
 
 #. Resource IDs: (161)
 msgid "Inverse search"
@@ -480,11 +480,11 @@ msgstr "Sökresultat"
 
 #. Resource IDs: (105)
 msgid "Search string"
-msgstr "Sök sträng"
+msgstr "Söksträng"
 
 #. Resource IDs: (182)
 msgid "Search string contains non-word characters, a \"whole word\" search is not possible!"
-msgstr ""
+msgstr "Söksträngen innehåller tecken som inte ingår i ord, så det går inte att söka efter \"hela ord\"!"
 
 #. Resource IDs: (128)
 #, c-format
@@ -560,7 +560,7 @@ msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "ett reguljärt uttryck använt för sökning. Tryck F1 för mer information."
+msgstr "ett reguljärt uttryck som används för sökning. Tryck på F1 för mer information."
 
 #. Resource IDs: (125)
 msgid "an empty string"
