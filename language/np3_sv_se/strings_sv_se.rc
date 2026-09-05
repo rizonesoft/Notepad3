@@ -104,7 +104,7 @@ BEGIN
     IDS_MUI_UNTITLED        "Namnlös"
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(skrivskyddad)"
-    IDS_MUI_FILELOCKED      "<Exklusiv>"
+    IDS_MUI_FILELOCKED      "<exklusiv>"
     IDS_MUI_LOADFILE        "Laddar ""%s""..."
     IDS_MUI_SAVEFILE        "Sparar ""%s""..."
     IDS_MUI_PRINTFILE       "Skriver ut sida %i..."
@@ -121,7 +121,7 @@ BEGIN
     IDS_MUI_OPENWITH        "Välj mappen med länkar till dina favoritprogram"
     IDS_MUI_FAVORITES       "Välj mappen med länkar till dina favoritfiler"
     IDS_MUI_BACKSLASHHELP   "Bakåtlutande snedstreck transformation\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBacksteg (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNyrad (LF, Ascii 10)\n\\r\tVagnretur (CR, Ascii 13)\n\\t\tHorisontell tab (HT, Ascii 9)\n\\v\tVertikal tab (VT, Ascii 11)\n\\0oo\tOktalt värde\n\\u####\tHexadecimalt värde\n\\xhh\tHexadecimalt värde\n\\\\\tBakåtlutande snedstreck"
-    IDS_MUI_REGEXPHELP      "RegExp Matchning Syntax (multirad)\n\n.\tMatchar bokstav\n^\tTom rad efter nyrad\n$\tTom rad före radslut\n\\<\tBörjan av ord\n\\>\tSlut av ord\n\\b\tOrdgräns\n[...]\tEn mängd tecken ([abc]) eller intervall ([a-z])\n[^...]\tTecken som inte finns\n\\d\tAlla decimaltal\n\\D\tEj decimaltalstecken\n\\s\tAlla tomrumstecken\n\\S\tEj tomrumstecken\n\\w\tAlla ""ord""-tecken\n\\W\tAlla ""icke-ord""-tecken\n\\x\tLägg till bakåtlutande snedstreck till tecken med\n\tspeciell betydelse\n\\xHH\tTecken med hexadecimal kod HH\n?\tMatchar föregående 0 eller 1 gånger\n*\tMatchar föregående 0 eller mer än 1 gånger\n+\tMatchar föregående 1 eller fler gånger\n*? eller\n+?\tIcke girig matchning av kvantifierare ""?"" och ""+""\n(\tbörjan av region\n)\tslut av region\n\\n\tRefererar till en region vid ersättning (n är 1-9)\n"
+    IDS_MUI_REGEXPHELP      "RegExp matchning syntax (multirad)\n\n.\tMatchar bokstav\n^\tTom rad efter nyrad\n$\tTom rad före radslut\n\\<\tBörjan av ord\n\\>\tSlut av ord\n\\b\tOrdgräns\n[...]\tEn mängd tecken ([abc]) eller intervall ([a-z])\n[^...]\tTecken som inte finns\n\\d\tAlla decimaltal\n\\D\tEj decimaltalstecken\n\\s\tAlla tomrumstecken\n\\S\tEj tomrumstecken\n\\w\tAlla ""ord""-tecken\n\\W\tAlla ""icke-ord""-tecken\n\\x\tLägg till bakåtlutande snedstreck till tecken med\n\tspeciell betydelse\n\\xHH\tTecken med hexadecimal kod HH\n?\tMatchar föregående 0 eller 1 gånger\n*\tMatchar föregående 0 eller mer än 1 gånger\n+\tMatchar föregående 1 eller fler gånger\n*? eller\n+?\tIcke girig matchning av kvantifierare ""?"" och ""+""\n(\tbörjan av region\n)\tslut av region\n\\n\tRefererar till en region vid ersättning (n är 1-9)\n"
     IDS_MUI_WILDCARDHELP    "Sökning med jokertecken\n\n*\tMatchar noll eller fler tecken\n?\tMatchar exakt ett tecken"
 END
 
@@ -154,7 +154,7 @@ BEGIN
                             "Filen ""%s"" kan inte sparas och kan vara skyddad\n\nVill du köra %s med utökade privilegier?"
     IDS_MUI_ERR_ADMINEXE    "Ingen exekverbar fil för administratör kan hittas\nGå till webbsidan https://rizonesoft.com?"
     IDS_MUI_WARN_LOAD_BIG_FILE
-                            "Vill du öppna denna stora fil?\n\t(storlek: %s >= %s)!\n(Stil och syntaxmarkering kommer inte användas!)"
+                            "Vill du öppna denna stora fil?\n\t(Storlek: %s >= %s)!\n(Stil och syntaxmarkering kommer inte användas!)"
     IDS_MUI_ERR_FILE_TOO_LARGE
                             "Kan inte hantera så stor fil (storlek: %s)!"
     IDS_MUI_WARN_UNKNOWN_EXT
@@ -207,8 +207,8 @@ BEGIN
     IDS_MUI_URL_FILE_EXISTS  "Angiven URL-fil existerar redan!"
     IDS_MUI_URL_PATH_NOT_FOUND
                              "Angiven URL-sökväg existerar redan!"
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Klicka för att öppna fil"
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klicka för att öppna länken i webbläsaren"
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + klicka för att öppna fil"
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + klicka för att öppna länken i webbläsaren"
     IDS_MUI_UNMATCHED_BRACE  "Omatchad klammerparentes"
     IDS_MUI_NO_ENCLOSING_BRACE "Ingen omgivande klammerparentes"
     IDS_MUI_INF_PRSVFILEMODTM
@@ -226,7 +226,7 @@ BEGIN
     IDS_MUI_ASK_CREATE      """%s"" hittades inte\nVill du skapa denna fil?"
     IDS_MUI_PRINT_HEADER    "Filnamn, aktuellt datum och tid|Filnamn aktuellt datum|Filnamn|Lämna tom"
     IDS_MUI_PRINT_FOOTER    "Sidnummer|Lämna tom"
-    IDS_MUI_PRINT_COLOR     "Normal|Mörk (Inverterade färger)|Svart på vit|Färg på vit|Färg på vit (förutom radnummer)|Skärmfärger"
+    IDS_MUI_PRINT_COLOR     "Normal|Mörk (inverterade färger)|Svart på vit|Färg på vit|Färg på vit (förutom radnummer)|Skärmfärger"
     IDS_MUI_PRINT_PAGENUM   "Sida %i"
     IDS_MUI_WARN_STYLE_RESET
                             "Denna åtgård kommer att återställa stilen till förvalt färgläge och ändra aktiv temafil config.ini!"
