@@ -299,7 +299,7 @@ msgstr "Niewłaściwa ścieżka!"
 
 #. Resource IDs: (183)
 msgid "Invalid search text"
-msgstr ""
+msgstr "Nieprawidłowy tekst wyszukiwania"
 
 #. Resource IDs: (161)
 msgid "Inverse search"
@@ -484,7 +484,7 @@ msgstr "Szukana fraza"
 
 #. Resource IDs: (182)
 msgid "Search string contains non-word characters, a \"whole word\" search is not possible!"
-msgstr ""
+msgstr "Ciąg wyszukiwania zawiera znaki niebędące słowami, więc wyszukiwanie \"całych słów\" nie jest możliwe!"
 
 #. Resource IDs: (128)
 #, c-format
