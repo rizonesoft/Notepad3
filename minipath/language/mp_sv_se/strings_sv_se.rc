@@ -73,8 +73,8 @@ END
 STRINGTABLE
 BEGIN
     IDS_APPTITLE            "MiniPath"
-    IDS_NUMFILES            "%s Objekt"
-    IDS_NUMFILES2           "%s Objekt | Filter"
+    IDS_NUMFILES            "%s objekt"
+    IDS_NUMFILES2           "%s objekt | Filter"
     IDS_SAVEFILE            "Sparar ""%s""..."
     IDS_OPEN_FILE_WITH      "Öppna med %s"
 END
