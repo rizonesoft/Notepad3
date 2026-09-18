@@ -856,7 +856,7 @@ BEGIN
     RTEXT           "Blå:", COLOR_BLUEACCEL, 243, 154, 24, 9
     EDITTEXT, COLOR_BLUE, 269, 152, 19, 12, WS_GROUP | WS_TABSTOP
 
-    PUSHBUTTON      "Lägg till anpassade färger", COLOR_ADD, 152, 166, 142, 14,
+    PUSHBUTTON      "Lägg till i anpassade färger", COLOR_ADD, 152, 166, 142, 14,
     WS_GROUP | WS_TABSTOP
 END
 
