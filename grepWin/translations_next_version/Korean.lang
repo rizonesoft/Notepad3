@@ -474,6 +474,10 @@ msgstr "다음에서 검색"
 msgid "Search in found files"
 msgstr "찾은 파일들에서 검색"
 
+#. Resource IDs: (184)
+msgid "Search in found files"
+msgstr ""
+
 #. Resource IDs: (1018)
 msgid "Search results"
 msgstr "검색 결과"

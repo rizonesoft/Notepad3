@@ -474,6 +474,10 @@ msgstr "搜尋於"
 msgid "Search in found files"
 msgstr "在找到的檔案中搜尋"
 
+#. Resource IDs: (184)
+msgid "Search in found files"
+msgstr "在找到的檔案中取代"
+
 #. Resource IDs: (1018)
 msgid "Search results"
 msgstr "搜尋結果"
