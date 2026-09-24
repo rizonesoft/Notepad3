@@ -474,6 +474,10 @@ msgstr "Tìm trong"
 msgid "Search in found files"
 msgstr "Tìm trong các tệp đã tìm thấy"
 
+#. Resource IDs: (184)
+msgid "Search in found files"
+msgstr ""
+
 #. Resource IDs: (1018)
 msgid "Search results"
 msgstr "Kết quả tìm kiếm"

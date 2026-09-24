@@ -474,6 +474,10 @@ msgstr "Szukaj w"
 msgid "Search in found files"
 msgstr "Szukaj w znalezionych plikach"
 
+#. Resource IDs: (184)
+msgid "Search in found files"
+msgstr ""
+
 #. Resource IDs: (1018)
 msgid "Search results"
 msgstr "Wyniki wyszukiwania"

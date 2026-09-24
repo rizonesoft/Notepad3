@@ -474,6 +474,10 @@ msgstr "Keresés ebben"
 msgid "Search in found files"
 msgstr "Keresés a talált fájlokban"
 
+#. Resource IDs: (184)
+msgid "Search in found files"
+msgstr ""
+
 #. Resource IDs: (1018)
 msgid "Search results"
 msgstr "Keresési eredmények"
