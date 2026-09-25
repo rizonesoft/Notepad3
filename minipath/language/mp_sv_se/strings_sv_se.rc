@@ -96,7 +96,7 @@ BEGIN
     IDS_ERR_LNK_NOACCESS    "Länkfel\nIngen tillgång till sökväg till länkat objekt\nKontrollera disk- eller nätverkstillgång"
     IDS_ERR_CREATELINK      "Länkfel\nFel vid skapande av länk\nTroligtvis är målmappen skrivskyddad"
     IDS_ERR_FILTER          "Fel på filfilter\nInga ytterligare filter angavs\nLäs MiniPath:s readme-fil för mer information"
-    IDS_ERR_PREVWINDISABLED "MiniPath\nMiniPath fönstret är upptaget eller har en aktiv dialogruta\nVill du öppna ett nytta MiniPath-fönster?"
+    IDS_ERR_PREVWINDISABLED "MiniPath\nMiniPath fönstret är upptaget eller har en aktiv dialogruta\nVill du öppna ett nytt MiniPath-fönster?"
 END
 
 STRINGTABLE
