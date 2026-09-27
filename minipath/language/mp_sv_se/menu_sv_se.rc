@@ -84,7 +84,7 @@ BEGIN
         BEGIN
             MENUITEM "Mappar",                    IDM_VIEW_FOLDERS
             MENUITEM "Filer",                     IDM_VIEW_FILES
-            MENUITEM "System objekt",             IDM_VIEW_HIDDEN
+            MENUITEM "Systemobjekt",             IDM_VIEW_HIDDEN
         END
         POPUP "Sortera"
         BEGIN
