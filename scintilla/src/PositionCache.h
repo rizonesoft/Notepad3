@@ -124,9 +124,9 @@ public:
 	bool InLine(int offset, int line) const noexcept;
 	int SubLineFromPosition(int posInLine, PointEnd pe) const noexcept;
 	void AddLineStart(Sci::Position start);
-	void SetBracesHighlight(Range rangeLine, const Sci::Position braces[],
+	void SetBracesHighlight(ForwardRange rangeLine, const Sci::Position braces[],
 		char bracesMatchStyle, int xHighlight, bool ignoreStyle);
-	void RestoreBracesHighlight(Range rangeLine, const Sci::Position braces[], bool ignoreStyle);
+	void RestoreBracesHighlight(ForwardRange rangeLine, const Sci::Position braces[], bool ignoreStyle);
 	int FindBefore(XYPOSITION x, Range range) const noexcept;
 	int FindPositionFromX(XYPOSITION x, Range range, bool charPosition) const noexcept;
 	Point PointFromPosition(int posInLine, int lineHeight, PointEnd pe) const noexcept;
@@ -263,7 +263,7 @@ constexpr int lengthStartSubdivision = 300;
 // Class to break a line of text into shorter runs at sensible places.
 class BreakFinder {
 	const LineLayout *ll;
-	const Range lineRange;
+	const ForwardRange lineRange;
 	int nextBreak;
 	std::vector<int> selAndEdge;
 	unsigned int saeCurrentPos;
@@ -282,7 +282,7 @@ public:
 		Foreground = 2,
 		ForegroundAndSelection = 3,
 	};
-	BreakFinder(const LineLayout *ll_, const Selection *psel, Range lineRange_, Sci::Position posLineStart,
+	BreakFinder(const LineLayout *ll_, const Selection *psel, ForwardRange lineRange_, Sci::Position posLineStart,
 		XYPOSITION xStart, BreakFor breakFor, const Document *pdoc_, const SpecialRepresentations *preprs_, const ViewStyle *pvsDraw);
 	// Deleted so BreakFinder objects can not be copied.
 	BreakFinder(const BreakFinder &) = delete;
