@@ -9742,6 +9742,11 @@ inline static LRESULT _MsgNotifyLean(const SCNotification* const scn, bool* bMod
         bool const bInUndoRedoStep = (iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO));
         if (iModType & SC_MOD_INSERTCHECK) {
             if (!bInUndoRedoStep) {
+                if (Settings.SplitUndoTypingSeqOnLnBreak && (scn->length > 0) && ((scn->text[0] == '\r') || (scn->text[0] == '\n'))) {
+                    // split the undo transaction BEFORE the line break, so the next transaction
+                    // will include both the line break and subsequent auto indentation.
+                    _SplitUndoTransaction();
+                }
                 _HandleInsertCheck(scn);
             }
         }
@@ -9848,11 +9853,6 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
             int const iModType = scn->modificationType;
             if (scn->linesAdded != 0) {
                 EditBookmarkAdjustNavigation(SciCall_LineFromPosition(scn->position), scn->linesAdded);
-                if (Settings.SplitUndoTypingSeqOnLnBreak && (scn->linesAdded > 0)) {
-                    if (!(iModType & (SC_PERFORMED_UNDO | SC_PERFORMED_REDO))) {
-                        _SplitUndoTransaction();
-                    }
-                }
             }
             if (s_bInMultiEditMode && !(iModType & SC_MULTILINEUNDOREDO)) {
                 if (!Sci_IsMultiSelection()) {
