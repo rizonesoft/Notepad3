@@ -29,6 +29,7 @@ typeAliases = {
 	"int": "int",
 	"keymod": "int",
 	"line": "Line",
+	"pixels": "Pixels",
 	"pointer": "void *",
 	"position": "Position",
 	"string": "const char *",

@@ -256,22 +256,22 @@ struct FontDirectWrite : public FontWin {
 // >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
 		// Try to resolve font face name (e.g., "Cascadia Mono Light") into family + properties
 		std::wstring wsFace;
-		DWRITE_FONT_WEIGHT weight = static_cast<DWRITE_FONT_WEIGHT>(fp.weight);
+
+		const std::wstring wsLocale = WStringFromUTF8(fp.localeName);
+		const FLOAT fHeight = static_cast<FLOAT>(fp.size);
 		DWRITE_FONT_STYLE style = fp.italic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL;
-		DWRITE_FONT_STRETCH stretch = static_cast<DWRITE_FONT_STRETCH>(fp.stretch);
+		constexpr DWRITE_FONT_WEIGHT minWeight = static_cast<DWRITE_FONT_WEIGHT>(1);
+		constexpr DWRITE_FONT_WEIGHT maxWeight = static_cast<DWRITE_FONT_WEIGHT>(999);
+		DWRITE_FONT_WEIGHT weight = std::clamp(
+			static_cast<DWRITE_FONT_WEIGHT>(fp.weight), minWeight, maxWeight);
+		DWRITE_FONT_STRETCH stretch = std::clamp(
+			static_cast<DWRITE_FONT_STRETCH>(fp.stretch), DWRITE_FONT_STRETCH_ULTRA_CONDENSED, DWRITE_FONT_STRETCH_ULTRA_EXPANDED);
 
 		if (!ResolveFontFace(fp, wsFace, weight, style, stretch)) {
 			// Fallback to direct face name if resolution fails
 			wsFace = WStringFromUTF8(fp.faceName);
 		}
 
-		// Override style if italic explicitly requested
-		if (fp.italic) {
-			style = DWRITE_FONT_STYLE_ITALIC;
-		}
-
-		const std::wstring wsLocale = WStringFromUTF8(fp.localeName);
-		const FLOAT fHeight = static_cast<FLOAT>(fp.size);
 		HRESULT hr = pIDWriteFactory->CreateTextFormat(wsFace.c_str(), nullptr,
 			weight,
 			style,
@@ -323,6 +323,9 @@ struct FontDirectWrite : public FontWin {
 	FontDirectWrite &operator=(FontDirectWrite &&) = delete;
 	~FontDirectWrite() noexcept override = default;
 	[[nodiscard]] HFONT HFont() const noexcept override {
+		if (!pTextFormat) {
+			return {};
+		}
 		LOGFONTW lf = {};
 		const HRESULT hr = pTextFormat->GetFontFamilyName(lf.lfFaceName, LF_FACESIZE);
 		if (!SUCCEEDED(hr)) {

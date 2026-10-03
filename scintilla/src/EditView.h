@@ -152,7 +152,7 @@ private:
 		Sci::Line lineDoc, int xOrigin, PRectangle rcLine, int subLine) const;
 	void DrawIndentGuide(Surface *surface, XYPOSITION start, PRectangle rcSegment, bool highlight, bool offset) const;
 	void DrawForeground(Surface *surface, const EditModel &model, const ViewStyle &vsDraw, const LineLayout *ll,
-		int xStart, PRectangle rcLine, int subLine, Sci::Line lineVisible, Range lineRange, Sci::Position posLineStart,
+		int xStart, PRectangle rcLine, int subLine, Sci::Line lineVisible, ForwardRange lineRange, Sci::Position posLineStart,
 		ColourOptional background);
 	void DrawIndentGuidesOverEmpty(Surface *surface, const EditModel &model, const ViewStyle &vsDraw, const LineLayout *ll,
 		Sci::Line line, int xStart, PRectangle rcLine, int subLine, Sci::Line lineVisible);
