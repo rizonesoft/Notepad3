@@ -149,7 +149,7 @@ jobs:
         shell: cmd
         working-directory: test
         run: |
-          call TestFileVersion.cmd
+          call TestFileVersion.cmd || exit /b 1
           call TestAhkNotepad3.cmd
 
       - name: Upload artifacts
