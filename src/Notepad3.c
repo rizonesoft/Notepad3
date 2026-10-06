@@ -365,6 +365,11 @@ static void _PruneOldDropSnapshots(DWORD maxAgeSecs);
 static bool _IsDropSnapshotPath(const HPATHL hpth);
 static void _RegisterDropSnapshot(const HPATHL hpth);
 static void _CleanupDropSnapshots(bool dropAll);
+typedef struct _topmost_wnd_t {
+    LPCWSTR pszAppID;
+    HWND    hwnd;
+} TOPMOST_WND_T;
+static BOOL CALLBACK _EnumTopmostWndProc(HWND hwnd, LPARAM lParam);
 static HPATHL _ResolveSelectionForOpen(int* lineNum, bool* isDir);
 
 // ----------------------------------------------------------------------------
@@ -1322,6 +1327,31 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         StringCchCat(s_wchWndClass, COUNTOF(s_wchWndClass), L"B");
     }
 
+    (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
+    (void)OleInitialize(NULL);
+
+    // launched w/o args by a link carrying an AppID (taskbar Shift+Click): topmost window of that group does File > New Window
+    LPCWSTR lpArgs = PathGetArgsW(GetCommandLineW());
+    lpArgs += StrSpnW(lpArgs, L" \t");
+    WCHAR wchLinkAppID[SMALL_BUFFER] = { L'\0' };
+    if (StrIsEmpty(lpArgs) && SUCCEEDED(GetLaunchLinkAppUserModelID(wchLinkAppID, COUNTOF(wchLinkAppID)))) {
+        TOPMOST_WND_T tw = { wchLinkAppID, NULL };
+        EnumWindows(_EnumTopmostWndProc, (LPARAM)&tw);
+        if (tw.hwnd) {
+            DWORD dwTargetPID = 0;
+            GetWindowThreadProcessId(tw.hwnd, &dwTargetPID);
+            AllowSetForegroundWindow(dwTargetPID); // let the target bring its new window to front
+            DWORD_PTR dwResult = 0;
+            if (SendMessageTimeout(tw.hwnd, WM_NEWWINDOWREQUEST, 0, 0, SMTO_ABORTIFHUNG | SMTO_BLOCK, 500, &dwResult) && dwResult) {
+                OleUninitialize();
+                CoUninitialize();
+                return FALSE; // acknowledged (an older build or a hung instance does not)
+            }
+        }
+        StringCchCopy(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID), wchLinkAppID); // join the clicked taskbar group
+        Globals.CmdLnFlag_ReuseWindow = 1; // new window requested: like -n, ReuseWindow must not activate another instance
+    }
+
     // INI File Handling
     FindIniFile();
     TestIniFile();
@@ -1337,9 +1367,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     InitIniFileSaveMutex();
 
     PrivateSetCurrentProcessExplicitAppUserModelID(Settings2.AppUserModelID);
-
-    (void)CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_SPEED_OVER_MEMORY);
-    (void)OleInitialize(NULL);
 
     INITCOMMONCONTROLSEX icex = { sizeof(INITCOMMONCONTROLSEX) };
     icex.dwICC = ICC_WIN95_CLASSES | ICC_USEREX_CLASSES | ICC_COOL_CLASSES | ICC_NATIVEFNTCTL_CLASS | ICC_STANDARD_CLASSES;
@@ -1792,6 +1819,30 @@ static BOOL CALLBACK _EnumWndProc(HWND hwnd, LPARAM lParam)
 
 //=============================================================================
 //
+//  _EnumTopmostWndProc : find topmost enabled Notepad3 window of an AppID
+//
+static BOOL CALLBACK _EnumTopmostWndProc(HWND hwnd, LPARAM lParam)
+{
+    TOPMOST_WND_T* const ptw = (TOPMOST_WND_T*)lParam;
+    WCHAR szClassName[64] = { L'\0' };
+    if (!GetClassName(hwnd, szClassName, COUNTOF(szClassName)) || (StrCmpW(szClassName, s_wchWndClass) != 0)) {
+        return TRUE;
+    }
+    if (!IsWindowEnabled(hwnd)) { // modal dialog open
+        return TRUE;
+    }
+    WCHAR wchAppID[SMALL_BUFFER] = { L'\0' };
+    GetWindowAppUserModelID(hwnd, wchAppID, COUNTOF(wchAppID));
+    if (CompareStringOrdinal(wchAppID, -1, ptw->pszAppID, -1, TRUE) != CSTR_EQUAL) {
+        return TRUE;
+    }
+    ptw->hwnd = hwnd;
+    return FALSE;
+}
+
+
+//=============================================================================
+//
 //  _EnumWndProc2 : find other Notepad3 window w/ same file loaded
 //
 static BOOL CALLBACK _EnumWndProc2(HWND hwnd, LPARAM lParam)
@@ -2186,7 +2237,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     }
 
     Globals.hwndMain = hwndMain; // make main window globaly available
-    SetWindowAppUserModelID(hwndMain, Settings2.AppUserModelID);
+    SetWindowAppUserModelID(hwndMain, Settings2.AppUserModelID, _W(SAPPNAME));
 
     HPATHL        hfile_pth = Path_Copy(s_pthArgFilePath);
     FileLoadFlags fLoadFlags = FLF_None;
@@ -2600,6 +2651,15 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case WM_TRAYMESSAGE:
         return MsgTrayMessage(hwnd, wParam, lParam);
+
+    case WM_NEWWINDOWREQUEST:
+        if (wParam == 0) { // request from a launching instance: acknowledge, open the window asynchronously
+            PostMessage(hwnd, WM_NEWWINDOWREQUEST, 1, 0);
+            return TRUE;
+        }
+        SaveAllSettings(false);
+        DialogNewWindow(hwnd, false, NULL, NULL);
+        return TRUE;
 
     //// This message is posted before Notepad3 reactivates itself
     //case WM_CHANGENOTIFYCLEAR:
@@ -3609,6 +3669,7 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     assert(!IsIniFileCached());
 
     if (WM_DESTROY == umsg) {
+        ClearWindowAppUserModelID(hwnd); // window properties must be removed before the window is closed
         if (IS_VALID_HANDLE(s_hEventAppIsClosing)) {
             CloseHandle(s_hEventAppIsClosing);
         }
@@ -10548,7 +10609,7 @@ static void ParseCmdLnOption(LPWSTR lp1, LPWSTR lp2, const size_t len)
     else if (StrCmpNI(lp1, L"appid=", CONSTSTRGLEN(L"appid=")) == 0) {
         StringCchCopyN(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID),
             lp1 + CONSTSTRGLEN(L"appid="), len - CONSTSTRGLEN(L"appid="));
-        StrTrim(Settings2.AppUserModelID, L" ");
+        StrTrim(Settings2.AppUserModelID, L" \"");
         if (StrIsEmpty(Settings2.AppUserModelID)) {
             StringCchCopy(Settings2.AppUserModelID, COUNTOF(Settings2.AppUserModelID), _W("Rizonesoft.") _W(SAPPNAME));
         }
@@ -10556,7 +10617,7 @@ static void ParseCmdLnOption(LPWSTR lp1, LPWSTR lp2, const size_t len)
     else if (StrCmpNI(lp1, L"sysmru=", CONSTSTRGLEN(L"sysmru=")) == 0) {
         WCHAR wch[16];
         StringCchCopyN(wch, COUNTOF(wch), lp1 + CONSTSTRGLEN(L"sysmru="), COUNTOF(wch));
-        StrTrim(wch, L" ");
+        StrTrim(wch, L" \"");
         if (*wch == L'1') {
             Globals.CmdLnFlag_ShellUseSystemMRU = 2;
         }
@@ -10690,8 +10751,9 @@ static void ParseCmdLnOption(LPWSTR lp1, LPWSTR lp2, const size_t len)
             else if (ExtractFirstArgument(lp2, lp1, lp2, (int)len)) {
                 WININFO   wi = INIT_WININFO;
                 int       iMaximize = 0;
-                int const itok = swscanf_s(lp1, WINDOWPOS_STRGFORMAT, &wi.x, &wi.y, &wi.cx, &wi.cy, &wi.dpi, &iMaximize);
-                if (itok == 4 || itok == 5 || itok == 6) { // scan successful
+                int       iZoom = 0;
+                int const itok = swscanf_s(lp1, WINDOWPOS_STRGFORMAT L",%i", &wi.x, &wi.y, &wi.cx, &wi.cy, &wi.dpi, &iMaximize, &iZoom);
+                if (itok >= 4 && itok <= 7) { // scan successful
                     Globals.CmdLnFlag_PosParam = true;
                     Globals.CmdLnFlag_WindowPos = 0;
                     if (itok == 4) {
@@ -10708,6 +10770,9 @@ static void ParseCmdLnOption(LPWSTR lp1, LPWSTR lp2, const size_t len)
                         }
                     }
                     wi.max = !!iMaximize;
+                    if (itok == 7) { // optional zoom (File > New Window)
+                        wi.zoom = clampi(iZoom, NP3_MIN_ZOOM_PERCENT, NP3_MAX_ZOOM_PERCENT);
+                    }
                     g_IniWinInfo = wi; // set window placement
                 }
             }

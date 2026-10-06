@@ -5036,7 +5036,7 @@ void DialogNewWindow(HWND hwnd, bool bSaveBeforeOpen, const HPATHL hFilePath, WI
     if (bSaveBeforeOpen && !FileSave(FSF_Ask)) {
         return;
     }
-    WCHAR wch[80] = { L'\0' };
+    WCHAR wch[SMALL_BUFFER + 32] = { L'\0' }; // fits -appid="<AppUserModelID>"
 
     HPATHL hmod_pth = Path_Allocate(NULL);
     Path_GetModuleFilePath(hmod_pth);
@@ -5056,11 +5056,11 @@ void DialogNewWindow(HWND hwnd, bool bSaveBeforeOpen, const HPATHL hFilePath, WI
     }
     StrgCat(hparam_str, Flags.bSingleFileInstance ? L" -ns" : L" -n");
 
-    WININFO const _wi = (Flags.bStickyWindowPosition ? g_IniWinInfo : 
-                         (wi ? *wi : GetMyWindowPlacement(hwnd, NULL, Settings2.LaunchInstanceWndPosOffset, Settings2.LaunchInstanceFullVisible)));
-
-    StringCchPrintf(wch, COUNTOF(wch), L" -pos " WINDOWPOS_STRGFORMAT, _wi.x, _wi.y, _wi.cx, _wi.cy, _wi.dpi, (int)_wi.max);
-    StrgCat(hparam_str, wch);
+    if (!Flags.bStickyWindowPosition) { // sticky: new instance takes the frozen INI placement
+        WININFO const _wi = wi ? *wi : GetMyWindowPlacement(hwnd, NULL, Settings2.LaunchInstanceWndPosOffset, Settings2.LaunchInstanceFullVisible);
+        StringCchPrintf(wch, COUNTOF(wch), L" -pos " WINDOWPOS_STRGFORMAT L",%i", _wi.x, _wi.y, _wi.cx, _wi.cy, _wi.dpi, (int)_wi.max, _wi.zoom);
+        StrgCat(hparam_str, wch);
+    }
 
     if (Path_IsNotEmpty(hFilePath)) {
         HPATHL hfile_pth = Path_Copy(hFilePath);
