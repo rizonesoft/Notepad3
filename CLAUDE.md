@@ -16,7 +16,10 @@ Build scripts live in `Build\` (PowerShell under `Build\scripts\`):
 - `Build\Clean.cmd` — clean outputs
 - Run `nuget restore Notepad3.sln` once before first build.
 - Run `Version.ps1` before building to regenerate `src\VersionEx.h` (format `Major.YY.Mdd.Build`; build number in `Versions\build.txt`).
-- Tests: `test\TestFileVersion.cmd`, `test\TestAhkNotepad3.cmd` (needs AutoHotkey). CI matrix in `.github/workflows/build.yml` (windows-2022).
+- Tests: `test\TestFileVersion.cmd`, `test\TestAhkNotepad3.cmd` (needs AutoHotkey). CI matrix in `.github/workflows/build.yml` (windows-2025-vs2026).
+  - The runner image has no `wmic`; query dates and file versions via `powershell -NoProfile -Command`.
+  - Both tests share one `shell: cmd` step, which fails only on its last command's exit code — every earlier call needs `|| exit /b 1`.
+  - Drive dialogs in the AHK test with `PostMessage(WM_COMMAND, ...)`, not `ControlClick` — synthesized clicks fail intermittently on the runner desktop.
 
 Default configuration is Release.
 

@@ -11,7 +11,10 @@ Scripts under `Build\` (PowerShell under `Build\scripts\`):
 - `Build\Clean.cmd` — clean outputs
 - `nuget restore` once before first build
 - `Version.ps1` regenerates `src\VersionEx.h` (`Major.YY.Mdd.Build`, build number in `Versions\build.txt`)
-- Tests: `test\TestFileVersion.cmd`, `test\TestAhkNotepad3.cmd` (AutoHotkey). CI in `.github/workflows/build.yml` (windows-2022, Release × all four platforms).
+- Tests: `test\TestFileVersion.cmd`, `test\TestAhkNotepad3.cmd` (AutoHotkey). CI in `.github/workflows/build.yml` (windows-2025-vs2026, Release × all four platforms).
+  - The runner image has no `wmic`; query dates and file versions via `powershell -NoProfile -Command`.
+  - Both tests share one `shell: cmd` step, which fails only on its last command's exit code — every earlier call needs `|| exit /b 1`.
+  - Drive dialogs in the AHK test with `PostMessage(WM_COMMAND, ...)`, not `ControlClick` — synthesized clicks fail intermittently on the runner desktop.
 
 Default config is Release.
 
