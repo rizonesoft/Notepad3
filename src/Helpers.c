@@ -214,7 +214,20 @@ HRESULT PrivateSetCurrentProcessExplicitAppUserModelID(PCWSTR AppID)
 //
 //  SetWindowAppUserModelID()
 //
-HRESULT SetWindowAppUserModelID(HWND hwnd, PCWSTR AppID)
+static HRESULT _SetPropertyString(IPropertyStore* pps, REFPROPERTYKEY key, PCWSTR value)
+{
+    PROPVARIANT pv;
+    PropVariantInit(&pv);
+    pv.vt = VT_LPWSTR;
+    HRESULT hr = SHStrDupW(value, &pv.pwszVal);
+    if (SUCCEEDED(hr)) {
+        hr = pps->lpVtbl->SetValue(pps, key, &pv);
+        PropVariantClear(&pv);
+    }
+    return hr;
+}
+
+HRESULT SetWindowAppUserModelID(HWND hwnd, PCWSTR AppID, PCWSTR DisplayName)
 {
     if (!hwnd || StrIsEmpty(AppID)) {
         return S_OK;
@@ -226,14 +239,87 @@ HRESULT SetWindowAppUserModelID(HWND hwnd, PCWSTR AppID)
     IPropertyStore* pps = NULL;
     HRESULT hr = SHGetPropertyStoreForWindow(hwnd, &IID_IPropertyStore, (void**)&pps);
     if (SUCCEEDED(hr)) {
+        // without relaunch info, the taskbar cannot start a new instance (Shift+Click) for an explicit AppID
+        HPATHL hexe_pth = Path_Allocate(NULL);
+        Path_GetModuleFilePath(hexe_pth);
+        HSTRINGW hcmd_str = StrgCreate(NULL);
+        StrgFormat(hcmd_str, L"\"%s\"", Path_Get(hexe_pth));
+        _SetPropertyString(pps, &PKEY_AppUserModel_RelaunchCommand, StrgGet(hcmd_str));
+        _SetPropertyString(pps, &PKEY_AppUserModel_RelaunchDisplayNameResource, DisplayName);
+        StrgDestroy(hcmd_str);
+        Path_Release(hexe_pth);
+
+        hr = _SetPropertyString(pps, &PKEY_AppUserModel_ID, AppID);
+        pps->lpVtbl->Release(pps);
+    }
+    return hr;
+}
+
+
+//=============================================================================
+//
+//  ClearWindowAppUserModelID()
+//
+HRESULT ClearWindowAppUserModelID(HWND hwnd)
+{
+    IPropertyStore* pps = NULL;
+    HRESULT hr = SHGetPropertyStoreForWindow(hwnd, &IID_IPropertyStore, (void**)&pps);
+    if (SUCCEEDED(hr)) {
         PROPVARIANT pv;
-        PropVariantInit(&pv);
-        pv.vt = VT_LPWSTR;
-        hr = SHStrDupW(AppID, &pv.pwszVal);
-        if (SUCCEEDED(hr)) {
-            hr = pps->lpVtbl->SetValue(pps, &PKEY_AppUserModel_ID, &pv);
-            PropVariantClear(&pv);
-        }
+        PropVariantInit(&pv); // VT_EMPTY removes the property
+        pps->lpVtbl->SetValue(pps, &PKEY_AppUserModel_ID, &pv);
+        pps->lpVtbl->SetValue(pps, &PKEY_AppUserModel_RelaunchCommand, &pv);
+        hr = pps->lpVtbl->SetValue(pps, &PKEY_AppUserModel_RelaunchDisplayNameResource, &pv);
+        pps->lpVtbl->Release(pps);
+    }
+    return hr;
+}
+
+
+//=============================================================================
+//
+//  GetWindowAppUserModelID()
+//
+static HRESULT _GetAppIDFromStore(IPropertyStore* pps, LPWSTR AppID, size_t cchAppID)
+{
+    PROPVARIANT pv;
+    PropVariantInit(&pv);
+    HRESULT hr = pps->lpVtbl->GetValue(pps, &PKEY_AppUserModel_ID, &pv);
+    if (SUCCEEDED(hr)) {
+        hr = (pv.vt == VT_LPWSTR) ? StringCchCopy(AppID, cchAppID, pv.pwszVal) : E_FAIL;
+        PropVariantClear(&pv);
+    }
+    return hr;
+}
+
+HRESULT GetWindowAppUserModelID(HWND hwnd, LPWSTR AppID, size_t cchAppID)
+{
+    IPropertyStore* pps = NULL;
+    HRESULT hr = SHGetPropertyStoreForWindow(hwnd, &IID_IPropertyStore, (void**)&pps);
+    if (SUCCEEDED(hr)) {
+        hr = _GetAppIDFromStore(pps, AppID, cchAppID);
+        pps->lpVtbl->Release(pps);
+    }
+    return hr;
+}
+
+
+//=============================================================================
+//
+//  GetLaunchLinkAppUserModelID()
+//
+HRESULT GetLaunchLinkAppUserModelID(LPWSTR AppID, size_t cchAppID)
+{
+    // taskbar Shift+Click launches via a shell link (implicit app shortcut) carrying the button's AppID
+    STARTUPINFOW si = { sizeof(STARTUPINFOW) };
+    GetStartupInfoW(&si);
+    if (!(si.dwFlags & STARTF_TITLEISLINKNAME) || StrIsEmpty(si.lpTitle)) {
+        return E_FAIL;
+    }
+    IPropertyStore* pps = NULL;
+    HRESULT hr = SHGetPropertyStoreFromParsingName(si.lpTitle, NULL, GPS_DEFAULT, &IID_IPropertyStore, (void**)&pps);
+    if (SUCCEEDED(hr)) {
+        hr = _GetAppIDFromStore(pps, AppID, cchAppID);
         pps->lpVtbl->Release(pps);
     }
     return hr;

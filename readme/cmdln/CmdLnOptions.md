@@ -233,11 +233,12 @@ Notepad3.exe /h template.eex
 
 ## Window position and size: `/p`
 
-### `/p <left>,<top>,<width>,<height>[,<dpi>[,<maximize>]]`
+### `/p <left>,<top>,<width>,<height>[,<dpi>[,<maximize>[,<zoom>]]]`
 Place the window at explicit coordinates. All numbers are integers.
 
 - `<dpi>` is optional; default `96`. Used to scale the geometry on high-DPI monitors.
-- `<maximize>` is optional; non-zero zooms the window after placement.
+- `<maximize>` is optional; non-zero maximizes the window after placement.
+- `<zoom>` is optional; text zoom in percent, default `100`.
 
 ```
 Notepad3.exe /p 100,100,1280,800

@@ -2401,6 +2401,10 @@ static bool _SaveSettings(bool bForceSaveSettings)
         IniSectionDelete(IniSecWindow, tchHighDpiToolBar, false);
     }
 
+    // another instance may have toggled it since load: use the INI state just reloaded from disk
+    if (Globals.bCanSaveIniFile) {
+        Flags.bStickyWindowPosition = IniSectionGetBool(Constants.Settings2_Section, L"StickyWindowPosition", DefaultFlags.bStickyWindowPosition);
+    }
     if (!Flags.bStickyWindowPosition) {
         SaveWindowPositionSettings(false);
     }
@@ -2461,7 +2465,6 @@ bool SaveWindowPositionSettings(bool bClearSettings)
         IniSectionSetInt(Constants.Window_Section, tchSizeX, winInfo.cx);
         IniSectionSetInt(Constants.Window_Section, tchSizeY, winInfo.cy);
         IniSectionSetBool(Constants.Window_Section, tchMaximized, winInfo.max);
-        IniSectionSetBool(Constants.Window_Section, tchMaximized, winInfo.max);
         IniSectionSetInt(Constants.Window_Section, tchZoom, winInfo.zoom);
         IniSectionSetInt(Constants.Window_Section, tchDPI, winInfo.dpi);
         // set current window position as new initial window
@@ -2499,7 +2502,7 @@ bool SaveAllSettings(bool bForceSaveSettings)
 
     bool ok = false;
 
-    BeginWaitCursor(true, tchMsg);
+    BeginWaitCursor(Settings.SaveSettings || bForceSaveSettings, tchMsg);
 
     ok = OpenSettingsFile(__func__);
 

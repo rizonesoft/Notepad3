@@ -106,8 +106,8 @@ CHECK_ABOUT_BOX() {
         Cleanup()
         ExitApp(v_ExitCode)
     }
-    WinActivate("About " . v_NP3Name)
-    ControlClick("OK", "About " . v_NP3Name)
+    ; WM_COMMAND/IDOK: a synthesized ControlClick is unreliable on the CI runner's desktop
+    PostMessage(0x0111, 1, 0, , "About " . v_NP3Name)
     if !WinWaitClose("About " . v_NP3Name, , 2) {
         stdout.WriteLine("*** ERROR: " . v_NP3Name . "'s About Box can not be closed!")
         v_ExitCode := 5
