@@ -653,7 +653,9 @@ using TextPositionsI = VarBuffer<int, stackBufferLength>;
 void SurfaceGDI::DrawTextCommon(PRectangle rc, const Font *font_, XYPOSITION ybase, std::string_view text, UINT fuOptions) {
 	SetFont(font_);
 	const RECT rcw = RectFromPRectangle(rc);
-	const int x = static_cast<int>(rc.left);
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	const int x = static_cast<int>(std::lround(rc.left));
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	const int yBaseInt = static_cast<int>(ybase);
 
 	if (mode.codePage == CpUtf8) {
@@ -749,7 +751,9 @@ XYPOSITION SurfaceGDI::WidthText(const Font *font_, std::string_view text) {
 void SurfaceGDI::DrawTextCommonUTF8(PRectangle rc, const Font *font_, XYPOSITION ybase, std::string_view text, UINT fuOptions) {
 	SetFont(font_);
 	const RECT rcw = RectFromPRectangle(rc);
-	const int x = static_cast<int>(rc.left);
+	// >>>>>>>>>>>>>>>   BEG NON STD SCI PATCH   >>>>>>>>>>>>>>>
+	const int x = static_cast<int>(std::lround(rc.left));
+	// <<<<<<<<<<<<<<<   END NON STD SCI PATCH   <<<<<<<<<<<<<<<
 	const int yBaseInt = static_cast<int>(ybase);
 
 	const TextWide tbuf(text, CpUtf8);
