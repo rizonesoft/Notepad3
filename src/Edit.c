@@ -6753,6 +6753,39 @@ static void  _DelayMarkAll(int delay)
 static bool s_SaveMarkOccurrences = false;
 static bool s_SaveMarkMatchVisible = false;
 
+//=============================================================================
+//
+//  EditBoxForPasteFixes()
+//  Single-line EDIT's default WM_PASTE truncates at the first line break;
+//  EM_REPLACESEL inserts multi-line clipboard text unchanged.
+//
+static LRESULT CALLBACK EditBoxForPasteFixes(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam,
+                                             UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+{
+    UNREFERENCED_PARAMETER(dwRefData);
+
+    switch (uMsg) {
+    case WM_PASTE: {
+        // copy first: EM_REPLACESEL synchronously triggers the incremental search,
+        // which must not run while the clipboard is held open
+        WCHAR wchBuffer[FNDRPL_BUFFER] = { L'\0' };
+        EditGetClipboardW(wchBuffer, COUNTOF(wchBuffer));
+        if (StrIsNotEmpty(wchBuffer)) {
+            SendMessage(hwnd, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)wchBuffer);
+            return 0;
+        }
+    } break;
+
+    case WM_NCDESTROY:
+        RemoveWindowSubclass(hwnd, EditBoxForPasteFixes, uIdSubclass);
+        break;
+
+    default:
+        break;
+    }
+    return DefSubclassProc(hwnd, uMsg, wParam, lParam);
+}
+
 
 //=============================================================================
 //
@@ -6906,6 +6939,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         COMBOBOXINFO cbInfoF = { sizeof(COMBOBOXINFO) };
         GetComboBoxInfo(GetDlgItem(hwnd, IDC_FINDTEXT), &cbInfoF);
         if (cbInfoF.hwndItem) {
+            SetWindowSubclass(cbInfoF.hwndItem, EditBoxForPasteFixes, 0, 0);
             SHAutoComplete(cbInfoF.hwndItem, SHACF_FILESYS_ONLY | SHACF_AUTOAPPEND_FORCE_OFF | SHACF_AUTOSUGGEST_FORCE_OFF);
         }
 
@@ -6923,6 +6957,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             COMBOBOXINFO cbInfoR = { sizeof(COMBOBOXINFO) };
             GetComboBoxInfo(GetDlgItem(hwnd, IDC_REPLACETEXT), &cbInfoR);
             if (cbInfoR.hwndItem) {
+                SetWindowSubclass(cbInfoR.hwndItem, EditBoxForPasteFixes, 0, 0);
                 SHAutoComplete(cbInfoR.hwndItem, SHACF_FILESYS_ONLY | SHACF_AUTOAPPEND_FORCE_OFF | SHACF_AUTOSUGGEST_FORCE_OFF);
             }
         }
