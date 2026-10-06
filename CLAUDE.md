@@ -64,6 +64,12 @@ Runtime toggle `IDM_EDIT_TOGGLE_PASTEBOARD`; `/B` enables at startup. Not persis
 - **`/B` initial auto-paste vs runtime toggle**: `/B` pastes the current clipboard once — but only on an empty untitled buffer (no file arg, no `/c`, no auto-loaded MRU). Runtime toggle never auto-pastes. Preserve this asymmetry.
 - `Settings2.PasteBoardSeparator`: `\x01` = one document EOL; `\0` = no separator; anything else = verbatim. Separator is also suppressed on the first paste after enable and when the caret is at a line start.
 
+### Taskbar Shift+Click / New Window
+
+- Explorer runs Shift+Click via an implicit `.lnk` it creates once from the window's `RelaunchCommand` (`%APPDATA%\Microsoft\Internet Explorer\Quick Launch\User Pinned\ImplicitAppShortcuts\`) and never refreshes — the new process gets **no arguments**, only the link path in `STARTUPINFO.lpTitle` (`STARTF_TITLEISLINKNAME`). Changing `RelaunchCommand` does not affect existing links. `Start-Process <that .lnk>` emulates a Shift+Click for testing.
+- A no-arg start whose launch link carries an AppID hands off via `WM_NEWWINDOWREQUEST` to `DialogNewWindow` (File > New Window) in the topmost enabled window of that AppID group, then exits. `DialogNewWindow` passes `-n`, so new-window requests deliberately bypass `ReuseWindow`. Preserve this asymmetry.
+- Every property set via `SHGetPropertyStoreForWindow` must also be cleared in `ClearWindowAppUserModelID()` (`WM_DESTROY`) — required by the API.
+
 ## Vendored Libraries
 
 `scintilla\` (5.5.8), `lexilla\` (5.4.6), `scintilla\pcre2\` (PCRE2 10.47), `src\uchardet\`, `src\tinyexpr\` / `src\tinyexprcpp\`, `src\uthash\`, `src\crypto\` (Rijndael/SHA-256). NP3 patches under each `np3_patches\`; offline docs under `scintilla\doc\` and `lexilla\doc\`.
@@ -191,11 +197,11 @@ After any of these:
 
 ## Python Environment
 
-`.venv\` (Python 3.14) for scripting tasks — bulk locale edits, code generation, etc.
+`.venv\` (Python 3.14, git-ignored — exists only where it was created locally) for scripting tasks — bulk locale edits, code generation, etc. If it is missing, check for a system Python (`py`, `python`) before relying on one; availability varies by machine.
 
 ```bash
 .venv/Scripts/python.exe <script.py>
 .venv/Scripts/pip.exe install <package>
 ```
 
-System Python is not installed; `python3` fails. Python beats sed/perl under Cygwin for literal string insertions (reliable `\r\n`).
+Python beats sed/perl under Cygwin for literal string insertions (reliable `\r\n`).

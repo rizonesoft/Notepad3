@@ -87,6 +87,12 @@ Runtime toggle `IDM_EDIT_TOGGLE_PASTEBOARD`; `/B` enables at startup. Not persis
 - **`/B` initial auto-paste vs runtime toggle**: `/B` pastes the current clipboard once — only on an empty untitled buffer (no file arg, no `/c`, no auto-loaded MRU). Runtime toggle never auto-pastes. Preserve this asymmetry.
 - `Settings2.PasteBoardSeparator`: `\x01` = one document EOL; `\0` = none; else verbatim. Also suppressed on first paste after enable and when caret is at line start.
 
+## Taskbar Shift+Click / New Window
+
+- Explorer runs Shift+Click via an implicit `.lnk` it creates once from the window's `RelaunchCommand` (`%APPDATA%\Microsoft\Internet Explorer\Quick Launch\User Pinned\ImplicitAppShortcuts\`) and never refreshes — the new process gets **no arguments**, only the link path in `STARTUPINFO.lpTitle` (`STARTF_TITLEISLINKNAME`). Changing `RelaunchCommand` does not affect existing links. `Start-Process <that .lnk>` emulates a Shift+Click for testing.
+- A no-arg start whose launch link carries an AppID hands off via `WM_NEWWINDOWREQUEST` to `DialogNewWindow` (File > New Window) in the topmost enabled window of that AppID group, then exits. `DialogNewWindow` passes `-n`, so new-window requests deliberately bypass `ReuseWindow`. Preserve this asymmetry.
+- Every property set via `SHGetPropertyStoreForWindow` must also be cleared in `ClearWindowAppUserModelID()` (`WM_DESTROY`) — required by the API.
+
 ## File I/O
 
 - `FileSave()` / `FileLoad()` (`Notepad3.c`) → `FileIO()` → `EditSaveFile()` / `EditLoadFile()` (`Edit.c`).
