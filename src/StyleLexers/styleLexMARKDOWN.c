@@ -20,7 +20,6 @@ EDITLEXER lexMARKDOWN =
         { {SCE_MARKDOWN_HEADER4}, IDS_LEX_STR_63323, L"Header 4", L"bold; fore:#336193; eolfilled", L"" },
         { {SCE_MARKDOWN_HEADER5}, IDS_LEX_STR_63324, L"Header 5", L"bold; fore:#3F77B6; eolfilled", L"" },
         { {SCE_MARKDOWN_HEADER6}, IDS_LEX_STR_63325, L"Header 6", L"bold; fore:#5C8FC7; eolfilled", L"" },
-        //{ {SCE_MARKDOWN_HDRTEXT}, IDS_LEX_STR_HdrText, L"Header Text", L"bold; fore:#336193", L"" },
         { {SCE_MARKDOWN_PRECHAR}, IDS_LEX_STR_63326, L"Pre Char", L"fore:#00007F", L"" },
         { {SCE_MARKDOWN_ULIST_ITEM}, IDS_LEX_STR_63327, L"Unordered List", L"bold; fore:#0080FF", L"" },
         { {SCE_MARKDOWN_OLIST_ITEM}, IDS_LEX_STR_63268, L"Ordered List", L"bold; fore:#0080FF", L"" },
@@ -29,6 +28,9 @@ EDITLEXER lexMARKDOWN =
         { {SCE_MARKDOWN_HRULE}, IDS_LEX_STR_63330, L"Horizontal Rule", L"bold", L"" },
         { {SCE_MARKDOWN_LINK}, IDS_LEX_STR_Link, L"Link", L"fore:#0000FF", L"" },
         { {MULTI_STYLE(SCE_MARKDOWN_CODE,SCE_MARKDOWN_CODE2,SCE_MARKDOWN_CODEBK,0)}, IDS_LEX_STR_Code, L"Code", L"fore:#00007F; back:#EBEBEB", L"" },
+        { {SCE_MARKDOWN_FRONT_MARK}, IDS_LEX_STR_FrontMark, L"Front Matter Marker", L"bold; fore:#FFFFFF; back:#000088; eolfilled", L"" },
+        { {SCE_MARKDOWN_FRONT}, IDS_LEX_STR_FrontMatter, L"Front Matter", L"fore:#404040", L"" },
+        { {SCE_MARKDOWN_FRONT_KEY}, IDS_LEX_STR_FrontKey, L"Front Matter Key", L"bold; fore:#0A246A", L"" },
         EDITLEXER_SENTINEL
     }
 };

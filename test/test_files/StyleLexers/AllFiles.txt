@@ -260,6 +260,12 @@ styleLexMAK/scintilla.mak
 ; --- styleLexMARKDOWN ---
 file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexMARKDOWN/README.md
 styleLexMARKDOWN/README.md
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexMARKDOWN/FrontMatter_YAML.md
+styleLexMARKDOWN/FrontMatter_YAML.md
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexMARKDOWN/FrontMatter_TOML.md
+styleLexMARKDOWN/FrontMatter_TOML.md
+file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexMARKDOWN/FrontMatter_JSON.md
+styleLexMARKDOWN/FrontMatter_JSON.md
 
 ; --- styleLexMATLAB ---
 file:///D:/DEV/GitHub/Notepad3/test/test_files/StyleLexers/styleLexMATLAB/bresenham.m

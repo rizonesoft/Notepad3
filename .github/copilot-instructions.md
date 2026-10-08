@@ -11,9 +11,14 @@ Scripts under `Build\` (PowerShell under `Build\scripts\`):
 - `Build\Clean.cmd` — clean outputs
 - `nuget restore` once before first build
 - `Version.ps1` regenerates `src\VersionEx.h` (`Major.YY.Mdd.Build`, build number in `Versions\build.txt`)
-- Tests: `test\TestFileVersion.cmd`, `test\TestAhkNotepad3.cmd` (AutoHotkey). CI in `.github/workflows/build.yml` (windows-2022, Release × all four platforms).
+- Tests: `test\TestFileVersion.cmd`, `test\TestAhkNotepad3.cmd` (AutoHotkey). CI in `.github/workflows/build.yml` (windows-2025-vs2026, Release × all four platforms).
+  - The runner image has no `wmic`; query dates and file versions via `powershell -NoProfile -Command`.
+  - Both tests share one `shell: cmd` step, which fails only on its last command's exit code — every earlier call needs `|| exit /b 1`.
+  - Drive dialogs in the AHK test with `PostMessage(WM_COMMAND, ...)`, not `ControlClick` — synthesized clicks fail intermittently on the runner desktop.
 
 Default config is Release.
+
+Verify a build with the default target on the full solution (`/t:Notepad3` fails with MSB4057 — not all sub-projects define it); check `Bin\Release_x64_v145\Notepad3.exe` has a fresh timestamp.
 
 ### Invoking MSBuild from PowerShell
 
@@ -62,6 +67,8 @@ Easy-to-miss touchpoints — derivable but only if you know to look:
 - **Comment-toggle arms.** If the lexer has comments, add `case SCLEX_FOO:` in BOTH `Lexer_GetStreamCommentStrgs` and `Lexer_GetLineCommentStrg` in `EditLexer.c`, or Edit > Toggle Block/Line Comment is a no-op.
 - **Theme INI sections live under `pszName` (4th `EDITLEXER` field), not the lexer name string.** Each new lexer needs a `[<pszName>]` block in every theme INI: `Build\Notepad3.ini`, `Build\Themes\*.ini`, `res\StdDarkModeScheme.ini`, locale variants `Build\Notepad3_<locale>.ini`. Renaming `pszName` orphans existing user style customizations.
 - **New style rows need theme INI entries too** — same rule as new lexers, just per-row. Each `EDITLEXER` row's label string (e.g. `L"User Literal"`) needs a matching `User Literal=<spec>` line in every theme INI's `[<pszName>]` block. Without it, the EDITLEXER inline default applies and the row is invisible to theme switching. `lexilla/wscite/*.properties` (one per language) are useful colour references.
+- **New style row = localization too.** Each new `EDITSTYLE` label needs an `IDS_LEX_STR_*` define in `language\common_res.h` (pick the next free ID — check gaps, e.g. before `IDS_LEX_CSV_COL_0`) and an entry in all 26 `language\np3_*\lexer_*.rc` files (English placeholder). In bulk-insert scripts anchor the regex on an existing *identifier* (e.g. `IDS_LEX_STR_Code`), never on its string text (translated locales differ), run once, and verify exactly one occurrence per file (re-running after a partial literal match duplicates entries).
+- **Which theme INIs need explicit style entries.** Only files with per-style overrides: `res\StdDarkModeScheme.ini` and `Build\Themes\{Dark,Obsidian,Sombra}.ini`. `Build\Notepad3.ini` and `Notepad3_<locale>.ini` often have an empty `[<pszName>]` section (EDITLEXER defaults apply) — check before editing. For `fore`/`back` pairs aim for WCAG contrast ≥ 4.5:1.
 - **Homebrew lexers in `lexilla/lexers_x/`** (6 files): `LexAHK`, `LexCSV`, `LexHTML` (NP3 fork — used by both `SCLEX_HTML` and `SCLEX_XML`), `LexJSON5`, `LexKotlin`, `LexVerilog` (`SCLEX_VERILOG` + `SCLEX_SYSVERILOG`). Their `SCE_*_*` enums live in `lexilla/lexers_x/SciXLexer.h`, not the stock `lexilla/include/SciLexer.h` — `#include "lexers_x/SciXLexer.h"` if you need the homebrew constants.
 
 ## Localization (`language\`)
