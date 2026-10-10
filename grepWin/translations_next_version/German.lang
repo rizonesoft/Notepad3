@@ -475,8 +475,8 @@ msgid "Search in found files"
 msgstr "Suche in gefundenen Dateien"
 
 #. Resource IDs: (184)
-msgid "Search in found files"
-msgstr ""
+msgid "Replace in found files"
+msgstr "In gefundenen Dateien ersetzen"
 
 #. Resource IDs: (1018)
 msgid "Search results"
