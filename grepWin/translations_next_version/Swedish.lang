@@ -194,7 +194,7 @@ msgstr "Mörkt läge"
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr "Datum modifierad"
+msgstr "Ändringsdatum"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
@@ -475,8 +475,8 @@ msgid "Search in found files"
 msgstr "Sök i hittade filer"
 
 #. Resource IDs: (184)
-msgid "Search in found files"
-msgstr ""
+msgid "Replace in found files"
+msgstr "Ersätt i hittade filer"
 
 #. Resource IDs: (1018)
 msgid "Search results"
