@@ -476,7 +476,7 @@ msgstr "Keresés a talált fájlokban"
 
 #. Resource IDs: (184)
 msgid "Replace in found files"
-msgstr ""
+msgstr "Csere a talált fájlokban"
 
 #. Resource IDs: (1018)
 msgid "Search results"
@@ -488,7 +488,7 @@ msgstr "Keresett szöveg"
 
 #. Resource IDs: (182)
 msgid "Search string contains non-word characters, a \"whole word\" search is not possible!"
-msgstr "A keresett szöveg nem egy szót tartalmaz, a \"teljes szó\" keresés nem lehetséges!"
+msgstr "A keresett szöveg nem-szó karaktereket tartalmaz, a \"teljes szó\" keresés nem lehetséges!"
 
 #. Resource IDs: (128)
 #, c-format
