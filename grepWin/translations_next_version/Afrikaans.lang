@@ -299,7 +299,7 @@ msgstr "Ongeldig pad!"
 
 #. Resource IDs: (183)
 msgid "Invalid search text"
-msgstr ""
+msgstr "Ongeldige soekteks"
 
 #. Resource IDs: (161)
 msgid "Inverse search"
@@ -476,7 +476,7 @@ msgstr "Soek in gevinde lêers"
 
 #. Resource IDs: (184)
 msgid "Replace in found files"
-msgstr ""
+msgstr "Vervang in gevind-lêers"
 
 #. Resource IDs: (1018)
 msgid "Search results"
@@ -488,7 +488,7 @@ msgstr "Soekstring"
 
 #. Resource IDs: (182)
 msgid "Search string contains non-word characters, a \"whole word\" search is not possible!"
-msgstr ""
+msgstr "Soekstring bevat nie-woordkarakters, 'n \"hele woord\"-soektog is nie moontlik nie!"
 
 #. Resource IDs: (128)
 #, c-format
