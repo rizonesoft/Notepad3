@@ -28,14 +28,15 @@ MIN - (MIN)iPath Fast Browser Tool
 MUI - (M)ultilingual (U)ser (I)nterface
 NLS - (N)ew (L)anguage (S)trings (need for translation)
 ONI - (ONI)guruma Regex engine
-PCR - (PCR)2 Regex engine
+PCR - (PCR)E2 Regex engine
 SCI - (SCI)ntilla Library
 SUP - (S)et(UP) / Installer Package
 TIN - (TIN)yExpr++ is an engine for math expressions
 UCH - (UCH)ARDET is an Encoding Detector Library
+UTH - (UTH)ash provides a hash table for C structures
 
 
-Current BETA Version 7.26.828.(build_#) (2026-08-28)
+Current BETA Version 7.26.1012.(build_#) (2026-10-12)
 ========================================================
 
 --------------------------------------------------------
@@ -48,6 +49,10 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.x]- .
+[1012.1]- Update grepWin Translations_next_version (GRE) (#6023).
+[1012.1]- Markdown Lexer Enhancements (#6019).
+[1012.1]- Update  Lexilla (v.5.5.4) (LEX) (#6014).
+[1012.1]- Update Scintilla (v5.6.7) (SCI) (LEX) (#6014).
 [.828.1]- Update  Lexilla (v.5.5.3) and use LEXILLA_NO_EXPORT for static build (LEX) (#5982).
 [.828.1]- Move edit-refresh work to coalesced SCN_UPDATEUI (SC_UPDATE_TEXT/LINE_COUNT) (SCI) (#5982).
 [.828.1]- Update Scintilla (v5.6.6) (SCI) (LEX) (#5982).
@@ -57,6 +62,11 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.x]- .
+[1012.x]- In Lexer TCL, restore extensions "ts; tsx", removed by error (#6021).
+[1012.x]- Fix(ci): restore version test and stabilize About-box smoke test (#6018).
+[1012.x]- "Shift + Click" on Taskbar Icon Does Not Open a New Notepad3 Window (#6018).
+[1012.x]- The "Replace Text" dialog does not allow multiple lines of text to be entered (#6018).
+[1012.x]- Scintilla GDI visual glitch (SCI) (#6017).
 [.828.1]- Replace DBCS-aware Str*A calls on UTF-8 buffers with code-page-independent trim/search  (#5982).
 [.828.1]- Code-page independent in-place replacement for StrTrimA() on UTF-8 buffers (#5982).
 [.715.1]- Patch Scintilla to try to fix "vanishing mouse pointer" (SCI) (#5949).
@@ -70,12 +80,13 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[.828.1]- Update Scintilla (SCI) Library version 5.6.4 (2026-08-12) (#5982).
-[.828.1]- Update Lexilla (LEX) Library version 5.5.1 (2026-08-12) (#5982).
+[1012.1]- Update Lexilla (LEX) Library version 5.5.4 (2026-09-28) (#6015).
+[1012.1]- Update Scintilla (SCI) Library version 5.6.7 (2026-09-28) (#6014).
+[1012.1]- Update PCRE2 (PCR) Regex engine version 10.49 (2026-10-03) (#6013).
 [.418.1]- Update TinyExpr++ (TIN) version 1.1.0 (2026-01-16) (#5707).
 [.411.1]- Update grepWin (GRE) version 2.1.12.1434 (2025-09-24) (#5635).
+[.306.1]- Update uthash (UTH) single header file version 2.3.0 (2021-02-25) (#5570).
 [.305.1]- Update UCHARDET (UCH) encoding detector version 0.0.8 (2022-12-08) (#5562).
-[.303.1]- Update PCR2 (PCR) Regex engine version 10.47 (2025-10-21) (#5559).
 [1213.1]- Update MiniPath (MIN) version 1.0.2.191 (2022-12-13) (#4359).
 
 --------------------------------------------------------
@@ -130,8 +141,8 @@ FIXES:
 [.514.1]- AHK case insensitive (LEX) (#5860).
 [.514.1]- Lexer AHK_L minor issues (LEX) (#5860).
 [.514.1]- Enhance existing homebrew AHK lexer (LEX) (#5860).
-[.514.1]- Small optimization of PCRE2 regEx backward search (PCR) (#5836).
-[.511.1]- Modernize and align Lexilla lib related Style-Lexers definitions (LEX) (#5836).
+[.514.1]- Small optimization of PCRE2 regEx backward search (PCR) (#5850).
+[.511.1]- Modernize and align Lexilla lib related Style-Lexers definitions (LEX) (#5844).
 [.511.1]- Hardening of JSON5 lexer (#5843).
 [.508.1]- Small correction of factory default position (#5836).
 [.507.1]- Minor fixes for change-history navigation (#5834).
