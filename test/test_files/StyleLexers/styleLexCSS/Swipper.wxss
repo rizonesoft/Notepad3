@@ -1,0 +1,8 @@
+.swiper—container {
+    height: 150px;
+}
+.item {
+    height: 100%;
+    line-height: 150px;
+    text-align: center;
+}
