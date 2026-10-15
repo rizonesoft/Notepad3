@@ -95,9 +95,15 @@ IF EXIST "%TEMP_NAME%"     RD /S /Q "%TEMP_NAME%"
 IF NOT EXIST "%TEMP_NAME%" MD "%TEMP_NAME%"
 IF NOT EXIST "Packages"    MD "Packages"
 
-FOR %%A IN ("Notepad3_ptb.ini" "minipath.ini" "..\%1\Notepad3.exe" "..\%1\minipath.exe"^ 
+If %2% == x64 (
+    FOR %%A IN ("Notepad3_ptb_x64.ini" "minipath.ini" "..\%1\Notepad3.exe" "..\%1\minipath.exe"^ 
     "..\%1\np3encrypt.exe") DO COPY /Y /V "%%A" "%TEMP_NAME%\"
-IF EXIST "%TEMP_NAME%\Notepad3_ptb.ini" RENAME "%TEMP_NAME%\Notepad3_ptb.ini" "Notepad3.ini"
+    IF EXIST "%TEMP_NAME%\Notepad3_ptb_x64.ini" RENAME "%TEMP_NAME%\Notepad3_ptb_x64.ini" "Notepad3.ini"
+) else (
+    FOR %%A IN ("Notepad3_ptb_x86.ini" "minipath.ini" "..\%1\Notepad3.exe" "..\%1\minipath.exe"^ 
+    "..\%1\np3encrypt.exe") DO COPY /Y /V "%%A" "%TEMP_NAME%\"
+    IF EXIST "%TEMP_NAME%\Notepad3_ptb_x86.ini" RENAME "%TEMP_NAME%\Notepad3_ptb_x86.ini" "Notepad3.ini"
+)
 
 SET "LNG=%TEMP_NAME%\lng"
 SET "GREPWIN=%TEMP_NAME%\grepWin"
