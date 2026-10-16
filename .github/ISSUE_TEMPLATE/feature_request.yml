@@ -10,7 +10,7 @@ body:
 
         Before submitting:
         - Check whether an INI key in [Configuration.md](https://github.com/Rizonesoft/Notepad3/blob/master/readme/config/Configuration.md) or a command-line switch in [CmdLnOptions.md](https://github.com/Rizonesoft/Notepad3/blob/master/readme/cmdln/CmdLnOptions.md) already covers this.
-        - Search [existing issues](https://github.com/Rizonesoft/Notepad3/issues?q=is%3Aissue+label%3Aenhancement) for related requests.
+        - Search [existing issues](https://github.com/rizonesoft/Notepad3/issues?q=is%3Aissue+label%3A%22enhancement+%2F+feature+req.%22) for related requests.
 
   - type: textarea
     id: summary
