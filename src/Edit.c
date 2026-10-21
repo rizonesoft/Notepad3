@@ -7373,12 +7373,15 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             }
 
             if (Globals.bFindReplCopySelOrClip) {
+                // reset first: setting the combo text below re-enters this handler (CBN_EDITCHANGE)
+                Globals.bFindReplCopySelOrClip = false;
                 char*        lpszSelection = NULL;
                 DocPos const cchSelection = SciCall_GetSelText(NULL);
-                if ((cchSelection > 0) && (LOWORD(wParam) != IDC_REPLACETEXT)) {
+                // WM_SETTEXT ignores CB_LIMITTEXT: an oversized selection freezes the combo's edit control
+                if ((cchSelection > 0) && (cchSelection <= FNDRPL_BUFFER) && (LOWORD(wParam) != IDC_REPLACETEXT)) {
                     lpszSelection = AllocMem((cchSelection + 1), HEAP_ZERO_MEMORY);
                     SciCall_GetSelText(lpszSelection);
-                } else { // (cchSelection <= 0)
+                } else { // no (usable) selection
                     // nothing is selected in the editor:
                     // if first time you bring up find/replace dialog,
                     // use most recent search pattern to find box
@@ -7397,7 +7400,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                     bFndPatternChanged = true;
                 }
                 s_InitialTopLine = -1; // reset
-                Globals.bFindReplCopySelOrClip = false;
 
             } // Globals.bFindReplCopySelOrClip
 
