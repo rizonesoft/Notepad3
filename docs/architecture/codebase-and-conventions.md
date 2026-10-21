@@ -69,6 +69,12 @@ DeclareSciCallR1(SupportsFeature, SUPPORTSFEATURE, bool, int, feature);  // bool
 - `InfoBoxLng()` returns `MAKELONG(button, mode)`. When a suppression key is non-NULL, a saved-answer replay sets the high word; do not compare the raw result with `IDNO`. Use `IsYesOkay()`, `IsRetryContinue()`, `IsNoCancelClose()`, or extract `INFOBOX_ANSW(r)` / `INFOBOX_MODE(r)`.
 - For new Scintilla/Lexilla APIs, consult the vendored versions in `scintilla\version.txt` and `lexilla\version.txt` and the offline docs under `scintilla\doc\` and `lexilla\doc\`.
 
+### Find/Replace dialog text limits
+
+- `CB_LIMITTEXT` (`FNDRPL_BUFFER`) does not apply to `WM_SETTEXT`; bound text before calling `ComboBox_SetText*`, or an oversized value freezes the single-line combo edit (see the `bFindReplCopySelOrClip` block in `EditFindReplaceDlgProc`, `src\Edit.c`).
+- `ComboBox_SetText*` fires `CBN_EDITCHANGE` synchronously; reset one-shot flags before calling it.
+- `_FindInTarget` has an 8192-byte `chFind` buffer; a longer pattern makes `WideCharToMultiByte` fail (`len` = -1) and Scintilla reports "not found".
+
 ### Dynamic string/path buffer lifetime
 
 Never use a pointer returned by `Path_WriteAccessBuf()` / `StrgWriteAccessBuf()` after an operation that may reallocate or swap the same handle's buffer. Examples include `Path_CanonicalizeEx`, `Path_Swap` / `StrgSwap`, `Path_ExpandEnvStrings` / `ExpandEnvironmentStrgs`, `Path_Append` / `Path_Reset`, `StrgCat` / `StrgInsert` / `StrgFormat` / `StrgReset`, and `Path_NormalizeEx` / `Path_AbsoluteFromApp` / `Path_RelativeToApp`.
