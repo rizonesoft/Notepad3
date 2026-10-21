@@ -130,6 +130,7 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    """%s"" शुरू करने में त्रुटि"
     IDS_MUI_ERR_SAVEFILE    """%s"" सहेजने में त्रुटि"
     IDS_MUI_ERR_PATHNOTFOUND """%s"" का पथ अब मौजूद नहीं है।\nपथ पुनः बनाएं और फ़ाईल सहेजें?"
+    IDS_MUI_WARN_UTF32_CONVERTED  "The file is UTF-32 encoded. It was converted to UTF-8 and will be saved as UTF-8."
     IDS_MUI_ERR_DLG_FORMAT  "त्रुटि '%s', कारण:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "कोई फ़ाईल ब्राउज़र plugin नहीं मिला।\nकृपया MiniPath फ़ाईल ब्राउज़र plugin यहाँ से डाउनलोड करें: https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "कोई फ़ाईल सर्च plugin नहीं मिला।\ngrepWin Portable सर्च plugin कृपया यहाँ से डाउनलोड करें: https://github.com/stefankueng/grepWin/releases"

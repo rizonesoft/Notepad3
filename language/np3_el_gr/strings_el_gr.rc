@@ -130,6 +130,7 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Σφάλμα φόρτωσης του ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Σφάλμα αποθήκευσης του ""%s"""
     IDS_MUI_ERR_PATHNOTFOUND "Η διαδρομή για το ""%s"" δεν υπάρχει πλέον.\nΔημιουργήστε ξανά τη διαδρομή και αποθηκεύστε το αρχείο;"
+    IDS_MUI_WARN_UTF32_CONVERTED  "The file is UTF-32 encoded. It was converted to UTF-8 and will be saved as UTF-8."
     IDS_MUI_ERR_DLG_FORMAT  "Σφάλμα '%s'. Αιτία:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Δεν βρέθηκε το πρόσθετο περιήγησης αρχείων\nΜπορείτε να κάνετε λήψη του πρόσθετου περιήγησης αρχείων MiniPath από https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Δεν βρέθηκε το πρόσθετο αναζήτησης αρχείων\nΜπορείτε να κάνετε λήψη του πρόσθετου αναζήτησης αρχείων grepWin Portable από https://github.com/stefankueng/grepWin/releases"
