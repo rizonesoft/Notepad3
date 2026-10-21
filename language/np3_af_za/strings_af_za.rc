@@ -204,6 +204,11 @@ BEGIN
     IDS_MUI_REGEX_INVALID    "Kon nie regular expression evalueer nie. Expression is ongeldig!"
     IDS_MUI_DROP_NO_FILE     "Geen geldige lêernaam opgehaal\nAs jy van 32-bit toepassing af sak, sleep na Notepad3 se nutsbalk"
     IDS_MUI_DROP_CAP_EXCEEDED "Meer lêers as die gekonfigureerde limiet (%i) is verwyder. Verhoog Settings2.MaxFileDropInstances indien nodig"
+    IDS_MUI_MRU_OPEN_FOLDER  "Open Containing &Folder"
+    IDS_MUI_MRU_BROWSE_RENAMED "&Browse for Renamed or Moved File..."
+    IDS_MUI_MRU_COPY_FULLPATH "Copy Full &Path"
+    IDS_MUI_MRU_COPY_DIRPATH "Copy &Directory Path"
+    IDS_MUI_MRU_COPY_FILENAME "Copy File &Name"
     IDS_MUI_URL_DIR_EXISTS   "URL gespesifiseerde gids bestaan!"
     IDS_MUI_URL_FILE_EXISTS  "URL gespesifiseerde lêer bestaan!"
     IDS_MUI_URL_PATH_NOT_FOUND

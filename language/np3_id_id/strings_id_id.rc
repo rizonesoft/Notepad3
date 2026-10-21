@@ -204,6 +204,11 @@ BEGIN
     IDS_MUI_REGEX_INVALID    "Kesalahan mengevaluasi ekspresi reguler. Ekspresi tidak valid!"
     IDS_MUI_DROP_NO_FILE     "Tidak ada nama berkas yang valid diambil\nJika telah lepas dari penggunaan aplikasi 32-bit,\nsilahkan seret berkas dan lepaskan ke bilah alat Notepad3"
     IDS_MUI_DROP_CAP_EXCEEDED "Dropped more files than the configured limit (%i). Increase Settings2.MaxFileDropInstances if needed."
+    IDS_MUI_MRU_OPEN_FOLDER  "Open Containing &Folder"
+    IDS_MUI_MRU_BROWSE_RENAMED "&Browse for Renamed or Moved File..."
+    IDS_MUI_MRU_COPY_FULLPATH "Copy Full &Path"
+    IDS_MUI_MRU_COPY_DIRPATH "Copy &Directory Path"
+    IDS_MUI_MRU_COPY_FILENAME "Copy File &Name"
     IDS_MUI_URL_DIR_EXISTS   "URL direktori yang dituju tersedia!"
     IDS_MUI_URL_FILE_EXISTS  "URL berkas yang dituju tersedia!"
     IDS_MUI_URL_PATH_NOT_FOUND

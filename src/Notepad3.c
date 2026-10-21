@@ -6209,25 +6209,7 @@ void EditOpenContainingFolderFromSelection(void)
         return;
     }
 
-    // SHParseDisplayName doesn't reliably accept the \\?\ long-path prefix.
-    // Strip it for shell-API use: \\?\C:\… -> C:\…, \\?\UNC\server\share -> \\server\share.
-    LPCWSTR pszForShell = Path_Get(hpth);
-    WCHAR shellPath[PATHLONG_MAX_CCH];
-    if (pszForShell && StrCmpNW(pszForShell, L"\\\\?\\", 4) == 0) {
-        if (StrCmpNIW(pszForShell + 4, L"UNC\\", 4) == 0) {
-            StringCchPrintf(shellPath, COUNTOF(shellPath), L"\\\\%s", pszForShell + 8);
-        } else {
-            StringCchCopy(shellPath, COUNTOF(shellPath), pszForShell + 4);
-        }
-        pszForShell = shellPath;
-    }
-
-    PIDLIST_ABSOLUTE pidl = NULL;
-    SHParseDisplayName(pszForShell, NULL, &pidl, SFGAO_BROWSABLE | SFGAO_FILESYSTEM, NULL);
-    if (pidl) {
-        SHOpenFolderAndSelectItems(pidl, 0, NULL, 0);
-        ILFree(pidl);
-    }
+    ShellRevealInExplorer(hpth);
     Path_Release(hpth);
 }
 

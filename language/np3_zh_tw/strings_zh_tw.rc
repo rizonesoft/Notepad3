@@ -204,6 +204,11 @@ BEGIN
     IDS_MUI_REGEX_INVALID    "正規表示式無效"
     IDS_MUI_DROP_NO_FILE     "未能獲取檔名\n\n如果從 32 位應用程式拖放檔案，請拖放到 Notepad3 的工具列上"
     IDS_MUI_DROP_CAP_EXCEEDED "拖放的檔案數量超過設定的限制（%i）。如有需要，請增大 Settings2.MaxFileDropInstances。"
+    IDS_MUI_MRU_OPEN_FOLDER  "Open Containing &Folder"
+    IDS_MUI_MRU_BROWSE_RENAMED "&Browse for Renamed or Moved File..."
+    IDS_MUI_MRU_COPY_FULLPATH "Copy Full &Path"
+    IDS_MUI_MRU_COPY_DIRPATH "Copy &Directory Path"
+    IDS_MUI_MRU_COPY_FILENAME "Copy File &Name"
     IDS_MUI_URL_DIR_EXISTS   "URL 指定目錄存在！"
     IDS_MUI_URL_FILE_EXISTS  "URL 指定檔案存在！"
     IDS_MUI_URL_PATH_NOT_FOUND

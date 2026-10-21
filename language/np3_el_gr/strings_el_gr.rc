@@ -204,6 +204,11 @@ BEGIN
     IDS_MUI_REGEX_INVALID    "Σφάλμα κατά την αξιολόγηση της κανονικής έκφρασης. Η έκφραση δεν είναι έγκυρη!"
     IDS_MUI_DROP_NO_FILE     "Δεν ανακτήθηκε έγκυρο όνομα αρχείου\nΕάν χρησιμοποιείται μια εφαρμογή 32-bit,\nκάντε μεταφορά κι απόθεση στη γραμμή εργαλείων του Notepad3"
     IDS_MUI_DROP_CAP_EXCEEDED "Απορρίφθηκαν περισσότερα αρχεία από το όριο (%i) των ρυθμίσεων. Αύξηστε το Settings2.MaxFileDropInstances αν απαιτείται."
+    IDS_MUI_MRU_OPEN_FOLDER  "Open Containing &Folder"
+    IDS_MUI_MRU_BROWSE_RENAMED "&Browse for Renamed or Moved File..."
+    IDS_MUI_MRU_COPY_FULLPATH "Copy Full &Path"
+    IDS_MUI_MRU_COPY_DIRPATH "Copy &Directory Path"
+    IDS_MUI_MRU_COPY_FILENAME "Copy File &Name"
     IDS_MUI_URL_DIR_EXISTS   "Υπάρχει καθορισμένος κατάλογος διευθύνσεων URL!"
     IDS_MUI_URL_FILE_EXISTS  "Υπάρχει καθορισμένο αρχείο διευθύνσεων URL!"
     IDS_MUI_URL_PATH_NOT_FOUND

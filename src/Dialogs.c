@@ -2465,6 +2465,224 @@ unsigned int WINAPI FileMRUIconThread(LPVOID lpParam)
 }
 
 
+//=============================================================================
+//
+//  Shell helpers (Explorer integration)
+//
+//  SHParseDisplayName() / ShellExecute() don't reliably accept the \\?\ long-path prefix.
+//  Strip it for shell-API use: \\?\C:\… -> C:\…, \\?\UNC\server\share -> \\server\share.
+//
+static LPCWSTR _PathForShell(const HPATHL hpth, LPWSTR pszBuf, const size_t cchBuf)
+{
+    LPCWSTR pszPath = Path_Get(hpth);
+    if (pszPath && (StrCmpNW(pszPath, L"\\\\?\\", 4) == 0)) {
+        if (StrCmpNIW(pszPath + 4, L"UNC\\", 4) == 0) {
+            StringCchPrintf(pszBuf, cchBuf, L"\\\\%s", pszPath + 8);
+        } else {
+            StringCchCopy(pszBuf, cchBuf, pszPath + 4);
+        }
+        pszPath = pszBuf;
+    }
+    return pszPath;
+}
+
+// Opens Explorer with the given file or folder selected (in its parent folder).
+bool ShellRevealInExplorer(const HPATHL hpth)
+{
+    WCHAR shellPath[PATHLONG_MAX_CCH];
+    LPCWSTR const pszPath = _PathForShell(hpth, shellPath, COUNTOF(shellPath));
+
+    PIDLIST_ABSOLUTE pidl = NULL;
+    SHParseDisplayName(pszPath, NULL, &pidl, SFGAO_BROWSABLE | SFGAO_FILESYSTEM, NULL);
+    if (pidl) {
+        SHOpenFolderAndSelectItems(pidl, 0, NULL, 0);
+        ILFree(pidl);
+        return true;
+    }
+    return false;
+}
+
+// Opens the given (existing) folder in Explorer.
+static bool _ShellOpenFolderInExplorer(HWND hwnd, const HPATHL hdir)
+{
+    WCHAR shellPath[PATHLONG_MAX_CCH];
+    LPCWSTR const pszPath = _PathForShell(hdir, shellPath, COUNTOF(shellPath));
+    return ((INT_PTR)ShellExecuteW(hwnd, L"explore", pszPath, NULL, NULL, SW_SHOWNORMAL) > 32);
+}
+
+
+//=============================================================================
+//
+//  FileMRU helpers
+//
+// Strips the last path component; keeps the backslash of a drive root ("C:\foo" -> "C:\").
+static void _GetParentDir(HPATHL hpth)
+{
+    Path_RemoveFileSpec(hpth);
+    LPCWSTR const psz = Path_Get(hpth);
+    if ((Path_GetLength(hpth) == 2) && (psz[1] == L':')) {
+        WCHAR const root[] = { psz[0], L':', L'\\', L'\0' };
+        Path_Reset(hpth, root);
+    }
+}
+
+// Replaces hpth (in/out) by its nearest existing parent directory.
+static bool _FindExistingParentDir(HPATHL hpth)
+{
+    for (;;) {
+        size_t const len = Path_GetLength(hpth);
+        _GetParentDir(hpth);
+        if (Path_IsEmpty(hpth) || (Path_GetLength(hpth) >= len)) {
+            return false; // no progress (root reached)
+        }
+        if (Path_IsExistingDirectory(hpth)) {
+            return true;
+        }
+    }
+}
+
+// Gets the absolute path of the selected MRU list entry.
+static bool _FileMRU_GetSelectedPath(HWND hwndLV, HPATHL hpth_out, int* pItem)
+{
+    int const item = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
+    if (item < 0) {
+        return false;
+    }
+    LV_ITEM lvi = { 0 };
+    lvi.mask       = LVIF_TEXT;
+    lvi.pszText    = Path_WriteAccessBuf(hpth_out, PATHLONG_MAX_CCH);
+    lvi.cchTextMax = (int)Path_GetBufCount(hpth_out);
+    lvi.iItem      = item;
+    if (!ListView_GetItem(hwndLV, &lvi)) {
+        return false;
+    }
+    Path_Sanitize(hpth_out);
+    Path_UnQuoteSpaces(hpth_out);
+    Path_AbsoluteFromApp(hpth_out, true);
+    if (pItem) {
+        *pItem = item;
+    }
+    return Path_IsNotEmpty(hpth_out);
+}
+
+static void _FileMRU_ContextMenu(HWND hwnd, HWND hwndLV, LPARAM lParam)
+{
+    POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+
+    if (lParam == (LPARAM)-1) { // keyboard invoked (Shift+F10 / menu key)
+        int const item = ListView_GetNextItem(hwndLV, -1, LVNI_SELECTED);
+        RECT rc = { 0 };
+        if ((item < 0) || !ListView_GetItemRect(hwndLV, item, &rc, LVIR_LABEL)) {
+            return;
+        }
+        pt.x = rc.left;
+        pt.y = rc.bottom;
+        ClientToScreen(hwndLV, &pt);
+    } else {
+        LVHITTESTINFO lvhti = { 0 };
+        lvhti.pt = pt;
+        ScreenToClient(hwndLV, &lvhti.pt);
+        int const item = ListView_HitTest(hwndLV, &lvhti);
+        if (item < 0) {
+            return;
+        }
+        ListView_SetItemState(hwndLV, item, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+    }
+
+    HMENU const hMenu = CreatePopupMenu();
+    if (!hMenu) {
+        return;
+    }
+    static const struct {
+        UINT idCmd;
+        UINT idStr;
+    } items[] = {
+        { IDC_MRU_OPEN_FOLDER, IDS_MUI_MRU_OPEN_FOLDER },
+        { IDC_MRU_BROWSE_RENAMED, IDS_MUI_MRU_BROWSE_RENAMED },
+        { 0, 0 }, // separator
+        { IDC_MRU_COPY_FULLPATH, IDS_MUI_MRU_COPY_FULLPATH },
+        { IDC_MRU_COPY_DIRPATH, IDS_MUI_MRU_COPY_DIRPATH },
+        { IDC_MRU_COPY_FILENAME, IDS_MUI_MRU_COPY_FILENAME },
+    };
+    for (int i = 0; i < COUNTOF(items); ++i) {
+        if (items[i].idCmd == 0) {
+            AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
+        } else {
+            WCHAR szMenu[128] = { L'\0' };
+            GetLngString(items[i].idStr, szMenu, COUNTOF(szMenu));
+            AppendMenu(hMenu, MF_STRING, items[i].idCmd, szMenu);
+        }
+    }
+    TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_TOPALIGN | TPM_RIGHTBUTTON, pt.x, pt.y, 0, hwnd, NULL);
+    DestroyMenu(hMenu);
+}
+
+// Handles the context menu commands; returns true if the dialog has to be closed with IDOK.
+static bool _FileMRU_HandleContextCmd(HWND hwnd, HWND hwndLV, UINT idCmd)
+{
+    bool bLoadNew = false;
+    int  item     = -1;
+
+    HPATHL const hpth = Path_Allocate(NULL);
+    if (hpth && _FileMRU_GetSelectedPath(hwndLV, hpth, &item)) {
+
+        switch (idCmd) {
+        case IDC_MRU_OPEN_FOLDER:
+            if (Path_IsExistingFile(hpth) && ShellRevealInExplorer(hpth)) {
+                break;
+            }
+            if (!_FindExistingParentDir(hpth) || !_ShellOpenFolderInExplorer(hwnd, hpth)) {
+                MessageBeep(MB_ICONHAND);
+            }
+            break;
+
+        case IDC_MRU_BROWSE_RENAMED: {
+            HPATHL const hdir = Path_Copy(hpth);
+            if (!_FindExistingParentDir(hdir)) {
+                Path_Empty(hdir, false); // let OpenFileDlg choose a reasonable directory
+            }
+            HPATHL const hnew = Path_Allocate(NULL);
+            if (OpenFileDlg(hwnd, hnew, hdir) && Path_IsNotEmpty(hnew)) {
+                // don't remove myself
+                int iCur = 0;
+                if (!MRU_FindPath(Globals.pFileMRU, Paths.CurrentFile, &iCur)) {
+                    iCur = -1;
+                }
+                if (iCur != item) {
+                    MRU_Delete(Globals.pFileMRU, item);
+                }
+                HPATHL const hFilePathOut = (HPATHL)GetWindowLongPtr(hwnd, DWLP_USER);
+                Path_Reset(hFilePathOut, Path_Get(hnew));
+                bLoadNew = true;
+            }
+            Path_Release(hnew);
+            Path_Release(hdir);
+        } break;
+
+        case IDC_MRU_COPY_FULLPATH:
+        case IDC_MRU_COPY_DIRPATH: {
+            if (idCmd == IDC_MRU_COPY_DIRPATH) {
+                _GetParentDir(hpth);
+            }
+            WCHAR szBuf[PATHLONG_MAX_CCH];
+            LPCWSTR const pszPath = _PathForShell(hpth, szBuf, COUNTOF(szBuf));
+            SetClipboardText(hwnd, pszPath, StringCchLen(pszPath, 0));
+        } break;
+
+        case IDC_MRU_COPY_FILENAME: {
+            LPCWSTR const pszName = Path_FindFileName(hpth);
+            SetClipboardText(hwnd, pszName, StringCchLen(pszName, 0));
+        } break;
+
+        default:
+            break;
+        }
+    }
+    Path_Release(hpth);
+    return bLoadNew;
+}
+
+
 static INT_PTR CALLBACK FileMRUDlgProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
     static HWND hwndLV = NULL;
@@ -2622,6 +2840,13 @@ CASE_WM_CTLCOLOR_SET:
 
 #endif
 
+    case WM_CONTEXTMENU:
+        if ((HWND)wParam == hwndLV) {
+            _FileMRU_ContextMenu(hwnd, hwndLV, lParam);
+            return TRUE;
+        }
+        break;
+
     case WM_NOTIFY: {
         switch (wParam) {
         case IDC_REMOVE:
@@ -2743,6 +2968,16 @@ CASE_WM_CTLCOLOR_SET:
         break;
 
         case IDC_FILEMRU:
+            break;
+
+        case IDC_MRU_OPEN_FOLDER:
+        case IDC_MRU_BROWSE_RENAMED:
+        case IDC_MRU_COPY_FULLPATH:
+        case IDC_MRU_COPY_DIRPATH:
+        case IDC_MRU_COPY_FILENAME:
+            if (_FileMRU_HandleContextCmd(hwnd, hwndLV, LOWORD(wParam))) {
+                EndDialog(hwnd, IDOK);
+            }
             break;
 
         case IDC_SAVEMRU: {

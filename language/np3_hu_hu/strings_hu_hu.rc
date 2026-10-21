@@ -204,6 +204,11 @@ BEGIN
     IDS_MUI_REGEX_INVALID    "Hiba a reguláris kifejezés feldolgozásakor. A kifejezés érvénytelen!"
     IDS_MUI_DROP_NO_FILE     "Nem sikerült érvényes fájlnevet kapni\nHa egy 32 bites alkalmazásból lett átdobva,\nkérem, ejtse újra a Notepad3 eszköztárra"
     IDS_MUI_DROP_CAP_EXCEEDED "Dropped more files than the configured limit (%i). Increase Settings2.MaxFileDropInstances if needed."
+    IDS_MUI_MRU_OPEN_FOLDER  "Open Containing &Folder"
+    IDS_MUI_MRU_BROWSE_RENAMED "&Browse for Renamed or Moved File..."
+    IDS_MUI_MRU_COPY_FULLPATH "Copy Full &Path"
+    IDS_MUI_MRU_COPY_DIRPATH "Copy &Directory Path"
+    IDS_MUI_MRU_COPY_FILENAME "Copy File &Name"
     IDS_MUI_URL_DIR_EXISTS   "Az URL-ben megadott könyvtár létezik!"
     IDS_MUI_URL_FILE_EXISTS  "Az URL-ben megadott fájl létezik!"
     IDS_MUI_URL_PATH_NOT_FOUND

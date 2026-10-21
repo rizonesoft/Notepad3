@@ -204,6 +204,11 @@ BEGIN
     IDS_MUI_REGEX_INVALID    "Errore nella valutazione dell'espressione regolare. La RegExp non è valida!"
     IDS_MUI_DROP_NO_FILE     "Nessun nome file valido.\nSe stai facendo drag-n-drop da una applicazione 32-bit,\nrilascia il file nella barra strumenti di Notepad3"
     IDS_MUI_DROP_CAP_EXCEEDED "Sono stati rilasciati più file rispetto al limite configurato (%i). Se necessario aumenta Settings2.MaxFileDropInstances."
+    IDS_MUI_MRU_OPEN_FOLDER  "Open Containing &Folder"
+    IDS_MUI_MRU_BROWSE_RENAMED "&Browse for Renamed or Moved File..."
+    IDS_MUI_MRU_COPY_FULLPATH "Copy Full &Path"
+    IDS_MUI_MRU_COPY_DIRPATH "Copy &Directory Path"
+    IDS_MUI_MRU_COPY_FILENAME "Copy File &Name"
     IDS_MUI_URL_DIR_EXISTS   "La cartella specificata nella URL esiste!"
     IDS_MUI_URL_FILE_EXISTS  "Il file specificato nella URL esiste!"
     IDS_MUI_URL_PATH_NOT_FOUND

@@ -204,6 +204,11 @@ BEGIN
     IDS_MUI_REGEX_INVALID    "सामान्य व्यंजक मूल्यांकन करने में त्रुटि। व्यंजक अवैध है!"
     IDS_MUI_DROP_NO_FILE     "प्राप्त हुआ फ़ाईलनाम वैध नहीं है\nअगर 32-बिट एपलिकेशन से ड्रॉप कर रहे है,\nतो कृपया Notepad3 की औज़ार पट्टी पर ड्रैग और ड्रॉप करें"
     IDS_MUI_DROP_CAP_EXCEEDED "Dropped more files than the configured limit (%i). Increase Settings2.MaxFileDropInstances if needed."
+    IDS_MUI_MRU_OPEN_FOLDER  "Open Containing &Folder"
+    IDS_MUI_MRU_BROWSE_RENAMED "&Browse for Renamed or Moved File..."
+    IDS_MUI_MRU_COPY_FULLPATH "Copy Full &Path"
+    IDS_MUI_MRU_COPY_DIRPATH "Copy &Directory Path"
+    IDS_MUI_MRU_COPY_FILENAME "Copy File &Name"
     IDS_MUI_URL_DIR_EXISTS   "URL निर्दिष्ट निदेशिका मौजूद है!"
     IDS_MUI_URL_FILE_EXISTS  "URL निर्दिष्ट फ़ाईल मौजूद है!"
     IDS_MUI_URL_PATH_NOT_FOUND
