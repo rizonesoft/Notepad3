@@ -129,8 +129,7 @@ inline bool IsUTF8Signature(const char* p)
 }
 #define UTF8StringStart(p) (IsUTF8Signature(p)) ? ((p)+3) : (p)
 
-bool IsValidUTF8(const char* pTest, size_t nLength, bool* pbIsASCII, bool* pbHasNullBytes);
-bool IsValidUTF8_AllowNulls(const char* pTest, size_t nLength);
+bool IsValidUTF8(const char* pTest, size_t nLength, bool* pbIsASCII, bool* pbHasNullBytes, bool* pbWithNulls);
 
 
 //////////////////////////////////////////////////////

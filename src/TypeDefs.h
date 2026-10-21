@@ -587,6 +587,7 @@ typedef struct GLOBALS_T {
     bool      bFindReplCopySelOrClip;
     bool      bReplaceInitialized;
     bool      bDocHasInconsistentEOLs;
+    bool      bDocUTF8WithNul;
 
     unsigned  uCurrentThemeIndex;
     char *    pStdDarkModeIniStyles;
@@ -994,7 +995,7 @@ typedef struct EditFileIOStatus {
     bool bUnknownExt;
     bool bEncryptedRaw;
     bool bMaybeBinary;
-
+    bool bUTF8WithNul;  // valid UTF-8 containing NUL bytes
     // inconsistent line endings
     bool bInconsistentEOLs;
     // inconsistent indentation
@@ -1005,7 +1006,7 @@ typedef struct EditFileIOStatus {
 
 } EditFileIOStatus;
 
-#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, false, false, false, I_MIX_LN, {0,0,0}, {0,0,0,0,0} }
+#define INIT_FILEIO_STATUS { CPI_ANSI_DEFAULT, SC_EOL_CRLF, false, false, false, false, false, false, false, I_MIX_LN, {0,0,0}, {0,0,0,0,0} }
 
 //=============================================================================
 

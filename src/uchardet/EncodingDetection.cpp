@@ -422,6 +422,23 @@ cpi_enc_t AnalyzeText_UCHARDET(
 
 
 // ============================================================================
+
+// ESC (ISO-2022-xx) or "~{" (HZ-GB-2312) in 7-bit data may announce a stateful encoding
+static bool _MayBeStateful7Bit(const char* text, size_t len)
+{
+    if (memchr(text, 0x1B, len)) {
+        return true;
+    }
+    for (const char* p = (const char*)memchr(text, '~', len); p; ) {
+        size_t const rest = len - (size_t)(p - text);
+        if ((rest > 1) && (p[1] == '{')) {
+            return true;
+        }
+        p = (rest > 1) ? (const char*)memchr(p + 1, '~', rest - 1) : NULL;
+    }
+    return false;
+}
+
 // ============================================================================
 
 void Encoding_AnalyzeText(const char* const text, const size_t len,
@@ -438,30 +455,17 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
     float confidence_UCD = 0.0f;
     cpi_enc_t cpiEncoding_UCD = CPI_NONE;
 
-#if FALSE
-    size_t const largeFile = static_cast<size_t>(Settings2.FileLoadWarningMB) * 1024LL * 1024LL;
-
-    if (len < largeFile) {
-        // small file: do SERIAL encoding detection
-        cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, &ucd_cnf, encodingStrg_UCD, MAX_ENC_STRG_LEN, pEncDetInfo->unicodeAnalysis);
-        cpiEncoding_CED = AnalyzeText_CED(text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN, pEncDetInfo->unicodeAnalysis);
-    } else { // large file:  start ASYNC PARALLEL encoding detection
-
-        std::future<int> cpiUCD = std::async(std::launch::async, AnalyzeText_UCHARDET,
-                                             text, len, encodingHint, &ucd_cnf, encodingStrg_UCD, MAX_ENC_STRG_LEN, pEncDetInfo->unicodeAnalysis);
-
-        std::future<int> cpiCED = std::async(std::launch::async, AnalyzeText_CED,
-                                             text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN, pEncDetInfo->unicodeAnalysis);
-
-        cpiEncoding_UCD = cpiUCD.get();
-        cpiEncoding_CED = cpiCED.get();
+    // Pure 7-bit ASCII is a certain result - skip the expensive uchardet run, unless the
+    // text may be a 7-bit stateful encoding (ISO-2022-xx: ESC sequences, HZ: "~{").
+    if (pEncDetInfo->bPureASCII7Bit && !Flags.bDevDebugMode && !_MayBeStateful7Bit(text, len)) {
+        StringCchCopyA(pEncDetInfo->encodingStrg, COUNTOF(pEncDetInfo->encodingStrg), "ASCII");
+        pEncDetInfo->confidence = 1.0f;
+        pEncDetInfo->analyzedEncoding = CPI_ASCII_7BIT;
+        return;
     }
-
-#else
 
     cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, &confidence_UCD, pEncDetInfo->encodingStrg, COUNTOF(pEncDetInfo->encodingStrg));
 
-#endif
 
     // UCARDET does not rely on encodingHint, so make a bias here
     confidence_UCD += (cpiEncoding_UCD == encodingHint) ? (1.0f - confidence_UCD) / 2.0f : 0.0f;
@@ -505,7 +509,7 @@ static void _SetEncodingTitleInfo(const ENC_DET_T* pEncDetInfo)
     StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), tmpBuf);
 
     const WCHAR* const validUTF8 = (pEncDetInfo->bValidUTF8) ? (pEncDetInfo->bPureASCII7Bit ? L" [ASCII 7-bit]" : L" [Valid UTF-8]")
-                                                                : (pEncDetInfo->bUTF8WithNulls ? L" [UTF-8 with NUL bytes]" : L" [Invalid UTF-8]");
+                                                                : (pEncDetInfo->bUTF8WithNulls && !Encoding_IsUNICODE(pEncDetInfo->unicodeAnalysis) ? L" [UTF-8 with NUL bytes]" : L" [Invalid UTF-8]");
     StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), validUTF8);
 }
 
@@ -643,10 +647,31 @@ static void _ParseVimModeline(const char* buffer, LPFILEVARS lpfv)
 
 //=============================================================================
 //
+//  _CopyScanBuffer()
+//
+//  Copies up to (dstSize-1) bytes; embedded NUL bytes are replaced by blanks so
+//  that file variables behind a stray NUL are still found.
+//
+static void _CopyScanBuffer(char* dst, size_t dstSize, const char* src, size_t cnt)
+{
+    size_t const n = min_s(cnt, dstSize - 1);
+    for (size_t i = 0; i < n; ++i) {
+        dst[i] = src[i] ? src[i] : ' ';
+    }
+    dst[n] = '\0';
+}
+
+//=============================================================================
+//
 //  _SetFileVars()
 //
-static void _SetFileVars(char* buffer, size_t cch, LPFILEVARS lpfv)
+static void _SetFileVars(const char* buffer, bool bHasSignature, LPFILEVARS lpfv)
 {
+    // every file variable / encoding tag / modeline needs a ':' or '=' separator
+    if (!strpbrk(buffer, ":=")) {
+        return;
+    }
+
     bool bEnableFileVar = !Flags.NoFileVariables;
 
     if (bEnableFileVar) {
@@ -700,8 +725,6 @@ static void _SetFileVars(char* buffer, size_t cch, LPFILEVARS lpfv)
 
     if (!Settings.NoEncodingTags) {
 
-        bool const bHasSignature = IsUTF8Signature(buffer) || Has_UTF16_LE_BOM(buffer, cch) || Has_UTF16_BE_BOM(buffer, cch);
-
         // Signature override Encoding Tag
         if (!bHasSignature) {
             if (FileVars_ParseStr(buffer, "coding", lpfv->chEncoding, COUNTOF(lpfv->chEncoding))) {
@@ -740,15 +763,17 @@ extern "C" bool FileVars_GetFromData(const char* lpData, size_t cbData, LPFILEVA
 
     size_t const scanBytes = (size_t)clampi(Settings2.FileVarScanBytes, MIDSZ_BUFFER, XHUGE_BUFFER);
     char tmpbuf[XHUGE_BUFFER];
-    size_t const cch = min_s(cbData + 1, scanBytes);
 
-    StringCchCopyNA(tmpbuf, scanBytes, lpData, cch);
-    _SetFileVars(tmpbuf, cch, lpfv);
+    // an encoding tag must not override a signature (BOM) at the very start of the file
+    bool const bHasSignature = (cbData >= 3 && IsUTF8Signature(lpData)) || Has_UTF16_LE_BOM(lpData, cbData) || Has_UTF16_BE_BOM(lpData, cbData);
+
+    _CopyScanBuffer(tmpbuf, scanBytes, lpData, cbData);
+    _SetFileVars(tmpbuf, bHasSignature, lpfv);
 
     // if no file vars found, look at EOF
     if ((lpfv->mask == 0) && (cbData > scanBytes)) {
-        StringCchCopyNA(tmpbuf, scanBytes, lpData + cbData - scanBytes + 1, scanBytes);
-        _SetFileVars(tmpbuf, cch, lpfv);
+        _CopyScanBuffer(tmpbuf, scanBytes, lpData + cbData - (scanBytes - 1), scanBytes - 1);
+        _SetFileVars(tmpbuf, bHasSignature, lpfv);
     }
 
     return true;
@@ -1086,10 +1111,8 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
     encDetRes.bHasBOM = (bBOM_LE || bBOM_BE) || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UNICODE_BOM));
     encDetRes.bIsReverse = bBOM_BE || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UNICODE_REVERSE));
     encDetRes.bIsUTF8Sig = bUTF8Sig || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UTF8_SIGN));
-    // IsValidUTF8() rejects null bytes as non-text (returns false for buffers with 0x00).
-    // Also reports pure-ASCII status and null-byte presence, eliminating separate scans.
-    encDetRes.bValidUTF8 = IsValidUTF8(lpData, cbData, &(encDetRes.bPureASCII7Bit), &(encDetRes.bHasNullBytes));
-    encDetRes.bUTF8WithNulls = encDetRes.bHasNullBytes && IsValidUTF8_AllowNulls(lpData, cbData);
+    // One scan yields strict validity, pure-ASCII, NUL presence and "valid UTF-8 except for NUL bytes".
+    encDetRes.bValidUTF8 = IsValidUTF8(lpData, cbData, &(encDetRes.bPureASCII7Bit), &(encDetRes.bHasNullBytes), &(encDetRes.bUTF8WithNulls));
 
     // --- 2nd Use Encoding Analysis if applicable
 
@@ -1118,7 +1141,9 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
             }
         }
 
-        if (!bSkipANSICPDetection) {
+        // a BOM decides the encoding anyway - the (expensive) analysis is only needed for diagnostics / forced detection
+        bool const bHasSignatureBOM = bUTF8Sig || bBOM_LE || bBOM_BE;
+        if (!bSkipANSICPDetection && (!bHasSignatureBOM || bForceEncDetection || Flags.bDevDebugMode)) {
             // ---------------------------------------------------------------------------
             Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes, iAnalyzeHint);
             // ---------------------------------------------------------------------------

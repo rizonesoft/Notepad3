@@ -1250,6 +1250,8 @@ bool EditLoadFile(
     }
     status->iEncoding = Settings.DefaultEncoding;
     status->bUnicodeErr = false;
+    status->bMaybeBinary = false;
+    status->bUTF8WithNul = false;
     status->bUnknownExt = false;
     status->bEncryptedRaw = false;
     Flags.bHugeFileLoadState = false;
@@ -1479,29 +1481,35 @@ bool EditLoadFile(
         // ===  UTF-8 ? ===
         bool const bForcedUTF8 = Encoding_MaybeUTF8(encDetection.forcedEncoding); // ~ don't || encDetection.bIsUTF8Sig here !
         bool const bAnalysisUTF8 = Encoding_MaybeUTF8(encDetection.Encoding);
-        // stray NUL chars make IsValidUTF8() fail, but must not turn UTF-8 data into (garbage) UTF-16
-        bool const bValidUTF8 = encDetection.bValidUTF8 ||
-                                (encDetection.bHasNullBytes && (encDetection.bIsUTF8Sig || bAnalysisUTF8) &&
-                                 IsValidUTF8_AllowNulls(lpData, cbData));
 
-        bool const bRejectUTF8 = (IS_ENC_ENFORCED() && !bForcedUTF8) || !bValidUTF8 || (!encDetection.bIsUTF8Sig && (fLoadFlags & FLF_SkipUnicodeDetect));
+        // The detected family decides the decoder. A failed validity check or skipped
+        // unicode detection must never turn UTF-8 data into (garbage) UTF-16: such data
+        // falls back to the ANSI codepage conversion below.
+        bool const bIsUTF8Family = bForcedUTF8 || (!IS_ENC_ENFORCED() && (encDetection.bIsUTF8Sig || bAnalysisUTF8));
 
-        if (bForcedUTF8 || (!bRejectUTF8 && (encDetection.bIsUTF8Sig || bAnalysisUTF8))) {
+        // stray NUL bytes are valid U+0000 characters
+        bool const bValidUTF8 = encDetection.bValidUTF8 || encDetection.bUTF8WithNulls;
+        bool const bSkipUTF8 = !bForcedUTF8 && !encDetection.bIsUTF8Sig && (fLoadFlags & FLF_SkipUnicodeDetect);
+
+        if (bIsUTF8Family) {
 
             if (encDetection.bIsUTF8Sig) {
                 EditSetNewText(hwnd, UTF8StringStart(lpData), cbData - 3, bClearUndoHistory, bReloadFile);
                 status->iEncoding = CPI_UTF8SIGN;
                 EditDetectEOLMode(UTF8StringStart(lpData), cbData - 3, status);
+                status->bUTF8WithNul = encDetection.bUTF8WithNulls;
             }
-            else if (bValidUTF8) {
+            else if (bValidUTF8 && !bSkipUTF8) {
                 EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory, bReloadFile);
                 status->iEncoding = CPI_UTF8;
                 EditDetectEOLMode(lpData, cbData, status);
+                status->bUTF8WithNul = encDetection.bUTF8WithNulls;
             }
             else {
-                // Detector picked UTF-8 but the byte sequence does not pass strict
-                // UTF-8 validation — pushing it to Scintilla as UTF-8 would silently
-                // corrupt the document. Fall back to ANSI codepage conversion.
+                // UTF-8 was detected but the byte sequence does not pass strict UTF-8
+                // validation (or unicode detection is to be skipped) — pushing it to
+                // Scintilla as UTF-8 would silently corrupt the document.
+                // Fall back to ANSI codepage conversion.
                 status->iEncoding = CPI_ANSI_DEFAULT;
                 UINT const uCodePage = Encoding_GetCodePage(CPI_ANSI_DEFAULT);
                 if (!ConvertToSciCPAndSetText(hwnd, uCodePage, &lpData, &cbData,
@@ -1509,6 +1517,8 @@ bool EditLoadFile(
                     EditSetNewText(hwnd, "", 0, bClearUndoHistory, bReloadFile);
                 }
             }
+            // stray NUL bytes in text: no reliable inconsistent EOL / indentation checks
+            status->bMaybeBinary = status->bMaybeBinary || status->bUTF8WithNul;
         }
         else { // ===  UNICODE NON UTF-8 ===
 
