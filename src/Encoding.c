@@ -724,20 +724,19 @@ bool Has_UTF32_BOM(const char* pBuf, size_t cnt)
 
 bool Has_UTF16_LE_BOM(const char* pBuf, size_t cnt)
 {
-    if (Has_UTF32_LE_BOM(pBuf, cnt)) {
+    if (!pBuf || cnt < 2 || Has_UTF32_LE_BOM(pBuf, cnt)) {
         return false; // UTF-32 LE BOM starts with FF FE — must not match as UTF-16 LE
     }
-    int iTest = IS_TEXT_UNICODE_SIGNATURE;
-    bool const ok = IsTextUnicode(pBuf, clampi((int)cnt, 0, 4), &iTest);
-    return (ok && ((iTest & IS_TEXT_UNICODE_SIGNATURE) != 0));
+    return ((unsigned char)pBuf[0] == 0xFF && (unsigned char)pBuf[1] == 0xFE);
 }
 // ----------------------------------------------------------------------------
 
 bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt)
 {
-    int iTest = IS_TEXT_UNICODE_REVERSE_SIGNATURE;
-    bool const ok = IsTextUnicode(pBuf, clampi((int)cnt, 0, 4), &iTest);
-    return (ok && ((iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE) != 0));
+    if (!pBuf || cnt < 2) {
+        return false;
+    }
+    return ((unsigned char)pBuf[0] == 0xFE && (unsigned char)pBuf[1] == 0xFF);
 }
 // ----------------------------------------------------------------------------
 
@@ -752,212 +751,15 @@ bool Has_UTF16_BOM(const char* pBuf, size_t cnt)
 // ============================================================================
 
 
-#undef _OLD_UTF8_VALIDATOR_
-//#define _OLD_UTF8_VALIDATOR_ 1
-#ifdef _OLD_UTF8_VALIDATOR_
-
-// ============================================================================
-
-/* byte length of UTF-8 sequence based on value of first byte.
-for UTF-16 (21-bit space), max. code length is 4, so we only need to look
-at 4 upper bits.
-*/
-static const size_t utf8_lengths[16] = {
-    1,1,1,1,1,1,1,1,        /* 0000 to 0111 : 1 byte (plain ASCII) */
-    0,0,0,0,                /* 1000 to 1011 : not valid */
-    2,2,                    /* 1100, 1101 : 2 bytes */
-    3,                      /* 1110 : 3 bytes */
-    4                       /* 1111 : 4 bytes */
-};
-
-// ----------------------------------------------------------------------------
-
-/*++
-Function :
-UTF8_mbslen_bytes [INTERNAL]
-
-Calculates the byte size of a NULL-terminated UTF-8 string.
-
-Parameters :
-char *utf8_string : string to examine
-
-Return value :
-size (in bytes) of a NULL-terminated UTF-8 string.
--1 if invalid NULL-terminated UTF-8 string
---*/
-size_t  UTF8_mbslen_bytes(LPCSTR utf8_string)
-{
-    size_t length = 0;
-    size_t code_size;
-    BYTE byte;
-
-    while (*utf8_string) {
-        byte = (BYTE)*utf8_string;
-
-        if ((byte <= 0xF7) && (0 != (code_size = utf8_lengths[byte >> 4]))) {
-            length += code_size;
-            utf8_string += code_size;
-        } else {
-            /* we got an invalid byte value but need to count it,
-            it will be later ignored during the string conversion */
-            //WARN("invalid first byte value 0x%02X in UTF-8 sequence!\n",byte);
-            length++;
-            utf8_string++;
-        }
-    }
-    length++; /* include NULL terminator */
-    return length;
-}
-// ----------------------------------------------------------------------------
-
-/*++
-Function :
-UTF8_mbslen [INTERNAL]
-
-Calculates the character size of a NULL-terminated UTF-8 string.
-
-Parameters :
-char *utf8_string : string to examine
-int byte_length : byte size of string
-
-Return value :
-size (in characters) of a UTF-8 string.
--1 if invalid UTF-8 string
---*/
-size_t  UTF8_mbslen(LPCSTR utf8_string, size_t byte_length)
-{
-    size_t wchar_length = 0;
-    size_t code_size;
-    BYTE byte;
-
-    while (byte_length > 0) {
-        byte = (BYTE)*utf8_string;
-
-        /* UTF-16 can't encode 5-byte and 6-byte sequences, so maximum value
-        for first byte is 11110111. Use lookup table to determine sequence
-        length based on upper 4 bits of first byte */
-        if ((byte <= 0xF7) && (0 != (code_size = utf8_lengths[byte >> 4]))) {
-            /* 1 sequence == 1 character */
-            wchar_length++;
-
-            if (code_size == 4) {
-                wchar_length++;
-            }
-
-            utf8_string += code_size;        /* increment pointer */
-            byte_length -= code_size;   /* decrement counter*/
-        } else {
-            /*
-            unlike UTF8_mbslen_bytes, we ignore the invalid characters.
-            we only report the number of valid characters we have encountered
-            to match the Windows behavior.
-            */
-            //WARN("invalid byte 0x%02X in UTF-8 sequence, skipping it!\n", byte);
-            utf8_string++;
-            byte_length--;
-        }
-    }
-    return wchar_length;
-}
-// ----------------------------------------------------------------------------
-
-bool  UTF8_ContainsInvalidChars(LPCSTR utf8_string, size_t byte_length)
-{
-    return ((UTF8_mbslen_bytes(UTF8StringStart(utf8_string)) - 1) !=
-            UTF8_mbslen(UTF8StringStart(utf8_string), IsUTF8Signature(utf8_string) ? (byte_length - 3) : byte_length));
-}
-
-// ----------------------------------------------------------------------------
-
-
-bool IsValidUTF8(const char* pTest, size_t nLength, bool* pbIsASCII, bool* pbHasNullBytes)
-{
-    static int byte_class_table[256] = {
-        /*       00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  */
-        /* 00 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        /* 10 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        /* 20 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        /* 30 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        /* 40 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        /* 50 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        /* 60 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        /* 70 */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        /* 80 */ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        /* 90 */ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-        /* A0 */ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-        /* B0 */ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-        /* C0 */ 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-        /* D0 */ 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-        /* E0 */ 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 7, 7,
-        /* F0 */ 9,10,10,10,11, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4
-        /*       00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F  */
-    };
-
-    /* state table */
-    typedef enum {
-        kSTART = 0, kA, kB, kC, kD, kE, kF, kG, kERROR, kNumOfStates
-    } utf8_state;
-
-    static utf8_state state_table[] = {
-        /*                            kSTART, kA,     kB,     kC,     kD,     kE,     kF,     kG,     kERROR */
-        /* 0x00-0x7F: 0            */ kSTART, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR,
-        /* 0x80-0x8F: 1            */ kERROR, kSTART, kA,     kERROR, kA,     kB,     kERROR, kB,     kERROR,
-        /* 0x90-0x9f: 2            */ kERROR, kSTART, kA,     kERROR, kA,     kB,     kB,     kERROR, kERROR,
-        /* 0xa0-0xbf: 3            */ kERROR, kSTART, kA,     kA,     kERROR, kB,     kB,     kERROR, kERROR,
-        /* 0xc0-0xc1, 0xf5-0xff: 4 */ kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR,
-        /* 0xc2-0xdf: 5            */ kA,     kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR,
-        /* 0xe0: 6                 */ kC,     kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR,
-        /* 0xe1-0xec, 0xee-0xef: 7 */ kB,     kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR,
-        /* 0xed: 8                 */ kD,     kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR,
-        /* 0xf0: 9                 */ kF,     kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR,
-        /* 0xf1-0xf3: 10           */ kE,     kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR,
-        /* 0xf4: 11                */ kG,     kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR, kERROR
-    };
-
-#define BYTE_CLASS(b) (byte_class_table[(unsigned char)b])
-#define NEXT_STATE(b,cur) (state_table[(BYTE_CLASS(b) * kNumOfStates) + (cur)])
-
-    utf8_state current = kSTART;
-    bool bIsASCII = true;
-    bool bFoundNull = false;
-
-    const char* pt = pTest;
-    size_t len = nLength;
-
-    for (size_t i = 0; i < len; i++, pt++) {
-        if (*pt == '\0') {
-            bFoundNull = true;
-            break;  // null bytes indicate non-text (binary/UTF-16)
-        }
-        if (*pt & 0x80) { bIsASCII = false; }
-        current = NEXT_STATE(*pt, current);
-        if (kERROR == current) {
-            break;
-        }
-    }
-
-    if (bFoundNull) {
-        if (pbIsASCII) { *pbIsASCII = false; }
-        if (pbHasNullBytes) { *pbHasNullBytes = true; }
-        return false;
-    }
-
-    bool const bValid = (current == kSTART) && !UTF8_ContainsInvalidChars(pTest, nLength);
-    if (pbIsASCII) { *pbIsASCII = bValid ? bIsASCII : false; }
-    if (pbHasNullBytes) { *pbHasNullBytes = false; }
-    return bValid;
-}
-
-
-// ============================================================================
-#else  // new UTF-8 validator
-// ============================================================================
-
-
 // Copyright (c) 2008-2010 Bjoern Hoehrmann <bjoern@hoehrmann.de>
 // See http://bjoern.hoehrmann.de/utf-8/decoder/dfa/ for details.
 
-bool IsValidUTF8(const char* pTest, size_t nLength, bool* pbIsASCII, bool* pbHasNullBytes)
+// Single-pass strict UTF-8 scan. NUL bytes are processed as valid U+0000 so that one scan
+// yields everything the detection needs:
+//   return value / *pbWithNulls : valid UTF-8 without / with NUL bytes (mutually exclusive)
+//   *pbHasNullBytes             : buffer contains 0x00 (also reported for invalid UTF-8)
+//   *pbIsASCII                  : only 0x01-0x7F bytes (pure 7-bit text)
+bool IsValidUTF8(const char* pTest, size_t nLength, bool* pbIsASCII, bool* pbHasNullBytes, bool* pbWithNulls)
 {
     enum {
         UTF8_ACCEPT = 0,
@@ -985,36 +787,49 @@ bool IsValidUTF8(const char* pTest, size_t nLength, bool* pbIsASCII, bool* pbHas
         12,36,12,12,12,12,12,12,12,12,12,12,
     };
 
-    const unsigned char *pt = (const unsigned char *)pTest;
-    const unsigned char *end = pt + nLength;
+    const unsigned char* pt = (const unsigned char*)pTest;
+    const unsigned char* const end = pt + nLength;
 
-    UINT state = UTF8_ACCEPT;
-    bool bIsASCII = true;
-    // Null bytes (0x00) are rejected as non-text — real UTF-8 text files never contain them.
+    unsigned int state = UTF8_ACCEPT;
+    bool bNonASCII = false;
+    bool bHasNull = false;
+    bool bValid = true;
+
     while (pt < end) {
-        if (*pt == '\0') {
-            if (pbIsASCII) { *pbIsASCII = false; }
-            if (pbHasNullBytes) { *pbHasNullBytes = true; }
-            return false;  // null bytes indicate non-text (binary/UTF-16)
+        // fast path: 8 ASCII bytes at once (only between multi-byte sequences)
+        if ((state == UTF8_ACCEPT) && ((size_t)(end - pt) >= sizeof(uint64_t))) {
+            uint64_t v;
+            memcpy(&v, pt, sizeof(v));
+            if ((v & 0x8080808080808080ULL) == 0) {
+                if (((v - 0x0101010101010101ULL) & ~v & 0x8080808080808080ULL) != 0) {
+                    bHasNull = true;
+                }
+                pt += sizeof(v);
+                continue;
+            }
         }
-        if (*pt & 0x80) { bIsASCII = false; }  // multi-byte UTF-8 sequence
-        state = utf8_dfa[256 + state + utf8_dfa[*pt++]];
+        unsigned char const c = *pt++;
+        if (c == 0) {
+            bHasNull = true;
+        } else if (c & 0x80) {
+            bNonASCII = true;
+        }
+        state = utf8_dfa[256 + state + utf8_dfa[c]];
         if (state == UTF8_REJECT) {
-            if (pbIsASCII) { *pbIsASCII = false; }
-            if (pbHasNullBytes) { *pbHasNullBytes = false; }
-            return false;
+            bValid = false;
+            if (!bHasNull && (pt < end)) {
+                bHasNull = (memchr(pt, 0, (size_t)(end - pt)) != NULL); // UTF-16 detection needs this
+            }
+            break;
         }
     }
-    if (pbIsASCII) { *pbIsASCII = bIsASCII; }
-    if (pbHasNullBytes) { *pbHasNullBytes = false; }
-    return (state == UTF8_ACCEPT);
+    bValid = bValid && (state == UTF8_ACCEPT);
+
+    if (pbIsASCII) { *pbIsASCII = bValid && !bNonASCII && !bHasNull; }
+    if (pbHasNullBytes) { *pbHasNullBytes = bHasNull; }
+    if (pbWithNulls) { *pbWithNulls = bValid && bHasNull; }
+    return bValid && !bHasNull;
 }
-
-// ----------------------------------------------------------------------------
-
-#endif
-
-// ============================================================================
 
 // ----------------------------------------------------------------------------
 // https://stackoverflow.com/questions/342409/how-do-i-base64-encode-decode-in-c

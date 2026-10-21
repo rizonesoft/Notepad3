@@ -130,6 +130,7 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Đã xảy ra lỗi khi mở tệp ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Đã xảy ra lỗi khi lưu tệp ""%s"""
     IDS_MUI_ERR_PATHNOTFOUND "Đường dẫn cho ""%s"" không còn tồn tại.\nTạo lại đường dẫn và lưu tệp?"
+    IDS_MUI_WARN_UTF32_CONVERTED  "The file is UTF-32 encoded. It was converted to UTF-8 and will be saved as UTF-8."
     IDS_MUI_ERR_DLG_FORMAT  "Lỗi '%s', Nguyên nhân:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Không thể tìm thấy plugin trình duyệt tệp\nPlugin MiniPath có thể tải xuống từ https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Không thể tìm thấy plugin tìm kiếm tệp\nPlugin grepWin Portable có thể tải xuống từ https://github.com/stefankueng/grepWin/releases"

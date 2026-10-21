@@ -129,7 +129,7 @@ inline bool IsUTF8Signature(const char* p)
 }
 #define UTF8StringStart(p) (IsUTF8Signature(p)) ? ((p)+3) : (p)
 
-bool IsValidUTF8(const char* pTest, size_t nLength, bool* pbIsASCII, bool* pbHasNullBytes);
+bool IsValidUTF8(const char* pTest, size_t nLength, bool* pbIsASCII, bool* pbHasNullBytes, bool* pbWithNulls);
 
 
 //////////////////////////////////////////////////////
@@ -190,6 +190,7 @@ typedef struct _enc_det_t {
     bool bIsUTF8Sig;
     bool bValidUTF8;
     bool bPureASCII7Bit;  // all bytes 0x01-0x7F (no nulls, no high-bit)
+    bool bUTF8WithNulls;  // not valid UTF-8 only because of NUL bytes (otherwise strictly valid)
     bool bHasNullBytes;   // buffer contains 0x00 bytes (binary/UTF-16/UTF-32)
     bool bIsUTF32;
     bool bIsAnalyzed;     // Encoding_AnalyzeText() was actually called (not skipped)
@@ -198,7 +199,7 @@ typedef struct _enc_det_t {
 
 } ENC_DET_T;
 
-#define INIT_ENC_DET_T  { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, false, false, false, false, "" }
+#define INIT_ENC_DET_T  { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, false, false, false, false, false, "" }
 
 
 ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpData, const size_t cbData,

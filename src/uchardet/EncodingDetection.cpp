@@ -308,64 +308,6 @@ constexpr float clampf(float x, float lower, float upper)
 
 //=============================================================================
 
-cpi_enc_t AnalyzeUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM, bool* lpbReverse)
-{
-    cpi_enc_t iEncoding = CPI_NONE;
-
-    size_t const enoughData = 2048LL;
-    size_t const cb = (len < enoughData) ? len : enoughData;
-
-    if (!pBuffer || cb < 2) {
-        return CPI_NONE;
-    }
-
-    // IS_TEXT_UNICODE_UNICODE_MASK -> IS_TEXT_UNICODE_ASCII16, IS_TEXT_UNICODE_STATISTICS, IS_TEXT_UNICODE_CONTROLS, IS_TEXT_UNICODE_SIGNATURE.
-    // IS_TEXT_UNICODE_REVERSE_MASK -> IS_TEXT_UNICODE_REVERSE_ASCII16, IS_TEXT_UNICODE_REVERSE_STATISTICS, IS_TEXT_UNICODE_REVERSE_CONTROLS, IS_TEXT_UNICODE_REVERSE_SIGNATURE.
-    // IS_TEXT_UNICODE_NOT_UNICODE_MASK -> IS_TEXT_UNICODE_ILLEGAL_CHARS, IS_TEXT_UNICODE_ODD_LENGTH, and two currently unused bit flags.
-    // IS_TEXT_UNICODE_NOT_ASCII_MASK -> IS_TEXT_UNICODE_NULL_BYTES and three currently unused bit flags.
-    //
-    int const iAllTests = IS_TEXT_UNICODE_UNICODE_MASK | IS_TEXT_UNICODE_REVERSE_MASK | IS_TEXT_UNICODE_NOT_UNICODE_MASK | IS_TEXT_UNICODE_NOT_ASCII_MASK;
-
-    int iTest = iAllTests;
-    /*bool const ok =*/ IsTextUnicode(pBuffer, (int)cb, &iTest); // don't rely on result ok in case of multi-flags
-
-    if (iTest == iAllTests) {
-        return CPI_NONE; // iTest doesn't seem to have been modified ...
-    }
-
-    bool const bHasBOM = (iTest & IS_TEXT_UNICODE_SIGNATURE);
-    bool const bHasRBOM = (iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE);
-
-    bool const bIsUnicode = (iTest & IS_TEXT_UNICODE_UNICODE_MASK);
-    bool const bIsReverse = (iTest & IS_TEXT_UNICODE_REVERSE_MASK);
-
-    //bool const bHasOddLen = (iTest & IS_TEXT_UNICODE_ODD_LENGTH);
-    //bool const bHasDBCS = (iTest & IS_TEXT_UNICODE_DBCS_LEADBYTE);
-    bool const bIsUTF8 = (iTest & IS_TEXT_UNICODE_UTF8);
-
-    //~ unreliable ~ bool const bIsIllegal = (iTest & IS_TEXT_UNICODE_ILLEGAL_CHARS);
-    bool const bHasNullBytes = (iTest & IS_TEXT_UNICODE_NULL_BYTES);
-
-    if ((bHasBOM || bHasRBOM || bIsUnicode || bIsReverse) && bHasNullBytes) // && !bHasOddLen)
-    {
-        if (bHasBOM || bHasRBOM) {
-            if (lpbBOM) { *lpbBOM = true; }
-            if (lpbReverse) { *lpbReverse = bHasRBOM; }
-            iEncoding = bHasRBOM ? CPI_UNICODEBEBOM : CPI_UNICODEBOM;
-        }
-        else if ((bIsUnicode || bIsReverse) && !(len & 1)) {
-            // BOM-less: require even byte count (UTF-16 is 2-byte aligned)
-            if (lpbBOM) { *lpbBOM = false; }
-            if (lpbReverse) { *lpbReverse = bIsReverse; }
-            iEncoding = bIsReverse ? CPI_UNICODEBE : CPI_UNICODE;
-        }
-    }
-    if (bIsUTF8 && (iEncoding == CPI_NONE)) {
-        iEncoding = CPI_UTF8;
-    }
-
-    return iEncoding;
-}
 // ============================================================================
 
 // Supplementary BOM-less UTF-16 detection via null-byte distribution analysis.
@@ -374,14 +316,18 @@ cpi_enc_t AnalyzeUnicodeEncoding(const char* pBuffer, const size_t len, bool* lp
 // In UTF-16 LE, ASCII chars produce nulls at odd positions (e.g. 'A' = 41 00).
 // In UTF-16 BE, ASCII chars produce nulls at even positions (e.g. 'A' = 00 41).
 //
-static cpi_enc_t DetectUTF16ByNullDistribution(const char* pBuffer, size_t len)
+// A trailing odd byte (truncated file) is ignored. A few nulls at the opposite position
+// (U+xx00 characters) are tolerated. *pbStrong is set for ASCII-heavy text (>= 10% of the
+// code units are ASCII-range), which makes the UTF-16 verdict independent of uchardet.
+//
+static cpi_enc_t DetectUTF16ByNullDistribution(const char* pBuffer, size_t len, bool* pbStrong)
 {
-    if (!pBuffer || len < 2 || (len & 1))
-    {
-        return CPI_NONE;  // odd length can't be valid UTF-16
+    *pbStrong = false;
+    if (!pBuffer || len < 2) {
+        return CPI_NONE;
     }
 
-    size_t const cb = min_s(len, 4096LL);
+    size_t const cb = min_s(len & ~(size_t)1, 4096LL);
     const unsigned char* p = (const unsigned char*)pBuffer;
 
     size_t nullsEven = 0;  // null bytes at even positions (0, 2, 4, ...)
@@ -392,19 +338,49 @@ static cpi_enc_t DetectUTF16ByNullDistribution(const char* pBuffer, size_t len)
         if (p[i + 1] == 0) { ++nullsOdd; }
     }
 
-    // In valid UTF-16, nulls appear at exactly one byte position (even XOR odd).
-    // The requirement that the opposite position has ZERO nulls is already a
-    // strong signal. We just need a minimum count to avoid false positives
-    // from stray null bytes in binary data.
-    size_t const minNulls = max_s(2, cb/256LL);
+    // In valid UTF-16, nulls appear (almost) exclusively at one byte position (even XOR odd).
+    // We need a minimum count to avoid false positives from stray null bytes in binary data.
+    size_t const minNulls = max_s(2, cb / 256LL);
+    size_t const units = cb / 2;
 
-    if (nullsOdd >= minNulls && nullsEven == 0) {
-        return CPI_UNICODE;     // UTF-16 LE: nulls at odd positions only
+    if (nullsOdd >= minNulls && nullsEven <= (nullsOdd >> 5)) {
+        *pbStrong = (nullsOdd * 10 >= units) && (nullsEven == 0);
+        return CPI_UNICODE;     // UTF-16 LE: nulls at odd positions
     }
-    if (nullsEven >= minNulls && nullsOdd == 0) {
-        return CPI_UNICODEBE;   // UTF-16 BE: nulls at even positions only
+    if (nullsEven >= minNulls && nullsOdd <= (nullsEven >> 5)) {
+        *pbStrong = (nullsEven * 10 >= units) && (nullsOdd == 0);
+        return CPI_UNICODEBE;   // UTF-16 BE: nulls at even positions
     }
     return CPI_NONE;
+}
+
+// ============================================================================
+
+// BOM-less UTF-32 detection: every 32-bit unit must be a code point <= U+10FFFF
+// (the 2 bytes at the most significant end are 0x00 0x00..0x10).
+//
+static bool DetectUTF32ByRange(const char* pBuffer, size_t len, bool* pbBigEndian)
+{
+    if (!pBuffer || len < 8 || (len & 3)) {
+        return false;
+    }
+    size_t const cb = min_s(len, 4096LL) & ~(size_t)3;
+    const unsigned char* p = (const unsigned char*)pBuffer;
+
+    bool bLE = true;
+    bool bBE = true;
+    bool bAnyNonZero = false;
+
+    for (size_t i = 0; i < cb && (bLE || bBE); i += 4) {
+        bLE = bLE && (p[i + 3] == 0) && (p[i + 2] <= 0x10);
+        bBE = bBE && (p[i] == 0) && (p[i + 1] <= 0x10);
+        bAnyNonZero = bAnyNonZero || p[i] || p[i + 1] || p[i + 2] || p[i + 3];
+    }
+    if (!bAnyNonZero || (bLE == bBE)) {
+        return false; // all zero or ambiguous
+    }
+    *pbBigEndian = bBE;
+    return true;
 }
 // ============================================================================
 
@@ -480,6 +456,23 @@ cpi_enc_t AnalyzeText_UCHARDET(
 
 
 // ============================================================================
+
+// ESC (ISO-2022-xx) or "~{" (HZ-GB-2312) in 7-bit data may announce a stateful encoding
+static bool _MayBeStateful7Bit(const char* text, size_t len)
+{
+    if (memchr(text, 0x1B, len)) {
+        return true;
+    }
+    for (const char* p = (const char*)memchr(text, '~', len); p; ) {
+        size_t const rest = len - (size_t)(p - text);
+        if ((rest > 1) && (p[1] == '{')) {
+            return true;
+        }
+        p = (rest > 1) ? (const char*)memchr(p + 1, '~', rest - 1) : NULL;
+    }
+    return false;
+}
+
 // ============================================================================
 
 void Encoding_AnalyzeText(const char* const text, const size_t len,
@@ -496,30 +489,17 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
     float confidence_UCD = 0.0f;
     cpi_enc_t cpiEncoding_UCD = CPI_NONE;
 
-#if FALSE
-    size_t const largeFile = static_cast<size_t>(Settings2.FileLoadWarningMB) * 1024LL * 1024LL;
-
-    if (len < largeFile) {
-        // small file: do SERIAL encoding detection
-        cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, &ucd_cnf, encodingStrg_UCD, MAX_ENC_STRG_LEN, pEncDetInfo->unicodeAnalysis);
-        cpiEncoding_CED = AnalyzeText_CED(text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN, pEncDetInfo->unicodeAnalysis);
-    } else { // large file:  start ASYNC PARALLEL encoding detection
-
-        std::future<int> cpiUCD = std::async(std::launch::async, AnalyzeText_UCHARDET,
-                                             text, len, encodingHint, &ucd_cnf, encodingStrg_UCD, MAX_ENC_STRG_LEN, pEncDetInfo->unicodeAnalysis);
-
-        std::future<int> cpiCED = std::async(std::launch::async, AnalyzeText_CED,
-                                             text, len, encodingHint, &ced_cnf, encodingStrg_CED, MAX_ENC_STRG_LEN, pEncDetInfo->unicodeAnalysis);
-
-        cpiEncoding_UCD = cpiUCD.get();
-        cpiEncoding_CED = cpiCED.get();
+    // Pure 7-bit ASCII is a certain result - skip the expensive uchardet run, unless the
+    // text may be a 7-bit stateful encoding (ISO-2022-xx: ESC sequences, HZ: "~{").
+    if (pEncDetInfo->bPureASCII7Bit && !Flags.bDevDebugMode && !_MayBeStateful7Bit(text, len)) {
+        StringCchCopyA(pEncDetInfo->encodingStrg, COUNTOF(pEncDetInfo->encodingStrg), "ASCII");
+        pEncDetInfo->confidence = 1.0f;
+        pEncDetInfo->analyzedEncoding = CPI_ASCII_7BIT;
+        return;
     }
-
-#else
 
     cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, &confidence_UCD, pEncDetInfo->encodingStrg, COUNTOF(pEncDetInfo->encodingStrg));
 
-#endif
 
     // UCARDET does not rely on encodingHint, so make a bias here
     confidence_UCD += (cpiEncoding_UCD == encodingHint) ? (1.0f - confidence_UCD) / 2.0f : 0.0f;
@@ -562,7 +542,8 @@ static void _SetEncodingTitleInfo(const ENC_DET_T* pEncDetInfo)
     StringCchPrintf(tmpBuf, COUNTOF(tmpBuf), rel_fmt, threshPercent);
     StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), tmpBuf);
 
-    const WCHAR* const validUTF8 = (pEncDetInfo->bValidUTF8) ? (pEncDetInfo->bPureASCII7Bit ? L" [ASCII 7-bit]" : L" [Valid UTF-8]") : L" [Invalid UTF-8]";
+    const WCHAR* const validUTF8 = (pEncDetInfo->bValidUTF8) ? (pEncDetInfo->bPureASCII7Bit ? L" [ASCII 7-bit]" : L" [Valid UTF-8]")
+                                                                : (pEncDetInfo->bUTF8WithNulls && !Encoding_IsUNICODE(pEncDetInfo->unicodeAnalysis) ? L" [UTF-8 with NUL bytes]" : L" [Invalid UTF-8]");
     StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), validUTF8);
 }
 
@@ -700,10 +681,31 @@ static void _ParseVimModeline(const char* buffer, LPFILEVARS lpfv)
 
 //=============================================================================
 //
+//  _CopyScanBuffer()
+//
+//  Copies up to (dstSize-1) bytes; embedded NUL bytes are replaced by blanks so
+//  that file variables behind a stray NUL are still found.
+//
+static void _CopyScanBuffer(char* dst, size_t dstSize, const char* src, size_t cnt)
+{
+    size_t const n = min_s(cnt, dstSize - 1);
+    for (size_t i = 0; i < n; ++i) {
+        dst[i] = src[i] ? src[i] : ' ';
+    }
+    dst[n] = '\0';
+}
+
+//=============================================================================
+//
 //  _SetFileVars()
 //
-static void _SetFileVars(char* buffer, size_t cch, LPFILEVARS lpfv)
+static void _SetFileVars(const char* buffer, bool bHasSignature, LPFILEVARS lpfv)
 {
+    // every file variable / encoding tag / modeline needs a ':' or '=' separator
+    if (!strpbrk(buffer, ":=")) {
+        return;
+    }
+
     bool bEnableFileVar = !Flags.NoFileVariables;
 
     if (bEnableFileVar) {
@@ -757,8 +759,6 @@ static void _SetFileVars(char* buffer, size_t cch, LPFILEVARS lpfv)
 
     if (!Settings.NoEncodingTags) {
 
-        bool const bHasSignature = IsUTF8Signature(buffer) || Has_UTF16_LE_BOM(buffer, cch) || Has_UTF16_BE_BOM(buffer, cch);
-
         // Signature override Encoding Tag
         if (!bHasSignature) {
             if (FileVars_ParseStr(buffer, "coding", lpfv->chEncoding, COUNTOF(lpfv->chEncoding))) {
@@ -797,15 +797,17 @@ extern "C" bool FileVars_GetFromData(const char* lpData, size_t cbData, LPFILEVA
 
     size_t const scanBytes = (size_t)clampi(Settings2.FileVarScanBytes, MIDSZ_BUFFER, XHUGE_BUFFER);
     char tmpbuf[XHUGE_BUFFER];
-    size_t const cch = min_s(cbData + 1, scanBytes);
 
-    StringCchCopyNA(tmpbuf, scanBytes, lpData, cch);
-    _SetFileVars(tmpbuf, cch, lpfv);
+    // an encoding tag must not override a signature (BOM) at the very start of the file
+    bool const bHasSignature = (cbData >= 3 && IsUTF8Signature(lpData)) || Has_UTF16_LE_BOM(lpData, cbData) || Has_UTF16_BE_BOM(lpData, cbData);
+
+    _CopyScanBuffer(tmpbuf, scanBytes, lpData, cbData);
+    _SetFileVars(tmpbuf, bHasSignature, lpfv);
 
     // if no file vars found, look at EOF
     if ((lpfv->mask == 0) && (cbData > scanBytes)) {
-        StringCchCopyNA(tmpbuf, scanBytes, lpData + cbData - scanBytes + 1, scanBytes);
-        _SetFileVars(tmpbuf, cch, lpfv);
+        _CopyScanBuffer(tmpbuf, scanBytes, lpData + cbData - (scanBytes - 1), scanBytes - 1);
+        _SetFileVars(tmpbuf, bHasSignature, lpfv);
     }
 
     return true;
@@ -1018,7 +1020,7 @@ __forceinline static cpi_enc_t _SetAnsiDefaultEncoding(const ENC_DET_T* const en
 }
 
 
-static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_BE, size_t data_len)
+static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_BE)
 {
     if (encDetRes->bIsUTF8Sig) {
         encDetRes->Encoding = CPI_UTF8SIGN;
@@ -1037,7 +1039,7 @@ static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_
             encDetRes->Encoding = encDetRes->analyzedEncoding;
         }
     }
-    else if (Encoding_IsUNICODE(encDetRes->unicodeAnalysis) && (!(data_len & 1) || encDetRes->bHasBOM)) {
+    else if (Encoding_IsUNICODE(encDetRes->unicodeAnalysis)) {
         // unicodeAnalysis confirms Unicode structure.
         // Only prefer analyzedEncoding if it's also Unicode (e.g., UCHARDET
         // identified specific UTF-16 variant). Otherwise use unicodeAnalysis.
@@ -1093,7 +1095,54 @@ static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_
 //  GetFileEncoding()
 //
 
-ENC_DET_T encDetRes = INIT_ENC_DET_T;
+// Large files: analyze head, middle and tail chunks (cut at line breaks) instead of the head only,
+// because the characteristic non-ASCII content may start late.
+static char* _BuildAnalysisSample(const char* lpData, size_t cbData, size_t* pcbSample)
+{
+    constexpr size_t HEAD = 100000, MID = 50000, TAIL = 50000;
+
+    auto lineStart = [&](size_t pos) -> size_t { // first position after the next LF within 512 bytes
+        size_t const lim = min_s(pos + 512, cbData);
+        for (size_t i = pos; i < lim; ++i) {
+            if (lpData[i] == '\n') {
+                return i + 1;
+            }
+        }
+        return pos;
+    };
+    auto lineEnd = [&](size_t pos, size_t floor) -> size_t { // last position after an LF within 512 bytes before pos
+        size_t const lim = (pos > floor + 512) ? (pos - 512) : floor;
+        for (size_t i = pos; i > lim; --i) {
+            if (lpData[i - 1] == '\n') {
+                return i;
+            }
+        }
+        return pos;
+    };
+
+    char* const buf = (char*)AllocMem(HEAD + MID + TAIL + 1, HEAP_ZERO_MEMORY);
+    if (!buf) {
+        return NULL;
+    }
+    size_t n = 0;
+    size_t const headEnd = lineEnd(HEAD, 0);
+    memcpy(buf, lpData, headEnd);
+    n = headEnd;
+
+    size_t const midBeg = lineStart((cbData / 2) - (MID / 2));
+    size_t const midEnd = lineEnd(midBeg + MID, midBeg);
+    memcpy(buf + n, lpData + midBeg, midEnd - midBeg);
+    n += (midEnd - midBeg);
+
+    size_t const tailBeg = lineStart(cbData - TAIL);
+    memcpy(buf + n, lpData + tailBeg, cbData - tailBeg);
+    n += (cbData - tailBeg);
+
+    *pcbSample = n;
+    return buf;
+}
+
+// ============================================================================
 
 extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
                                              const char* lpData, const size_t cbData,
@@ -1102,19 +1151,20 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
                                              bool bSkipANSICPDetection,
                                              bool bForceEncDetection)
 {
-    encDetRes = INIT_ENC_DET_T;
+    ENC_DET_T encDetRes = INIT_ENC_DET_T;
 
     #define IS_ENC_ENFORCED() (!Encoding_IsNONE(encDetRes.forcedEncoding))
 
     FileVars_GetFromData(lpData, cbData, &Globals.fvCurFile);
 
-    // --- Check for UTF-32 BOM first (unsupported encoding) ---
+    // --- Check for UTF-32 BOM first ---
     if (Has_UTF32_BOM(lpData, cbData)) {
+        bool const bBE = Has_UTF32_BE_BOM(lpData, cbData);
         encDetRes.bIsUTF32 = true;
         encDetRes.bHasBOM = true;
-        encDetRes.Encoding = CPI_ANSI_DEFAULT; // as for binary
-        StringCchCopyA(encDetRes.encodingStrg, COUNTOF(encDetRes.encodingStrg),
-                       Has_UTF32_BE_BOM(lpData, cbData) ? "UTF-32BE" : "UTF-32LE");
+        encDetRes.bIsReverse = bBE;
+        encDetRes.Encoding = CPI_UTF8SIGN; // converted to UTF-8 on load
+        StringCchCopyA(encDetRes.encodingStrg, COUNTOF(encDetRes.encodingStrg), bBE ? "UTF-32BE" : "UTF-32LE");
         if (Flags.bDevDebugMode) {
             _SetEncodingTitleInfo(&encDetRes);
         }
@@ -1143,42 +1193,44 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
     encDetRes.bHasBOM = (bBOM_LE || bBOM_BE) || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UNICODE_BOM));
     encDetRes.bIsReverse = bBOM_BE || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UNICODE_REVERSE));
     encDetRes.bIsUTF8Sig = bUTF8Sig || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UTF8_SIGN));
-    // IsValidUTF8() rejects null bytes as non-text (returns false for buffers with 0x00).
-    // Also reports pure-ASCII status and null-byte presence, eliminating separate scans.
-    encDetRes.bValidUTF8 = IsValidUTF8(lpData, cbData, &(encDetRes.bPureASCII7Bit), &(encDetRes.bHasNullBytes));
+    // One scan yields strict validity, pure-ASCII, NUL presence and "valid UTF-8 except for NUL bytes".
+    encDetRes.bValidUTF8 = IsValidUTF8(lpData, cbData, &(encDetRes.bPureASCII7Bit), &(encDetRes.bHasNullBytes), &(encDetRes.bUTF8WithNulls));
 
     // --- 2nd Use Encoding Analysis if applicable
 
     size_t const cbNbytes4Analysis = min_s(cbData, 200000LL);
 
     encDetRes.confidence = 0.0f;
+    bool bStrongUTF16 = false;
 
     if (!IS_ENC_ENFORCED() || bForceEncDetection) {
 
-        // --- Unicode (IsTextUnicode) analysis - run once, reused by UCHARDET mapping below
+        // --- BOM-less UTF-32
+        bool bUTF32BE = false;
+        if (!bSkipUTFDetection && !encDetRes.bHasBOM && !bUTF8Sig && encDetRes.bHasNullBytes &&
+            DetectUTF32ByRange(lpData, cbData, &bUTF32BE)) {
+            encDetRes.bIsUTF32 = true;
+            encDetRes.bIsReverse = bUTF32BE;
+            encDetRes.Encoding = CPI_UTF8; // converted to UTF-8 on load
+            StringCchCopyA(encDetRes.encodingStrg, COUNTOF(encDetRes.encodingStrg), bUTF32BE ? "UTF-32BE" : "UTF-32LE");
+            if (Flags.bDevDebugMode) {
+                _SetEncodingTitleInfo(&encDetRes);
+            }
+            return encDetRes;
+        }
+
+        // --- Unicode analysis: BOM check + null-byte distribution for BOM-less UTF-16
         if (!bSkipUTFDetection) {
 
-            encDetRes.unicodeAnalysis = AnalyzeUnicodeEncoding(lpData, cbData, &(encDetRes.bHasBOM), &(encDetRes.bIsReverse));
-
-            if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis)) {
-                // check consistent BOM
-                if (encDetRes.bHasBOM && !(bBOM_LE || bBOM_BE || bUTF8Sig)) {
-                    encDetRes.unicodeAnalysis = CPI_NONE;
-                }
-                else if (encDetRes.bHasBOM && encDetRes.bIsReverse && !bBOM_BE) {
-                    encDetRes.unicodeAnalysis = CPI_NONE;
-                }
-                else if (encDetRes.bHasBOM && !encDetRes.bIsReverse && !bBOM_LE) {
-                    // must be UTF-32, can't handle
-                    encDetRes.unicodeAnalysis = CPI_NONE;
-                }
+            if (bBOM_LE || bBOM_BE) {
+                encDetRes.bHasBOM = true;
+                encDetRes.bIsReverse = bBOM_BE;
+                encDetRes.unicodeAnalysis = bBOM_BE ? CPI_UNICODEBEBOM : CPI_UNICODEBOM;
             }
 
-            // Supplementary UTF-16 detection when IsTextUnicode() fails.
-            // Needed for CJK-heavy BOM-less UTF-16 files where Windows'
-            // heuristic doesn't recognize the Unicode structure.
-            if (encDetRes.bHasNullBytes) {
-                cpi_enc_t const nullDist = DetectUTF16ByNullDistribution(lpData, cbData);
+            // BOM-less UTF-16 detection (also handles CJK-heavy content)
+            else if (encDetRes.bHasNullBytes) {
+                cpi_enc_t const nullDist = DetectUTF16ByNullDistribution(lpData, cbData, &bStrongUTF16);
                 if (Encoding_IsUNICODE(nullDist)) {
                     encDetRes.unicodeAnalysis = nullDist;
                     encDetRes.bIsReverse = Encoding_IsUNICODE_REVERSE(nullDist);
@@ -1186,9 +1238,19 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
             }
         }
 
-        if (!bSkipANSICPDetection) {
+        // a BOM decides the encoding anyway - the (expensive) analysis is only needed for diagnostics / forced detection
+        // (the same holds for strong BOM-less UTF-16 evidence: uchardet must not overrule it)
+        bool const bHasSignatureBOM = bUTF8Sig || bBOM_LE || bBOM_BE || bStrongUTF16;
+        if (!bSkipANSICPDetection && (!bHasSignatureBOM || bForceEncDetection || Flags.bDevDebugMode)) {
             // ---------------------------------------------------------------------------
-            Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes, iAnalyzeHint);
+            size_t cbSample = 0;
+            char* const lpSample = (cbData > 2 * 200000LL) ? _BuildAnalysisSample(lpData, cbData, &cbSample) : NULL;
+            if (lpSample) {
+                Encoding_AnalyzeText(lpSample, cbSample, &encDetRes, iAnalyzeHint);
+                FreeMem(lpSample);
+            } else {
+                Encoding_AnalyzeText(lpData, cbNbytes4Analysis, &encDetRes, iAnalyzeHint);
+            }
             // ---------------------------------------------------------------------------
         }
 
@@ -1220,7 +1282,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
         encDetRes.Encoding = encDetRes.forcedEncoding;
     }
     else {
-        _SetResultingEncoding(&encDetRes, bBOM_LE, bBOM_BE, cbData);
+        _SetResultingEncoding(&encDetRes, bBOM_LE, bBOM_BE);
     }
     return encDetRes;
 }

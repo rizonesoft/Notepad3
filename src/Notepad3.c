@@ -909,7 +909,7 @@ static void _InitGlobals()
     Globals.bReplaceInitialized = false;
     Globals.FindReplaceMatchFoundState = FND_NOP;
     Globals.bDocHasInconsistentEOLs = false;
-    Globals.pStdDarkModeIniStyles = NULL;
+    Globals.bDocUTF8WithNul = false;
     Globals.bMinimizedToTray = false;
     Globals.uCurrentThemeIndex = 0;
 
@@ -11765,12 +11765,15 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     if (g_iStatusbarVisible[STATUS_CODEPAGE]) {
         static cpi_enc_t s_iEncoding = CPI_NONE;
+        static bool      s_bUTF8WithNul = false;
         cpi_enc_t const  iEncoding   = Encoding_GetCurrent();
-        if (bForceRedraw || (s_iEncoding != iEncoding)) {
-            StringCchPrintf(tchStatusBar[STATUS_CODEPAGE], txtWidth, L"%s%s%s",
-                            g_mxSBPrefix[STATUS_CODEPAGE], Encoding_GetLabel(iEncoding), g_mxSBPostfix[STATUS_CODEPAGE]);
+        bool const       bUTF8WithNul = Globals.bDocUTF8WithNul && Encoding_MaybeUTF8(iEncoding);
+        if (bForceRedraw || (s_iEncoding != iEncoding) || (s_bUTF8WithNul != bUTF8WithNul)) {
+            StringCchPrintf(tchStatusBar[STATUS_CODEPAGE], txtWidth, L"%s%s%s%s",
+                            g_mxSBPrefix[STATUS_CODEPAGE], Encoding_GetLabel(iEncoding), (bUTF8WithNul ? L" +NUL" : L""), g_mxSBPostfix[STATUS_CODEPAGE]);
 
             s_iEncoding = iEncoding;
+            s_bUTF8WithNul = bUTF8WithNul;
             bIsUpdateNeeded = true;
         }
     }
@@ -12425,6 +12428,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
 
         // Show inconsistent line endings warning
         Globals.bDocHasInconsistentEOLs = fioStatus.bInconsistentEOLs;
+        Globals.bDocUTF8WithNul = fioStatus.bUTF8WithNul;
 
         bool const bCheckFile = !Globals.CmdLnFlag_PrintFileAndLeave && !fioStatus.bEncryptedRaw && !(fioStatus.bUnknownExt && bUnknownLexer) && !bReloadFile;
         //&& (fioStatus.iEncoding == Settings.DefaultEncoding) ???

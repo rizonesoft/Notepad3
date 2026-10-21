@@ -1250,6 +1250,8 @@ bool EditLoadFile(
     }
     status->iEncoding = Settings.DefaultEncoding;
     status->bUnicodeErr = false;
+    status->bMaybeBinary = false;
+    status->bUTF8WithNul = false;
     status->bUnknownExt = false;
     status->bEncryptedRaw = false;
     Flags.bHugeFileLoadState = false;
@@ -1428,19 +1430,41 @@ bool EditLoadFile(
     // --------------------------------------------------------------------------
 
     if (encDetection.bIsUTF32) {
-        // UTF-32 is not supported — convert through ANSI codepage for binary display
-        // (same conversion path that other binary files use via EXTERNAL_8BIT)
-        status->iEncoding = CPI_ANSI_DEFAULT;
-        status->bMaybeBinary = true;
-        UINT const uCodePage = Encoding_GetCodePage(CPI_ANSI_DEFAULT);
+        // UTF-32 is converted to UTF-8 (saving will write UTF-8)
+        bool const bBE = encDetection.bIsReverse;
+        const unsigned char* const pSrc = (const unsigned char*)lpData + (encDetection.bHasBOM ? 4 : 0);
+        size_t const cntUnits = (cbData - (encDetection.bHasBOM ? 4 : 0)) / 4;
 
-        if (!ConvertToSciCPAndSetText(hwnd, uCodePage, &lpData, &cbData,
-                                       bClearUndoHistory, bReloadFile, status)) {
-            EditSetNewText(hwnd, "", 0, bClearUndoHistory, bReloadFile);
+        LPWSTR const lpwStr = AllocMem((cntUnits * 2 + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+        size_t cchWide = 0;
+        for (size_t i = 0; i < cntUnits; ++i) {
+            const unsigned char* const u = pSrc + (i * 4);
+            uint32_t cp = bBE ? (((uint32_t)u[0] << 24) | ((uint32_t)u[1] << 16) | ((uint32_t)u[2] << 8) | u[3])
+                              : (((uint32_t)u[3] << 24) | ((uint32_t)u[2] << 16) | ((uint32_t)u[1] << 8) | u[0]);
+            if ((cp > 0x10FFFF) || ((cp >= 0xD800) && (cp <= 0xDFFF))) {
+                cp = 0xFFFD;
+                status->bUnicodeErr = true;
+            }
+            if (cp >= 0x10000) {
+                cp -= 0x10000;
+                lpwStr[cchWide++] = (WCHAR)(0xD800 + (cp >> 10));
+                lpwStr[cchWide++] = (WCHAR)(0xDC00 + (cp & 0x3FF));
+            } else {
+                lpwStr[cchWide++] = (WCHAR)cp;
+            }
         }
-        status->iEOLMode = Settings.DefaultEOLMode;
+
+        char* const lpDataUTF8 = AllocMem((cchWide * 3) + 2, HEAP_ZERO_MEMORY);
+        ptrdiff_t const convCnt = WideCharToMultiByteEx(Encoding_SciCP, 0, lpwStr, (ptrdiff_t)cchWide, lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
+        FreeMem(lpwStr);
+
+        status->iEncoding = encDetection.bHasBOM ? CPI_UTF8SIGN : CPI_UTF8;
+        FileVars_GetFromData(lpDataUTF8, convCnt, &Globals.fvCurFile);
+        EditSetNewText(hwnd, lpDataUTF8, convCnt, bClearUndoHistory, bReloadFile);
+        EditDetectEOLMode(lpDataUTF8, convCnt, status);
+        FreeMem(lpDataUTF8);
         FreeMem(lpData);
-        InfoBoxLng(MB_ICONWARNING, Constants.SuppressKey.MsgUTF32Unsupported, IDS_MUI_ERR_ENCODINGNA);
+        InfoBoxLng(MB_ICONWARNING, Constants.SuppressKey.MsgUTF32Unsupported, IDS_MUI_WARN_UTF32_CONVERTED);
         goto observe;
     }
 
@@ -1477,28 +1501,37 @@ bool EditLoadFile(
     if (Encoding_IsUNICODE(encDetection.Encoding))
     {
         // ===  UTF-8 ? ===
-        bool const bValidUTF8 = encDetection.bValidUTF8;
         bool const bForcedUTF8 = Encoding_MaybeUTF8(encDetection.forcedEncoding); // ~ don't || encDetection.bIsUTF8Sig here !
         bool const bAnalysisUTF8 = Encoding_MaybeUTF8(encDetection.Encoding);
 
-        bool const bRejectUTF8 = (IS_ENC_ENFORCED() && !bForcedUTF8) || !bValidUTF8 || (!encDetection.bIsUTF8Sig && (fLoadFlags & FLF_SkipUnicodeDetect));
+        // The detected family decides the decoder. A failed validity check or skipped
+        // unicode detection must never turn UTF-8 data into (garbage) UTF-16: such data
+        // falls back to the ANSI codepage conversion below.
+        bool const bIsUTF8Family = bForcedUTF8 || (!IS_ENC_ENFORCED() && (encDetection.bIsUTF8Sig || bAnalysisUTF8));
 
-        if (bForcedUTF8 || (!bRejectUTF8 && (encDetection.bIsUTF8Sig || bAnalysisUTF8))) {
+        // stray NUL bytes are valid U+0000 characters
+        bool const bValidUTF8 = encDetection.bValidUTF8 || encDetection.bUTF8WithNulls;
+        bool const bSkipUTF8 = !bForcedUTF8 && !encDetection.bIsUTF8Sig && (fLoadFlags & FLF_SkipUnicodeDetect);
+
+        if (bIsUTF8Family) {
 
             if (encDetection.bIsUTF8Sig) {
                 EditSetNewText(hwnd, UTF8StringStart(lpData), cbData - 3, bClearUndoHistory, bReloadFile);
                 status->iEncoding = CPI_UTF8SIGN;
                 EditDetectEOLMode(UTF8StringStart(lpData), cbData - 3, status);
+                status->bUTF8WithNul = encDetection.bUTF8WithNulls;
             }
-            else if (bValidUTF8) {
+            else if (bValidUTF8 && !bSkipUTF8) {
                 EditSetNewText(hwnd, lpData, cbData, bClearUndoHistory, bReloadFile);
                 status->iEncoding = CPI_UTF8;
                 EditDetectEOLMode(lpData, cbData, status);
+                status->bUTF8WithNul = encDetection.bUTF8WithNulls;
             }
             else {
-                // Detector picked UTF-8 but the byte sequence does not pass strict
-                // UTF-8 validation — pushing it to Scintilla as UTF-8 would silently
-                // corrupt the document. Fall back to ANSI codepage conversion.
+                // UTF-8 was detected but the byte sequence does not pass strict UTF-8
+                // validation (or unicode detection is to be skipped) — pushing it to
+                // Scintilla as UTF-8 would silently corrupt the document.
+                // Fall back to ANSI codepage conversion.
                 status->iEncoding = CPI_ANSI_DEFAULT;
                 UINT const uCodePage = Encoding_GetCodePage(CPI_ANSI_DEFAULT);
                 if (!ConvertToSciCPAndSetText(hwnd, uCodePage, &lpData, &cbData,
@@ -1506,6 +1539,8 @@ bool EditLoadFile(
                     EditSetNewText(hwnd, "", 0, bClearUndoHistory, bReloadFile);
                 }
             }
+            // stray NUL bytes in text: no reliable inconsistent EOL / indentation checks
+            status->bMaybeBinary = status->bMaybeBinary || status->bUTF8WithNul;
         }
         else { // ===  UNICODE NON UTF-8 ===
 
@@ -1537,7 +1572,6 @@ bool EditLoadFile(
     } else { // ===  ALL OTHERS  ===
 
         // Encoding detection failed — treat as binary via ANSI codepage
-        // (same conversion path as UTF-32 binary handling above)
         if (Encoding_IsNONE(encDetection.Encoding)) {
             status->iEncoding = CPI_ANSI_DEFAULT;
             status->bMaybeBinary = true;
