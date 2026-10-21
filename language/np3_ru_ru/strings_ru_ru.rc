@@ -204,6 +204,11 @@ BEGIN
     IDS_MUI_REGEX_INVALID    "Ошибка обработки регулярного выражения. Выражение недействительно!"
     IDS_MUI_DROP_NO_FILE     "Не удается получить имя файла\nЕсли перетаскиваете из 32-битного приложения,\nперетащите на панели инструментов Notepad3"
     IDS_MUI_DROP_CAP_EXCEEDED "Dropped more files than the configured limit (%i). Increase Settings2.MaxFileDropInstances if needed."
+    IDS_MUI_MRU_OPEN_FOLDER  "Open Containing &Folder"
+    IDS_MUI_MRU_BROWSE_RENAMED "&Browse for Renamed or Moved File..."
+    IDS_MUI_MRU_COPY_FULLPATH "Copy Full &Path"
+    IDS_MUI_MRU_COPY_DIRPATH "Copy &Directory Path"
+    IDS_MUI_MRU_COPY_FILENAME "Copy File &Name"
     IDS_MUI_URL_DIR_EXISTS   "Указанная в URL папка существует!"
     IDS_MUI_URL_FILE_EXISTS  "Указанный в URL файл существует!"
     IDS_MUI_URL_PATH_NOT_FOUND

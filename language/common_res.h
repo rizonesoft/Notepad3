@@ -202,6 +202,11 @@
 #define IDS_MUI_DOCUMENT_READONLY       14023
 #define IDS_MUI_ASK_CLEAR_UNDO          14024
 #define IDS_MUI_DROP_CAP_EXCEEDED       14025
+#define IDS_MUI_MRU_OPEN_FOLDER         14026
+#define IDS_MUI_MRU_BROWSE_RENAMED      14027
+#define IDS_MUI_MRU_COPY_FULLPATH       14028
+#define IDS_MUI_MRU_COPY_DIRPATH        14029
+#define IDS_MUI_MRU_COPY_FILENAME       14030
 
 #define IDS_MUI_ASK_SAVE                15000
 #define IDS_MUI_ASK_REVERT              15001
@@ -481,6 +486,11 @@
 #define IDC_TAB_BACKTAB_INDENTS_ALWAYS  18137
 #define IDC_ANSI_CONFIDENCE_LEVEL       18138
 #define IDC_ANSI_CONFIDENCE_SPIN        18139
+#define IDC_MRU_OPEN_FOLDER             18140
+#define IDC_MRU_BROWSE_RENAMED          18141
+#define IDC_MRU_COPY_FULLPATH           18142
+#define IDC_MRU_COPY_DIRPATH            18143
+#define IDC_MRU_COPY_FILENAME           18144
 
 #define IDC_RADIO_BTN_A                 18200
 #define IDC_RADIO_BTN_B                 18201

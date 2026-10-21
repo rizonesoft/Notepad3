@@ -204,6 +204,11 @@ BEGIN
     IDS_MUI_REGEX_INVALID    "Virhe säännöllisen lausekkeen käytössä. Lauseke on virheellinen!"
     IDS_MUI_DROP_NO_FILE     "Kelvollista tiedostonimeä ei saatu\nJos pudotat tiedoston 32-bittisestä sovelluksesta, vedä ja pudota se Notepad3:n työkalupalkkiin"
     IDS_MUI_DROP_CAP_EXCEEDED "Tiedostoja pudotettu enemmän kuin määritetty raja (%i). Lisää tarvittaessa asetusta Asetukset2. MaxFileDropInstances."
+    IDS_MUI_MRU_OPEN_FOLDER  "Open Containing &Folder"
+    IDS_MUI_MRU_BROWSE_RENAMED "&Browse for Renamed or Moved File..."
+    IDS_MUI_MRU_COPY_FULLPATH "Copy Full &Path"
+    IDS_MUI_MRU_COPY_DIRPATH "Copy &Directory Path"
+    IDS_MUI_MRU_COPY_FILENAME "Copy File &Name"
     IDS_MUI_URL_DIR_EXISTS   "URL-osoitteessa määritetty hakemisto on olemassa!"
     IDS_MUI_URL_FILE_EXISTS  "URL-osoitteessa määritetty tiedosto on olemassa!"
     IDS_MUI_URL_PATH_NOT_FOUND

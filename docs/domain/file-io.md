@@ -14,3 +14,10 @@
 ## File watching
 
 `InstallFileWatching()` uses `FindFirstChangeNotificationW` on the parent directory. Stop watching with `InstallFileWatching(false)` before saving, then reinstall it with `InstallFileWatching(true)` afterward.
+
+## Recent files dialog (`FileMRUDlgProc`, `Dialogs.c`)
+
+- OK on a missing entry only offers removal (`IDS_MUI_ERR_MRUDLG`). Recovery actions live in the list's context menu (right-click / Shift+F10, `_FileMRU_ContextMenu()`): open containing folder, browse for renamed/moved file, copy full path / directory / file name (`IDC_MRU_*`, `IDS_MUI_MRU_*`).
+- Folder actions walk up to the nearest existing parent with `_FindExistingDirectory()`. "Browse" opens `OpenFileDlg()` there, deletes the old MRU entry (unless it is the current file) and returns the chosen path through the dialog's `DWLP_USER` `HPATHL` (`EndDialog(IDOK)`), so `IDM_FILE_RECENT` in `Notepad3.c` loads it.
+- Use a local `HPATHL` in dialog actions; the dialog's `hFilePath` is shared with the `FileMRUIconThread` worker.
+- Shell APIs need the `\\?\` prefix stripped: use `ShellRevealInExplorer()` / `_PathForShell()` in `Dialogs.c`.
