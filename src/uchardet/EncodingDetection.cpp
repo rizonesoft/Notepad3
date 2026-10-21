@@ -308,64 +308,6 @@ constexpr float clampf(float x, float lower, float upper)
 
 //=============================================================================
 
-cpi_enc_t AnalyzeUnicodeEncoding(const char* pBuffer, const size_t len, bool* lpbBOM, bool* lpbReverse)
-{
-    cpi_enc_t iEncoding = CPI_NONE;
-
-    size_t const enoughData = 2048LL;
-    size_t const cb = (len < enoughData) ? len : enoughData;
-
-    if (!pBuffer || cb < 2) {
-        return CPI_NONE;
-    }
-
-    // IS_TEXT_UNICODE_UNICODE_MASK -> IS_TEXT_UNICODE_ASCII16, IS_TEXT_UNICODE_STATISTICS, IS_TEXT_UNICODE_CONTROLS, IS_TEXT_UNICODE_SIGNATURE.
-    // IS_TEXT_UNICODE_REVERSE_MASK -> IS_TEXT_UNICODE_REVERSE_ASCII16, IS_TEXT_UNICODE_REVERSE_STATISTICS, IS_TEXT_UNICODE_REVERSE_CONTROLS, IS_TEXT_UNICODE_REVERSE_SIGNATURE.
-    // IS_TEXT_UNICODE_NOT_UNICODE_MASK -> IS_TEXT_UNICODE_ILLEGAL_CHARS, IS_TEXT_UNICODE_ODD_LENGTH, and two currently unused bit flags.
-    // IS_TEXT_UNICODE_NOT_ASCII_MASK -> IS_TEXT_UNICODE_NULL_BYTES and three currently unused bit flags.
-    //
-    int const iAllTests = IS_TEXT_UNICODE_UNICODE_MASK | IS_TEXT_UNICODE_REVERSE_MASK | IS_TEXT_UNICODE_NOT_UNICODE_MASK | IS_TEXT_UNICODE_NOT_ASCII_MASK;
-
-    int iTest = iAllTests;
-    /*bool const ok =*/ IsTextUnicode(pBuffer, (int)cb, &iTest); // don't rely on result ok in case of multi-flags
-
-    if (iTest == iAllTests) {
-        return CPI_NONE; // iTest doesn't seem to have been modified ...
-    }
-
-    bool const bHasBOM = (iTest & IS_TEXT_UNICODE_SIGNATURE);
-    bool const bHasRBOM = (iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE);
-
-    bool const bIsUnicode = (iTest & IS_TEXT_UNICODE_UNICODE_MASK);
-    bool const bIsReverse = (iTest & IS_TEXT_UNICODE_REVERSE_MASK);
-
-    //bool const bHasOddLen = (iTest & IS_TEXT_UNICODE_ODD_LENGTH);
-    //bool const bHasDBCS = (iTest & IS_TEXT_UNICODE_DBCS_LEADBYTE);
-    bool const bIsUTF8 = (iTest & IS_TEXT_UNICODE_UTF8);
-
-    //~ unreliable ~ bool const bIsIllegal = (iTest & IS_TEXT_UNICODE_ILLEGAL_CHARS);
-    bool const bHasNullBytes = (iTest & IS_TEXT_UNICODE_NULL_BYTES);
-
-    if ((bHasBOM || bHasRBOM || bIsUnicode || bIsReverse) && bHasNullBytes) // && !bHasOddLen)
-    {
-        if (bHasBOM || bHasRBOM) {
-            if (lpbBOM) { *lpbBOM = true; }
-            if (lpbReverse) { *lpbReverse = bHasRBOM; }
-            iEncoding = bHasRBOM ? CPI_UNICODEBEBOM : CPI_UNICODEBOM;
-        }
-        else if ((bIsUnicode || bIsReverse) && !(len & 1)) {
-            // BOM-less: require even byte count (UTF-16 is 2-byte aligned)
-            if (lpbBOM) { *lpbBOM = false; }
-            if (lpbReverse) { *lpbReverse = bIsReverse; }
-            iEncoding = bIsReverse ? CPI_UNICODEBE : CPI_UNICODE;
-        }
-    }
-    if (bIsUTF8 && (iEncoding == CPI_NONE)) {
-        iEncoding = CPI_UTF8;
-    }
-
-    return iEncoding;
-}
 // ============================================================================
 
 // Supplementary BOM-less UTF-16 detection via null-byte distribution analysis.
@@ -562,7 +504,8 @@ static void _SetEncodingTitleInfo(const ENC_DET_T* pEncDetInfo)
     StringCchPrintf(tmpBuf, COUNTOF(tmpBuf), rel_fmt, threshPercent);
     StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), tmpBuf);
 
-    const WCHAR* const validUTF8 = (pEncDetInfo->bValidUTF8) ? (pEncDetInfo->bPureASCII7Bit ? L" [ASCII 7-bit]" : L" [Valid UTF-8]") : L" [Invalid UTF-8]";
+    const WCHAR* const validUTF8 = (pEncDetInfo->bValidUTF8) ? (pEncDetInfo->bPureASCII7Bit ? L" [ASCII 7-bit]" : L" [Valid UTF-8]")
+                                                                : (pEncDetInfo->bUTF8WithNulls ? L" [UTF-8 with NUL bytes]" : L" [Invalid UTF-8]");
     StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), validUTF8);
 }
 
@@ -1146,6 +1089,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
     // IsValidUTF8() rejects null bytes as non-text (returns false for buffers with 0x00).
     // Also reports pure-ASCII status and null-byte presence, eliminating separate scans.
     encDetRes.bValidUTF8 = IsValidUTF8(lpData, cbData, &(encDetRes.bPureASCII7Bit), &(encDetRes.bHasNullBytes));
+    encDetRes.bUTF8WithNulls = encDetRes.bHasNullBytes && IsValidUTF8_AllowNulls(lpData, cbData);
 
     // --- 2nd Use Encoding Analysis if applicable
 
@@ -1155,29 +1099,17 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
 
     if (!IS_ENC_ENFORCED() || bForceEncDetection) {
 
-        // --- Unicode (IsTextUnicode) analysis - run once, reused by UCHARDET mapping below
+        // --- Unicode analysis: BOM check + null-byte distribution for BOM-less UTF-16
         if (!bSkipUTFDetection) {
 
-            encDetRes.unicodeAnalysis = AnalyzeUnicodeEncoding(lpData, cbData, &(encDetRes.bHasBOM), &(encDetRes.bIsReverse));
-
-            if (Encoding_IsUNICODE(encDetRes.unicodeAnalysis)) {
-                // check consistent BOM
-                if (encDetRes.bHasBOM && !(bBOM_LE || bBOM_BE || bUTF8Sig)) {
-                    encDetRes.unicodeAnalysis = CPI_NONE;
-                }
-                else if (encDetRes.bHasBOM && encDetRes.bIsReverse && !bBOM_BE) {
-                    encDetRes.unicodeAnalysis = CPI_NONE;
-                }
-                else if (encDetRes.bHasBOM && !encDetRes.bIsReverse && !bBOM_LE) {
-                    // must be UTF-32, can't handle
-                    encDetRes.unicodeAnalysis = CPI_NONE;
-                }
+            if (bBOM_LE || bBOM_BE) {
+                encDetRes.bHasBOM = true;
+                encDetRes.bIsReverse = bBOM_BE;
+                encDetRes.unicodeAnalysis = bBOM_BE ? CPI_UNICODEBEBOM : CPI_UNICODEBOM;
             }
 
-            // Supplementary UTF-16 detection when IsTextUnicode() fails.
-            // Needed for CJK-heavy BOM-less UTF-16 files where Windows'
-            // heuristic doesn't recognize the Unicode structure.
-            if (encDetRes.bHasNullBytes) {
+            // BOM-less UTF-16 detection (also handles CJK-heavy content)
+            else if (encDetRes.bHasNullBytes) {
                 cpi_enc_t const nullDist = DetectUTF16ByNullDistribution(lpData, cbData);
                 if (Encoding_IsUNICODE(nullDist)) {
                     encDetRes.unicodeAnalysis = nullDist;

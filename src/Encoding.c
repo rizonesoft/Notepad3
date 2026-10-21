@@ -724,20 +724,19 @@ bool Has_UTF32_BOM(const char* pBuf, size_t cnt)
 
 bool Has_UTF16_LE_BOM(const char* pBuf, size_t cnt)
 {
-    if (Has_UTF32_LE_BOM(pBuf, cnt)) {
+    if (!pBuf || cnt < 2 || Has_UTF32_LE_BOM(pBuf, cnt)) {
         return false; // UTF-32 LE BOM starts with FF FE — must not match as UTF-16 LE
     }
-    int iTest = IS_TEXT_UNICODE_SIGNATURE;
-    bool const ok = IsTextUnicode(pBuf, clampi((int)cnt, 0, 4), &iTest);
-    return (ok && ((iTest & IS_TEXT_UNICODE_SIGNATURE) != 0));
+    return ((unsigned char)pBuf[0] == 0xFF && (unsigned char)pBuf[1] == 0xFE);
 }
 // ----------------------------------------------------------------------------
 
 bool Has_UTF16_BE_BOM(const char* pBuf, size_t cnt)
 {
-    int iTest = IS_TEXT_UNICODE_REVERSE_SIGNATURE;
-    bool const ok = IsTextUnicode(pBuf, clampi((int)cnt, 0, 4), &iTest);
-    return (ok && ((iTest & IS_TEXT_UNICODE_REVERSE_SIGNATURE) != 0));
+    if (!pBuf || cnt < 2) {
+        return false;
+    }
+    return ((unsigned char)pBuf[0] == 0xFE && (unsigned char)pBuf[1] == 0xFF);
 }
 // ----------------------------------------------------------------------------
 
@@ -1013,6 +1012,22 @@ bool IsValidUTF8(const char* pTest, size_t nLength, bool* pbIsASCII, bool* pbHas
 // ----------------------------------------------------------------------------
 
 #endif
+
+// Strict UTF-8 validation where U+0000 is accepted as a valid character.
+// NUL is a complete one-byte sequence, so each NUL-free segment is validated on its own.
+bool IsValidUTF8_AllowNulls(const char* pTest, size_t nLength)
+{
+    size_t i = 0;
+    while (i < nLength) {
+        size_t j = i;
+        while ((j < nLength) && (pTest[j] != '\0')) { ++j; }
+        if ((j > i) && !IsValidUTF8(pTest + i, j - i, NULL, NULL)) {
+            return false;
+        }
+        i = j + 1;
+    }
+    return true;
+}
 
 // ============================================================================
 

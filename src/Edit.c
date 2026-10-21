@@ -1477,9 +1477,12 @@ bool EditLoadFile(
     if (Encoding_IsUNICODE(encDetection.Encoding))
     {
         // ===  UTF-8 ? ===
-        bool const bValidUTF8 = encDetection.bValidUTF8;
         bool const bForcedUTF8 = Encoding_MaybeUTF8(encDetection.forcedEncoding); // ~ don't || encDetection.bIsUTF8Sig here !
         bool const bAnalysisUTF8 = Encoding_MaybeUTF8(encDetection.Encoding);
+        // stray NUL chars make IsValidUTF8() fail, but must not turn UTF-8 data into (garbage) UTF-16
+        bool const bValidUTF8 = encDetection.bValidUTF8 ||
+                                (encDetection.bHasNullBytes && (encDetection.bIsUTF8Sig || bAnalysisUTF8) &&
+                                 IsValidUTF8_AllowNulls(lpData, cbData));
 
         bool const bRejectUTF8 = (IS_ENC_ENFORCED() && !bForcedUTF8) || !bValidUTF8 || (!encDetection.bIsUTF8Sig && (fLoadFlags & FLF_SkipUnicodeDetect));
 
