@@ -36,22 +36,23 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 UTH - (UTH)ash provides a hash table for C structures
 
 
-Current BETA Version 7.26.1021.(build_#) (2026-10-21)
+Current BETA Version 7.26.1023.(build_#) (2026-10-23)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
-[.xxx.x]- .
-[.xxx.x]- .
+[.xxx.1]- .
+[1023.1]- Add recovery actions to the Open Recent File dialog (#6045).
+[1023.1]- docs: organize agent guidance into indexed references (#6044).
 
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
-[.xxx.x]- .
-[1021.x]- Encoding detection: tolerant BOM-less UTF-16, UTF-32 load as UTF-8, head/mid/tail sampling, no global state (#6042).
-[1021.x]- Encoding detection: never decode UTF-8 as UTF-16, single-pass validator, skip redundant analysis (UCH) (#6042).
-[1021.x]- In Lexer CSS, add extension "wxss" (#6033).
+[.xxx.1]- .
+[1021.1]- Encoding detection: tolerant BOM-less UTF-16, UTF-32 load as UTF-8, head/mid/tail sampling, no global state (UCH) (#6042).
+[1021.1]- Encoding detection: never decode UTF-8 as UTF-16, single-pass validator, skip redundant analysis (UCH) (#6042).
+[1021.1]- In Lexer CSS, add extension "wxss" (#6033).
 [1012.1]- Update grepWin Translations_next_version (GRE) (#6023).
 [1012.1]- Markdown Lexer Enhancements (#6019).
 [1012.1]- Update  Lexilla (v.5.5.4) (LEX) (#6014).
@@ -64,13 +65,14 @@ CHANGES:
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
-[.xxx.x]- .
-[1021.x]- Slow load of UTF-8 files with stray NUL; drop IsTextUnicode from encoding detection (UCH) (#6042).
-[1012.x]- In Lexer TCL, restore extensions "ts; tsx", removed by error (#6021).
-[1012.x]- Fix(ci): restore version test and stabilize About-box smoke test (#6018).
-[1012.x]- "Shift + Click" on Taskbar Icon Does Not Open a New Notepad3 Window (#6018).
-[1012.x]- The "Replace Text" dialog does not allow multiple lines of text to be entered (#6018).
-[1012.x]- Scintilla GDI visual glitch (SCI) (#6017).
+[.xxx.1]- .
+[1023.1]- Find dialog freeze on Ctrl+F with huge selection (#6046).
+[1021.1]- Slow load of UTF-8 files with stray NUL; drop IsTextUnicode from encoding detection (UCH) (#6042).
+[1012.1]- In Lexer TCL, restore extensions "ts; tsx", removed by error (#6021).
+[1012.1]- Fix(ci): restore version test and stabilize About-box smoke test (#6018).
+[1012.1]- "Shift + Click" on Taskbar Icon Does Not Open a New Notepad3 Window (#6018).
+[1012.1]- The "Replace Text" dialog does not allow multiple lines of text to be entered (#6018).
+[1012.1]- Scintilla GDI visual glitch (SCI) (#6017).
 [.828.1]- Replace DBCS-aware Str*A calls on UTF-8 buffers with code-page-independent trim/search  (#5982).
 [.828.1]- Code-page independent in-place replacement for StrTrimA() on UTF-8 buffers (#5982).
 [.715.1]- Patch Scintilla to try to fix "vanishing mouse pointer" (SCI) (#5949).
@@ -78,8 +80,8 @@ FIXES:
 --------------------------------------------------------
 REMOVED:
 --------------------------------------------------------
-[.xxx.x]- .
-[.xxx.x]- .
+[.xxx.1]- .
+[.xxx.1]- .
 
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
