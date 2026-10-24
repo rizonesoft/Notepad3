@@ -1,0 +1,10 @@
+﻿UTF-8 test file
+ASCII: The quick brown fox jumps over the lazy dog 0123456789
+Accents: àéîõü çñ ß ø å œ
+Greek: Γειά σου Κόσμε
+Cyrillic: Привет, мир
+CJK: 你好，世界 / こんにちは / 안녕하세요
+Arabic: مرحبا بالعالم
+Symbols: € £ ¥ © ® ™ § ¶ † ‡ • … ≠ ≤ ≥ ∞
+Beyond BMP: 😀 🚀 🎉 𝄞 𓀀
+End of file.
