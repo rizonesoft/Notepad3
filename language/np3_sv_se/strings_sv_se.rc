@@ -105,7 +105,7 @@ BEGIN
     IDS_MUI_TITLEEXCERPT    """%s"""
     IDS_MUI_READONLY        "(skrivskyddad)"
     IDS_MUI_FILELOCKED      "<exklusiv>"
-    IDS_MUI_LOADFILE        "Laddar ""%s""..."
+    IDS_MUI_LOADFILE        "Läser in ""%s""..."
     IDS_MUI_SAVEFILE        "Sparar ""%s""..."
     IDS_MUI_PRINTFILE       "Skriver ut sida %i..."
     IDS_MUI_SAVINGSETTINGS  "Sparar inställningar..."
@@ -117,7 +117,7 @@ BEGIN
     IDS_MUI_FILTER_ALL      "Alla filer (*.*)|*.*|"
     IDS_MUI_FILTER_EXE      "Exekverbara filer (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Alla filer (*.*)|*.*|"
     IDS_MUI_FILTER_INI      "Konfigurationsfiler (*.ini)|*.ini|Alla filer (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "Bitmap filer (*.bmp)|*.bmp|Alla filer (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "Bitmappsfiler (*.bmp)|*.bmp|Alla filer (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Välj mappen med länkar till dina favoritprogram"
     IDS_MUI_FAVORITES       "Välj mappen med länkar till dina favoritfiler"
     IDS_MUI_BACKSLASHHELP   "Bakåtlutande snedstreck transformation\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBacksteg (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNyrad (LF, Ascii 10)\n\\r\tVagnretur (CR, Ascii 13)\n\\t\tHorisontell tab (HT, Ascii 9)\n\\v\tVertikal tab (VT, Ascii 11)\n\\0oo\tOktalt värde\n\\u####\tHexadecimalt värde\n\\xhh\tHexadecimalt värde\n\\\\\tBakåtlutande snedstreck"
@@ -127,8 +127,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_ERR_LOADFILE    "Fel vid laddning ""%s"""
-    IDS_MUI_ERR_SAVEFILE    "Fel vid sparande ""%s"""
+    IDS_MUI_ERR_LOADFILE    "Fel vid inläsning av ""%s"""
+    IDS_MUI_ERR_SAVEFILE    "Fel vid sparande av ""%s"""
     IDS_MUI_ERR_PATHNOTFOUND "Sökvägen till ""%s"" finns inte längre.\nVill du återskapa sökvägen och spara filen?"
     IDS_MUI_WARN_UTF32_CONVERTED  "The file is UTF-32 encoded. It was converted to UTF-8 and will be saved as UTF-8."
     IDS_MUI_ERR_DLG_FORMAT  "Fel '%s', orsak:\n%s(ID:%d)\n"
@@ -198,17 +198,17 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_RELOADSETTINGS   "Vill du ladda om applikationen med sparade inställningar?\n\n%s"
+    IDS_MUI_RELOADSETTINGS   "Vill du aktivera sparade inställningar genom att starta om programmet?\n\n%s"
     IDS_MUI_RELOADCFGSEX     "Om du fortsätter utan att starta om kommer inställningarna inte sparas!"
     IDS_MUI_EXPORT_FAIL      "Fel vid exportering av stilinställningar ""%s"""
     IDS_MUI_REGEX_INVALID    "Fel vid utvärdering av reguljärt uttryck. Uttrycket är ogiltigt!"
     IDS_MUI_DROP_NO_FILE     "Inget giltigt filnamn hämtades\nOm du drar och släpper filer från ett 32-bitarsprogram,\nsläpp dem på Notepad3s verktygsfält"
     IDS_MUI_DROP_CAP_EXCEEDED "Fler filer än den konfigurerade gränsen (%i) har släppts. Öka Settings2.MaxFileDropInstances om det behövs."
-    IDS_MUI_MRU_OPEN_FOLDER  "Open Containing &Folder"
-    IDS_MUI_MRU_BROWSE_RENAMED "&Browse for Renamed or Moved File..."
-    IDS_MUI_MRU_COPY_FULLPATH "Copy Full &Path"
-    IDS_MUI_MRU_COPY_DIRPATH "Copy &Directory Path"
-    IDS_MUI_MRU_COPY_FILENAME "Copy File &Name"
+    IDS_MUI_MRU_OPEN_FOLDER  "Öppna filens &mapp"
+    IDS_MUI_MRU_BROWSE_RENAMED "&Bläddra efter omdöpt eller flyttad fil..."
+    IDS_MUI_MRU_COPY_FULLPATH "Kopiera fullständig &sökväg"
+    IDS_MUI_MRU_COPY_DIRPATH "Kopiera &katalogsökväg"
+    IDS_MUI_MRU_COPY_FILENAME "Kopiera &filnamn"
     IDS_MUI_URL_DIR_EXISTS   "Angiven URL-mapp existerar redan!"
     IDS_MUI_URL_FILE_EXISTS  "Angiven URL-fil existerar redan!"
     IDS_MUI_URL_PATH_NOT_FOUND
