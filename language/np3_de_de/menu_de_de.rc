@@ -77,7 +77,7 @@ BEGIN
         END
         POPUP "&Starte"
         BEGIN
-            MENUITEM "Suche in &Dateien...\tCtrl+Shift+F",     IDM_GREP_WIN_SEARCH
+            MENUITEM "Suche in &Dateien...\tCtrl+Shift+F",  IDM_GREP_WIN_SEARCH
             MENUITEM SEPARATOR
             MENUITEM "&Neues Fenster\tAlt+N",               IDM_FILE_NEWWINDOW
             MENUITEM "&Dupliziere Instanz\tAlt+Shift+N",    IDM_FILE_NEWWINDOW2
@@ -98,12 +98,12 @@ BEGIN
         END
         MENUITEM SEPARATOR
         MENUITEM "&Datei erneut laden\tF5",                 IDM_FILE_REVERT
-        MENUITEM "Ignoriere File-Variablen",                CMD_IGNORE_FILE_VARS
+        MENUITEM "Ignoriere Datei-Variablen",               CMD_IGNORE_FILE_VARS
         POPUP "&Codierung"
         BEGIN
             POPUP "&Datei erneut laden als"
             BEGIN
-                MENUITEM "&Default (Voreinstellung)",           CMD_RECODEDEFAULT
+                MENUITEM "&Voreinstellung",                     CMD_RECODEDEFAULT
                 MENUITEM "&ANSI\tCtrl+Shift+A",                 CMD_RECODEANSI
                 MENUITEM "&OEM\tCtrl+Shift+O",                  CMD_RECODEOEM
                 MENUITEM "&GB18030\tCtrl+Shift+F10",            CMD_RECODEGB18030
@@ -166,7 +166,7 @@ BEGIN
         MENUITEM "&Kopieren\tCtrl+C",                       IDM_EDIT_COPY
         MENUITEM "&Alles kopieren\tAlt+C",                  IDM_EDIT_COPYALL
         MENUITEM "Kopiere ans &Ende\tCtrl+E",               IDM_EDIT_COPYADD
-        MENUITEM "Copy as RT&F",                            IDM_EDIT_COPYRTF
+        MENUITEM "Als RT&F kopieren",                       IDM_EDIT_COPYRTF
         MENUITEM "&Einfügen\tCtrl+V",                       IDM_EDIT_PASTE
         MENUITEM "&Auswahl <-> &Zwischenablage\tCtrl+K",    IDM_EDIT_SWAP
         MENUITEM "&Alles auswählen\tCtrl+A",                IDM_EDIT_SELECTALL
@@ -217,7 +217,7 @@ BEGIN
             MENUITEM SEPARATOR
             POPUP "&Zeilenkommentar"
             BEGIN
-                MENUITEM "&Umschalten	Ctrl+Q",                      IDM_EDIT_LINECOMMENT
+                MENUITEM "&Umschalten	Ctrl+Q",                 IDM_EDIT_LINECOMMENT
                 MENUITEM "&Einfügen\tCtrl+Alt+Q",                IDM_EDIT_LINECOMMENT_ADD
                 MENUITEM "Ent&fernen)\tCtrl+Alt+Shift+Q",        IDM_EDIT_LINECOMMENT_REMOVE
                 MENUITEM "&Bearbeitung\tAlt+Shift+Q",            IDM_EDIT_LINECOMMENT_BLOCKEDIT
@@ -234,7 +234,7 @@ BEGIN
                 MENUITEM "[ ]\tCtrl+4",                          CMD_EMBRACE2
                 MENUITEM "{ }\tCtrl+5",                          CMD_EMBRACE3
                 MENUITEM SEPARATOR
-                MENUITEM "&Backticks	Ctrl+6",                   CMD_EMBRACE4
+                MENUITEM "&Backticks	Ctrl+6",                 CMD_EMBRACE4
                 MENUITEM SEPARATOR
                 MENUITEM "Umschließe &mit...\tAlt+Q",            IDM_EDIT_ENCLOSESELECTION
             END
@@ -348,7 +348,7 @@ BEGIN
         MENUITEM "Ersetze Nächstes\tF4",                    IDM_EDIT_REPLACENEXT
         MENUITEM "&Gehe zu...\tCtrl+G",                     IDM_EDIT_GOTOLINE
         MENUITEM SEPARATOR
-        MENUITEM "Suche in &Dateien...\tCtrl+Shift+F",         IDM_GREP_WIN_SEARCH2
+        MENUITEM "Suche in &Dateien...\tCtrl+Shift+F",      IDM_GREP_WIN_SEARCH2
     END
     POPUP "&Ansicht"
     BEGIN
@@ -429,7 +429,7 @@ BEGIN
                 MENUITEM "Hervorheben && Faltung",              IDM_VIEW_FV_HIGHLGFOLD
             END
             MENUITEM SEPARATOR
-            MENUITEM "Logfile &Monitoring",                     IDM_VIEW_CHASING_DOCTAIL
+            MENUITEM "Datei&überwachung",                       IDM_VIEW_CHASING_DOCTAIL
             MENUITEM "&Erweiterte Dokument Ende Ansicht",       IDM_VIEW_SCROLLPASTEOF
             MENUITEM "Zeige einen &Hyperlink Tooltip",          IDM_VIEW_SHOW_HYPLNK_CALLTIP
             END
@@ -652,4 +652,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-

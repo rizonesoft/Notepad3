@@ -114,7 +114,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Datei Filter"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
-    LTEXT           "Neue(n) &Filter angeben. (Separator ';')",IDC_STATIC,7,7,175,8
+    LTEXT           "Neue(n) &Filter angeben. (Trennzeichen ';')",IDC_STATIC,7,7,175,8
     EDITTEXT        IDC_FILTER,7,22,158,13,ES_AUTOHSCROLL
     PUSHBUTTON      "",IDC_BROWSEFILTER,169,22,13,13
     CONTROL         "Gefilterte &Dateien ausschließen",IDC_NEGFILTER,
@@ -172,7 +172,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS,IDC_STATIC,10,10,20,20
     LTEXT           "Allgemeine Programm-Einstellungen festlegen",IDC_STATIC,40,15, 180,8
-    CONTROL         "Erlaube einen &Einfach-Maus-Click um Objekte zu öffnen",IDC_SINGLECLICK,
+    CONTROL         "Erlaube einen &Einfachklick zum Öffnen von Objekten",IDC_SINGLECLICK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46, 230,10
     CONTROL         "Erlaube &Verfolgungs-Spur-Auswahl",IDC_TRACKSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,58, 230,10
     CONTROL         "Erlaube volle &Zeilen-Auswahl",IDC_FULLROWSELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70, 230,10
@@ -181,7 +181,7 @@ BEGIN
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,100, 240,1
     CONTROL         "&Halte MiniPath-Fenster immer im Vordergrund",IDC_ALWAYSONTOP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,109, 230,10
-    CONTROL         "Minimiere in den &System-Tray (Click zum reaktivieren)",IDC_MINIMIZETOTRAY,
+    CONTROL         "Minimiere in den &Infobereich (Klick zum Reaktivieren)",IDC_MINIMIZETOTRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,121, 230,10
     CONTROL         "Versuche e&xistierendes Fenster zu nutzen, wenn MiniPath gestartet wird",IDC_REUSEWINDOW,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,133, 245,10
@@ -196,7 +196,7 @@ FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     ICON            IDI_OPTIONS2,IDC_STATIC,10,10,20,20
     LTEXT           "Fortgeschrittene Programm-Einstellungen festlegen",IDC_STATIC,40,15,180,8
-    CONTROL         "Nutze als &Startup-Verzeichnis:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,110,10
+    CONTROL         "Nutze als &Startverzeichnis:",IDC_STARTUPDIR,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,10,46,110,10
     CONTROL         "das &zuletzt benutzte",IDC_GOTOMRU,"Button",BS_AUTORADIOBUTTON,130,46, 105,10
     CONTROL         """&Favoriten""",IDC_GOTOFAV,"Button",BS_AUTORADIOBUTTON,130,58, 105,10
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,10,76,240,1
@@ -264,7 +264,7 @@ BEGIN
     LTEXT           "Nachricht:",IDC_STATIC, 16, 120, 40, 8
     CONTROL         "KEINE, starte die Ziel-Applikation immer wenn eine Datei geöffnet wird",IDC_ALWAYSRUN,
                     "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,7,78,250,10
-    CONTROL         "Sende eine ""DROP FILES"" Nachricht zum Ziel-Fenster:",IDC_SENDDROPMSG,
+    CONTROL         "Sende Dateien an das Zielfenster:",IDC_SENDDROPMSG,
                     "Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,92,190,10
     CONTROL         "Führe folgendes DDE-Kommando aus:",IDC_USEDDE,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,7,106,240,10
     LTEXT           "Applikation:",IDC_STATIC,144,120,40,8
@@ -430,4 +430,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-

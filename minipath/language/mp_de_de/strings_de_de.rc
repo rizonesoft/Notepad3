@@ -88,14 +88,14 @@ BEGIN
     IDS_ERR_SAVEAS1         "Datei Speicher-Fehler\nFehler beim Speichern von ""%s""\nMöglicherweise ist eine bereits existierende Datei schreibgeschützt"
     IDS_ERR_SAVEAS2         "Datei Speicher-Fehler\nFehler beim Entfernen des Schreibschutz-Attributs der gespeicherten Datei"
     IDS_ERR_CMDLINE         "MiniPath\nFehler beim Zugriff auf die in der Kommandozeile angegebene Datei"
-    IDS_ERR_STARTUPDIR      "MiniPath\nKein Zugriff auf das Startup-Verzeichnis"
+    IDS_ERR_STARTUPDIR      "MiniPath\nKein Zugriff auf das Startverzeichnis"
     IDS_ERR_DROP1           "MiniPath\nKein Zugriff auf fallengelassene(s) Datei oder Verzeichnis"
     IDS_ERR_DROP2           "MiniPath\nEs kann nur eine einzelne Datei oder ein einzelnes Verzeichnis auf einmal fallengelassen werden"
     IDS_ERR_FAVORITES       "Favoriten\nKein Zugriff auf ""Favoriten"" Ordner\nGebe ein valides Verzeichnis in der ""Optionen"" Dialogbox an"
     IDS_ERR_LNK_GETPATH     "Link Fehler\nKein valider Filesystem-Pfad für das verlinkte Objekt verfügbar\nMöglicherweise verweist der Link nicht auf eine Datei oder ein Verzeichnis"
     IDS_ERR_LNK_NOACCESS    "Link Fehler\nKein Zugriff auf den Filesystem-Pfad für das verlinkte Objekt\nÜberprüfe das Speichermedium oder die Netzwerkverbindung"
     IDS_ERR_CREATELINK      "Link Fehler\nFehler beim Erzeugen des angegebenen Links\nMöglicherweise ist das Zielverzeichnis schreibgeschützt"
-    IDS_ERR_FILTER          "Dateifilter Fehler\nNo additional filters specified\nPlease refer to the MiniPath readme file for more information"
+    IDS_ERR_FILTER          "Dateifilter-Fehler\nKeine weiteren Filter angegeben\nWeitere Informationen findest du in der MiniPath-README."
     IDS_ERR_PREVWINDISABLED "MiniPath\nDas existierende MiniPath Fenster ist beschäftigt oder hat eine aktive Dialogbox\nMöchtest du ein neues MiniPath Fenster öffnen?"
 END
 
@@ -115,7 +115,7 @@ BEGIN
     IDS_GETTARGET           "Suche Editor"
     IDS_NEWFILE             "Neue Datei"
     IDS_FILTER_ALL          "Alle Dateien (*.*)\n*.*\n"
-    IDS_FILTER_EXE          "Ausführbare Dateien (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nAll files (*.*)\n*.*\n"
+    IDS_FILTER_EXE          "Ausführbare Dateien (*.exe;*.com;*.bat;*.lnk;*.pif)\n*.exe;*.com;*.bat;*.lnk;*.pif\nAlle Dateien (*.*)\n*.*\n"
     IDS_GETDIRECTORY        "Wähle ein neues Verzeichnis"
     IDS_FAVORITES           "Lege das ""Favoriten"" Verzeichnis fest"
 END
@@ -149,4 +149,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-

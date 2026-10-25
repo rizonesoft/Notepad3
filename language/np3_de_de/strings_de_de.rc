@@ -84,7 +84,7 @@ BEGIN
     IDT_FILE_PRINT          "Drucken"
     IDT_FILE_OPENFAV        "Favoriten"
     IDT_FILE_ADDTOFAV       "Zu Favoriten hinzufügen"
-    IDT_VIEW_TOGGLEFOLDS    "Toggle Code-Folding"
+    IDT_VIEW_TOGGLEFOLDS    "Code-Faltung umschalten"
 END
 
 STRINGTABLE
@@ -92,37 +92,37 @@ BEGIN
     IDT_FILE_LAUNCH          "Dokument ausführen"
     IDT_VIEW_NEW_WINDOW      "Neues Leeres Fenster"
     IDT_VIEW_TOGGLE_VIEW     "Fokussierte Ansicht"
-    IDT_VIEW_CHASING_DOCTAIL "Logfile Monitoring"
+    IDT_VIEW_CHASING_DOCTAIL "Dateiüberwachung"
     IDT_VIEW_PIN_ON_TOP      "Immer im Vordergrung"
     IDT_GREP_WIN_TOOL        "Suche in Dateien"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_MUI_APPTITLE_ELEVATED "%s : Erhöhte Rechte"
-    IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
-    IDS_MUI_UNTITLED        "Kein Titel"
-    IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Nur Lesen)"
-    IDS_MUI_FILELOCKED      "<Exklusive>"
-    IDS_MUI_LOADFILE        "Laden ""%s""..."
-    IDS_MUI_SAVEFILE        "Speichern ""%s""..."
-    IDS_MUI_PRINTFILE       "Drucken: Seite %i..."
-    IDS_MUI_SAVINGSETTINGS  "Speichern der Einstellungen..."
-    IDS_MUI_LINKDESCRIPTION "Mit Notepad3 bearbeiten"
+    IDS_MUI_APPTITLE_ELEVATED    "%s : Erhöhte Rechte"
+    IDS_MUI_APPTITLE_PASTEBOARD  "%s : PASTEBOARD"
+    IDS_MUI_UNTITLED             "Kein Titel"
+    IDS_MUI_TITLEEXCERPT         """%s"""
+    IDS_MUI_READONLY             "(Nur Lesen)"
+    IDS_MUI_FILELOCKED           "<Exklusive>"
+    IDS_MUI_LOADFILE             "Laden ""%s""..."
+    IDS_MUI_SAVEFILE             "Speichern ""%s""..."
+    IDS_MUI_PRINTFILE            "Drucken: Seite %i..."
+    IDS_MUI_SAVINGSETTINGS       "Speichern der Einstellungen..."
+    IDS_MUI_LINKDESCRIPTION      "Mit Notepad3 bearbeiten"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_FILTER_ALL      "Alle Dateien (*.*)|*.*|"
-    IDS_MUI_FILTER_EXE      "Ausführbare Dateien (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_INI      "Konfigurations Dateien (*.ini)|*.ini|All files (*.*)|*.*|"
-    IDS_MUI_FILTER_BITMAP   "Bitmap Dateien (*.bmp)|*.bmp|All files (*.*)|*.*|"
+    IDS_MUI_FILTER_EXE      "Ausführbare Dateien (*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif)|*.exe;*.com;*.bat;*.cmd;*.lnk;*.pif|Alle Dateien (*.*)|*.*|"
+    IDS_MUI_FILTER_INI      "Konfigurations Dateien (*.ini)|*.ini|Alle Dateien (*.*)|*.*|"
+    IDS_MUI_FILTER_BITMAP   "Bitmap Dateien (*.bmp)|*.bmp|Alle Dateien (*.*)|*.*|"
     IDS_MUI_OPENWITH        "Wähle das Verzeichnis mit den Links zu den favorisierten Applikationen"
     IDS_MUI_FAVORITES       "Wähle das Verzeichnis mit den Links zu den favorisierten Dateien"
-    IDS_MUI_BACKSLASHHELP   "Backslash Transformationen\n\n\\a\tAlert (BEL, Ascii 7)\n\\b\tBackspace (BS, Ascii 8)\n\\f\tFormfeed (FF, Ascii 12)\n\\n\tNewline (LF, Ascii 10)\n\\r\tCarriage return (CR, Ascii 13)\n\\t\tHorizontal Tab (HT, Ascii 9)\n\\v\tVertical Tab (VT, Ascii 11)\n\\0oo\tOctal Value\n\\u####\tHexadecimal Value\n\\xhh\tHexadecimal Value\n\\\\\tBackslash"
+    IDS_MUI_BACKSLASHHELP   "Rückschrägstrich-Umwandlungen\n\n\\a\tSignalton (BEL, ASCII 7)\n\\b\tRücktaste (BS, ASCII 8)\n\\f\tSeitenvorschub (FF, ASCII 12)\n\\n\tZeilenumbruch (LF, ASCII 10)\n\\r\tWagenrücklauf (CR, ASCII 13)\n\\t\tHorizontaler Tabulator (HT, ASCII 9)\n\\v\tVertikaler Tabulator (VT, ASCII 11)\n\\0oo\tOktalwert\n\\u####\tHexadezimalwert\n\\xhh\tHexadezimalwert\n\\\\\tRückschrägstrich"
     IDS_MUI_REGEXPHELP      "RegExp-Suchmuster-Syntax (Mehrere Zeilen)\n\n.\tBeliebiges Zeichen\n^\tLeere Zeichenkette direkt nach Zeilenumbruch\n$\tLeere Zeichenkette direkt vor Zeilenende\n\\<\tWortanfang\n\\>\tWortende\n\\b\tWortgrenze\n[...]\tZeichenmenge ([abc]) oder Bereich ([a-z])\n[^...]\tZeichen NICHT in der Menge oder im Bereich\n\\d\tJede Dezimalziffer\n\\D\tJedes Nicht-Ziffern-Zeichen\n\\s\tJedes Leerzeichen\n\\S\tKein Leerzeichen\n\\w\tJedes Wort-Zeichen\n\\W\tJedes Nicht-Wort-Zeichen\n\\x\tSonderzeichen mit besonderer Bedeutung entwerten\n\\xHH\tZeichen mit Hex-Code HH\n?\tVorheriges 0 oder 1 Mal\n*\tVorheriges 0 oder mehr Male\n+\tVorheriges 1 oder mehr Male\n*? or +?\tNicht-gieriges Matchen der Quantifizierer ""?"" und ""+""\n(\tAnfang einer Region\n)\tEnde einer Region\n\\n\tBezug auf Region beim Ersetzen (n ist 1-9)\n"
-    IDS_MUI_WILDCARDHELP    "Wildcard Suche\n\n*\tPasst zu keinem oder mehr Zeichen\n?\tPasst zu genau einem Zeichen"
+    IDS_MUI_WILDCARDHELP    "Platzhaltersuche\n\n*\tPasst zu keinem oder mehr Zeichen\n?\tPasst zu genau einem Zeichen"
 END
 
 STRINGTABLE
@@ -130,7 +130,7 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Fehler beim Laden ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Fehler beim Speichern ""%s"""
     IDS_MUI_ERR_PATHNOTFOUND "Der Dateipfad ""%s"" existiert nicht mehr.\nPfad neu anlegen und Datei speichern?"
-    IDS_MUI_WARN_UTF32_CONVERTED  "The file is UTF-32 encoded. It was converted to UTF-8 and will be saved as UTF-8."
+    IDS_MUI_WARN_UTF32_CONVERTED  "Die Datei ist UTF-32-kodiert. Sie wurde in UTF-8 umgewandelt und wird als UTF-8 gespeichert."
     IDS_MUI_ERR_DLG_FORMAT  "Fehler '%s', weil:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Es wurde kein Datei-Browser Plugin gefunden\nDas MiniPath Datei-Browser Plugin kann hier herunter geladen werden: https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Es wurde kein Datei-Inhaltsuche Tool gefunden\nDas grepWin Portable Datei-Inhaltsuche Tool kann hier herunter geladen werden: https://github.com/stefankueng/grepWin/releases"
@@ -180,10 +180,10 @@ BEGIN
     IDS_MUI_REPLCOUNT       "%s Fundstelle(n) des gegebenen Suchbegriffs wurde(n) ersetzt"
     IDS_MUI_ASK_ENCODING    "Der Wechsel zwischen verschiedenen Codierungen kann die Ersetzung nicht unterstützter Zeichen mit voreingestellten Zeichen zur folge haben, wobei die Undo-Historie gelöscht wird. Weiter machen?"
     IDS_MUI_ASK_ENCODING2   "Du bist dabei die Codierung eines leeren Dokumentes zu ändern. Beachte bitte, daß dabei die Undo-Historie gelöscht wird, da diese nicht mit der neuen Codierung synchronisiert werden kann. Weiter machen?"
-    IDS_MUI_ASK_CLEAR_UNDO  "Diese Operation wird die Undo-History löschen. Weiter machen?"
+    IDS_MUI_ASK_CLEAR_UNDO  "Diese Operation wird den Rückgängig-Verlauf löschen. Weiter machen?"
     IDS_MUI_READONLY_SAVE   """%s"" ist schreibgeschützt. Dokument unter einem anderen Dateipfad speichern?"
     IDS_MUI_FILECHANGENOTIFY
-                            "Die geladene Datei wurde durch ein anderes Programm auf dem Datenträger verändert. Bitte wähle:\n\nIgnorieren:\tIgnoriere weitere Änderungen\nNeu Laden:\tDatei neu laden\nMonitoring:\tWechsle zum Logfile Monitoring"
+                            "Die geladene Datei wurde durch ein anderes Programm auf dem Datenträger verändert. Bitte wähle:\n\nIgnorieren:\tIgnoriere weitere Änderungen\nNeu laden:\tDatei neu laden\nÜberwachung:\tWechsle zur Dateiüberwachung"
     IDS_MUI_FILECHANGENOTIFY2 "Die geladene Datei wurde auf dem Datenträger gelöscht. Nochmals speichern?"
     IDS_MUI_FILELOCK_ERROR  "Es konnte keine exklusive Dateisperre auf ""%s"" gesetzt werden!"
     IDS_MUI_STICKYWINPOS    "Eingefrorene Fensterpositionierung is eingeschaltet worden. Jede neue Notepad3 Instanz wird nun diese Fensterpositionierung initial verwenden"
@@ -203,20 +203,20 @@ BEGIN
     IDS_MUI_EXPORT_FAIL     "Fehler beim Export der Stil Einstellungen nach ""%s"""
     IDS_MUI_REGEX_INVALID   "Fehler bei der Evaluierung des regulären Ausdrucks (RegEx), der Ausruck ist ungültig!"
     IDS_MUI_DROP_NO_FILE    "Es wurde kein gültiger Dateiname erkannt. Falls aus einer 32-bit Applikation gedropped wurde, dann versuche die Datei auf die Werkzeugleiste zu ziehen"
-    IDS_MUI_DROP_CAP_EXCEEDED "Dropped more files than the configured limit (%i). Increase Settings2.MaxFileDropInstances if needed."
-    IDS_MUI_MRU_OPEN_FOLDER  "Open Containing &Folder"
-    IDS_MUI_MRU_BROWSE_RENAMED "&Browse for Renamed or Moved File..."
-    IDS_MUI_MRU_COPY_FULLPATH "Copy Full &Path"
-    IDS_MUI_MRU_COPY_DIRPATH "Copy &Directory Path"
-    IDS_MUI_MRU_COPY_FILENAME "Copy File &Name"
+    IDS_MUI_DROP_CAP_EXCEEDED "Es wurden mehr Dateien abgelegt als zulässig (%i). Erhöhe bei Bedarf Settings2.MaxFileDropInstances."
+    IDS_MUI_MRU_OPEN_FOLDER  "Ordner der Datei öffnen"
+    IDS_MUI_MRU_BROWSE_RENAMED "&Nach umbenannter oder verschobener Datei suchen..."
+    IDS_MUI_MRU_COPY_FULLPATH "Vollständigen &Pfad kopieren"
+    IDS_MUI_MRU_COPY_DIRPATH "&Ordnerpfad kopieren"
+    IDS_MUI_MRU_COPY_FILENAME "Datei&namen kopieren"
     IDS_MUI_URL_DIR_EXISTS  "URL spezifiziertes Verzeichnis existiert!"
     IDS_MUI_URL_FILE_EXISTS "URL spezifizierte Datei existiert!"
     IDS_MUI_URL_PATH_NOT_FOUND
                             "URL spezifizierter Pfad nicht gefunden!"
-    IDS_MUI_URL_OPEN_FILE    "\nAlt + Click um die Datei zu  öffnen"
-    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Click um die URL im Browser zu öffnen"
-    IDS_MUI_UNMATCHED_BRACE  "Unmatched Brace"
-    IDS_MUI_NO_ENCLOSING_BRACE "No Enclosing Brace"
+    IDS_MUI_URL_OPEN_FILE    "\nAlt + Klick, um die Datei zu öffnen"
+    IDS_MUI_URL_OPEN_BROWSER "\nCtrl + Klick, um die URL im Browser zu öffnen"
+    IDS_MUI_UNMATCHED_BRACE  "Nicht gepaarte Klammer"
+    IDS_MUI_NO_ENCLOSING_BRACE "Keine umschließende Klammer"
     IDS_MUI_INF_PRSVFILEMODTM
                              "Die Speicherung mit originalem Zeitstempel wurde aktiviert\nDiese Option gilt nun für die gesamte Sitzung (Datei)!"
     IDS_MUI_OUT_OFF_OCCMRK   "Es stehen keine weiteren Fundstellen Markierungen/Lesezeichen mehr zur Verfügung!"
@@ -290,14 +290,14 @@ BEGIN
     IDS_MUI_SEARCHCLIPIFEMPTY
                             "Suche Clipboardinhalt wenn keine Selektion"
     IDS_MUI_REPLCLIPTAG     "Ersetzen durch Clipboard mittels Shortcut [^c]"
-    IDS_MUI_WRAPSEARCH_FWD  "Wrap-Around Fund von Oben"
-    IDS_MUI_WRAPSEARCH_BCK  "Wrap-Around Fund von Unten"
+    IDS_MUI_WRAPSEARCH_FWD  "Umlaufsuche ab Dokumentanfang"
+    IDS_MUI_WRAPSEARCH_BCK  "Umlaufsuche ab Dokumentende"
 END
 
 STRINGTABLE
 BEGIN
     IDS_MUI_SB_MARK_ALL_OCC   "Markiere alle Fundstellen..."
-    IDS_MUI_SB_TOGGLE_VIEW    "Toggle Code-Folding..."
+    IDS_MUI_SB_TOGGLE_VIEW    "Code-Faltung umschalten..."
     IDS_MUI_SB_REPLACE_ALL    "Ersetze alle Stellen..."
     IDS_MUI_SB_WRAP_LINES     "Setze Zeilen Umbruch..."
     IDS_MUI_SB_SORTING_LINES  "Sortiere Zeilen..."
@@ -330,13 +330,13 @@ Optionen:\r\n\
 /h\tSetze das Web Quellcode Schema\r\n\
 /x\tSetze das XML Dokument Schema\r\n\
 /c\tÖffne ein neues Fenster und füge den Inhalt der Zwischenablage ein\r\n\
-/b\tÖffne ein neues 'Paste Board' um die Einträge der Zwischenablage \r\n\tzu sammeln\r\n\
-/n\tÖffne immer ein neues Fenster (/ns single file instance)\r\n\
-/r\tBenutze geöffnetes Fenster erneut (/rs single file instance)\r\n\
+/b\tÖffne eine neue Zwischenablage-Sammlung, um Einträge der Zwischenablage \r\n\tzu sammeln\r\n\
+/n\tÖffne immer ein neues Fenster (/ns: eine Instanz pro Datei)\r\n\
+/r\tBenutze das geöffnete Fenster erneut (/rs: eine Instanz pro Datei)\r\n\
 /p\tSetze Fenster: Position und Größe (/p0,/ps,/pd,f,l,t,r,b,m)\r\n\
 \toder /p <links>,<oben>,<breite>,<höhe>[,<dpi>[,<max>]]  (ganzzahlig)\r\n\
 /t\tSetze Fenster-Titel\r\n\
-/i\tStarte als 'Tray-Icon'\r\n\
+/i\tStarte als Symbol im Infobereich\r\n\
 /o\tHalte Fenster immer auf oberster Ebene\r\n\
 /f\tSpezifiziere .ini-Datei (/f0 keine .ini-Datei)\r\n\
 /u\tStarte mit erhöhten Benutzerrechten\r\n\
@@ -353,12 +353,12 @@ Notepad3 /v d:\\temp\\Test.txt\r\n\
 
 IDS_MUI_STYLEEDIT_HELP "\
 Trennung von Dateinamen-Erweiterungen mittels ';'\r\n\
-Einträge mit '*', '?' oder '.' werden auf den Dateinamen angewendet (Wildcard):\r\n\
+Einträge mit '*', '?' oder '.' werden als Platzhalter auf den Dateinamen angewendet:\r\n\
    Makefile*;CMakeLists.txt;test_*.py\r\n\r\n\
 Stil-Format:\r\n\
 font:Name; size:[+/-]nn.mm; bold; italic; underline;\r\n\
 fore:#ffffff; back:#bbbbbb; eolfilled; indic_gradient\r\n\r\n\
-Formate kopieren: 'Copy & Paste' oder 'Drag & Drop'\
+Formate kopieren: 'Kopieren und Einfügen' oder 'Ziehen und Ablegen'\
 "
 
 END
@@ -376,7 +376,7 @@ IDS_MUI_ABOUT_RTF_1  "\
 \\cf0 \\fs20\\b1\\ul1 Mitwirkende:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_2  "\
-\\cf0 \\fs20\\b1\\ul1 Open Source / Bibliotheken:\\ul0\\b0\\fs18\\par\
+\\cf0 \\fs20\\b1\\ul1 Quelloffene Software / Bibliotheken:\\ul0\\b0\\fs18\\par\
 "
 IDS_MUI_ABOUT_RTF_3  "\
 \\cf0 \\fs20\\b1\\ul1 Danksagung:\\ul0\\b0\\fs18\\par\
@@ -404,4 +404,3 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-
