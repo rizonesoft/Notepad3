@@ -130,7 +130,7 @@ BEGIN
     IDS_MUI_ERR_LOADFILE    "Fel vid inläsning av ""%s"""
     IDS_MUI_ERR_SAVEFILE    "Fel vid sparande av ""%s"""
     IDS_MUI_ERR_PATHNOTFOUND "Sökvägen till ""%s"" finns inte längre.\nVill du återskapa sökvägen och spara filen?"
-    IDS_MUI_WARN_UTF32_CONVERTED  "The file is UTF-32 encoded. It was converted to UTF-8 and will be saved as UTF-8."
+    IDS_MUI_WARN_UTF32_CONVERTED  "Filen är kodad i UTF-32. Den har konverterats till UTF-8 och kommer att sparas som UTF-8."
     IDS_MUI_ERR_DLG_FORMAT  "Fel '%s', orsak:\n%s(ID:%d)\n"
     IDS_MUI_ERR_BROWSE      "Inget plugin för filbläddring hittades\nMinipath filbläddrare kan laddas ner från https://rizonesoft.com"
     IDS_MUI_ERR_GREPWIN     "Inget sökplugin hittades\ngrepWin Portable filsökningsplugin kan hämtas från https://github.com/stefankueng/grepWin/releases"
@@ -243,7 +243,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_MUI_PRINT_EMPTY     "Detta dokument innehåller ingen text att skriva ut"
-    IDS_MUI_PRINT_ERROR     "Fel vid utskrift ""%s""!"
+    IDS_MUI_PRINT_ERROR     "Fel vid utskrift av ""%s""!"
     IDS_MUI_FAV_SUCCESS     "En snabblänk till denna fil har lagts till dina favoriter"
     IDS_MUI_FAV_FAILURE     "En snabblänk till denna fil kunde inte sparas\nFörsäkra dig att det inte redan finns en fil med samma filnamn"
     IDS_MUI_READONLY_MODIFY "Attribut för ""%s"" kunde inte ändras"
