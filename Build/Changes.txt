@@ -36,7 +36,7 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 UTH - (UTH)ash provides a hash table for C structures
 
 
-Current BETA Version 7.26.1023.(build_#) (2026-10-23)
+Current BETA Version 7.26.1025.(build_#) (2026-10-25)
 ========================================================
 
 --------------------------------------------------------
@@ -66,6 +66,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.1]- .
+[1025.1]- Open dialog directory precedence and add recent-folder fallback (#6064).
+[1025.1]- BOM-less UTF-16 detection and refine encoding confidence and diagnostics (#6062).
 [1023.1]- Find dialog freeze on Ctrl+F with huge selection (#6046).
 [1021.1]- Slow load of UTF-8 files with stray NUL; drop IsTextUnicode from encoding detection (UCH) (#6042).
 [1012.1]- In Lexer TCL, restore extensions "ts; tsx", removed by error (#6021).
