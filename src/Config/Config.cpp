@@ -1432,7 +1432,7 @@ void LoadSettings()
         bDirtyFlag = true;
     }
 
-    int const iAnsiCPBonusSet = clampi(IniSectionGetInt(IniSecSettings2, L"LocaleAnsiCodePageAnalysisBonus", 33), 0, 100);
+    int const iAnsiCPBonusSet = clampi(IniSectionGetInt(IniSecSettings2, L"LocaleAnsiCodePageAnalysisBonus", 20), 0, 100);
     Settings2.LocaleAnsiCodePageAnalysisBonus = (float)iAnsiCPBonusSet / 100.0f;
 
     Settings2.UchardetLanguageFilter = clampi(IniSectionGetInt(IniSecSettings2, L"UchardetLanguageFilter", 0x1F), 0, 0x1F);
@@ -1809,7 +1809,7 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(NoEncodingTags, true);
     GET_BOOL_VALUE_FROM_INISECTION(SkipUnicodeDetection, false);
     GET_BOOL_VALUE_FROM_INISECTION(SkipANSICodePageDetection, !bDefaultEncUTF8);
-    GET_INT_VALUE_FROM_INISECTION(AnalyzeReliableConfidenceLevel, 50, 0, 100);
+    GET_INT_VALUE_FROM_INISECTION(AnalyzeReliableConfidenceLevel, 60, 0, 100);
     constexpr const WCHAR* const arcl_s2 = L"AnalyzeReliableConfidenceLevel";
     int const deprecatedARCL = IniSectionGetInt(IniSecSettings2, arcl_s2, -1);
     if (deprecatedARCL >= 0) {
@@ -3167,4 +3167,3 @@ extern "C" bool EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText, bo
     RestoreNotifyEvents();
     return ok;
 }
-

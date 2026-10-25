@@ -310,15 +310,34 @@ constexpr float clampf(float x, float lower, float upper)
 
 // ============================================================================
 
+static bool IsValidUTF16(const char* pBuffer, size_t len, bool bBigEndian)
+{
+    bool bHighSurrogate = false;
+    for (size_t i = 0; i + 1 < len; i += 2) {
+        const unsigned char* const p = (const unsigned char*)pBuffer + i;
+        unsigned int const unit = bBigEndian ? ((p[0] << 8) | p[1]) : ((p[1] << 8) | p[0]);
+        if (bHighSurrogate) {
+            if (unit < 0xDC00 || unit > 0xDFFF) {
+                return false;
+            }
+            bHighSurrogate = false;
+        } else if (unit >= 0xD800 && unit <= 0xDBFF) {
+            bHighSurrogate = true;
+        } else if (unit >= 0xDC00 && unit <= 0xDFFF) {
+            return false;
+        }
+    }
+    return !bHighSurrogate;
+}
+
 // Supplementary BOM-less UTF-16 detection via null-byte distribution analysis.
-// IsTextUnicode() fails for CJK-heavy content (few ASCII chars = few null bytes).
 // This heuristic counts null bytes at even vs odd byte positions.
 // In UTF-16 LE, ASCII chars produce nulls at odd positions (e.g. 'A' = 41 00).
 // In UTF-16 BE, ASCII chars produce nulls at even positions (e.g. 'A' = 00 41).
 //
 // A trailing odd byte (truncated file) is ignored. A few nulls at the opposite position
-// (U+xx00 characters) are tolerated. *pbStrong is set for ASCII-heavy text (>= 10% of the
-// code units are ASCII-range), which makes the UTF-16 verdict independent of uchardet.
+// (including surrogate units with zero low bytes) are tolerated. Strong evidence
+// requires at least 10% dominant-position NULs and valid surrogate pairing.
 //
 static cpi_enc_t DetectUTF16ByNullDistribution(const char* pBuffer, size_t len, bool* pbStrong)
 {
@@ -343,13 +362,36 @@ static cpi_enc_t DetectUTF16ByNullDistribution(const char* pBuffer, size_t len, 
     size_t const minNulls = max_s(2, cb / 256LL);
     size_t const units = cb / 2;
 
-    if (nullsOdd >= minNulls && nullsEven <= (nullsOdd >> 5)) {
-        *pbStrong = (nullsOdd * 10 >= units) && (nullsEven == 0);
+    if (nullsOdd >= minNulls && nullsEven <= (nullsOdd >> 5) && IsValidUTF16(pBuffer, len, false)) {
+        *pbStrong = (nullsOdd * 10 >= units);
         return CPI_UNICODE;     // UTF-16 LE: nulls at odd positions
     }
-    if (nullsEven >= minNulls && nullsOdd <= (nullsEven >> 5)) {
-        *pbStrong = (nullsEven * 10 >= units) && (nullsOdd == 0);
+    if (nullsEven >= minNulls && nullsOdd <= (nullsEven >> 5) && IsValidUTF16(pBuffer, len, true)) {
+        *pbStrong = (nullsEven * 10 >= units);
         return CPI_UNICODEBE;   // UTF-16 BE: nulls at even positions
+    }
+    return CPI_NONE;
+}
+
+// ============================================================================
+
+static cpi_enc_t DetectUTF16ByWindows(const char* pBuffer, size_t len)
+{
+    if (len < 2 || (len & 1)) {
+        return CPI_NONE;
+    }
+    int const tests = IS_TEXT_UNICODE_UNICODE_MASK | IS_TEXT_UNICODE_REVERSE_MASK |
+                      IS_TEXT_UNICODE_NOT_UNICODE_MASK | IS_TEXT_UNICODE_NOT_ASCII_MASK;
+    int flags = tests;
+    // The Boolean result can be false even when reverse-order evidence is present.
+    IsTextUnicode(pBuffer, (int)min_s(len, 4096LL), &flags);
+    if (flags == tests || (flags & IS_TEXT_UNICODE_ILLEGAL_CHARS)) {
+        return CPI_NONE;
+    }
+    bool const bLE = (flags & IS_TEXT_UNICODE_UNICODE_MASK) != 0;
+    bool const bBE = (flags & IS_TEXT_UNICODE_REVERSE_MASK) != 0;
+    if (bLE != bBE && IsValidUTF16(pBuffer, len, bBE)) {
+        return bBE ? CPI_UNICODEBE : CPI_UNICODE;
     }
     return CPI_NONE;
 }
@@ -481,6 +523,7 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
     pEncDetInfo->bIsAnalyzed = true;
 
     if (len == 0) {
+        pEncDetInfo->analysisSkipReason = L"empty";
         pEncDetInfo->analyzedEncoding = CPI_NONE;
         pEncDetInfo->confidence = 0.0f;
         return;
@@ -492,19 +535,21 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
     // Pure 7-bit ASCII is a certain result - skip the expensive uchardet run, unless the
     // text may be a 7-bit stateful encoding (ISO-2022-xx: ESC sequences, HZ: "~{").
     if (pEncDetInfo->bPureASCII7Bit && !Flags.bDevDebugMode && !_MayBeStateful7Bit(text, len)) {
+        pEncDetInfo->analysisSkipReason = L"ASCII";
         StringCchCopyA(pEncDetInfo->encodingStrg, COUNTOF(pEncDetInfo->encodingStrg), "ASCII");
         pEncDetInfo->confidence = 1.0f;
         pEncDetInfo->analyzedEncoding = CPI_ASCII_7BIT;
         return;
     }
 
+    pEncDetInfo->bUCDRan = true;
     cpiEncoding_UCD = AnalyzeText_UCHARDET(text, len, &confidence_UCD, pEncDetInfo->encodingStrg, COUNTOF(pEncDetInfo->encodingStrg));
 
-
-    // UCARDET does not rely on encodingHint, so make a bias here
-    confidence_UCD += (cpiEncoding_UCD == encodingHint) ? (1.0f - confidence_UCD) / 2.0f : 0.0f;
-    // Default ANSI CodePage detection ? -> bonus
-    confidence_UCD += (cpiEncoding_UCD == CPI_ANSI_DEFAULT) ? ((1.0f - confidence_UCD) * Settings2.LocaleAnsiCodePageAnalysisBonus) : 0.0f;
+    // Hint and locale are preferences, not independent evidence: apply one bonus.
+    if (Encoding_IsValid(cpiEncoding_UCD) &&
+        (cpiEncoding_UCD == encodingHint || cpiEncoding_UCD == CPI_ANSI_DEFAULT)) {
+        confidence_UCD += (1.0f - confidence_UCD) * Settings2.LocaleAnsiCodePageAnalysisBonus;
+    }
 
     pEncDetInfo->confidence = confidence_UCD;
     pEncDetInfo->analyzedEncoding = cpiEncoding_UCD;
@@ -517,34 +562,47 @@ void Encoding_AnalyzeText(const char* const text, const size_t len,
 //
 //  _SetEncodingTitleInfo()
 //
-static void _SetEncodingTitleInfo(const ENC_DET_T* pEncDetInfo)
-//const char* encodingUCD, cpi_enc_t encUCD, float ucd_confidence)
+static const WCHAR* _EncodingDebugName(cpi_enc_t encoding, WCHAR* buffer, size_t count)
 {
-    WCHAR encodingUCD[80] = { L'\0' };
-    ::MultiByteToWideChar(CP_ACP, 0, pEncDetInfo->encodingStrg, -1, encodingUCD, COUNTOF(encodingUCD));
-    cpi_enc_t const encUCD = pEncDetInfo->analyzedEncoding;
-    float const ucd_confidence = pEncDetInfo->confidence;
-
-    StringCchCopy(wchEncodingInfo, COUNTOF(wchEncodingInfo), L"UCD='");
-    if (encUCD >= 0) {
-        StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), encodingUCD);
-    } else {
-        const WCHAR* const ukn = (encodingUCD[0] == L'\0') ? L"<unknown>" : encodingUCD;
-        StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), (encUCD == CPI_ASCII_7BIT) ? L"ASCII" : ukn);
+    switch (encoding) {
+    case CPI_NONE: return L"none";
+    case CPI_ASCII_7BIT: return L"ASCII";
+    case CPI_UTF8: return L"UTF-8";
+    case CPI_UTF8SIGN: return L"UTF-8+BOM";
+    case CPI_UNICODE: return L"UTF-16LE";
+    case CPI_UNICODEBE: return L"UTF-16BE";
+    case CPI_UNICODEBOM: return L"UTF-16LE+BOM";
+    case CPI_UNICODEBEBOM: return L"UTF-16BE+BOM";
+    default:
+        StringCchPrintf(buffer, count, L"CP%u", Encoding_GetCodePage(encoding));
+        return buffer;
     }
-    WCHAR tmpBuf[80] = { '\0' };
-    double const confPercent = (double)(ucd_confidence * 100.0f);
-    StringCchPrintf(tmpBuf, COUNTOF(tmpBuf), L"' Conf=%.1f%%", confPercent);
-    StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), tmpBuf);
+}
 
-    double const threshPercent = (double)Settings.AnalyzeReliableConfidenceLevel;
-    const WCHAR* rel_fmt = (confPercent >= threshPercent) ? L" (reliable (%.1f%%))" : L" (NOT reliable (%.1f%%))";
-    StringCchPrintf(tmpBuf, COUNTOF(tmpBuf), rel_fmt, threshPercent);
-    StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), tmpBuf);
-
-    const WCHAR* const validUTF8 = (pEncDetInfo->bValidUTF8) ? (pEncDetInfo->bPureASCII7Bit ? L" [ASCII 7-bit]" : L" [Valid UTF-8]")
-                                                                : (pEncDetInfo->bUTF8WithNulls && !Encoding_IsUNICODE(pEncDetInfo->unicodeAnalysis) ? L" [UTF-8 with NUL bytes]" : L" [Invalid UTF-8]");
-    StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), validUTF8);
+static void _SetEncodingTitleInfo(const ENC_DET_T* result)
+{
+    WCHAR name[32];
+    const WCHAR* const utf8 = (result->bIsUTF32 && result->bHasBOM) ? L"not checked" :
+        result->bPureASCII7Bit ? L"ASCII" : result->bValidUTF8 ? L"valid" :
+        result->bUTF8WithNulls ? L"valid+NUL" : L"invalid";
+    StringCchPrintf(wchEncodingInfo, COUNTOF(wchEncodingInfo), L"ENC=%s <- %s | U8=%s",
+                    _EncodingDebugName(result->Encoding, name, COUNTOF(name)), result->selectionReason, utf8);
+    WCHAR part[192];
+    if (!Encoding_IsNONE(result->unicodeAnalysis)) {
+        StringCchPrintf(part, COUNTOF(part), L" | U16=%s/%s",
+                        _EncodingDebugName(result->unicodeAnalysis, name, COUNTOF(name)),
+                        wcscmp(result->unicodeReason, L"BOM") == 0 ? L"BOM" : L"valid");
+        StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), part);
+    }
+    if (result->bUCDRan) {
+        WCHAR candidate[64] = L"";
+        MultiByteToWideChar(CP_ACP, 0, result->encodingStrg, -1, candidate, COUNTOF(candidate));
+        StringCchPrintf(part, COUNTOF(part), L" | UCD(%.1f%%)=%s",
+                        result->confidence * 100.0, candidate[0] ? candidate : L"none");
+    } else {
+        StringCchPrintf(part, COUNTOF(part), L" | UCD=skipped(%s)", result->analysisSkipReason);
+    }
+    StringCchCat(wchEncodingInfo, COUNTOF(wchEncodingInfo), part);
 }
 
 
@@ -1008,7 +1066,7 @@ __forceinline static cpi_enc_t _SetAnsiDefaultEncoding(const ENC_DET_T* const en
     }
     if (Encoding_IsValid(Settings.DefaultEncoding)) {
         if (Settings.DefaultEncoding == CPI_UTF8) {
-            if (encDetRes->bValidUTF8) {
+            if (encDetRes->bValidUTF8 || encDetRes->bUTF8WithNulls) {
                 return Settings.DefaultEncoding;
             }
         }
@@ -1020,23 +1078,31 @@ __forceinline static cpi_enc_t _SetAnsiDefaultEncoding(const ENC_DET_T* const en
 }
 
 
-static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_BE)
+static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_BE, bool bStrongUTF16)
 {
     if (encDetRes->bIsUTF8Sig) {
         encDetRes->Encoding = CPI_UTF8SIGN;
+        encDetRes->selectionReason = L"BOM";
     }
     else if (bBOM_LE || bBOM_BE) {
         encDetRes->Encoding = bBOM_LE ? CPI_UNICODEBOM : CPI_UNICODEBEBOM;
         encDetRes->bIsReverse = bBOM_BE;
+        encDetRes->selectionReason = L"BOM";
+    }
+    else if (bStrongUTF16) {
+        encDetRes->Encoding = encDetRes->unicodeAnalysis;
+        encDetRes->selectionReason = encDetRes->unicodeReason;
     }
     else if (Encoding_IsValid(encDetRes->analyzedEncoding) && encDetRes->bIsAnalysisReliable) {
         // Valid UTF-8 byte sequence (no null bytes) prefer UTF-8 over
         // analyzed encoding. ASCII-only files are also valid UTF-8.
         if ((encDetRes->bValidUTF8) && (encDetRes->confidence < MIN_CONFIDENCE_ANSI_NOT_UTF8)) {
             encDetRes->Encoding = CPI_UTF8;
+            encDetRes->selectionReason = L"UTF-8(valid)";
         }
         else {
             encDetRes->Encoding = encDetRes->analyzedEncoding;
+            encDetRes->selectionReason = L"UCD";
         }
     }
     else if (Encoding_IsUNICODE(encDetRes->unicodeAnalysis)) {
@@ -1045,9 +1111,11 @@ static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_
         // identified specific UTF-16 variant). Otherwise use unicodeAnalysis.
         if (Encoding_IsValid(encDetRes->analyzedEncoding) && Encoding_IsUNICODE(encDetRes->analyzedEncoding)) {
             encDetRes->Encoding = encDetRes->analyzedEncoding;
+            encDetRes->selectionReason = L"UCD";
         }
         else {
             encDetRes->Encoding = encDetRes->unicodeAnalysis;
+            encDetRes->selectionReason = encDetRes->unicodeReason;
         }
     }
     
@@ -1059,8 +1127,9 @@ static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_
     {
         if (Settings.UseDefaultForFileEncoding) {
             encDetRes->Encoding = _SetAnsiDefaultEncoding(encDetRes);
+            encDetRes->selectionReason = L"DEF";
         }
-        else if ((encDetRes->bValidUTF8 && !encDetRes->bPureASCII7Bit) ||
+        else if (((encDetRes->bValidUTF8 || encDetRes->bUTF8WithNulls) && !encDetRes->bPureASCII7Bit) ||
                  (encDetRes->bPureASCII7Bit && Settings.LoadASCIIasUTF8)) {
             // Promote to UTF-8 when either:
             //  - the file has multi-byte valid UTF-8 sequences (always preferred), or
@@ -1069,6 +1138,7 @@ static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_
             // a flat `bValidUTF8 || (bPureASCII7Bit && LoadASCIIasUTF8)` makes the
             // setting dead — pure-ASCII files would always become UTF-8.
             encDetRes->Encoding = CPI_UTF8;
+            encDetRes->selectionReason = encDetRes->bPureASCII7Bit ? L"ASCII-PREF" : L"UTF-8(valid)";
         }
         else {
             cpi_enc_t const weak = Encoding_SrcWeak(CPI_GET);
@@ -1076,9 +1146,11 @@ static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_
                 if ((weak == CPI_UTF8) && encDetRes->bValidUTF8) {
                     // weak UTF-8 hint and data is valid UTF-8 - use weak hint
                     encDetRes->Encoding = weak;
+                    encDetRes->selectionReason = L"HINT";
                 }
                 else if (Encoding_IsEXTERNAL_8BIT(weak)) {
                     encDetRes->Encoding = weak;
+                    encDetRes->selectionReason = L"HINT";
                 }
             }
         }
@@ -1087,6 +1159,7 @@ static void _SetResultingEncoding(ENC_DET_T* encDetRes, bool bBOM_LE, bool bBOM_
     // Final fallback / last resort: if still no encoding, but valid UTF-8, use UTF-8.
     if (Encoding_IsNONE(encDetRes->Encoding)) {
         encDetRes->Encoding = (encDetRes->bValidUTF8) ? CPI_UTF8 : CPI_ANSI_DEFAULT;
+        encDetRes->selectionReason = encDetRes->bValidUTF8 ? L"UTF-8(valid)" : L"ANSI-FB";
     }
 }
 
@@ -1157,20 +1230,6 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
 
     FileVars_GetFromData(lpData, cbData, &Globals.fvCurFile);
 
-    // --- Check for UTF-32 BOM first ---
-    if (Has_UTF32_BOM(lpData, cbData)) {
-        bool const bBE = Has_UTF32_BE_BOM(lpData, cbData);
-        encDetRes.bIsUTF32 = true;
-        encDetRes.bHasBOM = true;
-        encDetRes.bIsReverse = bBE;
-        encDetRes.Encoding = CPI_UTF8SIGN; // converted to UTF-8 on load
-        StringCchCopyA(encDetRes.encodingStrg, COUNTOF(encDetRes.encodingStrg), bBE ? "UTF-32BE" : "UTF-32LE");
-        if (Flags.bDevDebugMode) {
-            _SetEncodingTitleInfo(&encDetRes);
-        }
-        return encDetRes;
-    }
-
     bool const bBOM_LE = Has_UTF16_LE_BOM(lpData, cbData);
     bool const bBOM_BE = Has_UTF16_BE_BOM(lpData, cbData);
     bool const bUTF8Sig = (cbData >= 3) ? IsUTF8Signature(lpData) : false;
@@ -1181,18 +1240,37 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
     bool const bNfoDizDetected = (lpszExt && ((StringCchCompareXI(lpszExt, L".nfo") == 0) || (StringCchCompareXI(lpszExt, L".diz") == 0)));
 
     encDetRes.forcedEncoding = (Settings.LoadNFOasOEM && bNfoDizDetected) ? Globals.DOSEncoding : Encoding_Forced(CPI_GET);
+    if (IS_ENC_ENFORCED()) {
+        encDetRes.selectionReason = (Settings.LoadNFOasOEM && bNfoDizDetected) ? L"NFO/OEM" : L"OVR";
+    }
 
     if (!IS_ENC_ENFORCED()) {
         // force file vars ?
         encDetRes.fileVarEncoding = (FileVars_IsValidEncoding(&Globals.fvCurFile)) ? FileVars_GetEncoding(&Globals.fvCurFile) : CPI_NONE;
         if (Encoding_IsValid(encDetRes.fileVarEncoding) && (Globals.fvCurFile.mask & FV_ENCODING)) {
             encDetRes.forcedEncoding = encDetRes.fileVarEncoding;
+            encDetRes.selectionReason = L"F-TAG";
         }
     }
 
-    encDetRes.bHasBOM = (bBOM_LE || bBOM_BE) || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UNICODE_BOM));
-    encDetRes.bIsReverse = bBOM_BE || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UNICODE_REVERSE));
-    encDetRes.bIsUTF8Sig = bUTF8Sig || (IS_ENC_ENFORCED() && (g_Encodings[encDetRes.forcedEncoding].uFlags & NCP_UTF8_SIGN));
+    // Input signatures describe actual bytes, never the requested save encoding.
+    encDetRes.bHasBOM = bBOM_LE || bBOM_BE;
+    encDetRes.bIsReverse = bBOM_BE;
+    encDetRes.bIsUTF8Sig = bUTF8Sig;
+
+    if (!IS_ENC_ENFORCED() && Has_UTF32_BOM(lpData, cbData)) {
+        bool const bBE = Has_UTF32_BE_BOM(lpData, cbData);
+        encDetRes.bIsUTF32 = true;
+        encDetRes.bHasBOM = true;
+        encDetRes.bIsReverse = bBE;
+        encDetRes.Encoding = CPI_UTF8SIGN; // converted to UTF-8 on load
+        encDetRes.selectionReason = bBE ? L"BOM(U32BE->U8)" : L"BOM(U32LE->U8)";
+        encDetRes.analysisSkipReason = L"UTF-32";
+        if (Flags.bDevDebugMode) {
+            _SetEncodingTitleInfo(&encDetRes);
+        }
+        return encDetRes;
+    }
     // One scan yields strict validity, pure-ASCII, NUL presence and "valid UTF-8 except for NUL bytes".
     encDetRes.bValidUTF8 = IsValidUTF8(lpData, cbData, &(encDetRes.bPureASCII7Bit), &(encDetRes.bHasNullBytes), &(encDetRes.bUTF8WithNulls));
 
@@ -1207,12 +1285,13 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
 
         // --- BOM-less UTF-32
         bool bUTF32BE = false;
-        if (!bSkipUTFDetection && !encDetRes.bHasBOM && !bUTF8Sig && encDetRes.bHasNullBytes &&
+        if (!IS_ENC_ENFORCED() && !bSkipUTFDetection && !encDetRes.bHasBOM && !bUTF8Sig && encDetRes.bHasNullBytes &&
             DetectUTF32ByRange(lpData, cbData, &bUTF32BE)) {
             encDetRes.bIsUTF32 = true;
             encDetRes.bIsReverse = bUTF32BE;
             encDetRes.Encoding = CPI_UTF8; // converted to UTF-8 on load
-            StringCchCopyA(encDetRes.encodingStrg, COUNTOF(encDetRes.encodingStrg), bUTF32BE ? "UTF-32BE" : "UTF-32LE");
+            encDetRes.selectionReason = bUTF32BE ? L"UTF-32BE(range->U8)" : L"UTF-32LE(range->U8)";
+            encDetRes.analysisSkipReason = L"UTF-32";
             if (Flags.bDevDebugMode) {
                 _SetEncodingTitleInfo(&encDetRes);
             }
@@ -1226,6 +1305,7 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
                 encDetRes.bHasBOM = true;
                 encDetRes.bIsReverse = bBOM_BE;
                 encDetRes.unicodeAnalysis = bBOM_BE ? CPI_UNICODEBEBOM : CPI_UNICODEBOM;
+                encDetRes.unicodeReason = L"BOM";
             }
 
             // BOM-less UTF-16 detection (also handles CJK-heavy content)
@@ -1234,14 +1314,28 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
                 if (Encoding_IsUNICODE(nullDist)) {
                     encDetRes.unicodeAnalysis = nullDist;
                     encDetRes.bIsReverse = Encoding_IsUNICODE_REVERSE(nullDist);
+                    encDetRes.unicodeReason = bStrongUTF16 ? L"UTF-16(NUL-S)" : L"UTF-16(NUL-W)";
+                }
+                // Valid UTF-8 containing stray NULs must not be reclassified by
+                // Windows' statistical heuristic. ASCII UTF-16 is handled above.
+                if (!bStrongUTF16 && !encDetRes.bUTF8WithNulls) {
+                    cpi_enc_t const windowsUTF16 = DetectUTF16ByWindows(lpData, cbData);
+                    if (Encoding_IsUNICODE(windowsUTF16) &&
+                        (Encoding_IsNONE(nullDist) || windowsUTF16 == nullDist)) {
+                        encDetRes.unicodeAnalysis = windowsUTF16;
+                        encDetRes.bIsReverse = Encoding_IsUNICODE_REVERSE(windowsUTF16);
+                        bStrongUTF16 = true;
+                        encDetRes.unicodeReason = L"UTF-16(WIN)";
+                    }
                 }
             }
         }
 
         // a BOM decides the encoding anyway - the (expensive) analysis is only needed for diagnostics / forced detection
         // (the same holds for strong BOM-less UTF-16 evidence: uchardet must not overrule it)
-        bool const bHasSignatureBOM = bUTF8Sig || bBOM_LE || bBOM_BE || bStrongUTF16;
-        if (!bSkipANSICPDetection && (!bHasSignatureBOM || bForceEncDetection || Flags.bDevDebugMode)) {
+        bool const bHasUnicodeEvidence = bUTF8Sig || bBOM_LE || bBOM_BE || bStrongUTF16;
+        encDetRes.analysisSkipReason = bSkipANSICPDetection ? L"disabled" : bStrongUTF16 ? L"strong UTF-16" : L"BOM";
+        if (!bSkipANSICPDetection && (!bHasUnicodeEvidence || bForceEncDetection || Flags.bDevDebugMode)) {
             // ---------------------------------------------------------------------------
             size_t cbSample = 0;
             char* const lpSample = (cbData > 2 * 200000LL) ? _BuildAnalysisSample(lpData, cbData, &cbSample) : NULL;
@@ -1254,19 +1348,19 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
             // ---------------------------------------------------------------------------
         }
 
-        if (bForceEncDetection) {
+        if (bForceEncDetection && !IS_ENC_ENFORCED() && !bHasUnicodeEvidence) {
             if (Encoding_IsValid(encDetRes.analyzedEncoding)) {
                 // no bIsReliable check (forced unreliable detection)
                 encDetRes.forcedEncoding = encDetRes.analyzedEncoding;
+                encDetRes.selectionReason = L"UCD(FORCE)";
             }
             else if (Encoding_IsValid(encDetRes.unicodeAnalysis)) {
                 encDetRes.forcedEncoding = encDetRes.unicodeAnalysis;
+                encDetRes.selectionReason = L"UTF-16(FORCE)";
             }
         }
-    }
-
-    if (Flags.bDevDebugMode) {
-        _SetEncodingTitleInfo(&encDetRes);
+    } else {
+        encDetRes.analysisSkipReason = L"override";
     }
 
     // --------------------------------------------------------------------------
@@ -1280,10 +1374,14 @@ extern "C" ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath,
 
     if (IS_ENC_ENFORCED()) {
         encDetRes.Encoding = encDetRes.forcedEncoding;
+        encDetRes.bIsReverse = Encoding_IsUNICODE_REVERSE(encDetRes.forcedEncoding);
+        encDetRes.bHasBOM = encDetRes.bIsReverse ? bBOM_BE : bBOM_LE;
     }
     else {
-        _SetResultingEncoding(&encDetRes, bBOM_LE, bBOM_BE);
+        _SetResultingEncoding(&encDetRes, bBOM_LE, bBOM_BE, bStrongUTF16);
+    }
+    if (Flags.bDevDebugMode) {
+        _SetEncodingTitleInfo(&encDetRes);
     }
     return encDetRes;
 }
-
