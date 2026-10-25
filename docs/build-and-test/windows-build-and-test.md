@@ -27,6 +27,7 @@ Check `$LASTEXITCODE` and scan output for `-> Notepad3.exe` or `error C` entries
 
 Tests include `test\TestFileVersion.cmd` and `test\TestAhkNotepad3.cmd` (AutoHotkey).
 
+- `test\test_files\encoding\TestEncodingDetection.ps1` builds a temporary native regression harness using Visual C++ and the current encoding detector functions. See [Encoding detection](../domain/encoding-detection.md#regression-coverage) for coverage and stub boundaries.
 - The CI runner has no `wmic`; query dates and file versions with PowerShell.
 - Both tests share a `shell: cmd` step, which reports only the last command's exit code; append `|| exit /b 1` to every earlier test command.
 - Drive dialogs in the AHK test should be driven with `PostMessage(WM_COMMAND, ...)`, not `ControlClick`; synthesized clicks fail intermittently on the runner desktop.

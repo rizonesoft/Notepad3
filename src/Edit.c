@@ -1436,6 +1436,13 @@ bool EditLoadFile(
         size_t const cntUnits = (cbData - (encDetection.bHasBOM ? 4 : 0)) / 4;
 
         LPWSTR const lpwStr = AllocMem((cntUnits * 2 + 1) * sizeof(WCHAR), HEAP_ZERO_MEMORY);
+        if (!lpwStr) {
+            Globals.dwLastError = ERROR_NOT_ENOUGH_MEMORY;
+            FreeMem(lpData);
+            bReadSuccess = false;
+            goto observe;
+        }
+        status->bUnicodeErr = ((cbData - (encDetection.bHasBOM ? 4 : 0)) & 3) != 0;
         size_t cchWide = 0;
         for (size_t i = 0; i < cntUnits; ++i) {
             const unsigned char* const u = pSrc + (i * 4);
@@ -1452,18 +1459,37 @@ bool EditLoadFile(
             } else {
                 lpwStr[cchWide++] = (WCHAR)cp;
             }
+            status->bUTF8WithNul = status->bUTF8WithNul || (cp == 0);
         }
 
         char* const lpDataUTF8 = AllocMem((cchWide * 3) + 2, HEAP_ZERO_MEMORY);
+        if (!lpDataUTF8) {
+            Globals.dwLastError = ERROR_NOT_ENOUGH_MEMORY;
+            FreeMem(lpwStr);
+            FreeMem(lpData);
+            bReadSuccess = false;
+            goto observe;
+        }
         ptrdiff_t const convCnt = WideCharToMultiByteEx(Encoding_SciCP, 0, lpwStr, (ptrdiff_t)cchWide, lpDataUTF8, SizeOfMem(lpDataUTF8), NULL, NULL);
         FreeMem(lpwStr);
+        if (cchWide && !convCnt) {
+            Globals.dwLastError = ERROR_NO_UNICODE_TRANSLATION;
+            FreeMem(lpDataUTF8);
+            FreeMem(lpData);
+            bReadSuccess = false;
+            goto observe;
+        }
 
         status->iEncoding = encDetection.bHasBOM ? CPI_UTF8SIGN : CPI_UTF8;
+        status->bMaybeBinary = status->bMaybeBinary || status->bUTF8WithNul;
         FileVars_GetFromData(lpDataUTF8, convCnt, &Globals.fvCurFile);
         EditSetNewText(hwnd, lpDataUTF8, convCnt, bClearUndoHistory, bReloadFile);
         EditDetectEOLMode(lpDataUTF8, convCnt, status);
         FreeMem(lpDataUTF8);
         FreeMem(lpData);
+        if (Flags.bDevDebugMode) {
+            SetAdditionalTitleInfo(Encoding_GetTitleInfo());
+        }
         InfoBoxLng(MB_ICONWARNING, Constants.SuppressKey.MsgUTF32Unsupported, IDS_MUI_WARN_UTF32_CONVERTED);
         goto observe;
     }
@@ -1482,8 +1508,8 @@ bool EditLoadFile(
 #endif
         WCHAR wchBuf[128] = { L'\0' };
         if (IS_ENC_ENFORCED()) {
-            StringCchPrintf(wchBuf, COUNTOF(wchBuf), L"ForcedEncoding='%s'", g_Encodings[encDetection.forcedEncoding].wchLabel);
-            SetAdditionalTitleInfo(wchBuf);
+            StringCchPrintf(wchBuf, COUNTOF(wchBuf), L" - ForcedEncoding='%s'", g_Encodings[encDetection.forcedEncoding].wchLabel);
+            AppendAdditionalTitleInfo(wchBuf);
         }
         if (!Encoding_IsNONE(encDetection.fileVarEncoding) && FileVars_IsValidEncoding(&Globals.fvCurFile)) {
             StringCchPrintf(wchBuf, COUNTOF(wchBuf), L" - FilEncTag='%s'",

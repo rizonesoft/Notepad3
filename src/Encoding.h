@@ -197,9 +197,14 @@ typedef struct _enc_det_t {
 
     char encodingStrg[64];
 
+    bool bUCDRan;
+    const WCHAR* selectionReason;
+    const WCHAR* unicodeReason;
+    const WCHAR* analysisSkipReason;
+
 } ENC_DET_T;
 
-#define INIT_ENC_DET_T  { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, false, false, false, false, false, "" }
+#define INIT_ENC_DET_T  { CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, CPI_NONE, 0.0f, false, false, false, false, false, false, false, false, false, false, "", false, L"fallback", L"", L"not requested" }
 
 
 ENC_DET_T Encoding_DetectEncoding(const HPATHL hpath, const char* lpData, const size_t cbData,
