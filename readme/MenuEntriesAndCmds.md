@@ -563,8 +563,10 @@ Editor behaviour, persistence, and platform integration. Most items are toggles 
 
 | Menu | Description |
 |---|---|
-| **Set to Current File's Directory** | Bind the *Open* / *Save As* default to the current file's directory. |
-| **Reset to Default** | Restore the standard "Documents" default. |
+| **Set to Current File's Directory** | Store the current file's directory as the *Open* / *Save As* default when no file is open. This is a fixed directory, not a setting that tracks later files. |
+| **Reset to Default** | Clear the menu-set directory override and return to the configured `DefaultDirectory` or the normal fallback. |
+
+An explicitly supplied directory (for example, a directory command-line argument) takes precedence over these defaults, as does the directory of an open file. With no current file or configured default, **Open** can use the most recent file's directory when **Remember Recent Files** is enabled. See [file-dialog starting directories](paths/FilePathHandling.md#file-dialog-starting-directory) for the full order and fallbacks.
 
 ### Remember
 
