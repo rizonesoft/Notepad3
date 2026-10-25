@@ -190,6 +190,8 @@ Yes. Notepad3 always looks beside the exe first — `%APPDATA%` is only consulte
 
 `DefaultDirectory=` and `DefaultExtension=txt` under `[Settings2]`.
 
+You can also choose **Settings → Default Directory → Set to Current File's Directory** to store a fixed default folder. With no current file and no default folder defined, **Open** tries the most recent file's directory if **Remember Recent Files** is enabled, then the working directory. See [file-dialog starting directories](../paths/FilePathHandling.md#file-dialog-starting-directory).
+
 ### How do I customize the date/time format for "Update Timestamps" (Shift+F5)?
 
 You need to define **both** of the following in `[Settings2]`:

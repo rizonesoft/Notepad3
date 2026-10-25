@@ -7457,6 +7457,26 @@ static void _CanonicalizeInitialDir(HPATHL hpth_in_out, bool bMustBeWritable)
     }
 }
 
+static void _ResolveOpenInitialDir(HPATHL hpth_in_out)
+{
+    if (Path_IsEmpty(hpth_in_out) && Path_IsEmpty(Paths.CurrentFile) &&
+        Path_IsEmpty(Settings.DefaultDirectoryOverride) && Path_IsEmpty(Settings2.DefaultDirectory) &&
+        Settings.SaveRecentFiles && MRU_Count(Globals.pFileMRU) > 0) {
+        LPWSTR const fileBuf = Path_WriteAccessBuf(hpth_in_out, PATHLONG_MAX_CCH);
+        int const fileLength = MRU_Enum(Globals.pFileMRU, 0, fileBuf, (int)Path_GetBufCount(hpth_in_out));
+        Path_Sanitize(hpth_in_out);
+        if (fileLength > 0) {
+            Path_UnQuoteSpaces(hpth_in_out);
+            Path_AbsoluteFromApp(hpth_in_out, true);
+            _GetParentDir(hpth_in_out);
+        }
+        if (!Path_IsExistingDirectory(hpth_in_out)) {
+            Path_Empty(hpth_in_out, false);
+        }
+    }
+    _CanonicalizeInitialDir(hpth_in_out, false);
+}
+
 
 // ============================================================================
 //
@@ -7691,6 +7711,7 @@ bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     if (!hfile_pth_io) {
         return false;
     }
+    HPATHL hpth_dir = Path_Copy(hinidir_pth);
     if (!Path_IsEmpty(hinidir_pth)) {
         Path_Empty(hfile_pth_io, false);
     }
@@ -7698,8 +7719,7 @@ bool OpenFileDlg(HWND hwnd, HPATHL hfile_pth_io, const HPATHL hinidir_pth)
     WCHAR szFilter[EXTENSIONS_FILTER_BUFFER];
     Style_GetFileFilterStr(szFilter, COUNTOF(szFilter), szDefExt, COUNTOF(szDefExt), false);
 
-    HPATHL hpth_dir = Path_Copy(hinidir_pth);
-    _CanonicalizeInitialDir(hpth_dir, false);
+    _ResolveOpenInitialDir(hpth_dir);
 
     LPCWSTR defExt = StrIsNotEmpty(szDefExt) ? szDefExt : Settings2.DefaultExtension;
     LPCWSTR initDir = Path_IsNotEmpty(hpth_dir) ? Path_Get(hpth_dir) : NULL;

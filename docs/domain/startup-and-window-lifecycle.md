@@ -17,3 +17,7 @@ The runtime toggle is `IDM_EDIT_TOGGLE_PASTEBOARD`; `/B` enables Pasteboard Mode
 - If there is no acknowledging target, the launched process adopts the AppID and opens a new window.
 - The handoff to `DialogNewWindow` passes `-n` semantics, so a taskbar new-window request bypasses `ReuseWindow`.
 - Every AppUserModel property set through the window property store must be cleared in `ClearWindowAppUserModelID()` during `WM_DESTROY`.
+
+## Startup with a directory argument
+
+- A directory passed as the startup path opens the file dialog rooted in that directory (`Notepad3.c` startup path handling). `OpenFileDlg()` may receive the same `HPATHL` as both output and initial-directory input; it must copy the initial directory before clearing the output path (`Dialogs.c`).

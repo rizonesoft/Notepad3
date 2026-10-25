@@ -11,6 +11,13 @@
 - If temp-file setup fails, saving falls back to writing the target directly. After a successful temp-file write, replacement tries `ReplaceFileW` for an existing target, then `MoveFileExW` with replace/write-through flags; a replacement failure makes the save fail.
 - `Globals.dwLastError` holds the Win32 error. In `FileSave()`, check `ERROR_ACCESS_DENIED` and `ERROR_PATH_NOT_FOUND` before the generic fallback.
 
+## Open-dialog initial directory
+
+- `OpenFileDlg()` / `_ResolveOpenInitialDir()` in `src\Dialogs.c` prefer an explicit initial path, then the current file's directory, `Settings.DefaultDirectoryOverride`, and `Settings2.DefaultDirectory`.
+- With none of those available and `Settings.SaveRecentFiles` enabled, Open uses the newest MRU entry's parent directory if it exists (the file itself need not exist). Otherwise it uses `Paths.WorkingDirectory`. It does not search older MRU entries.
+- MRU paths must be sanitized, unquoted, and expanded with `Path_AbsoluteFromApp(..., true)` before taking the parent directory with the drive-root-safe `_GetParentDir()`. An unavailable parent clears the candidate so the shared resolver supplies the working directory. Save dialogs do not use history.
+- An invalid final directory still falls back to Documents; Save also requires a writable directory. Focused coverage: `test\TestOpenDialogDirectory.ps1`.
+
 ## File watching
 
 `InstallFileWatching()` uses `FindFirstChangeNotificationW` on the parent directory. Stop watching with `InstallFileWatching(false)` before saving, then reinstall it with `InstallFileWatching(true)` afterward.

@@ -284,6 +284,25 @@ The Recent Files list in the File menu is persisted in `Notepad3.ini` under
 `[Recent Files]`. Disable persistence with the `NoSaveRecent` setting.
 Entries can be removed individually from the MRU dialog.
 
+### File-dialog starting directory
+
+The **Open** dialog chooses its starting directory in this order:
+
+1. An explicitly supplied directory. Passing a directory rather than a file on the command line opens the dialog there.
+2. The directory of the currently open file.
+3. The fixed directory stored by **Settings → Default Directory → Set to Current File's Directory**.
+4. `DefaultDirectory` under `[Settings2]`.
+5. The most recent file's parent directory, if **Remember Recent Files** is enabled and that directory still exists.
+6. The process working directory (set by the launcher, such as a shortcut's **Start in** folder).
+
+To start Notepad3 with the Open dialog in the current directory, run `Notepad3.exe .`.
+
+The recent file itself need not still exist. Only the newest history entry is considered; a missing directory falls back to the working directory rather than searching older entries. If the final directory is unavailable, the dialog falls back to **Documents**.
+
+**Save As** uses the same defaults but does not use recent-file history, and falls back to **Documents** if the selected directory is not writable. **Reset to Default** clears only the menu-set override; it does not clear `DefaultDirectory` or force **Documents**.
+
+Starting without a file or directory argument does not itself display the Open dialog. **Autoload Recent File** is a separate option that loads the newest history entry at startup; if loaded, that file's directory applies as the current-file directory above.
+
 ### Portable & redirected INI
 
 By default `Notepad3.ini` lives next to `Notepad3.exe` (portable mode). The
@@ -304,7 +323,7 @@ descriptions.
 |---|---|
 | `AtomicFileSave` | Two-phase Save (temp file + ReplaceFileW). |
 | `ResolveUNCPaths` | When opening a UNC path that's actually a mapped drive's share, prefer the drive-letter form for display. |
-| `DefaultDirectory` | Initial directory of the **Open…** dialog. |
+| `DefaultDirectory` | Default directory for **Open…** / **Save As** when no file is open; see [starting-directory precedence](#file-dialog-starting-directory). |
 | `OpenWithDir` | Directory used by **Open with…**. |
 | `FavoritesDir` | Where the Favorites list lives. |
 | `GrepWinPath` | Override the grepWin executable lookup. |

@@ -120,6 +120,10 @@ This pattern is used by **Shift+F5** to update timestamps, e.g., `$Date: 2018/04
 
 Default directory for open/save dialogs when no file is open. Paths can be relative to the Notepad3 program directory.
 
+**Settings → Default Directory → Set to Current File's Directory** stores a separate override (`DefaultDirectoryOverride` under `[Settings]`); **Reset to Default** clears that override without changing this key. An explicit directory or the currently open file's directory takes precedence over both defaults.
+
+If neither default is defined, **Open** tries the most recent file's existing directory when **Remember Recent Files** is enabled, then the working directory. This history fallback does not apply to **Save As**. See [file-dialog starting directories](../paths/FilePathHandling.md#file-dialog-starting-directory).
+
 #### `DefaultExtension=txt`
 
 Default extension for saved files (omit the leading dot).
