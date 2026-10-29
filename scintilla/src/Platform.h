@@ -92,12 +92,12 @@ namespace Scintilla::Internal {
 // Underlying the implementation of the platform classes are platform specific types.
 // Sometimes these need to be passed around by client code so they are defined here
 
-typedef void *SurfaceID;
-typedef void *WindowID;
-typedef void *MenuID;
-typedef void *TickerID;
-typedef void *Function;
-typedef void *IdlerID;
+using SurfaceID = void *;
+using WindowID = void *;
+using MenuID = void *;
+using TickerID = void *;
+using Function = void *;
+using IdlerID = void *;
 
 /**
  * Font management.
@@ -118,14 +118,14 @@ struct FontParameters {
 
 	constexpr FontParameters(
 		const char *faceName_,
-		XYPOSITION size_=10,
-		Scintilla::FontWeight weight_= Scintilla::FontWeight::Normal,
-		bool italic_=false,
-		Scintilla::FontQuality extraFontFlag_= Scintilla::FontQuality::QualityDefault,
-		Scintilla::Technology technology_= Scintilla::Technology::Default,
-		Scintilla::CharacterSet characterSet_= Scintilla::CharacterSet::Ansi,
-		const char *localeName_=localeNameDefault,
-		Scintilla::FontStretch stretch_=Scintilla::FontStretch::Normal) noexcept :
+		XYPOSITION size_,
+		Scintilla::FontWeight weight_,
+		bool italic_,
+		Scintilla::FontQuality extraFontFlag_,
+		Scintilla::Technology technology_,
+		Scintilla::CharacterSet characterSet_,
+		const char *localeName_,
+		Scintilla::FontStretch stretch_) noexcept :
 
 		faceName(faceName_),
 		size(size_),
@@ -269,10 +269,9 @@ public:
  */
 class Window {
 protected:
-	WindowID wid;
+	WindowID wid {};
 public:
-	Window() noexcept : wid(nullptr), cursorLast(Cursor::invalid) {
-	}
+	Window() noexcept = default;
 	Window(const Window &source) = delete;
 	Window(Window &&) = delete;
 	Window &operator=(WindowID wid_) noexcept {
@@ -297,7 +296,7 @@ public:
 	void SetCursor(Cursor curs);
 	PRectangle GetMonitorRect(Point pt);
 private:
-	Cursor cursorLast;
+	Cursor cursorLast = Cursor::invalid;
 };
 
 /**
@@ -308,7 +307,7 @@ private:
 
 struct ListBoxEvent {
 	enum class EventType { selectionChange, doubleClick } event;
-	ListBoxEvent(EventType event_) noexcept : event(event_) {
+	explicit ListBoxEvent(EventType event_) noexcept : event(event_) {
 	}
 };
 
@@ -379,7 +378,8 @@ const char *DefaultFont();
 int DefaultFontSize();
 unsigned int DoubleClickTime();
 constexpr long LongFromTwoShorts(short a,short b) noexcept {
-	return (a) | ((b) << 16);
+	constexpr short shortBits = 16;
+	return a | (b << shortBits);
 }
 
 }
