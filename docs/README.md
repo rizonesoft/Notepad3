@@ -20,6 +20,7 @@ This directory holds repository-specific guidance for contributors and coding ag
 | If you are changing... | Read |
 |---|---|
 | Menus, commands, source layout, coding conventions, buffers | [Codebase and conventions](architecture/codebase-and-conventions.md) |
+| Replacing home-grown `Edit.c` code with Scintilla messages | [Scintilla API usage](architecture/scintilla-api-usage.md) |
 | Build, MSBuild, CI, test scripts, Python scripting | [Windows build and test](build-and-test/windows-build-and-test.md) |
 | `Edit.c` load/save, atomic save, file watching | [File I/O](domain/file-io.md) |
 | Open dialog start directory, Recent files dialog | [File I/O](domain/file-io.md) |
@@ -37,6 +38,7 @@ This directory holds repository-specific guidance for contributors and coding ag
 | Topic | Description | Pages |
 |---|---|---|
 | Architecture | Source map, command dispatch, vendored libraries, coding conventions, and implementation patterns. | [Codebase and conventions](architecture/codebase-and-conventions.md) |
+| Architecture: Scintilla API | Verified constraints of Scintilla messages when replacing home-grown `Edit.c` code. | [Scintilla API usage](architecture/scintilla-api-usage.md) |
 | Build and test | Windows build targets, MSBuild invocation, CI and test gotchas, Python environment. | [Windows build and test](build-and-test/windows-build-and-test.md) |
 | Domain: configuration | Portable INI lifecycle, persistence rules, and save/load behavior. | [Configuration and INI](domain/configuration-and-ini.md) |
 | Domain: localization | Locale resource invariants, encoding/line-ending requirements, and adding UI strings. | [Localization](domain/localization.md) |

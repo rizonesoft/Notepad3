@@ -1134,8 +1134,10 @@ void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status)
         int tabCount = 0;
         int blankCount = 0;
         int subSpcCnt = 0;
-        for (DocPos pos = lineStartPos; pos < lineIndentBeg; ++pos) {
-            char const ch = SciCall_GetCharAt(pos);
+        DocPos const indentLen = (lineIndentBeg - lineStartPos);
+        const char* const pIndent = (indentLen > 0) ? SciCall_GetRangePointer(lineStartPos, indentLen) : NULL;
+        for (DocPos i = 0; i < indentLen; ++i) {
+            char const ch = pIndent[i];
             switch (ch) {
             case 0x09: // tab
                 ++tabCount;
@@ -2713,10 +2715,19 @@ static DocPos _FindEnclosingOpenBrace(DocPos iStartPos)
     int depthBracket = 0; // []
     int depthBrace = 0;   // {}
 
+    // UTF-8: all bytes of a multi-byte sequence are >= 0x80, so a plain byte scan can't hit a brace.
+    // Other code pages (DBCS trail bytes may equal brace chars) must step by character.
+    const char* const pDoc = ((iStartPos > 0) && (SciCall_GetCodePage() == SC_CP_UTF8)) ? SciCall_GetRangePointer(0, iStartPos) : NULL;
+
     DocPos iPos = iStartPos;
     while (iPos > 0) {
-        iPos = SciCall_PositionBefore(iPos);
-        const char ch = SciCall_GetCharAt(iPos);
+        char ch = '\0';
+        if (pDoc) {
+            ch = pDoc[--iPos];
+        } else {
+            iPos = SciCall_PositionBefore(iPos);
+            ch = SciCall_GetCharAt(iPos);
+        }
         switch (ch) {
         case ')': ++depthParen;   break;
         case ']': ++depthBracket; break;
@@ -4103,6 +4114,23 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
 
 //=============================================================================
 //
+//  _LineEndWithoutTrailingBlanks() - end position of a line's content w/o trailing blanks
+//
+static DocPos _LineEndWithoutTrailingBlanks(const DocPos iStartPos, const DocPos iEndPos)
+{
+    DocPos n = (iEndPos - iStartPos);
+    if (n > 0) {
+        const char* const pLine = SciCall_GetRangePointer(iStartPos, n); // valid until next doc modification
+        while ((n > 0) && IsBlankCharA(pLine[n - 1])) {
+            --n;
+        }
+    }
+    return (iStartPos + n);
+}
+
+
+//=============================================================================
+//
 //  EditAlignText()
 //
 void EditAlignText(int nMode)
@@ -4140,13 +4168,7 @@ void EditAlignText(int nMode)
         if (iLineIndentPos != iLineEndPos) {
             int const iIndentCol = SciCall_GetLineIndentation(iLine);
             DocPos const iLineStartPos = SciCall_PositionFromLine(iLine);
-            DocPos iTail = iLineEndPos - 1;
-            char ch = SciCall_GetCharAt(iTail);
-            while (iTail >= iLineStartPos && (ch == ' ' || ch == '\t')) {
-                --iTail;
-                ch = SciCall_GetCharAt(iTail);
-                --iLineEndPos;
-            }
+            iLineEndPos = _LineEndWithoutTrailingBlanks(iLineStartPos, iLineEndPos);
             const DocPos iEndCol = SciCall_GetColumn(iLineEndPos);
 
             iMinIndent = min_i(iMinIndent, iIndentCol);
@@ -4953,16 +4975,10 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
             DocPos const iEndPos = SciCall_GetLineEndPosition(iLine);
 
             if (bTrailingBlanksOnly) {
-                if (iStartPos < iEndPos) {
-                    DocPos i = iEndPos;
-                    char ch = '\0';
-                    do {
-                        ch = SciCall_GetCharAt(--i);
-                    } while ((i >= iStartPos) && IsBlankCharA(ch));
-                    if ((++i) < iEndPos) {
-                        SciCall_SetTargetRange(i, iEndPos);
-                        Sci_ReplaceTargetTestChgHist(0, "");
-                    }
+                DocPos const iTrimPos = _LineEndWithoutTrailingBlanks(iStartPos, iEndPos);
+                if (iTrimPos < iEndPos) {
+                    SciCall_SetTargetRange(iTrimPos, iEndPos);
+                    Sci_ReplaceTargetTestChgHist(0, "");
                 }
             } else { // any char at line end
                 if (iStartPos < iEndPos) {
@@ -6247,7 +6263,10 @@ void EditGetExcerpt(HWND hwnd, LPWSTR lpszExcerpt, DWORD cchExcerpt)
     struct Sci_TextRangeFull tr = { { 0, 0 }, NULL };
     /*if (iCurPos != iAnchorPos && !Sci_IsMultiOrRectangleSelection()) {*/
     tr.chrg.cpMin = (DocPosCR)SciCall_GetSelectionStart();
-    tr.chrg.cpMax = min_p((tr.chrg.cpMin + COUNTOF(tch)), SciCall_GetSelectionEnd());
+    // limit by characters (not bytes) so a multi-byte sequence is never cut in the middle
+    // (SCI_POSITIONRELATIVE yields 0 when the offset passes the document end)
+    DocPos const posLimit = SciCall_PositionRelative(tr.chrg.cpMin, COUNTOF(tch));
+    tr.chrg.cpMax = (posLimit > tr.chrg.cpMin) ? min_p(posLimit, SciCall_GetSelectionEnd()) : SciCall_GetSelectionEnd();
     /*}
     else {
       int iLine = SciCall_LineFromPosition(iCurPos);
@@ -8756,14 +8775,16 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
         return true;
     }
 
-    DocPos iPos = iWordStartPos;
+    // multi-byte sequences consist of bytes >= 0x80, so a byte-wise digit test is sufficient
     bool bWordAllNumbers = true;
-    while ((iPos < iCurrentPos) && bWordAllNumbers && (iPos <= iDocEndPos)) {
-        char const ch = SciCall_GetCharAt(iPos);
-        if (ch < '0' || ch > '9') {
-            bWordAllNumbers = false;
+    DocPos const iWordLen = (iCurrentPos - iWordStartPos);
+    if (iWordLen > 0) {
+        const char* const pWord = SciCall_GetRangePointer(iWordStartPos, iWordLen);
+        for (DocPos i = 0; (i < iWordLen) && bWordAllNumbers; ++i) {
+            if (pWord[i] < '0' || pWord[i] > '9') {
+                bWordAllNumbers = false;
+            }
         }
-        iPos = SciCall_PositionAfter(iPos);
     }
     if (!autoInsert && bWordAllNumbers) {
         EditReducedWordSeparatorSet(hwnd, Settings.AccelWordNavigation);
