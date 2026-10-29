@@ -433,7 +433,9 @@ void LineLayout::CalculatePositions(Sci::Line line, const TabStopProvider &tsp, 
 	}
 	SetPosition(numCharsInLine, xPosition);
 
-	const bool lastSegItalics = (chars[numCharsBeforeEOL - 1] != ' ') && vstyle.styles[styles[numCharsBeforeEOL - 1]].italic;
+	const bool lastSegItalics = (numCharsBeforeEOL > 0) &&
+		(chars[numCharsBeforeEOL - 1] != ' ') &&
+		vstyle.styles[styles[numCharsBeforeEOL - 1]].italic;
 
 	// Small hack to make lines that end with italics not cut off the edge of the last character
 	if (lastSegItalics) {
@@ -1184,7 +1186,7 @@ void PositionCache::MeasureWidths(Surface *surface, const ViewStyle &vstyle, uns
 		}
 	}
 
-	constexpr size_t maxCachedLength = 30;
+	constexpr size_t maxCachedLength = 40;
 	size_t probe = pces.size();	// Out of bounds
 	if ((!pces.empty()) && (sv.length() < maxCachedLength)) {
 		// Only store short strings in the cache so it doesn't churn with

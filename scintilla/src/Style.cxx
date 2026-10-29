@@ -64,15 +64,13 @@ int DefaultFontSize() noexcept {
 		return Platform::DefaultFontSize();
 	} catch (...) {
 		// Should never happen
-		constexpr int sensibleFontSize = 10;
-		return sensibleFontSize;
+		return Style::sensibleFontSize;
 	}
 }
 
 }
 
 Style::Style(const char *fontName_) noexcept :
-	FontSpecification(fontName_, DefaultFontSize() * FontSizeMultiplier),
 	fore(black),
 	back(white),
 	eolFilled(false),
@@ -84,7 +82,8 @@ Style::Style(const char *fontName_) noexcept :
 	visible(true),
 	changeable(true),
 	hotspot(false),
-	invisibleRepresentation{} {
+	invisibleRepresentation{},
+	FontSpecification(fontName_, DefaultFontSize() * FontSizeMultiplier) {
 }
 
 void Style::Copy(std::shared_ptr<Font> font_, const FontMeasurements &fm_) noexcept {
