@@ -11,7 +11,8 @@ Add one bullet per finding: `- <area/file>: <observation> — <what would verify
 - `src\Edit.c` `EditMarkAll(bMultiSel)`: one `AddSelection` per match, while `EditSelectionMultiSelectAll` uses `SCI_MULTIPLESELECTADDEACH`; converging needs `iSelectionMarkNumber` / `iMarkOccurrencesCount` derived afterwards (2026-10-29).
 - `src\Edit.c` `EditWrapToColumnEx`: only caller is `src\Notepad3.c:6402`; whether `SCI_LINESSPLIT` (used by `EditWrapToColumn`) can replace it depends on its delimiter and tab handling — compare behaviour first (2026-10-29).
 - `src\Edit.c` `EditHasTrailingBlanks`: three messages per line; a `SCI_SEARCHINTARGET` regex for `[ \t]$` might be faster — benchmark on a large file before changing (2026-10-29).
-- `src\Edit.c` Scintilla-API audit not yet done for: Find/Replace dialog and search flags (~6300-7900), `EditSortLines`, hex and number tools, modify-lines/enclose/insert-tag dialogs, clipboard and `EditSetNewText` (2026-10-29).
+- `src\Edit.c` `_FindInTarget`: the pattern conversion is now cached, but `SciCall_SetSearchFlags` and the target save/restore still run on every call; the gain from splitting those into a prepare and an iterate step was not measured (2026-10-30).
+- `src\Edit.c` Scintilla-API audit, second pass (2026-10-30): read the find/replace functions, `EditSortLines`, clipboard, `EditConvertText`, URL, Base64 and hex tools and `EditModifyNumber`. No further Scintilla message replaces home-grown code there (there is no Scintilla replace-all, recode, locale sort or wildcard search). Not read: the dialog procedures (~6930-7930 and ~9377-10260).
 
 ## Coverage review
 
