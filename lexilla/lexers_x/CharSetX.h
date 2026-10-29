@@ -77,18 +77,6 @@ constexpr bool IsNewline(const int ch) noexcept
 	return IsEOLChar(ch) || (ch == '\0');
 }
 
-constexpr bool IsAGraphic(int ch) noexcept
-{
-	// excludes C0 control characters and whitespace
-	return ch > 32 && ch < 127;
-}
-
-constexpr bool IsGraphic(int ch) noexcept
-{
-	// excludes C0 control characters and whitespace
-	return ch > 32 && ch != 127;
-}
-
 constexpr bool IsJumpLabelPrevChar(int chPrev) noexcept {
 	return chPrev == ';' || chPrev == '{' || chPrev == '}';
 }
