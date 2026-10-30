@@ -41,6 +41,11 @@ typedef struct te_variable {
  * parse error on failure. */
 double te_interp(const char *expression, te_int_t *error);
 
+/* Like te_interp(), and additionally reports (when isLogical != NULL) whether
+ * the expression lexically looks logical (see te_is_logical_expr()), using the
+ * same parse. *isLogical is 0 on error. */
+double te_interp_ex(const char *expression, te_int_t *error, int *isLogical);
+
 /* Parses, evaluates, and returns a cooked string representation.
  *   - "true"  / "false"  if the expression is "logical" AND the result
  *     is finite and exactly 1.0 or 0.0.
@@ -74,7 +79,8 @@ const char *te_interp_str(const char *expression, te_int_t *error);
 int te_is_logical_expr(const char *expression);
 
 /* Parses the input expression and binds variables.
- * Returns NULL on error.
+ * Returns NULL on error. A NULL name/address or a duplicate name in `variables`
+ * is an error too (*error == 1); entries are never silently dropped.
  * *error is set to 0 on success, or the 1-based error position on failure. */
 te_expr *te_compile(const char *expression, const te_variable *variables, int var_count, te_int_t *error);
 
@@ -96,16 +102,16 @@ int te_supports_64bit(void);
 /* ---- NP3-specific utility functions (inline) ---- */
 
 /* ANSI codepage of te operators */
-inline unsigned te_cp(void) { return 1252U; }
+static inline unsigned te_cp(void) { return 1252U; }
 
 /* Invalid default char for conversion */
-inline unsigned te_invalid_chr(void) { return (unsigned)'#'; }
+static inline unsigned te_invalid_chr(void) { return (unsigned)'#'; }
 
 /* Check if character is a digit */
-inline unsigned te_is_num(const char * const pch) { return (pch && (*pch > 47) && (*pch < 58)); }
+static inline unsigned te_is_num(const char * const pch) { return (pch && (*pch > 47) && (*pch < 58)); }
 
 /* Check for operator or special character */
-inline int te_is_op(const char * const expr) {
+static inline int te_is_op(const char * const expr) {
     if (!expr)
         return !0;
     switch (*expr) {

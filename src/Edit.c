@@ -3070,7 +3070,8 @@ void EditModifyNumber(HWND hwnd, bool bIncrease)
 
     if (!bHandled) {
         char szExpr[4128];
-        StringCchPrintfA(szExpr, COUNTOF(szExpr), "(%s)%s", pTrimmed, bIncrease ? "+1" : "-1");
+        // the newline ends a trailing // comment in the selection
+        StringCchPrintfA(szExpr, COUNTOF(szExpr), "(%s\n)%s", pTrimmed, bIncrease ? "+1" : "-1");
 
         te_int_t iErr = 0;
         double const dResult = te_interp(szExpr, &iErr);
@@ -3711,6 +3712,7 @@ void EditCopyMultiSelection(HWND hwnd)
 }
 
 
+
 //=============================================================================
 //
 //  EditModifyLines()
@@ -3844,13 +3846,13 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
             L = (double)(iStartLine + 1ll);
             I = 0.0;
             N = I + 1.0;
-            DocLn vmin = d2ln(te_eval(pTinyExprPre));
+            DocLn vmin = d2lnc(te_eval(pTinyExprPre));
             DocLn vmax = vmin;
             for (DocLn ln = iStartLine + 2; ln <= iEndLine + 1; ++ln) {
                 L = (double)ln;
                 I += 1.0;
                 N += 1.0;
-                DocLn const vres = d2ln(te_eval(pTinyExprPre));
+                DocLn const vres = d2lnc(te_eval(pTinyExprPre));
                 if (vres < vmin)
                     vmin = vres;
                 else if (vres > vmax)
@@ -3885,13 +3887,13 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
             L = (double)(iStartLine + 1ll);
             I = 0.0;
             N = I + 1.0;
-            DocLn vmin = d2ln(te_eval(pTinyExprPost));
+            DocLn vmin = d2lnc(te_eval(pTinyExprPost));
             DocLn vmax = vmin;
             for (DocLn ln = iStartLine + 2; ln <= iEndLine + 1; ++ln) {
                 L = (double)ln;
                 I += 1.0;
                 N += 1.0;
-                DocLn const vres = d2ln(te_eval(pTinyExprPost));
+                DocLn const vres = d2lnc(te_eval(pTinyExprPost));
                 if (vres < vmin)
                     vmin = vres;
                 else if (vres > vmax)
@@ -3949,7 +3951,7 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
                     L = (double)iPrefixNum;
                     I = (double)count;
                     N = I + 1.0;
-                    iPrefixNum = d2ln(te_eval(pTinyExprPre));
+                    iPrefixNum = d2lnc(te_eval(pTinyExprPre));
                     StringCchPrintfA(mszTEMsgPre, COUNTOF(mszTEMsgPre), tchFormatPre, iPrefixNum);
                 }
                 StringCchCatA(mszInsert, COUNTOF(mszInsert), mszTEMsgPre);
@@ -3973,7 +3975,7 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
                     L = (double)iAppendNum;
                     I = (double)count;
                     N = I + 1.0;
-                    iAppendNum = d2ln(te_eval(pTinyExprPost));
+                    iAppendNum = d2lnc(te_eval(pTinyExprPost));
                     StringCchPrintfA(mszTEMsgPost, COUNTOF(mszTEMsgPost), tchFormatPost, iAppendNum);
                 }
                 StringCchCatA(mszInsert, COUNTOF(mszInsert), mszTEMsgPost);
@@ -9236,10 +9238,10 @@ CASE_WM_CTLCOLOR_SET:
             if (SendDlgItemMessage(hwnd, IDC_LINENUM, WM_GETTEXTLENGTH, 0, 0) > 0) {
                 char chLineNumber[96];
                 GetDlgItemTextA(hwnd, IDC_LINENUM, chLineNumber, COUNTOF(chLineNumber));
-                iNewLine = (DocLn)te_interp(chLineNumber, &iExprError);
+                iNewLine = d2lnc(te_interp(chLineNumber, &iExprError));
                 if (iExprError > 1) {
                     chLineNumber[iExprError-1] = '\0';
-                    iNewLine = (DocLn)te_interp(chLineNumber, &iExprError);
+                    iNewLine = d2lnc(te_interp(chLineNumber, &iExprError));
                 }
                 bLnTranslated = (iExprError == 0);
             }
@@ -9249,10 +9251,10 @@ CASE_WM_CTLCOLOR_SET:
             if (SendDlgItemMessage(hwnd, IDC_COLNUM, WM_GETTEXTLENGTH, 0, 0) > 0) {
                 char chColumnNumber[96];
                 GetDlgItemTextA(hwnd, IDC_COLNUM, chColumnNumber, COUNTOF(chColumnNumber));
-                iNewCol = (DocPos)te_interp(chColumnNumber, &iExprError);
+                iNewCol = d2lnc(te_interp(chColumnNumber, &iExprError));
                 if (iExprError > 1) {
                     chColumnNumber[iExprError-1] = '\0';
-                    iNewLine = (DocLn)te_interp(chColumnNumber, &iExprError);
+                    iNewCol = d2lnc(te_interp(chColumnNumber, &iExprError));
                 }
                 bColTranslated = (iExprError == 0);
             }

@@ -32,6 +32,7 @@ This directory holds repository-specific guidance for contributors and coding ag
 | INI settings, persistence | [Configuration and INI](domain/configuration-and-ini.md) |
 | Dark mode, rendering, theme-change redraw | [Dark mode and rendering](domain/ui-rendering.md) |
 | Startup, activation, AppID, new-window reuse | [Startup and window lifecycle](domain/startup-and-window-lifecycle.md) |
+| Expression evaluation (`=?`, Go To, line numbering), `tinyexpr_cif` | [TinyExpr++ wrapper](domain/tinyexpr-wrapper.md) |
 
 ## Contents
 
@@ -50,4 +51,5 @@ This directory holds repository-specific guidance for contributors and coding ag
 | Domain: file I/O | Load/save flow, atomic saves, error handling, file watching, Open-dialog initial directory, and Recent files dialog. | [File I/O](domain/file-io.md) |
 | Domain: paths | PathLib wrappers, long-path handling, and path comparison rules. | [PathLib](domain/pathlib.md) |
 | Domain: UI rendering | Dark mode, ARM64 rendering technology, and theme-change redraw. | [Dark mode and rendering](domain/ui-rendering.md) |
+| Domain: expressions | C wrapper over TinyExpr++: contract, length-preserving pre-pass, error positions, callers. | [TinyExpr++ wrapper](domain/tinyexpr-wrapper.md) |
 | Docs maintenance | Unverified findings and pages queued for coverage review. | [Open questions and coverage review](open-questions.md) |

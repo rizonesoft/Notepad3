@@ -189,6 +189,14 @@ __forceinline DocLn d2ln(const double d)
     return (DocLn)llround(d);
 }
 
+// Like d2ln(), but safe for any double: NaN -> 0, out-of-range / Inf -> +/- 9.2233720368547748e18
+// (the largest double below 2^63), instead of the unspecified llround() result.
+__forceinline DocLn d2lnc(const double d)
+{
+    const double dMax = 9.2233720368547748e18;
+    return isnan(d) ? 0ll : d2ln((d > dMax) ? dMax : ((d < -dMax) ? -dMax : d));
+}
+
 __forceinline int f2int(const float f)
 {
     return (int)lroundf(f);
