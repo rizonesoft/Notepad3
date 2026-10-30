@@ -722,21 +722,25 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
     // translate to SCI editor component codepage (default: UTF-8)
     char* pmch = NULL;
     ptrdiff_t mlen = 0;
+    bool bConverted = false;
     if (wlen > 0) {
         mlen = WideCharToMultiByteEx(Encoding_SciCP, 0, pwch, wlen, NULL, 0, NULL, NULL);
         pmch = (char*)AllocMem(mlen + 1, HEAP_ZERO_MEMORY);
-        if (pmch && mlen != 0) {
-            ptrdiff_t const cnt = WideCharToMultiByteEx(Encoding_SciCP, 0, pwch, wlen, pmch, SizeOfMem(pmch), NULL, NULL);
-            if (cnt == 0) {
-                return pmch;
-            }
-        } else {
-            return pmch;
+        if (pmch && (mlen != 0)) {
+            bConverted = (WideCharToMultiByteEx(Encoding_SciCP, 0, pwch, wlen, pmch, SizeOfMem(pmch), NULL, NULL) != 0);
         }
     } else {
         pmch = AllocMem(1, HEAP_ZERO_MEMORY);
-        return pmch;
     }
+
+    // clipboard data is no longer needed - release it on every path
+    GlobalUnlock(hmem);
+    CloseClipboard();
+
+    if (!bConverted) {
+        return pmch; // empty or failed conversion
+    }
+
     int lineCount = 0;
     int lenLastLine = 0;
 
@@ -793,9 +797,6 @@ char* EditGetClipboardText(HWND hwnd, bool bCheckEncoding, int* pLineCount, int*
             }
         }
     }
-
-    GlobalUnlock(hmem);
-    CloseClipboard();
 
     if (pLineCount) {
         *pLineCount = lineCount;
@@ -1134,8 +1135,10 @@ void EditIndentationStatistic(HWND hwnd, EditFileIOStatus* const status)
         int tabCount = 0;
         int blankCount = 0;
         int subSpcCnt = 0;
-        for (DocPos pos = lineStartPos; pos < lineIndentBeg; ++pos) {
-            char const ch = SciCall_GetCharAt(pos);
+        DocPos const indentLen = (lineIndentBeg - lineStartPos);
+        const char* const pIndent = (indentLen > 0) ? SciCall_GetRangePointer(lineStartPos, indentLen) : NULL;
+        for (DocPos i = 0; i < indentLen; ++i) {
+            char const ch = pIndent[i];
             switch (ch) {
             case 0x09: // tab
                 ++tabCount;
@@ -2713,10 +2716,19 @@ static DocPos _FindEnclosingOpenBrace(DocPos iStartPos)
     int depthBracket = 0; // []
     int depthBrace = 0;   // {}
 
+    // UTF-8: all bytes of a multi-byte sequence are >= 0x80, so a plain byte scan can't hit a brace.
+    // Other code pages (DBCS trail bytes may equal brace chars) must step by character.
+    const char* const pDoc = ((iStartPos > 0) && (SciCall_GetCodePage() == SC_CP_UTF8)) ? SciCall_GetRangePointer(0, iStartPos) : NULL;
+
     DocPos iPos = iStartPos;
     while (iPos > 0) {
-        iPos = SciCall_PositionBefore(iPos);
-        const char ch = SciCall_GetCharAt(iPos);
+        char ch = '\0';
+        if (pDoc) {
+            ch = pDoc[--iPos];
+        } else {
+            iPos = SciCall_PositionBefore(iPos);
+            ch = SciCall_GetCharAt(iPos);
+        }
         switch (ch) {
         case ')': ++depthParen;   break;
         case ']': ++depthBracket; break;
@@ -3058,7 +3070,8 @@ void EditModifyNumber(HWND hwnd, bool bIncrease)
 
     if (!bHandled) {
         char szExpr[4128];
-        StringCchPrintfA(szExpr, COUNTOF(szExpr), "(%s)%s", pTrimmed, bIncrease ? "+1" : "-1");
+        // the newline ends a trailing // comment in the selection
+        StringCchPrintfA(szExpr, COUNTOF(szExpr), "(%s\n)%s", pTrimmed, bIncrease ? "+1" : "-1");
 
         te_int_t iErr = 0;
         double const dResult = te_interp(szExpr, &iErr);
@@ -3699,6 +3712,7 @@ void EditCopyMultiSelection(HWND hwnd)
 }
 
 
+
 //=============================================================================
 //
 //  EditModifyLines()
@@ -3832,13 +3846,13 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
             L = (double)(iStartLine + 1ll);
             I = 0.0;
             N = I + 1.0;
-            DocLn vmin = d2ln(te_eval(pTinyExprPre));
+            DocLn vmin = d2lnc(te_eval(pTinyExprPre));
             DocLn vmax = vmin;
             for (DocLn ln = iStartLine + 2; ln <= iEndLine + 1; ++ln) {
                 L = (double)ln;
                 I += 1.0;
                 N += 1.0;
-                DocLn const vres = d2ln(te_eval(pTinyExprPre));
+                DocLn const vres = d2lnc(te_eval(pTinyExprPre));
                 if (vres < vmin)
                     vmin = vres;
                 else if (vres > vmax)
@@ -3873,13 +3887,13 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
             L = (double)(iStartLine + 1ll);
             I = 0.0;
             N = I + 1.0;
-            DocLn vmin = d2ln(te_eval(pTinyExprPost));
+            DocLn vmin = d2lnc(te_eval(pTinyExprPost));
             DocLn vmax = vmin;
             for (DocLn ln = iStartLine + 2; ln <= iEndLine + 1; ++ln) {
                 L = (double)ln;
                 I += 1.0;
                 N += 1.0;
-                DocLn const vres = d2ln(te_eval(pTinyExprPost));
+                DocLn const vres = d2lnc(te_eval(pTinyExprPost));
                 if (vres < vmin)
                     vmin = vres;
                 else if (vres > vmax)
@@ -3937,7 +3951,7 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
                     L = (double)iPrefixNum;
                     I = (double)count;
                     N = I + 1.0;
-                    iPrefixNum = d2ln(te_eval(pTinyExprPre));
+                    iPrefixNum = d2lnc(te_eval(pTinyExprPre));
                     StringCchPrintfA(mszTEMsgPre, COUNTOF(mszTEMsgPre), tchFormatPre, iPrefixNum);
                 }
                 StringCchCatA(mszInsert, COUNTOF(mszInsert), mszTEMsgPre);
@@ -3961,7 +3975,7 @@ void EditModifyLines(const PENCLOSESELDATA pEnclData) {
                     L = (double)iAppendNum;
                     I = (double)count;
                     N = I + 1.0;
-                    iAppendNum = d2ln(te_eval(pTinyExprPost));
+                    iAppendNum = d2lnc(te_eval(pTinyExprPost));
                     StringCchPrintfA(mszTEMsgPost, COUNTOF(mszTEMsgPost), tchFormatPost, iAppendNum);
                 }
                 StringCchCatA(mszInsert, COUNTOF(mszInsert), mszTEMsgPost);
@@ -4103,6 +4117,23 @@ void EditIndentBlock(HWND hwnd, int cmd, bool bFormatIndentation, bool bForceAll
 
 //=============================================================================
 //
+//  _LineEndWithoutTrailingBlanks() - end position of a line's content w/o trailing blanks
+//
+static DocPos _LineEndWithoutTrailingBlanks(const DocPos iStartPos, const DocPos iEndPos)
+{
+    DocPos n = (iEndPos - iStartPos);
+    if (n > 0) {
+        const char* const pLine = SciCall_GetRangePointer(iStartPos, n); // valid until next doc modification
+        while ((n > 0) && IsBlankCharA(pLine[n - 1])) {
+            --n;
+        }
+    }
+    return (iStartPos + n);
+}
+
+
+//=============================================================================
+//
 //  EditAlignText()
 //
 void EditAlignText(int nMode)
@@ -4140,13 +4171,7 @@ void EditAlignText(int nMode)
         if (iLineIndentPos != iLineEndPos) {
             int const iIndentCol = SciCall_GetLineIndentation(iLine);
             DocPos const iLineStartPos = SciCall_PositionFromLine(iLine);
-            DocPos iTail = iLineEndPos - 1;
-            char ch = SciCall_GetCharAt(iTail);
-            while (iTail >= iLineStartPos && (ch == ' ' || ch == '\t')) {
-                --iTail;
-                ch = SciCall_GetCharAt(iTail);
-                --iLineEndPos;
-            }
+            iLineEndPos = _LineEndWithoutTrailingBlanks(iLineStartPos, iLineEndPos);
             const DocPos iEndCol = SciCall_GetColumn(iLineEndPos);
 
             iMinIndent = min_i(iMinIndent, iIndentCol);
@@ -4953,16 +4978,10 @@ void EditStripLastCharacter(HWND hwnd, bool bIgnoreSelection, bool bTrailingBlan
             DocPos const iEndPos = SciCall_GetLineEndPosition(iLine);
 
             if (bTrailingBlanksOnly) {
-                if (iStartPos < iEndPos) {
-                    DocPos i = iEndPos;
-                    char ch = '\0';
-                    do {
-                        ch = SciCall_GetCharAt(--i);
-                    } while ((i >= iStartPos) && IsBlankCharA(ch));
-                    if ((++i) < iEndPos) {
-                        SciCall_SetTargetRange(i, iEndPos);
-                        Sci_ReplaceTargetTestChgHist(0, "");
-                    }
+                DocPos const iTrimPos = _LineEndWithoutTrailingBlanks(iStartPos, iEndPos);
+                if (iTrimPos < iEndPos) {
+                    SciCall_SetTargetRange(iTrimPos, iEndPos);
+                    Sci_ReplaceTargetTestChgHist(0, "");
                 }
             } else { // any char at line end
                 if (iStartPos < iEndPos) {
@@ -6038,6 +6057,10 @@ void EditSortLines(HWND hwnd, int iSortFlags)
     FNSTRCMP const pFctStrCmp = (iSortFlags & SORT_NOCASE) ? ((iSortFlags & SORT_LEXICOGRAPH) ? _wcsicmp_s : _wcsicoll_s) :
                                 ((iSortFlags & SORT_LEXICOGRAPH) ? _wcscmp_s  : _wcscoll_s);
 
+    // append at a write position: StringCchCat would re-scan the growing result for every line
+    char*  pResEnd = pmszResult;
+    size_t cchResLeft = (size_t)lenRes;
+
     bool bLastDup = false;
     for (DocLn i = 0; i < iLineCount; ++i) {
         if (pLines[i].pwszLine && ((iSortFlags & SORT_SHUFFLE) || StrIsNotEmpty(pLines[i].pwszLine))) {
@@ -6060,8 +6083,8 @@ void EditSortLines(HWND hwnd, int iSortFlags)
             }
             if (!bDropLine) {
                 WideCharToMultiByte(Encoding_SciCP, 0, pLines[i].pwszLine, -1, pmszBuf, (ichlMax + 1), NULL, NULL);
-                StringCchCatA(pmszResult, lenRes, pmszBuf);
-                StringCchCatA(pmszResult, lenRes, mszEOL);
+                StringCchCopyExA(pResEnd, cchResLeft, pmszBuf, &pResEnd, &cchResLeft, 0);
+                StringCchCopyExA(pResEnd, cchResLeft, mszEOL, &pResEnd, &cchResLeft, 0);
             }
         }
     }
@@ -6075,8 +6098,11 @@ void EditSortLines(HWND hwnd, int iSortFlags)
         iZeroLenLineCount = 1; // removes duplicate empty lines
     }
     if (!(iSortFlags & SORT_REMZEROLEN)) {
+        // trimming above shortened the result: continue at its new end
+        pResEnd = pmszResult + StringCchLenA(pmszResult, lenRes);
+        cchResLeft = (size_t)lenRes - (size_t)(pResEnd - pmszResult);
         for (DocLn i = 0; i < iZeroLenLineCount; ++i) {
-            StringCchCatA(pmszResult, lenRes, mszEOL);
+            StringCchCopyExA(pResEnd, cchResLeft, mszEOL, &pResEnd, &cchResLeft, 0);
         }
     }
 
@@ -6247,7 +6273,10 @@ void EditGetExcerpt(HWND hwnd, LPWSTR lpszExcerpt, DWORD cchExcerpt)
     struct Sci_TextRangeFull tr = { { 0, 0 }, NULL };
     /*if (iCurPos != iAnchorPos && !Sci_IsMultiOrRectangleSelection()) {*/
     tr.chrg.cpMin = (DocPosCR)SciCall_GetSelectionStart();
-    tr.chrg.cpMax = min_p((tr.chrg.cpMin + COUNTOF(tch)), SciCall_GetSelectionEnd());
+    // limit by characters (not bytes) so a multi-byte sequence is never cut in the middle
+    // (SCI_POSITIONRELATIVE yields 0 when the offset passes the document end)
+    DocPos const posLimit = SciCall_PositionRelative(tr.chrg.cpMin, COUNTOF(tch));
+    tr.chrg.cpMax = (posLimit > tr.chrg.cpMin) ? min_p(posLimit, SciCall_GetSelectionEnd()) : SciCall_GetSelectionEnd();
     /*}
     else {
       int iLine = SciCall_LineFromPosition(iCurPos);
@@ -6298,6 +6327,29 @@ void EditGetExcerpt(HWND hwnd, LPWSTR lpszExcerpt, DWORD cchExcerpt)
 
 //=============================================================================
 //
+//  _SyncBoolOpt() / _SyncFlagOpt() - take a dialog check-box state over into the F/R data
+//
+static void _SyncBoolOpt(HWND hwnd, int idButton, bool* const pbOpt, bool* const pbChanged)
+{
+    bool const bChecked = IsButtonChecked(hwnd, idButton);
+    if (bChecked != *pbOpt) {
+        *pbOpt = bChecked;
+        *pbChanged = true;
+    }
+}
+
+static void _SyncFlagOpt(HWND hwnd, int idButton, UINT* const puFlags, const UINT flag, bool* const pbChanged)
+{
+    bool const bChecked = IsButtonChecked(hwnd, idButton);
+    if (bChecked != ((*puFlags & flag) != 0)) {
+        *puFlags = bChecked ? (*puFlags | flag) : (*puFlags & ~flag);
+        *pbChanged = true;
+    }
+}
+
+
+//=============================================================================
+//
 //  _SetSearchFlags()
 //
 static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
@@ -6324,185 +6376,52 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
 
         StrgDestroy(hstr);
 
-        bool bIsFlagSet = ((lpefr->fuFlags & SCFIND_MATCHCASE) != 0);
-        if (IsButtonChecked(hwnd, IDC_FINDCASE)) {
-            if (!bIsFlagSet) {
-                lpefr->fuFlags |= SCFIND_MATCHCASE;
-                lpefr->bStateChanged = true;
-            }
-        } else {
-            if (bIsFlagSet) {
-                lpefr->fuFlags &= ~(SCFIND_MATCHCASE);
-                lpefr->bStateChanged = true;
-            }
-        }
-
-        bIsFlagSet = ((lpefr->fuFlags & SCFIND_WHOLEWORD) != 0);
-        if (IsButtonChecked(hwnd, IDC_FINDWORD)) {
-            if (!bIsFlagSet) {
-                lpefr->fuFlags |= SCFIND_WHOLEWORD;
-                lpefr->bStateChanged = true;
-            }
-        } else {
-            if (bIsFlagSet) {
-                lpefr->fuFlags &= ~(SCFIND_WHOLEWORD);
-                lpefr->bStateChanged = true;
-            }
-        }
+        _SyncFlagOpt(hwnd, IDC_FINDCASE, &lpefr->fuFlags, SCFIND_MATCHCASE, &lpefr->bStateChanged);
+        _SyncFlagOpt(hwnd, IDC_FINDWORD, &lpefr->fuFlags, SCFIND_WHOLEWORD, &lpefr->bStateChanged);
 
         if (IsDialogControlEnabled(hwnd, IDC_FINDTRANSFORMBS)) {
-            bIsFlagSet = lpefr->bTransformBS;
-            if (IsButtonChecked(hwnd, IDC_FINDTRANSFORMBS)) {
-                if (!bIsFlagSet) {
-                    lpefr->bTransformBS = true;
-                    lpefr->bStateChanged = true;
-                }
-            }
-            else {
-                if (bIsFlagSet) {
-                    lpefr->bTransformBS = false;
-                    lpefr->bStateChanged = true;
-                }
-            }
+            _SyncBoolOpt(hwnd, IDC_FINDTRANSFORMBS, &lpefr->bTransformBS, &lpefr->bStateChanged);
         }
 
-        bIsFlagSet = ((lpefr->fuFlags & SCFIND_WORDSTART) != 0);
-        if (IsButtonChecked(hwnd, IDC_FINDSTART)) {
-            if (!bIsFlagSet) {
-                lpefr->fuFlags |= SCFIND_WORDSTART;
-                lpefr->bStateChanged = true;
-            }
-        } else {
-            if (bIsFlagSet) {
-                lpefr->fuFlags &= ~(SCFIND_WORDSTART);
-                lpefr->bStateChanged = true;
-            }
-        }
+        _SyncFlagOpt(hwnd, IDC_FINDSTART, &lpefr->fuFlags, SCFIND_WORDSTART, &lpefr->bStateChanged);
 
-        bIsFlagSet = lpefr->bRegExprSearch;
-        if (IsButtonChecked(hwnd, IDC_FINDREGEXP)) {
-            if (!bIsFlagSet) {
-                lpefr->bRegExprSearch = true;
-                lpefr->fuFlags |= SCFIND_REGEXP;
-                lpefr->bStateChanged = true;
-            }
-        } else {
-            if (bIsFlagSet) {
-                lpefr->bRegExprSearch = false;
-                lpefr->fuFlags &= ~SCFIND_REGEXP;
-                lpefr->bStateChanged = true;
-            }
+        // regular expression option and its search flag change together
+        bool const bRegExChecked = IsButtonChecked(hwnd, IDC_FINDREGEXP);
+        if (bRegExChecked != lpefr->bRegExprSearch) {
+            lpefr->bRegExprSearch = bRegExChecked;
+            lpefr->fuFlags = bRegExChecked ? (lpefr->fuFlags | SCFIND_REGEXP) : (lpefr->fuFlags & ~(UINT)SCFIND_REGEXP);
+            lpefr->bStateChanged = true;
         }
 
         if (IsDialogControlEnabled(hwnd, IDC_DOT_MATCH_ALL)) {
-            bIsFlagSet = ((lpefr->fuFlags & SCFIND_DOT_MATCH_ALL) != 0);
-            if (IsButtonChecked(hwnd, IDC_DOT_MATCH_ALL)) {
-                if (!bIsFlagSet) {
-                    lpefr->fuFlags |= SCFIND_DOT_MATCH_ALL;
-                    lpefr->bStateChanged = true;
-                }
-            } else {
-                if (bIsFlagSet) {
-                    lpefr->fuFlags &= ~SCFIND_DOT_MATCH_ALL;
-                    lpefr->bStateChanged = true;
-                }
-            }
+            _SyncFlagOpt(hwnd, IDC_DOT_MATCH_ALL, &lpefr->fuFlags, SCFIND_DOT_MATCH_ALL, &lpefr->bStateChanged);
         }
 
         // force consistency
         if (lpefr->bRegExprSearch) {
             CheckDlgButton(hwnd, IDC_WILDCARDSEARCH, BST_UNCHECKED);
         }
-        bIsFlagSet = lpefr->bWildcardSearch;
-        if (IsButtonChecked(hwnd, IDC_WILDCARDSEARCH)) {
-            if (!bIsFlagSet) {
-                lpefr->bWildcardSearch = true;
-                lpefr->bStateChanged = true;
-            }
+        bool const bWildcardChecked = IsButtonChecked(hwnd, IDC_WILDCARDSEARCH);
+        if (bWildcardChecked != lpefr->bWildcardSearch) {
+            lpefr->bWildcardSearch = bWildcardChecked;
+            lpefr->bStateChanged = true;
+        }
+        if (bWildcardChecked) {
             if (!(lpefr->fuFlags & SCFIND_REGEXP)) {
                 lpefr->fuFlags |= SCFIND_REGEXP; // wild-card search based on RegExpr
                 lpefr->bStateChanged = true;
             }
-        }
-        else {
-            if (bIsFlagSet) {
-                lpefr->bWildcardSearch = false;
-                lpefr->bStateChanged = true;
-            }
-            if (lpefr->fuFlags & SCFIND_REGEXP) {
-                if (!(lpefr->bRegExprSearch)) {
-                    lpefr->fuFlags &= ~SCFIND_REGEXP;
-                    lpefr->bStateChanged = true;
-                }
-            }
+        } else if ((lpefr->fuFlags & SCFIND_REGEXP) && !lpefr->bRegExprSearch) {
+            lpefr->fuFlags &= ~(UINT)SCFIND_REGEXP;
+            lpefr->bStateChanged = true;
         }
 
-        bIsFlagSet = lpefr->bNoFindWrap;
-        if (IsButtonChecked(hwnd, IDC_NOWRAP)) {
-            if (!bIsFlagSet) {
-                lpefr->bNoFindWrap = true;
-                lpefr->bStateChanged = true;
-            }
-        } else {
-            if (bIsFlagSet) {
-                lpefr->bNoFindWrap = false;
-                lpefr->bStateChanged = true;
-            }
-        }
+        _SyncBoolOpt(hwnd, IDC_NOWRAP, &lpefr->bNoFindWrap, &lpefr->bStateChanged);
+        _SyncBoolOpt(hwnd, IDC_ALL_OCCURRENCES, &lpefr->bMarkOccurences, &lpefr->bStateChanged);
+        _SyncBoolOpt(hwnd, IDC_INST_INCR_SEARCH, &lpefr->bInstantIncrementalSearch, &lpefr->bStateChanged);
 
-        bIsFlagSet = lpefr->bMarkOccurences;
-        if (IsButtonChecked(hwnd, IDC_ALL_OCCURRENCES)) {
-            if (!bIsFlagSet) {
-                lpefr->bMarkOccurences = true;
-                lpefr->bStateChanged = true;
-            }
-        } else {
-            if (bIsFlagSet) {
-                lpefr->bMarkOccurences = false;
-                lpefr->bStateChanged = true;
-            }
-        }
-
-        bIsFlagSet = lpefr->bInstantIncrementalSearch;
-        if (IsButtonChecked(hwnd, IDC_INST_INCR_SEARCH)) {
-            if (!bIsFlagSet) {
-                lpefr->bInstantIncrementalSearch = true;
-                lpefr->bStateChanged = true;
-            }
-        } else {
-            if (bIsFlagSet) {
-                lpefr->bInstantIncrementalSearch = false;
-                lpefr->bStateChanged = true;
-            }
-        }
-
-        if (bIsFindDlg) {
-            bIsFlagSet = lpefr->bFindClose;
-            if (IsButtonChecked(hwnd, IDC_FINDCLOSE)) {
-                if (!bIsFlagSet) {
-                    lpefr->bFindClose = true;
-                    lpefr->bStateChanged = true;
-                }
-            } else {
-                if (bIsFlagSet) {
-                    lpefr->bFindClose = false;
-                    lpefr->bStateChanged = true;
-                }
-            }
-        } else { // replace close
-            bIsFlagSet = lpefr->bReplaceClose;
-            if (IsButtonChecked(hwnd, IDC_FINDCLOSE)) {
-                if (!bIsFlagSet) {
-                    lpefr->bReplaceClose = true;
-                    lpefr->bStateChanged = true;
-                }
-            } else {
-                if (bIsFlagSet) {
-                    lpefr->bReplaceClose = false;
-                    lpefr->bStateChanged = true;
-                }
-            }
-        }
+        // close dialog after find resp. replace
+        _SyncBoolOpt(hwnd, IDC_FINDCLOSE, bIsFindDlg ? &lpefr->bFindClose : &lpefr->bReplaceClose, &lpefr->bStateChanged);
     }
 }
 
@@ -6671,6 +6590,10 @@ static DocPos  _FindInTarget(LPCWSTR wchFind, int sFlags,
 {
     static char chFind[8192] = { '\0' }; // max find buffer
 
+    // mark-all and replace-all call this once per match with the same pattern: convert it only when it changed
+    static WCHAR s_wchLastFind[COUNTOF(chFind)] = { L'\0' };
+    static UINT  s_cpLastFind = 0; // code page of the pattern in chFind, 0 if chFind is not backed by s_wchLastFind
+
     DocPos iPos = NOT_FOUND;
 
     if (StrIsEmpty(wchFind)) {
@@ -6685,7 +6608,14 @@ static DocPos  _FindInTarget(LPCWSTR wchFind, int sFlags,
     DocPos const stop  = *end;
     bool const bFindNext = (start <= stop); // else find previous
 
-    DocPos const len = (DocPos)(WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, chFind, COUNTOF(chFind), NULL, NULL) - 1);
+    DocPos len = 0;
+    if ((s_cpLastFind == (UINT)Encoding_SciCP) && (wcscmp(wchFind, s_wchLastFind) == 0)) { // exact (ordinal) comparison
+        len = (DocPos)strlen(chFind);
+    } else {
+        len = (DocPos)(WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, chFind, COUNTOF(chFind), NULL, NULL) - 1);
+        bool const bRemember = (len >= 0) && SUCCEEDED(StringCchCopyW(s_wchLastFind, COUNTOF(s_wchLastFind), wchFind));
+        s_cpLastFind = bRemember ? (UINT)Encoding_SciCP : 0;
+    }
 
     // Clear any lingering regex-warning status so the post-call state reflects
     // this search only. Without this, a stale SC_STATUS_WARN_REGEX from an
@@ -8630,6 +8560,10 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
         DocPos end = rangeEnd;
         DocPos iPos = _FindInTarget(wchText, sFlags, &start, &end, false, FRMOD_NORM);
 
+        if (!bMultiSel) {
+            SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE); // once: doc-change notifications are disabled (LimitNotifyEvents)
+        }
+
         DocPosU count = 0;
         DocPosU found = 0;
         while ((iPos >= 0LL) && (start <= rangeEnd)) {
@@ -8642,7 +8576,6 @@ void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd
                 }
             } else {
                 // mark this match if not done before
-                SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE);
                 SciCall_IndicatorFillRange(iPos, (end - start));
                 SciCall_MarkerAdd(SciCall_LineFromPosition(iPos), MARKER_NP3_OCCURRENCE);
             }
@@ -8756,14 +8689,16 @@ bool EditAutoCompleteWord(HWND hwnd, bool autoInsert)
         return true;
     }
 
-    DocPos iPos = iWordStartPos;
+    // multi-byte sequences consist of bytes >= 0x80, so a byte-wise digit test is sufficient
     bool bWordAllNumbers = true;
-    while ((iPos < iCurrentPos) && bWordAllNumbers && (iPos <= iDocEndPos)) {
-        char const ch = SciCall_GetCharAt(iPos);
-        if (ch < '0' || ch > '9') {
-            bWordAllNumbers = false;
+    DocPos const iWordLen = (iCurrentPos - iWordStartPos);
+    if (iWordLen > 0) {
+        const char* const pWord = SciCall_GetRangePointer(iWordStartPos, iWordLen);
+        for (DocPos i = 0; (i < iWordLen) && bWordAllNumbers; ++i) {
+            if (pWord[i] < '0' || pWord[i] > '9') {
+                bWordAllNumbers = false;
+            }
         }
-        iPos = SciCall_PositionAfter(iPos);
     }
     if (!autoInsert && bWordAllNumbers) {
         EditReducedWordSeparatorSet(hwnd, Settings.AccelWordNavigation);
@@ -9303,10 +9238,10 @@ CASE_WM_CTLCOLOR_SET:
             if (SendDlgItemMessage(hwnd, IDC_LINENUM, WM_GETTEXTLENGTH, 0, 0) > 0) {
                 char chLineNumber[96];
                 GetDlgItemTextA(hwnd, IDC_LINENUM, chLineNumber, COUNTOF(chLineNumber));
-                iNewLine = (DocLn)te_interp(chLineNumber, &iExprError);
+                iNewLine = d2lnc(te_interp(chLineNumber, &iExprError));
                 if (iExprError > 1) {
                     chLineNumber[iExprError-1] = '\0';
-                    iNewLine = (DocLn)te_interp(chLineNumber, &iExprError);
+                    iNewLine = d2lnc(te_interp(chLineNumber, &iExprError));
                 }
                 bLnTranslated = (iExprError == 0);
             }
@@ -9316,10 +9251,10 @@ CASE_WM_CTLCOLOR_SET:
             if (SendDlgItemMessage(hwnd, IDC_COLNUM, WM_GETTEXTLENGTH, 0, 0) > 0) {
                 char chColumnNumber[96];
                 GetDlgItemTextA(hwnd, IDC_COLNUM, chColumnNumber, COUNTOF(chColumnNumber));
-                iNewCol = (DocPos)te_interp(chColumnNumber, &iExprError);
+                iNewCol = d2lnc(te_interp(chColumnNumber, &iExprError));
                 if (iExprError > 1) {
                     chColumnNumber[iExprError-1] = '\0';
-                    iNewLine = (DocLn)te_interp(chColumnNumber, &iExprError);
+                    iNewCol = d2lnc(te_interp(chColumnNumber, &iExprError));
                 }
                 bColTranslated = (iExprError == 0);
             }

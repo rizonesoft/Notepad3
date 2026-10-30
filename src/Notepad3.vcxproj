@@ -995,7 +995,9 @@
     <ClCompile Include="StyleLexers\styleLexVerilog.c" />
     <ClCompile Include="timsort\timsort.c" />
     <ClCompile Include="timsort\timsort_r.c" />
-    <ClCompile Include="tinyexprcpp\tinyexpr.cpp" />
+    <ClCompile Include="tinyexprcpp\tinyexpr.cpp">
+      <DisableSpecificWarnings>4702;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
     <ClCompile Include="tinyexprcpp\tinyexpr_cif.cpp" />
     <ClCompile Include="uchardet\uchardet\src\CharDistribution.cpp" />
     <ClCompile Include="uchardet\uchardet\src\JpCntx.cpp" />
