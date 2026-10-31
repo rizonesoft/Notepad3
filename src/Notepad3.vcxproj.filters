@@ -87,6 +87,9 @@
     <ClCompile Include="StyleLexers\styleLexAPDL.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>
+    <ClCompile Include="StyleLexers\styleLexNASTRAN.c">
+      <Filter>Source Files\StyleLexers</Filter>
+    </ClCompile>
     <ClCompile Include="StyleLexers\styleLexASM.c">
       <Filter>Source Files\StyleLexers</Filter>
     </ClCompile>

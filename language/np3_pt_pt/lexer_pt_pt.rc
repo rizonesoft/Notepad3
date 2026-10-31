@@ -140,6 +140,7 @@ BEGIN
     IDS_LEX_SYSVERILOG      "SystemVerilog HDVL"
     IDS_LEX_ABAQUS          "ABAQUS"
     IDS_LEX_APDL            "ANSYS APDL"
+    IDS_LEX_NASTRAN         "NASTRAN"
 END
 
 STRINGTABLE

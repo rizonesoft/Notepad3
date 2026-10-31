@@ -75,3 +75,7 @@ Style-label resources are part of lexer work; general locale resource invariants
 - Visual checks and expected fold headers are in
   `test/test_files/StyleLexers/styleLexAPDL/README.md`. No ANSYS installation or
   license is needed to edit, highlight, or fold APDL source.
+
+## NASTRAN
+
+See [NASTRAN BDF/NAS](nastran.md) for field widths, compact numbers, continuation and section folding, incremental state, and fixtures.

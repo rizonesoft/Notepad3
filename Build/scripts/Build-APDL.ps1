@@ -1,4 +1,4 @@
-# Build and package the APDL-enabled Windows x64 editor with the installed MSVC toolset.
+# Build and package the APDL/NASTRAN-enabled Windows x64 editor with the installed MSVC toolset.
 param([int]$BuildNumber = 1)
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -57,7 +57,7 @@ try {
 
     $dist = Join-Path $repo 'Bin/APDL-artifacts'
     New-Item $dist -ItemType Directory -Force | Out-Null
-    $stage = Join-Path $dist "Notepad3-APDL-$version-x64"
+    $stage = Join-Path $dist "Notepad3-APDL-NASTRAN-$version-x64"
     if (Test-Path $stage) { throw "Package staging directory already exists: $stage" }
     New-Item $stage -ItemType Directory | Out-Null
     Get-ChildItem $outputs[0].FullName -Recurse -File |
@@ -72,16 +72,17 @@ try {
     Copy-Item Build/Docs/License.txt $stage
     Copy-Item Build/Themes $stage -Recurse
     Copy-Item test/test_files/StyleLexers/styleLexAPDL (Join-Path $stage 'APDL-examples') -Recurse
+    Copy-Item test/test_files/StyleLexers/styleLexNASTRAN (Join-Path $stage 'NASTRAN-examples') -Recurse
     Get-ChildItem lexilla/License.txt, scintilla/License.txt | ForEach-Object {
         Copy-Item $_.FullName (Join-Path $stage ($_.Directory.Name + '-License.txt'))
     }
     $metadata = [ordered]@{
         version = $version; architecture = 'x64'; commit = $commit
         built_at_utc = [DateTime]::UtcNow.ToString('o'); toolset_output = $outputs[0].Name
-        signed = $false
+        signed = $false; languages = @('APDL', 'NASTRAN')
     }
     $metadata | ConvertTo-Json | Set-Content (Join-Path $stage 'build-info.json') -Encoding utf8
-    $zip = Join-Path $dist "Notepad3-APDL-$version-x64.zip"
+    $zip = Join-Path $dist "Notepad3-APDL-NASTRAN-$version-x64.zip"
     Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $zip
     Copy-Item $exe.FullName (Join-Path $dist 'Notepad3.exe')
     $metadata | ConvertTo-Json | Set-Content (Join-Path $dist 'build-info.json') -Encoding utf8

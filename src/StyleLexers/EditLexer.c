@@ -67,6 +67,7 @@ void Lexer_GetStreamCommentStrgs(LPWSTR beg_out, LPWSTR end_out, size_t maxlen)
             assert("SciCall_GetLexer() UNDEFINED!" && 0);
         // ------------------
         case SCLEX_NULL:
+        case SCLEX_NASTRAN:
         case SCLEX_APDL:
         case SCLEX_ASM:
         case SCLEX_BASH:
@@ -153,6 +154,8 @@ bool Lexer_GetLineCommentStrg(LPWSTR pre_out, size_t maxlen)
         case SCLEX_LATEX:
         case SCLEX_MATLAB:
             SET_COMMENT_STRG(L"%", true);
+        case SCLEX_NASTRAN:
+            SET_COMMENT_STRG(L"$", true);
         case SCLEX_APDL:
         case SCLEX_FORTRAN:
         case SCLEX_F77:

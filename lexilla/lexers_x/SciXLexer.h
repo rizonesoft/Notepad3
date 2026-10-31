@@ -9,6 +9,7 @@
 #define SCLEX_SYSVERILOG  203
 #define SCLEX_JSON5       204
 #define SCLEX_AHK2        205   /* AutoHotkey v2 — shares SCE_AHK_* style ids */
+#define SCLEX_NASTRAN     206
 
 // -----------------------------------------------------------------------------
 // !!!!! ADD  Lexer Linkage in:  scintilla\src\Catalogue.cxx  !!!!!
@@ -98,3 +99,14 @@
 #define SCE_JSON5_LDKEYWORD 12
 #define SCE_JSON5_ERROR 13
 
+
+#define SCE_NASTRAN_DEFAULT 0
+#define SCE_NASTRAN_COMMENT 1
+#define SCE_NASTRAN_CARD 2
+#define SCE_NASTRAN_SECTION 3
+#define SCE_NASTRAN_KEYWORD 4
+#define SCE_NASTRAN_NUMBER 5
+#define SCE_NASTRAN_STRING 6
+#define SCE_NASTRAN_OPERATOR 7
+#define SCE_NASTRAN_CONTINUATION 8
+#define SCE_NASTRAN_IDENTIFIER 9

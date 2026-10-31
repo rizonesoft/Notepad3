@@ -110,6 +110,7 @@
     <ClCompile Include="lexers_x\LexAHK2.cxx" />
     <ClCompile Include="lexers_x\LexCSV.cxx" />
     <ClCompile Include="lexers_x\LexAPDL.cxx" />
+    <ClCompile Include="lexers_x\LexNASTRAN.cxx" />
     <ClCompile Include="lexers_x\LexerUtils.cxx" />
     <ClCompile Include="lexers\LexJSON.cxx" />
     <ClCompile Include="lexers_x\LexJSON5.cxx" />

@@ -1,4 +1,4 @@
-name: APDL Windows x64
+name: APDL and NASTRAN Windows x64
 
 on:
   push:
@@ -27,7 +27,7 @@ jobs:
       - name: Upload executable and portable package
         uses: actions/upload-artifact@v4
         with:
-          name: Notepad3-APDL-x64
+          name: Notepad3-APDL-NASTRAN-x64
           if-no-files-found: error
           path: |
             Bin/APDL-artifacts/*.zip

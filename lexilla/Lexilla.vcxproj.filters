@@ -209,6 +209,9 @@
     <ClCompile Include="lexers_x\LexAPDL.cxx">
       <Filter>lexers_x</Filter>
     </ClCompile>
+    <ClCompile Include="lexers_x\LexNASTRAN.cxx">
+      <Filter>lexers_x</Filter>
+    </ClCompile>
     <ClCompile Include="lexers_x\LexKotlin.cxx">
       <Filter>lexers_x</Filter>
     </ClCompile>

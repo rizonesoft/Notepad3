@@ -1046,6 +1046,7 @@
 #define IDS_LEX_SYSVERILOG              63058
 #define IDS_LEX_ABAQUS                  63059
 #define IDS_LEX_APDL                    63061
+#define IDS_LEX_NASTRAN                 63062
 
 
 #define IDS_LEX_STD_STYLE               63100
