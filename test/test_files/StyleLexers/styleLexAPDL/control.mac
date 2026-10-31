@@ -1,0 +1,33 @@
+! APDL highlighting and nested folds. Mixed case is intentional.
+/PREP7
+/COM, *DO,FAKE,1,99 $ *ENDIF -- all of this is a comment, including 'quotes
+radius = 2.5e-3
+height = 1.2D+2
+name = 'a!b$c,don''t' ! Quoted punctuation does not start commands.
+message = "*DO is text, not a fold"
+value = SQRT(radius**2 + ABS(-height))
+N,1,0,0,0 $ N,2,1,0,0
+*CREATE,build_part,mac
+  *Do,i,1,3
+    *IF,i,EQ,1,THEN
+      N,i,i,0,0
+    *ELSEIF,i,EQ,2,THEN
+      *DOWHILE,radius
+        radius = radius - .001
+      *ENDDO
+    *ELSE
+      N,i,0,i,0
+    *ENDIF
+  *Enddo
+*END
+! These single-line forms must not open folds.
+*IF,radius,LT,0,STOP
+*IF,radius,GT,0,:target
+:target
+*DO,j,1,2 $ *ENDDO ! Opening and closing on one line: no fold header.
+*VWRITE,radius,height
+('radius=',E16.8,' height=',E16.8)
+*VWRITE,radius
+%G ! This is a format record, not an APDL comment.
+/COM, Quotes need not match here: ' " $ *DO
+FINISH

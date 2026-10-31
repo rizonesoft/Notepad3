@@ -1736,6 +1736,8 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(MarkLongLines, (Globals.iCfgVersionRead < CFG_VER_0002));
     Defaults.MarkLongLines = false; // new default
     GET_INT_VALUE_FROM_INISECTION(LongLineMode, EDGE_LINE, EDGE_LINE, EDGE_MULTILINE);
+    GET_INT_VALUE_FROM_INISECTION(NastranColumnGuides, NGM_SMALL, NGM_NONE, NGM_LARGE);
+    Globals.iLastNastranColumnGuides = (Settings.NastranColumnGuides == NGM_LARGE) ? NGM_LARGE : NGM_SMALL;
     GET_INT_VALUE_FROM_INISECTION(LongLinesLimit, 80, 0, LONG_LINES_MARKER_LIMIT);
     Globals.iWrapCol = Settings.LongLinesLimit;
 
@@ -2238,6 +2240,7 @@ static bool _SaveSettings(bool bForceSaveSettings)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MultipleSelection);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, MarkLongLines);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int,  LongLineMode);
+    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int,  NastranColumnGuides);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Int,  LongLinesLimit);
     if (StringCchCompareX(Settings.MultiEdgeLines, Defaults.MultiEdgeLines) != 0) {
         if (StrIsNotEmpty(Settings.MultiEdgeLines)) {

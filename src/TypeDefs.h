@@ -190,6 +190,8 @@ typedef enum DEFAULT_FONT_STYLES { DFS_GLOBAL = 0,
 
 // ----------------------------------------------------------------------------
 
+typedef enum NASTRAN_GUIDE_MODE { NGM_NONE = 0, NGM_SMALL = 1, NGM_LARGE = 2 } NASTRAN_GUIDE_MODE;
+
 // keep backward compatible with older settings-file versions
 typedef enum CFG_VERSION {
 
@@ -561,6 +563,8 @@ typedef struct GLOBALS_T {
     LPMRULIST pMRUreplace;
     FILEVARS  fvCurFile;
     int       iWrapCol;
+    int       iLastNastranColumnGuides;
+    bool      bNastranGuideFontCompatible;
     unsigned  uAvailLngCount;
     bool      CmdLnFlag_PosParam;
     int       CmdLnFlag_AlwaysOnTop;
@@ -665,6 +669,7 @@ typedef struct SETTINGS_T {
     bool MarkLongLines;
     int  LongLinesLimit;
     int  LongLineMode;
+    int  NastranColumnGuides;
     bool ShowBookmarkMargin;
     bool ShowLineNumbers;
     bool ShowCodeFolding;

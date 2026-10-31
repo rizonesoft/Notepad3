@@ -1,0 +1,132 @@
+! Programmer's Reference 2026 R1, section 3.2: CDB block boundaries.
+/BLOCK,FILE,START
+/BLOCK,LOAD,START
+BFBLOCK,2,TEMP,2,2,0
+(i9,6(pg16.9))
+        1     -1.00000000
+        2      300.000000
+BF,end,LOC,       -1,
+! CHECK: the following command is outside this data block.
+/COM, after BFBLOCK
+BFEBLOCK,3,TEMP,2,2,1
+(2i9,a)
+        1        1         %BODYFORCE%
+        2        1         %BODYFORCE%
+BFE,end,LOC,       -1,
+! CHECK: the following command is outside this data block.
+/COM, after BFEBLOCK
+SFEBLOCK,4,CONV,2,2,0
+(i9,i4,i4,6(pg16.9))
+        1   1   1 -1.0000000 10.0000000
+        2   1   2 300.000000  0.0000000
+SFE,end,LOC,       -1,
+! CHECK: the following command is outside this data block.
+/COM, after SFEBLOCK
+DBLOCK,2
+(i9,a6,2a)
+        1  UY   %REAL%   %IMAG%
+        2  UY   -1.0000000 0.0
+       -1
+! CHECK: the following command is outside this data block.
+/COM, after DBLOCK
+FBLOCK,2
+(i9,a6,2a)
+        1  FY   %REAL%   %IMAG%
+        2  FY   -1.0000000 0.0
+       -1
+! CHECK: the following command is outside this data block.
+/COM, after FBLOCK
+ETBLOCK,2,2
+(2i9,19a9)
+        1      285        0        0
+        2      170        0        1
+       -1        0        0
+! CHECK: the following command is outside this data block.
+/COM, after ETBLOCK
+NSMBLOCK,1,2,1,2,5
+(i10,8(pg20.9))
+         1 250.0 0.0 0.0 0.0 0.0625 0.0 0.0000001
+         2 500.0 0.0 0.0 0.0 0.1250 0.0 0.0000001
+        -1
+! CHECK: the following command is outside this data block.
+/COM, after NSMBLOCK
+/BLOCK,LOAD,END
+/BLOCK,NODE,START
+NBLOCK,6,SOLID,1,1
+(3i9,6e21.13e3)
+        1        0        0 -1.0 0.0 0.0
+N,UNBL,LOC,       -1,
+! CHECK: the following command is outside this data block.
+/COM, after NBLOCK
+/BLOCK,NODE,END
+/BLOCK,ELEM,START
+/BLOCK,ELST,1,1
+EBLOCK,3,COMPACT,1,1
+(3i9)
+        1        1        2
+       -1
+! CHECK: the following command is outside this data block.
+/COM, after EBLOCK
+/BLOCK,ELEN
+/BLOCK,ELEM,END
+/BLOCK,MAT,START
+RLBLOCK,2,2,15,7
+(2i8,6g16.9)
+(7g16.9)
+       1      15-1.000000000E+00 2.000000000E+00 3.000000000E+00 4.000000000E+00 5.000000000E+00 6.000000000E+00
+ 7.000000000E+00 8.000000000E+00 9.000000000E+00 1.000000000E+01 1.100000000E+01 1.200000000E+01 1.300000000E+01
+ 1.400000000E+01 1.500000000E+01
+       2       2-1.000000000E+00 0.000000000E+00
+! CHECK: the following command is outside this data block.
+/COM, after RLBLOCK
+SECBLOCK,2
+0.1,1,0,3
+0.2,2,-45,3
+! CHECK: the following command is outside this data block.
+/COM, after SECBLOCK
+SECBLOCK
+3 1
+1 2 3 1 2 3 1 2 3 1
+0 -1.0 0.0
+0 0.0 0.0
+0 1.0 0.0
+! CHECK: the following command is outside this data block.
+/COM, after SECBLOCK
+SECBLOCK,2,1,4
+1 1 1 0 .1 0 0 .5 1 -1.0 0.0 0.0
+-1 -1.0 0.0 1.0
+2 2 1 0 .1 0 0 .5 2 0.0 1.0 0.0
+-2 0.0 -1.0 1.0
+! CHECK: the following command is outside this data block.
+/COM, after SECBLOCK
+/BLOCK,MAT,END
+/BLOCK,CONT,START
+/BLOCK,CONT,END
+/BLOCK,INIS,START
+*PREAD,coefficients,4
+(4g20.13)
+-1.0 2.0 3.0 4.0
+END PREAD
+! CHECK: the following command is outside this data block.
+/COM, after *PREAD
+/BLOCK,INIS,END
+CMBLOCK,FACES,EFAC,2,,,2
+(1a240)
+NBLOCK
+*DO
+(8i10)
+         0         0
+! CHECK: the following command is outside this data block.
+/COM, after CMBLOCK
+CMBLOCK,FACES2,EFACE,2,,,2
+(8i10)
+         1        -3
+(8i10)
+         1        -2
+! CHECK: the following command is outside this data block.
+/COM, after CMBLOCK
+/BLOCK,FILE,END
+! A name ending in BLOCK alone is not a fold opener.
+NOTABLOCK,1
+bfblock = 1
+FINISH
