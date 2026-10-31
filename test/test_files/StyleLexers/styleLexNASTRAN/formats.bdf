@@ -1,0 +1,39 @@
+$ Full deck: executive, case control, subcases, and bulk data.
+SOL 101
+CEND
+TITLE = NASTRAN highlighting and folding
+SPC = 10
+SUBCASE 1
+  LABEL = Gravity
+  LOAD = 100
+  DISPLACEMENT(PLOT) = ALL
+SUBCASE 2
+  LABEL = Thermal
+  TEMPERATURE(LOAD) = 200
+BEGIN BULK
+$ Small fields: 8 characters, including blank fields and compact exponents.
+GRID           1          1.25-3  -.21+5      0.
+GRID           2            1.+6   1.D-3 -2.5E+2
+MAT1           1  2.1E+5              .3
+RBE2         100       1  123456       2       3       4       5       6+RBE    
+$ A comment between the card and its continuation belongs to this fold.
++RBE           7       8       9      10
+PSHELL        10       1      .1
+$ Large fields: 16 characters, plus star continuation identifiers.
+GRID*                  3                1.234567890123-5-2.00000000000+2*G1     
+*G1     3.14159265358979                               0                
+$ Free fields and explicit/implicit continuations.
+GRID,4,,1.0,-2.0,3.0 $ inline comment
+SET1,20,1,2,3,4,5,6,7,+SET
++SET,8,9,10
+SET1,21,11,12,13,14,15,16,17,
+,18,19,20
+GRID*,5,,1.23456789012345,2.0,*G2
+*G2,3.0,,
+INCLUDE 'models/path,$literal/part.bdf'
+INCLUDE 'models/very_long/
+        $part_is_a_literal_path/
+        part.bdf' $ comment after the closing quote
+PARAM,POST,-1
+ENDDATA
+$ SOL 103 and BEGIN BULK here are comments, not section headers.

@@ -985,6 +985,8 @@
     <ClCompile Include="PathLib.c" />
     <ClCompile Include="StyleLexers\EditLexer.c" />
     <ClCompile Include="StyleLexers\styleLexAbaqus.c" />
+    <ClCompile Include="StyleLexers\styleLexAPDL.c" />
+    <ClCompile Include="StyleLexers\styleLexNASTRAN.c" />
     <ClCompile Include="StyleLexers\styleLexAHK.c" />
     <ClCompile Include="StyleLexers\styleLexAHK2.c" />
     <ClCompile Include="StyleLexers\styleLexDart.c" />

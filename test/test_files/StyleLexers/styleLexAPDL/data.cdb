@@ -1,0 +1,29 @@
+/PREP7
+! Each block must end before the next command.
+NBLOCK,6,SOLID,2,2
+(3i8,6e20.13)
+       1       0       0  0.000000000000E+00 -1.000000000000E+00  0.000000000000E+00
+       2       0       0  1.000000000000E+00  0.000000000000E+00  0.000000000000E+00
+N,R5.3,LOC,       -1,
+N,3,1,1,0
+EBLOCK,19,SOLID,1,1
+(19i8)
+       1       1       1       1       0       0       0       0       2       0       1       1       2
+      -1
+ESEL,ALL
+CMBLOCK,PART,NODE,4
+(8i8)
+       1      -5      12     -20
+CMSEL,S,PART
+CMBLOCK,ADJACENT,NODE,2
+(8i8)
+1234567812345679
+CMSEL,ALL
+! Bare NBLOCK terminator and blocks nested in a control loop.
+*DO,i,1,2
+  NBLOCK,6,SOLID,1,1
+(3i8,6e20.13)
+       1       0       0 -1.000000000000E+00  0.000000000000E+00  0.000000000000E+00
+      -1
+*ENDDO
+FINISH

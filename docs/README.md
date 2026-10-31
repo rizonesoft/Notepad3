@@ -26,6 +26,7 @@ This directory holds repository-specific guidance for contributors and coding ag
 | Any Win32 file/path call on `HPATHL` | [PathLib](domain/pathlib.md) |
 | Encoding selection or UTF-16/32 handling | [Encoding detection](domain/encoding-detection.md), then [diagnostics and tests](domain/encoding-diagnostics-and-tests.md) |
 | Lexers, styles, themes | [Lexer development](domain/lexer-development.md) |
+| NASTRAN BDF/NAS formats and folding | [NASTRAN](domain/nastran.md) |
 | UI strings, locale resources | [Localization](domain/localization.md) |
 | Search/replace, PCRE2, URL hotspots | [Regular expressions](domain/regular-expressions.md) |
 | INI settings, persistence | [Configuration and INI](domain/configuration-and-ini.md) |
@@ -41,6 +42,7 @@ This directory holds repository-specific guidance for contributors and coding ag
 | Domain: configuration | Portable INI lifecycle, persistence rules, and save/load behavior. | [Configuration and INI](domain/configuration-and-ini.md) |
 | Domain: localization | Locale resource invariants, encoding/line-ending requirements, and adding UI strings. | [Localization](domain/localization.md) |
 | Domain: lexer development | Lexer registration, property/comment/theme/localization touchpoints, and visual fixtures. | [Lexer development](domain/lexer-development.md) |
+| Domain: NASTRAN | Fixed/free fields, continuation and section folding, and display-only constraints. | [NASTRAN](domain/nastran.md) |
 | Domain: encoding | Detection precedence, UTF validation and heuristics, UCHARDET sampling, and UTF-32 load conversion. | [Encoding detection](domain/encoding-detection.md) |
 | Domain: encoding diagnostics | Developer title diagnostics, abbreviations, and the native regression harness. | [Encoding diagnostics and tests](domain/encoding-diagnostics-and-tests.md) |
 | Domain: regular expressions | PCRE2 integration, search/replacement syntax, regex translations, and URL hotspots. | [Regular expressions](domain/regular-expressions.md) |

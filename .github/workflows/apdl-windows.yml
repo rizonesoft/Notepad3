@@ -1,0 +1,51 @@
+name: APDL and NASTRAN Windows x64
+
+on:
+  push:
+    branches: ['codex/apdl-*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: microsoft/setup-msbuild@v2
+      - uses: NuGet/setup-nuget@v2
+      - name: Build Windows x64 Release and package
+        shell: pwsh
+        run: ./Build/scripts/Build-APDL.ps1 -BuildNumber ${{ github.run_number }}
+      - name: Validate documentation
+        shell: pwsh
+        run: ./Build/scripts/Test-Docs.ps1
+      - name: Check NASTRAN column guides and Chinese language pack
+        timeout-minutes: 3
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem Bin -Filter Notepad3.exe -Recurse | Where-Object { $_.Directory.Name -like 'Release_x64_*' } | Select-Object -First 1
+          $fontRoot = Join-Path $env:RUNNER_TEMP 'sarasa-guide-fonts'
+          New-Item $fontRoot -ItemType Directory -Force | Out-Null
+          $archive = Join-Path $fontRoot 'SarasaTermSC.7z'
+          Invoke-WebRequest 'https://github.com/be5invis/Sarasa-Gothic/releases/download/v1.0.43/SarasaTermSC-TTF-1.0.43.7z' -OutFile $archive
+          if ((Get-FileHash $archive -Algorithm SHA256).Hash -ne 'C915EF316F0194A3F25185E0370B226E073ABE68B877C6BD678CE3071E215567') { throw 'Test font checksum mismatch.' }
+          7z e $archive SarasaTermSC-Regular.ttf SarasaTermSC-Bold.ttf "-o$fontRoot" -y | Out-Null
+          if ($LASTEXITCODE) { throw 'Test font extraction failed.' }
+          $fonts = @((Join-Path $fontRoot 'SarasaTermSC-Regular.ttf'), (Join-Path $fontRoot 'SarasaTermSC-Bold.ttf'))
+          ./test/TestNastranColumnGuides.ps1 -ExePath $exe.FullName -FontFiles $fonts
+      - name: Upload executable and portable package
+        uses: actions/upload-artifact@v4
+        with:
+          name: Notepad3-APDL-NASTRAN-x64
+          if-no-files-found: error
+          path: |
+            Bin/APDL-artifacts/*.zip
+            Bin/APDL-artifacts/Notepad3.exe
+            Bin/APDL-artifacts/build-info.json
+            Bin/APDL-artifacts/SHA256SUMS.txt
+            Bin/APDL-artifacts/README-APDL-NASTRAN.txt

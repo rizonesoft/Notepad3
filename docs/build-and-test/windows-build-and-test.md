@@ -9,6 +9,24 @@
 - Default configuration is Release. CI is in `.github\workflows\build.yml` (`windows-2025-vs2026`, Release × all four platforms).
 - Verify builds using the default target on the full solution. `/t:Notepad3` fails with MSB4057 because not all subprojects define that target. Check that `Bin\Release_x64_v145\Notepad3.exe` has a fresh timestamp.
 
+### APDL/NASTRAN x64 artifact build
+
+`pwsh Build/scripts/Build-APDL.ps1 -BuildNumber 1` builds the full solution in
+Release/x64 using the installed Visual Studio toolset. It requires Windows,
+PowerShell 7, NuGet on PATH, and Visual Studio C++ tools. It generates version
+headers/manifests from the checked-in templates, verifies the executable's fresh
+version and AMD64 PE header, and packages the binary, language DLLs, themes,
+licenses, and APDL/NASTRAN fixtures under `Bin/APDL-artifacts` with SHA-256 hashes and
+source-commit metadata. These checks do not replace Windows GUI acceptance tests.
+
+`.github/workflows/apdl-windows.yml` runs this script on `windows-latest` for
+`codex/apdl-*` branch pushes or manual dispatch, runs
+`test/TestNastranColumnGuides.ps1` against the built Windows UI (including zh-CN
+resource loading), then uploads `Notepad3-APDL-NASTRAN-x64`. The font checks use
+Consolas, Arial, and a SHA-256-pinned official Sarasa Term SC archive; the test
+registers/removes its regular/bold fonts for the runner session. The artifact README
+explains extracting the complete portable ZIP and retaining its `lng` directory.
+
 ### Invoking MSBuild from PowerShell
 
 `msbuild` is not on the PowerShell PATH. Locate it with `vswhere.exe`:

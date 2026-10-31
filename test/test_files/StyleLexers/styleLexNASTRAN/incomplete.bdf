@@ -1,0 +1,12 @@
+$ An orphan continuation must not invent a fold header.
++ORPHAN,1,2,3
+GRID,1,,0.,0.,0.
+SET1,10,1,2,3,4,5,6,7,+A
+$ comment between continuation records
++A,8,9
+CUSTOM,42,,1.25-3 $ Unknown/custom card names still get card styling.
+$ Quoted dollar signs are not comments; unmatched ordinary quotes end at EOL.
+PARAM,NAME,'literal$inside'
+PARAM,NAME,'unfinished
+GRID,2,,1.,2.,3.
+INCLUDE 'unfinished/path
