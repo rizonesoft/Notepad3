@@ -1,0 +1,36 @@
+name: APDL Windows x64
+
+on:
+  push:
+    branches: ['codex/apdl-*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: microsoft/setup-msbuild@v2
+      - uses: NuGet/setup-nuget@v2
+      - name: Build Windows x64 Release and package
+        shell: pwsh
+        run: ./Build/scripts/Build-APDL.ps1 -BuildNumber ${{ github.run_number }}
+      - name: Validate documentation
+        shell: pwsh
+        run: ./Build/scripts/Test-Docs.ps1
+      - name: Upload executable and portable package
+        uses: actions/upload-artifact@v4
+        with:
+          name: Notepad3-APDL-x64
+          if-no-files-found: error
+          path: |
+            Bin/APDL-artifacts/*.zip
+            Bin/APDL-artifacts/Notepad3.exe
+            Bin/APDL-artifacts/build-info.json
+            Bin/APDL-artifacts/SHA256SUMS.txt

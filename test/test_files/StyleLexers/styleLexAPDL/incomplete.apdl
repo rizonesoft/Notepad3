@@ -1,0 +1,14 @@
+! Malformed and incomplete input must remain editable.
+*ENDDO ! Unmatched close: do not underflow the fold level.
+*IF,1,EQ,1,THEN
+*ENDDO ! Wrong close: must not close the conditional.
+*ENDIF
+NBLOCK,6,SOLID,1,1
+(3i8,6e20.13)
+       1       0       0 -1.0
+NSEL,ALL ! Missing NBLOCK terminator: recover at a command.
+label = '*DO'
+text = 'unterminated string
+/COM, The next command must still be styled correctly.
+*DO,i,1,10
+! Unfinished loop at EOF (intentionally no final newline).

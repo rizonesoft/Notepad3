@@ -20,3 +20,58 @@ Homebrew lexer sources under `lexilla\lexers_x\` include AutoHotkey (`LexAHK` an
 `test\test_files\StyleLexers\styleLex<NAME>\` contains lexer fixtures. Any tokenization change (style, state-machine branch, keyword list, escape handling, fold rule, etc.) must extend or add a fixture. Open fixtures in Notepad3 for visual verification; automated lexer assertions are not in scope. Folder names follow the EDITLEXER source file; the historical AHK folder is `styleLexAHKL\`.
 
 Style-label resources are part of lexer work; general locale resource invariants and UI strings are documented in [Localization](localization.md).
+
+## ANSYS APDL
+
+- `lexilla/lexers_x/LexAPDL.cxx` uses the upstream `SCLEX_APDL` and `SCE_APDL_*`
+  constants already declared in `SciLexer.h`; do not allocate another custom ID.
+  Register `lmAPDL` in the curated `lexilla/src/Lexilla.cxx` catalogue and keep
+  `lexilla/Lexilla.vcxproj` plus the main application's project in sync.
+- `src/StyleLexers/styleLexAPDL.c` defines processors, commands, arguments, and
+  functions as lowercase keyword lists. Matching is ASCII case-insensitive.
+  Only command positions (line start or after `$`) open/close blocks. Strings,
+  `!` comments, `/COM` tails, and VREAD/VWRITE/MWRITE format records are excluded.
+- Fold pairs are DO/DOWHILE-ENDDO, IF-THEN/ELSEIF/ELSE-ENDIF, and CREATE-END.
+  IF forms with STOP/EXIT/label actions do not open a fold. Closing commands must
+  match the innermost block type; unmatched closes cannot underflow the level.
+- CDB folding follows the [Programmer's Reference 2026 R1, section 3.2](https://ansyshelp.ansys.com/public/Views/Secured/corp/v261/en/ans_prog/Hlp_P_INT3_3.html).
+  Use explicit grammars, not a generic command-name suffix rule:
+
+  | Block | Boundary |
+  |---|---|
+  | NBLOCK | `N,UNBL,LOC,-1` (also legacy `N,R5.3,LOC,-1`), `N,-1`, or a `-1` entity field |
+  | EBLOCK, ETBLOCK, DBLOCK, FBLOCK, NSMBLOCK | `-1` in the first entity field |
+  | BFBLOCK, BFEBLOCK, SFEBLOCK | Corresponding `BF`/`BFE`/`SFE,end,LOC,-1` record |
+  | CMBLOCK | Declared count of encoded entries using the integer field width |
+  | RLBLOCK | NUMSETS sets; per-set value count determines continuation records |
+  | SECBLOCK (beam/shell) | Nodes + cells from the first record, or N layer records |
+  | SECBLOCK (reinforcement) | Member records plus negative-ID Format2 continuations; resume at the following command |
+  | *PREAD | `END PREAD` |
+  | /BLOCK | Matching type's START/END, or ELST/ELEN |
+
+- Entity-field terminators must not match negative load values, coordinates, or
+  substrings such as `-1.0`. Load command terminators must match the complete
+  record, including the corresponding command and LOC field. A command following
+  a missing data terminator resumes normal command parsing.
+- CMBLOCK counts negative range endpoints as single encoded entries. EFACE/EFAC
+  components may contain `(1a240)` component-name records followed by another
+  descriptor and NUMBF bitmap entries. Those names are data even when they look
+  like APDL commands. Keep both phases in one fold.
+- RLBLOCK has two descriptors. The first record of each set contains its ID and
+  value count (normally 2i8), then up to six reals; continuation records normally
+  contain seven. A negative real value is not a terminator. SECBLOCK reinforcing
+  Format2 records start with a negative element ID; do not mistake them for an
+  ETBLOCK/EBLOCK sentinel.
+- /BLOCK supports FILE, NODE, ELEM, MAT, CONT, LOAD, INIS, and ELST/ELEN groups.
+  Its body is APDL code, so nested data blocks remain independently foldable.
+- Fold closing records stay inside the fold; ELSE/ELSEIF start sibling folds.
+  Immutable parse states are interned and referenced by Scintilla line-state IDs,
+  which move with lines on edits. Restyling starts at a complete line, restores the
+  previous state, and continues until the requested range and changed states end.
+  Do not replace this with a whole-document pass for each edit of a large CDB.
+- The theme section is `[ANSYS APDL]`. Default extensions are `apdl; mac; cdb`;
+  preserve ABAQUS's `inp` and ANSI Art's `ans`. Append to `g_pLexArray` to avoid
+  shifting existing saved default-scheme indices and command-line lexer indices.
+- Visual checks and expected fold headers are in
+  `test/test_files/StyleLexers/styleLexAPDL/README.md`. No ANSYS installation or
+  license is needed to edit, highlight, or fold APDL source.

@@ -139,6 +139,7 @@ BEGIN
     IDS_LEX_VERILOG         "Verilog HDL"
     IDS_LEX_SYSVERILOG      "Verilog systemowy HDVL"
     IDS_LEX_ABAQUS          "ABAQUS"
+    IDS_LEX_APDL            "ANSYS APDL"
 END
 
 STRINGTABLE

@@ -117,6 +117,7 @@ static PEDITLEXER g_pLexArray[] = {
     &lexHTML,          // Web Source Code
     &lexXML,           // XML Document
     &lexYAML,          // YAML
+    &lexAPDL,          // ANSYS APDL (append to preserve saved lexer indices)
 };
 
 int Style_NumOfLexers() {
