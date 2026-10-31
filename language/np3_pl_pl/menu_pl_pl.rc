@@ -354,6 +354,12 @@ BEGIN
     BEGIN
         MENUITEM "Zawijanie wierszy\tCtrl+W",                       IDM_VIEW_WORDWRAP
         MENUITEM "&Znacznik długości wiersza\tCtrl+Alt+L",          IDM_VIEW_LONGLINEMARKER
+        POPUP "NASTRAN Column &Guides"
+        BEGIN
+            MENUITEM "&Off",                         IDM_VIEW_NASTRAN_GUIDES_NONE
+            MENUITEM "&8-character fields",          IDM_VIEW_NASTRAN_GUIDES_SMALL
+            MENUITEM "&16-character fields",         IDM_VIEW_NASTRAN_GUIDES_LARGE
+        END
         MENUITEM "Linie pomocnicze wcięć\tCtrl+Shift+G",            IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Pokaż symbole zawijania wiersza\tCtrl+Shift+7",   IDM_VIEW_WORDWRAPSYMBOLS

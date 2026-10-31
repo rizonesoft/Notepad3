@@ -20,7 +20,10 @@ licenses, and APDL/NASTRAN fixtures under `Bin/APDL-artifacts` with SHA-256 hash
 source-commit metadata. These checks do not replace Windows GUI acceptance tests.
 
 `.github/workflows/apdl-windows.yml` runs this script on `windows-latest` for
-`codex/apdl-*` branch pushes or manual dispatch, then uploads `Notepad3-APDL-NASTRAN-x64`.
+`codex/apdl-*` branch pushes or manual dispatch, runs
+`test/TestNastranColumnGuides.ps1` against the built Windows UI (including zh-CN
+resource loading), then uploads `Notepad3-APDL-NASTRAN-x64`. The artifact README
+explains extracting the complete portable ZIP and retaining its `lng` directory.
 
 ### Invoking MSBuild from PowerShell
 

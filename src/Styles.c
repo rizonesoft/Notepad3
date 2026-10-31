@@ -2386,6 +2386,30 @@ void Style_SetMultiEdgeLine(const int colVec[], const size_t count)
     Settings.LongLinesLimit = iLongLineLimit; // normalize
     Globals.iWrapCol = iLongLineLimit;  // long line limit should be explicit wrap column too
 
+    // The installed lexer is already current while Style_SetLexer is still
+    // applying styles; s_pLexCurrent is updated later in that function.
+    if (SciCall_GetLexer() == SCLEX_NASTRAN) {
+        SciCall_MultiEdgeClearAll();
+        if (Settings.NastranColumnGuides == NGM_NONE) {
+            SciCall_SetEdgeMode(EDGE_NONE);
+        } else {
+            COLORREF const background = SciCall_StyleGetBack(STYLE_DEFAULT);
+            bool const dark = (299 * GetRValue(background) + 587 * GetGValue(background) +
+                               114 * GetBValue(background)) < 128000;
+            COLORREF const fieldColor = dark ? RGB(70, 86, 102) : RGB(208, 216, 224);
+            COLORREF const dataEndColor = dark ? RGB(90, 162, 224) : RGB(64, 120, 172);
+            COLORREF const cardEndColor = dark ? RGB(226, 154, 82) : RGB(174, 94, 32);
+            int const width = (Settings.NastranColumnGuides == NGM_LARGE) ? 16 : 8;
+            SciCall_SetEdgeMode(EDGE_MULTILINE);
+            for (int column = 8; column < 72; column += width) {
+                SciCall_MultiEdgeAddLine(column, fieldColor);
+            }
+            SciCall_MultiEdgeAddLine(72, dataEndColor);
+            SciCall_MultiEdgeAddLine(80, cardEndColor);
+        }
+        return; // keep the ordinary marker list, visibility and wrap column
+    }
+
     if (mLongLineMode == EDGE_BACKGROUND) {
         if (!Style_StrGetColor(GetCurrentStdLexer()->Styles[STY_LONG_LN_MRK].szValue, BACKGROUND_LAYER, &rgb, NULL, false)) { // edge back
             rgb = GetSysColor(COLOR_3DSHADOW);
@@ -2417,6 +2441,23 @@ void Style_SetMultiEdgeLine(const int colVec[], const size_t count)
     } else {
         SciCall_SetEdgeMode(EDGE_NONE);
     }
+}
+
+
+//=============================================================================
+//
+//  Style_SetNastranColumnGuides()
+//
+void Style_SetNastranColumnGuides(int mode)
+{
+    Settings.NastranColumnGuides = clampi(mode, NGM_NONE, NGM_LARGE);
+    if (Settings.NastranColumnGuides != NGM_NONE) {
+        Globals.iLastNastranColumnGuides = Settings.NastranColumnGuides;
+    }
+    int columns[EDGELINE_NUM_LIMIT] = { 0 };
+    size_t const count = ReadVectorFromString(Globals.fvCurFile.wchMultiEdgeLines, columns,
+                         COUNTOF(columns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
+    Style_SetMultiEdgeLine(columns, count);
 }
 
 

@@ -1,0 +1,13 @@
+$ Column guides: select 8- or 16-character fields in View > NASTRAN Column Guides.
+$ Data ends after column 72; continuation labels occupy columns 73-80.
+$       |       |       |       |       |       |       |       |       |       |
+BEGIN BULK
+GRID           1              0.      0.      0.
+RBE2          10       1  123456       2       3       4       5       6+NEXT001
++NEXT001       7       8       9      10
+
+GRID*                  2                          1.25-3          -.21+5*NEXT001
+*NEXT001              0.
+$ Free fields have no fixed-width boundaries; select Off for these records.
+GRID,3,,0.,0.,0.
+ENDDATA

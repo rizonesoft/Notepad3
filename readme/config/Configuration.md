@@ -28,6 +28,17 @@ These settings are managed through Notepad3's user interface (Menu → Settings)
 
 #### `SettingsVersion=5`
 
+#### `NastranColumnGuides=1`
+
+NASTRAN-only vertical column guides, controlled by **View → NASTRAN Column Guides**:
+`0` = off, `1` = 8-character fields (default), `2` = 16-character fields.
+Column 72 marks the end of data and column 80 the end of the continuation-label
+area; both use stronger colours than ordinary field boundaries. **Ctrl+Alt+L**
+toggles the selected preset in a NASTRAN view and remembers its width until exit.
+The setting is independent of ordinary long-line markers and their wrapping
+column, which return when another syntax scheme is selected. For accurate
+alignment use a monospace font, tab width 8, and disable visual word wrap.
+
 #### `Favorites=%APPDATA%\Rizonesoft\Notepad3\Favorites\`
 
 #### `AnalyzeReliableConfidenceLevel=50`

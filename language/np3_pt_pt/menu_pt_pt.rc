@@ -354,6 +354,12 @@ BEGIN
     BEGIN
         MENUITEM "Moldar texto\tCtrl+W",                        IDM_VIEW_WORDWRAP
         MENUITEM "Marcador de linha &longa\tCtrl+Alt+L",        IDM_VIEW_LONGLINEMARKER
+        POPUP "NASTRAN Column &Guides"
+        BEGIN
+            MENUITEM "&Off",                         IDM_VIEW_NASTRAN_GUIDES_NONE
+            MENUITEM "&8-character fields",          IDM_VIEW_NASTRAN_GUIDES_SMALL
+            MENUITEM "&16-character fields",         IDM_VIEW_NASTRAN_GUIDES_LARGE
+        END
         MENUITEM "&Guias de indentação\tCtrl+Shift+G",          IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Mostrar símbolos de mudança de linha\tCtrl+Shift+7",     IDM_VIEW_WORDWRAPSYMBOLS

@@ -108,6 +108,7 @@ void   Style_SetStyles(HWND hwnd, const int iStyle, LPCWSTR lpszStyle, const flo
 bool   Style_IsCurLexerStandard();
 float  Style_GetBaseFontSize();
 void   Style_SetMultiEdgeLine(const int colVec[], const size_t count);
+void   Style_SetNastranColumnGuides(int mode);
 PEDITLEXER Style_GetCurrentLexerPtr();
 int    Style_GetCurrentLexerRID();
 void   Style_GetLexerDisplayName(PEDITLEXER pLexer, LPWSTR lpszName, int cchName);

@@ -5087,7 +5087,15 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     CheckCmd(hmenu, IDM_VIEW_READONLY, ro);
     CheckCmd(hmenu, IDM_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
-    CheckCmd(hmenu, IDM_VIEW_LONGLINEMARKER, Settings.MarkLongLines);
+    bool const nastran = (Style_GetCurrentLexerRID() == IDS_LEX_NASTRAN);
+    CheckCmd(hmenu, IDM_VIEW_LONGLINEMARKER,
+             nastran ? (Settings.NastranColumnGuides != NGM_NONE) : Settings.MarkLongLines);
+    EnableCmd(hmenu, IDM_SET_LONGLINESETTINGS, !nastran);
+    EnableCmd(hmenu, IDM_VIEW_NASTRAN_GUIDES_NONE, nastran);
+    EnableCmd(hmenu, IDM_VIEW_NASTRAN_GUIDES_SMALL, nastran);
+    EnableCmd(hmenu, IDM_VIEW_NASTRAN_GUIDES_LARGE, nastran);
+    CheckMenuRadioItem(hmenu, IDM_VIEW_NASTRAN_GUIDES_NONE, IDM_VIEW_NASTRAN_GUIDES_LARGE,
+                       IDM_VIEW_NASTRAN_GUIDES_NONE + Settings.NastranColumnGuides, MF_BYCOMMAND);
     CheckCmd(hmenu, IDM_VIEW_SHOWINDENTGUIDES, Settings.ShowIndentGuides);
     CheckCmd(hmenu, IDM_VIEW_LINENUMBERS, SciCall_GetMarginWidthN(MARGIN_SCI_LINENUM) > 0);
     CheckCmd(hmenu, IDM_VIEW_BOOKMARK_MARGIN, SciCall_GetMarginWidthN(MARGIN_SCI_BOOKMRK) > 0);
@@ -7020,7 +7028,21 @@ static bool _HandleViewAndSettingsCommands(HWND hwnd, UINT umsg, WPARAM wParam, 
         break;
 
 
+    case IDM_VIEW_NASTRAN_GUIDES_NONE:
+    case IDM_VIEW_NASTRAN_GUIDES_SMALL:
+    case IDM_VIEW_NASTRAN_GUIDES_LARGE:
+        if (Style_GetCurrentLexerRID() == IDS_LEX_NASTRAN) {
+            Style_SetNastranColumnGuides((int)iLoWParam - IDM_VIEW_NASTRAN_GUIDES_NONE);
+        }
+        break;
+
+
     case IDM_VIEW_LONGLINEMARKER: {
+        if (Style_GetCurrentLexerRID() == IDS_LEX_NASTRAN) {
+            Style_SetNastranColumnGuides((Settings.NastranColumnGuides != NGM_NONE) ?
+                                       NGM_NONE : Globals.iLastNastranColumnGuides);
+            break;
+        }
         Settings.MarkLongLines = !Settings.MarkLongLines;
         size_t cnt = 0;
         int    edgeColumns[EDGELINE_NUM_LIMIT] = { 0 };
@@ -7033,6 +7055,9 @@ static bool _HandleViewAndSettingsCommands(HWND hwnd, UINT umsg, WPARAM wParam, 
 
 
     case IDM_SET_LONGLINESETTINGS: {
+        if (Style_GetCurrentLexerRID() == IDS_LEX_NASTRAN) {
+            break; // the NASTRAN view has its own guide presets
+        }
         int iLongLinesLimit = Defaults.LongLinesLimit;
 
         if (LongLineSettingsDlg(hwnd, IDD_MUI_LONGLINES, Globals.fvCurFile.wchMultiEdgeLines)) {

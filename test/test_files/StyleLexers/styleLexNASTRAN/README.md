@@ -22,3 +22,16 @@ card/section stays visible. Add, remove, or change the first continuation marker
 including across intervening comments; compare with reopening the file. Repeat
 with LF, CRLF, and CR endings. Check that all original field bytes remain intact:
 do not auto-align or reformat these fixtures, since fixed column widths matter.
+
+Column-guide visual check (`columns.bdf`, 3 fold headers):
+
+- View > NASTRAN Column Guides defaults to 8-character fields. Check all small
+  fields against the guides, then select 16-character fields for GRID*.
+- The line after column 72 is blue; the line after column 80 is orange. Check
+  both light/dark backgrounds, zoom levels, and horizontal scrolling.
+- Ctrl+Alt+L hides/shows the chosen width. Off removes all guides in NASTRAN;
+  free-field records do not need a fixed grid. Keep a monospace font, display
+  tabs at width 8, and turn off visual word wrap for physical card columns.
+- Switch to APDL and back: ordinary long-line preferences must return outside
+  NASTRAN, and the NASTRAN preset must return inside it. Check save/restart.
+- Guide changes must never edit card text or mark the document modified.

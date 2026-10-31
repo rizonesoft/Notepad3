@@ -70,6 +70,8 @@ try {
     Copy-Item Build/Notepad3.ini $stage
     Copy-Item Build/minipath.ini $stage
     Copy-Item Build/Docs/License.txt $stage
+    Copy-Item Build/Docs/README-APDL-NASTRAN.txt $stage
+    Copy-Item Build/Docs/README-APDL-NASTRAN.txt $dist
     Copy-Item Build/Themes $stage -Recurse
     Copy-Item test/test_files/StyleLexers/styleLexAPDL (Join-Path $stage 'APDL-examples') -Recurse
     Copy-Item test/test_files/StyleLexers/styleLexNASTRAN (Join-Path $stage 'NASTRAN-examples') -Recurse

@@ -24,6 +24,12 @@ jobs:
       - name: Validate documentation
         shell: pwsh
         run: ./Build/scripts/Test-Docs.ps1
+      - name: Check NASTRAN column guides and Chinese language pack
+        timeout-minutes: 3
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem Bin -Filter Notepad3.exe -Recurse | Where-Object { $_.Directory.Name -like 'Release_x64_*' } | Select-Object -First 1
+          ./test/TestNastranColumnGuides.ps1 -ExePath $exe.FullName
       - name: Upload executable and portable package
         uses: actions/upload-artifact@v4
         with:
@@ -34,3 +40,4 @@ jobs:
             Bin/APDL-artifacts/Notepad3.exe
             Bin/APDL-artifacts/build-info.json
             Bin/APDL-artifacts/SHA256SUMS.txt
+            Bin/APDL-artifacts/README-APDL-NASTRAN.txt

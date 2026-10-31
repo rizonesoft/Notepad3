@@ -354,6 +354,12 @@ BEGIN
     BEGIN
         MENUITEM "&Перанос радкоў\tCtrl+W",                     IDM_VIEW_WORDWRAP
         MENUITEM "&Маркер доўгіх радкоў\tCtrl+Alt+L",           IDM_VIEW_LONGLINEMARKER
+        POPUP "NASTRAN Column &Guides"
+        BEGIN
+            MENUITEM "&Off",                         IDM_VIEW_NASTRAN_GUIDES_NONE
+            MENUITEM "&8-character fields",          IDM_VIEW_NASTRAN_GUIDES_SMALL
+            MENUITEM "&16-character fields",         IDM_VIEW_NASTRAN_GUIDES_LARGE
+        END
         MENUITEM "Нак&іравальнікі водступаў\tCtrl+Shift+G",     IDM_VIEW_SHOWINDENTGUIDES
         MENUITEM SEPARATOR
         MENUITEM "Паказваць &сімвалы пераносаў\tCtrl+Shift+7",  IDM_VIEW_WORDWRAPSYMBOLS

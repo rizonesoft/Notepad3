@@ -28,6 +28,39 @@
 - Lexing and folding must never insert, delete, align, truncate, or convert field
   contents. This feature provides display/recognition/folding, not text formatting.
 
+## Column guides
+
+- View > NASTRAN Column Guides has Off / 8-character fields / 16-character fields.
+  `[Settings] NastranColumnGuides=0/1/2` persists the choice; 1 is the default.
+  Small: `8 16 24 32 40 48 56 64 72 80`; large: `8 24 40 56 72 80`.
+  Values mark the boundary after N columns. Column 72 is blue (end of payload),
+  column 80 is orange (end of continuation label); other edges are subdued.
+  Colours follow the editor background's luminance, including custom themes.
+- The preset is active only in the NASTRAN scheme. Off hides all column edges in
+  that scheme; Ctrl+Alt+L toggles the preset and remembers its last nonzero width
+  until exit. Other schemes retain the usual long-line-marker controls. The
+  generic Long Line Settings dialog is disabled in NASTRAN to keep those controls
+  distinct. Free-field records have no fixed-width payload boundaries; use Off.
+- `Style_SetMultiEdgeLine()` in `src/Styles.c` renders NASTRAN edges separately
+  through `EDGE_MULTILINE` / `SciCall_MultiEdgeAddLine()`. Presets never replace
+  the ordinary `Globals.fvCurFile.wchMultiEdgeLines`, `Settings.MultiEdgeLines`,
+  `Settings.MarkLongLines`, or wrap-column preference. File-variable application
+  and lexer/theme restyling reapply the appropriate scheme's guides.
+- Test `SciCall_GetLexer()`, not `s_pLexCurrent`, while drawing: `Style_SetLexer()`
+  installs the new Scintilla lexer before applying guides and assigns
+  `s_pLexCurrent` later. Otherwise entering/leaving NASTRAN would use stale state.
+- Scintilla's `DrawEdgeLine()` in `scintilla/src/EditView.cxx` places edges using
+  the default style's space width, with horizontal-offset handling. Accurate
+  fixed-field alignment needs a consistent monospace font; displayed tabs must
+  use width 8 to agree with the lexer. Disable visual word wrap when checking
+  physical card columns. These display settings do not rewrite existing tabs.
+- The native multi-edge API applies one column set across the view. Mixed small,
+  large, and free records use the selected preset; guides do not vary per row.
+- `test/TestNastranColumnGuides.ps1` drives real menus and the syntax selection
+  dialog on Windows, checking presets/toggle, rendering-technology changes,
+  restyling, restoration of ordinary markers, saved preferences/restart, Chinese
+  resources, and exact document bytes. `columns.bdf` is the visual fixture.
+
 ## Folding and incremental state
 
 - Executive control starts at SOL/ID/ASSIGN/NASTRAN. CEND starts the case-control
