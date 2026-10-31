@@ -135,7 +135,7 @@ PreferredLanguageLocaleName=$locale
 [Common Base]
 Default Style=font:$fontFamily; size:11; $colours
 [2nd Common Base]
-Default Style=font:Arial; size:11; $colours
+2nd Default Style=font:Arial; size:11; $colours
 "@ | Set-Content $ini -Encoding utf8
     $app = Start-Process $ExePath -ArgumentList "/n /f `"$ini`" `"$sample`"" -PassThru
     $main = [IntPtr]::Zero
@@ -167,6 +167,7 @@ Default Style=font:Arial; size:11; $colours
         # Changing to a proportional font must suppress guides without losing
         # the selected preset; changing back must restore it in the same window.
         [GuideProbe]::Command($main,41002)
+        Wait-For { [GuideProbe]::Font($app.Id,$editor) -eq 'Arial' } 'proportional font applied' | Out-Null
         Assert-Guides '' 0
         foreach ($command in @(41067,41068,41006)) {
             if (-not ([GuideProbe]::MenuState($main,$command) -band 3)) { throw "Proportional-font command $command is enabled." }
@@ -175,6 +176,7 @@ Default Style=font:Arial; size:11; $colours
         Start-Sleep -Milliseconds 150
         Assert-Guides '' 0
         [GuideProbe]::Command($main,41002)
+        Wait-For { [GuideProbe]::Font($app.Id,$editor) -eq $fontFamily } 'monospace font restored' | Out-Null
         Assert-Guides '8 24 40 56 72 80'
         foreach ($command in @(41018,41019)) {
             [GuideProbe]::Command($main,$command)

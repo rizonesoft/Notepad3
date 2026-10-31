@@ -20,6 +20,9 @@ Each language has an `EDITLEXER` definition in `src\StyleLexers\styleLexXXX.c`. 
   `font:$Text0` override. APDL and NASTRAN have no default font override and
   inherit Common Base. Check the active scheme and any saved theme overrides
   before changing shared font-selection or rendering code.
+- The INI default-style key in `[Common Base]` is `Default Style`; in
+  `[2nd Common Base]` it is `2nd Default Style`, matching the corresponding
+  `EDITSTYLE.pszName`. Using `Default Style` in the second section is ignored.
 
 ## Lexilla sources
 
