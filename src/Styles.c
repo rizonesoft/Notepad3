@@ -24,6 +24,7 @@
 #include <shlwapi.h>
 #include <pathcch.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "Lexilla.h"
 #include "lexers_x/SciXLexer.h"
@@ -2054,11 +2055,6 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
     StringCchCopy(pCurrentStandard->Styles[STY_CARET].szValue,
                   COUNTOF(pCurrentStandard->Styles[STY_CARET].szValue),wchStylesBuffer);
 
-    int          edgeColumns[EDGELINE_NUM_LIMIT] = { 0 };
-    size_t const cnt = ReadVectorFromString(Globals.fvCurFile.wchMultiEdgeLines, edgeColumns, COUNTOF(edgeColumns), 0, LONG_LINES_MARKER_LIMIT, 0, true);
-    Style_SetMultiEdgeLine(edgeColumns, cnt);
-
-        
     int iLnSpc = 0;
     if (Style_StrGetSizeIntEx(pCurrentStandard->Styles[STY_X_LN_SPACE].szValue, &iLnSpc)) {
         Style_SetExtraLineSpace(iLnSpc);
@@ -2112,6 +2108,9 @@ void Style_SetLexer(HWND hwnd, PEDITLEXER pLexNew)
 
         Style_FillRelatedStyles(hwnd, s_pLexCurrent);
     }
+
+    // Measure the final fonts, including per-token font/size overrides.
+    Style_UpdateColumnGuides();
 
     // Lexer reserved indicator styles
     switch (s_pLexCurrent->lexerID) {
@@ -2386,11 +2385,9 @@ void Style_SetMultiEdgeLine(const int colVec[], const size_t count)
     Settings.LongLinesLimit = iLongLineLimit; // normalize
     Globals.iWrapCol = iLongLineLimit;  // long line limit should be explicit wrap column too
 
-    // The installed lexer is already current while Style_SetLexer is still
-    // applying styles; s_pLexCurrent is updated later in that function.
     if (SciCall_GetLexer() == SCLEX_NASTRAN) {
         SciCall_MultiEdgeClearAll();
-        if (Settings.NastranColumnGuides == NGM_NONE) {
+        if ((Settings.NastranColumnGuides == NGM_NONE) || !Globals.bNastranGuideFontCompatible) {
             SciCall_SetEdgeMode(EDGE_NONE);
         } else {
             COLORREF const background = SciCall_StyleGetBack(STYLE_DEFAULT);
@@ -2454,6 +2451,37 @@ void Style_SetNastranColumnGuides(int mode)
     if (Settings.NastranColumnGuides != NGM_NONE) {
         Globals.iLastNastranColumnGuides = Settings.NastranColumnGuides;
     }
+    Style_UpdateColumnGuides();
+}
+
+
+// Compare rendered ASCII advances, not font names or Windows pitch flags.
+// SCI_STYLEGETCHECKMONOSPACED only reports an optimisation hint, not a result.
+static bool _Style_IsNastranFontMonospaced()
+{
+    char sample[65] = { 0 };
+    memset(sample, ' ', COUNTOF(sample) - 1);
+    int const referenceWidth = SciCall_TextWidth(STYLE_DEFAULT, sample);
+    if (referenceWidth <= 1) {
+        return false;
+    }
+    for (int style = SCE_NASTRAN_DEFAULT; style <= SCE_NASTRAN_IDENTIFIER; ++style) {
+        for (int ch = ' '; ch <= '~'; ++ch) {
+            // Repetition exposes differences hidden by TextWidth's integer result.
+            memset(sample, ch, COUNTOF(sample) - 1);
+            if (SciCall_TextWidth(style, sample) != referenceWidth) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+
+void Style_UpdateColumnGuides()
+{
+    Globals.bNastranGuideFontCompatible = (SciCall_GetLexer() == SCLEX_NASTRAN) &&
+                                         _Style_IsNastranFontMonospaced();
     int columns[EDGELINE_NUM_LIMIT] = { 0 };
     size_t const count = ReadVectorFromString(Globals.fvCurFile.wchMultiEdgeLines, columns,
                          COUNTOF(columns), 0, LONG_LINES_MARKER_LIMIT, 0, true);

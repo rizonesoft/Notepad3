@@ -38,6 +38,9 @@ toggles the selected preset in a NASTRAN view and remembers its width until exit
 The setting is independent of ordinary long-line markers and their wrapping
 column, which return when another syntax scheme is selected. For accurate
 alignment use a monospace font, tab width 8, and disable visual word wrap.
+The editor measures printable ASCII widths, including syntax-style overrides;
+with incompatible fonts the guides and enable commands are disabled. The saved
+preset returns automatically when the fonts are compatible again.
 
 #### `Favorites=%APPDATA%\Rizonesoft\Notepad3\Favorites\`
 

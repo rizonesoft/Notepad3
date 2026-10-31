@@ -564,6 +564,7 @@ typedef struct GLOBALS_T {
     FILEVARS  fvCurFile;
     int       iWrapCol;
     int       iLastNastranColumnGuides;
+    bool      bNastranGuideFontCompatible;
     unsigned  uAvailLngCount;
     bool      CmdLnFlag_PosParam;
     int       CmdLnFlag_AlwaysOnTop;

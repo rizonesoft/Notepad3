@@ -1,5 +1,8 @@
 # Exercise guide presets through real Windows menus and syntax selection dialogs.
-param([Parameter(Mandatory = $true)][string]$ExePath)
+param(
+    [Parameter(Mandatory = $true)][string]$ExePath,
+    [string[]]$FontFiles = @()
+)
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 if (-not $IsWindows) { throw 'This integration test requires Windows.' }
@@ -9,6 +12,8 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 public static class GuideProbe {
+    [DllImport("gdi32.dll", CharSet=CharSet.Unicode)] public static extern int AddFontResourceEx(string path,uint flags,IntPtr reserved);
+    [DllImport("gdi32.dll", CharSet=CharSet.Unicode)] public static extern bool RemoveFontResourceEx(string path,uint flags,IntPtr reserved);
     delegate bool EnumProc(IntPtr h, IntPtr data);
     [DllImport("user32.dll")] static extern bool EnumWindows(EnumProc callback, IntPtr data);
     [DllImport("user32.dll")] static extern bool EnumChildWindows(IntPtr parent, EnumProc callback, IntPtr data);
@@ -50,6 +55,7 @@ public static class GuideProbe {
     public static void Command(IntPtr h,int id){if(!PostMessage(h,0x111,(IntPtr)id,IntPtr.Zero))throw new Exception("PostMessage failed");}
     public static long Query(IntPtr h,uint msg,int w=0){return SendMessage(h,msg,(IntPtr)w,IntPtr.Zero).ToInt64();}
     public static string Edges(IntPtr editor){var result=new System.Collections.Generic.List<long>();for(int i=0;i<256;i++){long column=Query(editor,2749,i);if(column<0)break;result.Add(column);}return String.Join(" ",result);}
+    public static string Font(int pid,IntPtr editor){using(var r=new Remote(pid,256)){SendMessage(editor,2486,(IntPtr)32,r.Address);return Encoding.UTF8.GetString(r.Read(256)).Split('\0')[0];}}
     public static byte[] Text(int pid,IntPtr editor){int size=checked((int)Query(editor,2006));using(var r=new Remote(pid,size+1)){SendMessage(editor,2182,(IntPtr)(size+1),r.Address);return r.Read(size);}}
     static IntPtr MenuContaining(IntPtr menu,int id){for(int i=0;i<GetMenuItemCount(menu);i++){if(GetMenuItemID(menu,i)==id)return menu;IntPtr sub=GetSubMenu(menu,i);if(sub!=IntPtr.Zero){IntPtr found=MenuContaining(sub,id);if(found!=IntPtr.Zero)return found;}}return IntPtr.Zero;}
     public static uint MenuState(IntPtr main,int id){IntPtr menu=GetMenu(main);SendMessage(main,0x116,menu,IntPtr.Zero);IntPtr parent=MenuContaining(menu,id);if(parent==IntPtr.Zero)throw new Exception("Missing menu command "+id);return GetMenuState(parent,(uint)id,0);}
@@ -103,8 +109,18 @@ New-Item $testRoot -ItemType Directory | Out-Null
 $sample = Join-Path $testRoot 'columns.bdf'
 Copy-Item (Join-Path $PSScriptRoot 'test_files/StyleLexers/styleLexNASTRAN/columns.bdf') $sample
 $sourceHash = Hash-Bytes ([IO.File]::ReadAllBytes($sample))
+$fontFamilies = @('Consolas')
+$registeredFonts = [Collections.Generic.List[string]]::new()
+try {
+foreach ($fontFile in $FontFiles) {
+    $path = (Resolve-Path $fontFile).Path
+    if (-not [GuideProbe]::AddFontResourceEx($path,0,[IntPtr]::Zero)) { throw "Could not register test font: $path" }
+    $registeredFonts.Add($path)
+}
+if ($registeredFonts.Count) { $fontFamilies += 'Sarasa Term SC' }
+foreach ($fontFamily in $fontFamilies) {
 foreach ($locale in @('en-US','zh-CN')) {
-    $ini = Join-Path $testRoot ($locale + '.ini')
+    $ini = Join-Path $testRoot ($fontFamily.Replace(' ','-') + '-' + $locale + '.ini')
     $colours = if ($locale -eq 'zh-CN') { 'fore:#D8D8D8; back:#202020' } else { 'fore:#202020; back:#FFFFFF' }
     @"
 [Settings]
@@ -117,7 +133,9 @@ WordWrap=0
 [Settings2]
 PreferredLanguageLocaleName=$locale
 [Common Base]
-Default Style=font:Consolas; size:11; $colours
+Default Style=font:$fontFamily; size:11; $colours
+[2nd Common Base]
+Default Style=font:Arial; size:11; $colours
 "@ | Set-Content $ini -Encoding utf8
     $app = Start-Process $ExePath -ArgumentList "/n /f `"$ini`" `"$sample`"" -PassThru
     $main = [IntPtr]::Zero
@@ -125,6 +143,7 @@ Default Style=font:Consolas; size:11; $colours
         $main = Wait-For { $app.Refresh(); if ($app.HasExited) { throw "Editor exited: $($app.ExitCode)" }; $app.MainWindowHandle } 'editor window'
         $editor = Wait-For { [GuideProbe]::Editor($main) } 'Scintilla window'
         Wait-For { [GuideProbe]::Query($editor,4002) -eq 206 } 'NASTRAN recognition' | Out-Null
+        if ([GuideProbe]::Font($app.Id,$editor) -ne $fontFamily) { throw "Test font was not applied: $fontFamily" }
         Assert-Guides '8 16 24 32 40 48 56 64 72 80'
         if ([GuideProbe]::MenuState($main,41067) -band 3) { throw 'NASTRAN preset is disabled.' }
         if (-not ([GuideProbe]::MenuState($main,41067) -band 8)) { throw 'Default preset is not checked.' }
@@ -140,7 +159,24 @@ Default Style=font:Consolas; size:11; $colours
         [GuideProbe]::Command($main,41068)
         Assert-Guides '8 24 40 56 72 80'
         # Changing renderers and reapplying the base scheme must retain the preset.
-        foreach ($command in @(42000,42001,41002,41002)) {
+        foreach ($command in @(42000,42001)) {
+            [GuideProbe]::Command($main,$command)
+            Start-Sleep -Milliseconds 150
+            Assert-Guides '8 24 40 56 72 80'
+        }
+        # Changing to a proportional font must suppress guides without losing
+        # the selected preset; changing back must restore it in the same window.
+        [GuideProbe]::Command($main,41002)
+        Assert-Guides '' 0
+        foreach ($command in @(41067,41068,41006)) {
+            if (-not ([GuideProbe]::MenuState($main,$command) -band 3)) { throw "Proportional-font command $command is enabled." }
+            [GuideProbe]::Command($main,$command)
+        }
+        Start-Sleep -Milliseconds 150
+        Assert-Guides '' 0
+        [GuideProbe]::Command($main,41002)
+        Assert-Guides '8 24 40 56 72 80'
+        foreach ($command in @(41018,41019)) {
             [GuideProbe]::Command($main,$command)
             Start-Sleep -Milliseconds 150
             Assert-Guides '8 24 40 56 72 80'
@@ -162,7 +198,7 @@ Default Style=font:Consolas; size:11; $colours
         foreach ($line in @('LongLinesLimit=111','MultiEdgeLines=40 111')) {
             if ($saved -notmatch ('(?m)^' + [Regex]::Escape($line) + '\s*$')) { throw "Ordinary marker preference changed: $line" }
         }
-        Write-Host "PASS ${locale}: presets, toggle, renderer/restyle, scheme restoration, INI and document bytes"
+        Write-Host "PASS $fontFamily / ${locale}: presets, toggle, proportional/monospace fonts, zoom, renderer, scheme restoration, INI and document bytes"
     } finally {
         if (-not $app.HasExited) { if ($main -ne [IntPtr]::Zero) { [GuideProbe]::Command($main,40025) }; if (-not $app.WaitForExit(5000)) { $app.Kill() } }
     }
@@ -173,10 +209,37 @@ Default Style=font:Consolas; size:11; $colours
         $main = Wait-For { $app.Refresh(); if ($app.HasExited) { throw 'Editor exited on restart.' }; $app.MainWindowHandle } 'restarted editor'
         $editor = Wait-For { [GuideProbe]::Editor($main) } 'restarted Scintilla'
         Assert-Guides '8 24 40 56 72 80'
-        Write-Host "PASS ${locale}: saved preset restored after restart"
+        Write-Host "PASS $fontFamily / ${locale}: saved preset restored after restart"
     } finally {
         if (-not $app.HasExited) { if ($main -ne [IntPtr]::Zero) { [GuideProbe]::Command($main,40025) }; if (-not $app.WaitForExit(5000)) { $app.Kill() } }
     }
 }
+}
+$ini = Join-Path $testRoot 'mixed-fonts.ini'
+@'
+[Settings]
+WordWrap=0
+[Settings2]
+PreferredLanguageLocaleName=en-US
+[Common Base]
+Default Style=font:Consolas; size:11
+[NASTRAN]
+Card=font:Arial
+'@ | Set-Content $ini -Encoding utf8
+$app = Start-Process $ExePath -ArgumentList "/n /f `"$ini`" `"$sample`"" -PassThru
+$main = [IntPtr]::Zero
+try {
+    $main = Wait-For { $app.Refresh(); $app.MainWindowHandle } 'mixed-font editor'
+    $editor = Wait-For { [GuideProbe]::Editor($main) } 'mixed-font Scintilla'
+    Wait-For { [GuideProbe]::Query($editor,4002) -eq 206 } 'mixed-font NASTRAN recognition' | Out-Null
+    Assert-Guides '' 0
+    if (-not ([GuideProbe]::MenuState($main,41067) -band 3)) { throw 'Incompatible token font was accepted.' }
+    Write-Host 'PASS incompatible per-token font is detected'
+} finally {
+    if (-not $app.HasExited) { if ($main -ne [IntPtr]::Zero) { [GuideProbe]::Command($main,40025) }; if (-not $app.WaitForExit(5000)) { $app.Kill() } }
+}
 if ((Hash-Bytes ([IO.File]::ReadAllBytes($sample))) -ne $sourceHash) { throw 'Source file changed on disk.' }
 Write-Host 'NASTRAN column guide integration tests passed.'
+} finally {
+    foreach ($path in $registeredFonts) { [GuideProbe]::RemoveFontResourceEx($path,0,[IntPtr]::Zero) | Out-Null }
+}

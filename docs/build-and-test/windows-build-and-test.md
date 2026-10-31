@@ -22,7 +22,9 @@ source-commit metadata. These checks do not replace Windows GUI acceptance tests
 `.github/workflows/apdl-windows.yml` runs this script on `windows-latest` for
 `codex/apdl-*` branch pushes or manual dispatch, runs
 `test/TestNastranColumnGuides.ps1` against the built Windows UI (including zh-CN
-resource loading), then uploads `Notepad3-APDL-NASTRAN-x64`. The artifact README
+resource loading), then uploads `Notepad3-APDL-NASTRAN-x64`. The font checks use
+Consolas, Arial, and a SHA-256-pinned official Sarasa Term SC archive; the test
+registers/removes its regular/bold fonts for the runner session. The artifact README
 explains extracting the complete portable ZIP and retaining its `lng` directory.
 
 ### Invoking MSBuild from PowerShell

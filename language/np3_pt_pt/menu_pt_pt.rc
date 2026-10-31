@@ -356,6 +356,7 @@ BEGIN
         MENUITEM "Marcador de linha &longa\tCtrl+Alt+L",        IDM_VIEW_LONGLINEMARKER
         POPUP "NASTRAN Column &Guides"
         BEGIN
+            MENUITEM "Requires a uniform monospace font", IDM_VIEW_NASTRAN_GUIDES_FONT_HINT, GRAYED
             MENUITEM "&Off",                         IDM_VIEW_NASTRAN_GUIDES_NONE
             MENUITEM "&8-character fields",          IDM_VIEW_NASTRAN_GUIDES_SMALL
             MENUITEM "&16-character fields",         IDM_VIEW_NASTRAN_GUIDES_LARGE

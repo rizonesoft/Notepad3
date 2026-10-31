@@ -35,3 +35,8 @@ Column-guide visual check (`columns.bdf`, 3 fold headers):
 - Switch to APDL and back: ordinary long-line preferences must return outside
   NASTRAN, and the NASTRAN preset must return inside it. Check save/restart.
 - Guide changes must never edit card text or mark the document modified.
+
+- Change the base font to Arial: guides disappear and the enable commands are
+  disabled. Restore Consolas: the chosen preset returns. Repeat with a Card-only
+  font or size override that differs from the base; incompatible advances must
+  also suppress guides. Check zoom and changing GDI/DirectWrite rendering.

@@ -46,9 +46,15 @@
   the ordinary `Globals.fvCurFile.wchMultiEdgeLines`, `Settings.MultiEdgeLines`,
   `Settings.MarkLongLines`, or wrap-column preference. File-variable application
   and lexer/theme restyling reapply the appropriate scheme's guides.
-- Test `SciCall_GetLexer()`, not `s_pLexCurrent`, while drawing: `Style_SetLexer()`
-  installs the new Scintilla lexer before applying guides and assigns
-  `s_pLexCurrent` later. Otherwise entering/leaving NASTRAN would use stale state.
+- `Style_UpdateColumnGuides()` measures the final default and NASTRAN token fonts
+  after `Style_FillRelatedStyles()`, and again on zoom/preset changes. It compares
+  64 repeated copies of every printable ASCII character against the default
+  space advance through `SciCall_TextWidth()`, exposing fractional differences
+  despite that API's integer result. Proportional or incompatible per-style
+  fonts/sizes suppress guides and disable the enable/toggle commands. The saved
+  preset is retained and returns automatically with compatible fonts.
+  `Globals.bNastranGuideFontCompatible` caches the result for menu state queries;
+  `SCI_STYLEGETCHECKMONOSPACED` is only an optimisation hint, not a measurement.
 - Scintilla's `DrawEdgeLine()` in `scintilla/src/EditView.cxx` places edges using
   the default style's space width, with horizontal-offset handling. Accurate
   fixed-field alignment needs a consistent monospace font; displayed tabs must
@@ -58,8 +64,9 @@
   large, and free records use the selected preset; guides do not vary per row.
 - `test/TestNastranColumnGuides.ps1` drives real menus and the syntax selection
   dialog on Windows, checking presets/toggle, rendering-technology changes,
-  restyling, restoration of ordinary markers, saved preferences/restart, Chinese
-  resources, and exact document bytes. `columns.bdf` is the visual fixture.
+  restyling, proportional/monospace font changes and per-token overrides, zoom,
+  restoration of ordinary markers, saved preferences/restart, Chinese resources,
+  and exact document bytes. `columns.bdf` is the visual fixture.
 
 ## Folding and incremental state
 

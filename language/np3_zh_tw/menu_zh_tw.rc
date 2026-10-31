@@ -356,6 +356,7 @@ BEGIN
         MENUITEM "顯示行長度標記(&L)\tCtrl+Alt+L",               IDM_VIEW_LONGLINEMARKER
         POPUP "NASTRAN 欄位尺規"
         BEGIN
+            MENUITEM "需統一使用等寬字型", IDM_VIEW_NASTRAN_GUIDES_FONT_HINT, GRAYED
             MENUITEM "關閉(&O)",                         IDM_VIEW_NASTRAN_GUIDES_NONE
             MENUITEM "8 字元欄位(&8)",          IDM_VIEW_NASTRAN_GUIDES_SMALL
             MENUITEM "16 字元欄位(&1)",         IDM_VIEW_NASTRAN_GUIDES_LARGE
