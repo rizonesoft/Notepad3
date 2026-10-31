@@ -19,6 +19,9 @@ public static class FontProbe {
     [DllImport("user32.dll", CharSet=CharSet.Unicode)] static extern int GetClassName(IntPtr hwnd, StringBuilder name, int count);
     [DllImport("user32.dll")] static extern bool IsWindowVisible(IntPtr hwnd);
     [DllImport("user32.dll")] static extern bool IsWindow(IntPtr hwnd);
+    [DllImport("user32.dll")] static extern IntPtr GetDlgItem(IntPtr hwnd, int id);
+    [DllImport("user32.dll", CharSet=CharSet.Unicode, EntryPoint="SendMessageW")] static extern IntPtr SendText(IntPtr hwnd, uint msg, IntPtr w, string text);
+    [DllImport("user32.dll", CharSet=CharSet.Unicode)] static extern int GetWindowText(IntPtr hwnd, StringBuilder text, int count);
     [DllImport("user32.dll")] static extern bool PostMessage(IntPtr hwnd, uint msg, IntPtr w, IntPtr l);
     [DllImport("user32.dll")] static extern IntPtr SendMessage(IntPtr hwnd, uint msg, IntPtr w, IntPtr l);
     [DllImport("kernel32.dll", SetLastError=true)] static extern IntPtr OpenProcess(uint rights, bool inherit, int pid);
@@ -51,13 +54,30 @@ public static class FontProbe {
         try { if(remote==IntPtr.Zero)throw new Exception("VirtualAllocEx failed"); SendMessage(editor,2486,(IntPtr)style,remote);byte[] bytes=new byte[256];UIntPtr done;if(!ReadProcessMemory(p,remote,bytes,(UIntPtr)bytes.Length,out done))throw new Exception("ReadProcessMemory failed");int end=Array.IndexOf(bytes,(byte)0);return Encoding.UTF8.GetString(bytes,0,end<0?bytes.Length:end); }
         finally { if(remote!=IntPtr.Zero)VirtualFreeEx(p,remote,UIntPtr.Zero,0x8000);CloseHandle(p); }
     }
-    public static void SelectFont(int pid,IntPtr dialog,string family) {
-        var font=new LogFont{height=-24,weight=400,charset=1,face=family};int size=Marshal.SizeOf(font);byte[] bytes=new byte[size];IntPtr local=Marshal.AllocHGlobal(size);
-        try {Marshal.StructureToPtr(font,local,false);Marshal.Copy(local,bytes,0,size);}finally{Marshal.FreeHGlobal(local);}
-        IntPtr p=OpenProcess(0x438,false,pid);if(p==IntPtr.Zero)throw new Exception("OpenProcess failed");IntPtr remote=VirtualAllocEx(p,IntPtr.Zero,(UIntPtr)size,0x3000,4);
-        try {UIntPtr done;if(remote==IntPtr.Zero||!WriteProcessMemory(p,remote,bytes,(UIntPtr)size,out done))throw new Exception("Writing test LOGFONT failed");SendMessage(dialog,0x465,IntPtr.Zero,remote);Command(dialog,1);}
-        finally {if(remote!=IntPtr.Zero)VirtualFreeEx(p,remote,UIntPtr.Zero,0x8000);CloseHandle(p);}
+    public static string SelectFont(int pid,IntPtr dialog,string family) {
+        IntPtr combo=GetDlgItem(dialog,0x470);
+        if(combo==IntPtr.Zero)throw new Exception("Not a font dialog: "+WindowText(dialog));
+        long index=SendText(combo,0x158,(IntPtr)(-1),family).ToInt64(); // CB_FINDSTRINGEXACT
+        if(index<0)throw new Exception("Font is not in the dialog list: "+family);
+        SendMessage(combo,0x14e,(IntPtr)index,IntPtr.Zero); // CB_SETCURSEL
+        SendMessage(dialog,0x111,(IntPtr)(0x10000|0x470),combo); // CBN_SELCHANGE
+        int size=Marshal.SizeOf<LogFont>();
+        IntPtr p=OpenProcess(0x438,false,pid);if(p==IntPtr.Zero)throw new Exception("OpenProcess failed");
+        IntPtr remote=VirtualAllocEx(p,IntPtr.Zero,(UIntPtr)size,0x3000,4);
+        string selected;
+        try {
+            if(remote==IntPtr.Zero)throw new Exception("Allocating test LOGFONT failed");
+            SendMessage(dialog,0x401,IntPtr.Zero,remote); // WM_CHOOSEFONT_GETLOGFONT
+            byte[] bytes=new byte[size];UIntPtr done;
+            if(!ReadProcessMemory(p,remote,bytes,(UIntPtr)size,out done))throw new Exception("Reading dialog LOGFONT failed");
+            selected=Encoding.Unicode.GetString(bytes,28,64).TrimEnd('\0');
+        } finally {if(remote!=IntPtr.Zero)VirtualFreeEx(p,remote,UIntPtr.Zero,0x8000);CloseHandle(p);}
+        string report="title="+WindowText(dialog)+" combo="+WindowText(combo)+" LOGFONT="+selected;
+        if(!String.Equals(selected,family,StringComparison.OrdinalIgnoreCase))throw new Exception("Font selection failed: "+report);
+        Command(dialog,1);
+        return report;
     }
+    static string WindowText(IntPtr h) {var text=new StringBuilder(256);GetWindowText(h,text,text.Capacity);return text.ToString();}
     public static bool Exists(IntPtr hwnd){return IsWindow(hwnd);}
 }
 '@
@@ -77,6 +97,7 @@ function Wait-For([scriptblock]$Condition, [string]$Description) {
 $testRoot = Join-Path $env:RUNNER_TEMP ('notepad3-font-' + [Guid]::NewGuid().ToString('N'))
 New-Item $testRoot -ItemType Directory | Out-Null
 $results = [Collections.Generic.List[object]]::new()
+$fontIssues = [Collections.Generic.List[string]]::new()
 foreach ($extension in @('bdf', 'mac', 'txt')) {
     $ini = Join-Path $testRoot ($extension + '.ini')
     $sample = Join-Path $testRoot ('sample.' + $extension)
@@ -97,7 +118,7 @@ Default Style=font:Consolas; size:11
         $lexer = [FontProbe]::Query($editor, 4002, 0)
         [FontProbe]::Command($main, 41004)
         $dialog = Wait-For { [FontProbe]::FindWindow($app.Id, '#32770') } 'global font dialog'
-        [FontProbe]::SelectFont($app.Id, $dialog, 'Arial')
+        Write-Host ([FontProbe]::SelectFont($app.Id, $dialog, 'Arial'))
         Wait-For { -not [FontProbe]::Exists($dialog) } 'font dialog OK' | Out-Null
         Start-Sleep -Milliseconds 250
         $after = [FontProbe]::ReadFont($app.Id, $editor, 32)
@@ -109,19 +130,20 @@ Default Style=font:Consolas; size:11
         $results.Add([pscustomobject]@{ extension=$extension; lexer=$lexer; before=$before; after=$after; token0=$token })
         # Text Files deliberately has its own $Text0 override. APDL/NASTRAN inherit Common Base.
         if ($extension -ne 'txt' -and ($after -ne 'Arial' -or $token -ne 'Arial')) {
-            throw "Global font was not applied to $extension"
+            $fontIssues.Add("Global font was not applied to $extension")
         }
         [FontProbe]::Command($main, 41044)
         $dialog = Wait-For { [FontProbe]::FindWindow($app.Id, '#32770') } 'current scheme font dialog'
-        [FontProbe]::SelectFont($app.Id, $dialog, 'Courier New')
+        Write-Host ([FontProbe]::SelectFont($app.Id, $dialog, 'Courier New'))
         Wait-For { -not [FontProbe]::Exists($dialog) } 'scheme font dialog OK' | Out-Null
         Start-Sleep -Milliseconds 250
         $scheme = [FontProbe]::ReadFont($app.Id, $editor, 32)
         Write-Host "SCHEME FONT RESULT $extension -> $scheme"
-        if ($scheme -ne 'Courier New') { throw "Scheme font was not applied to $extension" }
+        if ($scheme -ne 'Courier New') { $fontIssues.Add("Scheme font was not applied to $extension") }
     } finally {
         if (-not $app.HasExited) { [FontProbe]::Command($app.MainWindowHandle, 40025); if (-not $app.WaitForExit(5000)) { $app.Kill() } }
     }
 }
 $results | ConvertTo-Json | Write-Host
+if ($fontIssues.Count) { throw ($fontIssues -join '; ') }
 Write-Host 'Editor font GUI regression passed.'
