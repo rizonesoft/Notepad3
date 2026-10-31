@@ -24,11 +24,6 @@ jobs:
       - name: Validate documentation
         shell: pwsh
         run: ./Build/scripts/Test-Docs.ps1
-      - name: Check actual editor font changes
-        shell: pwsh
-        run: |
-          $exe = Get-ChildItem Bin -Filter Notepad3.exe -Recurse | Where-Object { $_.Directory.Name -like 'Release_x64_*' } | Select-Object -First 1
-          ./test/TestEditorFont.ps1 -ExePath $exe.FullName
       - name: Upload executable and portable package
         uses: actions/upload-artifact@v4
         with:

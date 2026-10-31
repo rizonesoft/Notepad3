@@ -11,6 +11,16 @@ Each language has an `EDITLEXER` definition in `src\StyleLexers\styleLexXXX.c`. 
 - **New style rows:** add a matching style entry to the applicable theme overrides. Only `res\StdDarkModeScheme.ini` and `Build\Themes\{Dark,Obsidian,Sombra}.ini` have per-style overrides; the main and locale INIs often have empty lexer sections where inline defaults apply. For foreground/background pairs, target WCAG contrast of at least 4.5:1. `lexilla\wscite\*.properties` can provide color references.
 - **Style localization:** each new `EDITSTYLE` label needs an `IDS_LEX_STR_*` definition in `language\common_res.h` and an English placeholder in all 26 `language\np3_*\lexer_*.rc` files. Check ID gaps when choosing an ID. For bulk insertion, anchor on an existing identifier (not translated text), run once, and verify one occurrence per file.
 
+## Font inheritance
+
+- `Style_SetDefaultFont()` in `src/Styles.c` changes the active Common Base with
+  Alt+F12, or the current scheme's default style with Ctrl+Alt+F12. A scheme's
+  explicit `font:` overrides Common Base when `Style_SetLexer()` merges styles.
+- `src/StyleLexers/styleLexStandard.c` deliberately gives Text Files a
+  `font:$Text0` override. APDL and NASTRAN have no default font override and
+  inherit Common Base. Check the active scheme and any saved theme overrides
+  before changing shared font-selection or rendering code.
+
 ## Lexilla sources
 
 Homebrew lexer sources under `lexilla\lexers_x\` include AutoHotkey (`LexAHK` and `LexAHK2`), CSV, JSON5, Kotlin, and Verilog. Their `SCE_*_*` enums are in `lexilla\lexers_x\SciXLexer.h`, not `lexilla\include\SciLexer.h`. `LexHTML.cxx` is under `lexilla\lexers\` in this repository; `SCLEX_HTML` and `SCLEX_XML` use that source.
