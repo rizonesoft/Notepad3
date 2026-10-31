@@ -92,5 +92,9 @@ Open them in the NASTRAN scheme, test both themes and line endings, and verify
 fold-all/expand-all plus edits to continuation markers. The same Windows package
 contains APDL and NASTRAN fixtures in separate example directories.
 
+User-provided Windows BDF example showing highlighting, folding and column guides:
+
+![NASTRAN highlighting, folding and fixed-field column guides](../images/nastran-column-guides.png)
+
 Format references: [pyNastran BDF card formatting](https://pynastran-git.readthedocs.io/en/latest/manual/bdf_developer.html#bdf-card-formatting)
 and its [field reader](https://github.com/SteveDoyle2/pyNastran/blob/main/pyNastran/bdf/bdf_interface/utils.py).
