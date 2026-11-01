@@ -20,6 +20,7 @@ This directory holds repository-specific guidance for contributors and coding ag
 | If you are changing... | Read |
 |---|---|
 | Menus, commands, source layout, coding conventions, buffers | [Codebase and conventions](architecture/codebase-and-conventions.md) |
+| Replacing home-grown `Edit.c` code with Scintilla messages | [Scintilla API usage](architecture/scintilla-api-usage.md) |
 | Build, MSBuild, CI, test scripts, Python scripting | [Windows build and test](build-and-test/windows-build-and-test.md) |
 | `Edit.c` load/save, atomic save, file watching | [File I/O](domain/file-io.md) |
 | Open dialog start directory, Recent files dialog | [File I/O](domain/file-io.md) |
@@ -31,12 +32,14 @@ This directory holds repository-specific guidance for contributors and coding ag
 | INI settings, persistence | [Configuration and INI](domain/configuration-and-ini.md) |
 | Dark mode, rendering, theme-change redraw | [Dark mode and rendering](domain/ui-rendering.md) |
 | Startup, activation, AppID, new-window reuse | [Startup and window lifecycle](domain/startup-and-window-lifecycle.md) |
+| Expression evaluation (`=?`, Go To, line numbering), `tinyexpr_cif` | [TinyExpr++ wrapper](domain/tinyexpr-wrapper.md) |
 
 ## Contents
 
 | Topic | Description | Pages |
 |---|---|---|
 | Architecture | Source map, command dispatch, vendored libraries, coding conventions, and implementation patterns. | [Codebase and conventions](architecture/codebase-and-conventions.md) |
+| Architecture: Scintilla API | Verified constraints of Scintilla messages when replacing home-grown `Edit.c` code. | [Scintilla API usage](architecture/scintilla-api-usage.md) |
 | Build and test | Windows build targets, MSBuild invocation, CI and test gotchas, Python environment. | [Windows build and test](build-and-test/windows-build-and-test.md) |
 | Domain: configuration | Portable INI lifecycle, persistence rules, and save/load behavior. | [Configuration and INI](domain/configuration-and-ini.md) |
 | Domain: localization | Locale resource invariants, encoding/line-ending requirements, and adding UI strings. | [Localization](domain/localization.md) |
@@ -48,4 +51,5 @@ This directory holds repository-specific guidance for contributors and coding ag
 | Domain: file I/O | Load/save flow, atomic saves, error handling, file watching, Open-dialog initial directory, and Recent files dialog. | [File I/O](domain/file-io.md) |
 | Domain: paths | PathLib wrappers, long-path handling, and path comparison rules. | [PathLib](domain/pathlib.md) |
 | Domain: UI rendering | Dark mode, ARM64 rendering technology, and theme-change redraw. | [Dark mode and rendering](domain/ui-rendering.md) |
+| Domain: expressions | C wrapper over TinyExpr++: contract, length-preserving pre-pass, error positions, callers. | [TinyExpr++ wrapper](domain/tinyexpr-wrapper.md) |
 | Docs maintenance | Unverified findings and pages queued for coverage review. | [Open questions and coverage review](open-questions.md) |

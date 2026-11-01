@@ -5872,7 +5872,17 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, const TITLEPROPS_T prop
         WCHAR szExcrptFmt[32] = { L'\0' };
         WCHAR szExcrptQuot[SMALL_BUFFER] = { L'\0' };
         GetLngString(IDS_MUI_TITLEEXCERPT, szExcrptFmt, COUNTOF(szExcrptFmt));
-        StringCchPrintf(szExcrptQuot, COUNTOF(szExcrptQuot), szExcrptFmt, lpszExcerpt);
+
+        // shorten a long excerpt so the formatted result fits and the closing quote is kept
+        WCHAR szExcrpt[SMALL_BUFFER] = { L'\0' };
+        size_t const cchFmt = StringCchLen(szExcrptFmt, COUNTOF(szExcrptFmt));
+        size_t const cchMax = COUNTOF(szExcrptQuot) - 1 - ((cchFmt > 2) ? (cchFmt - 2) : 0); // format is < 32 chars, so cchMax >= 96
+        StringCchCopyN(szExcrpt, COUNTOF(szExcrpt), lpszExcerpt, cchMax);
+        if (StringCchLen(lpszExcerpt, 0) > cchMax) {
+            StringCchCopy(&szExcrpt[cchMax - 3], 4, L"..."); // also overwrites a possibly cut surrogate pair
+        }
+
+        StringCchPrintf(szExcrptQuot, COUNTOF(szExcrptQuot), szExcrptFmt, szExcrpt);
         StringCchCat(szTitle, COUNTOF(szTitle), szExcrptQuot);
     }
     else if (Path_IsNotEmpty(pthFilePath)) {

@@ -3075,11 +3075,10 @@ static bool _EvalTinyExpr(bool qmark)
             te_int_t exprErr = 1;
             bool bExprIsLogical = false;
             while (*p && exprErr) {
-                dExprEval = te_interp(p, &exprErr);
+                int iLogical = 0;
+                dExprEval = te_interp_ex(p, &exprErr, &iLogical);
                 if (!exprErr) {
-                    // `p` hasn't moved yet (the advance happens in the inner
-                    // while below); safe to classify the just-evaluated text.
-                    bExprIsLogical = (te_is_logical_expr(p) != 0);
+                    bExprIsLogical = (iLogical != 0);
                 }
                 // proceed to next possible expression
                 while (*++p && exprErr && !(te_is_num(p) || te_is_op(p))) {}
@@ -11636,8 +11635,9 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
                     WideCharToMultiByte(1252, (WC_COMPOSITECHECK | WC_DISCARDNS), wchSelBuf, -1, chSeBuf, LARGE_BUFFER, &defchar, NULL);
                     StrDelChrA(chSeBuf, chr_currency);
 
-                    s_dExpression    = te_interp(chSeBuf, &s_iExprError);
-                    s_bExprIsLogical = (s_iExprError == 0) && (te_is_logical_expr(chSeBuf) != 0);
+                    int iLogical = 0;
+                    s_dExpression    = te_interp_ex(chSeBuf, &s_iExprError, &iLogical);
+                    s_bExprIsLogical = (iLogical != 0);
                 } else {
                     s_iExprError = -1;
                 }

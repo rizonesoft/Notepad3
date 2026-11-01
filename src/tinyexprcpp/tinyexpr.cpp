@@ -2,7 +2,7 @@
 /*
  * TINYEXPR - Tiny recursive descent parser and evaluation engine in C
  *
- * Copyright (c) 2015-2020 Lewis Van Winkle
+ * Copyright (c) 2015-2026 Lewis Van Winkle
  *
  * http://CodePlea.com
  *
@@ -49,9 +49,6 @@
 
 #include "tinyexpr.h"
 
-#pragma warning(push)
-#pragma warning(disable : 4702) // unreachable code (benign in template-heavy visitor patterns)
-
 // NOLINTBEGIN(readability-redundant-casting,readability-avoid-nested-conditional-operator,hicpp-named-parameter,readability-named-parameter)
 
 // builtin functions
@@ -84,7 +81,7 @@ namespace te_builtins
     [[nodiscard]]
     static te_type te_is_nan(te_type val)
         {
-        return (!std::isfinite(val) ? 1 : 0);
+        return (!std::isfinite(val) ? te_true_value() : te_false_value());
         }
 
     [[nodiscard]]
@@ -276,7 +273,7 @@ namespace te_builtins
             type = 0;
             }
 
-        type = (type != 0) ? 1 : 0;
+        type = (type != 0) ? te_true_value() : te_false_value();
 
         if (rate <= -1.0)
             {
@@ -331,7 +328,7 @@ namespace te_builtins
             return -presentValue;
             }
 
-        type = (type != 0) ? 1 : 0;
+        type = (type != 0) ? te_true_value() : te_false_value();
 
         if (rate == 0.0)
             {
@@ -377,7 +374,7 @@ namespace te_builtins
             }
 
         // coerce type to 0 or 1
-        type = (type != 0) ? 1 : 0;
+        type = (type != 0) ? te_true_value() : te_false_value();
 
         // zero-interest
         if (rate == 0.0)
@@ -414,7 +411,7 @@ namespace te_builtins
             type = 0;
             }
 
-        type = (type != 0) ? 1 : 0;
+        type = (type != 0) ? te_true_value() : te_false_value();
 
         if (periods <= 0.0)
             {
@@ -452,7 +449,7 @@ namespace te_builtins
             }
 
         // compute FV at period - 1 (this must allow period - 1 == 0)
-        const te_type num = period - 1.0;
+        const te_type num = period - 1;
         const te_type powVal = std::pow(1 + rate, num);
         if (!std::isfinite(powVal))
             {
@@ -503,7 +500,7 @@ namespace te_builtins
             }
 
         // coerce type to 0 or 1
-        type = (type != 0) ? 1 : 0;
+        type = (type != 0) ? te_true_value() : te_false_value();
 
         if (rate == 0.0)
             {
@@ -544,7 +541,7 @@ namespace te_builtins
             return te_parser::te_nan;
             }
 
-        type = (type != 0) ? 1 : 0;
+        type = (type != 0) ? te_true_value() : te_false_value();
 
         const te_type payment = te_pmt(rate, periods, presentValue, futureValue, type);
         if (!std::isfinite(payment))
@@ -754,7 +751,7 @@ namespace te_builtins
             {
             return te_parser::te_nan;
             }
-        if (val > (std::numeric_limits<unsigned int>::max)())
+        if (te_parser::te_exceeds_uint32(val))
             {
             return std::numeric_limits<te_type>::infinity();
             }
@@ -986,8 +983,7 @@ namespace te_builtins
             {
             return te_parser::te_nan;
             }
-        if (val1 > (std::numeric_limits<unsigned int>::max)() ||
-            val2 > (std::numeric_limits<unsigned int>::max)())
+        if (te_parser::te_exceeds_uint32(val1) || te_parser::te_exceeds_uint32(val2))
             {
             return std::numeric_limits<te_type>::infinity();
             }
@@ -1315,7 +1311,7 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise NOT value must be positive.");
             }
-        if (val > std::numeric_limits<uint32_t>::max())
+        if (te_parser::te_exceeds_uint32(val))
             {
             throw std::runtime_error("Value is too large for bitwise NOT.");
             }
@@ -1785,6 +1781,361 @@ namespace te_builtins
         {
         return val2;
         }
+
+    // Extracts the sole string argument shared by the single-argument text builtins.
+    // Returns nullptr when the arity or argument type is wrong.
+    [[nodiscard]]
+    static const std::string_view* get_single_string_arg(std::span<const te_arg> args)
+        {
+        if (args.size() != 1)
+            {
+            return nullptr;
+            }
+        return std::get_if<std::string_view>(args.data());
+        }
+
+    // NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+    [[nodiscard]]
+    static te_type te_arabic(std::span<const te_arg> args)
+        {
+        constexpr int MAX_TEXT_LENGTH{ 255 };
+        const auto* const romanText = get_single_string_arg(args);
+        if (romanText == nullptr || romanText->empty() || romanText->size() > MAX_TEXT_LENGTH)
+            {
+            return te_parser::te_nan;
+            }
+        auto romanVal = [](const char romanChar) -> int
+        {
+            switch (romanChar)
+                {
+            case 'I':
+            case 'i':
+                return 1;
+            case 'V':
+            case 'v':
+                return 5;
+            case 'X':
+            case 'x':
+                return 10;
+            case 'L':
+            case 'l':
+                return 50;
+            case 'C':
+            case 'c':
+                return 100;
+            case 'D':
+            case 'd':
+                return 500;
+            case 'M':
+            case 'm':
+                return 1000;
+            default:
+                return -1;
+                }
+        };
+        for (const char romanChar : *romanText)
+            {
+            if (romanVal(romanChar) < 0)
+                {
+                return te_parser::te_nan;
+                }
+            }
+        size_t repeatCount{ 1 };
+        for (size_t romanIdx = 1; romanIdx < romanText->size(); ++romanIdx)
+            {
+            // compare numeric values (not raw chars) so mixed-case repeats
+            // (e.g., "Vv", "IiIi") are validated the same as single-case ones
+            const int repeatVal = romanVal((*romanText)[romanIdx]);
+            if (repeatVal == romanVal((*romanText)[romanIdx - 1]))
+                {
+                ++repeatCount;
+                if (repeatVal == 5 || repeatVal == 50 || repeatVal == 500)
+                    {
+                    return te_parser::te_nan;
+                    }
+                // I, X, and C may repeat a 4th time (e.g., "IIII", "XXXX", "CCCC"),
+                // an additive form for 4/40/400 that remains common alongside the
+                // subtractive one. M is capped at 3, as a 4th would exceed the
+                // largest representable numeral, 3999 ("MMMCMXCIX")
+                const size_t maxRepeats{ (repeatVal == 1000) ? static_cast<size_t>(3) :
+                                                               static_cast<size_t>(4) };
+                if (repeatCount > maxRepeats)
+                    {
+                    return te_parser::te_nan;
+                    }
+                }
+            else
+                {
+                repeatCount = 1;
+                }
+            }
+        te_type total{ 0 };
+        for (size_t romanIdx = 0; romanIdx < romanText->size(); ++romanIdx)
+            {
+            const int currVal = romanVal((*romanText)[romanIdx]);
+            const int nextVal =
+                (romanIdx + 1 < romanText->size()) ? romanVal((*romanText)[romanIdx + 1]) : 0;
+            if (currVal < nextVal)
+                {
+                if (!((currVal == 1 && (nextVal == 5 || nextVal == 10))) &&
+                    !((currVal == 10 && (nextVal == 50 || nextVal == 100))) &&
+                    !((currVal == 100 && (nextVal == 500 || nextVal == 1000))))
+                    {
+                    return te_parser::te_nan;
+                    }
+                if (romanIdx > 0 && romanVal((*romanText)[romanIdx - 1]) == currVal)
+                    {
+                    return te_parser::te_nan;
+                    }
+                total -= static_cast<te_type>(currVal);
+                }
+            else
+                {
+                total += static_cast<te_type>(currVal);
+                }
+            }
+        return total;
+        }
+
+// HEX2DEC/BIN2DEC/OCT2DEC can return integers larger than 2^24, which a 32-bit
+// float (TE_FLOAT) cannot represent exactly. Like the bitwise builtins, these
+// are excluded when the parser's data type is float.
+#ifndef TE_FLOAT
+    [[nodiscard]]
+    static te_type te_hex2dec(std::span<const te_arg> args)
+        {
+        const auto* const hexText = get_single_string_arg(args);
+        if (hexText == nullptr || hexText->empty() || hexText->size() > 10)
+            {
+            return te_parser::te_nan;
+            }
+        auto hexVal = [](const char hexChar) -> int
+        {
+            if (hexChar >= '0' && hexChar <= '9')
+                {
+                return hexChar - '0';
+                }
+            if (hexChar >= 'A' && hexChar <= 'F')
+                {
+                return hexChar - 'A' + 10;
+                }
+            if (hexChar >= 'a' && hexChar <= 'f')
+                {
+                return hexChar - 'a' + 10;
+                }
+            return -1;
+        };
+        uint64_t hexValue{ 0 };
+        for (const char hexChar : *hexText)
+            {
+            const int digit = hexVal(hexChar);
+            if (digit < 0)
+                {
+                return te_parser::te_nan;
+                }
+            hexValue = (hexValue << 4) | static_cast<uint64_t>(digit);
+            }
+        if (hexText->size() == 10)
+            {
+            constexpr uint64_t LIMIT{ uint64_t{ 1 } << 40 };
+            constexpr uint64_t HALF{ uint64_t{ 1 } << 39 };
+            if (hexValue >= HALF)
+                {
+                hexValue = hexValue - LIMIT;
+                }
+            }
+        return static_cast<te_type>(static_cast<int64_t>(hexValue));
+        }
+
+    [[nodiscard]]
+    static te_type te_bin2dec(std::span<const te_arg> args)
+        {
+        const auto* const binText = get_single_string_arg(args);
+        if (binText == nullptr || binText->empty() || binText->size() > 10)
+            {
+            return te_parser::te_nan;
+            }
+        uint64_t binValue{ 0 };
+        for (const char binChar : *binText)
+            {
+            if (binChar != '0' && binChar != '1')
+                {
+                return te_parser::te_nan;
+                }
+            binValue = (binValue << 1) | static_cast<uint64_t>(binChar - '0');
+            }
+        if (binText->size() == 10 && (*binText)[0] == '1')
+            {
+            binValue -= (uint64_t{ 1 } << 10);
+            }
+        return static_cast<te_type>(static_cast<int64_t>(binValue));
+        }
+
+    [[nodiscard]]
+    static te_type te_oct2dec(std::span<const te_arg> args)
+        {
+        const auto* const octText = get_single_string_arg(args);
+        if (octText == nullptr || octText->empty() || octText->size() > 10)
+            {
+            return te_parser::te_nan;
+            }
+        uint64_t octValue{ 0 };
+        for (const char octChar : *octText)
+            {
+            if (octChar < '0' || octChar > '7')
+                {
+                return te_parser::te_nan;
+                }
+            octValue = (octValue << 3) | static_cast<uint64_t>(octChar - '0');
+            }
+        if (octText->size() == 10)
+            {
+            constexpr uint64_t HALF{ uint64_t{ 1 } << 29 };
+            constexpr uint64_t LIMIT{ uint64_t{ 1 } << 30 };
+            if (octValue >= HALF)
+                {
+                octValue = octValue - LIMIT;
+                }
+            }
+        return static_cast<te_type>(static_cast<int64_t>(octValue));
+        }
+#endif // !TE_FLOAT
+
+    // NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+
+    // Converts text into a number, locale independently.
+    // NaN stands in for Excel's #VALUE! error.
+    [[nodiscard]]
+    static te_type te_numbervalue(std::span<const te_arg> args)
+        {
+        if (args.empty() || args.size() > 3)
+            {
+            return te_parser::te_nan;
+            }
+        // a number converts to itself
+        if (const auto* const num = std::get_if<te_type>(args.data()); num != nullptr)
+            {
+            return *num;
+            }
+        if (!std::holds_alternative<std::string_view>(args[0]))
+            {
+            return te_parser::te_nan;
+            }
+
+        // only the first character of a separator argument is used
+        const auto getSeparatorArg = [&args](const size_t index, const char defaultSep) -> char
+        {
+            if (index >= args.size())
+                {
+                return defaultSep;
+                }
+            const auto* const sep = std::get_if<std::string_view>(&args[index]);
+            return (sep == nullptr || sep->empty()) ? static_cast<char>(0) : sep->front();
+        };
+
+        const char decimalSep = getSeparatorArg(1, '.');
+        // the default group separator is whichever of '.' and ',' the decimal one isn't
+        const char groupSep = getSeparatorArg(2, (decimalSep == ',') ? '.' : ',');
+        if (decimalSep == 0 || groupSep == 0 || decimalSep == groupSep)
+            {
+            return te_parser::te_nan;
+            }
+
+        // only leading and trailing spaces are ignored; an interior space may be a
+        // group separator (the character list is spelled out to be locale independent)
+        constexpr std::string_view WHITESPACE{ " \t\n\r" };
+        std::string_view text{ std::get<std::string_view>(args[0]) };
+        while (!text.empty() && WHITESPACE.find(text.front()) != std::string_view::npos)
+            {
+            text.remove_prefix(1);
+            }
+        // an empty string is zero
+        if (text.empty())
+            {
+            return static_cast<te_type>(0);
+            }
+
+        // trailing percent signs are cumulative, and trailing spaces are ignored
+        size_t percentCount{ 0 };
+        while (!text.empty() &&
+               (text.back() == '%' || WHITESPACE.find(text.back()) != std::string_view::npos))
+            {
+            if (text.back() == '%')
+                {
+                ++percentCount;
+                }
+            text.remove_suffix(1);
+            }
+        if (text.empty())
+            {
+            return te_parser::te_nan;
+            }
+
+        const auto decimalPos = text.find_first_of(decimalSep);
+        // more than one decimal separator is an error
+        if (decimalPos != std::string_view::npos &&
+            text.find_first_of(decimalSep, decimalPos + 1) != std::string_view::npos)
+            {
+            return te_parser::te_nan;
+            }
+        // a group separator after the decimal separator is an error,
+        // before it is simply ignored
+        if (decimalPos != std::string_view::npos &&
+            text.find_first_of(groupSep, decimalPos) != std::string_view::npos)
+            {
+            return te_parser::te_nan;
+            }
+
+        // strtod() reads the C locale's decimal point, so rewrite to that, not '.'
+        char nativeDecimalSep{ '.' };
+        if (decimalPos != std::string_view::npos)
+            {
+            const auto* const localeInfo = std::localeconv();
+            if (localeInfo != nullptr && localeInfo->decimal_point != nullptr &&
+                *localeInfo->decimal_point != 0)
+                {
+                nativeDecimalSep = *localeInfo->decimal_point;
+                }
+            }
+
+        // strtod() needs a null-terminated buffer, so this is where the copy has to happen
+        std::string normalized;
+        normalized.reserve(text.length());
+        for (const auto chr : text)
+            {
+            if (chr == groupSep)
+                {
+                continue;
+                }
+            normalized += (chr == decimalSep) ? nativeDecimalSep : chr;
+            }
+        if (normalized.empty())
+            {
+            return te_parser::te_nan;
+            }
+
+        char* nEnd{ nullptr };
+#ifdef TE_FLOAT
+        const auto result = static_cast<te_type>(std::strtof(normalized.c_str(), &nEnd));
+#elif defined(TE_LONG_DOUBLE)
+        const auto result = static_cast<te_type>(std::strtold(normalized.c_str(), &nEnd));
+#else
+        const auto result = static_cast<te_type>(std::strtod(normalized.c_str(), &nEnd));
+#endif
+        // unlike the lexer, the whole string has to convert (i.e., stopped at the null terminator)
+        if (nEnd == nullptr || *nEnd != 0)
+            {
+            return te_parser::te_nan;
+            }
+
+        constexpr te_type PERCENT_DIVISOR{ 100 };
+        te_type scaled{ result };
+        for (size_t i = 0; i < percentCount; ++i)
+            {
+            scaled /= PERCENT_DIVISOR;
+            }
+        return scaled;
+        }
     } // namespace te_builtins
 
 //--------------------------------------------------
@@ -1794,7 +2145,12 @@ void te_parser::te_free_parameters(te_expr* texp)
         {
         return;
         }
-    if (is_closure(texp->m_value))
+    // a te_arg_confun that failed to parse may not have its context slot yet
+    if (is_any_closure(texp->m_value) && texp->m_parameters.empty())
+        {
+        return;
+        }
+    if (is_any_closure(texp->m_value))
         {
         // last param is the context object, we don't manage that here
         for (auto param = texp->m_parameters.begin(); param != texp->m_parameters.end() - 1;
@@ -1804,7 +2160,7 @@ void te_parser::te_free_parameters(te_expr* texp)
             *param = nullptr;
             }
         }
-    else if (is_function(texp->m_value))
+    else if (is_any_function(texp->m_value))
         {
         for (auto* param : texp->m_parameters)
             {
@@ -1821,12 +2177,14 @@ const std::set<te_variable> te_parser::m_functions = { // NOLINT
     // variadic, accepts 1-24 arguments
     { "and", static_cast<te_fun24>(te_builtins::te_and_variadic),
       static_cast<te_variable_flags>(TE_PURE | TE_VARIADIC) },
+    { "arabic", static_cast<te_arg_fun>(te_builtins::te_arabic), TE_PURE },
     { "asin", static_cast<te_fun1>(te_builtins::te_asin), TE_PURE },
     { "atan", static_cast<te_fun1>(te_builtins::te_atan), TE_PURE },
     { "atan2", static_cast<te_fun2>(te_builtins::te_atan2), TE_PURE },
     { "average", static_cast<te_fun24>(te_builtins::te_average),
       static_cast<te_variable_flags>(TE_PURE | TE_VARIADIC) },
 #ifndef TE_FLOAT
+    { "bin2dec", static_cast<te_arg_fun>(te_builtins::te_bin2dec), TE_PURE },
     { "bitand", static_cast<te_fun2>(te_builtins::te_bitwise_and), TE_PURE },
     { "bitor", static_cast<te_fun2>(te_builtins::te_bitwise_or), TE_PURE },
     #if __cplusplus >= 202002L
@@ -1879,6 +2237,9 @@ const std::set<te_variable> te_parser::m_functions = { // NOLINT
     { "floor", static_cast<te_fun1>(te_builtins::te_floor), TE_PURE },
     { "fv", static_cast<te_fun5>(te_builtins::te_fv),
       static_cast<te_variable_flags>(TE_PURE | TE_VARIADIC) },
+#ifndef TE_FLOAT
+    { "hex2dec", static_cast<te_arg_fun>(te_builtins::te_hex2dec), TE_PURE },
+#endif
     { "iserr", static_cast<te_fun1>(te_builtins::te_is_nan), TE_PURE },
     { "iserror", static_cast<te_fun1>(te_builtins::te_is_nan), TE_PURE },
     { "iseven", static_cast<te_fun1>(te_builtins::te_is_even), TE_PURE },
@@ -1906,6 +2267,11 @@ const std::set<te_variable> te_parser::m_functions = { // NOLINT
     { "nper", static_cast<te_fun5>(te_builtins::te_nper),
       static_cast<te_variable_flags>(TE_PURE | TE_VARIADIC) },
     { "npr", static_cast<te_fun2>(te_builtins::te_npr), TE_PURE },
+    // accepts 1-3 arguments
+    { "numbervalue", static_cast<te_arg_fun>(te_builtins::te_numbervalue), TE_PURE },
+#ifndef TE_FLOAT
+    { "oct2dec", static_cast<te_arg_fun>(te_builtins::te_oct2dec), TE_PURE },
+#endif
     { "odd", static_cast<te_fun1>(te_builtins::te_odd), TE_PURE },
     { "or", static_cast<te_fun24>(te_builtins::te_or_variadic),
       static_cast<te_variable_flags>(TE_PURE | TE_VARIADIC) },
@@ -1969,8 +2335,16 @@ void te_parser::next_token(state* theState)
 #else
             theState->m_value = static_cast<te_type>(std::strtod(theState->m_next, &nEnd));
 #endif
+            // Normally strtod() stops at the list separator and the lexer reads it next.
+            // It only consumes one if the locale's decimal point is that separator,
+            // which means the locale and the parser (get_decimal_separator()) disagree.
+            // Raise a syntax error in that case.
+            const std::string_view consumed{ theState->m_next,
+                                             static_cast<size_t>(nEnd - theState->m_next) };
             theState->m_next = nEnd;
-            theState->m_type = state::token_type::TOK_NUMBER;
+            theState->m_type = (consumed.find(get_list_separator()) == std::string_view::npos) ?
+                                   state::token_type::TOK_NUMBER :
+                                   state::token_type::TOK_ERROR;
             }
         else
             {
@@ -2062,7 +2436,8 @@ void te_parser::next_token(state* theState)
                     {
 #ifndef TE_NO_BOOKKEEPING
                     // keep track of what's been used in the formula
-                    if (is_function(m_currentVar->m_value) || is_closure(m_currentVar->m_value))
+                    if (is_any_function(m_currentVar->m_value) ||
+                        is_any_closure(m_currentVar->m_value))
                         {
                         m_usedFunctions.insert(m_currentVar->m_name);
                         }
@@ -2082,18 +2457,24 @@ void te_parser::next_token(state* theState)
                         theState->m_type = state::token_type::TOK_VARIABLE;
                         theState->m_value = m_currentVar->m_value;
                         }
-                    else if (is_function(m_currentVar->m_value))
+                    else if (is_any_function(m_currentVar->m_value))
                         {
                         theState->m_type = state::token_type::TOK_FUNCTION;
                         theState->m_varType = m_currentVar->m_type;
                         theState->m_value = m_currentVar->m_value;
                         }
-                    else if (is_closure(m_currentVar->m_value))
+                    else if (is_any_closure(m_currentVar->m_value))
                         {
                         theState->context = m_currentVar->m_context;
                         theState->m_type = state::token_type::TOK_FUNCTION;
                         theState->m_varType = m_currentVar->m_type;
                         theState->m_value = m_currentVar->m_value;
+                        }
+                    // a string-valued te_variable isn't supported; don't leave
+                    // m_type as TOK_NULL or the token is silently skipped
+                    else
+                        {
+                        theState->m_type = state::token_type::TOK_ERROR;
                         }
                     }
                 }
@@ -2102,7 +2483,29 @@ void te_parser::next_token(state* theState)
                 /* Look for an operator or special character. */
                 const auto tok = *theState->m_next;
                 std::advance(theState->m_next, 1);
-                if (tok == '+')
+                /* Read a string literal. There are no escapes; the next quote ends it. */
+                if (tok == '"')
+                    {
+                    const char* strStart = theState->m_next;
+                    while (*theState->m_next != 0 && *theState->m_next != '"')
+                        {
+                        std::advance(theState->m_next, 1);
+                        }
+                    if (*theState->m_next != '"')
+                        {
+                        // unterminated
+                        theState->m_type = state::token_type::TOK_ERROR;
+                        }
+                    else
+                        {
+                        theState->m_value =
+                            std::string_view{ strStart, static_cast<std::string_view::size_type>(
+                                                            theState->m_next - strStart) };
+                        theState->m_type = state::token_type::TOK_STRING;
+                        std::advance(theState->m_next, 1);
+                        }
+                    }
+                else if (tok == '+')
                     {
                     theState->m_type = state::token_type::TOK_INFIX;
                     theState->m_value = te_builtins::te_add;
@@ -2325,6 +2728,25 @@ void te_parser::next_token(state* theState)
 //--------------------------------------------------
 te_expr* te_parser::base(state* theState)
     {
+    // base() is the only place the descent recurses back on itself, so this is
+    // where nesting is capped. Without it, deeply nested input could overflow the stack.
+    if (theState->m_depth >= static_cast<size_t>(TE_MAX_DEPTH))
+        {
+        m_lastErrorMessage = "Expression is nested too deeply.";
+        theState->m_type = state::token_type::TOK_ERROR;
+        return new_expr(TE_DEFAULT, te_variant_type{ te_nan });
+        }
+
+    ++theState->m_depth;
+    te_expr* ret = base_impl(theState);
+    --theState->m_depth;
+
+    return ret;
+    }
+
+//--------------------------------------------------
+te_expr* te_parser::base_impl(state* theState)
+    {
     /* <base>      =    <constant> | <variable> | <function-0> {"(" ")"} | <function-1> <power> |
                         <function-X> "(" <expr> {"," <expr>} ")" | "(" <list> ")" */
     te_expr* ret{ nullptr };
@@ -2352,12 +2774,15 @@ te_expr* te_parser::base(state* theState)
         ret = new_expr(TE_DEFAULT, theState->m_value);
         next_token(theState);
         }
+    // TOK_STRING is only consumed by the te_arg_fun branch below, so reaching
+    // it here means a literal was used outside of a function's argument list
     else if (theState->m_type == state::token_type::TOK_NULL ||
              theState->m_type == state::token_type::TOK_ERROR ||
              theState->m_type == state::token_type::TOK_END ||
              theState->m_type == state::token_type::TOK_SEP ||
              theState->m_type == state::token_type::TOK_CLOSE ||
-             theState->m_type == state::token_type::TOK_INFIX)
+             theState->m_type == state::token_type::TOK_INFIX ||
+             theState->m_type == state::token_type::TOK_STRING)
         {
         ret = new_expr(TE_DEFAULT, te_variant_type{ te_nan });
         theState->m_type = state::token_type::TOK_ERROR;
@@ -2381,6 +2806,62 @@ te_expr* te_parser::base(state* theState)
                 {
                 next_token(theState);
                 }
+            }
+        }
+    else if (is_arg_function(theState->m_value) || is_arg_closure(theState->m_value))
+        {
+        /* <function> "(" [<expr> | <string> {"," <expr> | <string>}] ")" */
+        const bool isCtxFunc{ is_arg_closure(theState->m_value) };
+        te_expr* const context{ theState->context };
+
+        ret = new_expr(theState->m_varType, theState->m_value);
+        next_token(theState);
+
+        if (theState->m_type != state::token_type::TOK_OPEN)
+            {
+            theState->m_type = state::token_type::TOK_ERROR;
+            }
+        else
+            {
+            next_token(theState);
+            // no arguments at all
+            if (theState->m_type == state::token_type::TOK_CLOSE)
+                {
+                next_token(theState);
+                }
+            else
+                {
+                while (true)
+                    {
+                    if (theState->m_type == state::token_type::TOK_STRING)
+                        {
+                        ret->m_parameters.push_back(new_expr(TE_DEFAULT, theState->m_value));
+                        next_token(theState);
+                        }
+                    else
+                        {
+                        ret->m_parameters.push_back(expr_level1(theState));
+                        }
+                    if (theState->m_type != state::token_type::TOK_SEP)
+                        {
+                        break;
+                        }
+                    next_token(theState);
+                    }
+                if (theState->m_type != state::token_type::TOK_CLOSE)
+                    {
+                    theState->m_type = state::token_type::TOK_ERROR;
+                    }
+                else
+                    {
+                    next_token(theState);
+                    }
+                }
+            }
+        // context slot goes last, matching te_free_parameters() and te_eval()
+        if (isCtxFunc)
+            {
+            ret->m_parameters.push_back(context);
             }
         }
     else if (is_function1(theState->m_value) || is_closure1(theState->m_value))
@@ -2667,41 +3148,52 @@ te_expr* te_parser::factor(te_parser::state* theState)
     // second from the highest level of operator precedence
     te_expr* ret = power(theState);
 
-    int neg{ 0 };
+    // A unary to the left of '^' applies to the whole chain, so lift it off
+    // and put it back at the end. only lift one that power() wrote itself;
+    // "(-2)^2" is 4, not -(2^2)
+    te_fun1 leftUnary{ nullptr };
 
-    if (ret->m_type == TE_PURE && is_function1(ret->m_value) &&
-        get_function1(ret->m_value) == te_builtins::te_negate)
+    if (theState->m_appliedUnary && ret->m_type == TE_PURE && is_function1(ret->m_value))
         {
+        leftUnary = get_function1(ret->m_value);
         te_expr* se = ret->m_parameters[0];
         delete ret;
         ret = se;
-        neg = 1;
         }
 
-    te_expr* insertion{ nullptr };
+    // Where the next exponent goes, which is what makes '^' go right-to-left.
+    // A unary on an exponent applies to the rest of the chain, so the slot
+    // moves inside it.
+    te_expr* slotOwner{ nullptr };
+    size_t slotIndex{ 0 };
     while (theState->m_type == state::token_type::TOK_INFIX && is_function2(theState->m_value) &&
            (get_function2(theState->m_value) == static_cast<te_fun2>(te_builtins::te_pow)))
         {
         const te_fun2 t = get_function2(theState->m_value);
         next_token(theState);
 
-        if (insertion)
+        te_expr* exponent = power(theState);
+        const bool exponentIsUnary{ theState->m_appliedUnary };
+
+        te_expr* insert{ nullptr };
+        if (slotOwner != nullptr)
             {
-            /* Make exponentiation go right-to-left. */
-            te_expr* insert = new_expr(TE_PURE, t, { insertion->m_parameters[1], power(theState) });
-            insertion->m_parameters[1] = insert;
-            insertion = insert;
+            insert = new_expr(TE_PURE, t, { slotOwner->m_parameters[slotIndex], exponent });
+            slotOwner->m_parameters[slotIndex] = insert;
             }
         else
             {
-            ret = new_expr(TE_PURE, t, { ret, power(theState) });
-            insertion = ret;
+            ret = new_expr(TE_PURE, t, { ret, exponent });
+            insert = ret;
             }
+
+        slotOwner = exponentIsUnary ? exponent : insert;
+        slotIndex = exponentIsUnary ? 0 : 1;
         }
 
-    if (neg)
+    if (leftUnary != nullptr)
         {
-        ret = new_expr(TE_PURE, te_variant_type(te_builtins::te_negate), { ret });
+        ret = new_expr(TE_PURE, te_variant_type(leftUnary), { ret });
         }
 
     return ret;
@@ -2770,6 +3262,9 @@ te_expr* te_parser::power(state* theState)
         ret = base(theState);
         }
 
+    // set last, so that any nesting inside base() can't clobber it
+    theState->m_appliedUnary = (theSign == -1 || bitwiseNot);
+
     return ret;
     }
 
@@ -2810,6 +3305,37 @@ te_type te_parser::te_eval(const te_expr* texp)
                 {
                 return *var;
                 }
+            // a string literal has no numeric value of its own
+            if constexpr (te_is_string_v<T>)
+                {
+                return te_nan;
+                }
+            if constexpr (te_is_arg_function_v<T> || te_is_arg_closure_v<T>)
+                {
+                const size_t argCount = get_parameter_count(texp);
+                std::vector<te_arg> args;
+                args.reserve(argCount);
+                for (size_t i = 0; i < argCount; ++i)
+                    {
+                    const te_expr* param = texp->m_parameters[i];
+                    if (param != nullptr && is_string(param->m_value))
+                        {
+                        args.emplace_back(get_string(param->m_value));
+                        }
+                    else
+                        {
+                        args.emplace_back(te_eval(param));
+                        }
+                    }
+                if constexpr (te_is_arg_closure_v<T>)
+                    {
+                    return var(texp->m_parameters[argCount], args);
+                    }
+                else
+                    {
+                    return var(args);
+                    }
+                }
             if constexpr (std::is_same_v<T, te_fun0>)
                 {
                 return var();
@@ -2838,8 +3364,6 @@ te_type te_parser::te_eval(const te_expr* texp)
     // NOLINTEND
     }
 
-#pragma warning(pop)
-
 //--------------------------------------------------
 void te_parser::optimize(te_expr* texp)
     {
@@ -2848,7 +3372,7 @@ void te_parser::optimize(te_expr* texp)
         return;
         }
     /* Evaluates as much as possible. */
-    if (is_constant(texp->m_value) || is_variable(texp->m_value))
+    if (is_constant(texp->m_value) || is_variable(texp->m_value) || is_string(texp->m_value))
         {
         return;
         }
@@ -2856,7 +3380,9 @@ void te_parser::optimize(te_expr* texp)
     /* Only optimize out functions flagged as pure. */
     if (is_pure(texp->m_type))
         {
-        const auto arity = get_arity(texp->m_value);
+        // not get_arity(), which is zero for te_arg_fun and would fold
+        // the call away without ever looking at its arguments
+        const auto arity = get_parameter_count(texp);
         bool known{ true };
         for (std::decay_t<decltype(arity)> i = 0; i < arity; ++i)
             {
@@ -2865,7 +3391,9 @@ void te_parser::optimize(te_expr* texp)
                 break;
                 }
             optimize(texp->m_parameters[i]);
-            if (!is_constant(texp->m_parameters[i]->m_value))
+            // string literals are constant too, so a pure function of them can fold
+            if (!is_constant(texp->m_parameters[i]->m_value) &&
+                !is_string(texp->m_parameters[i]->m_value))
                 {
                 known = false;
                 }
@@ -2942,7 +3470,7 @@ bool te_parser::compile(const std::string_view expression)
     size_t commentStart{ 0 };
     while (commentStart != std::string::npos)
         {
-        commentStart = m_expression.find('/', commentStart);
+        commentStart = find_outside_of_string(m_expression, '/', commentStart);
         if (commentStart == std::string::npos || commentStart == m_expression.length() - 1)
             {
             break;
