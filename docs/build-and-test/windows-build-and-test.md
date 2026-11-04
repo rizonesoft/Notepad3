@@ -43,6 +43,7 @@ Use the default solution target for integration, as CI does. If a narrower targe
 ## Tests and CI
 
 - Product CI is `.github\workflows\build.yml`: `windows-2025-vs2026`, Release on Win32, x64, x64_AVX2, and ARM64. Version/GUI tests run on Win32 and x64.
+- Docs CI is `.github\workflows\docs.yml`; it runs the existing docs checker independently, including Markdown-only changes that skip the product build.
 - `cmd /d /c "call test\TestFileVersion.cmd"` checks existing x86/x64 binaries against today's date and `Versions\build.txt`. Old local binaries can fail without a source regression; compare the reported expected/actual versions.
 - The GUI smoke test requires AutoHotkey v2 and an available desktop: `cmd /d /c "cd /d test && call TestAhkNotepad3.cmd"`. It creates `test\_TESTDIR`, copies an executable/config, and writes `test\test.log`; do not run it in a read-only review or on a shared desktop without approval.
 - In the shared CI `shell: cmd` test step, preserve `|| exit /b 1` after the version test so the GUI command cannot mask its failure.

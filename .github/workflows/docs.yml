@@ -1,0 +1,31 @@
+name: Docs
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - '**/*.md'
+      - 'Build/scripts/Test-Docs.ps1'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    branches: [master]
+    paths:
+      - '**/*.md'
+      - 'Build/scripts/Test-Docs.ps1'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  docs:
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Validate documentation
+        shell: pwsh
+        run: pwsh -NoProfile -File Build\scripts\Test-Docs.ps1
