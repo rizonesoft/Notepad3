@@ -1,5 +1,7 @@
 # Deferred File Loading Enhancements — ILoader, ANSI Memory, Chunked Streaming
 
+> Deferred proposal and historical implementation notes, not current instructions. Recheck source anchors and completion status; any remaining refactoring requires explicit task approval.
+
 ## Background: What Was Already Implemented
 
 In a prior session, these items were analyzed and **already committed** to `Dev_Master`:

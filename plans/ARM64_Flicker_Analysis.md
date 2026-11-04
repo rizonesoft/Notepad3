@@ -1,5 +1,7 @@
 # ARM64 Flicker Analysis — Notepad3 Editor Pane
 
+> Historical analysis, not current implementation instructions. Source locations, causal hypotheses, and mitigation results below belong to the recorded snapshot; reverify them before use. This document does not authorize further changes.
+
 **Scope:** Slow, visible flicker in the Scintilla editor pane on Qualcomm ARM64 devices, strongly correlated with paste operations, aggravated by Windows 11 25H2, behaving differently across GDI vs. D2D rendering. A recent ARM64 mitigation reduced but did not eliminate the problem.
 
 **Date:** 2026-04-24

@@ -1,5 +1,7 @@
 # Notepad3.c Refactoring — Extract Utilities & Split MsgCommand()
 
+> Historical work record with deferred ideas, not a current refactoring mandate. Counts, source locations, and completion claims describe an earlier snapshot; verify them against current code before reuse.
+
 ## Context
 
 `src/Notepad3.c` was the largest module in the project at **12,985 lines**. It contained ~55 static functions and ~60 static variables spanning unrelated concerns (auto-scroll, file observation, bitmap loading, text input helpers, TinyExpr evaluation, etc.) plus a monolithic `MsgCommand()` dispatcher (2,994 lines, 360+ case statements). This refactoring improves navigability and separation of concerns without changing any behavior.

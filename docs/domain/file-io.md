@@ -16,7 +16,7 @@
 - `OpenFileDlg()` / `_ResolveOpenInitialDir()` in `src\Dialogs.c` prefer an explicit initial path, then the current file's directory, `Settings.DefaultDirectoryOverride`, and `Settings2.DefaultDirectory`.
 - With none of those available and `Settings.SaveRecentFiles` enabled, Open uses the newest MRU entry's parent directory if it exists (the file itself need not exist). Otherwise it uses `Paths.WorkingDirectory`. It does not search older MRU entries.
 - MRU paths must be sanitized, unquoted, and expanded with `Path_AbsoluteFromApp(..., true)` before taking the parent directory with the drive-root-safe `_GetParentDir()`. An unavailable parent clears the candidate so the shared resolver supplies the working directory. Save dialogs do not use history.
-- An invalid final directory still falls back to Documents; Save also requires a writable directory. Focused coverage: `test\TestOpenDialogDirectory.ps1`.
+- An invalid final directory still falls back to Documents; Save also requires a writable directory. Focused resolver coverage: `pwsh -NoProfile -File test\TestOpenDialogDirectory.ps1`; see the [build/test guide](../build-and-test/windows-build-and-test.md#focused-feedback) for its in-memory stub boundaries.
 
 ## File watching
 
@@ -25,6 +25,6 @@
 ## Recent files dialog (`FileMRUDlgProc`, `Dialogs.c`)
 
 - OK on a missing entry only offers removal (`IDS_MUI_ERR_MRUDLG`). Recovery actions live in the list's context menu (right-click / Shift+F10, `_FileMRU_ContextMenu()`): open containing folder, browse for renamed/moved file, copy full path / directory / file name (`IDC_MRU_*`, `IDS_MUI_MRU_*`).
-- Folder actions walk up to the nearest existing parent with `_FindExistingDirectory()`. "Browse" opens `OpenFileDlg()` there, deletes the old MRU entry (unless it is the current file) and returns the chosen path through the dialog's `DWLP_USER` `HPATHL` (`EndDialog(IDOK)`), so `IDM_FILE_RECENT` in `Notepad3.c` loads it.
+- Folder actions walk up to the nearest existing parent with `_FindExistingParentDir()` in `src\Dialogs.c`. "Browse" opens `OpenFileDlg()` there, deletes the old MRU entry (unless it is the current file) and returns the chosen path through the dialog's `DWLP_USER` `HPATHL` (`EndDialog(IDOK)`), so `IDM_FILE_RECENT` in `Notepad3.c` loads it.
 - Use a local `HPATHL` in dialog actions; the dialog's `hFilePath` is shared with the `FileMRUIconThread` worker.
 - Shell APIs need the `\\?\` prefix stripped: use `ShellRevealInExplorer()` / `_PathForShell()` in `Dialogs.c`.

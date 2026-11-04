@@ -1,4 +1,4 @@
-# Open Questions and Coverage Review
+# Open Questions
 
 Holding area for findings that are **not yet verified enough** for a topic page. Nothing here is authoritative; do not act on an entry without checking the code. Promote verified entries into the relevant page and delete them here; delete entries that turn out to be wrong.
 
@@ -13,14 +13,3 @@ Add one bullet per finding: `- <area/file>: <observation> — <what would verify
 - `src\Edit.c` `EditHasTrailingBlanks`: three messages per line; a `SCI_SEARCHINTARGET` regex for `[ \t]$` might be faster — benchmark on a large file before changing (2026-10-29).
 - `src\Edit.c` `_FindInTarget`: the pattern conversion is now cached, but `SciCall_SetSearchFlags` and the target save/restore still run on every call; the gain from splitting those into a prepare and an iterate step was not measured (2026-10-30).
 - `src\Edit.c` Scintilla-API audit, second pass (2026-10-30): read the find/replace functions, `EditSortLines`, clipboard, `EditConvertText`, URL, Base64 and hex tools and `EditModifyNumber`. No further Scintilla message replaces home-grown code there (there is no Scintilla replace-all, recode, locale sort or wildcard search). Not read: the dialog procedures (~6930-7930 and ~9377-10260).
-
-## Coverage review
-
-Pages that are small relative to the area they cover. They are review candidates, not known to be incomplete. When a session works in one of these areas, compare the page against the code and extend it with verified guidance; remove the row once reviewed.
-
-| Page | Size | Area to compare against |
-|---|---|---|
-| [Regular expressions](domain/regular-expressions.md) | ~1 KB | PCRE2 integration and search/replace paths |
-| [Localization](domain/localization.md) | ~1.4 KB | Locale resources under `language\` and string-adding workflow |
-| [Configuration and INI](domain/configuration-and-ini.md) | ~1.9 KB | `Config.cpp` settings load/save and `Settings` / `Settings2` structs |
-| [Lexer development](domain/lexer-development.md) | ~2.9 KB | Lexer registration, styles, and themes |

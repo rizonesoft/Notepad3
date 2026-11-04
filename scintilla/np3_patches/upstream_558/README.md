@@ -1,5 +1,7 @@
 # Scintilla 5.5.8 Upstream Cherry-Pick Patches
 
+> Historical import record for an older baseline, not the current Scintilla version or a fresh verification result. Preserve relevant Notepad3 deltas, but compare current sources before applying any old patch. The build path below is historical evidence, not a command for this checkout.
+
 All beneficial changes from Scintilla 5.5.8 have been applied to NP3's 5.5.7 baseline.
 
 ## ✅ All Changes Applied
@@ -42,4 +44,3 @@ Build completed successfully with exit code 0:
 ```
 Notepad3.vcxproj -> R:\GitHub\Notepad3\Bin\Release_x64_v145\Notepad3.exe
 ```
-

@@ -126,6 +126,8 @@ bool PTHAPI            Path_DeleteFile(const HPATHL hpth);
 bool PTHAPI            Path_ReplaceFile(const HPATHL hpth_replaced, LPCWSTR lpszReplacementFile);
 bool PTHAPI            Path_MoveFileEx(LPCWSTR lpszSource, const HPATHL hpth_dest, DWORD dwFlags);
 HANDLE PTHAPI          Path_FindFirstFile(const HPATHL hpth, LPWIN32_FIND_DATAW lpFindData);
+// S_OK: created; HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS): directory already exists (FAILED() is true - compare explicitly);
+// any other value: failure (a conflicting file yields HRESULT_FROM_WIN32(ERROR_FILE_EXISTS))
 HRESULT PTHAPI         Path_CreateDirectoryEx(const HPATHL hpth);
 bool PTHAPI            Path_StripToRoot(HPATHL hpth_in_out);
 bool PTHAPI            Path_GetCurrentDirectory(HPATHL hpth_out);

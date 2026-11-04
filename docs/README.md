@@ -2,28 +2,41 @@
 
 This directory holds repository-specific guidance for contributors and coding agents. [`AGENTS.md`](../AGENTS.md) is the session entry point; use this index to find relevant details without scanning the repository.
 
-## Documentation rules
+Scoped signposts live in [`src\AGENTS.md`](../src/AGENTS.md) and [`src\Config\AGENTS.md`](../src/Config/AGENTS.md), with one-line CLAUDE import adapters. They link to these canonical topics rather than importing them all. For a tool-version/settings check, confirm the applicable files in Claude `/context all` or Copilot `/instructions`; filesystem access alone does not establish that instructions loaded.
 
-- **Optimize for retrieval.** Put one coherent topic in each file, use descriptive filenames and scannable headings, and place the task-specific guidance before background context.
-- **Be concise and actionable.** Record verified behavior, constraints, decision points, failure modes, and required implementation/test touchpoints. Prefer a precise bullet, short procedure, or small lookup table over narrative.
-- **Link to evidence.** Include exact repository paths and relevant identifiers so an agent can jump to implementation, tests, or user-facing configuration. Do not copy large code excerpts or repeat information already maintained elsewhere.
-- **Maintain the source of truth.** In each session, capture verified, durable repo-specific insights found during implementation, debugging, or investigation. Create and index a focused page when a useful topic is missing; update or remove guidance when code changes make it inaccurate.
-- **Keep pages lean.** Exclude transient notes, unverified hypotheses (see below), generic programming advice, and details an agent can safely derive from a nearby definition. Consolidate overlap and link to the canonical page.
-- **Keep navigation complete.** Add every page to this index with a short description; use links between related pages instead of duplicating their content.
-- **Respect the size guideline.** Split a page when it exceeds about 8 KB or covers two distinct tasks; `Build\scripts\Test-Docs.ps1` warns above 8 KB.
-- **Park unverified findings.** Record tentative observations in [`open-questions.md`](open-questions.md) with how to verify them, not in topic pages. Promote or delete them once checked.
-- **Validate after editing docs.** Run `pwsh Build\scripts\Test-Docs.ps1` (index completeness, relative links, anchors, page size).
-- Keep `AGENTS.md` concise and limited to startup guidance and navigation.
+## Writing a page
+
+- Follow the [root documentation policy](../AGENTS.md#documentation) for proposals, evidence, uncertainty, and validation.
+- Keep one coherent topic per page, with actionable constraints before background and exact source/test paths or symbols.
+- Link canonical guidance instead of copying it; add any new page to the routing table below.
+- The docs checker warns above 8 KB. Split only when it improves retrieval; short pages do not need expansion.
+
+### Verification metadata pilot
+
+Only [PathLib](domain/pathlib.md) and [configuration](domain/configuration-and-ini.md) currently pilot metadata. Existing pages without it remain accepted. Headers use `status`, a full `verified-at` source commit, `owner`, and `anchors` entries with repository-relative `path` plus a literal `symbol`. A path-only anchor must instead include a `reason`. Keep the YAML subset simple: scalar fields and the anchor list, no multiline values or aliases.
+
+Use `agent-observed` for code-backed agent findings; only @RaiKoHoff may approve `human-verified` status. Ownership routes review; it does not certify correctness. Each pilot states its evidence scope so the commit does not imply every sentence was verified. Uncertain observations stay in [Open questions](open-questions.md). Do not bulk-stamp old pages with the latest commit.
+
+The checker rejects malformed declared metadata, missing/untracked anchor files, absent literal symbols, and invalid/non-ancestor verification commits. Source changes or dirty anchored files warn "possibly stale", not "wrong"; shallow missing history warns "verification unavailable". Symbol matching is a case-sensitive token search, not semantic proof. Run checker regression cases with `pwsh -NoProfile -File Build\scripts\tests\Test-Docs.Tests.ps1` when changing the checker.
+
+### Maintenance and pruning
+
+- @RaiKoHoff is the human documentation approver. No CODEOWNERS-based review routing is configured by this policy.
+- When a task changes documented behavior, review the affected guidance, not the entire tree. Correct/remove directly affected false claims; propose new knowledge only when useful.
+- Quarterly, the approver reviews possibly stale evidence, unresolved observations, and redundant prose. This is a lightweight human review, not an automated rewrite or expansion job.
+- Remove demonstrably wrong or duplicated entries. Do not delete a page solely because it is old, short, cold, or absent from a small task sample; rare high-risk invariants can still matter.
+- Keep historical plans in place with status labels and off the default task route. Promote observations only with evidence; delete disproven ones. Archival/deletion beyond an approved change needs owner review.
+- Benchmark agent runs and advanced code-intelligence/sanitizer setup are deferred and require separate scope/budget approval. No access telemetry or scheduled agent work is introduced.
 
 ## Where to look
 
 | If you are changing... | Read |
 |---|---|
+| Bug fix, small feature, characterization test, focused check, or doc proposal | [Maintenance playbooks](playbooks/maintenance.md) (read only the relevant procedure) |
 | Menus, commands, source layout, coding conventions, buffers | [Codebase and conventions](architecture/codebase-and-conventions.md) |
 | Replacing home-grown `Edit.c` code with Scintilla messages | [Scintilla API usage](architecture/scintilla-api-usage.md) |
 | Build, MSBuild, CI, test scripts, Python scripting | [Windows build and test](build-and-test/windows-build-and-test.md) |
-| `Edit.c` load/save, atomic save, file watching | [File I/O](domain/file-io.md) |
-| Open dialog start directory, Recent files dialog | [File I/O](domain/file-io.md) |
+| `Edit.c` load/save, atomic save, file watching, Open/MRU dialogs | [File I/O](domain/file-io.md) |
 | Any Win32 file/path call on `HPATHL` | [PathLib](domain/pathlib.md) |
 | Encoding selection or UTF-16/32 handling | [Encoding detection](domain/encoding-detection.md), then [diagnostics and tests](domain/encoding-diagnostics-and-tests.md) |
 | Lexers, styles, themes | [Lexer development](domain/lexer-development.md) |
@@ -33,23 +46,4 @@ This directory holds repository-specific guidance for contributors and coding ag
 | Dark mode, rendering, theme-change redraw | [Dark mode and rendering](domain/ui-rendering.md) |
 | Startup, activation, AppID, new-window reuse | [Startup and window lifecycle](domain/startup-and-window-lifecycle.md) |
 | Expression evaluation (`=?`, Go To, line numbering), `tinyexpr_cif` | [TinyExpr++ wrapper](domain/tinyexpr-wrapper.md) |
-
-## Contents
-
-| Topic | Description | Pages |
-|---|---|---|
-| Architecture | Source map, command dispatch, vendored libraries, coding conventions, and implementation patterns. | [Codebase and conventions](architecture/codebase-and-conventions.md) |
-| Architecture: Scintilla API | Verified constraints of Scintilla messages when replacing home-grown `Edit.c` code. | [Scintilla API usage](architecture/scintilla-api-usage.md) |
-| Build and test | Windows build targets, MSBuild invocation, CI and test gotchas, Python environment. | [Windows build and test](build-and-test/windows-build-and-test.md) |
-| Domain: configuration | Portable INI lifecycle, persistence rules, and save/load behavior. | [Configuration and INI](domain/configuration-and-ini.md) |
-| Domain: localization | Locale resource invariants, encoding/line-ending requirements, and adding UI strings. | [Localization](domain/localization.md) |
-| Domain: lexer development | Lexer registration, property/comment/theme/localization touchpoints, and visual fixtures. | [Lexer development](domain/lexer-development.md) |
-| Domain: encoding | Detection precedence, UTF validation and heuristics, UCHARDET sampling, and UTF-32 load conversion. | [Encoding detection](domain/encoding-detection.md) |
-| Domain: encoding diagnostics | Developer title diagnostics, abbreviations, and the native regression harness. | [Encoding diagnostics and tests](domain/encoding-diagnostics-and-tests.md) |
-| Domain: regular expressions | PCRE2 integration, search/replacement syntax, regex translations, and URL hotspots. | [Regular expressions](domain/regular-expressions.md) |
-| Domain: startup and lifecycle | Pasteboard activation, taskbar Shift+Click handoff, AppID grouping, and new-window reuse behavior. | [Startup and window lifecycle](domain/startup-and-window-lifecycle.md) |
-| Domain: file I/O | Load/save flow, atomic saves, error handling, file watching, Open-dialog initial directory, and Recent files dialog. | [File I/O](domain/file-io.md) |
-| Domain: paths | PathLib wrappers, long-path handling, and path comparison rules. | [PathLib](domain/pathlib.md) |
-| Domain: UI rendering | Dark mode, ARM64 rendering technology, and theme-change redraw. | [Dark mode and rendering](domain/ui-rendering.md) |
-| Domain: expressions | C wrapper over TinyExpr++: contract, length-preserving pre-pass, error positions, callers. | [TinyExpr++ wrapper](domain/tinyexpr-wrapper.md) |
-| Docs maintenance | Unverified findings and pages queued for coverage review. | [Open questions and coverage review](open-questions.md) |
+| Unverified findings / what would verify them | [Open questions](open-questions.md) |

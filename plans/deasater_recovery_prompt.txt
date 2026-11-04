@@ -1,3 +1,5 @@
+STATUS: Historical task prompt, not active instructions. Requirements and implementation status must be reconfirmed before any new work is authorized.
+
 please make a plan for implementing a kind of "disaster file recovery":
 - on application crash/sigkill/sigint/sys-shutdown there should be a directory (user's %APPDATA%/Notepad3/recovery/) where recovery bundle files are kept
 - one file to keep the original document (respect encryption)
