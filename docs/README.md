@@ -2,6 +2,8 @@
 
 This directory holds repository-specific guidance for contributors and coding agents. [`AGENTS.md`](../AGENTS.md) is the session entry point; use this index to find relevant details without scanning the repository.
 
+Scoped signposts live in [`src\AGENTS.md`](../src/AGENTS.md) and [`src\Config\AGENTS.md`](../src/Config/AGENTS.md), with one-line CLAUDE import adapters. They link to these canonical topics rather than importing them all. For a tool-version/settings check, confirm the applicable files in Claude `/context all` or Copilot `/instructions`; filesystem access alone does not establish that instructions loaded.
+
 ## Writing a page
 
 - Follow the [root documentation policy](../AGENTS.md#documentation) for proposals, evidence, uncertainty, and validation.
