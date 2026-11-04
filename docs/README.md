@@ -23,6 +23,7 @@ The checker rejects malformed declared metadata, missing/untracked anchor files,
 
 | If you are changing... | Read |
 |---|---|
+| Bug fix, small feature, characterization test, focused check, or doc proposal | [Maintenance playbooks](playbooks/maintenance.md) (read only the relevant procedure) |
 | Menus, commands, source layout, coding conventions, buffers | [Codebase and conventions](architecture/codebase-and-conventions.md) |
 | Replacing home-grown `Edit.c` code with Scintilla messages | [Scintilla API usage](architecture/scintilla-api-usage.md) |
 | Build, MSBuild, CI, test scripts, Python scripting | [Windows build and test](build-and-test/windows-build-and-test.md) |
