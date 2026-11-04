@@ -6,10 +6,13 @@ Run commands from the repository root. Discover installed tools before assuming 
 
 ```powershell
 pwsh -NoProfile -File test\test_files\encoding\TestEncodingDetection.ps1
+pwsh -NoProfile -File test\TestOpenDialogDirectory.ps1
 pwsh -NoProfile -File Build\scripts\Test-Docs.ps1
 ```
 
 The encoding runner compiles current detector functions in a temporary native harness and removes its generated files. It requires Visual C++ build tools and stubs application state and UCHARDET; it does not test the full editor load path. See [Encoding diagnostics and tests](../domain/encoding-diagnostics-and-tests.md#regression-coverage).
+
+The Open-directory runner also requires Visual C++ build tools. It extracts `_GetParentDir`, `_CanonicalizeInitialDir`, and `_ResolveOpenInitialDir` from `src\Dialogs.c` into a temporary harness with in-memory path/MRU stubs. Its 14 cases cover precedence, missing recent files/directories, drive roots, quoted relative history, and the Save/history distinction. It does not exercise real PathLib/filesystem behavior, environment expansion, `OpenFileDlg` aliasing, or the Windows dialog UI.
 
 For compiler-only feedback on the main project, locate MSBuild:
 
