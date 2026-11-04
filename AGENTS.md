@@ -17,10 +17,9 @@ Quick routing (details in `docs\`): file load/save, open/MRU dialogs → `docs/d
 ## Documentation
 
 - Consult the index in [`docs/README.md`](docs/README.md) to find repository-specific guidance without scanning the repository.
-- During each session, capture verified, durable Notepad3 insights found during implementation, debugging, or repository investigation in the relevant `docs\` page. If an investigation uncovers a useful topic not covered by the index, create a focused page in the appropriate subdirectory and add it to the index.
-- Update or remove guidance when code changes make it inaccurate. Do not add transient observations or duplicate material to topic pages (unverified hypotheses go to `docs/open-questions.md`); link to the canonical page instead.
-- Before editing a file or identifier that a docs page cites, grep `docs\` for its name and re-read that page; fix it in the same change if it is now inaccurate.
-- Park unverified findings in [`docs/open-questions.md`](docs/open-questions.md), not in topic pages. When working in an area listed in its coverage review, compare the page with the code and extend it.
-- **Wrap-up check (every session that touched code or investigated behavior):** before finishing, decide whether you learned something non-obvious and durable that `docs\` lacks. Either update/add the page (and the index) or state "no doc update needed" in your final summary. After editing docs, run `pwsh Build\scripts\Test-Docs.ps1`.
-- Write docs for fast agent retrieval: concise actionable guidance, scannable headings, and exact source/test paths or identifiers; prioritize task-relevant constraints and decision points over background narrative.
+- Docs may be stale. Verify relevant source paths and symbols before relying on a claim; when changing cited behavior, check the affected guidance too.
+- Propose doc changes only for a durable invariant, rationale, or trap that prevents a repeated mistake, or to correct/remove inaccurate guidance. Include exact source/test anchors and verification evidence in the diff or PR description; a human reviews the proposal. Do not claim human verification without that review.
+- Keep uncertain observations separate in [`docs/open-questions.md`](docs/open-questions.md), with what would verify them. Do not add speculative claims to topic pages.
+- No doc update is required just because a session investigated code or a page is short. Avoid code paraphrases and duplicate guidance; link to the canonical page. Index any approved new topic page.
+- After editing docs, run `pwsh Build\scripts\Test-Docs.ps1`.
 - Keep this file as the agent’s operating guidance and navigation entry point; use `docs\` for detailed reference material.

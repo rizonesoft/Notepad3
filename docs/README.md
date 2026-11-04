@@ -7,10 +7,10 @@ This directory holds repository-specific guidance for contributors and coding ag
 - **Optimize for retrieval.** Put one coherent topic in each file, use descriptive filenames and scannable headings, and place the task-specific guidance before background context.
 - **Be concise and actionable.** Record verified behavior, constraints, decision points, failure modes, and required implementation/test touchpoints. Prefer a precise bullet, short procedure, or small lookup table over narrative.
 - **Link to evidence.** Include exact repository paths and relevant identifiers so an agent can jump to implementation, tests, or user-facing configuration. Do not copy large code excerpts or repeat information already maintained elsewhere.
-- **Maintain the source of truth.** In each session, capture verified, durable repo-specific insights found during implementation, debugging, or investigation. Create and index a focused page when a useful topic is missing; update or remove guidance when code changes make it inaccurate.
+- **Propose changes selectively.** Follow the [root documentation policy](../AGENTS.md#documentation): propose useful invariants, reasons, traps, or corrections with source anchors and verification evidence for human review. Investigation alone does not require a doc update.
 - **Keep pages lean.** Exclude transient notes, unverified hypotheses (see below), generic programming advice, and details an agent can safely derive from a nearby definition. Consolidate overlap and link to the canonical page.
 - **Keep navigation complete.** Add every page to this index with a short description; use links between related pages instead of duplicating their content.
-- **Respect the size guideline.** Split a page when it exceeds about 8 KB or covers two distinct tasks; `Build\scripts\Test-Docs.ps1` warns above 8 KB.
+- **Treat size as a signal, not a goal.** `Build\scripts\Test-Docs.ps1` warns above 8 KB; split only when it improves task-specific retrieval. Short pages do not need expansion.
 - **Park unverified findings.** Record tentative observations in [`open-questions.md`](open-questions.md) with how to verify them, not in topic pages. Promote or delete them once checked.
 - **Validate after editing docs.** Run `pwsh Build\scripts\Test-Docs.ps1` (index completeness, relative links, anchors, page size).
 - Keep `AGENTS.md` concise and limited to startup guidance and navigation.
@@ -52,4 +52,4 @@ This directory holds repository-specific guidance for contributors and coding ag
 | Domain: paths | PathLib wrappers, long-path handling, and path comparison rules. | [PathLib](domain/pathlib.md) |
 | Domain: UI rendering | Dark mode, ARM64 rendering technology, and theme-change redraw. | [Dark mode and rendering](domain/ui-rendering.md) |
 | Domain: expressions | C wrapper over TinyExpr++: contract, length-preserving pre-pass, error positions, callers. | [TinyExpr++ wrapper](domain/tinyexpr-wrapper.md) |
-| Docs maintenance | Unverified findings and pages queued for coverage review. | [Open questions and coverage review](open-questions.md) |
+| Docs maintenance | Unverified findings and how to verify them. | [Open questions](open-questions.md) |
