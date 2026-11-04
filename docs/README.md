@@ -19,6 +19,15 @@ Use `agent-observed` for code-backed agent findings; only @RaiKoHoff may approve
 
 The checker rejects malformed declared metadata, missing/untracked anchor files, absent literal symbols, and invalid/non-ancestor verification commits. Source changes or dirty anchored files warn "possibly stale", not "wrong"; shallow missing history warns "verification unavailable". Symbol matching is a case-sensitive token search, not semantic proof. Run checker regression cases with `pwsh -NoProfile -File Build\scripts\tests\Test-Docs.Tests.ps1` when changing the checker.
 
+### Maintenance and pruning
+
+- @RaiKoHoff is the human documentation approver. No CODEOWNERS-based review routing is configured by this policy.
+- When a task changes documented behavior, review the affected guidance, not the entire tree. Correct/remove directly affected false claims; propose new knowledge only when useful.
+- Quarterly, the approver reviews possibly stale evidence, unresolved observations, and redundant prose. This is a lightweight human review, not an automated rewrite or expansion job.
+- Remove demonstrably wrong or duplicated entries. Do not delete a page solely because it is old, short, cold, or absent from a small task sample; rare high-risk invariants can still matter.
+- Keep historical plans in place with status labels and off the default task route. Promote observations only with evidence; delete disproven ones. Archival/deletion beyond an approved change needs owner review.
+- Benchmark agent runs and advanced code-intelligence/sanitizer setup are deferred and require separate scope/budget approval. No access telemetry or scheduled agent work is introduced.
+
 ## Where to look
 
 | If you are changing... | Read |
