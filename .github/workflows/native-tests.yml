@@ -1,0 +1,45 @@
+name: Native regression tests
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'src/Encoding.c'
+      - 'src/Encoding.h'
+      - 'src/uchardet/EncodingDetection.cpp'
+      - 'src/Dialogs.c'
+      - 'test/test_files/encoding/TestEncodingDetection.*'
+      - 'test/test_files/encoding/UTF-16/**'
+      - 'test/TestOpenDialogDirectory.*'
+      - '.github/workflows/native-tests.yml'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'src/Encoding.c'
+      - 'src/Encoding.h'
+      - 'src/uchardet/EncodingDetection.cpp'
+      - 'src/Dialogs.c'
+      - 'test/test_files/encoding/TestEncodingDetection.*'
+      - 'test/test_files/encoding/UTF-16/**'
+      - 'test/TestOpenDialogDirectory.*'
+      - '.github/workflows/native-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Encoding regression
+        shell: pwsh
+        run: pwsh -NoProfile -File test\test_files\encoding\TestEncodingDetection.ps1
+
+      - name: Open-directory regression
+        shell: pwsh
+        run: pwsh -NoProfile -File test\TestOpenDialogDirectory.ps1
