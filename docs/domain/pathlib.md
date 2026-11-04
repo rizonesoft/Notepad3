@@ -14,5 +14,5 @@ Do not call Win32 file APIs directly with `Path_Get(hpth)`. Use PathLib wrappers
 | `Path_CreateDirectoryEx` | `SHCreateDirectoryExW` |
 | `Path_IsExistingFile` / `Path_IsExistingDirectory` | `GetFileAttributesW` plus a type check |
 
-- Compare paths with `Path_StrgComparePath()` (normalization and locale-independent, case-insensitive `CompareStringOrdinal`). For raw wide strings use `CompareStringOrdinal(s1, -1, s2, -1, TRUE)`. Never use `_wcsicmp` / `_wcsnicmp`.
-- Use `Path_CreateDirectoryEx(hpth)` to create directories. Success is `SUCCEEDED(hr)` or `hr == HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS)`; see `CreateIniFile()` in `Config.cpp`.
+- Compare paths with `Path_StrgComparePath()` (`src\PathLib.c`): it normalizes only when `bNormalize` is true, then uses locale-independent, case-insensitive `CompareStringOrdinal`. For raw wide strings use `CompareStringOrdinal(s1, -1, s2, -1, TRUE)`. Never use `_wcsicmp` / `_wcsnicmp` for path identity.
+- `Path_CreateDirectoryEx(hpth)` in `src\PathLib.c` currently returns the raw `SHCreateDirectoryExW` status despite its `HRESULT` declaration. Check `ERROR_SUCCESS` or `ERROR_ALREADY_EXISTS` explicitly; do not use `SUCCEEDED` / `FAILED` or compare with `HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS)`. The existing HRESULT-style check in `src\Config\Config.cpp:CreateIniFile` is not a safe template: positive Win32 error codes would pass it.
