@@ -1463,9 +1463,18 @@ HRESULT PTHAPI Path_CreateDirectoryEx(const HPATHL hpth)
 {
     HPATHL hxpth = Path_Allocate(PathGet(hpth));
     PrependLongPathPrefix(hxpth);
-    HRESULT const hr = SHCreateDirectoryExW(NULL, PathGet(hxpth), NULL);
+    // SHCreateDirectoryExW returns a raw Win32 error code (not an HRESULT).
+    DWORD const dwStatus = (DWORD)SHCreateDirectoryExW(NULL, PathGet(hxpth), NULL);
     Path_Release(hxpth);
-    return hr;
+
+    if (dwStatus == ERROR_SUCCESS) {
+        return S_OK;
+    }
+    if ((dwStatus == ERROR_ALREADY_EXISTS) || (dwStatus == ERROR_FILE_EXISTS)) {
+        // the same status is reported for an existing file: only a directory is "already exists"
+        return HRESULT_FROM_WIN32(Path_IsExistingDirectory(hpth) ? ERROR_ALREADY_EXISTS : ERROR_FILE_EXISTS);
+    }
+    return HRESULT_FROM_WIN32(dwStatus);
 }
 // ----------------------------------------------------------------------------
 

@@ -8,9 +8,14 @@ on:
       - 'src/Encoding.h'
       - 'src/uchardet/EncodingDetection.cpp'
       - 'src/Dialogs.c'
+      - 'src/PathLib.c'
+      - 'src/PathLib.h'
+      - 'src/Notepad3.c'
+      - 'src/Config/Config.cpp'
       - 'test/test_files/encoding/TestEncodingDetection.*'
       - 'test/test_files/encoding/UTF-16/**'
       - 'test/TestOpenDialogDirectory.*'
+      - 'test/TestCreateDirectory.*'
       - '.github/workflows/native-tests.yml'
   pull_request:
     branches: [master]
@@ -19,9 +24,14 @@ on:
       - 'src/Encoding.h'
       - 'src/uchardet/EncodingDetection.cpp'
       - 'src/Dialogs.c'
+      - 'src/PathLib.c'
+      - 'src/PathLib.h'
+      - 'src/Notepad3.c'
+      - 'src/Config/Config.cpp'
       - 'test/test_files/encoding/TestEncodingDetection.*'
       - 'test/test_files/encoding/UTF-16/**'
       - 'test/TestOpenDialogDirectory.*'
+      - 'test/TestCreateDirectory.*'
       - '.github/workflows/native-tests.yml'
   workflow_dispatch:
 
@@ -43,3 +53,7 @@ jobs:
       - name: Open-directory regression
         shell: pwsh
         run: pwsh -NoProfile -File test\TestOpenDialogDirectory.ps1
+
+      - name: Create-directory regression
+        shell: pwsh
+        run: pwsh -NoProfile -File test\TestCreateDirectory.ps1
