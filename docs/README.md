@@ -2,18 +2,12 @@
 
 This directory holds repository-specific guidance for contributors and coding agents. [`AGENTS.md`](../AGENTS.md) is the session entry point; use this index to find relevant details without scanning the repository.
 
-## Documentation rules
+## Writing a page
 
-- **Optimize for retrieval.** Put one coherent topic in each file, use descriptive filenames and scannable headings, and place the task-specific guidance before background context.
-- **Be concise and actionable.** Record verified behavior, constraints, decision points, failure modes, and required implementation/test touchpoints. Prefer a precise bullet, short procedure, or small lookup table over narrative.
-- **Link to evidence.** Include exact repository paths and relevant identifiers so an agent can jump to implementation, tests, or user-facing configuration. Do not copy large code excerpts or repeat information already maintained elsewhere.
-- **Propose changes selectively.** Follow the [root documentation policy](../AGENTS.md#documentation): propose useful invariants, reasons, traps, or corrections with source anchors and verification evidence for human review. Investigation alone does not require a doc update.
-- **Keep pages lean.** Exclude transient notes, unverified hypotheses (see below), generic programming advice, and details an agent can safely derive from a nearby definition. Consolidate overlap and link to the canonical page.
-- **Keep navigation complete.** Add every page to this index with a short description; use links between related pages instead of duplicating their content.
-- **Treat size as a signal, not a goal.** `Build\scripts\Test-Docs.ps1` warns above 8 KB; split only when it improves task-specific retrieval. Short pages do not need expansion.
-- **Park unverified findings.** Record tentative observations in [`open-questions.md`](open-questions.md) with how to verify them, not in topic pages. Promote or delete them once checked.
-- **Validate after editing docs.** Run `pwsh Build\scripts\Test-Docs.ps1` (index completeness, relative links, anchors, page size).
-- Keep `AGENTS.md` concise and limited to startup guidance and navigation.
+- Follow the [root documentation policy](../AGENTS.md#documentation) for proposals, evidence, uncertainty, and validation.
+- Keep one coherent topic per page, with actionable constraints before background and exact source/test paths or symbols.
+- Link canonical guidance instead of copying it; add any new page to the routing table below.
+- The docs checker warns above 8 KB. Split only when it improves retrieval; short pages do not need expansion.
 
 ## Where to look
 
@@ -22,8 +16,7 @@ This directory holds repository-specific guidance for contributors and coding ag
 | Menus, commands, source layout, coding conventions, buffers | [Codebase and conventions](architecture/codebase-and-conventions.md) |
 | Replacing home-grown `Edit.c` code with Scintilla messages | [Scintilla API usage](architecture/scintilla-api-usage.md) |
 | Build, MSBuild, CI, test scripts, Python scripting | [Windows build and test](build-and-test/windows-build-and-test.md) |
-| `Edit.c` load/save, atomic save, file watching | [File I/O](domain/file-io.md) |
-| Open dialog start directory, Recent files dialog | [File I/O](domain/file-io.md) |
+| `Edit.c` load/save, atomic save, file watching, Open/MRU dialogs | [File I/O](domain/file-io.md) |
 | Any Win32 file/path call on `HPATHL` | [PathLib](domain/pathlib.md) |
 | Encoding selection or UTF-16/32 handling | [Encoding detection](domain/encoding-detection.md), then [diagnostics and tests](domain/encoding-diagnostics-and-tests.md) |
 | Lexers, styles, themes | [Lexer development](domain/lexer-development.md) |
@@ -33,23 +26,4 @@ This directory holds repository-specific guidance for contributors and coding ag
 | Dark mode, rendering, theme-change redraw | [Dark mode and rendering](domain/ui-rendering.md) |
 | Startup, activation, AppID, new-window reuse | [Startup and window lifecycle](domain/startup-and-window-lifecycle.md) |
 | Expression evaluation (`=?`, Go To, line numbering), `tinyexpr_cif` | [TinyExpr++ wrapper](domain/tinyexpr-wrapper.md) |
-
-## Contents
-
-| Topic | Description | Pages |
-|---|---|---|
-| Architecture | Source map, command dispatch, vendored libraries, coding conventions, and implementation patterns. | [Codebase and conventions](architecture/codebase-and-conventions.md) |
-| Architecture: Scintilla API | Verified constraints of Scintilla messages when replacing home-grown `Edit.c` code. | [Scintilla API usage](architecture/scintilla-api-usage.md) |
-| Build and test | Windows build targets, MSBuild invocation, CI and test gotchas, Python environment. | [Windows build and test](build-and-test/windows-build-and-test.md) |
-| Domain: configuration | Portable INI lifecycle, persistence rules, and save/load behavior. | [Configuration and INI](domain/configuration-and-ini.md) |
-| Domain: localization | Locale resource invariants, encoding/line-ending requirements, and adding UI strings. | [Localization](domain/localization.md) |
-| Domain: lexer development | Lexer registration, property/comment/theme/localization touchpoints, and visual fixtures. | [Lexer development](domain/lexer-development.md) |
-| Domain: encoding | Detection precedence, UTF validation and heuristics, UCHARDET sampling, and UTF-32 load conversion. | [Encoding detection](domain/encoding-detection.md) |
-| Domain: encoding diagnostics | Developer title diagnostics, abbreviations, and the native regression harness. | [Encoding diagnostics and tests](domain/encoding-diagnostics-and-tests.md) |
-| Domain: regular expressions | PCRE2 integration, search/replacement syntax, regex translations, and URL hotspots. | [Regular expressions](domain/regular-expressions.md) |
-| Domain: startup and lifecycle | Pasteboard activation, taskbar Shift+Click handoff, AppID grouping, and new-window reuse behavior. | [Startup and window lifecycle](domain/startup-and-window-lifecycle.md) |
-| Domain: file I/O | Load/save flow, atomic saves, error handling, file watching, Open-dialog initial directory, and Recent files dialog. | [File I/O](domain/file-io.md) |
-| Domain: paths | PathLib wrappers, long-path handling, and path comparison rules. | [PathLib](domain/pathlib.md) |
-| Domain: UI rendering | Dark mode, ARM64 rendering technology, and theme-change redraw. | [Dark mode and rendering](domain/ui-rendering.md) |
-| Domain: expressions | C wrapper over TinyExpr++: contract, length-preserving pre-pass, error positions, callers. | [TinyExpr++ wrapper](domain/tinyexpr-wrapper.md) |
-| Docs maintenance | Unverified findings and how to verify them. | [Open questions](open-questions.md) |
+| Unverified findings / what would verify them | [Open questions](open-questions.md) |
