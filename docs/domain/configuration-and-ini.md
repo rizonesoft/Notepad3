@@ -1,7 +1,24 @@
+---
+status: agent-observed
+verified-at: cf8b520fc97bf039b68497041e61bbed2b7a88de
+owner: "@RaiKoHoff"
+anchors:
+  - path: src/Config/Config.cpp
+    symbol: _HandleIniFileRedirect
+  - path: src/Config/Config.cpp
+    symbol: FindIniFile
+  - path: src/Config/Config.cpp
+    symbol: bCurrentEncUTF8
+  - path: src/Encoding.c
+    symbol: Encoding_MapIniSetting
+---
+
 # Configuration and INI
 
+Evidence scope: code inspection of redirect creation/depth, encoding-setting mapping, and encoding-dependent save defaults at the commit above. Other entries are existing guidance to verify when used; this pilot does not certify the whole page. Human review is pending.
+
 - INI files are beside the executable; there is no registry dependency. The application uses defaults if there is no INI; the user can create one with "Save Settings Now".
-- Admin redirect: `Notepad3.ini=<path>` in `[Notepad3]` redirects to a per-user path (up to two levels). Redirect targets are auto-created by `CreateIniFileEx()`.
+- Admin redirect: `Notepad3.ini=<path>` in `[Notepad3]` redirects to a per-user path (up to two levels). In `src\Config\Config.cpp`, `FindIniFile()` limits `_HandleIniFileRedirect()` to two levels; missing targets are created with `CreateIniFile()`.
 - `Paths.IniFile` is the active writable INI; `Paths.IniFileDefault` is the recovery fallback.
 - Initialization in `src\Config\Config.cpp`: `FindIniFile()` → `TestIniFile()` → `CreateIniFile()` → `LoadSettings()`.
 - Missing `SettingsVersion` defaults to `CFG_VER_CURRENT`; a new or empty INI gets current defaults.

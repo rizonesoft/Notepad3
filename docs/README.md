@@ -9,6 +9,12 @@ This directory holds repository-specific guidance for contributors and coding ag
 - Link canonical guidance instead of copying it; add any new page to the routing table below.
 - The docs checker warns above 8 KB. Split only when it improves retrieval; short pages do not need expansion.
 
+### Verification metadata pilot
+
+Only [PathLib](domain/pathlib.md) and [configuration](domain/configuration-and-ini.md) currently pilot metadata. Existing pages without it remain accepted. Headers use `status`, a full `verified-at` source commit, `owner`, and `anchors` entries with repository-relative `path` plus a literal `symbol`. A path-only anchor must instead include a `reason`. Keep the YAML subset simple: scalar fields and the anchor list, no multiline values or aliases.
+
+Use `agent-observed` for code-backed agent findings; only @RaiKoHoff may approve `human-verified` status. Ownership routes review; it does not certify correctness. Each pilot states its evidence scope so the commit does not imply every sentence was verified. Uncertain observations stay in [Open questions](open-questions.md). Do not bulk-stamp old pages with the latest commit.
+
 ## Where to look
 
 | If you are changing... | Read |

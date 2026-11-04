@@ -1,4 +1,19 @@
+---
+status: agent-observed
+verified-at: cf8b520fc97bf039b68497041e61bbed2b7a88de
+owner: "@RaiKoHoff"
+anchors:
+  - path: src/PathLib.c
+    symbol: PrependLongPathPrefix
+  - path: src/PathLib.c
+    symbol: Path_StrgComparePath
+  - path: src/PathLib.c
+    symbol: Path_CreateDirectoryEx
+---
+
 # PathLib and Long Paths
+
+Evidence scope: code inspection of long-path prefix conditions, comparison normalization, and the raw directory-status contract at the commit above. The wrapper table is navigation, not a separately tested API guarantee. Human review is pending.
 
 Do not call Win32 file APIs directly with `Path_Get(hpth)`. Use PathLib wrappers, which conditionally apply the `\\?\` prefix when long paths are not enabled and the path is at least 260 characters.
 
