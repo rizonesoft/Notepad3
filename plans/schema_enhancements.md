@@ -1,5 +1,7 @@
 # Schema / Style / Theme System — Enhancements & Fixes
 
+> Proposal backlog, not verified current defects or permission to implement. Reproduce each candidate against current code and obtain task-specific scope approval before acting.
+
 > Companion plan to the user-facing reference at
 > [`readme/schema/CustomSchema.md`](../readme/schema/CustomSchema.md).
 > Use this document to scope a future Claude Code session focused on the

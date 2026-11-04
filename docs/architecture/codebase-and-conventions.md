@@ -69,6 +69,12 @@ DeclareSciCallR1(SupportsFeature, SUPPORTSFEATURE, bool, int, feature);  // bool
 - `InfoBoxLng()` returns `MAKELONG(button, mode)`. When a suppression key is non-NULL, a saved-answer replay sets the high word; do not compare the raw result with `IDNO`. Use `IsYesOkay()`, `IsRetryContinue()`, `IsNoCancelClose()`, or extract `INFOBOX_ANSW(r)` / `INFOBOX_MODE(r)`.
 - For new Scintilla/Lexilla APIs, consult the vendored versions in `scintilla\version.txt` and `lexilla\version.txt` and the offline docs under `scintilla\doc\` and `lexilla\doc\`.
 
+### Local patch guidance
+
+Before an approved vendored-library change, consult the [Lexilla patch registry](../../lexilla/np3_patches/README.md) and relevant Scintilla records: [DirectWrite font resolution](../../scintilla/np3_patches/001_directwrite_font_resolution.md), [font weight/style enums](../../scintilla/np3_patches/002_fontweight_fontstyle_enums.md), and [mouse-pointer scope](../../scintilla/np3_patches/003_mousevanish_cursor_scope.md). Verify each against current sources; these records are preservation guidance, not a complete or freshly certified patch inventory.
+
+`scintilla\np3_patches\upstream_558\` is an older import record. Historical plans under `plans\` are not active instructions or permission for product refactoring.
+
 ### Find/Replace dialog text limits
 
 - `CB_LIMITTEXT` (`FNDRPL_BUFFER`) does not apply to `WM_SETTEXT`; bound text before calling `ComboBox_SetText*`, or an oversized value freezes the single-line combo edit (see the `bFindReplCopySelOrClip` block in `EditFindReplaceDlgProc`, `src\Edit.c`).
