@@ -7,10 +7,13 @@ Run commands from the repository root. Discover installed tools before assuming 
 ```powershell
 pwsh -NoProfile -File test\test_files\encoding\TestEncodingDetection.ps1
 pwsh -NoProfile -File test\TestOpenDialogDirectory.ps1
+pwsh -NoProfile -File test\TestCreateDirectory.ps1
 pwsh -NoProfile -File Build\scripts\Test-Docs.ps1
 ```
 
 The encoding runner compiles current detector functions in a temporary native harness and removes its generated files. It requires Visual C++ build tools and stubs application state and UCHARDET; it does not test the full editor load path. See [Encoding diagnostics and tests](../domain/encoding-diagnostics-and-tests.md#regression-coverage).
+
+The create-directory runner extracts `Path_CreateDirectoryEx` (`src\PathLib.c`), `CreateIniFile` (`src\Config\Config.cpp`), `_BuildSnapshotPath` and the directory-recreation block (`src\Notepad3.c`) into a temporary harness. It uses real temporary directories and files, stubs only the path/string handles and UI hooks, and injects raw `SHCreateDirectoryExW` statuses for failures that cannot be reproduced reliably. Its 26 checks cover created, existing-directory, conflicting-file, and failure results. `-PathLibSource <file>` substitutes an alternate `PathLib.c`, e.g. a pre-fix copy, to demonstrate a regression failing. Extraction is text-based, so renaming those functions requires updating the runner.
 
 The Open-directory runner also requires Visual C++ build tools. It extracts `_GetParentDir`, `_CanonicalizeInitialDir`, and `_ResolveOpenInitialDir` from `src\Dialogs.c` into a temporary harness with in-memory path/MRU stubs. Its 14 cases cover precedence, missing recent files/directories, drive roots, quoted relative history, and the Save/history distinction. It does not exercise real PathLib/filesystem behavior, environment expansion, `OpenFileDlg` aliasing, or the Windows dialog UI.
 
@@ -47,7 +50,7 @@ Use the default solution target for integration, as CI does. If a narrower targe
 
 - Product CI is `.github\workflows\build.yml`: `windows-2025-vs2026`, Release on Win32, x64, x64_AVX2, and ARM64. Version/GUI tests run on Win32 and x64.
 - Docs CI is `.github\workflows\docs.yml`; it runs the existing docs checker independently, including Markdown-only changes that skip the product build.
-- Native regression CI is `.github\workflows\native-tests.yml`: one Windows job runs both extracted-function harnesses for relevant source, test, fixture, or workflow changes. Docs-only changes do not trigger it; no GUI or full-product coverage is implied.
+- Native regression CI is `.github\workflows\native-tests.yml`: one Windows job runs the three extracted-function harnesses for relevant source, test, fixture, or workflow changes. Docs-only changes do not trigger it; no GUI or full-product coverage is implied.
 - `cmd /d /c "call test\TestFileVersion.cmd"` checks existing x86/x64 binaries against today's date and `Versions\build.txt`. Old local binaries can fail without a source regression; compare the reported expected/actual versions.
 - The GUI smoke test requires AutoHotkey v2 and an available desktop: `cmd /d /c "cd /d test && call TestAhkNotepad3.cmd"`. It creates `test\_TESTDIR`, copies an executable/config, and writes `test\test.log`; do not run it in a read-only review or on a shared desktop without approval.
 - In the shared CI `shell: cmd` test step, preserve `|| exit /b 1` after the version test so the GUI command cannot mask its failure.
