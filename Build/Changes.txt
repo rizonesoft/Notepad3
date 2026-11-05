@@ -36,7 +36,7 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 UTH - (UTH)ash provides a hash table for C structures
 
 
-Current BETA Version 7.26.1025.(build_#) (2026-10-25)
+Current BETA Version 7.26.1105.(build_#) (2026-11-05)
 ========================================================
 
 --------------------------------------------------------
@@ -50,22 +50,29 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.1]- .
+[1105.1]- Enhancements for AGENTS/docs system (#6076).
+[1105.1]- Update TinyExpr++ (v1.2.0) and adapt the C wrapper (TIN) (#6073).
+[1105.1]- Update  Lexilla (v5.5.5) (LEX) (#6071).
+[1105.1]- Update Scintilla (v5.6.8) (SCI) (LEX) (#6071).
 [1021.1]- Encoding detection: tolerant BOM-less UTF-16, UTF-32 load as UTF-8, head/mid/tail sampling, no global state (UCH) (#6042).
 [1021.1]- Encoding detection: never decode UTF-8 as UTF-16, single-pass validator, skip redundant analysis (UCH) (#6042).
 [1021.1]- In Lexer CSS, add extension "wxss" (#6033).
 [1012.1]- Update grepWin Translations_next_version (GRE) (#6023).
 [1012.1]- Markdown Lexer Enhancements (#6019).
-[1012.1]- Update  Lexilla (v.5.5.4) (LEX) (#6014).
+[1012.1]- Update  Lexilla (v5.5.4) (LEX) (#6014).
 [1012.1]- Update Scintilla (v5.6.7) (SCI) (LEX) (#6014).
-[.828.1]- Update  Lexilla (v.5.5.3) and use LEXILLA_NO_EXPORT for static build (LEX) (#5982).
+[.828.1]- Update  Lexilla (v5.5.3) and use LEXILLA_NO_EXPORT for static build (LEX) (#5982).
 [.828.1]- Move edit-refresh work to coalesced SCN_UPDATEUI (SC_UPDATE_TEXT/LINE_COUNT) (SCI) (#5982).
 [.828.1]- Update Scintilla (v5.6.6) (SCI) (LEX) (#5982).
-[.715.1]- Update Scintilla (v5.6.4) (SCI) and Lexilla (v.5.5.1) (LEX) (#5948).
+[.715.1]- Update Scintilla (v5.6.4) (SCI) and Lexilla (v5.5.1) (LEX) (#5948).
 
 --------------------------------------------------------
 FIXES:
 --------------------------------------------------------
 [.xxx.1]- .
+[1105.1]- Return a real HRESULT from Path_CreateDirectoryEx (#6076).
+[1105.1]- Keep UTF-16 encoding fixtures byte-exact (-text) (#6076).
+[1105.1]- Release clipboard on all paths, linear sort output; tidy search code in Edit.c (#6073).
 [1025.1]- Open dialog directory precedence and add recent-folder fallback (#6064).
 [1025.1]- BOM-less UTF-16 detection and refine encoding confidence and diagnostics (#6062).
 [1023.1]- Find dialog freeze on Ctrl+F with huge selection (#6046).
@@ -88,10 +95,10 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[1012.1]- Update Lexilla (LEX) Library version 5.5.4 (2026-09-28) (#6015).
-[1012.1]- Update Scintilla (SCI) Library version 5.6.7 (2026-09-28) (#6014).
+[1005.1]- Update TinyExpr++ (TIN) version 1.2.0 (2026-09-13) (#6073).
+[1005.1]- Update Lexilla (LEX) Library version 5.5.5 (2026-10-31) (#6071).
+[1005.1]- Update Scintilla (SCI) Library version 5.6.8 (2026-10-31) (#6071).
 [1012.1]- Update PCRE2 (PCR) Regex engine version 10.49 (2026-10-03) (#6013).
-[.418.1]- Update TinyExpr++ (TIN) version 1.1.0 (2026-01-16) (#5707).
 [.411.1]- Update grepWin (GRE) version 2.1.12.1434 (2025-09-24) (#5635).
 [.306.1]- Update uthash (UTH) single header file version 2.3.0 (2021-02-25) (#5570).
 [.305.1]- Update UCHARDET (UCH) encoding detector version 0.0.8 (2022-12-08) (#5562).
