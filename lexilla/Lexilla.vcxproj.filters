@@ -101,6 +101,9 @@
     <ClCompile Include="src\Lexilla.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lexers\LexAPDL.cxx">
+      <Filter>lexers</Filter>
+    </ClCompile>
     <ClCompile Include="lexers\LexAsm.cxx">
       <Filter>lexers</Filter>
     </ClCompile>

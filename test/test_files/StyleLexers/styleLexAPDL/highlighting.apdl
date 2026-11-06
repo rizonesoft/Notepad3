@@ -1,0 +1,31 @@
+! APDL highlighting: processors, commands, slash/star commands, arguments, functions.
+!! Alternate comment style supported by the upstream lexer.
+/PREP7
+ET,1,BEAM188
+MP,EX,1,2.1E11
+N,1,0,0,0
+N,2,1.0,0,0
+E,1,2
+NSEL,ALL
+/TITLE,'APDL highlighting ! inside a string'
+label="APDL string"
+distance=SQRT(ABS(-4.0))
+! Mixed-case keywords use the same styles.
+/prep7
+Nsel,All
+distance=Sqrt(Abs(-4.0))
+! Each of the following opens a fold with the upstream lexer.
+*DO,i,1,3
+    value=i*2
+*ENDDO
+*IF,value,GT,0,THEN
+    value=value+1
+*ENDIF
+*DOWHILE,value
+    value=0
+*ENDDO
+FINISH
+/SOLU
+ANTYPE,STATIC
+SOLVE
+FINISH
