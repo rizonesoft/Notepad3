@@ -38,8 +38,9 @@
 # Text files where line endings should be preserved
 *Line_Endings_Source.txt   -text
 
-# UTF-16 encoding-detection fixtures are byte-exact; EOL conversion corrupts them
+# UTF-16, UTF-32 encoding-detection fixtures are byte-exact; EOL conversion corrupts them
 test/test_files/encoding/UTF-16/*.txt   -text
+test/test_files/encoding/UTF-32/*.txt   -text
 
 
 *.bmp           binary
