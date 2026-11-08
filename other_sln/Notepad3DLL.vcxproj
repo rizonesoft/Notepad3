@@ -434,6 +434,7 @@
     <ClCompile Include="MuiLanguage.c" />
     <ClCompile Include="Notepad3.c" />
     <ClCompile Include="Print.cpp" />
+    <ClCompile Include="StyleLexers\styleLexAPDL.c" />
     <ClCompile Include="StyleLexers\styleLexASM.c" />
     <ClCompile Include="StyleLexers\styleLexAU3.c" />
     <ClCompile Include="StyleLexers\styleLexAVS.c" />

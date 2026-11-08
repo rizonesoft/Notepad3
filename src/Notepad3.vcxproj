@@ -1085,6 +1085,7 @@
     <ClCompile Include="Notepad3Util.c" />
     <ClCompile Include="Print.cpp" />
     <ClCompile Include="Resample.c" />
+    <ClCompile Include="StyleLexers\styleLexAPDL.c" />
     <ClCompile Include="StyleLexers\styleLexASM.c" />
     <ClCompile Include="StyleLexers\styleLexAU3.c" />
     <ClCompile Include="StyleLexers\styleLexAVS.c" />
