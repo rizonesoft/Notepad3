@@ -4839,7 +4839,10 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     bool const faro = IsFileReadOnly();                                    // file attrib read-only
     bool const pst = SciCall_CanPaste();
     bool const se = SciCall_IsSelectionEmpty();
+    bool const ms = Sci_IsMultiSelection();
     bool const mrs = Sci_IsMultiOrRectangleSelection();
+    bool const canEditSingleRange = !ro && !mrs;
+    bool const canEditSelectedRange = canEditSingleRange && !se;
     bool const te = Sci_IsDocEmpty();
     bool const moe = IsMarkOccurrencesEnabled();
     bool const isn = IsSaveNeeded();
@@ -4941,7 +4944,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_EDIT_COPY, !te);             // allow Ctrl-C w/o selection
 
     EnableCmd(hmenu, IDM_EDIT_COPYALL, !te);
-    EnableCmd(hmenu, IDM_EDIT_COPYADD, !te);
+    EnableCmd(hmenu, IDM_EDIT_COPYADD, !te && !mrs);
     EnableCmd(hmenu, IDM_EDIT_COPYRTF, !te);
 
     EnableCmd(hmenu, IDM_EDIT_PASTE, pst && !ro);
@@ -4959,23 +4962,23 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     CheckCmd(hmenu, IDM_EDIT_TOGGLE_PASTEBOARD, s_flagPasteBoard);
     EnableCmd(hmenu, IDM_EDIT_TOGGLE_PASTEBOARD, !FileWatching.MonitoringLog);
 
-    EnableCmd(hmenu, IDM_EDIT_MOVELINEUP, !ro);
-    EnableCmd(hmenu, IDM_EDIT_MOVELINEDOWN, !ro);
+    EnableCmd(hmenu, IDM_EDIT_MOVELINEUP, !ro && !ms);
+    EnableCmd(hmenu, IDM_EDIT_MOVELINEDOWN, !ro && !ms);
     EnableCmd(hmenu, IDM_EDIT_DUPLINEORSELECTION, !ro);
     EnableCmd(hmenu, IDM_EDIT_LINETRANSPOSE, !ro);
     EnableCmd(hmenu, IDM_EDIT_CUTLINE, !ro);
     EnableCmd(hmenu, IDM_EDIT_COPYLINE, !mrs);
     EnableCmd(hmenu, IDM_EDIT_DELETELINE, !ro);
 
-    EnableCmd(hmenu, IDM_EDIT_UNITEDUPLICATELINES, !ro);
-    EnableCmd(hmenu, IDM_EDIT_REMOVEDUPLICATELINES, !ro);
-    EnableCmd(hmenu, IDM_EDIT_MERGEBLANKLINES, !ro);
-    EnableCmd(hmenu, IDM_EDIT_MERGEEMPTYLINES, !ro);
-    EnableCmd(hmenu, IDM_EDIT_REMOVEBLANKLINES, !ro);
-    EnableCmd(hmenu, IDM_EDIT_REMOVEEMPTYLINES, !ro);
+    EnableCmd(hmenu, IDM_EDIT_UNITEDUPLICATELINES, canEditSingleRange);
+    EnableCmd(hmenu, IDM_EDIT_REMOVEDUPLICATELINES, canEditSingleRange);
+    EnableCmd(hmenu, IDM_EDIT_MERGEBLANKLINES, canEditSingleRange);
+    EnableCmd(hmenu, IDM_EDIT_MERGEEMPTYLINES, canEditSingleRange);
+    EnableCmd(hmenu, IDM_EDIT_REMOVEBLANKLINES, canEditSingleRange);
+    EnableCmd(hmenu, IDM_EDIT_REMOVEEMPTYLINES, canEditSingleRange);
 
-    EnableCmd(hmenu, IDM_EDIT_INDENT, !se && !ro);
-    EnableCmd(hmenu, IDM_EDIT_UNINDENT, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_INDENT, !ro);
+    EnableCmd(hmenu, IDM_EDIT_UNINDENT, !ro);
 
     EnableCmd(hmenu, CMD_JUMP2SELSTART, !se || mrs);
     EnableCmd(hmenu, CMD_JUMP2SELEND, !se || mrs);
@@ -4984,9 +4987,10 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_EDIT_STRIP1STCHAR, !ro && !se);
     EnableCmd(hmenu, IDM_EDIT_STRIPLASTCHAR, !ro && !se);
     EnableCmd(hmenu, IDM_EDIT_TRIMLINES, !ro);
-    EnableCmd(hmenu, IDM_EDIT_COMPRESS_BLANKS, !ro);
+    // Empty rectangles have no target; an empty stream selection uses the document.
+    EnableCmd(hmenu, IDM_EDIT_COMPRESS_BLANKS, !ro && !ms && (!mrs || !se));
 
-    EnableCmd(hmenu, IDM_EDIT_MODIFYLINES, !ro);
+    EnableCmd(hmenu, IDM_EDIT_MODIFYLINES, canEditSingleRange);
 
     DocPos const alignSelEnd = SciCall_GetSelectionEnd();
     DocLn const  alignLineStart =
@@ -5000,11 +5004,11 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
         !ro && !mrs && (alignLineEnd > alignLineStart));
     EnableCmd(hmenu, IDM_EDIT_SORTLINES, !ro);
 
-    EnableCmd(hmenu, IDM_EDIT_COLUMNWRAP, !ro);
-    EnableCmd(hmenu, IDM_EDIT_SPLITLINES, !ro);
-    EnableCmd(hmenu, IDM_EDIT_JOINLINES, !se && !ro);
-    EnableCmd(hmenu, IDM_EDIT_JOINLN_NOSP, !se && !ro);
-    EnableCmd(hmenu, IDM_EDIT_JOINLINES_PARA, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_COLUMNWRAP, canEditSingleRange);
+    EnableCmd(hmenu, IDM_EDIT_SPLITLINES, canEditSingleRange);
+    EnableCmd(hmenu, IDM_EDIT_JOINLINES, canEditSelectedRange);
+    EnableCmd(hmenu, IDM_EDIT_JOINLN_NOSP, canEditSelectedRange);
+    EnableCmd(hmenu, IDM_EDIT_JOINLINES_PARA, canEditSelectedRange);
 
     EnableCmd(hmenu, IDM_EDIT_CONVERTUPPERCASE, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_CONVERTLOWERCASE, !se && !ro);
@@ -5012,37 +5016,37 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_EDIT_TITLECASE, !se && !ro /*&& IsWindowsNT()*/);
     EnableCmd(hmenu, IDM_EDIT_SENTENCECASE, !se && !ro /*&& IsWindowsNT()*/);
 
-    EnableCmd(hmenu, IDM_EDIT_CONVERTTABS, !se && !ro);
-    EnableCmd(hmenu, IDM_EDIT_CONVERTSPACES, !se && !ro);
-    EnableCmd(hmenu, IDM_EDIT_CONVERTTABS2, !se && !ro);
-    EnableCmd(hmenu, IDM_EDIT_CONVERTSPACES2, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_CONVERTTABS, canEditSelectedRange);
+    EnableCmd(hmenu, IDM_EDIT_CONVERTSPACES, canEditSelectedRange);
+    EnableCmd(hmenu, IDM_EDIT_CONVERTTABS2, canEditSelectedRange);
+    EnableCmd(hmenu, IDM_EDIT_CONVERTSPACES2, canEditSelectedRange);
 
-    EnableCmd(hmenu, IDM_EDIT_URLENCODE, !se && !ro);
-    EnableCmd(hmenu, IDM_EDIT_URLDECODE, !se && !ro);
-    EnableCmd(hmenu, IDM_EDIT_BASE64ENCODE, !se && !ro);
-    EnableCmd(hmenu, IDM_EDIT_BASE64DECODE, !se && !ro);
-    EnableCmd(hmenu, IDM_EDIT_B64DECODESEL, !se && !ro);
-    EnableCmd(hmenu, IDM_EDIT_PATH2URL, !se && !ro);
-    EnableCmd(hmenu, IDM_EDIT_URL2PATH, !se && !ro);
-    EnableCmd(hmenu, IDM_EDIT_INVERTBACKSLASH, !se && !ro);
-    EnableCmd(hmenu, IDM_EDIT_INVERTSLASH, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_URLENCODE, canEditSelectedRange);
+    EnableCmd(hmenu, IDM_EDIT_URLDECODE, canEditSelectedRange);
+    EnableCmd(hmenu, IDM_EDIT_BASE64ENCODE, canEditSelectedRange);
+    EnableCmd(hmenu, IDM_EDIT_BASE64DECODE, canEditSelectedRange);
+    EnableCmd(hmenu, IDM_EDIT_B64DECODESEL, canEditSelectedRange);
+    EnableCmd(hmenu, IDM_EDIT_PATH2URL, canEditSelectedRange);
+    EnableCmd(hmenu, IDM_EDIT_URL2PATH, canEditSelectedRange);
+    EnableCmd(hmenu, IDM_EDIT_INVERTBACKSLASH, canEditSelectedRange);
+    EnableCmd(hmenu, IDM_EDIT_INVERTSLASH, canEditSelectedRange);
 
-    EnableCmd(hmenu, IDM_EDIT_ESCAPECCHARS, !se && !ro);
-    EnableCmd(hmenu, IDM_EDIT_UNESCAPECCHARS, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_ESCAPECCHARS, canEditSelectedRange);
+    EnableCmd(hmenu, IDM_EDIT_UNESCAPECCHARS, canEditSelectedRange);
 
-    EnableCmd(hmenu, IDM_EDIT_CHAR2HEX, !ro);  // Char2Hex allowed for char after current pos
-    EnableCmd(hmenu, IDM_EDIT_HEX2CHAR, !se && !ro);
+    EnableCmd(hmenu, IDM_EDIT_CHAR2HEX, canEditSingleRange);  // Char2Hex allowed for char after current pos
+    EnableCmd(hmenu, IDM_EDIT_HEX2CHAR, canEditSelectedRange);
 
-    EnableCmd(hmenu, CMD_INCREASENUM, !se && !mrs && !ro);
-    EnableCmd(hmenu, CMD_DECREASENUM, !se && !mrs && !ro);
+    EnableCmd(hmenu, CMD_INCREASENUM, canEditSelectedRange);
+    EnableCmd(hmenu, CMD_DECREASENUM, canEditSelectedRange);
 
-    EnableCmd(hmenu, IDM_EDIT_ENCLOSESELECTION, !ro);
-    EnableCmd(hmenu, CMD_STRINGIFY, !ro);
-    EnableCmd(hmenu, CMD_STRINGIFY2, !ro);
-    EnableCmd(hmenu, CMD_EMBRACE, !ro);
-    EnableCmd(hmenu, CMD_EMBRACE2, !ro);
-    EnableCmd(hmenu, CMD_EMBRACE3, !ro);
-    EnableCmd(hmenu, CMD_EMBRACE4, !ro);
+    EnableCmd(hmenu, IDM_EDIT_ENCLOSESELECTION, canEditSingleRange);
+    EnableCmd(hmenu, CMD_STRINGIFY, canEditSingleRange);
+    EnableCmd(hmenu, CMD_STRINGIFY2, canEditSingleRange);
+    EnableCmd(hmenu, CMD_EMBRACE, canEditSingleRange);
+    EnableCmd(hmenu, CMD_EMBRACE2, canEditSingleRange);
+    EnableCmd(hmenu, CMD_EMBRACE3, canEditSingleRange);
+    EnableCmd(hmenu, CMD_EMBRACE4, canEditSingleRange);
 
     EnableCmd(hmenu, IDM_SET_SHOWEXCERPT, !se);
 
@@ -5054,7 +5058,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_EDIT_LINECOMMENT_BLOCKEDIT, StrIsNotEmpty(cmnt) && !ro);
 
     Lexer_GetStreamCommentStrgs(cmnt, cmnt, COUNTOF(cmnt));
-    EnableCmd(hmenu, IDM_EDIT_STREAMCOMMENT, StrIsNotEmpty(cmnt) && !ro);
+    EnableCmd(hmenu, IDM_EDIT_STREAMCOMMENT, StrIsNotEmpty(cmnt) && canEditSingleRange);
 
     EnableCmd(hmenu, CMD_INSERTNEWLINE, !ro);
     EnableCmd(hmenu, IDM_EDIT_INSERT_TAG, !ro);
@@ -8543,6 +8547,11 @@ static bool _HandleToolbarCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM l
 LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 {
     unsigned const iLoWParam = (unsigned)LOWORD(wParam);
+
+    // Accelerators must honor menu availability even when the menubar is hidden.
+    if ((HIWORD(wParam) == 1) && !lParam && (GetMenuState(Globals.hMainMenu, iLoWParam, MF_BYCOMMAND) != (UINT)-1) && !IsCmdEnabled(hwnd, iLoWParam)) {
+        return FALSE;
+    }
 
     #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
     bool const bIsLngMenuCmd = ((iLoWParam >= IDS_MUI_LANG_EN_US) && (iLoWParam < (IDS_MUI_LANG_EN_US + MuiLanguages_CountOf())));

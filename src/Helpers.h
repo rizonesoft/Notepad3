@@ -463,8 +463,9 @@ void GetSystemMenuFontA(LPSTR fontFaceName_out, bool bForceRefresh);
 void GetSystemMessageFontA(LPSTR fontFaceName_out, bool bForceRefresh);
 void GetSystemStatusFontA(LPSTR fontFaceName_out, bool bForceRefresh);
 
-bool IsCmdEnabled(HWND hwnd, UINT uId);
-
+bool  IsCmdEnabled(HWND hwnd, UINT uId);
+BOOL  EnableMenuCommand(HMENU hmenu, UINT uId, bool enabled);
+DWORD CheckMenuCommand(HMENU hmenu, UINT uId, bool checked);
 
 #define SetBtn(b) ((b) ? BST_CHECKED : BST_UNCHECKED)
 
@@ -483,8 +484,8 @@ __forceinline bool IsButtonUnchecked(HWND hwnd, int iButtonID)
 
 #define EnableItem(hwnd, id, b) EnableWindow(GetDlgItem((hwnd), (id)), (b))
 
-#define EnableCmd(hmenu,id,b) EnableMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_ENABLED:MF_BYCOMMAND|MF_GRAYED)
-#define CheckCmd(hmenu,id,b)  CheckMenuItem((hmenu),(id),(b)?MF_BYCOMMAND|MF_CHECKED:MF_BYCOMMAND|MF_UNCHECKED)
+#define EnableCmd(hmenu, id, b) EnableMenuCommand((hmenu), (id), (b))
+#define CheckCmd(hmenu, id, b) CheckMenuCommand((hmenu), (id), (b))
 
 #define EnableTool(htbar,id,b) SendMessage((htbar),TB_ENABLEBUTTON,(id), MAKELONG(((b) ? 1 : 0), 0))
 #define CheckTool(htbar,id,b)  SendMessage((htbar),TB_CHECKBUTTON,(id), MAKELONG((b),0))
