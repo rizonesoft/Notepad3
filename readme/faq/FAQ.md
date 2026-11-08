@@ -559,9 +559,9 @@ Run `Notepad3.exe /?` from a command prompt — Notepad3 opens a help dialog lis
 Two modes are available:
 
 - **`/c`** — open a new window pre-populated with the **current** clipboard contents. One-shot.
-- **`/b`** — start in *pasteboard mode*: every time the clipboard changes, that text is appended as a new entry in the document. Useful for collecting snippets across many copy operations. Stop it any time via **Edit → Stop Clipboard Monitoring** (the editor stays open with the collected text).
+- **`/b`** — start in *pasteboard mode*: clipboard updates paste text at the current caret/selection. Useful for collecting snippets across many copy operations. Stop via **Edit → Toggle Clipboard Monitoring** (the editor stays open with the collected text).
 
-Combine either with `/i` to start minimised to the tray.
+Combine either with `/i` to minimize according to your tray/taskbar preference. With `/b /i`, startup minimization is delayed and can be skipped; see the [Clipboard Monitoring guide](../config/ClipboardMonitoring.md).
 
 ### Can I run Notepad3 with administrator privileges?
 

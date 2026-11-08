@@ -214,11 +214,13 @@ CopyMultiSelectionSeparator=\r\n   ;CRLF between each selection
 
 ### Clipboard Monitoring
 
-Notepad3 can be launched in **clipboard monitoring mode** with the `/b` command-line switch. In this mode, every clipboard change is automatically appended as a new entry at the end of the document. Stop monitoring at any time via **Edit → Stop Clipboard Monitoring** without closing the editor. While active, the status bar shows **`CBS`** in the INS/OVR field.
+Notepad3 can be launched in **clipboard monitoring mode** with the `/b` command-line switch. Pasteable clipboard updates are automatically inserted at the current caret/selection. Stop monitoring via **Edit → Toggle Clipboard Monitoring** without closing the editor. While active, the status bar shows **`CBS`** in the INS/OVR field.
+
+For startup capture, delayed minimize, entry-formatting examples, and the optional discard-prompt safety net, see the [Clipboard Monitoring guide](ClipboardMonitoring.md).
 
 #### `PasteBoardDebounceMs=200`
 
-Debounce interval in milliseconds before a clipboard change is pasted into the document. Increase this value if rapid successive copies result in missed or doubled entries. Range: `0`–`5000`.
+Quiet interval in milliseconds after a clipboard update before its content is pasted into the document. Rapid successive updates can be coalesced into one paste of the latest content; increasing the interval can therefore skip more intermediate copies. Range: `0`–`5000`.
 
 #### `PasteBoardSeparator=`
 

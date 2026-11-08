@@ -15,6 +15,7 @@ This folder collects the user-facing reference documentation for Notepad3 and it
 
 - [config/Configuration.md](config/Configuration.md) — Full reference for the portable `Notepad3.ini` (`[Settings2]` keys, restart-required settings, etc.).
 - [config/FileContentFlags.md](config/FileContentFlags.md) — Markers inside a file (mode lines, BOMs) that change how Notepad3 opens or styles it.
+- [config/ClipboardMonitoring.md](config/ClipboardMonitoring.md) — Pasteboard startup capture, delayed minimize, entry formatting, and the optional discard-prompt safety net.
 - [cmdln/CmdLnOptions.md](cmdln/CmdLnOptions.md) — Every command-line option, switch, and positional argument accepted by `Notepad3.exe`.
 
 ### File handling
