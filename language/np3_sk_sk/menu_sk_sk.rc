@@ -161,21 +161,23 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Späť\tCtrl+Z",                           IDM_EDIT_UNDO
         MENUITEM "&Znova\tCtrl+Y",                          IDM_EDIT_REDO
+        MENUITEM "Rozdel&iť akciu Späť po zalomení riadku",        IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "V&ystrihnúť\tCtrl+X",                     IDM_EDIT_CUT
         MENUITEM "&Kopírovať\tCtrl+C",                      IDM_EDIT_COPY
         MENUITEM "K&opírovať všetko\tAlt+C",                IDM_EDIT_COPYALL
         MENUITEM "Kopírov&ať pridané\tCtrl+E",              IDM_EDIT_COPYADD
         MENUITEM "Copy as RT&F",                            IDM_EDIT_COPYRTF
+        MENUITEM "Kopírovať &GUID do schránky\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
         MENUITEM "&Vložiť\tCtrl+V",                         IDM_EDIT_PASTE
-        MENUITEM "Z&ameniť\tCtrl+K",                        IDM_EDIT_SWAP
+        MENUITEM "Zam&eniť\tCtrl+K",                        IDM_EDIT_SWAP
         MENUITEM "Vy&brať všetko\tCtrl+A",                  IDM_EDIT_SELECTALL
         MENUITEM "Z&mazať\tDel",                            IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "Vyprázdniť &schránku",                    IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Prepnúť &monitorovanie schránky",        IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Vy&prázdniť schránku",                    IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Prep&núť monitorovanie schránky",        IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
-        POPUP "&Slová"
+        POPUP "Slov&á"
         BEGIN
             MENUITEM "&Kompletné slovo\tCtrl+Alt+Enter",       IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
@@ -188,41 +190,67 @@ BEGIN
         BEGIN
             MENUITEM "Posun &hore\tAlt+ ↑",                    IDM_EDIT_MOVELINEUP
             MENUITEM "Posun &dole\tAlt+ ↓",                    IDM_EDIT_MOVELINEDOWN
+            MENUITEM "&Transponovať riadky\tAlt+D",                       IDM_EDIT_LINETRANSPOSE
             MENUITEM SEPARATOR
             MENUITEM "Vystr&ihnúť vybratý/aktuálny riadok\tCtrl+X",       IDM_EDIT_CUT
             MENUITEM "Vystrihnúť výber &celého riadku\tCtrl+Shift+X",     IDM_EDIT_CUTLINE
             MENUITEM "&Kopírovať vybratý/aktuálny riadok\tCtrl+C",        IDM_EDIT_COPY
             MENUITEM "Kopírovať vý&ber celého riadku\tCtrl+Shift+C",      IDM_EDIT_COPYLINE
-            MENUITEM SEPARATOR
-            MENUITEM "&Duplikovať riadok/výber\tCtrl+D",                  IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "&Transponovať riadky\tAlt+D",                       IDM_EDIT_LINETRANSPOSE
+            MENUITEM "Dupliko&vať riadok/výber\tCtrl+D",                  IDM_EDIT_DUPLINEORSELECTION
             MENUITEM "&Zmazať riadok\tCtrl+Shift+D",                      IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "Zmazať riadok vľavo od kurzora\tCtrl+Shift+Back",   IDM_EDIT_DELETELINELEFT
             MENUITEM "Zmazať riadok vpravo od kurzora\tCtrl+Shift+Del",   IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
-            MENUITEM "Za&lamovať podľa stĺpca...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
-            MENUITEM SEPARATOR
-            MENUITEM "Zjednotiť &duplicitné riadky\tCtrl+Alt+D",       IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "&Odstrániť duplicitné riadky",                  IDM_EDIT_REMOVEDUPLICATELINES
-            MENUITEM "Zlúčiť &prázdne riadky\tAlt+Y",            IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "Zlúčiť &nepopísané riadky\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "Odstrániť p&rázdne riadky\tAlt+R",         IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "Odstrániť n&epopísané riadky\tCtrl+Alt+B", IDM_EDIT_REMOVEBLANKLINES
-        END
-        POPUP "Po&kročilé"
-        BEGIN
             MENUITEM "&Odsadiť",                          IDM_EDIT_INDENT
             MENUITEM "Z&rušiť odsadenie",                   IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "Riadok &komentára"
+            MENUITEM "&Upraviť riadky...\tAlt+M",           IDM_EDIT_MODIFYLINES
+            MENUITEM "Zor&adiť riadky...\tAlt+O",           IDM_EDIT_SORTLINES
+            MENUITEM "Zarov&nať riadky...\tAlt+J",          IDM_EDIT_ALIGN
+            MENUITEM SEPARATOR
+            MENUITEM "Za&lamovať podľa stĺpca...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
+            MENUITEM "Rozd&eliť riadky\tCtrl+I",            IDM_EDIT_SPLITLINES
+            MENUITEM "&Pripojiť riadky\tCtrl+J",            IDM_EDIT_JOINLINES
+            MENUITEM "Zl&účiť riadky\tCtrl+Alt+J",          IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Zachova&ť odseky\tCtrl+Shift+J",      IDM_EDIT_JOINLINES_PARA
+            MENUITEM SEPARATOR
+            POPUP "Čistenie (&S)"
+            BEGIN
+                MENUITEM "Zjednotiť &duplicitné riadky\tCtrl+Alt+D",       IDM_EDIT_UNITEDUPLICATELINES
+                MENUITEM "&Odstrániť duplicitné riadky",                  IDM_EDIT_REMOVEDUPLICATELINES
+                MENUITEM SEPARATOR
+                MENUITEM "Zlúčiť &prázdne riadky\tAlt+Y",            IDM_EDIT_MERGEEMPTYLINES
+                MENUITEM "Zlúčiť &nepopísané riadky\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
+                MENUITEM "Odstrániť p&rázdne riadky\tAlt+R",         IDM_EDIT_REMOVEEMPTYLINES
+                MENUITEM "Odstrániť n&epopísané riadky\tCtrl+Alt+B", IDM_EDIT_REMOVEBLANKLINES
+                MENUITEM SEPARATOR
+                MENUITEM "Pod&čiarnik\tAlt+B",               IDM_EDIT_PADWITHSPACES
+                MENUITEM "Odo&brať prvý znak\tAlt+Z",        IDM_EDIT_STRIP1STCHAR
+                MENUITEM "Odobr&ať posledný znak\tAlt+U",    IDM_EDIT_STRIPLASTCHAR
+                MENUITEM "Odobrať &koncové prázdne miesta\tAlt+W",   IDM_EDIT_TRIMLINES
+                MENUITEM "Ko&mpresia medzier\tCtrl+Alt+P",      IDM_EDIT_COMPRESS_BLANKS
+            END
+        END
+        POPUP "Výber && Kurzor (&U)"
+        BEGIN
+            MENUITEM "Vybrať &slovo alebo riadok\tCtrl+Spc",           IDM_EDIT_SELECTWORD
+            MENUITEM "&Viacnásobný výber všetkých zhôd\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
+            MENUITEM SEPARATOR
+            MENUITEM "&Nájsť zodpovedajúcu zátvorku\tCtrl+B",          IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "V&ybrať zodpovedajúcu zátvorku\tCtrl+Shift+B",   IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "Vy&brať ďalšie\tCtrl+Alt+F2",                    IDM_EDIT_SELTONEXT
+            MENUITEM "Vyb&rať predchádzajúce\tCtrl+Alt+Shift+F2",      IDM_EDIT_SELTOPREV
+            MENUITEM "Prejsť na &začiatok výberu\tCtrl+,",  CMD_JUMP2SELSTART
+            MENUITEM "Prejsť na &koniec výberu\tCtrl+.",    CMD_JUMP2SELEND
+            MENUITEM SEPARATOR
+            POPUP "R&iadok komentára"
             BEGIN
                 MENUITEM "Pr&epnúť\tCtrl+Q",               IDM_EDIT_LINECOMMENT
                 MENUITEM "&Pridať\tCtrl+Alt+Q",              IDM_EDIT_LINECOMMENT_ADD
                 MENUITEM "&Odstrániť\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
                 MENUITEM "&Blokovať úpravy\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
-            MENUITEM SEPARATOR
             MENUITEM "Pr&enos komentára\tCtrl+Shift+Q",         IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Pripojiť výber"
@@ -240,25 +268,13 @@ BEGIN
             END
             MENUITEM "&Duplikovať výber/riadok\tCtrl+D",    IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "&Podčiarnik\tAlt+B",               IDM_EDIT_PADWITHSPACES
-            MENUITEM "Odobrať &prvý znak\tAlt+Z",        IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Odobrať p&osledný znak\tAlt+U",    IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Odobrať &koncové prázdne miesta\tAlt+W",   IDM_EDIT_TRIMLINES
-            MENUITEM "Komp&resia medzier\tCtrl+Alt+P",      IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Zv&ýšiť číslo\tCtrl+Alt+NK+",                     CMD_INCREASENUM
+            MENUITEM "Zn&ížiť číslo\tCtrl+Alt+NK-",                     CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "&Upraviť riadky...\tAlt+M",           IDM_EDIT_MODIFYLINES
-            MENUITEM "Zor&adiť riadky...\tAlt+O",           IDM_EDIT_SORTLINES
-            MENUITEM SEPARATOR
-            MENUITEM "Z&arovnať riadky...\tAlt+J",          IDM_EDIT_ALIGN
-            MENUITEM "&Rozdeliť riadky\tCtrl+I",            IDM_EDIT_SPLITLINES
-            MENUITEM "&Pripojiť riadky\tCtrl+J",            IDM_EDIT_JOINLINES
-            MENUITEM "Z&lúčiť riadky\tCtrl+Alt+J",          IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Zachovať odseky\tCtrl+Shift+J",      IDM_EDIT_JOINLINES_PARA
-            MENUITEM SEPARATOR
-            MENUITEM "Prejsť na &začiatok výberu\tCtrl+,",  CMD_JUMP2SELSTART
-            MENUITEM "Prejsť na &koniec výberu\tCtrl+.",    CMD_JUMP2SELEND
+            MENUITEM "&Otvoriť vybratý priečinok",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "O&tvoriť vybratý súbor",                           IDM_EDIT_OPEN_FILE_FROM_SEL
         END
-        POPUP "&Konvertovať"
+        POPUP "Konver&tovať"
         BEGIN
             MENUITEM "&Veľké písmo\tCtrl+Shift+U",          IDM_EDIT_CONVERTUPPERCASE
             MENUITEM "&Malé písmo\tCtrl+U",                 IDM_EDIT_CONVERTLOWERCASE
@@ -285,10 +301,13 @@ BEGIN
             MENUITEM "Invertovať opačné lomítko",           IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Invertovať lomítko",                  IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
+            MENUITEM "E&scape C znaky\tCtrl+Alt+E",                    IDM_EDIT_ESCAPECCHARS
+            MENUITEM "&Unescape C znaky\tCtrl+Alt+R",                  IDM_EDIT_UNESCAPECCHARS
+            MENUITEM SEPARATOR
             MENUITEM "Znaky na &Hex\tCtrl+Alt+X",           IDM_EDIT_CHAR2HEX
             MENUITEM "He&x na znaky\tCtrl+Alt+C",           IDM_EDIT_HEX2CHAR
         END
-        POPUP "&Vkladať"
+        POPUP "Vkla&dať"
         BEGIN
             MENUITEM "&Nový riadok vyššie\tCtrl+Enter",         CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
@@ -301,32 +320,8 @@ BEGIN
             MENUITEM "&Aktuálne časové razítko",                CMD_INSERT_TIMESTAMP
             MENUITEM "&Aktualizovať časové razítka\tShift+F5",  CMD_UPDATE_TIMESTAMPS
         END
-        POPUP "&Rôzne"
-        BEGIN
-            MENUITEM "Kopírovať &GUID do schránky\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
-            MENUITEM SEPARATOR
-            MENUITEM "&Escape C znaky\tCtrl+Alt+E",                    IDM_EDIT_ESCAPECCHARS
-            MENUITEM "&Unescape C znaky\tCtrl+Alt+R",                  IDM_EDIT_UNESCAPECCHARS
-            MENUITEM SEPARATOR
-            MENUITEM "&Zvýšiť číslo\tCtrl+Alt+NK+",                     CMD_INCREASENUM
-            MENUITEM "Z&nížiť číslo\tCtrl+Alt+NK-",                     CMD_DECREASENUM
-            MENUITEM SEPARATOR
-            MENUITEM "&Nájsť zodpovedajúcu zátvorku\tCtrl+B",          IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "&Vybrať zodpovedajúcu zátvorku\tCtrl+Shift+B",   IDM_EDIT_SELTOMATCHINGBRACE
-            MENUITEM SEPARATOR
-            MENUITEM "Vy&brať ďalšie\tCtrl+Alt+F2",                    IDM_EDIT_SELTONEXT
-            MENUITEM "Vyb&rať predchádzajúce\tCtrl+Alt+Shift+F2",      IDM_EDIT_SELTOPREV
-            MENUITEM SEPARATOR
-            MENUITEM "Vybrať &slovo alebo riadok\tCtrl+Spc",           IDM_EDIT_SELECTWORD
-            MENUITEM "&Viacnásobný výber všetkých zhôd\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
-            MENUITEM SEPARATOR
-            MENUITEM "Otvoriť vybratý &priečinok",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Otvoriť vybratý &súbor",                           IDM_EDIT_OPEN_FILE_FROM_SEL
-            MENUITEM SEPARATOR
-            MENUITEM "Rozdeliť a&kciu Späť po zalomení riadku",        IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
-        END
         MENUITEM SEPARATOR
-        POPUP "&Záložky"
+        POPUP "Zálo&žky"
         BEGIN
             MENUITEM "&Prepnúť\tCtrl+F2",                   BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR

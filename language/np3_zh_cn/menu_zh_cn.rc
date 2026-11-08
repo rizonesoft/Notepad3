@@ -161,12 +161,14 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "撤销(&U)\tCtrl+Z",                          IDM_EDIT_UNDO
         MENUITEM "重做(&R)\tCtrl+Y",                          IDM_EDIT_REDO
+        MENUITEM "换行时重定撤销操作边界(&J)",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "剪切(&T)\tCtrl+X",                          IDM_EDIT_CUT
         MENUITEM "复制(&C)\tCtrl+C",                          IDM_EDIT_COPY
         MENUITEM "全部复制(&L)\tAlt+C",                       IDM_EDIT_COPYALL
         MENUITEM "增量复制(&Y)\tCtrl+E",                      IDM_EDIT_COPYADD
         MENUITEM "复制为 RTF(&F)",                            IDM_EDIT_COPYRTF
+        MENUITEM "生成 GUID 到剪贴板(&G)\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
         MENUITEM "粘贴(&P)\tCtrl+V",                          IDM_EDIT_PASTE
         MENUITEM "与剪贴板交换(&W)\tCtrl+K",                  IDM_EDIT_SWAP
         MENUITEM "全选(&A)\tCtrl+A",                          IDM_EDIT_SELECTALL
@@ -175,7 +177,7 @@ BEGIN
         MENUITEM "清空剪贴板(&E)",                            IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "切换监视剪贴板(&B)",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
-        POPUP "单词(&O)"
+        POPUP "单词(&H)"
         BEGIN
             MENUITEM "补全单词(&C)\tCtrl+Alt+Enter",          IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
@@ -184,36 +186,63 @@ BEGIN
             MENUITEM "删除光标左边的单词(&D)\tCtrl+Backspace",      CMD_CTRLBACK
             MENUITEM "删除光标右边的单词(&W)\tCtrl+Delete",       CMD_CTRLDEL
         END
-        POPUP "行(&L)"
+        POPUP "行(&M)"
         BEGIN
             MENUITEM "上移行(&U)\tAlt+ ↑",               IDM_EDIT_MOVELINEUP
             MENUITEM "下移行(&M)\tAlt+ ↓",               IDM_EDIT_MOVELINEDOWN
+            MENUITEM "与上一行调换(&T)\tAlt+D",                IDM_EDIT_LINETRANSPOSE
             MENUITEM SEPARATOR
             MENUITEM "剪切选区或当前行(&I)\tCtrl+X",      IDM_EDIT_CUT
             MENUITEM "剪切选区所在整行或当前行(&L)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
             MENUITEM "复制选区或当前行(&C)\tCtrl+C",     IDM_EDIT_COPY
             MENUITEM "复制选区所在整行或当前行(&Y)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
-            MENUITEM SEPARATOR
             MENUITEM "复写当前行/选区(&D)\tCtrl+D",            IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "与上一行调换(&T)\tAlt+D",                IDM_EDIT_LINETRANSPOSE
             MENUITEM "删除行(&E)\tCtrl+Shift+D",               IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "向左删除直到行首(&N)\tCtrl+Shift+Backspace",  IDM_EDIT_DELETELINELEFT
             MENUITEM "向右删除直到行尾(&H)\tCtrl+Shift+Delete",     IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
-            MENUITEM "硬换行处理(&W)...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
+            MENUITEM "增加缩进(&B)",                           IDM_EDIT_INDENT
+            MENUITEM "减少缩进(&F)",                           IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "合并重复行(&U)\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "删除重复行(&V)",              IDM_EDIT_REMOVEDUPLICATELINES
-            MENUITEM "合并空行(&G)\tAlt+Y",                    IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "合并只有空白字符的行(&K)\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "删除空行(&R)\tAlt+R",                    IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "删除只有空白字符的行(&B)\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "修改(&G)...\tAlt+M",                     IDM_EDIT_MODIFYLINES
+            MENUITEM "排序(&S)...\tAlt+O",                     IDM_EDIT_SORTLINES
+            MENUITEM "对齐(&A)...\tAlt+J",                     IDM_EDIT_ALIGN
+            MENUITEM SEPARATOR
+            MENUITEM "硬换行处理(&W)...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
+            MENUITEM "拆分行(&O)\tCtrl+I",                      IDM_EDIT_SPLITLINES
+            MENUITEM "拼接行（用空格隔开）(&J)\tCtrl+J",          IDM_EDIT_JOINLINES
+            MENUITEM "拼接行（不添加空格）(&P)\tCtrl+Alt+J",      IDM_EDIT_JOINLN_NOSP
+            MENUITEM "拼接行（保留段落）(&V)\tCtrl+Shift+J",      IDM_EDIT_JOINLINES_PARA
+            MENUITEM SEPARATOR
+            POPUP "清理 (&K)"
+            BEGIN
+                MENUITEM "合并重复行(&U)\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
+                MENUITEM "删除重复行(&V)",              IDM_EDIT_REMOVEDUPLICATELINES
+                MENUITEM SEPARATOR
+                MENUITEM "合并空行(&G)\tAlt+Y",                    IDM_EDIT_MERGEEMPTYLINES
+                MENUITEM "合并只有空白字符的行(&K)\tCtrl+Alt+Y",     IDM_EDIT_MERGEBLANKLINES
+                MENUITEM "删除空行(&R)\tAlt+R",                    IDM_EDIT_REMOVEEMPTYLINES
+                MENUITEM "删除只有空白字符的行(&B)\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
+                MENUITEM SEPARATOR
+                MENUITEM "填充空格(&P)\tAlt+B",                    IDM_EDIT_PADWITHSPACES
+                MENUITEM "删除第一个字符(&F)\tAlt+Z",               IDM_EDIT_STRIP1STCHAR
+                MENUITEM "删除最后一个字符(&L)\tAlt+U",             IDM_EDIT_STRIPLASTCHAR
+                MENUITEM "删除行尾空格(&T)\tAlt+W",                 IDM_EDIT_TRIMLINES
+                MENUITEM "压缩空白字符(&W)\tCtrl+Alt+P",            IDM_EDIT_COMPRESS_BLANKS
+            END
         END
-        POPUP "高级(&N)"
+        POPUP "选区与光标 (&N)"
         BEGIN
-            MENUITEM "增加缩进(&I)",                           IDM_EDIT_INDENT
-            MENUITEM "减少缩进(&U)",                           IDM_EDIT_UNINDENT
+            MENUITEM "选定单词或行(&W)\tCtrl+Spc",             IDM_EDIT_SELECTWORD
+            MENUITEM "选定全部匹配(&A)\tCtrl+Shift+Spc",       IDM_EDIT_SELECTALLMATCHES
+            MENUITEM SEPARATOR
+            MENUITEM "查找配对的括号(&M)\tCtrl+B",                    IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "选定直到配对的括号(&S)\tCtrl+Shift+B",          IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "选定直到下一个查找匹配(&N)\tCtrl+Alt+F2",        IDM_EDIT_SELTONEXT
+            MENUITEM "选定直到上一个查找匹配(&P)\tCtrl+Alt+Shift+F2",  IDM_EDIT_SELTOPREV
+            MENUITEM "跳转到选区开始\tCtrl+,",         CMD_JUMP2SELSTART
+            MENUITEM "跳转到选区结束\tCtrl+.",         CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "行注释(&C)"
             BEGIN
@@ -222,7 +251,6 @@ BEGIN
                 MENUITEM "删除(&R)\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
                 MENUITEM "矩形编辑(&B)\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
-            MENUITEM SEPARATOR
             MENUITEM "添加块注释(&R)\tCtrl+Shift+Q",             IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "围闭选区(&E)"
@@ -240,23 +268,11 @@ BEGIN
             END
             MENUITEM "复写选定内容/行(&D)\tCtrl+D",            IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "填充空格(&P)\tAlt+B",                    IDM_EDIT_PADWITHSPACES
-            MENUITEM "删除第一个字符(&F)\tAlt+Z",               IDM_EDIT_STRIP1STCHAR
-            MENUITEM "删除最后一个字符(&L)\tAlt+U",             IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "删除行尾空格(&T)\tAlt+W",                 IDM_EDIT_TRIMLINES
-            MENUITEM "压缩空白字符(&W)\tCtrl+Alt+P",            IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "增大数值(&I)\tCtrl+Alt+NK+",             CMD_INCREASENUM
+            MENUITEM "减小数值(&B)\tCtrl+Alt+NK-",             CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "修改(&M)...\tAlt+M",                     IDM_EDIT_MODIFYLINES
-            MENUITEM "排序(&S)...\tAlt+O",                     IDM_EDIT_SORTLINES
-            MENUITEM SEPARATOR
-            MENUITEM "对齐(&A)...\tAlt+J",                     IDM_EDIT_ALIGN
-            MENUITEM "拆分行(&I)\tCtrl+I",                      IDM_EDIT_SPLITLINES
-            MENUITEM "拼接行（用空格隔开）(&J)\tCtrl+J",          IDM_EDIT_JOINLINES
-            MENUITEM "拼接行（不添加空格）(&E)\tCtrl+Alt+J",      IDM_EDIT_JOINLN_NOSP
-            MENUITEM "拼接行（保留段落）(&V)\tCtrl+Shift+J",      IDM_EDIT_JOINLINES_PARA
-            MENUITEM SEPARATOR
-            MENUITEM "跳转到选区开始\tCtrl+,",         CMD_JUMP2SELSTART
-            MENUITEM "跳转到选区结束\tCtrl+.",         CMD_JUMP2SELEND
+            MENUITEM "打开所选内容所在的文件夹(&G)",          IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "打开所选内容指向的文件(&F)",            IDM_EDIT_OPEN_FILE_FROM_SEL
         END
         POPUP "转换(&V)"
         BEGIN
@@ -277,13 +293,16 @@ BEGIN
             MENUITEM "Base64 解码(&4)",                    IDM_EDIT_BASE64DECODE
             MENUITEM "Base64 解码为代码页...",              IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
-            MENUITEM "URL 编码(&E)\tCtrl+Shift+E",            IDM_EDIT_URLENCODE
+            MENUITEM "URL 编码(&R)\tCtrl+Shift+E",            IDM_EDIT_URLENCODE
             MENUITEM "URL 解码(&D)\tCtrl+Shift+R",            IDM_EDIT_URLDECODE
             MENUITEM "转换文件路径为 URL\tCtrl+F10",           IDM_EDIT_PATH2URL
             MENUITEM "转换 URL 为文件路径\tAlt+F10",           IDM_EDIT_URL2PATH
             MENUITEM SEPARATOR
             MENUITEM "调转反斜线",                      IDM_EDIT_INVERTBACKSLASH
             MENUITEM "调转斜线",                        IDM_EDIT_INVERTSLASH
+            MENUITEM SEPARATOR
+            MENUITEM "C 转义(&E)\tCtrl+Alt+E",                 IDM_EDIT_ESCAPECCHARS
+            MENUITEM "C 反转义(&K)\tCtrl+Alt+R",               IDM_EDIT_UNESCAPECCHARS
             MENUITEM SEPARATOR
             MENUITEM "转换为十六进制(&H)\tCtrl+Alt+X",         IDM_EDIT_CHAR2HEX
             MENUITEM "从十六进制转换(&C)\tCtrl+Alt+C",         IDM_EDIT_HEX2CHAR
@@ -300,30 +319,6 @@ BEGIN
             MENUITEM "日期和时间（长格式）(&L)\tCtrl+Shift+F5",   IDM_EDIT_INSERT_LONGDATE
             MENUITEM "当前时间戳(&T)",                   CMD_INSERT_TIMESTAMP
             MENUITEM "更新时间戳(&U)\tShift+F5",                 CMD_UPDATE_TIMESTAMPS
-        END
-        POPUP "杂项(&M)"
-        BEGIN
-            MENUITEM "生成 GUID 到剪贴板(&G)\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
-            MENUITEM SEPARATOR
-            MENUITEM "C 转义(&E)\tCtrl+Alt+E",                 IDM_EDIT_ESCAPECCHARS
-            MENUITEM "C 反转义(&K)\tCtrl+Alt+R",               IDM_EDIT_UNESCAPECCHARS
-            MENUITEM SEPARATOR
-            MENUITEM "增大数值(&I)\tCtrl+Alt+NK+",             CMD_INCREASENUM
-            MENUITEM "减小数值(&D)\tCtrl+Alt+NK-",             CMD_DECREASENUM
-            MENUITEM SEPARATOR
-            MENUITEM "查找配对的括号(&M)\tCtrl+B",                    IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "选定直到配对的括号(&S)\tCtrl+Shift+B",          IDM_EDIT_SELTOMATCHINGBRACE
-            MENUITEM SEPARATOR
-            MENUITEM "选定直到下一个查找匹配(&N)\tCtrl+Alt+F2",        IDM_EDIT_SELTONEXT
-            MENUITEM "选定直到上一个查找匹配(&P)\tCtrl+Alt+Shift+F2",  IDM_EDIT_SELTOPREV
-            MENUITEM SEPARATOR
-            MENUITEM "选定单词或行(&W)\tCtrl+Spc",             IDM_EDIT_SELECTWORD
-            MENUITEM "选定全部匹配(&A)\tCtrl+Shift+Spc",       IDM_EDIT_SELECTALLMATCHES
-            MENUITEM SEPARATOR
-            MENUITEM "打开所选内容所在的文件夹(&C)",          IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "打开所选内容指向的文件(&F)",            IDM_EDIT_OPEN_FILE_FROM_SEL
-            MENUITEM SEPARATOR
-            MENUITEM "换行时重定撤销操作边界(&T)",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "书签(&K)"

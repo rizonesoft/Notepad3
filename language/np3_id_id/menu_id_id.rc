@@ -157,23 +157,25 @@ BEGIN
     END
     POPUP "&Sunting"
     BEGIN
-        MENUITEM "M&ode Hanya Baca",                 IDM_VIEW_READONLY
+        MENUITEM "Mode Han&ya Baca",                 IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "&Urungkan\tCtrl+Z",                IDM_EDIT_UNDO
-        MENUITEM "Kem&balikan\tCtrl+Y",              IDM_EDIT_REDO
+        MENUITEM "&Kembalikan\tCtrl+Y",              IDM_EDIT_REDO
+        MENUITEM "Pisahkan Ri&wayat Kembali pada Baris Baru",    IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
-        MENUITEM "&Potong\tCtrl+X",                  IDM_EDIT_CUT
+        MENUITEM "Poton&g\tCtrl+X",                  IDM_EDIT_CUT
         MENUITEM "&Salin\tCtrl+C",                   IDM_EDIT_COPY
         MENUITEM "Sali&n Semua\tAlt+C",              IDM_EDIT_COPYALL
-        MENUITEM "Tambah ke Papan &Klip\tCtrl+E",    IDM_EDIT_COPYADD
+        MENUITEM "T&ambah ke Papan Klip\tCtrl+E",    IDM_EDIT_COPYADD
         MENUITEM "Copy as RT&F",                     IDM_EDIT_COPYRTF
+        MENUITEM "Salin GUI&D ke Papan Klip\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
         MENUITEM "Te&mpel\tCtrl+V",                  IDM_EDIT_PASTE
         MENUITEM "Tuka&r\tCtrl+K",                   IDM_EDIT_SWAP
-        MENUITEM "Pil&ih Semua\tCtrl+A",             IDM_EDIT_SELECTALL
-        MENUITEM "Hap&us\tDel",                      IDM_EDIT_CLEAR
+        MENUITEM "Pi&lih Semua\tCtrl+A",             IDM_EDIT_SELECTALL
+        MENUITEM "&Hapus\tDel",                      IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "Bersi&hkan Papan Klip",            IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Ak-/Nonak-tifkan &pemantauan papan klip",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "B&ersihkan Papan Klip",            IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Ak-/N&onak-tifkan pemantauan papan klip",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "Ka&ta"
         BEGIN
@@ -186,43 +188,69 @@ BEGIN
         END
         POPUP "&Baris"
         BEGIN
-            MENUITEM "Pindah ke &Atas\tAlt+ ↑",                              IDM_EDIT_MOVELINEUP
-            MENUITEM "Pindah ke &Bawah\tAlt+ ↓",                             IDM_EDIT_MOVELINEDOWN
-            MENUITEM SEPARATOR
-            MENUITEM "&Potong Dalam Seleksi\tCtrl+X",                        IDM_EDIT_CUT
-            MENUITEM "Potong Ba&ris\tCtrl+Shift+X",                          IDM_EDIT_CUTLINE
-            MENUITEM "&Salin Dalam Seleksi\tCtrl+C",                         IDM_EDIT_COPY
-            MENUITEM "Salin Bar&is\tCtrl+Shift+C",                           IDM_EDIT_COPYLINE
-            MENUITEM SEPARATOR
-            MENUITEM "&Duplikasi Baris/Seleksi\tCtrl+D",                     IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "Pindah k&e Atas\tAlt+ ↑",                              IDM_EDIT_MOVELINEUP
+            MENUITEM "Pindah ke Ba&wah\tAlt+ ↓",                             IDM_EDIT_MOVELINEDOWN
             MENUITEM "Ubah &Urutkan Baris\tAlt+D",                           IDM_EDIT_LINETRANSPOSE
-            MENUITEM "&Hapus Baris\tCtrl+Shift+D",                           IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
-            MENUITEM "Hapus Baris dari K&iri\tCtrl+Shift+Back",              IDM_EDIT_DELETELINELEFT
+            MENUITEM "P&otong Dalam Seleksi\tCtrl+X",                        IDM_EDIT_CUT
+            MENUITEM "&Potong Baris\tCtrl+Shift+X",                          IDM_EDIT_CUTLINE
+            MENUITEM "Salin Dala&m Seleksi\tCtrl+C",                         IDM_EDIT_COPY
+            MENUITEM "Salin Bar&is\tCtrl+Shift+C",                           IDM_EDIT_COPYLINE
+            MENUITEM "Dup&likasi Baris/Seleksi\tCtrl+D",                     IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "Hapu&s Baris\tCtrl+Shift+D",                           IDM_EDIT_DELETELINE
+            MENUITEM SEPARATOR
+            MENUITEM "Hapus Baris &dari Kiri\tCtrl+Shift+Back",              IDM_EDIT_DELETELINELEFT
             MENUITEM "Hapus Baris dari K&anan\tCtrl+Shift+Del",              IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
-            MENUITEM "Bungkus Baris (dari Ko&lom)...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
-            MENUITEM SEPARATOR
-            MENUITEM "Sa&tukan Baris Duplikat\tCtrl+Alt+D",                  IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Hapus Baris &Duplikat",                                IDM_EDIT_REMOVEDUPLICATELINES
-            MENUITEM "Gabungkan Baris Koson&g\tAlt+Y",                       IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "Gabungka&n Baris Kosong (Ada Spasi)\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "Hapus Baris K&osong\tAlt+R",                           IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "Hapus Baris &Kosong (Ada Spasi)\tCtrl+Alt+B",          IDM_EDIT_REMOVEBLANKLINES
-        END
-        POPUP "Lan&jutan"
-        BEGIN
-            MENUITEM "&Indentasi",                                      IDM_EDIT_INDENT
+            MENUITEM "I&ndentasi",                                      IDM_EDIT_INDENT
             MENUITEM "&Batal Indentasi",                                IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            POPUP "&Komentar Baris"
+            MENUITEM "Uba&h Baris...\tAlt+M",                           IDM_EDIT_MODIFYLINES
+            MENUITEM "Uru&tkan Baris...\tAlt+O",                        IDM_EDIT_SORTLINES
+            MENUITEM "Pe&rataan Baris...\tAlt+J",                       IDM_EDIT_ALIGN
+            MENUITEM SEPARATOR
+            MENUITEM "Bun&gkus Baris (dari Kolom)...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
+            MENUITEM "Pisahkan Baris (&C)\tCtrl+I",                         IDM_EDIT_SPLITLINES
+            MENUITEM "Gabungkan Baris (&J)\tCtrl+J",                        IDM_EDIT_JOINLINES
+            MENUITEM "Gabungkan Baris (Tanpa Spasi) (&Q)\tCtrl+Alt+J",      IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Pertahankan Paragra&f\tCtrl+Shift+J",             IDM_EDIT_JOINLINES_PARA
+            MENUITEM SEPARATOR
+            POPUP "Pembersihan (&K)"
+            BEGIN
+                MENUITEM "Sa&tukan Baris Duplikat\tCtrl+Alt+D",                  IDM_EDIT_UNITEDUPLICATELINES
+                MENUITEM "Hapus Baris &Duplikat",                                IDM_EDIT_REMOVEDUPLICATELINES
+                MENUITEM SEPARATOR
+                MENUITEM "Gabungkan Baris Koson&g\tAlt+Y",                       IDM_EDIT_MERGEEMPTYLINES
+                MENUITEM "Gabungka&n Baris Kosong (Ada Spasi)\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
+                MENUITEM "Hapus Baris K&osong\tAlt+R",                           IDM_EDIT_REMOVEEMPTYLINES
+                MENUITEM "Hapus Baris &Kosong (Ada Spasi)\tCtrl+Alt+B",          IDM_EDIT_REMOVEBLANKLINES
+                MENUITEM SEPARATOR
+                MENUITEM "I&si Baris Kosong dengan Spasi\tAlt+B",           IDM_EDIT_PADWITHSPACES
+                MENUITEM "Hapus dari &Awal\tAlt+Z",                         IDM_EDIT_STRIP1STCHAR
+                MENUITEM "Hapus dari Ak&hir\tAlt+U",                        IDM_EDIT_STRIPLASTCHAR
+                MENUITEM "Hapus K&ekosongan Spasi\tAlt+W",                  IDM_EDIT_TRIMLINES
+                MENUITEM "Ko&mpres Baris Kosong\tCtrl+Alt+P",               IDM_EDIT_COMPRESS_BLANKS
+            END
+        END
+        POPUP "Seleksi && Kursor (&J)"
+        BEGIN
+            MENUITEM "Pilih Kata a&tau Baris\tCtrl+Spc",             IDM_EDIT_SELECTWORD
+            MENUITEM "Pilih Semua yang &Sesuai\tCtrl+Shift+Spc",     IDM_EDIT_SELECTALLMATCHES
+            MENUITEM SEPARATOR
+            MENUITEM "Temukan Pasangan Pen&gurung\tCtrl+B",          IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "Pilih &isi Pengurung\tCtrl+Shift+B",           IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "Pilih Se&lanjutnya\tCtrl+Alt+F2",              IDM_EDIT_SELTONEXT
+            MENUITEM "Pilih Se&belumnya\tCtrl+Alt+Shift+F2",         IDM_EDIT_SELTOPREV
+            MENUITEM "Pergi ke A&wal Seleksi\tCtrl+,",                  CMD_JUMP2SELSTART
+            MENUITEM "Pergi ke A&khir Seleksi\tCtrl+.",                 CMD_JUMP2SELEND
+            MENUITEM SEPARATOR
+            POPUP "K&omentar Baris"
             BEGIN
                 MENUITEM "&Alihkan\tCtrl+Q",                            IDM_EDIT_LINECOMMENT
                 MENUITEM "&Tambahkan\tCtrl+Alt+Q",                      IDM_EDIT_LINECOMMENT_ADD
                 MENUITEM "&Hapus\tCtrl+Alt+Shift+Q",                    IDM_EDIT_LINECOMMENT_REMOVE
                 MENUITEM "&Sunting (multi-baris)\tAlt+Shift+Q",         IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
-            MENUITEM SEPARATOR
             MENUITEM "Komentar &Multi-baris\tCtrl+Shift+Q",             IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Apit Seleksi"
@@ -240,25 +268,13 @@ BEGIN
             END
             MENUITEM "&Duplikasi Baris/Seleksi\tCtrl+D",                IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "I&si Baris Kosong dengan Spasi\tAlt+B",           IDM_EDIT_PADWITHSPACES
-            MENUITEM "Hapus dari &Awal\tAlt+Z",                         IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Hapus dari Ak&hir\tAlt+U",                        IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Hapus K&ekosongan Spasi\tAlt+W",                  IDM_EDIT_TRIMLINES
-            MENUITEM "Kompres Baris &Kosong\tCtrl+Alt+P",               IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Tamba&hkan Angka\tCtrl+Alt+NK+",               CMD_INCREASENUM
+            MENUITEM "K&urangi Angka\tCtrl+Alt+NK-",                 CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "&Ubah Baris...\tAlt+M",                           IDM_EDIT_MODIFYLINES
-            MENUITEM "Uru&tkan Baris...\tAlt+O",                        IDM_EDIT_SORTLINES
-            MENUITEM SEPARATOR
-            MENUITEM "Pe&rataan Baris...\tAlt+J",                       IDM_EDIT_ALIGN
-            MENUITEM "Pi&sahkan Baris\tCtrl+I",                         IDM_EDIT_SPLITLINES
-            MENUITEM "Gabungkan B&aris\tCtrl+J",                        IDM_EDIT_JOINLINES
-            MENUITEM "Gabungkan Baris (Tan&pa Spasi)\tCtrl+Alt+J",      IDM_EDIT_JOINLN_NOSP
-            MENUITEM "Pertahankan Para&graf\tCtrl+Shift+J",             IDM_EDIT_JOINLINES_PARA
-            MENUITEM SEPARATOR
-            MENUITEM "Pergi ke A&wal Seleksi\tCtrl+,",                  CMD_JUMP2SELSTART
-            MENUITEM "Pergi ke A&khir Seleksi\tCtrl+.",                 CMD_JUMP2SELEND
+            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
         END
-        POPUP "&Konversi"
+        POPUP "Kon&versi"
         BEGIN
             MENUITEM "Huruf &Besar\tCtrl+Shift+U",                      IDM_EDIT_CONVERTUPPERCASE
             MENUITEM "Huruf &Kecil\tCtrl+U",                            IDM_EDIT_CONVERTLOWERCASE
@@ -285,6 +301,9 @@ BEGIN
             MENUITEM "Balikkan Garis Miring (\)",                       IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Balikkan Garis Miring (/)",                       IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
+            MENUITEM "K&hususkan Karakter String\tCtrl+Alt+E",       IDM_EDIT_ESCAPECCHARS
+            MENUITEM "&Normalkan Karakter String\tCtrl+Alt+R",       IDM_EDIT_UNESCAPECCHARS
+            MENUITEM SEPARATOR
             MENUITEM "Karakter ke Hex\tCtrl+Alt+X",                     IDM_EDIT_CHAR2HEX
             MENUITEM "Hex ke Karakter\tCtrl+Alt+C",                     IDM_EDIT_HEX2CHAR
         END
@@ -301,32 +320,8 @@ BEGIN
             MENUITEM "&Stempel Waktu Saat Ini",                      CMD_INSERT_TIMESTAMP
             MENUITEM "&Perbarui Stempel Waktu\tShift+F5",            CMD_UPDATE_TIMESTAMPS
         END
-        POPUP "&Lain-Lain"
-        BEGIN
-            MENUITEM "Salin &GUID ke Papan Klip\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
-            MENUITEM SEPARATOR
-            MENUITEM "&Khususkan Karakter String\tCtrl+Alt+E",       IDM_EDIT_ESCAPECCHARS
-            MENUITEM "&Normalkan Karakter String\tCtrl+Alt+R",       IDM_EDIT_UNESCAPECCHARS
-            MENUITEM SEPARATOR
-            MENUITEM "&Tambahkan Angka\tCtrl+Alt+NK+",               CMD_INCREASENUM
-            MENUITEM "&Kurangi Angka\tCtrl+Alt+NK-",                 CMD_DECREASENUM
-            MENUITEM SEPARATOR
-            MENUITEM "Temukan Pasangan Pen&gurung\tCtrl+B",          IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Pilih &isi Pengurung\tCtrl+Shift+B",           IDM_EDIT_SELTOMATCHINGBRACE
-            MENUITEM SEPARATOR
-            MENUITEM "Pilih Se&lanjutnya\tCtrl+Alt+F2",              IDM_EDIT_SELTONEXT
-            MENUITEM "Pilih Se&belumnya\tCtrl+Alt+Shift+F2",         IDM_EDIT_SELTOPREV
-            MENUITEM SEPARATOR
-            MENUITEM "Pilih Kata a&tau Baris\tCtrl+Spc",             IDM_EDIT_SELECTWORD
-            MENUITEM "Pilih Semua yang &Sesuai\tCtrl+Shift+Spc",     IDM_EDIT_SELECTALLMATCHES
-            MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
-            MENUITEM SEPARATOR
-            MENUITEM "Pisahkan &Riwayat Kembali pada Baris Baru",    IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
-        END
         MENUITEM SEPARATOR
-        POPUP "Pe&markahan"
+        POPUP "&Pemarkahan"
         BEGIN
             MENUITEM "&Alihkan\tCtrl+F2",                   BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR

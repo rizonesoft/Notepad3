@@ -161,21 +161,23 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Visszavonás\tCtrl+Z",        IDM_EDIT_UNDO
         MENUITEM "&Újra\tCtrl+Y",               IDM_EDIT_REDO
+        MENUITEM "Visszavonás műveletek szétvágása sortöréseknél", IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "Kivá&gás\tCtrl+X",            IDM_EDIT_CUT
         MENUITEM "&Másolás\tCtrl+C",            IDM_EDIT_COPY
         MENUITEM "Mind m&ásolása\tAlt+C",       IDM_EDIT_COPYALL
         MENUITEM "Vág&ólaphoz ad\tCtrl+E",      IDM_EDIT_COPYADD
         MENUITEM "Másolás RT&F-ként",           IDM_EDIT_COPYRTF
+        MENUITEM "G&UID másolása a vágólapra\tCtrl+Shift+.",       IDM_EDIT_INSERT_GUID
         MENUITEM "&Beillesztés\tCtrl+V",        IDM_EDIT_PASTE
         MENUITEM "&Csere\tCtrl+K",              IDM_EDIT_SWAP
         MENUITEM "Min&d kijelölése\tCtrl+A",    IDM_EDIT_SELECTALL
         MENUITEM "&Törlés\tDel",                IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
         MENUITEM "Vágólap t&örlése",            IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "&Vágólapfigyelés állapotváltása", IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Vágó&lapfigyelés állapotváltása", IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
-        POPUP "Sza&vak"
+        POPUP "&Szavak"
         BEGIN
             MENUITEM "&Szó kiegészítése\tCtrl+Alt+Enter",      IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
@@ -184,36 +186,63 @@ BEGIN
             MENUITEM "Szó &törlése balra\tCtrl+Back",          CMD_CTRLBACK
             MENUITEM "Szó t&örlése jobbra\tCtrl+Del",          CMD_CTRLDEL
         END
-        POPUP "S&orok"
+        POPUP "So&rok"
         BEGIN
             MENUITEM "Mozgatás &fel\tAlt+ ↑",                  IDM_EDIT_MOVELINEUP
             MENUITEM "Mozgatás l&e\tAlt+ ↓",                   IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Soro&k felcserélése\tAlt+D",          IDM_EDIT_LINETRANSPOSE
             MENUITEM SEPARATOR
-            MENUITEM "Kijelölés vagy a&ktuális sor kivágása\tCtrl+X",      IDM_EDIT_CUT
+            MENUITEM "K&ijelölés vagy aktuális sor kivágása\tCtrl+X",      IDM_EDIT_CUT
             MENUITEM "Kijelölés &sorainak kivágása\tCtrl+Shift+X",         IDM_EDIT_CUTLINE
             MENUITEM "Kijelölés vagy aktuális s&or másolása\tCtrl+C",      IDM_EDIT_COPY
-            MENUITEM "Kijelölés sorainak má&solása\tCtrl+Shift+C",         IDM_EDIT_COPYLINE
-            MENUITEM SEPARATOR
+            MENUITEM "Ki&jelölés sorainak másolása\tCtrl+Shift+C",         IDM_EDIT_COPYLINE
             MENUITEM "Sor/Kijelölés d&uplikálása\tCtrl+D",  IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "Soro&k felcserélése\tAlt+D",          IDM_EDIT_LINETRANSPOSE
             MENUITEM "Sor t&örlése\tCtrl+Shift+D",          IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "Törlés sor elejéig\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
             MENUITEM "Törlés sor végéig\tCtrl+Shift+Del",   IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
-            MENUITEM "&Oszlop sortörés...\tCtrl+Shift+W",   IDM_EDIT_COLUMNWRAP
-            MENUITEM SEPARATOR
-            MENUITEM "&Duplikált sorok egyesítése\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "D&uplikált sorok törlése",              IDM_EDIT_REMOVEDUPLICATELINES
-            MENUITEM "&Üres sorok egyesítése\tAlt+Y",        IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "Üres kar.-eket tart. sorok egyes&ítése\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "Üres so&rok törlése\tAlt+R",           IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "Üres kar.-eket &tar. sorok törlése\tCtrl+Alt+B", IDM_EDIT_REMOVEBLANKLINES
-        END
-        POPUP "Hala&dó"
-        BEGIN
             MENUITEM "&Behúzás",                           IDM_EDIT_INDENT
             MENUITEM "Behúzás törlése",                    IDM_EDIT_UNINDENT
+            MENUITEM SEPARATOR
+            MENUITEM "Sorok &módosítása...\tAlt+M",       IDM_EDIT_MODIFYLINES
+            MENUITEM "Sorok &rendezése...\tAlt+O",        IDM_EDIT_SORTLINES
+            MENUITEM "Sorok i&gazítása...\tAlt+J",          IDM_EDIT_ALIGN
+            MENUITEM SEPARATOR
+            MENUITEM "Osz&lop sortörés...\tCtrl+Shift+W",   IDM_EDIT_COLUMNWRAP
+            MENUITEM "Sorok szétv&ágása\tCtrl+I",           IDM_EDIT_SPLITLINES
+            MENUITEM "Sorok összefű&zése\tCtrl+J",          IDM_EDIT_JOINLINES
+            MENUITEM "Sorok eg&ybeolvasztása\tCtrl+Alt+J",  IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Bekez&dések megőrzése\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
+            MENUITEM SEPARATOR
+            POPUP "Tisztítás (&T)"
+            BEGIN
+                MENUITEM "&Duplikált sorok egyesítése\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
+                MENUITEM "D&uplikált sorok törlése",              IDM_EDIT_REMOVEDUPLICATELINES
+                MENUITEM SEPARATOR
+                MENUITEM "&Üres sorok egyesítése\tAlt+Y",        IDM_EDIT_MERGEEMPTYLINES
+                MENUITEM "Üres kar.-eket tart. sorok egyes&ítése\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
+                MENUITEM "Üres so&rok törlése\tAlt+R",           IDM_EDIT_REMOVEEMPTYLINES
+                MENUITEM "Üres kar.-eket &tar. sorok törlése\tCtrl+Alt+B", IDM_EDIT_REMOVEBLANKLINES
+                MENUITEM SEPARATOR
+                MENUITEM "Kitöltés &szóközökkel\tAlt+B",      IDM_EDIT_PADWITHSPACES
+                MENUITEM "&Első kar. törlése\tAlt+Z",         IDM_EDIT_STRIP1STCHAR
+                MENUITEM "Ut&olsó kar. törlése\tAlt+U",       IDM_EDIT_STRIPLASTCHAR
+                MENUITEM "Sor&végi üres kar. törlése\tAlt+W", IDM_EDIT_TRIMLINES
+                MENUITEM "Üres &kar. tömörítése\tCtrl+Alt+P", IDM_EDIT_COMPRESS_BLANKS
+            END
+        END
+        POPUP "Kijelölés && Kurzor (&K)"
+        BEGIN
+            MENUITEM "Szó vag&y sorok kijelölése\tCtrl+Spc",           IDM_EDIT_SELECTWORD
+            MENUITEM "Összes egyezés ki&jelölése\tCtrl+Shift+Spc",     IDM_EDIT_SELECTALLMATCHES
+            MENUITEM SEPARATOR
+            MENUITEM "&Zárójelpár keresése\tCtrl+B",                   IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "Kijelölés zárójel &párig\tCtrl+Shift+B",         IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "Kijelölés a következői&g\tCtrl+Alt+F2",          IDM_EDIT_SELTONEXT
+            MENUITEM "Kijelölés az &előzőig\tCtrl+Alt+Shift+F2",       IDM_EDIT_SELTOPREV
+            MENUITEM "&Ugrás a kijelölés elejére\tCtrl+,",  CMD_JUMP2SELSTART
+            MENUITEM "Ugrás a kijelölés &végére\tCtrl+.",   CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "S&or megjegyzés"
             BEGIN
@@ -222,7 +251,6 @@ BEGIN
                 MENUITEM "&Eltávolítás\tCtrl+Alt+Shift+Q",   IDM_EDIT_LINECOMMENT_REMOVE
                 MENUITEM "&Blokk szerkesztése\tAlt+Shift+Q", IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
-            MENUITEM SEPARATOR
             MENUITEM "&Blokk megjegyzés\tCtrl+Shift+Q",            IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Kijelölés körbevétele"
@@ -240,23 +268,11 @@ BEGIN
             END
             MENUITEM "Sor/Kijelölés &duplikálása\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "Kitöltés &szóközökkel\tAlt+B",      IDM_EDIT_PADWITHSPACES
-            MENUITEM "&Első kar. törlése\tAlt+Z",         IDM_EDIT_STRIP1STCHAR
-            MENUITEM "&Utolsó kar. törlése\tAlt+U",       IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Sorvégi &üres kar. törlése\tAlt+W", IDM_EDIT_TRIMLINES
-            MENUITEM "Üres kar. &tömörítése\tCtrl+Alt+P", IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "&Szám növelése\tCtrl+Alt+NK+",                   CMD_INCREASENUM
+            MENUITEM "Szám &csökkentése\tCtrl+Alt+NK-",                CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "Sorok &módosítása...\tAlt+M",       IDM_EDIT_MODIFYLINES
-            MENUITEM "Sorok &rendezése...\tAlt+O",        IDM_EDIT_SORTLINES
-            MENUITEM SEPARATOR
-            MENUITEM "Sorok i&gazítása...\tAlt+J",          IDM_EDIT_ALIGN
-            MENUITEM "Sorok szétv&ágása\tCtrl+I",           IDM_EDIT_SPLITLINES
-            MENUITEM "Sorok összefű&zése\tCtrl+J",          IDM_EDIT_JOINLINES
-            MENUITEM "Sorok eg&ybeolvasztása\tCtrl+Alt+J",  IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Bekezdések megőrzése\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
-            MENUITEM SEPARATOR
-            MENUITEM "Ugrás a kijelölés &elejére\tCtrl+,",  CMD_JUMP2SELSTART
-            MENUITEM "Ugrás a kijelölés &végére\tCtrl+.",   CMD_JUMP2SELEND
+            MENUITEM "K&ijelölésben lévő mappa megnyitása",            IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Fájl &megnyitása a kijelölésből",                IDM_EDIT_OPEN_FILE_FROM_SEL
         END
         POPUP "Ko&nvertálás"
         BEGIN
@@ -277,7 +293,7 @@ BEGIN
             MENUITEM "Base6&4 dekódolás",                 IDM_EDIT_BASE64DECODE
             MENUITEM "Base64 dekódolás kódlapra...",      IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
-            MENUITEM "&URL bekódolás\tCtrl+Shift+E",               IDM_EDIT_URLENCODE
+            MENUITEM "UR&L bekódolás\tCtrl+Shift+E",               IDM_EDIT_URLENCODE
             MENUITEM "U&RL kikódolás\tCtrl+Shift+R",               IDM_EDIT_URLDECODE
             MENUITEM "Fájlrendszer útvonal URL-re\tCtrl+F10",      IDM_EDIT_PATH2URL
             MENUITEM "URL-t fájlrendszer útvonallá\tAlt+F10",      IDM_EDIT_URL2PATH
@@ -285,10 +301,13 @@ BEGIN
             MENUITEM "Backslash-ek váltása",                       IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Törtvonalak váltása",                        IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
-            MENUITEM "&Kar. -> Hex\tCtrl+Alt+X",                   IDM_EDIT_CHAR2HEX
+            MENUITEM "Vezérlőkar.-ek v&édelme\tCtrl+Alt+E",            IDM_EDIT_ESCAPECCHARS
+            MENUITEM "Vezérlőkar.-ek védelem t&örlése\tCtrl+Alt+R",    IDM_EDIT_UNESCAPECCHARS
+            MENUITEM SEPARATOR
+            MENUITEM "K&ar. -> Hex\tCtrl+Alt+X",                   IDM_EDIT_CHAR2HEX
             MENUITEM "&Hex ->Kar.\tCtrl+Alt+C",                    IDM_EDIT_HEX2CHAR
         END
-        POPUP "&Beillesztés"
+        POPUP "B&eillesztés"
         BEGIN
             MENUITEM "&Fölé egy új sor\tCtrl+Enter",               CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
@@ -301,32 +320,8 @@ BEGIN
             MENUITEM "&Aktuális időbélyeg",                        CMD_INSERT_TIMESTAMP
             MENUITEM "Időbélye&gek frissítése\tShift+F5",          CMD_UPDATE_TIMESTAMPS
         END
-        POPUP "&Vegyes"
-        BEGIN
-            MENUITEM "&GUID másolása a vágólapra\tCtrl+Shift+.",       IDM_EDIT_INSERT_GUID
-            MENUITEM SEPARATOR
-            MENUITEM "Vezérlőkar.-ek v&édelme\tCtrl+Alt+E",            IDM_EDIT_ESCAPECCHARS
-            MENUITEM "Vezérlőkar.-ek védelem t&örlése\tCtrl+Alt+R",    IDM_EDIT_UNESCAPECCHARS
-            MENUITEM SEPARATOR
-            MENUITEM "Szám nö&velése\tCtrl+Alt+NK+",                   CMD_INCREASENUM
-            MENUITEM "Szám &csökkentése\tCtrl+Alt+NK-",                CMD_DECREASENUM
-            MENUITEM SEPARATOR
-            MENUITEM "&Zárójelpár keresése\tCtrl+B",                   IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Kijelölés zárójel &párig\tCtrl+Shift+B",         IDM_EDIT_SELTOMATCHINGBRACE
-            MENUITEM SEPARATOR
-            MENUITEM "Kijelölés a következői&g\tCtrl+Alt+F2",          IDM_EDIT_SELTONEXT
-            MENUITEM "Kijelölés az &előzőig\tCtrl+Alt+Shift+F2",       IDM_EDIT_SELTOPREV
-            MENUITEM SEPARATOR
-            MENUITEM "Szó vag&y sorok kijelölése\tCtrl+Spc",           IDM_EDIT_SELECTWORD
-            MENUITEM "Összes egyezés ki&jelölése\tCtrl+Shift+Spc",     IDM_EDIT_SELECTALLMATCHES
-            MENUITEM SEPARATOR
-            MENUITEM "Kijelölésben lé&vő mappa megnyitása",            IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Fájl &megnyitása a kijelölésből",                IDM_EDIT_OPEN_FILE_FROM_SEL
-            MENUITEM SEPARATOR
-            MENUITEM "Visszavonás műveletek szétvágása sortöréseknél", IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
-        END
         MENUITEM SEPARATOR
-        POPUP "Köny&vjelzők"
+        POPUP "Kön&yvjelzők"
         BEGIN
             MENUITEM "&Váltás\tCtrl+F2",            BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR

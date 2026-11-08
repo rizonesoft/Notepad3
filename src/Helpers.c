@@ -835,12 +835,64 @@ void GetSystemStatusFontA(LPSTR fontFaceName_out, bool bForceRefresh)
 
 //=============================================================================
 //
+//  Update every occurrence, including aliases in nested submenus.
+//
+static void _SetMenuCommandState(HMENU hmenu, UINT uId, UINT flags, bool checking)
+{
+    int const    count = GetMenuItemCount(hmenu);
+    MENUITEMINFO item = { 0 };
+    item.cbSize = sizeof(item);
+    item.fMask = MIIM_ID | MIIM_SUBMENU;
+
+    for (int pos = 0; pos < count; ++pos) {
+        if (!GetMenuItemInfo(hmenu, pos, TRUE, &item)) {
+            continue;
+        }
+        if (item.wID == uId) {
+            if (checking) {
+                CheckMenuItem(hmenu, pos, MF_BYPOSITION | flags);
+            }
+            else {
+                EnableMenuItem(hmenu, pos, MF_BYPOSITION | flags);
+            }
+        }
+        if (item.hSubMenu) {
+            _SetMenuCommandState(item.hSubMenu, uId, flags, checking);
+        }
+    }
+}
+
+BOOL EnableMenuCommand(HMENU hmenu, UINT uId, bool enabled)
+{
+    UINT const flags = enabled ? MF_ENABLED : MF_GRAYED;
+    BOOL const previous = EnableMenuItem(hmenu, uId, MF_BYCOMMAND | flags);
+    if (previous != -1) {
+        _SetMenuCommandState(hmenu, uId, flags, false);
+    }
+    return previous;
+}
+
+DWORD CheckMenuCommand(HMENU hmenu, UINT uId, bool checked)
+{
+    UINT const  flags = checked ? MF_CHECKED : MF_UNCHECKED;
+    DWORD const previous = CheckMenuItem(hmenu, uId, MF_BYCOMMAND | flags);
+    if (previous != (DWORD)-1) {
+        _SetMenuCommandState(hmenu, uId, flags, true);
+    }
+    return previous;
+}
+
+//=============================================================================
+//
 //  IsCmdEnabled()
 //
 bool IsCmdEnabled(HWND hwnd, UINT uId)
 {
-    HMENU const hmenu = GetMenu(hwnd);
-    SendMessage(hwnd, WM_INITMENU,(WPARAM)hmenu, 0);
+    HMENU hmenu = GetMenu(hwnd);
+    if (!hmenu && (hwnd == Globals.hwndMain)) {
+        hmenu = Globals.hMainMenu;
+    }
+    SendMessage(hwnd, WM_INITMENU, (WPARAM)hmenu, 0);
     UINT const ustate = GetMenuState(hmenu, uId, MF_BYCOMMAND);
     return ((ustate == 0xFFFFFFFF) ? true : (!(ustate & (MF_GRAYED | MF_DISABLED))));
 }

@@ -161,12 +161,14 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Отмена\tCtrl+Z",                     IDM_EDIT_UNDO
         MENUITEM "&Повтор\tCtrl+Y",                     IDM_EDIT_REDO
+        MENUITEM "Разделить &транзакцию отмены по окончаниям строк", IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "&Вырезать\tCtrl+X",                   IDM_EDIT_CUT
         MENUITEM "&Копировать\tCtrl+C",                 IDM_EDIT_COPY
         MENUITEM "Копи&ровать всё\tAlt+C",              IDM_EDIT_COPYALL
         MENUITEM "Добавить в конец буфера\tCtrl+E",     IDM_EDIT_COPYADD
         MENUITEM "Copy as RT&F",                        IDM_EDIT_COPYRTF
+        MENUITEM "Копировать &GUID в буфер обмена\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
         MENUITEM "Вст&авить\tCtrl+V",                   IDM_EDIT_PASTE
         MENUITEM "Поменять\tCtrl+K",                    IDM_EDIT_SWAP
         MENUITEM "Выделить в&сё\tCtrl+A",               IDM_EDIT_SELECTALL
@@ -188,32 +190,59 @@ BEGIN
         BEGIN
             MENUITEM "Перейти &выше\tAlt+ ↑",                       IDM_EDIT_MOVELINEUP
             MENUITEM "Перейти &ниже\tAlt+ ↓",                       IDM_EDIT_MOVELINEDOWN
+            MENUITEM "&Поменять строки\tAlt+D",                     IDM_EDIT_LINETRANSPOSE
             MENUITEM SEPARATOR
             MENUITEM "Вырезать в&ыделение или строку\tCtrl+X",      IDM_EDIT_CUT
             MENUITEM "Вырезать &строки с выделением\tCtrl+Shift+X", IDM_EDIT_CUTLINE
             MENUITEM "&Копировать выделение или строку\tCtrl+C",    IDM_EDIT_COPY
             MENUITEM "Копирова&ть строки с выделением\tCtrl+Shift+C", IDM_EDIT_COPYLINE
-            MENUITEM SEPARATOR
             MENUITEM "&Дублировать строку/выделение\tCtrl+D",       IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "&Поменять строки\tAlt+D",                     IDM_EDIT_LINETRANSPOSE
             MENUITEM "&Удалить строку\tCtrl+Shift+D",               IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "Удалить данные слева\tCtrl+Shift+Back",       IDM_EDIT_DELETELINELEFT
             MENUITEM "Удалить данные справа\tCtrl+Shift+Del",       IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
-            MENUITEM "Разбить по &ширине...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
+            MENUITEM "До&бавить отступ",                  IDM_EDIT_INDENT
+            MENUITEM "Уда&лить отступ",                   IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "&Объединить дублирующиеся строки\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Удали&ть дублирующиеся строки",                  IDM_EDIT_REMOVEDUPLICATELINES
-            MENUITEM "Объединить пустые строки\tAlt+Y",             IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "Объединить строки с пробелами\tCtrl+Alt+Y",   IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "Удалить пустые строки\tAlt+R",                IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "Удалить строки с пробелами\tCtrl+Alt+B",      IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "&Изменить строки...\tAlt+M",              IDM_EDIT_MODIFYLINES
+            MENUITEM "Сортироват&ь строки...\tAlt+O",           IDM_EDIT_SORTLINES
+            MENUITEM "Выровн&ять строки...\tAlt+J",                 IDM_EDIT_ALIGN
+            MENUITEM SEPARATOR
+            MENUITEM "Разбить по &ширине...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
+            MENUITEM "&Разделить строки\tCtrl+I",                   IDM_EDIT_SPLITLINES
+            MENUITEM "&Объединить строки\tCtrl+J",                  IDM_EDIT_JOINLINES
+            MENUITEM "Склеить строки\tCtrl+Alt+J",                  IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Объединить, сохранив &абзацы\tCtrl+Shift+J",  IDM_EDIT_JOINLINES_PARA
+            MENUITEM SEPARATOR
+            POPUP "Очистка (&K)"
+            BEGIN
+                MENUITEM "&Объединить дублирующиеся строки\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
+                MENUITEM "Удали&ть дублирующиеся строки",                  IDM_EDIT_REMOVEDUPLICATELINES
+                MENUITEM SEPARATOR
+                MENUITEM "Объединить пустые строки\tAlt+Y",             IDM_EDIT_MERGEEMPTYLINES
+                MENUITEM "Объединить строки с пробелами\tCtrl+Alt+Y",   IDM_EDIT_MERGEBLANKLINES
+                MENUITEM "Удалить пустые строки\tAlt+R",                IDM_EDIT_REMOVEEMPTYLINES
+                MENUITEM "Удалить строки с пробелами\tCtrl+Alt+B",      IDM_EDIT_REMOVEBLANKLINES
+                MENUITEM SEPARATOR
+                MENUITEM "Выровнять &пробелами\tAlt+B",             IDM_EDIT_PADWITHSPACES
+                MENUITEM "Удалить первый символ\tAlt+Z",            IDM_EDIT_STRIP1STCHAR
+                MENUITEM "Удалить последний символ\tAlt+U",         IDM_EDIT_STRIPLASTCHAR
+                MENUITEM "Удалить замыкающие пробелы\tAlt+W",       IDM_EDIT_TRIMLINES
+                MENUITEM "Объединить пробелы\tCtrl+Alt+P",          IDM_EDIT_COMPRESS_BLANKS
+            END
         END
-        POPUP "&Дополнительно"
+        POPUP "Выделение && Курсор (&Д)"
         BEGIN
-            MENUITEM "&Добавить отступ",                  IDM_EDIT_INDENT
-            MENUITEM "&Удалить отступ",                   IDM_EDIT_UNINDENT
+            MENUITEM "Выбрать с&лово или строку\tCtrl+Spc",             IDM_EDIT_SELECTWORD
+            MENUITEM "&Мультивыбор всех совпадений\tCtrl+Shift+Spc",    IDM_EDIT_SELECTALLMATCHES
+            MENUITEM SEPARATOR
+            MENUITEM "&Найти парные скобки\tCtrl+B",                    IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "Выделить по &парным скобкам\tCtrl+Shift+B",       IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "&Выделить до следующего вхождения\tCtrl+Alt+F2",        IDM_EDIT_SELTONEXT
+            MENUITEM "Выделить до предыдущего в&хождения\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
+            MENUITEM "Перейти к началу в&ыделения\tCtrl+,",     CMD_JUMP2SELSTART
+            MENUITEM "Перейти в конец выделени&я\tCtrl+.",      CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "Однострочный &комментарий"
             BEGIN
@@ -222,7 +251,6 @@ BEGIN
                 MENUITEM "&Удалить\tCtrl+Alt+Shift+Q",              IDM_EDIT_LINECOMMENT_REMOVE
                 MENUITEM "&Блочное редактирование\tAlt+Shift+Q",    IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
-            MENUITEM SEPARATOR
             MENUITEM "&Блочный комментарий\tCtrl+Shift+Q",          IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Обернуть выделение"
@@ -238,25 +266,13 @@ BEGIN
                 MENUITEM SEPARATOR
                 MENUITEM "&Еще...\tAlt+Q",                IDM_EDIT_ENCLOSESELECTION
             END
-            MENUITEM "Дублировать &выделение/строку\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
+            MENUITEM "&Дублировать выделение/строку\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "Выровнять &пробелами\tAlt+B",             IDM_EDIT_PADWITHSPACES
-            MENUITEM "Удалить первый символ\tAlt+Z",            IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Удалить последний символ\tAlt+U",         IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Удалить замыкающие пробелы\tAlt+W",       IDM_EDIT_TRIMLINES
-            MENUITEM "Объединить пробелы\tCtrl+Alt+P",          IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Увеличить число\tCtrl+Alt+NK+",                   CMD_INCREASENUM
+            MENUITEM "Уменьшить число\tCtrl+Alt+NK-",                   CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "&Изменить строки...\tAlt+M",              IDM_EDIT_MODIFYLINES
-            MENUITEM "&Сортировать строки...\tAlt+O",           IDM_EDIT_SORTLINES
-            MENUITEM SEPARATOR
-            MENUITEM "Выров&нять строки...\tAlt+J",                 IDM_EDIT_ALIGN
-            MENUITEM "&Разделить строки\tCtrl+I",                   IDM_EDIT_SPLITLINES
-            MENUITEM "&Объединить строки\tCtrl+J",                  IDM_EDIT_JOINLINES
-            MENUITEM "Склеить строки\tCtrl+Alt+J",                  IDM_EDIT_JOINLN_NOSP
-            MENUITEM "Объединить, сохранив &абзацы\tCtrl+Shift+J",  IDM_EDIT_JOINLINES_PARA
-            MENUITEM SEPARATOR
-            MENUITEM "Перейти к началу в&ыделения\tCtrl+,",     CMD_JUMP2SELSTART
-            MENUITEM "Перейти в конец выделени&я\tCtrl+.",      CMD_JUMP2SELEND
+            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
         END
         POPUP "Преобразование"
         BEGIN
@@ -285,6 +301,9 @@ BEGIN
             MENUITEM "Инвертировать обратные косые черты",              IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Инвертировать прямые косые черты",                IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
+            MENUITEM "&Экранировать символы C\tCtrl+Alt+E",             IDM_EDIT_ESCAPECCHARS
+            MENUITEM "&Убрать экранирование символов C\tCtrl+Alt+R",    IDM_EDIT_UNESCAPECCHARS
+            MENUITEM SEPARATOR
             MENUITEM "Символ &в шестнадцатеричный код\tCtrl+Alt+X",     IDM_EDIT_CHAR2HEX
             MENUITEM "&Шестнадцатеричный код в символ\tCtrl+Alt+C",     IDM_EDIT_HEX2CHAR
         END
@@ -300,30 +319,6 @@ BEGIN
             MENUITEM "Время/&дата (длинная форма)\tCtrl+Shift+F5",      IDM_EDIT_INSERT_LONGDATE
             MENUITEM "&Текущая метка времени",                          CMD_INSERT_TIMESTAMP
             MENUITEM "&Обновить метки времени\tShift+F5",               CMD_UPDATE_TIMESTAMPS
-        END
-        POPUP "Разное"
-        BEGIN
-            MENUITEM "Копировать &GUID в буфер обмена\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
-            MENUITEM SEPARATOR
-            MENUITEM "&Экранировать символы C\tCtrl+Alt+E",             IDM_EDIT_ESCAPECCHARS
-            MENUITEM "&Убрать экранирование символов C\tCtrl+Alt+R",    IDM_EDIT_UNESCAPECCHARS
-            MENUITEM SEPARATOR
-            MENUITEM "Увеличить число\tCtrl+Alt+NK+",                   CMD_INCREASENUM
-            MENUITEM "Уменьшить число\tCtrl+Alt+NK-",                   CMD_DECREASENUM
-            MENUITEM SEPARATOR
-            MENUITEM "&Найти парные скобки\tCtrl+B",                    IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Выделить по &парным скобкам\tCtrl+Shift+B",       IDM_EDIT_SELTOMATCHINGBRACE
-            MENUITEM SEPARATOR
-            MENUITEM "&Выделить до следующего вхождения\tCtrl+Alt+F2",        IDM_EDIT_SELTONEXT
-            MENUITEM "Выделить до предыдущего в&хождения\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
-            MENUITEM SEPARATOR
-            MENUITEM "Выбрать с&лово или строку\tCtrl+Spc",             IDM_EDIT_SELECTWORD
-            MENUITEM "&Мультивыбор всех совпадений\tCtrl+Shift+Spc",    IDM_EDIT_SELECTALLMATCHES
-            MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
-            MENUITEM SEPARATOR
-            MENUITEM "Разделить &транзакцию отмены по окончаниям строк", IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "&Закладки"

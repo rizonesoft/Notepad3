@@ -161,12 +161,14 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Ångra\tCtrl+Z",                                   IDM_EDIT_UNDO
         MENUITEM "Gör om\tCtrl+Y",                                  IDM_EDIT_REDO
+        MENUITEM "Dela ångra vid radslut",                      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "Klipp ut\tCtrl+X",                                IDM_EDIT_CUT
         MENUITEM "Kopiera\tCtrl+C",                                 IDM_EDIT_COPY
         MENUITEM "Kopiera allt\tAlt+C",                             IDM_EDIT_COPYALL
         MENUITEM "Lägg till i urklipp\tCtrl+E",                       IDM_EDIT_COPYADD
         MENUITEM "Kopiera som RT&F",                                      IDM_EDIT_COPYRTF
+        MENUITEM "Kopiera GUID till urklipp\tCtrl+Skift+.",     IDM_EDIT_INSERT_GUID
         MENUITEM "Klistra in\tCtrl+V",                              IDM_EDIT_PASTE
         MENUITEM "Byt\tCtrl+K",                                     IDM_EDIT_SWAP
         MENUITEM "Markera allt\tCtrl+A",                               IDM_EDIT_SELECTALL
@@ -188,32 +190,59 @@ BEGIN
         BEGIN
             MENUITEM "Flytta upp\tAlt+ ↑",                          IDM_EDIT_MOVELINEUP
             MENUITEM "Flytta ner\tAlt+ ↓",                          IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Transponera rader\tAlt+D",                    IDM_EDIT_LINETRANSPOSE
             MENUITEM SEPARATOR
             MENUITEM "Klipp ut markering eller rad\tCtrl+X",                IDM_EDIT_CUT
             MENUITEM "Klipp ut markering eller hela rader\tCtrl+Skift+X",   IDM_EDIT_CUTLINE
             MENUITEM "Kopiera markering eller aktuell rad\tCtrl+C",         IDM_EDIT_COPY
             MENUITEM "Kopiera hela rader i markering\tCtrl+Skift+C",        IDM_EDIT_COPYLINE
-            MENUITEM SEPARATOR
             MENUITEM "Duplicera rad eller markering\tCtrl+D",       IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "Transponera rader\tAlt+D",                    IDM_EDIT_LINETRANSPOSE
             MENUITEM "Radera rad\tCtrl+Skift+D",                    IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "Radera tecken till vänster\tCtrl+Skift+Back", IDM_EDIT_DELETELINELEFT
             MENUITEM "Radera tecken till höger\tCtrl+Skift+Del",    IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
-            MENUITEM "Radbryt kolumn...\tCtrl+Skift+W",             IDM_EDIT_COLUMNWRAP
-            MENUITEM SEPARATOR
-            MENUITEM "Sammanfoga dubblettrader\tCtrl+Alt+D",          IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Ta bort dubblettrader",                     IDM_EDIT_REMOVEDUPLICATELINES
-            MENUITEM "Sammanfoga tomma rader\tAlt+Y",               IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "Sammanfoga blanka rader\tCtrl+Alt+Y",         IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "Ta bort tomma rader\tAlt+R",                  IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "Ta bort blanka rader\tCtrl+Alt+B",            IDM_EDIT_REMOVEBLANKLINES
-        END
-        POPUP "Ava&ncerat"
-        BEGIN
             MENUITEM "Skapa indrag",                                IDM_EDIT_INDENT
             MENUITEM "Ta bort indrag",                              IDM_EDIT_UNINDENT
+            MENUITEM SEPARATOR
+            MENUITEM "Modifiera rader...\tAlt+M",                   IDM_EDIT_MODIFYLINES
+            MENUITEM "Sortera rader...\tAlt+O",                     IDM_EDIT_SORTLINES
+            MENUITEM "Justera rader...\tAlt+J",                     IDM_EDIT_ALIGN
+            MENUITEM SEPARATOR
+            MENUITEM "Radbryt kolumn...\tCtrl+Skift+W",             IDM_EDIT_COLUMNWRAP
+            MENUITEM "Dela rader\tCtrl+I",                          IDM_EDIT_SPLITLINES
+            MENUITEM "Slå ihop rader\tCtrl+J",                      IDM_EDIT_JOINLINES
+            MENUITEM "Sammanfoga rader\tCtrl+Alt+J",                IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Bevara paragrafer\tCtrl+Skift+J",             IDM_EDIT_JOINLINES_PARA
+            MENUITEM SEPARATOR
+            POPUP "Rensning (&K)"
+            BEGIN
+                MENUITEM "Sammanfoga dubblettrader\tCtrl+Alt+D",          IDM_EDIT_UNITEDUPLICATELINES
+                MENUITEM "Ta bort dubblettrader",                     IDM_EDIT_REMOVEDUPLICATELINES
+                MENUITEM SEPARATOR
+                MENUITEM "Sammanfoga tomma rader\tAlt+Y",               IDM_EDIT_MERGEEMPTYLINES
+                MENUITEM "Sammanfoga blanka rader\tCtrl+Alt+Y",         IDM_EDIT_MERGEBLANKLINES
+                MENUITEM "Ta bort tomma rader\tAlt+R",                  IDM_EDIT_REMOVEEMPTYLINES
+                MENUITEM "Ta bort blanka rader\tCtrl+Alt+B",            IDM_EDIT_REMOVEBLANKLINES
+                MENUITEM SEPARATOR
+                MENUITEM "Utfyllnad med blanksteg\tAlt+B",              IDM_EDIT_PADWITHSPACES
+                MENUITEM "Ta bort första bokstav\tAlt+Z",               IDM_EDIT_STRIP1STCHAR
+                MENUITEM "Ta bort sista bokstav\tAlt+U",                IDM_EDIT_STRIPLASTCHAR
+                MENUITEM "Ta bort blanksteg i slutet av rader\tAlt+W",  IDM_EDIT_TRIMLINES
+                MENUITEM "Komprimera blanksteg\tCtrl+Alt+P",            IDM_EDIT_COMPRESS_BLANKS
+            END
+        END
+        POPUP "Markering && Markör (&N)"
+        BEGIN
+            MENUITEM "Markera ord eller rader\tCtrl+Spc",           IDM_EDIT_SELECTWORD
+            MENUITEM "Markera alla matchningar\tCtrl+Skift+Spc",     IDM_EDIT_SELECTALLMATCHES
+            MENUITEM SEPARATOR
+            MENUITEM "Hitta matchande klammerparentes\tCtrl+B",     IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "Markera till klammerparentes\tCtrl+Skift+B",  IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "Markera till nästa\tCtrl+Alt+F2",             IDM_EDIT_SELTONEXT
+            MENUITEM "Markera till föregående\tCtrl+Alt+Skift+F2",  IDM_EDIT_SELTOPREV
+            MENUITEM "Hoppa till början av markeringen\tCtrl+,",    CMD_JUMP2SELSTART
+            MENUITEM "Hoppa till slutet av markeringen\tCtrl+.",    CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "Radkommentar"
             BEGIN
@@ -222,7 +251,6 @@ BEGIN
                 MENUITEM "Ta bort\tCtrl+Alt+Skift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
                 MENUITEM "Blockredigering\tAlt+Skift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
-            MENUITEM SEPARATOR
             MENUITEM "Strömkommentar\tCtrl+Skift+Q",                IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "Omslut markering"
@@ -240,23 +268,11 @@ BEGIN
             END
             MENUITEM "Duplicera rad eller markering\tCtrl+D",       IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "Utfyllnad med blanksteg\tAlt+B",              IDM_EDIT_PADWITHSPACES
-            MENUITEM "Ta bort första bokstav\tAlt+Z",               IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Ta bort sista bokstav\tAlt+U",                IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Ta bort blanksteg i slutet av rader\tAlt+W",  IDM_EDIT_TRIMLINES
-            MENUITEM "Komprimera blanksteg\tCtrl+Alt+P",            IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Öka nummer\tCtrl+Alt+NK+",                    CMD_INCREASENUM
+            MENUITEM "Minska nummer\tCtrl+Alt+NK-",                CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "Modifiera rader...\tAlt+M",                   IDM_EDIT_MODIFYLINES
-            MENUITEM "Sortera rader...\tAlt+O",                     IDM_EDIT_SORTLINES
-            MENUITEM SEPARATOR
-            MENUITEM "Justera rader...\tAlt+J",                     IDM_EDIT_ALIGN
-            MENUITEM "Dela rader\tCtrl+I",                          IDM_EDIT_SPLITLINES
-            MENUITEM "Slå ihop rader\tCtrl+J",                      IDM_EDIT_JOINLINES
-            MENUITEM "Sammanfoga rader\tCtrl+Alt+J",                IDM_EDIT_JOINLN_NOSP
-            MENUITEM "Bevara paragrafer\tCtrl+Skift+J",             IDM_EDIT_JOINLINES_PARA
-            MENUITEM SEPARATOR
-            MENUITEM "Hoppa till början av markeringen\tCtrl+,",    CMD_JUMP2SELSTART
-            MENUITEM "Hoppa till slutet av markeringen\tCtrl+.",    CMD_JUMP2SELEND
+            MENUITEM "Öppna &innehållande mapp från markering",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Öppna &fil från markering",                           IDM_EDIT_OPEN_FILE_FROM_SEL
         END
         POPUP "Konvertera"
         BEGIN
@@ -285,6 +301,9 @@ BEGIN
             MENUITEM "Invertera omvända snedstreck",                IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Invertera snedstreck",                        IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
+            MENUITEM "Koda C tecken\tCtrl+Alt+E",                   IDM_EDIT_ESCAPECCHARS
+            MENUITEM "Ta bort kodning för C tecken\tCtrl+Alt+R",    IDM_EDIT_UNESCAPECCHARS
+            MENUITEM SEPARATOR
             MENUITEM "Tecken till hex\tCtrl+Alt+X",                 IDM_EDIT_CHAR2HEX
             MENUITEM "Hex till tecken\tCtrl+Alt+C",                 IDM_EDIT_HEX2CHAR
         END
@@ -300,30 +319,6 @@ BEGIN
             MENUITEM "Tid och datum (lång)\tCtrl+Skift+F5",         IDM_EDIT_INSERT_LONGDATE
             MENUITEM "Aktuell tidsstämpel",                         CMD_INSERT_TIMESTAMP
             MENUITEM "Uppdatera tidsstämplar\tSkift+F5",            CMD_UPDATE_TIMESTAMPS
-        END
-        POPUP "Övrigt"
-        BEGIN
-            MENUITEM "Kopiera GUID till urklipp\tCtrl+Skift+.",     IDM_EDIT_INSERT_GUID
-            MENUITEM SEPARATOR
-            MENUITEM "Koda C tecken\tCtrl+Alt+E",                   IDM_EDIT_ESCAPECCHARS
-            MENUITEM "Ta bort kodning för C tecken\tCtrl+Alt+R",    IDM_EDIT_UNESCAPECCHARS
-            MENUITEM SEPARATOR
-            MENUITEM "Öka nummer\tCtrl+Alt+NK+",                    CMD_INCREASENUM
-            MENUITEM "Minska nummer\tCtrl+Alt+NK-",                CMD_DECREASENUM
-            MENUITEM SEPARATOR
-            MENUITEM "Hitta matchande klammerparentes\tCtrl+B",     IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Markera till klammerparentes\tCtrl+Skift+B",  IDM_EDIT_SELTOMATCHINGBRACE
-            MENUITEM SEPARATOR
-            MENUITEM "Markera till nästa\tCtrl+Alt+F2",             IDM_EDIT_SELTONEXT
-            MENUITEM "Markera till föregående\tCtrl+Alt+Skift+F2",  IDM_EDIT_SELTOPREV
-            MENUITEM SEPARATOR
-            MENUITEM "Markera ord eller rader\tCtrl+Spc",           IDM_EDIT_SELECTWORD
-            MENUITEM "Markera alla matchningar\tCtrl+Skift+Spc",     IDM_EDIT_SELECTALLMATCHES
-            MENUITEM SEPARATOR
-            MENUITEM "Öppna &innehållande mapp från markering",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Öppna &fil från markering",                           IDM_EDIT_OPEN_FILE_FROM_SEL
-            MENUITEM SEPARATOR
-            MENUITEM "Dela ångra vid radslut",                      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "Bokmärken"

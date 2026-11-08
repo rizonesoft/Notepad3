@@ -161,12 +161,14 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Cofnij\tCtrl+Z",                      IDM_EDIT_UNDO
         MENUITEM "&Powtórz\tCtrl+Y",                     IDM_EDIT_REDO
+        MENUITEM "Podział operacji cofania przy przenoszeniu wierszy", IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "Wytnij\tCtrl+X",                       IDM_EDIT_CUT
         MENUITEM "&Kopiuj\tCtrl+C",                      IDM_EDIT_COPY
         MENUITEM "Kopiuj wszystko\tAlt+C",               IDM_EDIT_COPYALL
         MENUITEM "Dodaj do schowka\tCtrl+E",             IDM_EDIT_COPYADD
         MENUITEM "Kopiuj jako RT&F",                     IDM_EDIT_COPYRTF
+        MENUITEM "Kopiuj&GUID do Schowka\tCtrl+Shift+.",        IDM_EDIT_INSERT_GUID
         MENUITEM "&Wklej\tCtrl+V",                       IDM_EDIT_PASTE
         MENUITEM "Zamień\tCtrl+K",                       IDM_EDIT_SWAP
         MENUITEM "&Zaznacz wszystko\tCtrl+A",            IDM_EDIT_SELECTALL
@@ -184,36 +186,63 @@ BEGIN
             MENUITEM "&Usuń wyrazy przed kursorem\tCtrl+Back",    CMD_CTRLBACK
             MENUITEM "Usuń wyrazy za kursorem\tCtrl+Del",         CMD_CTRLDEL
         END
-        POPUP "&Wiersze"
+        POPUP "W&iersze"
         BEGIN
             MENUITEM "Przenieś w górę\tAlt+ ↑",                   IDM_EDIT_MOVELINEUP
             MENUITEM "&Przenieś w dół\tAlt+ ↓",                   IDM_EDIT_MOVELINEDOWN
+            MENUITEM "&Zamień wiersze\tAlt+D",                    IDM_EDIT_LINETRANSPOSE
             MENUITEM SEPARATOR
             MENUITEM "Wytnij wybór lub bieżący wiersz\tCtrl+X",   IDM_EDIT_CUT
             MENUITEM "Wytnij cały wiersz wyboru\tCtrl+Shift+X",   IDM_EDIT_CUTLINE
             MENUITEM "&Kopiuj wybór lub bieżący wiersz\tCtrl+C",  IDM_EDIT_COPY
             MENUITEM "Kopiuj cały wiersz wyboru\tCtrl+Shift+C",   IDM_EDIT_COPYLINE
-            MENUITEM SEPARATOR
             MENUITEM "&Utwórz duplikat wiersza/wyboru\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "&Zamień wiersze\tAlt+D",                    IDM_EDIT_LINETRANSPOSE
             MENUITEM "Usuń wiersz\tCtrl+Shift+D",                 IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "Usuń wiersz z lewej\tCtrl+Shift+Back",      IDM_EDIT_DELETELINELEFT
             MENUITEM "Usuń wiersz z prawej\tCtrl+Shift+Del",      IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
-            MENUITEM "Zawijanie kolumn...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
-            MENUITEM SEPARATOR
-            MENUITEM "&Połącz duplikaty lini\tCtrl+Alt+D",            IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Usuń duplikaty lini",                       IDM_EDIT_REMOVEDUPLICATELINES
-            MENUITEM "Połącz puste wiersze\tAlt+Y",                   IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "Połącz puste miejsca po wierszach\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "Usuń puste wiersze\tAlt+R",                     IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "Usuń puste miejsca po wierszach\tCtrl+Alt+B",   IDM_EDIT_REMOVEBLANKLINES
-        END
-        POPUP "Zaawansowane"
-        BEGIN
             MENUITEM "&Wcięcie",                              IDM_EDIT_INDENT
             MENUITEM "&Bez wcięcia",                          IDM_EDIT_UNINDENT
+            MENUITEM SEPARATOR
+            MENUITEM "&Modyfikuj wiersze...\tAlt+M",             IDM_EDIT_MODIFYLINES
+            MENUITEM "P&osortuj wiersze...\tAlt+O",              IDM_EDIT_SORTLINES
+            MENUITEM "W&yrównaj wiersze...\tAlt+J",              IDM_EDIT_ALIGN
+            MENUITEM SEPARATOR
+            MENUITEM "Zawijanie kolumn...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
+            MENUITEM "&Rozdziel wiersze\tCtrl+I",                IDM_EDIT_SPLITLINES
+            MENUITEM "Połącz wiersze\tCtrl+J",                   IDM_EDIT_JOINLINES
+            MENUITEM "&Scal wiersze\tCtrl+Alt+J",                IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Z&achowaj akapity\tCtrl+Shift+J",          IDM_EDIT_JOINLINES_PARA
+            MENUITEM SEPARATOR
+            POPUP "Porządkowanie (&D)"
+            BEGIN
+                MENUITEM "&Połącz duplikaty lini\tCtrl+Alt+D",            IDM_EDIT_UNITEDUPLICATELINES
+                MENUITEM "Usuń duplikaty lini",                       IDM_EDIT_REMOVEDUPLICATELINES
+                MENUITEM SEPARATOR
+                MENUITEM "Połącz puste wiersze\tAlt+Y",                   IDM_EDIT_MERGEEMPTYLINES
+                MENUITEM "Połącz puste miejsca po wierszach\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
+                MENUITEM "Usuń puste wiersze\tAlt+R",                     IDM_EDIT_REMOVEEMPTYLINES
+                MENUITEM "Usuń puste miejsca po wierszach\tCtrl+Alt+B",   IDM_EDIT_REMOVEBLANKLINES
+                MENUITEM SEPARATOR
+                MENUITEM "&Wyściel pustym miejscem\tAlt+B",          IDM_EDIT_PADWITHSPACES
+                MENUITEM "Usuń pierwszy znak wiersza\tAlt+Z",        IDM_EDIT_STRIP1STCHAR
+                MENUITEM "Usuń ostatni znak wiersza\tAlt+U",         IDM_EDIT_STRIPLASTCHAR
+                MENUITEM "Usuń niewidoczne końcowe znaki\tAlt+W",    IDM_EDIT_TRIMLINES
+                MENUITEM "Skompresuj niewidoczne znaki\tCtrl+Alt+P", IDM_EDIT_COMPRESS_BLANKS
+            END
+        END
+        POPUP "Zaznaczenie && Kursor (&N)"
+        BEGIN
+            MENUITEM "Zaznacz wyraz lub wiersz\tCtrl+Spc",            IDM_EDIT_SELECTWORD
+            MENUITEM "Multiwybór-wszystko pasujące\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
+            MENUITEM SEPARATOR
+            MENUITEM "&Znajdź pasujący nawias\tCtrl+B",             IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "Zaznacz tekst w nawiasach\tCtrl+Shift+B",     IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "Zaznacz do &następnego\tCtrl+Alt+F2",         IDM_EDIT_SELTONEXT
+            MENUITEM "Zaznacz do &poprzedniego\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
+            MENUITEM "Skocz na początek wyboru\tCtrl+,",      CMD_JUMP2SELSTART
+            MENUITEM "Skocz na koniec wyboru\tCtrl+.",        CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "Komentarz liniowy"
             BEGIN
@@ -222,7 +251,6 @@ BEGIN
                 MENUITEM "&Usuń\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
                 MENUITEM "&Blokuj edycję\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
-            MENUITEM SEPARATOR
             MENUITEM "&Komentarz strumieniowy\tCtrl+Shift+Q", IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Ujęcie zaznaczenia"
@@ -240,25 +268,13 @@ BEGIN
             END
             MENUITEM "&Duplikuj zaznaczenie/wiersz\tCtrl+D",  IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "&Wyściel pustym miejscem\tAlt+B",          IDM_EDIT_PADWITHSPACES
-            MENUITEM "Usuń pierwszy znak wiersza\tAlt+Z",        IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Usuń ostatni znak wiersza\tAlt+U",         IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Usuń niewidoczne końcowe znaki\tAlt+W",    IDM_EDIT_TRIMLINES
-            MENUITEM "Skompresuj niewidoczne znaki\tCtrl+Alt+P", IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Zwiększ liczbę\tCtrl+Alt+NK+",                CMD_INCREASENUM
+            MENUITEM "Zmniejsz liczbę\tCtrl+Alt+NK-",               CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "&Modyfikuj wiersze...\tAlt+M",             IDM_EDIT_MODIFYLINES
-            MENUITEM "&Posortuj wiersze...\tAlt+O",              IDM_EDIT_SORTLINES
-            MENUITEM SEPARATOR
-            MENUITEM "&Wyrównaj wiersze...\tAlt+J",              IDM_EDIT_ALIGN
-            MENUITEM "&Rozdziel wiersze\tCtrl+I",                IDM_EDIT_SPLITLINES
-            MENUITEM "Połącz wiersze\tCtrl+J",                   IDM_EDIT_JOINLINES
-            MENUITEM "&Scal wiersze\tCtrl+Alt+J",                IDM_EDIT_JOINLN_NOSP
-            MENUITEM "&Zachowaj akapity\tCtrl+Shift+J",          IDM_EDIT_JOINLINES_PARA
-            MENUITEM SEPARATOR
-            MENUITEM "Skocz na początek wyboru\tCtrl+,",      CMD_JUMP2SELSTART
-            MENUITEM "Skocz na koniec wyboru\tCtrl+.",        CMD_JUMP2SELEND
+            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
         END
-        POPUP "Ko&nwertuj"
+        POPUP "K&onwertuj"
         BEGIN
             MENUITEM "&Duże litery (wersaliki)\tCtrl+Shift+U",      IDM_EDIT_CONVERTUPPERCASE
             MENUITEM "&Małe litery (minuskuły)\tCtrl+U",            IDM_EDIT_CONVERTLOWERCASE
@@ -285,10 +301,13 @@ BEGIN
             MENUITEM "Odwróć ukośniki wsteczne- \\",                IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Odwróć ukośniki- /",                          IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
+            MENUITEM "Z&naki ucieczki\tCtrl+Alt+E",                 IDM_EDIT_ESCAPECCHARS
+            MENUITEM "&Usuń znaki ucieczki\tCtrl+Alt+R",            IDM_EDIT_UNESCAPECCHARS
+            MENUITEM SEPARATOR
             MENUITEM "&Char na Hex\tCtrl+Alt+X",                    IDM_EDIT_CHAR2HEX
             MENUITEM "&Hex na Char\tCtrl+Alt+C",                    IDM_EDIT_HEX2CHAR
         END
-        POPUP "&Wstaw"
+        POPUP "W&staw"
         BEGIN
             MENUITEM "&Nowy wiersz u góry\tCtrl+Enter",             CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
@@ -300,30 +319,6 @@ BEGIN
             MENUITEM "Godzinę/Datę (&długi format)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
             MENUITEM "&Bieżący znacznik czasu",                     CMD_INSERT_TIMESTAMP
             MENUITEM "&Aktualizacja znacznika czasu\tShift+F5",     CMD_UPDATE_TIMESTAMPS
-        END
-        POPUP "&Różne"
-        BEGIN
-            MENUITEM "Kopiuj&GUID do Schowka\tCtrl+Shift+.",        IDM_EDIT_INSERT_GUID
-            MENUITEM SEPARATOR
-            MENUITEM "&Znaki ucieczki\tCtrl+Alt+E",                 IDM_EDIT_ESCAPECCHARS
-            MENUITEM "&Usuń znaki ucieczki\tCtrl+Alt+R",            IDM_EDIT_UNESCAPECCHARS
-            MENUITEM SEPARATOR
-            MENUITEM "Zwiększ liczbę\tCtrl+Alt+NK+",                CMD_INCREASENUM
-            MENUITEM "Zmniejsz liczbę\tCtrl+Alt+NK-",               CMD_DECREASENUM
-            MENUITEM SEPARATOR
-            MENUITEM "&Znajdź pasujący nawias\tCtrl+B",             IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Zaznacz tekst w nawiasach\tCtrl+Shift+B",     IDM_EDIT_SELTOMATCHINGBRACE
-            MENUITEM SEPARATOR
-            MENUITEM "Zaznacz do &następnego\tCtrl+Alt+F2",         IDM_EDIT_SELTONEXT
-            MENUITEM "Zaznacz do &poprzedniego\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
-            MENUITEM SEPARATOR
-            MENUITEM "Zaznacz wyraz lub wiersz\tCtrl+Spc",            IDM_EDIT_SELECTWORD
-            MENUITEM "Multiwybór-wszystko pasujące\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
-            MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
-            MENUITEM SEPARATOR
-            MENUITEM "Podział operacji cofania przy przenoszeniu wierszy", IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "Zakładki"
