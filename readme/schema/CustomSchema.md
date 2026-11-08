@@ -30,7 +30,7 @@ Audience: advanced users who want to tweak colours and fonts beyond the built-in
 | **Schema** / **Scheme** | A complete set of styles for one language (e.g. *C/C++ Source Code*, *Python Script*). Backed in code by an `EDITLEXER` record plus an array of `EDITSTYLE` entries. |
 | **Style** | A single styleable element inside a schema (e.g. *Default Style*, *Keywords*, *Comments*, *Strings*). Each style has a plain-text *style string* describing its font, size, colours, etc. |
 | **Theme** | A complete snapshot of all custom colours, schemas and per-schema extensions, stored as a standalone `.ini` file (e.g. `Dark.ini`). Switching themes replaces every schema's style strings at once. |
-| **Lexilla lexer** | The underlying syntax-highlighting engine for a schema. Notepad3 ships with ~60 lexers (C++, Python, Markdown, Rust, YAML, …). |
+| **Lexilla lexer** | The underlying syntax-highlighting engine for a schema. Notepad3 ships with ~60 lexers (ANSYS APDL, C++, Python, Markdown, Rust, YAML, …). |
 | **Custom colours** | A 16-slot colour palette stored per-installation. Used by the *Customize Schemes* colour-picker and exported with every theme. |
 
 Notepad3 ships with roughly 60 schemas; the exact list appears in the *Select Scheme* dialog (**Ctrl+F11**) and in the left-hand tree of *Customize Schemes* (**F12**).
