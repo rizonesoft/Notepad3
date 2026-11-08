@@ -160,20 +160,22 @@ BEGIN
         MENUITEM "Дакумент толькі для &чытання",    IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Ад&мена\tCtrl+Z",                 IDM_EDIT_UNDO
-        MENUITEM "&Паўтор\tCtrl+Y",                 IDM_EDIT_REDO
+        MENUITEM "Па&ўтор\tCtrl+Y",                 IDM_EDIT_REDO
+        MENUITEM "Падзяліць &транзакцыю адмены па канчаткам радкоў",        IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "&Выразаць\tCtrl+X",               IDM_EDIT_CUT
         MENUITEM "&Капіяваць\tCtrl+C",              IDM_EDIT_COPY
         MENUITEM "Капі&яваць усё\tAlt+C",           IDM_EDIT_COPYALL
         MENUITEM "Дадаць у канец буфера\tCtrl+E",   IDM_EDIT_COPYADD
         MENUITEM "Copy as RT&F",                    IDM_EDIT_COPYRTF
+        MENUITEM "Капіяваць &GUID у буфер абмену\tCtrl+Shift+.",    IDM_EDIT_INSERT_GUID
         MENUITEM "Уст&авіць\tCtrl+V",               IDM_EDIT_PASTE
         MENUITEM "Памяняць\tCtrl+K",                IDM_EDIT_SWAP
         MENUITEM "Вылучыць у&сё\tCtrl+A",           IDM_EDIT_SELECTALL
         MENUITEM "В&ыдаліць\tDel",                  IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "А&чысціць буфер абмену",          IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Уключыць/выключыць &маніторынг буфера абмену",  IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Ачыс&ціць буфер абмену",          IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "&Уключыць/выключыць маніторынг буфера абмену",  IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
         POPUP "Словы"
         BEGIN
@@ -188,32 +190,59 @@ BEGIN
         BEGIN
             MENUITEM "Перайсці &вышэй\tAlt+ ↑",             IDM_EDIT_MOVELINEUP
             MENUITEM "Перайсці &ніжэй\tAlt+ ↓",             IDM_EDIT_MOVELINEDOWN
+            MENUITEM "&Памяняць радкі\tAlt+D",             IDM_EDIT_LINETRANSPOSE
             MENUITEM SEPARATOR
             MENUITEM "Выразаць вылучэнне &альбо радок\tCtrl+X",     IDM_EDIT_CUT
             MENUITEM "Выразаць радкі &з вылучэннем\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
             MENUITEM "&Капіяваць вылучэнне альбо радок\tCtrl+C",    IDM_EDIT_COPY
             MENUITEM "Капіява&ць радкі з вылучэннем\tCtrl+Shift+C", IDM_EDIT_COPYLINE
-            MENUITEM SEPARATOR
             MENUITEM "&Дубляваць радок/вылучэнне\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "&Памяняць радкі\tAlt+D",             IDM_EDIT_LINETRANSPOSE
             MENUITEM "В&ыдаліць радок\tCtrl+Shift+D",      IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "Выдаліць даныя злева\tCtrl+Shift+Back", IDM_EDIT_DELETELINELEFT
             MENUITEM "Выдаліць даныя справа\tCtrl+Shift+Del", IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
-            MENUITEM "Разбіць па &шырыні...\tCtrl+Shift+W",           IDM_EDIT_COLUMNWRAP
+            MENUITEM "Дадац&ь водступ",                    IDM_EDIT_INDENT
+            MENUITEM "Выда&ліць водступ",                  IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "&Аб'яднаць дублікаты радкоў\tCtrl+Alt+D",      IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Выдал&іць дублікаты радкоў",                  IDM_EDIT_REMOVEDUPLICATELINES
-            MENUITEM "Аб'яднаць пустыя радкі\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "Аб'яднаць радкі з прабеламі\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "Выдаліць пустыя радкі\tAlt+R",            IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "Выдаліць радкі з прабеламі\tCtrl+Alt+B",  IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "З&мяніць радкі...\tAlt+M",        IDM_EDIT_MODIFYLINES
+            MENUITEM "Сар&таваць радкі...\tAlt+O",      IDM_EDIT_SORTLINES
+            MENUITEM "Выра&ўнаваць радкі...\tAlt+J",                  IDM_EDIT_ALIGN
+            MENUITEM SEPARATOR
+            MENUITEM "Разбіць па &шырыні...\tCtrl+Shift+W",           IDM_EDIT_COLUMNWRAP
+            MENUITEM "Падзяліць &радкі\tCtrl+I",                      IDM_EDIT_SPLITLINES
+            MENUITEM "Аб'&яднаць радкі\tCtrl+J",                      IDM_EDIT_JOINLINES
+            MENUITEM "Пасклейваць радкі\tCtrl+Alt+J",                 IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Аб'яднаць з захоўваннем абзацаў\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
+            MENUITEM SEPARATOR
+            POPUP "Ачыстка (&K)"
+            BEGIN
+                MENUITEM "&Аб'яднаць дублікаты радкоў\tCtrl+Alt+D",      IDM_EDIT_UNITEDUPLICATELINES
+                MENUITEM "Выдал&іць дублікаты радкоў",                  IDM_EDIT_REMOVEDUPLICATELINES
+                MENUITEM SEPARATOR
+                MENUITEM "Аб'яднаць пустыя радкі\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
+                MENUITEM "Аб'яднаць радкі з прабеламі\tCtrl+Alt+Y", IDM_EDIT_MERGEBLANKLINES
+                MENUITEM "Выдаліць пустыя радкі\tAlt+R",            IDM_EDIT_REMOVEEMPTYLINES
+                MENUITEM "Выдаліць радкі з прабеламі\tCtrl+Alt+B",  IDM_EDIT_REMOVEBLANKLINES
+                MENUITEM SEPARATOR
+                MENUITEM "Выраўнаваць &прабеламі\tAlt+B",   IDM_EDIT_PADWITHSPACES
+                MENUITEM "Выдаліць першы сімвал\tAlt+Z",    IDM_EDIT_STRIP1STCHAR
+                MENUITEM "Выдаліць апошні сімвал\tAlt+U",   IDM_EDIT_STRIPLASTCHAR
+                MENUITEM "Выдаліць прабелы ў канцы\tAlt+W", IDM_EDIT_TRIMLINES
+                MENUITEM "Аб'яднаць прабелы\tCtrl+Alt+P",   IDM_EDIT_COMPRESS_BLANKS
+            END
         END
-        POPUP "&Пашыранае"
+        POPUP "Вылучэнне && Курсор (&П)"
         BEGIN
-            MENUITEM "&Дадаць водступ",                    IDM_EDIT_INDENT
-            MENUITEM "&Выдаліць водступ",                  IDM_EDIT_UNINDENT
+            MENUITEM "Вылучыць с&лова альбо радок\tCtrl+Spc",                   IDM_EDIT_SELECTWORD
+            MENUITEM "&Мультывылучэнне ўсіх уваходжанняў\tCtrl+Shift+Spc",      IDM_EDIT_SELECTALLMATCHES
+            MENUITEM SEPARATOR
+            MENUITEM "Адшукаць парныя ду&жкі\tCtrl+B",                  IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "Вылучыць па &парным дужкам\tCtrl+Shift+B",        IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "&Вылучыць да наступнага ўваходжання\tCtrl+Alt+F2",        IDM_EDIT_SELTONEXT
+            MENUITEM "Вылучыць да папярэдняга ўва&ходжання\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
+            MENUITEM "Перайсці &ў пачатак вылучэння\tCtrl+,",   CMD_JUMP2SELSTART
+            MENUITEM "Перайсці ў кане&ц вылучэння\tCtrl+.",     CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "Аднарадковы &каментарый"
             BEGIN
@@ -222,7 +251,6 @@ BEGIN
                 MENUITEM "&Выдаліць\tCtrl+Alt+Shift+Q",         IDM_EDIT_LINECOMMENT_REMOVE
                 MENUITEM "&Блокавае рэдагавання\tAlt+Shift+Q",  IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
-            MENUITEM SEPARATOR
             MENUITEM "&Блокавы каментарый\tCtrl+Shift+Q", IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "&Абгарнуць вылучэнне"
@@ -240,23 +268,11 @@ BEGIN
             END
             MENUITEM "Дубл&яваць вылучэнне/радок\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "Выраўнаваць &прабеламі\tAlt+B",   IDM_EDIT_PADWITHSPACES
-            MENUITEM "Выдаліць першы сімвал\tAlt+Z",    IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Выдаліць апошні сімвал\tAlt+U",   IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Выдаліць прабелы ў канцы\tAlt+W", IDM_EDIT_TRIMLINES
-            MENUITEM "Аб'яднаць прабелы\tCtrl+Alt+P",   IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Павялічыць лік\tCtrl+Alt+NK+",                    CMD_INCREASENUM
+            MENUITEM "Паменьшыць лік\tCtrl+Alt+NK-",                    CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "&Змяніць радкі...\tAlt+M",        IDM_EDIT_MODIFYLINES
-            MENUITEM "Сар&таваць радкі...\tAlt+O",      IDM_EDIT_SORTLINES
-            MENUITEM SEPARATOR
-            MENUITEM "Выраў&наваць радкі...\tAlt+J",                  IDM_EDIT_ALIGN
-            MENUITEM "Падзяліць &радкі\tCtrl+I",                      IDM_EDIT_SPLITLINES
-            MENUITEM "Аб'&яднаць радкі\tCtrl+J",                      IDM_EDIT_JOINLINES
-            MENUITEM "Пасклейваць радкі\tCtrl+Alt+J",                 IDM_EDIT_JOINLN_NOSP
-            MENUITEM "Аб'яднаць з захоўваннем абзацаў\tCtrl+Shift+J", IDM_EDIT_JOINLINES_PARA
-            MENUITEM SEPARATOR
-            MENUITEM "Перайсці &ў пачатак вылучэння\tCtrl+,",   CMD_JUMP2SELSTART
-            MENUITEM "Перайсці ў кане&ц вылучэння\tCtrl+.",     CMD_JUMP2SELEND
+            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
         END
         POPUP "Пераўтварэнне"
         BEGIN
@@ -285,6 +301,9 @@ BEGIN
             MENUITEM "Інвертаваць адваротныя косыя рыскі",              IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Інвертаваць прамыя косыя рыскі",                  IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
+            MENUITEM "Э&кранаваць сімвалы C\tCtrl+Alt+E",               IDM_EDIT_ESCAPECCHARS
+            MENUITEM "В&ыдаліць экранаванне сімвалаў C\tCtrl+Alt+R",    IDM_EDIT_UNESCAPECCHARS
+            MENUITEM SEPARATOR
             MENUITEM "&Сімвал у шаснаццатковы код\tCtrl+Alt+X",         IDM_EDIT_CHAR2HEX
             MENUITEM "&Шаснаццатковы код у сімвал\tCtrl+Alt+C",         IDM_EDIT_HEX2CHAR
         END
@@ -300,30 +319,6 @@ BEGIN
             MENUITEM "Час/&дата (доўгая форма)\tCtrl+Shift+F5", IDM_EDIT_INSERT_LONGDATE
             MENUITEM "&Цяперашняя метка часу",                  CMD_INSERT_TIMESTAMP
             MENUITEM "&Аднавіць меткі часу\tShift+F5",          CMD_UPDATE_TIMESTAMPS
-        END
-        POPUP "Рознае"
-        BEGIN
-            MENUITEM "Капіяваць &GUID у буфер абмену\tCtrl+Shift+.",    IDM_EDIT_INSERT_GUID
-            MENUITEM SEPARATOR
-            MENUITEM "&Экранаваць сімвалы C\tCtrl+Alt+E",               IDM_EDIT_ESCAPECCHARS
-            MENUITEM "В&ыдаліць экранаванне сімвалаў C\tCtrl+Alt+R",    IDM_EDIT_UNESCAPECCHARS
-            MENUITEM SEPARATOR
-            MENUITEM "Павялічыць лік\tCtrl+Alt+NK+",                    CMD_INCREASENUM
-            MENUITEM "Паменьшыць лік\tCtrl+Alt+NK-",                    CMD_DECREASENUM
-            MENUITEM SEPARATOR
-            MENUITEM "Адшукаць парныя ду&жкі\tCtrl+B",                  IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Вылучыць па &парным дужкам\tCtrl+Shift+B",        IDM_EDIT_SELTOMATCHINGBRACE
-            MENUITEM SEPARATOR
-            MENUITEM "&Вылучыць да наступнага ўваходжання\tCtrl+Alt+F2",        IDM_EDIT_SELTONEXT
-            MENUITEM "Вылучыць да папярэдняга ўва&ходжання\tCtrl+Alt+Shift+F2", IDM_EDIT_SELTOPREV
-            MENUITEM SEPARATOR
-            MENUITEM "Вылучыць с&лова альбо радок\tCtrl+Spc",                   IDM_EDIT_SELECTWORD
-            MENUITEM "&Мультывылучэнне ўсіх уваходжанняў\tCtrl+Shift+Spc",      IDM_EDIT_SELECTALLMATCHES
-            MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
-            MENUITEM SEPARATOR
-            MENUITEM "Падзяліць &транзакцыю адмены па канчаткам радкоў",        IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "&Закладкі"

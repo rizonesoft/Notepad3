@@ -157,25 +157,27 @@ BEGIN
     END
     POPUP "&Muokkaa"
     BEGIN
-        MENUITEM "Doku&mentti Vain luettavissa",         IDM_VIEW_READONLY
+        MENUITEM "&Dokumentti Vain luettavissa",         IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "K&umoa\tCtrl+Z",                       IDM_EDIT_UNDO
-        MENUITEM "&Tee uudelleen\tCtrl+Y",               IDM_EDIT_REDO
+        MENUITEM "T&ee uudelleen\tCtrl+Y",               IDM_EDIT_REDO
+        MENUITEM "Jaa kumous&tapahtuma rivinvaihdon kohdalla",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "&Leikkaa\tCtrl+X",                 IDM_EDIT_CUT
         MENUITEM "&Kopioi\tCtrl+C",                  IDM_EDIT_COPY
         MENUITEM "Kopioi k&aikki\tAlt+C",            IDM_EDIT_COPYALL
-        MENUITEM "Kop&ioi lisäys\tCtrl+E",           IDM_EDIT_COPYADD
+        MENUITEM "Kopioi lisä&ys\tCtrl+E",           IDM_EDIT_COPYADD
         MENUITEM "Copy as RT&F",                     IDM_EDIT_COPYRTF
-        MENUITEM "&Liitä\tCtrl+V",                   IDM_EDIT_PASTE
+        MENUITEM "Kopioi &GUID leikepöydälle\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
+        MENUITEM "Liit&ä\tCtrl+V",                   IDM_EDIT_PASTE
         MENUITEM "&Vaihda\tCtrl+K",                  IDM_EDIT_SWAP
         MENUITEM "Valit&se kaikki\tCtrl+A",          IDM_EDIT_SELECTALL
         MENUITEM "&Poista\tDel",                     IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "Tyhj&ennä leikepöytä",             IDM_EDIT_CLEARCLIPBOARD
-        MENUITEM "Vaihda leikepöydän &seurantaa",    IDM_EDIT_TOGGLE_PASTEBOARD
+        MENUITEM "Tyhjennä leikep&öytä",             IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Vai&hda leikepöydän seurantaa",    IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
-        POPUP "S&anat"
+        POPUP "Sa&nat"
         BEGIN
             MENUITEM "&Täydennä sana\tCtrl+Alt+Enter",      IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
@@ -186,34 +188,61 @@ BEGIN
         END
         POPUP "&Rivit"
         BEGIN
-            MENUITEM "Siirrä &ylös\tAlt+ ↑",                    IDM_EDIT_MOVELINEUP
-            MENUITEM "Siirrä &alas\tAlt+ ↓",                  IDM_EDIT_MOVELINEDOWN
+            MENUITEM "Siirrä yl&ös\tAlt+ ↑",                    IDM_EDIT_MOVELINEUP
+            MENUITEM "&Siirrä alas\tAlt+ ↓",                  IDM_EDIT_MOVELINEDOWN
+            MENUITEM "T&ransponoi rivejä\tAlt+D",             IDM_EDIT_LINETRANSPOSE
             MENUITEM SEPARATOR
-            MENUITEM "Le&ikkaa valinta tai nykyinen rivi\tCtrl+X",      IDM_EDIT_CUT
-            MENUITEM "Leikkaa va&linnan koko rivi(t)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
-            MENUITEM "&Kopioi valinta tai nykyinen rivi\tCtrl+C",     IDM_EDIT_COPY
-            MENUITEM "Kopi&oi valinnan koko rivi(t)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
-            MENUITEM SEPARATOR
+            MENUITEM "&Leikkaa valinta tai nykyinen rivi\tCtrl+X",      IDM_EDIT_CUT
+            MENUITEM "Leikkaa &valinnan koko rivi(t)\tCtrl+Shift+X",  IDM_EDIT_CUTLINE
+            MENUITEM "Ko&pioi valinta tai nykyinen rivi\tCtrl+C",     IDM_EDIT_COPY
+            MENUITEM "&Kopioi valinnan koko rivi(t)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
             MENUITEM "Ka&hdenna rivi/valinta\tCtrl+D",   IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "&Transponoi rivejä\tAlt+D",             IDM_EDIT_LINETRANSPOSE
-            MENUITEM "&Poista rivi\tCtrl+Shift+D",          IDM_EDIT_DELETELINE
+            MENUITEM "Po&ista rivi\tCtrl+Shift+D",          IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
-            MENUITEM "Poista rivi &vasemmalle\tCtrl+Shift+Back",  IDM_EDIT_DELETELINELEFT
+            MENUITEM "Poista rivi vase&mmalle\tCtrl+Shift+Back",  IDM_EDIT_DELETELINELEFT
             MENUITEM "Poista rivi &oikealle\tCtrl+Shift+Del",  IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
-            MENUITEM "Sarakkeen &kierto...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
-            MENUITEM SEPARATOR
-            MENUITEM "&Yhdistä kaksoisrivit\tCtrl+Alt+D",             IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "Poista kaksoisri&vit",                        IDM_EDIT_REMOVEDUPLICATELINES
-            MENUITEM "Yhdis&tä tyhjiä (empty) rivejä\tAlt+Y",          IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "Yhdistä tyh&jiä (blan&k) rivejä\tCtrl+Alt+Y",    IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "Yhdistä tyhjiä (empty) &rivejä\tAlt+R",          IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "Poista tyh&jiä (&blank) rivejä\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
-        END
-        POPUP "Lisä&asetuset"
-        BEGIN
-            MENUITEM "S&isennä",                              IDM_EDIT_INDENT
+            MENUITEM "Sise&nnä",                              IDM_EDIT_INDENT
             MENUITEM "Poista sisenn&ys",                            IDM_EDIT_UNINDENT
+            MENUITEM SEPARATOR
+            MENUITEM "M&uokkaa rivejä...\tAlt+M",           IDM_EDIT_MODIFYLINES
+            MENUITEM "La&jittele rivit...\tAlt+O",             IDM_EDIT_SORTLINES
+            MENUITEM "T&asaa rivit...\tAlt+J",            IDM_EDIT_ALIGN
+            MENUITEM SEPARATOR
+            MENUITEM "Sarakk&een kierto...\tCtrl+Shift+W",       IDM_EDIT_COLUMNWRAP
+            MENUITEM "Jaa rivejä (&B)\tCtrl+I",              IDM_EDIT_SPLITLINES
+            MENUITEM "Lii&tä rivejä\tCtrl+J",               IDM_EDIT_JOINLINES
+            MENUITEM "Sulata rivej&ä\tCtrl+Alt+J",           IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Säilytä kappaleet (&C)\tCtrl+Shift+J",IDM_EDIT_JOINLINES_PARA
+            MENUITEM SEPARATOR
+            POPUP "Siivous (&D)"
+            BEGIN
+                MENUITEM "&Yhdistä kaksoisrivit\tCtrl+Alt+D",             IDM_EDIT_UNITEDUPLICATELINES
+                MENUITEM "Poista kaksoisri&vit",                        IDM_EDIT_REMOVEDUPLICATELINES
+                MENUITEM SEPARATOR
+                MENUITEM "Yhdis&tä tyhjiä (empty) rivejä\tAlt+Y",          IDM_EDIT_MERGEEMPTYLINES
+                MENUITEM "Yhdistä tyh&jiä (blank) rivejä\tCtrl+Alt+Y",    IDM_EDIT_MERGEBLANKLINES
+                MENUITEM "Yhdistä tyhjiä (empty) &rivejä\tAlt+R",          IDM_EDIT_REMOVEEMPTYLINES
+                MENUITEM "&Poista tyhjiä (blank) rivejä\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
+                MENUITEM SEPARATOR
+                MENUITEM "T&äytä tyhjillä\tAlt+B",           IDM_EDIT_PADWITHSPACES
+                MENUITEM "Poista &ensimmäinen merkki\tAlt+Z",     IDM_EDIT_STRIP1STCHAR
+                MENUITEM "P&oista viimeinen merkki\tAlt+U",      IDM_EDIT_STRIPLASTCHAR
+                MENUITEM "Po&ista tyhjät lopusta\tAlt+W",     IDM_EDIT_TRIMLINES
+                MENUITEM "P&akkaa tyhjät\tCtrl+Alt+P",      IDM_EDIT_COMPRESS_BLANKS
+            END
+        END
+        POPUP "Valinta && Kursori (&O)"
+        BEGIN
+            MENUITEM "Valitse &sana tai rivi\tCtrl+Spc",            IDM_EDIT_SELECTWORD
+            MENUITEM "Monivalitse k&aikki täsmäävät\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
+            MENUITEM SEPARATOR
+            MENUITEM "&Etsi vastaavat sulkeet\tCtrl+B",               IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "Valitse &vastaaviin sulkeisiin\tCtrl+Shift+B",    IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "Val&itse seuraavaan\tCtrl+Alt+F2",               IDM_EDIT_SELTONEXT
+            MENUITEM "Vali&tse edelliseen\tCtrl+Alt+Shift+F2",     IDM_EDIT_SELTOPREV
+            MENUITEM "Siirr&y valinnan alkuun\tCtrl+,",  CMD_JUMP2SELSTART
+            MENUITEM "Siirry valinnan &loppuun\tCtrl+.",    CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "Rivi&kommentti"
             BEGIN
@@ -222,7 +251,6 @@ BEGIN
                 MENUITEM "&Poista\tCtrl+Alt+Shift+Q",     IDM_EDIT_LINECOMMENT_REMOVE
                 MENUITEM "Lo&hkon muokkaus\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
-            MENUITEM SEPARATOR
             MENUITEM "Vi&rtakommentti\tCtrl+Shift+Q",     IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "Sis&ällytä valinta"
@@ -240,32 +268,20 @@ BEGIN
             END
             MENUITEM "&Monista valinta/rivi\tCtrl+D", IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "&Täytä tyhjillä\tAlt+B",           IDM_EDIT_PADWITHSPACES
-            MENUITEM "Poista &ensimmäinen merkki\tAlt+Z",     IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Poista &viimeinen merkki\tAlt+U",      IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Poista &tyhjät lopusta\tAlt+W",     IDM_EDIT_TRIMLINES
-            MENUITEM "Pakkaa &tyhjät\tCtrl+Alt+P",      IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Kasvata &numeroa\tCtrl+Alt+NK+",             CMD_INCREASENUM
+            MENUITEM "&Pienennä numeroa\tCtrl+Alt+NK-",             CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "&Muokkaa rivejä...\tAlt+M",           IDM_EDIT_MODIFYLINES
-            MENUITEM "&Lajittele rivit...\tAlt+O",             IDM_EDIT_SORTLINES
-            MENUITEM SEPARATOR
-            MENUITEM "T&asaa rivit...\tAlt+J",            IDM_EDIT_ALIGN
-            MENUITEM "Jaa r&ivejä\tCtrl+I",              IDM_EDIT_SPLITLINES
-            MENUITEM "Liitä rive&jä\tCtrl+J",               IDM_EDIT_JOINLINES
-            MENUITEM "Sulata riv&ejä\tCtrl+Alt+J",           IDM_EDIT_JOINLN_NOSP
-            MENUITEM "Säily&tä kappaleet\tCtrl+Shift+J",IDM_EDIT_JOINLINES_PARA
-            MENUITEM SEPARATOR
-            MENUITEM "Siirry valinnan &alkuun\tCtrl+,",  CMD_JUMP2SELSTART
-            MENUITEM "Siirry valinnan &loppuun\tCtrl+.",    CMD_JUMP2SELEND
+            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
         END
         POPUP "&Muunna"
         BEGIN
             MENUITEM "&Isot kirjaimet\tCtrl+Shift+U",          IDM_EDIT_CONVERTUPPERCASE
             MENUITEM "&Pienet kirjaimet\tCtrl+U",                IDM_EDIT_CONVERTLOWERCASE
             MENUITEM SEPARATOR
-            MENUITEM "&Käänte&inen koko\tCtrl+Alt+U",          IDM_EDIT_INVERTCASE
+            MENUITEM "&Käänteinen koko\tCtrl+Alt+U",          IDM_EDIT_INVERTCASE
             MENUITEM "&Otsikkokoko\tCtrl+Alt+I",           IDM_EDIT_TITLECASE
-            MENUITEM "&Lau&sekoko\tCtrl+Alt+O",        IDM_EDIT_SENTENCECASE
+            MENUITEM "&Lausekoko\tCtrl+Alt+O",        IDM_EDIT_SENTENCECASE
             MENUITEM SEPARATOR
             MENUITEM "S&arkaimet valintaan\tCtrl+Shift+T",   IDM_EDIT_CONVERTSPACES
             MENUITEM "Ei sarkaimia valintaa&n\tCtrl+Shift+S", IDM_EDIT_CONVERTTABS
@@ -277,7 +293,7 @@ BEGIN
             MENUITEM "Base6&4 dekoodaus",                    IDM_EDIT_BASE64DECODE
             MENUITEM "Base64 dekoodaus koodisivuksi...",      IDM_EDIT_B64DECODESEL
             MENUITEM SEPARATOR
-            MENUITEM "URL &koodaus\tCtrl+Shift+E",         IDM_EDIT_URLENCODE
+            MENUITEM "&URL koodaus\tCtrl+Shift+E",         IDM_EDIT_URLENCODE
             MENUITEM "URL &dekoodaus\tCtrl+Shift+R",         IDM_EDIT_URLDECODE
             MENUITEM "Tiedostojärjestelmäpolku URL-osoitteeseen\tCtrl+F10", IDM_EDIT_PATH2URL
             MENUITEM "URL tiedostojärjestelmän polkuun\tAlt+F10",  IDM_EDIT_URL2PATH
@@ -285,8 +301,11 @@ BEGIN
             MENUITEM "Käännä kenoviivat",                IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Käännä vinoviivat",                    IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
+            MENUITEM "Es&cape C-merkit\tCtrl+Alt+E",                IDM_EDIT_ESCAPECCHARS
+            MENUITEM "Kumoa Escape C-merkit\tCtrl+Alt+R",              IDM_EDIT_UNESCAPECCHARS
+            MENUITEM SEPARATOR
             MENUITEM "Merkki -> &heksaksi\tCtrl+Alt+X",          IDM_EDIT_CHAR2HEX
-            MENUITEM "Heksa -> &merkiksi\tCtrl+Alt+C",          IDM_EDIT_HEX2CHAR
+            MENUITEM "Hek&sa -> merkiksi\tCtrl+Alt+C",          IDM_EDIT_HEX2CHAR
         END
         POPUP "L&isää"
         BEGIN
@@ -301,32 +320,8 @@ BEGIN
             MENUITEM "Nykyinen &aikaleima",                    CMD_INSERT_TIMESTAMP
             MENUITEM "&Päivitä aikaleimat\tShift+F5",          CMD_UPDATE_TIMESTAMPS
         END
-        POPUP "&Sekalaiset"
-        BEGIN
-            MENUITEM "Kopioi &GUID leikepöydälle\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
-            MENUITEM SEPARATOR
-            MENUITEM "&Escape C-merkit\tCtrl+Alt+E",                IDM_EDIT_ESCAPECCHARS
-            MENUITEM "Kumoa Escape C-merkit\tCtrl+Alt+R",              IDM_EDIT_UNESCAPECCHARS
-            MENUITEM SEPARATOR
-            MENUITEM "&Kasvata numeroa\tCtrl+Alt+NK+",             CMD_INCREASENUM
-            MENUITEM "&Pienennä numeroa\tCtrl+Alt+NK-",             CMD_DECREASENUM
-            MENUITEM SEPARATOR
-            MENUITEM "&Etsi vastaavat sulkeet\tCtrl+B",               IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Valitse &vastaaviin sulkeisiin\tCtrl+Shift+B",    IDM_EDIT_SELTOMATCHINGBRACE
-            MENUITEM SEPARATOR
-            MENUITEM "Valitse &seuraavaan\tCtrl+Alt+F2",               IDM_EDIT_SELTONEXT
-            MENUITEM "Valitse &edelliseen\tCtrl+Alt+Shift+F2",     IDM_EDIT_SELTOPREV
-            MENUITEM SEPARATOR
-            MENUITEM "Valitse &sana tai rivi\tCtrl+Spc",            IDM_EDIT_SELECTWORD
-            MENUITEM "Monivalitse k&aikki täsmäävät\tCtrl+Shift+Spc",  IDM_EDIT_SELECTALLMATCHES
-            MENUITEM SEPARATOR
-            MENUITEM "Open &Containing Folder of Selection",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Open &File from Selection",                           IDM_EDIT_OPEN_FILE_FROM_SEL
-            MENUITEM SEPARATOR
-            MENUITEM "Jaa kumous&tapahtuma rivinvaihdon kohdalla",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
-        END
         MENUITEM SEPARATOR
-        POPUP "&Kirjanmerkit"
+        POPUP "Kir&janmerkit"
         BEGIN
             MENUITEM "&Vaihda\tCtrl+F2",            BME_EDIT_BOOKMARKTOGGLE
             MENUITEM SEPARATOR

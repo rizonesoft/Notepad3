@@ -4841,7 +4841,6 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     bool const se = SciCall_IsSelectionEmpty();
     bool const mrs = Sci_IsMultiOrRectangleSelection();
     bool const te = Sci_IsDocEmpty();
-    bool const mls = Sci_IsSelectionMultiLine();
     bool const moe = IsMarkOccurrencesEnabled();
     bool const isn = IsSaveNeeded();
 
@@ -4988,10 +4987,21 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_EDIT_COMPRESS_BLANKS, !ro);
 
     EnableCmd(hmenu, IDM_EDIT_MODIFYLINES, !ro);
-    EnableCmd(hmenu, IDM_EDIT_ALIGN, mls && !ro);
+
+    DocPos const alignSelEnd = SciCall_GetSelectionEnd();
+    DocLn const  alignLineStart =
+        SciCall_LineFromPosition(SciCall_GetSelectionStart());
+    DocLn const alignEnd = SciCall_LineFromPosition(alignSelEnd);
+    // A selection ending at the next line's start does not include that line.
+    DocLn const alignLineEnd =
+        (alignSelEnd <= SciCall_PositionFromLine(alignEnd)) ? (alignEnd - 1)
+                                                            : alignEnd;
+    EnableCmd(hmenu, IDM_EDIT_ALIGN,
+        !ro && !mrs && (alignLineEnd > alignLineStart));
     EnableCmd(hmenu, IDM_EDIT_SORTLINES, !ro);
 
-    //EnableCmd(hmenu,IDM_EDIT_COLUMNWRAP,i /*&& IsWindowsNT()*/);
+    EnableCmd(hmenu, IDM_EDIT_COLUMNWRAP, !ro);
+    EnableCmd(hmenu, IDM_EDIT_SPLITLINES, !ro);
     EnableCmd(hmenu, IDM_EDIT_JOINLINES, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_JOINLN_NOSP, !se && !ro);
     EnableCmd(hmenu, IDM_EDIT_JOINLINES_PARA, !se && !ro);
@@ -5022,6 +5032,17 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     EnableCmd(hmenu, IDM_EDIT_CHAR2HEX, !ro);  // Char2Hex allowed for char after current pos
     EnableCmd(hmenu, IDM_EDIT_HEX2CHAR, !se && !ro);
+
+    EnableCmd(hmenu, CMD_INCREASENUM, !se && !mrs && !ro);
+    EnableCmd(hmenu, CMD_DECREASENUM, !se && !mrs && !ro);
+
+    EnableCmd(hmenu, IDM_EDIT_ENCLOSESELECTION, !ro);
+    EnableCmd(hmenu, CMD_STRINGIFY, !ro);
+    EnableCmd(hmenu, CMD_STRINGIFY2, !ro);
+    EnableCmd(hmenu, CMD_EMBRACE, !ro);
+    EnableCmd(hmenu, CMD_EMBRACE2, !ro);
+    EnableCmd(hmenu, CMD_EMBRACE3, !ro);
+    EnableCmd(hmenu, CMD_EMBRACE4, !ro);
 
     EnableCmd(hmenu, IDM_SET_SHOWEXCERPT, !se);
 

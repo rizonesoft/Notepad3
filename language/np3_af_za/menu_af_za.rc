@@ -157,25 +157,27 @@ BEGIN
     END
     POPUP "&Wysig"
     BEGIN
-        MENUITEM "D&okument Slegs Lees",                    IDM_VIEW_READONLY
+        MENUITEM "&Dokument Slegs Lees",                    IDM_VIEW_READONLY
         MENUITEM SEPARATOR
-        MENUITEM "O&ngedaan\tCtrl+Z",                       IDM_EDIT_UNDO
+        MENUITEM "&Ongedaan\tCtrl+Z",                       IDM_EDIT_UNDO
         MENUITEM "Oo&rdoen\tCtrl+Y",                        IDM_EDIT_REDO
+        MENUITEM "Verdeel en Onttrek &Transaksies by Lynbrekings",      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "&Sny\tCtrl+X",                            IDM_EDIT_CUT
-        MENUITEM "Ko&pieer\tCtrl+C",                        IDM_EDIT_COPY
+        MENUITEM "Kopi&eer\tCtrl+C",                        IDM_EDIT_COPY
         MENUITEM "Kop&ieer Alles\tAlt+C",                   IDM_EDIT_COPYALL
         MENUITEM "Kopieer &Voeg\tCtrl+E",                   IDM_EDIT_COPYADD
         MENUITEM "Kopieer as RT&F",                         IDM_EDIT_COPYRTF
+        MENUITEM "Kopieer GUID na Die Knipbord (&C)\tCtrl+Shift+.",         IDM_EDIT_INSERT_GUID
         MENUITEM "&Plak\tCtrl+V",                           IDM_EDIT_PASTE
         MENUITEM "&Uitruil\tCtrl+K",                        IDM_EDIT_SWAP
         MENUITEM "Kies &Alles\tCtrl+A",                     IDM_EDIT_SELECTALL
-        MENUITEM "&Verwyder\tDel",                          IDM_EDIT_CLEAR
+        MENUITEM "Verw&yder\tDel",                          IDM_EDIT_CLEAR
         MENUITEM SEPARATOR
-        MENUITEM "Maak &Klipbord Skoon",                    IDM_EDIT_CLEARCLIPBOARD
+        MENUITEM "Maak Klip&bord Skoon",                    IDM_EDIT_CLEARCLIPBOARD
         MENUITEM "Klembord-&monitering wissel",             IDM_EDIT_TOGGLE_PASTEBOARD
         MENUITEM SEPARATOR
-        POPUP "W&oorde"
+        POPUP "&Woorde"
         BEGIN
             MENUITEM "Voltooi &Woord\tCtrl+Alt+Enter",      IDM_EDIT_COMPLETEWORD
             MENUITEM SEPARATOR
@@ -188,32 +190,59 @@ BEGIN
         BEGIN
             MENUITEM "Skuif &Op\tAlt+ ↑",                   IDM_EDIT_MOVELINEUP
             MENUITEM "Skuif &Af\tAlt+ ↓",                   IDM_EDIT_MOVELINEDOWN
+            MENUITEM "T&ransponeer Lyne\tAlt+D",             IDM_EDIT_LINETRANSPOSE
             MENUITEM SEPARATOR
             MENUITEM "Sny Seleks&ie of Huidige Lyn\tCtrl+X",        IDM_EDIT_CUT
             MENUITEM "Sny Seleksie Hele &Lyn(e)\tCtrl+Shift+X",     IDM_EDIT_CUTLINE
             MENUITEM "&Kopieer Seleksie of Huidige Lyn\tCtrl+C",    IDM_EDIT_COPY
-            MENUITEM "Kopiee&r Seleksie Hele Lyn(e)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
-            MENUITEM SEPARATOR
+            MENUITEM "Kopieer Seleksie &Hele Lyn(e)\tCtrl+Shift+C", IDM_EDIT_COPYLINE
             MENUITEM "&Dupliseer Lyn/Selection\tCtrl+D",     IDM_EDIT_DUPLINEORSELECTION
-            MENUITEM "&Transponeer Lyne\tAlt+D",             IDM_EDIT_LINETRANSPOSE
             MENUITEM "&Verwyder Lyn\tCtrl+Shift+D",          IDM_EDIT_DELETELINE
             MENUITEM SEPARATOR
             MENUITEM "Verwyder Lyn Links\tCtrl+Shift+Back",  IDM_EDIT_DELETELINELEFT
             MENUITEM "Verwyder Lyn Regs\tCtrl+Shift+Del",    IDM_EDIT_DELETELINERIGHT
             MENUITEM SEPARATOR
-            MENUITEM "Kolom &Wrap...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
+            MENUITEM "I&nkeep",                             IDM_EDIT_INDENT
+            MENUITEM "Ontkee&p",                            IDM_EDIT_UNINDENT
             MENUITEM SEPARATOR
-            MENUITEM "&Verenig Duplikaatlyne\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
-            MENUITEM "&Verwyder Dubbele Lyne",               IDM_EDIT_REMOVEDUPLICATELINES
-            MENUITEM "Voeg Lêer Lyne &Saam\tAlt+Y",          IDM_EDIT_MERGEEMPTYLINES
-            MENUITEM "Voeg &Blank Lyne Saam\tCtrl+Alt+Y",    IDM_EDIT_MERGEBLANKLINES
-            MENUITEM "Verw&yder Lêer Lyne\tAlt+R",           IDM_EDIT_REMOVEEMPTYLINES
-            MENUITEM "Ver&wyder Blank Lyne\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
+            MENUITEM "&Modifiseer Lyne...\tAlt+M",          IDM_EDIT_MODIFYLINES
+            MENUITEM "&Sorteer Lyne...\tAlt+O",             IDM_EDIT_SORTLINES
+            MENUITEM "&Bring Lyne in Lyn...\tAlt+J",        IDM_EDIT_ALIGN
+            MENUITEM SEPARATOR
+            MENUITEM "Kolom &Wrap...\tCtrl+Shift+W",         IDM_EDIT_COLUMNWRAP
+            MENUITEM "V&erdeel Lyne\tCtrl+I",               IDM_EDIT_SPLITLINES
+            MENUITEM "Kombineer L&yne\tCtrl+J",             IDM_EDIT_JOINLINES
+            MENUITEM "Smel&t Lyne Saam\tCtrl+Alt+J",        IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Beho&u Paragrawe\tCtrl+Shift+J",      IDM_EDIT_JOINLINES_PARA
+            MENUITEM SEPARATOR
+            POPUP "Opruiming (&G)"
+            BEGIN
+                MENUITEM "&Verenig Duplikaatlyne\tCtrl+Alt+D",   IDM_EDIT_UNITEDUPLICATELINES
+                MENUITEM "Ve&rwyder Dubbele Lyne",               IDM_EDIT_REMOVEDUPLICATELINES
+                MENUITEM SEPARATOR
+                MENUITEM "Voeg Lêer Lyne &Saam\tAlt+Y",          IDM_EDIT_MERGEEMPTYLINES
+                MENUITEM "Voeg &Blank Lyne Saam\tCtrl+Alt+Y",    IDM_EDIT_MERGEBLANKLINES
+                MENUITEM "Verw&yder Lêer Lyne\tAlt+R",           IDM_EDIT_REMOVEEMPTYLINES
+                MENUITEM "Ver&wyder Blank Lyne\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
+                MENUITEM SEPARATOR
+                MENUITEM "&Pad Met Spasies\tAlt+B",             IDM_EDIT_PADWITHSPACES
+                MENUITEM "Strip &Eerste Karakter\tAlt+Z",       IDM_EDIT_STRIP1STCHAR
+                MENUITEM "Strip &Laaste Karakter\tAlt+U",       IDM_EDIT_STRIPLASTCHAR
+                MENUITEM "Strip &Agterliggende Spasies\tAlt+W", IDM_EDIT_TRIMLINES
+                MENUITEM "&Kompres Spasies\tCtrl+Alt+P",        IDM_EDIT_COMPRESS_BLANKS
+            END
         END
-        POPUP "&Gevorderd"
+        POPUP "Seleksie && Wyser (&G)"
         BEGIN
-            MENUITEM "&Inkeep",                             IDM_EDIT_INDENT
-            MENUITEM "&Ontkeep",                            IDM_EDIT_UNINDENT
+            MENUITEM "Kies &Woord of Lyne\tCtrl+Spc",                       IDM_EDIT_SELECTWORD
+            MENUITEM "Multi-Select &Alles wat Pas\tCtrl+Shift+Spc",         IDM_EDIT_SELECTALLMATCHES
+            MENUITEM SEPARATOR
+            MENUITEM "&Vind Bypassende Hakie\tCtrl+B",                      IDM_EDIT_FINDMATCHINGBRACE
+            MENUITEM "Kies na &Bypassende Hakie\tCtrl+Shift+B",             IDM_EDIT_SELTOMATCHINGBRACE
+            MENUITEM "K&ies na Volgende\tCtrl+Alt+F2",                      IDM_EDIT_SELTONEXT
+            MENUITEM "Kies na Vori&ge\tCtrl+Alt+Shift+F2",                  IDM_EDIT_SELTOPREV
+            MENUITEM "Spring na die &Seleksie Begin\tCtrl+,",    CMD_JUMP2SELSTART
+            MENUITEM "S&pring na die Seleksie Einde\tCtrl+.",      CMD_JUMP2SELEND
             MENUITEM SEPARATOR
             POPUP "Lyn &Kommentaar"
             BEGIN
@@ -222,8 +251,7 @@ BEGIN
                 MENUITEM "Ve&rwyder\tCtrl+Alt+Shift+Q",   IDM_EDIT_LINECOMMENT_REMOVE
                 MENUITEM "&Blok Wysig\tAlt+Shift+Q",      IDM_EDIT_LINECOMMENT_BLOCKEDIT
             END
-            MENUITEM SEPARATOR
-            MENUITEM "&Stroom Kommentaar\tCtrl+Shift+Q",  IDM_EDIT_STREAMCOMMENT
+            MENUITEM "S&troom Kommentaar\tCtrl+Shift+Q",  IDM_EDIT_STREAMCOMMENT
             MENUITEM SEPARATOR
             POPUP "Omsluit S&eleksie"
             BEGIN
@@ -240,25 +268,13 @@ BEGIN
             END
             MENUITEM "&Dupliseer Seleksie/Lyn\tCtrl+D",     IDM_EDIT_DUPLINEORSELECTION
             MENUITEM SEPARATOR
-            MENUITEM "&Pad Met Spasies\tAlt+B",             IDM_EDIT_PADWITHSPACES
-            MENUITEM "Strip &Eerste Karakter\tAlt+Z",       IDM_EDIT_STRIP1STCHAR
-            MENUITEM "Strip &Laaste Karakter\tAlt+U",       IDM_EDIT_STRIPLASTCHAR
-            MENUITEM "Strip &Agterliggende Spasies\tAlt+W", IDM_EDIT_TRIMLINES
-            MENUITEM "&Kompres Spasies\tCtrl+Alt+P",        IDM_EDIT_COMPRESS_BLANKS
+            MENUITEM "Verhoog &Nommer\tCtrl+Alt+NK+",                       CMD_INCREASENUM
+            MENUITEM "Ve&rminder Nommer\tCtrl+Alt+NK-",                     CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "&Modifiseer Lyne...\tAlt+M",          IDM_EDIT_MODIFYLINES
-            MENUITEM "&Sorteer Lyne...\tAlt+O",             IDM_EDIT_SORTLINES
-            MENUITEM SEPARATOR
-            MENUITEM "&Bring Lyne in Lyn...\tAlt+J",        IDM_EDIT_ALIGN
-            MENUITEM "V&erdeel Lyne\tCtrl+I",               IDM_EDIT_SPLITLINES
-            MENUITEM "K&ombineer Lyne\tCtrl+J",             IDM_EDIT_JOINLINES
-            MENUITEM "Smel&t Lyne Saam\tCtrl+Alt+J",        IDM_EDIT_JOINLN_NOSP
-            MENUITEM "Behou Paragra&we\tCtrl+Shift+J",      IDM_EDIT_JOINLINES_PARA
-            MENUITEM SEPARATOR
-            MENUITEM "Spring na die &Seleksie Begin\tCtrl+,",    CMD_JUMP2SELSTART
-            MENUITEM "Sprin&g na die Seleksie Einde\tCtrl+.",      CMD_JUMP2SELEND
+            MENUITEM "&Maak die Vouer met die Seleksie Oop",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "Maak &Lêer Oop vanaf Seleksie",                       IDM_EDIT_OPEN_FILE_FROM_SEL
         END
-        POPUP "O&mskep"
+        POPUP "Omskep (&H)"
         BEGIN
             MENUITEM "&Hoofletters\tCtrl+Shift+U",              IDM_EDIT_CONVERTUPPERCASE
             MENUITEM "&Kleinletter\tCtrl+U",                    IDM_EDIT_CONVERTLOWERCASE
@@ -285,10 +301,13 @@ BEGIN
             MENUITEM "Keer terugslae om",                       IDM_EDIT_INVERTBACKSLASH
             MENUITEM "Keer skuinsstrepe om",                    IDM_EDIT_INVERTSLASH
             MENUITEM SEPARATOR
-            MENUITEM "Karakter na &Hex\tCtrl+Alt+X",            IDM_EDIT_CHAR2HEX
-            MENUITEM "Hex an &Karakters\tCtrl+Alt+C",           IDM_EDIT_HEX2CHAR
+            MENUITEM "Ontsna&p C Karakters\tCtrl+Alt+E",                    IDM_EDIT_ESCAPECCHARS
+            MENUITEM "On-ontsnap C Ka&rakters\tCtrl+Alt+R",                 IDM_EDIT_UNESCAPECCHARS
+            MENUITEM SEPARATOR
+            MENUITEM "Karakter &na Hex\tCtrl+Alt+X",            IDM_EDIT_CHAR2HEX
+            MENUITEM "He&x an Karakters\tCtrl+Alt+C",           IDM_EDIT_HEX2CHAR
         END
-        POPUP "&Insetsel"
+        POPUP "I&nsetsel"
         BEGIN
             MENUITEM "Nuwe &Lyn Hierbo\tCtrl+Enter",            CMD_INSERTNEWLINE
             MENUITEM SEPARATOR
@@ -300,30 +319,6 @@ BEGIN
             MENUITEM "Tyd/Datum (&Lang Form)\tCtrl+Shift+F5",   IDM_EDIT_INSERT_LONGDATE
             MENUITEM "Huidige &Tydstempel",                     CMD_INSERT_TIMESTAMP
             MENUITEM "&Opdateer Tydstempel\tShift+F5",          CMD_UPDATE_TIMESTAMPS
-        END
-        POPUP "&Diverse"
-        BEGIN
-            MENUITEM "Kopieer &GUID na Die Knipbord\tCtrl+Shift+.",         IDM_EDIT_INSERT_GUID
-            MENUITEM SEPARATOR
-            MENUITEM "&Ontsnap C Karakters\tCtrl+Alt+E",                    IDM_EDIT_ESCAPECCHARS
-            MENUITEM "On-ontsnap C Ka&rakters\tCtrl+Alt+R",                 IDM_EDIT_UNESCAPECCHARS
-            MENUITEM SEPARATOR
-            MENUITEM "Verhoog &Nommer\tCtrl+Alt+NK+",                       CMD_INCREASENUM
-            MENUITEM "V&erminder Nommer\tCtrl+Alt+NK-",                     CMD_DECREASENUM
-            MENUITEM SEPARATOR
-            MENUITEM "&Vind Bypassende Hakie\tCtrl+B",                      IDM_EDIT_FINDMATCHINGBRACE
-            MENUITEM "Kies na &Bypassende Hakie\tCtrl+Shift+B",             IDM_EDIT_SELTOMATCHINGBRACE
-            MENUITEM SEPARATOR
-            MENUITEM "Kies na &Volgende\tCtrl+Alt+F2",                      IDM_EDIT_SELTONEXT
-            MENUITEM "Kies na Vori&ge\tCtrl+Alt+Shift+F2",                  IDM_EDIT_SELTOPREV
-            MENUITEM SEPARATOR
-            MENUITEM "Kies &Woord of Lyne\tCtrl+Spc",                       IDM_EDIT_SELECTWORD
-            MENUITEM "Multi-Select &Alles wat Pas\tCtrl+Shift+Spc",         IDM_EDIT_SELECTALLMATCHES
-            MENUITEM SEPARATOR
-            MENUITEM "Maak die &Vouer met die Seleksie Oop",                IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
-            MENUITEM "Maak &Lêer Oop vanaf Seleksie",                       IDM_EDIT_OPEN_FILE_FROM_SEL
-            MENUITEM SEPARATOR
-            MENUITEM "Verdeel en Onttrek &Transaksies by Lynbrekings",      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         END
         MENUITEM SEPARATOR
         POPUP "Boe&kmerke"
