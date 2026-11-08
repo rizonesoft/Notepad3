@@ -180,11 +180,11 @@ Open a new (untitled) Notepad3 window and **paste the current clipboard contents
 ## Pasteboard (clipboard collector): `/b`
 
 ### `/b`
-Activates **Pasteboard mode**: every clipboard change observed while the editor is running is appended as a new entry at the end of the document. Stop at any time via **Edit → Stop Clipboard Monitoring** or by pressing the Pasteboard toolbar toggle. The mode is *runtime-only* (process-local) and is not persisted to the INI.
+Activates **Pasteboard mode**: pasteable clipboard updates are inserted at the current caret/selection. Stop via **Edit → Toggle Clipboard Monitoring** or by double-clicking **CBS** in the status bar. The mode is *runtime-only* (process-local) and is not persisted to the INI. See the [Clipboard Monitoring guide](../config/ClipboardMonitoring.md) for workflow examples and the optional discard-prompt safety net.
 
 #### Initial paste behaviour
 
-When `/b` is passed at startup, Notepad3 will additionally **paste the current clipboard once** — but **only** if the buffer is otherwise empty: no file argument, no `/c`, and no MRU auto-load. This asymmetry is intentional. The runtime toggle (`Edit → Toggle Pasteboard`) never auto-pastes.
+When `/b` is passed at startup, Notepad3 will additionally **paste the current clipboard once** — but **only** if the buffer is empty and Untitled after startup loading. This asymmetry is intentional. The runtime toggle (**Edit → Toggle Clipboard Monitoring**) never auto-pastes.
 
 #### Separator between entries
 
@@ -192,9 +192,9 @@ Subsequent entries are separated according to `Settings2.PasteBoardSeparator`:
 
 | Value | Meaning |
 |---|---|
-| `\x01` (default) | One document EOL between entries |
-| `\0` | No separator |
-| anything else | Verbatim character(s) used as separator |
+| Key absent (default) | One document EOL between entries |
+| Empty value (`PasteBoardSeparator=`) | No separator |
+| Custom value | Character(s) used as separator, with escape sequences decoded |
 
 The separator is suppressed for the first paste after enable and when the caret is already at the start of a line.
 
@@ -204,7 +204,7 @@ The separator is suppressed for the first paste after enable and when the caret 
 
 #### Combining with `/i` — deferred minimize **(N3)**
 
-When `/b` and `/i` are passed together, Notepad3 keeps the window visible for `Settings2.PasteBoardInitialShowMs` (clamped to 500–5000 ms; default 2000 ms) before minimizing, so the user can briefly see what landed in the buffer. **Holding `Ctrl` at the moment the minimize-timer fires cancels the auto-minimize and keeps the window visible** — useful for inspecting or editing the captured clipboard immediately. Pasteboard mode itself remains active either way. Releasing `Ctrl` before the timer expires has no effect; the check is at the firing instant only.
+When `/b` and `/i` are passed together, Notepad3 keeps the window visible for `Settings2.PasteBoardInitialShowMs` (clamped to 500–5000 ms; default 1500 ms) before minimizing. **Holding `Ctrl` at the moment the minimize-timer fires cancels the auto-minimize and keeps the window visible**. Auto-minimize is also skipped if the clipboard has nothing pasteable at that instant; this is not a document-empty check or a guarantee of successful pasting. Pasteboard mode itself remains active either way. Releasing `Ctrl` before the timer expires has no effect.
 
 ---
 

@@ -161,7 +161,7 @@ Editing operations on the document's text. The **Edit** menu is split: the top o
 | **Select All** | `Ctrl+A` | Select the whole document. |
 | **Delete** | `Del` | Remove the selection (no clipboard write). |
 | **Clear Clipboard** | — | Empty the Windows clipboard. |
-| **Toggle Clipboard Monitoring** | — | "Pasteboard" mode — every clipboard change is auto-pasted into the document. Mutually exclusive with *Monitoring Log* (see *View → Display*). This is a session-only toggle and is not persisted. Can also be enabled at startup via the `/B` switch (see [`cmdln/CmdLnOptions.md`](cmdln/CmdLnOptions.md)). |
+| **Toggle Clipboard Monitoring** | — | "Pasteboard" mode — pasteable clipboard updates are inserted at the caret/selection. Mutually exclusive with *Monitoring Log* (see *View → Display*). This is a session-only toggle and is not persisted. Can also be enabled at startup via `/B`; see the [Clipboard Monitoring guide](config/ClipboardMonitoring.md). |
 
 ### Words
 
