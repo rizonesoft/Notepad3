@@ -12,7 +12,6 @@
 
 #include <cstdlib>
 #include <cassert>
-#include <cctype>
 #include <cstdio>
 
 #include <string>
@@ -143,7 +142,7 @@ class LexerRegistry : public DefaultLexer {
 			int i = 0;
 			while (i < count) {
 				digit = styler.SafeGetCharAt(start+offset);
-				if (!(isxdigit(digit) || digit == '-')) {
+				if (!(IsAHeXDigit(digit) || digit == '-')) {
 					return false;
 				}
 				offset++;
@@ -250,7 +249,7 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 					}
 					if (context.state == SCE_REG_STRING &&
 						context.ch == '%' &&
-						(isdigit(context.chNext) || context.chNext == '*')) {
+						(IsADigit(context.chNext) || context.chNext == '*')) {
 						context.SetState(SCE_REG_PARAMETER);
 					}
 				}
@@ -337,11 +336,11 @@ void SCI_METHOD LexerRegistry::Lex(Sci_PositionU startPos,
 				afterEqualSign = true;
 				highlight = true;
 			} else if (afterEqualSign) {
-				bool wordStart = isalpha(context.ch) && !isalpha(context.chPrev);
+				bool wordStart = IsUpperOrLowerCase(context.ch) && !IsUpperOrLowerCase(context.chPrev);
 				if (wordStart && AtValueType(styler, currPos)) {
 					context.SetState(SCE_REG_VALUETYPE);
 				}
-			} else if (isxdigit(context.ch) && highlight) {
+			} else if (IsAHeXDigit(context.ch) && highlight) {
 				context.SetState(SCE_REG_HEXDIGIT);
 			}
 			highlight = (context.ch == '@') ? true : highlight;

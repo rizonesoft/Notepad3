@@ -4,10 +4,12 @@
  **/
 // Copyright 1998-2010 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
+#include <cstdint>
 #include <cassert>
 #include <cstring>
 
 #include <string>
+#include <string_view>
 #include <algorithm>
 
 #include "ILexer.h"
@@ -19,6 +21,33 @@
 using namespace Lexilla;
 
 namespace Lexilla {
+
+ LexAccessor::LexAccessor(Scintilla::IDocument *pAccess_) :
+	pAccess(pAccess_), startPos(PTRDIFF_MAX), endPos(0),
+	codePage(pAccess->CodePage()),
+	encodingType(EncodingType::eightBit),
+	lenDoc(pAccess->Length()),
+	validLen(0),
+	startSeg(0), startPosStyling(0),
+	documentVersion(pAccess->Version()) {
+	// Prevent warnings by static analyzers about uninitialized buf and styleBuf.
+	buf[0] = 0;
+	styleBuf[0] = 0;
+	switch (codePage) {
+	case 65001:
+		encodingType = EncodingType::unicode;
+		break;
+	case 932:
+	case 936:
+	case 949:
+	case 950:
+	case 1361:
+		encodingType = EncodingType::dbcs;
+		break;
+	default:
+		break;
+	}
+}
 
 bool LexAccessor::Match(Sci_Position pos, std::string_view sv) {
 	for (unsigned int i = 0; i < sv.size(); i++) {
@@ -94,7 +123,7 @@ int FoldLevelFlags(int levelLine, int levelNext, bool white, bool headerPermitte
 	if (white) {
 		flags |= SC_FOLDLEVELWHITEFLAG;
 	}
-	if ((levelLine < levelNext) && (headerPermitted)) {
+	if ((levelLine < levelNext) && headerPermitted) {
 		flags |= SC_FOLDLEVELHEADERFLAG;
 	}
 	return flags;

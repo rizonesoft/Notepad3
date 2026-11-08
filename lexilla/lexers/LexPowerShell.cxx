@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <assert.h>
-#include <ctype.h>
 
 #include <string>
 #include <string_view>
@@ -30,7 +29,7 @@ using namespace Lexilla;
 
 // Extended to accept accented characters
 static inline bool IsAWordChar(int ch) noexcept {
-	return ch >= 0x80 || isalnum(ch) || ch == '-' || ch == '_';
+	return ch >= 0x80 || IsAlphaNumeric(ch) || ch == '-' || ch == '_';
 }
 
 static bool IsNumericLiteral(int chPrev, int ch, int chNext) {

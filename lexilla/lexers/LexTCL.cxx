@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <assert.h>
-#include <ctype.h>
 
 #include <string>
 #include <string_view>
@@ -33,18 +32,18 @@ namespace {
 // Extended to accept accented characters
 inline bool IsAWordChar(int ch) {
 	return ch >= 0x80 ||
-	       (isalnum(ch) || ch == '_' || ch ==':' || ch=='.'); // : name space separator
+	       (IsAlphaNumeric(ch) || ch == '_' || ch ==':' || ch=='.'); // : name space separator
 }
 
 inline bool IsAWordStart(int ch) {
-	return ch >= 0x80 || (ch ==':' || isalpha(ch) || ch == '_');
+	return ch >= 0x80 || (ch ==':' || IsUpperOrLowerCase(ch) || ch == '_');
 }
 
 inline bool IsANumberChar(int ch) {
 	// Not exactly following number definition (several dots are seen as OK, etc.)
 	// but probably enough in most cases.
 	return (ch < 0x80) &&
-	       (IsADigit(ch, 0x10) || toupper(ch) == 'E' ||
+	       (IsADigit(ch, 0x10) || MakeUpperCase(ch) == 'E' ||
 	        ch == '.' || ch == '-' || ch == '+');
 }
 

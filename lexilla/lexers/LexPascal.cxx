@@ -183,7 +183,7 @@ const LexicalClass lexicalClasses[] = {
 	11, "SCE_PAS_STRINGEOL", "error literal string", "End of line where string is not closed",
 	12, "SCE_PAS_CHARACTER","literal string character", "Character",
 	13, "SCE_PAS_OPERATOR","operator", "Operator",
-	14, "SCE_PAS_ASM", "assembler", "Inline Assembler", 
+	14, "SCE_PAS_ASM", "assembler", "Inline Assembler",
 	15, "SCE_PAS_MULTILINESTRING", "literal string multiline", "Triple quoted multiline string",
 };
 
@@ -326,7 +326,7 @@ void LexerPascal::Lex(Sci_PositionU startPos, Sci_Position length, int initStyle
 	const CharacterSet setHexNumber(CharacterSet::setDigits, "abcdefABCDEF");
 	const CharacterSet setOperator(CharacterSet::setNone, "#$&'()*+,-./:;<=>@[]^{}");
 
-	// To terminate SCE_PAS_MULTILINESTRING, need to know number of quotes at start so retreat to starting line. 
+	// To terminate SCE_PAS_MULTILINESTRING, need to know number of quotes at start so retreat to starting line.
 	if ((initStyle == SCE_PAS_MULTILINESTRING) && (startPos > 0)) {
 		const Sci_Position endPos = startPos + length;
 		// Look for line start not in SCE_PAS_MULTILINESTRING

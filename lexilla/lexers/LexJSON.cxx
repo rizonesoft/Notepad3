@@ -12,7 +12,6 @@
 
 #include <cstdlib>
 #include <cassert>
-#include <cctype>
 #include <cstdio>
 
 #include <string>
@@ -427,19 +426,19 @@ void SCI_METHOD LexerJSON::Lex(Sci_PositionU startPos,
 										 IsASpace(context.chPrev) ||
 										 setOperators.Contains(context.chPrev));
 			const bool exponentPart =
-				tolower(context.ch) == 'e' &&
+				MakeLowerCase(context.ch) == 'e' &&
 				IsADigit(context.chPrev) &&
 				(IsADigit(context.chNext) ||
 				 context.chNext == '+' ||
 				 context.chNext == '-');
 			const bool signPart =
 				(context.ch == '-' || context.ch == '+') &&
-				((tolower(context.chPrev) == 'e' && IsADigit(context.chNext)) ||
+				((MakeLowerCase(context.chPrev) == 'e' && IsADigit(context.chNext)) ||
 				 ((IsASpace(context.chPrev) || setOperators.Contains(context.chPrev))
 				  && IsADigit(context.chNext)));
 			const bool adjacentDigit =
 				IsADigit(context.ch) && IsADigit(context.chPrev);
-			const bool afterExponent = IsADigit(context.ch) && tolower(context.chPrev) == 'e';
+			const bool afterExponent = IsADigit(context.ch) && MakeLowerCase(context.chPrev) == 'e';
 			const bool dotPart = context.ch == '.' &&
 				IsADigit(context.chPrev) &&
 				IsADigit(context.chNext);

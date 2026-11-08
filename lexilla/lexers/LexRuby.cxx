@@ -8,7 +8,6 @@
 #include <cstdlib>
 #include <cassert>
 #include <cstring>
-#include <cctype>
 #include <cstdio>
 #include <cstdarg>
 
@@ -53,30 +52,30 @@ constexpr bool isHighBitChar(char ch) noexcept {
 }
 
 bool isSafeAlpha(char ch) noexcept {
-    return (isSafeASCII(ch) && isalpha(ch)) || ch == '_';
+    return (isSafeASCII(ch) && IsUpperOrLowerCase(ch)) || ch == '_';
 }
 
 bool isSafeAlphaOrHigh(char ch) noexcept {
-	return isHighBitChar(ch) || isalpha(ch) || ch == '_';
+	return isHighBitChar(ch) || IsUpperOrLowerCase(ch) || ch == '_';
 }
 
 bool isSafeAlnum(char ch) noexcept {
-    return (isSafeASCII(ch) && isalnum(ch)) || ch == '_';
+    return (isSafeASCII(ch) && IsAlphaNumeric(ch)) || ch == '_';
 }
 
 bool isSafeAlnumOrHigh(char ch) noexcept {
-    return isHighBitChar(ch) || isalnum(ch) || ch == '_';
+    return isHighBitChar(ch) || IsAlphaNumeric(ch) || ch == '_';
 }
 
 bool isSafeDigit(char ch) noexcept {
-    return isSafeASCII(ch) && isdigit(ch);
+    return isSafeASCII(ch) && IsADigit(ch);
 }
 
 bool isSafeWordcharOrHigh(char ch) noexcept {
     // Error: scintilla's KeyWords.h includes '.' as a word-char
     // we want to separate things that can take methods from the
     // methods.
-    return isHighBitChar(ch) || isalnum(ch) || ch == '_';
+    return isHighBitChar(ch) || IsAlphaNumeric(ch) || ch == '_';
 }
 
 constexpr bool isWhiteSpace(char ch) noexcept {

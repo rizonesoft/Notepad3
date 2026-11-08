@@ -342,7 +342,7 @@ void SCI_METHOD LexerMarkdown::Lex(Sci_PositionU startPos, Sci_Position length, 
             }
             break;
 
-        case SCE_MARKDOWN_FRONT: 
+        case SCE_MARKDOWN_FRONT:
             if (sc.atLineStart) {
                 const FrontMatter frontMatterMark = FrontMatterFromString(
                     styler.GetRange(sc.currentPos, sc.currentPos + 3));

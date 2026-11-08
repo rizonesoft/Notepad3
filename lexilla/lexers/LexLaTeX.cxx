@@ -10,7 +10,6 @@
 #include <cstdlib>
 #include <cassert>
 #include <cstring>
-#include <cctype>
 #include <cstdio>
 #include <cstdarg>
 
@@ -119,7 +118,7 @@ bool latexIsBlankAndNL(int ch) noexcept {
 }
 
 bool latexIsLetter(int ch) {
-	return IsASCII(ch) && isalpha(ch);
+	return IsASCII(ch) && IsUpperOrLowerCase(ch);
 }
 
 bool latexIsTagValid(Sci_Position &i, Sci_Position l, Accessor &styler) {

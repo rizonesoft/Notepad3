@@ -10,7 +10,6 @@
 #include <cstdlib>
 #include <cassert>
 #include <cstring>
-#include <cctype>
 
 #include <string>
 #include <string_view>
@@ -40,17 +39,17 @@ namespace {
 
 bool IsAWordChar(int ch, bool sqlAllowDottedWord) noexcept {
 	if (!sqlAllowDottedWord)
-		return (ch < 0x80) && (isalnum(ch) || ch == '_');
+		return (ch < 0x80) && (IsAlphaNumeric(ch) || ch == '_');
 	else
-		return (ch < 0x80) && (isalnum(ch) || ch == '_' || ch == '.');
+		return (ch < 0x80) && (IsAlphaNumeric(ch) || ch == '_' || ch == '.');
 }
 
 bool IsAWordStart(int ch) noexcept {
-	return (ch < 0x80) && (isalpha(ch) || ch == '_');
+	return (ch < 0x80) && (IsUpperOrLowerCase(ch) || ch == '_');
 }
 
 bool IsADoxygenChar(int ch) noexcept {
-	return (islower(ch) || ch == '$' || ch == '@' ||
+	return (IsLowerCase(ch) || ch == '$' || ch == '@' ||
 	        ch == '\\' || ch == '&' || ch == '<' ||
 	        ch == '>' || ch == '#' || ch == '{' ||
 	        ch == '}' || ch == '[' || ch == ']');
@@ -60,8 +59,8 @@ bool IsANumberChar(int ch, int chPrev) noexcept {
 	// Not exactly following number definition (several dots are seen as OK, etc.)
 	// but probably enough in most cases.
 	return (ch < 0x80) &&
-	       (isdigit(ch) || toupper(ch) == 'E' ||
-	        ch == '.' || ((ch == '-' || ch == '+') && chPrev < 0x80 && toupper(chPrev) == 'E'));
+	       (IsADigit(ch) || MakeUpperCase(ch) == 'E' ||
+	        ch == '.' || ((ch == '-' || ch == '+') && chPrev < 0x80 && MakeUpperCase(chPrev) == 'E'));
 }
 
 constexpr int GetQuoteComplement(int ch) noexcept {
@@ -545,7 +544,7 @@ void SCI_METHOD LexerSQL::Lex(Sci_PositionU startPos, Sci_Position length, int i
 			} else if (!IsADoxygenChar(sc.ch)) {
 				char s[100];
 				sc.GetCurrentLowered(s, sizeof(s));
-				if (!isspace(sc.ch) || !kw_pldoc.InList(s + 1)) {
+				if (!IsASpace(sc.ch) || !kw_pldoc.InList(s + 1)) {
 					sc.ChangeState(SCE_SQL_COMMENTDOCKEYWORDERROR);
 				}
 				sc.SetState(styleBeforeDCKeyword);

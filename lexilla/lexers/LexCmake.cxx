@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <assert.h>
-#include <ctype.h>
 
 #include <string>
 #include <string_view>
@@ -113,7 +112,7 @@ static int classifyWordCmake(Sci_PositionU start, Sci_PositionU end, WordList *k
 
     for (Sci_PositionU i = 0; start + i <= end && i < 99; i++) {
         word[i] = static_cast<char>( styler[ start + i ] );
-        lowercaseWord[i] = static_cast<char>(tolower(word[i]));
+        lowercaseWord[i] = static_cast<char>(MakeLowerCase(word[i]));
     }
 
     // Check for special words...

@@ -8,7 +8,6 @@
 #include <cstdlib>
 #include <cassert>
 #include <cstring>
-#include <cctype>
 #include <cstdio>
 #include <cstdarg>
 
@@ -101,7 +100,7 @@ bool Contains(const std::string &s, std::string_view search) noexcept {
 }
 
 script_type segIsScriptingIndicator(const Accessor & styler, Sci_PositionU end, script_type prevValue, script_type aspScript) {
-	const Sci_PositionU start = styler.GetStartSegment(); 
+	const Sci_PositionU start = styler.GetStartSegment();
 	const std::string s = styler.GetRangeLowered(start, end+1);
 	if (Contains(s, "java"))
 		return eScriptJS;

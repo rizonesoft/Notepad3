@@ -15,12 +15,12 @@ enum class EncodingType { eightBit, unicode, dbcs };
 class LexAccessor {
 private:
 	Scintilla::IDocument *pAccess;
-	enum {extremePosition=0x7FFFFFFF};
 	/** @a bufferSize is a trade off between time taken to copy the characters
 	 * and retrieval overhead.
 	 * @a slopSize positions the buffer before the desired position
 	 * in case there is some backtracking. */
-	enum {bufferSize=4000, slopSize=bufferSize/8};
+	static constexpr Sci_Position bufferSize=4000;
+	static constexpr Sci_Position slopSize=bufferSize/8;
 	char buf[bufferSize+1];
 	Sci_Position startPos;
 	Sci_Position endPos;
@@ -48,35 +48,14 @@ private:
 	}
 
 public:
-	explicit LexAccessor(Scintilla::IDocument *pAccess_) :
-		pAccess(pAccess_), startPos(extremePosition), endPos(0),
-		codePage(pAccess->CodePage()),
-		encodingType(EncodingType::eightBit),
-		lenDoc(pAccess->Length()),
-		validLen(0),
-		startSeg(0), startPosStyling(0),
-		documentVersion(pAccess->Version()) {
-		// Prevent warnings by static analyzers about uninitialized buf and styleBuf.
-		buf[0] = 0;
-		styleBuf[0] = 0;
-		switch (codePage) {
-		case 65001:
-			encodingType = EncodingType::unicode;
-			break;
-		case 932:
-		case 936:
-		case 949:
-		case 950:
-		case 1361:
-			encodingType = EncodingType::dbcs;
-			break;
-		default:
-			break;
-		}
-	}
+	explicit LexAccessor(Scintilla::IDocument *pAccess_);
 	char operator[](Sci_Position position) {
 		if (position < startPos || position >= endPos) {
 			Fill(position);
+			if (position < startPos || position >= endPos) {
+				// Position is outside range of document
+				return 0;
+			}
 		}
 		return buf[position - startPos];
 	}

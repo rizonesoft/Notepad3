@@ -13,7 +13,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <assert.h>
-#include <ctype.h>
 
 #include <string>
 #include <string_view>
@@ -32,11 +31,11 @@
 using namespace Lexilla;
 
 static inline bool IsAKeywordChar(const int ch) {
-	return (ch < 0x80 && (isalnum(ch) || (ch == '_') || (ch == ' ')));
+	return (ch < 0x80 && (IsAlphaNumeric(ch) || (ch == '_') || (ch == ' ')));
 }
 
 static inline bool IsASetChar(const int ch) {
-	return (ch < 0x80 && (isalnum(ch) || (ch == '_') || (ch == '.') || (ch == '-')));
+	return (ch < 0x80 && (IsAlphaNumeric(ch) || (ch == '_') || (ch == '.') || (ch == '-')));
 }
 
 static void ColouriseABAQUSDoc(Sci_PositionU startPos, Sci_Position length, int initStyle, WordList*[] /* *keywordlists[] */,
@@ -288,11 +287,11 @@ static int character_classification[128] =
 };
 
 static bool IsSpace(int c) {
-	return c < 128 && (character_classification[c] & 1);
+	return IsASCII(c) && (character_classification[c] & 1);
 }
 
 static bool IsIdentifier(int c) {
-	return c < 128 && (character_classification[c] & 4);
+	return IsASCII(c) && (character_classification[c] & 4);
 }
 
 static int LowerCase(int c)

@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <assert.h>
-#include <ctype.h>
 
 #include <string>
 #include <string_view>
@@ -196,7 +195,7 @@ static int classifyWordNsis(Sci_PositionU start, Sci_PositionU end, WordList *ke
 	for (Sci_PositionU i = 0; i < end - start + 1 && i < 99; i++)
 	{
     if( bIgnoreCase )
-      s[i] = static_cast<char>( tolower(styler[ start + i ] ) );
+      s[i] = static_cast<char>( MakeLowerCase(styler[ start + i ] ) );
     else
 		  s[i] = static_cast<char>( styler[ start + i ] );
 		s[i + 1] = '\0';

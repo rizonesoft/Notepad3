@@ -105,7 +105,7 @@ public:
 		return (rc.left == left) && (rc.right == right) &&
 			(rc.top == top) && (rc.bottom == bottom);
 	}
-	
+
 	constexpr PRectangle operator*(XYPOSITION multiplier) const noexcept {
 		return PRectangle(left * multiplier, top * multiplier, right * multiplier, bottom * multiplier);
 	}

@@ -803,7 +803,7 @@ struct Sci_TextRangeFull {
     href="#SCN_SAVEPOINTREACHED"><code>SCN_SAVEPOINTREACHED</code></a> and <a class="message"
     href="#SCN_SAVEPOINTLEFT"><code>SCN_SAVEPOINTLEFT</code></a> <a class="jump"
     href="#Notifications">notification messages</a>.</p>
-    
+
     <p><b id="SCI_LINEFROMPOSITION">SCI_LINEFROMPOSITION(position pos) &rarr; line</b><br />
      This message returns the line that contains the position <code class="parameter">pos</code> in the document. The
     return value is 0 if <code class="parameter">pos</code> &lt;= 0. The return value is the last line if
@@ -2138,7 +2138,7 @@ struct Sci_TextToFindFull {
 
     <p>Scintilla stores each change in an undo stack.
     Various inter-action points play roles in undo behaviour: actions count, save point, detach point,
-    tentative point, and current action. Just like positions in documents, these points are between actions in the 
+    tentative point, and current action. Just like positions in documents, these points are between actions in the
     undo stack. Thus the current action specifies the number of actions that led to the current document state and
     actions after this are for redo.
     The save point specifies that the actions before this point are in the most recent save and actions after this are not yet saved.</p>
@@ -2355,7 +2355,7 @@ struct Sci_TextToFindFull {
         </tr>
       </tbody>
     </table>
-    
+
     <p>The bits used for change history markers are specified by <code>SC_MASK_HISTORY</code>, which is commonly
     used as an argument to <code>SCI_SETMARGINMASKN</code> when defining a margin to be used for change history.</p>
 
@@ -8950,7 +8950,7 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     <p><b id="SCI_ALLOCATESUBSTYLES">SCI_ALLOCATESUBSTYLES(int styleBase, int numberStyles) &rarr; int</b><br />
      Allocate some number of substyles for a particular base style returning the first substyle number allocated.
      A failure, such as requesting more substyles than available, is indicated by returning a negative number.
-     Lexers that support substyles will commonly allow allocating 64 substyles. 
+     Lexers that support substyles will commonly allow allocating 64 substyles.
      Substyles are allocated contiguously.</p>
 
     <p><b id="SCI_FREESUBSTYLES">SCI_FREESUBSTYLES</b><br />

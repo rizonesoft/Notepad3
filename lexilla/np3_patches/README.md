@@ -1,6 +1,6 @@
 # Notepad3 Lexilla Patches
 
-This directory records local Lexilla patch rationale and upgrade constraints. Treat its registry and source counts as a historical inventory, not proof of completeness or current patch applicability. Before an approved upgrade, compare current sources and preserve still-required Notepad3 deltas; do not blindly reapply old patch files.
+This directory contains documentation of all modifications made to the upstream Lexilla library for Notepad3 compatibility.
 
 ## Patch Registry
 
@@ -41,7 +41,7 @@ bool MatchNext(char ch0, char ch1, char ch2) const noexcept;
 
 **File:** `lexers/LexMarkdown.cxx`
 **Status:** Local fix; candidate for upstream submission. See
-[003_LexMarkdown_AtTermStart.md](003_LexMarkdown_AtTermStart.md) for the full write-up.
+`003_LexMarkdown_AtTermStart.md` for the full write-up.
 
 Stock Lexilla only opens inline spans (code, strong, emphasis,
 strikeout) when the preceding character is whitespace, so

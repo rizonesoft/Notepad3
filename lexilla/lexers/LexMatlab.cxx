@@ -34,7 +34,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <assert.h>
-#include <ctype.h>
 
 #include <string>
 #include <string_view>
@@ -244,7 +243,7 @@ void ColouriseMatlabOctaveDoc(
 				sc.SetState(SCE_MATLAB_DEFAULT);
 			}
 		} else if (sc.state == SCE_MATLAB_KEYWORD) {
-			if (!isalnum(sc.ch) && sc.ch != '_') {
+			if (!IsAlphaNumeric(sc.ch) && sc.ch != '_') {
 				char s[100];
 				sc.GetCurrent(s, sizeof(s));
 				bool notKeyword = false;
@@ -304,7 +303,7 @@ void ColouriseMatlabOctaveDoc(
 			styler.SetLineState(curLine, ComposeLineState(
 				commentDepth, foldingLevel, expectingArgumentsBlock, inClassScope, inArgumentsScope));
 		} else if (sc.state == SCE_MATLAB_NUMBER) {
-			if (!isdigit(sc.ch) && sc.ch != '.'
+			if (!IsADigit(sc.ch) && sc.ch != '.'
 			        && !(sc.ch == 'e' || sc.ch == 'E')
 			        && !((sc.ch == '+' || sc.ch == '-') && (sc.chPrev == 'e' || sc.chPrev == 'E'))
 			        && !(((sc.ch == 'x' || sc.ch == 'X') && sc.chPrev == '0') || (sc.ch >= 'a' && sc.ch <= 'f') || (sc.ch >= 'A' && sc.ch <= 'F'))
@@ -396,9 +395,9 @@ void ColouriseMatlabOctaveDoc(
 				}
 			} else if (sc.ch == '"') {
 				sc.SetState(SCE_MATLAB_DOUBLEQUOTESTRING);
-			} else if (isdigit(sc.ch) || (sc.ch == '.' && isdigit(sc.chNext))) {
+			} else if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
 				sc.SetState(SCE_MATLAB_NUMBER);
-			} else if (isalpha(sc.ch)) {
+			} else if (IsUpperOrLowerCase(sc.ch)) {
 				sc.SetState(SCE_MATLAB_KEYWORD);
 			} else if (isoperator(static_cast<char>(sc.ch)) || sc.ch == '@' || sc.ch == '\\') {
 				if (sc.ch == '(' || sc.ch == '[' || sc.ch == '{') {
