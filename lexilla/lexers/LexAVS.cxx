@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <assert.h>
-#include <ctype.h>
 
 #include <string>
 #include <string_view>
@@ -30,18 +29,18 @@
 using namespace Lexilla;
 
 static inline bool IsAWordChar(const int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '_');
+	return (ch < 0x80) && (IsAlphaNumeric(ch) || ch == '_');
 }
 
 static inline bool IsAWordStart(int ch) {
-	return isalpha(ch) || (ch != ' ' && ch != '\n' && ch != '(' && ch != '.' && ch != ',');
+	return IsUpperOrLowerCase(ch) || (ch != ' ' && ch != '\n' && ch != '(' && ch != '.' && ch != ',');
 }
 
 static inline bool IsANumberChar(int ch) {
 	// Not exactly following number definition (several dots are seen as OK, etc.)
 	// but probably enough in most cases.
 	return (ch < 0x80) &&
-			(isdigit(ch) || ch == '.' || ch == '-' || ch == '+');
+			(IsADigit(ch) || ch == '.' || ch == '-' || ch == '+');
 }
 
 static void ColouriseAvsDoc(

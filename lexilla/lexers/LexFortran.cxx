@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <assert.h>
-#include <ctype.h>
 
 #include <string>
 #include <string_view>
@@ -34,11 +33,11 @@ namespace {
 
 /***********************************************/
 inline bool IsAWordChar(const int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '_' || ch == '%');
+	return (ch < 0x80) && (IsAlphaNumeric(ch) || ch == '_' || ch == '%');
 }
 /**********************************************/
 inline bool IsAWordStart(const int ch) {
-	return (ch < 0x80) && (isalnum(ch));
+	return (ch < 0x80) && (IsAlphaNumeric(ch));
 }
 /***************************************/
 inline bool IsABlank(unsigned int ch) {
@@ -92,7 +91,7 @@ void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length, int initSt
 		// Handle the fix format generically
 		Sci_Position toLineStart = sc.currentPos - posLineStart;
 		if (isFixFormat && (toLineStart < 6 || toLineStart >= 72)) {
-			if ((toLineStart == 0 && (tolower(sc.ch) == 'c' || sc.ch == '*')) || sc.ch == '!') {
+			if ((toLineStart == 0 && (MakeLowerCase(sc.ch) == 'c' || sc.ch == '*')) || sc.ch == '!') {
 				if (sc.MatchIgnoreCase("cdec$") || sc.MatchIgnoreCase("*dec$") || sc.MatchIgnoreCase("!dec$") ||
 				        sc.MatchIgnoreCase("cdir$") || sc.MatchIgnoreCase("*dir$") || sc.MatchIgnoreCase("!dir$") ||
 				        sc.MatchIgnoreCase("cms$")  || sc.MatchIgnoreCase("*ms$")  || sc.MatchIgnoreCase("!ms$")  ||
@@ -239,11 +238,11 @@ void ColouriseFortranDoc(Sci_PositionU startPos, Sci_Position length, int initSt
 				sc.SetState(SCE_F_LABEL);
 			} else if (IsADigit(sc.ch) || (sc.ch == '.' && IsADigit(sc.chNext))) {
 				sc.SetState(SCE_F_NUMBER);
-			} else if ((tolower(sc.ch) == 'b' || tolower(sc.ch) == 'o' ||
-				tolower(sc.ch) == 'z') && (sc.chNext == '\"' || sc.chNext == '\'')) {
+			} else if ((MakeLowerCase(sc.ch) == 'b' || MakeLowerCase(sc.ch) == 'o' ||
+				MakeLowerCase(sc.ch) == 'z') && (sc.chNext == '\"' || sc.chNext == '\'')) {
 				sc.SetState(SCE_F_NUMBER);
 				sc.Forward();
-			} else if (sc.ch == '.' && isalpha(sc.chNext)) {
+			} else if (sc.ch == '.' && IsUpperOrLowerCase(sc.chNext)) {
 				sc.SetState(SCE_F_OPERATOR2);
 			} else if (IsAWordStart(sc.ch)) {
 				sc.SetState(SCE_F_IDENTIFIER);
@@ -299,7 +298,7 @@ void GetIfLineComment(Accessor &styler, bool isFixFormat, const Sci_Position lin
 	Sci_Position len = styler.Length();
 	while(pos<len) {
 		char ch = styler.SafeGetCharAt(pos);
-		if (ch == '!' || (isFixFormat && col == 0 && (tolower(ch) == 'c' || ch == '*'))) {
+		if (ch == '!' || (isFixFormat && col == 0 && (MakeLowerCase(ch) == 'c' || ch == '*'))) {
 			isComLine = true;
 			comCol = col;
 			break;
@@ -562,7 +561,7 @@ void FoldFortranDoc(Sci_PositionU startPos, Sci_Position length, int initStyle,
 				char s[32];
 				Sci_PositionU k;
 				for(k=0; (k<31 ) && (k<i-lastStart+1 ); k++) {
-					s[k] = static_cast<char>(tolower(styler[lastStart+k]));
+					s[k] = static_cast<char>(MakeLowerCase(styler[lastStart+k]));
 				}
 				s[k] = '\0';
 				// Handle the forall and where statement and structure.

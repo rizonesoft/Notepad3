@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <assert.h>
-#include <ctype.h>
 
 #include <string>
 #include <string_view>
@@ -165,11 +164,11 @@ static void ColouriseInnoDoc(Sci_PositionU startPos, Sci_Position length, int, W
 					// Start of a single-quote string
 					state = SCE_INNO_STRING_SINGLE;
 					styler.ColourTo(i, SCE_INNO_STRING_SINGLE);
-				} else if (!isMessages && IsASCII(ch) && (isalpha(ch) || (ch == '_'))) {
+				} else if (!isMessages && IsASCII(ch) && (IsUpperOrLowerCase(ch) || (ch == '_'))) {
 					// Start of an identifier
 					state = SCE_INNO_IDENTIFIER;
 					bufferCount = 0;
-					buffer[bufferCount++] = static_cast<char>(tolower(ch));
+					buffer[bufferCount++] = static_cast<char>(MakeLowerCase(ch));
 				} else {
 					// Style it the default style
 					styler.ColourTo(i, SCE_INNO_DEFAULT);
@@ -187,8 +186,8 @@ static void ColouriseInnoDoc(Sci_PositionU startPos, Sci_Position length, int, W
 				break;
 
 			case SCE_INNO_IDENTIFIER:
-				if (IsASCII(ch) && (isalnum(ch) || (ch == '_'))) {
-					buffer[bufferCount++] = static_cast<char>(tolower(ch));
+				if (IsASCII(ch) && (IsAlphaNumeric(ch) || (ch == '_'))) {
+					buffer[bufferCount++] = static_cast<char>(MakeLowerCase(ch));
 				} else {
 					state = SCE_INNO_DEFAULT;
 					buffer[bufferCount] = '\0';
@@ -228,8 +227,8 @@ static void ColouriseInnoDoc(Sci_PositionU startPos, Sci_Position length, int, W
 					} else {
 						styler.ColourTo(i, SCE_INNO_DEFAULT);
 					}
-				} else if (IsASCII(ch) && (isalnum(ch) || (ch == '_'))) {
-					buffer[bufferCount++] = static_cast<char>(tolower(ch));
+				} else if (IsASCII(ch) && (IsAlphaNumeric(ch) || (ch == '_'))) {
+					buffer[bufferCount++] = static_cast<char>(MakeLowerCase(ch));
 				} else {
 					state = SCE_INNO_DEFAULT;
 					styler.ColourTo(i, SCE_INNO_DEFAULT);
@@ -238,7 +237,7 @@ static void ColouriseInnoDoc(Sci_PositionU startPos, Sci_Position length, int, W
 
 			case SCE_INNO_PREPROC:
 				if (isWS || isEOL) {
-					if (IsASCII(chPrev) && isalpha(chPrev)) {
+					if (IsASCII(chPrev) && IsUpperOrLowerCase(chPrev)) {
 						state = SCE_INNO_DEFAULT;
 						buffer[bufferCount] = '\0';
 
@@ -253,10 +252,10 @@ static void ColouriseInnoDoc(Sci_PositionU startPos, Sci_Position length, int, W
 						chNext = styler[i--];
 						ch = chPrev;
 					}
-				} else if (IsASCII(ch) && isalpha(ch)) {
+				} else if (IsASCII(ch) && IsUpperOrLowerCase(ch)) {
 					if (chPrev == '#' || chPrev == ' ' || chPrev == '\t')
 						bufferCount = 0;
-					buffer[bufferCount++] = static_cast<char>(tolower(ch));
+					buffer[bufferCount++] = static_cast<char>(MakeLowerCase(ch));
 				}
 				break;
 

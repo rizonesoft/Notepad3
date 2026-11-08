@@ -55,7 +55,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <assert.h>
-#include <ctype.h>
 
 #include <string>
 #include <string_view>
@@ -79,16 +78,16 @@ static inline bool IsTypeCharacter(const int ch)
 }
 static inline bool IsAWordChar(const int ch)
 {
-    return (ch < 0x80) && (isalnum(ch) || ch == '_');
+    return (ch < 0x80) && (IsAlphaNumeric(ch) || ch == '_');
 }
 
 static inline bool IsAWordStart(const int ch)
 {
-    return (ch < 0x80) && (isalnum(ch) || ch == '_' || ch == '@' || ch == '#' || ch == '$' || ch == '.');
+    return (ch < 0x80) && (IsAlphaNumeric(ch) || ch == '_' || ch == '@' || ch == '#' || ch == '$' || ch == '.');
 }
 
 static inline bool IsAOperator(char ch) {
-	if (IsASCII(ch) && isalnum(ch))
+	if (IsASCII(ch) && IsAlphaNumeric(ch))
 		return false;
 	if (ch == '+' || ch == '-' || ch == '*' || ch == '/' ||
 	    ch == '&' || ch == '^' || ch == '=' || ch == '<' || ch == '>' ||
@@ -143,7 +142,7 @@ static int GetSendKey(const char *szLine, char *szKey)
 				// Save second portion into var...
 				szSpecial[nSpecPos++] = cTemp;
 				// check if Second portion is all numbers for repeat fuction
-				if (isdigit(cTemp) == false) {nSpecNum = 0;}
+				if (IsADigit(cTemp) == false) {nSpecNum = 0;}
 			}
 		}
 		nPos++;									// skip to next char
@@ -244,7 +243,7 @@ static void ColouriseAU3Doc(Sci_PositionU startPos,
 			strcpy(s_save,s);
 			int tp = static_cast<int>(strlen(s_save));
 			if (tp < 99) {
-				s_save[tp] = static_cast<char>(tolower(sc.ch));
+				s_save[tp] = static_cast<char>(MakeLowerCase(sc.ch));
 				s_save[tp+1] = '\0';
 			}
 		}
@@ -737,7 +736,7 @@ static void FoldAU3Doc(Sci_PositionU startPos, Sci_Position length, int, WordLis
 			}
 			else {
 				if (szKeywordlen < 10) {
-				szKeyword[szKeywordlen++] = static_cast<char>(tolower(ch));
+				szKeyword[szKeywordlen++] = static_cast<char>(MakeLowerCase(ch));
 				}
 			}
 		}
@@ -745,7 +744,7 @@ static void FoldAU3Doc(Sci_PositionU startPos, Sci_Position length, int, WordLis
 		if (!(FirstWordStart)) {
 			if (IsAWordChar(ch) || IsAWordStart(ch) || ch == ';') {
 				FirstWordStart = true;
-				szKeyword[szKeywordlen++] = static_cast<char>(tolower(ch));
+				szKeyword[szKeywordlen++] = static_cast<char>(MakeLowerCase(ch));
 			}
 		}
 		// only process this logic when not in comment section
@@ -761,13 +760,13 @@ static void FoldAU3Doc(Sci_PositionU startPos, Sci_Position length, int, WordLis
 					szThen[0] = szThen[1];
 					szThen[1] = szThen[2];
 					szThen[2] = szThen[3];
-					szThen[3] = static_cast<char>(tolower(ch));
+					szThen[3] = static_cast<char>(MakeLowerCase(ch));
 					if (strcmp(szThen,"then") == 0 ) {
 						ThenFoundLast = true;
 					}
 				}
 				else {
-					szThen[szThenlen++] = static_cast<char>(tolower(ch));
+					szThen[szThenlen++] = static_cast<char>(MakeLowerCase(ch));
 					if (szThenlen == 5) {
 						szThen[4] = '\0';
 					}

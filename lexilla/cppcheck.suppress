@@ -184,7 +184,6 @@ constParameterReference:lexilla/lexers/LexTADS3.cxx
 constParameterReference:lexilla/lexers/LexTAL.cxx
 variableScope:lexilla/lexers/LexTAL.cxx
 constVariableReference:lexilla/lexers/LexTCL.cxx
-constParameterPointer:lexilla/lexers/LexTCMD.cxx
 invalidscanf:lexilla/lexers/LexTCMD.cxx
 constParameterReference:lexilla/lexers/LexTeX.cxx
 variableScope:lexilla/lexers/LexTeX.cxx

@@ -10,7 +10,6 @@
 #include <cstdlib>
 #include <cassert>
 #include <cstring>
-#include <cctype>
 #include <cstdio>
 #include <cstdarg>
 
@@ -227,12 +226,12 @@ static bool IsWhitespace(int c) {
 
 /* This isn't quite right for Unicode identifiers */
 static bool IsIdentifierStart(int ch) {
-	return (IsASCII(ch) && (isalpha(ch) || ch == '_')) || !IsASCII(ch);
+	return (IsASCII(ch) && (IsUpperOrLowerCase(ch) || ch == '_')) || !IsASCII(ch);
 }
 
 /* This isn't quite right for Unicode identifiers */
 static bool IsIdentifierContinue(int ch) {
-	return (IsASCII(ch) && (isalnum(ch) || ch == '_')) || !IsASCII(ch);
+	return (IsASCII(ch) && (IsAlphaNumeric(ch) || ch == '_')) || !IsASCII(ch);
 }
 
 static void ScanWhitespace(Accessor& styler, Sci_Position& pos, Sci_Position max) {

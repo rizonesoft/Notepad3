@@ -14,7 +14,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <assert.h>
-#include <ctype.h>
 
 #include <string>
 #include <string_view>
@@ -75,17 +74,17 @@ static void ColouriseConfDoc(Sci_PositionU startPos, Sci_Position length, int, W
 				} else if( ch == '"') {
 					state = SCE_CONF_STRING;
 					styler.ColourTo(i,SCE_CONF_STRING);
-				} else if( IsASCII(ch) && ispunct(ch) ) {
+				} else if( IsASCII(ch) && IsPunctuation(ch) ) {
 					// signals an operator...
 					// no state jump necessary for this
 					// simple case...
 					styler.ColourTo(i,SCE_CONF_OPERATOR);
-				} else if( IsASCII(ch) && isalpha(ch) ) {
+				} else if( IsASCII(ch) && IsUpperOrLowerCase(ch) ) {
 					// signals the start of an identifier
 					bufferCount = 0;
-					buffer[bufferCount++] = static_cast<char>(tolower(ch));
+					buffer[bufferCount++] = static_cast<char>(MakeLowerCase(ch));
 					state = SCE_CONF_IDENTIFIER;
-				} else if( IsASCII(ch) && isdigit(ch) ) {
+				} else if( IsASCII(ch) && IsADigit(ch) ) {
 					// signals the start of a number
 					bufferCount = 0;
 					buffer[bufferCount++] = ch;
@@ -112,7 +111,7 @@ static void ColouriseConfDoc(Sci_PositionU startPos, Sci_Position length, int, W
 				// if we find a non-alphanumeric char,
 				// we simply go to default state
 				// else we're still dealing with an extension...
-				if( (IsASCII(ch) && isalnum(ch)) || (ch == '_') ||
+				if( (IsASCII(ch) && IsAlphaNumeric(ch)) || (ch == '_') ||
 					(ch == '-') || (ch == '$') ||
 					(ch == '/') || (ch == '.') || (ch == '*') )
 				{
@@ -134,8 +133,8 @@ static void ColouriseConfDoc(Sci_PositionU startPos, Sci_Position length, int, W
 
 			case SCE_CONF_IDENTIFIER:
 				// stay  in CONF_IDENTIFIER state until we find a non-alphanumeric
-				if( (IsASCII(ch) && isalnum(ch)) || (ch == '_') || (ch == '-') || (ch == '/') || (ch == '$') || (ch == '.') || (ch == '*')) {
-					buffer[bufferCount++] = static_cast<char>(tolower(ch));
+				if( (IsASCII(ch) && IsAlphaNumeric(ch)) || (ch == '_') || (ch == '-') || (ch == '/') || (ch == '$') || (ch == '.') || (ch == '*')) {
+					buffer[bufferCount++] = static_cast<char>(MakeLowerCase(ch));
 				} else {
 					state = SCE_CONF_DEFAULT;
 					buffer[bufferCount] = '\0';
@@ -159,7 +158,7 @@ static void ColouriseConfDoc(Sci_PositionU startPos, Sci_Position length, int, W
 
 			case SCE_CONF_NUMBER:
 				// stay  in CONF_NUMBER state until we find a non-numeric
-				if( (IsASCII(ch) && isdigit(ch)) || ch == '.') {
+				if( (IsASCII(ch) && IsADigit(ch)) || ch == '.') {
 					buffer[bufferCount++] = ch;
 				} else {
 					state = SCE_CONF_DEFAULT;

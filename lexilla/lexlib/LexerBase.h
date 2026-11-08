@@ -16,7 +16,7 @@ protected:
 	const LexicalClass *lexClasses;
 	size_t nClasses;
 	PropSetSimple props;
-	enum {numWordLists=KEYWORDSET_MAX+1};
+	static constexpr int numWordLists=KEYWORDSET_MAX+1;
 	WordList *keyWordLists[numWordLists+1]{};
 public:
 	LexerBase(const LexicalClass *lexClasses_=nullptr, size_t nClasses_=0);

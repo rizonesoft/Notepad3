@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <assert.h>
-#include <ctype.h>
 
 #include <string>
 #include <string_view>
@@ -45,15 +44,15 @@ namespace {
 // Underscore, letter, digit and universal alphas from C99 Appendix D.
 
 bool IsWordStart(int ch) {
-	return (IsASCII(ch) && (isalpha(ch) || ch == '_')) || !IsASCII(ch);
+	return (IsASCII(ch) && (IsUpperOrLowerCase(ch) || ch == '_')) || !IsASCII(ch);
 }
 
 bool IsWord(int ch) {
-	return (IsASCII(ch) && (isalnum(ch) || ch == '_')) || !IsASCII(ch);
+	return (IsASCII(ch) && (IsAlphaNumeric(ch) || ch == '_')) || !IsASCII(ch);
 }
 
 bool IsDoxygen(int ch) {
-	if (IsASCII(ch) && islower(ch))
+	if (IsASCII(ch) && IsLowerCase(ch))
 		return true;
 	if (ch == '$' || ch == '@' || ch == '\\' ||
 		ch == '&' || ch == '#' || ch == '<' || ch == '>' ||
@@ -272,7 +271,7 @@ void SCI_METHOD LexerD::Lex(Sci_PositionU startPos, Sci_Position length, int ini
 				break;
 			case SCE_D_NUMBER:
 				// We accept almost anything because of hex. and number suffixes
-				if (IsASCII(sc.ch) && (isalnum(sc.ch) || sc.ch == '_')) {
+				if (IsASCII(sc.ch) && (IsAlphaNumeric(sc.ch) || sc.ch == '_')) {
 					continue;
 				} else if (sc.ch == '.' && sc.chNext != '.' && !numFloat) {
 					// Don't parse 0..2 as number.

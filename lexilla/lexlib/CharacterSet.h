@@ -89,6 +89,7 @@ constexpr void AnyOf([[maybe_unused]] const T *t, [[maybe_unused]] Args... args)
 
 constexpr int charTab = 0x09;
 constexpr int charCarriageReturn = 0x0D;
+constexpr int charLastASCII = 0x7F;
 
 constexpr bool IsASpace(int ch) noexcept {
     return (ch == ' ') || ((ch >= charTab) && (ch <= charCarriageReturn));
@@ -123,8 +124,7 @@ constexpr bool IsADigit(int ch, int base) noexcept {
 }
 
 constexpr bool IsASCII(int ch) noexcept {
-	constexpr int lastASCII = 0x7F;
-	return (ch >= 0) && (ch <= lastASCII);
+	return (ch >= 0) && (ch <= charLastASCII);
 }
 
 constexpr bool IsLowerCase(int ch) noexcept {
@@ -146,6 +146,17 @@ constexpr bool IsAlphaNumeric(int ch) noexcept {
 		((ch >= 'A') && (ch <= 'Z'));
 }
 
+constexpr bool IsControl(int ch) noexcept {
+	return ((ch >= 0) && (ch < ' ')) || (ch == charLastASCII);
+}
+
+constexpr bool IsPunctuation(int ch) noexcept {
+	return (ch > ' ' && ch < '0')
+		|| (ch > '9' && ch < 'A')
+		|| (ch > 'Z' && ch < 'a')
+		|| (ch > 'z' && ch < charLastASCII);
+}
+
 /**
  * Check if a character is a space.
  * This is ASCII specific but is safe with chars >= 0x80.
@@ -162,6 +173,7 @@ constexpr bool iswordstart(int ch) noexcept {
 	return IsAlphaNumeric(ch) || ch == '_';
 }
 
+// isoperator() excludes following eight punctuation: '"', '#', '$', '\'', '@', '\\', '_', '`'
 constexpr bool isoperator(int ch) noexcept {
 	if (IsAlphaNumeric(ch))
 		return false;
