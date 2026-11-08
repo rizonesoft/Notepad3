@@ -329,7 +329,7 @@ int main(int argc, char** argv)
     }
     if (argc > 1) {
         for (const char* endian : {"le", "be"}) {
-            std::string path = std::string(argv[1]) + "\\test_utf16_" + endian + "_bom_no_bom.txt";
+            std::string path = std::string(argv[1]) + "\\test_utf16_" + endian + "_no_bom.txt";
             std::ifstream file(path, std::ios::binary);
             Check(file.is_open(), path.c_str());
             std::string bytes((std::istreambuf_iterator<char>(file)), {});
