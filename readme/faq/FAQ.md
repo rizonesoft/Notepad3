@@ -24,7 +24,7 @@ A fast, lightweight, Scintilla/Lexilla-based text editor for Windows. Notepad3 i
 Notepad3 keeps the small footprint and most of the Notepad2 shortcut set, while adding plenty of new functionality on top of Notepad2-mod's code folding, bookmarks, mark-all-occurrences, and word auto-completion. The differences you're most likely to notice:
 
 - **Modern regex engine.** Find/Replace uses **PCRE2** (full Perl-compatible regex) instead of Scintilla's basic subset — multi-line search, lookarounds, named groups, and Unicode all work.
-- **More languages.** Over 55 syntax lexers, including AutoHotkey, AutoIt3, AviSynth, Awk, CMake, CoffeeScript, CSV, D, Dart, Go, JSON, Julia, Kotlin, LaTeX, Lua, Markdown, MATLAB, Nim, NSIS, R, Registry, Ruby, Rust, SystemVerilog, Tcl, TOML, VHDL, Verilog, YAML, and more.
+- **More languages.** Over 55 syntax lexers, including ANSYS APDL, AutoHotkey, AutoIt3, AviSynth, Awk, CMake, CoffeeScript, CSV, D, Dart, Go, JSON, Julia, Kotlin, LaTeX, Lua, Markdown, MATLAB, Nim, NSIS, R, Registry, Ruby, Rust, SystemVerilog, Tcl, TOML, VHDL, Verilog, YAML, and more.
 - **Better encoding handling.** Automatic detection via [uchardet](https://www.freedesktop.org/wiki/Software/uchardet/), plus a much wider range of supported code pages.
 - **Dark mode** and high-DPI awareness, with crisp toolbar icons at every scale factor.
 - **Built-in AES-256 encryption** for sensitive files (with an optional command-line companion).

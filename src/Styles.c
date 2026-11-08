@@ -51,9 +51,8 @@ extern COLORREF  g_colorCustom[16];
 
 // ----------------------------------------------------------------------------
 
-// This array holds all the lexers...
-// Don't forget to change the number of the lexer for HTML and XML
-// in Notepad2.c ParseCommandLine() if you change this array!
+// Array positions are used by saved DefaultScheme values and numeric lexer selection.
+// Append new lexers to preserve existing indices; dialogs sort their displayed entries separately.
 static PEDITLEXER g_pLexArray[] = {
     &lexStandard,      // Default Text
     &lexStandard2nd,   // 2nd Default Text
@@ -79,7 +78,6 @@ static PEDITLEXER g_pLexArray[] = {
     &lexDart,          // Dart Source Code
     &lexDIFF,          // Diff Files
     &lexFortran,       // Fortran F90+
-    //&lexF77,           // Fortran F77
     &lexGo,            // Go Source Code
     &lexINNO,          // Inno Setup Script
     &lexJAVA,          // Java Source Code
@@ -117,7 +115,7 @@ static PEDITLEXER g_pLexArray[] = {
     &lexHTML,          // Web Source Code
     &lexXML,           // XML Document
     &lexYAML,          // YAML
-    &lexAPDL,          // ANSYS APDL (append to preserve saved lexer indices)
+    &lexAPDL,          // ANSYS APDL
 };
 
 int Style_NumOfLexers() {
@@ -4825,6 +4823,69 @@ void Style_GetLexerDisplayName(PEDITLEXER pLexer, LPWSTR lpszName, int cchName)
     }
 }
 
+static int _GetLexerIndex(PEDITLEXER pLexer)
+{
+    for (int i = 0; i < COUNTOF(g_pLexArray); ++i) {
+        if (g_pLexArray[i] == pLexer) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+static int CALLBACK _CompareLexersByDisplayName(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
+{
+    UNREFERENCED_PARAMETER(lParamSort);
+
+    PEDITLEXER const pLexer1 = (PEDITLEXER)lParam1;
+    PEDITLEXER const pLexer2 = (PEDITLEXER)lParam2;
+    if (pLexer1 == pLexer2) {
+        return 0;
+    }
+
+    // Keep the two default schemes and Pure Text at the top in their existing order.
+    for (int i = 0; i < 3; ++i) {
+        if (pLexer1 == g_pLexArray[i]) {
+            return -1;
+        }
+        if (pLexer2 == g_pLexArray[i]) {
+            return 1;
+        }
+    }
+
+    WCHAR name1[MIDSZ_BUFFER] = { L'\0' };
+    WCHAR name2[MIDSZ_BUFFER] = { L'\0' };
+    Style_GetLexerDisplayName(pLexer1, name1, COUNTOF(name1));
+    Style_GetLexerDisplayName(pLexer2, name2, COUNTOF(name2));
+
+    int const cmp = StrCmpIW(name1, name2);
+    return (cmp != 0) ? cmp : _GetLexerIndex(pLexer1) - _GetLexerIndex(pLexer2);
+}
+
+static HTREEITEM _FindLexerTreeItem(HWND hwndTV, PEDITLEXER pLexer)
+{
+    for (HTREEITEM hItem = TreeView_GetRoot(hwndTV); hItem; hItem = TreeView_GetNextSibling(hwndTV, hItem)) {
+        TVITEM tvi = { 0 };
+        tvi.mask = TVIF_PARAM;
+        tvi.hItem = hItem;
+        if (TreeView_GetItem(hwndTV, &tvi) && ((PEDITLEXER)tvi.lParam == pLexer)) {
+            return hItem;
+        }
+    }
+    return NULL;
+}
+
+static PEDITLEXER _GetListViewLexer(HWND hwndLV, int iItem)
+{
+    if (iItem < 0) {
+        return NULL;
+    }
+    LVITEM lvi = { 0 };
+    lvi.mask = LVIF_PARAM;
+    lvi.iItem = iItem;
+    return ListView_GetItem(hwndLV, &lvi) ? (PEDITLEXER)lvi.lParam : NULL;
+}
+
 
 //=============================================================================
 //
@@ -5111,14 +5172,7 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                                       flagIconSize | SHGFI_SYSICONINDEX | SHGFI_USEFILEATTRIBUTES),
                               TVSIL_NORMAL);
 
-        // findlexer
-        int found = -1;
-        for (int i = 0; i < COUNTOF(g_pLexArray); ++i) {
-            if (g_pLexArray[i] == s_pLexCurrent) {
-                found = i;
-                break;
-            }
-        }
+        int const found = _GetLexerIndex(s_pLexCurrent);
 
         // Build lexer tree view
         HTREEITEM hCurrentTVLex = NULL;
@@ -5129,11 +5183,11 @@ INT_PTR CALLBACK Style_CustomizeSchemesDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                 Style_AddLexerToTreeView(hwndTV, g_pLexArray[i]);
             }
         }
+        TV_SORTCB tvSort = { NULL, _CompareLexersByDisplayName, 0 };
+        TreeView_SortChildrenCB(hwndTV, &tvSort, FALSE);
         if (!hCurrentTVLex) {
-            hCurrentTVLex = TreeView_GetRoot(hwndTV);
-            if (Style_GetUse2ndDefault()) {
-                hCurrentTVLex = TreeView_GetNextSibling(hwndTV, hCurrentTVLex);
-            }
+            PEDITLEXER const pDefaultTextLexer = Style_GetUse2ndDefault() ? &lexStandard2nd : &lexStandard;
+            hCurrentTVLex = _FindLexerTreeItem(hwndTV, pDefaultTextLexer);
         }
         TreeView_Select(hwndTV, hCurrentTVLex, TVGN_CARET);
         TreeView_Expand(hwndTV, hCurrentTVLex, TVE_EXPAND);
@@ -5518,15 +5572,12 @@ CASE_WM_CTLCOLOR_SET:
         switch (LOWORD(wParam)) {
         case IDC_SETCURLEXERTV: {
             // find current lexer's tree entry
-            HTREEITEM hCurrentTVLex = TreeView_GetRoot(hwndTV);
-            for (int i = 0; i < COUNTOF(g_pLexArray); ++i) {
-                if (g_pLexArray[i] == s_pLexCurrent) {
-                    break;
-                }
-                hCurrentTVLex = TreeView_GetNextSibling(hwndTV, hCurrentTVLex); // next
-            }
             if (s_pLexCurrent == pCurrentLexer) {
                 break;    // no change
+            }
+            HTREEITEM hCurrentTVLex = _FindLexerTreeItem(hwndTV, s_pLexCurrent);
+            if (!hCurrentTVLex) {
+                break;
             }
 
             // collaps current node
@@ -5773,7 +5824,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
 
     static HWND hwndLV = NULL;
 
-    static int  iInternalDefault = 0;
+    static PEDITLEXER pDefaultLexer = NULL;
     static PEDITLEXER* pSelectedLexer = NULL;
 
 
@@ -5781,6 +5832,7 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
     case WM_INITDIALOG: {
 
         pSelectedLexer = (PEDITLEXER*)lParam;
+        pDefaultLexer = GetDefaultLexer();
 
         SetDialogIconNP3(hwnd);
         InitWindowCommon(hwnd, true);
@@ -5824,25 +5876,21 @@ INT_PTR CALLBACK Style_SelectLexerDlgProc(HWND hwnd,UINT umsg,WPARAM wParam,LPAR
         for (int i = 0; i < COUNTOF(g_pLexArray); i++) {
             Style_AddLexerToListView(hwndLV, g_pLexArray[i]);
         }
+        ListView_SortItems(hwndLV, _CompareLexersByDisplayName, 0);
         ListView_SetColumnWidth(hwndLV,0,LVSCW_AUTOSIZE_USEHEADER);
 
         // Select current lexer
         int lvItems = ListView_GetItemCount(hwndLV);
-        LVITEM lvi = { 0 };
-        lvi.mask = LVIF_PARAM;
         for (int i = 0; i < lvItems; i++) {
-            lvi.iItem = i;
-            ListView_GetItem(hwndLV,&lvi);
-
-            if (((PEDITLEXER)lvi.lParam)->resID == (*pSelectedLexer)->resID) {
+            PEDITLEXER const pLexer = _GetListViewLexer(hwndLV, i);
+            if (pLexer && (pLexer->resID == (*pSelectedLexer)->resID)) {
                 ListView_SetItemState(hwndLV,i,LVIS_FOCUSED|LVIS_SELECTED,LVIS_FOCUSED|LVIS_SELECTED);
                 ListView_EnsureVisible(hwndLV,i,false);
-                CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, SetBtn(s_iDefaultLexer == i));
+                CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, SetBtn(pLexer == pDefaultLexer));
                 break;
             }
         }
 
-        iInternalDefault = s_iDefaultLexer;
         CheckDlgButton(hwnd,IDC_AUTOSELECT, SetBtn(s_bAutoSelect));
 
         CenterDlgInParent(hwnd, false);
@@ -5925,7 +5973,9 @@ CASE_WM_CTLCOLOR_SET:
             case LVN_ITEMCHANGED:
             case LVN_DELETEITEM: {
                 int i = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
-                CheckDlgButton(hwnd, IDC_DEFAULTSCHEME, SetBtn(iInternalDefault == i));
+                PEDITLEXER const pSelected = _GetListViewLexer(hwndLV, i);
+                CheckDlgButton(hwnd, IDC_DEFAULTSCHEME,
+                               SetBtn(pSelected && (pSelected == pDefaultLexer)));
                 DialogEnableControl(hwnd, IDC_DEFAULTSCHEME, i != -1);
                 DialogEnableControl(hwnd, IDOK, i != -1);
             }
@@ -5940,20 +5990,21 @@ CASE_WM_CTLCOLOR_SET:
         switch (LOWORD(wParam)) {
         case IDC_DEFAULTSCHEME:
             if (IsButtonChecked(hwnd, IDC_DEFAULTSCHEME)) {
-                iInternalDefault = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
+                int const iSelected = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
+                PEDITLEXER const pSelected = _GetListViewLexer(hwndLV, iSelected);
+                pDefaultLexer = pSelected ? pSelected : &lexStandard;
             } else {
-                iInternalDefault = 0;
+                pDefaultLexer = &lexStandard;
             }
             break;
 
 
         case IDOK: {
-            LVITEM lvi = {0};
-            lvi.mask = LVIF_PARAM;
-            lvi.iItem = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
-            if (ListView_GetItem(hwndLV, &lvi)) {
-                *pSelectedLexer = (PEDITLEXER)lvi.lParam;
-                s_iDefaultLexer = iInternalDefault;
+            int const iSelected = ListView_GetNextItem(hwndLV, -1, LVNI_ALL | LVNI_SELECTED);
+            PEDITLEXER const pSelected = _GetListViewLexer(hwndLV, iSelected);
+            if (pSelected) {
+                *pSelectedLexer = pSelected;
+                s_iDefaultLexer = _GetLexerIndex(pDefaultLexer);
                 s_bAutoSelect = IsButtonChecked(hwnd, IDC_AUTOSELECT);
                 //@@@??? Flags.bHugeFileLoadState = false;  // user choice
                 EndDialog(hwnd,IDOK);

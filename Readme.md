@@ -40,7 +40,7 @@ Notepad3 is a free, open-source text editor with syntax highlighting for Windows
 ### Syntax Highlighting
 Over 55 languages supported, including:
 
-> ANSI Art, Apache Config, Assembly, AutoHotkey, AutoIt3, AviSynth, Awk, Batch, C/C++, C#, CMake, CoffeeScript, CSS, CSV, D, Dart, Diff, F77/Fortran, Go, HTML/XML, Java, JavaScript, JSON, Julia, Kotlin, KiXtart, LaTeX, Lua, Makefiles, Markdown, MATLAB, Nim, NSIS, Pascal, Perl, PHP, PowerShell, Python, R/S-Plus, Registry, Resource Script, Ruby, Rust, Shell Script, SQL, SystemVerilog, Tcl, TOML, VBScript, VHDL, Verilog, Visual Basic, YAML, and more.
+> ANSI Art, ANSYS APDL, Apache Config, Assembly, AutoHotkey, AutoIt3, AviSynth, Awk, Batch, C/C++, C#, CMake, CoffeeScript, CSS, CSV, D, Dart, Diff, F77/Fortran, Go, HTML/XML, Java, JavaScript, JSON, Julia, Kotlin, KiXtart, LaTeX, Lua, Makefiles, Markdown, MATLAB, Nim, NSIS, Pascal, Perl, PHP, PowerShell, Python, R/S-Plus, Registry, Resource Script, Ruby, Rust, Shell Script, SQL, SystemVerilog, Tcl, TOML, VBScript, VHDL, Verilog, Visual Basic, YAML, and more.
 
 ### File Handling
 - **[AES-256 Rijndael](readme/encryption/Encryption.md)** encryption/decryption (in-app and command-line batch tool)

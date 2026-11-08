@@ -1811,7 +1811,7 @@ bool PTHAPI Path_CreateFavLnk(LPCWSTR lpszLinkName, const HPATHL hTargetPth, con
 //
 //  Path_CreateDeskLnk()
 //
-//  Modified to create a desktop link to Notepad2
+//  Modified to create a desktop link to Notepad3
 //
 bool PTHAPI Path_CreateDeskLnk(const HPATHL hDocumentPath, LPCWSTR pszDescription)
 {
