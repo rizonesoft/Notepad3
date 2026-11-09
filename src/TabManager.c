@@ -28,6 +28,7 @@
 #include <shellapi.h>
 #include <shlwapi.h>
 #include <strsafe.h>
+#include <stdio.h>
 
 #ifdef D_NP3_WIN10_DARK_MODE
 #include "DarkMode/DarkMode.h"
@@ -45,6 +46,16 @@ TabDoc    g_Tabs[MAX_TABS];
 //=============================================================================
 // Internal Helpers
 //=============================================================================
+
+static void _TraceStep(const char* pszStep)
+{
+    FILE* pFile = NULL;
+    if (_wfopen_s(&pFile, L"C:\\Users\\Administrator\\Documents\\Trae-CN\\temp_20261109_01\\tab_trace.log", L"a") == 0 && pFile) {
+        fprintf(pFile, "%s\n", pszStep);
+        fflush(pFile);
+        fclose(pFile);
+    }
+}
 
 static void _BuildTabText(TabDoc* pTab, int nUntitledIndex)
 {
@@ -314,7 +325,9 @@ void TabManager_SwitchToTab(HWND hwndMain, int nIndex)
 
     TabDoc* pNewTab = &g_Tabs[nIndex];
 
+    _TraceStep("S1:switch-entry");
     SendMessage(Globals.hwndEdit, SCI_SETDOCPOINTER, 0, (LPARAM)pNewTab->pDocPointer);
+    _TraceStep("S2:doc-set");
 
     g_pActiveTab = pNewTab;
 
@@ -323,17 +336,24 @@ void TabManager_SwitchToTab(HWND hwndMain, int nIndex)
     } else {
         Path_Empty(Paths.CurrentFile, false);
     }
+    _TraceStep("S3:path");
 
     Encoding_Current(pNewTab->iEncoding);
     Globals.fvCurFile = pNewTab->fvFileVars;
+    _TraceStep("S4:encoding");
 
     TabCtrl_SetCurSel(g_hwndTabControl, nIndex);
+    _TraceStep("S5:cursel");
 
     if (hwndMain) {
         UpdateTitlebar(hwndMain);
+        _TraceStep("S6:title");
         UpdateStatusbar(true);
+        _TraceStep("S7:status");
         UpdateSaveSettingsCmds();
+        _TraceStep("S8:savecmds");
     }
+    _TraceStep("S9:switch-done");
 }
 
 //=============================================================================
@@ -395,6 +415,7 @@ LRESULT TabManager_HandleNotify(HWND hwndMain, WPARAM wParam, LPARAM lParam)
         return FALSE;
 
     case TCN_SELCHANGE: {
+        _TraceStep("N1:selchange");
         int nIndex = TabCtrl_GetCurSel(g_hwndTabControl);
         if (nIndex >= 0 && nIndex < g_nTabCount) {
             if (g_pActiveTab) {
@@ -403,6 +424,7 @@ LRESULT TabManager_HandleNotify(HWND hwndMain, WPARAM wParam, LPARAM lParam)
             }
             TabManager_SwitchToTab(hwndMain, nIndex);
         }
+        _TraceStep("N2:selchange-done");
         return 0;
     }
     }
