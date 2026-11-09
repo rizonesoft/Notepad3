@@ -209,10 +209,10 @@ BEGIN
             MENUITEM "&Ordina linee...\tAlt+O",                IDM_EDIT_SORTLINES
             MENUITEM "&Allinea linee...\tAlt+J",               IDM_EDIT_ALIGN
             MENUITEM SEPARATOR
-            MENUITEM "Colonna a capo...\tCtrl+Maiusc+W",      IDM_EDIT_COLUMNWRAP
+            MENUITEM "Colonna a capo...\tCtrl+Maiusc+W",       IDM_EDIT_COLUMNWRAP
             MENUITEM "Di&vidi linee\tCtrl+I",                  IDM_EDIT_SPLITLINES
             MENUITEM "U&nisci linee\tCtrl+J",                  IDM_EDIT_JOINLINES
-            MENUITEM "Fondi &linee\tCtrl+Alt+J",               IDM_EDIT_JOINLN_NOSP
+            MENUITEM "Unisci &linee\tCtrl+Alt+J",              IDM_EDIT_JOINLN_NOSP
             MENUITEM "Conserva i &paragrafi\tCtrl+Maiusc+J",   IDM_EDIT_JOINLINES_PARA
             MENUITEM SEPARATOR
             POPUP "Pulizia (&K)"
@@ -221,15 +221,15 @@ BEGIN
                 MENUITEM "Rimuo&vi linee doppie",                IDM_EDIT_REMOVEDUPLICATELINES
                 MENUITEM SEPARATOR
                 MENUITEM "U&nisci linee vuote\tAlt+Y",           IDM_EDIT_MERGEEMPTYLINES
-                MENUITEM "Unisci linee blan&k\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
+                MENUITEM "Unisci linee &vuote\tCtrl+Alt+Y",      IDM_EDIT_MERGEBLANKLINES
                 MENUITEM "&Rimuovi linee vuote\tAlt+R",          IDM_EDIT_REMOVEEMPTYLINES
                 MENUITEM "Rimu&ovi linee vuote\tCtrl+Alt+B",     IDM_EDIT_REMOVEBLANKLINES
                 MENUITEM SEPARATOR
                 MENUITEM "Riem&pi con spazi\tAlt+B",               IDM_EDIT_PADWITHSPACES
                 MENUITEM "R&imuovi primo carattere\tAlt+Z",        IDM_EDIT_STRIP1STCHAR
                 MENUITEM "Ri&muovi ultimo carattere\tAlt+U",       IDM_EDIT_STRIPLASTCHAR
-                MENUITEM "Rimuovi gli spazi a fine linea\tAlt+W",  IDM_EDIT_TRIMLINES
-                MENUITEM "Comprimi gli spazi\tCtrl+Alt+P",         IDM_EDIT_COMPRESS_BLANKS
+                MENUITEM "Rimuovi spazi a fine linea\tAlt+W",  IDM_EDIT_TRIMLINES
+                MENUITEM "Comprimi spazi\tCtrl+Alt+P",         IDM_EDIT_COMPRESS_BLANKS
             END
         END
         POPUP "Selezione && Cursore (&Z)"
@@ -271,7 +271,7 @@ BEGIN
             MENUITEM "Aumenta numero\tCtrl+Alt+NK+",                 CMD_INCREASENUM
             MENUITEM "Diminuisci numero\tCtrl+Alt+NK-",              CMD_DECREASENUM
             MENUITEM SEPARATOR
-            MENUITEM "&Apri cartella contenitore della selezione", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
+            MENUITEM "&Apri cartella contenitore selezione", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
             MENUITEM "Apri fi&le dalla selezione",                 IDM_EDIT_OPEN_FILE_FROM_SEL
         END
         POPUP "Co&nverti"
