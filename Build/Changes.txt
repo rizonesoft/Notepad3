@@ -36,13 +36,14 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 UTH - (UTH)ash provides a hash table for C structures
 
 
-Current BETA Version 7.26.1105.(build_#) (2026-11-05)
+Current BETA Version 7.26.1109.(build_#) (2026-11-09)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.1]- .
+[1109.1]- Add ANSYS APDL using the upstream Lexilla lexer (#6078).
 [1023.1]- Add recovery actions to the Open Recent File dialog (#6045).
 [1023.1]- docs: organize agent guidance into indexed references (#6044).
 
@@ -50,6 +51,9 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.1]- .
+[1109.1]- Reorganize Edit menu across locales and fix command enable states (#6088).
+[1109.1]- Document clipboard monitoring and startup behavior (#6087).
+[1109.1]- Update Scintilla (v5.6.9) (SCI) (LEX) (#6071).
 [1105.1]- Enhancements for AGENTS/docs system (#6076).
 [1105.1]- Update TinyExpr++ (v1.2.0) and adapt the C wrapper (TIN) (#6073).
 [1105.1]- Update  Lexilla (v5.5.5) (LEX) (#6071).
@@ -70,6 +74,10 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.1]- .
+[1109.1]- Reorganize Edit menu across locales and fix command enable states (#6088).
+[1109.1]- Sort scheme dialogs alphabetically while preserving lexer indics (#6086).
+[1109.1]- Keep default schemes first and add sorting regression tests (#6086).
+[1109.1]- Update Scintilla v5.6.9, Lexilla cleanup (SCI) (#6085).
 [1105.1]- Return a real HRESULT from Path_CreateDirectoryEx (#6076).
 [1105.1]- Keep UTF-16 encoding fixtures byte-exact (-text) (#6076).
 [1105.1]- Release clipboard on all paths, linear sort output; tidy search code in Edit.c (#6073).
@@ -95,9 +103,9 @@ REMOVED:
 --------------------------------------------------------
 CHANGES Versions in Tools or Libraries:
 --------------------------------------------------------
-[1005.1]- Update TinyExpr++ (TIN) version 1.2.0 (2026-09-13) (#6073).
-[1005.1]- Update Lexilla (LEX) Library version 5.5.5 (2026-10-31) (#6071).
-[1005.1]- Update Scintilla (SCI) Library version 5.6.8 (2026-10-31) (#6071).
+[1109.1]- Update Scintilla (SCI) Library version 5.6.9 (2026-11-02) (#6085).
+[1105.1]- Update TinyExpr++ (TIN) version 1.2.0 (2026-09-13) (#6073).
+[1105.1]- Update Lexilla (LEX) Library version 5.5.5 (2026-10-31) (#6071.
 [1012.1]- Update PCRE2 (PCR) Regex engine version 10.49 (2026-10-03) (#6013).
 [.411.1]- Update grepWin (GRE) version 2.1.12.1434 (2025-09-24) (#5635).
 [.306.1]- Update uthash (UTH) single header file version 2.3.0 (2021-02-25) (#5570).
