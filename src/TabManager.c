@@ -71,6 +71,18 @@ static void _RefreshTabControlItem(int nIndex)
     TabCtrl_SetItem(g_hwndTabControl, nIndex, &tci);
 }
 
+// Re-run the main window layout so that the tab bar is shown/hidden correctly
+static void _RelayoutMainWindow(HWND hwndMain)
+{
+    if (!hwndMain) return;
+
+    RECT rc;
+    if (!GetClientRect(hwndMain, &rc)) return;
+
+    SendMessage(hwndMain, WM_SIZE, (WPARAM)SIZE_RESTORED,
+                MAKELONG((WORD)(rc.right - rc.left), (WORD)(rc.bottom - rc.top)));
+}
+
 //=============================================================================
 // Initialization / Cleanup
 //=============================================================================
@@ -178,6 +190,7 @@ void TabManager_RegisterInitialTab(HWND hwndMain)
     g_pActiveTab = pTab;
 
     ShowWindow(g_hwndTabControl, SW_SHOW);
+    _RelayoutMainWindow(hwndMain);
 }
 
 //=============================================================================
@@ -218,6 +231,7 @@ TabDoc* TabManager_AddNewTab(HWND hwndMain)
     TabManager_SwitchToTab(hwndMain, nIndex);
 
     ShowWindow(g_hwndTabControl, SW_SHOW);
+    _RelayoutMainWindow(hwndMain);
 
     return pTab;
 }
@@ -254,6 +268,12 @@ bool TabManager_CloseTab(int nIndex)
     g_nTabCount--;
 
     if (g_nTabCount == 0) {
+        // Detach from the released document: Scintilla creates a fresh one
+        if (Globals.hwndEdit) {
+            SendMessage(Globals.hwndEdit, SCI_SETDOCPOINTER, 0, 0);
+        }
+        ShowWindow(g_hwndTabControl, SW_HIDE);
+        _RelayoutMainWindow(Globals.hwndMain);
         return true;
     } else {
         int nSwitchIndex = nIndex;

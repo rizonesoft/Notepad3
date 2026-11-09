@@ -338,6 +338,12 @@ void SetSaveDone()
     // Multi-Tab: Clear modified flag on active tab
     if (g_pActiveTab) {
         g_pActiveTab->bModified = false;
+        if (g_pActiveTab->hFilePath) {
+            Path_Release(g_pActiveTab->hFilePath);
+        }
+        g_pActiveTab->hFilePath = Path_IsNotEmpty(Paths.CurrentFile) ? Path_Copy(Paths.CurrentFile) : NULL;
+        g_pActiveTab->fvFileVars = Globals.fvCurFile;
+        g_pActiveTab->iEncoding = Encoding_Current(-1);
         TabManager_UpdateActiveTabText();
     }
 }
@@ -5475,7 +5481,30 @@ static bool _HandleFileCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPar
         FileLoadFlags fLoadFlags = FLF_None;
         fLoadFlags |= Settings.SkipUnicodeDetection ? FLF_SkipUnicodeDetect : 0;
         fLoadFlags |= Settings.SkipANSICodePageDetection ? FLF_SkipANSICPDetection : 0;
-        FileLoad(hfile_pth, fLoadFlags, 0, 0);
+
+        // Multi-Tab: keep the current document and open the file in a new tab
+        bool const bNewTab = (g_pActiveTab != NULL) &&
+                             (Path_IsNotEmpty(Paths.CurrentFile) || !Sci_IsDocEmpty()) &&
+                             (TabManager_AddNewTab(Globals.hwndMain) != NULL);
+
+        if (FileLoad(hfile_pth, fLoadFlags, 0, 0)) {
+            int const nTabIdx = TabManager_GetActiveTabIndex();
+            TabDoc* const pTab = TabManager_GetTab(nTabIdx);
+            if (pTab) {
+                if (pTab->hFilePath) {
+                    Path_Release(pTab->hFilePath);
+                }
+                pTab->hFilePath = Path_Copy(Paths.CurrentFile);
+                pTab->fvFileVars = Globals.fvCurFile;
+                pTab->iEncoding = Encoding_Current(-1);
+                TabManager_UpdateTabText(nTabIdx);
+            }
+        }
+        else if (bNewTab && Sci_IsDocEmpty()) {
+            // Nothing was loaded (dialog cancelled) - drop the unused tab
+            TabManager_CloseTab(TabManager_GetActiveTabIndex());
+        }
+
         Path_Release(hfile_pth);
     } break;
 
