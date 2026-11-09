@@ -17,6 +17,7 @@
 #define _NP3_TABMANAGER_H_
 
 #include "TypeDefs.h"
+#include "SciCall.h"
 
 // Forward declarations
 typedef struct TabDoc TabDoc;
@@ -26,7 +27,7 @@ typedef struct TabDoc TabDoc;
 
 // Tab document structure - each tab represents one Scintilla document
 struct TabDoc {
-    void*       pDocPointer;       // Scintilla document pointer (SCI_CREATEDOCUMENT)
+    sptr_t      pDocPointer;       // Scintilla document pointer (SCI_CREATEDOCUMENT)
     HPATHL      hFilePath;         // File path (NULL for untitled)
     bool        bModified;         // Modified flag
     bool        bReadOnly;         // Read-only flag

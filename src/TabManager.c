@@ -21,8 +21,17 @@
 #include "SciCall.h"
 #include "Helpers.h"
 #include "PathLib.h"
+#include "Encoding.h"
+#include "Dialogs.h"
 
 #include <commctrl.h>
+#include <shellapi.h>
+#include <shlwapi.h>
+#include <strsafe.h>
+
+#ifdef D_NP3_WIN10_DARK_MODE
+#include "DarkMode/DarkMode.h"
+#endif
 
 //=============================================================================
 // Globals
@@ -42,11 +51,9 @@ static void _BuildTabText(TabDoc* pTab, int nUntitledIndex)
     if (!pTab) return;
 
     if (Path_IsNotEmpty(pTab->hFilePath)) {
-        HPATHL hName = Path_GetFileNameCopy(pTab->hFilePath);
-        const WCHAR* pName = hName ? Path_Get(hName) : NULL;
+        const WCHAR* pName = Path_FindFileName(pTab->hFilePath);
         StringCchPrintf(pTab->wchTabText, COUNTOF(pTab->wchTabText),
                         L"%s%s", pTab->bModified ? L"* " : L"", pName ? pName : L"Untitled");
-        Path_Release(hName);
     } else {
         StringCchPrintf(pTab->wchTabText, COUNTOF(pTab->wchTabText),
                         L"%sUntitled %i", pTab->bModified ? L"* " : L"", nUntitledIndex);
@@ -57,11 +64,11 @@ static void _RefreshTabControlItem(int nIndex)
 {
     if (!g_hwndTabControl || nIndex < 0 || nIndex >= g_nTabCount) return;
 
-    TCITEMW tci = { 0 };
+    TCITEM tci = { 0 };
     tci.mask = TCIF_TEXT;
     tci.pszText = g_Tabs[nIndex].wchTabText;
     tci.cchTextMax = (int)COUNTOF(g_Tabs[nIndex].wchTabText);
-    TabCtrl_SetItemW(g_hwndTabControl, nIndex, &tci);
+    TabCtrl_SetItem(g_hwndTabControl, nIndex, &tci);
 }
 
 //=============================================================================
@@ -117,7 +124,7 @@ void TabManager_Cleanup(HWND hwndMain)
             if (g_pActiveTab != &g_Tabs[i]) {
                 SendMessage(Globals.hwndEdit, SCI_SETDOCPOINTER, 0, (LPARAM)g_Tabs[i].pDocPointer);
             }
-            SendMessage(Globals.hwndEdit, SCI_RELEASEDOCUMENT, 0, (LPARAM)g_Tabs[i].pDocPointer);
+            SciCall_ReleaseDocument(g_Tabs[i].pDocPointer);
         }
         if (g_Tabs[i].hFilePath) {
             Path_Release(g_Tabs[i].hFilePath);
@@ -139,7 +146,7 @@ void TabManager_RegisterInitialTab(HWND hwndMain)
 
     if (!Globals.hwndEdit || !g_hwndTabControl) return;
 
-    void* pDoc = (void*)SendMessage(Globals.hwndEdit, SCI_GETDOCPOINTER, 0, 0);
+    sptr_t pDoc = (sptr_t)SendMessage(Globals.hwndEdit, SCI_GETDOCPOINTER, 0, 0);
     if (!pDoc) return;
 
     int nIndex = g_nTabCount;
@@ -160,12 +167,12 @@ void TabManager_RegisterInitialTab(HWND hwndMain)
 
     _BuildTabText(pTab, nIndex + 1);
 
-    TCITEMW tci = { 0 };
+    TCITEM tci = { 0 };
     tci.mask = TCIF_TEXT | TCIF_PARAM;
     tci.pszText = pTab->wchTabText;
     tci.cchTextMax = (int)COUNTOF(pTab->wchTabText);
     tci.lParam = (LPARAM)pTab;
-    TabCtrl_InsertItemW(g_hwndTabControl, nIndex, &tci);
+    TabCtrl_InsertItem(g_hwndTabControl, nIndex, &tci);
 
     g_nTabCount++;
     g_pActiveTab = pTab;
@@ -183,7 +190,7 @@ TabDoc* TabManager_AddNewTab(HWND hwndMain)
         return NULL;
     }
 
-    void* pNewDoc = (void*)SendMessage(Globals.hwndEdit, SCI_CREATEDOCUMENT, 0, SC_DOCUMENTOPTION_DEFAULT);
+    sptr_t pNewDoc = SciCall_CreateDocument(0, SC_DOCUMENTOPTION_DEFAULT);
     if (!pNewDoc) return NULL;
 
     int nIndex = g_nTabCount;
@@ -199,12 +206,12 @@ TabDoc* TabManager_AddNewTab(HWND hwndMain)
 
     _BuildTabText(pTab, nIndex + 1);
 
-    TCITEMW tci = { 0 };
+    TCITEM tci = { 0 };
     tci.mask = TCIF_TEXT | TCIF_PARAM;
     tci.pszText = pTab->wchTabText;
     tci.cchTextMax = (int)COUNTOF(pTab->wchTabText);
     tci.lParam = (LPARAM)pTab;
-    TabCtrl_InsertItemW(g_hwndTabControl, nIndex, &tci);
+    TabCtrl_InsertItem(g_hwndTabControl, nIndex, &tci);
 
     g_nTabCount++;
 
@@ -224,7 +231,7 @@ bool TabManager_CloseTab(int nIndex)
     TabDoc* pTab = &g_Tabs[nIndex];
 
     if (pTab->pDocPointer && Globals.hwndEdit) {
-        SendMessage(Globals.hwndEdit, SCI_RELEASEDOCUMENT, 0, (LPARAM)pTab->pDocPointer);
+        SciCall_ReleaseDocument(pTab->pDocPointer);
     }
 
     if (pTab->hFilePath) {
@@ -235,10 +242,10 @@ bool TabManager_CloseTab(int nIndex)
 
     for (int i = nIndex; i < g_nTabCount - 1; i++) {
         g_Tabs[i] = g_Tabs[i + 1];
-        TCITEMW tci = { 0 };
+        TCITEM tci = { 0 };
         tci.mask = TCIF_PARAM;
         tci.lParam = (LPARAM)&g_Tabs[i];
-        TabCtrl_SetItemW(g_hwndTabControl, i, &tci);
+        TabCtrl_SetItem(g_hwndTabControl, i, &tci);
     }
 
     TabDoc empty = { 0 };
