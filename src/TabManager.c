@@ -101,7 +101,7 @@ void TabManager_Init(HWND hwndMain, HINSTANCE hInstance)
 #endif
 
     for (int i = 0; i < MAX_TABS; i++) {
-        g_Tabs[i].pDocPointer = NULL;
+        g_Tabs[i].pDocPointer = 0;
         g_Tabs[i].hFilePath = NULL;
         g_Tabs[i].bModified = false;
         g_Tabs[i].bReadOnly = false;
