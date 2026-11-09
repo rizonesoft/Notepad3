@@ -334,6 +334,18 @@ void SetSaveDone()
 {
     s_NeedSavingForced = false;
     SetSavePoint();
+
+    // Multi-Tab: Clear modified flag on active tab
+    if (g_pActiveTab) {
+        g_pActiveTab->bModified = false;
+        if (g_pActiveTab->hFilePath) {
+            Path_Release(g_pActiveTab->hFilePath);
+        }
+        g_pActiveTab->hFilePath = Path_IsNotEmpty(Paths.CurrentFile) ? Path_Copy(Paths.CurrentFile) : NULL;
+        g_pActiveTab->fvFileVars = Globals.fvCurFile;
+        g_pActiveTab->iEncoding = Encoding_Current(-1);
+        TabManager_UpdateActiveTabText();
+    }
 }
 
 //==============================================================================
@@ -2521,6 +2533,9 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
 
     s_bInitAppDone = true;
 
+    // Register initial document as first tab (Multi-Tab support)
+    TabManager_RegisterInitialTab(Globals.hwndMain);
+
     return Globals.hwndMain;
 }
 
@@ -3184,6 +3199,9 @@ LRESULT MsgCreate(HWND hwnd, WPARAM wParam,LPARAM lParam)
     // Create Toolbar and Statusbar
     CreateBars(hwnd, hInstance);
 
+    // Create Tab Control (Multi-Tab support)
+    TabManager_Init(hwnd, hInstance);
+
     // Window Initialization
 
     (void)CreateWindowEx(
@@ -3658,6 +3676,9 @@ LRESULT MsgEndSession(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         // Remove tray icon in any case
         ShowNotifyIcon(hwnd, false);
 
+        // Clean up TabManager (Multi-Tab support) - release all Scintilla docs
+        TabManager_Cleanup(hwnd);
+
         //if (IS_VALID_HANDLE(s_hEvent)) {
         //    CloseHandle(s_hEvent);
         //}
@@ -3771,15 +3792,6 @@ LRESULT MsgThemeChanged(HWND hwnd, WPARAM wParam,LPARAM lParam)
 LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(wParam);
-    //switch (wParam) {
-    //case SIZE_MINIMIZED:
-    //    return FALSE;
-    //case SIZE_MAXIMIZED:
-    //case SIZE_RESTORED:
-    //    break;
-    //default:
-    //    break;
-    //}
 
     int x = 0;
     int y = 0;
@@ -3787,24 +3799,18 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
     int cy = GET_Y_LPARAM(lParam);
 
     if (Settings.ShowToolbar) {
-        //~SendMessage(Globals.hwndToolbar,WM_SIZE,0,0);
-        //~RECT rc;
-        //~GetWindowRect(Globals.hwndToolbar,&rc);
-        //~y = (rc.bottom - rc.top);
-        //~cy -= (rc.bottom - rc.top);
-
-        //~SendMessage(Globals.hwndToolbar,TB_GETITEMRECT,0,(LPARAM)&rc);
-
         SetWindowPos(Globals.hwndRebar, NULL, 0, 0, LOWORD(lParam), s_cyReBar, SWP_NOZORDER);
+        y = s_cyReBar + s_cyReBarFrame;
+        cy -= s_cyReBar + s_cyReBarFrame;
+    }
 
-        // the ReBar automatically sets the correct height
-        // calling SetWindowPos() with the height of one toolbar button
-        // causes the control not to temporarily use the whole client area
-        // and prevents flickering
-
-        //GetWindowRect(Globals.hwndRebar,&rc);
-        y = s_cyReBar + s_cyReBarFrame;    // define
-        cy -= s_cyReBar + s_cyReBarFrame;  // border
+    // Tab control height adjustment (Multi-Tab support)
+    int nTabH = 0;
+    if (g_hwndTabControl && IsWindowVisible(g_hwndTabControl)) {
+        nTabH = 28;  // Standard tab height
+        SetWindowPos(g_hwndTabControl, NULL, x, y, cx, nTabH, SWP_NOZORDER | SWP_NOACTIVATE);
+        y += nTabH;
+        cy -= nTabH;
     }
 
     if (Settings.ShowStatusbar) {
@@ -3829,7 +3835,6 @@ LRESULT MsgSize(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     UpdateToolbar_Now(hwnd);
     UpdateMargins(true);
-    //~UpdateUI(); //~ recursion
     
     return FALSE;
 }
@@ -5400,6 +5405,12 @@ static bool _HandleFileCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPar
     switch (iLoWParam) {
 
     case IDM_FILE_NEW: {
+        // Multi-Tab: Save current tab state before switching
+        if (g_pActiveTab) {
+            g_pActiveTab->fvFileVars = Globals.fvCurFile;
+            g_pActiveTab->iEncoding = Encoding_Current(-1);
+        }
+
         int  lineNum = -1;
         bool isDir   = false;
         HPATHL hsel  = _ResolveSelectionForOpen(&lineNum, &isDir);
@@ -5408,16 +5419,39 @@ static bool _HandleFileCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPar
         fLoadFlags |= Settings.SkipUnicodeDetection ? FLF_SkipUnicodeDetect : 0;
         fLoadFlags |= Settings.SkipANSICodePageDetection ? FLF_SkipANSICPDetection : 0;
 
+        // Create a new tab with a new Scintilla document (Multi-Tab support)
+        TabManager_AddNewTab(Globals.hwndMain);
+
         if (hsel && !isDir) {
             FileLoadFlags const fLoad = fLoadFlags & ~FLF_New;
             if (FileLoad(hsel, fLoad, 0, 0) && lineNum > 0) {
                 SciCall_PostMsg(SCI_GOTOLINE, (WPARAM)clampi(lineNum - 1, 0, INT_MAX), 0);
+            }
+            // Update tab with file path
+            int nTabIdx = TabManager_GetActiveTabIndex();
+            if (nTabIdx >= 0) {
+                TabDoc* pTab = TabManager_GetTab(nTabIdx);
+                if (pTab) {
+                    if (pTab->hFilePath) Path_Release(pTab->hFilePath);
+                    pTab->hFilePath = Path_Copy(hsel);
+                    TabManager_UpdateTabText(nTabIdx);
+                }
             }
         }
         else if (hsel && isDir) {
             FileLoadFlags const fLoad = fLoadFlags & ~FLF_New;
             if (OpenFileDlg(Globals.hwndMain, hsel, hsel)) {
                 FileLoad(hsel, fLoad, 0, 0);
+                // Update tab with file path
+                int nTabIdx = TabManager_GetActiveTabIndex();
+                if (nTabIdx >= 0) {
+                    TabDoc* pTab = TabManager_GetTab(nTabIdx);
+                    if (pTab) {
+                        if (pTab->hFilePath) Path_Release(pTab->hFilePath);
+                        pTab->hFilePath = Path_Copy(hsel);
+                        TabManager_UpdateTabText(nTabIdx);
+                    }
+                }
             }
         }
         else {
@@ -5429,6 +5463,16 @@ static bool _HandleFileCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPar
         if (hsel) {
             Path_Release(hsel);
         }
+
+        // Update encoding state for new tab
+        int nTabIdx = TabManager_GetActiveTabIndex();
+        if (nTabIdx >= 0) {
+            TabDoc* pTab = TabManager_GetTab(nTabIdx);
+            if (pTab) {
+                pTab->fvFileVars = Globals.fvCurFile;
+                pTab->iEncoding = Encoding_Current(-1);
+            }
+        }
     } break;
 
 
@@ -5437,7 +5481,30 @@ static bool _HandleFileCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPar
         FileLoadFlags fLoadFlags = FLF_None;
         fLoadFlags |= Settings.SkipUnicodeDetection ? FLF_SkipUnicodeDetect : 0;
         fLoadFlags |= Settings.SkipANSICodePageDetection ? FLF_SkipANSICPDetection : 0;
-        FileLoad(hfile_pth, fLoadFlags, 0, 0);
+
+        // Multi-Tab: keep the current document and open the file in a new tab
+        bool const bNewTab = (g_pActiveTab != NULL) &&
+                             (Path_IsNotEmpty(Paths.CurrentFile) || !Sci_IsDocEmpty()) &&
+                             (TabManager_AddNewTab(Globals.hwndMain) != NULL);
+
+        if (FileLoad(hfile_pth, fLoadFlags, 0, 0)) {
+            int const nTabIdx = TabManager_GetActiveTabIndex();
+            TabDoc* const pTab = TabManager_GetTab(nTabIdx);
+            if (pTab) {
+                if (pTab->hFilePath) {
+                    Path_Release(pTab->hFilePath);
+                }
+                pTab->hFilePath = Path_Copy(Paths.CurrentFile);
+                pTab->fvFileVars = Globals.fvCurFile;
+                pTab->iEncoding = Encoding_Current(-1);
+                TabManager_UpdateTabText(nTabIdx);
+            }
+        }
+        else if (bNewTab && Sci_IsDocEmpty()) {
+            // Nothing was loaded (dialog cancelled) - drop the unused tab
+            TabManager_CloseTab(TabManager_GetActiveTabIndex());
+        }
+
         Path_Release(hfile_pth);
     } break;
 
@@ -9933,6 +10000,11 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
                     s_bInMultiEditMode = false;
                 }
             }
+            // Multi-Tab: Update modified indicator on active tab
+            if (g_pActiveTab) {
+                g_pActiveTab->bModified = true;
+                TabManager_UpdateActiveTabText();
+            }
         }
         return resMN;
     }
@@ -10243,6 +10315,11 @@ LRESULT MsgNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     const LPNMHDR pnmh = (LPNMHDR)scn;
     switch (pnmh->idFrom) {
+
+    case IDC_TAB:
+        // Forward tab control notifications to TabManager (Multi-Tab support)
+        result = TabManager_HandleNotify(hwnd, wParam, lParam);
+        break;
 
     case IDC_EDIT: {
         bool bModified = false;
