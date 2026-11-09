@@ -19,6 +19,7 @@
 
 #include "TypeDefs.h"
 #include "SciCall.h"
+#include "TabManager.h"    // Multi-tab document manager
 
 //==== Main Window ============================================================
 
