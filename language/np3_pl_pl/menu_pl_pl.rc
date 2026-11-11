@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "Podział operacji cofania przy przenoszeniu wierszy", IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "Wytnij\tCtrl+X",                       IDM_EDIT_CUT
-        MENUITEM "&Kopiuj\tCtrl+C",                      IDM_EDIT_COPY
-        MENUITEM "Kopiuj wszystko\tAlt+C",               IDM_EDIT_COPYALL
-        MENUITEM "Dodaj do schowka\tCtrl+E",             IDM_EDIT_COPYADD
-        MENUITEM "Kopiuj jako RT&F",                     IDM_EDIT_COPYRTF
-        MENUITEM "Kopiuj&GUID do Schowka\tCtrl+Shift+.",        IDM_EDIT_INSERT_GUID
+        POPUP "&Kopiuj..."
+        BEGIN
+            MENUITEM "&Kopiuj\tCtrl+C",                      IDM_EDIT_COPY
+            MENUITEM "Kopiuj wszystko\tAlt+C",               IDM_EDIT_COPYALL
+            MENUITEM "Dodaj do schowka\tCtrl+E",             IDM_EDIT_COPYADD
+            MENUITEM "Kopiuj jako RT&F",                     IDM_EDIT_COPYRTF
+            MENUITEM "Kopiuj&GUID do Schowka\tCtrl+Shift+.",        IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "&Wklej\tCtrl+V",                       IDM_EDIT_PASTE
         MENUITEM "Zamień\tCtrl+K",                       IDM_EDIT_SWAP
         MENUITEM "&Zaznacz wszystko\tCtrl+A",            IDM_EDIT_SELECTALL

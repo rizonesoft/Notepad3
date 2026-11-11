@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "On&gedaan maken bij regeleinde afbreken",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "Kni&ppen\tCtrl+X",                                IDM_EDIT_CUT
-        MENUITEM "&Kopiëren\tCtrl+C",                               IDM_EDIT_COPY
-        MENUITEM "&Alles kopiëren\tAlt+C",                          IDM_EDIT_COPYALL
-        MENUITEM "Kopie &toevoegen\tCtrl+E",                        IDM_EDIT_COPYADD
-        MENUITEM "Kopiëren als RT&F",                               IDM_EDIT_COPYRTF
-        MENUITEM "GUID naar klembord kopi&ëren\tCtrl+Shift+.",  IDM_EDIT_INSERT_GUID
+        POPUP "&Kopiëren..."
+        BEGIN
+            MENUITEM "&Kopiëren\tCtrl+C",                               IDM_EDIT_COPY
+            MENUITEM "&Alles kopiëren\tAlt+C",                          IDM_EDIT_COPYALL
+            MENUITEM "Kopie &toevoegen\tCtrl+E",                        IDM_EDIT_COPYADD
+            MENUITEM "Kopiëren als RT&F",                               IDM_EDIT_COPYRTF
+            MENUITEM "GUID naar klembord kopi&ëren\tCtrl+Shift+.",  IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "P&lakken\tCtrl+V",                                IDM_EDIT_PASTE
         MENUITEM "&Verwisselen\tCtrl+K",                            IDM_EDIT_SWAP
         MENUITEM "Alles &selecteren\tCtrl+A",                       IDM_EDIT_SELECTALL

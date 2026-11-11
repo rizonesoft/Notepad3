@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "&Separa transazione annulla azione per ogni linea",            IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "&Taglia\tCtrl+X",                       IDM_EDIT_CUT
-        MENUITEM "C&opia\tCtrl+C",                        IDM_EDIT_COPY
-        MENUITEM "Copia t&utto\tAlt+C",                   IDM_EDIT_COPYALL
-        MENUITEM "Copia aggiungi\tCtrl+E",                IDM_EDIT_COPYADD
-        MENUITEM "Copia come RT&F",                       IDM_EDIT_COPYRTF
-        MENUITEM "Copia &GUID negli Appunti\tCtrl+Maiusc+.",     IDM_EDIT_INSERT_GUID
+        POPUP "C&opia..."
+        BEGIN
+            MENUITEM "C&opia\tCtrl+C",                        IDM_EDIT_COPY
+            MENUITEM "Copia t&utto\tAlt+C",                   IDM_EDIT_COPYALL
+            MENUITEM "Copia aggiungi\tCtrl+E",                IDM_EDIT_COPYADD
+            MENUITEM "Copia come RT&F",                       IDM_EDIT_COPYRTF
+            MENUITEM "Copia &GUID negli Appunti\tCtrl+Maiusc+.",     IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "In&colla\tCtrl+V",                      IDM_EDIT_PASTE
         MENUITEM "Scam&bia\tCtrl+K",                      IDM_EDIT_SWAP
         MENUITEM "S&eleziona tutto\tCtrl+A",              IDM_EDIT_SELECTALL

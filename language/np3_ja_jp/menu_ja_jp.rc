@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "「元に戻す」の履歴を改行で区切る(&H)",                IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "切り取り(&T)\tCtrl+X",                        IDM_EDIT_CUT
-        MENUITEM "コピー(&C)\tCtrl+C",                           IDM_EDIT_COPY
-        MENUITEM "すべてコピー(&A)\tAlt+C",                       IDM_EDIT_COPYALL
-        MENUITEM "クリップボード末尾に追加(&Y)\tCtrl+E",            IDM_EDIT_COPYADD
-        MENUITEM "Copy as RT&F",                        IDM_EDIT_COPYRTF
-        MENUITEM "GUIDをクリップボードにコピー(&G)\tCtrl+Shift+.",     IDM_EDIT_INSERT_GUID
+        POPUP "コピー...(&C)"
+        BEGIN
+            MENUITEM "コピー(&C)\tCtrl+C",                           IDM_EDIT_COPY
+            MENUITEM "すべてコピー(&A)\tAlt+C",                       IDM_EDIT_COPYALL
+            MENUITEM "クリップボード末尾に追加(&Y)\tCtrl+E",            IDM_EDIT_COPYADD
+            MENUITEM "Copy as RT&F",                        IDM_EDIT_COPYRTF
+            MENUITEM "GUIDをクリップボードにコピー(&G)\tCtrl+Shift+.",     IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "貼り付け(&P)\tCtrl+V",                        IDM_EDIT_PASTE
         MENUITEM "クリップボードと入替(&W)\tCtrl+K",                IDM_EDIT_SWAP
         MENUITEM "すべて選択(&S)\tCtrl+A",                      IDM_EDIT_SELECTALL

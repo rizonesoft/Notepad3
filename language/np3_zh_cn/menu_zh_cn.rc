@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "换行时重定撤销操作边界(&J)",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "剪切(&T)\tCtrl+X",                          IDM_EDIT_CUT
-        MENUITEM "复制(&C)\tCtrl+C",                          IDM_EDIT_COPY
-        MENUITEM "全部复制(&L)\tAlt+C",                       IDM_EDIT_COPYALL
-        MENUITEM "增量复制(&Y)\tCtrl+E",                      IDM_EDIT_COPYADD
-        MENUITEM "复制为 RTF(&F)",                            IDM_EDIT_COPYRTF
-        MENUITEM "生成 GUID 到剪贴板(&G)\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
+        POPUP "复制...(&C)"
+        BEGIN
+            MENUITEM "复制(&C)\tCtrl+C",                          IDM_EDIT_COPY
+            MENUITEM "全部复制(&L)\tAlt+C",                       IDM_EDIT_COPYALL
+            MENUITEM "增量复制(&Y)\tCtrl+E",                      IDM_EDIT_COPYADD
+            MENUITEM "复制为 RTF(&F)",                            IDM_EDIT_COPYRTF
+            MENUITEM "生成 GUID 到剪贴板(&G)\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "粘贴(&P)\tCtrl+V",                          IDM_EDIT_PASTE
         MENUITEM "与剪贴板交换(&W)\tCtrl+K",                  IDM_EDIT_SWAP
         MENUITEM "全选(&A)\tCtrl+A",                          IDM_EDIT_SELECTALL

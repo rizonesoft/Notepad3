@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "Pisahkan Ri&wayat Kembali pada Baris Baru",    IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "Poton&g\tCtrl+X",                  IDM_EDIT_CUT
-        MENUITEM "&Salin\tCtrl+C",                   IDM_EDIT_COPY
-        MENUITEM "Sali&n Semua\tAlt+C",              IDM_EDIT_COPYALL
-        MENUITEM "T&ambah ke Papan Klip\tCtrl+E",    IDM_EDIT_COPYADD
-        MENUITEM "Copy as RT&F",                     IDM_EDIT_COPYRTF
-        MENUITEM "Salin GUI&D ke Papan Klip\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
+        POPUP "&Salin..."
+        BEGIN
+            MENUITEM "&Salin\tCtrl+C",                   IDM_EDIT_COPY
+            MENUITEM "Sali&n Semua\tAlt+C",              IDM_EDIT_COPYALL
+            MENUITEM "T&ambah ke Papan Klip\tCtrl+E",    IDM_EDIT_COPYADD
+            MENUITEM "Copy as RT&F",                     IDM_EDIT_COPYRTF
+            MENUITEM "Salin GUI&D ke Papan Klip\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "Te&mpel\tCtrl+V",                  IDM_EDIT_PASTE
         MENUITEM "Tuka&r\tCtrl+K",                   IDM_EDIT_SWAP
         MENUITEM "Pi&lih Semua\tCtrl+A",             IDM_EDIT_SELECTALL

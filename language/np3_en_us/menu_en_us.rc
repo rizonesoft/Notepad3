@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "Split Undo Transaction at Line-Breaks (&H)",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "Cu&t\tCtrl+X",                IDM_EDIT_CUT
-        MENUITEM "&Copy\tCtrl+C",               IDM_EDIT_COPY
-        MENUITEM "Copy &All\tAlt+C",            IDM_EDIT_COPYALL
-        MENUITEM "Cop&y Add\tCtrl+E",           IDM_EDIT_COPYADD
-        MENUITEM "Copy as RT&F",                IDM_EDIT_COPYRTF
-        MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
+        POPUP "&Copy..."
+        BEGIN
+            MENUITEM "&Copy\tCtrl+C",               IDM_EDIT_COPY
+            MENUITEM "Copy &All\tAlt+C",            IDM_EDIT_COPYALL
+            MENUITEM "Cop&y Add\tCtrl+E",           IDM_EDIT_COPYADD
+            MENUITEM "Copy as RT&F",                IDM_EDIT_COPYRTF
+            MENUITEM "Copy &GUID to Clipboard\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "&Paste\tCtrl+V",              IDM_EDIT_PASTE
         MENUITEM "S&wap\tCtrl+K",               IDM_EDIT_SWAP
         MENUITEM "&Select All\tCtrl+A",         IDM_EDIT_SELECTALL

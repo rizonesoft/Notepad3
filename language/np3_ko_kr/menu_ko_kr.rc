@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "줄 바꿈에서 분할 실행 취소 처리(&M)",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "잘라내기(&T)\tCtrl+X",                IDM_EDIT_CUT
-        MENUITEM "복사(&C)\tCtrl+C",               IDM_EDIT_COPY
-        MENUITEM "모두 복사(&L)\tAlt+C",            IDM_EDIT_COPYALL
-        MENUITEM "복사 추가(&A)\tCtrl+E",           IDM_EDIT_COPYADD
-        MENUITEM "Copy as RT&F",                IDM_EDIT_COPYRTF
-        MENUITEM "GUID를 클립보드로 복사(&G)\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
+        POPUP "복사...(&C)"
+        BEGIN
+            MENUITEM "복사(&C)\tCtrl+C",               IDM_EDIT_COPY
+            MENUITEM "모두 복사(&L)\tAlt+C",            IDM_EDIT_COPYALL
+            MENUITEM "복사 추가(&A)\tCtrl+E",           IDM_EDIT_COPYADD
+            MENUITEM "Copy as RT&F",                IDM_EDIT_COPYRTF
+            MENUITEM "GUID를 클립보드로 복사(&G)\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "붙여넣기(&P)\tCtrl+V",              IDM_EDIT_PASTE
         MENUITEM "교환(&W)\tCtrl+K",               IDM_EDIT_SWAP
         MENUITEM "모두 선택(&S)\tCtrl+A",         IDM_EDIT_SELECTALL

@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "Visszavonás műveletek szétvágása sortöréseknél", IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "Kivá&gás\tCtrl+X",            IDM_EDIT_CUT
-        MENUITEM "&Másolás\tCtrl+C",            IDM_EDIT_COPY
-        MENUITEM "Mind m&ásolása\tAlt+C",       IDM_EDIT_COPYALL
-        MENUITEM "Vág&ólaphoz ad\tCtrl+E",      IDM_EDIT_COPYADD
-        MENUITEM "Másolás RT&F-ként",           IDM_EDIT_COPYRTF
-        MENUITEM "G&UID másolása a vágólapra\tCtrl+Shift+.",       IDM_EDIT_INSERT_GUID
+        POPUP "&Másolás..."
+        BEGIN
+            MENUITEM "&Másolás\tCtrl+C",            IDM_EDIT_COPY
+            MENUITEM "Mind m&ásolása\tAlt+C",       IDM_EDIT_COPYALL
+            MENUITEM "Vág&ólaphoz ad\tCtrl+E",      IDM_EDIT_COPYADD
+            MENUITEM "Másolás RT&F-ként",           IDM_EDIT_COPYRTF
+            MENUITEM "G&UID másolása a vágólapra\tCtrl+Shift+.",       IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "&Beillesztés\tCtrl+V",        IDM_EDIT_PASTE
         MENUITEM "&Csere\tCtrl+K",              IDM_EDIT_SWAP
         MENUITEM "Min&d kijelölése\tCtrl+A",    IDM_EDIT_SELECTALL

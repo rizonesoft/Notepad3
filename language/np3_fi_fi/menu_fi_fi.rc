@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "Jaa kumous&tapahtuma rivinvaihdon kohdalla",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "&Leikkaa\tCtrl+X",                 IDM_EDIT_CUT
-        MENUITEM "&Kopioi\tCtrl+C",                  IDM_EDIT_COPY
-        MENUITEM "Kopioi k&aikki\tAlt+C",            IDM_EDIT_COPYALL
-        MENUITEM "Kopioi lisä&ys\tCtrl+E",           IDM_EDIT_COPYADD
-        MENUITEM "Copy as RT&F",                     IDM_EDIT_COPYRTF
-        MENUITEM "Kopioi &GUID leikepöydälle\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
+        POPUP "&Kopioi..."
+        BEGIN
+            MENUITEM "&Kopioi\tCtrl+C",                  IDM_EDIT_COPY
+            MENUITEM "Kopioi k&aikki\tAlt+C",            IDM_EDIT_COPYALL
+            MENUITEM "Kopioi lisä&ys\tCtrl+E",           IDM_EDIT_COPYADD
+            MENUITEM "Copy as RT&F",                     IDM_EDIT_COPYRTF
+            MENUITEM "Kopioi &GUID leikepöydälle\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "Liit&ä\tCtrl+V",                   IDM_EDIT_PASTE
         MENUITEM "&Vaihda\tCtrl+K",                  IDM_EDIT_SWAP
         MENUITEM "Valit&se kaikki\tCtrl+A",          IDM_EDIT_SELECTALL

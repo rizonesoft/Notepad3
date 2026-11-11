@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "Neue Undo &Transaktion bei Zeilenumbruch",           IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "&Ausschneiden\tCtrl+X",                   IDM_EDIT_CUT
-        MENUITEM "&Kopieren\tCtrl+C",                       IDM_EDIT_COPY
-        MENUITEM "Alle&s kopieren\tAlt+C",                  IDM_EDIT_COPYALL
-        MENUITEM "Kopiere ans &Ende\tCtrl+E",               IDM_EDIT_COPYADD
-        MENUITEM "Als RT&F kopieren",                       IDM_EDIT_COPYRTF
-        MENUITEM "Kopiere &GUID in die Zwischenablage\tCtrl+Shift+.",  IDM_EDIT_INSERT_GUID
+        POPUP "&Kopieren..."
+        BEGIN
+            MENUITEM "&Kopieren\tCtrl+C",                       IDM_EDIT_COPY
+            MENUITEM "Alle&s kopieren\tAlt+C",                  IDM_EDIT_COPYALL
+            MENUITEM "Kopiere ans &Ende\tCtrl+E",               IDM_EDIT_COPYADD
+            MENUITEM "Als RT&F kopieren",                       IDM_EDIT_COPYRTF
+            MENUITEM "Kopiere &GUID in die Zwischenablage\tCtrl+Shift+.",  IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "E&infügen\tCtrl+V",                       IDM_EDIT_PASTE
         MENUITEM "A&uswahl <-> Zwischenablage\tCtrl+K",    IDM_EDIT_SWAP
         MENUITEM "Alles ausw&ählen\tCtrl+A",                IDM_EDIT_SELECTALL

@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "Dela ångra vid radslut",                      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "Klipp ut\tCtrl+X",                                IDM_EDIT_CUT
-        MENUITEM "Kopiera\tCtrl+C",                                 IDM_EDIT_COPY
-        MENUITEM "Kopiera allt\tAlt+C",                             IDM_EDIT_COPYALL
-        MENUITEM "Lägg till i urklipp\tCtrl+E",                       IDM_EDIT_COPYADD
-        MENUITEM "Kopiera som RT&F",                                      IDM_EDIT_COPYRTF
-        MENUITEM "Kopiera GUID till urklipp\tCtrl+Skift+.",     IDM_EDIT_INSERT_GUID
+        POPUP "Kopiera..."
+        BEGIN
+            MENUITEM "Kopiera\tCtrl+C",                                 IDM_EDIT_COPY
+            MENUITEM "Kopiera allt\tAlt+C",                             IDM_EDIT_COPYALL
+            MENUITEM "Lägg till i urklipp\tCtrl+E",                       IDM_EDIT_COPYADD
+            MENUITEM "Kopiera som RT&F",                                      IDM_EDIT_COPYRTF
+            MENUITEM "Kopiera GUID till urklipp\tCtrl+Skift+.",     IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "Klistra in\tCtrl+V",                              IDM_EDIT_PASTE
         MENUITEM "Byt\tCtrl+K",                                     IDM_EDIT_SWAP
         MENUITEM "Markera allt\tCtrl+A",                               IDM_EDIT_SELECTALL

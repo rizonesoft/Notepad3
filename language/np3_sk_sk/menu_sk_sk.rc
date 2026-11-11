@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "Rozdel&iť akciu Späť po zalomení riadku",        IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "V&ystrihnúť\tCtrl+X",                     IDM_EDIT_CUT
-        MENUITEM "&Kopírovať\tCtrl+C",                      IDM_EDIT_COPY
-        MENUITEM "K&opírovať všetko\tAlt+C",                IDM_EDIT_COPYALL
-        MENUITEM "Kopírov&ať pridané\tCtrl+E",              IDM_EDIT_COPYADD
-        MENUITEM "Copy as RT&F",                            IDM_EDIT_COPYRTF
-        MENUITEM "Kopírovať &GUID do schránky\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
+        POPUP "&Kopírovať..."
+        BEGIN
+            MENUITEM "&Kopírovať\tCtrl+C",                      IDM_EDIT_COPY
+            MENUITEM "K&opírovať všetko\tAlt+C",                IDM_EDIT_COPYALL
+            MENUITEM "Kopírov&ať pridané\tCtrl+E",              IDM_EDIT_COPYADD
+            MENUITEM "Copy as RT&F",                            IDM_EDIT_COPYRTF
+            MENUITEM "Kopírovať &GUID do schránky\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "&Vložiť\tCtrl+V",                         IDM_EDIT_PASTE
         MENUITEM "Zam&eniť\tCtrl+K",                        IDM_EDIT_SWAP
         MENUITEM "Vy&brať všetko\tCtrl+A",                  IDM_EDIT_SELECTALL

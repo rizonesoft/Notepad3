@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "Satır sonlarında geri alma i&şlemini ayır",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "&Kes\tCtrl+X",                                      IDM_EDIT_CUT
-        MENUITEM "K&opyala\tCtrl+C",                                  IDM_EDIT_COPY
-        MENUITEM "T&ümünü kopyala\tAlt+C",                            IDM_EDIT_COPYALL
-        MENUITEM "Tümünü y&apıştır\tCtrl+E",                          IDM_EDIT_COPYADD
-        MENUITEM "Copy as RT&F",                                      IDM_EDIT_COPYRTF
-        MENUITEM "G&UID değerini panoya kopyala\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
+        POPUP "K&opyala..."
+        BEGIN
+            MENUITEM "K&opyala\tCtrl+C",                                  IDM_EDIT_COPY
+            MENUITEM "T&ümünü kopyala\tAlt+C",                            IDM_EDIT_COPYALL
+            MENUITEM "Tümünü y&apıştır\tCtrl+E",                          IDM_EDIT_COPYADD
+            MENUITEM "Copy as RT&F",                                      IDM_EDIT_COPYRTF
+            MENUITEM "G&UID değerini panoya kopyala\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "Yap&ıştır\tCtrl+V",                                 IDM_EDIT_PASTE
         MENUITEM "De&ğiştir\tCtrl+K",                                 IDM_EDIT_SWAP
         MENUITEM "Tü&münü seç\tCtrl+A",                               IDM_EDIT_SELECTALL
