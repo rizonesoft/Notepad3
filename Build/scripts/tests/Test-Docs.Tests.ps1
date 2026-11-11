@@ -140,6 +140,8 @@ When to read: Topic
         throw "Shallow history case failed: $($output -join "`n")"
     }
     $passed++
+    Write-Fixture 'unexpected\AGENTS.md' '# Unlisted scope'
+    Check 'unlisted instruction scope' $legacy 1 'instruction file is not declared: unexpected/AGENTS.md'
     Write-Host "All $passed docs checker cases passed."
 } finally {
     if (Test-Path -LiteralPath $temp) { Remove-Item -LiteralPath $temp -Recurse -Force }

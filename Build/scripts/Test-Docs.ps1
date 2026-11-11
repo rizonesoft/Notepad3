@@ -234,6 +234,18 @@ foreach ($p in $pages) {
 }
 
 $inbound = @()
+$declaredInstructionPaths = @($layout['Instruction files'] | ForEach-Object { $_.Replace('\', '/') })
+$actualInstructionPaths = @(& git -C $root ls-files --cached -- ':(glob)**/AGENTS.md' 2>$null)
+if ($LASTEXITCODE -ne 0) { Evidence-Error 'cannot enumerate tracked instruction files' }
+$actualInstructionPaths += @(& git -C $root ls-files --others --exclude-standard -- ':(glob)**/AGENTS.md' 2>$null)
+if ($LASTEXITCODE -ne 0) { Evidence-Error 'cannot enumerate untracked instruction files' }
+$actualInstructionPaths += @(& git -C $root ls-files --others --ignored --exclude-standard -- ':(glob)**/AGENTS.md' 2>$null)
+if ($LASTEXITCODE -ne 0) { Evidence-Error 'cannot enumerate ignored instruction files' }
+foreach ($path in @($actualInstructionPaths | Sort-Object -Unique)) {
+    if ($path -notin $declaredInstructionPaths) {
+        Evidence-Error "instruction file is not declared: $path"
+    }
+}
 foreach ($path in $layout['Instruction files']) {
     $dest = Join-Path $root $path
     if (!(Test-Path -LiteralPath $dest -PathType Leaf)) { Evidence-Error "missing instruction file: $path"; continue }
