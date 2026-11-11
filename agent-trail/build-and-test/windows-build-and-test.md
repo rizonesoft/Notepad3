@@ -1,5 +1,7 @@
 # Windows Build and Test
 
+When to read: Build, MSBuild, CI, test scripts, Python scripting
+
 Run commands from the repository root. Discover installed tools before assuming they are on PATH.
 
 ## Focused feedback

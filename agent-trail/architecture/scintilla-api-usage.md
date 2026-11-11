@@ -1,5 +1,7 @@
 # Scintilla API Usage Notes
 
+When to read: Replacing home-grown `Edit.c` code with Scintilla messages
+
 Verified constraints to check before replacing home-grown `src\Edit.c` code with a Scintilla message. Wrapper rules are in [Codebase and conventions](codebase-and-conventions.md).
 
 ## Reading document text

@@ -1,5 +1,7 @@
 # Encoding Detection
 
+When to read: Encoding selection or UTF-16/32 handling
+
 Encoding detection is implemented in `src\uchardet\EncodingDetection.cpp` and is called from `EditLoadFile()` in `src\Edit.c`. It combines explicit declarations, byte signatures, structural checks, and UCHARDET analysis; no single heuristic is authoritative for every input.
 
 ## Detection flow

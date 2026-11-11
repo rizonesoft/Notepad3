@@ -1,5 +1,7 @@
 # File I/O
 
+When to read: `Edit.c` load/save, atomic save, file watching, Open/MRU dialogs
+
 ## Load and save path
 
 `FileSave()` / `FileLoad()` in `Notepad3.c` call `FileIO()`, which dispatches to `EditSaveFile()` / `EditLoadFile()` in `Edit.c`.

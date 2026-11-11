@@ -1,5 +1,7 @@
 # Codebase and Conventions
 
+When to read: Menus, commands, source layout, coding conventions, buffers
+
 ## Project
 
 Notepad3 is a Windows-only Win32 C/C++ text editor built on Scintilla/Lexilla, distributed under BSD-3. It includes MiniPath (`Ctrl+M`) and integrates the pre-built portable grepWin tool (`Ctrl+Shift+F`). The solution is `Notepad3.sln`; builds use Visual Studio 2026 and toolset v145.
@@ -20,7 +22,7 @@ Notepad3 is a Windows-only Win32 C/C++ text editor built on Scintilla/Lexilla, d
 | `src\PathLib.c/h` | `HPATHL` path handle and long-path-aware Win32 wrappers |
 | `src\TypeDefs.h` | `DocPos`, `DocLn`, `cpi_enc_t`, OS targeting, compiler macros |
 | `src\MuiLanguage.c/h` | MUI language DLL loading |
-| `src\StyleLexers\styleLexXXX.c` | Per-language `EDITLEXER` definitions |
+| `src\StyleLexers\styleLex<name>.c` | Per-language `EDITLEXER` definitions |
 
 ## Menu and command dispatch
 
@@ -43,7 +45,7 @@ Notepad3 is a Windows-only Win32 C/C++ text editor built on Scintilla/Lexilla, d
 ## Libraries and external tools
 
 - `scintilla\` and `lexilla\`, with NP3 patches under `np3_patches\` and offline documentation under `doc\`. Read their current [Scintilla](../../scintilla/version.txt) and [Lexilla](../../lexilla/version.txt) version files instead of relying on copied version numbers.
-- `scintilla\pcre2\` ([version](../../scintilla/pcre2/version.txt)), `src\uchardet\`, `src\tinyexpr\`, `src\tinyexprcpp\`, `src\uthash\`, and `src\crypto\` (Rijndael/SHA-256 for AES-256).
+- `scintilla\pcre2\` ([version](../../scintilla/pcre2/version.txt)), `src\uchardet\`, `src\tinyexprcpp\`, `src\uthash\`, and `src\crypto\` (Rijndael/SHA-256 for AES-256).
 - grepWin is external and is not built from source. Pre-built executables are in `grepWin\portables\`; language files are in `grepWin\translations\`.
   - Runtime lookup in `src\Dialogs.c`: `Settings2.GrepWinPath` → `<ModuleDir>\grepWin\grepWin-x{64,86}_portable.exe` → `%APPDATA%\Rizonesoft\Notepad3\grepWin\`.
   - `grepWinLangResName[]` in `MuiLanguage.c` maps Notepad3 locales to `.lang` filenames, written to `grepwin.ini` before launch.
