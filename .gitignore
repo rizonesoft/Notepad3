@@ -29,6 +29,7 @@ Thumbs.db
 *.VC.db*
 
 /.vs
+/.claude/settings.local.json
 /Bin
 #/Build/Ignore*
 #/Build/*portable*

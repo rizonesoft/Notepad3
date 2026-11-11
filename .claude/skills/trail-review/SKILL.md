@@ -1,5 +1,5 @@
 ---
-name: docs-review
+name: trail-review
 description: Review agent instructions, documentation routing, adapters, skill wrappers, and the docs checker; use for an agent-docs maintenance review.
 disable-model-invocation: true
 ---

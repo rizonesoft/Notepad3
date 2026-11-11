@@ -17,7 +17,7 @@ Forbidden adapters are checked in each declared instruction scope. The only IDE 
 
 Claude Code must support native `AGENTS.md` loading (v2.1.277 or later, with support enabled). Parent or personal project `CLAUDE.md`/`CLAUDE.local.md` files can suppress the default fallback; check user/managed settings rather than adding project adapters. See the [official loading contract](https://code.claude.com/docs/en/memory.md#agents-md).
 
-After loading-related changes, verify in fresh sessions: Copilot `/instructions`, Claude `/context all` for startup files, then sequential reads in `src` and `src/Config` for on-demand scopes. Check transcripts for retained root rules and duplicate content. Verify `/docs-review` discovery separately; one wrapper lives under `.claude/skills`, with no duplicate wrapper for another client. VS Code skill discovery in that location remains unverified; use the playbook link if unavailable. File existence or this already-loaded session cannot prove runtime loading.
+After loading-related changes, verify in fresh sessions: Copilot `/instructions`, Claude `/context all` for startup files, then sequential reads in `src` and `src/Config` for on-demand scopes. Check transcripts for retained root rules and duplicate content. Verify `/trail-review` discovery separately; one wrapper lives under `.claude/skills`, with no duplicate wrapper for another client. VS Code skill discovery in that location remains unverified; use the playbook link if unavailable. File existence or this already-loaded session cannot prove runtime loading.
 
 ## Writing a page
 

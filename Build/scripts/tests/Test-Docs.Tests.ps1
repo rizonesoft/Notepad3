@@ -120,7 +120,7 @@ When to read: Topic
     Check 'adapter pointer accepted' $legacy 0 'docs OK'
     Write-Fixture 'agent-trail\playbooks\review.md' $legacy
     Write-Fixture 'agent-trail\index.md' ($index + "`n| Topic | [Review](playbooks/review.md) |")
-    $skillPath = '.claude\skills\docs-review\SKILL.md'
+    $skillPath = '.claude\skills\trail-review\SKILL.md'
     Write-Fixture $skillPath '[Review](../../../agent-trail/playbooks/review.md)'
     Check 'untracked wrapper discovered' $legacy 0 'docs OK'
     Write-Fixture $skillPath '[Wrong](../../../AGENTS.md)'
