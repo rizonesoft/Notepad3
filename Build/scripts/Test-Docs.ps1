@@ -183,8 +183,18 @@ function Test-CodePaths([IO.FileInfo]$file) {
         $rooted = $first -notin '.', '..' -and ![IO.Path]::IsPathRooted($path) -and (Test-Path -LiteralPath (Join-Path $root $first))
         $dest = [IO.Path]::GetFullPath($path, $(if ($rooted) { $root } else { $file.DirectoryName }))
         if (Test-Path -LiteralPath $dest) { continue }
-        if ($rooted -and (Test-Contained $dest)) { Evidence-Error "$rel cites missing repository path $path" }
-        else { Write-Host "WARN   $rel unverified path outside known repository roots: $path" }
+        if ($rooted -and (Test-Contained $dest)) {
+            & git -C $root check-ignore -q -- $path 2>$null
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "WARN   $rel cites missing ignored path (may be generated): $path"
+            } elseif ($LASTEXITCODE -eq 1) {
+                Evidence-Error "$rel cites missing repository path $path"
+            } else {
+                Evidence-Error "$rel cannot check ignore status for path $path"
+            }
+        } else {
+            Write-Host "WARN   $rel unverified path outside known repository roots: $path"
+        }
     }
 }
 

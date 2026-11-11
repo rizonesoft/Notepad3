@@ -40,6 +40,7 @@ try {
     Write-Fixture 'AGENTS.md' '[Index](agent-trail/index.md)'
     Write-Fixture 'src\sample.c' 'void Example(void) {}'
     Write-Fixture 'src\AGENTS.md' '[Topic](../agent-trail/topic.md)'
+    Write-Fixture '.gitignore' 'src/generated.c'
     Git-Fixture add -- .
     Git-Fixture -c core.hooksPath=NUL commit --quiet -m 'Initial fixture' -m 'Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>'
     $commit = & git -C $temp rev-parse HEAD
@@ -100,6 +101,7 @@ When to read: Topic
     Write-Fixture 'agent-trail\index.md' $index
     Check 'repository link escape' ($legacy + "`n[Outside](../../)") 1 'link must stay inside repository'
     Check 'rooted code path missing' ($legacy + "`n" + '`src/missing.c`') 1 'missing repository path'
+    Check 'missing ignored generated path' ($legacy + "`n" + '`src/generated.c`') 0 'missing ignored path (may be generated)'
     Check 'relative code path exists' ($legacy + "`n" + '`../src/sample.c`') 0 'docs OK'
     Check 'Windows code path exists' ($legacy + "`n" + '`src\sample.c`') 0 'docs OK'
     Check 'absolute external code path warns' ($legacy + "`n``${temp}-outside\missing.c``") 0 'unverified path outside known repository roots'
