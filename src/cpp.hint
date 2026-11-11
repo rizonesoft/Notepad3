@@ -1,0 +1,5 @@
+// Hinweisdateien unterstützen die Visual Studio-IDE beim Interpretiertieren von Visual C++-Bezeichnern,
+// z. B. von Namen der Funktionen und Makros.
+// Weitere Informationen finden Sie unter https://go.microsoft.com/fwlink/?linkid=865984
+#define _RETCMPMIN_ { return (x > y) ? y : x; }
+#define _RETCMPMAX_ { return (x < y) ? y : x; }
