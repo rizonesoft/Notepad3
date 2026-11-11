@@ -17,7 +17,7 @@ Forbidden adapters are checked in each declared instruction scope. The only IDE 
 
 Claude Code must support native `AGENTS.md` loading (v2.1.277 or later, with support enabled). Parent or personal project `CLAUDE.md`/`CLAUDE.local.md` files can suppress the default fallback; check user/managed settings rather than adding project adapters. See the [official loading contract](https://code.claude.com/docs/en/memory.md#agents-md).
 
-After loading-related changes, verify in fresh sessions: Copilot `/instructions`, Claude `/context all` for startup files, then sequential reads in `src` and `src/Config` for on-demand scopes. Check transcripts for retained root rules and duplicate content. Verify `/docs-review` discovery separately; one wrapper lives under `.claude/skills`, with no duplicate wrapper for another client. VS Code skill discovery in that location remains unverified; use the playbook link if unavailable. File existence or this already-loaded session cannot prove runtime loading.
+After loading-related changes, verify in fresh sessions: Copilot `/instructions`, Claude `/context all` for startup files, then sequential reads in `src` and `src/Config` for on-demand scopes. Check transcripts for retained root rules and duplicate content. Verify `/trail-review` discovery separately; one wrapper lives under `.claude/skills`, with no duplicate wrapper for another client. VS Code skill discovery in that location remains unverified; use the playbook link if unavailable. File existence or this already-loaded session cannot prove runtime loading.
 
 ## Writing a page
 
@@ -34,7 +34,7 @@ Only [PathLib](domain/pathlib.md) and [configuration](domain/configuration-and-i
 
 Use `agent-observed` for code-backed agent findings; only @RaiKoHoff may approve `human-verified` status. Ownership routes review; it does not certify correctness. Each pilot states its evidence scope so the commit does not imply every sentence was verified. Uncertain observations stay in [Open questions](open-questions.md). Do not bulk-stamp old pages with the latest commit.
 
-The checker rejects broken/escaping links, undeclared topic folders, mismatched routing triggers, forbidden adapters, broken skill targets, malformed declared metadata, missing/untracked anchor files, absent literal symbols, and invalid/non-ancestor verification commits. Recognizable repository paths in prose code spans must exist; missing paths with an unknown root warn instead. Source changes or dirty anchored files warn "possibly stale", not "wrong"; shallow missing history warns "verification unavailable". These are structural checks, not semantic or runtime-loading proof. Run checker regression cases with `pwsh -NoProfile -File Build\scripts\tests\Test-Docs.Tests.ps1` when changing the checker.
+The checker rejects broken/escaping links, undeclared topic folders, mismatched routing triggers, forbidden adapters, broken skill targets, malformed declared metadata, missing/untracked anchor files, absent literal symbols, and invalid/non-ancestor verification commits. Recognizable repository paths in prose code spans must exist; a missing ignored path warns because it may be generated, and an unknown-root path also warns. Source changes or dirty anchored files warn "possibly stale", not "wrong"; shallow missing history warns "verification unavailable". These are structural checks, not semantic or runtime-loading proof. Run checker regression cases with `pwsh -NoProfile -File Build\scripts\tests\Test-Docs.Tests.ps1` when changing the checker.
 
 ### Maintenance and pruning
 

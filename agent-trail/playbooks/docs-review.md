@@ -2,7 +2,7 @@
 
 When to read: Instructions, routing, adapters, skills, or the docs checker
 
-This is an on-demand review procedure, not permission to edit. Invoking `/docs-review` requests a review only. If selected automatically, confirm the scope first. Changes require the user's approval; do not stage, commit, install tools, launch new agent sessions, dispatch CI, or run benchmarks.
+This is an on-demand review procedure, not permission to edit. Invoking `/trail-review` requests a review only. If selected automatically, confirm the scope first. Changes require the user's approval; do not stage, commit, install tools, launch new agent sessions, dispatch CI, or run benchmarks.
 
 ## Review
 
@@ -33,4 +33,4 @@ Record a compact ledger: baseline revision; implemented files and commit or `unc
 
 For loading changes, give the user this read-only prompt for each fresh client session:
 
-> Before manually reading instruction files, list startup-loaded instruction paths and any duplicate content. Then read `src/Notepad3.c`, followed by `src/Config/Config.cpp`, one at a time. Record newly injected scoped guidance and whether root rules remain present. Check whether `/docs-review` is discoverable without invoking edits. Report observations and client version, not inferred loading.
+> Before manually reading instruction files, list startup-loaded instruction paths and any duplicate content. Then read `src/Notepad3.c`, followed by `src/Config/Config.cpp`, one at a time. Record newly injected scoped guidance and whether root rules remain present. Check whether `/trail-review` is discoverable without invoking edits. Report observations and client version, not inferred loading.
