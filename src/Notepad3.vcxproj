@@ -1217,6 +1217,7 @@
     <None Include="..\Versions\Notepad3.exe.manifest.tpl" />
     <None Include="..\Versions\VersionEx.h.tpl" />
     <None Include=".clang-format" />
+    <None Include="cpp.hint" />
     <None Include="Notepad3.ver" />
     <None Include="uchardet\uchardet\src\Big5Freq.tab" />
     <None Include="uchardet\uchardet\src\EUCKRFreq.tab" />

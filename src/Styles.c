@@ -3057,7 +3057,7 @@ bool Style_HasLexerForExt(const HPATHL hpath)
         }
     }
     if (!bFound && Path_IsNotEmpty(hpath)) {
-        bFound = Style_WildcardMatchLexer(Path_FindFileName(hpath));
+        bFound = (Style_WildcardMatchLexer(Path_FindFileName(hpath)) != NULL);
     }
     return bFound;
 }
