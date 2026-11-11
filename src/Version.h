@@ -173,9 +173,13 @@ inline LPCWSTR _Win10BuildToReleaseId(const DWORD build)
 #undef VER_CPL
 
 #if defined(_MSC_VER)
-    #if (_MSC_VER == 1951)
+    #if (_MSC_VER == 1952)
+        #if (_MSC_FULL_VER >= 195237027)
+            #define VER_CPL     MS Visual C++ 2026 v18.12.0
+        #endif
+    #elif (_MSC_VER == 1951)
         #if (_MSC_FULL_VER >= 195136260)
-            #define VER_CPL     MS Visual C++ 2026 v18.11.(0-3)
+            #define VER_CPL     MS Visual C++ 2026 v18.11.(0-4)
         #elif (_MSC_FULL_VER >= 195136260)
             #define VER_CPL     MS Visual C++ 2026 v18.10.(2-4)
         #elif (_MSC_FULL_VER >= 195136257)
