@@ -1,5 +1,7 @@
 # TinyExpr++ and the C Wrapper
 
+When to read: Expression evaluation (`=?`, Go To, line numbering), `tinyexpr_cif`
+
 Notepad3's C code never includes `src\tinyexprcpp\tinyexpr.h` (C++20). It uses the C interface `src\tinyexprcpp\tinyexpr_cif.h` / `tinyexpr_cif.cpp`, which wraps `te_parser`. Do not edit the vendored `tinyexpr.cpp` / `tinyexpr.h` to fix Notepad3 behavior; adapt the wrapper. Library version is recorded in `src\tinyexprcpp\version.txt` and `TINYEXPR_CPP_*_VERSION`.
 
 ## Wrapper contract (`tinyexpr_cif.h`)

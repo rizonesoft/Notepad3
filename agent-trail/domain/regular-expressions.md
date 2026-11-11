@@ -1,5 +1,7 @@
 # Regular Expressions
 
+When to read: Search/replace, PCRE2, URL hotspots
+
 ## PCRE2 integration
 
 `scintilla\pcre2\scintilla\PCRE2RegExEngine.cxx`, compiled with `SCI_OWNREGEX`, replaces Scintilla's built-in regex engine. Scintilla search and replacement use `FindText()` and `SubstituteByPosition()`.

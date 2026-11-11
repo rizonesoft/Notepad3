@@ -1,5 +1,7 @@
 # Open Questions
 
+When to read: Unverified findings / what would verify them
+
 Holding area for findings that are **not yet verified enough** for a topic page. Nothing here is authoritative; do not act on an entry without checking the code. Promote verified entries into the relevant page and delete them here; delete entries that turn out to be wrong.
 
 ## Open findings

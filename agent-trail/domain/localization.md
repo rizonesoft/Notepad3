@@ -1,6 +1,8 @@
 # Localization
 
-There are 26 locales under `language\np3_LANG_COUNTRY\`; language packs build as separate DLLs.
+When to read: UI strings, locale resources
+
+There are 26 locales under `language\np3_<LANG>_<COUNTRY>\`; language packs build as separate DLLs.
 
 ## Resource invariants
 

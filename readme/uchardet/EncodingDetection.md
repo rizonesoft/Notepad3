@@ -419,4 +419,4 @@ The pipeline is implemented in `src\uchardet\EncodingDetection.cpp`, UTF-8 valid
 
 Run `test\test_files\encoding\TestEncodingDetection.ps1` with Visual C++ build tools installed. It compiles current detector functions into a temporary native harness; application state and the low-level uchardet call are stubbed. Coverage includes UTF-16 byte order and surrogate validity, Windows fallback, UTF-8 with NULs, overrides, diagnostic formatting, non-stacking preference weighting, and the inclusive confidence threshold. The runner also reads the BOM-less fixtures in the adjacent `UTF-16` directory; `UTF-8` and `UTF-32` fixture directories are alongside it.
 
-See the [encoding implementation reference](../../docs/domain/encoding-detection.md) for exact heuristic constraints and test boundaries.
+See the [encoding implementation reference](../../agent-trail/domain/encoding-detection.md) for exact heuristic constraints and test boundaries.

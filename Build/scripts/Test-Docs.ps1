@@ -1,18 +1,29 @@
 <#
 .SYNOPSIS
-    Validates the docs\ tree: index completeness, relative links, anchors, page size.
+    Validates the agent-trail\ tree: index completeness, relative links, anchors, page size.
 .DESCRIPTION
-    Errors (exit 1): page missing from docs\README.md, unresolved relative link or anchor.
+    Errors (exit 1): page missing from agent-trail\index.md, unresolved relative link or anchor.
     Metadata is optional; declared source anchors and verification commits are checked.
     Warnings: page size, possibly stale evidence, unavailable shallow history.
-    Also checks links into docs from AGENTS.md, CLAUDE.md and readme**.md, and AGENTS.md code-span page paths.
+    Checks the index-declared layout, loading exclusions, routing triggers and skill targets.
+    Also checks inbound links and recognizable repository paths in prose code spans.
     Fenced code blocks and inline code are ignored for links and headings.
 #>
 param(
-    [string]$DocsDir = (Join-Path $PSScriptRoot '..\..\docs'),
+    [string]$DocsDir,
     [int]$MaxPageBytes = 8192
 )
 $ErrorActionPreference = 'Stop'
+if (!$DocsDir) {
+    $repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+    $entry = Get-Content -LiteralPath (Join-Path $repo 'AGENTS.md') -Raw -Encoding UTF8
+    if ($entry -notmatch '\]\(([^)#]+/index\.md)\)') { throw 'AGENTS.md must link the topic index' }
+    $index = [IO.Path]::GetFullPath($Matches[1], $repo)
+    if (!$index.StartsWith($repo + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
+        throw 'Topic index must stay inside the repository'
+    }
+    $DocsDir = Split-Path $index
+}
 $docs = (Resolve-Path $DocsDir).Path
 $root = (Resolve-Path (Join-Path $docs '..')).Path
 $errors = 0
@@ -135,67 +146,140 @@ function Get-Anchors([string]$file) {
     }
 }
 
+function Test-Contained([string]$path) {
+    $path.StartsWith($root + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)
+}
+
+function Test-Links([IO.FileInfo]$file, [bool]$inboundOnly = $false) {
+    $rel = $file.FullName.Substring($root.Length + 1).Replace('\', '/')
+    $text = (Read-Prose $file.FullName) -join "`n" -replace '`[^`]*`', ''
+    foreach ($m in [regex]::Matches($text, '\]\(([^)\s]+)\)')) {
+        $target = $m.Groups[1].Value
+        if ($target -match '^[a-z][a-z0-9+.-]*:') { continue }
+        $path, $frag = $target, $null
+        if ($target.Contains('#')) { $path, $frag = $target.Split('#', 2) }
+        $dest = if ($path) { [IO.Path]::GetFullPath($path, $file.DirectoryName) } else { $file.FullName }
+        if ($inboundOnly -and !$dest.StartsWith($docs + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) { continue }
+        if (!(Test-Contained $dest)) {
+            Evidence-Error "$rel -> $target (link must stay inside repository)"; continue
+        }
+        if (!(Test-Path -LiteralPath $dest)) {
+            Evidence-Error "$rel -> $target (file not found)"; continue
+        }
+        if ($frag -and $dest -like '*.md' -and ((Get-Anchors $dest) -notcontains $frag)) {
+            Evidence-Error "$rel -> $target (anchor not found)"
+        }
+    }
+}
+
+function Test-CodePaths([IO.FileInfo]$file) {
+    $rel = $file.FullName.Substring($root.Length + 1).Replace('\', '/')
+    $text = ((Read-Prose $file.FullName) | Where-Object { $_ -notmatch '^- Forbidden adapters:' }) -join "`n"
+    foreach ($m in [regex]::Matches($text, '`([^`\r\n]+)`')) {
+        $path = $m.Groups[1].Value.Replace('\', '/')
+        if ($path -notmatch '/' -or $path -match '://|[\s<>*?{}()|=%]' -or $path -notmatch '\.[a-zA-Z0-9]+/?$|/$') { continue }
+        $first = $path.Split('/')[0]
+        if (!$first) { continue }
+        $rooted = $first -notin '.', '..' -and ![IO.Path]::IsPathRooted($path) -and (Test-Path -LiteralPath (Join-Path $root $first))
+        $dest = [IO.Path]::GetFullPath($path, $(if ($rooted) { $root } else { $file.DirectoryName }))
+        if (Test-Path -LiteralPath $dest) { continue }
+        if ($rooted -and (Test-Contained $dest)) { Evidence-Error "$rel cites missing repository path $path" }
+        else { Write-Host "WARN   $rel unverified path outside known repository roots: $path" }
+    }
+}
+
 $pages = Get-ChildItem -LiteralPath $docs -Recurse -Filter *.md
-$readme = Join-Path $docs 'README.md'
+$readme = Join-Path $docs 'index.md'
 $readmeText = (Read-Prose $readme) -join "`n"
+$indexRel = $readme.Substring($root.Length + 1).Replace('\', '/')
+$layout = @{}
+foreach ($key in 'Topic folders', 'Instruction files', 'Forbidden adapters', 'Skill roots') {
+    $declarations = @([regex]::Matches($readmeText, '(?m)^- ' + [regex]::Escape($key) + ': (.+)$'))
+    if ($declarations.Count -ne 1) { Evidence-Error "$indexRel must declare $key exactly once"; $layout[$key] = @(); continue }
+    $layout[$key] = @([regex]::Matches($declarations[0].Groups[1].Value, '`([^`]+)`') | ForEach-Object { $_.Groups[1].Value })
+    if (!$layout[$key].Count) { Evidence-Error "$indexRel empty declaration: $key" }
+    foreach ($path in $layout[$key]) {
+        if ($path -match '(^[/\\]|:|(^|[/\\])\.\.([/\\]|$)|[*?\[])') {
+            Evidence-Error "$indexRel invalid layout path: $path"
+        }
+    }
+}
+if ($errors) { exit 1 }
 
 foreach ($p in $pages) {
     $rel = $p.FullName.Substring($docs.Length + 1).Replace('\', '/')
     Test-Evidence $p.FullName $rel
     if ($p.FullName -ne $readme -and $readmeText -notmatch [regex]::Escape("]($rel)")) {
-        Write-Host "ERROR  $rel is not linked from docs/README.md"; $errors++
+        Write-Host "ERROR  $rel is not linked from $indexRel"; $errors++
+    }
+    if ($p.FullName -ne $readme) {
+        if ($rel.Contains('/') -and $rel.Split('/')[0] -notin $layout['Topic folders']) {
+            Evidence-Error "$rel is in an undeclared topic folder"
+        }
+        $triggers = @([regex]::Matches(((Read-Prose $p.FullName) -join "`n"), '(?m)^When to read: (.+?)\r?$'))
+        if ($triggers.Count -ne 1) { Evidence-Error "$rel needs exactly one When to read line" }
+        else {
+            $trigger = $triggers[0].Groups[1].Value
+            $rows = @($readmeText -split "`n" | Where-Object { $_.Contains("]($rel)") })
+            if (!($rows | Where-Object { $_.StartsWith("| $trigger |", [StringComparison]::Ordinal) })) {
+                Evidence-Error "$rel when-to-read trigger does not match its index row"
+            }
+        }
     }
     if ($p.Length -gt $MaxPageBytes) {
         Write-Host "WARN   $rel is $($p.Length) bytes (> $MaxPageBytes); consider splitting"
     }
-    $text = (Read-Prose $p.FullName) -join "`n" -replace '`[^`]*`', ''
-    foreach ($m in [regex]::Matches($text, '\]\(([^)\s]+)\)')) {
-        $target = $m.Groups[1].Value
-        if ($target -match '^[a-z]+://|^mailto:') { continue }
-        $path, $frag = $target, $null
-        if ($target.Contains('#')) { $path, $frag = $target.Split('#', 2) }
-        $dest = if ($path) { Join-Path $p.DirectoryName $path } else { $p.FullName }
-        if (-not (Test-Path -LiteralPath $dest)) {
-            Write-Host "ERROR  $rel -> $target (file not found)"; $errors++; continue
-        }
-        if ($frag -and $dest -like '*.md' -and ((Get-Anchors $dest) -notcontains $frag)) {
-            Write-Host "ERROR  $rel -> $target (anchor not found)"; $errors++
-        }
-    }
+    Test-Links $p
+    Test-CodePaths $p
 }
 
-# Inbound references: files outside docs\ that point into docs\.
-# Markdown links resolving inside docs\ must exist (with anchors); AGENTS.md code spans
-# such as `docs/domain/x.md` must name an existing page.
 $inbound = @()
-foreach ($n in 'AGENTS.md', 'CLAUDE.md') {
-    if (Test-Path -LiteralPath (Join-Path $root $n)) { $inbound += Get-Item -LiteralPath (Join-Path $root $n) }
+foreach ($path in $layout['Instruction files']) {
+    $dest = Join-Path $root $path
+    if (!(Test-Path -LiteralPath $dest -PathType Leaf)) { Evidence-Error "missing instruction file: $path"; continue }
+    $inbound += Get-Item -LiteralPath $dest
+    foreach ($adapter in $layout['Forbidden adapters']) {
+        $forbidden = Join-Path (Split-Path $dest) $adapter
+        if (Test-Path -LiteralPath $forbidden) { Evidence-Error "forbidden adapter: $forbidden" }
+    }
 }
 if (Test-Path -LiteralPath (Join-Path $root 'readme')) {
     $inbound += Get-ChildItem -LiteralPath (Join-Path $root 'readme') -Recurse -Filter *.md
 }
-$instructionPaths = @(& git -C $root ls-files -- ':(glob)**/AGENTS.md' ':(glob)**/CLAUDE.md' '.github/copilot-instructions.md' '.github/instructions/*.instructions.md' 'lexilla/np3_patches/README.md' 'scintilla/np3_patches/upstream_558/README.md' 2>$null)
+$instructionPaths = @(& git -C $root ls-files -- '*.md' 2>$null)
 foreach ($path in $instructionPaths) {
-    if (Test-Path -LiteralPath (Join-Path $root $path)) { $inbound += Get-Item -LiteralPath (Join-Path $root $path) }
+    $dest = Join-Path $root $path
+    if ((Test-Path -LiteralPath $dest -PathType Leaf) -and
+        !([IO.Path]::GetFullPath($dest).StartsWith($docs + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase))) {
+        $inbound += Get-Item -LiteralPath $dest
+    }
+}
+foreach ($skillRoot in $layout['Skill roots']) {
+    $dest = Join-Path $root $skillRoot
+    if (!(Test-Path -LiteralPath $dest -PathType Container)) { continue }
+    foreach ($skill in Get-ChildItem -LiteralPath $dest -Recurse -Filter SKILL.md) {
+        $raw = (Read-Prose $skill.FullName) -join "`n"
+        $targets = @([regex]::Matches($raw, '\]\(([^)\s]+)\)') | Where-Object {
+            $link = $_.Groups[1].Value
+            if ($link -notmatch '^[a-z][a-z0-9+.-]*:') {
+                $target = [IO.Path]::GetFullPath((Join-Path $skill.DirectoryName ($link.Split('#', 2)[0])))
+                $target.StartsWith((Join-Path $docs 'playbooks') + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase) -and
+                    (Test-Path -LiteralPath $target -PathType Leaf)
+            }
+        })
+        if (!$targets.Count) { Evidence-Error "$($skill.FullName) must link a canonical playbook" }
+        $inbound += $skill
+    }
 }
 $inbound = @($inbound | Sort-Object FullName -Unique)
 foreach ($f in $inbound) {
     $rel = $f.FullName.Substring($root.Length + 1).Replace('\', '/')
     $raw = (Read-Prose $f.FullName) -join "`n"
-    foreach ($m in [regex]::Matches(($raw -replace '`[^`]*`', ''), '\]\(([^)\s]+)\)')) {
-        $target = $m.Groups[1].Value
-        if ($target -match '^[a-z]+://|^mailto:|^#') { continue }
-        $path, $frag = $target, $null
-        if ($target.Contains('#')) { $path, $frag = $target.Split('#', 2) }
-        $dest = [System.IO.Path]::GetFullPath((Join-Path $f.DirectoryName $path))
-        $isInstruction = $f.Name -in 'AGENTS.md', 'CLAUDE.md', 'copilot-instructions.md' -or $f.Name -like '*.instructions.md'
-        if (!$isInstruction -and -not $dest.StartsWith($docs + '\', [StringComparison]::OrdinalIgnoreCase)) { continue }
-        if (-not (Test-Path -LiteralPath $dest)) {
-            Write-Host "ERROR  $rel -> $target (file not found)"; $errors++; continue
-        }
-        if ($frag -and $dest -like '*.md' -and ((Get-Anchors $dest) -notcontains $frag)) {
-            Write-Host "ERROR  $rel -> $target (anchor not found)"; $errors++
-        }
+    $isInstruction = $f.Name -in 'AGENTS.md', 'CLAUDE.md', 'copilot-instructions.md', 'SKILL.md' -or $f.Name -like '*.instructions.md'
+    Test-Links $f (!$isInstruction)
+    if ($isInstruction) { Test-CodePaths $f }
+    if ($f.Name -eq 'copilot-instructions.md' -and $raw -notmatch '\]\(\.\./AGENTS\.md\)') {
+        Evidence-Error "$rel must link the canonical root AGENTS.md"
     }
     if ($f.Name -in 'AGENTS.md', 'CLAUDE.md', 'copilot-instructions.md') {
         foreach ($line in Read-Prose $f.FullName) {
@@ -205,13 +289,6 @@ foreach ($f in $inbound) {
                     !(Test-Path -LiteralPath $dest -PathType Leaf)) {
                     Evidence-Error "$rel unresolved or external instruction import: $line"
                 }
-            }
-        }
-    }
-    if ($f.Name -eq 'AGENTS.md') {
-        foreach ($m in [regex]::Matches($raw, '`(docs/[^`\s]+\.md)`')) {
-            if (-not (Test-Path -LiteralPath (Join-Path $root $m.Groups[1].Value))) {
-                Write-Host "ERROR  $rel cites missing page $($m.Groups[1].Value)"; $errors++
             }
         }
     }

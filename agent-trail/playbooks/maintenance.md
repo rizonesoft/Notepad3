@@ -1,6 +1,8 @@
 # Small maintenance tasks
 
-Read only the procedure needed for the task. These are checklists, not permission to expand scope. Start at the repository root, consult the [topic index](../README.md), and verify relevant claims against code.
+When to read: Bug fix, small feature, characterization test, focused check, or doc proposal
+
+Read only the procedure needed for the task. These are checklists, not permission to expand scope. Start at the repository root, consult the [topic index](../index.md), and verify relevant claims against code.
 
 ## Bug fix
 
@@ -12,7 +14,7 @@ Read only the procedure needed for the task. These are checklists, not permissio
 
 Stop and ask with a recommendation if intended behavior is ambiguous, a vendored patch needs alteration, reproduction is unsafe, or the fix requires broader refactoring.
 
-Output: cause, focused change, exact evidence, and remaining uncertainty. Do not equate stub-harness success with full application behavior.
+Output: cause, focused change, exact evidence, remaining uncertainty, and the [root policy's doc-impact line](../../AGENTS.md#documentation). Ask before writing proposed docs. Do not equate stub-harness success with full application behavior.
 
 ## Small feature
 
@@ -69,7 +71,7 @@ Output: commands, configuration, results, and boundaries; report unrun checks pl
 2. Correct/remove false guidance, or add one atomic invariant, rationale, or trap. Link the canonical page instead of copying it.
 3. Include source path/symbol, inspected source commit, and verification method. On metadata-pilot pages, respect the stated evidence scope; do not silently certify unchecked claims.
 4. Keep uncertainty in [Open questions](../open-questions.md) with a concrete verification step. Only @RaiKoHoff may approve `human-verified` status.
-5. Present a reviewable diff within the approved task scope, index any new page, and run the docs checker.
+5. Ask for approval before writing the proposal; then present a reviewable diff within that scope, index any new page, and run the docs checker.
 
 Stop if evidence is inference, old narrative, or an unrun command; recommend omission or an explicitly unverified observation.
 

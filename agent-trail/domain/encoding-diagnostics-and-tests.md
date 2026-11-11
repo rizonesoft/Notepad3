@@ -1,5 +1,7 @@
 # Encoding Diagnostics and Tests
 
+When to read: Encoding diagnostics, detector regression tests, or coverage boundaries
+
 Companion to [Encoding detection](encoding-detection.md): developer title diagnostics and the native regression harness for `src\uchardet\EncodingDetection.cpp`.
 
 ## Developer title diagnostics

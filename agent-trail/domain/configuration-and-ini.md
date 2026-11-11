@@ -25,6 +25,8 @@ anchors:
 
 # Configuration and INI
 
+When to read: INI settings, persistence
+
 Evidence scope: code inspection of redirect creation/depth/fallback, initialization, from-scratch state, conditional lexer ordering/pruning, encoding-setting mapping, and encoding-dependent save defaults at the commit above. Other entries are existing guidance to verify when used; this pilot does not certify the whole page. Human review is pending.
 
 - `FindIniFile()` in `src\Config\Config.cpp` searches beside the executable when no explicit INI path is supplied. The application uses defaults if there is no INI; the user can create one with "Save Settings Now".

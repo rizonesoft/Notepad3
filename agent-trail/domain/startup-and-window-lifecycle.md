@@ -1,5 +1,7 @@
 # Startup and Window Lifecycle
 
+When to read: Startup, activation, AppID, new-window reuse
+
 ## Clipboard monitoring (Pasteboard Mode)
 
 The runtime toggle is `IDM_EDIT_TOGGLE_PASTEBOARD`; `/B` enables Pasteboard Mode at startup. It is not persisted. `IsPasteBoardActive()` in `Notepad3.h` is the cross-translation-unit query.

@@ -21,6 +21,8 @@ anchors:
 
 # PathLib and Long Paths
 
+When to read: Any Win32 file/path call on `HPATHL`
+
 Evidence scope: code inspection of long-path prefix conditions, comparison normalization/empty inputs, and two-path wrapper limitations; the `Path_CreateDirectoryEx` result contract is additionally exercised by `test\TestCreateDirectory.ps1` (agent-run at the commit above; the sub-248-character real-file-system cases only). The wrapper table is navigation, not a separately tested API guarantee. Human review is pending.
 
 Do not call Win32 file APIs directly with `Path_Get(hpth)`. Use PathLib wrappers, which conditionally apply the `\\?\` prefix when long paths are not enabled and the path is at least 260 characters.

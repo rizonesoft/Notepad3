@@ -1,6 +1,8 @@
 # Lexer Development
 
-Each language has an `EDITLEXER` definition in `src\StyleLexers\styleLexXXX.c`. Register new lexers in the `Styles.c` lexer array and add localization string IDs.
+When to read: Lexers, styles, themes
+
+Each language has an `EDITLEXER` definition in `src\StyleLexers\styleLex<name>.c`. Register new lexers in the `Styles.c` lexer array and add localization string IDs.
 
 ## Implementation touchpoints
 
