@@ -2707,15 +2707,11 @@ void EditHex2Char(HWND hwnd)
 
 //=============================================================================
 //
-//  _FindEnclosingOpenBrace() - scan backwards to find the unmatched opening
-//  brace that encloses the given position.  Returns brace position or -1.
+//  _FindEnclosingOpenBrace() - scan backwards to find an opening brace whose
+//  Scintilla match encloses the given range.  Returns brace position or -1.
 //
-static DocPos _FindEnclosingOpenBrace(DocPos iStartPos)
+static DocPos _FindEnclosingOpenBrace(DocPos iStartPos, DocPos iEndPos)
 {
-    int depthParen = 0;   // ()
-    int depthBracket = 0; // []
-    int depthBrace = 0;   // {}
-
     // UTF-8: all bytes of a multi-byte sequence are >= 0x80, so a plain byte scan can't hit a brace.
     // Other code pages (DBCS trail bytes may equal brace chars) must step by character.
     const char* const pDoc = ((iStartPos > 0) && (SciCall_GetCodePage() == SC_CP_UTF8)) ? SciCall_GetRangePointer(0, iStartPos) : NULL;
@@ -2729,24 +2725,10 @@ static DocPos _FindEnclosingOpenBrace(DocPos iStartPos)
             iPos = SciCall_PositionBefore(iPos);
             ch = SciCall_GetCharAt(iPos);
         }
-        switch (ch) {
-        case ')': ++depthParen;   break;
-        case ']': ++depthBracket; break;
-        case '}': ++depthBrace;   break;
-        case '(':
-            if (depthParen == 0) { return iPos; }
-            --depthParen;
-            break;
-        case '[':
-            if (depthBracket == 0) { return iPos; }
-            --depthBracket;
-            break;
-        case '{':
-            if (depthBrace == 0) { return iPos; }
-            --depthBrace;
-            break;
-        default:
-            break;
+        if (ch == '(' || ch == '[' || ch == '{') {
+            if (SciCall_BraceMatch(iPos) >= iEndPos) {
+                return iPos;
+            }
         }
     }
     return (DocPos)-1;
@@ -2794,17 +2776,9 @@ void EditFindMatchingBrace()
         ShowBraceMatchCallTip(iBracePos, IDS_MUI_UNMATCHED_BRACE);
     } else {
         // Not at a brace — search backwards for enclosing opener
-        const DocPos iEnclosing = _FindEnclosingOpenBrace(iCurPos);
+        const DocPos iEnclosing = _FindEnclosingOpenBrace(iCurPos, iCurPos);
         if (iEnclosing != (DocPos)-1) {
-            const DocPos iMatch = SciCall_BraceMatch(iEnclosing);
-            if (iMatch != (DocPos)-1) {
-                Sci_GotoPosChooseCaret(iEnclosing);
-            } else {
-                // Enclosing opener has no match — orphan
-                SciCall_BraceBadLight(iEnclosing);
-                ShowBraceMatchCallTip(iEnclosing, IDS_MUI_UNMATCHED_BRACE);
-                Sci_GotoPosChooseCaret(iEnclosing);
-            }
+            Sci_GotoPosChooseCaret(iEnclosing);
         } else {
             // No enclosing brace found at all
             ShowBraceMatchCallTip(iCurPos, IDS_MUI_NO_ENCLOSING_BRACE);
@@ -2864,21 +2838,14 @@ void EditSelectToMatchingBrace()
         const bool bHasSelection = (iSelStart != iSelEnd);
 
         DocPos iSearchFrom = bHasSelection ? iSelStart : iCurPos;
-        const DocPos iEnclosing = _FindEnclosingOpenBrace(iSearchFrom);
+        const DocPos iEnclosing = _FindEnclosingOpenBrace(iSearchFrom, bHasSelection ? iSelEnd : iSearchFrom);
 
         if (iEnclosing != (DocPos)-1) {
             const DocPos iMatch = SciCall_BraceMatch(iEnclosing);
             if (iMatch != (DocPos)-1) {
-                // Ensure the match actually encloses the selection/cursor
-                if (!bHasSelection || iMatch >= iSelEnd) {
-                    UndoTransActionBegin();
-                    EditSetSelectionEx(iEnclosing, SciCall_PositionAfter(iMatch), -1, -1);
-                    EndUndoTransAction();
-                }
-            } else {
-                // Enclosing opener has no match — orphan
-                SciCall_BraceBadLight(iEnclosing);
-                ShowBraceMatchCallTip(iEnclosing, IDS_MUI_UNMATCHED_BRACE);
+                UndoTransActionBegin();
+                EditSetSelectionEx(iEnclosing, SciCall_PositionAfter(iMatch), -1, -1);
+                EndUndoTransAction();
             }
         } else {
             // No enclosing brace found at all
