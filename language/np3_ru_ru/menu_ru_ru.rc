@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "Разделить &транзакцию отмены по окончаниям строк", IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "&Вырезать\tCtrl+X",                   IDM_EDIT_CUT
-        MENUITEM "&Копировать\tCtrl+C",                 IDM_EDIT_COPY
-        MENUITEM "Копи&ровать всё\tAlt+C",              IDM_EDIT_COPYALL
-        MENUITEM "Добавить в конец буфера\tCtrl+E",     IDM_EDIT_COPYADD
-        MENUITEM "Copy as RT&F",                        IDM_EDIT_COPYRTF
-        MENUITEM "Копировать &GUID в буфер обмена\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
+        POPUP "&Копировать..."
+        BEGIN
+            MENUITEM "&Копировать\tCtrl+C",                 IDM_EDIT_COPY
+            MENUITEM "Копи&ровать всё\tAlt+C",              IDM_EDIT_COPYALL
+            MENUITEM "Добавить в конец буфера\tCtrl+E",     IDM_EDIT_COPYADD
+            MENUITEM "Copy as RT&F",                        IDM_EDIT_COPYRTF
+            MENUITEM "Копировать &GUID в буфер обмена\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "Вст&авить\tCtrl+V",                   IDM_EDIT_PASTE
         MENUITEM "Поменять\tCtrl+K",                    IDM_EDIT_SWAP
         MENUITEM "Выделить в&сё\tCtrl+A",               IDM_EDIT_SELECTALL

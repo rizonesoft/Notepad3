@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "Νέα λειτο&υργία αναίρεσης σε κάθε αλλαγή γραμμής",      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "Α&ποκοπή\tCtrl+X",              IDM_EDIT_CUT
-        MENUITEM "Αντι&γραφή\tCtrl+C",            IDM_EDIT_COPY
-        MENUITEM "Α&ντιγραφή όλων\tAlt+C",        IDM_EDIT_COPYALL
-        MENUITEM "Προσ&θήκη αντιγραφής\tCtrl+E",  IDM_EDIT_COPYADD
-        MENUITEM "Copy as RT&F",                  IDM_EDIT_COPYRTF
-        MENUITEM "Αντιγρα&φή GUΙD στο πρόχειρο\tCtrl+Shift+.",            IDM_EDIT_INSERT_GUID
+        POPUP "Αντι&γραφή..."
+        BEGIN
+            MENUITEM "Αντι&γραφή\tCtrl+C",            IDM_EDIT_COPY
+            MENUITEM "Α&ντιγραφή όλων\tAlt+C",        IDM_EDIT_COPYALL
+            MENUITEM "Προσ&θήκη αντιγραφής\tCtrl+E",  IDM_EDIT_COPYADD
+            MENUITEM "Copy as RT&F",                  IDM_EDIT_COPYRTF
+            MENUITEM "Αντιγρα&φή GUΙD στο πρόχειρο\tCtrl+Shift+.",            IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "Επ&ικόλληση\tCtrl+V",           IDM_EDIT_PASTE
         MENUITEM "Αν&τιμετάθεση\tCtrl+K",         IDM_EDIT_SWAP
         MENUITEM "Επιλ&ογή όλων\tCtrl+A",         IDM_EDIT_SELECTALL

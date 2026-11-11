@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "पंक्ति-विराम पर पूर्ववत लेनदेन विभाजित करें",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "काटें (&T)\tCtrl+X",                   IDM_EDIT_CUT
-        MENUITEM "कॉपी (&C)\tCtrl+C",                  IDM_EDIT_COPY
-        MENUITEM "सारा कॉपी करें (&A)\tAlt+C",            IDM_EDIT_COPYALL
-        MENUITEM "कॉपी करें और जोड़ें (&Y)\tCtrl+E",       IDM_EDIT_COPYADD
-        MENUITEM "Copy as RT&F",                          IDM_EDIT_COPYRTF
-        MENUITEM "GUID क्लिपबोर्ड में कॉपी करें (&G)\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
+        POPUP "कॉपी... (&C)"
+        BEGIN
+            MENUITEM "कॉपी (&C)\tCtrl+C",                  IDM_EDIT_COPY
+            MENUITEM "सारा कॉपी करें (&A)\tAlt+C",            IDM_EDIT_COPYALL
+            MENUITEM "कॉपी करें और जोड़ें (&Y)\tCtrl+E",       IDM_EDIT_COPYADD
+            MENUITEM "Copy as RT&F",                          IDM_EDIT_COPYRTF
+            MENUITEM "GUID क्लिपबोर्ड में कॉपी करें (&G)\tCtrl+Shift+.",      IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "चिपकाएं (&P)\tCtrl+V",                IDM_EDIT_PASTE
         MENUITEM "बदलें (&W)\tCtrl+K",                  IDM_EDIT_SWAP
         MENUITEM "सारा चुनें (&S)\tCtrl+A",               IDM_EDIT_SELECTALL

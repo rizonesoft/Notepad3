@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "Verdeel en Onttrek &Transaksies by Lynbrekings",      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "&Sny\tCtrl+X",                            IDM_EDIT_CUT
-        MENUITEM "Kopi&eer\tCtrl+C",                        IDM_EDIT_COPY
-        MENUITEM "Kop&ieer Alles\tAlt+C",                   IDM_EDIT_COPYALL
-        MENUITEM "Kopieer &Voeg\tCtrl+E",                   IDM_EDIT_COPYADD
-        MENUITEM "Kopieer as RT&F",                         IDM_EDIT_COPYRTF
-        MENUITEM "Kopieer GUID na Die Knipbord (&C)\tCtrl+Shift+.",         IDM_EDIT_INSERT_GUID
+        POPUP "Kopi&eer..."
+        BEGIN
+            MENUITEM "Kopi&eer\tCtrl+C",                        IDM_EDIT_COPY
+            MENUITEM "Kop&ieer Alles\tAlt+C",                   IDM_EDIT_COPYALL
+            MENUITEM "Kopieer &Voeg\tCtrl+E",                   IDM_EDIT_COPYADD
+            MENUITEM "Kopieer as RT&F",                         IDM_EDIT_COPYRTF
+            MENUITEM "Kopieer GUID na Die Knipbord (&C)\tCtrl+Shift+.",         IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "&Plak\tCtrl+V",                           IDM_EDIT_PASTE
         MENUITEM "&Uitruil\tCtrl+K",                        IDM_EDIT_SWAP
         MENUITEM "Kies &Alles\tCtrl+A",                     IDM_EDIT_SELECTALL

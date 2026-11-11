@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "Fractionner l'opération ""Défaire"" aux sauts de ligne",          IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "Coupe&r\tCtrl+X",                         IDM_EDIT_CUT
-        MENUITEM "C&opier\tCtrl+C",                         IDM_EDIT_COPY
-        MENUITEM "Copier &tout\tAlt+C",                     IDM_EDIT_COPYALL
-        MENUITEM "Copier / &Ajouter\tCtrl+E",               IDM_EDIT_COPYADD
-        MENUITEM "Copier au format RT&F",                   IDM_EDIT_COPYRTF
-        MENUITEM "Copier &GUID dans presse-papiers\tCtrl+Maj+.",             IDM_EDIT_INSERT_GUID
+        POPUP "C&opier..."
+        BEGIN
+            MENUITEM "C&opier\tCtrl+C",                         IDM_EDIT_COPY
+            MENUITEM "Copier &tout\tAlt+C",                     IDM_EDIT_COPYALL
+            MENUITEM "Copier / &Ajouter\tCtrl+E",               IDM_EDIT_COPYADD
+            MENUITEM "Copier au format RT&F",                   IDM_EDIT_COPYRTF
+            MENUITEM "Copier &GUID dans presse-papiers\tCtrl+Maj+.",             IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "&Coller\tCtrl+V",                         IDM_EDIT_PASTE
         MENUITEM "&Permuter\tCtrl+K",                       IDM_EDIT_SWAP
         MENUITEM "Sél&ectionner tout\tCtrl+A",              IDM_EDIT_SELECTALL

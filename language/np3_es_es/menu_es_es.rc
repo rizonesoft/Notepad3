@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "Dividir transacción de deshacer en saltos de l&ínea",  IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "Cor&tar\tCtrl+X",                         IDM_EDIT_CUT
-        MENUITEM "&Copiar\tCtrl+C",                         IDM_EDIT_COPY
-        MENUITEM "C&opiar todo\tAlt+C",                     IDM_EDIT_COPYALL
-        MENUITEM "Copiar a&ñadiendo\tCtrl+E",               IDM_EDIT_COPYADD
-        MENUITEM "Copiar como RT&F",                        IDM_EDIT_COPYRTF
-        MENUITEM "Copiar &GUID al portapapeles\tCtrl+Shift+.",           IDM_EDIT_INSERT_GUID
+        POPUP "&Copiar..."
+        BEGIN
+            MENUITEM "&Copiar\tCtrl+C",                         IDM_EDIT_COPY
+            MENUITEM "C&opiar todo\tAlt+C",                     IDM_EDIT_COPYALL
+            MENUITEM "Copiar a&ñadiendo\tCtrl+E",               IDM_EDIT_COPYADD
+            MENUITEM "Copiar como RT&F",                        IDM_EDIT_COPYRTF
+            MENUITEM "Copiar &GUID al portapapeles\tCtrl+Shift+.",           IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "&Pegar\tCtrl+V",                          IDM_EDIT_PASTE
         MENUITEM "Perm&utar\tCtrl+K",                       IDM_EDIT_SWAP
         MENUITEM "S&eleccionar todo\tCtrl+A",               IDM_EDIT_SELECTALL

@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "Dividir Transa&ções Desfeitas nas Quebras de Linha",   IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "Rec&ortar\tCtrl+X",               IDM_EDIT_CUT
-        MENUITEM "Co&piar\tCtrl+C",                 IDM_EDIT_COPY
-        MENUITEM "Copiar T&udo\tAlt+C",             IDM_EDIT_COPYALL
-        MENUITEM "Cop&iar Adicional\tCtrl+E",       IDM_EDIT_COPYADD
-        MENUITEM "&Copiar como RTF",                IDM_EDIT_COPYRTF
-        MENUITEM "Copiar GUID para a Área de Transfer&ência\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
+        POPUP "Co&piar..."
+        BEGIN
+            MENUITEM "Co&piar\tCtrl+C",                 IDM_EDIT_COPY
+            MENUITEM "Copiar T&udo\tAlt+C",             IDM_EDIT_COPYALL
+            MENUITEM "Cop&iar Adicional\tCtrl+E",       IDM_EDIT_COPYADD
+            MENUITEM "&Copiar como RTF",                IDM_EDIT_COPYRTF
+            MENUITEM "Copiar GUID para a Área de Transfer&ência\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "Co&lar\tCtrl+V",                  IDM_EDIT_PASTE
         MENUITEM "&Trocar\tCtrl+K",                 IDM_EDIT_SWAP
         MENUITEM "S&elecionar Tudo\tCtrl+A",        IDM_EDIT_SELECTALL

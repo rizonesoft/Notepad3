@@ -164,11 +164,14 @@ BEGIN
         MENUITEM "Dividir transac&ção anular nas quebras de linha",     IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "Co&rtar\tCtrl+X",                        IDM_EDIT_CUT
-        MENUITEM "C&opiar\tCtrl+C",                        IDM_EDIT_COPY
-        MENUITEM "Copiar &tudo\tAlt+C",                    IDM_EDIT_COPYALL
-        MENUITEM "Copiar A&dicionar\tCtrl+E",              IDM_EDIT_COPYADD
-        MENUITEM "Copy as RT&F",                           IDM_EDIT_COPYRTF
-        MENUITEM "Copiar &GUID para área de transferência\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
+        POPUP "C&opiar..."
+        BEGIN
+            MENUITEM "C&opiar\tCtrl+C",                        IDM_EDIT_COPY
+            MENUITEM "Copiar &tudo\tAlt+C",                    IDM_EDIT_COPYALL
+            MENUITEM "Copiar A&dicionar\tCtrl+E",              IDM_EDIT_COPYADD
+            MENUITEM "Copy as RT&F",                           IDM_EDIT_COPYRTF
+            MENUITEM "Copiar &GUID para área de transferência\tCtrl+Shift+.",   IDM_EDIT_INSERT_GUID
+        END
         MENUITEM "Co&lar\tCtrl+V",                         IDM_EDIT_PASTE
         MENUITEM "Trocar\tCtrl+K",                         IDM_EDIT_SWAP
         MENUITEM "&Seleccionar tudo\tCtrl+A",              IDM_EDIT_SELECTALL
