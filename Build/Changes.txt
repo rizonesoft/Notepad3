@@ -36,7 +36,7 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 UTH - (UTH)ash provides a hash table for C structures
 
 
-Current BETA Version 7.26.1109.(build_#) (2026-11-09)
+Current BETA Version 7.26.1112.(build_#) (2026-11-12)
 ========================================================
 
 --------------------------------------------------------
@@ -51,6 +51,8 @@ NEW:
 CHANGES:
 --------------------------------------------------------
 [.xxx.1]- .
+[1112.1]- Reorganize agent docs into agent-trail and enhance maintenance guidance (#6099).
+[1112.1]- Group Edit copy commands in submenu (#6096).
 [1109.1]- Reorganize Edit menu across locales and fix command enable states (#6088).
 [1109.1]- Document clipboard monitoring and startup behavior (#6087).
 [1109.1]- Update Scintilla (v5.6.9) (SCI) (LEX) (#6071).
@@ -74,6 +76,8 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.1]- .
+[1112.1]- Fix enclosing brace search with Scintilla matching (#6098).
+[1112.1]- Error from warning due to new compiler (#6095).
 [1109.1]- Reorganize Edit menu across locales and fix command enable states (#6088).
 [1109.1]- Sort scheme dialogs alphabetically while preserving lexer indics (#6086).
 [1109.1]- Keep default schemes first and add sorting regression tests (#6086).
