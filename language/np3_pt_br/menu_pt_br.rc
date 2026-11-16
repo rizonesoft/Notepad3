@@ -90,7 +90,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Modelo Web &1\tCtrl+Shift+1",     CMD_WEBACTION1
             MENUITEM "Modelo Web &2\tCtrl+Shift+2",     CMD_WEBACTION2
-            MENUITEM "Preview current file &3\tCtrl+Shift+3", CMD_WEBACTION3
+            MENUITEM "Pré-visualizar arquivo atual &3\tCtrl+Shift+3", CMD_WEBACTION3
             MENUITEM SEPARATOR
             MENUITEM "Abrir pasta de &trabalho da seleção", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
             MENUITEM "Abrir ar&quivo da seleção",       IDM_EDIT_OPEN_FILE_FROM_SEL
@@ -601,7 +601,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Abrir Ação Web 1",                           CMD_WEBACTION1
         MENUITEM "Abrir Ação Web 2",                           CMD_WEBACTION2
-        MENUITEM "Preview current file", CMD_WEBACTION3
+        MENUITEM "Pré-visualizar arquivo atual", CMD_WEBACTION3
         MENUITEM SEPARATOR
         MENUITEM "Abrir pasta de trabalho da seleção", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
         MENUITEM "Abrir arquivo da seleção",           IDM_EDIT_OPEN_FILE_FROM_SEL
