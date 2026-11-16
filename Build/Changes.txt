@@ -36,13 +36,15 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 UTH - (UTH)ash provides a hash table for C structures
 
 
-Current BETA Version 7.26.1112.(build_#) (2026-11-12)
+Current BETA Version 7.26.1116.(build_#) (2026-11-16)
 ========================================================
 
 --------------------------------------------------------
 NEW:
 --------------------------------------------------------
 [.xxx.1]- .
+[1116.1]- Add configurable zoom tooltip positioning (#6104).
+[1116.1]- Add WebTemplate3 for current-file browser preview (#6103).
 [1109.1]- Add ANSYS APDL using the upstream Lexilla lexer (#6078).
 [1023.1]- Add recovery actions to the Open Recent File dialog (#6045).
 [1023.1]- docs: organize agent guidance into indexed references (#6044).
