@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "편집(&E)"
     BEGIN
-        MENUITEM "읽기 전용 문서(&O)",         IDM_VIEW_READONLY
+        MENUITEM "읽기 전용 문서(&O)\tCtrl+Alt+M", IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "실행 취소(&U)\tCtrl+Z",               IDM_EDIT_UNDO
         MENUITEM "다시 실행(&R)\tCtrl+Y",               IDM_EDIT_REDO

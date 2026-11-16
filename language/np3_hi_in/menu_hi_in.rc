@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "संपादन (&E)"
     BEGIN
-        MENUITEM "दस्तावेज़ केवल पढ़ने योग्य (&O)",         IDM_VIEW_READONLY
+        MENUITEM "दस्तावेज़ केवल पढ़ने योग्य (&O)\tCtrl+Alt+M", IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "पूर्ववत करें (&U)\tCtrl+Z",               IDM_EDIT_UNDO
         MENUITEM "फिर से करें (&R)\tCtrl+Y",              IDM_EDIT_REDO

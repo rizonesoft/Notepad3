@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "编辑(&E)"
     BEGIN
-        MENUITEM "只读(&O)",                                  IDM_VIEW_READONLY
+        MENUITEM "只读(&O)\tCtrl+Alt+M",                       IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "撤销(&U)\tCtrl+Z",                          IDM_EDIT_UNDO
         MENUITEM "重做(&R)\tCtrl+Y",                          IDM_EDIT_REDO
