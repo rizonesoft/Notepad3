@@ -13,7 +13,7 @@ The checker reads these declarations; change them with the approved layout, not 
 - Forbidden adapters: `CLAUDE.md`, `.claude/CLAUDE.md`, `CLAUDE.local.md`.
 - Skill roots: `.claude/skills`, `.github/skills`, `.agents/skills`.
 
-Forbidden adapters are checked in each declared instruction scope. The only IDE adapter is [Copilot instructions](../.github/copilot-instructions.md), a pointer to the canonical root rather than an import or copy. No project `CLAUDE.md` adapters are used.
+Forbidden adapters are checked in each declared instruction scope. The only IDE adapter is [Copilot instructions](../.github/copilot-instructions.md), a pointer to the canonical root, not an import, that repeats the safety and harvest rules word for word for clients that do not follow links; the checker's restated-copy table compares them. No project `CLAUDE.md` adapters are used.
 
 Claude Code must support native `AGENTS.md` loading (v2.1.277 or later, with support enabled). Parent or personal project `CLAUDE.md`/`CLAUDE.local.md` files can suppress the default fallback; check user/managed settings rather than adding project adapters. See the [official loading contract](https://code.claude.com/docs/en/memory.md#agents-md).
 

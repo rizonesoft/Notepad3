@@ -35,4 +35,6 @@ Record a compact ledger: baseline revision; implemented files and commit or `unc
 
 For loading changes, give the user this read-only prompt for each fresh client session:
 
-> Before manually reading instruction files, list startup-loaded instruction paths and any duplicate content. Then read `src/Notepad3.c`, followed by `src/Config/Config.cpp`, one at a time. Record newly injected scoped guidance and whether root rules remain present. Check whether `/trail-review` is discoverable without invoking edits. Report observations and client version, not inferred loading.
+> Before manually reading instruction files, list startup-loaded instruction paths and any duplicate content. Then read `src/Notepad3.c`, followed by `src/Config/Config.cpp`, one at a time. Record newly injected scoped guidance and whether root rules remain present. Report observations and client version, not inferred loading.
+
+The user, not the model, checks that `/trail-review` and `/trail-harvest` complete as slash commands: in Claude Code, `disable-model-invocation: true` hides them from the model, which then reports them missing.
