@@ -55,6 +55,7 @@ Use the default solution target for integration, as CI does. If a narrower targe
 
 ## Tests and CI
 
+- For upstream PRs and CI runs, pass `--repo rizonesoft/Notepad3` to `gh` commands. Unqualified commands in a fork checkout can target the fork, returning a missing PR or an unrelated run; confirm the target with `gh repo view --json nameWithOwner`.
 - Product CI is `.github\workflows\build.yml`: `windows-2025-vs2026`, Release on Win32, x64, x64_AVX2, and ARM64. Version/GUI tests run on Win32 and x64.
 - Docs CI is `.github\workflows\docs.yml`; it runs the existing docs checker independently, including Markdown-only changes that skip the product build.
 - Native regression CI is `.github\workflows\native-tests.yml`: one Windows job runs the three extracted-function harnesses for relevant source, test, fixture, or workflow changes. Docs-only changes do not trigger it; no GUI or full-product coverage is implied.

@@ -7,6 +7,13 @@ function Write-Fixture([string]$path, [string]$text) {
     [void][IO.Directory]::CreateDirectory((Split-Path $dest))
     [IO.File]::WriteAllText($dest, $text)
 }
+function Add-SecondAnchor([string]$page, [string]$symbol) {
+    $newline = if ($page.Contains("`r`n")) { "`r`n" } else { "`n" }
+    $needle = "    symbol: Example$newline"
+    if (!$page.Contains($needle)) { throw 'Fixture anchor line not found' }
+    $replacement = "    symbol: Example${newline}  - path: src/sample.c${newline}    symbol: $symbol${newline}"
+    $page.Replace($needle, $replacement)
+}
 function Git-Fixture {
     & git -C $temp @args 1>$null
     if ($LASTEXITCODE -ne 0) { throw "Fixture git failed: $args" }
@@ -88,13 +95,13 @@ When to read: Topic
     Git-Fixture add -- src/sample.c
     Git-Fixture -c core.hooksPath=NUL commit --quiet -m 'Change source fixture' -m 'Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>'
     Check 'changed source warning' $page 0 'possibly stale (source changed)'
-    Write-Fixture 'agent-trail\topic.md' ($page.Replace("    symbol: Example`n", "    symbol: Example`n  - path: src/sample.c`n    symbol: void`n"))
+    Write-Fixture 'agent-trail\topic.md' (Add-SecondAnchor $page 'void')
     $output = & pwsh -NoProfile -File $checker -DocsDir (Join-Path $temp 'agent-trail') 2>&1
     if ($LASTEXITCODE -ne 0 -or @($output | Where-Object { $_ -match 'possibly stale \(source changed\): src/sample\.c' }).Count -ne 1) {
         throw "Stale warning per path case failed: $($output -join "`n")"
     }
     $passed++
-    Check 'repeated anchor still checks its symbol' ($page.Replace("    symbol: Example`n", "    symbol: Example`n  - path: src/sample.c`n    symbol: Missing`n")) 1 'symbol not found: src/sample.c:Missing'
+    Check 'repeated anchor still checks its symbol' (Add-SecondAnchor $page 'Missing') 1 'symbol not found: src/sample.c:Missing'
     $tree = & git -C $temp rev-parse 'HEAD^{tree}'
     $unrelated = & git -C $temp -c core.hooksPath=NUL commit-tree $tree -m 'Unrelated fixture root' -m 'Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>'
     if ($LASTEXITCODE -ne 0) { throw 'Cannot create non-ancestor fixture' }
