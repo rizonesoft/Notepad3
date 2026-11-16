@@ -90,6 +90,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "用超链接模板 1 打开(&1)(&1)\tCtrl+Shift+1",           CMD_WEBACTION1
             MENUITEM "用超链接模板 2 打开(&2)(&2)\tCtrl+Shift+2",           CMD_WEBACTION2
+            MENUITEM "Preview current file &3\tCtrl+Shift+3", CMD_WEBACTION3
             MENUITEM SEPARATOR
             MENUITEM "打开所选内容所在的文件夹(&C)", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
             MENUITEM "打开所选内容指向的文件(&F)",   IDM_EDIT_OPEN_FILE_FROM_SEL
@@ -600,6 +601,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "用超链接模板 1 打开",                    CMD_WEBACTION1
         MENUITEM "用超链接模板 2 打开",                    CMD_WEBACTION2
+        MENUITEM "Preview current file", CMD_WEBACTION3
         MENUITEM SEPARATOR
         MENUITEM "打开所选内容所在的文件夹", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
         MENUITEM "打开所选内容指向的文件",   IDM_EDIT_OPEN_FILE_FROM_SEL

@@ -854,6 +854,7 @@ typedef struct SETTINGS2_T {
 
     HSTRINGW WebTemplate1;
     HSTRINGW WebTemplate2;
+    HSTRINGW WebTemplate3;
     HSTRINGW HyperlinkShellExURLWithApp;
     HSTRINGW HyperlinkShellExURLCmdLnArgs;
     HSTRINGW FileDlgFilters;
@@ -876,6 +877,7 @@ typedef struct SETTINGS2_T {
 
     WCHAR WebTmpl1MenuName[MICRO_BUFFER];
     WCHAR WebTmpl2MenuName[MICRO_BUFFER];
+    WCHAR WebTmpl3MenuName[MICRO_BUFFER];
     WCHAR DefaultWindowPosition[MINI_BUFFER];
 
     WCHAR PreferredLanguageLocaleName[LOCALE_NAME_MAX_LENGTH + 1];

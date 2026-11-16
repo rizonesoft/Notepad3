@@ -90,6 +90,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Webová šablóna &1\tCtrl+Shift+1",     CMD_WEBACTION1
             MENUITEM "Webová šablóna &2\tCtrl+Shift+2",     CMD_WEBACTION2
+            MENUITEM "Preview current file &3\tCtrl+Shift+3", CMD_WEBACTION3
             MENUITEM SEPARATOR
             MENUITEM "Otvoriť &priečinok obsahujúci výber", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
             MENUITEM "Otvoriť &súbor z výberu",           IDM_EDIT_OPEN_FILE_FROM_SEL
@@ -600,6 +601,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Webová šablóna 1",                       CMD_WEBACTION1
         MENUITEM "Webová šablóna 2",                       CMD_WEBACTION2
+        MENUITEM "Preview current file", CMD_WEBACTION3
         MENUITEM SEPARATOR
         MENUITEM "Otvoriť vybratý &priečinok", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
         MENUITEM "Otvoriť vybratý &súbor",            IDM_EDIT_OPEN_FILE_FROM_SEL

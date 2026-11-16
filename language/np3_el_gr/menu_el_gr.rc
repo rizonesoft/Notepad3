@@ -90,6 +90,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Πρότυπο web &1\tCtrl+Shift+1",      CMD_WEBACTION1
             MENUITEM "Πρότυπο web &2\tCtrl+Shift+2",      CMD_WEBACTION2
+            MENUITEM "Preview current file &3\tCtrl+Shift+3", CMD_WEBACTION3
             MENUITEM SEPARATOR
             MENUITEM "Άνοιγμα Περικλείοντος Φακέλου από την Επιλογή", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
             MENUITEM "Άνοιγμα Α&ρχείου από την Επιλογή",  IDM_EDIT_OPEN_FILE_FROM_SEL
@@ -600,6 +601,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Άνοιγμα ενέργειας Web 1",      CMD_WEBACTION1
         MENUITEM "Άνοιγμα ενέργειας Web 2",      CMD_WEBACTION2
+        MENUITEM "Preview current file", CMD_WEBACTION3
         MENUITEM SEPARATOR
         MENUITEM "Άνοιγμα Περικλείοντος Φακέλου από την Επιλογή", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
         MENUITEM "Άνοιγμα Αρχείου από την Επιλογή",               IDM_EDIT_OPEN_FILE_FROM_SEL

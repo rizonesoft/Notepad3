@@ -90,6 +90,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Plantilla Web &1\tCtrl+Shift+1",      CMD_WEBACTION1
             MENUITEM "Plantilla Web &2\tCtrl+Shift+2",      CMD_WEBACTION2
+            MENUITEM "Preview current file &3\tCtrl+Shift+3", CMD_WEBACTION3
             MENUITEM SEPARATOR
             MENUITEM "Abrir la &carpeta contenedora la selección", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
             MENUITEM "Abrir a&rchivo desde la selección",          IDM_EDIT_OPEN_FILE_FROM_SEL
@@ -600,6 +601,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Abrir Web Acción 1",                         CMD_WEBACTION1
         MENUITEM "Abrir Web Acción 2",                         CMD_WEBACTION2
+        MENUITEM "Preview current file", CMD_WEBACTION3
         MENUITEM SEPARATOR
         MENUITEM "Abrir la carpeta contenedora la selección",  IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
         MENUITEM "Abrir archivo desde la selección",           IDM_EDIT_OPEN_FILE_FROM_SEL

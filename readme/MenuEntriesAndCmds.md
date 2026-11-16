@@ -65,7 +65,8 @@ External actions that operate on the current document or its location.
 | **Execute Document** | `Ctrl+L` | Run the current document through its shell association (e.g. open a `.html` file in the browser). |
 | **Open with…** | `Alt+L` | Show the Windows *"Open with"* picker for the current file. |
 | **Command…** | `Ctrl+R` | Open a free-form command-line dialog pre-populated with the current file's directory. |
-| **Web Template 1 / 2** | `Ctrl+Shift+1` / `Ctrl+Shift+2` | Run a user-configurable web action. Templates and their menu labels are set via `[Settings2] WebTmplFilePath1/2`, `WebTmpl1MenuName/WebTmpl2MenuName` and friends in `Notepad3.ini`. Selection / file path can be substituted into the URL. See `config/Configuration.md`. |
+| **Web Template 1 / 2** | `Ctrl+Shift+1` / `Ctrl+Shift+2` | Run a user-configurable web action. `[Settings2] WebTemplate1/2` and `WebTmpl1MenuName/WebTmpl2MenuName` configure templates and labels. Legacy `%s` templates use selected text; opt-in `${FILE_URL}` templates preview the current saved file without a selection, using the configured browser or the Windows default browser, never the file-extension association. See [Web Actions](config/Configuration.md#web-actions). |
+| **Preview current file (Web Template 3)** | `Ctrl+Shift+3` | Preview the current saved file in the configured or default browser without a selection. `[Settings2] WebTemplate3` defaults to `${FILE_URL}` and accepts the same template modes as slots 1/2; `WebTmpl3MenuName` customizes its label. |
 | **Open File Explorer** | — | Open Windows Explorer with the current file pre-selected. |
 
 ### Revert / encoding / line endings
@@ -650,7 +651,7 @@ A condensed editing menu reachable via right-click on the text:
 - **Undo / Redo / Cut / Copy / Paste / Delete / Select All** — standard editing.
 - **Convert Case → Uppercase / Lowercase / Invert Case / Title Case / Sentence Case** — same conversions as *Edit → Convert*, but apply to the selection **or** to the word at the right-click position when nothing is selected.
 - **Toggle Current Fold** — collapse or expand the fold containing the right-click line. Equivalent to clicking the fold margin's `+` / `-` glyph.
-- **Open Web Action 1 / 2** — same as *File → Launch → Web Template 1 / 2*. Menu labels are customised via `Settings2.WebTmpl1MenuName` / `WebTmpl2MenuName`.
+- **Open Web Action 1 / 2 / Preview current file** — same as *File → Launch → Web Templates 1 / 2 / 3*, including their shortcut hints. Menu labels are customised via `Settings2.WebTmpl1MenuName` / `WebTmpl2MenuName` / `WebTmpl3MenuName`.
 - **Open File Explorer** — open the current document's directory in Windows Explorer with the file selected.
 
 ### Bar area (right-click on title / toolbar / status bar / non-client area)

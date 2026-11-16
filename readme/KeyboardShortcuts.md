@@ -58,8 +58,9 @@ A complete reference for the shortcuts wired into Notepad3 (`src/Notepad3.rc` ac
 | `Ctrl+L` | Launch document with its associated application | NP2 |
 | `Alt+L` | "Open with…" external program | NP2 |
 | `Ctrl+R` | Run command… | NP2 |
-| `Ctrl+Shift+1` | Web template 1 (configurable URL — pass selection / file path) | (N3) |
-| `Ctrl+Shift+2` | Web template 2 | (N3) |
+| `Ctrl+Shift+1` | Web template 1 (`%s` for selected text, or `${FILE_URL}` for current-file preview in the configured or default browser; see [Web Actions](config/Configuration.md#web-actions)) | (N3) |
+| `Ctrl+Shift+2` | Web template 2 (same template modes as above) | (N3) |
+| `Ctrl+Shift+3` | Web template 3 (defaults to browser preview of the current saved file without a selection; see [Web Actions](config/Configuration.md#web-actions)) | (N3) |
 
 ### Encoding
 
