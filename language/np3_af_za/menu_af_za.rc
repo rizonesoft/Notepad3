@@ -90,7 +90,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Web Sjabloon &1\tCtrl+Shift+1",       CMD_WEBACTION1
             MENUITEM "Web Sjabloon &2\tCtrl+Shift+2",       CMD_WEBACTION2
-            MENUITEM "Preview current file &3\tCtrl+Shift+3", CMD_WEBACTION3
+            MENUITEM "Bekyk huidige lêer &3\tCtrl+Shift+3", CMD_WEBACTION3
             MENUITEM SEPARATOR
             MENUITEM "Maak die &Vouer met die Seleksie Oop", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
             MENUITEM "Maak &Lêer Oop vanaf Seleksie",        IDM_EDIT_OPEN_FILE_FROM_SEL
@@ -601,7 +601,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Web Sjabloon 1",                          CMD_WEBACTION1
         MENUITEM "Web Sjabloon 2",                          CMD_WEBACTION2
-        MENUITEM "Preview current file", CMD_WEBACTION3
+        MENUITEM "Bekyk huidige lêer",                      CMD_WEBACTION3
         MENUITEM SEPARATOR
         MENUITEM "Maak die Vouer met die Seleksie Oop",     IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
         MENUITEM "Maak &Lêer Oop vanaf Seleksie",           IDM_EDIT_OPEN_FILE_FROM_SEL
