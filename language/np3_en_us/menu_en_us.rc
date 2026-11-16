@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "&Edit"
     BEGIN
-        MENUITEM "Docu&ment Read Only",         IDM_VIEW_READONLY
+        MENUITEM "Docu&ment Read Only\tCtrl+Alt+M", IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "&Undo\tCtrl+Z",               IDM_EDIT_UNDO
         MENUITEM "&Redo\tCtrl+Y",               IDM_EDIT_REDO

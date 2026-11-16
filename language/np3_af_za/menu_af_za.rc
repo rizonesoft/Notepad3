@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "&Wysig"
     BEGIN
-        MENUITEM "&Dokument Slegs Lees",                    IDM_VIEW_READONLY
+        MENUITEM "&Dokument Slegs Lees\tCtrl+Alt+M",         IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "&Ongedaan\tCtrl+Z",                       IDM_EDIT_UNDO
         MENUITEM "Oo&rdoen\tCtrl+Y",                        IDM_EDIT_REDO

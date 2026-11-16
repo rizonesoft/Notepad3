@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "&Επεξεργασία"
     BEGIN
-        MENUITEM "&Έγγραφο μόνο για ανάγνωση",    IDM_VIEW_READONLY
+        MENUITEM "&Έγγραφο μόνο για ανάγνωση\tCtrl+Alt+M", IDM_VIEW_READONLY
         MENUITEM SEPARATOR
         MENUITEM "Αναίρε&ση\tCtrl+Z",             IDM_EDIT_UNDO
         MENUITEM "Επανάλη&ψη ενέργειας\tCtrl+Y",  IDM_EDIT_REDO

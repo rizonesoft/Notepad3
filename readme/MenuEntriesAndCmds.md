@@ -145,7 +145,7 @@ Editing operations on the document's text. The **Edit** menu is split: the top o
 
 | Menu | Shortcut | Description |
 |---|---|---|
-| **Document Read Only** | — | Toggle the *session-only* read-only flag — typing is ignored. This is **not** the on-disk read-only attribute; see *File → Read Only File Attribute* for that. |
+| **Document Read Only** | `Ctrl+Alt+M` | Toggle the *session-only* read-only flag — typing is ignored. This is **not** the on-disk read-only attribute; see *File → Read Only File Attribute* for that. |
 
 ### Basic clipboard / undo
 
