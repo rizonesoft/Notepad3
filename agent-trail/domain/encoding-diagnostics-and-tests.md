@@ -6,7 +6,7 @@ Companion to [Encoding detection](encoding-detection.md): developer title diagno
 
 ## Developer title diagnostics
 
-With `Settings2.DevDebugMode` enabled, the title shows the final selection first, then the validation evidence and UCHARDET candidate:
+With `DevDebugMode` in `[Settings2]` enabled (runtime `Flags.bDevDebugMode`), the title shows the final selection first, then the validation evidence and UCHARDET candidate:
 
 ```text
 ENC=UTF-16LE <- UTF-16(NUL-S) | U8=invalid | U16=UTF-16LE/valid | UCD(60.0%)=WINDOWS-1252

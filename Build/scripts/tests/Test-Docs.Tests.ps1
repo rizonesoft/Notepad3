@@ -24,6 +24,8 @@ try {
     Git-Fixture init --quiet
     Git-Fixture config user.name 'Docs checker fixture'
     Git-Fixture config user.email 'fixture@example.invalid'
+    # A user-level commit.gpgsign would fail every fixture commit; signing a disposable fixture proves nothing.
+    Git-Fixture config commit.gpgsign false
     $index = @'
 - Topic folders: `architecture`, `playbooks`.
 - Instruction files: `AGENTS.md`, `src/AGENTS.md`.
@@ -35,9 +37,17 @@ try {
 | Topic | [Topic](topic.md) |
 '@
     $legacy = "# Legacy page`n`nWhen to read: Topic"
+    $restated = @(
+        'This rule outranks other repository guidance. Use only read-only Git commands.'
+        'Never print, copy, or commit credentials or secrets.'
+        'End every analysis or implementation task with a trail harvest.'
+        'Worth harvesting: what you would have wanted at the start.'
+    )
+    $copilot = (@('[Rules](../AGENTS.md)', '- The code is the truth; docs can be stale.') + ($restated | ForEach-Object { "- $_" })) -join "`n"
     Write-Fixture 'agent-trail\index.md' $index
     Write-Fixture 'agent-trail\topic.md' $legacy
-    Write-Fixture 'AGENTS.md' '[Index](agent-trail/index.md)'
+    Write-Fixture 'AGENTS.md' ((@('[Index](agent-trail/index.md)', '- The code is the truth.') + $restated) -join "`n")
+    Write-Fixture '.github\copilot-instructions.md' $copilot
     Write-Fixture 'src\sample.c' 'void Example(void) {}'
     Write-Fixture 'src\AGENTS.md' '[Topic](../agent-trail/topic.md)'
     Write-Fixture '.gitignore' 'src/generated.c'
@@ -115,21 +125,43 @@ When to read: Topic
         Check "forbidden adapter $adapter" $legacy 1 'forbidden adapter'
         Remove-Item -LiteralPath (Join-Path $temp $adapter)
     }
-    Write-Fixture '.github\copilot-instructions.md' '[Wrong](../src/AGENTS.md)'
+    Write-Fixture '.github\copilot-instructions.md' $copilot.Replace('[Rules](../AGENTS.md)', '[Wrong](../src/AGENTS.md)')
     Git-Fixture add -- .github/copilot-instructions.md
     Check 'adapter target' $legacy 1 'must link the canonical root AGENTS.md'
-    Write-Fixture '.github\copilot-instructions.md' '[Rules](../AGENTS.md)'
+    Write-Fixture '.github\copilot-instructions.md' $copilot
     Check 'adapter pointer accepted' $legacy 0 'docs OK'
+    Write-Fixture '.github\copilot-instructions.md' $copilot.Replace('read-only Git commands', 'read-only commands')
+    Check 'restated copy differs' $legacy 1 'copy differs from AGENTS.md: This rule outranks'
+    Write-Fixture '.github\copilot-instructions.md' $copilot.Replace("`n- Worth harvesting: what you would have wanted at the start.", '')
+    Check 'restated copy missing' $legacy 1 'lacks the restated copy of: Worth harvesting:'
+    Write-Fixture '.github\copilot-instructions.md' $copilot.Replace('docs can be stale', 'docs may be outdated')
+    Check 'adapted copy not compared' $legacy 0 'docs OK'
+    Write-Fixture '.github\copilot-instructions.md' $copilot.Replace("`n- The code is the truth; docs can be stale.", '')
+    Check 'adapted copy missing' $legacy 1 'lacks the restated copy of: The code is the truth'
+    Write-Fixture '.github\copilot-instructions.md' $copilot
+    Write-Fixture 'AGENTS.md' ((@('[Index](agent-trail/index.md)', '```text', 'Never print, copy, or commit credentials (fenced example).', '```', '- The code is the truth.') + $restated) -join "`n")
+    Check 'fenced source line ignored' $legacy 0 'docs OK'
+    Write-Fixture 'AGENTS.md' ((@('[Index](agent-trail/index.md)') + $restated) -join "`n")
+    Check 'adapted source sentence missing' $legacy 1 'lacks the restated source line: The code is the truth'
+    Write-Fixture 'AGENTS.md' ((@('[Index](agent-trail/index.md)', '- The code is the truth.') + $restated) -join "`n")
     Write-Fixture 'agent-trail\playbooks\review.md' $legacy
     Write-Fixture 'agent-trail\index.md' ($index + "`n| Topic | [Review](playbooks/review.md) |")
     $skillPath = '.claude\skills\trail-review\SKILL.md'
-    Write-Fixture $skillPath '[Review](../../../agent-trail/playbooks/review.md)'
+    $wrapperHead = "---`nname: trail-review`n---`n"
+    Write-Fixture $skillPath ($wrapperHead + '[Review](../../../agent-trail/playbooks/review.md)')
     Check 'untracked wrapper discovered' $legacy 0 'docs OK'
-    Write-Fixture $skillPath '[Wrong](../../../AGENTS.md)'
+    Write-Fixture $skillPath ("---`nname: other`n---`n" + '[Review](../../../agent-trail/playbooks/review.md)')
+    Check 'wrapper name mismatch' $legacy 1 'front-matter name must match its folder'
+    Write-Fixture $skillPath ("name: trail-review`n" + '[Review](../../../agent-trail/playbooks/review.md)')
+    Check 'wrapper name outside front matter' $legacy 1 'front-matter name must match its folder'
+    Write-Fixture $skillPath ("---`nname: trail-review  # wrapper`n---`n" + '[Review](../../../agent-trail/playbooks/review.md)')
+    Check 'wrapper name with comment' $legacy 0 'docs OK'
+    Write-Fixture $skillPath ($wrapperHead + '[Review](../../../agent-trail/playbooks/review.md)')
+    Write-Fixture $skillPath ($wrapperHead + '[Wrong](../../../AGENTS.md)')
     Check 'wrapper needs playbook' $legacy 1 'must link a canonical playbook'
-    Write-Fixture $skillPath '[Missing](../../../agent-trail/playbooks/missing.md)'
+    Write-Fixture $skillPath ($wrapperHead + '[Missing](../../../agent-trail/playbooks/missing.md)')
     Check 'wrapper target missing' $legacy 1 'file not found'
-    Write-Fixture $skillPath '[External](https://example.invalid/review.md)'
+    Write-Fixture $skillPath ($wrapperHead + '[External](https://example.invalid/review.md)')
     Check 'external link not a playbook' $legacy 1 'must link a canonical playbook'
     Remove-Item -LiteralPath (Join-Path $temp $skillPath)
     Remove-Item -LiteralPath (Join-Path $temp 'agent-trail\playbooks\review.md')
@@ -137,9 +169,25 @@ When to read: Topic
     Git-Fixture clone --quiet --depth=1 --no-local $temp (Join-Path $temp 'shallow')
     # The committed legacy page is valid; install metadata pointing to excluded history.
     [IO.File]::WriteAllText((Join-Path $temp 'shallow\agent-trail\topic.md'), $page)
+    # The outer fixture root is a parent folder of the clone, so a CLAUDE.md there must warn.
+    Write-Fixture 'CLAUDE.local.md' 'personal'
     $output = & pwsh -NoProfile -File $checker -DocsDir (Join-Path $temp 'shallow\agent-trail') 2>&1
     if ($LASTEXITCODE -ne 0 -or ($output -join "`n") -notmatch 'verification unavailable \(shallow history\)') {
         throw "Shallow history case failed: $($output -join "`n")"
+    }
+    $passed++
+    if (($output -join "`n") -notmatch [regex]::Escape("parent folder: $(Join-Path $temp 'CLAUDE.local.md')")) {
+        throw "Parent folder warning missing: $($output -join "`n")"
+    }
+    $passed++
+    if ($HOME -and ($output -join "`n") -match [regex]::Escape("parent folder: $(Join-Path $HOME '.claude\CLAUDE.md')")) {
+        throw "User-level CLAUDE.md must not warn: $($output -join "`n")"
+    }
+    $passed++
+    Remove-Item -LiteralPath (Join-Path $temp 'CLAUDE.local.md')
+    $output = & pwsh -NoProfile -File $checker -DocsDir (Join-Path $temp 'missing-docs') 2>&1
+    if ($LASTEXITCODE -ne 1 -or ($output -join "`n") -notmatch '^ERROR  missing docs folder') {
+        throw "Missing docs folder case failed: $($output -join "`n")"
     }
     $passed++
     Write-Fixture 'unexpected\AGENTS.md' '# Unlisted scope'

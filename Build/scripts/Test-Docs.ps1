@@ -7,6 +7,7 @@
     Warnings: page size, possibly stale evidence, unavailable shallow history.
     Checks the index-declared layout, loading exclusions, routing triggers and skill targets.
     Also checks inbound links and recognizable repository paths in prose code spans.
+    Compares restated adapter copies with AGENTS.md and warns on a CLAUDE.md in a parent folder.
     Fenced code blocks and inline code are ignored for links and headings.
 #>
 param(
@@ -16,15 +17,18 @@ param(
 $ErrorActionPreference = 'Stop'
 if (!$DocsDir) {
     $repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
-    $entry = Get-Content -LiteralPath (Join-Path $repo 'AGENTS.md') -Raw -Encoding UTF8
-    if ($entry -notmatch '\]\(([^)#]+/index\.md)\)') { throw 'AGENTS.md must link the topic index' }
+    $entryPath = Join-Path $repo 'AGENTS.md'
+    if (!(Test-Path -LiteralPath $entryPath -PathType Leaf)) { Write-Host "ERROR  missing root instruction file: $entryPath"; exit 1 }
+    $entry = Get-Content -LiteralPath $entryPath -Raw -Encoding UTF8
+    if ($entry -notmatch '\]\(([^)#]+/index\.md)\)') { Write-Host 'ERROR  AGENTS.md must link the topic index'; exit 1 }
     $index = [IO.Path]::GetFullPath($Matches[1], $repo)
     if (!$index.StartsWith($repo + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
-        throw 'Topic index must stay inside the repository'
+        Write-Host 'ERROR  Topic index must stay inside the repository'; exit 1
     }
     $DocsDir = Split-Path $index
 }
-$docs = (Resolve-Path $DocsDir).Path
+if (!(Test-Path -LiteralPath $DocsDir -PathType Container)) { Write-Host "ERROR  missing docs folder: $DocsDir"; exit 1 }
+$docs = (Resolve-Path -LiteralPath $DocsDir).Path
 $root = (Resolve-Path (Join-Path $docs '..')).Path
 $errors = 0
 
@@ -200,6 +204,7 @@ function Test-CodePaths([IO.FileInfo]$file) {
 
 $pages = Get-ChildItem -LiteralPath $docs -Recurse -Filter *.md
 $readme = Join-Path $docs 'index.md'
+if (!(Test-Path -LiteralPath $readme -PathType Leaf)) { Write-Host "ERROR  missing topic index: $readme"; exit 1 }
 $readmeText = (Read-Prose $readme) -join "`n"
 $indexRel = $readme.Substring($root.Length + 1).Replace('\', '/')
 $layout = @{}
@@ -280,7 +285,8 @@ foreach ($skillRoot in $layout['Skill roots']) {
     $dest = Join-Path $root $skillRoot
     if (!(Test-Path -LiteralPath $dest -PathType Container)) { continue }
     foreach ($skill in Get-ChildItem -LiteralPath $dest -Recurse -Filter SKILL.md) {
-        $raw = (Read-Prose $skill.FullName) -join "`n"
+        $proseLines = @(Read-Prose $skill.FullName)
+        $raw = $proseLines -join "`n"
         $targets = @([regex]::Matches($raw, '\]\(([^)\s]+)\)') | Where-Object {
             $link = $_.Groups[1].Value
             if ($link -notmatch '^[a-z][a-z0-9+.-]*:') {
@@ -290,6 +296,16 @@ foreach ($skillRoot in $layout['Skill roots']) {
             }
         })
         if (!$targets.Count) { Evidence-Error "$($skill.FullName) must link a canonical playbook" }
+        $skillName = ''
+        if ($proseLines.Count -and $proseLines[0] -eq '---') {
+            foreach ($line in $proseLines | Select-Object -Skip 1) {
+                if ($line -eq '---') { break }
+                if ($line -cmatch '^name:\s*(.*?)\s*(\s#.*)?$') { $skillName = $Matches[1].Trim('"').Trim("'"); break }
+            }
+        }
+        if ($skillName -cne $skill.Directory.Name) {
+            Evidence-Error "$($skill.FullName) front-matter name must match its folder: $($skill.Directory.Name)"
+        }
         $inbound += $skill
     }
 }
@@ -315,5 +331,46 @@ foreach ($f in $inbound) {
         }
     }
 }
+
+# Deliberate restatements for clients that do not follow links. A comparable copy must equal its
+# source line (ignoring a leading list marker); an adapted copy only needs a line starting with the key.
+$restated = @(
+    @{ Copy = '.github/copilot-instructions.md'; Source = 'AGENTS.md'; Key = 'This rule outranks other repository guidance.'; Comparable = $true }
+    @{ Copy = '.github/copilot-instructions.md'; Source = 'AGENTS.md'; Key = 'Never print, copy, or commit credentials'; Comparable = $true }
+    @{ Copy = '.github/copilot-instructions.md'; Source = 'AGENTS.md'; Key = 'End every analysis or implementation task with a trail harvest'; Comparable = $true }
+    @{ Copy = '.github/copilot-instructions.md'; Source = 'AGENTS.md'; Key = 'Worth harvesting:'; Comparable = $true }
+    @{ Copy = '.github/copilot-instructions.md'; Source = 'AGENTS.md'; Key = 'The code is the truth'; Comparable = $false }
+)
+$restatedLines = @{}
+function Find-RestatedLine([string]$path, [string]$key) {
+    if (!$restatedLines.ContainsKey($path)) {
+        $file = Join-Path $root $path
+        $restatedLines[$path] = if (Test-Path -LiteralPath $file -PathType Leaf) {
+            @(Read-Prose $file | ForEach-Object { $_ -replace '^\s*-\s+', '' })
+        } else { @() }
+    }
+    $restatedLines[$path] | Where-Object { $_.StartsWith($key, [StringComparison]::Ordinal) } | Select-Object -First 1
+}
+foreach ($r in $restated) {
+    $source = Find-RestatedLine $r.Source $r.Key
+    if ($null -eq $source) { Evidence-Error "$($r.Source) lacks the restated source line: $($r.Key)"; continue }
+    $copy = Find-RestatedLine $r.Copy $r.Key
+    if ($null -eq $copy) { Evidence-Error "$($r.Copy) lacks the restated copy of: $($r.Key)" }
+    elseif ($r.Comparable -and $copy -cne $source) { Evidence-Error "$($r.Copy) copy differs from $($r.Source): $($r.Key)" }
+}
+
+# A CLAUDE.md in a parent folder turns off Claude Code's AGENTS.md loading; the home folder's
+# .claude/CLAUDE.md is the user-level file and does not. Walk the path as opened, not resolved.
+$homeClaude = if ($HOME) { [IO.Path]::GetFullPath((Join-Path $HOME '.claude\CLAUDE.md')) } else { $null }
+$parent = Split-Path $root
+while ($parent) {
+    foreach ($name in $layout['Forbidden adapters']) {
+        $candidate = [IO.Path]::GetFullPath((Join-Path $parent $name))
+        if ($candidate -eq $homeClaude -or !(Test-Path -LiteralPath $candidate -PathType Leaf)) { continue }
+        Write-Host "WARN   parent folder: $candidate stops Claude Code from reading AGENTS.md; ask its owner, or set Project instructions (/config) to claude-md-and-agents-md"
+    }
+    $parent = Split-Path $parent
+}
+
 if ($errors) { Write-Host "$errors error(s)"; exit 1 }
 Write-Host "docs OK ($($pages.Count) pages)"

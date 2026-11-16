@@ -20,7 +20,7 @@ Notepad3's C code never includes `src\tinyexprcpp\tinyexpr.h` (C++20). It uses t
 ## Invariants in `tinyexpr_cif.cpp`
 
 - **`te_cif_preprocess()` keeps the input length.** TinyExpr++ error positions index the text it was given, so every rewrite must be length-preserving, otherwise callers (`Edit.c` truncating at `err`, Go To dialog) point to the wrong character. It blanks a leading `=` (spreadsheet prefix the library would strip) and terminated comments (a comment acts as whitespace, so `1/**/2` is a parse error rather than `12`), rewrites `0b<bits>` to decimal padded with blanks (saturates above 64 significant bits), and copies `"..."` literals verbatim. An unterminated `/*` is left for the library to report.
-- **String literals** (library 1.2.0) have no escapes; the next `"` ends them. `te_strip_outer_parens` and `te_expression_is_logical` must skip them.
+- **String literals** have no escapes in the vendored library version; the next `"` ends them. `te_strip_outer_parens` and `te_expression_is_logical` must skip them.
 - **`0b` token boundaries** are operators, `(`, `,`, `;`, whitespace, `~`, and the cp1252 `×` / `÷` (`0xD7` / `0xF7`, as in `te_is_op`).
 - **`te_cif_init_parser()` registers the compat `log` (log10) and the locale separators.** In `te_compile` call it *after* `set_variables_and_functions()`, which replaces the whole set. A user variable named `log` takes precedence (`insert` does not overwrite).
 - **Locale separators:** if the C runtime locale decimal point is `,`, decimal becomes `,` and list separator `;`.
@@ -28,8 +28,7 @@ Notepad3's C code never includes `src\tinyexprcpp\tinyexpr.h` (C++20). It uses t
 
 ## Callers
 
-`Notepad3.c` `_EvalTinyExpr` (`=?` trigger), the status-bar selection evaluator (both via `te_interp_ex`) and `_InterpMultiSelectionTinyExpr`, `Edit.c` `EditModifyNumber`, `EditModifyLinesDlg` (compile once, `te_eval` per line with `L`, `I`, `N`), Go To dialog, `Dialogs.c` autosave interval. Results converted to line/column numbers go through `d2lnc()` (`Helpers.h`; NaN -> 0, out-of-range and Inf clamped, unlike `d2ln`) in `EditModifyLinesDlg` and the Go To dialog; `EditModifyNumber` evaluates `(sel
-)+1` so a trailing `//` comment cannot swallow `)+1`. Input is converted with `te_cp()` (1252) and `te_invalid_chr()`.
+`Notepad3.c` `_EvalTinyExpr` (`=?` trigger), the status-bar selection evaluator (both via `te_interp_ex`) and `_InterpMultiSelectionTinyExpr`, `Edit.c` `EditModifyNumber`, `EditModifyLinesDlg` (compile once, `te_eval` per line with `L`, `I`, `N`), Go To dialog, `Dialogs.c` autosave interval, `Styles.c` dark-mode highlight contrast. Results converted to line/column numbers go through `d2lnc()` (`Helpers.h`; NaN -> 0, out-of-range and Inf clamped, unlike `d2ln`) in `EditModifyLinesDlg` and the Go To dialog; `EditModifyNumber` evaluates `"(%s\n)%s"` with `+1` or `-1`, so a trailing `//` comment cannot swallow the closing parenthesis. Input is converted with `te_cp()` (1252) and `te_invalid_chr()`.
 
 ## Test
 
