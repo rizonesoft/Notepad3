@@ -85,12 +85,12 @@ BEGIN
             MENUITEM "&Relancer avec des droits élevés",            IDM_FILE_LAUNCH_ELEVATED
             MENUITEM SEPARATOR      
             MENUITEM "Exécuter le document\tCtrl+L",                IDM_FILE_LAUNCH
-            MENUITEM "&Ouvrir avec…\tAlt+L",                      IDM_FILE_OPENWITH
-            MENUITEM "Co&mmande…\tCtrl+R",                        IDM_FILE_RUN
+            MENUITEM "&Ouvrir avec…\tAlt+L",                        IDM_FILE_OPENWITH
+            MENUITEM "Co&mmande…\tCtrl+R",                          IDM_FILE_RUN
             MENUITEM SEPARATOR      
-            MENUITEM "Modèle Web &1\tCtrl+Maj+1",                   CMD_WEBACTION1
-            MENUITEM "Modèle Web &2\tCtrl+Maj+2",                   CMD_WEBACTION2
-            MENUITEM "Preview current file &3\tCtrl+Shift+3", CMD_WEBACTION3
+            MENUITEM "Modèle Web &1\tCtrl+Maj+1",                        CMD_WEBACTION1
+            MENUITEM "Modèle Web &2\tCtrl+Maj+2",                        CMD_WEBACTION2
+            MENUITEM "Prévisualiser le fichier actuel &3\tCtrl+Shift+3", CMD_WEBACTION3
             MENUITEM SEPARATOR      
             MENUITEM "Ouvrir le dossier &contenant la sélection",   IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
             MENUITEM "Ouvrir le &fichier à partir de la sélection", IDM_EDIT_OPEN_FILE_FROM_SEL
@@ -601,7 +601,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Ouvrir Action Web &1",                   CMD_WEBACTION1
         MENUITEM "Ouvrir Action Web &2",                   CMD_WEBACTION2
-        MENUITEM "Preview current file", CMD_WEBACTION3
+        MENUITEM "Prévisualiser le fichier actuel",        CMD_WEBACTION3
         MENUITEM SEPARATOR
         MENUITEM "Ouvrir le dossier &contenant la sélection",   IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
         MENUITEM "Ouvrir le &fichier à partir de la sélection", IDM_EDIT_OPEN_FILE_FROM_SEL
