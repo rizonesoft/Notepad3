@@ -14,7 +14,7 @@ Read only the procedure needed for the task. These are checklists, not permissio
 
 Stop and ask with a recommendation if intended behavior is ambiguous, a vendored patch needs alteration, reproduction is unsafe, or the fix requires broader refactoring.
 
-Output: cause, focused change, exact evidence, remaining uncertainty, and the [root policy's doc-impact line](../../AGENTS.md#documentation). Ask before writing proposed docs. Do not equate stub-harness success with full application behavior.
+Output: cause, focused change, exact evidence, remaining uncertainty, and the [root policy's trail harvest](../../AGENTS.md#documentation). Ask before writing proposed docs. Do not equate stub-harness success with full application behavior.
 
 ## Small feature
 
@@ -71,7 +71,7 @@ Output: commands, configuration, results, and boundaries; report unrun checks pl
 
 1. Ask whether the entry prevents a repeated mistake and cannot safely be derived from nearby code.
 2. Correct/remove false guidance, or add one atomic invariant, rationale, or trap. Link the canonical page instead of copying it.
-3. Include source path/symbol, inspected source commit, and verification method. On metadata-pilot pages, respect the stated evidence scope; do not silently certify unchecked claims.
+3. Include source path/symbol, inspected source commit, and verification method. On pages with verification metadata, respect the stated evidence scope; do not silently certify unchecked claims.
 4. Keep uncertainty in [Open questions](../open-questions.md) with a concrete verification step. Only @RaiKoHoff may approve `human-verified` status.
 5. Ask for approval before writing the proposal; then present a reviewable diff within that scope, index any new page, and run the docs checker.
 
@@ -86,6 +86,6 @@ Entry:
 Anchor: repository path + symbol (or explain a path-only anchor)
 Verified-at: inspected source commit
 Evidence: command/result or inspected code range
-Status: agent-observed | unverified-agent-observation
+Status: agent-observed (unverified parts go to open questions)
 Requested review:
 ```

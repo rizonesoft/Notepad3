@@ -20,7 +20,7 @@ Constraints for first-party Scintilla calls and native zoom call-tip positioning
 
 ## Native zoom call-tip discovery
 
-- Preserve the combined discovery checks in `_FindZoomCallTip` / `_PositionZoomCallTip`: enumerate the current thread's windows, match the editor's top-level owner (`GA_ROOT`), require class `CallTip`, and compare window extra bytes at offset zero with the nonzero `SciCall_GetDirectPointer()`. Windows promotes the child editor's popup owner to its top-level window; owner matching alone cannot distinguish editors sharing that window ([implementation](../../src/Notepad3.c#L13665-L13692)).
+- Preserve the combined discovery checks in `_FindZoomCallTip` / `_PositionZoomCallTip`: enumerate the current thread's windows, match the editor's top-level owner (`GA_ROOT`), require class `CallTip`, and compare window extra bytes at offset zero with the nonzero `SciCall_GetDirectPointer()`. Windows promotes the child editor's popup owner to its top-level window; owner matching alone cannot distinguish editors sharing that window (both in `src\Notepad3.c`).
 - Never cache the popup HWND across cancellation. `CallTip::CallTipCancel` destroys the native window; rediscover it after showing the next tip ([lifetime](../../scintilla/src/CallTip.cxx#L312-L317)).
 - Revalidate this contract when upgrading Scintilla: the class and instance-pointer storage are vendored Win32 internals, not a public popup-HWND API. `ScintillaWin::CTWndProc` stores the instance via `SetWindowPointer`, whose offset-zero storage must still agree with `SCI_GETDIRECTPOINTER` ([creation](../../scintilla/win32/ScintillaWin.cxx#L4134-L4147), [storage](../../scintilla/win32/PlatWin.cxx#L78-L84), [direct pointer](../../scintilla/win32/ScintillaWin.cxx#L2278-L2279)).
 

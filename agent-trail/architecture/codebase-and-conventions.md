@@ -44,11 +44,11 @@ Notepad3 is a Windows-only Win32 C/C++ text editor built on Scintilla/Lexilla, d
 
 ## Libraries and external tools
 
-- `scintilla\` and `lexilla\`, with NP3 patches under `np3_patches\` and offline documentation under `doc\`. Read their current [Scintilla](../../scintilla/version.txt) and [Lexilla](../../lexilla/version.txt) version files instead of relying on copied version numbers.
+- `scintilla\` and `lexilla\`, each with NP3 patch records in its `np3_patches` folder and offline documentation in its `doc` folder. Read their current [Scintilla](../../scintilla/version.txt) and [Lexilla](../../lexilla/version.txt) version files instead of relying on copied version numbers.
 - `scintilla\pcre2\` ([version](../../scintilla/pcre2/version.txt)), `src\uchardet\`, `src\tinyexprcpp\`, `src\uthash\`, and `src\crypto\` (Rijndael/SHA-256 for AES-256).
 - grepWin is external and is not built from source. Pre-built executables are in `grepWin\portables\`; language files are in `grepWin\translations\`.
   - Runtime lookup in `src\Dialogs.c`: `Settings2.GrepWinPath` → `<ModuleDir>\grepWin\grepWin-x{64,86}_portable.exe` → `%APPDATA%\Rizonesoft\Notepad3\grepWin\`.
-  - `grepWinLangResName[]` in `MuiLanguage.c` maps Notepad3 locales to `.lang` filenames, written to `grepwin.ini` before launch.
+  - `grepWinLangFileName[]` (and `grepWinLangFileNamePortableApps[]`) in `MuiLanguage.c` maps Notepad3 locales to `.lang` filenames, written to `grepwin.ini` before launch.
   - `Build\make_portable_*.cmd` packages both portable executables, LICENSE, and all `.lang` files.
   - ARM64 uses the x64 executable via emulation (`#if defined(_M_ARM64)` in `Notepad3.c`).
 
@@ -67,7 +67,7 @@ DeclareSciCallR0(GetTextLength, GETTEXTLENGTH, DocPos);                  // DocP
 DeclareSciCallR1(SupportsFeature, SUPPORTSFEATURE, bool, int, feature);  // bool SciCall_SupportsFeature(int)
 ```
 
-- Group undoable edits with `_BEGIN_UNDO_ACTION_` / `_END_UNDO_ACTION_` (`Notepad3.h`); they also throttle notifications during bulk edits.
+- Group undoable edits with `UndoTransActionBegin()` / `EndUndoTransAction()` (`Notepad3.h`); they suppress document-change notifications only at the outermost undo level. For bulk edits that must also suppress redraw, nest `LimitNotifyEvents()` / `RestoreNotifyEvents()`.
 - `InfoBoxLng()` returns `MAKELONG(button, mode)`. When a suppression key is non-NULL, a saved-answer replay sets the high word; do not compare the raw result with `IDNO`. Use `IsYesOkay()`, `IsRetryContinue()`, `IsNoCancelClose()`, or extract `INFOBOX_ANSW(r)` / `INFOBOX_MODE(r)`.
 - For new Scintilla/Lexilla APIs, consult the vendored versions in `scintilla\version.txt` and `lexilla\version.txt` and the offline docs under `scintilla\doc\` and `lexilla\doc\`.
 

@@ -13,4 +13,4 @@ When to read: Search/replace, PCRE2, URL hotspots
 
 ## URL hotspots
 
-`HYPLNK_REGEX_FULL` in `src\Edit.c` recognizes `https?://`, `ftp://`, `file:///`, `file://`, `mailto:`, `www.`, and `ftp.` forms. The pattern permits selected punctuation inside parenthesized URL segments and requires a non-punctuation final character to avoid consuming sentence punctuation.
+`HYPLNK_REGEX_FULL` in `src\Edit.c` recognizes `https?://`, `ftp://`, `file:///`, `file://`, `mailto:`, `www.`, and `ftp.` forms. The pattern permits selected punctuation inside parenthesized URL segments and requires a non-punctuation final character to avoid consuming sentence punctuation. `HYPLNK_REGEX_FILEREF` separately recognizes bare file paths (drive, UNC or `.`/`..` relative) followed by `:line`, `:line:col` or `(line)`.

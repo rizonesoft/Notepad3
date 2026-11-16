@@ -13,11 +13,11 @@ The checker reads these declarations; change them with the approved layout, not 
 - Forbidden adapters: `CLAUDE.md`, `.claude/CLAUDE.md`, `CLAUDE.local.md`.
 - Skill roots: `.claude/skills`, `.github/skills`, `.agents/skills`.
 
-Forbidden adapters are checked in each declared instruction scope. The only IDE adapter is [Copilot instructions](../.github/copilot-instructions.md), a pointer to the canonical root rather than an import or copy. No project `CLAUDE.md` adapters are used.
+Forbidden adapters are checked in each declared instruction scope. The only IDE adapter is [Copilot instructions](../.github/copilot-instructions.md), a pointer to the canonical root, not an import; its restated rules are listed in the [root documentation policy](../AGENTS.md#documentation). No project `CLAUDE.md` adapters are used.
 
 Claude Code must support native `AGENTS.md` loading (v2.1.277 or later, with support enabled). Parent or personal project `CLAUDE.md`/`CLAUDE.local.md` files can suppress the default fallback; check user/managed settings rather than adding project adapters. See the [official loading contract](https://code.claude.com/docs/en/memory.md#agents-md).
 
-After loading-related changes, verify in fresh sessions: Copilot `/instructions`, Claude `/context all` for startup files, then sequential reads in `src` and `src/Config` for on-demand scopes. Check transcripts for retained root rules and duplicate content. Verify `/trail-review` discovery separately; one wrapper lives under `.claude/skills`, with no duplicate wrapper for another client. VS Code skill discovery in that location remains unverified; use the playbook link if unavailable. File existence or this already-loaded session cannot prove runtime loading.
+After loading-related changes, verify in fresh sessions: Copilot `/instructions`, Claude `/context all` for startup files, then sequential reads in `src` and `src/Config` for on-demand scopes. Check transcripts for retained root rules and duplicate content. Verify `/trail-review` and `/trail-harvest` discovery separately; their wrappers live under `.claude/skills`, with no duplicate wrapper for another client. VS Code skill discovery in that location remains unverified; use the playbook link if unavailable. File existence or this already-loaded session cannot prove runtime loading.
 
 ## Writing a page
 
@@ -25,16 +25,16 @@ After loading-related changes, verify in fresh sessions: Copilot `/instructions`
 - Keep one coherent topic per page, with actionable constraints before background and exact source/test paths or symbols.
 - Link canonical guidance instead of copying it; add any new page to the routing table below.
 - Put a plain `When to read: <trigger>` line on each page; repeat its trigger verbatim in that page's routing row.
-- Mark schematic paths with `<placeholder>` segments or globs so the checker does not mistake examples for literal files.
+- Mark schematic paths with `<placeholder>` segments or globs so the checker does not mistake examples for literal files. A code span whose first segment is a top-level repository entry is checked as a repository path, so name files that live outside the repository (a parent folder's adapter, for example) in prose.
 - The docs checker warns above 8 KB. Split only when it improves retrieval; short pages do not need expansion.
 
 ### Verification metadata pilot
 
 Only [PathLib](domain/pathlib.md) and [configuration](domain/configuration-and-ini.md) currently pilot metadata. Existing pages without it remain accepted. Headers use `status`, a full `verified-at` source commit, `owner`, and `anchors` entries with repository-relative `path` plus a literal `symbol`. A path-only anchor must instead include a `reason`. Keep the YAML subset simple: scalar fields and the anchor list, no multiline values or aliases.
 
-Use `agent-observed` for code-backed agent findings; only @RaiKoHoff may approve `human-verified` status. Ownership routes review; it does not certify correctness. Each pilot states its evidence scope so the commit does not imply every sentence was verified. Uncertain observations stay in [Open questions](open-questions.md). Do not bulk-stamp old pages with the latest commit.
+Use `agent-observed` for code-backed agent findings; only @RaiKoHoff may approve `human-verified` status. Ownership routes review; it does not certify correctness. Each pilot states its evidence scope so the commit does not imply every sentence was verified. Uncertain observations stay in [Open questions](open-questions.md). Do not bulk-stamp old pages with the latest commit. Move `verified-at` forward only after repeating the evidence the page's scope names, including any test run; otherwise the new commit certifies checks nobody repeated.
 
-The checker rejects broken/escaping links, undeclared topic folders, mismatched routing triggers, forbidden adapters, broken skill targets, malformed declared metadata, missing/untracked anchor files, absent literal symbols, and invalid/non-ancestor verification commits. Recognizable repository paths in prose code spans must exist; a missing ignored path warns because it may be generated, and an unknown-root path also warns. Source changes or dirty anchored files warn "possibly stale", not "wrong"; shallow missing history warns "verification unavailable". These are structural checks, not semantic or runtime-loading proof. Run checker regression cases with `pwsh -NoProfile -File Build\scripts\tests\Test-Docs.Tests.ps1` when changing the checker.
+The checker rejects broken/escaping links, undeclared topic folders, mismatched routing triggers, forbidden adapters, broken skill targets, skill front-matter names that differ from their folder, adapter copies that differ from the rules they restate, a missing root instruction file, index, or docs folder, malformed declared metadata, missing/untracked anchor files, absent literal symbols, and invalid/non-ancestor verification commits. Recognizable repository paths in prose code spans must exist; a missing ignored path warns because it may be generated, and an unknown-root path also warns. A forbidden adapter in a parent folder of the repository warns, because it stops Claude Code from reading `AGENTS.md`. Source changes or dirty anchored files warn "possibly stale" once per file, not "wrong"; shallow missing history warns "verification unavailable". These are structural checks, not semantic or runtime-loading proof. Run checker regression cases with `pwsh -NoProfile -File Build\scripts\tests\Test-Docs.Tests.ps1` when changing the checker.
 
 ### Maintenance and pruning
 
@@ -51,6 +51,7 @@ The checker rejects broken/escaping links, undeclared topic folders, mismatched 
 |---|---|
 | Bug fix, small feature, characterization test, focused check, or doc proposal | [Maintenance playbooks](playbooks/maintenance.md) (read only the relevant procedure) |
 | Instructions, routing, adapters, skills, or the docs checker | [Review the agent docs](playbooks/docs-review.md) |
+| Harvest session insights into the agent trail | [Trail harvest](playbooks/trail-harvest.md) |
 | Menus, commands, source layout, coding conventions, buffers | [Codebase and conventions](architecture/codebase-and-conventions.md) |
 | Scintilla message replacements, zoom call-tip positioning, or Scintilla upgrades | [Scintilla API usage](architecture/scintilla-api-usage.md) |
 | Build, MSBuild, CI, test scripts, Python scripting | [Windows build and test](build-and-test/windows-build-and-test.md) |
