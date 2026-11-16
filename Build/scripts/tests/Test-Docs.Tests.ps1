@@ -88,6 +88,13 @@ When to read: Topic
     Git-Fixture add -- src/sample.c
     Git-Fixture -c core.hooksPath=NUL commit --quiet -m 'Change source fixture' -m 'Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>'
     Check 'changed source warning' $page 0 'possibly stale (source changed)'
+    Write-Fixture 'agent-trail\topic.md' ($page.Replace("    symbol: Example`n", "    symbol: Example`n  - path: src/sample.c`n    symbol: void`n"))
+    $output = & pwsh -NoProfile -File $checker -DocsDir (Join-Path $temp 'agent-trail') 2>&1
+    if ($LASTEXITCODE -ne 0 -or @($output | Where-Object { $_ -match 'possibly stale \(source changed\): src/sample\.c' }).Count -ne 1) {
+        throw "Stale warning per path case failed: $($output -join "`n")"
+    }
+    $passed++
+    Check 'repeated anchor still checks its symbol' ($page.Replace("    symbol: Example`n", "    symbol: Example`n  - path: src/sample.c`n    symbol: Missing`n")) 1 'symbol not found: src/sample.c:Missing'
     $tree = & git -C $temp rev-parse 'HEAD^{tree}'
     $unrelated = & git -C $temp -c core.hooksPath=NUL commit-tree $tree -m 'Unrelated fixture root' -m 'Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>'
     if ($LASTEXITCODE -ne 0) { throw 'Cannot create non-ancestor fixture' }
@@ -117,6 +124,7 @@ When to read: Topic
     Check 'absolute external code path warns' ($legacy + "`n``${temp}-outside\missing.c``") 0 'unverified path outside known repository roots'
     Check 'link anchor missing' ($legacy + "`n[Missing](#missing)") 1 'anchor not found'
     Check 'link anchor exists' ($legacy + "`n[Heading](#legacy-page)") 0 'docs OK'
+    Check 'stray backtick does not hide links' ($legacy + "`nPress the `` key.`n[Missing](missing.md) uses ``foo``.") 1 'missing.md (file not found)'
     Check 'unknown root warning' ($legacy + "`n" + '`other-repository/missing.c`') 0 'unverified path outside known repository roots'
     Check 'schematic paths skipped' ($legacy + "`n" + '`src/styleLex<name>.c` `src/*.c`') 0 'docs OK'
     Check 'fenced examples ignored' ($legacy + "`n``````text`n[Missing](missing.md) ``src/missing.c```n``````") 0 'docs OK'
@@ -180,14 +188,24 @@ When to read: Topic
         throw "Parent folder warning missing: $($output -join "`n")"
     }
     $passed++
-    if ($HOME -and ($output -join "`n") -match [regex]::Escape("parent folder: $(Join-Path $HOME '.claude\CLAUDE.md')")) {
-        throw "User-level CLAUDE.md must not warn: $($output -join "`n")"
-    }
-    $passed++
+    # Exercised only where the user-level file exists above the fixture (a typical %TEMP% under the home folder).
+    $homeClaude = if ($HOME) { Join-Path $HOME '.claude\CLAUDE.md' }
+    if ($homeClaude -and (Test-Path -LiteralPath $homeClaude) -and $temp.StartsWith($HOME + '\', [StringComparison]::OrdinalIgnoreCase)) {
+        if (($output -join "`n") -match [regex]::Escape("parent folder: $homeClaude")) {
+            throw "User-level CLAUDE.md must not warn: $($output -join "`n")"
+        }
+        $passed++
+    } else { Write-Host 'Skipped user-level CLAUDE.md case: no ~/.claude/CLAUDE.md above the fixture.' }
     Remove-Item -LiteralPath (Join-Path $temp 'CLAUDE.local.md')
     $output = & pwsh -NoProfile -File $checker -DocsDir (Join-Path $temp 'missing-docs') 2>&1
     if ($LASTEXITCODE -ne 1 -or ($output -join "`n") -notmatch '^ERROR  missing docs folder') {
         throw "Missing docs folder case failed: $($output -join "`n")"
+    }
+    $passed++
+    [void][IO.Directory]::CreateDirectory((Join-Path $temp 'no-index'))
+    $output = & pwsh -NoProfile -File $checker -DocsDir (Join-Path $temp 'no-index') 2>&1
+    if ($LASTEXITCODE -ne 1 -or ($output -join "`n") -notmatch '^ERROR  missing topic index') {
+        throw "Missing topic index case failed: $($output -join "`n")"
     }
     $passed++
     Write-Fixture 'unexpected\AGENTS.md' '# Unlisted scope'

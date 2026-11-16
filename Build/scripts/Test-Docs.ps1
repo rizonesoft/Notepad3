@@ -37,6 +37,15 @@ function Evidence-Error([string]$message) {
     $script:errors++
 }
 
+function Test-AnchorSymbol([string]$rel, [string]$path, [string]$dest, [hashtable]$a) {
+    if ($a.symbol) {
+        $pattern = '(?<!\w)' + [regex]::Escape($a.symbol) + '(?!\w)'
+        if ((Get-Content -LiteralPath $dest -Raw -Encoding UTF8) -cnotmatch $pattern) {
+            Evidence-Error "$rel symbol not found: ${path}:$($a.symbol)"
+        }
+    } elseif (!$a.reason) { Evidence-Error "$rel path-only anchor needs a reason: $path" }
+}
+
 # Deliberately limited to the documented scalar/list schema; no YAML dependency.
 function Test-Evidence([string]$file, [string]$rel) {
     $lines = @(Get-Content -LiteralPath $file -Encoding UTF8)
@@ -100,9 +109,16 @@ function Test-Evidence([string]$file, [string]$rel) {
         & git -C $root merge-base --is-ancestor $commit HEAD 2>$null
         if ($LASTEXITCODE -ne 0) { Evidence-Error "$rel verification commit is not an ancestor of HEAD"; return }
     }
+    # Path-level checks and warnings run once per anchored file; each anchor still checks its symbol.
+    $pathOk = @{}
     foreach ($a in $anchors) {
         $path = $a.path.Replace('\', '/')
         $dest = [IO.Path]::GetFullPath((Join-Path $root $path))
+        if ($pathOk.ContainsKey($path)) {
+            if ($pathOk[$path]) { Test-AnchorSymbol $rel $path $dest $a }
+            continue
+        }
+        $pathOk[$path] = $false
         if ($path -match '(^/|:|(^|/)\.\.(/|$)|[*?\[])' -or
             !$dest.StartsWith($root + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
             Evidence-Error "$rel anchor must stay inside the repository: $path"; continue
@@ -112,12 +128,8 @@ function Test-Evidence([string]$file, [string]$rel) {
         if (!(Test-Path -LiteralPath $dest -PathType Leaf)) {
             Evidence-Error "$rel anchor file not found: $path"; continue
         }
-        if ($a.symbol) {
-            $pattern = '(?<!\w)' + [regex]::Escape($a.symbol) + '(?!\w)'
-            if ((Get-Content -LiteralPath $dest -Raw -Encoding UTF8) -cnotmatch $pattern) {
-                Evidence-Error "$rel symbol not found: ${path}:$($a.symbol)"
-            }
-        } elseif (!$a.reason) { Evidence-Error "$rel path-only anchor needs a reason: $path" }
+        $pathOk[$path] = $true
+        Test-AnchorSymbol $rel $path $dest $a
         if ($historyAvailable) {
             & git -C $root --literal-pathspecs diff --quiet $commit HEAD -- $path
             if ($LASTEXITCODE -eq 1) { Write-Host "WARN   $rel possibly stale (source changed): $path" }
@@ -156,7 +168,7 @@ function Test-Contained([string]$path) {
 
 function Test-Links([IO.FileInfo]$file, [bool]$inboundOnly = $false) {
     $rel = $file.FullName.Substring($root.Length + 1).Replace('\', '/')
-    $text = (Read-Prose $file.FullName) -join "`n" -replace '`[^`]*`', ''
+    $text = (Read-Prose $file.FullName) -join "`n" -replace '`[^`\n]*`', ''
     foreach ($m in [regex]::Matches($text, '\]\(([^)\s]+)\)')) {
         $target = $m.Groups[1].Value
         if ($target -match '^[a-z][a-z0-9+.-]*:') { continue }
@@ -274,6 +286,7 @@ if (Test-Path -LiteralPath (Join-Path $root 'readme')) {
     $inbound += Get-ChildItem -LiteralPath (Join-Path $root 'readme') -Recurse -Filter *.md
 }
 $instructionPaths = @(& git -C $root ls-files -- '*.md' 2>$null)
+if ($LASTEXITCODE -ne 0) { Evidence-Error 'cannot enumerate tracked Markdown files' }
 foreach ($path in $instructionPaths) {
     $dest = Join-Path $root $path
     if ((Test-Path -LiteralPath $dest -PathType Leaf) -and
