@@ -85,6 +85,8 @@ Before an approved vendored-library change, consult the [Lexilla patch registry]
 
 ### Dynamic string/path buffer lifetime
 
+`StrgCreate(NULL)` can return a valid handle without allocating its text buffer; `StrgGet(h) == NULL` before initialization is normal, not proof of allocation failure. Initialize the fresh handle with `StrgReset(h, text)` and check its result (`> 0`) before using the text ([source](../../src/DynStrg.c#L432-L473): `StrgCreate`, `StrgReset`, `StrgGet`).
+
 Never use a pointer returned by `Path_WriteAccessBuf()` / `StrgWriteAccessBuf()` after an operation that may reallocate or swap the same handle's buffer. Examples include `Path_CanonicalizeEx`, `Path_Swap` / `StrgSwap`, `Path_ExpandEnvStrings` / `ExpandEnvironmentStrgs`, `Path_Append` / `Path_Reset`, `StrgCat` / `StrgInsert` / `StrgFormat` / `StrgReset`, and `Path_NormalizeEx` / `Path_AbsoluteFromApp` / `Path_RelativeToApp`.
 
 - For read-only access afterward, use `Path_Get(h)` / `StrgGet(h)`.
