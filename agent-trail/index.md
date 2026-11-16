@@ -52,7 +52,7 @@ The checker rejects broken/escaping links, undeclared topic folders, mismatched 
 | Bug fix, small feature, characterization test, focused check, or doc proposal | [Maintenance playbooks](playbooks/maintenance.md) (read only the relevant procedure) |
 | Instructions, routing, adapters, skills, or the docs checker | [Review the agent docs](playbooks/docs-review.md) |
 | Menus, commands, source layout, coding conventions, buffers | [Codebase and conventions](architecture/codebase-and-conventions.md) |
-| Replacing home-grown `Edit.c` code with Scintilla messages | [Scintilla API usage](architecture/scintilla-api-usage.md) |
+| Scintilla message replacements, zoom call-tip positioning, or Scintilla upgrades | [Scintilla API usage](architecture/scintilla-api-usage.md) |
 | Build, MSBuild, CI, test scripts, Python scripting | [Windows build and test](build-and-test/windows-build-and-test.md) |
 | `Edit.c` load/save, atomic save, file watching, Open/MRU dialogs | [File I/O](domain/file-io.md) |
 | Any Win32 file/path call on `HPATHL` | [PathLib](domain/pathlib.md) |

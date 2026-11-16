@@ -13626,29 +13626,160 @@ int NP3_GetZoomPercent()
 
 //=============================================================================
 //
+//  _GetZoomCallTipViewport()
+//
+static bool _GetZoomCallTipViewport(RECT* rcViewport)
+{
+    if (!GetClientRect(Globals.hwndEdit, rcViewport)) {
+        return false;
+    }
+    rcViewport->left += SciCall_GetMarginLeft();
+    int const margins = SciCall_GetMargins();
+    for (int i = 0; i < margins; ++i) {
+        rcViewport->left += SciCall_GetMarginWidthN(i);
+    }
+    rcViewport->right -= SciCall_GetMarginRight();
+    return !IsRectEmpty(rcViewport);
+}
+
+
+//=============================================================================
+//
+//  _GetZoomCallTipCaret()
+//
+static DocPos _GetZoomCallTipCaret(const RECT* rcViewport)
+{
+    DocPos const pos = SciCall_GetCurrentPos();
+    if (!SciCall_GetLineVisible(SciCall_LineFromPosition(pos))) {
+        return -1;
+    }
+    POINT const pt = { (LONG)SciCall_PointXFromPosition(pos), (LONG)SciCall_PointYFromPosition(pos) };
+    return PtInRect(rcViewport, pt) ? pos : -1;
+}
+
+
+//=============================================================================
+//
+//  _FindZoomCallTip()
+//
+static BOOL CALLBACK _FindZoomCallTip(HWND hwnd, LPARAM lParam)
+{
+    if (GetWindow(hwnd, GW_OWNER) != GetAncestor(Globals.hwndEdit, GA_ROOT)) {
+        return TRUE;
+    }
+    WCHAR className[32] = { L'\0' };
+    if (!GetClassName(hwnd, className, COUNTOF(className)) || lstrcmp(className, L"CallTip") != 0) {
+        return TRUE;
+    }
+    // Scintilla's CTWndProc stores the editor's direct pointer in window extra bytes.
+    LONG_PTR const sci = (LONG_PTR)SciCall_GetDirectPointer();
+    if (!sci || GetWindowLongPtr(hwnd, 0) != sci) {
+        return TRUE;
+    }
+
+    *(HWND*)lParam = hwnd;
+    return FALSE;
+}
+
+
+//=============================================================================
+//
+//  _PositionZoomCallTip()
+//
+static void _PositionZoomCallTip(const RECT* rcViewport, const POINT* mouse)
+{
+    HWND hwnd = NULL;
+    EnumThreadWindows(GetCurrentThreadId(), _FindZoomCallTip, (LPARAM)&hwnd);
+
+    RECT rcTip;
+    if (!hwnd || !GetWindowRect(hwnd, &rcTip)) {
+        return;
+    }
+
+    LONG const width = rcTip.right - rcTip.left;
+    LONG const height = rcTip.bottom - rcTip.top;
+    int const gap = ScaleIntToDPI(Globals.hwndEdit, 4);
+    LONG x = max_l(rcViewport->left, rcViewport->right - width - gap);
+    LONG y = min_l(rcViewport->top + gap, max_l(rcViewport->top, rcViewport->bottom - height));
+    RECT rcPosition = { x, y, x + width, y + height };
+    if (mouse) {
+        SetRect(&rcPosition, mouse->x, mouse->y, mouse->x + 1, mouse->y + 1);
+    }
+    MONITORINFO mi = { sizeof(mi) };
+    bool const hasMonitor = GetMonitorInfo(MonitorFromRect(&rcPosition, MONITOR_DEFAULTTONEAREST), &mi);
+    if (mouse) {
+        RECT bounds = *rcViewport;
+        if (hasMonitor && !IntersectRect(&bounds, rcViewport, &mi.rcWork)) {
+            bounds = mi.rcWork;
+        }
+        x = mouse->x + gap;
+        y = mouse->y + gap;
+        if (x + width > bounds.right) {
+            x = mouse->x - width - gap;
+        }
+        if (y + height > bounds.bottom) {
+            y = mouse->y - height - gap;
+        }
+        x = max_l(bounds.left, min_l(x, bounds.right - width));
+        y = max_l(bounds.top, min_l(y, bounds.bottom - height));
+    }
+    if (hasMonitor) {
+        x = max_l(mi.rcWork.left, min_l(x, mi.rcWork.right - width));
+        y = max_l(mi.rcWork.top, min_l(y, mi.rcWork.bottom - height));
+    }
+    SetWindowPos(hwnd, NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+}
+
+
+//=============================================================================
+//
 //  ShowZoomCallTip()
 //
 void ShowZoomCallTip()
 {
     static char chToolTip[64] = { '\0' };
     int const   delayClr = Settings2.ZoomTooltipTimeout;
-    if (delayClr >= (_MQ_TIMER_CYCLE << 3)) {
-
-        StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", NP3_GetZoomPercent());
-
-        DocPos const iPos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
-
-        int const iXOff = SciCall_GetXOffset();
-        SciCall_SetXOffset(-4); // move away from margin
-
-        SciCall_CallTipSetPosition(true);  // show above
-        SciCall_CallTipShow(iPos, chToolTip);
-        
-        SciCall_SetXOffset(iXOff);
-        _DelayClearCallTip(delayClr);
-    } else {
+    if (delayClr < (_MQ_TIMER_CYCLE << 3)) {
         Sci_CallTipCancelEx();
+        return;
     }
+
+    StringCchPrintfA(chToolTip, COUNTOF(chToolTip), "Zoom: %i%%", NP3_GetZoomPercent());
+
+    RECT rcViewport;
+    bool const hasViewport = Settings2.ZoomTooltipPosition != ZOOM_TOOLTIP_UPPER_LEFT && _GetZoomCallTipViewport(&rcViewport);
+    POINT origin = { 0, 0 };
+    bool const hasScreenViewport = hasViewport && ClientToScreen(Globals.hwndEdit, &origin);
+    POINT mouse = { 0, 0 };
+    bool const atMouse = hasScreenViewport && Settings2.ZoomTooltipPosition == ZOOM_TOOLTIP_MOUSE
+                        && GetCursorPos(&mouse) && ScreenToClient(Globals.hwndEdit, &mouse) && PtInRect(&rcViewport, mouse);
+    DocPos pos = -1;
+    if (atMouse) {
+        pos = SciCall_GetCurrentPos(); // Only used to create and measure the popup.
+    } else if (hasViewport && (Settings2.ZoomTooltipPosition == ZOOM_TOOLTIP_CARET || Settings2.ZoomTooltipPosition == ZOOM_TOOLTIP_MOUSE)) {
+        pos = _GetZoomCallTipCaret(&rcViewport);
+    }
+    bool const useLegacyAnchor = pos < 0;
+    int const iXOff = SciCall_GetXOffset();
+    if (useLegacyAnchor) {
+        pos = SciCall_PositionFromLine(SciCall_GetFirstVisibleLine());
+        SciCall_SetXOffset(-4); // move away from margin
+    }
+    SciCall_CallTipSetPosition(useLegacyAnchor);
+    SciCall_CallTipShow(pos, chToolTip);
+    if (useLegacyAnchor) {
+        SciCall_SetXOffset(iXOff);
+    }
+
+    if (hasScreenViewport && (Settings2.ZoomTooltipPosition == ZOOM_TOOLTIP_UPPER_RIGHT || atMouse)) {
+        OffsetRect(&rcViewport, origin.x, origin.y);
+        if (atMouse) {
+            mouse.x += origin.x;
+            mouse.y += origin.y;
+        }
+        _PositionZoomCallTip(&rcViewport, atMouse ? &mouse : NULL);
+    }
+    _DelayClearCallTip(delayClr);
 }
 
 
