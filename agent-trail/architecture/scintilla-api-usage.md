@@ -1,8 +1,8 @@
 # Scintilla API Usage Notes
 
-When to read: Replacing home-grown `Edit.c` code with Scintilla messages
+When to read: Scintilla message replacements, zoom call-tip positioning, or Scintilla upgrades
 
-Verified constraints to check before replacing home-grown `src\Edit.c` code with a Scintilla message. Wrapper rules are in [Codebase and conventions](codebase-and-conventions.md).
+Constraints for first-party Scintilla calls and native zoom call-tip positioning. Wrapper rules are in [Codebase and conventions](codebase-and-conventions.md).
 
 ## Reading document text
 
@@ -17,6 +17,14 @@ Verified constraints to check before replacing home-grown `src\Edit.c` code with
 | `SCI_SETLINEINDENTATION` | Does nothing when the requested indentation width equals the current one (`Document::SetLineIndentation`, `scintilla\src\Document.cxx`). It cannot convert tabs to spaces (or back) at the same width. |
 | `SCI_REPLACETARGETMINIMAL` | `Sci_ReplaceTargetTestChgHist` (`src\SciCall.h`) uses it only when change history is enabled; otherwise a full `SCI_REPLACETARGET`. |
 | `SCI_MARKERNEXT` / `SCI_MARKERPREVIOUS` | Do not see change-history markers (21-24); `_MarkerNext` / `_MarkerPrevious` in `src\Edit.c` scan linearly for them. |
+
+## Native zoom call-tip discovery
+
+- Preserve the combined discovery checks in `_FindZoomCallTip` / `_PositionZoomCallTip`: enumerate the current thread's windows, match the editor's top-level owner (`GA_ROOT`), require class `CallTip`, and compare window extra bytes at offset zero with the nonzero `SciCall_GetDirectPointer()`. Windows promotes the child editor's popup owner to its top-level window; owner matching alone cannot distinguish editors sharing that window ([implementation](../../src/Notepad3.c#L13665-L13692)).
+- Never cache the popup HWND across cancellation. `CallTip::CallTipCancel` destroys the native window; rediscover it after showing the next tip ([lifetime](../../scintilla/src/CallTip.cxx#L312-L317)).
+- Revalidate this contract when upgrading Scintilla: the class and instance-pointer storage are vendored Win32 internals, not a public popup-HWND API. `ScintillaWin::CTWndProc` stores the instance via `SetWindowPointer`, whose offset-zero storage must still agree with `SCI_GETDIRECTPOINTER` ([creation](../../scintilla/win32/ScintillaWin.cxx#L4134-L4147), [storage](../../scintilla/win32/PlatWin.cxx#L78-L84), [direct pointer](../../scintilla/win32/ScintillaWin.cxx#L2278-L2279)).
+
+Ownership isolation and popup recreation are exercised by `test\TestZoomTooltipPosition.cpp` using hidden Win32 windows. Those checks do not establish visible rendering or physical monitor-DPI behavior.
 
 ## Wrapped but unused
 

@@ -232,6 +232,13 @@ typedef enum FR_STATES { FND_NOP = 0, NXT_NOT_FND, NXT_FND, NXT_WRP_FND, PRV_NOT
 typedef enum FR_UPD_MODES { FRMOD_IGNORE = 0, FRMOD_NORM, FRMOD_WRAPED } FR_UPD_MODES;
 typedef enum WIN_DISPL_MODE { WINDSPMOD_AUTO = 0, WINDSPMOD_DARK, WINDSPMOD_LIGHT } WIN_DISPL_MODE;
 
+typedef enum ZOOM_TOOLTIP_POSITION {
+    ZOOM_TOOLTIP_UPPER_LEFT = 0,
+    ZOOM_TOOLTIP_UPPER_RIGHT = 1,
+    ZOOM_TOOLTIP_CARET = 2,
+    ZOOM_TOOLTIP_MOUSE = 3
+} ZOOM_TOOLTIP_POSITION;
+
 //==== Statusbar ==============================================================
 
 typedef WCHAR prefix_t[MICRO_BUFFER];
@@ -834,6 +841,7 @@ typedef struct SETTINGS2_T {
     bool    DiscardOnClosingUntitledPasteBoard;
     int     ExitOnESCSkipLevel;
     int     ZoomTooltipTimeout;
+    int     ZoomTooltipPosition;
     int     WrapAroundTooltipTimeout;
     int     LargeIconScalePrecent;
     int     DarkModeHiglightContrast;

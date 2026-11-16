@@ -1499,6 +1499,11 @@ void LoadSettings()
 
     Settings2.ZoomTooltipTimeout = clampi(IniSectionGetInt(IniSecSettings2, L"ZoomTooltipTimeout", 3200), 0, 10000);
 
+    Settings2.ZoomTooltipPosition = IniSectionGetInt(IniSecSettings2, L"ZoomTooltipPosition", ZOOM_TOOLTIP_UPPER_LEFT);
+    if (Settings2.ZoomTooltipPosition < ZOOM_TOOLTIP_UPPER_LEFT || Settings2.ZoomTooltipPosition > ZOOM_TOOLTIP_MOUSE) {
+        Settings2.ZoomTooltipPosition = ZOOM_TOOLTIP_UPPER_LEFT;
+    }
+
     Settings2.WrapAroundTooltipTimeout = clampi(IniSectionGetInt(IniSecSettings2, L"WrapAroundTooltipTimeout", 2000), 0, 10000);
 
     Settings2.LargeIconScalePrecent = clampi(IniSectionGetInt(IniSecSettings2, L"LargeIconScalePrecent", 150), 100, 1000);

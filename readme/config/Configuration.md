@@ -552,6 +552,16 @@ Controls ESC key behavior:
 
 Zoom tooltip display duration in milliseconds. Set to `0` to disable.
 
+#### `ZoomTooltipPosition=0`
+
+Selects where the temporary zoom tooltip appears:
+- **0** (default): Existing upper-left placement.
+- **1**: Upper-right of the editor text area, constrained to the monitor work area.
+- **2**: Near the caret, if it is visible; otherwise upper-left.
+- **3**: Near the mouse pointer inside the editor text area, including space beyond line endings and empty editor space. If the pointer is outside that area or its coordinates cannot be obtained, use the visible caret, then upper-left.
+
+Caret mode is text-anchored. Mouse mode uses pixel coordinates and does not require virtual-space selection to be enabled. It offsets the tooltip from the sampled pointer, flips to the other side near right/bottom edges, and constrains placement to the editor text area and monitor work area where the tooltip fits. The pointer is sampled when the tooltip appears; the tooltip does not follow later mouse movement. Missing or unsupported values use `0`. `ZoomTooltipTimeout` still controls the display duration.
+
 #### `WrapAroundTooltipTimeout=2000`
 
 Search wrap-around tooltip duration in milliseconds. Set to `0` to disable.

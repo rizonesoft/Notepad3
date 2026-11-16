@@ -36,6 +36,8 @@ Output: implemented behavior, extension points, evidence, and explicit exclusion
 4. Run against unchanged production source first; record stub/integration boundaries.
 5. Change the expectation only as part of the requested behavior change.
 
+Prefer linking self-contained production helpers where practical. Test doubles must preserve observable allocation/lifecycle and return-value contracts; a more permissive double can hide a regression. The [WebTemplate runner](../../test/TestWebTemplates.ps1) links production `DynStrg.c` to exercise the real [lazy-string initialization contract](../architecture/codebase-and-conventions.md#dynamic-stringpath-buffer-lifetime).
+
 Stop if isolation requires product refactoring or desktop interaction could disturb another user. Recommend a manual reproduction record or separately approved test seam.
 
 Output: characterized boundary, cases, stubs, baseline outcome, and uncovered integration.
