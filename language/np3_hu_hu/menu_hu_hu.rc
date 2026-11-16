@@ -90,6 +90,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Web sablon &2\tCtrl+Shift+2",        CMD_WEBACTION2
             MENUITEM "Web sablon &1\tCtrl+Shift+1",        CMD_WEBACTION1
+            MENUITEM "Preview current file &3\tCtrl+Shift+3", CMD_WEBACTION3
             MENUITEM SEPARATOR
             MENUITEM "Kijelölésben lévő &mappa megnyitása", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
             MENUITEM "Fájl me&gnyitása a kijelölésből",    IDM_EDIT_OPEN_FILE_FROM_SEL
@@ -600,6 +601,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Webes művelet 1",            CMD_WEBACTION1
         MENUITEM "Webes művelet 2",            CMD_WEBACTION2
+        MENUITEM "Preview current file", CMD_WEBACTION3
         MENUITEM SEPARATOR
         MENUITEM "Kijelölésben lévő mappa megnyitása", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
         MENUITEM "Fájl megnyitása a kijelölésből", IDM_EDIT_OPEN_FILE_FROM_SEL

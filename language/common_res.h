@@ -582,6 +582,7 @@
 #define CMD_CTX_INVERTCASE              20068
 #define CMD_CTX_TITLECASE               20069
 #define CMD_CTX_SENTENCECASE            20070
+#define CMD_WEBACTION3                  20071
 
 #define IDS_MUI_MENU_LANGUAGE           34500
 #define IDS_MUI_LANG_EN_US              34501

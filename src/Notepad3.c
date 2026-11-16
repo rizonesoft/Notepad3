@@ -955,6 +955,7 @@ static void _InitGlobals()
 
     Settings2.WebTemplate1 = StrgCreate(NULL);
     Settings2.WebTemplate2 = StrgCreate(NULL);
+    Settings2.WebTemplate3 = StrgCreate(NULL);
     Settings2.HyperlinkShellExURLWithApp = StrgCreate(NULL);
     Settings2.HyperlinkShellExURLCmdLnArgs = StrgCreate(NULL);
     Settings2.FileDlgFilters = StrgCreate(NULL);
@@ -1136,6 +1137,7 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     StrgDestroy(Settings2.FileDlgFilters);
     StrgDestroy(Settings2.HyperlinkShellExURLCmdLnArgs);
     StrgDestroy(Settings2.HyperlinkShellExURLWithApp);
+    StrgDestroy(Settings2.WebTemplate3);
     StrgDestroy(Settings2.WebTemplate2);
     StrgDestroy(Settings2.WebTemplate1);
 
@@ -4632,14 +4634,7 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         imenu = bMargin ? MNU_MARGIN : MNU_EDIT;
 
         if (imenu == MNU_EDIT) {
-            // modify configured items
             HMENU const hStdCtxMenu = GetSubMenu(hMenuCtx, imenu);
-            if (StrIsNotEmpty(Settings2.WebTmpl1MenuName)) {
-                ModifyMenu(hStdCtxMenu, CMD_WEBACTION1, MF_BYCOMMAND | MF_STRING, CMD_WEBACTION1, Settings2.WebTmpl1MenuName);
-            }
-            if (StrIsNotEmpty(Settings2.WebTmpl2MenuName)) {
-                ModifyMenu(hStdCtxMenu, CMD_WEBACTION2, MF_BYCOMMAND | MF_STRING, CMD_WEBACTION2, Settings2.WebTmpl2MenuName);
-            }
 
             // Enable selection-acting commands based on selection-or-word-at-click-position.
             s_iCtxMenuClickPos = SciCall_CharPositionFromPointClose(pt.x, pt.y);
@@ -4815,6 +4810,151 @@ LRESULT MsgExitMenuLoop(HWND hwnd, WPARAM wParam)
         }
     }
     return (LRESULT)wParam;
+}
+
+
+//=============================================================================
+//
+//  WebTemplate preparation
+//
+static bool _IsFileWebTemplate(LPCWSTR webTemplate)
+{
+    return StrIsNotEmpty(webTemplate) && (wcsstr(webTemplate, L"${FILE_URL}") != NULL);
+}
+
+static bool _CanRunWebTemplate(LPCWSTR webTemplate, bool canUseSelection)
+{
+    if (!StrIsNotEmpty(webTemplate)) {
+        return false;
+    }
+    return _IsFileWebTemplate(webTemplate)
+        ? Path_IsNotEmpty(Paths.CurrentFile)
+        : canUseSelection;
+}
+
+static void _UpdateWebTemplateMenu(HMENU hmenu, bool canUseSelection)
+{
+    const struct {
+        UINT command;
+        LPCWSTR name;
+        HSTRINGW webTemplate;
+    } actions[] = {
+        { CMD_WEBACTION1, Settings2.WebTmpl1MenuName, Settings2.WebTemplate1 },
+        { CMD_WEBACTION2, Settings2.WebTmpl2MenuName, Settings2.WebTemplate2 },
+        { CMD_WEBACTION3, Settings2.WebTmpl3MenuName, Settings2.WebTemplate3 }
+    };
+    for (size_t i = 0; i < COUNTOF(actions); ++i) {
+        WCHAR label[SMALL_BUFFER] = { L'\0' };
+        if (!GetMenuStringW(hmenu, actions[i].command, label, COUNTOF(label), MF_BYCOMMAND)) {
+            continue;
+        }
+        WCHAR mainLabel[SMALL_BUFFER] = { L'\0' };
+        GetMenuStringW(Globals.hMainMenu, actions[i].command, mainLabel, COUNTOF(mainLabel), MF_BYCOMMAND);
+        if (StrIsNotEmpty(actions[i].name)) {
+            StringCchCopyW(label, COUNTOF(label), actions[i].name);
+        }
+        LPWSTR oldShortcut = StrChr(label, L'\t');
+        if (oldShortcut) {
+            *oldShortcut = L'\0';
+        }
+        LPCWSTR const shortcut = StrChr(mainLabel, L'\t');
+        if (shortcut) {
+            StringCchCatW(label, COUNTOF(label), shortcut);
+        }
+        MENUITEMINFO item = { sizeof(item) };
+        item.fMask = MIIM_STRING;
+        item.dwTypeData = label;
+        SetMenuItemInfoW(hmenu, actions[i].command, FALSE, &item);
+        EnableCmd(hmenu, actions[i].command, _CanRunWebTemplate(StrgGet(actions[i].webTemplate), canUseSelection));
+    }
+}
+
+static HRESULT _GetDefaultBrowserClass(HSTRINGW browserClass)
+{
+    DWORD length = 0;
+    HRESULT hr = AssocQueryStringW(ASSOCF_IS_PROTOCOL, ASSOCSTR_PROGID, L"https", NULL, NULL, &length);
+    if (FAILED(hr)) {
+        return hr;
+    }
+    if (!length) {
+        return HRESULT_FROM_WIN32(ERROR_NO_ASSOCIATION);
+    }
+    LPWSTR buffer = StrgWriteAccessBuf(browserClass, length);
+    // Failed growth can leave a non-null buffer with its old capacity.
+    if (!buffer || (StrgGetAllocLength(browserClass) < length)) {
+        return E_OUTOFMEMORY;
+    }
+    hr = AssocQueryStringW((ASSOCF)(ASSOCF_IS_PROTOCOL | ASSOCF_NOTRUNCATE), ASSOCSTR_PROGID, L"https", NULL, buffer, &length);
+    if (FAILED(hr)) {
+        return (hr == E_POINTER) ? HRESULT_FROM_WIN32(ERROR_INSUFFICIENT_BUFFER) : hr;
+    }
+    StrgSanitize(browserClass);
+    return StrgIsNotEmpty(browserClass) ? S_OK : HRESULT_FROM_WIN32(ERROR_NO_ASSOCIATION);
+}
+
+static bool _PrepareWebTemplate(LPCWSTR webTemplate, HSTRINGW target)
+{
+    if (!_IsFileWebTemplate(webTemplate)) {
+        WCHAR selectedText[STRINGW_MAX_URL_LENGTH + 1] = { L'\0' };
+        if (EditGetSelectedText(selectedText, COUNTOF(selectedText)) <= 1) {
+            return false;
+        }
+        selectedText[wcscspn(selectedText, L"\r\n\t")] = L'\0';
+        StrgFormat(target, webTemplate, selectedText);
+        ExpandEnvironmentStrgs(target, false);
+        return true;
+    }
+
+    if (Path_IsEmpty(Paths.CurrentFile)) {
+        return false;
+    }
+    if (StrgReset(target, webTemplate) <= 0) {
+        InfoBoxLastError(webTemplate, ERROR_OUTOFMEMORY);
+        return false;
+    }
+
+    ExpandEnvironmentStrgs(target, false);
+    if (wcsstr(StrgGet(target), L"%s")) {
+        InfoBoxLastError(webTemplate, ERROR_INVALID_PARAMETER);
+        return false;
+    }
+    LPCWSTR const arguments = StrgGet(Settings2.HyperlinkShellExURLCmdLnArgs);
+    if (StrgIsNotEmpty(Settings2.HyperlinkShellExURLWithApp) && StrIsNotEmpty(arguments) && !wcsstr(arguments, URLPLACEHLDR)) {
+        InfoBoxLastError(arguments, ERROR_INVALID_PARAMETER);
+        return false;
+    }
+    if (Settings.SaveBeforeRunningTools && !FileSave(FSF_Ask)) {
+        return false;
+    }
+    if (!Path_IsExistingFile(Paths.CurrentFile)) {
+        InfoBoxLastError(Path_Get(Paths.CurrentFile), ERROR_FILE_NOT_FOUND);
+        return false;
+    }
+
+    size_t const pathLength = Path_GetLength(Paths.CurrentFile);
+    if ((pathLength >= INTERNET_MAX_URL_LENGTH) || (wcsncmp(Path_Get(Paths.CurrentFile), L"\\\\?\\", 4) == 0)) {
+        InfoBoxLastError(Path_Get(Paths.CurrentFile), ERROR_INVALID_NAME);
+        return false;
+    }
+
+    HSTRINGW fileUrl = StrgCreate(NULL);
+    DWORD urlLength = (DWORD)(pathLength * 3 + COUNTOF(L"file:///"));
+    LPWSTR urlBuffer = StrgWriteAccessBuf(fileUrl, urlLength);
+    HRESULT const hr = (urlBuffer && (StrgGetAllocLength(fileUrl) >= urlLength))
+        ? UrlCreateFromPathW(Path_Get(Paths.CurrentFile), urlBuffer, &urlLength, 0)
+        : E_OUTOFMEMORY;
+    if (SUCCEEDED(hr)) {
+        StrgSanitize(fileUrl);
+        // Keep percent escapes and environment-looking filenames out of format/expansion passes.
+        StrgReplace(target, L"${FILE_URL}", StrgGet(fileUrl));
+    }
+    StrgDestroy(fileUrl);
+    if (FAILED(hr)) {
+        DWORD const error = (HRESULT_FACILITY(hr) == FACILITY_WIN32) ? HRESULT_CODE(hr) : (DWORD)hr;
+        InfoBoxLastError(Path_Get(Paths.CurrentFile), (hr == E_POINTER) ? ERROR_INSUFFICIENT_BUFFER : error);
+        return false;
+    }
+    return true;
 }
 
 
@@ -5321,8 +5461,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     bool const bIsHLink = (SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, iCurPos) > 0);
     EnableCmd(hmenu, CMD_OPEN_HYPERLINK, !mrs && bIsHLink);
     EnableCmd(hmenu, CMD_COPY_HYPERLINK, !mrs && bIsHLink);
-    EnableCmd(hmenu, CMD_WEBACTION1, !se && !mrs && bPosInSel && !bIsHLink);
-    EnableCmd(hmenu, CMD_WEBACTION2, !se && !mrs && bPosInSel && !bIsHLink);
+    _UpdateWebTemplateMenu(hmenu, !se && !mrs && bPosInSel && !bIsHLink);
 
     i = (int)Path_IsNotEmpty(Settings2.AdministrationTool);
     EnableCmd(hmenu, IDM_HELP_ADMINEXE, i);
@@ -8197,72 +8336,65 @@ static bool _HandleCmdCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPara
         break;
 
     case CMD_WEBACTION1:
-    case CMD_WEBACTION2: {
+    case CMD_WEBACTION2:
+    case CMD_WEBACTION3: {
 
-        const wchar_t* const wchWebTemplate = ((iLoWParam == CMD_WEBACTION1) ? StrgGet(Settings2.WebTemplate1) : StrgGet(Settings2.WebTemplate2));
+        HSTRINGW const hstr_webTemplate = (iLoWParam == CMD_WEBACTION1) ? Settings2.WebTemplate1
+            : ((iLoWParam == CMD_WEBACTION2) ? Settings2.WebTemplate2 : Settings2.WebTemplate3);
+        LPCWSTR const wchWebTemplate = StrgGet(hstr_webTemplate);
 
-        if (StrIsNotEmpty(wchWebTemplate)) {
-
-            WCHAR        wszSelection[STRINGW_MAX_URL_LENGTH + 1] = { L'\0' };
-            size_t const cchSelection = EditGetSelectedText(wszSelection, COUNTOF(wszSelection));
-
-            if (1 < cchSelection) {
-
-                HPATHL hdir = Path_Copy(Paths.CurrentFile);
-                Path_RemoveFileSpec(hdir);
-
-                // Check lpszSelection and truncate bad WCHARs
-                WCHAR* lpsz = StrChr(wszSelection, L'\r');
-                if (lpsz) {
-                    *lpsz = L'\0';
-                }
-
-                lpsz = StrChr(wszSelection, L'\n');
-                if (lpsz) {
-                    *lpsz = L'\0';
-                }
-
-                lpsz = StrChr(wszSelection, L'\t');
-                if (lpsz) {
-                    *lpsz = L'\0';
-                }
-
-                HSTRINGW hstr_hyplnk = StrgCreate(NULL);
-                StrgFormat(hstr_hyplnk, wchWebTemplate, wszSelection);
-                ExpandEnvironmentStrgs(hstr_hyplnk, false);
-
-                if (StrgIsNotEmpty(Settings2.HyperlinkShellExURLWithApp))
-                {
-                    HSTRINGW hstr_params = StrgCopy(Settings2.HyperlinkShellExURLCmdLnArgs);
-                    StrgReplace(hstr_params, URLPLACEHLDR, StrgGet(hstr_hyplnk));
-
-                    SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-                    sei.fMask = SEE_MASK_DEFAULT;
-                    sei.hwnd = NULL;
-                    sei.lpVerb = NULL;
-                    sei.lpFile = StrgGet(Settings2.HyperlinkShellExURLWithApp);
-                    sei.lpParameters = StrgGet(hstr_params);
-                    sei.lpDirectory = Path_Get(hdir);
-                    sei.nShow = SW_SHOWNORMAL;
-                    ShellExecuteExW(&sei);
-
-                    StrgDestroy(hstr_params);
-                }
-                else {
-                    SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-                    sei.fMask = SEE_MASK_NOZONECHECKS;
-                    sei.hwnd = NULL;
-                    sei.lpVerb = NULL;
-                    sei.lpFile = StrgGet(hstr_hyplnk);
-                    sei.lpParameters = NULL;
-                    sei.lpDirectory = Path_Get(hdir);
-                    sei.nShow = SW_SHOWNORMAL;
-                    ShellExecuteExW(&sei);
-                }
-                StrgDestroy(hstr_hyplnk);
-                Path_Release(hdir);
+        if (!_CanRunWebTemplate(wchWebTemplate, true)) {
+            break;
+        }
+        bool const bFileTemplate = _IsFileWebTemplate(wchWebTemplate);
+        bool const bExplicitBrowser = StrgIsNotEmpty(Settings2.HyperlinkShellExURLWithApp);
+        HSTRINGW hstr_browserClass = NULL;
+        if (bFileTemplate && !bExplicitBrowser) {
+            hstr_browserClass = StrgCreate(NULL);
+            HRESULT const hr = _GetDefaultBrowserClass(hstr_browserClass);
+            if (FAILED(hr)) {
+                DWORD const error = (HRESULT_FACILITY(hr) == FACILITY_WIN32) ? HRESULT_CODE(hr) : (DWORD)hr;
+                InfoBoxLastError(L"https", error);
+                StrgDestroy(hstr_browserClass);
+                break;
             }
         }
+        HSTRINGW hstr_hyplnk = StrgCreate(NULL);
+        if (!_PrepareWebTemplate(wchWebTemplate, hstr_hyplnk)) {
+            StrgDestroy(hstr_hyplnk);
+            StrgDestroy(hstr_browserClass);
+            break;
+        }
+
+        HPATHL hdir = Path_Copy(Paths.CurrentFile);
+        Path_RemoveFileSpec(hdir);
+        HSTRINGW hstr_params = NULL;
+
+        SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
+        sei.fMask = bFileTemplate ? SEE_MASK_FLAG_NO_UI : SEE_MASK_DEFAULT;
+        sei.lpFile = StrgGet(hstr_hyplnk);
+        sei.lpDirectory = Path_Get(hdir);
+        sei.nShow = SW_SHOWNORMAL;
+        if (bExplicitBrowser) {
+            hstr_params = StrgCopy(Settings2.HyperlinkShellExURLCmdLnArgs);
+            StrgReplace(hstr_params, URLPLACEHLDR, StrgGet(hstr_hyplnk));
+            sei.lpFile = StrgGet(Settings2.HyperlinkShellExURLWithApp);
+            sei.lpParameters = (bFileTemplate && !StrgIsNotEmpty(hstr_params)) ? StrgGet(hstr_hyplnk) : StrgGet(hstr_params);
+        } else if (bFileTemplate) {
+            // Force the browser, never the document's file-extension association.
+            sei.fMask |= SEE_MASK_CLASSNAME;
+            sei.lpClass = StrgGet(hstr_browserClass);
+        } else {
+            sei.fMask = SEE_MASK_NOZONECHECKS;
+        }
+        if (!ShellExecuteExW(&sei) && bFileTemplate) {
+            DWORD const error = GetLastError();
+            InfoBoxLastError(sei.lpFile, error);
+        }
+        StrgDestroy(hstr_params);
+        Path_Release(hdir);
+        StrgDestroy(hstr_hyplnk);
+        StrgDestroy(hstr_browserClass);
     }
     break;
 

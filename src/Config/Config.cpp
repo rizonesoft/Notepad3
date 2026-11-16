@@ -1487,6 +1487,10 @@ void LoadSettings()
     //~GetMenuStringW(Globals.hMainMenu, CMD_WEBACTION2, WebTmpl2MenuName, COUNTOF(WebTmpl2MenuName), MF_BYCOMMAND))
     IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTmpl2MenuName", L"", Settings2.WebTmpl2MenuName, COUNTOF(Settings2.WebTmpl2MenuName));
 
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTemplate3", L"${FILE_URL}", pPathBuffer, PATHLONG_MAX_CCH);
+    StrgReset(Settings2.WebTemplate3, pPathBuffer);
+    IniSectionGetStringNoQuotes(IniSecSettings2, L"WebTmpl3MenuName", L"", Settings2.WebTmpl3MenuName, COUNTOF(Settings2.WebTmpl3MenuName));
+
     Settings2.LexerSQLNumberSignAsComment = IniSectionGetBool(IniSecSettings2, L"LexerSQLNumberSignAsComment", true);
 
     Settings2.AtomicFileSave = IniSectionGetBool(IniSecSettings2, L"AtomicFileSave", true);

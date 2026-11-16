@@ -225,9 +225,10 @@ BEGIN
     "0",            IDM_VIEW_RESETZOOM,               VIRTKEY, CONTROL, NOINVERT
     //~"0",            MMMMMMMMMMMMMMMMMM,               VIRTKEY, SHIFT, CONTROL, NOINVERT  (intercepted?)
     "1",            CMD_STRINGIFY,                    VIRTKEY, CONTROL, NOINVERT
-    "1",            CMD_WEBACTION1,                   VIRTKEY, SHIFT, CONTROL, NOINVERT
     "2",            CMD_STRINGIFY2,                   VIRTKEY, CONTROL, NOINVERT
+    "1",            CMD_WEBACTION1,                   VIRTKEY, SHIFT, CONTROL, NOINVERT
     "2",            CMD_WEBACTION2,                   VIRTKEY, SHIFT, CONTROL, NOINVERT
+    "3",            CMD_WEBACTION3,                   VIRTKEY, SHIFT, CONTROL, NOINVERT
     "3",            CMD_EMBRACE,                      VIRTKEY, CONTROL, NOINVERT
     "4",            CMD_EMBRACE2,                     VIRTKEY, CONTROL, NOINVERT
     "5",            CMD_EMBRACE3,                     VIRTKEY, CONTROL, NOINVERT
