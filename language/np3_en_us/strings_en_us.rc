@@ -103,7 +103,6 @@ BEGIN
     IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Untitled"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Read Only)"
     IDS_MUI_FILELOCKED      "<Exclusive>"
     IDS_MUI_LOADFILE        "Loading ""%s""..."
     IDS_MUI_SAVEFILE        "Saving ""%s""..."
@@ -220,7 +219,7 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Preserving original File Modification Timestamp enabled\nThis option will stay for this session!"
     IDS_MUI_OUT_OFF_OCCMRK   "Running out of Occurrence Markers (Bookmark/Highlight)!"
-    IDS_MUI_DOCUMENT_READONLY
+    IDS_MUI_DOCUMENT_VIEWONLY
                              "The document is locked for view only. Keep the lock to prevent editing?"
 END
 

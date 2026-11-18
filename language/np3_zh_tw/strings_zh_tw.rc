@@ -103,7 +103,6 @@ BEGIN
     IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "未命名"
     IDS_MUI_TITLEEXCERPT    "「%s」"
-    IDS_MUI_READONLY        "(唯讀)"
     IDS_MUI_FILELOCKED      "<獨佔>"
     IDS_MUI_LOADFILE        "正在載入「%s」..."
     IDS_MUI_SAVEFILE        "正在儲存「%s」..."
@@ -220,7 +219,7 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "已啟用維持檔案最後修改時間功能\n\n本選項將在目前工作階段期間生效"
     IDS_MUI_OUT_OFF_OCCMRK   "書籤/高亮標記已用完！"
-    IDS_MUI_DOCUMENT_READONLY
+    IDS_MUI_DOCUMENT_VIEWONLY
                              "該檔案已被鎖定僅供閱覽。保持鎖定以防止修改嗎？"
 END
 

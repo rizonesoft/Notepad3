@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "コピーして保存(&C)...\tCtrl+F6",                      IDM_FILE_SAVECOPY
         MENUITEM "更新日時を更新しない(&M)\tCtrl+Alt+F6",       IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "読み取り専用(&R)",            IDM_FILE_READONLY
+        MENUITEM "読み取り専用属性(&R)",            IDM_FILE_READONLY
         MENUITEM "ロック(読み取り共有)(&L)",                 IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "暗号化パスワード設定(&Y)...",                 IDM_SETPASS
@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "編集(&E)"
     BEGIN
-        MENUITEM "閲覧専用(&O)\tCtrl+Alt+M",                   IDM_VIEW_READONLY
+        MENUITEM "表示専用(&O)\tCtrl+Alt+M",                   IDM_VIEW_VIEWONLY
         MENUITEM SEPARATOR
         MENUITEM "元に戻す(&U)\tCtrl+Z",                       IDM_EDIT_UNDO
         MENUITEM "やり直し(&R)\tCtrl+Y",                        IDM_EDIT_REDO

@@ -107,7 +107,8 @@ typedef struct TITLEPROPS_T {
     bool bFileLocked;
     bool bFileChanged;
     bool bFileDeleted;
-    bool bReadOnly;
+    bool bFileReadOnly;
+    bool bViewOnly;
 } TITLEPROPS_T;
 
 void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, TITLEPROPS_T properties, LPCWSTR lpszExcerpt, bool forceRedraw);

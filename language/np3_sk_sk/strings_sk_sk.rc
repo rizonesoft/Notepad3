@@ -103,7 +103,6 @@ BEGIN
     IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Bez názvu"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Len na čítanie)"
     IDS_MUI_FILELOCKED      "<Exkluzívny>"
     IDS_MUI_LOADFILE        "Načítanie ""%s""..."
     IDS_MUI_SAVEFILE        "Ukladanie ""%s""..."
@@ -220,7 +219,7 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Zachovanie pôvodnej časovej pečiatky pri úprave súboru je povolené\nTáto možnosť zostane len pre túto reláciu!"
     IDS_MUI_OUT_OFF_OCCMRK   "Dochádzajú označené výskyty (záložka/zvýraznenie)!"
-    IDS_MUI_DOCUMENT_READONLY
+    IDS_MUI_DOCUMENT_VIEWONLY
                              "Dokument je uzamknutý len na čítanie. Ponechať uzamknutie na zabránenie úprav?"
 END
 

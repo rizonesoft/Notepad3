@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "Másolat m&entése...\tCtrl+F6",                       IDM_FILE_SAVECOPY
         MENUITEM "Mentés e&redeti fájl dátumával/idővel\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Csak olvasható Fájl attribútum",                    IDM_FILE_READONLY
+        MENUITEM "Csak olvasható &attribútum",                    IDM_FILE_READONLY
         MENUITEM "&Fájl zárolása (Olvasásra megosztva)",               IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Kódolási &jelmondat beállítása...",                  IDM_SETPASS
@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "&Szerkesztés"
     BEGIN
-        MENUITEM "Csak &olvasható dokumentum\tCtrl+Alt+M", IDM_VIEW_READONLY
+        MENUITEM "Csak megtekintésű &dokumentum\tCtrl+Alt+M", IDM_VIEW_VIEWONLY
         MENUITEM SEPARATOR
         MENUITEM "&Visszavonás\tCtrl+Z",        IDM_EDIT_UNDO
         MENUITEM "&Újra\tCtrl+Y",               IDM_EDIT_REDO

@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "Chỉnh sửa(&E)"
     BEGIN
-        MENUITEM "Tài liệu chỉ đọc(&O)\tCtrl+Alt+M",       IDM_VIEW_READONLY
+        MENUITEM "Chỉ xem tài liệu(&O)\tCtrl+Alt+M",       IDM_VIEW_VIEWONLY
         MENUITEM SEPARATOR
         MENUITEM "Hoàn tác(&U)\tCtrl+Z",                  IDM_EDIT_UNDO
         MENUITEM "Làm lại(&R)\tCtrl+Y",                   IDM_EDIT_REDO

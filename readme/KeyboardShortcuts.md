@@ -91,7 +91,7 @@ A complete reference for the shortcuts wired into Notepad3 (`src/Notepad3.rc` ac
 
 | Shortcut | Action | Notes |
 |---|---|---|
-| `Ctrl+Alt+M` | Toggle Document Read Only mode (typing is ignored; the file attribute is unchanged) | (N3) |
+| `Ctrl+Alt+M` | Toggle Document View-only mode (typing is ignored; the file attribute is unchanged) | (N3) |
 
 ### Basic clipboard / undo
 

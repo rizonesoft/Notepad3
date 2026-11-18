@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "Αποθήκευση αντι&γράφου...\tCtrl+F6",                    IDM_FILE_SAVECOPY
         MENUITEM "Αποθήκευση με την αρχική &ημερομηνία/ώρα\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Χαρακτηριστικό αρχείου μόνο για ανάγνωση",             IDM_FILE_READONLY
+        MENUITEM "Ιδιότητα μόνο για &ανάγνωση",             IDM_FILE_READONLY
         MENUITEM "Κ&λείδωμα αρχείου (κοινόχρηστου)",                      IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Ορισμός φράσης πρόσβασης κρ&υπτογράφησης...",           IDM_SETPASS
@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "&Επεξεργασία"
     BEGIN
-        MENUITEM "&Έγγραφο μόνο για ανάγνωση\tCtrl+Alt+M", IDM_VIEW_READONLY
+        MENUITEM "&Έγγραφο μόνο για προβολή\tCtrl+Alt+M", IDM_VIEW_VIEWONLY
         MENUITEM SEPARATOR
         MENUITEM "Αναίρε&ση\tCtrl+Z",             IDM_EDIT_UNDO
         MENUITEM "Επανάλη&ψη ενέργειας\tCtrl+Y",  IDM_EDIT_REDO

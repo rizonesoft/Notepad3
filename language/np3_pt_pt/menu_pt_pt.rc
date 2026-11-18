@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "Guardar &cópia...\tCtrl+F6",                           IDM_FILE_SAVECOPY
         MENUITEM "Guardar com &data/hora original do ficheiro\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "Atributo do ficheiro Só de leitu&ra",                   IDM_FILE_READONLY
+        MENUITEM "Atributo só de leitu&ra",                   IDM_FILE_READONLY
         MENUITEM "B&loquear ficheiro (Leitura-Partilhado)",               IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Definir palavra-passe de encr&iptação...",        IDM_SETPASS
@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "&Editar"
     BEGIN
-        MENUITEM "Documento s&ó de leitura\tCtrl+Alt+M",   IDM_VIEW_READONLY
+        MENUITEM "Documento apenas visualização\tCtrl+Alt+M",   IDM_VIEW_VIEWONLY
         MENUITEM SEPARATOR
         MENUITEM "An&ular\tCtrl+Z",                        IDM_EDIT_UNDO
         MENUITEM "Refa&zer\tCtrl+Y",                       IDM_EDIT_REDO

@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "Uložiť &kópiu...\tCtrl+F6",                       IDM_FILE_SAVECOPY
         MENUITEM "Uložiť s pôvodným &dátumom a časom\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Len na čítanie",                                 IDM_FILE_READONLY
+        MENUITEM "Atribút len na čítanie",                                 IDM_FILE_READONLY
         MENUITEM "&Zamknúť súbor (Zdieľané čítanie)",               IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Nastaviť šifrovanie prístupovou frázou...",       IDM_SETPASS
@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "&Upraviť"
     BEGIN
-        MENUITEM "Dokument &Len na čítanie\tCtrl+Alt+M",    IDM_VIEW_READONLY
+        MENUITEM "Dokument len na &zobrazenie\tCtrl+Alt+M",    IDM_VIEW_VIEWONLY
         MENUITEM SEPARATOR
         MENUITEM "&Späť\tCtrl+Z",                           IDM_EDIT_UNDO
         MENUITEM "&Znova\tCtrl+Y",                          IDM_EDIT_REDO

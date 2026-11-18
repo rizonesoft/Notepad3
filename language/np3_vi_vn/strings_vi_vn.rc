@@ -103,7 +103,6 @@ BEGIN
     IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Không có tiêu đề"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Chỉ đọc)"
     IDS_MUI_FILELOCKED      "<Độc quyền>"
     IDS_MUI_LOADFILE        "Đang mở ""%s""..."
     IDS_MUI_SAVEFILE        "Đang lưu ""%s""..."
@@ -220,7 +219,7 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Có thể bảo tồn dấu thời gian sửa đổi tệp gốc\nTùy chọn này sẽ giữ nguyên trong phiên này!"
     IDS_MUI_OUT_OFF_OCCMRK   "Không đủ dấu đánh dấu (dấu trang/nổi bật)!"
-    IDS_MUI_DOCUMENT_READONLY
+    IDS_MUI_DOCUMENT_VIEWONLY
                              "Tài liệu hiện đang khóa chỉ đọc. Có muốn giữ khóa để ngăn chặn việc chỉnh sửa không?"
 END
 

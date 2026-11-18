@@ -103,7 +103,6 @@ BEGIN
     IDS_MUI_APPTITLE_PASTEBOARD "%s: CARTONE"
     IDS_MUI_UNTITLED        "Senza titolo"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Sola lettura)"
     IDS_MUI_FILELOCKED      "<Esclusivo>"
     IDS_MUI_LOADFILE        "Apertura ""%s""..."
     IDS_MUI_SAVEFILE        "Salvataggio ""%s""..."
@@ -220,7 +219,7 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Conservazione data ultima modifica originale abilitata\nQuesta opzione rimarrà attiva per questa sessione!"
     IDS_MUI_OUT_OFF_OCCMRK   "Marcatori occorrenza in esaurimento (Segnalibro/evidenziatura)!"
-    IDS_MUI_DOCUMENT_READONLY
+    IDS_MUI_DOCUMENT_VIEWONLY
                              "Il documento è bloccato per la sola visualizzazione. Vuoi mantenere il blocco per prevenire le modifiche?"
 END
 

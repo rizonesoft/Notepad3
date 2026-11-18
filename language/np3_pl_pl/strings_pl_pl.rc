@@ -103,7 +103,6 @@ BEGIN
     IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Bez nazwy"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Tylko do odczytu)"
     IDS_MUI_FILELOCKED      "<Wyłączny>"
     IDS_MUI_LOADFILE        "Ładowanie ""%s""..."
     IDS_MUI_SAVEFILE        "Zapisywanie ""%s""..."
@@ -220,7 +219,7 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Włączono zachowanie znacznika czasu w modyfikacji pliku\nTa opcja pozostanie dla tej sesji!"
     IDS_MUI_OUT_OFF_OCCMRK   "Kończą się znaczniki występowania (Zakładka/Podświetlenie)!"
-    IDS_MUI_DOCUMENT_READONLY
+    IDS_MUI_DOCUMENT_VIEWONLY
                              "Dokument jest zablokowany tylko do przeglądania. Zachowaj blokadę, aby uniemożliwić edycję?"
 END
 

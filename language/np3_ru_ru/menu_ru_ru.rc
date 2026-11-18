@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "Со&хранить копию...\tCtrl+F6", IDM_FILE_SAVECOPY
         MENUITEM "Сохранять исходну&ю дату/время файла\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "Атрибут &Только чтение",              IDM_FILE_READONLY
+        MENUITEM "Атрибут только для &чтения",              IDM_FILE_READONLY
         MENUITEM "Б&локировать файл (чтение доступно)", IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Задать парольную фразу...",          IDM_SETPASS
@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "&Правка"
     BEGIN
-        MENUITEM "Документ только для чтени&я\tCtrl+Alt+M", IDM_VIEW_READONLY
+        MENUITEM "Документ только для &просмотра\tCtrl+Alt+M", IDM_VIEW_VIEWONLY
         MENUITEM SEPARATOR
         MENUITEM "&Отмена\tCtrl+Z",                     IDM_EDIT_UNDO
         MENUITEM "&Повтор\tCtrl+Y",                     IDM_EDIT_REDO
