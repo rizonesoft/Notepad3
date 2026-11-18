@@ -10,9 +10,9 @@ Notepad3 is a Windows-only Win32 C/C++ text editor built on Scintilla/Lexilla, d
 
 | File | Purpose |
 |---|---|
-| `src\Notepad3.c/h` | `wWinMain`, `MainWndProc`, global state structs (`Globals`, `Settings`, `Settings2`, `Flags`, `Paths`), and `MsgCommand()` |
-| `src\Notepad3Util.c/h` | Bitmap/toolbar helpers, word-wrap configuration, middle-click auto-scroll |
-| `src\Edit.c/h` | Find/replace (PCRE2), encoding, clipboard, indent, sort, bookmarks, folding, autocomplete |
+| `src\Notepad3.c/h` | `wWinMain`, `MainWndProc`, global state, `MsgCommand()`, toolbar setup, word-wrap configuration, middle-click auto-scroll |
+| `src\Edit.c/h` | Encoding, clipboard, indent, sort, bookmarks, folding, autocomplete, URL/color highlighting |
+| `src\FindReplace.c/h` | Find/Replace dialog, search state, PCRE2-backed matching, replacement, occurrence marking |
 | `src\Styles.c/h` | Scintilla styling, lexer selection, themes, margins |
 | `src\Dialogs.c/h` | Dialogs and DPI-aware UI |
 | `src\Config\Config.cpp/h` | INI load/save and MRU |
@@ -79,13 +79,13 @@ Before an approved vendored-library change, consult the [Lexilla patch registry]
 
 ### Find/Replace dialog text limits
 
-- `CB_LIMITTEXT` (`FNDRPL_BUFFER`) does not apply to `WM_SETTEXT`; bound text before calling `ComboBox_SetText*`, or an oversized value freezes the single-line combo edit (see the `bFindReplCopySelOrClip` block in `EditFindReplaceDlgProc`, `src\Edit.c`).
+- `CB_LIMITTEXT` (`FNDRPL_BUFFER`) does not apply to `WM_SETTEXT`; bound text before calling `ComboBox_SetText*`, or an oversized value freezes the single-line combo edit (see the `bFindReplCopySelOrClip` block in `EditFindReplaceDlgProc`, `src\FindReplace.c`).
 - `ComboBox_SetText*` fires `CBN_EDITCHANGE` synchronously; reset one-shot flags before calling it.
 - `_FindInTarget` has an 8192-byte `chFind` buffer; a longer pattern makes `WideCharToMultiByte` fail (`len` = -1) and Scintilla reports "not found".
 
 ### Find/Replace dialog placement
 
-- For live recreation, capture the old screen rectangle and restore against its monitor. [`SetDlgPos`](../../src/Dialogs.c#L6157) is for owner-relative settings and clamps to the owner's monitor; [`_RestoreFindReplaceDlgPosition`](../../src/Edit.c#L6807) uses the old rectangle's monitor and fits the dialog again after any DPI resize.
+- For live recreation, capture the old screen rectangle and restore against its monitor. [`SetDlgPos`](../../src/Dialogs.c#L6157) is for owner-relative settings and clamps to the owner's monitor; [`_RestoreFindReplaceDlgPosition`](../../src/FindReplace.c#L828) uses the old rectangle's monitor and fits the dialog again after any DPI resize.
 
 ### Dynamic string/path buffer lifetime
 

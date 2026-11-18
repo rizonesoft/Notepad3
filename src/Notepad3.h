@@ -69,7 +69,6 @@ np3params, *LPnp3params;
 #define ID_PASTEBOARDTIMER  (0xA001)        // Paste Board
 #define ID_AUTOSAVETIMER    (0xA002)        // Auto Save Timer
 #define ID_LOGROTATETIMER   (0xA003)        // Log Rotation Retry
-#define ID_AUTOSCROLLTIMER  (0xA004)        // Middle-Click Auto-Scroll
 #define ID_ATOMICSAVETIMER  (0xA005)        // Atomic Save Detection
 #define ID_DEFERMINIMIZETIMER (0xA006)      // Deferred minimize on /B + /I startup
 #define ID_TINYEXPRCOPYTIMER  (0xA007)      // TinyExpr status-bar single-click copy debounce
@@ -128,13 +127,7 @@ void HandleDWellStartEnd(const DocPos position, const UINT uid);
 bool HandleHotSpotURLClicked(const DocPos position, const HYPERLINK_OPS operation);
 void HandleColorDefClicked(HWND hwnd, const DocPos position);
 
-bool    IsFindPatternEmpty();
-LPCWSTR GetFindPattern();
-void    GetFindPatternMB(LPSTR chPattern, int cch);
-void    SetFindPattern(LPCWSTR wchFindPattern);
-void    SetFindPatternMB(LPCSTR chFindPattern);
-size_t  LengthOfFindPattern();
-size_t  LengthOfFindPatternMB();
+extern int g_flagMatchText;
 
 bool ConsistentIndentationCheck(EditFileIOStatus* status);
 

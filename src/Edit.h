@@ -21,11 +21,9 @@
 #include "SciCall.h"
 #include "TypeDefs.h"
 
-void DuplicateEFR(LPEDITFINDREPLACE dst, CLPCEDITFINDREPLACE src);
-void ReleaseEFR(LPEDITFINDREPLACE efr);
-
 void EditReplaceSelection(const char* text, bool bForceSel);
 void EditInitWordDelimiter(HWND hwnd);
+bool EditContainsWordDelimiter(LPCSTR text, size_t length);
 void EditSetNewText(HWND hwnd, const char* lpstrText, DocPosU lenText, bool bClearUndoHistory, bool bReload);
 bool EditConvertText(HWND hwnd, cpi_enc_t encSource, cpi_enc_t encDest);
 bool EditSetNewEncoding(HWND hwnd, cpi_enc_t iNewEncoding,bool bSupressWarning);
@@ -100,18 +98,6 @@ void EditFixPositions();
 void EditEnsureConsistentLineEndings(HWND hwnd);
 void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt);
 
-typedef struct {
-    RECT windowRect;
-    bool bFocusedView;
-} FindReplaceDlgRestore;
-
-HWND EditFindReplaceDlg(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bReplace, const FindReplaceDlgRestore* pRestore);
-bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd, bool bFillEmpty);
-bool EditFindPrev(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd, bool bFillEmpty);
-bool EditReplace(HWND hwnd, LPEDITFINDREPLACE lpefr);
-DocPosU EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos iStartPos, DocPos iEndPos, DocPos *enlargement);
-bool EditReplaceAll(HWND hwnd, LPEDITFINDREPLACE lpefr, bool);
-bool EditReplaceAllInSelection(HWND hwnd, LPEDITFINDREPLACE lpefr, bool);
 bool EditLinenumDlg(HWND hwnd);
 bool EditModifyLinesDlg(HWND hwnd, PENCLOSESELDATA pEnclData);
 bool EditEncloseSelectionDlg(HWND hwnd, PENCLOSESELDATA pEnclData);
@@ -123,12 +109,9 @@ void EditPrintSetup(HWND hwnd);
 void EditPrintInit();
 bool EditSetDocumentBuffer(const char* lpstrText, DocPosU lenText, bool reload);
 void EditMatchBrace(HWND hwnd);
-void EditClearAllOccurrenceMarkers(HWND hwnd);
 void EditClearAllBookMarks(HWND hwnd);
 void EditToggleView(HWND hwnd);
 void EditSelectWordAtPos(const DocPos iPos, const bool bForceWord);
-int  EditAddSearchFlags(int flags, bool bRegEx, bool bWordStart, bool bMatchCase, bool bMatchWords, bool bDotMatchAll);
-void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos rangeEnd, bool bMultiSel);
 void EditUpdateVisibleIndicators();
 void EditUpdateIndicators(DocPos startPos, DocPos endPos, bool bClearOnly);
 void EditReducedWordSeparatorSet(HWND hwnd, bool);
@@ -141,12 +124,9 @@ void EditBookmarkPrevious(HWND hwnd, const DocLn iLine);
 void EditBookmarkToggle(HWND hwnd, const DocLn ln, const int modifiers);
 void EditBookmarkResetNavigation(void);
 void EditBookmarkAdjustNavigation(const DocLn modLine, const DocLn linesAdded);
-void EditMarkAllOccurrences(HWND hwnd, bool bForceClear);
 void EditFoldMarkedLineRange(HWND hwnd, bool bHideLines);
 void EditBookMarkLineRange(HWND hwnd);
 void EditDeleteMarkerInSelection();
-void EditSelectionMultiSelectAll();
-void EditSelectionMultiSelectAllEx(HWND hwnd, CLPCEDITFINDREPLACE edFndRpl);
 
 //
 //  Folding Functions
@@ -171,12 +151,6 @@ void EditFoldCmdKey(FOLD_MOVE move, FOLD_ACTION action);
 
 
 #define NP3_BRACES_TO_MATCH "()[]{}"
-
-inline int GetMarkAllOccSearchFlags()
-{
-    return EditAddSearchFlags(0, false, false, Settings.MarkOccurrencesMatchCase,
-                              Settings.MarkOccurrencesCurrentWord || Settings.MarkOccurrencesMatchWholeWords, false);
-}
 
 #endif //_NP3_EDIT_H_
 

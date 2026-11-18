@@ -51,6 +51,9 @@
     <ClCompile Include="Edit.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FindReplace.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="EditRTF.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -411,6 +414,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Edit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FindReplace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EditRTF.h">

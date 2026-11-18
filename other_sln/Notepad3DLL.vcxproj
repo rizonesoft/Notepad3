@@ -427,6 +427,7 @@
     <ClCompile Include="Dialogs.c" />
     <ClCompile Include="Dlapi.c" />
     <ClCompile Include="Edit.c" />
+    <ClCompile Include="FindReplace.c" />
     <ClCompile Include="EditRTF.cpp" />
     <ClCompile Include="Encoding.c" />
     <ClCompile Include="uchardet\EncodingDetection.cpp" />
@@ -526,6 +527,7 @@
     <ClInclude Include="Dialogs.h" />
     <ClInclude Include="Dlapi.h" />
     <ClInclude Include="Edit.h" />
+    <ClInclude Include="FindReplace.h" />
     <ClInclude Include="EditRTF.h" />
     <ClInclude Include="Encoding.h" />
     <ClInclude Include="Helpers.h" />

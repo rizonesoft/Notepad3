@@ -833,6 +833,24 @@ void GetSystemStatusFontA(LPSTR fontFaceName_out, bool bForceRefresh)
 }
 
 
+int GetSubMenuPosByChildCmd(HMENU hParent, UINT childCmdId)
+{
+    int const count = GetMenuItemCount(hParent);
+    for (int i = 0; i < count; ++i) {
+        HMENU const hSub = GetSubMenu(hParent, i);
+        if (hSub) {
+            int const subCount = GetMenuItemCount(hSub);
+            for (int j = 0; j < subCount; ++j) {
+                if (GetMenuItemID(hSub, j) == childCmdId) {
+                    return i;
+                }
+            }
+        }
+    }
+    return -1;
+}
+
+
 //=============================================================================
 //
 //  Update every occurrence, including aliases in nested submenus.
@@ -1834,63 +1852,6 @@ UINT CharSetFromCodePage(const UINT uCodePage)
 }
 #endif
 
-/**
- * Convert C style \0oo into their indicated characters.
- * This is used to get control characters into the regular expresion engine
- * w/o interfering with group referencing ('\0').
- */
-ptrdiff_t UnSlashLowOctalA(LPSTR s)
-{
-    LPSTR sStart = s;
-    LPSTR o = s;
-    while (*s) {
-        if ((s[0] == '\\') && (s[1] == '\\')) { // esc seq
-            *o = *s;
-            ++o;
-            ++s;
-            *o = *s;
-        } else if ((s[0] == '\\') && (s[1] == '0') && IsOctalDigitA(s[2]) && IsOctalDigitA(s[3])) {
-            *o = (CHAR)(8 * (s[2] - '0') + (s[3] - '0'));
-            s += 3;
-        } else {
-            *o = *s;
-        }
-        ++o;
-        if (*s) {
-            ++s;
-        }
-    }
-    *o = '\0';
-    return (ptrdiff_t)(o - sStart);
-}
-
-
-ptrdiff_t UnSlashLowOctalW(LPWSTR s)
-{
-    LPWSTR sStart = s;
-    LPWSTR o = s;
-    while (*s) {
-        if ((s[0] == L'\\') && (s[1] == L'\\')) { // esc seq
-            *o = *s;
-            ++o;
-            ++s;
-            *o = *s;
-        } else if ((s[0] == L'\\') && (s[1] == L'0') && IsOctalDigitW(s[2]) && IsOctalDigitW(s[3])) {
-            *o = (WCHAR)(8 * (s[2] - L'0') + (s[3] - L'0'));
-            s += 3;
-        } else {
-            *o = *s;
-        }
-        ++o;
-        if (*s) {
-            ++s;
-        }
-    }
-    *o = L'\0';
-    return (ptrdiff_t)(o - sStart);
-}
-
-
 /** ******************************************************************************
  *
  *  UnSlash functions
@@ -2213,85 +2174,6 @@ size_t UnSlashCharW(LPWSTR pchInOut, WCHAR wch)
     }
     *o = L'\0';
     return (size_t)((ptrdiff_t)(o - sStart));
-}
-
-
-/**
- *  check, if we have regex sub-group referencing
- */
-static int _CheckRegExReplTargetA(LPSTR pszInput)
-{
-    while (*pszInput) {
-        if (*pszInput == '$') {
-            ++pszInput;
-            if (((*pszInput >= '0') && (*pszInput <= '9')) || (*pszInput == '+') || (*pszInput == '{')) {
-                return SCI_REPLACETARGETRE;
-            }
-        } else if (*pszInput == '\\') {
-            ++pszInput;
-            if ((*pszInput >= '0') && (*pszInput <= '9')) {
-                return SCI_REPLACETARGETRE;
-            }
-        } else {
-            ++pszInput;
-        }
-    }
-    return SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
-}
-
-static int _CheckRegExReplTargetW(LPWSTR pszInput)
-{
-    while (*pszInput) {
-        if (*pszInput == L'$') {
-            ++pszInput;
-            if (((*pszInput >= L'0') && (*pszInput <= L'9')) || (*pszInput == L'+') || (*pszInput == L'{')) {
-                return SCI_REPLACETARGETRE;
-            }
-        } else if (*pszInput == L'\\') {
-            ++pszInput;
-            if ((*pszInput >= L'0') && (*pszInput <= L'9')) {
-                return SCI_REPLACETARGETRE;
-            }
-        } else {
-            ++pszInput;
-        }
-    }
-    return SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
-}
-
-
-void TransformBackslashesA(LPSTR pszInput, bool bRegEx, UINT cpEdit, int* iReplaceMsg)
-{
-    if (iReplaceMsg) {
-        if (bRegEx) {
-            UnSlashLowOctalA(pszInput);
-            *iReplaceMsg = _CheckRegExReplTargetA(pszInput);
-        } else {
-            *iReplaceMsg = SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
-        }
-    }
-    // regex handles backslashes itself
-    bool const bStdReplace = (iReplaceMsg && (SCI_REPLACETARGETRE != *iReplaceMsg));
-    if (!bRegEx || bStdReplace) {
-        UnSlashA(pszInput, cpEdit);
-    }
-}
-
-void TransformBackslashesW(LPWSTR pszInput, bool bRegEx, UINT cpEdit, int* iReplaceMsg)
-{
-    if (iReplaceMsg) {
-        if (bRegEx) {
-            UnSlashLowOctalW(pszInput);
-            *iReplaceMsg = _CheckRegExReplTargetW(pszInput);
-        } else {
-            *iReplaceMsg = SciCall_GetChangeHistory() ? SCI_REPLACETARGETMINIMAL : SCI_REPLACETARGET;
-        }
-    }
-    // regex handles backslashes itself
-    bool const bStdReplace = (iReplaceMsg && (SCI_REPLACETARGETRE != *iReplaceMsg));
-    if (!bRegEx || bStdReplace) {
-        UnSlashW(pszInput, cpEdit);
-    }
 }
 
 
