@@ -213,9 +213,6 @@
     <ClCompile Include="pcre2\src\pcre2_ucd.c">
       <Filter>pcre2</Filter>
     </ClCompile>
-    <ClCompile Include="pcre2\src\pcre2_ucptables.c">
-      <Filter>pcre2</Filter>
-    </ClCompile>
     <ClCompile Include="pcre2\src\pcre2_valid_utf.c">
       <Filter>pcre2</Filter>
     </ClCompile>
@@ -223,6 +220,12 @@
       <Filter>pcre2</Filter>
     </ClCompile>
     <ClCompile Include="pcre2\scintilla\PCRE2RegExEngine.cxx">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_compile_cgroup.c">
+      <Filter>pcre2</Filter>
+    </ClCompile>
+    <ClCompile Include="pcre2\src\pcre2_match_next.c">
       <Filter>pcre2</Filter>
     </ClCompile>
   </ItemGroup>
@@ -408,6 +411,15 @@
       <Filter>pcre2</Filter>
     </ClInclude>
     <ClInclude Include="pcre2\src\pcre2_ucp.h">
+      <Filter>pcre2</Filter>
+    </ClInclude>
+    <ClInclude Include="pcre2\src\pcre2_jit_match_inc.h">
+      <Filter>pcre2</Filter>
+    </ClInclude>
+    <ClInclude Include="pcre2\src\pcre2_jit_misc_inc.h">
+      <Filter>pcre2</Filter>
+    </ClInclude>
+    <ClInclude Include="pcre2\src\pcre2_ucptables_inc.h">
       <Filter>pcre2</Filter>
     </ClInclude>
   </ItemGroup>
