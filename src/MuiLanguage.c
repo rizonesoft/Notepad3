@@ -375,9 +375,8 @@ bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName_out, int cchBuffer)
 //=============================================================================
 //
 //  LoadLanguageResources
-//  return MUI_LanguageDLLs index
 //
-unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
+void LoadLanguageResources(LPCWSTR pLocaleName) {
 
     FreeLanguageResources(); // reset
     Globals.hLngResContainer = NULL; // (!) unlink from instance resources
@@ -464,6 +463,9 @@ unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
         }
     }
 
+    // LoadString can still resolve the previous language until the thread UI language is set.
+    SetMuiLanguage(iLngIndex);
+
     // ===  update language dependent items  ===
 
     for (cpi_enc_t enc = 0; enc < Encoding_CountOf(); ++enc) {
@@ -484,8 +486,6 @@ unsigned LoadLanguageResources(LPCWSTR pLocaleName) {
     GetLngString(IDS_MUI_STATUSBAR_POSTFIXES, tchDefaultStrg, COUNTOF(tchDefaultStrg));
     IniFileGetString(Paths.IniFile, StatusBar_Section, L"SectionPostfixes", tchDefaultStrg, tchStatusBar, COUNTOF(tchStatusBar));
     ReadStrgsFromCSV(tchStatusBar, g_mxSBPostfix, STATUS_SECTOR_COUNT, MICRO_BUFFER, L"_POFX_");
-
-    return iLngIndex;
 }
 
 
@@ -562,33 +562,29 @@ bool InsertLanguageMenu(HMENU hMenuBar) {
 //
 //  DynamicLanguageMenuCmd() - Handles IDS_MUI_LANG_XX_YY messages
 //
-void DynamicLanguageMenuCmd(int cmd) {
+bool DynamicLanguageMenuCmd(int cmd) {
 
     // consecutive resource IDs
     unsigned const iLngIdx = (unsigned)((cmd >= IDS_MUI_LANG_EN_US) ?
                              (cmd - IDS_MUI_LANG_EN_US) : MuiLanguages_CountOf());
-    if (iLngIdx >= MuiLanguages_CountOf()) {
-        return;
+    if (iLngIdx >= MuiLanguages_CountOf() || MUI_LanguageDLLs[iLngIdx].bIsActive) {
+        return false;
     }
-    if (!MUI_LanguageDLLs[iLngIdx].bIsActive) {
 
-        DestroyMenu(Globals.hMainMenu);
+    DestroyMenu(Globals.hMainMenu);
 
-        // desired language
-        LPCWSTR desiredLocaleName = MUI_LanguageDLLs[iLngIdx].LocaleName;
-        SetMuiLanguage(LoadLanguageResources(desiredLocaleName));
+    LoadLanguageResources(MUI_LanguageDLLs[iLngIdx].LocaleName);
 
-        Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
-        if (!Globals.hMainMenu) {
-            InfoBoxLastError(L"LoadMenu()", 0);
-            CloseApplication();
-            return;
-        }
-
-        InsertLanguageMenu(Globals.hMainMenu);
-        SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
-        DrawMenuBar(Globals.hwndMain);
+    Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
+    if (!Globals.hMainMenu) {
+        InfoBoxLastError(L"LoadMenu()", 0);
+        CloseApplication();
+        return false;
     }
+
+    InsertLanguageMenu(Globals.hMainMenu);
+    SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
+    return true;
 }
 
 

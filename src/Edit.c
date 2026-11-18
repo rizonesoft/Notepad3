@@ -6799,6 +6799,34 @@ static void _AddPatternToComboMRU(HWND hwnd, int nIDDlgItem, LPCWSTR pszItem)
 //
 //  EditFindReplaceDlgProc()
 //
+typedef struct {
+    LPEDITFINDREPLACE pEfrData;
+    const FindReplaceDlgRestore* pRestore;
+} FindReplaceDlgInit;
+
+static void _RestoreFindReplaceDlgPosition(HWND hwnd, const RECT* pPreviousRect)
+{
+    MONITORINFO mi = { sizeof(mi) };
+    if (IsRectEmpty(pPreviousRect) ||
+            !GetMonitorInfo(MonitorFromRect(pPreviousRect, MONITOR_DEFAULTTONEAREST), &mi)) {
+        return;
+    }
+
+    // The first move can resize the dialog via WM_DPICHANGED. Fit it again using the new size.
+    for (int i = 0; i < 2; ++i) {
+        RECT rc;
+        if (!GetWindowRect(hwnd, &rc)) {
+            return;
+        }
+        LONG const x = max_l(mi.rcWork.left, min_l(pPreviousRect->left, mi.rcWork.right - (rc.right - rc.left)));
+        LONG const y = max_l(mi.rcWork.top, min_l(pPreviousRect->top, mi.rcWork.bottom - (rc.bottom - rc.top)));
+        if (rc.left == x && rc.top == y) {
+            break;
+        }
+        SetWindowPos(hwnd, NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+    }
+}
+
 extern int    g_flagMatchText;
 
 // TODO: §§§ get rid of this buffer
@@ -6811,6 +6839,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     static LPEDITFINDREPLACE s_pEfrData = NULL;
 
     static bool s_bIsReplaceDlg = false;
+    static bool s_bRestoreFocusedView = false;
 
     static UINT_PTR pTimerIdentifier = 0;
 
@@ -6835,9 +6864,9 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     switch (umsg) {
     case WM_INITDIALOG: {
 
-        // the global static Find/Replace data structure (main)
-        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-        s_pEfrData = (LPEDITFINDREPLACE)GetWindowLongPtr(hwnd, DWLP_USER);
+        const FindReplaceDlgInit* const pInit = (const FindReplaceDlgInit*)lParam;
+        s_pEfrData = pInit->pEfrData;
+        s_bRestoreFocusedView = pInit->pRestore && pInit->pRestore->bFocusedView;
 
         Globals.hwndDlgFindReplace = hwnd;
         s_bIsReplaceDlg = (GetDlgItem(hwnd, IDC_REPLACETEXT) != NULL);
@@ -6963,7 +6992,15 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
         // Now set combobox text — CBN_EDITCHANGE will fire and call
         // _SetSearchFlags(), which can now read the correct checkbox states.
-        if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_FINDTEXT))) {
+        if (pInit->pRestore) {
+            // Restore both fields before edit notifications can sync the partially initialized dialog.
+            s_pEfrData = NULL;
+            ComboBox_SetTextHW(hwnd, IDC_FINDTEXT, pInit->pEfrData->chFindPattern);
+            if (s_bIsReplaceDlg) {
+                ComboBox_SetTextHW(hwnd, IDC_REPLACETEXT, pInit->pEfrData->chReplaceTemplate);
+            }
+            s_pEfrData = pInit->pEfrData;
+        } else if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_FINDTEXT))) {
             if (StrgIsNotEmpty(s_pEfrData->chFindPattern)) {
                 ComboBox_SetTextHW(hwnd, IDC_FINDTEXT, s_pEfrData->chFindPattern);
             }
@@ -6976,7 +7013,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             }
         }
 
-        if (s_bIsReplaceDlg) {
+        if (s_bIsReplaceDlg && !pInit->pRestore) {
             if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_REPLACETEXT))) {
                 if (StrgIsNotEmpty(s_pEfrData->chReplaceTemplate)) {
                     ComboBox_SetTextHW(hwnd, IDC_REPLACETEXT, s_pEfrData->chReplaceTemplate);
@@ -6995,6 +7032,9 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             // restore from prev Dlg
             SetDlgPos(hwnd, s_xFindReplaceDlgSave, s_yFindReplaceDlgSave);
             s_bSwitchedFindReplace = false;
+        }
+        else if (pInit->pRestore) {
+            _RestoreFindReplaceDlgPosition(hwnd, &pInit->pRestore->windowRect);
         }
         else {
             if (Settings.FindReplaceDlgPosX == CW_USEDEFAULT || Settings.FindReplaceDlgPosY == CW_USEDEFAULT) {
@@ -7048,6 +7088,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     case WM_ENABLE:
         // modal child dialog should disable main window too
         EnableWindow(Globals.hwndMain, (BOOL)wParam);
+        return TRUE;
+
+    case WM_CLOSE:
+        // Language switching needs the modeless dialog destroyed before the resource DLL is unloaded.
+        DestroyWindow(hwnd);
         return TRUE;
 
     case WM_DESTROY: {
@@ -7374,19 +7419,26 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         break;
 
         case IDT_TIMER_CALLBACK_MRKALL: {
-            //DocPos const startPos = (DocPos)lParam;
-            s_anyMatch = _FindHasMatch(s_pEfrData->hwnd, s_pEfrData, 0, false);
+            bool const bRestoreFocusedView = s_bRestoreFocusedView;
+            s_bRestoreFocusedView = false;
+            static wchar_t s_lastFind[FNDRPL_BUFFER] = { L'\0' };
+            bool const bRefreshMarks = s_pEfrData->bMarkOccurences &&
+                (s_pEfrData->bStateChanged || (StringCchCompareX(s_lastFind, StrgGet(s_pEfrData->chFindPattern)) != 0));
+            if (bRefreshMarks) {
+                StringCchCopyW(s_lastFind, COUNTOF(s_lastFind), StrgGet(s_pEfrData->chFindPattern));
+            }
+            s_anyMatch = _FindHasMatch(s_pEfrData->hwnd, s_pEfrData, 0, bRefreshMarks);
             InvalidateRect(GetDlgItem(hwnd, IDC_FINDTEXT), NULL, TRUE); // coloring
-            if (s_pEfrData->bMarkOccurences) {
-                static wchar_t s_lastFind[FNDRPL_BUFFER] = { L'\0' };
-                if (s_pEfrData->bStateChanged || (StringCchCompareX(s_lastFind, StrgGet(s_pEfrData->chFindPattern)) != 0)) {
-                    StringCchCopyW(s_lastFind, COUNTOF(s_lastFind), StrgGet(s_pEfrData->chFindPattern));
-                    /*~s_anyMatch=~*/ _FindHasMatch(s_pEfrData->hwnd, s_pEfrData, 0, s_pEfrData->bMarkOccurences);
-                    if (FocusedView.HideNonMatchedLines) {
-                        EditToggleView(s_pEfrData->hwnd);
-                    }
+            if (bRefreshMarks) {
+                if (bRestoreFocusedView && s_anyMatch == MATCH && (Settings.FocusViewMarkerMode & FVMM_FOLD)) {
+                    // Fold the rebuilt matches without re-running Focused View's bookmark action.
+                    FocusedView.HideNonMatchedLines = true;
+                    EditFoldMarkedLineRange(s_pEfrData->hwnd, true);
+                    UpdateDocumentReadOnlyState();
+                } else if (FocusedView.HideNonMatchedLines) {
+                    EditToggleView(s_pEfrData->hwnd);
                 }
-            } else if (s_pEfrData->bStateChanged) {
+            } else if (!s_pEfrData->bMarkOccurences && s_pEfrData->bStateChanged) {
                 if (FocusedView.HideNonMatchedLines) {
                     SendWMCommand(hwnd, IDC_TOGGLE_VISIBILITY);
                 } else {
@@ -7422,6 +7474,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
         case IDC_TOGGLE_VISIBILITY:
             if (s_pEfrData) {
+                s_bRestoreFocusedView = false;
                 EditToggleView(s_pEfrData->hwnd);
                 if (!FocusedView.HideNonMatchedLines) {
                     s_pEfrData->bStateChanged = true;
@@ -7799,17 +7852,22 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 //
 //  EditFindReplaceDlg()
 //
-HWND EditFindReplaceDlg(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bReplace)
+HWND EditFindReplaceDlg(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bReplace, const FindReplaceDlgRestore* pRestore)
 {
     lpefr->hwnd = hwnd;
+    FindReplaceDlgInit const init = { lpefr, pRestore };
     HWND hDlg = CreateThemedDialogParam(Globals.hLngResContainer,
                                         (bReplace) ? MAKEINTRESOURCEW(IDD_MUI_REPLACE) : MAKEINTRESOURCEW(IDD_MUI_FIND),
                                         GetParent(hwnd),
                                         EditFindReplaceDlgProc,
-                                        (LPARAM) lpefr);
+                                        (LPARAM)&init);
 
     if (IS_VALID_HANDLE(hDlg)) {
         ShowWindow(hDlg, SW_SHOW);
+        if (pRestore) {
+            _EnableFRDlgCtrls(hDlg);
+        }
+        UpdateStatusbar(true);
     }
     return hDlg;
 }
