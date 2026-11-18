@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "Spara kopia...\tCtrl+F6",                         IDM_FILE_SAVECOPY
         MENUITEM "Spara med filens datum och tid\tCtrl+Alt+F6",    IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "Skrivskyddat filattribut",                        IDM_FILE_READONLY
+        MENUITEM "Skrivskyddsattribut",                        IDM_FILE_READONLY
         MENUITEM "&Lås fil (delad läsning)",                         IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Ange lösenfras...",                               IDM_SETPASS
@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "Redigera"
     BEGIN
-        MENUITEM "Skrivskydda dokument\tCtrl+Alt+M",                 IDM_VIEW_READONLY
+        MENUITEM "Visa dokument endast\tCtrl+Alt+M",                 IDM_VIEW_VIEWONLY
         MENUITEM SEPARATOR
         MENUITEM "Ångra\tCtrl+Z",                                   IDM_EDIT_UNDO
         MENUITEM "Gör om\tCtrl+Y",                                  IDM_EDIT_REDO

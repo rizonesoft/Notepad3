@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "Tallenna &kopio...\tCtrl+F6",                          IDM_FILE_SAVECOPY
         MENUITEM "Tallenna alkuperäisen tiedoston päiväyksellä/a&jalla\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "Vain luku - tiedostoatt&ribuutti",              IDM_FILE_READONLY
+        MENUITEM "&Vain luku -määrite",              IDM_FILE_READONLY
         MENUITEM "&Lukitse tiedosto (luku jaettu)",               IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Määritä sala&uslauseke...",          IDM_SETPASS
@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "&Muokkaa"
     BEGIN
-        MENUITEM "&Dokumentti Vain luettavissa\tCtrl+Alt+M", IDM_VIEW_READONLY
+        MENUITEM "&Dokumentti Vain katselu\tCtrl+Alt+M", IDM_VIEW_VIEWONLY
         MENUITEM SEPARATOR
         MENUITEM "K&umoa\tCtrl+Z",                       IDM_EDIT_UNDO
         MENUITEM "T&ee uudelleen\tCtrl+Y",               IDM_EDIT_REDO

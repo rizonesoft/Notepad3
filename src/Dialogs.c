@@ -5800,7 +5800,7 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, const TITLEPROPS_T prop
         else if (s_properties.bFileDeleted != properties.bFileDeleted) {
             forceRedraw = true;
         }
-        else if (s_properties.bReadOnly != properties.bReadOnly) {
+        else if (s_properties.bFileReadOnly != properties.bFileReadOnly || s_properties.bViewOnly != properties.bViewOnly) {
             forceRedraw = true;
         }
     }
@@ -5868,6 +5868,19 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, const TITLEPROPS_T prop
         }
         StringCchCat(szTitle, COUNTOF(szTitle), L" ");
     }
+
+    const WCHAR* const pwszModeIndicator = properties.bFileReadOnly
+        ? Settings2.FileReadOnlyIndicator
+        : (properties.bViewOnly ? Settings2.DocViewOnlyIndicator : NULL);
+    if (StrIsNotEmpty(pwszModeIndicator)) {
+        const size_t cchTitle = StringCchLen(szTitle, COUNTOF(szTitle));
+        if (cchTitle > 0 && szTitle[cchTitle - 1] != L' ') {
+            StringCchCat(szTitle, COUNTOF(szTitle), L" ");
+        }
+        StringCchCat(szTitle, COUNTOF(szTitle), pwszModeIndicator);
+        StringCchCat(szTitle, COUNTOF(szTitle), L" ");
+    }
+
     if (StrIsNotEmpty(lpszExcerpt)) {
         WCHAR szExcrptFmt[32] = { L'\0' };
         WCHAR szExcrptQuot[SMALL_BUFFER] = { L'\0' };
@@ -5913,14 +5926,9 @@ void SetWindowTitle(HWND hwnd, const HPATHL pthFilePath, const TITLEPROPS_T prop
         StringCchCat(szTitle, COUNTOF(szTitle), s_szUntitled);
     }
 
-    WCHAR wchModeEx[64] = { L'\0' };
     if (properties.bFileLocked) {
+        WCHAR wchModeEx[64] = { L'\0' };
         GetLngString(IDS_MUI_FILELOCKED, wchModeEx, COUNTOF(wchModeEx));
-        StringCchCat(szTitle, COUNTOF(szTitle), L" ");
-        StringCchCat(szTitle, COUNTOF(szTitle), wchModeEx);
-    }
-    if (properties.bReadOnly) {
-        GetLngString(IDS_MUI_READONLY, wchModeEx, COUNTOF(wchModeEx));
         StringCchCat(szTitle, COUNTOF(szTitle), L" ");
         StringCchCat(szTitle, COUNTOF(szTitle), wchModeEx);
     }

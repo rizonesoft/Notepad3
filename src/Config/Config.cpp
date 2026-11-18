@@ -1358,6 +1358,10 @@ void LoadSettings()
 
     IniSectionGetString(IniSecSettings2, L"FileDeletedIndicator", L"[X]", Settings2.FileDeletedIndicator, COUNTOF(Settings2.FileDeletedIndicator));
 
+    IniSectionGetString(IniSecSettings2, L"FileReadOnlyIndicator", L"(RO)", Settings2.FileReadOnlyIndicator, COUNTOF(Settings2.FileReadOnlyIndicator));
+
+    IniSectionGetString(IniSecSettings2, L"DocViewOnlyIndicator", L"(VO)", Settings2.DocViewOnlyIndicator, COUNTOF(Settings2.DocViewOnlyIndicator));
+
     Settings2.UndoTransactionTimeout = clampul(IniSectionGetInt(IniSecSettings2, L"UndoTransactionTimeout", 0UL), 0UL, 86400000UL);
 
     // Settings2 SciDirectWriteTech deprecated
@@ -1669,7 +1673,9 @@ void LoadSettings()
     GET_BOOL_VALUE_FROM_INISECTION(PreserveCaretPos, false);
     GET_BOOL_VALUE_FROM_INISECTION(SaveFindReplace, false);
     GET_BOOL_VALUE_FROM_INISECTION(AutoLoadMRUFile, false);
-    GET_BOOL_VALUE_FROM_INISECTION(DocReadOnlyMode, false);
+    // Keep the existing INI key for compatibility with user settings.
+    Defaults.DocViewOnlyMode = false;
+    Settings.DocViewOnlyMode = IniSectionGetBool(IniSecSettings, L"DocReadOnlyMode", Defaults.DocViewOnlyMode);
 
     Defaults.EFR_Data.bFindClose = false;
     Settings.EFR_Data.bFindClose = IniSectionGetBool(IniSecSettings, L"CloseFind", Defaults.EFR_Data.bFindClose);
@@ -2137,7 +2143,11 @@ static bool _SaveSettings(bool bForceSaveSettings)
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, PreserveCaretPos);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, SaveFindReplace);
     SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, AutoLoadMRUFile);
-    SAVE_VALUE_IF_NOT_EQ_DEFAULT(Bool, DocReadOnlyMode);
+    if (Settings.DocViewOnlyMode != Defaults.DocViewOnlyMode) {
+        IniSectionSetBool(IniSecSettings, L"DocReadOnlyMode", Settings.DocViewOnlyMode);
+    } else {
+        IniSectionDelete(IniSecSettings, L"DocReadOnlyMode", false);
+    }
 
     if (Settings.EFR_Data.bFindClose != Defaults.EFR_Data.bFindClose) {
         IniSectionSetBool(IniSecSettings, L"CloseFind", Settings.EFR_Data.bFindClose);

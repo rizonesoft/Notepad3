@@ -103,7 +103,6 @@ BEGIN
     IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Névtelen"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Csak olvasható)"
     IDS_MUI_FILELOCKED      "<Exklúzív>"
     IDS_MUI_LOADFILE        "Betöltés: ""%s""..."
     IDS_MUI_SAVEFILE        "Mentés ""%s""..."
@@ -220,7 +219,7 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Az eredeti fájl módosítási idejeének megőrzése opció be van kapcsolva\nA beállítás így marad erre a munkamenetre!"
     IDS_MUI_OUT_OFF_OCCMRK   "Elfogytak a találatjelölők (Könyvjelző/Kiemelés)!"
-    IDS_MUI_DOCUMENT_READONLY
+    IDS_MUI_DOCUMENT_VIEWONLY
                              "A dokumentum csak olvasható, zárolva van. Maradjon a zárolás a szerkesztés megakadályozására?"
 END
 

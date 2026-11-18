@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "Stoor &Kopie...\tCtrl+F6",                        IDM_FILE_SAVECOPY
         MENUITEM "Stoor met oorspronklike lêer &Datum/Tyd\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Lees net Lêerkenmerk",                IDM_FILE_READONLY
+        MENUITEM "&Leesalleen-kenmerk",                IDM_FILE_READONLY
         MENUITEM "&Sluit lêer (Leesgedeel)",                IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Stel Enkripsie &Wagwoordfrase...",        IDM_SETPASS
@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "&Wysig"
     BEGIN
-        MENUITEM "&Dokument Slegs Lees\tCtrl+Alt+M",         IDM_VIEW_READONLY
+        MENUITEM "&Dokument Slegs Bekyk\tCtrl+Alt+M",         IDM_VIEW_VIEWONLY
         MENUITEM SEPARATOR
         MENUITEM "&Ongedaan\tCtrl+Z",                       IDM_EDIT_UNDO
         MENUITEM "Oo&rdoen\tCtrl+Y",                        IDM_EDIT_REDO

@@ -103,7 +103,6 @@ BEGIN
     IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "अनामांकित"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(सिर्फ़ पढ़ने के लिए)"
     IDS_MUI_FILELOCKED      "<अनन्य>"
     IDS_MUI_LOADFILE        "शुरू हो रहा है ""%s""..."
     IDS_MUI_SAVEFILE        "सहेजा जा रहा है ""%s""..."
@@ -220,7 +219,7 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "फ़ाईल परिवर्तन का मौलिक समय संरक्षण सक्षम है\nयह विकल्प इस सत्र के लिए बना रहेगा!"
     IDS_MUI_OUT_OFF_OCCMRK   "उपस्तिथि चिन्हक खत्म हो रहे है (बुकमार्क/हाइलाइट)!"
-    IDS_MUI_DOCUMENT_READONLY
+    IDS_MUI_DOCUMENT_VIEWONLY
                              "दस्तावेज़ केवल देखने के लिए लॉक है। संपादन रोकने के लिए लॉक बनाए रखें?"
 END
 

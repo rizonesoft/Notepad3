@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "Sauvegarder une &copie…\tCtrl+F6",                              IDM_FILE_SAVECOPY
         MENUITEM "Sauvegarder avec l'horodatage original du fichier \tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "Attribut de fichier en lecture seule",              IDM_FILE_READONLY
+        MENUITEM "&Attribut en lecture seule",              IDM_FILE_READONLY
         MENUITEM "&Verrouiller le fichier (lecture-partage)",         IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Définir le mot de p&asse de cryptage…",           IDM_SETPASS
@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "&Edition"
     BEGIN
-        MENUITEM "&Document en lecture seule\tCtrl+Alt+M",  IDM_VIEW_READONLY
+        MENUITEM "&Document en consultation seule\tCtrl+Alt+M",  IDM_VIEW_VIEWONLY
         MENUITEM SEPARATOR
         MENUITEM "Défaire\tCtrl+Z",                         IDM_EDIT_UNDO
         MENUITEM "Réta&blir\tCtrl+Y",                       IDM_EDIT_REDO

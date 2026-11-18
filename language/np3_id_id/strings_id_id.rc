@@ -103,7 +103,6 @@ BEGIN
     IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Tidak Berjudul"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Hanya Baca)"
     IDS_MUI_FILELOCKED      "<Eksklusif>"
     IDS_MUI_LOADFILE        "Memuat ""%s""..."
     IDS_MUI_SAVEFILE        "Menyimpan ""%s""..."
@@ -220,7 +219,7 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Mempertahankan berkas dari Modifikasi Stempel Waktu telah diaktifkan\nOpsi ini hanya akan berlangsung untuk sesi ini saja!"
     IDS_MUI_OUT_OFF_OCCMRK   "Penanda Pengulangan Kata telah habis (Markah/Sorotan)!"
-    IDS_MUI_DOCUMENT_READONLY
+    IDS_MUI_DOCUMENT_VIEWONLY
                              "Dokumen dikunci dan hanya dilihat saja. Tetap kunci untuk mencegah pengeditan?"
 END
 

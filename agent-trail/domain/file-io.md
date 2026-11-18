@@ -6,6 +6,10 @@ When to read: `Edit.c` load/save, atomic save, file watching, Open/MRU dialogs
 
 `FileSave()` / `FileLoad()` in `Notepad3.c` call `FileIO()`, which dispatches to `EditSaveFile()` / `EditLoadFile()` in `Edit.c`.
 
+## Scintilla read-only state
+
+Route persistent main-editor read-only changes through `UpdateDocumentReadOnlyState()` in `Notepad3.c`, including buffer preparation in `_PrepareDocBuffer()` (`Edit.c`). Directly setting Scintilla's read-only flag there can drop another active cause, such as file-attribute or saved View-only mode. Temporary programmatic unlocks must restore the prior read-only state.
+
 ## Saving
 
 - Atomic save uses a temporary file and `ReplaceFileW`, controlled by `Settings2.AtomicFileSave`.

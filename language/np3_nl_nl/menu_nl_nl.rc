@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "&Kopie opslaan...\tCtrl+F6",                      IDM_FILE_SAVECOPY
         MENUITEM "Opslaan met originele bestands&datum/-tijd\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "Bestand Alleen-&lezen markeren",                  IDM_FILE_READONLY
+        MENUITEM "Alleen-lezen-&attribuut",                  IDM_FILE_READONLY
         MENUITEM "Bestand &vergrendelen (Gelezen-Gedeeld)",         IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "Versleutelings&wachtwoord instellen...",          IDM_SETPASS
@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "Bew&erken"
     BEGIN
-        MENUITEM "Docu&ment Alleen-lezen\tCtrl+Alt+M",               IDM_VIEW_READONLY
+        MENUITEM "Docu&ment Alleen bekijken\tCtrl+Alt+M",               IDM_VIEW_VIEWONLY
         MENUITEM SEPARATOR
         MENUITEM "&Ongedaan maken\tCtrl+Z",                         IDM_EDIT_UNDO
         MENUITEM "Opnie&uw uitvoeren\tCtrl+Y",                      IDM_EDIT_REDO

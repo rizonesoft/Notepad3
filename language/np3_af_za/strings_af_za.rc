@@ -103,7 +103,6 @@ BEGIN
     IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Ongetiteld"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Lees Net)"
     IDS_MUI_FILELOCKED      "<Eksklusief>"
     IDS_MUI_LOADFILE        "Laai ""%s""..."
     IDS_MUI_SAVEFILE        "Stoor ""%s""..."
@@ -220,7 +219,7 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Die behoud van die oorspronklike tydstempel vir lêerveranderings is geaktiveer\nHierdie opsie bly vir hierdie sessie!"
     IDS_MUI_OUT_OFF_OCCMRK   "Die optredemarkers raak op (Bookmerk/Merk)!"
-    IDS_MUI_DOCUMENT_READONLY
+    IDS_MUI_DOCUMENT_VIEWONLY
                              "Die dokument is gesluit vir slegs besigtiging. Hou die slot om redigering te voorkom?"
 END
 

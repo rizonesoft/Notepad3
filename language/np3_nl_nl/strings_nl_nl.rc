@@ -103,7 +103,6 @@ BEGIN
     IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Naamloos"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Alleen lezen)"
     IDS_MUI_FILELOCKED      "<vergrendeld>"
     IDS_MUI_LOADFILE        "Laden ""%s""..."
     IDS_MUI_SAVEFILE        "Opslaan ""%s""..."
@@ -220,7 +219,7 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Tijdstempel originele bestandswijziging behouden\nDeze optie blijft gedurende deze sessie actief!"
     IDS_MUI_OUT_OFF_OCCMRK   "Er zijn geen andere markeringen van voorvallen (Bladwijzer/Markering)!"
-    IDS_MUI_DOCUMENT_READONLY
+    IDS_MUI_DOCUMENT_VIEWONLY
                              "Het bestand is vergrendeld voor alleen-lezen. Vergrendeling behouden om bewerken te voorkomen?"
 END
 

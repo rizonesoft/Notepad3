@@ -426,7 +426,7 @@ extern bool s_bFreezeAppTitle;
 static void _PrepareDocBuffer(HWND hwnd)
 {
     SciCall_Cancel();
-    SciCall_SetReadOnly(FileWatching.MonitoringLog);
+    UpdateDocumentReadOnlyState();
     EditClearAllBookMarks(hwnd);
     EditClearAllOccurrenceMarkers(hwnd);
     SciCall_SetScrollWidth(1);
@@ -8387,7 +8387,7 @@ void EditToggleView(HWND hwnd)
             EditFoldMarkedLineRange(hwnd, false);
         }
 
-        SciCall_SetReadOnly(FocusedView.HideNonMatchedLines);
+        UpdateDocumentReadOnlyState();
         SciCall_ScrollCaret();
 
         EndWaitCursor();

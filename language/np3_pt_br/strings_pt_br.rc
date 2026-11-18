@@ -103,7 +103,6 @@ BEGIN
     IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Sem Título"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Somente Leitura)"
     IDS_MUI_FILELOCKED      "<Exclusivo>"
     IDS_MUI_LOADFILE        "Carregando ""%s""..."
     IDS_MUI_SAVEFILE        "Salvando ""%s""..."
@@ -220,7 +219,7 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Preservação do Timestamp original de Modificação de Arquivo habilitado\nEsta opção ficará ativa durante esta sessão!"
     IDS_MUI_OUT_OFF_OCCMRK   "Ficando sem marcadores de ocorrência (Marcador/Destacado)!"
-    IDS_MUI_DOCUMENT_READONLY
+    IDS_MUI_DOCUMENT_VIEWONLY
                              "O documento está bloqueado para somente visualização. Manter o bloqueio para prevenir a edição?"
 END
 

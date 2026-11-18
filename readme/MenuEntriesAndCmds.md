@@ -36,7 +36,7 @@ File-system operations on the active document, plus a launcher for external tool
 | **Save As…** | `F6` | Save the document under a new path. |
 | **Save Copy…** | `Ctrl+F6` | Save a copy without changing the editor's tracked path (the current document remains the original). |
 | **Save with Original File Date/Time** | `Ctrl+Alt+F6` | Save like *Save*, but restore the original last-modified timestamp on disk afterwards. Useful when adjusting a file's contents without disturbing timestamp-based bookkeeping (build systems, backups). |
-| **Read Only File Attribute** | — | Toggle the **Windows `FILE_ATTRIBUTE_READONLY`** bit on the file on disk. This is a persistent file-system flag — other applications see it too. (Distinct from *Document Read Only* in the Edit menu, which only affects this editor session.) |
+| **Read-only Attribute** | — | Toggle the **Windows `FILE_ATTRIBUTE_READONLY`** bit on the file on disk. Setting or loading this persistent flag also enables *Document View-only*. You can turn View-only off while leaving the file attribute set; attempts to save still show the read-only save prompt. Removing the attribute clears its View-only lock, but separately enabled View-only remains. |
 | **Lock File (Read-Shared)** | — | Open the file with an exclusive write lock so that other processes cannot save over it while Notepad3 has it open (others may still read). Useful for streaming logs you want to read but not have rewritten under you. |
 | **Set Encryption Passphrase…** | — | Set / change / clear the per-file passphrase used for `Crypt File` (.cryptedit) operations. See [`encryption/Encryption.md`](encryption/Encryption.md) for the full encryption workflow. |
 
@@ -145,7 +145,7 @@ Editing operations on the document's text. The **Edit** menu is split: the top o
 
 | Menu | Shortcut | Description |
 |---|---|---|
-| **Document Read Only** | `Ctrl+Alt+M` | Toggle the *session-only* read-only flag — typing is ignored. This is **not** the on-disk read-only attribute; see *File → Read Only File Attribute* for that. |
+| **Document View-only** | `Ctrl+Alt+M` | Toggle the View-only mode saved in Notepad3's INI settings and restored on the next launch. When enabled, typing is ignored in every document. It is distinct from the on-disk *Read-only Attribute*; when both are active, the title bar shows *Read-only*. |
 
 ### Basic clipboard / undo
 

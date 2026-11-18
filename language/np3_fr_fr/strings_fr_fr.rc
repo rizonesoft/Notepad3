@@ -103,7 +103,6 @@ BEGIN
     IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Sans titre"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Lecture seule)"
     IDS_MUI_FILELOCKED      "<Exclusif>"
     IDS_MUI_LOADFILE        "Chargement de ""%s""..."
     IDS_MUI_SAVEFILE        "Sauvegarde de ""%s""..."
@@ -220,7 +219,7 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Préservation de l'horodatage de modification original du fichier activée\nCette option restera active pour cette session !"
     IDS_MUI_OUT_OFF_OCCMRK   "Il n'y a pas d'autres marqueurs d'occurrence (Signet/Surlignage) !"
-    IDS_MUI_DOCUMENT_READONLY
+    IDS_MUI_DOCUMENT_VIEWONLY
                              "Le document est verrouillé en lecture seule. Garder ce mode pour éviter l'édition ?"
 END
 

@@ -103,7 +103,6 @@ BEGIN
     IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Nimetön"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Vain luku)"
     IDS_MUI_FILELOCKED      "<Yksinomainen>"
     IDS_MUI_LOADFILE        "Ladataan ""%s""..."
     IDS_MUI_SAVEFILE        "Tallennetaan ""%s""..."
@@ -220,7 +219,7 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Alkuperäisen tiedoston muokkausaikaleiman säilyttäminen käytössä\nVaihtoehto säilyy tämän istunnon ajan!"
     IDS_MUI_OUT_OFF_OCCMRK   "Esiintymämerkit loppumassa (kirjanmerkki/korostus)!"
-    IDS_MUI_DOCUMENT_READONLY
+    IDS_MUI_DOCUMENT_VIEWONLY
                              "Asiakirja on lukittu vain katseltavaksi. Pidätkö lukituksen muokkaamisen estämiseksi?"
 END
 

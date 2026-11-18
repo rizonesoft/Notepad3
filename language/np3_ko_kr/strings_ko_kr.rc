@@ -103,7 +103,6 @@ BEGIN
     IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "제목 없음"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(읽기 전용)"
     IDS_MUI_FILELOCKED      "<배타적>"
     IDS_MUI_LOADFILE        "불러오는 중 ""%s""..."
     IDS_MUI_SAVEFILE        "저장 중""%s""..."
@@ -220,7 +219,7 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "원래 파일 수정 타임스탬프를 보존할 수 있습니다\n이 옵션은 이 세션에 유지됩니다!"
     IDS_MUI_OUT_OFF_OCCMRK   "발생 마커 (북마크/강조)가 부족합니다!"
-    IDS_MUI_DOCUMENT_READONLY
+    IDS_MUI_DOCUMENT_VIEWONLY
                              "문서는 보기 전용으로 잠겨 있습니다. 편집을 방지하기 위해 잠금을 유지하시겠습니까?"""
 END
 

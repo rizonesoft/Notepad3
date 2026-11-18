@@ -643,7 +643,7 @@ typedef struct SETTINGS_T {
     int  WordWrapIndent;
     int  WordWrapSymbols;
     bool ShowWordWrapSymbols;
-    bool DocReadOnlyMode;
+    bool DocViewOnlyMode;
     bool MatchBraces;
     bool AutoCloseTags;
     bool AutoCloseQuotes;
@@ -806,6 +806,7 @@ typedef struct FLAGS_T {
     bool bSearchPathIfRelative;
 
     bool bSettingsFileSoftLocked;
+    bool bDocViewOnlyFromFileAttr; // dismissible View Only lock inferred from the current file attribute
 
 } FLAGS_T, *PFLAGS_T;
 
@@ -869,6 +870,8 @@ typedef struct SETTINGS2_T {
 
     WCHAR FileChangedIndicator[31];
     WCHAR FileDeletedIndicator[31];
+    WCHAR FileReadOnlyIndicator[31];
+    WCHAR DocViewOnlyIndicator[31];
 
     WCHAR DefaultExtension[MINI_BUFFER];
 

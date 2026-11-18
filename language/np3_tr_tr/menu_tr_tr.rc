@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "K&opyasını kaydet...\tCtrl+F6",                     IDM_FILE_SAVECOPY
         MENUITEM "Özgün dosya &tarih/saati ile kaydet\tCtrl+Alt+F6",  IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "Dosyayı salt &okunur yap",                          IDM_FILE_READONLY
+        MENUITEM "Salt okunur özniteliği(&R)",                          IDM_FILE_READONLY
         MENUITEM "Dosyayı &kilitle (okuma-paylaşılmış)",              IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "&Parola ile şifrele...",                            IDM_SETPASS
@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "Dü&zenle"
     BEGIN
-        MENUITEM "Belge sal&t okunur\tCtrl+Alt+M",                   IDM_VIEW_READONLY
+        MENUITEM "Belge yalnızca &görüntüle\tCtrl+Alt+M",                   IDM_VIEW_VIEWONLY
         MENUITEM SEPARATOR
         MENUITEM "&Geri al\tCtrl+Z",                                  IDM_EDIT_UNDO
         MENUITEM "Yi&nele\tCtrl+Y",                                   IDM_EDIT_REDO

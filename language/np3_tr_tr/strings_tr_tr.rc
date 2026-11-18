@@ -103,7 +103,6 @@ BEGIN
     IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Başlıksız"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Salt okunur)"
     IDS_MUI_FILELOCKED      "<Ayrıcalıklı>"
     IDS_MUI_LOADFILE        "Yükleniyor ""%s""..."
     IDS_MUI_SAVEFILE        "Kaydediliyor ""%s""..."
@@ -220,7 +219,7 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Özgün dosya değişiklik zamanının korunması seçeneği etkinleştirilmiş\nBu seçenek bu oturum boyunca etkin olacak!"
     IDS_MUI_OUT_OFF_OCCMRK   "Yinelenme işaretleyicileri bitiyor (Yer imi/Vurgula)!"
-    IDS_MUI_DOCUMENT_READONLY
+    IDS_MUI_DOCUMENT_VIEWONLY
                              "Blge salt okunur olarak kilitlenmiş. Düzenlemeyi engellemek için kilitli kalsın mı?"
 END
 

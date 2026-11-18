@@ -162,6 +162,14 @@ Interval in milliseconds to check for external file modification. Min: 200 ms (n
 
 #### `FileDeletedIndicator=[X]`
 
+#### `FileReadOnlyIndicator=(RO)`
+
+Title-bar indicator for a file with the Read-only Attribute. Set this key in `[Settings2]` to customize it; the default is `(RO)`.
+
+#### `DocViewOnlyIndicator=(VO)`
+
+Title-bar indicator for Document View-only mode. Set this key in `[Settings2]` to customize it; the default is `(VO)`. If both modes are active, the file-attribute indicator takes precedence.
+
 #### `FileDlgFilters=`
 
 Custom filters for open/save dialogs. Example:

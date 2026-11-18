@@ -526,6 +526,11 @@ static bool IsFileReadOnly()
     return (Path_IsNotEmpty(Paths.CurrentFile) ? IsReadOnly(Path_GetFileAttributes(Paths.CurrentFile)) : false);
 }
 
+void UpdateDocumentReadOnlyState()
+{
+    SciCall_SetReadOnly(Settings.DocViewOnlyMode || Flags.bDocViewOnlyFromFileAttr || FileWatching.MonitoringLog || FocusedView.HideNonMatchedLines);
+}
+
 
 
 //=============================================================================
@@ -935,6 +940,7 @@ static void _InitGlobals()
     Flags.bSearchPathIfRelative = DefaultFlags.bSearchPathIfRelative = false;
 
     Flags.bSettingsFileSoftLocked = DefaultFlags.bSettingsFileSoftLocked = false;
+    Flags.bDocViewOnlyFromFileAttr = DefaultFlags.bDocViewOnlyFromFileAttr = false;
 
     Settings.EFR_Data.chFindPattern = StrgCreate(NULL);
     Settings.EFR_Data.chReplaceTemplate = StrgCreate(NULL);
@@ -2273,6 +2279,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
 
     // initial set text in front of ShowWindow()
     EditSetNewText(Globals.hwndEdit, "", 0, false, false);
+    UpdateDocumentReadOnlyState();
 
     // Pre-set Scintilla background/foreground to match current mode before making
     // the editor visible — prevents white flash in dark mode (Style_SetLexer
@@ -4976,7 +4983,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     bool const cf = Path_IsNotEmpty(Paths.CurrentFile);
     bool const ro = SciCall_GetReadOnly();                                 // scintilla mode read-only
     bool const lck = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK); // file write lock
-    bool const faro = IsFileReadOnly();                                    // file attrib read-only
+    bool const fileReadOnly = IsFileReadOnly();                            // file attribute read-only
     bool const pst = SciCall_CanPaste();
     bool const se = SciCall_IsSelectionEmpty();
     bool const ms = Sci_IsMultiSelection();
@@ -5031,7 +5038,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
     EnableCmd(hmenu, IDM_EDIT_INSERT_PATHNAME, cf);
     EnableCmd(hmenu, IDM_ENCODING_RECODE, cf);
 
-    CheckCmd(hmenu, IDM_FILE_READONLY, faro);
+    CheckCmd(hmenu, IDM_FILE_READONLY, fileReadOnly);
     CheckCmd(hmenu, IDM_FILE_PRESERVE_FILEMODTIME, Flags.bPreserveFileModTime);
     EnableCmd(hmenu, IDM_FILE_LOCK_SHARE_READ, cf);
     CheckCmd(hmenu, IDM_FILE_LOCK_SHARE_READ, lck);
@@ -5249,7 +5256,7 @@ LRESULT MsgInitMenu(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     CheckCmd(hmenu, IDM_VIEW_USE2NDDEFAULT, Style_GetUse2ndDefault());
 
-    CheckCmd(hmenu, IDM_VIEW_READONLY, ro);
+    CheckCmd(hmenu, IDM_VIEW_VIEWONLY, Settings.DocViewOnlyMode || Flags.bDocViewOnlyFromFileAttr);
     CheckCmd(hmenu, IDM_VIEW_WORDWRAP, Globals.fvCurFile.bWordWrap);
     CheckCmd(hmenu, IDM_VIEW_LONGLINEMARKER, Settings.MarkLongLines);
     CheckCmd(hmenu, IDM_VIEW_SHOWINDENTGUIDES, Settings.ShowIndentGuides);
@@ -5633,12 +5640,16 @@ static bool _HandleFileCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lPar
             if (!Path_SetFileAttributes(Paths.CurrentFile, dwFileAttributes)) {
                 Path_GetDisplayName(szDisplayName, COUNTOF(szDisplayName), Paths.CurrentFile, NULL, false);
                 InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_READONLY_MODIFY, szDisplayName);
+            } else {
+                Flags.bDocViewOnlyFromFileAttr = IsFileReadOnly();
+                UpdateDocumentReadOnlyState();
             }
             if (Flags.bSettingsFileSoftLocked) {
                 Globals.bCanSaveIniFile = CanAccessPath(Paths.IniFile, GENERIC_WRITE);
                 UpdateSaveSettingsCmds();
             }
             UpdateToolbar();
+            UpdateTitlebar(hwnd);
         }
         break;
 
@@ -7152,10 +7163,12 @@ static bool _HandleViewAndSettingsCommands(HWND hwnd, UINT umsg, WPARAM wParam, 
         break;
 
 
-    case IDM_VIEW_READONLY:
-        SciCall_SetReadOnly(!SciCall_GetReadOnly());
-        Settings.DocReadOnlyMode = SciCall_GetReadOnly();
+    case IDM_VIEW_VIEWONLY:
+        Settings.DocViewOnlyMode = !(Settings.DocViewOnlyMode || Flags.bDocViewOnlyFromFileAttr);
+        Flags.bDocViewOnlyFromFileAttr = false;
+        UpdateDocumentReadOnlyState();
         UpdateToolbar();
+        UpdateTitlebar(hwnd);
         break;
 
 
@@ -7596,17 +7609,17 @@ static bool _HandleViewAndSettingsCommands(HWND hwnd, UINT umsg, WPARAM wParam, 
             FileWatching.FileWatchingMode = FWM_AUTORELOAD;
             SciCall_SetEndAtLastLine(false); // false(!)
             FileRevert(Paths.CurrentFile, true);
-            SciCall_SetReadOnly(FileWatching.MonitoringLog);
         }
         else {
             KillTimer(hwnd, ID_LOGROTATETIMER); // cancel any pending log rotation retry
             FileWatching.LogRotateRetryCount = 0;
             FileWatching.FileWatchingMode = Settings.FileWatchingMode;
             SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
-            SciCall_SetReadOnly(Settings.DocReadOnlyMode);
             SciCall_GotoPos(_lastCaretPos);
         }
 
+        UpdateDocumentReadOnlyState();
+        UpdateTitlebar(hwnd);
         InstallFileWatching(true);
 
         CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CHASING_DOCTAIL, FileWatching.MonitoringLog);
@@ -10002,8 +10015,9 @@ inline static LRESULT _MsgNotifyLean(const SCNotification* const scn, bool* bMod
             EditToggleView(Globals.hwndEdit);
         }
         else {
-            if (!FileWatching.MonitoringLog && !IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, Constants.SuppressKey.QuietKeepReadonlyLock, IDS_MUI_DOCUMENT_READONLY))) {
-                SendWMCommand(Globals.hwndMain, IDM_VIEW_READONLY);
+            if ((Settings.DocViewOnlyMode || Flags.bDocViewOnlyFromFileAttr) && !FileWatching.MonitoringLog
+                && !IsYesOkay(InfoBoxLng(MB_YESNO | MB_ICONINFORMATION, Constants.SuppressKey.QuietKeepReadonlyLock, IDS_MUI_DOCUMENT_VIEWONLY))) {
+                SendWMCommand(Globals.hwndMain, IDM_VIEW_VIEWONLY);
             }
             else {
                 AttentionBeep(MB_YESNO | MB_ICONINFORMATION);
@@ -11229,7 +11243,8 @@ static void _UpdateTitlebarDelayed(const HWND hwnd)
         props.bFileLocked = (FileWatching.FileWatchingMode == FWM_EXCLUSIVELOCK);
         props.bFileChanged = IsFileChangedFlagSet();
         props.bFileDeleted = IsFileDeletedFlagSet();
-        props.bReadOnly = IsFileReadOnly();
+        props.bFileReadOnly = IsFileReadOnly();
+        props.bViewOnly = Settings.DocViewOnlyMode || Flags.bDocViewOnlyFromFileAttr;
 
         SetWindowTitle(Globals.hwndMain, Paths.CurrentFile, props, s_wchTitleExcerpt, false);
     }
@@ -12233,7 +12248,10 @@ bool FileIO(bool fLoad, const HPATHL hfile_pth, EditFileIOStatus* status,
 
     if (fLoad) {
         bSuccess = EditLoadFile(Globals.hwndEdit, hfile_pth, status, fLoadFlags, bSetSavePoint);
-        SciCall_SetReadOnly(Settings.DocReadOnlyMode || FileWatching.MonitoringLog);
+        if (bSuccess) {
+            Flags.bDocViewOnlyFromFileAttr = IsReadOnly(Path_GetFileAttributes(hfile_pth));
+        }
+        UpdateDocumentReadOnlyState();
     }
     else {
         int idx = 0;
@@ -12303,7 +12321,7 @@ static inline void _ResetFileWatchingMode() {
         FileWatching.LogRotateRetryCount = 0;
         FileWatching.MonitoringLog = false;
         SciCall_SetEndAtLastLine(!Settings.ScrollPastEOF);
-        SciCall_SetReadOnly(Settings.DocReadOnlyMode);
+        UpdateDocumentReadOnlyState();
         CheckCmd(GetMenu(Globals.hwndMain), IDM_VIEW_CHASING_DOCTAIL, false);
     }
 
@@ -12343,6 +12361,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
         }
 
         Path_Empty(Paths.CurrentFile, false);
+        Flags.bDocViewOnlyFromFileAttr = false;
         _SetEnumWindowsItems(Globals.hwndMain);
         if (!s_flagKeepTitleExcerpt) {
             StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
@@ -12350,6 +12369,7 @@ bool FileLoad(const HPATHL hfile_pth, const FileLoadFlags fLoadFlags, const DocP
         FileVars_GetFromData(NULL, 0, &Globals.fvCurFile); // init-reset
 
         EditSetNewText(Globals.hwndEdit, "", 0, false, false);
+        UpdateDocumentReadOnlyState();
 
         SciCall_SetEOLMode(Settings.DefaultEOLMode);
         Encoding_Current(Settings.DefaultEncoding);
@@ -12960,6 +12980,9 @@ bool FileSave(FileSaveFlags fSaveFlags)
                     // normalize for consistency with FileLoad (resolve long names, real path)
                     Path_NormalizeEx(hfile_pth, Paths.WorkingDirectory, true, false);
                     Path_Swap(Paths.CurrentFile, hfile_pth);
+                    Flags.bDocViewOnlyFromFileAttr = IsFileReadOnly();
+                    UpdateDocumentReadOnlyState();
+                    UpdateTitlebar(Globals.hwndMain);
                     _SetEnumWindowsItems(Globals.hwndMain);
                     if (!s_flagKeepTitleExcerpt) {
                         StringCchCopy(s_wchTitleExcerpt, COUNTOF(s_wchTitleExcerpt), L"");
@@ -13945,8 +13968,8 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
             case IDCONTINUE:
                 UndoRedoReset();
                 FileRevert(Paths.CurrentFile, false);
-                SciCall_SetReadOnly(FileWatching.MonitoringLog);
                 FileWatching.MonitoringLog = false; // will be reset in IDM_VIEW_CHASING_DOCTAIL
+                UpdateDocumentReadOnlyState();
                 PostWMCommand(Globals.hwndMain, IDM_VIEW_CHASING_DOCTAIL);
                 bRevertFile = false; // done already
                 break;
@@ -13978,12 +14001,10 @@ LRESULT MsgFileChangeNotify(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         if (bRevertFile) {
             FileRevert(Paths.CurrentFile, false);
-            if (FileWatching.MonitoringLog || (s_flagChangeNotify == FWM_AUTORELOAD)) {
-                SciCall_SetReadOnly(FileWatching.MonitoringLog);
-            }
-            else {
+            if (!FileWatching.MonitoringLog && (s_flagChangeNotify != FWM_AUTORELOAD)) {
                 Sci_GotoPosChooseCaret(iCurPos);
             }
+            UpdateDocumentReadOnlyState();
         }
     }
     else { // file has been deleted

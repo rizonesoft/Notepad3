@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "&Kopie speichern...\tCtrl+F6",                      IDM_FILE_SAVECOPY
         MENUITEM "Speichern mit Original &Zeitstempel\tCtrl+Alt+F6",  IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "&Nur Lesen Datei Attribut",               IDM_FILE_READONLY
+        MENUITEM "Schreibschutz-&Attribut",         IDM_FILE_READONLY
         MENUITEM "&Sperre Datei (Gemeinsam-Lesend)",        IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "&Verschlüsselungs Passwort...",           IDM_SETPASS
@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "&Bearbeiten"
     BEGIN
-        MENUITEM "&Dokument Nur Lesen\tCtrl+Alt+M",         IDM_VIEW_READONLY
+        MENUITEM "&Dokument: Nur Ansicht\tCtrl+Alt+M",        IDM_VIEW_VIEWONLY
         MENUITEM SEPARATOR
         MENUITEM "&Rückgängig\tCtrl+Z",                     IDM_EDIT_UNDO
         MENUITEM "Wieder&holen\tCtrl+Y",                    IDM_EDIT_REDO

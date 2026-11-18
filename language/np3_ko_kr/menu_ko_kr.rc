@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "복사본 저장(&C)...\tCtrl+F6",                          IDM_FILE_SAVECOPY
         MENUITEM "원본 파일 날짜/시간으로 저장(&M)\tCtrl+Alt+F6", IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "읽기 전용 파일 속성(&R)",              IDM_FILE_READONLY
+        MENUITEM "읽기 전용 속성(&R)",              IDM_FILE_READONLY
         MENUITEM "파일 잠금 (읽기 공유)(&L)",            IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "암호화 암호 구문 설정(&Y)...",         IDM_SETPASS
@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "편집(&E)"
     BEGIN
-        MENUITEM "읽기 전용 문서(&O)\tCtrl+Alt+M", IDM_VIEW_READONLY
+        MENUITEM "보기 전용 문서(&O)\tCtrl+Alt+M", IDM_VIEW_VIEWONLY
         MENUITEM SEPARATOR
         MENUITEM "실행 취소(&U)\tCtrl+Z",               IDM_EDIT_UNDO
         MENUITEM "다시 실행(&R)\tCtrl+Y",               IDM_EDIT_REDO

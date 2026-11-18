@@ -103,7 +103,6 @@ BEGIN
     IDS_MUI_APPTITLE_PASTEBOARD "%s : PASTEBOARD"
     IDS_MUI_UNTITLED        "Ανώνυμο"
     IDS_MUI_TITLEEXCERPT    """%s"""
-    IDS_MUI_READONLY        "(Μόνο για ανάγνωση)"
     IDS_MUI_FILELOCKED      "<Αποκλειστικά>"
     IDS_MUI_LOADFILE        "Φόρτωση ""%s""..."
     IDS_MUI_SAVEFILE        "Αποθήκευση ""%s""..."
@@ -220,7 +219,7 @@ BEGIN
     IDS_MUI_INF_PRSVFILEMODTM
                              "Η διατήρηση της αρχικής χρονοσήμανσης μεταβολής του αρχείου είναι ενεργοποιημένη\nΑυτή η επιλογή θα παραμείνει για αυτή την σύνοδο!"
     IDS_MUI_OUT_OFF_OCCMRK   "Δεν υπάρχουν άλλοι δείκτες εμφάνισης (Σελιδοδείκτης/Επισήμανση)!"
-    IDS_MUI_DOCUMENT_READONLY
+    IDS_MUI_DOCUMENT_VIEWONLY
                              "Το έγγραφο είναι κλειδωμένο μόνο για ανάγνωση. Διατήρηση του κλειδώματος για αποφυγή επεξεργασίας του;"
 END
 

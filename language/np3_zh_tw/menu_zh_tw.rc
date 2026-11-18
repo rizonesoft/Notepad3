@@ -64,7 +64,7 @@ BEGIN
         MENUITEM "儲存副本(&C)...\tCtrl+F6",                      IDM_FILE_SAVECOPY
         MENUITEM "使用原始修改時間儲存(&M)\tCtrl+Alt+F6",            IDM_FILE_PRESERVE_FILEMODTIME
         MENUITEM SEPARATOR
-        MENUITEM "檔案唯讀屬性(&R)",                   IDM_FILE_READONLY
+        MENUITEM "唯讀屬性(&R)",                   IDM_FILE_READONLY
         MENUITEM "鎖定檔案 (讀取共用)(&L)",                     IDM_FILE_LOCK_SHARE_READ
         MENUITEM SEPARATOR
         MENUITEM "設定加密密碼(&Y)...",                           IDM_SETPASS
@@ -158,7 +158,7 @@ BEGIN
     END
     POPUP "編輯(&E)"
     BEGIN
-        MENUITEM "唯讀(&O)\tCtrl+Alt+M",            IDM_VIEW_READONLY
+        MENUITEM "僅供檢視(&O)\tCtrl+Alt+M",            IDM_VIEW_VIEWONLY
         MENUITEM SEPARATOR
         MENUITEM "復原(&U)\tCtrl+Z",                          IDM_EDIT_UNDO
         MENUITEM "取消復原(&R)\tCtrl+Y",                       IDM_EDIT_REDO
