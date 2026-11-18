@@ -338,7 +338,7 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
 {
     if (hwnd && lpefr) {
 
-        bool bIsFindDlg = (GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE) == NULL);
+        bool const bIsFindDlg = (GetDlgItem(hwnd, IDC_REPLACETEXT) == NULL);
 
         HSTRINGW hstr = StrgCreate(NULL);
 
@@ -348,12 +348,13 @@ static void  _SetSearchFlags(HWND hwnd, LPEDITFINDREPLACE lpefr)
             lpefr->bStateChanged = true;
         }
 
-        StrgReset(hstr, L"");
-
-        ComboBox_GetTextHW(hwnd, IDC_REPLACETEXT, hstr);
-        if (StringCchCompareX(StrgGet(hstr), StrgGet(lpefr->chReplaceTemplate)) != 0) {
-            StrgReset(lpefr->chReplaceTemplate, StrgGet(hstr));
-            lpefr->bStateChanged = true;
+        if (!bIsFindDlg) {
+            StrgReset(hstr, L"");
+            ComboBox_GetTextHW(hwnd, IDC_REPLACETEXT, hstr);
+            if (StringCchCompareX(StrgGet(hstr), StrgGet(lpefr->chReplaceTemplate)) != 0) {
+                StrgReset(lpefr->chReplaceTemplate, StrgGet(hstr));
+                lpefr->bStateChanged = true;
+            }
         }
 
         StrgDestroy(hstr);
@@ -606,50 +607,34 @@ static DocPos  _FindInTarget(LPCWSTR wchFind, int sFlags,
     // earlier _FindInTarget call could leak into the next caller's Sci_ConsumeRegexWarnStatus.
     SciCall_SetStatus(SC_STATUS_OK);
 
-    SciCall_SetSearchFlags(sFlags);
-    SciCall_SetTargetRange(start, stop);
-    iPos = SciCall_SearchInTarget(len, chFind);
+    // Scintilla treats a nonpositive pattern length as a match at the target start.
+    if (len > 0) {
+        SciCall_SetSearchFlags(sFlags);
+        SciCall_SetTargetRange(start, stop);
+        iPos = SciCall_SearchInTarget(len, chFind);
 
-    // Bail out before the retry loop if the regex engine flagged an invalid
-    // pattern — every subsequent SearchInTarget would just re-set the warning.
-    // Status stays raised for the caller to consume via Sci_ConsumeRegexWarnStatus.
-    if ((sFlags & SCFIND_REGEXP) && SciCall_GetStatus() == SC_STATUS_WARN_REGEX) {
-        SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd);
-        return NOT_FOUND;
-    }
+        // Leave the regex warning raised for the caller to consume.
+        if ((sFlags & SCFIND_REGEXP) && SciCall_GetStatus() == SC_STATUS_WARN_REGEX) {
+            SciCall_SetTargetRange(saveTargetBeg, saveTargetEnd);
+            return NOT_FOUND;
+        }
 
-#if 1
-    //  handle next in case of zero-length-matches or invalid position (regex) !
-    bool const bZeroLenMatch = ((iPos == start) && (start == SciCall_GetTargetEnd()));
-    bool       bValidPos = !(bForceNext && bZeroLenMatch) && Sci_IsPosValid(iPos);
-    while (!bValidPos) {
-        DocPos const newStart = (bFindNext ? SciCall_PositionAfter(iPos) : SciCall_PositionBefore(iPos));
-        bool const   bProceed = (bFindNext ? (newStart < stop) : (newStart > stop)) && (newStart != iPos);
-        if (bProceed) {
-            SciCall_SetTargetRange(newStart, stop);
-            iPos = SciCall_SearchInTarget(len, chFind); // not found if beyond stop
-        }
-        else {
-            iPos = NOT_FOUND; // already at document begin, end or stuck => not found
-        }
-        bValidPos = Sci_IsPosValid(iPos); // NOT_FOUND is a valid pos
-    }
-#else
-    //  handle next in case of zero-length-matches (regex) !
-    if (iPos == start) {
-        DocPos const nstop = SciCall_GetTargetEnd();
-        if ((start == nstop) && bForceNext) {
-            DocPos const new_start = (bFindNext ? SciCall_PositionAfter(start) : SciCall_PositionBefore(start));
-            bool const bProceed = (bFindNext ? (new_start < stop) : (new_start > stop));
-            if ((new_start != start) && bProceed) {
-                SciCall_SetTargetRange(new_start, stop);
-                iPos = SciCall_SearchInTarget(len - 1, chFind);
-            } else {
-                iPos = (DocPos)-1LL; // already at document begin or end => not found
+        // Advance past a zero-length regex match or an invalid position.
+        bool const bZeroLenMatch = ((iPos == start) && (start == SciCall_GetTargetEnd()));
+        bool       bValidPos = !(bForceNext && bZeroLenMatch) && Sci_IsPosValid(iPos);
+        while (!bValidPos) {
+            DocPos const newStart = (bFindNext ? SciCall_PositionAfter(iPos) : SciCall_PositionBefore(iPos));
+            bool const   bProceed = (bFindNext ? (newStart < stop) : (newStart > stop)) && (newStart != iPos);
+            if (bProceed) {
+                SciCall_SetTargetRange(newStart, stop);
+                iPos = SciCall_SearchInTarget(len, chFind);
             }
+            else {
+                iPos = NOT_FOUND;
+            }
+            bValidPos = Sci_IsPosValid(iPos); // NOT_FOUND is a valid pos
         }
     }
-#endif
 
     if (iPos >= 0) {
         if (fMode != FRMOD_IGNORE) {
@@ -685,31 +670,26 @@ typedef enum { MATCH = 0, NO_MATCH = 1, INVALID = 2 } RegExResult_t;
 
 static RegExResult_t _FindHasMatch(HWND hwnd, const LPEDITFINDREPLACE lpefr, DocPos iStartPos, bool bMarkAll)
 {
-    if (StrgIsEmpty(lpefr->chFindPattern)) {
-        return NO_MATCH;
-    }
-    int const sFlags = (int)(lpefr->fuFlags);
-    DocPos const iStart = iStartPos;
     DocPos const iTextEnd = Sci_GetDocEndPosition();
-
-    DocPos start = iStart;
+    DocPos start = iStartPos;
     DocPos end = iTextEnd;
 
+    int const sFlags = (int)(lpefr->fuFlags);
     LPCWSTR      wchFind = _EditGetFindStrg(hwnd, lpefr, false);
     DocPos const iPos = _FindInTarget(wchFind, sFlags, &start, &end, false, FRMOD_IGNORE);
-    bool const   bRegexInvalid = (sFlags & SCFIND_REGEXP) && Sci_ConsumeRegexWarnStatus();
+    bool const   bRegexInvalid = StrIsNotEmpty(wchFind) && (sFlags & SCFIND_REGEXP) && Sci_ConsumeRegexWarnStatus();
 
     if (bMarkAll) {
         EditClearAllOccurrenceMarkers(hwnd);
         if (iPos >= 0) {
-            EditMarkAll(wchFind, (int)(lpefr->fuFlags), 0, iTextEnd, false);
+            EditMarkAll(wchFind, sFlags, 0, iTextEnd, false);
             if (FocusedView.HideNonMatchedLines) {
+                // Lines hidden by the previous match set may now be headers.
+                SciCall_FoldAll(EXPAND);
                 EditFoldMarkedLineRange(lpefr->hwnd, true);
             }
-        } else {
-            if (FocusedView.HideNonMatchedLines) {
-                EditFoldMarkedLineRange(lpefr->hwnd, false);
-            }
+        } else if (FocusedView.HideNonMatchedLines) {
+            EditToggleView(lpefr->hwnd);
         }
     }
     return ((iPos >= 0) ? MATCH : (bRegexInvalid ? INVALID : NO_MATCH));
@@ -860,6 +840,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     static LPEDITFINDREPLACE s_pEfrData = NULL;
 
     static bool s_bIsReplaceDlg = false;
+    static bool s_bHasReplacementDraft = false;
     static bool s_bRestoreFocusedView = false;
 
     static UINT_PTR pTimerIdentifier = 0;
@@ -1011,15 +992,25 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
         CheckDlgButton(hwnd, IDC_TRANSPARENT, SetBtn(Settings.FindReplaceTransparentMode));
 
-        // Now set combobox text — CBN_EDITCHANGE will fire and call
-        // _SetSearchFlags(), which can now read the correct checkbox states.
-        if (pInit->pRestore) {
-            // Restore both fields before edit notifications can sync the partially initialized dialog.
+        if (s_bIsReplaceDlg) {
+            // Populate replacement text before the find combo can sync both fields.
             s_pEfrData = NULL;
-            ComboBox_SetTextHW(hwnd, IDC_FINDTEXT, pInit->pEfrData->chFindPattern);
-            if (s_bIsReplaceDlg) {
+            if (pInit->pRestore || s_bHasReplacementDraft || StrgIsNotEmpty(pInit->pEfrData->chReplaceTemplate)) {
                 ComboBox_SetTextHW(hwnd, IDC_REPLACETEXT, pInit->pEfrData->chReplaceTemplate);
             }
+            else if (MRU_Count(Globals.pMRUreplace)) {
+                MRU_Enum(Globals.pMRUreplace, 0, s_wchBufOut, COUNTOF(s_wchBufOut));
+                ComboBox_SetTextW(hwnd, IDC_REPLACETEXT, s_wchBufOut);
+            }
+            else {
+                ComboBox_SetTextW(hwnd, IDC_REPLACETEXT, NULL);
+            }
+            s_pEfrData = pInit->pEfrData;
+        }
+
+        if (pInit->pRestore) {
+            s_pEfrData = NULL;
+            ComboBox_SetTextHW(hwnd, IDC_FINDTEXT, pInit->pEfrData->chFindPattern);
             s_pEfrData = pInit->pEfrData;
         } else if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_FINDTEXT))) {
             if (StrgIsNotEmpty(s_pEfrData->chFindPattern)) {
@@ -1031,21 +1022,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             }
             else {
                 ComboBox_SetTextW(hwnd, IDC_FINDTEXT, NULL);
-            }
-        }
-
-        if (s_bIsReplaceDlg && !pInit->pRestore) {
-            if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_REPLACETEXT))) {
-                if (StrgIsNotEmpty(s_pEfrData->chReplaceTemplate)) {
-                    ComboBox_SetTextHW(hwnd, IDC_REPLACETEXT, s_pEfrData->chReplaceTemplate);
-                }
-                else if (MRU_Count(Globals.pMRUreplace)) {
-                    MRU_Enum(Globals.pMRUreplace, 0, s_wchBufOut, COUNTOF(s_wchBufOut));
-                    ComboBox_SetTextW(hwnd, IDC_REPLACETEXT, s_wchBufOut);
-                }
-                else {
-                    ComboBox_SetTextW(hwnd, IDC_REPLACETEXT, NULL);
-                }
             }
         }
 
@@ -1125,15 +1101,16 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         DuplicateEFR(&(Settings.EFR_Data), s_pEfrData);
 
         if (!s_bSwitchedFindReplace) {
+            s_bHasReplacementDraft = false;
             if (s_anyMatch == MATCH) {
                 // Save MRUs
                 if (StrgIsNotEmpty(s_pEfrData->chFindPattern)) {
                     MRU_Add(Globals.pMRUfind, StrgGet(s_pEfrData->chFindPattern), 0, -1, -1, NULL);
                     SetFindPattern(StrgGet(s_pEfrData->chFindPattern));
                 }
-                //~if (StrgIsNotEmpty(s_pEfrData->chReplaceTemplate)) {
+                if (s_bIsReplaceDlg) {
                     MRU_Add(Globals.pMRUreplace, StrgGet(s_pEfrData->chReplaceTemplate), 0, -1, -1, NULL);
-                //~}
+                }
             }
 
             Globals.iReplacedOccurrences = 0;
@@ -1456,8 +1433,6 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                     FocusedView.HideNonMatchedLines = true;
                     EditFoldMarkedLineRange(s_pEfrData->hwnd, true);
                     UpdateDocumentReadOnlyState();
-                } else if (FocusedView.HideNonMatchedLines) {
-                    EditToggleView(s_pEfrData->hwnd);
                 }
             } else if (!s_pEfrData->bMarkOccurences && s_pEfrData->bStateChanged) {
                 if (FocusedView.HideNonMatchedLines) {
@@ -1577,55 +1552,24 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         case IDOK:
         case IDC_FINDPREV:
         case IDACC_SELTONEXT:
-        case IDACC_SELTOPREV:
-        case IDMSG_SWITCHTOFIND:
-        case IDMSG_SWITCHTOREPLACE: {
-
-            if ((!s_bIsReplaceDlg && LOWORD(wParam) == IDMSG_SWITCHTOREPLACE) ||
-                (s_bIsReplaceDlg && LOWORD(wParam) == IDMSG_SWITCHTOFIND)) {
-                GetDlgPos(hwnd, &s_xFindReplaceDlgSave, &s_yFindReplaceDlgSave);
-                s_bSwitchedFindReplace = true;
-            }
-
-            if (!s_bSwitchedFindReplace && !_EnableFRDlgCtrls(hwnd)) {
+        case IDACC_SELTOPREV: {
+            if (!_EnableFRDlgCtrls(hwnd)) {
                 return true;
             }
 
             _SetSearchFlags(hwnd, s_pEfrData);
 
-            if (s_bSwitchedFindReplace) {
-                // Reload MRUs
-                SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_RESETCONTENT, 0, 0);
-                SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_RESETCONTENT, 0, 0);
-
-                for (int i = 0; i < MRU_Count(Globals.pMRUfind); i++) {
-                    MRU_Enum(Globals.pMRUfind, i, s_wchBufOut, COUNTOF(s_wchBufOut));
-                    SendDlgItemMessage(hwnd, IDC_FINDTEXT, CB_ADDSTRING, 0, (LPARAM)s_wchBufOut);
-                }
-                for (int i = 0; i < MRU_Count(Globals.pMRUreplace); i++) {
-                    MRU_Enum(Globals.pMRUreplace, i, s_wchBufOut, COUNTOF(s_wchBufOut));
-                    SendDlgItemMessage(hwnd, IDC_REPLACETEXT, CB_ADDSTRING, 0, (LPARAM)s_wchBufOut);
-                }
-                ComboBox_SetTextHW(hwnd, IDC_FINDTEXT, s_pEfrData->chFindPattern);
-                ComboBox_SetTextHW(hwnd, IDC_REPLACETEXT, s_pEfrData->chReplaceTemplate);
+            // Save MRUs
+            if (StrgIsNotEmpty(s_pEfrData->chFindPattern)) {
+                MRU_Add(Globals.pMRUfind, StrgGet(s_pEfrData->chFindPattern), 0, -1, -1, NULL);
+                SetFindPattern(StrgGet(s_pEfrData->chFindPattern));
             }
-            else {
-                // Save MRUs
-                if (StrgIsNotEmpty(s_pEfrData->chFindPattern)) {
-                    MRU_Add(Globals.pMRUfind, StrgGet(s_pEfrData->chFindPattern), 0, -1, -1, NULL);
-                    SetFindPattern(StrgGet(s_pEfrData->chFindPattern));
-                }
+            if (s_bIsReplaceDlg) {
                 MRU_Add(Globals.pMRUreplace, StrgGet(s_pEfrData->chReplaceTemplate), 0, -1, -1, NULL);
-                // Immediately reflect used patterns in dropdown (without touching the edit field)
-                _AddPatternToComboMRU(hwnd, IDC_FINDTEXT, StrgGet(s_pEfrData->chFindPattern));
-                if (s_bIsReplaceDlg) {
-                    _AddPatternToComboMRU(hwnd, IDC_REPLACETEXT, StrgGet(s_pEfrData->chReplaceTemplate));
-                }
+                _AddPatternToComboMRU(hwnd, IDC_REPLACETEXT, StrgGet(s_pEfrData->chReplaceTemplate));
             }
-
-            if (!s_bSwitchedFindReplace) {
-                SendMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetFocus()), 1);
-            }
+            _AddPatternToComboMRU(hwnd, IDC_FINDTEXT, StrgGet(s_pEfrData->chFindPattern));
+            SendMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)(GetFocus()), 1);
 
             bool bFound = false;
 
@@ -1679,6 +1623,14 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
         _DelayMarkAll(_MQ_STD);
         break;
 
+        case IDMSG_SWITCHTOFIND:
+        case IDMSG_SWITCHTOREPLACE:
+            if (s_bIsReplaceDlg == (LOWORD(wParam) == IDMSG_SWITCHTOFIND)) {
+                GetDlgPos(hwnd, &s_xFindReplaceDlgSave, &s_yFindReplaceDlgSave);
+                s_bSwitchedFindReplace = true;
+                s_bHasReplacementDraft |= s_bIsReplaceDlg;
+            }
+            break;
 
         case IDCANCEL:
             //~EndDialog(hwnd, IDCANCEL); ~ (!) not running on own message loop
@@ -2269,8 +2221,8 @@ bool EditReplace(HWND hwnd, LPEDITFINDREPLACE lpefr)
             return true;
         }
     }
-    // if selection is is not equal current find, set selection
-    else if ((selBeg != start) || (selEnd != end)) {
+    // Only replace a selection when the search matched it.
+    else if ((iPos < 0LL) || (selBeg != start) || (selEnd != end)) {
         FreeMem(pszReplace);
         SciCall_SetCurrentPos(selBeg);
         return EditFindNext(hwnd, lpefr, false, false, false);
@@ -2337,6 +2289,7 @@ static DocPosU EditReplaceAllInRange(HWND hwnd, LPEDITFINDREPLACE lpefr, DocPos 
     DocPos iPos = _FindInTarget(wchFind, sFlags, &start, &end, false, FRMOD_NORM);
 
     if (bIsRegExpr && Sci_ConsumeRegexWarnStatus()) {
+        FreeMem(pszReplace);
         InfoBoxLng(MB_ICONWARNING, Constants.SuppressKey.MsgInvalidRegex, IDS_MUI_REGEX_INVALID);
         return 0;
     }
@@ -2490,9 +2443,6 @@ static void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos r
     LimitNotifyEvents();
 
     if (StrIsEmpty(wchFind)) {
-
-        WideCharToMultiByte(Encoding_SciCP, 0, wchFind, -1, chText, COUNTOF(chText), NULL, NULL);
-
         if (SciCall_IsSelectionEmpty()) {
             // nothing selected, get word under caret if flagged
             if (Settings.MarkOccurrencesCurrentWord && (sFlags & SCFIND_WHOLEWORD)) {
@@ -2540,12 +2490,10 @@ static void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos r
         }
 
         MultiByteToWideChar(Encoding_SciCP, 0, chText, (int)iFindLength, wchText, (int)COUNTOF(wchText));
-
-    } else {
-        StringCchCopy(wchText, COUNTOF(wchText), wchFind);
+        wchFind = wchText;
     }
 
-    if (StrIsNotEmpty(wchText)) {
+    if (StrIsNotEmpty(wchFind)) {
 
         if (bMultiSel) {
             SciCall_ClearSelections();
@@ -2559,7 +2507,7 @@ static void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos r
 
         DocPos start = rangeStart;
         DocPos end = rangeEnd;
-        DocPos iPos = _FindInTarget(wchText, sFlags, &start, &end, false, FRMOD_NORM);
+        DocPos iPos = _FindInTarget(wchFind, sFlags, &start, &end, false, FRMOD_NORM);
 
         if (!bMultiSel) {
             SciCall_SetIndicatorCurrent(INDIC_NP3_MARK_OCCURANCE); // once: doc-change notifications are disabled (LimitNotifyEvents)
@@ -2587,7 +2535,7 @@ static void EditMarkAll(LPCWSTR wchFind, int sFlags, DocPos rangeStart, DocPos r
             }
             start = end;
             end = rangeEnd;
-            iPos = _FindInTarget(wchText, sFlags, &start, &end, true, FRMOD_NORM);
+            iPos = _FindInTarget(wchFind, sFlags, &start, &end, true, FRMOD_NORM);
         };
         Globals.iSelectionMarkNumber = found;
         Globals.iMarkOccurrencesCount = count;
