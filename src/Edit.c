@@ -6799,6 +6799,11 @@ static void _AddPatternToComboMRU(HWND hwnd, int nIDDlgItem, LPCWSTR pszItem)
 //
 //  EditFindReplaceDlgProc()
 //
+typedef struct {
+    LPEDITFINDREPLACE pEfrData;
+    const POINT* pRestorePos;
+} FindReplaceDlgInit;
+
 extern int    g_flagMatchText;
 
 // TODO: §§§ get rid of this buffer
@@ -6835,9 +6840,8 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     switch (umsg) {
     case WM_INITDIALOG: {
 
-        // the global static Find/Replace data structure (main)
-        SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)lParam);
-        s_pEfrData = (LPEDITFINDREPLACE)GetWindowLongPtr(hwnd, DWLP_USER);
+        const FindReplaceDlgInit* const pInit = (const FindReplaceDlgInit*)lParam;
+        s_pEfrData = pInit->pEfrData;
 
         Globals.hwndDlgFindReplace = hwnd;
         s_bIsReplaceDlg = (GetDlgItem(hwnd, IDC_REPLACETEXT) != NULL);
@@ -6963,7 +6967,15 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 
         // Now set combobox text — CBN_EDITCHANGE will fire and call
         // _SetSearchFlags(), which can now read the correct checkbox states.
-        if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_FINDTEXT))) {
+        if (pInit->pRestorePos) {
+            // Restore both fields before edit notifications can sync the partially initialized dialog.
+            s_pEfrData = NULL;
+            ComboBox_SetTextHW(hwnd, IDC_FINDTEXT, pInit->pEfrData->chFindPattern);
+            if (s_bIsReplaceDlg) {
+                ComboBox_SetTextHW(hwnd, IDC_REPLACETEXT, pInit->pEfrData->chReplaceTemplate);
+            }
+            s_pEfrData = pInit->pEfrData;
+        } else if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_FINDTEXT))) {
             if (StrgIsNotEmpty(s_pEfrData->chFindPattern)) {
                 ComboBox_SetTextHW(hwnd, IDC_FINDTEXT, s_pEfrData->chFindPattern);
             }
@@ -6976,7 +6988,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             }
         }
 
-        if (s_bIsReplaceDlg) {
+        if (s_bIsReplaceDlg && !pInit->pRestorePos) {
             if (!GetWindowTextLengthW(GetDlgItem(hwnd, IDC_REPLACETEXT))) {
                 if (StrgIsNotEmpty(s_pEfrData->chReplaceTemplate)) {
                     ComboBox_SetTextHW(hwnd, IDC_REPLACETEXT, s_pEfrData->chReplaceTemplate);
@@ -6995,6 +7007,9 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
             // restore from prev Dlg
             SetDlgPos(hwnd, s_xFindReplaceDlgSave, s_yFindReplaceDlgSave);
             s_bSwitchedFindReplace = false;
+        }
+        else if (pInit->pRestorePos) {
+            SetDlgPos(hwnd, pInit->pRestorePos->x, pInit->pRestorePos->y);
         }
         else {
             if (Settings.FindReplaceDlgPosX == CW_USEDEFAULT || Settings.FindReplaceDlgPosY == CW_USEDEFAULT) {
@@ -7048,6 +7063,11 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
     case WM_ENABLE:
         // modal child dialog should disable main window too
         EnableWindow(Globals.hwndMain, (BOOL)wParam);
+        return TRUE;
+
+    case WM_CLOSE:
+        // Language switching needs the modeless dialog destroyed before the resource DLL is unloaded.
+        DestroyWindow(hwnd);
         return TRUE;
 
     case WM_DESTROY: {
@@ -7799,17 +7819,22 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
 //
 //  EditFindReplaceDlg()
 //
-HWND EditFindReplaceDlg(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bReplace)
+HWND EditFindReplaceDlg(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bReplace, const POINT* pRestorePos)
 {
     lpefr->hwnd = hwnd;
+    FindReplaceDlgInit const init = { lpefr, pRestorePos };
     HWND hDlg = CreateThemedDialogParam(Globals.hLngResContainer,
                                         (bReplace) ? MAKEINTRESOURCEW(IDD_MUI_REPLACE) : MAKEINTRESOURCEW(IDD_MUI_FIND),
                                         GetParent(hwnd),
                                         EditFindReplaceDlgProc,
-                                        (LPARAM) lpefr);
+                                        (LPARAM)&init);
 
     if (IS_VALID_HANDLE(hDlg)) {
         ShowWindow(hDlg, SW_SHOW);
+        if (pRestorePos) {
+            _EnableFRDlgCtrls(hDlg);
+        }
+        UpdateStatusbar(true);
     }
     return hDlg;
 }

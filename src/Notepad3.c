@@ -1417,7 +1417,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     // MultiLingual
     //
 #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-    SetMuiLanguage(LoadLanguageResources(Settings2.PreferredLanguageLocaleName));
+    LoadLanguageResources(Settings2.PreferredLanguageLocaleName);
 #else
     SetMuiLanguage(GetMUILanguageIndexByLocaleName(MUI_BASE_LNG_ID));
 #endif
@@ -6955,13 +6955,13 @@ static bool _HandleEditFind(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (!IsWindow(Globals.hwndDlgFindReplace)) {
             // Don't overwrite cmd-line search pattern with editor selection
             Globals.bFindReplCopySelOrClip = !g_flagMatchText;
-            /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
+            /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false, NULL);
         } else {
             Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
             if (GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
                 SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOFIND);
                 DestroyWindow(Globals.hwndDlgFindReplace);
-                /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false);
+                /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false, NULL);
             } else {
                 SetForegroundWindow(Globals.hwndDlgFindReplace);
                 PostMessage(Globals.hwndDlgFindReplace, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(Globals.hwndDlgFindReplace, IDC_FINDTEXT)), 1);
@@ -6976,13 +6976,13 @@ static bool _HandleEditFind(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         if (!IsWindow(Globals.hwndDlgFindReplace)) {
             // Don't overwrite cmd-line search pattern with editor selection
             Globals.bFindReplCopySelOrClip = !g_flagMatchText;
-            /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
+            /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true, NULL);
         } else {
             Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
             if (!GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
                 SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOREPLACE);
                 DestroyWindow(Globals.hwndDlgFindReplace);
-                /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true);
+                /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true, NULL);
             } else {
                 SetForegroundWindow(Globals.hwndDlgFindReplace);
                 PostMessage(Globals.hwndDlgFindReplace, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(Globals.hwndDlgFindReplace, IDC_FINDTEXT)), 1);
@@ -8701,10 +8701,25 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
     bool const bIsLngMenuCmd = ((iLoWParam >= IDS_MUI_LANG_EN_US) && (iLoWParam < (IDS_MUI_LANG_EN_US + MuiLanguages_CountOf())));
     if (bIsLngMenuCmd) {
+        bool const bHadFindReplace = IsWindow(Globals.hwndDlgFindReplace);
+        bool bReplace = false;
+        int xDlg = 0;
+        int yDlg = 0;
+        if (bHadFindReplace) {
+            bReplace = GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE) != NULL;
+            GetDlgPos(Globals.hwndDlgFindReplace, &xDlg, &yDlg);
+        }
+
         DynamicLanguageMenuCmd(iLoWParam);
         Style_InsertThemesMenu(Globals.hMainMenu);
         DrawMenuBar(Globals.hwndMain);
+        if (Globals.hMainMenu && bHadFindReplace && !IsWindow(Globals.hwndDlgFindReplace)) {
+            POINT const pos = { xDlg, yDlg };
+            Globals.bFindReplCopySelOrClip = false;
+            EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, bReplace, &pos);
+        }
         UpdateToolbar();
+        UpdateStatusbar(true);
         return FALSE;
     }
     #endif
@@ -11559,7 +11574,9 @@ const static WCHAR *const FR_StatusW[] = { L"[>--<]", L"[>>--]", L"[>>-+]", L"[+
 
 static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 {
-    if (!Settings.ShowStatusbar) {
+    bool const bShowStatusbar = Settings.ShowStatusbar;
+    bool const bIsWindowFindReplace = IsWindow(Globals.hwndDlgFindReplace);
+    if (!bShowStatusbar && !bIsWindowFindReplace) {
         return;
     }
 
@@ -11578,8 +11595,6 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     bool const bIsSelectionEmpty = SciCall_IsSelectionEmpty();
     bool const bIsMultiSelection = Sci_IsMultiOrRectangleSelection();
     bool const bIsSelCharCountable = !bIsSelectionEmpty && !bIsMultiSelection;
-    bool const bIsWindowFindReplace = IsWindow(Globals.hwndDlgFindReplace);
-
     bool bIsUpdateNeeded = bForceRedraw;
 
     static WCHAR tchLn[32] = { L'\0' };
@@ -11643,7 +11658,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     }
     // ------------------------------------------------------
 
-    if (g_iStatusbarVisible[STATUS_DOCCHAR]) {
+    if (bShowStatusbar && g_iStatusbarVisible[STATUS_DOCCHAR]) {
         static WCHAR tchChr[32] = { L'\0' };
         static WCHAR tchChrs[32] = { L'\0' };
         static DocPos s_iChr = -1;
@@ -11673,7 +11688,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     }
     // ------------------------------------------------------
 
-    if (g_iStatusbarVisible[STATUS_UNICODEPT]) {
+    if (bShowStatusbar && g_iStatusbarVisible[STATUS_UNICODEPT]) {
 
         static WCHAR     tchChr[32] = { L'\0' };
         static UINT64    s_wChr = L'\0';
@@ -11697,7 +11712,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
             else
                 StringCchPrintf(tchChr, COUNTOF(tchChr), L"0x%.4X 0x%.4X", LOWORD(wChr), HIWORD(wChr));
         }
-        if (s_wChr != wChr) {
+        if (bForceRedraw || (s_wChr != wChr)) {
             StringCchPrintf(tchStatusBar[STATUS_UNICODEPT], txtWidth, L"%s%s%s",
                 g_mxSBPrefix[STATUS_UNICODEPT], tchChr, g_mxSBPostfix[STATUS_UNICODEPT]);
             s_wChr = wChr;
@@ -11755,7 +11770,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     // ------------------------------------------------------
 
     // number of selected lines in statusbar
-    if (g_iStatusbarVisible[STATUS_SELCTLINES]) {
+    if (bShowStatusbar && g_iStatusbarVisible[STATUS_SELCTLINES]) {
         static bool s_bIsSelectionEmpty = true;
         static DocLn s_iLinesSelected = -1;
 
@@ -11788,7 +11803,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     // ------------------------------------------------------
 
     // try calculate expression of selection
-    if (g_iStatusbarVisible[STATUS_TINYEXPR]) {
+    if (bShowStatusbar && g_iStatusbarVisible[STATUS_TINYEXPR]) {
         static WCHAR tchExpression[80] = { L'\0' }; // fits "0b" + 64 bits + NUL with headroom
         static te_int_t s_iExErr          = -3;
         s_dExpression    = 0.0;
@@ -11885,7 +11900,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     // ------------------------------------------------------
 
     // number of replaced pattern
-    if (g_iStatusbarVisible[STATUS_OCCREPLACE] || bIsWindowFindReplace) {
+    if (bShowStatusbar && g_iStatusbarVisible[STATUS_OCCREPLACE]) {
         static DocPosU s_iReplacedOccurrences = 0;
         if (bForceRedraw || (s_iReplacedOccurrences != Globals.iReplacedOccurrences)) {
             static WCHAR tchRepl[64] = { L'\0' };
@@ -11906,7 +11921,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     // ------------------------------------------------------
 
     // get number of bytes in current encoding
-    if (g_iStatusbarVisible[STATUS_DOCSIZE]) {
+    if (bShowStatusbar && g_iStatusbarVisible[STATUS_DOCSIZE]) {
         static DocPos s_iTextLength = -1;
         DocPos const iTextLength = SciCall_GetTextLength();
         if (bForceRedraw || (s_iTextLength != iTextLength)) {
@@ -11922,7 +11937,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     }
     // ------------------------------------------------------
 
-    if (g_iStatusbarVisible[STATUS_CODEPAGE]) {
+    if (bShowStatusbar && g_iStatusbarVisible[STATUS_CODEPAGE]) {
         static cpi_enc_t s_iEncoding = CPI_NONE;
         static bool      s_bUTF8WithNul = false;
         cpi_enc_t const  iEncoding   = Encoding_GetCurrent();
@@ -11945,7 +11960,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     const WCHAR* const _CRLF_f  = L"%sCR+LF%s";
     const WCHAR* const _CRLFi_f = L"%sCR+LF*%s";
 
-    if (g_iStatusbarVisible[STATUS_EOLMODE]) {
+    if (bShowStatusbar && g_iStatusbarVisible[STATUS_EOLMODE]) {
         static int s_iEOLMode = -1;
         int const eol_mode = SciCall_GetEOLMode();
 
@@ -11967,7 +11982,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     }
     // ------------------------------------------------------
 
-    if (g_iStatusbarVisible[STATUS_OVRMODE]) {
+    if (bShowStatusbar && g_iStatusbarVisible[STATUS_OVRMODE]) {
         static int  s_bIsOVR = -1;   // int for -1 sentinel (first-paint trigger)
         static bool s_bPasteBoard = false;
         bool const bIsOVR = SciCall_GetOverType();
@@ -11989,7 +12004,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     }
     // ------------------------------------------------------
 
-    if (g_iStatusbarVisible[STATUS_2ND_DEF]) {
+    if (bShowStatusbar && g_iStatusbarVisible[STATUS_2ND_DEF]) {
         static bool s_bUse2ndDefault = true;
         bool const bUse2ndDefault = Style_GetUse2ndDefault();
         if (bForceRedraw || (s_bUse2ndDefault != bUse2ndDefault)) {
@@ -12006,7 +12021,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     }
     // ------------------------------------------------------
 
-    if (g_iStatusbarVisible[STATUS_LEXER]) {
+    if (bShowStatusbar && g_iStatusbarVisible[STATUS_LEXER]) {
         static int s_iCurLexer = -1;
         int const iCurLexer = Style_GetCurrentLexerRID();
         if (bForceRedraw || (s_iCurLexer != iCurLexer)) {
@@ -12030,9 +12045,11 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     int g_vStatusbarSectionWidth[STATUS_SECTOR_COUNT] = SBS_INIT_MINUS;
 
-    _CalculateStatusbarSections(g_vStatusbarSectionWidth, tchStatusBar, &bIsUpdateNeeded);
+    if (bShowStatusbar) {
+        _CalculateStatusbarSections(g_vStatusbarSectionWidth, tchStatusBar, &bIsUpdateNeeded);
+    }
 
-    if (bIsUpdateNeeded) {
+    if (bShowStatusbar && bIsUpdateNeeded) {
         int aStatusbarSections[STATUS_SECTOR_COUNT] = SBS_INIT_ZERO;
         BYTE cnt = 0;
         int totalWidth = 0;

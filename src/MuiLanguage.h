@@ -113,7 +113,7 @@ inline bool IsSameLocale(const WCHAR *ln1, const WCHAR *ln2) {
 #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
 
 bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName_out, int cchBuffer);
-unsigned LoadLanguageResources(LPCWSTR localeName);
+void LoadLanguageResources(LPCWSTR localeName);
 void FreeLanguageResources();
 bool InsertLanguageMenu(HMENU hMenuBar);
 void DynamicLanguageMenuCmd(int cmd);
