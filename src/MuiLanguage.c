@@ -562,33 +562,29 @@ bool InsertLanguageMenu(HMENU hMenuBar) {
 //
 //  DynamicLanguageMenuCmd() - Handles IDS_MUI_LANG_XX_YY messages
 //
-void DynamicLanguageMenuCmd(int cmd) {
+bool DynamicLanguageMenuCmd(int cmd) {
 
     // consecutive resource IDs
     unsigned const iLngIdx = (unsigned)((cmd >= IDS_MUI_LANG_EN_US) ?
                              (cmd - IDS_MUI_LANG_EN_US) : MuiLanguages_CountOf());
-    if (iLngIdx >= MuiLanguages_CountOf()) {
-        return;
+    if (iLngIdx >= MuiLanguages_CountOf() || MUI_LanguageDLLs[iLngIdx].bIsActive) {
+        return false;
     }
-    if (!MUI_LanguageDLLs[iLngIdx].bIsActive) {
 
-        DestroyMenu(Globals.hMainMenu);
+    DestroyMenu(Globals.hMainMenu);
 
-        // desired language
-        LPCWSTR desiredLocaleName = MUI_LanguageDLLs[iLngIdx].LocaleName;
-        LoadLanguageResources(desiredLocaleName);
+    LoadLanguageResources(MUI_LanguageDLLs[iLngIdx].LocaleName);
 
-        Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
-        if (!Globals.hMainMenu) {
-            InfoBoxLastError(L"LoadMenu()", 0);
-            CloseApplication();
-            return;
-        }
-
-        InsertLanguageMenu(Globals.hMainMenu);
-        SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
-        DrawMenuBar(Globals.hwndMain);
+    Globals.hMainMenu = LoadMenu(Globals.hLngResContainer, MAKEINTRESOURCE(IDR_MUI_MAINMENU));
+    if (!Globals.hMainMenu) {
+        InfoBoxLastError(L"LoadMenu()", 0);
+        CloseApplication();
+        return false;
     }
+
+    InsertLanguageMenu(Globals.hMainMenu);
+    SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
+    return true;
 }
 
 

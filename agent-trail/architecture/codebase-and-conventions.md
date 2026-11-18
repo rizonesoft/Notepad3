@@ -83,6 +83,10 @@ Before an approved vendored-library change, consult the [Lexilla patch registry]
 - `ComboBox_SetText*` fires `CBN_EDITCHANGE` synchronously; reset one-shot flags before calling it.
 - `_FindInTarget` has an 8192-byte `chFind` buffer; a longer pattern makes `WideCharToMultiByte` fail (`len` = -1) and Scintilla reports "not found".
 
+### Find/Replace dialog placement
+
+- For live recreation, capture the old screen rectangle and restore against its monitor. [`SetDlgPos`](../../src/Dialogs.c#L6157) is for owner-relative settings and clamps to the owner's monitor; [`_RestoreFindReplaceDlgPosition`](../../src/Edit.c#L6807) uses the old rectangle's monitor and fits the dialog again after any DPI resize.
+
 ### Dynamic string/path buffer lifetime
 
 `StrgCreate(NULL)` can return a valid handle without allocating its text buffer; `StrgGet(h) == NULL` before initialization is normal, not proof of allocation failure. Initialize the fresh handle with `StrgReset(h, text)` and check its result (`> 0`) before using the text ([source](../../src/DynStrg.c#L432-L473): `StrgCreate`, `StrgReset`, `StrgGet`).

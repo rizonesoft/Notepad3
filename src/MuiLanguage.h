@@ -116,7 +116,7 @@ bool GetUserPreferredLanguage(LPWSTR pszPrefLocaleName_out, int cchBuffer);
 void LoadLanguageResources(LPCWSTR localeName);
 void FreeLanguageResources();
 bool InsertLanguageMenu(HMENU hMenuBar);
-void DynamicLanguageMenuCmd(int cmd);
+bool DynamicLanguageMenuCmd(int cmd);
 
 #endif // HAVE_DYN_LOAD_LIBS_MUI_LNGS
 

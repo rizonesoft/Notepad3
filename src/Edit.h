@@ -100,7 +100,12 @@ void EditFixPositions();
 void EditEnsureConsistentLineEndings(HWND hwnd);
 void EditGetExcerpt(HWND hwnd,LPWSTR lpszExcerpt,DWORD cchExcerpt);
 
-HWND EditFindReplaceDlg(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bReplace, const POINT* pRestorePos);
+typedef struct {
+    RECT windowRect;
+    bool bFocusedView;
+} FindReplaceDlgRestore;
+
+HWND EditFindReplaceDlg(HWND hwnd, LPEDITFINDREPLACE lpefr, bool bReplace, const FindReplaceDlgRestore* pRestore);
 bool EditFindNext(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd, bool bFillEmpty);
 bool EditFindPrev(HWND hwnd, const LPEDITFINDREPLACE lpefr, bool bExtendSelection, bool bFocusWnd, bool bFillEmpty);
 bool EditReplace(HWND hwnd, LPEDITFINDREPLACE lpefr);

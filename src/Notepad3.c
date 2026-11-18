@@ -8703,20 +8703,21 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     if (bIsLngMenuCmd) {
         bool const bHadFindReplace = IsWindow(Globals.hwndDlgFindReplace);
         bool bReplace = false;
-        int xDlg = 0;
-        int yDlg = 0;
+        FindReplaceDlgRestore restore = { 0 };
         if (bHadFindReplace) {
             bReplace = GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE) != NULL;
-            GetDlgPos(Globals.hwndDlgFindReplace, &xDlg, &yDlg);
+            GetWindowRect(Globals.hwndDlgFindReplace, &restore.windowRect);
+            restore.bFocusedView = FocusedView.HideNonMatchedLines;
         }
 
-        DynamicLanguageMenuCmd(iLoWParam);
+        if (!DynamicLanguageMenuCmd(iLoWParam)) {
+            return FALSE;
+        }
         Style_InsertThemesMenu(Globals.hMainMenu);
         DrawMenuBar(Globals.hwndMain);
-        if (Globals.hMainMenu && bHadFindReplace && !IsWindow(Globals.hwndDlgFindReplace)) {
-            POINT const pos = { xDlg, yDlg };
+        if (bHadFindReplace && !IsWindow(Globals.hwndDlgFindReplace)) {
             Globals.bFindReplCopySelOrClip = false;
-            EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, bReplace, &pos);
+            EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, bReplace, &restore);
         }
         UpdateToolbar();
         UpdateStatusbar(true);
@@ -8750,7 +8751,10 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         return FALSE;
 
     case IDT_TIMER_CALLBACK_MRKALL:
-        EditMarkAllOccurrences(Globals.hwndEdit, (bool)lParam);
+        // A queued editor refresh must not clear the open dialog's occurrence marks.
+        if (!IsWindow(Globals.hwndDlgFindReplace)) {
+            EditMarkAllOccurrences(Globals.hwndEdit, (bool)lParam);
+        }
         return FALSE;
 
     case IDT_TIMER_CLEAR_CALLTIP:
@@ -11900,10 +11904,11 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
     // ------------------------------------------------------
 
     // number of replaced pattern
-    if (bShowStatusbar && g_iStatusbarVisible[STATUS_OCCREPLACE]) {
+    static WCHAR tchRepl[64] = L"--";
+    bool const bShowReplacementCount = bShowStatusbar && g_iStatusbarVisible[STATUS_OCCREPLACE];
+    if (bShowReplacementCount || bIsWindowFindReplace) {
         static DocPosU s_iReplacedOccurrences = 0;
         if (bForceRedraw || (s_iReplacedOccurrences != Globals.iReplacedOccurrences)) {
-            static WCHAR tchRepl[64] = { L'\0' };
             if (Globals.iReplacedOccurrences) {
                 StringCchPrintf(tchRepl, COUNTOF(tchRepl), DOCPOSFMTW, Globals.iReplacedOccurrences);
                 FormatNumberStr(tchRepl, COUNTOF(tchRepl), 0);
@@ -11911,11 +11916,12 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
                 StringCchCopy(tchRepl, COUNTOF(tchRepl), L"--");
             }
 
-            StringCchPrintf(tchStatusBar[STATUS_OCCREPLACE], txtWidth, L"%s%s%s",
-                            g_mxSBPrefix[STATUS_OCCREPLACE], tchRepl, g_mxSBPostfix[STATUS_OCCREPLACE]);
-
             s_iReplacedOccurrences = Globals.iReplacedOccurrences;
-            bIsUpdateNeeded = true;
+            if (bShowReplacementCount) {
+                StringCchPrintf(tchStatusBar[STATUS_OCCREPLACE], txtWidth, L"%s%s%s",
+                                g_mxSBPrefix[STATUS_OCCREPLACE], tchRepl, g_mxSBPostfix[STATUS_OCCREPLACE]);
+                bIsUpdateNeeded = true;
+            }
         }
     }
     // ------------------------------------------------------
@@ -12095,15 +12101,6 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
 
     // update Find/Replace dialog (if any)
     if (bIsWindowFindReplace) {
-        static WCHAR tchReplOccs[64] = { L'\0' };
-        if (Globals.iReplacedOccurrences) {
-            StringCchPrintf(tchReplOccs, COUNTOF(tchReplOccs), DOCPOSFMTW, Globals.iReplacedOccurrences);
-            FormatNumberStr(tchReplOccs, COUNTOF(tchReplOccs), 0);
-        }
-        else {
-            StringCchCopy(tchReplOccs, COUNTOF(tchReplOccs), L"--");
-        }
-
         const WCHAR* const SBFMT = L" %s%s / %s     %s%s     %s%s     %s%s     %s%s     (  %s  )              ";
 
         static WCHAR tchFRStatus[128] = { L'\0' };
@@ -12112,7 +12109,7 @@ static void  _UpdateStatusbarDelayed(bool bForceRedraw)
                         g_mxSBPrefix[STATUS_DOCCOLUMN], tchCol,
                         g_mxSBPrefix[STATUS_SELECTION], tchSel,
                         g_mxSBPrefix[STATUS_OCCURRENCE], tchOccOf,
-                        g_mxSBPrefix[STATUS_OCCREPLACE], tchReplOccs,
+                        g_mxSBPrefix[STATUS_OCCREPLACE], tchRepl,
                         FR_StatusW[Globals.FindReplaceMatchFoundState]);
 
         SetWindowText(GetDlgItem(Globals.hwndDlgFindReplace, IDS_FR_STATUS_TEXT), tchFRStatus);
