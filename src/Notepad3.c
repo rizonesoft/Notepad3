@@ -315,9 +315,6 @@ static inline void SetSaveNeeded(const bool bSetFlagForced)
     if (bSetFlagForced) {
         s_NeedSavingForced = true;
     }
-    if (IsWindow(Globals.hwndDlgFindReplace)) {
-        PostWMCommand(Globals.hwndDlgFindReplace, IDC_DOC_MODIFIED);
-    }
     UpdateToolbar();
 }
 
@@ -10233,7 +10230,9 @@ static LRESULT _MsgNotifyFromEdit(HWND hwnd, const SCNotification* const scn)
             // Scintilla 5.6.6+: coalesced per-UI-update text/line-count refresh,
             // replacing the former per-edit work in the rapid SCN_MODIFIED handler.
             if (iUpd & SC_UPDATE_TEXT) {
-                if (!bMarkOccUpdated && IsMarkOccurrencesEnabled()) {
+                if (IsWindow(Globals.hwndDlgFindReplace)) {
+                    PostWMCommand(Globals.hwndDlgFindReplace, IDC_DOC_MODIFIED);
+                } else if (!bMarkOccUpdated && IsMarkOccurrencesEnabled()) {
                     MarkAllOccurrences(-1, true);
                 }
                 // Scintilla 5.6.6 delivers scn->position = earliest changed

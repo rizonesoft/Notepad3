@@ -1434,6 +1434,7 @@ static INT_PTR CALLBACK EditFindReplaceDlgProc(HWND hwnd, UINT umsg, WPARAM wPar
                     EditFoldMarkedLineRange(s_pEfrData->hwnd, true);
                     UpdateDocumentReadOnlyState();
                 }
+                UpdateStatusbar(false);
             } else if (!s_pEfrData->bMarkOccurences && s_pEfrData->bStateChanged) {
                 if (FocusedView.HideNonMatchedLines) {
                     SendWMCommand(hwnd, IDC_TOGGLE_VISIBILITY);
