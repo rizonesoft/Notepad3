@@ -41,12 +41,12 @@
 #include "uthash/utlist.h"
 #include "tinyexprcpp/tinyexpr_cif.h"
 #include "Encoding.h"
+#include "FindReplace.h"
 #include "VersionEx.h"
 #include "MuiLanguage.h"
 #include "Notepad3.h"
 #include "Config/Config.h"
 #include "DarkMode/DarkMode.h"
-#include "Notepad3Util.h"
 #include "StyleLexers/EditLexer.h"
 
 #if (defined(_DEBUG) || defined(DEBUG)) && !defined(NDEBUG)
@@ -208,8 +208,6 @@ static int       s_cxEditFrame = 0;
 static int       s_cyEditFrame = 0;
 static bool      s_bUndoRedoScroll = false;
 
-// Auto-scroll state moved to Notepad3Util.c
-
 // for tiny expression calculation
 static double   s_dExpression    = 0.0;
 static te_int_t s_iExprError     = -1;
@@ -240,7 +238,6 @@ const char* const _assert_msg = "Broken UndoRedo-Transaction!";
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // (!) ENSURE  IDT_FILE_NEW -> IDT_VIEW_NEW_WINDOW corresponds to order of Toolbar.bmp
-// NUMTOOLBITMAPS defined in Notepad3Util.h
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 static TBBUTTON  s_tbbMainWnd[] = {
@@ -339,7 +336,6 @@ void SetSaveDone()
 //==============================================================================
 
 // current find pattern
-static HSTRINGW s_hstrCurrentFindPattern = NULL;
 
 
 // ----------------------------------------------------------------------------
@@ -1005,7 +1001,7 @@ static void _InitGlobals()
     s_hpthRelaunchElevatedFile = Path_Allocate(NULL);
 
     ThemesItems_Init();
-    s_hstrCurrentFindPattern = StrgCreate(NULL);
+    FindReplaceInit();
 
     s_pthArgFilePath = Path_Allocate(NULL);
     s_pthCheckFilePath = Path_Allocate(NULL);
@@ -1175,7 +1171,7 @@ static void _CleanUpResources(const HWND hwnd, bool bIsInitialized)
     Path_Release(s_pthArgFilePath);
     Path_Release(s_pthCheckFilePath);
 
-    StrgDestroy(s_hstrCurrentFindPattern);
+    FindReplaceRelease();
     ThemesItems_Release();
 
     Path_Release(s_hpthRelaunchElevatedFile);
@@ -1914,140 +1910,6 @@ static SIZE _StatusCalcTextSize(HWND hwnd, LPCWSTR lpsz)
 
 //=============================================================================
 //
-//  Set/Get FindPattern()
-//
-
-bool IsFindPatternEmpty()
-{
-    return StrgIsEmpty(s_hstrCurrentFindPattern);
-}
-
-//=============================================================================
-//
-//  GetFindPatternMB()
-//
-LPCWSTR GetFindPattern()
-{
-    return StrgGet(s_hstrCurrentFindPattern);
-}
-
-//=============================================================================
-//
-//  GetFindPatternMB()
-//
-void GetFindPatternMB(LPSTR chPattern, int cch)
-{
-    StrgGetAsUTF8(s_hstrCurrentFindPattern, chPattern, cch);
-}
-
-//=============================================================================
-//
-//  SetFindPattern()
-//
-void SetFindPattern(LPCWSTR wchFindPattern)
-{
-    StrgReset(s_hstrCurrentFindPattern, StrIsNotEmpty(wchFindPattern) ? wchFindPattern : L"");
-}
-
-//=============================================================================
-//
-//  SetFindPatternMB()
-//
-void SetFindPatternMB(LPCSTR chFindPattern)
-{
-    StrgResetFromUTF8(s_hstrCurrentFindPattern, !StrIsEmptyA(chFindPattern) ? chFindPattern : "");
-}
-
-//=============================================================================
-//
-//  LengthOfFindPattern()
-//
-size_t LengthOfFindPattern()
-{
-    return StrgGetLength(s_hstrCurrentFindPattern);
-}
-
-//=============================================================================
-//
-//  LengthOfFindPatternMB()
-//
-size_t LengthOfFindPatternMB()
-{
-    return (size_t)StrgGetAsUTF8(s_hstrCurrentFindPattern, NULL, 0);
-}
-
-// ----------------------------------------------------------------------------
-
-static EDITFINDREPLACE s_FindReplaceData = INIT_EFR_DATA;
-
-//=============================================================================
-//
-// SetFindReplaceData()
-//
-static void SetFindReplaceData()
-{
-    // init find pattern with current
-    if (!IsFindPatternEmpty()) {
-        StrgReset(Settings.EFR_Data.chFindPattern, GetFindPattern());
-    }
-    // copy settings to working data
-    DuplicateEFR(&s_FindReplaceData, &(Settings.EFR_Data));
-
-    if (g_flagMatchText) { // cmd line
-        if (g_flagMatchText & 4) {
-            s_FindReplaceData.fuFlags = (SCFIND_REGEXP | SCFIND_POSIX);
-        } else {
-            // /m without R flag: force text mode (clear regex flags) - fixes #5060
-            s_FindReplaceData.fuFlags &= ~(SCFIND_REGEXP | SCFIND_POSIX);
-        }
-        if (g_flagMatchText & 8) {
-            s_FindReplaceData.fuFlags |= SCFIND_MATCHCASE;
-        }
-        if (g_flagMatchText & 16) {
-            s_FindReplaceData.fuFlags |= SCFIND_DOT_MATCH_ALL;
-        }
-        if (g_flagMatchText & 32) {
-            s_FindReplaceData.bTransformBS = true;
-        }
-        s_FindReplaceData.bRegExprSearch = (s_FindReplaceData.fuFlags & SCFIND_REGEXP);
-        s_FindReplaceData.bWildcardSearch = false;
-        s_FindReplaceData.bReplaceClose = false;
-    }
-}
-
-
-//=============================================================================
-//
-// SetCurrentSelAsFindReplaceData()
-//
-static bool SetCurrentSelAsFindReplaceData(LPEDITFINDREPLACE lpefr)
-{
-    if (SciCall_IsSelectionEmpty()) {
-        EditSelectWordAtPos(SciCall_GetCurrentPos(), true);
-    }
-
-    size_t const cchSelection = SciCall_GetSelText(NULL);
-
-    if (0 < cchSelection) {
-        char* const szSelection = AllocMem((cchSelection + 1), HEAP_ZERO_MEMORY);
-        if (szSelection) {
-            SciCall_GetSelText(szSelection);
-
-            SetFindPatternMB(szSelection);
-            SetFindReplaceData(); // s_FindReplaceData
-            if (lpefr) {
-                StrgReset(lpefr->chFindPattern, GetFindPattern());
-            }
-
-            FreeMem(szSelection);
-            return true;
-        }
-    }
-    return false;
-}
-
-//=============================================================================
-//
 // InitApplication()
 //
 //
@@ -2438,18 +2300,18 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     if (g_flagMatchText && !IsFindPatternEmpty()) {
         if (!Sci_IsDocEmpty()) {
 
-            SetFindReplaceData(); // s_FindReplaceData
+            LPEDITFINDREPLACE const lpefr = FindReplacePrepare();
 
             if (g_flagMatchText & 2) {
                 if (!s_flagJumpTo) {
                     Sci_SetCaretScrollDocEnd();
                 }
-                EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
+                EditFindPrev(Globals.hwndEdit, lpefr, false, false, false);
             } else {
                 if (!s_flagJumpTo) {
                     SciCall_DocumentStart();
                 }
-                EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
+                EditFindNext(Globals.hwndEdit, lpefr, false, false, false);
             }
         }
     }
@@ -2750,15 +2612,118 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 }
 
 
-// _SetWrapStartIndent, _SetWrapIndentMode, _SetWrapVisualFlags moved to Notepad3Util.c
-
-
 //=============================================================================
 //
 //  Auto-Scroll (middle-click continuous scroll, Firefox-style)
 //
 
-// _AutoScrollStop, _AutoScrollTimerProc, _AutoScrollStart moved to Notepad3Util.c
+#define ID_AUTOSCROLLTIMER (0xA004)
+#define AUTOSCROLL_TIMER_MS             30
+#define AUTOSCROLL_DEADZONE             15
+#define AUTOSCROLL_DIVISOR              60.0
+#define AUTOSCROLL_CLICK_THRESHOLD_MS  200
+
+static bool      s_bAutoScrollMode = false;
+static bool      s_bAutoScrollHeld = false;
+static ULONGLONG s_dwAutoScrollStartTick = 0;
+static POINT     s_ptAutoScrollOrigin = { 0, 0 };
+static POINT     s_ptAutoScrollMouse = { 0, 0 };
+static double    s_dAutoScrollAccumY = 0.0;
+
+static bool _IsAutoScrollMode(void)
+{
+    return s_bAutoScrollMode;
+}
+
+static bool _IsAutoScrollHeld(void)
+{
+    return s_bAutoScrollHeld;
+}
+
+static ULONGLONG _GetAutoScrollStartTick(void)
+{
+    return s_dwAutoScrollStartTick;
+}
+
+static void _SetAutoScrollHeld(bool held)
+{
+    s_bAutoScrollHeld = held;
+}
+
+static void _AutoScrollUpdateMouse(POINT pt)
+{
+    s_ptAutoScrollMouse = pt;
+}
+
+
+//=============================================================================
+//
+//  _AutoScrollStop()
+//
+static void _AutoScrollStop(HWND hwndEdit)
+{
+    if (s_bAutoScrollMode) {
+        KillTimer(hwndEdit, ID_AUTOSCROLLTIMER);
+        ReleaseCapture();
+        SciCall_SetCursor(SC_CURSORNORMAL);
+        s_bAutoScrollMode = false;
+        s_bAutoScrollHeld = false;
+        s_dAutoScrollAccumY = 0.0;
+    }
+}
+
+
+//=============================================================================
+//
+//  _AutoScrollTimerProc()
+//
+static void CALLBACK _AutoScrollTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
+{
+    UNREFERENCED_PARAMETER(uMsg);
+    UNREFERENCED_PARAMETER(idEvent);
+    UNREFERENCED_PARAMETER(dwTime);
+
+    if (!s_bAutoScrollMode) {
+        KillTimer(hwnd, ID_AUTOSCROLLTIMER);
+        return;
+    }
+
+    int const deltaY = s_ptAutoScrollMouse.y - s_ptAutoScrollOrigin.y;
+
+    if (abs(deltaY) <= AUTOSCROLL_DEADZONE) {
+        s_dAutoScrollAccumY = 0.0;
+        return;
+    }
+
+    // Speed: proportional to distance beyond dead zone
+    double const speed = (double)(deltaY - (deltaY > 0 ? AUTOSCROLL_DEADZONE : -AUTOSCROLL_DEADZONE)) / AUTOSCROLL_DIVISOR;
+    s_dAutoScrollAccumY += speed;
+
+    DocLn const linesToScroll = (DocLn)s_dAutoScrollAccumY;
+    if (linesToScroll != 0) {
+        SciCall_LineScroll(0, linesToScroll);
+        s_dAutoScrollAccumY -= (double)linesToScroll;
+    }
+}
+
+
+//=============================================================================
+//
+//  _AutoScrollStart()
+//
+static void _AutoScrollStart(HWND hwndEdit, POINT pt)
+{
+    s_bAutoScrollMode = true;
+    s_bAutoScrollHeld = false;
+    s_dwAutoScrollStartTick = GetTickCount64();
+    s_ptAutoScrollOrigin = pt;
+    s_ptAutoScrollMouse = pt;
+    s_dAutoScrollAccumY = 0.0;
+    SetCapture(hwndEdit);
+    SetCursor(LoadCursor(NULL, IDC_SIZEALL));
+    SetTimer(hwndEdit, ID_AUTOSCROLLTIMER, AUTOSCROLL_TIMER_MS, _AutoScrollTimerProc);
+}
+
 
 static LRESULT CALLBACK _EditSubclassProc(
     HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam,
@@ -2769,30 +2734,30 @@ static LRESULT CALLBACK _EditSubclassProc(
     switch (uMsg) {
 
     case WM_MBUTTONDOWN: {
-        if (NP3Util_IsAutoScrollMode()) {
-            NP3Util_AutoScrollStop(hwnd);
+        if (_IsAutoScrollMode()) {
+            _AutoScrollStop(hwnd);
         } else {
             POINT const pt = POINTFromLParam(lParam);
             DocPos const pos = SciCall_CharPositionFromPointClose(pt.x, pt.y);
             if ((pos >= 0) && SciCall_IndicatorValueAt(INDIC_NP3_HYPERLINK, pos)) {
                 HandleHotSpotURLClicked(pos, OPEN_WITH_BROWSER);
             } else {
-                NP3Util_SetAutoScrollHeld(true);
-                NP3Util_AutoScrollStart(hwnd, pt);
+                _SetAutoScrollHeld(true);
+                _AutoScrollStart(hwnd, pt);
             }
         }
         return 0;
     }
 
     case WM_MBUTTONUP: {
-        if (NP3Util_IsAutoScrollMode() && NP3Util_IsAutoScrollHeld()) {
-            ULONGLONG const elapsed = GetTickCount64() - NP3Util_GetAutoScrollStartTick();
+        if (_IsAutoScrollMode() && _IsAutoScrollHeld()) {
+            ULONGLONG const elapsed = GetTickCount64() - _GetAutoScrollStartTick();
             if (elapsed > AUTOSCROLL_CLICK_THRESHOLD_MS) {
                 // Hold-to-scroll: stop on release
-                NP3Util_AutoScrollStop(hwnd);
+                _AutoScrollStop(hwnd);
             } else {
                 // Quick click: keep scrolling (toggle mode)
-                NP3Util_SetAutoScrollHeld(false);
+                _SetAutoScrollHeld(false);
             }
             return 0;
         }
@@ -2800,8 +2765,8 @@ static LRESULT CALLBACK _EditSubclassProc(
     }
 
     case WM_MOUSEMOVE:
-        if (NP3Util_IsAutoScrollMode()) {
-            NP3Util_AutoScrollUpdateMouse(POINTFromLParam(lParam));
+        if (_IsAutoScrollMode()) {
+            _AutoScrollUpdateMouse(POINTFromLParam(lParam));
             SetCursor(LoadCursor(NULL, IDC_SIZEALL));  // maintain four-way arrow
             return 0;
         }
@@ -2809,29 +2774,29 @@ static LRESULT CALLBACK _EditSubclassProc(
 
     case WM_LBUTTONDOWN:
     case WM_RBUTTONDOWN:
-        if (NP3Util_IsAutoScrollMode()) {
-            NP3Util_AutoScrollStop(hwnd);
+        if (_IsAutoScrollMode()) {
+            _AutoScrollStop(hwnd);
             return 0;
         }
         break;
 
     case WM_MOUSEWHEEL:
-        if (NP3Util_IsAutoScrollMode()) {
-            NP3Util_AutoScrollStop(hwnd);
+        if (_IsAutoScrollMode()) {
+            _AutoScrollStop(hwnd);
             return 0;
         }
         break;
 
     case WM_SETCURSOR:
-        if (NP3Util_IsAutoScrollMode()) {
+        if (_IsAutoScrollMode()) {
             SetCursor(LoadCursor(NULL, IDC_SIZEALL));
             return TRUE;
         }
         break;
 
     case WM_CAPTURECHANGED:
-        if (NP3Util_IsAutoScrollMode() && ((HWND)lParam != hwnd)) {
-            NP3Util_AutoScrollStop(hwnd);
+        if (_IsAutoScrollMode() && ((HWND)lParam != hwnd)) {
+            _AutoScrollStop(hwnd);
         }
         break;
 
@@ -2841,6 +2806,98 @@ static LRESULT CALLBACK _EditSubclassProc(
     }
 
     return DefSubclassProc(hwnd, uMsg, wParam, lParam);
+}
+
+
+//=============================================================================
+//
+//  _SetWrapStartIndent()
+//
+static void _SetWrapStartIndent(void)
+{
+    int i = 0;
+    switch (Settings.WordWrapIndent) {
+    case 1:
+        i = 1;
+        break;
+    case 2:
+        i = 2;
+        break;
+    case 3:
+        i = (Globals.fvCurFile.iIndentWidth) ? 1 * Globals.fvCurFile.iIndentWidth : 1 * Globals.fvCurFile.iTabWidth;
+        break;
+    case 4:
+        i = (Globals.fvCurFile.iIndentWidth) ? 2 * Globals.fvCurFile.iIndentWidth : 2 * Globals.fvCurFile.iTabWidth;
+        break;
+    default:
+        break;
+    }
+    SciCall_SetWrapStartIndent(i);
+}
+
+
+//=============================================================================
+//
+//  _SetWrapIndentMode()
+//
+static void _SetWrapIndentMode(void)
+{
+    BeginWaitCursorUID(Flags.bHugeFileLoadState, IDS_MUI_SB_WRAP_LINES);
+
+    Sci_SetWrapModeEx(GET_WRAP_MODE());
+
+    if (Settings.WordWrapIndent == 5) {
+        SciCall_SetWrapIndentMode(SC_WRAPINDENT_SAME);
+    } else if (Settings.WordWrapIndent == 6) {
+        SciCall_SetWrapIndentMode(SC_WRAPINDENT_INDENT);
+    } else if (Settings.WordWrapIndent == 7) {
+        SciCall_SetWrapIndentMode(SC_WRAPINDENT_DEEPINDENT);
+    } else {
+        _SetWrapStartIndent();
+        SciCall_SetWrapIndentMode(SC_WRAPINDENT_FIXED);
+    }
+
+    EndWaitCursor();
+}
+
+
+//=============================================================================
+//
+//  _SetWrapVisualFlags()
+//
+static void _SetWrapVisualFlags(HWND hwndEditCtrl)
+{
+    UNREFERENCED_PARAMETER(hwndEditCtrl);
+
+    if (Settings.ShowWordWrapSymbols) {
+        int wrapVisualFlags = 0;
+        int wrapVisualFlagsLocation = 0;
+        if (Settings.WordWrapSymbols == 0) {
+            Settings.WordWrapSymbols = 22;
+        }
+        switch (Settings.WordWrapSymbols % 10) {
+        case 1:
+            wrapVisualFlags |= SC_WRAPVISUALFLAG_END;
+            wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_END_BY_TEXT;
+            break;
+        case 2:
+            wrapVisualFlags |= SC_WRAPVISUALFLAG_END;
+            break;
+        }
+        switch (((Settings.WordWrapSymbols % 100) - (Settings.WordWrapSymbols % 10)) / 10) {
+        case 1:
+            wrapVisualFlags |= SC_WRAPVISUALFLAG_START;
+            wrapVisualFlagsLocation |= SC_WRAPVISUALFLAGLOC_START_BY_TEXT;
+            break;
+        case 2:
+            wrapVisualFlags |= SC_WRAPVISUALFLAG_START;
+            break;
+        }
+        SciCall_SetWrapVisualFlags(wrapVisualFlags);
+        SciCall_SetWrapVisualFlagsLocation(wrapVisualFlagsLocation);
+    } else {
+        SciCall_SetWrapVisualFlags(0);
+    }
 }
 
 
@@ -2996,8 +3053,8 @@ static void  _InitializeSciEditCtrl(HWND hwndEditCtrl)
     Style_SetIndentGuides(hwndEditCtrl, Settings.ShowIndentGuides);
 
     // Word Wrap
-    NP3Util_SetWrapIndentMode();
-    NP3Util_SetWrapVisualFlags(hwndEditCtrl);
+    _SetWrapIndentMode();
+    _SetWrapVisualFlags(hwndEditCtrl);
 
     // Long Lines
     if (Settings.MarkLongLines) {
@@ -3323,7 +3380,82 @@ bool SelectExternalToolBar(HWND hwnd)
 }
 
 
-// LoadBitmapFile, XXX_CreateScaledImageListFromBitmap, CreateScaledImageListFromBitmap moved to Notepad3Util.c
+#define NUMTOOLBITMAPS (31)
+
+//=============================================================================
+//
+//  _LoadToolbarBitmapFile()
+//
+static HBITMAP _LoadToolbarBitmapFile(const HPATHL hpath)
+{
+    HBITMAP hbmp = NULL;
+
+    if (Path_IsExistingFile(hpath)) {
+
+        hbmp = (HBITMAP)LoadImage(NULL, Path_Get(hpath), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+
+        bool bDimOK = false;
+        int  height = 16;
+        if (hbmp) {
+            BITMAP bmp = { 0 };
+            GetObject(hbmp, sizeof(BITMAP), &bmp);
+            height = bmp.bmHeight;
+            bDimOK = (bmp.bmWidth >= (height * NUMTOOLBITMAPS));
+        }
+        if (!bDimOK) {
+            InfoBoxLng(MB_ICONWARNING, Constants.SuppressKey.NotSuitableToolbarDim, IDS_MUI_ERR_BITMAP, Path_Get(hpath),
+                (height * NUMTOOLBITMAPS), height, NUMTOOLBITMAPS);
+        }
+    }
+    else {
+        WCHAR displayName[80];
+        Path_GetDisplayName(displayName, 80, hpath, L"<unknown>", false);
+        InfoBoxLng(MB_ICONWARNING, NULL, IDS_MUI_ERR_LOADFILE, displayName);
+    }
+
+    return hbmp;
+}
+
+
+//=============================================================================
+//
+//  _CreateScaledToolbarImageList()
+//
+static HIMAGELIST _CreateScaledToolbarImageList(HWND hWnd, HBITMAP hBmp)
+{
+    BITMAP bmp = { 0 };
+    GetObject(hBmp, sizeof(BITMAP), &bmp);
+
+    int const numOfToolBitmaps = (int)(bmp.bmWidth / bmp.bmHeight);
+
+    int const mod = bmp.bmWidth % numOfToolBitmaps;
+    int const cx = (bmp.bmWidth - mod) / numOfToolBitmaps;
+    int const cy = bmp.bmHeight;
+
+    HIMAGELIST himl = ImageList_Create(cx, cy, ILC_COLOR32 | ILC_MASK, numOfToolBitmaps, numOfToolBitmaps);
+    ImageList_AddMasked(himl, hBmp, CLR_DEFAULT);
+
+    UINT const dpi = Scintilla_GetWindowDPI(hWnd);
+    if (!Settings.DpiScaleToolBar || (dpi == USER_DEFAULT_SCREEN_DPI)) {
+        return himl; // default DPI, we are done
+    }
+
+    // Scale button icons/images
+    int const scx = ScaleIntToDPI(hWnd, cx);
+    int const scy = ScaleIntToDPI(hWnd, cy);
+
+    HIMAGELIST hsciml = ImageList_Create(scx, scy, ILC_COLOR32 | ILC_MASK | ILC_HIGHQUALITYSCALE, numOfToolBitmaps, numOfToolBitmaps);
+
+    for (int i = 0; i < numOfToolBitmaps; ++i) {
+        HICON const hicon = ImageList_GetIcon(himl, i, ILD_TRANSPARENT | ILD_PRESERVEALPHA | ILD_SCALE);
+        ImageList_AddIcon(hsciml, hicon);
+        DestroyIcon(hicon);
+    }
+
+    ImageList_Destroy(himl);
+
+    return hsciml;
+}
 
 
 //==== Toolbar Style ==========================================================
@@ -3402,7 +3534,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     if ((Settings.ToolBarTheme == 2) && Path_IsNotEmpty(g_tchToolbarBitmap)) {
         HPATHL hfile_pth = Path_Copy(g_tchToolbarBitmap);
         Path_AbsoluteFromApp(hfile_pth, true);
-        hbmp = NP3Util_LoadBitmapFile(hfile_pth);
+        hbmp = _LoadToolbarBitmapFile(hfile_pth);
         if (!hbmp) {
             Path_Reset(g_tchToolbarBitmap, L"");
             IniSectionDelete(L"Toolbar Images", L"BitmapDefault", false);
@@ -3420,7 +3552,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     hbmpCopy = CopyImage(hbmp, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
 
 
-    HIMAGELIST himl = NP3Util_CreateScaledImageListFromBitmap(hwnd, hbmp);
+    HIMAGELIST himl = _CreateScaledToolbarImageList(hwnd, hbmp);
     DeleteObject(hbmp);
     hbmp = NULL;
 
@@ -3434,7 +3566,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     if ((Settings.ToolBarTheme == 2) && Path_IsNotEmpty(g_tchToolbarBitmapHot)) {
         HPATHL hfile_pth = Path_Copy(g_tchToolbarBitmapHot);
         Path_AbsoluteFromApp(hfile_pth, true);
-        hbmp = Path_IsExistingFile(hfile_pth) ? NP3Util_LoadBitmapFile(hfile_pth) : NULL;
+        hbmp = Path_IsExistingFile(hfile_pth) ? _LoadToolbarBitmapFile(hfile_pth) : NULL;
         if (!hbmp) {
             Path_Reset(g_tchToolbarBitmapHot, L"");
             IniSectionDelete(L"Toolbar Images", L"BitmapHot", false);
@@ -3447,7 +3579,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
         hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
     }
     if (hbmp) {
-        himl = NP3Util_CreateScaledImageListFromBitmap(hwnd, hbmp);
+        himl = _CreateScaledToolbarImageList(hwnd, hbmp);
         DeleteObject(hbmp);
         hbmp = NULL;
         SendMessage(Globals.hwndToolbar, TB_SETHOTIMAGELIST, 0, (LPARAM)himl);
@@ -3463,7 +3595,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
     if ((Settings.ToolBarTheme == 2) && Path_IsNotEmpty(g_tchToolbarBitmapDisabled)) {
         HPATHL hfile_pth = Path_Copy(g_tchToolbarBitmapDisabled);
         Path_AbsoluteFromApp(hfile_pth, true);
-        hbmp = Path_IsExistingFile(hfile_pth) ? NP3Util_LoadBitmapFile(hfile_pth) : NULL;
+        hbmp = Path_IsExistingFile(hfile_pth) ? _LoadToolbarBitmapFile(hfile_pth) : NULL;
         if (!hbmp) {
             Path_Reset(g_tchToolbarBitmapDisabled, L"");
             IniSectionDelete(L"Toolbar Images", L"BitmapDisabled", false);
@@ -3475,7 +3607,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
         hbmp = LoadImage(hInstance, toolBarIntRes, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
     }
     if (hbmp) {
-        himl = NP3Util_CreateScaledImageListFromBitmap(hwnd, hbmp);
+        himl = _CreateScaledToolbarImageList(hwnd, hbmp);
         DeleteObject(hbmp);
         hbmp = NULL;
         SendMessage(Globals.hwndToolbar, TB_SETDISABLEDIMAGELIST, 0, (LPARAM)himl);
@@ -3490,7 +3622,7 @@ void CreateBars(HWND hwnd, HINSTANCE hInstance)
                 bProcessed = BitmapGrayScale(hbmpCopy);
             }
             if (bProcessed) {
-                himl = NP3Util_CreateScaledImageListFromBitmap(hwnd, hbmpCopy);
+                himl = _CreateScaledToolbarImageList(hwnd, hbmpCopy);
                 SendMessage(Globals.hwndToolbar, TB_SETDISABLEDIMAGELIST, 0, (LPARAM)himl);
             }
         }
@@ -4531,18 +4663,18 @@ LRESULT MsgCopyData(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 g_flagMatchText = params->flagMatchText;
 
                 SetFindPattern(StrEndW(&params->wchData, 0) + 1);
-                SetFindReplaceData(); // s_FindReplaceData
+                LPEDITFINDREPLACE const lpefr = FindReplacePrepare();
 
                 if (g_flagMatchText & 2) {
                     if (!s_flagJumpTo) {
                         Sci_SetCaretScrollDocEnd();
                     }
-                    EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
+                    EditFindPrev(Globals.hwndEdit, lpefr, false, false, false);
                 } else {
                     if (!s_flagJumpTo) {
                         SciCall_DocumentStart();
                     }
-                    EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
+                    EditFindNext(Globals.hwndEdit, lpefr, false, false, false);
                 }
             }
 
@@ -4707,29 +4839,6 @@ LRESULT MsgContextMenu(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     DestroyMenu(hMenuCtx);
 
     return (imenu != MNU_NONE) ? !0 : 0;
-}
-
-// ---------------------------------------------------------------------------
-// Find the 0-based position of a POPUP submenu within hParent that contains
-// childCmdId as a direct child MENUITEM.  Returns -1 if not found.
-// Replaces fragile hardcoded position numbers for POPUP items (which have
-// no command ID in MENU resource format).
-// ---------------------------------------------------------------------------
-static int GetSubMenuPosByChildCmd(HMENU hParent, UINT childCmdId)
-{
-    int const count = GetMenuItemCount(hParent);
-    for (int i = 0; i < count; ++i) {
-        HMENU const hSub = GetSubMenu(hParent, i);
-        if (hSub) {
-            int const subCount = GetMenuItemCount(hSub);
-            for (int j = 0; j < subCount; ++j) {
-                if (GetMenuItemID(hSub, j) == childCmdId) {
-                    return i;
-                }
-            }
-        }
-    }
-    return -1;
 }
 
 //=============================================================================
@@ -6217,8 +6326,7 @@ static bool _HandleEditBasicCommands(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM
     case IDM_EDIT_SELECTALLMATCHES: {
         if (!Sci_IsMultiOrRectangleSelection()) {
             if (IsWindow(Globals.hwndDlgFindReplace)) {
-                SetFindReplaceData(); // s_FindReplaceData
-                EditSelectionMultiSelectAllEx(Globals.hwndEdit, &s_FindReplaceData);
+                EditSelectionMultiSelectAllEx(Globals.hwndEdit, FindReplacePrepare());
             } else {
                 if (SciCall_IsSelectionEmpty()) {
                     EditSelectWordAtPos(SciCall_GetCurrentPos(), false);
@@ -6950,53 +7058,17 @@ static bool _HandleEditFind(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
         break;
 
 
-    case IDM_EDIT_FIND: {
-        SetFindReplaceData(); // s_FindReplaceData
-        if (!IsWindow(Globals.hwndDlgFindReplace)) {
-            // Don't overwrite cmd-line search pattern with editor selection
-            Globals.bFindReplCopySelOrClip = !g_flagMatchText;
-            /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false, NULL);
-        } else {
-            Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
-            if (GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
-                SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOFIND);
-                DestroyWindow(Globals.hwndDlgFindReplace);
-                /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, false, NULL);
-            } else {
-                SetForegroundWindow(Globals.hwndDlgFindReplace);
-                PostMessage(Globals.hwndDlgFindReplace, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(Globals.hwndDlgFindReplace, IDC_FINDTEXT)), 1);
-            }
-        }
-    }
-    break;
-
-
-    case IDM_EDIT_REPLACE: {
-        SetFindReplaceData(); // s_FindReplaceData
-        if (!IsWindow(Globals.hwndDlgFindReplace)) {
-            // Don't overwrite cmd-line search pattern with editor selection
-            Globals.bFindReplCopySelOrClip = !g_flagMatchText;
-            /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true, NULL);
-        } else {
-            Globals.bFindReplCopySelOrClip = (GetForegroundWindow() != Globals.hwndDlgFindReplace);
-            if (!GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE)) {
-                SendWMCommand(Globals.hwndDlgFindReplace, IDMSG_SWITCHTOREPLACE);
-                DestroyWindow(Globals.hwndDlgFindReplace);
-                /*Globals.hwndDlgFindReplace =*/ EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, true, NULL);
-            } else {
-                SetForegroundWindow(Globals.hwndDlgFindReplace);
-                PostMessage(Globals.hwndDlgFindReplace, WM_NEXTDLGCTL, (WPARAM)(GetDlgItem(Globals.hwndDlgFindReplace, IDC_FINDTEXT)), 1);
-            }
-        }
-    }
-    break;
+    case IDM_EDIT_FIND:
+    case IDM_EDIT_REPLACE:
+        FindReplaceShowDialog(iLoWParam == IDM_EDIT_REPLACE);
+        break;
 
 
     case IDM_EDIT_FINDNEXT:
     case IDM_EDIT_FINDPREV:
     case IDM_EDIT_REPLACENEXT:
     case IDM_EDIT_SELTONEXT:
-    case IDM_EDIT_SELTOPREV:
+    case IDM_EDIT_SELTOPREV: {
 
         if (Sci_IsDocEmpty()) {
             break;
@@ -7028,9 +7100,9 @@ static bool _HandleEditFind(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             break; // done
         }
 
-        SetFindReplaceData(); // s_FindReplaceData
+        LPEDITFINDREPLACE lpefr = FindReplacePrepare();
 
-        if (IsFindPatternEmpty() && StrgIsNotEmpty(s_FindReplaceData.chFindPattern)) {
+        if (IsFindPatternEmpty() && StrgIsNotEmpty(lpefr->chFindPattern)) {
             if (iLoWParam != IDM_EDIT_REPLACENEXT) {
                 SendWMCommand(hwnd, IDM_EDIT_FIND);
             } else {
@@ -7041,50 +7113,48 @@ static bool _HandleEditFind(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
             switch (iLoWParam) {
 
             case IDM_EDIT_FINDNEXT:
-                EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false, true);
+                EditFindNext(Globals.hwndEdit, lpefr, false, false, true);
                 break;
 
             case IDM_EDIT_FINDPREV:
-                EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false, true);
+                EditFindPrev(Globals.hwndEdit, lpefr, false, false, true);
                 break;
 
             case IDM_EDIT_REPLACENEXT:
                 if (Globals.bReplaceInitialized) {
-                    EditReplace(Globals.hwndEdit, &s_FindReplaceData);
+                    EditReplace(Globals.hwndEdit, lpefr);
                 } else {
                     SendWMCommand(hwnd, IDM_EDIT_REPLACE);
                 }
                 break;
 
             case IDM_EDIT_SELTONEXT:
-                if (IsFindPatternEmpty()) {
-                    if (!SetCurrentSelAsFindReplaceData(&s_FindReplaceData)) {
-                        break;
-                    }
-                }
-                EditFindNext(Globals.hwndEdit, &s_FindReplaceData, true, false, false);
-                break;
-
             case IDM_EDIT_SELTOPREV:
                 if (IsFindPatternEmpty()) {
-                    if (!SetCurrentSelAsFindReplaceData(&s_FindReplaceData)) {
-                        break;
+                    lpefr = FindReplaceUseSelection();
+                }
+                if (lpefr) {
+                    if (iLoWParam == IDM_EDIT_SELTONEXT) {
+                        EditFindNext(Globals.hwndEdit, lpefr, true, false, false);
+                    } else {
+                        EditFindPrev(Globals.hwndEdit, lpefr, true, false, false);
                     }
                 }
-                EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, true, false, false);
                 break;
             }
         }
-        break;
+    }
+    break;
 
 
     case CMD_FINDNEXTSEL:
     case CMD_FINDPREVSEL:
     case IDM_EDIT_SAVEFIND: {
-        if (SetCurrentSelAsFindReplaceData(&s_FindReplaceData)) {
+        LPEDITFINDREPLACE const lpefr = FindReplaceUseSelection();
+        if (lpefr) {
             MRU_Add(Globals.pMRUfind, GetFindPattern(), 0, -1, -1, NULL);
-            s_FindReplaceData.fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));
-            s_FindReplaceData.bTransformBS = false;
+            lpefr->fuFlags &= (~(SCFIND_REGEXP | SCFIND_POSIX));
+            lpefr->bTransformBS = false;
 
             switch (iLoWParam) {
 
@@ -7092,11 +7162,11 @@ static bool _HandleEditFind(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
                 break;
 
             case CMD_FINDNEXTSEL:
-                EditFindNext(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
+                EditFindNext(Globals.hwndEdit, lpefr, false, false, false);
                 break;
 
             case CMD_FINDPREVSEL:
-                EditFindPrev(Globals.hwndEdit, &s_FindReplaceData, false, false, false);
+                EditFindPrev(Globals.hwndEdit, lpefr, false, false, false);
                 break;
             }
         }
@@ -7174,7 +7244,7 @@ static bool _HandleViewAndSettingsCommands(HWND hwnd, UINT umsg, WPARAM wParam, 
 
     case IDM_VIEW_WORDWRAP:
         Globals.fvCurFile.bWordWrap = Settings.WordWrap = !Settings.WordWrap;
-        NP3Util_SetWrapIndentMode();
+        _SetWrapIndentMode();
         SciCall_ScrollVertical(Sci_GetCurrentLineNumber(), 0);
         UpdateToolbar();
         break;
@@ -7182,8 +7252,8 @@ static bool _HandleViewAndSettingsCommands(HWND hwnd, UINT umsg, WPARAM wParam, 
 
     case IDM_SET_WORDWRAPSETTINGS:
         if (WordWrapSettingsDlg(hwnd,IDD_MUI_WORDWRAP, &Settings.WordWrapIndent)) {
-            NP3Util_SetWrapIndentMode();
-            NP3Util_SetWrapVisualFlags(Globals.hwndEdit);
+            _SetWrapIndentMode();
+            _SetWrapVisualFlags(Globals.hwndEdit);
             UpdateToolbar();
         }
         break;
@@ -7191,7 +7261,7 @@ static bool _HandleViewAndSettingsCommands(HWND hwnd, UINT umsg, WPARAM wParam, 
 
     case IDM_VIEW_WORDWRAPSYMBOLS:
         Settings.ShowWordWrapSymbols = !Settings.ShowWordWrapSymbols;
-        NP3Util_SetWrapVisualFlags(Globals.hwndEdit);
+        _SetWrapVisualFlags(Globals.hwndEdit);
         UpdateToolbar();
         break;
 
@@ -7267,7 +7337,7 @@ static bool _HandleViewAndSettingsCommands(HWND hwnd, UINT umsg, WPARAM wParam, 
             SciCall_SetTabWidth(Globals.fvCurFile.iTabWidth);
             SciCall_SetIndent(Globals.fvCurFile.iIndentWidth);
             if (SciCall_GetWrapIndentMode() == SC_WRAPINDENT_FIXED) {
-                NP3Util_SetWrapStartIndent();
+                _SetWrapStartIndent();
             }
         }
         break;
@@ -8701,23 +8771,16 @@ LRESULT MsgCommand(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
     #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
     bool const bIsLngMenuCmd = ((iLoWParam >= IDS_MUI_LANG_EN_US) && (iLoWParam < (IDS_MUI_LANG_EN_US + MuiLanguages_CountOf())));
     if (bIsLngMenuCmd) {
-        bool const bHadFindReplace = IsWindow(Globals.hwndDlgFindReplace);
-        bool bReplace = false;
         FindReplaceDlgRestore restore = { 0 };
-        if (bHadFindReplace) {
-            bReplace = GetDlgItem(Globals.hwndDlgFindReplace, IDC_REPLACE) != NULL;
-            GetWindowRect(Globals.hwndDlgFindReplace, &restore.windowRect);
-            restore.bFocusedView = FocusedView.HideNonMatchedLines;
-        }
+        bool const bHadFindReplace = FindReplaceCaptureDialog(&restore);
 
         if (!DynamicLanguageMenuCmd(iLoWParam)) {
             return FALSE;
         }
         Style_InsertThemesMenu(Globals.hMainMenu);
         DrawMenuBar(Globals.hwndMain);
-        if (bHadFindReplace && !IsWindow(Globals.hwndDlgFindReplace)) {
-            Globals.bFindReplCopySelOrClip = false;
-            EditFindReplaceDlg(Globals.hwndEdit, &s_FindReplaceData, bReplace, &restore);
+        if (bHadFindReplace) {
+            FindReplaceRestoreDialog(&restore);
         }
         UpdateToolbar();
         UpdateStatusbar(true);
@@ -11319,7 +11382,6 @@ static void  _UpdateToolbarDelayed()
 
     EnableTool(Globals.hwndToolbar, IDT_EDIT_FIND, b2);
     //EnableTool(Globals.hwndToolbar, ,b2);
-    //EnableTool(Globals.hwndToolbar, IDT_EDIT_FINDPREV,b2 && !StrIsEmptyA(s_FindReplaceData.szFind));
     EnableTool(Globals.hwndToolbar, IDT_EDIT_REPLACE, b2 && !ro);
 
     EnableTool(Globals.hwndToolbar, IDT_EDIT_CUT, !b1 && !ro);

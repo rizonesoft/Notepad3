@@ -229,7 +229,6 @@ typedef enum BUFFER_SIZES {
 
 
 typedef enum FR_STATES { FND_NOP = 0, NXT_NOT_FND, NXT_FND, NXT_WRP_FND, PRV_NOT_FND, PRV_FND, PRV_WRP_FND } FR_STATES;
-typedef enum FR_UPD_MODES { FRMOD_IGNORE = 0, FRMOD_NORM, FRMOD_WRAPED } FR_UPD_MODES;
 typedef enum WIN_DISPL_MODE { WINDSPMOD_AUTO = 0, WINDSPMOD_DARK, WINDSPMOD_LIGHT } WIN_DISPL_MODE;
 
 typedef enum ZOOM_TOOLTIP_POSITION {
@@ -322,8 +321,7 @@ typedef struct EDITFINDREPLACE {
 typedef const EDITFINDREPLACE* const CLPCEDITFINDREPLACE;
 
 #define INIT_EFR_DATA  { 0, false, false, false, false, false, false, false, true, false, true, NULL, NULL, NULL }
-// USE: void DuplicateEFR(LPEDITFINDREPLACE dst, CLPCEDITFINDREPLACE src);
-//      void ReleaseEFR(LPEDITFINDREPLACE efr);
+// Release string handles with ReleaseEFR() from FindReplace.h.
 
 #define IDMSG_SWITCHTOFIND    300
 #define IDMSG_SWITCHTOREPLACE 301

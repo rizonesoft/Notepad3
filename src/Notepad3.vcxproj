@@ -1057,6 +1057,7 @@
     <ClCompile Include="Dialogs.c" />
     <ClCompile Include="Dlapi.c" />
     <ClCompile Include="Edit.c" />
+    <ClCompile Include="FindReplace.c" />
     <ClCompile Include="EditRTF.cpp" />
     <ClCompile Include="Encoding.c" />
     <ClCompile Include="uchardet\EncodingDetection.cpp">
@@ -1082,7 +1083,6 @@
     <ClCompile Include="Helpers.c" />
     <ClCompile Include="MuiLanguage.c" />
     <ClCompile Include="Notepad3.c" />
-    <ClCompile Include="Notepad3Util.c" />
     <ClCompile Include="Print.cpp" />
     <ClCompile Include="Resample.c" />
     <ClCompile Include="StyleLexers\styleLexAPDL.c" />
@@ -1185,12 +1185,12 @@
     <ClInclude Include="Dialogs.h" />
     <ClInclude Include="Dlapi.h" />
     <ClInclude Include="Edit.h" />
+    <ClInclude Include="FindReplace.h" />
     <ClInclude Include="EditRTF.h" />
     <ClInclude Include="Encoding.h" />
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="MuiLanguage.h" />
     <ClInclude Include="Notepad3.h" />
-    <ClInclude Include="Notepad3Util.h" />
     <ClInclude Include="Resample.h" />
     <ClInclude Include="SciCall.h" />
     <ClInclude Include="StyleLexers\EditLexer.h" />

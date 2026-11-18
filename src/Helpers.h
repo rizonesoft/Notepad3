@@ -464,6 +464,8 @@ void GetSystemMessageFontA(LPSTR fontFaceName_out, bool bForceRefresh);
 void GetSystemStatusFontA(LPSTR fontFaceName_out, bool bForceRefresh);
 
 bool  IsCmdEnabled(HWND hwnd, UINT uId);
+// Zero-based position of the first submenu directly containing childCmdId, or -1.
+int GetSubMenuPosByChildCmd(HMENU hParent, UINT childCmdId);
 BOOL  EnableMenuCommand(HMENU hmenu, UINT uId, bool enabled);
 DWORD CheckMenuCommand(HMENU hmenu, UINT uId, bool checked);
 
@@ -564,8 +566,6 @@ size_t UnSlashCharW(LPWSTR pchInOut, WCHAR wch);
 size_t SlashCtrlW(LPWSTR pchOutput, size_t cchOutLen, LPCWSTR pchInput);
 size_t UnSlashCtrlW(LPWSTR pchInOut);
 
-void TransformBackslashesA(LPSTR pszInput, bool bRegEx, UINT cpEdit, int *iReplaceMsg);
-void TransformBackslashesW(LPWSTR pszInput, bool bRegEx, UINT cpEdit, int *iReplaceMsg);
 //void TransformMetaChars(char *pszInput, size_t cch, bool bRegEx, int iEOLMode);
 
 

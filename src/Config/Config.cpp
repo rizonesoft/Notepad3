@@ -55,6 +55,7 @@ extern "C" {
 #include "Styles.h"
 #include "Dialogs.h"
 #include "Encoding.h"
+#include "FindReplace.h"
 #include "Notepad3.h"
 #include "MuiLanguage.h"
 #include "DynStrg.h"
