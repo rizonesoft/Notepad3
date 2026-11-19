@@ -36,7 +36,7 @@ UCH - (UCH)ARDET is an Encoding Detector Library
 UTH - (UTH)ash provides a hash table for C structures
 
 
-Current BETA Version 7.26.1116.(build_#) (2026-11-16)
+Current BETA Version 7.26.1119.(build_#) (2026-11-19)
 ========================================================
 
 --------------------------------------------------------
@@ -47,12 +47,16 @@ NEW:
 [1116.1]- Add WebTemplate3 for current-file browser preview (#6103).
 [1109.1]- Add ANSYS APDL using the upstream Lexilla lexer (#6078).
 [1023.1]- Add recovery actions to the Open Recent File dialog (#6045).
-[1023.1]- docs: organize agent guidance into indexed references (#6044).
+[1023.1]- Docs: organize agent guidance into indexed references (#6044).
 
 --------------------------------------------------------
 CHANGES:
 --------------------------------------------------------
 [.xxx.1]- .
+[1119.1]- Extract Find/Replace and consolidate editor helpers (#6115).
+[1119.1]- Refactoring Edit Helper and fixing minor bugs on F/R-dialog (#6115).
+[1119.1]- Preserve Find/Replace view state across language switches (#6113).
+[1119.1]- Clarify Read-only and View-only modes (#6111).
 [1112.1]- Reorganize agent docs into agent-trail and enhance maintenance guidance (#6099).
 [1112.1]- Group Edit copy commands in submenu (#6096).
 [1109.1]- Reorganize Edit menu across locales and fix command enable states (#6088).
@@ -78,7 +82,10 @@ CHANGES:
 FIXES:
 --------------------------------------------------------
 [.xxx.1]- .
-[1112.1]- Fix enclosing brace search with Scintilla matching (#6098).
+[1119.1]- Refresh Find/Replace match counts after Undo and Redo (#6115).
+[1119.1]- Find/Replace matching and dialog state (#6115).
+[1119.1]- Refresh and reopen Find/Replace on language changes (#6113).
+[1112.1]- Enclosing brace search with Scintilla matching (#6098).
 [1112.1]- Error from warning due to new compiler (#6095).
 [1109.1]- Reorganize Edit menu across locales and fix command enable states (#6088).
 [1109.1]- Sort scheme dialogs alphabetically while preserving lexer indics (#6086).
