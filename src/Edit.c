@@ -2963,6 +2963,11 @@ static void _GetCurrentDateTimeString(LPWSTR pwchDateTimeStrg, size_t cchBufLen,
         WCHAR wchDate[SMALL_BUFFER] = { L'\0' };
         WCHAR wchFormat[SMALL_BUFFER] = { L'\0' };
 
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+        if (Settings.PreferredLocale4DateFmt) {
+            EnsureLanguageDLLsChecked();
+        }
+#endif
         LPCWSTR const pLocaleName = Settings.PreferredLocale4DateFmt ? Settings2.PreferredLanguageLocaleName : LOCALE_NAME_USER_DEFAULT;
 
         GetLocaleInfoEx(pLocaleName, (bShortFmt ? LOCALE_SSHORTDATE : LOCALE_SLONGDATE), wchFormat, COUNTOF(wchFormat));

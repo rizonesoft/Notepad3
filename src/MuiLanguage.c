@@ -325,16 +325,23 @@ static bool _CheckLanguageDLL(unsigned lng)
     return bAvail;
 }
 
-static unsigned _CheckAvailableLanguageDLLs()
+void EnsureLanguageDLLsChecked(void)
 {
+    if (s_bFullLngScanDone) {
+        return;
+    }
+
     unsigned count = 1; // internal instance always available
     for (unsigned lng = 1; lng < MuiLanguages_CountOf(); ++lng) {
         if (_CheckLanguageDLL(lng)) {
             ++count;
         }
     }
+    Globals.uAvailLngCount = count;
+    if (count < 2) {
+        Settings.PreferredLocale4DateFmt = false;
+    }
     s_bFullLngScanDone = true;
-    return count;
 }
 
 
@@ -383,7 +390,7 @@ void LoadLanguageResources(LPCWSTR pLocaleName) {
 
     unsigned const iInternalLngIndex = max_u(0, GetMUILanguageIndexByLocaleName(MUI_BASE_LNG_ID));
 
-    // Check only the preferred locale's DLL on startup (defer full scan to menu population)
+    // Check only the preferred locale's DLL on startup.
     unsigned iLngIndex = MuiLanguages_CountOf();
     for (unsigned lng = 0; lng < MuiLanguages_CountOf(); ++lng) {
         if (StrCmpIW(MUI_LanguageDLLs[lng].LocaleName, pLocaleName) == 0) {
@@ -394,11 +401,6 @@ void LoadLanguageResources(LPCWSTR pLocaleName) {
             break;
         }
     }
-    if (!s_bFullLngScanDone) {
-        // Set count > 1 so language menu creation is not skipped prematurely
-        Globals.uAvailLngCount = MuiLanguages_CountOf();
-    }
-
     // set the appropriate fallback list
     WCHAR tchAvailLngs[2 * (LOCALE_NAME_MAX_LENGTH + 1)] = { L'\0' };
     if (iLngIndex < MuiLanguages_CountOf() && MUI_LanguageDLLs[iLngIndex].bHasDLL && (iLngIndex > 0)) {
@@ -510,29 +512,26 @@ void FreeLanguageResources() {
 
 //=============================================================================
 //
-//  InsertLanguageMenu
+//  InitLanguageMenu
 //
 //
 
-static HMENU s_hmenuLanguage = NULL;
-
-bool InsertLanguageMenu(HMENU hMenuBar) {
-
-    // Perform full language DLL scan if deferred from startup
-    if (!s_bFullLngScanDone) {
-        Globals.uAvailLngCount = _CheckAvailableLanguageDLLs();
+void InitLanguageMenu(HMENU hPopup)
+{
+    // The Settings popup starts with this command until its language items are inserted.
+    if (GetMenuItemID(hPopup, 0) != IDM_SET_TABSASSPACES) {
+        return;
     }
 
-    // check, if we need a language switching menu
+    EnsureLanguageDLLsChecked();
     if (Globals.uAvailLngCount < 2) {
-        Settings.PreferredLocale4DateFmt = false;
-        return false;
+        return;
     }
 
-    if (s_hmenuLanguage) {
-        DestroyMenu(s_hmenuLanguage);
+    HMENU const hLanguage = CreatePopupMenu();
+    if (!hLanguage) {
+        return;
     }
-    s_hmenuLanguage = CreatePopupMenu();
 
     WCHAR wchMenuItemFmt[128] = { L'\0' };
     WCHAR wchMenuItemStrg[196] = { L'\0' };
@@ -540,22 +539,20 @@ bool InsertLanguageMenu(HMENU hMenuBar) {
         if (MUI_LanguageDLLs[lng].bHasDLL) {
             StringCchCopy(wchMenuItemFmt, COUNTOF(wchMenuItemFmt), MUI_LanguageDLLs[lng].MenuItem);
             StringCchPrintfW(wchMenuItemStrg, COUNTOF(wchMenuItemStrg), wchMenuItemFmt, MUI_LanguageDLLs[lng].LocaleName);
-            AppendMenu(s_hmenuLanguage, MF_ENABLED | MF_STRING, MUI_LanguageDLLs[lng].rid, wchMenuItemStrg);
+            UINT const flags = MF_STRING | (MUI_LanguageDLLs[lng].bIsActive ? MF_CHECKED : MF_UNCHECKED);
+            AppendMenu(hLanguage, flags, MUI_LanguageDLLs[lng].rid, wchMenuItemStrg);
         }
     }
 
-    // --- insert ---
-    int const pos = GetMenuItemCount(hMenuBar) - 1;
-    if (pos >= 0) {
-        GetLngString(IDS_MUI_MENU_LANGUAGE, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
-        //return InsertMenu(hMenuBar, pos, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuLanguage, wchMenuItemStrg);
-        bool const res = InsertMenu(hMenuBar, IDM_SET_TABSASSPACES, MF_BYCOMMAND | MF_POPUP | MF_STRING, (UINT_PTR)s_hmenuLanguage, wchMenuItemStrg);
-        GetLngString(IDS_USE_LOCALE_DATEFMT, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
-        InsertMenu(hMenuBar, IDM_SET_TABSASSPACES, MF_BYCOMMAND | MF_STRING, (UINT_PTR)IDS_USE_LOCALE_DATEFMT, wchMenuItemStrg);
-        InsertMenu(hMenuBar, IDM_SET_TABSASSPACES, MF_BYCOMMAND | MF_SEPARATOR, (UINT_PTR)NULL, NULL);
-        return res;
+    GetLngString(IDS_MUI_MENU_LANGUAGE, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
+    if (!InsertMenu(hPopup, 0, MF_BYPOSITION | MF_POPUP | MF_STRING, (UINT_PTR)hLanguage, wchMenuItemStrg)) {
+        DestroyMenu(hLanguage);
+        return;
     }
-    return false;
+    GetLngString(IDS_USE_LOCALE_DATEFMT, wchMenuItemStrg, COUNTOF(wchMenuItemStrg));
+    UINT const flags = MF_STRING | (Settings.PreferredLocale4DateFmt ? MF_CHECKED : MF_UNCHECKED);
+    InsertMenu(hPopup, 1, MF_BYPOSITION | flags, IDS_USE_LOCALE_DATEFMT, wchMenuItemStrg);
+    InsertMenu(hPopup, 2, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
 }
 
 //=============================================================================
@@ -582,7 +579,6 @@ bool DynamicLanguageMenuCmd(int cmd) {
         return false;
     }
 
-    InsertLanguageMenu(Globals.hMainMenu);
     SetMenu(Globals.hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
     return true;
 }

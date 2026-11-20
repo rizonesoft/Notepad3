@@ -1533,9 +1533,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         return 1;
     }
 
-    #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-        InsertLanguageMenu(Globals.hMainMenu);
-    #endif
     Style_InsertThemesMenu(Globals.hMainMenu);
 
     if (!InitApplication(Globals.hInstance)) {
@@ -2493,6 +2490,14 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case WM_INITMENU:
         return MsgInitMenu(hwnd, wParam, lParam);
+
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+    case WM_INITMENUPOPUP:
+        if (!HIWORD(lParam)) {
+            InitLanguageMenu((HMENU)wParam);
+        }
+        break;
+#endif
 
     case WM_EXITMENULOOP:
         return MsgExitMenuLoop(hwnd, wParam);
