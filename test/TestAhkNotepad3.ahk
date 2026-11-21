@@ -47,6 +47,7 @@ Sleep(1000)
 CHECK_WIN_TITLE()
 Sleep(1000)
 CHECK_ABOUT_BOX()
+CHECK_LANGUAGE_MENU()
 
 Cleanup()
 ExitApp(0)
@@ -118,6 +119,42 @@ CHECK_ABOUT_BOX() {
 ; =============================================================================
 
 ; =============================================================================
+CHECK_LANGUAGE_MENU() {
+    global v_Notepad3_PID, v_NP3TestDir, stdout, v_ExitCode
+    if !FileExist(v_NP3TestDir . "\lng\de-DE\np3lng.dll.mui") {
+        stdout.WriteLine("Skipping lazy language menu check: no German language pack.")
+        return
+    }
+
+    hwnd := WinExist("ahk_pid " . v_Notepad3_PID)
+    menu := DllCall("GetMenu", "Ptr", hwnd, "Ptr")
+    ; IDM_SET_TABSASSPACES starts the Settings popup before discovery.
+    Loop DllCall("GetMenuItemCount", "Ptr", menu, "Int") {
+        pos := A_Index - 1
+        popup := DllCall("GetSubMenu", "Ptr", menu, "Int", pos, "Ptr")
+        if (DllCall("GetMenuItemID", "Ptr", popup, "Int", 0, "UInt") != 42010)
+            continue
+
+        before := DllCall("GetMenuItemCount", "Ptr", popup, "Int")
+        SendMessage(0x0117, popup, pos, , "ahk_id " . hwnd) ; WM_INITMENUPOPUP
+        languages := DllCall("GetSubMenu", "Ptr", popup, "Int", 0, "Ptr")
+        english := DllCall("GetMenuState", "Ptr", languages, "UInt", 34501, "UInt", 0, "Int")
+        german := DllCall("GetMenuState", "Ptr", languages, "UInt", 34504, "UInt", 0, "Int")
+        after := DllCall("GetMenuItemCount", "Ptr", popup, "Int")
+        SendMessage(0x0117, popup, pos, , "ahk_id " . hwnd)
+        if (english != -1 && (english & 8) && german != -1 && after = before + 3
+            && DllCall("GetMenuItemCount", "Ptr", popup, "Int") = after)
+            return
+        break
+    }
+
+    stdout.WriteLine("*** ERROR: Settings did not populate the language menu once on first open.")
+    v_ExitCode := 6
+    Cleanup()
+    ExitApp(v_ExitCode)
+}
+; =============================================================================
+
 Cleanup() {
     global v_Notepad3_PID, v_NP3Name, stdout, v_ExitCode
     if (v_Notepad3_PID > 0) {

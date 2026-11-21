@@ -20,8 +20,14 @@ if not exist "%AHK_EXE%" set AHK_EXE=%ProgramFiles%\AutoHotkey\AutoHotkey.exe
 if not exist "%TEST_DIR%" mkdir "%TEST_DIR%"
 if not exist "%TEST_DIR%Favorites\" mkdir "%TEST_DIR%Favorites\"
 copy "%NP3_CONFIG_DIR%Notepad3_distrib.ini" "%TEST_DIR%Notepad3.ini" /Y /V
-if exist "%NP3_WIN32_DIR%Notepad3.exe" copy /B "%NP3_WIN32_DIR%Notepad3.exe" /B "%TEST_DIR%Notepad3.exe" /Y /V
-if exist "%NP3_X64_DIR%Notepad3.exe" copy /B "%NP3_X64_DIR%Notepad3.exe" /B "%TEST_DIR%Notepad3.exe" /Y /V
+set "NP3_BIN="
+if exist "%NP3_WIN32_DIR%Notepad3.exe" set "NP3_BIN=%NP3_WIN32_DIR%"
+if exist "%NP3_X64_DIR%Notepad3.exe" set "NP3_BIN=%NP3_X64_DIR%"
+if defined NP3_BIN copy /B "%NP3_BIN%Notepad3.exe" /B "%TEST_DIR%Notepad3.exe" /Y /V
+if defined NP3_BIN if exist "%NP3_BIN%lng\de-DE\np3lng.dll.mui" (
+  if not exist "%TEST_DIR%lng\de-DE\" mkdir "%TEST_DIR%lng\de-DE\"
+  copy /B "%NP3_BIN%lng\de-DE\np3lng.dll.mui" /B "%TEST_DIR%lng\de-DE\np3lng.dll.mui" /Y /V
+)
 
 ::Loop over all ahk files in tests directory
 echo. > "%TEST_LOG%"

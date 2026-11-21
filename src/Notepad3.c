@@ -1533,9 +1533,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         return 1;
     }
 
-    #if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
-        InsertLanguageMenu(Globals.hMainMenu);
-    #endif
     Style_InsertThemesMenu(Globals.hMainMenu);
 
     if (!InitApplication(Globals.hInstance)) {
@@ -2077,8 +2074,7 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
     // before the PasteBoard activation block clears it.
     bool const bDeferMinimizeForPasteBoard = bStartMinimized && s_flagPasteBoard;
 
-    // Show window frame early for faster perceived startup — the user sees
-    // the window (with initial toolbar from WM_CREATE) while we re-create bars.
+    // Show the window early with the bars already created by WM_CREATE.
     // For the /B + /I deferred-minimize case, force SW_SHOWNORMAL: nCmdShow could be
     // SW_SHOWMINIMIZED (shortcut "Start minimized") which would defeat the purpose.
     if (!bStartMinimized || bDeferMinimizeForPasteBoard) {
@@ -2088,15 +2084,15 @@ HWND InitInstance(const HINSTANCE hInstance, int nCmdShow)
         SetWindowPos(hwndMain, Settings.AlwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         ShowWindow(hwndMain, bDeferMinimizeForPasteBoard ? SW_SHOWNORMAL : nCmdShow);
         UpdateWindow(hwndMain);
+    } else {
+        // Keep the rebuild for windows starting minimized (54a7cfc1e).
+        CreateBars(hwndMain, hInstance);
     }
-
-    CreateBars(hwndMain, hInstance);
 
     SetMenu(hwndMain, (Settings.ShowMenubar ? Globals.hMainMenu : NULL));
     DrawMenuBar(hwndMain);
 
-    // Force layout recalculation after toolbar/statusbar re-creation
-    // (early ShowWindow already triggered WM_SIZE with old child windows)
+    // Recalculate the client layout after attaching the menu.
     if (!bStartMinimized || bDeferMinimizeForPasteBoard) {
         RECT rc;
         GetClientRect(hwndMain, &rc);
@@ -2493,6 +2489,14 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM lParam)
 
     case WM_INITMENU:
         return MsgInitMenu(hwnd, wParam, lParam);
+
+#if defined(HAVE_DYN_LOAD_LIBS_MUI_LNGS)
+    case WM_INITMENUPOPUP:
+        if (!HIWORD(lParam)) {
+            InitLanguageMenu((HMENU)wParam);
+        }
+        break;
+#endif
 
     case WM_EXITMENULOOP:
         return MsgExitMenuLoop(hwnd, wParam);

@@ -13,6 +13,11 @@ There are 26 locales under `language\np3_<LANG>_<COUNTRY>\`; language packs buil
 - `Build\Notepad3.ini` and `Build\minipath.ini` are UTF-8 with BOM (`EF BB BF`); preserve it.
 - For bulk locale edits, use the Python in the git-ignored `.venv` when available; `sed`/`perl` newline escaping is unreliable in Cygwin.
 
+## Lazy language discovery
+
+- Keep the full language-pack scan off the startup path: [`LoadLanguageResources`](../../src/MuiLanguage.c#L386-L403) probes only the preferred locale until the inventory is known. The first Settings popup or first use of preferred-locale date formatting calls [`EnsureLanguageDLLsChecked`](../../src/MuiLanguage.c#L328-L346), which caches the inventory and disables that date-format option if no additional pack exists. Keep the date-format call independent of the menu so shortcuts work before Settings opens ([date formatting](../../src/Edit.c#L2966-L2971)).
+- Keep `IDM_SET_TABSASSPACES` first in every localized Settings menu. [`InitLanguageMenu`](../../src/MuiLanguage.c#L519-L557) uses it to recognize an unpopulated popup; insertion moves it down, preventing duplicates on later opens. Set the active-language and date-format checkmarks during insertion: [`WM_INITMENUPOPUP`](../../src/Notepad3.c#L2491-L2499) runs after the usual `WM_INITMENU` update. See the [English menu resource](../../language/np3_en_us/menu_en_us.rc#L477-L479).
+
 ## Adding a UI string
 
 1. Define `IDS_MUI_XXX` in `language\common_res.h` with a free ID next to related entries; the IDs are grouped by feature, not by message kind.
