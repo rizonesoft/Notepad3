@@ -90,7 +90,7 @@ BEGIN
             MENUITEM SEPARATOR
             MENUITEM "Webbmall &1\tCtrl+Skift+1",                   CMD_WEBACTION1
             MENUITEM "Webbmall &2\tCtrl+Skift+2",                   CMD_WEBACTION2
-            MENUITEM "Preview current file &3\tCtrl+Shift+3", CMD_WEBACTION3
+            MENUITEM "Förhandsgranska aktuell fil &3\tCtrl+Shift+3", CMD_WEBACTION3
             MENUITEM SEPARATOR
             MENUITEM "Öppna &innehållande mapp från markering",     IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
             MENUITEM "Öppna &fil från markering",                   IDM_EDIT_OPEN_FILE_FROM_SEL
@@ -158,11 +158,11 @@ BEGIN
     END
     POPUP "Redigera"
     BEGIN
-        MENUITEM "Visa dokument endast\tCtrl+Alt+M",                 IDM_VIEW_VIEWONLY
+        MENUITEM "Endast visning av dokument\tCtrl+Alt+M",                 IDM_VIEW_VIEWONLY
         MENUITEM SEPARATOR
         MENUITEM "Ångra\tCtrl+Z",                                   IDM_EDIT_UNDO
         MENUITEM "Gör om\tCtrl+Y",                                  IDM_EDIT_REDO
-        MENUITEM "Dela ångra vid radslut",                      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
+        MENUITEM "Dela upp ångring vid radslut",                      IDM_VIEW_SPLIT_UNDOTYPSEQ_LNBRK
         MENUITEM SEPARATOR
         MENUITEM "Klipp ut\tCtrl+X",                                IDM_EDIT_CUT
         POPUP "Kopiera..."
@@ -601,7 +601,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Öppna webbåtgärd 1",                                    CMD_WEBACTION1
         MENUITEM "Öppna webbåtgärd 2",                                    CMD_WEBACTION2
-        MENUITEM "Preview current file", CMD_WEBACTION3
+        MENUITEM "Förhandsgranska aktuell fil", CMD_WEBACTION3
         MENUITEM SEPARATOR
         MENUITEM "Öppna innehållande mapp från markering", IDM_EDIT_OPEN_CONTAINING_FOLDER_SEL
         MENUITEM "Öppna fil från markering",            IDM_EDIT_OPEN_FILE_FROM_SEL
