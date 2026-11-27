@@ -64,7 +64,7 @@ STRINGTABLE
 BEGIN
     IDS_LEX_DEF_TXT         "Κοινή βάση"
     IDS_LEX_WEB_SRC         "Web Source Code"
-    IDS_LEX_XML_DOC         "XML Document"
+    IDS_LEX_XML_DOC         "XML Έγγραφο"
     IDS_LEX_CSS_STYLE       "CSS Style Sheets"
     IDS_LEX_PRISM_CSV       "CSV Prism"
     IDS_LEX_CPP_SRC         "C/C++ πηγαίος κώδικας"
@@ -433,30 +433,30 @@ BEGIN
     IDS_LEX_STR_63324       "Header 5"
     IDS_LEX_STR_63325       "Header 6"
     IDS_LEX_STR_63326       "Pre Char"
-    IDS_LEX_STR_63327       "Unordered List"
+    IDS_LEX_STR_63327       "Λίστα δίχως σειρά"
 END
 
 STRINGTABLE
 BEGIN
     IDS_LEX_STR_63328       "Block Quote"
-    IDS_LEX_STR_63329       "Strikeout"
-    IDS_LEX_STR_63330       "Horizontal Rule"
-    IDS_LEX_STR_Link        "Link"
-    IDS_LEX_STR_Code        "Code"
+    IDS_LEX_STR_63329       "Διαγράμιση"
+    IDS_LEX_STR_63330       "Οριζόντιος Χάρακας"
+    IDS_LEX_STR_Link        "Σύνδεσμος"
+    IDS_LEX_STR_Code        "Κώδικας"
     IDS_LEX_STR_FrontMark   "Front Matter Marker"
     IDS_LEX_STR_FrontMatter "Front Matter"
     IDS_LEX_STR_FrontKey    "Front Matter Key"
-    IDS_LEX_STR_Ref         "Reference"
-    IDS_LEX_STR_Doc         "Document"
-    IDS_LEX_STR_Txt         "Text"
+    IDS_LEX_STR_Ref         "Αναφορά"
+    IDS_LEX_STR_Doc         "Έγγραφο"
+    IDS_LEX_STR_Txt         "Κείμενο"
     IDS_LEX_STR_StdOp       "Standard Operator"
-    IDS_LEX_STR_Attrib      "Attribute"
+    IDS_LEX_STR_Attrib      "Ιδιότητα"
     IDS_LEX_STR_StdFct      "Standard Function"
     IDS_LEX_STR_StdPck      "Standard Package"
     IDS_LEX_STR_StdTyp      "Standard Type"
-    IDS_LEX_STR_Word        "Word"
+    IDS_LEX_STR_Word        "Λέξη"
     IDS_LEX_STR_Verb        "Verbatim"
-    IDS_LEX_STR_63343       "Built-In Type"
+    IDS_LEX_STR_63343       "Ενσωματωμένος Τύπος"
 END
 
 STRINGTABLE
